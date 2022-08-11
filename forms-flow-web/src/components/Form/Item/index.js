@@ -23,6 +23,8 @@ import {
   clearSubmissionError,
 } from "../../../actions/formActions";
 
+import Draft from "../../Draft";
+
 const Item = React.memo(() => {
   const { formId } = useParams();
   const userRoles = useSelector((state) => state.user.roles || []);
@@ -102,6 +104,10 @@ const Item = React.memo(() => {
         <SubmissionRoute
           path={`${BASE_ROUTE}form/:formId/submission`}
           component={Submission}
+        />
+        <SubmissionRoute
+          path={`${BASE_ROUTE}form/:formId/draft`}
+          component={Draft}
         />
         <Redirect exact to="/404" />
       </Switch>

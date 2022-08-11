@@ -30,6 +30,7 @@ export const updateUserlang = (data) => {
 export const getFormioRoleIds = (...rest) => {
   // eslint-disable-next-line
   const done = rest.length ? rest[0] : () => {};
+  const formioToken = localStorage.getItem("formioToken");
   let data;
   if (MULTITENANCY_ENABLED) {
     data = localStorage.getItem("tenantData");
@@ -37,7 +38,7 @@ export const getFormioRoleIds = (...rest) => {
     data = localStorage.getItem("roleIds");
   }
   // if data is there no need to call api
-  if (data) {
+  if (data && formioToken) {
     return (dispatch) => {
       // converting data
       data = JSON.parse(data);
@@ -55,7 +56,9 @@ export const getFormioRoleIds = (...rest) => {
     return (dispatch) => {
       httpGETRequest(url, {}, UserService.getToken(), true)
         .then((res) => {
-          if (res.data) {
+          const token = res.headers["x-jwt-token"];
+          if (res.data && res.data.form && token) {
+            localStorage.setItem("formioToken",token);
             localStorage.setItem("roleIds", JSON.stringify(res.data.form));
             dispatch(setRoleIds(res.data?.form));
             dispatch(setAccessForForm(res.data?.form));

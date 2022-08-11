@@ -14,9 +14,12 @@ import { setFormSubmissionLoading } from "../../../../../actions/formActions";
 import LoadingOverlay from "react-loading-overlay";
 import { useTranslation } from "react-i18next";
 import { formio_resourceBundles } from "../../../../../resourceBundles/formio_resourceBundles";
-import { CUSTOM_SUBMISSION_URL, CUSTOM_SUBMISSION_ENABLE } from "../../../../../constants/constants";
+import {
+  CUSTOM_SUBMISSION_URL,
+  CUSTOM_SUBMISSION_ENABLE,
+} from "../../../../../constants/constants";
 import { updateCustomSubmission } from "../../../../../apiManager/services/FormServices";
-import { DownloadPDFButton } from '../../../ExportAsPdf/downloadPdfButton';
+import { DownloadPDFButton } from "../../../ExportAsPdf/downloadPdfButton";
 const View = React.memo((props) => {
   const { t } = useTranslation();
   const {
@@ -32,19 +35,20 @@ const View = React.memo((props) => {
     (state) => state.formDelete.isFormSubmissionLoading
   );
 
-  const customSubmission = useSelector((state) => state.formDelete.customSubmission);
+  const customSubmission = useSelector(
+    (state) => state.formDelete.customSubmission
+  );
 
   let updatedSubmission;
-  if(CUSTOM_SUBMISSION_URL && CUSTOM_SUBMISSION_ENABLE){
+  if (CUSTOM_SUBMISSION_URL && CUSTOM_SUBMISSION_ENABLE) {
     updatedSubmission = customSubmission;
-  }else {
+  } else {
     updatedSubmission = submission;
   }
 
   if (isFormActive || (isSubActive && !isFormSubmissionLoading)) {
     return <Loading />;
   }
-
 
   return (
     <div className="container row task-container">
@@ -53,9 +57,10 @@ const View = React.memo((props) => {
         {showPrintButton && form?._id ? (
           <div className="btn-right d-flex flex-row">
             <DownloadPDFButton
-            form_id={form._id}
-            submission_id={submission._id}
-            title={form.title}/>
+              form_id={form._id}
+              submission_id={submission._id}
+              title={form.title}
+            />
           </div>
         ) : null}
       </div>
@@ -86,10 +91,13 @@ View.defaultProps = {
   showPrintButton: true,
 };
 
-const mapStateToProps = (state) => {
+const mapStateToProps = (state, props) => {
+  const isDraftView = props.page === "draft-detail" ? true : false;
   return {
     form: selectRoot("form", state),
-    submission: selectRoot("submission", state),
+    submission: isDraftView
+      ? selectRoot("draft", state)
+      : selectRoot("submission", state),
     options: {
       readOnly: true,
       language: state.user.lang,
@@ -115,9 +123,13 @@ const mapDispatchToProps = (dispatch, ownProps) => {
           dispatch(setFormSubmissionLoading(false));
         }
       };
-      if(CUSTOM_SUBMISSION_URL && CUSTOM_SUBMISSION_ENABLE){
-        updateCustomSubmission(submission,ownProps.match.params.formId,callBack);
-      }else{
+      if (CUSTOM_SUBMISSION_URL && CUSTOM_SUBMISSION_ENABLE) {
+        updateCustomSubmission(
+          submission,
+          ownProps.match.params.formId,
+          callBack
+        );
+      } else {
         dispatch(
           saveSubmission(
             "submission",
@@ -127,7 +139,6 @@ const mapDispatchToProps = (dispatch, ownProps) => {
           )
         );
       }
-    
     },
   };
 };

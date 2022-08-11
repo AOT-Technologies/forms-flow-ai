@@ -1,16 +1,18 @@
 import React, { useEffect, Suspense, lazy, useMemo } from "react";
 import { Route, Switch, Redirect, useParams } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
-import { BASE_ROUTE, MULTITENANCY_ENABLED } from "../constants/constants";
+import {
+  BASE_ROUTE,
+  DRAFT_ENABLED,
+  MULTITENANCY_ENABLED,
+} from "../constants/constants";
 import UserService from "../services/UserService";
 import { setUserAuth } from "../actions/bpmActions";
 import { CLIENT, STAFF_REVIEWER, STAFF_DESIGNER } from "../constants/constants";
 
 import Loading from "../containers/Loading";
 import NotFound from "./NotFound";
-import {
-  setTenantFromId,
-} from "../apiManager/services/tenantServices";
+import { setTenantFromId } from "../apiManager/services/tenantServices";
 
 const Form = lazy(() => import("./Form"));
 const ServiceFlow = lazy(() => import("./ServiceFlow"));
@@ -18,7 +20,8 @@ const DashboardPage = lazy(() => import("./Dashboard"));
 const InsightsPage = lazy(() => import("./Insights"));
 const Application = lazy(() => import("./Application"));
 const Admin = lazy(() => import("./Admin"));
-const Modeller = lazy(() => import("./Modeller"));  //BPMN Modeller
+const Modeller = lazy(() => import("./Modeller")); //BPMN Modeller
+const Drafts = lazy(() => import("./Draft"));
 
 const PrivateRoute = React.memo((props) => {
   const dispatch = useDispatch();
@@ -103,15 +106,37 @@ const PrivateRoute = React.memo((props) => {
     [userRoles]
   );
 
+  const DraftRoute = useMemo(
+    () =>
+      ({ component: Component, ...rest }) =>
+        (
+          <Route
+            {...rest}
+            render={(props) =>
+              DRAFT_ENABLED ? (
+                <Component {...props} />
+              ) : (
+                <Redirect exact to="/404" />
+              )
+            }
+          />
+        ),
+    [userRoles]
+  );
+
   return (
     <>
       {isAuth ? (
         <Suspense fallback={<Loading />}>
           <Switch>
             <Route path={`${BASE_ROUTE}form`} component={Form} />
+            <DraftRoute path={`${BASE_ROUTE}draft`} component={Drafts} />
             <DesignerRoute path={`${BASE_ROUTE}admin`} component={Admin} />
             <DesignerRoute path={`${BASE_ROUTE}formflow`} component={Form} />
-            <DesignerRoute path={`${BASE_ROUTE}processes`} component={Modeller} />
+            <DesignerRoute
+              path={`${BASE_ROUTE}processes`}
+              component={Modeller}
+            />
             <ClientReviewerRoute
               path={`${BASE_ROUTE}application`}
               component={Application}

@@ -65,7 +65,9 @@ const Edit = React.memo((props) => {
     (state) => state.formDelete.isFormSubmissionLoading
   );
   const tenantKey = useSelector((state) => state.tenants?.tenantId);
-  const customSubmission = useSelector((state)=>state.formDelete.customSubmission);
+  const customSubmission = useSelector(
+    (state) => state.formDelete.customSubmission
+  );
   const redirectUrl = MULTITENANCY_ENABLED ? `/tenant/${tenantKey}/` : "/";
   useEffect(() => {
     if (applicationStatus && !onFormSubmit) {
@@ -84,17 +86,17 @@ const Edit = React.memo((props) => {
     formId,
     onFormSubmit,
   ]);
-  let updatedSubmission ;
-  if(CUSTOM_SUBMISSION_URL && CUSTOM_SUBMISSION_ENABLE){
+  let updatedSubmission;
+  if (CUSTOM_SUBMISSION_URL && CUSTOM_SUBMISSION_ENABLE) {
     updatedSubmission = customSubmission;
-  }else{
+  } else {
     updatedSubmission = submission;
   }
 
   if (isFormActive || (isSubActive && !isFormSubmissionLoading)) {
     return <Loading />;
   }
-  
+
   return (
     <div className="container">
       <div className="main-header">
@@ -177,12 +179,10 @@ const mapDispatchToProps = (dispatch, ownProps) => {
       redirectUrl
     ) => {
       dispatch(setFormSubmissionLoading(true));
-      const callBack =   (err, submission) => {
+      const callBack = (err, submission) => {
         if (!err) {
           if (
-            UPDATE_EVENT_STATUS.includes(
-              applicationDetail.applicationStatus
-            )
+            UPDATE_EVENT_STATUS.includes(applicationDetail.applicationStatus)
           ) {
             const data = getProcessDataReq(applicationDetail);
             dispatch(
@@ -193,9 +193,7 @@ const mapDispatchToProps = (dispatch, ownProps) => {
                   onFormSubmit();
                 } else {
                   toast.success(
-                    <Translation>
-                      {(t) => t("Submission Saved")}
-                    </Translation>
+                    <Translation>{(t) => t("Submission Saved")}</Translation>
                   );
                   dispatch(
                     push(
@@ -239,10 +237,12 @@ const mapDispatchToProps = (dispatch, ownProps) => {
           dispatch(setFormSubmissionError(ErrorDetails));
         }
       };
-      if(CUSTOM_SUBMISSION_URL && CUSTOM_SUBMISSION_ENABLE){
-        updateCustomSubmission(submission,
+      if (CUSTOM_SUBMISSION_URL && CUSTOM_SUBMISSION_ENABLE) {
+        updateCustomSubmission(
+          submission,
           onFormSubmit ? formId : ownProps.match.params.formId,
-          callBack);
+          callBack
+        );
       }
       dispatch(
         saveSubmission(

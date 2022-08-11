@@ -11,12 +11,16 @@ import org.camunda.bpm.extension.hooks.rest.TaskRestResource;
 import org.camunda.bpm.extension.hooks.rest.dto.UserIdDto;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.hateoas.EntityModel;
 
 import javax.ws.rs.core.Request;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.UriInfo;
 import java.util.List;
 import java.util.Map;
+
+import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
+import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
 
 public class TaskRestResourceImpl implements TaskRestResource {
 
@@ -39,13 +43,9 @@ public class TaskRestResourceImpl implements TaskRestResource {
     }
 
     @Override
-    public CountResultDto getTasksCount(UriInfo uriInfo) {
-        return restService.getTasksCount(uriInfo);
-    }
-
-    @Override
-    public CountResultDto queryTasksCount(TaskQueryDto query) {
-        return restService.queryTasksCount(query);
+    public EntityModel<CountResultDto> getTasksCount(UriInfo uriInfo) {
+        CountResultDto dto = restService.getTasksCount(uriInfo);
+        return EntityModel.of(dto, linkTo(methodOn(TaskRestResourceImpl.class).getTasksCount(uriInfo)).withSelfRel());
     }
 
     @Override
@@ -81,11 +81,6 @@ public class TaskRestResourceImpl implements TaskRestResource {
     @Override
     public List<IdentityLinkDto> getIdentityLinks(String type, String id) {
         return restService.getTask(id).getIdentityLinks(type);
-    }
-
-    @Override
-    public void addIdentityLink(IdentityLinkDto identityLinkDto, String id) {
-        restService.getTask(id).addIdentityLink(identityLinkDto);
     }
 
     @Override

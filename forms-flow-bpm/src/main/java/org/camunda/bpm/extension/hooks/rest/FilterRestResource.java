@@ -4,12 +4,18 @@ import org.camunda.bpm.engine.rest.dto.CountResultDto;
 import org.camunda.bpm.engine.rest.dto.runtime.FilterDto;
 import org.camunda.bpm.engine.rest.hal.Hal;
 import org.springframework.hateoas.EntityModel;
-
-import javax.ws.rs.*;
+import javax.ws.rs.Consumes;
+import javax.ws.rs.Path;
+import javax.ws.rs.GET;
+import javax.ws.rs.POST;
+import javax.ws.rs.PathParam;
+import javax.ws.rs.Produces;
+import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
-import javax.ws.rs.core.Request;
 import javax.ws.rs.core.UriInfo;
+import javax.ws.rs.core.Request;
+
 import java.util.List;
 
 @Produces(MediaType.APPLICATION_JSON)
@@ -20,17 +26,7 @@ public interface FilterRestResource extends RestResource {
     @GET
     @Produces(MediaType.APPLICATION_JSON)
     List<FilterDto> getFilters(@Context UriInfo uriInfo, @QueryParam("itemCount") Boolean itemCount,
-                               @QueryParam("firstResult") Integer firstResult, @QueryParam("maxResults") Integer maxResults);
-
-    @GET
-    @Path("/{id}")
-    @Produces(MediaType.APPLICATION_JSON)
-    EntityModel<FilterDto> getFilter(@QueryParam("itemCount") Boolean itemCount, @PathParam("id") String id);
-
-    @PUT
-    @Path("/{id}")
-    @Consumes(MediaType.APPLICATION_JSON)
-    void updateFilter(FilterDto filterDto, @PathParam("id") String id);
+                                          @QueryParam("firstResult") Integer firstResult, @QueryParam("maxResults") Integer maxResults);
 
     @GET
     @Path("/{id}/list")
@@ -49,14 +45,4 @@ public interface FilterRestResource extends RestResource {
     @Produces(MediaType.APPLICATION_JSON)
     EntityModel<CountResultDto> executeCount(@PathParam("id") String id);
 
-    @POST
-    @Path("/{id}/count")
-    @Produces(MediaType.APPLICATION_JSON)
-    @Consumes(MediaType.APPLICATION_JSON)
-    EntityModel<CountResultDto> queryCount(String extendingQuery, @PathParam("id") String id);
-
-    @GET
-    @Path("/count")
-    @Produces(MediaType.APPLICATION_JSON)
-    EntityModel<CountResultDto> getFiltersCount(@Context UriInfo uriInfo);
 }

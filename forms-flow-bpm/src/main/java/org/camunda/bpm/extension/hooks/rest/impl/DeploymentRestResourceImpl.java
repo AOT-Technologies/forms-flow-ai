@@ -7,10 +7,14 @@ import org.camunda.bpm.engine.rest.mapper.MultipartFormData;
 import org.camunda.bpm.extension.hooks.rest.DeploymentRestResource;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.hateoas.EntityModel;
 
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.UriInfo;
 import java.util.List;
+
+import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
+import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
 
 public class DeploymentRestResourceImpl implements DeploymentRestResource {
 
@@ -28,8 +32,9 @@ public class DeploymentRestResourceImpl implements DeploymentRestResource {
     }
 
     @Override
-    public DeploymentDto createDeployment(UriInfo uriInfo, MultipartFormData multipartFormData) {
-        return restService.createDeployment(uriInfo, multipartFormData);
+    public EntityModel<DeploymentDto> createDeployment(UriInfo uriInfo, MultipartFormData multipartFormData) {
+        DeploymentDto dto = restService.createDeployment(uriInfo, multipartFormData);
+        return EntityModel.of(dto, linkTo(methodOn(DeploymentRestResourceImpl.class).createDeployment(uriInfo, multipartFormData)).withSelfRel());
     }
 
     @Override

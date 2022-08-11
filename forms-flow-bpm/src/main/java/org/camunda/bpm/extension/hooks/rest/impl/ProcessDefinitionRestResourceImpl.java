@@ -23,18 +23,20 @@ public class ProcessDefinitionRestResourceImpl implements ProcessDefinitionRestR
     }
 
     @Override
-    public List<ProcessDefinitionDto> getProcessDefinitions(UriInfo uriInfo, Integer firstResult, Integer maxResults) {
+    public  List<ProcessDefinitionDto> getProcessDefinitions(UriInfo uriInfo, Integer firstResult, Integer maxResults) {
         return restService.getProcessDefinitions(uriInfo, firstResult, maxResults);
     }
 
     @Override
-    public ProcessDefinitionDto getProcessDefinition(String key) {
-        return restService.getProcessDefinitionByKey(key).getProcessDefinition();
+    public EntityModel<ProcessDefinitionDto> getProcessDefinition(String key) {
+        ProcessDefinitionDto dto = restService.getProcessDefinitionByKey(key).getProcessDefinition();
+        return EntityModel.of(dto, linkTo(methodOn(ProcessDefinitionRestResourceImpl.class).getProcessDefinition(key)).withSelfRel());
     }
 
     @Override
-    public ProcessDefinitionDiagramDto getProcessDefinitionBpmn20Xml(String key) {
-        return restService.getProcessDefinitionByKey(key).getProcessDefinitionBpmn20Xml();
+    public EntityModel<ProcessDefinitionDiagramDto> getProcessDefinitionBpmn20Xml(String key) {
+        ProcessDefinitionDiagramDto dto =  restService.getProcessDefinitionByKey(key).getProcessDefinitionBpmn20Xml();
+        return EntityModel.of(dto, linkTo(methodOn(ProcessDefinitionRestResourceImpl.class).getProcessDefinitionBpmn20Xml(key)).withSelfRel());
     }
 
     @Override

@@ -5,8 +5,13 @@ import org.camunda.bpm.engine.rest.dto.repository.ProcessDefinitionDto;
 import org.camunda.bpm.engine.rest.dto.runtime.ProcessInstanceDto;
 import org.camunda.bpm.engine.rest.dto.runtime.StartProcessInstanceDto;
 import org.springframework.hateoas.EntityModel;
-
-import javax.ws.rs.*;
+import javax.ws.rs.Consumes;
+import javax.ws.rs.Path;
+import javax.ws.rs.GET;
+import javax.ws.rs.POST;
+import javax.ws.rs.PathParam;
+import javax.ws.rs.Produces;
+import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.UriInfo;
@@ -24,12 +29,12 @@ public interface ProcessDefinitionRestResource extends RestResource{
     @GET
     @Path("/key/{key}")
     @Produces(MediaType.APPLICATION_JSON)
-    ProcessDefinitionDto getProcessDefinition(@PathParam("key") String key);
+    EntityModel<ProcessDefinitionDto> getProcessDefinition(@PathParam("key") String key);
 
     @GET
     @Path("/key/{key}/xml")
     @Produces(MediaType.APPLICATION_JSON)
-    ProcessDefinitionDiagramDto getProcessDefinitionBpmn20Xml(@PathParam("key") String key);
+    EntityModel<ProcessDefinitionDiagramDto> getProcessDefinitionBpmn20Xml(@PathParam("key") String key);
 
     @POST
     @Path("/key/{key}/start")

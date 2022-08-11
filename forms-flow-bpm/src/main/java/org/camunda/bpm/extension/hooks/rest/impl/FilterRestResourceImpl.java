@@ -31,17 +31,6 @@ public class FilterRestResourceImpl implements FilterRestResource {
     }
 
     @Override
-    public EntityModel<FilterDto> getFilter(Boolean itemCount, String id) {
-        FilterDto dto = restService.getFilter(id).getFilter(itemCount);
-        return EntityModel.of(dto, linkTo(methodOn(FilterRestResourceImpl.class).getFilter(itemCount, id)).withSelfRel().withSelfRel());
-    }
-
-    @Override
-    public void updateFilter(FilterDto filterDto, String id) {
-         restService.getFilter(id).updateFilter(filterDto);
-    }
-
-    @Override
     public Object executeList(Request request, Integer firstResult, Integer maxResults, String id) {
         return restService.getFilter(id).executeList(request, firstResult, maxResults);
 
@@ -57,17 +46,5 @@ public class FilterRestResourceImpl implements FilterRestResource {
     public EntityModel<CountResultDto> executeCount(String id) {
         CountResultDto dto = restService.getFilter(id).executeCount();
         return EntityModel.of(dto, linkTo(methodOn(FilterRestResourceImpl.class).executeCount(id)).withSelfRel().withSelfRel());
-    }
-
-    @Override
-    public EntityModel<CountResultDto> queryCount(String extendingQuery, String id) {
-        CountResultDto dto = restService.getFilter(id).queryCount(extendingQuery);
-        return  EntityModel.of(dto, linkTo(methodOn(FilterRestResourceImpl.class).queryCount(extendingQuery, id)).withSelfRel().withSelfRel());
-    }
-
-    @Override
-    public EntityModel<CountResultDto> getFiltersCount(UriInfo uriInfo) {
-        CountResultDto dto = restService.getFiltersCount(uriInfo);
-        return EntityModel.of(dto, linkTo(methodOn(FilterRestResourceImpl.class).getFiltersCount(uriInfo)).withSelfRel().withSelfRel());
     }
 }

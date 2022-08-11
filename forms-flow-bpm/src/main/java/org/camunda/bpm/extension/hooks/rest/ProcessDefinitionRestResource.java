@@ -22,6 +22,11 @@ public interface ProcessDefinitionRestResource extends RestResource{
     List<ProcessDefinitionDto> getProcessDefinitions(@Context UriInfo uriInfo, @QueryParam("firstResult") Integer firstResult, @QueryParam("maxResults") Integer maxResults);
 
     @GET
+    @Path("/key/{key}")
+    @Produces(MediaType.APPLICATION_JSON)
+    ProcessDefinitionDto getProcessDefinition(@PathParam("key") String key);
+
+    @GET
     @Path("/key/{key}/xml")
     @Produces(MediaType.APPLICATION_JSON)
     ProcessDefinitionDiagramDto getProcessDefinitionBpmn20Xml(@PathParam("key") String key);

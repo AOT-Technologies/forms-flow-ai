@@ -28,6 +28,11 @@ public class ProcessDefinitionRestResourceImpl implements ProcessDefinitionRestR
     }
 
     @Override
+    public ProcessDefinitionDto getProcessDefinition(String key) {
+        return restService.getProcessDefinitionByKey(key).getProcessDefinition();
+    }
+
+    @Override
     public ProcessDefinitionDiagramDto getProcessDefinitionBpmn20Xml(String key) {
         return restService.getProcessDefinitionByKey(key).getProcessDefinitionBpmn20Xml();
     }

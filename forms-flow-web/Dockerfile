@@ -54,8 +54,6 @@ RUN apk update && apk upgrade && \
 
 COPY package-lock.json /forms-flow-web/app/package-lock.json
 COPY package.json /forms-flow-web/app/package.json
-COPY forms-flow-util/package.json /forms-flow-web/app/forms-flow-util/package.json
-COPY forms-flow-util/package-lock.json /forms-flow-web/app/forms-flow-util/package-lock.json
 
 RUN npm install --unsafe-perm --production
 #RUN npm install react-scripts@3.0.1 -g --silent

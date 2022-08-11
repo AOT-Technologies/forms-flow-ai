@@ -15,7 +15,7 @@ from formsflow_api.utils import (
     validate_sort_order_and_order_by,
 )
 from formsflow_api.utils.enums import DraftStatus
-
+from formsflow_api.utils.user_context import UserContext, user_context
 from .application import Application
 from .audit_mixin import AuditDateTimeMixin
 from .base_model import BaseModel
@@ -195,11 +195,11 @@ class Draft(AuditDateTimeMixin, BaseModel, db.Model):
         return query
 
     @classmethod
-    def get_draft_count(cls, user_id=None):
-        """Get active draft count.
-
-        user_id: user_id specified for non reviewers
-        """
+    @user_context
+    def get_draft_count(cls, **kwargs):
+        """Get active draft count."""
+        user: UserContext = kwargs["user"]
+        user_id: str = user.user_name
         query = cls.query.join(Application, cls.application_id == Application.id)
         if user_id:
             query = query.filter(Application.created_by == user_id)

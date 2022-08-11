@@ -200,8 +200,8 @@ services:
       FORMIO_ROOT_EMAIL: ${FORMIO_ROOT_EMAIL:-admin@example.com}
       FORMIO_ROOT_PASSWORD: ${FORMIO_ROOT_PASSWORD:-changeme}
 
-  forms-flow-export-api:
-    container_name: forms-flow-exportapi
+  forms-flow-documents-api:
+    container_name: forms-flow-documents-api
     build:
       context: ./../../forms-flow-documents/
       dockerfile: Dockerfile

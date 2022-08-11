@@ -1,7 +1,7 @@
 #Author: Kurian Benoy
 FROM python:3.9-slim-buster
 
-WORKDIR /forms-flow-api/app
+WORKDIR /forms-flow-documents/app
 
 # install curl, gnupg2 and unzip and git
 RUN  apt-get update \
@@ -38,7 +38,7 @@ RUN : \
     && pip install --upgrade pip \
     && pip install -r requirements.txt 
 
-ADD . /forms-flow-api/app
+ADD . /forms-flow-documents/app
 RUN pip install -e .
 
 EXPOSE 5000

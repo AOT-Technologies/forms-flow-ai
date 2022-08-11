@@ -15,3 +15,6 @@ Werkzeug
 sqlalchemy_utils
 markupsafe==2.0.1
 PyJWT==2.4.0
+git+https://github.com/ratheesh-aot/forms-flow-ai.git@split-python-services#egg=formsflow_api_utils&subdirectory=forms-flow-api-utils
+ndg-httpsclient
+pyopenssl

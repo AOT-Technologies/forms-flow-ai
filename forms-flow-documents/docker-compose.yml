@@ -1,7 +1,7 @@
 version: '3.7'
 
 services:
-  forms-flow-export-api:
+  forms-flow-documents-api:
     build:
       context: ./
       dockerfile: Dockerfile

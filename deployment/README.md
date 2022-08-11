@@ -38,9 +38,8 @@ In the following document, we’ll describe about the different project dependen
 There are multiple options for installing formsflow.ai. They are given below
 
 - Quick Installation 
-  - Follow the instructions given in the readme[Quick Installation](./docker/bundle)
+  - Follow the instructions given in the usage file [Usage Instructions](https://github.com/AOT-Technologies/forms-flow-ai-deployment/blob/main/scripts/usage.txt)
 - Docker Based installation
-  - [Docker single click installation](#docker-single-click-installation)
   - [Docker Full Deployment](#Docker-Full-Deployment)
   - [Docker Individual Service Deployment](#Docker-Individual-Service-Deployment)
 - Openshift Based Installation

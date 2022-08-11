@@ -1,4 +1,6 @@
 """Test suit for formio role id cached endpoint."""
+import jwt as pyjwt
+
 from formsflow_api.utils import cache
 from formsflow_api.utils.enums import FormioRoles
 from tests.utilities.base_test import get_formio_roles, get_token
@@ -12,7 +14,8 @@ def test_formio_roles(app, client, session, jwt):
         role_ids_filtered,
         timeout=0,
     )
-    cache.set("user_resource_id", "62cc9223b5cad9348f5880a9", timeout=0)
+    resource_id = "62cc9223b5cad9348f5880a9"
+    cache.set("user_resource_id", resource_id, timeout=0)
 
     # Requesting from client role
     token = get_token(jwt, role="formsflow-client")
@@ -23,7 +26,14 @@ def test_formio_roles(app, client, session, jwt):
     assert response.json["form"][0]["roleId"] == 1
     assert response.json["form"][0]["type"] == FormioRoles.CLIENT.name
     assert response.json["form"][1]["type"] == FormioRoles.RESOURCE_ID.name
-    assert response.json["form"][1]["roleId"] == "62cc9223b5cad9348f5880a9"
+    assert response.json["form"][1]["roleId"] == resource_id
+    assert response.headers["x-jwt-token"]
+    decoded_token = pyjwt.decode(
+        response.headers["x-jwt-token"],
+        algorithms="HS256",
+        key=app.config["FORMIO_JWT_SECRET"],
+    )
+    assert decoded_token["form"]["_id"] == resource_id
 
     # Requesting from reviewer role
     token = get_token(jwt, role="formsflow-reviewer")

@@ -143,10 +143,10 @@ it("Should call the draft create when draft mode is on", () => {
     route: "/form/123",
   });
   expect(serviceSpy).toHaveBeenCalled();
-  expect(serviceSpy).toHaveBeenCalledWith({ data: {}, formId: "123" });
+  expect(serviceSpy).toHaveBeenCalledWith({ data: {}, formId: "123" }, expect.anything());
 });
 
-it("Should not call the draft create when draft mode is ff", () => {
+it("Should not call the draft create when draft mode is off", () => {
   constants.DRAFT_ENABLED = false;
   const spy = jest.spyOn(redux, "useSelector");
   spy.mockImplementation((callback) =>

@@ -47,6 +47,9 @@ services:
       FORMIO_ROOT_EMAIL: ${FORMIO_ROOT_EMAIL:-admin@example.com}
       FORMIO_ROOT_PASSWORD: ${FORMIO_ROOT_PASSWORD:-changeme}
       CHROME_DRIVER_PATH: ${CHROME_DRIVER_PATH}
+      CUSTOM_SUBMISSION_URL: ${CUSTOM_SUBMISSION_URL}
+      CUSTOM_SUBMISSION_ENABLED: ${CUSTOM_SUBMISSION_ENABLED}
+      FORMIO_JWT_SECRET: ${FORMIO_JWT_SECRET:---- change me now ---}
     stdin_open: true # -i
     tty: true # -t
     networks:

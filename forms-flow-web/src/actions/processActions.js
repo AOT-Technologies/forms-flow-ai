@@ -36,6 +36,13 @@ export const setAllProcessList = (data) => (dispatch) => {
   });
 };
 
+export const setAllDeploymentList = (data) => (dispatch) => {
+  dispatch({
+    type: ACTION_CONSTANTS.DEPLOYMENT_LIST,
+    payload: data,
+  });
+};
+
 export const setFormProcessLoadError = (data) => (dispatch) => {
   dispatch({
     type: ACTION_CONSTANTS.IS_FORM_PROCESS_STATUS_LOAD_ERROR,

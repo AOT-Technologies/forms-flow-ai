@@ -54,7 +54,7 @@ const View = React.memo((props) => {
     <div className="container row task-container">
       <div className="main-header">
         <h3 className="task-head"> {form.title}</h3>
-        {showPrintButton && form?._id ? (
+        {(showPrintButton && form?._id && props.submission.draftDetailStatusCode !== 200 ) ? (
           <div className="btn-right d-flex flex-row">
             <DownloadPDFButton
               form_id={form._id}

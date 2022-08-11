@@ -194,8 +194,8 @@ class Application(
         """Fetch applications list based on searching parameters for Non-reviewer."""
         query = cls.filter_conditions(**filters)
         query = FormProcessMapper.tenant_authorization(query=query)
-        query = cls.filter_draft_applications(query=query)
         query = query.filter(Application.created_by == user_id)
+        query = cls.filter_draft_applications(query=query)
         order_by, sort_order = validate_sort_order_and_order_by(order_by, sort_order)
         if order_by and sort_order:
             table_name = "application"
@@ -296,6 +296,7 @@ class Application(
         query = cls.filter_conditions(**filters)
         query = FormProcessMapper.tenant_authorization(query=query)
         query = query.filter(FormProcessMapper.process_key.in_(process_key))
+        query = cls.filter_draft_applications(query=query)
         order_by, sort_order = validate_sort_order_and_order_by(order_by, sort_order)
         if order_by and sort_order:
             table_name = "application"

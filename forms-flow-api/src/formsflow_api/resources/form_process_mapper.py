@@ -400,16 +400,33 @@ class FormResourceRenderFormPdf(Resource):
         """Form rendering method."""
         formio_service = FormioService()
         form_io_url = current_app.config.get("FORMIO_URL")
+        is_form_adapter = current_app.config.get("CUSTOM_SUBMISSION_ENABLED")
         form_io_token = formio_service.get_formio_access_token()
-        form_url = form_io_url + "/form/" + form_id + "/submission/" + submission_id
+
+        if is_form_adapter:
+            sub_url = current_app.config.get("CUSTOM_SUBMISSION_URL")
+            form_url = form_io_url + "/form/" + form_id
+            submission_url = (
+                sub_url + "/form/" + form_id + "/submission/" + submission_id
+            )
+            auth_token = request.headers.get("Authorization")
+        else:
+            form_url = form_io_url + "/form/" + form_id + "/submission/" + submission_id
+            submission_url = None
+            auth_token = None
+
         template_params = {
             "form": {
                 "base_url": form_io_url,
                 "project_url": form_io_url,
                 "form_url": form_url,
                 "token": form_io_token,
+                "submission_url": submission_url,
+                "form_apater": is_form_adapter,
+                "auth_token": auth_token,
             }
         }
+        current_app.logger.debug(template_params)
         headers = {"Content-Type": "text/html"}
         return make_response(
             render_template("index.html", **template_params), 200, headers
@@ -448,7 +465,15 @@ class FormResourceExportFormPdf(Resource):
 
                 args = {"wait": "completed", "timezone": timezone, "auth_token": token}
                 result = get_pdf_from_html(url, args=args)
-                return pdf_response(result, file_name)
+                if result:
+                    return pdf_response(result, file_name)
+                response, status = (
+                    {
+                        "message": "Cannot render pdf.",
+                    },
+                    HTTPStatus.BAD_REQUEST,
+                )
+                return response, status
 
             response, status = (
                 {

@@ -21,6 +21,7 @@ import {
   setApplicationCountResponse,
   setUnPublishApiError,
   setResetProcess,
+  setAllDeploymentList,
 } from "../../actions/processActions";
 import { setApplicationCount } from "../../actions/processActions";
 import { replaceUrl } from "../../helper/helper";
@@ -63,22 +64,95 @@ export const getProcessStatusList = (processId, taskId) => {
  *
  * @param  {...any} rest
  */
-export const fetchAllBpmProcesses = (...rest) => {
+export const fetchAllBpmProcesses = (excludeInternal = true, ...rest) => {
   const done = rest.length ? rest[0] : () => {};
   return (dispatch) => {
-    httpGETRequest(API.GET_BPM_PROCESS_LIST + "?latestVersion=true&excludeInternal=true", {}, UserService.getToken(), true)
+    // eslint-disable-next-line max-len
+    httpGETRequest(
+      API.GET_BPM_PROCESS_LIST +
+        `?latestVersion=true&excludeInternal=${excludeInternal}`,
+      {},
+      UserService.getToken(),
+      true
+    )
       .then((res) => {
         if(res?.data) {
           dispatch(setAllProcessList(res.data));
           done(null, res.data);
         } else {
           dispatch(setAllProcessList([]));
-          //dispatch(setProcessLoadError(true));
         }
       })
       // eslint-disable-next-line no-unused-vars
       .catch((error) => {
-        // dispatch(setProcessStatusLoading(false));
+        dispatch(setProcessLoadError(true));
+      });
+  };
+};
+
+export const fetchAllBpmDeployments = (...rest) => {
+  const done = rest.length ? rest[0] : () => {};
+  return (dispatch) => {
+    // eslint-disable-next-line max-len
+    httpGETRequest(API.GET_BPM_DEPLOYMENTS, {}, UserService.getToken(), true)
+      .then(async (res) => {
+        if (res?.data) {
+          // GET Resources
+          const resourceIdList = res.data.map(async (deployment) => {
+            const apiUrlDeployementId = replaceUrl(
+              API.GET_BPM_DEPLOYMENT_RESOURCES,
+              "<deployment_id>",
+              deployment.id
+            );
+            // eslint-disable-next-line max-len
+            const resources = await httpGETRequest(
+              apiUrlDeployementId,
+              {},
+              UserService.getToken(),
+              true
+            );
+            deployment.isExecutable = false;
+            deployment.deploymentId = resources.data[0].deploymentId;
+            deployment.resourceId = resources.data[0].id;
+            deployment.deploymentName = resources.data[0].name;
+            deployment.key = resources.data[0].name.slice(0, -5); // remove .bpmn
+
+            return deployment;
+          });
+          const updatedResourceList = await Promise.all(resourceIdList);
+
+          // GET Diagrams
+          const diagramList = updatedResourceList.map(async (deployment) => {
+            let apiUrlDiagramList = replaceUrl(
+              API.GET_BPM_DEPLOYMENT_DIAGRAM,
+              "<deployment_id>",
+              deployment.deploymentId
+            );
+            apiUrlDiagramList = replaceUrl(
+              apiUrlDiagramList,
+              "<resource_id>",
+              deployment.resourceId
+            );
+            // eslint-disable-next-line max-len
+            const diagram = await httpGETRequest(
+              apiUrlDiagramList,
+              {},
+              UserService.getToken(),
+              true
+            );
+            deployment.diagram = diagram.data;
+            return deployment;
+          });
+          const updatedDiagramList = await Promise.all(diagramList);
+
+          dispatch(setAllDeploymentList(updatedDiagramList));
+          done(null, updatedDiagramList);
+        } else {
+          dispatch(setAllDeploymentList([]));
+        }
+      })
+      // eslint-disable-next-line no-unused-vars
+      .catch((error) => {
         dispatch(setProcessLoadError(true));
       });
   };
@@ -235,11 +309,7 @@ export const fetchDiagram = (process_key, tenant_key = null, ...rest) => {
   let url = replaceUrl(API.PROCESSES_XML, "<process_key>", process_key);
 
   if (tenant_key) {
-    url = replaceUrl(
-      API.PROCESSES_XML,
-      "<process_key>",
-      process_key
-    );
+    url = replaceUrl(API.PROCESSES_XML, "<process_key>", process_key);
     url = url + "?tenantId=" + tenant_key;
   }
 

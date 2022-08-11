@@ -63,7 +63,7 @@ def get_pdf_from_html(path, chromedriver=driver_path(), p_options=None, args=Non
     if "auth_token" in args:
         driver.request_interceptor = interceptor
 
-    if "timezone" in args:
+    if "timezone" in args and args["timezone"] is not None:
         tz_params = {"timezoneId": args["timezone"]}
         driver.execute_cdp_cmd("Emulation.setTimezoneOverride", tz_params)
 
@@ -71,7 +71,7 @@ def get_pdf_from_html(path, chromedriver=driver_path(), p_options=None, args=Non
 
     try:
         if "wait" in args:
-            delay = 100  # seconds
+            delay = 30  # seconds
             elem_loc = EC.presence_of_element_located((By.CLASS_NAME, args["wait"]))
             WebDriverWait(driver, delay).until(elem_loc)
         calculated_print_options = {
@@ -87,7 +87,9 @@ def get_pdf_from_html(path, chromedriver=driver_path(), p_options=None, args=Non
         return base64.b64decode(result["data"])
 
     except TimeoutException as err:
+        driver.quit()
         current_app.logger.warning(err)
+        return False
 
 
 def pdf_response(result, file_name="Pdf.pdf"):

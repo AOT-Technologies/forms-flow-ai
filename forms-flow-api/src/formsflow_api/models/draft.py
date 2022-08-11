@@ -9,7 +9,11 @@ from sqlalchemy import and_, update
 from sqlalchemy.dialects.postgresql import JSON, UUID
 from sqlalchemy.sql.expression import text
 
-from formsflow_api.utils import FILTER_MAPS, validate_sort_order_and_order_by
+from formsflow_api.utils import (
+    DRAFT_APPLICATION_STATUS,
+    FILTER_MAPS,
+    validate_sort_order_and_order_by,
+)
 from formsflow_api.utils.enums import DraftStatus
 
 from .application import Application
@@ -77,7 +81,7 @@ class Draft(AuditDateTimeMixin, BaseModel, db.Model):
             cls.query.with_entities(
                 FormProcessMapper.form_name,
                 FormProcessMapper.process_name,
-                FormProcessMapper.created_by,
+                Application.created_by,
                 FormProcessMapper.form_id,
                 FormProcessMapper.process_key,
                 FormProcessMapper.process_name,
@@ -118,7 +122,7 @@ class Draft(AuditDateTimeMixin, BaseModel, db.Model):
             .with_entities(
                 FormProcessMapper.form_name,
                 FormProcessMapper.process_name,
-                FormProcessMapper.created_by,
+                Application.created_by,
                 FormProcessMapper.form_id,
                 cls.id,
                 cls.application_id,
@@ -189,3 +193,21 @@ class Draft(AuditDateTimeMixin, BaseModel, db.Model):
                 filter_conditions.append(condition)
         query = cls.query.filter(*filter_conditions) if filter_conditions else cls.query
         return query
+
+    @classmethod
+    def get_draft_count(cls, user_id=None):
+        """Get active draft count.
+
+        user_id: user_id specified for non reviewers
+        """
+        query = cls.query.join(Application, cls.application_id == Application.id)
+        if user_id:
+            query = query.filter(Application.created_by == user_id)
+        query = query.filter(
+            and_(
+                Application.application_status == DRAFT_APPLICATION_STATUS,
+                Draft.status == str(DraftStatus.ACTIVE.value),
+            )
+        )
+        draft_count = query.count()
+        return draft_count

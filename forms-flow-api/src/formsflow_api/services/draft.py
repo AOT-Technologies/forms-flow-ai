@@ -113,11 +113,22 @@ class DraftService:
         user_id: str = user.user_name
         page_number = query_params.get("page_no")
         limit = query_params.get("limit")
-        sort_by = query_params.get("sort_by", "id")
+        sort_by = query_params.get("order_by", "id")
         sort_order = query_params.get("sort_order", "desc")
         form_name = query_params.get("form_name")
+        draft_id = query_params.get("id")
+        modified_from_date = query_params.get("modified_from_date")
+        modified_to_date = query_params.get("modified_to_date")
         draft, count = Draft.find_all_active(
-            user_id, page_number, limit, sort_by, sort_order, form_name=form_name
+            user_id,
+            page_number,
+            limit,
+            sort_by,
+            sort_order,
+            modified_from=modified_from_date,
+            modified_to=modified_to_date,
+            form_name=form_name,
+            id=draft_id,
         )
         draft_schema = DraftSchema()
         return draft_schema.dump(draft, many=True), count

@@ -49,3 +49,14 @@ class DraftStatus(Enum):
 
     ACTIVE = 1
     INACTIVE = 0
+
+
+class DraftSortingParameters:  # pylint: disable=too-few-public-methods
+    """This enum provides the list of Sorting Parameters."""
+
+    id = "id"
+    Created = "created"
+    Name = "DraftName"
+    Status = "applicationStatus"
+    Modified = "modified"
+    FormName = "formName"

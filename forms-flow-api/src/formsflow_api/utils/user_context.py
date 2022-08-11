@@ -21,6 +21,7 @@ class UserContext:  # pylint: disable=too-many-instance-attributes
         self._user_name = token_info.get("preferred_username", None)
         self._bearer_token: str = _get_token()
         self.token_info = token_info
+        self._email = token_info.get("email")
 
     @property
     def tenant_key(self) -> str:
@@ -36,6 +37,11 @@ class UserContext:  # pylint: disable=too-many-instance-attributes
     def bearer_token(self) -> str:
         """Return the bearer_token."""
         return self._bearer_token
+
+    @property
+    def email(self) -> str:
+        """Return the email."""
+        return self._email
 
 
 def user_context(function):

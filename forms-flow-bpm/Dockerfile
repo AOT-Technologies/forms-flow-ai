@@ -1,7 +1,6 @@
 # Modified by Yichun Zhao and Walter Moar
 
 # Maven build
-ARG MAKEFLAGS=-j12
 FROM maven:3.6.1-jdk-11-slim AS MAVEN_TOOL_CHAIN
 COPY pom-docker.xml /tmp/pom.xml
 COPY settings-docker.xml /usr/share/maven/ref/
@@ -28,4 +27,5 @@ COPY --from=MAVEN_TOOL_CHAIN /tmp/target/forms-flow-bpm.jar ./app
 RUN chmod a+rwx -R /app
 WORKDIR /app
 VOLUME /tmp
-ENTRYPOINT ["java","-Djava.security.egd=file:/dev/./urandom","-jar","/app/forms-flow-bpm.jar"]
+COPY entrypoint.sh entrypoint.sh
+CMD ["sh", "entrypoint.sh"]

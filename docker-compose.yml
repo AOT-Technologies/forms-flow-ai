@@ -24,6 +24,7 @@ services:
     hostname: forms-flow-forms-db
     ports:
       - ${MONGO_PORT}:${MONGO_PORT}
+    command: mongod --port ${MONGO_PORT}
     environment:
       MONGO_INITDB_ROOT_USERNAME: ${MONGO_ROOT_USER}
       MONGO_INITDB_ROOT_PASSWORD: ${MONGO_ROOT_PASSWORD}
@@ -54,9 +55,14 @@ services:
     #   - .formio-data/:/app:rw
     environment:
       DEBUG: formio:*
-      NODE_CONFIG: "{\"mongo\":\"mongodb://admin:admin@mongo:27017/formio?authSource=admin\"}"
-      ROOT_EMAIL: admin@example.com
-      ROOT_PASSWORD: admin
+      NODE_CONFIG: '{
+        "mongo":"mongodb://admin:admin@mongo:27017/formio?authSource=admin",
+        "port": ${FORMIO_PORT},
+        "host": "${FORMIO_URL}",
+        "domain": "${FORMIO_URL}"
+      }'
+      ROOT_EMAIL: ${FORMIO_ROOT_EMAIL}
+      ROOT_PASSWORD: ${FORMIO_ROOT_PASSWORD}
       FORMIO_DOMAIN: ${FORMIO_URL}
       FORMIO_JWT_SECRET: ${FORMIO_JWT_SECRET}
       FORMIO_JWT_EXPIRE: 600
@@ -77,7 +83,10 @@ services:
       - ./forms-flow-idm/keycloak/themes/formsflow:/opt/jboss/keycloak/themes/formsflow
       
     command: 
-      - "-b 0.0.0.0 -Dkeycloak.import=/opt/jboss/keycloak/imports/formsflow-ai-realm.json -Dkeycloak.migration.strategy=OVERWRITE_EXISTING"
+      - "-b 0.0.0.0 \
+         -Djboss.http.port=${KEYCLOAK_PORT} \
+         -Dkeycloak.import=/opt/jboss/keycloak/imports/formsflow-ai-realm.json \
+         -Dkeycloak.migration.strategy=OVERWRITE_EXISTING"
     environment:
       - DB_VENDOR=POSTGRES
       - DB_ADDR=postgres
@@ -99,7 +108,6 @@ services:
     build:
       context: ./forms-flow-bpm/
       dockerfile: Dockerfile
-    env_file: .env
     restart: always
     ports:
       - ${BPM_PORT}:${BPM_PORT}
@@ -149,6 +157,7 @@ services:
       - KEYCLOAK_WEB_CLIENTID=${KEYCLOAK_WEB_CLIENT_ID:-}
       - KEYCLOAK_ENABLE_CLIENT_AUTH=${KEYCLOAK_ENABLE_CLIENT_AUTH:-false}
       - BPM_CLIENT_CONN_TIMEOUT=${BPM_CLIENT_CONN_TIMEOUT:-5000}
+      - BPM_PORT=${BPM_PORT}
     networks:
       forms-flow:
           aliases:
@@ -183,6 +192,7 @@ services:
       KEYCLOAK_ADMIN_USERNAME: 'admin'
       KEYCLOAK_ADMIN_PASSWORD: 'admin'
       WEB_API_BASE_URL: ${API_URL}
+      API_PORT: ${API_PORT}
     stdin_open: true # -i
     tty: true # -t
     depends_on:
@@ -205,11 +215,11 @@ services:
         - redis
     # restart: always
     command: server
-    env_file: .env
     ports:
       - ${REDASH_PORT}:${REDASH_PORT}
     environment:
       REDASH_WEB_WORKERS: 4
+      REDASH_COOKIE_SECRET: ${REDASH_COOKIE_SECRET}
     networks:
       forms-flow:
           aliases:

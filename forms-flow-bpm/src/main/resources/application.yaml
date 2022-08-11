@@ -1,5 +1,5 @@
 # Set variables
-spring.config.import: "optional:file:.env[.properties]"
+spring.config.import: "optional:file:/app/.env[.properties]"
 
 keycloak.url: ${KEYCLOAK_URL}
 keycloak.url.realm: ${KEYCLOAK_URL_REALM}
@@ -108,7 +108,7 @@ camunda.bpm:
 #  metrics:
 #    enabled: ${CAMUNDA_METRICS_FLAG:true}
 server:
-  port: 8000
+  port: ${BPM_PORT}
   servlet.context-path: /camunda
   session:
     cookie:

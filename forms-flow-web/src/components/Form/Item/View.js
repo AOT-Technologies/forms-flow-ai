@@ -60,7 +60,7 @@ const View = React.memo((props) => {
   const { t } = useTranslation();
   const lang = useSelector((state) => state.user.lang);
   const formStatusLoading = useSelector(
-    (state) => state.process.formStatusLoading
+    (state) => state.process?.formStatusLoading
   );
   const isFormSubmissionLoading = useSelector(
     (state) => state.formDelete.isFormSubmissionLoading

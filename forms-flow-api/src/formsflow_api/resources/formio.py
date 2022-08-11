@@ -67,6 +67,7 @@ class FormioResource(Resource):
                 key=current_app.config.get("FORMIO_JWT_SECRET"),
                 algorithm="HS256",
             )
+            response.headers["Access-Control-Expose-Headers"] = "x-jwt-token"
             return response
 
         try:

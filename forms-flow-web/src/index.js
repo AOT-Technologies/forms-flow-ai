@@ -9,6 +9,7 @@ import "react-bootstrap-table2-paginator/dist/react-bootstrap-table2-paginator.m
 import "react-bootstrap-table-next/dist/react-bootstrap-table2.min.css";
 import "./styles.scss";
 import "./resourceBundles/i18n.js";
+import * as serviceWorkerRegistration from './serviceWorkerRegistration';
 
 // disable react-dev-tools for this project
 if (typeof window.__REACT_DEVTOOLS_GLOBAL_HOOK__ === "object") {
@@ -37,3 +38,5 @@ ReactDOM.render(
   <App {...{ store, history }} />,
   document.getElementById("app")
 );
+
+serviceWorkerRegistration.register();

@@ -158,27 +158,31 @@ export const checkIsObjectId = (data) => {
 
 export const listProcess = (processes) => {
   if (processes?.length > 0) {
-    // Remove duplicates (there may be duplicated between processes (executable)
-    // and deployments (non-executable),
-    // remove duplicate deployments)
-    const unique = uniqByKeepFirst(processes, (x) => (x ? x.key : null));
-
-    const data = unique.map((process) => {
-      if (process.name == null || process.name == "") {
-        process.name = "Unnamed";
-      }
+    const data = processes.map((process) => {
       return {
         label: process.name,
         value: process.key,
         tenant: process.tenantId,
-        isExecutable: process.isExecutable == null ? true : false,
-        xml: process.diagram,
       };
     });
+    return data;
+  } else {
+    return [];
+  }
+};
 
-    // Sort alphabetically
-    data.sort((a, b) => {
-      return compareStrings(a.label, b.label);
+export const listDeployments = (deployments) => {
+  if (deployments?.length > 0) {
+    const unique = uniqByKeepFirst(deployments);
+
+    const data = unique.map((process) => {
+      const xmlData = extractDataFromDiagram(process.diagram);
+      return {
+        label: xmlData.name,
+        value: xmlData.processId,
+        tenant: process.tenantId,
+        xml: process.diagram,
+      };
     });
 
     return data;
@@ -187,16 +191,42 @@ export const listProcess = (processes) => {
   }
 };
 
-const uniqByKeepFirst = (a, key) => {
+const uniqByKeepFirst = (deployments) => {
   let seen = new Set();
-  return a.filter((item) => {
-    let k = key(item);
-    return seen.has(k) ? false : seen.add(k);
+  return deployments.filter((item) => {
+    let key = extractDataFromDiagram(item.diagram).processId;
+    return seen.has(key) ? false : seen.add(key);
   });
 };
 
-const compareStrings = (a, b) => {
-  a = a.toLowerCase();
-  b = b.toLowerCase();
-  return a < b ? -1 : a > b ? 1 : 0;
+const extractDataFromDiagram = (xml) => {
+  let processXml = xml.split("<bpmn:process ")[1];
+  if (!processXml) {
+    processXml = xml.split("<decision ")[1];
+  }
+
+  const processId_index_start = processXml.indexOf('id="') + 'id="'.length;
+  const processId_index_end = processXml.indexOf('name="') - 2;
+  const processId = processXml.substring(
+    processId_index_start,
+    processId_index_end
+  );
+
+  const name_index_start = processXml.indexOf('name="') + 'name="'.length;
+  const name_index_end = processXml.indexOf("isExecutable") - 2;
+  const name = processXml.substring(name_index_start, name_index_end);
+
+  let version = "";
+  if (processXml.includes("camunda:versionTag")) {
+    const version_index_start =
+      processXml.indexOf('versionTag="') + 'versionTag="'.length;
+    const version_index_end = processXml.indexOf('">');
+    version = processXml.substring(version_index_start, version_index_end);
+  }
+
+  return {
+    processId: processId,
+    name: name,
+    version: version,
+  };
 };

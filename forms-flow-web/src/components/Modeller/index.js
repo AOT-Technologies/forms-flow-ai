@@ -10,13 +10,10 @@ import {
   setProcessDiagramXML,
 } from "../../actions/processActions";
 import { useTranslation } from "react-i18next";
-import { listProcess } from "../../apiManager/services/formatterService";
+import { listDeployments } from "../../apiManager/services/formatterService";
 import "./Modeller.scss";
 
-import {
-  fetchAllBpmProcesses,
-  fetchAllBpmDeployments,
-} from "../../apiManager/services/processServices";
+import { fetchAllBpmDeployments } from "../../apiManager/services/processServices";
 
 import Button from "react-bootstrap/Button";
 
@@ -25,30 +22,26 @@ import { createNewProcess } from "./helpers/helper";
 export default React.memo(() => {
   const { t } = useTranslation();
   const dispatch = useDispatch();
-  const process = useSelector((state) => state.process.processList);
   const deployments = useSelector((state) => state.process.deploymentList);
+  const [deploymentList, setDeploymentList] = useState([]);
   const workflow = useSelector((state) => state.process.workflowAssociated);
   const [defaultProcessInfo, setDefaultProcessInfo] = useState(
     createNewProcess()
   );
   const [showModeller, setShowModeller] = useState(false);
 
-  // Combine executable (processes) and non-executable (deployments)
-  const [fullProcessList, setFullProcessList] = useState([]);
-
   // Populate workflows in dropdown on page load
   useEffect(() => {
     setShowModeller(false);
     dispatch(setWorkflowAssociation(null));
-    dispatch(fetchAllBpmProcesses(true));
     dispatch(fetchAllBpmDeployments());
   }, []);
 
   useEffect(() => {
     if (deployments) {
-      setFullProcessList(listProcess(process.concat(deployments)));
+      setDeploymentList(listDeployments(deployments));
     }
-  }, [process, deployments]);
+  }, [deployments]);
 
   const handleListChange = (item) => {
     setShowModeller(true);
@@ -127,11 +120,9 @@ export default React.memo(() => {
                 <Select
                   placeholder={t("Select...")}
                   dropdownHeight={showModeller ? "250px" : "100px"}
-                  options={fullProcessList}
+                  options={deploymentList}
                   onChange={handleListChange}
-                  values={
-                    fullProcessList.length && workflow?.value ? [workflow] : []
-                  }
+                  values={workflow?.xml ? [workflow] : []}
                 />
               </Grid>
 
@@ -160,13 +151,10 @@ export default React.memo(() => {
                 </div>
               </div>
 
-              {fullProcessList.length && workflow?.value && showModeller ? (
+              {deploymentList.length && workflow?.value && showModeller ? (
                 <div>
                   <EditModel
-                    isExecutable={workflow?.isExecutable}
                     xml={workflow?.xml}
-                    processKey={workflow?.value}
-                    tenant={workflow?.tenant}
                     defaultProcessInfo={defaultProcessInfo}
                     name={workflow?.label}
                   />

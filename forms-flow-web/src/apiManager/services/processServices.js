@@ -103,6 +103,7 @@ export const fetchAllBpmDeployments = () => {
     )
       .then((res) => {
         let deploymentList = [];
+        let numDeployments = 0;
 
         if (res?.data) {
           // Get Deployments
@@ -112,14 +113,18 @@ export const fetchAllBpmDeployments = () => {
               resourceList.resources.map((resource) => {
                 // Only include bpmn files
                 if (resource.name.substr(resource.name.length - 4) == "bpmn") {
+                  numDeployments++;
                   // Get Diagram
                   getBpmDeploymentDiagram(resource).then(
                     (updatedDeployment) => {
                       updatedDeployment.tenantId = deployment.tenantId;
                       updatedDeployment.deploymentName = deployment.name;
+                      updatedDeployment.deploymentTime = deployment.deploymentTime;
                       deploymentList.push(updatedDeployment);
                       // Dispatch complete list
-                      dispatch(setAllDeploymentList(deploymentList));
+                      if (deploymentList.length == numDeployments) {
+                        dispatch(setAllDeploymentList(deploymentList));
+                      }
                     }
                   );
                 }

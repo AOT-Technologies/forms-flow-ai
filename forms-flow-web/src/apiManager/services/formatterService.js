@@ -173,7 +173,9 @@ export const listProcess = (processes) => {
 
 export const listDeployments = (deployments) => {
   if (deployments?.length > 0) {
-    const unique = uniqByKeepFirst(deployments);
+    const deploymentsSorted = sortByDeploymentTime(deployments);
+
+    const unique = uniqByKeepFirst(deploymentsSorted);
 
     const data = unique.map((process) => {
       const xmlData = extractDataFromDiagram(process.diagram);
@@ -189,6 +191,12 @@ export const listDeployments = (deployments) => {
   } else {
     return [];
   }
+};
+
+const sortByDeploymentTime = (deployments) => {
+  return deployments.sort(function (a, b) {
+    return b.deploymentTime.localeCompare(a.deploymentTime);
+  });
 };
 
 const uniqByKeepFirst = (deployments) => {

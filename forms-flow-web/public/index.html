@@ -22,49 +22,7 @@
   <body class="no-scroll">
     <div id="app" class="scrollable-page"></div>
     <script src="%PUBLIC_URL%/config/config.js"></script>
-    <script>
-      // Check that service workers are supported
-      let newWorker;
 
-      if ('serviceWorker' in navigator) {
-        // Register the service worker
-        navigator.serviceWorker.register('/service-worker.js').then(reg => {
-          reg.addEventListener('updatefound', () => {
-            // An updated service worker has appeared in reg.installing!
-            newWorker = reg.installing;
-
-            newWorker.addEventListener('statechange', () => {
-
-              // Has service worker state changed?
-              switch (newWorker.state) {
-                case 'installed':
-
-                  // There is a new service worker available, show the notification
-                  if (navigator.serviceWorker.controller) {
-                    newWorker.postMessage({ action: 'skipWaiting' });
-                  }
-
-                  break;
-              }
-            });
-          });
-        },(err) => {
-            console.log("Worker registration failed", err);
-        }).catch((err) => {
-          console.log(err);
-        });
-        let refreshing;
-        // The event listener that is fired when the service worker updates
-        // Here we reload the page
-        navigator.serviceWorker.addEventListener('controllerchange', function () {
-          if (refreshing) return;
-          window.location.reload();
-          refreshing = true;
-        });
-      }else{
-          console.log("Service Worker is not supported by browser.");
-      }
-    </script>
     <style>
       .scrollable-page {
         position: fixed;

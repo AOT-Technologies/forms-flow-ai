@@ -5,9 +5,6 @@ import "bpmn-js/dist/assets/diagram-js.css";
 import "bpmn-js/dist/assets/bpmn-font/css/bpmn-embedded.css";
 import "./Modeller.scss";
 import Button from "react-bootstrap/Button";
-import Col from "react-bootstrap/Col";
-import Form from "react-bootstrap/Form";
-import Row from "react-bootstrap/Row";
 
 import { fetchAllBpmDeployments } from "../../apiManager/services/processServices";
 
@@ -47,7 +44,7 @@ import lintModule from "bpmn-js-bpmnlint";
 import "bpmn-js-bpmnlint/dist/assets/css/bpmn-js-bpmnlint.css";
 import linterConfig from "./lint-rules/packed-config";
 
-const EditModel = React.memo(({ xml, defaultProcessInfo, name }) => {
+const EditModel = React.memo(({ xml, defaultProcessInfo }) => {
   const { t } = useTranslation();
 
   const dispatch = useDispatch();
@@ -56,7 +53,6 @@ const EditModel = React.memo(({ xml, defaultProcessInfo, name }) => {
   const tenantKey = useSelector((state) => state.tenants?.tenantId);
   const [applyAllTenants, setApplyAllTenants] = useState(false);
   const [lintErrors, setLintErrors] = useState([]);
-  const [deploymentName, setDeploymentName] = useState(name);
 
   const containerRef = useCallback((node) => {
     if (node !== null) {
@@ -100,7 +96,6 @@ const EditModel = React.memo(({ xml, defaultProcessInfo, name }) => {
   }, [bpmnModeller]);
 
   useEffect(() => {
-    setDeploymentName(name);
     if (xml) {
       dispatch(setProcessDiagramLoading(true));
       dispatch(setProcessDiagramXML(xml));
@@ -136,18 +131,12 @@ const EditModel = React.memo(({ xml, defaultProcessInfo, name }) => {
     setApplyAllTenants(!applyAllTenants);
   };
 
-  async function deployProcess() {
+  const deployProcess = async () => {
     try {
       const isValidated = await validateProcess();
       if (!isValidated) {
         toast.error(t(ERROR_MSG));
       } else {
-        // Update diagram with deployment name from input box
-        const rootElement = getRootElement(bpmnModeller);
-        var modeling = bpmnModeller.get("modeling");
-        modeling.updateProperties(rootElement, {
-          name: deploymentName,
-        });
         // Convert diagram to xml
         const { xml } = await bpmnModeller.saveXML();
         // Deploy to Camunda
@@ -156,7 +145,7 @@ const EditModel = React.memo(({ xml, defaultProcessInfo, name }) => {
     } catch (err) {
       console.error(err);
     }
-  }
+  };
 
   const validateProcess = async () => {
     // If the BPMN Linting is active then check for linting errors, else check for Camunda API errors
@@ -166,15 +155,16 @@ const EditModel = React.memo(({ xml, defaultProcessInfo, name }) => {
       return false;
     }
     // Check for input errors in the Process Panel
-    else if (document.getElementsByClassName(ERROR_CLASSNAME).length > 0) {
+    if (document.getElementsByClassName(ERROR_CLASSNAME).length > 0) {
       return false;
     }
 
-    // Check for blank deployment name
-    if (!deploymentName) {
-      toast.error(t("Please enter a deployment name"));
+    /*
+    if (!getPropertyPanelInfo().deploymentName){
+      toast.error(t("Please provide a process name"));
       return false;
     }
+    */
 
     return true;
   };
@@ -183,6 +173,7 @@ const EditModel = React.memo(({ xml, defaultProcessInfo, name }) => {
     const form = new FormData();
 
     const processId = getPropertyPanelInfo().processID;
+    const deploymentName = getPropertyPanelInfo().deploymentName;
 
     // Deployment Name
     form.append("deployment-name", deploymentName);
@@ -204,7 +195,7 @@ const EditModel = React.memo(({ xml, defaultProcessInfo, name }) => {
   const getPropertyPanelInfo = () => {
     // Default names
     let processID = defaultProcessInfo.processID;
-    let isExecutable = defaultProcessInfo.isExecutable;
+    let deploymentName = defaultProcessInfo.deploymentName;
 
     // Get elements from process panel, find the root element which contains the deployment name and process ID
     // Use the names assigned in the bpmn-js-properties-panel, otherwise keep the default names
@@ -217,7 +208,9 @@ const EditModel = React.memo(({ xml, defaultProcessInfo, name }) => {
     ) {
       if (rootElement.businessObject.id) {
         processID = rootElement.businessObject.id;
-        isExecutable = rootElement.businessObject.isExecutable;
+      }
+      if (rootElement.businessObject.name){
+        deploymentName = rootElement.businessObject.name;
       }
     } else {
       if (
@@ -227,15 +220,16 @@ const EditModel = React.memo(({ xml, defaultProcessInfo, name }) => {
       ) {
         if (rootElement.businessObject.participants[0].processRef.id) {
           processID = rootElement.businessObject.participants[0].processRef.id;
-          isExecutable =
-            rootElement.businessObject.participants[0].processRef.isExecutable;
+        }
+        if (rootElement.businessObject.participants[0].processRef.name){
+          deploymentName = rootElement.businessObject.participants[0].processRef.name;
         }
       }
     }
 
     return {
       processID: processID,
-      isExecutable: isExecutable,
+      deploymentName: deploymentName,
     };
   };
 
@@ -293,7 +287,7 @@ const EditModel = React.memo(({ xml, defaultProcessInfo, name }) => {
     dispatch(fetchAllBpmDeployments());
     // Show the updated workflow as the current value in the dropdown
     const updatedWorkflow = {
-      label: deploymentName,
+      label: getPropertyPanelInfo().deploymentName,
       value: getPropertyPanelInfo().processID,
       xml: xml,
     };
@@ -353,32 +347,12 @@ const EditModel = React.memo(({ xml, defaultProcessInfo, name }) => {
         <div className="properties-panel-parent" id="js-properties-panel"></div>
       </div>
 
-      <Form>
-        <Row className="deploy-container">
-          <Col className="deploy-btn">
-            <Button onClick={deployProcess}>Deploy</Button>
-          </Col>
-          <Col className="pl-0">
-            <Form.Control
-              className="deploy-name"
-              placeholder="Deployment Name"
-              value={deploymentName}
-              onChange={(e) => setDeploymentName(e.target.value)}
-            />
-          </Col>
-        </Row>
-        <Row className="mt-2">
-          <Col>
-            {MULTITENANCY_ENABLED ? (
-              <Form.Check
-                type="checkbox"
-                onClick={handleApplyAllTenants}
-                label="Apply for all tenants"
-              />
-            ) : null}
-          </Col>
-        </Row>
-      </Form>
+      <div>
+          {MULTITENANCY_ENABLED ? <label className="deploy-checkbox"><input type="checkbox" onClick={handleApplyAllTenants}/>  Apply for all tenants</label> : null}
+          <Button onClick={deployProcess}>
+            Deploy
+          </Button>
+      </div>
     </>
   );
 });

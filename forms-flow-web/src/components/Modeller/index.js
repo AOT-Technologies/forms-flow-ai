@@ -10,7 +10,10 @@ import {
   setProcessDiagramXML,
 } from "../../actions/processActions";
 import { useTranslation } from "react-i18next";
-import { listDeployments } from "../../apiManager/services/formatterService";
+import {
+  listDeployments,
+  extractDataFromDiagram,
+} from "./helpers/formatDeployments";
 import "./Modeller.scss";
 
 import { fetchAllBpmDeployments } from "../../apiManager/services/processServices";
@@ -46,22 +49,30 @@ export default React.memo(() => {
   const handleListChange = (item) => {
     setShowModeller(true);
     dispatch(setWorkflowAssociation(item[0]));
-    // Clear the filename after the "Choose File" input button
-    if (item[0] !== defaultProcessInfo.defaultWorkflow) {
-      document.getElementById("inputWorkflow").value = "";
-    }
+    document.getElementById('inputWorkflow').value = null;
   };
 
-  const handleFile = (e) => {
+  const handleFile = (e, fileName) => {
     const content = e.target.result;
+    
+    const xmlName = extractDataFromDiagram(content).name;
+    const processId = extractDataFromDiagram(content).processId;
+
+    const name = xmlName ? xmlName : fileName.slice(0, -5);
+    const newWorkflow = {
+      label: name,
+      value: processId,
+      xml: content,
+    };
     dispatch(setProcessDiagramXML(content));
-    dispatch(setWorkflowAssociation(defaultProcessInfo.defaultWorkflow));
-    setShowModeller(true);
+    dispatch(setWorkflowAssociation(newWorkflow));
   };
 
   const handleChangeFile = (file) => {
     let fileData = new FileReader();
-    fileData.onloadend = handleFile;
+    fileData.onloadend = (e) => {
+      handleFile(e, file.name);
+    };
     fileData.readAsText(file);
     setShowModeller(true);
   };
@@ -71,7 +82,7 @@ export default React.memo(() => {
     setDefaultProcessInfo(newProcess);
     dispatch(setProcessDiagramXML(newProcess.defaultBlankProcessXML));
     dispatch(setWorkflowAssociation(newProcess.defaultWorkflow));
-    document.getElementById("inputWorkflow").value = "";
+    document.getElementById('inputWorkflow').value = null;
     setShowModeller(true);
   };
 
@@ -156,7 +167,6 @@ export default React.memo(() => {
                   <EditModel
                     xml={workflow?.xml}
                     defaultProcessInfo={defaultProcessInfo}
-                    name={workflow?.label}
                   />
                 </div>
               ) : null}

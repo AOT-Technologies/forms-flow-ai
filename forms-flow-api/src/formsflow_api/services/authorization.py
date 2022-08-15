@@ -46,7 +46,7 @@ class AuthorizationService:
     def _as_dict(self, auth):
         return {
             "resourceId": auth.resource_id,
-            "resourceDescription": auth.resource_description,
+            "resourceDetails": auth.resource_details,
             "roles": auth.roles,
         }
 
@@ -54,14 +54,14 @@ class AuthorizationService:
     def is_dashboard_authorized(self, resource_id: str, **kwargs) -> bool:
         """Return if user is authorized to access the resource."""
         user: UserContext = kwargs["user"]
-        auth = Authorization.find_resource_authorization(
+        auth: Authorization = Authorization.find_resource_authorization(
             auth_type=AuthType.DASHBOARD,
             roles=user.roles,
             user_name=user.user_name,
             tenant=user.tenant_key,
             resource_id=resource_id,
         )
-        return auth is not None
+        return auth is not None and len(auth) > 0
 
     @user_context
     def create_authorization(
@@ -79,6 +79,7 @@ class AuthorizationService:
         roles = resource.get("roles")
         if auth:
             auth.roles = roles
+            auth.resource_details = resource.get("resourceDetails")
             auth.modified = datetime.datetime.now()
             auth.modified_by = user.user_name
         else:
@@ -86,7 +87,7 @@ class AuthorizationService:
                 tenant=user.tenant_key,
                 auth_type=AuthType(auth_type),
                 resource_id=resource.get("resourceId"),
-                resource_description=resource.get("resourceDescription"),
+                resource_details=resource.get("resourceDetails"),
                 roles=resource.get("roles"),
                 user_name=resource.get("userName"),
                 created=datetime.datetime.now(),
@@ -95,6 +96,6 @@ class AuthorizationService:
         auth = auth.save()
         return {
             "resourceId": auth.resource_id,
-            "resourceDescription": auth.resource_description,
+            "resourceDetails": auth.resource_details,
             "roles": auth.roles,
         }

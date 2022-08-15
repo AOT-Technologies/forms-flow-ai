@@ -506,13 +506,13 @@ def get_form_model_object():
 
 
 def factory_auth(
-    resource_id, resource_desc, auth_type, roles, tenant=None
+    resource_id, resource_details, auth_type, roles, tenant=None
 ) -> Authorization:
     """Return an auth model instance."""
     return Authorization(
         auth_type=AuthType(auth_type.upper()),
         resource_id=resource_id,
-        resource_description=resource_desc,
+        resource_details=resource_details,
         roles=roles,
         created=datetime.datetime.now(),
         created_by="test",

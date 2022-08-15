@@ -5,7 +5,7 @@ from __future__ import annotations
 from enum import Enum, unique
 from typing import List, Optional
 
-from sqlalchemy import or_
+from sqlalchemy import JSON, or_
 from sqlalchemy.dialects.postgresql import ARRAY, ENUM
 
 from .audit_mixin import AuditDateTimeMixin, AuditUserMixin
@@ -37,9 +37,7 @@ class Authorization(AuditDateTimeMixin, AuditUserMixin, BaseModel, db.Model):
     resource_id = db.Column(
         db.String, nullable=False, index=True, comment="Resource identifier"
     )
-    resource_description = db.Column(
-        db.String, nullable=True, comment="Resource description"
-    )
+    resource_details = db.Column(JSON, nullable=True, comment="Resource details")
     roles = db.Column(ARRAY(db.String), nullable=True, comment="Applicable roles")
     user_name = db.Column(db.String, nullable=True, comment="Applicable user")
 
@@ -95,7 +93,7 @@ class Authorization(AuditDateTimeMixin, AuditUserMixin, BaseModel, db.Model):
     ) -> List[Authorization]:
         """Find resource authorization."""
         query = cls._auth_query(auth_type, roles, tenant, user_name)
-        query = query.filter(Authorization.resource_id == resource_id)
+        query = query.filter(Authorization.resource_id == str(resource_id))
         return query.all()
 
     @classmethod
@@ -108,7 +106,7 @@ class Authorization(AuditDateTimeMixin, AuditUserMixin, BaseModel, db.Model):
     ) -> Optional[Authorization]:
         """Find resource authorization by id."""
         query = (
-            cls.query.filter(Authorization.resource_id == resource_id)
+            cls.query.filter(Authorization.resource_id == str(resource_id))
             .filter(Authorization.auth_type == auth_type)
             .filter(
                 or_(

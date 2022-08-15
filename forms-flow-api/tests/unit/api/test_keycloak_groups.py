@@ -1,6 +1,7 @@
 """Unit test for APIs of Keycloak Group."""
-from tests.utilities.base_test import get_token, update_dashboard_payload
 import pytest
+
+from tests.utilities.base_test import get_token, update_dashboard_payload
 
 
 def test_group_list(app, client, session, jwt):

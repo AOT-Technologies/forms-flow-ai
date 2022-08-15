@@ -2,21 +2,19 @@
 
 import logging
 
-from flask_migrate import Migrate, MigrateCommand
-from flask_script import Manager
+from flask_migrate import Migrate
 
 # models included so that migrate can build the database migrations
 from formsflow_api import models  # noqa: F401 # pylint: disable=unused-import
 from formsflow_api import create_app
 from formsflow_api.models import db
-
+from flask.cli import FlaskGroup
 
 APP = create_app()
-MIGRATE = Migrate(APP, db)
-MANAGER = Manager(APP)
+cli = FlaskGroup(APP)
 
-MANAGER.add_command('db', MigrateCommand)
+MIGRATE = Migrate(APP, db)
 
 if __name__ == '__main__':
     logging.log(logging.INFO, 'Running the Manager')
-    MANAGER.run()
+    cli()

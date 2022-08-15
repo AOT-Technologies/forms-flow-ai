@@ -1,6 +1,6 @@
 """Unit test for APIs of Keycloak Group."""
-from tests import skip_in_ci
 from tests.utilities.base_test import get_token, update_dashboard_payload
+import pytest
 
 
 def test_group_list(app, client, session, jwt):
@@ -35,6 +35,7 @@ def test_group_list_wrong_auth_header(app, client, session):
     }
 
 
+@pytest.mark.skip(reason="No more keycloak get groups/id operation")
 def test_group_details(app, client, session, jwt):
     """Testing group details API."""
     token = get_token(jwt)
@@ -49,7 +50,7 @@ def test_group_details(app, client, session, jwt):
     assert len(response.json) > 0
 
 
-@skip_in_ci
+@pytest.mark.skip(reason="No more keycloak put groups operation")
 def test_groups_put_details(app, client, session, jwt):
     """Good cases."""
     token = get_token(jwt)
@@ -65,6 +66,7 @@ def test_groups_put_details(app, client, session, jwt):
     assert response.status_code == 200
 
 
+@pytest.mark.skip(reason="No more keycloak put groups operation")
 def test_groups_put_wrong_details(app, client, session, jwt):
     """Wrong request object."""
     token = get_token(jwt)

@@ -28,9 +28,6 @@ export default React.memo(() => {
   const deployments = useSelector((state) => state.process.deploymentList);
   const [deploymentList, setDeploymentList] = useState([]);
   const workflow = useSelector((state) => state.process.workflowAssociated);
-  const [defaultProcessInfo, setDefaultProcessInfo] = useState(
-    createNewProcess()
-  );
   const [showModeller, setShowModeller] = useState(false);
 
   // Populate workflows in dropdown on page load
@@ -77,7 +74,6 @@ export default React.memo(() => {
 
   const handleCreateNew = () => {
     const newProcess = createNewProcess();
-    setDefaultProcessInfo(newProcess);
     dispatch(setProcessDiagramXML(newProcess.defaultBlankProcessXML));
     dispatch(setWorkflowAssociation(newProcess.defaultWorkflow));
     document.getElementById("inputWorkflow").value = null;
@@ -109,7 +105,7 @@ export default React.memo(() => {
       <Grid
         container
         direction="row"
-        justify="flex-start"
+        justifyContent="flex-start"
         alignItems="baseline"
       >
         <Grid item xs={12} sm={12}>
@@ -166,7 +162,6 @@ export default React.memo(() => {
                 <div>
                   <EditModel
                     xml={workflow?.xml}
-                    defaultProcessInfo={defaultProcessInfo}
                     setShowModeller={setShowModeller}
                   />
                 </div>

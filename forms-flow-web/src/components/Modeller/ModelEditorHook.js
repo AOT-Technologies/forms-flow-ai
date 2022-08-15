@@ -27,7 +27,6 @@ import {
 
 import CamundaExtensionModule from "camunda-bpmn-moddle/lib";
 import camundaModdleDescriptors from "camunda-bpmn-moddle/resources/camunda";
-import { is } from "bpmn-js/lib/util/ModelUtil";
 
 import {
   SUCCESS_MSG,
@@ -38,13 +37,13 @@ import {
 
 import { MULTITENANCY_ENABLED } from "../../constants/constants";
 
-import { getRootElement } from "./helpers/helper";
-
 import lintModule from "bpmn-js-bpmnlint";
 import "bpmn-js-bpmnlint/dist/assets/css/bpmn-js-bpmnlint.css";
 import linterConfig from "./lint-rules/packed-config";
 
-const EditModel = React.memo(({ xml, defaultProcessInfo, setShowModeller }) => {
+import { extractDataFromDiagram } from "./helpers/formatDeployments";
+
+const EditModel = React.memo(({ xml, setShowModeller }) => {
   const { t } = useTranslation();
 
   const dispatch = useDispatch();
@@ -166,8 +165,8 @@ const EditModel = React.memo(({ xml, defaultProcessInfo, setShowModeller }) => {
   const createBpmnForm = (xml) => {
     const form = new FormData();
 
-    const processId = getPropertyPanelInfo().processID;
-    const deploymentName = getPropertyPanelInfo().deploymentName;
+    const processId = extractDataFromDiagram(xml).processId;
+    const deploymentName = extractDataFromDiagram(xml).name;
 
     // Deployment Name
     form.append("deployment-name", deploymentName);
@@ -184,48 +183,6 @@ const EditModel = React.memo(({ xml, defaultProcessInfo, setShowModeller }) => {
     form.append("upload", blob, processId + ".bpmn");
 
     return form;
-  };
-
-  const getPropertyPanelInfo = () => {
-    // Default names
-    let processID = defaultProcessInfo.processID;
-    let deploymentName = defaultProcessInfo.deploymentName;
-
-    // Get elements from process panel, find the root element which contains the deployment name and process ID
-    // Use the names assigned in the bpmn-js-properties-panel, otherwise keep the default names
-    const rootElement = getRootElement(bpmnModeller);
-
-    if (
-      rootElement &&
-      is(rootElement, "bpmn:Process") &&
-      rootElement.businessObject
-    ) {
-      if (rootElement.businessObject.id) {
-        processID = rootElement.businessObject.id;
-      }
-      if (rootElement.businessObject.name) {
-        deploymentName = rootElement.businessObject.name;
-      }
-    } else {
-      if (
-        rootElement &&
-        is(rootElement, "bpmn:Collaboration") &&
-        rootElement.businessObject.participants
-      ) {
-        if (rootElement.businessObject.participants[0].processRef.id) {
-          processID = rootElement.businessObject.participants[0].processRef.id;
-        }
-        if (rootElement.businessObject.participants[0].processRef.name) {
-          deploymentName =
-            rootElement.businessObject.participants[0].processRef.name;
-        }
-      }
-    }
-
-    return {
-      processID: processID,
-      deploymentName: deploymentName,
-    };
   };
 
   const deployXML = (xml) => {
@@ -282,8 +239,8 @@ const EditModel = React.memo(({ xml, defaultProcessInfo, setShowModeller }) => {
     dispatch(fetchAllBpmDeployments());
     // Show the updated workflow as the current value in the dropdown
     const updatedWorkflow = {
-      label: getPropertyPanelInfo().deploymentName,
-      value: getPropertyPanelInfo().processID,
+      label: extractDataFromDiagram(xml).name,
+      value: extractDataFromDiagram(xml).processId,
       xml: xml,
     };
     dispatch(setWorkflowAssociation(updatedWorkflow));

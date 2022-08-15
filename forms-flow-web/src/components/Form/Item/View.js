@@ -84,6 +84,8 @@ const View = React.memo((props) => {
   const [isDraftCreated, setIsDraftCreated] = useState(false);
 
   const { formId } = useParams();
+  const [validFormId, setValidFormId] = useState(undefined);
+
   const [showPublicForm, setShowPublicForm] = useState("checking");
   const [poll, setPoll] = useState(DRAFT_ENABLED);
   const {
@@ -136,12 +138,14 @@ const View = React.memo((props) => {
     const isObjectId = checkIsObjectId(formId);
     if (isObjectId) {
       getPublicForm(formId, isObjectId);
+      setValidFormId(formId);
     } else {
       dispatch(
         fetchFormByAlias(formId, async (err, formObj) => {
           if (!err) {
             const form_id = formObj._id;
             getPublicForm(form_id, isObjectId, formObj);
+            setValidFormId(form_id);
           } else {
             dispatch(setFormFailureErrorData("form", err));
           }
@@ -160,11 +164,11 @@ const View = React.memo((props) => {
    * Will create a draft application when the form is selected for entry.
    */
   useEffect(() => {
-    if (formId && DRAFT_ENABLED) {
-      let payload = getDraftReqFormat(formId, draftData?.data);
+    if (validFormId && DRAFT_ENABLED) {
+      let payload = getDraftReqFormat(validFormId, draftData?.data);
       dispatch(draftCreateMethod(payload, setIsDraftCreated));
     }
-  }, [formId]);
+  }, [validFormId]);
 
   /**
    * We will repeatedly update the current state to draft table
@@ -172,7 +176,7 @@ const View = React.memo((props) => {
    */
   useInterval(
     () => {
-      let payload = getDraftReqFormat(formId, draftData?.data);
+      let payload = getDraftReqFormat(validFormId, draftData?.data);
       saveDraft(payload);
     },
     poll ? DRAFT_POLLING_RATE : null
@@ -183,16 +187,17 @@ const View = React.memo((props) => {
    */
   useEffect(() => {
     return () => {
-      let payload = getDraftReqFormat(formId, draftRef.current?.data);
+      let payload = getDraftReqFormat(validFormId, draftRef.current?.data);
       saveDraft(payload);
     };
-  }, [formId, draftSubmissionId, isDraftCreated]);
+  }, [validFormId, draftSubmissionId, isDraftCreated]);
 
   useEffect(() => {
     if (isPublic) {
       getFormData();
     } else {
       dispatch(setMaintainBPMFormPagination(true));
+      setValidFormId(formId);
     }
   }, [isPublic, dispatch, getFormData]);
 

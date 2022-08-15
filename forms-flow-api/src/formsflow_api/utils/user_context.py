@@ -24,6 +24,7 @@ class UserContext:  # pylint: disable=too-many-instance-attributes
         self._roles: list = token_info.get("roles", None) or token_info.get(
             "groups", None
         )
+        self._email = token_info.get("email")
 
     @property
     def tenant_key(self) -> str:
@@ -44,6 +45,11 @@ class UserContext:  # pylint: disable=too-many-instance-attributes
     def roles(self) -> str:
         """Return the roles."""
         return self._roles
+
+    @property
+    def email(self) -> str:
+        """Return the email."""
+        return self._email
 
 
 def user_context(function):

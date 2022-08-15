@@ -16,7 +16,11 @@ from .constants import (
     DESIGNER_GROUP,
     REVIEWER_GROUP,
 )
-from .enums import ApplicationSortingParameters, FormioRoles
+from .enums import (
+    ApplicationSortingParameters,
+    DraftSortingParameters,
+    FormioRoles,
+)
 from .translations.translations import translations
 
 
@@ -55,10 +59,11 @@ def validate_sort_order_and_order_by(order_by: str, sort_order: str) -> bool:
         ApplicationSortingParameters.Status,
         ApplicationSortingParameters.Modified,
         ApplicationSortingParameters.FormName,
+        DraftSortingParameters.Name,
     ]:
         order_by = None
     else:
-        if order_by == ApplicationSortingParameters.Name:
+        if order_by in [ApplicationSortingParameters.Name, DraftSortingParameters.Name]:
             order_by = ApplicationSortingParameters.FormName
         order_by = camel_to_snake(order_by)
     if sort_order not in ["asc", "desc"]:

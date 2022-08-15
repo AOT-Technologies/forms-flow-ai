@@ -113,7 +113,7 @@ class DraftService:
         user_id: str = user.user_name
         page_number = query_params.get("page_no")
         limit = query_params.get("limit")
-        sort_by = query_params.get("sort_by", "id")
+        sort_by = query_params.get("order_by", "id")
         sort_order = query_params.get("sort_order", "desc")
         form_name = query_params.get("form_name")
         draft_id = query_params.get("id")

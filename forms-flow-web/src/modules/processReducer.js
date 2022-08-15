@@ -5,6 +5,7 @@ const initialState = {
   processStatusList: [],
   processLoadError: false,
   processList: [],
+  deploymentList: [],
   formProcessError: false,
   formProcessList: [],
   formPreviousData: [],
@@ -31,6 +32,8 @@ const process = (state = initialState, action) => {
       return { ...state, processActivityLoadError: action.payload };
     case ACTION_CONSTANTS.PROCESS_LIST:
       return { ...state, processList: action.payload };
+    case ACTION_CONSTANTS.DEPLOYMENT_LIST:
+      return { ...state, deploymentList: action.payload };
     case ACTION_CONSTANTS.IS_FORM_PROCESS_STATUS_LOAD_ERROR:
       return { ...state, formProcessError: action.payload };
     case ACTION_CONSTANTS.FORM_PROCESS_LIST:

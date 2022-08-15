@@ -8,7 +8,7 @@ from typing import Dict
 from flask import current_app
 
 from formsflow_api.exceptions import BusinessException
-from formsflow_api.models import Application, FormProcessMapper
+from formsflow_api.models import Application, Draft, FormProcessMapper
 from formsflow_api.schemas import (
     AggregatedApplicationSchema,
     ApplicationSchema,
@@ -167,10 +167,11 @@ class ApplicationService:
                 created_to=created_to,
                 process_key=resource_list,
             )
-
+        draft_count = Draft.get_draft_count()
         return (
             application_schema.dump(applications, many=True),
             get_all_applications_count,
+            draft_count,
         )
 
     @staticmethod
@@ -229,10 +230,11 @@ class ApplicationService:
             created_from=created_from,
             created_to=created_to,
         )
-
+        draft_count = Draft.get_draft_count()
         return (
             application_schema.dump(applications, many=True),
             get_all_applications_count,
+            draft_count,
         )
 
     @staticmethod

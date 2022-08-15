@@ -13,6 +13,7 @@ const initialState = {
   activePage: 1,
   isDraftDetailLoading: true,
   submission: {},
+  draftDetailStatusCode:""
 };
 
 const draftSubmission = (state = initialState, action) => {
@@ -40,6 +41,8 @@ const draftSubmission = (state = initialState, action) => {
         ...state,
         draftSubmissionError: { error: true, message: action.payload },
       };
+    case ACTION_CONSTANTS.DRAFT_DETAIL_STATUS_CODE:
+      return { ...state, draftDetailStatusCode: action.payload };
     default:
       return state;
   }

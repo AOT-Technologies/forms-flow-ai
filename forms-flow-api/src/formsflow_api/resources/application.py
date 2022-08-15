@@ -64,6 +64,7 @@ class ApplicationsResource(Resource):
                 (
                     application_schema_dump,
                     application_count,
+                    draft_count,
                 ) = ApplicationService.get_auth_applications_and_count(
                     created_from=created_from_date,
                     created_to=created_to_date,
@@ -83,6 +84,7 @@ class ApplicationsResource(Resource):
                 (
                     application_schema_dump,
                     application_count,
+                    draft_count,
                 ) = ApplicationService.get_all_applications_by_user(
                     page_no=page_no,
                     limit=limit,
@@ -102,6 +104,7 @@ class ApplicationsResource(Resource):
                     {
                         "applications": application_schema_dump,
                         "totalCount": application_count,
+                        "draftCount": draft_count,
                         "limit": limit,
                         "pageNo": page_no,
                     }

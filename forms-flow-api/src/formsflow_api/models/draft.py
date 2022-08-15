@@ -9,9 +9,13 @@ from sqlalchemy import and_, update
 from sqlalchemy.dialects.postgresql import JSON, UUID
 from sqlalchemy.sql.expression import text
 
-from formsflow_api.utils import FILTER_MAPS, validate_sort_order_and_order_by
+from formsflow_api.utils import (
+    DRAFT_APPLICATION_STATUS,
+    FILTER_MAPS,
+    validate_sort_order_and_order_by,
+)
 from formsflow_api.utils.enums import DraftStatus
-
+from formsflow_api.utils.user_context import UserContext, user_context
 from .application import Application
 from .audit_mixin import AuditDateTimeMixin
 from .base_model import BaseModel
@@ -77,7 +81,7 @@ class Draft(AuditDateTimeMixin, BaseModel, db.Model):
             cls.query.with_entities(
                 FormProcessMapper.form_name,
                 FormProcessMapper.process_name,
-                FormProcessMapper.created_by,
+                Application.created_by,
                 FormProcessMapper.form_id,
                 FormProcessMapper.process_key,
                 FormProcessMapper.process_name,
@@ -108,8 +112,8 @@ class Draft(AuditDateTimeMixin, BaseModel, db.Model):
         user_name: str,
         page_number=None,
         limit=None,
-        sort_by=None,
-        sort_order=None,
+        sort_by="id",
+        sort_order="desc",
         **filters,
     ):
         """Fetch all active drafts."""
@@ -118,7 +122,7 @@ class Draft(AuditDateTimeMixin, BaseModel, db.Model):
             .with_entities(
                 FormProcessMapper.form_name,
                 FormProcessMapper.process_name,
-                FormProcessMapper.created_by,
+                Application.created_by,
                 FormProcessMapper.form_id,
                 cls.id,
                 cls.application_id,
@@ -137,11 +141,11 @@ class Draft(AuditDateTimeMixin, BaseModel, db.Model):
                     Application.created_by == user_name,
                 )
             )
-            .order_by(Draft.id.desc())
         )
         sort_by, sort_order = validate_sort_order_and_order_by(sort_by, sort_order)
+        model_name = "form_process_mapper" if sort_by == "form_name" else "draft"
         if sort_by and sort_order:
-            result = result.order_by(text(f"draft.{sort_by} {sort_order}"))
+            result = result.order_by(text(f"{model_name}.{sort_by} {sort_order}"))
         result = FormProcessMapper.tenant_authorization(result)
         total_count = result.count()
         limit = total_count if limit is None else limit
@@ -189,3 +193,21 @@ class Draft(AuditDateTimeMixin, BaseModel, db.Model):
                 filter_conditions.append(condition)
         query = cls.query.filter(*filter_conditions) if filter_conditions else cls.query
         return query
+
+    @classmethod
+    @user_context
+    def get_draft_count(cls, **kwargs):
+        """Get active draft count."""
+        user: UserContext = kwargs["user"]
+        user_id: str = user.user_name
+        query = cls.query.join(Application, cls.application_id == Application.id)
+        if user_id:
+            query = query.filter(Application.created_by == user_id)
+        query = query.filter(
+            and_(
+                Application.application_status == DRAFT_APPLICATION_STATUS,
+                Draft.status == str(DraftStatus.ACTIVE.value),
+            )
+        )
+        draft_count = query.count()
+        return draft_count

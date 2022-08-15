@@ -44,7 +44,7 @@ import lintModule from "bpmn-js-bpmnlint";
 import "bpmn-js-bpmnlint/dist/assets/css/bpmn-js-bpmnlint.css";
 import linterConfig from "./lint-rules/packed-config";
 
-const EditModel = React.memo(({ xml, defaultProcessInfo }) => {
+const EditModel = React.memo(({ xml, defaultProcessInfo, setShowModeller }) => {
   const { t } = useTranslation();
 
   const dispatch = useDispatch();
@@ -87,6 +87,7 @@ const EditModel = React.memo(({ xml, defaultProcessInfo }) => {
         const { error } = event;
         if (error) {
           console.log("bpmnViewer error >", error);
+          setShowModeller(false);
         }
       });
     }
@@ -123,6 +124,7 @@ const EditModel = React.memo(({ xml, defaultProcessInfo }) => {
         })
         .catch((err) => {
           console.log("error", err);
+          setShowModeller(false);
         });
     }
   }, [diagramXML, bpmnModeller]);
@@ -158,14 +160,6 @@ const EditModel = React.memo(({ xml, defaultProcessInfo }) => {
     if (document.getElementsByClassName(ERROR_CLASSNAME).length > 0) {
       return false;
     }
-
-    /*
-    if (!getPropertyPanelInfo().deploymentName){
-      toast.error(t("Please provide a process name"));
-      return false;
-    }
-    */
-
     return true;
   };
 
@@ -209,7 +203,7 @@ const EditModel = React.memo(({ xml, defaultProcessInfo }) => {
       if (rootElement.businessObject.id) {
         processID = rootElement.businessObject.id;
       }
-      if (rootElement.businessObject.name){
+      if (rootElement.businessObject.name) {
         deploymentName = rootElement.businessObject.name;
       }
     } else {
@@ -221,8 +215,9 @@ const EditModel = React.memo(({ xml, defaultProcessInfo }) => {
         if (rootElement.businessObject.participants[0].processRef.id) {
           processID = rootElement.businessObject.participants[0].processRef.id;
         }
-        if (rootElement.businessObject.participants[0].processRef.name){
-          deploymentName = rootElement.businessObject.participants[0].processRef.name;
+        if (rootElement.businessObject.participants[0].processRef.name) {
+          deploymentName =
+            rootElement.businessObject.participants[0].processRef.name;
         }
       }
     }
@@ -348,10 +343,13 @@ const EditModel = React.memo(({ xml, defaultProcessInfo }) => {
       </div>
 
       <div>
-          {MULTITENANCY_ENABLED ? <label className="deploy-checkbox"><input type="checkbox" onClick={handleApplyAllTenants}/>  Apply for all tenants</label> : null}
-          <Button onClick={deployProcess}>
-            Deploy
-          </Button>
+        {MULTITENANCY_ENABLED ? (
+          <label className="deploy-checkbox">
+            <input type="checkbox" onClick={handleApplyAllTenants} /> Apply for
+            all tenants
+          </label>
+        ) : null}
+        <Button onClick={deployProcess}>Deploy</Button>
       </div>
     </>
   );

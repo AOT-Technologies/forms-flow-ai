@@ -49,15 +49,13 @@ export default React.memo(() => {
   const handleListChange = (item) => {
     setShowModeller(true);
     dispatch(setWorkflowAssociation(item[0]));
-    document.getElementById('inputWorkflow').value = null;
+    document.getElementById("inputWorkflow").value = null;
   };
 
   const handleFile = (e, fileName) => {
     const content = e.target.result;
-    
     const xmlName = extractDataFromDiagram(content).name;
     const processId = extractDataFromDiagram(content).processId;
-
     const name = xmlName ? xmlName : fileName.slice(0, -5);
     const newWorkflow = {
       label: name,
@@ -82,7 +80,7 @@ export default React.memo(() => {
     setDefaultProcessInfo(newProcess);
     dispatch(setProcessDiagramXML(newProcess.defaultBlankProcessXML));
     dispatch(setWorkflowAssociation(newProcess.defaultWorkflow));
-    document.getElementById('inputWorkflow').value = null;
+    document.getElementById("inputWorkflow").value = null;
     setShowModeller(true);
   };
 
@@ -128,13 +126,15 @@ export default React.memo(() => {
                 <span className="fontsize-16">
                   {t("Please select an existing workflow.")}
                 </span>
-                <Select
-                  placeholder={t("Select...")}
-                  dropdownHeight={showModeller ? "250px" : "100px"}
-                  options={deploymentList}
-                  onChange={handleListChange}
-                  values={workflow?.xml ? [workflow] : []}
-                />
+                <div className="select-style">
+                  <Select
+                    placeholder={t("Select...")}
+                    dropdownHeight={showModeller ? "250px" : "100px"}
+                    options={deploymentList}
+                    onChange={handleListChange}
+                    values={workflow?.xml ? [workflow] : []}
+                  />
+                </div>
               </Grid>
 
               <div className="create-import-container">
@@ -167,6 +167,7 @@ export default React.memo(() => {
                   <EditModel
                     xml={workflow?.xml}
                     defaultProcessInfo={defaultProcessInfo}
+                    setShowModeller={setShowModeller}
                   />
                 </div>
               ) : null}

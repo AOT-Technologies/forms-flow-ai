@@ -94,8 +94,4 @@ class AuthorizationService:
                 created_by=user.user_name,
             )
         auth = auth.save()
-        return {
-            "resourceId": auth.resource_id,
-            "resourceDetails": auth.resource_details,
-            "roles": auth.roles,
-        }
+        return self._as_dict(auth)

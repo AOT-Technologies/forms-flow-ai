@@ -120,6 +120,7 @@ class ApplicationService:  # pylint: disable=too-many-public-methods
     def _application_access(token: str) -> bool:
         """Checks if the user has access to all applications."""
         auth_form_details = ApplicationService.get_authorised_form_list(token=token)
+        assert auth_form_details is not None
         current_app.logger.info(auth_form_details)
         auth_list = auth_form_details.get("authorizationList") or {}
         resource_list = [group["resourceId"] for group in auth_list]

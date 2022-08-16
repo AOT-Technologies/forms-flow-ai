@@ -13,11 +13,10 @@ import {
   setDraftDetail,
   setDraftCount,
   setDraftSubmissionError,
-  setDraftDetailStatusCode
+  setDraftDetailStatusCode,
 } from "../../actions/draftActions";
 import moment from "moment";
 import { setApplicationListCount } from "../../actions/applicationActions";
-
 
 export const draftCreate = (data, ...rest) => {
   const done = rest.length ? rest[0] : () => {};
@@ -121,7 +120,11 @@ export const publicDraftUpdate = (data, ...rest) => {
 export const publicDraftSubmit = (data, ...rest) => {
   const draftId = rest.length ? rest[0] : null;
   const done = draftId && rest.length > 1 ? rest[1] : () => {};
-  const URL = replaceUrl(API.DRAFT_APPLICATION_CREATE_PUBLIC,"<draft_id>", draftId);
+  const URL = replaceUrl(
+    API.DRAFT_APPLICATION_CREATE_PUBLIC,
+    "<draft_id>",
+    draftId
+  );
   return () => {
     httpPUTRequestWithoutToken(URL, data)
       .then((res) => {

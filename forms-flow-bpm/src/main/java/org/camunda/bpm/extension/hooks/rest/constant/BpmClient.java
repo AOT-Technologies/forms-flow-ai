@@ -6,7 +6,7 @@ public enum BpmClient {
 
     private String name;
 
-    BpmClient(String name){
+    BpmClient(String name) {
         this.name = name;
     }
 

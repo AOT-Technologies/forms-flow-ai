@@ -1,17 +1,5 @@
 package org.camunda.bpm.extension.hooks.rest.service.impl;
 
-import static org.camunda.bpm.engine.authorization.Authorization.AUTH_TYPE_GRANT;
-
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-import java.util.HashSet;
-import java.util.ArrayList;
-
-import java.io.IOException;
-
-import javax.servlet.ServletException;
-
 import com.nimbusds.jose.shaded.json.JSONArray;
 import com.nimbusds.oauth2.sdk.util.CollectionUtils;
 import org.apache.commons.lang.StringUtils;
@@ -26,22 +14,24 @@ import org.camunda.bpm.extension.hooks.controllers.data.Authorization;
 import org.camunda.bpm.extension.hooks.controllers.data.AuthorizationInfo;
 import org.camunda.bpm.extension.hooks.controllers.data.TenantAuthorizationDto;
 import org.camunda.bpm.extension.hooks.exceptions.ApplicationServiceException;
-import org.camunda.bpm.extension.hooks.rest.service.AbstractRestService;
 import org.camunda.bpm.extension.hooks.rest.service.AdminRestService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.oauth2.core.oidc.user.OidcUser;
 import org.springframework.security.oauth2.server.resource.authentication.JwtAuthenticationToken;
-import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 import reactor.core.publisher.Mono;
 
-@Service
-public class AdminRestServiceImpl extends AbstractRestService implements AdminRestService {
+import javax.servlet.ServletException;
+import java.io.IOException;
+import java.util.*;
+
+import static org.camunda.bpm.engine.authorization.Authorization.AUTH_TYPE_GRANT;
+
+public class AdminRestServiceImpl implements AdminRestService {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(AdminRestServiceImpl.class);
 
@@ -49,10 +39,9 @@ public class AdminRestServiceImpl extends AbstractRestService implements AdminRe
     private final AuthorizationService authService;
     private final RepositoryService repoService;
 
-    public AdminRestServiceImpl(@Value("${plugin.identity.keycloak.administratorGroupName}") String adminGroupName,
-                                AuthorizationService authorizationService, RepositoryService repositoryService){
-        super(null, null);
-
+    public AdminRestServiceImpl(
+            String adminGroupName, AuthorizationService authorizationService, RepositoryService repositoryService
+    ) {
         this.adminGroupName = adminGroupName;
         this.authService = authorizationService;
         this.repoService = repositoryService;
@@ -62,6 +51,7 @@ public class AdminRestServiceImpl extends AbstractRestService implements AdminRe
     public Mono<ResponseEntity<AuthorizationInfo>> getFormAuthorization() throws ServletException {
 
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        LOGGER.error("authentication" + authentication);
         List<String> groups = getGroups(authentication);
         AuthorizationInfo authorizationInfo = null;
 
@@ -133,6 +123,7 @@ public class AdminRestServiceImpl extends AbstractRestService implements AdminRe
 
     /**
      * Return groups associated with authentication object.
+     *
      * @param authentication
      * @return
      */
@@ -151,7 +142,7 @@ public class AdminRestServiceImpl extends AbstractRestService implements AdminRe
             tenantKey = claims.get("tenantKey").toString();
         }
         List<String> groupIds = null;
-        if(claims != null && claims.containsKey("groups")) {
+        if (claims != null && claims.containsKey("groups")) {
             groupIds = getKeyValues(claims, "groups", null);
         } else if (claims != null && claims.containsKey("roles")) {
             groupIds = getKeyValues(claims, "roles", tenantKey);
@@ -161,11 +152,11 @@ public class AdminRestServiceImpl extends AbstractRestService implements AdminRe
 
     private List<String> getKeyValues(Map<String, Object> claims, String claimName, String tenantKey) {
         List<String> groupIds = new ArrayList<String>();
-        JSONArray groups = (JSONArray)claims.get(claimName);
+        JSONArray groups = (JSONArray) claims.get(claimName);
         for (Object group1 : groups) {
             String groupName = group1.toString();
-            if(StringUtils.startsWith(groupName,"/")) {
-                groupIds.add(StringUtils.substring(groupName,1));
+            if (StringUtils.startsWith(groupName, "/")) {
+                groupIds.add(StringUtils.substring(groupName, 1));
             } else {
                 if (tenantKey != null)
                     groupName = tenantKey + "-" + groupName;
@@ -178,6 +169,7 @@ public class AdminRestServiceImpl extends AbstractRestService implements AdminRe
 
     /**
      * This method returns all authorization details of Groups.
+     *
      * @param groups
      * @return
      */
@@ -186,7 +178,7 @@ public class AdminRestServiceImpl extends AbstractRestService implements AdminRe
         Set<Authorization> authorizationList = new HashSet<>();
 
         String[] groupIds = groups.size() > 0 ? groups.toArray(new String[0]) : new String[]{};
-        List<org.camunda.bpm.engine.authorization.Authorization> authorizations =  ProcessEngines.getDefaultProcessEngine().getAuthorizationService().createAuthorizationQuery()
+        List<org.camunda.bpm.engine.authorization.Authorization> authorizations = ProcessEngines.getDefaultProcessEngine().getAuthorizationService().createAuthorizationQuery()
                 .resourceType(Resources.PROCESS_DEFINITION.resourceType())
                 .hasPermission(ProcessDefinitionPermissions.CREATE_INSTANCE)
                 .groupIdIn(groupIds).list();

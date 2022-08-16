@@ -6,5 +6,5 @@ import java.io.Serializable;
 
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class UserProfileDto extends org.camunda.bpm.engine.rest.dto.identity.UserProfileDto implements Serializable {
-	private static final long serialVersionUID = 1L;
+    private static final long serialVersionUID = 1L;
 }

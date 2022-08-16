@@ -230,7 +230,7 @@ class ApplicationService:
             created_from=created_from,
             created_to=created_to,
         )
-        draft_count = Draft.get_draft_count(user_id=user_id)
+        draft_count = Draft.get_draft_count()
         return (
             application_schema.dump(applications, many=True),
             get_all_applications_count,

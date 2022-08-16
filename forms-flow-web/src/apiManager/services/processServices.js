@@ -76,10 +76,8 @@ export const fetchAllBpmProcesses = (excludeInternal = true, ...rest) => {
       true
     )
       .then((res) => {
-        if (res?.data?._embedded?.processDefinitionDtoList) {
-          dispatch(
-            setAllProcessList(res.data._embedded.processDefinitionDtoList)
-          );
+        if(res?.data) {
+          dispatch(setAllProcessList(res.data));
           done(null, res.data);
         } else {
           dispatch(setAllProcessList([]));

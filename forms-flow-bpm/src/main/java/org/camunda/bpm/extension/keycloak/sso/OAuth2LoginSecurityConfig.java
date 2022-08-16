@@ -29,6 +29,7 @@ import org.springframework.security.oauth2.core.oidc.IdTokenClaimNames;
 import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 import org.springframework.web.context.request.RequestContextListener;
 import org.springframework.web.filter.ForwardedHeaderFilter;
+import org.springframework.beans.factory.annotation.Autowired;
 
 import static org.springframework.security.config.Customizer.withDefaults;
 
@@ -42,7 +43,7 @@ import static org.springframework.security.config.Customizer.withDefaults;
 @Order(SecurityProperties.BASIC_AUTH_ORDER - 10)
 public class OAuth2LoginSecurityConfig extends WebSecurityConfigurerAdapter {
 
-	@Inject
+	@Autowired
 	private KeycloakLogoutHandler keycloakLogoutHandler;
 
 	@Override

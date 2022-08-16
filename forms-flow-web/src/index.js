@@ -39,4 +39,18 @@ ReactDOM.render(
   document.getElementById("app")
 );
 
-serviceWorkerRegistration.register();
+// Register service worker and if new changes skip waiting and activate new service worker
+serviceWorkerRegistration.register({
+  onUpdate: registration => {
+    const waitingServiceWorker = registration.waiting;
+
+    if (waitingServiceWorker) {
+      waitingServiceWorker.addEventListener("statechange", event => {
+        if (event.target.state === "activated") {
+          window.location.reload();
+        }
+      });
+      waitingServiceWorker.postMessage({ type: "SKIP_WAITING" });
+    }
+  }
+});

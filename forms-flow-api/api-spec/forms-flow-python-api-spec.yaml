@@ -1,0 +1,2705 @@
+openapi: 3.0.0
+info:
+  title: formsflow.ai API
+  description: 'The API for formsflow.ai. Checkout: formsflow.ai to know more'
+  version: 1.0.0
+servers:
+  - url: http://localhost:5000
+  - url: http://{{baseurl}}
+components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+    apikeyAuth:
+      type: http
+      scheme: apikey
+security:
+  - apikeyAuth: []
+tags:
+  - name: application
+  - name: application > {application id}
+  - name: application > {application id} > history
+  - name: dashboards
+  - name: draft
+  - name: draft > public
+  - name: draft > public > {draft id}
+  - name: draft > {draft id}
+  - name: form
+  - name: form > {form id}/submission/{submission id}
+  - name: form > {mapper id}
+  - name: groups
+  - name: groups > {group id}
+  - name: metrics
+  - name: public
+paths:
+  /application/{application_id}/history:
+    get:
+      tags:
+        - application > {application id} > history
+      summary: Get application history
+      description: >-
+        : application_id:- Getting application history by providing
+        application_id
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: application_id
+          in: path
+          schema:
+            type: integer
+          required: true
+          example: '2'
+      responses:
+        '200':
+          description: OK
+          headers:
+            Content-Type:
+              schema:
+                type: string
+                example: text/plain
+          content:
+            text/plain:
+              schema:
+                type: string
+              example: ''
+            application/json:
+              schema:
+                type: object
+              example:
+                applications:
+                  - formUrl: >-
+                      http://localhost:3000/form/61b857cff85e92f5958f8a03/submission/6296e8eae7720c1bcfb8bdd6
+                    applicationStatus: New
+                    created: '2022-06-01 04:19:57.118021'
+                    submittedBy: john.honai
+    post:
+      tags:
+        - application > {application id} > history
+      summary: Post a new application using the request body
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              example:
+                id: 2
+                applicationStatus: Reviewed
+                created: '2022-04-28 10:18:03.521461'
+                formUrl: >-
+                  http://localhost:3000/form/626a42e228d493440d3580d6/submission/626a69da85ba0250e51141fc
+                submittedBy: formsflow-client
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: application_id
+          in: path
+          schema:
+            type: integer
+          required: true
+          description: '(Required) '
+          example: '2'
+      responses:
+        '200':
+          description: OK
+          headers:
+            Content-Type:
+              schema:
+                type: string
+                example: text/plain
+          content:
+            text/plain:
+              schema:
+                type: string
+              example: ''
+        '201':
+          description: CREATED
+          headers:
+            Server:
+              schema:
+                type: string
+                example: gunicorn
+            Date:
+              schema:
+                type: string
+                example: Wed, 01 Jun 2022 07:14:38 GMT
+            Connection:
+              schema:
+                type: string
+                example: keep-alive
+            Content-Type:
+              schema:
+                type: string
+                example: application/json
+            Content-Length:
+              schema:
+                type: integer
+                example: '241'
+            X-Frame-Options:
+              schema:
+                type: string
+                example: DENY
+            Access-Control-Allow-Origin:
+              schema:
+                type: string
+                example: '*'
+          content:
+            application/json:
+              schema:
+                type: object
+              example:
+                created: '2022-06-01 07:14:38.099773'
+                formUrl: >-
+                  http://localhost:3000/form/626a42e228d493440d3580d6/submission/626a69da85ba0250e51141fc
+                id: 5
+                applicationId: 2
+                applicationStatus: Reviewed
+                submittedBy: formsflow-client
+  /application/{application_id}:
+    get:
+      tags:
+        - application > {application id}
+      summary: Get application by id
+      description: ': application_id:- List the application for particular application_id'
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: application_id
+          in: path
+          schema:
+            type: integer
+          required: true
+          description: '(Required) '
+          example: '2'
+      responses:
+        '200':
+          description: OK
+          headers:
+            Content-Type:
+              schema:
+                type: string
+                example: text/plain
+          content:
+            text/plain:
+              schema:
+                type: string
+              example: ''
+            application/json:
+              schema:
+                type: object
+              example:
+                id: 2
+                applicationName: New Business License Application
+                modifiedBy: service-account-forms-flow-bpm
+                formUrl: >-
+                  http://localhost:3000/form/61b857cff85e92f5958f8a03/submission/6296e8eae7720c1bcfb8bdd6
+                processKey: two-step-approval-listener
+                processInstanceId: 1776837b-e162-11ec-974d-0242ac120006
+                processTenant: null
+                applicationStatus: New
+                created: '2022-06-01 04:19:55.422250'
+                modified: '2022-06-01 04:19:57.294518'
+                formProcessMapperId: '878'
+                processName: Two Step Approval-listener
+                createdBy: john.honai
+                formId: 61b857cff85e92f5958f8a03
+                submissionId: 6296e8eae7720c1bcfb8bdd6
+    put:
+      tags:
+        - application > {application id}
+      summary: Update application details
+      description: ': application_id:- Update the application for particular application_id'
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              example:
+                id: 15
+                formId: 626a42e228d493440d3580d6
+                formUrl: >-
+                  http://localhost:3000/form/626a42e228d493440d3580d6/submission/6296ff78bbe1c77a328df300
+                submissionId: 6296ff78bbe1c77a328df300
+                applicationStatus: Approved
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: application_id
+          in: path
+          schema:
+            type: integer
+          required: true
+          description: '(Required) '
+          example: '15'
+      responses:
+        '200':
+          description: OK
+          headers:
+            Content-Type:
+              schema:
+                type: string
+                example: text/plain
+          content:
+            text/plain:
+              schema:
+                type: string
+              example: ''
+            application/json:
+              schema:
+                type: object
+              example: Updated successfully
+  /application:
+    get:
+      tags:
+        - application
+      summary: Get applications
+      description: |-
+        : Id:- List the application for particular id
+        : applicationName:- Retrieve application list based on application name
+        : applicationStatus:- List all applications based on status
+        : createdBy:- To retrieve applications based on createdby
+        : created:- Retrieve the applications based on date and time
+        : modified:- Retrieve the applications based on modified date and time
+        : pageNo:- To retrieve page number
+        : limit:- To retrieve limit for each page
+        : orderBy:- Name of column to order by (default: id)
+      security:
+        - bearerAuth: []
+      responses:
+        '200':
+          description: OK
+          headers:
+            Content-Type:
+              schema:
+                type: string
+                example: text/plain
+          content:
+            text/plain:
+              schema:
+                type: string
+              example: ''
+            application/json:
+              schema:
+                type: object
+              example:
+                applications:
+                  - id: 15
+                    applicationName: New Business License Application
+                    modifiedBy: service-account-forms-flow-bpm
+                    formUrl: >-
+                      http://localhost:3000/form/61b857cff85e92f5958f8a03/submission/6296e8eae7720c1bcfb8bdd6
+                    processKey: two-step-approval-listener
+                    processInstanceId: 1776837b-e162-11ec-974d-0242ac120006
+                    processTenant: null
+                    applicationStatus: New
+                    created: '2022-06-01 04:19:55.422250'
+                    modified: '2022-06-01 04:19:57.294518'
+                    formProcessMapperId: '878'
+                    processName: Two Step Approval-listener
+                    createdBy: john.honai
+                    formId: 61b857cff85e92f5958f8a03
+                    submissionId: 6296e8eae7720c1bcfb8bdd6
+                totalCount: 26
+                limit: null
+                pageNo: null
+  /application/create:
+    post:
+      tags:
+        - application
+      summary: Post a new application using the request body
+      description: |-
+        : formId:- Unique Id for the corresponding form
+        : submissionId:- Unique Id for the submitted form
+        : formUrl:- Unique URL for the submitted application
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              example:
+                formId: 626a42e228d493440d3580d6
+                formUrl: >-
+                  http://localhost:3000/form/626a42e228d493440d3580d6/submission/6296ff78bbe1c77a328df300
+                submissionId: 6296ff78bbe1c77a328df300
+      security:
+        - bearerAuth: []
+      responses:
+        '200':
+          description: OK
+          headers:
+            Content-Type:
+              schema:
+                type: string
+                example: text/plain
+          content:
+            text/plain:
+              schema:
+                type: string
+              example: ''
+        '201':
+          description: CREATED
+          headers:
+            Server:
+              schema:
+                type: string
+                example: gunicorn
+            Date:
+              schema:
+                type: string
+                example: Wed, 01 Jun 2022 05:57:20 GMT
+            Connection:
+              schema:
+                type: string
+                example: keep-alive
+            Content-Type:
+              schema:
+                type: string
+                example: application/json
+            Content-Length:
+              schema:
+                type: integer
+                example: '346'
+            X-Frame-Options:
+              schema:
+                type: string
+                example: DENY
+            Access-Control-Allow-Origin:
+              schema:
+                type: string
+                example: '*'
+          content:
+            application/json:
+              schema:
+                type: object
+              example:
+                created: '2022-06-01 05:57:20.128424'
+                formUrl: >-
+                  http://localhost:3000/form/626a42e228d493440d3580d6/submission/6296ff78bbe1c77a328df300
+                id: 15
+                modifiedBy: null
+                modified: '2022-06-01 05:57:20.128431'
+                createdBy: service-account-forms-flow-bpm
+                applicationStatus: New
+                processInstanceId: null
+                formProcessMapperId: '1'
+  /application/formid/{form_id}:
+    get:
+      tags:
+        - application
+      summary: Get applications
+      description: ': form_id:- Retrieve application list based on formid'
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: form_id
+          in: path
+          schema:
+            type: string
+          required: true
+          description: '(Required) '
+          example: 624d71460d7e747ab1b85d73
+      responses:
+        '200':
+          description: OK
+          headers:
+            Content-Type:
+              schema:
+                type: string
+                example: text/plain
+          content:
+            text/plain:
+              schema:
+                type: string
+              example: ''
+            application/json:
+              schema:
+                type: object
+              example:
+                applications:
+                  - id: 2442
+                    modifiedBy: service-account-forms-flow-bpm
+                    formUrl: >-
+                      https://localhost:3000/form/624d71460d7e747ab1b85d73/submission/6295e161e7720c1bcfb8bb89
+                    processInstanceId: 02df9949-e0c5-11ec-974d-0242ac120006
+                    applicationStatus: New
+                    created: '2022-05-31 09:35:30.198911'
+                    modified: '2022-05-31 09:35:31.175404'
+                    formProcessMapperId: '1090'
+                    createdBy: john.doe
+                    formId: 624d71460d7e747ab1b85d73
+                    submissionId: 6295e161e7720c1bcfb8bb89
+                totalCount: 70
+  /application/status/list:
+    get:
+      tags:
+        - application
+      summary: Method to get the application status lists
+      security:
+        - bearerAuth: []
+      responses:
+        '200':
+          description: OK
+          headers:
+            Content-Type:
+              schema:
+                type: string
+                example: text/plain
+          content:
+            text/plain:
+              schema:
+                type: string
+              example: ''
+            application/json:
+              schema:
+                type: object
+              example:
+                applicationStatus:
+                  - Approved
+                  - New
+  /dashboards:
+    get:
+      tags:
+        - dashboards
+      summary: List all dashboards
+      security:
+        - bearerAuth: []
+      responses:
+        '200':
+          description: OK
+          headers:
+            Content-Type:
+              schema:
+                type: string
+                example: text/plain
+          content:
+            text/plain:
+              schema:
+                type: string
+              example: ''
+            application/json:
+              schema:
+                type: object
+              example:
+                count: 10
+                page: 1
+                page_size: 25
+                results:
+                  - id: 19
+                    slug: test-publish
+                    name: test publish
+                    user_id: 1
+                    user:
+                      id: 1
+                      name: Kurian Benoy
+                      email: kurian.benoy@aot-technologies.com
+                      profile_image_url: >-
+                        https://www.gravatar.com/avatar/00daef977e7230d0d497f0c3d3929d7b?s=40&d=identicon
+                    layout: []
+                    dashboard_filters_enabled: false
+                    widgets: null
+                    options: {}
+                    is_archived: false
+                    is_draft: false
+                    tags: []
+                    updated_at: '2022-05-16T10:03:57.775Z'
+                    created_at: '2022-05-16T09:57:07.175Z'
+                    version: 2
+                    is_favorite: false
+                  - id: 18
+                    slug: tempdashboard
+                    name: tempdashboard
+                    user_id: 1
+                    user:
+                      id: 1
+                      name: Kurian Benoy
+                      email: kurian.benoy@aot-technologies.com
+                      profile_image_url: >-
+                        https://www.gravatar.com/avatar/00daef977e7230d0d497f0c3d3929d7b?s=40&d=identicon
+                    layout: []
+                    dashboard_filters_enabled: false
+                    widgets: null
+                    options: {}
+                    is_archived: false
+                    is_draft: true
+                    tags: []
+                    updated_at: '2022-02-21T10:01:03.359Z'
+                    created_at: '2022-02-21T10:01:03.359Z'
+                    version: 1
+                    is_favorite: false
+                  - id: 17
+                    slug: test
+                    name: test
+                    user_id: 1
+                    user:
+                      id: 1
+                      name: Kurian Benoy
+                      email: kurian.benoy@aot-technologies.com
+                      profile_image_url: >-
+                        https://www.gravatar.com/avatar/00daef977e7230d0d497f0c3d3929d7b?s=40&d=identicon
+                    layout: []
+                    dashboard_filters_enabled: false
+                    widgets: null
+                    options: {}
+                    is_archived: false
+                    is_draft: true
+                    tags: []
+                    updated_at: '2022-02-07T06:16:37.874Z'
+                    created_at: '2022-02-07T06:16:37.874Z'
+                    version: 1
+                    is_favorite: false
+                  - id: 15
+                    slug: sample-4
+                    name: Sample 4
+                    user_id: 1
+                    user:
+                      id: 1
+                      name: Kurian Benoy
+                      email: kurian.benoy@aot-technologies.com
+                      profile_image_url: >-
+                        https://www.gravatar.com/avatar/00daef977e7230d0d497f0c3d3929d7b?s=40&d=identicon
+                    layout: []
+                    dashboard_filters_enabled: false
+                    widgets: null
+                    options: {}
+                    is_archived: false
+                    is_draft: false
+                    tags: []
+                    updated_at: '2022-01-07T10:00:21.775Z'
+                    created_at: '2022-01-04T13:39:41.463Z'
+                    version: 4
+                    is_favorite: false
+                  - id: 14
+                    slug: sample3
+                    name: Sample3
+                    user_id: 1
+                    user:
+                      id: 1
+                      name: Kurian Benoy
+                      email: kurian.benoy@aot-technologies.com
+                      profile_image_url: >-
+                        https://www.gravatar.com/avatar/00daef977e7230d0d497f0c3d3929d7b?s=40&d=identicon
+                    layout: []
+                    dashboard_filters_enabled: false
+                    widgets: null
+                    options: {}
+                    is_archived: false
+                    is_draft: false
+                    tags: []
+                    updated_at: '2022-01-04T13:39:28.713Z'
+                    created_at: '2022-01-04T13:39:16.768Z'
+                    version: 2
+                    is_favorite: false
+                  - id: 13
+                    slug: sample2
+                    name: sample2
+                    user_id: 1
+                    user:
+                      id: 1
+                      name: Kurian Benoy
+                      email: kurian.benoy@aot-technologies.com
+                      profile_image_url: >-
+                        https://www.gravatar.com/avatar/00daef977e7230d0d497f0c3d3929d7b?s=40&d=identicon
+                    layout: []
+                    dashboard_filters_enabled: false
+                    widgets: null
+                    options: {}
+                    is_archived: false
+                    is_draft: false
+                    tags: []
+                    updated_at: '2022-01-04T13:39:03.369Z'
+                    created_at: '2022-01-04T13:38:48.378Z'
+                    version: 2
+                    is_favorite: false
+                  - id: 11
+                    slug: sample2
+                    name: SAMPLE2
+                    user_id: 1
+                    user:
+                      id: 1
+                      name: Kurian Benoy
+                      email: kurian.benoy@aot-technologies.com
+                      profile_image_url: >-
+                        https://www.gravatar.com/avatar/00daef977e7230d0d497f0c3d3929d7b?s=40&d=identicon
+                    layout: []
+                    dashboard_filters_enabled: false
+                    widgets: null
+                    options: {}
+                    is_archived: false
+                    is_draft: false
+                    tags: []
+                    updated_at: '2021-12-20T06:31:04.218Z'
+                    created_at: '2021-12-20T06:30:51.355Z'
+                    version: 2
+                    is_favorite: false
+                  - id: 10
+                    slug: sample1
+                    name: SAMPLE1
+                    user_id: 1
+                    user:
+                      id: 1
+                      name: Kurian Benoy
+                      email: kurian.benoy@aot-technologies.com
+                      profile_image_url: >-
+                        https://www.gravatar.com/avatar/00daef977e7230d0d497f0c3d3929d7b?s=40&d=identicon
+                    layout: []
+                    dashboard_filters_enabled: false
+                    widgets: null
+                    options: {}
+                    is_archived: false
+                    is_draft: false
+                    tags: []
+                    updated_at: '2021-12-20T06:30:39.153Z'
+                    created_at: '2021-12-20T06:30:28.967Z'
+                    version: 2
+                    is_favorite: false
+                  - id: 9
+                    slug: freedom-of-information-and-protection-of-privacy
+                    name: Freedom of Information and Protection of Privacy
+                    user_id: 1
+                    user:
+                      id: 1
+                      name: Kurian Benoy
+                      email: kurian.benoy@aot-technologies.com
+                      profile_image_url: >-
+                        https://www.gravatar.com/avatar/00daef977e7230d0d497f0c3d3929d7b?s=40&d=identicon
+                    layout: []
+                    dashboard_filters_enabled: true
+                    widgets: null
+                    options: {}
+                    is_archived: false
+                    is_draft: false
+                    tags: []
+                    updated_at: '2022-01-12T05:32:08.845Z'
+                    created_at: '2021-12-16T11:29:36.675Z'
+                    version: 5
+                    is_favorite: false
+                  - id: 5
+                    slug: new-business-license-application
+                    name: New Business License Application
+                    user_id: 1
+                    user:
+                      id: 1
+                      name: Kurian Benoy
+                      email: kurian.benoy@aot-technologies.com
+                      profile_image_url: >-
+                        https://www.gravatar.com/avatar/00daef977e7230d0d497f0c3d3929d7b?s=40&d=identicon
+                    layout: []
+                    dashboard_filters_enabled: true
+                    widgets: null
+                    options: {}
+                    is_archived: false
+                    is_draft: false
+                    tags: []
+                    updated_at: '2021-12-16T10:51:44.704Z'
+                    created_at: '2021-12-16T10:49:27.519Z'
+                    version: 3
+                    is_favorite: false
+  /dashboards/{dashboard_id}:
+    get:
+      tags:
+        - dashboards
+      summary: Get  dashboard
+      description: ': dashboard_id:- Get dashboard with given dashboard_id'
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: dashboard_id
+          in: path
+          schema:
+            type: integer
+          required: true
+          description: '(Required) '
+          example: '19'
+      responses:
+        '200':
+          description: OK
+          headers:
+            Content-Type:
+              schema:
+                type: string
+                example: text/plain
+          content:
+            text/plain:
+              schema:
+                type: string
+              example: ''
+            application/json:
+              schema:
+                type: object
+              example:
+                id: 19
+                slug: test-publish
+                name: test publish
+                user_id: 1
+                user:
+                  id: 1
+                  name: Kurian Benoy
+                  email: kurian.benoy@aot-technologies.com
+                  profile_image_url: >-
+                    https://www.gravatar.com/avatar/00daef977e7230d0d497f0c3d3929d7b?s=40&d=identicon
+                layout: []
+                dashboard_filters_enabled: false
+                widgets:
+                  - id: 24
+                    width: 1
+                    options:
+                      isHidden: false
+                      position:
+                        autoHeight: false
+                        sizeX: 3
+                        sizeY: 3
+                        minSizeX: 1
+                        maxSizeX: 6
+                        minSizeY: 1
+                        maxSizeY: 1000
+                        col: 0
+                        row: 0
+                    dashboard_id: 19
+                    text: testing dashboard
+                    updated_at: '2022-05-16T10:01:31.364Z'
+                    created_at: '2022-05-16T10:01:31.364Z'
+                options: {}
+                is_archived: false
+                is_draft: false
+                tags: []
+                updated_at: '2022-05-16T10:03:57.775Z'
+                created_at: '2022-05-16T09:57:07.175Z'
+                version: 2
+                is_favorite: false
+                public_url: >-
+                  http://localhost:7000/public/dashboards/YCAynmArs9q8NIVB3RRVwP4Peox5n8Dv4j2V33re?org_slug=default
+                api_key: YCAynmArs9q8NIVB3RRVwP4Peox5n8Dv4j2V33re
+                can_edit: true
+  /draft/public/{draft_id}:
+    put:
+      tags:
+        - draft > public > {draft id}
+      summary: Update draft details
+      requestBody:
+        content: {}
+      parameters:
+        - name: draft_id
+          in: path
+          schema:
+            type: string
+          required: true
+          description: '(Required) '
+          example: '-28702638'
+      responses:
+        '200':
+          description: OK
+          headers:
+            Content-Type:
+              schema:
+                type: string
+                example: text/plain
+          content:
+            text/plain:
+              schema:
+                type: string
+              example: ''
+  /draft/public/{draft_id}/submit:
+    put:
+      tags:
+        - draft > public > {draft id}
+      summary: Updates the application and draft entry to create a new submission
+      requestBody:
+        content: {}
+      parameters:
+        - name: draft_id
+          in: path
+          schema:
+            type: string
+          required: true
+          description: '(Required) '
+          example: '-28702638'
+      responses:
+        '200':
+          description: OK
+          headers:
+            Content-Type:
+              schema:
+                type: string
+                example: text/plain
+          content:
+            text/plain:
+              schema:
+                type: string
+              example: ''
+  /draft/public/create:
+    post:
+      tags:
+        - draft > public
+      summary: Create a new draft submission
+      requestBody:
+        content: {}
+      responses:
+        '200':
+          description: OK
+          headers:
+            Content-Type:
+              schema:
+                type: string
+                example: text/plain
+          content:
+            text/plain:
+              schema:
+                type: string
+              example: ''
+  /draft/{draft_id}:
+    put:
+      tags:
+        - draft > {draft id}
+      summary: Update draft details
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              example:
+                data:
+                  color: yellow is nice
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: draft_id
+          in: path
+          schema:
+            type: integer
+          required: true
+          description: '(Required) '
+          example: '19'
+      responses:
+        '200':
+          description: OK
+          headers:
+            Content-Type:
+              schema:
+                type: string
+                example: text/plain
+          content:
+            text/plain:
+              schema:
+                type: string
+              example: ''
+            application/json:
+              schema:
+                type: object
+              example: Updated 19 successfully
+    get:
+      tags:
+        - draft > {draft id}
+      summary: Get draft by id
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: draft_id
+          in: path
+          schema:
+            type: integer
+          required: true
+          description: '(Required) '
+          example: '19'
+      responses:
+        '200':
+          description: OK
+          headers:
+            Content-Type:
+              schema:
+                type: string
+                example: text/plain
+          content:
+            text/plain:
+              schema:
+                type: string
+              example: ''
+            application/json:
+              schema:
+                type: object
+              example:
+                applicationId: 61
+                processKey: onestepapproval
+                id: 19
+                data:
+                  name: new chapter.
+                created: '2022-08-16 05:00:20.055905'
+                CreatedBy: formsflow-reviewer
+                modified: '2022-08-16 05:00:20.055911'
+                DraftName: Freedom of Information and Protection of Privacy
+                processName: One Step Approval
+                formId: 6299cf76f4fd4797a3238a0b
+  /draft/{draft_id}/submit:
+    put:
+      tags:
+        - draft > {draft id}
+      summary: Updates the application and draft entry to create a new submission
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              example:
+                formUrl: >-
+                  http://localhost:3000/form/6299cf76f4fd4797a3238a0b/submission/6296ff78bbe1c77a328df309
+                submissionId: 6296ff78bbe1c77a328df309
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: draft_id
+          in: path
+          schema:
+            type: integer
+          required: true
+          description: '(Required) '
+          example: '16'
+      responses:
+        '200':
+          description: OK
+          headers:
+            Content-Type:
+              schema:
+                type: string
+                example: text/plain
+          content:
+            text/plain:
+              schema:
+                type: string
+              example: ''
+  /draft:
+    get:
+      tags:
+        - draft
+      summary: Retrieves all drafts
+      security:
+        - bearerAuth: []
+      responses:
+        '200':
+          description: OK
+          headers:
+            Content-Type:
+              schema:
+                type: string
+                example: text/plain
+          content:
+            text/plain:
+              schema:
+                type: string
+              example: ''
+            application/json:
+              schema:
+                type: object
+              example:
+                drafts:
+                  - applicationId: 61
+                    id: 19
+                    data:
+                      name: new chapter.
+                    created: '2022-08-16 05:00:20.055905'
+                    CreatedBy: formsflow-reviewer
+                    modified: '2022-08-16 05:00:20.055911'
+                    DraftName: Freedom of Information and Protection of Privacy
+                    processName: One Step Approval
+                    formId: 6299cf76f4fd4797a3238a0b
+                  - applicationId: 54
+                    id: 14
+                    data:
+                      name: new servicesss.
+                    created: '2022-08-10 05:51:02.115545'
+                    CreatedBy: formsflow-reviewer
+                    modified: '2022-08-10 05:51:02.115545'
+                    DraftName: Freedom of Information and Protection of Privacy
+                    processName: One Step Approval
+                    formId: 6299cf76f4fd4797a3238a0b
+                totalCount: 2
+    post:
+      tags:
+        - draft
+      summary: Create a new draft submission
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              example:
+                applicationStatus: Draft
+                formId: 6299cf76f4fd4797a3238a0b
+                data:
+                  name: new chapter.
+      security:
+        - bearerAuth: []
+      responses:
+        '200':
+          description: OK
+          headers:
+            Content-Type:
+              schema:
+                type: string
+                example: text/plain
+          content:
+            text/plain:
+              schema:
+                type: string
+              example: ''
+        '201':
+          description: CREATED
+          headers:
+            Server:
+              schema:
+                type: string
+                example: gunicorn
+            Date:
+              schema:
+                type: string
+                example: Tue, 16 Aug 2022 05:00:20 GMT
+            Connection:
+              schema:
+                type: string
+                example: keep-alive
+            Content-Type:
+              schema:
+                type: string
+                example: application/json
+            Content-Length:
+              schema:
+                type: integer
+                example: '236'
+            X-Frame-Options:
+              schema:
+                type: string
+                example: DENY
+            Access-Control-Allow-Origin:
+              schema:
+                type: string
+                example: '*'
+          content:
+            application/json:
+              schema:
+                type: object
+              example:
+                applicationId: 61
+                id: 19
+                _id: 2e83a8c5-658b-4fb0-adf2-b9581003059c
+                data:
+                  name: new chapter.
+                created: '2022-08-16 05:00:20.055905'
+                modified: '2022-08-16 05:00:20.055911'
+  /form/{form_id}/submission/{submission_id}/export/pdf:
+    get:
+      tags:
+        - form > {form id}/submission/{submission id}
+      summary: PDF generation and rendering method
+      parameters:
+        - name: form_id
+          in: path
+          schema:
+            type: string
+          required: true
+          description: '(Required) '
+          example: reprehenderit ea
+        - name: submission_id
+          in: path
+          schema:
+            type: string
+          required: true
+          description: '(Required) '
+          example: reprehenderit ea
+      responses:
+        '200':
+          description: OK
+          headers:
+            Content-Type:
+              schema:
+                type: string
+                example: text/plain
+          content:
+            text/plain:
+              schema:
+                type: string
+              example: ''
+  /form/{form_id}/submission/{submission_id}/render:
+    get:
+      tags:
+        - form > {form id}/submission/{submission id}
+      summary: Form rendering method
+      parameters:
+        - name: form_id
+          in: path
+          schema:
+            type: string
+          required: true
+          description: '(Required) '
+          example: reprehenderit ea
+        - name: submission_id
+          in: path
+          schema:
+            type: string
+          required: true
+          description: '(Required) '
+          example: reprehenderit ea
+      responses:
+        '200':
+          description: OK
+          headers:
+            Content-Type:
+              schema:
+                type: string
+                example: text/plain
+          content:
+            text/plain:
+              schema:
+                type: string
+              example: ''
+  /form/{mapper_id}:
+    get:
+      tags:
+        - form > {mapper id}
+      summary: Get form by mapper_id
+      description: ': mapper_id:- Get form process mapper by mapper_id'
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: mapper_id
+          in: path
+          schema:
+            type: integer
+          required: true
+          description: '(Required) '
+          example: '1'
+      responses:
+        '200':
+          description: OK
+          headers:
+            Content-Type:
+              schema:
+                type: string
+                example: text/plain
+          content:
+            text/plain:
+              schema:
+                type: string
+              example: ''
+            application/json:
+              schema:
+                type: object
+              example:
+                created: '2022-04-28 10:15:49.933160'
+                comments: null
+                id: '1'
+                processKey: two-step-approval
+                processTenant: null
+                version: '1'
+                anonymous: false
+                modifiedBy: null
+                processName: Two Step Approval
+                modified: '2022-04-28 10:15:49.933166'
+                status: active
+                taskVariable: '[]'
+                createdBy: formsflow-designer
+                formId: 626a42e228d493440d3580d6
+                formName: New Business License Application
+    delete:
+      tags:
+        - form > {mapper id}
+      summary: Delete form by mapper_id
+      description: ': mapper_id:- Delete form process mapper by mapper_id.'
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: mapper_id
+          in: path
+          schema:
+            type: integer
+          required: true
+          description: '(Required) '
+          example: '4'
+      responses:
+        '200':
+          description: OK
+          headers:
+            Content-Type:
+              schema:
+                type: string
+                example: text/plain
+          content:
+            text/plain:
+              schema:
+                type: string
+              example: ''
+            application/json:
+              schema:
+                type: object
+              example: Deleted
+    put:
+      tags:
+        - form > {mapper id}
+      summary: Update form by mapper_id
+      description: |-
+        : comments:- Brief description
+        : formId:- Unique Id for the corresponding form
+        : formName:- Name for the corresponding form
+        : id:- Id for particular form
+        : processKey:- Workflow associated for particular form
+        : processName:- Workflow associated for particular form
+        : status:- Status of the form
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              example:
+                created: '2022-06-01 07:33:12.863950'
+                comments: edit
+                id: '4'
+                processKey: Defaultflow
+                processTenant: Default
+                version: '1'
+                anonymous: false
+                modifiedBy: formsflow-designer
+                processName: Default Flow
+                modified: '2022-06-01 07:33:27.425340'
+                status: active
+                taskVariable: '[]'
+                createdBy: formsflow-designer
+                formId: 62971638bbe1c77a328df2c3
+                formName: sampletest1
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: mapper_id
+          in: path
+          schema:
+            type: integer
+          required: true
+          description: '(Required) '
+          example: '4'
+      responses:
+        '200':
+          description: OK
+          headers:
+            Content-Type:
+              schema:
+                type: string
+                example: text/plain
+          content:
+            text/plain:
+              schema:
+                type: string
+              example: ''
+            application/json:
+              schema:
+                type: object
+              example:
+                created: '2022-06-01 07:33:12.863950'
+                comments: edit
+                id: '4'
+                processKey: Defaultflow
+                processTenant: Default
+                version: '1'
+                anonymous: false
+                modifiedBy: service-account-forms-flow-bpm
+                processName: Default Flow
+                modified: '2022-06-01 07:47:06.947451'
+                status: active
+                taskVariable: '[]'
+                createdBy: formsflow-designer
+                formId: 62971638bbe1c77a328df2c3
+                formName: sampletest1
+  /form/{mapper_id}/application/count:
+    get:
+      tags:
+        - form > {mapper id}
+      summary: The method retrieves the total application count for th egiven mapper id
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: mapper_id
+          in: path
+          schema:
+            type: integer
+          required: true
+          description: '(Required) '
+          example: '1'
+      responses:
+        '200':
+          description: OK
+          headers:
+            Content-Type:
+              schema:
+                type: string
+                example: text/plain
+          content:
+            text/plain:
+              schema:
+                type: string
+              example: ''
+            application/json:
+              schema:
+                type: object
+              example:
+                message: 'Total Applications found are: 7'
+                value: 7
+  /form:
+    get:
+      tags:
+        - form
+      summary: Get form process mapper
+      description: |-
+        : pageNo:- To retrieve page number
+        : limit:- To retrieve limit for each page
+        : formName:- Retrieve form list based on form name
+      security:
+        - bearerAuth: []
+      responses:
+        '200':
+          description: OK
+          headers:
+            Content-Type:
+              schema:
+                type: string
+                example: text/plain
+          content:
+            text/plain:
+              schema:
+                type: string
+              example: ''
+            application/json:
+              schema:
+                type: object
+              example:
+                forms:
+                  - formId: 626a42e228d493440d3580d0
+                    id: '2'
+                    processKey: onestepapproval
+                    formName: Freedom of Information and Protection of Privacy
+                  - formId: 626a42e228d493440d3580d6
+                    id: '1'
+                    processKey: two-step-approval
+                    formName: New Business License Application
+                totalCount: 2
+                pageNo: null
+                limit: null
+    post:
+      tags:
+        - form
+      summary: Post a form process mapper using the request body
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              example:
+                formId: 626a42e228d493440d3580d1
+                processKey: onestepapproval
+                formName: New Form
+      security:
+        - bearerAuth: []
+      responses:
+        '200':
+          description: OK
+          headers:
+            Content-Type:
+              schema:
+                type: string
+                example: text/plain
+          content:
+            text/plain:
+              schema:
+                type: string
+              example: ''
+        '201':
+          description: CREATED
+          headers:
+            Server:
+              schema:
+                type: string
+                example: gunicorn
+            Date:
+              schema:
+                type: string
+                example: Tue, 31 May 2022 11:22:13 GMT
+            Connection:
+              schema:
+                type: string
+                example: keep-alive
+            Content-Type:
+              schema:
+                type: string
+                example: application/json
+            Content-Length:
+              schema:
+                type: integer
+                example: '400'
+            X-Frame-Options:
+              schema:
+                type: string
+                example: DENY
+            Access-Control-Allow-Origin:
+              schema:
+                type: string
+                example: '*'
+          content:
+            application/json:
+              schema:
+                type: object
+              example:
+                processName: Default Flow
+                formId: 626a42e228d493440d3580d1
+                modifiedBy: null
+                modified: '2022-05-31 11:22:13.120771'
+                processTenant: null
+                id: '3'
+                taskVariable: []
+                version: '1'
+                createdBy: service-account-forms-flow-bpm
+                created: '2022-05-31 11:22:13.120761'
+                comments: null
+                status: null
+                anonymous: null
+                processKey: onestepapproval
+                formName: New Form
+  /form/applicationid/{application_id}:
+    get:
+      tags:
+        - form
+      summary: The method retrieves task variables based on application id
+      parameters:
+        - name: application_id
+          in: path
+          schema:
+            type: string
+          required: true
+          description: '(Required) '
+          example: '-28702638'
+      responses:
+        '200':
+          description: OK
+          headers:
+            Content-Type:
+              schema:
+                type: string
+                example: text/plain
+          content:
+            text/plain:
+              schema:
+                type: string
+              example: ''
+            application/json:
+              schema:
+                type: object
+              example:
+                processKey: 'onestepapproval'
+                taskVariable: '[]'
+                processTenant: null
+                processName: 'One Step Approval'
+  /form/form-create:
+    post:
+      tags:
+        - form
+      summary: Formio form creation method
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              examples:
+                example-1:
+                  value:
+                    display: form
+                    components:
+                      - label: Text Field
+                        labelPosition: top
+                        labelWidth: ''
+                        labelMargin: ''
+                        placeholder: ''
+                        description: ''
+                        tooltip: ''
+                        prefix: ''
+                        suffix: ''
+                        widget:
+                          type: input
+                        inputMask: ''
+                        displayMask: ''
+                        allowMultipleMasks: false
+                        customClass: ''
+                        tabindex: ''
+                        autocomplete: ''
+                        hidden: false
+                        hideLabel: false
+                        showWordCount: false
+                        showCharCount: false
+                        mask: false
+                        autofocus: false
+                        spellcheck: true
+                        disabled: false
+                        tableView: true
+                        modalEdit: false
+                        multiple: false
+                        persistent: true
+                        inputFormat: plain
+                        protected: false
+                        dbIndex: false
+                        case: ''
+                        truncateMultipleSpaces: false
+                        encrypted: false
+                        redrawOn: ''
+                        clearOnHide: true
+                        customDefaultValue: ''
+                        calculateValue: ''
+                        calculateServer: false
+                        allowCalculateOverride: false
+                        validateOn: change
+                        validate:
+                          required: false
+                          minLength: ''
+                          maxLength: ''
+                          minWords: ''
+                          maxWords: ''
+                          pattern: ''
+                          customMessage: ''
+                          custom: ''
+                          customPrivate: false
+                          json: ''
+                          strictDateValidation: false
+                          multiple: false
+                          unique: false
+                        unique: false
+                        errorLabel: ''
+                        errors: ''
+                        key: textField
+                        tags: []
+                        properties: {}
+                        conditional:
+                          show: null
+                          when: null
+                          eq: ''
+                          json: ''
+                        customConditional: ''
+                        logic: []
+                        attributes: {}
+                        overlay:
+                          style: ''
+                          page: ''
+                          left: ''
+                          top: ''
+                          width: ''
+                          height: ''
+                        type: textfield
+                        input: true
+                        refreshOn: ''
+                        dataGridLabel: false
+                        addons: []
+                        inputType: text
+                        id: e2dprro
+                        defaultValue: null
+                      - type: button
+                        label: Submit
+                        key: submit
+                        size: md
+                        block: false
+                        action: submit
+                        disableOnInvalid: true
+                        theme: primary
+                        input: true
+                        placeholder: ''
+                        prefix: ''
+                        customClass: ''
+                        suffix: ''
+                        multiple: false
+                        defaultValue: null
+                        protected: false
+                        unique: false
+                        persistent: false
+                        hidden: false
+                        clearOnHide: true
+                        refreshOn: ''
+                        redrawOn: ''
+                        tableView: false
+                        modalEdit: false
+                        dataGridLabel: true
+                        labelPosition: top
+                        description: ''
+                        errorLabel: ''
+                        tooltip: ''
+                        hideLabel: false
+                        tabindex: ''
+                        disabled: false
+                        autofocus: false
+                        dbIndex: false
+                        customDefaultValue: ''
+                        calculateValue: ''
+                        calculateServer: false
+                        widget:
+                          type: input
+                        attributes: {}
+                        validateOn: change
+                        validate:
+                          required: false
+                          custom: ''
+                          customPrivate: false
+                          strictDateValidation: false
+                          multiple: false
+                          unique: false
+                        conditional:
+                          show: null
+                          when: null
+                          eq: ''
+                        overlay:
+                          style: ''
+                          left: ''
+                          top: ''
+                          width: ''
+                          height: ''
+                        allowCalculateOverride: false
+                        encrypted: false
+                        showCharCount: false
+                        showWordCount: false
+                        properties: {}
+                        allowMultipleMasks: false
+                        addons: []
+                        leftIcon: ''
+                        rightIcon: ''
+                        id: eyhab3d
+                      - label: applicationId
+                        customClass: ''
+                        modalEdit: false
+                        persistent: true
+                        protected: false
+                        dbIndex: false
+                        encrypted: false
+                        redrawOn: ''
+                        customDefaultValue: ''
+                        calculateValue: ''
+                        calculateServer: false
+                        key: applicationId
+                        tags: []
+                        properties: {}
+                        logic: []
+                        attributes: {}
+                        overlay:
+                          style: ''
+                          page: ''
+                          left: ''
+                          top: ''
+                          width: ''
+                          height: ''
+                        type: hidden
+                        input: true
+                        placeholder: ''
+                        prefix: ''
+                        suffix: ''
+                        multiple: false
+                        unique: false
+                        hidden: false
+                        clearOnHide: true
+                        refreshOn: ''
+                        tableView: false
+                        labelPosition: top
+                        Description: ''
+                        errorLabel: ''
+                        tooltip: ''
+                        hideLabel: false
+                        tabindex: ''
+                        disabled: false
+                        autofocus: false
+                        widget:
+                          type: input
+                        validateOn: change
+                        validate:
+                          required: false
+                          custom: ''
+                          customPrivate: false
+                          strictDateValidation: false
+                          multiple: false
+                          unique: false
+                        conditional:
+                          show: null
+                          when: null
+                          eq: ''
+                        allowCalculateOverride: false
+                        showCharCount: false
+                        showWordCount: false
+                        allowMultipleMasks: false
+                        inputType: hidden
+                        id: em1y8gd
+                        defaultValue: ''
+                        dataGridLabel: false
+                        description: ''
+                        addons: []
+                      - label: applicationStatus
+                        customClass: ''
+                        modalEdit: false
+                        defaultValue: null
+                        persistent: true
+                        protected: false
+                        dbIndex: false
+                        encrypted: false
+                        redrawOn: ''
+                        customDefaultValue: ''
+                        calculateValue: ''
+                        calculateServer: false
+                        key: applicationStatus
+                        tags: []
+                        properties: {}
+                        logic: []
+                        attributes: {}
+                        overlay:
+                          style: ''
+                          page: ''
+                          left: ''
+                          top: ''
+                          width: ''
+                          height: ''
+                        type: hidden
+                        input: true
+                        tableView: false
+                        placeholder: ''
+                        prefix: ''
+                        suffix: ''
+                        multiple: false
+                        unique: false
+                        hidden: false
+                        clearOnHide: true
+                        refreshOn: ''
+                        dataGridLabel: false
+                        labelPosition: top
+                        Description: ''
+                        errorLabel: ''
+                        tooltip: ''
+                        hideLabel: false
+                        tabindex: ''
+                        disabled: false
+                        autofocus: false
+                        widget:
+                          type: input
+                        validateOn: change
+                        validate:
+                          required: false
+                          custom: ''
+                          customPrivate: false
+                          strictDateValidation: false
+                          multiple: false
+                          unique: false
+                        conditional:
+                          show: null
+                          when: null
+                          eq: ''
+                        allowCalculateOverride: false
+                        showCharCount: false
+                        showWordCount: false
+                        allowMultipleMasks: false
+                        inputType: hidden
+                        id: e6z1qd9
+                        description: ''
+                        addons: []
+                    name: testcreateform
+                    path: testcreateform
+                    title: testcreateform
+                    tags:
+                      - common
+                    submissionAccess:
+                      - roles:
+                          - 628f0edf19cebb9cea4f1226
+                        type: create_all
+                      - roles:
+                          - 628f0edf19cebb9cea4f1232
+                        type: read_all
+                      - roles:
+                          - 628f0edf19cebb9cea4f1232
+                        type: update_all
+                      - roles:
+                          - 628f0edf19cebb9cea4f1226
+                          - 628f0edf19cebb9cea4f1232
+                        type: delete_all
+                      - roles:
+                          - 628f0ee019cebb9cea4f1236
+                        type: create_own
+                      - roles:
+                          - 628f0ee019cebb9cea4f1236
+                        type: read_own
+                      - roles:
+                          - 628f0ee019cebb9cea4f1236
+                        type: update_own
+                      - roles:
+                          - 628f0edf19cebb9cea4f1232
+                        type: delete_own
+                    access:
+                      - type: read_all
+                        roles:
+                          - 628f0ee019cebb9cea4f1236
+                          - 628f0edf19cebb9cea4f1232
+                          - 628f0edf19cebb9cea4f1226
+      parameters:
+        - name: x-jwt-token
+          in: header
+          schema:
+            type: string
+          example: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyIjp7Il9pZCI6IjYyOGYwZWUyMTljZWJiOWNlYTRmMTJiMiJ9LCJmb3JtIjp7Il9pZCI6IjYyOGYwZWUwMTljZWJiOWNlYTRmMTIzZiJ9LCJpYXQiOjE2NTU4OTAyMTUsImV4cCI6MTY1NTkwNDYxNX0.4IEK2N7j9et_VyN2kTDrgb_IUz5ByY9LQgB_Twvs8vE
+      responses:
+        '201':
+          description: Created
+          headers:
+            X-Powered-By:
+              schema:
+                type: string
+                example: Express
+            Vary:
+              schema:
+                type: string
+                example: Origin
+            Access-Control-Allow-Origin:
+              schema:
+                type: string
+                example: '*'
+            Access-Control-Expose-Headers:
+              schema:
+                type: string
+                example: x-jwt-token
+            x-jwt-token:
+              schema:
+                type: string
+                example: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyIjp7Il9pZCI6IjYyOGYwZWUyMTljZWJiOWNlYTRmMTJiMiJ9LCJmb3JtIjp7Il9pZCI6IjYyOGYwZWUwMTljZWJiOWNlYTRmMTIzZiJ9LCJpYXQiOjE2NTU4OTA4MjMsImV4cCI6MTY1NTkwNTIyM30.aGDjT15_APtrqg5It5PrxK-ygv6vCEmwnpLl899u5a8
+            Content-Type:
+              schema:
+                type: string
+                example: application/json; charset=utf-8
+            ETag:
+              schema:
+                type: string
+                example: W/"162a-OrUq4QRTHSVqbrCGs0rZ+qHo3Og"
+            Date:
+              schema:
+                type: string
+                example: 'Wed, 22 Jun 2022 09:40:23 GMT'
+            Connection:
+              schema:
+                type: string
+                example: keep-alive
+            Keep-Alive:
+              schema:
+                type: string
+                example: timeout=5
+          content:
+            application/json:
+              schema:
+                type: object
+              examples:
+                example-1:
+                  value:
+                    title: testcreateform
+                    name: testcreateform
+                    path: testcreateform
+                    type: form
+                    display: form
+                    tags:
+                      - common
+                    access:
+                      - type: read_all
+                        roles:
+                          - 628f0ee019cebb9cea4f1236
+                          - 628f0edf19cebb9cea4f1232
+                          - 628f0edf19cebb9cea4f1226
+                    submissionAccess:
+                      - type: create_all
+                        roles:
+                          - 628f0edf19cebb9cea4f1226
+                      - type: read_all
+                        roles:
+                          - 628f0edf19cebb9cea4f1232
+                      - type: update_all
+                        roles:
+                          - 628f0edf19cebb9cea4f1232
+                      - type: delete_all
+                        roles:
+                          - 628f0edf19cebb9cea4f1226
+                          - 628f0edf19cebb9cea4f1232
+                      - type: create_own
+                        roles:
+                          - 628f0ee019cebb9cea4f1236
+                      - type: read_own
+                        roles:
+                          - 628f0ee019cebb9cea4f1236
+                      - type: update_own
+                        roles:
+                          - 628f0ee019cebb9cea4f1236
+                      - type: delete_own
+                        roles:
+                          - 628f0edf19cebb9cea4f1232
+                    owner: 628f0ee219cebb9cea4f12b2
+                    components:
+                      - label: Text Field
+                        labelPosition: top
+                        labelWidth: ''
+                        labelMargin: ''
+                        placeholder: ''
+                        description: ''
+                        tooltip: ''
+                        prefix: ''
+                        suffix: ''
+                        widget:
+                          type: input
+                        inputMask: ''
+                        displayMask: ''
+                        allowMultipleMasks: false
+                        customClass: ''
+                        tabindex: ''
+                        autocomplete: ''
+                        hidden: false
+                        hideLabel: false
+                        showWordCount: false
+                        showCharCount: false
+                        mask: false
+                        autofocus: false
+                        spellcheck: true
+                        disabled: false
+                        tableView: true
+                        modalEdit: false
+                        multiple: false
+                        persistent: true
+                        inputFormat: plain
+                        protected: false
+                        dbIndex: false
+                        case: ''
+                        truncateMultipleSpaces: false
+                        encrypted: false
+                        redrawOn: ''
+                        clearOnHide: true
+                        customDefaultValue: ''
+                        calculateValue: ''
+                        calculateServer: false
+                        allowCalculateOverride: false
+                        validateOn: change
+                        validate:
+                          required: false
+                          minLength: ''
+                          maxLength: ''
+                          minWords: ''
+                          maxWords: ''
+                          pattern: ''
+                          customMessage: ''
+                          custom: ''
+                          customPrivate: false
+                          json: ''
+                          strictDateValidation: false
+                          multiple: false
+                          unique: false
+                        unique: false
+                        errorLabel: ''
+                        errors: ''
+                        key: textField
+                        tags: []
+                        properties: {}
+                        conditional:
+                          show: null
+                          when: null
+                          eq: ''
+                          json: ''
+                        customConditional: ''
+                        logic: []
+                        attributes: {}
+                        overlay:
+                          style: ''
+                          page: ''
+                          left: ''
+                          top: ''
+                          width: ''
+                          height: ''
+                        type: textfield
+                        input: true
+                        refreshOn: ''
+                        dataGridLabel: false
+                        addons: []
+                        inputType: text
+                        id: e2dprro
+                        defaultValue: null
+                      - type: button
+                        label: Submit
+                        key: submit
+                        size: md
+                        block: false
+                        action: submit
+                        disableOnInvalid: true
+                        theme: primary
+                        input: true
+                        placeholder: ''
+                        prefix: ''
+                        customClass: ''
+                        suffix: ''
+                        multiple: false
+                        defaultValue: null
+                        protected: false
+                        unique: false
+                        persistent: false
+                        hidden: false
+                        clearOnHide: true
+                        refreshOn: ''
+                        redrawOn: ''
+                        tableView: false
+                        modalEdit: false
+                        dataGridLabel: true
+                        labelPosition: top
+                        description: ''
+                        errorLabel: ''
+                        tooltip: ''
+                        hideLabel: false
+                        tabindex: ''
+                        disabled: false
+                        autofocus: false
+                        dbIndex: false
+                        customDefaultValue: ''
+                        calculateValue: ''
+                        calculateServer: false
+                        widget:
+                          type: input
+                        attributes: {}
+                        validateOn: change
+                        validate:
+                          required: false
+                          custom: ''
+                          customPrivate: false
+                          strictDateValidation: false
+                          multiple: false
+                          unique: false
+                        conditional:
+                          show: null
+                          when: null
+                          eq: ''
+                        overlay:
+                          style: ''
+                          left: ''
+                          top: ''
+                          width: ''
+                          height: ''
+                        allowCalculateOverride: false
+                        encrypted: false
+                        showCharCount: false
+                        showWordCount: false
+                        properties: {}
+                        allowMultipleMasks: false
+                        addons: []
+                        leftIcon: ''
+                        rightIcon: ''
+                        id: eyhab3d
+                      - label: applicationId
+                        customClass: ''
+                        modalEdit: false
+                        persistent: true
+                        protected: false
+                        dbIndex: false
+                        encrypted: false
+                        redrawOn: ''
+                        customDefaultValue: ''
+                        calculateValue: ''
+                        calculateServer: false
+                        key: applicationId
+                        tags: []
+                        properties: {}
+                        logic: []
+                        attributes: {}
+                        overlay:
+                          style: ''
+                          page: ''
+                          left: ''
+                          top: ''
+                          width: ''
+                          height: ''
+                        type: hidden
+                        input: true
+                        placeholder: ''
+                        prefix: ''
+                        suffix: ''
+                        multiple: false
+                        unique: false
+                        hidden: false
+                        clearOnHide: true
+                        refreshOn: ''
+                        tableView: false
+                        labelPosition: top
+                        Description: ''
+                        errorLabel: ''
+                        tooltip: ''
+                        hideLabel: false
+                        tabindex: ''
+                        disabled: false
+                        autofocus: false
+                        widget:
+                          type: input
+                        validateOn: change
+                        validate:
+                          required: false
+                          custom: ''
+                          customPrivate: false
+                          strictDateValidation: false
+                          multiple: false
+                          unique: false
+                        conditional:
+                          show: null
+                          when: null
+                          eq: ''
+                        allowCalculateOverride: false
+                        showCharCount: false
+                        showWordCount: false
+                        allowMultipleMasks: false
+                        inputType: hidden
+                        id: em1y8gd
+                        defaultValue: ''
+                        dataGridLabel: false
+                        description: ''
+                        addons: []
+                      - label: applicationStatus
+                        customClass: ''
+                        modalEdit: false
+                        defaultValue: null
+                        persistent: true
+                        protected: false
+                        dbIndex: false
+                        encrypted: false
+                        redrawOn: ''
+                        customDefaultValue: ''
+                        calculateValue: ''
+                        calculateServer: false
+                        key: applicationStatus
+                        tags: []
+                        properties: {}
+                        logic: []
+                        attributes: {}
+                        overlay:
+                          style: ''
+                          page: ''
+                          left: ''
+                          top: ''
+                          width: ''
+                          height: ''
+                        type: hidden
+                        input: true
+                        tableView: false
+                        placeholder: ''
+                        prefix: ''
+                        suffix: ''
+                        multiple: false
+                        unique: false
+                        hidden: false
+                        clearOnHide: true
+                        refreshOn: ''
+                        dataGridLabel: false
+                        labelPosition: top
+                        Description: ''
+                        errorLabel: ''
+                        tooltip: ''
+                        hideLabel: false
+                        tabindex: ''
+                        disabled: false
+                        autofocus: false
+                        widget:
+                          type: input
+                        validateOn: change
+                        validate:
+                          required: false
+                          custom: ''
+                          customPrivate: false
+                          strictDateValidation: false
+                          multiple: false
+                          unique: false
+                        conditional:
+                          show: null
+                          when: null
+                          eq: ''
+                        allowCalculateOverride: false
+                        showCharCount: false
+                        showWordCount: false
+                        allowMultipleMasks: false
+                        inputType: hidden
+                        id: e6z1qd9
+                        description: ''
+                        addons: []
+                    _id: 62b2e3873ef018c5dd7f5277
+                    created: '2022-06-22T09:40:23.095Z'
+                    modified: '2022-06-22T09:40:23.103Z'
+                    machineName: testcreateform
+  /form/formid/{form_id}:
+    get:
+      tags:
+        - form
+      summary: Get form by form_id
+      description: >-
+        : form_id:- Get details of only form corresponding to a particular
+        formId
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: form_id
+          in: path
+          schema:
+            type: string
+          required: true
+          description: '(Required) '
+          example: 626a42e228d493440d3580d0
+      responses:
+        '200':
+          description: OK
+          headers:
+            Content-Type:
+              schema:
+                type: string
+                example: text/plain
+          content:
+            text/plain:
+              schema:
+                type: string
+              example: ''
+            application/json:
+              schema:
+                type: object
+              example:
+                processName: One Step Approval
+                formId: 626a42e228d493440d3580d0
+                modifiedBy: null
+                modified: '2022-04-28 10:16:07.440568'
+                processTenant: null
+                id: '2'
+                taskVariable: []
+                version: '1'
+                createdBy: formsflow-designer
+                created: '2022-04-28 10:16:07.440562'
+                comments: null
+                status: active
+                anonymous: false
+                processKey: onestepapproval
+                formName: Freedom of Information and Protection of Privacy
+  /groups/{group_id}:
+    get:
+      tags:
+        - groups > {group id}
+      summary: GET request to fetch groups details API
+      description: ':params str id: group-id of Keycloak Dashboard Authorized groups'
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: group_id
+          in: path
+          schema:
+            type: string
+          required: true
+          description: '(Required) '
+          example: 8b8740cf-2adf-476b-8a54-f22e1cc8d21c
+      responses:
+        '200':
+          description: OK
+          headers:
+            Content-Type:
+              schema:
+                type: string
+                example: text/plain
+          content:
+            text/plain:
+              schema:
+                type: string
+              example: ''
+            application/json:
+              schema:
+                type: object
+              example:
+                id: 8b8740cf-2adf-476b-8a54-f22e1cc8d21c
+                name: group2
+                path: /formsflow-analytics/group2
+                attributes: {}
+                realmRoles: []
+                clientRoles: {}
+                subGroups: []
+                access:
+                  view: true
+                  manage: true
+                  manageMembership: true
+    put:
+      tags:
+        - groups > {group id}
+      summary: Update request to update dashboard details
+      description: ':params str id: group-id of Keycloak Dashboard Authorized groups'
+      requestBody:
+        content: {}
+      parameters:
+        - name: group_id
+          in: path
+          schema:
+            type: string
+          required: true
+          description: '(Required) '
+          example: nisi labore et
+      responses:
+        '200':
+          description: OK
+          headers:
+            Content-Type:
+              schema:
+                type: string
+                example: text/plain
+          content:
+            text/plain:
+              schema:
+                type: string
+              example: ''
+  /groups:
+    get:
+      tags:
+        - groups
+      summary: GET request to fetch all dashboard groups from Keycloak
+      description: |-
+        :params int pageNo: page number (optional)
+        :params int limit: number of items per page (optional)
+      security:
+        - bearerAuth: []
+      responses:
+        '200':
+          description: OK
+          headers:
+            Content-Type:
+              schema:
+                type: string
+                example: text/plain
+          content:
+            text/plain:
+              schema:
+                type: string
+              example: ''
+            application/json:
+              schema:
+                type: object
+              example:
+                - id: 8b8740cf-2adf-476b-8a54-f22e1cc8d21c
+                  name: group2
+                  path: /formsflow-analytics/group2
+                  subGroups: []
+                  dashboards: null
+                - id: 71b17248-7674-4cdc-8dbb-d724a2aafb93
+                  name: group1
+                  path: /formsflow-analytics/group1
+                  subGroups: []
+                  dashboards: null
+  /metrics:
+    get:
+      tags:
+        - metrics
+      summary: Get aggregated applications
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: from
+          in: query
+          schema:
+            type: string
+          example: '2022-05-31T18:30:00+00:00'
+        - name: to
+          in: query
+          schema:
+            type: string
+          example: '2022-06-29T18:30:00+00:00'
+        - name: orderBy
+          in: query
+          schema:
+            type: string
+          example: created
+      responses:
+        '200':
+          description: OK
+          headers:
+            Content-Type:
+              schema:
+                type: string
+                example: text/plain
+          content:
+            text/plain:
+              schema:
+                type: string
+              example: ''
+            application/json:
+              schema:
+                type: object
+              example:
+                applications:
+                  - count: 2
+                    version: '1'
+                    mapperId: 1
+                    formName: New Business License Application
+  /metrics/{mapper_id}:
+    get:
+      tags:
+        - metrics
+      summary: Get application metrics corresponding to a mapper_id
+      description: ': mapper_id:- Get aggregated application status.'
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: from
+          in: query
+          schema:
+            type: string
+          example: '2022-05-31T18:30:00+00:00'
+        - name: to
+          in: query
+          schema:
+            type: string
+          example: '2022-06-29T18:30:00+00:00'
+        - name: orderBy
+          in: query
+          schema:
+            type: string
+          example: created
+        - name: mapper_id
+          in: path
+          schema:
+            type: integer
+          required: true
+          description: (Required) Metrics corresponding to FormProcess mapperId
+          example: '1'
+      responses:
+        '200':
+          description: OK
+          headers:
+            Content-Type:
+              schema:
+                type: string
+                example: text/plain
+          content:
+            text/plain:
+              schema:
+                type: string
+              example: ''
+            application/json:
+              schema:
+                type: object
+              example:
+                applications:
+                  - applicationName: New Business License Application
+                    count: 1
+                    statusName: Approved
+                  - applicationName: New Business License Application
+                    count: 1
+                    statusName: New
+  /public/application/create:
+    post:
+      tags:
+        - public
+      summary: Post a new anonymous application using the request body
+      description: |-
+        : formId:- Unique Id for the corresponding form
+        : submissionId:- Unique Id for the submitted form
+        : formUrl:- Unique URL for the submitted application
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              example:
+                formId: 629731d0bbe1c77a328df2e7
+                formUrl: >-
+                  http://localhost:3000/form/629731d0bbe1c77a328df2e7/submission/62973249bbe1c77a328df30e
+                submissionId: 62973249bbe1c77a328df30e
+      security:
+        - bearerAuth: []
+      responses:
+        '200':
+          description: OK
+          headers:
+            Content-Type:
+              schema:
+                type: string
+                example: text/plain
+          content:
+            text/plain:
+              schema:
+                type: string
+              example: ''
+        '201':
+          description: CREATED
+          headers:
+            Server:
+              schema:
+                type: string
+                example: gunicorn
+            Date:
+              schema:
+                type: string
+                example: Wed, 01 Jun 2022 09:40:58 GMT
+            Connection:
+              schema:
+                type: string
+                example: keep-alive
+            Content-Type:
+              schema:
+                type: string
+                example: application/json
+            Content-Length:
+              schema:
+                type: integer
+                example: '3'
+            X-Frame-Options:
+              schema:
+                type: string
+                example: DENY
+            Access-Control-Allow-Origin:
+              schema:
+                type: string
+                example: '*'
+          content:
+            application/json:
+              schema:
+                type: object
+              example: {}
+  /public/form/{form_id}:
+    get:
+      tags:
+        - public
+      summary: Get form by form id and return is_anonymous and published status
+      description: |-
+        : formId:- Unique Id for the corresponding form
+        : response: is_anonymous, status(published or not)
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: form_id
+          in: path
+          schema:
+            type: string
+          required: true
+          description: '(Required) '
+          example: 629731d0bbe1c77a328df2e7
+      responses:
+        '200':
+          description: OK
+          headers:
+            Content-Type:
+              schema:
+                type: string
+                example: text/plain
+          content:
+            text/plain:
+              schema:
+                type: string
+              example: ''
+            application/json:
+              schema:
+                type: object
+              example:
+                is_anonymous: true
+                status: active
+  /checkpoint:
+    get:
+      tags:
+        - General
+      summary: Get the status of API
+      responses:
+        '200':
+          description: OK
+          headers:
+            Content-Type:
+              schema:
+                type: string
+                example: text/plain
+          content:
+            text/plain:
+              schema:
+                type: string
+              example: ''
+            application/json:
+              schema:
+                type: object
+              example:
+                message: Welcome to formsflow.ai API
+  /formio/roles:
+    get:
+      tags:
+        - default
+      summary: Get role ids from cache
+      responses:
+        '200':
+          description: OK
+          headers:
+            Content-Type:
+              schema:
+                type: string
+                example: text/plain
+          content:
+            text/plain:
+              schema:
+                type: string
+              example: ''
+            application/json:
+              schema:
+                type: object
+              example:
+                form:
+                  - roleId: 6299cf75f4fd4797a32389dd
+                    type: CLIENT
+                  - roleId: 6299cf75f4fd4797a32389e1
+                    type: RESOURCE_ID
+  /process:
+    get:
+      tags:
+        - General
+      summary: Get all process
+      security:
+        - bearerAuth: []
+      responses:
+        '200':
+          description: OK
+          headers:
+            Content-Type:
+              schema:
+                type: string
+                example: text/plain
+          content:
+            text/plain:
+              schema:
+                type: string
+              example: ''
+            application/json:
+              schema:
+                type: object
+              example:
+                process:
+                  - name: Default Flow
+                    tenantKey: null
+                    key: Defaultflow
+                  - name: One Step Approval Sentiment Analysis
+                    tenantKey: null
+                    key: onestepapprovalsentimentanalysis
+                  - name: One Step Approval
+                    tenantKey: null
+                    key: onestepapproval
+                  - name: One Step Review
+                    tenantKey: null
+                    key: onestepreview
+                  - name: Two Step Approval
+                    tenantKey: null
+                    key: two-step-approval
+  /user/locale:
+    put:
+      tags:
+        - General
+      summary: Update the user locale attribute
+      description: ': locale :- string representing the language value to update'
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              example:
+                locale: en
+      security:
+        - bearerAuth: []
+      responses:
+        '200':
+          description: OK
+          headers:
+            Content-Type:
+              schema:
+                type: string
+                example: text/plain
+          content:
+            text/plain:
+              schema:
+                type: string
+              example: ''
+            application/json:
+              schema:
+                type: object
+              example: Updated - users/8cee5182-acd0-4586-9121-72eeea87f9f9

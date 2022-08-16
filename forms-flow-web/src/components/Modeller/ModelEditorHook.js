@@ -31,7 +31,6 @@ import camundaModdleDescriptors from "camunda-bpmn-moddle/resources/camunda";
 import {
   SUCCESS_MSG,
   ERROR_MSG,
-  ERROR_CLASSNAME,
   ERROR_LINTING_CLASSNAME,
 } from "./constants/bpmnModellerConstants";
 
@@ -134,12 +133,13 @@ const EditModel = React.memo(({ xml, setShowModeller }) => {
 
   const deployProcess = async () => {
     try {
-      const isValidated = await validateProcess();
+      // Convert diagram to xml
+      const { xml } = await bpmnModeller.saveXML();
+
+      const isValidated = await validateProcess(xml);
       if (!isValidated) {
         toast.error(t(ERROR_MSG));
       } else {
-        // Convert diagram to xml
-        const { xml } = await bpmnModeller.saveXML();
         // Deploy to Camunda
         deployXML(xml);
       }
@@ -148,17 +148,23 @@ const EditModel = React.memo(({ xml, setShowModeller }) => {
     }
   };
 
-  const validateProcess = async () => {
+  const validateProcess = async (xml) => {
     // If the BPMN Linting is active then check for linting errors, else check for Camunda API errors
     // Check for linting errors in the modeller view
     if (document.getElementsByClassName(ERROR_LINTING_CLASSNAME).length > 0) {
       validateBpmnLintErrors();
       return false;
     }
-    // Check for input errors in the Process Panel
-    if (document.getElementsByClassName(ERROR_CLASSNAME).length > 0) {
+
+    // Check for undefined process names
+    if (
+      !extractDataFromDiagram(xml).name ||
+      extractDataFromDiagram(xml).name.includes("undefined")
+    ) {
+      toast.error(t("Error: Process name is undefined"));
       return false;
     }
+
     return true;
   };
 
@@ -234,7 +240,7 @@ const EditModel = React.memo(({ xml, setShowModeller }) => {
     return hasErrors ? false : true;
   };
 
-  const updateBpmProcesses = (xml) => {
+  const updateBpmProcesses = () => {
     // Update drop down with all processes
     dispatch(fetchAllBpmDeployments());
     // Show the updated workflow as the current value in the dropdown

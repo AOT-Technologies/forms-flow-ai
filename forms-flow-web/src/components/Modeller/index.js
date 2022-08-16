@@ -128,7 +128,6 @@ export default React.memo(() => {
                     dropdownHeight={showModeller ? "250px" : "100px"}
                     options={deploymentList}
                     onChange={handleListChange}
-                    values={workflow?.xml ? [workflow] : []}
                   />
                 </div>
               </Grid>

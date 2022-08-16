@@ -34,7 +34,7 @@ objects:
             "NODE_ENV": "production",
             "REACT_APP_API_SERVER_URL": "${REACT_APP_API_SERVER_URL}",
             "REACT_APP_API_PROJECT_URL": "${REACT_APP_API_PROJECT_URL}",
-            "REACT_APP_CAMUNDA_API_URI": "${REACT_APP_CAMUNDA_API_URI}",
+            "REACT_APP_BPM_URL": "${REACT_APP_BPM_URL}",
             "REACT_APP_KEYCLOAK_CLIENT": "forms-flow-web",
             "REACT_APP_WEB_BASE_URL": "${REACT_APP_WEB_BASE_URL}",
             "REACT_APP_WEBSOCKET_ENCRYPT_KEY": "{REACT_APP_WEBSOCKET_ENCRYPT_KEY}",
@@ -219,8 +219,8 @@ parameters:
     description:
       Route to access Forms Flow AI Web site
     required: true
-  - name: REACT_APP_CAMUNDA_API_URI
-    displayName: REACT_APP_CAMUNDA_API_URI
+  - name: REACT_APP_BPM_URL
+    displayName: REACT_APP_BPM_URL
     description:
       Route to access Forms Flow AI Web site
     required: true

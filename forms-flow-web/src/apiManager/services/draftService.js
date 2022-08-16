@@ -16,6 +16,8 @@ import {
   setDraftDetailStatusCode
 } from "../../actions/draftActions";
 import moment from "moment";
+import { setApplicationListCount } from "../../actions/applicationActions";
+
 
 export const draftCreate = (data, ...rest) => {
   const done = rest.length ? rest[0] : () => {};
@@ -144,6 +146,7 @@ export const fetchDrafts = (pageNo = 1, limit = 5, ...rest) => {
         if (res.data) {
           dispatch(setDraftlist(res.data.drafts));
           dispatch(setDraftCount(res.data?.totalCount || 0));
+          dispatch(setApplicationListCount(res.data?.applicationCount || 0));
         } else {
           done("Error fetching data");
         }

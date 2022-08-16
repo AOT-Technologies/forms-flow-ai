@@ -631,3 +631,26 @@ class Application(
         if not isinstance(query, BaseQuery):
             raise TypeError("Query object must be of type BaseQuery")
         return query.filter(cls.application_status != DRAFT_APPLICATION_STATUS)
+
+    @classmethod
+    def get_all_application_count(cls):
+        """Retrieves all non draft application count."""
+        query = FormProcessMapper.tenant_authorization(query=cls.query)
+        query = cls.filter_draft_applications(query=query)
+        return query.count()
+
+    @classmethod
+    def get_authorized_application_count(cls, process_key):
+        """Retrieves authorized application count."""
+        query = FormProcessMapper.tenant_authorization(query=cls.query)
+        query = cls.filter_draft_applications(query=query)
+        query = query.filter(FormProcessMapper.process_key.in_(process_key))
+        return query.count()
+
+    @classmethod
+    def get_user_based_application_count(cls, user_id):
+        """Retrieves user specific application count."""
+        query = FormProcessMapper.tenant_authorization(query=cls.query)
+        query = cls.filter_draft_applications(query=query)
+        query = query.filter(Application.created_by == user_id)
+        return query.count()

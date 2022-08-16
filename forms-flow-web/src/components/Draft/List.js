@@ -99,7 +99,6 @@ export const DraftList = React.memo(() => {
   const handlePageChange = (type, newState) => {
     if (type === "filter") {
       setfiltermode(true);
-      console.log("filter");
     } else if (type === "pagination") {
       if (countPerPage > 5) {
         dispatch(setDraftListLoader(true));

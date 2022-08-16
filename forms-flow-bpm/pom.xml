@@ -29,7 +29,7 @@
 		<version.springBoot>2.6.4</version.springBoot><!-- 2.4.8 - 2.6.4 -->
 		<version.springSecurityOauth2>2.6.4</version.springSecurityOauth2><!-- 
 			2.4.8 - 2.6.4 -->
-		<version.jackson>2.13.2</version.jackson>
+		<version.jackson>2.13.3</version.jackson>
 	</properties>
 
 	<dependencyManagement>
@@ -182,7 +182,7 @@
 			<groupId>org.postgresql</groupId>
 			<artifactId>postgresql</artifactId>
 			<!--version>9.4-1205-jdbc41</version -->
-			<version>42.2.5</version>
+			<version>42.4.1</version>
 		</dependency>
 
 		<dependency>
@@ -250,7 +250,7 @@
 		<dependency>
 			<groupId>org.jsoup</groupId>
 			<artifactId>jsoup</artifactId>
-			<version>1.13.1</version>
+			<version>1.14.2</version>
 		</dependency>
 
 		<dependency>

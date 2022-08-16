@@ -3,24 +3,34 @@ package org.camunda.bpm.extension.hooks.rest;
 import org.camunda.bpm.extension.hooks.controllers.data.AuthorizationInfo;
 import org.camunda.bpm.extension.hooks.controllers.data.TenantAuthorizationDto;
 import org.springframework.hateoas.EntityModel;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.multipart.MultipartFile;
 
-import javax.ws.rs.core.MediaType;
-
 import javax.servlet.ServletException;
+import javax.ws.rs.*;
+import javax.ws.rs.core.Context;
+import javax.ws.rs.core.MediaType;
+import javax.ws.rs.core.UriInfo;
 
-public interface AdminRestResource extends RestResource{
+@Produces({MediaType.APPLICATION_JSON})
+public interface AdminRestResource extends RestResource {
 
-    String PATH = "";
+    String PATH = "/admin";
 
-    @GetMapping(value = "/form/authorization", produces = MediaType.APPLICATION_JSON)
+    @GET
+    @Path("/form/authorization")
+    @Produces({MediaType.APPLICATION_JSON})
     EntityModel<AuthorizationInfo> getFormAuthorization() throws ServletException;
 
-    @PostMapping(value = "/tenant/authorization", produces = MediaType.APPLICATION_JSON)
-    void createTenant(@RequestBody TenantAuthorizationDto dto) throws ServletException;
+    @POST
+    @Path("/tenant/authorization")
+    @Produces({MediaType.APPLICATION_JSON})
+    void createTenant(TenantAuthorizationDto dto) throws ServletException;
 
-    @PostMapping(value = "/tenant/{tenantKey}/deployment", produces = MediaType.APPLICATION_JSON, consumes = MediaType.MULTIPART_FORM_DATA )
-    void createTenantDeployment(@PathVariable("tenantKey") String tenantKey,
-                                @RequestParam("file") MultipartFile file) throws ServletException;
+    @POST
+    @Path(value = "/tenant/{tenantKey}/deployment")
+    @Consumes({MediaType.MULTIPART_FORM_DATA})
+    @Produces({MediaType.APPLICATION_JSON})
+    void createTenantDeployment(
+            @Context UriInfo context, @PathParam("tenantKey") String tenantKey, @RequestParam("file") MultipartFile file) throws ServletException;
 }

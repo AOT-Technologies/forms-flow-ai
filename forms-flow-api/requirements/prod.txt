@@ -1,8 +1,8 @@
 gunicorn
-Flask<2
+Flask
 Flask-Caching
-Flask-Migrate==2.5.2
-Flask-Script<3
+Flask-Migrate
+Flask-Moment
 Flask-SQLAlchemy
 flask-restx
 flask-marshmallow
@@ -11,7 +11,9 @@ python-dotenv
 psycopg2-binary
 marshmallow-sqlalchemy
 requests
-Werkzeug
+Werkzeug==2.1.2 # Watch out updates on https://github.com/python-restx/flask-restx/issues/460
 sqlalchemy_utils
-markupsafe==2.0.1
-PyJWT==2.4.0
+markupsafe
+PyJWT
+selenium==3.141.0
+selenium-wire==3.0.0

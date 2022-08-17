@@ -12,7 +12,7 @@ from formsflow_api.schemas import (
     DraftListSchema,
     DraftSchema,
 )
-from formsflow_api.services import DraftService
+from formsflow_api.services import ApplicationService, DraftService
 from formsflow_api.utils import (
     NEW_APPLICATION_STATUS,
     auth,
@@ -34,9 +34,15 @@ class DraftResource(Resource):
     def get():
         """Retrieves all drafts."""
         try:
+            token = request.headers["Authorization"]
             dict_data = DraftListSchema().load(request.args) or {}
             draft, count = DraftService.get_all_drafts(dict_data)
-            result = {"drafts": draft, "totalCount": count}
+            application_count = ApplicationService.get_application_count(auth, token)
+            result = {
+                "drafts": draft,
+                "totalCount": count,
+                "applicationCount": application_count,
+            }
             return (result, HTTPStatus.OK)
 
         except BaseException as submission_err:  # pylint: disable=broad-except

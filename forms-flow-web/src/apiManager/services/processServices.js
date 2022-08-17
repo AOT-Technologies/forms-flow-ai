@@ -90,63 +90,45 @@ export const fetchAllBpmProcesses = (excludeInternal = true, ...rest) => {
   };
 };
 
-export const fetchAllBpmDeployments = (...rest) => {
-  const done = rest.length ? rest[0] : () => {};
-  return (dispatch) => {
+export const fetchAllBpmDeployments = () => {
+  return async (dispatch) => {
     // eslint-disable-next-line max-len
-    httpGETRequest(API.GET_BPM_DEPLOYMENTS, {}, UserService.getToken(), true)
-      .then(async (res) => {
+    httpGETRequest(
+      API.GET_BPM_DEPLOYMENTS + `?sortBy=deploymentTime&sortOrder=desc`,
+      {},
+      UserService.getToken(),
+      true
+    )
+      .then((res) => {
+        let deploymentList = [];
+        let numDeployments = 0;
+
         if (res?.data) {
-          // GET Resources
-          const resourceIdList = res.data.map(async (deployment) => {
-            const apiUrlDeployementId = replaceUrl(
-              API.GET_BPM_DEPLOYMENT_RESOURCES,
-              "<deployment_id>",
-              deployment.id
-            );
-            // eslint-disable-next-line max-len
-            const resources = await httpGETRequest(
-              apiUrlDeployementId,
-              {},
-              UserService.getToken(),
-              true
-            );
-            deployment.isExecutable = false;
-            deployment.deploymentId = resources.data[0].deploymentId;
-            deployment.resourceId = resources.data[0].id;
-            deployment.deploymentName = resources.data[0].name;
-            deployment.key = resources.data[0].name.slice(0, -5); // remove .bpmn
-
-            return deployment;
+          // Get Deployments
+          res.data.map((deployment) => {
+            // Get Resources
+            getBpmDeploymentResources(deployment).then((resourceList) => {
+              resourceList.resources.map((resource) => {
+                // Only include bpmn files
+                if (resource.name.substr(resource.name.length - 4) == "bpmn") {
+                  numDeployments++;
+                  // Get Diagram
+                  getBpmDeploymentDiagram(resource).then(
+                    (updatedDeployment) => {
+                      updatedDeployment.tenantId = deployment.tenantId;
+                      updatedDeployment.deploymentName = deployment.name;
+                      updatedDeployment.deploymentTime = deployment.deploymentTime;
+                      deploymentList.push(updatedDeployment);
+                      // Dispatch complete list
+                      if (deploymentList.length == numDeployments) {
+                        dispatch(setAllDeploymentList(deploymentList));
+                      }
+                    }
+                  );
+                }
+              });
+            });
           });
-          const updatedResourceList = await Promise.all(resourceIdList);
-
-          // GET Diagrams
-          const diagramList = updatedResourceList.map(async (deployment) => {
-            let apiUrlDiagramList = replaceUrl(
-              API.GET_BPM_DEPLOYMENT_DIAGRAM,
-              "<deployment_id>",
-              deployment.deploymentId
-            );
-            apiUrlDiagramList = replaceUrl(
-              apiUrlDiagramList,
-              "<resource_id>",
-              deployment.resourceId
-            );
-            // eslint-disable-next-line max-len
-            const diagram = await httpGETRequest(
-              apiUrlDiagramList,
-              {},
-              UserService.getToken(),
-              true
-            );
-            deployment.diagram = diagram.data;
-            return deployment;
-          });
-          const updatedDiagramList = await Promise.all(diagramList);
-
-          dispatch(setAllDeploymentList(updatedDiagramList));
-          done(null, updatedDiagramList);
         } else {
           dispatch(setAllDeploymentList([]));
         }
@@ -156,6 +138,47 @@ export const fetchAllBpmDeployments = (...rest) => {
         dispatch(setProcessLoadError(true));
       });
   };
+};
+
+const getBpmDeploymentResources = async (deployment) => {
+  const apiUrlDeployementId = replaceUrl(
+    API.GET_BPM_DEPLOYMENT_RESOURCES,
+    "<deployment_id>",
+    deployment.id
+  );
+  // eslint-disable-next-line max-len
+  const resources = await httpGETRequest(
+    apiUrlDeployementId,
+    {},
+    UserService.getToken(),
+    true
+  );
+  deployment.resources = resources.data;
+
+  return deployment;
+};
+
+export const getBpmDeploymentDiagram = async (resource) => {
+  let apiUrlDiagramList = replaceUrl(
+    API.GET_BPM_DEPLOYMENT_DIAGRAM,
+    "<deployment_id>",
+    resource.deploymentId
+  );
+  apiUrlDiagramList = replaceUrl(
+    apiUrlDiagramList,
+    "<resource_id>",
+    resource.id
+  );
+  // eslint-disable-next-line max-len
+  const diagram = await httpGETRequest(
+    apiUrlDiagramList,
+    {},
+    UserService.getToken(),
+    true
+  );
+  resource.diagram = diagram.data;
+
+  return resource;
 };
 
 /**

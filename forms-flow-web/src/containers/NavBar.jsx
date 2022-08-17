@@ -135,7 +135,9 @@ const NavBar = React.memo(() => {
                     as={Link}
                     to={`${baseUrl}processes`}
                     className={`main-nav nav-item ${
-                      pathname.match(/^\/processes/) ? "active-tab" : ""
+                      pathname.match(createURLPathMatchExp("processes", baseUrl)) 
+                        ? "active-tab" 
+                        : ""
                     }`}
                   >
                     <i className="fa fa-cogs fa-lg fa-fw mr-2" />

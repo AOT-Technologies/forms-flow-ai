@@ -38,6 +38,9 @@ jest.mock("bpmn-js/lib/util/ModelUtil", () => ({
 jest.mock("bpmn-js-bpmnlint", () => ({
   lintModule: jest.fn(() => <div>Test</div>),
 }));
+jest.mock("bpmn-xml-parser", () => ({
+  XmlParser: jest.fn,
+}));
 
 let store;
 beforeEach(() => {

@@ -27,19 +27,14 @@ public class ProcessDefinitionRestResourceImpl implements ProcessDefinitionRestR
     }
 
     @Override
-    public  List<ProcessDefinitionDto> getProcessDefinitions(UriInfo uriInfo, Integer firstResult, Integer maxResults) {
+    public List<ProcessDefinitionDto> getProcessDefinitions(UriInfo uriInfo, Integer firstResult, Integer maxResults) {
         List<ProcessDefinitionDto> response = restService.getProcessDefinitions(uriInfo, firstResult, maxResults);
-        if(uriInfo.getQueryParameters() != null && uriInfo.getQueryParameters().containsKey("excludeInternal")){
-            LOGGER.info(uriInfo.getQueryParameters().toString());
-            if(Boolean.parseBoolean(uriInfo.getQueryParameters().get("excludeInternal").toString())){
-                response = response.stream()
-                        .filter(processDefinitionDto -> processDefinitionDto.getName() != null
-                                && !processDefinitionDto.getName().strip().endsWith("(Internal)"))
-                        .collect(Collectors.toList());
-                LOGGER.info("response" + response);
-            }
+        if (uriInfo.getQueryParameters() != null && uriInfo.getQueryParameters().containsKey("excludeInternal")) {
+            response = response.stream()
+                    .filter(processDefinitionDto -> processDefinitionDto.getName() != null
+                            && !processDefinitionDto.getName().strip().endsWith("(Internal)"))
+                    .collect(Collectors.toList());
         }
-        LOGGER.info(response.toString());
         return response;
     }
 

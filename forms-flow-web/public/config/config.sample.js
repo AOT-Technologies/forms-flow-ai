@@ -2,7 +2,7 @@ window["_env_"] = {
   // To define project level configuration  possible values development,test, production
   NODE_ENV: "development",
   //Environment Variables for forms-flow-web
-  
+
   /*URL of forms-flow-forms
    Form-IO API-URL*/
   REACT_APP_API_SERVER_URL: "http://localhost:3001",
@@ -35,6 +35,7 @@ window["_env_"] = {
   REACT_APP_USER_ACCESS_PERMISSIONS:{accessAllowApplications:false, accessAllowSubmissions:false},
   REACT_APP_MULTI_TENANCY_ENABLED:'false',
   REACT_APP_DRAFT_ENABLED: 'false',
-  REACT_APP_DRAFT_POLLING_RATE: 15000
+  REACT_APP_DRAFT_POLLING_RATE: 15000,
+  REACT_APP_EXPORT_PDF_ENABLED: 'false'
 
 };

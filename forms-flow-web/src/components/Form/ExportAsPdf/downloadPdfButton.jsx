@@ -7,8 +7,9 @@ import { ExportButton, ButtonState } from "./button";
 import { Alert, Container } from "react-bootstrap";
 import { replaceUrl } from "../../../helper/helper";
 import { Translation } from "react-i18next";
+import { withFeature } from "flagged";
 
-export const DownloadPDFButton = React.memo(
+const DownloadPDFButton = React.memo(
   ({ form_id, submission_id, title }) => {
     const [buttonState, setButtonState] = useState(ButtonState.Primary);
     const [showAlert, setShowAlert] = useState(false);
@@ -72,3 +73,5 @@ export const DownloadPDFButton = React.memo(
     );
   }
 );
+
+export default withFeature("exportPdf")(DownloadPDFButton);

@@ -9,6 +9,9 @@ import "react-bootstrap-table2-paginator/dist/react-bootstrap-table2-paginator.m
 import "react-bootstrap-table-next/dist/react-bootstrap-table2.min.css";
 import "./styles.scss";
 import "./resourceBundles/i18n.js";
+import { featureFlags } from "./featureToogle";
+import { FlagsProvider } from 'flagged';
+
 
 // disable react-dev-tools for this project
 if (typeof window.__REACT_DEVTOOLS_GLOBAL_HOOK__ === "object") {
@@ -34,6 +37,8 @@ import("formsflow-formio-custom-elements/dist/customformio-ex").then(
 );
 
 ReactDOM.render(
-  <App {...{ store, history }} />,
+  <FlagsProvider features={featureFlags}>
+     <App {...{ store, history }} />
+  </FlagsProvider>,
   document.getElementById("app")
 );

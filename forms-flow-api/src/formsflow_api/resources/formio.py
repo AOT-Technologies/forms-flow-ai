@@ -71,8 +71,7 @@ class FormioResource(Resource):
             return response
 
         try:
-
-            user_role = user.token_info["role"]
+            user_role = user.roles
             role_ids = cache.get("formio_role_ids")
             roles = get_role_ids_from_user_groups(role_ids, user_role)
             if roles is not None:

@@ -2,6 +2,7 @@
 
 from formsflow_api.services.application import ApplicationService
 from formsflow_api.services.application_history import ApplicationHistoryService
+from formsflow_api.services.authorization import AuthorizationService
 from formsflow_api.services.draft import DraftService
 from formsflow_api.services.external.analytics_api import RedashAPIService
 from formsflow_api.services.external.formio import FormioService
@@ -18,4 +19,5 @@ __all__ = [
     "ProcessService",
     "FormioService",
     "DraftService",
+    "AuthorizationService",
 ]

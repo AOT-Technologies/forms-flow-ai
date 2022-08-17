@@ -1,8 +1,11 @@
 """Base Test Class to be used by test suites. Used for getting JWT token purpose."""
+import datetime
 import time
 
 from dotenv import find_dotenv, load_dotenv
 from flask import current_app
+
+from formsflow_api.models import Authorization, AuthType
 
 load_dotenv(find_dotenv())
 
@@ -40,7 +43,7 @@ def get_token(
                 },
             },
             "scope": "camunda-rest-api email profile",
-            "role": [role, *roles],
+            "roles": [role, *roles],
             "name": "John Smith",
             "preferred_username": username,
             "given_name": "John",
@@ -500,3 +503,18 @@ def get_form_model_object():
         "status": "active",
         "created_by": "test",
     }
+
+
+def factory_auth(
+    resource_id, resource_details, auth_type, roles, tenant=None
+) -> Authorization:
+    """Return an auth model instance."""
+    return Authorization(
+        auth_type=AuthType(auth_type.upper()),
+        resource_id=resource_id,
+        resource_details=resource_details,
+        roles=roles,
+        created=datetime.datetime.now(),
+        created_by="test",
+        tenant=tenant,
+    ).save()

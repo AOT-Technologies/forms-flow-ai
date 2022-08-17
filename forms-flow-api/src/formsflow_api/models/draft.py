@@ -16,6 +16,7 @@ from formsflow_api.utils import (
 )
 from formsflow_api.utils.enums import DraftStatus
 from formsflow_api.utils.user_context import UserContext, user_context
+
 from .application import Application
 from .audit_mixin import AuditDateTimeMixin
 from .base_model import BaseModel
@@ -201,13 +202,13 @@ class Draft(AuditDateTimeMixin, BaseModel, db.Model):
         user: UserContext = kwargs["user"]
         user_id: str = user.user_name
         query = cls.query.join(Application, cls.application_id == Application.id)
-        if user_id:
-            query = query.filter(Application.created_by == user_id)
+        query = query.filter(Application.created_by == user_id)
         query = query.filter(
             and_(
                 Application.application_status == DRAFT_APPLICATION_STATUS,
                 Draft.status == str(DraftStatus.ACTIVE.value),
             )
         )
+        query = FormProcessMapper.tenant_authorization(query=query)
         draft_count = query.count()
         return draft_count

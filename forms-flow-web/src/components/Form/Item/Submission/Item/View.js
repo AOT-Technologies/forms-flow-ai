@@ -19,7 +19,7 @@ import {
   CUSTOM_SUBMISSION_ENABLE,
 } from "../../../../../constants/constants";
 import { updateCustomSubmission } from "../../../../../apiManager/services/FormServices";
-import { DownloadPDFButton } from "../../../ExportAsPdf/downloadPdfButton";
+import DownloadPDFButton from "../../../ExportAsPdf/downloadPdfButton";
 const View = React.memo((props) => {
   const { t } = useTranslation();
   const {

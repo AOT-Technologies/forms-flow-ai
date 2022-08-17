@@ -113,7 +113,9 @@ const PrivateRoute = React.memo((props) => {
           <Route
             {...rest}
             render={(props) =>
-              DRAFT_ENABLED ? (
+              DRAFT_ENABLED &&
+              (userRoles.includes(STAFF_REVIEWER) ||
+                userRoles.includes(CLIENT)) ? (
                 <Component {...props} />
               ) : (
                 <Redirect exact to="/404" />

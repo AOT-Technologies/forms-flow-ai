@@ -163,7 +163,7 @@ export const ApplicationList = React.memo(() => {
     headOptions.pop();
   }
 
-  return applicationCount > 0 || filtermode ? (
+  return (
     <ToolkitProvider
       bootstrap4
       keyField="id"
@@ -182,7 +182,7 @@ export const ApplicationList = React.memo(() => {
           <Head items={headOptions} page="Applications" />
           <br />
           <div>
-            <BootstrapTable
+          {applicationCount > 0 || filtermode ? <BootstrapTable
               remote={{ pagination: true, filter: true, sort: true }}
               loading={isLoading}
               filter={filterFactory()}
@@ -209,15 +209,15 @@ export const ApplicationList = React.memo(() => {
                   }),
                 },
               })}
-            />
+            /> : iserror ? (
+              <Alert variant={"danger"}>{error}</Alert>
+            ) : (
+              <Nodata text="No Applications Found" />
+            )}
           </div>
         </div>
       )}
     </ToolkitProvider>
-  ) : iserror ? (
-    <Alert variant={"danger"}>{error}</Alert>
-  ) : (
-    <Nodata />
   );
 });
 

@@ -46,7 +46,6 @@ const createNewProcess = () => {
     label: deploymentName,
     value: processID,
     xml: blankProcessXML,
-    isExecutable: isExecutable
   };
 
   return {

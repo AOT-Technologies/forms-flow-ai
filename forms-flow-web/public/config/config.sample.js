@@ -23,7 +23,7 @@ window["_env_"] = {
   //web Api End point
   REACT_APP_WEB_BASE_URL: "Web Api base end-point",
   //bpm base api
-  REACT_APP_CAMUNDA_API_URI:"Camunda base API",
+  REACT_APP_BPM_URL:"Camunda base API",
   REACT_APP_WEBSOCKET_ENCRYPT_KEY:"Web Socket encrypt key for Socket IO",
   //application name
   REACT_APP_APPLICATION_NAME:"formsflow.ai",
@@ -37,5 +37,4 @@ window["_env_"] = {
   REACT_APP_DRAFT_ENABLED: 'false',
   REACT_APP_DRAFT_POLLING_RATE: 15000,
   REACT_APP_EXPORT_PDF_ENABLED: 'false'
-
 };

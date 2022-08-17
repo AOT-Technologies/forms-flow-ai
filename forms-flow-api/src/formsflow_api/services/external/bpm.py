@@ -157,5 +157,5 @@ class BPMService(BaseBPMService):
         except BaseException:  # pylint: disable=broad-except
             return {
                 "type": "Environment missing",
-                "message": "Missing environment variable CAMUNDA_API_URL",
+                "message": "Missing environment variable BPM_API_URL",
             }

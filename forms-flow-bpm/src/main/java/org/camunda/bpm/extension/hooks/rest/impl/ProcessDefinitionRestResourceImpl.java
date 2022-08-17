@@ -9,12 +9,16 @@ import org.springframework.hateoas.EntityModel;
 
 import javax.ws.rs.core.UriInfo;
 import java.util.List;
+import java.util.logging.Logger;
+import java.util.stream.Collectors;
 
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
 
 
 public class ProcessDefinitionRestResourceImpl implements ProcessDefinitionRestResource {
+
+    private final Logger LOGGER = Logger.getLogger(ProcessDefinitionRestResourceImpl.class.getName());
 
     private final org.camunda.bpm.engine.rest.ProcessDefinitionRestService restService;
 
@@ -23,8 +27,15 @@ public class ProcessDefinitionRestResourceImpl implements ProcessDefinitionRestR
     }
 
     @Override
-    public  List<ProcessDefinitionDto> getProcessDefinitions(UriInfo uriInfo, Integer firstResult, Integer maxResults) {
-        return restService.getProcessDefinitions(uriInfo, firstResult, maxResults);
+    public List<ProcessDefinitionDto> getProcessDefinitions(UriInfo uriInfo, Integer firstResult, Integer maxResults) {
+        List<ProcessDefinitionDto> response = restService.getProcessDefinitions(uriInfo, firstResult, maxResults);
+        if (uriInfo.getQueryParameters() != null && uriInfo.getQueryParameters().containsKey("excludeInternal")) {
+            response = response.stream()
+                    .filter(processDefinitionDto -> processDefinitionDto.getName() != null
+                            && !processDefinitionDto.getName().strip().endsWith("(Internal)"))
+                    .collect(Collectors.toList());
+        }
+        return response;
     }
 
     @Override

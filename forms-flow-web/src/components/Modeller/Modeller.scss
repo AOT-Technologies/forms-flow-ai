@@ -55,7 +55,7 @@
   margin-right: 15px;
 }
 
-.deploy-btn {
+.deploy-name-col {
   flex-grow: inherit;
 }
 
@@ -91,7 +91,12 @@
   float: right;
 }
 
-.deploy-container {
-  display: flex;
-  justify-content: flex-start;
+input[type='file'] {
+  color: rgba(0, 0, 0, 0)
+}
+
+.select-style{
+  width: 100%;
+  white-space: normal;
+  word-break: break-all;
 }

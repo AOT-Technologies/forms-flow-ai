@@ -38,7 +38,7 @@ objects:
           - name: BPM_API_BASE
             valueFrom:
               configMapKeyRef:
-                key: CAMUNDA_API_URI
+                key: BPM_API_URI
                 name: ${FORMSFLOW_CONFIG_NAME}-config
           - name: INSIGHTS_API_BASE
             valueFrom:

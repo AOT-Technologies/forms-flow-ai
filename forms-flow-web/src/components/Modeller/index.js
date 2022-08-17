@@ -128,6 +128,7 @@ export default React.memo(() => {
                     dropdownHeight={showModeller ? "250px" : "100px"}
                     options={deploymentList}
                     onChange={handleListChange}
+                    searchable={false}
                   />
                 </div>
               </Grid>

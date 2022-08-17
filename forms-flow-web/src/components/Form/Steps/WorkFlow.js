@@ -211,6 +211,7 @@ const WorkFlow = React.memo(
                       processList.length && workflow?.value ? [workflow] : []
                     }
                     disabled={disableWorkflowAssociation}
+                    searchable={false}
                   />
                 </Grid>
                 <Grid item xs={12} sm={6} spacing={3} />

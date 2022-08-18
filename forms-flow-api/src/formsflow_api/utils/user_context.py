@@ -3,7 +3,7 @@
 import functools
 from typing import Dict
 
-from flask import g, request, current_app
+from flask import current_app, g, request
 
 
 def _get_context():
@@ -54,7 +54,12 @@ class UserContext:  # pylint: disable=too-many-instance-attributes
 
     @property
     def group_or_roles(self) -> list[str]:
-        return self._roles if current_app.config.get("KEYCLOAK_ENABLE_CLIENT_AUTH") else self._groups
+        """Return groups is env is using groups, else roles."""
+        return (
+            self._roles
+            if current_app.config.get("KEYCLOAK_ENABLE_CLIENT_AUTH")
+            else self._groups
+        )
 
 
 def user_context(function):

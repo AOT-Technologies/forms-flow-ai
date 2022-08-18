@@ -5,6 +5,7 @@ import { useDispatch } from "react-redux";
 import {
   fetchdashboards,
   fetchGroups,
+  fetchAuthorizations
 } from "../../apiManager/services/dashboardsService";
 import ACTION_CONSTANTS from "../../actions/actionConstants";
 import "./insightDashboard.scss";
@@ -16,7 +17,7 @@ const AdminDashboard = () => {
   useEffect(() => {
     dispatch(fetchdashboards());
     dispatch(fetchGroups());
-
+    dispatch(fetchAuthorizations());
     return () =>
       dispatch({
         type: ACTION_CONSTANTS.DASHBOARDS_CLEAN_UP,

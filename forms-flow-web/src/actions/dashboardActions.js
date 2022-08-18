@@ -31,28 +31,24 @@ export const updateErrorHandler = (data) => (dispatch) => {
   });
 };
 
-export const initiateUpdate = () => (dispatch) => {
-  dispatch({
-    type: ACTION_CONSTANTS.DASHBOARDS_INITIATE_UPDATE,
-    payload: null,
-  });
-};
-
-// maps the dashboards with the groups and update the state
-
-export const updateDashboardFromGroups = (data) => (dispatch) => {
-  dispatch({
-    type: ACTION_CONSTANTS.DASHBOARDS_MAP_FROM_GROUPS,
-    payload: {
-      dashboards: data.dashboards,
-      groups: data.groups,
-    },
-  });
-};
 
 export const hideUpdateError = () => (dispatch) => {
   dispatch({
     type: ACTION_CONSTANTS.DASHBOARDS_HIDE_UPDATE_ERROR,
     payload: null,
+  });
+};
+
+export const setDashboardAuthorizations = (data)=>(dispatch)=> {
+  dispatch({
+      type: ACTION_CONSTANTS.SET_AUTHORIZATIONS,
+      payload: data
+  });
+};
+
+export const updateDashboardAuthorizationList = (data)=>(dispatch)=>{
+  dispatch({
+    type: ACTION_CONSTANTS.UPDATE_AUTHORIZATIONS,
+    payload: data
   });
 };

@@ -68,7 +68,7 @@ export const InsightDashboard = (props) => {
   const handleClick = (event, rowData) => {
     let approvedGroupIds = rowData.roles;
     let listGroup = groups.filter(
-      (item) => approvedGroupIds.includes(item.name) === false
+      (item) => approvedGroupIds.includes(item.path) === false
     );
     setActiveRow(rowData);
     setRemainingGroups(listGroup);
@@ -83,18 +83,18 @@ export const InsightDashboard = (props) => {
 
   const id = show ? "simple-popover" : undefined;
 
-  const removeDashboardAuth = (rowData, groupName) => {
+  const removeDashboardAuth = (rowData, groupPath) => {
     let dashboard = authDashBoardList.find(
       (element) => element.resourceId === rowData.resourceId
     );
-    let modifiedRoles = dashboard.roles.filter((item) => item !== groupName);
+    let modifiedRoles = dashboard.roles.filter((item) => item !== groupPath);
     dashboard.roles = modifiedRoles;
     dispatch(updateAuthorization(dashboard));
   };
 
   const addDashboardAuth = (data) => {
     let currentRow = {...activeRow};
-    currentRow.roles = [...activeRow.roles, data.name];
+    currentRow.roles = [...activeRow.roles, data.path];
     setActiveRow(currentRow);
     setShow(!show);
     dispatch(updateAuthorization(currentRow));
@@ -168,7 +168,7 @@ export const InsightDashboard = (props) => {
                       as="button"
                       onClick={() => addDashboardAuth(item)}
                     >
-                      {item.name}
+                      {item.path}
                     </ListGroup.Item>
                   ))
                 ) : (

@@ -1,65 +1,62 @@
 import React, { useState, useEffect } from "react";
+import { useSelector, useDispatch } from "react-redux";
 import Grid from "@material-ui/core/Grid";
 import CardContent from "@material-ui/core/CardContent";
 import Card from "@material-ui/core/Card";
 import Select from "react-dropdown-select";
 import EditModel from "./ModelEditorHook";
-import { useSelector, useDispatch } from "react-redux";
+import Button from "react-bootstrap/Button";
+import { useTranslation } from "react-i18next";
+import { createNewProcess } from "./helpers/helper";
+import { fetchAllBpmProcesses } from "../../apiManager/services/processServices";
+import "./Modeller.scss";
+
 import {
   setWorkflowAssociation,
   setProcessDiagramXML,
 } from "../../actions/processActions";
-import { useTranslation } from "react-i18next";
+
 import {
-  listDeployments,
+  listProcess,
   extractDataFromDiagram,
 } from "./helpers/formatDeployments";
-import "./Modeller.scss";
-
-import { fetchAllBpmDeployments } from "../../apiManager/services/processServices";
-
-import Button from "react-bootstrap/Button";
-
-import { createNewProcess } from "./helpers/helper";
 
 export default React.memo(() => {
   const { t } = useTranslation();
   const dispatch = useDispatch();
-  const deployments = useSelector((state) => state.process.deploymentList);
-  const [deploymentList, setDeploymentList] = useState([]);
+  const process = useSelector((state) => state.process.processList);
+  const [processList, setProcessList] = useState(listProcess(process));
   const workflow = useSelector((state) => state.process.workflowAssociated);
   const [showModeller, setShowModeller] = useState(false);
+  const [xml, setXml] = useState(null);
 
-  // Populate workflows in dropdown on page load
   useEffect(() => {
     setShowModeller(false);
     dispatch(setWorkflowAssociation(null));
-    dispatch(fetchAllBpmDeployments());
+    dispatch(fetchAllBpmProcesses());
   }, []);
 
   useEffect(() => {
-    if (deployments) {
-      setDeploymentList(listDeployments(deployments));
-    }
-  }, [deployments]);
+    setProcessList(listProcess(process));
+  }, [process]);
 
   const handleListChange = (item) => {
     setShowModeller(true);
     dispatch(setWorkflowAssociation(item[0]));
-    document.getElementById("inputWorkflow").value = null;
+    dispatch(setProcessDiagramXML(null));
+    setXml(null);
   };
 
   const handleFile = (e, fileName) => {
     const content = e.target.result;
-    const xmlName = extractDataFromDiagram(content).name;
     const processId = extractDataFromDiagram(content).processId;
-    const name = xmlName ? xmlName : fileName.slice(0, -5);
+    const name = fileName.slice(0, -5);
     const newWorkflow = {
       label: name,
       value: processId,
       xml: content,
     };
-    dispatch(setProcessDiagramXML(content));
+    setXml(content);
     dispatch(setWorkflowAssociation(newWorkflow));
   };
 
@@ -74,9 +71,9 @@ export default React.memo(() => {
 
   const handleCreateNew = () => {
     const newProcess = createNewProcess();
-    dispatch(setProcessDiagramXML(newProcess.defaultBlankProcessXML));
     dispatch(setWorkflowAssociation(newProcess.defaultWorkflow));
-    document.getElementById("inputWorkflow").value = null;
+    dispatch(setProcessDiagramXML(newProcess.defaultWorkflow.xml));
+    setXml(newProcess.defaultWorkflow.xml);
     setShowModeller(true);
   };
 
@@ -126,8 +123,11 @@ export default React.memo(() => {
                   <Select
                     placeholder={t("Select...")}
                     dropdownHeight={showModeller ? "250px" : "100px"}
-                    options={deploymentList}
+                    options={processList}
                     onChange={handleListChange}
+                    values={
+                      processList.length && workflow?.value ? [workflow] : []
+                    }
                   />
                 </div>
               </Grid>
@@ -157,11 +157,13 @@ export default React.memo(() => {
                 </div>
               </div>
 
-              {deploymentList.length && workflow?.value && showModeller ? (
+              {processList.length && workflow?.value && showModeller ? (
                 <div>
                   <EditModel
-                    xml={workflow?.xml}
+                    xml={xml ? xml : workflow?.xml}
                     setShowModeller={setShowModeller}
+                    processKey={workflow?.value}
+                    tenant={workflow?.tenant}
                   />
                 </div>
               ) : null}

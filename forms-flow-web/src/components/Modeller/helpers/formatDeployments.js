@@ -59,3 +59,20 @@ export const extractDataFromDiagram = (xml) => {
     name: name,
   };
 };
+
+export const listProcess = (processes) => {
+  processes = processes?._embedded?.processDefinitionDtoList;
+
+  if (processes?.length > 0) {
+    const data = processes.map((process) => {
+      return {
+        label: process.name,
+        value: process.key,
+        tenant: process.tenantId,
+      };
+    });
+    return data;
+  } else {
+    return [];
+  }
+};

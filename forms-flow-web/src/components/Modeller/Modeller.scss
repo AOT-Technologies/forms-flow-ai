@@ -91,12 +91,17 @@
   float: right;
 }
 
-input[type='file'] {
-  color: rgba(0, 0, 0, 0)
+input[type="file"] {
+  color: rgba(0, 0, 0, 0);
+  width: 110px;
 }
 
-.select-style{
+.select-style {
   width: 100%;
   white-space: normal;
   word-break: break-all;
+}
+
+[data-entry-id="isExecutable"] {
+  display: none;
 }

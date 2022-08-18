@@ -1,12 +1,23 @@
 import React, { useCallback, useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import BpmnModeler from "bpmn-js/lib/Modeler";
-import "bpmn-js/dist/assets/diagram-js.css";
-import "bpmn-js/dist/assets/bpmn-font/css/bpmn-embedded.css";
 import "./Modeller.scss";
 import Button from "react-bootstrap/Button";
+import { toast } from "react-toastify";
+import { useTranslation } from "react-i18next";
+import { extractDataFromDiagram } from "./helpers/formatDeployments";
+import { MULTITENANCY_ENABLED } from "../../constants/constants";
+import { deployBpmnDiagram } from "../../apiManager/services/bpmServices";
 
-import { fetchAllBpmDeployments } from "../../apiManager/services/processServices";
+import {
+  SUCCESS_MSG,
+  ERROR_MSG,
+  ERROR_LINTING_CLASSNAME,
+} from "./constants/bpmnModellerConstants";
+
+import {
+  fetchAllBpmProcesses,
+  fetchDiagram,
+} from "../../apiManager/services/processServices";
 
 import {
   setProcessDiagramLoading,
@@ -14,10 +25,9 @@ import {
   setWorkflowAssociation,
 } from "../../actions/processActions";
 
-import { deployBpmnDiagram } from "../../apiManager/services/bpmServices";
-
-import { toast } from "react-toastify";
-import { useTranslation } from "react-i18next";
+import BpmnModeler from "bpmn-js/lib/Modeler";
+import "bpmn-js/dist/assets/diagram-js.css";
+import "bpmn-js/dist/assets/bpmn-font/css/bpmn-embedded.css";
 
 import {
   BpmnPropertiesPanelModule,
@@ -28,21 +38,11 @@ import {
 import CamundaExtensionModule from "camunda-bpmn-moddle/lib";
 import camundaModdleDescriptors from "camunda-bpmn-moddle/resources/camunda";
 
-import {
-  SUCCESS_MSG,
-  ERROR_MSG,
-  ERROR_LINTING_CLASSNAME,
-} from "./constants/bpmnModellerConstants";
-
-import { MULTITENANCY_ENABLED } from "../../constants/constants";
-
 import lintModule from "bpmn-js-bpmnlint";
 import "bpmn-js-bpmnlint/dist/assets/css/bpmn-js-bpmnlint.css";
 import linterConfig from "./lint-rules/packed-config";
 
-import { extractDataFromDiagram } from "./helpers/formatDeployments";
-
-const EditModel = React.memo(({ xml, setShowModeller }) => {
+const EditModel = React.memo(({ xml, setShowModeller, processKey, tenant }) => {
   const { t } = useTranslation();
 
   const dispatch = useDispatch();
@@ -98,6 +98,12 @@ const EditModel = React.memo(({ xml, setShowModeller }) => {
     if (xml) {
       dispatch(setProcessDiagramLoading(true));
       dispatch(setProcessDiagramXML(xml));
+    } else if (diagramXML) {
+      dispatch(setProcessDiagramLoading(true));
+      dispatch(setProcessDiagramXML(diagramXML));
+    } else if (processKey) {
+      dispatch(setProcessDiagramLoading(true));
+      dispatch(fetchDiagram(processKey, tenant));
     } else {
       dispatch(setProcessDiagramLoading(false));
     }
@@ -105,7 +111,7 @@ const EditModel = React.memo(({ xml, setShowModeller }) => {
       dispatch(setProcessDiagramLoading(true));
       dispatch(setProcessDiagramXML(""));
     };
-  }, [xml, dispatch]);
+  }, [xml, processKey, tenant, dispatch]);
 
   useEffect(() => {
     if (diagramXML && bpmnModeller) {
@@ -134,7 +140,9 @@ const EditModel = React.memo(({ xml, setShowModeller }) => {
   const deployProcess = async () => {
     try {
       // Convert diagram to xml
-      const { xml } = await bpmnModeller.saveXML();
+      let { xml } = await bpmnModeller.saveXML();
+      // Set isExecutable to true
+      xml = xml.replaceAll('isExecutable="false"', 'isExecutable="true"');
 
       const isValidated = await validateProcess(xml);
       if (!isValidated) {
@@ -161,7 +169,7 @@ const EditModel = React.memo(({ xml, setShowModeller }) => {
       !extractDataFromDiagram(xml).name ||
       extractDataFromDiagram(xml).name.includes("undefined")
     ) {
-      toast.error(t("Error: Process name is undefined"));
+      toast.error(t("Process name(s) must not be empty"));
       return false;
     }
 
@@ -240,9 +248,9 @@ const EditModel = React.memo(({ xml, setShowModeller }) => {
     return hasErrors ? false : true;
   };
 
-  const updateBpmProcesses = () => {
+  const updateBpmProcesses = (xml) => {
     // Update drop down with all processes
-    dispatch(fetchAllBpmDeployments());
+    dispatch(fetchAllBpmProcesses());
     // Show the updated workflow as the current value in the dropdown
     const updatedWorkflow = {
       label: extractDataFromDiagram(xml).name,

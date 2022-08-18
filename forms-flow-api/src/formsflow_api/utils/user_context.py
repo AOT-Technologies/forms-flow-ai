@@ -3,7 +3,7 @@
 import functools
 from typing import Dict
 
-from flask import g, request
+from flask import g, request, current_app
 
 
 def _get_context():
@@ -25,6 +25,7 @@ class UserContext:  # pylint: disable=too-many-instance-attributes
         self._roles: list = token_info.get("roles", None) or token_info.get(
             "role", None
         )
+        self._groups: list = token_info.get("groups", None)
 
     @property
     def tenant_key(self) -> str:
@@ -47,9 +48,13 @@ class UserContext:  # pylint: disable=too-many-instance-attributes
         return self._email
 
     @property
-    def roles(self) -> str:
+    def roles(self) -> list[str]:
         """Return the roles."""
         return self._roles
+
+    @property
+    def group_or_roles(self) -> list[str]:
+        return self._roles if current_app.config.get("KEYCLOAK_ENABLE_CLIENT_AUTH") else self._groups
 
 
 def user_context(function):

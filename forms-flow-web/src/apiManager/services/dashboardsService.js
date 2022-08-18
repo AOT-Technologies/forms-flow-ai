@@ -1,8 +1,5 @@
 /* istanbul ignore file */
-import {
-  httpGETRequest,
-  httpPOSTRequest,
-} from "../httpRequestHandler";
+import { httpGETRequest, httpPOSTRequest } from "../httpRequestHandler";
 import {
   setDashboards,
   dashboardErrorHandler,

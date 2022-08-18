@@ -93,7 +93,7 @@ export const InsightDashboard = (props) => {
   };
 
   const addDashboardAuth = (data) => {
-    let currentRow = {...activeRow};
+    let currentRow = { ...activeRow };
     currentRow.roles = [...activeRow.roles, data.path];
     setActiveRow(currentRow);
     setShow(!show);

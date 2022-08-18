@@ -31,7 +31,6 @@ export const updateErrorHandler = (data) => (dispatch) => {
   });
 };
 
-
 export const hideUpdateError = () => (dispatch) => {
   dispatch({
     type: ACTION_CONSTANTS.DASHBOARDS_HIDE_UPDATE_ERROR,
@@ -39,16 +38,16 @@ export const hideUpdateError = () => (dispatch) => {
   });
 };
 
-export const setDashboardAuthorizations = (data)=>(dispatch)=> {
+export const setDashboardAuthorizations = (data) => (dispatch) => {
   dispatch({
-      type: ACTION_CONSTANTS.SET_AUTHORIZATIONS,
-      payload: data
+    type: ACTION_CONSTANTS.SET_AUTHORIZATIONS,
+    payload: data,
   });
 };
 
-export const updateDashboardAuthorizationList = (data)=>(dispatch)=>{
+export const updateDashboardAuthorizationList = (data) => (dispatch) => {
   dispatch({
     type: ACTION_CONSTANTS.UPDATE_AUTHORIZATIONS,
-    payload: data
+    payload: data,
   });
 };

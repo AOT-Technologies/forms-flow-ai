@@ -93,7 +93,7 @@ export const updatedState = {
     {
       resourceId: "1",
       resourceDetails: { name: "Freedom of Information Form" },
-      roles:[]
+      roles: [],
     },
   ],
   isDashUpdated: true,

@@ -5,7 +5,7 @@ import { useDispatch } from "react-redux";
 import {
   fetchdashboards,
   fetchGroups,
-  fetchAuthorizations
+  fetchAuthorizations,
 } from "../../apiManager/services/dashboardsService";
 import ACTION_CONSTANTS from "../../actions/actionConstants";
 import "./insightDashboard.scss";

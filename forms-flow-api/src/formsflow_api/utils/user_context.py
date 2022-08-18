@@ -1,7 +1,7 @@
 """User Context to hold request scoped variables."""
 
 import functools
-from typing import Dict
+from typing import Dict, List
 
 from flask import current_app, g, request
 
@@ -48,12 +48,12 @@ class UserContext:  # pylint: disable=too-many-instance-attributes
         return self._email
 
     @property
-    def roles(self) -> list[str]:
+    def roles(self) -> List[str]:
         """Return the roles."""
         return self._roles
 
     @property
-    def group_or_roles(self) -> list[str]:
+    def group_or_roles(self) -> List[str]:
         """Return groups is env is using groups, else roles."""
         return (
             self._roles

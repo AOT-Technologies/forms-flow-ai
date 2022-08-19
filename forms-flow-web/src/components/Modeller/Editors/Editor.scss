@@ -1,0 +1,68 @@
+#js-properties-panel {
+  width: 400px;
+  overflow: auto;
+}
+
+.bpmn-main-container {
+  width: 100%;
+  display: flex;
+  margin-bottom: 20px;
+  min-height: 450px;
+  max-height: 600px;
+  resize: vertical;
+  overflow: hidden;
+}
+
+.bpm-modeller-container {
+  height: 100%;
+}
+
+.bpmn-viewer-container {
+  width: 100%;
+}
+
+.properties-panel-parent {
+  border: 1px solid rgb(0, 0, 0);
+  border-left: none;
+}
+
+.grab-cursor {
+  cursor: move;
+  cursor: grab;
+}
+
+.highlight:not(.djs-connection) .djs-visual > :nth-child(1) {
+  fill: rgb(56, 89, 138) !important;
+}
+
+.zoom-container {
+  position: relative;
+  bottom: 10em;
+  right: 15px;
+  pointer-events: none;
+}
+
+.btn-zoom {
+  pointer-events: auto;
+}
+
+.deploy-checkbox {
+  margin-right: 15px;
+}
+
+// Override bpmn-js-properties-panel style for removing entry (trash can)
+.bio-properties-panel-remove-entry {
+  visibility: visible;
+}
+
+[data-entry-id="isExecutable"] {
+  display: none;
+}
+
+.bjsl-button {
+  pointer-events: none;
+}
+
+.bjsl-button svg {
+  display: none;
+}

@@ -1,29 +1,29 @@
 import React, { useCallback, useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import "./Modeller.scss";
+import "../Editor.scss";
 import Button from "react-bootstrap/Button";
 import { toast } from "react-toastify";
 import { useTranslation } from "react-i18next";
-import { extractDataFromDiagram } from "./helpers/formatDeployments";
-import { MULTITENANCY_ENABLED } from "../../constants/constants";
-import { deployBpmnDiagram } from "../../apiManager/services/bpmServices";
+import { extractDataFromDiagram } from "../../helpers/helper";
+import { MULTITENANCY_ENABLED } from "../../../../constants/constants";
+import { deployBpmnDiagram } from "../../../../apiManager/services/bpmServices";
 
 import {
   SUCCESS_MSG,
   ERROR_MSG,
   ERROR_LINTING_CLASSNAME,
-} from "./constants/bpmnModellerConstants";
+} from "../../constants/bpmnModellerConstants";
 
 import {
   fetchAllBpmProcesses,
   fetchDiagram,
-} from "../../apiManager/services/processServices";
+} from "../../../../apiManager/services/processServices";
 
 import {
   setProcessDiagramLoading,
   setProcessDiagramXML,
   setWorkflowAssociation,
-} from "../../actions/processActions";
+} from "../../../../actions/processActions";
 
 import BpmnModeler from "bpmn-js/lib/Modeler";
 import "bpmn-js/dist/assets/diagram-js.css";
@@ -40,11 +40,10 @@ import camundaModdleDescriptors from "camunda-bpmn-moddle/resources/camunda";
 
 import lintModule from "bpmn-js-bpmnlint";
 import "bpmn-js-bpmnlint/dist/assets/css/bpmn-js-bpmnlint.css";
-import linterConfig from "./lint-rules/packed-config";
+import linterConfig from "../../lint-rules/packed-config";
 
-const EditModel = React.memo(({ xml, setShowModeller, processKey, tenant }) => {
+export default React.memo(({ xml, setShowModeller, processKey, tenant }) => {
   const { t } = useTranslation();
-
   const dispatch = useDispatch();
   const diagramXML = useSelector((state) => state.process.processDiagramXML);
   const [bpmnModeller, setBpmnModeller] = useState(null);
@@ -62,7 +61,7 @@ const EditModel = React.memo(({ xml, setShowModeller, processKey, tenant }) => {
           },
           linting: {
             bpmnlint: linterConfig,
-            //active: true
+            active: true,
           },
           additionalModules: [
             BpmnPropertiesPanelModule,
@@ -78,21 +77,6 @@ const EditModel = React.memo(({ xml, setShowModeller, processKey, tenant }) => {
       );
     }
   }, []);
-
-  useEffect(() => {
-    if (bpmnModeller) {
-      bpmnModeller.on("import.done", (event) => {
-        const { error } = event;
-        if (error) {
-          console.log("bpmnViewer error >", error);
-          setShowModeller(false);
-        }
-      });
-    }
-    return () => {
-      bpmnModeller && bpmnModeller.destroy();
-    };
-  }, [bpmnModeller]);
 
   useEffect(() => {
     if (xml) {
@@ -165,13 +149,7 @@ const EditModel = React.memo(({ xml, setShowModeller, processKey, tenant }) => {
     }
 
     // Check for undefined process names
-    if (
-      !extractDataFromDiagram(xml).name ||
-      extractDataFromDiagram(xml).name.includes("undefined")
-    ) {
-      toast.error(t("Process name(s) must not be empty"));
-      return false;
-    }
+    if (!validateProcessNames(xml)) return false;
 
     return true;
   };
@@ -244,8 +222,28 @@ const EditModel = React.memo(({ xml, setShowModeller, processKey, tenant }) => {
         }
       });
     }
-
     return hasErrors ? false : true;
+  };
+
+  const validateProcessNames = (xml) => {
+    let isValidated = true;
+    // Check for undefined process names
+    if (
+      !extractDataFromDiagram(xml).name ||
+      extractDataFromDiagram(xml).name.includes("undefined")
+    ) {
+      toast.error(t("Process name(s) must not be empty"));
+      isValidated = false;
+    }
+
+    /*
+    // Show errors in properties panel
+    if (!isValidated){
+
+    }
+    */
+   
+    return isValidated;
   };
 
   const updateBpmProcesses = (xml) => {
@@ -325,5 +323,3 @@ const EditModel = React.memo(({ xml, setShowModeller, processKey, tenant }) => {
     </>
   );
 });
-
-export default EditModel;

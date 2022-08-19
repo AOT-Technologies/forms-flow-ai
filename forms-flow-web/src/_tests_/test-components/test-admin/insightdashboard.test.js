@@ -23,7 +23,6 @@ afterEach(() => cleanup);
 
 test("renders the insightdashboard component with initial state", () => {
   render(<InsightDashboard dashboardReducer={initialState} />);
-  expect(screen.getByText(/Dashboard/i)).toBeInTheDocument();
   expect(screen.getByTestId(/loading-component/i)).toBeInTheDocument();
 });
 

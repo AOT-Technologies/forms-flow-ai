@@ -48,22 +48,10 @@ export const updatedState = {
     {
       id: 2,
       name: "sample",
-      approvedGroups: [
-        { name: "group2", id: "group2id" },
-        { name: "group3", id: "group3id" },
-        { name: "group4", id: "group4id" },
-        { name: "group5", id: "group5id" },
-        { name: "group6", id: "group6id" },
-      ],
     },
     {
       id: 1,
       name: "Freedom of Information Form",
-      approvedGroups: [
-        { name: "group1", id: "group1id" },
-        { name: "group2", id: "group2id" },
-        { name: "group5", id: "group5id" },
-      ],
     },
   ],
   isloading: false,
@@ -72,36 +60,44 @@ export const updatedState = {
     {
       id: "group1id",
       name: "group1",
-      dashboards: [{ 1: "Freedom of Information Form" }],
     },
     {
       id: "group2id",
       name: "group2",
-      dashboards: [{ 2: "sample" }, { 1: "Freedom of Information Form" }],
     },
-    { id: "group3id", name: "group3", dashboards: [{ 2: "sample" }] },
-    { id: "group4id", name: "group4", dashboards: [{ 2: "sample" }] },
+    { id: "group3id", name: "group3" },
+    { id: "group4id", name: "group4" },
     {
       id: "group5id",
       name: "group5",
-      dashboards: [{ 2: "sample" }, { 1: "Freedom of Information Form" }],
     },
-    { id: "group6id", name: "group6", dashboards: [{ 2: "sample" }] },
+    { id: "group6id", name: "group6" },
+  ],
+  authorizations: [
+    {
+      resourceId: "2",
+      resourceDetails: {
+        name: "sample",
+      },
+      roles: ["group1", "group2"],
+    },
+  ],
+  authDashBoards: [
+    {
+      resourceId: "2",
+      resourceDetails: {
+        name: "sample",
+      },
+      roles: ["group1", "group2"],
+    },
+    {
+      resourceId: "1",
+      resourceDetails: { name: "Freedom of Information Form" },
+      roles: [],
+    },
   ],
   isDashUpdated: true,
   isGroupUpdated: true,
+  isAuthRecieved: true,
+  isAuthUpdated: true,
 };
-
-export const dashboardToclean = [
-  "[{'5': 'Hello'}, {'4': 'testathira'}, {'6': 'New Business License Application'}," +
-    " {'8': 'Sentiment Analysis'}, {'7': 'Freedom Of Information Form'}, {'3': 'test'}, {'12': 'dashboard4'}]",
-];
-export const cleanedDashboards = [
-  { 5: "Hello" },
-  { 4: "testathira" },
-  { 6: "New Business License Application" },
-  { 8: "Sentiment Analysis" },
-  { 7: "Freedom Of Information Form" },
-  { 3: "test" },
-  { 12: "dashboard4" },
-];

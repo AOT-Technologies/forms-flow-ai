@@ -1,5 +1,11 @@
 /* eslint-disable max-len */
-import {WEB_BASE_URL, MT_ADMIN_BASE_URL, MT_ADMIN_BASE_URL_VERSION, BPM_BASE_URL_EXT, CUSTOM_SUBMISSION_URL} from "./config";
+import {
+  WEB_BASE_URL,
+  MT_ADMIN_BASE_URL,
+  MT_ADMIN_BASE_URL_VERSION,
+  BPM_BASE_URL_EXT,
+  CUSTOM_SUBMISSION_URL,
+} from "./config";
 import { AppConfig } from "../../config";
 
 const API = {
@@ -38,8 +44,8 @@ const API = {
   GET_BPM_FORM_LIST: `${WEB_BASE_URL}/form`,
   UPDATE_ASSIGNEE_BPM_TASK: `${BPM_BASE_URL_EXT}/v1/task/<task_id>/assignee`,
   GET_FORM_BY_ALIAS: `${AppConfig.projectUrl}/<form_path>`,
+
   GET_GROUPS: `${WEB_BASE_URL}/groups`,
-  UPDATE_GROUPS: `${WEB_BASE_URL}/groups/<groupId>`,
   GET_FORM_COUNT: `${WEB_BASE_URL}/form/<mapper id>/application/count`,
   UNPUBLISH_FORMS: `${WEB_BASE_URL}/form/<mapper id>`,
   DEPLOY_BPM: `${BPM_BASE_URL_EXT}/v1/deployment/create`,
@@ -53,7 +59,9 @@ const API = {
   DRAFT_UPDATE_PUBLIC: `${WEB_BASE_URL}/draft/public/<draft_id>`,
   DRAFT_APPLICATION_CREATE: `${WEB_BASE_URL}/draft/<draft_id>/submit`,
   DRAFT_APPLICATION_CREATE_PUBLIC: `${WEB_BASE_URL}/draft/public/<draft_id>/submit`,
-  FORMIO_ROLES: `${WEB_BASE_URL}/formio/roles`
+  FORMIO_ROLES: `${WEB_BASE_URL}/formio/roles`,
+  DASHBOARD_AUTHORIZATION: `${WEB_BASE_URL}/authorizations/dashboard`,
+  USER_DASHBOARDS: `${WEB_BASE_URL}/authorizations/users/dashboard`,
 };
 
 export default API;

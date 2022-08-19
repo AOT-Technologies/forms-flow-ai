@@ -21,7 +21,6 @@ import {
   setApplicationCountResponse,
   setUnPublishApiError,
   setResetProcess,
-  setAllDeploymentList,
 } from "../../actions/processActions";
 import { setApplicationCount } from "../../actions/processActions";
 import { replaceUrl } from "../../helper/helper";
@@ -88,97 +87,6 @@ export const fetchAllBpmProcesses = (excludeInternal = true, ...rest) => {
         dispatch(setProcessLoadError(true));
       });
   };
-};
-
-export const fetchAllBpmDeployments = () => {
-  return async (dispatch) => {
-    // eslint-disable-next-line max-len
-    httpGETRequest(
-      API.GET_BPM_DEPLOYMENTS + `?sortBy=deploymentTime&sortOrder=desc`,
-      {},
-      UserService.getToken(),
-      true
-    )
-      .then((res) => {
-        let deploymentList = [];
-        let numDeployments = 0;
-
-        if (res?.data) {
-          // Get Deployments
-          res.data.map((deployment) => {
-            // Get Resources
-            getBpmDeploymentResources(deployment).then((resourceList) => {
-              resourceList.resources.map((resource) => {
-                // Only include bpmn files
-                if (resource.name.substr(resource.name.length - 4) == "bpmn") {
-                  numDeployments++;
-                  // Get Diagram
-                  getBpmDeploymentDiagram(resource).then(
-                    (updatedDeployment) => {
-                      updatedDeployment.tenantId = deployment.tenantId;
-                      updatedDeployment.deploymentName = deployment.name;
-                      updatedDeployment.deploymentTime = deployment.deploymentTime;
-                      deploymentList.push(updatedDeployment);
-                      // Dispatch complete list
-                      if (deploymentList.length == numDeployments) {
-                        dispatch(setAllDeploymentList(deploymentList));
-                      }
-                    }
-                  );
-                }
-              });
-            });
-          });
-        } else {
-          dispatch(setAllDeploymentList([]));
-        }
-      })
-      // eslint-disable-next-line no-unused-vars
-      .catch((error) => {
-        dispatch(setProcessLoadError(true));
-      });
-  };
-};
-
-const getBpmDeploymentResources = async (deployment) => {
-  const apiUrlDeployementId = replaceUrl(
-    API.GET_BPM_DEPLOYMENT_RESOURCES,
-    "<deployment_id>",
-    deployment.id
-  );
-  // eslint-disable-next-line max-len
-  const resources = await httpGETRequest(
-    apiUrlDeployementId,
-    {},
-    UserService.getToken(),
-    true
-  );
-  deployment.resources = resources.data;
-
-  return deployment;
-};
-
-export const getBpmDeploymentDiagram = async (resource) => {
-  let apiUrlDiagramList = replaceUrl(
-    API.GET_BPM_DEPLOYMENT_DIAGRAM,
-    "<deployment_id>",
-    resource.deploymentId
-  );
-  apiUrlDiagramList = replaceUrl(
-    apiUrlDiagramList,
-    "<resource_id>",
-    resource.id
-  );
-  // eslint-disable-next-line max-len
-  const diagram = await httpGETRequest(
-    apiUrlDiagramList,
-    {},
-    UserService.getToken(),
-    true
-  );
-  resource.diagram = diagram.data;
-
-  return resource;
 };
 
 /**

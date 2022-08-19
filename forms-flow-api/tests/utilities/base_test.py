@@ -44,6 +44,7 @@ def get_token(
             },
             "scope": "camunda-rest-api email profile",
             "roles": [role, *roles],
+            "groups": [role, *roles],
             "name": "John Smith",
             "preferred_username": username,
             "given_name": "John",

@@ -136,7 +136,7 @@ class BPMService(BaseBPMService):
     @classmethod
     def _get_url_(cls, endpoint_type: BPMEndpointType):
         """Get Url."""
-        bpm_api_base = current_app.config.get("BPM_API_BASE")
+        bpm_api_base = current_app.config.get("BPM_API_URL")
         try:
             if endpoint_type == BPMEndpointType.PROCESS_DEFINITION:
                 url = f"{bpm_api_base}/engine-rest-ext/v1/process-definition"

@@ -8,6 +8,7 @@ import EditModel from "./ModelEditorHook";
 import Button from "react-bootstrap/Button";
 import { useTranslation } from "react-i18next";
 import { createNewProcess } from "./helpers/helper";
+import { listProcess } from "../../apiManager/services/formatterService";
 import { fetchAllBpmProcesses } from "../../apiManager/services/processServices";
 import "./Modeller.scss";
 
@@ -16,10 +17,7 @@ import {
   setProcessDiagramXML,
 } from "../../actions/processActions";
 
-import {
-  listProcess,
-  extractDataFromDiagram,
-} from "./helpers/formatDeployments";
+import { extractDataFromDiagram } from "./helpers/formatDeployments";
 
 export default React.memo(() => {
   const { t } = useTranslation();

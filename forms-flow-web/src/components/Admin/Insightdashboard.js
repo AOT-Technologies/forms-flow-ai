@@ -12,8 +12,9 @@ import { updateAuthorization } from "../../apiManager/services/dashboardsService
 import Popover from "@material-ui/core/Popover";
 import { updateDashboardAuthorizationList } from "../../actions/dashboardActions";
 import { Translation, useTranslation } from "react-i18next";
+import Head from "../../containers/Head";
 
-export const InsightDashboard = (props) => {
+export const InsightDashboard = React.memo((props) => {
   const { dashboardReducer } = props;
   const dispatch = useDispatch();
   const dashboards = dashboardReducer.dashboards;
@@ -23,7 +24,6 @@ export const InsightDashboard = (props) => {
   const isloading = dashboardReducer.isloading;
   const isError = dashboardReducer.iserror;
   const error = dashboardReducer.error;
-  const updateError = dashboardReducer.updateError;
   const authorizations = dashboardReducer.authorizations;
   const authDashBoardList = dashboardReducer.authDashBoards;
   const isAuthRecieved = dashboardReducer.isAuthRecieved;
@@ -38,6 +38,16 @@ export const InsightDashboard = (props) => {
   const [show, setShow] = useState(false);
   const [activePage, setActivePage] = useState(1);
   const [sizePerPage, setSizePerPage] = useState(5);
+
+  function compare(a, b) {
+    if (Number(a.resourceId) < Number(b.resourceId)) {
+      return -1;
+    }
+    if (Number(a.resourceId) > Number(b.resourceId)) {
+      return 1;
+    }
+    return 0;
+  }
 
   const updateAuthList = () => {
     let newList = [...authorizations];
@@ -54,7 +64,7 @@ export const InsightDashboard = (props) => {
         newList.push(obj);
       }
     }
-    return newList;
+    return newList.sort(compare);
   };
 
   useEffect(() => {
@@ -84,9 +94,11 @@ export const InsightDashboard = (props) => {
   const id = show ? "simple-popover" : undefined;
 
   const removeDashboardAuth = (rowData, groupPath) => {
-    let dashboard = authDashBoardList.find(
-      (element) => element.resourceId === rowData.resourceId
-    );
+    let dashboard = {
+      ...authDashBoardList.find(
+        (element) => element.resourceId === rowData.resourceId
+      ),
+    };
     let modifiedRoles = dashboard.roles.filter((item) => item !== groupPath);
     dashboard.roles = modifiedRoles;
     dispatch(updateAuthorization(dashboard));
@@ -235,48 +247,47 @@ export const InsightDashboard = (props) => {
     onSizePerPageChange: (size, page) => handleSizeChange(size, page),
   });
 
+  if (isloading) {
+    if (isError) {
+      return <Errors errors={error} />;
+    }
+    return <Loading />;
+  }
+
+  const headerList = () => {
+    return [
+      {
+        name: "Dashboard",
+        count: dashboards.length,
+        icon: "user-circle-o",
+      },
+    ];
+  };
+
+  let headOptions = headerList();
   return (
     <>
-      <div className="flex-container">
-        <div className=" d-flex flex-row">
-          <h3 className="task-head">
-            <span>
-              <i className="fa fa-user-circle-o mt-3" aria-hidden="true" />
-            </span>
-            <span className="forms-text" role="contentinfo">
-              <Translation>{(t) => t("Dashboard")}</Translation>
-            </span>
-          </h3>
-        </div>
-        {updateError && (
-          <div className="error-container error-custom">
-            <Errors errors={error} />
-          </div>
-        )}
-      </div>
-      <section className="custom-grid grid-forms">
-        {isloading ? (
-          isError ? (
-            <Errors errors={error} />
+      <div className="container" role="definition">
+        <Head items={headOptions} page="Dashboard" />
+        <br />
+        <div>
+          {dashboards.length ? (
+            <BootstrapTable
+              keyField="resourceId"
+              data={authDashBoardList}
+              columns={columns}
+              pagination={pagination}
+            />
           ) : (
-            <Loading />
-          )
-        ) : dashboards.length ? (
-          <BootstrapTable
-            keyField="resourceId"
-            data={authDashBoardList}
-            columns={columns}
-            pagination={pagination}
-          />
-        ) : (
-          <h3 className="text-center">
-            <Translation>{(t) => t("No Dashboards Found")}</Translation>
-          </h3>
-        )}
-      </section>
+            <h3 className="text-center">
+              <Translation>{(t) => t("No Dashboards Found")}</Translation>
+            </h3>
+          )}
+        </div>
+      </div>
     </>
   );
-};
+});
 
 const mapStateToProps = (state) => {
   return {

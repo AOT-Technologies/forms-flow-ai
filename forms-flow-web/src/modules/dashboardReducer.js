@@ -35,14 +35,6 @@ const dashboards = (state = initialState, action) => {
         updateError: false,
       };
 
-    case ACTION_CONSTANTS.DASHBOARDS_CLEAN_UP:
-      return {
-        ...state,
-        isDashUpdated: false,
-        isGroupUpdated: false,
-        isloading: true,
-      };
-
     case ACTION_CONSTANTS.DASHBOARDS_UPDATE_ERROR:
       return {
         ...state,
@@ -50,9 +42,6 @@ const dashboards = (state = initialState, action) => {
         error: action.payload,
         isloading: false,
       };
-
-    case ACTION_CONSTANTS.DASHBOARDS_HIDE_UPDATE_ERROR:
-      return { ...state, updateError: false };
 
     case ACTION_CONSTANTS.SET_AUTHORIZATIONS:
       return {

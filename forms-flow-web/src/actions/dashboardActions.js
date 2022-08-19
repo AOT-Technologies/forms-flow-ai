@@ -1,4 +1,5 @@
 /* istanbul ignore file */
+import { toast } from "react-toastify";
 import ACTION_CONSTANTS from "./actionConstants";
 
 //updates the dashboards state
@@ -29,14 +30,9 @@ export const updateErrorHandler = (data) => (dispatch) => {
     type: ACTION_CONSTANTS.DASHBOARDS_UPDATE_ERROR,
     payload: data,
   });
+  toast.error(data);
 };
 
-export const hideUpdateError = () => (dispatch) => {
-  dispatch({
-    type: ACTION_CONSTANTS.DASHBOARDS_HIDE_UPDATE_ERROR,
-    payload: null,
-  });
-};
 
 export const setDashboardAuthorizations = (data) => (dispatch) => {
   dispatch({

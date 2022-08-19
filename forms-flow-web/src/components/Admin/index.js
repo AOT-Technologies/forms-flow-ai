@@ -7,22 +7,16 @@ import {
   fetchGroups,
   fetchAuthorizations,
 } from "../../apiManager/services/dashboardsService";
-import ACTION_CONSTANTS from "../../actions/actionConstants";
 import "./insightDashboard.scss";
 import { BASE_ROUTE } from "../../constants/constants";
 
-const AdminDashboard = () => {
+const AdminDashboard = React.memo(() => {
   const dispatch = useDispatch();
 
   useEffect(() => {
     dispatch(fetchdashboards());
     dispatch(fetchGroups());
     dispatch(fetchAuthorizations());
-    return () =>
-      dispatch({
-        type: ACTION_CONSTANTS.DASHBOARDS_CLEAN_UP,
-        payload: null,
-      });
   }, [dispatch]);
 
   return (
@@ -33,6 +27,6 @@ const AdminDashboard = () => {
       </Switch>
     </div>
   );
-};
+});
 
 export default withRouter(AdminDashboard);

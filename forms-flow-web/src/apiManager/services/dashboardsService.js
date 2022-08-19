@@ -5,7 +5,6 @@ import {
   dashboardErrorHandler,
   setGroups,
   updateErrorHandler,
-  hideUpdateError,
   setDashboardAuthorizations,
 } from "../../actions/dashboardActions";
 import API from "../endpoints/index";
@@ -57,17 +56,11 @@ export const updateAuthorization = (data) => {
         if (res.data) {
           dispatch(fetchAuthorizations());
         } else {
-          dispatch(updateErrorHandler("Update Failed"));
-          setTimeout(() => {
-            dispatch(hideUpdateError());
-          }, 2000);
+          dispatch(updateErrorHandler("Update Failed!"));
         }
       })
       .catch((error) => {
-        dispatch(updateErrorHandler(error));
-        setTimeout(() => {
-          dispatch(hideUpdateError());
-        }, 2000);
+        dispatch(updateErrorHandler(error.message));
       });
   };
 };

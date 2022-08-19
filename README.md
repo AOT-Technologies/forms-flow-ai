@@ -65,7 +65,7 @@ Typical use cases are:
 ## Download and Installation
 
 - If you want to download and setup, follow the [installation guide](./deployment), you will find step-by-step instructions to download and install.
-- For Docker based single click installation follow the instruction from [here](./deployment/README.md#docker-single-click-installation)
+- For Docker based single click installation follow the instruction from [here](https://github.com/AOT-Technologies/forms-flow-ai-deployment/blob/main/README.md)
 
 ### Project Tree
 

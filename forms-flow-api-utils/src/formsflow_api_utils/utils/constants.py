@@ -18,6 +18,7 @@ FORMSFLOW_ROLES = [DESIGNER_GROUP, REVIEWER_GROUP, CLIENT_GROUP]
 ALLOW_ALL_APPLICATIONS = "/formsflow/formsflow-reviewer/access-allow-applications"
 
 NEW_APPLICATION_STATUS = "New"
+DRAFT_APPLICATION_STATUS = "Draft"
 KEYCLOAK_DASHBOARD_BASE_GROUP = "formsflow-analytics"
 ANONYMOUS_USER = "Anonymous-user"
 
@@ -31,6 +32,7 @@ FILTER_MAPS = {
     "created_from": {"field": "created", "operator": "ge"},
     "created_to": {"field": "created", "operator": "le"},
     "form_name": {"field": "form_name", "operator": "ilike"},
+    "id": {"field": "id", "operator": "eq"},
 }
 
 DEFAULT_PROCESS_KEY = "Defaultflow"

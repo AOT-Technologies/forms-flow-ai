@@ -22,6 +22,7 @@ import { columns, getoptions, defaultSortedBy } from "./table";
 import { getUserRolePermission } from "../../helper/user";
 import {
   CLIENT,
+  DRAFT_ENABLED,
   MULTITENANCY_ENABLED,
   STAFF_REVIEWER,
 } from "../../constants/constants";
@@ -31,6 +32,8 @@ import { Translation } from "react-i18next";
 
 import overlayFactory from "react-bootstrap-table2-overlay";
 import { SpinnerSVG } from "../../containers/SpinnerSVG";
+import Head from "../../containers/Head";
+import { push } from "connected-react-router";
 
 export const ApplicationList = React.memo(() => {
   const { t } = useTranslation();
@@ -47,6 +50,7 @@ export const ApplicationList = React.memo(() => {
   const applicationCount = useSelector(
     (state) => state.applications.applicationCount
   );
+  const draftCount = useSelector((state) => state.draft.draftCount);
   const dispatch = useDispatch();
   const userRoles = useSelector((state) => state.user.roles);
   const page = useSelector((state) => state.applications.activePage);
@@ -135,7 +139,31 @@ export const ApplicationList = React.memo(() => {
     });
     return totalApplications;
   };
-  return applicationCount > 0 || filtermode ? (
+
+  const headerList = () => {
+    return [
+      {
+        name: "Applications",
+        count: applicationCount,
+        onClick: () => dispatch(push(`${redirectUrl}application`)),
+        icon: "list",
+      },
+      {
+        name: "Drafts",
+        count: draftCount,
+        onClick: () => dispatch(push(`${redirectUrl}draft`)),
+        icon: "edit",
+      },
+    ];
+  };
+
+  let headOptions = headerList();
+
+  if (!DRAFT_ENABLED) {
+    headOptions.pop();
+  }
+
+  return (
     <ToolkitProvider
       bootstrap4
       keyField="id"
@@ -151,24 +179,10 @@ export const ApplicationList = React.memo(() => {
     >
       {(props) => (
         <div className="container" role="definition">
-          <div className="main-header">
-            <h3 className="application-head">
-              <i
-                className="fa fa-list"
-                style={{ marginTop: "5px" }}
-                aria-hidden="true"
-              />
-              <span className="application-text">
-                <Translation>{(t) => t("Applications")}</Translation>
-              </span>
-              <div className="col-md-1 application-count" role="contentinfo">
-                ({applicationCount})
-              </div>
-            </h3>
-          </div>
+          <Head items={headOptions} page="Applications" />
           <br />
           <div>
-            <BootstrapTable
+          {applicationCount > 0 || filtermode ? <BootstrapTable
               remote={{ pagination: true, filter: true, sort: true }}
               loading={isLoading}
               filter={filterFactory()}
@@ -195,15 +209,15 @@ export const ApplicationList = React.memo(() => {
                   }),
                 },
               })}
-            />
+            /> : iserror ? (
+              <Alert variant={"danger"}>{error}</Alert>
+            ) : (
+              <Nodata text="No Applications Found" />
+            )}
           </div>
         </div>
       )}
     </ToolkitProvider>
-  ) : iserror ? (
-    <Alert variant={"danger"}>{error}</Alert>
-  ) : (
-    <Nodata />
   );
 });
 

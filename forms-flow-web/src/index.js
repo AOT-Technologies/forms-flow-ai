@@ -5,11 +5,13 @@ import App from "./components/App";
 import StoreService from "./services/StoreService";
 import { Formio, Components } from "react-formio";
 import { AppConfig } from "./config";
-import 'react-bootstrap-table2-paginator/dist/react-bootstrap-table2-paginator.min.css';
-import 'react-bootstrap-table-next/dist/react-bootstrap-table2.min.css';
-import components from "./customFormioComponents";
+import "react-bootstrap-table2-paginator/dist/react-bootstrap-table2-paginator.min.css";
+import "react-bootstrap-table-next/dist/react-bootstrap-table2.min.css";
 import "./styles.scss";
 import "./resourceBundles/i18n.js";
+import { featureFlags } from "./featureToogle";
+import { FlagsProvider } from 'flagged';
+
 
 // disable react-dev-tools for this project
 if (typeof window.__REACT_DEVTOOLS_GLOBAL_HOOK__ === "object") {
@@ -26,9 +28,17 @@ const history = StoreService.history;
 
 Formio.setProjectUrl(AppConfig.projectUrl);
 Formio.setBaseUrl(AppConfig.apiUrl);
-Components.setComponents(components);
+
+// Set custom formio elements - Code splitted
+import("formsflow-formio-custom-elements/dist/customformio-ex").then(
+  (FormioCustomEx) => {
+    Components.setComponents(FormioCustomEx.components);
+  }
+);
 
 ReactDOM.render(
-  <App {...{ store, history }} />,
+  <FlagsProvider features={featureFlags}>
+     <App {...{ store, history }} />
+  </FlagsProvider>,
   document.getElementById("app")
 );

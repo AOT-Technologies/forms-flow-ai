@@ -21,6 +21,7 @@ import { replaceUrl } from "../../helper/helper";
 import moment from "moment";
 import { getFormattedProcess } from "./formatterService";
 import { setPublicFormStatus } from "../../actions/formActions";
+import {setDraftCount} from "../../actions/draftActions";
 
 export const getAllApplicationsByFormId = (formId, ...rest) => {
   const done = rest.length ? rest[0] : () => {};
@@ -58,6 +59,7 @@ export const getAllApplications = (pageNo = 1, limit = 5, ...rest) => {
         if (res.data) {
           const applications = res.data.applications || [];
           dispatch(setApplicationListCount(res.data.totalCount || 0));
+          dispatch(setDraftCount(res.data?.draftCount || 0));
           dispatch(setApplicationList(applications));
           done(null, applications);
         } else {
@@ -112,7 +114,7 @@ export const getApplicationById = (applicationId, ...rest) => {
 };
 
 export const applicationCreate = (data, ...rest) => {
-  const done = rest.length ? rest[0] : () => {};
+  const done = rest.length ? rest[1] : () => {};
   const URL = API.APPLICATION_START;
   return (dispatch) => {
     httpPOSTRequest(URL, data)
@@ -132,7 +134,7 @@ export const applicationCreate = (data, ...rest) => {
 };
 
 export const publicApplicationCreate = (data, ...rest) => {
-  const done = rest.length ? rest[0] : () => {};
+  const done = rest.length ? rest[1] : () => {};
   const URL = API.PUBLIC_APPLICATION_START;
   return (dispatch) => {
     httpPOSTRequestWithoutToken(URL, data)

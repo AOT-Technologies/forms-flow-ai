@@ -10,20 +10,20 @@ export const WEB_BASE_URL =
 export const WEB_BASE_CUSTOM_URL =
   (window._env_ && window._env_.REACT_APP_WEB_BASE_CUSTOM_URL) ||
   process.env.REACT_APP_WEB_BASE_CUSTOM_URL;
+  
 
-export const BPM_BASE_URL = `${
-  (window._env_ && window._env_.REACT_APP_CAMUNDA_API_URI) ||
-  process.env.REACT_APP_CAMUNDA_API_URI
-}/engine-rest`;
+export const CUSTOM_SUBMISSION_URL =
+  (window._env_ && window._env_.REACT_APP_CUSTOM_SUBMISSION_URL) ||
+  process.env.REACT_APP_CUSTOM_SUBMISSION_URL;
 
  export const BPM_BASE_URL_EXT = `${
-   (window._env_ && window._env_.REACT_APP_CAMUNDA_API_URI) ||
-   process.env.REACT_APP_CAMUNDA_API_URI
+   (window._env_ && window._env_.REACT_APP_BPM_URL) ||
+   process.env.REACT_APP_BPM_URL
  }/engine-rest-ext`;
 
 export const BPM_BASE_URL_SOCKET_IO = `${
-  (window._env_ && window._env_.REACT_APP_CAMUNDA_API_URI) ||
-  process.env.REACT_APP_CAMUNDA_API_URI
+  (window._env_ && window._env_.REACT_APP_BPM_URL) ||
+  process.env.REACT_APP_BPM_URL
 }/forms-flow-bpm-socket`;
 
 export const MT_ADMIN_BASE_URL = `${

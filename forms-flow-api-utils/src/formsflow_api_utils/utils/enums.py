@@ -35,3 +35,28 @@ class FormioRoles(Enum):
     REVIEWER = "formsflowReviewer"
     DESIGNER = "administrator"
     ANONYMOUS = "anonymous"
+    RESOURCE_ID = "RESOURCE_ID"
+
+    @classmethod
+    def contains(cls, item: str) -> bool:
+        """Checks if the parameter exists in the enum."""
+        return item in [entry.value for entry in cls]
+
+
+@unique
+class DraftStatus(Enum):
+    """Draft status and corresponding values."""
+
+    ACTIVE = 1
+    INACTIVE = 0
+
+
+class DraftSortingParameters:  # pylint: disable=too-few-public-methods
+    """This enum provides the list of Sorting Parameters."""
+
+    id = "id"
+    Created = "created"
+    Name = "DraftName"
+    Status = "applicationStatus"
+    Modified = "modified"
+    FormName = "formName"

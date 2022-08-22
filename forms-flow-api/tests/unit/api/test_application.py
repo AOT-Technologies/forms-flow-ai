@@ -3,6 +3,7 @@ import pytest
 
 from tests.utilities.base_test import (
     get_application_create_payload,
+    get_draft_create_payload,
     get_form_request_payload,
     get_token,
 )
@@ -103,6 +104,24 @@ class TestApplicationResource:
             headers=headers,
         )
         assert response.status_code == 200
+
+    def test_application_list_with_no_draft(self, app, client, session, jwt):
+        """Application list should not contain draft applications."""
+        for role in ["formsflow-client", "formsflow-designer", "formsflow-reviewer"]:
+            token = get_token(jwt, role=role)
+            headers = {
+                "Authorization": f"Bearer {token}",
+                "content-type": "application/json",
+            }
+            rv = client.post("/form", headers=headers, json=get_form_request_payload())
+            form_id = rv.json.get("formId")
+            # creating a draft will create a draft application
+            client.post(
+                "/draft", headers=headers, json=get_draft_create_payload(form_id)
+            )
+
+            response = client.get("/application", headers=headers)
+            assert len(response.json["applications"]) == 0
 
 
 class TestApplicationDetailView:
@@ -248,10 +267,7 @@ def test_application_payload(app, client, session, jwt):
     assert rv.status_code == 201
     application_response = rv.json
     assert application_response["applicationStatus"] == "New"
-    assert (
-        application_response["formUrl"]
-        == f"http://sample.com/form/{form_id}/submission/1233432"
-    )
+    assert application_response["submissionId"] == "1233432"
 
 
 def test_application_update_details_api(app, client, session, jwt):
@@ -278,7 +294,12 @@ def test_application_update_details_api(app, client, session, jwt):
     rv = client.get(f"/application/{application_id}", headers=headers)
     payload = rv.json
     payload["applicationStatus"] = "New"
+    payload["formUrl"] = "https://sample.com/form/980/submission/1234"
 
     rv = client.put(f"/application/{application_id}", headers=headers, json=payload)
     assert rv.status_code == 200
     assert rv.json == "Updated successfully"
+    application = client.get(f"/application/{application_id}", headers=headers)
+    assert application.status_code == 200
+    assert application.json.get("formId") == "980"
+    assert application.json.get("submissionId") == "1234"

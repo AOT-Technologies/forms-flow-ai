@@ -8,14 +8,19 @@ from typing import Dict
 from flask import current_app
 
 from formsflow_api_utils.exceptions import BusinessException
-from formsflow_api.models import Application, FormProcessMapper
+from formsflow_api.models import Application, Draft, FormProcessMapper
+
 from formsflow_api.schemas import (
     AggregatedApplicationSchema,
     ApplicationSchema,
     FormProcessMapperSchema,
 )
 from formsflow_api.services.external import BPMService
-from formsflow_api_utils.utils import NEW_APPLICATION_STATUS
+from formsflow_api_utils.utils import (
+    DRAFT_APPLICATION_STATUS,
+    NEW_APPLICATION_STATUS,
+    REVIEWER_GROUP,
+)
 from formsflow_api_utils.utils.user_context import UserContext, user_context
 
 from .form_process_mapper import FormProcessMapperService
@@ -23,8 +28,49 @@ from .form_process_mapper import FormProcessMapperService
 application_schema = ApplicationSchema()
 
 
-class ApplicationService:
+class ApplicationService:  # pylint: disable=too-many-public-methods
     """This class manages application service."""
+
+    @staticmethod
+    def get_start_task_payload(
+        application: Application, mapper: FormProcessMapper, form_url: str
+    ) -> Dict:
+        """Returns the payload for initiating the task."""
+        return {
+            "variables": {
+                "applicationId": {"value": application.id},
+                "formUrl": {"value": form_url},
+                "formName": {"value": mapper.form_name},
+                "submitterName": {"value": application.created_by},
+                "submissionDate": {"value": str(application.created)},
+                "tenantKey": {"value": mapper.tenant},
+            }
+        }
+
+    @staticmethod
+    def start_task(
+        mapper: FormProcessMapper, payload: Dict, token: str, application: Application
+    ) -> None:
+        """Trigger bpmn workflow to create a task."""
+        try:
+            if mapper.process_tenant:
+                camunda_start_task = BPMService.post_process_start_tenant(
+                    process_key=mapper.process_key,
+                    payload=payload,
+                    token=token,
+                    tenant_key=mapper.process_tenant,
+                )
+            else:
+                camunda_start_task = BPMService.post_process_start(
+                    process_key=mapper.process_key, payload=payload, token=token
+                )
+            application.update({"process_instance_id": camunda_start_task["id"]})
+        except TypeError as camunda_error:
+            response = {
+                "message": "Camunda workflow not able to create a task",
+                "error": camunda_error,
+            }
+            current_app.logger.critical(response)
 
     @staticmethod
     @user_context
@@ -52,35 +98,11 @@ class ApplicationService:
             application.update({"process_instance_id": data["process_instance_id"]})
         # In normal cases, it's through this else case task is being created
         else:
-            payload = {
-                "variables": {
-                    "applicationId": {"value": application.id},
-                    "formUrl": {"value": application.form_url},
-                    "formName": {"value": mapper.form_name},
-                    "submitterName": {"value": application.created_by},
-                    "submissionDate": {"value": str(application.created)},
-                    "tenantKey": {"value": mapper.tenant},
-                }
-            }
-            try:
-                if mapper.process_tenant:
-                    camunda_start_task = BPMService.post_process_start_tenant(
-                        process_key=mapper.process_key,
-                        payload=payload,
-                        token=token,
-                        tenant_key=mapper.process_tenant,
-                    )
-                else:
-                    camunda_start_task = BPMService.post_process_start(
-                        process_key=mapper.process_key, payload=payload, token=token
-                    )
-                application.update({"process_instance_id": camunda_start_task["id"]})
-            except TypeError as camunda_error:
-                response = {
-                    "message": "Camunda workflow not able to create a task",
-                    "error": camunda_error,
-                }
-                current_app.logger.critical(response)
+            form_url = data["form_url"]
+            payload = ApplicationService.get_start_task_payload(
+                application, mapper, form_url
+            )
+            ApplicationService.start_task(mapper, payload, token, application)
         return application, HTTPStatus.CREATED
 
     @staticmethod
@@ -94,6 +116,19 @@ class ApplicationService:
         """
         response = BPMService.get_auth_form_details(token=token)
         return response
+
+    @staticmethod
+    def _application_access(token: str) -> bool:
+        """Checks if the user has access to all applications."""
+        auth_form_details = ApplicationService.get_authorised_form_list(token=token)
+        assert auth_form_details is not None
+        current_app.logger.info(auth_form_details)
+        auth_list = auth_form_details.get("authorizationList") or {}
+        resource_list = [group["resourceId"] for group in auth_list]
+        return (
+            auth_form_details.get("adminGroupEnabled") is True or "*" in resource_list,
+            resource_list,
+        )
 
     @staticmethod
     def get_auth_applications_and_count(  # pylint: disable=too-many-arguments,too-many-locals
@@ -112,11 +147,8 @@ class ApplicationService:
         token: str,
     ):
         """Get applications only from authorized groups."""
-        auth_form_details = ApplicationService.get_authorised_form_list(token=token)
-        current_app.logger.info(auth_form_details)
-        auth_list = auth_form_details.get("authorizationList") or {}
-        resource_list = [group["resourceId"] for group in auth_list]
-        if auth_form_details.get("adminGroupEnabled") is True or "*" in resource_list:
+        access, resource_list = ApplicationService._application_access(token)
+        if access:
             applications, get_all_applications_count = Application.find_all(
                 page_no=page_no,
                 limit=limit,
@@ -150,10 +182,11 @@ class ApplicationService:
                 created_to=created_to,
                 process_key=resource_list,
             )
-
+        draft_count = Draft.get_draft_count()
         return (
             application_schema.dump(applications, many=True),
             get_all_applications_count,
+            draft_count,
         )
 
     @staticmethod
@@ -212,17 +245,22 @@ class ApplicationService:
             created_from=created_from,
             created_to=created_to,
         )
-
+        draft_count = Draft.get_draft_count()
         return (
             application_schema.dump(applications, many=True),
             get_all_applications_count,
+            draft_count,
         )
 
     @staticmethod
     def get_all_application_status():
         """Get all application status."""
         status_list = Application.find_all_application_status()
-        status_list = [x.application_status for x in status_list]
+        status_list = [
+            x.application_status
+            for x in status_list
+            if x.application_status != DRAFT_APPLICATION_STATUS
+        ]
         current_app.logger.debug(status_list)
         return {"applicationStatus": status_list}
 
@@ -407,16 +445,6 @@ class ApplicationService:
         raise BusinessException("Invalid application", HTTPStatus.BAD_REQUEST)
 
     @staticmethod
-    def apply_custom_attributes(application_schema_dump):
-        """Wrapper function to call Application Schema Wrapper."""
-        if isinstance(application_schema_dump, list):
-            for entry in application_schema_dump:
-                ApplicationSchemaWrapper.apply_attributes(entry)
-        else:
-            ApplicationSchemaWrapper.apply_attributes(application_schema_dump)
-        return application_schema_dump
-
-    @staticmethod
     def get_total_application_corresponding_to_mapper_id(mapper_id: int):
         """Retrieves application count related to a mapper_id."""
         count = Application.get_total_application_corresponding_to_mapper_id(mapper_id)
@@ -428,28 +456,18 @@ class ApplicationService:
             HTTPStatus.OK,
         )
 
-
-class ApplicationSchemaWrapper:  # pylint: disable=too-few-public-methods
-    """ApplicationSchemaWrapper Class."""
-
     @staticmethod
-    def apply_attributes(application):
-        """
-        Wrapper function to call Application Schema Wrapper class.
-
-        finds formid, submissionId from passed formUrl.
-        """
-        try:
-            formurl = application["formUrl"]
-            application["formId"] = formurl[
-                formurl.find("/form/") + 6 : formurl.find("/submission/")
-            ]
-            application["submissionId"] = formurl[
-                formurl.find("/submission/") + 12 : len(formurl)
-            ]
-            return application
-        except KeyError:
-            return (
-                "The required fields of Input request are not passed",
-                HTTPStatus.BAD_REQUEST,
-            )
+    @user_context
+    def get_application_count(auth, token, **kwargs):
+        """Retrieves the active application count."""
+        user: UserContext = kwargs["user"]
+        access, resource_list = ApplicationService._application_access(token=token)
+        application_count = None
+        if auth.has_role([REVIEWER_GROUP]) and access:
+            application_count = Application.get_all_application_count()
+        elif auth.has_role([REVIEWER_GROUP]) and not access:
+            application_count = Application.get_authorized_application_count(resource_list)
+        else:
+            application_count = Application.get_user_based_application_count(user.user_name)
+        assert application_count is not None
+        return application_count

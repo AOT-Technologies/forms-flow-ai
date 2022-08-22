@@ -13,7 +13,12 @@ export const setMetricsTotalItems = (data) => (dispatch) => {
     payload: data,
   });
 };
-
+export const setMetricsDateChange = (data) => (dispatch) => {
+  dispatch({
+    type: ACTION_CONSTANTS.METRICS_SUBMISSION_DATE,
+    payload: data,
+  }); 
+};
 export const setMetricsLoader = (data) => (dispatch) => {
   dispatch({
     type: ACTION_CONSTANTS.IS_METRICS_LOADING,

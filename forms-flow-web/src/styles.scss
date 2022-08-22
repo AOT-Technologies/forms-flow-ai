@@ -49,6 +49,7 @@ $dark: $gray-800;
   max-width: 100vw;
 }
 .container {
+  margin-top: 20px;
   padding-left: 0;
   padding-right: 0;
   //height: 100vh;
@@ -74,9 +75,10 @@ $dark: $gray-800;
   background-color: $primary;
   }
 .btn-outline-primary:not(:disabled){
-  border-color: $primary;
+  border-color: #0071EB;
+  color: #0071EB;
   &:hover{
-    color: #ffff;
+    color: #ffffff;
     background-color: $primary;
   }
 }
@@ -624,3 +626,4 @@ div[disabled] {
 a{
   color: #0000FF;
 }
+

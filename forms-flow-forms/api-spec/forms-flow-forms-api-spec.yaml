@@ -86,15 +86,14 @@ paths:
               examples:
                 example-1:
                   value:
-                    results:
-                      - _id: 1
-                        machineName: formsflowReviewer
-                      - _id: 2
-                        machineName: administrator
-                      - _id: 3
-                        machineName: formsflowClient
-                      - _id: 4
-                        machineName: anonymous
+                    - _id: 1
+                      machineName: formsflowReviewer
+                    - _id: 2
+                      machineName: administrator
+                    - _id: 3
+                      machineName: formsflowClient
+                    - _id: 4
+                      machineName: anonymous
   /user/login:
     post:
       tags:
@@ -134,8 +133,7 @@ paths:
             x-jwt-token:
               schema:
                 type: string
-                example: >-
-                  eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyIjp7Il9pZCI6IjYyOGYwZWUyMTljZWJiOWNlYTRmMTJiMiJ9LCJmb3JtIjp7Il9pZCI6IjYyOGYwZWUwMTljZWJiOWNlYTRmMTIzZiJ9LCJpYXQiOjE2NTU4OTAyMTUsImV4cCI6MTY1NTkwNDYxNX0.4IEK2N7j9et_VyN2kTDrgb_IUz5ByY9LQgB_Twvs8vE
+                example: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyIjp7Il9pZCI6IjYyOGYwZWUyMTljZWJiOWNlYTRmMTJiMiJ9LCJmb3JtIjp7Il9pZCI6IjYyOGYwZWUwMTljZWJiOWNlYTRmMTIzZiJ9LCJpYXQiOjE2NTU4OTAyMTUsImV4cCI6MTY1NTkwNDYxNX0.4IEK2N7j9et_VyN2kTDrgb_IUz5ByY9LQgB_Twvs8vE
             Content-Type:
               schema:
                 type: string
@@ -147,7 +145,7 @@ paths:
             Date:
               schema:
                 type: string
-                example: Wed, 22 Jun 2022 09:30:15 GMT
+                example: 'Wed, 22 Jun 2022 09:30:15 GMT'
             Connection:
               schema:
                 type: string
@@ -516,8 +514,7 @@ paths:
           in: header
           schema:
             type: string
-          example: >-
-            eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyIjp7Il9pZCI6IjYyOGYwZWUyMTljZWJiOWNlYTRmMTJiMiJ9LCJmb3JtIjp7Il9pZCI6IjYyOGYwZWUwMTljZWJiOWNlYTRmMTIzZiJ9LCJpYXQiOjE2NTU4OTAyMTUsImV4cCI6MTY1NTkwNDYxNX0.4IEK2N7j9et_VyN2kTDrgb_IUz5ByY9LQgB_Twvs8vE
+          example: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyIjp7Il9pZCI6IjYyOGYwZWUyMTljZWJiOWNlYTRmMTJiMiJ9LCJmb3JtIjp7Il9pZCI6IjYyOGYwZWUwMTljZWJiOWNlYTRmMTIzZiJ9LCJpYXQiOjE2NTU4OTAyMTUsImV4cCI6MTY1NTkwNDYxNX0.4IEK2N7j9et_VyN2kTDrgb_IUz5ByY9LQgB_Twvs8vE
       responses:
         '201':
           description: Created
@@ -541,8 +538,7 @@ paths:
             x-jwt-token:
               schema:
                 type: string
-                example: >-
-                  eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyIjp7Il9pZCI6IjYyOGYwZWUyMTljZWJiOWNlYTRmMTJiMiJ9LCJmb3JtIjp7Il9pZCI6IjYyOGYwZWUwMTljZWJiOWNlYTRmMTIzZiJ9LCJpYXQiOjE2NTU4OTA4MjMsImV4cCI6MTY1NTkwNTIyM30.aGDjT15_APtrqg5It5PrxK-ygv6vCEmwnpLl899u5a8
+                example: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyIjp7Il9pZCI6IjYyOGYwZWUyMTljZWJiOWNlYTRmMTJiMiJ9LCJmb3JtIjp7Il9pZCI6IjYyOGYwZWUwMTljZWJiOWNlYTRmMTIzZiJ9LCJpYXQiOjE2NTU4OTA4MjMsImV4cCI6MTY1NTkwNTIyM30.aGDjT15_APtrqg5It5PrxK-ygv6vCEmwnpLl899u5a8
             Content-Type:
               schema:
                 type: string
@@ -554,7 +550,7 @@ paths:
             Date:
               schema:
                 type: string
-                example: Wed, 22 Jun 2022 09:40:23 GMT
+                example: 'Wed, 22 Jun 2022 09:40:23 GMT'
             Connection:
               schema:
                 type: string
@@ -900,3 +896,20 @@ paths:
                     created: '2022-06-22T09:40:23.095Z'
                     modified: '2022-06-22T09:40:23.103Z'
                     machineName: testcreateform
+  /user:
+    get:
+      summary: GET user endpoint
+      tags: []
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+                properties: {}
+              examples:
+                example-1:
+                  value:
+                    _id: 62cc9223b5cad9348f5880a9
+      operationId: get-user

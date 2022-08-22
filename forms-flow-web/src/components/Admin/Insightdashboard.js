@@ -219,12 +219,22 @@ export const InsightDashboard = (props) => {
     setSizePerPage(sizePerPage);
   };
 
+  const customTotal = (from, to, size) => (
+    <span className="react-bootstrap-table-pagination-total" role="main">
+      <Translation>{(t) => t("Showing")}</Translation> {from}{" "}
+      <Translation>{(t) => t("to")}</Translation> {to}{" "}
+      <Translation>{(t) => t("of")}</Translation> {size} <Translation>{(t) => t("Results")}</Translation>
+    </span>
+  );
+  
+
   const pagination = paginationFactory({
     showTotal: true,
     align: "left",
     sizePerPageList: getpageList(),
     page: activePage,
     sizePerPage: sizePerPage,
+    paginationTotalRenderer: customTotal,
     onPageChange: (page) => setActivePage(page),
     onSizePerPageChange: (size, page) => handleSizeChange(size, page),
   });
@@ -263,7 +273,9 @@ export const InsightDashboard = (props) => {
             pagination={pagination}
           />
         ) : (
-          <h3 className="text-center">No Dashboards Found</h3>
+          <h3 className="text-center">
+          <Translation>{(t) => t("No Dashboards Found")}</Translation>
+          </h3>
         )}
       </section>
     </>

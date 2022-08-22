@@ -17,9 +17,10 @@ server:
         max-age: 1800
 
 formsflow.ai:
-  bpm:
-    url: ${BPM_BASE_URL}
-    client: camunda
+  forms:
+    enableCustomSubmission: ${CUSTOM_SUBMISSION_ENABLED:false}
+    custom_submission:
+      url: ${CUSTOM_SUBMISSION_URL}
   api:
     url: ${FORMSFLOW_API_URL}
   analysis:
@@ -72,8 +73,6 @@ spring:
     connectionTimeout: ${CAMUNDA_HIKARI_CONN_TIMEOUT:30000}
     idleTimeout: ${CAMUNDA_HIKARI_IDLE_TIMEOUT:600000}
     validationTimeout: ${CAMUNDA_HIKARI_VALID_TIMEOUT:5000}
-  jersey:
-    application-path: /engine-rest
   security:
     oauth2:
       client:

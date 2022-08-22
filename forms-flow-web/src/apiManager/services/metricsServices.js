@@ -1,7 +1,7 @@
 import { httpGETRequest } from "../httpRequestHandler";
 import API from "../endpoints";
-import UserService from "../../services/UserService";
 import {
+  setMetricsDateRangeLoading,
   setMetricsTotalItems,
   setMetricsSubmissionCount,
   setMetricsLoader,
@@ -12,106 +12,51 @@ import {
   setMetricsStatusLoadError,
 } from "../../actions/metricsActions";
 
-export const fetchMetricsList = (
-  fromDate,
-  toDate,
-  setSearchBy,
-  pageNo,
-  limit,
-  searchText,
-  sortBy,
-  sortOrder,
-  ...rest
-) => {
-  setSearchBy = "modified";
-  const done = rest.length ? rest[0] : () => { };
-
-  return (dispatch) => {
-
-    let url = `${API.METRICS_SUBMISSIONS}?from=${fromDate}&to=${toDate}&orderBy=${setSearchBy}&pageNo=${pageNo}&limit=${limit}&sortBy=${sortBy}&sortOrder=${sortOrder}`;
-    if (searchText) {
-      url += `&formName=${searchText}`;
-    }
-    httpGETRequest(url, {}, UserService.getToken())
-      .then((res) => {
-        if (res.data) {
-          dispatch(setMetricsSubmissionCount(res.data.applications));
-          dispatch(setMetricsTotalItems(res.data.totalCount));
-          dispatch(setMetricsLoader(false));
-          if (res.data.applications && res.data.applications[0]) {
-
-            dispatch(
-              fetchMetricsSubmissionStatusCount(
-                res.data.applications[0].mapperId,
-                fromDate,
-                toDate,
-                setSearchBy
-              )
-            );
-          } else {
-            dispatch(setMetricsSubmissionStatusCount([]));
-            dispatch(setMetricsStatusLoader(false));
-          }
-          done(null, res.data);
-        } else {
-          // TODO error handling
-          dispatch(setMetricsStatusLoader(false));
-          dispatch(setMetricsLoadError(true));
-          // dispatch(setMetricsLoader(false));
-          done(null, []);
-        }
-      })
-      .catch((error) => {
-        // TODO error handling
-        console.log("Error", error);
-        dispatch(setMetricsLoader(false));
-        dispatch(setMetricsLoadError(true));
-      });
-  };
-
-
-};
-
-
 
 export const fetchMetricsSubmissionCount = (
   fromDate,
   toDate,
-  setSearchBy,
+  searchBy,
   formName,
+  pageNo,
+  limit,
+  sortsBy,
+  sortOrder,
   ...rest
 ) => {
   const done = rest.length ? rest[0] : () => { };
   return (dispatch) => {
     dispatch(setMetricsLoadError(false));
     /*eslint max-len: ["error", { "code": 170 }]*/
-    let url = `${API.METRICS_SUBMISSIONS}?from=${fromDate}&to=${toDate}&orderBy=${setSearchBy}`;
+    let url = `${API.METRICS_SUBMISSIONS}?from=${fromDate}&to=${toDate}&orderBy=${searchBy}&pageNo=${pageNo}&limit=${limit}&sortBy=${sortsBy}&sortOrder=${sortOrder}`;
     if (formName) {
       url += `&formName=${formName}`;
     }
     httpGETRequest(url, {})
       .then((res) => {
         if (res.data) {
+          dispatch(setMetricsDateRangeLoading(false));
+          dispatch(setMetricsLoader(false));
           dispatch(setMetricsSubmissionCount(res.data.applications));
           dispatch(setMetricsTotalItems(res.data.totalCount));
-          dispatch(setMetricsLoader(false));
           if (res.data.applications && res.data.applications[0]) {
             dispatch(
               fetchMetricsSubmissionStatusCount(
                 res.data.applications[0].mapperId,
                 fromDate,
                 toDate,
-                setSearchBy
+                searchBy
               )
             );
           } else {
             dispatch(setMetricsSubmissionStatusCount([]));
             dispatch(setMetricsStatusLoader(false));
+            dispatch(setMetricsDateRangeLoading(false));
           }
           done(null, res.data);
         } else {
+          dispatch(setMetricsDateRangeLoading(false));
           // TODO error handling
-
           dispatch(setMetricsStatusLoader(false));
           dispatch(setMetricsLoadError(true));
           // dispatch(setMetricsLoader(false));
@@ -122,6 +67,7 @@ export const fetchMetricsSubmissionCount = (
         // TODO error handling
         console.log("Error", error);
         // dispatch(serviceActionError(error));
+        dispatch(setMetricsDateRangeLoading(false));
         dispatch(setMetricsLoader(false));
         dispatch(setMetricsLoadError(true));
       });

@@ -84,6 +84,7 @@ const Insights = React.memo((props) => {
 
                   <div className="col-3 mb-2">
                     <Select
+                      aria-label="Select Dashboard"
                       options={dashboards}
                       onChange={setDashboardSelected}
                       placeholder={t("Select Dashboard")}

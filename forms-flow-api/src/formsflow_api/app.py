@@ -6,6 +6,7 @@ import json
 import logging
 import os
 from http import HTTPStatus
+from typing import Dict
 
 from flask import Flask, current_app, g, request
 from flask.logging import default_handler

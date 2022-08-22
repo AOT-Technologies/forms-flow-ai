@@ -12,8 +12,10 @@ from formsflow_api.resources.application import API as APPLICATION_API
 from formsflow_api.resources.application_history import (
     API as APPLICATION_HISTORY_API,
 )
+from formsflow_api.resources.authorization import API as AUTHORIZATION_API
 from formsflow_api.resources.checkpoint import API as CHECKPOINT_API
 from formsflow_api.resources.dashboards import API as DASHBOARDS_API
+from formsflow_api.resources.draft import API as DRAFT_API
 from formsflow_api.resources.form_process_mapper import API as FORM_API
 from formsflow_api.resources.formio import API as FORMIO_API
 from formsflow_api.resources.groups import API as KEYCLOAK_GROUPS_API
@@ -70,4 +72,6 @@ API.add_namespace(KEYCLOAK_GROUPS_API, path="/groups")
 API.add_namespace(PROCESS_API, path="/process")
 API.add_namespace(PUBLIC_API, path="/public")
 API.add_namespace(KEYCLOAK_USER_API, path="/user")
+API.add_namespace(DRAFT_API, path="/draft")
 API.add_namespace(FORMIO_API, path="/formio")
+API.add_namespace(AUTHORIZATION_API, path="/authorizations")

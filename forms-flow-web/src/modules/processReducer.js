@@ -5,6 +5,7 @@ const initialState = {
   processStatusList: [],
   processLoadError: false,
   processList: [],
+  deploymentList: [],
   formProcessError: false,
   formProcessList: [],
   formPreviousData: [],
@@ -17,6 +18,7 @@ const initialState = {
   applicationCountResponse: false,
   unPublishApiError: false,
   workflowAssociated: null, //{label:'Workflow Name', value:'workflow_process_key'}
+  formStatusLoading:false,
 };
 
 const process = (state = initialState, action) => {
@@ -31,6 +33,8 @@ const process = (state = initialState, action) => {
       return { ...state, processActivityLoadError: action.payload };
     case ACTION_CONSTANTS.PROCESS_LIST:
       return { ...state, processList: action.payload };
+    case ACTION_CONSTANTS.DEPLOYMENT_LIST:
+      return { ...state, deploymentList: action.payload };
     case ACTION_CONSTANTS.IS_FORM_PROCESS_STATUS_LOAD_ERROR:
       return { ...state, formProcessError: action.payload };
     case ACTION_CONSTANTS.FORM_PROCESS_LIST:
@@ -73,6 +77,8 @@ const process = (state = initialState, action) => {
       };
     case ACTION_CONSTANTS.WORKFLOW_ASSOCIATION_CHANGED:
       return { ...state, workflowAssociated: action.payload };
+    case ACTION_CONSTANTS.FORM_STATUS_LOADING:
+      return { ...state, formStatusLoading: action.payload };
     default:
       return state;
   }

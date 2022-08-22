@@ -128,23 +128,6 @@ Variable name | Meaning | Possible values | Default value |
 `INSIGHT_API_URL`:triangular_flag_on_post:|Insight Api base end-point||`http://{your-ip-address}:7000`
 `INSIGHT_API_KEY`:triangular_flag_on_post:|API_KEY from REDASH|eg. G6ozrFn15l5YJkpHcMZaKOlAhYZxFPhJl5Xr7vQw| `Get the api key from forms-flow-analytics (REDASH) by following the 'Get the Redash API Key' steps from `[here](../../forms-flow-analytics/README.md#get-the-redash-api-key)
 
-##### formsflow.ai forms variable settings
------------------------------------
-
-* [STEP 1](): Getting **ROLE_ID** and **RESOURCE_ID** are mandatory for role based access. To generate ID go to ["Formsflow-forms user/role API"](../../forms-flow-forms/README.md#formsflow-forms-userrole-api) and follow the steps.
-* [STEP 2](): Modify the environment variables using the values from step 1.
-
-Variable name | Meaning | Possible values | Default value |
---- | --- | --- | ---
-`CLIENT_ROLE`|	The role name used for client users|| `formsflow-client`
-`CLIENT_ROLE_ID`:triangular_flag_on_post:|forms-flow-forms client role Id|eg. 10121d8f7fadb18402a4c|`must get the **formsflow Client** role Id value from step #1 above.`
-`REVIEWER_ROLE`|The role name used for reviewer users||`formsflow-reviewer`
-`REVIEWER_ROLE_ID`:triangular_flag_on_post:|forms-flow-forms reviewer role Id|eg. 5ee10121d8f7fa03b3402a4d|`must get the **formsflow Reviewer** role Id value from step #1 above.`
-`DESIGNER_ROLE`|The role name used for designer users||`formsflow-designer`
-`DESIGNER_ROLE_ID`:triangular_flag_on_post:|forms-flow-forms administrator role Id|eg. 5ee090afee045f1597609cae|`must get the **Administrator** role Id value from step #1 above.`
-`ANONYMOUS_ID`|forms-flow-forms anonymous role Id|eg. 5ee090b0ee045f28ad609cb0|`must get the **Anonymous** role Id value from step #1 above.`
-`USER_RESOURCE_ID`:triangular_flag_on_post:|User forms form-Id|eg. 5ee090b0ee045f51c5609cb1|`must get the **user resource** id value from the step #1 above.`
-
 ##### formsflow.ai Datastore variable settings
 -----------------------------------
 
@@ -164,7 +147,7 @@ Variable name | Meaning | Possible values | Default value |
 `APPLICATION_NAME`| Application_Name | eg: formsflow.ai| `formsflow.ai`
 `WEB_BASE_CUSTOM_URL`| Custom_URL | eg: https://formsflow.ai| `custom url`
 `FORMSFLOW_API_CORS_ORIGINS`| formsflow.ai Rest API allowed origins, for allowing multiple origins you can separate host address using a comma seperated string or use * to allow all origins |eg:`host1, host2, host3`| `*`
-`CAMUNDA_API_URL` :triangular_flag_on_post: |Camunda Rest API URL||`http://{your-ip-address}:8000/camunda`
+`BPM_API_URL` :triangular_flag_on_post: |Camunda Rest API URL||`http://{your-ip-address}:8000/camunda`
 `FORMSFLOW_API_URL`:triangular_flag_on_post:|formsflow.ai Rest API URL||`http://{your-ip-address}:5000`
 `USER_ACCESS_PERMISSIONS`| JSON formatted permissions to enable / disable few access on user login.|| `{"accessAllowApplications":false,"accessAllowSubmissions":false}`
 

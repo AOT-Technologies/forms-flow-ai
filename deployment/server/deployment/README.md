@@ -197,7 +197,7 @@ Variable name | Meaning | Possible values | Default value |
 `APPLICATION_NAME`| Application_Name | eg: formsflow.ai| `formsflow.ai`
 `WEB_BASE_CUSTOM_URL`| Custom_URL | eg: https://formsflow.ai| `custom url`
 `FORMSFLOW_API_CORS_ORIGINS`| formsflow.ai Rest API allowed origins, for allowing multiple origins you can separate host address using a comma seperated string or use * to allow all origins |eg:`host1, host2, host3`| `*`
-`CAMUNDA_API_URL` :triangular_flag_on_post: |Camunda Rest API URL||`http://{your-ip-address}:8000/camunda`
+`BPM_API_URL` :triangular_flag_on_post: |Camunda Rest API URL||`http://{your-ip-address}:8000/camunda`
 `FORMSFLOW_API_URL`:triangular_flag_on_post:|formsflow.ai Rest API URL||`http://{your-ip-address}:5000`
 `USER_ACCESS_PERMISSIONS`| JSON formatted permissions to enable / disable few access on user login.|| `{"accessAllowApplications":false,"accessAllowSubmissions":false}`
 

@@ -1,30 +1,23 @@
 /* istanbul ignore file */
 import {
-  ROLES,
-  USER_RESOURCE_FORM_ID,
-  ANONYMOUS_USER,
-  ANONYMOUS_ID,
-  FORMIO_JWT_SECRET,
-  MULTITENANCY_ENABLED,
-} from "../constants/constants";
-import {
   setUserRole,
   setUserToken,
   setUserDetails,
 } from "../actions/bpmActions";
-import { BPM_BASE_URL } from "../apiManager/endpoints/config";
+import { BPM_BASE_URL_EXT } from "../apiManager/endpoints/config";
 import { AppConfig } from "../config";
 import {
   WEB_BASE_URL,
   WEB_BASE_CUSTOM_URL,
+  CUSTOM_SUBMISSION_URL
 } from "../apiManager/endpoints/config";
 
 // import {_kc} from "../constants/tenantConstant";
 import { setLanguage } from "../actions/languageSetAction";
 import Keycloak from "keycloak-js";
 import { getTenantKeycloakJson } from "../apiManager/services/tenantServices";
+import { getFormioRoleIds } from "../apiManager/services/userservices";
 
-const jwt = require("jsonwebtoken");
 let KeycloakData, doLogin, doLogout;
 
 const setKeycloakJson = (tenantKey = null, ...rest) => {
@@ -63,21 +56,22 @@ const initKeycloak = (store, ...rest) => {
         store.dispatch(setLanguage(KeycloakData.tokenParsed.locale || "en"));
         //Set Cammunda/Formio Base URL
         setApiBaseUrlToLocalStorage();
-
-        let roles = [];
-        for (let i = 0; i < UserRoles.length; i++) {
-          const roleData = ROLES.find((x) => x.title === UserRoles[i]);
-          if (roleData) {
-            roles = roles.concat(roleData.id);
-          }
-        }
-        KeycloakData.loadUserInfo().then((res) =>
-          store.dispatch(setUserDetails(res))
+        // get formio roles
+        store.dispatch(
+          getFormioRoleIds((err) => {
+            if (err) {
+              console.error(err);
+              // doLogout();
+            } else {
+              KeycloakData.loadUserInfo().then((res) =>
+                store.dispatch(setUserDetails(res))
+              );
+              // onAuthenticatedCallback();
+              done(null, KeycloakData);
+            }
+          })
         );
-        const email = KeycloakData.tokenParsed.email || "external";
-        authenticateFormio(email, roles, KeycloakData.tokenParsed?.tenantKey);
-        // onAuthenticatedCallback();
-        done(null, KeycloakData);
+
         refreshToken(store);
       } else {
         doLogout();
@@ -133,11 +127,12 @@ const userLogout = () => {
 };
 
 const setApiBaseUrlToLocalStorage = () => {
-  localStorage.setItem("bpmApiUrl", BPM_BASE_URL);
+  localStorage.setItem("bpmApiUrl", BPM_BASE_URL_EXT);
   localStorage.setItem("formioApiUrl", AppConfig.projectUrl);
   localStorage.setItem("formsflow.ai.url", window.location.origin);
   localStorage.setItem("formsflow.ai.api.url", WEB_BASE_URL);
   localStorage.setItem("customApiUrl", WEB_BASE_CUSTOM_URL);
+  localStorage.setItem("customSubmissionUrl", CUSTOM_SUBMISSION_URL);
 };
 
 const getFormioToken = () => localStorage.getItem("formioToken");
@@ -148,35 +143,7 @@ const getFormioToken = () => localStorage.getItem("formioToken");
   return KeycloakData.updateToken(5).then(successCallback).catch(doLogin);
 };*/
 
-const authenticateAnonymousUser = (store) => {
-  const user = ANONYMOUS_USER;
-  const roles = [ANONYMOUS_ID];
-  store.dispatch(setUserRole([user]));
-  authenticateFormio(user, roles);
-};
-
-const authenticateFormio = (user, roles, tenantKey) => {
-  let tenantData = {};
-  if (tenantKey && MULTITENANCY_ENABLED) {
-    tenantData = { tenantKey };
-  }
-  const FORMIO_TOKEN = jwt.sign(
-    {
-      external: true,
-      form: {
-        _id: USER_RESOURCE_FORM_ID, // form.io form Id of user resource
-      },
-      user: {
-        _id: user, // keep it like that
-        roles: roles,
-      },
-      ...tenantData,
-    },
-    FORMIO_JWT_SECRET
-  ); // TODO Move JWT secret key to COME From ENV
-  //TODO remove this token from local Storage on logout and try to move to redux store as well
-  localStorage.setItem("formioToken", FORMIO_TOKEN);
-};
+ 
 
 // const KeycloakData= _kc;
 
@@ -189,7 +156,6 @@ const UserService = {
   userLogout,
   getToken,
   getFormioToken,
-  authenticateAnonymousUser,
   setKeycloakJson,
 };
 

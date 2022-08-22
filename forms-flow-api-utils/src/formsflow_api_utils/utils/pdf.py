@@ -10,6 +10,7 @@ from selenium.webdriver.common.by import By
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.support.ui import WebDriverWait
 from seleniumwire import webdriver
+
 from formsflow_api_utils.utils import CHROME_DRIVER_PATH
 
 
@@ -34,13 +35,14 @@ def driver_path():
 # pylint: disable=R1710
 
 
-def get_pdf_from_html(
-    path, chromedriver=driver_path(), p_options=None, wait=None, auth_token=None
-):
+def get_pdf_from_html(path, chromedriver=driver_path(), p_options=None, args=None):
     """Load url in chrome web driver and print as pdf."""
 
     def interceptor(request):
-        request.headers["Authorization"] = auth_token
+        request.headers["Authorization"] = args["auth_token"]
+
+    if args is None:
+        args = {}
 
     options = Options()
     options.add_argument("--headless")
@@ -58,14 +60,19 @@ def get_pdf_from_html(
     )
     driver.set_window_size(1920, 1080)
 
-    if auth_token is not None:
+    if "auth_token" in args:
         driver.request_interceptor = interceptor
+
+    if "timezone" in args and args["timezone"] is not None:
+        tz_params = {"timezoneId": args["timezone"]}
+        driver.execute_cdp_cmd("Emulation.setTimezoneOverride", tz_params)
+
     driver.get(path)
 
     try:
-        if wait is not None:
-            delay = 100  # seconds
-            elem_loc = EC.presence_of_element_located((By.CLASS_NAME, wait))
+        if "wait" in args:
+            delay = 30  # seconds
+            elem_loc = EC.presence_of_element_located((By.CLASS_NAME, args["wait"]))
             WebDriverWait(driver, delay).until(elem_loc)
         calculated_print_options = {
             "landscape": False,
@@ -80,7 +87,9 @@ def get_pdf_from_html(
         return base64.b64decode(result["data"])
 
     except TimeoutException as err:
+        driver.quit()
         current_app.logger.warning(err)
+        return False
 
 
 def pdf_response(result, file_name="Pdf.pdf"):

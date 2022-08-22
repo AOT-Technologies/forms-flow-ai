@@ -214,7 +214,18 @@ export const RESOURCE_BUNDLES_EN = {
   "Form deleted successfully":"Form deleted successfully",
   "Form process failed":"Form process failed",
   "Form unpublishing Failed":"Form unpublishing Failed",
-  "All groups have access to the dashboard":"All groups have access to the dashboard"
+  "All groups have access to the dashboard":"All groups have access to the dashboard",
+  "Export PDF":"Export PDF",
+  "Something went wrong. Please try again!":"Something went wrong. Please try again!",
+  "No Dashboards Found":"No Dashboards Found",
+  "Processes":"Processes",
+  "Please select an existing workflow.":"Please select an existing workflow.",
+  "Create New":"Create New",
+  "Or create new workflow or import a workflow from a local directory.":"Or create new workflow or import a workflow from a local directory.",
+  "The operation couldn't be completed. Please try after sometime":"The operation couldn't be completed. Please try after sometime",
+  "Select...":"Select..."
+
+
 
 
 };

@@ -1,65 +1,61 @@
 package org.camunda.bpm.extension.hooks.rest.impl;
 
+import org.camunda.bpm.engine.rest.dto.repository.ProcessDefinitionDiagramDto;
+import org.camunda.bpm.engine.rest.dto.repository.ProcessDefinitionDto;
+import org.camunda.bpm.engine.rest.dto.runtime.ProcessInstanceDto;
+import org.camunda.bpm.engine.rest.dto.runtime.StartProcessInstanceDto;
+import org.camunda.bpm.extension.hooks.rest.ProcessDefinitionRestResource;
+import org.springframework.hateoas.EntityModel;
+
+import javax.ws.rs.core.UriInfo;
+import java.util.List;
+import java.util.logging.Logger;
+import java.util.stream.Collectors;
+
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
 
-import java.util.List;
-import java.util.Map;
 
-import org.camunda.bpm.extension.hooks.rest.dto.ProcessDefinitionDiagramDto;
-import org.camunda.bpm.extension.hooks.rest.dto.ProcessDefinitionDto;
-import org.camunda.bpm.extension.hooks.rest.dto.ProcessInstanceDto;
-import org.camunda.bpm.extension.hooks.rest.dto.StartProcessInstanceDto;
-import org.camunda.bpm.extension.hooks.rest.ProcessDefinitionRestResource;
-import org.camunda.bpm.extension.hooks.rest.RestResource;
-import org.camunda.bpm.extension.hooks.rest.service.ProcessDefinitionRestService;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.hateoas.CollectionModel;
-import org.springframework.hateoas.EntityModel;
-import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
-
-@RestController
-@RequestMapping(RestResource.BASE_PATH+"/v1"+ ProcessDefinitionRestResource.PATH)
 public class ProcessDefinitionRestResourceImpl implements ProcessDefinitionRestResource {
 
-    Logger LOG = LoggerFactory.getLogger(ProcessDefinitionRestResourceImpl.class);
+    private final Logger LOGGER = Logger.getLogger(ProcessDefinitionRestResourceImpl.class.getName());
 
-    private final ProcessDefinitionRestService restService;
+    private final org.camunda.bpm.engine.rest.ProcessDefinitionRestService restService;
 
-    public ProcessDefinitionRestResourceImpl(ProcessDefinitionRestService processDefinitionRestService){
-        this.restService = processDefinitionRestService;
+    public ProcessDefinitionRestResourceImpl(org.camunda.bpm.engine.rest.ProcessDefinitionRestService processEngineRestService) {
+        restService = processEngineRestService;
     }
 
     @Override
-    public CollectionModel<ProcessDefinitionDto> getProcessDefinition(Map<String, Object> parameters){
-
-        ResponseEntity<List<ProcessDefinitionDto>> processDefinition = restService.getProcessDefinition(parameters);
-
-        return CollectionModel.of(processDefinition.getBody(),
-                linkTo(methodOn(ProcessDefinitionRestResourceImpl.class).getProcessDefinition(parameters)).withSelfRel(),
-                linkTo(methodOn(ProcessDefinitionRestResourceImpl.class).startProcessInstanceByKey(parameters, null, "defaultflow")).withSelfRel());
+    public List<ProcessDefinitionDto> getProcessDefinitions(UriInfo uriInfo, Integer firstResult, Integer maxResults) {
+        List<ProcessDefinitionDto> response = restService.getProcessDefinitions(uriInfo, firstResult, maxResults);
+        if (uriInfo.getQueryParameters() != null && uriInfo.getQueryParameters().containsKey("excludeInternal")) {
+            response = response.stream()
+                    .filter(processDefinitionDto -> processDefinitionDto.getName() != null
+                            && !processDefinitionDto.getName().strip().endsWith("(Internal)"))
+                    .collect(Collectors.toList());
+        }
+        return response;
     }
 
     @Override
-    public EntityModel<ProcessDefinitionDiagramDto> getProcessDefinitionBpmn20Xml(@RequestParam Map<String, Object> parameters, String key){
-
-        ResponseEntity<ProcessDefinitionDiagramDto> processDefinition = restService.getProcessDefinitionBpmn20Xml(parameters, key);
-
-        return EntityModel.of(processDefinition.getBody(),
-                linkTo(methodOn(ProcessDefinitionRestResourceImpl.class).getProcessDefinitionBpmn20Xml(parameters, key)).withSelfRel(),
-                linkTo(methodOn(ProcessDefinitionRestResourceImpl.class).startProcessInstanceByKey(parameters, null, "defaultflow")).withSelfRel());
+    public EntityModel<ProcessDefinitionDto> getProcessDefinition(String key) {
+        ProcessDefinitionDto dto = restService.getProcessDefinitionByKey(key).getProcessDefinition();
+        return EntityModel.of(dto, linkTo(methodOn(ProcessDefinitionRestResourceImpl.class).getProcessDefinition(key)).withSelfRel());
     }
 
     @Override
-    public EntityModel<ProcessInstanceDto> startProcessInstanceByKey(Map<String, Object> parameters, StartProcessInstanceDto dto, String key){
+    public EntityModel<ProcessDefinitionDiagramDto> getProcessDefinitionBpmn20Xml(String key) {
+        ProcessDefinitionDiagramDto dto =  restService.getProcessDefinitionByKey(key).getProcessDefinitionBpmn20Xml();
+        return EntityModel.of(dto, linkTo(methodOn(ProcessDefinitionRestResourceImpl.class).getProcessDefinitionBpmn20Xml(key)).withSelfRel());
+    }
 
-        ResponseEntity<ProcessInstanceDto> processInstanceDto = restService.startProcessInstanceByKey(parameters, dto, key);
+    @Override
+    public EntityModel<ProcessInstanceDto> startProcessInstanceByKey(UriInfo context, StartProcessInstanceDto parameters, String key) {
 
-        return EntityModel.of(processInstanceDto.getBody(),
-                linkTo(methodOn(ProcessDefinitionRestResourceImpl.class).startProcessInstanceByKey(parameters, dto, key)).withSelfRel());
+        org.camunda.bpm.engine.rest.dto.runtime.ProcessInstanceDto processInstanceDto = restService.getProcessDefinitionByKey(key).startProcessInstance(context, parameters);
+
+        return EntityModel.of(processInstanceDto,
+                linkTo(methodOn(ProcessDefinitionRestResourceImpl.class).startProcessInstanceByKey(context, parameters, key)).withSelfRel());
     }
 }

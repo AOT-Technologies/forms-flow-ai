@@ -72,7 +72,7 @@ const FormOperations = React.memo(({ formData }) => {
       className="btn  btn-outline-primary"
       onClick={() => viewOrEditForm(formData._id)}
     >
-      <i className="fa fa-pencil-square-o mr-1" />
+      <i className="fa fa-pencil-square-o mr-1"  />
       <Translation>{(t) => t("View/Edit Form")}</Translation>{" "}
     </button>
   );

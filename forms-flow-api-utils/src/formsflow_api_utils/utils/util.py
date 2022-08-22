@@ -8,6 +8,7 @@ if sort order and sort order by is correct.
 translate - Translate the response to provided language
 """
 import re
+from typing import Tuple
 
 from .constants import (
     ALLOW_ALL_ORIGINS,
@@ -15,7 +16,11 @@ from .constants import (
     DESIGNER_GROUP,
     REVIEWER_GROUP,
 )
-from .enums import ApplicationSortingParameters, FormioRoles
+from .enums import (
+    ApplicationSortingParameters,
+    DraftSortingParameters,
+    FormioRoles,
+)
 from .translations.translations import translations
 
 
@@ -54,10 +59,11 @@ def validate_sort_order_and_order_by(order_by: str, sort_order: str) -> bool:
         ApplicationSortingParameters.Status,
         ApplicationSortingParameters.Modified,
         ApplicationSortingParameters.FormName,
+        DraftSortingParameters.Name,
     ]:
         order_by = None
     else:
-        if order_by == ApplicationSortingParameters.Name:
+        if order_by in [ApplicationSortingParameters.Name, DraftSortingParameters.Name]:
             order_by = ApplicationSortingParameters.FormName
         order_by = camel_to_snake(order_by)
     if sort_order not in ["asc", "desc"]:
@@ -101,12 +107,19 @@ def get_role_ids_from_user_groups(role_ids, user_role):
     if DESIGNER_GROUP in user_role:
         return role_ids
     if REVIEWER_GROUP in user_role:
-        return filter_list_by_user_role(FormioRoles.REVIEWER.value, role_ids)
+        return filter_list_by_user_role(FormioRoles.REVIEWER.name, role_ids)
     if CLIENT_GROUP in user_role:
-        return filter_list_by_user_role(FormioRoles.CLIENT.value, role_ids)
+        return filter_list_by_user_role(FormioRoles.CLIENT.name, role_ids)
     return None
 
 
 def filter_list_by_user_role(formio_role, role_ids):
     """Iterate over role_ids and return entries with matching formio role."""
-    return list(filter(lambda item: item["role"] == formio_role, role_ids))
+    return list(filter(lambda item: item["type"] == formio_role, role_ids))
+
+
+def get_form_and_submission_id_from_form_url(form_url: str) -> Tuple:
+    """Retrieves the formid and submission id from the url parameters."""
+    form_id = form_url[form_url.find("/form/") + 6 : form_url.find("/submission/")]
+    submission_id = form_url[form_url.find("/submission/") + 12 : len(form_url)]
+    return (form_id, submission_id)

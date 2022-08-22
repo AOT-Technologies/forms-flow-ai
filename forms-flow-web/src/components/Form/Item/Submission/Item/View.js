@@ -9,16 +9,17 @@ import {
   Errors,
 } from "react-formio";
 import { push } from "connected-react-router";
-// import { Button } from "react-bootstrap";
-
 import Loading from "../../../../../containers/Loading";
-// import PdfDownloadService from "../../../../../services/PdfDownloadService";
 import { setFormSubmissionLoading } from "../../../../../actions/formActions";
 import LoadingOverlay from "react-loading-overlay";
 import { useTranslation } from "react-i18next";
 import { formio_resourceBundles } from "../../../../../resourceBundles/formio_resourceBundles";
-import { DownloadPDFButton } from '../../../ExportAsPdf/downloadPdfButton';
-
+import {
+  CUSTOM_SUBMISSION_URL,
+  CUSTOM_SUBMISSION_ENABLE,
+} from "../../../../../constants/constants";
+import { updateCustomSubmission } from "../../../../../apiManager/services/FormServices";
+import DownloadPDFButton from "../../../ExportAsPdf/downloadPdfButton";
 const View = React.memo((props) => {
   const { t } = useTranslation();
   const {
@@ -33,6 +34,18 @@ const View = React.memo((props) => {
   const isFormSubmissionLoading = useSelector(
     (state) => state.formDelete.isFormSubmissionLoading
   );
+
+  const customSubmission = useSelector(
+    (state) => state.formDelete.customSubmission
+  );
+
+  let updatedSubmission;
+  if (CUSTOM_SUBMISSION_URL && CUSTOM_SUBMISSION_ENABLE) {
+    updatedSubmission = customSubmission;
+  } else {
+    updatedSubmission = submission;
+  }
+
   if (isFormActive || (isSubActive && !isFormSubmissionLoading)) {
     return <Loading />;
   }
@@ -41,19 +54,13 @@ const View = React.memo((props) => {
     <div className="container row task-container">
       <div className="main-header">
         <h3 className="task-head"> {form.title}</h3>
-        {showPrintButton ? (
+        {showPrintButton && form?._id ? (
           <div className="btn-right d-flex flex-row">
-            {/* <Button
-              className="btn btn-primary btn-sm form-btn pull-right btn-right"
-              onClick={() => PdfDownloadService.getPdf(form, submission)}
-            >
-              <i className="fa fa-print" aria-hidden="true" />
-              {t("Print As PDF")}
-            </Button> */}
-            <DownloadPDFButton 
-            form_id={form._id} 
-            submission_id={submission._id} 
-            title={form.title}/>
+            <DownloadPDFButton
+              form_id={form._id}
+              submission_id={submission._id}
+              title={form.title}
+            />
           </div>
         ) : null}
       </div>
@@ -68,7 +75,7 @@ const View = React.memo((props) => {
         <div className="sub-container">
           <Form
             form={form}
-            submission={submission}
+            submission={updatedSubmission}
             url={url}
             hideComponents={hideComponents}
             onSubmit={onSubmit}
@@ -84,10 +91,13 @@ View.defaultProps = {
   showPrintButton: true,
 };
 
-const mapStateToProps = (state) => {
+const mapStateToProps = (state, props) => {
+  const isDraftView = props.page === "draft-detail" ? true : false;
   return {
     form: selectRoot("form", state),
-    submission: selectRoot("submission", state),
+    submission: isDraftView
+      ? selectRoot("draft", state)
+      : selectRoot("submission", state),
     options: {
       readOnly: true,
       language: state.user.lang,
@@ -100,26 +110,35 @@ const mapDispatchToProps = (dispatch, ownProps) => {
   return {
     onSubmit: (submission) => {
       dispatch(setFormSubmissionLoading(true));
-      dispatch(
-        saveSubmission(
-          "submission",
+      const callBack = (err, submission) => {
+        if (!err) {
+          dispatch(resetSubmissions("submission"));
+          dispatch(setFormSubmissionLoading(false));
+          dispatch(
+            push(
+              `/form/${ownProps.match.params.formId}/submission/${submission._id}`
+            )
+          );
+        } else {
+          dispatch(setFormSubmissionLoading(false));
+        }
+      };
+      if (CUSTOM_SUBMISSION_URL && CUSTOM_SUBMISSION_ENABLE) {
+        updateCustomSubmission(
           submission,
           ownProps.match.params.formId,
-          (err, submission) => {
-            if (!err) {
-              dispatch(resetSubmissions("submission"));
-              dispatch(setFormSubmissionLoading(false));
-              dispatch(
-                push(
-                  `/form/${ownProps.match.params.formId}/submission/${submission._id}`
-                )
-              );
-            } else {
-              dispatch(setFormSubmissionLoading(false));
-            }
-          }
-        )
-      );
+          callBack
+        );
+      } else {
+        dispatch(
+          saveSubmission(
+            "submission",
+            submission,
+            ownProps.match.params.formId,
+            callBack
+          )
+        );
+      }
     },
   };
 };

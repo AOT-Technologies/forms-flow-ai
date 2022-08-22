@@ -162,7 +162,7 @@ export const RESOURCE_BUNDLES_BG = {
     "No forms found": "Няма намерени формуляри",
     "Powered by ": "Задвижвани от ",
     "No Process Diagram found": "Не е намерена диаграма на процеса",
-    "No applications found": "No applications found",
+    "No applications found": "Няма намерени приложения",
     "Successfully Updated": "Актуализирано успешно",
     "Failed": "Се провали",
     "Press Enter key or click here to search": "Натиснете клавиша Enter или щракнете тук, за да търсите",
@@ -214,7 +214,24 @@ export const RESOURCE_BUNDLES_BG = {
     "Form deleted successfully":"Формулярът е изтрит успешно",
     "Form process failed":"Обработката на формуляра не бе успешно",
     "Form unpublishing Failed":"Прекратяването на публикуването на формуляра не бе успешно",
-    "All groups have access to the dashboard":"Всички групи имат достъп до таблото"
+    "All groups have access to the dashboard":"Всички групи имат достъп до таблото",
+    "Export PDF": "Експортиране на PDF",
+    "Something went wrong. Please try again!":"Нещо се обърка. Моля, опитайте отново!",
+    "No Dashboards Found":"Няма намерени табла за управление",
+    "Processes":"процеси",
+    "Please select an existing workflow.":"Моля, изберете съществуващ работен процес.",
+    "Create New":"Създай нов",
+    "Or create new workflow or import a workflow from a local directory.":"Или създайте нов работен поток или импортирайте работен поток от локална директория.",
+    "The operation couldn't be completed. Please try after sometime":"Операцията не можа да бъде завършена. Моля, опитайте след известно време",
+    "Select...":"Изберете..."
+
+
+
+
+
+
+
+
   
 
 

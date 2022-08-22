@@ -21,6 +21,7 @@ import {
   setApplicationCountResponse,
   setUnPublishApiError,
   setResetProcess,
+  setAllDeploymentList,
 } from "../../actions/processActions";
 import { setApplicationCount } from "../../actions/processActions";
 import { replaceUrl } from "../../helper/helper";
@@ -63,25 +64,121 @@ export const getProcessStatusList = (processId, taskId) => {
  *
  * @param  {...any} rest
  */
-export const fetchAllBpmProcesses = (...rest) => {
+export const fetchAllBpmProcesses = (excludeInternal = true, ...rest) => {
   const done = rest.length ? rest[0] : () => {};
   return (dispatch) => {
-    httpGETRequest(API.GET_BPM_PROCESS_LIST + "?latestVersion=true&excludeInternal=true", {}, UserService.getToken(), true)
+    // eslint-disable-next-line max-len
+    httpGETRequest(
+      API.GET_BPM_PROCESS_LIST +
+        `?latestVersion=true&excludeInternal=${excludeInternal}`,
+      {},
+      UserService.getToken(),
+      true
+    )
       .then((res) => {
-        if(res?.data?._embedded?.processDefinitionDtoList) {
-          dispatch(setAllProcessList(res.data._embedded.processDefinitionDtoList));
+        if(res?.data) {
+          dispatch(setAllProcessList(res.data));
           done(null, res.data);
         } else {
           dispatch(setAllProcessList([]));
-          //dispatch(setProcessLoadError(true));
         }
       })
       // eslint-disable-next-line no-unused-vars
       .catch((error) => {
-        // dispatch(setProcessStatusLoading(false));
         dispatch(setProcessLoadError(true));
       });
   };
+};
+
+export const fetchAllBpmDeployments = () => {
+  return async (dispatch) => {
+    // eslint-disable-next-line max-len
+    httpGETRequest(
+      API.GET_BPM_DEPLOYMENTS + `?sortBy=deploymentTime&sortOrder=desc`,
+      {},
+      UserService.getToken(),
+      true
+    )
+      .then((res) => {
+        let deploymentList = [];
+        let numDeployments = 0;
+
+        if (res?.data) {
+          // Get Deployments
+          res.data.map((deployment) => {
+            // Get Resources
+            getBpmDeploymentResources(deployment).then((resourceList) => {
+              resourceList.resources.map((resource) => {
+                // Only include bpmn files
+                if (resource.name.substr(resource.name.length - 4) == "bpmn") {
+                  numDeployments++;
+                  // Get Diagram
+                  getBpmDeploymentDiagram(resource).then(
+                    (updatedDeployment) => {
+                      updatedDeployment.tenantId = deployment.tenantId;
+                      updatedDeployment.deploymentName = deployment.name;
+                      updatedDeployment.deploymentTime = deployment.deploymentTime;
+                      deploymentList.push(updatedDeployment);
+                      // Dispatch complete list
+                      if (deploymentList.length == numDeployments) {
+                        dispatch(setAllDeploymentList(deploymentList));
+                      }
+                    }
+                  );
+                }
+              });
+            });
+          });
+        } else {
+          dispatch(setAllDeploymentList([]));
+        }
+      })
+      // eslint-disable-next-line no-unused-vars
+      .catch((error) => {
+        dispatch(setProcessLoadError(true));
+      });
+  };
+};
+
+const getBpmDeploymentResources = async (deployment) => {
+  const apiUrlDeployementId = replaceUrl(
+    API.GET_BPM_DEPLOYMENT_RESOURCES,
+    "<deployment_id>",
+    deployment.id
+  );
+  // eslint-disable-next-line max-len
+  const resources = await httpGETRequest(
+    apiUrlDeployementId,
+    {},
+    UserService.getToken(),
+    true
+  );
+  deployment.resources = resources.data;
+
+  return deployment;
+};
+
+export const getBpmDeploymentDiagram = async (resource) => {
+  let apiUrlDiagramList = replaceUrl(
+    API.GET_BPM_DEPLOYMENT_DIAGRAM,
+    "<deployment_id>",
+    resource.deploymentId
+  );
+  apiUrlDiagramList = replaceUrl(
+    apiUrlDiagramList,
+    "<resource_id>",
+    resource.id
+  );
+  // eslint-disable-next-line max-len
+  const diagram = await httpGETRequest(
+    apiUrlDiagramList,
+    {},
+    UserService.getToken(),
+    true
+  );
+  resource.diagram = diagram.data;
+
+  return resource;
 };
 
 /**
@@ -235,11 +332,7 @@ export const fetchDiagram = (process_key, tenant_key = null, ...rest) => {
   let url = replaceUrl(API.PROCESSES_XML, "<process_key>", process_key);
 
   if (tenant_key) {
-    url = replaceUrl(
-      API.PROCESSES_XML,
-      "<process_key>",
-      process_key
-    );
+    url = replaceUrl(API.PROCESSES_XML, "<process_key>", process_key);
     url = url + "?tenantId=" + tenant_key;
   }
 

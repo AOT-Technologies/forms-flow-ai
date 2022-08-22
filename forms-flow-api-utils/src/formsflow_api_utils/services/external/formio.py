@@ -87,7 +87,7 @@ class FormioService:
             current_app.logger.info("User resource ids collected successfully.")
             return response.json()
         current_app.logger.error("Failed to fetch user resource ids!")
-        return BusinessException(response.json(), HTTPStatus.SERVICE_UNAVAILABLE)
+        raise BusinessException(response.json(), HTTPStatus.SERVICE_UNAVAILABLE)
 
     def get_form(self, data, formio_token):
         """Get request to formio API to get form details."""

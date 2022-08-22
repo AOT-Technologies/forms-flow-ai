@@ -18,6 +18,7 @@ from formsflow_api_utils.utils import (
     REVIEWER_GROUP,
     auth,
     cors_preflight,
+    get_form_and_submission_id_from_form_url,
     profiletime,
 )
 
@@ -63,6 +64,7 @@ class ApplicationsResource(Resource):
                 (
                     application_schema_dump,
                     application_count,
+                    draft_count,
                 ) = ApplicationService.get_auth_applications_and_count(
                     created_from=created_from_date,
                     created_to=created_to_date,
@@ -82,6 +84,7 @@ class ApplicationsResource(Resource):
                 (
                     application_schema_dump,
                     application_count,
+                    draft_count,
                 ) = ApplicationService.get_all_applications_by_user(
                     page_no=page_no,
                     limit=limit,
@@ -96,14 +99,12 @@ class ApplicationsResource(Resource):
                     application_name=application_name,
                     application_status=application_status,
                 )
-            application_schema = ApplicationService.apply_custom_attributes(
-                application_schema_dump=application_schema_dump
-            )
             return (
                 (
                     {
-                        "applications": application_schema,
+                        "applications": application_schema_dump,
                         "totalCount": application_count,
+                        "draftCount": draft_count,
                         "limit": limit,
                         "pageNo": page_no,
                     }
@@ -159,13 +160,13 @@ class ApplicationResourceById(Resource):
                     token=request.headers["Authorization"],
                 )
                 return (
-                    ApplicationService.apply_custom_attributes(application_schema_dump),
+                    application_schema_dump,
                     status,
                 )
             application, status = ApplicationService.get_application_by_user(
                 application_id=application_id
             )
-            return (ApplicationService.apply_custom_attributes(application), status)
+            return (application, status)
         except PermissionError as err:
             response, status = (
                 {
@@ -192,6 +193,14 @@ class ApplicationResourceById(Resource):
         try:
             application_schema = ApplicationUpdateSchema()
             dict_data = application_schema.load(application_json)
+            form_url = dict_data.get("form_url", None)
+            if form_url:
+                (
+                    latest_form_id,
+                    submission_id,
+                ) = get_form_and_submission_id_from_form_url(form_url)
+                dict_data["latest_form_id"] = latest_form_id
+                dict_data["submission_id"] = submission_id
             ApplicationService.update_application(
                 application_id=application_id, data=dict_data
             )
@@ -242,21 +251,17 @@ class ApplicationResourceByFormId(Resource):
             limit = 0
 
         if auth.has_role(["formsflow-reviewer"]):
-            application_schema = ApplicationService.apply_custom_attributes(
-                ApplicationService.get_all_applications_form_id(
-                    form_id=form_id, page_no=page_no, limit=limit
-                )
+            application_schema = ApplicationService.get_all_applications_form_id(
+                form_id=form_id, page_no=page_no, limit=limit
             )
             application_count = ApplicationService.get_all_applications_form_id_count(
                 form_id=form_id
             )
         else:
-            application_schema = ApplicationService.apply_custom_attributes(
-                ApplicationService.get_all_applications_form_id_user(
-                    form_id=form_id,
-                    page_no=page_no,
-                    limit=limit,
-                )
+            application_schema = ApplicationService.get_all_applications_form_id_user(
+                form_id=form_id,
+                page_no=page_no,
+                limit=limit,
             )
             application_count = (
                 ApplicationService.get_all_applications_form_id_user_count(

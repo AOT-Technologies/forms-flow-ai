@@ -11,9 +11,6 @@ from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.support.ui import WebDriverWait
 from seleniumwire import webdriver
 
-from formsflow_api_utils.utils import CHROME_DRIVER_PATH
-
-
 def send_devtools(driver, cmd, params=None):
     """Chrome dev tools execution function."""
     resource = "/session/" + driver.session_id + "/chromium/send_command_and_get_result"
@@ -26,16 +23,10 @@ def send_devtools(driver, cmd, params=None):
         raise Exception(response.get("value"))
     return response.get("value")
 
-
-def driver_path():
-    """Return chrome webreiver path."""
-    return CHROME_DRIVER_PATH
-
-
 # pylint: disable=R1710
 
 
-def get_pdf_from_html(path, chromedriver=driver_path(), p_options=None, args=None):
+def get_pdf_from_html(path, chromedriver=None, p_options=None, args=None):
     """Load url in chrome web driver and print as pdf."""
 
     def interceptor(request):

@@ -36,9 +36,9 @@ export const setAllProcessList = (data) => (dispatch) => {
   });
 };
 
-export const setAllDeploymentList = (data) => (dispatch) => {
+export const setAllDmnProcessList = (data) => (dispatch) => {
   dispatch({
-    type: ACTION_CONSTANTS.DEPLOYMENT_LIST,
+    type: ACTION_CONSTANTS.DMN_PROCESS_LIST,
     payload: data,
   });
 };

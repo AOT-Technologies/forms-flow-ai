@@ -41,6 +41,17 @@ jest.mock("bpmn-js-bpmnlint", () => ({
 jest.mock("bpmn-xml-parser", () => ({
   XmlParser: jest.fn,
 }));
+jest.mock("dmn-js/lib/Modeler", () => ({
+  DmnJS: jest.fn,
+}));
+jest.mock("dmn-js-properties-panel", () => ({
+  DmnPropertiesPanelModule: jest.fn,
+  DmnPropertiesProviderModule: jest.fn,
+  CamundaPropertiesProviderModule: jest.fn,
+}));
+jest.mock("camunda-dmn-moddle/resources/camunda", () => ({
+  camundaModdleDescriptor: jest.fn,
+}));
 
 let store;
 beforeEach(() => {

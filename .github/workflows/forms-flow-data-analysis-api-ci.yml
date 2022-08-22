@@ -59,7 +59,7 @@ jobs:
       JWT_OIDC_ISSUER: "http://localhost:8081/auth/realms/forms-flow-ai"
       JWT_OIDC_AUDIENCE: "forms-flow-web"
       JWT_OIDC_CACHING_ENABLED: "True"
-      BPM_API_BASE: ${{ secrets.BPM_API_BASE }}
+      BPM_API_URL: ${{ secrets.BPM_API_BASE }}
       BPM_CLIENT_SECRET: ${{ secrets.BPM_CLIENT_SECRET }}
       BPM_CLIENT_ID: ${{ secrets.BPM_CLIENT_ID }}
       BPM_TOKEN_API: ${{ secrets.BPM_TOKEN_API }}

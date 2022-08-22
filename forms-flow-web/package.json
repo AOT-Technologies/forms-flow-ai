@@ -41,9 +41,12 @@
     "bpmnlint": "^7.8.0",
     "browserslist": "^4.16.6",
     "camunda-bpmn-moddle": "^6.1.2",
+    "camunda-dmn-moddle": "^1.1.0",
     "connected-react-router": "^6.9.1",
     "create-react-class": "^15.7.0",
     "crypto-js": "^4.0.0",
+    "dmn-js": "^12.3.0",
+    "dmn-js-properties-panel": "^1.1.0",
     "flagged": "^2.0.5",
     "formiojs": "^4.14.0",
     "formsflow-formio-custom-elements": "^1.0.3",
@@ -93,7 +96,9 @@
     "nth-check": "^2.0.1",
     "ansi-html": "^0.0.9",
     "node-forge": "^1.2.1",
-    "underscore": "1.12.1"
+    "underscore": "1.12.1",
+    "shell-quote": ">=1.7.3",
+    "ejs": ">=3.1.7"
   },
   "browserslist": [
     ">0.2%",

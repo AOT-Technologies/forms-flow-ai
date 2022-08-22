@@ -1,66 +1,6 @@
-#js-properties-panel {
-  width: 400px;
-  overflow: auto;
-}
-
-.bpmn-main-container {
-  width: 100%;
-  display: flex;
-  margin-bottom: 20px;
-  min-height: 450px;
-  max-height: 600px;
-  resize: vertical;
-  overflow: hidden;
-}
-
-.bpm-modeller-container {
-  height: 100%;
-}
-
-.bpmn-viewer-container {
-  width: 100%;
-}
-
-.properties-panel-parent {
-  border: 1px solid rgb(0, 0, 0);
-  border-left: none;
-}
-
-.grab-cursor {
-  cursor: move;
-  cursor: grab;
-}
-
-.highlight:not(.djs-connection) .djs-visual > :nth-child(1) {
-  fill: rgb(56, 89, 138) !important;
-}
-
-.zoom-container {
-  position: relative;
-  bottom: 10em;
-  right: 15px;
-  pointer-events: none;
-}
-
-.btn-zoom {
-  pointer-events: auto;
-}
-
 .btn-create-new {
   height: 30px;
   padding: 0rem 0.75rem;
-}
-
-.deploy-checkbox {
-  margin-right: 15px;
-}
-
-.deploy-name-col {
-  flex-grow: inherit;
-}
-
-.deploy-name {
-  width: 300px;
 }
 
 .import-container {
@@ -82,21 +22,153 @@
   margin-right: 7px;
 }
 
-// Override bpmn-js-properties-panel style for removing entry (trash can)
-.bio-properties-panel-remove-entry {
-  visibility: visible;
-}
-
 .help-btn {
   float: right;
 }
 
-input[type='file'] {
-  color: rgba(0, 0, 0, 0)
+/*
+// Style to remove 'No file chosen'
+input[type="file"] {
+  color: rgba(0, 0, 0, 0);
+  width: 110px;
 }
+*/
 
-.select-style{
+.select-style {
   width: 100%;
   white-space: normal;
   word-break: break-all;
 }
+
+// remove validation error for unique ID, 
+// properties panel is not reliable for validation errors
+/*
+.bio-properties-panel-error {
+  display: none;
+}
+.formio-error-wrapper,
+.has-error label {
+  color: black;
+  background-color: #fff;
+  border-color: black;
+}
+.bio-properties-panel-entry.has-error .bio-properties-panel-input {
+  border-color: hsl(225, 10%, 75%);
+  background-color: #fff;
+}
+*/
+
+/* 
+
+START: BPMN and DMN Toggle CSS 
+
+*/
+
+/* The switch - the box around the slider */
+.switch {
+  position: relative;
+  display: inline-block;
+  width: 80px;
+  height: 24px;
+}
+
+/* Hide default HTML checkbox */
+.switch input {
+  opacity: 0;
+  width: 0;
+  height: 0;
+}
+
+/* The slider */
+.slider {
+  position: absolute;
+  cursor: pointer;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: #ccc;
+  -webkit-transition: 0.4s;
+  transition: 0.4s;
+}
+
+.slider:before {
+  position: absolute;
+  content: "";
+  height: 20px;
+  width: 20px;
+  left: 3px;
+  bottom: 3px;
+  background-color: white;
+  -webkit-transition: 0.4s;
+  transition: 0.4s;
+}
+
+input:checked + .slider {
+  background-color: #2196f3;
+}
+
+input:focus + .slider {
+  box-shadow: 0 0 1px #2196f3;
+}
+
+input:checked + .slider:before {
+  -webkit-transform: translateX(52px);
+  -ms-transform: translateX(52px);
+  transform: translateX(52px);
+}
+
+/* Rounded sliders */
+.slider.round {
+  border-radius: 24px;
+}
+
+.slider.round:before {
+  border-radius: 50%;
+}
+
+/* Adding text in the toggle button */
+.switch .labels {
+  position: absolute;
+  top: 4px;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  font-size: 12px;
+  font-family: sans-serif;
+  transition: all 0.4s ease-in-out;
+}
+
+.switch .labels::after {
+  content: attr(data-off);
+  position: absolute;
+  right: 14px;
+  color: #4d4d4d;
+  opacity: 1;
+  text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.4);
+  transition: all 0.4s ease-in-out;
+}
+
+.switch .labels::before {
+  content: attr(data-on);
+  position: absolute;
+  left: 8px;
+  color: #ffffff;
+  opacity: 0;
+  text-shadow: 1px 1px 2px rgba(255, 255, 255, 0.4);
+  transition: all 0.4s ease-in-out;
+}
+
+.switch input:checked ~ .labels::after {
+  opacity: 0;
+}
+
+.switch input:checked ~ .labels::before {
+  opacity: 1;
+}
+
+/* 
+
+END: BPMN and DMN Toggle CSS 
+
+*/

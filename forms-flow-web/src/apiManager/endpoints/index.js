@@ -1,5 +1,13 @@
 /* eslint-disable max-len */
-import {WEB_BASE_URL, MT_ADMIN_BASE_URL, MT_ADMIN_BASE_URL_VERSION, BPM_BASE_URL_EXT, CUSTOM_SUBMISSION_URL, WEB_DOCUMENT_SERVICE_URL} from "./config";
+import {
+  WEB_BASE_URL,
+  MT_ADMIN_BASE_URL,
+  MT_ADMIN_BASE_URL_VERSION,
+  BPM_BASE_URL_EXT,
+  CUSTOM_SUBMISSION_URL,
+  WEB_DOCUMENT_SERVICE_URL
+} from "./config";
+
 import { AppConfig } from "../../config";
 
 const API = {
@@ -16,6 +24,7 @@ const API = {
   GET_ALL_APPLICATIONS_STATUS: `${WEB_BASE_URL}/application/status/list`,
   GET_PROCESS_DEFINITION: `${BPM_BASE_URL_EXT}/v1/process-definition/key/<process_key>`,
   PROCESSES_XML: `${BPM_BASE_URL_EXT}/v1/process-definition/key/<process_key>/xml`,
+  DMN_XML: `${BPM_BASE_URL_EXT}/decision-definition/key/<process_key>/xml`,
   PROCESS_ACTIVITIES: `${BPM_BASE_URL_EXT}/v1/process-instance/<process_instance_id>/activity-instances`,
   FORM: `${WEB_BASE_URL}/form`,
   FORM_CREATION: `${WEB_BASE_URL}/form/form-create`,
@@ -28,6 +37,7 @@ const API = {
   CLAIM_BPM_TASK: `${BPM_BASE_URL_EXT}/v1/task/<task_id>/claim`,
   UNCLAIM_BPM_TASK: `${BPM_BASE_URL_EXT}/v1/task/<task_id>/unclaim`,
   GET_BPM_PROCESS_LIST: `${BPM_BASE_URL_EXT}/v1/process-definition`,
+  GET_DMN_PROCESS_LIST: `${BPM_BASE_URL_EXT}/decision-definition`,
   GET_BPM_USER_LIST: `${BPM_BASE_URL_EXT}/v1/user`,
   GET_BPM_FILTERS: `${BPM_BASE_URL_EXT}/v1/filter`,
   GET_BPM_TASK_LIST_WITH_FILTER: `${BPM_BASE_URL_EXT}/v1/filter/<filter_id>/list`,
@@ -38,14 +48,11 @@ const API = {
   GET_BPM_FORM_LIST: `${WEB_BASE_URL}/form`,
   UPDATE_ASSIGNEE_BPM_TASK: `${BPM_BASE_URL_EXT}/v1/task/<task_id>/assignee`,
   GET_FORM_BY_ALIAS: `${AppConfig.projectUrl}/<form_path>`,
+
   GET_GROUPS: `${WEB_BASE_URL}/groups`,
-  UPDATE_GROUPS: `${WEB_BASE_URL}/groups/<groupId>`,
   GET_FORM_COUNT: `${WEB_BASE_URL}/form/<mapper id>/application/count`,
   UNPUBLISH_FORMS: `${WEB_BASE_URL}/form/<mapper id>`,
   DEPLOY_BPM: `${BPM_BASE_URL_EXT}/v1/deployment/create`,
-  GET_BPM_DEPLOYMENTS: `${BPM_BASE_URL_EXT}/v1/deployment`,
-  GET_BPM_DEPLOYMENT_RESOURCES: `${BPM_BASE_URL_EXT}/v1/deployment/<deployment_id>/resources`,
-  GET_BPM_DEPLOYMENT_DIAGRAM: `${BPM_BASE_URL_EXT}/v1/deployment/<deployment_id>/resources/<resource_id>/data`,
   GET_TENANT_DATA: `${MT_ADMIN_BASE_URL}/${MT_ADMIN_BASE_URL_VERSION}/tenant`,
   EXPORT_FORM_PDF: `${WEB_DOCUMENT_SERVICE_URL}/form/<form_id>/submission/<submission_id>/export/pdf`,
   CUSTOM_SUBMISSION: `${CUSTOM_SUBMISSION_URL}/form/<form_id>/submission`,
@@ -56,7 +63,9 @@ const API = {
   DRAFT_UPDATE_PUBLIC: `${WEB_BASE_URL}/draft/public/<draft_id>`,
   DRAFT_APPLICATION_CREATE: `${WEB_BASE_URL}/draft/<draft_id>/submit`,
   DRAFT_APPLICATION_CREATE_PUBLIC: `${WEB_BASE_URL}/draft/public/<draft_id>/submit`,
-  FORMIO_ROLES: `${WEB_BASE_URL}/formio/roles`
+  FORMIO_ROLES: `${WEB_BASE_URL}/formio/roles`,
+  DASHBOARD_AUTHORIZATION: `${WEB_BASE_URL}/authorizations/dashboard`,
+  USER_DASHBOARDS: `${WEB_BASE_URL}/authorizations/users/dashboard`,
 };
 
 export default API;

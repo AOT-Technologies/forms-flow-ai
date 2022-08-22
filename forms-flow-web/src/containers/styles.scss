@@ -350,3 +350,30 @@ margin-right: 1rem;
   margin-top: -10px;
   padding-top: -10px;
 }
+
+.application-head
+{
+    font-weight: bold;
+    font-size:26px;
+    display: flex;
+}
+.application-head-details
+{
+    font-weight: bold;
+    font-size:30px;
+    margin-left: 10px !important;
+    display: inline-block;
+}
+.solid-list-icon {
+  height: 25px;
+  margin-top: 7px;
+}
+.application-text{
+  margin-left: 10px;
+}
+.application-count
+{
+    font-size: 20px;
+    margin-top: 5px;
+    margin-left: 5px;
+}

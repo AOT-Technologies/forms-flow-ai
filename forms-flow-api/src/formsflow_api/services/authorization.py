@@ -35,7 +35,7 @@ class AuthorizationService:
 
         authz = Authorization.find_user_authorizations(
             auth_type=auth_type,
-            roles=user.roles,
+            roles=user.group_or_roles,
             user_name=user.user_name,
             tenant=user.tenant_key,
         )
@@ -56,7 +56,7 @@ class AuthorizationService:
         user: UserContext = kwargs["user"]
         auth: Authorization = Authorization.find_resource_authorization(
             auth_type=AuthType.DASHBOARD,
-            roles=user.roles,
+            roles=user.group_or_roles,
             user_name=user.user_name,
             tenant=user.tenant_key,
             resource_id=resource_id,

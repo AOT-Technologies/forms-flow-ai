@@ -5,6 +5,7 @@ import Button from "react-bootstrap/Button";
 import { toast } from "react-toastify";
 import { useTranslation } from "react-i18next";
 import { extractDataFromDiagram } from "../../helpers/helper";
+import { createXML } from "../../helpers/deploy";
 import { MULTITENANCY_ENABLED } from "../../../../constants/constants";
 import { deployBpmnDiagram } from "../../../../apiManager/services/bpmServices";
 
@@ -122,21 +123,15 @@ export default React.memo(({ xml, setShowModeller, processKey, tenant }) => {
   };
 
   const deployProcess = async () => {
-    try {
-      // Convert diagram to xml
-      let { xml } = await bpmnModeller.saveXML();
-      // Set isExecutable to true
-      xml = xml.replaceAll('isExecutable="false"', 'isExecutable="true"');
+    
+    let xml = await createXML(bpmnModeller);
 
-      const isValidated = await validateProcess(xml);
-      if (!isValidated) {
-        toast.error(t(ERROR_MSG));
-      } else {
-        // Deploy to Camunda
-        deployXML(xml);
-      }
-    } catch (err) {
-      console.error(err);
+    const isValidated = await validateProcess(xml);
+    if (!isValidated) {
+      toast.error(t(ERROR_MSG));
+    } else {
+      // Deploy to Camunda
+      deployXML(xml);
     }
   };
 
@@ -242,7 +237,7 @@ export default React.memo(({ xml, setShowModeller, processKey, tenant }) => {
 
     }
     */
-   
+
     return isValidated;
   };
 
@@ -256,6 +251,19 @@ export default React.memo(({ xml, setShowModeller, processKey, tenant }) => {
       xml: xml,
     };
     dispatch(setWorkflowAssociation(updatedWorkflow));
+  };
+
+  const handleExport = async () => {
+    let xml = await createXML(bpmnModeller);
+
+    const element = document.createElement("a");
+    const file = new Blob([xml], { type: "text/bpmn" });
+    element.href = URL.createObjectURL(file);
+    const deploymentName = extractDataFromDiagram(xml).name;
+    element.download = deploymentName.replaceAll(' ', '_') + ".bpmn";
+    document.body.appendChild(element);
+    element.click();
+
   };
 
   const zoom = () => {
@@ -319,6 +327,7 @@ export default React.memo(({ xml, setShowModeller, processKey, tenant }) => {
           </label>
         ) : null}
         <Button onClick={deployProcess}>Deploy</Button>
+        <Button className="ml-3" onClick={handleExport}>Export</Button>
       </div>
     </>
   );

@@ -5,6 +5,7 @@ import Button from "react-bootstrap/Button";
 import { toast } from "react-toastify";
 import { useTranslation } from "react-i18next";
 import { extractDataFromDiagram } from "../../helpers/helper";
+import { createXML } from "../../helpers/deploy";
 import { MULTITENANCY_ENABLED } from "../../../../constants/constants";
 import { deployBpmnDiagram } from "../../../../apiManager/services/bpmServices";
 
@@ -120,20 +121,12 @@ export default React.memo(({ xml, processKey, tenant }) => {
   };
 
   const deployProcess = async () => {
-    try {
-      // Convert diagram to xml
-      let { xml } = await dmnModeller.saveXML();
-      // Set isExecutable to true
-      //xml = xml.replaceAll('isExecutable="false"', 'isExecutable="true"');
-
-      // Deploy to Camunda
-      deployXML(xml);
-    } catch (err) {
-      console.error(err);
-    }
+    let xml = await createXML(dmnModeller);
+    // Deploy to Camunda
+    deployXML(xml);
   };
 
-  const createBpmnForm = (xml) => {
+  const createForm = (xml) => {
     const form = new FormData();
 
     const processId = extractDataFromDiagram(xml, true).processId;
@@ -157,7 +150,7 @@ export default React.memo(({ xml, processKey, tenant }) => {
   };
 
   const deployXML = (xml) => {
-    const form = createBpmnForm(xml);
+    const form = createForm(xml);
 
     deployBpmnDiagram(form)
       .then((res) => {
@@ -197,6 +190,19 @@ export default React.memo(({ xml, processKey, tenant }) => {
       xml: xml,
     };
     dispatch(setWorkflowAssociation(updatedWorkflow));
+  };
+
+  const handleExport = async () => {
+    let xml = await createXML(dmnModeller);
+
+    const element = document.createElement("a");
+    const file = new Blob([xml], { type: "text/dmn" });
+    element.href = URL.createObjectURL(file);
+    const deploymentName = extractDataFromDiagram(xml, true).name;
+    element.download = deploymentName.replaceAll(' ', '_') + ".dmn";
+    document.body.appendChild(element);
+    element.click();
+
   };
 
   const zoom = () => {
@@ -262,6 +268,7 @@ export default React.memo(({ xml, processKey, tenant }) => {
           </label>
         ) : null}
         <Button onClick={deployProcess}>Deploy</Button>
+        <Button className="ml-3" onClick={handleExport}>Export</Button>
       </div>
     </>
   );

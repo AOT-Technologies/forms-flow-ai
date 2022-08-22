@@ -84,6 +84,11 @@ public class TaskRestResourceImpl implements TaskRestResource {
     }
 
     @Override
+    public void addIdentityLink(IdentityLinkDto identityLink, String id) {
+        restService.getTask(id).addIdentityLink(identityLink);
+    }
+
+    @Override
     public void deleteIdentityLink(IdentityLinkDto identityLink, String id) {
         restService.getTask(id).deleteIdentityLink(identityLink);
     }

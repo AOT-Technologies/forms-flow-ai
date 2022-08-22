@@ -3,7 +3,7 @@ FROM python:3.9-slim-buster
 
 WORKDIR /forms-flow-documents/app
 
-# install curl, gnupg2 and unzip and git
+# install curl, gnupg2 and unzip
 RUN  apt-get update \
   && apt-get install -y gnupg2 \
   && apt-get install -y curl \
@@ -26,6 +26,7 @@ RUN curl -sS -o - https://dl-ssl.google.com/linux/linux_signing_key.pub | apt-ke
     apt-get -yqq update && \
     apt-get -yqq install google-chrome-stable && \
     rm -rf /var/lib/apt/lists/*
+
 
 # set display port to avoid crash
 ENV DISPLAY=:99

@@ -22,7 +22,7 @@ from formsflow_api_utils.utils.pdf import get_pdf_from_html, pdf_response
 API = Namespace("Form", description="Form")
 
 
-@API.route("/<string:form_id>/submission/<string:submission_id>/render")
+@API.route("/<string:form_id>/submission/<string:submission_id>/render", doc=False)
 class FormResourceRenderFormPdf(Resource):
     """Resource to render form and submission details as html."""
 
@@ -33,16 +33,33 @@ class FormResourceRenderFormPdf(Resource):
         """Form rendering method."""
         formio_service = FormioService()
         form_io_url = current_app.config.get("FORMIO_URL")
+        is_form_adapter = current_app.config.get("CUSTOM_SUBMISSION_ENABLED")
         form_io_token = formio_service.get_formio_access_token()
-        form_url = form_io_url + "/form/" + form_id + "/submission/" + submission_id
+
+        if is_form_adapter:
+            sub_url = current_app.config.get("CUSTOM_SUBMISSION_URL")
+            form_url = form_io_url + "/form/" + form_id
+            submission_url = (
+                sub_url + "/form/" + form_id + "/submission/" + submission_id
+            )
+            auth_token = request.headers.get("Authorization")
+        else:
+            form_url = form_io_url + "/form/" + form_id + "/submission/" + submission_id
+            submission_url = None
+            auth_token = None
+
         template_params = {
-            "form" : {
+            "form": {
                 "base_url": form_io_url,
                 "project_url": form_io_url,
                 "form_url": form_url,
                 "token": form_io_token,
+                "submission_url": submission_url,
+                "form_apater": is_form_adapter,
+                "auth_token": auth_token,
             }
         }
+        current_app.logger.debug(template_params)
         headers = {"Content-Type": "text/html"}
         return make_response(
             render_template("index.html", **template_params), 200, headers
@@ -64,6 +81,7 @@ class FormResourceExportFormPdf(Resource):
         """PDF generation and rendering method."""
         try:
             if auth.has_one_of_roles([REVIEWER_GROUP, CLIENT_GROUP]):
+                timezone = request.args.get("timezone")
                 token = request.headers.get("Authorization")
                 host_name = current_app.config.get("FORMSFLOW_API_URL")
                 url = (
@@ -77,8 +95,18 @@ class FormResourceExportFormPdf(Resource):
                 file_name = (
                     "Application_" + form_id + "_" + submission_id + "_export.pdf"
                 )
-                result = get_pdf_from_html(url, wait="completed", auth_token=token)
-                return pdf_response(result, file_name)
+
+                args = {"wait": "completed", "timezone": timezone, "auth_token": token}
+                result = get_pdf_from_html(url, args=args)
+                if result:
+                    return pdf_response(result, file_name)
+                response, status = (
+                    {
+                        "message": "Cannot render pdf.",
+                    },
+                    HTTPStatus.BAD_REQUEST,
+                )
+                return response, status
 
             response, status = (
                 {

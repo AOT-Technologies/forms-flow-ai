@@ -56,7 +56,7 @@ it("should render the View component without breaking", async () => {
       form: { isActive: false },
       formDelete: { isFormSubmissionLoading: false },
       user: { lang: "" },
-      draft: { draftSubmission: {} },
+      draft: { draftSubmission: {}, lastUpdated:{} },
     })
   );
   renderWithRouterMatch(View, {
@@ -77,7 +77,7 @@ it("should render the public View component without breaking ", async () => {
       form: { isActive: false },
       formDelete: { isFormSubmissionLoading: false },
       user: { lang: "" },
-      draft: { draftSubmission: {} },
+      draft: { draftSubmission: {}, lastUpdated:{} },
     })
   );
   const applicationCreate = jest.fn();
@@ -106,7 +106,7 @@ it("should call the custom submission when custom submission is on ", () => {
       form: { isActive: false },
       formDelete: { isFormSubmissionLoading: false },
       user: { lang: "" },
-      draft: { draftSubmission: {} },
+      draft: { draftSubmission: {}, lastUpdated:{} },
     })
   );
   customSubmission.postCustomSubmission = jest.fn();
@@ -137,7 +137,7 @@ it("Should call the draft create when draft mode is on", () => {
       form: { isActive: false },
       formDelete: { isFormSubmissionLoading: false },
       user: { lang: "", isAuthenticated: true },
-      draft: { draftSubmission: {} },
+      draft: { draftSubmission: {}, lastUpdated:{} },
     })
   );
   draftService.draftCreate = jest.fn();
@@ -162,7 +162,7 @@ it("Should not call the draft create when draft mode is off", () => {
       form: { isActive: false },
       formDelete: { isFormSubmissionLoading: false },
       user: { lang: "", isAuthenticated: true },
-      draft: { draftSubmission: {} },
+      draft: { draftSubmission: {}, lastUpdated:{} },
     })
   );
   draftService.draftCreate = jest.fn();

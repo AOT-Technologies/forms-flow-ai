@@ -2,6 +2,11 @@
 FROM python:3.9-slim-buster
 
 WORKDIR /forms-flow-api/app
+
+# install curl, gnupg2 and unzip
+RUN  apt-get update \
+  && apt-get install -y git
+
 COPY requirements.txt .
 ENV PATH=/venv/bin:$PATH
 

@@ -3,7 +3,7 @@
 from http import HTTPStatus
 from typing import Dict
 
-from formsflow_api.exceptions import BusinessException
+from formsflow_api_utils.exceptions import BusinessException
 from formsflow_api.models import Application, Draft, FormProcessMapper
 from formsflow_api.schemas import DraftSchema
 from formsflow_api_utils.utils import ANONYMOUS_USER, DRAFT_APPLICATION_STATUS

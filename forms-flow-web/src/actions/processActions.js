@@ -36,6 +36,13 @@ export const setAllProcessList = (data) => (dispatch) => {
   });
 };
 
+export const setAllDmnProcessList = (data) => (dispatch) => {
+  dispatch({
+    type: ACTION_CONSTANTS.DMN_PROCESS_LIST,
+    payload: data,
+  });
+};
+
 export const setFormProcessLoadError = (data) => (dispatch) => {
   dispatch({
     type: ACTION_CONSTANTS.IS_FORM_PROCESS_STATUS_LOAD_ERROR,

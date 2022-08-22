@@ -167,7 +167,7 @@ export default React.memo(() => {
                 className="help-btn"
                 onClick={() => handleHelp()}
               >
-                Help
+                {t("Help")}
               </Button>
               <Grid item xs={12} sm={6}>
                 <span className="fontsize-16">

@@ -245,7 +245,11 @@ export const formio_resourceBundles = {
     "Create New":"Create New",
     "Or create new workflow or import a workflow from a local directory.":"Or create new workflow or import a workflow from a local directory.",
     "The operation couldn't be completed. Please try after sometime":"The operation couldn't be completed. Please try after sometime",
-    "Select...":"Select..."
+    "Select...":"Select...",
+    "No Drafts Found":  "No Drafts Found",
+    "Help":"Help"
+
+
  
 
 
@@ -1114,7 +1118,9 @@ export const formio_resourceBundles = {
     "Create New":"创建新的",
     "Or create new workflow or import a workflow from a local directory.":"或创建新工作流或从本地目录导入工作流。",
     "The operation couldn't be completed. Please try after sometime":"操作无法完成。请稍后再试",
-    "Select...":"选择..."
+    "Select...":"选择...",
+    "No Drafts Found":  "未找到草稿"
+
 },
 
   bg: {
@@ -1614,7 +1620,6 @@ export const formio_resourceBundles = {
     "JSONLogic Validation": "JSON логическа проверка",
     "Execute custom logic using":
       "Изпълнете персонализирана логика с помощта на",
-    "Help": "помогне",
     "Validation": "проверете",
     "API": "API",
     "Property Name": "име на собственост",
@@ -2033,7 +2038,11 @@ export const formio_resourceBundles = {
     "Create New":"Създай нов",
     "Or create new workflow or import a workflow from a local directory.":"Или създайте нов работен поток или импортирайте работен поток от локална директория.",
     "The operation couldn't be completed. Please try after sometime":"Операцията не можа да бъде завършена. Моля, опитайте след известно време",
-    "Select...":"Изберете..."
+    "Select...":"Изберете...",
+    "No Drafts Found":  "Няма намерени чернови",
+    "Help":"Помогне"
+
+
 
  
 
@@ -2955,7 +2964,9 @@ export const formio_resourceBundles = {
     "Create New":"Crie um novo",
     "Or create new workflow or import a workflow from a local directory.":"Ou crie um novo fluxo de trabalho ou importe um fluxo de trabalho de um diretório local.",
     "The operation couldn't be completed. Please try after sometime":"A operação não pôde ser concluída. Por favor, tente depois de algum tempo",
-    "Select...":"Selecionar..."
+    "Select...":"Selecionar...",
+    "No Drafts Found": "Nenhum rascunho encontrado"
+
 
 
 
@@ -3884,7 +3895,9 @@ export const formio_resourceBundles = {
     "Create New":"Créer un nouveau",
     "Or create new workflow or import a workflow from a local directory.":"Ou créez un nouveau flux de travail ou importez un flux de travail à partir d'un répertoire local.",
     "The operation couldn't be completed. Please try after sometime":"L'opération n'a pas pu être terminée. Veuillez essayer après un certain temps",
-    "Select...":"Sélectionner..."
+    "Select...":"Sélectionner...",
+    "No Drafts Found":  "Aucun brouillon trouvé"
+
  
 
 
@@ -4817,7 +4830,9 @@ export const formio_resourceBundles = {
     "Create New":"Erstelle neu",
   "Or create new workflow or import a workflow from a local directory.":"Oder erstellen Sie einen neuen Workflow oder importieren Sie einen Workflow aus einem lokalen Verzeichnis.",
   "The operation couldn't be completed. Please try after sometime":"Der Vorgang konnte nicht abgeschlossen werden. Bitte versuchen Sie es nach einiger Zeit erneut",
-    "Select...":"Auswählen..."
+    "Select...":"Auswählen...",
+    "No Drafts Found":  "Keine Entwürfe gefunden"
+
  
 
 

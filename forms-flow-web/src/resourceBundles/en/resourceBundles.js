@@ -223,7 +223,11 @@ export const RESOURCE_BUNDLES_EN = {
   "Create New":"Create New",
   "Or create new workflow or import a workflow from a local directory.":"Or create new workflow or import a workflow from a local directory.",
   "The operation couldn't be completed. Please try after sometime":"The operation couldn't be completed. Please try after sometime",
-  "Select...":"Select..."
+  "Select...":"Select...",
+  "No Drafts Found":  "No Drafts Found",
+  "Help":"Help"
+
+
 
 
 

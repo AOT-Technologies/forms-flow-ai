@@ -131,7 +131,7 @@ export const DraftList = React.memo(() => {
     if (iserror) {
       return <Alert variant={"danger"}>{error}</Alert>;
     } else {
-      return <Nodata text="No Drafts Found" />;
+      return <Nodata text={t("No Drafts Found")} />;
     }
   };
 

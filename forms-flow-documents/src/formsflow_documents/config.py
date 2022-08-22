@@ -65,6 +65,10 @@ class _Config:  # pylint: disable=too-few-public-methods
     FORMIO_USERNAME = os.getenv("FORMIO_ROOT_EMAIL")
     FORMIO_PASSWORD = os.getenv("FORMIO_ROOT_PASSWORD")
 
+    # API Base URL (Self)
+    FORMSFLOW_API_URL = os.getenv("WEB_API_BASE_URL")
+    CHROME_DRIVER_PATH = os.getenv("CHROME_DRIVER_PATH", "/usr/local/bin/chromedriver")
+
     CUSTOM_SUBMISSION_URL = os.getenv("CUSTOM_SUBMISSION_URL", "")
     CUSTOM_SUBMISSION_ENABLED = (
         os.getenv("CUSTOM_SUBMISSION_ENABLED", "false").lower() == "true"

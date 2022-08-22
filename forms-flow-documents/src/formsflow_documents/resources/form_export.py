@@ -71,6 +71,7 @@ class FormResourceRenderFormPdf(Resource):
     "/<string:form_id>/submission/<string:submission_id>/export/pdf",
     methods=["GET", "OPTIONS"],
 )
+@API.doc(params={'timezone': {'description': 'Timezone of client device eg: Asia/Calcutta', 'in': 'query', 'type': 'string'}})
 class FormResourceExportFormPdf(Resource):
     """Resource to export form and submission details as pdf."""
 
@@ -96,8 +97,10 @@ class FormResourceExportFormPdf(Resource):
                     "Application_" + form_id + "_" + submission_id + "_export.pdf"
                 )
 
+                chromedriver = current_app.config.get("CHROME_DRIVER_PATH")
+
                 args = {"wait": "completed", "timezone": timezone, "auth_token": token}
-                result = get_pdf_from_html(url, args=args)
+                result = get_pdf_from_html(url, chromedriver, args=args)
                 if result:
                     return pdf_response(result, file_name)
                 response, status = (

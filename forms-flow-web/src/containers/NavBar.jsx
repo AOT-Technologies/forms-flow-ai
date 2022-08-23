@@ -6,7 +6,9 @@ import UserService from "../services/UserService";
 import {
   getUserRoleName,
   getUserRolePermission,
+  // TODO : modify insigth permission conditions
   // getUserInsightsPermission,
+
 } from "../helper/user";
 import createURLPathMatchExp from "../helper/regExp/pathMatch";
 import { useTranslation } from "react-i18next";

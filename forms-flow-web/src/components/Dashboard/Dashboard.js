@@ -206,10 +206,6 @@ const Dashboard = React.memo(() => {
             <div className="row ">
               <div className="col-12" >
                 <Head items={headerList()} page="Metrics"/>
-                {/* <h1 className="dashboard-title">
-                  <i className="fa fa-pie-chart p-1" />
-                  <Translation>{(t) => t("Metrics")}</Translation>
-                </h1> */}
                 <hr className="line-hr" />
                 <div className="row ">
                   <div className="col-12 col-lg-4 ">

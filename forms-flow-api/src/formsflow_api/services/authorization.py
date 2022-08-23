@@ -4,7 +4,7 @@ from typing import Dict, List
 
 from formsflow_api.models import Authorization, AuthType
 from formsflow_api.schemas import ApplicationSchema
-from formsflow_api.utils.user_context import UserContext, user_context
+from formsflow_api_utils.utils.user_context import UserContext, user_context
 
 application_schema = ApplicationSchema()
 

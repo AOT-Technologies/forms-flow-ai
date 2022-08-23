@@ -1,0 +1,2 @@
+#!/bin/bash
+gunicorn -b :5006 'formsflow_documents:create_app()' --timeout 120 --worker-class=gthread --workers=5 --threads=10

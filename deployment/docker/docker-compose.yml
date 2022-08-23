@@ -139,6 +139,7 @@ services:
         - REACT_APP_DRAFT_ENABLED=${DRAFT_ENABLED:-false}
         - REACT_APP_DRAFT_POLLING_RATE=${DRAFT_POLLING_RATE:-15000}
         - REACT_APP_EXPORT_PDF_ENABLED=${EXPORT_PDF_ENABLED:-false}
+        - REACT_APP_DOCUMENT_SERVICE_URL=${DOCUMENT_SERVICE_URL}
     ports:
       - '3000:8080'
     tty: true
@@ -193,6 +194,32 @@ services:
       KEYCLOAK_URL: ${KEYCLOAK_URL}
       KEYCLOAK_URL_REALM: ${KEYCLOAK_URL_REALM:-forms-flow-ai}
       WEB_API_BASE_URL: ${FORMSFLOW_API_URL}
+      FORMIO_URL: ${FORMIO_DEFAULT_PROJECT_URL}
+      FORMIO_ROOT_EMAIL: ${FORMIO_ROOT_EMAIL:-admin@example.com}
+      FORMIO_ROOT_PASSWORD: ${FORMIO_ROOT_PASSWORD:-changeme}
+
+  forms-flow-documents-api:
+    container_name: forms-flow-documents-api
+    build:
+      context: ./../../forms-flow-documents/
+      dockerfile: Dockerfile
+    restart: always
+    ports:
+      - '5006:5006'
+    volumes:
+      - ./:/app:rw
+    environment:
+      DATABASE_URL: ${FORMSFLOW_API_DB_URL:-postgresql://postgres:changeme@forms-flow-webapi-db:5432/webapi}
+      FORMSFLOW_API_CORS_ORIGINS: ${FORMSFLOW_API_CORS_ORIGINS:-*}
+      JWT_OIDC_WELL_KNOWN_CONFIG: ${KEYCLOAK_URL}/auth/realms/${KEYCLOAK_URL_REALM:-forms-flow-ai}/.well-known/openid-configuration
+      JWT_OIDC_JWKS_URI: ${KEYCLOAK_URL}/auth/realms/${KEYCLOAK_URL_REALM:-forms-flow-ai}/protocol/openid-connect/certs
+      JWT_OIDC_ISSUER: ${KEYCLOAK_URL}/auth/realms/${KEYCLOAK_URL_REALM:-forms-flow-ai}
+      JWT_OIDC_AUDIENCE: ${KEYCLOAK_WEB_CLIENT_ID:-forms-flow-web}
+      JWT_OIDC_CACHING_ENABLED: 'True'
+      KEYCLOAK_URL: ${KEYCLOAK_URL}
+      KEYCLOAK_URL_REALM: ${KEYCLOAK_URL_REALM:-forms-flow-ai}
+      FORMSFLOW_API_URL: ${FORMSFLOW_API_URL}
+      WEB_API_BASE_URL: ${DOCUMENT_SERVICE_URL}
       FORMIO_URL: ${FORMIO_DEFAULT_PROJECT_URL}
       FORMIO_ROOT_EMAIL: ${FORMIO_ROOT_EMAIL:-admin@example.com}
       FORMIO_ROOT_PASSWORD: ${FORMIO_ROOT_PASSWORD:-changeme}

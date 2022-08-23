@@ -31,12 +31,10 @@ class FormResourceRenderFormPdf(Resource):
     @profiletime
     def get(form_id: string, submission_id: string):
         """Form rendering method."""
-        current_app.logger.debug('Call received')
         formio_service = FormioService()
         form_io_url = current_app.config.get("FORMIO_URL")
         is_form_adapter = current_app.config.get("CUSTOM_SUBMISSION_ENABLED")
         form_io_token = formio_service.get_formio_access_token()
-        current_app.logger.debug(form_io_token)
 
         if is_form_adapter:
             sub_url = current_app.config.get("CUSTOM_SUBMISSION_URL")

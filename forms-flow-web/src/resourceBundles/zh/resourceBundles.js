@@ -224,7 +224,15 @@ export const RESOURCE_BUNDLES_ZH = {
   "The operation couldn't be completed. Please try after sometime":"操作无法完成。请稍后再试",
   "Select...":"选择...",
   "No Drafts Found":  "未找到草稿",
-  "Help":"帮助"
+  "Help":"帮助",
+  "Draft Id":"草稿 ID",
+  "Draft Name":"草稿名称",
+  "Link To Draft Submission":"链接到草稿提交",
+  "Drafts":"草稿"
+
+
+
+
 
 
 

@@ -229,7 +229,11 @@ export const RESOURCE_BUNDLES_EN = {
   "Draft Id":"Draft Id",
   "Draft Name":"Draft Name",
   "Link To Draft Submission":"Link To Draft Submission",
-  "Drafts":"Drafts"
+  "Drafts":"Drafts",
+  "You can't submit this form until it is published":"You can't submit this form until it is published",
+  "Form not published":"Form not published"
+
+
 
 
 

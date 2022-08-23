@@ -74,7 +74,7 @@ self.addEventListener('message', (event) => {
 // Cache the cdn assets using StaleWhileRevalidate strategy for 1 year.
 registerRoute(
   // Add in any other file extensions or routing criteria as needed.
-  ({ url }) => url.origin.startsWith('https://cdn') || url.origin.startsWith('https://unpkg'), // Customize this strategy as needed, e.g., by changing to CacheFirst.
+  ({ url }) => url.origin.startsWith('https://cdn') || url.origin.startsWith('https://unpkg') || url.origin.startsWith('https://fonts'), // Customize this strategy as needed, e.g., by changing to CacheFirst.
   new StaleWhileRevalidate({
     cacheName: 'cdn-package-assets',
     plugins: [

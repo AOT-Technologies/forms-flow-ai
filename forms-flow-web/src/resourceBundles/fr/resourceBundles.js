@@ -226,7 +226,15 @@ export const RESOURCE_BUNDLES_FR = {
   "The operation couldn't be completed. Please try after sometime":"L'opération n'a pas pu être terminée. Veuillez essayer après un certain temps",
   "Select...":"Sélectionner...",
   "No Drafts Found":  "Aucun brouillon trouvé",
-  "Help":"Aider"
+  "Help":"Aider",
+  "Draft Id":"ID brouillon",
+  "Draft Name":"Nom provisoire",
+  "Link To Draft Submission":"Lien vers la soumission de brouillon",
+  "Drafts":"Brouillons"
+
+
+
+
 
 
  

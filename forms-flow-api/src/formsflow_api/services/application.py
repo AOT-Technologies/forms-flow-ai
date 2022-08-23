@@ -32,13 +32,14 @@ class ApplicationService:  # pylint: disable=too-many-public-methods
 
     @staticmethod
     def get_start_task_payload(
-        application: Application, mapper: FormProcessMapper, form_url: str
+        application: Application, mapper: FormProcessMapper, form_url: str, web_form_url: str
     ) -> Dict:
         """Returns the payload for initiating the task."""
         return {
             "variables": {
                 "applicationId": {"value": application.id},
                 "formUrl": {"value": form_url},
+                "webFormUrl": {"value": web_form_url},
                 "formName": {"value": mapper.form_name},
                 "submitterName": {"value": application.created_by},
                 "submissionDate": {"value": str(application.created)},
@@ -98,8 +99,9 @@ class ApplicationService:  # pylint: disable=too-many-public-methods
         # In normal cases, it's through this else case task is being created
         else:
             form_url = data["form_url"]
+            web_form_url = data["web_form_url"]
             payload = ApplicationService.get_start_task_payload(
-                application, mapper, form_url
+                application, mapper, form_url, web_form_url
             )
             ApplicationService.start_task(mapper, payload, token, application)
         return application, HTTPStatus.CREATED

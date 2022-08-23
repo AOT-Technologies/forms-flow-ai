@@ -16,7 +16,8 @@ import { useDispatch, useSelector } from "react-redux";
 import Loading from "../../../containers/Loading";
 import ProcessDiagram from "../../BPMN/ProcessDiagramHook";
 import {
-  getFormIdSubmissionIdFromURL, getFormUrlWithFormIdSubmissionId,
+  getFormIdSubmissionIdFromURL,
+  getFormUrlWithFormIdSubmissionId,
   getProcessDataObjectFromList,
 } from "../../../apiManager/services/formatterService";
 import History from "../../Application/ApplicationHistory";
@@ -30,7 +31,11 @@ import { useParams } from "react-router-dom";
 import { push } from "connected-react-router";
 import { setFormSubmissionLoading } from "../../../actions/formActions";
 import { useTranslation } from "react-i18next";
-import { CUSTOM_SUBMISSION_URL, CUSTOM_SUBMISSION_ENABLE,  MULTITENANCY_ENABLED } from "../../../constants/constants";
+import {
+  CUSTOM_SUBMISSION_URL,
+  CUSTOM_SUBMISSION_ENABLE,
+  MULTITENANCY_ENABLED,
+} from "../../../constants/constants";
 import { getCustomSubmission } from "../../../apiManager/services/FormServices";
 
 const ServiceFlowTaskDetails = React.memo(() => {
@@ -100,9 +105,9 @@ const ServiceFlowTaskDetails = React.memo(() => {
       const { formId, submissionId } = getFormIdSubmissionIdFromURL(formUrl);
       Formio.clearCache();
       dispatch(getForm("form", formId));
-      if(CUSTOM_SUBMISSION_URL && CUSTOM_SUBMISSION_ENABLE){
-        dispatch(getCustomSubmission(submissionId,formId));
-      }else{
+      if (CUSTOM_SUBMISSION_URL && CUSTOM_SUBMISSION_ENABLE) {
+        dispatch(getCustomSubmission(submissionId, formId));
+      } else {
         dispatch(getSubmission("submission", submissionId, formId));
       }
       dispatch(setFormSubmissionLoading(false));
@@ -172,12 +177,21 @@ const ServiceFlowTaskDetails = React.memo(() => {
   const onFormSubmitCallback = (actionType = "") => {
     if (bpmTaskId) {
       dispatch(setBPMTaskDetailLoader(true));
-      const { formId, submissionId } = getFormIdSubmissionIdFromURL(task?.formUrl);
+      const { formId, submissionId } = getFormIdSubmissionIdFromURL(
+        task?.formUrl
+      );
       const formUrl = getFormUrlWithFormIdSubmissionId(formId, submissionId);
+      const origin = `${window.location.origin}${redirectUrl}`;
+      const webFormUrl = `${origin}form/${formId}/submission/${submissionId}`;
       dispatch(
         onBPMTaskFormSubmit(
           bpmTaskId,
-          getTaskSubmitFormReq(formUrl, task?.applicationId, actionType),
+          getTaskSubmitFormReq(
+            formUrl,
+            task?.applicationId,
+            actionType,
+            webFormUrl
+          ),
           (err) => {
             if (!err) {
               reloadTasks();
@@ -194,7 +208,7 @@ const ServiceFlowTaskDetails = React.memo(() => {
 
   if (!bpmTaskId) {
     return (
-      <Row className="not-selected mt-2 ml-1 " style={{color: "#757575"}}>
+      <Row className="not-selected mt-2 ml-1 " style={{ color: "#757575" }}>
         <i className="fa fa-info-circle mr-2 mt-1" />
         {t("Select a task in the list.")}
       </Row>

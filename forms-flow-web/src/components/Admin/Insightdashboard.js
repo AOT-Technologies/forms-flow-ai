@@ -13,6 +13,7 @@ import Popover from "@material-ui/core/Popover";
 import { updateDashboardAuthorizationList } from "../../actions/dashboardActions";
 import { Translation, useTranslation } from "react-i18next";
 import Head from "../../containers/Head";
+import { customDropUp } from "../Application/table";
 
 export const InsightDashboard = React.memo((props) => {
   const { dashboardReducer } = props;
@@ -245,6 +246,7 @@ export const InsightDashboard = React.memo((props) => {
     paginationTotalRenderer: customTotal,
     onPageChange: (page) => setActivePage(page),
     onSizePerPageChange: (size, page) => handleSizeChange(size, page),
+    sizePerPageRenderer: customDropUp,
   });
 
   if (isloading) {

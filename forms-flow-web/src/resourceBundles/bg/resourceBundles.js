@@ -223,7 +223,18 @@ export const RESOURCE_BUNDLES_BG = {
     "Create New":"Създай нов",
     "Or create new workflow or import a workflow from a local directory.":"Или създайте нов работен поток или импортирайте работен поток от локална директория.",
     "The operation couldn't be completed. Please try after sometime":"Операцията не можа да бъде завършена. Моля, опитайте след известно време",
-    "Select...":"Изберете..."
+    "Select...":"Изберете...",
+    "No Drafts Found":  "Няма намерени чернови",
+    "Help":"Помогне",
+    "Draft Id":"Чернова на ID",
+    "Draft Name":"Име на черновата",
+    "Link To Draft Submission":"Връзка към изпращане на чернова",
+    "Drafts":"Чернови"
+
+
+
+
+
 
 
 

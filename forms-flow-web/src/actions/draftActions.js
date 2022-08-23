@@ -63,3 +63,10 @@ export const setDraftDetailStatusCode = (data) => (dispatch) => {
     payload: data,
   });
 };
+
+export const saveLastUpdatedDraft = (data) => (dispatch) => {
+  dispatch({
+    type: ACTION_CONSTANTS.DRAFT_LAST_UPDATED,
+    payload: data,
+  });
+};

@@ -41,5 +41,5 @@ public interface ProcessDefinitionRestResource extends RestResource{
     @Produces(MediaType.APPLICATION_JSON)
     @Consumes(MediaType.APPLICATION_JSON)
     EntityModel<ProcessInstanceDto> startProcessInstanceByKey(
-            @Context UriInfo context, StartProcessInstanceDto parameters, @PathParam("key") String key);
+            @Context UriInfo context, StartProcessInstanceDto parameters, @PathParam("key") String key, @QueryParam("tenantId") String tenantId);
 }

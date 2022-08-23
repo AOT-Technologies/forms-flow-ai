@@ -7,10 +7,14 @@ export const WEB_BASE_URL =
   (window._env_ && window._env_.REACT_APP_WEB_BASE_URL) ||
   process.env.REACT_APP_WEB_BASE_URL;
 
+  export const DOCUMENT_SERVICE_URL =
+  (window._env_ && window._env_.REACT_APP_DOCUMENT_SERVICE_URL) ||
+  process.env.REACT_APP_DOCUMENT_SERVICE_URL;
+
 export const WEB_BASE_CUSTOM_URL =
   (window._env_ && window._env_.REACT_APP_WEB_BASE_CUSTOM_URL) ||
   process.env.REACT_APP_WEB_BASE_CUSTOM_URL;
-  
+
 
 export const CUSTOM_SUBMISSION_URL =
   (window._env_ && window._env_.REACT_APP_CUSTOM_SUBMISSION_URL) ||

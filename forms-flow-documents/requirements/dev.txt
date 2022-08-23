@@ -1,0 +1,19 @@
+-r prod.txt
+autopep8
+black==21.12b0
+flake8
+flake8-blind-except
+flake8-debugger
+flake8-docstrings
+flake8-isort
+flake8-polyfill
+flake8-quotes
+lovely-pytest-docker
+pycodestyle
+pytest
+pytest-cov
+pytest-it
+pytest-mock
+pyflakes
+pylint
+lovely-pytest-docker

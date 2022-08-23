@@ -15,5 +15,3 @@ Werkzeug==2.1.2 # Watch out updates on https://github.com/python-restx/flask-res
 sqlalchemy_utils
 markupsafe
 PyJWT
-selenium==3.141.0
-selenium-wire==3.0.0

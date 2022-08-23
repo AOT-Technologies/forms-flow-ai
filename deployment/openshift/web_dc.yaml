@@ -45,7 +45,8 @@ objects:
             "REACT_APP_USER_ACCESS_PERMISSIONS": "${REACT_APP_USER_ACCESS_PERMISSIONS}",
             "REACT_APP_DRAFT_ENABLED":"${REACT_APP_DRAFT_ENABLED}",
             "REACT_APP_DRAFT_POLLING_RATE":"${REACT_APP_DRAFT_POLLING_RATE}",
-            "REACT_APP_EXPORT_PDF_ENABLED":"${REACT_APP_EXPORT_PDF_ENABLED}"
+            "REACT_APP_EXPORT_PDF_ENABLED":"${REACT_APP_EXPORT_PDF_ENABLED}",
+            "REACT_APP_DOCUMENT_SERVICE_URL":"${REACT_APP_DOCUMENT_SERVICE_URL}"
           }
 
   -
@@ -274,4 +275,8 @@ parameters:
   -name: REACT_APP_EXPORT_PDF_ENABLED
     displayName: REACT_APP_EXPORT_PDF_ENABLED
     description: Wheather or not to show the Export pdf feature
+    required: false
+  -name: REACT_APP_DOCUMENT_SERVICE_URL
+    displayName: REACT_APP_DOCUMENT_SERVICE_URL
+    description: Document related services api url
     required: false

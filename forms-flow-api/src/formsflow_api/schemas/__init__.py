@@ -18,7 +18,6 @@ from formsflow_api.schemas.form_process_mapper import (
     FormProcessMapperListRequestSchema,
     FormProcessMapperSchema,
 )
-from formsflow_api.schemas.formio_roles import FormioRoleSchema
 from formsflow_api.schemas.keycloak_groups import KeycloakDashboardGroupSchema
 from formsflow_api.schemas.user import UserlocaleReqSchema
 

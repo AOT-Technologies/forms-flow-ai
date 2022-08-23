@@ -5,7 +5,7 @@ from flask import current_app, request
 from flask_restx import Namespace, Resource
 from marshmallow.exceptions import ValidationError
 
-from formsflow_api.exceptions import BusinessException
+from formsflow_api_utils.exceptions import BusinessException
 from formsflow_api.schemas import (
     ApplicationSchema,
     ApplicationSubmissionSchema,
@@ -13,7 +13,7 @@ from formsflow_api.schemas import (
     DraftSchema,
 )
 from formsflow_api.services import ApplicationService, DraftService
-from formsflow_api.utils import (
+from formsflow_api_utils.utils import (
     NEW_APPLICATION_STATUS,
     auth,
     cors_preflight,

@@ -171,6 +171,7 @@ services:
     restart: always
     links:
       - forms-flow-webapi-db
+      - forms-flow-forms
     ports:
       - '5000:5000'
     volumes:

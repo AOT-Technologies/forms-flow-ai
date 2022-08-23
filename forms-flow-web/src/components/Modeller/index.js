@@ -68,14 +68,18 @@ export default React.memo(() => {
     var n = filePath.lastIndexOf("\\");
     let fileName = filePath.substring(n + 1);
 
+    let isBpmnFile = true;
+
     if (fileName.substr(fileName.length - 5) == ".bpmn") {
       fileName = fileName.slice(0, -5);
-    } else {
+    } else if (fileName.substr(fileName.length - 4) == ".dmn") {
       fileName = fileName.slice(0, -4);
+      isBpmnFile = false;
     }
+
     if (
-      fileName !==
-      (item[0]?.fileName?.slice(0, -5) || item[0]?.fileName?.slice(0, -4))
+      (isBpmnFile && fileName !== item[0]?.fileName?.slice(0, -5)) ||
+      (!isBpmnFile && fileName !== item[0]?.fileName?.slice(0, -4))
     ) {
       document.getElementById("inputWorkflow").value = null;
     }

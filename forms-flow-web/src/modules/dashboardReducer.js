@@ -1,24 +1,23 @@
 import ACTION_CONSTANTS from "../actions/actionConstants";
 
 export const initialState = {
-  dashboards: [
-    {
-      id: "",
-      name: "",
-      approvedGroups: [],
-    },
-  ],
+  dashboards: [],
   isloading: true,
   iserror: false,
   groups: [],
   isDashUpdated: false,
   isGroupUpdated: false,
   updateError: false,
+  authorizations: [],
+  authDashBoards: [],
+  isAuthUpdated: false,
+  isAuthRecieved: false,
+  authorization_error: null,
 };
 
 const dashboards = (state = initialState, action) => {
   switch (action.type) {
-    case ACTION_CONSTANTS.DASHBOARDS_LIST:{
+    case ACTION_CONSTANTS.DASHBOARDS_LIST: {
       let dashboards = action.payload.results.map((result) => ({
         id: result.id,
         name: result.name,
@@ -36,33 +35,6 @@ const dashboards = (state = initialState, action) => {
         updateError: false,
       };
 
-    case ACTION_CONSTANTS.DASHBOARDS_MAP_FROM_GROUPS:{
-      let dashboardsFromState = [...action.payload.dashboards];
-      let groups = [...action.payload.groups];
-      for (let dashboard of dashboardsFromState) {
-        let res = checkDashboardIngroups(dashboard, groups);
-        dashboard.approvedGroups = res;
-      }
-
-      return { ...state, dashboards: dashboardsFromState, isloading: false };
-    }
-    case ACTION_CONSTANTS.DASHBOARDS_CLEAN_UP:
-      return {
-        ...state,
-        isDashUpdated: false,
-        isGroupUpdated: false,
-        isloading: true,
-      };
-
-    // fetch the fresh data after update
-    case ACTION_CONSTANTS.DASHBOARDS_INITIATE_UPDATE:
-      return {
-        ...state,
-        isloading: true,
-        isDashUpdated: false,
-        isGroupUpdated: false,
-      };
-
     case ACTION_CONSTANTS.DASHBOARDS_UPDATE_ERROR:
       return {
         ...state,
@@ -71,26 +43,23 @@ const dashboards = (state = initialState, action) => {
         isloading: false,
       };
 
-    case ACTION_CONSTANTS.DASHBOARDS_HIDE_UPDATE_ERROR:
-      return { ...state, updateError: false };
-
+    case ACTION_CONSTANTS.SET_AUTHORIZATIONS:
+      return {
+        ...state,
+        authorizations: action.payload,
+        isAuthRecieved: true,
+        isAuthUpdated: false,
+      };
+    case ACTION_CONSTANTS.UPDATE_AUTHORIZATIONS:
+      return {
+        ...state,
+        authDashBoards: action.payload,
+        isAuthUpdated: true,
+        isloading: false,
+      };
     default:
       return state;
   }
 };
 
-export const checkDashboardIngroups = (dashboard, groups) => {
-  let approvedGroups = [];
-
-  for (let group of groups) {
-    let dashboardIdsInGroupsArray = group.dashboards.map((item) =>
-      Number(Object.keys(item)[0])
-    );
-    if (dashboardIdsInGroupsArray.includes(dashboard.id)) {
-      approvedGroups.push({ name: group.name, id: group.id });
-    }
-  }
-
-  return approvedGroups;
-};
 export default dashboards;

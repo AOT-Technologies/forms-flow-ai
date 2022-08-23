@@ -67,11 +67,11 @@ class FormioResource(Resource):
                 key=current_app.config.get("FORMIO_JWT_SECRET"),
                 algorithm="HS256",
             )
+            response.headers["Access-Control-Expose-Headers"] = "x-jwt-token"
             return response
 
         try:
-
-            user_role = user.token_info["role"]
+            user_role = user.roles
             role_ids = cache.get("formio_role_ids")
             roles = get_role_ids_from_user_groups(role_ids, user_role)
             if roles is not None:

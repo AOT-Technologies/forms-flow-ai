@@ -4,8 +4,8 @@ import Select from "react-select";
 import NoData from "./nodashboard";
 import { Route, Redirect } from "react-router";
 import {
-  fetchDashboardsList,
   fetchDashboardDetails,
+  fetchUserDashboards,
 } from "../../apiManager/services/insightServices";
 import {
   setInsightDetailLoader,
@@ -15,26 +15,24 @@ import LoadingOverlay from "react-loading-overlay";
 import Loading from "../../containers/Loading";
 import { useTranslation, Translation } from "react-i18next";
 
-import { fetchdashboards } from "../../apiManager/services/dashboardsService";
 import { SpinnerSVG } from "../../containers/SpinnerSVG";
 import { BASE_ROUTE } from "../../constants/constants";
 
 const Insights = React.memo((props) => {
   const {
-    getDashboardsList,
     getDashboardDetail,
     dashboards,
     activeDashboard,
-    isInsightLoading,
     isDashboardLoading,
     getDashboards,
-    dashboardsFromRedash,
+    isDashboardListUpdated,
+    isDashboardDetailUpdated,
+    error,
   } = props;
   const [dashboardSelected, setDashboardSelected] = useState(null);
+  const [options, setOptions] = useState([]);
+
   const { t } = useTranslation();
-  useEffect(() => {
-    getDashboardsList(dashboardsFromRedash);
-  }, [getDashboardsList, dashboardsFromRedash]);
 
   useEffect(() => {
     getDashboards();
@@ -42,7 +40,12 @@ const Insights = React.memo((props) => {
 
   useEffect(() => {
     if (dashboards.length > 0) {
-      setDashboardSelected(dashboards[0]);
+      let options = dashboards.map((item) => ({
+        label: item.resourceDetails.name,
+        value: item.resourceId,
+      }));
+      setDashboardSelected(options[0]);
+      setOptions(options);
     }
   }, [dashboards]);
   useEffect(() => {
@@ -76,26 +79,36 @@ const Insights = React.memo((props) => {
               </h1>
               <hr className="line-hr" />
               <div className="col-12">
-                <div className="app-title-container mt-3" data-testid="Insight" role="main">
+                <div
+                  className="app-title-container mt-3"
+                  data-testid="Insight"
+                  role="main"
+                >
                   <h3 className="insight-title" data-testid="Dashboard">
                     <i className="fa fa-bars mr-1" />{" "}
                     <Translation>{(t) => t("Dashboard")}</Translation>
                   </h3>
 
                   <div className="col-3 mb-2">
-                    <Select
-                      aria-label="Select Dashboard"
-                      options={dashboards}
-                      onChange={setDashboardSelected}
-                      placeholder={t("Select Dashboard")}
-                      value={dashboardSelected}
-                    />
+                    {options.length > 0 && (
+                      <Select
+                        aria-label="Select Dashboard"
+                        options={options}
+                        onChange={setDashboardSelected}
+                        placeholder={t("Select Dashboard")}
+                        value={options.find(
+                          (element) => element.value == activeDashboard.id
+                        )}
+                      />
+                    )}
                   </div>
                 </div>
               </div>
             </div>
             <LoadingOverlay
-              active={isInsightLoading || !activeDashboard.name}
+              active={
+                !(isDashboardListUpdated || isDashboardDetailUpdated) && !error
+              }
               styles={{
                 overlay: (base) => ({
                   ...base,
@@ -105,7 +118,7 @@ const Insights = React.memo((props) => {
               spinner={<SpinnerSVG />}
               className="col-12"
             >
-              {dashboards.length > 0 ? (
+              {options.length > 0 ? (
                 activeDashboard.public_url ? (
                   <iframe
                     title="dashboard"
@@ -119,7 +132,7 @@ const Insights = React.memo((props) => {
                     src={activeDashboard.public_url}
                   />
                 ) : (
-                  <NoPublicUrlMessage />
+                  !isDashboardDetailUpdated ? <Loading /> : <NoPublicUrlMessage />
                 )
               ) : (
                 <NoData />
@@ -141,23 +154,21 @@ const mapStateToProps = (state) => {
     isInsightLoading: state.insights.isInsightLoading,
     dashboards: state.insights.dashboardsList,
     activeDashboard: state.insights.dashboardDetail,
-    dashboardsFromRedash: state.dashboardReducer.dashboards,
+    isDashboardListUpdated: state.insights.isDashboardListUpdated,
+    isDashboardDetailUpdated: state.insights.isDashboardDetailUpdated,
+    error: state.insights.error,
   };
 };
 
 const mapDispatchToProps = (dispatch) => {
   return {
-    getDashboardsList: (dashboardsFromRedash) => {
-      dispatch(setInsightDashboardListLoader(true));
-      dispatch(fetchDashboardsList(dashboardsFromRedash));
-    },
     getDashboardDetail: (dashboardId) => {
       dispatch(setInsightDetailLoader(true));
       dispatch(fetchDashboardDetails(dashboardId));
     },
     getDashboards: () => {
       dispatch(setInsightDashboardListLoader(true));
-      dispatch(fetchdashboards());
+      dispatch(fetchUserDashboards());
     },
   };
 };

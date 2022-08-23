@@ -21,7 +21,7 @@ import {
   setApplicationCountResponse,
   setUnPublishApiError,
   setResetProcess,
-  setAllDeploymentList,
+  setAllDmnProcessList,
 } from "../../actions/processActions";
 import { setApplicationCount } from "../../actions/processActions";
 import { replaceUrl } from "../../helper/helper";
@@ -76,10 +76,8 @@ export const fetchAllBpmProcesses = (excludeInternal = true, ...rest) => {
       true
     )
       .then((res) => {
-        if (res?.data?._embedded?.processDefinitionDtoList) {
-          dispatch(
-            setAllProcessList(res.data._embedded.processDefinitionDtoList)
-          );
+        if (res?.data) {
+          dispatch(setAllProcessList(res.data));
           done(null, res.data);
         } else {
           dispatch(setAllProcessList([]));
@@ -92,65 +90,22 @@ export const fetchAllBpmProcesses = (excludeInternal = true, ...rest) => {
   };
 };
 
-export const fetchAllBpmDeployments = (...rest) => {
+export const fetchAllDmnProcesses = (...rest) => {
   const done = rest.length ? rest[0] : () => {};
   return (dispatch) => {
     // eslint-disable-next-line max-len
-    httpGETRequest(API.GET_BPM_DEPLOYMENTS, {}, UserService.getToken(), true)
-      .then(async (res) => {
+    httpGETRequest(
+      API.GET_DMN_PROCESS_LIST + `?latestVersion=true`,
+      {},
+      UserService.getToken(),
+      true
+    )
+      .then((res) => {
         if (res?.data) {
-          // GET Resources
-          const resourceIdList = res.data.map(async (deployment) => {
-            const apiUrlDeployementId = replaceUrl(
-              API.GET_BPM_DEPLOYMENT_RESOURCES,
-              "<deployment_id>",
-              deployment.id
-            );
-            // eslint-disable-next-line max-len
-            const resources = await httpGETRequest(
-              apiUrlDeployementId,
-              {},
-              UserService.getToken(),
-              true
-            );
-            deployment.isExecutable = false;
-            deployment.deploymentId = resources.data[0].deploymentId;
-            deployment.resourceId = resources.data[0].id;
-            deployment.deploymentName = resources.data[0].name;
-            deployment.key = resources.data[0].name.slice(0, -5); // remove .bpmn
-
-            return deployment;
-          });
-          const updatedResourceList = await Promise.all(resourceIdList);
-
-          // GET Diagrams
-          const diagramList = updatedResourceList.map(async (deployment) => {
-            let apiUrlDiagramList = replaceUrl(
-              API.GET_BPM_DEPLOYMENT_DIAGRAM,
-              "<deployment_id>",
-              deployment.deploymentId
-            );
-            apiUrlDiagramList = replaceUrl(
-              apiUrlDiagramList,
-              "<resource_id>",
-              deployment.resourceId
-            );
-            // eslint-disable-next-line max-len
-            const diagram = await httpGETRequest(
-              apiUrlDiagramList,
-              {},
-              UserService.getToken(),
-              true
-            );
-            deployment.diagram = diagram.data;
-            return deployment;
-          });
-          const updatedDiagramList = await Promise.all(diagramList);
-
-          dispatch(setAllDeploymentList(updatedDiagramList));
-          done(null, updatedDiagramList);
+          dispatch(setAllDmnProcessList(res.data));
+          done(null, res.data);
         } else {
-          dispatch(setAllDeploymentList([]));
+          dispatch(setAllDmnProcessList([]));
         }
       })
       // eslint-disable-next-line no-unused-vars
@@ -307,11 +262,18 @@ export const getProcessActivities = (process_instance_id, ...rest) => {
   };
 };
 
-export const fetchDiagram = (process_key, tenant_key = null, ...rest) => {
-  let url = replaceUrl(API.PROCESSES_XML, "<process_key>", process_key);
+export const fetchDiagram = (
+  process_key,
+  tenant_key = null,
+  isDmn = false,
+  ...rest
+) => {
+  const api = isDmn ? API.DMN_XML : API.PROCESSES_XML;
+
+  let url = replaceUrl(api, "<process_key>", process_key);
 
   if (tenant_key) {
-    url = replaceUrl(API.PROCESSES_XML, "<process_key>", process_key);
+    url = replaceUrl(api, "<process_key>", process_key);
     url = url + "?tenantId=" + tenant_key;
   }
 
@@ -319,8 +281,10 @@ export const fetchDiagram = (process_key, tenant_key = null, ...rest) => {
   return (dispatch) => {
     httpGETRequest(url, {}, UserService.getToken(), true)
       .then((res) => {
-        if (res.data && res.data.bpmn20Xml) {
-          dispatch(setProcessDiagramXML(res.data.bpmn20Xml));
+        if (res.data && (isDmn ? res.data.dmnXml : res.data.bpmn20Xml)) {
+          dispatch(
+            setProcessDiagramXML(isDmn ? res.data.dmnXml : res.data.bpmn20Xml)
+          );
           // console.log('res.data.bpmn20Xml>>',res.data.bpmn20Xml);
         } else {
           dispatch(setProcessDiagramXML(""));

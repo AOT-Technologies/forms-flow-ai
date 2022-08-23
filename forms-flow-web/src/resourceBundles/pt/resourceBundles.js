@@ -223,7 +223,19 @@ export const RESOURCE_BUNDLES_PT = {
   "Create New":"Crie um novo",
   "Or create new workflow or import a workflow from a local directory.":"Ou crie um novo fluxo de trabalho ou importe um fluxo de trabalho de um diretório local.",
   "The operation couldn't be completed. Please try after sometime":"A operação não pôde ser concluída. Por favor, tente depois de algum tempo",
-  "Select...":"Selecionar..."
+  "Select...":"Selecionar...",
+  "No Drafts Found": "Nenhum rascunho encontrado",
+  "Help":"Ajuda",
+  "Draft Id":"ID de rascunho",
+  "Draft Name":"Nome do rascunho",
+  "Link To Draft Submission":"Link para envio de rascunho",
+  "Drafts":"Rascunhos"
+
+
+
+
+
+
 
 
 

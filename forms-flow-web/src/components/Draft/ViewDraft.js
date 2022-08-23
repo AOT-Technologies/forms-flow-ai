@@ -91,7 +91,7 @@ const ViewDraft = React.memo(() => {
           eventKey="form"
           title={<Translation>{(t) => t("Form")}</Translation>}
         >
-          <View page="draft-detail" />
+          <View page="draft-detail" showPrintButton={false} />
         </Tab>
         <Tab
           eventKey="process-diagram"

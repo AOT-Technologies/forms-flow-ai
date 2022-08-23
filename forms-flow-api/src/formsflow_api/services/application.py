@@ -15,7 +15,11 @@ from formsflow_api.schemas import (
     FormProcessMapperSchema,
 )
 from formsflow_api.services.external import BPMService
-from formsflow_api.utils import DRAFT_APPLICATION_STATUS, NEW_APPLICATION_STATUS
+from formsflow_api.utils import (
+    DRAFT_APPLICATION_STATUS,
+    NEW_APPLICATION_STATUS,
+    REVIEWER_GROUP,
+)
 from formsflow_api.utils.user_context import UserContext, user_context
 
 from .form_process_mapper import FormProcessMapperService
@@ -23,7 +27,7 @@ from .form_process_mapper import FormProcessMapperService
 application_schema = ApplicationSchema()
 
 
-class ApplicationService:
+class ApplicationService:  # pylint: disable=too-many-public-methods
     """This class manages application service."""
 
     @staticmethod
@@ -113,6 +117,19 @@ class ApplicationService:
         return response
 
     @staticmethod
+    def _application_access(token: str) -> bool:
+        """Checks if the user has access to all applications."""
+        auth_form_details = ApplicationService.get_authorised_form_list(token=token)
+        assert auth_form_details is not None
+        current_app.logger.info(auth_form_details)
+        auth_list = auth_form_details.get("authorizationList") or {}
+        resource_list = [group["resourceId"] for group in auth_list]
+        return (
+            auth_form_details.get("adminGroupEnabled") is True or "*" in resource_list,
+            resource_list,
+        )
+
+    @staticmethod
     def get_auth_applications_and_count(  # pylint: disable=too-many-arguments,too-many-locals
         page_no: int,
         limit: int,
@@ -129,11 +146,8 @@ class ApplicationService:
         token: str,
     ):
         """Get applications only from authorized groups."""
-        auth_form_details = ApplicationService.get_authorised_form_list(token=token)
-        current_app.logger.info(auth_form_details)
-        auth_list = auth_form_details.get("authorizationList") or {}
-        resource_list = [group["resourceId"] for group in auth_list]
-        if auth_form_details.get("adminGroupEnabled") is True or "*" in resource_list:
+        access, resource_list = ApplicationService._application_access(token)
+        if access:
             applications, get_all_applications_count = Application.find_all(
                 page_no=page_no,
                 limit=limit,
@@ -230,7 +244,7 @@ class ApplicationService:
             created_from=created_from,
             created_to=created_to,
         )
-        draft_count = Draft.get_draft_count(user_id=user_id)
+        draft_count = Draft.get_draft_count()
         return (
             application_schema.dump(applications, many=True),
             get_all_applications_count,
@@ -440,3 +454,19 @@ class ApplicationService:
             {"message": f"Total Applications found are: {count}", "value": count},
             HTTPStatus.OK,
         )
+
+    @staticmethod
+    @user_context
+    def get_application_count(auth, token, **kwargs):
+        """Retrieves the active application count."""
+        user: UserContext = kwargs["user"]
+        access, resource_list = ApplicationService._application_access(token=token)
+        application_count = None
+        if auth.has_role([REVIEWER_GROUP]) and access:
+            application_count = Application.get_all_application_count()
+        elif auth.has_role([REVIEWER_GROUP]) and not access:
+            application_count = Application.get_authorized_application_count(resource_list)
+        else:
+            application_count = Application.get_user_based_application_count(user.user_name)
+        assert application_count is not None
+        return application_count

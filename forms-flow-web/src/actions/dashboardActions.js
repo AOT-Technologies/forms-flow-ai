@@ -1,4 +1,5 @@
 /* istanbul ignore file */
+import { toast } from "react-toastify";
 import ACTION_CONSTANTS from "./actionConstants";
 
 //updates the dashboards state
@@ -29,30 +30,20 @@ export const updateErrorHandler = (data) => (dispatch) => {
     type: ACTION_CONSTANTS.DASHBOARDS_UPDATE_ERROR,
     payload: data,
   });
+  toast.error(data);
 };
 
-export const initiateUpdate = () => (dispatch) => {
+
+export const setDashboardAuthorizations = (data) => (dispatch) => {
   dispatch({
-    type: ACTION_CONSTANTS.DASHBOARDS_INITIATE_UPDATE,
-    payload: null,
+    type: ACTION_CONSTANTS.SET_AUTHORIZATIONS,
+    payload: data,
   });
 };
 
-// maps the dashboards with the groups and update the state
-
-export const updateDashboardFromGroups = (data) => (dispatch) => {
+export const updateDashboardAuthorizationList = (data) => (dispatch) => {
   dispatch({
-    type: ACTION_CONSTANTS.DASHBOARDS_MAP_FROM_GROUPS,
-    payload: {
-      dashboards: data.dashboards,
-      groups: data.groups,
-    },
-  });
-};
-
-export const hideUpdateError = () => (dispatch) => {
-  dispatch({
-    type: ACTION_CONSTANTS.DASHBOARDS_HIDE_UPDATE_ERROR,
-    payload: null,
+    type: ACTION_CONSTANTS.UPDATE_AUTHORIZATIONS,
+    payload: data,
   });
 };

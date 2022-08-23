@@ -35,10 +35,10 @@ objects:
       spec:
         containers:
         - env:
-          - name: BPM_API_BASE
+          - name: BPM_API_URL
             valueFrom:
               configMapKeyRef:
-                key: CAMUNDA_API_URI
+                key: BPM_API_URL
                 name: ${FORMSFLOW_CONFIG_NAME}-config
           - name: INSIGHTS_API_BASE
             valueFrom:

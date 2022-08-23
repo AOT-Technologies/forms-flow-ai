@@ -1,85 +1,134 @@
 import React, { useState, useEffect } from "react";
+import { useSelector, useDispatch } from "react-redux";
 import Grid from "@material-ui/core/Grid";
 import CardContent from "@material-ui/core/CardContent";
 import Card from "@material-ui/core/Card";
 import Select from "react-dropdown-select";
-import EditModel from "./ModelEditorHook";
-import { useSelector, useDispatch } from "react-redux";
-import {
-  setWorkflowAssociation,
-  setProcessDiagramXML,
-} from "../../actions/processActions";
+import BpmnEditor from "./Editors/BpmnEditor";
+import DmnEditor from "./Editors/DmnEditor";
+import Button from "react-bootstrap/Button";
 import { useTranslation } from "react-i18next";
 import { listProcess } from "../../apiManager/services/formatterService";
+import {
+  createNewDecision,
+  createNewProcess,
+  extractDataFromDiagram,
+} from "./helpers/helper";
 import "./Modeller.scss";
 
 import {
   fetchAllBpmProcesses,
-  fetchAllBpmDeployments,
+  fetchAllDmnProcesses,
 } from "../../apiManager/services/processServices";
 
-import Button from "react-bootstrap/Button";
-
-import { createNewProcess } from "./helpers/helper";
+import {
+  setWorkflowAssociation,
+  setProcessDiagramXML,
+} from "../../actions/processActions";
 
 export default React.memo(() => {
   const { t } = useTranslation();
   const dispatch = useDispatch();
   const process = useSelector((state) => state.process.processList);
-  const deployments = useSelector((state) => state.process.deploymentList);
+  const dmn = useSelector((state) => state.process.dmnProcessList);
+  const [processList, setProcessList] = useState(listProcess(process));
   const workflow = useSelector((state) => state.process.workflowAssociated);
-  const [defaultProcessInfo, setDefaultProcessInfo] = useState(
-    createNewProcess()
-  );
   const [showModeller, setShowModeller] = useState(false);
+  const [xml, setXml] = useState(null);
+  const [isBpmnModel, setIsBpmnModel] = useState(true);
 
-  // Combine executable (processes) and non-executable (deployments)
-  const [fullProcessList, setFullProcessList] = useState([]);
-
-  // Populate workflows in dropdown on page load
   useEffect(() => {
     setShowModeller(false);
     dispatch(setWorkflowAssociation(null));
-    dispatch(fetchAllBpmProcesses(true));
-    dispatch(fetchAllBpmDeployments());
+    dispatch(fetchAllBpmProcesses());
   }, []);
 
   useEffect(() => {
-    if (deployments) {
-      setFullProcessList(listProcess(process.concat(deployments)));
-    }
-  }, [process, deployments]);
+    isBpmnModel
+      ? setProcessList(listProcess(process))
+      : setProcessList(listProcess(dmn));
+  }, [process, dmn]);
+
+  useEffect(() => {
+    isBpmnModel
+      ? dispatch(fetchAllBpmProcesses())
+      : dispatch(fetchAllDmnProcesses());
+  }, [isBpmnModel]);
 
   const handleListChange = (item) => {
     setShowModeller(true);
     dispatch(setWorkflowAssociation(item[0]));
-    // Clear the filename after the "Choose File" input button
-    if (item[0] !== defaultProcessInfo.defaultWorkflow) {
-      document.getElementById("inputWorkflow").value = "";
+    dispatch(setProcessDiagramXML(null));
+    setXml(null);
+    showChosenFileName(item);
+  };
+
+  const showChosenFileName = (item) => {
+    const filePath = document.getElementById("inputWorkflow").value;
+    var n = filePath.lastIndexOf("\\");
+    let fileName = filePath.substring(n + 1);
+
+    if (fileName.substr(fileName.length - 5) == ".bpmn") {
+      fileName = fileName.slice(0, -5);
+    } else {
+      fileName = fileName.slice(0, -4);
+    }
+    if (
+      fileName !==
+      (item[0]?.fileName?.slice(0, -5) || item[0]?.fileName?.slice(0, -4))
+    ) {
+      document.getElementById("inputWorkflow").value = null;
     }
   };
 
-  const handleFile = (e) => {
+  const handleFile = (e, fileName) => {
     const content = e.target.result;
-    dispatch(setProcessDiagramXML(content));
-    dispatch(setWorkflowAssociation(defaultProcessInfo.defaultWorkflow));
-    setShowModeller(true);
+    let processId = "";
+    let name = "";
+
+    if (fileName.substr(fileName.length - 5) == ".bpmn") {
+      setIsBpmnModel(true);
+      name = extractDataFromDiagram(content).name;
+      processId = extractDataFromDiagram(content).processId;
+    } else {
+      setIsBpmnModel(false);
+      name = extractDataFromDiagram(content, true).name;
+      processId = extractDataFromDiagram(content, true).processId;
+    }
+
+    const newWorkflow = {
+      label: name,
+      value: processId,
+      xml: content,
+      fileName: fileName,
+    };
+    setXml(content);
+    dispatch(setWorkflowAssociation(newWorkflow));
   };
 
   const handleChangeFile = (file) => {
     let fileData = new FileReader();
-    fileData.onloadend = handleFile;
+    fileData.onloadend = (e) => {
+      handleFile(e, file.name);
+    };
     fileData.readAsText(file);
     setShowModeller(true);
   };
 
   const handleCreateNew = () => {
-    const newProcess = createNewProcess();
-    setDefaultProcessInfo(newProcess);
-    dispatch(setProcessDiagramXML(newProcess.defaultBlankProcessXML));
+    const newProcess = isBpmnModel ? createNewProcess() : createNewDecision();
     dispatch(setWorkflowAssociation(newProcess.defaultWorkflow));
-    document.getElementById("inputWorkflow").value = "";
+    dispatch(setProcessDiagramXML(newProcess.defaultWorkflow.xml));
+    setXml(newProcess.defaultWorkflow.xml);
     setShowModeller(true);
+    document.getElementById("inputWorkflow").value = null;
+  };
+
+  const handleToggle = () => {
+    setShowModeller(false);
+    dispatch(setWorkflowAssociation(null));
+    setIsBpmnModel((toggle) => !toggle);
+    document.getElementById("inputWorkflow").value = null;
   };
 
   const handleHelp = () => {
@@ -107,7 +156,7 @@ export default React.memo(() => {
       <Grid
         container
         direction="row"
-        justify="flex-start"
+        justifyContent="flex-start"
         alignItems="baseline"
       >
         <Grid item xs={12} sm={12}>
@@ -118,21 +167,38 @@ export default React.memo(() => {
                 className="help-btn"
                 onClick={() => handleHelp()}
               >
-                Help
+                {t("Help")}
               </Button>
               <Grid item xs={12} sm={6}>
                 <span className="fontsize-16">
                   {t("Please select an existing workflow.")}
                 </span>
-                <Select
-                  placeholder={t("Select...")}
-                  dropdownHeight={showModeller ? "250px" : "100px"}
-                  options={fullProcessList}
-                  onChange={handleListChange}
-                  values={
-                    fullProcessList.length && workflow?.value ? [workflow] : []
-                  }
-                />
+                <div className="select-style">
+                  <Select
+                    placeholder={t("Select...")}
+                    dropdownHeight={"135px"}
+                    options={processList}
+                    onChange={handleListChange}
+                    values={
+                      processList.length && workflow?.value ? [workflow] : []
+                    }
+                  />
+                </div>
+                <div className="mt-2">
+                  <label className="switch">
+                    <input
+                      type="checkbox"
+                      checked={isBpmnModel}
+                      onChange={handleToggle}
+                    />
+                    <span className="slider round"></span>
+                    <span
+                      className="labels"
+                      data-on="BPMN"
+                      data-off="DMN"
+                    ></span>
+                  </label>
+                </div>
               </Grid>
 
               <div className="create-import-container">
@@ -154,22 +220,28 @@ export default React.memo(() => {
                   <input
                     id="inputWorkflow"
                     type="file"
-                    accept=".bpmn"
+                    accept=".bpmn, .dmn"
                     onChange={(e) => handleChangeFile(e.target.files[0])}
                   />
                 </div>
               </div>
 
-              {fullProcessList.length && workflow?.value && showModeller ? (
+              {processList.length && workflow?.value && showModeller ? (
                 <div>
-                  <EditModel
-                    isExecutable={workflow?.isExecutable}
-                    xml={workflow?.xml}
-                    processKey={workflow?.value}
-                    tenant={workflow?.tenant}
-                    defaultProcessInfo={defaultProcessInfo}
-                    name={workflow?.label}
-                  />
+                  {isBpmnModel ? (
+                    <BpmnEditor
+                      xml={xml ? xml : workflow?.xml}
+                      setShowModeller={setShowModeller}
+                      processKey={workflow?.value}
+                      tenant={workflow?.tenant}
+                    />
+                  ) : (
+                    <DmnEditor
+                      xml={xml ? xml : workflow?.xml}
+                      processKey={workflow?.value}
+                      tenant={workflow?.tenant}
+                    />
+                  )}
                 </div>
               ) : null}
             </CardContent>

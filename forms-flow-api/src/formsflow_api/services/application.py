@@ -32,7 +32,10 @@ class ApplicationService:  # pylint: disable=too-many-public-methods
 
     @staticmethod
     def get_start_task_payload(
-        application: Application, mapper: FormProcessMapper, form_url: str, web_form_url: str
+        application: Application,
+        mapper: FormProcessMapper,
+        form_url: str,
+        web_form_url: str,
     ) -> Dict:
         """Returns the payload for initiating the task."""
         return {
@@ -467,8 +470,12 @@ class ApplicationService:  # pylint: disable=too-many-public-methods
         if auth.has_role([REVIEWER_GROUP]) and access:
             application_count = Application.get_all_application_count()
         elif auth.has_role([REVIEWER_GROUP]) and not access:
-            application_count = Application.get_authorized_application_count(resource_list)
+            application_count = Application.get_authorized_application_count(
+                resource_list
+            )
         else:
-            application_count = Application.get_user_based_application_count(user.user_name)
+            application_count = Application.get_user_based_application_count(
+                user.user_name
+            )
         assert application_count is not None
         return application_count

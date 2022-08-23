@@ -88,4 +88,3 @@ class ApplicationSubmissionSchema(Schema):
     form_url = fields.Str(data_key="formUrl", required=True)
     submission_id = fields.Str(data_key="submissionId", required=True)
     web_form_url = fields.Str(data_key="webFormUrl", load_only=True)
-

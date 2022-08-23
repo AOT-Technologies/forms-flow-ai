@@ -198,7 +198,7 @@ const customTotal = (from, to, size) => (
     <Translation>{(t) => t("Results")}</Translation>
   </span>
 );
-const customDropUp = ({ options, currSizePerPage, onSizePerPageChange }) => {
+export const customDropUp = ({ options, currSizePerPage, onSizePerPageChange }) => {
   return (
     <DropdownButton
       drop="up"

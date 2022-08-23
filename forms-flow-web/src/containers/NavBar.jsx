@@ -195,6 +195,7 @@ const NavBar = React.memo(() => {
                <Nav.Link
                       as={Link}
                       to={`${baseUrl}metrics`}
+                      data-testid="Dashboards"
                       className={`main-nav nav-item ${
                         pathname.match(
                           createURLPathMatchExp("metrics", baseUrl)

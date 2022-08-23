@@ -42,5 +42,3 @@ six==1.16.0
 urllib3==1.26.11
 zipp==3.8.1
 git+https://github.com/ratheesh-aot/forms-flow-ai.git@split-python-services#egg=formsflow_api_utils&subdirectory=forms-flow-api-utils
-ndg-httpsclient
-pyopenssl

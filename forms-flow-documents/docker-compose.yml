@@ -7,7 +7,7 @@ services:
       dockerfile: Dockerfile
     restart: unless-stopped
     ports:
-      - '5006:5000'
+      - '5006:5006'
     volumes:
       - ./:/app:rw
     environment:
@@ -20,7 +20,8 @@ services:
       JWT_OIDC_CACHING_ENABLED: 'True'
       KEYCLOAK_URL: ${KEYCLOAK_URL}
       KEYCLOAK_URL_REALM: ${KEYCLOAK_URL_REALM:-forms-flow-ai}
-      WEB_API_BASE_URL: ${FORMSFLOW_API_URL}
+      FORMSFLOW_API_URL: ${FORMSFLOW_API_URL}
+      WEB_API_BASE_URL: ${WEB_API_BASE_URL}
       FORMIO_URL: ${FORMIO_DEFAULT_PROJECT_URL}
       FORMIO_ROOT_EMAIL: ${FORMIO_ROOT_EMAIL:-admin@example.com}
       FORMIO_ROOT_PASSWORD: ${FORMIO_ROOT_PASSWORD:-changeme}

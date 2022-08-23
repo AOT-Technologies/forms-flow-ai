@@ -42,6 +42,6 @@ RUN : \
 ADD . /forms-flow-documents/app
 RUN pip install -e .
 
-EXPOSE 5000
+EXPOSE 5006
 RUN chmod u+x ./entrypoint
 ENTRYPOINT ["/bin/sh", "entrypoint"]

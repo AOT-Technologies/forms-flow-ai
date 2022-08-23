@@ -225,7 +225,14 @@ export const RESOURCE_BUNDLES_BG = {
     "The operation couldn't be completed. Please try after sometime":"Операцията не можа да бъде завършена. Моля, опитайте след известно време",
     "Select...":"Изберете...",
     "No Drafts Found":  "Няма намерени чернови",
-    "Help":"Помогне"
+    "Help":"Помогне",
+    "Draft Id":"Чернова на ID",
+    "Draft Name":"Име на черновата",
+    "Link To Draft Submission":"Връзка към изпращане на чернова",
+    "Drafts":"Чернови"
+
+
+
 
 
 

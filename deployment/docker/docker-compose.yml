@@ -204,10 +204,8 @@ services:
       context: ./../../forms-flow-documents/
       dockerfile: Dockerfile
     restart: always
-    links:
-      - forms-flow-webapi-db
     ports:
-      - '5006:5000'
+      - '5006:5006'
     volumes:
       - ./:/app:rw
     environment:

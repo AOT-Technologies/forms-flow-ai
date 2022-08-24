@@ -201,9 +201,7 @@ const NavBar = React.memo(() => {
                       className={`main-nav nav-item ${
                         pathname.match(
                           createURLPathMatchExp("metrics", baseUrl)
-                        )
-                          ? "active-tab"
-                          : pathname.match(
+                        ) || pathname.match(
                               createURLPathMatchExp("insights", baseUrl)
                             )
                           ? "active-tab"

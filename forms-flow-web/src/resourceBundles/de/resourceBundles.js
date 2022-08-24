@@ -231,7 +231,11 @@ export const RESOURCE_BUNDLES_DE = {
   "Draft Id":"Entwurfs-ID",
   "Draft Name":"Entwurfsname",
   "Link To Draft Submission":"Link zur Entwurfsübermittlung",
-  "Drafts":"Entwürfe"
+  "Drafts":"Entwürfe",
+  "You can't submit this form until it is published":"Sie können dieses Formular erst absenden, wenn es veröffentlicht wurde",
+  "Form not published":"Formular nicht veröffentlicht"
+
+
 
 
 

@@ -229,7 +229,9 @@ export const RESOURCE_BUNDLES_BG = {
     "Draft Id":"Чернова на ID",
     "Draft Name":"Име на черновата",
     "Link To Draft Submission":"Връзка към изпращане на чернова",
-    "Drafts":"Чернови"
+    "Drafts":"Чернови",
+    "You can't submit this form until it is published":"Не можете да изпратите този формуляр, докато не бъде публикуван",
+    "Form not published":"Формулярът не е публикуван"
 
 
 

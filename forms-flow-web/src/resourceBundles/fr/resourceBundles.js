@@ -230,7 +230,11 @@ export const RESOURCE_BUNDLES_FR = {
   "Draft Id":"ID brouillon",
   "Draft Name":"Nom provisoire",
   "Link To Draft Submission":"Lien vers la soumission de brouillon",
-  "Drafts":"Brouillons"
+  "Drafts":"Brouillons",
+  "You can't submit this form until it is published":"Vous ne pouvez pas soumettre ce formulaire tant qu'il n'est pas publié",
+  "Form not published":"Formulaire non publié"
+
+
 
 
 

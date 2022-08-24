@@ -105,18 +105,22 @@ const extractDataFromDiagram = (xml, isDmn = false) => {
   let name = "";
   const elementToInclude = isDmn ? "decision" : ":process";
 
-  const parser = new XmlParser(xml);
-  const elements = parser.convertedJson.elements[0].elements;
-  const processes = elements.filter((element) => {
-    return element.name.includes(elementToInclude);
-  });
+  try {
+    const parser = new XmlParser(xml);
+    const elements = parser.convertedJson.elements[0].elements;
+    const processes = elements.filter((element) => {
+      return element.name.includes(elementToInclude);
+    });
 
-  processes.forEach((process) => {
-    name += process.attributes?.name + " / ";
-  });
-  name = name.substring(0, name.length - 3);
+    processes.forEach((process) => {
+      name += process.attributes?.name + " / ";
+    });
+    name = name.substring(0, name.length - 3);
 
-  processId = processes[0].attributes?.id;
+    processId = processes[0].attributes?.id;
+  } catch (error) {
+    console.log("XML Parser Error: ", error);
+  }
 
   return {
     processId: processId,
@@ -124,4 +128,9 @@ const extractDataFromDiagram = (xml, isDmn = false) => {
   };
 };
 
-export { getRootElement, createNewProcess, createNewDecision, extractDataFromDiagram };
+export {
+  getRootElement,
+  createNewProcess,
+  createNewDecision,
+  extractDataFromDiagram,
+};

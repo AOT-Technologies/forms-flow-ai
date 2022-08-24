@@ -353,13 +353,15 @@ const executeAuthSideEffects = (dispatch, redirectUrl) => {
 const doProcessActions = (submission, ownProps) => {
   return (dispatch, getState) => {
     const state = getState();
-    let user = state.user.userDetail;
     let form = state.form.form;
     let isAuth = state.user.isAuthenticated;
-    dispatch(resetSubmissions("submission"));
-    const data = getProcessReq(form, submission._id, "new", user);
-    const tenantKey = state.tenants?.tenantId;
     const redirectUrl = MULTITENANCY_ENABLED ? `/tenant/${tenantKey}/` : `/`;
+    const origin = `${window.location.origin}${redirectUrl}`;
+
+    dispatch(resetSubmissions("submission"));
+    const data = getProcessReq(form, submission._id, origin);
+    const tenantKey = state.tenants?.tenantId;
+
     let draft_id = state.draft.draftSubmission?.id;
     let isDraftCreated = draft_id ? true : false;
     const applicationCreateAPI = selectApplicationCreateAPI(

@@ -62,6 +62,7 @@ class ApplicationSchema(Schema):
     latest_form_id = fields.Str(data_key="formId", dump_only=True)
     submission_id = fields.Str(data_key="submissionId")
     form_url = fields.Str(data_key="formUrl", load_only=True)
+    web_form_url = fields.Str(data_key="webFormUrl", load_only=True)
 
 
 class ApplicationUpdateSchema(Schema):
@@ -86,3 +87,4 @@ class ApplicationSubmissionSchema(Schema):
 
     form_url = fields.Str(data_key="formUrl", required=True)
     submission_id = fields.Str(data_key="submissionId", required=True)
+    web_form_url = fields.Str(data_key="webFormUrl", load_only=True)

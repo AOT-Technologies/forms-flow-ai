@@ -225,7 +225,16 @@ export const RESOURCE_BUNDLES_EN = {
   "The operation couldn't be completed. Please try after sometime":"The operation couldn't be completed. Please try after sometime",
   "Select...":"Select...",
   "No Drafts Found":  "No Drafts Found",
-  "Help":"Help"
+  "Help":"Help",
+  "Draft Id":"Draft Id",
+  "Draft Name":"Draft Name",
+  "Link To Draft Submission":"Link To Draft Submission",
+  "Drafts":"Drafts",
+  "You can't submit this form until it is published":"You can't submit this form until it is published",
+  "Form not published":"Form not published"
+
+
+
 
 
 

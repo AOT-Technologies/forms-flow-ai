@@ -85,6 +85,11 @@ public interface TaskRestResource extends RestResource {
     List<IdentityLinkDto> getIdentityLinks(@QueryParam("type") String type, @PathParam("id") String id);
 
     @POST
+    @Path("/{id}/identity-links")
+    @Consumes(MediaType.APPLICATION_JSON)
+    void addIdentityLink(IdentityLinkDto identityLink, @PathParam("id") String id);
+
+    @POST
     @Path("/{id}/identity-links/delete")
     @Consumes(MediaType.APPLICATION_JSON)
     void deleteIdentityLink(IdentityLinkDto identityLink, @PathParam("id") String id);

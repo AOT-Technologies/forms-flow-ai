@@ -54,6 +54,7 @@ import useInterval from "../../../customHooks/useInterval";
 import selectApplicationCreateAPI from "./apiSelectHelper";
 import { getFormProcesses } from "../../../apiManager/services/processServices";
 import { setFormStatusLoading } from "../../../actions/processActions";
+import isEqual from "lodash/isEqual";
 
 const View = React.memo((props) => {
   const [formStatus, setFormStatus] = useState("");
@@ -78,6 +79,8 @@ const View = React.memo((props) => {
   const draftSubmissionId = useSelector(
     (state) => state.draft.draftSubmission?.id
   );
+  // Holds the latest data saved by the server
+  const lastUpdatedDraft = useSelector((state) => state.draft.lastUpdated);
   const isPublic = !props.isAuthenticated;
   const tenantKey = useSelector((state) => state.tenants?.tenantId);
   const redirectUrl = MULTITENANCY_ENABLED ? `/tenant/${tenantKey}/` : "/";
@@ -123,7 +126,6 @@ const View = React.memo((props) => {
               if (isObjectId) {
                 dispatch(getForm("form", form_id));
                 dispatch(setFormStatusLoading(false));
-
               } else {
                 dispatch(
                   setFormRequestData(
@@ -143,7 +145,6 @@ const View = React.memo((props) => {
     [dispatch, isPublic]
   );
   const getFormData = useCallback(() => {
-    
     const isObjectId = checkIsObjectId(formId);
     if (isObjectId) {
       getPublicForm(formId, isObjectId);
@@ -162,10 +163,14 @@ const View = React.memo((props) => {
       );
     }
   }, [formId, dispatch, getPublicForm]);
-
+  /**
+   * Compares the current form data and last saved data
+   * Draft is updated only if the form is updated from the last saved form data.
+   */
   const saveDraft = (payload) => {
+    let dataChanged = !isEqual(payload.data, lastUpdatedDraft.data);
     if (draftSubmissionId && isDraftCreated) {
-      dispatch(draftUpdateMethod(payload, draftSubmissionId));
+      if (dataChanged) dispatch(draftUpdateMethod(payload, draftSubmissionId));
     }
   };
 
@@ -197,7 +202,7 @@ const View = React.memo((props) => {
    */
   useInterval(
     () => {
-      let payload = getDraftReqFormat(validFormId, draftData?.data);
+      let payload = getDraftReqFormat(validFormId, { ...draftData?.data });
       saveDraft(payload);
     },
     poll ? DRAFT_POLLING_RATE : null
@@ -205,13 +210,14 @@ const View = React.memo((props) => {
 
   /**
    * Save the current state when the component unmounts.
+   * Save the data before submission to handle submission failure.
    */
   useEffect(() => {
     return () => {
       let payload = getDraftReqFormat(validFormId, draftRef.current?.data);
-      saveDraft(payload);
+      if (poll) saveDraft(payload);
     };
-  }, [validFormId, draftSubmissionId, isDraftCreated]);
+  }, [validFormId, draftSubmissionId, isDraftCreated, poll]);
 
   useEffect(() => {
     if (isPublic) {
@@ -243,7 +249,7 @@ const View = React.memo((props) => {
     );
   }
 
-  if (isFormSubmitted) {
+  if (isFormSubmitted && !isAuthenticated) {
     return (
       <div className="text-center pt-5">
         <h1>{t("Thank you for your response.")}</h1>
@@ -280,7 +286,7 @@ const View = React.memo((props) => {
             </span>{" "}
             {form.title}
           </h3>
-          ) : (
+        ) : (
           ""
         )}
       </div>
@@ -294,24 +300,24 @@ const View = React.memo((props) => {
         <div className="ml-4 mr-4">
           {isPublic || formStatus === "active" ? (
             <Form
-            form={form}
-            submission={submission}
-            url={url}
-            options={{
-              ...options,
-              language: lang,
-              i18n: formio_resourceBundles,
-            }}
-            hideComponents={hideComponents}
-            onChange={(data) => {
-              setDraftData(data);
-              draftRef.current = data;
-            }}
-            onSubmit={(data) => {
-              setPoll(false);
-              onSubmit(data, form._id, isPublic);
-            }}
-            onCustomEvent={(evt) => onCustomEvent(evt, redirectUrl)}
+              form={form}
+              submission={submission}
+              url={url}
+              options={{
+                ...options,
+                language: lang,
+                i18n: formio_resourceBundles,
+              }}
+              hideComponents={hideComponents}
+              onChange={(data) => {
+                setDraftData(data);
+                draftRef.current = data;
+              }}
+              onSubmit={(data) => {
+                setPoll(false);
+                onSubmit(data, form._id, isPublic);
+              }}
+              onCustomEvent={(evt) => onCustomEvent(evt, redirectUrl)}
             />
           ) : formStatus === "inactive" || !formStatus ? (
             <span>
@@ -347,13 +353,15 @@ const executeAuthSideEffects = (dispatch, redirectUrl) => {
 const doProcessActions = (submission, ownProps) => {
   return (dispatch, getState) => {
     const state = getState();
-    let user = state.user.userDetail;
     let form = state.form.form;
     let isAuth = state.user.isAuthenticated;
-    dispatch(resetSubmissions("submission"));
-    const data = getProcessReq(form, submission._id, "new", user);
-    const tenantKey = state.tenants?.tenantId;
     const redirectUrl = MULTITENANCY_ENABLED ? `/tenant/${tenantKey}/` : `/`;
+    const origin = `${window.location.origin}${redirectUrl}`;
+
+    dispatch(resetSubmissions("submission"));
+    const data = getProcessReq(form, submission._id, origin);
+    const tenantKey = state.tenants?.tenantId;
+
     let draft_id = state.draft.draftSubmission?.id;
     let isDraftCreated = draft_id ? true : false;
     const applicationCreateAPI = selectApplicationCreateAPI(
@@ -370,13 +378,13 @@ const doProcessActions = (submission, ownProps) => {
           toast.success(
             <Translation>{(t) => t("Submission Saved")}</Translation>
           );
+          dispatch(setFormSubmitted(true));
         } else {
           toast.error(
             <Translation>{(t) => t("Submission Failed.")}</Translation>
           );
         }
         if (isAuth) executeAuthSideEffects(dispatch, redirectUrl);
-        else dispatch(setFormSubmitted(true));
       })
     );
   };

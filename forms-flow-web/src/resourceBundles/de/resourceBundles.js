@@ -227,7 +227,19 @@ export const RESOURCE_BUNDLES_DE = {
   "The operation couldn't be completed. Please try after sometime":"Der Vorgang konnte nicht abgeschlossen werden. Bitte versuchen Sie es nach einiger Zeit erneut",
   "Select...":"Auswählen...",
   "No Drafts Found":  "Keine Entwürfe gefunden",
-  "Help":"Hilfe"
+  "Help":"Hilfe",
+  "Draft Id":"Entwurfs-ID",
+  "Draft Name":"Entwurfsname",
+  "Link To Draft Submission":"Link zur Entwurfsübermittlung",
+  "Drafts":"Entwürfe",
+  "You can't submit this form until it is published":"Sie können dieses Formular erst absenden, wenn es veröffentlicht wurde",
+  "Form not published":"Formular nicht veröffentlicht"
+
+
+
+
+
+
 
 
  

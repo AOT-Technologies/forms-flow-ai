@@ -3,19 +3,19 @@ import API from "../endpoints";
 import { httpPOSTRequest } from "../httpRequestHandler";
 
 /* istanbul ignore file */
-// eslint-disable-next-line no-unused-vars
 import {getFormUrlWithFormIdSubmissionId} from "./formatterService";
 
-export const getProcessReq = (form, submissionId ) => {
+export const getProcessReq = (form, submissionId, origin ) => {
   const requestFormat = {
     formId: form._id,
     submissionId: submissionId,
-    formUrl: getFormUrlWithFormIdSubmissionId(form._id, submissionId)
+    formUrl: getFormUrlWithFormIdSubmissionId(form._id, submissionId),
+    webFormUrl: `${origin}form/${form._id}/submission/${submissionId}`
   };
   return requestFormat;
 };
 
-export const getTaskSubmitFormReq = (formUrl, applicationId, actionType) => {
+export const getTaskSubmitFormReq = (formUrl, applicationId, actionType, webFormUrl) => {
   let formRequestFormat = {
     variables: {
       formUrl: {
@@ -24,6 +24,9 @@ export const getTaskSubmitFormReq = (formUrl, applicationId, actionType) => {
       applicationId: {
         value: applicationId,
       },
+      webFormUrl:{
+        value: webFormUrl
+      }
     },
   };
   if (actionType) {

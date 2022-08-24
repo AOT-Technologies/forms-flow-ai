@@ -247,7 +247,19 @@ export const formio_resourceBundles = {
     "The operation couldn't be completed. Please try after sometime":"The operation couldn't be completed. Please try after sometime",
     "Select...":"Select...",
     "No Drafts Found":  "No Drafts Found",
-    "Help":"Help"
+    "Help":"Help",
+    "Draft Id":"Draft Id",
+    "Draft Name":"Draft Name",
+    "Link To Draft Submission":"Link To Draft Submission",
+    "Drafts":"Drafts",
+    "You can't submit this form until it is published":"You can't submit this form until it is published",
+    "Form not published":"Form not published"
+
+
+
+
+
+
 
 
  
@@ -1119,7 +1131,18 @@ export const formio_resourceBundles = {
     "Or create new workflow or import a workflow from a local directory.":"或创建新工作流或从本地目录导入工作流。",
     "The operation couldn't be completed. Please try after sometime":"操作无法完成。请稍后再试",
     "Select...":"选择...",
-    "No Drafts Found":  "未找到草稿"
+    "No Drafts Found":  "未找到草稿",
+    "Draft Id":"草稿 ID",
+    "Draft Name":"草稿名称",
+    "Link To Draft Submission":"链接到草稿提交",
+    "Drafts":"草稿",
+    "You can't submit this form until it is published":"在此表单发布之前，您无法提交此表单",
+    "Form not published":"表格未发布"
+
+
+
+
+
 
 },
 
@@ -2040,7 +2063,17 @@ export const formio_resourceBundles = {
     "The operation couldn't be completed. Please try after sometime":"Операцията не можа да бъде завършена. Моля, опитайте след известно време",
     "Select...":"Изберете...",
     "No Drafts Found":  "Няма намерени чернови",
-    "Help":"Помогне"
+    "Help":"Помогне",
+    "Draft Id":"Чернова на ID",
+    "Draft Name":"Име на черновата",
+    "Link To Draft Submission":"Връзка към изпращане на чернова",
+    "Drafts":"Чернови",
+    "You can't submit this form until it is published":"Не можете да изпратите този формуляр, докато не бъде публикуван",
+    "Form not published":"Формулярът не е публикуван"
+
+
+
+
 
 
 
@@ -2965,7 +2998,18 @@ export const formio_resourceBundles = {
     "Or create new workflow or import a workflow from a local directory.":"Ou crie um novo fluxo de trabalho ou importe um fluxo de trabalho de um diretório local.",
     "The operation couldn't be completed. Please try after sometime":"A operação não pôde ser concluída. Por favor, tente depois de algum tempo",
     "Select...":"Selecionar...",
-    "No Drafts Found": "Nenhum rascunho encontrado"
+    "No Drafts Found": "Nenhum rascunho encontrado",
+    "Draft Id":"ID de rascunho",
+    "Draft Name":"Nome do rascunho",
+    "Link To Draft Submission":"Link para envio de rascunho",
+    "Drafts":"Rascunhos",
+    "You can't submit this form until it is published":"Você não pode enviar este formulário até que ele seja publicado",
+    "Form not published":"Formulário não publicado"
+
+
+
+
+
 
 
 
@@ -3896,7 +3940,18 @@ export const formio_resourceBundles = {
     "Or create new workflow or import a workflow from a local directory.":"Ou créez un nouveau flux de travail ou importez un flux de travail à partir d'un répertoire local.",
     "The operation couldn't be completed. Please try after sometime":"L'opération n'a pas pu être terminée. Veuillez essayer après un certain temps",
     "Select...":"Sélectionner...",
-    "No Drafts Found":  "Aucun brouillon trouvé"
+    "No Drafts Found":  "Aucun brouillon trouvé",
+    "Draft Id":"ID brouillon",
+    "Draft Name":"Nom provisoire",
+    "Link To Draft Submission":"Lien vers la soumission de brouillon",
+    "Drafts":"Brouillons",
+    "You can't submit this form until it is published":"Vous ne pouvez pas soumettre ce formulaire tant qu'il n'est pas publié",
+    "Form not published":"Formulaire non publié"
+
+
+
+
+
 
  
 
@@ -4831,7 +4886,18 @@ export const formio_resourceBundles = {
   "Or create new workflow or import a workflow from a local directory.":"Oder erstellen Sie einen neuen Workflow oder importieren Sie einen Workflow aus einem lokalen Verzeichnis.",
   "The operation couldn't be completed. Please try after sometime":"Der Vorgang konnte nicht abgeschlossen werden. Bitte versuchen Sie es nach einiger Zeit erneut",
     "Select...":"Auswählen...",
-    "No Drafts Found":  "Keine Entwürfe gefunden"
+    "No Drafts Found":  "Keine Entwürfe gefunden",
+    "Draft Id":"Entwurfs-ID",
+    "Draft Name":"Entwurfsname",
+    "Link To Draft Submission":"Link zur Entwurfsübermittlung",
+    "Drafts":"Entwürfe",
+    "You can't submit this form until it is published":"Sie können dieses Formular erst absenden, wenn es veröffentlicht wurde",
+    "Form not published":"Formular nicht veröffentlicht"
+
+
+
+
+
 
  
 

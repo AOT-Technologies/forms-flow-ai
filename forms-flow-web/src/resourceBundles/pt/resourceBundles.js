@@ -225,7 +225,19 @@ export const RESOURCE_BUNDLES_PT = {
   "The operation couldn't be completed. Please try after sometime":"A operação não pôde ser concluída. Por favor, tente depois de algum tempo",
   "Select...":"Selecionar...",
   "No Drafts Found": "Nenhum rascunho encontrado",
-  "Help":"Ajuda"
+  "Help":"Ajuda",
+  "Draft Id":"ID de rascunho",
+  "Draft Name":"Nome do rascunho",
+  "Link To Draft Submission":"Link para envio de rascunho",
+  "Drafts":"Rascunhos",
+  "You can't submit this form until it is published":"Você não pode enviar este formulário até que ele seja publicado",
+  "Form not published":"Formulário não publicado"
+
+
+
+
+
+
 
 
 

@@ -107,7 +107,7 @@ const Insights = React.memo((props) => {
             </div>
             <LoadingOverlay
               active={
-                !(isDashboardListUpdated && isDashboardDetailUpdated) && !error
+                !(isDashboardListUpdated || isDashboardDetailUpdated) && !error
               }
               styles={{
                 overlay: (base) => ({
@@ -132,7 +132,7 @@ const Insights = React.memo((props) => {
                     src={activeDashboard.public_url}
                   />
                 ) : (
-                  <NoPublicUrlMessage />
+                  !isDashboardDetailUpdated ? <Loading /> : <NoPublicUrlMessage />
                 )
               ) : (
                 <NoData />

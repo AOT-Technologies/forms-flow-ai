@@ -37,6 +37,7 @@ import {
 } from "../../constants/constants";
 import Loading from "../../containers/Loading";
 import SubmissionError from "../../containers/SubmissionError";
+import isEqual from "lodash/isEqual";
 
 const View = React.memo((props) => {
   const { t } = useTranslation();
@@ -62,6 +63,8 @@ const View = React.memo((props) => {
    * this will get updated on every change the form is having.
    */
   const [draftData, setDraftData] = useState(draftSubmission?.data);
+  // Holds the latest data saved by the server
+  const lastUpdatedDraft = useSelector((state) => state.draft.lastUpdated);
   const draftRef = useRef();
   const { formId } = useParams();
   const [poll, setPoll] = useState(DRAFT_ENABLED);
@@ -78,8 +81,9 @@ const View = React.memo((props) => {
   const dispatch = useDispatch();
 
   const saveDraft = (payload) => {
+    let dataChanged = !isEqual(payload.data, lastUpdatedDraft.data);
     if (draftSubmission?.id) {
-      dispatch(draftUpdate(payload, draftSubmission?.id));
+      if (dataChanged) dispatch(draftUpdate(payload, draftSubmission?.id));
     }
   };
 
@@ -89,7 +93,7 @@ const View = React.memo((props) => {
    */
   useInterval(
     () => {
-      let payload = getDraftReqFormat(formId, draftData);
+      let payload = getDraftReqFormat(formId, { ...draftData });
       saveDraft(payload);
     },
     poll ? DRAFT_POLLING_RATE : null
@@ -98,9 +102,9 @@ const View = React.memo((props) => {
   useEffect(() => {
     return () => {
       let payload = getDraftReqFormat(formId, draftRef.current);
-      saveDraft(payload);
+      if (poll) saveDraft(payload);
     };
-  }, []);
+  }, [poll]);
 
   if (isActive || isPublicStatusLoading) {
     return (
@@ -186,13 +190,13 @@ const executeAuthSideEffects = (dispatch, redirectUrl) => {
 const doProcessActions = (submission, ownProps) => {
   return (dispatch, getState) => {
     const state = getState();
-    let user = state.user.userDetail;
     let form = state.form.form;
     let isAuth = state.user.isAuthenticated;
-    dispatch(resetSubmissions("submission"));
-    const data = getProcessReq(form, submission._id, "new", user);
-    const tenantKey = state.tenants?.tenantId;
     const redirectUrl = MULTITENANCY_ENABLED ? `/tenant/${tenantKey}/` : `/`;
+    dispatch(resetSubmissions("submission"));
+    const origin = `${window.location.origin}${redirectUrl}`;
+    const data = getProcessReq(form, submission._id, origin);
+    const tenantKey = state.tenants?.tenantId;
     let draft_id = state.draft.submission?.id;
     let isDraftCreated = draft_id ? true : false;
     const applicationCreateAPI = selectApplicationCreateAPI(

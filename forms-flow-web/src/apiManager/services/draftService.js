@@ -14,6 +14,7 @@ import {
   setDraftCount,
   setDraftSubmissionError,
   setDraftDetailStatusCode,
+  saveLastUpdatedDraft,
 } from "../../actions/draftActions";
 import moment from "moment";
 import { setApplicationListCount } from "../../actions/applicationActions";
@@ -43,11 +44,12 @@ export const draftUpdate = (data, ...rest) => {
   const draftId = rest.length ? rest[0] : null;
   const done = draftId && rest.length > 1 ? rest[1] : () => {};
   const URL = replaceUrl(API.DRAFT_UPDATE, "<draft_id>", draftId);
-  return () => {
+  return (dispatch) => {
     httpPUTRequest(URL, data)
       .then((res) => {
         if (res.data) {
           done(null, res.data);
+          dispatch(saveLastUpdatedDraft({ ...data }));
         } else {
           done("Error Posting data");
         }
@@ -102,11 +104,12 @@ export const publicDraftUpdate = (data, ...rest) => {
   const draftId = rest.length ? rest[0] : null;
   const done = draftId && rest.length > 1 ? rest[1] : () => {};
   const URL = replaceUrl(API.DRAFT_UPDATE_PUBLIC, "<draft_id>", draftId);
-  return () => {
+  return (dispatch) => {
     httpPUTRequestWithoutToken(URL, data)
       .then((res) => {
         if (res.data) {
           done(null, res.data);
+          dispatch(saveLastUpdatedDraft({ ...data }));
         } else {
           done("Error Posting data");
         }

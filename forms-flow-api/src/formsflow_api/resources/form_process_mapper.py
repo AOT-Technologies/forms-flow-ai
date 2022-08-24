@@ -265,7 +265,10 @@ class FormResourceByFormId(Resource):
         """
         try:
             response = FormProcessMapperService.get_mapper_by_formid(form_id=form_id)
-            response["taskVariable"] = json.loads(response["taskVariable"])
+            task_variable = response.get("taskVariable")
+            response["taskVariable"] = (
+                json.loads(task_variable) if task_variable else None
+            )
             return (
                 response,
                 HTTPStatus.OK,

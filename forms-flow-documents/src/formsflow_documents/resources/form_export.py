@@ -71,7 +71,15 @@ class FormResourceRenderFormPdf(Resource):
     "/<string:form_id>/submission/<string:submission_id>/export/pdf",
     methods=["GET", "OPTIONS"],
 )
-@API.doc(params={'timezone': {'description': 'Timezone of client device eg: Asia/Calcutta', 'in': 'query', 'type': 'string'}})
+@API.doc(
+    params={
+        "timezone": {
+            "description": "Timezone of client device eg: Asia/Calcutta",
+            "in": "query",
+            "type": "string",
+        }
+    }
+)
 class FormResourceExportFormPdf(Resource):
     """Resource to export form and submission details as pdf."""
 

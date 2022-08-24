@@ -11,6 +11,7 @@ from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.support.ui import WebDriverWait
 from seleniumwire import webdriver
 
+
 def send_devtools(driver, cmd, params=None):
     """Chrome dev tools execution function."""
     resource = "/session/" + driver.session_id + "/chromium/send_command_and_get_result"
@@ -22,6 +23,7 @@ def send_devtools(driver, cmd, params=None):
     if response.get("status"):
         raise Exception(response.get("value"))
     return response.get("value")
+
 
 # pylint: disable=R1710
 

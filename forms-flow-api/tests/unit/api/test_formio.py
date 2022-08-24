@@ -1,7 +1,6 @@
 """Test suit for formio role id cached endpoint."""
 
 import jwt as pyjwt
-
 from formsflow_api_utils.utils import cache
 from formsflow_api_utils.utils.enums import FormioRoles
 

@@ -6,16 +6,9 @@ import json
 import logging
 import os
 from http import HTTPStatus
-from typing import Dict
 
 from flask import Flask, current_app, g, request
 from flask.logging import default_handler
-from werkzeug.middleware.proxy_fix import ProxyFix
-
-from formsflow_api import config, models
-from formsflow_api.models import db, ma
-from formsflow_api.resources import API
-from formsflow_api_utils.utils.startup import setup_jwt_manager, collect_role_ids, collect_user_resource_ids
 from formsflow_api_utils.utils import (
     ALLOW_ALL_ORIGINS,
     CORS_ORIGINS,
@@ -26,6 +19,17 @@ from formsflow_api_utils.utils import (
     setup_logging,
     translate,
 )
+from formsflow_api_utils.utils.startup import (
+    collect_role_ids,
+    collect_user_resource_ids,
+    setup_jwt_manager,
+)
+from werkzeug.middleware.proxy_fix import ProxyFix
+
+from formsflow_api import config, models
+from formsflow_api.models import db, ma
+from formsflow_api.resources import API
+
 
 def create_app(run_mode=os.getenv("FLASK_ENV", "production")):
     """Return a configured Flask App using the Factory method."""
@@ -110,6 +114,7 @@ def create_app(run_mode=os.getenv("FLASK_ENV", "production")):
             collect_role_ids(app)
             collect_user_resource_ids(app)
     return app
+
 
 def register_shellcontext(app):
     """Register shell context objects."""

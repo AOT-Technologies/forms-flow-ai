@@ -229,7 +229,11 @@ export const RESOURCE_BUNDLES_PT = {
   "Draft Id":"ID de rascunho",
   "Draft Name":"Nome do rascunho",
   "Link To Draft Submission":"Link para envio de rascunho",
-  "Drafts":"Rascunhos"
+  "Drafts":"Rascunhos",
+  "You can't submit this form until it is published":"Você não pode enviar este formulário até que ele seja publicado",
+  "Form not published":"Formulário não publicado"
+
+
 
 
 

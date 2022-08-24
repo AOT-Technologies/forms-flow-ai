@@ -58,7 +58,7 @@ const View = React.memo((props) => {
           <div className="btn-right d-flex flex-row">
             <DownloadPDFButton
               form_id={form._id}
-              submission_id={submission._id}
+              submission_id={updatedSubmission._id}
               title={form.title}
             />
           </div>

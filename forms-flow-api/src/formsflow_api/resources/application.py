@@ -4,16 +4,7 @@ from http import HTTPStatus
 
 from flask import current_app, request
 from flask_restx import Namespace, Resource
-from marshmallow.exceptions import ValidationError
-
 from formsflow_api_utils.exceptions import BusinessException
-from formsflow_api.schemas import (
-    ApplicationListReqSchema,
-    ApplicationListRequestSchema,
-    ApplicationSchema,
-    ApplicationUpdateSchema,
-)
-from formsflow_api.services import ApplicationService
 from formsflow_api_utils.utils import (
     REVIEWER_GROUP,
     auth,
@@ -21,6 +12,15 @@ from formsflow_api_utils.utils import (
     get_form_and_submission_id_from_form_url,
     profiletime,
 )
+from marshmallow.exceptions import ValidationError
+
+from formsflow_api.schemas import (
+    ApplicationListReqSchema,
+    ApplicationListRequestSchema,
+    ApplicationSchema,
+    ApplicationUpdateSchema,
+)
+from formsflow_api.services import ApplicationService
 
 API = Namespace("Application", description="Application")
 

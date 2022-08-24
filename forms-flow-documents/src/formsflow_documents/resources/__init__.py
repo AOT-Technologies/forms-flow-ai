@@ -48,5 +48,6 @@ def handle_auth_error(error: AuthError):
         {"Access-Control-Allow-Origin": ALLOW_ALL_ORIGINS},
     )
 
+
 API.add_namespace(FORM_API, path="/form")
 API.add_namespace(CHECKPOINT_API, path="/checkpoint")

@@ -5,10 +5,6 @@ from __future__ import annotations
 
 import uuid
 
-from sqlalchemy import and_, update
-from sqlalchemy.dialects.postgresql import JSON, UUID
-from sqlalchemy.sql.expression import text
-
 from formsflow_api_utils.utils import (
     DRAFT_APPLICATION_STATUS,
     FILTER_MAPS,
@@ -16,6 +12,9 @@ from formsflow_api_utils.utils import (
 )
 from formsflow_api_utils.utils.enums import DraftStatus
 from formsflow_api_utils.utils.user_context import UserContext, user_context
+from sqlalchemy import and_, update
+from sqlalchemy.dialects.postgresql import JSON, UUID
+from sqlalchemy.sql.expression import text
 
 from .application import Application
 from .audit_mixin import AuditDateTimeMixin

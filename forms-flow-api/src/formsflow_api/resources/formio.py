@@ -6,7 +6,6 @@ from typing import Dict
 import jwt
 from flask import after_this_request, current_app
 from flask_restx import Namespace, Resource
-
 from formsflow_api_utils.utils import (
     auth,
     cache,
@@ -14,7 +13,6 @@ from formsflow_api_utils.utils import (
     get_role_ids_from_user_groups,
     profiletime,
 )
-
 from formsflow_api_utils.utils.enums import FormioRoles
 from formsflow_api_utils.utils.user_context import UserContext, user_context
 

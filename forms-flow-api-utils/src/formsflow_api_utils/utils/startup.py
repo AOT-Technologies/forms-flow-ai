@@ -7,10 +7,9 @@ from typing import Dict
 from formsflow_api_utils.exceptions import BusinessException
 from formsflow_api_utils.schemas import FormioRoleSchema
 from formsflow_api_utils.services.external import FormioService
-from formsflow_api_utils.utils import (
-    cache
-)
+from formsflow_api_utils.utils import cache
 from formsflow_api_utils.utils.enums import FormioRoles
+
 
 def setup_jwt_manager(app, jwt_manager):
     """Use flask app to configure the JWTManager to work for a particular Realm."""
@@ -21,6 +20,7 @@ def setup_jwt_manager(app, jwt_manager):
 
     app.config["JWT_ROLE_CALLBACK"] = get_roles
     jwt_manager.init_app(app)
+
 
 def collect_role_ids(app):
     """Collect role ids from Form.io."""

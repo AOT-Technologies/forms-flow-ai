@@ -188,11 +188,7 @@ const Dashboard = React.memo(() => {
     ];
   };
 
-  let headOptions = headerList();
 
-  if (!getUserInsightsPermission) {
-    headOptions.pop();
-  }
   const noDefaultApplicationAvailable =
     !searchInputBox.current.value && !submissionsList.length ? true : false;
   const noOfApplicationsAvailable = submissionsList?.length || 0;
@@ -212,7 +208,7 @@ const Dashboard = React.memo(() => {
           <div className="dashboard mb-2" >
             <div className="row ">
               <div className="col-12" >
-                <Head items={headOptions} page="Metrics"/>
+                <Head items={headerList()} page="Metrics"/>
                 <hr className="line-hr" />
                 <div className="row ">
                   <div className="col-12 col-lg-4 ">

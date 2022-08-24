@@ -8,7 +8,7 @@ import Modal from "react-bootstrap/Modal";
 import {
   fetchMetricsSubmissionCount,
   fetchMetricsSubmissionStatusCount,
-} from "./../../apiManager/services/metricsServices";
+} from "../../apiManager/services/metricsServices";
 import Pagination from "react-js-pagination";
 import Loading from "../../containers/Loading";
 import LoadError from "../Error";
@@ -26,10 +26,15 @@ import {
 } from "../../actions/metricsActions";
 import LoadingOverlay from "@ronchalant/react-loading-overlay";
 import { Button } from "react-bootstrap";
+import { push } from "connected-react-router";
+import { MULTITENANCY_ENABLED } from "../../constants/constants";
+import Head from "../../containers/Head";
+import { getUserInsightsPermission } from "../../helper/user";
 const Dashboard = React.memo(() => {
   const { t } = useTranslation();
   const dispatch = useDispatch();
   const submissionsList = useSelector((state) => state.metrics.submissionsList);
+  const tenantKey = useSelector((state) => state.tenants?.tenantId);
   const submissionsStatusList = useSelector(
     (state) => state.metrics.submissionsStatusList
   );
@@ -57,6 +62,7 @@ const Dashboard = React.memo(() => {
   const totalItems = useSelector((state) => state.metrics.totalItems);
   const pageRange = useSelector((state) => state.metrics.pagination.numPages);
   const sort = useSelector((state) => state.metrics.sort);
+  const redirectUrl = MULTITENANCY_ENABLED ? `/tenant/${tenantKey}/` : "/";
   const submissionStatusCountLoader = useSelector(
     (state) => state.metrics.submissionStatusCountLoader
   );
@@ -166,6 +172,27 @@ const Dashboard = React.memo(() => {
     dispatch(setMetricsDateRangeLoading(true));
     dispatch(setMetricsDateChange(date));
   };
+  const headerList = () => {
+    return [
+      {
+        name: "Metrics",
+        count: totalItems,
+        onClick: () => dispatch(push(`${redirectUrl}metrics`)),
+        icon: "pie-chart",
+      },
+      {
+        name: "Insights",
+        onClick: () => dispatch(push(`${redirectUrl}insights`)),
+        icon: "lightbulb-o",
+      },
+    ];
+  };
+
+  let headOptions = headerList();
+
+  if (!getUserInsightsPermission) {
+    headOptions.pop();
+  }
   const noDefaultApplicationAvailable =
     !searchInputBox.current.value && !submissionsList.length ? true : false;
   const noOfApplicationsAvailable = submissionsList?.length || 0;
@@ -185,10 +212,7 @@ const Dashboard = React.memo(() => {
           <div className="dashboard mb-2" >
             <div className="row ">
               <div className="col-12" >
-                <h1 className="dashboard-title">
-                  <i className="fa fa-pie-chart p-1" />
-                  <Translation>{(t) => t("Metrics")}</Translation>
-                </h1>
+                <Head items={headOptions} page="Metrics"/>
                 <hr className="line-hr" />
                 <div className="row ">
                   <div className="col-12 col-lg-4 ">

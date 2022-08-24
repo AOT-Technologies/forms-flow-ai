@@ -37,3 +37,10 @@ export const setInsightError = (data) => (dispatch) => {
   });
   toast.error("Something went wrong");
 };
+
+export const runCleanup = () => (dispatch) => {
+  dispatch({
+    type: ACTION_CONSTANTS.CLEANUP_INSIGHTS,
+    payload: null,
+  });
+};

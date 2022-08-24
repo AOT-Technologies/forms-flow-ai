@@ -93,7 +93,7 @@ const View = React.memo((props) => {
    */
   useInterval(
     () => {
-      let payload = getDraftReqFormat(formId, {...draftData});
+      let payload = getDraftReqFormat(formId, { ...draftData });
       saveDraft(payload);
     },
     poll ? DRAFT_POLLING_RATE : null
@@ -102,7 +102,7 @@ const View = React.memo((props) => {
   useEffect(() => {
     return () => {
       let payload = getDraftReqFormat(formId, draftRef.current);
-      if(poll) saveDraft(payload);
+      if (poll) saveDraft(payload);
     };
   }, [poll]);
 
@@ -190,13 +190,13 @@ const executeAuthSideEffects = (dispatch, redirectUrl) => {
 const doProcessActions = (submission, ownProps) => {
   return (dispatch, getState) => {
     const state = getState();
-    let user = state.user.userDetail;
     let form = state.form.form;
     let isAuth = state.user.isAuthenticated;
-    dispatch(resetSubmissions("submission"));
-    const data = getProcessReq(form, submission._id, "new", user);
-    const tenantKey = state.tenants?.tenantId;
     const redirectUrl = MULTITENANCY_ENABLED ? `/tenant/${tenantKey}/` : `/`;
+    dispatch(resetSubmissions("submission"));
+    const origin = `${window.location.origin}${redirectUrl}`;
+    const data = getProcessReq(form, submission._id, origin);
+    const tenantKey = state.tenants?.tenantId;
     let draft_id = state.draft.submission?.id;
     let isDraftCreated = draft_id ? true : false;
     const applicationCreateAPI = selectApplicationCreateAPI(

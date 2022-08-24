@@ -251,7 +251,10 @@ export const formio_resourceBundles = {
     "Draft Id":"Draft Id",
     "Draft Name":"Draft Name",
     "Link To Draft Submission":"Link To Draft Submission",
-    "Drafts":"Drafts"
+    "Drafts":"Drafts",
+    "You can't submit this form until it is published":"You can't submit this form until it is published",
+    "Form not published":"Form not published"
+
 
 
 
@@ -1132,7 +1135,10 @@ export const formio_resourceBundles = {
     "Draft Id":"草稿 ID",
     "Draft Name":"草稿名称",
     "Link To Draft Submission":"链接到草稿提交",
-    "Drafts":"草稿"
+    "Drafts":"草稿",
+    "You can't submit this form until it is published":"在此表单发布之前，您无法提交此表单",
+    "Form not published":"表格未发布"
+
 
 
 
@@ -2061,7 +2067,10 @@ export const formio_resourceBundles = {
     "Draft Id":"Чернова на ID",
     "Draft Name":"Име на черновата",
     "Link To Draft Submission":"Връзка към изпращане на чернова",
-    "Drafts":"Чернови"
+    "Drafts":"Чернови",
+    "You can't submit this form until it is published":"Не можете да изпратите този формуляр, докато не бъде публикуван",
+    "Form not published":"Формулярът не е публикуван"
+
 
 
 
@@ -2993,7 +3002,10 @@ export const formio_resourceBundles = {
     "Draft Id":"ID de rascunho",
     "Draft Name":"Nome do rascunho",
     "Link To Draft Submission":"Link para envio de rascunho",
-    "Drafts":"Rascunhos"
+    "Drafts":"Rascunhos",
+    "You can't submit this form until it is published":"Você não pode enviar este formulário até que ele seja publicado",
+    "Form not published":"Formulário não publicado"
+
 
 
 
@@ -3932,7 +3944,10 @@ export const formio_resourceBundles = {
     "Draft Id":"ID brouillon",
     "Draft Name":"Nom provisoire",
     "Link To Draft Submission":"Lien vers la soumission de brouillon",
-    "Drafts":"Brouillons"
+    "Drafts":"Brouillons",
+    "You can't submit this form until it is published":"Vous ne pouvez pas soumettre ce formulaire tant qu'il n'est pas publié",
+    "Form not published":"Formulaire non publié"
+
 
 
 
@@ -4875,7 +4890,10 @@ export const formio_resourceBundles = {
     "Draft Id":"Entwurfs-ID",
     "Draft Name":"Entwurfsname",
     "Link To Draft Submission":"Link zur Entwurfsübermittlung",
-    "Drafts":"Entwürfe"
+    "Drafts":"Entwürfe",
+    "You can't submit this form until it is published":"Sie können dieses Formular erst absenden, wenn es veröffentlicht wurde",
+    "Form not published":"Formular nicht veröffentlicht"
+
 
 
 

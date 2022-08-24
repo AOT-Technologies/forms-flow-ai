@@ -228,7 +228,11 @@ export const RESOURCE_BUNDLES_ZH = {
   "Draft Id":"草稿 ID",
   "Draft Name":"草稿名称",
   "Link To Draft Submission":"链接到草稿提交",
-  "Drafts":"草稿"
+  "Drafts":"草稿",
+  "You can't submit this form until it is published":"在此表单发布之前，您无法提交此表单",
+  "Form not published":"表格未发布"
+
+
 
 
 

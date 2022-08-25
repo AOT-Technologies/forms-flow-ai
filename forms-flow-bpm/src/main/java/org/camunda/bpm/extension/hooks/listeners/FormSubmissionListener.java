@@ -14,6 +14,7 @@ import java.io.IOException;
 import java.util.logging.Logger;
 
 import static org.camunda.bpm.extension.commons.utils.VariableConstants.FORM_URL;
+import static org.camunda.bpm.extension.commons.utils.VariableConstants.WEB_FORM_URL;
 /**
  * Form Submission Listener.
  * This class creates a new submission from the current submission.
@@ -47,9 +48,14 @@ public class FormSubmissionListener extends BaseListener implements ExecutionLis
     private void createRevision(DelegateExecution execution) throws IOException {
         String submissionId = formSubmissionService.createRevision(String.valueOf(execution.getVariables().get(FORM_URL)));
         execution.setVariable(FORM_URL, getUrl(execution) + "/" + submissionId);
+        execution.setVariable(WEB_FORM_URL, getWebUrl(execution) + "/" + submissionId);
     }
 
     private String getUrl(DelegateExecution execution){
         return StringUtils.substringBeforeLast(String.valueOf(execution.getVariables().get(FORM_URL)),"/");
+    }
+
+    private String getWebUrl(DelegateExecution execution){
+        return StringUtils.substringBeforeLast(String.valueOf(execution.getVariables().get(WEB_FORM_URL)),"/");
     }
 }

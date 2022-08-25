@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { connect, useDispatch } from "react-redux";
+import { connect, useSelector,useDispatch } from "react-redux";
 import Select from "react-select";
 import NoData from "./nodashboard";
 import { Route, Redirect } from "react-router";
@@ -16,7 +16,9 @@ import Loading from "../../containers/Loading";
 import { useTranslation, Translation } from "react-i18next";
 
 import { SpinnerSVG } from "../../containers/SpinnerSVG";
-import { BASE_ROUTE } from "../../constants/constants";
+import { BASE_ROUTE, MULTITENANCY_ENABLED } from "../../constants/constants";
+import { push } from "connected-react-router";
+import Head from "../../containers/Head";
 import { runCleanup } from "../../actions/insightActions";
 
 const Insights = React.memo((props) => {
@@ -33,8 +35,11 @@ const Insights = React.memo((props) => {
   const dispatch = useDispatch();
   const [dashboardSelected, setDashboardSelected] = useState(null);
   const [options, setOptions] = useState([]);
+  const tenantKey = useSelector((state) => state.tenants?.tenantId);
+  const totalItems = useSelector((state) => state.metrics.totalItems);
 
   const { t } = useTranslation();
+  const redirectUrl = MULTITENANCY_ENABLED ? `/tenant/${tenantKey}/` : "/";
 
   useEffect(() => {
     getDashboards();
@@ -62,6 +67,21 @@ const Insights = React.memo((props) => {
     };
   }, []);
 
+  const headerList = () => {
+    return [
+      {
+        name: "Metrics",
+        count: totalItems,
+        onClick: () => dispatch(push(`${redirectUrl}metrics`)),
+        icon: "pie-chart",
+      },
+      {
+        name: "Insights",
+        onClick: () => dispatch(push(`${redirectUrl}insights`)),
+        icon: "lightbulb-o",
+      },
+    ];
+  };
   const NoPublicUrlMessage = () => (
     <div className="h-100 col-12 text-center div-middle">
       <i className="fa fa-tachometer fa-lg" />
@@ -81,10 +101,7 @@ const Insights = React.memo((props) => {
         <div className="insights mb-2">
           <div className="row ">
             <div className="col-12" data-testid="Insight">
-              <h1 className="insights-title">
-                <i className="fa fa-lightbulb-o fa-lg" aria-hidden="true" />{" "}
-                <Translation>{(t) => t("Insights")}</Translation>
-              </h1>
+              <Head items={headerList()} page="Insights"/>
               <hr className="line-hr" />
               <div className="col-12">
                 <div

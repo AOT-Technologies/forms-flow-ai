@@ -20,9 +20,10 @@ const Head = React.memo((props) => {
               <span className="application-text">
                 <Translation>{(t) => t(item?.name)}</Translation>
               </span>
-              <div className="application-count" role="contentinfo">
+              { item?.count ? 
+                <div className="application-count" role="contentinfo">
                 ({item?.count})
-              </div>
+              </div> : null}
             </h3>
           </div>
         ))}

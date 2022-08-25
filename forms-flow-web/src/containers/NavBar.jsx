@@ -6,7 +6,9 @@ import UserService from "../services/UserService";
 import {
   getUserRoleName,
   getUserRolePermission,
-  getUserInsightsPermission,
+  // TODO : modify insigth permission conditions
+  // getUserInsightsPermission,
+
 } from "../helper/user";
 import createURLPathMatchExp from "../helper/regExp/pathMatch";
 import { useTranslation } from "react-i18next";
@@ -191,56 +193,26 @@ const NavBar = React.memo(() => {
                 ) : null}
 
                 {getUserRolePermission(userRoles, STAFF_REVIEWER) ? (
-                  <NavDropdown
-                    data-testid="Dashboards"
-                    title={
-                      <>
-                        <i className="fa fa-tachometer fa-lg fa-fw mr-2" />
-                        {t("Dashboards")}
-                      </>
-                    }
-                    id="dashboard-dropdown"
-                    className={`main-nav nav-item ${
-                      pathname.match(
-                        createURLPathMatchExp("metrics", baseUrl)
-                      ) ||
-                      pathname.match(createURLPathMatchExp("insights", baseUrl))
-                        ? "active-tab-dropdown"
-                        : ""
-                    }`}
-                  >
-                    <NavDropdown.Item
+
+               <Nav.Link
                       as={Link}
                       to={`${baseUrl}metrics`}
+                      data-testid="Dashboards"
                       className={`main-nav nav-item ${
                         pathname.match(
                           createURLPathMatchExp("metrics", baseUrl)
-                        )
+                        ) || pathname.match(
+                              createURLPathMatchExp("insights", baseUrl)
+                            )
                           ? "active-tab"
                           : ""
                       }`}
                     >
-                      <i className="fa fa-pie-chart fa-fw fa-lg" />
-                      {t("Metrics")}
-                    </NavDropdown.Item>
-                    {getUserInsightsPermission() && (
-                      <NavDropdown.Item
-                        as={Link}
-                        to={`${baseUrl}insights`}
-                        className={`main-nav nav-item ${
-                          pathname.match(
-                            createURLPathMatchExp("insights", baseUrl)
-                          )
-                            ? "active-tab"
-                            : ""
-                        }`}
-                      >
-                        <i className="fa fa-lightbulb-o fa-fw fa-lg" />{" "}
-                        {t("Insights")}
-                      </NavDropdown.Item>
-                    )}
-                  </NavDropdown>
-                ) : null}
+                      {" "}
+                      <i className="fa fa-tachometer fa-lg fa-fw mr-2" />
+                         {t("Dashboards")}
+                    </Nav.Link>
+                  ) : null}
               </Nav>
 
               <Nav className="ml-lg-auto mr-auto px-lg-0 px-3">

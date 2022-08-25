@@ -104,6 +104,7 @@ public class AdminRestServiceImpl implements AdminRestService {
             createAuthorization(tenantKey, reviewerRole, Resources.TENANT, tenantKey);
             createAuthorization(tenantKey, reviewerRole, Resources.FILTER, "*");
             createAuthorization(tenantKey, reviewerRole, Resources.USER, "*");
+            createAuthorization(tenantKey, reviewerRole, Resources.AUTHORIZATION, "*");
         }
         LOGGER.info("Finished creating authorizations for tenant");
     }

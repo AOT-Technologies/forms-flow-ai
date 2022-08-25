@@ -207,6 +207,7 @@ const WorkFlow = React.memo(
                   <Select
                     options={processList}
                     onChange={handleListChange}
+                    searchable={false}
                     values={
                       processList.length && workflow?.value ? [workflow] : []
                     }

@@ -63,6 +63,8 @@ const Edit = React.memo(() => {
   const submissionAccess = useSelector((state) => state.user?.submissionAccess || []);
   const redirectUrl = MULTITENANCY_ENABLED ? `/tenant/${tenantKey}/` : "/";
   const saveText = <Translation>{(t) => t("Save Form")}</Translation>;
+  const [formSubmitted , setFormSubmitted] = useState(false);
+
   const lang = useSelector((state) => state.user.lang);
   const history = useHistory();
   const { t } = useTranslation();
@@ -166,6 +168,7 @@ const Edit = React.memo(() => {
 
   // save form data to submit
   const saveFormData = () => {
+    setFormSubmitted(true);
     const newFormData = addHiddenApplicationComponent(form);
     newFormData.submissionAccess = submissionAccess;
     newFormData.access = formAccess;
@@ -218,6 +221,7 @@ const Edit = React.memo(() => {
           toast.success(t("Form Saved"));
           dispatch(push(`${redirectUrl}formflow/${submittedData._id}/preview`));
         } else {
+          setFormSubmitted(false);
           toast.error(t("Error while saving Form"));
         }
       })
@@ -293,12 +297,13 @@ const Edit = React.memo(() => {
           </div>
           <div id="save-buttons" className=" save-buttons pull-right">
             <div className="form-group pull-right">
-              <span
+              <button
                 className="btn btn-primary"
+                disabled={formSubmitted}
                 onClick={() => saveFormWithDataChangeCheck()}
               >
                 {saveText}
-              </span>
+              </button>
               <Modal show={show} onHide={handleClose}>
                 <Modal.Header closeButton>
                   <Modal.Title>{t("Confirmation")}</Modal.Title>

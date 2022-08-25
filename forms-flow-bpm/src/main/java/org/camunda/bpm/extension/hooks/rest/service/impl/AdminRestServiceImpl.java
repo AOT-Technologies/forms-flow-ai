@@ -51,7 +51,7 @@ public class AdminRestServiceImpl implements AdminRestService {
     public Mono<ResponseEntity<AuthorizationInfo>> getFormAuthorization() throws ServletException {
 
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        LOGGER.error("authentication" + authentication);
+        LOGGER.debug("authentication" + authentication);
         List<String> groups = getGroups(authentication);
         AuthorizationInfo authorizationInfo = null;
 
@@ -85,6 +85,7 @@ public class AdminRestServiceImpl implements AdminRestService {
             createAuthorization(tenantKey, clientRole, Resources.PROCESS_DEFINITION, "*");
             createAuthorization(tenantKey, clientRole, Resources.PROCESS_INSTANCE, "*");
             createAuthorization(tenantKey, clientRole, Resources.TENANT, tenantKey);
+            createAuthorization(tenantKey, clientRole, Resources.AUTHORIZATION, "*");
         }
 
         // Designer authorizations
@@ -174,7 +175,7 @@ public class AdminRestServiceImpl implements AdminRestService {
      * @return
      */
     private Set<Authorization> getAuthorization(List<String> groups) {
-
+    	LOGGER.debug("getAuthorization>>");
         Set<Authorization> authorizationList = new HashSet<>();
 
         String[] groupIds = groups.size() > 0 ? groups.toArray(new String[0]) : new String[]{};
@@ -182,11 +183,12 @@ public class AdminRestServiceImpl implements AdminRestService {
                 .resourceType(Resources.PROCESS_DEFINITION.resourceType())
                 .hasPermission(ProcessDefinitionPermissions.CREATE_INSTANCE)
                 .groupIdIn(groupIds).list();
-
+        LOGGER.info(" authorizations {}", authorizations);
         authorizations.forEach(authorization -> {
             Authorization auth = new Authorization(authorization.getGroupId(), authorization.getUserId(), authorization.getResourceId());
             authorizationList.add(auth);
         });
+        LOGGER.debug(" authorizationList {}", authorizationList);
         return authorizationList;
     }
 

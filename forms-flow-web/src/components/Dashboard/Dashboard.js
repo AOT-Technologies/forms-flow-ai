@@ -209,7 +209,6 @@ const Dashboard = React.memo(() => {
             <div className="row ">
               <div className="col-12" >
                 <Head items={headerList()} page="Metrics"/>
-                <hr className="line-hr" />
                 <div className="row ">
                   <div className="col-12 col-lg-4 ">
                     <h2 className="application-title">

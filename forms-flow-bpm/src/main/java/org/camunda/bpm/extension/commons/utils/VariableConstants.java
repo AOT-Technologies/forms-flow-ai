@@ -32,4 +32,6 @@ public class VariableConstants {
     
     public static final String SERVICE_ACCOUNT = "service-account-forms-flow-bpm";
 
+    public static final String WEB_FORM_URL = "webFormUrl";
+
 }

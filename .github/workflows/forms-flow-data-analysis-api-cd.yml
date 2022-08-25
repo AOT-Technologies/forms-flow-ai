@@ -79,8 +79,7 @@ jobs:
         uses: docker/build-push-action@v2
         with:
           context: forms-flow-data-analysis-api
-          build-args:
-            - MODEL_ID=Seethal/sentiment_analysis_generic_dataset
+          build-args: MODEL_ID=Seethal/sentiment_analysis_generic_dataset
           push: true
           tags: ${{ steps.meta.outputs.tags }}
           labels: ${{ steps.meta.outputs.labels }}
@@ -89,8 +88,7 @@ jobs:
         uses: docker/build-push-action@v2
         with:
           context: forms-flow-data-analysis-api
-          build-args:
-            - MODEL_ID=Seethal/sentiment_analysis_generic_dataset
+          build-args: MODEL_ID=Seethal/sentiment_analysis_generic_dataset
           push: true
           tags: ${{ steps.meta.outputs.tags }}, formsflow/forms-flow-data-analysis-api:latest
           labels: ${{ steps.meta.outputs.labels }}

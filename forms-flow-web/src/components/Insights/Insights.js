@@ -19,6 +19,7 @@ import { SpinnerSVG } from "../../containers/SpinnerSVG";
 import { BASE_ROUTE, MULTITENANCY_ENABLED } from "../../constants/constants";
 import { push } from "connected-react-router";
 import Head from "../../containers/Head";
+import { runCleanup } from "../../actions/insightActions";
 
 const Insights = React.memo((props) => {
   const {
@@ -59,6 +60,13 @@ const Insights = React.memo((props) => {
       getDashboardDetail(dashboardSelected.value);
     }
   }, [dashboardSelected, getDashboardDetail]);
+
+  useEffect(() => {
+    return () => {
+      dispatch(runCleanup());
+    };
+  }, []);
+
   const headerList = () => {
     return [
       {
@@ -148,8 +156,10 @@ const Insights = React.memo((props) => {
                     }}
                     src={activeDashboard.public_url}
                   />
+                ) : !isDashboardDetailUpdated ? (
+                  <Loading />
                 ) : (
-                  !isDashboardDetailUpdated ? <Loading /> : <NoPublicUrlMessage />
+                  <NoPublicUrlMessage />
                 )
               ) : (
                 <NoData />

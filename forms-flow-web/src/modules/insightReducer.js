@@ -34,6 +34,14 @@ const insights = (state = initialState, action) => {
       return { ...state, isInsightLoading: action.payload };
     case ACTION_CONSTANTS.INSIGHT_ERROR:
       return { ...state, error: true, errorMessage: action.payload };
+    case ACTION_CONSTANTS.CLEANUP_INSIGHTS:
+      return {
+        ...state,
+        dashboardDetail: {},
+        dashboardsList: [],
+        isDashboardDetailUpdated: false,
+        isDashboardListUpdated: false,
+      };
     default:
       return state;
   }

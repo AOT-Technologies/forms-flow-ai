@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { connect } from "react-redux";
+import { connect, useDispatch } from "react-redux";
 import Select from "react-select";
 import NoData from "./nodashboard";
 import { Route, Redirect } from "react-router";
@@ -17,6 +17,7 @@ import { useTranslation, Translation } from "react-i18next";
 
 import { SpinnerSVG } from "../../containers/SpinnerSVG";
 import { BASE_ROUTE } from "../../constants/constants";
+import { runCleanup } from "../../actions/insightActions";
 
 const Insights = React.memo((props) => {
   const {
@@ -29,6 +30,7 @@ const Insights = React.memo((props) => {
     isDashboardDetailUpdated,
     error,
   } = props;
+  const dispatch = useDispatch();
   const [dashboardSelected, setDashboardSelected] = useState(null);
   const [options, setOptions] = useState([]);
 
@@ -53,6 +55,12 @@ const Insights = React.memo((props) => {
       getDashboardDetail(dashboardSelected.value);
     }
   }, [dashboardSelected, getDashboardDetail]);
+
+  useEffect(() => {
+    return () => {
+      dispatch(runCleanup());
+    };
+  }, []);
 
   const NoPublicUrlMessage = () => (
     <div className="h-100 col-12 text-center div-middle">
@@ -131,8 +139,10 @@ const Insights = React.memo((props) => {
                     }}
                     src={activeDashboard.public_url}
                   />
+                ) : !isDashboardDetailUpdated ? (
+                  <Loading />
                 ) : (
-                  !isDashboardDetailUpdated ? <Loading /> : <NoPublicUrlMessage />
+                  <NoPublicUrlMessage />
                 )
               ) : (
                 <NoData />

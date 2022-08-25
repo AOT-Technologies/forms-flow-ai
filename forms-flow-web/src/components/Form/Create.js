@@ -58,6 +58,7 @@ const Create = React.memo(() => {
   const tenantKey = useSelector((state) => state.tenants?.tenantId);
   const formAccess = useSelector((state) => state.user?.formAccess || []) ;
   const roleIds = useSelector((state) => state.user?.roleIds || {}) ;
+  const [formSubmitted , setFormSubmitted] = useState(false);
 
   const submissionAccess = useSelector((state) => state.user?.submissionAccess || []) ;
   const redirectUrl = MULTITENANCY_ENABLED ? `/tenant/${tenantKey}/` : "/";
@@ -123,6 +124,7 @@ const Create = React.memo(() => {
 
   // submitting form
   const saveFormData = () => {
+    setFormSubmitted(true);
     const newFormData = addHiddenApplicationComponent(form);
     const newForm = {
       ...newFormData,
@@ -157,12 +159,14 @@ const Create = React.memo(() => {
               toast.success(t("Form Saved"));
               dispatch(push(`${redirectUrl}formflow/${form._id}/view-edit/`));
             } else {
+              setFormSubmitted(false);
               toast.error("Error in creating form process mapper");
             }
           })
         );
       } else {
         dispatch(setFormFailureErrorData("form", err));
+        setFormSubmitted(false);
       }
     });
   };
@@ -188,9 +192,9 @@ const Create = React.memo(() => {
         <div className="row justify-content-end w-100">
           <div id="save-buttons" className=" save-buttons pull-right">
             <div className="form-group pull-right">
-              <span className="btn btn-primary" onClick={() => saveFormData()}>
+              <button className="btn btn-primary" disabled={formSubmitted} onClick={() => saveFormData()}>
                 {saveText}
-              </span>
+              </button>
             </div>
           </div>
         </div>

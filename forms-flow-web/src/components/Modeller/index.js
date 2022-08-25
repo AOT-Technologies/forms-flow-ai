@@ -34,10 +34,11 @@ export default React.memo(() => {
   const [processList, setProcessList] = useState(listProcess(process));
   const workflow = useSelector((state) => state.process.workflowAssociated);
   const [showModeller, setShowModeller] = useState(false);
-  const [xml, setXml] = useState(null);
   const [isBpmnModel, setIsBpmnModel] = useState(true);
+  const [isNewDiagram, setIsNewDiagram] = useState(false);
 
   useEffect(() => {
+    setIsNewDiagram(false);
     setShowModeller(false);
     dispatch(setWorkflowAssociation(null));
     dispatch(fetchAllBpmProcesses());
@@ -56,10 +57,10 @@ export default React.memo(() => {
   }, [isBpmnModel]);
 
   const handleListChange = (item) => {
+    setIsNewDiagram(false);
     setShowModeller(true);
     dispatch(setWorkflowAssociation(item[0]));
     dispatch(setProcessDiagramXML(null));
-    setXml(null);
     showChosenFileName(item);
   };
 
@@ -68,14 +69,18 @@ export default React.memo(() => {
     var n = filePath.lastIndexOf("\\");
     let fileName = filePath.substring(n + 1);
 
+    let isBpmnFile = true;
+
     if (fileName.substr(fileName.length - 5) == ".bpmn") {
       fileName = fileName.slice(0, -5);
-    } else {
+    } else if (fileName.substr(fileName.length - 4) == ".dmn") {
       fileName = fileName.slice(0, -4);
+      isBpmnFile = false;
     }
+
     if (
-      fileName !==
-      (item[0]?.fileName?.slice(0, -5) || item[0]?.fileName?.slice(0, -4))
+      (isBpmnFile && fileName !== item[0]?.fileName?.slice(0, -5)) ||
+      (!isBpmnFile && fileName !== item[0]?.fileName?.slice(0, -4))
     ) {
       document.getElementById("inputWorkflow").value = null;
     }
@@ -95,40 +100,52 @@ export default React.memo(() => {
       name = extractDataFromDiagram(content, true).name;
       processId = extractDataFromDiagram(content, true).processId;
     }
-
     const newWorkflow = {
       label: name,
       value: processId,
-      xml: content,
       fileName: fileName,
+      xml: content,
     };
-    setXml(content);
     dispatch(setWorkflowAssociation(newWorkflow));
-  };
-
-  const handleChangeFile = (file) => {
-    let fileData = new FileReader();
-    fileData.onloadend = (e) => {
-      handleFile(e, file.name);
-    };
-    fileData.readAsText(file);
+    dispatch(setProcessDiagramXML(newWorkflow.xml));
     setShowModeller(true);
   };
 
+  const handleChangeFile = (file) => {
+    setIsNewDiagram(true);
+    let fileData = new FileReader();
+    try {
+      fileData.onloadend = (e) => {
+        handleFile(e, file.name);
+      };
+      fileData.readAsText(file);
+    } catch (err) {
+      handleError(err, "File Import Error: ");
+    }
+  };
+
   const handleCreateNew = () => {
+    setIsNewDiagram(true);
     const newProcess = isBpmnModel ? createNewProcess() : createNewDecision();
     dispatch(setWorkflowAssociation(newProcess.defaultWorkflow));
     dispatch(setProcessDiagramXML(newProcess.defaultWorkflow.xml));
-    setXml(newProcess.defaultWorkflow.xml);
     setShowModeller(true);
     document.getElementById("inputWorkflow").value = null;
   };
 
   const handleToggle = () => {
+    setIsNewDiagram(false);
     setShowModeller(false);
     dispatch(setWorkflowAssociation(null));
     setIsBpmnModel((toggle) => !toggle);
     document.getElementById("inputWorkflow").value = null;
+  };
+
+  const handleError = (err, message = "") => {
+    console.log(message, err);
+    document.getElementById("inputWorkflow").value = null;
+    dispatch(setWorkflowAssociation(null));
+    setShowModeller(false);
   };
 
   const handleHelp = () => {
@@ -230,16 +247,17 @@ export default React.memo(() => {
                 <div>
                   {isBpmnModel ? (
                     <BpmnEditor
-                      xml={xml ? xml : workflow?.xml}
                       setShowModeller={setShowModeller}
                       processKey={workflow?.value}
                       tenant={workflow?.tenant}
+                      isNewDiagram={isNewDiagram}
                     />
                   ) : (
                     <DmnEditor
-                      xml={xml ? xml : workflow?.xml}
+                      setShowModeller={setShowModeller}
                       processKey={workflow?.value}
                       tenant={workflow?.tenant}
+                      isNewDiagram={isNewDiagram}
                     />
                   )}
                 </div>

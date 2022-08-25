@@ -3,8 +3,7 @@ import json
 
 import requests
 from flask import current_app
-
-from formsflow_api.utils import (
+from formsflow_api_utils.utils import (
     FORMSFLOW_ROLES,
     KEYCLOAK_DASHBOARD_BASE_GROUP,
     UserContext,

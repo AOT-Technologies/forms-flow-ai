@@ -1,10 +1,11 @@
 """Test suite for 'draft' namespace API endpoints."""
-from formsflow_api.models import Application, Draft, FormProcessMapper
-from formsflow_api.utils import (
+from formsflow_api_utils.utils import (
     ANONYMOUS_USER,
     DRAFT_APPLICATION_STATUS,
     NEW_APPLICATION_STATUS,
 )
+
+from formsflow_api.models import Application, Draft, FormProcessMapper
 from tests.utilities.base_test import (
     get_anonymous_form_model_object,
     get_application_create_payload,

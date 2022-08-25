@@ -4,8 +4,7 @@ import json
 
 import requests
 from flask import current_app
-
-from formsflow_api.utils.logging import log_bpm_error
+from formsflow_api_utils.utils.logging import log_bpm_error
 
 
 class BaseBPMService:

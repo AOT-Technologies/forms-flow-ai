@@ -3,11 +3,11 @@ from http import HTTPStatus
 
 from flask import current_app, g, request
 from flask_restx import Namespace, Resource
+from formsflow_api_utils.utils import auth, cors_preflight, profiletime
 from marshmallow import ValidationError
 
 from formsflow_api.schemas import UserlocaleReqSchema
 from formsflow_api.services import KeycloakAdminAPIService
-from formsflow_api.utils import auth, cors_preflight, profiletime
 
 API = Namespace("user", description="Keycloak user APIs")
 

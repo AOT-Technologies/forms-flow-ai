@@ -1,7 +1,8 @@
 """This exposes application audit service."""
+from formsflow_api_utils.utils import get_form_and_submission_id_from_form_url
+
 from formsflow_api.models import ApplicationHistory
 from formsflow_api.schemas import ApplicationHistorySchema
-from formsflow_api.utils import get_form_and_submission_id_from_form_url
 
 
 class ApplicationHistoryService:

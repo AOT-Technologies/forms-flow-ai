@@ -6,19 +6,10 @@ import json
 import logging
 import os
 from http import HTTPStatus
-from typing import Dict
 
 from flask import Flask, current_app, g, request
 from flask.logging import default_handler
-from werkzeug.middleware.proxy_fix import ProxyFix
-
-from formsflow_api import config, models
-from formsflow_api.exceptions import BusinessException
-from formsflow_api.models import db, ma
-from formsflow_api.resources import API
-from formsflow_api.schemas import FormioRoleSchema
-from formsflow_api.services.external import FormioService
-from formsflow_api.utils import (
+from formsflow_api_utils.utils import (
     ALLOW_ALL_ORIGINS,
     CORS_ORIGINS,
     FORMSFLOW_API_CORS_ORIGINS,
@@ -28,7 +19,16 @@ from formsflow_api.utils import (
     setup_logging,
     translate,
 )
-from formsflow_api.utils.enums import FormioRoles
+from formsflow_api_utils.utils.startup import (
+    collect_role_ids,
+    collect_user_resource_ids,
+    setup_jwt_manager,
+)
+from werkzeug.middleware.proxy_fix import ProxyFix
+
+from formsflow_api import config, models
+from formsflow_api.models import db, ma
+from formsflow_api.resources import API
 
 
 def create_app(run_mode=os.getenv("FLASK_ENV", "production")):
@@ -116,17 +116,6 @@ def create_app(run_mode=os.getenv("FLASK_ENV", "production")):
     return app
 
 
-def setup_jwt_manager(app, jwt_manager):
-    """Use flask app to configure the JWTManager to work for a particular Realm."""
-
-    def get_roles(a_dict):
-        resource = a_dict["resource_access"].get(app.config["JWT_OIDC_AUDIENCE"])
-        return resource["roles"] if resource else a_dict["roles"]
-
-    app.config["JWT_ROLE_CALLBACK"] = get_roles
-    jwt_manager.init_app(app)
-
-
 def register_shellcontext(app):
     """Register shell context objects."""
 
@@ -135,49 +124,3 @@ def register_shellcontext(app):
         return {"app": app, "jwt": jwt, "db": db, "models": models}  # pragma: no cover
 
     app.shell_context_processor(shell_context)
-
-
-def collect_role_ids(app):
-    """Collect role ids from Form.io."""
-    try:
-        service = FormioService()
-        app.logger.info("Establishing new connection to formio...")
-        role_ids = FormioRoleSchema().load(service.get_role_ids(), many=True)
-        role_ids_filtered = list(filter(None, map(standardization_fn, role_ids)))
-        # Cache will be having infinite expiry
-        if role_ids:
-            cache.set(
-                "formio_role_ids",
-                role_ids_filtered,
-                timeout=0,
-            )
-            app.logger.info("Role ids saved to cache successfully.")
-    except BusinessException as err:
-        app.logger.error(err.error)
-    except Exception as err:  # pylint: disable=broad-except
-        app.logger.error(err)
-
-
-def collect_user_resource_ids(app):
-    """Collects user resource ids from Form.io."""
-    try:
-        service = FormioService()
-        user_resource = service.get_user_resource_ids()
-        user_resource_id = user_resource["_id"]
-        if user_resource:
-            cache.set(
-                "user_resource_id",
-                user_resource_id,
-                timeout=0,
-            )
-            app.logger.info("User resource ids saved to cache successfully.")
-    except Exception as err:  # pylint: disable=broad-except
-        app.logger.error(err)
-
-
-def standardization_fn(item: Dict) -> Dict or None:
-    """Updates the type value to enum key for standardization."""
-    if FormioRoles.contains(item["type"]):
-        item["type"] = FormioRoles(item["type"]).name
-        return item
-    return None

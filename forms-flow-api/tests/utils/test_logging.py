@@ -3,7 +3,7 @@
 Test-Suite to ensure that the logging setup is working as expected.
 """
 # import os
-from formsflow_api.utils.logging import setup_logging
+from formsflow_api_utils.utils.logging import setup_logging
 
 # def test_logging_with_file(capsys):
 #     """Assert that logging is setup with the configuration file."""

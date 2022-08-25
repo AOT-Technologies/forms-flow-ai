@@ -2,12 +2,13 @@
 
 import pytest
 from flask_migrate import Migrate, upgrade
+from formsflow_api_utils.utils import jwt as _jwt
+from formsflow_api_utils.utils.startup import setup_jwt_manager
 from sqlalchemy import event, text
 from sqlalchemy.schema import DropConstraint, MetaData
 
-from formsflow_api import create_app, setup_jwt_manager
+from formsflow_api import create_app
 from formsflow_api.models import db as _db
-from formsflow_api.utils import jwt as _jwt
 
 
 @pytest.fixture(scope="session", autouse=True)

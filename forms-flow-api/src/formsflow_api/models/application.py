@@ -5,14 +5,13 @@ from __future__ import annotations
 from datetime import datetime
 
 from flask_sqlalchemy import BaseQuery
-from sqlalchemy import and_, func, or_
-from sqlalchemy.sql.expression import text
-
-from formsflow_api.utils import (
+from formsflow_api_utils.utils import (
     DRAFT_APPLICATION_STATUS,
     FILTER_MAPS,
     validate_sort_order_and_order_by,
 )
+from sqlalchemy import and_, func, or_
+from sqlalchemy.sql.expression import text
 
 from .audit_mixin import AuditDateTimeMixin, AuditUserMixin
 from .base_model import BaseModel

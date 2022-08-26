@@ -88,7 +88,7 @@ class FormResourceExportFormPdf(Resource):
             if auth.has_one_of_roles([REVIEWER_GROUP, CLIENT_GROUP]):
                 timezone = request.args.get("timezone")
                 token = request.headers.get("Authorization")
-                host_name = current_app.config.get("FORMSFLOW_API_URL")
+                host_name = current_app.config.get("FORMSFLOW_DOC_API_URL")
                 url = (
                     host_name
                     + "/form/"

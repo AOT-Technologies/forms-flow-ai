@@ -235,7 +235,7 @@ export default React.memo(
 
     const updateBpmProcesses = (xml) => {
       // Update drop down with all processes
-      dispatch(fetchAllBpmProcesses());
+      dispatch(fetchAllBpmProcesses(tenantKey));
       // Show the updated workflow as the current value in the dropdown
       const updatedWorkflow = {
         label: extractDataFromDiagram(xml).name,

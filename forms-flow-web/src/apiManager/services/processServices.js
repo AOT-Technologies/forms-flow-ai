@@ -64,20 +64,27 @@ export const getProcessStatusList = (processId, taskId) => {
  *
  * @param  {...any} rest
  */
-export const fetchAllBpmProcesses = (excludeInternal = true, ...rest) => {
+export const fetchAllBpmProcesses = (tenant_key = null, ...rest) => {
   const done = rest.length ? rest[0] : () => {};
+
+  let url =
+    API.GET_BPM_PROCESS_LIST +
+    "?latestVersion=true" +
+    "&includeProcessDefinitionsWithoutTenantId=true" +
+    "&sortBy=tenantId" +
+    "&sortOrder=asc";
+
+  if (tenant_key) {
+    url = url + "&tenantIdIn=" + tenant_key;
+  }
+
   return (dispatch) => {
     // eslint-disable-next-line max-len
-    httpGETRequest(
-      API.GET_BPM_PROCESS_LIST +
-        `?latestVersion=true&excludeInternal=${excludeInternal}`,
-      {},
-      UserService.getToken(),
-      true
-    )
+    httpGETRequest(url, {}, UserService.getToken(), true)
       .then((res) => {
         if (res?.data) {
-          dispatch(setAllProcessList(res.data));
+          let unique = removeTenantDuplicates(res.data, tenant_key);
+          dispatch(setAllProcessList(unique));
           done(null, res.data);
         } else {
           dispatch(setAllProcessList([]));
@@ -85,24 +92,33 @@ export const fetchAllBpmProcesses = (excludeInternal = true, ...rest) => {
       })
       // eslint-disable-next-line no-unused-vars
       .catch((error) => {
+        console.log(error);
         dispatch(setProcessLoadError(true));
       });
   };
 };
 
-export const fetchAllDmnProcesses = (...rest) => {
+export const fetchAllDmnProcesses = (tenant_key = null, ...rest) => {
   const done = rest.length ? rest[0] : () => {};
+
+  let url =
+    API.GET_DMN_PROCESS_LIST +
+    "?latestVersion=true" +
+    "&includeDecisionDefinitionsWithoutTenantId=true" +
+    "&sortBy=tenantId" +
+    "&sortOrder=asc";
+
+  if (tenant_key) {
+    url = url + "&tenantIdIn=" + tenant_key;
+  }
+
   return (dispatch) => {
     // eslint-disable-next-line max-len
-    httpGETRequest(
-      API.GET_DMN_PROCESS_LIST + `?latestVersion=true`,
-      {},
-      UserService.getToken(),
-      true
-    )
+    httpGETRequest(url, {}, UserService.getToken(), true)
       .then((res) => {
         if (res?.data) {
-          dispatch(setAllDmnProcessList(res.data));
+          let unique = removeTenantDuplicates(res.data, tenant_key);
+          dispatch(setAllDmnProcessList(unique));
           done(null, res.data);
         } else {
           dispatch(setAllDmnProcessList([]));
@@ -113,6 +129,15 @@ export const fetchAllDmnProcesses = (...rest) => {
         dispatch(setProcessLoadError(true));
       });
   };
+};
+
+const removeTenantDuplicates = (list, tenant_key) => {
+  let seen = new Set();
+  return list.filter((item) => {
+    let key = item.key;
+    if (item.tenantId != tenant_key && item.tenantId != null) return false;
+    return seen.has(key) ? false : seen.add(key);
+  });
 };
 
 /**

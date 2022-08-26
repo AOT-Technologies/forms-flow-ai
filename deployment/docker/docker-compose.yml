@@ -112,6 +112,7 @@ services:
       - MULTI_TENANCY_ENABLED=${MULTI_TENANCY_ENABLED:-false}
       - KEYCLOAK_ENABLE_CLIENT_AUTH=${KEYCLOAK_ENABLE_CLIENT_AUTH:-false}
       - KEYCLOAK_WEB_CLIENTID=${KEYCLOAK_WEB_CLIENTID:-forms-flow-web}
+      - FORMSFLOW_ADMIN_URL=${FORMSFLOW_ADMIN_URL:-}
 
     networks:
       - forms-flow-network

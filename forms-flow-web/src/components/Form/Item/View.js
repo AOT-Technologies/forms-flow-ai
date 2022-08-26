@@ -178,11 +178,11 @@ const View = React.memo((props) => {
    * Will create a draft application when the form is selected for entry.
    */
   useEffect(() => {
-    if (validFormId && DRAFT_ENABLED) {
+    if (validFormId && DRAFT_ENABLED && formStatus === "active") {
       let payload = getDraftReqFormat(validFormId, draftData?.data);
       dispatch(draftCreateMethod(payload, setIsDraftCreated));
     }
-  }, [validFormId]);
+  }, [validFormId, formStatus]);
 
   useEffect(() => {
     dispatch(setFormStatusLoading(true));
@@ -215,7 +215,7 @@ const View = React.memo((props) => {
   useEffect(() => {
     return () => {
       let payload = getDraftReqFormat(validFormId, draftRef.current?.data);
-      if (poll) saveDraft(payload);
+      if (poll) saveDraft(payload, toast);
     };
   }, [validFormId, draftSubmissionId, isDraftCreated, poll]);
 

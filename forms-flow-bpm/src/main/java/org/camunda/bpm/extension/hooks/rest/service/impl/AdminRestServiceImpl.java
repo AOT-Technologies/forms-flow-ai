@@ -78,6 +78,8 @@ public class AdminRestServiceImpl implements AdminRestService {
             createAuthorization(tenantKey, adminRole, Resources.TENANT, tenantKey);
             createAuthorization(tenantKey, adminRole, Resources.DEPLOYMENT, "*");
             createAuthorization(tenantKey, adminRole, Resources.FILTER, "*");
+            createAuthorization(tenantKey, adminRole, Resources.DECISION_DEFINITION, "*");
+            createAuthorization(tenantKey, adminRole, Resources.DECISION_REQUIREMENTS_DEFINITION, "*");
         }
 
         // Client authorizations
@@ -86,6 +88,8 @@ public class AdminRestServiceImpl implements AdminRestService {
             createAuthorization(tenantKey, clientRole, Resources.PROCESS_INSTANCE, "*");
             createAuthorization(tenantKey, clientRole, Resources.TENANT, tenantKey);
             createAuthorization(tenantKey, clientRole, Resources.AUTHORIZATION, "*");
+            createAuthorization(tenantKey, clientRole, Resources.DECISION_DEFINITION, "*");
+            createAuthorization(tenantKey, clientRole, Resources.DECISION_REQUIREMENTS_DEFINITION, "*");
         }
 
         // Designer authorizations
@@ -94,6 +98,8 @@ public class AdminRestServiceImpl implements AdminRestService {
             createAuthorization(tenantKey, designerRole, Resources.PROCESS_INSTANCE, "*");
             createAuthorization(tenantKey, designerRole, Resources.TENANT, tenantKey);
             createAuthorization(tenantKey, designerRole, Resources.DEPLOYMENT, "*");
+            createAuthorization(tenantKey, designerRole, Resources.DECISION_DEFINITION, "*");
+            createAuthorization(tenantKey, designerRole, Resources.DECISION_REQUIREMENTS_DEFINITION, "*");
         }
 
         // Reviewer authorizations
@@ -105,6 +111,8 @@ public class AdminRestServiceImpl implements AdminRestService {
             createAuthorization(tenantKey, reviewerRole, Resources.FILTER, "*");
             createAuthorization(tenantKey, reviewerRole, Resources.USER, "*");
             createAuthorization(tenantKey, reviewerRole, Resources.AUTHORIZATION, "*");
+            createAuthorization(tenantKey, reviewerRole, Resources.DECISION_DEFINITION, "*");
+            createAuthorization(tenantKey, reviewerRole, Resources.DECISION_REQUIREMENTS_DEFINITION, "*");
         }
         LOGGER.info("Finished creating authorizations for tenant");
     }

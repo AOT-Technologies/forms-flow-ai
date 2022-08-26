@@ -63,9 +63,7 @@ services:
 
   forms-flow-bpm:
     container_name: forms-flow-bpm
-    build:
-      context: ./../../forms-flow-bpm/
-      dockerfile: Dockerfile
+    image: formsflow/forms-flow-bpm:v5.0.0-alpha
     restart: always
     links:
       - forms-flow-bpm-db
@@ -171,9 +169,7 @@ services:
 
   forms-flow-webapi:
     container_name: forms-flow-webapi
-    build:
-      context: ./../../forms-flow-api/
-      dockerfile: Dockerfile
+    image: formsflow/forms-flow-webapi:v5.0.0-alpha
     restart: always
     links:
       - forms-flow-webapi-db

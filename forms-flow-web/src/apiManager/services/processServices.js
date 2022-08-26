@@ -298,8 +298,7 @@ export const fetchDiagram = (
   let url = replaceUrl(api, "<process_key>", process_key);
 
   if (tenant_key) {
-    url = replaceUrl(api, "<process_key>", process_key);
-    url = url + "?tenantId=" + tenant_key;
+    url = replaceUrl(url, "/xml", `/tenant-id/${tenant_key}/xml`);
   }
 
   const done = rest.length ? rest[0] : () => {};

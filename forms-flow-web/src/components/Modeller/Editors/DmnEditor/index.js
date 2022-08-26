@@ -72,7 +72,7 @@ export default React.memo(
         dispatch(setProcessDiagramXML(diagramXML));
       } else if (processKey && !isNewDiagram) {
         dispatch(setProcessDiagramLoading(true));
-        dispatch(fetchDiagram(processKey, null, true));
+        dispatch(fetchDiagram(processKey, tenant, true));
       } else {
         dispatch(setProcessDiagramLoading(false));
       }

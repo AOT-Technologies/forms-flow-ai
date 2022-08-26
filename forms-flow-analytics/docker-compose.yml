@@ -17,6 +17,7 @@ services:
       - '7000:5000'
     environment:
       REDASH_WEB_WORKERS: 4
+      REDASH_MULTI_ORG: ${REDASH_MULTI_ORG:-false}
   scheduler:
     <<: *redash-service
     command: scheduler

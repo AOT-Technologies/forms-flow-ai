@@ -63,7 +63,9 @@ services:
 
   forms-flow-bpm:
     container_name: forms-flow-bpm
-    image: formsflow/forms-flow-bpm:v5.0.0-alpha
+    build:
+      context: ./../../forms-flow-bpm/
+      dockerfile: Dockerfile
     restart: always
     links:
       - forms-flow-bpm-db
@@ -111,6 +113,7 @@ services:
       - KEYCLOAK_ENABLE_CLIENT_AUTH=${KEYCLOAK_ENABLE_CLIENT_AUTH:-false}
       - KEYCLOAK_WEB_CLIENTID=${KEYCLOAK_WEB_CLIENTID:-forms-flow-web}
       - FORMSFLOW_ADMIN_URL=${FORMSFLOW_ADMIN_URL:-}
+      - MULTI_TENANCY_ENABLED=${MULTI_TENANCY_ENABLED:-false}
 
     networks:
       - forms-flow-network
@@ -169,7 +172,9 @@ services:
 
   forms-flow-webapi:
     container_name: forms-flow-webapi
-    image: formsflow/forms-flow-webapi:v5.0.0-alpha
+    build:
+      context: ./../../forms-flow-api/
+      dockerfile: Dockerfile
     restart: always
     links:
       - forms-flow-webapi-db

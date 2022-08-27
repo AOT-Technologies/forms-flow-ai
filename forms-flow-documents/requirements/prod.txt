@@ -17,4 +17,4 @@ markupsafe==2.0.1
 PyJWT==2.4.0
 selenium==3.141.0
 selenium-wire==3.0.0
-git+https://github.com/ratheesh-aot/forms-flow-ai.git@split-python-services#egg=formsflow_api_utils&subdirectory=forms-flow-api-utils
+git+https://github.com/AOT-Technologies/forms-flow-ai.git@develop#egg=formsflow_api_utils&subdirectory=forms-flow-api-utils

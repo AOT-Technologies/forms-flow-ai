@@ -70,6 +70,7 @@ export const fetchAllBpmProcesses = (tenant_key = null, ...rest) => {
   let url =
     API.GET_BPM_PROCESS_LIST +
     "?latestVersion=true" +
+    "&excludeInternal=true" +
     "&includeProcessDefinitionsWithoutTenantId=true" +
     "&sortBy=tenantId" +
     "&sortOrder=asc";

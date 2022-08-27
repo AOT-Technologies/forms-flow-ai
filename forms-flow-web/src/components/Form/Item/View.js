@@ -215,7 +215,7 @@ const View = React.memo((props) => {
   useEffect(() => {
     return () => {
       let payload = getDraftReqFormat(validFormId, draftRef.current?.data);
-      if (poll) saveDraft(payload, toast);
+      if (poll) saveDraft(payload);
     };
   }, [validFormId, draftSubmissionId, isDraftCreated, poll]);
 

@@ -57,7 +57,7 @@ import { setFormStatusLoading } from "../../../actions/processActions";
 import isEqual from "lodash/isEqual";
 
 const View = React.memo((props) => {
-  const [formStatus, setFormStatus] = useState("");
+  const [formStatus, setFormStatus] = React.useState("");
   const { t } = useTranslation();
   const lang = useSelector((state) => state.user.lang);
   const formStatusLoading = useSelector(

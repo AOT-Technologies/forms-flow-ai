@@ -24,7 +24,7 @@ const API = {
   GET_ALL_APPLICATIONS_STATUS: `${WEB_BASE_URL}/application/status/list`,
   GET_PROCESS_DEFINITION: `${BPM_BASE_URL_EXT}/v1/process-definition/key/<process_key>`,
   PROCESSES_XML: `${BPM_BASE_URL_EXT}/v1/process-definition/key/<process_key>/xml`,
-  DMN_XML: `${BPM_BASE_URL_EXT}/decision-definition/key/<process_key>/xml`,
+  DMN_XML: `${BPM_BASE_URL_EXT}/v1/decision-definition/key/<process_key>/xml`,
   PROCESS_ACTIVITIES: `${BPM_BASE_URL_EXT}/v1/process-instance/<process_instance_id>/activity-instances`,
   FORM: `${WEB_BASE_URL}/form`,
   FORM_CREATION: `${WEB_BASE_URL}/form/form-create`,

@@ -36,12 +36,13 @@ export default React.memo(() => {
   const [showModeller, setShowModeller] = useState(false);
   const [isBpmnModel, setIsBpmnModel] = useState(true);
   const [isNewDiagram, setIsNewDiagram] = useState(false);
+  const tenantKey = useSelector((state) => state.tenants?.tenantId);
 
   useEffect(() => {
     setIsNewDiagram(false);
     setShowModeller(false);
     dispatch(setWorkflowAssociation(null));
-    dispatch(fetchAllBpmProcesses());
+    dispatch(fetchAllBpmProcesses(tenantKey));
   }, []);
 
   useEffect(() => {
@@ -52,8 +53,8 @@ export default React.memo(() => {
 
   useEffect(() => {
     isBpmnModel
-      ? dispatch(fetchAllBpmProcesses())
-      : dispatch(fetchAllDmnProcesses());
+      ? dispatch(fetchAllBpmProcesses(tenantKey))
+      : dispatch(fetchAllDmnProcesses(tenantKey));
   }, [isBpmnModel]);
 
   const handleListChange = (item) => {

@@ -88,9 +88,7 @@ const View = React.memo((props) => {
         setDraftCreating(true);
         dispatch(
           draftUpdate(payload, draftSubmission?.id, (err) => {
-            if (err) {
-              toast.error(err);
-            } else {
+            if (!err){
               setTimeout(() => {
                 setDraftSaved(true);
                 setTimeout(() => {

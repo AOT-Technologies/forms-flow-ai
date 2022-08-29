@@ -3,7 +3,7 @@ from http import HTTPStatus
 
 import requests
 from flask import current_app
-from formsflow_api_utils.utils import UserContext, user_context, HTTP_TIMEOUT
+from formsflow_api_utils.utils import HTTP_TIMEOUT, UserContext, user_context
 
 
 class RedashAPIService:  # pylint: disable=too-few-public-methods

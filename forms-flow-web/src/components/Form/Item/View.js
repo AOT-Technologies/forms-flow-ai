@@ -1,4 +1,6 @@
 import React, { useCallback, useEffect, useRef, useState } from "react";
+import { Link, useParams } from "react-router-dom";
+import { push } from "connected-react-router";
 import { connect, useDispatch, useSelector } from "react-redux";
 import {
   selectRoot,
@@ -10,10 +12,10 @@ import {
   getForm,
   Formio,
 } from "react-formio";
-import { push } from "connected-react-router";
-import { Link, useParams } from "react-router-dom";
-import Loading from "../../../containers/Loading";
 import { useTranslation, Translation } from "react-i18next";
+import isEqual from "lodash/isEqual";
+
+import Loading from "../../../containers/Loading";
 import {
   getProcessReq,
   getDraftReqFormat,
@@ -25,7 +27,6 @@ import {
   setFormSubmissionError,
   setFormSubmissionLoading,
   setFormSuccessData,
-  setMaintainBPMFormPagination,
 } from "../../../actions/formActions";
 import SubmissionError from "../../../containers/SubmissionError";
 import { publicApplicationStatus } from "../../../apiManager/services/applicationServices";
@@ -54,7 +55,6 @@ import useInterval from "../../../customHooks/useInterval";
 import selectApplicationCreateAPI from "./apiSelectHelper";
 import { getFormProcesses } from "../../../apiManager/services/processServices";
 import { setFormStatusLoading } from "../../../actions/processActions";
-import isEqual from "lodash/isEqual";
 
 const View = React.memo((props) => {
   const [formStatus, setFormStatus] = useState("");
@@ -97,6 +97,7 @@ const View = React.memo((props) => {
 
   const [showPublicForm, setShowPublicForm] = useState("checking");
   const [poll, setPoll] = useState(DRAFT_ENABLED);
+  const exitType = useRef("UNMOUNT");
   const {
     isAuthenticated,
     submission,
@@ -167,10 +168,15 @@ const View = React.memo((props) => {
    * Compares the current form data and last saved data
    * Draft is updated only if the form is updated from the last saved form data.
    */
-  const saveDraft = (payload) => {
+  const saveDraft = (payload, exitType = exitType) => {
     let dataChanged = !isEqual(payload.data, lastUpdatedDraft.data);
     if (draftSubmissionId && isDraftCreated) {
-      if (dataChanged) dispatch(draftUpdateMethod(payload, draftSubmissionId));
+      if (dataChanged) {
+        dispatch(draftUpdateMethod(payload, draftSubmissionId,(err)=>{
+          if (exitType === "UNMOUNT" && !err) toast.success("Submission saved to draft.");
+        }));
+        
+      }
     }
   };
 
@@ -183,19 +189,6 @@ const View = React.memo((props) => {
       dispatch(draftCreateMethod(payload, setIsDraftCreated));
     }
   }, [validFormId]);
-
-  useEffect(() => {
-    dispatch(setFormStatusLoading(true));
-    dispatch(
-      getFormProcesses(formId, (err, data) => {
-        if (!err) {
-          setFormStatus(data.status);
-          dispatch(setFormStatusLoading(false));
-        }
-      })
-    );
-  }, []);
-
   /**
    * We will repeatedly update the current state to draft table
    * on purticular interval
@@ -215,15 +208,26 @@ const View = React.memo((props) => {
   useEffect(() => {
     return () => {
       let payload = getDraftReqFormat(validFormId, draftRef.current?.data);
-      if (poll) saveDraft(payload);
+      if (poll) saveDraft(payload, exitType.current);
     };
-  }, [validFormId, draftSubmissionId, isDraftCreated, poll]);
+  }, [validFormId, draftSubmissionId, isDraftCreated, poll, exitType.current]);
+
+  useEffect(() => {
+    dispatch(setFormStatusLoading(true));
+    dispatch(
+      getFormProcesses(formId, (err, data) => {
+        if (!err) {
+          setFormStatus(data.status);
+          dispatch(setFormStatusLoading(false));
+        }
+      })
+    );
+  }, []);
 
   useEffect(() => {
     if (isPublic) {
       getFormData();
     } else {
-      dispatch(setMaintainBPMFormPagination(true));
       setValidFormId(formId);
     }
   }, [isPublic, dispatch, getFormData]);
@@ -315,6 +319,7 @@ const View = React.memo((props) => {
               }}
               onSubmit={(data) => {
                 setPoll(false);
+                exitType.current = "SUBMIT";
                 onSubmit(data, form._id, isPublic);
               }}
               onCustomEvent={(evt) => onCustomEvent(evt, redirectUrl)}
@@ -344,11 +349,6 @@ const View = React.memo((props) => {
   );
 });
 
-const executeAuthSideEffects = (dispatch, redirectUrl) => {
-  dispatch(setMaintainBPMFormPagination(true));
-  dispatch(push(`${redirectUrl}form`));
-};
-
 // eslint-disable-next-line no-unused-vars
 const doProcessActions = (submission, ownProps) => {
   return (dispatch, getState) => {
@@ -377,12 +377,12 @@ const doProcessActions = (submission, ownProps) => {
             <Translation>{(t) => t("Submission Saved")}</Translation>
           );
           dispatch(setFormSubmitted(true));
+          if (isAuth) dispatch(push(`${redirectUrl}form`));
         } else {
           toast.error(
             <Translation>{(t) => t("Submission Failed.")}</Translation>
           );
         }
-        if (isAuth) executeAuthSideEffects(dispatch, redirectUrl);
       })
     );
   };

@@ -68,6 +68,7 @@ const View = React.memo((props) => {
   const draftRef = useRef();
   const { formId } = useParams();
   const [poll, setPoll] = useState(DRAFT_ENABLED);
+  const exitType = useRef("UNMOUNT");
   const {
     isAuthenticated,
     submission,
@@ -80,10 +81,16 @@ const View = React.memo((props) => {
   } = props;
   const dispatch = useDispatch();
 
-  const saveDraft = (payload) => {
+  const saveDraft = (payload, exitType = exitType) => {
     let dataChanged = !isEqual(payload.data, lastUpdatedDraft.data);
     if (draftSubmission?.id) {
-      if (dataChanged) dispatch(draftUpdate(payload, draftSubmission?.id));
+      if (dataChanged)
+        dispatch(
+          draftUpdate(payload, draftSubmission?.id, (err) => {
+            if (exitType === "UNMOUNT" && !err)
+              toast.success("Submission saved to draft.");
+          })
+        );
     }
   };
 
@@ -102,9 +109,9 @@ const View = React.memo((props) => {
   useEffect(() => {
     return () => {
       let payload = getDraftReqFormat(formId, draftRef.current);
-      if (poll) saveDraft(payload);
+      if (poll) saveDraft(payload, exitType.current);
     };
-  }, [poll]);
+  }, [poll, exitType.current]);
 
   if (isActive || isPublicStatusLoading) {
     return (
@@ -172,6 +179,7 @@ const View = React.memo((props) => {
             }}
             onSubmit={(data) => {
               setPoll(false);
+              exitType.current = "SUBMIT";
               onSubmit(data, form._id, isPublic);
             }}
             onCustomEvent={(evt) => onCustomEvent(evt, redirectUrl)}

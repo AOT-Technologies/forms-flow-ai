@@ -186,6 +186,8 @@ const View = React.memo((props) => {
                   setDraftSaved(false);
                 }, 2000);
               }, 3000);
+            }else{
+              setDraftCreating(false);
             }
           })
         );

@@ -8,7 +8,7 @@ import EditDraft from "./EditDraft";
 
 export default React.memo(() => {
   return (
-    <div className="container" id="main">
+    <div className="container">
       <Switch>
         <>
           <Route exact path={`${BASE_ROUTE}draft`} component={DraftList} />

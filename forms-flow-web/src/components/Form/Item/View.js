@@ -314,7 +314,13 @@ const View = React.memo((props) => {
         )}
         </div>
         {(isPublic || formStatus === "active") && draftCreating ? (
-         <SavingLoading text={draftSaved ? "saved to draft" : "saving..."} saved={draftSaved} />
+          <div className="d-flex w-75 justify-content-end">
+          <span className="p-2 info-background mr-2">
+          <i className="fa fa-info-circle mr-2" aria-hidden="true"></i>
+            Form which is not submitted is saved to draft
+          </span>
+          <SavingLoading text={draftSaved ? "Saved to draft" : "Saving..."} saved={draftSaved} />
+          </div>
       ) : (
         ""
       )}

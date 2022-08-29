@@ -57,7 +57,7 @@ import { setFormStatusLoading } from "../../../actions/processActions";
 import isEqual from "lodash/isEqual";
 
 const View = React.memo((props) => {
-  const [formStatus, setFormStatus] = useState("");
+  const [formStatus, setFormStatus] = React.useState("");
   const { t } = useTranslation();
   const lang = useSelector((state) => state.user.lang);
   const formStatusLoading = useSelector(
@@ -178,11 +178,11 @@ const View = React.memo((props) => {
    * Will create a draft application when the form is selected for entry.
    */
   useEffect(() => {
-    if (validFormId && DRAFT_ENABLED) {
+    if (validFormId && DRAFT_ENABLED && formStatus === "active") {
       let payload = getDraftReqFormat(validFormId, draftData?.data);
       dispatch(draftCreateMethod(payload, setIsDraftCreated));
     }
-  }, [validFormId]);
+  }, [validFormId, formStatus]);
 
   useEffect(() => {
     dispatch(setFormStatusLoading(true));

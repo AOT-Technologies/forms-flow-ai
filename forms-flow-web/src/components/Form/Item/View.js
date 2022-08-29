@@ -55,6 +55,7 @@ import useInterval from "../../../customHooks/useInterval";
 import selectApplicationCreateAPI from "./apiSelectHelper";
 import { getFormProcesses } from "../../../apiManager/services/processServices";
 import { setFormStatusLoading } from "../../../actions/processActions";
+import SavingLoading from "../../Loading/SavingLoading";
 
 const View = React.memo((props) => {
   const [formStatus, setFormStatus] = React.useState("");
@@ -98,6 +99,9 @@ const View = React.memo((props) => {
   const [showPublicForm, setShowPublicForm] = useState("checking");
   const [poll, setPoll] = useState(DRAFT_ENABLED);
   const exitType = useRef("UNMOUNT");
+  const [draftCreating, setDraftCreating] = useState(false);
+  const [draftSaved, setDraftSaved] = useState(false);
+
   const {
     isAuthenticated,
     submission,
@@ -172,10 +176,23 @@ const View = React.memo((props) => {
     let dataChanged = !isEqual(payload.data, lastUpdatedDraft.data);
     if (draftSubmissionId && isDraftCreated) {
       if (dataChanged) {
+        setDraftCreating(true);
         dispatch(
           draftUpdateMethod(payload, draftSubmissionId, (err) => {
-            if (exitType === "UNMOUNT" && !err)
+            if (exitType === "UNMOUNT" && !err) {
               toast.success("Submission saved to draft.");
+            }
+            if (!err) {
+              setTimeout(() => {
+                setDraftSaved(true);
+                setTimeout(() => {
+                  setDraftCreating(false);
+                  setDraftSaved(false);
+                }, 2000);
+              }, 3000);
+            } else {
+              setDraftCreating(false);
+            }
           })
         );
       }
@@ -186,11 +203,16 @@ const View = React.memo((props) => {
    * Will create a draft application when the form is selected for entry.
    */
   useEffect(() => {
-    if (validFormId && DRAFT_ENABLED && formStatus === "active") {
+    if (
+      validFormId &&
+      DRAFT_ENABLED &&
+      ((isAuthenticated && formStatus === "active") ||
+        (!isAuthenticated && publicFormStatus?.status == "active"))
+    ) {
       let payload = getDraftReqFormat(validFormId, draftData?.data);
       dispatch(draftCreateMethod(payload, setIsDraftCreated));
     }
-  }, [validFormId, formStatus]);
+  }, [validFormId, formStatus, publicFormStatus]);
 
   /**
    * We will repeatedly update the current state to draft table
@@ -216,16 +238,18 @@ const View = React.memo((props) => {
   }, [validFormId, draftSubmissionId, isDraftCreated, poll, exitType.current]);
 
   useEffect(() => {
-    dispatch(setFormStatusLoading(true));
-    dispatch(
-      getFormProcesses(formId, (err, data) => {
-        if (!err) {
-          setFormStatus(data.status);
-          dispatch(setFormStatusLoading(false));
-        }
-      })
-    );
-  }, []);
+    if (isAuthenticated) {
+      dispatch(setFormStatusLoading(true));
+      dispatch(
+        getFormProcesses(formId, (err, data) => {
+          if (!err) {
+            setFormStatus(data.status);
+            dispatch(setFormStatusLoading(false));
+          }
+        })
+      );
+    }
+  }, [isAuthenticated]);
 
   useEffect(() => {
     if (isPublic) {
@@ -274,25 +298,42 @@ const View = React.memo((props) => {
   }
   return (
     <div className="container overflow-y-auto">
-      <div className="main-header">
-        <SubmissionError
-          modalOpen={props.submissionError.modalOpen}
-          message={props.submissionError.message}
-          onConfirm={props.onConfirm}
-        ></SubmissionError>
-        {isAuthenticated ? (
-          <Link title="go back" to={`${redirectUrl}form`}>
-            <i className="fa fa-chevron-left fa-lg" />
-          </Link>
-        ) : null}
+      <div className="d-flex align-items-center justify-content-between">
+        <div className="main-header">
+          <SubmissionError
+            modalOpen={props.submissionError.modalOpen}
+            message={props.submissionError.message}
+            onConfirm={props.onConfirm}
+          ></SubmissionError>
+          {isAuthenticated ? (
+            <Link title="go back" to={`${redirectUrl}form`}>
+              <i className="fa fa-chevron-left fa-lg" />
+            </Link>
+          ) : null}
 
-        {form.title ? (
-          <h3 className="ml-3">
-            <span className="task-head-details">
-              <i className="fa fa-wpforms" aria-hidden="true" /> &nbsp; Forms /
-            </span>{" "}
-            {form.title}
-          </h3>
+          {form.title ? (
+            <h3 className="ml-3">
+              <span className="task-head-details">
+                <i className="fa fa-wpforms" aria-hidden="true" /> &nbsp; Forms
+                /
+              </span>{" "}
+              {form.title}
+            </h3>
+          ) : (
+            ""
+          )}
+        </div>
+        {(isPublic || formStatus === "active") && draftCreating ? (
+          <div className="d-flex w-75 justify-content-end">
+            <span className="p-2 info-background mr-2">
+              <i className="fa fa-info-circle mr-2" aria-hidden="true"></i>
+              Form which is not submitted is saved to draft
+            </span>
+            <SavingLoading
+              text={draftSaved ? "Saved to draft" : "Saving..."}
+              saved={draftSaved}
+            />
+          </div>
         ) : (
           ""
         )}

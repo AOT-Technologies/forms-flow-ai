@@ -181,12 +181,13 @@ const View = React.memo((props) => {
     if (
       validFormId &&
       DRAFT_ENABLED &&
-      (isAuthenticated ? (formStatus === "active" ? true : false) : true)
+      ((isAuthenticated && formStatus === "active") ||
+        (!isAuthenticated && publicFormStatus?.status == "active"))
     ) {
       let payload = getDraftReqFormat(validFormId, draftData?.data);
       dispatch(draftCreateMethod(payload, setIsDraftCreated));
     }
-  }, [validFormId, formStatus]);
+  }, [validFormId, formStatus, publicFormStatus]);
 
   useEffect(() => {
     if (isAuthenticated) {

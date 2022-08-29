@@ -71,8 +71,8 @@ flake8: ## Linting with flake8
 
 lint: format pylint flake8 ## run all lint type scripts
 
-test: ## Unit testing
-	. venv/bin/activate && pytest
+# test: ## Unit testing
+# 	. venv/bin/activate && pytest
 
 test-verbose: ## Unit testing with detailed error messages
 	. venv/bin/activate && pytest -vv

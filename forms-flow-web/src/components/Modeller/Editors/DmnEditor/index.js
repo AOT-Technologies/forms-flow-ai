@@ -169,7 +169,6 @@ export default React.memo(
           }
         })
         .catch((error) => {
-          console.log("errrrrr", error);
           showCamundaHTTTPErrors(error);
         });
     };
@@ -203,21 +202,36 @@ export default React.memo(
       dispatch(setWorkflowAssociation(updatedWorkflow));
     };
 
+    const validateDecisionNames = (xml) => {
+      let isValidated = true;
+      // Check for undefined process names
+      if (
+        !extractDataFromDiagram(xml, true).name ||
+        extractDataFromDiagram(xml, true).name.includes("undefined")
+      ) {
+        toast.error(t("Process name(s) must not be empty"));
+        isValidated = false;
+      }
+      return isValidated;
+    };
+
     const handleExport = async () => {
       let xml = await createXML(dmnModeller);
 
-      const element = document.createElement("a");
-      const file = new Blob([xml], { type: "text/dmn" });
-      element.href = URL.createObjectURL(file);
-      let deploymentName = extractDataFromDiagram(xml, true).name;
-      deploymentName = deploymentName.replaceAll(" ", "_") + ".dmn";
-      element.download = deploymentName.replaceAll(" ", "");
-      document.body.appendChild(element);
-      element.click();
+      const isValidated = validateDecisionNames(xml);
+      if (isValidated) {
+        const element = document.createElement("a");
+        const file = new Blob([xml], { type: "text/dmn" });
+        element.href = URL.createObjectURL(file);
+        let deploymentName = extractDataFromDiagram(xml, true).name;
+        deploymentName = deploymentName.replaceAll(" ", "_") + ".dmn";
+        element.download = deploymentName.replaceAll(" ", "");
+        document.body.appendChild(element);
+        element.click();
+      }
     };
 
-    const handleError = (err, message = "") => {
-      console.log(message, err);
+    const handleError = () => {
       document.getElementById("inputWorkflow").value = null;
       dispatch(setWorkflowAssociation(null));
       setShowModeller(false);

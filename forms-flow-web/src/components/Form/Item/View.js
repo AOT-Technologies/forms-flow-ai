@@ -27,6 +27,7 @@ import {
   setFormSubmissionError,
   setFormSubmissionLoading,
   setFormSuccessData,
+  setMaintainBPMFormPagination,
 } from "../../../actions/formActions";
 import SubmissionError from "../../../containers/SubmissionError";
 import { publicApplicationStatus } from "../../../apiManager/services/applicationServices";
@@ -421,7 +422,10 @@ const doProcessActions = (submission, ownProps) => {
             <Translation>{(t) => t("Submission Saved")}</Translation>
           );
           dispatch(setFormSubmitted(true));
-          if (isAuth) dispatch(push(`${redirectUrl}form`));
+          if (isAuth) {
+            dispatch(setMaintainBPMFormPagination(true));
+            dispatch(push(`${redirectUrl}form`));
+          }
         } else {
           toast.error(
             <Translation>{(t) => t("Submission Failed.")}</Translation>

@@ -18,6 +18,7 @@ from .constants import (
     KEYCLOAK_DASHBOARD_BASE_GROUP,
     NEW_APPLICATION_STATUS,
     REVIEWER_GROUP,
+    HTTP_TIMEOUT
 )
 from .enums import ApplicationSortingParameters
 from .format import CustomFormatter

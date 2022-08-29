@@ -9,6 +9,7 @@ from formsflow_api_utils.utils import (
     UserContext,
     profiletime,
     user_context,
+    HTTP_TIMEOUT,
 )
 
 
@@ -29,7 +30,9 @@ class KeycloakAdminAPIService:
             "grant_type": bpm_grant_type,
         }
 
-        response = requests.post(bpm_token_api, headers=headers, data=payload)
+        response = requests.post(
+            bpm_token_api, headers=headers, data=payload, timeout=HTTP_TIMEOUT
+        )
         data = json.loads(response.text)
         assert data["access_token"] is not None
         self.session.headers.update(

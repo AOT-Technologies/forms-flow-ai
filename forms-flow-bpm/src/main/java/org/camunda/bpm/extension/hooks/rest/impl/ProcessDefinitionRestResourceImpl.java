@@ -18,7 +18,7 @@ import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
 
 public class ProcessDefinitionRestResourceImpl implements ProcessDefinitionRestResource {
 
-    private final Logger LOGGER = Logger.getLogger(ProcessDefinitionRestResourceImpl.class.getName());
+    private final Logger LOG = Logger.getLogger(ProcessDefinitionRestResourceImpl.class.getName());
 
     private final org.camunda.bpm.engine.rest.ProcessDefinitionRestService restService;
 

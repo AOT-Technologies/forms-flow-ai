@@ -59,4 +59,9 @@ public class FormsFlowV1RestServiceImpl {
         return new DeploymentRestResourceImpl(processEngineService.getDeploymentRestService());
     }
 
+    @Path(DecisionDefinitionRestResource.PATH)
+    public DecisionDefinitionRestResource getDecisionDefinitionResource() {
+        return new DecisionDefinitionRestResourceImpl(processEngineService.getDecisionDefinitionRestService());
+    }
+
 }

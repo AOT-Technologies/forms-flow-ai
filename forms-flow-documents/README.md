@@ -59,7 +59,7 @@ Variable name | Meaning | Possible values | Default value |
 `KEYCLOAK_WEB_CLIENT_ID`|Client ID for formsflow to register with Keycloak|eg. forms-flow-web|`forms-flow-web`
 `CAMUNDA_API_URL`:triangular_flag_on_post:|Camunda Rest API URL||`http://{your-ip-address}:8000/camunda`
 `FORMSFLOW_API_URL`:triangular_flag_on_post:|formsflow.ai Rest API URL||`http://{your-ip-address}:5000`
-`WEB_API_BASE_URL`:triangular_flag_on_post:|formsflow.ai Document service URL||`http://{your-ip-address}:5006`
+`FORMSFLOW_DOC_API_URL`:triangular_flag_on_post:|formsflow.ai Document service URL||`http://{your-ip-address}:5006`
 `FORMSFLOW_API_CORS_ORIGINS`| formsflow.ai Rest API allowed origins, for allowing multiple origins you can separate host address using a comma seperated string or use * to allow all origins |eg:`host1, host2, host3`| `*`
 
 **NOTE : Default realm is `forms-flow-ai`**

@@ -3,31 +3,24 @@
 Initialize app and the dependencies.
 """
 
+import json
 import logging
 import os
-import json
+from http import HTTPStatus
 
 from flask import Flask, current_app, g, request
-from http import HTTPStatus
 from flask.logging import default_handler
+from formsflow_api_utils.utils import (ALLOW_ALL_ORIGINS, CORS_ORIGINS,
+                                       FORMSFLOW_API_CORS_ORIGINS,
+                                       CustomFormatter, cache, jwt,
+                                       setup_logging, translate)
+from formsflow_api_utils.utils.startup import (collect_role_ids,
+                                               collect_user_resource_ids,
+                                               setup_jwt_manager)
 from werkzeug.middleware.proxy_fix import ProxyFix
+
 from formsflow_documents import config
 from formsflow_documents.resources import API
-from formsflow_api_utils.utils.startup import (
-    setup_jwt_manager,
-    collect_role_ids,
-    collect_user_resource_ids,
-)
-from formsflow_api_utils.utils import (
-    ALLOW_ALL_ORIGINS,
-    CORS_ORIGINS,
-    FORMSFLOW_API_CORS_ORIGINS,
-    CustomFormatter,
-    cache,
-    jwt,
-    setup_logging,
-    translate,
-)
 
 
 def create_app(run_mode=os.getenv("FLASK_ENV", "production")):

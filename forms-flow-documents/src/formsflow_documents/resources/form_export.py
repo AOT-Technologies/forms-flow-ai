@@ -4,15 +4,11 @@ from http import HTTPStatus
 
 from flask import current_app, make_response, render_template, request
 from flask_restx import Namespace, Resource
-
 from formsflow_api_utils.exceptions import BusinessException
-
-from formsflow_api_utils.services import (
-    FormioService,
-)
+from formsflow_api_utils.services import FormioService
 from formsflow_api_utils.utils import (
-    REVIEWER_GROUP,
     CLIENT_GROUP,
+    REVIEWER_GROUP,
     auth,
     cors_preflight,
     profiletime,
@@ -92,7 +88,7 @@ class FormResourceExportFormPdf(Resource):
             if auth.has_one_of_roles([REVIEWER_GROUP, CLIENT_GROUP]):
                 timezone = request.args.get("timezone")
                 token = request.headers.get("Authorization")
-                host_name = current_app.config.get("FORMSFLOW_API_URL")
+                host_name = current_app.config.get("FORMSFLOW_DOC_API_URL")
                 url = (
                     host_name
                     + "/form/"

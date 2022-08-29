@@ -57,7 +57,7 @@ import { getFormProcesses } from "../../../apiManager/services/processServices";
 import { setFormStatusLoading } from "../../../actions/processActions";
 
 const View = React.memo((props) => {
-  const [formStatus, setFormStatus] = useState("");
+  const [formStatus, setFormStatus] = React.useState("");
   const { t } = useTranslation();
   const lang = useSelector((state) => state.user.lang);
   const formStatusLoading = useSelector(
@@ -172,10 +172,12 @@ const View = React.memo((props) => {
     let dataChanged = !isEqual(payload.data, lastUpdatedDraft.data);
     if (draftSubmissionId && isDraftCreated) {
       if (dataChanged) {
-        dispatch(draftUpdateMethod(payload, draftSubmissionId,(err)=>{
-          if (exitType === "UNMOUNT" && !err) toast.success("Submission saved to draft.");
-        }));
-        
+        dispatch(
+          draftUpdateMethod(payload, draftSubmissionId, (err) => {
+            if (exitType === "UNMOUNT" && !err)
+              toast.success("Submission saved to draft.");
+          })
+        );
       }
     }
   };
@@ -184,11 +186,12 @@ const View = React.memo((props) => {
    * Will create a draft application when the form is selected for entry.
    */
   useEffect(() => {
-    if (validFormId && DRAFT_ENABLED) {
+    if (validFormId && DRAFT_ENABLED && formStatus === "active") {
       let payload = getDraftReqFormat(validFormId, draftData?.data);
       dispatch(draftCreateMethod(payload, setIsDraftCreated));
     }
-  }, [validFormId]);
+  }, [validFormId, formStatus]);
+
   /**
    * We will repeatedly update the current state to draft table
    * on purticular interval

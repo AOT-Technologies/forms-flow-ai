@@ -38,7 +38,7 @@ import {
 import Loading from "../../containers/Loading";
 import SubmissionError from "../../containers/SubmissionError";
 import isEqual from "lodash/isEqual";
-
+import SavingLoading from "../Loading/SavingLoading";
 const View = React.memo((props) => {
   const { t } = useTranslation();
   const lang = useSelector((state) => state.user.lang);
@@ -57,7 +57,8 @@ const View = React.memo((props) => {
   const tenantKey = useSelector((state) => state.tenants?.tenantId);
   const redirectUrl = MULTITENANCY_ENABLED ? `/tenant/${tenantKey}/` : "/";
   const draftSubmission = useSelector((state) => state.draft.submission);
-
+  const [draftCreating, setDraftCreating] = useState(false);
+  const [draftSaved, setDraftSaved] = useState(false);
   /**
    * `draftData` is used for keeping the uptodate form entry,
    * this will get updated on every change the form is having.
@@ -83,7 +84,24 @@ const View = React.memo((props) => {
   const saveDraft = (payload) => {
     let dataChanged = !isEqual(payload.data, lastUpdatedDraft.data);
     if (draftSubmission?.id) {
-      if (dataChanged) dispatch(draftUpdate(payload, draftSubmission?.id));
+      if (dataChanged) {
+        setDraftCreating(true);
+        dispatch(
+          draftUpdate(payload, draftSubmission?.id, (err) => {
+            if (!err){
+              setTimeout(() => {
+                setDraftSaved(true);
+                setTimeout(() => {
+                  setDraftCreating(false);
+                  setDraftSaved(false);
+                }, 2000);
+              }, 3000);
+            }else{
+              setDraftCreating(false);
+            }
+          })
+        );
+      }
     }
   };
 
@@ -125,28 +143,42 @@ const View = React.memo((props) => {
 
   return (
     <div className="container overflow-y-auto">
-      <div className="main-header">
-        <SubmissionError
-          modalOpen={props.submissionError.modalOpen}
-          message={props.submissionError.message}
-          onConfirm={props.onConfirm}
-        ></SubmissionError>
-        {isAuthenticated ? (
-          <Link title="go back" to={`${redirectUrl}form`}>
-            <i className="fa fa-chevron-left fa-lg" />
-          </Link>
-        ) : null}
+      <div className="d-flex align-items-center justify-content-between">
+        <div className="main-header">
+          <SubmissionError
+            modalOpen={props.submissionError.modalOpen}
+            message={props.submissionError.message}
+            onConfirm={props.onConfirm}
+          ></SubmissionError>
+          {isAuthenticated ? (
+            <Link title="go back" to={`${redirectUrl}form`}>
+              <i className="fa fa-chevron-left fa-lg" />
+            </Link>
+          ) : null}
 
-        {form.title ? (
-          <h3 className="ml-3">
-            <span className="task-head-details">
-              <i className="fa fa-wpforms" aria-hidden="true" /> &nbsp; Drafts /
-            </span>{" "}
-            {form.title}
-          </h3>
-        ) : (
-          ""
-        )}
+          {form.title ? (
+            <h3 className="ml-3">
+              <span className="task-head-details">
+                <i className="fa fa-wpforms" aria-hidden="true" /> &nbsp; Drafts
+                /
+              </span>{" "}
+              {form.title}
+            </h3>
+          ) : (
+            ""
+          )}
+        </div>
+        {draftCreating ? (
+           <div className="d-flex w-75 justify-content-end">
+           <span className="p-2 info-background mr-2">
+           <i className="fa fa-info-circle mr-2" aria-hidden="true"></i>
+             Form which is not submitted is saved to draft
+           </span>
+           <SavingLoading text={draftSaved ? "Saved to draft" : "Saving..."} saved={draftSaved} />
+           </div>
+          ) : (
+            ""
+          )}
       </div>
       <Errors errors={errors} />
       <LoadingOverlay

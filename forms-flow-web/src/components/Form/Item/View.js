@@ -55,6 +55,7 @@ import selectApplicationCreateAPI from "./apiSelectHelper";
 import { getFormProcesses } from "../../../apiManager/services/processServices";
 import { setFormStatusLoading } from "../../../actions/processActions";
 import isEqual from "lodash/isEqual";
+import SavingLoading from "../../Loading/SavingLoading";
 
 const View = React.memo((props) => {
   const [formStatus, setFormStatus] = useState("");
@@ -97,6 +98,9 @@ const View = React.memo((props) => {
 
   const [showPublicForm, setShowPublicForm] = useState("checking");
   const [poll, setPoll] = useState(DRAFT_ENABLED);
+  const [draftCreating, setDraftCreating] = useState(false);
+  const [draftSaved, setDraftSaved] = useState(false);
+
   const {
     isAuthenticated,
     submission,
@@ -170,7 +174,24 @@ const View = React.memo((props) => {
   const saveDraft = (payload) => {
     let dataChanged = !isEqual(payload.data, lastUpdatedDraft.data);
     if (draftSubmissionId && isDraftCreated) {
-      if (dataChanged) dispatch(draftUpdateMethod(payload, draftSubmissionId));
+      if (dataChanged) {
+        setDraftCreating(true);
+        dispatch(
+          draftUpdateMethod(payload, draftSubmissionId, (err) => {
+            if (err) {
+              toast.error(err);
+            } else {
+              setTimeout(() => {
+                setDraftSaved(true);
+                setTimeout(() => {
+                  setDraftCreating(false);
+                  setDraftSaved(false);
+                }, 2000);
+              }, 3000);
+            }
+          })
+        );
+      }
     }
   };
 
@@ -267,7 +288,9 @@ const View = React.memo((props) => {
   }
   return (
     <div className="container overflow-y-auto">
-      <div className="main-header">
+      
+      <div className="d-flex align-items-center justify-content-between">
+        <div className="main-header">
         <SubmissionError
           modalOpen={props.submissionError.modalOpen}
           message={props.submissionError.message}
@@ -289,6 +312,12 @@ const View = React.memo((props) => {
         ) : (
           ""
         )}
+        </div>
+        {(isPublic || formStatus === "active") && draftCreating ? (
+         <SavingLoading text={draftSaved ? "saved to draft" : "saving..."} saved={draftSaved} />
+      ) : (
+        ""
+      )}
       </div>
       <Errors errors={errors} />
       <LoadingOverlay

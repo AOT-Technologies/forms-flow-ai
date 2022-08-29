@@ -5,6 +5,7 @@ import requests
 from flask import current_app
 from formsflow_api_utils.utils import (
     FORMSFLOW_ROLES,
+    HTTP_TIMEOUT,
     KEYCLOAK_DASHBOARD_BASE_GROUP,
     UserContext,
     profiletime,
@@ -29,7 +30,9 @@ class KeycloakAdminAPIService:
             "grant_type": bpm_grant_type,
         }
 
-        response = requests.post(bpm_token_api, headers=headers, data=payload)
+        response = requests.post(
+            bpm_token_api, headers=headers, data=payload, timeout=HTTP_TIMEOUT
+        )
         data = json.loads(response.text)
         assert data["access_token"] is not None
         self.session.headers.update(

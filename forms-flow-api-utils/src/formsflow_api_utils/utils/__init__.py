@@ -18,10 +18,11 @@ from .constants import (
     KEYCLOAK_DASHBOARD_BASE_GROUP,
     NEW_APPLICATION_STATUS,
     REVIEWER_GROUP,
+    HTTP_TIMEOUT
 )
 from .enums import ApplicationSortingParameters
 from .format import CustomFormatter
-from .logging import setup_logging
+from .logging import setup_logging, log_bpm_error
 from .profiler import profiletime
 from .user_context import UserContext, user_context
 from .util import (

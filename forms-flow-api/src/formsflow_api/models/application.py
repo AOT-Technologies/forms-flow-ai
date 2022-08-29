@@ -634,14 +634,22 @@ class Application(
     @classmethod
     def get_all_application_count(cls):
         """Retrieves all non draft application count."""
-        query = FormProcessMapper.tenant_authorization(query=cls.query)
+        query = FormProcessMapper.tenant_authorization(
+            query=cls.query.join(
+                FormProcessMapper, cls.form_process_mapper_id == FormProcessMapper.id
+            )
+        )
         query = cls.filter_draft_applications(query=query)
         return query.count()
 
     @classmethod
     def get_authorized_application_count(cls, process_key):
         """Retrieves authorized application count."""
-        query = FormProcessMapper.tenant_authorization(query=cls.query)
+        query = FormProcessMapper.tenant_authorization(
+            query=cls.query.join(
+                FormProcessMapper, cls.form_process_mapper_id == FormProcessMapper.id
+            )
+        )
         query = cls.filter_draft_applications(query=query)
         query = query.filter(FormProcessMapper.process_key.in_(process_key))
         return query.count()
@@ -649,7 +657,11 @@ class Application(
     @classmethod
     def get_user_based_application_count(cls, user_id):
         """Retrieves user specific application count."""
-        query = FormProcessMapper.tenant_authorization(query=cls.query)
+        query = FormProcessMapper.tenant_authorization(
+            query=cls.query.join(
+                FormProcessMapper, cls.form_process_mapper_id == FormProcessMapper.id
+            )
+        )
         query = cls.filter_draft_applications(query=query)
         query = query.filter(Application.created_by == user_id)
         return query.count()

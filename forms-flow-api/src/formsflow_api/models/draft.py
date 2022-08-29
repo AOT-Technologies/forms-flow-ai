@@ -208,6 +208,11 @@ class Draft(AuditDateTimeMixin, BaseModel, db.Model):
                 Draft.status == str(DraftStatus.ACTIVE.value),
             )
         )
-        query = FormProcessMapper.tenant_authorization(query=query)
+        query = FormProcessMapper.tenant_authorization(
+            query=query.join(
+                FormProcessMapper,
+                Application.form_process_mapper_id == FormProcessMapper.id,
+            )
+        )
         draft_count = query.count()
         return draft_count

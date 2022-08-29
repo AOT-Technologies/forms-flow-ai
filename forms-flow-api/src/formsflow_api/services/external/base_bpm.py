@@ -4,7 +4,7 @@ import json
 
 import requests
 from flask import current_app
-from formsflow_api_utils.utils.logging import log_bpm_error
+from formsflow_api_utils.utils import HTTP_TIMEOUT, log_bpm_error
 
 
 class BaseBPMService:
@@ -14,7 +14,7 @@ class BaseBPMService:
     def get_request(cls, url, token):
         """Get HTTP request to BPM API with auth header."""
         headers = cls._get_headers_(token)
-        response = requests.get(url, headers=headers)
+        response = requests.get(url, headers=headers, timeout=HTTP_TIMEOUT)
         data = None
         current_app.logger.debug(
             "GET URL : %s, Response Code : %s", url, response.status_code
@@ -73,7 +73,9 @@ class BaseBPMService:
         if token:
             return {"Authorization": token, "content-type": "application/json"}
 
-        response = requests.post(bpm_token_api, headers=headers, data=payload)
+        response = requests.post(
+            bpm_token_api, headers=headers, data=payload, timeout=HTTP_TIMEOUT
+        )
         data = json.loads(response.text)
         return {
             "Authorization": "Bearer " + data["access_token"],

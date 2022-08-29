@@ -199,23 +199,30 @@ const View = React.memo((props) => {
    * Will create a draft application when the form is selected for entry.
    */
   useEffect(() => {
-    if (validFormId && DRAFT_ENABLED && formStatus === "active") {
+    if (
+      validFormId &&
+      DRAFT_ENABLED &&
+      ((isAuthenticated && formStatus === "active") ||
+        (!isAuthenticated && publicFormStatus?.status == "active"))
+    ) {
       let payload = getDraftReqFormat(validFormId, draftData?.data);
       dispatch(draftCreateMethod(payload, setIsDraftCreated));
     }
-  }, [validFormId, formStatus]);
+  }, [validFormId, formStatus, publicFormStatus]);
 
   useEffect(() => {
-    dispatch(setFormStatusLoading(true));
-    dispatch(
-      getFormProcesses(formId, (err, data) => {
-        if (!err) {
-          setFormStatus(data.status);
-          dispatch(setFormStatusLoading(false));
-        }
-      })
-    );
-  }, []);
+    if (isAuthenticated) {
+      dispatch(setFormStatusLoading(true));
+      dispatch(
+        getFormProcesses(formId, (err, data) => {
+          if (!err) {
+            setFormStatus(data.status);
+            dispatch(setFormStatusLoading(false));
+          }
+        })
+      );
+    }
+  }, [isAuthenticated]);
 
   /**
    * We will repeatedly update the current state to draft table

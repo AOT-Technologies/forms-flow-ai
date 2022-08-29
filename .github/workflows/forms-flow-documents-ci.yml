@@ -101,7 +101,6 @@ jobs:
         id: test
         run: |
           make test
-
   build:
     runs-on: ubuntu-20.04
     name: Build

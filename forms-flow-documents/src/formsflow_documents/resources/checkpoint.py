@@ -7,7 +7,6 @@ from formsflow_api_utils.utils import cors_preflight, profiletime
 
 API = Namespace("Checkpoint", description="Checkpoint")
 
-
 @cors_preflight("GET")
 @API.route("", methods=["GET"])
 class HealthCheckpointResource(Resource):

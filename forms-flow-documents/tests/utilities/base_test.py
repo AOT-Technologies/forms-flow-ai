@@ -1,8 +1,5 @@
-"""Utils for Test Suite"""
-import ast
-import os
+"""Utils for Test Suite."""
 
-import requests
 import time
 from dotenv import find_dotenv, load_dotenv
 from flask import current_app
@@ -53,4 +50,3 @@ def get_token(
         },
         token_header,
     )
-

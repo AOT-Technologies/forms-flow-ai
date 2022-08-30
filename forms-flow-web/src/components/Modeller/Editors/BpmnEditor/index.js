@@ -248,18 +248,20 @@ export default React.memo(
     const handleExport = async () => {
       let xml = await createXML(bpmnModeller);
 
-      const element = document.createElement("a");
-      const file = new Blob([xml], { type: "text/bpmn" });
-      element.href = URL.createObjectURL(file);
-      let deploymentName = extractDataFromDiagram(xml).name;
-      deploymentName = deploymentName.replaceAll(" / ", "-") + ".bpmn";
-      element.download = deploymentName.replaceAll(" ", "");
-      document.body.appendChild(element);
-      element.click();
+      const isValidated = await validateProcess(xml);
+      if (isValidated) {
+        const element = document.createElement("a");
+        const file = new Blob([xml], { type: "text/bpmn" });
+        element.href = URL.createObjectURL(file);
+        let deploymentName = extractDataFromDiagram(xml).name;
+        deploymentName = deploymentName.replaceAll(" / ", "-") + ".bpmn";
+        element.download = deploymentName.replaceAll(" ", "");
+        document.body.appendChild(element);
+        element.click();
+      }
     };
 
-    const handleError = (err, message = "") => {
-      console.log(message, err);
+    const handleError = () => {
       document.getElementById("inputWorkflow").value = null;
       dispatch(setWorkflowAssociation(null));
       setShowModeller(false);

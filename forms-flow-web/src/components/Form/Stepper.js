@@ -101,7 +101,7 @@ class StepperPage extends PureComponent {
         processList: nextProps.processList,
         processListLoaded: true,
       };
-      nextProps.getAllProcesses();
+      nextProps.getAllProcesses(prevState.tenantKey);
     }
     if (
       nextProps.match.params.formId === FORM_CREATE_ROUTE &&
@@ -415,10 +415,10 @@ const mapStateToProps = (state) => {
 
 const mapDispatchToProps = (dispatch) => {
   return {
-    getAllProcesses: () => {
+    getAllProcesses: (tenantKey) => {
       dispatch(
         // eslint-disable-next-line no-unused-vars
-        fetchAllBpmProcesses(true, (err, res) => {
+        fetchAllBpmProcesses(tenantKey, (err, res) => {
           if (err) {
             console.log(err);
           }

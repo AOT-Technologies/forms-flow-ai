@@ -100,9 +100,8 @@ const View = React.memo((props) => {
   const [showPublicForm, setShowPublicForm] = useState("checking");
   const [poll, setPoll] = useState(DRAFT_ENABLED);
   const exitType = useRef("UNMOUNT");
-  const [draftCreating, setDraftCreating] = useState(false);
   const [draftSaved, setDraftSaved] = useState(false);
-
+  const [notified, setNotified] = useState(false);
   const {
     isAuthenticated,
     submission,
@@ -177,28 +176,34 @@ const View = React.memo((props) => {
     let dataChanged = !isEqual(payload.data, lastUpdatedDraft.data);
     if (draftSubmissionId && isDraftCreated) {
       if (dataChanged) {
-        setDraftCreating(true);
+        setDraftSaved(false);
         dispatch(
           draftUpdateMethod(payload, draftSubmissionId, (err) => {
             if (exitType === "UNMOUNT" && !err) {
               toast.success("Submission saved to draft.");
             }
             if (!err) {
-              setTimeout(() => {
-                setDraftSaved(true);
-                setTimeout(() => {
-                  setDraftCreating(false);
-                  setDraftSaved(false);
-                }, 2000);
-              }, 3000);
+              setDraftSaved(true);
             } else {
-              setDraftCreating(false);
+              setDraftSaved(false);
             }
           })
         );
       }
     }
   };
+
+  useEffect(() => {
+    setTimeout(() => {
+      setNotified(true);
+    }, 5000);
+  }, []);
+
+  useEffect(() => {
+    if (isDraftCreated) {
+      setDraftSaved(true);
+    }
+  }, [isDraftCreated]);
 
   /**
    * Will create a draft application when the form is selected for entry.
@@ -299,6 +304,28 @@ const View = React.memo((props) => {
   }
   return (
     <div className="container overflow-y-auto">
+      {DRAFT_ENABLED &&
+        (formStatus === "active" ||
+          (publicFormStatus?.anonymous === true &&
+            publicFormStatus?.status === "active")) && (
+          <>
+            <span className="pr-2  mr-2 d-flex justify-content-end align-items-center">
+              {!notified && (
+                <span className="text-primary">
+                  <i className="fa fa-info-circle mr-2" aria-hidden="true"></i>
+                  Unfinished applications will be saved to drafts.
+                </span>
+              )}
+
+              {notified && poll && (
+                <SavingLoading
+                  text={draftSaved ? "Saved to draft" : "Saving..."}
+                  saved={draftSaved}
+                />
+              )}
+            </span>
+          </>
+        )}
       <div className="d-flex align-items-center justify-content-between">
         <div className="main-header">
           <SubmissionError
@@ -324,20 +351,6 @@ const View = React.memo((props) => {
             ""
           )}
         </div>
-        {(isPublic || formStatus === "active") && draftCreating ? (
-          <div className="d-flex w-75 justify-content-end">
-            <span className="p-2 info-background mr-2">
-              <i className="fa fa-info-circle mr-2" aria-hidden="true"></i>
-              Form which is not submitted is saved to draft
-            </span>
-            <SavingLoading
-              text={draftSaved ? "Saved to draft" : "Saving..."}
-              saved={draftSaved}
-            />
-          </div>
-        ) : (
-          ""
-        )}
       </div>
       <Errors errors={errors} />
       <LoadingOverlay

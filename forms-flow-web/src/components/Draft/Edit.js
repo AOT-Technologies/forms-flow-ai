@@ -57,8 +57,7 @@ const View = React.memo((props) => {
   const tenantKey = useSelector((state) => state.tenants?.tenantId);
   const redirectUrl = MULTITENANCY_ENABLED ? `/tenant/${tenantKey}/` : "/";
   const draftSubmission = useSelector((state) => state.draft.submission);
-  const [draftCreating, setDraftCreating] = useState(false);
-  const [draftSaved, setDraftSaved] = useState(false);
+  const [draftSaved, setDraftSaved] = useState(true);
   /**
    * `draftData` is used for keeping the uptodate form entry,
    * this will get updated on every change the form is having.
@@ -86,22 +85,16 @@ const View = React.memo((props) => {
     let dataChanged = !isEqual(payload.data, lastUpdatedDraft.data);
     if (draftSubmission?.id) {
       if (dataChanged) {
-        setDraftCreating(true);
+        setDraftSaved(false);
         dispatch(
           draftUpdate(payload, draftSubmission?.id, (err) => {
             if (exitType === "UNMOUNT" && !err) {
               toast.success("Submission saved to draft.");
             }
             if (!err) {
-              setTimeout(() => {
-                setDraftSaved(true);
-                setTimeout(() => {
-                  setDraftCreating(false);
-                  setDraftSaved(false);
-                }, 2000);
-              }, 3000);
+              setDraftSaved(true);
             } else {
-              setDraftCreating(false);
+              setDraftSaved(false);
             }
           })
         );
@@ -147,6 +140,18 @@ const View = React.memo((props) => {
 
   return (
     <div className="container overflow-y-auto">
+      {
+        <>
+          <span className="pr-2  mr-2 d-flex justify-content-end align-items-center">
+            {poll && (
+              <SavingLoading
+                text={draftSaved ? "Saved to draft" : "Saving..."}
+                saved={draftSaved}
+              />
+            )}
+          </span>
+        </>
+      }
       <div className="d-flex align-items-center justify-content-between">
         <div className="main-header">
           <SubmissionError
@@ -172,20 +177,6 @@ const View = React.memo((props) => {
             ""
           )}
         </div>
-        {draftCreating ? (
-          <div className="d-flex w-75 justify-content-end">
-            <span className="p-2 info-background mr-2">
-              <i className="fa fa-info-circle mr-2" aria-hidden="true"></i>
-              Form which is not submitted is saved to draft
-            </span>
-            <SavingLoading
-              text={draftSaved ? "Saved to draft" : "Saving..."}
-              saved={draftSaved}
-            />
-          </div>
-        ) : (
-          ""
-        )}
       </div>
       <Errors errors={errors} />
       <LoadingOverlay
@@ -195,27 +186,29 @@ const View = React.memo((props) => {
         className="col-12"
       >
         <div className="ml-4 mr-4">
-          <Form
-            form={form}
-            submission={submission.submission}
-            url={url}
-            options={{
-              ...options,
-              language: lang,
-              i18n: formio_resourceBundles,
-            }}
-            hideComponents={hideComponents}
-            onChange={(formData) => {
-              setDraftData(formData.data);
-              draftRef.current = formData.data;
-            }}
-            onSubmit={(data) => {
-              setPoll(false);
-              exitType.current = "SUBMIT";
-              onSubmit(data, form._id, isPublic);
-            }}
-            onCustomEvent={(evt) => onCustomEvent(evt, redirectUrl)}
-          />
+          {
+            <Form
+              form={form}
+              submission={submission.submission}
+              url={url}
+              options={{
+                ...options,
+                language: lang,
+                i18n: formio_resourceBundles,
+              }}
+              hideComponents={hideComponents}
+              onChange={(formData) => {
+                setDraftData(formData.data);
+                draftRef.current = formData.data;
+              }}
+              onSubmit={(data) => {
+                setPoll(false);
+                exitType.current = "SUBMIT";
+                onSubmit(data, form._id, isPublic);
+              }}
+              onCustomEvent={(evt) => onCustomEvent(evt, redirectUrl)}
+            />
+          }
         </div>
       </LoadingOverlay>
     </div>

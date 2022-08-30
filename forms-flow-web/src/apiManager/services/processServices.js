@@ -78,7 +78,7 @@ export const fetchAllBpmProcesses = (tenant_key = null, ...rest) => {
   if (tenant_key) {
     url = url + "&tenantIdIn=" + tenant_key;
   }
-console.log("url",API.GET_BPM_FORM_LIST);
+  
   return (dispatch) => {
     // eslint-disable-next-line max-len
     httpGETRequest(url, {}, UserService.getToken(), true)

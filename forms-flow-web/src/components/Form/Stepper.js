@@ -101,7 +101,7 @@ class StepperPage extends PureComponent {
         processList: nextProps.processList,
         processListLoaded: true,
       };
-      nextProps.getAllProcesses();
+      nextProps.getAllProcesses(prevState.tenantKey);
     }
     if (
       nextProps.match.params.formId === FORM_CREATE_ROUTE &&
@@ -415,10 +415,11 @@ const mapStateToProps = (state) => {
 
 const mapDispatchToProps = (dispatch) => {
   return {
-    getAllProcesses: () => {
+    getAllProcesses: (tenantKey) => {
+    const tenantIdIn = MULTITENANCY_ENABLED ? tenantKey : null;
       dispatch(
         // eslint-disable-next-line no-unused-vars
-        fetchAllBpmProcesses(true, (err, res) => {
+        fetchAllBpmProcesses(tenantIdIn, (err, res) => {
           if (err) {
             console.log(err);
           }

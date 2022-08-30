@@ -304,7 +304,7 @@ const View = React.memo((props) => {
   }
   return (
     <div className="container overflow-y-auto">
-      {DRAFT_ENABLED &&
+      {DRAFT_ENABLED && isAuthenticated &&
         (formStatus === "active" ||
           (publicFormStatus?.anonymous === true &&
             publicFormStatus?.status === "active")) && (

@@ -31,6 +31,11 @@ const PrivateRoute = React.memo((props) => {
   const redirecUrl = MULTITENANCY_ENABLED ? `/tenant/${tenantId}/` : `/`;
   useEffect(() => {
     if (tenantId && props.store) {
+      let currentTenant = sessionStorage.getItem("tenantKey");
+      if(currentTenant && currentTenant !== tenantId){
+        sessionStorage.clear();
+        localStorage.clear();
+      }
       sessionStorage.setItem("tenantKey", tenantId);
       dispatch(setTenantFromId(tenantId));
       UserService.setKeycloakJson(tenantId, (clientId) => {

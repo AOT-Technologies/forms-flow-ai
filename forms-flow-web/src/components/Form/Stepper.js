@@ -416,7 +416,6 @@ const mapStateToProps = (state) => {
 const mapDispatchToProps = (dispatch) => {
   return {
     getAllProcesses: (tenantKey) => {
-      console.log("tenatn",tenantKey);
       dispatch(
         // eslint-disable-next-line no-unused-vars
         fetchAllBpmProcesses(tenantKey, (err, res) => {

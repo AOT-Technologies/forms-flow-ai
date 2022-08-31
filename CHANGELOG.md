@@ -38,6 +38,7 @@ Mark  items as `Added`, `Changed`, `Fixed`, `Removed`, `Untested Features`, `Upc
 * Added BPM_BASE_URL as the base url for camunda without /camunda- New property included with multitenancy.
 * Added default workflow.
 * Added `Form Adapter` to support form submission data to other data stores than Mongo with custom data URLs.
+* Added bpm gateway with jersey implementation
 
 **forms-flow-documents**
 

@@ -17,4 +17,5 @@ import java.io.Serializable;
 public class TaskEventMessage implements Serializable {
     private String id;
     private String eventName;
+    private String tenantId;
 }

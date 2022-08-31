@@ -1,7 +1,7 @@
 # Changelog for formsflow.ai
 
 Mark  items as `Added`, `Changed`, `Fixed`, `Removed`, `Untested Features`, `Upcoming Features`, `Known Issues`
-## 5.0.0 - 2022-05-26
+## 5.0.0 - 2022-08-31
 
 `Added`
 
@@ -12,6 +12,15 @@ Mark  items as `Added`, `Changed`, `Fixed`, `Removed`, `Untested Features`, `Upc
 * Added Internationalization.
 * Added multi-tenancy support.
 * Added modal for submission details on metrics page.
+* Added support for wizard forms.
+* Added Export to PDF feature.
+* Added application status `draft` for unfinished applications.
+* Added Processes page for camunda web modeller.
+* Added Form Adapter to support form submission data to other data stores than Mongo with custom data URLs.
+* Added environment variables `DRAFT_POLLING_RATE`,  `DRAFT_ENABLED` to manage draft feature. 
+* Added environment variables `EXPORT_PDF_ENABLED`,  `DOCUMENT_SERVICE_URL`.
+
+
 
 **forms-flow-forms**
 
@@ -21,11 +30,19 @@ Mark  items as `Added`, `Changed`, `Fixed`, `Removed`, `Untested Features`, `Upc
 
 * Added multi-tenancy support.
 * Added support for default workflow with form.
+* Added API support for `draft` feature.
+* Added API support for `Form Adapter`.
 
 **forms-flow-bpm**
 
 * Added BPM_BASE_URL as the base url for camunda without /camunda- New property included with multitenancy.
 * Added default workflow.
+* Added `Form Adapter` to support form submission data to other data stores than Mongo with custom data URLs.
+* Added bpm gateway with jersey implementation
+
+**forms-flow-documents**
+
+* Added document API  to provide generate pdf with form submission data.
 
 
 `Modified`
@@ -36,17 +53,54 @@ Mark  items as `Added`, `Changed`, `Fixed`, `Removed`, `Untested Features`, `Upc
 * Form page UI modified.
 * Accessibility enhancement.
 
+*Upgrade notes:*
+
+* Environment variables modified `REACT_APP_CAMUNDA_API_URI` to `REACT_APP_BPM_URL` and `CAMUNDA_API_URL` to `BPM_API_URL`.
+
+
 
 **forms-flow-forms**
 
 * Modified Docker-compose to point to create image from the [new Repository](https://github.com/AOT-Technologies/formio).
 
+**forms-flow-api**
+
+* Dependencies like utils, formio, JWT authentication moved to `forms-flow-api-utils`.
+ 
+*Upgrade notes:*
+
+* Environment variables modified ` BPM_API_BASE` to `BPM_API_URL`.
+
+
+**forms-flow-bpm**
+
+*Upgrade notes:*
+
+* Camunda upgraded from 7.15 to 7.17.
+* Java upgraded from  11 to 17.
+* springboot upgraded from 2.4.8 to 2.6.4.
+* camundaKeycloak upgraded from 2.2.1 to 2.2.3.
+* camundaConnect upgraded from 7.15.0 to 1.5.0.
+* camundaMail upgraded from 1.2.0 to 1.3.0.
+* Environment variables modified `BPM_BASE_URL` to `BPM_API_URL`.
+* formUrl parameter is changed to webFormUrl in DMN template.
+
+
+
+`Removed`
+
+**forms-flow-web**
+
+* Removed View submissions button from reviewer form list and view submissions route.
+* Removed the environment variables `CLIENT_ROLE_ID`, `DESIGNER_ROLE_ID`, `REVIEWER_ROLE_ID`,`ANONYMOUS_ID`, `USER_RESOURCE_ID`.
+
 
 `Generic Changes`
 
-* Docker-compose files changed to a single one.
-* Added CD pipeline.
-
+* Docker-compose files changed to single one.
+* Added CI/CD pipeline.
+* Environment variables updated with dynamic role-id fetching.
+* Added new detailed documentation, checkout [here](https://aot-technologies.github.io/forms-flow-ai-doc).
 ## 4.0.6 - 2022-07-19
 
 `Fixed`
@@ -75,7 +129,7 @@ Mark  items as `Added`, `Changed`, `Fixed`, `Removed`, `Untested Features`, `Upc
 * Added submitter name in the application history table.
 * Added Cancel button for form edit.
 * Added task variable in tasklist page at LHS.
-* Added CI pipeline.
+* Added CD pipeline.
 
 **forms-flow-api**
 
@@ -83,7 +137,7 @@ Mark  items as `Added`, `Changed`, `Fixed`, `Removed`, `Untested Features`, `Upc
 * Added migration scripts in the alembic file to resolve schema conflicts while db upgrade and downgrade, check out [here](./forms-flow-api/migrations/versions/80b8d5e95e9b_set_modification_date_on_create.py).
 * Added new api for updating user locale attribute in Keycloak with the help of Keycloak admin API.
 * Added form list page search and sort.
-* Added CI pipeline.
+* Added CD pipeline.
 * Added DB changes to accomodate task variable. 
 
 **forms-flow-data-analysis-api**
@@ -99,7 +153,7 @@ Mark  items as `Added`, `Changed`, `Fixed`, `Removed`, `Untested Features`, `Upc
 **forms-flow-bpm**
 
 * New (Task / Execution) Listener FormBpmFilteredDataPipelineListener Included for the effective form to bpm data copy.
-* Added CI pipeline.
+* Added CD pipeline.
 
 `Fixed`
 
@@ -167,7 +221,8 @@ Environment variables `KEYCLOAK_ADMIN_USERNAME` and `KEYCLOAK_ADMIN_PASSWORD` ar
 
 *Upgrade notes:*
 
-* For the upgrading user's formio-access-token.bpmn workflow should be manually stopped and deleted using these instructions [from here](https://docs.camunda.org/manual/7.8/reference/rest/process-definition/delete-process-definition/)
+* For the upgrading user's formio-access-token.bpmn workflow should be manually stopped and deleted using these instructions [from here](https://docs.camunda.org/manual/7.8/reference/rest/process-definition/delete-process-definition/).
+
 
 `Generic Changes`
 

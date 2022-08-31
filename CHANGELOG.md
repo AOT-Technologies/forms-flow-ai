@@ -14,7 +14,7 @@ Mark  items as `Added`, `Changed`, `Fixed`, `Removed`, `Untested Features`, `Upc
 * Added modal for submission details on metrics page.
 * Added support for wizard forms.
 * Added Export to PDF feature.
-* Added application status `draft`.
+* Added application status `draft` for unfinished applications.
 * Added Processes page for camunda web modeller.
 * Added Form Adapter to support form submission data to other data stores than Mongo with custom data URLs.
 * Added environment variables `DRAFT_POLLING_RATE`,  `DRAFT_ENABLED` to manage draft feature. 
@@ -30,13 +30,18 @@ Mark  items as `Added`, `Changed`, `Fixed`, `Removed`, `Untested Features`, `Upc
 
 * Added multi-tenancy support.
 * Added support for default workflow with form.
-* API support for `draft` feature.
+* Added API support for `draft` feature.
+* Added API support for `Form Adapter`.
 
 **forms-flow-bpm**
 
 * Added BPM_BASE_URL as the base url for camunda without /camunda- New property included with multitenancy.
 * Added default workflow.
-* Added Form Adapter to support form submission data to other data stores than Mongo with custom data URLs.
+* Added `Form Adapter` to support form submission data to other data stores than Mongo with custom data URLs.
+
+**forms-flow-documents**
+
+* Added document API  to provide generate pdf with form submission data.
 
 
 `Modified`
@@ -59,10 +64,12 @@ Mark  items as `Added`, `Changed`, `Fixed`, `Removed`, `Untested Features`, `Upc
 
 **forms-flow-api**
 
+* Dependencies like utils, formio, JWT authentication moved to `forms-flow-api-utils`.
+ 
 *Upgrade notes:*
 
 * Environment variables modified ` BPM_API_BASE` to `BPM_API_URL`.
- 
+
 
 **forms-flow-bpm**
 
@@ -86,10 +93,6 @@ Mark  items as `Added`, `Changed`, `Fixed`, `Removed`, `Untested Features`, `Upc
 * Removed View submissions button from reviewer form list and view submissions route.
 * Removed the environment variables `CLIENT_ROLE_ID`, `DESIGNER_ROLE_ID`, `REVIEWER_ROLE_ID`,`ANONYMOUS_ID`, `USER_RESOURCE_ID`.
 
-
-`Upcoming Features`
-
-* Draft feature to track unfinished application.
 
 `Generic Changes`
 

@@ -89,6 +89,7 @@ const List = React.memo((props) => {
   const isDesigner = userRoles.includes(STAFF_DESIGNER);
   const searchText = useSelector((state) => state.bpmForms.searchText);
   const pageNo = useSelector((state) => state.bpmForms.page);
+  const designerPageNo = useSelector(state => state.forms.pagination.page);
   const limit = useSelector((state) => state.bpmForms.limit);
   const totalForms = useSelector((state) => state.bpmForms.totalForms);
   const sortBy = useSelector((state) => state.bpmForms.sortBy);
@@ -139,7 +140,7 @@ const List = React.memo((props) => {
 
   useEffect(() => {
     if (isDesigner) {
-      getFormsInit(1);
+      getFormsInit(designerPageNo);
     } else {
       dispatch(fetchBPMFormList(pageNo, limit, sortBy, sortOrder, searchText));
     }
@@ -172,11 +173,13 @@ const List = React.memo((props) => {
     return false;
   };
   const handlePageChange = (type, newState) => {
+    let modifiedPage;
     dispatch(setFormSearchLoading(true));
     let updatedQuery = { query: { ...query } };
     if (type === "sort") {
       if (isDesigner) {
         updatedQuery.sort = `${isAscending ? "-" : ""}title`;
+        modifiedPage = 1;
       } else {
         let updatedSort;
         if (sortOrder === ASCENDING) {
@@ -202,7 +205,7 @@ const List = React.memo((props) => {
       dispatch(
         indexForms(
           "forms",
-          newState.page,
+          modifiedPage ? modifiedPage : newState.page,
           { limit: newState.sizePerPage, ...updatedQuery },
           () => {
             dispatch(setFormSearchLoading(false));
@@ -509,11 +512,11 @@ const getInitForms = (page = 1, query) => {
   return (dispatch, getState) => {
     const state = getState();
     const currentPage = state.forms.pagination.page;
-    const maintainPagination = state.bpmForms.maintainPagination;
+    // const maintainPagination = state.bpmForms.maintainPagination;
     dispatch(
       indexForms(
         "forms",
-        maintainPagination ? currentPage : page,
+        page ? page : currentPage,
         query,
         () => {
           dispatch(setFormLoading(false));

@@ -83,7 +83,7 @@ Mark  items as `Added`, `Changed`, `Fixed`, `Removed`, `Untested Features`, `Upc
 * camundaConnect upgraded from 7.15.0 to 1.5.0.
 * camundaMail upgraded from 1.2.0 to 1.3.0.
 * Environment variables modified `BPM_BASE_URL` to `BPM_API_URL`.
-* formUrl is modified to webFormUrl in dmn template.
+* formUrl parameter is changed to webFormUrl in DMN template.
 
 
 

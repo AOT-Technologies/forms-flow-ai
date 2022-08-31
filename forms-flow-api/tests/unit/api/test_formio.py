@@ -24,10 +24,7 @@ def test_formio_roles(app, client, session, jwt):
     response = client.get("/formio/roles", headers=headers)
 
     assert response.status_code == 200
-    assert response.json["form"][0]["roleId"] == 1
-    assert response.json["form"][0]["type"] == FormioRoles.CLIENT.name
-    assert response.json["form"][1]["type"] == FormioRoles.RESOURCE_ID.name
-    assert response.json["form"][1]["roleId"] == resource_id
+    assert response.json["form"] == []
     assert response.headers["x-jwt-token"]
     decoded_token = pyjwt.decode(
         response.headers["x-jwt-token"],
@@ -41,10 +38,8 @@ def test_formio_roles(app, client, session, jwt):
     headers = {"Authorization": f"Bearer {token}", "content-type": "application/json"}
     response = client.get("/formio/roles", headers=headers)
 
-    assert response.json["form"][0]["roleId"] == 2
-    assert response.json["form"][0]["type"] == FormioRoles.REVIEWER.name
-    assert response.json["form"][1]["type"] == FormioRoles.RESOURCE_ID.name
-    assert response.json["form"][1]["roleId"] == "62cc9223b5cad9348f5880a9"
+    assert response.status_code == 200
+    assert response.json["form"] == []
 
     # Requesting from designer role
     cache.set("user_resource_id", "123456789", timeout=0)

@@ -105,7 +105,7 @@ def get_role_ids_from_user_groups(role_ids, user_role):
         raise ValueError("Inavlid arguments passed")
 
     if DESIGNER_GROUP in user_role:
-        return filter_list_by_user_role(FormioRoles.DESIGNER.name, role_ids)
+        return role_ids
     if REVIEWER_GROUP in user_role:
         return filter_list_by_user_role(FormioRoles.REVIEWER.name, role_ids)
     if CLIENT_GROUP in user_role:

@@ -3,7 +3,6 @@ import { Link } from "react-router-dom";
 import startCase from "lodash/startCase";
 import {
   textFilter,
-  // selectFilter,
   customFilter,
   FILTER_TYPES,
 } from "react-bootstrap-table2-filter";
@@ -39,15 +38,17 @@ const linkDraft = (cell, row, redirectUrl) => {
   const buttonText = <Translation>{(t) => t("Edit")}</Translation>;
   const icon = "fa fa-edit";
   return (
-    <div onClick={() => window.open(url, "_blank")}>
-      <span style={{ color: "blue", cursor: "pointer" }}>
-        <span>
-          <i className={icon} />
-          &nbsp;
+    <Link to={url} style={{ textDecoration: "none" }}>
+      <div>
+        <span style={{ color: "blue", cursor: "pointer" }}>
+          <span>
+            <i className={icon} />
+            &nbsp;
+          </span>
+          {buttonText}
         </span>
-        {buttonText}
-      </span>
-    </div>
+      </div>
+    </Link>
   );
 };
 
@@ -101,11 +102,17 @@ export const columns = (lastModified, callback, t, redirectUrl) => {
           nameFilter = filter;
         },
       }),
+      headerStyle: () => {
+        return { width: "40%" };
+      },
     },
     {
       dataField: "formUrl",
-      text: <Translation>{(t) => t("Link To Draft Submission")}</Translation>,
+      text: <Translation>{(t) => t("Action")}</Translation>,
       formatter: (cell, row) => linkDraft(cell, row, redirectUrl),
+      headerStyle: () => {
+        return { width: "20%" };
+      },
     },
 
     {

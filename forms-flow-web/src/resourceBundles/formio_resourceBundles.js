@@ -253,18 +253,17 @@ export const formio_resourceBundles = {
     "Link To Draft Submission":"Link To Draft Submission",
     "Drafts":"Drafts",
     "You can't submit this form until it is published":"You can't submit this form until it is published",
-    "Form not published":"Form not published"
-
-
-
-
-
-
-
-
- 
-
-
+    "Form not published":"Form not published",
+    "Access Denied" : "Access Denied",
+    "By default, the tenant key would be prefixed to form":"By default, the tenant key would be prefixed to form",
+    "go back":"go back",
+    "No Applications Found":"No Applications Found",
+    "Submission saved to draft.":"Submission saved to draft.",
+    "Saved to draft":"Saved to draft",
+    "Saving...":"Saving...",
+    "Unfinished applications will be saved to drafts.":"Unfinished applications will be saved to drafts.",
+    "Error in creating form process mapper":"Error in creating form process mapper",
+    "Select the date":"Select the date"
 
 
 
@@ -1137,9 +1136,16 @@ export const formio_resourceBundles = {
     "Link To Draft Submission":"链接到草稿提交",
     "Drafts":"草稿",
     "You can't submit this form until it is published":"在此表单发布之前，您无法提交此表单",
-    "Form not published":"表格未发布"
-
-
+    "Form not published":"表格未发布",
+    "Access Denied" : "拒绝访问",
+    "By default, the tenant key would be prefixed to form":"默认情况下，租户键的前缀为 form",
+    "go back":"回去",
+    "No Applications Found":"未找到任何应​​用程序",
+    "Submission saved to draft.":"提交已保存到草稿。",
+    "Saved to draft":"已保存到草稿",
+    "Saving...":"保存...",
+    "Error in creating form process mapper":"创建表单流程映射器时出错",
+    "Select the date":"选择日期"
 
 
 
@@ -1422,7 +1428,6 @@ export const formio_resourceBundles = {
     "Edit Grid": "Редактиране на мрежата",
     "Tree": "Дърво",
     "reCAPTCHA": "код за потвърждение",
-    "Resource": "ресурс",
     "File": "документ",
     "Nested": "вложени",
     "Custom": "персонализиран",
@@ -2069,23 +2074,25 @@ export const formio_resourceBundles = {
     "Link To Draft Submission":"Връзка към изпращане на чернова",
     "Drafts":"Чернови",
     "You can't submit this form until it is published":"Не можете да изпратите този формуляр, докато не бъде публикуван",
-    "Form not published":"Формулярът не е публикуван"
+    "Form not published":"Формулярът не е публикуван",
+    "Access Denied" : "Отказан достъп",
+    "By default, the tenant key would be prefixed to form":"По подразбиране ключът на клиента ще има префикс за форма",
+    "go back":"Върни се",
+    "No Applications Found":"Няма намерени приложения",
+    "Submission saved to draft.":"Изпращането е запазено в чернова.",
+    "Saved to draft":"Запазено в чернова",
+    "Saving...":"Запазва се...",
+    "Unfinished applications will be saved to drafts.":"Незавършените приложения ще бъдат запазени в чернови.",
+    "Resource":"Ресурс",
+    "Error in creating form process mapper":"Грешка при създаването на картограф на процес на формуляр",
+    "Select the date":"Изберете датата"
 
 
 
 
 
 
-
- 
-
-
-
-
-
-
-
-  },
+},
 
   pt: {
     "Search by form name": "Pesquisar pelo nome do formulário",
@@ -3004,22 +3011,23 @@ export const formio_resourceBundles = {
     "Link To Draft Submission":"Link para envio de rascunho",
     "Drafts":"Rascunhos",
     "You can't submit this form until it is published":"Você não pode enviar este formulário até que ele seja publicado",
-    "Form not published":"Formulário não publicado"
+    "Form not published":"Formulário não publicado",
+    "Access Denied" : "Acesso negado",
+    "By default, the tenant key would be prefixed to form":"Por padrão, a chave do locatário seria prefixada para formar",
+    "go back":"volte",
+    "No Applications Found":"Nenhum aplicativo encontrado",
+    "Submission saved to draft.":"Envio salvo como rascunho.",
+    "Saved to draft":"Salvo no rascunho",
+    "Saving...":"Salvando...",
+    "Unfinished applications will be saved to drafts.":"Aplicativos inacabados serão salvos em rascunhos.",
+    "Error in creating form process mapper":"Erro ao criar mapeador de processo de formulário",
+    "Select the date":"Selecione a data"
 
 
 
 
 
-
-
-
-
-
-
-
-
-
-  },
+ },
 
   fr: {
     "Search by form name": "Rechercher par nom de formulaire",
@@ -3946,17 +3954,17 @@ export const formio_resourceBundles = {
     "Link To Draft Submission":"Lien vers la soumission de brouillon",
     "Drafts":"Brouillons",
     "You can't submit this form until it is published":"Vous ne pouvez pas soumettre ce formulaire tant qu'il n'est pas publié",
-    "Form not published":"Formulaire non publié"
-
-
-
-
-
-
- 
-
-
-
+    "Form not published":"Formulaire non publié",
+    "Access Denied" : "Accès refusé",
+    "By default, the tenant key would be prefixed to form":"Par défaut, la clé du locataire serait préfixée pour former",
+    "go back":"retourner",
+    "No Applications Found":"Aucune application trouvée",
+    "Submission saved to draft.":"Soumission enregistrée comme brouillon.",
+    "Saved to draft":"Enregistré comme brouillon",
+    "Saving...":"Économie...",
+    "Unfinished applications will be saved to drafts.":"Les candidatures non terminées seront enregistrées dans les brouillons.",
+    "Error in creating form process mapper":"Erreur lors de la création du mappeur de processus de formulaire",
+    "Select the date":"Sélectionnez la date"
 
 
 
@@ -4892,16 +4900,17 @@ export const formio_resourceBundles = {
     "Link To Draft Submission":"Link zur Entwurfsübermittlung",
     "Drafts":"Entwürfe",
     "You can't submit this form until it is published":"Sie können dieses Formular erst absenden, wenn es veröffentlicht wurde",
-    "Form not published":"Formular nicht veröffentlicht"
-
-
-
-
-
-
- 
-
-
+    "Form not published":"Formular nicht veröffentlicht",
+    "Access Denied" : "Zugriff abgelehnt",
+    "By default, the tenant key would be prefixed to form":"Standardmäßig wird dem Mandantenschlüssel form vorangestellt",
+    "go back":"geh zurück",
+    "No Applications Found":"Keine Anwendungen gefunden",
+    "Submission saved to draft.":"Übermittlung als Entwurf gespeichert.",
+    "Saved to draft":"Als Entwurf gespeichert",
+    "Saving...":"Sparen...",
+    "Unfinished applications will be saved to drafts.":"Unfertige Bewerbungen werden als Entwürfe gespeichert.",
+    "Error in creating form process mapper":"Fehler beim Erstellen des Formularprozess-Mappers",
+    "Select the date":"Wählen Sie das Datum aus"
 
 
 

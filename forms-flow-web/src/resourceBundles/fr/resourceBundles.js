@@ -232,7 +232,29 @@ export const RESOURCE_BUNDLES_FR = {
   "Link To Draft Submission":"Lien vers la soumission de brouillon",
   "Drafts":"Brouillons",
   "You can't submit this form until it is published":"Vous ne pouvez pas soumettre ce formulaire tant qu'il n'est pas publié",
-  "Form not published":"Formulaire non publié"
+  "Form not published":"Formulaire non publié",
+  "Access Denied" : "Accès refusé",
+  "By default, the tenant key would be prefixed to form":"Par défaut, la clé du locataire serait préfixée pour former",
+  "go back":"retourner",
+  "No Applications Found":"Aucune application trouvée",
+  "Submission saved to draft.":"Soumission enregistrée comme brouillon.",
+  "Saved to draft":"Enregistré comme brouillon",
+  "Saving...":"Économie...",
+  "Unfinished applications will be saved to drafts.":"Les candidatures non terminées seront enregistrées dans les brouillons.",
+  "Resource":"Ressource",
+  "Error in creating form process mapper":"Erreur lors de la création du mappeur de processus de formulaire",
+  "Select the date":"Sélectionnez la date"
+
+
+
+
+
+
+
+
+
+
+
 
 
 

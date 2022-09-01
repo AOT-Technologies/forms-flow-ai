@@ -233,7 +233,29 @@ export const RESOURCE_BUNDLES_DE = {
   "Link To Draft Submission":"Link zur Entwurfsübermittlung",
   "Drafts":"Entwürfe",
   "You can't submit this form until it is published":"Sie können dieses Formular erst absenden, wenn es veröffentlicht wurde",
-  "Form not published":"Formular nicht veröffentlicht"
+  "Form not published":"Formular nicht veröffentlicht",
+  "Access Denied" : "Zugriff abgelehnt",
+  "By default, the tenant key would be prefixed to form":"Standardmäßig wird dem Mandantenschlüssel form vorangestellt",
+  "go back":"geh zurück",
+  "No Applications Found":"Keine Anwendungen gefunden",
+  "Submission saved to draft.":"Übermittlung als Entwurf gespeichert.",
+  "Saved to draft":"Als Entwurf gespeichert",
+  "Saving...":"Sparen...",
+  "Unfinished applications will be saved to drafts.":"Unfertige Bewerbungen werden als Entwürfe gespeichert.",
+  "Resource":"Ressource",
+  "Error in creating form process mapper":"Fehler beim Erstellen des Formularprozess-Mappers",
+  "Select the date":"Wählen Sie das Datum aus"
+
+
+
+
+
+
+
+
+
+
+
 
 
 

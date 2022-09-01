@@ -240,7 +240,7 @@ const Dashboard = React.memo(() => {
                       dayPlaceholder="dd"
                       monthPlaceholder="mm"
                       yearPlaceholder="yyyy"
-                      calendarAriaLabel="Select the date"
+                      calendarAriaLabel={t("Select the date")}
                       dayAriaLabel="Select the day"
                       clearAriaLabel="Clear value"
                       clearIcon={null}

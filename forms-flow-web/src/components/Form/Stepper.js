@@ -349,7 +349,9 @@ class StepperPage extends PureComponent {
           {this.props.isAuthenticated ? (
             <Link
               to={`${this.state.redirectUrl}form`}
-              title="Back to Form List"
+              title={<Translation >
+              {(t) => t("Back to Form List")}
+            </Translation>}
             >
               <i className="fa fa-chevron-left fa-lg m-3" />
             </Link>

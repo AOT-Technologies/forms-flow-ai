@@ -179,7 +179,7 @@ export const columns = (
             dayPlaceholder="dd"
             monthPlaceholder="mm"
             yearPlaceholder="yyyy"
-            calendarAriaLabel="Select the date"
+            calendarAriaLabel={t("Select the date")}
             dayAriaLabel="Select the day"
             clearAriaLabel="Click to clear"
           />

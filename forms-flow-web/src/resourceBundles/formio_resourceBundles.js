@@ -264,11 +264,6 @@ export const formio_resourceBundles = {
     "Unfinished applications will be saved to drafts.":"Unfinished applications will be saved to drafts.",
     "Error in creating form process mapper":"Error in creating form process mapper",
     "Select the date":"Select the date"
-
-
-
-
-
   },
 
   "zh-CN": {
@@ -1147,12 +1142,7 @@ export const formio_resourceBundles = {
     "Error in creating form process mapper":"创建表单流程映射器时出错",
     "Select the date":"选择日期",
     "Unfinished applications will be saved to drafts.":"未完成的申请将被保存到草稿中。",
-
-
-
-
-
-},
+  },
 
   bg: {
     "Search by form name": "Tŭrsene po ime na formulyara",
@@ -2088,13 +2078,7 @@ export const formio_resourceBundles = {
     "Resource":"Ресурс",
     "Error in creating form process mapper":"Грешка при създаването на картограф на процес на формуляр",
     "Select the date":"Изберете датата"
-
-
-
-
-
-
-},
+  },
 
   pt: {
     "Search by form name": "Pesquisar pelo nome do formulário",
@@ -3024,12 +3008,7 @@ export const formio_resourceBundles = {
     "Unfinished applications will be saved to drafts.":"Aplicativos inacabados serão salvos em rascunhos.",
     "Error in creating form process mapper":"Erro ao criar mapeador de processo de formulário",
     "Select the date":"Selecione a data"
-
-
-
-
-
- },
+  },
 
   fr: {
     "Search by form name": "Rechercher par nom de formulaire",
@@ -3967,10 +3946,6 @@ export const formio_resourceBundles = {
     "Unfinished applications will be saved to drafts.":"Les candidatures non terminées seront enregistrées dans les brouillons.",
     "Error in creating form process mapper":"Erreur lors de la création du mappeur de processus de formulaire",
     "Select the date":"Sélectionnez la date"
-
-
-
-
   },
 
   de: {
@@ -3995,7 +3970,6 @@ export const formio_resourceBundles = {
       "Möchten Sie das Formular wirklich löschen ",
     "Are you sure you wish to delete the form?":
       "Möchten Sie das Formular wirklich löschen? ",
-
     "Applications are submitted against": "Anträge werden dagegen gestellt",
     "Application is submitted against": "Antrag wird dagegen gestellt",
     ". Are you sure want to delete ?": ". Möchten Sie wirklich löschen?",

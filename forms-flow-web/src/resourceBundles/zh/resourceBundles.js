@@ -242,42 +242,5 @@ export const RESOURCE_BUNDLES_ZH = {
   "Resource":"资源",
   "Error in creating form process mapper":"创建表单流程映射器时出错",
   "Select the date":"选择日期"
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 };
 

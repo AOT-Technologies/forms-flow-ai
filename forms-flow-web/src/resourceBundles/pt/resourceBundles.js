@@ -243,37 +243,4 @@ export const RESOURCE_BUNDLES_PT = {
   "Resource":"Recurso",
   "Error in creating form process mapper":"Erro ao criar mapeador de processo de formulário",
   "Select the date":"Selecione a data"
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 };

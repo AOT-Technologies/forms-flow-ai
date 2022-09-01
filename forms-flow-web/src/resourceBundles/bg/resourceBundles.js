@@ -243,32 +243,4 @@ export const RESOURCE_BUNDLES_BG = {
     "Resource":"Ресурс",
     "Error in creating form process mapper":"Грешка при създаването на картограф на процес на формуляр",
     "Select the date":"Изберете датата"
-    
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-  
-
-
-
 };
-
-
-
-
-
-
-
-
-

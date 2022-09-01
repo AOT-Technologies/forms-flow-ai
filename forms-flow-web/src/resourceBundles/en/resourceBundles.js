@@ -231,16 +231,18 @@ export const RESOURCE_BUNDLES_EN = {
   "Link To Draft Submission":"Link To Draft Submission",
   "Drafts":"Drafts",
   "You can't submit this form until it is published":"You can't submit this form until it is published",
-  "Form not published":"Form not published"
-
-
-
-
-
-
-
-
-
+  "Form not published":"Form not published",
+  "Access Denied" : "Access Denied",
+  "By default, the tenant key would be prefixed to form":"By default, the tenant key would be prefixed to form",
+  "go back":"go back",
+  "No Applications Found":"No Applications Found",
+  "Submission saved to draft.":"Submission saved to draft.",
+  "Saved to draft":"Saved to draft",
+  "Saving...":"Saving...",
+  "Unfinished applications will be saved to drafts.":"Unfinished applications will be saved to drafts.",
+  "Resource":"Resource",
+  "Error in creating form process mapper":"Error in creating form process mapper",
+  "Select the date":"Select the date"
 };
 
 

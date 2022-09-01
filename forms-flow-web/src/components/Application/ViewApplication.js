@@ -16,12 +16,13 @@ import History from "./ApplicationHistory";
 import View from "../Form/Item/Submission/Item/View";
 import { getForm, getSubmission } from "react-formio";
 import NotFound from "../NotFound";
-import { Translation } from "react-i18next";
+import { Translation,useTranslation } from "react-i18next";
 import { CUSTOM_SUBMISSION_URL,CUSTOM_SUBMISSION_ENABLE, MULTITENANCY_ENABLED } from "../../constants/constants";
 import { fetchAllBpmProcesses } from "../../apiManager/services/processServices";
 import { getCustomSubmission } from "../../apiManager/services/FormServices";
 
 const ViewApplication = React.memo(() => {
+  const {t} = useTranslation();
   const { applicationId } = useParams();
   const applicationDetail = useSelector(
     (state) => state.applications.applicationDetail
@@ -77,7 +78,7 @@ const ViewApplication = React.memo(() => {
   ) {
     return (
       <NotFound
-        errorMessage="Access Denied"
+        errorMessage={t("Access Denied")}
         errorCode={applicationDetailStatusCode}
       />
     );
@@ -86,7 +87,7 @@ const ViewApplication = React.memo(() => {
   return (
     <div className="container">
       <div className="main-header">
-        <Link title="go back" to={`${redirectUrl}application`}>
+        <Link title={t("go back")} to={`${redirectUrl}application`}>
           <i className="fa fa-chevron-left fa-lg" />
         </Link>
         <h3 className="ml-3">

@@ -180,7 +180,10 @@ const View = React.memo((props) => {
         dispatch(
           draftUpdateMethod(payload, draftSubmissionId, (err) => {
             if (exitType === "UNMOUNT" && !err) {
-              toast.success("Submission saved to draft.");
+              toast.success(
+                 t("Submission saved to draft.")
+                  
+                );
             }
             if (!err) {
               setDraftSaved(true);
@@ -298,7 +301,7 @@ const View = React.memo((props) => {
   if (isPublic && !showPublicForm) {
     return (
       <div className="alert alert-danger mt-4" role="alert">
-        Form not available
+        {t("Form not available")}
       </div>
     );
   }
@@ -313,13 +316,13 @@ const View = React.memo((props) => {
               {!notified && (
                 <span className="text-primary">
                   <i className="fa fa-info-circle mr-2" aria-hidden="true"></i>
-                  Unfinished applications will be saved to drafts.
+                  {t("Unfinished applications will be saved to drafts.")}
                 </span>
               )}
 
               {notified && poll && (
                 <SavingLoading
-                  text={draftSaved ? "Saved to draft" : "Saving..."}
+                  text={draftSaved ? t("Saved to draft") : t("Saving...")}
                   saved={draftSaved}
                 />
               )}
@@ -342,7 +345,7 @@ const View = React.memo((props) => {
           {form.title ? (
             <h3 className="ml-3">
               <span className="task-head-details">
-                <i className="fa fa-wpforms" aria-hidden="true" /> &nbsp; Forms
+                <i className="fa fa-wpforms" aria-hidden="true" /> &nbsp; {t("Forms")}
                 /
               </span>{" "}
               {form.title}

@@ -206,6 +206,7 @@ services:
       FORMIO_ROOT_PASSWORD: ${FORMIO_ROOT_PASSWORD:-changeme}
       FORMIO_JWT_SECRET: ${FORMIO_JWT_SECRET:---- change me now ---}
       KEYCLOAK_ENABLE_CLIENT_AUTH: ${KEYCLOAK_ENABLE_CLIENT_AUTH:-false}
+      MULTI_TENANCY_ENABLED: ${MULTI_TENANCY_ENABLED:-false}
 
     stdin_open: true # -i
     tty: true # -t

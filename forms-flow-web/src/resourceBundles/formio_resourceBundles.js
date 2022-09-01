@@ -1145,7 +1145,9 @@ export const formio_resourceBundles = {
     "Saved to draft":"已保存到草稿",
     "Saving...":"保存...",
     "Error in creating form process mapper":"创建表单流程映射器时出错",
-    "Select the date":"选择日期"
+    "Select the date":"选择日期",
+    "Unfinished applications will be saved to drafts.":"未完成的申请将被保存到草稿中。",
+
 
 
 

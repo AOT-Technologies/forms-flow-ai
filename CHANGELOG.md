@@ -18,7 +18,8 @@ Mark  items as `Added`, `Changed`, `Fixed`, `Removed`, `Untested Features`, `Upc
 * Added Processes page for camunda web modeller.
 * Added Form Adapter to support form submission data to other data stores than Mongo with custom data URLs.
 * Added environment variables `DRAFT_POLLING_RATE`,  `DRAFT_ENABLED` to manage draft feature. 
-* Added environment variables `EXPORT_PDF_ENABLED`,  `DOCUMENT_SERVICE_URL`.
+* Added environment variable `EXPORT_PDF_ENABLED`for pdf service.
+* Added environment variable `DOCUMENT_SERVICE_URL`for document service.
 
 
 
@@ -35,7 +36,6 @@ Mark  items as `Added`, `Changed`, `Fixed`, `Removed`, `Untested Features`, `Upc
 
 **forms-flow-bpm**
 
-* Added BPM_BASE_URL as the base url for camunda without /camunda- New property included with multitenancy.
 * Added default workflow.
 * Added `Form Adapter` to support form submission data to other data stores than Mongo with custom data URLs.
 * Added bpm gateway with jersey implementation

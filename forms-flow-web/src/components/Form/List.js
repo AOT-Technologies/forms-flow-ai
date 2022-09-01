@@ -140,7 +140,7 @@ const List = React.memo((props) => {
 
   useEffect(() => {
     if (isDesigner) {
-      getFormsInit(designerPageNo);
+      getFormsInit(designerPageNo,{limit,query:{...query,title__regex:""}});
     } else {
       dispatch(fetchBPMFormList(pageNo, limit, sortBy, sortOrder, searchText));
     }

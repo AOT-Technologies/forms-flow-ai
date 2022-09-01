@@ -257,7 +257,7 @@ const List = React.memo((props) => {
                                 resolve();
                               } else {
                                 dispatch(setFormFailureErrorData("form", err));
-                                toast.error("Error in Json file structure");
+                                toast.error(t("Error in JSON file structure"));
                                 setShowFormUploadModal(false);
                                 reject();
                               }
@@ -265,7 +265,7 @@ const List = React.memo((props) => {
                           )
                         );
                       } else {
-                        toast.error("Error in Json file structure");
+                        toast.error(t("Error in JSON file structure"));
                         setShowFormUploadModal(false);
                         reject();
                       }
@@ -285,7 +285,7 @@ const List = React.memo((props) => {
       }
     } catch (err) {
       setShowFormUploadModal(false);
-      return toast.error("Error in Json file structure");
+      return toast.error(t("Error in JSON file structure"));
     }
   };
 

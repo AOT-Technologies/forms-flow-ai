@@ -11,9 +11,11 @@ import {
 import { push } from "connected-react-router";
 import { Link, useParams } from "react-router-dom";
 import { useTranslation, Translation } from "react-i18next";
-import { formio_resourceBundles } from "../../resourceBundles/formio_resourceBundles";
 import LoadingOverlay from "react-loading-overlay";
 import { toast } from "react-toastify";
+import isEqual from "lodash/isEqual";
+
+import { formio_resourceBundles } from "../../resourceBundles/formio_resourceBundles";
 import useInterval from "../../customHooks/useInterval";
 import { CUSTOM_EVENT_TYPE } from "../ServiceFlow/constants/customEventTypes";
 import selectApplicationCreateAPI from "../Form/Item/apiSelectHelper";
@@ -37,8 +39,8 @@ import {
 } from "../../constants/constants";
 import Loading from "../../containers/Loading";
 import SubmissionError from "../../containers/SubmissionError";
-import isEqual from "lodash/isEqual";
 import SavingLoading from "../Loading/SavingLoading";
+
 const View = React.memo((props) => {
   const { t } = useTranslation();
   const lang = useSelector((state) => state.user.lang);
@@ -91,7 +93,9 @@ const View = React.memo((props) => {
         dispatch(
           draftUpdate(payload, draftSubmission?.id, (err) => {
             if (exitType === "UNMOUNT" && !err) {
-              toast.success("Submission saved to draft.");
+              toast.success(
+              t("Submission saved to draft.")
+              );
             }
             if (!err) {
               setDraftSaved(true);
@@ -147,7 +151,7 @@ const View = React.memo((props) => {
           <span className="pr-2  mr-2 d-flex justify-content-end align-items-center">
             {poll && showNotification && (
               <SavingLoading
-                text={draftSaved ? "Saved to draft" : "Saving..."}
+                text={draftSaved ? t("Saved to draft") : t("Saving...")}
                 saved={draftSaved}
               />
             )}
@@ -162,7 +166,7 @@ const View = React.memo((props) => {
             onConfirm={props.onConfirm}
           ></SubmissionError>
           {isAuthenticated ? (
-            <Link title="go back" to={`${redirectUrl}draft`}>
+            <Link title={t("go back")} to={`${redirectUrl}draft`}>
               <i className="fa fa-chevron-left fa-lg" />
             </Link>
           ) : null}
@@ -170,7 +174,7 @@ const View = React.memo((props) => {
           {form.title ? (
             <h3 className="ml-3">
               <span className="task-head-details">
-                <i className="fa fa-wpforms" aria-hidden="true" /> &nbsp; Drafts
+                <i className="fa fa-wpforms" aria-hidden="true" /> &nbsp; {t("Drafts")}
                 /
               </span>{" "}
               {form.title}

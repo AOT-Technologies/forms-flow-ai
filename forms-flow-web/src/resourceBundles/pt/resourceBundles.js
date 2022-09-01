@@ -231,27 +231,16 @@ export const RESOURCE_BUNDLES_PT = {
   "Link To Draft Submission":"Link para envio de rascunho",
   "Drafts":"Rascunhos",
   "You can't submit this form until it is published":"Você não pode enviar este formulário até que ele seja publicado",
-  "Form not published":"Formulário não publicado"
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+  "Form not published":"Formulário não publicado",
+  "Access Denied" : "Acesso negado",
+  "By default, the tenant key would be prefixed to form":"Por padrão, a chave do locatário seria prefixada para formar",
+  "go back":"volte",
+  "No Applications Found":"Nenhum aplicativo encontrado",
+  "Submission saved to draft.":"Envio salvo como rascunho.",
+  "Saved to draft":"Salvo no rascunho",
+  "Saving...":"Salvando...",
+  "Unfinished applications will be saved to drafts.":"Aplicativos inacabados serão salvos em rascunhos.",
+  "Resource":"Recurso",
+  "Error in creating form process mapper":"Erro ao criar mapeador de processo de formulário",
+  "Select the date":"Selecione a data"
 };

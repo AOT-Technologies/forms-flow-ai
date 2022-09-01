@@ -31,7 +31,7 @@ const ChartForm = React.memo((props) => {
       <div className="col-12">
         <div className="card-counter">
           <div className="d-flex align-items-center">
-            <span className="text-primary mr-2">{"Form Name"} : </span>
+            <span className="text-primary mr-2">{t("Form Name")} : </span>
             <h2>{applicationName}</h2>
           </div>
           <p>

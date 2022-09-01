@@ -137,7 +137,7 @@ const Preview = React.memo(
                   </div>
                   <label className="text-label">{t("Comments")}</label>
                   <TextField
-                    label="Comments"
+                    label={t("Comments")}
                     id="comments"
                     multiline
                     rows={4}

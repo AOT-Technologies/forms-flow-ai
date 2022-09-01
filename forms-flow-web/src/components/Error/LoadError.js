@@ -1,8 +1,9 @@
 import React from "react";
 import "./loadError.scss";
+import { Translation } from "react-i18next";
 
 const LoadError = React.memo(
-  ({ text = "Something went wrong.", className = "", noStyle = false }) => {
+  ({ text = <Translation>{(t) => t("Something went wrong.")}</Translation>, className = "", noStyle = false }) => {
     if (noStyle) {
       return <div>{text}</div>;
     }

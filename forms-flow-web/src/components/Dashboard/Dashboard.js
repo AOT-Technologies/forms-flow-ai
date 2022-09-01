@@ -74,7 +74,7 @@ const Dashboard = React.memo(() => {
   let numberofSubmissionListFrom =
     activePage === 1 ? 1 : (activePage * limit) - limit + 1;
   let numberofSubmissionListTo = activePage === 1 ? limit : limit * activePage;
-
+console.log("metrics date range loader",metricsDateRangeLoader);
   const [isAscending, setIsAscending] = useState(false);
   const [searchBy, setSearchBy] = useState("created");
   const [sortsBy, setSortsBy] = useState("formName");
@@ -146,7 +146,7 @@ const Dashboard = React.memo(() => {
     dispatch(setMetricsSubmissionLimitChange(6));
     setSearchBy(option);
   };
-  if (isMetricsLoading) {
+  if (isMetricsLoading  || metricsDateRangeLoader) {
     return <Loading />;
   }
   const getStatusDetails = (id) => {
@@ -189,8 +189,7 @@ const Dashboard = React.memo(() => {
   };
 
 
-  const noDefaultApplicationAvailable =
-    !searchInputBox.current.value && !submissionsList.length ? true : false;
+  
   const noOfApplicationsAvailable = submissionsList?.length || 0;
   if (metricsLoadError) {
     return (
@@ -200,7 +199,7 @@ const Dashboard = React.memo(() => {
   return (
     <Fragment>
       <LoadingOverlay
-        active={metricsDateRangeLoader || submissionStatusCountLoader}
+        active = {submissionStatusCountLoader}
         spinner
         text={t("Loading...")}
       >

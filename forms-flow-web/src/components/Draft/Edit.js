@@ -57,7 +57,8 @@ const View = React.memo((props) => {
   const tenantKey = useSelector((state) => state.tenants?.tenantId);
   const redirectUrl = MULTITENANCY_ENABLED ? `/tenant/${tenantKey}/` : "/";
   const draftSubmission = useSelector((state) => state.draft.submission);
-  const [draftSaved, setDraftSaved] = useState(true);
+  const [draftSaved, setDraftSaved] = useState(false);
+  const [showNotification, setShowNotification] = useState(false);
   /**
    * `draftData` is used for keeping the uptodate form entry,
    * this will get updated on every change the form is having.
@@ -86,6 +87,7 @@ const View = React.memo((props) => {
     if (draftSubmission?.id) {
       if (dataChanged) {
         setDraftSaved(false);
+        if (!showNotification) setShowNotification(true);
         dispatch(
           draftUpdate(payload, draftSubmission?.id, (err) => {
             if (exitType === "UNMOUNT" && !err) {
@@ -143,7 +145,7 @@ const View = React.memo((props) => {
       {
         <>
           <span className="pr-2  mr-2 d-flex justify-content-end align-items-center">
-            {poll && (
+            {poll && showNotification && (
               <SavingLoading
                 text={draftSaved ? "Saved to draft" : "Saving..."}
                 saved={draftSaved}
@@ -160,7 +162,7 @@ const View = React.memo((props) => {
             onConfirm={props.onConfirm}
           ></SubmissionError>
           {isAuthenticated ? (
-            <Link title="go back" to={`${redirectUrl}form`}>
+            <Link title="go back" to={`${redirectUrl}draft`}>
               <i className="fa fa-chevron-left fa-lg" />
             </Link>
           ) : null}

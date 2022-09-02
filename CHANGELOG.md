@@ -1,7 +1,7 @@
 # Changelog for formsflow.ai
 
 Mark  items as `Added`, `Changed`, `Fixed`, `Removed`, `Untested Features`, `Upcoming Features`, `Known Issues`
-## 5.0.0 - 2022-08-31
+## 5.0.0 - 2022-09-02
 
 `Added`
 

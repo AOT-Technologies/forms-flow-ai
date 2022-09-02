@@ -230,29 +230,23 @@ export const RESOURCE_BUNDLES_ZH = {
   "Link To Draft Submission":"链接到草稿提交",
   "Drafts":"草稿",
   "You can't submit this form until it is published":"在此表单发布之前，您无法提交此表单",
-  "Form not published":"表格未发布"
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+  "Form not published":"表格未发布",
+  "Access Denied" : "拒绝访问",
+  "By default, the tenant key would be prefixed to form":"默认情况下，租户键的前缀为 form",
+  "go back":"回去",
+  "No Applications Found":"未找到任何应​​用程序",
+  "Submission saved to draft.":"提交已保存到草稿。",
+  "Saved to draft":"已保存到草稿",
+  "Saving...":"保存...",
+  "Unfinished applications will be saved to drafts.":"未完成的申请将被保存到草稿中。",
+  "Resource":"资源",
+  "Error in creating form process mapper":"创建表单流程映射器时出错",
+  "Select the date":"选择日期",
+  "Diagram Deployed":"已部署的图表",
+  "Deployment Failed":"部署失败",
+  "Process name(s) must not be empty":"进程名称不能为空",
+  "URL copied":"已复制网址",
+  "Click Here to Copy":"点击这里复制"
 
 
 

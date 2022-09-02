@@ -237,7 +237,7 @@ const Edit = React.memo(() => {
           <i
             className="fa fa-info-circle text-primary cursor-pointer"
             data-toggle="tooltip"
-            title={`By default, the tenant key would be prefixed to form ${type}`}
+            title={`${t("By default, the tenant key would be prefixed to form")}${type}`}
           ></i>
         </span>
       );
@@ -337,7 +337,7 @@ const Edit = React.memo(() => {
                 type="text"
                 className="form-control"
                 id="title"
-                placeholder="Enter the form title"
+                placeholder={t("Enter the form title")}
                 value={form.title || ""}
                 onChange={(event) => handleChange("title", event)}
               />
@@ -366,7 +366,7 @@ const Edit = React.memo(() => {
                   type="text"
                   className="form-control"
                   id="name"
-                  placeholder="Enter the form machine name"
+                  placeholder={t("Enter the form machine name")}
                   value={form.name || ""}
                   onChange={(event) => handleChange("name", event)}
                 />
@@ -413,7 +413,7 @@ const Edit = React.memo(() => {
                     <Translation>{(t) => t("form")}</Translation>
                   </option>
                   <option label="Resource" value="resource">
-                    Resource
+                    {t("Resource")}
                   </option>
                 </select>
               </div>

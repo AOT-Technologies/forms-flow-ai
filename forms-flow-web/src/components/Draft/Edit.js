@@ -11,9 +11,11 @@ import {
 import { push } from "connected-react-router";
 import { Link, useParams } from "react-router-dom";
 import { useTranslation, Translation } from "react-i18next";
-import { formio_resourceBundles } from "../../resourceBundles/formio_resourceBundles";
 import LoadingOverlay from "react-loading-overlay";
 import { toast } from "react-toastify";
+import isEqual from "lodash/isEqual";
+
+import { formio_resourceBundles } from "../../resourceBundles/formio_resourceBundles";
 import useInterval from "../../customHooks/useInterval";
 import { CUSTOM_EVENT_TYPE } from "../ServiceFlow/constants/customEventTypes";
 import selectApplicationCreateAPI from "../Form/Item/apiSelectHelper";
@@ -37,8 +39,8 @@ import {
 } from "../../constants/constants";
 import Loading from "../../containers/Loading";
 import SubmissionError from "../../containers/SubmissionError";
-import isEqual from "lodash/isEqual";
 import SavingLoading from "../Loading/SavingLoading";
+
 const View = React.memo((props) => {
   const { t } = useTranslation();
   const lang = useSelector((state) => state.user.lang);
@@ -57,8 +59,8 @@ const View = React.memo((props) => {
   const tenantKey = useSelector((state) => state.tenants?.tenantId);
   const redirectUrl = MULTITENANCY_ENABLED ? `/tenant/${tenantKey}/` : "/";
   const draftSubmission = useSelector((state) => state.draft.submission);
-  const [draftCreating, setDraftCreating] = useState(false);
   const [draftSaved, setDraftSaved] = useState(false);
+  const [showNotification, setShowNotification] = useState(false);
   /**
    * `draftData` is used for keeping the uptodate form entry,
    * this will get updated on every change the form is having.
@@ -69,6 +71,7 @@ const View = React.memo((props) => {
   const draftRef = useRef();
   const { formId } = useParams();
   const [poll, setPoll] = useState(DRAFT_ENABLED);
+  const exitType = useRef("UNMOUNT");
   const {
     isAuthenticated,
     submission,
@@ -81,23 +84,23 @@ const View = React.memo((props) => {
   } = props;
   const dispatch = useDispatch();
 
-  const saveDraft = (payload) => {
+  const saveDraft = (payload, exitType = exitType) => {
     let dataChanged = !isEqual(payload.data, lastUpdatedDraft.data);
     if (draftSubmission?.id) {
       if (dataChanged) {
-        setDraftCreating(true);
+        setDraftSaved(false);
+        if (!showNotification) setShowNotification(true);
         dispatch(
           draftUpdate(payload, draftSubmission?.id, (err) => {
-            if (!err){
-              setTimeout(() => {
-                setDraftSaved(true);
-                setTimeout(() => {
-                  setDraftCreating(false);
-                  setDraftSaved(false);
-                }, 2000);
-              }, 3000);
-            }else{
-              setDraftCreating(false);
+            if (exitType === "UNMOUNT" && !err) {
+              toast.success(
+              t("Submission saved to draft.")
+              );
+            }
+            if (!err) {
+              setDraftSaved(true);
+            } else {
+              setDraftSaved(false);
             }
           })
         );
@@ -120,9 +123,9 @@ const View = React.memo((props) => {
   useEffect(() => {
     return () => {
       let payload = getDraftReqFormat(formId, draftRef.current);
-      if (poll) saveDraft(payload);
+      if (poll) saveDraft(payload, exitType.current);
     };
-  }, [poll]);
+  }, [poll, exitType.current]);
 
   if (isActive || isPublicStatusLoading) {
     return (
@@ -143,6 +146,18 @@ const View = React.memo((props) => {
 
   return (
     <div className="container overflow-y-auto">
+      {
+        <>
+          <span className="pr-2  mr-2 d-flex justify-content-end align-items-center">
+            {poll && showNotification && (
+              <SavingLoading
+                text={draftSaved ? t("Saved to draft") : t("Saving...")}
+                saved={draftSaved}
+              />
+            )}
+          </span>
+        </>
+      }
       <div className="d-flex align-items-center justify-content-between">
         <div className="main-header">
           <SubmissionError
@@ -151,7 +166,7 @@ const View = React.memo((props) => {
             onConfirm={props.onConfirm}
           ></SubmissionError>
           {isAuthenticated ? (
-            <Link title="go back" to={`${redirectUrl}form`}>
+            <Link title={t("go back")} to={`${redirectUrl}draft`}>
               <i className="fa fa-chevron-left fa-lg" />
             </Link>
           ) : null}
@@ -159,7 +174,7 @@ const View = React.memo((props) => {
           {form.title ? (
             <h3 className="ml-3">
               <span className="task-head-details">
-                <i className="fa fa-wpforms" aria-hidden="true" /> &nbsp; Drafts
+                <i className="fa fa-wpforms" aria-hidden="true" /> &nbsp; {t("Drafts")}
                 /
               </span>{" "}
               {form.title}
@@ -168,17 +183,6 @@ const View = React.memo((props) => {
             ""
           )}
         </div>
-        {draftCreating ? (
-           <div className="d-flex w-75 justify-content-end">
-           <span className="p-2 info-background mr-2">
-           <i className="fa fa-info-circle mr-2" aria-hidden="true"></i>
-             Form which is not submitted is saved to draft
-           </span>
-           <SavingLoading text={draftSaved ? "Saved to draft" : "Saving..."} saved={draftSaved} />
-           </div>
-          ) : (
-            ""
-          )}
       </div>
       <Errors errors={errors} />
       <LoadingOverlay
@@ -188,26 +192,29 @@ const View = React.memo((props) => {
         className="col-12"
       >
         <div className="ml-4 mr-4">
-          <Form
-            form={form}
-            submission={submission.submission}
-            url={url}
-            options={{
-              ...options,
-              language: lang,
-              i18n: formio_resourceBundles,
-            }}
-            hideComponents={hideComponents}
-            onChange={(formData) => {
-              setDraftData(formData.data);
-              draftRef.current = formData.data;
-            }}
-            onSubmit={(data) => {
-              setPoll(false);
-              onSubmit(data, form._id, isPublic);
-            }}
-            onCustomEvent={(evt) => onCustomEvent(evt, redirectUrl)}
-          />
+          {
+            <Form
+              form={form}
+              submission={submission.submission}
+              url={url}
+              options={{
+                ...options,
+                language: lang,
+                i18n: formio_resourceBundles,
+              }}
+              hideComponents={hideComponents}
+              onChange={(formData) => {
+                setDraftData(formData.data);
+                draftRef.current = formData.data;
+              }}
+              onSubmit={(data) => {
+                setPoll(false);
+                exitType.current = "SUBMIT";
+                onSubmit(data, form._id, isPublic);
+              }}
+              onCustomEvent={(evt) => onCustomEvent(evt, redirectUrl)}
+            />
+          }
         </div>
       </LoadingOverlay>
     </div>
@@ -224,11 +231,11 @@ const doProcessActions = (submission, ownProps) => {
     const state = getState();
     let form = state.form.form;
     let isAuth = state.user.isAuthenticated;
+    const tenantKey = state.tenants?.tenantId;
     const redirectUrl = MULTITENANCY_ENABLED ? `/tenant/${tenantKey}/` : `/`;
     dispatch(resetSubmissions("submission"));
     const origin = `${window.location.origin}${redirectUrl}`;
     const data = getProcessReq(form, submission._id, origin);
-    const tenantKey = state.tenants?.tenantId;
     let draft_id = state.draft.submission?.id;
     let isDraftCreated = draft_id ? true : false;
     const applicationCreateAPI = selectApplicationCreateAPI(

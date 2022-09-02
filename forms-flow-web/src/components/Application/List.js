@@ -212,7 +212,7 @@ export const ApplicationList = React.memo(() => {
             /> : iserror ? (
               <Alert variant={"danger"}>{error}</Alert>
             ) : (
-              <Nodata text="No Applications Found" />
+              <Nodata text={t("No Applications Found")} />
             )}
           </div>
         </div>

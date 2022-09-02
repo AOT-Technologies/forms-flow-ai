@@ -9,7 +9,7 @@ import Loading from "../../containers/Loading";
 import View from "../Form/Item/Submission/Item/View";
 import { getForm } from "react-formio";
 import NotFound from "../NotFound";
-import { Translation } from "react-i18next";
+import { Translation,useTranslation } from "react-i18next";
 import { MULTITENANCY_ENABLED } from "../../constants/constants";
 import { fetchAllBpmProcesses } from "../../apiManager/services/processServices";
 import { getDraftById } from "../../apiManager/services/draftService";
@@ -18,6 +18,7 @@ import { setDraftDetail } from "../../actions/draftActions";
 import ProcessDiagram from "../BPMN/ProcessDiagramHook";
 
 const ViewDraft = React.memo(() => {
+  const {t} = useTranslation();
   const { draftId } = useParams();
   const draftDetail = useSelector((state) => state.draft.submission);
   const draftDetailStatusCode = useSelector(
@@ -59,7 +60,7 @@ const ViewDraft = React.memo(() => {
   if (Object.keys(draftDetail).length === 0 && draftDetailStatusCode === 403) {
     return (
       <NotFound
-        errorMessage="Access Denied"
+        errorMessage={t("Access Denied")}
         errorCode={draftDetailStatusCode}
       />
     );

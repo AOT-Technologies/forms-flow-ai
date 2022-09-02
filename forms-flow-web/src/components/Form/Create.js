@@ -104,7 +104,7 @@ const Create = React.memo(() => {
           <i
             className="fa fa-info-circle text-primary cursor-pointer"
             data-toggle="tooltip"
-            title={`By default, the tenant key would be prefixed to form ${type}`}
+            title={`${t("By default, the tenant key would be prefixed to form")}${type}`}
           ></i>
         </span>
       );
@@ -160,7 +160,7 @@ const Create = React.memo(() => {
               dispatch(push(`${redirectUrl}formflow/${form._id}/view-edit/`));
             } else {
               setFormSubmitted(false);
-              toast.error("Error in creating form process mapper");
+              toast.error(t("Error in creating form process mapper"));
             }
           })
         );

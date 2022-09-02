@@ -514,6 +514,7 @@ const getInitForms = (page = 1, query) => {
     const currentPage = state.forms.pagination.page;
     const maintainPagination = state.bpmForms.maintainPagination;
     const modifedPage = maintainPagination ? currentPage : page;
+    // need to reduce calling the indexforms
     function fetchForms() {
       dispatch(
         indexForms("forms", modifedPage, query, (err) => {

@@ -139,7 +139,7 @@ We have implemented unit tests with pytest.
 
 * Test cases are provided in the [tests folder](./tests).
 * Run the tests by ensuring appropriate test environment variables are
-setup in the [.env file](.sample.env).
+setup in the [.env file](./sample.env).
 * Using the make command, run the tests by running `make test`.
 
 Things to note when writing tests:

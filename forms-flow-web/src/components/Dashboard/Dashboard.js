@@ -145,7 +145,7 @@ const Dashboard = React.memo(() => {
     dispatch(setMetricsSubmissionLimitChange(6));
     setSearchBy(option);
   };
-  if (isMetricsLoading  || metricsDateRangeLoader) {
+  if (isMetricsLoading) {
     return <Loading />;
   }
   const getStatusDetails = (id) => {
@@ -198,7 +198,7 @@ const Dashboard = React.memo(() => {
   return (
     <Fragment>
       <LoadingOverlay
-        active = {submissionStatusCountLoader}
+        active={submissionStatusCountLoader}
         spinner
         text={t("Loading...")}
       >
@@ -360,7 +360,7 @@ const Dashboard = React.memo(() => {
               {metricsStatusLoadError && <LoadError />}
               {noOfApplicationsAvailable > 0 && (
                 <div className="col-12">
-                  {isMetricsStatusLoading ? (
+                  {isMetricsStatusLoading || metricsDateRangeLoader ? (
                     <Loading />
                   ) : (
                     <Modal

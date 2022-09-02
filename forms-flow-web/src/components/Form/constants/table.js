@@ -1,7 +1,7 @@
 import { Dropdown, DropdownButton } from "react-bootstrap";
 import SelectFormForDownload from "../FileUpload/SelectFormForDownload";
 import FormOperations from "../FormOperations/FormOperations";
-import { Translation} from "react-i18next";
+import { Translation } from "react-i18next";
 
 export const defaultSorted = [{
   dataField: 'title',
@@ -33,7 +33,6 @@ export const userColumns = () => [
   {
     dataField: "title",
     text: "Forms",
-    sort:true,
     headerClasses: "form_title",
   },
   {

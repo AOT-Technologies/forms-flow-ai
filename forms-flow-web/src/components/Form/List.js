@@ -72,7 +72,7 @@ const List = React.memo((props) => {
     tenants,
     path,
   } = props;
-
+  const searchInputBox = useRef("");
   const isBPMFormListLoading = useSelector((state) => state.bpmForms.isActive);
   const designerFormLoading = useSelector(
     (state) => state.formCheckList.designerFormLoading
@@ -80,10 +80,14 @@ const List = React.memo((props) => {
   const seachFormLoading = useSelector(
     (state) => state.formCheckList.searchFormLoading
   );
-  const bpmForms = useSelector((state) => state.bpmForms);
+  const [showClearButton, setShowClearButton] = useState("");
+  const [isAscend, setIsAscending] = useState(false);
   const [previousForms, setPreviousForms] = useState({});
-  const query = useSelector((state) => state.forms.query);
+  const [isLoading, setIsLoading] = React.useState(false);
+
+   const query = useSelector((state) => state.forms.query);
   const isDesigner = userRoles.includes(STAFF_DESIGNER);
+  const bpmForms = useSelector((state) => state.bpmForms);
   const searchText = useSelector((state) => state.bpmForms.searchText);
   const pageNo = useSelector((state) => state.bpmForms.page);
   const limit = useSelector((state) => state.bpmForms.limit);
@@ -113,7 +117,7 @@ const List = React.memo((props) => {
   );
   const tenantKey = tenants?.tenantId;
   const redirectUrl = MULTITENANCY_ENABLED ? `/tenant/${tenantKey}/` : "/";
-  const [isLoading, setIsLoading] = React.useState(false);
+
   useEffect(() => {
     dispatch(setFormCheckList([]));
   }, [dispatch]);
@@ -195,6 +199,36 @@ const List = React.memo((props) => {
       dispatch(setBPMFormLimit(newState.sizePerPage));
       dispatch(setBPMFormListPage(newState.page));
     }
+  };
+  const handleSearch = () => {
+    if (searchText != searchInputBox.current.value) {
+      dispatch(setBPMFormListPage(1));
+      dispatch(setFormSearchLoading(true));
+      dispatch(setBpmFormSearch(searchInputBox.current.value));
+    }
+
+  };
+  const onClear = () => {
+    dispatch(setFormSearchLoading(true));
+    searchInputBox.current.value = "";
+    setShowClearButton(false);
+    handleSearch();
+  };
+  const handleSort = () => {
+    dispatch(setBPMFormListPage(1));
+    dispatch(setFormSearchLoading(true));
+    setIsAscending(!isAscend);
+    let updatedQuery = { query: { ...query } };
+    if (isDesigner) {
+      updatedQuery = `${isAscend ? "-" : ""}title`;
+      dispatch(setBPMFormListSort(updatedQuery));
+    } else {
+      const updatedQuery = isAscend ? 'asc' : "desc";
+
+      dispatch(setBPMFormListSort(updatedQuery));
+
+    }
+
   };
 
   const uploadFileContents = async (fileContent) => {
@@ -301,38 +335,6 @@ const List = React.memo((props) => {
       </span>
     );
   };
-  const searchInputBox = useRef("");
-  const [showClearButton, setShowClearButton] = useState("");
-  const handleSearch = () => {
-    if (searchText != searchInputBox.current.value) {
-      dispatch(setFormSearchLoading(true));
-    }
-    dispatch(setBpmFormSearch(searchInputBox.current.value));
-  };
-  const onClear = () => {
-    dispatch(setFormSearchLoading(true));
-    searchInputBox.current.value = "";
-    setShowClearButton(false);
-    handleSearch();
-  };
-  const [isAscend, setIsAscending] = useState(false);
-  const handleSort = () => {
-    dispatch(setFormSearchLoading(true));
-    setIsAscending(!isAscend);
-    let updatedQuery = { query: { ...query } };
-    if (isDesigner) {
-      updatedQuery = `${isAscend ? "-" : ""}title`;
-      dispatch(setBPMFormListSort(updatedQuery));
-    } else {
-      const updatedQuery = isAscend ? 'asc' : "desc";
-
-      dispatch(setBPMFormListSort(updatedQuery));
-
-    }
-
-    // dispatch(setMetricsSubmissionSort(updatedQuery.sort || "asc"));
-  };
-
   const formData =
     (() =>
       isDesigner

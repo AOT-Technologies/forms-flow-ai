@@ -50,7 +50,7 @@ There are multiple options for installing formsflow.ai. They are given below
 ------------------
 #### Docker single click installation
 
-Download the compressed [bundle](./docker/bundle/bundle.zip/?raw=true) and follow the instructions from [readme](./docker/bundle/README.md).
+Clone the deployments [repository](https://github.com/AOT-Technologies/forms-flow-ai-deployment) and follow the instructions given in the [usage file](https://github.com/AOT-Technologies/forms-flow-ai-deployment/blob/main/scripts/usage.txt).
 
 #### Docker Full Deployment
 

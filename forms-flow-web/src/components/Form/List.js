@@ -55,6 +55,7 @@ import filterFactory from "react-bootstrap-table2-filter";
 import overlayFactory from "react-bootstrap-table2-overlay";
 import { SpinnerSVG } from "../../containers/SpinnerSVG";
 import { ASCENDING, DESCENDING } from "./constants/formListConstants";
+import { getFormioRoleIds } from "../../apiManager/services/userservices";
 
 const List = React.memo((props) => {
   const { t } = useTranslation();
@@ -100,7 +101,9 @@ const List = React.memo((props) => {
   const designTotalForms = forms.pagination.total;
   const formAccess = useSelector((state) => state.user?.formAccess || []);
 
-  const submissionAccess = useSelector((state) => state.user?.submissionAccess || []);
+  const submissionAccess = useSelector(
+    (state) => state.user?.submissionAccess || []
+  );
 
   const searchFormLoading = useSelector(
     (state) => state.formCheckList.searchFormLoading
@@ -510,16 +513,26 @@ const getInitForms = (page = 1, query) => {
     const state = getState();
     const currentPage = state.forms.pagination.page;
     const maintainPagination = state.bpmForms.maintainPagination;
-    dispatch(
-      indexForms(
-        "forms",
-        maintainPagination ? currentPage : page,
-        query,
-        () => {
-          dispatch(setFormLoading(false));
-        }
-      )
-    );
+    const modifedPage = maintainPagination ? currentPage : page;
+    function fetchForms() {
+      dispatch(
+        indexForms("forms", modifedPage, query, (err) => {
+          if (err === "Bad Token" || err === "Token Expired") {
+            dispatch(
+              getFormioRoleIds((err) => {
+                if (!err) {
+                  fetchForms();
+                }
+                dispatch(setFormLoading(false));
+              })
+            );
+          } else {
+            dispatch(setFormLoading(false));
+          }
+        })
+      );
+    }
+    fetchForms();
   };
 };
 

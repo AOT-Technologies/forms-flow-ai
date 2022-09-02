@@ -2,7 +2,7 @@
 
 ![React](https://img.shields.io/badge/React-17.0.2-blue)
 
-**formsflow.ai** delivers progressive web application with React version `17.0.2` and `create-react-app`. Also currently uses  [form.io](https://github.com/formio/formio) version `2.3.0`.
+**formsflow.ai** delivers progressive web application with React version `17.0.2` and `create-react-app`. Also currently uses  [form.io](https://github.com/formio/formio) version `2.4.1`.
 
 A React library for rendering out forms based on the form.io platform.
 
@@ -105,17 +105,8 @@ is mentioned on the [link](../forms-flow-idm/keycloak/README.md#create-forms-flo
 
 ### Internationalization
   * Default language 'English' can be changed to other languages according to the   user.
-  * The languages currently provided are `Chinese,Portuguese,French and Bulgarian`.
-  * User can add more languages by following the steps :
-   1. Create a folder at *forms-flow-web/src/resourceBundles* with folder name as the abbrevation of the required language.
-   2. Create a file named resourceBundles.js inside the folder.
-   3. Copy the key-value pairs from *resourceBundles.js* file inside *en* folder and paste it to the new file.
-   4. Translate the value of the keys to the required language using google translator and paste the values to the same file
-   5. Import the same file to *forms-flow-web/src/resourceBundles/i18n.js* like rest of the languages.
-   6. You should add content of new translation file to *forms-flow-web/src/resourceBundles/formio_resourceBundles.js* also.
-   8. Open forms-flow-api/src/formsflow_api/utils/translations/translations.py , copy any set of translations ,translate the values and paste it back to the file with required language key.
-   9. You should add the proposed name and value of the language to *forms-flow-web/public/config/languageData.json*.
-   8. Login to **http://localhost:3000/** to check your updations.
+  * The languages currently provided are `Chinese,Portuguese,French,German and Bulgarian`.
+  * User can add more languages by following the steps mentioned [here](https://aot-technologies.github.io/forms-flow-ai-doc/#language)
   
 ## forms-flow-web Events
  > This section elaborates events used in forms-flow-web.

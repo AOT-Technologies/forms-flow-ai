@@ -3,7 +3,7 @@ import { useSelector, useDispatch } from "react-redux";
 import Grid from "@material-ui/core/Grid";
 import CardContent from "@material-ui/core/CardContent";
 import Card from "@material-ui/core/Card";
-import Select from "react-dropdown-select";
+import Select from "react-select";
 import BpmnEditor from "./Editors/BpmnEditor";
 import DmnEditor from "./Editors/DmnEditor";
 import Button from "react-bootstrap/Button";
@@ -60,7 +60,7 @@ export default React.memo(() => {
   const handleListChange = (item) => {
     setIsNewDiagram(false);
     setShowModeller(true);
-    dispatch(setWorkflowAssociation(item[0]));
+    dispatch(setWorkflowAssociation(item));
     dispatch(setProcessDiagramXML(null));
     showChosenFileName(item);
   };
@@ -80,8 +80,8 @@ export default React.memo(() => {
     }
 
     if (
-      (isBpmnFile && fileName !== item[0]?.fileName?.slice(0, -5)) ||
-      (!isBpmnFile && fileName !== item[0]?.fileName?.slice(0, -4))
+      (isBpmnFile && fileName !== item?.fileName?.slice(0, -5)) ||
+      (!isBpmnFile && fileName !== item?.fileName?.slice(0, -4))
     ) {
       document.getElementById("inputWorkflow").value = null;
     }
@@ -197,8 +197,8 @@ export default React.memo(() => {
                     dropdownHeight={"135px"}
                     options={processList}
                     onChange={handleListChange}
-                    values={
-                      processList.length && workflow?.value ? [workflow] : []
+                    value={
+                      processList.length && workflow?.value ? workflow : ""
                     }
                   />
                 </div>

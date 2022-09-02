@@ -74,7 +74,6 @@ const Dashboard = React.memo(() => {
   let numberofSubmissionListFrom =
     activePage === 1 ? 1 : (activePage * limit) - limit + 1;
   let numberofSubmissionListTo = activePage === 1 ? limit : limit * activePage;
-
   const [isAscending, setIsAscending] = useState(false);
   const [searchBy, setSearchBy] = useState("created");
   const [sortsBy, setSortsBy] = useState("formName");
@@ -146,6 +145,7 @@ const Dashboard = React.memo(() => {
     dispatch(setMetricsSubmissionLimitChange(6));
     setSearchBy(option);
   };
+
   if (isMetricsLoading ) {
     return <Loading />;
   }
@@ -189,8 +189,7 @@ const Dashboard = React.memo(() => {
   };
 
 
-  const noDefaultApplicationAvailable =
-    !searchInputBox.current.value && !submissionsList.length ? true : false;
+  
   const noOfApplicationsAvailable = submissionsList?.length || 0;
   if (metricsLoadError) {
     return (
@@ -200,7 +199,7 @@ const Dashboard = React.memo(() => {
   return (
     <Fragment>
       <LoadingOverlay
-        active={submissionStatusCountLoader}
+        active = {submissionStatusCountLoader}
         spinner
         text={t("Loading...")}
       >
@@ -240,7 +239,7 @@ const Dashboard = React.memo(() => {
                       dayPlaceholder="dd"
                       monthPlaceholder="mm"
                       yearPlaceholder="yyyy"
-                      calendarAriaLabel="Select the date"
+                      calendarAriaLabel={t("Select the date")}
                       dayAriaLabel="Select the day"
                       clearAriaLabel="Clear value"
                       clearIcon={null}

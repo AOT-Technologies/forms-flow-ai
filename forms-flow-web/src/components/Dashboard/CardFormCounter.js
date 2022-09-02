@@ -1,8 +1,9 @@
 import React, { Fragment } from "react";
 import { OverlayTrigger, Tooltip } from "react-bootstrap";
-import { Translation } from "react-i18next";
+import { Translation,useTranslation } from "react-i18next";
 
 const CardFormCounter = React.memo((props) => {
+  const {t} = useTranslation();
   const { submitionData, getStatusDetails, selectedMetricsId } = props;
   const { formName, mapperId, count, version } = submitionData;
   return (
@@ -25,7 +26,7 @@ const CardFormCounter = React.memo((props) => {
               overlay={(propsData) => (
                 <Tooltip id="overlay-example" {...propsData}>
                   {formName}{" "}
-                  <span style={{ fontSize: "16px" }}>Version {version}</span>
+                  <span style={{ fontSize: "16px" }}>{t("Version")} {version}</span>
                 </Tooltip>
               )}
             >

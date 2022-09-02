@@ -6,7 +6,7 @@ import CardContent from "@material-ui/core/CardContent";
 import Card from "@material-ui/core/Card";
 import Tabs from "@material-ui/core/Tabs";
 import Tab from "@material-ui/core/Tab";
-import Select from "react-dropdown-select";
+import Select from "react-select";
 import SaveNext from "./SaveNext";
 import ProcessDiagram from "../../BPMN/ProcessDiagramHook";
 import TaskvariableCreate from "./TaskvariableCreate";
@@ -150,7 +150,7 @@ const WorkFlow = React.memo(
     };
     const handleListChange = (item) => {
       setModified(true);
-      dispatch(setWorkflowAssociation(item[0]));
+      dispatch(setWorkflowAssociation(item));
     };
 
     return (
@@ -207,8 +207,8 @@ const WorkFlow = React.memo(
                   <Select
                     options={processList}
                     onChange={handleListChange}
-                    values={
-                      processList.length && workflow?.value ? [workflow] : []
+                    value={
+                      processList.length && workflow?.value ? workflow : ""
                     }
                     disabled={disableWorkflowAssociation}
                   />

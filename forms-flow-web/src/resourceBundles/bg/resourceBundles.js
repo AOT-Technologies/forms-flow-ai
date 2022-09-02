@@ -231,31 +231,21 @@ export const RESOURCE_BUNDLES_BG = {
     "Link To Draft Submission":"Връзка към изпращане на чернова",
     "Drafts":"Чернови",
     "You can't submit this form until it is published":"Не можете да изпратите този формуляр, докато не бъде публикуван",
-    "Form not published":"Формулярът не е публикуван"
-
-
-
-
-
-
-
-
-
-
-
-
-
-  
-
-
-
+    "Form not published":"Формулярът не е публикуван",
+    "Access Denied" : "Отказан достъп",
+    "By default, the tenant key would be prefixed to form":"По подразбиране ключът на клиента ще има префикс за форма",
+    "go back":"Върни се",
+    "No Applications Found":"Няма намерени приложения",
+    "Submission saved to draft.":"Изпращането е запазено в чернова.",
+    "Saved to draft":"Запазено в чернова",
+    "Saving...":"Запазва се...",
+    "Unfinished applications will be saved to drafts.":"Незавършените приложения ще бъдат запазени в чернови.",
+    "Resource":"Ресурс",
+    "Error in creating form process mapper":"Грешка при създаването на картограф на процес на формуляр",
+    "Select the date":"Изберете датата",
+    "Diagram Deployed":"Разгърната диаграма",
+    "Deployment Failed":"Неуспешно внедряване",
+    "Process name(s) must not be empty":"Името(ата) на процесите не трябва да са празни",
+    "URL copied":"URL адресът е копиран",
+    "Click Here to Copy":"Щракнете тук, за да копирате"
 };
-
-
-
-
-
-
-
-
-

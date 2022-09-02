@@ -1,5 +1,4 @@
 import { Dropdown, DropdownButton } from "react-bootstrap";
-import { textFilter } from "react-bootstrap-table2-filter";
 import SelectFormForDownload from "../FileUpload/SelectFormForDownload";
 import FormOperations from "../FormOperations/FormOperations";
 import { Translation} from "react-i18next";
@@ -8,20 +7,12 @@ export const defaultSorted = [{
   dataField: 'title',
   order: 'desc'
 }];
-const customStyle = { border: "1px solid #ced4da", fontStyle: "normal",width:"250px"};
-export const designerColums = (t) => [
+export const designerColums = () => [
   {
     dataField: "title",
     text: <Translation>{(t) => t("Forms")}</Translation>,
     sort:true,
     headerClasses: "form_title",
-    filter: textFilter({
-        delay: 800,
-        placeholder: t("Search by form name"), // custom the input placeholder
-        style: customStyle,
-        caseSensitive: false, // default is false, and true will only work when comparator is LIKE
-        className: "icon-search",
-      }),
   },
   {
     dataField: "operations",
@@ -39,18 +30,12 @@ export const designerColums = (t) => [
   },
 ];
 
-export const userColumns = (t) => [
+export const userColumns = () => [
   {
     dataField: "title",
     text: "Forms",
     sort:true,
     headerClasses: "form_title",
-    filter: textFilter({
-        delay: 800,
-        placeholder:  t("Search by form name"), // custom the input placeholder
-        caseSensitive: false, // default is false, and true will only work when comparator is LIKE
-        className: "icon-search"
-      }),
   },
   {
     dataField: "operations",

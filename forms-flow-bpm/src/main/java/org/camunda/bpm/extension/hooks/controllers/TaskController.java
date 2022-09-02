@@ -1,7 +1,8 @@
 package org.camunda.bpm.extension.hooks.controllers;
 
+import com.nimbusds.jose.shaded.json.JSONArray;
 import com.nimbusds.oauth2.sdk.util.CollectionUtils;
-import net.minidev.json.JSONArray;
+
 import org.apache.commons.lang.StringEscapeUtils;
 import org.apache.commons.lang.StringUtils;
 import org.camunda.bpm.extension.hooks.controllers.data.Task;
@@ -28,10 +29,11 @@ import java.util.List;
 import java.util.Map;
 import java.util.logging.Logger;
 
+import static org.camunda.bpm.extension.commons.utils.VariableConstants.GROUP_NAME;
+
 /**
+ * Task Controller.
  * This class list all task from history tables of camunda.
- *
- * @author  sumathi.thirumani@aot-technologies.com
  */
 @Deprecated
 @Controller
@@ -63,7 +65,7 @@ public class TaskController {
                     task.setProcessInstanceId(rs.getString("pid"));
                     task.setProcessDefinitionKey(rs.getString("processdefkey"));
                     task.setTaskDefinitionKey(rs.getString("taskDefinitionKey"));
-                    task.setGroupName(rs.getString("groupname"));
+                    task.setGroupName(rs.getString(GROUP_NAME));
                     List<Variable> variables = new ArrayList<>();
                     task.setVariables(variables);
                 }
@@ -94,7 +96,7 @@ public class TaskController {
                 taskObj.setProcessDefinitionKey(rs.getString("processdefkey"));
                 taskObj.setTaskDefinitionKey(rs.getString("taskDefinitionKey"));
                 taskObj.setProcessInstanceId(rs.getString("pid"));
-                taskObj.setGroupName(rs.getString("groupname"));
+                taskObj.setGroupName(rs.getString(GROUP_NAME));
                 taskObj.getVariables().add(new Variable(rs.getString("variablename"), rs.getString("variablevalue")));
             }
             return taskObj;

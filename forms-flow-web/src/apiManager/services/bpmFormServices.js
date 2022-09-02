@@ -1,28 +1,46 @@
- /* istanbul ignore file */
-import {httpGETRequest} from "../httpRequestHandler";
+/* istanbul ignore file */
+import { httpGETRequest } from "../httpRequestHandler";
 import API from "../endpoints";
 import UserService from "../../services/UserService";
+import { serviceActionError } from "../../actions/bpmTaskActions";
+
 import {
-  serviceActionError,
-} from "../../actions/bpmTaskActions";
+  setBPMFormList,
+  setBPMFormListLoading,
+  setBpmFormLoading,
+} from "../../actions/formActions";
+import { replaceUrl } from "../../helper/helper";
+import { setFormSearchLoading } from "../../actions/checkListActions";
 
-import {setBPMFormList, setBPMFormListLoading} from "../../actions/formActions";
-import {replaceUrl} from "../../helper/helper";
-
-export const fetchBPMFormList = (...rest) => {
+export const fetchBPMFormList = (
+  pageNo,
+  limit,
+  sortBy,
+  sortOrder,
+  formName,
+  ...rest
+) => {
   const done = rest.length ? rest[0] : () => {};
   return (dispatch) => {
-    httpGETRequest(API.GET_BPM_FORM_LIST, {}, UserService.getToken())
+    let url = `${API.FORM}?pageNo=${pageNo}&limit=${limit}&sortBy=${sortBy}&sortOrder=${sortOrder}`;
+    if (formName) {
+      url += `&formName=${formName}`;
+    }
+    httpGETRequest(url, {}, UserService.getToken())
       .then((res) => {
         if (res.data) {
           dispatch(setBPMFormList(res.data));
           dispatch(setBPMFormListLoading(false));
           //dispatch(setBPMLoader(false));
+          dispatch(setBpmFormLoading(false));
+          dispatch(setFormSearchLoading(false));
+
           done(null, res.data);
         } else {
           dispatch(setBPMFormListLoading(false));
           //console.log("Error", res);
           dispatch(serviceActionError(res));
+          dispatch(setFormSearchLoading(false));
           //dispatch(setBPMTaskLoader(false));
         }
       })
@@ -36,8 +54,7 @@ export const fetchBPMFormList = (...rest) => {
   };
 };
 
-
-export const fetchFormByAlias = (path,...rest) => {
+export const fetchFormByAlias = (path, ...rest) => {
   const done = rest.length ? rest[0] : () => {};
 
   const apiUrlGetFormByAlias = replaceUrl(
@@ -47,13 +64,14 @@ export const fetchFormByAlias = (path,...rest) => {
   );
 
   return (dispatch) => {
-    httpGETRequest(apiUrlGetFormByAlias, {}, '',false,{'x-jwt-token':UserService.getFormioToken()} )
+    let token = UserService.getFormioToken() ? {"x-jwt-token": UserService.getFormioToken()} : {};
+    httpGETRequest(apiUrlGetFormByAlias, {}, "", false, {
+      ...token
+    })
       .then((res) => {
-        //console.log("formData",res);
         if (res.data) {
           done(null, res.data);
         } else {
-          //console.log("Error", res);
           dispatch(serviceActionError(res));
           //dispatch(setBPMTaskLoader(false));
         }

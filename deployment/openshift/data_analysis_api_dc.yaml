@@ -1,0 +1,162 @@
+apiVersion: template.openshift.io/v1
+kind: Template
+label:
+    app: forms-flow-ai
+metadata:
+  name: forms-flow-data-analysis-api
+objects:
+- apiVersion: apps.openshift.io/v1
+  kind: DeploymentConfig
+  metadata:
+    annotations:
+    creationTimestamp: null
+    labels:
+      app: ${NAME}
+    name: ${NAME}
+  spec:
+    replicas: 1
+    selector:
+      app: ${NAME}
+    strategy:
+      activeDeadlineSeconds: 21600
+      resources: { }
+      rollingParams:
+        intervalSeconds: 1
+        maxSurge: 25%
+        maxUnavailable: 25%
+        timeoutSeconds: 600
+        updatePeriodSeconds: 1
+      type: Rolling
+    template:
+      metadata:
+        creationTimestamp: null
+        labels:
+          app: ${NAME}
+      spec:
+        containers:
+        - env:
+          - name: JWT_OIDC_ALGORITHMS
+            valueFrom:
+              configMapKeyRef:
+                key: KEYCLOAK_JWT_OIDC_ALGORITHMS
+                name: ${FORMSFLOW_CONFIG_NAME}-config
+          - name: JWT_OIDC_AUDIENCE
+            valueFrom:
+              secretKeyRef:
+                key: WEB_CLIENTID
+                name: ${FORMSFLOW_SECRET}
+          - name: JWT_OIDC_CACHING_ENABLED
+            valueFrom:
+              configMapKeyRef:
+                key: KEYCLOAK_JWT_OIDC_CACHING_ENABLED
+                name: ${FORMSFLOW_CONFIG_NAME}-config
+          - name: JWT_OIDC_ISSUER
+            valueFrom:
+              configMapKeyRef:
+                key: KEYCLOAK_JWT_OIDC_ISSUER
+                name: ${FORMSFLOW_CONFIG_NAME}-config
+          - name: JWT_OIDC_JWKS_CACHE_TIMEOUT
+            valueFrom:
+              configMapKeyRef:
+                key: KEYCLOAK_JWT_OIDC_JWKS_CACHE_TIMEOUT
+                name: ${FORMSFLOW_CONFIG_NAME}-config
+          - name: JWT_OIDC_JWKS_URI
+            valueFrom:
+              configMapKeyRef:
+                key: KEYCLOAK_JWT_OIDC_JWKS_URI
+                name: ${FORMSFLOW_CONFIG_NAME}-config
+          - name: JWT_OIDC_WELL_KNOWN_CONFIG
+            valueFrom:
+              configMapKeyRef:
+                key: KEYCLOAK_JWT_OIDC_CONFIG
+                name: ${FORMSFLOW_CONFIG_NAME}-config
+          - name: MODEL_ID
+            valueFrom:
+              configMapKeyRef:
+                key: MODEL_ID
+                name: ${FORMSFLOW_CONFIG_NAME}-config
+          - name: DATABASE_SUPPORT
+            value: 'DISABLED'      
+          image: image-registry.openshift-image-registry.svc:5000/${IMAGE_NAMESPACE}/${NAME}
+          name: ${NAME}
+        ports:
+        - containerPort: 5000
+        resources: {}
+        stdin: true
+        tty: true
+        restartPolicy: Always
+    test: false
+    triggers:
+    - type: ConfigChange
+    - imageChangeParams:
+        automatic: true
+        containerNames:
+        - ${NAME}
+        from:
+          kind: ImageStreamTag
+          namespace: "${IMAGE_NAMESPACE}"
+          name: "${NAME}:${TAG_NAME}"
+      type: ImageChange
+  status: {}
+
+-
+  apiVersion: v1
+  kind: Service
+  metadata:
+    name: ${NAME}
+  spec:
+    selector:
+      app: ${NAME}
+    ports:
+      - protocol: TCP
+        port: 5000
+        targetPort: 5000
+
+- apiVersion: route.openshift.io/v1
+  kind: Route
+  metadata:
+    labels:
+      app: ${NAME}
+    name: ${NAME}
+  spec:
+    host: ${DATA_ANALYSIS_API_URL}
+    tls:
+      insecureEdgeTerminationPolicy: Redirect
+      termination: edge
+    to:
+      kind: Service
+      name: ${NAME}
+    wildcardPolicy: None
+
+parameters:
+  - name: NAME
+    displayName: Name
+    description: The name assigned to all of the OpenShift resources associated to the
+      server instance.
+    required: true
+    value: forms-flow-data-analysis-api
+  - name: IMAGE_NAMESPACE
+    displayName: Image Namespace
+    required: true
+    description: The namespace of the OpenShift project containing the imagestream for
+      the application.
+    value: formsflow-ai
+  - name: FORMSFLOW_CONFIG_NAME
+    description: Secrets are referred from this.
+    required: true
+    value: forms-flow-ai  
+  - name: FORMSFLOW_SECRET
+    description: Secrets are referred from this.
+    required: true
+    value: forms-flow-ai
+  - name: TAG_NAME
+    displayName: Environment TAG name
+    description: The TAG name for this environment, e.g., dev, test, prod
+    required: true
+    value: latest
+
+  - name: DATA_ANALYSIS_API_URL
+    displayName: DATA_ANALYSIS_API_URL
+    description:
+      Data analysis API URL without https prefix for route
+    required: true

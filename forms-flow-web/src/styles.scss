@@ -1,12 +1,5 @@
 @charset "UTF-8";
 
-@import url(https://fonts.googleapis.com/css2?family=Nunito+Sans:wght@400;600;700&display=swap);
-@import url(https://cdnjs.cloudflare.com/ajax/libs/semantic-ui/2.4.1/semantic.min.css);
-@import url(https://cdn.jsdelivr.net/npm/bootstrap@4.6.0/dist/css/bootstrap.min.css);
-@import url(https://cdn.jsdelivr.net/npm/formiojs@4.13.1/dist/formio.full.min.css);
-@import url(https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css);
-
-
 $white: #fff;
 $grey: #6c757d;
 $gray-100: #f8f9fa;
@@ -20,7 +13,7 @@ $gray-800: #373a3c;
 $gray-900: #212529;
 $black: #000;
 
-$blue: #2780e3;
+$blue: #4D61FC;
 $indigo: #6610f2;
 $purple: #613d7c;
 $pink: #e83e8c;
@@ -49,6 +42,7 @@ $dark: $gray-800;
   max-width: 100vw;
 }
 .container {
+  margin-top: 3px;
   padding-left: 0;
   padding-right: 0;
   //height: 100vh;
@@ -63,7 +57,23 @@ $dark: $gray-800;
   overflow-y: auto;
   overflow-x: hidden;
 }
-
+.text-primary{
+  color: $primary;
+}
+.footer-text{
+  font-size: 18px;
+}
+.btn-primary{
+  background-color: $primary;
+  }
+.btn-outline-primary:not(:disabled){
+  border-color: #0071EB;
+  color: #0071EB;
+  &:hover{
+    color: #ffffff;
+    background-color: $primary;
+  }
+}
 .task-container{
   height: 100% !important;
 }
@@ -119,7 +129,7 @@ body {
   background-color: #f8f8f8bf;
 }
 .formio-component-panel {
-  border: 1px solid#eeeeee;
+  border: 1px solid #eeeeee;
 
   .panel-heading {
     background-color: #eeeeee;
@@ -402,6 +412,13 @@ i.fa.fa-question-circle.text-muted {
   height: 30px;
   width: 100%;
 }
+@media (max-width: 768px) {
+  .main-header{
+    height: 70px;
+    flex-direction: row;
+    flex-wrap: wrap;
+  }
+}
 .back-icon{
   display: flex;
 }
@@ -517,6 +534,26 @@ header nav {
   width: 40px;
 }
 
+.sort-span {
+  cursor: pointer;
+  border: 1px solid #0071EB;
+  border-radius: 0.25rem;
+  padding: 4px;
+  padding-left: 6px;
+  padding-top: 0px;
+  border-radius: 6px;
+  width: 35px;
+}
+
+.sort-span:hover {
+
+  background-color: #0071EB;
+
+  .fa-lg-hover {
+    color: white;
+  }
+}
+
 .custom-app-name {
   font-size: 30px;
   font-weight: 600;
@@ -543,6 +580,66 @@ div[disabled] {
 .classApplicationId{
   width: 15%;
 }
+.form_select{
+  width: 15%;
+}
+.form_operation{
+  width: 30%;
+}
 .classApplicationName{
   width: 20%;
 }
+.form_title{
+  width: 40%;
+}
+.navbar-light .navbar-nav .nav-link {
+  color: rgba(0,0,0,.9);
+}
+
+// overwriting default styles
+.MuiTab-wrapper{
+  font-size: 16px;
+}
+.formcomponents .formcomponent{
+  font-size: 1em;
+}
+.button_font{
+  font-size: 14px;
+  font-weight: bold;
+}
+.delete_button{
+  font-size: 25px;
+  color:red;
+  cursor: pointer;
+}
+
+.custom_primary_color{
+  color: #0000FF;
+}
+
+.tooltiptext{
+  color: #757575;
+}
+
+.select_download{
+  display: flex;
+  flex-direction: row;
+}
+.select_text{
+  font-weight: bold;
+}
+.select_input{
+  width: 15px;
+  height: 15px;
+}
+.form_check{
+  margin-bottom: 20px;
+}
+a{
+  color: #0000FF;
+}
+.info-background {
+  background-color: #FFDBDB;
+}
+
+

@@ -1,5 +1,9 @@
- /* istanbul ignore file */
-import {httpGETRequest, httpPOSTRequest,httpPOSTRequestWithoutToken} from "../httpRequestHandler";
+/* istanbul ignore file */
+import {
+  httpGETRequest,
+  httpPOSTRequest,
+  httpPOSTRequestWithoutToken,
+} from "../httpRequestHandler";
 import API from "../endpoints";
 import {
   setApplicationListByFormId,
@@ -7,14 +11,19 @@ import {
   setApplicationList,
   setApplicationDetail,
   setApplicationDetailLoader,
-  setApplicationProcess, setApplicationListCount, setApplicationDetailStatusCode, setApplicationStatusList,setApplicationError
+  setApplicationProcess,
+  setApplicationListCount,
+  setApplicationDetailStatusCode,
+  setApplicationStatusList,
+  setApplicationError,
 } from "../../actions/applicationActions";
-import {replaceUrl} from "../../helper/helper";
-import moment from 'moment';
-import {getFormattedProcess} from "./formatterService";
-import {setPublicFormStatus} from '../../actions/formActions';
+import { replaceUrl } from "../../helper/helper";
+import moment from "moment";
+import { getFormattedProcess } from "./formatterService";
+import { setPublicFormStatus } from "../../actions/formActions";
+import {setDraftCount} from "../../actions/draftActions";
 
-export const getAllApplicationsByFormId = (formId,...rest) => {
+export const getAllApplicationsByFormId = (formId, ...rest) => {
   const done = rest.length ? rest[0] : () => {};
   return (dispatch) => {
     //TODO remove the pageNo and limit currently its mandatory from api
@@ -38,16 +47,19 @@ export const getAllApplicationsByFormId = (formId,...rest) => {
   };
 };
 
-export const getAllApplications = (pageNo=1, limit=5,...rest) => {
+export const getAllApplications = (pageNo = 1, limit = 5, ...rest) => {
   const done = rest.length ? rest[0] : () => {};
   return (dispatch) => {
     //TODO remove the pageNo and limit currently its mandatory from api
     //`${API.GET_ALL_APPLICATIONS}?pageNo=${pageNo}&limit=${limit}`
-    httpGETRequest(`${API.GET_ALL_APPLICATIONS}?pageNo=${pageNo}&limit=${limit}`)
+    httpGETRequest(
+      `${API.GET_ALL_APPLICATIONS}?pageNo=${pageNo}&limit=${limit}`
+    )
       .then((res) => {
         if (res.data) {
           const applications = res.data.applications || [];
-          dispatch(setApplicationListCount(res.data.totalCount || 0))
+          dispatch(setApplicationListCount(res.data.totalCount || 0));
+          dispatch(setDraftCount(res.data?.draftCount || 0));
           dispatch(setApplicationList(applications));
           done(null, applications);
         } else {
@@ -61,7 +73,6 @@ export const getAllApplications = (pageNo=1, limit=5,...rest) => {
       });
   };
 };
-
 
 export const getApplicationById = (applicationId, ...rest) => {
   const done = rest.length ? rest[0] : () => {};
@@ -85,7 +96,7 @@ export const getApplicationById = (applicationId, ...rest) => {
           dispatch(serviceActionError(res));
           dispatch(setApplicationDetail({}));
           dispatch(setApplicationDetailStatusCode(403));
-          done('No data');
+          done("No data");
           dispatch(setApplicationDetailLoader(false));
         }
         done(null, res.data);
@@ -102,10 +113,8 @@ export const getApplicationById = (applicationId, ...rest) => {
   };
 };
 
-
-
 export const applicationCreate = (data, ...rest) => {
-  const done = rest.length ? rest[0] : () => {};
+  const done = rest.length ? rest[1] : () => {};
   const URL = API.APPLICATION_START;
   return (dispatch) => {
     httpPOSTRequest(URL, data)
@@ -124,9 +133,8 @@ export const applicationCreate = (data, ...rest) => {
   };
 };
 
-
 export const publicApplicationCreate = (data, ...rest) => {
-  const done = rest.length ? rest[0] : () => {};
+  const done = rest.length ? rest[1] : () => {};
   const URL = API.PUBLIC_APPLICATION_START;
   return (dispatch) => {
     httpPOSTRequestWithoutToken(URL, data)
@@ -152,8 +160,13 @@ export const publicApplicationStatus = (formId, ...rest) => {
     httpGETRequest(URL)
       .then((res) => {
         if (res.data) {
-            dispatch(setPublicFormStatus({anonymous:res.data.is_anonymous,status:res.data.status}));
-            done(null, res.data);
+          dispatch(
+            setPublicFormStatus({
+              anonymous: res.data.is_anonymous,
+              status: res.data.status,
+            })
+          );
+          done(null, res.data);
         } else {
           dispatch(setPublicFormStatus(null));
           dispatch(serviceActionError(res));
@@ -168,7 +181,7 @@ export const publicApplicationStatus = (formId, ...rest) => {
   };
 };
 
-export const updateApplicationEvent = (data,...rest) => {
+export const updateApplicationEvent = (data, ...rest) => {
   /* * Data Format
  {
   "messageName" : "application_resubmitted",
@@ -195,37 +208,43 @@ export const updateApplicationEvent = (data,...rest) => {
 
 // filter endpoint
 
-export const FilterApplications = (params,...rest) => {
+export const FilterApplications = (params, ...rest) => {
   const done = rest.length ? rest[0] : () => {};
-  return (dispatch)=>{
-    const {applicationName,id,modified,applicationStatus} = params.filters;
-    let url =`${API.GET_ALL_APPLICATIONS}?pageNo=${params.page}&limit=${params.sizePerPage}`;
-    if(applicationName && applicationName !==""){
-      url+=`&applicationName=${applicationName?.filterVal}`
+  return (dispatch) => {
+    const { applicationName, id, modified, applicationStatus } = params.filters;
+    let url = `${API.GET_ALL_APPLICATIONS}?pageNo=${params.page}&limit=${params.sizePerPage}`;
+    if (applicationName && applicationName !== "") {
+      url += `&applicationName=${applicationName?.filterVal}`;
     }
-    if(id && id !==""){
-      url+=`&Id=${id.filterVal}`
+    if (id && id !== "") {
+      url += `&Id=${id.filterVal}`;
+    }
+    
+    if (applicationStatus && applicationStatus !== "") {
+      url += `&applicationStatus=${applicationStatus?.filterVal}`;
     }
 
-    if(applicationStatus && applicationStatus !==""){
-      url+=`&applicationStatus=${applicationStatus?.filterVal}`
+    if (modified && modified?.filterVal?.length === 2) {
+      let modifiedFrom = moment
+        .utc(modified.filterVal[0])
+        .format("YYYY-MM-DDTHH:mm:ssZ")
+        .replace("+", "%2B");
+      let modifiedTo = moment
+        .utc(modified.filterVal[1])
+        .format("YYYY-MM-DDTHH:mm:ssZ")
+        .replace("+", "%2B");
+      url += `&modifiedFrom=${modifiedFrom}&modifiedTo=${modifiedTo}`;
     }
 
-    if(modified && modified?.filterVal?.length === 2){
-      let modifiedFrom = moment.utc(modified.filterVal[0]).format("YYYY-MM-DDTHH:mm:ssZ").replace("+","%2B");
-      let modifiedTo = moment.utc(modified.filterVal[1]).format("YYYY-MM-DDTHH:mm:ssZ").replace("+","%2B");
-      url+=`&modifiedFrom=${modifiedFrom}&modifiedTo=${modifiedTo}`
-  }
-
-    if(params.sortField !== null){
-      url+=`&sortBy=${params.sortField}&sortOrder=${params.sortOrder}`
+    if (params.sortField !== null) {
+      url += `&sortBy=${params.sortField}&sortOrder=${params.sortOrder}`;
     }
 
     httpGETRequest(url)
       .then((res) => {
         if (res.data) {
           const applications = res.data.applications || [];
-          dispatch(setApplicationListCount(res.data.totalCount || 0))
+          dispatch(setApplicationListCount(res.data.totalCount || 0));
           dispatch(setApplicationList(applications));
           done(null, applications);
         } else {
@@ -237,10 +256,10 @@ export const FilterApplications = (params,...rest) => {
         dispatch(serviceActionError(error));
         done(error);
       });
-  }
+  };
 };
 
-export const getAllApplicationStatus = (params,...rest) => {
+export const getAllApplicationStatus = (params, ...rest) => {
   //console.log("hai",params)
   const done = rest.length ? rest[0] : () => {};
   return (dispatch) => {
@@ -249,7 +268,7 @@ export const getAllApplicationStatus = (params,...rest) => {
     httpGETRequest(`${API.GET_ALL_APPLICATIONS_STATUS}`)
       .then((res) => {
         if (res.data) {
-          dispatch(setApplicationStatusList(res.data.applicationStatus))
+          dispatch(setApplicationStatusList(res.data.applicationStatus));
           //done(null, applications);
         } else {
           dispatch(setApplicationError("Application status not found"));
@@ -262,5 +281,3 @@ export const getAllApplicationStatus = (params,...rest) => {
       });
   };
 };
-
-

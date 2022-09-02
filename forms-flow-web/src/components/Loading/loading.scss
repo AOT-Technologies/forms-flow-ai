@@ -6,3 +6,26 @@
   width: calc(100% - 250px);
   height: 2.5rem; /* Footer height */
 }
+
+  .loading-animation{
+	 animation: loader-spin 1.2s infinite linear;
+  }
+  .transition-start{
+    opacity: 0.2;
+  }
+  .transition-end{
+    opacity: 1;
+  }
+  .transition-start, .transition-end {
+    transition: opacity 1s linear;
+  }
+  
+  @keyframes loader-spin {
+	0% {
+	  transform: rotate(0deg);
+	}
+	100% {
+	  transform: rotate(360deg);
+	}
+  }
+   

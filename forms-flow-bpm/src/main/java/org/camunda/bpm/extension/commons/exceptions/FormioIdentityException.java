@@ -1,7 +1,8 @@
 package org.camunda.bpm.extension.commons.exceptions;
 
 /**
- * To throw during the identity provider setup / token refresh
+ * Formio Identity Exception.
+ * To throw during the identity provider setup / token refresh.
  */
 public class FormioIdentityException extends RuntimeException{
 

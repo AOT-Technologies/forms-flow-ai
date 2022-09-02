@@ -1,102 +1,176 @@
-import React, {useEffect, useState} from "react";
-import { connect } from "react-redux";
-import Select from 'react-select'
-import NoData from './nodashboard';
+import React, { useEffect, useState } from "react";
+import { connect, useSelector,useDispatch } from "react-redux";
+import Select from "react-select";
+import NoData from "./nodashboard";
 import { Route, Redirect } from "react-router";
-import {fetchDashboardsList, fetchDashboardDetails} from "../../apiManager/services/insightServices";
-import {setInsightDetailLoader, setInsightDashboardListLoader} from "../../actions/insightActions";
+import {
+  fetchDashboardDetails,
+  fetchUserDashboards,
+} from "../../apiManager/services/insightServices";
+import {
+  setInsightDetailLoader,
+  setInsightDashboardListLoader,
+} from "../../actions/insightActions";
 import LoadingOverlay from "react-loading-overlay";
 import Loading from "../../containers/Loading";
-import { fetchdashboards } from "../../apiManager/services/dashboardsService";
+import { useTranslation, Translation } from "react-i18next";
+
 import { SpinnerSVG } from "../../containers/SpinnerSVG";
+import { BASE_ROUTE, MULTITENANCY_ENABLED } from "../../constants/constants";
+import { push } from "connected-react-router";
+import Head from "../../containers/Head";
+import { runCleanup } from "../../actions/insightActions";
 
 const Insights = React.memo((props) => {
-  const {getDashboardsList, getDashboardDetail, dashboards, activeDashboard, isInsightLoading, isDashboardLoading,getDashboards,dashboardsFromRedash} = props;
+  const {
+    getDashboardDetail,
+    dashboards,
+    activeDashboard,
+    isDashboardLoading,
+    getDashboards,
+    isDashboardListUpdated,
+    isDashboardDetailUpdated,
+    error,
+  } = props;
+  const dispatch = useDispatch();
   const [dashboardSelected, setDashboardSelected] = useState(null);
+  const [options, setOptions] = useState([]);
+  const tenantKey = useSelector((state) => state.tenants?.tenantId);
+  const totalItems = useSelector((state) => state.metrics.totalItems);
+
+  const { t } = useTranslation();
+  const redirectUrl = MULTITENANCY_ENABLED ? `/tenant/${tenantKey}/` : "/";
 
   useEffect(() => {
-      getDashboardsList(dashboardsFromRedash);
-  }, [getDashboardsList,dashboardsFromRedash]);
-
-  useEffect(()=>{
     getDashboards();
-  },[getDashboards])
+  }, [getDashboards]);
 
-  useEffect(()=>{
-    if(dashboards.length>0){
-      setDashboardSelected(dashboards[0]);
-    }
-  },[dashboards])
   useEffect(() => {
-    if(dashboardSelected){
+    if (dashboards.length > 0) {
+      let options = dashboards.map((item) => ({
+        label: item.resourceDetails.name,
+        value: item.resourceId,
+      }));
+      setDashboardSelected(options[0]);
+      setOptions(options);
+    }
+  }, [dashboards]);
+  useEffect(() => {
+    if (dashboardSelected) {
       getDashboardDetail(dashboardSelected.value);
     }
   }, [dashboardSelected, getDashboardDetail]);
 
-const NoPublicUrlMessage = ()=>(
-  <div className="h-100 col-12 text-center div-middle">
-      <i className="fa fa-tachometer fa-lg"/>
+  useEffect(() => {
+    return () => {
+      dispatch(runCleanup());
+    };
+  }, []);
+
+  const headerList = () => {
+    return [
+      {
+        name: "Metrics",
+        count: totalItems,
+        onClick: () => dispatch(push(`${redirectUrl}metrics`)),
+        icon: "pie-chart",
+      },
+      {
+        name: "Insights",
+        onClick: () => dispatch(push(`${redirectUrl}insights`)),
+        icon: "lightbulb-o",
+      },
+    ];
+  };
+  const NoPublicUrlMessage = () => (
+    <div className="h-100 col-12 text-center div-middle">
+      <i className="fa fa-tachometer fa-lg" />
       <br></br>
       <br></br>
-      <label> No Public url found </label>
+      <label>
+        <Translation>{(t) => t("No Public url found")}</Translation>
+      </label>
     </div>
-)
+  );
   if (isDashboardLoading) {
     return <Loading />;
   }
   return (
     <>
-    <div className="container mb-4" id="main">
-      <div className="insights mb-2">
-        <div className="row ">
-          <div className="col-12"  data-testid="Insight">
-            <h1 className="insights-title">
-            <i className="fa fa-lightbulb-o fa-lg" aria-hidden="true"/> Insights
-            </h1>
-            <hr className="line-hr"/>
-            <div className="col-12">
-              <div className="app-title-container mt-3"  data-testid="Insight">
-                <h3 className="insight-title" data-testid="Dashboard">
-                  <i className="fa fa-bars mr-1"/> Dashboard
-                </h3>
+      <div className="container mb-4" id="main">
+        <div className="insights mb-2">
+          <div className="row ">
+            <div className="col-12" data-testid="Insight">
+              <Head items={headerList()} page="Insights"/>
+              <hr className="line-hr" />
+              <div className="col-12">
+                <div
+                  className="app-title-container mt-3"
+                  data-testid="Insight"
+                  role="main"
+                >
+                  <h3 className="insight-title" data-testid="Dashboard">
+                    <i className="fa fa-bars mr-1" />{" "}
+                    <Translation>{(t) => t("Dashboard")}</Translation>
+                  </h3>
 
-                <div className="col-3 mb-2">
-                  <Select
-                    options={dashboards}
-                    onChange={setDashboardSelected}
-                    placeholder='Select Dashboard'
-                    value={dashboardSelected}
-                  />
+                  <div className="col-3 mb-2">
+                    {options.length > 0 && (
+                      <Select
+                        aria-label="Select Dashboard"
+                        options={options}
+                        onChange={setDashboardSelected}
+                        placeholder={t("Select Dashboard")}
+                        value={options.find(
+                          (element) => element.value == activeDashboard.id
+                        )}
+                      />
+                    )}
+                  </div>
                 </div>
               </div>
             </div>
+            <LoadingOverlay
+              active={
+                !(isDashboardListUpdated || isDashboardDetailUpdated) && !error
+              }
+              styles={{
+                overlay: (base) => ({
+                  ...base,
+                  background: "rgba(255, 255, 255)",
+                }),
+              }}
+              spinner={<SpinnerSVG />}
+              className="col-12"
+            >
+              {options.length > 0 ? (
+                activeDashboard.public_url ? (
+                  <iframe
+                    title="dashboard"
+                    style={{
+                      width: "100%",
+                      height: "auto",
+                      overflow: "visible",
+                      border: "none",
+                      minHeight: "100vh",
+                    }}
+                    src={activeDashboard.public_url}
+                  />
+                ) : !isDashboardDetailUpdated ? (
+                  <Loading />
+                ) : (
+                  <NoPublicUrlMessage />
+                )
+              ) : (
+                <NoData />
+              )}
+            </LoadingOverlay>
           </div>
-          <LoadingOverlay active={isInsightLoading || !activeDashboard.name} styles={{
-        overlay: (base) => ({
-          ...base,
-          background: 'rgba(255, 255, 255)'
-        })
-      }} spinner={<SpinnerSVG />} className="col-12">
-            {dashboards.length > 0 ?
-             ( activeDashboard.public_url ? <iframe
-                  title="dashboard"
-                  style={{
-                    width: '100%',
-                    height: 'auto',
-                    overflow: 'visible',
-                    border: 'none',
-                    minHeight: '100vh',
-                  }}
-                  src={activeDashboard.public_url}
-                  />:<NoPublicUrlMessage />)
-              :
-              <NoData/>
-            }
-          </LoadingOverlay>
         </div>
       </div>
-      </div>
-      <Route path={"/insights/:notAvailable"}> <Redirect exact to='/404'/></Route>
+      <Route path={`${BASE_ROUTE}insights/:notAvailable`}>
+        <Redirect exact to="/404" />
+      </Route>
     </>
   );
 });
@@ -107,30 +181,23 @@ const mapStateToProps = (state) => {
     isInsightLoading: state.insights.isInsightLoading,
     dashboards: state.insights.dashboardsList,
     activeDashboard: state.insights.dashboardDetail,
-    dashboardsFromRedash:state.dashboardReducer.dashboards,
-  }
-}
+    isDashboardListUpdated: state.insights.isDashboardListUpdated,
+    isDashboardDetailUpdated: state.insights.isDashboardDetailUpdated,
+    error: state.insights.error,
+  };
+};
 
 const mapDispatchToProps = (dispatch) => {
   return {
-    getDashboardsList: (dashboardsFromRedash) => {
-      dispatch(setInsightDashboardListLoader(true));
-      dispatch(
-      fetchDashboardsList(dashboardsFromRedash)
-      )
-    },
     getDashboardDetail: (dashboardId) => {
       dispatch(setInsightDetailLoader(true));
-      dispatch(fetchDashboardDetails(dashboardId))
+      dispatch(fetchDashboardDetails(dashboardId));
     },
-    getDashboards:()=>{
-      dispatch(setInsightDashboardListLoader(true)); 
-      dispatch(fetchdashboards())
-    }
-  }
+    getDashboards: () => {
+      dispatch(setInsightDashboardListLoader(true));
+      dispatch(fetchUserDashboards());
+    },
+  };
 };
 
-export default connect(
-  mapStateToProps,
-  mapDispatchToProps,
-)(Insights);
+export default connect(mapStateToProps, mapDispatchToProps)(Insights);

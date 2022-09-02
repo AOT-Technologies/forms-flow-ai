@@ -82,11 +82,8 @@ Start the **analytics server** by following the instructions given [here](../../
 
 
 *  Follow the below steps for mapping the role IDs.   
-   - Start the forms-flow-forms service.
-     - For Linux
-       - Run `docker-compose -f docker-compose-linux.yml up -d forms-flow-forms` to start.  
-     - For Windows  
-       - Run `docker-compose -f docker-compose-windows.yml up -d forms-flow-forms` to start.  
+   - Start the forms-flow-forms service. 
+       - Run `docker-compose up -d forms-flow-forms` to start.  
        
 ##### Health Check
 ------------------
@@ -97,7 +94,7 @@ Start the **analytics server** by following the instructions given [here](../../
            User Name / Email : admin@example.com
            Password  : changeme   
                    
-*NOTE: Use --build command with the start command to reflect any future **.env** / code changes eg : `docker-compose -f docker-compose-windows.yml up --build -d`*
+*NOTE: Use --build command with the start command to reflect any future **.env** / code changes eg : `docker-compose up --build -d`*
 
 #### forms-flow-web, forms-flow-bpm & forms-flow-api Setup
 -----------------------------------
@@ -131,23 +128,6 @@ Variable name | Meaning | Possible values | Default value |
 `INSIGHT_API_URL`:triangular_flag_on_post:|Insight Api base end-point||`http://{your-ip-address}:7000`
 `INSIGHT_API_KEY`:triangular_flag_on_post:|API_KEY from REDASH|eg. G6ozrFn15l5YJkpHcMZaKOlAhYZxFPhJl5Xr7vQw| `Get the api key from forms-flow-analytics (REDASH) by following the 'Get the Redash API Key' steps from `[here](../../forms-flow-analytics/README.md#get-the-redash-api-key)
 
-##### formsflow.ai forms variable settings
------------------------------------
-
-* [STEP 1](): Getting **ROLE_ID** and **RESOURCE_ID** are mandatory for role based access. To generate ID go to ["Formsflow-forms user/role API"](../../forms-flow-forms/README.md#formsflow-forms-userrole-api) and follow the steps.
-* [STEP 2](): Modify the environment variables using the values from step 1.
-
-Variable name | Meaning | Possible values | Default value |
---- | --- | --- | ---
-`CLIENT_ROLE`|	The role name used for client users|| `formsflow-client`
-`CLIENT_ROLE_ID`:triangular_flag_on_post:|forms-flow-forms client role Id|eg. 10121d8f7fadb18402a4c|`must get the **formsflow Client** role Id value from step #1 above.`
-`REVIEWER_ROLE`|The role name used for reviewer users||`formsflow-reviewer`
-`REVIEWER_ROLE_ID`:triangular_flag_on_post:|forms-flow-forms reviewer role Id|eg. 5ee10121d8f7fa03b3402a4d|`must get the **formsflow Reviewer** role Id value from step #1 above.`
-`DESIGNER_ROLE`|The role name used for designer users||`formsflow-designer`
-`DESIGNER_ROLE_ID`:triangular_flag_on_post:|forms-flow-forms administrator role Id|eg. 5ee090afee045f1597609cae|`must get the **Administrator** role Id value from step #1 above.`
-`ANONYMOUS_ID`|forms-flow-forms anonymous role Id|eg. 5ee090b0ee045f28ad609cb0|`must get the **Anonymous** role Id value from step #1 above.`
-`USER_RESOURCE_ID`:triangular_flag_on_post:|User forms form-Id|eg. 5ee090b0ee045f51c5609cb1|`must get the **user resource** id value from the step #1 above.`
-
 ##### formsflow.ai Datastore variable settings
 -----------------------------------
 
@@ -167,9 +147,19 @@ Variable name | Meaning | Possible values | Default value |
 `APPLICATION_NAME`| Application_Name | eg: formsflow.ai| `formsflow.ai`
 `WEB_BASE_CUSTOM_URL`| Custom_URL | eg: https://formsflow.ai| `custom url`
 `FORMSFLOW_API_CORS_ORIGINS`| formsflow.ai Rest API allowed origins, for allowing multiple origins you can separate host address using a comma seperated string or use * to allow all origins |eg:`host1, host2, host3`| `*`
-`CAMUNDA_API_URL` :triangular_flag_on_post: |Camunda Rest API URL||`http://{your-ip-address}:8000/camunda`
+`BPM_API_URL` :triangular_flag_on_post: |Camunda Rest API URL||`http://{your-ip-address}:8000/camunda`
 `FORMSFLOW_API_URL`:triangular_flag_on_post:|formsflow.ai Rest API URL||`http://{your-ip-address}:5000`
 `USER_ACCESS_PERMISSIONS`| JSON formatted permissions to enable / disable few access on user login.|| `{"accessAllowApplications":false,"accessAllowSubmissions":false}`
+`MULTI_TENANCY_ENABLED`|Multi tenancy enabled flag for the environment|true/false | false
+` DRAFT_ENABLED`|Enable draft feature|true/false
+`DRAFT_POLLING_RATE`|Control draft timing||15000
+`EXPORT_PDF_ENABLED`|Manage export to pdf feature|true/false
+`DOCUMENT_SERVICE_URL`|Formsflow document service api url||`http://{your-ip-address}:{port}`
+`MT_ADMIN_BASE_URL`|Multitenancy admin url||`http://{your-ip-address}:5010/api`
+`MT_ADMIN_BASE_URL_VERSION=v1`|Version of multitenancy admin|v1
+
+
+
 
 * NOTE - While configuring USER_ACCESS_PERMISSIONS the accessAllowApplications will hide / show application tab, the same way accessAllowSubmissions does for viewSubmission button. To enable this feature you need to add access-allow-applications, access-allow-submissions with the respective user group in keycloak.
 
@@ -210,6 +200,7 @@ Variable name | Meaning | Possible values | Default value |
 `WEBSOCKET_SECURITY_ORIGIN` :triangular_flag_on_post:|Camunda task event streaming. Origin setting, for multiple origins you can separate host address using a comma |eg:`host1, host2`|`http://{your-ip-address}:3000`
 `WEBSOCKET_MESSAGE_TYPE`|Camunda task event streaming. Message type ||`TASK_EVENT`
 `WEBSOCKET_ENCRYPT_KEY`|Camunda task event streaming. AES encryption of token||`giert989jkwrgb@DR55`
+`DATA_ANALYSIS_URL`|sentiment analysis url||`http://{your-ip-address}:6000/analysis`
  
 ```
 Modify the file **mail-config.properties** (under `forms-flow-bpm/src/main/resources/`). The default settings provided are for the Gmail server, and you need to change the credentials at the bottom of the file. Note that you want to configure your own Gmail setting to allow unsecure apps first. 
@@ -225,20 +216,17 @@ Modify the file **mail-config.properties** (under `forms-flow-bpm/src/main/resou
  `DATA_BUFFER_SIZE`|Configure a limit on the number of bytes that can be buffered for webclient||`2 (In MB)`
  `IDENTITY_PROVIDER_MAX_RESULT_SIZE`|Maximum result size for Keycloak user queries||`250`
  `BPM_CLIENT_CONN_TIMEOUT`|Webclient Connection timeout in milli seconds||`5000`
+ `BPM_BASE_URL`:triangular_flag_on_post:|BPM Client URL||`http://{your-ip-address}:8000/engine-bpm`
 
 ### Running the application
-* For Linux,
-   * Run `docker-compose -f docker-compose-linux.yml up -d` to start.
-* For Windows,
-   * Run `docker-compose -f docker-compose-windows.yml up -d` to start.
+
+* Run `docker-compose up -d` to start.
    
-*NOTE: Use --build command with the start command to reflect any future **.env** / code changes eg : `docker-compose -f docker-compose-windows.yml up --build -d`*
+*NOTE: Use --build command with the start command to reflect any future **.env** / code changes eg : `docker-compose up --build -d`*
 
 #### To stop the application
-* For Linux,
-  * Run `docker-compose -f docker-compose-linux.yml stop` to stop.
-* For Windows,
-  * Run `docker-compose -f docker-compose-windows.yml stop` to stop.
+
+* Run `docker-compose stop` to stop.
   
 ### Health Check
 * Analytics should be up and available for use at port defaulted to 7000 i.e. http://localhost:7000/

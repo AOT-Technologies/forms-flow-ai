@@ -4,35 +4,70 @@ import UserService from "../../services/UserService";
 
 // const qs = require("querystring");
 
-export const httpGETRequest = (url, data, token, isBearer = true, headers=null) => {
+export const httpGETRequest = (
+  url,
+  data,
+  token,
+  isBearer = true,
+  headers = null
+) => {
   return axios.get(url, {
     params: data,
-    headers: !headers?{
-      Authorization: isBearer
-        ? `Bearer ${token || UserService.getToken()}`
-        : token,
-    }:headers,
+    headers: !headers
+      ? {
+          Authorization: isBearer
+            ? `Bearer ${token || UserService.getToken()}`
+            : token,
+        }
+      : headers,
   });
 };
 
-export const httpPOSTRequest = (url, data, token, isBearer = true) => {
+export const httpGETBlobRequest = (
+  url,
+  data,
+  token,
+  isBearer = true,
+  headers = null
+) => {
+  return axios.get(url, {
+    params: data,
+    responseType: "blob",
+    headers: !headers
+      ? {
+          Authorization: isBearer
+            ? `Bearer ${token || UserService.getToken()}`
+            : token,
+        }
+      : headers,
+  });
+};
+
+export const httpPOSTRequest = (
+  url,
+  data,
+  token,
+  isBearer = true,
+  headers = null
+) => {
+  return axios.post(url, data, {
+    headers: !headers
+      ? {
+          Authorization: isBearer
+            ? `Bearer ${token || UserService.getToken()}`
+            : token,
+        }
+      : headers,
+  });
+};
+
+export const httpPOSTRequestWithoutToken = (url, data) => {
   return axios.post(url, data, {
     headers: {
-      Authorization: isBearer
-        ? `Bearer ${token || UserService.getToken()}`
-        : token,
+      "Content-Type": "application/json",
     },
   });
 };
-
-export const httpPOSTRequestWithoutToken = (url, data, token, isBearer = true) => {
-  return axios.post(url, data, {
-    headers: {
-      'Content-Type':'application/json'
-    }
-  });
-};
-
 
 export const httpPOSTRequestWithHAL = (url, data, token, isBearer = true) => {
   return axios.post(url, data, {
@@ -40,7 +75,7 @@ export const httpPOSTRequestWithHAL = (url, data, token, isBearer = true) => {
       Authorization: isBearer
         ? `Bearer ${token || UserService.getToken()}`
         : token,
-      Accept: 'application/hal+json'
+      Accept: "application/hal+json",
     },
   });
 };
@@ -55,7 +90,7 @@ export const httpPUTRequest = (url, data, token, isBearer = true) => {
   });
 };
 
-export const httpDELETERequest = (url,token, isBearer = true) => {
+export const httpDELETERequest = (url, token, isBearer = true) => {
   return axios.delete(url, {
     headers: {
       Authorization: isBearer
@@ -65,19 +100,10 @@ export const httpDELETERequest = (url,token, isBearer = true) => {
   });
 };
 
-/*export const httpPUTRequest = (url, data, token, isBearer=true) => {
-  return axios.put(url, data, { headers: { Authorization: isBearer ?`Bearer ${ token || UserService.getToken()}`: token } });
-};*/
-
-/*export const httpPOSTRequestWithoutToken = (url, data) => {
-  const config = {
+export const httpPUTRequestWithoutToken = (url, data) => {
+  return axios.put(url, data, {
     headers: {
-      "Content-Type": "application/x-www-form-urlencoded",
+      "Content-Type": "application/json",
     },
-  };
-  return axios.post(url, qs.stringify(data), config);
+  });
 };
-
-export const httpGETRequestWithoutToken = (url, token) => {
-  return axios.get(url);
-};*/

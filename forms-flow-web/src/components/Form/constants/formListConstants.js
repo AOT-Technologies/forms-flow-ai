@@ -1,42 +1,11 @@
-import SelectFormForDownload from "../FileUpload/SelectFormForDownload";
 import pick from "lodash/pick";
-import {CLIENT, OPERATIONS, STAFF_DESIGNER, STAFF_REVIEWER} from "../../../constants/constants";
-import FormSearch from "../FormSearch/FormSearch";
+import {
+  CLIENT,
+  OPERATIONS,
+  STAFF_DESIGNER,
+  STAFF_REVIEWER,
+} from "../../../constants/constants";
 
-
-export const designerColumns = [
-  {
-    key: 'title',
-    sort: false,
-    title: <FormSearch/>,
-    width: 6,
-  },
-  {
-    key: 'operations',
-    title: 'Operations',
-    width: 5,
-  },
-  {
-    key: 'id',
-    title: <SelectFormForDownload type="all"/>,
-    width: 1,
-    value: (form) => <SelectFormForDownload form={form}/>
-  },
-]
-
-export const userColumns = [
-  {
-    key: 'title',
-    sort: false,
-    title: <FormSearch/>,
-    width: 8,
-  },
-  {
-    key: 'operations',
-    title: 'Operations',
-    width: 4,
-  }
-];
 
 const columnsToPick = [
   "title",
@@ -45,12 +14,15 @@ const columnsToPick = [
   "name",
   "path",
   "tags",
-  "components"];
+  "components",
+];
 
-export const getFormattedForm = (form)=>{
-  return pick(form,columnsToPick);
-}
+export const getFormattedForm = (form) => {
+  return pick(form, columnsToPick);
+};
 
+export const ASCENDING = 'asc';
+export const DESCENDING = 'desc';
 export const getOperations = (userRoles, showViewSubmissions) => {
   let operations = [];
   if (userRoles.includes(CLIENT) || userRoles.includes(STAFF_REVIEWER)) {
@@ -63,4 +35,4 @@ export const getOperations = (userRoles, showViewSubmissions) => {
     operations.push(OPERATIONS.viewForm, OPERATIONS.delete); //  OPERATIONS.edit,
   }
   return operations;
-}
+};

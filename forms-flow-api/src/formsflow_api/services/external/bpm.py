@@ -1,6 +1,7 @@
 """This exposes BPM Service."""
 
 from enum import IntEnum
+from typing import Dict
 
 from flask import current_app
 
@@ -26,13 +27,23 @@ class BPMService(BaseBPMService):
     def get_all_process(cls, token):
         """Get all process."""
         url = cls._get_url_(BPMEndpointType.PROCESS_DEFINITION) + "?latestVersion=true"
+        current_app.logger.debug(url)
         return cls.get_request(url, token)
 
     @classmethod
-    def get_process_details(cls, process_key, token):
+    def get_process_details_by_key(cls, process_key, token):
         """Get process details."""
-        url = cls._get_url_(BPMEndpointType.PROCESS_DEFINITION) + process_key
-        return cls.get_request(url, token)
+        current_app.logger.debug(
+            "Getting process details. Process Key : %s", process_key
+        )
+        for process_definition in cls.get_all_process(token):
+            if process_definition.get("key") == process_key:
+                current_app.logger.debug(
+                    "Found Process Definition. process_definition : %s",
+                    process_definition,
+                )
+                return process_definition
+        return None
 
     @classmethod
     def get_process_definition_xml(cls, process_key, token):
@@ -50,6 +61,17 @@ class BPMService(BaseBPMService):
         url = (
             f"{cls._get_url_(BPMEndpointType.PROCESS_DEFINITION)}/"
             f"key/{process_key}/start"
+        )
+        return cls.post_request(url, token, payload=payload)
+
+    @classmethod
+    def post_process_start_tenant(
+        cls, process_key: str, payload: Dict, token: str, tenant_key: str
+    ):
+        """Post process start based on tenant key."""
+        url = (
+            f"{cls._get_url_(BPMEndpointType.PROCESS_DEFINITION)}/"
+            f"key/{process_key}/start?tenantId=" + tenant_key
         )
         return cls.post_request(url, token, payload=payload)
 
@@ -114,26 +136,26 @@ class BPMService(BaseBPMService):
     @classmethod
     def _get_url_(cls, endpoint_type: BPMEndpointType):
         """Get Url."""
-        bpm_api_base = current_app.config.get("BPM_API_BASE")
+        bpm_api_base = current_app.config.get("BPM_API_URL")
         try:
             if endpoint_type == BPMEndpointType.PROCESS_DEFINITION:
-                url = f"{bpm_api_base}/engine-rest/process-definition"
+                url = f"{bpm_api_base}/engine-rest-ext/v1/process-definition"
             elif endpoint_type == BPMEndpointType.FORM_AUTH_DETAILS:
-                url = f"{bpm_api_base}/engine-rest-ext/form/authorization"
+                url = f"{bpm_api_base}/engine-rest-ext/v1/admin/form/authorization"
             elif endpoint_type == BPMEndpointType.HISTORY:
-                url = f"{bpm_api_base}/engine-rest-ext/task/"
+                url = f"{bpm_api_base}/engine-rest-ext/v1/task/"
             elif endpoint_type == BPMEndpointType.TASK:
-                url = f"{bpm_api_base}/engine-rest/task/"
+                url = f"{bpm_api_base}/engine-rest-ext/v1/task/"
             elif endpoint_type == BPMEndpointType.PROCESS_DEFINITION_XML:
-                url = f"{bpm_api_base}/engine-rest/process-definition/key/"
+                url = f"{bpm_api_base}/engine-rest-ext/v1/process-definition/key/"
             elif endpoint_type == BPMEndpointType.MESSAGE_EVENT:
-                url = f"{bpm_api_base}/engine-rest/message/"
+                url = f"{bpm_api_base}/engine-rest-ext/v1/message/"
             elif endpoint_type == BPMEndpointType.PROCESS_INSTANCE:
-                url = f"{bpm_api_base}/engine-rest/process-instance/"
+                url = f"{bpm_api_base}/engine-rest-ext/v1/process-instance/"
             return url
 
         except BaseException:  # pylint: disable=broad-except
             return {
                 "type": "Environment missing",
-                "message": "Missing environment variable CAMUNDA_API_URL",
+                "message": "Missing environment variable BPM_API_URL",
             }

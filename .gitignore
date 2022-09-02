@@ -31,7 +31,8 @@ jobs/sentiment-analysis/venv
 jobs/sentiment-analysis/__pycache__
 jobs/sentiment-analysis/sentiment_analysis.egg-info
 jobs/sentiment-analysis/tests/__pycache__
-
+jobs/sentiment-analysis/utils/__pycache__
+jobs/sentiment-analysis/dbms/__pycache__
 #Visual Studio Code
 .vscode
 

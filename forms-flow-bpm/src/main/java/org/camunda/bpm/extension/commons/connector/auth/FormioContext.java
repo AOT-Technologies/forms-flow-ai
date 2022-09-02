@@ -1,9 +1,8 @@
 package org.camunda.bpm.extension.commons.connector.auth;
 
 /**
- * Formio context holding access token.
- *
- * @author Shibin Thomas
+ * Formio Context.
+ * Class for holding and transferring access token data.
  */
 public class FormioContext {
 

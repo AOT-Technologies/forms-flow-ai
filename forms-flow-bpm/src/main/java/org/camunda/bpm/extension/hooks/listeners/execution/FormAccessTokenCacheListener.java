@@ -11,10 +11,10 @@ import javax.inject.Named;
 import java.util.logging.Logger;
 
 /**
+ * Form Access Token Cache Listener.
  * Deprecated - This listener will be removed in the upcoming releases
  * Not a supported way to generate formio access token
  * This class supports caching of formio access token in generic variable scope.
- * @author sumathi.thirumani@aot-technologies.com
  */
 @Deprecated
 @Named("FormAccessTokenCacheListener")

@@ -23,6 +23,7 @@ import java.util.Properties;
 
 
 /**
+ * Camunda Application.
  * The Camunda Showcase Spring Boot application.
  */
 @EnableConfigurationProperties
@@ -49,9 +50,9 @@ public class CamundaApplication {
 	 * Note: Bean name should not be changed.
 	 * @return
 	 */
+	@Primary
 	@Bean(name="camundaBpmDataSource")
 	@ConfigurationProperties("spring.datasource")
-	@Primary
 	public DataSource camundaBpmDataSource(){
 		return DataSourceBuilder.create().build();
 	}

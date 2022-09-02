@@ -1,97 +1,59 @@
 """Base Test Class to be used by test suites. Used for getting JWT token purpose."""
-import ast
-import os
+import datetime
+import time
 
-import requests
 from dotenv import find_dotenv, load_dotenv
+from flask import current_app
+
+from formsflow_api.models import Authorization, AuthType
 
 load_dotenv(find_dotenv())
 
-# token_header = {"alg": "RS256", "typ": "JWT", "kid": "forms-flow-web"}
+token_header = {"alg": "RS256", "typ": "JWT", "kid": "forms-flow-web"}
 
 
-# def get_token_header():
-#     """Get the token header json."""
-#     return {
-#         "alg": "RS256",
-#         "typ": "JWT",
-#         "kid": "ka1JjPzW-DhsEHOowcYTtIuolGqjOCa7SXWDEp25tfA",
-#     }
-
-
-# def get_token_body():
-#     """Get the token body json."""
-#     return {
-#         "jti": "1d8c24bd-a1a7-4251-b769-b7bd6ecd51213215",
-#         "exp": 1636263332,
-#         "nbf": 0,
-#         "iat": 1635399332,
-#         "iss": "http://localhost:8081/auth/realms/demo",
-#         "aud": ["camunda-rest-api", "forms-flow-web", "account"],
-#         "sub": "47b46f22-45ec-4cfb-825b-ed10ba8bed01",
-#         "typ": "Bearer",
-#         "azp": "forms-flow-web",
-#         "auth_time": 0,
-#         "session_state": "6f50e760-cd96-4934-86dc-e0e667f1a407",
-#         "acr": "1",
-#         "allowed-origins": ["*"],
-#         "realm_access": {"roles": ["offline_access", "uma_authorization"]},
-#         "resource_access": {
-#             "forms-flow-web": {"roles": ["formsflow-client"]},
-#             "account": {
-#                 "roles": ["manage-account", "manage-account-links", "view-profile"]
-#             },
-#         },
-#         "scope": "camunda-rest-api email profile",
-#         "role": ["formsflow-client"],
-#         "name": "John Smith",
-#         "groups": ["/camunda-admin", "/formsflow/formsflow-client"],
-#         "preferred_username": "john-smith",
-#         "given_name": "John",
-#         "family_name": "Smith",
-#         "email": "john.smith@aot.com",
-#     }
-
-
-# def get_claims(
-#     app_request=None,
-#     role: str = "edit",
-#     username: str = "CP0001234",
-#     login_source: str = None,
-#     roles: list = [],
-# ):
-#     """Return the claim with the role param."""
-#     claim = {
-#         "jti": "a50fafa4-c4d6-4a9b-9e51-1e5e0d102878",
-#         "exp": 31531718745,
-#         "iat": 1531718745,
-#         "iss": "http://localhost:8081/auth/realms/demo",
-#         "aud": "sbc-auth-web",
-#         "sub": "15099883-3c3f-4b4c-a124-a1824d6cba84",
-#         "typ": "Bearer",
-#         "realm_access": {"roles": ["{}".format(role), *roles]},
-#         "preferred_username": username,
-#         "name": username,
-#         "username": username,
-#         "loginSource": login_source,
-#         "roles": ["{}".format(role), *roles],
-#     }
-#     return claim
-
-
-TEST_USER_PAYLOAD = {
-    "client_id": "forms-flow-web",
-    "grant_type": "password",
-    "username": os.getenv("TEST_REVIEWER_USERID"),
-    "password": os.getenv("TEST_REVIEWER_PASSWORD"),
-}
-
-
-def factory_auth_header():
-    """Returns authentication header."""
-    url = f"{os.getenv('KEYCLOAK_URL')}/auth/realms/{os.getenv('KEYCLOAK_URL_REALM')}/protocol/openid-connect/token"
-    x = requests.post(url, TEST_USER_PAYLOAD, verify=True).content.decode("utf-8")
-    return str(ast.literal_eval(x)["access_token"])
+def get_token(
+    jwt,
+    role: str = "formsflow-client",
+    username: str = "client",
+    roles: list = [],
+    tenant_key: str = None,
+):
+    """Return token json representation."""
+    return jwt.create_jwt(
+        {
+            "jti": "1d8c24bd-a1a7-4251-b769-b7bd6ecd51213215",
+            "exp": round(time.time() * 1000),
+            "nbf": 0,
+            "iat": 1635399332,
+            "iss": current_app.config["JWT_OIDC_TEST_ISSUER"],
+            "aud": ["camunda-rest-api", "forms-flow-web"],
+            "sub": "47b46f22-45ec-4cfb-825b-ed10ba8bed01",
+            "typ": "Bearer",
+            "azp": "forms-flow-web",
+            "auth_time": 0,
+            "session_state": "6f50e760-cd96-4934-86dc-e0e667f1a407",
+            "acr": "1",
+            "allowed-origins": ["*"],
+            "realm_access": {"roles": ["offline_access", "uma_authorization"]},
+            "resource_access": {
+                "forms-flow-web": {"roles": [role, *roles]},
+                "account": {
+                    "roles": ["manage-account", "manage-account-links", "view-profile"]
+                },
+            },
+            "scope": "camunda-rest-api email profile",
+            "roles": [role, *roles],
+            "groups": [role, *roles],
+            "name": "John Smith",
+            "preferred_username": username,
+            "given_name": "John",
+            "family_name": "Smith",
+            "email": "formsflow-reviewer@example.com",
+            "tenantKey": tenant_key,
+        },
+        token_header,
+    )
 
 
 def get_form_request_payload():
@@ -152,7 +114,13 @@ def get_application_create_payload(form_id: str = "1234"):
         "formId": form_id,
         "submissionId": "1233432",
         "formUrl": f"http://sample.com/form/{form_id}/submission/1233432",
+        "webFormUrl": f"http://sample.com/form/{form_id}/submission/1233432"
     }
+
+
+def get_draft_create_payload(form_id: str = "1234"):
+    """Return a payload for creating draft details."""
+    return {"formId": form_id, "data": {"name": "testing sample"}}
 
 
 def get_form_service_payload():
@@ -186,3 +154,369 @@ def update_dashboard_payload():
 def get_locale_update_valid_payload():
     """Returns a payload for updating the locale attribute."""
     return {"locale": "en"}
+
+
+def get_formio_form_request_payload():
+    """Return a formio form create request payload object."""
+    return {
+        "display": "form",
+        "components": [
+            {
+                "label": "Text Field",
+                "labelPosition": "top",
+                "labelWidth": "",
+                "labelMargin": "",
+                "placeholder": "",
+                "description": "",
+                "tooltip": "",
+                "prefix": "",
+                "suffix": "",
+                "widget": {"type": "input"},
+                "inputMask": "",
+                "displayMask": "",
+                "allowMultipleMasks": "false",
+                "customClass": "",
+                "tabindex": "",
+                "autocomplete": "",
+                "hidden": "false",
+                "hideLabel": "false",
+                "showWordCount": "false",
+                "showCharCount": "false",
+                "mask": "false",
+                "autofocus": "false",
+                "spellcheck": "true",
+                "disabled": "false",
+                "tableView": "true",
+                "modalEdit": "false",
+                "multiple": "false",
+                "persistent": "true",
+                "inputFormat": "plain",
+                "protected": "false",
+                "dbIndex": "false",
+                "case": "",
+                "truncateMultipleSpaces": "false",
+                "encrypted": "false",
+                "redrawOn": "",
+                "clearOnHide": "true",
+                "customDefaultValue": "",
+                "calculateValue": "",
+                "calculateServer": "false",
+                "allowCalculateOverride": "false",
+                "validateOn": "change",
+                "validate": {
+                    "required": "false",
+                    "minLength": "",
+                    "maxLength": "",
+                    "minWords": "",
+                    "maxWords": "",
+                    "pattern": "",
+                    "customMessage": "",
+                    "custom": "",
+                    "customPrivate": "false",
+                    "json": "",
+                    "strictDateValidation": "false",
+                    "multiple": "false",
+                    "unique": "false",
+                },
+                "unique": "false",
+                "errorLabel": "",
+                "errors": "",
+                "key": "textField",
+                "tags": [],
+                "properties": {},
+                "conditional": {"show": "null", "when": "null", "eq": "", "json": ""},
+                "customConditional": "",
+                "logic": [],
+                "attributes": {},
+                "overlay": {
+                    "style": "",
+                    "page": "",
+                    "left": "",
+                    "top": "",
+                    "width": "",
+                    "height": "",
+                },
+                "type": "textfield",
+                "input": "true",
+                "refreshOn": "",
+                "dataGridLabel": "false",
+                "addons": [],
+                "inputType": "text",
+                "id": "e2dprro",
+                "defaultValue": "null",
+            },
+            {
+                "type": "button",
+                "label": "Submit",
+                "key": "submit",
+                "size": "md",
+                "block": "false",
+                "action": "submit",
+                "disableOnInvalid": "true",
+                "theme": "primary",
+                "input": "true",
+                "placeholder": "",
+                "prefix": "",
+                "customClass": "",
+                "suffix": "",
+                "multiple": "false",
+                "defaultValue": "null",
+                "protected": "false",
+                "unique": "false",
+                "persistent": "false",
+                "hidden": "false",
+                "clearOnHide": "true",
+                "refreshOn": "",
+                "redrawOn": "",
+                "tableView": "false",
+                "modalEdit": "false",
+                "dataGridLabel": "true",
+                "labelPosition": "top",
+                "description": "",
+                "errorLabel": "",
+                "tooltip": "",
+                "hideLabel": "false",
+                "tabindex": "",
+                "disabled": "false",
+                "autofocus": "false",
+                "dbIndex": "false",
+                "customDefaultValue": "",
+                "calculateValue": "",
+                "calculateServer": "false",
+                "widget": {"type": "input"},
+                "attributes": {},
+                "validateOn": "change",
+                "validate": {
+                    "required": "false",
+                    "custom": "",
+                    "customPrivate": "false",
+                    "strictDateValidation": "false",
+                    "multiple": "false",
+                    "unique": "false",
+                },
+                "conditional": {"show": "null", "when": "null", "eq": ""},
+                "overlay": {
+                    "style": "",
+                    "left": "",
+                    "top": "",
+                    "width": "",
+                    "height": "",
+                },
+                "allowCalculateOverride": "false",
+                "encrypted": "false",
+                "showCharCount": "false",
+                "showWordCount": "false",
+                "properties": {},
+                "allowMultipleMasks": "false",
+                "addons": [],
+                "leftIcon": "",
+                "rightIcon": "",
+                "id": "eyhab3d",
+            },
+            {
+                "label": "applicationId",
+                "customClass": "",
+                "modalEdit": "false",
+                "persistent": "true",
+                "protected": "false",
+                "dbIndex": "false",
+                "encrypted": "false",
+                "redrawOn": "",
+                "customDefaultValue": "",
+                "calculateValue": "",
+                "calculateServer": "false",
+                "key": "applicationId",
+                "tags": [],
+                "properties": {},
+                "logic": [],
+                "attributes": {},
+                "overlay": {
+                    "style": "",
+                    "page": "",
+                    "left": "",
+                    "top": "",
+                    "width": "",
+                    "height": "",
+                },
+                "type": "hidden",
+                "input": "true",
+                "placeholder": "",
+                "prefix": "",
+                "suffix": "",
+                "multiple": "false",
+                "unique": "false",
+                "hidden": "false",
+                "clearOnHide": "true",
+                "refreshOn": "",
+                "tableView": "false",
+                "labelPosition": "top",
+                "Description": "",
+                "errorLabel": "",
+                "tooltip": "",
+                "hideLabel": "false",
+                "tabindex": "",
+                "disabled": "false",
+                "autofocus": "false",
+                "widget": {"type": "input"},
+                "validateOn": "change",
+                "validate": {
+                    "required": "false",
+                    "custom": "",
+                    "customPrivate": "false",
+                    "strictDateValidation": "false",
+                    "multiple": "false",
+                    "unique": "false",
+                },
+                "conditional": {"show": "null", "when": "null", "eq": ""},
+                "allowCalculateOverride": "false",
+                "showCharCount": "false",
+                "showWordCount": "false",
+                "allowMultipleMasks": "false",
+                "inputType": "hidden",
+                "id": "em1y8gd",
+                "defaultValue": "",
+                "dataGridLabel": "false",
+                "description": "",
+                "addons": [],
+            },
+            {
+                "label": "applicationStatus",
+                "customClass": "",
+                "modalEdit": "false",
+                "defaultValue": "null",
+                "persistent": "true",
+                "protected": "false",
+                "dbIndex": "false",
+                "encrypted": "false",
+                "redrawOn": "",
+                "customDefaultValue": "",
+                "calculateValue": "",
+                "calculateServer": "false",
+                "key": "applicationStatus",
+                "tags": [],
+                "properties": {},
+                "logic": [],
+                "attributes": {},
+                "overlay": {
+                    "style": "",
+                    "page": "",
+                    "left": "",
+                    "top": "",
+                    "width": "",
+                    "height": "",
+                },
+                "type": "hidden",
+                "input": "true",
+                "tableView": "false",
+                "placeholder": "",
+                "prefix": "",
+                "suffix": "",
+                "multiple": "false",
+                "unique": "false",
+                "hidden": "false",
+                "clearOnHide": "true",
+                "refreshOn": "",
+                "dataGridLabel": "false",
+                "labelPosition": "top",
+                "Description": "",
+                "errorLabel": "",
+                "tooltip": "",
+                "hideLabel": "false",
+                "tabindex": "",
+                "disabled": "false",
+                "autofocus": "false",
+                "widget": {"type": "input"},
+                "validateOn": "change",
+                "validate": {
+                    "required": "false",
+                    "custom": "",
+                    "customPrivate": "false",
+                    "strictDateValidation": "false",
+                    "multiple": "false",
+                    "unique": "false",
+                },
+                "conditional": {"show": "null", "when": "null", "eq": ""},
+                "allowCalculateOverride": "false",
+                "showCharCount": "false",
+                "showWordCount": "false",
+                "allowMultipleMasks": "false",
+                "inputType": "hidden",
+                "id": "e6z1qd9",
+                "description": "",
+                "addons": [],
+            },
+        ],
+        "name": "testcreateform",
+        "path": "testcreateform",
+        "title": "testcreateform",
+        "tags": ["common"],
+        "submissionAccess": [
+            {"roles": ["628f0edf19cebb9cea4f1226"], "type": "create_all"},
+            {"roles": ["628f0edf19cebb9cea4f1232"], "type": "read_all"},
+            {"roles": ["628f0edf19cebb9cea4f1232"], "type": "update_all"},
+            {
+                "roles": ["628f0edf19cebb9cea4f1226", "628f0edf19cebb9cea4f1232"],
+                "type": "delete_all",
+            },
+            {"roles": ["628f0ee019cebb9cea4f1236"], "type": "create_own"},
+            {"roles": ["628f0ee019cebb9cea4f1236"], "type": "read_own"},
+            {"roles": ["628f0ee019cebb9cea4f1236"], "type": "update_own"},
+            {"roles": ["628f0edf19cebb9cea4f1232"], "type": "delete_own"},
+        ],
+        "access": [
+            {
+                "type": "read_all",
+                "roles": [
+                    "628f0ee019cebb9cea4f1236",
+                    "628f0edf19cebb9cea4f1232",
+                    "628f0edf19cebb9cea4f1226",
+                ],
+            }
+        ],
+    }
+
+
+def get_formio_roles():
+    """Return formio role id representation."""
+    return [
+        {"roleId": 1, "type": "CLIENT"},
+        {"roleId": 2, "type": "REVIEWER"},
+        {"roleId": 3, "type": "DESIGNER"},
+    ]
+
+
+def get_anonymous_form_model_object():
+    """Return sample anonymous form process mapper model instance data."""
+    return {
+        "is_anonymous": True,
+        "form_id": "1234",
+        "form_name": "sample",
+        "status": "active",
+        "created_by": "test",
+    }
+
+
+def get_form_model_object():
+    """Return sample form process mapper model instance data."""
+    return {
+        "is_anonymous": False,
+        "form_id": "12345",
+        "form_name": "sample non anonymous",
+        "status": "active",
+        "created_by": "test",
+    }
+
+
+def factory_auth(
+    resource_id, resource_details, auth_type, roles, tenant=None
+) -> Authorization:
+    """Return an auth model instance."""
+    return Authorization(
+        auth_type=AuthType(auth_type.upper()),
+        resource_id=resource_id,
+        resource_details=resource_details,
+        roles=roles,
+        created=datetime.datetime.now(),
+        created_by="test",
+        tenant=tenant,
+    ).save()

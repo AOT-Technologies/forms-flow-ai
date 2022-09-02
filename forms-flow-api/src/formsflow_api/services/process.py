@@ -21,6 +21,7 @@ class ProcessService:  # pylint: disable=too-few-public-methods
             for data in result:
                 if data["name"] is not None and internal.search(data["name"]) is None:
                     new_result.append(data)
+
             return new_result
 
         return process

@@ -24,6 +24,7 @@ import java.util.Properties;
 
 
 /**
+ * RestApi Security Config.
  * Optional Security Configuration for Camunda REST Api.
  */
 @Configuration
@@ -103,6 +104,7 @@ public class RestApiSecurityConfig extends WebSecurityConfigurerAdapter {
 		filterRegistration.setFilter(new KeycloakAuthenticationFilter(identityService, clientService));
 		filterRegistration.setOrder(102); // make sure the filter is registered after the Spring Security Filter Chain
 		filterRegistration.addUrlPatterns("/engine-rest/*");
+		filterRegistration.addUrlPatterns("/engine-rest-ext/*");
 		return filterRegistration;
 	}
 }

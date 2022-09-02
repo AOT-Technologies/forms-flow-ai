@@ -1,6 +1,9 @@
 import React from "react";
-import {getFormIdSubmissionIdFromURL, getFormUrl, getLocalDateTime} from "../../apiManager/services/formatterService";
-
+import {
+  getFormUrl,
+  getLocalDateTime,
+} from "../../apiManager/services/formatterService";
+import { Translation } from "react-i18next";
 
 export const defaultSortedBy = [
   {
@@ -9,68 +12,73 @@ export const defaultSortedBy = [
   },
 ];
 
-const linkSubmision = (cell) => {
-  const {formId,submissionId} = getFormIdSubmissionIdFromURL(cell);
-  const url = getFormUrl(formId,submissionId)
+const linkSubmision = (row, redirectUrl) => {
+  const { formId, submissionId } = row;
+  const url = getFormUrl(formId, submissionId, redirectUrl);
   return (
-    <div title={url} onClick={()=> window.open(url, "_blank")}>
-        <span className="btn btn-primary btn-sm form-btn"><span><i className="fa fa-eye" aria-hidden="true"/>&nbsp;</span>View Submission</span>
+    <div title={url} onClick={() => window.open(url, "_blank")}>
+      <span className="btn btn-primary btn-sm form-btn">
+        <span>
+          <i className="fa fa-eye" aria-hidden="true"></i>&nbsp;
+        </span>
+        <Translation>{(t) => t("View Submission")}</Translation>
+      </span>
     </div>
   );
-}
+};
 
 function timeFormatter(cell) {
   const localDate = getLocalDateTime(cell);
   return <label title={cell}>{localDate}</label>;
 }
 
-
 // History table columns
-export const columns_history = [
+export const columns_history = (redirectUrl) => [
   {
     dataField: "applicationStatus",
-    text: "Status",
+    text: <Translation>{(t) => t("Status")}</Translation>,
     sort: true,
   },
   {
     dataField: "created",
-    text: "Created",
+    text: <Translation>{(t) => t("Created")}</Translation>,
     sort: true,
     formatter: timeFormatter,
   },
   {
-      dataField: "submittedBy",
-      text: "Submitted By",
-      sort: true,
+    dataField: "submittedBy",
+    text: <Translation>{(t) => t("Submitted By")}</Translation>,
+    sort: true,
   },
   {
-    dataField: "formUrl",
-    text: "Submissions",
-    formatter: linkSubmision,
+    dataField: "formId",
+    text: <Translation>{(t) => t("Submissions")}</Translation>,
+    formatter: (cell, row) => linkSubmision(row, redirectUrl),
   },
 ];
 const customTotal = (from, to, size) => (
-  <span className="react-bootstrap-table-pagination-total">
-    Showing {from} to {to} of {size} Results
+  <span className="react-bootstrap-table-pagination-total" role="main">
+    <Translation>{(t) => t("Showing")}</Translation> {from}{" "}
+    <Translation>{(t) => t("to")}</Translation> {to}{" "}
+    <Translation>{(t) => t("of")}</Translation> {size} <Translation>{(t) => t("Results")}</Translation>
   </span>
 );
 
 export const getoptions = (count) => {
-    return {
-      expandRowBgColor: "rgb(173,216,230)",
-      pageStartIndex: 1,
-      alwaysShowAllBtns: true, // Always show next and previous button
-      withFirstAndLast: false, // Hide the going to First and Last page button
-      hideSizePerPage: true, // Hide the sizePerPage dropdown always
-      // hidePageListOnlyOnePage: true, // Hide the pagination list when only one page
-      paginationSize: 7, // the pagination bar size.
-      prePageText: "<<",
-      nextPageText: ">>",
-      showTotal: true,
-      Total: count,
-      paginationTotalRenderer: customTotal,
-      disablePageTitle: true,
-      sizePerPage: 5,
-    };
-  }
-;
+  return {
+    expandRowBgColor: "rgb(173,216,230)",
+    pageStartIndex: 1,
+    alwaysShowAllBtns: true, // Always show next and previous button
+    withFirstAndLast: false, // Hide the going to First and Last page button
+    hideSizePerPage: true, // Hide the sizePerPage dropdown always
+    // hidePageListOnlyOnePage: true, // Hide the pagination list when only one page
+    paginationSize: 7, // the pagination bar size.
+    prePageText: "<<",
+    nextPageText: ">>",
+    showTotal: true,
+    Total: count,
+    paginationTotalRenderer: customTotal,
+    disablePageTitle: true,
+    sizePerPage: 5,
+  };
+};

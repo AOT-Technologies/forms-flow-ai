@@ -50,16 +50,19 @@ class ApplicationSchema(Schema):
     application_name = fields.Str(data_key="applicationName")
     application_status = fields.Str(data_key="applicationStatus")
     form_process_mapper_id = fields.Str(data_key="formProcessMapperId")
-    form_url = fields.Str(data_key="formUrl")
     process_instance_id = fields.Str(data_key="processInstanceId")
     process_key = fields.Str(data_key="processKey")
     process_name = fields.Str(data_key="processName")
+    process_tenant = fields.Str(data_key="processTenant")
     created_by = fields.Str(data_key="createdBy")
     created = fields.Str()
     modified_by = fields.Str(data_key="modifiedBy")
     modified = fields.Str()
-    form_id = fields.Str(data_key="formId")
+    form_id = fields.Str(data_key="formId", load_only=True)
+    latest_form_id = fields.Str(data_key="formId", dump_only=True)
     submission_id = fields.Str(data_key="submissionId")
+    form_url = fields.Str(data_key="formUrl", load_only=True)
+    web_form_url = fields.Str(data_key="webFormUrl", load_only=True)
 
 
 class ApplicationUpdateSchema(Schema):
@@ -72,3 +75,16 @@ class ApplicationUpdateSchema(Schema):
 
     application_status = fields.Str(data_key="applicationStatus", required=True)
     form_url = fields.Str(data_key="formUrl", required=False)
+
+
+class ApplicationSubmissionSchema(Schema):
+    """This class provides the schema for application submission data."""
+
+    class Meta:  # pylint: disable=too-few-public-methods
+        """Exclude unknown fields in the deserialized output."""
+
+        unknown = EXCLUDE
+
+    form_url = fields.Str(data_key="formUrl", required=True)
+    submission_id = fields.Str(data_key="submissionId", required=True)
+    web_form_url = fields.Str(data_key="webFormUrl", load_only=True)

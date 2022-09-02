@@ -4,7 +4,8 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 /**
- * Created by DELL on 13-10-2021.
+ * Two Step Approval Test.
+ * Test class for TwoStepApproval.
  */
 @ExtendWith(SpringExtension.class)
 public class TwoStepApprovalTest   {

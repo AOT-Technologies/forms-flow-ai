@@ -4,8 +4,8 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 
 /**
- * Configuration data for formio
- * @author Shibin Thomas
+ * Formio Configuration.
+ * Configuration data for formio.
  */
 @Data
 @AllArgsConstructor

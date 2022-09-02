@@ -5,12 +5,18 @@ from __future__ import annotations
 from http import HTTPStatus
 
 from flask import current_app
+from flask_sqlalchemy import BaseQuery
+from formsflow_api_utils.utils import (
+    DEFAULT_PROCESS_KEY,
+    DEFAULT_PROCESS_NAME,
+    FILTER_MAPS,
+    validate_sort_order_and_order_by,
+)
+from formsflow_api_utils.utils.enums import FormProcessMapperStatus
+from formsflow_api_utils.utils.user_context import UserContext, user_context
 from sqlalchemy import UniqueConstraint, and_, desc
 from sqlalchemy.dialects.postgresql import JSON
 from sqlalchemy.sql.expression import text
-
-from formsflow_api.utils import FILTER_MAPS, validate_sort_order_and_order_by
-from formsflow_api.utils.enums import FormProcessMapperStatus
 
 from .audit_mixin import AuditDateTimeMixin, AuditUserMixin
 from .base_model import BaseModel
@@ -23,11 +29,19 @@ class FormProcessMapper(AuditDateTimeMixin, AuditUserMixin, BaseModel, db.Model)
     id = db.Column(db.Integer, primary_key=True)
     form_id = db.Column(db.String(50), nullable=False)
     form_name = db.Column(db.String(100), nullable=False)
-    process_key = db.Column(db.String(50), nullable=True)
-    process_name = db.Column(db.String(100), nullable=True)
+    process_key = db.Column(db.String(50), nullable=True, default=DEFAULT_PROCESS_KEY)
+    process_name = db.Column(
+        db.String(100), nullable=True, default=DEFAULT_PROCESS_NAME
+    )
     status = db.Column(db.String(10), nullable=True)
     comments = db.Column(db.String(300), nullable=True)
     tenant = db.Column(db.String(100), nullable=True)
+    process_tenant = db.Column(
+        db.String(),
+        nullable=True,
+        comment="Tenant ID Mapped to process definition. "
+        "This will be null for shared process definition.",
+    )
     application = db.relationship(
         "Application", backref="form_process_mapper", lazy=True
     )
@@ -36,7 +50,9 @@ class FormProcessMapper(AuditDateTimeMixin, AuditUserMixin, BaseModel, db.Model)
     task_variable = db.Column(JSON, nullable=True)
     version = db.Column(db.Integer, nullable=False, default=1)
 
-    __table_args__ = (UniqueConstraint("form_id", "version", name="_form_version_uc"),)
+    __table_args__ = (
+        UniqueConstraint("form_id", "version", "tenant", name="_form_version_uc"),
+    )
 
     @classmethod
     def create_from_dict(cls, mapper_info: dict) -> FormProcessMapper:
@@ -52,6 +68,7 @@ class FormProcessMapper(AuditDateTimeMixin, AuditUserMixin, BaseModel, db.Model)
                 mapper.comments = mapper_info.get("comments")
                 mapper.created_by = mapper_info["created_by"]
                 mapper.tenant = mapper_info.get("tenant")
+                mapper.process_tenant = mapper_info.get("process_tenant")
                 mapper.is_anonymous = mapper_info.get("is_anonymous")
                 mapper.task_variable = mapper_info.get("task_variable")
                 mapper.version = mapper_info.get("version")
@@ -79,6 +96,7 @@ class FormProcessMapper(AuditDateTimeMixin, AuditUserMixin, BaseModel, db.Model)
                 "modified_by",
                 "is_anonymous",
                 "task_variable",
+                "process_tenant",
             ],
             mapper_info,
         )
@@ -126,6 +144,21 @@ class FormProcessMapper(AuditDateTimeMixin, AuditUserMixin, BaseModel, db.Model)
         return query
 
     @classmethod
+    @user_context
+    def access_filter(cls, query: BaseQuery, **kwargs):
+        """Modifies the query to include active and tenant check."""
+        if not isinstance(query, BaseQuery):
+            raise TypeError("Query object must be of type BaseQuery")
+        user: UserContext = kwargs["user"]
+        tenant_key: str = user.tenant_key
+        active = query.filter(
+            FormProcessMapper.status == str(FormProcessMapperStatus.ACTIVE.value)
+        )
+        if tenant_key is not None:
+            active = active.filter(FormProcessMapper.tenant == tenant_key)
+        return active
+
+    @classmethod
     def find_all_active(
         cls,
         page_number=None,
@@ -139,9 +172,7 @@ class FormProcessMapper(AuditDateTimeMixin, AuditUserMixin, BaseModel, db.Model)
         query = cls.filter_conditions(**filters)
         if process_key is not None:
             query = query.filter(FormProcessMapper.process_key.in_(process_key))
-        query = query.filter(
-            FormProcessMapper.status == str(FormProcessMapperStatus.ACTIVE.value)
-        )
+        query = cls.access_filter(query=query)
         sort_by, sort_order = validate_sort_order_and_order_by(sort_by, sort_order)
         if sort_by and sort_order:
             query = query.order_by(text(f"form_process_mapper.{sort_by} {sort_order}"))
@@ -192,8 +223,9 @@ class FormProcessMapper(AuditDateTimeMixin, AuditUserMixin, BaseModel, db.Model)
         )  # pylint: disable=no-member
 
     @classmethod
+    @user_context
     def find_mapper_by_form_id_and_version(
-        cls, form_id: int, version: int
+        cls, form_id: int, version: int, **kwargs
     ) -> FormProcessMapper:
         """
         Return the form process mapper with given form_id and version.
@@ -201,7 +233,24 @@ class FormProcessMapper(AuditDateTimeMixin, AuditUserMixin, BaseModel, db.Model)
         : form_id : form_id corresponding to the mapper
         : version : version corresponding to the mapper
         """
+        user: UserContext = kwargs["user"]
+        tenant_key: str = user.tenant_key
         query = cls.query.filter(
-            and_(cls.form_id == form_id, cls.version == version)
+            and_(
+                cls.form_id == form_id, cls.version == version, cls.tenant == tenant_key
+            )
         ).first()
         return query
+
+    @classmethod
+    @user_context
+    def tenant_authorization(cls, query: BaseQuery, **kwargs):
+        """Modifies the query to include tenant check if needed."""
+        tenant_auth_query: BaseQuery = query
+        user: UserContext = kwargs["user"]
+        tenant_key: str = user.tenant_key
+        if not isinstance(query, BaseQuery):
+            raise TypeError("Query object must be of type BaseQuery")
+        if tenant_key is not None:
+            tenant_auth_query = tenant_auth_query.filter(cls.tenant == tenant_key)
+        return tenant_auth_query

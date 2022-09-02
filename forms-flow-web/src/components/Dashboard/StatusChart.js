@@ -1,4 +1,5 @@
 import React from "react";
+import { useTranslation } from "react-i18next";
 
 import { Legend, PieChart, Pie, Cell, LabelList } from "recharts";
 
@@ -15,62 +16,67 @@ const COLORS = [
 
 // label={renderCustomizedLabel}
 const ChartForm = React.memo((props) => {
-  
-  const { submissionsStatusList,submissionData } = props;
-
+  const { submissionsStatusList, submissionData } = props;
+  const { t } = useTranslation();
   const pieData = submissionsStatusList;
-  
+
   if (pieData?.length === 0) {
-    return <div>No submission status</div>;
+    return <div>{t("No submission status")}</div>;
   }
 
-  const { applicationName  } = pieData[0];
-  
+  const { applicationName } = pieData[0];
+
   return (
     <div className="row">
       <div className="col-12">
         <div className="card-counter">
-          <div className="white-box status-container d-flex">
-            <div className="col-lg-6  col-xs-12">
-              <h2>Submission Status - {applicationName} <span>Version :</span> {submissionData?.version}</h2>
-              <div className="chart text-center">
-                <PieChart width={600} height={400}>
-                  <Pie
-                    data={pieData}
-                    cx={200}
-                    cy={200}
-                    labelLine={false}
-                    outerRadius={90}
-                    fill="#8884d8"
-                    dataKey="count"
+          <div className="d-flex align-items-center">
+            <span className="text-primary mr-2">{t("Form Name")} : </span>
+            <h2>{applicationName}</h2>
+          </div>
+          <p>
+            <span className="text-primary">{t("Version")} :</span>{" "}
+            {submissionData?.version}
+          </p>
+          <div className="white-box status-container flex-row d-md-flex align-items-center">
+            <div className="chart text-center">
+              <PieChart width={400} height={400}>
+                <Pie
+                  data={pieData}
+                  labelLine={false}
+                  outerRadius={90}
+                  fill="#8884d8"
+                  dataKey="count"
+                  nameKey="statusName"
+                  label
+                >
+                  <Legend />
+                  <LabelList
+                    dataKey="statusName"
                     nameKey="statusName"
-                    label
-                  >
-                    <Legend />
-                    <LabelList
-                      dataKey="statusName"
-                      nameKey="statusName"
-                      position="insideTop"
-                      angle="45"
+                    position="insideTop"
+                    angle="45"
+                  />
+                  {pieData.map((entry, index) => (
+                    <Cell
+                      key={`cell-${index}`}
+                      fill={COLORS[index % COLORS.length]}
                     />
-                    {pieData.map((entry, index) => (
-                      <Cell
-                        key={`cell-${index}`}
-                        fill={COLORS[index % COLORS.length]}
-                      />
-                    ))}
-                  </Pie>
-                </PieChart>
-                {/* </div>
-        </div> */}
-              </div>
+                  ))}
+                </Pie>
+              </PieChart>
             </div>
-            <div className="col-lg-6  col-xs-12 legent-container">
+
+            <div className="d-flex border flex-wrap rounded p-4   ">
               {pieData.map((entry, index) => (
-                <div className="legent" key={index}>
+                <div className=" d-flex align-items-center m-3" key={index}>
                   <span
-                    className="legent-color"
-                    style={{ backgroundColor: COLORS[index % COLORS.length] }}
+                    className="rounded-circle shadow  mr-2"
+                    style={{
+                      backgroundColor: COLORS[index % COLORS.length],
+                      width: "25px",
+                      height: "25px",
+                    }}
                   ></span>
                   <div className="legent-text">{entry.statusName}</div>
                 </div>

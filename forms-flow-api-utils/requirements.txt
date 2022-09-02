@@ -1,0 +1,19 @@
+gunicorn
+Flask
+Flask-Caching
+Flask-Migrate
+Flask-Moment
+Flask-SQLAlchemy
+flask-restx
+flask-marshmallow
+flask-jwt-oidc
+python-dotenv
+psycopg2-binary
+marshmallow-sqlalchemy
+requests
+Werkzeug==2.1.2 # Watch out updates on https://github.com/python-restx/flask-restx/issues/460
+sqlalchemy_utils
+markupsafe
+PyJWT
+selenium
+selenium-wire

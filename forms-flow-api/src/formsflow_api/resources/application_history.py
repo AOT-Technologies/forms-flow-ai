@@ -4,17 +4,17 @@ from http import HTTPStatus
 
 from flask import current_app, request
 from flask_restx import Namespace, Resource
+from formsflow_api_utils.utils import auth, cors_preflight, profiletime
 
 from formsflow_api.schemas import ApplicationHistorySchema
 from formsflow_api.services import ApplicationHistoryService
-from formsflow_api.utils import auth, cors_preflight, profiletime
 
 # keeping the base path same for application history and application/
 API = Namespace("Application", description="Application")
 
 
 @cors_preflight("GET,OPTIONS")
-@API.route("/<string:application_id>/history", methods=["GET", "POST", "OPTIONS"])
+@API.route("/<int:application_id>/history", methods=["GET", "POST", "OPTIONS"])
 class ApplicationHistoryResource(Resource):
     """Resource for managing state."""
 
@@ -41,7 +41,7 @@ class ApplicationHistoryResource(Resource):
     @auth.require
     @profiletime
     def post(application_id):
-        """Post a new application using the request body."""
+        """Post a new history entry using the request body."""
         application_history_json = request.get_json()
 
         try:

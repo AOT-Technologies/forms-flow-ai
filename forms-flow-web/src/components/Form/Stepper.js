@@ -1,4 +1,4 @@
-import React, {PureComponent} from "react";
+import React, { PureComponent } from "react";
 import { connect } from "react-redux";
 import Stepper from "@material-ui/core/Stepper";
 import Step from "@material-ui/core/Step";
@@ -6,12 +6,13 @@ import StepLabel from "@material-ui/core/StepLabel";
 import Button from "@material-ui/core/Button";
 import Typography from "@material-ui/core/Typography";
 import Grid from "@material-ui/core/Grid";
-import Paper from "@material-ui/core/Paper";
-import { toast } from 'react-toastify';
+import { toast } from "react-toastify";
 
 import Create from "./Create.js";
 import Preview from "./Item/Preview.js";
 import Edit from "./Item/Edit.js";
+import { Translation } from "react-i18next";
+import "../../resourceBundles/i18n";
 
 //TODO convert this code to functional component
 
@@ -20,44 +21,34 @@ import {
   fetchAllBpmProcesses,
   getFormProcesses,
   resetFormProcessData,
-  saveFormProcessMapper
+  saveFormProcessMapperPost,
+  saveFormProcessMapperPut,
 } from "../../apiManager/services/processServices";
-import {
-  setFormProcessesData
-} from "../../actions/processActions";
-//import { saveFormProcessMapper } from "../../apiManager/services/formServices";
-import { selectRoot, saveForm, selectError, getForm } from "react-formio";
-import { SUBMISSION_ACCESS } from "../../constants/constants";
+import { selectRoot, selectError, getForm } from "react-formio";
+import { MULTITENANCY_ENABLED } from "../../constants/constants";
 import { push } from "connected-react-router";
 import WorkFlow from "./Steps/WorkFlow";
 import PreviewStepper from "./Steps/PreviewStepper";
 
 import "./stepper.scss";
-import {Link} from "react-router-dom";
-import {FORM_CREATE_ROUTE, STEPPER_ROUTES} from "./constants/stepperConstants";
+import { Link } from "react-router-dom";
+import {
+  FORM_CREATE_ROUTE,
+  STEPPER_ROUTES,
+} from "./constants/stepperConstants";
 import { resetFormData } from "../../actions/formActions.js";
-
-/*const statusList = [
-  { label: "Active", value: "active" },
-  { label: "Inactive", value: "inactive" },
-];*/
-
 class StepperPage extends PureComponent {
-  // UNSAFE_componentWillMount() {
-  //   this.props.getAllProcesses();
-  // }
-
   constructor(props) {
     super(props);
     this.state = {
       // checked: false,
       activeStep: 0,
-      workflow: null,
-      status: null,
       previewMode: false,
       editMode: false,
-      associateWorkFlow: "no",
-      processData: { status: "inactive", comments: "" },
+      processData: {
+        status: props.formProcessList.status,
+        comments: props.formProcessList.comments,
+      },
       formId: "",
       processList: [],
       processListLoaded: false,
@@ -65,37 +56,35 @@ class StepperPage extends PureComponent {
       dataModified: false,
       disableWorkflowAssociation: false,
       disablePreview: false,
+      tenantKey: props.tenants?.tenantId,
+      redirectUrl: null,
     };
     this.setPreviewMode = this.setPreviewMode.bind(this);
     this.handleNext = this.handleNext.bind(this);
     // for edit
     this.setEditMode = this.setEditMode.bind(this);
-    this.populateDropdown = this.populateDropdown.bind(this);
     this.handleBack = this.handleBack.bind(this);
     this.handleEditAssociation = this.handleEditAssociation.bind(this);
     this.handleEditPreview = this.handleEditPreview.bind(this);
+    this.setRedirectUrl = this.setRedirectUrl.bind(this);
   }
 
   componentDidMount() {
-    if(this.state && this.state.displayMode === "view"){
+    if (this.state && this.state.displayMode === "view") {
       this.setState({ disableWorkflowAssociation: true });
       this.setState({ disablePreview: true });
     }
+    this.setRedirectUrl();
   }
-
-  componentWillUnmount() {
-    this.props.clearFormProcessData();
-  }
-
 
   static getDerivedStateFromProps(nextProps, prevState) {
     let stateData = null;
-
-    if(nextProps.match.params.step !== undefined && !STEPPER_ROUTES.includes(nextProps.match.params.step)){
+    if (
+      nextProps.match.params.step !== undefined &&
+      !STEPPER_ROUTES.includes(nextProps.match.params.step)
+    ) {
       nextProps.goToPageNotFound();
     }
-
-
     if (
       nextProps.match.params.formId &&
       nextProps.match.params.formId !== prevState.formId
@@ -112,7 +101,7 @@ class StepperPage extends PureComponent {
         processList: nextProps.processList,
         processListLoaded: true,
       };
-      nextProps.getAllProcesses();
+      nextProps.getAllProcesses(prevState.tenantKey);
     }
     if (
       nextProps.match.params.formId === FORM_CREATE_ROUTE &&
@@ -147,21 +136,10 @@ class StepperPage extends PureComponent {
       };
 
       if (!prevState.dataModified && nextProps.formProcessList) {
-        if (nextProps.formProcessList.processKey) {
-          stateData = {
-            ...stateData,
-            workflow: {
-              label: nextProps.formProcessList.processName,
-              value: nextProps.formProcessList.processKey,
-            },
-            associateWorkFlow: "yes",
-          };
-        }
-
         stateData = {
           ...stateData,
           processData: {
-            status: nextProps.formProcessList.status||"inactive",
+            status: nextProps.formProcessList.status || "inactive",
             isAnonymousAllowd: false,
             comments: nextProps.formProcessList.comments,
           },
@@ -187,15 +165,19 @@ class StepperPage extends PureComponent {
   }
   handleEditAssociation() {
     this.setState({ disableWorkflowAssociation: false });
-  };
+  }
   handleEditPreview() {
     this.setState({ disablePreview: false });
-  };
+  }
+  setRedirectUrl() {
+    this.setState({
+      redirectUrl: MULTITENANCY_ENABLED
+        ? `/tenant/${this.state?.tenantKey}/`
+        : "/",
+    });
+  }
   // handleCheckboxChange = (event) =>
   //   this.setState({ checked: event.target.checked });
-  changeWorkFlowStatus = (isWorkFlowAssociated) => {
-    this.setState({workflow:null, associateWorkFlow: isWorkFlowAssociated, dataModified:true});
-  };
 
   setProcessData = (data) => {
     this.setState((prevState) => ({
@@ -206,33 +188,13 @@ class StepperPage extends PureComponent {
 
   getSteps() {
     return [
-      "Design Form",
-      "Associate this form with a workflow?",
-      "Preview and Confirm",
+      <Translation key={1}>{(t) => t("Design Form")}</Translation>,
+      <Translation key={2}>
+        {(t) => t("Associate this form with a workflow?")}
+      </Translation>,
+      <Translation key={3}>{(t) => t("Preview and Confirm")}</Translation>,
     ];
   }
-
-  populateDropdown() {
-    const listProcess = (processes) => {
-      if (processes?.length > 0) {
-        const data = processes.map((process) => {
-          return {
-            label: process.name,
-            value: process.key,
-          };
-        });
-        return data;
-      } else {
-        return [];
-      }
-    };
-
-    return listProcess(this.props.processList);
-  }
-
-  associateToWorkFlow = (item) => {
-    this.setState({ workflow: item[0], dataModified: true });
-  };
 
   handleEdit() {
     this.setState((editState) => ({
@@ -244,64 +206,84 @@ class StepperPage extends PureComponent {
       activeStep: prevState.activeStep + 1,
     }));
   }
-  setSelectedStatus(item) {
-    this.setState({ status: item[0] });
-    //code to link form to a workflow
-  }
+
   handleBack() {
     this.setActiveStep(this.state.activeStep - 1);
   }
 
   submitData = () => {
-    const { form, onSaveFormProcessMapper, formProcessList, formPreviousData ,applicationCount} = this.props;
-    const { workflow, processData, associateWorkFlow} = this.state;
+    const {
+      form,
+      onSaveFormProcessMapper,
+      formProcessList,
+      formPreviousData,
+      applicationCount,
+      workflow,
+    } = this.props;
+    const { processData } = this.state;
+
+    let saveMethod = saveFormProcessMapperPut;
+
+    const isNewVersionNeeded = () => {
+      // New mapper version is needed if the form metadata is updated and applications exist with old data.
+      return (
+        (data.processName !== formPreviousData.processName ||
+          data.processKey !== formPreviousData.processKey ||
+          formPreviousData.isTitleChanged) &&
+        applicationCount > 0
+      );
+    };
     const data = {
       formId: form.id,
       formName: form.form && form.form.title,
-      status: processData.status? processData.status:"inactive",
-      taskVariable:formProcessList.taskVariable?formProcessList.taskVariable:[],
-      anonymous:formProcessList.anonymous?true:false
+      status: processData.status ? processData.status : "inactive",
+      taskVariable: formProcessList.taskVariable
+        ? formProcessList.taskVariable
+        : [],
+      anonymous: formProcessList.anonymous ? true : false,
     };
-    if (associateWorkFlow === "yes" && workflow) {
-      data["processKey"]= workflow && workflow.value;
-      data["processName"]= workflow && workflow.label;
-    }else if(associateWorkFlow === "no"){
-      data["processKey"]= "";
-      data["processName"]= "";
+
+    if (workflow) {
+      data["processKey"] = workflow && workflow.value;
+      data["processName"] = workflow && workflow.label;
+    } else {
+      data["processKey"] = "";
+      data["processName"] = "";
     }
 
-    const processNameChecking= data.processName!==formPreviousData.processName;
-    const processKeyChecking= data.processKey!==formPreviousData.processKey;
-
-    if(processData.comments){
+    if (processData.comments) {
       data["comments"] = processData.comments;
     }
 
-    let isUpdate = formProcessList && formProcessList.id ? true : false;
-    if(applicationCount > 0){
-      if(formPreviousData.isTitleChanged || processKeyChecking || processNameChecking ){
-      isUpdate=false;
-      let version = +formProcessList.version+1
-      data.version = `${version}`
+    if (formProcessList && formProcessList.id) {
+      data.id = formProcessList.id;
     }
-  }
 
-  if(formProcessList && formProcessList.id ){
-    data.id = formProcessList.id;
-  }
-    onSaveFormProcessMapper(data, isUpdate);
+    if (isNewVersionNeeded()) {
+      // POST request for creating new mapper version of the current form.
+
+      data["version"] = String(+formProcessList.version + 1);
+      saveMethod = saveFormProcessMapperPost;
+    } else {
+      if (formProcessList && formProcessList.id) {
+        // PUT request to modify the existing mapper if there is one.
+
+        saveMethod = saveFormProcessMapperPut;
+      } else {
+        // For hadling uploaded forms case
+        // There won't be any mapper in case of uploaded forms
+
+        saveMethod = saveFormProcessMapperPost;
+      }
+    }
+
+    onSaveFormProcessMapper(data, saveMethod, this.state.redirectUrl);
   };
 
   getStepContent(step) {
-    const {
-      previewMode,
-      editMode,
-      processData,
-      activeStep,
-      workflow,
-    } = this.state;
+    const { previewMode, editMode, processData, activeStep } = this.state;
     // const { editMode } = this.state;
-    const { form, formProcessList } = this.props;
+    const { form, formProcessList, workflow } = this.props;
 
     switch (step) {
       case 0:
@@ -322,16 +304,11 @@ class StepperPage extends PureComponent {
       case 1:
         return (
           <WorkFlow
-            associateWorkFlow={this.state.associateWorkFlow}
-            changeWorkFlowStatus={this.changeWorkFlowStatus}
-            populateDropdown={this.populateDropdown}
-            associateToWorkFlow={this.associateToWorkFlow}
             handleNext={this.handleNext}
             handleBack={this.handleBack}
             handleEditAssociation={this.handleEditAssociation}
             activeStep={activeStep}
             steps={this.getSteps().length}
-            workflow={this.state.workflow}
             formProcessList={formProcessList}
             disableWorkflowAssociation={this.state.disableWorkflowAssociation}
           />
@@ -339,8 +316,6 @@ class StepperPage extends PureComponent {
       case 2:
         return (
           <PreviewStepper
-            associateWorkFlow={this.state.associateWorkFlow}
-            setSelectedStatus={this.setSelectedStatus}
             handleNext={this.handleNext}
             handleBack={this.handleBack}
             handleEditPreview={this.handleEditPreview}
@@ -371,21 +346,23 @@ class StepperPage extends PureComponent {
     return (
       <>
         <div>
-          {this.props.isAuthenticated ?
-            <Link to="/form" title="Back to Form List">
-              <i className="fa fa-chevron-left fa-lg" />
+          {this.props.isAuthenticated ? (
+            <Link
+              to={`${this.state.redirectUrl}form`}
+              title={<Translation >
+              {(t) => t("Back to Form List")}
+            </Translation>}
+            >
+              <i className="fa fa-chevron-left fa-lg m-3" />
             </Link>
-            :
-            null
-          }
-          <Paper elevation={3} className="paper-root">
+          ) : null}
+          <div className="paper-root">
             <Grid
               container
               direction="row"
               justify="flex-start"
               alignItems="baseline"
             >
-              {" "}
               <Grid item xs={12} spacing={3}>
                 <Stepper
                   alternativeLabel
@@ -394,7 +371,7 @@ class StepperPage extends PureComponent {
                 >
                   {steps.map((label, index) => {
                     return (
-                      <Step key={label}>
+                      <Step key={index}>
                         <StepLabel>{label}</StepLabel>
                       </Step>
                     );
@@ -404,7 +381,9 @@ class StepperPage extends PureComponent {
                   {this.state.activeStep === steps.length ? (
                     <div>
                       <Typography>
-                        All steps completed - you're finished
+                        <Translation>
+                          {(t) => t("All steps completed - you're finished")}
+                        </Translation>
                       </Typography>
                       <Button onClick={handleReset}>Reset</Button>
                     </div>
@@ -414,7 +393,7 @@ class StepperPage extends PureComponent {
                 </div>
               </Grid>
             </Grid>
-          </Paper>
+          </div>
         </div>
       </>
     );
@@ -424,64 +403,61 @@ class StepperPage extends PureComponent {
 const mapStateToProps = (state) => {
   return {
     form: selectRoot("form", state),
-    saveText: "Next",
+    saveText: <Translation>{(t) => t("Next")}</Translation>,
     errors: selectError("form", state),
     processList: state.process.processList,
     formProcessList: state.process.formProcessList,
     isAuthenticated: state.user.isAuthenticated,
-    formPreviousData:state.process.formPreviousData,
-    applicationCount:state.process.applicationCount
+    formPreviousData: state.process.formPreviousData,
+    applicationCount: state.process.applicationCount,
+    tenants: state.tenants,
+    workflow: state.process.workflowAssociated,
   };
 };
 
 const mapDispatchToProps = (dispatch) => {
   return {
-    getAllProcesses: () => {
+    getAllProcesses: (tenantKey) => {
+    const tenantIdIn = MULTITENANCY_ENABLED ? tenantKey : null;
       dispatch(
-        fetchAllBpmProcesses((err, res) => {
+        // eslint-disable-next-line no-unused-vars
+        fetchAllBpmProcesses(tenantIdIn, (err, res) => {
           if (err) {
             console.log(err);
           }
         })
       );
     },
-    onSaveFormProcessMapper: (data, update) => {
+    onSaveFormProcessMapper: (data, saveMethod, redirectUrl) => {
       dispatch(
-        saveFormProcessMapper(data, update, (err, res) => {
+        // eslint-disable-next-line no-unused-vars
+        saveMethod(data, (err, res) => {
           if (!err) {
-            toast.success('Form Workflow Association Saved.');
-            dispatch(push(`/form`));
-            dispatch(resetFormProcessData())
-          }else{
-            toast.error('Form Workflow Association Failed.');
+            toast.success(
+              <Translation>
+                {(t) => t("Form Workflow Association Saved.")}
+              </Translation>
+            );
+            dispatch(push(`${redirectUrl}form`));
+            dispatch(resetFormProcessData());
+          } else {
+            toast.error(
+              <Translation>
+                {(t) => t("Form Workflow Association Failed.")}
+              </Translation>
+            );
           }
         })
       );
     },
 
-    saveForm: (form) => {
-      const newForm = {
-        ...form,
-        tags: ["common"],
-      };
-      newForm.submissionAccess = SUBMISSION_ACCESS;
-      dispatch(
-        saveForm("form", newForm, (err, form) => {
-          if (!err) {
-            toast.success('Form Saved');
-            dispatch(push(`/formflow/${form._id}/preview`));
-          }else{
-            toast.error("Error while saving Form");
-          }
-        })
-      );
-    },
     getForm: (id) => {
-      dispatch(resetFormData('form', id));
-      dispatch(getForm("form", id))
-  },
+      dispatch(resetFormData("form", id));
+      dispatch(getForm("form", id));
+    },
     getFormProcessesDetails: (formId) => {
       dispatch(
+        // eslint-disable-next-line no-unused-vars
         getFormProcesses(formId, (err, res) => {
           if (err) {
             console.log(err);
@@ -489,8 +465,7 @@ const mapDispatchToProps = (dispatch) => {
         })
       );
     },
-    clearFormProcessData: () => dispatch(setFormProcessesData([])),
-    goToPageNotFound:()=>dispatch(push(`/404`))
+    goToPageNotFound: () => dispatch(push(`/404`)),
   };
 };
 

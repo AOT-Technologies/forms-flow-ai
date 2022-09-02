@@ -17,10 +17,15 @@ import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 import java.io.IOException;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
+import static org.camunda.bpm.extension.commons.utils.VariableConstants.FORM_URL;
+import static org.camunda.bpm.extension.commons.utils.VariableConstants.WEB_FORM_URL;
+
 /**
- * Test class for FormSubmissionListener
+ * Form Submission Listener Test.
+ * Test class for FormSubmissionListener.
  */
 @ExtendWith(SpringExtension.class)
 public class FormSubmissionListenerTest {
@@ -41,17 +46,25 @@ public class FormSubmissionListenerTest {
         DelegateExecution delegateExecution = mock(DelegateExecution.class);
         String actualFormUrl = "http://localhost:3001/form/id1";
         String expectedFormUrl = "http://localhost:3001/form/id2";
+        String actualWebFormUrl = "http://localhost:3000/form/id1";
+        String expectedWebFormUrl = "http://localhost:3000/form/id2";
         Map<String, Object> variables = new HashMap<>();
-        variables.put("formUrl", actualFormUrl);
-        delegateExecution.setVariable("formUrl", actualFormUrl);
+        variables.put(FORM_URL, actualFormUrl);
+        variables.put(WEB_FORM_URL, actualWebFormUrl);
+        delegateExecution.setVariable(FORM_URL, actualFormUrl);
+        delegateExecution.setVariable(WEB_FORM_URL, actualWebFormUrl);
         when(delegateExecution.getVariables())
                 .thenReturn(variables);
         when(formSubmissionService.createRevision(actualFormUrl))
                 .thenReturn("id2");
+        when(formSubmissionService.createRevision(actualWebFormUrl))
+                .thenReturn("id2");
         formSubmissionListener.notify(delegateExecution);
         ArgumentCaptor<String> captor = ArgumentCaptor.forClass(String.class);
-        verify(delegateExecution, times(2)).setVariable(anyString(), captor.capture());
-        assertEquals(expectedFormUrl, captor.getValue());
+        verify(delegateExecution, times(4)).setVariable(anyString(), captor.capture());
+        List<String> allValues = captor.getAllValues();
+        assertEquals(expectedFormUrl, allValues.get(2));
+        assertEquals(expectedWebFormUrl, allValues.get(3));
     }
     
     /**
@@ -65,19 +78,28 @@ public class FormSubmissionListenerTest {
         DelegateExecution delegateExecution = mock(DelegateExecution.class);
         String actualFormUrl = "http://localhost:3001/form/id1";
         String expectedFormUrl = "http://localhost:3001/form/id2";
+        String actualWebFormUrl = "http://localhost:3000/form/id1";
+        String expectedWebFormUrl = "http://localhost:3000/form/id2";
         Map<String, Object> variables = new HashMap<>();
-        variables.put("formUrl", actualFormUrl);
-        delegateTask.setVariable("formUrl", actualFormUrl);
+        variables.put(FORM_URL, actualFormUrl);
+        variables.put(WEB_FORM_URL, actualWebFormUrl);
+        delegateTask.setVariable(FORM_URL, actualFormUrl);
+        delegateTask.setVariable(WEB_FORM_URL, actualWebFormUrl);
         when(delegateTask.getExecution())
                 .thenReturn(delegateExecution);
         when(delegateExecution.getVariables())
                 .thenReturn(variables);
         when(formSubmissionService.createRevision(actualFormUrl))
                 .thenReturn("id2");
-        formSubmissionListener.notify(delegateTask);
+        when(formSubmissionService.createRevision(actualWebFormUrl))
+                .thenReturn("id2");
+        formSubmissionListener.notify(delegateExecution);
         ArgumentCaptor<String> captor = ArgumentCaptor.forClass(String.class);
-        verify(delegateExecution).setVariable(anyString(), captor.capture());
-        assertEquals(expectedFormUrl, captor.getValue());
+
+        verify(delegateExecution, times(2)).setVariable(anyString(), captor.capture());
+        List<String> allValues = captor.getAllValues();
+        assertEquals(expectedFormUrl, allValues.get(0));
+        assertEquals(expectedWebFormUrl, allValues.get(1));
     }
     
     /**
@@ -90,8 +112,8 @@ public class FormSubmissionListenerTest {
         DelegateExecution delegateExecution = mock(DelegateExecution.class);
         String actualFormUrl = "http://localhost:3001/form/id1";
         Map<String, Object> variables = new HashMap<>();
-        variables.put("formUrl", actualFormUrl);
-        delegateTask.setVariable("formUrl", actualFormUrl);
+        variables.put(FORM_URL, actualFormUrl);
+        delegateTask.setVariable(FORM_URL, actualFormUrl);
         when(delegateTask.getExecution())
                 .thenReturn(delegateExecution);
         when(delegateExecution.getVariables())
@@ -112,8 +134,8 @@ public class FormSubmissionListenerTest {
         DelegateExecution delegateExecution = mock(DelegateExecution.class);
         String actualFormUrl = "http://localhost:3001/form/id1";
         Map<String, Object> variables = new HashMap<>();
-        variables.put("formUrl", actualFormUrl);
-        delegateExecution.setVariable("formUrl", actualFormUrl);
+        variables.put(FORM_URL, actualFormUrl);
+        delegateExecution.setVariable(FORM_URL, actualFormUrl);
         when(delegateExecution.getVariables())
                 .thenReturn(variables);
         doThrow(new IOException("Unable to read submission for: "+ actualFormUrl))

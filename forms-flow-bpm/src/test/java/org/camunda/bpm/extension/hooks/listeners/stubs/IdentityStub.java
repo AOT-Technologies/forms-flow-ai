@@ -6,6 +6,10 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+/**
+ * Identity Stub.
+ * Stub class for Identity.
+ */
 @Data
 @AllArgsConstructor
 @NoArgsConstructor

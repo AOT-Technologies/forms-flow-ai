@@ -22,6 +22,8 @@ objects:
       DATABASE_TABLE_NAME: "${DATABASE_TABLE_NAME}"
       DATABASE_INPUT_COLUMN: "${DATABASE_INPUT_COLUMN}"
       DATABASE_OUTPUT_COLUMN: "${DATABASE_OUTPUT_COLUMN}"
+      DBMS: "${DBMS}"
+      MODEL_ID: "${MODEL_ID}"
 - kind: ConfigMap
   apiVersion: v1
   metadata:
@@ -123,11 +125,16 @@ objects:
               secretKeyRef:
                 name: "${NAME}"
                 key: DATABASE_INPUT_COLUMN
-          - name: DATABASE_OUTPUT_COLUMN
+          - name: DBMS
             valueFrom:
               secretKeyRef:
                 name: "${NAME}"
-                key: DATABASE_OUTPUT_COLUMN
+                key: DBMS
+          - name: MODEL_ID
+            valueFrom:
+              configMapKeyRef:
+                key: MODEL_ID
+                name: ${FORMSFLOW_CONFIG_NAME}-config
 
           resources:
             requests:
@@ -253,4 +260,13 @@ parameters:
   description: Database table output column which stores the sentiment analysis response
   required: true
   value: ''
+- name: DBMS
+  displayName: Database type to use
+  description: Database type to use. SQL_SERVER or POSTGRES
+  required: true
+  value: 'SQL_SERVER'
+- name: MODEL_ID
+  displayName: Model ID for sentiment analysis
+  description: Model ID for sentiment analysis
+  required: true
 

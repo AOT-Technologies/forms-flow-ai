@@ -7,6 +7,7 @@ import lombok.NoArgsConstructor;
 import java.util.Objects;
 
 /**
+ * Authorization.
  * Mapper associated with querying authorization.
  */
 @Data

@@ -54,6 +54,7 @@ import paginationFactory from "react-bootstrap-table2-paginator";
 import filterFactory from "react-bootstrap-table2-filter";
 import overlayFactory from "react-bootstrap-table2-overlay";
 import { SpinnerSVG } from "../../containers/SpinnerSVG";
+import { getFormioRoleIds } from "../../apiManager/services/userservices";
 
 const List = React.memo((props) => {
   const { t } = useTranslation();
@@ -85,7 +86,6 @@ const List = React.memo((props) => {
   const isDesigner = userRoles.includes(STAFF_DESIGNER);
   const searchText = useSelector((state) => state.bpmForms.searchText);
   const pageNo = useSelector((state) => state.bpmForms.page);
-  const designerPageNo = useSelector(state => state.forms.pagination?.page);
   const limit = useSelector((state) => state.bpmForms.limit);
   const totalForms = useSelector((state) => state.bpmForms.totalForms);
   const sortBy = useSelector((state) => state.bpmForms.sortBy);

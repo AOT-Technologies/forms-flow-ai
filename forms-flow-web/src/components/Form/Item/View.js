@@ -180,10 +180,7 @@ const View = React.memo((props) => {
         dispatch(
           draftUpdateMethod(payload, draftSubmissionId, (err) => {
             if (exitType === "UNMOUNT" && !err) {
-              toast.success(
-                 t("Submission saved to draft.")
-                  
-                );
+              toast.success(t("Submission saved to draft."));
             }
             if (!err) {
               setDraftSaved(true);
@@ -215,13 +212,14 @@ const View = React.memo((props) => {
     if (
       validFormId &&
       DRAFT_ENABLED &&
+      form._id &&
       ((isAuthenticated && formStatus === "active") ||
         (!isAuthenticated && publicFormStatus?.status == "active"))
     ) {
       let payload = getDraftReqFormat(validFormId, draftData?.data);
       dispatch(draftCreateMethod(payload, setIsDraftCreated));
     }
-  }, [validFormId, formStatus, publicFormStatus]);
+  }, [validFormId, formStatus, publicFormStatus, form]);
 
   /**
    * We will repeatedly update the current state to draft table
@@ -307,7 +305,9 @@ const View = React.memo((props) => {
   }
   return (
     <div className="container overflow-y-auto">
-      {DRAFT_ENABLED && isAuthenticated &&
+      {DRAFT_ENABLED &&
+        isAuthenticated &&
+        form._id &&
         (formStatus === "active" ||
           (publicFormStatus?.anonymous === true &&
             publicFormStatus?.status === "active")) && (
@@ -342,16 +342,14 @@ const View = React.memo((props) => {
             </Link>
           ) : null}
 
-          {form.title ? (
+          {form.title && (
             <h3 className="ml-3">
               <span className="task-head-details">
-                <i className="fa fa-wpforms" aria-hidden="true" /> &nbsp; {t("Forms")}
-                /
+                <i className="fa fa-wpforms" aria-hidden="true" /> &nbsp;{" "}
+                {t("Forms")}/
               </span>{" "}
               {form.title}
             </h3>
-          ) : (
-            ""
           )}
         </div>
       </div>

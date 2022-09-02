@@ -17,7 +17,7 @@ Mark  items as `Added`, `Changed`, `Fixed`, `Removed`, `Untested Features`, `Upc
 * Added application status `draft` for unfinished applications.
 * Added Processes page for camunda web modeller.
 * Added Form Adapter to support form submission data to other data stores than Mongo with custom data URLs.
-* Added environment variable `MULTI_TENANCY_ENABLED`, `MT_ADMIN_BASE_URL`, `MT_ADMIN_BASE_URL_VERSION` for multitenancy support.
+* Added environment variable `MULTI_TENANCY_ENABLED`, `MT_ADMIN_BASE_URL`, `MT_ADMIN_BASE_URL_VERSION` to support multitenancy.
 * Added environment variable `CUSTOM_SUBMISSION_URL`, `CUSTOM_SUBMISSION_ENABLED` for support form adapter.
 * Added environment variables `DRAFT_ENABLED`, `DRAFT_POLLING_RATE` to manage draft feature. 
 * Added environment variable `EXPORT_PDF_ENABLED`for pdf service.
@@ -28,7 +28,7 @@ Mark  items as `Added`, `Changed`, `Fixed`, `Removed`, `Untested Features`, `Upc
 **forms-flow-forms**
 
 * Added new Repository , for more details checkout [here](https://github.com/AOT-Technologies/formio).
-* Added environment variable `MULTI_TENANCY_ENABLED` for mulitenancy support.
+* Added environment variable `MULTI_TENANCY_ENABLED` to support mulitenancy.
 
 
 **forms-flow-api**
@@ -37,7 +37,7 @@ Mark  items as `Added`, `Changed`, `Fixed`, `Removed`, `Untested Features`, `Upc
 * Added support for default workflow with form.
 * Added API support for `draft` feature.
 * Added API support for `Form Adapter`.
-* Added environment variable `MULTI_TENANCY_ENABLED`, `KEYCLOAK_ENABLE_CLIENT_AUTH` for mulitenancy support.
+* Added environment variable `MULTI_TENANCY_ENABLED`, `KEYCLOAK_ENABLE_CLIENT_AUTH` to support mulitenancy.
 
 
 **forms-flow-bpm**
@@ -53,7 +53,11 @@ Mark  items as `Added`, `Changed`, `Fixed`, `Removed`, `Untested Features`, `Upc
 **forms-flow-documents**
 
 * Added document API  to provide generate pdf with form submission data.
-* Added environment variable `MULTI_TENANCY_ENABLED`, `KEYCLOAK_ENABLE_CLIENT_AUTH` for mulitenancy support.
+* Added environment variable `MULTI_TENANCY_ENABLED`, `KEYCLOAK_ENABLE_CLIENT_AUTH` to support mulitenancy .
+
+**forms-flow-analytics**
+
+* Added environment variable `REDASH_MULTI_ORG` to support multitenancy.
 
 
 

@@ -242,5 +242,10 @@ export const RESOURCE_BUNDLES_BG = {
     "Unfinished applications will be saved to drafts.":"Незавършените приложения ще бъдат запазени в чернови.",
     "Resource":"Ресурс",
     "Error in creating form process mapper":"Грешка при създаването на картограф на процес на формуляр",
-    "Select the date":"Изберете датата"
+    "Select the date":"Изберете датата",
+    "Diagram Deployed":"Разгърната диаграма",
+    "Deployment Failed":"Неуспешно внедряване",
+    "Process name(s) must not be empty":"Името(ата) на процесите не трябва да са празни",
+    "URL copied":"URL адресът е копиран",
+    "Click Here to Copy":"Щракнете тук, за да копирате"
 };

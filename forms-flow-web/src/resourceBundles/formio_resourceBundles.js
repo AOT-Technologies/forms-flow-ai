@@ -266,7 +266,9 @@ export const formio_resourceBundles = {
     "Select the date":"Select the date",
     "Diagram Deployed":"Diagram Deployed",
     "Deployment Failed":"Deployment Failed",
-    "Process name(s) must not be empty":"Process name(s) must not be empty"
+    "Process name(s) must not be empty":"Process name(s) must not be empty",
+    "URL copied":"URL copied",
+    "Click Here to Copy":"Click Here to Copy"
   },
 
   "zh-CN": {
@@ -1147,7 +1149,9 @@ export const formio_resourceBundles = {
     "Unfinished applications will be saved to drafts.":"未完成的申请将被保存到草稿中。",
     "Diagram Deployed":"已部署的图表",
     "Deployment Failed":"部署失败",
-    "Process name(s) must not be empty":"进程名称不能为空"
+    "Process name(s) must not be empty":"进程名称不能为空",
+    "URL copied":"已复制网址",
+    "Click Here to Copy":"点击这里复制"
   },
 
   bg: {
@@ -2086,7 +2090,10 @@ export const formio_resourceBundles = {
     "Select the date":"Изберете датата",
     "Diagram Deployed":"Разгърната диаграма",
     "Deployment Failed":"Неуспешно внедряване",
-    "Process name(s) must not be empty":"Името(ата) на процесите не трябва да са празни"
+    "Process name(s) must not be empty":"Името(ата) на процесите не трябва да са празни",
+    "URL copied":"URL адресът е копиран",
+    "Click Here to Copy":"Щракнете тук, за да копирате"
+
   },
 
   pt: {
@@ -3019,7 +3026,9 @@ export const formio_resourceBundles = {
     "Select the date":"Selecione a data",
     "Diagram Deployed":"Diagrama implantado",
     "Deployment Failed":"Falha na implantação",
-    "Process name(s) must not be empty":"O(s) nome(s) do processo não deve(m) estar vazio(s)"
+    "Process name(s) must not be empty":"O(s) nome(s) do processo não deve(m) estar vazio(s)",
+    "URL copied":"URL copiado",
+    "Click Here to Copy":"Clique aqui para copiar"
 
   },
 
@@ -3961,7 +3970,9 @@ export const formio_resourceBundles = {
     "Select the date":"Sélectionnez la date",
     "Diagram Deployed":"Diagramme déployé",
     "Deployment Failed":"Échec du déploiement",
-    "Process name(s) must not be empty":"Le(s) nom(s) de processus ne doivent pas être vides"
+    "Process name(s) must not be empty":"Le(s) nom(s) de processus ne doivent pas être vides",
+    "URL copied":"URL copiée",
+    "Click Here to Copy":"Cliquez ici pour copier"
 
   },
 
@@ -4906,7 +4917,10 @@ export const formio_resourceBundles = {
     "Select the date":"Wählen Sie das Datum aus",
     "Diagram Deployed":"Diagramm bereitgestellt",
     "Deployment Failed":"Bereitstellung fehlgeschlagen",
-    "Process name(s) must not be empty":"Prozessname(n) dürfen nicht leer sein"
+    "Process name(s) must not be empty":"Prozessname(n) dürfen nicht leer sein",
+    "URL copied":"URL kopiert",
+    "Click Here to Copy":"Klicken Sie hier, um zu kopieren"
+
 
 
 

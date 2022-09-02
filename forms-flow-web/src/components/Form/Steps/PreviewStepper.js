@@ -96,7 +96,15 @@ const Preview = React.memo(
                       <div
                         data-toggle="tooltip"
                         data-placement="top"
-                        title={copied ? <Translation>{(t) => t("URL copied")}</Translation> : <Translation>{(t) => t("Click Here to Copy")}</Translation>}
+                        title={
+                          copied ? (
+                            <Translation>{(t) => t("URL copied")}</Translation>
+                          ) : (
+                            <Translation>
+                              {(t) => t("Click Here to Copy")}
+                            </Translation>
+                          )
+                        }
                         className={`coursor-pointer btn ${
                           copied ? "text-success" : "text-primary"
                         }`}

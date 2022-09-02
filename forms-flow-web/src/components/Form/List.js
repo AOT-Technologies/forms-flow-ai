@@ -55,6 +55,7 @@ import filterFactory from "react-bootstrap-table2-filter";
 import overlayFactory from "react-bootstrap-table2-overlay";
 import { SpinnerSVG } from "../../containers/SpinnerSVG";
 import { ASCENDING, DESCENDING } from "./constants/formListConstants";
+import { getFormioRoleIds } from "../../apiManager/services/userservices";
 
 const List = React.memo((props) => {
   const { t } = useTranslation();
@@ -89,6 +90,7 @@ const List = React.memo((props) => {
   const isDesigner = userRoles.includes(STAFF_DESIGNER);
   const searchText = useSelector((state) => state.bpmForms.searchText);
   const pageNo = useSelector((state) => state.bpmForms.page);
+  const designerPageNo = useSelector(state => state.forms.pagination?.page);
   const limit = useSelector((state) => state.bpmForms.limit);
   const totalForms = useSelector((state) => state.bpmForms.totalForms);
   const sortBy = useSelector((state) => state.bpmForms.sortBy);
@@ -100,7 +102,9 @@ const List = React.memo((props) => {
   const designTotalForms = forms.pagination.total;
   const formAccess = useSelector((state) => state.user?.formAccess || []);
 
-  const submissionAccess = useSelector((state) => state.user?.submissionAccess || []);
+  const submissionAccess = useSelector(
+    (state) => state.user?.submissionAccess || []
+  );
 
   const searchFormLoading = useSelector(
     (state) => state.formCheckList.searchFormLoading
@@ -134,15 +138,17 @@ const List = React.memo((props) => {
       dispatch(setFormLoading(true));
     } else {
       dispatch(setBPMFormListLoading(true));
+      dispatch(setBpmFormSearch(""));
     }
   }, []);
 
   useEffect(() => {
     if (isDesigner) {
-      getFormsInit(1);
+      getFormsInit(designerPageNo,{limit,query:{...query,title__regex:""}});
     } else {
       dispatch(fetchBPMFormList(pageNo, limit, sortBy, sortOrder, searchText));
     }
+
   }, [
     getFormsInit,
     dispatch,
@@ -153,6 +159,7 @@ const List = React.memo((props) => {
     sortOrder,
     searchText,
   ]);
+
 
   const downloadForms = () => {
     FileService.downloadFile({ forms: formCheckList }, () => {
@@ -172,11 +179,13 @@ const List = React.memo((props) => {
     return false;
   };
   const handlePageChange = (type, newState) => {
+    let modifiedPage;
     dispatch(setFormSearchLoading(true));
     let updatedQuery = { query: { ...query } };
     if (type === "sort") {
       if (isDesigner) {
         updatedQuery.sort = `${isAscending ? "-" : ""}title`;
+        modifiedPage = 1;
       } else {
         let updatedSort;
         if (sortOrder === ASCENDING) {
@@ -202,7 +211,7 @@ const List = React.memo((props) => {
       dispatch(
         indexForms(
           "forms",
-          newState.page,
+          modifiedPage ? modifiedPage : newState.page,
           { limit: newState.sizePerPage, ...updatedQuery },
           () => {
             dispatch(setFormSearchLoading(false));
@@ -509,17 +518,27 @@ const getInitForms = (page = 1, query) => {
   return (dispatch, getState) => {
     const state = getState();
     const currentPage = state.forms.pagination.page;
-    const maintainPagination = state.bpmForms.maintainPagination;
-    dispatch(
-      indexForms(
-        "forms",
-        maintainPagination ? currentPage : page,
-        query,
-        () => {
-          dispatch(setFormLoading(false));
-        }
-      )
-    );
+    // const maintainPagination = state.bpmForms.maintainPagination;
+    // need to reduce calling the indexforms
+    function fetchForms() {
+      dispatch(
+        indexForms("forms", page ? page : currentPage, query, (err) => {
+          if (err === "Bad Token" || err === "Token Expired") {
+            dispatch(
+              getFormioRoleIds((err) => {
+                if (!err) {
+                  fetchForms();
+                }
+                dispatch(setFormLoading(false));
+              })
+            );
+          } else {
+            dispatch(setFormLoading(false));
+          }
+        })
+      );
+    }
+    fetchForms();
   };
 };
 

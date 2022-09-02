@@ -1,0 +1,14 @@
+version: '3.7'
+services:
+  forms-flow-nginx:
+    container_name: forms-flow-nginx
+    image: forms-flow-nginx:v1.0.0
+    restart: unless-stopped
+    ports:
+      - '443:443'
+      - '80:80'
+    networks:
+      - forms-flow-network
+networks:
+  forms-flow-network:
+    external: true

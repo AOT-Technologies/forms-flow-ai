@@ -510,7 +510,6 @@ const List = React.memo((props) => {
                         remote={{
                           pagination: true,
                           filter: true,
-                          sort: true,
                         }}
                         Loading={isLoading}
                         filter={filterFactory()}

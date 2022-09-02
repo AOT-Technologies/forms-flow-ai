@@ -11,7 +11,6 @@ export const designerColums = () => [
   {
     dataField: "title",
     text: <Translation>{(t) => t("Forms")}</Translation>,
-    sort:true,
     headerClasses: "form_title",
   },
   {

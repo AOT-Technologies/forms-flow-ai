@@ -113,6 +113,7 @@ export default React.memo(() => {
   };
 
   const handleChangeFile = (file) => {
+    setShowModeller(false);
     setIsNewDiagram(true);
     let fileData = new FileReader();
     try {

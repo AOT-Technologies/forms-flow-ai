@@ -89,7 +89,7 @@ const List = React.memo((props) => {
   const isDesigner = userRoles.includes(STAFF_DESIGNER);
   const searchText = useSelector((state) => state.bpmForms.searchText);
   const pageNo = useSelector((state) => state.bpmForms.page);
-  const designerPageNo = useSelector(state => state.forms.pagination.page);
+  const designerPageNo = useSelector(state => state.forms.pagination?.page);
   const limit = useSelector((state) => state.bpmForms.limit);
   const totalForms = useSelector((state) => state.bpmForms.totalForms);
   const sortBy = useSelector((state) => state.bpmForms.sortBy);
@@ -135,6 +135,7 @@ const List = React.memo((props) => {
       dispatch(setFormLoading(true));
     } else {
       dispatch(setBPMFormListLoading(true));
+      dispatch(setBpmFormSearch(""));
     }
   }, []);
 
@@ -144,6 +145,7 @@ const List = React.memo((props) => {
     } else {
       dispatch(fetchBPMFormList(pageNo, limit, sortBy, sortOrder, searchText));
     }
+
   }, [
     getFormsInit,
     dispatch,
@@ -154,6 +156,7 @@ const List = React.memo((props) => {
     sortOrder,
     searchText,
   ]);
+
 
   const downloadForms = () => {
     FileService.downloadFile({ forms: formCheckList }, () => {

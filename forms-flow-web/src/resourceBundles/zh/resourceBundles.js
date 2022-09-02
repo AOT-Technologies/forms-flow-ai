@@ -241,6 +241,15 @@ export const RESOURCE_BUNDLES_ZH = {
   "Unfinished applications will be saved to drafts.":"未完成的申请将被保存到草稿中。",
   "Resource":"资源",
   "Error in creating form process mapper":"创建表单流程映射器时出错",
-  "Select the date":"选择日期"
+  "Select the date":"选择日期",
+  "Diagram Deployed":"已部署的图表",
+  "Deployment Failed":"部署失败",
+  "Process name(s) must not be empty":"进程名称不能为空",
+  "URL copied":"已复制网址",
+  "Click Here to Copy":"点击这里复制"
+
+
+
+
 };
 

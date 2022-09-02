@@ -244,5 +244,13 @@ export const RESOURCE_BUNDLES_DE = {
   "Unfinished applications will be saved to drafts.":"Unfertige Bewerbungen werden als Entwürfe gespeichert.",
   "Resource":"Ressource",
   "Error in creating form process mapper":"Fehler beim Erstellen des Formularprozess-Mappers",
-  "Select the date":"Wählen Sie das Datum aus"
+  "Select the date":"Wählen Sie das Datum aus",
+  "Diagram Deployed":"Diagramm bereitgestellt",
+  "Deployment Failed":"Bereitstellung fehlgeschlagen",
+  "Process name(s) must not be empty":"Prozessname(n) dürfen nicht leer sein",
+  "URL copied":"URL kopiert",
+  "Click Here to Copy":"Klicken Sie hier, um zu kopieren"
+
+
+
 };

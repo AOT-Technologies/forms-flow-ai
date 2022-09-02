@@ -263,7 +263,10 @@ export const formio_resourceBundles = {
     "Saving...":"Saving...",
     "Unfinished applications will be saved to drafts.":"Unfinished applications will be saved to drafts.",
     "Error in creating form process mapper":"Error in creating form process mapper",
-    "Select the date":"Select the date"
+    "Select the date":"Select the date",
+    "Diagram Deployed":"Diagram Deployed",
+    "Deployment Failed":"Deployment Failed",
+    "Process name(s) must not be empty":"Process name(s) must not be empty"
   },
 
   "zh-CN": {
@@ -1142,6 +1145,9 @@ export const formio_resourceBundles = {
     "Error in creating form process mapper":"创建表单流程映射器时出错",
     "Select the date":"选择日期",
     "Unfinished applications will be saved to drafts.":"未完成的申请将被保存到草稿中。",
+    "Diagram Deployed":"已部署的图表",
+    "Deployment Failed":"部署失败",
+    "Process name(s) must not be empty":"进程名称不能为空"
   },
 
   bg: {
@@ -2077,7 +2083,10 @@ export const formio_resourceBundles = {
     "Unfinished applications will be saved to drafts.":"Незавършените приложения ще бъдат запазени в чернови.",
     "Resource":"Ресурс",
     "Error in creating form process mapper":"Грешка при създаването на картограф на процес на формуляр",
-    "Select the date":"Изберете датата"
+    "Select the date":"Изберете датата",
+    "Diagram Deployed":"Разгърната диаграма",
+    "Deployment Failed":"Неуспешно внедряване",
+    "Process name(s) must not be empty":"Името(ата) на процесите не трябва да са празни"
   },
 
   pt: {
@@ -3007,7 +3016,11 @@ export const formio_resourceBundles = {
     "Saving...":"Salvando...",
     "Unfinished applications will be saved to drafts.":"Aplicativos inacabados serão salvos em rascunhos.",
     "Error in creating form process mapper":"Erro ao criar mapeador de processo de formulário",
-    "Select the date":"Selecione a data"
+    "Select the date":"Selecione a data",
+    "Diagram Deployed":"Diagrama implantado",
+    "Deployment Failed":"Falha na implantação",
+    "Process name(s) must not be empty":"O(s) nome(s) do processo não deve(m) estar vazio(s)"
+
   },
 
   fr: {
@@ -3945,7 +3958,11 @@ export const formio_resourceBundles = {
     "Saving...":"Économie...",
     "Unfinished applications will be saved to drafts.":"Les candidatures non terminées seront enregistrées dans les brouillons.",
     "Error in creating form process mapper":"Erreur lors de la création du mappeur de processus de formulaire",
-    "Select the date":"Sélectionnez la date"
+    "Select the date":"Sélectionnez la date",
+    "Diagram Deployed":"Diagramme déployé",
+    "Deployment Failed":"Échec du déploiement",
+    "Process name(s) must not be empty":"Le(s) nom(s) de processus ne doivent pas être vides"
+
   },
 
   de: {
@@ -4886,7 +4903,10 @@ export const formio_resourceBundles = {
     "Saving...":"Sparen...",
     "Unfinished applications will be saved to drafts.":"Unfertige Bewerbungen werden als Entwürfe gespeichert.",
     "Error in creating form process mapper":"Fehler beim Erstellen des Formularprozess-Mappers",
-    "Select the date":"Wählen Sie das Datum aus"
+    "Select the date":"Wählen Sie das Datum aus",
+    "Diagram Deployed":"Diagramm bereitgestellt",
+    "Deployment Failed":"Bereitstellung fehlgeschlagen",
+    "Process name(s) must not be empty":"Prozessname(n) dürfen nicht leer sein"
 
 
 

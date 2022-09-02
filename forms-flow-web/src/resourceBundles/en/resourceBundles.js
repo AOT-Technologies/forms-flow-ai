@@ -242,7 +242,16 @@ export const RESOURCE_BUNDLES_EN = {
   "Unfinished applications will be saved to drafts.":"Unfinished applications will be saved to drafts.",
   "Resource":"Resource",
   "Error in creating form process mapper":"Error in creating form process mapper",
-  "Select the date":"Select the date"
+  "Select the date":"Select the date",
+  "Diagram Deployed":"Diagram Deployed",
+  "Deployment Failed":"Deployment Failed",
+  "Process name(s) must not be empty":"Process name(s) must not be empty",
+  "URL copied":"URL copied",
+  "Click Here to Copy":"Click Here to Copy"
+
+
+
+
 };
 
 

@@ -6,7 +6,7 @@ import Card from "@material-ui/core/Card";
 import CardContent from "@material-ui/core/CardContent";
 import TextField from "@material-ui/core/TextField";
 import { useSelector } from "react-redux";
-import { Translation, useTranslation } from "react-i18next";
+import {  useTranslation } from "react-i18next";
 import SaveNext from "./SaveNext";
 
 const Preview = React.memo(
@@ -97,14 +97,11 @@ const Preview = React.memo(
                         data-toggle="tooltip"
                         data-placement="top"
                         title={
-                          copied ? (
-                            <Translation>{(t) => t("URL copied")}</Translation>
-                          ) : (
-                            <Translation>
-                              {(t) => t("Click Here to Copy")}
-                            </Translation>
-                          )
-                        }
+                          copied ? 
+                             (t("URL copied"))
+                           : 
+                             (t("Click Here to Copy"))
+                            }
                         className={`coursor-pointer btn ${
                           copied ? "text-success" : "text-primary"
                         }`}

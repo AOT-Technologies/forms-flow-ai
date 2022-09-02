@@ -95,6 +95,7 @@ const Dashboard = React.memo(() => {
 
   // Function to handle search text
   const handleSearch = () => {
+    dispatch(setMetricsSubmissionPageChange(1));
     dispatch(setMetricsSubmissionLimitChange(6));
     dispatch(setMetricsSubmissionSearch(searchInputBox.current.value));
 
@@ -109,7 +110,7 @@ const Dashboard = React.memo(() => {
   };
   // Function to handle sort for submission data
   const handleSort = () => {
-    //setOpacity(1);
+    dispatch(setMetricsSubmissionPageChange(1));
     setIsAscending(!isAscending);
     const updatedQuery = {
       sort: isAscending ? 'asc' : "desc",

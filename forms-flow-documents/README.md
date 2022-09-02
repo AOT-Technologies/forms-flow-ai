@@ -1,7 +1,8 @@
 # formsflow.ai EXPORT API
 
-![Python](https://img.shields.io/badge/python-3.9-blue) ![Flask](https://img.shields.io/badge/Flask-1.1.4-blue) ![postgres](https://img.shields.io/badge/postgres-11.0-blue)
-[![Imports: isort](https://img.shields.io/badge/%20imports-isort-%231674b1?style=flat&labelColor=ef8336)](https://pycqa.github.io/isort/) [![Code style: black](https://img.shields.io/badge/code%20style-black-000000.svg)](https://github.com/psf/black)[![linting: pylint](https://img.shields.io/badge/linting-pylint-yellowgreen)](https://github.com/PyCQA/pylint)
+![Python](https://img.shields.io/badge/python-3.9-blue) ![Flask](https://img.shields.io/badge/Flask-2.1.3-blue) ![postgres](https://img.shields.io/badge/postgres-11.0-blue)
+[![Imports: isort](https://img.shields.io/badge/%20imports-isort-%231674b1?style=flat&labelColor=ef8336)](https://pycqa.github.io/isort/) [![Code style: black](https://img.shields.io/badge/code%20style-black-000000.svg)](https://github.com/psf/black)
+[![linting: pylint](https://img.shields.io/badge/linting-pylint-yellowgreen)](https://github.com/PyCQA/pylint)
 
 
 The goal of the document API is to provide generate pdf with form submission data. It is built using Python :snake: .
@@ -79,7 +80,7 @@ Variable name | Meaning | Possible values | Default value |
 
 ### Verify the Application Status
 
-   The application should be up and available for use at port defaulted to 5000 in <http://localhost:5006/>
+   The application should be up and available for use at port defaulted to 5006 in <http://localhost:5006/>
   
 * Access the **/checkpoint** endpoint for a Health Check on API to see it's up and running.
 

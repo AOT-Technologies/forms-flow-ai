@@ -29,7 +29,7 @@ import { CUSTOM_EVENT_TYPE } from "../constants/customEventTypes";
 import { getTaskSubmitFormReq } from "../../../apiManager/services/bpmServices";
 import { useParams } from "react-router-dom";
 import { push } from "connected-react-router";
-import { setFormSubmissionLoading } from "../../../actions/formActions";
+import { resetFormData, setFormSubmissionLoading } from "../../../actions/formActions";
 import { useTranslation } from "react-i18next";
 import {
   CUSTOM_SUBMISSION_URL,
@@ -37,6 +37,7 @@ import {
   MULTITENANCY_ENABLED,
 } from "../../../constants/constants";
 import { getCustomSubmission } from "../../../apiManager/services/FormServices";
+import { getFormioRoleIds } from "../../../apiManager/services/userservices";
 
 const ServiceFlowTaskDetails = React.memo(() => {
   const { t } = useTranslation();
@@ -104,13 +105,33 @@ const ServiceFlowTaskDetails = React.memo(() => {
     (formUrl) => {
       const { formId, submissionId } = getFormIdSubmissionIdFromURL(formUrl);
       Formio.clearCache();
-      dispatch(getForm("form", formId));
-      if (CUSTOM_SUBMISSION_URL && CUSTOM_SUBMISSION_ENABLE) {
-        dispatch(getCustomSubmission(submissionId, formId));
-      } else {
-        dispatch(getSubmission("submission", submissionId, formId));
+      function fetchForm (){
+        dispatch(getForm("form", formId,(err)=>{
+          if(!err){
+            if (CUSTOM_SUBMISSION_URL && CUSTOM_SUBMISSION_ENABLE) {
+              dispatch(getCustomSubmission(submissionId, formId));
+            } else {
+              dispatch(getSubmission("submission", submissionId, formId));
+            }
+            dispatch(setFormSubmissionLoading(false));
+          }else{
+              if(err === "Bad Token" || err === "Token Expired"){
+                dispatch(resetFormData("form"));
+                dispatch(getFormioRoleIds((err)=>{
+                  if(!err){
+                    fetchForm();
+                  }else{
+                    dispatch(setFormSubmissionLoading(false));  
+                  }
+                }));
+              }else{
+                dispatch(setFormSubmissionLoading(false));
+              }
+          }
+        }));
       }
-      dispatch(setFormSubmissionLoading(false));
+      fetchForm();
+      
     },
     [dispatch]
   );

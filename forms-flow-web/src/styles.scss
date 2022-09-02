@@ -534,6 +534,26 @@ header nav {
   width: 40px;
 }
 
+.sort-span {
+  cursor: pointer;
+  border: 1px solid #0071EB;
+  border-radius: 0.25rem;
+  padding: 4px;
+  padding-left: 6px;
+  padding-top: 0px;
+  border-radius: 6px;
+  width: 35px;
+}
+
+.sort-span:hover {
+
+  background-color: #0071EB;
+
+  .fa-lg-hover {
+    color: white;
+  }
+}
+
 .custom-app-name {
   font-size: 30px;
   font-weight: 600;

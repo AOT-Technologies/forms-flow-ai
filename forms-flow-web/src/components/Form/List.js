@@ -54,7 +54,6 @@ import paginationFactory from "react-bootstrap-table2-paginator";
 import filterFactory from "react-bootstrap-table2-filter";
 import overlayFactory from "react-bootstrap-table2-overlay";
 import { SpinnerSVG } from "../../containers/SpinnerSVG";
-import { ASCENDING, DESCENDING } from "./constants/formListConstants";
 import { getFormioRoleIds } from "../../apiManager/services/userservices";
 
 const List = React.memo((props) => {
@@ -83,14 +82,10 @@ const List = React.memo((props) => {
   );
   const bpmForms = useSelector((state) => state.bpmForms);
   const [previousForms, setPreviousForms] = useState({});
-  // View submissions feature will be deprecated in the future releases.
-
-  // const showViewSubmissions = useSelector((state) => state.user.showViewSubmissions);
   const query = useSelector((state) => state.forms.query);
   const isDesigner = userRoles.includes(STAFF_DESIGNER);
   const searchText = useSelector((state) => state.bpmForms.searchText);
   const pageNo = useSelector((state) => state.bpmForms.page);
-  const designerPageNo = useSelector(state => state.forms.pagination?.page);
   const limit = useSelector((state) => state.bpmForms.limit);
   const totalForms = useSelector((state) => state.bpmForms.totalForms);
   const sortBy = useSelector((state) => state.bpmForms.sortBy);
@@ -116,9 +111,6 @@ const List = React.memo((props) => {
   const applicationCount = useSelector(
     (state) => state.process.applicationCount
   );
-  const sort = useSelector((state) => state.forms.sort);
-
-  const isAscending = isDesigner ? !sort.match(/^-/g) : null;
   const tenantKey = tenants?.tenantId;
   const redirectUrl = MULTITENANCY_ENABLED ? `/tenant/${tenantKey}/` : "/";
   const [isLoading, setIsLoading] = React.useState(false);
@@ -144,8 +136,15 @@ const List = React.memo((props) => {
 
   useEffect(() => {
     if (isDesigner) {
-      getFormsInit(designerPageNo,{limit,query:{...query,title__regex:""}});
+
+      setShowClearButton(searchText);
+      let updatedQuery = { query: { ...query } };
+      updatedQuery.query.title__regex = searchText;
+      updatedQuery.sort = sortOrder;
+
+      getFormsInit(1, updatedQuery);
     } else {
+      setShowClearButton(searchText);
       dispatch(fetchBPMFormList(pageNo, limit, sortBy, sortOrder, searchText));
     }
 
@@ -164,8 +163,7 @@ const List = React.memo((props) => {
   const downloadForms = () => {
     FileService.downloadFile({ forms: formCheckList }, () => {
       toast.success(
-        `${formCheckList.length} ${
-          formCheckList.length === 1 ? t("Form") : t("Forms")
+        `${formCheckList.length} ${formCheckList.length === 1 ? t("Form") : t("Forms")
         } ${t("Downloaded Successfully")}`
       );
       dispatch(setFormCheckList([]));
@@ -182,31 +180,6 @@ const List = React.memo((props) => {
     let modifiedPage;
     dispatch(setFormSearchLoading(true));
     let updatedQuery = { query: { ...query } };
-    if (type === "sort") {
-      if (isDesigner) {
-        updatedQuery.sort = `${isAscending ? "-" : ""}title`;
-        modifiedPage = 1;
-      } else {
-        let updatedSort;
-        if (sortOrder === ASCENDING) {
-          updatedSort = DESCENDING;
-          dispatch(setBPMFormListSort(updatedSort));
-        } else {
-          updatedSort = ASCENDING;
-          dispatch(setBPMFormListSort(updatedSort));
-        }
-      }
-    } else if (type === "filter") {
-      let searchTitle = Object.keys(newState.filters).length
-        ? newState.filters.title.filterVal
-        : "";
-      if (isDesigner) {
-        updatedQuery.query.title__regex = searchTitle;
-      } else {
-        dispatch(setBpmFormSearch(searchTitle));
-      }
-    }
-
     if (isDesigner) {
       dispatch(
         indexForms(
@@ -260,17 +233,17 @@ const List = React.memo((props) => {
                             "form",
                             newFormData,
                             (newFormData,
-                            (err) => {
-                              if (!err) {
-                                dispatch(updateFormUploadCounter());
-                                resolve();
-                              } else {
-                                dispatch(setFormFailureErrorData("form", err));
-                                toast.error(t("Error in JSON file structure"));
-                                setShowFormUploadModal(false);
-                                reject();
-                              }
-                            })
+                              (err) => {
+                                if (!err) {
+                                  dispatch(updateFormUploadCounter());
+                                  resolve();
+                                } else {
+                                  dispatch(setFormFailureErrorData("form", err));
+                                  toast.error(t("Error in JSON file structure"));
+                                  setShowFormUploadModal(false);
+                                  reject();
+                                }
+                              })
                           )
                         );
                       } else {
@@ -328,6 +301,37 @@ const List = React.memo((props) => {
       </span>
     );
   };
+  const searchInputBox = useRef("");
+  const [showClearButton, setShowClearButton] = useState("");
+  const handleSearch = () => {
+    if (searchText != searchInputBox.current.value) {
+      dispatch(setFormSearchLoading(true));
+    }
+    dispatch(setBpmFormSearch(searchInputBox.current.value));
+  };
+  const onClear = () => {
+    dispatch(setFormSearchLoading(true));
+    searchInputBox.current.value = "";
+    setShowClearButton(false);
+    handleSearch();
+  };
+  const [isAscend, setIsAscending] = useState(false);
+  const handleSort = () => {
+    dispatch(setFormSearchLoading(true));
+    setIsAscending(!isAscend);
+    let updatedQuery = { query: { ...query } };
+    if (isDesigner) {
+      updatedQuery = `${isAscend ? "-" : ""}title`;
+      dispatch(setBPMFormListSort(updatedQuery));
+    } else {
+      const updatedQuery = isAscend ? 'asc' : "desc";
+
+      dispatch(setBPMFormListSort(updatedQuery));
+
+    }
+
+    // dispatch(setMetricsSubmissionSort(updatedQuery.sort || "asc"));
+  };
 
   const formData =
     (() =>
@@ -344,7 +348,7 @@ const List = React.memo((props) => {
         onClose={() => setShowFormUploadModal(false)}
       />
       {(forms.isActive || designerFormLoading || isBPMFormListLoading) &&
-      !searchFormLoading ? (
+        !searchFormLoading ? (
         <div data-testid="Form-list-component-loader">
           <Loading />
         </div>
@@ -355,19 +359,16 @@ const List = React.memo((props) => {
             message={
               formProcessData.id && applicationCount
                 ? applicationCountResponse
-                  ? `${applicationCount} ${
-                      applicationCount > 1
-                        ? `${t("Applications are submitted against")}`
-                        : `${t("Application is submitted against")}`
-                    } "${props.formName}". ${t(
-                      "Are you sure you wish to delete the form?"
-                    )}`
-                  : `${t("Are you sure you wish to delete the form ")} "${
-                      props.formName
-                    }"?`
-                : `${t("Are you sure you wish to delete the form ")} "${
-                    props.formName
+                  ? `${applicationCount} ${applicationCount > 1
+                    ? `${t("Applications are submitted against")}`
+                    : `${t("Application is submitted against")}`
+                  } "${props.formName}". ${t(
+                    "Are you sure you wish to delete the form?"
+                  )}`
+                  : `${t("Are you sure you wish to delete the form ")} "${props.formName
                   }"?`
+                : `${t("Are you sure you wish to delete the form ")} "${props.formName
+                }"?`
             }
             onNo={() => onNo()}
             onYes={(e) => {
@@ -435,7 +436,69 @@ const List = React.memo((props) => {
           </div>
           <section className="custom-grid grid-forms">
             <Errors errors={errors} />
-
+            <div className="  row mt-2 mx-2" >
+              <div className="col" style={{ marginLeft: "5px" }}>
+                <div className="input-group">
+                  <span
+                    className="sort-span"
+                    onClick={handleSort}
+                    style={{
+                      cursor: "pointer",
+                      marginBottom: "8px"
+                    }}>
+                    <i
+                      className="fa fa-long-arrow-up fa-lg mt-2 fa-lg-hover"
+                      title="Sort by form name"
+                      style={{
+                        opacity: `${sortOrder === "asc" || sortOrder === "title" ? 1 : 0.5}`,
+                      }}
+                    />
+                    <i
+                      className="fa fa-long-arrow-down fa-lg mt-2 ml-1 fa-lg-hover"
+                      title="Sort by form name"
+                      style={{
+                        opacity: `${sortOrder === "desc" || sortOrder === "-title" ? 1 : 0.5}`,
+                      }}
+                    />
+                  </span>
+                  <div className="form-outline ml-3">
+                    <input
+                      type="search"
+                      id="form1"
+                      ref={searchInputBox}
+                      onKeyPress={(e) =>
+                        e.key === "Enter" && handleSearch()
+                      }
+                      onChange={(e) => {
+                        setShowClearButton(e.target.value);
+                        e.target.value === "" && handleSearch();
+                      }}
+                      autoComplete="off"
+                      className="form-control"
+                      placeholder={t(searchText ? searchText : "Search...")}
+                    />
+                  </div>
+                  {showClearButton && (
+                    <button
+                      type="button"
+                      className="btn btn-outline-primary ml-2"
+                      onClick={() => onClear()}
+                    >
+                      <i className="fa fa-times"></i>
+                    </button>
+                  )}
+                  <button
+                    type="button"
+                    className="btn btn-outline-primary ml-2"
+                    name="search-button"
+                    title={t("Click to search")}
+                    onClick={() => handleSearch()}
+                  >
+                    <i className="fa fa-search"></i>
+                  </button>
+                </div>
+              </div>
+            </div>
             <ToolkitProvider
               bootstrap4
               keyField="id"
@@ -455,7 +518,6 @@ const List = React.memo((props) => {
                         remote={{
                           pagination: true,
                           filter: true,
-                          sort: true,
                         }}
                         Loading={isLoading}
                         filter={filterFactory()}
@@ -476,13 +538,12 @@ const List = React.memo((props) => {
                             overlay: (base) => ({
                               ...base,
                               background: "rgba(255, 255, 255)",
-                              height: `${
-                                isDesigner
-                                  ? designerLimit
-                                  : limit > 5
+                              height: `${isDesigner
+                                ? designerLimit
+                                : limit > 5
                                   ? "100% !important"
                                   : "350px !important"
-                              }`,
+                                }`,
                               top: "65px",
                             }),
                           },
@@ -518,6 +579,20 @@ const getInitForms = (page = 1, query) => {
   return (dispatch, getState) => {
     const state = getState();
     const currentPage = state.forms.pagination.page;
+
+    const maintainPagination = state.bpmForms.maintainPagination;
+    dispatch(
+      indexForms(
+        "forms",
+        maintainPagination ? currentPage : page,
+        query,
+        () => {
+          dispatch(setFormLoading(false));
+          dispatch(setFormSearchLoading(false));
+        }
+      )
+    );
+
     // const maintainPagination = state.bpmForms.maintainPagination;
     // need to reduce calling the indexforms
     function fetchForms() {

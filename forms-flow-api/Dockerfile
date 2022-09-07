@@ -20,5 +20,6 @@ RUN pip install -e .
 
 EXPOSE 5000
 COPY wait-for-service.sh /wait-for-service.sh
+RUN chmod u+x /wait-for-service.sh
 RUN chmod u+x ./entrypoint.sh
 ENTRYPOINT ["/bin/sh", "entrypoint.sh"]

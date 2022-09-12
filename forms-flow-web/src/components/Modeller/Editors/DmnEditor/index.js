@@ -83,6 +83,7 @@ export default React.memo(
     }, [processKey, tenant, dispatch]);
 
     useEffect(() => {
+      tenant === null ? setApplyAllTenants(true) : '';
       if (diagramXML && dmnModeller) {
         dmnModeller
           .importXML(diagramXML)
@@ -123,7 +124,6 @@ export default React.memo(
     const handleApplyAllTenants = () => {
       setApplyAllTenants(!applyAllTenants);
     };
-
     const deployProcess = async () => {
       let xml = await createXML(dmnModeller);
       // Deploy to Camunda
@@ -298,7 +298,7 @@ export default React.memo(
         <div>
           {MULTITENANCY_ENABLED ? (
             <label className="deploy-checkbox">
-              <input type="checkbox" onClick={handleApplyAllTenants} /> Apply
+              <input type="checkbox" checked={applyAllTenants ? true : false} onClick={handleApplyAllTenants} /> Apply
               for all tenants
             </label>
           ) : null}

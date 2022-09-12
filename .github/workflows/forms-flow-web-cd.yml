@@ -3,9 +3,10 @@ name: Push Forms flow Web to registry
 on:
   workflow_dispatch:
   push:
-    branches: [ master, develop ]
+    branches: [ master, develop, release/* ]
     paths:
       - "forms-flow-web/**"
+      - "VERSION"
 
 defaults:
   run:
@@ -36,7 +37,7 @@ jobs:
         with:
           install: true
       - name: Set version
-        if: ${{ github.ref == 'refs/heads/develop' }}
+        if: ${{ github.ref != 'refs/heads/master' }}
         working-directory: .
         run: |
           VER=$(cat VERSION)
@@ -74,7 +75,7 @@ jobs:
             ${{ runner.os }}-buildx-${{ matrix.name }}
 
       - name: Build and push Docker image
-        if: ${{ github.ref == 'refs/heads/develop' }}
+        if: ${{ github.ref != 'refs/heads/master' }}
         uses: docker/build-push-action@v2
         with:
           context: forms-flow-web

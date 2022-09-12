@@ -27,17 +27,11 @@ function TaskHead() {
       
         <div
          
-          className='head-item'
+          className='head-item padding-right-60'
         >
           <h3 className="application-head">
-            <i
-              className={`fa fa-`}
-              style={{ marginTop: "5px" }}
-              aria-hidden="true"
-            />
-            <span className="application-text">
+            <span className="application-text mr-5">
                   <NavDropdown
-                  style = {{color:"black"}}
                   className={`main-nav nav-item taskDropdown  ${
                     pathname.match(createURLPathMatchExp("task", baseUrl))
                       ? "active-tab-dropdown"

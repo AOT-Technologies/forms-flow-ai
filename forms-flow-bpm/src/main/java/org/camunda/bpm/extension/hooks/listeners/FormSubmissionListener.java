@@ -49,9 +49,9 @@ public class FormSubmissionListener extends BaseListener implements ExecutionLis
         String submissionId = formSubmissionService.createRevision(String.valueOf(execution.getVariables().get(FORM_URL)));
         String webFormUrl = String.valueOf(execution.getVariables().get(WEB_FORM_URL));
         execution.setVariable(FORM_URL, getUrl(execution) + "/" + submissionId);
-        if(!webFormUrl.isBlank()) {
+        if (!webFormUrl.isBlank()) {
             execution.setVariable(WEB_FORM_URL, getWebUrl(execution) + "/" + submissionId);
-        }else {
+        } else {
             execution.setVariable(WEB_FORM_URL, "");
         }
     }

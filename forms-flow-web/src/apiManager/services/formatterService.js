@@ -159,8 +159,9 @@ export const checkIsObjectId = (data) => {
 export const listProcess = (processes) => {
   if (processes?.length > 0) {
     const data = processes.map((process) => {
+      const fullLabel = process.name + ` (${process.key})`;
       return {
-        label: process.name,
+        label: fullLabel,
         value: process.key,
         tenant: process.tenantId,
       };

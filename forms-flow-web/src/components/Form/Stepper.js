@@ -11,7 +11,7 @@ import { toast } from "react-toastify";
 import Create from "./Create.js";
 import Preview from "./Item/Preview.js";
 import Edit from "./Item/Edit.js";
-import { Translation,withTranslation } from "react-i18next";
+import { Translation, withTranslation } from "react-i18next";
 import "../../resourceBundles/i18n";
 
 //TODO convert this code to functional component

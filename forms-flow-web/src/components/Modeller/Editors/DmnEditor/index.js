@@ -163,7 +163,7 @@ export default React.memo(
           if (res?.data) {
             toast.success(t(SUCCESS_MSG));
             // Reload the dropdown menu
-            updateBpmProcesses(xml);
+            updateDmnProcesses(xml, res.data.deployedDecisionDefinitions);
           } else {
             toast.error(t(ERROR_MSG));
           }
@@ -190,7 +190,7 @@ export default React.memo(
       }
     };
 
-    const updateBpmProcesses = (xml) => {
+    const updateDmnProcesses = (xml, deployedDecisionDefinitions) => {
       // Update drop down with all processes
       dispatch(fetchAllDmnProcesses(tenantKey));
       // Show the updated workflow as the current value in the dropdown
@@ -198,6 +198,7 @@ export default React.memo(
         label: extractDataFromDiagram(xml, true).name,
         value: extractDataFromDiagram(xml, true).processId,
         xml: xml,
+        deployedDefinitions: deployedDecisionDefinitions
       };
       dispatch(setWorkflowAssociation(updatedWorkflow));
     };

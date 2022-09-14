@@ -1,6 +1,7 @@
 package org.camunda.bpm.extension.hooks.rest.impl;
 
 import org.camunda.bpm.engine.rest.ProcessInstanceRestService;
+import org.camunda.bpm.engine.rest.dto.VariableValueDto;
 import org.camunda.bpm.extension.hooks.rest.ProcessInstanceRestResource;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -8,6 +9,8 @@ import org.springframework.hateoas.EntityModel;
 
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
+
+import java.util.Map;
 
 public class ProcessInstanceRestResourceImpl implements ProcessInstanceRestResource {
 
@@ -26,4 +29,9 @@ public class ProcessInstanceRestResourceImpl implements ProcessInstanceRestResou
         return EntityModel.of(responseEntity,
                 linkTo(methodOn(ProcessInstanceRestResourceImpl.class).getActivityInstanceTree(id)).withSelfRel());
     }
+
+	@Override
+	public Map<String, VariableValueDto> getVariables(String id) {
+		return restService.getProcessInstance(id).getVariablesResource().getVariables(false);
+	}
 }

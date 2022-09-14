@@ -31,4 +31,4 @@ class ApplicationHistoryService:
         for history in history_data:
             history['formUrl'] = f"{current_app.config.get('FORMIO_URL')}/form/" \
                                  f"{history['formId']}/submission/{history['submissionId']}"
-        return
+        return history

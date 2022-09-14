@@ -28,7 +28,9 @@ class ApplicationHistoryService:
         schema = ApplicationHistorySchema()
         history_data = schema.dump(application_history, many=True)
         # This to make the API backward compatible by constructing the formUrl.
+        history_response = []
         for history in history_data:
             history['formUrl'] = f"{current_app.config.get('FORMIO_URL')}/form/" \
                                  f"{history['formId']}/submission/{history['submissionId']}"
-        return history
+            history_response.append(history)
+        return history_response

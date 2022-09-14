@@ -641,3 +641,13 @@ a{
 .info-background {
   background-color: #FFDBDB;
 }
+
+.formio-wizard-nav-container 
+{
+  display: flex;
+  flex-wrap: nowrap;
+  flex-direction: row;
+}
+.btn-wizard-nav-submit, .btn-wizard-nav-next, .btn-wizard-nav-previous{
+  margin-left:5px;
+}

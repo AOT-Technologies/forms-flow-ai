@@ -31,7 +31,9 @@ class ApplicationHistoryService:
         # Response is coming as single object and nor array if there is only 1 element. Need to investigate.
         history_response = []
         for history in history_data:
-            history['formUrl'] = f"{current_app.config.get('FORMIO_URL')}/form/" \
-                                 f"{history['formId']}/submission/{history['submissionId']}"
+            history["formUrl"] = (
+                f"{current_app.config.get('FORMIO_URL')}/form/"
+                f"{history['formId']}/submission/{history['submissionId']}"
+            )
             history_response.append(history)
         return history_response

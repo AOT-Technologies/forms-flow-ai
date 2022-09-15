@@ -28,6 +28,7 @@ class ApplicationHistoryService:
         schema = ApplicationHistorySchema()
         history_data = schema.dump(application_history, many=True)
         # This to make the API backward compatible by constructing the formUrl.
+        # Response is coming as single object and nor array if there is only 1 element. Need to investigate.
         history_response = []
         for history in history_data:
             history['formUrl'] = f"{current_app.config.get('FORMIO_URL')}/form/" \

@@ -22,7 +22,7 @@ public class FormsFlowProcessEngineRestServiceImpl extends DefaultProcessEngineR
         return subResource;
     }
 
-    @Path("/v1")
+    @Path("/v1/version/")
     public FormsFlowV1RestServiceImpl getFormsFlowV1RestService() {
         return new FormsFlowV1RestServiceImpl(this, serviceFinder);
     }

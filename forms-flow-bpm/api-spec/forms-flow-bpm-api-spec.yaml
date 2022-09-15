@@ -51,7 +51,7 @@ tags:
     description: Update Log Level
   - name: Authorization check
 paths:
-  /engine-rest-ext/v1/filter/create:
+  /engine-rest-ext/v1/version/filter/create:
     post:
       tags:
         - Filter
@@ -113,7 +113,7 @@ paths:
               examples:
                 example-1:
                   value: {}
-  /engine-rest-ext/v1/filter:
+  /engine-rest-ext/v1/version/filter:
     get:
       tags:
         - Filter
@@ -160,7 +160,7 @@ paths:
             type: string
           in: query
           name: itemCount
-  /engine-rest-ext/v1/filter/count:
+  /engine-rest-ext/v1/version/filter/count:
     get:
       tags:
         - Filter
@@ -182,7 +182,7 @@ paths:
               examples:
                 example-1:
                   value: {}
-  '/engine-rest-ext/v1/filter/{filter_id}':
+  '/engine-rest-ext/v1/version/filter/{filter_id}':
     delete:
       tags:
         - Filter
@@ -202,7 +202,7 @@ paths:
           description: Successful response
           content:
             application/json: {}
-  /engine-rest-ext/v1/deployment/create:
+  /engine-rest-ext/v1/version/deployment/create:
     post:
       tags:
         - Process
@@ -258,7 +258,7 @@ paths:
               example:
                 links:
                   - method: GET
-                    href: 'http://localhost:8000/camunda/engine-rest-ext/v1/deployment/16cee73b-19c6-11ec-9f26-0242ac170003'
+                    href: 'http://localhost:8000/camunda/engine-rest-ext/v1/version/deployment/16cee73b-19c6-11ec-9f26-0242ac170003'
                     rel: self
                 id: 16cee73b-19c6-11ec-9f26-0242ac170003
                 name: Payment check
@@ -284,7 +284,7 @@ paths:
                 deployedCaseDefinitions: null
                 deployedDecisionDefinitions: null
                 deployedDecisionRequirementsDefinitions: null
-  /engine-rest-ext/v1/process-instance:
+  /engine-rest-ext/v1/version/process-instance:
     get:
       tags:
         - Process
@@ -579,7 +579,7 @@ paths:
                   ended: false
                   suspended: false
                   tenantId: null
-  /engine-rest-ext/v1/process-definition:
+  /engine-rest-ext/v1/version/process-definition:
     get:
       tags:
         - Process
@@ -740,7 +740,7 @@ paths:
                       versionTag: '1'
                       historyTimeToLive: null
                       startableInTasklist: true
-  /engine-rest-ext/v1/process-definition/key/onestepapproval/start:
+  /engine-rest-ext/v1/version/process-definition/key/onestepapproval/start:
     post:
       tags:
         - Process
@@ -776,7 +776,7 @@ paths:
                         {
                             "method": "GET",
                             "href": "
-                http: //localhost:8000/camunda/engine-rest-ext/v1/process-instance/648c9e74-cc5b-11ec-8f27-0242ac180003", "rel" : "self"
+                http: //localhost:8000/camunda/engine-rest-ext/v1/version/process-instance/648c9e74-cc5b-11ec-8f27-0242ac180003", "rel" : "self"
                         }
                     ],
                     "id": "648c9e74-cc5b-11ec-8f27-0242ac180003",
@@ -792,7 +792,7 @@ paths:
                 example-1:
                   value: {}
     parameters: []
-  /engine-rest-ext/v1/process-definition/key/Defaultflow/start:
+  /engine-rest-ext/v1/version/process-definition/key/Defaultflow/start:
     post:
       tags:
         - Process
@@ -828,7 +828,7 @@ paths:
                         {
                             "method": "GET",
                             "href": "
-                http: //localhost:8000/camunda/engine-rest-ext/v1/process-instance/648c9e74-cc5b-11ec-8f27-0242ac180003", "rel" : "self"
+                http: //localhost:8000/camunda/engine-rest-ext/v1/version/process-instance/648c9e74-cc5b-11ec-8f27-0242ac180003", "rel" : "self"
                         }
                     ],
                     "id": "648c9e74-cc5b-11ec-8f27-0242ac180003",
@@ -845,7 +845,7 @@ paths:
                   value:
                     id: test
     parameters: []
-  /engine-rest-ext/v1/process-definition/key/onestepapproval/start?tenantId=test-tenant:
+  /engine-rest-ext/v1/version/process-definition/key/onestepapproval/start?tenantId=test-tenant:
     post:
       tags:
         - Process
@@ -881,7 +881,7 @@ paths:
                         {
                             "method": "GET",
                             "href": "
-                http: //localhost:8000/camunda/engine-rest-ext/v1/process-instance/648c9e74-cc5b-11ec-8f27-0242ac180003", "rel" : "self"
+                http: //localhost:8000/camunda/engine-rest-ext/v1/version/process-instance/648c9e74-cc5b-11ec-8f27-0242ac180003", "rel" : "self"
                         }
                     ],
                     "id": "648c9e74-cc5b-11ec-8f27-0242ac180003",
@@ -896,7 +896,7 @@ paths:
                 example-1:
                   value: {}
     parameters: []
-  /engine-rest-ext/v1/authorization/create:
+  /engine-rest-ext/v1/version/authorization/create:
     post:
       tags:
         - Permissions
@@ -953,7 +953,7 @@ paths:
                 resourceId: '*'
                 removalTime: null
                 rootProcessInstanceId: null
-  /engine-rest-ext/v1/authorization:
+  /engine-rest-ext/v1/version/authorization:
     get:
       tags:
         - Permissions
@@ -1033,7 +1033,7 @@ paths:
                   resourceId: '*'
                   removalTime: null
                   rootProcessInstanceId: null
-  '/engine-rest-ext/v1/authorization/{authorizationId}':
+  '/engine-rest-ext/v1/version/authorization/{authorizationId}':
     delete:
       tags:
         - Permissions
@@ -1053,7 +1053,7 @@ paths:
           description: Successful response
           content:
             application/json: {}
-  /engine-rest-ext/v1/task/create:
+  /engine-rest-ext/v1/version/task/create:
     post:
       tags:
         - Task
@@ -1070,7 +1070,7 @@ paths:
           description: Successful response
           content:
             application/json: {}
-  /engine-rest-ext/v1/task:
+  /engine-rest-ext/v1/version/task:
     get:
       tags:
         - Task
@@ -1612,7 +1612,7 @@ paths:
                   suspended: false
                   formKey: null
                   tenantId: null
-  '/engine-rest-ext/v1/task/{id}':
+  '/engine-rest-ext/v1/version/task/{id}':
     get:
       tags:
         - Task
@@ -1632,7 +1632,7 @@ paths:
           description: Successful response
           content:
             application/json: {}
-  '/engine-rest-ext/v1/task/{taskId}/claim':
+  '/engine-rest-ext/v1/version/task/{taskId}/claim':
     post:
       tags:
         - Task
@@ -1659,7 +1659,7 @@ paths:
           description: Successful response
           content:
             application/json: {}
-  '/engine-rest-ext/v1/task/{taskId}/unclaim':
+  '/engine-rest-ext/v1/version/task/{taskId}/unclaim':
     post:
       tags:
         - Task
@@ -1698,7 +1698,7 @@ paths:
           description: Successful response
           content:
             application/json: {}
-  /engine-rest-ext/v1/admin/form/authorization:
+  /engine-rest-ext/v1/version/admin/form/authorization:
     get:
       tags:
         - Authorization check
@@ -1739,7 +1739,7 @@ paths:
                     authorizationList:
                       - resourceId: ''
     parameters: []
-  /engine-rest-ext/v1/admin/tenant/authorization:
+  /engine-rest-ext/v1/version/admin/tenant/authorization:
     get:
       summary: Your GET endpoint
       tags: []

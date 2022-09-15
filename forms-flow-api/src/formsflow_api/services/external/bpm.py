@@ -139,19 +139,19 @@ class BPMService(BaseBPMService):
         bpm_api_base = current_app.config.get("BPM_API_URL")
         try:
             if endpoint_type == BPMEndpointType.PROCESS_DEFINITION:
-                url = f"{bpm_api_base}/engine-rest-ext/v1/process-definition"
+                url = f"{bpm_api_base}/engine-rest-ext/v1/version/process-definition"
             elif endpoint_type == BPMEndpointType.FORM_AUTH_DETAILS:
-                url = f"{bpm_api_base}/engine-rest-ext/v1/admin/form/authorization"
+                url = f"{bpm_api_base}/engine-rest-ext/v1/version/admin/form/authorization"
             elif endpoint_type == BPMEndpointType.HISTORY:
-                url = f"{bpm_api_base}/engine-rest-ext/v1/task/"
+                url = f"{bpm_api_base}/engine-rest-ext/v1/version/task/"
             elif endpoint_type == BPMEndpointType.TASK:
-                url = f"{bpm_api_base}/engine-rest-ext/v1/task/"
+                url = f"{bpm_api_base}/engine-rest-ext/v1/version/task/"
             elif endpoint_type == BPMEndpointType.PROCESS_DEFINITION_XML:
-                url = f"{bpm_api_base}/engine-rest-ext/v1/process-definition/key/"
+                url = f"{bpm_api_base}/engine-rest-ext/v1/version/process-definition/key/"
             elif endpoint_type == BPMEndpointType.MESSAGE_EVENT:
-                url = f"{bpm_api_base}/engine-rest-ext/v1/message/"
+                url = f"{bpm_api_base}/engine-rest-ext/v1/version/message/"
             elif endpoint_type == BPMEndpointType.PROCESS_INSTANCE:
-                url = f"{bpm_api_base}/engine-rest-ext/v1/process-instance/"
+                url = f"{bpm_api_base}/engine-rest-ext/v1/version/process-instance/"
             return url
 
         except BaseException:  # pylint: disable=broad-except

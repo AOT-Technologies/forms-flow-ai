@@ -1,6 +1,13 @@
 # Changelog for formsflow.ai
 
 Mark  items as `Added`, `Changed`, `Fixed`, `Removed`, `Untested Features`, `Upcoming Features`, `Known Issues`
+## 5.0.1 - 2022-09-21
+**forms-flow-bpm**
+* Added new endpoints for process instance variables
+
+**forms-flow-api**
+* Return the role name as path for authorization
+
 ## 5.0.0 - 2022-09-02
 
 `Added`

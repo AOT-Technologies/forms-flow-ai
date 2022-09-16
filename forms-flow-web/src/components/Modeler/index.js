@@ -14,7 +14,7 @@ import {
   createNewProcess,
   extractDataFromDiagram,
 } from "./helpers/helper";
-import "./Modeller.scss";
+import "./Modeler.scss";
 
 import {
   fetchAllBpmProcesses,
@@ -33,14 +33,14 @@ export default React.memo(() => {
   const dmn = useSelector((state) => state.process.dmnProcessList);
   const [processList, setProcessList] = useState(listProcess(process));
   const workflow = useSelector((state) => state.process.workflowAssociated);
-  const [showModeller, setShowModeller] = useState(false);
+  const [showModeler, setShowModeler] = useState(false);
   const [isBpmnModel, setIsBpmnModel] = useState(true);
   const [isNewDiagram, setIsNewDiagram] = useState(false);
   const tenantKey = useSelector((state) => state.tenants?.tenantId);
 
   useEffect(() => {
     setIsNewDiagram(false);
-    setShowModeller(false);
+    setShowModeler(false);
     dispatch(setWorkflowAssociation(null));
     dispatch(fetchAllBpmProcesses(tenantKey));
   }, []);
@@ -59,7 +59,7 @@ export default React.memo(() => {
 
   const handleListChange = (item) => {
     setIsNewDiagram(false);
-    setShowModeller(true);
+    setShowModeler(true);
     dispatch(setWorkflowAssociation(item));
     dispatch(setProcessDiagramXML(null));
     showChosenFileName(item);
@@ -109,11 +109,11 @@ export default React.memo(() => {
     };
     dispatch(setWorkflowAssociation(newWorkflow));
     dispatch(setProcessDiagramXML(newWorkflow.xml));
-    setShowModeller(true);
+    setShowModeler(true);
   };
 
   const handleChangeFile = (file) => {
-    setShowModeller(false);
+    setShowModeler(false);
     setIsNewDiagram(true);
     let fileData = new FileReader();
     try {
@@ -131,13 +131,13 @@ export default React.memo(() => {
     const newProcess = isBpmnModel ? createNewProcess() : createNewDecision();
     dispatch(setWorkflowAssociation(newProcess.defaultWorkflow));
     dispatch(setProcessDiagramXML(newProcess.defaultWorkflow.xml));
-    setShowModeller(true);
+    setShowModeler(true);
     document.getElementById("inputWorkflow").value = null;
   };
 
   const handleToggle = () => {
     setIsNewDiagram(false);
-    setShowModeller(false);
+    setShowModeler(false);
     dispatch(setWorkflowAssociation(null));
     setIsBpmnModel((toggle) => !toggle);
     document.getElementById("inputWorkflow").value = null;
@@ -147,7 +147,7 @@ export default React.memo(() => {
     console.log(message, err);
     document.getElementById("inputWorkflow").value = null;
     dispatch(setWorkflowAssociation(null));
-    setShowModeller(false);
+    setShowModeler(false);
   };
 
   const handleHelp = () => {
@@ -245,18 +245,18 @@ export default React.memo(() => {
                 </div>
               </div>
 
-              {processList.length && workflow?.value && showModeller ? (
+              {processList.length && workflow?.value && showModeler ? (
                 <div>
                   {isBpmnModel ? (
                     <BpmnEditor
-                      setShowModeller={setShowModeller}
+                      setShowModeler={setShowModeler}
                       processKey={workflow?.value}
                       tenant={workflow?.tenant}
                       isNewDiagram={isNewDiagram}
                     />
                   ) : (
                     <DmnEditor
-                      setShowModeller={setShowModeller}
+                      setShowModeler={setShowModeler}
                       processKey={workflow?.value}
                       tenant={workflow?.tenant}
                       isNewDiagram={isNewDiagram}

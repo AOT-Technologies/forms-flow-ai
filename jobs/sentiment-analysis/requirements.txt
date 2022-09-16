@@ -4,7 +4,7 @@ Flask-Migrate==2.5.2
 Flask-SQLAlchemy==2.5.1
 Flask==2.0.2
 Jinja2==3.0.3
-Mako==1.1.6
+Mako==1.2.2
 MarkupSafe==2.0.1
 SQLAlchemy-Utils==0.38.2
 SQLAlchemy==1.4.31

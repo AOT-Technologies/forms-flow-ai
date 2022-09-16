@@ -62,7 +62,7 @@ export default React.memo(
     }, []);
 
     const initializeModeler = () => {
-      setBpmnModeller(
+      setBpmnModeler(
         new BpmnModeler({
           container: "#canvas",
           propertiesPanel: {

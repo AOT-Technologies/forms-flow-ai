@@ -5,6 +5,7 @@ from http import HTTPStatus
 from flask import current_app, request
 from flask_restx import Namespace, Resource
 from formsflow_api_utils.exceptions import BusinessException
+from formsflow_api_utils.services.external import FormioService
 from formsflow_api_utils.utils import (
     REVIEWER_GROUP,
     auth,
@@ -363,3 +364,62 @@ class ApplicationResourceByApplicationStatus(Resource):
             )
         except BusinessException as err:
             return err.error, err.status_code
+
+
+@cors_preflight("POST,OPTIONS")
+@API.route("/create-application", methods=["POST", "OPTIONS"])
+class ApplicationCreation(Resource):
+    """Resource for application creation."""
+
+    @staticmethod
+    @auth.require
+    @profiletime
+    def post():
+        """Post a new application using the request body.
+
+        : data: form submission data
+        : formId:- Unique Id for the corresponding form
+        : submissionId:- Unique Id for the submitted form
+        : formUrl:- Unique URL for the submitted application
+        """
+        application_json = request.get_json()
+        data = request.get_json()
+
+        try:
+            application_schema = ApplicationSchema()
+            dict_data = application_schema.load(application_json)
+            formio_service = FormioService()
+            form_io_token = formio_service.get_formio_access_token()
+            formio_service.post_submission(data, form_io_token)
+            application, status = ApplicationService.create_application(
+                data=dict_data, token=request.headers["Authorization"]
+            )
+            response = application_schema.dump(application)
+            return response, status
+        except PermissionError as err:
+            response, status = (
+                {
+                    "type": "Permission Denied",
+                    "message": f"Access to formId-{dict_data['form_id']} is prohibited",
+                },
+                HTTPStatus.FORBIDDEN,
+            )
+            current_app.logger.warning(response)
+            current_app.logger.warning(err)
+            return response, status
+        except KeyError as err:
+            response, status = {
+                "type": "Bad request error",
+                "message": "Invalid application request passed",
+            }, HTTPStatus.BAD_REQUEST
+            current_app.logger.warning(response)
+            current_app.logger.warning(err)
+            return response, status
+        except BaseException as application_err:  # pylint: disable=broad-except
+            response, status = {
+                "type": "Bad request error",
+                "message": "Invalid application request passed",
+            }, HTTPStatus.BAD_REQUEST
+            current_app.logger.warning(response)
+            current_app.logger.warning(application_err)
+            return response, status

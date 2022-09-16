@@ -108,3 +108,14 @@ class FormioService:
         if response.ok:
             return response.json()
         raise BusinessException(response.json(), HTTPStatus.BAD_REQUEST)
+
+    def post_submission(self, data, formio_token):
+        """Post request to formio API to create submission details."""
+        headers = {"Content-Type": "application/json", "x-jwt-token": formio_token}
+        url = (
+            f"{self.base_url}/form/" + data["formId"] + "/submission"
+        )
+        response = requests.post(url, headers=headers, data=json.dumps(data["data"]))
+        if response.ok:
+            return response.json()
+        raise BusinessException(response.json(), HTTPStatus.BAD_REQUEST)

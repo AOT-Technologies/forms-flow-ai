@@ -154,6 +154,13 @@ export default React.memo(() => {
     window.open("https://camunda.com/bpmn/");
   };
 
+  const customDropdownStyles = {
+    menuList: base => ({
+      ...base,
+      maxHeight: "135px"
+    })
+  };
+
   return (
     <div className="container" id="main">
       <div className="flex-container">
@@ -194,13 +201,13 @@ export default React.memo(() => {
                 </span>
                 <div className="select-style">
                   <Select
-                    placeholder={t("Select...")}
-                    dropdownHeight={"135px"}
+                    placeholder={t("Select ...")}
                     options={processList}
                     onChange={handleListChange}
                     value={
                       processList.length && workflow?.value ? workflow : ""
                     }
+                    styles={customDropdownStyles}
                   />
                 </div>
                 <div className="mt-2">
@@ -220,22 +227,21 @@ export default React.memo(() => {
                 </div>
               </Grid>
 
-              <div className="create-import-container">
+              <div className="mt-2">
                 <span className="fontsize-16">
                   {t(
                     "Or create new workflow or import a workflow from a local directory."
                   )}
                 </span>
 
-                <div className="create-import-btns-container">
+                <div className="create-import-btns-container mt-2 mb-4">
                   <Button
-                    className="btn-create-new"
+                    className="btn-create-new mr-3"
                     onClick={() => handleCreateNew()}
                   >
                     {t("Create New")}
                   </Button>
 
-                  <span className="fontsize-16 or-txt">{t(" ")}</span>
                   <input
                     id="inputWorkflow"
                     type="file"

@@ -5,6 +5,7 @@ import json
 import requests
 from flask import current_app
 from formsflow_api_utils.utils import HTTP_TIMEOUT, log_bpm_error
+from formsflow_api_utils.utils.user_context import UserContext, user_context
 
 
 class BaseBPMService:
@@ -57,12 +58,16 @@ class BaseBPMService:
         return data
 
     @classmethod
-    def _get_headers_(cls, token):
+    @user_context
+    def _get_headers_(cls, token, **kwargs):
         """Generate headers."""
+        user: UserContext = kwargs["user"]
         bpm_token_api = current_app.config.get("BPM_TOKEN_API")
         bpm_client_id = current_app.config.get("BPM_CLIENT_ID")
         bpm_client_secret = current_app.config.get("BPM_CLIENT_SECRET")
         bpm_grant_type = current_app.config.get("BPM_GRANT_TYPE")
+        if current_app.config.get("MULTI_TENANCY_ENABLED"):
+            bpm_client_id = f"{user.tenant_key}-{bpm_client_id}"
 
         headers = {"Content-Type": "application/x-www-form-urlencoded"}
         payload = {

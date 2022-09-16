@@ -64,3 +64,4 @@ urllib3==1.26.12
 wsproto==1.2.0
 zipp==3.8.1
 zstandard==0.18.0
+git+https://github.com/AOT-Technologies/forms-flow-ai.git@develop#egg=formsflow_api_utils&subdirectory=forms-flow-api-utils

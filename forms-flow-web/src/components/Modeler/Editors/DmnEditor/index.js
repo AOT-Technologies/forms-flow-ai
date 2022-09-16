@@ -52,7 +52,7 @@ export default React.memo(
     }, []);
 
     const initializeModeler = () => {
-      setBpmnModeller(
+      setBpmnModeler(
         new DmnJS({
           container: "#canvas",
           drd: {
@@ -181,7 +181,7 @@ export default React.memo(
     };
 
     const refreshModeller = () => {
-      dmnModeller.destroy();
+      dmnModeler.destroy();
       setDeploymentLoading(true);
       initializeModeler();
       setDeploymentLoading(false);

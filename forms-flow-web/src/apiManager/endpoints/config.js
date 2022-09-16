@@ -23,7 +23,9 @@ export const CUSTOM_SUBMISSION_URL =
  export const BPM_BASE_URL_EXT = `${
    (window._env_ && window._env_.REACT_APP_BPM_URL) ||
    process.env.REACT_APP_BPM_URL
- }/engine-rest-ext/v1`;
+ }/engine-rest-ext`;
+
+export const BPM_API_WITH_VERSION = `${BPM_BASE_URL_EXT}/v1`;
 
 export const BPM_BASE_URL_SOCKET_IO = `${
   (window._env_ && window._env_.REACT_APP_BPM_URL) ||

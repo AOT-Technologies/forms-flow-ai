@@ -67,6 +67,7 @@ export default React.memo(
     }, []);
 
     useEffect(() => {
+      tenant === null ? setApplyAllTenants(true) : setApplyAllTenants(false);
       if (diagramXML) {
         dispatch(setProcessDiagramLoading(true));
         dispatch(setProcessDiagramXML(diagramXML));
@@ -83,7 +84,6 @@ export default React.memo(
     }, [processKey, tenant, dispatch]);
 
     useEffect(() => {
-      tenant === null ? setApplyAllTenants(true) : '';
       if (diagramXML && dmnModeller) {
         dmnModeller
           .importXML(diagramXML)

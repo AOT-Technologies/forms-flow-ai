@@ -86,7 +86,7 @@ class _Config:  # pylint: disable=too-few-public-methods
     KEYCLOAK_URL = os.getenv("KEYCLOAK_URL")
     KEYCLOAK_URL_REALM = os.getenv("KEYCLOAK_URL_REALM")
 
-    #web url
+    # Web url
     WEB_BASE_URL = os.getenv("WEB_BASE_URL")
 
     # Formio url

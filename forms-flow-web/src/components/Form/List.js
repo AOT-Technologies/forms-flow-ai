@@ -81,7 +81,7 @@ const List = React.memo((props) => {
     (state) => state.formCheckList.searchFormLoading
   );
   const [showClearButton, setShowClearButton] = useState("");
-  const [isAscend, setIsAscending] = useState(false);
+  const [isAscend, setIsAscending] = useState(true);
   const [previousForms, setPreviousForms] = useState({});
   const [isLoading, setIsLoading] = React.useState(false);
 
@@ -223,7 +223,7 @@ const List = React.memo((props) => {
       updatedQuery = `${isAscend ? "-" : ""}title`;
       dispatch(setBPMFormListSort(updatedQuery));
     } else {
-      const updatedQuery = isAscend ? 'asc' : "desc";
+      const updatedQuery = isAscend ? 'desc' : "asc";
 
       dispatch(setBPMFormListSort(updatedQuery));
 

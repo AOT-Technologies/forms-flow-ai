@@ -379,18 +379,24 @@ class ApplicationCreation(Resource):
 
         : data: form submission data
         : formId:- Unique Id for the corresponding form
-        : submissionId:- Unique Id for the submitted form
-        : formUrl:- Unique URL for the submitted application
         """
+        formio_url = current_app.config.get("FORMIO_URL")
+        web_url = current_app.config.get("WEB_BASE_URL")
         application_json = request.get_json()
         data = request.get_json()
-
         try:
             application_schema = ApplicationSchema()
             dict_data = application_schema.load(application_json)
             formio_service = FormioService()
             form_io_token = formio_service.get_formio_access_token()
-            formio_service.post_submission(data, form_io_token)
+            formio_data = formio_service.post_submission(data, form_io_token)
+            dict_data["submission_id"] = formio_data["_id"]
+            dict_data[
+                "form_url"
+            ] = f"{formio_url}/form/{dict_data['form_id']}/submission/{formio_data['_id']}"
+            dict_data[
+                "web_form_url"
+            ] = f"{web_url}/form/{dict_data['form_id']}/submission/{formio_data['_id']}"
             application, status = ApplicationService.create_application(
                 data=dict_data, token=request.headers["Authorization"]
             )

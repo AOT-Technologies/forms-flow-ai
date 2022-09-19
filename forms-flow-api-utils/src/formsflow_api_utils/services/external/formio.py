@@ -1,6 +1,7 @@
 """This exposes the Formio APIs."""
 import json
 from http import HTTPStatus
+from xmlrpc.client import ResponseError
 
 import jwt
 import requests
@@ -113,10 +114,9 @@ class FormioService:
         """Post request to formio API to create submission details."""
         headers = {"Content-Type": "application/json", "x-jwt-token": formio_token}
         url = (
-            f"{self.base_url}/form/" + data["formId"] + "/submission"
+            f"{self.base_url}/form/{data['formId']}/submission"
         )
         response = requests.post(url, headers=headers, data=json.dumps(data["data"]))
         if response.ok:
             return response.json()
         raise BusinessException(response.json(), HTTPStatus.BAD_REQUEST)
-        

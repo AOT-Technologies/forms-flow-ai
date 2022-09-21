@@ -138,7 +138,6 @@ const ServiceFlowTaskDetails = React.memo(() => {
             }
           })
         );
-        // dispatch(setFormSubmissionLoading(false));
       }
       fetchForm();
     },

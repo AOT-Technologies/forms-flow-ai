@@ -27,6 +27,7 @@ import cloneDeep from "lodash/cloneDeep";
 import { Route, Redirect, Switch } from "react-router-dom";
 import { push } from "connected-react-router";
 import { BASE_ROUTE, MULTITENANCY_ENABLED } from "../../constants/constants";
+import TaskHead from "../../containers/TaskHead";
 
 export default React.memo(() => {
   const dispatch = useDispatch();
@@ -185,6 +186,7 @@ export default React.memo(() => {
 
   return (
     <Container fluid id="main" className="pt-0">
+      <TaskHead/>
       <Row className="p-2">
         <Col lg={3} xs={12} sm={12} md={4} xl={3}>
           <section>

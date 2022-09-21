@@ -65,7 +65,7 @@ class ApplicationService:  # pylint: disable=too-many-public-methods
                 )
             else:
                 camunda_start_task = BPMService.post_process_start(
-                    process_key=mapper.process_key, payload=payload, token=token
+                    process_key=mapper.process_key, payload=payload, token=token, tenant_key=mapper.tenant
                 )
             application.update({"process_instance_id": camunda_start_task["id"]})
         except TypeError as camunda_error:

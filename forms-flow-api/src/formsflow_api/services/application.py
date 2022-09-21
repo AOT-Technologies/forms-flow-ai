@@ -102,7 +102,7 @@ class ApplicationService:  # pylint: disable=too-many-public-methods
         # In normal cases, it's through this else case task is being created
         else:
             form_url = data["form_url"]
-            web_form_url = data["web_form_url"]
+            web_form_url = data.get("web_form_url", "")
             payload = ApplicationService.get_start_task_payload(
                 application, mapper, form_url, web_form_url
             )

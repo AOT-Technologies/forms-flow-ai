@@ -316,13 +316,13 @@ const View = React.memo((props) => {
               {!notified && (
                 <span className="text-primary">
                   <i className="fa fa-info-circle mr-2" aria-hidden="true"></i>
-                  {t("Unfinished applications will be saved to drafts.")}
+                  {t("Unfinished applications will be saved to Applications/Drafts.")}
                 </span>
               )}
 
               {notified && poll && (
                 <SavingLoading
-                  text={draftSaved ? t("Saved to draft") : t("Saving...")}
+                  text={draftSaved ? t("Saved to Applications/Drafts") : t("Saving...")}
                   saved={draftSaved}
                 />
               )}

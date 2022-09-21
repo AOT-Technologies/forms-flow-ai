@@ -8,6 +8,7 @@ import { extractDataFromDiagram } from "../../helpers/helper";
 import { createXML } from "../../helpers/deploy";
 import { MULTITENANCY_ENABLED } from "../../../../constants/constants";
 import { deployBpmnDiagram } from "../../../../apiManager/services/bpmServices";
+import Loading from "../../../../containers/Loading";
 
 import {
   SUCCESS_MSG,
@@ -52,32 +53,38 @@ export default React.memo(
     const tenantKey = useSelector((state) => state.tenants?.tenantId);
     const [applyAllTenants, setApplyAllTenants] = useState(false);
     const [lintErrors, setLintErrors] = useState([]);
+    const [deploymentLoading, setDeploymentLoading] = useState(false);
+
     const containerRef = useCallback((node) => {
       if (node !== null) {
-        setBpmnModeller(
-          new BpmnModeler({
-            container: "#canvas",
-            propertiesPanel: {
-              parent: "#js-properties-panel",
-            },
-            linting: {
-              bpmnlint: linterConfig,
-              active: true,
-            },
-            additionalModules: [
-              BpmnPropertiesPanelModule,
-              BpmnPropertiesProviderModule,
-              CamundaPlatformPropertiesProviderModule,
-              CamundaExtensionModule,
-              lintModule,
-            ],
-            moddleExtensions: {
-              camunda: camundaModdleDescriptors,
-            },
-          })
-        );
+        initializeModeler();
       }
     }, []);
+
+    const initializeModeler = () => {
+      setBpmnModeller(
+        new BpmnModeler({
+          container: "#canvas",
+          propertiesPanel: {
+            parent: "#js-properties-panel",
+          },
+          linting: {
+            bpmnlint: linterConfig,
+            active: true,
+          },
+          additionalModules: [
+            BpmnPropertiesPanelModule,
+            BpmnPropertiesProviderModule,
+            CamundaPlatformPropertiesProviderModule,
+            CamundaExtensionModule,
+            lintModule,
+          ],
+          moddleExtensions: {
+            camunda: camundaModdleDescriptors,
+          },
+        })
+      );
+    };
     useEffect(() => {
         if (diagramXML) {
         dispatch(setProcessDiagramLoading(true));
@@ -94,7 +101,7 @@ export default React.memo(
       };
     }, [processKey, tenant, dispatch]);
 
-    useEffect(() => {  
+    useEffect(() => {
       tenant === null ? setApplyAllTenants(true) : '';
       if (diagramXML && bpmnModeller) {
         bpmnModeller
@@ -179,6 +186,7 @@ export default React.memo(
             toast.success(t(SUCCESS_MSG));
             // Reload the dropdown menu
             updateBpmProcesses(xml, res.data.deployedProcessDefinitions);
+            refreshModeller();
           } else {
             toast.error(t(ERROR_MSG));
           }
@@ -186,6 +194,13 @@ export default React.memo(
         .catch((error) => {
           showCamundaHTTTPErrors(error);
         });
+    };
+
+    const refreshModeller = () => {
+      bpmnModeller.destroy();
+      setDeploymentLoading(true);
+      initializeModeler();
+      setDeploymentLoading(false);
     };
 
     const showCamundaHTTTPErrors = (error) => {
@@ -289,7 +304,9 @@ export default React.memo(
               style={{
                 border: "1px solid #000000",
               }}
-            ></div>
+            >
+              {!deploymentLoading ? null : <Loading />}
+            </div>
 
             <div className="d-flex justify-content-end zoom-container">
               <div className="d-flex flex-column">

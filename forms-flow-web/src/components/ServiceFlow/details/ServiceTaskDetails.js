@@ -136,6 +136,7 @@ const ServiceFlowTaskDetails = React.memo(() => {
             }
           })
         );
+        dispatch(setFormSubmissionLoading(false));
       }
       fetchForm();
     },
@@ -181,6 +182,7 @@ const ServiceFlowTaskDetails = React.memo(() => {
       ); // Refresh the Task Selected
       dispatch(getBPMGroups(task.id));
       dispatch(fetchServiceTaskList(selectedFilter.id, firstResult, reqData)); //Refreshes the Tasks
+      
     }
   };
 

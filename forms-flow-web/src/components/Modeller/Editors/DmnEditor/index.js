@@ -8,6 +8,7 @@ import { extractDataFromDiagram } from "../../helpers/helper";
 import { createXML } from "../../helpers/deploy";
 import { MULTITENANCY_ENABLED } from "../../../../constants/constants";
 import { deployBpmnDiagram } from "../../../../apiManager/services/bpmServices";
+import Loading from "../../../../containers/Loading";
 
 import { SUCCESS_MSG, ERROR_MSG } from "../../constants/bpmnModellerConstants";
 
@@ -42,29 +43,34 @@ export default React.memo(
     const [dmnModeller, setBpmnModeller] = useState(null);
     const tenantKey = useSelector((state) => state.tenants?.tenantId);
     const [applyAllTenants, setApplyAllTenants] = useState(false);
+    const [deploymentLoading, setDeploymentLoading] = useState(false);
 
     const containerRef = useCallback((node) => {
       if (node !== null) {
-        setBpmnModeller(
-          new DmnJS({
-            container: "#canvas",
-            drd: {
-              propertiesPanel: {
-                parent: "#js-properties-panel",
-              },
-              additionalModules: [
-                DmnPropertiesPanelModule,
-                DmnPropertiesProviderModule,
-                CamundaPropertiesProviderModule,
-              ],
-            },
-            moddleExtensions: {
-              camunda: camundaModdleDescriptor,
-            },
-          })
-        );
+        initializeModeler();
       }
     }, []);
+
+    const initializeModeler = () => {
+      setBpmnModeller(
+        new DmnJS({
+          container: "#canvas",
+          drd: {
+            propertiesPanel: {
+              parent: "#js-properties-panel",
+            },
+            additionalModules: [
+              DmnPropertiesPanelModule,
+              DmnPropertiesProviderModule,
+              CamundaPropertiesProviderModule,
+            ],
+          },
+          moddleExtensions: {
+            camunda: camundaModdleDescriptor,
+          },
+        })
+      );
+    };
 
     useEffect(() => {
       if (diagramXML) {
@@ -164,6 +170,7 @@ export default React.memo(
             toast.success(t(SUCCESS_MSG));
             // Reload the dropdown menu
             updateDmnProcesses(xml, res.data.deployedDecisionDefinitions);
+            refreshModeller();
           } else {
             toast.error(t(ERROR_MSG));
           }
@@ -171,6 +178,13 @@ export default React.memo(
         .catch((error) => {
           showCamundaHTTTPErrors(error);
         });
+    };
+
+    const refreshModeller = () => {
+      dmnModeller.destroy();
+      setDeploymentLoading(true);
+      initializeModeler();
+      setDeploymentLoading(false);
     };
 
     const showCamundaHTTTPErrors = (error) => {
@@ -260,7 +274,9 @@ export default React.memo(
               style={{
                 border: "1px solid #000000",
               }}
-            ></div>
+            >
+              {!deploymentLoading ? null : <Loading />}
+            </div>
             <div
               className="d-flex justify-content-end zoom-container"
               id="zoom-id"

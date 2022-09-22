@@ -47,8 +47,13 @@ public class FormSubmissionListener extends BaseListener implements ExecutionLis
 
     private void createRevision(DelegateExecution execution) throws IOException {
         String submissionId = formSubmissionService.createRevision(String.valueOf(execution.getVariables().get(FORM_URL)));
+        String webFormUrl = String.valueOf(execution.getVariables().get(WEB_FORM_URL));
         execution.setVariable(FORM_URL, getUrl(execution) + "/" + submissionId);
-        execution.setVariable(WEB_FORM_URL, getWebUrl(execution) + "/" + submissionId);
+        if (!webFormUrl.isBlank()) {
+            execution.setVariable(WEB_FORM_URL, getWebUrl(execution) + "/" + submissionId);
+        } else {
+            execution.setVariable(WEB_FORM_URL, "");
+        }
     }
 
     private String getUrl(DelegateExecution execution){

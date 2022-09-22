@@ -61,11 +61,12 @@ const createNewProcess = () => {
 
 const createNewDecision = () => {
   const deploymentName = "";
+  const drdID = "Definitions_" + getNewID();
   const decisionID = "Decision_" + getNewID();
   const decisionTableID = "DecisionTable_" + getNewID();
 
   const blankProcessXML = `<?xml version="1.0" encoding="UTF-8"?>
-  <definitions xmlns="https://www.omg.org/spec/DMN/20191111/MODEL/" xmlns:dmndi="https://www.omg.org/spec/DMN/20191111/DMNDI/" xmlns:dc="http://www.omg.org/spec/DMN/20180521/DC/" id="Definitions_1bly4ej" name="DRD" namespace="http://camunda.org/schema/1.0/dmn" xmlns:modeler="http://camunda.org/schema/modeler/1.0" exporter="Camunda Modeler" exporterVersion="5.0.0" modeler:executionPlatform="Camunda Platform" modeler:executionPlatformVersion="7.17.0">
+  <definitions xmlns="https://www.omg.org/spec/DMN/20191111/MODEL/" xmlns:dmndi="https://www.omg.org/spec/DMN/20191111/DMNDI/" xmlns:dc="http://www.omg.org/spec/DMN/20180521/DC/" id="${drdID}" name="DRD" namespace="http://camunda.org/schema/1.0/dmn" xmlns:modeler="http://camunda.org/schema/modeler/1.0" exporter="Camunda Modeler" exporterVersion="5.0.0" modeler:executionPlatform="Camunda Platform" modeler:executionPlatformVersion="7.17.0">
     <decision id="${decisionID}" name="Decision 1">
       <decisionTable id="${decisionTableID}">
         <input id="Input_1">

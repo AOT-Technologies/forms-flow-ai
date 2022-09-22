@@ -152,7 +152,7 @@ const View = React.memo((props) => {
           <span className="pr-2  mr-2 d-flex justify-content-end align-items-center">
             {poll && showNotification && (
               <SavingLoading
-                text={draftSaved ? t("Saved to draft") : t("Saving...")}
+                text={draftSaved ? t("Saved to Applications/Drafts") : t("Saving...")}
                 saved={draftSaved}
               />
             )}

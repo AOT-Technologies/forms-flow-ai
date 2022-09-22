@@ -58,11 +58,26 @@ export default React.memo(() => {
   }, [isBpmnModel]);
 
   const handleListChange = (item) => {
-    setIsNewDiagram(false);
-    setShowModeller(true);
-    dispatch(setWorkflowAssociation(item));
-    dispatch(setProcessDiagramXML(null));
-    showChosenFileName(item);
+
+    // Check to see if the selected process/definition is already rendered in the canvas
+    // Resolves the false 'ID must be unique' error in the properties panel
+    const object = workflow?.deployedDefinitions;
+    let found = false;
+    if (object){
+      for (const value of Object.values(object)) { 
+        if (value?.key == item.value){
+          found = true;
+        }
+      }
+    }
+
+    if (!found){
+      setIsNewDiagram(false);
+      setShowModeller(true);
+      dispatch(setWorkflowAssociation(item));
+      dispatch(setProcessDiagramXML(null));
+      showChosenFileName(item);
+    }
   };
 
   const showChosenFileName = (item) => {

@@ -85,9 +85,8 @@ export default React.memo(
         })
       );
     };
-
     useEffect(() => {
-      if (diagramXML) {
+        if (diagramXML) {
         dispatch(setProcessDiagramLoading(true));
         dispatch(setProcessDiagramXML(diagramXML));
       } else if (processKey && !isNewDiagram) {
@@ -103,6 +102,7 @@ export default React.memo(
     }, [processKey, tenant, dispatch]);
 
     useEffect(() => {
+      tenant === null ? setApplyAllTenants(true) : '';
       if (diagramXML && bpmnModeller) {
         bpmnModeller
           .importXML(diagramXML)
@@ -185,7 +185,7 @@ export default React.memo(
           if (res?.data) {
             toast.success(t(SUCCESS_MSG));
             // Reload the dropdown menu
-            updateBpmProcesses(xml);
+            updateBpmProcesses(xml, res.data.deployedProcessDefinitions);
             refreshModeller();
           } else {
             toast.error(t(ERROR_MSG));
@@ -247,7 +247,7 @@ export default React.memo(
       return isValidated;
     };
 
-    const updateBpmProcesses = (xml) => {
+    const updateBpmProcesses = (xml, deployedProcessDefinitions) => {
       // Update drop down with all processes
       dispatch(fetchAllBpmProcesses(tenantKey));
       // Show the updated workflow as the current value in the dropdown
@@ -255,6 +255,7 @@ export default React.memo(
         label: extractDataFromDiagram(xml).name,
         value: extractDataFromDiagram(xml).processId,
         xml: xml,
+        deployedDefinitions: deployedProcessDefinitions
       };
       dispatch(setWorkflowAssociation(updatedWorkflow));
     };
@@ -342,7 +343,7 @@ export default React.memo(
         <div>
           {MULTITENANCY_ENABLED ? (
             <label className="deploy-checkbox">
-              <input type="checkbox" onClick={handleApplyAllTenants} /> Apply
+              <input type="checkbox" checked={applyAllTenants ? true : false} onClick={handleApplyAllTenants} /> Apply
               for all tenants
             </label>
           ) : null}

@@ -220,7 +220,7 @@ const List = React.memo((props) => {
     setIsAscending(!isAscend);
     let updatedQuery = { query: { ...query } };
     if (isDesigner) {
-      updatedQuery = `${isAscend ? "-" : ""}title`;
+      updatedQuery = `${isAscend ? "" : "-"}title`;
       dispatch(setBPMFormListSort(updatedQuery));
     } else {
       const updatedQuery = isAscend ? 'asc' : "desc";

@@ -5,7 +5,6 @@ import json
 import requests
 from flask import current_app
 from formsflow_api_utils.utils import HTTP_TIMEOUT, log_bpm_error
-from formsflow_api_utils.utils.user_context import UserContext, user_context
 
 
 class BaseBPMService:
@@ -33,9 +32,9 @@ class BaseBPMService:
         return data
 
     @classmethod
-    def post_request(cls, url, token, payload=None):
+    def post_request(cls, url, token, payload=None, tenant_key=None):
         """Post HTTP request to BPM API with auth header."""
-        headers = cls._get_headers_(token)
+        headers = cls._get_headers_(token, tenant_key)
         payload = json.dumps(payload)
         response = requests.post(url, data=payload, headers=headers, timeout=120)
         current_app.logger.debug(
@@ -58,16 +57,14 @@ class BaseBPMService:
         return data
 
     @classmethod
-    @user_context
-    def _get_headers_(cls, token, **kwargs):
+    def _get_headers_(cls, token, tenant_key=None):
         """Generate headers."""
-        user: UserContext = kwargs["user"]
         bpm_token_api = current_app.config.get("BPM_TOKEN_API")
         bpm_client_id = current_app.config.get("BPM_CLIENT_ID")
         bpm_client_secret = current_app.config.get("BPM_CLIENT_SECRET")
         bpm_grant_type = current_app.config.get("BPM_GRANT_TYPE")
-        if current_app.config.get("MULTI_TENANCY_ENABLED"):
-            bpm_client_id = f"{user.tenant_key}-{bpm_client_id}"
+        if current_app.config.get("MULTI_TENANCY_ENABLED") and tenant_key:
+            bpm_client_id = f"{tenant_key}-{bpm_client_id}"
 
         headers = {"Content-Type": "application/x-www-form-urlencoded"}
         payload = {

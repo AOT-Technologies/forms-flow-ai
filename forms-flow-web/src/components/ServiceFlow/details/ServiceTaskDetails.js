@@ -108,6 +108,7 @@ const ServiceFlowTaskDetails = React.memo(() => {
     (formUrl) => {
       const { formId, submissionId } = getFormIdSubmissionIdFromURL(formUrl);
       Formio.clearCache();
+      dispatch(resetFormData("form"));
       function fetchForm() {
         dispatch(
           getForm("form", formId, (err) => {
@@ -136,7 +137,6 @@ const ServiceFlowTaskDetails = React.memo(() => {
             }
           })
         );
-        dispatch(setFormSubmissionLoading(false));
       }
       fetchForm();
     },

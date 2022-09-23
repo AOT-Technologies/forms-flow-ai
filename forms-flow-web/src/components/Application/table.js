@@ -176,6 +176,7 @@ export const columns = (
             }}
             value={lastModified}
             maxDate={new Date()}
+            minDate={new Date("January 1, 0999 01:01:00")}
             dayPlaceholder="dd"
             monthPlaceholder="mm"
             yearPlaceholder="yyyy"

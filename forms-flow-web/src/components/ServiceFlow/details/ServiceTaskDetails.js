@@ -108,6 +108,7 @@ const ServiceFlowTaskDetails = React.memo(() => {
     (formUrl) => {
       const { formId, submissionId } = getFormIdSubmissionIdFromURL(formUrl);
       Formio.clearCache();
+      dispatch(resetFormData("form"));
       function fetchForm() {
         dispatch(
           getForm("form", formId, (err) => {
@@ -181,6 +182,7 @@ const ServiceFlowTaskDetails = React.memo(() => {
       ); // Refresh the Task Selected
       dispatch(getBPMGroups(task.id));
       dispatch(fetchServiceTaskList(selectedFilter.id, firstResult, reqData)); //Refreshes the Tasks
+      
     }
   };
 

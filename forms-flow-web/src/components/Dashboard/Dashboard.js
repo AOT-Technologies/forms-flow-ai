@@ -74,7 +74,6 @@ const Dashboard = React.memo(() => {
   let numberofSubmissionListFrom =
     activePage === 1 ? 1 : (activePage * limit) - limit + 1;
   let numberofSubmissionListTo = activePage === 1 ? limit : limit * activePage;
-
   const [isAscending, setIsAscending] = useState(false);
   const [searchBy, setSearchBy] = useState("created");
   const [sortsBy, setSortsBy] = useState("formName");
@@ -96,6 +95,7 @@ const Dashboard = React.memo(() => {
 
   // Function to handle search text
   const handleSearch = () => {
+    dispatch(setMetricsSubmissionPageChange(1));
     dispatch(setMetricsSubmissionLimitChange(6));
     dispatch(setMetricsSubmissionSearch(searchInputBox.current.value));
 
@@ -110,7 +110,7 @@ const Dashboard = React.memo(() => {
   };
   // Function to handle sort for submission data
   const handleSort = () => {
-    //setOpacity(1);
+    dispatch(setMetricsSubmissionPageChange(1));
     setIsAscending(!isAscending);
     const updatedQuery = {
       sort: isAscending ? 'asc' : "desc",
@@ -189,8 +189,7 @@ const Dashboard = React.memo(() => {
   };
 
 
-  const noDefaultApplicationAvailable =
-    !searchInputBox.current.value && !submissionsList.length ? true : false;
+  
   const noOfApplicationsAvailable = submissionsList?.length || 0;
   if (metricsLoadError) {
     return (
@@ -200,7 +199,7 @@ const Dashboard = React.memo(() => {
   return (
     <Fragment>
       <LoadingOverlay
-        active={metricsDateRangeLoader || submissionStatusCountLoader}
+        active={submissionStatusCountLoader}
         spinner
         text={t("Loading...")}
       >
@@ -362,7 +361,7 @@ const Dashboard = React.memo(() => {
               {metricsStatusLoadError && <LoadError />}
               {noOfApplicationsAvailable > 0 && (
                 <div className="col-12">
-                  {isMetricsStatusLoading ? (
+                  {isMetricsStatusLoading || metricsDateRangeLoader ? (
                     <Loading />
                   ) : (
                     <Modal

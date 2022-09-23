@@ -1,13 +1,13 @@
 # Changelog for formsflow.ai
 
 Mark  items as `Added`, `Changed`, `Fixed`, `Removed`, `Untested Features`, `Upcoming Features`, `Known Issues`
-## 5.0.0 - 2022-08-31
+## 5.0.0 - 2022-09-02
 
 `Added`
 
 **forms-flow-web**
 
-* Added pagination,search and sort for metrics page.
+* Added pagination, search and sort for metrics page.
 * Added default workflow for designer.
 * Added Internationalization.
 * Added multi-tenancy support.
@@ -17,14 +17,19 @@ Mark  items as `Added`, `Changed`, `Fixed`, `Removed`, `Untested Features`, `Upc
 * Added application status `draft` for unfinished applications.
 * Added Processes page for camunda web modeller.
 * Added Form Adapter to support form submission data to other data stores than Mongo with custom data URLs.
-* Added environment variables `DRAFT_POLLING_RATE`,  `DRAFT_ENABLED` to manage draft feature. 
-* Added environment variables `EXPORT_PDF_ENABLED`,  `DOCUMENT_SERVICE_URL`.
+* Added environment variable `MULTI_TENANCY_ENABLED`, `MT_ADMIN_BASE_URL`, `MT_ADMIN_BASE_URL_VERSION` to support multitenancy.
+* Added environment variable `CUSTOM_SUBMISSION_URL`, `CUSTOM_SUBMISSION_ENABLED` for support form adapter.
+* Added environment variables `DRAFT_ENABLED`, `DRAFT_POLLING_RATE` to manage draft feature. 
+* Added environment variable `EXPORT_PDF_ENABLED`for pdf service.
+* Added environment variable `DOCUMENT_SERVICE_URL`for document service.
 
 
 
 **forms-flow-forms**
 
 * Added new Repository , for more details checkout [here](https://github.com/AOT-Technologies/formio).
+* Added environment variable `MULTI_TENANCY_ENABLED` to support mulitenancy.
+
 
 **forms-flow-api**
 
@@ -32,17 +37,28 @@ Mark  items as `Added`, `Changed`, `Fixed`, `Removed`, `Untested Features`, `Upc
 * Added support for default workflow with form.
 * Added API support for `draft` feature.
 * Added API support for `Form Adapter`.
+* Added environment variable `MULTI_TENANCY_ENABLED`, `KEYCLOAK_ENABLE_CLIENT_AUTH` to support mulitenancy.
+
 
 **forms-flow-bpm**
 
-* Added BPM_BASE_URL as the base url for camunda without /camunda- New property included with multitenancy.
 * Added default workflow.
 * Added `Form Adapter` to support form submission data to other data stores than Mongo with custom data URLs.
-* Added bpm gateway with jersey implementation
+* Added bpm gateway with jersey implementation.
+* Added environment variable `MULTI_TENANCY_ENABLED`, `KEYCLOAK_ENABLE_CLIENT_AUTH`, `KEYCLOAK_WEB_CLIENTID`, `FORMSFLOW_ADMIN_URL` for multitenancy support.
+* Added environment variable `CUSTOM_SUBMISSION_URL`, `CUSTOM_SUBMISSION_ENABLED` for support form adapter.
+
+
 
 **forms-flow-documents**
 
 * Added document API  to provide generate pdf with form submission data.
+* Added environment variable `MULTI_TENANCY_ENABLED`, `KEYCLOAK_ENABLE_CLIENT_AUTH` to support mulitenancy .
+
+**forms-flow-analytics**
+
+* Added environment variable `REDASH_MULTI_ORG` to support multitenancy.
+
 
 
 `Modified`
@@ -52,10 +68,13 @@ Mark  items as `Added`, `Changed`, `Fixed`, `Removed`, `Untested Features`, `Upc
 * Metrics page UI modified.
 * Form page UI modified.
 * Accessibility enhancement.
+* service-worker updated.
+* React build size optimized.
 
 *Upgrade notes:*
 
-* Environment variables modified `REACT_APP_CAMUNDA_API_URI` to `REACT_APP_BPM_URL` and `CAMUNDA_API_URL` to `BPM_API_URL`.
+* Environment variables modified `CAMUNDA_API_URL` to `BPM_API_URL`.
+* Environment variables modified `REACT_APP_CAMUNDA_API_URI` to `REACT_APP_BPM_URL` in [config.sample.js](./forms-flow-web/public/config/config.sample.js)
 
 
 

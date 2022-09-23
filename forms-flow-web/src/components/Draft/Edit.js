@@ -135,7 +135,8 @@ const View = React.memo((props) => {
     );
   }
 
-  if (isFormSubmitted) {
+  if (isFormSubmitted && !isAuthenticated) { 
+    //This code has relevance only for form Submission Edit by Anonymous Users
     return (
       <div className="text-center pt-5">
         <h1>{t("Thank you for your response.")}</h1>

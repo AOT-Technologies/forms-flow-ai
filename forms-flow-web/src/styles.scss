@@ -42,7 +42,7 @@ $dark: $gray-800;
   max-width: 100vw;
 }
 .container {
-  margin-top: 20px;
+  margin-top: 3px;
   padding-left: 0;
   padding-right: 0;
   //height: 100vh;
@@ -534,6 +534,26 @@ header nav {
   width: 40px;
 }
 
+.sort-span {
+  cursor: pointer;
+  border: 1px solid #0071EB;
+  border-radius: 0.25rem;
+  padding: 4px;
+  padding-left: 6px;
+  padding-top: 0px;
+  border-radius: 6px;
+  width: 35px;
+}
+
+.sort-span:hover {
+
+  background-color: #0071EB;
+
+  .fa-lg-hover {
+    color: white;
+  }
+}
+
 .custom-app-name {
   font-size: 30px;
   font-weight: 600;
@@ -622,4 +642,12 @@ a{
   background-color: #FFDBDB;
 }
 
-
+.formio-wizard-nav-container 
+{
+  display: flex;
+  flex-wrap: nowrap;
+  flex-direction: row;
+}
+.btn-wizard-nav-submit, .btn-wizard-nav-next, .btn-wizard-nav-previous{
+  margin-left:5px;
+}

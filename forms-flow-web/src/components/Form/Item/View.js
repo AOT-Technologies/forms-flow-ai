@@ -110,8 +110,11 @@ const View = React.memo((props) => {
     onCustomEvent,
     errors,
     options,
-    form: { form, isActive, url },
+    form: { form, isActive, url, error },
   } = props;
+
+  const [isValidResource, setIsValidResource] = useState(false);
+
   const dispatch = useDispatch();
   /*
   Selecting which endpoint to use based on authentication status,
@@ -194,6 +197,11 @@ const View = React.memo((props) => {
   };
 
   useEffect(() => {
+    if (form._id && !error) setIsValidResource(true);
+    return () => setIsValidResource(false);
+  }, [error, form._id]);
+
+  useEffect(() => {
     setTimeout(() => {
       setNotified(true);
     }, 5000);
@@ -212,14 +220,14 @@ const View = React.memo((props) => {
     if (
       validFormId &&
       DRAFT_ENABLED &&
-      form._id &&
+      isValidResource &&
       ((isAuthenticated && formStatus === "active") ||
         (!isAuthenticated && publicFormStatus?.status == "active"))
     ) {
       let payload = getDraftReqFormat(validFormId, draftData?.data);
       dispatch(draftCreateMethod(payload, setIsDraftCreated));
     }
-  }, [validFormId, formStatus, publicFormStatus, form]);
+  }, [validFormId, formStatus, publicFormStatus, isValidResource]);
 
   /**
    * We will repeatedly update the current state to draft table

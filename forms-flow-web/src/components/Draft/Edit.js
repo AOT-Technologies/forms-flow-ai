@@ -93,9 +93,7 @@ const View = React.memo((props) => {
         dispatch(
           draftUpdate(payload, draftSubmission?.id, (err) => {
             if (exitType === "UNMOUNT" && !err) {
-              toast.success(
-              t("Submission saved to draft.")
-              );
+              toast.success(t("Submission saved to draft."));
             }
             if (!err) {
               setDraftSaved(true);
@@ -135,7 +133,7 @@ const View = React.memo((props) => {
     );
   }
 
-  if (isFormSubmitted && !isAuthenticated) { 
+  if (isFormSubmitted && !isAuthenticated) {
     //This code has relevance only for form Submission Edit by Anonymous Users
     return (
       <div className="text-center pt-5">
@@ -175,8 +173,8 @@ const View = React.memo((props) => {
           {form.title ? (
             <h3 className="ml-3">
               <span className="task-head-details">
-                <i className="fa fa-wpforms" aria-hidden="true" /> &nbsp; {t("Drafts")}
-                /
+                <i className="fa fa-wpforms" aria-hidden="true" /> &nbsp;{" "}
+                {t("Drafts")}/
               </span>{" "}
               {form.title}
             </h3>
@@ -316,7 +314,9 @@ const mapDispatchToProps = (dispatch, ownProps) => {
     onCustomEvent: (customEvent, redirectUrl) => {
       switch (customEvent.type) {
         case CUSTOM_EVENT_TYPE.CUSTOM_SUBMIT_DONE:
-          toast.success("Submission Saved.");
+          toast.success(
+            <Translation>{(t) => t("Submission Saved")}</Translation>
+          );
           dispatch(push(`${redirectUrl}draft`));
           break;
         case CUSTOM_EVENT_TYPE.CANCEL_SUBMISSION:

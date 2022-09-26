@@ -6,4 +6,4 @@ from formsflow_api_utils.utils.startup import (
     collect_user_resource_ids,
 )
 
-__version__ = "5.0.0"
+__version__ = "5.0.1"

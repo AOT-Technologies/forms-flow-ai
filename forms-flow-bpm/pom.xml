@@ -317,6 +317,12 @@
 			<artifactId>spring-boot-starter-jersey</artifactId>
 		</dependency>
 
+		<!-- Adding Redis Config for web sockets -->
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-data-redis-reactive</artifactId>
+		</dependency>
+
 	</dependencies>
 
 	<repositories>

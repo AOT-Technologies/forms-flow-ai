@@ -6,6 +6,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import org.apache.commons.lang3.StringUtils;
 import org.camunda.bpm.engine.delegate.DelegateTask;
 import org.camunda.bpm.engine.delegate.TaskListener;
+import org.camunda.bpm.extension.commons.io.ITaskEvent;
 import org.camunda.bpm.extension.commons.io.socket.message.TaskEventMessage;
 import org.camunda.bpm.extension.commons.io.socket.message.TaskMessage;
 import org.slf4j.Logger;
@@ -14,6 +15,7 @@ import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.event.EventListener;
+import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.stereotype.Component;
 
@@ -29,9 +31,12 @@ import static org.camunda.bpm.extension.commons.utils.VariableConstants.APPLICAT
  * This class intercepts all camunda task and push socket messages for web tier updates.
  */
 @Component
-public class CamundaEventListener {
+public class CamundaEventListener implements ITaskEvent {
 
     private final Logger logger = LoggerFactory.getLogger(CamundaEventListener.class.getName());
+
+    @Autowired
+    private StringRedisTemplate stringRedisTemplate;
 
     @Autowired
     private SimpMessagingTemplate template;
@@ -41,6 +46,10 @@ public class CamundaEventListener {
 
     @Value("${websocket.messageEvents}")
     private String messageEvents;
+
+    @Value("${websocket.enableRedis}")
+    private boolean redisEnabled;
+
     @Resource(name = "bpmObjectMapper")
     private ObjectMapper bpmObjectMapper;
 
@@ -50,10 +59,18 @@ public class CamundaEventListener {
         try {
             if (isRegisteredEvent(taskDelegate.getEventName())) {
                 if (isAllowed("TASK_EVENT_DETAILS")) {
-                    this.template.convertAndSend("/topic/task-event-details", bpmObjectMapper.writeValueAsString(getTaskMessage(taskDelegate)));
+                    if(redisEnabled){
+                        this.stringRedisTemplate.convertAndSend(getTopicNameForTaskDetail(),  bpmObjectMapper.writeValueAsString(getTaskMessage(taskDelegate)));
+                    }else{
+                        this.template.convertAndSend("/topic/task-event-details", bpmObjectMapper.writeValueAsString(getTaskMessage(taskDelegate)));
+                    }
                 }
                 if (isAllowed("TASK_EVENT")) {
-                    this.template.convertAndSend("/topic/task-event", bpmObjectMapper.writeValueAsString(getTaskEventMessage(taskDelegate)));
+                    if(redisEnabled){
+                        this.stringRedisTemplate.convertAndSend(getTopicNameForTask(),  bpmObjectMapper.writeValueAsString(getTaskEventMessage(taskDelegate)));
+                    } else{
+                        this.template.convertAndSend("/topic/task-event", bpmObjectMapper.writeValueAsString(getTaskEventMessage(taskDelegate)));
+                    }
                 }
             }
             } catch(JsonProcessingException e){

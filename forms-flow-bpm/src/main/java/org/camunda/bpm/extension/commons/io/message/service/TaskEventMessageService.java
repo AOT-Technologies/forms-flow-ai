@@ -12,8 +12,6 @@ import java.util.logging.Logger;
 
 /**
  * This component publishes the message to websocket
- *
- * @author sumathi.thirumani@aot-technologies.com
  */
 @Component
 public class TaskEventMessageService {

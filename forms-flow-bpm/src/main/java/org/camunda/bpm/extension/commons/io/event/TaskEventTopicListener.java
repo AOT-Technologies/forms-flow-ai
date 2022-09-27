@@ -12,8 +12,6 @@ import java.util.logging.Logger;
 
 /**
  * This component listens to message topic
- *
- * @author sumathi.thirumani@aot-technologies.com
  */
 @Qualifier("taskEventTopicListener")
 @Component

@@ -16,8 +16,6 @@ import org.springframework.data.redis.listener.adapter.MessageListenerAdapter;
 
 /**
  * Configuration for Message Broker.
- *
- * @author sumathi.thirumani@aot-technologies.com
  */
 @Configuration
 public class RedisConfig implements ITaskEvent {
@@ -34,6 +32,9 @@ public class RedisConfig implements ITaskEvent {
     @Value("${websocket.messageBroker.passcode}")
     private String messageBrokerPasscode;
 
+    @Value("${websocket.enableRedis}")
+    private boolean redisEnabled;
+
     @Bean
     RedisConnectionFactory redisConnectionFactory() {
         RedisStandaloneConfiguration redisStandaloneConfiguration = new RedisStandaloneConfiguration(messageBrokerHost,Integer.valueOf(messageBrokerPort));
@@ -45,8 +46,10 @@ public class RedisConfig implements ITaskEvent {
     RedisMessageListenerContainer container(RedisConnectionFactory connectionFactory,
                                             @Qualifier("taskMessageListenerAdapter") MessageListenerAdapter taskMessageListenerAdapter) {
         RedisMessageListenerContainer container = new RedisMessageListenerContainer();
-        container.setConnectionFactory(connectionFactory);
-        container.addMessageListener(taskMessageListenerAdapter, new PatternTopic(getTopicNameForTask()));
+        if (redisEnabled) {
+            container.setConnectionFactory(connectionFactory);
+            container.addMessageListener(taskMessageListenerAdapter, new PatternTopic(getTopicNameForTask()));
+        }
         return container;
     }
 

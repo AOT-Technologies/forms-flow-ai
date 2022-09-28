@@ -1,7 +1,6 @@
 """This exposes the Formio APIs."""
 import json
 from http import HTTPStatus
-from xmlrpc.client import ResponseError
 
 import jwt
 import requests

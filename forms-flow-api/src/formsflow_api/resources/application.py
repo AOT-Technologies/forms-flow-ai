@@ -367,7 +367,7 @@ class ApplicationResourceByApplicationStatus(Resource):
 
 
 @cors_preflight("POST,OPTIONS")
-@API.route("/create-application", methods=["POST", "OPTIONS"])
+@API.route("/external/create", methods=["POST", "OPTIONS"])
 class ApplicationCreation(Resource):
     """Resource for application creation."""
 
@@ -386,19 +386,19 @@ class ApplicationCreation(Resource):
         data = request.get_json()
         try:
             application_schema = ApplicationSchema()
-            dict_data = application_schema.load(application_json)
+            application_data = application_schema.load(application_json)
             formio_service = FormioService()
             form_io_token = formio_service.get_formio_access_token()
             formio_data = formio_service.post_submission(data, form_io_token)
-            dict_data["submission_id"] = formio_data["_id"]
-            dict_data[
+            application_data["submission_id"] = formio_data["_id"]
+            application_data[
                 "form_url"
-            ] = f"{formio_url}/form/{dict_data['form_id']}/submission/{formio_data['_id']}"
-            dict_data[
+            ] = f"{formio_url}/form/{application_data['form_id']}/submission/{formio_data['_id']}"
+            application_data[
                 "web_form_url"
-            ] = f"{web_url}/form/{dict_data['form_id']}/submission/{formio_data['_id']}"
+            ] = f"{web_url}/form/{application_data['form_id']}/submission/{formio_data['_id']}"
             application, status = ApplicationService.create_application(
-                data=dict_data, token=request.headers["Authorization"]
+                data=application_data, token=request.headers["Authorization"]
             )
             response = application_schema.dump(application)
             return response, status
@@ -406,7 +406,7 @@ class ApplicationCreation(Resource):
             response, status = (
                 {
                     "type": "Permission Denied",
-                    "message": f"Access to formId-{dict_data['form_id']} is prohibited",
+                    "message": f"Access to formId-{application_data['form_id']} is prohibited",
                 },
                 HTTPStatus.FORBIDDEN,
             )

@@ -58,25 +58,25 @@ public class CamundaEventListener implements ITaskEvent {
     public void onTaskEventListener(DelegateTask taskDelegate) {
         try {
             if (isRegisteredEvent(taskDelegate.getEventName())) {
-                if (isAllowed("TASK_EVENT_DETAILS")) {
-                    if(redisEnabled){
-                        this.stringRedisTemplate.convertAndSend(getTopicNameForTaskDetail(),  bpmObjectMapper.writeValueAsString(getTaskMessage(taskDelegate)));
-                    }else{
-                        this.template.convertAndSend("/topic/task-event-details", bpmObjectMapper.writeValueAsString(getTaskMessage(taskDelegate)));
-                    }
+                if (isAllowed(EventCategory.TASK_EVENT_DETAILS.name())) {
+                    convertAndSendMessage(getTopicNameForTaskDetail(), getTaskMessage(taskDelegate));
                 }
-                if (isAllowed("TASK_EVENT")) {
-                    if(redisEnabled){
-                        this.stringRedisTemplate.convertAndSend(getTopicNameForTask(),  bpmObjectMapper.writeValueAsString(getTaskEventMessage(taskDelegate)));
-                    } else{
-                        this.template.convertAndSend("/topic/task-event", bpmObjectMapper.writeValueAsString(getTaskEventMessage(taskDelegate)));
-                    }
+                if (isAllowed(EventCategory.TASK_EVENT.name())) {
+                    convertAndSendMessage(getTopicNameForTask(), getTaskEventMessage(taskDelegate));
                 }
             }
-            } catch(JsonProcessingException e){
-                logger.error("Unable to send message", e);
-            }
+        } catch (JsonProcessingException e) {
+            logger.error("Unable to send message", e);
+        }
 
+    }
+
+    private void convertAndSendMessage(String topicName, Object message) throws JsonProcessingException {
+        if (redisEnabled) {
+            this.stringRedisTemplate.convertAndSend(topicName, bpmObjectMapper.writeValueAsString(message));
+        } else {
+            this.template.convertAndSend(topicName, bpmObjectMapper.writeValueAsString(message));
+        }
     }
 
     private TaskMessage getTaskMessage(DelegateTask taskDelegate) {
@@ -92,13 +92,14 @@ public class CamundaEventListener implements ITaskEvent {
         return taskObj;
     }
 
-
     private boolean isAllowed(String category) {
-        return Arrays.asList(StringUtils.split(messageCategory,",")).contains(category);
+        return Arrays.asList(StringUtils.split(messageCategory, ",")).contains(category);
     }
 
     private boolean isRegisteredEvent(String eventName) {
-        if("ALL".equalsIgnoreCase(messageEvents)) { return true;}
+        if ("ALL".equalsIgnoreCase(messageEvents)) {
+            return true;
+        }
         return getRegisteredEvents().contains(eventName);
     }
 
@@ -106,15 +107,15 @@ public class CamundaEventListener implements ITaskEvent {
         if ("DEFAULT".equalsIgnoreCase(messageEvents)) {
             return getDefaultRegisteredEvents();
         }
-        String events = messageEvents != null?messageEvents: "";
-        return Arrays.asList(StringUtils.split(events,","));
+        String events = messageEvents != null ? messageEvents : "";
+        return Arrays.asList(StringUtils.split(events, ","));
     }
 
-    private Map<String,Object> getVariables(DelegateTask taskDelegate) {
-        List<String> configMap =getElements();
-        Map<String,Object> variables = new HashMap<>();
-        for(String entry : configMap) {
-            if(taskDelegate.getVariables().containsKey(entry)) {
+    private Map<String, Object> getVariables(DelegateTask taskDelegate) {
+        List<String> configMap = getElements();
+        Map<String, Object> variables = new HashMap<>();
+        for (String entry : configMap) {
+            if (taskDelegate.getVariables().containsKey(entry)) {
                 variables.put(entry, taskDelegate.getVariable(entry));
             }
         }
@@ -122,12 +123,16 @@ public class CamundaEventListener implements ITaskEvent {
     }
 
     private List<String> getElements() {
-        return new ArrayList<>(Arrays. asList(APPLICATION_ID, FORM_URL, APPLICATION_STATUS));
+        return new ArrayList<>(Arrays.asList(APPLICATION_ID, FORM_URL, APPLICATION_STATUS));
     }
 
     private List<String> getDefaultRegisteredEvents() {
-        return Arrays.asList(TaskListener.EVENTNAME_CREATE,TaskListener.EVENTNAME_UPDATE,TaskListener.EVENTNAME_COMPLETE);
+        return Arrays.asList(TaskListener.EVENTNAME_CREATE, TaskListener.EVENTNAME_UPDATE, TaskListener.EVENTNAME_COMPLETE);
     }
 
+    enum EventCategory {
+        TASK_EVENT,
+        TASK_EVENT_DETAILS;
+    }
 
 }

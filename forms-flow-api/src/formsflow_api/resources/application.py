@@ -364,6 +364,8 @@ class ApplicationResourceByApplicationStatus(Resource):
             )
         except BusinessException as err:
             return err.error, err.status_code
+
+
 @cors_preflight("POST,OPTIONS")
 @API.route("/external/create", methods=["POST", "OPTIONS"])
 class ApplicationCreation(Resource):

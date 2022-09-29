@@ -10,7 +10,7 @@ import { MULTITENANCY_ENABLED } from "../../../../constants/constants";
 import { deployBpmnDiagram } from "../../../../apiManager/services/bpmServices";
 import Loading from "../../../../containers/Loading";
 
-import { SUCCESS_MSG, ERROR_MSG } from "../../constants/bpmnModellerConstants";
+import { SUCCESS_MSG, ERROR_MSG } from "../../constants/bpmnModelerConstants";
 
 import {
   fetchAllDmnProcesses,
@@ -35,12 +35,12 @@ import {
 import camundaModdleDescriptor from "camunda-dmn-moddle/resources/camunda";
 
 export default React.memo(
-  ({ setShowModeller, processKey, tenant, isNewDiagram }) => {
+  ({ setShowModeler, processKey, tenant, isNewDiagram }) => {
     const { t } = useTranslation();
 
     const dispatch = useDispatch();
     const diagramXML = useSelector((state) => state.process.processDiagramXML);
-    const [dmnModeller, setBpmnModeller] = useState(null);
+    const [dmnModeler, setBpmnModeler] = useState(null);
     const tenantKey = useSelector((state) => state.tenants?.tenantId);
     const [applyAllTenants, setApplyAllTenants] = useState(false);
     const [deploymentLoading, setDeploymentLoading] = useState(false);
@@ -52,7 +52,7 @@ export default React.memo(
     }, []);
 
     const initializeModeler = () => {
-      setBpmnModeller(
+      setBpmnModeler(
         new DmnJS({
           container: "#canvas",
           drd: {
@@ -90,8 +90,8 @@ export default React.memo(
     }, [processKey, tenant, dispatch]);
 
     useEffect(() => {
-      if (diagramXML && dmnModeller) {
-        dmnModeller
+      if (diagramXML && dmnModeler) {
+        dmnModeler
           .importXML(diagramXML)
           .then(({ warnings }) => {
             if (warnings.length) {
@@ -99,8 +99,8 @@ export default React.memo(
             }
 
             try {
-              dmnModeller.on("views.changed", () => {
-                const propertiesPanel = dmnModeller
+              dmnModeler.on("views.changed", () => {
+                const propertiesPanel = dmnModeler
                   .getActiveViewer()
                   .get("propertiesPanel", false);
 
@@ -116,7 +116,7 @@ export default React.memo(
                     "d-flex justify-content-end zoom-container";
                 }
               });
-              setShowModeller(true);
+              setShowModeler(true);
             } catch (err) {
               handleError(err, "DMN Properties Panel Error: ");
             }
@@ -125,13 +125,13 @@ export default React.memo(
             handleError(err, "DMN Import Error: ");
           });
       }
-    }, [diagramXML, dmnModeller]);
+    }, [diagramXML, dmnModeler]);
 
     const handleApplyAllTenants = () => {
       setApplyAllTenants(!applyAllTenants);
     };
     const deployProcess = async () => {
-      let xml = await createXML(dmnModeller);
+      let xml = await createXML(dmnModeler);
       // Deploy to Camunda
       deployXML(xml);
     };
@@ -181,7 +181,7 @@ export default React.memo(
     };
 
     const refreshModeller = () => {
-      dmnModeller.destroy();
+      dmnModeler.destroy();
       setDeploymentLoading(true);
       initializeModeler();
       setDeploymentLoading(false);
@@ -231,7 +231,7 @@ export default React.memo(
     };
 
     const handleExport = async () => {
-      let xml = await createXML(dmnModeller);
+      let xml = await createXML(dmnModeler);
 
       const isValidated = validateDecisionNames(xml);
       if (isValidated) {
@@ -249,18 +249,18 @@ export default React.memo(
     const handleError = () => {
       document.getElementById("inputWorkflow").value = null;
       dispatch(setWorkflowAssociation(null));
-      setShowModeller(false);
+      setShowModeler(false);
     };
 
     const zoom = () => {
-      dmnModeller.getActiveViewer().get("zoomScroll").stepZoom(1);
+      dmnModeler.getActiveViewer().get("zoomScroll").stepZoom(1);
     };
 
     const zoomOut = () => {
-      dmnModeller.getActiveViewer().get("zoomScroll").stepZoom(-1);
+      dmnModeler.getActiveViewer().get("zoomScroll").stepZoom(-1);
     };
     const zoomReset = () => {
-      dmnModeller.getActiveViewer().get("zoomScroll").reset();
+      dmnModeler.getActiveViewer().get("zoomScroll").reset();
     };
 
     return (
@@ -270,7 +270,7 @@ export default React.memo(
             <div
               id="canvas"
               ref={containerRef}
-              className="bpm-modeller-container"
+              className="bpm-modeler-container"
               style={{
                 border: "1px solid #000000",
               }}

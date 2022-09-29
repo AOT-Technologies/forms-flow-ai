@@ -14,7 +14,7 @@ import {
   SUCCESS_MSG,
   ERROR_MSG,
   ERROR_LINTING_CLASSNAME,
-} from "../../constants/bpmnModellerConstants";
+} from "../../constants/bpmnModelerConstants";
 
 import {
   fetchAllBpmProcesses,
@@ -45,11 +45,11 @@ import "bpmn-js-bpmnlint/dist/assets/css/bpmn-js-bpmnlint.css";
 import linterConfig from "../../lint-rules/packed-config";
 
 export default React.memo(
-  ({ setShowModeller, processKey, tenant, isNewDiagram }) => {
+  ({ setShowModeler, processKey, tenant, isNewDiagram }) => {
     const { t } = useTranslation();
     const dispatch = useDispatch();
     const diagramXML = useSelector((state) => state.process.processDiagramXML);
-    const [bpmnModeller, setBpmnModeller] = useState(null);
+    const [bpmnModeler, setBpmnModeler] = useState(null);
     const tenantKey = useSelector((state) => state.tenants?.tenantId);
     const [applyAllTenants, setApplyAllTenants] = useState(false);
     const [lintErrors, setLintErrors] = useState([]);
@@ -62,7 +62,7 @@ export default React.memo(
     }, []);
 
     const initializeModeler = () => {
-      setBpmnModeller(
+      setBpmnModeler(
         new BpmnModeler({
           container: "#canvas",
           propertiesPanel: {
@@ -103,15 +103,15 @@ export default React.memo(
     }, [processKey, tenant, dispatch]);
 
     useEffect(() => {
-      if (diagramXML && bpmnModeller) {
-        bpmnModeller
+      if (diagramXML && bpmnModeler) {
+        bpmnModeler
           .importXML(diagramXML)
           .then(({ warnings }) => {
             if (warnings.length) {
               console.log("Warnings", warnings);
             }
             // Add event listeners for bpmn linting
-            bpmnModeller.on("linting.completed", function (event) {
+            bpmnModeler.on("linting.completed", function (event) {
               setLintErrors(event.issues);
             });
           })
@@ -119,14 +119,14 @@ export default React.memo(
             handleError(err, "BPMN Import Error: ");
           });
       }
-    }, [diagramXML, bpmnModeller]);
+    }, [diagramXML, bpmnModeler]);
 
     const handleApplyAllTenants = () => {
       setApplyAllTenants(!applyAllTenants);
     };
 
     const deployProcess = async () => {
-      let xml = await createXML(bpmnModeller);
+      let xml = await createXML(bpmnModeler);
 
       const isValidated = await validateProcess(xml);
       if (!isValidated) {
@@ -139,7 +139,7 @@ export default React.memo(
 
     const validateProcess = async (xml) => {
       // If the BPMN Linting is active then check for linting errors, else check for Camunda API errors
-      // Check for linting errors in the modeller view
+      // Check for linting errors in the modeler view
       if (document.getElementsByClassName(ERROR_LINTING_CLASSNAME).length > 0) {
         validateBpmnLintErrors();
         return false;
@@ -197,7 +197,7 @@ export default React.memo(
     };
 
     const refreshModeller = () => {
-      bpmnModeller.destroy();
+      bpmnModeler.destroy();
       setDeploymentLoading(true);
       initializeModeler();
       setDeploymentLoading(false);
@@ -261,7 +261,7 @@ export default React.memo(
     };
 
     const handleExport = async () => {
-      let xml = await createXML(bpmnModeller);
+      let xml = await createXML(bpmnModeler);
 
       const isValidated = await validateProcess(xml);
       if (isValidated) {
@@ -279,18 +279,18 @@ export default React.memo(
     const handleError = () => {
       document.getElementById("inputWorkflow").value = null;
       dispatch(setWorkflowAssociation(null));
-      setShowModeller(false);
+      setShowModeler(false);
     };
 
     const zoom = () => {
-      bpmnModeller.get("zoomScroll").stepZoom(1);
+      bpmnModeler.get("zoomScroll").stepZoom(1);
     };
 
     const zoomOut = () => {
-      bpmnModeller.get("zoomScroll").stepZoom(-1);
+      bpmnModeler.get("zoomScroll").stepZoom(-1);
     };
     const zoomReset = () => {
-      bpmnModeller.get("zoomScroll").reset();
+      bpmnModeler.get("zoomScroll").reset();
     };
 
     return (
@@ -300,7 +300,7 @@ export default React.memo(
             <div
               id="canvas"
               ref={containerRef}
-              className="bpm-modeller-container grab-cursor"
+              className="bpm-modeler-container grab-cursor"
               style={{
                 border: "1px solid #000000",
               }}

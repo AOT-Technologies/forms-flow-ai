@@ -40,7 +40,7 @@ function TaskHead() {
                     title={
                       <>
                         <i className="fa fa-list fa-lg fa-fw " />
-                        {`${selectedFilter ? selectedFilter : 'Tasks'}(${itemCount ? itemCount : ''})`}{" "}
+                        {`${selectedFilter ? selectedFilter : 'Tasks'} ${" "}(${itemCount ? itemCount : ''})`}{" "}
                       </>
                     }
                     onClick={goToTask}

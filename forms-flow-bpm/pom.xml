@@ -6,7 +6,7 @@
 
 	<groupId>org.camunda.bpm.extension</groupId>
 	<artifactId>formsflow-bpm</artifactId>
-	<version>5.0.0</version>
+	<version>5.0.1</version>
 	<packaging>pom</packaging>
 
 	<name>Forms flow BPM Extension</name>
@@ -315,6 +315,12 @@
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-jersey</artifactId>
+		</dependency>
+
+		<!-- Adding Redis Config for web sockets -->
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-data-redis-reactive</artifactId>
 		</dependency>
 
 	</dependencies>

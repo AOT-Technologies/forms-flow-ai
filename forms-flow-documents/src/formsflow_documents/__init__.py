@@ -2,4 +2,4 @@
 
 from formsflow_documents.app import create_app
 
-__version__ = "4.0.5"
+__version__ = "5.0.1"

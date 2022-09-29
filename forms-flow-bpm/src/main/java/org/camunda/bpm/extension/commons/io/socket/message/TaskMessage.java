@@ -33,8 +33,8 @@ public class TaskMessage implements Serializable {
     private String processDefinitionId;
     private String processInstanceId;
     private String taskDefinitionKey;
-
     private Map<String,Object> variables;
+    private String tenantId;
 }
 
 

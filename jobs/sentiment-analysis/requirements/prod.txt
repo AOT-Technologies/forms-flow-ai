@@ -4,5 +4,6 @@ Flask
 python-dotenv
 psycopg2-binary
 Werkzeug
+pymssql==2.2.4
 
 -e git+https://github.com/AOT-Technologies/forms-flow-ai.git@develop#egg=forms_flow_data_analysis_api&subdirectory=forms-flow-data-analysis-api

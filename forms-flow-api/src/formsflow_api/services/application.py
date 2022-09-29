@@ -65,7 +65,10 @@ class ApplicationService:  # pylint: disable=too-many-public-methods
                 )
             else:
                 camunda_start_task = BPMService.post_process_start(
-                    process_key=mapper.process_key, payload=payload, token=token
+                    process_key=mapper.process_key,
+                    payload=payload,
+                    token=token,
+                    tenant_key=mapper.tenant,
                 )
             application.update({"process_instance_id": camunda_start_task["id"]})
         except TypeError as camunda_error:
@@ -102,7 +105,7 @@ class ApplicationService:  # pylint: disable=too-many-public-methods
         # In normal cases, it's through this else case task is being created
         else:
             form_url = data["form_url"]
-            web_form_url = data["web_form_url"]
+            web_form_url = data.get("web_form_url", "")
             payload = ApplicationService.get_start_task_payload(
                 application, mapper, form_url, web_form_url
             )

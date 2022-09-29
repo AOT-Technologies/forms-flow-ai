@@ -38,7 +38,7 @@ Mark  items as `Added`, `Changed`, `Fixed`, `Removed`, `Untested Features`, `Upc
 * Added API support for `draft` feature.
 * Added API support for `Form Adapter`.
 * Added environment variable `MULTI_TENANCY_ENABLED`, `KEYCLOAK_ENABLE_CLIENT_AUTH` to support mulitenancy.
-
+* Added new environment variable `FORMIO_JWT_SECRET`.
 
 **forms-flow-bpm**
 
@@ -112,6 +112,7 @@ Mark  items as `Added`, `Changed`, `Fixed`, `Removed`, `Untested Features`, `Upc
 
 * Removed View submissions button from reviewer form list and view submissions route.
 * Removed the environment variables `CLIENT_ROLE_ID`, `DESIGNER_ROLE_ID`, `REVIEWER_ROLE_ID`,`ANONYMOUS_ID`, `USER_RESOURCE_ID`.
+* Removed the environment variable `FORMIO_JWT_SECRET`.
 
 
 `Generic Changes`

@@ -69,7 +69,7 @@ public class CamundaEventListenerTest {
         camundaEventListener.onTaskEventListener(delegateTask);
         ArgumentCaptor<String> captor = ArgumentCaptor.forClass(String.class);
         verify(template, times(2)).convertAndSend(anyString(), captor.capture());
-        assertEquals("{\"assignee\":null,\"createTime\":null,\"deleteReason\":null,\"description\":null,\"dueDate\":null,\"eventName\":\"create\",\"executionId\":null,\"followUpDate\":null,\"id\":null,\"name\":null,\"owner\":null,\"priority\":0,\"processDefinitionId\":null,\"processInstanceId\":null,\"taskDefinitionKey\":null,\"variables\":{\"applicationStatus\":null,\"formUrl\":null,\"applicationId\":null}}",
+        assertEquals("{\"assignee\":null,\"createTime\":null,\"deleteReason\":null,\"description\":null,\"dueDate\":null,\"eventName\":\"create\",\"executionId\":null,\"followUpDate\":null,\"id\":null,\"name\":null,\"owner\":null,\"priority\":0,\"processDefinitionId\":null,\"processInstanceId\":null,\"taskDefinitionKey\":null,\"variables\":{\"applicationStatus\":null,\"formUrl\":null,\"applicationId\":null},\"tenantId\":null}",
                 captor.getAllValues().get(0));
         assertEquals("{\"id\":null,\"eventName\":\"create\",\"tenantId\":null}", captor.getAllValues().get(1));
     }
@@ -95,7 +95,7 @@ public class CamundaEventListenerTest {
         camundaEventListener.onTaskEventListener(delegateTask);
         ArgumentCaptor<String> captor = ArgumentCaptor.forClass(String.class);
         verify(template, times(2)).convertAndSend(anyString(), captor.capture());
-        assertEquals("{\"assignee\":null,\"createTime\":null,\"deleteReason\":null,\"description\":null,\"dueDate\":null,\"eventName\":\"create\",\"executionId\":null,\"followUpDate\":null,\"id\":null,\"name\":null,\"owner\":null,\"priority\":0,\"processDefinitionId\":null,\"processInstanceId\":null,\"taskDefinitionKey\":null,\"variables\":{\"applicationStatus\":null,\"formUrl\":null,\"applicationId\":null}}",
+        assertEquals("{\"assignee\":null,\"createTime\":null,\"deleteReason\":null,\"description\":null,\"dueDate\":null,\"eventName\":\"create\",\"executionId\":null,\"followUpDate\":null,\"id\":null,\"name\":null,\"owner\":null,\"priority\":0,\"processDefinitionId\":null,\"processInstanceId\":null,\"taskDefinitionKey\":null,\"variables\":{\"applicationStatus\":null,\"formUrl\":null,\"applicationId\":null},\"tenantId\":null}",
                 captor.getAllValues().get(0));
         assertEquals("{\"id\":null,\"eventName\":\"create\",\"tenantId\":null}", captor.getAllValues().get(1));
     }
@@ -122,7 +122,7 @@ public class CamundaEventListenerTest {
 		ArgumentCaptor<String> captor = ArgumentCaptor.forClass(String.class);
 		verify(template, times(2)).convertAndSend(anyString(), captor.capture());
 		assertEquals(
-				"{\"assignee\":null,\"createTime\":null,\"deleteReason\":null,\"description\":null,\"dueDate\":null,\"eventName\":\"create\",\"executionId\":null,\"followUpDate\":null,\"id\":null,\"name\":null,\"owner\":null,\"priority\":0,\"processDefinitionId\":null,\"processInstanceId\":null,\"taskDefinitionKey\":null,\"variables\":{\"applicationStatus\":null,\"formUrl\":null,\"applicationId\":null}}",
+				"{\"assignee\":null,\"createTime\":null,\"deleteReason\":null,\"description\":null,\"dueDate\":null,\"eventName\":\"create\",\"executionId\":null,\"followUpDate\":null,\"id\":null,\"name\":null,\"owner\":null,\"priority\":0,\"processDefinitionId\":null,\"processInstanceId\":null,\"taskDefinitionKey\":null,\"variables\":{\"applicationStatus\":null,\"formUrl\":null,\"applicationId\":null},\"tenantId\":null}",
 				captor.getAllValues().get(0));
 		assertEquals("{\"id\":null,\"eventName\":\"create\",\"tenantId\":null}", captor.getAllValues().get(1));
 	}

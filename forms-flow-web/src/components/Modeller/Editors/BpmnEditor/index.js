@@ -103,7 +103,6 @@ export default React.memo(
     }, [processKey, tenant, dispatch]);
 
     useEffect(() => {  
-      tenant === null ? setApplyAllTenants(true) : '';
       if (diagramXML && bpmnModeller) {
         bpmnModeller
           .importXML(diagramXML)

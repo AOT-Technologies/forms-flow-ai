@@ -90,7 +90,6 @@ export default React.memo(
     }, [processKey, tenant, dispatch]);
 
     useEffect(() => {
-      tenant === null ? setApplyAllTenants(true) : '';
       if (diagramXML && dmnModeller) {
         dmnModeller
           .importXML(diagramXML)

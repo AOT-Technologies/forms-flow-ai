@@ -6,6 +6,7 @@ on:
     branches:
       - develop
       - master
+      - release/**
     paths:
       - "forms-flow-data-analysis-api/**"
 

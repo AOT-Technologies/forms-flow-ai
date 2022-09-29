@@ -64,13 +64,7 @@ export const STAFF_DESIGNER = "formsflow-designer";
 export const STAFF_REVIEWER = "formsflow-reviewer";
 export const ANONYMOUS_USER = "anonymous";
 
-export const FORMIO_JWT_SECRET =
-  (window._env_ && window._env_.REACT_APP_FORMIO_JWT_SECRET) ||
-  process.env.REACT_APP_FORMIO_JWT_SECRET ||
-  "--- change me now ---";
 
-
- 
 export const OPERATIONS = {
   insert: {
     action: "insert",

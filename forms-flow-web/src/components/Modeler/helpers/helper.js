@@ -2,8 +2,8 @@
 import XmlParser from "bpmn-xml-parser";
 import { is } from "bpmn-js/lib/util/ModelUtil";
 
-const getRootElement = (bpmnModeller) => {
-  const elementRegistry = bpmnModeller.get("elementRegistry");
+const getRootElement = (bpmnModeler) => {
+  const elementRegistry = bpmnModeler.get("elementRegistry");
 
   // check if workflow is of type 'bpmn:Process'
   let rootElement = elementRegistry.filter(function (element) {

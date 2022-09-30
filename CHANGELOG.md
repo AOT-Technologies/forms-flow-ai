@@ -1,12 +1,26 @@
 # Changelog for formsflow.ai
 
 Mark  items as `Added`, `Changed`, `Fixed`, `Removed`, `Untested Features`, `Upcoming Features`, `Known Issues`
-## 5.0.1 - 2022-09-21
-**forms-flow-bpm**
-* Added new endpoints for process instance variables
 
+## 5.0.1 - 2022-09-30
+
+`Added`
+
+**forms-flow-bpm**
+* Added new endpoints for process instance variables.
+* Added Redis Configuration for web sockets.
+* Added new environment variables `REDIS_ENABLED`,`REDIS_HOST`,`REDIS_PORT`,`REDIS_PASSCODE` for web socket support.
 **forms-flow-api**
-* Return the role name as path for authorization
+* Return the role name as path for authorization.
+
+`Modified`
+
+* Modified alignment of wizard.
+* Modified task page UI.
+
+`Removed`
+
+* Removed environment variable `REACT_APP_FORMIO_JWT_SECRET` form [config.sample.js](./forms-flow-web/public/config/config.sample.js).
 
 ## 5.0.0 - 2022-09-02
 

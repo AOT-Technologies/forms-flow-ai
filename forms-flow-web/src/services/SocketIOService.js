@@ -7,8 +7,13 @@ import { WEBSOCKET_ENCRYPT_KEY } from "../constants/socketIOConstants";
 import AES from "crypto-js/aes";
 import { MULTITENANCY_ENABLED } from "../constants/constants";
 
-const tenantData = JSON.parse(localStorage.getItem("tenantData"));
-const tenantKey = tenantData["key"];
+let tenantData = localStorage.getItem("tenantData");
+let tenantKey = '';
+if(tenantData){
+  tenantData = JSON.parse(tenantData);
+  tenantKey = tenantData["key"];
+}
+
 let stompClient = null;
 let reconnectTimeOut = null;
 

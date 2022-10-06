@@ -4,6 +4,7 @@ import org.camunda.bpm.extension.commons.io.ITaskEvent;
 import org.camunda.bpm.extension.commons.io.event.TaskEventTopicListener;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.data.redis.connection.RedisConnectionFactory;
@@ -18,6 +19,7 @@ import org.springframework.data.redis.listener.adapter.MessageListenerAdapter;
  * Configuration for Message Broker.
  */
 @Configuration
+@ConditionalOnProperty(value = "${websocket.enableRedis}", havingValue = "true", matchIfMissing = false)
 public class RedisConfig implements ITaskEvent {
 
     //@Autowired
@@ -32,9 +34,6 @@ public class RedisConfig implements ITaskEvent {
     @Value("${websocket.messageBroker.passcode}")
     private String messageBrokerPasscode;
 
-    @Value("${websocket.enableRedis}")
-    private boolean redisEnabled;
-
     @Bean
     RedisConnectionFactory redisConnectionFactory() {
         RedisStandaloneConfiguration redisStandaloneConfiguration = new RedisStandaloneConfiguration(messageBrokerHost,Integer.valueOf(messageBrokerPort));
@@ -46,10 +45,8 @@ public class RedisConfig implements ITaskEvent {
     RedisMessageListenerContainer container(RedisConnectionFactory connectionFactory,
                                             @Qualifier("taskMessageListenerAdapter") MessageListenerAdapter taskMessageListenerAdapter) {
         RedisMessageListenerContainer container = new RedisMessageListenerContainer();
-        if (redisEnabled) {
             container.setConnectionFactory(connectionFactory);
             container.addMessageListener(taskMessageListenerAdapter, new PatternTopic(getTopicNameForTask()));
-        }
         return container;
     }
 

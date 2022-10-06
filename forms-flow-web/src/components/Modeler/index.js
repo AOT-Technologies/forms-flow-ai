@@ -209,7 +209,7 @@ export default React.memo(() => {
                     styles={customDropdownStyles}
                   />
                 </div>
-                <div className="mt-2" style={{ marginBottom: "37px" }}>
+                <div className="mt-2 toggle-bpm">
                   <label className="switch">
                     <input
                       type="checkbox"
@@ -225,7 +225,6 @@ export default React.memo(() => {
                   </label>
                 </div>
               </Grid>
-
               <div className="mt-2">
                 <span className="fontsize-16">
                   {t(

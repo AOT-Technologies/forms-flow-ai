@@ -191,6 +191,10 @@ const Edit = React.memo(() => {
                   ? false
                   : processListData.anonymous,
               formName: submittedData.title,
+              status: processListData.status ? processListData.status : "inactive",
+              taskVariable: processListData.taskVariable
+                ? processListData.taskVariable
+                : [],
               id: processListData.id,
               formId: submittedData._id,
             };

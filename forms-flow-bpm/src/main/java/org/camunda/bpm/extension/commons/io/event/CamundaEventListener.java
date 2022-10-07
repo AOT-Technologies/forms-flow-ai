@@ -15,7 +15,7 @@ import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.event.EventListener;
-import org.springframework.data.redis.core.StringRedisTemplate;
+//import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.stereotype.Component;
 
@@ -35,8 +35,8 @@ public class CamundaEventListener implements ITaskEvent {
 
     private final Logger logger = LoggerFactory.getLogger(CamundaEventListener.class.getName());
 
-    @Autowired
-    private StringRedisTemplate stringRedisTemplate;
+//    @Autowired
+//    private StringRedisTemplate stringRedisTemplate;
 
     @Autowired
     private SimpMessagingTemplate template;
@@ -73,7 +73,7 @@ public class CamundaEventListener implements ITaskEvent {
 
     private void convertAndSendMessage(String topicName, Object message) throws JsonProcessingException {
         if (redisEnabled) {
-            this.stringRedisTemplate.convertAndSend(topicName, bpmObjectMapper.writeValueAsString(message));
+        //    this.stringRedisTemplate.convertAndSend(topicName, bpmObjectMapper.writeValueAsString(message));
         } else {
             this.template.convertAndSend(topicName, bpmObjectMapper.writeValueAsString(message));
         }

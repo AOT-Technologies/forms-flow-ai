@@ -23,6 +23,7 @@ export const getFormattedForm = (form) => {
 
 export const ASCENDING = 'asc';
 export const DESCENDING = 'desc';
+export const INACTIVE = 'inactive';
 export const getOperations = (userRoles, showViewSubmissions) => {
   let operations = [];
   if (userRoles.includes(CLIENT) || userRoles.includes(STAFF_REVIEWER)) {

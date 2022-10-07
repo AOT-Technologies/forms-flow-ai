@@ -157,7 +157,7 @@ export default React.memo(() => {
   const customDropdownStyles = {
     menuList: base => ({
       ...base,
-      maxHeight: "135px"
+      maxHeight: "170px",
     })
   };
 
@@ -178,7 +178,6 @@ export default React.memo(() => {
           </div>
         </div>
       </div>
-
       <Grid
         container
         direction="row"
@@ -210,7 +209,7 @@ export default React.memo(() => {
                     styles={customDropdownStyles}
                   />
                 </div>
-                <div className="mt-2">
+                <div className="mt-2 toggle-bpm">
                   <label className="switch">
                     <input
                       type="checkbox"
@@ -226,7 +225,6 @@ export default React.memo(() => {
                   </label>
                 </div>
               </Grid>
-
               <div className="mt-2">
                 <span className="fontsize-16">
                   {t(

@@ -115,7 +115,7 @@ class FormioService:
         url = (
             f"{self.base_url}/form/{data['formId']}/submission"
         )
-        response = requests.post(url, headers=headers, data=json.dumps(data["data"]))
+        response = requests.post(url, headers=headers, data=json.dumps(data))
         if response.ok:
             return response.json()
         raise BusinessException(response.json(), HTTPStatus.BAD_REQUEST)

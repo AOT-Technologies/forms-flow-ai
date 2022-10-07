@@ -301,12 +301,26 @@ class ApplicationResourcesByIds(Resource):
     @staticmethod
     @auth.require
     @profiletime
+    @API.doc(responses={
+        201: 'Application Created',
+        400: 'Validation Error'
+    })
     def post():
         """Post a new application using the request body.
 
         : formId:- Unique Id for the corresponding form
-        : submissionId:- Unique Id for the submitted form
         : formUrl:- Unique URL for the submitted application
+        : submissionId:- Unique Id for the submitted form
+        : webFormUrl:- Unique Web URL for the submitted application
+        e.g,
+        ```
+        {
+           "formId":"632208d9fbcab29c2ab1a097",
+           "submissionId":"63407583fbcab29c2ab1bed4",
+           "formUrl":"https://formsflow-forms/form/632208d9fbcab29c2ab1a097/submission/63407583fbcab29c2ab1bed4",
+           "webFormUrl":"https://formsflow-web/form/632208d9fbcab29c2ab1a097/submission/63407583fbcab29c2ab1bed4"
+        }
+        ```
         """
         application_json = request.get_json()
 
@@ -374,11 +388,29 @@ class ApplicationCreation(Resource):
     @staticmethod
     @auth.require
     @profiletime
+    @API.doc(responses={
+        201: 'Application Created',
+        400: 'Validation Error'
+    })
     def post():
         """Post a new application using the request body.
 
-        : data: form submission data
+        : data: form submission data as a dict as in form submission data.
         : formId:- Unique Id for the corresponding form
+        e.g,
+        ```
+        {
+            "formId" : "632208d9fbcab29c2ab1a097",
+            "data" : {
+                "firstName" : "John",
+                "lastName" : "Doe",
+                "contact": {
+                    "addressLine1": "1234 Street",
+                    "email" : "john.doe@example.com"
+                    }
+                }
+        }
+        ```
         """
         formio_url = current_app.config.get("FORMIO_URL")
         web_url = current_app.config.get("WEB_BASE_URL")

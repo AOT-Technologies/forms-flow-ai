@@ -201,10 +201,6 @@ Variable name | Meaning | Possible values | Default value |
 `WEBSOCKET_MESSAGE_TYPE`|Camunda task event streaming. Message type ||`TASK_EVENT`
 `WEBSOCKET_ENCRYPT_KEY`|Camunda task event streaming. AES encryption of token||`giert989jkwrgb@DR55`
 `DATA_ANALYSIS_URL`|sentiment analysis url||`http://{your-ip-address}:6000/analysis`
-`REDIS_ENABLED`|Boolean flag to enable redis||`false`
-`REDIS_HOST`|Websocket broker hostname for redis||`localhost`
-`REDIS_PORT`|Websocket broker port for redis||`6379`
-`REDIS_PASSCODE`|Websocket broker passcode for redis||`changeme`
  
 ```
 Modify the file **mail-config.properties** (under `forms-flow-bpm/src/main/resources/`). The default settings provided are for the Gmail server, and you need to change the credentials at the bottom of the file. Note that you want to configure your own Gmail setting to allow unsecure apps first. 

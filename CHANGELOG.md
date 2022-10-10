@@ -2,7 +2,7 @@
 
 Mark  items as `Added`, `Changed`, `Fixed`, `Removed`, `Untested Features`, `Upcoming Features`, `Known Issues`
 
-## 5.0.1 - 2022-09-30
+## 5.0.1 - 2022-10-10
 
 **forms-flow-web**
 
@@ -26,10 +26,6 @@ Mark  items as `Added`, `Changed`, `Fixed`, `Removed`, `Untested Features`, `Upc
 `Added`
 
 * Added new endpoints for process instance variables.
-* Added Redis Configuration for web sockets.
-* Added new environment variables `REDIS_ENABLED`,`REDIS_HOST`,`REDIS_PORT`,`REDIS_PASSCODE` for web socket support.
-
-
 
 
 

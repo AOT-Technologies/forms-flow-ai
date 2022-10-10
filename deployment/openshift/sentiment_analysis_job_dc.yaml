@@ -3,7 +3,7 @@ kind: Template
 apiVersion: v1
 metadata:
   annotations:
-    description: Deployment template for a payment job.
+    description: Deployment template for a Sentiment Analysis job.
     tags: "${NAME}"
   name: "${NAME}-deploy"
 objects:

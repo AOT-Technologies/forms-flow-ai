@@ -23,11 +23,11 @@ services:
 
   forms-flow-forms:
     container_name: forms-flow-forms
-    image: formsflow/forms-flow-forms:v5.0.0-alpha
+    image: formsflow/forms-flow-forms:v5.0.1
 
     # The app will restart until Mongo is listening
     restart: always
-    links:
+    depends_on :
       - forms-flow-forms-db
     ports:
       - '3001:3001'
@@ -67,7 +67,7 @@ services:
       context: ./../../forms-flow-bpm/
       dockerfile: Dockerfile
     restart: always
-    links:
+    depends_on :
       - forms-flow-bpm-db
     ports:
       - '8000:8080'
@@ -113,6 +113,10 @@ services:
       - KEYCLOAK_ENABLE_CLIENT_AUTH=${KEYCLOAK_ENABLE_CLIENT_AUTH:-false}
       - KEYCLOAK_WEB_CLIENTID=${KEYCLOAK_WEB_CLIENTID:-forms-flow-web}
       - FORMSFLOW_ADMIN_URL=${FORMSFLOW_ADMIN_URL:-}
+      - REDIS_HOST=${REDIS_HOST:-localhost}
+      - REDIS_PORT=${REDIS_PORT:-6379}
+      - REDIS_PASSCODE=${REDIS_PASSCODE:-changeme}
+      - REDIS_ENABLED=${REDIS_ENABLED:-false}
 
     networks:
       - forms-flow-network
@@ -120,7 +124,7 @@ services:
   forms-flow-web:
     container_name: forms-flow-web
     restart: always
-    links:
+    depends_on :
       - forms-flow-webapi
     build:
       context: ./../../forms-flow-web/
@@ -175,9 +179,10 @@ services:
       context: ./../../forms-flow-api/
       dockerfile: Dockerfile
     restart: always
-    links:
+    depends_on :
       - forms-flow-webapi-db
       - forms-flow-forms
+    entrypoint: "/wait-for-service.sh forms-flow-webapi-db:5432 -s -- ./entrypoint.sh"
     ports:
       - '5000:5000'
     volumes:

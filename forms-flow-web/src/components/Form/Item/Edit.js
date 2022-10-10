@@ -8,6 +8,7 @@ import _camelCase from "lodash/camelCase";
 import {
   MULTITENANCY_ENABLED,
 } from "../../../constants/constants";
+import { INACTIVE } from "../constants/formListConstants";
 import { addHiddenApplicationComponent } from "../../../constants/applicationComponent";
 import { toast } from "react-toastify";
 import { useSelector, useDispatch } from "react-redux";
@@ -191,6 +192,10 @@ const Edit = React.memo(() => {
                   ? false
                   : processListData.anonymous,
               formName: submittedData.title,
+              status: processListData.status ? processListData.status : INACTIVE,
+              taskVariable: processListData.taskVariable
+                ? processListData.taskVariable
+                : [],
               id: processListData.id,
               formId: submittedData._id,
             };

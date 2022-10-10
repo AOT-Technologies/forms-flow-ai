@@ -55,6 +55,7 @@ const Dashboard = React.memo(() => {
   );
   const sortOrder = useSelector((state) => state.metrics.sortOrder);
   const searchText = useSelector((state) => state.metrics.searchText);
+  const [searchTextInput,setSearchTextInput] = useState(searchText);
 
 
   const activePage = useSelector((state) => state.metrics.pageno);
@@ -102,12 +103,11 @@ const Dashboard = React.memo(() => {
   };
   const onClear = () => {
     searchInputBox.current.value = "";
+    setSearchTextInput("");
     setShowClearButton(false);
     handleSearch();
   };
-  const clearDate = () => {
-    console.log("clear date");
-  };
+ 
   // Function to handle sort for submission data
   const handleSort = () => {
     dispatch(setMetricsSubmissionPageChange(1));
@@ -280,11 +280,13 @@ const Dashboard = React.memo(() => {
                           }
                           onChange={(e) => {
                             setShowClearButton(e.target.value);
+                            setSearchTextInput(e.target.value);
                             e.target.value === "" && handleSearch();
                           }}
                           autoComplete="off"
                           className="form-control"
-                          placeholder={t(searchText ? searchText : "Search...")}
+                          value={searchTextInput}
+                          placeholder={t("Search...")}
                         />
                       </div>
                       {showClearButton && (

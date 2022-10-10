@@ -8,12 +8,13 @@ import { extractDataFromDiagram } from "../../helpers/helper";
 import { createXML } from "../../helpers/deploy";
 import { MULTITENANCY_ENABLED } from "../../../../constants/constants";
 import { deployBpmnDiagram } from "../../../../apiManager/services/bpmServices";
+import Loading from "../../../../containers/Loading";
 
 import {
   SUCCESS_MSG,
   ERROR_MSG,
   ERROR_LINTING_CLASSNAME,
-} from "../../constants/bpmnModellerConstants";
+} from "../../constants/bpmnModelerConstants";
 
 import {
   fetchAllBpmProcesses,
@@ -44,44 +45,49 @@ import "bpmn-js-bpmnlint/dist/assets/css/bpmn-js-bpmnlint.css";
 import linterConfig from "../../lint-rules/packed-config";
 
 export default React.memo(
-  ({ setShowModeller, processKey, tenant, isNewDiagram }) => {
+  ({ setShowModeler, processKey, tenant, isNewDiagram }) => {
     const { t } = useTranslation();
     const dispatch = useDispatch();
     const diagramXML = useSelector((state) => state.process.processDiagramXML);
-    const [bpmnModeller, setBpmnModeller] = useState(null);
+    const [bpmnModeler, setBpmnModeler] = useState(null);
     const tenantKey = useSelector((state) => state.tenants?.tenantId);
     const [applyAllTenants, setApplyAllTenants] = useState(false);
     const [lintErrors, setLintErrors] = useState([]);
+    const [deploymentLoading, setDeploymentLoading] = useState(false);
 
     const containerRef = useCallback((node) => {
       if (node !== null) {
-        setBpmnModeller(
-          new BpmnModeler({
-            container: "#canvas",
-            propertiesPanel: {
-              parent: "#js-properties-panel",
-            },
-            linting: {
-              bpmnlint: linterConfig,
-              active: true,
-            },
-            additionalModules: [
-              BpmnPropertiesPanelModule,
-              BpmnPropertiesProviderModule,
-              CamundaPlatformPropertiesProviderModule,
-              CamundaExtensionModule,
-              lintModule,
-            ],
-            moddleExtensions: {
-              camunda: camundaModdleDescriptors,
-            },
-          })
-        );
+        initializeModeler();
       }
     }, []);
 
+    const initializeModeler = () => {
+      setBpmnModeler(
+        new BpmnModeler({
+          container: "#canvas",
+          propertiesPanel: {
+            parent: "#js-properties-panel",
+          },
+          linting: {
+            bpmnlint: linterConfig,
+            active: true,
+          },
+          additionalModules: [
+            BpmnPropertiesPanelModule,
+            BpmnPropertiesProviderModule,
+            CamundaPlatformPropertiesProviderModule,
+            CamundaExtensionModule,
+            lintModule,
+          ],
+          moddleExtensions: {
+            camunda: camundaModdleDescriptors,
+          },
+        })
+      );
+    };
     useEffect(() => {
-      if (diagramXML) {
+      tenant === null ? setApplyAllTenants(true) : setApplyAllTenants(false);
+        if (diagramXML) {
         dispatch(setProcessDiagramLoading(true));
         dispatch(setProcessDiagramXML(diagramXML));
       } else if (processKey && !isNewDiagram) {
@@ -97,15 +103,15 @@ export default React.memo(
     }, [processKey, tenant, dispatch]);
 
     useEffect(() => {
-      if (diagramXML && bpmnModeller) {
-        bpmnModeller
+      if (diagramXML && bpmnModeler) {
+        bpmnModeler
           .importXML(diagramXML)
           .then(({ warnings }) => {
             if (warnings.length) {
               console.log("Warnings", warnings);
             }
             // Add event listeners for bpmn linting
-            bpmnModeller.on("linting.completed", function (event) {
+            bpmnModeler.on("linting.completed", function (event) {
               setLintErrors(event.issues);
             });
           })
@@ -113,14 +119,14 @@ export default React.memo(
             handleError(err, "BPMN Import Error: ");
           });
       }
-    }, [diagramXML, bpmnModeller]);
+    }, [diagramXML, bpmnModeler]);
 
     const handleApplyAllTenants = () => {
       setApplyAllTenants(!applyAllTenants);
     };
 
     const deployProcess = async () => {
-      let xml = await createXML(bpmnModeller);
+      let xml = await createXML(bpmnModeler);
 
       const isValidated = await validateProcess(xml);
       if (!isValidated) {
@@ -133,7 +139,7 @@ export default React.memo(
 
     const validateProcess = async (xml) => {
       // If the BPMN Linting is active then check for linting errors, else check for Camunda API errors
-      // Check for linting errors in the modeller view
+      // Check for linting errors in the modeler view
       if (document.getElementsByClassName(ERROR_LINTING_CLASSNAME).length > 0) {
         validateBpmnLintErrors();
         return false;
@@ -179,7 +185,8 @@ export default React.memo(
           if (res?.data) {
             toast.success(t(SUCCESS_MSG));
             // Reload the dropdown menu
-            updateBpmProcesses(xml);
+            updateBpmProcesses(xml, res.data.deployedProcessDefinitions);
+            refreshModeller();
           } else {
             toast.error(t(ERROR_MSG));
           }
@@ -187,6 +194,13 @@ export default React.memo(
         .catch((error) => {
           showCamundaHTTTPErrors(error);
         });
+    };
+
+    const refreshModeller = () => {
+      bpmnModeler.destroy();
+      setDeploymentLoading(true);
+      initializeModeler();
+      setDeploymentLoading(false);
     };
 
     const showCamundaHTTTPErrors = (error) => {
@@ -233,7 +247,7 @@ export default React.memo(
       return isValidated;
     };
 
-    const updateBpmProcesses = (xml) => {
+    const updateBpmProcesses = (xml, deployedProcessDefinitions) => {
       // Update drop down with all processes
       dispatch(fetchAllBpmProcesses(tenantKey));
       // Show the updated workflow as the current value in the dropdown
@@ -241,12 +255,13 @@ export default React.memo(
         label: extractDataFromDiagram(xml).name,
         value: extractDataFromDiagram(xml).processId,
         xml: xml,
+        deployedDefinitions: deployedProcessDefinitions
       };
       dispatch(setWorkflowAssociation(updatedWorkflow));
     };
 
     const handleExport = async () => {
-      let xml = await createXML(bpmnModeller);
+      let xml = await createXML(bpmnModeler);
 
       const isValidated = await validateProcess(xml);
       if (isValidated) {
@@ -264,18 +279,18 @@ export default React.memo(
     const handleError = () => {
       document.getElementById("inputWorkflow").value = null;
       dispatch(setWorkflowAssociation(null));
-      setShowModeller(false);
+      setShowModeler(false);
     };
 
     const zoom = () => {
-      bpmnModeller.get("zoomScroll").stepZoom(1);
+      bpmnModeler.get("zoomScroll").stepZoom(1);
     };
 
     const zoomOut = () => {
-      bpmnModeller.get("zoomScroll").stepZoom(-1);
+      bpmnModeler.get("zoomScroll").stepZoom(-1);
     };
     const zoomReset = () => {
-      bpmnModeller.get("zoomScroll").reset();
+      bpmnModeler.get("zoomScroll").reset();
     };
 
     return (
@@ -285,11 +300,13 @@ export default React.memo(
             <div
               id="canvas"
               ref={containerRef}
-              className="bpm-modeller-container grab-cursor"
+              className="bpm-modeler-container grab-cursor"
               style={{
                 border: "1px solid #000000",
               }}
-            ></div>
+            >
+              {!deploymentLoading ? null : <Loading />}
+            </div>
 
             <div className="d-flex justify-content-end zoom-container">
               <div className="d-flex flex-column">
@@ -326,7 +343,7 @@ export default React.memo(
         <div>
           {MULTITENANCY_ENABLED ? (
             <label className="deploy-checkbox">
-              <input type="checkbox" onClick={handleApplyAllTenants} /> Apply
+              <input type="checkbox" checked={applyAllTenants ? true : false} onClick={handleApplyAllTenants} /> Apply
               for all tenants
             </label>
           ) : null}

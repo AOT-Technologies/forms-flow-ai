@@ -6,6 +6,10 @@ Mark  items as `Added`, `Changed`, `Fixed`, `Removed`, `Untested Features`, `Upc
 
 **forms-flow-web**
 
+`Added`
+
+* Added websocket support for multitenancy.
+
 `Modified`
 
 * Modified task page UI.

@@ -6,7 +6,6 @@ import { toast } from "react-toastify";
 import { useTranslation } from "react-i18next";
 import { extractDataFromDiagram } from "../../helpers/helper";
 import { createXML } from "../../helpers/deploy";
-import { MULTITENANCY_ENABLED } from "../../../../constants/constants";
 import { deployBpmnDiagram } from "../../../../apiManager/services/bpmServices";
 import Loading from "../../../../containers/Loading";
 
@@ -51,9 +50,9 @@ export default React.memo(
     const diagramXML = useSelector((state) => state.process.processDiagramXML);
     const [bpmnModeler, setBpmnModeler] = useState(null);
     const tenantKey = useSelector((state) => state.tenants?.tenantId);
-    const [applyAllTenants, setApplyAllTenants] = useState(false);
     const [lintErrors, setLintErrors] = useState([]);
     const [deploymentLoading, setDeploymentLoading] = useState(false);
+    const publicWorkflowEnabled = process.env.REACT_APP_PUBLIC_WORKFLOW_ENABLED;
 
     const containerRef = useCallback((node) => {
       if (node !== null) {
@@ -86,8 +85,7 @@ export default React.memo(
       );
     };
     useEffect(() => {
-      tenant === null ? setApplyAllTenants(true) : setApplyAllTenants(false);
-        if (diagramXML) {
+      if (diagramXML) {
         dispatch(setProcessDiagramLoading(true));
         dispatch(setProcessDiagramXML(diagramXML));
       } else if (processKey && !isNewDiagram) {
@@ -120,11 +118,6 @@ export default React.memo(
           });
       }
     }, [diagramXML, bpmnModeler]);
-
-    const handleApplyAllTenants = () => {
-      setApplyAllTenants(!applyAllTenants);
-    };
-
     const deployProcess = async () => {
       let xml = await createXML(bpmnModeler);
 
@@ -161,9 +154,11 @@ export default React.memo(
       // Deployment Source
       form.append("deployment-source", "Camunda Modeler");
       // Tenant ID
-      if (tenantKey && !applyAllTenants) {
+      //if REACT_APP_PUBLIC_WORKFLOW_ENABLED is false in .env add tenant key to keep it private
+      if (tenantKey && publicWorkflowEnabled === "false") {
         form.append("tenant-id", tenantKey);
       }
+      //TO DO: if REACT_APP_PUBLIC_WORKFLOW_ENABLED is true make publick workflow keeping spesific tenantId.
       // Make sure that we do not re-deploy already existing deployment
       form.append("enable-duplicate-filtering", "true");
       // Create 'bpmn file' using blob which includes the xml of the process
@@ -339,14 +334,7 @@ export default React.memo(
             id="js-properties-panel"
           ></div>
         </div>
-
         <div>
-          {MULTITENANCY_ENABLED ? (
-            <label className="deploy-checkbox">
-              <input type="checkbox" checked={applyAllTenants ? true : false} onClick={handleApplyAllTenants} /> Apply
-              for all tenants
-            </label>
-          ) : null}
           <Button onClick={deployProcess}>Deploy</Button>
           <Button className="ml-3" onClick={handleExport}>
             Export

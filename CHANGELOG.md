@@ -20,12 +20,14 @@ Mark  items as `Added`, `Changed`, `Fixed`, `Removed`, `Untested Features`, `Upc
 `Added`
 
 * Return the role name as path for authorization.
+* Added formsflow API support to start application with data.
 
 **forms-flow-bpm**
 
 `Added`
 
 * Added new endpoints for process instance variables.
+* Added web socket support files to build.
 
 
 

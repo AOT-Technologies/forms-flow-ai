@@ -8,7 +8,7 @@ import { extractDataFromDiagram } from "../../helpers/helper";
 import { createXML } from "../../helpers/deploy";
 import { MULTITENANCY_ENABLED } from "../../../../constants/constants";
 import { deployBpmnDiagram } from "../../../../apiManager/services/bpmServices";
-
+import { publicWorkflowEnabled } from "../../../../constants/constants";
 import { SUCCESS_MSG, ERROR_MSG } from "../../constants/bpmnModellerConstants";
 
 import {
@@ -41,7 +41,6 @@ export default React.memo(
     const diagramXML = useSelector((state) => state.process.processDiagramXML);
     const [dmnModeller, setBpmnModeller] = useState(null);
     const tenantKey = useSelector((state) => state.tenants?.tenantId);
-    const publicWorkflowEnabled = process.env.REACT_APP_PUBLIC_WORKFLOW_ENABLED;
     const containerRef = useCallback((node) => {
       if (node !== null) {
         setBpmnModeller(

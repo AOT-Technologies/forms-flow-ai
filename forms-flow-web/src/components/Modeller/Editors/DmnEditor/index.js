@@ -134,7 +134,7 @@ export default React.memo(
       // Deployment Source
       form.append("deployment-source", "Camunda Modeler");
       // Tenant ID
-      if (MULTITENANCY_ENABLED && tenantKey && publicWorkflowEnabled === "false") {
+      if (MULTITENANCY_ENABLED && tenantKey && publicWorkflowEnabled === "false" && isNewDiagram) {
         form.append("tenant-id", tenantKey);
       }
       // Make sure that we do not re-deploy already existing deployment

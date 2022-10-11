@@ -8,7 +8,6 @@ import { extractDataFromDiagram } from "../../helpers/helper";
 import { createXML } from "../../helpers/deploy";
 import { MULTITENANCY_ENABLED } from "../../../../constants/constants";
 import { deployBpmnDiagram } from "../../../../apiManager/services/bpmServices";
-
 import {
   SUCCESS_MSG,
   ERROR_MSG,
@@ -50,8 +49,8 @@ export default React.memo(
     const diagramXML = useSelector((state) => state.process.processDiagramXML);
     const [bpmnModeller, setBpmnModeller] = useState(null);
     const tenantKey = useSelector((state) => state.tenants?.tenantId);
-    const [applyAllTenants, setApplyAllTenants] = useState(false);
     const [lintErrors, setLintErrors] = useState([]);
+    const publicWorkflowEnabled = process.env.REACT_APP_PUBLIC_WORKFLOW_ENABLED;
     const containerRef = useCallback((node) => {
       if (node !== null) {
         setBpmnModeller(
@@ -79,7 +78,7 @@ export default React.memo(
       }
     }, []);
     useEffect(() => {
-        if (diagramXML) {
+      if (diagramXML) {
         dispatch(setProcessDiagramLoading(true));
         dispatch(setProcessDiagramXML(diagramXML));
       } else if (processKey && !isNewDiagram) {
@@ -94,8 +93,7 @@ export default React.memo(
       };
     }, [processKey, tenant, dispatch]);
 
-    useEffect(() => {  
-      tenant === null ? setApplyAllTenants(true) : '';
+    useEffect(() => {
       if (diagramXML && bpmnModeller) {
         bpmnModeller
           .importXML(diagramXML)
@@ -113,10 +111,6 @@ export default React.memo(
           });
       }
     }, [diagramXML, bpmnModeller]);
-
-    const handleApplyAllTenants = () => {
-      setApplyAllTenants(!applyAllTenants);
-    };
 
     const deployProcess = async () => {
       let xml = await createXML(bpmnModeller);
@@ -154,7 +148,8 @@ export default React.memo(
       // Deployment Source
       form.append("deployment-source", "Camunda Modeler");
       // Tenant ID
-      if (tenantKey && !applyAllTenants) {
+      //if REACT_APP_PUBLIC_WORKFLOW_ENABLED is false in .env add tenant key to keep it private
+      if (MULTITENANCY_ENABLED && tenantKey && publicWorkflowEnabled === "false") {
         form.append("tenant-id", tenantKey);
       }
       // Make sure that we do not re-deploy already existing deployment
@@ -324,12 +319,6 @@ export default React.memo(
         </div>
 
         <div>
-          {MULTITENANCY_ENABLED ? (
-            <label className="deploy-checkbox">
-              <input type="checkbox" checked={applyAllTenants ? true : false} onClick={handleApplyAllTenants} /> Apply
-              for all tenants
-            </label>
-          ) : null}
           <Button onClick={deployProcess}>Deploy</Button>
           <Button className="ml-3" onClick={handleExport}>
             Export

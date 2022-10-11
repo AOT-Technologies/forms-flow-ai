@@ -21,6 +21,7 @@ Mark  items as `Added`, `Changed`, `Fixed`, `Removed`, `Untested Features`, `Upc
 * Added environment variable `CUSTOM_SUBMISSION_URL`, `CUSTOM_SUBMISSION_ENABLED` for support form adapter.
 * Added environment variables `DRAFT_ENABLED`, `DRAFT_POLLING_RATE` to manage draft feature. 
 * Added environment variable `EXPORT_PDF_ENABLED`for pdf service.
+* Added environment variable `PUBLIC_WORKFLOW_ENABLED` for making workflows tanant based or public.
 * Added environment variable `DOCUMENT_SERVICE_URL`for document service.
 
 

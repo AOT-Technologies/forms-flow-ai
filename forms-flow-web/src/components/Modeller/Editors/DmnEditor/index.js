@@ -41,8 +41,7 @@ export default React.memo(
     const diagramXML = useSelector((state) => state.process.processDiagramXML);
     const [dmnModeller, setBpmnModeller] = useState(null);
     const tenantKey = useSelector((state) => state.tenants?.tenantId);
-    const [applyAllTenants, setApplyAllTenants] = useState(false);
-
+    const publicWorkflowEnabled = process.env.REACT_APP_PUBLIC_WORKFLOW_ENABLED;
     const containerRef = useCallback((node) => {
       if (node !== null) {
         setBpmnModeller(
@@ -83,7 +82,6 @@ export default React.memo(
     }, [processKey, tenant, dispatch]);
 
     useEffect(() => {
-      tenant === null ? setApplyAllTenants(true) : '';
       if (diagramXML && dmnModeller) {
         dmnModeller
           .importXML(diagramXML)
@@ -121,9 +119,6 @@ export default React.memo(
       }
     }, [diagramXML, dmnModeller]);
 
-    const handleApplyAllTenants = () => {
-      setApplyAllTenants(!applyAllTenants);
-    };
     const deployProcess = async () => {
       let xml = await createXML(dmnModeller);
       // Deploy to Camunda
@@ -140,7 +135,7 @@ export default React.memo(
       // Deployment Source
       form.append("deployment-source", "Camunda Modeler");
       // Tenant ID
-      if (tenantKey && !applyAllTenants) {
+      if (MULTITENANCY_ENABLED && tenantKey && publicWorkflowEnabled === "false") {
         form.append("tenant-id", tenantKey);
       }
       // Make sure that we do not re-deploy already existing deployment
@@ -297,12 +292,6 @@ export default React.memo(
         </div>
 
         <div>
-          {MULTITENANCY_ENABLED ? (
-            <label className="deploy-checkbox">
-              <input type="checkbox" checked={applyAllTenants ? true : false} onClick={handleApplyAllTenants} /> Apply
-              for all tenants
-            </label>
-          ) : null}
           <Button onClick={deployProcess}>Deploy</Button>
           <Button className="ml-3" onClick={handleExport}>
             Export

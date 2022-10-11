@@ -77,6 +77,7 @@ export default React.memo(
       }
     }, []);
     useEffect(() => {
+      console.log("dataaaaaaa",tenant, tenantKey, processKey);
       if (diagramXML) {
         dispatch(setProcessDiagramLoading(true));
         dispatch(setProcessDiagramXML(diagramXML));
@@ -148,7 +149,7 @@ export default React.memo(
       form.append("deployment-source", "Camunda Modeler");
       // Tenant ID
       //if REACT_APP_PUBLIC_WORKFLOW_ENABLED is false in .env add tenant key to keep it private
-      if (MULTITENANCY_ENABLED && tenantKey && publicWorkflowEnabled === "false") {
+      if (MULTITENANCY_ENABLED && tenantKey && publicWorkflowEnabled === "false" && isNewDiagram) {
         form.append("tenant-id", tenantKey);
       }
       // Make sure that we do not re-deploy already existing deployment

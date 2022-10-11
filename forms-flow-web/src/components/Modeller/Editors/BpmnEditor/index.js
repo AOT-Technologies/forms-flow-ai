@@ -41,7 +41,7 @@ import camundaModdleDescriptors from "camunda-bpmn-moddle/resources/camunda";
 import lintModule from "bpmn-js-bpmnlint";
 import "bpmn-js-bpmnlint/dist/assets/css/bpmn-js-bpmnlint.css";
 import linterConfig from "../../lint-rules/packed-config";
-
+import {publicWorkflowEnabled} from "../../../../constants/constants";
 export default React.memo(
   ({ setShowModeller, processKey, tenant, isNewDiagram }) => {
     const { t } = useTranslation();
@@ -50,7 +50,6 @@ export default React.memo(
     const [bpmnModeller, setBpmnModeller] = useState(null);
     const tenantKey = useSelector((state) => state.tenants?.tenantId);
     const [lintErrors, setLintErrors] = useState([]);
-    const publicWorkflowEnabled = process.env.REACT_APP_PUBLIC_WORKFLOW_ENABLED;
     const containerRef = useCallback((node) => {
       if (node !== null) {
         setBpmnModeller(

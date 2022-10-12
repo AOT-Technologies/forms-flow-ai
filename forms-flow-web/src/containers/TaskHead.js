@@ -12,7 +12,7 @@ function TaskHead() {
   const dispatch = useDispatch();
   const tenantKey = useSelector((state) => state.tenants?.tenantId);
   const selectedFilter = useSelector(state => state.bpmTasks.selectedFilter?.name);
-  const itemCount = useSelector(state => state.bpmTasks.selectedFilter?.itemCount);
+  const itemCount = useSelector(state => state.bpmTasks.tasksCount);
 
   const location = useLocation();
   const { pathname } = location;
@@ -40,7 +40,7 @@ function TaskHead() {
                     title={
                       <>
                         <i className="fa fa-list fa-lg fa-fw " />
-                        {`${selectedFilter ? selectedFilter : 'Tasks'} ${" "}(${itemCount ? itemCount : ''})`}{" "}
+                        {`${selectedFilter ? selectedFilter : 'Tasks'} ${" "}(${itemCount ? itemCount : '0'})`}{" "}
                       </>
                     }
                     onClick={goToTask}

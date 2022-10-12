@@ -41,7 +41,7 @@ import camundaModdleDescriptors from "camunda-bpmn-moddle/resources/camunda";
 import lintModule from "bpmn-js-bpmnlint";
 import "bpmn-js-bpmnlint/dist/assets/css/bpmn-js-bpmnlint.css";
 import linterConfig from "../../lint-rules/packed-config";
-import {publicWorkflowEnabled} from "../../../../constants/constants";
+import { publicWorkflowEnabled } from "../../../../constants/constants";
 export default React.memo(
   ({ setShowModeller, processKey, tenant, isNewDiagram }) => {
     const { t } = useTranslation();
@@ -77,7 +77,6 @@ export default React.memo(
       }
     }, []);
     useEffect(() => {
-      console.log("dataaaaaaa",tenant, tenantKey, processKey);
       if (diagramXML) {
         dispatch(setProcessDiagramLoading(true));
         dispatch(setProcessDiagramXML(diagramXML));

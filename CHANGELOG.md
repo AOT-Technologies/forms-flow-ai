@@ -1,6 +1,40 @@
 # Changelog for formsflow.ai
 
 Mark  items as `Added`, `Changed`, `Fixed`, `Removed`, `Untested Features`, `Upcoming Features`, `Known Issues`
+
+## 5.0.1 - 2022-10-10
+
+**forms-flow-web**
+
+`Added`
+
+* Added websocket support for multitenancy.
+
+`Modified`
+
+* Modified task page UI.
+* Modified alignment of wizard.
+
+`Removed`
+
+* Removed environment variable `REACT_APP_FORMIO_JWT_SECRET` form [config.sample.js](./forms-flow-web/public/config/config.sample.js).
+
+**forms-flow-api**
+
+`Added`
+
+* Return the role name as path for authorization.
+* Added formsflow API support to start application with data.
+
+**forms-flow-bpm**
+
+`Added`
+
+* Added new endpoints for process instance variables.
+* Added web socket support files to build.
+
+
+
 ## 5.0.0 - 2022-09-02
 
 `Added`
@@ -38,7 +72,7 @@ Mark  items as `Added`, `Changed`, `Fixed`, `Removed`, `Untested Features`, `Upc
 * Added API support for `draft` feature.
 * Added API support for `Form Adapter`.
 * Added environment variable `MULTI_TENANCY_ENABLED`, `KEYCLOAK_ENABLE_CLIENT_AUTH` to support mulitenancy.
-
+* Added new environment variable `FORMIO_JWT_SECRET`.
 
 **forms-flow-bpm**
 
@@ -112,6 +146,7 @@ Mark  items as `Added`, `Changed`, `Fixed`, `Removed`, `Untested Features`, `Upc
 
 * Removed View submissions button from reviewer form list and view submissions route.
 * Removed the environment variables `CLIENT_ROLE_ID`, `DESIGNER_ROLE_ID`, `REVIEWER_ROLE_ID`,`ANONYMOUS_ID`, `USER_RESOURCE_ID`.
+* Removed the environment variable `FORMIO_JWT_SECRET`.
 
 
 `Generic Changes`

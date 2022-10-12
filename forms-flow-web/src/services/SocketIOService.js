@@ -5,6 +5,14 @@ import { BPM_BASE_URL_SOCKET_IO } from "../apiManager/endpoints/config";
 import UserService from "./UserService";
 import { WEBSOCKET_ENCRYPT_KEY } from "../constants/socketIOConstants";
 import AES from "crypto-js/aes";
+import { MULTITENANCY_ENABLED } from "../constants/constants";
+
+let tenantData = localStorage.getItem("tenantData");
+let tenantKey = '';
+if(tenantData){
+  tenantData = JSON.parse(tenantData);
+  tenantKey = tenantData["key"];
+}
 
 let stompClient = null;
 let reconnectTimeOut = null;
@@ -24,6 +32,7 @@ const connect = (reloadCallback) => {
       if (isConnected()) {
         stompClient.subscribe("/topic/task-event", function (output) {
           const taskUpdate = JSON.parse(output.body);
+    
           /* taskUpdate format
            {id:"taskId", eventName:"complete/update/create"}
            On Complete/ create the pagination can change so Would need a refresh
@@ -31,9 +40,16 @@ const connect = (reloadCallback) => {
            taskId available of the updated one then only Refresh.
            (Would fail in filter/Search on the Same params)
         */
-          const forceReload = taskUpdate.eventName === "complete";
-          const isUpdateEvent = taskUpdate.eventName === "update";
-          reloadCallback(taskUpdate.id, forceReload, isUpdateEvent);
+          
+           if(MULTITENANCY_ENABLED && tenantKey !== taskUpdate.tenantId){
+            //ignore this subscription if multitenancy is enabled and tenantkey does'nt match
+            return ;   
+           }
+           else{
+            const forceReload = taskUpdate.eventName === "complete";
+            const isUpdateEvent = taskUpdate.eventName === "update";
+            reloadCallback(taskUpdate.id, forceReload, isUpdateEvent);
+           }
         });
       }
     },

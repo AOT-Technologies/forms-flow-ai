@@ -4,8 +4,8 @@ info:
   description: 'The API for formsflow.ai. Checkout: formsflow.ai to know more'
   version: 1.0.0
 servers:
-  - url: http://localhost:5000
-  - url: http://{{baseurl}}
+  - url: 'http://localhost:5000'
+  - url: 'http://{{baseurl}}'
 components:
   securitySchemes:
     bearerAuth:
@@ -14,33 +14,56 @@ components:
     apikeyAuth:
       type: http
       scheme: apikey
+  schemas:
+    ApplicationCreate:
+      title: ApplicationCreate
+      x-stoplight:
+        id: oewtm1o0nd84m
+      type: object
+      properties:
+        formId:
+          type: string
+        formUrl:
+          type: string
+        submissionId:
+          type: string
+        webFormUrl:
+          type: string
+    ExternalApplicationCreate:
+      title: ExternalApplicationCreate
+      x-stoplight:
+        id: bw99oxbg3dani
+      type: object
+      properties:
+        formId:
+          type: string
+        data:
+          type: object
 security:
   - apikeyAuth: []
 tags:
   - name: application
-  - name: application > {application id}
-  - name: application > {application id} > history
+  - name: 'application > {application id}'
+  - name: 'application > {application id} > history'
   - name: dashboards
   - name: draft
   - name: draft > public
-  - name: draft > public > {draft id}
-  - name: draft > {draft id}
+  - name: 'draft > public > {draft id}'
+  - name: 'draft > {draft id}'
   - name: form
-  - name: form > {form id}/submission/{submission id}
-  - name: form > {mapper id}
+  - name: 'form > {form id}/submission/{submission id}'
+  - name: 'form > {mapper id}'
   - name: groups
-  - name: groups > {group id}
+  - name: 'groups > {group id}'
   - name: metrics
   - name: public
 paths:
-  /application/{application_id}/history:
+  '/application/{application_id}/history':
     get:
       tags:
-        - application > {application id} > history
+        - 'application > {application id} > history'
       summary: Get application history
-      description: >-
-        : application_id:- Getting application history by providing
-        application_id
+      description: ': application_id:- Getting application history by providing application_id'
       security:
         - bearerAuth: []
       parameters:
@@ -68,14 +91,13 @@ paths:
                 type: object
               example:
                 applications:
-                  - formUrl: >-
-                      http://localhost:3000/form/61b857cff85e92f5958f8a03/submission/6296e8eae7720c1bcfb8bdd6
+                  - formUrl: 'http://localhost:3000/form/61b857cff85e92f5958f8a03/submission/6296e8eae7720c1bcfb8bdd6'
                     applicationStatus: New
                     created: '2022-06-01 04:19:57.118021'
                     submittedBy: john.honai
     post:
       tags:
-        - application > {application id} > history
+        - 'application > {application id} > history'
       summary: Post a new application using the request body
       requestBody:
         content:
@@ -86,8 +108,7 @@ paths:
                 id: 2
                 applicationStatus: Reviewed
                 created: '2022-04-28 10:18:03.521461'
-                formUrl: >-
-                  http://localhost:3000/form/626a42e228d493440d3580d6/submission/626a69da85ba0250e51141fc
+                formUrl: 'http://localhost:3000/form/626a42e228d493440d3580d6/submission/626a69da85ba0250e51141fc'
                 submittedBy: formsflow-client
       security:
         - bearerAuth: []
@@ -122,7 +143,7 @@ paths:
             Date:
               schema:
                 type: string
-                example: Wed, 01 Jun 2022 07:14:38 GMT
+                example: 'Wed, 01 Jun 2022 07:14:38 GMT'
             Connection:
               schema:
                 type: string
@@ -149,16 +170,15 @@ paths:
                 type: object
               example:
                 created: '2022-06-01 07:14:38.099773'
-                formUrl: >-
-                  http://localhost:3000/form/626a42e228d493440d3580d6/submission/626a69da85ba0250e51141fc
+                formUrl: 'http://localhost:3000/form/626a42e228d493440d3580d6/submission/626a69da85ba0250e51141fc'
                 id: 5
                 applicationId: 2
                 applicationStatus: Reviewed
                 submittedBy: formsflow-client
-  /application/{application_id}:
+  '/application/{application_id}':
     get:
       tags:
-        - application > {application id}
+        - 'application > {application id}'
       summary: Get application by id
       description: ': application_id:- List the application for particular application_id'
       security:
@@ -191,8 +211,7 @@ paths:
                 id: 2
                 applicationName: New Business License Application
                 modifiedBy: service-account-forms-flow-bpm
-                formUrl: >-
-                  http://localhost:3000/form/61b857cff85e92f5958f8a03/submission/6296e8eae7720c1bcfb8bdd6
+                formUrl: 'http://localhost:3000/form/61b857cff85e92f5958f8a03/submission/6296e8eae7720c1bcfb8bdd6'
                 processKey: two-step-approval-listener
                 processInstanceId: 1776837b-e162-11ec-974d-0242ac120006
                 processTenant: null
@@ -206,7 +225,7 @@ paths:
                 submissionId: 6296e8eae7720c1bcfb8bdd6
     put:
       tags:
-        - application > {application id}
+        - 'application > {application id}'
       summary: Update application details
       description: ': application_id:- Update the application for particular application_id'
       requestBody:
@@ -217,8 +236,7 @@ paths:
               example:
                 id: 15
                 formId: 626a42e228d493440d3580d6
-                formUrl: >-
-                  http://localhost:3000/form/626a42e228d493440d3580d6/submission/6296ff78bbe1c77a328df300
+                formUrl: 'http://localhost:3000/form/626a42e228d493440d3580d6/submission/6296ff78bbe1c77a328df300'
                 submissionId: 6296ff78bbe1c77a328df300
                 applicationStatus: Approved
       security:
@@ -286,8 +304,7 @@ paths:
                   - id: 15
                     applicationName: New Business License Application
                     modifiedBy: service-account-forms-flow-bpm
-                    formUrl: >-
-                      http://localhost:3000/form/61b857cff85e92f5958f8a03/submission/6296e8eae7720c1bcfb8bdd6
+                    formUrl: 'http://localhost:3000/form/61b857cff85e92f5958f8a03/submission/6296e8eae7720c1bcfb8bdd6'
                     processKey: two-step-approval-listener
                     processInstanceId: 1776837b-e162-11ec-974d-0242ac120006
                     processTenant: null
@@ -315,12 +332,7 @@ paths:
         content:
           application/json:
             schema:
-              type: object
-              example:
-                formId: 626a42e228d493440d3580d6
-                formUrl: >-
-                  http://localhost:3000/form/626a42e228d493440d3580d6/submission/6296ff78bbe1c77a328df300
-                submissionId: 6296ff78bbe1c77a328df300
+              $ref: '#/components/schemas/ApplicationCreate'
       security:
         - bearerAuth: []
       responses:
@@ -346,7 +358,7 @@ paths:
             Date:
               schema:
                 type: string
-                example: Wed, 01 Jun 2022 05:57:20 GMT
+                example: 'Wed, 01 Jun 2022 05:57:20 GMT'
             Connection:
               schema:
                 type: string
@@ -373,8 +385,7 @@ paths:
                 type: object
               example:
                 created: '2022-06-01 05:57:20.128424'
-                formUrl: >-
-                  http://localhost:3000/form/626a42e228d493440d3580d6/submission/6296ff78bbe1c77a328df300
+                formUrl: 'http://localhost:3000/form/626a42e228d493440d3580d6/submission/6296ff78bbe1c77a328df300'
                 id: 15
                 modifiedBy: null
                 modified: '2022-06-01 05:57:20.128431'
@@ -382,7 +393,7 @@ paths:
                 applicationStatus: New
                 processInstanceId: null
                 formProcessMapperId: '1'
-  /application/formid/{form_id}:
+  '/application/formid/{form_id}':
     get:
       tags:
         - application
@@ -418,8 +429,7 @@ paths:
                 applications:
                   - id: 2442
                     modifiedBy: service-account-forms-flow-bpm
-                    formUrl: >-
-                      https://localhost:3000/form/624d71460d7e747ab1b85d73/submission/6295e161e7720c1bcfb8bb89
+                    formUrl: 'https://localhost:3000/form/624d71460d7e747ab1b85d73/submission/6295e161e7720c1bcfb8bb89'
                     processInstanceId: 02df9949-e0c5-11ec-974d-0242ac120006
                     applicationStatus: New
                     created: '2022-05-31 09:35:30.198911'
@@ -492,8 +502,7 @@ paths:
                       id: 1
                       name: Kurian Benoy
                       email: kurian.benoy@aot-technologies.com
-                      profile_image_url: >-
-                        https://www.gravatar.com/avatar/00daef977e7230d0d497f0c3d3929d7b?s=40&d=identicon
+                      profile_image_url: 'https://www.gravatar.com/avatar/00daef977e7230d0d497f0c3d3929d7b?s=40&d=identicon'
                     layout: []
                     dashboard_filters_enabled: false
                     widgets: null
@@ -513,8 +522,7 @@ paths:
                       id: 1
                       name: Kurian Benoy
                       email: kurian.benoy@aot-technologies.com
-                      profile_image_url: >-
-                        https://www.gravatar.com/avatar/00daef977e7230d0d497f0c3d3929d7b?s=40&d=identicon
+                      profile_image_url: 'https://www.gravatar.com/avatar/00daef977e7230d0d497f0c3d3929d7b?s=40&d=identicon'
                     layout: []
                     dashboard_filters_enabled: false
                     widgets: null
@@ -534,8 +542,7 @@ paths:
                       id: 1
                       name: Kurian Benoy
                       email: kurian.benoy@aot-technologies.com
-                      profile_image_url: >-
-                        https://www.gravatar.com/avatar/00daef977e7230d0d497f0c3d3929d7b?s=40&d=identicon
+                      profile_image_url: 'https://www.gravatar.com/avatar/00daef977e7230d0d497f0c3d3929d7b?s=40&d=identicon'
                     layout: []
                     dashboard_filters_enabled: false
                     widgets: null
@@ -555,8 +562,7 @@ paths:
                       id: 1
                       name: Kurian Benoy
                       email: kurian.benoy@aot-technologies.com
-                      profile_image_url: >-
-                        https://www.gravatar.com/avatar/00daef977e7230d0d497f0c3d3929d7b?s=40&d=identicon
+                      profile_image_url: 'https://www.gravatar.com/avatar/00daef977e7230d0d497f0c3d3929d7b?s=40&d=identicon'
                     layout: []
                     dashboard_filters_enabled: false
                     widgets: null
@@ -576,8 +582,7 @@ paths:
                       id: 1
                       name: Kurian Benoy
                       email: kurian.benoy@aot-technologies.com
-                      profile_image_url: >-
-                        https://www.gravatar.com/avatar/00daef977e7230d0d497f0c3d3929d7b?s=40&d=identicon
+                      profile_image_url: 'https://www.gravatar.com/avatar/00daef977e7230d0d497f0c3d3929d7b?s=40&d=identicon'
                     layout: []
                     dashboard_filters_enabled: false
                     widgets: null
@@ -597,8 +602,7 @@ paths:
                       id: 1
                       name: Kurian Benoy
                       email: kurian.benoy@aot-technologies.com
-                      profile_image_url: >-
-                        https://www.gravatar.com/avatar/00daef977e7230d0d497f0c3d3929d7b?s=40&d=identicon
+                      profile_image_url: 'https://www.gravatar.com/avatar/00daef977e7230d0d497f0c3d3929d7b?s=40&d=identicon'
                     layout: []
                     dashboard_filters_enabled: false
                     widgets: null
@@ -618,8 +622,7 @@ paths:
                       id: 1
                       name: Kurian Benoy
                       email: kurian.benoy@aot-technologies.com
-                      profile_image_url: >-
-                        https://www.gravatar.com/avatar/00daef977e7230d0d497f0c3d3929d7b?s=40&d=identicon
+                      profile_image_url: 'https://www.gravatar.com/avatar/00daef977e7230d0d497f0c3d3929d7b?s=40&d=identicon'
                     layout: []
                     dashboard_filters_enabled: false
                     widgets: null
@@ -639,8 +642,7 @@ paths:
                       id: 1
                       name: Kurian Benoy
                       email: kurian.benoy@aot-technologies.com
-                      profile_image_url: >-
-                        https://www.gravatar.com/avatar/00daef977e7230d0d497f0c3d3929d7b?s=40&d=identicon
+                      profile_image_url: 'https://www.gravatar.com/avatar/00daef977e7230d0d497f0c3d3929d7b?s=40&d=identicon'
                     layout: []
                     dashboard_filters_enabled: false
                     widgets: null
@@ -660,8 +662,7 @@ paths:
                       id: 1
                       name: Kurian Benoy
                       email: kurian.benoy@aot-technologies.com
-                      profile_image_url: >-
-                        https://www.gravatar.com/avatar/00daef977e7230d0d497f0c3d3929d7b?s=40&d=identicon
+                      profile_image_url: 'https://www.gravatar.com/avatar/00daef977e7230d0d497f0c3d3929d7b?s=40&d=identicon'
                     layout: []
                     dashboard_filters_enabled: true
                     widgets: null
@@ -681,8 +682,7 @@ paths:
                       id: 1
                       name: Kurian Benoy
                       email: kurian.benoy@aot-technologies.com
-                      profile_image_url: >-
-                        https://www.gravatar.com/avatar/00daef977e7230d0d497f0c3d3929d7b?s=40&d=identicon
+                      profile_image_url: 'https://www.gravatar.com/avatar/00daef977e7230d0d497f0c3d3929d7b?s=40&d=identicon'
                     layout: []
                     dashboard_filters_enabled: true
                     widgets: null
@@ -694,7 +694,7 @@ paths:
                     created_at: '2021-12-16T10:49:27.519Z'
                     version: 3
                     is_favorite: false
-  /dashboards/{dashboard_id}:
+  '/dashboards/{dashboard_id}':
     get:
       tags:
         - dashboards
@@ -735,8 +735,7 @@ paths:
                   id: 1
                   name: Kurian Benoy
                   email: kurian.benoy@aot-technologies.com
-                  profile_image_url: >-
-                    https://www.gravatar.com/avatar/00daef977e7230d0d497f0c3d3929d7b?s=40&d=identicon
+                  profile_image_url: 'https://www.gravatar.com/avatar/00daef977e7230d0d497f0c3d3929d7b?s=40&d=identicon'
                 layout: []
                 dashboard_filters_enabled: false
                 widgets:
@@ -766,14 +765,13 @@ paths:
                 created_at: '2022-05-16T09:57:07.175Z'
                 version: 2
                 is_favorite: false
-                public_url: >-
-                  http://localhost:7000/public/dashboards/YCAynmArs9q8NIVB3RRVwP4Peox5n8Dv4j2V33re?org_slug=default
+                public_url: 'http://localhost:7000/public/dashboards/YCAynmArs9q8NIVB3RRVwP4Peox5n8Dv4j2V33re?org_slug=default'
                 api_key: YCAynmArs9q8NIVB3RRVwP4Peox5n8Dv4j2V33re
                 can_edit: true
-  /draft/public/{draft_id}:
+  '/draft/public/{draft_id}':
     put:
       tags:
-        - draft > public > {draft id}
+        - 'draft > public > {draft id}'
       summary: Update draft details
       requestBody:
         content: {}
@@ -798,10 +796,10 @@ paths:
               schema:
                 type: string
               example: ''
-  /draft/public/{draft_id}/submit:
+  '/draft/public/{draft_id}/submit':
     put:
       tags:
-        - draft > public > {draft id}
+        - 'draft > public > {draft id}'
       summary: Updates the application and draft entry to create a new submission
       requestBody:
         content: {}
@@ -846,10 +844,10 @@ paths:
               schema:
                 type: string
               example: ''
-  /draft/{draft_id}:
+  '/draft/{draft_id}':
     put:
       tags:
-        - draft > {draft id}
+        - 'draft > {draft id}'
       summary: Update draft details
       requestBody:
         content:
@@ -888,7 +886,7 @@ paths:
               example: Updated 19 successfully
     get:
       tags:
-        - draft > {draft id}
+        - 'draft > {draft id}'
       summary: Get draft by id
       security:
         - bearerAuth: []
@@ -928,10 +926,10 @@ paths:
                 DraftName: Freedom of Information and Protection of Privacy
                 processName: One Step Approval
                 formId: 6299cf76f4fd4797a3238a0b
-  /draft/{draft_id}/submit:
+  '/draft/{draft_id}/submit':
     put:
       tags:
-        - draft > {draft id}
+        - 'draft > {draft id}'
       summary: Updates the application and draft entry to create a new submission
       requestBody:
         content:
@@ -939,8 +937,7 @@ paths:
             schema:
               type: object
               example:
-                formUrl: >-
-                  http://localhost:3000/form/6299cf76f4fd4797a3238a0b/submission/6296ff78bbe1c77a328df309
+                formUrl: 'http://localhost:3000/form/6299cf76f4fd4797a3238a0b/submission/6296ff78bbe1c77a328df309'
                 submissionId: 6296ff78bbe1c77a328df309
       security:
         - bearerAuth: []
@@ -1050,7 +1047,7 @@ paths:
             Date:
               schema:
                 type: string
-                example: Tue, 16 Aug 2022 05:00:20 GMT
+                example: 'Tue, 16 Aug 2022 05:00:20 GMT'
             Connection:
               schema:
                 type: string
@@ -1083,10 +1080,10 @@ paths:
                   name: new chapter.
                 created: '2022-08-16 05:00:20.055905'
                 modified: '2022-08-16 05:00:20.055911'
-  /form/{form_id}/submission/{submission_id}/export/pdf:
+  '/form/{form_id}/submission/{submission_id}/export/pdf':
     get:
       tags:
-        - form > {form id}/submission/{submission id}
+        - 'form > {form id}/submission/{submission id}'
       summary: PDF generation and rendering method
       parameters:
         - name: form_id
@@ -1116,10 +1113,10 @@ paths:
               schema:
                 type: string
               example: ''
-  /form/{form_id}/submission/{submission_id}/render:
+  '/form/{form_id}/submission/{submission_id}/render':
     get:
       tags:
-        - form > {form id}/submission/{submission id}
+        - 'form > {form id}/submission/{submission id}'
       summary: Form rendering method
       parameters:
         - name: form_id
@@ -1149,10 +1146,10 @@ paths:
               schema:
                 type: string
               example: ''
-  /form/{mapper_id}:
+  '/form/{mapper_id}':
     get:
       tags:
-        - form > {mapper id}
+        - 'form > {mapper id}'
       summary: Get form by mapper_id
       description: ': mapper_id:- Get form process mapper by mapper_id'
       security:
@@ -1199,7 +1196,7 @@ paths:
                 formName: New Business License Application
     delete:
       tags:
-        - form > {mapper id}
+        - 'form > {mapper id}'
       summary: Delete form by mapper_id
       description: ': mapper_id:- Delete form process mapper by mapper_id.'
       security:
@@ -1231,7 +1228,7 @@ paths:
               example: Deleted
     put:
       tags:
-        - form > {mapper id}
+        - 'form > {mapper id}'
       summary: Update form by mapper_id
       description: |-
         : comments:- Brief description
@@ -1304,10 +1301,10 @@ paths:
                 createdBy: formsflow-designer
                 formId: 62971638bbe1c77a328df2c3
                 formName: sampletest1
-  /form/{mapper_id}/application/count:
+  '/form/{mapper_id}/application/count':
     get:
       tags:
-        - form > {mapper id}
+        - 'form > {mapper id}'
       summary: The method retrieves the total application count for th egiven mapper id
       security:
         - bearerAuth: []
@@ -1416,7 +1413,7 @@ paths:
             Date:
               schema:
                 type: string
-                example: Tue, 31 May 2022 11:22:13 GMT
+                example: 'Tue, 31 May 2022 11:22:13 GMT'
             Connection:
               schema:
                 type: string
@@ -1457,7 +1454,7 @@ paths:
                 anonymous: null
                 processKey: onestepapproval
                 formName: New Form
-  /form/applicationid/{application_id}:
+  '/form/applicationid/{application_id}':
     get:
       tags:
         - form
@@ -1487,10 +1484,10 @@ paths:
               schema:
                 type: object
               example:
-                processKey: 'onestepapproval'
+                processKey: onestepapproval
                 taskVariable: '[]'
                 processTenant: null
-                processName: 'One Step Approval'
+                processName: One Step Approval
   /form/form-create:
     post:
       tags:
@@ -2215,14 +2212,12 @@ paths:
                     created: '2022-06-22T09:40:23.095Z'
                     modified: '2022-06-22T09:40:23.103Z'
                     machineName: testcreateform
-  /form/formid/{form_id}:
+  '/form/formid/{form_id}':
     get:
       tags:
         - form
       summary: Get form by form_id
-      description: >-
-        : form_id:- Get details of only form corresponding to a particular
-        formId
+      description: ': form_id:- Get details of only form corresponding to a particular formId'
       security:
         - bearerAuth: []
       parameters:
@@ -2265,10 +2260,10 @@ paths:
                 anonymous: false
                 processKey: onestepapproval
                 formName: Freedom of Information and Protection of Privacy
-  /groups/{group_id}:
+  '/groups/{group_id}':
     get:
       tags:
-        - groups > {group id}
+        - 'groups > {group id}'
       summary: GET request to fetch groups details API
       description: ':params str id: group-id of Keycloak Dashboard Authorized groups'
       security:
@@ -2311,7 +2306,7 @@ paths:
                   manageMembership: true
     put:
       tags:
-        - groups > {group id}
+        - 'groups > {group id}'
       summary: Update request to update dashboard details
       description: ':params str id: group-id of Keycloak Dashboard Authorized groups'
       requestBody:
@@ -2419,7 +2414,7 @@ paths:
                     version: '1'
                     mapperId: 1
                     formName: New Business License Application
-  /metrics/{mapper_id}:
+  '/metrics/{mapper_id}':
     get:
       tags:
         - metrics
@@ -2490,8 +2485,7 @@ paths:
               type: object
               example:
                 formId: 629731d0bbe1c77a328df2e7
-                formUrl: >-
-                  http://localhost:3000/form/629731d0bbe1c77a328df2e7/submission/62973249bbe1c77a328df30e
+                formUrl: 'http://localhost:3000/form/629731d0bbe1c77a328df2e7/submission/62973249bbe1c77a328df30e'
                 submissionId: 62973249bbe1c77a328df30e
       security:
         - bearerAuth: []
@@ -2518,7 +2512,7 @@ paths:
             Date:
               schema:
                 type: string
-                example: Wed, 01 Jun 2022 09:40:58 GMT
+                example: 'Wed, 01 Jun 2022 09:40:58 GMT'
             Connection:
               schema:
                 type: string
@@ -2544,7 +2538,7 @@ paths:
               schema:
                 type: object
               example: {}
-  /public/form/{form_id}:
+  '/public/form/{form_id}':
     get:
       tags:
         - public
@@ -2703,3 +2697,14 @@ paths:
               schema:
                 type: object
               example: Updated - users/8cee5182-acd0-4586-9121-72eeea87f9f9
+  /application/external/create:
+    get:
+      summary: Your GET endpoint
+      tags: []
+      responses: {}
+      operationId: get-application-external-create
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ExternalApplicationCreate'

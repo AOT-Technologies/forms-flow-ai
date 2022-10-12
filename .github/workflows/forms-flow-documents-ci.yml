@@ -6,10 +6,12 @@ on:
     branches:
       - develop
       - master
+      - release/**
   pull_request:
     branches:
       - develop
       - master
+      - release/**
     paths:
       - "forms-flow-documents/**"
 

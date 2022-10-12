@@ -23,7 +23,7 @@ services:
 
   forms-flow-forms:
     container_name: forms-flow-forms
-    image: formsflow/forms-flow-forms:v5.0.0-alpha
+    image: formsflow/forms-flow-forms:v5.0.1
 
     # The app will restart until Mongo is listening
     restart: always
@@ -113,6 +113,10 @@ services:
       - KEYCLOAK_ENABLE_CLIENT_AUTH=${KEYCLOAK_ENABLE_CLIENT_AUTH:-false}
       - KEYCLOAK_WEB_CLIENTID=${KEYCLOAK_WEB_CLIENTID:-forms-flow-web}
       - FORMSFLOW_ADMIN_URL=${FORMSFLOW_ADMIN_URL:-}
+      - REDIS_HOST=${REDIS_HOST:-localhost}
+      - REDIS_PORT=${REDIS_PORT:-6379}
+      - REDIS_PASSCODE=${REDIS_PASSCODE:-changeme}
+      - REDIS_ENABLED=${REDIS_ENABLED:-false}
 
     networks:
       - forms-flow-network

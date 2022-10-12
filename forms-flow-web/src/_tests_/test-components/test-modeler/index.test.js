@@ -1,4 +1,4 @@
-import Index from "../../../components/Modeller/index";
+import Index from "../../../components/Modeler/index";
 import React from "react";
 import { render as rtlRender, screen } from "@testing-library/react";
 import "@testing-library/jest-dom/extend-expect";
@@ -77,7 +77,7 @@ function renderWithRouterMatch(
   };
 }
 
-test("Should render the modeller index component without breaking", async () => {
+test("Should render the modeler index component without breaking", async () => {
   const spy = jest.spyOn(redux, "useSelector");
   spy.mockImplementation((callback) => callback(initialstate));
   renderWithRouterMatch(Index, {

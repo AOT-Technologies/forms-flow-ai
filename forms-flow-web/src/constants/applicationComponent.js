@@ -142,20 +142,59 @@ const applicationStatusHiddenComponent = {
 const APPLICATION_ID_KEY = "applicationId";
 const APPLICATION_STATUS_KEY = "applicationStatus";
 
-export const addHiddenApplicationComponent = (form) => {
-  const flatternComponent = utils.flattenComponents(form.components, true);
-  if (!flatternComponent[APPLICATION_ID_KEY]) {
-    if (form.display === "wizard") {
-      form.components[0].components.push(applicationIDHiddenComponent);
-    } else {
-      form.components.push(applicationIDHiddenComponent);
-    }
+const removeComponent  = (components, target) => {
+  const targetIndex = components.findIndex(item=> item.key === target);
+  if(targetIndex !== -1){
+    components.splice(targetIndex,1);
   }
-  if (!flatternComponent[APPLICATION_STATUS_KEY]) {
+};
+
+export const addHiddenApplicationComponent = (form) => {
+  const {components} = form;
+  const flatternComponent = utils.flattenComponents(components, true);
+  
+ 
+  if (flatternComponent[APPLICATION_ID_KEY]) {
     if (form.display === "wizard") {
-      form.components[0].components.push(applicationStatusHiddenComponent);
-    } else {
-      form.components.push(applicationStatusHiddenComponent);
+       // if application id is exist : remove the component form if it is wizard display
+      removeComponent(components, APPLICATION_ID_KEY);
+      let findPanel = components.find(component=> component.type == "panel");
+       if(findPanel){
+        const applicationExist = findPanel.components.some(item => item.key === APPLICATION_ID_KEY);
+        !applicationExist && findPanel.components.push(applicationIDHiddenComponent);  
+       }
+       
+    }
+  }else{
+    if(form.display === "wizard"){
+      let findPanel = components.find(component=> component.type == "panel");
+      if(findPanel){
+        findPanel.components.push(applicationIDHiddenComponent);
+      }
+  }else{
+    components.push(applicationIDHiddenComponent);
+  }
+}
+  
+  if (flatternComponent[APPLICATION_STATUS_KEY]) {
+    if (form.display === "wizard") {
+     // if application status is exist : remove the component form if it is wizard display
+      removeComponent(components, APPLICATION_STATUS_KEY);
+      let findPanel = components.find(component=> component.type == "panel");
+       if(findPanel){
+        const applicationExist = findPanel.components.some(item => 
+          item.key === APPLICATION_STATUS_KEY);
+          !applicationExist && findPanel.components.push(applicationStatusHiddenComponent);
+       }
+    }
+  } else {
+    if(form.display === "wizard"){
+      let findPanel = components.find(component=> component.type == "panel");
+      if(findPanel){
+        findPanel.components.push(applicationStatusHiddenComponent);
+      }
+    }else{
+      components.push(applicationStatusHiddenComponent);
     }
   }
   return form;

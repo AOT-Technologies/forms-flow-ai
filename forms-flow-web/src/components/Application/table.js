@@ -13,6 +13,7 @@ import { Translation } from "react-i18next";
 import DateRangePicker from "@wojtekmaj/react-daterange-picker";
 import DropdownButton from "react-bootstrap/DropdownButton";
 import Dropdown from "react-bootstrap/Dropdown";
+import { toast } from "react-toastify";
 
 let statusFilter, idFilter, nameFilter, modifiedDateFilter;
 
@@ -32,7 +33,11 @@ const getApplicationStatusOptions = (rows) => {
 
 const linkApplication = (cell, row, redirectUrl) => {
   return (
-    <Link className="custom_primary_color" to={`${redirectUrl}application/${row.id}`} title={cell}>
+    <Link
+      className="custom_primary_color"
+      to={`${redirectUrl}application/${row.id}`}
+      title={cell}
+    >
       {cell}
     </Link>
   );
@@ -78,7 +83,11 @@ const nameFormatter = (cell) => {
     </label>
   );
 };
-const customStyle = { border: "1px solid #ced4da", fontStyle: "normal"};
+
+const customStyle = { border: "1px solid #ced4da", fontStyle: "normal" };
+
+const styleForValidationFail = { border: "1px solid red" };
+
 export const columns_history = [
   {
     dataField: "applicationname",
@@ -92,13 +101,27 @@ export const columns_history = [
   },
 ];
 
+let applicationNotified = false;
+const notifyValidationError = () => {
+  if (!applicationNotified) {
+    toast.error("Invalid application id");
+    applicationNotified = true;
+  }
+};
+
 export const columns = (
   applicationStatus,
   lastModified,
   callback,
   t,
-  redirectUrl
+  redirectUrl,
+  invalidFilters
 ) => {
+  if (invalidFilters.APPLICATION_ID) {
+    notifyValidationError();
+  } else {
+    applicationNotified = false;
+  }
   return [
     {
       dataField: "id",
@@ -111,7 +134,9 @@ export const columns = (
         placeholder: `\uf002 ${t("Application Id")}`, // custom the input placeholder
         caseSensitive: false, // default is false, and true will only work when comparator is LIKE
         className: "icon-search",
-        style: customStyle,
+        style: invalidFilters.APPLICATION_ID
+          ? styleForValidationFail
+          : customStyle,
         getFilter: (filter) => {
           idFilter = filter;
         },
@@ -168,7 +193,6 @@ export const columns = (
       // eslint-disable-next-line no-unused-vars
       filterRenderer: (onFilter, column) => {
         return (
-          
           <DateRangePicker
             onChange={(selectedRange) => {
               callback(selectedRange);
@@ -184,7 +208,6 @@ export const columns = (
             dayAriaLabel="Select the day"
             clearAriaLabel="Click to clear"
           />
-          
         );
       },
     },
@@ -199,7 +222,11 @@ const customTotal = (from, to, size) => (
     <Translation>{(t) => t("Results")}</Translation>
   </span>
 );
-export const customDropUp = ({ options, currSizePerPage, onSizePerPageChange }) => {
+export const customDropUp = ({
+  options,
+  currSizePerPage,
+  onSizePerPageChange,
+}) => {
   return (
     <DropdownButton
       drop="up"

@@ -1,7 +1,7 @@
 const pattern = new RegExp("[^0-9]", "g");
 
-const isValidApplicationId = function(input) {
+const isValiResourceId = function(input) {
     return input.match(pattern) ? false : true;
 };
 
-export default isValidApplicationId;
+export default isValiResourceId;

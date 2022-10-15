@@ -26,7 +26,7 @@ import {
   setDraftListActivePage,
   setCountPerpage,
 } from "../../actions/draftActions";
-import isValidApplicationId from "../../helper/regExp/validApplicationId";
+import isValiResourceId from "../../helper/regExp/validResourceId";
 
 export const DraftList = React.memo(() => {
   const { t } = useTranslation();
@@ -100,7 +100,7 @@ export const DraftList = React.memo(() => {
   const validateFilters = (newState) => {
     if (
       newState.filters?.id?.filterVal &&
-      !isValidApplicationId(newState.filters?.id?.filterVal)
+      !isValiResourceId(newState.filters?.id?.filterVal)
     ) {
       return setInvalidFilters({ ...invalidFilters, DRAFT_ID: true });
     } else {

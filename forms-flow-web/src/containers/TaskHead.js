@@ -12,8 +12,9 @@ function TaskHead() {
   const dispatch = useDispatch();
   const tenantKey = useSelector((state) => state.tenants?.tenantId);
   const selectedFilter = useSelector(state => state.bpmTasks.selectedFilter?.name);
-  const itemCount = useSelector(state => state.bpmTasks.selectedFilter?.itemCount);
-
+  const itemCount = useSelector(state => state.bpmTasks.tasksCount);
+  const isTaskListLoading = useSelector(state => state.bpmTasks.isTaskListLoading);
+  const count = isTaskListLoading ? "" : itemCount ? `(${itemCount})` : '(0)';
   const location = useLocation();
   const { pathname } = location;
   const baseUrl = MULTITENANCY_ENABLED ? `/tenant/${tenantKey}/` : "/";
@@ -40,7 +41,7 @@ function TaskHead() {
                     title={
                       <>
                         <i className="fa fa-list fa-lg fa-fw " />
-                        {`${selectedFilter ? selectedFilter : 'Tasks'} ${" "}(${itemCount ? itemCount : ''})`}{" "}
+                        {`${selectedFilter ? selectedFilter : 'Tasks'} ${" "}`}{count}
                       </>
                     }
                     onClick={goToTask}

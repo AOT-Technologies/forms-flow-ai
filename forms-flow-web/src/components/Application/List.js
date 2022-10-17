@@ -34,6 +34,7 @@ import overlayFactory from "react-bootstrap-table2-overlay";
 import { SpinnerSVG } from "../../containers/SpinnerSVG";
 import Head from "../../containers/Head";
 import { push } from "connected-react-router";
+import isValiResourceId from "../../helper/regExp/validResourceId";
 
 export const ApplicationList = React.memo(() => {
   const { t } = useTranslation();
@@ -61,6 +62,8 @@ export const ApplicationList = React.memo(() => {
   const redirectUrl = MULTITENANCY_ENABLED ? `/tenant/${tenantKey}/` : "/";
   const [lastModified, setLastModified] = React.useState(null);
   const [isLoading, setIsLoading] = React.useState(false);
+  const [invalidFilters, setInvalidFilters] = React.useState({});
+
   useEffect(() => {
     setIsLoading(false);
   }, [applications]);
@@ -116,8 +119,19 @@ export const ApplicationList = React.memo(() => {
       </div>
     );
   };
+  const validateFilters = (newState) => {
+    if (
+      newState.filters?.id?.filterVal &&
+      !isValiResourceId(newState.filters?.id?.filterVal)
+    ) {
+      return setInvalidFilters({ ...invalidFilters, APPLICATION_ID: true });
+    } else {
+      return setInvalidFilters({ ...invalidFilters, APPLICATION_ID: false });
+    }
+  };
 
   const handlePageChange = (type, newState) => {
+    validateFilters(newState);
     if (type === "filter") {
       setfiltermode(true);
     } else if (type === "pagination") {
@@ -173,7 +187,8 @@ export const ApplicationList = React.memo(() => {
         lastModified,
         setLastModified,
         t,
-        redirectUrl
+        redirectUrl,
+        invalidFilters
       )}
       search
     >
@@ -182,34 +197,38 @@ export const ApplicationList = React.memo(() => {
           <Head items={headOptions} page="Applications" />
           <br />
           <div>
-          {applicationCount > 0 || filtermode ? <BootstrapTable
-              remote={{ pagination: true, filter: true, sort: true }}
-              loading={isLoading}
-              filter={filterFactory()}
-              pagination={paginationFactory(
-                getoptions(applicationCount, page, countPerPage)
-              )}
-              onTableChange={handlePageChange}
-              filterPosition={"top"}
-              {...props.baseProps}
-              noDataIndication={() =>
-                !isLoading && getNoDataIndicationContent()
-              }
-              defaultSorted={defaultSortedBy}
-              overlay={overlayFactory({
-                spinner: <SpinnerSVG />,
-                styles: {
-                  overlay: (base) => ({
-                    ...base,
-                    background: "rgba(255, 255, 255)",
-                    height: `${
-                      countPerPage > 5 ? "100% !important" : "350px !important"
-                    }`,
-                    top: "65px",
-                  }),
-                },
-              })}
-            /> : iserror ? (
+            {applicationCount > 0 || filtermode ? (
+              <BootstrapTable
+                remote={{ pagination: true, filter: true, sort: true }}
+                loading={isLoading}
+                filter={filterFactory()}
+                pagination={paginationFactory(
+                  getoptions(applicationCount, page, countPerPage)
+                )}
+                onTableChange={handlePageChange}
+                filterPosition={"top"}
+                {...props.baseProps}
+                noDataIndication={() =>
+                  !isLoading && getNoDataIndicationContent()
+                }
+                defaultSorted={defaultSortedBy}
+                overlay={overlayFactory({
+                  spinner: <SpinnerSVG />,
+                  styles: {
+                    overlay: (base) => ({
+                      ...base,
+                      background: "rgba(255, 255, 255)",
+                      height: `${
+                        countPerPage > 5
+                          ? "100% !important"
+                          : "350px !important"
+                      }`,
+                      top: "65px",
+                    }),
+                  },
+                })}
+              />
+            ) : iserror ? (
               <Alert variant={"danger"}>{error}</Alert>
             ) : (
               <Nodata text={t("No Applications Found")} />

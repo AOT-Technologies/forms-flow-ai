@@ -11,6 +11,7 @@ import { Translation } from "react-i18next";
 import DateRangePicker from "@wojtekmaj/react-daterange-picker";
 import DropdownButton from "react-bootstrap/DropdownButton";
 import Dropdown from "react-bootstrap/Dropdown";
+import { toast } from "react-toastify";
 
 let statusFilter, idFilter, nameFilter, modifiedDateFilter;
 
@@ -66,8 +67,27 @@ const nameFormatter = (cell) => {
   );
 };
 const customStyle = { border: "1px solid #ced4da", fontStyle: "normal" };
+const styleForValidationFail = { border: "1px solid red" };
 
-export const columns = (lastModified, callback, t, redirectUrl) => {
+let draftNotified = false;
+const notifyValidationError = () => {
+  if (!draftNotified) {
+    toast.error("Invalid draft id");
+    draftNotified = true;
+  }
+};
+export const columns = (
+  lastModified,
+  callback,
+  t,
+  redirectUrl,
+  invalidFilters
+) => {
+  if (invalidFilters.DRAFT_ID) {
+    notifyValidationError();
+  } else {
+    draftNotified = false;
+  }
   return [
     {
       dataField: "id",
@@ -80,7 +100,7 @@ export const columns = (lastModified, callback, t, redirectUrl) => {
         placeholder: `\uf002 ${t("Draft Id")}`, // custom the input placeholder
         caseSensitive: false, // default is false, and true will only work when comparator is LIKE
         className: "icon-search",
-        style: customStyle,
+        style: invalidFilters.DRAFT_ID ? styleForValidationFail : customStyle,
         getFilter: (filter) => {
           idFilter = filter;
         },

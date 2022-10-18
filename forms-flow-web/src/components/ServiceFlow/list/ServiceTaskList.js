@@ -93,7 +93,8 @@ const ServiceFlowTaskList = React.memo(() => {
                 <div
                   data-toggle="tooltip"
                   title={t("Task assignee")}
-                  className="pr-0 text-right"
+                  className="pr-0 text-right d-inline-block text-truncate"
+                  style={{maxWidth:"150"}}
                 >
                   <span> {task.assignee}</span>
                 </div>

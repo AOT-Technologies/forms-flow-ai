@@ -60,3 +60,11 @@ class DraftSortingParameters:  # pylint: disable=too-few-public-methods
     Status = "applicationStatus"
     Modified = "modified"
     FormName = "formName"
+
+
+@unique
+class FilterStatus(Enum):
+    """This enum provides the filter status."""
+
+    ACTIVE = "active"
+    INACTIVE = "inactive"

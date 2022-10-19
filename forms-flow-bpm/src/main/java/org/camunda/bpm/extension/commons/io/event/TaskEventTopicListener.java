@@ -17,10 +17,10 @@ import java.util.logging.Logger;
 @Component
 public class TaskEventTopicListener {
 
+    private final Logger LOGGER = Logger.getLogger(TaskEventTopicListener.class.getName());
+
     @Autowired
     private TaskEventMessageService taskEventMessageService;
-
-    private final Logger LOGGER = Logger.getLogger(TaskEventTopicListener.class.getName());
 
     public void receiveTaskMessage(String message) throws IOException {
         ObjectMapper objectMapper = new ObjectMapper();

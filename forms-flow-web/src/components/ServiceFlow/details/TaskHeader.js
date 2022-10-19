@@ -13,6 +13,7 @@ import "./../ServiceFlow.scss";
 import AddGroupModal from "./AddGroupModal";
 import {
   claimBPMTask,
+  // fetchFilterList,
   fetchServiceTaskList,
   getBPMTaskDetail,
   unClaimBPMTask,
@@ -68,6 +69,12 @@ const TaskHeader = React.memo(() => {
               dispatch(setBPMTaskDetailUpdating(false));
             }
           }
+          if(selectedFilter){
+            dispatch(
+              fetchServiceTaskList(selectedFilter.id, firstResult, reqData)
+            );
+          }
+           
         } else {
           dispatch(setBPMTaskDetailUpdating(false));
         }
@@ -85,11 +92,14 @@ const TaskHeader = React.memo(() => {
             if (!SocketIOService.isConnected()) {
               if (selectedFilter) {
                 dispatch(getBPMTaskDetail(taskId));
-                dispatch(
-                  fetchServiceTaskList(selectedFilter.id, firstResult, reqData)
-                );
               }
             }
+            if(selectedFilter){
+              dispatch(
+                fetchServiceTaskList(selectedFilter.id, firstResult, reqData)
+              );
+            }
+           
           } else {
             dispatch(setBPMTaskDetailUpdating(false));
           }
@@ -107,11 +117,14 @@ const TaskHeader = React.memo(() => {
           if (!SocketIOService.isConnected()) {
             if (selectedFilter) {
               dispatch(getBPMTaskDetail(taskId));
-              dispatch(
-                fetchServiceTaskList(selectedFilter.id, firstResult, reqData)
-              );
             }
           }
+          if(selectedFilter){
+            dispatch(
+              fetchServiceTaskList(selectedFilter.id, firstResult, reqData)
+            );
+          }
+          
         } else {
           dispatch(setBPMTaskDetailUpdating(false));
         }

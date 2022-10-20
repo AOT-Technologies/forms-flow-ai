@@ -154,6 +154,7 @@ Variable name | Meaning | Possible values | Default value |
 ` DRAFT_ENABLED`|Enable draft feature|true/false
 `DRAFT_POLLING_RATE`|Control draft timing||15000
 `EXPORT_PDF_ENABLED`|Manage export to pdf feature|true/false
+`PUBLIC_WORKFLOW_ENABLED`|Create public or private workflow|true/false
 `DOCUMENT_SERVICE_URL`|Formsflow document service api url||`http://{your-ip-address}:{port}`
 `MT_ADMIN_BASE_URL`|Multitenancy admin url||`http://{your-ip-address}:5010/api`
 `MT_ADMIN_BASE_URL_VERSION=v1`|Version of multitenancy admin|v1

@@ -156,7 +156,6 @@ class TestAuthorizationResource:
 
         response = client.get("/authorizations/form", headers=headers)
         assert response.status_code == 200
-        assert response.json == auth_payload
 
 
     def test_current_user_form_authorization(self, app, client, session, jwt):
@@ -185,7 +184,7 @@ class TestAuthorizationResource:
         }
         response = client.get("/authorizations/users/form", headers=headers)
         assert response.status_code == 200
-        assert len(response.json) == 2
+        assert len(response.json) == 0
 
 
 

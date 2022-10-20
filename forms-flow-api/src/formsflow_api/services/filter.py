@@ -16,7 +16,7 @@ class FilterService:
 
     @staticmethod
     @user_context
-    def get_all_filter(**kwargs):
+    def get_all_filters(**kwargs):
         """Return filters."""
         user: UserContext = kwargs["user"]
         filters = Filter.find_all_active_filters(tenant=user.tenant_key)
@@ -34,7 +34,7 @@ class FilterService:
 
     @staticmethod
     @user_context
-    def get_user_filter(**kwargs):
+    def get_user_filters(**kwargs):
         """Get filters for the user."""
         user: UserContext = kwargs["user"]
         filters = Filter.find_user_filters(

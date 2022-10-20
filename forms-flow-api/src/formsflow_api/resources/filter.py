@@ -6,7 +6,12 @@ from http.client import BAD_REQUEST
 from flask import current_app, request
 from flask_restx import Namespace, Resource
 from formsflow_api_utils.exceptions import BusinessException
-from formsflow_api_utils.utils import auth, cors_preflight, profiletime
+from formsflow_api_utils.utils import (
+    REVIEWER_GROUP,
+    auth,
+    cors_preflight,
+    profiletime,
+)
 from marshmallow.exceptions import ValidationError
 
 from formsflow_api.schemas import FilterSchema
@@ -28,7 +33,13 @@ class FilterResource(Resource):
     def get():
         """List all filters."""
         try:
-            return FilterService.get_all_filter(), HTTPStatus.OK
+            if auth.has_role([REVIEWER_GROUP]):
+                return FilterService.get_all_filters(), HTTPStatus.OK
+            else:
+                return {
+                    "type": "Authorization error",
+                    "message": "Permission denied",
+                }, HTTPStatus.FORBIDDEN
         except Exception as unexpected_error:
             current_app.logger.warning(unexpected_error)
             raise unexpected_error
@@ -39,11 +50,17 @@ class FilterResource(Resource):
     def post():
         """Create filter."""
         try:
-            filter_data = filter_schema.load(request.get_json())
-            return (
-                FilterService.create_filter(filter_data),
-                HTTPStatus.CREATED,
-            )
+            if auth.has_role([REVIEWER_GROUP]):
+                filter_data = filter_schema.load(request.get_json())
+                return (
+                    FilterService.create_filter(filter_data),
+                    HTTPStatus.CREATED,
+                )
+            else:
+                return {
+                    "type": "Authorization error",
+                    "message": "Permission denied",
+                }, HTTPStatus.FORBIDDEN
         except ValidationError as error:
             current_app.logger.warning(error)
             response, status = {
@@ -57,7 +74,7 @@ class FilterResource(Resource):
 
 
 @cors_preflight("GET, OPTIONS")
-@API.route("/users", methods=["GET", "OPTIONS"])
+@API.route("/user", methods=["GET", "OPTIONS"])
 class UsersFilterList(Resource):
     """Resource to list filters specific to current user."""
 
@@ -67,7 +84,13 @@ class UsersFilterList(Resource):
     def get():
         """List filters of current user."""
         try:
-            return FilterService.get_user_filter(), HTTPStatus.OK
+            if auth.has_role([REVIEWER_GROUP]):
+                return FilterService.get_user_filters(), HTTPStatus.OK
+            else:
+                return {
+                    "type": "Authorization error",
+                    "message": "Permission denied",
+                }, HTTPStatus.FORBIDDEN
         except Exception as unexpected_error:
             current_app.logger.warning(unexpected_error)
             raise unexpected_error
@@ -84,8 +107,14 @@ class FilterResourceById(Resource):
     def get(filter_id: int):
         """Get filter by id."""
         try:
-            filter_result = FilterService.get_filter_by_id(filter_id)
-            return filter_schema.dump(filter_result), HTTPStatus.OK
+            if auth.has_role([REVIEWER_GROUP]):
+                filter_result = FilterService.get_filter_by_id(filter_id)
+                return filter_schema.dump(filter_result), HTTPStatus.OK
+            else:
+                return {
+                    "type": "Authorization error",
+                    "message": "Permission denied",
+                }, HTTPStatus.FORBIDDEN
         except PermissionError as err:
             response, status = (
                 {
@@ -109,13 +138,19 @@ class FilterResourceById(Resource):
     def put(filter_id: int):
         """Update filter by id."""
         try:
-            filter_data = filter_schema.load(request.get_json())
-            filter_result = FilterService.update_filter(filter_id, filter_data)
-            response = filter_schema.dump(filter_result)
-            return (
-                response,
-                HTTPStatus.OK,
-            )
+            if auth.has_role([REVIEWER_GROUP]):
+                filter_data = filter_schema.load(request.get_json())
+                filter_result = FilterService.update_filter(filter_id, filter_data)
+                response = filter_schema.dump(filter_result)
+                return (
+                    response,
+                    HTTPStatus.OK,
+                )
+            else:
+                return {
+                    "type": "Authorization error",
+                    "message": "Permission denied",
+                }, HTTPStatus.FORBIDDEN
         except PermissionError as err:
             response, status = (
                 {
@@ -148,8 +183,14 @@ class FilterResourceById(Resource):
     def delete(filter_id: int):
         """Delete filter by id."""
         try:
-            FilterService.mark_inactive(filter_id=filter_id)
-            return "Deleted", HTTPStatus.OK
+            if auth.has_role([REVIEWER_GROUP]):
+                FilterService.mark_inactive(filter_id=filter_id)
+                return "Deleted", HTTPStatus.OK
+            else:
+                return {
+                    "type": "Authorization error",
+                    "message": "Permission denied",
+                }, HTTPStatus.FORBIDDEN
         except PermissionError as err:
             response, status = (
                 {

@@ -17,7 +17,7 @@ class Filter(AuditDateTimeMixin, AuditUserMixin, BaseModel, db.Model):
     """This class manages filter information."""
 
     id = db.Column(db.Integer, primary_key=True)
-    tenant = db.Column(db.String, nullable=True)
+    tenant = db.Column(db.String, index=True, nullable=True)
     name = db.Column(db.String, nullable=False)
     description = db.Column(db.String, nullable=True)
     resource_id = db.Column(db.String, nullable=True)

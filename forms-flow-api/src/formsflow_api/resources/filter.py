@@ -34,12 +34,13 @@ class FilterResource(Resource):
         """List all filters."""
         try:
             if auth.has_role([REVIEWER_GROUP]):
-                return FilterService.get_all_filters(), HTTPStatus.OK
+                response, status = FilterService.get_all_filters(), HTTPStatus.OK
             else:
-                return {
+                response, status = {
                     "type": "Authorization error",
                     "message": "Permission denied",
                 }, HTTPStatus.FORBIDDEN
+            return response, status
         except Exception as unexpected_error:
             current_app.logger.warning(unexpected_error)
             raise unexpected_error
@@ -52,15 +53,16 @@ class FilterResource(Resource):
         try:
             if auth.has_role([REVIEWER_GROUP]):
                 filter_data = filter_schema.load(request.get_json())
-                return (
+                response, status = (
                     FilterService.create_filter(filter_data),
                     HTTPStatus.CREATED,
                 )
             else:
-                return {
+                response, status = {
                     "type": "Authorization error",
                     "message": "Permission denied",
                 }, HTTPStatus.FORBIDDEN
+            return response, status
         except ValidationError as error:
             current_app.logger.warning(error)
             response, status = {
@@ -85,12 +87,13 @@ class UsersFilterList(Resource):
         """List filters of current user."""
         try:
             if auth.has_role([REVIEWER_GROUP]):
-                return FilterService.get_user_filters(), HTTPStatus.OK
+                response, status = FilterService.get_user_filters(), HTTPStatus.OK
             else:
-                return {
+                response, status = {
                     "type": "Authorization error",
                     "message": "Permission denied",
                 }, HTTPStatus.FORBIDDEN
+            return response, status
         except Exception as unexpected_error:
             current_app.logger.warning(unexpected_error)
             raise unexpected_error
@@ -109,12 +112,13 @@ class FilterResourceById(Resource):
         try:
             if auth.has_role([REVIEWER_GROUP]):
                 filter_result = FilterService.get_filter_by_id(filter_id)
-                return filter_schema.dump(filter_result), HTTPStatus.OK
+                response, status = filter_schema.dump(filter_result), HTTPStatus.OK
             else:
-                return {
+                response, status = {
                     "type": "Authorization error",
                     "message": "Permission denied",
                 }, HTTPStatus.FORBIDDEN
+            return response, status
         except PermissionError as err:
             response, status = (
                 {
@@ -141,16 +145,16 @@ class FilterResourceById(Resource):
             if auth.has_role([REVIEWER_GROUP]):
                 filter_data = filter_schema.load(request.get_json())
                 filter_result = FilterService.update_filter(filter_id, filter_data)
-                response = filter_schema.dump(filter_result)
-                return (
-                    response,
+                response, status = (
+                    filter_schema.dump(filter_result),
                     HTTPStatus.OK,
                 )
             else:
-                return {
+                response, status = {
                     "type": "Authorization error",
                     "message": "Permission denied",
                 }, HTTPStatus.FORBIDDEN
+            return response, status
         except PermissionError as err:
             response, status = (
                 {
@@ -185,12 +189,13 @@ class FilterResourceById(Resource):
         try:
             if auth.has_role([REVIEWER_GROUP]):
                 FilterService.mark_inactive(filter_id=filter_id)
-                return "Deleted", HTTPStatus.OK
+                response, status = "Deleted", HTTPStatus.OK
             else:
-                return {
+                response, status = {
                     "type": "Authorization error",
                     "message": "Permission denied",
                 }, HTTPStatus.FORBIDDEN
+            return response, status
         except PermissionError as err:
             response, status = (
                 {

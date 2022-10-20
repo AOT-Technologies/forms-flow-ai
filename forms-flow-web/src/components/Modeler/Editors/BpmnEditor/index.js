@@ -6,7 +6,7 @@ import { toast } from "react-toastify";
 import { useTranslation } from "react-i18next";
 import { extractDataFromDiagram } from "../../helpers/helper";
 import { createXML } from "../../helpers/deploy";
-import { MULTITENANCY_ENABLED } from "../../../../constants/constants";
+import { MULTITENANCY_ENABLED, PUBLIC_WORKFLOW_ENABLED } from "../../../../constants/constants";
 import { deployBpmnDiagram } from "../../../../apiManager/services/bpmServices";
 import Loading from "../../../../containers/Loading";
 
@@ -86,8 +86,11 @@ export default React.memo(
       );
     };
     useEffect(() => {
-      tenant === null ? setApplyAllTenants(true) : setApplyAllTenants(false);
-        if (diagramXML) {
+      if (PUBLIC_WORKFLOW_ENABLED) {
+        tenant === null || tenant === undefined ? setApplyAllTenants(true)
+          : setApplyAllTenants(false);
+      }
+      if (diagramXML) {
         dispatch(setProcessDiagramLoading(true));
         dispatch(setProcessDiagramXML(diagramXML));
       } else if (processKey && !isNewDiagram) {
@@ -136,7 +139,6 @@ export default React.memo(
         deployXML(xml);
       }
     };
-
     const validateProcess = async (xml) => {
       // If the BPMN Linting is active then check for linting errors, else check for Camunda API errors
       // Check for linting errors in the modeler view
@@ -161,7 +163,11 @@ export default React.memo(
       // Deployment Source
       form.append("deployment-source", "Camunda Modeler");
       // Tenant ID
-      if (tenantKey && !applyAllTenants) {
+      if (tenantKey && !applyAllTenants && PUBLIC_WORKFLOW_ENABLED) {
+        form.append("tenant-id", tenantKey);
+      }
+      //If the env value is false,and Multitenancy is enabled, then by default it will create a tenant based workflow.
+      if (MULTITENANCY_ENABLED && !PUBLIC_WORKFLOW_ENABLED) {
         form.append("tenant-id", tenantKey);
       }
       // Make sure that we do not re-deploy already existing deployment
@@ -341,9 +347,9 @@ export default React.memo(
         </div>
 
         <div>
-          {MULTITENANCY_ENABLED ? (
+          {MULTITENANCY_ENABLED && PUBLIC_WORKFLOW_ENABLED ? (
             <label className="deploy-checkbox">
-              <input type="checkbox" checked={applyAllTenants ? true : false} onClick={handleApplyAllTenants} /> Apply
+              <input type="checkbox" checked={applyAllTenants} onClick={handleApplyAllTenants} /> Apply
               for all tenants
             </label>
           ) : null}

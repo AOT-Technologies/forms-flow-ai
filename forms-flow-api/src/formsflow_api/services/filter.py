@@ -52,7 +52,7 @@ class FilterService:
         if filter_result:
             if tenant_key is not None and filter_result.tenant != tenant_key:
                 raise PermissionError("Tenant authentication failed.")
-            return filter_schema.dump(filter_result)
+            return filter_result
         raise BusinessException(
             {
                 "type": "Invalid response data",

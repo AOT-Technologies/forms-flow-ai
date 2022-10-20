@@ -34,3 +34,7 @@ class FilterSchema(Schema):
     roles = fields.List(fields.Str())
     users = fields.List(fields.Str())
     status = fields.Str()
+    created = fields.Str(dump_only=True)
+    modified = fields.Str(dump_only=True)
+    created_by = fields.Str(data_key="createdBy", dump_only=True)
+    modified_by = fields.Str(data_key="modifiedBy", dump_only=True)

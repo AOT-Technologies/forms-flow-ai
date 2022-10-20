@@ -39,6 +39,11 @@ const MULTITENANCY_ENABLED_VARIABLE =
   (window._env_ && window._env_.REACT_APP_MULTI_TENANCY_ENABLED) ||
   process.env.REACT_APP_MULTI_TENANCY_ENABLED ||
   false;
+  export const PUBLIC_WORKFLOW_ENABLED =
+  (window._env_ && window._env_.REACT_APP_PUBLIC_WORKFLOW_ENABLED) === "true" ||
+  process.env.REACT_APP_PUBLIC_WORKFLOW_ENABLED === "true" 
+  ? true
+  : false;
 
 export const MULTITENANCY_ENABLED =
   MULTITENANCY_ENABLED_VARIABLE === "true" ||
@@ -53,10 +58,6 @@ export const Keycloak_Tenant_Client = "forms-flow-web";
 export const KEYCLOAK_REALM =
   (window._env_ && window._env_.REACT_APP_KEYCLOAK_URL_REALM) ||
   process.env.REACT_APP_KEYCLOAK_URL_REALM ||
-  "forms-flow-ai";
-  export const publicWorkflowEnabled =
-  (window._env_ && window._env_.REACT_APP_PUBLIC_WORKFLOW_ENABLED) ||
-  process.env.REACT_APP_PUBLIC_WORKFLOW_ENABLED ||
   "forms-flow-ai";
   export const KEYCLOAK_URL =
   (window._env_ && window._env_.REACT_APP_KEYCLOAK_URL) ||

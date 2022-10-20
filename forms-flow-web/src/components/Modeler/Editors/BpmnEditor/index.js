@@ -7,7 +7,7 @@ import { useTranslation } from "react-i18next";
 import { extractDataFromDiagram } from "../../helpers/helper";
 import { createXML } from "../../helpers/deploy";
 import { MULTITENANCY_ENABLED } from "../../../../constants/constants";
-import { publicWorkflowEnabled } from "../../../../constants/constants";
+import { PUBLIC_WORKFLOW_ENABLED } from "../../../../constants/constants";
 import { deployBpmnDiagram } from "../../../../apiManager/services/bpmServices";
 import Loading from "../../../../containers/Loading";
 
@@ -87,7 +87,7 @@ export default React.memo(
       );
     };
     useEffect(() => {
-       if (publicWorkflowEnabled === "true") {
+      if (PUBLIC_WORKFLOW_ENABLED) {
         tenant === null || tenant === undefined ? setApplyAllTenants(true)
           : setApplyAllTenants(false);
       }
@@ -164,11 +164,11 @@ export default React.memo(
       // Deployment Source
       form.append("deployment-source", "Camunda Modeler");
       // Tenant ID
-      if (tenantKey && !applyAllTenants && publicWorkflowEnabled === "true") {
+      if (tenantKey && !applyAllTenants && PUBLIC_WORKFLOW_ENABLED) {
         form.append("tenant-id", tenantKey);
       }
       //If the env value is false,and Multitenancy is enabled, then by default it will create a tenant based workflow.
-      if (MULTITENANCY_ENABLED && publicWorkflowEnabled === "false") {
+      if (MULTITENANCY_ENABLED && !PUBLIC_WORKFLOW_ENABLED) {
         form.append("tenant-id", tenantKey);
       }
       // Make sure that we do not re-deploy already existing deployment
@@ -348,7 +348,7 @@ export default React.memo(
         </div>
 
         <div>
-          {MULTITENANCY_ENABLED && publicWorkflowEnabled === "true" ? (
+          {MULTITENANCY_ENABLED && PUBLIC_WORKFLOW_ENABLED ? (
             <label className="deploy-checkbox">
               <input type="checkbox" checked={applyAllTenants} onClick={handleApplyAllTenants} /> Apply
               for all tenants

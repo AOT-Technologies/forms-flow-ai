@@ -7,7 +7,6 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-/*
 import org.springframework.data.redis.connection.RedisConnectionFactory;
 import org.springframework.data.redis.connection.RedisStandaloneConfiguration;
 import org.springframework.data.redis.connection.lettuce.LettuceConnectionFactory;
@@ -15,19 +14,22 @@ import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.data.redis.listener.PatternTopic;
 import org.springframework.data.redis.listener.RedisMessageListenerContainer;
 import org.springframework.data.redis.listener.adapter.MessageListenerAdapter;
-*/
+
+import java.util.logging.Logger;
 
 /**
  * Configuration for Message Broker.
  */
 @Configuration
-@ConditionalOnProperty(value = "${websocket.enableRedis}", havingValue = "true", matchIfMissing = false)
+@ConditionalOnProperty(prefix = "websocket", name= "enableRedis", havingValue = "true", matchIfMissing = false)
 public class RedisConfig implements ITaskEvent {
 
-    //@Autowired
-    //private Properties messageBrokerProperties;
-	
-	@Value("${websocket.messageBroker.host}")
+    private final Logger LOGGER = Logger.getLogger(RedisConfig.class.getName());
+
+//    @Autowired
+//    private Properties messageBrokerProperties;
+
+    @Value("${websocket.messageBroker.host}")
     private String messageBrokerHost;
 
     @Value("${websocket.messageBroker.port}")
@@ -35,7 +37,6 @@ public class RedisConfig implements ITaskEvent {
 
     @Value("${websocket.messageBroker.passcode}")
     private String messageBrokerPasscode;
-/*
 
     @Bean
     RedisConnectionFactory redisConnectionFactory() {
@@ -63,7 +64,6 @@ public class RedisConfig implements ITaskEvent {
     StringRedisTemplate template(RedisConnectionFactory redisConnectionFactory) {
         return new StringRedisTemplate(redisConnectionFactory);
     }
-*/
 
     private String getExecutorName() { return "receiveTaskMessage";}
 

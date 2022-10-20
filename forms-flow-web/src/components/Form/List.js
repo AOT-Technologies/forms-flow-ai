@@ -85,9 +85,12 @@ const List = React.memo((props) => {
   const [previousForms, setPreviousForms] = useState({});
   const searchText = useSelector((state) => state.bpmForms.searchText);
   const [searchTextInput, setSearchTextInput] = useState(searchText);
+
   const [isLoading, setIsLoading] = React.useState(false);
 
    const query = useSelector((state) => state.forms.query);
+  const [formType, setFormType] = useState(query?.type);
+
   const isDesigner = userRoles.includes(STAFF_DESIGNER);
   const bpmForms = useSelector((state) => state.bpmForms);
   const pageNo = useSelector((state) => state.bpmForms.page);
@@ -146,7 +149,7 @@ const List = React.memo((props) => {
       let updatedQuery = { query: { ...query } };
       updatedQuery.query.title__regex = searchText;
       updatedQuery.sort = sortOrder;
-
+      updatedQuery.query.type = formType;
       getFormsInit(1, updatedQuery);
     } else {
       setShowClearButton(searchText);
@@ -162,6 +165,7 @@ const List = React.memo((props) => {
     sortBy,
     sortOrder,
     searchText,
+    formType
   ]);
 
 
@@ -502,7 +506,16 @@ const List = React.memo((props) => {
                   >
                     <i className="fa fa-search"></i>
                   </button>
+                  {
+                    isDesigner ? (
+                      <select className="form-control select" title="select form type" style={{maxWidth:"150px"}} onChange={(e)=>{setFormType(e.target.value);}} aria-label="Select Form Type">
+                        <option selected={formType === "form"}  value="form">Form</option>
+                        <option selected={formType === "resource"} value="resource">Resource</option>
+                     </select>
+                    ) : ""
+                  }
                 </div>
+                
               </div>
             </div>
             <ToolkitProvider

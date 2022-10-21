@@ -236,8 +236,8 @@ export const getBPMTaskDetail = (taskId, ...rest) => {
             if (responses[1]?.data) {
               let taskDetailUpdates = responses[1]?.data;
               taskDetail = {
-                ...taskDetail,
                 ...taskDetailVariableDataFormatter(taskDetailUpdates),
+                ...taskDetail,
               };
             }
 

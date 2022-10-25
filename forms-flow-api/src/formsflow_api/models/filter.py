@@ -33,7 +33,7 @@ class Filter(AuditDateTimeMixin, AuditUserMixin, BaseModel, db.Model):
         """Find all active filters."""
         query = cls.query.filter(Filter.status == str(FilterStatus.ACTIVE.value))
         if tenant:
-            query = cls.query.filter(Filter.tenant == tenant)
+            query = query.filter(Filter.tenant == tenant)
         return query.all()
 
     @classmethod

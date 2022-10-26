@@ -11,19 +11,23 @@ import org.mockito.Mock;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.oauth2.jwt.Jwt;
+import org.springframework.security.oauth2.server.resource.authentication.JwtAuthenticationConverter;
+import org.springframework.security.oauth2.server.resource.authentication.JwtAuthenticationToken;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.util.ReflectionTestUtils;
 
 import java.io.IOException;
+import java.util.Collections;
 import java.util.Properties;
 
+import static org.camunda.bpm.extension.commons.utils.VariableConstants.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
-
-import static org.camunda.bpm.extension.commons.utils.VariableConstants.FORM_URL;
-import static org.camunda.bpm.extension.commons.utils.VariableConstants.APPLICATION_STATUS;
-import static org.camunda.bpm.extension.commons.utils.VariableConstants.APPLICATION_ID;
 
 /**
  * Application State Listener Test.
@@ -40,9 +44,13 @@ public class ApplicationStateListenerTest {
 
     @Mock
     private ApplicationAuditListener applicationAuditListener;
-    
+
+    @Mock
+    private Authentication auth;
+
     /**
      * This test case perform a positive test over notify method in ApplicationStateListener
+     *
      * @throws IOException
      */
     @Test
@@ -64,7 +72,16 @@ public class ApplicationStateListenerTest {
         when(delegateExecution.getVariable(FORM_URL)).thenReturn(formUrl);
         when(delegateExecution.getVariable(APPLICATION_STATUS)).thenReturn(applicationStatus);
         when(delegateExecution.getVariable(APPLICATION_ID)).thenReturn("id1");
-        when(delegateExecution.getVariable("submittedBy")).thenReturn(submittedBy);
+        SecurityContextHolder.getContext().setAuthentication(auth);
+        Jwt jwt = Jwt.withTokenValue("72378")
+                .header("type", "JWT")
+                .claim("preferred_username", "test-user")
+                .claim("groups", Collections.singletonList("user"))
+                .claim("scope", "user openid profile")
+                .build();
+
+        JwtAuthenticationConverter jwtAuthenticationConverter = new JwtAuthenticationConverter();
+        JwtAuthenticationToken jwtAuthenticationToken = (JwtAuthenticationToken) jwtAuthenticationConverter.convert(jwt);
         ResponseEntity<String> responseEntity = new ResponseEntity<>(HttpStatus.OK);
         doReturn(application).when(applicationAuditListener).prepareApplicationAudit(delegateExecution);
         when(httpServiceInvoker.execute(any(), any(HttpMethod.class), any(Application.class)))
@@ -72,12 +89,14 @@ public class ApplicationStateListenerTest {
         doNothing().when(applicationAuditListener)
                 .invokeApplicationAuditService(delegateExecution);
         applicationStateListener.notify(delegateExecution);
+        assertEquals(submittedBy, jwtAuthenticationToken.getToken().getClaimAsString("preferred_username"));
     }
-    
+
     /**
      * This test case will evaluate ApplicationStateListener with a negative case
      * This test case expect the httpserviceinvoker to return internal error
      * Expectation will be to fail the case with Runtime Exception
+     *
      * @throws IOException
      */
     @Test
@@ -108,11 +127,12 @@ public class ApplicationStateListenerTest {
             applicationStateListener.notify(delegateExecution);
         });
     }
-    
+
     /**
      * This test case will evaluate ApplicationStateListener with a negative case
-     * This test case expect the formUrl to fail with ioexception 
+     * This test case expect the formUrl to fail with ioexception
      * Expectation will be to fail the case with Runtime Exception
+     *
      * @throws IOException
      */
     @Test
@@ -136,7 +156,7 @@ public class ApplicationStateListenerTest {
         when(delegateExecution.getVariable(APPLICATION_ID)).thenReturn("id1");
         when(delegateExecution.getVariable("submittedBy")).thenReturn(submittedBy);
         doReturn(application).when(applicationAuditListener).prepareApplicationAudit(delegateExecution);
-        doThrow(new IOException("Unable to read submission for: " +formUrl)).
+        doThrow(new IOException("Unable to read submission for: " + formUrl)).
                 when(httpServiceInvoker).execute(any(), any(HttpMethod.class), any(Application.class));
         assertThrows(RuntimeException.class, () -> {
             applicationStateListener.notify(delegateExecution);
@@ -145,6 +165,7 @@ public class ApplicationStateListenerTest {
 
     /**
      * This test case will evaluate ApplicationStateListener with a positive case
+     *
      * @throws IOException
      */
     @Test
@@ -170,6 +191,16 @@ public class ApplicationStateListenerTest {
         when(delegateExecution.getVariable(APPLICATION_STATUS)).thenReturn(applicationStatus);
         when(delegateExecution.getVariable(APPLICATION_ID)).thenReturn("id1");
         when(delegateExecution.getVariable("submittedBy")).thenReturn(submittedBy);
+        SecurityContextHolder.getContext().setAuthentication(auth);
+        Jwt jwt = Jwt.withTokenValue("72378")
+                .header("type", "JWT")
+                .claim("preferred_username", "test-user")
+                .claim("groups", Collections.singletonList("user"))
+                .claim("scope", "user openid profile")
+                .build();
+
+        JwtAuthenticationConverter jwtAuthenticationConverter = new JwtAuthenticationConverter();
+        JwtAuthenticationToken jwtAuthenticationToken = (JwtAuthenticationToken) jwtAuthenticationConverter.convert(jwt);
         ResponseEntity<String> responseEntity = new ResponseEntity<>(HttpStatus.OK);
         doReturn(application).when(applicationAuditListener).prepareApplicationAudit(delegateExecution);
         when(httpServiceInvoker.execute(any(), any(HttpMethod.class), any(Application.class)))
@@ -183,6 +214,7 @@ public class ApplicationStateListenerTest {
      * This test case will evaluate ApplicationStateListener with a negative case
      * This test case expect the httpserviceinvoker to return internal error
      * Expectation will be to fail the case with Runtime Exception
+     *
      * @throws IOException
      */
     @Test
@@ -216,11 +248,12 @@ public class ApplicationStateListenerTest {
             applicationStateListener.notify(delegateTask);
         });
     }
-    
+
     /**
      * This test case will evaluate ApplicationStateListener with a negative case
-     * This test case expect the formUrl to fail with ioexception 
+     * This test case expect the formUrl to fail with ioexception
      * Expectation will be to fail the case with Runtime Exception
+     *
      * @throws IOException
      */
     @Test
@@ -248,7 +281,7 @@ public class ApplicationStateListenerTest {
         when(delegateExecution.getVariable("submittedBy")).thenReturn(submittedBy);
         ResponseEntity<String> responseEntity = new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
         doReturn(application).when(applicationAuditListener).prepareApplicationAudit(delegateExecution);
-        doThrow(new IOException("Unable to read submission for: " +formUrl)).
+        doThrow(new IOException("Unable to read submission for: " + formUrl)).
                 when(httpServiceInvoker).execute(any(), any(HttpMethod.class), any(Application.class));
         assertThrows(RuntimeException.class, () -> {
             applicationStateListener.notify(delegateTask);

@@ -13,13 +13,14 @@ import org.mockito.ArgumentCaptor;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.springframework.http.HttpMethod;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.util.ReflectionTestUtils;
 
 import java.lang.reflect.Field;
 import java.util.*;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.*;
@@ -41,6 +42,12 @@ public class FormTextAnalysisDelegateTest {
     @Mock
     private HTTPServiceInvoker httpServiceInvoker;
 
+    @Mock
+    private Properties integrationCredentialProperties;
+
+    @Mock
+    private DelegateExecution execution;
+
     @BeforeEach
     public void setup() {
         try {
@@ -55,11 +62,10 @@ public class FormTextAnalysisDelegateTest {
 
     /**
      * This test case perform a positive test over execute method in FormTextAnalysisDelegate
-     * This will verify the textSentimentRequest
+     * CustomSubmission is not Enabled
      */
-    /*@Test
-    public void formTextAnalysisDelegate_happyFlow() throws Exception {
-        DelegateExecution execution = mock(DelegateExecution.class);
+    @Test
+    public void formTextAnalysisDelegate_without_customSubmissionEnabled_happyFlow() throws Exception {
         Map<String, Object> variable = new HashMap<>();
         variable.put("formUrl", "http://localhost:3001/submission/id1");
         variable.put("applicationId", 123);
@@ -71,55 +77,136 @@ public class FormTextAnalysisDelegateTest {
                 .thenReturn(variable.get("applicationId"));
         when(formSubmissionService.readSubmission(anyString()))
                 .thenReturn("{\"data\":{\"formId\":\"123\",\"formName\":\"New Business Licence\"," +
-                        "\"description\":{\"type\":\"textAreaWithAnalytics\",\"topics\":[\"t1\",\"t2\"],\"text\":\"test\"}}}");
+                        "\"description\":{\"type\":\"textAreaWithAnalytics\",\"topics\":[\"t1\",\"t2\"],\"text\":\"test\", \"overallSentiment\":\"positive\"}}}");
         List<TextSentimentData> txtRecords = new ArrayList<>();
-        txtRecords.add(formTextAnalysisDelegate.CreateTextSentimentData("description",
-                new ArrayList<>(Arrays.asList("t1","t2")), "test"));
-        TextSentimentRequest textSentimentRequest = new TextSentimentRequest(123, "http://localhost:3001/submission/id1",txtRecords);
-        ArgumentCaptor<TextSentimentRequest> captor = ArgumentCaptor.forClass(TextSentimentRequest.class);
+        txtRecords.add(new TextSentimentData("description",
+                new ArrayList<>(Arrays.asList("t1", "t2")), "test", "positive"));
+        TextSentimentRequest textSentimentRequest = new TextSentimentRequest(123, "http://localhost:3001/submission/id1", txtRecords);
 
-        Properties properties = mock(Properties.class);
+        ArgumentCaptor<TextSentimentRequest> captor = ArgumentCaptor.forClass(TextSentimentRequest.class);
+        ResponseEntity<String> responseEntity = new ResponseEntity<>(HttpStatus.OK);
         when(httpServiceInvoker.getProperties())
-                .thenReturn(properties);
-        when(properties.getProperty("api.url"))
+                .thenReturn(integrationCredentialProperties);
+        when(integrationCredentialProperties.getProperty("analysis.url"))
                 .thenReturn("http://localhost:5001");
+        when(httpServiceInvoker.execute(any(), any(HttpMethod.class), any(), any())).thenReturn(ResponseEntity.ok(textSentimentRequest));
+        when(integrationCredentialProperties.getProperty("forms.enableCustomSubmission"))
+                .thenReturn("false");
+        when(httpServiceInvoker.execute(any(), any(HttpMethod.class), any(List.class))).thenReturn(new ResponseEntity<>(HttpStatus.OK));
         formTextAnalysisDelegate.execute(execution);
-        verify(httpServiceInvoker).execute(anyString(), any(HttpMethod.class),captor.capture());
-        assertEquals(textSentimentRequest, captor.getValue());
     }
 
-    *//**
+    /**
      * This test case perform a positive test over execute method in FormTextAnalysisDelegate
-     * This will handle the runtime Exception
-     *//*
+     * CustomSubmission is Enabled
+     */
     @Test
-    public void formTextAnalysisDelegate_with_nullSubmissionData() throws Exception {
-        DelegateExecution execution = mock(DelegateExecution.class);
+    public void formTextAnalysisDelegate_with_customSubmissionEnabled_happyFlow() throws Exception {
         Map<String, Object> variable = new HashMap<>();
         variable.put("formUrl", "http://localhost:3001/submission/id1");
+        variable.put("applicationId", 123);
         when(execution.getVariables())
                 .thenReturn(variable);
+        when(execution.getVariable("formUrl"))
+                .thenReturn(variable.get("formUrl"));
+        when(execution.getVariable("applicationId"))
+                .thenReturn(variable.get("applicationId"));
         when(formSubmissionService.readSubmission(anyString()))
-                .thenReturn("");
+                .thenReturn("{\"data\":{\"formId\":\"123\",\"formName\":\"New Business Licence\"," +
+                        "\"description\":{\"type\":\"textAreaWithAnalytics\",\"topics\":[\"t1\",\"t2\"],\"text\":\"test\", \"overallSentiment\":\"positive\"}}}");
+        List<TextSentimentData> txtRecords = new ArrayList<>();
+        txtRecords.add(new TextSentimentData("description",
+                new ArrayList<>(Arrays.asList("t1", "t2")), "test", "positive"));
+        TextSentimentRequest textSentimentRequest = new TextSentimentRequest(123, "http://localhost:3001/submission/id1", txtRecords);
+
+        ArgumentCaptor<TextSentimentRequest> captor = ArgumentCaptor.forClass(TextSentimentRequest.class);
+        ResponseEntity<String> responseEntity = new ResponseEntity<>(HttpStatus.OK);
+        when(httpServiceInvoker.getProperties())
+                .thenReturn(integrationCredentialProperties);
+        when(integrationCredentialProperties.getProperty("analysis.url"))
+                .thenReturn("http://localhost:5001");
+        when(httpServiceInvoker.execute(any(), any(HttpMethod.class), any(), any())).thenReturn(ResponseEntity.ok(textSentimentRequest));
+        when(integrationCredentialProperties.getProperty("forms.enableCustomSubmission"))
+                .thenReturn("true");
+        when(httpServiceInvoker.execute(any(), any(HttpMethod.class), any(Map.class))).thenReturn(new ResponseEntity<>(HttpStatus.OK));
+        formTextAnalysisDelegate.execute(execution);
+    }
+
+    /**
+     * This test case perform a test over execute method with empty submission data
+     */
+    @Test
+    public void formTextAnalysisDelegate_with_emptySubmissionData() throws Exception {
+        Map<String, Object> variable = new HashMap<>();
+        variable.put("formUrl", "http://localhost:3001/submission/id1");
+        variable.put("applicationId", 123);
+        when(execution.getVariables())
+                .thenReturn(variable);
+        when(execution.getVariable("formUrl"))
+                .thenReturn(variable.get("formUrl"));
+        when(execution.getVariable("applicationId"))
+                .thenReturn(variable.get("applicationId"));
+        when(formSubmissionService.readSubmission(anyString()))
+                .thenReturn("{}");
+        formTextAnalysisDelegate.execute(execution);
+        verify(httpServiceInvoker, times(0)).execute(anyString(), any(HttpMethod.class), any(TextSentimentRequest.class));
+    }
+
+    /**
+     * This test case perform a test over execute method with Internal Server Error
+     * This will handle the runtime Exception
+     */
+    @Test
+    public void formTextAnalysisDelegate_with_500_api_test() throws Exception {
+        Map<String, Object> variable = new HashMap<>();
+        variable.put("formUrl", "http://localhost:3001/submission/id1");
+        variable.put("applicationId", 123);
+        when(execution.getVariables())
+                .thenReturn(variable);
+        when(execution.getVariable("formUrl"))
+                .thenReturn(variable.get("formUrl"));
+        when(execution.getVariable("applicationId"))
+                .thenReturn(variable.get("applicationId"));
+
+        when(formSubmissionService.readSubmission(anyString()))
+                .thenReturn("{\"data\":{\"formId\":\"123\",\"formName\":\"New Business Licence\"," +
+                        "\"description\":{\"type\":\"textAreaWithAnalytics\",\"topics\":[\"t1\",\"t2\"],\"text\":\"test\", \"overallSentiment\":\"positive\"}}}");
+        List<TextSentimentData> txtRecords = new ArrayList<>();
+        txtRecords.add(new TextSentimentData("description",
+                new ArrayList<>(Arrays.asList("t1", "t2")), "test", "positive"));
+        TextSentimentRequest textSentimentRequest = new TextSentimentRequest(123, "http://localhost:3001/submission/id1", txtRecords);
+        ArgumentCaptor<TextSentimentRequest> captor = ArgumentCaptor.forClass(TextSentimentRequest.class);
+
+        ResponseEntity<String> responseEntity = new ResponseEntity<>(HttpStatus.OK);
+        when(httpServiceInvoker.getProperties())
+                .thenReturn(integrationCredentialProperties);
+        when(integrationCredentialProperties.getProperty("analysis.url"))
+                .thenReturn("http://localhost:5001");
+        when(httpServiceInvoker.execute(any(), any(HttpMethod.class), any(), any())).thenReturn(ResponseEntity.internalServerError().build());
         assertThrows(RuntimeException.class, () -> {
             formTextAnalysisDelegate.execute(execution);
         });
     }
 
-    *//**
-     * This test case perform a test over execute method with empty submission data
-     * This will verify the TextSentimentRequest
-     *//*
+    /**
+     * This test case perform a test over execute method in FormTextAnalysisDelegate with null submission data
+     * This will handle the runtime Exception
+     */
     @Test
-    public void formTextAnalysisDelegate_with_emptySubmissionData() throws Exception {
-        DelegateExecution execution = mock(DelegateExecution.class);
+    public void formTextAnalysisDelegate_with_nullSubmissionData() throws Exception {
         Map<String, Object> variable = new HashMap<>();
         variable.put("formUrl", "http://localhost:3001/submission/id1");
+        variable.put("applicationId", 123);
         when(execution.getVariables())
                 .thenReturn(variable);
+        when(execution.getVariable("formUrl"))
+                .thenReturn(variable.get("formUrl"));
+        when(execution.getVariable("applicationId"))
+                .thenReturn(variable.get("applicationId"));
         when(formSubmissionService.readSubmission(anyString()))
-                .thenReturn("{}");
-        formTextAnalysisDelegate.execute(execution);
-        verify(httpServiceInvoker, times(0)).execute(anyString(), any(HttpMethod.class),any(TextSentimentRequest.class));
-    }*/
+                .thenReturn(null);
+        assertThrows(RuntimeException.class, () -> {
+            formTextAnalysisDelegate.execute(execution);
+        });
+    }
 }

@@ -10,6 +10,7 @@ from formsflow_api.services.external.analytics_api import RedashAPIService
 from formsflow_api.services.external.keycloak import KeycloakAdminAPIService
 from formsflow_api.services.form_process_mapper import FormProcessMapperService
 from formsflow_api.services.process import ProcessService
+from formsflow_api.services.form_logs import FormlogService
 
 __all__ = [
     "ApplicationService",
@@ -21,4 +22,5 @@ __all__ = [
     "FormioService",
     "DraftService",
     "AuthorizationService",
+    "FormlogService"
 ]

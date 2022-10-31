@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useEffect , useState} from "react";
 import { connect, useDispatch, useSelector } from "react-redux";
 import {
   selectRoot,
@@ -51,6 +51,8 @@ const Edit = React.memo((props) => {
     form: { form, isActive: isFormActive },
     submission: { submission, isActive: isSubActive, url },
   } = props;
+
+  const [updatedSubmissionData, setUpdatedSubmissionData] = useState({});
 
   const applicationStatus = useSelector(
     (state) => state.applications.applicationDetail?.applicationStatus || ""
@@ -117,17 +119,21 @@ const Edit = React.memo((props) => {
         <div className="ml-4 mr-4">
           <Form
             form={form}
-            submission={updatedSubmission}
+            submission={isFormSubmissionLoading ? updatedSubmissionData : updatedSubmission}
             url={url}
             hideComponents={hideComponents}
-            onSubmit={(submission) =>
+            onSubmit={(submission) =>{
+
+              setUpdatedSubmissionData(submission);
               onSubmit(
                 submission,
                 applicationDetail,
                 onFormSubmit,
                 form._id,
                 redirectUrl
-              )
+              );
+            }
+              
             }
             options={{
               ...options,
@@ -243,15 +249,17 @@ const mapDispatchToProps = (dispatch, ownProps) => {
           onFormSubmit ? formId : ownProps.match.params.formId,
           callBack
         );
+      }else{
+        dispatch(
+          saveSubmission(
+            "submission",
+            submission,
+            onFormSubmit ? formId : ownProps.match.params.formId,
+            callBack
+          )
+        );
       }
-      dispatch(
-        saveSubmission(
-          "submission",
-          submission,
-          onFormSubmit ? formId : ownProps.match.params.formId,
-          callBack
-        )
-      );
+     
     },
     onConfirm: () => {
       const ErrorDetails = { modalOpen: false, message: "" };

@@ -18,3 +18,7 @@ class KeycloakAdmin(ABC):
     @abstractmethod
     def update_group(self, group_id: str, dashboard_id_details: Dict):
         """Update group."""
+
+    @abstractmethod
+    def get_users(self, **kwargs):
+        """Get users."""

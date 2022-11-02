@@ -24,6 +24,13 @@ class KeycloakClientService(KeycloakAdmin):
             url_path=f"roles-by-id/{group_id}?client={client_id}"
         )
 
+    def get_users(self, **kwargs):
+        """Get users under this client with formsflow-reviewer role."""
+        client_id = self.client.get_client_id()
+        return self.client.get_request(
+            url_path=f"clients/{client_id}/roles/formsflow-reviewer/users"
+        )
+
     def update_group(self, group_id: str, dashboard_id_details: Dict):
         """Update keycloak role."""
         client_id = self.client.get_client_id()

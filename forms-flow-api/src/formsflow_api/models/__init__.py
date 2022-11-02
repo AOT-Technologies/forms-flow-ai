@@ -7,6 +7,7 @@ from .base_model import BaseModel
 from .db import db, ma
 from .draft import Draft
 from .form_logs import FormLogs
+from .filter import Filter
 from .form_process_mapper import FormProcessMapper
 
 __all__ = [
@@ -20,4 +21,5 @@ __all__ = [
     "AuthType",
     "Authorization",
     "FormLogs",
+    "Filter",
 ]

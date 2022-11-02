@@ -520,3 +520,16 @@ def factory_auth(
         created_by="test",
         tenant=tenant,
     ).save()
+
+
+def get_filter_payload(name: str = "Test Task", roles: list = [], users: list = []):
+    """Return filter create payload."""
+    return {
+        "name": name,
+        "description": "Test task",
+        "variables": [{"name": "name", "label": "userName"}],
+        "criteria": {"processDefinitionName": "onestepapproval", "condition": "ALL"},
+        "properties": {"priority": 10},
+        "users": users,
+        "roles": roles,
+    }

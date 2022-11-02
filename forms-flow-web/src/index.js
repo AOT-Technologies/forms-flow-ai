@@ -12,7 +12,7 @@ import "./resourceBundles/i18n.js";
 import * as serviceWorkerRegistration from './serviceWorkerRegistration';
 import { featureFlags } from "./featureToogle";
 import { FlagsProvider } from 'flagged';
-import FormioCustomEx from "formsflow-formio-custom-elements/dist/customformio-ex";
+
 // disable react-dev-tools for this project
 if (typeof window.__REACT_DEVTOOLS_GLOBAL_HOOK__ === "object") {
   for (let [key, value] of Object.entries(
@@ -28,13 +28,13 @@ const history = StoreService.history;
 
 Formio.setProjectUrl(AppConfig.projectUrl);
 Formio.setBaseUrl(AppConfig.apiUrl);
-Components.setComponents(FormioCustomEx.components);
+
 // Set custom formio elements - Code splitted
-// import("formsflow-formio-custom-elements/dist/customformio-ex").then(
-//   (FormioCustomEx) => {
-    
-//   }
-// );
+import("formsflow-formio-custom-elements/dist/customformio-ex").then(
+  (FormioCustomEx) => {
+    Components.setComponents(FormioCustomEx.components);
+  }
+);
 
 ReactDOM.render(
   <FlagsProvider features={featureFlags}>

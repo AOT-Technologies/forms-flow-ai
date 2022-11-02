@@ -17,13 +17,13 @@ from formsflow_api.resources.authorization import API as AUTHORIZATION_API
 from formsflow_api.resources.checkpoint import API as CHECKPOINT_API
 from formsflow_api.resources.dashboards import API as DASHBOARDS_API
 from formsflow_api.resources.draft import API as DRAFT_API
+from formsflow_api.resources.form_logs import API as FORM_LOGS_API
 from formsflow_api.resources.form_process_mapper import API as FORM_API
 from formsflow_api.resources.formio import API as FORMIO_API
 from formsflow_api.resources.groups import API as KEYCLOAK_GROUPS_API
 from formsflow_api.resources.metrics import API as APPLICATION_METRICS_API
 from formsflow_api.resources.process import API as PROCESS_API
 from formsflow_api.resources.user import API as KEYCLOAK_USER_API
-from formsflow_api.resources.form_logs import API as FORM_LOGS_API
 
 # This will add the Authorize button to the swagger docs
 # oauth2 & openid may not yet be supported by restplus

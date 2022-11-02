@@ -21,5 +21,9 @@ from formsflow_api.schemas.form_process_mapper import (
 from formsflow_api.schemas.keycloak_groups import KeycloakDashboardGroupSchema
 from formsflow_api.schemas.user import UserlocaleReqSchema
 
+from .form_logs import (
+    FormVariableSchema,
+    FormLogsRequestSchema,
+    FormLogsResponseSchema
+)
 from .process import ProcessListSchema
-from .form_logs import FormLogsRequestSchema, FormLogsResponseSchema

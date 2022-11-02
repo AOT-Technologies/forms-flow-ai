@@ -301,10 +301,7 @@ class ApplicationResourcesByIds(Resource):
     @staticmethod
     @auth.require
     @profiletime
-    @API.doc(responses={
-        201: 'Application Created',
-        400: 'Validation Error'
-    })
+    @API.doc(responses={201: "Application Created", 400: "Validation Error"})
     def post():
         """Post a new application using the request body.
 
@@ -388,10 +385,7 @@ class ApplicationCreation(Resource):
     @staticmethod
     @auth.require
     @profiletime
-    @API.doc(responses={
-        201: 'Application Created',
-        400: 'Validation Error'
-    })
+    @API.doc(responses={201: "Application Created", 400: "Validation Error"})
     def post():
         """Post a new application using the request body.
 

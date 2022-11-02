@@ -1,5 +1,5 @@
 """Keycloak implementation for keycloak group related operations."""
-from typing import Dict
+from typing import Dict, List
 
 from formsflow_api.services import KeycloakAdminAPIService
 
@@ -20,6 +20,16 @@ class KeycloakGroupService(KeycloakAdmin):
     def get_group(self, group_id: str):
         """Get group by group_id."""
         return self.client.get_request(url_path=f"groups/{group_id}")
+
+    def get_users(self, **kwargs):
+        """Get users under this client with formsflow-reviewer role."""
+        response: List[Dict] = []
+        group_name = kwargs.get("group_name")
+        if group_name:
+            group = self.client.get_request(url_path=f"group-by-path/{group_name}")
+            group_id = group.get("id")
+            response = self.client.get_request(url_path=f"groups/{group_id}/members")
+        return response
 
     def update_group(self, group_id: str, dashboard_id_details: Dict):
         """Update group details."""

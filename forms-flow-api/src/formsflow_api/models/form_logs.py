@@ -1,19 +1,20 @@
-"""this is form logs model"""
-from sqlalchemy.dialects.postgresql import ARRAY, JSON
+"""This is form logs model."""
 
+from sqlalchemy.dialects.postgresql import ARRAY, JSON
 from .base_model import BaseModel
 from .db import db
 
 
 class FormLogs(BaseModel, db.Model):
-    """this is for creating form logs"""
+    """This is for creating form logs."""
+
     id = db.Column(db.Integer, primary_key=True)
     form_id = db.Column(db.String(30), nullable=False)
     logs = db.Column(ARRAY(JSON), nullable=False)
 
     @classmethod
     def create_form_log(cls, data):
-        """this method will create form logs in db"""
+        """This method will create form logs in db."""
         form_log = FormLogs()
         form_log.form_id = data["form_id"]
         form_log.logs = data["logs"]
@@ -22,7 +23,7 @@ class FormLogs(BaseModel, db.Model):
 
     @classmethod
     def get_form_logs(cls, form_id):
-        """return the logs against form id"""
+        """Return the logs against form id."""
         if form_id:
             form_logs = cls.query.filter(cls.form_id == form_id).first()
             if form_logs:
@@ -31,7 +32,7 @@ class FormLogs(BaseModel, db.Model):
 
     @classmethod
     def update_form_logs(cls, form_id, data):
-        """update form logs against form id"""
+        """Update form logs against form id."""
         if form_id:
             form_logs = cls.query.filter(cls.form_id == form_id).first()
             if form_logs:
@@ -42,7 +43,7 @@ class FormLogs(BaseModel, db.Model):
 
     @classmethod
     def delete_form_logs(cls, form_id):
-        """delete form logs """
+        """Delete form logs."""
         if form_id:
             cls.query.filter(cls.form_id == form_id).delete()
             cls.commit()

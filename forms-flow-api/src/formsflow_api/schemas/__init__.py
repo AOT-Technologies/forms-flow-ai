@@ -24,6 +24,6 @@ from formsflow_api.schemas.user import UserlocaleReqSchema
 from .form_logs import (
     FormVariableSchema,
     FormLogsRequestSchema,
-    FormLogsResponseSchema
+    FormLogsResponseSchema,
 )
 from .process import ProcessListSchema

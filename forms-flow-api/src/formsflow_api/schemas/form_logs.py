@@ -4,9 +4,11 @@ from marshmallow import EXCLUDE, Schema, fields
 
 
 class FormVariableSchema(Schema):
-    """THIS IS VARIABLE SCHEMA FOR FORM LOGS"""
+    """THIS IS VARIABLE SCHEMA FOR FORM LOGS."""
+
     class Meta:  # pylint: disable=too-few-public-methods
-        """Exlude"""
+        """Exlude."""
+
         unkown: EXCLUDE
 
     mapper_version = fields.Str(data_key="mapperVersion", required=True)
@@ -20,18 +22,22 @@ class FormVariableSchema(Schema):
 
 
 class FormLogsRequestSchema(FormVariableSchema):
-    """THIS IS FOR REQUEST SCHEMA"""
+    """THIS IS FOR REQUEST SCHEMA."""
+
     class Meta:  # pylint: disable=too-few-public-methods
-        """Exlude"""
+        """Exlude."""
+
         unkown: EXCLUDE
 
     form_id = fields.Str(data_key="formId", required=False)
 
 
 class FormLogsResponseSchema(Schema):
-    """THIS IS RESPONSE SCHEMA FOR FORM LOGS"""
+    """THIS IS RESPONSE SCHEMA FOR FORM LOGS."""
+
     class Meta:  # pylint: disable=too-few-public-methods
-        """Exlude"""
+        """Exlude."""
+
         unknown = EXCLUDE
 
     form_id = fields.Str(data_key="formId")

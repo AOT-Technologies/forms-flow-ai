@@ -10,8 +10,8 @@ class FormlogService:
 
     @user_context
     @staticmethod
-    def create_form_logs( data, **kwargs):
-        """this is for create form logs """
+    def create_form_logs(data, **kwargs):
+        """This is for create form logs."""
         user: UserContext = kwargs["user"]
         try:
             if data:
@@ -36,7 +36,7 @@ class FormlogService:
 
     @staticmethod
     def get_form_logs_by_id(form_id):
-        """return form logs by form id"""
+        """Return form logs by form id."""
         try:
             if form_id:
                 form_logs = FormLogs.get_form_logs(form_id)
@@ -49,7 +49,7 @@ class FormlogService:
     @user_context
     @staticmethod
     def update_form_logs(form_id, data, **kwargs):
-        """update form logs"""
+        """Update form logs."""
         try:
             user: UserContext = kwargs["user"]
             if form_id:
@@ -64,7 +64,7 @@ class FormlogService:
 
     @staticmethod
     def delete_form_logs(form_id):
-        """delete form logs"""
+        """Delete form logs."""
         try:
             if form_id:
                 FormLogs.delete_form_logs(form_id)

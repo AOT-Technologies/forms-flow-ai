@@ -1,4 +1,4 @@
-"""fromlogs
+"""FormLogs
 
 Revision ID: bd9b4b1ae18a
 Revises: ddd2ec3a72f2

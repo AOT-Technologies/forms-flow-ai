@@ -51,22 +51,20 @@ class FormLogResource(Resource):
 class FormLogUpdateResource(Resource):
     """FORM LOGS UPDATE RESOURCE."""
 
+    @staticmethod
     @auth.require
     @profiletime
-    @staticmethod
     def get(form_id: str):
         """Return all form logs aginst the form id."""
         try:
-            if form_id:
-                return FormlogService.get_form_logs_by_id(form_id), HTTPStatus.OK
-            return HTTPStatus.BAD_REQUEST
+            return FormlogService.get_form_logs_by_id(form_id), HTTPStatus.OK
         except BusinessException as err:
             current_app.logger.warning(err)
             return err.error, err.status_code
 
+    @staticmethod
     @auth.require
     @profiletime
-    @staticmethod
     def put(form_id: str):
         """Update form logs against formid and return whole data."""
         try:
@@ -78,9 +76,9 @@ class FormLogUpdateResource(Resource):
             current_app.logger.warning(err)
             return err.error, err.status_code
 
+    @staticmethod
     @auth.require
     @profiletime
-    @staticmethod
     def delete(form_id: str):
         """Delete all form logs against this form id."""
         try:

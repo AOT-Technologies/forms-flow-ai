@@ -1,6 +1,5 @@
 """Resource to call Keycloak Service API calls and filter responses."""
 from http import HTTPStatus
-from typing import Dict, List
 
 import requests
 from flask import current_app, g, request
@@ -9,7 +8,7 @@ from formsflow_api_utils.utils import auth, cors_preflight, profiletime
 from marshmallow import ValidationError
 
 from formsflow_api.schemas import UserlocaleReqSchema
-from formsflow_api.services import KeycloakAdminAPIService
+from formsflow_api.services import KeycloakAdminAPIService, UserService
 from formsflow_api.services.factory import KeycloakFactory
 
 API = Namespace("user", description="Keycloak user APIs")
@@ -111,25 +110,15 @@ class KeycloakUsersList(Resource):
     """Resource to fetch keycloak users."""
 
     @staticmethod
-    def _as_dict(user):
-        return {
-            "id": user.get("username"),
-            "email": user.get("email"),
-            "firstName": user.get("firstName"),
-            "lastName": user.get("lastName"),
-        }
-
-    @staticmethod
     @auth.require
     @profiletime
     def get():
         """Get users in a group/role."""
         try:
-            response: List[Dict] = []
             group_name = request.args.get("memberOfGroup")
-            users = KeycloakFactory.get_instance().get_users(group_name=group_name)
-            for user in users:
-                response.append(KeycloakUsersList._as_dict(user))
+            users_list = KeycloakFactory.get_instance().get_users(group_name=group_name)
+            user_service = UserService()
+            response = user_service.get_users(request.args, users_list)
             return response, HTTPStatus.OK
         except requests.exceptions.RequestException as err:
             current_app.logger.warning(err)

@@ -1,5 +1,4 @@
 """Test suite for keycloak user API endpoint."""
-import pytest
 
 # from tests import skip_in_ci
 from tests.utilities.base_test import get_locale_update_valid_payload, get_token

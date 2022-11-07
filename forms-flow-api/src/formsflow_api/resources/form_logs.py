@@ -20,13 +20,13 @@ API = Namespace("FormLogs", description="Form logs")
 @cors_preflight("POST,OPTIONS")
 @API.route("", methods=["POST", "OPTIONS"])
 class FormLogResource(Resource):
-    """API TO MANAGE THE FORM LOGS."""
+    """API to manage the form logs."""
 
     @staticmethod
     @auth.require
     @profiletime
     def post():
-        """TO CREATE THE FORM LOGS."""
+        """To create the form logs."""
         try:
             form_logs_schema = FormLogsRequestSchema()
             form_logs_data = form_logs_schema.load(request.json)
@@ -49,7 +49,7 @@ class FormLogResource(Resource):
 @cors_preflight("GET,PUT,DELETE,OPTIONS")
 @API.route("/<string:form_id>", methods=["GET", "PUT", "DELETE", "OPTIONS"])
 class FormLogUpdateResource(Resource):
-    """FORM LOGS UPDATE RESOURCE."""
+    """To update the form logs."""
 
     @staticmethod
     @auth.require

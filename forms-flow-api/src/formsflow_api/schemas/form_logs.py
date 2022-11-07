@@ -4,7 +4,7 @@ from marshmallow import EXCLUDE, Schema, fields
 
 
 class FormVariableSchema(Schema):
-    """THIS IS VARIABLE SCHEMA FOR FORM LOGS."""
+    """This is variable schema for formlogs."""
 
     class Meta:  # pylint: disable=too-few-public-methods
         """Exlude."""
@@ -22,7 +22,7 @@ class FormVariableSchema(Schema):
 
 
 class FormLogsRequestSchema(FormVariableSchema):
-    """THIS IS FOR REQUEST SCHEMA."""
+    """This is request schema for formlogs."""
 
     class Meta:  # pylint: disable=too-few-public-methods
         """Exlude."""
@@ -33,7 +33,7 @@ class FormLogsRequestSchema(FormVariableSchema):
 
 
 class FormLogsResponseSchema(Schema):
-    """THIS IS RESPONSE SCHEMA FOR FORM LOGS."""
+    """This is response schema for formlogs."""
 
     class Meta:  # pylint: disable=too-few-public-methods
         """Exlude."""

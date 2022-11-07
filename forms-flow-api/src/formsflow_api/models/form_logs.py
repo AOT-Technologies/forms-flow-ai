@@ -24,26 +24,20 @@ class FormLogs(BaseModel, db.Model):
     @classmethod
     def get_form_logs(cls, form_id):
         """Return the logs against form id."""
-        if form_id:
-            form_logs = cls.query.filter(cls.form_id == form_id).first()
-            if form_logs:
-                return form_logs
-        return None
+        return cls.query.filter(cls.form_id == form_id).one_or_none()
 
     @classmethod
     def update_form_logs(cls, form_id, data):
         """Update form logs against form id."""
-        if form_id:
-            form_logs = cls.query.filter(cls.form_id == form_id).first()
-            if form_logs:
-                form_logs.logs = [*form_logs.logs, data]
-                cls.commit()
-                return form_logs
+        form_logs = cls.query.filter(cls.form_id == form_id).one_or_none()
+        if form_logs:
+            form_logs.logs = [*form_logs.logs, data]
+            cls.commit()
+            return form_logs
         return None
 
     @classmethod
     def delete_form_logs(cls, form_id):
         """Delete form logs."""
-        if form_id:
-            cls.query.filter(cls.form_id == form_id).delete()
-            cls.commit()
+        cls.query.filter(cls.form_id == form_id).delete()
+        cls.commit()

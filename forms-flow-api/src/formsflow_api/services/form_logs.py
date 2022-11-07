@@ -38,11 +38,10 @@ class FormlogService:
     def get_form_logs_by_id(form_id):
         """Return form logs by form id."""
         try:
-            if form_id:
-                form_logs = FormLogs.get_form_logs(form_id)
-                form_logs_response_schema = FormLogsResponseSchema()
-                return form_logs_response_schema.dump(form_logs)
-            return None
+            assert form_id is not None
+            form_logs = FormLogs.get_form_logs(form_id)
+            form_logs_response_schema = FormLogsResponseSchema()
+            return form_logs_response_schema.dump(form_logs)
         except Exception as err:
             raise err
 
@@ -52,13 +51,12 @@ class FormlogService:
         """Update form logs."""
         try:
             user: UserContext = kwargs["user"]
-            if form_id:
-                saved_data = FormLogs.update_form_logs(
-                    form_id, {**data, "modifed_by": user.user_name}
-                )
-                form_logs_response_schema = FormLogsResponseSchema()
-                return form_logs_response_schema.dump(saved_data)
-            return None
+            assert form_id is not None
+            saved_data = FormLogs.update_form_logs(
+                form_id, {**data, "modifed_by": user.user_name}
+            )
+            form_logs_response_schema = FormLogsResponseSchema()
+            return form_logs_response_schema.dump(saved_data)
         except Exception as err:
             raise err
 
@@ -66,7 +64,7 @@ class FormlogService:
     def delete_form_logs(form_id):
         """Delete form logs."""
         try:
-            if form_id:
-                FormLogs.delete_form_logs(form_id)
+            assert form_id is not None
+            FormLogs.delete_form_logs(form_id)
         except Exception as err:
             raise err

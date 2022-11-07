@@ -44,7 +44,8 @@
                "view-users",
                "query-users",
                "query-clients",
-               "query-groups"
+               "query-groups",
+               "manage-users"
             ],
             "{project-unique-key}-forms-flow-web":[
                "formsflow-reviewer",

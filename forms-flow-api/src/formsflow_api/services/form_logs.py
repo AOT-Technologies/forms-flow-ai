@@ -1,6 +1,8 @@
 """This exposes submission service."""
-from formsflow_api_utils.utils.user_context import UserContext, user_context
 from http import HTTPStatus
+
+from formsflow_api_utils.utils.user_context import UserContext, user_context
+
 from formsflow_api.models import FormLogs
 from formsflow_api.schemas import FormLogsResponseSchema
 
@@ -43,11 +45,10 @@ class FormlogService:
             if form_logs:
                 form_logs_response_schema = FormLogsResponseSchema()
                 return form_logs_response_schema.dump(form_logs), HTTPStatus.OK
-            else:
-                return {
-                "type": "Bad request error",
-                "message": "Invalid form id",
-                },HTTPStatus.BAD_REQUEST
+            return {
+                    "type": "Bad request error",
+                    "message": "Invalid form id",
+                }, HTTPStatus.BAD_REQUEST
         except Exception as err:
             raise err
 
@@ -64,11 +65,10 @@ class FormlogService:
             if saved_data:
                 form_logs_response_schema = FormLogsResponseSchema()
                 return form_logs_response_schema.dump(saved_data), HTTPStatus.OK
-            else:
-                return {
-                "type": "Bad request error",
-                "message": "Invalid form id",
-                },HTTPStatus.BAD_REQUEST 
+            return {
+                    "type": "Bad request error",
+                    "message": "Invalid form id",
+                }, HTTPStatus.BAD_REQUEST
         except Exception as err:
             raise err
 
@@ -77,6 +77,12 @@ class FormlogService:
         """Delete form logs."""
         try:
             assert form_id is not None
-            FormLogs.delete_form_logs(form_id)
+            deleted = FormLogs.delete_form_logs(form_id)
+            if deleted:
+                return {"message": "successfully deleted"}, HTTPStatus.OK
+            return {
+                    "type": "Bad request error",
+                    "message": "Invalid form id",
+                }, HTTPStatus.BAD_REQUEST
         except Exception as err:
             raise err

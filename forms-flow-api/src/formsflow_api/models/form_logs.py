@@ -1,6 +1,7 @@
 """This is form logs model."""
 
 from sqlalchemy.dialects.postgresql import ARRAY, JSON
+
 from .base_model import BaseModel
 from .db import db
 
@@ -9,7 +10,7 @@ class FormLogs(BaseModel, db.Model):
     """This is for creating form logs."""
 
     id = db.Column(db.Integer, primary_key=True)
-    form_id = db.Column(db.String(30), nullable=False)
+    form_id = db.Column(db.String(30), nullable=False, unique=True)
     logs = db.Column(ARRAY(JSON), nullable=False)
 
     @classmethod
@@ -39,5 +40,9 @@ class FormLogs(BaseModel, db.Model):
     @classmethod
     def delete_form_logs(cls, form_id):
         """Delete form logs."""
-        cls.query.filter(cls.form_id == form_id).delete()
-        cls.commit()
+        form_logs = cls.query.filter(cls.form_id == form_id).one_or_none()
+        if form_logs:
+            form_logs.delete()
+            cls.commit()
+            return True
+        return False

@@ -81,8 +81,7 @@ class FormLogUpdateResource(Resource):
     def delete(form_id: str):
         """Delete all form logs against this form id."""
         try:
-            FormlogService.delete_form_logs(form_id)
-            return {"message": "successfully deleted"}, HTTPStatus.OK
+            return FormlogService.delete_form_logs(form_id)
         except BusinessException as err:
             current_app.logger.warning(err)
             return err.error, err.status_code

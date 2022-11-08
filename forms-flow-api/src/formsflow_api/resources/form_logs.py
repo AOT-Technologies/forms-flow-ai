@@ -57,7 +57,7 @@ class FormLogUpdateResource(Resource):
     def get(form_id: str):
         """Return all form logs aginst the form id."""
         try:
-            return FormlogService.get_form_logs_by_id(form_id), HTTPStatus.OK
+            return FormlogService.get_form_logs_by_id(form_id)
         except BusinessException as err:
             current_app.logger.warning(err)
             return err.error, err.status_code
@@ -70,8 +70,7 @@ class FormLogUpdateResource(Resource):
         try:
             form_logs_schema = FormVariableSchema()
             form_logs_data = form_logs_schema.load(request.json)
-            formdata = FormlogService.update_form_logs(form_id, form_logs_data)
-            return formdata, HTTPStatus.OK
+            return FormlogService.update_form_logs(form_id, form_logs_data)
         except BusinessException as err:
             current_app.logger.warning(err)
             return err.error, err.status_code

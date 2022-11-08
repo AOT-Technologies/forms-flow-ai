@@ -24,14 +24,15 @@ class KeycloakGroupService(KeycloakAdmin):
         return self.client.get_request(url_path=f"groups/{group_id}")
 
     def get_users(self, **kwargs):
-        """Get users under this client with formsflow-reviewer role."""
+        """Get users under formsflow-reviewer group."""
         response: List[Dict] = []
         group_name = kwargs.get("group_name")
-        current_app.logger.debug(f"Group name: {group_name}")
+        current_app.logger.debug(
+            f"Fetching users from keycloak under {group_name} group..."
+        )
         if group_name:
             group = self.client.get_request(url_path=f"group-by-path/{group_name}")
             group_id = group.get("id")
-            current_app.logger.debug(f"Group Id: {group_id}")
             response = self.client.get_request(url_path=f"groups/{group_id}/members")
         return response
 

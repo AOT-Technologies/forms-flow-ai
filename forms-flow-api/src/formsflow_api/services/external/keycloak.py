@@ -52,6 +52,7 @@ class KeycloakAdminAPIService:
 
         : url_path: The relative path of the API
         """
+        current_app.logger.debug("Establishing new connection to keycloak...")
         url = f"{self.base_url}/{url_path}"
         response = self.session.request("GET", url)
         current_app.logger.debug(f"keycloak Admin API get request URL: {url}")

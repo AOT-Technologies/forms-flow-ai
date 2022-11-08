@@ -117,7 +117,6 @@ class KeycloakUsersList(Resource):
         try:
             group_name = request.args.get("memberOfGroup")
             users_list = KeycloakFactory.get_instance().get_users(group_name=group_name)
-            current_app.logger.debug(f"Keycloak Users List: {users_list}")
             user_service = UserService()
             response = user_service.get_users(request.args, users_list)
             return response, HTTPStatus.OK

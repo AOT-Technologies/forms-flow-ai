@@ -1,6 +1,8 @@
 """Keycloak Admin implementation for client related operations."""
 from typing import Dict
 
+from flask import current_app
+
 from formsflow_api.services import KeycloakAdminAPIService
 
 from .keycloak_admin import KeycloakAdmin
@@ -26,6 +28,9 @@ class KeycloakClientService(KeycloakAdmin):
 
     def get_users(self, **kwargs):
         """Get users under this client with formsflow-reviewer role."""
+        current_app.logger.debug(
+            "Fetching client based users from keycloak with formsflow-reviewer role..."
+        )
         client_id = self.client.get_client_id()
         return self.client.get_request(
             url_path=f"clients/{client_id}/roles/formsflow-reviewer/users"

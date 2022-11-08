@@ -28,7 +28,7 @@ jobs:
       - uses: actions/checkout@v2
       - run: "true"
 
-  linting:
+  Lint:
     needs: setup-job
     runs-on: ubuntu-20.04
 
@@ -54,7 +54,7 @@ jobs:
         run: |
           flake8 src/formsflow_documents tests
   
-  PyTest:
+  Test:
     needs: setup-job
     env:
       FLASK_ENV: "testing"
@@ -103,7 +103,8 @@ jobs:
         id: test
         run: |
           make test
-  build:
+  Build:
+    if: always()
     runs-on: ubuntu-20.04
     name: Build
     steps:

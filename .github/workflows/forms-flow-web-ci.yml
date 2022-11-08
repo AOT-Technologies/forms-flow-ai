@@ -28,7 +28,7 @@ jobs:
       - uses: actions/checkout@v2
       - run: "true"
 
-  linting:
+  Lint:
     needs: setup-job
     runs-on: ubuntu-20.04
 
@@ -48,7 +48,8 @@ jobs:
       - name: Linting
         run: |
           npm run lint
-  unit-tests:
+  Test:
+    if: Always()
     needs: setup-job
     runs-on: ubuntu-20.04
 
@@ -70,7 +71,8 @@ jobs:
         run: |
           npm test a
 
-  build-check:
+  Build:
+    if: always()
     needs: setup-job
     runs-on: ubuntu-20.04
 

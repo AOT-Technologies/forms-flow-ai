@@ -12,6 +12,7 @@ from formsflow_api.services.filter import FilterService
 from formsflow_api.services.form_logs import FormlogService
 from formsflow_api.services.form_process_mapper import FormProcessMapperService
 from formsflow_api.services.process import ProcessService
+from formsflow_api.services.user import UserService
 
 __all__ = [
     "ApplicationService",
@@ -25,4 +26,5 @@ __all__ = [
     "AuthorizationService",
     "FormlogService",
     "FilterService",
+    "UserService",
 ]

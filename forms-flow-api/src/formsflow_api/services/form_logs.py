@@ -48,7 +48,7 @@ class FormlogService:
             return {
                     "type": "Bad request error",
                     "message": "Invalid form id",
-                }, HTTPStatus.BAD_REQUEST
+                   }, HTTPStatus.BAD_REQUEST
         except Exception as err:
             raise err
 
@@ -68,7 +68,7 @@ class FormlogService:
             return {
                     "type": "Bad request error",
                     "message": "Invalid form id",
-                }, HTTPStatus.BAD_REQUEST
+                   }, HTTPStatus.BAD_REQUEST
         except Exception as err:
             raise err
 
@@ -83,6 +83,6 @@ class FormlogService:
             return {
                     "type": "Bad request error",
                     "message": "Invalid form id",
-                }, HTTPStatus.BAD_REQUEST
+                   }, HTTPStatus.BAD_REQUEST
         except Exception as err:
             raise err

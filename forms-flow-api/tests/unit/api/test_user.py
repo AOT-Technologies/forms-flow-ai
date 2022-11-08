@@ -33,3 +33,19 @@ class TestKeycloakUserServiceResource:
             "type": "Invalid Request Object format",
             "message": "Required fields are not passed",
         }
+
+
+def test_keycloak_users_list(app, client, session, jwt):
+    """Test users list API with formsflow-reviewer group."""
+    token = get_token(jwt)
+    headers = {"Authorization": f"Bearer {token}", "content-type": "application/json"}
+    rv = client.get("/user?memberOfGroup=formsflow/formsflow-reviewer", headers=headers)
+    assert rv.status_code == 200
+
+
+def test_keycloak_users_list_invalid_group(app, client, session, jwt):
+    """Test users list API with invalid group."""
+    token = get_token(jwt)
+    headers = {"Authorization": f"Bearer {token}", "content-type": "application/json"}
+    rv = client.get("/user?memberOfGroup=test123", headers=headers)
+    assert rv.status_code == 400

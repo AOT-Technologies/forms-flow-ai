@@ -43,8 +43,8 @@
             "realm-management":[
                "view-users",
                "query-users",
-               "manage-clients",
                "query-clients",
+               "query-groups",
                "manage-users"
             ],
             "{project-unique-key}-forms-flow-web":[
@@ -393,27 +393,13 @@
                "consentRequired":false,
                "config":{
                   "multivalued":"true",
-                  "userinfo.token.claim":"false",
+                  "userinfo.token.claim":"true",
                   "id.token.claim":"false",
                   "access.token.claim":"true",
                   "claim.name":"roles",
                   "usermodel.clientRoleMapping.clientId":"{project-unique-key}-forms-flow-web"
                }
-            },
-            {
-               "name":"Client Attributes Mapper",
-               "protocol":"openid-connect",
-               "protocolMapper":"oidc-script-based-protocol-mapper",
-               "consentRequired":false,
-               "config":{
-                  "userinfo.token.claim":"true",
-                  "multivalued":"true",
-                  "id.token.claim":"true",
-                  "access.token.claim":"true",
-                  "claim.name":"dashboards",
-                  "script":"var debug = true\n\nfunction debugOutput(msg) {\n    if (debug) print(\"Debug script mapper: \" + msg);\n}\n\nvar ArrayList = Java.type(\"java.util.ArrayList\");\nvar clientAttributes = new ArrayList();\nvar client = keycloakSession.getContext().getClient();\nvar forEach = Array.prototype.forEach;\nforEach.call(user.getClientRoleMappings(client).toArray(), function(roleModel) {\n    if (roleModel.getAttributes().get(\"dashboards\")) {\n        forEach.call(roleModel.getAttributes().get(\"dashboards\"), function(dashboard){\n            clientAttributes.add(dashboard);\n        });\n    }\n  \n});\n\ndebugOutput('final \"clientAttributes\" array ' + clientAttributes);\nexports = clientAttributes;\n"
-               }
-            }
+            }            
          ],
          "defaultClientScopes":[
             "web-origins",

@@ -11,6 +11,7 @@ from formsflow_api.services.external.keycloak import KeycloakAdminAPIService
 from formsflow_api.services.filter import FilterService
 from formsflow_api.services.form_process_mapper import FormProcessMapperService
 from formsflow_api.services.process import ProcessService
+from formsflow_api.services.user import UserService
 
 __all__ = [
     "ApplicationService",
@@ -23,4 +24,5 @@ __all__ = [
     "DraftService",
     "AuthorizationService",
     "FilterService",
+    "UserService",
 ]

@@ -1,13 +1,15 @@
 """Resource to call Keycloak Service API calls and filter responses."""
 from http import HTTPStatus
 
+import requests
 from flask import current_app, g, request
 from flask_restx import Namespace, Resource
 from formsflow_api_utils.utils import auth, cors_preflight, profiletime
 from marshmallow import ValidationError
 
 from formsflow_api.schemas import UserlocaleReqSchema
-from formsflow_api.services import KeycloakAdminAPIService
+from formsflow_api.services import KeycloakAdminAPIService, UserService
+from formsflow_api.services.factory import KeycloakFactory
 
 API = Namespace("user", description="Keycloak user APIs")
 
@@ -100,3 +102,30 @@ class KeycloakUserService(Resource):
             current_app.logger.critical(err)
 
             return response, status
+
+
+@cors_preflight("GET, OPTIONS")
+@API.route("", methods=["GET", "OPTIONS"])
+class KeycloakUsersList(Resource):
+    """Resource to fetch keycloak users."""
+
+    @staticmethod
+    @auth.require
+    @profiletime
+    def get():
+        """Get users in a group/role."""
+        try:
+            group_name = request.args.get("memberOfGroup")
+            users_list = KeycloakFactory.get_instance().get_users(group_name=group_name)
+            user_service = UserService()
+            response = user_service.get_users(request.args, users_list)
+            return response, HTTPStatus.OK
+        except requests.exceptions.RequestException as err:
+            current_app.logger.warning(err)
+            return {
+                "type": "Bad request error",
+                "message": "Invalid request data",
+            }, HTTPStatus.BAD_REQUEST
+        except Exception as unexpected_error:
+            current_app.logger.warning(unexpected_error)
+            raise unexpected_error

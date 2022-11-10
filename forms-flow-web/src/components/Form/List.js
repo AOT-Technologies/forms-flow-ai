@@ -138,7 +138,6 @@ const List = React.memo((props) => {
       dispatch(setFormLoading(true));
     } else {
       dispatch(setBPMFormListLoading(true));
-      dispatch(setBpmFormSearch(""));
     }
   }, []);
 

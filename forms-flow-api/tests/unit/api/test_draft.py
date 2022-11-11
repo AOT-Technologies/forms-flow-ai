@@ -213,3 +213,26 @@ def test_anonymous_drafts(app, client, session, jwt):
         response.json
         == f"Permission denied, formId - {get_form_model_object()['form_id']}."
     )
+
+
+def test_delete_draft(app, client, session, jwt):
+    """Tests the delete draft endpoint."""
+    token = get_token(jwt)
+    headers = {"Authorization": f"Bearer {token}", "content-type": "application/json"}
+    rv = client.post("/form", headers=headers, json=get_form_request_payload())
+    assert rv.status_code == 201
+
+    form_id = rv.json.get("formId")
+    response = client.post(
+        "/draft", headers=headers, json=get_draft_create_payload(form_id)
+    )
+    assert response.status_code == 201
+    draft_id = response.json.get("id")
+    rv = client.delete(f"/draft/{draft_id}", headers=headers)
+    assert rv.status_code == 200
+
+    # Tests if delete is user specific
+    token = get_token(jwt, username="different_user")
+    headers = {"Authorization": f"Bearer {token}", "content-type": "application/json"}
+    rv = client.delete(f"/draft/{draft_id}", headers=headers)
+    assert rv.status_code == 400

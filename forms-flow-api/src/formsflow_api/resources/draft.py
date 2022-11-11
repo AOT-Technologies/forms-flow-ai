@@ -86,8 +86,8 @@ class DraftResource(Resource):
             return response, status
 
 
-@cors_preflight("GET,PUT,OPTIONS")
-@API.route("/<int:draft_id>", methods=["GET", "PUT", "OPTIONS"])
+@cors_preflight("GET,PUT,DELETE,OPTIONS")
+@API.route("/<int:draft_id>", methods=["GET", "PUT", "DELETE", "OPTIONS"])
 class DraftResourceById(Resource):
     """Resource for managing draft by id."""
 
@@ -132,6 +132,18 @@ class DraftResourceById(Resource):
             current_app.logger.warning(submission_err)
 
             return response, status
+
+    @staticmethod
+    @auth.require
+    @profiletime
+    def delete(draft_id: int):
+        """Delete draft."""
+        try:
+            DraftService.delete_draft(draft_id)
+            return {"message": "Deleted"}, HTTPStatus.OK
+        except BusinessException as err:
+            current_app.logger.warning(err)
+            return err.error, err.status_code
 
 
 @cors_preflight("PUT, OPTIONS")

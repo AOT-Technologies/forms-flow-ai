@@ -168,10 +168,8 @@ class DraftService:
         user_id: str = user.user_name
         draft = Draft.get_by_id(draft_id=draft_id, user_id=user_id)
         if draft:
-            application = Application.find_by_id(application_id=draft.application_id)
             # deletes the draft and application entry related to the draft.
             draft.delete()
-            application.delete()
         else:
             response, status = {
                 "type": "Bad request error",

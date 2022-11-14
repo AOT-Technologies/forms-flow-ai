@@ -3,6 +3,7 @@ import string
 import uuid
 from http import HTTPStatus
 
+import requests
 from flask import current_app, make_response, render_template, request
 from flask_restx import Namespace, Resource
 from formsflow_api_utils.exceptions import BusinessException
@@ -32,15 +33,19 @@ class FormResourceRenderFormPdf(Resource):
         """Form rendering method."""
         pdf_helper = PdfHelpers(form_id=form_id, submission_id=submission_id)
 
-        template_name = secure_filename(request.args.get("template_name"))
-        default_template = "index.html"
+        DEFAULT_TEMPLATE = "index.html"
+        template_name = request.args.get("template_name")
         use_template = bool(template_name)
-        template_file = (
-            pdf_helper.url_decode(template_name) if use_template else default_template
+
+        template_name = (
+            pdf_helper.url_decode(secure_filename(template_name))
+            if use_template
+            else DEFAULT_TEMPLATE
         )
-        # TODO: better exception handling
-        if not pdf_helper.search_template(template_file):
-            return "template not found"
+        if not pdf_helper.search_template(template_name):
+            raise BusinessException(
+                "Template not found!", HTTPStatus.INTERNAL_SERVER_ERROR
+            )
 
         render_data = pdf_helper.get_render_data(
             use_template, request.headers.get("Authorization")
@@ -48,7 +53,7 @@ class FormResourceRenderFormPdf(Resource):
         current_app.logger.debug(render_data)
         headers = {"Content-Type": "text/html"}
         return make_response(
-            render_template(template_file, **render_data), 200, headers
+            render_template(template_name, **render_data), 200, headers
         )
 
 
@@ -106,12 +111,17 @@ class FormResourceExportFormPdf(Resource):
                 file_name = (
                     "Application_" + form_id + "_" + submission_id + "_export.pdf"
                 )
+                # Checking for successful rendering before calling chromedriver
+                res = requests.get(url=url, headers={"Authorization": token})
+                assert res.status_code == 200
+
                 chromedriver = current_app.config.get("CHROME_DRIVER_PATH")
                 current_app.logger.debug(args)
                 current_app.logger.debug(url)
                 result = get_pdf_from_html(url, chromedriver, args=args)
                 if result:
-                    pdf_helper.delete_template(template_name)
+                    if use_template:
+                        pdf_helper.delete_template(template_name)
                     return pdf_response(result, file_name)
                 response, status = (
                     {

@@ -15,8 +15,8 @@ import * as constants from "../../../../constants/constants";
 import * as customSubmission from "../../../../apiManager/services/FormServices";
 // import * as applicationService from "../../../../apiManager/services/applicationServices";
 
-jest.mock("react-formio", () => ({
-  ...jest.requireActual("react-formio"),
+jest.mock("@formio/react", () => ({
+  ...jest.requireActual("@formio/react"),
 }));
 
 const middlewares = [thunk];

@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useReducer } from "react";
-import { saveForm, Errors, FormBuilder } from "react-formio";
+import { saveForm, Errors, FormBuilder } from "@formio/react";
 import { push } from "connected-react-router";
 import { useHistory } from "react-router-dom";
 import _set from "lodash/set";

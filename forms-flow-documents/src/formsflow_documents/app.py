@@ -28,6 +28,7 @@ from formsflow_api_utils.utils.startup import (
 from werkzeug.middleware.proxy_fix import ProxyFix
 
 from formsflow_documents import config
+from formsflow_documents.helpers import TemplateFilters
 from formsflow_documents.resources import API
 
 
@@ -106,19 +107,7 @@ def create_app(run_mode=os.getenv("FLASK_ENV", "production")):
             current_app.logger.critical(err)
             return response
 
-    def is_signature(value):
-        """Checks if the given string is base64 image"""
-        try:
-            # TODO: better approach for checking base64 image
-            value_list = value.split("/")
-            value_starts_with = value_list[0] if len(value_list) > 0 else ""
-            if isinstance(value, str) and value_starts_with == "data:image":
-                return True
-            return False
-        except:
-            return False
-
-    app.jinja_env.globals.update(is_signature=is_signature)
+    app.jinja_env.globals.update(is_signature=TemplateFilters.is_signature)
 
     register_shellcontext(app)
     if not app.config["MULTI_TENANCY_ENABLED"]:

@@ -14,6 +14,7 @@ from formsflow_api_utils.utils import (
     profiletime,
 )
 from formsflow_api_utils.utils.pdf import get_pdf_from_html, pdf_response
+from werkzeug.utils import secure_filename
 
 from formsflow_documents.helpers import PdfHelpers
 
@@ -31,7 +32,7 @@ class FormResourceRenderFormPdf(Resource):
         """Form rendering method."""
         pdf_helper = PdfHelpers(form_id=form_id, submission_id=submission_id)
 
-        template_name = request.args.get("template_name")
+        template_name = secure_filename(request.args.get("template_name"))
         default_template = "index.html"
         use_template = bool(template_name)
         template_file = (

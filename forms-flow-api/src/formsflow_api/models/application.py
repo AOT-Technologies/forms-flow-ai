@@ -34,6 +34,10 @@ class Application(
     submission_id = db.Column(db.String(100), nullable=True)
     latest_form_id = db.Column(db.String(100), nullable=False)
 
+    draft = db.relationship(
+        "Draft", backref=db.backref("Application", cascade="delete")
+    )
+
     @classmethod
     def create_from_dict(cls, application_info: dict) -> Application:
         """Create new application."""

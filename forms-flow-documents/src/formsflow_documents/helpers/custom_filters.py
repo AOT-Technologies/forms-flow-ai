@@ -14,5 +14,5 @@ class TemplateFilters:
             if isinstance(value, str) and value_starts_with == "data:image":
                 return True
             return False
-        except:
+        except Exception as _:  # pylint: disable=broad-except
             return False

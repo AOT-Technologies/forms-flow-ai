@@ -2,11 +2,15 @@
 import base64
 import os
 import urllib.parse
+import uuid
 from http import HTTPStatus
 
+import requests
 from flask import current_app
 from formsflow_api_utils.exceptions import BusinessException
 from formsflow_api_utils.services import FormioService
+from formsflow_api_utils.utils import HTTP_TIMEOUT
+from formsflow_api_utils.utils.pdf import get_pdf_from_html, pdf_response
 from nested_lookup import get_occurrences_and_values
 
 
@@ -17,6 +21,8 @@ class PdfHelpers:
         self.__is_form_adaptor = current_app.config.get("CUSTOM_SUBMISSION_ENABLED")
         self.__custom_submission_url = current_app.config.get("CUSTOM_SUBMISSION_URL")
         self.__form_io_url = current_app.config.get("FORMIO_URL")
+        self.__host_name = current_app.config.get("FORMSFLOW_DOC_API_URL")
+        self.__chrome_driver_path = current_app.config.get("CHROME_DRIVER_PATH")
         self.form_id = form_id
         self.submission_id = submission_id
         self.formio = FormioService()
@@ -49,6 +55,10 @@ class PdfHelpers:
         return self.formio.get_form(
             {"form_id": self.form_id}, self.__get_formio_access_token()
         )
+
+    def get_chrome_driver_path(self):
+        """Returns the configured chrome driver path."""
+        return self.__chrome_driver_path
 
     def __get_form_and_submission_urls(self, token):
         """Returns the appropriate form and submission url based on the config."""
@@ -90,6 +100,62 @@ class PdfHelpers:
             }
         }
 
+    @staticmethod
+    def __generate_template_name():
+        """Generate unique template name."""
+        return f"{str(uuid.uuid4())}.html"
+
+    def __generate_pdf_file_name(self):
+        """Generated the PDF file name."""
+        return "Application_" + self.form_id + "_" + self.submission_id + "_export.pdf"
+
+    def __get_render_url(self, template_name=None):
+        """Returns the render URL."""
+        url = (
+            self.__host_name
+            + "/form/"
+            + self.form_id
+            + "/submission/"
+            + self.submission_id
+            + "/render"
+        )
+        if template_name:
+            url += f"?template_name={self.__url_encode(template_name)}"
+        return url
+
+    @staticmethod
+    def __get_render_args(timezone, token, use_template=False):
+        """Returns PDF render arguments."""
+        args = {"wait": "completed", "timezone": timezone, "auth_token": token}
+        if use_template:
+            del args["wait"]
+        return args
+
+    @staticmethod
+    def __url_encode(payload: str):
+        """Escapes url unsafe characters."""
+        return urllib.parse.quote(payload)
+
+    @staticmethod
+    def url_decode(template: str) -> str:
+        """Decodes the url encoded payload with utf-8 charset."""
+        try:
+            return urllib.parse.unquote(template)
+        except Exception as err:
+            current_app.logger.error(err)
+            raise BusinessException(
+                {"message": "URL decode failed!"}, HTTPStatus.BAD_REQUEST
+            ) from err
+
+    def get_render_status(self, token, template_name=None):
+        """Returns the render status code."""
+        res = requests.get(
+            url=self.__get_render_url(template_name),
+            headers={"Authorization": token},
+            timeout=HTTP_TIMEOUT,
+        )
+        return res.status_code
+
     # TODO: Refactor
     def get_render_data(self, use_template: bool, token):
         """
@@ -128,22 +194,6 @@ class PdfHelpers:
         return submission_data_formatted
 
     @staticmethod
-    def url_encode(payload: str):
-        """Escapes url unsafe characters."""
-        return urllib.parse.quote(payload)
-
-    @staticmethod
-    def url_decode(template: str) -> str:
-        """Decodes the url encoded payload with utf-8 charset."""
-        try:
-            return urllib.parse.unquote(template)
-        except Exception as err:
-            current_app.logger.error(err)
-            raise BusinessException(
-                {"message": "URL decode failed!"}, HTTPStatus.BAD_REQUEST
-            )
-
-    @staticmethod
     def b64decode(template: str):
         """
         Decodes the base64 encoded payload with utf-8 charset.
@@ -157,15 +207,15 @@ class PdfHelpers:
             current_app.logger.error(err)
             raise BusinessException(
                 {"message": "Failed to decode template!"}, HTTPStatus.BAD_REQUEST
-            )
+            ) from err
 
-    def create_template(self, template: str, template_name: str = None):
+    def create_template(self, template: str):
         """
         Creates a temporary template in the template directory.
 
         template: base64 encoded template, supported template formats: jinja
-        template_name: unique name for the template with extension, supported .html
         """
+        template_name = self.__generate_template_name()
         decoded_template = self.b64decode(self.url_decode(template))
         path = os.path.dirname(__file__)
         path = path.replace("helpers", "templates")
@@ -196,7 +246,16 @@ class PdfHelpers:
             path = os.path.dirname(__file__)
             path = path.replace("helpers", "templates")
             os.remove(f"{path}/{file_name}")
-        except:
+        except BaseException as _:  # pylint: disable=broad-except
             current_app.logger.error(
                 f"Failed to delete template:- {file_name} not found"
             )
+
+    def generate_pdf(self, timezone, token, template_name=None):
+        """Generates PDF from HTML."""
+        pdf = get_pdf_from_html(
+            self.__get_render_url(template_name),
+            self.get_chrome_driver_path(),
+            args=self.__get_render_args(timezone, token, bool(template_name)),
+        )
+        return pdf_response(pdf, self.__generate_pdf_file_name()) if pdf else False

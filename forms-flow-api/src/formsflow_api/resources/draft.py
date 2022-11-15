@@ -140,7 +140,7 @@ class DraftResourceById(Resource):
         """Delete draft."""
         try:
             DraftService.delete_draft(draft_id)
-            return {"message": "Deleted"}, HTTPStatus.OK
+            return {"message": "Draft deleted successfully"}, HTTPStatus.OK
         except BusinessException as err:
             current_app.logger.warning(err)
             return err.error, err.status_code

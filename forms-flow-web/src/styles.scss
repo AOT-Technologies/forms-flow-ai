@@ -171,6 +171,9 @@ i.fa.fa-question-circle.text-muted {
   padding: 0.75rem 1.25rem;
   margin-bottom: 8px;
 }
+.formio-form{
+min-height: 350px !important;
+}
 .formio-error-wrapper,
 .has-error {
   color: red;

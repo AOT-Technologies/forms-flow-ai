@@ -35,7 +35,7 @@ class Application(
     latest_form_id = db.Column(db.String(100), nullable=False)
 
     draft = db.relationship(
-        "Draft", backref=db.backref("Application", cascade="delete")
+        "Draft", backref=db.backref("Application", cascade="save-update, merge, delete")
     )
 
     @classmethod

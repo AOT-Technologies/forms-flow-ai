@@ -312,7 +312,7 @@ const View = React.memo((props) => {
     );
   }
   return (
-    <div className="container overflow-y-auto">
+    <div className="container overflow-y-auto form-view-wrapper">
       {DRAFT_ENABLED &&
         isAuthenticated &&
         isValidResource && 

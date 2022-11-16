@@ -23,11 +23,21 @@ class UserService:
         def iter_fun(user):
             search_flag = True
             if params.get("firstName"):
-                search_flag = params.get("firstName") in user["firstName"]
+                search_flag = (
+                    params.get("firstName") in user["firstName"]
+                    if user.get("firstName")
+                    else False
+                )
             if params.get("lastName"):
-                search_flag = params.get("lastName") in user["lastName"]
+                search_flag = (
+                    params.get("lastName") in user["lastName"]
+                    if user.get("lastName")
+                    else False
+                )
             if params.get("email"):
-                search_flag = params.get("email") in user["email"]
+                search_flag = (
+                    params.get("email") in user["email"] if user.get("email") else False
+                )
             return search_flag
 
         return list(filter(iter_fun, user_list))

@@ -46,7 +46,7 @@ public class FormsFlowV1RestServiceImpl {
 
     @Path(FilterRestResource.PATH)
     public FilterRestResource getFilterResource() {
-        return new FilterRestResourceImpl(processEngineService.getFilterRestService());
+        return new FilterRestResourceImpl(serviceFinder.getFilterRestService());
     }
 
     @Path(MessageRestResource.PATH)

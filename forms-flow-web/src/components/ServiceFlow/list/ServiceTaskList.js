@@ -146,6 +146,8 @@ const ServiceFlowTaskList = React.memo(() => {
               )}
             </div>
           ))}
+
+          <Row style={{justifyContent: "flex-end"}}>
           <div className="pagination-wrapper">
             <Pagination
               activePage={activePage}
@@ -157,6 +159,8 @@ const ServiceFlowTaskList = React.memo(() => {
               nextPageText=">"
             />
           </div>
+          </Row>
+
         </>
       );
     } else {

@@ -16,4 +16,3 @@ pytest-it
 pytest-mock
 pyflakes
 pylint
-lovely-pytest-docker

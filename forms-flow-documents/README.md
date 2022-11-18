@@ -120,7 +120,9 @@ example
 
 The example template will produce a PDF in a tabular form
 
-TODO: embed PDF link
+[Preview](https://github.com/sreehari-aot/forms-flow-ai/blob/pdf-template/.images/export_pdf_template_1.pdf)
+
+
 TODO: Provide details for `form` object 
 
 TODO: Add usecases 

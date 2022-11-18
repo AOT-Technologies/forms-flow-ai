@@ -5,6 +5,7 @@ import os
 import urllib.parse
 import uuid
 from http import HTTPStatus
+from typing import Any, Tuple, Union
 
 import requests
 from flask import current_app
@@ -28,40 +29,40 @@ class PDFService:
         self.submission_id = submission_id
         self.formio = FormioService()
 
-    def __is_form_adapter(self):
+    def __is_form_adapter(self) -> bool:
         """Returns whether th eapplication is using a form adaptor."""
         return self.__is_form_adaptor
 
-    def __get_custom_submission_url(self):
+    def __get_custom_submission_url(self) -> str:
         """Returns the custom submission url based on config."""
         return self.__custom_submission_url
 
-    def __get_formio_url(self):
+    def __get_formio_url(self) -> str:
         """Returns the formio url based on config."""
         return self.__form_io_url
 
-    def __get_formio_access_token(self):
+    def __get_formio_access_token(self) -> Any:
         """Returns formio access token."""
         return self.formio.get_formio_access_token()
 
-    def __get_submission_data(self):
+    def __get_submission_data(self) -> Any:
         """Returns the submission data from formio."""
         formio_get_payload = {"form_id": self.form_id, "sub_id": self.submission_id}
         return self.formio.get_submission(
             formio_get_payload, self.__get_formio_access_token()
         )
 
-    def __get_form_data(self):
+    def __get_form_data(self) -> Any:
         """Returns the form data from formio."""
         return self.formio.get_form(
             {"form_id": self.form_id}, self.__get_formio_access_token()
         )
 
-    def __get_chrome_driver_path(self):
+    def __get_chrome_driver_path(self) -> str:
         """Returns the configured chrome driver path."""
         return self.__chrome_driver_path
 
-    def __get_form_and_submission_urls(self, token):
+    def __get_form_and_submission_urls(self, token: str) -> Tuple[str, str, str]:
         """Returns the appropriate form and submission url based on the config."""
         form_io_url = self.__get_formio_url()
         if self.__is_form_adapter():
@@ -83,7 +84,7 @@ class PDFService:
             auth_token = None
         return (form_url, submission_url, auth_token)
 
-    def __get_template_params(self, token):
+    def __get_template_params(self, token: str) -> dict:
         """Returns the jinja template parameters for pdf export with formio renderer."""
         form_io_url = self.__get_formio_url()
         (form_url, submission_url, auth_token) = self.__get_form_and_submission_urls(
@@ -102,27 +103,31 @@ class PDFService:
         }
 
     @staticmethod
-    def __generate_template_name():
+    def __generate_template_name() -> str:
         """Generate unique template name."""
         return f"{str(uuid.uuid4())}.html"
 
     @staticmethod
-    def __generate_template_variables_name():
+    def __generate_template_variables_name() -> str:
         """Generate unique template variable name."""
         return f"{str(uuid.uuid4())}.json"
 
     @staticmethod
-    def __get_template_path():
+    def __get_template_path() -> str:
         """Returns the path to template directory."""
         path = os.path.dirname(__file__)
         path = path.replace("services", "templates")
         return path
 
-    def __generate_pdf_file_name(self):
+    def __generate_pdf_file_name(self) -> str:
         """Generated the PDF file name."""
         return "Application_" + self.form_id + "_" + self.submission_id + "_export.pdf"
 
-    def __get_render_url(self, template_name=None, template_variable_name=None):
+    def __get_render_url(
+        self,
+        template_name: Union[str, None] = None,
+        template_variable_name: Union[str, None] = None,
+    ) -> str:
         """Returns the render URL."""
         url = (
             self.__host_name
@@ -139,7 +144,9 @@ class PDFService:
         return url
 
     @staticmethod
-    def __get_render_args(timezone, token, use_template=False):
+    def __get_render_args(
+        timezone: str, token: str, use_template: bool = False
+    ) -> dict:
         """Returns PDF render arguments."""
         args = {"wait": "completed", "timezone": timezone, "auth_token": token}
         if use_template:
@@ -147,11 +154,11 @@ class PDFService:
         return args
 
     @staticmethod
-    def __url_encode(payload: str):
+    def __url_encode(payload: str) -> str:
         """Escapes url unsafe characters."""
         return urllib.parse.quote(payload)
 
-    def __read_json(self, file_name):
+    def __read_json(self, file_name: str) -> Any:
         """Reads the json file contents to a variable."""
         path = self.__get_template_path()
         with open(f"{path}/{file_name}", encoding="utf-8") as file:
@@ -170,7 +177,9 @@ class PDFService:
                 {"message": "URL decode failed!"}, HTTPStatus.BAD_REQUEST
             ) from err
 
-    def get_render_status(self, token, template_name=None):
+    def get_render_status(
+        self, token: str, template_name: Union[str, None] = None
+    ) -> int:
         """Returns the render status code."""
         res = requests.get(
             url=self.__get_render_url(template_name),
@@ -180,11 +189,15 @@ class PDFService:
         return res.status_code
 
     # TODO: Refactor
-    def get_render_data(self, use_template: bool, template_variable_name, token):
+    def get_render_data(
+        self, use_template: bool, template_variable_name: Union[str, None], token: str
+    ) -> Any:
         """
         Returns the render data for the pdf template.
 
         use_template: boolean, whether to use a template for generating pdf.
+        template_variable_name: template variable file name for requests with
+        template variable payload.
         token: token for the template parameters when using formio renderer.
         Raw data will be passed to the templat if the export is using any
         form of template. Else default formio renderer will be used where
@@ -220,7 +233,7 @@ class PDFService:
         return submission_data_formatted
 
     @staticmethod
-    def b64decode(template: str):
+    def b64decode(template: str) -> str:
         """
         Decodes the base64 encoded payload with utf-8 charset.
 
@@ -235,7 +248,9 @@ class PDFService:
                 {"message": "Failed to decode template!"}, HTTPStatus.BAD_REQUEST
             ) from err
 
-    def __write_to_file(self, template_name, content, is_json=False):
+    def __write_to_file(
+        self, template_name: str, content: Union[str, dict], is_json: bool = False
+    ) -> None:
         """Write data to file."""
         path = self.__get_template_path()
         with open(f"{path}/{template_name}", "w", encoding="utf-8") as file:
@@ -245,7 +260,9 @@ class PDFService:
             ) if is_json else file.write(content)
             file.close()
 
-    def create_template(self, template: str, template_var=None):
+    def create_template(
+        self, template: str, template_var: dict = None
+    ) -> Tuple[str, Union[str, None]]:
         """
         Creates a temporary template in the template directory.
 
@@ -255,13 +272,13 @@ class PDFService:
         template_var_name = (
             self.__generate_template_variables_name() if template_var else None
         )
-        decoded_template = self.b64decode(self.url_decode(template))
+        decoded_template = self.b64decode(template)
         self.__write_to_file(template_name, content=decoded_template)
         if template_var:
             self.__write_to_file(template_var_name, content=template_var, is_json=True)
         return (template_name, template_var_name)
 
-    def search_template(self, file_name: str):
+    def search_template(self, file_name: str) -> bool:
         """
         Check if the given file exists in the template directory.
 
@@ -271,7 +288,7 @@ class PDFService:
         current_app.logger.info("Searching for template...")
         return os.path.isfile(f"{path}/{file_name}")
 
-    def delete_template(self, file_name: str):
+    def delete_template(self, file_name: str) -> None:
         """
         Delete the given file from template directory.
 
@@ -286,8 +303,12 @@ class PDFService:
             )
 
     def generate_pdf(
-        self, timezone, token, template_name=None, template_variable_name=None
-    ):
+        self,
+        timezone: str,
+        token: str,
+        template_name: Union[str, None] = None,
+        template_variable_name: str = None,
+    ) -> Any:
         """Generates PDF from HTML."""
         pdf = get_pdf_from_html(
             self.__get_render_url(template_name, template_variable_name),

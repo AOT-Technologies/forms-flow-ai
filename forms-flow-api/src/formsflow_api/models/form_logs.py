@@ -2,47 +2,41 @@
 
 from sqlalchemy.dialects.postgresql import ARRAY, JSON
 
+from .audit_mixin import AuditDateTimeMixin, AuditUserMixin
 from .base_model import BaseModel
 from .db import db
 
 
-class FormLogs(BaseModel, db.Model):
+class FormLogs(AuditDateTimeMixin, AuditUserMixin, BaseModel,BaseModel, db.Model):
     """This is for creating form logs."""
 
     id = db.Column(db.Integer, primary_key=True)
-    form_id = db.Column(db.String(30), nullable=False, unique=True)
-    logs = db.Column(ARRAY(JSON), nullable=False)
+    form_id = db.Column(db.String(30), nullable=False)
+    mapper_id = db.Column(
+        db.Integer, db.ForeignKey("form_process_mapper.id"), nullable=False
+    )
+    form_name = db.Column(db.String(100), nullable=False)
+    process_key = db.Column(db.String(100), nullable=False)
+    status = db.Column(db.String(100), nullable=False)
+    
+    
 
     @classmethod
     def create_form_log(cls, data):
         """This method will create form logs in db."""
         form_log = FormLogs()
         form_log.form_id = data["form_id"]
-        form_log.logs = data["logs"]
+        form_log.form_name = data['form_name']
+        form_log.mapper_id = data['mapper_id']
+        form_log.process_key = data['process_key']
+        form_log.status = data['status']
+        form_log.modified_by = data['modifed_by']
         form_log.save()
         return form_log
 
     @classmethod
     def get_form_logs(cls, form_id):
         """Return the logs against form id."""
-        return cls.query.filter(cls.form_id == form_id).one_or_none()
+        return cls.query.filter(cls.form_id == form_id).all()
 
-    @classmethod
-    def update_form_logs(cls, form_id, data):
-        """Update form logs against form id."""
-        form_logs = cls.query.filter(cls.form_id == form_id).one_or_none()
-        if form_logs:
-            form_logs.logs = [*form_logs.logs, data]
-            cls.commit()
-            return form_logs
-        return None
-
-    @classmethod
-    def delete_form_logs(cls, form_id):
-        """Delete form logs."""
-        form_logs = cls.query.filter(cls.form_id == form_id).one_or_none()
-        if form_logs:
-            form_logs.delete()
-            cls.commit()
-            return True
-        return False
+    

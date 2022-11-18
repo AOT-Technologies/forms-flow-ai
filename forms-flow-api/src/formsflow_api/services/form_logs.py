@@ -12,26 +12,15 @@ class FormlogService:
 
     @user_context
     @staticmethod
-    def create_form_logs(data, **kwargs):
+    def create_form_logs(data, ):
         """This is for create form logs."""
-        user: UserContext = kwargs["user"]
         try:
             if data:
-                log_data = {
-                    "form_id": data["form_id"],
-                    "logs": [
-                        {
-                            "mapper_version": data["mapper_version"],
-                            "process_name": data["process_name"],
-                            "form_name": data["form_name"],
-                            "form_revision": data["form_revision"],
-                            "modifed_by": user.user_name,
-                        }
-                    ],
-                }
-                saved_data = FormLogs.create_form_log(log_data)
-                form_logs_response_schema = FormLogsResponseSchema()
-                return form_logs_response_schema.dump(saved_data)
+                print(data)
+                
+                # saved_data = FormLogs.create_form_log(data)
+
+                # return form_logs_response_schema.dump(saved_data)
             return None
         except Exception as err:
             raise err
@@ -52,37 +41,4 @@ class FormlogService:
         except Exception as err:
             raise err
 
-    @user_context
-    @staticmethod
-    def update_form_logs(form_id, data, **kwargs):
-        """Update form logs."""
-        try:
-            user: UserContext = kwargs["user"]
-            assert form_id is not None
-            saved_data = FormLogs.update_form_logs(
-                form_id, {**data, "modifed_by": user.user_name}
-            )
-            if saved_data:
-                form_logs_response_schema = FormLogsResponseSchema()
-                return form_logs_response_schema.dump(saved_data), HTTPStatus.OK
-            return {
-                    "type": "Bad request error",
-                    "message": "Invalid form id",
-                   }, HTTPStatus.BAD_REQUEST
-        except Exception as err:
-            raise err
-
-    @staticmethod
-    def delete_form_logs(form_id):
-        """Delete form logs."""
-        try:
-            assert form_id is not None
-            deleted = FormLogs.delete_form_logs(form_id)
-            if deleted:
-                return {"message": "successfully deleted"}, HTTPStatus.OK
-            return {
-                    "type": "Bad request error",
-                    "message": "Invalid form id",
-                   }, HTTPStatus.BAD_REQUEST
-        except Exception as err:
-            raise err
+    

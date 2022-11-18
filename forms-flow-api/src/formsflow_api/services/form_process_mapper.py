@@ -10,6 +10,7 @@ from formsflow_api_utils.utils.user_context import UserContext, user_context
 from formsflow_api.models import FormProcessMapper
 from formsflow_api.schemas import FormProcessMapperSchema
 from formsflow_api.services.external.bpm import BPMService
+from formsflow_api.services import FormlogService
 
 
 class FormProcessMapperService:
@@ -135,6 +136,7 @@ class FormProcessMapperService:
                 raise PermissionError("Tenant authentication failed.")
             FormProcessMapperService._update_process_tenant(data, user)
             mapper.update(data)
+            FormlogService.create_form_logs(mapper)
             return mapper
 
         raise BusinessException(

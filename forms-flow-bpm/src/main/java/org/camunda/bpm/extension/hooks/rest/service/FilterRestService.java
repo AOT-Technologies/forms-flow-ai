@@ -1,10 +1,12 @@
 package org.camunda.bpm.extension.hooks.rest.service;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-
 import javax.ws.rs.core.Request;
+
+import org.camunda.bpm.extension.hooks.rest.dto.TaskQueryDto;
+
+import com.fasterxml.jackson.core.JsonProcessingException;
 
 public interface FilterRestService {
 
-    Object queryList(Request request, String extendingQuery, Integer firstResult, Integer maxResults) throws JsonProcessingException;
+    Object queryList(Request request, TaskQueryDto extendingQuery, Integer firstResult, Integer maxResults) throws JsonProcessingException;
 }

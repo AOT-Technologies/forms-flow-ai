@@ -14,13 +14,13 @@ from formsflow_api_utils.utils import (
 )
 from werkzeug.utils import secure_filename
 
-from formsflow_documents.helpers import PdfHelpers
+from formsflow_documents.services import PDFService
 
 API = Namespace("Form", description="Form")
 
 
 @API.route("/<string:form_id>/submission/<string:submission_id>/render", doc=False)
-class FormResourceRenderFormPdf(Resource):
+class FormResourceRenderPdf(Resource):
     """Resource to render form and submission details as html."""
 
     @staticmethod
@@ -28,24 +28,36 @@ class FormResourceRenderFormPdf(Resource):
     @profiletime
     def get(form_id: string, submission_id: string):
         """Form rendering method."""
-        pdf_helper = PdfHelpers(form_id=form_id, submission_id=submission_id)
-
+        pdf_service = PDFService(form_id=form_id, submission_id=submission_id)
         default_template = "index.html"
         template_name = request.args.get("template_name")
+        template_variable_name = request.args.get("template_variable")
         use_template = bool(template_name)
 
         template_name = (
-            pdf_helper.url_decode(secure_filename(template_name))
+            pdf_service.url_decode(secure_filename(template_name))
             if use_template
             else default_template
         )
-        if not pdf_helper.search_template(template_name):
+
+        template_variable_name = (
+            pdf_service.url_decode(secure_filename(template_variable_name))
+            if template_variable_name
+            else None
+        )
+        if not pdf_service.search_template(template_name):
             raise BusinessException(
                 "Template not found!", HTTPStatus.INTERNAL_SERVER_ERROR
             )
+        if template_variable_name and not pdf_service.search_template(
+            template_variable_name
+        ):
+            raise BusinessException(
+                "Template variables not found!", HTTPStatus.INTERNAL_SERVER_ERROR
+            )
 
-        render_data = pdf_helper.get_render_data(
-            use_template, request.headers.get("Authorization")
+        render_data = pdf_service.get_render_data(
+            use_template, template_variable_name, request.headers.get("Authorization")
         )
         current_app.logger.debug(render_data)
         headers = {"Content-Type": "text/html"}
@@ -54,10 +66,10 @@ class FormResourceRenderFormPdf(Resource):
         )
 
 
-@cors_preflight("GET,OPTIONS")
+@cors_preflight("POST,OPTIONS")
 @API.route(
     "/<string:form_id>/submission/<string:submission_id>/export/pdf",
-    methods=["GET", "OPTIONS"],
+    methods=["POST", "OPTIONS"],
 )
 @API.doc(
     params={
@@ -68,33 +80,45 @@ class FormResourceRenderFormPdf(Resource):
         }
     }
 )
-class FormResourceExportFormPdf(Resource):
+class FormResourceExportPdf(Resource):
     """Resource to export form and submission details as pdf."""
 
     @staticmethod
     @auth.require
     @profiletime
-    def get(form_id: string, submission_id: string):
+    def post(form_id: string, submission_id: string):
         """PDF generation and rendering method."""
         try:
             if auth.has_one_of_roles([REVIEWER_GROUP, CLIENT_GROUP]):
 
                 timezone = request.args.get("timezone")
-                template = request.args.get("template")
+                request_json = request.get_json()
+                template = request_json.get("template")
+                template_variables = request_json.get("templateVars")
                 token = request.headers.get("Authorization")
                 use_template = bool(template)
 
-                pdf_helper = PdfHelpers(form_id=form_id, submission_id=submission_id)
+                pdf_service = PDFService(form_id=form_id, submission_id=submission_id)
 
                 template_name = None
+                template_variable_name = None
                 if use_template:
-                    template_name = pdf_helper.create_template(template=template)
+                    (
+                        template_name,
+                        template_variable_name,
+                    ) = pdf_service.create_template(template, template_variables)
                     current_app.logger.info(template_name)
-                assert pdf_helper.get_render_status(token, template_name) == 200
-                result = pdf_helper.generate_pdf(timezone, token, template_name)
+                    current_app.logger.info(template_variable_name)
+                assert pdf_service.get_render_status(token, template_name) == 200
+                current_app.logger.info("Generating PDF...")
+                result = pdf_service.generate_pdf(
+                    timezone, token, template_name, template_variable_name
+                )
                 if result:
                     if use_template:
-                        pdf_helper.delete_template(template_name)
+                        current_app.logger.info("Removing temporary files..")
+                        pdf_service.delete_template(template_name)
+                        pdf_service.delete_template(template_variable_name)
                     return result
                 response, status = (
                     {

@@ -1,7 +1,7 @@
 """Test suite for pdf service module"""
 import pytest
 
-from formsflow_documents.services import PDFService
+from src.formsflow_documents.services import PDFService
 from tests.utilities import get_test_template
 
 

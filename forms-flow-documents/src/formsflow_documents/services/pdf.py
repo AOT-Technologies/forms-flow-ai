@@ -1,5 +1,6 @@
-"""Helper module for PDF export options."""
+"""Helper module for PDF export."""
 import base64
+import json
 import os
 import urllib.parse
 import uuid
@@ -14,10 +15,10 @@ from formsflow_api_utils.utils.pdf import get_pdf_from_html, pdf_response
 from nested_lookup import get_occurrences_and_values
 
 
-class PdfHelpers:
-    """Helper methods for pdf generation."""
+class PDFService:
+    """Helper class for pdf generation."""
 
-    def __init__(self, form_id, submission_id) -> None:
+    def __init__(self, form_id: str, submission_id: str) -> None:
         self.__is_form_adaptor = current_app.config.get("CUSTOM_SUBMISSION_ENABLED")
         self.__custom_submission_url = current_app.config.get("CUSTOM_SUBMISSION_URL")
         self.__form_io_url = current_app.config.get("FORMIO_URL")
@@ -56,7 +57,7 @@ class PdfHelpers:
             {"form_id": self.form_id}, self.__get_formio_access_token()
         )
 
-    def get_chrome_driver_path(self):
+    def __get_chrome_driver_path(self):
         """Returns the configured chrome driver path."""
         return self.__chrome_driver_path
 
@@ -95,7 +96,7 @@ class PdfHelpers:
                 "form_url": form_url,
                 "token": self.__get_formio_access_token(),
                 "submission_url": submission_url,
-                "form_apater": self.__is_form_adapter(),
+                "form_adapter": self.__is_form_adapter(),
                 "auth_token": auth_token,
             }
         }
@@ -105,11 +106,23 @@ class PdfHelpers:
         """Generate unique template name."""
         return f"{str(uuid.uuid4())}.html"
 
+    @staticmethod
+    def __generate_template_variables_name():
+        """Generate unique template variable name."""
+        return f"{str(uuid.uuid4())}.json"
+
+    @staticmethod
+    def __get_template_path():
+        """Returns the path to template directory."""
+        path = os.path.dirname(__file__)
+        path = path.replace("services", "templates")
+        return path
+
     def __generate_pdf_file_name(self):
         """Generated the PDF file name."""
         return "Application_" + self.form_id + "_" + self.submission_id + "_export.pdf"
 
-    def __get_render_url(self, template_name=None):
+    def __get_render_url(self, template_name=None, template_variable_name=None):
         """Returns the render URL."""
         url = (
             self.__host_name
@@ -121,6 +134,8 @@ class PdfHelpers:
         )
         if template_name:
             url += f"?template_name={self.__url_encode(template_name)}"
+        if template_variable_name:
+            url += f"&template_variable={self.__url_encode(template_variable_name)}"
         return url
 
     @staticmethod
@@ -135,6 +150,14 @@ class PdfHelpers:
     def __url_encode(payload: str):
         """Escapes url unsafe characters."""
         return urllib.parse.quote(payload)
+
+    def __read_json(self, file_name):
+        """Reads the json file contents to a variable."""
+        path = self.__get_template_path()
+        with open(f"{path}/{file_name}", encoding="utf-8") as file:
+            data = json.load(file)
+            file.close()
+            return data
 
     @staticmethod
     def url_decode(template: str) -> str:
@@ -157,7 +180,7 @@ class PdfHelpers:
         return res.status_code
 
     # TODO: Refactor
-    def get_render_data(self, use_template: bool, token):
+    def get_render_data(self, use_template: bool, template_variable_name, token):
         """
         Returns the render data for the pdf template.
 
@@ -169,6 +192,9 @@ class PdfHelpers:
         """
         if not use_template:
             return self.__get_template_params(token=token)
+        if template_variable_name:
+            return self.__read_json(template_variable_name)
+
         submission_data = self.__get_submission_data()
         form_data = self.__get_form_data()
         submission_data_formatted = {"form": {"form": form_data, "data": {}}}
@@ -209,53 +235,63 @@ class PdfHelpers:
                 {"message": "Failed to decode template!"}, HTTPStatus.BAD_REQUEST
             ) from err
 
-    def create_template(self, template: str):
+    def __write_to_file(self, template_name, content, is_json=False):
+        """Write data to file."""
+        path = self.__get_template_path()
+        with open(f"{path}/{template_name}", "w", encoding="utf-8") as file:
+            # disabling pylint warning since it is a function call
+            json.dump(  # pylint: disable=expression-not-assigned
+                content, file
+            ) if is_json else file.write(content)
+            file.close()
+
+    def create_template(self, template: str, template_var=None):
         """
         Creates a temporary template in the template directory.
 
         template: base64 encoded template, supported template formats: jinja
         """
         template_name = self.__generate_template_name()
+        template_var_name = (
+            self.__generate_template_variables_name() if template_var else None
+        )
         decoded_template = self.b64decode(self.url_decode(template))
-        path = os.path.dirname(__file__)
-        path = path.replace("helpers", "templates")
-        with open(f"{path}/{template_name}", "w", encoding="utf-8") as file:
-            file.write(decoded_template)
-            file.close()
-        return template_name
+        self.__write_to_file(template_name, content=decoded_template)
+        if template_var:
+            self.__write_to_file(template_var_name, content=template_var, is_json=True)
+        return (template_name, template_var_name)
 
-    @staticmethod
-    def search_template(file_name: str):
+    def search_template(self, file_name: str):
         """
         Check if the given file exists in the template directory.
 
         file_name: name of the file to check with extension.
         """
-        path = os.path.dirname(__file__)
-        path = path.replace("helpers", "templates")
+        path = self.__get_template_path()
+        current_app.logger.info("Searching for template...")
         return os.path.isfile(f"{path}/{file_name}")
 
-    @staticmethod
-    def delete_template(file_name: str):
+    def delete_template(self, file_name: str):
         """
         Delete the given file from template directory.
 
         file_name: name of the file with extension.
         """
         try:
-            path = os.path.dirname(__file__)
-            path = path.replace("helpers", "templates")
+            path = self.__get_template_path()
             os.remove(f"{path}/{file_name}")
         except BaseException as _:  # pylint: disable=broad-except
             current_app.logger.error(
                 f"Failed to delete template:- {file_name} not found"
             )
 
-    def generate_pdf(self, timezone, token, template_name=None):
+    def generate_pdf(
+        self, timezone, token, template_name=None, template_variable_name=None
+    ):
         """Generates PDF from HTML."""
         pdf = get_pdf_from_html(
-            self.__get_render_url(template_name),
-            self.get_chrome_driver_path(),
+            self.__get_render_url(template_name, template_variable_name),
+            self.__get_chrome_driver_path(),
             args=self.__get_render_args(timezone, token, bool(template_name)),
         )
         return pdf_response(pdf, self.__generate_pdf_file_name()) if pdf else False

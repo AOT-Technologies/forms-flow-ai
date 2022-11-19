@@ -1,13 +1,14 @@
 """This manages form logs  Schema."""
 
-from marshmallow import EXCLUDE,INCLUDE, Schema, fields
+from marshmallow import EXCLUDE, Schema, fields
+
 
 class FormLogsRequestAndResponseSchema(Schema):
     """This is request schema for formlogs."""
 
     class Meta:  # pylint: disable=too-few-public-methods
         """Exlude."""
-        
+
         unknown = EXCLUDE
 
     id = fields.Str(data_key="id", required=False, dump_only=True)
@@ -18,5 +19,3 @@ class FormLogsRequestAndResponseSchema(Schema):
     status = fields.Str(data_key="status", required=False)
     created_by = fields.Str(data_key="modifiedBy", required=False)
     created = fields.Str(data_key="modified", required=False)
-
-

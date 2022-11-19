@@ -9,8 +9,9 @@ from formsflow_api.services import FormlogService
 
 API = Namespace("FormLogs", description="Form logs")
 
+
 @cors_preflight("GET,PUT,DELETE,OPTIONS")
-@API.route("/<string:form_id>", methods=["GET","OPTIONS"])
+@API.route("/<string:form_id>", methods=["GET", "OPTIONS"])
 class FormLogUpdateResource(Resource):
     """To update the form logs."""
 
@@ -24,5 +25,3 @@ class FormLogUpdateResource(Resource):
         except BusinessException as err:
             current_app.logger.warning(err)
             return err.error, err.status_code
-
-    

@@ -18,7 +18,11 @@ from formsflow_api.schemas import (
     FormProcessMapperListRequestSchema,
     FormProcessMapperSchema,
 )
-from formsflow_api.services import ApplicationService, FormProcessMapperService, FormlogService
+from formsflow_api.services import (
+    ApplicationService,
+    FormProcessMapperService,
+    FormlogService,
+)
 
 
 API = Namespace("Form", description="Form")

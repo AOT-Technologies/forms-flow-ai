@@ -1,16 +1,16 @@
-"""formlogs
+"""form-logs
 
-Revision ID: 0651f6dc4df9
+Revision ID: cbdc9ba48299
 Revises: e664a2f70952
-Create Date: 2022-11-08 12:32:35.870623
+Create Date: 2022-11-19 21:33:34.585606
 
 """
 from alembic import op
 import sqlalchemy as sa
-from sqlalchemy.dialects import postgresql
+
 
 # revision identifiers, used by Alembic.
-revision = '0651f6dc4df9'
+revision = 'cbdc9ba48299'
 down_revision = 'e664a2f70952'
 branch_labels = None
 depends_on = None
@@ -21,9 +21,14 @@ def upgrade():
     op.create_table('form_logs',
     sa.Column('id', sa.Integer(), nullable=False),
     sa.Column('form_id', sa.String(length=30), nullable=False),
-    sa.Column('logs', postgresql.ARRAY(postgresql.JSON(astext_type=sa.Text())), nullable=False),
-    sa.PrimaryKeyConstraint('id'),
-    sa.UniqueConstraint('form_id')
+    sa.Column('mapper_id', sa.Integer(), nullable=False),
+    sa.Column('form_name', sa.String(length=100), nullable=False),
+    sa.Column('process_key', sa.String(length=100), nullable=False),
+    sa.Column('status', sa.String(length=100), nullable=False),
+    sa.Column('created', sa.String(length=100), nullable=False),
+    sa.Column('created_by', sa.String(length=100), nullable=False),
+    sa.ForeignKeyConstraint(['mapper_id'], ['form_process_mapper.id'], ),
+    sa.PrimaryKeyConstraint('id')
     )
     # ### end Alembic commands ###
 

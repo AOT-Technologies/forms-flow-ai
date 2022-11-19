@@ -1,18 +1,11 @@
 """API endpoints for managing form resource."""
 
-
-from http import HTTPStatus
-
-from flask import current_app, request
+from flask import current_app
 from flask_restx import Namespace, Resource
 from formsflow_api_utils.exceptions import BusinessException
 from formsflow_api_utils.utils import auth, cors_preflight, profiletime
 
-from formsflow_api.schemas.form_logs import (
-    FormLogsRequestSchema,
-    FormVariableSchema,
-)
-from formsflow_api.services.form_logs import FormlogService
+from formsflow_api.services import FormlogService
 
 API = Namespace("FormLogs", description="Form logs")
 

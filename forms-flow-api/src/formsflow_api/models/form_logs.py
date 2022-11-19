@@ -1,13 +1,10 @@
 """This is form logs model."""
 
-from sqlalchemy.dialects.postgresql import ARRAY, JSON
-
-from .audit_mixin import AuditDateTimeMixin, AuditUserMixin
 from .base_model import BaseModel
 from .db import db
 
 
-class FormLogs(AuditDateTimeMixin, AuditUserMixin, BaseModel,BaseModel, db.Model):
+class FormLogs(BaseModel, db.Model):
     """This is for creating form logs."""
 
     id = db.Column(db.Integer, primary_key=True)
@@ -18,6 +15,8 @@ class FormLogs(AuditDateTimeMixin, AuditUserMixin, BaseModel,BaseModel, db.Model
     form_name = db.Column(db.String(100), nullable=False)
     process_key = db.Column(db.String(100), nullable=False)
     status = db.Column(db.String(100), nullable=False)
+    created = db.Column(db.String(100), nullable=False)
+    created_by= db.Column(db.String(100), nullable=False)
     
     
 
@@ -30,7 +29,8 @@ class FormLogs(AuditDateTimeMixin, AuditUserMixin, BaseModel,BaseModel, db.Model
         form_log.mapper_id = data['mapper_id']
         form_log.process_key = data['process_key']
         form_log.status = data['status']
-        form_log.modified_by = data['modifed_by']
+        form_log.created_by = data['created_by']
+        form_log.created = data['created']
         form_log.save()
         return form_log
 

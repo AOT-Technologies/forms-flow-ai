@@ -4,7 +4,7 @@ from marshmallow import EXCLUDE, Schema, fields
 
 
 class FormLogsRequestAndResponseSchema(Schema):
-    """This is request schema for formlogs."""
+    """This is request and response schema for form logs."""
 
     class Meta:  # pylint: disable=too-few-public-methods
         """Exlude."""

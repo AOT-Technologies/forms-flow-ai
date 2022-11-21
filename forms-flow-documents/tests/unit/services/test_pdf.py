@@ -1,5 +1,5 @@
-"""Test suite for pdf service module"""
-import pytest
+"""Test suite for pdf service module."""
+import pytest  # noqa
 
 from src.formsflow_documents.services import PDFService
 from tests.utilities import get_test_template
@@ -52,7 +52,7 @@ class TestPDFService:
             (template_name, template_var_name) = service.create_template(
                 template=self.template, template_var=None
             )
-            assert template_var_name == None
+            assert template_var_name is None
             render_data = service.get_render_data(
                 use_template=True,
                 template_variable_name=template_var_name,

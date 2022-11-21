@@ -1,5 +1,5 @@
 """Test suite for application API endpoint."""
-import pytest
+import pytest  # noqa
 
 from tests.utilities.base_test import get_token
 

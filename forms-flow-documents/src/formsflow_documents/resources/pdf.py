@@ -59,7 +59,6 @@ class FormResourceRenderPdf(Resource):
         render_data = pdf_service.get_render_data(
             use_template, template_variable_name, request.headers.get("Authorization")
         )
-        current_app.logger.debug(render_data)
         headers = {"Content-Type": "text/html"}
         return make_response(
             render_template(template_name, **render_data), 200, headers
@@ -116,9 +115,10 @@ class FormResourceExportPdf(Resource):
                 )
                 if result:
                     if use_template:
-                        current_app.logger.info("Removing temporary files..")
+                        current_app.logger.info("Removing temporary files...")
                         pdf_service.delete_template(template_name)
-                        pdf_service.delete_template(template_variable_name)
+                        if template_variable_name:
+                            pdf_service.delete_template(template_variable_name)
                     return result
                 response, status = (
                     {

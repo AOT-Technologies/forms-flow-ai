@@ -15,11 +15,30 @@ from formsflow_api_utils.utils import HTTP_TIMEOUT
 from formsflow_api_utils.utils.pdf import get_pdf_from_html, pdf_response
 from nested_lookup import get_occurrences_and_values
 
+from formsflow_documents.filters import is_b64image
+
 
 class PDFService:
     """Helper class for pdf generation."""
 
+    __slots__ = (
+        "__is_form_adaptor",
+        "__custom_submission_url",
+        "__form_io_url",
+        "__host_name",
+        "__chrome_driver_path",
+        "form_id",
+        "submission_id",
+        "formio",
+    )
+
     def __init__(self, form_id: str, submission_id: str) -> None:
+        """
+        Initializes PDFService.
+
+        form_id: formid corresponding to the PDF
+        submission_id: submissionid corresponding to the PDF.
+        """
         self.__is_form_adaptor = current_app.config.get("CUSTOM_SUBMISSION_ENABLED")
         self.__custom_submission_url = current_app.config.get("CUSTOM_SUBMISSION_URL")
         self.__form_io_url = current_app.config.get("FORMIO_URL")
@@ -188,36 +207,29 @@ class PDFService:
         )
         return res.status_code
 
-    # TODO: Refactor
-    def get_render_data(
-        self, use_template: bool, template_variable_name: Union[str, None], token: str
-    ) -> Any:
-        """
-        Returns the render data for the pdf template.
+    @staticmethod
+    def is_camel_case(string_val: str) -> bool:
+        """Checks if the given string is camelcase or not."""
+        if not isinstance(string_val, str) or is_b64image(string_val):
+            return False
+        string_val = string_val[1:]
+        if " " in string_val:
+            return False
+        return (
+            string_val != string_val.lower()
+            and string_val != string_val.upper()
+            and "_" not in string_val
+        )
 
-        use_template: boolean, whether to use a template for generating pdf.
-        template_variable_name: template variable file name for requests with
-        template variable payload.
-        token: token for the template parameters when using formio renderer.
-        Raw data will be passed to the templat if the export is using any
-        form of template. Else default formio renderer will be used where
-        only the formio render parameters will be passed to the template.
-        """
-        if not use_template:
-            return self.__get_template_params(token=token)
-        if template_variable_name:
-            return self.__read_json(template_variable_name)
-
-        submission_data = self.__get_submission_data()
-        form_data = self.__get_form_data()
+    def __get_formatted_data(self, form_data, submission_data):
+        """Returns the presentable data from the submission data."""
         submission_data_formatted = {"form": {"form": form_data, "data": {}}}
-
         for key, value in submission_data["data"].items():
             key_formatted = get_occurrences_and_values([form_data], value=key)[key][
                 "values"
             ][0].get("label")
             value_formatted = value
-            if value and isinstance(value, str):
+            if value and self.is_camel_case(value):
                 value_formatted = get_occurrences_and_values([form_data], value=value)[
                     value
                 ]["values"]
@@ -231,6 +243,30 @@ class PDFService:
                 "value": value_formatted,
             }
         return submission_data_formatted
+
+    def get_render_data(
+        self, use_template: bool, template_variable_name: Union[str, None], token: str
+    ) -> Any:
+        """
+        Returns the render data for the pdf template.
+
+        use_template: boolean, whether to use a template for generating pdf.
+        template_variable_name: template variable file name for requests with
+        template variable payload.
+        token: token for the template parameters when using formio renderer.
+        Raw data will be passed to the template if the export is using any
+        form of template. Else default formio renderer will be used where
+        only the formio render parameters will be passed to the template.
+        """
+        if not use_template:
+            return self.__get_template_params(token=token)
+        if template_variable_name:
+            return self.__read_json(template_variable_name)
+
+        submission_data = self.__get_submission_data()
+        form_data = self.__get_form_data()
+
+        return self.__get_formatted_data(form_data, submission_data)
 
     @staticmethod
     def b64decode(template: str) -> str:
@@ -297,7 +333,8 @@ class PDFService:
         try:
             path = self.__get_template_path()
             os.remove(f"{path}/{file_name}")
-        except BaseException as _:  # pylint: disable=broad-except
+        except BaseException as err:  # pylint: disable=broad-except
+            current_app.logger.error(err)
             current_app.logger.error(
                 f"Failed to delete template:- {file_name} not found"
             )

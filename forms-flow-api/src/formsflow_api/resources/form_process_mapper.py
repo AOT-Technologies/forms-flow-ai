@@ -2,11 +2,14 @@
 
 import json
 from http import HTTPStatus
+import uuid
+
 
 from flask import current_app, request
 from flask_restx import Namespace, Resource
 from formsflow_api_utils.exceptions import BusinessException
 from formsflow_api_utils.services.external import FormioService
+from formsflow_api.services import FormVersionService
 from formsflow_api_utils.utils import (
     DESIGNER_GROUP,
     auth,
@@ -354,7 +357,7 @@ class FormResourceTaskVariablesbyApplicationId(Resource):
 
 
 @cors_preflight("POST,OPTIONS")
-@API.route("/form-create", methods=["POST", "OPTIONS"])
+@API.route("/form-create", methods=["POST", "PUT", "OPTIONS"])
 class FormioFormResource(Resource):
     """Resource for formio form creation."""
 
@@ -372,6 +375,9 @@ class FormioFormResource(Resource):
                     formio_service.create_form(data, form_io_token),
                     HTTPStatus.CREATED,
                 )
+                
+                FormVersionService.create_form_Verions(response.get("_id"))
+                
             else:
                 response, status = (
                     {
@@ -383,3 +389,44 @@ class FormioFormResource(Resource):
         except BusinessException as err:
             current_app.logger.warning(err.error)
             return err.error, err.status_code
+        
+    @staticmethod
+    @auth.require
+    @profiletime
+    def put():
+        """Formio form creation method."""
+        try:
+            data = request.get_json()
+            if auth.has_role([DESIGNER_GROUP]):
+                formio_service = FormioService()
+                form_io_token = formio_service.get_formio_access_token()
+                if data.get("newForm") and data.get("oldForm"):
+                    
+                    oldForm = data["oldForm"]
+                    del oldForm['_id']
+                    del oldForm['machineName']
+                    name_and_path = str(uuid.uuid1())
+                    oldForm['path'] = name_and_path
+                    oldForm["name"] = name_and_path
+                    
+                    response,status= formio_service.update_form(data["newForm"], form_io_token),HTTPStatus.OK
+                    form_history = formio_service.create_form(oldForm, form_io_token)
+                    
+                    FormVersionService.update_form_Verions(form_id=response.get("_id"), version_id=form_history.get("_id"), form_data=data)
+                    
+                elif data.get("newForm") and not data.get("oldForm"):
+                    response,status= formio_service.update_form(data["newForm"], form_io_token),HTTPStatus.OK
+                    FormVersionService.update_form_Verions(form_id=response.get("_id"), form_data=data)
+                else:
+                    response, status = (
+                    {
+                        "message": "Permission Denied",
+                    },
+                    HTTPStatus.FORBIDDEN,
+                )
+                       
+            return response, status
+        except BusinessException as err:
+            current_app.logger.warning(err.error)
+            return err.error, err.status_code
+

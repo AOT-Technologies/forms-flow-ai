@@ -1,4 +1,4 @@
-"""This exposes submission service."""
+"""This exposes form logs service."""
 from http import HTTPStatus
 
 

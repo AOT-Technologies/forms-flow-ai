@@ -10,10 +10,10 @@ from formsflow_api.services import FormlogService
 API = Namespace("FormLogs", description="Form logs")
 
 
-@cors_preflight("GET,PUT,DELETE,OPTIONS")
+@cors_preflight("GET, OPTIONS")
 @API.route("/<string:form_id>", methods=["GET", "OPTIONS"])
 class FormLogUpdateResource(Resource):
-    """To update the form logs."""
+    """To get the form logs."""
 
     @staticmethod
     @auth.require

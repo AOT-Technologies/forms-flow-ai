@@ -1,10 +1,14 @@
 package org.camunda.bpm.extension.hooks.rest.service.impl;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.DeserializationFeature;
-import com.fasterxml.jackson.databind.ObjectMapper;
+import java.util.ArrayList;
+import java.util.List;
+
+import javax.ws.rs.core.MediaType;
+import javax.ws.rs.core.Request;
+import javax.ws.rs.core.Response;
+import javax.ws.rs.core.Variant;
+
 import org.camunda.bpm.engine.ProcessEngine;
-import org.camunda.bpm.engine.impl.AbstractQuery;
 import org.camunda.bpm.engine.query.Query;
 import org.camunda.bpm.engine.rest.dto.AbstractQueryDto;
 import org.camunda.bpm.engine.rest.dto.task.TaskDto;
@@ -12,18 +16,14 @@ import org.camunda.bpm.engine.rest.exception.InvalidRequestException;
 import org.camunda.bpm.engine.rest.hal.Hal;
 import org.camunda.bpm.engine.rest.hal.task.HalTaskList;
 import org.camunda.bpm.engine.task.Task;
-import org.camunda.bpm.engine.task.TaskQuery;
 import org.camunda.bpm.extension.hooks.rest.dto.TaskQueryDto;
 import org.camunda.bpm.extension.hooks.rest.service.FilterRestService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import javax.ws.rs.core.MediaType;
-import javax.ws.rs.core.Request;
-import javax.ws.rs.core.Response;
-import javax.ws.rs.core.Variant;
-import java.util.ArrayList;
-import java.util.List;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.DeserializationFeature;
+import com.fasterxml.jackson.databind.ObjectMapper;
 
 public class FilterRestServiceImpl implements FilterRestService {
     public static final List<Variant> VARIANTS = Variant.mediaTypes(MediaType.APPLICATION_JSON_TYPE, Hal.APPLICATION_HAL_JSON_TYPE).add().build();
@@ -37,12 +37,12 @@ public class FilterRestServiceImpl implements FilterRestService {
     }
 
     @Override
-    public Object queryList(Request request, String extendingQuery, Integer firstResult, Integer maxResults) throws JsonProcessingException {
-        return executeQueryList(request, extendingQuery, firstResult, maxResults);
+    public Object queryList(Request request, TaskQueryDto filterQuery, Integer firstResult, Integer maxResults) throws JsonProcessingException {
+        return executeQueryList(request, filterQuery, firstResult, maxResults);
 
     }
 
-    private Object executeQueryList(Request request, String extendingQuery, Integer firstResult, Integer maxResults) throws JsonProcessingException {
+    private Object executeQueryList(Request request, TaskQueryDto filterQuery, Integer firstResult, Integer maxResults) throws JsonProcessingException {
         if (firstResult == null) {
             firstResult = 0;
         }
@@ -51,14 +51,15 @@ public class FilterRestServiceImpl implements FilterRestService {
         }
 //        ((TaskQuery) query).initializeFormKeys();
 //        ((AbstractQuery) query).enableMaxResultsLimit();
-        return executeList(request, executeQuery(extendingQuery), firstResult, maxResults);
+        return executeList(request, executeQuery(filterQuery.getCriteria()), firstResult, maxResults);
     }
 
-    private Query executeQuery(String extendingQuery) throws JsonProcessingException {
+    private Query executeQuery(org.camunda.bpm.engine.rest.dto.task.TaskQueryDto extendingQuery) throws JsonProcessingException {
         objectMapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
-        AbstractQueryDto<?> queryDto = objectMapper.readValue(extendingQuery, TaskQueryDto.class);
-        queryDto.setObjectMapper(objectMapper);
-        return queryDto.toQuery(processEngine);
+        
+//        AbstractQueryDto<?> queryDto = objectMapper.readValue(extendingQuery, TaskQueryDto.class);
+        extendingQuery.setObjectMapper(objectMapper);
+        return extendingQuery.toQuery(processEngine);
     }
 
     private Object executeList(Request request, Query query, Integer firstResult, Integer maxResults) {

@@ -59,8 +59,10 @@ camunda.bpm:
         form-action 'self';
         frame-ancestors 'none';
         object-src 'none'
-
-
+  generic-properties:
+    properties:
+      enableExpressionsInAdhocQueries: true
+      
 spring:
   datasource:
     jdbc-url : ${CAMUNDA_JDBC_URL:jdbc:h2:./camunda-db;DB_CLOSE_DELAY=-1;DB_CLOSE_ON_EXIT=FALSE}

@@ -124,6 +124,13 @@ class FormResourceList(Resource):
             mapper = FormProcessMapperService.create_mapper(dict_data)
             FormProcessMapperService.unpublish_previous_mapper(dict_data)
             response = mapper_schema.dump(mapper)
+            if dict_data.get("version") and dict_data.get("form_id"):
+                log_data = {
+                    **response,
+                    "modifiedBy": response["createdBy"],
+                    "modified": response["created"],
+                }
+                FormlogService.create_form_logs(log_data)
             response["taskVariable"] = json.loads(response["taskVariable"])
             return response, HTTPStatus.CREATED
         except BaseException as form_err:  # pylint: disable=broad-except

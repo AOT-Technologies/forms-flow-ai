@@ -5,7 +5,7 @@ from tests.utilities.base_test import get_token
 
 
 class TestFormResourceRenderPdf:
-    """Test suite for the export PDF endpoint."""
+    """Test suite for the render endpoint."""
 
     def test_render_template(self, app, client, jwt):
         """Assert that API /render when passed with token returns 200 status code."""
@@ -54,3 +54,11 @@ class TestFormResourceRenderPdf:
             )
             assert response.status_code == 500
             assert response.json == {"message": "Template variables not found!"}
+
+    def test_render_template_without_authentication(self, app, client):
+        """Assert that API /render when passed without auth token should return error."""
+        with app.app_context():
+            response = client.get(
+                "/form/624d71460d7e747ab1b85d73/submission/635f97be1b21a07fc44e05e2/render"
+            )
+            assert response.status_code == 401

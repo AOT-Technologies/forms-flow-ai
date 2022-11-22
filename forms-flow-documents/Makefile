@@ -74,6 +74,9 @@ lint: format pylint flake8 ## run all lint type scripts
 test: ## Unit testing
 	. venv/bin/activate && pytest
 
+coverage: ## Code coverage
+	. venv/bin/activate && pytest --cov=formsflow_documents tests/
+
 test-verbose: ## Unit testing with detailed error messages
 	. venv/bin/activate && pytest -vv
 

@@ -228,6 +228,8 @@ class PDFService:
             key_formatted = get_occurrences_and_values([form_data], value=key)[key][
                 "values"
             ][0].get("label")
+            if key_formatted is None:
+                continue
             value_formatted = value
             if value and self.is_camel_case(value):
                 value_formatted = get_occurrences_and_values([form_data], value=value)[

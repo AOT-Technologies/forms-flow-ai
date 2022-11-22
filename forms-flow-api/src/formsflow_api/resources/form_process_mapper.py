@@ -18,7 +18,12 @@ from formsflow_api.schemas import (
     FormProcessMapperListRequestSchema,
     FormProcessMapperSchema,
 )
-from formsflow_api.services import ApplicationService, FormProcessMapperService
+from formsflow_api.services import (
+    ApplicationService,
+    FormProcessMapperService,
+    FormlogService,
+)
+
 
 API = Namespace("Form", description="Form")
 
@@ -217,6 +222,7 @@ class FormResourceById(Resource):
                 form_process_mapper_id=mapper_id, data=dict_data
             )
             response = mapper_schema.dump(mapper)
+            FormlogService.create_form_logs(response)
             response["taskVariable"] = json.loads(response["taskVariable"])
             return (
                 response,

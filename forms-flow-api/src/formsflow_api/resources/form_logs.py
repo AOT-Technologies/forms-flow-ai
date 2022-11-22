@@ -12,7 +12,7 @@ API = Namespace("FormLogs", description="Form logs")
 
 @cors_preflight("GET, OPTIONS")
 @API.route("/<string:form_id>", methods=["GET", "OPTIONS"])
-class FormLogUpdateResource(Resource):
+class FormLogsResource(Resource):
     """To get the form logs."""
 
     @staticmethod

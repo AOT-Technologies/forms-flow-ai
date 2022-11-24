@@ -2,7 +2,7 @@
 from http import HTTPStatus
 
 from flask import current_app, request
-from flask_restx import Namespace, Resource
+from flask_restx import Namespace, Resource, fields
 from formsflow_api_utils.utils import auth, cors_preflight, profiletime
 from formsflow_api_utils.utils.enums import MetricsState
 from marshmallow.exceptions import ValidationError
@@ -14,20 +14,86 @@ from formsflow_api.services import ApplicationService as AS
 
 API = Namespace("Metrics", description="Application Metrics endpoint")
 
+metrics_model = API.model(
+    "Metrics",
+    {
+        "count": fields.Integer(),
+        "formName": fields.String(),
+        "mapperId": fields.Integer(),
+        "version": fields.String(),
+    },
+)
+
+metrics_list_model = API.model(
+    "Metrics List",
+    {
+        "applications": fields.List(fields.Nested(metrics_model)),
+        "limit": fields.Integer(),
+        "pageNo": fields.Integer(),
+        "totalCount": fields.Integer(),
+    },
+)
+
+metrics_detail_model = API.model(
+    "Metrics detail",
+    {
+        "applications": fields.List(
+            fields.Nested(
+                API.model(
+                    "Metrics detail mapper",
+                    {
+                        "applicationName": fields.String(),
+                        "count": fields.Integer(),
+                        "statusName": fields.String(),
+                    },
+                )
+            )
+        )
+    },
+)
+
 
 @cors_preflight("GET,OPTIONS")
 @API.route("", methods=["GET", "OPTIONS"])
 class AggregatedApplicationsResource(Resource):
-    """Resource for managing aggregated applications.
-
-    : from:- To retrieve applications based on from_date
-    : to:- To retrieve applications based on to_date
-    : orderBy:- Name of column to order by
-    """
+    """Resource for managing aggregated applications."""
 
     @staticmethod
     @auth.require
     @profiletime
+    @API.doc(
+        params={
+            "from": {
+                "in": "query",
+                "description": "From date for metrics filter.",
+                "default": "1",
+            },
+            "to": {
+                "in": "query",
+                "description": "To date for metrics filter.",
+                "default": "5",
+            },
+            "orderBy": {
+                "in": "query",
+                "description": "Specify field for sorting the results.",
+                "default": "id",
+            },
+            "sortOrder": {
+                "in": "query",
+                "description": "Specify sorting  order.",
+                "default": "desc",
+            },
+        }
+    )
+    @API.response(200, "OK:- Successful request.", model=metrics_list_model)
+    @API.response(
+        400,
+        "BAD_REQUEST:- Invalid request.",
+    )
+    @API.response(
+        401,
+        "UNAUTHORIZED:- Authorization header not provided or an invalid token passed.",
+    )
     def get():
         """Get aggregated applications."""
         try:
@@ -95,13 +161,44 @@ class AggregatedApplicationsResource(Resource):
 
 @cors_preflight("GET,OPTIONS")
 @API.route("/<int:mapper_id>", methods=["GET", "OPTIONS"])
-@API.doc(params={"mapper_id": "Metrics corresponding to FormProcess mapperId"})
 class AggregatedApplicationStatusResource(Resource):
     """Resource for managing aggregated applications."""
 
     @staticmethod
     @auth.require
     @profiletime
+    @API.doc(
+        params={
+            "from": {
+                "in": "query",
+                "description": "From date for metrics filter.",
+                "default": "1",
+            },
+            "to": {
+                "in": "query",
+                "description": "To date for metrics filter.",
+                "default": "5",
+            },
+            "orderBy": {
+                "in": "query",
+                "description": "Specify field for sorting the results.",
+                "default": "id",
+            },
+        }
+    )
+    @API.response(200, "OK:- Successful request.", model=metrics_detail_model)
+    @API.response(
+        400,
+        "BAD_REQUEST:- Invalid request.",
+    )
+    @API.response(
+        401,
+        "UNAUTHORIZED:- Authorization header not provided or an invalid token passed.",
+    )
+    @API.response(
+        403,
+        "FORBIDDEN:- Authorization will not help.",
+    )
     def get(mapper_id):
         """
         Get application metrics corresponding to a mapper_id.

@@ -3,7 +3,7 @@ from http import HTTPStatus
 
 import requests
 from flask import current_app, g, request
-from flask_restx import Namespace, Resource
+from flask_restx import Namespace, Resource, fields
 from formsflow_api_utils.utils import auth, cors_preflight, profiletime
 from marshmallow import ValidationError
 
@@ -12,6 +12,18 @@ from formsflow_api.services import KeycloakAdminAPIService, UserService
 from formsflow_api.services.factory import KeycloakFactory
 
 API = Namespace("user", description="Keycloak user APIs")
+
+user_list_model = API.model(
+    "UserList",
+    {
+        "id": fields.String(),
+        "email": fields.String(),
+        "firstName": fields.String(),
+        "lastName": fields.String(),
+    },
+)
+
+locale_put_model = API.model("Locale", {"locale": fields.String()})
 
 
 @cors_preflight("PUT, OPTIONS")
@@ -42,11 +54,14 @@ class KeycloakUserService(Resource):
 
     @auth.require
     @profiletime
+    @API.doc(body=locale_put_model)
+    @API.response(200, "OK:- Successful request.")
+    @API.response(
+        400,
+        "BAD_REQUEST:- Invalid request.",
+    )
     def put(self) -> dict:
-        """Update the user locale attribute.
-
-        : locale :- string representing the language value to update
-        """
+        """Update the user locale attribute."""
         try:
             user = self.__get_user_data()
             json_payload = request.get_json()
@@ -112,6 +127,24 @@ class KeycloakUsersList(Resource):
     @staticmethod
     @auth.require
     @profiletime
+    @API.doc(
+        params={
+            "memberOfGroup": {
+                "in": "query",
+                "description": "Group name for fetching users.",
+                "default": "formsflow/formsflow-reviewer",
+            }
+        }
+    )
+    @API.response(200, "OK:- Successful request.", model=[user_list_model])
+    @API.response(
+        401,
+        "UNAUTHORIZED:- Authorization header not provided or an invalid token passed.",
+    )
+    @API.response(
+        400,
+        "BAD_REQUEST:- Invalid request.",
+    )
     def get():
         """Get users in a group/role."""
         try:

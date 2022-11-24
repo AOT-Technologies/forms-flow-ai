@@ -3,7 +3,7 @@
 from http import HTTPStatus
 
 from flask import current_app, request
-from flask_restx import Namespace, Resource
+from flask_restx import Namespace, Resource, fields
 from formsflow_api_utils.exceptions import BusinessException
 from formsflow_api_utils.services.external import FormioService
 from formsflow_api_utils.utils import (
@@ -25,6 +25,69 @@ from formsflow_api.services import ApplicationService
 
 API = Namespace("Application", description="Application")
 
+application_create_model = API.model(
+    "ApplicationCreate",
+    {
+        "formId": fields.String(),
+        "submissionId": fields.String(),
+        "formUrl": fields.String(),
+        "webFormUrl": fields.String(),
+    },
+)
+
+application_external_create_model = API.model(
+    "ApplicationCreateExternal", {"formId": fields.String(), "data": fields.Raw()}
+)
+
+application_base_model = API.model(
+    "ApplicationCreateResponse",
+    {
+        "applicationStatus": fields.String(),
+        "created": fields.String(),
+        "createdBy": fields.String(),
+        "formId": fields.String(),
+        "formProcessMapperId": fields.String(),
+        "id": fields.Integer(),
+        "modified": fields.String(),
+        "modifiedBy": fields.String(),
+        "processInstanceId": fields.String(),
+        "submissionId": fields.String(),
+    },
+)
+
+application_model = API.inherit(
+    "Application",
+    application_base_model,
+    {
+        "applicationName": fields.String(),
+        "processKey": fields.String(),
+        "processName": fields.String(),
+        "processTenant": fields.String(),
+    },
+)
+
+application_list_model = API.model(
+    "ApplicationList",
+    {
+        "applications": fields.List(
+            fields.Nested(application_model, description="List of Applications.")
+        ),
+        "draftCount": fields.Integer(),
+        "totalCount": fields.Integer(),
+        "limit": fields.Integer(),
+        "pageNo": fields.Integer(),
+    },
+)
+
+application_update_model = API.model(
+    "ApplicationUpdate",
+    {"applicationStatus": fields.String(), "formUrl": fields.String()},
+)
+
+application_status_list_model = API.model(
+    "StatusList", {"applicationStatus": fields.List(fields.String())}
+)
+
 
 @cors_preflight("GET,POST,OPTIONS")
 @API.route("", methods=["GET", "OPTIONS"])
@@ -34,19 +97,61 @@ class ApplicationsResource(Resource):
     @staticmethod
     @auth.require
     @profiletime
+    @API.doc(
+        params={
+            "pageNo": {
+                "in": "query",
+                "description": "Page number for paginated results",
+                "default": "1",
+            },
+            "limit": {
+                "in": "query",
+                "description": "Limit for paginated results",
+                "default": "5",
+            },
+            "sortBy": {
+                "in": "query",
+                "description": "Specify field for sorting the results.",
+                "default": "id",
+            },
+            "sortOrder": {
+                "in": "query",
+                "description": "Specify sorting  order.",
+                "default": "desc",
+            },
+            "applicationName": {
+                "in": "query",
+                "description": "Filter resources by application name.",
+                "type": "string",
+            },
+            "id": {
+                "in": "query",
+                "description": "Filter resources by id.",
+                "type": "int",
+            },
+            "modifiedFrom": {
+                "in": "query",
+                "description": "Filter resources by modified from.",
+                "type": "string",
+            },
+            "modifiedTo": {
+                "in": "query",
+                "description": "Filter resources by modified to.",
+                "type": "string",
+            },
+        }
+    )
+    @API.response(200, "OK:- Successful request.", model=application_list_model)
+    @API.response(
+        400,
+        "BAD_REQUEST:- Invalid request.",
+    )
+    @API.response(
+        401,
+        "UNAUTHORIZED:- Authorization header not provided or an invalid token passed.",
+    )
     def get():  # pylint:disable=too-many-locals
-        """Get applications.
-
-        : Id:- List the application for particular id
-        : applicationName:- Retrieve application list based on application name
-        : applicationStatus:- List all applications based on status
-        : createdBy:- To retrieve applications based on createdby
-        : created:- Retrieve the applications based on date and time
-        : modified:- Retrieve the applications based on modified date and time
-        : pageNo:- To retrieve page number
-        : limit:- To retrieve limit for each page
-        : orderBy:- Name of column to order by (default: id)
-        """
+        """Get applications."""
         try:
             dict_data = ApplicationListRequestSchema().load(request.args) or {}
             page_no = dict_data.get("page_no")
@@ -146,11 +251,17 @@ class ApplicationResourceById(Resource):
     @staticmethod
     @auth.require
     @profiletime
+    @API.response(200, "OK:- Successful request.", model=application_model)
+    @API.response(
+        400,
+        "BAD_REQUEST:- Invalid request.",
+    )
+    @API.response(
+        401,
+        "UNAUTHORIZED:- Authorization header not provided or an invalid token passed.",
+    )
     def get(application_id: int):
-        """Get application by id.
-
-        : application_id:- List the application for particular application_id
-        """
+        """Get application by id."""
         try:
             if auth.has_role([REVIEWER_GROUP]):
                 (
@@ -185,11 +296,18 @@ class ApplicationResourceById(Resource):
     @staticmethod
     @auth.require
     @profiletime
+    @API.doc(body=application_update_model)
+    @API.response(200, "OK:- Successful request.")
+    @API.response(
+        400,
+        "BAD_REQUEST:- Invalid request.",
+    )
+    @API.response(
+        401,
+        "UNAUTHORIZED:- Authorization header not provided or an invalid token passed.",
+    )
     def put(application_id: int):
-        """Update application details.
-
-        : application_id:- Update the application for particular application_id
-        """
+        """Update application details."""
         application_json = request.get_json()
         try:
             application_schema = ApplicationUpdateSchema()
@@ -238,11 +356,31 @@ class ApplicationResourceByFormId(Resource):
     @staticmethod
     @auth.require
     @profiletime
+    @API.doc(
+        params={
+            "pageNo": {
+                "in": "query",
+                "description": "Page number for paginated results",
+                "default": "1",
+            },
+            "limit": {
+                "in": "query",
+                "description": "Limit for paginated results",
+                "default": "5",
+            },
+        }
+    )
+    @API.response(200, "OK:- Successful request.", model=application_list_model)
+    @API.response(
+        400,
+        "BAD_REQUEST:- Invalid request.",
+    )
+    @API.response(
+        401,
+        "UNAUTHORIZED:- Authorization header not provided or an invalid token passed.",
+    )
     def get(form_id: str):
-        """Get applications.
-
-        : form_id:- Retrieve application list based on formid
-        """
+        """Get applications by formId."""
         if request.args:
             dict_data = ApplicationListReqSchema().load(request.args)
             page_no = dict_data["page_no"]
@@ -301,17 +439,19 @@ class ApplicationResourcesByIds(Resource):
     @staticmethod
     @auth.require
     @profiletime
-    @API.doc(responses={
-        201: 'Application Created',
-        400: 'Validation Error'
-    })
+    @API.doc(body=application_create_model)
+    @API.response(201, "CREATED:- Successful request.", model=application_base_model)
+    @API.response(
+        400,
+        "BAD_REQUEST:- Invalid request.",
+    )
+    @API.response(
+        401,
+        "UNAUTHORIZED:- Authorization header not provided or an invalid token passed.",
+    )
     def post():
         """Post a new application using the request body.
 
-        : formId:- Unique Id for the corresponding form
-        : formUrl:- Unique URL for the submitted application
-        : submissionId:- Unique Id for the submitted form
-        : webFormUrl:- Unique Web URL for the submitted application
         e.g,
         ```
         {
@@ -369,6 +509,15 @@ class ApplicationResourceByApplicationStatus(Resource):
     @staticmethod
     @auth.require
     @profiletime
+    @API.response(200, "OK:- Successful request.", model=application_status_list_model)
+    @API.response(
+        400,
+        "BAD_REQUEST:- Invalid request.",
+    )
+    @API.response(
+        401,
+        "UNAUTHORIZED:- Authorization header not provided or an invalid token passed.",
+    )
     def get():
         """Method to get the application status lists."""
         try:
@@ -388,10 +537,16 @@ class ApplicationCreation(Resource):
     @staticmethod
     @auth.require
     @profiletime
-    @API.doc(responses={
-        201: 'Application Created',
-        400: 'Validation Error'
-    })
+    @API.doc(body=application_external_create_model)
+    @API.response(201, "CREATED:- Successful request.", model=application_base_model)
+    @API.response(
+        400,
+        "BAD_REQUEST:- Invalid request.",
+    )
+    @API.response(
+        401,
+        "UNAUTHORIZED:- Authorization header not provided or an invalid token passed.",
+    )
     def post():
         """Post a new application using the request body.
 

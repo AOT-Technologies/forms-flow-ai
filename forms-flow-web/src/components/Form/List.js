@@ -166,11 +166,18 @@ const List = React.memo((props) => {
     formType
   ]);
 
-
+   
+  const checkForm = ()=>{
+     return formCheckList.length === 1 ? t("Form") : t("Forms");
+    };
+  const checkResource = ()=>{
+     return  formCheckList.length === 1 ? t("Resource") : t("Resources");
+    };
+    
   const downloadForms = () => {
-    FileService.downloadFile({ forms: formCheckList }, () => {
+    FileService.downloadFile({ forms: formCheckList}, formType , () => {
       toast.success(
-        `${formCheckList.length} ${formCheckList.length === 1 ? t("Form") : t("Forms")
+        `${formCheckList.length} ${(formType === "form") ? checkForm() : checkResource()
         } ${t("Downloaded Successfully")}`
       );
       dispatch(setFormCheckList([]));

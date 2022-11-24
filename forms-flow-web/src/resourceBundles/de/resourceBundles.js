@@ -249,7 +249,8 @@ export const RESOURCE_BUNDLES_DE = {
   "Deployment Failed":"Bereitstellung fehlgeschlagen",
   "Process name(s) must not be empty":"Prozessname(n) dürfen nicht leer sein",
   "URL copied":"URL kopiert",
-  "Click Here to Copy":"Klicken Sie hier, um zu kopieren"
+  "Click Here to Copy":"Klicken Sie hier, um zu kopieren",
+  "Resources":"Bronnen"
 
 
 

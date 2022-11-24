@@ -1,11 +1,13 @@
 /* istanbul ignore file */
-const downloadFile = async (data = {}, callback) => {
+const downloadFile = async (data = {}, formTypes ,callback) => {
   const myData = data;
+  const formType = formTypes;
+  console.log("ddd",formType.formType);
   let fileName;
-  if (myData.forms.length === 1) {
+  if (myData.forms.length === 1 ) {
     fileName = `${myData.forms[0].title}-${new Date().toJSON()}`;
   } else {
-    fileName = `forms(${myData.forms.length})-${new Date().toJSON()}`;
+    fileName = `${formType === "form" ? 'forms' : 'resources'}(${myData.forms.length})-${new Date().toJSON()}`;
   }
   const json = JSON.stringify(myData);
   const blob = new Blob([json], { type: "application/json" });

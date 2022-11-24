@@ -8,13 +8,9 @@ import { createMemoryHistory } from "history";
 import configureStore from "redux-mock-store";
 import { mockstate } from "./constatnts-edit";
 import thunk from "redux-thunk";
-import { formUpdate } from "../../../../apiManager/services/FormServices";
+import * as Formservice from "../../../../apiManager/services/FormServices";
 
-jest.mock("react-formio", () => ({
-  ...jest.requireActual("react-formio"),
-  formUpdate: jest.fn(),
-}));
-
+ 
 const middlewares = [thunk];
 let store;
 let mockStore = configureStore(middlewares);
@@ -44,6 +40,7 @@ function renderWithRouterMatch(
 }
 
 it("should render the Edit component without breaking", async () => {
+  const formUpdate = jest.spyOn(Formservice, 'formUpdate');
   renderWithRouterMatch(Edit, {
     path: "/formflow/:formId/edit",
     route: "/formflow/123/edit",

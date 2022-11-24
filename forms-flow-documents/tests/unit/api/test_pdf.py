@@ -36,7 +36,7 @@ class TestFormResourceRenderPdf:
                 "/form/624d71460d7e747ab1b85d73/submission/635f97be1b21a07fc44e05e2/render?template_name=invalid.html",
                 headers=headers,
             )
-            assert response.status_code == 500
+            assert response.status_code == 400
             assert response.json == {"message": "Template not found!"}
 
     def test_render_template_invalid_template_variable(self, app, client, jwt):
@@ -52,7 +52,7 @@ class TestFormResourceRenderPdf:
                 "/form/624d71460d7e747ab1b85d73/submission/635f97be1b21a07fc44e05e2/render?template_variable=invalid.html",
                 headers=headers,
             )
-            assert response.status_code == 500
+            assert response.status_code == 400
             assert response.json == {"message": "Template variables not found!"}
 
     def test_render_template_without_authentication(self, app, client):

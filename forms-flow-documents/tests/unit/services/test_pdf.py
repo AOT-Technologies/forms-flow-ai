@@ -1,6 +1,5 @@
 """Test suite for pdf service module."""
-import pytest
-from formsflow_api_utils.exceptions import BusinessException
+import pytest  # noqa
 
 from src.formsflow_documents.services import PDFService
 from tests.utilities import get_test_template
@@ -73,12 +72,3 @@ class TestPDFService:
                 service.delete_template("__invalid")
             except BaseException as err:
                 assert False, f"raised Exception {err}"
-
-    def test_b64decode_for_invalid_input(self, app):
-        """Test b64decode method to raise exception for nvalid input."""
-        with app.app_context():
-            service = PDFService(form_id="1234", submission_id="1234567")
-            with pytest.raises(TypeError):
-                service.b64decode()
-            with pytest.raises(BusinessException):
-                service.b64decode("+-")

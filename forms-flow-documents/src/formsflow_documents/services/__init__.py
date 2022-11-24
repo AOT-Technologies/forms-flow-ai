@@ -1,3 +1,3 @@
-"""PDF export helper modules."""
+"""Service layer for Document generation."""
 
 from .pdf import PDFService

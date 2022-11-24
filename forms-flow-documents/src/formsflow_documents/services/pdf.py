@@ -1,21 +1,18 @@
 """Helper module for PDF export."""
-import base64
 import json
 import os
 import urllib.parse
 import uuid
-from http import HTTPStatus
 from typing import Any, Tuple, Union
 
 import requests
 from flask import current_app
-from formsflow_api_utils.exceptions import BusinessException
 from formsflow_api_utils.services import FormioService
 from formsflow_api_utils.utils import HTTP_TIMEOUT
 from formsflow_api_utils.utils.pdf import get_pdf_from_html, pdf_response
 from nested_lookup import get_occurrences_and_values
 
-from formsflow_documents.filters import is_b64image
+from formsflow_documents.utils import DocUtils
 
 
 class PDFService:
@@ -185,17 +182,6 @@ class PDFService:
             file.close()
             return data
 
-    @staticmethod
-    def url_decode(template: str) -> str:
-        """Decodes the url encoded payload with utf-8 charset."""
-        try:
-            return urllib.parse.unquote(template)
-        except Exception as err:
-            current_app.logger.error(err)
-            raise BusinessException(
-                {"message": "URL decode failed!"}, HTTPStatus.BAD_REQUEST
-            ) from err
-
     def get_render_status(
         self, token: str, template_name: Union[str, None] = None
     ) -> int:
@@ -207,20 +193,6 @@ class PDFService:
         )
         return res.status_code
 
-    @staticmethod
-    def is_camel_case(string_val: str) -> bool:
-        """Checks if the given string is camelcase or not."""
-        if not isinstance(string_val, str) or is_b64image(string_val):
-            return False
-        string_val = string_val[1:]
-        if " " in string_val:
-            return False
-        return (
-            string_val != string_val.lower()
-            and string_val != string_val.upper()
-            and "_" not in string_val
-        )
-
     def __get_formatted_data(self, form_data, submission_data):
         """Returns the presentable data from the submission data."""
         submission_data_formatted = {"form": {"form": form_data, "data": {}}}
@@ -231,7 +203,7 @@ class PDFService:
             if key_formatted is None:
                 continue
             value_formatted = value
-            if value and self.is_camel_case(value):
+            if value and DocUtils.is_camel_case(value):
                 value_formatted = get_occurrences_and_values([form_data], value=value)[
                     value
                 ]["values"]
@@ -270,22 +242,6 @@ class PDFService:
 
         return self.__get_formatted_data(form_data, submission_data)
 
-    @staticmethod
-    def b64decode(template: str) -> str:
-        """
-        Decodes the base64 encoded payload with utf-8 charset.
-
-        template: base64 encoded data, the data should be properly
-        url decoded if payload is sent through url.
-        """
-        try:
-            return base64.b64decode(template).decode("utf-8")
-        except Exception as err:
-            current_app.logger.error(err)
-            raise BusinessException(
-                {"message": "Failed to decode template!"}, HTTPStatus.BAD_REQUEST
-            ) from err
-
     def __write_to_file(
         self, template_name: str, content: Union[str, dict], is_json: bool = False
     ) -> None:
@@ -310,7 +266,7 @@ class PDFService:
         template_var_name = (
             self.__generate_template_variables_name() if template_var else None
         )
-        decoded_template = self.b64decode(template)
+        decoded_template = DocUtils.b64decode(template)
         self.__write_to_file(template_name, content=decoded_template)
         if template_var:
             self.__write_to_file(template_var_name, content=template_var, is_json=True)

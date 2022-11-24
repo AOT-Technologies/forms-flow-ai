@@ -8,7 +8,7 @@ def is_b64image(value: str) -> bool:
     is_image = False
 
     if "data:image" not in value:
-        if "iVBORw0KGg" in value or "/9j/4" in value:
+        if any(substr in value for substr in ("iVBORw0KGg", "/9j/4")):
             is_image = True
     else:
         is_image = True

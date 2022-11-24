@@ -659,3 +659,7 @@ a{
 .btn-wizard-nav-submit, .btn-wizard-nav-next, .btn-wizard-nav-previous{
   margin-left:5px;
 }
+.formio-form {
+  position: relative;
+  min-height: 100vh;
+}

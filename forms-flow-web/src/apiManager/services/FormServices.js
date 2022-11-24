@@ -25,6 +25,11 @@ export const formCreate = (formData, ...rest) => {
     });
 };
 
+export const formUpdate = (form_id,formData) => {
+  return httpPUTRequest(`${API.FORM_UPDATE}/${form_id}`, formData);
+};
+
+
 export const postCustomSubmission = (data, formId, isPublic, ...rest) => {
   const done = rest.length ? rest[0] : () => {};
   const url = isPublic ? API.PUBLIC_CUSTOM_SUBMISSION : API.CUSTOM_SUBMISSION;

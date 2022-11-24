@@ -383,3 +383,35 @@ class FormioFormResource(Resource):
         except BusinessException as err:
             current_app.logger.warning(err.error)
             return err.error, err.status_code
+
+
+@cors_preflight("PUT,OPTIONS")
+@API.route("/form-update/<string:form_id>", methods=["PUT", "OPTIONS"])
+class FormioFormUpdateResource(Resource):
+    """Resource for formio form Update."""
+
+    @staticmethod
+    @auth.require
+    @profiletime
+    def put(form_id):
+        """Formio form update method."""
+        try:
+            data = request.get_json()
+            if auth.has_role([DESIGNER_GROUP]):
+                formio_service = FormioService()
+                form_io_token = formio_service.get_formio_access_token()
+                response, status = (
+                    formio_service.update_form(form_id, data, form_io_token),
+                    HTTPStatus.OK,
+                )
+            else:
+                response, status = (
+                    {
+                        "message": "Permission Denied",
+                    },
+                    HTTPStatus.FORBIDDEN,
+                )
+            return response, status
+        except BusinessException as err:
+            current_app.logger.warning(err.error)
+            return err.error, err.status_code

@@ -8,11 +8,11 @@ import { createMemoryHistory } from "history";
 import configureStore from "redux-mock-store";
 import { mockstate } from "./constatnts-edit";
 import thunk from "redux-thunk";
-import { saveForm } from "react-formio";
+import { formUpdate } from "../../../../apiManager/services/FormServices";
 
 jest.mock("react-formio", () => ({
   ...jest.requireActual("react-formio"),
-  saveForm: jest.fn(),
+  formUpdate: jest.fn(),
 }));
 
 const middlewares = [thunk];
@@ -52,5 +52,5 @@ it("should render the Edit component without breaking", async () => {
   expect(screen.getByText("Save Form")).toBeInTheDocument();
   const savebtn = screen.getByText("Save Form");
   fireEvent.click(savebtn);
-  expect(saveForm).toHaveBeenCalled();
+  expect(formUpdate).toHaveBeenCalled();
 });

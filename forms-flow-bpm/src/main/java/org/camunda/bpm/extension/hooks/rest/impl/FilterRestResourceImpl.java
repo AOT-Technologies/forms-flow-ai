@@ -1,30 +1,55 @@
 package org.camunda.bpm.extension.hooks.rest.impl;
 
-import javax.ws.rs.core.Request;
-
+import org.camunda.bpm.engine.rest.FilterRestService;
+import org.camunda.bpm.engine.rest.dto.CountResultDto;
+import org.camunda.bpm.engine.rest.dto.runtime.FilterDto;
 import org.camunda.bpm.extension.hooks.rest.FilterRestResource;
-import org.camunda.bpm.extension.hooks.rest.dto.TaskQueryDto;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.stereotype.Component;
+import org.springframework.hateoas.EntityModel;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
+import javax.ws.rs.core.Request;
+import javax.ws.rs.core.UriInfo;
+import java.util.List;
 
-@Component
+import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
+import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
+
+@Deprecated
 public class FilterRestResourceImpl implements FilterRestResource {
 
     private static final Logger LOG = LoggerFactory.getLogger(FilterRestResourceImpl.class);
 
-    private final org.camunda.bpm.extension.hooks.rest.service.FilterRestService restService;
+    private final FilterRestService restService;
 
-    public FilterRestResourceImpl(org.camunda.bpm.extension.hooks.rest.service.FilterRestService filterRestService) {
+    public FilterRestResourceImpl(FilterRestService filterRestService) {
         restService = filterRestService;
     }
 
+    @Deprecated
     @Override
-    public Object queryList(Request request, TaskQueryDto extendingQuery, Integer firstResult, Integer maxResults) throws JsonProcessingException {
-        return restService.queryList(request, extendingQuery, firstResult, maxResults);
+    public List<FilterDto> getFilters(UriInfo uriInfo, Boolean itemCount, Integer firstResult, Integer maxResults) {
+        return restService.getFilters(uriInfo, itemCount, firstResult, maxResults);
     }
 
+    @Deprecated
+    @Override
+    public Object executeList(Request request, Integer firstResult, Integer maxResults, String id) {
+        return restService.getFilter(id).executeList(request, firstResult, maxResults);
 
+    }
+
+    @Deprecated
+    @Override
+    public Object queryList(Request request, String extendingQuery, Integer firstResult, Integer maxResults, String id) {
+        return restService.getFilter(id).queryList(request, extendingQuery, firstResult, maxResults);
+
+    }
+
+    @Deprecated
+    @Override
+    public EntityModel<CountResultDto> executeCount(String id) {
+        CountResultDto dto = restService.getFilter(id).executeCount();
+        return EntityModel.of(dto, linkTo(methodOn(FilterRestResourceImpl.class).executeCount(id)).withSelfRel().withSelfRel());
+    }
 }

@@ -1,13 +1,8 @@
 package org.camunda.bpm.extension.hooks.rest.service.impl;
 
-import java.util.ArrayList;
-import java.util.List;
-
-import javax.ws.rs.core.MediaType;
-import javax.ws.rs.core.Request;
-import javax.ws.rs.core.Response;
-import javax.ws.rs.core.Variant;
-
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.DeserializationFeature;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.camunda.bpm.engine.ProcessEngine;
 import org.camunda.bpm.engine.query.Query;
 import org.camunda.bpm.engine.rest.dto.task.TaskDto;
@@ -16,23 +11,26 @@ import org.camunda.bpm.engine.rest.hal.Hal;
 import org.camunda.bpm.engine.rest.hal.task.HalTaskList;
 import org.camunda.bpm.engine.task.Task;
 import org.camunda.bpm.extension.hooks.rest.dto.TaskQueryDto;
-import org.camunda.bpm.extension.hooks.rest.service.FilterRestService;
+import org.camunda.bpm.extension.hooks.rest.service.TaskFilterRestService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.DeserializationFeature;
-import com.fasterxml.jackson.databind.ObjectMapper;
+import javax.ws.rs.core.MediaType;
+import javax.ws.rs.core.Request;
+import javax.ws.rs.core.Response;
+import javax.ws.rs.core.Variant;
+import java.util.ArrayList;
+import java.util.List;
 
-public class FilterRestServiceImpl implements FilterRestService {
-    
-    private static final Logger LOGGER = LoggerFactory.getLogger(FilterRestServiceImpl.class);
-    
+public class TaskFilterRestServiceImpl implements TaskFilterRestService {
+
+    private static final Logger LOGGER = LoggerFactory.getLogger(TaskFilterRestServiceImpl.class);
+
     public static final List<Variant> VARIANTS = Variant.mediaTypes(MediaType.APPLICATION_JSON_TYPE, Hal.APPLICATION_HAL_JSON_TYPE).add().build();
     private final ObjectMapper objectMapper;
     private final ProcessEngine processEngine;
 
-    public FilterRestServiceImpl(ObjectMapper objectMapper, ProcessEngine processEngine) {
+    public TaskFilterRestServiceImpl(ObjectMapper objectMapper, ProcessEngine processEngine) {
         this.objectMapper = objectMapper;
         this.processEngine = processEngine;
     }
@@ -53,13 +51,21 @@ public class FilterRestServiceImpl implements FilterRestService {
         return executeList(request, executeQuery(filterQuery.getCriteria()), firstResult, maxResults);
     }
 
-    private Query executeQuery(org.camunda.bpm.engine.rest.dto.task.TaskQueryDto extendingQuery) throws JsonProcessingException {
+    private Query<?, ?> executeQuery(org.camunda.bpm.engine.rest.dto.task.TaskQueryDto extendingQuery) throws JsonProcessingException {
         objectMapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
         extendingQuery.setObjectMapper(objectMapper);
         return extendingQuery.toQuery(processEngine);
     }
 
-    private Object executeList(Request request, Query query, Integer firstResult, Integer maxResults) {
+    /**
+     * This method validate the request media type and returns the tasklist
+     *
+     * @param query
+     * @param firstResult
+     * @param maxResults
+     * @return
+     */
+    private Object executeList(Request request, Query<?, ?> query, Integer firstResult, Integer maxResults) {
         Variant variant = request.selectVariant(VARIANTS);
         if (variant != null) {
             if (MediaType.APPLICATION_JSON_TYPE.equals(variant.getMediaType())) {
@@ -71,12 +77,27 @@ public class FilterRestServiceImpl implements FilterRestService {
         throw new InvalidRequestException(Response.Status.NOT_ACCEPTABLE, "No acceptable content-type found");
     }
 
-    private Object queryHalList(Query query, Integer firstResult, Integer maxResults) {
-        List<Task> entities = query.listPage(firstResult, maxResults);
+    /**
+     * This method returns the Hal Tasklist
+     *
+     * @param query
+     * @param firstResult
+     * @param maxResults
+     * @return
+     */
+    @SuppressWarnings("unchecked")
+	private Object queryHalList(Query<?, ?> query, Integer firstResult, Integer maxResults) {
+        List<Task> entities = (List<Task>) query.listPage(firstResult, maxResults);
         return HalTaskList.generate(entities, query.count(), processEngine);
     }
 
-    public List<Object> queryJsonList(Query query) {
+    /**
+     * This method returns json list of Task.
+     *
+     * @param query
+     * @return
+     */
+    public List<Object> queryJsonList(Query<?, ?> query) {
         List<?> entities = query.list();
         List<Object> dtoList = new ArrayList<>();
         for (Object entity : entities) {
@@ -86,4 +107,3 @@ public class FilterRestServiceImpl implements FilterRestService {
     }
 
 }
-

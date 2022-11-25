@@ -46,7 +46,7 @@ public class FormsFlowV1RestServiceImpl {
 
     @Path(FilterRestResource.PATH)
     public FilterRestResource getFilterResource() {
-        return new FilterRestResourceImpl(serviceFinder.getFilterRestService());
+        return new FilterRestResourceImpl(processEngineService.getFilterRestService());
     }
 
     @Path(MessageRestResource.PATH)
@@ -67,6 +67,11 @@ public class FormsFlowV1RestServiceImpl {
     @Path(VersionRestResource.PATH)
     public VersionRestResource getVersion() {
         return new VersionRestResourceImpl(processEngineService.getVersionRestService());
+    }
+
+    @Path(TaskFilterRestResource.PATH)
+    public TaskFilterRestResource getTaskFilterResource() {
+        return new TaskFilterRestResourceImpl(serviceFinder.getTaskFilterRestService());
     }
 
 }

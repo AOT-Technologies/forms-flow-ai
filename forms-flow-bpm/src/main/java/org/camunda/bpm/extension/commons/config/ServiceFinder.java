@@ -5,9 +5,9 @@ import org.camunda.bpm.engine.AuthorizationService;
 import org.camunda.bpm.engine.ProcessEngine;
 import org.camunda.bpm.engine.RepositoryService;
 import org.camunda.bpm.extension.hooks.rest.service.AdminRestService;
-import org.camunda.bpm.extension.hooks.rest.service.FilterRestService;
+import org.camunda.bpm.extension.hooks.rest.service.TaskFilterRestService;
 import org.camunda.bpm.extension.hooks.rest.service.impl.AdminRestServiceImpl;
-import org.camunda.bpm.extension.hooks.rest.service.impl.FilterRestServiceImpl;
+import org.camunda.bpm.extension.hooks.rest.service.impl.TaskFilterRestServiceImpl;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.stereotype.Component;
@@ -16,14 +16,14 @@ import org.springframework.stereotype.Component;
 public class ServiceFinder {
 
     private AdminRestService adminRestService;
-    private FilterRestService filterRestService;
+    private TaskFilterRestService taskFilterRestService;
 
     public AdminRestService getAdminRestService() {
         return adminRestService;
     }
 
-    public FilterRestService getFilterRestService() {
-        return filterRestService;
+    public TaskFilterRestService getTaskFilterRestService() {
+        return taskFilterRestService;
     }
 
     @Bean
@@ -36,8 +36,8 @@ public class ServiceFinder {
     }
 
     @Bean
-    public FilterRestService getFilterRestService(ObjectMapper objectMapper, ProcessEngine processEngine) {
-        filterRestService =  new FilterRestServiceImpl(objectMapper, processEngine);
-        return filterRestService;
+    public TaskFilterRestService getTaskFilterRestService(ObjectMapper objectMapper, ProcessEngine processEngine) {
+        taskFilterRestService =  new TaskFilterRestServiceImpl(objectMapper, processEngine);
+        return taskFilterRestService;
     }
 }

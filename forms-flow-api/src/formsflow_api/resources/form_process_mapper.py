@@ -354,31 +354,24 @@ class FormResourceTaskVariablesbyApplicationId(Resource):
 
 
 @cors_preflight("POST,OPTIONS")
-@API.route("/form-create", methods=["POST", "OPTIONS"])
+@API.route("/formio", methods=["POST", "OPTIONS"])
 class FormioFormResource(Resource):
     """Resource for formio form creation."""
 
     @staticmethod
     @auth.require
+    @auth.has_one_of_roles([DESIGNER_GROUP])
     @profiletime
     def post():
         """Formio form creation method."""
         try:
             data = request.get_json()
-            if auth.has_role([DESIGNER_GROUP]):
-                formio_service = FormioService()
-                form_io_token = formio_service.get_formio_access_token()
-                response, status = (
-                    formio_service.create_form(data, form_io_token),
-                    HTTPStatus.CREATED,
-                )
-            else:
-                response, status = (
-                    {
-                        "message": "Permission Denied",
-                    },
-                    HTTPStatus.FORBIDDEN,
-                )
+            formio_service = FormioService()
+            form_io_token = formio_service.get_formio_access_token()
+            response, status = (
+                formio_service.create_form(data, form_io_token),
+                HTTPStatus.CREATED,
+            )
             return response, status
         except BusinessException as err:
             current_app.logger.warning(err.error)
@@ -386,31 +379,24 @@ class FormioFormResource(Resource):
 
 
 @cors_preflight("PUT,OPTIONS")
-@API.route("/form-update/<string:form_id>", methods=["PUT", "OPTIONS"])
+@API.route("/formio/<string:form_id>", methods=["PUT", "OPTIONS"])
 class FormioFormUpdateResource(Resource):
     """Resource for formio form Update."""
 
     @staticmethod
     @auth.require
+    @auth.has_role([DESIGNER_GROUP])
     @profiletime
-    def put(form_id):
+    def put(form_id: str):
         """Formio form update method."""
         try:
             data = request.get_json()
-            if auth.has_role([DESIGNER_GROUP]):
-                formio_service = FormioService()
-                form_io_token = formio_service.get_formio_access_token()
-                response, status = (
-                    formio_service.update_form(form_id, data, form_io_token),
-                    HTTPStatus.OK,
-                )
-            else:
-                response, status = (
-                    {
-                        "message": "Permission Denied",
-                    },
-                    HTTPStatus.FORBIDDEN,
-                )
+            formio_service = FormioService()
+            form_io_token = formio_service.get_formio_access_token()
+            response, status = (
+                formio_service.update_form(form_id, data, form_io_token),
+                HTTPStatus.OK,
+            )
             return response, status
         except BusinessException as err:
             current_app.logger.warning(err.error)

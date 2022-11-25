@@ -385,7 +385,7 @@ class FormioFormUpdateResource(Resource):
 
     @staticmethod
     @auth.require
-    @auth.has_role([DESIGNER_GROUP])
+    @auth.has_one_of_roles([DESIGNER_GROUP])
     @profiletime
     def put(form_id: str):
         """Formio form update method."""

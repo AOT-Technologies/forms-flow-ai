@@ -171,6 +171,14 @@ i.fa.fa-question-circle.text-muted {
   padding: 0.75rem 1.25rem;
   margin-bottom: 8px;
 }
+.form-view-wrapper{
+  min-height: 75vh;
+}
+.btn.signature-pad-refresh{
+  z-index: 99 !important;
+}
+
+
 .formio-error-wrapper,
 .has-error {
   color: red;
@@ -650,4 +658,8 @@ a{
 }
 .btn-wizard-nav-submit, .btn-wizard-nav-next, .btn-wizard-nav-previous{
   margin-left:5px;
+}
+.formio-form {
+  position: relative;
+  min-height: 100vh;
 }

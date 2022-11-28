@@ -81,14 +81,14 @@ const List = React.memo((props) => {
     (state) => state.formCheckList.searchFormLoading
   );
   const [showClearButton, setShowClearButton] = useState("");
-  const [isAscend, setIsAscending] = useState(false);
+  const [isAscend, setIsAscending] = useState(true);
   const [previousForms, setPreviousForms] = useState({});
   const searchText = useSelector((state) => state.bpmForms.searchText);
   const [searchTextInput, setSearchTextInput] = useState(searchText);
 
   const [isLoading, setIsLoading] = React.useState(false);
 
-   const query = useSelector((state) => state.forms.query);
+  const query = useSelector((state) => state.forms.query);
   const [formType, setFormType] = useState(query?.type);
 
   const isDesigner = userRoles.includes(STAFF_DESIGNER);
@@ -138,13 +138,11 @@ const List = React.memo((props) => {
       dispatch(setFormLoading(true));
     } else {
       dispatch(setBPMFormListLoading(true));
-      dispatch(setBpmFormSearch(""));
     }
   }, []);
 
   useEffect(() => {
     if (isDesigner) {
-
       setShowClearButton(searchText);
       let updatedQuery = { query: { ...query } };
       updatedQuery.query.title__regex = searchText;
@@ -214,27 +212,25 @@ const List = React.memo((props) => {
 
   };
   const onClear = () => {
-    dispatch(setFormSearchLoading(true));
     setSearchTextInput("");
     searchInputBox.current.value = "";
     setShowClearButton(false);
     handleSearch();
   };
-  const handleSort = () => {
-    dispatch(setBPMFormListPage(1));
-    dispatch(setFormSearchLoading(true));
-    setIsAscending(!isAscend);
+  useEffect(() => {
     let updatedQuery = { query: { ...query } };
     if (isDesigner) {
       updatedQuery = `${isAscend ? "" : "-"}title`;
       dispatch(setBPMFormListSort(updatedQuery));
     } else {
       const updatedQuery = isAscend ? 'asc' : "desc";
-
       dispatch(setBPMFormListSort(updatedQuery));
-
     }
-
+  }, [isAscend]);
+  const handleSort = () => {
+    setIsAscending(!isAscend);
+    dispatch(setBPMFormListPage(1));
+    dispatch(setFormSearchLoading(true));
   };
 
   const uploadFileContents = async (fileContent) => {
@@ -508,14 +504,14 @@ const List = React.memo((props) => {
                   </button>
                   {
                     isDesigner ? (
-                      <select className="form-control select" title="select form type" style={{maxWidth:"150px"}} onChange={(e)=>{setFormType(e.target.value);}} aria-label="Select Form Type">
-                        <option selected={formType === "form"}  value="form">Form</option>
+                      <select className="form-control select" title="select form type" style={{ maxWidth: "150px" }} onChange={(e) => { setFormType(e.target.value); }} aria-label="Select Form Type">
+                        <option selected={formType === "form"} value="form">Form</option>
                         <option selected={formType === "resource"} value="resource">Resource</option>
-                     </select>
+                      </select>
                     ) : ""
                   }
                 </div>
-                
+
               </div>
             </div>
             <ToolkitProvider

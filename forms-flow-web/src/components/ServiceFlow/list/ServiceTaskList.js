@@ -80,7 +80,7 @@ const ServiceFlowTaskList = React.memo(() => {
                 </div>
               </Row>
               <div className="font-size-16 d-flex justify-content-between">
-                <div className="col pl-0" style={{ maxWidth: "65%" }}>
+                <div className="pr-0" style={{ maxWidth: "65%" }}>
                   <span data-toggle="tooltip" title="Form Name">
                     {
                       getProcessDataObjectFromList(
@@ -146,6 +146,8 @@ const ServiceFlowTaskList = React.memo(() => {
               )}
             </div>
           ))}
+
+          <Row style={{justifyContent: "flex-end"}}>
           <div className="pagination-wrapper">
             <Pagination
               activePage={activePage}
@@ -157,6 +159,8 @@ const ServiceFlowTaskList = React.memo(() => {
               nextPageText=">"
             />
           </div>
+          </Row>
+
         </>
       );
     } else {

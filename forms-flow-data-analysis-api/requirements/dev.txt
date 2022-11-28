@@ -10,7 +10,7 @@ pytest-cov
 FreezeGun
 
 # Lint and code style
-flake8
+flake8==5.0.4
 flake8-blind-except
 flake8-debugger
 flake8-docstrings

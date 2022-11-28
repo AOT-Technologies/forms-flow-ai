@@ -247,7 +247,8 @@ export const RESOURCE_BUNDLES_EN = {
   "Deployment Failed":"Deployment Failed",
   "Process name(s) must not be empty":"Process name(s) must not be empty",
   "URL copied":"URL copied",
-  "Click Here to Copy":"Click Here to Copy"
+  "Click Here to Copy":"Click Here to Copy",
+  "Resources":"Resources"
 
 
 

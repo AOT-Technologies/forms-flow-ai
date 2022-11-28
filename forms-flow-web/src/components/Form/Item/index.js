@@ -1,6 +1,6 @@
 import { Route, Switch, Redirect, useParams } from "react-router-dom";
 import React, { useEffect } from "react";
-import { Formio, getForm } from "react-formio";
+import { Formio, getForm } from "@formio/react";
 import { useDispatch, useSelector } from "react-redux";
 import {
   STAFF_REVIEWER,

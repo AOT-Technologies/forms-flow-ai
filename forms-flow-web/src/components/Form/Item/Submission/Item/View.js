@@ -7,7 +7,7 @@ import {
   Form,
   selectError,
   Errors,
-} from "react-formio";
+} from "@formio/react";
 import { push } from "connected-react-router";
 import Loading from "../../../../../containers/Loading";
 import { setFormSubmissionLoading } from "../../../../../actions/formActions";

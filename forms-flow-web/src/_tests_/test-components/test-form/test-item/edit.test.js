@@ -8,10 +8,10 @@ import { createMemoryHistory } from "history";
 import configureStore from "redux-mock-store";
 import { mockstate } from "./constatnts-edit";
 import thunk from "redux-thunk";
-import { saveForm } from "react-formio";
+import { saveForm } from "@formio/react";
 
-jest.mock("react-formio", () => ({
-  ...jest.requireActual("react-formio"),
+jest.mock("@formio/react", () => ({
+  ...jest.requireActual("@formio/react"),
   saveForm: jest.fn(),
 }));
 

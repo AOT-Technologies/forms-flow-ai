@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useReducer } from "react";
-import { FormBuilder, Errors, Formio } from "react-formio";
+import { FormBuilder, Errors, Formio } from "@formio/react";
 import _set from "lodash/set";
 import _cloneDeep from "lodash/cloneDeep";
 import _camelCase from "lodash/camelCase";
@@ -21,7 +21,7 @@ import {
 import { addTenankey } from "../../helper/helper";
 import { formCreate } from "../../apiManager/services/FormServices";
 
-// reducer from react-formio code
+// reducer from @formio/react code
 const reducer = (form, { type, value }) => {
   const formCopy = _cloneDeep(form);
   switch (type) {

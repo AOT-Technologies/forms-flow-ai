@@ -2,7 +2,7 @@ import React from "react";
 
 import { Link } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
-import { selectRoot } from "react-formio";
+import { selectRoot } from "@formio/react";
 import { useLocation } from "react-router-dom";
 import createURLPathMatchExp from "../helper/regExp/pathMatch";
 import { MULTITENANCY_ENABLED } from "../constants/constants";

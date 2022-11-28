@@ -13,7 +13,7 @@ import {
   deleteForm,
   Formio,
   saveForm,
-} from "react-formio";
+} from "@formio/react";
 import Loading from "../../containers/Loading";
 import {
   MULTITENANCY_ENABLED,

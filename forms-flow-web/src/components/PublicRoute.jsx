@@ -1,7 +1,7 @@
 import React from "react";
 import { Route } from "react-router-dom";
 import { connect } from "react-redux";
-import { getForm } from "react-formio";
+import { getForm } from "@formio/react";
 import View from "../components/Form/Item/View";
 import NavBar from "../containers/NavBar";
 import NotFound from "./NotFound";

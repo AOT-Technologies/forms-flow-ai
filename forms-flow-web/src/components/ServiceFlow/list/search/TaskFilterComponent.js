@@ -121,7 +121,7 @@ const TaskFilterComponent = React.memo(({ totalTasks }) => {
             {showFilterItems ? (
               <TaskFilterDropdown onFilterSelect={setFilter} />
             ) : null}
-            <span dat-title={t("Total number of results")}>{totalTasks}</span>
+            <span data-title={t("Total number of results")}>{totalTasks}</span>
           </div>
         </div>
         <TaskIgnoreCaseComponent />

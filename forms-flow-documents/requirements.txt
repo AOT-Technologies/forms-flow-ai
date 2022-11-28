@@ -41,4 +41,5 @@ rsa==4.9
 six==1.16.0
 urllib3==1.26.11
 zipp==3.8.1
+nested-lookup==0.2.25
 git+https://github.com/AOT-Technologies/forms-flow-ai.git@develop#egg=formsflow_api_utils&subdirectory=forms-flow-api-utils

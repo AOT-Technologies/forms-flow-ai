@@ -23,3 +23,4 @@ from formsflow_api.schemas.keycloak_groups import KeycloakDashboardGroupSchema
 from formsflow_api.schemas.user import UserlocaleReqSchema
 
 from .process import ProcessListSchema
+from .form_history import FormHistorySchema

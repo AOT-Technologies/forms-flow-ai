@@ -12,7 +12,7 @@ class FormHistory(ApplicationAuditDateTimeMixin, BaseModel, db.Model):
 
     id = db.Column(db.Integer, primary_key=True)
     parent_form_id = db.Column(db.String, index=True, nullable=False)
-    clone_id = db.Column(db.String, nullable=False)
+    cloned_form_id = db.Column(db.String, nullable=False)
     created_by = db.Column(db.String, nullable=False)
     
     @classmethod
@@ -27,7 +27,7 @@ class FormHistory(ApplicationAuditDateTimeMixin, BaseModel, db.Model):
         return None
     
     @classmethod
-    def fetch_history_by_parent_id(cls, parent_id) -> List['FormHistory']:
+    def fetch_histories_by_parent_id(cls, parent_id) -> List['FormHistory']:
         assert parent_id is not None
         return cls.query.filter(cls.id == parent_id).all()
     

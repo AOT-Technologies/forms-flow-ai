@@ -16,4 +16,5 @@ markupsafe
 PyJWT
 selenium==3.141.0
 selenium-wire==3.0.0
+nested-lookup
 git+https://github.com/AOT-Technologies/forms-flow-ai.git@develop#egg=formsflow_api_utils&subdirectory=forms-flow-api-utils

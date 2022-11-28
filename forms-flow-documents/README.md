@@ -1,20 +1,153 @@
-# formsflow.ai EXPORT API
+# formsflow.ai Documents API
 
 ![Python](https://img.shields.io/badge/python-3.9-blue) ![Flask](https://img.shields.io/badge/Flask-2.1.3-blue) ![postgres](https://img.shields.io/badge/postgres-11.0-blue)
 [![Imports: isort](https://img.shields.io/badge/%20imports-isort-%231674b1?style=flat&labelColor=ef8336)](https://pycqa.github.io/isort/) [![Code style: black](https://img.shields.io/badge/code%20style-black-000000.svg)](https://github.com/psf/black)
 [![linting: pylint](https://img.shields.io/badge/linting-pylint-yellowgreen)](https://github.com/PyCQA/pylint)
 
 
-The goal of the document API is to provide generate pdf with form submission data. It is built using Python :snake: .
+The goal of the document API is to generate pdf with form submission data. It is built using Python :snake: .
 
 ## Table of Content
 
-1. [Prerequisites](#prerequisites)
-2. [Solution Setup](#solution-setup)
-   * [Step 1 : Installation](#installation)
-   * [Step 2 : Environment Configuration](#environment-configuration)
-   * [Step 3 : Running the Application](#running-the-application)
-   * [Step 4 : Verify the Application Status](#verify-the-application-status)
+- [formsflow.ai Documents API](#formsflowai-documents-api)
+  - [Table of Content](#table-of-content)
+  - [Usage guidlines](#usage-guidlines)
+    - [Generate default PDF](#generate-default-pdf)
+    - [Generate PDFs with generic custom theme](#generate-pdfs-with-generic-custom-theme)
+    - [Generate PDFs with dedicated custom theme](#generate-pdfs-with-dedicated-custom-theme)
+  - [Prerequisites](#prerequisites)
+  - [Solution Setup](#solution-setup)
+    - [Installation](#installation)
+    - [Keycloak Setup](#keycloak-setup)
+    - [Environment Configuration](#environment-configuration)
+    - [Running the Application](#running-the-application)
+      - [To Stop the Application](#to-stop-the-application)
+    - [Verify the Application Status](#verify-the-application-status)
+
+## Usage guidlines
+
+The document API provides a POST endpoint which supports custom themed templates for the PDF.
+
+`{FORMSFLOW_DOC_API_URL}/form/{formId}/submission/{submissionId}/export/pdf`
+
+### Generate default PDF 
+
+The document API will use the default theme when no template is passed. The default theme 
+will be similar to the theme used in the application UI.
+
+example request body
+```
+{}
+```
+
+### Generate PDFs with generic custom theme
+
+The document API accept `template` attribute from the request body.
+The expected value for the template attribute is a base64 encoded [jinja](https://jinja.palletsprojects.com/en/3.1.x/) template.
+When using a generic custom theme the body should not contain any other attributes like `templateVars` which will force 
+the API to operate on  [dedicated custom theme mode](#generate-pdfs-with-dedicated-custom-theme)
+
+For flexibility when using this mode, the template designer can expect `form` object which contains both form and submission data.
+TODO: More details on form object
+
+When designing a custom jinja template the following code blocks are required
+```
+{% extends "template.html" %} <!-- Required -->
+{% block links %} <!-- Required -->
+   <!-- 
+   This block will be placed as the child of <head> tag in the base template
+   This block is ideal for <style> and <link> tags
+    -->
+{% endblock %} <!-- Required -->
+{% block content %} <!-- Required -->
+  <!-- 
+   This block will be placed as the child of <body> tag in the base template
+   This block is ideal for the actual content.
+   All valid html tags that we typically use under <body> tag can be used here.
+   Additionally {{form}} object will contain all the data related to form and submission will be
+   available.
+    -->
+{% endblock %} <!-- Required -->
+
+```
+
+example
+
+```
+{% extends "template.html" %}
+{% block links %}
+  <style type="text/css">
+    .container{
+        margin-top: 10px;
+    }
+    .head{
+        text-align: center;
+        margin-bottom: 10px;
+    }
+    table {
+    font-family: arial, sans-serif;
+    border-collapse: collapse;
+    width: 100%;
+    }
+
+    td, th {
+    border: 1px solid #dddddd;
+    text-align: left;
+    padding: 15px;
+    }
+  </style>
+{% endblock %}
+{% block content %}
+  <div class="container">
+    <div class="head">
+        <h1>{{form.form.title}}</h1>
+    </div>
+    <table>
+      {% for item in form['data'] %}
+      <TR>
+         <TD>{{form['data'][item]['label']}}</TD>
+         {% if is_signature(form['data'][item]['value']) %}
+         <TD><img src="{{form['data'][item]['value']}}" /></TD>
+         {% else %}
+         <TD>{{form['data'][item]['value']}}</TD>
+         {% endif %}
+      </TR>
+      {% endfor %}
+      </table>
+  </div>
+{% endblock %}
+```
+
+The example template will produce a PDF in a tabular form
+
+[Preview](https://github.com/sreehari-aot/forms-flow-ai/blob/pdf-template/.images/export_pdf_template_1.pdf)
+
+
+TODO: Provide details for `form` object 
+
+TODO: Add usecases 
+
+
+### Generate PDFs with dedicated custom theme
+
+The document API supports `templateVars` attribute in request body which should contain
+all the key value pairs of dynamic content that should be used for PDF generation.
+
+Make sure the given `template` accept the given keys too.
+
+`templateVars` should be JSON friendly data.
+
+example 
+```
+"templateVars": {"invoiceNumber": 7723949372643552}
+
+```
+
+`template` should be base64 encoded form of the actual template.
+
+When using this mode the `template` doesn't have to follow any specific rules, except the 
+template should be valid jinja template.
+
 
 ## Prerequisites
 

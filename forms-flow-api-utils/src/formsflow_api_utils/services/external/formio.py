@@ -75,7 +75,7 @@ class FormioService:
         raise BusinessException(response.json(), HTTPStatus.BAD_REQUEST)
 
     def get_role_ids(self):
-        """Get request to forio API to retrieve role ids."""
+        """Get request to Formio API to retrieve role ids."""
         url = f"{self.base_url}/role"
         headers = {"x-jwt-token": self.get_formio_access_token()}
         current_app.logger.info("Role id fetching started...")

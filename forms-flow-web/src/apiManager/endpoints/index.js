@@ -38,7 +38,7 @@ const API = {
   UNCLAIM_BPM_TASK: `${BPM_BASE_URL_EXT}/v1/task/<task_id>/unclaim`,
   GET_BPM_PROCESS_LIST: `${BPM_BASE_URL_EXT}/v1/process-definition`,
   GET_DMN_PROCESS_LIST: `${BPM_BASE_URL_EXT}/v1/decision-definition`,
-  GET_BPM_USER_LIST: `${BPM_BASE_URL_EXT}/v1/user`,
+  GET_API_USER_LIST: `${WEB_BASE_URL}/user`,
   GET_BPM_FILTERS: `${BPM_BASE_URL_EXT}/v1/filter`,
   GET_BPM_TASK_LIST_WITH_FILTER: `${BPM_BASE_URL_EXT}/v1/filter/<filter_id>/list`,
   GET_BPM_TASK_LIST_COUNT_WITH_FILTER: `${BPM_BASE_URL_EXT}/v1/filter/<filter_id>/count`,

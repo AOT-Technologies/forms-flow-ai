@@ -126,7 +126,7 @@ export const fetchProcessDefinitionList = (...rest) => {
 export const fetchUserList = (...rest) => {
   const done = rest.length ? rest[0] : () => {};
   /*TODO search with query /user?lastNameLike=%${lastName}%&memberOfGroup=${group}*/
-  const getReviewerUserListApi = `${API.GET_BPM_USER_LIST}?memberOfGroup=${REVIEWER_GROUP}`;
+  const getReviewerUserListApi = `${API.GET_API_USER_LIST}?memberOfGroup=${REVIEWER_GROUP}`;
   return (dispatch) => {
     httpGETRequest(getReviewerUserListApi, {}, UserService.getToken())
       .then((res) => {
@@ -153,14 +153,14 @@ export const fetchUserListWithSearch = ({ searchType, query }, ...rest) => {
   const done = rest.length ? rest[0] : () => {};
   const paramData = { memberOfGroup: REVIEWER_GROUP };
   /*TODO search with query /user?lastNameLike=%${lastName}%&memberOfGroup=${group}*/
-  //let getReviewerUserListApi = `${API.GET_BPM_USER_LIST}?memberOfGroup=${REVIEWER_GROUP}`;
+  //let getReviewerUserListApi = `${API.GET_API_USER_LIST}?memberOfGroup=${REVIEWER_GROUP}`;
   if (searchType && query) {
     //getReviewerUserListApi = `${getReviewerUserListApi}&${searchType}=%${query||""}%`
     paramData[searchType] = `%${query}%`;
   }
 
   return (dispatch) => {
-    httpGETRequest(API.GET_BPM_USER_LIST, paramData, UserService.getToken())
+    httpGETRequest(API.GET_API_USER_LIST, paramData, UserService.getToken())
       .then((res) => {
         if (res.data) {
           dispatch(setBPMUserList(res.data));

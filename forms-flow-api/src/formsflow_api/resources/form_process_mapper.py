@@ -354,12 +354,11 @@ class FormResourceTaskVariablesbyApplicationId(Resource):
 
 
 @cors_preflight("POST,OPTIONS")
-@API.route("/formio", methods=["POST", "OPTIONS"])
+@API.route("/form-design", methods=["POST", "OPTIONS"])
 class FormioFormResource(Resource):
     """Resource for formio form creation."""
 
     @staticmethod
-    @auth.require
     @auth.has_one_of_roles([DESIGNER_GROUP])
     @profiletime
     def post():
@@ -379,12 +378,11 @@ class FormioFormResource(Resource):
 
 
 @cors_preflight("PUT,OPTIONS")
-@API.route("/formio/<string:form_id>", methods=["PUT", "OPTIONS"])
+@API.route("/form-design/<string:form_id>", methods=["PUT", "OPTIONS"])
 class FormioFormUpdateResource(Resource):
     """Resource for formio form Update."""
 
     @staticmethod
-    @auth.require
     @auth.has_one_of_roles([DESIGNER_GROUP])
     @profiletime
     def put(form_id: str):

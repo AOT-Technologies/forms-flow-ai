@@ -3,7 +3,7 @@
 from http import HTTPStatus
 
 from flask import current_app, request
-from flask_restx import Namespace, Resource
+from flask_restx import Namespace, Resource, fields
 from formsflow_api_utils.utils import (
     ANONYMOUS_USER,
     cors_preflight,
@@ -16,6 +16,35 @@ from formsflow_api.services import ApplicationService
 
 API = Namespace("Public", description="Public api endpoints")
 
+application_create_model = API.model(
+    "AnonymousApplicationCreate",
+    {
+        "formId": fields.String(),
+        "submissionId": fields.String(),
+        "formUrl": fields.String(),
+    },
+)
+
+application_base_model = API.model(
+    "AnonymousApplicationCreateResponse",
+    {
+        "applicationStatus": fields.String(),
+        "created": fields.String(),
+        "createdBy": fields.String(),
+        "formId": fields.String(),
+        "formProcessMapperId": fields.String(),
+        "id": fields.Integer(),
+        "modified": fields.String(),
+        "modifiedBy": fields.String(),
+        "processInstanceId": fields.String(),
+        "submissionId": fields.String(),
+    },
+)
+
+check_response = API.model(
+    "CheckStatus", {"is_anonymous": fields.Boolean(), "status": fields.String()}
+)
+
 
 @cors_preflight("POST,OPTIONS")
 @API.route("/application/create", methods=["POST", "OPTIONS"])
@@ -24,13 +53,14 @@ class ApplicationAnonymousResourcesByIds(Resource):
 
     @staticmethod
     @profiletime
+    @API.doc(body=application_create_model)
+    @API.response(201, "CREATED:- Successful request.", model=application_base_model)
+    @API.response(
+        400,
+        "BAD_REQUEST:- Invalid request.",
+    )
     def post():
-        """Post a new anonymous application using the request body.
-
-        : formId:- Unique Id for the corresponding form
-        : submissionId:- Unique Id for the submitted form
-        : formUrl:- Unique URL for the submitted application
-        """
+        """Post a new anonymous application using the request body."""
         application_json = request.get_json()
         try:
             application_schema = ApplicationSchema()
@@ -68,12 +98,13 @@ class AnonymousResourceById(Resource):
 
     @staticmethod
     @profiletime
+    @API.response(200, "OK:- Successful request.", model=check_response)
+    @API.response(
+        400,
+        "BAD_REQUEST:- Invalid request.",
+    )
     def get(form_id: str):
-        """Get form by form id and return is_anonymous and published status.
-
-        : formId:- Unique Id for the corresponding form
-        : response: is_anonymous, status(published or not)
-        """
+        """Get form by form id and return is_anonymous and published status."""
         try:
             mapper = FormProcessMapper.find_form_by_form_id(form_id)
             response, status = {

@@ -3,7 +3,7 @@
 from http import HTTPStatus
 
 from flask import current_app, request
-from flask_restx import Namespace, Resource
+from flask_restx import Namespace, Resource, fields
 from formsflow_api_utils.utils import auth, cors_preflight, profiletime
 
 from formsflow_api.schemas import ApplicationHistorySchema
@@ -11,6 +11,35 @@ from formsflow_api.services import ApplicationHistoryService
 
 # keeping the base path same for application history and application/
 API = Namespace("Application", description="Application")
+application_history_model = API.model(
+    "ApplicationHistory",
+    {
+        "applicationStatus": fields.String(),
+        "created": fields.String(),
+        "formId": fields.String(),
+        "formUrl": fields.String(),
+        "submissionId": fields.String(),
+        "submittedBy": fields.String(),
+    },
+)
+
+application_history_list_model = API.model(
+    "ApplicationHistoryList",
+    {
+        "applications": fields.List(
+            fields.Nested(application_history_model, description="Application History")
+        )
+    },
+)
+
+application_history_create_model = API.model(
+    "ApplicationHistoryCreate",
+    {
+        "applicationStatus": fields.String(),
+        "formUrl": fields.String(),
+        "submittedBy": fields.String(),
+    },
+)
 
 
 @cors_preflight("GET,OPTIONS")
@@ -21,11 +50,17 @@ class ApplicationHistoryResource(Resource):
     @staticmethod
     @auth.require
     @profiletime
+    @API.response(200, "OK:- Successful request.", model=application_history_list_model)
+    @API.response(
+        400,
+        "BAD_REQUEST:- Invalid request.",
+    )
+    @API.response(
+        401,
+        "UNAUTHORIZED:- Authorization header not provided or an invalid token passed.",
+    )
     def get(application_id):
-        """Get application history.
-
-        : application_id:- Getting application history by providing application_id
-        """
+        """Get application history."""
         return (
             (
                 {
@@ -40,6 +75,16 @@ class ApplicationHistoryResource(Resource):
     @staticmethod
     @auth.require
     @profiletime
+    @API.doc(body=application_history_create_model)
+    @API.response(201, "CREATED:- Successful request.", model=application_history_model)
+    @API.response(
+        400,
+        "BAD_REQUEST:- Invalid request.",
+    )
+    @API.response(
+        401,
+        "UNAUTHORIZED:- Authorization header not provided or an invalid token passed.",
+    )
     def post(application_id):
         """Post a new history entry using the request body."""
         application_history_json = request.get_json()

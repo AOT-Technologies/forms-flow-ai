@@ -388,6 +388,9 @@ class FormioFormUpdateResource(Resource):
     def put(form_id: str):
         """Formio form update method."""
         try:
+            FormProcessMapperService.check_tenant_authorization_by_formid(
+                form_id=form_id
+            )
             data = request.get_json()
             formio_service = FormioService()
             form_io_token = formio_service.get_formio_access_token()
@@ -395,6 +398,16 @@ class FormioFormUpdateResource(Resource):
                 formio_service.update_form(form_id, data, form_io_token),
                 HTTPStatus.OK,
             )
+            return response, status
+        except PermissionError as err:
+            response, status = (
+                {
+                    "type": "Permission Denied",
+                    "message": f"Access to form id - {form_id} is prohibited.",
+                },
+                HTTPStatus.FORBIDDEN,
+            )
+            current_app.logger.warning(err)
             return response, status
         except BusinessException as err:
             current_app.logger.warning(err.error)

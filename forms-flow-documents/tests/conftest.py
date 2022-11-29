@@ -2,6 +2,7 @@
 import pytest
 from formsflow_api_utils.utils import jwt as _jwt
 from formsflow_api_utils.utils.startup import setup_jwt_manager
+
 from formsflow_documents import create_app
 
 
@@ -62,6 +63,9 @@ def auto(docker_services, app):
         docker_services.start("keycloak")
         docker_services.wait_for_service("keycloak", 8081)
         setup_jwt_manager(app, _jwt)
+
+        docker_services.start("forms")
+        docker_services.start("proxy")
 
 
 @pytest.fixture(scope="session")

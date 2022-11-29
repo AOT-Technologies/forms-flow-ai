@@ -7,15 +7,13 @@ from flask import current_app, request
 from flask_restx import Namespace, Resource
 from formsflow_api_utils.exceptions import BusinessException
 from formsflow_api_utils.services.external import FormioService
-from formsflow_api.models import FormHistory
-from formsflow_api.schemas import FormHistorySchema
 from formsflow_api_utils.utils import (
     DESIGNER_GROUP,
     auth,
     cors_preflight,
     profiletime,
 )
-
+from formsflow_api.services import FormHistoryService
 from formsflow_api.schemas import (
     FormProcessMapperListRequestSchema,
     FormProcessMapperSchema,
@@ -385,7 +383,7 @@ class FormioFormResource(Resource):
         except BusinessException as err:
             current_app.logger.warning(err.error)
             return err.error, err.status_code
-        
+
 
 @cors_preflight("GET,OPTIONS")
 @API.route("/form-history/<string:form_id>", methods=["GET", "OPTIONS"])
@@ -398,20 +396,7 @@ class FormHistoryResource(Resource):
     def get(form_id: str):
         """Getting form history."""
         try:
-            form_histories = FormHistory.fetch_histories_by_parent_id(form_id)
-            if form_histories:
-                form_history_schema = FormHistorySchema(many=True)
-                response = form_history_schema.dump(form_histories),HTTPStatus.OK
-             
-            else:
-                response, status = (
-                {
-                    "message": "Invalid form id",
-                },
-                HTTPStatus.BAD_REQUEST,
-                )
-            return response, status
+            return FormHistoryService.create_form_history(form_id)
         except BusinessException as err:
             current_app.logger.warning(err.error)
             return err.error, err.status_code
-

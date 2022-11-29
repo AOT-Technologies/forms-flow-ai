@@ -14,26 +14,27 @@ class FormHistory(ApplicationAuditDateTimeMixin, BaseModel, db.Model):
     parent_form_id = db.Column(db.String, index=True, nullable=False)
     cloned_form_id = db.Column(db.String, nullable=False)
     created_by = db.Column(db.String, nullable=False)
-    
+
     @classmethod
-    def create_history(cls, data) -> 'FormHistory':
+    def create_history(cls, data) -> "FormHistory":
+        """Creating form history"""
         if data:
             history = FormHistory()
-            history.parent_form_id = data.get('parent_form_id')
-            history.cloned_form_id = data.get('cloned_form_id')
-            history.created_by = data.get('created_by')
+            history.parent_form_id = data.get("parent_form_id")
+            history.cloned_form_id = data.get("cloned_form_id")
+            history.created_by = data.get("created_by")
             history.save()
             return history
         return None
-    
+
     @classmethod
-    def fetch_histories_by_parent_id(cls, parent_id) -> List['FormHistory']:
+    def fetch_histories_by_parent_id(cls, parent_id) -> List["FormHistory"]:
+        """Fetch all histories against a form id"""
         assert parent_id is not None
         return cls.query.filter(cls.id == parent_id).all()
-    
+
     @classmethod
-    def get_count_of_all_history(cls, parent_id) -> List['FormHistory']:
+    def get_count_of_all_history(cls, parent_id) -> List["FormHistory"]:
+        """Get all count fo history"""
         assert parent_id is not None
         return cls.query.filter(cls.id == parent_id).count()
-        
- 

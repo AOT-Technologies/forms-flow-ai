@@ -396,7 +396,7 @@ class FormHistoryResource(Resource):
     def get(form_id: str):
         """Getting form history."""
         try:
-            return FormHistoryService.create_form_history(form_id)
+            return FormHistoryService.get_all_history(form_id)
         except BusinessException as err:
             current_app.logger.warning(err.error)
             return err.error, err.status_code

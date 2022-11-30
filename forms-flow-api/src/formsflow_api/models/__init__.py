@@ -8,7 +8,7 @@ from .db import db, ma
 from .draft import Draft
 from .filter import Filter
 from .form_process_mapper import FormProcessMapper
-from .form_history import FormHistory
+from .form_history_logs import FormHistory
 
 __all__ = [
     "db",

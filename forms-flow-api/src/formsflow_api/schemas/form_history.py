@@ -12,7 +12,7 @@ class FormHistorySchema(Schema):
         unknown = EXCLUDE
 
     id = fields.Str(dump_only=True)
-    parent_form_id = fields.Str(data_key="parentFormId")
-    cloned_form_id = fields.Str(data_key="clonedFormId")
-    created_by = fields.Str(data_key="createdBy", dump_only=True)
-    created = fields.Str(data_key="created", dump_only=True)
+    form_id = fields.Str(data_key="formId")
+    created_by = fields.Str(data_key="createdBy")
+    created = fields.Str(data_key="created")
+    change_log = fields.Nested(data_key="changeLog")

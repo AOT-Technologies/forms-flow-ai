@@ -156,7 +156,8 @@ export const fetchUserListWithSearch = ({ searchType, query }, ...rest) => {
   //let getReviewerUserListApi = `${API.GET_API_USER_LIST}?memberOfGroup=${REVIEWER_GROUP}`;
   if (searchType && query) {
     //getReviewerUserListApi = `${getReviewerUserListApi}&${searchType}=%${query||""}%`
-    paramData[searchType] = `%${query}%`;
+    paramData[searchType] = `${query}`;
+    
   }
 
   return (dispatch) => {

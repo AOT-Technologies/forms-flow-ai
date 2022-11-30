@@ -81,7 +81,7 @@ export const DraftList = React.memo(() => {
 
   const onYes = () => {
     deleteDraftbyId(draftDelete.draftId).then(()=>{
-      toast.success('Delete successfull');
+      toast.success('Draft Deleted Successfully');
       dispatch(fetchDrafts(currentPage.current, countPerPageRef.current));
     }).catch((error)=>{
       toast.error(error.message);
@@ -196,7 +196,7 @@ export const DraftList = React.memo(() => {
           <Confirm
           modalOpen={draftDelete.modalOpen}
           message={`Are you sure you wish to delete the draft "${draftDelete.draftName}" 
-          with ID ${draftDelete.draftId}`}
+          with ID "${draftDelete.draftId}"`}
           onNo={() => onNo()}
           onYes={() => onYes()}
         />

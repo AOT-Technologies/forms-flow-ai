@@ -16,7 +16,6 @@ import {
   setDraftSubmissionError,
   setDraftDetailStatusCode,
   saveLastUpdatedDraft,
-  setDraftDelete,
 } from "../../actions/draftActions";
 import moment from "moment";
 import { setApplicationListCount } from "../../actions/applicationActions";
@@ -247,20 +246,7 @@ export const FilterDrafts = (params, ...rest) => {
   };
 };
 
-export const deleteDraftbyId = (draftId,...rest)=>{
-  const done = rest.length ? rest[0] : () => {};
-  return (dispatch)=>{
-    let url = `${API.DRAFT_BASE}/${draftId}`;
-    httpDELETERequest(url)
-    .then((res)=>{
-      console.log("delete response",res);
-      dispatch(setDraftDelete({
-        modalOpen:false,
-        draftId:null
-      }));
-      done(res);
-    }).catch((error)=>{
-      console.log("error",error);
-    });
-  };
+export const deleteDraftbyId = (draftId) => {
+  let url = `${API.DRAFT_BASE}/${draftId}`;
+  return httpDELETERequest(url);
 };

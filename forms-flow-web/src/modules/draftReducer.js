@@ -2,7 +2,7 @@ import ACTION_CONSTANTS from "../actions/actionConstants";
 
 const initialState = {
   draftSubmission: {},
-  draftDelete : { modalOpen: false, draftId:null },
+  draftDelete : { modalOpen: false, draftId:null, draftName:'' },
   draftSubmissionError: {
     error: null,
     message: null,

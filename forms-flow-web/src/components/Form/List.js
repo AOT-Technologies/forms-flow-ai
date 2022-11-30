@@ -166,13 +166,29 @@ const List = React.memo((props) => {
     formType
   ]);
 
+  const formCheck = (formCheckList)=>{
+    
+    const result = formCheckList.reduce(function(obj, v) {
+      obj[v.type] = (obj[v.type] || 0) + 1;
+      return obj;
+    }, {});
+
+  let response = "";
+
+  if (result.resource)
+  {
+    response = `${result.resource} ${result.resource == 1 ? t("Resource") : t("Resources")}`;
+  }
+  if(result.form)
+  {
+     response += `${result.resource ? " ," : ""} ${result.form} ${result.form == 1 ? t("Form") : t("Forms")}`;
+  } 
+  return toast.success(`${response} ${t("Downloaded Successfully")}`);
+  };
 
   const downloadForms = () => {
     FileService.downloadFile({ forms: formCheckList }, () => {
-      toast.success(
-        `${formCheckList.length} ${formCheckList.length === 1 ? t("Form") : t("Forms")
-        } ${t("Downloaded Successfully")}`
-      );
+      formCheck(formCheckList);
       dispatch(setFormCheckList([]));
     });
   };

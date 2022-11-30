@@ -248,10 +248,8 @@ export const RESOURCE_BUNDLES_FR = {
   "Deployment Failed":"Échec du déploiement",
   "Process name(s) must not be empty":"Le(s) nom(s) de processus ne doivent pas être vides",
   "URL copied":"URL copiée",
-  "Click Here to Copy":"Cliquez ici pour copier"
-
-
-
+  "Click Here to Copy":"Cliquez ici pour copier",
+  "Resources":"Ressources"
 
 };
   

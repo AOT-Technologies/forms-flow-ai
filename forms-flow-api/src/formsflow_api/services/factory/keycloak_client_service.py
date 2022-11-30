@@ -43,3 +43,11 @@ class KeycloakClientService(KeycloakAdmin):
             url_path=f"roles-by-id/{group_id}?client={client_id}",
             data=dashboard_id_details,
         )
+
+    def get_groups_roles(self, page_no: int, limit: int):
+        """Get roles."""
+        return self.client.get_roles(page_no, limit)
+
+    def delete_group(self, group_id: str):
+        """Delete role by role_id."""
+        return self.client.delete_request(url_path=f"roles-by-id/{group_id}")

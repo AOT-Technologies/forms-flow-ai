@@ -22,3 +22,11 @@ class KeycloakAdmin(ABC):
     @abstractmethod
     def get_users(self, **kwargs):
         """Get users."""
+
+    @abstractmethod
+    def get_groups_roles(self, page_no: int, limit: int):
+        """Get groups."""
+
+    @abstractmethod
+    def delete_group(self, group_id: str):
+        """Delete group by group_id."""

@@ -78,25 +78,30 @@ class KeycloakAdminAPIService:
             return response.json()
         return None
 
-    def get_analytics_groups(self, page_no: int, limit: int):
-        """Return groups for analytics users."""
-        dashboard_group_list: list = []
+    def get_groups(self, page_no: int, limit: int):
+        """Return groups."""
+        current_app.logger.debug("Getting groups")
         if page_no == 0 and limit == 0:
             group_list_response = self.get_request(url_path="groups")
         else:
             group_list_response = self.get_paginated_request(
                 url_path="groups", first=page_no, max_results=limit
             )
+        current_app.logger.debug("Groups %s", group_list_response)
+        return group_list_response
 
+    def get_analytics_groups(self, page_no: int, limit: int):
+        """Return groups for analytics users."""
+        dashboard_group_list: list = []
+        group_list_response = self.get_groups(page_no, limit)
         for group in group_list_response:
             if group["name"] == KEYCLOAK_DASHBOARD_BASE_GROUP:
                 dashboard_group_list = list(group["subGroups"])
         return dashboard_group_list
 
-    def get_analytics_roles(self, page_no: int, limit: int):
-        """Return roles for analytics users."""
-        current_app.logger.debug("Getting analytics roles")
-        dashboard_roles_list: list = []
+    def get_roles(self, page_no: int, limit: int):
+        """Return roles."""
+        current_app.logger.debug("Getting roles")
         client_id = self.get_client_id()
         # Look for exact match
         if page_no == 0 and limit == 0:
@@ -108,6 +113,13 @@ class KeycloakAdminAPIService:
                 max_results=limit,
             )
         current_app.logger.debug("Client roles %s", roles)
+        return roles
+
+    def get_analytics_roles(self, page_no: int, limit: int):
+        """Return roles for analytics users."""
+        current_app.logger.debug("Getting analytics roles")
+        dashboard_roles_list: list = []
+        roles = self.get_roles(page_no, limit)
         for client_role in roles:
             if client_role["name"] not in FORMSFLOW_ROLES:
                 client_role["path"] = client_role["name"]
@@ -155,3 +167,17 @@ class KeycloakAdminAPIService:
             raise f"Request to Keycloak Admin APIs failed., {err_code}"
         if response.status_code == 204:
             return f"Updated - {url_path}"
+
+    @profiletime
+    def delete_request(self, url_path):
+        """Method to invoke delete.
+
+        : url_path: The relative path of the API
+        """
+        url = f"{self.base_url}/{url_path}"
+        try:
+            response = self.session.request("DELETE", url)
+            current_app.logger.debug(f"keycloak Admin API DELETE request URL: {url}")
+        except Exception as err_code:
+            raise f"Request to Keycloak Admin APIs failed., {err_code}"
+        response.raise_for_status()

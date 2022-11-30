@@ -28,6 +28,7 @@ from formsflow_api_utils.utils.startup import (
 from werkzeug.middleware.proxy_fix import ProxyFix
 
 from formsflow_documents import config
+from formsflow_documents.filters import is_b64image
 from formsflow_documents.resources import API
 
 
@@ -105,6 +106,8 @@ def create_app(run_mode=os.getenv("FLASK_ENV", "production")):
         except Exception as err:  # pylint: disable=broad-except
             current_app.logger.critical(err)
             return response
+
+    app.jinja_env.globals.update(is_signature=is_b64image)  # pylint: disable=no-member
 
     register_shellcontext(app)
     if not app.config["MULTI_TENANCY_ENABLED"]:

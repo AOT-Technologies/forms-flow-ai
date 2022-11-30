@@ -1,7 +1,7 @@
 -r prod.txt
 autopep8
 black
-flake8
+flake8==5.0.4
 flake8-blind-except
 flake8-debugger
 flake8-docstrings
@@ -16,4 +16,3 @@ pytest-it
 pytest-mock
 pyflakes
 pylint
-lovely-pytest-docker

@@ -35,7 +35,7 @@ class FormHistoryService:
                 "form_id": form_id,
                 "created_by": user_name,
                 "component_changed": True,
-                "change_log": { "cloned_form_id": response.get("_id"),},
+                "change_log": { "cloned_form_id": response.get("_id")},
             }
             history_schema = FormHistorySchema()
             create_form_history = FormHistory.create_history(form_history_data)
@@ -43,7 +43,7 @@ class FormHistoryService:
         
     @staticmethod
     @user_context
-    def created_form_logs_wihout_clone(data, **kwargs):
+    def created_form_logs_without_clone(data, **kwargs):
         """Create form history"""
         user: UserContext = kwargs["user"]
         assert data is not None
@@ -51,10 +51,10 @@ class FormHistoryService:
         form_logs_data = {"change_log":{}}
         if data.get("statusChanged") == True:
             form_logs_data["status"]=True
-            form_logs_data["change_log"]={"status": data.get("status")}
+            form_logs_data["change_log"] = {"status": data.get("status")}
         if data.get("workflowChanged") == True:
             form_logs_data["workflow"] == True
-            form_logs_data["change_log"]["workFlow"]= data.get("processKey")
+            form_logs_data["change_log"]["workFlow"] = data.get("processKey")
         if data.get("anonymousChanged") == True:
             form_logs_data["anonymous"] == True
             form_logs_data["change_log"]["anonymous"]= data.get("anonymous")

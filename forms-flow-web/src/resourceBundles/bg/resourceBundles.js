@@ -1,5 +1,11 @@
 /* eslint-disable max-len */
 export const RESOURCE_BUNDLES_BG = {
+    "Draft Deleted Successfully":"Черновата е изтрита успешно",
+    "Saved to Applications/Drafts":"Запазено в Приложения/Чернови",
+    "Unfinished applications will be saved to Applications/Drafts":" Незавършените приложения ще бъдат запазени в Приложения/Чернови",
+    "Discard Draft":"Отхвърлете черновата",
+    "Are you sure you wish to delete the draft":"Сигурни ли сте, че искате да изтриете черновата",
+    "with ID":"с лична карта",
     "Please change the selected filters to view Forms":"Моля, променете избраните филтри, за да видите формуляри",
     "Search by form name":"Tŭrsene po ime na formulyara",
     "Click to search":"Щракнете за търсене",

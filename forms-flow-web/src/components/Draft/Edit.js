@@ -29,7 +29,10 @@ import {
   getProcessReq,
   getDraftReqFormat,
 } from "../../apiManager/services/bpmServices";
-import { draftUpdate } from "../../apiManager/services/draftService";
+import {
+  deleteDraftbyId,
+  draftUpdate,
+} from "../../apiManager/services/draftService";
 import {
   CUSTOM_SUBMISSION_URL,
   CUSTOM_SUBMISSION_ENABLE,
@@ -40,6 +43,8 @@ import {
 import Loading from "../../containers/Loading";
 import SubmissionError from "../../containers/SubmissionError";
 import SavingLoading from "../Loading/SavingLoading";
+import Confirm from "../../containers/Confirm";
+import { setDraftDelete } from "../../actions/draftActions";
 
 const View = React.memo((props) => {
   const { t } = useTranslation();
@@ -54,6 +59,8 @@ const View = React.memo((props) => {
   const isFormSubmitted = useSelector(
     (state) => state.formDelete.formSubmitted
   );
+
+  const draftDelete = useSelector((state) => state.draft?.draftDelete);
 
   const isPublic = !props.isAuthenticated;
   const tenantKey = useSelector((state) => state.tenants?.tenantId);
@@ -93,9 +100,7 @@ const View = React.memo((props) => {
         dispatch(
           draftUpdate(payload, draftSubmission?.id, (err) => {
             if (exitType === "UNMOUNT" && !err) {
-              toast.success(
-              t("Submission saved to draft.")
-              );
+              toast.success(t("Submission saved to draft."));
             }
             if (!err) {
               setDraftSaved(true);
@@ -135,7 +140,47 @@ const View = React.memo((props) => {
     );
   }
 
-  if (isFormSubmitted && !isAuthenticated) { 
+  const deleteDraft = () => {
+    dispatch(
+      setDraftDelete({
+        modalOpen: true,
+        draftId: draftSubmission.id,
+        draftName: draftSubmission.DraftName,
+      })
+    );
+  };
+
+  const onYes = () => {
+    deleteDraftbyId(draftDelete.draftId)
+      .then(() => {
+        toast.success(t("Draft Deleted Successfully"));
+        dispatch(push(`${redirectUrl}draft`));
+      })
+      .catch((error) => {
+        toast.error(error.message);
+      })
+      .finally(() => {
+        dispatch(
+          setDraftDelete({
+            modalOpen: false,
+            draftId: null,
+            draftName: "",
+          })
+        );
+      });
+  };
+
+  const onNo = () => {
+    dispatch(
+      setDraftDelete({
+        modalOpen: false,
+        draftId: null,
+        draftName: "",
+      })
+    );
+  };
+
+  if (isFormSubmitted && !isAuthenticated) {
     //This code has relevance only for form Submission Edit by Anonymous Users
     return (
       <div className="text-center pt-5">
@@ -152,7 +197,11 @@ const View = React.memo((props) => {
           <span className="pr-2  mr-2 d-flex justify-content-end align-items-center">
             {poll && showNotification && (
               <SavingLoading
-                text={draftSaved ? t("Saved to Applications/Drafts") : t("Saving...")}
+                text={
+                  draftSaved
+                    ? t("Saved to Applications/Drafts")
+                    : t("Saving...")
+                }
                 saved={draftSaved}
               />
             )}
@@ -175,8 +224,8 @@ const View = React.memo((props) => {
           {form.title ? (
             <h3 className="ml-3">
               <span className="task-head-details">
-                <i className="fa fa-wpforms" aria-hidden="true" /> &nbsp; {t("Drafts")}
-                /
+                <i className="fa fa-wpforms" aria-hidden="true" /> &nbsp;{" "}
+                {t("Drafts")}/
               </span>{" "}
               {form.title}
             </h3>
@@ -184,6 +233,13 @@ const View = React.memo((props) => {
             ""
           )}
         </div>
+        <button
+          className="btn btn-danger mr-2"
+          style={{ width: "8.5em" }}
+          onClick={() => deleteDraft()}
+        >
+          {t('Discard Draft')}
+        </button>
       </div>
       <Errors errors={errors} />
       <LoadingOverlay
@@ -193,6 +249,13 @@ const View = React.memo((props) => {
         className="col-12"
       >
         <div className="ml-4 mr-4">
+          <Confirm
+            modalOpen={draftDelete.modalOpen}
+            message={`${t('Are you sure you wish to delete the draft')} "${draftDelete.draftName}" 
+            ${t('with ID')} "${draftDelete.draftId}"`}
+            onNo={() => onNo()}
+            onYes={() => onYes()}
+          />
           {
             <Form
               form={form}

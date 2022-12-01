@@ -1,5 +1,11 @@
 /* eslint-disable max-len */
 export const RESOURCE_BUNDLES_FR = {
+  "Draft Deleted Successfully":"Brouillon supprimé avec succès",
+  "Saved to Applications/Drafts":"Enregistré dans Candidatures/Brouillons",
+  "Unfinished applications will be saved to Applications/Drafts":"Les candidatures non terminées seront enregistrées dans Candidatures/Brouillons",
+  "Discard Draft":" Supprimer le brouillon",
+  "Are you sure you wish to delete the draft":"Êtes-vous sûr de vouloir supprimer le brouillon",
+  "with ID":"avec pièce d'identité",
   "Please change the selected filters to view Forms":"Veuillez modifier les filtres sélectionnés pour afficher les formulaires",
   "Search by form name":"Rechercher par nom de formulaire",
   "Click to search":"Cliquez pour rechercher",

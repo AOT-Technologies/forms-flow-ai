@@ -19,19 +19,24 @@ import {
   fetchDrafts,
   FilterDrafts,
 } from "../../apiManager/services/draftService";
+import Confirm from "../../containers/Confirm";
 import Head from "../../containers/Head";
 import { push } from "connected-react-router";
 import {
   setDraftListLoader,
   setDraftListActivePage,
   setCountPerpage,
+  setDraftDelete,
 } from "../../actions/draftActions";
+import { deleteDraftbyId } from "../../apiManager/services/draftService";
 import isValiResourceId from "../../helper/regExp/validResourceId";
+import { toast } from "react-toastify";
 
 export const DraftList = React.memo(() => {
   const { t } = useTranslation();
   const drafts = useSelector((state) => state.draft.draftList);
   const countPerPage = useSelector((state) => state.draft.countPerPage);
+  const draftDelete = useSelector((state) => state.draft?.draftDelete);
 
   const isDraftListLoading = useSelector(
     (state) => state.draft.isDraftListLoading
@@ -64,6 +69,7 @@ export const DraftList = React.memo(() => {
     ref.current = currentValue;
     return ref;
   };
+  
 
   const countPerPageRef = useNoRenderRef(countPerPage);
 
@@ -73,6 +79,30 @@ export const DraftList = React.memo(() => {
     dispatch(fetchDrafts(currentPage.current, countPerPageRef.current));
   }, [dispatch, currentPage, countPerPageRef]);
 
+  const onYes = () => {
+    deleteDraftbyId(draftDelete.draftId).then(()=>{
+      toast.success(t('Draft Deleted Successfully'));
+      dispatch(fetchDrafts(currentPage.current, countPerPageRef.current));
+    }).catch((error)=>{
+      toast.error(error.message);
+    }).finally(()=>{
+      dispatch(setDraftDelete({
+        modalOpen:false,
+        draftId:null,
+        draftName:''
+      }));
+    });
+  };
+
+  const onNo = () => {
+    dispatch(
+      setDraftDelete({
+        modalOpen: false,
+        draftId: null,
+        draftName: ''
+      })
+    );
+  };
   if (isDraftListLoading) {
     return <Loading />;
   }
@@ -163,6 +193,13 @@ export const DraftList = React.memo(() => {
     >
       {(props) => (
         <div className="container" role="definition">
+          <Confirm
+          modalOpen={draftDelete.modalOpen}
+          message={`${t('Are you sure you wish to delete the draft')} "${draftDelete.draftName}" 
+          ${t('with ID')} "${draftDelete.draftId}"`}
+          onNo={() => onNo()}
+          onYes={() => onYes()}
+        />
           <Head items={headerList()} page="Drafts" />
           <br />
           <div>

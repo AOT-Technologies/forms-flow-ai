@@ -12,6 +12,7 @@ import DateRangePicker from "@wojtekmaj/react-daterange-picker";
 import DropdownButton from "react-bootstrap/DropdownButton";
 import Dropdown from "react-bootstrap/Dropdown";
 import { toast } from "react-toastify";
+import DraftOperations from "./DraftOperations";
 
 let statusFilter, idFilter, nameFilter, modifiedDateFilter;
 
@@ -30,25 +31,6 @@ const linkDraftDetail = (cell, row, redirectUrl) => {
       title={cell}
     >
       {cell}
-    </Link>
-  );
-};
-
-const linkDraft = (cell, row, redirectUrl) => {
-  const url = `${redirectUrl}form/${row.formId}/draft/${row.id}/edit`;
-  const buttonText = <Translation>{(t) => t("Edit")}</Translation>;
-  const icon = "fa fa-edit";
-  return (
-    <Link to={url} style={{ textDecoration: "none" }}>
-      <div>
-        <span style={{ color: "blue", cursor: "pointer" }}>
-          <span>
-            <i className={icon} />
-            &nbsp;
-          </span>
-          {buttonText}
-        </span>
-      </div>
     </Link>
   );
 };
@@ -129,7 +111,7 @@ export const columns = (
     {
       dataField: "formUrl",
       text: <Translation>{(t) => t("Action")}</Translation>,
-      formatter: (cell, row) => linkDraft(cell, row, redirectUrl),
+      formatter: (cell,row) => <DraftOperations cell={cell} row={row}/>,
       headerStyle: () => {
         return { width: "20%" };
       },

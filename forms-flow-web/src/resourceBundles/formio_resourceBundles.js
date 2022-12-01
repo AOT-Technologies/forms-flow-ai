@@ -1,6 +1,12 @@
 /* eslint-disable max-len */
 export const formio_resourceBundles = {
   en: {
+    "Draft Deleted Successfully":"Draft Deleted Successfully",
+    "Saved to Applications/Drafts":"Saved to Applications/Drafts",
+    "Unfinished applications will be saved to Applications/Drafts":"Unfinished applications will be saved to Applications/Drafts",
+    "with ID":"with ID",
+    "Are you sure you wish to delete the draft":"Are you sure you wish to delete the draft",
+    "Discard Draft":"Discard Draft",
     "Search by form name": "Search by form name",
     "Click to search": "Click to search",
     "No submissions found": "No submissions found",
@@ -272,6 +278,12 @@ export const formio_resourceBundles = {
   },
 
   "zh-CN": {
+    "Draft Deleted Successfully":"草稿删除成功",
+    "Saved to Applications/Drafts":"保存到申请/草稿",
+    "Unfinished applications will be saved to Applications/Drafts":"未完成的申请将被保存到申请/草稿",
+    "with ID":"带身份证",
+    "Are you sure you wish to delete the draft":"您确定要删除草稿吗",
+    "Discard Draft":" 丢弃草稿",
     "Search by form name": "按表格名称搜索",
     "Click to search": "点击搜索",
     "No submissions found": "未找到任何提交",
@@ -1155,6 +1167,12 @@ export const formio_resourceBundles = {
   },
 
   bg: {
+    "Draft Deleted Successfully":"Черновата е изтрита успешно",
+    "Saved to Applications/Drafts":"Запазено в Приложения/Чернови",
+    "Unfinished applications will be saved to Applications/Drafts":" Незавършените приложения ще бъдат запазени в Приложения/Чернови",
+    "with ID":"с лична карта",
+    "Are you sure you wish to delete the draft":"Сигурни ли сте, че искате да изтриете черновата",
+    "Discard Draft":"Отхвърлете черновата",
     "Search by form name": "Tŭrsene po ime na formulyara",
     "Click to search": "Щракнете за търсене",
     "No submissions found": "Няма намерени заявки",
@@ -2097,6 +2115,12 @@ export const formio_resourceBundles = {
   },
 
   pt: {
+    "Draft Deleted Successfully":"Rascunho excluído com sucesso",
+    "Saved to Applications/Drafts":"Salvo em Aplicações/Rascunhos",
+    "Unfinished applications will be saved to Applications/Drafts":"Os aplicativos inacabados serão salvos em Aplicativos/Rascunhos",
+    "with ID":"com identidade",
+    "Are you sure you wish to delete the draft":"Tem certeza de que deseja excluir o rascunho",
+    "Discard Draft":"Descartar Rascunho",
     "Search by form name": "Pesquisar pelo nome do formulário",
     "Click to search": "Clique para pesquisar",
     "No submissions found": "Nenhum envio encontrado",
@@ -3033,6 +3057,12 @@ export const formio_resourceBundles = {
   },
 
   fr: {
+    "Draft Deleted Successfully":"Brouillon supprimé avec succès",
+    "Saved to Applications/Drafts":"Enregistré dans Candidatures/Brouillons",
+    "Unfinished applications will be saved to Applications/Drafts":"Les candidatures non terminées seront enregistrées dans Candidatures/Brouillons",
+    "with ID":"avec pièce d'identité",
+    "Are you sure you wish to delete the draft":"Êtes-vous sûr de vouloir supprimer le brouillon",
+    "Discard Draft":" Supprimer le brouillon",
     "Search by form name": "Rechercher par nom de formulaire",
     "Click to search": "Cliquez pour rechercher",
     "No submissions found": "Aucune soumission trouvée",
@@ -3977,6 +4007,12 @@ export const formio_resourceBundles = {
   },
 
   de: {
+    "Draft Deleted Successfully":"Entwurf erfolgreich gelöscht",
+    "Saved to Applications/Drafts":"Unter Anwendungen/Entwürfe gespeichert",
+    "Unfinished applications will be saved to Applications/Drafts":" Unfertige Bewerbungen werden unter Bewerbungen/Entwürfe gespeichert",
+    "with ID":"mit Ausweis",
+    "Are you sure you wish to delete the draft":"Möchten Sie den Entwurf wirklich löschen",
+    "Discard Draft":"Entwurf verwerfen",
     "Search by form name": "Suche nach Formularnamen",
     "Click to search": "Klicken Sie, um zu suchen",
     "No submissions found": "Keine Einreichungen gefunden",

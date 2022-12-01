@@ -1,5 +1,11 @@
 /* eslint-disable max-len */
 export const RESOURCE_BUNDLES_EN = {
+  "Draft Deleted Successfully":"Draft Deleted Successfully",
+  "Saved to Applications/Drafts":"Saved to Applications/Drafts",
+  "Unfinished applications will be saved to Applications/Drafts":"Unfinished applications will be saved to Applications/Drafts",
+  "Discard Draft":"Discard Draft",
+  "Are you sure you wish to delete the draft":"Are you sure you wish to delete the draft",
+  "with ID":"with ID",
   "Please change the selected filters to view Forms":"Please change the selected filters to view Forms",
   "Search by form name":"Search by form name",
   "Click to search":"Click to search",

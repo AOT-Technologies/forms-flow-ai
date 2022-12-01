@@ -1,5 +1,11 @@
 /* eslint-disable max-len */
 export const RESOURCE_BUNDLES_DE = {
+  "Draft Deleted Successfully":"Entwurf erfolgreich gelöscht",
+  "Saved to Applications/Drafts":"Unter Anwendungen/Entwürfe gespeichert",
+  "Unfinished applications will be saved to Applications/Drafts":" Unfertige Bewerbungen werden unter Bewerbungen/Entwürfe gespeichert",
+  "Discard Draft":"Entwurf verwerfen",
+  "Are you sure you wish to delete the draft":"Möchten Sie den Entwurf wirklich löschen",
+  "with ID":"mit Ausweis",
   "Please change the selected filters to view Forms":"Bitte ändern Sie die ausgewählten Filter, um Formulare anzuzeigen",
   "Search by form name":"Suche nach Formularnamen",
   "Click to search":"Klicken Sie, um zu suchen",

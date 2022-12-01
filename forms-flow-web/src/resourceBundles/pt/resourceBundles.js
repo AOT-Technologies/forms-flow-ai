@@ -1,5 +1,11 @@
 /* eslint-disable max-len */
 export const RESOURCE_BUNDLES_PT = {
+  "Draft Deleted Successfully":"Rascunho excluído com sucesso",
+  "Saved to Applications/Drafts":"Salvo em Aplicações/Rascunhos",
+  "Unfinished applications will be saved to Applications/Drafts":"Os aplicativos inacabados serão salvos em Aplicativos/Rascunhos",
+  "Discard Draft":"Descartar Rascunho",
+  "Are you sure you wish to delete the draft":"Tem certeza de que deseja excluir o rascunho",
+  "with ID":"com identidade",
   "Please change the selected filters to view Forms":"Por favor, altere os filtros selecionados para visualizar os formulários",
   "Search by form name":"Pesquisar pelo nome do formulário",
   "Click to search":"Clique para pesquisar",

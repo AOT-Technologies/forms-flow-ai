@@ -1,5 +1,11 @@
 /* eslint-disable max-len */
 export const RESOURCE_BUNDLES_ZH = {
+  "Draft Deleted Successfully":"草稿删除成功",
+  "Saved to Applications/Drafts":"保存到申请/草稿",
+  "Unfinished applications will be saved to Applications/Drafts":"未完成的申请将被保存到申请/草稿",
+  "Discard Draft":" 丢弃草稿",
+  "Are you sure you wish to delete the draft":"您确定要删除草稿吗",
+  "with ID":"带身份证",
   "Please change the selected filters to view Forms":"请更改所选过滤器以查看表格",
   "Search by form name":"按表格名称搜索",
   "Click to search":"点击搜索",

@@ -15,6 +15,7 @@ import java.util.List;
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
 
+@Deprecated
 public class FilterRestResourceImpl implements FilterRestResource {
 
     private static final Logger LOG = LoggerFactory.getLogger(FilterRestResourceImpl.class);
@@ -25,23 +26,27 @@ public class FilterRestResourceImpl implements FilterRestResource {
         restService = filterRestService;
     }
 
+    @Deprecated
     @Override
     public List<FilterDto> getFilters(UriInfo uriInfo, Boolean itemCount, Integer firstResult, Integer maxResults) {
         return restService.getFilters(uriInfo, itemCount, firstResult, maxResults);
     }
 
+    @Deprecated
     @Override
     public Object executeList(Request request, Integer firstResult, Integer maxResults, String id) {
         return restService.getFilter(id).executeList(request, firstResult, maxResults);
 
     }
 
+    @Deprecated
     @Override
     public Object queryList(Request request, String extendingQuery, Integer firstResult, Integer maxResults, String id) {
         return restService.getFilter(id).queryList(request, extendingQuery, firstResult, maxResults);
 
     }
 
+    @Deprecated
     @Override
     public EntityModel<CountResultDto> executeCount(String id) {
         CountResultDto dto = restService.getFilter(id).executeCount();

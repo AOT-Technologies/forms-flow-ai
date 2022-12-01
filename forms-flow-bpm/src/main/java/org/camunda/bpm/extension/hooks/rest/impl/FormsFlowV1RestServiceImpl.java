@@ -69,4 +69,9 @@ public class FormsFlowV1RestServiceImpl {
         return new VersionRestResourceImpl(processEngineService.getVersionRestService());
     }
 
+    @Path(TaskFilterRestResource.PATH)
+    public TaskFilterRestResource getTaskFilterResource() {
+        return new TaskFilterRestResourceImpl(serviceFinder.getTaskFilterRestService());
+    }
+
 }

@@ -18,6 +18,7 @@ import javax.ws.rs.core.Request;
 
 import java.util.List;
 
+
 @Produces(MediaType.APPLICATION_JSON)
 public interface FilterRestResource extends RestResource {
 
@@ -26,7 +27,7 @@ public interface FilterRestResource extends RestResource {
     @GET
     @Produces(MediaType.APPLICATION_JSON)
     List<FilterDto> getFilters(@Context UriInfo uriInfo, @QueryParam("itemCount") Boolean itemCount,
-                                          @QueryParam("firstResult") Integer firstResult, @QueryParam("maxResults") Integer maxResults);
+                               @QueryParam("firstResult") Integer firstResult, @QueryParam("maxResults") Integer maxResults);
 
     @GET
     @Path("/{id}/list")

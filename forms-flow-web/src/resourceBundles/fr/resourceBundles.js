@@ -1,5 +1,6 @@
 /* eslint-disable max-len */
 export const RESOURCE_BUNDLES_FR = {
+  "Draft Deleted Successfully":"Brouillon supprimé avec succès",
   "Saved to Applications/Drafts":"Enregistré dans Candidatures/Brouillons",
   "Unfinished applications will be saved to Applications/Drafts":"Les candidatures non terminées seront enregistrées dans Candidatures/Brouillons",
   "Discard Draft":" Supprimer le brouillon",

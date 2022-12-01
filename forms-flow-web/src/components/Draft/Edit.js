@@ -153,7 +153,7 @@ const View = React.memo((props) => {
   const onYes = () => {
     deleteDraftbyId(draftDelete.draftId)
       .then(() => {
-        toast.success("Draft Deleted Successfully");
+        toast.success(t("Draft Deleted Successfully"));
         dispatch(push(`${redirectUrl}draft`));
       })
       .catch((error) => {

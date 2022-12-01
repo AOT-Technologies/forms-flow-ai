@@ -1,5 +1,6 @@
 /* eslint-disable max-len */
 export const RESOURCE_BUNDLES_DE = {
+  "Draft Deleted Successfully":"Entwurf erfolgreich gelöscht",
   "Saved to Applications/Drafts":"Unter Anwendungen/Entwürfe gespeichert",
   "Unfinished applications will be saved to Applications/Drafts":" Unfertige Bewerbungen werden unter Bewerbungen/Entwürfe gespeichert",
   "Discard Draft":"Entwurf verwerfen",

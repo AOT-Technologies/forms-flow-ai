@@ -1,5 +1,6 @@
 /* eslint-disable max-len */
 export const RESOURCE_BUNDLES_PT = {
+  "Draft Deleted Successfully":"Rascunho excluído com sucesso",
   "Saved to Applications/Drafts":"Salvo em Aplicações/Rascunhos",
   "Unfinished applications will be saved to Applications/Drafts":"Os aplicativos inacabados serão salvos em Aplicativos/Rascunhos",
   "Discard Draft":"Descartar Rascunho",

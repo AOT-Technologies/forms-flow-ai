@@ -34,32 +34,6 @@ const linkDraftDetail = (cell, row, redirectUrl) => {
     </Link>
   );
 };
-//   const url = `${redirectUrl}form/${row.formId}/draft/${row.id}/edit`;
-//   const buttonText = <Translation>{(t) => t("Edit")}</Translation>;
-//   const icon = "fa fa-edit";
-//   const deleteIcon = "fa fa-trash fa-lg delete_button";
-//   return (
-//     <>
-//       <div>
-//         <Link to={url} style={{ textDecoration: "none" }}>
-//           <span style={{ color: "blue", cursor: "pointer" }}>
-//             <span>
-//               <i className={icon} />
-//               &nbsp;
-//             </span>
-//             {buttonText}
-//           </span>
-//         </Link>
-//         <span style={{ marginLeft: "2rem" }} onClick={DeleteDraft}>
-//           <span>
-//             <i className={deleteIcon} />
-//             &nbsp;
-//           </span>
-//         </span>
-//       </div>
-//     </>
-//   );
-// };
 
 function timeFormatter(cell) {
   const localdate = getLocalDateTime(cell);

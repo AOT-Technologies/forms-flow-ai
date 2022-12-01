@@ -1,5 +1,6 @@
 /* eslint-disable max-len */
 export const RESOURCE_BUNDLES_EN = {
+  "Draft Deleted Successfully":"Draft Deleted Successfully",
   "Saved to Applications/Drafts":"Saved to Applications/Drafts",
   "Unfinished applications will be saved to Applications/Drafts":"Unfinished applications will be saved to Applications/Drafts",
   "Discard Draft":"Discard Draft",

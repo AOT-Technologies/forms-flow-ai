@@ -1,6 +1,7 @@
 /* eslint-disable max-len */
 export const formio_resourceBundles = {
   en: {
+    "Draft Deleted Successfully":"Draft Deleted Successfully",
     "Saved to Applications/Drafts":"Saved to Applications/Drafts",
     "Unfinished applications will be saved to Applications/Drafts":"Unfinished applications will be saved to Applications/Drafts",
     "with ID":"with ID",
@@ -277,6 +278,7 @@ export const formio_resourceBundles = {
   },
 
   "zh-CN": {
+    "Draft Deleted Successfully":"草稿删除成功",
     "Saved to Applications/Drafts":"保存到申请/草稿",
     "Unfinished applications will be saved to Applications/Drafts":"未完成的申请将被保存到申请/草稿",
     "with ID":"带身份证",
@@ -1165,6 +1167,7 @@ export const formio_resourceBundles = {
   },
 
   bg: {
+    "Draft Deleted Successfully":"Черновата е изтрита успешно",
     "Saved to Applications/Drafts":"Запазено в Приложения/Чернови",
     "Unfinished applications will be saved to Applications/Drafts":" Незавършените приложения ще бъдат запазени в Приложения/Чернови",
     "with ID":"с лична карта",
@@ -2112,6 +2115,7 @@ export const formio_resourceBundles = {
   },
 
   pt: {
+    "Draft Deleted Successfully":"Rascunho excluído com sucesso",
     "Saved to Applications/Drafts":"Salvo em Aplicações/Rascunhos",
     "Unfinished applications will be saved to Applications/Drafts":"Os aplicativos inacabados serão salvos em Aplicativos/Rascunhos",
     "with ID":"com identidade",
@@ -3053,6 +3057,7 @@ export const formio_resourceBundles = {
   },
 
   fr: {
+    "Draft Deleted Successfully":"Brouillon supprimé avec succès",
     "Saved to Applications/Drafts":"Enregistré dans Candidatures/Brouillons",
     "Unfinished applications will be saved to Applications/Drafts":"Les candidatures non terminées seront enregistrées dans Candidatures/Brouillons",
     "with ID":"avec pièce d'identité",
@@ -4002,6 +4007,7 @@ export const formio_resourceBundles = {
   },
 
   de: {
+    "Draft Deleted Successfully":"Entwurf erfolgreich gelöscht",
     "Saved to Applications/Drafts":"Unter Anwendungen/Entwürfe gespeichert",
     "Unfinished applications will be saved to Applications/Drafts":" Unfertige Bewerbungen werden unter Bewerbungen/Entwürfe gespeichert",
     "with ID":"mit Ausweis",

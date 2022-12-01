@@ -81,7 +81,7 @@ export const DraftList = React.memo(() => {
 
   const onYes = () => {
     deleteDraftbyId(draftDelete.draftId).then(()=>{
-      toast.success('Draft Deleted Successfully');
+      toast.success(t('Draft Deleted Successfully'));
       dispatch(fetchDrafts(currentPage.current, countPerPageRef.current));
     }).catch((error)=>{
       toast.error(error.message);

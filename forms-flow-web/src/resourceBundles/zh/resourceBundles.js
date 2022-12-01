@@ -1,5 +1,6 @@
 /* eslint-disable max-len */
 export const RESOURCE_BUNDLES_ZH = {
+  "Draft Deleted Successfully":"草稿删除成功",
   "Saved to Applications/Drafts":"保存到申请/草稿",
   "Unfinished applications will be saved to Applications/Drafts":"未完成的申请将被保存到申请/草稿",
   "Discard Draft":" 丢弃草稿",

@@ -247,5 +247,6 @@ export const RESOURCE_BUNDLES_BG = {
     "Deployment Failed":"Неуспешно внедряване",
     "Process name(s) must not be empty":"Името(ата) на процесите не трябва да са празни",
     "URL copied":"URL адресът е копиран",
-    "Click Here to Copy":"Щракнете тук, за да копирате"
+    "Click Here to Copy":"Щракнете тук, за да копирате",
+    "Resources":"Ресурси"
 };

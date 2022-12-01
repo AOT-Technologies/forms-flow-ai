@@ -1488,7 +1488,7 @@ paths:
                 taskVariable: '[]'
                 processTenant: null
                 processName: One Step Approval
-  /form/form-create:
+  /form/form-design:
     post:
       tags:
         - form

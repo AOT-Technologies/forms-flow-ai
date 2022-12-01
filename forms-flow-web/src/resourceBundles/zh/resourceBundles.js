@@ -246,10 +246,8 @@ export const RESOURCE_BUNDLES_ZH = {
   "Deployment Failed":"部署失败",
   "Process name(s) must not be empty":"进程名称不能为空",
   "URL copied":"已复制网址",
-  "Click Here to Copy":"点击这里复制"
-
-
-
+  "Click Here to Copy":"点击这里复制",
+  "Resources":"资源"
 
 };
 

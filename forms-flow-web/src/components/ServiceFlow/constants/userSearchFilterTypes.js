@@ -1,7 +1,7 @@
 import { Translation } from "react-i18next";
-export const SearchByLastName = "lastNameLike";
-export const SearchByFirstName = "firstNameLike";
-export const SearchByEmail = "emailLike";
+export const SearchByLastName = "lastName";
+export const SearchByFirstName = "firstName";
+export const SearchByEmail = "email";
 
 export const UserSearchFilterTypes = [
   {

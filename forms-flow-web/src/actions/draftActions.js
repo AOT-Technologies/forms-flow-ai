@@ -70,3 +70,10 @@ export const saveLastUpdatedDraft = (data) => (dispatch) => {
     payload: data,
   });
 };
+
+export const setDraftDelete = (data) => (dispatch) => {
+  dispatch({
+    type: ACTION_CONSTANTS.DRAFT_DELETE,
+    payload: data,
+  });
+};

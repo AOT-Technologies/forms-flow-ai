@@ -13,6 +13,7 @@ const Confirm = React.memo((props) => {
     yesText = t("Confirm"),
     noText = t("Cancel"),
   } = props;
+  
   return (
     <>
       <Modal show={modalOpen}>

@@ -1,4 +1,5 @@
 import {
+  httpDELETERequest,
   httpGETRequest,
   httpPOSTRequest,
   httpPOSTRequestWithoutToken,
@@ -243,4 +244,9 @@ export const FilterDrafts = (params, ...rest) => {
         done(error);
       });
   };
+};
+
+export const deleteDraftbyId = (draftId) => {
+  let url = `${API.DRAFT_BASE}/${draftId}`;
+  return httpDELETERequest(url);
 };

@@ -238,7 +238,7 @@ const View = React.memo((props) => {
           style={{ width: "8.5em" }}
           onClick={() => deleteDraft()}
         >
-          Discard Draft
+          {t('Discard Draft')}
         </button>
       </div>
       <Errors errors={errors} />
@@ -251,8 +251,8 @@ const View = React.memo((props) => {
         <div className="ml-4 mr-4">
           <Confirm
             modalOpen={draftDelete.modalOpen}
-            message={`Are you sure you wish to delete the draft "${draftDelete.draftName}" 
-            with ID "${draftDelete.draftId}"`}
+            message={`${t('Are you sure you wish to delete the draft')} "${draftDelete.draftName}" 
+            ${t('with ID')} "${draftDelete.draftId}"`}
             onNo={() => onNo()}
             onYes={() => onYes()}
           />

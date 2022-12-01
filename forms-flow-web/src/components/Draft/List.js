@@ -195,8 +195,8 @@ export const DraftList = React.memo(() => {
         <div className="container" role="definition">
           <Confirm
           modalOpen={draftDelete.modalOpen}
-          message={`Are you sure you wish to delete the draft "${draftDelete.draftName}" 
-          with ID "${draftDelete.draftId}"`}
+          message={`${t('Are you sure you wish to delete the draft')} "${draftDelete.draftName}" 
+          ${t('with ID')} "${draftDelete.draftId}"`}
           onNo={() => onNo()}
           onYes={() => onYes()}
         />

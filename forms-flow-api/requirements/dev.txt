@@ -19,5 +19,5 @@ pylint
 lovely-pytest-docker
 selenium==3.141.0
 selenium-wire==3.0.0
-git+https://github.com/shuhaib-aot/forms-flow-ai.git@update-api-change#egg=formsflow_api_utils&subdirectory=forms-flow-api-utils
+git+https://github.com/AOT-Technologies/forms-flow-ai.git@develop#egg=formsflow_api_utils&subdirectory=forms-flow-api-utils
 

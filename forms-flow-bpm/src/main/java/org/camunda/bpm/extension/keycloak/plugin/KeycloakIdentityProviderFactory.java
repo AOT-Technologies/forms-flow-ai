@@ -34,7 +34,7 @@ public class KeycloakIdentityProviderFactory
 	 */
 	@Override
 	public Session openSession() {
-		return new KeycloakIdentityProviderSession(keycloakConfiguration, restTemplate, keycloakContextProvider,
-				userQueryCache, groupQueryCache, this.webClientId, this.enableClientAuth);
+		return new KeycloakIdentityProviderSession(keycloakConfiguration, restTemplate, keycloakContextProvider, 
+				userQueryCache, groupQueryCache, checkPasswordCache, this.webClientId, this.enableClientAuth);
 	}
 }

@@ -1,8 +1,11 @@
 /* eslint-disable max-len */
 export const RESOURCE_BUNDLES_BG = {
+    "Choose any":"Изберете всяка",
+    "Sort by form name":"Сортиране по име на формуляр",
+    "select form type":"изберете тип формуляр",
     "Draft Deleted Successfully":"Черновата е изтрита успешно",
     "Saved to Applications/Drafts":"Запазено в Приложения/Чернови",
-    "Unfinished applications will be saved to Applications/Drafts":" Незавършените приложения ще бъдат запазени в Приложения/Чернови",
+    "Unfinished applications will be saved to Applications/Drafts.":" Незавършените приложения ще бъдат запазени в Приложения/Чернови.",
     "Discard Draft":"Отхвърлете черновата",
     "Are you sure you wish to delete the draft":"Сигурни ли сте, че искате да изтриете черновата",
     "with ID":"с лична карта",
@@ -245,7 +248,6 @@ export const RESOURCE_BUNDLES_BG = {
     "Submission saved to draft.":"Изпращането е запазено в чернова.",
     "Saved to draft":"Запазено в чернова",
     "Saving...":"Запазва се...",
-    "Unfinished applications will be saved to drafts.":"Незавършените приложения ще бъдат запазени в чернови.",
     "Resource":"Ресурс",
     "Error in creating form process mapper":"Грешка при създаването на картограф на процес на формуляр",
     "Select the date":"Изберете датата",

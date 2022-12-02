@@ -1,9 +1,11 @@
 /* eslint-disable max-len */
 export const formio_resourceBundles = {
   en: {
+    "Choose any":"Choose any",
+    "select form type":"select form type",
     "Draft Deleted Successfully":"Draft Deleted Successfully",
     "Saved to Applications/Drafts":"Saved to Applications/Drafts",
-    "Unfinished applications will be saved to Applications/Drafts":"Unfinished applications will be saved to Applications/Drafts",
+    "Unfinished applications will be saved to Applications/Drafts.":"Unfinished applications will be saved to Applications/Drafts.",
     "with ID":"with ID",
     "Are you sure you wish to delete the draft":"Are you sure you wish to delete the draft",
     "Discard Draft":"Discard Draft",
@@ -267,7 +269,6 @@ export const formio_resourceBundles = {
     "Submission saved to draft.":"Submission saved to draft.",
     "Saved to draft":"Saved to draft",
     "Saving...":"Saving...",
-    "Unfinished applications will be saved to drafts.":"Unfinished applications will be saved to drafts.",
     "Error in creating form process mapper":"Error in creating form process mapper",
     "Select the date":"Select the date",
     "Diagram Deployed":"Diagram Deployed",
@@ -278,9 +279,11 @@ export const formio_resourceBundles = {
   },
 
   "zh-CN": {
+    "Choose any":"选择任何",
+    "select form type":"选择表格类型",
     "Draft Deleted Successfully":"草稿删除成功",
     "Saved to Applications/Drafts":"保存到申请/草稿",
-    "Unfinished applications will be saved to Applications/Drafts":"未完成的申请将被保存到申请/草稿",
+    "Unfinished applications will be saved to Applications/Drafts.":"未完成的申请将被保存到申请/草稿.",
     "with ID":"带身份证",
     "Are you sure you wish to delete the draft":"您确定要删除草稿吗",
     "Discard Draft":" 丢弃草稿",
@@ -1158,7 +1161,6 @@ export const formio_resourceBundles = {
     "Saving...":"保存...",
     "Error in creating form process mapper":"创建表单流程映射器时出错",
     "Select the date":"选择日期",
-    "Unfinished applications will be saved to drafts.":"未完成的申请将被保存到草稿中。",
     "Diagram Deployed":"已部署的图表",
     "Deployment Failed":"部署失败",
     "Process name(s) must not be empty":"进程名称不能为空",
@@ -1167,9 +1169,11 @@ export const formio_resourceBundles = {
   },
 
   bg: {
+    "Choose any":"Изберете всяка",
+    "select form type":"изберете тип формуляр",
     "Draft Deleted Successfully":"Черновата е изтрита успешно",
     "Saved to Applications/Drafts":"Запазено в Приложения/Чернови",
-    "Unfinished applications will be saved to Applications/Drafts":" Незавършените приложения ще бъдат запазени в Приложения/Чернови",
+    "Unfinished applications will be saved to Applications/Drafts.":" Незавършените приложения ще бъдат запазени в Приложения/Чернови.",
     "with ID":"с лична карта",
     "Are you sure you wish to delete the draft":"Сигурни ли сте, че искате да изтриете черновата",
     "Discard Draft":"Отхвърлете черновата",
@@ -2102,7 +2106,6 @@ export const formio_resourceBundles = {
     "Submission saved to draft.":"Изпращането е запазено в чернова.",
     "Saved to draft":"Запазено в чернова",
     "Saving...":"Запазва се...",
-    "Unfinished applications will be saved to drafts.":"Незавършените приложения ще бъдат запазени в чернови.",
     "Resource":"Ресурс",
     "Error in creating form process mapper":"Грешка при създаването на картограф на процес на формуляр",
     "Select the date":"Изберете датата",
@@ -2115,9 +2118,11 @@ export const formio_resourceBundles = {
   },
 
   pt: {
+    "Choose any":"Escolha qualquer",
+    "select form type":"selecione o tipo de formulário",
     "Draft Deleted Successfully":"Rascunho excluído com sucesso",
     "Saved to Applications/Drafts":"Salvo em Aplicações/Rascunhos",
-    "Unfinished applications will be saved to Applications/Drafts":"Os aplicativos inacabados serão salvos em Aplicativos/Rascunhos",
+    "Unfinished applications will be saved to Applications/Drafts.":"Os aplicativos inacabados serão salvos em Aplicativos/Rascunhos.",
     "with ID":"com identidade",
     "Are you sure you wish to delete the draft":"Tem certeza de que deseja excluir o rascunho",
     "Discard Draft":"Descartar Rascunho",
@@ -3045,7 +3050,6 @@ export const formio_resourceBundles = {
     "Submission saved to draft.":"Envio salvo como rascunho.",
     "Saved to draft":"Salvo no rascunho",
     "Saving...":"Salvando...",
-    "Unfinished applications will be saved to drafts.":"Aplicativos inacabados serão salvos em rascunhos.",
     "Error in creating form process mapper":"Erro ao criar mapeador de processo de formulário",
     "Select the date":"Selecione a data",
     "Diagram Deployed":"Diagrama implantado",
@@ -3057,9 +3061,11 @@ export const formio_resourceBundles = {
   },
 
   fr: {
+    "Choose any":"Choisissez n'importe quel",
+    "select form type":"sélectionner le type de formulaire",
     "Draft Deleted Successfully":"Brouillon supprimé avec succès",
     "Saved to Applications/Drafts":"Enregistré dans Candidatures/Brouillons",
-    "Unfinished applications will be saved to Applications/Drafts":"Les candidatures non terminées seront enregistrées dans Candidatures/Brouillons",
+    "Unfinished applications will be saved to Applications/Drafts.":"Les candidatures non terminées seront enregistrées dans Candidatures/Brouillons.",
     "with ID":"avec pièce d'identité",
     "Are you sure you wish to delete the draft":"Êtes-vous sûr de vouloir supprimer le brouillon",
     "Discard Draft":" Supprimer le brouillon",
@@ -3995,7 +4001,6 @@ export const formio_resourceBundles = {
     "Submission saved to draft.":"Soumission enregistrée comme brouillon.",
     "Saved to draft":"Enregistré comme brouillon",
     "Saving...":"Économie...",
-    "Unfinished applications will be saved to drafts.":"Les candidatures non terminées seront enregistrées dans les brouillons.",
     "Error in creating form process mapper":"Erreur lors de la création du mappeur de processus de formulaire",
     "Select the date":"Sélectionnez la date",
     "Diagram Deployed":"Diagramme déployé",
@@ -4007,9 +4012,11 @@ export const formio_resourceBundles = {
   },
 
   de: {
+    "Choose any":"Wählen Sie eine aus",
+    "select form type":"Formulartyp auswählen",
     "Draft Deleted Successfully":"Entwurf erfolgreich gelöscht",
     "Saved to Applications/Drafts":"Unter Anwendungen/Entwürfe gespeichert",
-    "Unfinished applications will be saved to Applications/Drafts":" Unfertige Bewerbungen werden unter Bewerbungen/Entwürfe gespeichert",
+    "Unfinished applications will be saved to Applications/Drafts.":" Unfertige Bewerbungen werden unter Bewerbungen/Entwürfe gespeichert.",
     "with ID":"mit Ausweis",
     "Are you sure you wish to delete the draft":"Möchten Sie den Entwurf wirklich löschen",
     "Discard Draft":"Entwurf verwerfen",
@@ -4948,7 +4955,6 @@ export const formio_resourceBundles = {
     "Submission saved to draft.":"Übermittlung als Entwurf gespeichert.",
     "Saved to draft":"Als Entwurf gespeichert",
     "Saving...":"Sparen...",
-    "Unfinished applications will be saved to drafts.":"Unfertige Bewerbungen werden als Entwürfe gespeichert.",
     "Error in creating form process mapper":"Fehler beim Erstellen des Formularprozess-Mappers",
     "Select the date":"Wählen Sie das Datum aus",
     "Diagram Deployed":"Diagramm bereitgestellt",

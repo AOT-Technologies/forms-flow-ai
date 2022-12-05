@@ -1,8 +1,11 @@
 /* eslint-disable max-len */
 export const RESOURCE_BUNDLES_PT = {
+  "Choose any":"Escolha qualquer",
+  "Sort by form name":"Classificar por nome do formulário",
+  "select form type":"selecione o tipo de formulário",
   "Draft Deleted Successfully":"Rascunho excluído com sucesso",
   "Saved to Applications/Drafts":"Salvo em Aplicações/Rascunhos",
-  "Unfinished applications will be saved to Applications/Drafts":"Os aplicativos inacabados serão salvos em Aplicativos/Rascunhos",
+  "Unfinished applications will be saved to Applications/Drafts.":"Os aplicativos inacabados serão salvos em Aplicativos/Rascunhos.",
   "Discard Draft":"Descartar Rascunho",
   "Are you sure you wish to delete the draft":"Tem certeza de que deseja excluir o rascunho",
   "with ID":"com identidade",
@@ -245,7 +248,6 @@ export const RESOURCE_BUNDLES_PT = {
   "Submission saved to draft.":"Envio salvo como rascunho.",
   "Saved to draft":"Salvo no rascunho",
   "Saving...":"Salvando...",
-  "Unfinished applications will be saved to drafts.":"Aplicativos inacabados serão salvos em rascunhos.",
   "Resource":"Recurso",
   "Error in creating form process mapper":"Erro ao criar mapeador de processo de formulário",
   "Select the date":"Selecione a data",

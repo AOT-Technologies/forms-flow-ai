@@ -1,8 +1,11 @@
 /* eslint-disable max-len */
 export const RESOURCE_BUNDLES_FR = {
+  "Choose any":"Choisissez n'importe quel",
+  "Sort by form name":"Trier par nom de formulaire",
+  "select form type":"sélectionner le type de formulaire",
   "Draft Deleted Successfully":"Brouillon supprimé avec succès",
   "Saved to Applications/Drafts":"Enregistré dans Candidatures/Brouillons",
-  "Unfinished applications will be saved to Applications/Drafts":"Les candidatures non terminées seront enregistrées dans Candidatures/Brouillons",
+  "Unfinished applications will be saved to Applications/Drafts.":"Les candidatures non terminées seront enregistrées dans Candidatures/Brouillons.",
   "Discard Draft":" Supprimer le brouillon",
   "Are you sure you wish to delete the draft":"Êtes-vous sûr de vouloir supprimer le brouillon",
   "with ID":"avec pièce d'identité",
@@ -246,7 +249,6 @@ export const RESOURCE_BUNDLES_FR = {
   "Submission saved to draft.":"Soumission enregistrée comme brouillon.",
   "Saved to draft":"Enregistré comme brouillon",
   "Saving...":"Économie...",
-  "Unfinished applications will be saved to drafts.":"Les candidatures non terminées seront enregistrées dans les brouillons.",
   "Resource":"Ressource",
   "Error in creating form process mapper":"Erreur lors de la création du mappeur de processus de formulaire",
   "Select the date":"Sélectionnez la date",

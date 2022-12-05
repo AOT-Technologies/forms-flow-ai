@@ -1,8 +1,11 @@
 /* eslint-disable max-len */
 export const RESOURCE_BUNDLES_EN = {
+  "Choose any":"Choose any",
+  "Sort by form name":"Sort by form name",
+  "select form type":"select form type",
   "Draft Deleted Successfully":"Draft Deleted Successfully",
   "Saved to Applications/Drafts":"Saved to Applications/Drafts",
-  "Unfinished applications will be saved to Applications/Drafts":"Unfinished applications will be saved to Applications/Drafts",
+  "Unfinished applications will be saved to Applications/Drafts.":"Unfinished applications will be saved to Applications/Drafts.",
   "Discard Draft":"Discard Draft",
   "Are you sure you wish to delete the draft":"Are you sure you wish to delete the draft",
   "with ID":"with ID",
@@ -245,7 +248,6 @@ export const RESOURCE_BUNDLES_EN = {
   "Submission saved to draft.":"Submission saved to draft.",
   "Saved to draft":"Saved to draft",
   "Saving...":"Saving...",
-  "Unfinished applications will be saved to drafts.":"Unfinished applications will be saved to drafts.",
   "Resource":"Resource",
   "Error in creating form process mapper":"Error in creating form process mapper",
   "Select the date":"Select the date",

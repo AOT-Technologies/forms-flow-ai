@@ -4,7 +4,6 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.camunda.bpm.engine.ProcessEngine;
 import org.camunda.bpm.engine.TaskService;
-import org.camunda.bpm.engine.rest.dto.CountResultDto;
 import org.camunda.bpm.engine.rest.hal.Hal;
 import org.camunda.bpm.engine.task.TaskQuery;
 import org.camunda.bpm.extension.hooks.rest.dto.TaskQueryDto;

@@ -4,6 +4,7 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.camunda.bpm.engine.ProcessEngine;
 import org.camunda.bpm.engine.TaskService;
+import org.camunda.bpm.engine.rest.dto.CountResultDto;
 import org.camunda.bpm.engine.rest.hal.Hal;
 import org.camunda.bpm.engine.task.TaskQuery;
 import org.camunda.bpm.extension.hooks.rest.dto.TaskQueryDto;
@@ -126,6 +127,22 @@ public class TaskFilterRestServiceImplTest {
 		assertThrows(RuntimeException.class, () -> {
 			filterRestServiceImpl.queryList(request, querydto, null, null);
 		});
+	}
+	
+	@Test
+	public void invoke_filterCount_with_success() throws JsonProcessingException {
+		TaskQueryDto querydto = mock(TaskQueryDto.class);
+		org.camunda.bpm.engine.rest.dto.task.TaskQueryDto taskdto = new org.camunda.bpm.engine.rest.dto.task.TaskQueryDto();
+		taskdto.setAssignee("John Honai");
+		taskdto.setProcessDefinitionName("Two Step Approval");
+		when(querydto.getCriteria()).thenReturn(taskdto);
+		when(processEngine.getTaskService()).thenReturn(taskService);
+		taskQuery.taskAssignee(querydto.getCriteria().getAssignee());
+		taskQuery.processDefinitionName(querydto.getCriteria().getProcessDefinitionName());
+		when(taskQuery.count()).thenReturn(2L);
+		when(taskService.createTaskQuery()).thenReturn(taskQuery);
+		filterRestServiceImpl.queryCount(querydto);
+		verify(taskQuery, times(1)).count();		
 	}
 
 }

@@ -5,6 +5,7 @@ import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.camunda.bpm.engine.ProcessEngine;
 import org.camunda.bpm.engine.query.Query;
+import org.camunda.bpm.engine.rest.dto.CountResultDto;
 import org.camunda.bpm.engine.rest.dto.task.TaskDto;
 import org.camunda.bpm.engine.rest.exception.InvalidRequestException;
 import org.camunda.bpm.engine.rest.hal.Hal;
@@ -40,6 +41,22 @@ public class TaskFilterRestServiceImpl implements TaskFilterRestService {
         return executeQueryList(request, filterQuery, firstResult, maxResults);
 
     }
+    
+	@Override
+	public CountResultDto queryCount(TaskQueryDto filterQuery) {
+		return new CountResultDto(executeFilterCount(filterQuery));
+	}
+	
+	/**
+	 * This method execute the query and returns the count
+	 *
+	 * @param filterQuery
+	 * @return
+	 */
+	protected long executeFilterCount(TaskQueryDto filterQuery) {
+		Query<?, ?> query = filterQuery.getCriteria().toQuery(processEngine);
+		return query.count();
+	}
 
     private Object executeQueryList(Request request, TaskQueryDto filterQuery, Integer firstResult, Integer maxResults) throws JsonProcessingException {
         if (firstResult == null) {

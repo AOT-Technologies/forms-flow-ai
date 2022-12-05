@@ -293,11 +293,7 @@ class StepperPage extends PureComponent {
           return <Preview handleNext={this.handleNext} />;
         } else if (editMode) {
           return (
-            <Edit
-              handleNext={this.handleNext}
-              {...this.props}
-              setPreviewMode={this.setPreviewMode}
-            />
+            <Edit/>
           );
         }
         return <Create setPreviewMode={this.setPreviewMode} />;

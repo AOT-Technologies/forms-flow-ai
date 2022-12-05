@@ -7,6 +7,7 @@ import java.util.List;
 
 import org.camunda.bpm.engine.identity.Group;
 import org.camunda.bpm.engine.identity.User;
+import org.camunda.bpm.extension.keycloak.CacheableKeycloakCheckPasswordCall;
 import org.camunda.bpm.extension.keycloak.CacheableKeycloakGroupQuery;
 import org.camunda.bpm.extension.keycloak.CacheableKeycloakUserQuery;
 import org.camunda.bpm.extension.keycloak.KeycloakConfiguration;
@@ -21,12 +22,11 @@ import org.camunda.bpm.extension.keycloak.rest.KeycloakRestTemplate;
 public class KeycloakIdentityProviderSession
 		extends org.camunda.bpm.extension.keycloak.KeycloakIdentityProviderSession {
 
-	public KeycloakIdentityProviderSession(KeycloakConfiguration keycloakConfiguration,
-			KeycloakRestTemplate restTemplate, KeycloakContextProvider keycloakContextProvider,
-			QueryCache<CacheableKeycloakUserQuery, List<User>> userQueryCache,
-			QueryCache<CacheableKeycloakGroupQuery, List<Group>> groupQueryCache,
+	public KeycloakIdentityProviderSession(KeycloakConfiguration keycloakConfiguration, KeycloakRestTemplate restTemplate, KeycloakContextProvider keycloakContextProvider,
+			QueryCache<CacheableKeycloakUserQuery, List<User>> userQueryCache, QueryCache<CacheableKeycloakGroupQuery, List<Group>> groupQueryCache,
+			QueryCache<CacheableKeycloakCheckPasswordCall, Boolean> checkPasswordCache,
 			String webClientId, boolean enableClientAuth) {
-		super(keycloakConfiguration, restTemplate, keycloakContextProvider, userQueryCache, groupQueryCache);
+		super(keycloakConfiguration, restTemplate, keycloakContextProvider, userQueryCache, groupQueryCache, checkPasswordCache);
 		this.groupService = new  KeycloakGroupService(keycloakConfiguration, restTemplate, keycloakContextProvider, webClientId, enableClientAuth);
 	}
 

@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useReducer } from "react";
-import { Errors, FormBuilder } from "react-formio";
+import { Errors, FormBuilder, Formio } from "react-formio";
 import { push } from "connected-react-router";
 import { useHistory } from "react-router-dom";
 import _set from "lodash/set";
@@ -21,7 +21,7 @@ import {
 import Button from "react-bootstrap/Button";
 import Modal from "react-bootstrap/Modal";
 import { formio_resourceBundles } from "../../../resourceBundles/formio_resourceBundles";
-import { clearFormError, setFormFailureErrorData } from "../../../actions/formActions";
+import { clearFormError, setFormFailureErrorData, setFormSuccessData } from "../../../actions/formActions";
 import { addTenankey, removeTenantKey } from "../../../helper/helper";
 import { formUpdate } from "../../../apiManager/services/FormServices";
 const reducer = (form, { type, value }) => {
@@ -223,6 +223,8 @@ const Edit = React.memo(() => {
       }
 
       toast.success(t("Form Saved"));
+      dispatch(setFormSuccessData("form", submittedData));
+      Formio.cache = {};
       dispatch(push(`${redirectUrl}formflow/${submittedData._id}/preview`));
 
     }).catch((err) => {

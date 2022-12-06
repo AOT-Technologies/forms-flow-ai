@@ -166,13 +166,29 @@ const List = React.memo((props) => {
     formType
   ]);
 
+  const formCheck = (formCheckList)=>{
+    
+    const result = formCheckList.reduce(function(obj, v) {
+      obj[v.type] = (obj[v.type] || 0) + 1;
+      return obj;
+    }, {});
+
+  let response = "";
+
+  if (result.resource)
+  {
+    response = `${result.resource} ${result.resource == 1 ? t("Resource") : t("Resources")}`;
+  }
+  if(result.form)
+  {
+     response += `${result.resource ? " ," : ""} ${result.form} ${result.form == 1 ? t("Form") : t("Forms")}`;
+  } 
+  return toast.success(`${response} ${t("Downloaded Successfully")}`);
+  };
 
   const downloadForms = () => {
     FileService.downloadFile({ forms: formCheckList }, () => {
-      toast.success(
-        `${formCheckList.length} ${formCheckList.length === 1 ? t("Form") : t("Forms")
-        } ${t("Downloaded Successfully")}`
-      );
+      formCheck(formCheckList);
       dispatch(setFormCheckList([]));
     });
   };
@@ -452,14 +468,14 @@ const List = React.memo((props) => {
                     }}>
                     <i
                       className="fa fa-long-arrow-up fa-lg mt-2 fa-lg-hover"
-                      title="Sort by form name"
+                      title={t("Sort by form name")}
                       style={{
                         opacity: `${sortOrder === "asc" || sortOrder === "title" ? 1 : 0.5}`,
                       }}
                     />
                     <i
                       className="fa fa-long-arrow-down fa-lg mt-2 ml-1 fa-lg-hover"
-                      title="Sort by form name"
+                      title={t("Sort by form name")}
                       style={{
                         opacity: `${sortOrder === "desc" || sortOrder === "-title" ? 1 : 0.5}`,
                       }}
@@ -504,9 +520,9 @@ const List = React.memo((props) => {
                   </button>
                   {
                     isDesigner ? (
-                      <select className="form-control select" title="select form type" style={{ maxWidth: "150px" }} onChange={(e) => { setFormType(e.target.value); }} aria-label="Select Form Type">
-                        <option selected={formType === "form"} value="form">Form</option>
-                        <option selected={formType === "resource"} value="resource">Resource</option>
+                      <select className="form-control select" title={t("select form type")} style={{ maxWidth: "150px" }} onChange={(e) => { setFormType(e.target.value); }} aria-label="Select Form Type">
+                        <option selected={formType === "form"} value="form">{t("Form")}</option>
+                        <option selected={formType === "resource"} value="resource">{t("Resource")}</option>
                       </select>
                     ) : ""
                   }

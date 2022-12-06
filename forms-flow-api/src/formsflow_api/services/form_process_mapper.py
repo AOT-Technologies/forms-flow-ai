@@ -235,3 +235,16 @@ class FormProcessMapperService:
         if mapper is not None and mapper.tenant != tenant_key:
             raise PermissionError("Tenant authorization failed.")
         return 0
+
+    @staticmethod
+    @user_context
+    def check_tenant_authorization_by_formid(form_id: int, **kwargs) -> int:
+        """Check if tenant has permission to access the resource."""
+        user: UserContext = kwargs["user"]
+        tenant_key = user.tenant_key
+        if tenant_key is None:
+            return
+        mapper = FormProcessMapper.find_form_by_form_id(form_id=form_id)
+        if mapper is not None and mapper.tenant != tenant_key:
+            raise PermissionError("Tenant authorization failed.")
+        return

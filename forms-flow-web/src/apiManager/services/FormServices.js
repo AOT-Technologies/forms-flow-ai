@@ -10,7 +10,7 @@ import { replaceUrl } from "../../helper/helper";
 
 export const formCreate = (formData, ...rest) => {
   const done = rest.length ? rest[0] : () => {};
-  httpPOSTRequest(API.FORM_CREATION, formData)
+  httpPOSTRequest(API.FORM_DESIGN, formData)
     .then((res) => {
       if (res.data) {
         done(null, res.data);
@@ -24,6 +24,11 @@ export const formCreate = (formData, ...rest) => {
       }
     });
 };
+
+export const formUpdate = (form_id,formData) => {
+  return httpPUTRequest(`${API.FORM_DESIGN}/${form_id}`, formData);
+};
+
 
 export const postCustomSubmission = (data, formId, isPublic, ...rest) => {
   const done = rest.length ? rest[0] : () => {};

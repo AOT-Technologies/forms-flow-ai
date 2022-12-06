@@ -220,7 +220,7 @@ const Dashboard = React.memo(() => {
                       <select
                         onChange={(e) => onChangeInput(e.target.value)}
                         className="date-select mx-5 mb-3"
-                        title="choose any"
+                        title={t("Choose any")}
                         aria-label="Select date type"
                       >
                         <option className="date-select" value="created">
@@ -257,14 +257,14 @@ const Dashboard = React.memo(() => {
                         }}>
                         <i
                           className="fa fa-long-arrow-up fa-lg mt-2 fa-lg-hover"
-                          title="Sort by form name"
+                          title={t("Sort by form name")}
                           style={{
                             opacity: `${sortOrder === "asc" ? 1 : 0.5}`,
                           }}
                         />
                         <i
                           className="fa fa-long-arrow-down fa-lg mt-2 ml-1 fa-lg-hover"
-                          title="Sort by form name"
+                          title={t("Sort by form name")}
                           style={{
                             opacity: `${sortOrder === "desc" ? 1 : 0.5}`,
                           }}

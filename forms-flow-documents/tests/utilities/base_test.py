@@ -1,6 +1,7 @@
 """Utils for Test Suite."""
 
 import time
+
 from dotenv import find_dotenv, load_dotenv
 from flask import current_app
 

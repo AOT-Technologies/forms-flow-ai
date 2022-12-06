@@ -1,5 +1,14 @@
 /* eslint-disable max-len */
 export const RESOURCE_BUNDLES_ZH = {
+  "Choose any":"选择任何",
+  "Sort by form name":"按表格名称排序",
+  "select form type":"选择表格类型",
+  "Draft Deleted Successfully":"草稿删除成功",
+  "Saved to Applications/Drafts":"保存到申请/草稿",
+  "Unfinished applications will be saved to Applications/Drafts.":"未完成的申请将被保存到申请/草稿.",
+  "Discard Draft":" 丢弃草稿",
+  "Are you sure you wish to delete the draft":"您确定要删除草稿吗",
+  "with ID":"带身份证",
   "Please change the selected filters to view Forms":"请更改所选过滤器以查看表格",
   "Search by form name":"按表格名称搜索",
   "Click to search":"点击搜索",
@@ -238,7 +247,6 @@ export const RESOURCE_BUNDLES_ZH = {
   "Submission saved to draft.":"提交已保存到草稿。",
   "Saved to draft":"已保存到草稿",
   "Saving...":"保存...",
-  "Unfinished applications will be saved to drafts.":"未完成的申请将被保存到草稿中。",
   "Resource":"资源",
   "Error in creating form process mapper":"创建表单流程映射器时出错",
   "Select the date":"选择日期",
@@ -246,10 +254,8 @@ export const RESOURCE_BUNDLES_ZH = {
   "Deployment Failed":"部署失败",
   "Process name(s) must not be empty":"进程名称不能为空",
   "URL copied":"已复制网址",
-  "Click Here to Copy":"点击这里复制"
-
-
-
+  "Click Here to Copy":"点击这里复制",
+  "Resources":"资源"
 
 };
 

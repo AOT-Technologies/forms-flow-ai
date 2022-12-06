@@ -200,7 +200,7 @@ export default React.memo(() => {
                 </span>
                 <div className="select-style">
                   <Select
-                    placeholder={t("Select ...")}
+                    placeholder={t("Select...")}
                     options={processList}
                     onChange={handleListChange}
                     value={

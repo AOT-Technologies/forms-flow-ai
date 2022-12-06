@@ -16,3 +16,4 @@ sqlalchemy_utils
 markupsafe
 PyJWT
 git+https://github.com/AOT-Technologies/forms-flow-ai.git@develop#egg=formsflow_api_utils&subdirectory=forms-flow-api-utils
+

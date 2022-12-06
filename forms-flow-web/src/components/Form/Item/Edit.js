@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useReducer } from "react";
-import { saveForm, Errors, FormBuilder } from "react-formio";
+import { Errors, FormBuilder, Formio } from "react-formio";
 import { push } from "connected-react-router";
 import { useHistory } from "react-router-dom";
 import _set from "lodash/set";
@@ -21,8 +21,9 @@ import {
 import Button from "react-bootstrap/Button";
 import Modal from "react-bootstrap/Modal";
 import { formio_resourceBundles } from "../../../resourceBundles/formio_resourceBundles";
-import { clearFormError } from "../../../actions/formActions";
+import { clearFormError, setFormFailureErrorData, setFormSuccessData } from "../../../actions/formActions";
 import { addTenankey, removeTenantKey } from "../../../helper/helper";
+import { formUpdate } from "../../../apiManager/services/FormServices";
 const reducer = (form, { type, value }) => {
   const formCopy = _cloneDeep(form);
   switch (type) {
@@ -181,56 +182,55 @@ const Edit = React.memo(() => {
         newFormData.name = addTenankey(newFormData.name, tenantKey);
       }
     }
-    dispatch(
-      saveForm("form", newFormData, (err, submittedData) => {
-        if (!err) {
-          // checking any changes
-          if (isMapperSaveNeeded(submittedData)) {
-            const data = {
-              anonymous:
-                processListData.anonymous === null
-                  ? false
-                  : processListData.anonymous,
-              formName: submittedData.title,
-              status: processListData.status ? processListData.status : INACTIVE,
-              taskVariable: processListData.taskVariable
-                ? processListData.taskVariable
-                : [],
-              id: processListData.id,
-              formId: submittedData._id,
-            };
+    formUpdate(newFormData._id, newFormData).then((res)=>{
+      const {data:submittedData} = res;
+      if (isMapperSaveNeeded(submittedData)) {
+        const data = {
+          anonymous:
+            processListData.anonymous === null
+              ? false
+              : processListData.anonymous,
+          formName: submittedData.title,
+          status: processListData.status ? processListData.status : INACTIVE,
+          taskVariable: processListData.taskVariable
+            ? processListData.taskVariable
+            : [],
+          id: processListData.id,
+          formId: submittedData._id,
+        };
 
-            // PUT request : when application count is zero.
-            // POST request with updated version : when application count is positive.
+        // PUT request : when application count is zero.
+        // POST request with updated version : when application count is positive.
 
-            if (isNewMapperNeeded()) {
-              data["version"] = String(+prviousData.version + 1);
-              data["processKey"] = prviousData.processKey;
-              data["processName"] = prviousData.processName;
-              dispatch(saveFormProcessMapperPost(data));
-            } else {
-              // For hadling uploaded forms case.
-
-              if (processListData && processListData.id) {
-                // For created forms we would be having a mapper
-
-                dispatch(saveFormProcessMapperPut(data));
-              } else {
-                // For uploaded forms we have to create new mapper.
-
-                dispatch(saveFormProcessMapperPost(data));
-              }
-            }
-          }
-
-          toast.success(t("Form Saved"));
-          dispatch(push(`${redirectUrl}formflow/${submittedData._id}/preview`));
+        if (isNewMapperNeeded()) {
+          data["version"] = String(+prviousData.version + 1);
+          data["processKey"] = prviousData.processKey;
+          data["processName"] = prviousData.processName;
+          dispatch(saveFormProcessMapperPost(data));
         } else {
-          setFormSubmitted(false);
-          toast.error(t("Error while saving Form"));
+          // For hadling uploaded forms case.
+
+          if (processListData && processListData.id) {
+            // For created forms we would be having a mapper
+
+            dispatch(saveFormProcessMapperPut(data));
+          } else {
+            // For uploaded forms we have to create new mapper.
+
+            dispatch(saveFormProcessMapperPost(data));
+          }
         }
-      })
-    );
+      }
+
+      toast.success(t("Form Saved"));
+      dispatch(setFormSuccessData("form", submittedData));
+      Formio.cache = {};
+      dispatch(push(`${redirectUrl}formflow/${submittedData._id}/preview`));
+
+    }).catch((err) => {
+      const error = err.response.data || err.message;
+      dispatch(setFormFailureErrorData("form", error));
+    }).finally(setFormSubmitted(false));
   };
 
   // information about tenant key adding

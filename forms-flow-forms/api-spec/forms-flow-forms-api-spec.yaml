@@ -896,6 +896,504 @@ paths:
                     created: '2022-06-22T09:40:23.095Z'
                     modified: '2022-06-22T09:40:23.103Z'
                     machineName: testcreateform
+  '/form/{formId}':
+    get:
+      summary: GET form endpoint
+      tags: []
+      parameters:
+        - name: formId
+          in: path
+          schema:
+            type: string
+          required: true
+      responses: 
+        '200':
+          description: OK
+          content:
+              application/json:
+                schema:
+                  type: object
+                examples:
+                  example-1:
+                    value:
+                      __id: 63736e889fe51130648f0fe4
+                      title: select check _resouce
+                      name: selectCheckResouce
+                      path: selectcheckresouce
+                      type: resource
+                      display: form
+                      tags:
+                      - common
+                      access:
+                      - type: read_all
+                        roles:
+                        - 61b857cdf85e920fa28f89fb
+                        - 61b857cdf85e92313e8f89f7
+                        - 61b857cdf85e9225c08f89fa
+                      - type: update_all
+                        roles:
+                        - 61b857cdf85e92313e8f89f7
+                      - type: delete_all
+                        roles:
+                        - 61b857cdf85e92313e8f89f7
+                      submissionAccess:
+                      - type: create_all
+                        roles:
+                        - 61b857cdf85e92313e8f89f7
+                      - type: read_all
+                        roles:
+                        - 61b857cdf85e9225c08f89fa
+                      - type: update_all
+                        roles:
+                        - 61b857cdf85e9225c08f89fa
+                      - type: delete_all
+                        roles:
+                        - 61b857cdf85e92313e8f89f7
+                        - 61b857cdf85e9225c08f89fa
+                      - type: create_own
+                        roles:
+                        - 61b857cdf85e920fa28f89fb
+                      - type: read_own
+                        roles:
+                        - 61b857cdf85e920fa28f89fb
+                      - type: update_own
+                        roles:
+                        - 61b857cdf85e920fa28f89fb
+                      - type: delete_own
+                        roles:
+                        - 61b857cdf85e9225c08f89fa
+                      owner: 61b857cff85e92c6298f8a13
+                      components:
+                      - label: Text Field
+                        labelPosition: top
+                        placeholder: ''
+                        description: ''
+                        tooltip: ''
+                        prefix: ''
+                        suffix: ''
+                        widget:
+                          type: input
+                        inputMask: ''
+                        displayMask: ''
+                        allowMultipleMasks: false
+                        customClass: ''
+                        tabindex: ''
+                        autocomplete: ''
+                        hidden: false
+                        hideLabel: false
+                        showWordCount: false
+                        showCharCount: false
+                        mask: false
+                        autofocus: false
+                        spellcheck: true
+                        disabled: false
+                        tableView: true
+                        modalEdit: false
+                        multiple: false
+                        persistent: true
+                        inputFormat: plain
+                        protected: false
+                        dbIndex: false
+                        case: ''
+                        truncateMultipleSpaces: false
+                        encrypted: false
+                        redrawOn: ''
+                        clearOnHide: true
+                        customDefaultValue: ''
+                        calculateValue: ''
+                        calculateServer: false
+                        allowCalculateOverride: false
+                        validateOn: change
+                        validate:
+                          required: false
+                          pattern: ''
+                          customMessage: ''
+                          custom: ''
+                          customPrivate: false
+                          json: ''
+                          minLength: ''
+                          maxLength: ''
+                          strictDateValidation: false
+                          multiple: false
+                          unique: false
+                        unique: false
+                        errorLabel: ''
+                        errors: ''
+                        key: textField
+                        tags: []
+                        properties: {}
+                        conditional:
+                          show:
+                          when:
+                          eq: ''
+                          json: ''
+                        customConditional: ''
+                        logic: []
+                        attributes: {}
+                        overlay:
+                          style: ''
+                          page: ''
+                          left: ''
+                          top: ''
+                          width: ''
+                          height: ''
+                        type: textfield
+                        input: true
+                        refreshOn: ''
+                        dataGridLabel: false
+                        addons: []
+                        inputType: text
+                        id: eo2dcw
+                        defaultValue:
+                      - label: Select one
+                        labelPosition: top
+                        widget: choicesjs
+                        placeholder: ''
+                        description: ''
+                        tooltip: ''
+                        customClass: ''
+                        tabindex: ''
+                        hidden: false
+                        hideLabel: false
+                        uniqueOptions: false
+                        autofocus: false
+                        disabled: false
+                        tableView: true
+                        modalEdit: false
+                        multiple: false
+                        dataSrc: values
+                        data:
+                          values:
+                          - label: english
+                            value: english
+                          - label: hindy
+                            value: hindy
+                          - label: malayalam
+                            value: malayalam
+                          - label: thamil
+                            value: thamil
+                          - label: kannada
+                            value: kannada
+                          resource: ''
+                          json: ''
+                          url: ''
+                          custom: ''
+                        dataType: ''
+                        idPath: id
+                        valueProperty: ''
+                        template: "<span>{{ item.label }}</span>"
+                        refreshOn: ''
+                        refreshOnBlur: ''
+                        clearOnRefresh: false
+                        searchEnabled: true
+                        selectThreshold: 0.3
+                        readOnlyValue: false
+                        customOptions: {}
+                        useExactSearch: false
+                        persistent: true
+                        protected: false
+                        dbIndex: false
+                        encrypted: false
+                        clearOnHide: true
+                        customDefaultValue: ''
+                        calculateValue: ''
+                        calculateServer: false
+                        allowCalculateOverride: false
+                        validateOn: change
+                        validate:
+                          required: false
+                          onlyAvailableItems: false
+                          customMessage: ''
+                          custom: ''
+                          customPrivate: false
+                          json: ''
+                          strictDateValidation: false
+                          multiple: false
+                          unique: false
+                        unique: false
+                        errorLabel: ''
+                        errors: ''
+                        key: selectOne
+                        tags: []
+                        properties: {}
+                        conditional:
+                          show:
+                          when:
+                          eq: ''
+                          json: ''
+                        customConditional: ''
+                        logic: []
+                        attributes: {}
+                        overlay:
+                          style: ''
+                          page: ''
+                          left: ''
+                          top: ''
+                          width: ''
+                          height: ''
+                        type: select
+                        indexeddb:
+                          filter: {}
+                        selectFields: ''
+                        searchField: ''
+                        searchDebounce: 0.3
+                        minSearch: 0
+                        filter: ''
+                        limit: 100
+                        redrawOn: ''
+                        input: true
+                        prefix: ''
+                        suffix: ''
+                        dataGridLabel: false
+                        showCharCount: false
+                        showWordCount: false
+                        allowMultipleMasks: false
+                        addons: []
+                        lazyLoad: true
+                        authenticate: false
+                        ignoreCache: false
+                        fuseOptions:
+                          include: score
+                          threshold: 0.3
+                        id: ekq8h6
+                        defaultValue: ''
+                      - type: button
+                        label: Submit
+                        key: submit
+                        size: md
+                        block: false
+                        action: submit
+                        disableOnInvalid: true
+                        theme: primary
+                        input: true
+                        placeholder: ''
+                        prefix: ''
+                        customClass: ''
+                        suffix: ''
+                        multiple: false
+                        defaultValue:
+                        protected: false
+                        unique: false
+                        persistent: false
+                        hidden: false
+                        clearOnHide: true
+                        refreshOn: ''
+                        redrawOn: ''
+                        tableView: false
+                        modalEdit: false
+                        dataGridLabel: true
+                        labelPosition: top
+                        description: ''
+                        errorLabel: ''
+                        tooltip: ''
+                        hideLabel: false
+                        tabindex: ''
+                        disabled: false
+                        autofocus: false
+                        dbIndex: false
+                        customDefaultValue: ''
+                        calculateValue: ''
+                        calculateServer: false
+                        widget:
+                          type: input
+                        attributes: {}
+                        validateOn: change
+                        validate:
+                          required: false
+                          custom: ''
+                          customPrivate: false
+                          strictDateValidation: false
+                          multiple: false
+                          unique: false
+                        conditional:
+                          show:
+                          when:
+                          eq: ''
+                        overlay:
+                          style: ''
+                          left: ''
+                          top: ''
+                          width: ''
+                          height: ''
+                        allowCalculateOverride: false
+                        encrypted: false
+                        showCharCount: false
+                        showWordCount: false
+                        properties: {}
+                        allowMultipleMasks: false
+                        addons: []
+                        leftIcon: ''
+                        rightIcon: ''
+                        id: ev19qxl
+                      - label: applicationId
+                        customClass: ''
+                        modalEdit: false
+                        persistent: true
+                        protected: false
+                        dbIndex: false
+                        encrypted: false
+                        redrawOn: ''
+                        customDefaultValue: ''
+                        calculateValue: ''
+                        calculateServer: false
+                        key: applicationId
+                        tags: []
+                        properties: {}
+                        logic: []
+                        attributes: {}
+                        overlay:
+                          style: ''
+                          page: ''
+                          left: ''
+                          top: ''
+                          width: ''
+                          height: ''
+                        type: hidden
+                        input: true
+                        placeholder: ''
+                        prefix: ''
+                        suffix: ''
+                        multiple: false
+                        unique: false
+                        hidden: false
+                        clearOnHide: true
+                        refreshOn: ''
+                        tableView: false
+                        labelPosition: top
+                        Description: ''
+                        errorLabel: ''
+                        tooltip: ''
+                        hideLabel: false
+                        tabindex: ''
+                        disabled: false
+                        autofocus: false
+                        widget:
+                          type: input
+                        validateOn: change
+                        validate:
+                          required: false
+                          custom: ''
+                          customPrivate: false
+                          strictDateValidation: false
+                          multiple: false
+                          unique: false
+                        conditional:
+                          show:
+                          when:
+                          eq: ''
+                        allowCalculateOverride: false
+                        showCharCount: false
+                        showWordCount: false
+                        allowMultipleMasks: false
+                        inputType: hidden
+                        id: em1y8gd
+                        defaultValue: ''
+                      - label: applicationStatus
+                        customClass: ''
+                        modalEdit: false
+                        defaultValue:
+                        persistent: true
+                        protected: false
+                        dbIndex: false
+                        encrypted: false
+                        redrawOn: ''
+                        customDefaultValue: ''
+                        calculateValue: ''
+                        calculateServer: false
+                        key: applicationStatus
+                        tags: []
+                        properties: {}
+                        logic: []
+                        attributes: {}
+                        overlay:
+                          style: ''
+                          page: ''
+                          left: ''
+                          top: ''
+                          width: ''
+                          height: ''
+                        type: hidden
+                        input: true
+                        tableView: false
+                        placeholder: ''
+                        prefix: ''
+                        suffix: ''
+                        multiple: false
+                        unique: false
+                        hidden: false
+                        clearOnHide: true
+                        refreshOn: ''
+                        dataGridLabel: false
+                        labelPosition: top
+                        Description: ''
+                        errorLabel: ''
+                        tooltip: ''
+                        hideLabel: false
+                        tabindex: ''
+                        disabled: false
+                        autofocus: false
+                        widget:
+                          type: input
+                        validateOn: change
+                        validate:
+                          required: false
+                          custom: ''
+                          customPrivate: false
+                          strictDateValidation: false
+                          multiple: false
+                          unique: false
+                        conditional:
+                          show:
+                          when:
+                          eq: ''
+                        allowCalculateOverride: false
+                        showCharCount: false
+                        showWordCount: false
+                        allowMultipleMasks: false
+                        inputType: hidden
+                        id: e6z1qd9
+                      created: '2022-11-15T10:48:40.784Z'
+                      modified: '2022-11-15T10:48:40.796Z'
+                      machineName: selectCheckResouce
+
+  '/form/{formId}/submission/{submissionId}':
+    get:
+      summary: GET submission endpoint
+      tags: []
+      parameters:
+        - name: formId
+          in: path
+          schema:
+            type: string
+          required: true
+        - name: submissionId
+          in: path
+          schema:
+            type: string
+          required: true
+      responses: 
+        '200':
+          description: OK
+          content:
+              application/json:
+                schema:
+                  type: object
+                examples:
+                  example-1:
+                    value:
+                      _id: 63736eb79fe51130648f1000
+                      form: 63736e889fe51130648f0fe4
+                      owner: sample owner
+                      roles: []
+                      access: []
+                      data:
+                        textField: 'abc'
+                        selectOne: 'english'
+                        applicationId: 2920
+                        applicationStatus: 'Completed'
+                      externalIds: []
+                      created: '2022-11-15T10:49:27.163Z'
+                      modified: '2022-11-15T10:49:27.163Z'
   /user:
     get:
       summary: GET user endpoint

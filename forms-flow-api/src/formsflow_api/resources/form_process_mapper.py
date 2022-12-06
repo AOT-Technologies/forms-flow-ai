@@ -4,7 +4,7 @@ import json
 from http import HTTPStatus
 
 from flask import current_app, request
-from flask_restx import Namespace, Resource
+from flask_restx import Namespace, Resource, fields
 from formsflow_api_utils.exceptions import BusinessException
 from formsflow_api_utils.services.external import FormioService
 from formsflow_api_utils.utils import (
@@ -20,7 +20,125 @@ from formsflow_api.schemas import (
 )
 from formsflow_api.services import ApplicationService, FormProcessMapperService
 
+
+class NullableString(fields.String):
+    """Extending String field to be nullable."""
+
+    __schema_type__ = ["string", "null"]
+    __schema_example__ = "nullable string"
+
+
 API = Namespace("Form", description="Form")
+
+form_list_model = API.model(
+    "FormList",
+    {
+        "forms": fields.List(
+            fields.Nested(
+                API.model(
+                    "Form",
+                    {
+                        "formId": fields.String(),
+                        "formName": fields.String(),
+                        "id": fields.String(),
+                        "processKey": fields.String(),
+                    },
+                )
+            )
+        ),
+        "totalCount": fields.Integer(),
+        "pageNo": fields.Integer(),
+        "limit": fields.Integer(),
+    },
+)
+
+mapper_create_model = API.model(
+    "CreateMapper",
+    {
+        "anonymous": fields.Boolean(),
+        "formId": fields.String(),
+        "formName": fields.String(),
+        "formRevisionNumber": fields.String(),
+    },
+)
+
+mapper_create_response_model = API.model(
+    "MapperCreateResponse",
+    {
+        "anonymous": fields.Boolean(),
+        "comments": NullableString(),
+        "created": fields.String(),
+        "createdBy": fields.String(),
+        "formId": fields.String(),
+        "formName": fields.String(),
+        "id": fields.String(),
+        "modified": fields.String(),
+        "modifiedBy": NullableString(),
+        "processKey": fields.String(),
+        "processName": fields.String(),
+        "processTenant": NullableString(),
+        "status": NullableString(),
+        "taskVariable": fields.String(),
+        "version": fields.String(),
+    },
+)
+
+mapper_update_model = API.model(
+    "MapperUpdate",
+    {
+        "formId": fields.String(),
+        "formName": fields.String(),
+        "status": fields.String(),
+        "taskVariable": fields.String(),
+        "anonymous": fields.Boolean(),
+        "processKey": fields.String(),
+        "processName": fields.String(),
+        "id": fields.String(),
+    },
+)
+
+application_count_model = API.model(
+    "ApplicationCount", {"message": fields.String(), "value": fields.Integer()}
+)
+
+task_variable_response_model = API.model(
+    "TaskVariableResponse",
+    {
+        "processName": fields.String(),
+        "processKey": fields.String(),
+        "processTenant": NullableString(),
+        "taskVariable": fields.String(),
+    },
+)
+
+access_model = API.model(
+    "SubmissionAccess",
+    {"type": fields.String(), "roles": fields.List(fields.String())},
+)
+form_create_model = API.model(
+    "FormCreate",
+    {
+        "title": fields.String(),
+        "tags": fields.List(fields.String()),
+        "submissionAccess": fields.List(fields.Nested(access_model)),
+        "path": fields.String(),
+        "name": fields.String(),
+        "display": fields.String(),
+        "components": fields.List(fields.Raw()),
+        "access": fields.List(fields.Nested(access_model)),
+    },
+)
+
+form_create_response_model = API.inherit(
+    "FormCreateResponse",
+    {
+        "_id": fields.String(),
+        "machineName": fields.String(),
+        "owner": fields.String(),
+        "created": fields.String(),
+        "modified": fields.String(),
+    },
+)
 
 
 @cors_preflight("GET,POST,OPTIONS")
@@ -31,15 +149,46 @@ class FormResourceList(Resource):
     @staticmethod
     @auth.require
     @profiletime
+    @API.doc(
+        params={
+            "pageNo": {
+                "in": "query",
+                "description": "Page number for paginated results",
+                "default": "1",
+            },
+            "limit": {
+                "in": "query",
+                "description": "Limit for paginated results",
+                "default": "5",
+            },
+            "sortBy": {
+                "in": "query",
+                "description": "Name of column to sort by.",
+                "default": "id",
+            },
+            "sortOrder": {
+                "in": "query",
+                "description": "Specify sorting  order.",
+                "default": "desc",
+            },
+            "formName": {
+                "in": "query",
+                "description": "Retrieve form list based on form name.",
+                "default": "",
+            },
+        }
+    )
+    @API.response(200, "OK:- Successful request.", model=form_list_model)
+    @API.response(
+        400,
+        "BAD_REQUEST:- Invalid request.",
+    )
+    @API.response(
+        401,
+        "UNAUTHORIZED:- Authorization header not provided or an invalid token passed.",
+    )
     def get():  # pylint: disable=too-many-locals
-        """Get form process mapper.
-
-        : pageNo:- To retrieve page number
-        : limit:- To retrieve limit for each page
-        : formName:- Retrieve form list based on form name
-        : sortBy:- Name of column to sort by (default: id)
-        : sortOrder:- Order for sorting (asc/desc) (default: desc)
-        """
+        """Get form process mapper."""
         try:
             auth_form_details = ApplicationService.get_authorised_form_list(
                 token=request.headers["Authorization"]
@@ -107,6 +256,18 @@ class FormResourceList(Resource):
     @staticmethod
     @auth.require
     @profiletime
+    @API.doc(body=mapper_create_model)
+    @API.response(
+        200, "CREATED:- Successful request.", model=mapper_create_response_model
+    )
+    @API.response(
+        400,
+        "BAD_REQUEST:- Invalid request.",
+    )
+    @API.response(
+        401,
+        "UNAUTHORIZED:- Authorization header not provided or an invalid token passed.",
+    )
     def post():
         """Post a form process mapper using the request body."""
         mapper_json = request.get_json()
@@ -140,11 +301,21 @@ class FormResourceById(Resource):
     @staticmethod
     @auth.require
     @profiletime
+    @API.response(200, "OK:- Successful request.", model=mapper_create_response_model)
+    @API.response(
+        400,
+        "BAD_REQUEST:- Invalid request.",
+    )
+    @API.response(
+        401,
+        "UNAUTHORIZED:- Authorization header not provided or an invalid token passed.",
+    )
+    @API.response(
+        403,
+        "FORBIDDEN:- Authorization will not help.",
+    )
     def get(mapper_id: int):
-        """Get form by mapper_id.
-
-        : mapper_id:- Get form process mapper by mapper_id
-        """
+        """Get form by mapper_id."""
         try:
             return (
                 FormProcessMapperService.get_mapper(form_process_mapper_id=mapper_id),
@@ -167,11 +338,21 @@ class FormResourceById(Resource):
     @staticmethod
     @auth.require
     @profiletime
+    @API.response(200, "OK:- Successful request.")
+    @API.response(
+        400,
+        "BAD_REQUEST:- Invalid request.",
+    )
+    @API.response(
+        401,
+        "UNAUTHORIZED:- Authorization header not provided or an invalid token passed.",
+    )
+    @API.response(
+        403,
+        "FORBIDDEN:- Authorization will not help.",
+    )
     def delete(mapper_id: int):
-        """Delete form by mapper_id.
-
-        : mapper_id:- Delete form process mapper by mapper_id.
-        """
+        """Delete form by mapper_id."""
         try:
             FormProcessMapperService.mark_inactive_and_delete(
                 form_process_mapper_id=mapper_id
@@ -193,17 +374,24 @@ class FormResourceById(Resource):
 
     @staticmethod
     @auth.require
+    @API.doc(body=mapper_update_model)
+    @API.response(
+        200, "CREATED:- Successful request.", model=mapper_create_response_model
+    )
+    @API.response(
+        400,
+        "BAD_REQUEST:- Invalid request.",
+    )
+    @API.response(
+        401,
+        "UNAUTHORIZED:- Authorization header not provided or an invalid token passed.",
+    )
+    @API.response(
+        403,
+        "FORBIDDEN:- Authorization will not help.",
+    )
     def put(mapper_id: int):
-        """Update form by mapper_id.
-
-        : comments:- Brief description
-        : formId:- Unique Id for the corresponding form
-        : formName:- Name for the corresponding form
-        : id:- Id for particular form
-        : processKey:- Workflow associated for particular form
-        : processName:- Workflow associated for particular form
-        : status:- Status of the form
-        """
+        """Update form by mapper_id."""
         application_json = request.get_json()
 
         try:
@@ -251,6 +439,22 @@ class FormResourceByFormId(Resource):
     @staticmethod
     @auth.require
     @profiletime
+    @API.response(
+        200, "CREATED:- Successful request.", model=mapper_create_response_model
+    )
+    @API.response(204, "NO_CONTENT:- Successful request but nothing follows.")
+    @API.response(
+        400,
+        "BAD_REQUEST:- Invalid request.",
+    )
+    @API.response(
+        401,
+        "UNAUTHORIZED:- Authorization header not provided or an invalid token passed.",
+    )
+    @API.response(
+        403,
+        "FORBIDDEN:- Authorization will not help.",
+    )
     def get(form_id: str):
         """Get form by form_id.
 
@@ -300,6 +504,19 @@ class FormResourceApplicationCount(Resource):
     @staticmethod
     @auth.require
     @profiletime
+    @API.response(200, "OK:- Successful request.", model=application_count_model)
+    @API.response(
+        400,
+        "BAD_REQUEST:- Invalid request.",
+    )
+    @API.response(
+        401,
+        "UNAUTHORIZED:- Authorization header not provided or an invalid token passed.",
+    )
+    @API.response(
+        403,
+        "FORBIDDEN:- Authorization will not help.",
+    )
     def get(mapper_id: int):
         """The method retrieves the total application count for the given mapper id."""
         try:
@@ -331,6 +548,19 @@ class FormResourceTaskVariablesbyApplicationId(Resource):
     @staticmethod
     @auth.require
     @profiletime
+    @API.response(200, "OK:- Successful request.", model=task_variable_response_model)
+    @API.response(
+        400,
+        "BAD_REQUEST:- Invalid request.",
+    )
+    @API.response(
+        401,
+        "UNAUTHORIZED:- Authorization header not provided or an invalid token passed.",
+    )
+    @API.response(
+        403,
+        "FORBIDDEN:- Authorization will not help.",
+    )
     def get(application_id: int):
         """The method retrieves task variables based on application id."""
         try:
@@ -354,31 +584,76 @@ class FormResourceTaskVariablesbyApplicationId(Resource):
 
 
 @cors_preflight("POST,OPTIONS")
-@API.route("/form-create", methods=["POST", "OPTIONS"])
+@API.route("/form-design", methods=["POST", "OPTIONS"])
 class FormioFormResource(Resource):
     """Resource for formio form creation."""
 
     @staticmethod
-    @auth.require
+    @auth.has_one_of_roles([DESIGNER_GROUP])
     @profiletime
+    @API.doc(body=form_create_model)
+    @API.response(
+        200, "CREATED:- Successful request.", model=form_create_response_model
+    )
+    @API.response(
+        400,
+        "BAD_REQUEST:- Invalid request.",
+    )
+    @API.response(
+        401,
+        "UNAUTHORIZED:- Authorization header not provided or an invalid token passed.",
+    )
+    @API.response(
+        403,
+        "FORBIDDEN:- Authorization will not help.",
+    )
     def post():
         """Formio form creation method."""
         try:
             data = request.get_json()
-            if auth.has_role([DESIGNER_GROUP]):
-                formio_service = FormioService()
-                form_io_token = formio_service.get_formio_access_token()
-                response, status = (
-                    formio_service.create_form(data, form_io_token),
-                    HTTPStatus.CREATED,
-                )
-            else:
-                response, status = (
-                    {
-                        "message": "Permission Denied",
-                    },
-                    HTTPStatus.FORBIDDEN,
-                )
+            formio_service = FormioService()
+            form_io_token = formio_service.get_formio_access_token()
+            response, status = (
+                formio_service.create_form(data, form_io_token),
+                HTTPStatus.CREATED,
+            )
+            return response, status
+        except BusinessException as err:
+            current_app.logger.warning(err.error)
+            return err.error, err.status_code
+
+
+@cors_preflight("PUT,OPTIONS")
+@API.route("/form-design/<string:form_id>", methods=["PUT", "OPTIONS"])
+class FormioFormUpdateResource(Resource):
+    """Resource for formio form Update."""
+
+    @staticmethod
+    @auth.has_one_of_roles([DESIGNER_GROUP])
+    @profiletime
+    def put(form_id: str):
+        """Formio form update method."""
+        try:
+            FormProcessMapperService.check_tenant_authorization_by_formid(
+                form_id=form_id
+            )
+            data = request.get_json()
+            formio_service = FormioService()
+            form_io_token = formio_service.get_formio_access_token()
+            response, status = (
+                formio_service.update_form(form_id, data, form_io_token),
+                HTTPStatus.OK,
+            )
+            return response, status
+        except PermissionError as err:
+            response, status = (
+                {
+                    "type": "Permission Denied",
+                    "message": f"Access to form id - {form_id} is prohibited.",
+                },
+                HTTPStatus.FORBIDDEN,
+            )
+            current_app.logger.warning(err)
             return response, status
         except BusinessException as err:
             current_app.logger.warning(err.error)

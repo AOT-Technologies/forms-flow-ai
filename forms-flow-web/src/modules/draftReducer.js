@@ -2,6 +2,7 @@ import ACTION_CONSTANTS from "../actions/actionConstants";
 
 const initialState = {
   draftSubmission: {},
+  draftDelete : { modalOpen: false, draftId:null, draftName:'' },
   draftSubmissionError: {
     error: null,
     message: null,
@@ -46,6 +47,8 @@ const draftSubmission = (state = initialState, action) => {
       return { ...state, draftDetailStatusCode: action.payload };
     case ACTION_CONSTANTS.DRAFT_LAST_UPDATED:
       return { ...state, lastUpdated: action.payload };
+    case ACTION_CONSTANTS.DRAFT_DELETE:
+      return { ...state, draftDelete: action.payload };
     default:
       return state;
   }

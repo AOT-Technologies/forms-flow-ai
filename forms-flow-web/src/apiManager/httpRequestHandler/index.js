@@ -61,6 +61,27 @@ export const httpPOSTRequest = (
   });
 };
 
+export const httpPOSTBlobRequest = (
+  url,
+  params,
+  data,
+  token,
+  isBearer = true,
+  headers = null
+) => {
+  return axios.post(url, data, {
+    params: params,
+    responseType: "blob",
+    headers: !headers
+      ? {
+          Authorization: isBearer
+            ? `Bearer ${token || UserService.getToken()}`
+            : token,
+        }
+      : headers,
+  });
+};
+
 export const httpPOSTRequestWithoutToken = (url, data) => {
   return axios.post(url, data, {
     headers: {

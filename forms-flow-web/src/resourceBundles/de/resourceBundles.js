@@ -1,5 +1,14 @@
 /* eslint-disable max-len */
 export const RESOURCE_BUNDLES_DE = {
+  "Choose any":"Wählen Sie eine aus",
+  "Sort by form name":"Nach Formularnamen sortieren",
+  "select form type":"Formulartyp auswählen",
+  "Draft Deleted Successfully":"Entwurf erfolgreich gelöscht",
+  "Saved to Applications/Drafts":"Unter Anwendungen/Entwürfe gespeichert",
+  "Unfinished applications will be saved to Applications/Drafts.":" Unfertige Bewerbungen werden unter Bewerbungen/Entwürfe gespeichert.",
+  "Discard Draft":"Entwurf verwerfen",
+  "Are you sure you wish to delete the draft":"Möchten Sie den Entwurf wirklich löschen",
+  "with ID":"mit Ausweis",
   "Please change the selected filters to view Forms":"Bitte ändern Sie die ausgewählten Filter, um Formulare anzuzeigen",
   "Search by form name":"Suche nach Formularnamen",
   "Click to search":"Klicken Sie, um zu suchen",
@@ -241,7 +250,6 @@ export const RESOURCE_BUNDLES_DE = {
   "Submission saved to draft.":"Übermittlung als Entwurf gespeichert.",
   "Saved to draft":"Als Entwurf gespeichert",
   "Saving...":"Sparen...",
-  "Unfinished applications will be saved to drafts.":"Unfertige Bewerbungen werden als Entwürfe gespeichert.",
   "Resource":"Ressource",
   "Error in creating form process mapper":"Fehler beim Erstellen des Formularprozess-Mappers",
   "Select the date":"Wählen Sie das Datum aus",
@@ -249,7 +257,8 @@ export const RESOURCE_BUNDLES_DE = {
   "Deployment Failed":"Bereitstellung fehlgeschlagen",
   "Process name(s) must not be empty":"Prozessname(n) dürfen nicht leer sein",
   "URL copied":"URL kopiert",
-  "Click Here to Copy":"Klicken Sie hier, um zu kopieren"
+  "Click Here to Copy":"Klicken Sie hier, um zu kopieren",
+  "Resources":"Bronnen"
 
 
 

@@ -64,9 +64,18 @@ class FormioService:
         if response.ok:
             return response.json()
         raise BusinessException(response.json(), HTTPStatus.BAD_REQUEST)
+    
+    def update_form(self, form_id, data, formio_token):
+        """Put request to formio API to update form."""
+        headers = {"Content-Type": "application/json", "x-jwt-token": formio_token}
+        url = f"{self.base_url}/form/{form_id}"
+        response = requests.put(url, headers=headers, data=json.dumps(data))
+        if response.ok:
+            return response.json()
+        raise BusinessException(response.json(), HTTPStatus.BAD_REQUEST)
 
     def get_role_ids(self):
-        """Get request to forio API to retrieve role ids."""
+        """Get request to Formio API to retrieve role ids."""
         url = f"{self.base_url}/role"
         headers = {"x-jwt-token": self.get_formio_access_token()}
         current_app.logger.info("Role id fetching started...")

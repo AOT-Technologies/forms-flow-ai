@@ -101,8 +101,8 @@ def translate(to_lang: str, data: dict) -> dict:
 
 def get_role_ids_from_user_groups(role_ids, user_role):
     """Filters out formio role ids specific to user groups."""
-    if user_role is None or user_role is None:
-        raise ValueError("Inavlid arguments passed")
+    if role_ids is None or user_role is None:
+        return None
 
     if DESIGNER_GROUP in user_role:
         return role_ids

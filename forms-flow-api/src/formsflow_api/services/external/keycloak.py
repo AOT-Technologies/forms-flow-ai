@@ -63,7 +63,7 @@ class KeycloakAdminAPIService:
             return response.json()
         return None
 
-    def get_paginated_request(self, url_path, first, max_results):
+    def get_paginated_request(self, url_path, first, max_results, search):
         """Method to fetch GET paginated request of Keycloak Admin APIs.
 
         : url_path: The relative path of the API
@@ -71,6 +71,8 @@ class KeycloakAdminAPIService:
         : max_results: The max number of items per page
         """
         url = f"{self.base_url}/{url_path}?first={first}&max={max_results}"
+        if search:
+            url = f"{url}&search={search}"
         response = self.session.request("GET", url)
         response.raise_for_status()
 
@@ -78,14 +80,14 @@ class KeycloakAdminAPIService:
             return response.json()
         return None
 
-    def get_groups(self, page_no: int, limit: int):
+    def get_groups(self, page_no: int, limit: int, search: str = ""):
         """Return groups."""
         current_app.logger.debug("Getting groups")
         if page_no == 0 and limit == 0:
-            group_list_response = self.get_request(url_path="groups")
+            group_list_response = self.get_request(url_path=f"groups?search={search}&briefRepresentation=false")
         else:
             group_list_response = self.get_paginated_request(
-                url_path="groups", first=page_no, max_results=limit
+                url_path="groups", first=page_no, max_results=limit, search=search
             )
         current_app.logger.debug("Groups %s", group_list_response)
         return group_list_response
@@ -99,18 +101,19 @@ class KeycloakAdminAPIService:
                 dashboard_group_list = list(group["subGroups"])
         return dashboard_group_list
 
-    def get_roles(self, page_no: int, limit: int):
+    def get_roles(self, page_no: int, limit: int, search: str = ""):
         """Return roles."""
         current_app.logger.debug("Getting roles")
         client_id = self.get_client_id()
         # Look for exact match
         if page_no == 0 and limit == 0:
-            roles = self.get_request(f"clients/{client_id}/roles")
+            roles = self.get_request(f"clients/{client_id}/roles?search={search}")
         else:
             roles = self.get_paginated_request(
                 url_path=f"clients/{client_id}/roles",
                 first=page_no,
                 max_results=limit,
+                search=search
             )
         current_app.logger.debug("Client roles %s", roles)
         return roles
@@ -165,6 +168,7 @@ class KeycloakAdminAPIService:
             current_app.logger.debug(f"Keycloak response: {response}")
         except Exception as err_code:
             raise f"Request to Keycloak Admin APIs failed., {err_code}"
+        response.raise_for_status()
         if response.status_code == 204:
             return f"Updated - {url_path}"
 
@@ -181,3 +185,29 @@ class KeycloakAdminAPIService:
         except Exception as err_code:
             raise f"Request to Keycloak Admin APIs failed., {err_code}"
         response.raise_for_status()
+
+    @profiletime
+    def create_request(  # pylint: disable=inconsistent-return-statements
+        self, url_path, data=None
+    ):
+        """Method to create request of Keycloak Admin APIs.
+
+        : url_path: The relative path of the API
+        : data: The request data object
+        """
+        try:
+            url = f"{self.base_url}/{url_path}"
+            response = self.session.request(
+                "POST",
+                url,
+                data=json.dumps(data),
+            )
+            current_app.logger.debug(f"keycloak Admin API POST request URL: {url}")
+            current_app.logger.debug(f"Keycloak Admin POST API payload {data}")
+            current_app.logger.debug(f"Keycloak response: {response}")
+        except Exception as err_code:
+            raise f"Request to Keycloak Admin APIs failed., {err_code}"
+        response.raise_for_status()
+
+        if response.status_code == 201:
+            return "Created."

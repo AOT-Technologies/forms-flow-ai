@@ -36,20 +36,32 @@ class KeycloakGroupService(KeycloakAdmin):
             response = self.client.get_request(url_path=f"groups/{group_id}/members")
         return response
 
-    def update_group(self, group_id: str, dashboard_id_details: Dict):
+    def update_group(self, group_id: str, data: Dict):
         """Update group details."""
-        return self.client.update_request(
-            url_path=f"groups/{group_id}", data=dashboard_id_details
-        )
+        data = self.add_description(data)
+        return self.client.update_request(url_path=f"groups/{group_id}", data=data)
 
-    def get_groups_roles(self, page_no: int, limit: int):
+    def get_groups_roles(self, page_no: int, limit: int, search:str, sort_order:str):
         """Get groups."""
-        response = self.client.get_groups(page_no, limit)
-        # for data in response:
-        #     print(data)
-        #     response["description"] = data.get("attributes")
-        return response
+        response = self.client.get_groups(page_no, limit, search)
+        return self.sort_results(response, sort_order)
 
     def delete_group(self, group_id: str):
         """Delete role by role_id."""
         return self.client.delete_request(url_path=f"groups/{group_id}")
+
+    def create_group_role(self, data: Dict):
+        """Create group."""
+        data = self.add_description(data)
+        return self.client.create_request(url_path="groups", data=data)
+
+    def add_description(self, data: Dict):
+        """Group based doesn't have description field.
+
+        Description is added to attributes field.
+        """
+        dict_description = {}
+        dict_description["description"] = [data.get("description")]
+        data["attributes"] = dict_description
+        data.pop("description", None)
+        return data

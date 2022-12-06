@@ -44,10 +44,18 @@ class KeycloakClientService(KeycloakAdmin):
             data=dashboard_id_details,
         )
 
-    def get_groups_roles(self, page_no: int, limit: int):
+    def get_groups_roles(self, page_no: int, limit: int, search:str, sort_order:str):
         """Get roles."""
-        return self.client.get_roles(page_no, limit)
+        response = self.client.get_roles(page_no, limit, search)
+        return self.sort_results(response, sort_order)
 
     def delete_group(self, group_id: str):
         """Delete role by role_id."""
         return self.client.delete_request(url_path=f"roles-by-id/{group_id}")
+
+    def create_group_role(self, data: Dict):
+        """Create role."""
+        client_id = self.client.get_client_id()
+        return self.client.create_request(
+            url_path=f"clients/{client_id}/roles", data=data
+        )

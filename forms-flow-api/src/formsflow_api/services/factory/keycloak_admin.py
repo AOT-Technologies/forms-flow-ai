@@ -2,6 +2,7 @@
 
 from abc import ABC, abstractmethod
 from typing import Dict
+from operator import itemgetter
 
 
 class KeycloakAdmin(ABC):
@@ -24,9 +25,20 @@ class KeycloakAdmin(ABC):
         """Get users."""
 
     @abstractmethod
-    def get_groups_roles(self, page_no: int, limit: int):
+    def get_groups_roles(self, page_no: int, limit: int, search: str, sort_order:str):
         """Get groups."""
 
     @abstractmethod
     def delete_group(self, group_id: str):
         """Delete group by group_id."""
+
+    @abstractmethod
+    def create_group_role(self, data: Dict):
+        """Create group/role."""
+
+    def sort_results(self, data: Dict, sort_order: str):
+        """Sort results by name."""
+        if sort_order == "asc":
+            return sorted(data, key=itemgetter("name"))
+        else:
+            return sorted(data, key=itemgetter("name"), reverse=True)

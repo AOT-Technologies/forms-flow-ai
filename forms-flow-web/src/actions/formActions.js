@@ -133,6 +133,14 @@ export const setBpmFormSearch = (data) => (dispatch) => {
   return Promise.resolve();
 };
 
+export const setBpmFormType = (data) => (dispatch) => {
+  dispatch({
+    type: ACTION_CONSTANTS.BPM_FORM_TYPE,
+    payload: data,
+  });
+  return Promise.resolve();
+};
+
 export const setBpmFormLoading = (data) => (dispatch) => {
   dispatch({
     type: ACTION_CONSTANTS.BPM_FORM_LOADING,
@@ -153,4 +161,27 @@ export const clearSubmissionError = (name) => (dispatch) => {
     name,
   });
 };
+
+
+export const setRestoreFormId = (form_id) => (dispatch) => {
+  dispatch({
+    type: ACTION_CONSTANTS.RESTORE_FORM_ID,
+    payload:form_id,
+  });
+};
+
+export const setRestoreFormData = (fromData) => (dispatch) => {
+  dispatch({
+    type: ACTION_CONSTANTS.RESTORE_FORM_DATA,
+    payload:fromData,
+  });
+};
+
+export const setFormHistories = (historyData) => (dispatch) => {
+  dispatch({
+    type: ACTION_CONSTANTS.FORM_HISTORY,
+    payload:historyData,
+  });
+};
+
 

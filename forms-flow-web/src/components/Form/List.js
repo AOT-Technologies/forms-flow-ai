@@ -27,6 +27,7 @@ import {
   setBPMFormListPage,
   setBPMFormListSort,
   setFormDeleteStatus,
+  setBpmFormType,
 } from "../../actions/formActions";
 import Confirm from "../../containers/Confirm";
 import {
@@ -82,14 +83,13 @@ const List = React.memo((props) => {
   );
   const [showClearButton, setShowClearButton] = useState("");
   const [isAscend, setIsAscending] = useState(true);
-  const [previousForms, setPreviousForms] = useState({});
   const searchText = useSelector((state) => state.bpmForms.searchText);
   const [searchTextInput, setSearchTextInput] = useState(searchText);
 
   const [isLoading, setIsLoading] = React.useState(false);
 
-  const query = useSelector((state) => state.forms.query);
-  const [formType, setFormType] = useState(query?.type);
+  const type = useSelector((state) => state.bpmForms.formType);
+  const [formType, setFormType] = useState(type);
 
   const isDesigner = userRoles.includes(STAFF_DESIGNER);
   const bpmForms = useSelector((state) => state.bpmForms);
@@ -100,9 +100,7 @@ const List = React.memo((props) => {
   const sortOrder = useSelector((state) => state.bpmForms.sortOrder);
   const formCheckList = useSelector((state) => state.formCheckList.formList);
   const columns = isDesigner ? designerColums(t) : userColumns(t);
-  const designerPage = forms.pagination.page;
   const designerLimit = forms.limit;
-  const designTotalForms = forms.pagination.total;
   const formAccess = useSelector((state) => state.user?.formAccess || []);
 
   const submissionAccess = useSelector(
@@ -126,33 +124,20 @@ const List = React.memo((props) => {
     dispatch(setFormCheckList([]));
   }, [dispatch]);
 
-  useEffect(() => {
-    if (forms.forms.length > 0) {
-      setPreviousForms(forms);
-    }
-  }, [forms]);
+
 
   useEffect(() => {
     setIsLoading(false);
-    if (isDesigner) {
-      dispatch(setFormLoading(true));
-    } else {
-      dispatch(setBPMFormListLoading(true));
-    }
+    dispatch(setBPMFormListLoading(true));
   }, []);
 
   useEffect(() => {
-    if (isDesigner) {
-      setShowClearButton(searchText);
-      let updatedQuery = { query: { ...query } };
-      updatedQuery.query.title__regex = searchText;
-      updatedQuery.sort = sortOrder;
-      updatedQuery.query.type = formType;
-      getFormsInit(1, updatedQuery);
-    } else {
-      setShowClearButton(searchText);
-      dispatch(fetchBPMFormList(pageNo, limit, sortBy, sortOrder, searchText));
+    setShowClearButton(searchText);
+    let filters = [pageNo, limit, sortBy, sortOrder, searchText];
+    if(isDesigner){
+      filters.push(formType);
     }
+    dispatch(fetchBPMFormList(...filters));
 
   }, [
     getFormsInit,
@@ -200,24 +185,9 @@ const List = React.memo((props) => {
     return false;
   };
   const handlePageChange = (type, newState) => {
-    let modifiedPage;
     dispatch(setFormSearchLoading(true));
-    let updatedQuery = { query: { ...query } };
-    if (isDesigner) {
-      dispatch(
-        indexForms(
-          "forms",
-          modifiedPage ? modifiedPage : newState.page,
-          { limit: newState.sizePerPage, ...updatedQuery },
-          () => {
-            dispatch(setFormSearchLoading(false));
-          }
-        )
-      );
-    } else {
-      dispatch(setBPMFormLimit(newState.sizePerPage));
-      dispatch(setBPMFormListPage(newState.page));
-    }
+    dispatch(setBPMFormLimit(newState.sizePerPage));
+    dispatch(setBPMFormListPage(newState.page));
   };
   const handleSearch = () => {
     if (searchText != searchInputBox.current.value) {
@@ -227,6 +197,13 @@ const List = React.memo((props) => {
     }
 
   };
+
+  const handleTypeChange = (type)=>{
+    setFormType(type);
+    dispatch(setFormSearchLoading(true));
+    dispatch(setBpmFormType(type));
+
+  };
   const onClear = () => {
     setSearchTextInput("");
     searchInputBox.current.value = "";
@@ -234,14 +211,8 @@ const List = React.memo((props) => {
     handleSearch();
   };
   useEffect(() => {
-    let updatedQuery = { query: { ...query } };
-    if (isDesigner) {
-      updatedQuery = `${isAscend ? "" : "-"}title`;
-      dispatch(setBPMFormListSort(updatedQuery));
-    } else {
-      const updatedQuery = isAscend ? 'asc' : "desc";
-      dispatch(setBPMFormListSort(updatedQuery));
-    }
+    const updatedQuery = isAscend ? 'asc' : "desc";
+    dispatch(setBPMFormListSort(updatedQuery));
   }, [isAscend]);
   const handleSort = () => {
     setIsAscending(!isAscend);
@@ -354,12 +325,7 @@ const List = React.memo((props) => {
     );
   };
   const formData =
-    (() =>
-      isDesigner
-        ? forms.forms.length || !searchFormLoading
-          ? forms.forms
-          : previousForms.forms
-        : bpmForms.forms)() || [];
+    (() => bpmForms.forms)() || [];
 
   return (
     <>
@@ -520,7 +486,7 @@ const List = React.memo((props) => {
                   </button>
                   {
                     isDesigner ? (
-                      <select className="form-control select" title={t("select form type")} style={{ maxWidth: "150px" }} onChange={(e) => { setFormType(e.target.value); }} aria-label="Select Form Type">
+                      <select className="form-control select" title={t("select form type")} style={{ maxWidth: "150px" }} onChange={(e) => { handleTypeChange(e.target.value); }} aria-label="Select Form Type">
                         <option selected={formType === "form"} value="form">{t("Form")}</option>
                         <option selected={formType === "resource"} value="resource">{t("Resource")}</option>
                       </select>
@@ -555,9 +521,9 @@ const List = React.memo((props) => {
                         filterPosition={"top"}
                         pagination={paginationFactory(
                           getoptions(
-                            isDesigner ? designerPage : pageNo,
-                            isDesigner ? designerLimit : limit,
-                            isDesigner ? designTotalForms : totalForms
+                             pageNo,
+                             limit,
+                            totalForms
                           )
                         )}
                         onTableChange={handlePageChange}

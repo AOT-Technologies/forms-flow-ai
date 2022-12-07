@@ -241,6 +241,7 @@ class StepperPage extends PureComponent {
         ? formProcessList.taskVariable
         : [],
       anonymous: formProcessList.anonymous ? true : false,
+
     };
 
     if (workflow) {
@@ -258,6 +259,9 @@ class StepperPage extends PureComponent {
     if (formProcessList && formProcessList.id) {
       data.id = formProcessList.id;
     }
+
+    data.workflowChanged = data?.processKey !== formPreviousData.processKey;
+    data.statusChanged =  processData?.status !== formPreviousData.status;
 
     if (isNewVersionNeeded()) {
       // POST request for creating new mapper version of the current form.

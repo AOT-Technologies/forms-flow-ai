@@ -5,6 +5,7 @@ import { useHistory } from "react-router-dom";
 import _set from "lodash/set";
 import _cloneDeep from "lodash/cloneDeep";
 import _camelCase from "lodash/camelCase";
+import _isEquial from "lodash/isEqual";
 import {
   MULTITENANCY_ENABLED,
 } from "../../../constants/constants";
@@ -21,8 +22,9 @@ import {
 import Button from "react-bootstrap/Button";
 import Modal from "react-bootstrap/Modal";
 import { formio_resourceBundles } from "../../../resourceBundles/formio_resourceBundles";
-import { clearFormError, setFormFailureErrorData, setFormSuccessData } from "../../../actions/formActions";
+import { clearFormError, setFormFailureErrorData, setFormSuccessData, setRestoreFormData, setRestoreFormId } from "../../../actions/formActions";
 import { addTenankey, removeTenantKey } from "../../../helper/helper";
+import { fetchFormById } from "../../../apiManager/services/bpmFormServices";
 import { formUpdate } from "../../../apiManager/services/FormServices";
 const reducer = (form, { type, value }) => {
   const formCopy = _cloneDeep(form);
@@ -60,6 +62,8 @@ const Edit = React.memo(() => {
     (state) => state.process.applicationCount
   );
   const tenantKey = useSelector((state) => state.tenants?.tenantId);
+  const restoredFormId = useSelector((state) => state.formRestore?.restoredFormId);
+  const restoredFormData = useSelector((state) => state.formRestore?.restoredFormData);
   const formAccess = useSelector((state) => state.user?.formAccess || []);
   const roleIds = useSelector((state) => state.user?.roleIds || {});
   const submissionAccess = useSelector((state) => state.user?.submissionAccess || []);
@@ -71,14 +75,36 @@ const Edit = React.memo(() => {
   const history = useHistory();
   const { t } = useTranslation();
   const [show, setShow] = useState(false);
+  const [currentFormLoading , setCurrentFormLoading] = useState(false);
 
   const handleClose = () => setShow(false);
-
   const handleShow = () => setShow(true);
   const handleSave = () => {
     setShow(false);
     saveFormData();
   };
+  
+  useEffect(()=>{
+    if(restoredFormId){
+      setCurrentFormLoading(true);
+      fetchFormById(restoredFormId).then((res)=>{
+        if(res.data){
+        dispatch(setRestoreFormData(res.data));
+        dispatchFormAction({ type: "components", value: res.data.components });
+        toast.success("form restored");
+        }
+      }).catch((err)=>{
+        toast.error(err.response.data);
+      }).finally(()=>{
+        setCurrentFormLoading(false);
+      });
+    }
+    return () =>{
+      dispatch(setRestoreFormData({}));
+      dispatch(setRestoreFormId(null));
+    };
+  },[restoredFormId]);
+
   //remove tenatkey form path name
   useEffect(() => {
     if (form.path && MULTITENANCY_ENABLED) {
@@ -148,8 +174,11 @@ const Edit = React.memo(() => {
   }, [processListData]);
 
   const isNewMapperNeeded = () => {
-    return prviousData.formName !== form.title && applicationCount > 0;
+    return prviousData.formName !== form.title  && applicationCount > 0;
   };
+
+
+ 
 
   const saveFormWithDataChangeCheck = () => {
     if (isNewMapperNeeded()) {
@@ -164,16 +193,25 @@ const Edit = React.memo(() => {
     return (
       prviousData.formName !== newData.title ||
       prviousData.anonymous !== processListData.anonymous ||
-      processListData.anonymous === null
+      processListData.anonymous === null ||
+      processListData.formType !== newData.type
     );
   };
-
+// to check the component changed or not
+  const isFormComponentsChanged = ()=>{
+      if(restoredFormData && restoredFormId){
+         return _isEquial(restoredFormData.components,form.components);
+      }else{
+        return _isEquial(formData.components ,form.components);
+      }
+  };
   // save form data to submit
   const saveFormData = () => {
     setFormSubmitted(true);
     const newFormData = addHiddenApplicationComponent(form);
     newFormData.submissionAccess = submissionAccess;
     newFormData.access = formAccess;
+    newFormData.componentChanged = !isFormComponentsChanged();
     if (MULTITENANCY_ENABLED && tenantKey) {
       if (newFormData.path) {
         newFormData.path = addTenankey(newFormData.path, tenantKey);
@@ -191,12 +229,16 @@ const Edit = React.memo(() => {
               ? false
               : processListData.anonymous,
           formName: submittedData.title,
+          formType: submittedData.type,
           status: processListData.status ? processListData.status : INACTIVE,
           taskVariable: processListData.taskVariable
-            ? processListData.taskVariable
-            : [],
+          ? processListData.taskVariable
+          : [],
           id: processListData.id,
           formId: submittedData._id,
+          formTypeChanged: prviousData.formType !==  submittedData.type,
+          anonymousChanged: prviousData.formName !==  submittedData.title,
+          titleChanged: prviousData.anonymous !== processListData.anonymous
         };
 
         // PUT request : when application count is zero.
@@ -221,7 +263,8 @@ const Edit = React.memo(() => {
           }
         }
       }
-
+      dispatch(setRestoreFormData({}));
+      dispatch(setRestoreFormId(null));
       toast.success(t("Form Saved"));
       dispatch(setFormSuccessData("form", submittedData));
       Formio.cache = {};
@@ -230,7 +273,9 @@ const Edit = React.memo(() => {
     }).catch((err) => {
       const error = err.response.data || err.message;
       dispatch(setFormFailureErrorData("form", error));
-    }).finally(setFormSubmitted(false));
+    }).finally(()=>{
+      setFormSubmitted(false);
+    });
   };
 
   // information about tenant key adding
@@ -260,16 +305,17 @@ const Edit = React.memo(() => {
   const formChange = (newForm) =>
     dispatchFormAction({ type: "formChange", value: newForm });
 
+  
   // loading up to set the data to the form variable
-  if (!form._id) {
+  if (!form._id || currentFormLoading) {
     return (
       <div className="d-flex justify-content-center">
-        <div className="spinner-grow" role="status">
-          <span className="sr-only">
-            <Translation>{(t) => t("Loading...")}</Translation>
-          </span>
-        </div>
+      <div className="spinner-grow" role="status">
+        <span className="sr-only">
+          <Translation>{(t) => t("Loading...")}</Translation>
+        </span>
       </div>
+    </div>
     );
   }
 

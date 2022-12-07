@@ -110,6 +110,8 @@ const Create = React.memo(() => {
       );
     }
   };
+ 
+
 
   // setting the form data
   useEffect(() => {
@@ -130,7 +132,9 @@ const Create = React.memo(() => {
       ...newFormData,
       tags: ["common"],
     };
+    
     newForm.submissionAccess = submissionAccess;
+    newForm.componentChanged = true;
     newForm.access = formAccess;
     if (MULTITENANCY_ENABLED && tenantKey) {
       newForm.tenantKey = tenantKey;
@@ -147,6 +151,11 @@ const Create = React.memo(() => {
         const data = {
           formId: form._id,
           formName: form.title,
+          formType: form.type,
+          formTypeChanged:true, 
+          anonymousChanged:true,
+          parentFormId: form._id,
+          titleChanged: true,
           formRevisionNumber: "V1", // to do
           anonymous: formAccess[0]?.roles.includes(roleIds.ANONYMOUS),
         };

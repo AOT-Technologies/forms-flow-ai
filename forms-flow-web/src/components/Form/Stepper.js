@@ -292,13 +292,7 @@ class StepperPage extends PureComponent {
         if (previewMode) {
           return <Preview handleNext={this.handleNext} />;
         } else if (editMode) {
-          return (
-            <Edit
-              handleNext={this.handleNext}
-              {...this.props}
-              setPreviewMode={this.setPreviewMode}
-            />
-          );
+          return <Edit />;
         }
         return <Create setPreviewMode={this.setPreviewMode} />;
       case 1:
@@ -338,7 +332,7 @@ class StepperPage extends PureComponent {
   render() {
     // const { process } = this.props;
     const steps = this.getSteps();
-    const {t} = this.props;
+    const { t } = this.props;
     const handleReset = () => {
       this.setActiveStep(0);
     };
@@ -349,7 +343,7 @@ class StepperPage extends PureComponent {
           {this.props.isAuthenticated ? (
             <Link
               to={`${this.state.redirectUrl}form`}
-              title={ t("Back to Form List")}
+              title={t("Back to Form List")}
             >
               <i className="fa fa-chevron-left fa-lg m-3" />
             </Link>
@@ -416,7 +410,7 @@ const mapStateToProps = (state) => {
 const mapDispatchToProps = (dispatch) => {
   return {
     getAllProcesses: (tenantKey) => {
-    const tenantIdIn = MULTITENANCY_ENABLED ? tenantKey : null;
+      const tenantIdIn = MULTITENANCY_ENABLED ? tenantKey : null;
       dispatch(
         // eslint-disable-next-line no-unused-vars
         fetchAllBpmProcesses(tenantIdIn, (err, res) => {
@@ -467,4 +461,7 @@ const mapDispatchToProps = (dispatch) => {
   };
 };
 
-export default connect(mapStateToProps, mapDispatchToProps)(withTranslation()(StepperPage));
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps
+)(withTranslation()(StepperPage));

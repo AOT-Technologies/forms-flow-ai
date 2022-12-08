@@ -1,0 +1,67 @@
+{
+  "_from": "keycloak-js",
+  "_id": "keycloak-js@26.1.4",
+  "_inBundle": false,
+  "_integrity": "sha512-4h2RicCzIAtsjKIG8DIO+8NKlpWX2fiNkbS0jlbtjZFbIGGjbQBzjS/5NkyWlzxamXVow9prHTIgIiwfo3GAmQ==",
+  "_location": "/keycloak-js",
+  "_phantomChildren": {},
+  "_requested": {
+    "type": "tag",
+    "registry": true,
+    "raw": "keycloak-js",
+    "name": "keycloak-js",
+    "escapedName": "keycloak-js",
+    "rawSpec": "",
+    "saveSpec": null,
+    "fetchSpec": "latest"
+  },
+  "_requiredBy": [
+    "#USER",
+    "/"
+  ],
+  "_resolved": "https://registry.npmjs.org/keycloak-js/-/keycloak-js-26.1.4.tgz",
+  "_shasum": "d279ec2b0e4d0805bfa6f08ae1499f2332f86802",
+  "_spec": "keycloak-js",
+  "_where": "C:\\projects\\serviceflow\\formsflow\\forms-flow-web",
+  "author": {
+    "name": "Keycloak"
+  },
+  "bugs": {
+    "url": "https://github.com/keycloak/keycloak/issues"
+  },
+  "bundleDependencies": false,
+  "deprecated": false,
+  "description": "A client-side JavaScript OpenID Connect library that can be used to secure web applications.",
+  "exports": {
+    ".": {
+      "types": "./lib/keycloak.d.ts",
+      "default": "./lib/keycloak.js"
+    },
+    "./authz": {
+      "types": "./lib/keycloak-authz.d.ts",
+      "default": "./lib/keycloak-authz.js"
+    }
+  },
+  "files": [
+    "lib"
+  ],
+  "homepage": "https://www.keycloak.org",
+  "keywords": [
+    "keycloak",
+    "sso",
+    "oauth",
+    "oauth2",
+    "authentication"
+  ],
+  "license": "Apache-2.0",
+  "name": "keycloak-js",
+  "publishConfig": {
+    "access": "public"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/keycloak/keycloak.git"
+  },
+  "type": "module",
+  "version": "26.1.4"
+}

@@ -20,6 +20,11 @@
   <body class="no-scroll">
     <div id="app" class="scrollable-page"></div>
     <script src="%PUBLIC_URL%/config/config.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/keycloak-js@26.1.4/+esm"></script>
+    <script>
+      // Temporary check
+      console.log('Keycloak loaded?', !!window.Keycloak); // Should log "true"
+    </script>
     <script>
       // Check that service workers are supported
       let newWorker;

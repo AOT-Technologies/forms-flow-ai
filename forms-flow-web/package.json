@@ -38,7 +38,6 @@
     "crypto-js": "^4.0.0",
     "formiojs": "^4.14.0",
     "jsonwebtoken": "^8.5.1",
-    "keycloak-js": "^10.0.2",
     "lodash": "^4.17.21",
     "moment": "^2.29.2",
     "querystring": "^0.2.1",

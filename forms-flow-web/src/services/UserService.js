@@ -1,117 +1,115 @@
- /* istanbul ignore file */
+/* istanbul ignore file */
 import {
-  ROLES,
-  USER_RESOURCE_FORM_ID,
-  Keycloak_Client,
-  ANONYMOUS_USER,
-  ANONYMOUS_ID,
-  FORMIO_JWT_SECRET
-} from "../constants/constants";
-import {
+  setUserDetails,
   setUserRole,
   setUserToken,
-  setUserDetails,
 } from "../actions/bpmActions";
-import {BPM_BASE_URL} from "../apiManager/endpoints/config";
-import {AppConfig} from '../config';
-import {WEB_BASE_URL , WEB_BASE_CUSTOM_URL} from "../apiManager/endpoints/config";
+import { BPM_BASE_URL, WEB_BASE_CUSTOM_URL, WEB_BASE_URL } from "../apiManager/endpoints/config";
+import { AppConfig } from '../config';
+import {
+  ANONYMOUS_ID,
+  ANONYMOUS_USER,
+  FORMIO_JWT_SECRET,
+  Keycloak_Client,
+  ROLES,
+  USER_RESOURCE_FORM_ID
+} from "../constants/constants";
 
-import {_kc} from "../constants/tenantConstant";
+import { _kc } from "../constants/tenantConstant";
 
 const jwt = require("jsonwebtoken");
 
-/**
- * Initializes Keycloak instance and calls the provided callback function if successfully authenticated.
- *
- * @param onAuthenticatedCallback
- */
-// const KeycloakData = new Keycloak(tenantDetail);
+let KeycloakData = null;
+let refreshInterval;
 
-
-const initKeycloak = (store, ...rest) => {
-  const done = rest.length ? rest[0] : () => {};
-  KeycloakData
-    .init({
+const initKeycloak = async (store, ...rest) => {
+  try {
+    const done = rest.length ? rest[0] : () => {};
+    KeycloakData = await _kc; // Wait for Keycloak to be initialized
+    
+    const authenticated = await KeycloakData.init({
       onLoad: "check-sso",
       promiseType: "native",
-      silentCheckSsoRedirectUri:
-        window.location.origin + "/silent-check-sso.html",
+      silentCheckSsoRedirectUri: window.location.origin + "/silent-check-sso.html",
       pkceMethod: "S256",
       checkLoginIframe: false
-    })
-    .then((authenticated) => {
-      if (authenticated) {
-        if (KeycloakData.resourceAccess[Keycloak_Client]) {
-          const UserRoles = KeycloakData.resourceAccess[Keycloak_Client].roles;
-          store.dispatch(setUserRole(UserRoles));
-          store.dispatch(setUserToken(KeycloakData.token));
-          //Set Cammunda/Formio Base URL
-          setApiBaseUrlToLocalStorage();
-
-          let roles = [];
-          for (let i = 0; i < UserRoles.length; i++) {
-            const roleData = ROLES.find((x) => x.title === UserRoles[i]);
-            if (roleData) {
-              roles = roles.concat(roleData.id);
-            }
-          }
-          KeycloakData.loadUserInfo().then((res) => store.dispatch(setUserDetails(res)));
-          const email = KeycloakData.tokenParsed.email || "external";
-          authenticateFormio(email, roles);
-          // onAuthenticatedCallback();
-          done(null, KeycloakData);
-          refreshToken(store);
-        } else {
-          doLogout();
-        }
-      } else {
-        console.warn("not authenticated!");
-        doLogin();
-      }
     });
-};
-let refreshInterval;
-const refreshToken = (store) => {
-  refreshInterval = setInterval(() => {
-    KeycloakData && KeycloakData.updateToken(5).then((refreshed)=> {
-      if (refreshed) {
+
+    if (authenticated) {
+      if (KeycloakData.resourceAccess[Keycloak_Client]) {
+        const UserRoles = KeycloakData.resourceAccess[Keycloak_Client].roles;
+        store.dispatch(setUserRole(UserRoles));
         store.dispatch(setUserToken(KeycloakData.token));
+        setApiBaseUrlToLocalStorage();
+
+        let roles = [];
+        for (let i = 0; i < UserRoles.length; i++) {
+          const roleData = ROLES.find((x) => x.title === UserRoles[i]);
+          if (roleData) {
+            roles = roles.concat(roleData.id);
+          }
+        }
+        
+        const userInfo = await KeycloakData.loadUserInfo();
+        store.dispatch(setUserDetails(userInfo));
+        
+        const email = KeycloakData.tokenParsed.email || "external";
+        authenticateFormio(email, roles);
+        done(null, KeycloakData);
+        refreshToken(store);
+      } else {
+        await doLogout();
       }
-    }).catch( (error)=> {
-      console.log(error);
-      userLogout();
-    });
-  }, 6000);
-}
-
-
-/**
- * Logout function
- */
-const userLogout = () => {
-  localStorage.clear();
-  sessionStorage.clear();
-  clearInterval(refreshInterval);
-  doLogout();
+    } else {
+      console.warn("not authenticated!");
+      await doLogin();
+    }
+  } catch (error) {
+    console.error("Failed to initialize Keycloak:", error);
+    if (rest.length) {
+      rest[0](error);
+    }
+  }
 };
 
-const setApiBaseUrlToLocalStorage = ()=> {
+const refreshToken = (store) => {
+  refreshInterval = setInterval(async () => {
+    try {
+      if (KeycloakData) {
+        const refreshed = await KeycloakData.updateToken(5);
+        if (refreshed) {
+          store.dispatch(setUserToken(KeycloakData.token));
+        }
+      }
+    } catch (error) {
+      console.error("Failed to refresh token:", error);
+      userLogout();
+    }
+  }, 6000);
+};
+
+const userLogout = async () => {
+  try {
+    localStorage.clear();
+    sessionStorage.clear();
+    clearInterval(refreshInterval);
+    if (KeycloakData) {
+      await KeycloakData.logout();
+    }
+  } catch (error) {
+    console.error("Logout failed:", error);
+  }
+};
+
+const setApiBaseUrlToLocalStorage = () => {
   localStorage.setItem("bpmApiUrl", BPM_BASE_URL);
   localStorage.setItem("formioApiUrl", AppConfig.projectUrl);
-  localStorage.setItem("formsflow.ai.url",window.location.origin)
+  localStorage.setItem("formsflow.ai.url", window.location.origin);
   localStorage.setItem("formsflow.ai.api.url", WEB_BASE_URL);
   localStorage.setItem("customApiUrl", WEB_BASE_CUSTOM_URL);
-}
-
-
+};
 
 const getFormioToken = () => localStorage.getItem("formioToken");
-
-//const getUserEmail = () => KeycloakData.tokenParsed.email;
-
-/*const updateToken = (successCallback) => {
-  return KeycloakData.updateToken(5).then(successCallback).catch(doLogin);
-};*/
 
 const authenticateAnonymousUser = (store) => {
   const user = ANONYMOUS_USER;
@@ -121,32 +119,37 @@ const authenticateAnonymousUser = (store) => {
 };
 
 const authenticateFormio = (user, roles) => {
-  
   const FORMIO_TOKEN = jwt.sign(
     {
       external: true,
       form: {
-        _id: USER_RESOURCE_FORM_ID, // form.io form Id of user resource
+        _id: USER_RESOURCE_FORM_ID,
       },
       user: {
-        _id: user, // keep it like that
+        _id: user,
         roles: roles,
       },
     },
     FORMIO_JWT_SECRET
-  ); // TODO Move JWT secret key to COME From ENV
-  //TODO remove this token from local Storage on logout and try to move to redux store as well
+  );
   localStorage.setItem("formioToken", FORMIO_TOKEN);
 };
 
+const doLogin = async () => {
+  if (KeycloakData) {
+    await KeycloakData.login();
+  }
+};
 
-const KeycloakData= _kc;
+const doLogout = async () => {
+  if (KeycloakData) {
+    await KeycloakData.logout();
+  }
+};
 
-const doLogin = KeycloakData.login;
-const doLogout = KeycloakData.logout;
-const getToken = () => KeycloakData.token;
+const getToken = () => KeycloakData ? KeycloakData.token : null;
 
-const UserService ={
+const UserService = {
   initKeycloak,
   userLogout,
   getToken,

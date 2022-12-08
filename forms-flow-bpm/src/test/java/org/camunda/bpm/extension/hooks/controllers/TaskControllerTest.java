@@ -1,6 +1,6 @@
 package org.camunda.bpm.extension.hooks.controllers;
 
-import net.minidev.json.JSONArray;
+import com.nimbusds.jose.shaded.json.JSONArray;
 import org.camunda.bpm.extension.hooks.controllers.data.Task;
 import org.camunda.bpm.extension.hooks.controllers.data.Variable;
 import org.camunda.bpm.extension.hooks.controllers.stubs.TaskStub;

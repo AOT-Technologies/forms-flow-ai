@@ -1,7 +1,7 @@
 package org.camunda.bpm.extension.keycloak.rest;
 
 
-import net.minidev.json.JSONArray;
+import com.nimbusds.jose.shaded.json.JSONArray;
 import org.apache.commons.lang3.StringUtils;
 import org.camunda.bpm.engine.IdentityService;
 import org.slf4j.Logger;

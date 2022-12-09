@@ -69,7 +69,6 @@ export const DraftList = React.memo(() => {
     ref.current = currentValue;
     return ref;
   };
-  
 
   const countPerPageRef = useNoRenderRef(countPerPage);
 
@@ -80,18 +79,23 @@ export const DraftList = React.memo(() => {
   }, [dispatch, currentPage, countPerPageRef]);
 
   const onYes = () => {
-    deleteDraftbyId(draftDelete.draftId).then(()=>{
-      toast.success(t('Draft Deleted Successfully'));
-      dispatch(fetchDrafts(currentPage.current, countPerPageRef.current));
-    }).catch((error)=>{
-      toast.error(error.message);
-    }).finally(()=>{
-      dispatch(setDraftDelete({
-        modalOpen:false,
-        draftId:null,
-        draftName:''
-      }));
-    });
+    deleteDraftbyId(draftDelete.draftId)
+      .then(() => {
+        toast.success(t("Draft Deleted Successfully"));
+        dispatch(fetchDrafts(currentPage.current, countPerPageRef.current));
+      })
+      .catch((error) => {
+        toast.error(error.message);
+      })
+      .finally(() => {
+        dispatch(
+          setDraftDelete({
+            modalOpen: false,
+            draftId: null,
+            draftName: "",
+          })
+        );
+      });
   };
 
   const onNo = () => {
@@ -99,7 +103,7 @@ export const DraftList = React.memo(() => {
       setDraftDelete({
         modalOpen: false,
         draftId: null,
-        draftName: ''
+        draftName: "",
       })
     );
   };
@@ -192,14 +196,16 @@ export const DraftList = React.memo(() => {
       search
     >
       {(props) => (
-        <div className="container" role="definition">
+        <div className="container" id="main" role="definition">
           <Confirm
-          modalOpen={draftDelete.modalOpen}
-          message={`${t('Are you sure you wish to delete the draft')} "${draftDelete.draftName}" 
-          ${t('with ID')} "${draftDelete.draftId}"`}
-          onNo={() => onNo()}
-          onYes={() => onYes()}
-        />
+            modalOpen={draftDelete.modalOpen}
+            message={`${t("Are you sure you wish to delete the draft")} "${
+              draftDelete.draftName
+            }" 
+          ${t("with ID")} "${draftDelete.draftId}"`}
+            onNo={() => onNo()}
+            onYes={() => onYes()}
+          />
           <Head items={headerList()} page="Drafts" />
           <br />
           <div>

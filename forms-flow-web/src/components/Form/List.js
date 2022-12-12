@@ -5,13 +5,7 @@ import ToolkitProvider from "react-bootstrap-table2-toolkit";
 import { Link } from "react-router-dom";
 import { Button } from "react-bootstrap";
 import { toast } from "react-toastify";
-import {
-  selectRoot,
-  selectError,
-  Errors,
-  Formio,
-  saveForm,
-} from "react-formio";
+import { selectRoot, selectError, Errors, Formio } from "react-formio";
 import Loading from "../../containers/Loading";
 import {
   MULTITENANCY_ENABLED,
@@ -44,16 +38,20 @@ import FileModal from "./FileUpload/fileUploadModal";
 import { useTranslation, Translation } from "react-i18next";
 import { addHiddenApplicationComponent } from "../../constants/applicationComponent";
 import LoadingOverlay from "react-loading-overlay";
-import { unPublishForm } from "../../apiManager/services/processServices";
+import {
+  getFormProcesses,
+  saveFormProcessMapperPost,
+  unPublishForm,
+} from "../../apiManager/services/processServices";
 import { setBpmFormSearch } from "../../actions/formActions";
 import { checkAndAddTenantKey } from "../../helper/helper";
-import { formCreate } from "../../apiManager/services/FormServices";
+import { formCreate, formUpdate } from "../../apiManager/services/FormServices";
 import { designerColums, getoptions, userColumns } from "./constants/table";
 import paginationFactory from "react-bootstrap-table2-paginator";
 import filterFactory from "react-bootstrap-table2-filter";
 import overlayFactory from "react-bootstrap-table2-overlay";
 import { SpinnerSVG } from "../../containers/SpinnerSVG";
-import {getFormattedForm} from "./constants/formListConstants";
+import { getFormattedForm } from "./constants/formListConstants";
 
 const List = React.memo((props) => {
   const { t } = useTranslation();
@@ -69,7 +67,6 @@ const List = React.memo((props) => {
     onNo,
     onYes,
     tenants,
-  
   } = props;
   const searchInputBox = useRef("");
   const isBPMFormListLoading = useSelector((state) => state.bpmForms.isActive);
@@ -122,18 +119,15 @@ const List = React.memo((props) => {
     dispatch(setFormCheckList([]));
   }, [dispatch]);
 
-
-
   useEffect(() => {
     setIsLoading(false);
     dispatch(setBPMFormListLoading(true));
   }, []);
 
-
-  const fetchForms = () =>{
+  const fetchForms = () => {
     setShowClearButton(searchText);
-    let filters = [ pageNo, limit, sortBy, sortOrder, searchText];
-    if(isDesigner){
+    let filters = [pageNo, limit, sortBy, sortOrder, searchText];
+    if (isDesigner) {
       filters.push(formType);
     }
     dispatch(setFormSearchLoading(true));
@@ -151,32 +145,31 @@ const List = React.memo((props) => {
     sortBy,
     sortOrder,
     searchText,
-    formType
+    formType,
   ]);
 
-  const formCheck = (formCheckList)=>{
-    
-    const result = formCheckList.reduce(function(obj, v) {
+  const formCheck = (formCheckList) => {
+    const result = formCheckList.reduce(function (obj, v) {
       obj[v.type] = (obj[v.type] || 0) + 1;
       return obj;
     }, {});
 
-  let response = "";
+    let response = "";
 
-  if (result.resource)
-  {
-    response = `${result.resource} ${result.resource == 1 ? t("Resource") : t("Resources")}`;
-  }
-  if(result.form)
-  {
-     response += `${result.resource ? " ," : ""} ${result.form} ${result.form == 1 ? t("Form") : t("Forms")}`;
-  } 
-  return toast.success(`${response} ${t("Downloaded Successfully")}`);
+    if (result.resource) {
+      response = `${result.resource} ${
+        result.resource == 1 ? t("Resource") : t("Resources")
+      }`;
+    }
+    if (result.form) {
+      response += `${result.resource ? " ," : ""} ${result.form} ${
+        result.form == 1 ? t("Form") : t("Forms")
+      }`;
+    }
+    return toast.success(`${response} ${t("Downloaded Successfully")}`);
   };
 
-   
-
-  const downloadForms = async() => {
+  const downloadForms = async () => {
     let downloadForm = [];
     for (const form of formCheckList) {
       let newFormData = await fetchFormById(form._id);
@@ -184,15 +177,14 @@ const List = React.memo((props) => {
       downloadForm.push(newFormData);
     }
 
-    if(downloadForm.length == formCheckList.length){
+    if (downloadForm.length == formCheckList.length) {
       FileService.downloadFile({ forms: downloadForm }, () => {
         formCheck(downloadForm);
         dispatch(setFormCheckList([]));
       });
-    }else{
+    } else {
       toast.error(`Download Failed`);
     }
-    
   };
 
   const uploadClick = (e) => {
@@ -208,17 +200,15 @@ const List = React.memo((props) => {
   const handleSearch = () => {
     if (searchText != searchInputBox.current.value) {
       dispatch(setBPMFormListPage(1));
-    
+
       dispatch(setBpmFormSearch(searchInputBox.current.value));
     }
-
   };
 
-  const handleTypeChange = (type)=>{
+  const handleTypeChange = (type) => {
     setFormType(type);
-   
-    dispatch(setBpmFormType(type));
 
+    dispatch(setBpmFormType(type));
   };
   const onClear = () => {
     setSearchTextInput("");
@@ -227,7 +217,7 @@ const List = React.memo((props) => {
     handleSearch();
   };
   useEffect(() => {
-    const updatedQuery = isAscend ? 'asc' : "desc";
+    const updatedQuery = isAscend ? "asc" : "desc";
     dispatch(setBPMFormListSort(updatedQuery));
   }, [isAscend]);
   const handleSort = () => {
@@ -236,6 +226,30 @@ const List = React.memo((props) => {
     dispatch(setFormSearchLoading(true));
   };
 
+ const mapperHandler = (form)=>{
+  const data = {
+    formId: form._id,
+    formName: form.title,
+    formType: form.type,
+    formTypeChanged: true,
+    anonymousChanged: true,
+    parentFormId: form._id,
+    titleChanged: true,
+    formRevisionNumber: "V1", // to do
+    anonymous: false,
+  };
+  dispatch(
+    // eslint-disable-next-line no-unused-vars
+    saveFormProcessMapperPost(data, (err, res) => {
+      if (!err) {
+        toast.success(t("Form Sucessfully uploaded"));
+        fetchForms();
+      } else {
+        toast.error(t("Error in creating form process mapper"));
+      }
+    })
+  );
+ };
   const uploadFileContents = async (fileContent) => {
     try {
       if (fileContent.forms && Array.isArray(fileContent.forms)) {
@@ -256,10 +270,12 @@ const List = React.memo((props) => {
               };
               newFormData.access = formAccess;
               newFormData.submissionAccess = submissionAccess;
-              formCreate(newFormData, (err) => {
+              formCreate(newFormData, (err, createdForm) => {
+               
                 Formio.cache = {}; //removing cache
                 if (err) {
                   // get the form Id of the form if exists already in the server
+
                   dispatch(
                     fetchFormByAlias(newFormData.path, async (err, formObj) => {
                       if (!err) {
@@ -268,23 +284,24 @@ const List = React.memo((props) => {
                         newFormData.submissionAccess = formObj.submissionAccess;
                         // newFormData.tags = formObj.tags;
                         dispatch(
-                          saveForm(
-                            "form",
-                            newFormData,
-                            (newFormData,
-                              (err) => {
-                                if (!err) {
-                                  dispatch(updateFormUploadCounter());
-                                  resolve();
-                                } else {
-                                  dispatch(setFormFailureErrorData("form", err));
-                                  toast.error(t("Error in JSON file structure"));
-                                  setShowFormUploadModal(false);
-                                  reject();
-                                }
-                              })
-                          )
+                          // eslint-disable-next-line no-unused-vars
+                          getFormProcesses(newFormData._id, (err, res) => {
+                            if(!res){
+                              mapperHandler(newFormData);
+                            }
+                          })
                         );
+                        formUpdate(newFormData._id, newFormData)
+                          .then(() => {
+                            dispatch(updateFormUploadCounter());
+                            resolve();
+                          })
+                          .catch((err) => {
+                            dispatch(setFormFailureErrorData("form", err));
+                            toast.error(t("Error in JSON file structure"));
+                            setShowFormUploadModal(false);
+                            reject();
+                          });
                       } else {
                         toast.error(t("Error in JSON file structure"));
                         setShowFormUploadModal(false);
@@ -293,6 +310,7 @@ const List = React.memo((props) => {
                     })
                   );
                 } else {
+                  mapperHandler(createdForm);
                   dispatch(updateFormUploadCounter());
                   resolve();
                 }
@@ -312,10 +330,12 @@ const List = React.memo((props) => {
 
   const fileUploaded = async (evt) => {
     FileService.uploadFile(evt, async (fileContent) => {
-      dispatch(setFormUploadList(fileContent?.forms || []));
+      if(fileContent){
+        dispatch(setFormUploadList(fileContent?.forms || []));
       setShowFormUploadModal(true);
       await uploadFileContents(fileContent);
       fetchForms();
+      } 
     });
   };
 
@@ -340,9 +360,7 @@ const List = React.memo((props) => {
       </span>
     );
   };
-  const formData =
-    (() => bpmForms.forms)() || [];
-    
+  const formData = (() => bpmForms.forms)() || [];
 
   return (
     <>
@@ -351,7 +369,7 @@ const List = React.memo((props) => {
         onClose={() => setShowFormUploadModal(false)}
       />
       {(forms.isActive || designerFormLoading || isBPMFormListLoading) &&
-        !searchFormLoading ? (
+      !searchFormLoading ? (
         <div data-testid="Form-list-component-loader">
           <Loading />
         </div>
@@ -362,16 +380,19 @@ const List = React.memo((props) => {
             message={
               formProcessData.id && applicationCount
                 ? applicationCountResponse
-                  ? `${applicationCount} ${applicationCount > 1
-                    ? `${t("Applications are submitted against")}`
-                    : `${t("Application is submitted against")}`
-                  } "${props.formName}". ${t(
-                    "Are you sure you wish to delete the form?"
-                  )}`
-                  : `${t("Are you sure you wish to delete the form ")} "${props.formName
+                  ? `${applicationCount} ${
+                      applicationCount > 1
+                        ? `${t("Applications are submitted against")}`
+                        : `${t("Application is submitted against")}`
+                    } "${props.formName}". ${t(
+                      "Are you sure you wish to delete the form?"
+                    )}`
+                  : `${t("Are you sure you wish to delete the form ")} "${
+                      props.formName
+                    }"?`
+                : `${t("Are you sure you wish to delete the form ")} "${
+                    props.formName
                   }"?`
-                : `${t("Are you sure you wish to delete the form ")} "${props.formName
-                }"?`
             }
             onNo={() => onNo()}
             onYes={(e) => {
@@ -418,7 +439,7 @@ const List = React.memo((props) => {
                     className="d-none"
                     multiple={false}
                     accept=".json,application/json"
-                    onChange={fileUploaded}
+                    onChange={(e)=>{fileUploaded(e);}}
                     ref={uploadFormNode}
                   />
                 </>
@@ -439,7 +460,7 @@ const List = React.memo((props) => {
           </div>
           <section className="custom-grid grid-forms">
             <Errors errors={errors} />
-            <div className="  row mt-2 mx-2" >
+            <div className="  row mt-2 mx-2">
               <div className="col" style={{ marginLeft: "5px" }}>
                 <div className="input-group">
                   <span
@@ -447,20 +468,27 @@ const List = React.memo((props) => {
                     onClick={handleSort}
                     style={{
                       cursor: "pointer",
-                      marginBottom: "8px"
-                    }}>
+                      marginBottom: "8px",
+                    }}
+                  >
                     <i
                       className="fa fa-long-arrow-up fa-lg mt-2 fa-lg-hover"
                       title={t("Sort by form name")}
                       style={{
-                        opacity: `${sortOrder === "asc" || sortOrder === "title" ? 1 : 0.5}`,
+                        opacity: `${
+                          sortOrder === "asc" || sortOrder === "title" ? 1 : 0.5
+                        }`,
                       }}
                     />
                     <i
                       className="fa fa-long-arrow-down fa-lg mt-2 ml-1 fa-lg-hover"
                       title={t("Sort by form name")}
                       style={{
-                        opacity: `${sortOrder === "desc" || sortOrder === "-title" ? 1 : 0.5}`,
+                        opacity: `${
+                          sortOrder === "desc" || sortOrder === "-title"
+                            ? 1
+                            : 0.5
+                        }`,
                       }}
                     />
                   </span>
@@ -469,9 +497,7 @@ const List = React.memo((props) => {
                       type="search"
                       id="form1"
                       ref={searchInputBox}
-                      onKeyPress={(e) =>
-                        e.key === "Enter" && handleSearch()
-                      }
+                      onKeyPress={(e) => e.key === "Enter" && handleSearch()}
                       onChange={(e) => {
                         setShowClearButton(e.target.value);
                         setSearchTextInput(e.target.value);
@@ -501,16 +527,30 @@ const List = React.memo((props) => {
                   >
                     <i className="fa fa-search"></i>
                   </button>
-                  {
-                    isDesigner ? (
-                      <select className="form-control select" title={t("select form type")} style={{ maxWidth: "150px" }} onChange={(e) => { handleTypeChange(e.target.value); }} aria-label="Select Form Type">
-                        <option selected={formType === "form"} value="form">{t("Form")}</option>
-                        <option selected={formType === "resource"} value="resource">{t("Resource")}</option>
-                      </select>
-                    ) : ""
-                  }
+                  {isDesigner ? (
+                    <select
+                      className="form-control select"
+                      title={t("select form type")}
+                      style={{ maxWidth: "150px" }}
+                      onChange={(e) => {
+                        handleTypeChange(e.target.value);
+                      }}
+                      aria-label="Select Form Type"
+                    >
+                      <option selected={formType === "form"} value="form">
+                        {t("Form")}
+                      </option>
+                      <option
+                        selected={formType === "resource"}
+                        value="resource"
+                      >
+                        {t("Resource")}
+                      </option>
+                    </select>
+                  ) : (
+                    ""
+                  )}
                 </div>
-
               </div>
             </div>
             <ToolkitProvider
@@ -537,11 +577,7 @@ const List = React.memo((props) => {
                         filter={filterFactory()}
                         filterPosition={"top"}
                         pagination={paginationFactory(
-                          getoptions(
-                             pageNo,
-                             limit,
-                            totalForms
-                          )
+                          getoptions(pageNo, limit, totalForms)
                         )}
                         onTableChange={handlePageChange}
                         {...props.baseProps}
@@ -552,12 +588,13 @@ const List = React.memo((props) => {
                             overlay: (base) => ({
                               ...base,
                               background: "rgba(255, 255, 255)",
-                              height: `${isDesigner
-                                ? designerLimit
-                                : limit > 5
+                              height: `${
+                                isDesigner
+                                  ? designerLimit
+                                  : limit > 5
                                   ? "100% !important"
                                   : "350px !important"
-                                }`,
+                              }`,
                               top: "65px",
                             }),
                           },
@@ -589,35 +626,33 @@ const mapStateToProps = (state) => {
   };
 };
 
- 
-
 // eslint-disable-next-line no-unused-vars
 const mapDispatchToProps = (dispatch, ownProps) => {
   return {
-  
-
-    onYes: (e,  formId, formProcessData, formCheckList, fetchForms) => {
+    onYes: (e, formId, formProcessData, formCheckList, fetchForms) => {
       e.currentTarget.disabled = true;
-     
-      if (formProcessData.id) {
-        dispatch(unPublishForm(formProcessData.id,(err)=>{
-          if(err){
-            toast.error(
-              <Translation>{(t) => t("Form delete unsuccessfull")}</Translation>
-            );
-          }else{
-            toast.success(
-              <Translation>{(t) => t("Form delete successfull")}</Translation>
-            );
-            const newFormCheckList = formCheckList.filter(
-              (i) => i.formId !== formId
-            );
-            dispatch(setFormCheckList(newFormCheckList));
-          }
-          fetchForms();
 
-        }));
-        
+      if (formProcessData.id) {
+        dispatch(
+          unPublishForm(formProcessData.id, (err) => {
+            if (err) {
+              toast.error(
+                <Translation>
+                  {(t) => t("Form delete unsuccessfull")}
+                </Translation>
+              );
+            } else {
+              toast.success(
+                <Translation>{(t) => t("Form delete successfull")}</Translation>
+              );
+              const newFormCheckList = formCheckList.filter(
+                (i) => i.formId !== formId
+              );
+              dispatch(setFormCheckList(newFormCheckList));
+            }
+            fetchForms();
+          })
+        );
       }
       const formDetails = {
         modalOpen: false,
@@ -625,8 +660,6 @@ const mapDispatchToProps = (dispatch, ownProps) => {
         formName: "",
       };
       dispatch(setFormDeleteStatus(formDetails));
-     
-
     },
     onNo: () => {
       const formDetails = { modalOpen: false, formId: "", formName: "" };

@@ -151,7 +151,7 @@ const Preview = class extends PureComponent {
                   formRestore?.formHistory.map((i)=>(
                     <tr key={i.id}>
                  
-                  <td>{moment(i.created).fromNow()}</td>
+                  <td>{moment(i.created).format('MMMM Do YYYY, h:mm:ss a')}</td>
                   <td>{i.createdBy}</td>
                   <td>
                      
@@ -214,9 +214,8 @@ const mapDispatchToProps = (dispatch, ownProps)  => {
     getFormHistories: (formId)=>{
       getFormHistory(formId).then((res)=>{
         dispatch(setFormHistories(res.data));
-      }).catch((err)=>{
+      }).catch(()=>{
         dispatch(setFormHistories([]));
-        console.log(err);
       });
     }
   };

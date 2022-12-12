@@ -9,7 +9,7 @@ import Loading from "../../containers/Loading";
 import View from "../Form/Item/Submission/Item/View";
 import { getForm } from "react-formio";
 import NotFound from "../NotFound";
-import { Translation,useTranslation } from "react-i18next";
+import { Translation, useTranslation } from "react-i18next";
 import { MULTITENANCY_ENABLED } from "../../constants/constants";
 import { fetchAllBpmProcesses } from "../../apiManager/services/processServices";
 import { getDraftById } from "../../apiManager/services/draftService";
@@ -18,7 +18,7 @@ import { setDraftDetail } from "../../actions/draftActions";
 import ProcessDiagram from "../BPMN/ProcessDiagramHook";
 
 const ViewDraft = React.memo(() => {
-  const {t} = useTranslation();
+  const { t } = useTranslation();
   const { draftId } = useParams();
   const draftDetail = useSelector((state) => state.draft.submission);
   const draftDetailStatusCode = useSelector(
@@ -67,7 +67,7 @@ const ViewDraft = React.memo(() => {
   }
 
   return (
-    <div className="container">
+    <div className="container" id="main">
       <div className="main-header">
         <Link title="go back" to={`${redirectUrl}draft`}>
           <i className="fa fa-chevron-left fa-lg" />

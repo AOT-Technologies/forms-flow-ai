@@ -176,6 +176,7 @@ const View = React.memo((props) => {
    * Draft is updated only if the form is updated from the last saved form data.
    */
   const saveDraft = (payload, exitType = exitType) => {
+    if (exitType === "SUBMIT") return;
     let dataChanged = !isEqual(payload.data, lastUpdatedDraft.data);
     if (draftSubmissionId && isDraftCreated) {
       if (dataChanged) {

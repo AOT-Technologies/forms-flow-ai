@@ -8,21 +8,19 @@ import EditDraft from "./EditDraft";
 
 export default React.memo(() => {
   return (
-    <div className="container" id="main">
-      <Switch>
-        <>
-          <Route exact path={`${BASE_ROUTE}draft`} component={DraftList} />
-          <Route path={`${BASE_ROUTE}draft/:draftId`}>
-            <ViewDraft />
-          </Route>
-          <Route path={`${BASE_ROUTE}draft/:draftId/:notavailable`}>
-            <Redirect exact to="/404" />
-          </Route>
-          <Route path={`${BASE_ROUTE}form/:formId/draft/:draftId/edit`}>
-            <EditDraft />
-          </Route>
-        </>
-      </Switch>
-    </div>
+    <Switch>
+      <>
+        <Route exact path={`${BASE_ROUTE}draft`} component={DraftList} />
+        <Route path={`${BASE_ROUTE}draft/:draftId`}>
+          <ViewDraft />
+        </Route>
+        <Route path={`${BASE_ROUTE}draft/:draftId/:notavailable`}>
+          <Redirect exact to="/404" />
+        </Route>
+        <Route path={`${BASE_ROUTE}form/:formId/draft/:draftId/edit`}>
+          <EditDraft />
+        </Route>
+      </>
+    </Switch>
   );
 });

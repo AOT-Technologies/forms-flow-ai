@@ -17,7 +17,7 @@ class KeycloakAdmin(ABC):
         """Get group by group_id."""
 
     @abstractmethod
-    def update_group(self, group_id: str, dashboard_id_details: Dict):
+    def update_group(self, group_id: str, data: Dict):
         """Update group."""
 
     @abstractmethod
@@ -25,7 +25,7 @@ class KeycloakAdmin(ABC):
         """Get users."""
 
     @abstractmethod
-    def get_groups_roles(self, page_no: int, limit: int, search: str, sort_order:str):
+    def get_groups_roles(self, search: str, sort_order: str):
         """Get groups."""
 
     @abstractmethod
@@ -40,5 +40,4 @@ class KeycloakAdmin(ABC):
         """Sort results by name."""
         if sort_order == "asc":
             return sorted(data, key=itemgetter("name"))
-        else:
-            return sorted(data, key=itemgetter("name"), reverse=True)
+        return sorted(data, key=itemgetter("name"), reverse=True)

@@ -41,9 +41,9 @@ class KeycloakGroupService(KeycloakAdmin):
         data = self.add_description(data)
         return self.client.update_request(url_path=f"groups/{group_id}", data=data)
 
-    def get_groups_roles(self, page_no: int, limit: int, search:str, sort_order:str):
+    def get_groups_roles(self, search: str, sort_order: str):
         """Get groups."""
-        response = self.client.get_groups(page_no, limit, search)
+        response = self.client.get_groups()
         return self.sort_results(response, sort_order)
 
     def delete_group(self, group_id: str):

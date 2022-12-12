@@ -42,12 +42,10 @@ class KeycloakRolesResource(Resource):
         :params int limit: number of items per page (optional)
         """
         try:
-            page_no = request.args.get("pageNo", 0)
-            limit = request.args.get("limit", 0)
             search = request.args.get("search", "")
             sort_order = request.args.get("sortOrder", "asc")
             group_response = KeycloakFactory.get_instance().get_groups_roles(
-                page_no, limit, search, sort_order
+                search, sort_order
             )
             return group_response, HTTPStatus.OK
         except requests.exceptions.RequestException as err:
@@ -72,11 +70,7 @@ class KeycloakRolesResource(Resource):
     )
     @API.expect(roles_request)
     def post():
-        """
-        Create role/group in keycloak.
-
-
-        """
+        """Create role/group in keycloak."""
         try:
             response, status = (
                 KeycloakFactory.get_instance().create_group_role(request.get_json()),

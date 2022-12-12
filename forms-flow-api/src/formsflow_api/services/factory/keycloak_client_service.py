@@ -36,17 +36,17 @@ class KeycloakClientService(KeycloakAdmin):
             url_path=f"clients/{client_id}/roles/formsflow-reviewer/users"
         )
 
-    def update_group(self, group_id: str, dashboard_id_details: Dict):
+    def update_group(self, group_id: str, data: Dict):
         """Update keycloak role."""
         client_id = self.client.get_client_id()
         return self.client.update_request(
             url_path=f"roles-by-id/{group_id}?client={client_id}",
-            data=dashboard_id_details,
+            data=data,
         )
 
-    def get_groups_roles(self, page_no: int, limit: int, search:str, sort_order:str):
+    def get_groups_roles(self, search: str, sort_order: str):
         """Get roles."""
-        response = self.client.get_roles(page_no, limit, search)
+        response = self.client.get_roles(search)
         return self.sort_results(response, sort_order)
 
     def delete_group(self, group_id: str):

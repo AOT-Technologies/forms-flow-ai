@@ -63,7 +63,7 @@ class KeycloakAdminAPIService:
             return response.json()
         return None
 
-    def get_paginated_request(self, url_path, first, max_results, search):
+    def get_paginated_request(self, url_path, first, max_results):
         """Method to fetch GET paginated request of Keycloak Admin APIs.
 
         : url_path: The relative path of the API
@@ -71,8 +71,6 @@ class KeycloakAdminAPIService:
         : max_results: The max number of items per page
         """
         url = f"{self.base_url}/{url_path}?first={first}&max={max_results}"
-        if search:
-            url = f"{url}&search={search}"
         response = self.session.request("GET", url)
         response.raise_for_status()
 
@@ -80,49 +78,36 @@ class KeycloakAdminAPIService:
             return response.json()
         return None
 
-    def get_groups(self, page_no: int, limit: int, search: str = ""):
-        """Return groups."""
-        current_app.logger.debug("Getting groups")
-        if page_no == 0 and limit == 0:
-            group_list_response = self.get_request(url_path=f"groups?search={search}&briefRepresentation=false")
-        else:
-            group_list_response = self.get_paginated_request(
-                url_path="groups", first=page_no, max_results=limit, search=search
-            )
-        current_app.logger.debug("Groups %s", group_list_response)
-        return group_list_response
-
     def get_analytics_groups(self, page_no: int, limit: int):
         """Return groups for analytics users."""
         dashboard_group_list: list = []
-        group_list_response = self.get_groups(page_no, limit)
+        if page_no == 0 and limit == 0:
+            group_list_response = self.get_request(url_path="groups")
+        else:
+            group_list_response = self.get_paginated_request(
+                url_path="groups", first=page_no, max_results=limit
+            )
+
         for group in group_list_response:
             if group["name"] == KEYCLOAK_DASHBOARD_BASE_GROUP:
                 dashboard_group_list = list(group["subGroups"])
         return dashboard_group_list
 
-    def get_roles(self, page_no: int, limit: int, search: str = ""):
-        """Return roles."""
-        current_app.logger.debug("Getting roles")
+    def get_analytics_roles(self, page_no: int, limit: int):
+        """Return roles for analytics users."""
+        current_app.logger.debug("Getting analytics roles")
+        dashboard_roles_list: list = []
         client_id = self.get_client_id()
         # Look for exact match
         if page_no == 0 and limit == 0:
-            roles = self.get_request(f"clients/{client_id}/roles?search={search}")
+            roles = self.get_request(f"clients/{client_id}/roles")
         else:
             roles = self.get_paginated_request(
                 url_path=f"clients/{client_id}/roles",
                 first=page_no,
                 max_results=limit,
-                search=search
             )
         current_app.logger.debug("Client roles %s", roles)
-        return roles
-
-    def get_analytics_roles(self, page_no: int, limit: int):
-        """Return roles for analytics users."""
-        current_app.logger.debug("Getting analytics roles")
-        dashboard_roles_list: list = []
-        roles = self.get_roles(page_no, limit)
         for client_role in roles:
             if client_role["name"] not in FORMSFLOW_ROLES:
                 client_role["path"] = client_role["name"]
@@ -171,6 +156,23 @@ class KeycloakAdminAPIService:
         response.raise_for_status()
         if response.status_code == 204:
             return f"Updated - {url_path}"
+
+    def get_groups(self):
+        """Return groups."""
+        current_app.logger.debug("Getting groups")
+        group_list_response = self.get_request(
+            url_path="groups?briefRepresentation=false"
+        )
+        current_app.logger.debug("Groups %s", group_list_response)
+        return group_list_response
+
+    def get_roles(self, search: str = ""):
+        """Return roles."""
+        current_app.logger.debug("Getting roles")
+        client_id = self.get_client_id()
+        roles = self.get_request(f"clients/{client_id}/roles?search={search}")
+        current_app.logger.debug("Client roles %s", roles)
+        return roles
 
     @profiletime
     def delete_request(self, url_path):

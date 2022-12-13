@@ -221,7 +221,7 @@ const TaskHeader = React.memo(() => {
       />
       <Row className="ml-0 task-header">{task?.name}</Row>
       <Row className="ml-0 task-name">
-        <span className="application-id" dat-title={t("Process Name")}>
+        <span className="application-id" data-title={t("Process Name")}>
           {" "}
           {
             getProcessDataObjectFromList(processList, task?.processDefinitionId)
@@ -296,7 +296,7 @@ const TaskHeader = React.memo(() => {
           className="center-position"
           sm={4}
           onClick={() => setModal(true)}
-          dat-title={t("groups")}
+          data-title={t("groups")}
         >
           <i className="fa fa-group mr-1" />
           {taskGroups.length === 0 ? (
@@ -329,14 +329,14 @@ const TaskHeader = React.memo(() => {
                   <span
                     className="change-tooltip"
                     onClick={() => setIsEditAssignee(true)}
-                    dat-title={t("Click to Change Assignee")}
+                    data-title={t("Click to Change Assignee")}
                   >
                     {task.assignee}
                   </span>
                   <i
                     className="fa fa-times ml-1"
                     onClick={onUnClaimTask}
-                    dat-title={t("Reset Assignee")}
+                    data-title={t("Reset Assignee")}
                   />
                 </span>
               ) : (

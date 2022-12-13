@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useReducer } from "react";
-import { FormBuilder, Errors, Formio } from "react-formio";
+import { FormBuilder, Errors } from "react-formio";
 import _set from "lodash/set";
 import _cloneDeep from "lodash/cloneDeep";
 import _camelCase from "lodash/camelCase";
@@ -145,38 +145,44 @@ const Create = React.memo(() => {
         newForm.name = addTenankey(newForm.name, tenantKey);
       }
     }
-    formCreate(newForm, (err, form) => {
-      if (!err) {
-        // ownProps.setPreviewMode(true);
-        const data = {
-          formId: form._id,
-          formName: form.title,
-          formType: form.type,
-          formTypeChanged:true, 
-          anonymousChanged:true,
-          parentFormId: form._id,
-          titleChanged: true,
-          formRevisionNumber: "V1", // to do
-          anonymous: formAccess[0]?.roles.includes(roleIds.ANONYMOUS),
-        };
-        dispatch(setFormSuccessData("form", form));
-        Formio.cache = {}; //removing formio cache
-        dispatch(
-          // eslint-disable-next-line no-unused-vars
-          saveFormProcessMapperPost(data, (err, res) => {
-            if (!err) {
-              toast.success(t("Form Saved"));
-              dispatch(push(`${redirectUrl}formflow/${form._id}/view-edit/`));
-            } else {
-              setFormSubmitted(false);
-              toast.error(t("Error in creating form process mapper"));
-            }
-          })
-        );
+    formCreate(newForm).then((res)=>{
+      const form = res.data;
+      const data = {
+        formId: form._id,
+        formName: form.title,
+        formType: form.type,
+        formTypeChanged:true, 
+        anonymousChanged:true,
+        parentFormId: form._id,
+        titleChanged: true,
+        formRevisionNumber: "V1", // to do
+        anonymous: formAccess[0]?.roles.includes(roleIds.ANONYMOUS),
+      };
+      dispatch(setFormSuccessData("form", form));
+      dispatch(
+        // eslint-disable-next-line no-unused-vars
+        saveFormProcessMapperPost(data, (err, res) => {
+          if (!err) {
+            toast.success(t("Form Saved"));
+            dispatch(push(`${redirectUrl}formflow/${form._id}/view-edit/`));
+          } else {
+            setFormSubmitted(false);
+            toast.error(t("Error in creating form process mapper"));
+          }
+        })
+      );
+ 
+    }).catch((err)=>{
+      let error ;
+      if (err.response?.data) {
+        error = err.response.data;
       } else {
-        dispatch(setFormFailureErrorData("form", err));
-        setFormSubmitted(false);
+        error = err.message;
       }
+      dispatch(setFormFailureErrorData("form", error));
+     
+    }).finally(()=>{
+      setFormSubmitted(false);
     });
   };
 

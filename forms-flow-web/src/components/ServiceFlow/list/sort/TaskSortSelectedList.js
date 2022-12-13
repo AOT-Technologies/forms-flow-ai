@@ -119,7 +119,7 @@ const TaskSortSelectedList = React.memo(() => {
           ) : (
             <i
               className="fa fa-angle-down fa-lg font-weight-bold"
-              dat-title={t("Descending")}
+              data-title={t("Descending")}
               onClick={() => updateSortOrder(index, "asc")}
             />
           )}
@@ -135,7 +135,7 @@ const TaskSortSelectedList = React.memo(() => {
         <div className="ml-1">
           <i
             className="fa fa-plus font-weight-bold"
-            dat-title={t("Add sorting")}
+            data-title={t("Add sorting")}
             onClick={() => setShowSortListDropdown(!showSortListDropdown)}
           />
 

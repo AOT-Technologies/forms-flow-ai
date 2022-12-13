@@ -303,9 +303,10 @@ const List = React.memo((props) => {
                           getFormProcesses(formObj._id, (err, mapperData) => {
                             // just update form
                             if (mapperData) {
+                              
                               dispatch(
                                 getApplicationCount(mapperData.id, (error) => {
-                                  console.log("hre reaced");
+                                 
                                   if (!error) {
                                     newFormData._id = formObj._id;
                                     newFormData.access = formObj.access;
@@ -735,7 +736,7 @@ const mapDispatchToProps = (dispatch, ownProps) => {
       fetchForms
     ) => {
       e.currentTarget.disabled = true;
-      if (applicationCount > 0) {
+      if (!applicationCount) {
         dispatch(deleteForm("form", formId));
       }
       if (formProcessData.id) {

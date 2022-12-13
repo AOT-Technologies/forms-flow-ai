@@ -76,7 +76,7 @@ const View = React.memo((props) => {
   // Holds the latest data saved by the server
   const lastUpdatedDraft = useSelector((state) => state.draft.lastUpdated);
   const draftRef = useRef();
-  const { formId } = useParams();
+  const { formId, draftId } = useParams();
   const [poll, setPoll] = useState(DRAFT_ENABLED);
   const exitType = useRef("UNMOUNT");
   const {
@@ -92,8 +92,10 @@ const View = React.memo((props) => {
   const dispatch = useDispatch();
 
   const saveDraft = (payload, exitType = exitType) => {
+    if (exitType === "SUBMIT") return;
     let dataChanged = !isEqual(payload.data, lastUpdatedDraft.data);
     if (draftSubmission?.id) {
+      if (String(draftSubmission?.id) !== String(draftId)) return;
       if (dataChanged) {
         setDraftSaved(false);
         if (!showNotification) setShowNotification(true);
@@ -130,7 +132,7 @@ const View = React.memo((props) => {
       let payload = getDraftReqFormat(formId, draftRef.current);
       if (poll) saveDraft(payload, exitType.current);
     };
-  }, [poll, exitType.current]);
+  }, [poll, exitType.current, draftSubmission?.id]);
 
   if (isActive || isPublicStatusLoading) {
     return (
@@ -238,7 +240,7 @@ const View = React.memo((props) => {
           style={{ width: "8.5em" }}
           onClick={() => deleteDraft()}
         >
-          {t('Discard Draft')}
+          {t("Discard Draft")}
         </button>
       </div>
       <Errors errors={errors} />
@@ -251,10 +253,15 @@ const View = React.memo((props) => {
         <div className="ml-4 mr-4">
           <Confirm
             modalOpen={draftDelete.modalOpen}
-            message={`${t('Are you sure you wish to delete the draft')} "${draftDelete.draftName}" 
-            ${t('with ID')} "${draftDelete.draftId}"`}
+            message={`${t("Are you sure you wish to delete the draft")} "${
+              draftDelete.draftName
+            }" 
+            ${t("with ID")} "${draftDelete.draftId}"`}
             onNo={() => onNo()}
-            onYes={() => onYes()}
+            onYes={() => {
+              exitType.current = "SUBMIT";
+              onYes();
+            }}
           />
           {
             <Form

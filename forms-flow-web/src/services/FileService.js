@@ -21,12 +21,18 @@ const downloadFile = async (data = {}, callback) => {
 
 const uploadFile = (evt, callback) => {
   const fileObj = evt.target.files[0];
-  const reader = new FileReader();
+  if(fileObj){
+    const reader = new FileReader();
   reader.readAsText(fileObj);
   reader.onload = (e) => {
     const fileContents = JSON.parse(e.target.result);
     callback(fileContents);
   };
+  }else{
+    callback(null);
+  }
+
+  
 };
 
 const FileService = {

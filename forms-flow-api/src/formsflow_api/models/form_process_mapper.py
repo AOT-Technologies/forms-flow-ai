@@ -256,7 +256,10 @@ class FormProcessMapper(AuditDateTimeMixin, AuditUserMixin, BaseModel, db.Model)
         """Find form process mapper that matches the provided form_id."""
         return (
             cls.query.filter(
-                FormProcessMapper.form_id == form_id,
+                and_(
+                    FormProcessMapper.form_id == form_id,
+                    FormProcessMapper.deleted.is_(False),
+                )
             )
             .order_by(desc(FormProcessMapper.version))
             .limit(1)

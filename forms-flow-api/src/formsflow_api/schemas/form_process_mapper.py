@@ -28,6 +28,7 @@ class FormProcessMapperSchema(Schema):
     task_variable = fields.Str(data_key="taskVariable")
     version = fields.Str(data_key="version")
     process_tenant = fields.Str(data_key="processTenant")
+    deleted = fields.Boolean(data_key="deleted")
 
 
 class FormProcessMapperListReqSchema(Schema):

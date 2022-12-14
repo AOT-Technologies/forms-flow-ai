@@ -2,7 +2,7 @@ import ACTION_CONSTANTS from "../actions/actionConstants";
 
 const initialState = {
   restoredFormData: {},
-  restoreFormId: null,
+  restoredFormId: null,
   formHistory:[]
  
 };

@@ -63,6 +63,8 @@ mapper_create_model = API.model(
         "formId": fields.String(),
         "formName": fields.String(),
         "formRevisionNumber": fields.String(),
+        "formType": fields.String(),
+        "parentFormId": fields.String(),
     },
 )
 

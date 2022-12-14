@@ -258,7 +258,10 @@ const View = React.memo((props) => {
             }" 
             ${t("with ID")} "${draftDelete.draftId}"`}
             onNo={() => onNo()}
-            onYes={() => onYes()}
+            onYes={() => {
+              exitType.current = "SUBMIT";
+              onYes();
+            }}
           />
           {
             <Form

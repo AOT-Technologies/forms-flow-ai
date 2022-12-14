@@ -90,8 +90,7 @@ const Edit = React.memo(() => {
       fetchFormById(restoredFormId).then((res)=>{
         if(res.data){
         dispatch(setRestoreFormData(res.data));
-        dispatchFormAction({ type: "components", value: res.data.components });
-        toast.success("form restored");
+        dispatchFormAction({ type: "components", value: _cloneDeep(res.data.components )});
         }
       }).catch((err)=>{
         toast.error(err.response.data);
@@ -200,9 +199,9 @@ const Edit = React.memo(() => {
 // to check the component changed or not
   const isFormComponentsChanged = ()=>{
       if(restoredFormData && restoredFormId){
-         return _isEquial(restoredFormData.components,form.components);
+         return true;
       }else{
-        return _isEquial(formData.components ,form.components);
+        return !_isEquial(formData.components ,form.components);
       }
   };
   // save form data to submit
@@ -211,7 +210,7 @@ const Edit = React.memo(() => {
     const newFormData = addHiddenApplicationComponent(form);
     newFormData.submissionAccess = submissionAccess;
     newFormData.access = formAccess;
-    newFormData.componentChanged = !isFormComponentsChanged();
+    newFormData.componentChanged = isFormComponentsChanged();
     if (MULTITENANCY_ENABLED && tenantKey) {
       if (newFormData.path) {
         newFormData.path = addTenankey(newFormData.path, tenantKey);
@@ -237,8 +236,8 @@ const Edit = React.memo(() => {
           id: processListData.id,
           formId: submittedData._id,
           formTypeChanged: prviousData.formType !==  submittedData.type,
-          anonymousChanged: prviousData.formName !==  submittedData.title,
-          titleChanged: prviousData.anonymous !== processListData.anonymous
+          titleChanged: prviousData.formName !==  submittedData.title,
+          anonymousChanged: prviousData.anonymous !== processListData.anonymous
         };
 
         // PUT request : when application count is zero.
@@ -248,6 +247,7 @@ const Edit = React.memo(() => {
           data["version"] = String(+prviousData.version + 1);
           data["processKey"] = prviousData.processKey;
           data["processName"] = prviousData.processName;
+          data.parentFormId = processListData.parentFormId,
           dispatch(saveFormProcessMapperPost(data));
         } else {
           // For hadling uploaded forms case.

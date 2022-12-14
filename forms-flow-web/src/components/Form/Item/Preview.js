@@ -1,6 +1,6 @@
 import React, { PureComponent } from "react";
 import { connect } from "react-redux";
-import moment from "moment";
+ 
 import { selectRoot, Form, selectError, Errors } from "react-formio";
 import { push } from "connected-react-router";
 import { Button } from "react-bootstrap";
@@ -11,7 +11,7 @@ import { MULTITENANCY_ENABLED } from "../../../constants/constants";
 import Modal from "react-bootstrap/Modal";
 import { setFormHistories, setRestoreFormId } from "../../../actions/formActions";
 import { getFormHistory } from "../../../apiManager/services/FormServices";
-
+import { getLocalDateTime } from "../../../apiManager/services/formatterService";
 const Preview = class extends PureComponent {
   constructor(props) {
     super(props);
@@ -124,7 +124,9 @@ const Preview = class extends PureComponent {
               {formRestore?.formHistory.length ? (
                 <button onClick={()=>{
                   this.handleRestore(`${redirecUrl}formflow/${form._id}/edit`);
-                }} className="btn btn-primary btn-small">Restore</button>
+                }} className="btn btn-primary btn-small"
+                disabled={!this.state.selectedRestoreId}
+                >Restore</button>
               ) : null}
               <button
                 onClick={() => {
@@ -141,22 +143,22 @@ const Preview = class extends PureComponent {
               <thead>
                 <tr>
                   
-                  <th scope="col">created</th>
-                  <th scope="col">createdBy</th>
+                  <th scope="col">Created</th>
+                  <th scope="col">Created by</th>
                   <th scope="col">Select</th>
                 </tr>
               </thead>
               <tbody>
                 {
-                  formRestore?.formHistory.map((i)=>(
+                  formRestore?.formHistory.map((i,index)=>(
                     <tr key={i.id}>
                  
-                  <td>{moment(i.created).format('MMMM Do YYYY, h:mm:ss a')}</td>
+                  <td>{getLocalDateTime(i.created)}</td>
                   <td>{i.createdBy}</td>
                   <td>
                      
-                  <div className="round" onClick={()=>{this.handleSelectChange(i.changeLog.cloned_form_id);}} >
-                       <input type="checkbox" readOnly checked={i.changeLog.cloned_form_id === this.state.selectedRestoreId}  />
+                  <div disabled={index === formRestore?.formHistory.length - 1} className="round" onClick={()=>{this.handleSelectChange(i.changeLog.cloned_form_id);}} >
+                       <input type="checkbox" readOnly checked={index === formRestore?.formHistory.length - 1 || i.changeLog.cloned_form_id === this.state.selectedRestoreId}  />
                      <span ></span>
                   </div>
                  

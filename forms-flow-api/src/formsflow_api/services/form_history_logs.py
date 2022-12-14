@@ -1,7 +1,7 @@
 """This exposes Form history service."""
 
 from http import HTTPStatus
-
+from uuid import uuid1
 from formsflow_api_utils.exceptions import BusinessException
 from formsflow_api_utils.services.external import FormioService
 from formsflow_api_utils.utils.user_context import UserContext, user_context
@@ -24,10 +24,9 @@ class FormHistoryService:
         assert data is not None
         if data.get("componentChanged") is True:
             form_id = data.get("_id")
-            history_count = FormHistory.get_count_of_all_history(form_id)
             del data["_id"]
             del data["machineName"]
-            name_and_path = f"{data.get('path')}-v{history_count+1}"
+            name_and_path = f"{data.get('path')}-v-{uuid1().hex}"
             data["path"] = name_and_path
             data["name"] = name_and_path
             formio_service = FormioService()

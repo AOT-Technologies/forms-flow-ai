@@ -5,7 +5,7 @@ import ToolkitProvider from "react-bootstrap-table2-toolkit";
 import { Link } from "react-router-dom";
 import { Button } from "react-bootstrap";
 import { toast } from "react-toastify";
-import { selectRoot, selectError, Errors, Formio } from "react-formio";
+import { selectRoot, selectError, Errors, deleteForm } from "react-formio";
 import Loading from "../../containers/Loading";
 import {
   MULTITENANCY_ENABLED,
@@ -41,7 +41,9 @@ import LoadingOverlay from "react-loading-overlay";
 import {
   getFormProcesses,
   saveFormProcessMapperPost,
+  saveFormProcessMapperPut,
   unPublishForm,
+  getApplicationCount,
 } from "../../apiManager/services/processServices";
 import { setBpmFormSearch } from "../../actions/formActions";
 import { checkAndAddTenantKey } from "../../helper/helper";
@@ -51,7 +53,7 @@ import paginationFactory from "react-bootstrap-table2-paginator";
 import filterFactory from "react-bootstrap-table2-filter";
 import overlayFactory from "react-bootstrap-table2-overlay";
 import { SpinnerSVG } from "../../containers/SpinnerSVG";
-import { getFormattedForm } from "./constants/formListConstants";
+import { getFormattedForm, INACTIVE } from "./constants/formListConstants";
 
 const List = React.memo((props) => {
   const { t } = useTranslation();
@@ -226,30 +228,44 @@ const List = React.memo((props) => {
     dispatch(setFormSearchLoading(true));
   };
 
- const mapperHandler = (form)=>{
-  const data = {
-    formId: form._id,
-    formName: form.title,
-    formType: form.type,
-    formTypeChanged: true,
-    anonymousChanged: true,
-    parentFormId: form._id,
-    titleChanged: true,
-    formRevisionNumber: "V1", // to do
-    anonymous: false,
+  const mapperHandler = (form) => {
+    const data = {
+      formId: form._id,
+      formName: form.title,
+      formType: form.type,
+      formTypeChanged: true,
+      anonymousChanged: true,
+      parentFormId: form._id,
+      titleChanged: true,
+      formRevisionNumber: "V1", // to do
+      anonymous: false,
+    };
+    dispatch(
+      // eslint-disable-next-line no-unused-vars
+      saveFormProcessMapperPost(data, (err, res) => {
+        if (!err) {
+          toast.success(t("Form Sucessfully uploaded"));
+          fetchForms();
+        } else {
+          toast.error(t("Error in creating form process mapper"));
+        }
+      })
+    );
   };
-  dispatch(
-    // eslint-disable-next-line no-unused-vars
-    saveFormProcessMapperPost(data, (err, res) => {
-      if (!err) {
-        toast.success(t("Form Sucessfully uploaded"));
-        fetchForms();
-      } else {
-        toast.error(t("Error in creating form process mapper"));
-      }
-    })
-  );
- };
+
+  const isMapperSaveNeeded = (mapperData, formdata) => {
+    // checks if the updates need to save to form_process_mapper too
+    if (mapperData.formName !== formdata.title && applicationCount > 0) {
+      return "new";
+    }
+    if (
+      mapperData.formName !== formdata.title ||
+      mapperData.formType !== formdata.type
+    ) {
+      return "update";
+    }
+  };
+  // upload file
   const uploadFileContents = async (fileContent) => {
     try {
       if (fileContent.forms && Array.isArray(fileContent.forms)) {
@@ -270,51 +286,124 @@ const List = React.memo((props) => {
               };
               newFormData.access = formAccess;
               newFormData.submissionAccess = submissionAccess;
-              formCreate(newFormData, (err, createdForm) => {
-               
-                Formio.cache = {}; //removing cache
-                if (err) {
-                  // get the form Id of the form if exists already in the server
-
+              newFormData.componentChanged = true;
+              formCreate(newFormData)
+                .then((res) => {
+                  const { data } = res;
+                  mapperHandler(data);
+                  dispatch(updateFormUploadCounter());
+                })
+                .catch(() => {
+                  newFormData.componentChanged = false;
                   dispatch(
                     fetchFormByAlias(newFormData.path, async (err, formObj) => {
                       if (!err) {
-                        newFormData._id = formObj._id;
-                        newFormData.access = formObj.access;
-                        newFormData.submissionAccess = formObj.submissionAccess;
-                        // newFormData.tags = formObj.tags;
                         dispatch(
                           // eslint-disable-next-line no-unused-vars
-                          getFormProcesses(newFormData._id, (err, res) => {
-                            if(!res){
-                              mapperHandler(newFormData);
+                          getFormProcesses(formObj._id, (err, mapperData) => {
+                            // just update form
+                            if (mapperData) {
+                              
+                              dispatch(
+                                getApplicationCount(mapperData.id, (error) => {
+                                 
+                                  if (!error) {
+                                    newFormData._id = formObj._id;
+                                    newFormData.access = formObj.access;
+                                    newFormData.submissionAccess =
+                                      newFormData.access =
+                                        formObj.submissionAccess;
+                                    formUpdate(newFormData._id, newFormData)
+                                      .then((formupdated) => {
+                                        const updatedForm = formupdated.data;
+                                        const data = {
+                                          anonymous:
+                                            mapperData.anonymous === null
+                                              ? false
+                                              : mapperData.anonymous,
+                                          formName: updatedForm.title,
+                                          formType: updatedForm.type,
+                                          status: mapperData.status
+                                            ? mapperData.status
+                                            : INACTIVE,
+                                          taskVariable: mapperData.taskVariable
+                                            ? mapperData.taskVariable
+                                            : [],
+                                          id: mapperData.id,
+                                          formId: updatedForm._id,
+                                          formTypeChanged:
+                                            mapperData.formType !==
+                                            updatedForm.type,
+                                          titleChanged:
+                                            mapperData.formName !==
+                                            updatedForm.title,
+                                        };
+
+                                        const isMapperNeed = isMapperSaveNeeded(
+                                          mapperData,
+                                          updatedForm
+                                        );
+
+                                        if (isMapperNeed === "new") {
+                                          data["version"] = String(
+                                            +mapperData.version + 1
+                                          );
+
+                                          dispatch(
+                                            saveFormProcessMapperPost(data)
+                                          );
+                                        } else if (isMapperNeed === "update") {
+                                          dispatch(
+                                            saveFormProcessMapperPut(data)
+                                          );
+                                        }
+
+                                        dispatch(updateFormUploadCounter());
+                                        resolve();
+                                      })
+                                      .catch((err) => {
+                                        dispatch(
+                                          setFormFailureErrorData("form", err)
+                                        );
+                                        toast.error(t(err.message));
+                                        setShowFormUploadModal(false);
+                                        reject();
+                                      });
+                                  } else {
+                                    reject();
+                                    toast.error(error);
+                                  }
+                                })
+                              );
+                            } else if (!mapperData) {
+                              newFormData.componentChanged = true;
+                              newFormData.path += Date.now();
+                              newFormData.name += Date.now();
+                              formCreate(newFormData)
+                                .then((res) => {
+                                  if (res.data) {
+                                    mapperHandler(res.data);
+                                  }
+                                  dispatch(updateFormUploadCounter());
+                                  resolve();
+                                })
+                                .catch((err) => {
+                                  toast.error(err);
+                                  reject();
+                                });
+                            } else {
+                              toast.error(err);
+                              reject();
                             }
                           })
                         );
-                        formUpdate(newFormData._id, newFormData)
-                          .then(() => {
-                            dispatch(updateFormUploadCounter());
-                            resolve();
-                          })
-                          .catch((err) => {
-                            dispatch(setFormFailureErrorData("form", err));
-                            toast.error(t("Error in JSON file structure"));
-                            setShowFormUploadModal(false);
-                            reject();
-                          });
                       } else {
-                        toast.error(t("Error in JSON file structure"));
-                        setShowFormUploadModal(false);
+                        toast.error(err);
                         reject();
                       }
                     })
                   );
-                } else {
-                  mapperHandler(createdForm);
-                  dispatch(updateFormUploadCounter());
-                  resolve();
-                }
-              });
+                });
             });
           })
         );
@@ -330,12 +419,12 @@ const List = React.memo((props) => {
 
   const fileUploaded = async (evt) => {
     FileService.uploadFile(evt, async (fileContent) => {
-      if(fileContent){
+      if (fileContent) {
         dispatch(setFormUploadList(fileContent?.forms || []));
-      setShowFormUploadModal(true);
-      await uploadFileContents(fileContent);
-      fetchForms();
-      } 
+        setShowFormUploadModal(true);
+        await uploadFileContents(fileContent);
+        fetchForms();
+      }
     });
   };
 
@@ -396,7 +485,14 @@ const List = React.memo((props) => {
             }
             onNo={() => onNo()}
             onYes={(e) => {
-              onYes(e, formId, formProcessData, formCheckList, fetchForms);
+              onYes(
+                e,
+                formId,
+                formProcessData,
+                formCheckList,
+                applicationCount,
+                fetchForms
+              );
             }}
           />
           <div className="flex-container">
@@ -439,7 +535,9 @@ const List = React.memo((props) => {
                     className="d-none"
                     multiple={false}
                     accept=".json,application/json"
-                    onChange={(e)=>{fileUploaded(e);}}
+                    onChange={(e) => {
+                      fileUploaded(e);
+                    }}
                     ref={uploadFormNode}
                   />
                 </>
@@ -629,9 +727,18 @@ const mapStateToProps = (state) => {
 // eslint-disable-next-line no-unused-vars
 const mapDispatchToProps = (dispatch, ownProps) => {
   return {
-    onYes: (e, formId, formProcessData, formCheckList, fetchForms) => {
+    onYes: (
+      e,
+      formId,
+      formProcessData,
+      formCheckList,
+      applicationCount,
+      fetchForms
+    ) => {
       e.currentTarget.disabled = true;
-
+      if (!applicationCount) {
+        dispatch(deleteForm("form", formId));
+      }
       if (formProcessData.id) {
         dispatch(
           unPublishForm(formProcessData.id, (err) => {

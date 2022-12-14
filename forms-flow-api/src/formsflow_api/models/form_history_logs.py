@@ -1,7 +1,7 @@
 """This manages Form history information."""
 from typing import List
 
-from sqlalchemy import JSON, and_
+from sqlalchemy import JSON, and_, asc
 
 from formsflow_api.models.base_model import BaseModel
 from formsflow_api.models.db import db
@@ -46,9 +46,13 @@ class FormHistory(ApplicationAuditDateTimeMixin, BaseModel, db.Model):
     def fetch_histories_by_parent_id(cls, form_id) -> List["FormHistory"]:
         """Fetch all histories against a form id."""
         assert form_id is not None
-        return cls.query.filter(
-            and_(cls.form_id == form_id, cls.component_change.is_(True))
-        ).all()
+        return (
+            cls.query.filter(
+                and_(cls.form_id == form_id, cls.component_change.is_(True))
+            )
+            .order_by(asc(FormHistory.created))
+            .all()
+        )
 
     @classmethod
     def get_count_of_all_history(cls, form_id) -> List["FormHistory"]:

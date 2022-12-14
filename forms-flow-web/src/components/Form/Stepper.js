@@ -19,6 +19,7 @@ import "../../resourceBundles/i18n";
 // for edit
 import {
   fetchAllBpmProcesses,
+  getApplicationCount,
   getFormProcesses,
   resetFormProcessData,
   saveFormProcessMapperPost,
@@ -456,9 +457,11 @@ const mapDispatchToProps = (dispatch) => {
     getFormProcessesDetails: (formId) => {
       dispatch(
         // eslint-disable-next-line no-unused-vars
-        getFormProcesses(formId, (err, res) => {
-          if (err) {
-            console.log(err);
+        getFormProcesses(formId, (err, data) => {
+          if (!err) {
+            dispatch(getApplicationCount(data.id));
+          }else{
+            console.error(err);
           }
         })
       );

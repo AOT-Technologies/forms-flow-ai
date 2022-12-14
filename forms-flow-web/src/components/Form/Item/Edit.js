@@ -247,6 +247,7 @@ const Edit = React.memo(() => {
           data["version"] = String(+prviousData.version + 1);
           data["processKey"] = prviousData.processKey;
           data["processName"] = prviousData.processName;
+          data.parentFormId = processListData.parentFormId,
           dispatch(saveFormProcessMapperPost(data));
         } else {
           // For hadling uploaded forms case.

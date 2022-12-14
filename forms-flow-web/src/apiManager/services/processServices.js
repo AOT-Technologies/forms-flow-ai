@@ -155,8 +155,7 @@ export const getFormProcesses = (formId, ...rest) => {
       true
     )
       .then((res) => {
-        if (res.data) {
-          dispatch(getApplicationCount(res.data.id));
+        if (res.data) { 
           dispatch(setFormPreviosData(res.data));
           dispatch(setFormProcessesData(res.data));
           // need to check api and put exact respose
@@ -201,6 +200,33 @@ export const getApplicationCount = (mapperId, ...rest) => {
   };
 };
 
+
+export const getAllApplicationCount = (formId, ...rest) => {
+  const done = rest.length ? rest[0] : () => {};
+  return async (dispatch) => {
+    let apiUrlClaimTask = replaceUrl(
+      API.GET_ALL_APPLICATIONS_COUNT_BY_FORM_ID,
+      "<form id>",
+      formId
+    );
+    await httpGETRequest(apiUrlClaimTask)
+      .then((res) => {
+        const applicationCount = +res.data?.value;
+        dispatch(setApplicationCount(applicationCount));
+        dispatch(setApplicationCountResponse(true));
+        done(null, res);
+      })
+      // eslint-disable-next-line no-unused-vars
+      .catch((error) => {
+        // dispatch(setProcessStatusLoading(false));
+        dispatch(setApplicationCount(0));
+        dispatch(setApplicationCountResponse(true));
+        done("no data", null);
+      });
+  };
+};
+
+
 export const saveFormProcessMapperPost = (data, ...rest) => {
   const done = rest.length ? rest[0] : () => {};
   return async (dispatch) => {
@@ -235,6 +261,7 @@ export const saveFormProcessMapperPut = (data, ...rest) => {
     httpPUTRequest(`${API.FORM}/${data.id}`, data)
       .then(async (res) => {
         if (res.data) {
+          dispatch(getApplicationCount(res.data.id));
           dispatch(setFormPreviosData(res.data));
           dispatch(setFormProcessesData(res.data));
           done(null, res.data);

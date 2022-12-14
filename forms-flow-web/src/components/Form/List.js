@@ -253,7 +253,8 @@ const List = React.memo((props) => {
     );
   };
 
-  const isMapperSaveNeeded = (mapperData, formdata) => {
+  const isMapperSaveNeeded = (mapperData, formdata, applicationData) => {
+    const applicationCount = applicationData?.data.value;
     // checks if the updates need to save to form_process_mapper too
     if (mapperData.formName !== formdata.title && applicationCount > 0) {
       return "new";
@@ -298,15 +299,14 @@ const List = React.memo((props) => {
                   dispatch(
                     fetchFormByAlias(newFormData.path, async (err, formObj) => {
                       if (!err) {
+                      
                         dispatch(
                           // eslint-disable-next-line no-unused-vars
                           getFormProcesses(formObj._id, (err, mapperData) => {
                             // just update form
                             if (mapperData) {
-                              
-                              dispatch(
-                                getApplicationCount(mapperData.id, (error) => {
-                                 
+                               dispatch(
+                                getApplicationCount(mapperData.id, (error, applicationCount) => {
                                   if (!error) {
                                     newFormData._id = formObj._id;
                                     newFormData.access = formObj.access;
@@ -341,13 +341,15 @@ const List = React.memo((props) => {
 
                                         const isMapperNeed = isMapperSaveNeeded(
                                           mapperData,
-                                          updatedForm
+                                          updatedForm,
+                                          applicationCount
                                         );
 
                                         if (isMapperNeed === "new") {
                                           data["version"] = String(
                                             +mapperData.version + 1
                                           );
+                                          data.parentFormId = mapperData.parentFormId;
 
                                           dispatch(
                                             saveFormProcessMapperPost(data)
@@ -371,7 +373,7 @@ const List = React.memo((props) => {
                                       });
                                   } else {
                                     reject();
-                                    toast.error(error);
+                                    toast.error("Error in application count");
                                   }
                                 })
                               );

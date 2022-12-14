@@ -1,7 +1,7 @@
 """Keycloak Admin abstract interface."""
 
 from abc import ABC, abstractmethod
-from typing import Dict
+from typing import Dict, List
 from operator import itemgetter
 
 
@@ -36,8 +36,8 @@ class KeycloakAdmin(ABC):
     def create_group_role(self, data: Dict):
         """Create group/role."""
 
-    def sort_results(self, data: Dict, sort_order: str):
+    def sort_results(self, data: List, sort_order: str):
         """Sort results by name."""
         if sort_order == "asc":
-            return sorted(data, key=itemgetter("name"))
-        return sorted(data, key=itemgetter("name"), reverse=True)
+            return sorted(data, key=lambda k: k['name'].lower())
+        return sorted(data, key=lambda k: k['name'].lower(), reverse=True)

@@ -21,7 +21,8 @@ class KeycloakGroupService(KeycloakAdmin):
 
     def get_group(self, group_id: str):
         """Get group by group_id."""
-        return self.client.get_request(url_path=f"groups/{group_id}")
+        response = self.client.get_request(url_path=f"groups/{group_id}")
+        return self.format_response(response)
 
     def get_users(self, **kwargs):
         """Get users under formsflow-reviewer group."""
@@ -44,7 +45,11 @@ class KeycloakGroupService(KeycloakAdmin):
     def get_groups_roles(self, search: str, sort_order: str):
         """Get groups."""
         response = self.client.get_groups()
-        return self.sort_results(response, sort_order)
+        flat_response: List[Dict] = []
+        result_list = self.sort_results(self.flat(response, flat_response), sort_order)
+        if search:
+            result_list = self.search_group(search, result_list)
+        return result_list
 
     def delete_group(self, group_id: str):
         """Delete role by role_id."""
@@ -64,4 +69,34 @@ class KeycloakGroupService(KeycloakAdmin):
         dict_description["description"] = [data.get("description")]
         data["attributes"] = dict_description
         data.pop("description", None)
+        return data
+
+    def flat(self, data, response):
+        """ Flatten response to single list of dictionary.
+        
+        Keycloak response has subgroups as list of dictionary.
+        Flatten response to single list of dictionary
+        """
+        for group in data:
+            subgroups= group.pop("subGroups", data)
+            group = self.format_response(group)
+            if subgroups == []:                
+                response.append(group)
+            elif subgroups != []:
+                response.append(group)
+                self.flat(subgroups, response)
+        return response
+
+    def search_group(self, search, data):
+        """Search group by name."""
+        search_list = list(filter(lambda data: search in data["name"], data))
+        return search_list
+
+    def format_response(self, data):
+        """Format group response."""
+        
+        data["description"] = ""
+        data["name"] = data.get("path")
+        if data.get("attributes") !={}: # Reaarange description
+                data["description"] = data["attributes"]["description"][0] if data["attributes"].get("description") else ""
         return data

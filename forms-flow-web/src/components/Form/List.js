@@ -379,8 +379,8 @@ const List = React.memo((props) => {
                               );
                             } else if (!mapperData) {
                               newFormData.componentChanged = true;
-                              newFormData.path += Date.now();
-                              newFormData.name += Date.now();
+                              newFormData.path += "-added-" + Date.now();
+                              newFormData.name += "-added-" + Date.now();
                               formCreate(newFormData)
                                 .then((res) => {
                                   if (res.data) {

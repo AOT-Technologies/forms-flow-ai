@@ -105,7 +105,9 @@ class FormProcessMapperService:
             if tenant_key is not None and mapper.tenant != tenant_key:
                 raise PermissionError("Tenant authentication failed.")
             mapper_schema = FormProcessMapperSchema()
-            return mapper_schema.dump(mapper)
+            response = mapper_schema.dump(mapper)
+            if response.get("deleted") is False:
+                return response
 
         raise BusinessException(
             {

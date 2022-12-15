@@ -56,6 +56,8 @@ class KeycloakClientService(KeycloakAdmin):
     def create_group_role(self, data: Dict):
         """Create role."""
         client_id = self.client.get_client_id()
-        return self.client.create_request(
+        response = self.client.create_request(
             url_path=f"clients/{client_id}/roles", data=data
         )
+        group_id = response.headers["Location"].split("/")[-1]
+        return {"id": group_id}

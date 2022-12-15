@@ -2,7 +2,6 @@
 
 from abc import ABC, abstractmethod
 from typing import Dict, List
-from operator import itemgetter
 
 
 class KeycloakAdmin(ABC):
@@ -39,5 +38,5 @@ class KeycloakAdmin(ABC):
     def sort_results(self, data: List, sort_order: str):
         """Sort results by name."""
         if sort_order == "asc":
-            return sorted(data, key=lambda k: k['name'].lower())
-        return sorted(data, key=lambda k: k['name'].lower(), reverse=True)
+            return sorted(data, key=lambda k: k["name"].lower())
+        return sorted(data, key=lambda k: k["name"].lower(), reverse=True)

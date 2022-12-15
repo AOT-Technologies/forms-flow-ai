@@ -1,7 +1,10 @@
 """Keycloak implementation for keycloak group related operations."""
+from http import HTTPStatus
 from typing import Dict, List
 
+import requests
 from flask import current_app
+from formsflow_api_utils.exceptions import BusinessException
 
 from formsflow_api.services import KeycloakAdminAPIService
 
@@ -40,6 +43,7 @@ class KeycloakGroupService(KeycloakAdmin):
     def update_group(self, group_id: str, data: Dict):
         """Update group details."""
         data = self.add_description(data)
+        data["name"] = data["name"].split("/")[-1]
         return self.client.update_request(url_path=f"groups/{group_id}", data=data)
 
     def get_groups_roles(self, search: str, sort_order: str):
@@ -56,9 +60,39 @@ class KeycloakGroupService(KeycloakAdmin):
         return self.client.delete_request(url_path=f"groups/{group_id}")
 
     def create_group_role(self, data: Dict):
-        """Create group."""
+        """Create group or subgroup.
+
+        Split name parameter to create group/subgroups
+        """
         data = self.add_description(data)
-        return self.client.create_request(url_path="groups", data=data)
+        data["name"] = (
+            data["name"].lstrip("/") if data["name"].startswith("/") else data["name"]
+        )
+        groups = data["name"].split("/")
+        url_path = "groups"
+        groups_length = len(groups)
+        if groups_length == 1:
+            response = self.client.create_request(url_path=url_path, data=data)
+            group_id = response.headers["Location"].split("/")[-1]
+        else:
+            for index, group_name in enumerate(groups):
+                try:
+                    data["name"] = group_name
+                    response = self.client.create_request(url_path=url_path, data=data)
+                    group_id = response.headers["Location"].split("/")[-1]
+                except requests.exceptions.HTTPError as err:
+                    if err.response.status_code == 409:
+                        if index == (groups_length - 1):
+                            raise BusinessException(
+                                "Role already exists.", HTTPStatus.BAD_REQUEST
+                            ) from err
+                        group_path = "/".join(groups[: index + 1])
+                        response = self.client.get_request(
+                            url_path=f"group-by-path/{group_path}"
+                        )
+                        group_id = response["id"]
+                url_path = f"groups/{group_id}/children"
+        return {"id": group_id}
 
     def add_description(self, data: Dict):
         """Group based doesn't have description field.
@@ -72,15 +106,15 @@ class KeycloakGroupService(KeycloakAdmin):
         return data
 
     def flat(self, data, response):
-        """ Flatten response to single list of dictionary.
-        
+        """Flatten response to single list of dictionary.
+
         Keycloak response has subgroups as list of dictionary.
         Flatten response to single list of dictionary
         """
         for group in data:
-            subgroups= group.pop("subGroups", data)
+            subgroups = group.pop("subGroups", data)
             group = self.format_response(group)
-            if subgroups == []:                
+            if subgroups == []:
                 response.append(group)
             elif subgroups != []:
                 response.append(group)
@@ -94,9 +128,12 @@ class KeycloakGroupService(KeycloakAdmin):
 
     def format_response(self, data):
         """Format group response."""
-        
         data["description"] = ""
         data["name"] = data.get("path")
-        if data.get("attributes") !={}: # Reaarange description
-                data["description"] = data["attributes"]["description"][0] if data["attributes"].get("description") else ""
+        if data.get("attributes") != {}:  # Reaarange description
+            data["description"] = (
+                data["attributes"]["description"][0]
+                if data["attributes"].get("description")
+                else ""
+            )
         return data

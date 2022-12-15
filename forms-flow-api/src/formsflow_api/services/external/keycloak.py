@@ -210,6 +210,4 @@ class KeycloakAdminAPIService:
         except Exception as err_code:
             raise f"Request to Keycloak Admin APIs failed., {err_code}"
         response.raise_for_status()
-
-        if response.status_code == 201:
-            return "Created."
+        return response

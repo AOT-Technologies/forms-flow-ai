@@ -11,5 +11,5 @@ class RolesGroupsSchema(Schema):
 
         unknown = EXCLUDE
 
-    name = fields.Str()
+    name = fields.Str(required=True)
     description = fields.Str()

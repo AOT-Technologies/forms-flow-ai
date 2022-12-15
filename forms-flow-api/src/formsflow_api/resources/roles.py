@@ -5,8 +5,12 @@ import requests
 from flask import current_app, request
 from flask_restx import Namespace, Resource, fields
 from formsflow_api_utils.utils import auth, cors_preflight, profiletime
+from marshmallow.exceptions import ValidationError
 
+from formsflow_api.schemas import RolesGroupsSchema
 from formsflow_api.services.factory import KeycloakFactory
+
+roles_schema = RolesGroupsSchema()
 
 API = Namespace("roles", description="keycloak roles wrapper APIs")
 
@@ -72,16 +76,27 @@ class KeycloakRolesResource(Resource):
     def post():
         """Create role/group in keycloak."""
         try:
+            request_data = roles_schema.load(request.get_json())
             response, status = (
-                KeycloakFactory.get_instance().create_group_role(request.get_json()),
+                KeycloakFactory.get_instance().create_group_role(request_data),
                 HTTPStatus.CREATED,
             )
             return response, status
-        except requests.exceptions.RequestException as err:
+        except ValidationError as err:
             current_app.logger.warning(err)
-            return {
+            response, status = {
                 "type": "Bad request error",
                 "message": "Invalid request data",
+            }, HTTPStatus.BAD_REQUEST
+            return response, status
+        except requests.exceptions.HTTPError as err:
+            current_app.logger.warning(err)
+            message = "Invalid request data"
+            if err.response.status_code == 409:
+                message = "Role already exists."
+            return {
+                "type": "Bad request error",
+                "message": message,
             }, HTTPStatus.BAD_REQUEST
         except Exception as unexpected_error:
             current_app.logger.warning(unexpected_error)

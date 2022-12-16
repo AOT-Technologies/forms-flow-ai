@@ -2,6 +2,70 @@
 
 Mark  items as `Added`, `Changed`, `Fixed`, `Removed`, `Untested Features`, `Upcoming Features`, `Known Issues`
 
+## 5.1.0 - 2022-12-15
+
+`Added`
+
+**forms-flow-web**
+
+* Added form versoning.
+* Added delete option for draft feature.
+* Added form embedding.
+
+**forms-flow-api**
+
+* Added DB changes to accomodate form type, parent form id. 
+* Added migration scripts in the alembic file to resolve schema conflicts while db upgrade and downgrade.
+* Added new table for form history
+* Added new api to get form history by form id.
+* Added new api to delete draft.
+* Added new api to get the list of users for a role/group from keycloak.
+* Added swagger documentation.
+
+**forms-flow-bpm**
+
+* Added monitoring.
+* Added environment variables `REDIS_ENABLED`,`REDIS_HOST`,`REDIS_PORT` and `REDIS_PASSCODE`.
+
+
+`Modified`
+
+**forms-flow-api**
+
+* Moved form list of designer to forms-flow-api.
+* Updated certifi to 2022.12.7, protobuf to 3.20.2 and  joblib to 1.2.0.
+
+
+**forms-flow-bpm**
+
+*Upgrade notes:*
+
+* spring boot upgraded from version 2.6.4. to  2.6.6.
+* spring websocket upgraded from version 5.3.4 to 5.3.20.
+* spring messaging upgraded from version 5.3.4 to 5.3.20.
+* spring security Oauth2 upgraded from version 2.6.4. to 2.6.6.
+* postgresql upgraded from version 42.4.1 to 42.4.3.
+* jackson upgraded from version 2.13.3 to 2.14.0.
+
+
+`Fixed`
+
+**forms-flow-web**
+
+* Fixed session time out issue while form create.
+
+**forms-flow-api**
+
+* Fixed Python security vulnerabilities
+
+## 5.0.2 - 2022-12-07
+
+**forms-flow-web**
+
+`Fixed`
+
+* Frozen UI during form design.
+
 ## 5.0.1 - 2022-10-10
 
 **forms-flow-web**

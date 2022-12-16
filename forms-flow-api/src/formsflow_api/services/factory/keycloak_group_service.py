@@ -144,3 +144,20 @@ class KeycloakGroupService(KeycloakAdmin):
                 else ""
             )
         return data
+
+    def add_user_to_group_role(self, user_id: str, group_id: str, payload: Dict):
+        """Add user to group."""
+        data = {
+            "realm": current_app.config.get("KEYCLOAK_URL_REALM"),
+            "userId": payload.get("userId"),
+            "groupId": payload.get("groupId"),
+        }
+        return self.client.update_request(
+            url_path=f"users/{user_id}/groups/{group_id}", data=data
+        )
+
+    def remove_user_from_group_role(
+        self, user_id: str, group_id: str, payload: Dict = None
+    ):
+        """Remove user to group."""
+        return self.client.delete_request(url_path=f"users/{user_id}/groups/{group_id}")

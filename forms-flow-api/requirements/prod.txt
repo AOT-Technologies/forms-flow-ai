@@ -15,5 +15,5 @@ Werkzeug==2.1.2 # Watch out updates on https://github.com/python-restx/flask-res
 sqlalchemy_utils
 markupsafe
 PyJWT
-git+https://github.com/AOT-Technologies/forms-flow-ai.git@develop#egg=formsflow_api_utils&subdirectory=forms-flow-api-utils
+git+https://github.com/sreehari-aot/forms-flow-ai.git@FWF-1862#egg=formsflow_api_utils&subdirectory=forms-flow-api-utils
 

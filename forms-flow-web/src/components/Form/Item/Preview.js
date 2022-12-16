@@ -21,7 +21,6 @@ const Preview = class extends PureComponent {
       workflow: null,
       status: null,
       historyModal: false,
-      selectedRestoreId:null,
     };
    
  
@@ -35,16 +34,13 @@ const Preview = class extends PureComponent {
   }
 
   handleModalChange() {
-    this.setState({ ...this.state, historyModal: !this.state.historyModal,
-       selectedRestoreId:null });
+    this.setState({ ...this.state, historyModal: !this.state.historyModal});
   }
 
-  handleSelectChange(value) {
-    this.setState({ ...this.state, selectedRestoreId: value });
-  }
+ 
 
-  handleRestore(redirecUrl){
-    this.props.onRestore(this.state.selectedRestoreId);
+  handleRestore(redirecUrl, restoreId){
+    this.props.onRestore(restoreId);
     this.props.gotoEdit(redirecUrl);
 
   }
@@ -117,24 +113,26 @@ const Preview = class extends PureComponent {
           aria-labelledby="example-custom-modal-styling-title"
         >
           <Modal.Header>
+            <div>
             <Modal.Title id="example-custom-modal-styling-title">
               Form History
             </Modal.Title>
+            <div className="d-flex align-items-start">
+            <i className="fa fa-info-circle text-primary mr-2"></i>
+            <span className="text-muted h6">Formsflow automatically save your previous form data.<br></br>
+              now you can switch to previous stage and edit.</span>
+            </div>
+            </div>
+
             <div>
-              {formRestore?.formHistory.length ? (
-                <button onClick={()=>{
-                  this.handleRestore(`${redirecUrl}formflow/${form._id}/edit`);
-                }} className="btn btn-primary btn-small"
-                disabled={!this.state.selectedRestoreId}
-                >Restore</button>
-              ) : null}
+             
               <button
                 onClick={() => {
                   this.handleModalChange();
                 }}
                 className="btn btn-outline-danger btn-small ml-2"
               >
-                cancel
+                close
               </button>
             </div>
           </Modal.Header>
@@ -142,10 +140,8 @@ const Preview = class extends PureComponent {
             {formRestore?.formHistory.length ? ( <table className="table table-borderless">
               <thead>
                 <tr>
-                  
-                  <th scope="col">Created</th>
-                  <th scope="col">Created by</th>
-                  <th scope="col">Select</th>
+                  <th scope="col">{ formRestore?.formHistory.length === 1 ? 'created' : 'modified'}</th>
+                  <th scope="col">{ formRestore?.formHistory.length === 1 ? 'created by' : 'modified by'}</th>
                 </tr>
               </thead>
               <tbody>
@@ -157,11 +153,15 @@ const Preview = class extends PureComponent {
                   <td>{i.createdBy}</td>
                   <td>
                      
-                  <div disabled={index === formRestore?.formHistory.length - 1} className="round" onClick={()=>{this.handleSelectChange(i.changeLog.cloned_form_id);}} >
-                       <input type="checkbox" readOnly checked={index === formRestore?.formHistory.length - 1 || i.changeLog.cloned_form_id === this.state.selectedRestoreId}  />
-                     <span ></span>
-                  </div>
-                 
+             
+               
+                <button onClick={()=>{
+                  this.handleRestore(`${redirecUrl}formflow/${form._id}/edit`,
+                  i.changeLog.cloned_form_id);
+                }} className="btn btn-primary btn-small"
+                disabled={index === formRestore?.formHistory.length - 1}
+                >Switch to edit</button>
+             
                   </td>
                 </tr>
                   ))

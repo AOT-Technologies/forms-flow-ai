@@ -25,7 +25,8 @@ class FormHistoryService:
         if data.get("componentChanged") is True:
             form_id = data.get("_id")
             del data["_id"]
-            del data["machineName"]
+            if data.get("machineName"):
+                del data["machineName"]
             name_and_path = f"{data.get('path')}-v-{uuid1().hex}"
             data["path"] = name_and_path
             data["name"] = name_and_path

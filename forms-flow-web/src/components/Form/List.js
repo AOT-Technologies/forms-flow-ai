@@ -5,6 +5,7 @@ import ToolkitProvider from "react-bootstrap-table2-toolkit";
 import { Link } from "react-router-dom";
 import { Button } from "react-bootstrap";
 import { toast } from "react-toastify";
+import _isEquial from "lodash/isEqual";
 import { selectRoot, selectError, Errors, deleteForm } from "react-formio";
 import Loading from "../../containers/Loading";
 import {
@@ -54,6 +55,7 @@ import filterFactory from "react-bootstrap-table2-filter";
 import overlayFactory from "react-bootstrap-table2-overlay";
 import { SpinnerSVG } from "../../containers/SpinnerSVG";
 import { getFormattedForm, INACTIVE } from "./constants/formListConstants";
+ 
 
 const List = React.memo((props) => {
   const { t } = useTranslation();
@@ -311,8 +313,12 @@ const List = React.memo((props) => {
                                     newFormData._id = formObj._id;
                                     newFormData.access = formObj.access;
                                     newFormData.submissionAccess =
-                                      newFormData.access =
-                                        formObj.submissionAccess;
+                                    newFormData.access = formObj.submissionAccess;
+                                    newFormData.componentChanged = 
+                                    (!_isEquial(newFormData.components,formObj.components) ||
+                                    newFormData.display !== formObj.display ||
+                                    newFormData.type !== formObj.type
+                                    ); 
                                     formUpdate(newFormData._id, newFormData)
                                       .then((formupdated) => {
                                         const updatedForm = formupdated.data;
@@ -379,8 +385,8 @@ const List = React.memo((props) => {
                               );
                             } else if (!mapperData) {
                               newFormData.componentChanged = true;
-                              newFormData.path += "-added-" + Date.now();
-                              newFormData.name += "-added-" + Date.now();
+                              newFormData.path += "-" + Date.now();
+                              newFormData.name += "-" + Date.now();
                               formCreate(newFormData)
                                 .then((res) => {
                                   if (res.data) {

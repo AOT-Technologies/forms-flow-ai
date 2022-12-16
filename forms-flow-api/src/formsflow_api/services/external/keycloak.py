@@ -136,7 +136,7 @@ class KeycloakAdminAPIService:
     def update_request(  # pylint: disable=inconsistent-return-statements
         self, url_path, data=None
     ):
-        """Method to fetch get request of Keycloak Admin APIs.
+        """Method to fetch PUT request of Keycloak Admin APIs.
 
         : url_path: The relative path of the API
         : data: The request data object
@@ -175,7 +175,7 @@ class KeycloakAdminAPIService:
         return roles
 
     @profiletime
-    def delete_request(self, url_path, data=None):
+    def delete_request(self, url_path, data=None) -> bool:
         """Method to invoke delete.
 
         : url_path: The relative path of the API
@@ -187,6 +187,7 @@ class KeycloakAdminAPIService:
         except Exception as err_code:
             raise f"Request to Keycloak Admin APIs failed., {err_code}"
         response.raise_for_status()
+        return response.status_code == 204
 
     @profiletime
     def create_request(  # pylint: disable=inconsistent-return-statements

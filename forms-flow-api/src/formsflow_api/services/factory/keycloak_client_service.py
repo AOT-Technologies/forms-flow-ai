@@ -69,3 +69,29 @@ class KeycloakClientService(KeycloakAdmin):
         )
         role_name = response.headers["Location"].split("/")[-1]
         return {"id": role_name}
+
+    def add_user_to_group_role(self, user_id: str, group_id: str, payload: Dict):
+        """Add user to role."""
+        client_id = self.client.get_client_id()
+        data = {
+            "containerId": client_id,
+            "id": group_id,
+            "name": payload.get("name"),
+        }
+        return self.client.create_request(
+            url_path=f"users/{user_id}/role-mappings/clients/{client_id}", data=[data]
+        )
+
+    def remove_user_from_group_role(
+        self, user_id: str, group_id: str, payload: Dict = None
+    ):
+        """Remove user to role."""
+        client_id = self.client.get_client_id()
+        data = {
+            "containerId": client_id,
+            "id": group_id,
+            "name": payload.get("name"),
+        }
+        return self.client.delete_request(
+            url_path=f"users/{user_id}/role-mappings/clients/{client_id}", data=[data]
+        )

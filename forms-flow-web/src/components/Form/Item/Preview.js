@@ -160,7 +160,7 @@ const Preview = class extends PureComponent {
                   i.changeLog.cloned_form_id);
                 }} className="btn btn-primary btn-small"
                 disabled={index === formRestore?.formHistory.length - 1}
-                >Switch to edit</button>
+                >Select to edit</button>
              
                   </td>
                 </tr>

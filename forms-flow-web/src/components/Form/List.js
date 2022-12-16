@@ -365,7 +365,8 @@ const List = React.memo((props) => {
                                             saveFormProcessMapperPut(data)
                                           );
                                         }
-
+                                        toast.success(t("Form Sucessfully uploaded"));
+                                        fetchForms();
                                         dispatch(updateFormUploadCounter());
                                         resolve();
                                       })

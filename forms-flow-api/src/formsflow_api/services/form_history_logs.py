@@ -24,9 +24,8 @@ class FormHistoryService:
         assert data is not None
         if data.get("componentChanged") is True:
             form_id = data.get("_id")
-            del data["_id"]
-            if data.get("machineName"):
-                del data["machineName"]
+            data.pop("_id",None)
+            data.pop("machineName",None)
             name_and_path = f"{data.get('path')}-v-{uuid1().hex}"
             data["path"] = name_and_path
             data["name"] = name_and_path

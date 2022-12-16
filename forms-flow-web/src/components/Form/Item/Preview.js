@@ -120,7 +120,7 @@ const Preview = class extends PureComponent {
             <div className="d-flex align-items-start">
             <i className="fa fa-info-circle text-primary mr-2"></i>
             <span className="text-muted h6">Formsflow automatically save your previous form data.<br></br>
-              now you can switch to previous stage and edit.</span>
+              Now you can switch to previous stage and edit.</span>
             </div>
             </div>
 

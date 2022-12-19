@@ -9,7 +9,6 @@ from formsflow_api_utils.services.external import FormioService
 from formsflow_api_utils.utils import (
     REVIEWER_GROUP,
     auth,
-    cache,
     cors_preflight,
     get_form_and_submission_id_from_form_url,
     profiletime,
@@ -23,8 +22,6 @@ from formsflow_api.schemas import (
     ApplicationUpdateSchema,
 )
 from formsflow_api.services import ApplicationService
-
-import jwt
 
 API = Namespace("Application", description="Application")
 
@@ -620,59 +617,3 @@ class ApplicationCreation(Resource):
             current_app.logger.warning(response)
             current_app.logger.warning(application_err)
             return response, status
-
-
-@cors_preflight("POST,OPTIONS")
-@API.route("/external/verify", methods=["POST", "OPTIONS"])
-class TokenVerify(Resource):
-    """Resource for jwt token verification."""
-
-    @staticmethod
-    # @auth.require
-    @profiletime
-    # @API.doc(body=application_external_create_model)
-    @API.response(201, "CREATED:- Successful request.", model=application_base_model)
-    @API.response(
-        400,
-        "BAD_REQUEST:- Invalid request.",
-    )
-    @API.response(
-        401,
-        "UNAUTHORIZED:- Authorization header not provided or an invalid token passed.",
-    )
-    def post():
-        secret_key = current_app.config.get('JWT_SECRET')
-        print("secret",secret_key)
-        try : 
-            token = (request.headers['Authorization'].split(' '))[1]
-            data = jwt.decode(
-                token,
-                algorithms="HS256",
-                key=secret_key,
-                )
-            roles = cache.get("formio_role_ids")
-            client_id = [a for a in roles if a['type'] == 'CLIENT'][0]["roleId"]
-            payload = {
-                "external":True,
-                "form":{
-                "_id": cache.get("user_resource_id"),
-            },
-                "user":{
-                    "_id": data['email'],
-                    "roles":[
-                        client_id
-                    ]
-                }
-            }
-            response = jwt.encode(
-                payload=payload,
-                key=current_app.config.get("FORMIO_JWT_SECRET"),
-                algorithm="HS256",
-            )
-            status = {
-                    "type": "Request success",
-                    "message": "Verification success",
-            }, HTTPStatus.BAD_REQUEST
-        except Exception as err:
-            raise err
-        return response

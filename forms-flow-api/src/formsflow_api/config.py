@@ -65,7 +65,6 @@ class _Config:  # pylint: disable=too-few-public-methods
     JWT_OIDC_ISSUER = os.getenv("JWT_OIDC_ISSUER")
     JWT_OIDC_AUDIENCE = os.getenv("JWT_OIDC_AUDIENCE")
     JWT_OIDC_CACHING_ENABLED = os.getenv("JWT_OIDC_CACHING_ENABLED")
-    JWT_SECRET = os.getenv('JWT_SECRET')
     JWT_OIDC_JWKS_CACHE_TIMEOUT = 300
 
     # Keycloak Service for BPM Camunda
@@ -106,6 +105,8 @@ class _Config:  # pylint: disable=too-few-public-methods
 
     # Formio JWT Secret
     FORMIO_JWT_SECRET = os.getenv("FORMIO_JWT_SECRET", "--- change me now ---")
+    # Form embed JWT Secret for custom authentication
+    FORM_EMBED_JWT_SECRET = os.getenv("FORM_EMBED_JWT_SECRET")
 
 
 class DevConfig(_Config):  # pylint: disable=too-few-public-methods

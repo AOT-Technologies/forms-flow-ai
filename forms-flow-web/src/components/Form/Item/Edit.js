@@ -89,8 +89,11 @@ const Edit = React.memo(() => {
       setCurrentFormLoading(true);
       fetchFormById(restoredFormId).then((res)=>{
         if(res.data){
+          const {data} = res;
         dispatch(setRestoreFormData(res.data));
-        dispatchFormAction({ type: "components", value: _cloneDeep(res.data.components )});
+        dispatchFormAction({ type: "components", value: _cloneDeep(data.components )});
+        dispatchFormAction({ type: "type", value: data.type });
+        dispatchFormAction({ type: "display", value: data.display });
         }
       }).catch((err)=>{
         toast.error(err.response.data);
@@ -201,7 +204,11 @@ const Edit = React.memo(() => {
       if(restoredFormData && restoredFormId){
          return true;
       }else{
-        return !_isEquial(formData.components ,form.components);
+        return (
+          !_isEquial(formData.components ,form.components) ||
+          formData.display !== form.display ||
+          formData.type !== form.type
+        );
       }
   };
   // save form data to submit

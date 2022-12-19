@@ -25,7 +25,7 @@ import {
   saveFormProcessMapperPost,
   saveFormProcessMapperPut,
 } from "../../apiManager/services/processServices";
-import { selectRoot, selectError, getForm } from "react-formio";
+import { selectRoot, selectError, getForm, Formio } from "react-formio";
 import { MULTITENANCY_ENABLED } from "../../constants/constants";
 import { push } from "connected-react-router";
 import WorkFlow from "./Steps/WorkFlow";
@@ -91,6 +91,7 @@ class StepperPage extends PureComponent {
       nextProps.match.params.formId !== prevState.formId
     ) {
       if (nextProps.match.params.formId !== FORM_CREATE_ROUTE) {
+        Formio.cache = {};
         nextProps.getForm(nextProps.match.params.formId);
         nextProps.getFormProcessesDetails(nextProps.match.params.formId);
       }

@@ -22,6 +22,8 @@ roles_request = API.model(
     },
 )
 
+roles_response = API.inherit("roles_response", roles_request, {"id": fields.String()})
+
 
 @cors_preflight("GET, POST, OPTIONS")
 @API.route("", methods=["GET", "POST", "OPTIONS"])
@@ -36,7 +38,8 @@ class KeycloakRolesResource(Resource):
             200: "OK:- Successful request.",
             400: "BAD_REQUEST:- Invalid request.",
             401: "UNAUTHORIZED:- Authorization header not provided or an invalid token passed.",
-        }
+        },
+        model=[roles_response],
     )
     def get():
         """
@@ -48,10 +51,11 @@ class KeycloakRolesResource(Resource):
         try:
             search = request.args.get("search", "")
             sort_order = request.args.get("sortOrder", "asc")
-            group_response = KeycloakFactory.get_instance().get_groups_roles(
+            response = KeycloakFactory.get_instance().get_groups_roles(
                 search, sort_order
             )
-            return group_response, HTTPStatus.OK
+            response = roles_schema.dump(response, many=True)
+            return response, HTTPStatus.OK
         except requests.exceptions.RequestException as err:
             current_app.logger.warning(err)
             return {
@@ -93,7 +97,7 @@ class KeycloakRolesResource(Resource):
             current_app.logger.warning(err)
             message = "Invalid request data"
             if err.response.status_code == 409:
-                message = "Role already exists."
+                message = "Role name already exists."
             return {
                 "type": "Bad request error",
                 "message": message,
@@ -105,22 +109,31 @@ class KeycloakRolesResource(Resource):
 
 @cors_preflight("GET, POST, OPTIONS")
 @API.route("/<string:role_id>", methods=["GET", "PUT", "DELETE", "OPTIONS"])
-@API.doc(params={"role_id": "Role details corresponding to role_id"})
+@API.doc(params={"role_id": "Group/Role details corresponding to group_id/role name"})
 class KeycloakRolesResourceById(Resource):
     """Resource to manage keycloak roles/groups by id."""
 
     @staticmethod
     @auth.require
     @profiletime
+    @API.doc(
+        responses={
+            200: "OK:- Successful request.",
+            400: "BAD_REQUEST:- Invalid request.",
+            401: "UNAUTHORIZED:- Authorization header not provided or an invalid token passed.",
+        },
+        model=roles_response,
+    )
     def get(role_id: str):
         """
-        Get role by role id.
+        Get role by group id/role name.
 
-        Get keycloak role/group by id.
+        Get keycloak role by role name & group by group id.
         """
         try:
-            role_response = KeycloakFactory.get_instance().get_group(role_id)
-            return role_response, HTTPStatus.OK
+            response = KeycloakFactory.get_instance().get_group(role_id)
+            response = roles_schema.dump(response)
+            return response, HTTPStatus.OK
         except requests.exceptions.HTTPError as err:
             current_app.logger.warning(err)
             return {
@@ -134,15 +147,22 @@ class KeycloakRolesResourceById(Resource):
     @staticmethod
     @auth.require
     @profiletime
+    @API.doc(
+        responses={
+            200: "OK:- Successful request.",
+            400: "BAD_REQUEST:- Invalid request.",
+            401: "UNAUTHORIZED:- Authorization header not provided or an invalid token passed.",
+        },
+    )
     def delete(role_id: str):
         """
         Delete role by role id.
 
-        Delete keycloak role/group by id.
+        Delete keycloak role by role name & group by group id.
         """
         try:
             KeycloakFactory.get_instance().delete_group(role_id)
-            return "Role deleted successfully.", HTTPStatus.NO_CONTENT
+            return {"message": "Deleted successfully."}, HTTPStatus.OK
         except requests.exceptions.HTTPError as err:
             current_app.logger.warning(err)
             return {
@@ -168,19 +188,30 @@ class KeycloakRolesResourceById(Resource):
         """
         Update role by role id.
 
-        Update keycloak role/group by id.
+        Update keycloak role by role name & group by group id.
         """
         try:
+            request_data = roles_schema.load(request.get_json())
             response = KeycloakFactory.get_instance().update_group(
-                role_id, request.get_json()
+                role_id, request_data
             )
-            return response, HTTPStatus.OK
+            return {"message": response}, HTTPStatus.OK
         except requests.exceptions.HTTPError as err:
             current_app.logger.warning(err)
+            message = "Invalid role_id"
+            if err.response.status_code == 409:
+                message = "Role name already exists."
             return {
                 "type": "Bad request error",
-                "message": "Invalid role_id",
+                "message": message,
             }, HTTPStatus.BAD_REQUEST
+        except ValidationError as err:
+            current_app.logger.warning(err)
+            response, status = {
+                "type": "Bad request error",
+                "message": "Invalid request data",
+            }, HTTPStatus.BAD_REQUEST
+            return response, status
         except Exception as unexpected_error:
             current_app.logger.warning(unexpected_error)
             raise unexpected_error

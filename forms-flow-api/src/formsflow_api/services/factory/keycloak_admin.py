@@ -38,5 +38,9 @@ class KeycloakAdmin(ABC):
     def sort_results(self, data: List, sort_order: str):
         """Sort results by name."""
         if sort_order == "asc":
-            return sorted(data, key=lambda k: k["name"].lower())
-        return sorted(data, key=lambda k: k["name"].lower(), reverse=True)
+            return sorted(
+                data, key=lambda k: k["name"].lower() if k.get("name") else ""
+            )
+        return sorted(
+            data, key=lambda k: k["name"].lower() if k.get("name") else "", reverse=True
+        )

@@ -123,7 +123,14 @@ class KeycloakGroupService(KeycloakAdmin):
 
     def search_group(self, search, data):
         """Search group by name."""
-        search_list = list(filter(lambda data: search in data["name"], data))
+        search_list = list(
+            filter(
+                lambda data: search.lower() in data["name"].lower()
+                if data.get("name")
+                else "",
+                data,
+            )
+        )
         return search_list
 
     def format_response(self, data):

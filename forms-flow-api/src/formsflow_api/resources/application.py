@@ -5,7 +5,6 @@ from http import HTTPStatus
 from flask import current_app, request
 from flask_restx import Namespace, Resource, fields
 from formsflow_api_utils.exceptions import BusinessException
-from formsflow_api_utils.services.external import FormioService
 from formsflow_api_utils.utils import (
     REVIEWER_GROUP,
     auth,
@@ -33,10 +32,6 @@ application_create_model = API.model(
         "formUrl": fields.String(),
         "webFormUrl": fields.String(),
     },
-)
-
-application_external_create_model = API.model(
-    "ApplicationCreateExternal", {"formId": fields.String(), "data": fields.Raw()}
 )
 
 application_base_model = API.model(
@@ -527,92 +522,3 @@ class ApplicationResourceByApplicationStatus(Resource):
             )
         except BusinessException as err:
             return err.error, err.status_code
-
-
-@cors_preflight("POST,OPTIONS")
-@API.route("/external/create", methods=["POST", "OPTIONS"])
-class ApplicationCreation(Resource):
-    """Resource for application creation."""
-
-    @staticmethod
-    @auth.require
-    @profiletime
-    @API.doc(body=application_external_create_model)
-    @API.response(201, "CREATED:- Successful request.", model=application_base_model)
-    @API.response(
-        400,
-        "BAD_REQUEST:- Invalid request.",
-    )
-    @API.response(
-        401,
-        "UNAUTHORIZED:- Authorization header not provided or an invalid token passed.",
-    )
-    def post():
-        """Post a new application using the request body.
-
-        : data: form submission data as a dict as in form submission data.
-        : formId:- Unique Id for the corresponding form
-        e.g,
-        ```
-        {
-            "formId" : "632208d9fbcab29c2ab1a097",
-            "data" : {
-                "firstName" : "John",
-                "lastName" : "Doe",
-                "contact": {
-                    "addressLine1": "1234 Street",
-                    "email" : "john.doe@example.com"
-                    }
-                }
-        }
-        ```
-        """
-        formio_url = current_app.config.get("FORMIO_URL")
-        web_url = current_app.config.get("WEB_BASE_URL")
-        application_json = request.get_json()
-        data = request.get_json()
-        try:
-            application_schema = ApplicationSchema()
-            application_data = application_schema.load(application_json)
-            formio_service = FormioService()
-            form_io_token = formio_service.get_formio_access_token()
-            formio_data = formio_service.post_submission(data, form_io_token)
-            application_data["submission_id"] = formio_data["_id"]
-            application_data[
-                "form_url"
-            ] = f"{formio_url}/form/{application_data['form_id']}/submission/{formio_data['_id']}"
-            application_data[
-                "web_form_url"
-            ] = f"{web_url}/form/{application_data['form_id']}/submission/{formio_data['_id']}"
-            application, status = ApplicationService.create_application(
-                data=application_data, token=request.headers["Authorization"]
-            )
-            response = application_schema.dump(application)
-            return response, status
-        except PermissionError as err:
-            response, status = (
-                {
-                    "type": "Permission Denied",
-                    "message": f"Access to formId-{application_data['form_id']} is prohibited",
-                },
-                HTTPStatus.FORBIDDEN,
-            )
-            current_app.logger.warning(response)
-            current_app.logger.warning(err)
-            return response, status
-        except KeyError as err:
-            response, status = {
-                "type": "Bad request error",
-                "message": "Invalid application request passed",
-            }, HTTPStatus.BAD_REQUEST
-            current_app.logger.warning(response)
-            current_app.logger.warning(err)
-            return response, status
-        except BaseException as application_err:  # pylint: disable=broad-except
-            response, status = {
-                "type": "Bad request error",
-                "message": "Invalid application request passed",
-            }, HTTPStatus.BAD_REQUEST
-            current_app.logger.warning(response)
-            current_app.logger.warning(application_err)
-            return response, status

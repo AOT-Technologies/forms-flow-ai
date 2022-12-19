@@ -24,8 +24,8 @@ class FormHistoryService:
         assert data is not None
         if data.get("componentChanged") is True:
             form_id = data.get("_id")
-            data.pop("_id",None)
-            data.pop("machineName",None)
+            data.pop("_id", None)
+            data.pop("machineName", None)
             name_and_path = f"{data.get('path')}-v-{uuid1().hex}"
             data["path"] = name_and_path
             data["name"] = name_and_path
@@ -46,7 +46,7 @@ class FormHistoryService:
 
     @staticmethod
     @user_context
-    def created_form_logs_without_clone(data, **kwargs):
+    def create_form_logs_without_clone(data, **kwargs):
         """Create form history."""
         user: UserContext = kwargs["user"]
         assert data is not None

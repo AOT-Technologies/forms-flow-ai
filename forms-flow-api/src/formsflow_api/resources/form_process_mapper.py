@@ -298,7 +298,7 @@ class FormResourceList(Resource):
             response = mapper_schema.dump(mapper)
             response["taskVariable"] = json.loads(response["taskVariable"])
 
-            FormHistoryService.created_form_logs_without_clone(data=mapper_json)
+            FormHistoryService.create_form_logs_without_clone(data=mapper_json)
             return response, HTTPStatus.CREATED
         except BaseException as form_err:  # pylint: disable=broad-except
             response, status = {
@@ -424,7 +424,7 @@ class FormResourceById(Resource):
             )
             response = mapper_schema.dump(mapper)
             response["taskVariable"] = json.loads(response["taskVariable"])
-            FormHistoryService.created_form_logs_without_clone(data=application_json)
+            FormHistoryService.create_form_logs_without_clone(data=application_json)
 
             return (
                 response,

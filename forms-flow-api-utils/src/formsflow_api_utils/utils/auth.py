@@ -70,7 +70,7 @@ class Auth:
                     key=current_app.config.get('FORM_EMBED_JWT_SECRET'),
                     )
                 g.authorization_header = token
-                g.token_info = data
+                g.token_info = g.jwt_oidc_token_info = data
             except JWTError as err:
                 raise BusinessException("Invalid token", HTTPStatus.UNAUTHORIZED)
             except Exception as err:

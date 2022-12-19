@@ -105,6 +105,8 @@ class _Config:  # pylint: disable=too-few-public-methods
 
     # Formio JWT Secret
     FORMIO_JWT_SECRET = os.getenv("FORMIO_JWT_SECRET", "--- change me now ---")
+    # Form embed JWT Secret for custom authentication
+    FORM_EMBED_JWT_SECRET = os.getenv("FORM_EMBED_JWT_SECRET")
 
 
 class DevConfig(_Config):  # pylint: disable=too-few-public-methods

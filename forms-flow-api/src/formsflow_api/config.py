@@ -65,6 +65,7 @@ class _Config:  # pylint: disable=too-few-public-methods
     JWT_OIDC_ISSUER = os.getenv("JWT_OIDC_ISSUER")
     JWT_OIDC_AUDIENCE = os.getenv("JWT_OIDC_AUDIENCE")
     JWT_OIDC_CACHING_ENABLED = os.getenv("JWT_OIDC_CACHING_ENABLED")
+    JWT_SECRET = os.getenv('JWT_SECRET')
     JWT_OIDC_JWKS_CACHE_TIMEOUT = 300
 
     # Keycloak Service for BPM Camunda

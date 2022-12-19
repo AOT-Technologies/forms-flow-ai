@@ -156,6 +156,7 @@ Variable name | Meaning | Possible values | Default value |
 `EXPORT_PDF_ENABLED`|Manage export to pdf feature|true/false
 `PUBLIC_WORKFLOW_ENABLED`|Enable creating workflow for all tenants
 `DOCUMENT_SERVICE_URL`|Formsflow document service api url||`http://{your-ip-address}:{port}`
+`OPENTELEMETRY_SERVICE`|Formsflow opentelemetry service||`false`
 `MT_ADMIN_BASE_URL`|Multitenancy admin url||`http://{your-ip-address}:5010/api`
 `MT_ADMIN_BASE_URL_VERSION=v1`|Version of multitenancy admin|v1
 

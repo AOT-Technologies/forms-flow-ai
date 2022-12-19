@@ -38,4 +38,5 @@ window["_env_"] = {
   REACT_APP_EXPORT_PDF_ENABLED: 'false',
   REACT_APP_PUBLIC_WORKFLOW_ENABLED: 'false',
   REACT_APP_DOCUMENT_SERVICE_URL:"Custom URL",
+  REACT_APP_OPENTELEMETRY_SERVICE:"Opentelemetry service",
 };

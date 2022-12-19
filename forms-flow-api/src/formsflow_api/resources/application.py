@@ -438,7 +438,6 @@ class ApplicationResourceCountByFormId(Resource):
     """Resource for getting applications count on formid."""
 
     @staticmethod
-    @auth.require
     @auth.has_one_of_roles([DESIGNER_GROUP])
     @profiletime
     def get(form_id: str):

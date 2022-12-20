@@ -175,14 +175,14 @@ class KeycloakAdminAPIService:
         return roles
 
     @profiletime
-    def delete_request(self, url_path):
+    def delete_request(self, url_path, data=None):
         """Method to invoke delete.
 
         : url_path: The relative path of the API
         """
         url = f"{self.base_url}/{url_path}"
         try:
-            response = self.session.request("DELETE", url)
+            response = self.session.request("DELETE", url, data=json.dumps(data))
             current_app.logger.debug(f"keycloak Admin API DELETE request URL: {url}")
         except Exception as err_code:
             raise f"Request to Keycloak Admin APIs failed., {err_code}"

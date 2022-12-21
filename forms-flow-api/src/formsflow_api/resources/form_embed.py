@@ -4,12 +4,12 @@ from http import HTTPStatus
 
 from flask import current_app, g, request
 from flask_restx import Namespace, Resource, fields
+from formsflow_api_utils.exceptions import BusinessException
 from formsflow_api_utils.services.external import FormioService
 from formsflow_api_utils.utils import auth, cache, cors_preflight, profiletime
 from jose import jwt as json_web_token
 
-from formsflow_api.schemas import ApplicationSchema
-from formsflow_api.services import ApplicationService
+from formsflow_api.services import CombineFormAndApplicationCreate
 
 API = Namespace("Embed", description="APIs for form embeding")
 
@@ -32,7 +32,7 @@ application_base_model = API.model(
     },
 )
 
-
+# TODO: Deprecate this resource
 @cors_preflight("POST,OPTIONS")
 @API.route("/token", methods=["POST", "OPTIONS"])
 class TokenResource(Resource):
@@ -51,6 +51,7 @@ class TokenResource(Resource):
         "UNAUTHORIZED:- Authorization header not provided or an invalid token passed.",
     )
     def post():
+        """Retrieve formio token for embed form."""
         try:
             data = g.token_info
             roles = cache.get("formio_role_ids")
@@ -122,50 +123,41 @@ class ApplicationCreate(Resource):
         """
         formio_url = current_app.config.get("FORMIO_URL")
         web_url = current_app.config.get("WEB_BASE_URL")
-        application_json = request.get_json()
         data = request.get_json()
         try:
-            application_schema = ApplicationSchema()
-            application_data = application_schema.load(application_json)
+            (
+                response,
+                status,
+            ) = CombineFormAndApplicationCreate.application_create_with_submission(
+                data, formio_url, web_url, request.headers["Authorization"]
+            )
+            return response, status
+        except BusinessException as err:
+            return err.error, err.status_code
+
+
+@cors_preflight("GET,OPTIONS")
+@API.route("/form/<string:path>", methods=["GET", "OPTIONS"])
+class Form(Resource):
+    """Resource for Retrieving form."""
+
+    @staticmethod
+    @auth.require_custom
+    @profiletime
+    @API.response(200, "OK:- Successful request.")
+    @API.response(
+        400,
+        "BAD_REQUEST:- Invalid request.",
+    )
+    @API.response(
+        401,
+        "UNAUTHORIZED:- Authorization header not provided or an invalid token passed.",
+    )
+    def get(path):
+        """Get form by form name."""
+        try:
             formio_service = FormioService()
-            form_io_token = formio_service.get_formio_access_token()
-            formio_data = formio_service.post_submission(data, form_io_token)
-            application_data["submission_id"] = formio_data["_id"]
-            application_data[
-                "form_url"
-            ] = f"{formio_url}/form/{application_data['form_id']}/submission/{formio_data['_id']}"
-            application_data[
-                "web_form_url"
-            ] = f"{web_url}/form/{application_data['form_id']}/submission/{formio_data['_id']}"
-            application, status = ApplicationService.create_application(
-                data=application_data, token=request.headers["Authorization"]
-            )
-            response = application_schema.dump(application)
-            return response, status
-        except PermissionError as err:
-            response, status = (
-                {
-                    "type": "Permission Denied",
-                    "message": f"Access to formId-{application_data['form_id']} is prohibited",
-                },
-                HTTPStatus.FORBIDDEN,
-            )
-            current_app.logger.warning(response)
-            current_app.logger.warning(err)
-            return response, status
-        except KeyError as err:
-            response, status = {
-                "type": "Bad request error",
-                "message": "Invalid application request passed",
-            }, HTTPStatus.BAD_REQUEST
-            current_app.logger.warning(response)
-            current_app.logger.warning(err)
-            return response, status
-        except BaseException as application_err:  # pylint: disable=broad-except
-            response, status = {
-                "type": "Bad request error",
-                "message": "Invalid application request passed",
-            }, HTTPStatus.BAD_REQUEST
-            current_app.logger.warning(response)
-            current_app.logger.warning(application_err)
-            return response, status
+            formio_token = formio_service.get_formio_access_token()
+            return formio_service.get_form_by_path(path, formio_token)
+        except BusinessException as err:
+            return err.error, err.status_code

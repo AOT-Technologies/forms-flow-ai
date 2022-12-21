@@ -221,7 +221,7 @@ const Edit = React.memo(() => {
         );
       }
   };
-  const setFormDataForSendingBackend = (form)=>{
+  const manipulatingFormData = (form)=>{
     const newFormData = addHiddenApplicationComponent(form);
     newFormData.submissionAccess = submissionAccess;
     newFormData.access = formAccess;
@@ -237,7 +237,7 @@ const Edit = React.memo(() => {
   return newFormData;
   };
 
-  const setFormProcessDatatoVariable = (submittedData)=>{
+  const setFormProcessDataToVariable = (submittedData)=>{
     const data = {
       anonymous:
         processListData.anonymous === null
@@ -261,7 +261,7 @@ const Edit = React.memo(() => {
   const saveAsNewVersion = () =>{
     closeOptionModal();
     setFormSubmitted(true);
-    const newFormData = setFormDataForSendingBackend(form);
+    const newFormData = manipulatingFormData(form);
     const parentFormId = newFormData._id;
     const newPathAndName = "-v" + Math.random().toString(16).slice(9);
     newFormData.path += newPathAndName;
@@ -271,7 +271,7 @@ const Edit = React.memo(() => {
     delete newFormData._id;
     formCreate(newFormData).then((res)=>{
       const {data:submittedData} = res;
-      const data =  setFormProcessDatatoVariable(submittedData);
+      const data =  setFormProcessDataToVariable(submittedData);
       data.formRevisionNumber = "V1",
       data["version"] = String(+prviousData.version + 1);
       data["processKey"] = prviousData.processKey;
@@ -298,12 +298,12 @@ const Edit = React.memo(() => {
   // save form data to submit
   const saveFormData = () => {
     setFormSubmitted(true);
-    const newFormData = setFormDataForSendingBackend(form);
+    const newFormData = manipulatingFormData(form);
 
     formUpdate(newFormData._id, newFormData).then((res)=>{
       const {data:submittedData} = res;
       if (isMapperSaveNeeded(submittedData)) {
-        const data = setFormProcessDatatoVariable(submittedData);
+        const data = setFormProcessDataToVariable(submittedData);
 
         // PUT request : when application count is zero.
         // POST request with updated version : when application count is positive.

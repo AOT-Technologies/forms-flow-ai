@@ -1,7 +1,7 @@
 """This manages Form history information."""
 from typing import List
 
-from sqlalchemy import JSON, and_, asc
+from sqlalchemy import JSON, and_, desc
 
 from formsflow_api.models.base_model import BaseModel
 from formsflow_api.models.db import db
@@ -50,7 +50,7 @@ class FormHistory(ApplicationAuditDateTimeMixin, BaseModel, db.Model):
             cls.query.filter(
                 and_(cls.form_id == form_id, cls.component_change.is_(True))
             )
-            .order_by(asc(FormHistory.created))
+            .order_by(desc(FormHistory.created))
             .all()
         )
 

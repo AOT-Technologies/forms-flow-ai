@@ -230,7 +230,7 @@ class FormProcessMapperService:
         : Should be called with create_mapper method
         """
         try:
-            form_id = mapper_data.get("form_id")
+            form_id = mapper_data.get("previous_form_id") or mapper_data.get("form_id")
             version = mapper_data.get("version")
             if version is None or form_id is None:
                 return

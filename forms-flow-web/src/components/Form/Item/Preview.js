@@ -140,6 +140,7 @@ const Preview = class extends PureComponent {
             {formRestore?.formHistory.length ? ( <table className="table table-borderless">
               <thead>
                 <tr>
+                  <th>NO</th>
                   <th scope="col">{ formRestore?.formHistory.length === 1 ? 'created' : 'modified'}</th>
                   <th scope="col">{ formRestore?.formHistory.length === 1 ? 'created by' : 'modified by'}</th>
                 </tr>
@@ -148,20 +149,21 @@ const Preview = class extends PureComponent {
                 {
                   formRestore?.formHistory.map((i,index)=>(
                     <tr key={i.id}>
-                 
+                  <th>{index + 1}</th>
                   <td>{getLocalDateTime(i.created)}</td>
                   <td>{i.createdBy}</td>
                   <td>
+                    {
+                      index === 0 ? <span className="text-success">Active</span> : (
+                        <button onClick={()=>{
+                          this.handleRestore(`${redirecUrl}formflow/${form._id}/edit`,
+                          i.changeLog.cloned_form_id);
+                        }} className="btn btn-primary btn-small"
+                        
+                        >Select to edit</button>
                      
-             
-               
-                <button onClick={()=>{
-                  this.handleRestore(`${redirecUrl}formflow/${form._id}/edit`,
-                  i.changeLog.cloned_form_id);
-                }} className="btn btn-primary btn-small"
-                disabled={index === formRestore?.formHistory.length - 1}
-                >Select to edit</button>
-             
+                      )
+                    }
                   </td>
                 </tr>
                   ))

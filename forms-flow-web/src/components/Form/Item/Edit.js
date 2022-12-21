@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useReducer } from "react";
-import { Errors, FormBuilder, Formio } from "react-formio";
+import { Errors, FormBuilder, Formio  } from "react-formio";
 import { push } from "connected-react-router";
 import { useHistory } from "react-router-dom";
 import _set from "lodash/set";
@@ -18,6 +18,7 @@ import { Translation, useTranslation } from "react-i18next";
 import {
   saveFormProcessMapperPost,
   saveFormProcessMapperPut,
+  unPublishForm,
 } from "../../../apiManager/services/processServices";
 import Button from "react-bootstrap/Button";
 import Modal from "react-bootstrap/Modal";
@@ -25,7 +26,7 @@ import { formio_resourceBundles } from "../../../resourceBundles/formio_resource
 import { clearFormError, setFormFailureErrorData, setFormSuccessData, setRestoreFormData, setRestoreFormId } from "../../../actions/formActions";
 import { addTenankey, removeTenantKey } from "../../../helper/helper";
 import { fetchFormById } from "../../../apiManager/services/bpmFormServices";
-import { formUpdate } from "../../../apiManager/services/FormServices";
+import { formCreate, formUpdate } from "../../../apiManager/services/FormServices";
 const reducer = (form, { type, value }) => {
   const formCopy = _cloneDeep(form);
   switch (type) {
@@ -68,13 +69,14 @@ const Edit = React.memo(() => {
   const roleIds = useSelector((state) => state.user?.roleIds || {});
   const submissionAccess = useSelector((state) => state.user?.submissionAccess || []);
   const redirectUrl = MULTITENANCY_ENABLED ? `/tenant/${tenantKey}/` : "/";
-  const saveText = <Translation>{(t) => t("Save Form")}</Translation>;
+  const saveText = <Translation>{(t) => t("Save")}</Translation>;
   const [formSubmitted , setFormSubmitted] = useState(false);
 
   const lang = useSelector((state) => state.user.lang);
   const history = useHistory();
   const { t } = useTranslation();
   const [show, setShow] = useState(false);
+  const [showModalOptions, setShowModalOptions] = useState(false);
   const [currentFormLoading , setCurrentFormLoading] = useState(false);
 
   const handleClose = () => setShow(false);
@@ -180,15 +182,23 @@ const Edit = React.memo(() => {
   };
 
 
- 
+ const showOptionModal = () =>{
+  setShowModalOptions(true);
+ };
+  const closeOptionModal = () => {
+  setShowModalOptions(false);
+  };
 
   const saveFormWithDataChangeCheck = () => {
+    showOptionModal();
     if (isNewMapperNeeded()) {
       handleShow();
     } else {
       saveFormData();
     }
   };
+
+
 
   const isMapperSaveNeeded = (newData) => {
     // checks if the updates need to save to form_process_mapper too
@@ -211,9 +221,7 @@ const Edit = React.memo(() => {
         );
       }
   };
-  // save form data to submit
-  const saveFormData = () => {
-    setFormSubmitted(true);
+  const setFormDataForSendingBackend = (form)=>{
     const newFormData = addHiddenApplicationComponent(form);
     newFormData.submissionAccess = submissionAccess;
     newFormData.access = formAccess;
@@ -226,26 +234,76 @@ const Edit = React.memo(() => {
         newFormData.name = addTenankey(newFormData.name, tenantKey);
       }
     }
+  return newFormData;
+  };
+
+  const setFormProcessDatatoVariable = (submittedData)=>{
+    const data = {
+      anonymous:
+        processListData.anonymous === null
+          ? false
+          : processListData.anonymous,
+      formName: submittedData.title,
+      formType: submittedData.type,
+      status: processListData.status ? processListData.status : INACTIVE,
+      taskVariable: processListData.taskVariable
+      ? processListData.taskVariable
+      : [],
+      id: processListData.id,
+      formId: submittedData._id,
+      formTypeChanged: prviousData.formType !==  submittedData.type,
+      titleChanged: prviousData.formName !==  submittedData.title,
+      anonymousChanged: prviousData.anonymous !== processListData.anonymous
+    };
+    return data;
+  };
+
+  const saveAsNewVersion = () =>{
+    closeOptionModal();
+    setFormSubmitted(true);
+    const newFormData = setFormDataForSendingBackend(form);
+    const parentFormId = newFormData._id;
+    const newPathAndName = "-v" + Math.random().toString(16).slice(9);
+    newFormData.path += newPathAndName;
+    newFormData.name += newPathAndName;
+    newFormData.componentChanged = true;
+    delete newFormData.machineName;
+    delete newFormData._id;
+    formCreate(newFormData).then((res)=>{
+      const {data:submittedData} = res;
+      const data =  setFormProcessDatatoVariable(submittedData);
+      data.formRevisionNumber = "V1",
+      data["version"] = String(+prviousData.version + 1);
+      data["processKey"] = prviousData.processKey;
+      data["processName"] = prviousData.processName;
+      data.parentFormId = parentFormId,
+      data.previousFormId = parentFormId,
+      Formio.cache = {};
+      dispatch(saveFormProcessMapperPost(data));
+      dispatch(unPublishForm(prviousData.id));
+      dispatch(setFormSuccessData("form", submittedData));
+      dispatch(setRestoreFormData({}));
+      dispatch(setRestoreFormId(null));
+      toast.success(t("Form Saved"));
+      dispatch(push(`${redirectUrl}formflow/${submittedData._id}/preview`));
+    }).catch((err)=>{
+      const error = err.response.data || err.message;
+      dispatch(setFormFailureErrorData("form", error));
+    }).finally(()=>{
+      setFormSubmitted(false);
+    });
+
+  };
+
+  // save form data to submit
+  const saveFormData = () => {
+    setFormSubmitted(true);
+    const newFormData = setFormDataForSendingBackend(form);
+
     formUpdate(newFormData._id, newFormData).then((res)=>{
       const {data:submittedData} = res;
       if (isMapperSaveNeeded(submittedData)) {
-        const data = {
-          anonymous:
-            processListData.anonymous === null
-              ? false
-              : processListData.anonymous,
-          formName: submittedData.title,
-          formType: submittedData.type,
-          status: processListData.status ? processListData.status : INACTIVE,
-          taskVariable: processListData.taskVariable
-          ? processListData.taskVariable
-          : [],
-          id: processListData.id,
-          formId: submittedData._id,
-          formTypeChanged: prviousData.formType !==  submittedData.type,
-          titleChanged: prviousData.formName !==  submittedData.title,
-          anonymousChanged: prviousData.anonymous !== processListData.anonymous
-        };
+        const data = setFormProcessDatatoVariable(submittedData);
 
         // PUT request : when application count is zero.
         // POST request with updated version : when application count is positive.
@@ -358,11 +416,37 @@ const Edit = React.memo(() => {
               <button
                 className="btn btn-primary"
                 disabled={formSubmitted}
-                onClick={() => saveFormWithDataChangeCheck()}
+                onClick={() => showOptionModal()}
               >
                 {saveText}
               </button>
-              <Modal show={show} onHide={handleClose}>
+              <Modal show={showModalOptions} onHide={()=>{closeOptionModal();}}>
+                <Modal.Header closeButton>
+                  <Modal.Title>{t("Choose option")}</Modal.Title>
+                </Modal.Header>
+                <Modal.Body>
+                   <ul>
+                    <li><span className="font-weight-bold">Save as  new version:  </span> 
+                    To publish new version of this form
+                    </li>
+                    <li><span className="font-weight-bold">Save form:  </span> 
+                    To update this form 
+                    </li>
+                   </ul>
+                </Modal.Body>
+                <Modal.Footer>
+                  <Button variant="secondary" onClick={()=>{closeOptionModal();}}>
+                    {t("Cancel")}
+                  </Button>
+                  <Button variant="primary" onClick={() => saveAsNewVersion()}>
+                    Save as new version
+                  </Button>
+                  <Button variant="primary" onClick={() => saveFormWithDataChangeCheck ()}>
+                    {t("Save Form")}
+                  </Button>
+                </Modal.Footer>
+              </Modal>
+              <Modal show={show} onHide={()=>{setShowModalOptions(false);}}>
                 <Modal.Header closeButton>
                   <Modal.Title>{t("Confirmation")}</Modal.Title>
                 </Modal.Header>

@@ -87,8 +87,8 @@ const List = React.memo((props) => {
 
   const [isLoading, setIsLoading] = React.useState(false);
 
-  const type = useSelector((state) => state.bpmForms.formType);
-  const [formType, setFormType] = useState(type);
+  const formType = useSelector((state) => state.bpmForms.formType);
+
 
   const isDesigner = userRoles.includes(STAFF_DESIGNER);
   const bpmForms = useSelector((state) => state.bpmForms);
@@ -99,7 +99,7 @@ const List = React.memo((props) => {
   const sortOrder = useSelector((state) => state.bpmForms.sortOrder);
   const formCheckList = useSelector((state) => state.formCheckList.formList);
   const columns = isDesigner ? designerColums(t) : userColumns(t);
-  const designerLimit = forms.limit;
+ 
   const formAccess = useSelector((state) => state.user?.formAccess || []);
 
   const submissionAccess = useSelector(
@@ -149,8 +149,12 @@ const List = React.memo((props) => {
     sortBy,
     sortOrder,
     searchText,
-    formType,
   ]);
+  useEffect(()=>{
+    dispatch(setBPMFormListPage(1));
+    dispatch(setBPMFormLimit(5));
+    fetchForms();
+  },[formType]);
 
   const formCheck = (formCheckList) => {
     const result = formCheckList.reduce(function (obj, v) {
@@ -210,8 +214,6 @@ const List = React.memo((props) => {
   };
 
   const handleTypeChange = (type) => {
-    setFormType(type);
-
     dispatch(setBpmFormType(type));
   };
   const onClear = () => {
@@ -459,7 +461,7 @@ const List = React.memo((props) => {
     );
   };
   const formData = (() => bpmForms.forms)() || [];
-
+  
   return (
     <>
       <FileModal
@@ -683,12 +685,12 @@ const List = React.memo((props) => {
                         Loading={isLoading}
                         filter={filterFactory()}
                         filterPosition={"top"}
-                        pagination={paginationFactory(
+                        pagination={formData.length ? paginationFactory(
                           getoptions(pageNo, limit, totalForms)
-                        )}
+                        ) : false}
                         onTableChange={handlePageChange}
                         {...props.baseProps}
-                        noDataIndication={() => noDataFound()}
+                        noDataIndication={() => !seachFormLoading ? noDataFound() : ""}
                         overlay={overlayFactory({
                           spinner: <SpinnerSVG />,
                           styles: {
@@ -696,9 +698,7 @@ const List = React.memo((props) => {
                               ...base,
                               background: "rgba(255, 255, 255)",
                               height: `${
-                                isDesigner
-                                  ? designerLimit
-                                  : limit > 5
+                                   limit > 5
                                   ? "100% !important"
                                   : "350px !important"
                               }`,

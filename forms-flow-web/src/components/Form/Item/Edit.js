@@ -83,7 +83,7 @@ const Edit = React.memo(() => {
     (state) => state.user?.submissionAccess || []
   );
   const redirectUrl = MULTITENANCY_ENABLED ? `/tenant/${tenantKey}/` : "/";
-  const saveText = <Translation>{(t) => t("Save")}</Translation>;
+  const saveText = <Translation>{(t) => t("Save Form")}</Translation>;
   const [formSubmitted, setFormSubmitted] = useState(false);
 
   const lang = useSelector((state) => state.user.lang);

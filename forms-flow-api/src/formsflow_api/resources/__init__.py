@@ -23,6 +23,7 @@ from formsflow_api.resources.formio import API as FORMIO_API
 from formsflow_api.resources.groups import API as KEYCLOAK_GROUPS_API
 from formsflow_api.resources.metrics import API as APPLICATION_METRICS_API
 from formsflow_api.resources.process import API as PROCESS_API
+from formsflow_api.resources.roles import API as KEYCLOAK_ROLES_API
 from formsflow_api.resources.user import API as KEYCLOAK_USER_API
 
 # This will add the Authorize button to the swagger docs
@@ -77,3 +78,4 @@ API.add_namespace(DRAFT_API, path="/draft")
 API.add_namespace(FORMIO_API, path="/formio")
 API.add_namespace(AUTHORIZATION_API, path="/authorizations")
 API.add_namespace(FILTER_API, path="/filter")
+API.add_namespace(KEYCLOAK_ROLES_API, path="/roles")

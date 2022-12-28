@@ -8,7 +8,6 @@ import _camelCase from "lodash/camelCase";
 import _isEquial from "lodash/isEqual";
 import { MULTITENANCY_ENABLED } from "../../../constants/constants";
 import { INACTIVE } from "../constants/formListConstants";
-import { addHiddenApplicationComponent } from "../../../constants/applicationComponent";
 import { toast } from "react-toastify";
 import { useSelector, useDispatch } from "react-redux";
 import { setFormProcessesData } from "../../../actions/processActions";
@@ -28,13 +27,14 @@ import {
   setRestoreFormData,
   setRestoreFormId,
 } from "../../../actions/formActions";
-import { addTenankey, removeTenantKey } from "../../../helper/helper";
+import {  removeTenantKey } from "../../../helper/helper";
 import { fetchFormById } from "../../../apiManager/services/bpmFormServices";
 import {
   formCreate,
   formUpdate,
 } from "../../../apiManager/services/FormServices";
 import { Checkbox, FormControlLabel } from "@material-ui/core";
+import { manipulatingFormData } from "../../../apiManager/services/formFormatterService";
 const reducer = (form, { type, value }) => {
   const formCopy = _cloneDeep(form);
   switch (type) {
@@ -236,21 +236,7 @@ const Edit = React.memo(() => {
       );
     }
   };
-  const manipulatingFormData = (form) => {
-    const newFormData = addHiddenApplicationComponent(form);
-    newFormData.submissionAccess = submissionAccess;
-    newFormData.access = formAccess;
-    newFormData.componentChanged = isFormComponentsChanged();
-    if (MULTITENANCY_ENABLED && tenantKey) {
-      if (newFormData.path) {
-        newFormData.path = addTenankey(newFormData.path, tenantKey);
-      }
-      if (newFormData.name) {
-        newFormData.name = addTenankey(newFormData.name, tenantKey);
-      }
-    }
-    return newFormData;
-  };
+ 
 
   const setFormProcessDataToVariable = (submittedData) => {
     const data = {
@@ -273,7 +259,14 @@ const Edit = React.memo(() => {
 
   const saveAsNewVersion = () => {
     setFormSubmitted(true);
-    const newFormData = manipulatingFormData(form);
+    const newFormData = manipulatingFormData(
+      form,
+      MULTITENANCY_ENABLED,
+      tenantKey,
+      formAccess,
+      submissionAccess
+    );
+    newFormData.componentChanged = isFormComponentsChanged();
     const parentFormId = newFormData._id;
     const newPathAndName = "-v" + Math.random().toString(16).slice(9);
     newFormData.path += newPathAndName;
@@ -285,13 +278,14 @@ const Edit = React.memo(() => {
       .then((res) => {
         const { data: submittedData } = res;
         const data = setFormProcessDataToVariable(submittedData);
-        (data.formRevisionNumber = "V1"),
-          (data["version"] = String(+prviousData.version + 1));
+        data.formRevisionNumber = "V1";
+        data["version"] = String(+prviousData.version + 1);
         data["processKey"] = prviousData.processKey;
         data["processName"] = prviousData.processName;
-        (data.parentFormId = parentFormId),
-          (data.previousFormId = parentFormId),
-          (Formio.cache = {});
+        data.previousFormId = parentFormId;
+        data.parentFormId = parentFormId;
+    
+        Formio.cache = {};
         dispatch(saveFormProcessMapperPost(data));
         dispatch(unPublishForm(prviousData.id));
         dispatch(setFormSuccessData("form", submittedData));
@@ -312,7 +306,14 @@ const Edit = React.memo(() => {
   // save form data to submit
   const saveFormData = () => {
     setFormSubmitted(true);
-    const newFormData = manipulatingFormData(form);
+    const newFormData = manipulatingFormData(
+      form,
+      MULTITENANCY_ENABLED,
+      tenantKey,
+      formAccess,
+      submissionAccess
+    );
+    newFormData.componentChanged = isFormComponentsChanged();
 
     formUpdate(newFormData._id, newFormData)
       .then((res) => {
@@ -327,7 +328,7 @@ const Edit = React.memo(() => {
             data["version"] = String(+prviousData.version + 1);
             data["processKey"] = prviousData.processKey;
             data["processName"] = prviousData.processName;
-            (data.parentFormId = processListData.parentFormId),
+            data.parentFormId = processListData.parentFormId;
               dispatch(saveFormProcessMapperPost(data));
           } else {
             // For hadling uploaded forms case.
@@ -444,7 +445,7 @@ const Edit = React.memo(() => {
         </div>
       </div>
 
-      {/* <hr /> */}
+
 
       <Errors errors={errors} />
       <div

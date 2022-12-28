@@ -20,11 +20,13 @@ class KeycloakClientService(KeycloakAdmin):
         return self.client.get_analytics_roles(page_no, limit)
 
     def get_group(self, group_id: str):
-        """Get role by role_id."""
+        """Get role by role name."""
         client_id = self.client.get_client_id()
-        return self.client.get_request(
-            url_path=f"roles-by-id/{group_id}?client={client_id}"
+        response = self.client.get_request(
+            url_path=f"clients/{client_id}/roles/{group_id}"
         )
+        response["id"] = response.get("name", None)
+        return response
 
     def get_users(self, **kwargs):
         """Get users under this client with formsflow-reviewer role."""
@@ -36,10 +38,34 @@ class KeycloakClientService(KeycloakAdmin):
             url_path=f"clients/{client_id}/roles/formsflow-reviewer/users"
         )
 
-    def update_group(self, group_id: str, dashboard_id_details: Dict):
-        """Update keycloak role."""
+    def update_group(self, group_id: str, data: Dict):
+        """Update keycloak role by role name."""
         client_id = self.client.get_client_id()
         return self.client.update_request(
-            url_path=f"roles-by-id/{group_id}?client={client_id}",
-            data=dashboard_id_details,
+            url_path=f"clients/{client_id}/roles/{group_id}",
+            data=data,
         )
+
+    def get_groups_roles(self, search: str, sort_order: str):
+        """Get roles."""
+        response = self.client.get_roles(search)
+        for role in response:
+            role["id"] = role.get("name")
+            role["description"] = role.get("description")
+        return self.sort_results(response, sort_order)
+
+    def delete_group(self, group_id: str):
+        """Delete role by role name."""
+        client_id = self.client.get_client_id()
+        return self.client.delete_request(
+            url_path=f"clients/{client_id}/roles/{group_id}"
+        )
+
+    def create_group_role(self, data: Dict):
+        """Create role."""
+        client_id = self.client.get_client_id()
+        response = self.client.create_request(
+            url_path=f"clients/{client_id}/roles", data=data
+        )
+        role_name = response.headers["Location"].split("/")[-1]
+        return {"id": role_name}

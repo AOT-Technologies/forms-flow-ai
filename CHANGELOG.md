@@ -2,7 +2,7 @@
 
 Mark  items as `Added`, `Changed`, `Fixed`, `Removed`, `Untested Features`, `Upcoming Features`, `Known Issues`
 
-## 5.1.0 - 2022-12-15
+## 5.1.0 - 2022-12-28
 
 `Added`
 
@@ -11,6 +11,10 @@ Mark  items as `Added`, `Changed`, `Fixed`, `Removed`, `Untested Features`, `Upc
 * Added form versoning.
 * Added delete option for draft feature.
 * Added form embedding.
+
+**forms-flow-forms**
+
+* Added environment variable `FORMIO_CLIENT_UI`.
 
 **forms-flow-api**
 

@@ -8,7 +8,7 @@ In the following document, we’ll describe the details of dependencies of vario
 
   | Component | Version|  
   | ---       | -----   |
-  |  Redash   | 10.1.0 |
+  |  Redash   | 10.1.4 |
 
 <br>
 
@@ -18,7 +18,7 @@ In the following document, we’ll describe the details of dependencies of vario
 
    | Component | Version |  
    | ---       | -----   |
-   |  Python   |  3.9    |
+   |  Python   |  3.8    |
    | Flask     |  2.1.3  |
    |  Postgres |  11.0   |
 
@@ -41,7 +41,7 @@ In the following document, we’ll describe the details of dependencies of vario
 
    | Component | Version|  
    | ---       | -----   |
-   |   Formio | 4.3.0 |
+   |   Formio | 2.4.1 |
    |   Mongo | 5.0 |
    <br>
 
@@ -51,7 +51,7 @@ In the following document, we’ll describe the details of dependencies of vario
 
    | Component | Version|  
    | ---       | -----   |
-   | Keycloak   | 7.0  and above   |
+   | Keycloak  | 7.0  and above   |
    <br>
 
 #### NOTE
@@ -67,5 +67,5 @@ In the following document, we’ll describe the details of dependencies of vario
    | Component | Version |
    |  --- | --- |
    | React  | 17.0.2 |
-   |  Formio | 4.3.0 |
+   | Formio | 2.4.1 |
    <br>

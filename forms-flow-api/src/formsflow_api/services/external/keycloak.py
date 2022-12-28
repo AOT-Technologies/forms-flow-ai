@@ -153,5 +153,61 @@ class KeycloakAdminAPIService:
             current_app.logger.debug(f"Keycloak response: {response}")
         except Exception as err_code:
             raise f"Request to Keycloak Admin APIs failed., {err_code}"
+        response.raise_for_status()
         if response.status_code == 204:
             return f"Updated - {url_path}"
+
+    def get_groups(self):
+        """Return groups."""
+        current_app.logger.debug("Getting groups")
+        group_list_response = self.get_request(
+            url_path="groups?briefRepresentation=false"
+        )
+        current_app.logger.debug("Groups %s", group_list_response)
+        return group_list_response
+
+    def get_roles(self, search: str = ""):
+        """Return roles."""
+        current_app.logger.debug("Getting roles")
+        client_id = self.get_client_id()
+        roles = self.get_request(f"clients/{client_id}/roles?search={search}")
+        current_app.logger.debug("Client roles %s", roles)
+        return roles
+
+    @profiletime
+    def delete_request(self, url_path, data=None):
+        """Method to invoke delete.
+
+        : url_path: The relative path of the API
+        """
+        url = f"{self.base_url}/{url_path}"
+        try:
+            response = self.session.request("DELETE", url, data=json.dumps(data))
+            current_app.logger.debug(f"keycloak Admin API DELETE request URL: {url}")
+        except Exception as err_code:
+            raise f"Request to Keycloak Admin APIs failed., {err_code}"
+        response.raise_for_status()
+
+    @profiletime
+    def create_request(  # pylint: disable=inconsistent-return-statements
+        self, url_path, data=None
+    ):
+        """Method to create request of Keycloak Admin APIs.
+
+        : url_path: The relative path of the API
+        : data: The request data object
+        """
+        try:
+            url = f"{self.base_url}/{url_path}"
+            response = self.session.request(
+                "POST",
+                url,
+                data=json.dumps(data),
+            )
+            current_app.logger.debug(f"keycloak Admin API POST request URL: {url}")
+            current_app.logger.debug(f"Keycloak Admin POST API payload {data}")
+            current_app.logger.debug(f"Keycloak response: {response}")
+        except Exception as err_code:
+            raise f"Request to Keycloak Admin APIs failed., {err_code}"
+        response.raise_for_status()
+        return response

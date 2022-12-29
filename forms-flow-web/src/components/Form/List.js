@@ -430,10 +430,20 @@ const List = React.memo((props) => {
 
   const fileUploaded = async (evt) => {
     FileService.uploadFile(evt, async (fileContent) => {
-      if (fileContent) {
-        dispatch(setFormUploadList(fileContent?.forms || []));
+      let formToUpload;
+      if ("forms" in fileContent) {
+         formToUpload = fileContent;
+      }
+      else {
+        ['_id','type', 'created', 'modified', 'machineName'].forEach(e => delete fileContent[e]);
+        const newArray = [];
+        newArray.push(fileContent);
+        formToUpload = { "forms": newArray };
+      }
+      if (formToUpload) {
+        dispatch(setFormUploadList(formToUpload?.forms || []));
         setShowFormUploadModal(true);
-        await uploadFileContents(fileContent);
+        await uploadFileContents(formToUpload);
         fetchForms();
       }
     });

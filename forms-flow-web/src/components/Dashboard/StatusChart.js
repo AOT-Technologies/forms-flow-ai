@@ -42,6 +42,8 @@ const ChartForm = React.memo((props) => {
             <div className="chart text-center">
               <PieChart width={400} height={400}>
                 <Pie
+                  paddingAngle={1}
+                  minAngle={1}
                   data={pieData}
                   labelLine={false}
                   outerRadius={90}

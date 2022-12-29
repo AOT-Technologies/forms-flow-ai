@@ -573,7 +573,7 @@ class Application(
         """Get application status w.r.t to mapper_id ordered by modified date."""
         result_proxy = (
             db.session.query(
-                FormProcessMapper.form_name,
+                FormProcessMapper.form_name.label("application_name"),
                 Application.application_status,
                 func.count(FormProcessMapper.form_name).label("count"),
             )

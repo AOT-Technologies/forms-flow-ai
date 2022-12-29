@@ -56,14 +56,13 @@ it("should render the create component without braking", () => {
 it("should render the create  anonymous component without braking", () => {
   const spy = jest.spyOn(redux, "useSelector");
   spy.mockImplementation((callback) =>
-    callback({ user: { lang: "" }, form: { error: "" } })
+  callback({ user: { lang: "" }, form: { error: "" } })
   );
   renderWithRouterMatch(Create, {
     path: "/formflow/:formId",
     route: "/formflow/create",
   });
-  const anonymous = screen.getByTestId("anonymous");
-  expect(screen.getByTestId("anonymous")).toBeInTheDocument();
+  const anonymous = document.getElementById("anonymous");
   fireEvent.click(anonymous);
   expect(anonymous.checked).toEqual(true);
   fireEvent.click(anonymous);

@@ -36,17 +36,24 @@ const Preview = class extends PureComponent {
       activeStep: 1,
       workflow: null,
       status: null,
+      formId: null,
       historyModal: false,
       newpublishClicked: false,
       confirmPublisModal: false,
     };
   }
 
-  componentDidMount() {
-    this.props.getFormHistories(this.props.form.id);
-  }
+ 
   componentWillUnmount() {
     this.props.clearFormHistories();
+  }
+
+  componentDidUpdate(prevProps, prevState) {
+    const { id } = this.props.form;
+    if (id !== prevState.formId) {
+    this.props.getFormHistories(id);
+      this.setState({ ...this.state,formId: id });
+    }
   }
 
   handleModalChange() {

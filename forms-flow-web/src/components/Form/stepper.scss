@@ -29,7 +29,7 @@
 
 
 .form-history-container{
-  max-height: 300px;
+  max-height: 350px;
   overflow-y: auto;
   margin:auto;
   display:block;
@@ -62,7 +62,7 @@
 .form-history-container  li::before{
     position: absolute;
     left: -10px;
-    top: -5px;
+    top: 0;
     content: " ";
     border-radius: 500%;
     background: #c4c4c4;

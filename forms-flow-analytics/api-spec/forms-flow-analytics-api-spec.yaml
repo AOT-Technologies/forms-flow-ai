@@ -25,26 +25,6 @@ paths:
         - Filter
       summary: Get Dashboards
       description: Get all dashboards
-      requestBody:
-        content:
-          application/json:
-            schema:
-              type: object
-              example:
-                resourceType: Task
-                name: Sample Tasks
-                owner: john
-                query:
-                  candidateGroup: Sample
-                properties:
-                  color: '#3e4d2f'
-                  description: Tasks assigned to group Sample
-                  priority: 5
-            examples:
-              example-1:
-                value:
-                  - id: 1
-                    name: Test Dashboard
       responses:
         '200':
           description: OK
@@ -53,21 +33,6 @@ paths:
             application/json:
               schema:
                 type: object
-              example:
-                id: a7b2d065-19ed-11ec-9f26-0242ac170003
-                resourceType: Task
-                name: Sample Tasks
-                owner: john
-                query:
-                  candidateGroup: Sample
-                  taskVariables: []
-                  processVariables: []
-                  caseInstanceVariables: []
-                  orQueries: []
-                properties:
-                  color: '#3e4d2f'
-                  description: Tasks assigned to group Sample
-                  priority: 5
               examples:
                 example-1:
                   value:

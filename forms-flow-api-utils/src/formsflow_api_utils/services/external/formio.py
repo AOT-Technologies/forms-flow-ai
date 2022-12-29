@@ -128,4 +128,13 @@ class FormioService:
         if response.ok:
             return response.json()
         raise BusinessException(response.json(), HTTPStatus.BAD_REQUEST)
+
+    def get_form_by_path(self, path_name: str, formio_token: str) -> dict:
+        """Get request to formio API to get form details from path."""
+        headers = {"Content-Type": "application/json", "x-jwt-token": formio_token}
+        url = f"{self.base_url}/{path_name}" 
+        response = requests.get(url, headers=headers)
+        if response.ok:
+            return response.json()
+        raise BusinessException(response.json(), HTTPStatus.BAD_REQUEST)
         

@@ -3,8 +3,11 @@
 from functools import wraps
 from http import HTTPStatus
 
-from flask import g, request
+from flask import g, request, current_app
 from flask_jwt_oidc import JwtManager
+
+from jose import jwt as json_web_token
+from jose.exceptions import JWTError
 
 from ..exceptions import BusinessException
 
@@ -54,6 +57,26 @@ class Auth:
         """Method to validate the role."""
         return jwt.validate_roles(role)
 
+    @classmethod
+    def require_custom(cls, f):
+        """Validate custom form embed token."""
+        @wraps(f)
+        def decorated(*args, **kwargs):
+            token = jwt.get_token_auth_header()
+            try:
+                data = json_web_token.decode(
+                    token,
+                    algorithms="HS256",
+                    key=current_app.config.get('FORM_EMBED_JWT_SECRET'),
+                    )
+                g.authorization_header = token
+                g.token_info = g.jwt_oidc_token_info = data
+            except JWTError as err:
+                raise BusinessException("Invalid token", HTTPStatus.UNAUTHORIZED)
+            except Exception as err:
+                raise err
+            return f(*args, **kwargs)
+        return decorated
 
 auth = (
     Auth()

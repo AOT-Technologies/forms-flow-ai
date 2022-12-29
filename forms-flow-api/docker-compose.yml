@@ -51,6 +51,7 @@ services:
       FORMIO_JWT_SECRET: ${FORMIO_JWT_SECRET:---- change me now ---}
       MULTI_TENANCY_ENABLED: ${MULTI_TENANCY_ENABLED:-false}
       KEYCLOAK_ENABLE_CLIENT_AUTH: ${KEYCLOAK_ENABLE_CLIENT_AUTH:-false}
+      FORM_EMBED_JWT_SECRET: ${FORM_EMBED_JWT_SECRET:- f6a69a42-7f8a-11ed-a1eb-0242ac120002}
 
     stdin_open: true # -i
     tty: true # -t

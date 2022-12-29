@@ -24,3 +24,4 @@ from formsflow_api.schemas.user import UserlocaleReqSchema
 
 from .form_history_logs import FormHistorySchema
 from .process import ProcessListSchema
+from .roles import RolesGroupsSchema

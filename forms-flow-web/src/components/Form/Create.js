@@ -20,7 +20,7 @@ import {
 } from "../../actions/formActions";
 import { addTenankey } from "../../helper/helper";
 import { formCreate } from "../../apiManager/services/FormServices";
-
+import { Checkbox, FormControlLabel } from "@material-ui/core";
 // reducer from react-formio code
 const reducer = (form, { type, value }) => {
   const formCopy = _cloneDeep(form);
@@ -198,21 +198,20 @@ const Create = React.memo(() => {
 
   return (
     <div>
+      <div className="d-flex align-items-center flex-wrap justify-content-between my-4 bg-light p-3">
+
       <h2>
         <Translation>{(t) => t("Create Form")}</Translation>
       </h2>
-      <hr />
+      <button className="btn btn-primary" disabled={formSubmitted} onClick={() => saveFormData()}>
+        {saveText}
+       </button>
+      </div>
+    
       <Errors errors={errors} />
-      <div>
-        <div className="row justify-content-end w-100">
-          <div id="save-buttons" className=" save-buttons pull-right">
-            <div className="form-group pull-right">
-              <button className="btn btn-primary" disabled={formSubmitted} onClick={() => saveFormData()}>
-                {saveText}
-              </button>
-            </div>
-          </div>
-        </div>
+      <div className="p-4"
+        style={{ border: "1px solid #c2c0be", borderRadius: "5px" }}>
+         
         <div className="row align-item-center">
           <div className="col-lg-4 col-md-4 col-sm-4">
             <div id="form-group-title" className="form-group">
@@ -333,33 +332,26 @@ const Create = React.memo(() => {
               </div>
             </div>
           </div>
+          
           <div className="col-lg-4 col-md-4 col-sm-4">
-            <div
-              id="form-group-anonymous"
-              className="form-group"
-              style={{ marginTop: "30px" }}
-            >
-              <div className="input-group align-items-center">
-                <input
-                  className="m-0"
-                  style={{ height: "20px", width: "20px" }}
-                  type="checkbox"
-                  id="anonymous"
-                  title="Make this form public"
-                  data-testid="anonymous"
-                  checked={anonymous}
-                  onChange={() => {
-                    setAnonymous(!anonymous);
-                  }}
+            <div id="form-group-path" className="form-group">
+              <label htmlFor="path" className="control-label "></label>
+              <div className="input-group">
+                <FormControlLabel
+                  control={
+                    <Checkbox
+                      checked={anonymous}
+                      id="anonymous"
+                      color="primary"
+                      aria-label="Publish"
+                      onChange={() => {
+                        setAnonymous(!anonymous);
+                      }}
+                    />
+                  }
+                  label={t("Make this form public ?")}
+                  labelPlacement="start"
                 />
-                <label
-                  htmlFor="anonymousLabel"
-                  className="form-control border-0"
-                >
-                  <Translation>
-                    {(t) => t("Make this form public ?")}
-                  </Translation>
-                </label>
               </div>
             </div>
           </div>

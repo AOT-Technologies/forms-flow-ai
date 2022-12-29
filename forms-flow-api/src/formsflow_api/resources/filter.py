@@ -203,7 +203,7 @@ class FilterResourceById(Resource):
     @profiletime
     @API.doc(
         responses={
-            201: "CREATED:- Successful request.",
+            200: "OK:- Successful request.",
             400: "BAD_REQUEST:- Invalid request.",
             403: "FORBIDDEN:- Permission denied",
         },
@@ -242,7 +242,7 @@ class FilterResourceById(Resource):
     @profiletime
     @API.doc(
         responses={
-            201: "CREATED:- Successful request.",
+            200: "OK:- Successful request.",
             400: "BAD_REQUEST:- Invalid request.",
             403: "FORBIDDEN:- Permission denied",
         },
@@ -295,7 +295,7 @@ class FilterResourceById(Resource):
     @profiletime
     @API.doc(
         responses={
-            201: "CREATED:- Successful request.",
+            200: "OK:- Successful request.",
             400: "BAD_REQUEST:- Invalid request.",
             403: "FORBIDDEN:- Permission denied",
         }

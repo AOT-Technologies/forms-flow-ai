@@ -166,24 +166,22 @@ const List = React.memo((props) => {
     formType
   ]);
 
-  const formCheck = (formCheckList)=>{
-    
-    const result = formCheckList.reduce(function(obj, v) {
+  const formCheck = (formCheckList) => {
+
+    const result = formCheckList.reduce(function (obj, v) {
       obj[v.type] = (obj[v.type] || 0) + 1;
       return obj;
     }, {});
 
-  let response = "";
+    let response = "";
 
-  if (result.resource)
-  {
-    response = `${result.resource} ${result.resource == 1 ? t("Resource") : t("Resources")}`;
-  }
-  if(result.form)
-  {
-     response += `${result.resource ? " ," : ""} ${result.form} ${result.form == 1 ? t("Form") : t("Forms")}`;
-  } 
-  return toast.success(`${response} ${t("Downloaded Successfully")}`);
+    if (result.resource) {
+      response = `${result.resource} ${result.resource == 1 ? t("Resource") : t("Resources")}`;
+    }
+    if (result.form) {
+      response += `${result.resource ? " ," : ""} ${result.form} ${result.form == 1 ? t("Form") : t("Forms")}`;
+    }
+    return toast.success(`${response} ${t("Downloaded Successfully")}`);
   };
 
   const downloadForms = () => {
@@ -325,9 +323,22 @@ const List = React.memo((props) => {
 
   const fileUploaded = async (evt) => {
     FileService.uploadFile(evt, async (fileContent) => {
-      dispatch(setFormUploadList(fileContent?.forms || []));
+      if ("forms" in fileContent) {
+        var formToUpload = fileContent;
+      }
+      else {
+        delete fileContent["_id"];
+        delete fileContent["type"];
+        delete fileContent["created"];
+        delete fileContent["modified"];
+        delete fileContent["machineName"];
+        const newArray = [];
+        newArray.push(fileContent);
+        formToUpload = { "forms": newArray };
+      }
+      dispatch(setFormUploadList(formToUpload?.forms || []));
       setShowFormUploadModal(true);
-      await uploadFileContents(fileContent);
+      await uploadFileContents(formToUpload);
       dispatch(indexForms("forms", 1, forms.query));
     });
   };

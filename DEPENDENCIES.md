@@ -18,7 +18,7 @@ In the following document, we’ll describe the details of dependencies of vario
 
    | Component | Version |  
    | ---       | -----   |
-   |  Python   |  3.8    |
+   |  Python   |  3.9    |
    | Flask     |  2.1.3  |
    |  Postgres |  11.0   |
 

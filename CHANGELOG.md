@@ -2,6 +2,14 @@
 
 Mark  items as `Added`, `Changed`, `Fixed`, `Removed`, `Untested Features`, `Upcoming Features`, `Known Issues`
 
+## 5.0.2 - 2022-12-07
+
+**forms-flow-web**
+
+`Fixed`
+
+* Frozen UI during form design.
+
 ## 5.0.1 - 2022-10-10
 
 **forms-flow-web**

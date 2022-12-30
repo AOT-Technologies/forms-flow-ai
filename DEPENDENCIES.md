@@ -8,7 +8,7 @@ In the following document, we’ll describe the details of dependencies of vario
 
   | Component | Version|  
   | ---       | -----   |
-  |  Redash   | 10.1.4 |
+  |  Redash   | 10.1.2 |
 
 <br>
 

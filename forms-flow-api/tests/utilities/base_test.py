@@ -4,6 +4,7 @@ import time
 
 from dotenv import find_dotenv, load_dotenv
 from flask import current_app
+from jose import jwt as json_web_token
 
 from formsflow_api.models import Authorization, AuthType
 
@@ -532,4 +533,31 @@ def get_filter_payload(name: str = "Test Task", roles: list = [], users: list = 
         "properties": {"priority": 10},
         "users": users,
         "roles": roles,
+    }
+
+
+def get_embed_token(
+    user_name="test_user", email="test@email.com", tenant_key=None, invalid=False
+):
+    """Return token for embed APIs."""
+    return json_web_token.encode(
+        {"preferred_username": user_name, "email": email, "tenant_key": tenant_key},
+        current_app.config.get(
+            "TEST_FORM_EMBED_JWT_SECRET", "f6a69a42-7f8a-11ed-a1eb-0242ac120002"
+        )
+        if not invalid
+        else "invalid-secret",
+        algorithm="HS256",
+    )
+
+
+def get_embed_application_create_payload(formId):
+    """Returns the payload for embed submission."""
+    return {
+        "formId": formId,
+        "data": {
+            "firstName": "John",
+            "lastName": "Doe",
+            "contact": {"addressLine1": "1234 Street", "email": "john.doe@example.com"},
+        },
     }

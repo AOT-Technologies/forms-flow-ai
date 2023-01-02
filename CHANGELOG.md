@@ -60,7 +60,12 @@ Mark  items as `Added`, `Changed`, `Fixed`, `Removed`, `Untested Features`, `Upc
 
 **forms-flow-api**
 
-* Fixed Python security vulnerabilities
+* Fixed Python security vulnerabilities.
+
+`Generic Changes`
+* In Quick Installation:
+<br> &nbsp;&nbsp;Fixed versions for data bases.<br> &nbsp;&nbsp;Reduced script size.<br> &nbsp;&nbsp;Added IP confirmation to avoid IP issues.
+       
 
 
 ## 5.0.2 - 2022-12-07

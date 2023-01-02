@@ -25,6 +25,7 @@ class FormHistoryService:
         assert data is not None
         if data.get("componentChanged") is True:
             form_id = data.get("_id")
+            parent_form_id = data.get("parentFormId")
             data.pop("_id", None)
             data.pop("machineName", None)
             name_and_path = f"{data.get('path')}-v-{uuid1().hex}"
@@ -36,9 +37,13 @@ class FormHistoryService:
             user_name = (user.user_name,)
             form_history_data = {
                 "form_id": form_id,
+                "parent_form_id": parent_form_id or form_id,
                 "created_by": user_name,
                 "component_change": True,
-                "change_log": {"cloned_form_id": response.get("_id")},
+                "change_log": {
+                    "cloned_form_id": response.get("_id"),
+                    "new_version": data.get("saveAsNewVersion") or False,
+                },
             }
             history_schema = FormHistorySchema()
             create_form_history = FormHistory.create_history(form_history_data)
@@ -72,6 +77,7 @@ class FormHistoryService:
         if len(form_logs_data.values()) > 1:
             form_logs_data["created_by"] = user_name
             form_logs_data["form_id"] = data.get("formId")
+            form_logs_data["parent_form_id"] = data.get("parentFormId")
             history_schema = FormHistorySchema()
             create_form_history = FormHistory.create_history(form_logs_data)
             return history_schema.dump(create_form_history)

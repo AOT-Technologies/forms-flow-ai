@@ -638,7 +638,12 @@ class FormioFormResource(Resource):
                 HTTPStatus.CREATED,
             )
             FormHistoryService.create_form_log_with_clone(
-                data={**response, "componentChanged": True}
+                data={
+                    **response,
+                    "parentFormId": data.get("parentFormId"),
+                    "saveAsNewVersion": data.get("saveAsNewVersion"),
+                    "componentChanged": True,
+                }
             )
             return response, status
         except BusinessException as err:

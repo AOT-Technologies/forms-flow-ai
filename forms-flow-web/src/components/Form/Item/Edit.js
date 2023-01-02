@@ -243,6 +243,7 @@ const Edit = React.memo(() => {
       anonymous:
         processListData.anonymous === null ? false : processListData.anonymous,
       formName: submittedData.title,
+      parentFormId: processListData.parentFormId,
       formType: submittedData.type,
       status: processListData.status ? processListData.status : INACTIVE,
       taskVariable: processListData.taskVariable
@@ -266,12 +267,13 @@ const Edit = React.memo(() => {
       formAccess,
       submissionAccess
     );
-    newFormData.componentChanged = isFormComponentsChanged();
-    const parentFormId = newFormData._id;
+    const previousformId = newFormData._id;
     const newPathAndName = "-v" + Math.random().toString(16).slice(9);
     newFormData.path += newPathAndName;
     newFormData.name += newPathAndName;
     newFormData.componentChanged = true;
+    newFormData.saveAsNewVersion = true;
+    newFormData.parentFormId = prviousData.parentFormId;
     delete newFormData.machineName;
     delete newFormData._id;
     formCreate(newFormData)
@@ -282,8 +284,8 @@ const Edit = React.memo(() => {
         data["version"] = String(+prviousData.version + 1);
         data["processKey"] = prviousData.processKey;
         data["processName"] = prviousData.processName;
-        data.previousFormId = parentFormId;
-        data.parentFormId = parentFormId;
+        data.previousFormId = previousformId;
+        data.parentFormId = prviousData.parentFormId;
     
         Formio.cache = {};
         dispatch(saveFormProcessMapperPost(data));
@@ -314,6 +316,7 @@ const Edit = React.memo(() => {
       submissionAccess
     );
     newFormData.componentChanged = isFormComponentsChanged();
+    newFormData.parentFormId = prviousData.parentFormId;
 
     formUpdate(newFormData._id, newFormData)
       .then((res) => {

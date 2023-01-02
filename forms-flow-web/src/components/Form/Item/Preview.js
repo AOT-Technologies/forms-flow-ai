@@ -15,7 +15,6 @@ import {
 } from "../../../actions/formActions";
 import {
   formCreate,
-  getFormHistory,
 } from "../../../apiManager/services/FormServices";
 
 import _ from "lodash";
@@ -36,7 +35,6 @@ const Preview = class extends PureComponent {
       activeStep: 1,
       workflow: null,
       status: null,
-      formId: null,
       historyModal: false,
       newpublishClicked: false,
       confirmPublisModal: false,
@@ -48,14 +46,6 @@ const Preview = class extends PureComponent {
     this.props.clearFormHistories();
   }
 
-  componentDidUpdate(prevProps, prevState) {
-    const { id } = this.props.form;
-    if (id !== prevState.formId) {
-    this.props.getFormHistories(id);
-      this.setState({ ...this.state,formId: id });
-    }
-  }
-
   handleModalChange() {
     this.setState({ ...this.state, historyModal: !this.state.historyModal });
   }
@@ -63,6 +53,7 @@ const Preview = class extends PureComponent {
   publishConfirmModalChange () {
     this.setState({...this.state, confirmPublisModal: !this.state.confirmPublisModal });
   }
+ 
   
 
   handlePublishAsNewVersion(redirecUrl) {
@@ -246,15 +237,6 @@ const mapDispatchToProps = (dispatch, ownProps) => {
     },
     clearFormHistories: () => {
       dispatch(setFormHistories([]));
-    },
-    getFormHistories: (formId) => {
-      getFormHistory(formId)
-        .then((res) => {
-          dispatch(setFormHistories(res.data));
-        })
-        .catch(() => {
-          dispatch(setFormHistories([]));
-        });
     },
     createMapper: (data, form, redirectUrl) => {
       Formio.cache = {};

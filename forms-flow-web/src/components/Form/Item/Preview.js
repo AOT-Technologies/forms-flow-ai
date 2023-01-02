@@ -18,7 +18,6 @@ import {
 } from "../../../apiManager/services/FormServices";
 
 import _ from "lodash";
-// import { INACTIVE } from "../constants/formListConstants";
 import { manipulatingFormData } from "../../../apiManager/services/formFormatterService";
 import { saveFormProcessMapperPost } from "../../../apiManager/services/processServices";
 import { toast } from "react-toastify";

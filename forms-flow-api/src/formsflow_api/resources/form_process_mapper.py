@@ -145,6 +145,20 @@ form_create_response_model = API.inherit(
         "modified": fields.String(),
     },
 )
+form_history_change_log_model = API.model(
+    "formHistoryChangeLog",
+    {"clone_id": fields.String(), "new_version": fields.Boolean()},
+)
+form_history_response_model = API.inherit(
+    "FormHistoryResponse",
+    {
+        "id": fields.String(),
+        "form_id": fields.String(),
+        "created_by": fields.String(),
+        "created": fields.String(),
+        "change_log": fields.Nested(form_history_change_log_model),
+    },
+)
 
 
 @cors_preflight("GET,POST,OPTIONS")
@@ -697,6 +711,20 @@ class FormHistoryResource(Resource):
     @staticmethod
     @auth.has_one_of_roles([DESIGNER_GROUP])
     @profiletime
+    @API.doc(body=form_create_model)
+    @API.response(200, "OK:- Successful request.", model=form_history_response_model)
+    @API.response(
+        400,
+        "BAD_REQUEST:- Invalid request.",
+    )
+    @API.response(
+        401,
+        "UNAUTHORIZED:- Authorization header not provided or an invalid token passed.",
+    )
+    @API.response(
+        403,
+        "FORBIDDEN:- Authorization will not help.",
+    )
     def get(form_id: str):
         """Getting form history."""
         try:

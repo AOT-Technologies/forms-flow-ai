@@ -74,7 +74,7 @@ class FormHistoryService:
             form_logs_data["title"] = True
             form_logs_data["change_log"]["form_name"] = data.get("formName")
 
-        if len(form_logs_data.values()) > 1:
+        if len(form_logs_data) > 1:
             form_logs_data["created_by"] = user_name
             form_logs_data["form_id"] = data.get("formId")
             form_logs_data["parent_form_id"] = data.get("parentFormId")

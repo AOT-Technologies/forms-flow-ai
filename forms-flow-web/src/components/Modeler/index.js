@@ -250,9 +250,9 @@ export default React.memo(() => {
                       accept=".bpmn, .dmn"
                       onChange={(e) => handleChangeFile(e.target.files[0])}
                     />
-                    <label For="inputWorkflow">{t("Choose File")}</label>
+                    <label htmlFor="inputWorkflow">{t("Choose File")}</label>
                   </div>
-                  <label style={{ padding: "4px" }} For="inputWorkflow">
+                  <label htmlFor="inputWorkflow" style={{ padding: "4px" }} >
                     {fileName ? fileName : t("No file chosen")}
                   </label>
                 </div>

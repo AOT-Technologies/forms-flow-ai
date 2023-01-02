@@ -6,8 +6,8 @@ from flask import current_app, request
 from flask_restx import Namespace, Resource, fields
 from formsflow_api_utils.exceptions import BusinessException
 from formsflow_api_utils.utils import (
-    REVIEWER_GROUP,
     DESIGNER_GROUP,
+    REVIEWER_GROUP,
     auth,
     cors_preflight,
     get_form_and_submission_id_from_form_url,

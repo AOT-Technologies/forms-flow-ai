@@ -321,6 +321,7 @@ const List = React.memo((props) => {
                                     newFormData.display !== formObj.display ||
                                     newFormData.type !== formObj.type
                                     ); 
+                                    newFormData.parentFormId = mapperData.parentFormId;
                                     formUpdate(newFormData._id, newFormData)
                                       .then((formupdated) => {
                                         const updatedForm = formupdated.data;
@@ -331,6 +332,7 @@ const List = React.memo((props) => {
                                               : mapperData.anonymous,
                                           formName: updatedForm.title,
                                           formType: updatedForm.type,
+                                          parentFormId: mapperData.parentFormId,
                                           status: mapperData.status
                                             ? mapperData.status
                                             : INACTIVE,
@@ -356,9 +358,7 @@ const List = React.memo((props) => {
                                         if (isMapperNeed === "new") {
                                           data["version"] = String(
                                             +mapperData.version + 1
-                                          );
-                                          data.parentFormId = mapperData.parentFormId;
-
+                                          ); 
                                           dispatch(
                                             saveFormProcessMapperPost(data)
                                           );

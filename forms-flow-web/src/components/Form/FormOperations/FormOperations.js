@@ -13,10 +13,11 @@ import {
 } from "../../../actions/processActions";
 import { setFormDeleteStatus } from "../../../actions/formActions";
 import {
-  getApplicationCount,
   getFormProcesses,
   resetFormProcessData,
+  getAllApplicationCount
 } from "../../../apiManager/services/processServices";
+
 import { Translation } from "react-i18next";
 
 const FormOperations = React.memo(({ formData }) => {
@@ -45,7 +46,7 @@ const FormOperations = React.memo(({ formData }) => {
         if (data) {
           dispatch(
             // eslint-disable-next-line no-unused-vars
-            getApplicationCount(data.id, (err, res) => {
+              getAllApplicationCount(formData._id,(err, res) => {
               dispatch(setIsApplicationCountLoading(false));
               dispatch(setFormDeleteStatus(formDetails));
             })

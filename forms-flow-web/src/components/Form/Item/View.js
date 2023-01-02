@@ -54,7 +54,7 @@ import {
 } from "../../../constants/constants";
 import useInterval from "../../../customHooks/useInterval";
 import selectApplicationCreateAPI from "./apiSelectHelper";
-import { getFormProcesses } from "../../../apiManager/services/processServices";
+import { getApplicationCount, getFormProcesses } from "../../../apiManager/services/processServices";
 import { setFormStatusLoading } from "../../../actions/processActions";
 import SavingLoading from "../../Loading/SavingLoading";
 
@@ -259,6 +259,7 @@ const View = React.memo((props) => {
       dispatch(
         getFormProcesses(formId, (err, data) => {
           if (!err) {
+            dispatch(getApplicationCount(data.id));
             setFormStatus(data.status);
             dispatch(setFormStatusLoading(false));
           }

@@ -20,6 +20,7 @@ const API = {
   GET_APPLICATION: `${WEB_BASE_URL}/application/<application_id>`,
   GET_APPLICATION_HISTORY_API: `${WEB_BASE_URL}/application/<application_id>/history`,
   GET_ALL_APPLICATIONS_FROM_FORM_ID: `${WEB_BASE_URL}/application/formid`,
+  GET_ALL_APPLICATIONS_COUNT_BY_FORM_ID: `${WEB_BASE_URL}/application/formid/<form id>/count`,
   GET_ALL_APPLICATIONS: `${WEB_BASE_URL}/application`,
   GET_ALL_APPLICATIONS_STATUS: `${WEB_BASE_URL}/application/status/list`,
   GET_PROCESS_DEFINITION: `${BPM_BASE_URL_EXT}/v1/process-definition/key/<process_key>`,
@@ -28,6 +29,7 @@ const API = {
   PROCESS_ACTIVITIES: `${BPM_BASE_URL_EXT}/v1/process-instance/<process_instance_id>/activity-instances`,
   FORM: `${WEB_BASE_URL}/form`,
   FORM_DESIGN: `${WEB_BASE_URL}/form/form-design`,
+  FORM_HISTORY: `${WEB_BASE_URL}/form/form-history`,
   LANG_UPDATE: `${WEB_BASE_URL}/user/locale`,
   FORM_PROCESSES: `${WEB_BASE_URL}/form/formid`,
   APPLICATION_EVENT_UPDATE: `${BPM_BASE_URL_EXT}/v1/message`,
@@ -48,6 +50,7 @@ const API = {
   GET_BPM_FORM_LIST: `${WEB_BASE_URL}/form`,
   UPDATE_ASSIGNEE_BPM_TASK: `${BPM_BASE_URL_EXT}/v1/task/<task_id>/assignee`,
   GET_FORM_BY_ALIAS: `${AppConfig.projectUrl}/<form_path>`,
+  GET_FORM_BY_ID: `${AppConfig.projectUrl}/form`,
 
   GET_GROUPS: `${WEB_BASE_URL}/groups`,
   GET_FORM_COUNT: `${WEB_BASE_URL}/form/<mapper id>/application/count`,

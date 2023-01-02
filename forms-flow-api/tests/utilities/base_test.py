@@ -68,6 +68,8 @@ def get_form_request_payload():
         "comments": "test",
         "tenant": 12,
         "anonymous": False,
+        "formType": "form",
+        "parentFormId": "1234",
     }
 
 
@@ -82,6 +84,8 @@ def get_form_request_payload_private():
         "comments": "test",
         "tenant": 11,
         "anonymous": False,
+        "formType": "form",
+        "parentFormId": "12",
     }
 
 
@@ -96,6 +100,8 @@ def get_form_request_payload_public_inactive():
         "comments": "test",
         "tenant": 11,
         "anonymous": True,
+        "formType": "form",
+        "parentFormId": "12",
     }
 
 
@@ -106,6 +112,8 @@ def get_form_request_anonymous_payload():
         "formName": "Sample form",
         "anonymous": True,
         "status": "active",
+        "formType": "form",
+        "parentFormId": "1234",
     }
 
 
@@ -494,6 +502,8 @@ def get_anonymous_form_model_object():
         "form_name": "sample",
         "status": "active",
         "created_by": "test",
+        "form_type": "form",
+        "parent_form_id": "1234",
     }
 
 
@@ -505,6 +515,8 @@ def get_form_model_object():
         "form_name": "sample non anonymous",
         "status": "active",
         "created_by": "test",
+        "form_type": "form",
+        "parent_form_id": "12345",
     }
 
 

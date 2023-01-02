@@ -8,25 +8,16 @@ import API from "../endpoints";
 import { setCustomSubmission } from "../../actions/checkListActions";
 import { replaceUrl } from "../../helper/helper";
 
-export const formCreate = (formData, ...rest) => {
-  const done = rest.length ? rest[0] : () => {};
-  httpPOSTRequest(API.FORM_DESIGN, formData)
-    .then((res) => {
-      if (res.data) {
-        done(null, res.data);
-      }
-    })
-    .catch((err) => {
-      if (err.response?.data) {
-        done(err.response.data);
-      } else {
-        done(err.message);
-      }
-    });
+export const formCreate = (formData) => {
+  return httpPOSTRequest(API.FORM_DESIGN, formData);
 };
 
 export const formUpdate = (form_id,formData) => {
   return httpPUTRequest(`${API.FORM_DESIGN}/${form_id}`, formData);
+};
+
+export const getFormHistory = (form_id) => {
+  return httpGETRequest(`${API.FORM_HISTORY}/${form_id}`);
 };
 
 

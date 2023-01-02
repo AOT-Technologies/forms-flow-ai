@@ -13,7 +13,10 @@ class FormProcessMapperSchema(Schema):
 
     id = fields.Str(data_key="id")
     form_id = fields.Str(data_key="formId", required=True)
+    previous_form_id = fields.Str(data_key="previousFormId", load_only=True)
     form_name = fields.Str(data_key="formName", required=True)
+    form_type = fields.Str(data_key="formType")
+    parent_form_id = fields.Str(data_key="parentFormId")
     process_key = fields.Str(data_key="processKey")
     process_name = fields.Str(data_key="processName")
     comments = fields.Str(data_key="comments")
@@ -26,6 +29,7 @@ class FormProcessMapperSchema(Schema):
     task_variable = fields.Str(data_key="taskVariable")
     version = fields.Str(data_key="version")
     process_tenant = fields.Str(data_key="processTenant")
+    deleted = fields.Boolean(data_key="deleted")
 
 
 class FormProcessMapperListReqSchema(Schema):
@@ -46,3 +50,4 @@ class FormProcessMapperListRequestSchema(FormProcessMapperListReqSchema):
     form_name = fields.Str(data_key="formName", required=False)
     sort_by = fields.Str(data_key="sortBy", required=False)
     sort_order = fields.Str(data_key="sortOrder", required=False)
+    form_type = fields.Str(data_key="formType", required=False)

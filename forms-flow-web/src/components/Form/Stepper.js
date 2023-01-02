@@ -19,12 +19,13 @@ import "../../resourceBundles/i18n";
 // for edit
 import {
   fetchAllBpmProcesses,
+  getApplicationCount,
   getFormProcesses,
   resetFormProcessData,
   saveFormProcessMapperPost,
   saveFormProcessMapperPut,
 } from "../../apiManager/services/processServices";
-import { selectRoot, selectError, getForm } from "react-formio";
+import { selectRoot, selectError, getForm, Formio } from "react-formio";
 import { MULTITENANCY_ENABLED } from "../../constants/constants";
 import { push } from "connected-react-router";
 import WorkFlow from "./Steps/WorkFlow";
@@ -90,6 +91,7 @@ class StepperPage extends PureComponent {
       nextProps.match.params.formId !== prevState.formId
     ) {
       if (nextProps.match.params.formId !== FORM_CREATE_ROUTE) {
+        Formio.cache = {};
         nextProps.getForm(nextProps.match.params.formId);
         nextProps.getFormProcessesDetails(nextProps.match.params.formId);
       }
@@ -241,6 +243,7 @@ class StepperPage extends PureComponent {
         ? formProcessList.taskVariable
         : [],
       anonymous: formProcessList.anonymous ? true : false,
+
     };
 
     if (workflow) {
@@ -258,6 +261,9 @@ class StepperPage extends PureComponent {
     if (formProcessList && formProcessList.id) {
       data.id = formProcessList.id;
     }
+
+    data.workflowChanged = data?.processKey !== formPreviousData.processKey;
+    data.statusChanged =  processData?.status !== formPreviousData.status;
 
     if (isNewVersionNeeded()) {
       // POST request for creating new mapper version of the current form.
@@ -450,9 +456,11 @@ const mapDispatchToProps = (dispatch) => {
     getFormProcessesDetails: (formId) => {
       dispatch(
         // eslint-disable-next-line no-unused-vars
-        getFormProcesses(formId, (err, res) => {
-          if (err) {
-            console.log(err);
+        getFormProcesses(formId, (err, data) => {
+          if (!err) {
+            dispatch(getApplicationCount(data.id));
+          }else{
+            console.error(err);
           }
         })
       );

@@ -6,6 +6,7 @@ from flask import current_app, request
 from flask_restx import Namespace, Resource, fields
 from formsflow_api_utils.exceptions import BusinessException
 from formsflow_api_utils.utils import (
+    DESIGNER_GROUP,
     REVIEWER_GROUP,
     auth,
     cors_preflight,
@@ -424,6 +425,58 @@ class ApplicationResourceByFormId(Resource):
             ),
             HTTPStatus.OK,
         )
+
+
+@cors_preflight("GET,OPTIONS")
+@API.route("/formid/<string:form_id>/count", methods=["GET", "OPTIONS"])
+class ApplicationResourceCountByFormId(Resource):
+    """Resource for getting applications count on formid."""
+
+    @staticmethod
+    @auth.has_one_of_roles([DESIGNER_GROUP])
+    @profiletime
+    def get(form_id: str):
+        """Get application count by formId."""
+        try:
+            application_count = ApplicationService.get_all_applications_form_id_count(
+                form_id=form_id
+            )
+            return (
+                (
+                    {
+                        "message": f"Total Applications found are: {application_count}",
+                        "value": application_count,
+                    }
+                ),
+                HTTPStatus.OK,
+            )
+        except PermissionError as err:
+            response, status = (
+                {
+                    "type": "Permission Denied",
+                    "message": f"Access to application count of-{form_id} is prohibited",
+                },
+                HTTPStatus.FORBIDDEN,
+            )
+            current_app.logger.warning(response)
+            current_app.logger.warning(err)
+            return response, status
+        except KeyError as err:
+            response, status = {
+                "type": "Bad request error",
+                "message": "Invalid application request passed",
+            }, HTTPStatus.BAD_REQUEST
+            current_app.logger.warning(response)
+            current_app.logger.warning(err)
+            return response, status
+        except BaseException as application_err:  # pylint: disable=broad-except
+            response, status = {
+                "type": "Bad request error",
+                "message": "Invalid application request passed",
+            }, HTTPStatus.BAD_REQUEST
+            current_app.logger.warning(response)
+            current_app.logger.warning(application_err)
+            return response, status
 
 
 @cors_preflight("POST,OPTIONS")

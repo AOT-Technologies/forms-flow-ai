@@ -18,7 +18,11 @@ from formsflow_api.schemas import (
     FormProcessMapperListRequestSchema,
     FormProcessMapperSchema,
 )
-from formsflow_api.services import ApplicationService, FormProcessMapperService
+from formsflow_api.services import (
+    ApplicationService,
+    FormHistoryService,
+    FormProcessMapperService,
+)
 
 
 class NullableString(fields.String):
@@ -59,6 +63,8 @@ mapper_create_model = API.model(
         "formId": fields.String(),
         "formName": fields.String(),
         "formRevisionNumber": fields.String(),
+        "formType": fields.String(),
+        "parentFormId": fields.String(),
     },
 )
 
@@ -139,6 +145,20 @@ form_create_response_model = API.inherit(
         "modified": fields.String(),
     },
 )
+form_history_change_log_model = API.model(
+    "formHistoryChangeLog",
+    {"clone_id": fields.String(), "new_version": fields.Boolean()},
+)
+form_history_response_model = API.inherit(
+    "FormHistoryResponse",
+    {
+        "id": fields.String(),
+        "form_id": fields.String(),
+        "created_by": fields.String(),
+        "created": fields.String(),
+        "change_log": fields.Nested(form_history_change_log_model),
+    },
+)
 
 
 @cors_preflight("GET,POST,OPTIONS")
@@ -200,9 +220,17 @@ class FormResourceList(Resource):
             limit: int = dict_data.get("limit")
             sort_by: str = dict_data.get("sort_by", "id")
             sort_order: str = dict_data.get("sort_order", "desc")
+            form_type: str = dict_data.get("form_type", "form")
             auth_list = auth_form_details.get("authorizationList") or {}
             resource_list = [group["resourceId"] for group in auth_list]
-            if (
+            if auth.has_role([DESIGNER_GROUP]):
+                (
+                    form_process_mapper_schema,
+                    form_process_mapper_count,
+                ) = FormProcessMapperService.get_all_forms(
+                    page_no, limit, form_name, sort_by, sort_order, form_type
+                )
+            elif (
                 auth_form_details.get("adminGroupEnabled") is True
                 or "*" in resource_list
             ):
@@ -278,9 +306,13 @@ class FormResourceList(Resource):
             mapper_schema = FormProcessMapperSchema()
             dict_data = mapper_schema.load(mapper_json)
             mapper = FormProcessMapperService.create_mapper(dict_data)
+
             FormProcessMapperService.unpublish_previous_mapper(dict_data)
+
             response = mapper_schema.dump(mapper)
             response["taskVariable"] = json.loads(response["taskVariable"])
+
+            FormHistoryService.create_form_logs_without_clone(data=mapper_json)
             return response, HTTPStatus.CREATED
         except BaseException as form_err:  # pylint: disable=broad-except
             response, status = {
@@ -406,6 +438,8 @@ class FormResourceById(Resource):
             )
             response = mapper_schema.dump(mapper)
             response["taskVariable"] = json.loads(response["taskVariable"])
+            FormHistoryService.create_form_logs_without_clone(data=application_json)
+
             return (
                 response,
                 HTTPStatus.OK,
@@ -617,6 +651,14 @@ class FormioFormResource(Resource):
                 formio_service.create_form(data, form_io_token),
                 HTTPStatus.CREATED,
             )
+            FormHistoryService.create_form_log_with_clone(
+                data={
+                    **response,
+                    "parentFormId": data.get("parentFormId"),
+                    "saveAsNewVersion": data.get("saveAsNewVersion"),
+                    "componentChanged": True,
+                }
+            )
             return response, status
         except BusinessException as err:
             current_app.logger.warning(err.error)
@@ -644,6 +686,7 @@ class FormioFormUpdateResource(Resource):
                 formio_service.update_form(form_id, data, form_io_token),
                 HTTPStatus.OK,
             )
+            FormHistoryService.create_form_log_with_clone(data=data)
             return response, status
         except PermissionError as err:
             response, status = (
@@ -655,6 +698,40 @@ class FormioFormUpdateResource(Resource):
             )
             current_app.logger.warning(err)
             return response, status
+        except BusinessException as err:
+            current_app.logger.warning(err.error)
+            return err.error, err.status_code
+
+
+@cors_preflight("GET,OPTIONS")
+@API.route("/form-history/<string:form_id>", methods=["GET", "OPTIONS"])
+class FormHistoryResource(Resource):
+    """Resource for form history."""
+
+    @staticmethod
+    @auth.has_one_of_roles([DESIGNER_GROUP])
+    @profiletime
+    @API.doc(body=form_create_model)
+    @API.response(200, "OK:- Successful request.", model=form_history_response_model)
+    @API.response(
+        400,
+        "BAD_REQUEST:- Invalid request.",
+    )
+    @API.response(
+        401,
+        "UNAUTHORIZED:- Authorization header not provided or an invalid token passed.",
+    )
+    @API.response(
+        403,
+        "FORBIDDEN:- Authorization will not help.",
+    )
+    def get(form_id: str):
+        """Getting form history."""
+        try:
+            FormProcessMapperService.check_tenant_authorization_by_formid(
+                form_id=form_id
+            )
+            return FormHistoryService.get_all_history(form_id)
         except BusinessException as err:
             current_app.logger.warning(err.error)
             return err.error, err.status_code

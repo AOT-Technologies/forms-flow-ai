@@ -5,11 +5,9 @@ import { useHistory } from "react-router-dom";
 import _set from "lodash/set";
 import _cloneDeep from "lodash/cloneDeep";
 import _camelCase from "lodash/camelCase";
-import {
-  MULTITENANCY_ENABLED,
-} from "../../../constants/constants";
+import _isEquial from "lodash/isEqual";
+import { MULTITENANCY_ENABLED } from "../../../constants/constants";
 import { INACTIVE } from "../constants/formListConstants";
-import { addHiddenApplicationComponent } from "../../../constants/applicationComponent";
 import { toast } from "react-toastify";
 import { useSelector, useDispatch } from "react-redux";
 import { setFormProcessesData } from "../../../actions/processActions";
@@ -17,13 +15,26 @@ import { Translation, useTranslation } from "react-i18next";
 import {
   saveFormProcessMapperPost,
   saveFormProcessMapperPut,
+  unPublishForm,
 } from "../../../apiManager/services/processServices";
 import Button from "react-bootstrap/Button";
 import Modal from "react-bootstrap/Modal";
 import { formio_resourceBundles } from "../../../resourceBundles/formio_resourceBundles";
-import { clearFormError, setFormFailureErrorData, setFormSuccessData } from "../../../actions/formActions";
-import { addTenankey, removeTenantKey } from "../../../helper/helper";
-import { formUpdate } from "../../../apiManager/services/FormServices";
+import {
+  clearFormError,
+  setFormFailureErrorData,
+  setFormSuccessData,
+  setRestoreFormData,
+  setRestoreFormId,
+} from "../../../actions/formActions";
+import {  removeTenantKey } from "../../../helper/helper";
+import { fetchFormById } from "../../../apiManager/services/bpmFormServices";
+import {
+  formCreate,
+  formUpdate,
+} from "../../../apiManager/services/FormServices";
+import { Checkbox, FormControlLabel } from "@material-ui/core";
+import { manipulatingFormData } from "../../../apiManager/services/formFormatterService";
 const reducer = (form, { type, value }) => {
   const formCopy = _cloneDeep(form);
   switch (type) {
@@ -60,25 +71,63 @@ const Edit = React.memo(() => {
     (state) => state.process.applicationCount
   );
   const tenantKey = useSelector((state) => state.tenants?.tenantId);
+  const restoredFormId = useSelector(
+    (state) => state.formRestore?.restoredFormId
+  );
+  const restoredFormData = useSelector(
+    (state) => state.formRestore?.restoredFormData
+  );
   const formAccess = useSelector((state) => state.user?.formAccess || []);
   const roleIds = useSelector((state) => state.user?.roleIds || {});
-  const submissionAccess = useSelector((state) => state.user?.submissionAccess || []);
+  const submissionAccess = useSelector(
+    (state) => state.user?.submissionAccess || []
+  );
   const redirectUrl = MULTITENANCY_ENABLED ? `/tenant/${tenantKey}/` : "/";
   const saveText = <Translation>{(t) => t("Save Form")}</Translation>;
-  const [formSubmitted , setFormSubmitted] = useState(false);
+  const [formSubmitted, setFormSubmitted] = useState(false);
 
   const lang = useSelector((state) => state.user.lang);
   const history = useHistory();
   const { t } = useTranslation();
   const [show, setShow] = useState(false);
-
+  const [currentFormLoading, setCurrentFormLoading] = useState(false);
+  const [saveAsNewVersionselected, setSaveAsNewVersion] = useState(false);
   const handleClose = () => setShow(false);
-
   const handleShow = () => setShow(true);
   const handleSave = () => {
     setShow(false);
     saveFormData();
   };
+
+  useEffect(() => {
+    if (restoredFormId) {
+      setCurrentFormLoading(true);
+      fetchFormById(restoredFormId)
+        .then((res) => {
+          if (res.data) {
+            const { data } = res;
+            dispatch(setRestoreFormData(res.data));
+            dispatchFormAction({
+              type: "components",
+              value: _cloneDeep(data.components),
+            });
+            dispatchFormAction({ type: "type", value: data.type });
+            dispatchFormAction({ type: "display", value: data.display });
+          }
+        })
+        .catch((err) => {
+          toast.error(err.response.data);
+        })
+        .finally(() => {
+          setCurrentFormLoading(false);
+        });
+    }
+    return () => {
+      dispatch(setRestoreFormData({}));
+      dispatch(setRestoreFormId(null));
+    };
+  }, [restoredFormId]);
+
   //remove tenatkey form path name
   useEffect(() => {
     if (form.path && MULTITENANCY_ENABLED) {
@@ -110,9 +159,8 @@ const Edit = React.memo(() => {
   }, [formData, form]);
 
   // set the anonymous value
-  const changeAnonymous = (setvalue,goBack) => {
-    let latestValue =
-      goBack ? setvalue : !processListData.anonymous;
+  const changeAnonymous = (setvalue, goBack) => {
+    let latestValue = goBack ? setvalue : !processListData.anonymous;
     let newData = {
       ...processListData,
       anonymous: latestValue,
@@ -151,6 +199,14 @@ const Edit = React.memo(() => {
     return prviousData.formName !== form.title && applicationCount > 0;
   };
 
+  const handleChooseOption = () => {
+    if (saveAsNewVersionselected) {
+      saveAsNewVersion();
+    } else {
+      saveFormWithDataChangeCheck();
+    }
+  };
+
   const saveFormWithDataChangeCheck = () => {
     if (isNewMapperNeeded()) {
       handleShow();
@@ -164,73 +220,147 @@ const Edit = React.memo(() => {
     return (
       prviousData.formName !== newData.title ||
       prviousData.anonymous !== processListData.anonymous ||
-      processListData.anonymous === null
+      processListData.anonymous === null ||
+      processListData.formType !== newData.type
     );
+  };
+  // to check the component changed or not
+  const isFormComponentsChanged = () => {
+    if (restoredFormData && restoredFormId) {
+      return true;
+    } else {
+      return (
+        !_isEquial(formData.components, form.components) ||
+        formData.display !== form.display ||
+        formData.type !== form.type
+      );
+    }
+  };
+ 
+
+  const setFormProcessDataToVariable = (submittedData) => {
+    const data = {
+      anonymous:
+        processListData.anonymous === null ? false : processListData.anonymous,
+      formName: submittedData.title,
+      parentFormId: processListData.parentFormId,
+      formType: submittedData.type,
+      status: processListData.status ? processListData.status : INACTIVE,
+      taskVariable: processListData.taskVariable
+        ? processListData.taskVariable
+        : [],
+      id: processListData.id,
+      formId: submittedData._id,
+      formTypeChanged: prviousData.formType !== submittedData.type,
+      titleChanged: prviousData.formName !== submittedData.title,
+      anonymousChanged: prviousData.anonymous !== processListData.anonymous,
+    };
+    return data;
+  };
+
+  const saveAsNewVersion = () => {
+    setFormSubmitted(true);
+    const newFormData = manipulatingFormData(
+      form,
+      MULTITENANCY_ENABLED,
+      tenantKey,
+      formAccess,
+      submissionAccess
+    );
+    const previousformId = newFormData._id;
+    const newPathAndName = "-v" + Math.random().toString(16).slice(9);
+    newFormData.path += newPathAndName;
+    newFormData.name += newPathAndName;
+    newFormData.componentChanged = true;
+    newFormData.saveAsNewVersion = true;
+    newFormData.parentFormId = prviousData.parentFormId;
+    delete newFormData.machineName;
+    delete newFormData._id;
+    formCreate(newFormData)
+      .then((res) => {
+        const { data: submittedData } = res;
+        const data = setFormProcessDataToVariable(submittedData);
+        data.formRevisionNumber = "V1";
+        data["version"] = String(+prviousData.version + 1);
+        data["processKey"] = prviousData.processKey;
+        data["processName"] = prviousData.processName;
+        data.previousFormId = previousformId;
+        data.parentFormId = prviousData.parentFormId;
+    
+        Formio.cache = {};
+        dispatch(saveFormProcessMapperPost(data));
+        dispatch(unPublishForm(prviousData.id));
+        dispatch(setFormSuccessData("form", submittedData));
+        dispatch(setRestoreFormData({}));
+        dispatch(setRestoreFormId(null));
+        toast.success(t("Form Saved"));
+        dispatch(push(`${redirectUrl}formflow/${submittedData._id}/preview`));
+      })
+      .catch((err) => {
+        const error = err.response.data || err.message;
+        dispatch(setFormFailureErrorData("form", error));
+      })
+      .finally(() => {
+        setFormSubmitted(false);
+      });
   };
 
   // save form data to submit
   const saveFormData = () => {
     setFormSubmitted(true);
-    const newFormData = addHiddenApplicationComponent(form);
-    newFormData.submissionAccess = submissionAccess;
-    newFormData.access = formAccess;
-    if (MULTITENANCY_ENABLED && tenantKey) {
-      if (newFormData.path) {
-        newFormData.path = addTenankey(newFormData.path, tenantKey);
-      }
-      if (newFormData.name) {
-        newFormData.name = addTenankey(newFormData.name, tenantKey);
-      }
-    }
-    formUpdate(newFormData._id, newFormData).then((res)=>{
-      const {data:submittedData} = res;
-      if (isMapperSaveNeeded(submittedData)) {
-        const data = {
-          anonymous:
-            processListData.anonymous === null
-              ? false
-              : processListData.anonymous,
-          formName: submittedData.title,
-          status: processListData.status ? processListData.status : INACTIVE,
-          taskVariable: processListData.taskVariable
-            ? processListData.taskVariable
-            : [],
-          id: processListData.id,
-          formId: submittedData._id,
-        };
+    const newFormData = manipulatingFormData(
+      form,
+      MULTITENANCY_ENABLED,
+      tenantKey,
+      formAccess,
+      submissionAccess
+    );
+    newFormData.componentChanged = isFormComponentsChanged();
+    newFormData.parentFormId = prviousData.parentFormId;
 
-        // PUT request : when application count is zero.
-        // POST request with updated version : when application count is positive.
+    formUpdate(newFormData._id, newFormData)
+      .then((res) => {
+        const { data: submittedData } = res;
+        if (isMapperSaveNeeded(submittedData)) {
+          const data = setFormProcessDataToVariable(submittedData);
 
-        if (isNewMapperNeeded()) {
-          data["version"] = String(+prviousData.version + 1);
-          data["processKey"] = prviousData.processKey;
-          data["processName"] = prviousData.processName;
-          dispatch(saveFormProcessMapperPost(data));
-        } else {
-          // For hadling uploaded forms case.
+          // PUT request : when application count is zero.
+          // POST request with updated version : when application count is positive.
 
-          if (processListData && processListData.id) {
-            // For created forms we would be having a mapper
-
-            dispatch(saveFormProcessMapperPut(data));
+          if (isNewMapperNeeded()) {
+            data["version"] = String(+prviousData.version + 1);
+            data["processKey"] = prviousData.processKey;
+            data["processName"] = prviousData.processName;
+            data.parentFormId = processListData.parentFormId;
+              dispatch(saveFormProcessMapperPost(data));
           } else {
-            // For uploaded forms we have to create new mapper.
+            // For hadling uploaded forms case.
 
-            dispatch(saveFormProcessMapperPost(data));
+            if (processListData && processListData.id) {
+              // For created forms we would be having a mapper
+
+              dispatch(saveFormProcessMapperPut(data));
+            } else {
+              // For uploaded forms we have to create new mapper.
+
+              dispatch(saveFormProcessMapperPost(data));
+            }
           }
         }
-      }
-
-      toast.success(t("Form Saved"));
-      dispatch(setFormSuccessData("form", submittedData));
-      Formio.cache = {};
-      dispatch(push(`${redirectUrl}formflow/${submittedData._id}/preview`));
-
-    }).catch((err) => {
-      const error = err.response.data || err.message;
-      dispatch(setFormFailureErrorData("form", error));
-    }).finally(setFormSubmitted(false));
+        dispatch(setRestoreFormData({}));
+        dispatch(setRestoreFormId(null));
+        toast.success(t("Form Saved"));
+        dispatch(setFormSuccessData("form", submittedData));
+        Formio.cache = {};
+        dispatch(push(`${redirectUrl}formflow/${submittedData._id}/preview`));
+      })
+      .catch((err) => {
+        const error = err.response.data || err.message;
+        dispatch(setFormFailureErrorData("form", error));
+      })
+      .finally(() => {
+        setFormSubmitted(false);
+      });
   };
 
   // information about tenant key adding
@@ -242,7 +372,9 @@ const Edit = React.memo(() => {
           <i
             className="fa fa-info-circle text-primary cursor-pointer"
             data-toggle="tooltip"
-            title={`${t("By default, the tenant key would be prefixed to form")}${type}`}
+            title={`${t(
+              "By default, the tenant key would be prefixed to form"
+            )}${type}`}
           ></i>
         </span>
       );
@@ -261,7 +393,7 @@ const Edit = React.memo(() => {
     dispatchFormAction({ type: "formChange", value: newForm });
 
   // loading up to set the data to the form variable
-  if (!form._id) {
+  if (!form._id || currentFormLoading) {
     return (
       <div className="d-flex justify-content-center">
         <div className="spinner-grow" role="status">
@@ -275,63 +407,74 @@ const Edit = React.memo(() => {
 
   return (
     <div className="container">
-      <div className="main-header">
+      <div className="d-flex align-items-center flex-wrap justify-content-between my-4 bg-light p-3">
         <h3 className="ml-3 task-head">
           <i className="fa fa-wpforms" aria-hidden="true" /> &nbsp;{" "}
           {formData.title}
         </h3>
+        <div className="d-flex align-items-center">
+          <FormControlLabel
+            className="mr-2"
+            control={
+              <Checkbox
+                checked={saveAsNewVersionselected}
+                color="primary"
+                aria-label="Publish"
+                onChange={(e) => {
+                  setSaveAsNewVersion(e.target.checked);
+                }}
+              />
+            }
+            label={t("Save as new Version")}
+            labelPlacement="start"
+          />
+          <span
+            className="btn btn-secondary mr-2"
+            onClick={() => {
+              changeAnonymous(prviousData.anonymous, true);
+              history.goBack();
+              dispatch(clearFormError("form", formData.formName));
+            }}
+          >
+            <Translation>{(t) => t("Cancel")}</Translation>
+          </span>
+          <button
+            className="btn btn-primary"
+            disabled={formSubmitted}
+            onClick={() => handleChooseOption()}
+          >
+            {saveText}
+          </button>
+        </div>
       </div>
 
-      <hr />
+
+
       <Errors errors={errors} />
-      <div>
-        <div className="row justify-content-end w-100">
-          <div id="save-buttons" className=" mr-4 save-buttons pull-right">
-            <div className="form-group pull-right">
-              <span
-                className="btn btn-secondary"
-                onClick={() => {
-                  changeAnonymous(prviousData.anonymous,true);
-                  history.goBack();
-                  dispatch(clearFormError("form", formData.formName));
-                }}
-              >
-                <Translation>{(t) => t("Cancel")}</Translation>
-              </span>
-            </div>
-          </div>
-          <div id="save-buttons" className=" save-buttons pull-right">
-            <div className="form-group pull-right">
-              <button
-                className="btn btn-primary"
-                disabled={formSubmitted}
-                onClick={() => saveFormWithDataChangeCheck()}
-              >
-                {saveText}
-              </button>
-              <Modal show={show} onHide={handleClose}>
-                <Modal.Header closeButton>
-                  <Modal.Title>{t("Confirmation")}</Modal.Title>
-                </Modal.Header>
-                <Modal.Body>
-                  {t(
-                    "Changing the form title will not affect the existing applications. " +
-                      "It will only update in the newly created applications. Press Save " +
-                      "Changes to continue or cancel the changes."
-                  )}
-                </Modal.Body>
-                <Modal.Footer>
-                  <Button variant="secondary" onClick={handleClose}>
-                    {t("Cancel")}
-                  </Button>
-                  <Button variant="primary" onClick={() => handleSave()}>
-                    {t("Save Changes")}
-                  </Button>
-                </Modal.Footer>
-              </Modal>
-            </div>
-          </div>
-        </div>
+      <div
+        className="p-4"
+        style={{ border: "1px solid #c2c0be", borderRadius: "5px" }}
+      >
+        <Modal show={show} onHide={handleClose}>
+          <Modal.Header closeButton>
+            <Modal.Title>{t("Confirmation")}</Modal.Title>
+          </Modal.Header>
+          <Modal.Body>
+            {t(
+              "Changing the form title will not affect the existing applications. " +
+                "It will only update in the newly created applications. Press Save " +
+                "Changes to continue or cancel the changes."
+            )}
+          </Modal.Body>
+          <Modal.Footer>
+            <Button variant="secondary" onClick={handleClose}>
+              {t("Cancel")}
+            </Button>
+            <Button variant="primary" onClick={() => handleSave()}>
+              {t("Save Changes")}
+            </Button>
+          </Modal.Footer>
+        </Modal>
         <div className="row">
           <div className="col-lg-4 col-md-4 col-sm-4">
             <div id="form-group-title" className="form-group">
@@ -456,29 +599,22 @@ const Edit = React.memo(() => {
             </div>
           </div>
           <div className="col-lg-4 col-md-4 col-sm-4">
-            <div
-              id="form-group-anonymous"
-              className="form-group d-flex ml-5"
-              style={{ marginTop: "30px" }}
-            >
-              <label
-                htmlFor="anonymousLabel"
-                className=" form-control control-label border-0 "
-                style={{ fontSize: "16px" }}
-              >
-                {t("Make this form public ?")}
-              </label>
-              <div className="input-group align-items-center">
-                <input
-                  className="m-0"
-                  style={{ height: "20px", width: "20px" }}
-                  type="checkbox"
-                  id="anonymous"
-                  title="Check Anonymous"
-                  checked={processListData.anonymous || false}
-                  onChange={() => {
-                    changeAnonymous();
-                  }}
+            <div id="form-group-path" className="form-group">
+              <label htmlFor="path" className="control-label "></label>
+              <div className="input-group">
+                <FormControlLabel
+                  control={
+                    <Checkbox
+                      checked={processListData.anonymous || false}
+                      color="primary"
+                      aria-label="Publish"
+                      onChange={() => {
+                        changeAnonymous();
+                      }}
+                    />
+                  }
+                  label={t("Make this form public ?")}
+                  labelPlacement="start"
                 />
               </div>
             </div>

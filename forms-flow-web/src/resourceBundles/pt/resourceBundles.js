@@ -1,5 +1,7 @@
 /* eslint-disable max-len */
 export const RESOURCE_BUNDLES_PT = {
+  "No file chosen":"Nenhum arquivo selecionado",
+  "Choose File":"Escolher arquivo",
   "Choose any":"Escolha qualquer",
   "Sort by form name":"Classificar por nome do formulário",
   "select form type":"selecione o tipo de formulário",

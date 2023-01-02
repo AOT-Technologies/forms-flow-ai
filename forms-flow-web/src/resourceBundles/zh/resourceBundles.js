@@ -1,5 +1,7 @@
 /* eslint-disable max-len */
 export const RESOURCE_BUNDLES_ZH = {
+  "No file chosen":"没有选中任何文件",
+  "Choose File":"选择文件",
   "Choose any":"选择任何",
   "Sort by form name":"按表格名称排序",
   "select form type":"选择表格类型",

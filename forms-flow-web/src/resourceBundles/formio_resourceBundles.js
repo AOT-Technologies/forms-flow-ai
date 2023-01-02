@@ -1,6 +1,8 @@
 /* eslint-disable max-len */
 export const formio_resourceBundles = {
   en: {
+    "No file chosen":"No file chosen",
+    "Choose File":"Choose File",
     "Choose any":"Choose any",
     "select form type":"select form type",
     "Draft Deleted Successfully":"Draft Deleted Successfully",
@@ -279,6 +281,8 @@ export const formio_resourceBundles = {
   },
 
   "zh-CN": {
+    "No file chosen":"没有选中任何文件",
+    "Choose File":"选择文件",
     "Choose any":"选择任何",
     "select form type":"选择表格类型",
     "Draft Deleted Successfully":"草稿删除成功",
@@ -1169,6 +1173,8 @@ export const formio_resourceBundles = {
   },
 
   bg: {
+    "No file chosen":"Няма избран файл",
+    "Choose File":"Изберете файл",
     "Choose any":"Изберете всяка",
     "select form type":"изберете тип формуляр",
     "Draft Deleted Successfully":"Черновата е изтрита успешно",
@@ -2118,6 +2124,8 @@ export const formio_resourceBundles = {
   },
 
   pt: {
+    "No file chosen":"Nenhum arquivo selecionado",
+    "Choose File":"Escolher arquivo",
     "Choose any":"Escolha qualquer",
     "select form type":"selecione o tipo de formulário",
     "Draft Deleted Successfully":"Rascunho excluído com sucesso",
@@ -3061,6 +3069,8 @@ export const formio_resourceBundles = {
   },
 
   fr: {
+    "No file chosen":"Aucun fichier choisi",
+    "Choose File":"Choisir le fichier",
     "Choose any":"Choisissez n'importe quel",
     "select form type":"sélectionner le type de formulaire",
     "Draft Deleted Successfully":"Brouillon supprimé avec succès",
@@ -4012,6 +4022,8 @@ export const formio_resourceBundles = {
   },
 
   de: {
+    "No file chosen":"Keine Datei ausgewählt",
+    "Choose File":"Datei wählen",
     "Choose any":"Wählen Sie eine aus",
     "select form type":"Formulartyp auswählen",
     "Draft Deleted Successfully":"Entwurf erfolgreich gelöscht",

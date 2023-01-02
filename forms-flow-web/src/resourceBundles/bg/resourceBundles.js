@@ -1,5 +1,7 @@
 /* eslint-disable max-len */
 export const RESOURCE_BUNDLES_BG = {
+    "No file chosen":"Няма избран файл",
+    "Choose File":"Изберете файл",
     "Choose any":"Изберете всяка",
     "Sort by form name":"Сортиране по име на формуляр",
     "select form type":"изберете тип формуляр",

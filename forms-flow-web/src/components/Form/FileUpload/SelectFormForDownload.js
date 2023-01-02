@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { setFormCheckList } from "../../../actions/checkListActions";
-// import { getFormattedForm } from "../constants/formListConstants";
 import { useTranslation } from "react-i18next";
 import Form from "react-bootstrap/Form";
 const SelectFormForDownload = React.memo(({ form, type }) => {
@@ -26,9 +25,9 @@ const SelectFormForDownload = React.memo(({ form, type }) => {
 
   useEffect(() => {
     if (formCheckList.length) {
-      const pathList = formCheckList.map((formData) => formData._id);
+      const idList = formCheckList.map((formData) => formData._id);
       setIsAllFormChecked(
-        forms.every((formData) => pathList.includes(formData._id))
+        forms.every((formData) => idList.includes(formData._id))
       );
     } else {
       setIsAllFormChecked(false);

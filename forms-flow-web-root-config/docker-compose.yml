@@ -1,0 +1,11 @@
+services:
+  forms-flow-web:
+    container_name: forms-flow-web
+    build:
+      context: .
+      dockerfile: Dockerfile
+      args:
+        - FORMSFLOW_WEB_URL=${FORMSFLOW_WEB_URL}
+    ports:
+      - "3000:8080"
+    tty: true

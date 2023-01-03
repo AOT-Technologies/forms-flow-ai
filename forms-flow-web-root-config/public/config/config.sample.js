@@ -11,9 +11,9 @@ window["_env_"] = {
   // Keycloak-client-name for web
   REACT_APP_KEYCLOAK_CLIENT: "forms-flow-web",
   // Keycloak-Realm-name
-  REACT_APP_KEYCLOAK_URL_REALM:"forms-flow-ai",
+  REACT_APP_KEYCLOAK_URL_REALM: "forms-flow-ai",
   // Keycloak URL
-  REACT_APP_KEYCLOAK_URL:"<Keycloak URL>",
+  REACT_APP_KEYCLOAK_URL: "<Keycloak URL>",
 
   ////Environment Variables for forms-flow-bpm////
 
@@ -23,20 +23,23 @@ window["_env_"] = {
   //web Api End point
   REACT_APP_WEB_BASE_URL: "Web Api base end-point",
   //bpm base api
-  REACT_APP_BPM_URL:"Camunda base API",
-  REACT_APP_WEBSOCKET_ENCRYPT_KEY:"Web Socket encrypt key for Socket IO",
+  REACT_APP_BPM_URL: "Camunda base API",
+  REACT_APP_WEBSOCKET_ENCRYPT_KEY: "Web Socket encrypt key for Socket IO",
   //application name
-  REACT_APP_APPLICATION_NAME:"formsflow.ai",
+  REACT_APP_APPLICATION_NAME: "formsflow.ai",
   //custom url
-  REACT_APP_WEB_BASE_CUSTOM_URL:"Custom URL",
-  REACT_APP_CUSTOM_SUBMISSION_URL:"Custom Submission URL",
-  REACT_APP_CUSTOM_SUBMISSION_ENABLED:'false',
-  REACT_APP_USER_ACCESS_PERMISSIONS:{accessAllowApplications:false, accessAllowSubmissions:false},
-  REACT_APP_MULTI_TENANCY_ENABLED:'false',
-  REACT_APP_DRAFT_ENABLED: 'false',
+  REACT_APP_WEB_BASE_CUSTOM_URL: "Custom URL",
+  REACT_APP_CUSTOM_SUBMISSION_URL: "Custom Submission URL",
+  REACT_APP_CUSTOM_SUBMISSION_ENABLED: "false",
+  REACT_APP_USER_ACCESS_PERMISSIONS: {
+    accessAllowApplications: false,
+    accessAllowSubmissions: false,
+  },
+  REACT_APP_MULTI_TENANCY_ENABLED: "false",
+  REACT_APP_DRAFT_ENABLED: "false",
   REACT_APP_DRAFT_POLLING_RATE: 15000,
-  REACT_APP_EXPORT_PDF_ENABLED: 'false',
-  REACT_APP_PUBLIC_WORKFLOW_ENABLED: 'false',
-  REACT_APP_DOCUMENT_SERVICE_URL:"Custom URL",
-  REACT_APP_OPENTELEMETRY_SERVICE:"Opentelemetry service",
+  REACT_APP_EXPORT_PDF_ENABLED: "false",
+  REACT_APP_PUBLIC_WORKFLOW_ENABLED: "false",
+  REACT_APP_DOCUMENT_SERVICE_URL: "Custom URL",
+  REACT_APP_OPENTELEMETRY_SERVICE: "Opentelemetry service",
 };

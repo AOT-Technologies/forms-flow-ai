@@ -289,6 +289,10 @@ const View = React.memo((props) => {
     }
   }, [publicFormStatus]);
 
+  useEffect(()=>{
+    props.publish('ES_FORM', form);
+  },[form]);
+
   if (isActive || isPublicStatusLoading || formStatusLoading) {
     return (
       <div data-testid="loading-view-component">

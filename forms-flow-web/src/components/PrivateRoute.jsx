@@ -1,3 +1,4 @@
+/* eslint-disable no-unused-vars */
 import React, { useEffect, Suspense, lazy, useMemo } from "react";
 import { Route, Switch, Redirect, useParams } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
@@ -14,14 +15,16 @@ import Loading from "../containers/Loading";
 import NotFound from "./NotFound";
 import { setTenantFromId } from "../apiManager/services/tenantServices";
 
-const Form = lazy(() => import("./Form"));
-const ServiceFlow = lazy(() => import("./ServiceFlow"));
-const DashboardPage = lazy(() => import("./Dashboard"));
-const InsightsPage = lazy(() => import("./Insights"));
-const Application = lazy(() => import("./Application"));
-const Admin = lazy(() => import("./Admin"));
-const Modeler = lazy(() => import("./Modeler")); //BPMN Modeler
-const Drafts = lazy(() => import("./Draft"));
+// Lazy imports is having issues with micro-front-end build
+
+import Form from './Form';
+import ServiceFlow from './ServiceFlow';
+import DashboardPage from './Dashboard';
+import InsightsPage from './Insights';
+import Application from './Application';
+import Admin from './Admin';
+import Modeler from './Modeler';
+import Drafts from './Draft';
 
 const PrivateRoute = React.memo((props) => {
   const dispatch = useDispatch();

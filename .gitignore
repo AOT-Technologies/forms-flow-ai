@@ -42,3 +42,4 @@ jobs/sentiment-analysis/dbms/__pycache__
 #Database
 postgres/
 mongodb/
+forms-flow-web/scripts/node_modules

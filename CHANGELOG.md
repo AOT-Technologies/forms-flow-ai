@@ -24,12 +24,15 @@ Mark  items as `Added`, `Changed`, `Fixed`, `Removed`, `Untested Features`, `Upc
 * Added new api to get form history by form id.
 * Added new api to delete draft.
 * Added new api to get the list of users for a role/group from keycloak.
-* Added swagger documentation.
 
 **forms-flow-bpm**
 
 * Added monitoring.
 * Added environment variables `REDIS_ENABLED`,`REDIS_HOST`,`REDIS_PORT` and `REDIS_PASSCODE`.
+
+**forms-flow-documents**
+
+* Added support for PDF templating.
 
 
 `Modified`
@@ -38,6 +41,8 @@ Mark  items as `Added`, `Changed`, `Fixed`, `Removed`, `Untested Features`, `Upc
 
 * Moved form list of designer to forms-flow-api.
 * Updated certifi to 2022.12.7, protobuf to 3.20.2 and  joblib to 1.2.0.
+* Modified swagger documentation.
+
 
 
 **forms-flow-bpm**

@@ -59,10 +59,6 @@ Mark  items as `Added`, `Changed`, `Fixed`, `Removed`, `Untested Features`, `Upc
 
 `Fixed`
 
-**forms-flow-web**
-
-* Fixed session time out issue while form create.
-
 **forms-flow-api**
 
 * Fixed Python security vulnerabilities.

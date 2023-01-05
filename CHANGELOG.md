@@ -39,7 +39,6 @@ Mark  items as `Added`, `Changed`, `Fixed`, `Removed`, `Untested Features`, `Upc
 
 **forms-flow-api**
 
-* Moved form list of designer to forms-flow-api.
 * Updated certifi to 2022.12.7, protobuf to 3.20.2 and  joblib to 1.2.0.
 * Modified swagger documentation.
 
@@ -65,7 +64,9 @@ Mark  items as `Added`, `Changed`, `Fixed`, `Removed`, `Untested Features`, `Upc
 
 `Generic Changes`
 * In Quick Installation:
-<br> &nbsp;&nbsp;Fixed versions for data bases.<br> &nbsp;&nbsp;Reduced script size.<br> &nbsp;&nbsp;Added IP confirmation to avoid IP issues.
+<br> &nbsp;&nbsp;&nbsp;&nbsp;Fixed versions for data bases.<br> &nbsp;&nbsp;&nbsp;&nbsp;Reduced script size.<br> &nbsp;&nbsp;&nbsp;&nbsp;Added IP confirmation to avoid IP issues.
+
+* Moved form list of designer to forms-flow-api.
        
 
 

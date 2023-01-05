@@ -6,7 +6,7 @@ import _set from "lodash/set";
 import _cloneDeep from "lodash/cloneDeep";
 import _camelCase from "lodash/camelCase";
 import _isEquial from "lodash/isEqual";
-import { MULTITENANCY_ENABLED } from "../../../constants/constants";
+import { MULTITENANCY_ENABLED, SAVE_AS_NEW_VERSION_ENABLED } from "../../../constants/constants";
 import { INACTIVE } from "../constants/formListConstants";
 import { toast } from "react-toastify";
 import { useSelector, useDispatch } from "react-redux";
@@ -200,7 +200,7 @@ const Edit = React.memo(() => {
   };
 
   const handleChooseOption = () => {
-    if (saveAsNewVersionselected) {
+    if (saveAsNewVersionselected && SAVE_AS_NEW_VERSION_ENABLED) {
       saveAsNewVersion();
     } else {
       saveFormWithDataChangeCheck();
@@ -413,7 +413,8 @@ const Edit = React.memo(() => {
           {formData.title}
         </h3>
         <div className="d-flex align-items-center">
-          <FormControlLabel
+         {SAVE_AS_NEW_VERSION_ENABLED &&  
+         <FormControlLabel
             className="mr-2"
             control={
               <Checkbox
@@ -427,7 +428,7 @@ const Edit = React.memo(() => {
             }
             label={t("Save as new Version")}
             labelPlacement="start"
-          />
+          />}
           <span
             className="btn btn-secondary mr-2"
             onClick={() => {

@@ -166,3 +166,12 @@ export const DRAFT_ENABLED =
   DRAFT_ENABLED_VARIABLE === "true" || DRAFT_ENABLED_VARIABLE === true
     ? true
     : false;
+
+const SAVE_NEW_VERSION_ENABLED =
+    (window._env_ && window._env_.REACT_APP_SAVE_NEW_VERSION_ENABLED) ||
+    process.env.REACT_APP_SAVE_NEW_VERSION_ENABLED ||
+    false;
+export const SAVE_AS_NEW_VERSION_ENABLED =
+SAVE_NEW_VERSION_ENABLED === "true" || SAVE_NEW_VERSION_ENABLED === true
+      ? true
+      : false;

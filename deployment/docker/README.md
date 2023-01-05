@@ -159,6 +159,7 @@ Variable name | Meaning | Possible values | Default value |
 `OPENTELEMETRY_SERVICE`|Formsflow opentelemetry service||`false`
 `MT_ADMIN_BASE_URL`|Multitenancy admin url||`http://{your-ip-address}:5010/api`
 `MT_ADMIN_BASE_URL_VERSION=v1`|Version of multitenancy admin|v1
+`SAVE_NEW_VERSION_ENABLED`|To enable save as new version feature|true/false
 
 
 

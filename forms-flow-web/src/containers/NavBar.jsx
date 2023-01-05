@@ -267,7 +267,7 @@ const NavBar = React.memo(() => {
               </Nav>
             </Navbar.Collapse>
           ) : (
-            <Link to="/" className="btn btn-primary">
+            <Link to={baseUrl} className="btn btn-primary">
               Login
             </Link>
           )}

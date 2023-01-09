@@ -19,7 +19,7 @@ Mark  items as `Added`, `Changed`, `Fixed`, `Removed`, `Untested Features`, `Upc
 **forms-flow-api**
 
 * Added DB changes to accomodate form type, parent form id. 
-* Added migration scripts in the alembic file to resolve schema conflicts while db upgrade and downgrade.
+* Added migration scripts in the alembic file to resolve schema conflicts while db upgrade and downgrade, check out [here](./forms-flow-api/migrations/versions/1a55b7674144_form_history.py).
 * Added new table for form history
 * Added new api to get form history by form id.
 * Added new api to delete draft.

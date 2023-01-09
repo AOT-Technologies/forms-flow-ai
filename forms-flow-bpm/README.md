@@ -97,7 +97,11 @@ To know more about Camunda, visit https://camunda.com/.
  `MULTI_TENANCY_ENABLED`|Multi tenancy enabled flag for the environment||`true|false`
  `FORMSFLOW_ADMIN_URL`|Only needed if multi tenancy is enabled||`http://{your-ip-address}:5001/`
  `DATA_ANALYSIS_URL`|sentiment analysis url||`http://{your-ip-address}:6000/analysis`
-
+ `REDIS_HOST`|Redis hostname||`localhost`
+ `REDIS_PORT`|Redis portname||`6379`
+ `REDIS_PASSCODE`|Redis passcode||`changeme`
+ `REDIS_ENABLED`|Boolean flag to enable redis|`true`|`false`
+ 
  #### Mail Configuration
  * Modify the file **mail-config.properties** (under forms-flow-bpm/src/main/resources/). The default settings provided are for the Gmail server, and you need to change the credentials at the bottom of the file. Note that you want to configure your own Gmail setting to allow unsecure apps first. 
  

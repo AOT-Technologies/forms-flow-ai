@@ -149,12 +149,9 @@ const List = React.memo((props) => {
     sortBy,
     sortOrder,
     searchText,
+    formType
   ]);
-  useEffect(()=>{
-    dispatch(setBPMFormListPage(1));
-    dispatch(setBPMFormLimit(5));
-    fetchForms();
-  },[formType]);
+ 
 
   const formCheck = (formCheckList) => {
     const result = formCheckList.reduce(function (obj, v) {
@@ -214,6 +211,8 @@ const List = React.memo((props) => {
   };
 
   const handleTypeChange = (type) => {
+    dispatch(setBPMFormListPage(1));
+    dispatch(setBPMFormLimit(5));
     dispatch(setBpmFormType(type));
   };
   const onClear = () => {

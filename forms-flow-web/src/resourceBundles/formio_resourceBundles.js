@@ -1,6 +1,15 @@
 /* eslint-disable max-len */
 export const formio_resourceBundles = {
   en: {
+    "Save as new Version":"Save as new Version",
+    "Create a duplicate form":"Create a duplicate form",
+    "Do you want to create a duplicate Form and associated workflow from existing form data ?":"Do you want to create a duplicate Form and associated workflow from existing form data ?",
+    "Show more":"Show more",
+    "Modified By":"Modified By",
+    "Created On" : "Created On",
+    "Formsflow automatically saves your previous form data. Now you can switch to the previous stage and edit.":"Formsflow automatically saves your previous form data. Now you can switch to the previous stage and edit.",
+    "Duplicate Form":"Duplicate Form",
+    "Form History":"Form History",
     "No file chosen":"No file chosen",
     "Choose File":"Choose File",
     "Choose any":"Choose any",
@@ -281,6 +290,15 @@ export const formio_resourceBundles = {
   },
 
   "zh-CN": {
+    "Save as new Version":"另存为新版本",
+    "Create a duplicate form":"创建一个重复的表单",
+    "Do you want to create a duplicate Form and associated workflow from existing form data ?":"您是否要从现有表单数据创建重复的表单和关联的工作流？",
+    "Show more":"展示更多",
+    "Modified By":"修改者",
+    "Created On" : "创建于",
+    "Formsflow automatically saves your previous form data. Now you can switch to the previous stage and edit.":"Formsflow 会自动保存您以前的表单数据。现在您可以切换到上一个阶段并进行编辑。",
+    "Duplicate Form":"复制表格",
+    "Form History":"表单历史",
     "No file chosen":"没有选中任何文件",
     "Choose File":"选择文件",
     "Choose any":"选择任何",
@@ -1173,6 +1191,15 @@ export const formio_resourceBundles = {
   },
 
   bg: {
+    "Save as new Version":"Запазване като нова версия",
+    "Create a duplicate form":"Създайте дублиран формуляр",
+    "Do you want to create a duplicate Form and associated workflow from existing form data ?":"Искате ли да създадете дублиран формуляр и свързан работен процес от съществуващи данни на формуляр?",
+    "Show more":"Покажи повече",
+    "Modified By":"Променен от",
+    "Created On" :"Създадено на",
+    "Formsflow automatically saves your previous form data. Now you can switch to the previous stage and edit.":"Formsflow автоматично запазва предишните ви данни за формуляри. Сега можете да преминете към предишния етап и да редактирате.",
+    "Duplicate Form":"Дублиран формуляр",
+    "Form History":"История на формуляра",
     "No file chosen":"Няма избран файл",
     "Choose File":"Изберете файл",
     "Choose any":"Изберете всяка",
@@ -2124,6 +2151,15 @@ export const formio_resourceBundles = {
   },
 
   pt: {
+    "Save as new Version":"Salvar como nova versão",
+    "Create a duplicate form":"Criar um formulário duplicado",
+    "Do you want to create a duplicate Form and associated workflow from existing form data ?":"Deseja criar um formulário duplicado e fluxo de trabalho associado a partir de dados de formulário existentes?",
+    "Show more":"Mostre mais",
+    "Modified By":"Modificado por",
+    "Created On" : "Criado em",
+    "Formsflow automatically saves your previous form data. Now you can switch to the previous stage and edit.":"O Formsflow salva automaticamente os dados do formulário anterior. Agora você pode mudar para o estágio anterior e editar.",
+    "Duplicate Form":"Formulário Duplicado",
+    "Form History":"Histórico do formulário",
     "No file chosen":"Nenhum arquivo selecionado",
     "Choose File":"Escolher arquivo",
     "Choose any":"Escolha qualquer",
@@ -3069,6 +3105,15 @@ export const formio_resourceBundles = {
   },
 
   fr: {
+    "Save as new Version":"Enregistrer en tant que nouvelle version",
+    "Create a duplicate form":"Créer un formulaire en double",
+    "Do you want to create a duplicate Form and associated workflow from existing form data ?":"Souhaitez-vous créer un formulaire en double et un flux de travail associé à partir de données de formulaire existantes ?",
+    "Show more":"Montre plus",
+    "Modified By":"Modifié par",
+    "Created On" : "Créé sur",
+    "Formsflow automatically saves your previous form data. Now you can switch to the previous stage and edit.":"Formsflow enregistre automatiquement vos données de formulaire précédentes. Vous pouvez maintenant passer à l'étape précédente et modifier.",
+    "Duplicate Form":"Formulaire en double",
+    "Form History":"Historique du formulaire",
     "No file chosen":"Aucun fichier choisi",
     "Choose File":"Choisir le fichier",
     "Choose any":"Choisissez n'importe quel",
@@ -4022,6 +4067,15 @@ export const formio_resourceBundles = {
   },
 
   de: {
+    "Save as new Version":"Als neue Version speichern",
+    "Create a duplicate form":"Erstellen Sie ein Duplikat des Formulars",
+    "Do you want to create a duplicate Form and associated workflow from existing form data ?":"Möchten Sie ein dupliziertes Formular und den zugehörigen Workflow aus vorhandenen Formulardaten erstellen?",
+    "Show more":"Zeig mehr",
+    "Modified By":"Verändert von",
+    "Created On" : "Erstellt am",
+    "Formsflow automatically saves your previous form data. Now you can switch to the previous stage and edit.":"Formsflow speichert automatisch Ihre vorherigen Formulardaten. Jetzt können Sie zur vorherigen Stufe wechseln und bearbeiten.",
+    "Duplicate Form":"Doppeltes Formular",
+    "Form History":"Formulargeschichte",
     "No file chosen":"Keine Datei ausgewählt",
     "Choose File":"Datei wählen",
     "Choose any":"Wählen Sie eine aus",

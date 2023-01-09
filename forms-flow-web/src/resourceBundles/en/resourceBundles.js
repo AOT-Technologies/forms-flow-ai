@@ -1,5 +1,14 @@
 /* eslint-disable max-len */
 export const RESOURCE_BUNDLES_EN = {
+  "Save as new Version":"Save as new Version",
+  "Create a duplicate form":"Create a duplicate form",
+  "Do you want to create a duplicate Form and associated workflow from existing form data ?":"Do you want to create a duplicate Form and associated workflow from existing form data ?",
+  "Show more":"Show more",
+  "Modified By":"Modified By",
+  "Created On" : "Created On",
+  "Formsflow automatically saves your previous form data. Now you can switch to the previous stage and edit.":"Formsflow automatically saves your previous form data. Now you can switch to the previous stage and edit.",
+  "Duplicate Form":"Duplicate Form",
+  "Form History":"Form History",
   "No file chosen":"No file chosen",
   "Choose File":"Choose File",
   "Choose any":"Choose any",

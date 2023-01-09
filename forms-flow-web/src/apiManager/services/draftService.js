@@ -215,11 +215,11 @@ export const FilterDrafts = (params, ...rest) => {
       let modifiedFrom = moment
         .utc(modified.filterVal[0])
         .format("YYYY-MM-DDTHH:mm:ssZ")
-        .replace("+", "%2B");
+        .replaceAll("+", "%2B");
       let modifiedTo = moment
         .utc(modified.filterVal[1])
         .format("YYYY-MM-DDTHH:mm:ssZ")
-        .replace("+", "%2B");
+        .replaceAll("+", "%2B");
       url += `&modifiedFrom=${modifiedFrom}&modifiedTo=${modifiedTo}`;
     }
 

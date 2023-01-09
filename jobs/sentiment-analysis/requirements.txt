@@ -58,7 +58,7 @@ spacy==2.3.7
 srsly==1.0.5
 thinc==7.4.5
 tokenizers==0.12.1
-torch==1.12.1
+torch==1.13.1
 tqdm==4.64.0
 transformers==4.21.2
 typing_extensions==4.3.0

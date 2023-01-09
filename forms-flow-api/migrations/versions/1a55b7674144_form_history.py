@@ -1,4 +1,4 @@
-"""Form versioning
+"""Form history
 
 Revision ID: 1a55b7674144
 Revises: e664a2f70952

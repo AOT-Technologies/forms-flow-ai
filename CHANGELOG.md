@@ -27,7 +27,6 @@ Mark  items as `Added`, `Changed`, `Fixed`, `Removed`, `Untested Features`, `Upc
 
 **forms-flow-bpm**
 
-* Added monitoring.
 * Added environment variables `REDIS_ENABLED`,`REDIS_HOST`,`REDIS_PORT` and `REDIS_PASSCODE`.
 
 **forms-flow-documents**

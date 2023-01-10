@@ -85,7 +85,7 @@ class ApplicationService:  # pylint: disable=too-many-public-methods
         user: UserContext = kwargs["user"]
         user_id: str = user.user_name
         tenant_key = user.tenant_key
-        if token is not None:
+        if user_id is not None:
             # for anonymous form submission
             data["created_by"] = user_id
         data["application_status"] = NEW_APPLICATION_STATUS

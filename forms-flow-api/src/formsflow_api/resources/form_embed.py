@@ -45,7 +45,7 @@ class EmbedCommonMethods:
             return err.error, err.status_code
 
     @staticmethod
-    def post():
+    def post(token=None):
         """Post a new application using the request body."""
         formio_url = current_app.config.get("FORMIO_URL")
         web_url = current_app.config.get("WEB_BASE_URL")
@@ -55,7 +55,7 @@ class EmbedCommonMethods:
                 response,
                 status,
             ) = CombineFormAndApplicationCreate.application_create_with_submission(
-                data, formio_url, web_url, request.headers["Authorization"]
+                data, formio_url, web_url, token
             )
             return response, status
         except BusinessException as err:
@@ -163,7 +163,7 @@ class ApplicationCreateInternal(Resource):
         }
         ```
         """
-        return EmbedCommonMethods.post()
+        return EmbedCommonMethods.post(request.headers["Authorization"])
 
 
 @cors_preflight("GET,OPTIONS")

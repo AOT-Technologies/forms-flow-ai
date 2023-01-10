@@ -1,8 +1,14 @@
 /* eslint-disable max-len */
 export const RESOURCE_BUNDLES_ZH = {
-  "Save as new Version":"另存为新版本",
+  "No histories found":"没有找到历史记录",
+  "Continue":"继续",
+  "This will create a new version of the form without changing the path name but with new form id.":"这将创建一个新版本的表单而不更改路径名但具有新的表单 ID。",
+  "Save as a new version":"另存为新版本",
+  "Save New Version":"保存新版本",
+  "Do you want to save a new version of this form?":"您要保存此表单的新版本吗？",
+  "Do you want to create a duplicate form and associated workflow from existing form ?":"您要从现有表单创建重复表单和关联工作流吗？",
+  "New version created":"已创建新版本",
   "Create a duplicate form":"创建一个重复的表单",
-  "Do you want to create a duplicate Form and associated workflow from existing form data ?":"您是否要从现有表单数据创建重复的表单和关联的工作流？",
   "Show more":"展示更多",
   "Modified By":"修改者",
   "Created On" : "创建于",

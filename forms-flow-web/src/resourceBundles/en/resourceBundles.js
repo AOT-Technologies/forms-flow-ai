@@ -1,8 +1,14 @@
 /* eslint-disable max-len */
 export const RESOURCE_BUNDLES_EN = {
-  "Save as new Version":"Save as new Version",
+  "No histories found":"No histories found",
+  "Continue":"Continue",
+  "This will create a new version of the form without changing the path name but with new form id.":"This will create a new version of the form without changing the path name but with new form id.",
+  "Save as a new version":"Save as a new version",
+  "Save New Version":"Save New Version",
+  "Do you want to save a new version of this form?":"Do you want to save a new version of this form?",
+  "Do you want to create a duplicate form and associated workflow from existing form ?":"Do you want to create a duplicate form and associated workflow from existing form ?",
+  "New version created":"New version created",
   "Create a duplicate form":"Create a duplicate form",
-  "Do you want to create a duplicate Form and associated workflow from existing form data ?":"Do you want to create a duplicate Form and associated workflow from existing form data ?",
   "Show more":"Show more",
   "Modified By":"Modified By",
   "Created On" : "Created On",

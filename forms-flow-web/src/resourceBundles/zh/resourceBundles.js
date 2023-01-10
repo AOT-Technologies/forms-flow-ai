@@ -1,5 +1,14 @@
 /* eslint-disable max-len */
 export const RESOURCE_BUNDLES_ZH = {
+  "Save as new Version":"另存为新版本",
+  "Create a duplicate form":"创建一个重复的表单",
+  "Do you want to create a duplicate Form and associated workflow from existing form data ?":"您是否要从现有表单数据创建重复的表单和关联的工作流？",
+  "Show more":"展示更多",
+  "Modified By":"修改者",
+  "Created On" : "创建于",
+  "Formsflow automatically saves your previous form data. Now you can switch to the previous stage and edit.":"Formsflow 会自动保存您以前的表单数据。现在您可以切换到上一个阶段并进行编辑。",
+  "Duplicate Form":"复制表格",
+  "Form History":"表单历史",
   "No file chosen":"没有选中任何文件",
   "Choose File":"选择文件",
   "Choose any":"选择任何",

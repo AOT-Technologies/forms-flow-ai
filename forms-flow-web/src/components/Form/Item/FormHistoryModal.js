@@ -8,8 +8,10 @@ import {
 import { getLocalDateTime } from "../../../apiManager/services/formatterService";
 import { getFormHistory } from "../../../apiManager/services/FormServices";
 import Loading from "../../../containers/Loading";
+import { useTranslation } from "react-i18next";
 
 const FormHistoryModal = ({ historyModal, handleModalChange, gotoEdit }) => {
+  const { t } = useTranslation();
   const dispatch = useDispatch();
   const [showCount, setShowCount] = useState(3);
   const [isLoading, setLoading] = useState(false);
@@ -72,7 +74,7 @@ const FormHistoryModal = ({ historyModal, handleModalChange, gotoEdit }) => {
         <Modal.Header>
           <div>
             <Modal.Title id="example-custom-modal-styling-title">
-              Form History
+              {t("Form History")}
             </Modal.Title>
           </div>
 
@@ -94,8 +96,7 @@ const FormHistoryModal = ({ historyModal, handleModalChange, gotoEdit }) => {
           <div className="d-flex align-items-start p-3">
             <i className="fa fa-info-circle text-primary mr-2"></i>
             <span className="text-muted h6">
-              Formsflow automatically saves your previous form data. Now you can
-              switch to the previous stage and edit.
+            {t("Formsflow automatically saves your previous form data. Now you can switch to the previous stage and edit.")}
             </span>
           </div>
           {isLoading ? 
@@ -113,22 +114,22 @@ const FormHistoryModal = ({ historyModal, handleModalChange, gotoEdit }) => {
                       <div>
                         <span className="text-muted text-small">
                           {formHistory.length === 1
-                            ? "Created by"
-                            : "Modified by"}
+                            ? t("Created By")
+                            : t("Modified By")}
                         </span>
                         <span className="d-block">{history.createdBy}</span>
                       </div>
                       <div>
                         <span className="text-muted">
                           {formHistory.length === 1
-                            ? "Created on"
-                            : "Modified on"}
+                            ? t("Created On")
+                            : t("Modified On")}
                         </span>
                         <p className="mb-0">{getLocalDateTime(history.created)}</p>
                         <span className="text-muted">{history.changeLog.new_version && "New verison released"}</span>
                       </div>
                       <div>
-                        <span className="d-block text-muted">Action </span>
+                        <span className="d-block text-muted">{t("Action")}</span>
                         <button
                           className="btn btn-outline-primary"
                           disabled={index === 0}
@@ -137,7 +138,7 @@ const FormHistoryModal = ({ historyModal, handleModalChange, gotoEdit }) => {
                           }
                         >
                           <i className="fa fa-pencil" aria-hidden="true" />
-                          &nbsp;&nbsp; Edit
+                          &nbsp;&nbsp; {t("Edit")}
                         </button>
                       </div>
                     </div>
@@ -152,7 +153,7 @@ const FormHistoryModal = ({ historyModal, handleModalChange, gotoEdit }) => {
                       handleShowMore();
                     }}
                   >
-                    Show more
+                    {t("Show more")}
                     <i
                       className="fa fa-arrow-circle-down ml-2"
                       aria-hidden="true"

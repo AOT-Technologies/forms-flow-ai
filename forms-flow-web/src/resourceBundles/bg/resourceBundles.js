@@ -1,5 +1,14 @@
 /* eslint-disable max-len */
 export const RESOURCE_BUNDLES_BG = {
+    "Save as new Version":"Запазване като нова версия",
+    "Create a duplicate form":"Създайте дублиран формуляр",
+    "Do you want to create a duplicate Form and associated workflow from existing form data ?":"Искате ли да създадете дублиран формуляр и свързан работен процес от съществуващи данни на формуляр?",
+    "Show more":"Покажи повече",
+    "Modified By":"Променен от",
+    "Created On" :"Създадено на",
+    "Formsflow automatically saves your previous form data. Now you can switch to the previous stage and edit.":"Formsflow автоматично запазва предишните ви данни за формуляри. Сега можете да преминете към предишния етап и да редактирате.",    
+    "Duplicate Form":"Дублиран формуляр",
+    "Form History":"История на формуляра",
     "No file chosen":"Няма избран файл",
     "Choose File":"Изберете файл",
     "Choose any":"Изберете всяка",

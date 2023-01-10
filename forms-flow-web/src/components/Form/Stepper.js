@@ -243,8 +243,8 @@ class StepperPage extends PureComponent {
         ? formProcessList.taskVariable
         : [],
       anonymous: formProcessList.anonymous ? true : false,
-      parentFormId: formProcessList.parentFormId
-
+      parentFormId: formProcessList.parentFormId,
+      formType: formProcessList.formType
     };
 
     if (workflow) {

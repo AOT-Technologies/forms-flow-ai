@@ -258,7 +258,7 @@ const Edit = React.memo(() => {
     return data;
   };
 
-  const saveAsNewVersion = () => {
+  const saveAsNewVersion = async() => {
     setFormSubmitted(true);
     const newFormData = manipulatingFormData(
       form,
@@ -267,10 +267,19 @@ const Edit = React.memo(() => {
       formAccess,
       submissionAccess
     );
-    const previousformId = newFormData._id;
+    const oldFormData = manipulatingFormData(
+      formData,
+      MULTITENANCY_ENABLED,
+      tenantKey,
+      formAccess,
+      submissionAccess
+    );
+
     const newPathAndName = "-v" + Math.random().toString(16).slice(9);
-    newFormData.path += newPathAndName;
-    newFormData.name += newPathAndName;
+    oldFormData.path += newPathAndName;
+    oldFormData.name += newPathAndName;
+    await formUpdate(oldFormData._id,oldFormData);
+    const previousformId = newFormData._id;
     newFormData.componentChanged = true;
     newFormData.saveAsNewVersion = true;
     newFormData.parentFormId = prviousData.parentFormId;
@@ -286,7 +295,6 @@ const Edit = React.memo(() => {
         data["processName"] = prviousData.processName;
         data.previousFormId = previousformId;
         data.parentFormId = prviousData.parentFormId;
-    
         Formio.cache = {};
         dispatch(saveFormProcessMapperPost(data));
         dispatch(unPublishForm(prviousData.id));

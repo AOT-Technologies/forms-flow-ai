@@ -36,6 +36,7 @@ import {
 import { Checkbox, FormControlLabel } from "@material-ui/core";
 import { manipulatingFormData } from "../../../apiManager/services/formFormatterService";
 import SaveAsNewVersionConfirmationModal from "./SaveAsNewVersionConfirmationModal";
+import LoadingOverlay from "react-loading-overlay";
 const reducer = (form, { type, value }) => {
   const formCopy = _cloneDeep(form);
   switch (type) {
@@ -500,6 +501,11 @@ const Edit = React.memo(() => {
             </Button>
           </Modal.Footer>
         </Modal>
+        <LoadingOverlay
+          active={formSubmitted}
+          spinner
+          text={t("Loading...")}
+        >
         <div className="row">
           <div className="col-lg-4 col-md-4 col-sm-4">
             <div id="form-group-title" className="form-group">
@@ -654,6 +660,7 @@ const Edit = React.memo(() => {
             i18n: formio_resourceBundles,
           }}
         />
+        </LoadingOverlay>
       </div>
     </div>
   );

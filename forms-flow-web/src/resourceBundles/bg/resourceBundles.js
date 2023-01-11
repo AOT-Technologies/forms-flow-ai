@@ -273,5 +273,6 @@ export const RESOURCE_BUNDLES_BG = {
     "Process name(s) must not be empty":"Името(ата) на процесите не трябва да са празни",
     "URL copied":"URL адресът е копиран",
     "Click Here to Copy":"Щракнете тук, за да копирате",
-    "Resources":"Ресурси"
+    "Resources":"Ресурси",
+    "Duplicate form created successfully":"Дублираният формуляр е създаден успешно"
 };

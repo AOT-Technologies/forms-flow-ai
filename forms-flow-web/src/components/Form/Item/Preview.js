@@ -244,7 +244,7 @@ const mapDispatchToProps = (dispatch, ownProps) => {
         // eslint-disable-next-line no-unused-vars
         saveFormProcessMapperPost(data, (err, res) => {
           if (!err) {
-            toast.success(t("New form published successfully"));
+            toast.success(t("Duplicate form created successfully"));
             dispatch(push(`${redirectUrl}formflow/${form._id}/view-edit/`));
           } else {
             toast.error(t("Error in creating form process mapper"));

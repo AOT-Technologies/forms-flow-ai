@@ -273,7 +273,8 @@ export const RESOURCE_BUNDLES_EN = {
   "Process name(s) must not be empty":"Process name(s) must not be empty",
   "URL copied":"URL copied",
   "Click Here to Copy":"Click Here to Copy",
-  "Resources":"Resources"
+  "Resources":"Resources",
+  "Duplicate form created successfully":"Duplicate form created successfully"
 
 
 

@@ -12,7 +12,7 @@ alembic==1.9.1
 aniso8601==9.0.1
 attrs==22.2.0
 blis==0.7.9
-cachelib==0.9.0
+cachelib==0.10.0
 catalogue==1.0.2
 certifi==2022.12.7
 charset-normalizer==2.1.1
@@ -55,6 +55,6 @@ torch==1.13.1
 tqdm==4.64.1
 transformers==4.25.1
 typing_extensions==4.4.0
-urllib3==1.26.13
+urllib3==1.26.14
 wasabi==0.10.1
 zipp==3.11.0

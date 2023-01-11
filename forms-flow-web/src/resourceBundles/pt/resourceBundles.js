@@ -1,8 +1,14 @@
 /* eslint-disable max-len */
 export const RESOURCE_BUNDLES_PT = {
-  "Save as new Version":"Salvar como nova versão",
+  "No histories found":"Nenhum histórico encontrado",
+  "Continue":"Prosseguir",
+  "This will create a new version of the form without changing the path name but with new form id.":"Isso criará uma nova versão do formulário sem alterar o nome do caminho, mas com o novo ID do formulário.",
+  "Save as a new version":"Salvar como uma nova versão",
+  "Save New Version":"Salvar nova versão",
+  "Do you want to save a new version of this form?":"Deseja salvar uma nova versão deste formulário?",
+  "Do you want to create a duplicate form and associated workflow from existing form ?":"Deseja criar um formulário duplicado e um fluxo de trabalho associado a partir de um formulário existente?",
+  "New version created":"New version created",
   "Create a duplicate form":"Criar um formulário duplicado",
-  "Do you want to create a duplicate Form and associated workflow from existing form data ?":"Deseja criar um formulário duplicado e fluxo de trabalho associado a partir de dados de formulário existentes?",
   "Show more":"Mostre mais",
   "Modified By":"Modificado por",
   "Created On" : "Criado em",

@@ -1,8 +1,14 @@
 /* eslint-disable max-len */
 export const RESOURCE_BUNDLES_BG = {
-    "Save as new Version":"Запазване като нова версия",
+    "No histories found":"Няма намерени истории",
+    "Continue":"продължи",
+    "This will create a new version of the form without changing the path name but with new form id.":"Това ще създаде нова версия на формуляра без промяна на името на пътя, но с нов идентификатор на формуляра.",
+    "Save as a new version":"Запазете като нова версия",
+    "Save New Version":"Запазване на новата версия",
+    "Do you want to save a new version of this form?":"Искате ли да запазите нова версия на този формуляр?",
+    "Do you want to create a duplicate form and associated workflow from existing form ?":"Искате ли да създадете дублиран формуляр и свързан работен процес от съществуващ формуляр?",
+    "New version created":"Създадена е нова версия",
     "Create a duplicate form":"Създайте дублиран формуляр",
-    "Do you want to create a duplicate Form and associated workflow from existing form data ?":"Искате ли да създадете дублиран формуляр и свързан работен процес от съществуващи данни на формуляр?",
     "Show more":"Покажи повече",
     "Modified By":"Променен от",
     "Created On" :"Създадено на",

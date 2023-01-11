@@ -127,7 +127,7 @@ const Dashboard = React.memo(() => {
     dispatch(setMetricsSubmissionPageChange(pageNumber));
   };
   const getFormattedDate = (date) => {
-    return moment.utc(date).format("YYYY-MM-DDTHH:mm:ssZ").replace("+", "%2B");
+    return moment.utc(date).format("YYYY-MM-DDTHH:mm:ssZ").replace(/\+/g, "%2B");
   };
   useEffect(() => {
     const fromDate = getFormattedDate(dateRange[0]);

@@ -228,11 +228,11 @@ export const FilterApplications = (params, ...rest) => {
       let modifiedFrom = moment
         .utc(modified.filterVal[0])
         .format("YYYY-MM-DDTHH:mm:ssZ")
-        .replace("+", "%2B");
+        .replace(/\+/g, "%2B");
       let modifiedTo = moment
         .utc(modified.filterVal[1])
         .format("YYYY-MM-DDTHH:mm:ssZ")
-        .replace("+", "%2B");
+        .replace(/\+/g, "%2B");
       url += `&modifiedFrom=${modifiedFrom}&modifiedTo=${modifiedTo}`;
     }
 

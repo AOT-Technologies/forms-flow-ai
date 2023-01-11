@@ -126,7 +126,7 @@ const FormHistoryModal = ({ historyModal, handleModalChange, gotoEdit }) => {
                             : t("Modified On")}
                         </span>
                         <p className="mb-0">{getLocalDateTime(history.created)}</p>
-                        <span className="text-muted">{history.changeLog.new_version && "New verison released"}</span>
+                        <span className="text-muted">{history.changeLog.new_version && t("New version created")}</span>
                       </div>
                       <div>
                         <span className="d-block text-muted">{t("Action")}</span>
@@ -163,7 +163,7 @@ const FormHistoryModal = ({ historyModal, handleModalChange, gotoEdit }) => {
               )}
             </>
           ) : (
-            <p>No histories found</p>
+            <p>{t("No histories found")}</p>
           ))}
         </Modal.Body>
       </Modal>

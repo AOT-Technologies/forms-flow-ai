@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import { Navbar, Container, Nav, NavDropdown } from "react-bootstrap";
 import { Link, useLocation } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
@@ -34,11 +34,21 @@ const NavBar = React.memo(() => {
   const lang = useSelector((state) => state.user.lang);
   const userRoles = useSelector((state) => state.user.roles);
   const showApplications = useSelector((state) => state.user.showApplications);
-  const tenantKey = useSelector((state) => state.tenants?.tenantId);
   const applicationTitle = useSelector(
     (state) => state.tenants?.tenantData?.details?.applicationTitle
   );
+  const tenantKey = useSelector((state) => state.tenants?.tenantId);
+  const formTenant = useSelector((state)=>state.form?.form?.tenantKey);
   const baseUrl = MULTITENANCY_ENABLED ? `/tenant/${tenantKey}/` : "/";
+
+  /**
+   * For anonymous forms the only way to identify the tenant is through the
+   * form data with current implementation. To redirect to the correact tenant
+   * we will use form as the data source for the tenantKey
+   */
+
+  const [loginUrl, setLoginUrl] = useState(baseUrl);
+
   const selectLanguages = useSelector((state) => state.user.selectLanguages);
   const dispatch = useDispatch();
   const logoPath = "/logo.svg";
@@ -54,6 +64,12 @@ const NavBar = React.memo(() => {
   );
   const appName = getAppName();
   const { t } = useTranslation();
+
+  useEffect(()=>{
+    if(!isAuthenticated && formTenant && MULTITENANCY_ENABLED){ 
+      setLoginUrl(`/tenant/${formTenant}/`);
+    }
+  },[isAuthenticated, formTenant]);
 
   useEffect(() => {
     dispatch(fetchSelectLanguages());
@@ -267,7 +283,7 @@ const NavBar = React.memo(() => {
               </Nav>
             </Navbar.Collapse>
           ) : (
-            <Link to={baseUrl} className="btn btn-primary">
+            <Link to={loginUrl} className="btn btn-primary">
               Login
             </Link>
           )}

@@ -167,7 +167,7 @@ const Preview = class extends PureComponent {
                 this.publishConfirmModalChange();
               }}
             >
-              <i className="fa fa-refresh" aria-hidden="true"></i>
+              <i className="fa fa-clone" aria-hidden="true"></i>
               &nbsp;&nbsp;
               <Translation>{(t) => t("Duplicate Form")}</Translation>
             </button>

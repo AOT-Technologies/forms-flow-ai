@@ -35,6 +35,7 @@ import {
 } from "../../../apiManager/services/FormServices";
 import { Checkbox, FormControlLabel } from "@material-ui/core";
 import { manipulatingFormData } from "../../../apiManager/services/formFormatterService";
+import SaveAsNewVersionConfirmationModal from "./SaveAsNewVersionConfirmationModal";
 const reducer = (form, { type, value }) => {
   const formCopy = _cloneDeep(form);
   switch (type) {
@@ -84,6 +85,7 @@ const Edit = React.memo(() => {
   );
   const redirectUrl = MULTITENANCY_ENABLED ? `/tenant/${tenantKey}/` : "/";
   const saveText = <Translation>{(t) => t("Save Form")}</Translation>;
+  const saveNewVersion = <Translation>{(t) => t("Save New Version")}</Translation>;
   const [formSubmitted, setFormSubmitted] = useState(false);
 
   const lang = useSelector((state) => state.user.lang);
@@ -92,8 +94,11 @@ const Edit = React.memo(() => {
   const [show, setShow] = useState(false);
   const [currentFormLoading, setCurrentFormLoading] = useState(false);
   const [saveAsNewVersionselected, setSaveAsNewVersion] = useState(false);
+  const [confirmModalShow, setConfirmModalShow] = useState(false);
   const handleClose = () => setShow(false);
   const handleShow = () => setShow(true);
+  const handleConfirmModalChange = () => setConfirmModalShow(!confirmModalShow);
+
   const handleSave = () => {
     setShow(false);
     saveFormData();
@@ -201,10 +206,15 @@ const Edit = React.memo(() => {
 
   const handleChooseOption = () => {
     if (saveAsNewVersionselected) {
-      saveAsNewVersion();
+        setConfirmModalShow(true);
     } else {
       saveFormWithDataChangeCheck();
     }
+  };
+
+  const saveAsNewVersionOnCofirm = () =>{
+    setConfirmModalShow(false);
+    saveAsNewVersion();
   };
 
   const saveFormWithDataChangeCheck = () => {
@@ -301,7 +311,7 @@ const Edit = React.memo(() => {
         dispatch(setFormSuccessData("form", submittedData));
         dispatch(setRestoreFormData({}));
         dispatch(setRestoreFormId(null));
-        toast.success(t("Form Saved"));
+        toast.success(t("New version created"));
         dispatch(push(`${redirectUrl}formflow/${submittedData._id}/preview`));
       })
       .catch((err) => {
@@ -415,6 +425,13 @@ const Edit = React.memo(() => {
 
   return (
     <div className="container">
+      {
+        saveAsNewVersionselected && confirmModalShow && (
+          <SaveAsNewVersionConfirmationModal modalOpen={confirmModalShow} 
+          handleModalChange={handleConfirmModalChange} 
+          onConfirm={saveAsNewVersionOnCofirm}/>
+        )
+      }
       <div className="d-flex align-items-center flex-wrap justify-content-between my-4 bg-light p-3">
         <h3 className="ml-3 task-head">
           <i className="fa fa-wpforms" aria-hidden="true" /> &nbsp;{" "}
@@ -433,7 +450,7 @@ const Edit = React.memo(() => {
                 }}
               />
             }
-            label={t("Save as new Version")}
+            label={t("Do you want to save a new version of this form?")}
             labelPlacement="start"
           />
           <span
@@ -451,7 +468,7 @@ const Edit = React.memo(() => {
             disabled={formSubmitted}
             onClick={() => handleChooseOption()}
           >
-            {saveText}
+            {saveAsNewVersionselected ? saveNewVersion : saveText}
           </button>
         </div>
       </div>

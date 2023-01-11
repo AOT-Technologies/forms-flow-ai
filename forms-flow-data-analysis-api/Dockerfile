@@ -1,5 +1,5 @@
 #Author: Kurian Benoy
-FROM python:3.12.0a4-slim
+FROM python:3.9.16-slim-buster
 
 WORKDIR /forms-flow-data-analysis-api/app
 COPY requirements.txt .

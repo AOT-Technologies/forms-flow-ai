@@ -64,7 +64,7 @@ Mark  items as `Added`, `Changed`, `Fixed`, `Removed`, `Untested Features`, `Upc
 
 `Generic Changes`
 * In Quick Installation:
-<br> &nbsp;&nbsp;&nbsp;&nbsp;Fixed versions for data bases.<br> &nbsp;&nbsp;&nbsp;&nbsp;Reduced script size.<br> &nbsp;&nbsp;&nbsp;&nbsp;Added IP confirmation to avoid IP issues.
+<br> &nbsp;&nbsp;&nbsp;&nbsp;Fixed versions for databases.<br> &nbsp;&nbsp;&nbsp;&nbsp;Reduced script size.<br> &nbsp;&nbsp;&nbsp;&nbsp;Added IP confirmation to avoid IP issues.
 
 * Moved form list of designer to forms-flow-api.
        

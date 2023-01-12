@@ -183,7 +183,7 @@ const View = React.memo((props) => {
         setDraftSaved(false);
         dispatch(
           draftUpdateMethod(payload, draftSubmissionId, (err) => {
-            if (exitType === "UNMOUNT" && !err) {
+            if (exitType === "UNMOUNT" && !err && isAuthenticated) {
               toast.success(t("Submission saved to draft."));
             }
             if (!err) {

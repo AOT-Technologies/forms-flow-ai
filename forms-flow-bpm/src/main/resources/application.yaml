@@ -12,9 +12,9 @@ server:
     context-path: /camunda
     session:
       cookie:
-        secure: true
-        http-only: true
+        secure: ${SESSION_COOKIE_SECURE:true}
         max-age: 1800
+        http-only: true
 
 formsflow.ai:
   forms:

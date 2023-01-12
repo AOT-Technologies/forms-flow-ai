@@ -118,7 +118,7 @@ services:
       - REDIS_HOST=${REDIS_HOST}
       - REDIS_PORT=${REDIS_PORT:-6379}
       - REDIS_PASSCODE=${REDIS_PASSCODE:-changeme}
-
+      - SESSION_COOKIE_SECURE=${SESSION_COOKIE_SECURE:-false}
     networks:
       - forms-flow-network
  

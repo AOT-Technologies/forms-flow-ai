@@ -15,6 +15,7 @@ Mark  items as `Added`, `Changed`, `Fixed`, `Removed`, `Untested Features`, `Upc
 **forms-flow-forms**
 
 * Added environment variable `FORMIO_CLIENT_UI`.
+* Added health check API-end point `/checkpoint`
 
 **forms-flow-api**
 

@@ -374,3 +374,20 @@ export const unPublishForm = (mapperId, ...rest) => {
       });
   };
 };
+
+
+export const deleteFormProcessMapper = (mapperId, ...rest) => {
+  const done = rest.length ? rest[0] : () => {};
+  const url = replaceUrl(API.UNPUBLISH_FORMS, "<mapper id>", mapperId);
+  return (dispatch) => {
+    httpDELETERequest(url)
+      .then((res) => {
+        done(null, res.data);
+      })
+      .catch((error) => {
+        console.log("error", error);
+        dispatch(setUnPublishApiError(true));
+        done(error);
+      });
+  };
+};

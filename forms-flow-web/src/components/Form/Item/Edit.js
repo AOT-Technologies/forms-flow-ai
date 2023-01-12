@@ -13,9 +13,9 @@ import { useSelector, useDispatch } from "react-redux";
 import { setFormProcessesData } from "../../../actions/processActions";
 import { Translation, useTranslation } from "react-i18next";
 import {
+  deleteFormProcessMapper,
   saveFormProcessMapperPost,
   saveFormProcessMapperPut,
-  unPublishForm,
 } from "../../../apiManager/services/processServices";
 import Button from "react-bootstrap/Button";
 import Modal from "react-bootstrap/Modal";
@@ -307,13 +307,17 @@ const Edit = React.memo(() => {
         data.previousFormId = previousformId;
         data.parentFormId = prviousData.parentFormId;
         Formio.cache = {};
-        dispatch(saveFormProcessMapperPost(data));
-        dispatch(unPublishForm(prviousData.id));
-        dispatch(setFormSuccessData("form", submittedData));
-        dispatch(setRestoreFormData({}));
-        dispatch(setRestoreFormId(null));
-        toast.success(t("New version created"));
-        dispatch(push(`${redirectUrl}formflow/${submittedData._id}/preview`));
+        const prviousId = prviousData.id;
+        dispatch(saveFormProcessMapperPost(data,(err)=>{
+          if(!err){
+            dispatch(deleteFormProcessMapper(prviousId));
+            dispatch(setFormSuccessData("form", submittedData));
+            dispatch(setRestoreFormData({}));
+            dispatch(setRestoreFormId(null));
+            toast.success(t("New version created"));
+            dispatch(push(`${redirectUrl}formflow/${submittedData._id}/preview`));
+          }
+        }));
       })
       .catch((err) => {
         const error = err.response.data || err.message;

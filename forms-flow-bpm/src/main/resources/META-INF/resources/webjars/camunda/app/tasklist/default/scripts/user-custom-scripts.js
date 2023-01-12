@@ -19,7 +19,7 @@ if (!$.fn.resizable) {
     return this.each(function() {
       var $el = $(this);
       var el = $el.get(0);
-      var $handle = $(opt.handleSelector);
+      var $handle = $.find(opt.handleSelector);
 
       var startWidth, startHeight, startTransition;
 

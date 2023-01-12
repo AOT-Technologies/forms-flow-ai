@@ -67,6 +67,11 @@ Mark  items as `Added`, `Changed`, `Fixed`, `Removed`, `Untested Features`, `Upc
 <br> &nbsp;&nbsp;&nbsp;&nbsp;Fixed versions for data bases.<br> &nbsp;&nbsp;&nbsp;&nbsp;Reduced script size.<br> &nbsp;&nbsp;&nbsp;&nbsp;Added IP confirmation to avoid IP issues.
 
 * Moved form list of designer to forms-flow-api.
+
+`Known Issues`
+
+**forms-flow-bpm**
+* Camunda Integration shows Invalid Credentials with formsflow.ai docker deployment, for more details refer [here](https://github.com/AOT-Technologies/forms-flow-ai/issues/978).
        
 
 

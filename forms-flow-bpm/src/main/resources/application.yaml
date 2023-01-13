@@ -50,7 +50,7 @@ camunda.bpm:
   webapp:
     application-path: /
     csrf:
-      enable-secure-cookie: true
+      enable-secure-cookie: ${SESSION_COOKIE_SECURE:true}
     header-security:
       content-security-policy-disabled: false
       content-security-policy-value:  base-uri 'self';

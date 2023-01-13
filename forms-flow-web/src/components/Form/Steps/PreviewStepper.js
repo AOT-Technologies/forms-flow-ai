@@ -8,6 +8,7 @@ import TextField from "@material-ui/core/TextField";
 import { useSelector } from "react-redux";
 import {  useTranslation } from "react-i18next";
 import SaveNext from "./SaveNext";
+import { copyText } from "../../../apiManager/services/formatterService";
 
 const Preview = React.memo(
   ({
@@ -27,22 +28,23 @@ const Preview = React.memo(
       (state) => state.process.formProcessList
     );
     //  taking the url and make the copy button
+     
+
     const copyPublicUrl = () => {
       const hostName = window.location.host;
       const url = `${hostName}/public/form/${formData.form.path}`;
-      navigator.clipboard
-        ?.writeText(url)
-        .then(() => {
-          setCopied(() => {
-            setTimeout(() => {
-              setCopied(false);
-            }, 3000);
-            return true;
-          });
-        })
-        .catch((err) => {
-          console.log(err);
+
+      copyText(url).then(()=>{
+        setCopied(() => {
+          setTimeout(() => {
+            setCopied(false);
+          }, 3000);
+          return true;
         });
+      }).catch((err)=>{
+        console.error(err);
+      });
+
     };
 
     return (

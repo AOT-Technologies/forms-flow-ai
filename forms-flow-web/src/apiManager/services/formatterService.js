@@ -156,6 +156,21 @@ export const checkIsObjectId = (data) => {
   return data.length === 24 && !isNaN(Number("0x" + data));
 };
 
+export const copyText = (text)=>{
+  if(navigator.clipboard){
+   return navigator.clipboard?.writeText(text);
+  }
+  const textArea = document.createElement("textarea");
+  textArea.value = text;
+  document.body.appendChild(textArea);
+  textArea.focus();
+  textArea.select();
+  return new Promise((res, rej) => {
+    document.execCommand('copy') ? res() : rej();
+    textArea.remove();
+});
+};
+
 export const listProcess = (processes) => {
   if (processes?.length > 0) {
     const data = processes.map((process) => {

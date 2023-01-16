@@ -618,7 +618,7 @@ const List = React.memo((props) => {
                       onKeyPress={(e) => e.key === "Enter" && handleSearch()}
                       onChange={(e) => {
                         setShowClearButton(e.target.value);
-                        setSearchTextInput(e.target.value);
+                        setSearchTextInput(e.target.value.replace(/[^\w\s]/gi, ""));
                         e.target.value === "" && handleSearch();
                       }}
                       autoComplete="off"

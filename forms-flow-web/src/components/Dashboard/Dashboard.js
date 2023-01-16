@@ -119,7 +119,10 @@ const Dashboard = React.memo(() => {
   };
   // Function to handle page limit change for submission data
   const handleLimitChange = (limit) => {
-    setSelectedLimitValue(limit);
+    const newPageNumber = Math.ceil(totalItems / limit);
+    if(newPageNumber < activePage){
+    dispatch(setMetricsSubmissionPageChange(newPageNumber));
+    }
     dispatch(setMetricsSubmissionLimitChange(limit));
   };
   // Function to handle pageination page change for submission data

@@ -2,7 +2,7 @@
 
 Mark  items as `Added`, `Changed`, `Fixed`, `Removed`, `Untested Features`, `Upcoming Features`, `Known Issues`
 
-## 5.1.0 - 2022-01-12
+## 5.1.0 - 2022-01-17
 
 `Added`
 
@@ -28,7 +28,7 @@ Mark  items as `Added`, `Changed`, `Fixed`, `Removed`, `Untested Features`, `Upc
 
 **forms-flow-bpm**
 
-* Added environment variables `REDIS_ENABLED`,`REDIS_HOST`,`REDIS_PORT` and `REDIS_PASSCODE`.
+* Added environment variables `REDIS_ENABLED`,`REDIS_HOST`,`REDIS_PORT`,`REDIS_PASSCODE` and `SESSION_COOKIE_SECURE`.
 
 **forms-flow-documents**
 
@@ -73,6 +73,8 @@ Mark  items as `Added`, `Changed`, `Fixed`, `Removed`, `Untested Features`, `Upc
 **forms-flow-bpm**
 * Camunda Integration shows Invalid Credentials with formsflow.ai docker deployment, for more details refer [here](https://github.com/AOT-Technologies/forms-flow-ai/issues/978).
        
+Note: Temporary fix added. Setting the value of environment variable `SESSION_COOKIE_SECURE` to `false` makes the camunda login works with ip.
+For a production setup value should be true, which will work with Kubernetes and docker deployments with nginx.
 
 
 ## 5.0.2 - 2022-12-07

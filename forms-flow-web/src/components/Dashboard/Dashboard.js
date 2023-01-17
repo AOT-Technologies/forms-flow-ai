@@ -146,7 +146,7 @@ const Dashboard = React.memo(() => {
   }, [submissionsList]);
 
   const onChangeInput = (option) => {
-    dispatch(setMetricsSubmissionLimitChange(6));
+    dispatch(setMetricsSubmissionLimitChange(limit));
     setSearchBy(option);
   };
   if (isMetricsLoading) {
@@ -171,7 +171,8 @@ const Dashboard = React.memo(() => {
   };
 
   const onSetDateRange = (date) => {
-    dispatch(setMetricsSubmissionLimitChange(6));
+    dispatch(setMetricsSubmissionLimitChange(limit));
+    dispatch(setMetricsSubmissionPageChange(1));
     dispatch(setMetricsDateRangeLoading(true));
     dispatch(setMetricsDateChange(date));
   };

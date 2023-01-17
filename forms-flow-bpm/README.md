@@ -101,6 +101,7 @@ To know more about Camunda, visit https://camunda.com/.
  `REDIS_PORT`|Redis portname||`6379`
  `REDIS_PASSCODE`|Redis passcode||`changeme`
  `REDIS_ENABLED`|Boolean flag to enable redis|`true`|`false`
+ `SESSION_COOKIE_SECURE`|Boolean flag to enable cookie secure flag||`true`
  
  #### Mail Configuration
  * Modify the file **mail-config.properties** (under forms-flow-bpm/src/main/resources/). The default settings provided are for the Gmail server, and you need to change the credentials at the bottom of the file. Note that you want to configure your own Gmail setting to allow unsecure apps first. 

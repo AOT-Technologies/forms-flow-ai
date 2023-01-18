@@ -2,15 +2,16 @@
 
 Mark  items as `Added`, `Changed`, `Fixed`, `Removed`, `Untested Features`, `Upcoming Features`, `Known Issues`
 
-## 5.1.0 - 2022-01-17
+## 5.1.0 - 2022-01-18
 
 `Added`
 
 **forms-flow-web**
 
 * Added form versoning.
-* Added delete option for draft feature.
+* Added discard option for draft feature.
 * Added form embedding.
+* Added support for resources
 
 **forms-flow-forms**
 

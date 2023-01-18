@@ -1,5 +1,31 @@
 /* eslint-disable max-len */
 export const RESOURCE_BUNDLES_ZH = {
+  "No histories found":"没有找到历史记录",
+  "Continue":"继续",
+  "This will create a new version of the form without changing the path name but with new form id.":"这将创建一个新版本的表单而不更改路径名但具有新的表单 ID。",
+  "Save as a new version":"另存为新版本",
+  "Save New Version":"保存新版本",
+  "Do you want to save a new version of this form?":"您要保存此表单的新版本吗？",
+  "Do you want to create a duplicate form and associated workflow from existing form ?":"您要从现有表单创建重复表单和关联工作流吗？",
+  "New version created":"已创建新版本",
+  "Create a duplicate form":"创建一个重复的表单",
+  "Show more":"展示更多",
+  "Modified By":"修改者",
+  "Created On" : "创建于",
+  "Formsflow automatically saves your previous form data. Now you can switch to the previous stage and edit.":"Formsflow 会自动保存您以前的表单数据。现在您可以切换到上一个阶段并进行编辑。",
+  "Duplicate Form":"复制表格",
+  "Form History":"表单历史",
+  "No file chosen":"没有选中任何文件",
+  "Choose File":"选择文件",
+  "Choose any":"选择任何",
+  "Sort by form name":"按表格名称排序",
+  "select form type":"选择表格类型",
+  "Draft Deleted Successfully":"草稿删除成功",
+  "Saved to Applications/Drafts":"保存到申请/草稿",
+  "Unfinished applications will be saved to Applications/Drafts.":"未完成的申请将被保存到申请/草稿.",
+  "Discard Draft":" 丢弃草稿",
+  "Are you sure you wish to delete the draft":"您确定要删除草稿吗",
+  "with ID":"带身份证",
   "Please change the selected filters to view Forms":"请更改所选过滤器以查看表格",
   "Search by form name":"按表格名称搜索",
   "Click to search":"点击搜索",
@@ -238,7 +264,6 @@ export const RESOURCE_BUNDLES_ZH = {
   "Submission saved to draft.":"提交已保存到草稿。",
   "Saved to draft":"已保存到草稿",
   "Saving...":"保存...",
-  "Unfinished applications will be saved to drafts.":"未完成的申请将被保存到草稿中。",
   "Resource":"资源",
   "Error in creating form process mapper":"创建表单流程映射器时出错",
   "Select the date":"选择日期",
@@ -246,10 +271,9 @@ export const RESOURCE_BUNDLES_ZH = {
   "Deployment Failed":"部署失败",
   "Process name(s) must not be empty":"进程名称不能为空",
   "URL copied":"已复制网址",
-  "Click Here to Copy":"点击这里复制"
-
-
-
+  "Click Here to Copy":"点击这里复制",
+  "Resources":"资源",
+  "Duplicate form created successfully":"成功创建重复表单"
 
 };
 

@@ -23,7 +23,7 @@ services:
 
   forms-flow-forms:
     container_name: forms-flow-forms
-    image: formsflow/forms-flow-forms:v5.0.1
+    image: formsflow/forms-flow-forms:v5.1.0
 
     # The app will restart until Mongo is listening
     restart: always
@@ -39,6 +39,7 @@ services:
       ROOT_PASSWORD: ${FORMIO_ROOT_PASSWORD:-changeme}
       FORMIO_DOMAIN: ${FORMIO_DEFAULT_PROJECT_URL}
       FORMIO_JWT_SECRET: ${FORMIO_JWT_SECRET:---- change me now ---}
+      FORMIO_CLIENT_UI: ${FORMIO_CLIENT_UI:-false}
       MULTI_TENANCY_ENABLED: ${MULTI_TENANCY_ENABLED:-false}
 
     stdin_open: true # -i
@@ -113,11 +114,11 @@ services:
       - KEYCLOAK_ENABLE_CLIENT_AUTH=${KEYCLOAK_ENABLE_CLIENT_AUTH:-false}
       - KEYCLOAK_WEB_CLIENTID=${KEYCLOAK_WEB_CLIENTID:-forms-flow-web}
       - FORMSFLOW_ADMIN_URL=${FORMSFLOW_ADMIN_URL:-}
-      - REDIS_HOST=${REDIS_HOST:-localhost}
+      - REDIS_ENABLED=${REDIS_ENABLED:-false}
+      - REDIS_HOST=${REDIS_HOST}
       - REDIS_PORT=${REDIS_PORT:-6379}
       - REDIS_PASSCODE=${REDIS_PASSCODE:-changeme}
-      - REDIS_ENABLED=${REDIS_ENABLED:-false}
-
+      - SESSION_COOKIE_SECURE=${SESSION_COOKIE_SECURE:-false}
     networks:
       - forms-flow-network
  
@@ -150,7 +151,9 @@ services:
         - REACT_APP_DRAFT_ENABLED=${DRAFT_ENABLED:-false}
         - REACT_APP_DRAFT_POLLING_RATE=${DRAFT_POLLING_RATE:-15000}
         - REACT_APP_EXPORT_PDF_ENABLED=${EXPORT_PDF_ENABLED:-false}
+        - REACT_APP_PUBLIC_WORKFLOW_ENABLED=${PUBLIC_WORKFLOW_ENABLED:-false}
         - REACT_APP_DOCUMENT_SERVICE_URL=${DOCUMENT_SERVICE_URL}
+        - REACT_APP_OPENTELEMETRY_SERVICE=${OPENTELEMETRY_SERVICE:-false}
     ports:
       - '3000:8080'
     tty: true
@@ -212,6 +215,7 @@ services:
       FORMIO_JWT_SECRET: ${FORMIO_JWT_SECRET:---- change me now ---}
       KEYCLOAK_ENABLE_CLIENT_AUTH: ${KEYCLOAK_ENABLE_CLIENT_AUTH:-false}
       MULTI_TENANCY_ENABLED: ${MULTI_TENANCY_ENABLED:-false}
+      FORM_EMBED_JWT_SECRET: ${FORM_EMBED_JWT_SECRET:-f6a69a42-7f8a-11ed-a1eb-0242ac120002}
 
     stdin_open: true # -i
     tty: true # -t

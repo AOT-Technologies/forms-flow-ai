@@ -1,5 +1,31 @@
 /* eslint-disable max-len */
 export const RESOURCE_BUNDLES_FR = {
+  "No histories found":"Aucun historique trouvé",
+  "Continue":"Continuez",
+  "This will create a new version of the form without changing the path name but with new form id.":"Cela créera une nouvelle version du formulaire sans changer le nom du chemin mais avec un nouvel identifiant de formulaire.",
+  "Save as a new version":"Enregistrer en tant que nouvelle version",
+  "Save New Version":"Enregistrer la nouvelle version",
+  "Do you want to save a new version of this form?":"Voulez-vous enregistrer une nouvelle version de ce formulaire ?",
+  "Do you want to create a duplicate form and associated workflow from existing form ?":"Vous souhaitez créer un formulaire dupliqué et un workflow associé à partir d'un formulaire existant ?",
+  "New version created":"Nouvelle version créée",
+  "Create a duplicate form":"Créer un formulaire en double",
+  "Show more":"Montre plus",
+  "Modified By":"Modifié par",
+  "Created On" : "Créé sur",
+  "Formsflow automatically saves your previous form data. Now you can switch to the previous stage and edit.":"Formsflow enregistre automatiquement vos données de formulaire précédentes. Vous pouvez maintenant passer à l'étape précédente et modifier.",
+  "Duplicate Form":"Formulaire en double",
+  "Form History":"Historique du formulaire",
+  "No file chosen":"Aucun fichier choisi",
+  "Choose File":"Choisir le fichier",
+  "Choose any":"Choisissez n'importe quel",
+  "Sort by form name":"Trier par nom de formulaire",
+  "select form type":"sélectionner le type de formulaire",
+  "Draft Deleted Successfully":"Brouillon supprimé avec succès",
+  "Saved to Applications/Drafts":"Enregistré dans Candidatures/Brouillons",
+  "Unfinished applications will be saved to Applications/Drafts.":"Les candidatures non terminées seront enregistrées dans Candidatures/Brouillons.",
+  "Discard Draft":" Supprimer le brouillon",
+  "Are you sure you wish to delete the draft":"Êtes-vous sûr de vouloir supprimer le brouillon",
+  "with ID":"avec pièce d'identité",
   "Please change the selected filters to view Forms":"Veuillez modifier les filtres sélectionnés pour afficher les formulaires",
   "Search by form name":"Rechercher par nom de formulaire",
   "Click to search":"Cliquez pour rechercher",
@@ -240,7 +266,6 @@ export const RESOURCE_BUNDLES_FR = {
   "Submission saved to draft.":"Soumission enregistrée comme brouillon.",
   "Saved to draft":"Enregistré comme brouillon",
   "Saving...":"Économie...",
-  "Unfinished applications will be saved to drafts.":"Les candidatures non terminées seront enregistrées dans les brouillons.",
   "Resource":"Ressource",
   "Error in creating form process mapper":"Erreur lors de la création du mappeur de processus de formulaire",
   "Select the date":"Sélectionnez la date",
@@ -248,10 +273,9 @@ export const RESOURCE_BUNDLES_FR = {
   "Deployment Failed":"Échec du déploiement",
   "Process name(s) must not be empty":"Le(s) nom(s) de processus ne doivent pas être vides",
   "URL copied":"URL copiée",
-  "Click Here to Copy":"Cliquez ici pour copier"
-
-
-
+  "Click Here to Copy":"Cliquez ici pour copier",
+  "Resources":"Ressources",
+  "Duplicate form created successfully":"Formulaire en double créé avec succès"
 
 };
   

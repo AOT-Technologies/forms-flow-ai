@@ -19,18 +19,24 @@ import {
   fetchDrafts,
   FilterDrafts,
 } from "../../apiManager/services/draftService";
+import Confirm from "../../containers/Confirm";
 import Head from "../../containers/Head";
 import { push } from "connected-react-router";
 import {
   setDraftListLoader,
   setDraftListActivePage,
   setCountPerpage,
+  setDraftDelete,
 } from "../../actions/draftActions";
+import { deleteDraftbyId } from "../../apiManager/services/draftService";
+import isValiResourceId from "../../helper/regExp/validResourceId";
+import { toast } from "react-toastify";
 
 export const DraftList = React.memo(() => {
   const { t } = useTranslation();
   const drafts = useSelector((state) => state.draft.draftList);
   const countPerPage = useSelector((state) => state.draft.countPerPage);
+  const draftDelete = useSelector((state) => state.draft?.draftDelete);
 
   const isDraftListLoading = useSelector(
     (state) => state.draft.isDraftListLoading
@@ -52,6 +58,7 @@ export const DraftList = React.memo(() => {
   const redirectUrl = MULTITENANCY_ENABLED ? `/tenant/${tenantKey}/` : "/";
   const [lastModified, setLastModified] = React.useState(null);
   const [isLoading, setIsLoading] = React.useState(false);
+  const [invalidFilters, setInvalidFilters] = React.useState({});
 
   useEffect(() => {
     setIsLoading(false);
@@ -71,6 +78,35 @@ export const DraftList = React.memo(() => {
     dispatch(fetchDrafts(currentPage.current, countPerPageRef.current));
   }, [dispatch, currentPage, countPerPageRef]);
 
+  const onYes = () => {
+    deleteDraftbyId(draftDelete.draftId)
+      .then(() => {
+        toast.success(t("Draft Deleted Successfully"));
+        dispatch(fetchDrafts(currentPage.current, countPerPageRef.current));
+      })
+      .catch((error) => {
+        toast.error(error.message);
+      })
+      .finally(() => {
+        dispatch(
+          setDraftDelete({
+            modalOpen: false,
+            draftId: null,
+            draftName: "",
+          })
+        );
+      });
+  };
+
+  const onNo = () => {
+    dispatch(
+      setDraftDelete({
+        modalOpen: false,
+        draftId: null,
+        draftName: "",
+      })
+    );
+  };
   if (isDraftListLoading) {
     return <Loading />;
   }
@@ -95,8 +131,18 @@ export const DraftList = React.memo(() => {
       </div>
     );
   };
-
+  const validateFilters = (newState) => {
+    if (
+      newState.filters?.id?.filterVal &&
+      !isValiResourceId(newState.filters?.id?.filterVal)
+    ) {
+      return setInvalidFilters({ ...invalidFilters, DRAFT_ID: true });
+    } else {
+      return setInvalidFilters({ ...invalidFilters, DRAFT_ID: false });
+    }
+  };
   const handlePageChange = (type, newState) => {
+    validateFilters(newState);
     if (type === "filter") {
       setfiltermode(true);
     } else if (type === "pagination") {
@@ -140,11 +186,26 @@ export const DraftList = React.memo(() => {
       bootstrap4
       keyField="id"
       data={drafts}
-      columns={columns(lastModified, setLastModified, t, redirectUrl)}
+      columns={columns(
+        lastModified,
+        setLastModified,
+        t,
+        redirectUrl,
+        invalidFilters
+      )}
       search
     >
       {(props) => (
-        <div className="container" role="definition">
+        <div className="container" id="main" role="definition">
+          <Confirm
+            modalOpen={draftDelete.modalOpen}
+            message={`${t("Are you sure you wish to delete the draft")} "${
+              draftDelete.draftName
+            }" 
+          ${t("with ID")} "${draftDelete.draftId}"`}
+            onNo={() => onNo()}
+            onYes={() => onYes()}
+          />
           <Head items={headerList()} page="Drafts" />
           <br />
           <div>

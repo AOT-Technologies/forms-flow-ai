@@ -1,7 +1,7 @@
 {
   "name": "formsflow-ai-react",
   "description": "React web app for formsflow.ai project",
-  "version": "5.0.2",
+  "version": "5.1.0",
   "main": "index.js",
   "scripts": {
     "analyze": "source-map-explorer 'build/static/js/*.js'",
@@ -13,6 +13,11 @@
     "preinstall": "npx npm-force-resolutions",
     "coverage": "react-scripts test --coverage --watchAll=false",
     "lint": "eslint src --no-fix --max-warnings 0"
+  },
+  "jest": {
+    "transformIgnorePatterns": [
+      "<rootDir>/node_modules/(?!d3)/"
+    ]
   },
   "author": {
     "name": "Abhilash"
@@ -52,7 +57,7 @@
     "formsflow-formio-custom-elements": "^1.0.3",
     "i18next": "^21.6.6",
     "i18next-browser-languagedetector": "^6.1.2",
-    "jsonwebtoken": "^8.5.1",
+    "jsonwebtoken": "9.0.0",
     "keycloak-js": "^10.0.2",
     "lodash": "^4.17.21",
     "moment": "^2.29.4",
@@ -98,7 +103,11 @@
     "underscore": "1.12.1",
     "shell-quote": ">=1.7.3",
     "ejs": ">=3.1.7",
-    "moment-timezone": "0.5.37"
+    "moment-timezone": "0.5.37",
+    "loader-utils": "2.0.4",
+    "minimatch": "3.0.5",
+    "json5": "2.2.2",
+    "d3-color": "3.1.0"
   },
   "browserslist": [
     ">0.2%",

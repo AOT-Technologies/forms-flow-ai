@@ -61,7 +61,7 @@ function renderForm() {
     Formio.setProjectUrl(form_info.project_url);
     Formio.setToken(form_info.token);
 
-    if (form_info.form_apater) {
+    if (form_info.form_adapter) {
       renderFormWithSubmission();
     } else {
       renderFormWithOutSubmission();

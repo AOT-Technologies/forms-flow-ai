@@ -12,9 +12,9 @@ server:
     context-path: /camunda
     session:
       cookie:
-        secure: true
-        http-only: true
+        secure: ${SESSION_COOKIE_SECURE:true}
         max-age: 1800
+        http-only: true
 
 formsflow.ai:
   forms:
@@ -50,7 +50,7 @@ camunda.bpm:
   webapp:
     application-path: /
     csrf:
-      enable-secure-cookie: true
+      enable-secure-cookie: ${SESSION_COOKIE_SECURE:true}
     header-security:
       content-security-policy-disabled: false
       content-security-policy-value:  base-uri 'self';
@@ -146,15 +146,15 @@ websocket:
   messageType: ${WEBSOCKET_MESSAGE_TYPE}
   messageEvents: ${WEBSOCKET_MESSAGE_EVENTS:DEFAULT}
   messageBroker:
-    host: ${REDIS_HOST:localhost}
-    port: ${REDIS_PORT:6379}
-    passcode: ${REDIS_PASSCODE:changeme}
+    host: ${REDIS_HOST}
+    port: ${REDIS_PORT}
+    passcode: ${REDIS_PASSCODE}
   enableRedis: ${REDIS_ENABLED:false}
 
 # disable redis
-#spring.data.redis.repositories.enabled: false
-#spring.autoconfigure.exclude:
-#  - org.springframework.boot.autoconfigure.data.redis.RedisAutoConfiguration
+spring.data.redis.repositories.enabled: false
+spring.autoconfigure.exclude:
+  - org.springframework.boot.autoconfigure.data.redis.RedisAutoConfiguration
 
 management:
   health:

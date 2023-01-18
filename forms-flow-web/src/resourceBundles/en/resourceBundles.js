@@ -1,5 +1,31 @@
 /* eslint-disable max-len */
 export const RESOURCE_BUNDLES_EN = {
+  "No histories found":"No histories found",
+  "Continue":"Continue",
+  "This will create a new version of the form without changing the path name but with new form id.":"This will create a new version of the form without changing the path name but with new form id.",
+  "Save as a new version":"Save as a new version",
+  "Save New Version":"Save New Version",
+  "Do you want to save a new version of this form?":"Do you want to save a new version of this form?",
+  "Do you want to create a duplicate form and associated workflow from existing form ?":"Do you want to create a duplicate form and associated workflow from existing form ?",
+  "New version created":"New version created",
+  "Create a duplicate form":"Create a duplicate form",
+  "Show more":"Show more",
+  "Modified By":"Modified By",
+  "Created On" : "Created On",
+  "Formsflow automatically saves your previous form data. Now you can switch to the previous stage and edit.":"Formsflow automatically saves your previous form data. Now you can switch to the previous stage and edit.",
+  "Duplicate Form":"Duplicate Form",
+  "Form History":"Form History",
+  "No file chosen":"No file chosen",
+  "Choose File":"Choose File",
+  "Choose any":"Choose any",
+  "Sort by form name":"Sort by form name",
+  "select form type":"select form type",
+  "Draft Deleted Successfully":"Draft Deleted Successfully",
+  "Saved to Applications/Drafts":"Saved to Applications/Drafts",
+  "Unfinished applications will be saved to Applications/Drafts.":"Unfinished applications will be saved to Applications/Drafts.",
+  "Discard Draft":"Discard Draft",
+  "Are you sure you wish to delete the draft":"Are you sure you wish to delete the draft",
+  "with ID":"with ID",
   "Please change the selected filters to view Forms":"Please change the selected filters to view Forms",
   "Search by form name":"Search by form name",
   "Click to search":"Click to search",
@@ -239,7 +265,6 @@ export const RESOURCE_BUNDLES_EN = {
   "Submission saved to draft.":"Submission saved to draft.",
   "Saved to draft":"Saved to draft",
   "Saving...":"Saving...",
-  "Unfinished applications will be saved to drafts.":"Unfinished applications will be saved to drafts.",
   "Resource":"Resource",
   "Error in creating form process mapper":"Error in creating form process mapper",
   "Select the date":"Select the date",
@@ -247,7 +272,9 @@ export const RESOURCE_BUNDLES_EN = {
   "Deployment Failed":"Deployment Failed",
   "Process name(s) must not be empty":"Process name(s) must not be empty",
   "URL copied":"URL copied",
-  "Click Here to Copy":"Click Here to Copy"
+  "Click Here to Copy":"Click Here to Copy",
+  "Resources":"Resources",
+  "Duplicate form created successfully":"Duplicate form created successfully"
 
 
 

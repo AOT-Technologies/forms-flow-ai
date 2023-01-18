@@ -54,7 +54,7 @@ import {
 } from "../../../constants/constants";
 import useInterval from "../../../customHooks/useInterval";
 import selectApplicationCreateAPI from "./apiSelectHelper";
-import { getFormProcesses } from "../../../apiManager/services/processServices";
+import { getApplicationCount, getFormProcesses } from "../../../apiManager/services/processServices";
 import { setFormStatusLoading } from "../../../actions/processActions";
 import SavingLoading from "../../Loading/SavingLoading";
 
@@ -176,13 +176,14 @@ const View = React.memo((props) => {
    * Draft is updated only if the form is updated from the last saved form data.
    */
   const saveDraft = (payload, exitType = exitType) => {
+    if (exitType === "SUBMIT") return;
     let dataChanged = !isEqual(payload.data, lastUpdatedDraft.data);
     if (draftSubmissionId && isDraftCreated) {
       if (dataChanged) {
         setDraftSaved(false);
         dispatch(
           draftUpdateMethod(payload, draftSubmissionId, (err) => {
-            if (exitType === "UNMOUNT" && !err) {
+            if (exitType === "UNMOUNT" && !err && isAuthenticated) {
               toast.success(t("Submission saved to draft."));
             }
             if (!err) {
@@ -258,6 +259,7 @@ const View = React.memo((props) => {
       dispatch(
         getFormProcesses(formId, (err, data) => {
           if (!err) {
+            dispatch(getApplicationCount(data.id));
             setFormStatus(data.status);
             dispatch(setFormStatusLoading(false));
           }
@@ -312,7 +314,7 @@ const View = React.memo((props) => {
     );
   }
   return (
-    <div className="container overflow-y-auto">
+    <div className="container overflow-y-auto form-view-wrapper">
       {DRAFT_ENABLED &&
         isAuthenticated &&
         isValidResource && 

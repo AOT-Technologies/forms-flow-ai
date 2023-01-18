@@ -1,5 +1,31 @@
 /* eslint-disable max-len */
 export const RESOURCE_BUNDLES_PT = {
+  "No histories found":"Nenhum histórico encontrado",
+  "Continue":"Prosseguir",
+  "This will create a new version of the form without changing the path name but with new form id.":"Isso criará uma nova versão do formulário sem alterar o nome do caminho, mas com o novo ID do formulário.",
+  "Save as a new version":"Salvar como uma nova versão",
+  "Save New Version":"Salvar nova versão",
+  "Do you want to save a new version of this form?":"Deseja salvar uma nova versão deste formulário?",
+  "Do you want to create a duplicate form and associated workflow from existing form ?":"Deseja criar um formulário duplicado e um fluxo de trabalho associado a partir de um formulário existente?",
+  "New version created":"New version created",
+  "Create a duplicate form":"Criar um formulário duplicado",
+  "Show more":"Mostre mais",
+  "Modified By":"Modificado por",
+  "Created On" : "Criado em",
+  "Formsflow automatically saves your previous form data. Now you can switch to the previous stage and edit.":"O Formsflow salva automaticamente os dados do formulário anterior. Agora você pode mudar para o estágio anterior e editar.",
+  "Duplicate Form":"Formulário Duplicado",
+  "Form History":"Histórico do formulário",
+  "No file chosen":"Nenhum arquivo selecionado",
+  "Choose File":"Escolher arquivo",
+  "Choose any":"Escolha qualquer",
+  "Sort by form name":"Classificar por nome do formulário",
+  "select form type":"selecione o tipo de formulário",
+  "Draft Deleted Successfully":"Rascunho excluído com sucesso",
+  "Saved to Applications/Drafts":"Salvo em Aplicações/Rascunhos",
+  "Unfinished applications will be saved to Applications/Drafts.":"Os aplicativos inacabados serão salvos em Aplicativos/Rascunhos.",
+  "Discard Draft":"Descartar Rascunho",
+  "Are you sure you wish to delete the draft":"Tem certeza de que deseja excluir o rascunho",
+  "with ID":"com identidade",
   "Please change the selected filters to view Forms":"Por favor, altere os filtros selecionados para visualizar os formulários",
   "Search by form name":"Pesquisar pelo nome do formulário",
   "Click to search":"Clique para pesquisar",
@@ -239,7 +265,6 @@ export const RESOURCE_BUNDLES_PT = {
   "Submission saved to draft.":"Envio salvo como rascunho.",
   "Saved to draft":"Salvo no rascunho",
   "Saving...":"Salvando...",
-  "Unfinished applications will be saved to drafts.":"Aplicativos inacabados serão salvos em rascunhos.",
   "Resource":"Recurso",
   "Error in creating form process mapper":"Erro ao criar mapeador de processo de formulário",
   "Select the date":"Selecione a data",
@@ -247,7 +272,9 @@ export const RESOURCE_BUNDLES_PT = {
   "Deployment Failed":"Falha na implantação",
   "Process name(s) must not be empty":"O(s) nome(s) do processo não deve(m) estar vazio(s)",
   "URL copied":"URL copiado",
-  "Click Here to Copy":"Clique aqui para copiar"
+  "Click Here to Copy":"Clique aqui para copiar",
+  "Resources":"Recursos",
+  "Duplicate form created successfully":"Formulário duplicado criado com sucesso"
 
 
 

@@ -1,33 +1,33 @@
 import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { setFormCheckList } from "../../../actions/checkListActions";
-import { getFormattedForm } from "../constants/formListConstants";
 import { useTranslation } from "react-i18next";
 import Form from "react-bootstrap/Form";
 const SelectFormForDownload = React.memo(({ form, type }) => {
+ 
   const formCheckList = useSelector((state) => state.formCheckList.formList);
-  const forms = useSelector((state) => state.forms.forms);
-  const formObj = getFormattedForm(form);
+  const forms = useSelector((state) => state.bpmForms.forms);
+ 
   const [isFormChecked, setIsFormChecked] = useState(false);
   const [isAllFormChecked, setIsAllFormChecked] = useState(false);
   const dispatch = useDispatch();
   const { t } = useTranslation();
   useEffect(() => {
-    if (formObj && formCheckList.length) {
+    if (form && formCheckList.length) {
       const isFormAdded = formCheckList.some(
-        (formData) => formData.path === formObj.path
+        (formData) => formData._id === form._id
       );
       setIsFormChecked(isFormAdded);
     } else {
       setIsFormChecked(false);
     }
-  }, [formCheckList, formObj]);
+  }, [formCheckList, form]);
 
   useEffect(() => {
     if (formCheckList.length) {
-      const pathList = formCheckList.map((formData) => formData.path);
+      const idList = formCheckList.map((formData) => formData._id);
       setIsAllFormChecked(
-        forms.every((formData) => pathList.includes(formData.path))
+        forms.every((formData) => idList.includes(formData._id))
       );
     } else {
       setIsAllFormChecked(false);
@@ -37,10 +37,10 @@ const SelectFormForDownload = React.memo(({ form, type }) => {
   const updateFormCheckList = (formInsert) => {
     let updatedFormCheckList = [...formCheckList];
     if (formInsert) {
-      updatedFormCheckList.push({ ...formObj });
+      updatedFormCheckList.push(form);
     } else {
       const index = updatedFormCheckList.findIndex(
-        (formData) => formData.path === formObj.path
+        (formData) => formData._id === form._id
       );
       updatedFormCheckList.splice(index, 1);
     }
@@ -54,11 +54,11 @@ const SelectFormForDownload = React.memo(({ form, type }) => {
       let updatedFormCheckList = [...formCheckList];
       forms.forEach((formData) => {
         const isFormAdded = formCheckList.some(
-          (formCheck) => formData.path === formCheck.path
+          (formCheck) => formData._id === formCheck._id
         );
         if (!isFormAdded) {
-          let formObjToInsert = getFormattedForm(formData);
-          updatedFormCheckList.push({ ...formObjToInsert });
+          
+          updatedFormCheckList.push({ ...formData });
         }
       });
       dispatch(setFormCheckList(updatedFormCheckList));

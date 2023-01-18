@@ -36,6 +36,7 @@ export default React.memo(() => {
   const [showModeler, setShowModeler] = useState(false);
   const [isBpmnModel, setIsBpmnModel] = useState(true);
   const [isNewDiagram, setIsNewDiagram] = useState(false);
+  const [fileName, setFileName] = useState("");
   const tenantKey = useSelector((state) => state.tenants?.tenantId);
 
   useEffect(() => {
@@ -113,6 +114,7 @@ export default React.memo(() => {
   };
 
   const handleChangeFile = (file) => {
+    setFileName(file.name);
     setShowModeler(false);
     setIsNewDiagram(true);
     let fileData = new FileReader();
@@ -155,10 +157,10 @@ export default React.memo(() => {
   };
 
   const customDropdownStyles = {
-    menuList: base => ({
+    menuList: (base) => ({
       ...base,
       maxHeight: "170px",
-    })
+    }),
   };
 
   return (
@@ -200,7 +202,7 @@ export default React.memo(() => {
                 </span>
                 <div className="select-style">
                   <Select
-                    placeholder={t("Select ...")}
+                    placeholder={t("Select...")}
                     options={processList}
                     onChange={handleListChange}
                     value={
@@ -239,13 +241,20 @@ export default React.memo(() => {
                   >
                     {t("Create New")}
                   </Button>
-
-                  <input
-                    id="inputWorkflow"
-                    type="file"
-                    accept=".bpmn, .dmn"
-                    onChange={(e) => handleChangeFile(e.target.files[0])}
-                  />
+                  <div className="upload">
+                    <input
+                      id="inputWorkflow"
+                      style={{ display: "none" }}
+                      type="file"
+                      name="upload"
+                      accept=".bpmn, .dmn"
+                      onChange={(e) => handleChangeFile(e.target.files[0])}
+                    />
+                    <label htmlFor="inputWorkflow">{t("Choose File")}</label>
+                  </div>
+                  <label htmlFor="inputWorkflow" style={{ padding: "4px" }} >
+                    {fileName ? fileName : t("No file chosen")}
+                  </label>
                 </div>
               </div>
 

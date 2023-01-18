@@ -1,5 +1,31 @@
 /* eslint-disable max-len */
 export const RESOURCE_BUNDLES_DE = {
+  "No histories found":"Keine Historien gefunden",
+  "Continue":"Weitermachen",
+  "This will create a new version of the form without changing the path name but with new form id.":"Dadurch wird eine neue Version des Formulars erstellt, ohne den Pfadnamen zu ändern, aber mit einer neuen Formular-ID.",
+  "Save as a new version":"Als neue Version speichern",
+  "Save New Version":"Neue Version speichern",
+  "Do you want to save a new version of this form?":"Möchten Sie eine neue Version dieses Formulars speichern?",
+  "Do you want to create a duplicate form and associated workflow from existing form ?":"Möchten Sie ein Duplikat des Formulars und des zugehörigen Workflows aus einem vorhandenen Formular erstellen?",
+  "New version created":"Neue Version erstellt",
+  "Create a duplicate form":"Erstellen Sie ein Duplikat des Formulars",
+  "Show more":"Zeig mehr",
+  "Modified By":"Verändert von",
+  "Created On" : "Erstellt am",
+  "Formsflow automatically saves your previous form data. Now you can switch to the previous stage and edit.":"Formsflow speichert automatisch Ihre vorherigen Formulardaten. Jetzt können Sie zur vorherigen Stufe wechseln und bearbeiten.",
+  "Duplicate Form":"Doppeltes Formular",
+  "Form History":"Formulargeschichte",
+  "No file chosen":"Keine Datei ausgewählt",
+  "Choose File":"Datei wählen",
+  "Choose any":"Wählen Sie eine aus",
+  "Sort by form name":"Nach Formularnamen sortieren",
+  "select form type":"Formulartyp auswählen",
+  "Draft Deleted Successfully":"Entwurf erfolgreich gelöscht",
+  "Saved to Applications/Drafts":"Unter Anwendungen/Entwürfe gespeichert",
+  "Unfinished applications will be saved to Applications/Drafts.":" Unfertige Bewerbungen werden unter Bewerbungen/Entwürfe gespeichert.",
+  "Discard Draft":"Entwurf verwerfen",
+  "Are you sure you wish to delete the draft":"Möchten Sie den Entwurf wirklich löschen",
+  "with ID":"mit Ausweis",
   "Please change the selected filters to view Forms":"Bitte ändern Sie die ausgewählten Filter, um Formulare anzuzeigen",
   "Search by form name":"Suche nach Formularnamen",
   "Click to search":"Klicken Sie, um zu suchen",
@@ -241,7 +267,6 @@ export const RESOURCE_BUNDLES_DE = {
   "Submission saved to draft.":"Übermittlung als Entwurf gespeichert.",
   "Saved to draft":"Als Entwurf gespeichert",
   "Saving...":"Sparen...",
-  "Unfinished applications will be saved to drafts.":"Unfertige Bewerbungen werden als Entwürfe gespeichert.",
   "Resource":"Ressource",
   "Error in creating form process mapper":"Fehler beim Erstellen des Formularprozess-Mappers",
   "Select the date":"Wählen Sie das Datum aus",
@@ -249,7 +274,9 @@ export const RESOURCE_BUNDLES_DE = {
   "Deployment Failed":"Bereitstellung fehlgeschlagen",
   "Process name(s) must not be empty":"Prozessname(n) dürfen nicht leer sein",
   "URL copied":"URL kopiert",
-  "Click Here to Copy":"Klicken Sie hier, um zu kopieren"
+  "Click Here to Copy":"Klicken Sie hier, um zu kopieren",
+  "Resources":"Bronnen",
+  "Duplicate form created successfully":"Doppeltes Formular erfolgreich erstellt"
 
 
 

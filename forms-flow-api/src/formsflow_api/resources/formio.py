@@ -6,7 +6,7 @@ from typing import Dict
 
 import jwt
 from flask import after_this_request, current_app
-from flask_restx import Namespace, Resource
+from flask_restx import Namespace, Resource, fields
 from formsflow_api_utils.utils import (
     CLIENT_GROUP,
     DESIGNER_GROUP,
@@ -26,6 +26,25 @@ from formsflow_api_utils.utils.user_context import UserContext, user_context
 
 API = Namespace("Formio", description="formio")
 
+role = API.model(
+    "Role",
+    {
+        "roleId": fields.String(description="The role or resource Id"),
+        "type": fields.String(
+            description="The Id type",
+            enum=["DESIGNER", "ANONYMOUS", "CLIENT", "REVIEWER", "RESOURCE_ID"],
+        ),
+    },
+)
+role_success_response_model = API.model(
+    "Roles",
+    {
+        "form": fields.List(
+            fields.Nested(role, description="List of role / resource Ids")
+        ),
+    },
+)
+
 
 @cors_preflight("GET, OPTIONS")
 @API.route("/roles", methods=["GET", "OPTIONS"])
@@ -36,8 +55,31 @@ class FormioResource(Resource):
     @auth.require
     @profiletime
     @user_context
+    @API.response(
+        200,
+        "OK:- Successful request.",
+        headers={"x-jwt-token": "Formio token"},
+        model=role_success_response_model,
+    )
+    @API.response(
+        401,
+        "UNAUTHORIZED:- Authorization header not provided or an invalid token passed.",
+    )
+    @API.response(503, "SERVICE_UNAVAILABLE:- Service failed to serve the request.")
     def get(**kwargs):
-        """Get role ids from cache."""
+        """
+        Get formio role ids.
+
+        For requests with designer authorization, the server will send a response
+        with role Ids of the following roles `DESIGNER`, `REVIEWER`, `CLIENT`,
+        `ANONYMOUS` along with `RESOURCE_ID`.
+
+        For requests without designer authorization, no resource / role Ids will be returned.
+        This is because only designer will be expected to use the resource and role Ids.
+
+        All successful response will contain `x-jwt-token` in the response header
+        which is the formio token generated from the server.
+        """
         user: UserContext = kwargs["user"]
         assert user.token_info is not None
 
@@ -53,6 +95,8 @@ class FormioResource(Resource):
 
         @after_this_request
         def add_jwt_token_as_header(response):
+            if response.status_code != 200:
+                return response
             _role_ids = [
                 role["roleId"]
                 for role in list(
@@ -112,12 +156,6 @@ class FormioResource(Resource):
                 result = {"form": roles}
                 return result, HTTPStatus.OK
 
-            return (
-                {"message": "Role ids not available on server"},
-                HTTPStatus.SERVICE_UNAVAILABLE,
-            )
-        except ValueError as err:
-            current_app.logger.warning(err)
             return (
                 {"message": "Role ids not available on server"},
                 HTTPStatus.SERVICE_UNAVAILABLE,

@@ -2,6 +2,81 @@
 
 Mark  items as `Added`, `Changed`, `Fixed`, `Removed`, `Untested Features`, `Upcoming Features`, `Known Issues`
 
+## 5.1.0 - 2022-01-17
+
+`Added`
+
+**forms-flow-web**
+
+* Added form versoning.
+* Added delete option for draft feature.
+* Added form embedding.
+
+**forms-flow-forms**
+
+* Added environment variable `FORMIO_CLIENT_UI`.
+* Added health check API-end point `/checkpoint`
+
+**forms-flow-api**
+
+* Added DB changes to accomodate form type, parent form id. 
+* Added migration scripts in the alembic file to resolve schema conflicts while db upgrade and downgrade, check out [here](./forms-flow-api/migrations/versions/1a55b7674144_form_history.py).
+* Added new table for form history
+* Added new api to get form history by form id.
+* Added new api to delete draft.
+* Added new api to get the list of users for a role/group from keycloak.
+
+**forms-flow-bpm**
+
+* Added environment variables `REDIS_ENABLED`,`REDIS_HOST`,`REDIS_PORT`,`REDIS_PASSCODE` and `SESSION_COOKIE_SECURE`.
+
+**forms-flow-documents**
+
+* Added support for PDF templating.
+
+
+`Modified`
+
+**forms-flow-api**
+
+* Updated certifi to 2022.12.7, protobuf to 3.20.2 and  joblib to 1.2.0.
+* Modified swagger documentation.
+
+
+
+**forms-flow-bpm**
+
+*Upgrade notes:*
+
+* spring boot upgraded from version 2.6.4. to  2.6.6.
+* spring websocket upgraded from version 5.3.4 to 5.3.20.
+* spring messaging upgraded from version 5.3.4 to 5.3.20.
+* spring security Oauth2 upgraded from version 2.6.4. to 2.6.6.
+* postgresql upgraded from version 42.4.1 to 42.4.3.
+* jackson upgraded from version 2.13.3 to 2.14.0.
+
+
+`Fixed`
+
+**forms-flow-api**
+
+* Fixed Python security vulnerabilities.
+
+`Generic Changes`
+* In Quick Installation:
+<br> &nbsp;&nbsp;&nbsp;&nbsp;Fixed versions for databases.<br> &nbsp;&nbsp;&nbsp;&nbsp;Reduced script size.<br> &nbsp;&nbsp;&nbsp;&nbsp;Added IP confirmation to avoid IP issues.
+
+* Moved form list of designer to forms-flow-api.
+
+`Known Issues`
+
+**forms-flow-bpm**
+* Camunda Integration shows Invalid Credentials with formsflow.ai docker deployment, for more details refer [here](https://github.com/AOT-Technologies/forms-flow-ai/issues/978).
+       
+Note: Temporary fix added. Setting the value of environment variable `SESSION_COOKIE_SECURE` to `false` makes the camunda login works with ip.
+For a production setup value should be true, which will work with Kubernetes and docker deployments with nginx.
+
+
 ## 5.0.2 - 2022-12-07
 
 **forms-flow-web**
@@ -63,7 +138,9 @@ Mark  items as `Added`, `Changed`, `Fixed`, `Removed`, `Untested Features`, `Upc
 * Added environment variable `CUSTOM_SUBMISSION_URL`, `CUSTOM_SUBMISSION_ENABLED` for support form adapter.
 * Added environment variables `DRAFT_ENABLED`, `DRAFT_POLLING_RATE` to manage draft feature. 
 * Added environment variable `EXPORT_PDF_ENABLED`for pdf service.
+* Added environment variable `PUBLIC_WORKFLOW_ENABLED` for enabling public workflow creation for multitenancy users.
 * Added environment variable `DOCUMENT_SERVICE_URL`for document service.
+* Added environment variable `OPENTELEMETRY_SERVICE`for opentelemetry service.
 
 
 

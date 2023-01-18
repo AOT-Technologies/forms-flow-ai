@@ -13,6 +13,8 @@ def test_formprocessmapper_creation(app, client, session):
         status="Pending",
         comments="test",
         tenant="test-org",
+        form_type="form",
+        parent_form_id=12324,
     )
     assert form.id == 1
     assert form.form_id == 12324
@@ -30,6 +32,8 @@ def test_formprocessmapper_anonymous_creation(app, client, session):
         comments="test",
         tenant="test-org",
         is_anonymous=True,
+        form_type="form",
+        parent_form_id=12324,
     )
 
     assert form.id == 5

@@ -2,7 +2,7 @@
 from http import HTTPStatus
 
 from flask import current_app, request
-from flask_restx import Namespace, Resource
+from flask_restx import Namespace, Resource, fields
 from formsflow_api_utils.utils import auth, cors_preflight, profiletime
 
 from formsflow_api.schemas import ApplicationListReqSchema
@@ -12,20 +12,93 @@ API = Namespace("dashboards", description="Dashboard APIs")
 analytics_service = RedashAPIService()
 auth_service = AuthorizationService()
 
+dashboard_base_model = API.model(
+    "DashboardBase",
+    {
+        "created_at": fields.String(),
+        "dashboard_filters_enabled": fields.Boolean(),
+        "id": fields.Integer(),
+        "is_archived": fields.Boolean(),
+        "is_draft": fields.Boolean(),
+        "is_favorite": fields.Boolean(),
+        "layout": fields.List(fields.Raw()),
+        "name": fields.String(),
+        "options": fields.Raw(),
+        "tags": fields.List(fields.String()),
+        "updated_at": fields.String(),
+        "user": fields.Nested(
+            API.model(
+                "User",
+                {
+                    "email": fields.String(),
+                    "id": fields.Integer(),
+                    "name": fields.String(),
+                    "profile_image_url": fields.String(),
+                },
+            )
+        ),
+        "user_id": fields.Integer(),
+        "version": fields.Integer(),
+    },
+)
+
+dashboard_model = API.inherit(
+    "Dashboard",
+    dashboard_base_model,
+    {
+        "slug": fields.String(),
+        "can_edit": fields.Boolean(),
+        "widgets": fields.List(fields.Raw()),
+        "dashboard_filters_enabled": fields.Boolean(),
+    },
+)
+
+dashboard_list_model = API.model(
+    "DashboardList",
+    {
+        "results": fields.List(fields.Nested(dashboard_base_model)),
+        "count": fields.Integer(),
+        "page": fields.Integer(),
+        "page_size": fields.Integer(),
+    },
+)
+
 
 @cors_preflight("GET, OPTIONS")
 @API.route("", methods=["GET", "OPTIONS"])
 class DashboardList(Resource):
-    """Resource to fetch Dashboard List.
-
-    : pageNo:- page number which starts from number 1 (optional)
-    : limit:- number of items per page (optional)
-    """
+    """Resource to fetch Dashboard List."""
 
     @staticmethod
-    @API.doc("list_dashboards")
     @auth.require
     @profiletime
+    @API.doc(
+        params={
+            "pageNo": {
+                "in": "query",
+                "description": "Page number which starts from number 1 (optional).",
+                "default": "",
+            },
+            "limit": {
+                "in": "query",
+                "description": "Number of items per page (optional).",
+                "default": "",
+            },
+        }
+    )
+    @API.response(200, "OK:- Successful request.", model=dashboard_list_model)
+    @API.response(
+        401,
+        "UNAUTHORIZED:- Authorization header not provided or an invalid token passed.",
+    )
+    @API.response(
+        502,
+        "BAD_GATEWAY:- Invalid response from another service.",
+    )
+    @API.response(
+        503,
+        "SERVICE_UNAVAILABLE:- Server cannot process te request.",
+    )
     def get():
         """List all dashboards."""
         try:
@@ -62,14 +135,27 @@ class DashboardDetail(Resource):
     """Resource to fetch Dashboard Detail."""
 
     @staticmethod
-    @API.doc("get_dashboard")
     @auth.require
     @profiletime
+    @API.response(200, "OK:- Successful request.", model=dashboard_model)
+    @API.response(
+        401,
+        "UNAUTHORIZED:- Authorization header not provided or an invalid token passed.",
+    )
+    @API.response(
+        403,
+        "FORBIDDEN:- Authorization will not help.",
+    )
+    @API.response(
+        502,
+        "BAD_GATEWAY:- Invalid response from another service.",
+    )
+    @API.response(
+        503,
+        "SERVICE_UNAVAILABLE:- Server cannot process te request.",
+    )
     def get(dashboard_id: int):
-        """Get  dashboard.
-
-        : dashboard_id:- Get dashboard with given dashboard_id
-        """
+        """Get dashboard by id."""
         if not auth_service.is_dashboard_authorized(resource_id=dashboard_id):
             return {
                 "message": f"Dashboard - {dashboard_id} not accessible"

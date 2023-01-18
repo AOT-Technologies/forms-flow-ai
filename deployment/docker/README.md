@@ -154,7 +154,9 @@ Variable name | Meaning | Possible values | Default value |
 ` DRAFT_ENABLED`|Enable draft feature|true/false
 `DRAFT_POLLING_RATE`|Control draft timing||15000
 `EXPORT_PDF_ENABLED`|Manage export to pdf feature|true/false
+`PUBLIC_WORKFLOW_ENABLED`|Enable creating workflow for all tenants
 `DOCUMENT_SERVICE_URL`|Formsflow document service api url||`http://{your-ip-address}:{port}`
+`OPENTELEMETRY_SERVICE`|Formsflow opentelemetry service||`false`
 `MT_ADMIN_BASE_URL`|Multitenancy admin url||`http://{your-ip-address}:5010/api`
 `MT_ADMIN_BASE_URL_VERSION=v1`|Version of multitenancy admin|v1
 
@@ -201,6 +203,10 @@ Variable name | Meaning | Possible values | Default value |
 `WEBSOCKET_MESSAGE_TYPE`|Camunda task event streaming. Message type ||`TASK_EVENT`
 `WEBSOCKET_ENCRYPT_KEY`|Camunda task event streaming. AES encryption of token||`giert989jkwrgb@DR55`
 `DATA_ANALYSIS_URL`|sentiment analysis url||`http://{your-ip-address}:6000/analysis`
+`REDIS_HOST`|Redis hostname||`localhost`
+`REDIS_PORT`|Redis portname||`6379`
+`REDIS_PASSCODE`|Redis passcode||`changeme`
+`REDIS_ENABLED`|Boolean flag to enable redis|`true`|`false`
  
 ```
 Modify the file **mail-config.properties** (under `forms-flow-bpm/src/main/resources/`). The default settings provided are for the Gmail server, and you need to change the credentials at the bottom of the file. Note that you want to configure your own Gmail setting to allow unsecure apps first. 

@@ -18,11 +18,16 @@ export const fetchBPMFormList = (
   sortBy,
   sortOrder,
   formName,
+  formType,
   ...rest
 ) => {
   const done = rest.length ? rest[0] : () => {};
   return (dispatch) => {
     let url = `${API.FORM}?pageNo=${pageNo}&limit=${limit}&sortBy=${sortBy}&sortOrder=${sortOrder}`;
+    if(formType){
+      url += `&formType=${formType}`;
+    }
+
     if (formName) {
       url += `&formName=${formName}`;
     }
@@ -84,3 +89,15 @@ export const fetchFormByAlias = (path, ...rest) => {
       });
   };
 };
+
+
+
+
+export const fetchFormById = (id) => {
+  let token = UserService.getFormioToken() ? {"x-jwt-token": UserService.getFormioToken()} : {};
+  return httpGETRequest(`${API.GET_FORM_BY_ID}/${id}`, {}, "", false, {
+    ...token
+  });
+  
+};
+

@@ -11,6 +11,8 @@ import { Translation } from "react-i18next";
 import DateRangePicker from "@wojtekmaj/react-daterange-picker";
 import DropdownButton from "react-bootstrap/DropdownButton";
 import Dropdown from "react-bootstrap/Dropdown";
+import { toast } from "react-toastify";
+import DraftOperations from "./DraftOperations";
 
 let statusFilter, idFilter, nameFilter, modifiedDateFilter;
 
@@ -33,25 +35,6 @@ const linkDraftDetail = (cell, row, redirectUrl) => {
   );
 };
 
-const linkDraft = (cell, row, redirectUrl) => {
-  const url = `${redirectUrl}form/${row.formId}/draft/${row.id}/edit`;
-  const buttonText = <Translation>{(t) => t("Edit")}</Translation>;
-  const icon = "fa fa-edit";
-  return (
-    <Link to={url} style={{ textDecoration: "none" }}>
-      <div>
-        <span style={{ color: "blue", cursor: "pointer" }}>
-          <span>
-            <i className={icon} />
-            &nbsp;
-          </span>
-          {buttonText}
-        </span>
-      </div>
-    </Link>
-  );
-};
-
 function timeFormatter(cell) {
   const localdate = getLocalDateTime(cell);
   return <label title={cell}>{localdate}</label>;
@@ -66,8 +49,27 @@ const nameFormatter = (cell) => {
   );
 };
 const customStyle = { border: "1px solid #ced4da", fontStyle: "normal" };
+const styleForValidationFail = { border: "1px solid red" };
 
-export const columns = (lastModified, callback, t, redirectUrl) => {
+let draftNotified = false;
+const notifyValidationError = () => {
+  if (!draftNotified) {
+    toast.error("Invalid draft id");
+    draftNotified = true;
+  }
+};
+export const columns = (
+  lastModified,
+  callback,
+  t,
+  redirectUrl,
+  invalidFilters
+) => {
+  if (invalidFilters.DRAFT_ID) {
+    notifyValidationError();
+  } else {
+    draftNotified = false;
+  }
   return [
     {
       dataField: "id",
@@ -80,7 +82,7 @@ export const columns = (lastModified, callback, t, redirectUrl) => {
         placeholder: `\uf002 ${t("Draft Id")}`, // custom the input placeholder
         caseSensitive: false, // default is false, and true will only work when comparator is LIKE
         className: "icon-search",
-        style: customStyle,
+        style: invalidFilters.DRAFT_ID ? styleForValidationFail : customStyle,
         getFilter: (filter) => {
           idFilter = filter;
         },
@@ -109,7 +111,7 @@ export const columns = (lastModified, callback, t, redirectUrl) => {
     {
       dataField: "formUrl",
       text: <Translation>{(t) => t("Action")}</Translation>,
-      formatter: (cell, row) => linkDraft(cell, row, redirectUrl),
+      formatter: (cell,row) => <DraftOperations cell={cell} row={row}/>,
       headerStyle: () => {
         return { width: "20%" };
       },

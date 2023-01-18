@@ -1,0 +1,16 @@
+<html>
+<head>
+  <meta charset="utf-8">
+  {% block links %}
+  {% endblock %}
+  <script defer type="text/javascript">
+    form_info = {{ form | tojson }}
+  </script>
+</head>
+
+<body>
+    {% block content %}
+    {% endblock %}
+</body>
+
+</html>

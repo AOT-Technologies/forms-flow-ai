@@ -1,6 +1,6 @@
 # Form Management Platform
 
-![Formio](https://img.shields.io/badge/formio-2.4.1-blue)
+![Formio](https://img.shields.io/badge/formio-2.4.1-blue)  ![Formsflow-forms](https://img.shields.io/docker/v/formsflow/forms-flow-forms?label=formsflow-forms-latest-image)
 
 **formsflow.ai** leverages form.io to build "serverless" data management applications using a simple drag-and-drop form builder interface.
 
@@ -46,9 +46,11 @@ Not applicable.
 |`FORMIO_DB_NAME`|Mongo Database  Name. Used on installation to create the database.Choose your own||`formio`
 |`FORMIO_ROOT_EMAIL`|forms-flow-forms admin login|eg. admin@example.com|`admin@example.com`
 |`FORMIO_ROOT_PASSWORD`|forms-flow-forms admin password|eg.changeme|`changeme`
+|`FORMIO_CLIENT_UI`|To setup FORMIO client ui |true / false|`false`
 |`FORMIO_DEFAULT_PROJECT_URL`:triangular_flag_on_post:|forms-flow-forms default url||`http://{your-ip-address}:3001`
 |`FORMIO_JWT_SECRET`|forms-flow-forms jwt secret| |`--- change me now ---`
-
+|`FORMIO_CLIENT_UI`|To setup FORMIO client ui |true / false|`false`
+|`MULTI_TENANCY_ENABLED`|To enable multit tenancy |true / false|`false`
 **Additionally, you may want to change these**
 
 * The value of Mongo database details (especially if this instance is not just for testing purposes)

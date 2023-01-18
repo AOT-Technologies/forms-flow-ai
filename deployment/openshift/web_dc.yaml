@@ -46,7 +46,9 @@ objects:
             "REACT_APP_DRAFT_ENABLED":"${REACT_APP_DRAFT_ENABLED}",
             "REACT_APP_DRAFT_POLLING_RATE":"${REACT_APP_DRAFT_POLLING_RATE}",
             "REACT_APP_EXPORT_PDF_ENABLED":"${REACT_APP_EXPORT_PDF_ENABLED}",
-            "REACT_APP_DOCUMENT_SERVICE_URL":"${REACT_APP_DOCUMENT_SERVICE_URL}"
+            "REACT_APP_PUBLIC_WORKFLOW_ENABLED":"&{REACT_APP_PUBLIC_WORKFLOW_ENABLED}","
+            "REACT_APP_DOCUMENT_SERVICE_URL":"${REACT_APP_DOCUMENT_SERVICE_URL}",
+            "REACT_APP_OPENTELEMETRY_SERVICE":"${REACT_APP_OPENTELEMETRY_SERVICE}"
           }
 
   -
@@ -276,7 +278,15 @@ parameters:
     displayName: REACT_APP_EXPORT_PDF_ENABLED
     description: Wheather or not to show the Export pdf feature
     required: false
+  -name: REACT_APP_PUBLIC_WORKFLOW_ENABLED
+    displayName: REACT_APP_PUBLIC_WORKFLOW_ENABLED
+    description: Enable user to create public workflows
+    required: false
   -name: REACT_APP_DOCUMENT_SERVICE_URL
     displayName: REACT_APP_DOCUMENT_SERVICE_URL
     description: Document related services api url
+    required: false
+  -name: REACT_APP_OPENTELEMETRY_SERVICE
+    displayName: REACT_APP_OPENTELEMETRY_SERVICE
+    description: Opentelemetry services
     required: false

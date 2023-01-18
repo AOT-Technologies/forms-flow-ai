@@ -8,7 +8,7 @@ In the following document, we’ll describe the details of dependencies of vario
 
   | Component | Version|  
   | ---       | -----   |
-  |  Redash   | 10.1.0 |
+  |  Redash   | 10.1.4 |
 
 <br>
 
@@ -31,7 +31,7 @@ In the following document, we’ll describe the details of dependencies of vario
    | Component | Version|  
    | ---       | -----  |
    |  Camunda  |  7.17|
-   |  SpringBoot  | 2.6.4 |
+   |  SpringBoot  | 2.6.6 |
    | Postgres    | Latest |
   <br>
   
@@ -51,7 +51,7 @@ In the following document, we’ll describe the details of dependencies of vario
 
    | Component | Version|  
    | ---       | -----   |
-   | Keycloak   | 7.0  and above   |
+   | Keycloak  | 7.0  and above   |
    <br>
 
 #### NOTE
@@ -67,5 +67,5 @@ In the following document, we’ll describe the details of dependencies of vario
    | Component | Version |
    |  --- | --- |
    | React  | 17.0.2 |
-   |  Formio | 2.4.1 |
+   | Formio | 2.4.1 |
    <br>

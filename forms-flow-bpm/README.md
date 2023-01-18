@@ -1,7 +1,7 @@
 # Workflow Engine
 
 [![FormsFlow BPM CI](https://github.com/AOT-Technologies/forms-flow-ai-dev/actions/workflows/forms-flow-api-ci.yml/badge.svg?branch=develop)](https://github.com/AOT-Technologies/forms-flow-ai-dev/actions)
-![Camunda](https://img.shields.io/badge/Camunda-7.17.0-blue)  ![Spring Boot](https://img.shields.io/badge/Spring_Boot-2.6.4.RELEASE-blue)  ![postgres](https://img.shields.io/badge/postgres-latest-blue)  
+![Camunda](https://img.shields.io/badge/Camunda-7.17.0-blue)  ![Spring Boot](https://img.shields.io/badge/Spring_Boot-2.6.6.RELEASE-blue)  ![postgres](https://img.shields.io/badge/postgres-latest-blue)  
 **formsflow.ai** leverages Camunda for workflow and decision automation.
 
 To know more about Camunda, visit https://camunda.com/.
@@ -97,7 +97,12 @@ To know more about Camunda, visit https://camunda.com/.
  `MULTI_TENANCY_ENABLED`|Multi tenancy enabled flag for the environment||`true|false`
  `FORMSFLOW_ADMIN_URL`|Only needed if multi tenancy is enabled||`http://{your-ip-address}:5001/`
  `DATA_ANALYSIS_URL`|sentiment analysis url||`http://{your-ip-address}:6000/analysis`
-
+ `REDIS_HOST`|Redis hostname||`localhost`
+ `REDIS_PORT`|Redis portname||`6379`
+ `REDIS_PASSCODE`|Redis passcode||`changeme`
+ `REDIS_ENABLED`|Boolean flag to enable redis|`true`|`false`
+ `SESSION_COOKIE_SECURE`|Boolean flag to enable cookie secure flag||`true`
+ 
  #### Mail Configuration
  * Modify the file **mail-config.properties** (under forms-flow-bpm/src/main/resources/). The default settings provided are for the Gmail server, and you need to change the credentials at the bottom of the file. Note that you want to configure your own Gmail setting to allow unsecure apps first. 
  

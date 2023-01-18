@@ -34,6 +34,10 @@ class Application(
     submission_id = db.Column(db.String(100), nullable=True)
     latest_form_id = db.Column(db.String(100), nullable=False)
 
+    draft = db.relationship(
+        "Draft", backref=db.backref("Application", cascade="save-update, merge, delete")
+    )
+
     @classmethod
     def create_from_dict(cls, application_info: dict) -> Application:
         """Create new application."""
@@ -569,7 +573,7 @@ class Application(
         """Get application status w.r.t to mapper_id ordered by modified date."""
         result_proxy = (
             db.session.query(
-                FormProcessMapper.form_name,
+                FormProcessMapper.form_name.label("application_name"),
                 Application.application_status,
                 func.count(FormProcessMapper.form_name).label("count"),
             )

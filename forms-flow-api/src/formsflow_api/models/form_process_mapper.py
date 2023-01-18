@@ -14,7 +14,7 @@ from formsflow_api_utils.utils import (
 )
 from formsflow_api_utils.utils.enums import FormProcessMapperStatus
 from formsflow_api_utils.utils.user_context import UserContext, user_context
-from sqlalchemy import UniqueConstraint, and_, desc
+from sqlalchemy import UniqueConstraint, and_, desc, func
 from sqlalchemy.dialects.postgresql import JSON
 from sqlalchemy.sql.expression import text
 
@@ -29,6 +29,8 @@ class FormProcessMapper(AuditDateTimeMixin, AuditUserMixin, BaseModel, db.Model)
     id = db.Column(db.Integer, primary_key=True)
     form_id = db.Column(db.String(50), nullable=False)
     form_name = db.Column(db.String(100), nullable=False)
+    form_type = db.Column(db.String(20), nullable=False)
+    parent_form_id = db.Column(db.String(50), nullable=False)
     process_key = db.Column(db.String(50), nullable=True, default=DEFAULT_PROCESS_KEY)
     process_name = db.Column(
         db.String(100), nullable=True, default=DEFAULT_PROCESS_NAME
@@ -62,6 +64,8 @@ class FormProcessMapper(AuditDateTimeMixin, AuditUserMixin, BaseModel, db.Model)
                 mapper = FormProcessMapper()
                 mapper.form_id = mapper_info["form_id"]
                 mapper.form_name = mapper_info["form_name"]
+                mapper.form_type = mapper_info["form_type"]
+                mapper.parent_form_id = mapper_info["parent_form_id"]
                 mapper.process_key = mapper_info.get("process_key")
                 mapper.process_name = mapper_info.get("process_name")
                 mapper.status = mapper_info.get("status")
@@ -88,6 +92,7 @@ class FormProcessMapper(AuditDateTimeMixin, AuditUserMixin, BaseModel, db.Model)
             [
                 "form_id",
                 "form_name",
+                "form_type",
                 "form_revision_number",
                 "process_key",
                 "process_name",
@@ -157,6 +162,42 @@ class FormProcessMapper(AuditDateTimeMixin, AuditUserMixin, BaseModel, db.Model)
         if tenant_key is not None:
             active = active.filter(FormProcessMapper.tenant == tenant_key)
         return active
+
+    @classmethod
+    def find_all_forms(
+        cls,
+        page_number=None,
+        limit=None,
+        sort_by=None,
+        sort_order=None,
+        **filters,
+    ):  # pylint: disable=too-many-arguments
+        """Fetch all active and inactive forms which are not deleted."""
+        # Get latest row for each form_id group
+        filtered_form_query = (
+            db.session.query(func.max(cls.id).label("id")).group_by(cls.form_id).all()
+        )
+        filtered_form_ids = [data.id for data in filtered_form_query]
+        query = cls.filter_conditions(**filters)
+        query = query.filter(
+            and_(FormProcessMapper.deleted.is_(False)),
+            FormProcessMapper.id.in_(filtered_form_ids),
+        )
+        query = cls.tenant_authorization(query=query)
+        sort_by, sort_order = validate_sort_order_and_order_by(sort_by, sort_order)
+        if sort_by and sort_order:
+            query = query.order_by(text(f"form_process_mapper.{sort_by} {sort_order}"))
+
+        total_count = query.count()
+        query = query.with_entities(
+            cls.id,
+            cls.process_key,
+            cls.form_id,
+            cls.form_name,
+        )
+        limit = total_count if limit is None else limit
+        query = query.paginate(page_number, limit)
+        return query.items, total_count
 
     @classmethod
     def find_all_active(

@@ -119,7 +119,10 @@ const Dashboard = React.memo(() => {
   };
   // Function to handle page limit change for submission data
   const handleLimitChange = (limit) => {
-    setSelectedLimitValue(limit);
+    const newPageNumber = Math.ceil(totalItems / limit);
+    if(newPageNumber < activePage){
+    dispatch(setMetricsSubmissionPageChange(newPageNumber));
+    }
     dispatch(setMetricsSubmissionLimitChange(limit));
   };
   // Function to handle pageination page change for submission data
@@ -127,7 +130,7 @@ const Dashboard = React.memo(() => {
     dispatch(setMetricsSubmissionPageChange(pageNumber));
   };
   const getFormattedDate = (date) => {
-    return moment.utc(date).format("YYYY-MM-DDTHH:mm:ssZ").replace("+", "%2B");
+    return moment.utc(date).format("YYYY-MM-DDTHH:mm:ssZ").replace(/\+/g, "%2B");
   };
   useEffect(() => {
     const fromDate = getFormattedDate(dateRange[0]);
@@ -143,7 +146,7 @@ const Dashboard = React.memo(() => {
   }, [submissionsList]);
 
   const onChangeInput = (option) => {
-    dispatch(setMetricsSubmissionLimitChange(6));
+    dispatch(setMetricsSubmissionLimitChange(limit));
     setSearchBy(option);
   };
   if (isMetricsLoading) {
@@ -168,7 +171,8 @@ const Dashboard = React.memo(() => {
   };
 
   const onSetDateRange = (date) => {
-    dispatch(setMetricsSubmissionLimitChange(6));
+    dispatch(setMetricsSubmissionLimitChange(limit));
+    dispatch(setMetricsSubmissionPageChange(1));
     dispatch(setMetricsDateRangeLoading(true));
     dispatch(setMetricsDateChange(date));
   };
@@ -220,7 +224,7 @@ const Dashboard = React.memo(() => {
                       <select
                         onChange={(e) => onChangeInput(e.target.value)}
                         className="date-select mx-5 mb-3"
-                        title="choose any"
+                        title={t("Choose any")}
                         aria-label="Select date type"
                       >
                         <option className="date-select" value="created">
@@ -257,14 +261,14 @@ const Dashboard = React.memo(() => {
                         }}>
                         <i
                           className="fa fa-long-arrow-up fa-lg mt-2 fa-lg-hover"
-                          title="Sort by form name"
+                          title={t("Sort by form name")}
                           style={{
                             opacity: `${sortOrder === "asc" ? 1 : 0.5}`,
                           }}
                         />
                         <i
                           className="fa fa-long-arrow-down fa-lg mt-2 ml-1 fa-lg-hover"
-                          title="Sort by form name"
+                          title={t("Sort by form name")}
                           style={{
                             opacity: `${sortOrder === "desc" ? 1 : 0.5}`,
                           }}

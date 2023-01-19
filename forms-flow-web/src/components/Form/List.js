@@ -217,9 +217,9 @@ const List = React.memo((props) => {
   };
   const onClear = () => {
     setSearchTextInput("");
-    searchInputBox.current.value = "";
+    dispatch(setBpmFormSearch(''));
+    dispatch(setBPMFormLimit(5));
     setShowClearButton(false);
-    handleSearch();
   };
   useEffect(() => {
     const updatedQuery = isAscend ? "asc" : "desc";

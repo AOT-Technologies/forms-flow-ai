@@ -20,7 +20,10 @@ from formsflow_api.schemas.form_process_mapper import (
     FormProcessMapperSchema,
 )
 from formsflow_api.schemas.keycloak_groups import KeycloakDashboardGroupSchema
-from formsflow_api.schemas.user import UserlocaleReqSchema
+from formsflow_api.schemas.user import (
+    UserlocaleReqSchema,
+    UserPermissionUpdateSchema,
+)
 
 from .form_history_logs import FormHistorySchema
 from .process import ProcessListSchema

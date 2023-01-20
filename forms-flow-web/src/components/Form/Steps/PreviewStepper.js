@@ -32,7 +32,8 @@ const Preview = React.memo(
 
     const copyPublicUrl = () => {
       const hostName = window.location.host;
-      const url = `${hostName}/public/form/${formData.form.path}`;
+      const protocol = window.location.protocol;
+      const url = `${protocol}//${hostName}/public/form/${formData.form.path}`;
 
       copyText(url).then(()=>{
         setCopied(() => {

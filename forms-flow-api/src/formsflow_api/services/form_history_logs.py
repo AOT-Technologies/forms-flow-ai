@@ -35,6 +35,10 @@ class FormHistoryService:
             form_io_token = formio_service.get_formio_access_token()
             response = formio_service.create_form(data, form_io_token)
             user_name = (user.user_name,)
+            version_details= {}
+            if data.get("saveAsNewVersion") is True:
+                version_count = FormHistory.get_version_count(parent_form_id)
+                version_details["version"] = "v"+ str(version_count+1)
             form_history_data = {
                 "form_id": form_id,
                 "parent_form_id": parent_form_id or form_id,
@@ -43,6 +47,7 @@ class FormHistoryService:
                 "change_log": {
                     "cloned_form_id": response.get("_id"),
                     "new_version": data.get("saveAsNewVersion") or False,
+                    **version_details
                 },
             }
             history_schema = FormHistorySchema()

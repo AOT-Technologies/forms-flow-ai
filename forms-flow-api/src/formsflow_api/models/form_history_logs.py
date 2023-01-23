@@ -66,3 +66,18 @@ class FormHistory(ApplicationAuditDateTimeMixin, BaseModel, db.Model):
                 text("CAST(change_log->>'new_version' AS BOOLEAN) = true"),
             )
         ).count()
+
+    @classmethod
+    def get_latest_version(cls, parent_form_id):
+        """Get latest version number"""
+        return (
+            cls.query.filter(
+                and_(
+                    cls.parent_form_id == parent_form_id,
+                    cls.component_change.is_(True),
+                    text("CAST(change_log->>'new_version' AS BOOLEAN) = true"),
+                )
+            )
+            .order_by(desc(FormHistory.id))
+            .first()
+        )

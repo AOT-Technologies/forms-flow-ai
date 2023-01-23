@@ -17,42 +17,45 @@ class FormHistoryService:
     @staticmethod
     @user_context
     def create_form_log_with_clone(data, **kwargs):
-        """Create form history.
-
-        If the component changed then we can create a clone.
-        """
+        """Create form history If the component changed then we can create a clone."""
         user: UserContext = kwargs["user"]
         assert data is not None
         if data.get("componentChanged") is True:
             form_id = data.get("_id")
             parent_form_id = data.get("parentFormId")
+            # Delete id and machineName form form data
             data.pop("_id", None)
             data.pop("machineName", None)
+            # changing path name and form name and changing title
             name_and_path = f"{data.get('path')}-v-{uuid1().hex}"
             data["path"] = name_and_path
             data["name"] = name_and_path
+            data["title"] += "-clone"
+            # Get formio access token
             formio_service = FormioService()
             form_io_token = formio_service.get_formio_access_token()
             response = formio_service.create_form(data, form_io_token)
-            user_name = (user.user_name,)
-            version_details= {}
-            if data.get("saveAsNewVersion") is True:
-                version_count = FormHistory.get_version_count(parent_form_id)
-                version_details["version"] = "v"+ str(version_count+1)
+            # Version details is used set version number
+            version_data_schema = FormHistorySchema()
+            if data.get("newVersion") is True:
+                version_number = "v" + str( FormHistory.get_version_count(parent_form_id) + 1)
+            else:
+                version_data = version_data_schema.dump(FormHistory.get_latest_version(parent_form_id))
+                version_number = version_data["changeLog"]["version"]
+            # Form history data to save into form history table
             form_history_data = {
                 "form_id": form_id,
                 "parent_form_id": parent_form_id or form_id,
-                "created_by": user_name,
+                "created_by": user.user_name,
                 "component_change": True,
                 "change_log": {
                     "cloned_form_id": response.get("_id"),
-                    "new_version": data.get("saveAsNewVersion") or False,
-                    **version_details
+                    "new_version": data.get("newVersion") or False,
+                    "version": version_number,
                 },
             }
-            history_schema = FormHistorySchema()
             create_form_history = FormHistory.create_history(form_history_data)
-            return history_schema.dump(create_form_history)
+            return version_data_schema.dump(create_form_history)
         return None
 
     @staticmethod
@@ -78,7 +81,6 @@ class FormHistoryService:
         if data.get("titleChanged") is True:
             form_logs_data["title"] = True
             form_logs_data["change_log"]["form_name"] = data.get("formName")
-
         if len(form_logs_data) > 1:
             form_logs_data["created_by"] = user_name
             form_logs_data["form_id"] = data.get("formId")

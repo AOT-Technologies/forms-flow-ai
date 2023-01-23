@@ -292,7 +292,7 @@ const Edit = React.memo(() => {
     await formUpdate(oldFormData._id,oldFormData);
     const previousformId = newFormData._id;
     newFormData.componentChanged = true;
-    newFormData.saveAsNewVersion = true;
+    newFormData.newVersion = true;
     newFormData.parentFormId = prviousData.parentFormId;
     delete newFormData.machineName;
     delete newFormData._id;

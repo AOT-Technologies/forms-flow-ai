@@ -58,7 +58,7 @@ class FormHistory(ApplicationAuditDateTimeMixin, BaseModel, db.Model):
 
     @classmethod
     def get_version_count(cls, parent_form_id):
-        """Get count of form versions"""
+        """Get count of form versions."""
         return cls.query.filter(
             and_(
                 cls.parent_form_id == parent_form_id,
@@ -69,7 +69,7 @@ class FormHistory(ApplicationAuditDateTimeMixin, BaseModel, db.Model):
 
     @classmethod
     def get_latest_version(cls, parent_form_id):
-        """Get latest version number"""
+        """Get latest version number."""
         return (
             cls.query.filter(
                 and_(

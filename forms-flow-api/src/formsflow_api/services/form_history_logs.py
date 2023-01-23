@@ -38,10 +38,17 @@ class FormHistoryService:
             # Version details is used set version number
             version_data_schema = FormHistorySchema()
             if data.get("newVersion") is True:
-                version_number = "v" + str( FormHistory.get_version_count(parent_form_id) + 1)
+                version_number = "v" + str(
+                    FormHistory.get_version_count(parent_form_id) + 1
+                )
             else:
-                version_data = version_data_schema.dump(FormHistory.get_latest_version(parent_form_id))
-                version_number = version_data["changeLog"]["version"]
+                version_data = version_data_schema.dump(
+                    FormHistory.get_latest_version(parent_form_id)
+                )
+                version_number = (
+                    version_data.get("changeLog")
+                    and version_data.get("changeLog").get("version")
+                ) or None
             # Form history data to save into form history table
             form_history_data = {
                 "form_id": form_id,

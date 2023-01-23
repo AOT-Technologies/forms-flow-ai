@@ -26,6 +26,7 @@ class FormHistoryService:
             # Delete id and machineName form form data
             data.pop("_id", None)
             data.pop("machineName", None)
+            data.pop("parentFormId", None)
             # changing path name and form name and changing title
             name_and_path = f"{data.get('path')}-v-{uuid1().hex}"
             data["path"] = name_and_path

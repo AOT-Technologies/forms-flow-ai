@@ -291,6 +291,7 @@ const List = React.memo((props) => {
               newFormData.access = formAccess;
               newFormData.submissionAccess = submissionAccess;
               newFormData.componentChanged = true;
+              newFormData.newVersion = true;
               formCreate(newFormData)
                 .then((res) => {
                   const { data } = res;
@@ -387,6 +388,7 @@ const List = React.memo((props) => {
                               );
                             } else if (!mapperData) {
                               newFormData.componentChanged = true;
+                              newFormData.newVersion = true;
                               newFormData.path += "-" + Date.now();
                               newFormData.name += "-" + Date.now();
                               formCreate(newFormData)

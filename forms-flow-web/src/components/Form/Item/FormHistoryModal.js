@@ -126,7 +126,15 @@ const FormHistoryModal = ({ historyModal, handleModalChange, gotoEdit }) => {
                             : t("Modified On")}
                         </span>
                         <p className="mb-0">{getLocalDateTime(history.created)}</p>
-                        <span className="text-primary">{history.changeLog.new_version && t(`${history.changeLog.version ? "Version " + history.changeLog.version + " created" : "New version created"}`)}</span>
+                        {
+                          formHistory.length > 1 && (
+                            <span className="text-primary">{
+                              history.changeLog?.new_version ? 
+                              t(history.changeLog?.version ? `Version ${history.changeLog.version} created` : "New Version created") : 
+                              t(history.changeLog.version ? `Version ${history.changeLog.version}` : "")}
+                              </span>
+                          )
+                        }
                       </div>
                       <div>
                         <span className="d-block text-muted">{t("Action")}</span>

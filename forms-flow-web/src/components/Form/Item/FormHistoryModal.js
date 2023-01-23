@@ -17,7 +17,7 @@ const FormHistoryModal = ({ historyModal, handleModalChange, gotoEdit }) => {
   const historyRef = useRef(null);
    
   useEffect(() => {
-    setSliceFormHistory(formHistory.slice(0, showCount));
+    setSliceFormHistory(formHistory?.slice(0, showCount));
   },[showCount,formHistory]);
 
  
@@ -109,10 +109,10 @@ const FormHistoryModal = ({ historyModal, handleModalChange, gotoEdit }) => {
                         </span>
                         <p className="mb-0">{getLocalDateTime(history.created)}</p>
                         {
-                          formHistory.length > 1 && (
+                          formHistory.length - 1 !== index && (
                             <span className="text-primary">{
                               history.changeLog?.new_version ? 
-                              t(history.changeLog?.version ? `Version ${history.changeLog.version} created` : "New Version created") : 
+                              t(history.changeLog?.version ? `Version ${history.changeLog.version} created` : "New version created") : 
                               t(history.changeLog.version ? `Version ${history.changeLog.version}` : "")}
                               </span>
                           )

@@ -34,7 +34,7 @@ const Preview = ({handleNext, hideComponents, activeStep}) => {
   const redirectUrl = MULTITENANCY_ENABLED ? `/tenant/${tenantKey}/` : "/";
   const submissionAccess = useSelector((state) => state.user?.submissionAccess || []) ;
   const formAccess = useSelector((state) => state.user?.formAccess || []) ;
-  const {form, isActive: isFormActive, errors} = useSelector(state => state.form);
+  const {form, isActive: isFormActive, errors} = useSelector(state => state.form || {});
   const tenantKey = useSelector((state) => state.tenants?.tenantId);
   const lang = useSelector(state => state.user.lang);
   const formProcessList = useSelector(state => state.process?.formProcessList);
@@ -148,7 +148,7 @@ const Preview = ({handleNext, hideComponents, activeStep}) => {
         <h3 className="task-head">
           {" "}
           <i className="fa fa-wpforms" aria-hidden="true" /> &nbsp;{" "}
-          {form.title}
+          {form?.title}
         </h3>
 
         <div>

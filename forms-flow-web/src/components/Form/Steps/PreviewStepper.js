@@ -6,7 +6,7 @@ import Card from "@material-ui/core/Card";
 import CardContent from "@material-ui/core/CardContent";
 import TextField from "@material-ui/core/TextField";
 import { useSelector } from "react-redux";
-import {  useTranslation } from "react-i18next";
+import { useTranslation } from "react-i18next";
 import SaveNext from "./SaveNext";
 import { copyText } from "../../../apiManager/services/formatterService";
 
@@ -28,21 +28,20 @@ const Preview = React.memo(
       (state) => state.process.formProcessList
     );
     //  taking the url and make the copy button
-     
+
 
     const copyPublicUrl = () => {
-      const hostName = window.location.host;
-      const protocol = window.location.protocol;
-      const url = `${protocol}//${hostName}/public/form/${formData.form.path}`;
+      const originUrl = window.origin;
+      const url = `${originUrl}/public/form/${formData.form.path}`;
 
-      copyText(url).then(()=>{
+      copyText(url).then(() => {
         setCopied(() => {
           setTimeout(() => {
             setCopied(false);
           }, 3000);
           return true;
         });
-      }).catch((err)=>{
+      }).catch((err) => {
         console.error(err);
       });
 
@@ -100,14 +99,13 @@ const Preview = React.memo(
                         data-toggle="tooltip"
                         data-placement="top"
                         title={
-                          copied ? 
-                             (t("URL copied"))
-                           : 
-                             (t("Click Here to Copy"))
-                            }
-                        className={`coursor-pointer btn ${
-                          copied ? "text-success" : "text-primary"
-                        }`}
+                          copied ?
+                            (t("URL copied"))
+                            :
+                            (t("Click Here to Copy"))
+                        }
+                        className={`coursor-pointer btn ${copied ? "text-success" : "text-primary"
+                          }`}
                         onClick={() => {
                           copyPublicUrl();
                         }}

@@ -55,7 +55,7 @@ import filterFactory from "react-bootstrap-table2-filter";
 import overlayFactory from "react-bootstrap-table2-overlay";
 import { SpinnerSVG } from "../../containers/SpinnerSVG";
 import { getFormattedForm, INACTIVE } from "./constants/formListConstants";
- 
+
 
 const List = React.memo((props) => {
   const { t } = useTranslation();
@@ -99,7 +99,7 @@ const List = React.memo((props) => {
   const sortOrder = useSelector((state) => state.bpmForms.sortOrder);
   const formCheckList = useSelector((state) => state.formCheckList.formList);
   const columns = isDesigner ? designerColums(t) : userColumns(t);
- 
+
   const formAccess = useSelector((state) => state.user?.formAccess || []);
 
   const submissionAccess = useSelector(
@@ -151,7 +151,7 @@ const List = React.memo((props) => {
     searchText,
     formType
   ]);
- 
+
 
   const formCheck = (formCheckList) => {
     const result = formCheckList.reduce(function (obj, v) {
@@ -162,14 +162,12 @@ const List = React.memo((props) => {
     let response = "";
 
     if (result.resource) {
-      response = `${result.resource} ${
-        result.resource == 1 ? t("Resource") : t("Resources")
-      }`;
+      response = `${result.resource} ${result.resource == 1 ? t("Resource") : t("Resources")
+        }`;
     }
     if (result.form) {
-      response += `${result.resource ? " ," : ""} ${result.form} ${
-        result.form == 1 ? t("Form") : t("Forms")
-      }`;
+      response += `${result.resource ? " ," : ""} ${result.form} ${result.form == 1 ? t("Form") : t("Forms")
+        }`;
     }
     return toast.success(`${response} ${t("Downloaded Successfully")}`);
   };
@@ -302,24 +300,24 @@ const List = React.memo((props) => {
                   dispatch(
                     fetchFormByAlias(newFormData.path, async (err, formObj) => {
                       if (!err) {
-                      
+
                         dispatch(
                           // eslint-disable-next-line no-unused-vars
                           getFormProcesses(formObj._id, (err, mapperData) => {
                             // just update form
                             if (mapperData) {
-                               dispatch(
+                              dispatch(
                                 getApplicationCount(mapperData.id, (error, applicationCount) => {
                                   if (!error) {
                                     newFormData._id = formObj._id;
                                     newFormData.access = formObj.access;
                                     newFormData.submissionAccess =
-                                    newFormData.access = formObj.submissionAccess;
-                                    newFormData.componentChanged = 
-                                    (!_isEquial(newFormData.components,formObj.components) ||
-                                    newFormData.display !== formObj.display ||
-                                    newFormData.type !== formObj.type
-                                    ); 
+                                      newFormData.access = formObj.submissionAccess;
+                                    newFormData.componentChanged =
+                                      (!_isEquial(newFormData.components, formObj.components) ||
+                                        newFormData.display !== formObj.display ||
+                                        newFormData.type !== formObj.type
+                                      );
                                     newFormData.parentFormId = mapperData.parentFormId;
                                     formUpdate(newFormData._id, newFormData)
                                       .then((formupdated) => {
@@ -357,7 +355,7 @@ const List = React.memo((props) => {
                                         if (isMapperNeed === "new") {
                                           data["version"] = String(
                                             +mapperData.version + 1
-                                          ); 
+                                          );
                                           dispatch(
                                             saveFormProcessMapperPost(data)
                                           );
@@ -366,7 +364,6 @@ const List = React.memo((props) => {
                                             saveFormProcessMapperPut(data)
                                           );
                                         }
-                                        toast.success(t("Form Sucessfully uploaded"));
                                         fetchForms();
                                         dispatch(updateFormUploadCounter());
                                         resolve();
@@ -431,10 +428,10 @@ const List = React.memo((props) => {
     FileService.uploadFile(evt, async (fileContent) => {
       let formToUpload;
       if ("forms" in fileContent) {
-         formToUpload = fileContent;
+        formToUpload = fileContent;
       }
       else {
-        ['_id','type', 'created', 'modified', 'machineName'].forEach(e => delete fileContent[e]);
+        ['_id', 'type', 'created', 'modified', 'machineName'].forEach(e => delete fileContent[e]);
         const newArray = [];
         newArray.push(fileContent);
         formToUpload = { "forms": newArray };
@@ -470,7 +467,7 @@ const List = React.memo((props) => {
     );
   };
   const formData = (() => bpmForms.forms)() || [];
-  
+
   return (
     <>
       <FileModal
@@ -478,7 +475,7 @@ const List = React.memo((props) => {
         onClose={() => setShowFormUploadModal(false)}
       />
       {(forms.isActive || designerFormLoading || isBPMFormListLoading) &&
-      !searchFormLoading ? (
+        !searchFormLoading ? (
         <div data-testid="Form-list-component-loader">
           <Loading />
         </div>
@@ -489,19 +486,16 @@ const List = React.memo((props) => {
             message={
               formProcessData.id && applicationCount
                 ? applicationCountResponse
-                  ? `${applicationCount} ${
-                      applicationCount > 1
-                        ? `${t("Applications are submitted against")}`
-                        : `${t("Application is submitted against")}`
-                    } "${props.formName}". ${t(
-                      "Are you sure you wish to delete the form?"
-                    )}`
-                  : `${t("Are you sure you wish to delete the form ")} "${
-                      props.formName
-                    }"?`
-                : `${t("Are you sure you wish to delete the form ")} "${
-                    props.formName
+                  ? `${applicationCount} ${applicationCount > 1
+                    ? `${t("Applications are submitted against")}`
+                    : `${t("Application is submitted against")}`
+                  } "${props.formName}". ${t(
+                    "Are you sure you wish to delete the form?"
+                  )}`
+                  : `${t("Are you sure you wish to delete the form ")} "${props.formName
                   }"?`
+                : `${t("Are you sure you wish to delete the form ")} "${props.formName
+                }"?`
             }
             onNo={() => onNo()}
             onYes={(e) => {
@@ -593,20 +587,18 @@ const List = React.memo((props) => {
                       className="fa fa-long-arrow-up fa-lg mt-2 fa-lg-hover"
                       title={t("Sort by form name")}
                       style={{
-                        opacity: `${
-                          sortOrder === "asc" || sortOrder === "title" ? 1 : 0.5
-                        }`,
+                        opacity: `${sortOrder === "asc" || sortOrder === "title" ? 1 : 0.5
+                          }`,
                       }}
                     />
                     <i
                       className="fa fa-long-arrow-down fa-lg mt-2 ml-1 fa-lg-hover"
                       title={t("Sort by form name")}
                       style={{
-                        opacity: `${
-                          sortOrder === "desc" || sortOrder === "-title"
+                        opacity: `${sortOrder === "desc" || sortOrder === "-title"
                             ? 1
                             : 0.5
-                        }`,
+                          }`,
                       }}
                     />
                   </span>
@@ -706,11 +698,10 @@ const List = React.memo((props) => {
                             overlay: (base) => ({
                               ...base,
                               background: "rgba(255, 255, 255)",
-                              height: `${
-                                   limit > 5
+                              height: `${limit > 5
                                   ? "100% !important"
                                   : "350px !important"
-                              }`,
+                                }`,
                               top: "65px",
                             }),
                           },

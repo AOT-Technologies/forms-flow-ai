@@ -1,19 +1,17 @@
 package org.camunda.bpm.extension.hooks.rest.impl;
 
-import org.camunda.bpm.engine.rest.dto.repository.ProcessDefinitionDiagramDto;
-import org.camunda.bpm.engine.rest.dto.repository.ProcessDefinitionDto;
-import org.camunda.bpm.engine.rest.dto.runtime.ProcessInstanceDto;
+import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.camunda.bpm.engine.rest.dto.runtime.StartProcessInstanceDto;
 import org.camunda.bpm.extension.hooks.rest.ProcessDefinitionRestResource;
-import org.springframework.hateoas.EntityModel;
+import org.bpm.utils.dto.ProcessInstanceDto;
+import org.bpm.utils.dto.ProcessDefinitionDiagramDto;
+import org.bpm.utils.dto.ProcessDefinitionDto;
 
 import javax.ws.rs.core.UriInfo;
 import java.util.List;
 import java.util.logging.Logger;
 import java.util.stream.Collectors;
-
-import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
-import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
 
 
 public class ProcessDefinitionRestResourceImpl implements ProcessDefinitionRestResource {
@@ -22,13 +20,17 @@ public class ProcessDefinitionRestResourceImpl implements ProcessDefinitionRestR
 
     private final org.camunda.bpm.engine.rest.ProcessDefinitionRestService restService;
 
+    private ObjectMapper bpmObjectMapper = new ObjectMapper();
+
     public ProcessDefinitionRestResourceImpl(org.camunda.bpm.engine.rest.ProcessDefinitionRestService processEngineRestService) {
         restService = processEngineRestService;
     }
 
     @Override
     public List<ProcessDefinitionDto> getProcessDefinitions(UriInfo uriInfo, Integer firstResult, Integer maxResults) {
-        List<ProcessDefinitionDto> response = restService.getProcessDefinitions(uriInfo, firstResult, maxResults);
+        List<ProcessDefinitionDto> response = bpmObjectMapper.convertValue(
+                restService.getProcessDefinitions(uriInfo, firstResult, maxResults),
+                new TypeReference<List<ProcessDefinitionDto>>(){});
         if (uriInfo.getQueryParameters() != null && uriInfo.getQueryParameters().containsKey("excludeInternal")) {
             response = response.stream()
                     .filter(processDefinitionDto -> processDefinitionDto.getName() != null
@@ -39,34 +41,41 @@ public class ProcessDefinitionRestResourceImpl implements ProcessDefinitionRestR
     }
 
     @Override
-    public EntityModel<ProcessDefinitionDto> getProcessDefinition(String key) {
-        ProcessDefinitionDto dto = restService.getProcessDefinitionByKey(key).getProcessDefinition();
-        return EntityModel.of(dto, linkTo(methodOn(ProcessDefinitionRestResourceImpl.class).getProcessDefinition(key)).withSelfRel());
+    public ProcessDefinitionDto getProcessDefinition(String key) {
+        ProcessDefinitionDto dto = bpmObjectMapper.convertValue(
+                restService.getProcessDefinitionByKey(key).getProcessDefinition(), ProcessDefinitionDto.class);
+        return dto;
     }
 
     @Override
-    public EntityModel<ProcessDefinitionDiagramDto> getProcessDefinitionBpmn20Xml(String tenantId, String key) {
+    public ProcessDefinitionDiagramDto getProcessDefinitionBpmn20Xml(String tenantId, String key) {
         ProcessDefinitionDiagramDto dto;
         if (tenantId!= null){
-            dto =  restService.getProcessDefinitionByKeyAndTenantId(key, tenantId).getProcessDefinitionBpmn20Xml();
+            dto =  bpmObjectMapper.convertValue(
+                    restService.getProcessDefinitionByKeyAndTenantId(key, tenantId).getProcessDefinitionBpmn20Xml(),
+                    ProcessDefinitionDiagramDto.class);
         }
         else{
-            dto =  restService.getProcessDefinitionByKey(key).getProcessDefinitionBpmn20Xml();
+            dto =  bpmObjectMapper.convertValue(
+                    restService.getProcessDefinitionByKey(key).getProcessDefinitionBpmn20Xml(),
+                    ProcessDefinitionDiagramDto.class);
         }
-
-        return EntityModel.of(dto, linkTo(methodOn(ProcessDefinitionRestResourceImpl.class).getProcessDefinitionBpmn20Xml(tenantId, key)).withSelfRel());
+        return dto;
     }
 
     @Override
-    public EntityModel<ProcessInstanceDto> startProcessInstanceByKey(UriInfo context, StartProcessInstanceDto parameters, String key, String tenantId) {
+    public ProcessInstanceDto startProcessInstanceByKey(UriInfo context, StartProcessInstanceDto parameters, String key, String tenantId) {
         ProcessInstanceDto processInstanceDto;
         if (tenantId!= null){
-            processInstanceDto = restService.getProcessDefinitionByKeyAndTenantId(key, tenantId).startProcessInstance(context, parameters);
+            processInstanceDto = bpmObjectMapper.convertValue(
+                    restService.getProcessDefinitionByKeyAndTenantId(key, tenantId).startProcessInstance(context, parameters),
+                    ProcessInstanceDto.class);
         }
         else{
-            processInstanceDto = restService.getProcessDefinitionByKey(key).startProcessInstance(context, parameters);
+            processInstanceDto = bpmObjectMapper.convertValue(
+                    restService.getProcessDefinitionByKey(key).startProcessInstance(context, parameters),
+                    ProcessInstanceDto.class);
         }
-        return EntityModel.of(processInstanceDto,
-                linkTo(methodOn(ProcessDefinitionRestResourceImpl.class).startProcessInstanceByKey(context, parameters, key, tenantId)).withSelfRel());
+        return processInstanceDto;
     }
 }

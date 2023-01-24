@@ -64,16 +64,19 @@ public class ProcessDefinitionRestResourceImpl implements ProcessDefinitionRestR
     }
 
     @Override
-    public ProcessInstanceDto startProcessInstanceByKey(UriInfo context, StartProcessInstanceDto parameters, String key, String tenantId) {
+    public ProcessInstanceDto startProcessInstanceByKey(
+            UriInfo context, org.bpm.utils.dto.StartProcessInstanceDto parameters, String key, String tenantId) {
         ProcessInstanceDto processInstanceDto;
+        StartProcessInstanceDto params = bpmObjectMapper.convertValue(
+                parameters, StartProcessInstanceDto.class);
         if (tenantId!= null){
             processInstanceDto = bpmObjectMapper.convertValue(
-                    restService.getProcessDefinitionByKeyAndTenantId(key, tenantId).startProcessInstance(context, parameters),
+                    restService.getProcessDefinitionByKeyAndTenantId(key, tenantId).startProcessInstance(context, params),
                     ProcessInstanceDto.class);
         }
         else{
             processInstanceDto = bpmObjectMapper.convertValue(
-                    restService.getProcessDefinitionByKey(key).startProcessInstance(context, parameters),
+                    restService.getProcessDefinitionByKey(key).startProcessInstance(context, params),
                     ProcessInstanceDto.class);
         }
         return processInstanceDto;

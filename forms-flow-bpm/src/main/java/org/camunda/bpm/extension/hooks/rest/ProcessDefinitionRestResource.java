@@ -1,9 +1,9 @@
 package org.camunda.bpm.extension.hooks.rest;
 
-import org.camunda.bpm.engine.rest.dto.runtime.StartProcessInstanceDto;
 import org.bpm.utils.dto.ProcessDefinitionDiagramDto;
 import org.bpm.utils.dto.ProcessInstanceDto;
 import org.bpm.utils.dto.ProcessDefinitionDto;
+import org.bpm.utils.dto.StartProcessInstanceDto;
 
 import javax.ws.rs.Consumes;
 import javax.ws.rs.Path;

@@ -29,7 +29,7 @@ import CreateTemplateConfirmModal from "./CreateTemplateConfirmModal";
 const Preview = ({handleNext, hideComponents, activeStep}) => {
   const dispatch = useDispatch();
   const [newpublishClicked, setNewpublishClicked] = useState(false);
-  const [confirmPublisModal, setConfirmPublisModal] = useState(false);
+  const [confirmPublishModal, setConfirmPublishModal] = useState(false);
   const [historyModal, setHistoryModal] = useState(false);
   const redirectUrl = MULTITENANCY_ENABLED ? `/tenant/${tenantKey}/` : "/";
   const submissionAccess = useSelector((state) => state.user?.submissionAccess || []) ;
@@ -44,7 +44,7 @@ const Preview = ({handleNext, hideComponents, activeStep}) => {
   };
 
   const publishConfirmModalChange = ()=> {
-    setConfirmPublisModal(!confirmPublisModal);
+    setConfirmPublishModal(!confirmPublishModal);
   };
  
   useEffect(()=>{
@@ -62,7 +62,7 @@ const Preview = ({handleNext, hideComponents, activeStep}) => {
 
   const handlePublishAsNewVersion = ()=>{
     setNewpublishClicked(true);
-    setConfirmPublisModal(!confirmPublisModal);
+    setConfirmPublishModal(!confirmPublishModal);
 
 
     const newFormData = manipulatingFormData(
@@ -194,7 +194,7 @@ const Preview = ({handleNext, hideComponents, activeStep}) => {
         </div>
       </div>
 
-      <CreateTemplateConfirmModal modalOpen={confirmPublisModal}
+      <CreateTemplateConfirmModal modalOpen={confirmPublishModal}
       handleModalChange={publishConfirmModalChange}
       onConfirm = {handlePublishAsNewVersion}
       />

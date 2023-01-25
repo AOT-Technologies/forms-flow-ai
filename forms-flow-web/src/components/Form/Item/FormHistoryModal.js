@@ -2,44 +2,25 @@ import React, { useEffect, useRef, useState } from "react";
 import { Modal } from "react-bootstrap";
 import { useDispatch, useSelector } from "react-redux";
 import {
-  setFormHistories,
   setRestoreFormId,
 } from "../../../actions/formActions";
 import { getLocalDateTime } from "../../../apiManager/services/formatterService";
-import { getFormHistory } from "../../../apiManager/services/FormServices";
 import Loading from "../../../containers/Loading";
 import { useTranslation } from "react-i18next";
 
 const FormHistoryModal = ({ historyModal, handleModalChange, gotoEdit }) => {
   const { t } = useTranslation();
   const dispatch = useDispatch();
-  const [showCount, setShowCount] = useState(3);
-  const [isLoading, setLoading] = useState(false);
-  const processData = useSelector((state) => state.process?.formProcessList);
+  const [showCount, setShowCount] = useState(3); 
   const formHistory = useSelector((state) => state.formRestore?.formHistory);
   const [sliceFormHistory, setSliceFormHistory] = useState([]);
   const historyRef = useRef(null);
    
   useEffect(() => {
-    setSliceFormHistory(formHistory.slice(0, showCount));
+    setSliceFormHistory(formHistory?.slice(0, showCount));
   },[showCount,formHistory]);
 
-  useEffect(() => {
-    if (historyModal) {
-      setLoading(true);
-      getFormHistory(processData.parentFormId)
-        .then((res) => {
-          const historyLength = res.data?.length;
-          setShowCount(historyLength <= 3 ? historyLength : 3);
-          dispatch(setFormHistories(res.data));
-        })
-        .catch(() => {
-          dispatch(setFormHistories([]));
-        }).finally(()=>{
-          setLoading(false);
-        });
-    }
-  }, [historyModal]);
+ 
 
  
 
@@ -83,6 +64,7 @@ const FormHistoryModal = ({ historyModal, handleModalChange, gotoEdit }) => {
               type="button"
               className="close"
               onClick={() => {
+                setShowCount(3);
                 handleModalChange();
               }}
               aria-label="Close"
@@ -99,7 +81,7 @@ const FormHistoryModal = ({ historyModal, handleModalChange, gotoEdit }) => {
             {t("Formsflow automatically saves your previous form data. Now you can switch to the previous stage and edit.")}
             </span>
           </div>
-          {isLoading ? 
+          {!formHistory ? 
           <Loading/>
           : ( sliceFormHistory.length ? (
             <>
@@ -126,7 +108,15 @@ const FormHistoryModal = ({ historyModal, handleModalChange, gotoEdit }) => {
                             : t("Modified On")}
                         </span>
                         <p className="mb-0">{getLocalDateTime(history.created)}</p>
-                        <span className="text-muted">{history.changeLog.new_version && t("New version created")}</span>
+                        {
+                          formHistory.length - 1 !== index && (
+                            <span className="text-primary">{
+                              history.changeLog?.new_version ? 
+                              t(history.changeLog?.version ? `Version ${history.changeLog.version} created` : "New version created") : 
+                              t(history.changeLog.version ? `Version ${history.changeLog.version}` : "")}
+                              </span>
+                          )
+                        }
                       </div>
                       <div>
                         <span className="d-block text-muted">{t("Action")}</span>

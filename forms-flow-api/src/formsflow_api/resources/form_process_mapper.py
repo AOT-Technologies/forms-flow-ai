@@ -655,7 +655,7 @@ class FormioFormResource(Resource):
                 data={
                     **response,
                     "parentFormId": data.get("parentFormId"),
-                    "saveAsNewVersion": data.get("saveAsNewVersion"),
+                    "newVersion": data.get("newVersion"),
                     "componentChanged": True,
                 }
             )

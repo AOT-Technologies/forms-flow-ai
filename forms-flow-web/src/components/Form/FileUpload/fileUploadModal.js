@@ -21,7 +21,7 @@ const FileModal = React.memo(({ modalOpen = false, onClose, forms }) => {
     if (formUploadList.length) {
       const uploadloded = (formUploadCounter / formUploadList.length) * 100 ;
       setFormsUploaded(uploadloded);
-      uploadloded === 100 ? toast.success(t("Form Sucessfully uploaded")) : '';
+      uploadloded === 100 ? toast.success(t(formUploadList.length === 1 ? "Form Sucessfully uploaded" : `${formUploadList.length} Forms Sucessfully uploaded`)) : '';
     }
   }, [formUploadCounter, formUploadList]);
   return (

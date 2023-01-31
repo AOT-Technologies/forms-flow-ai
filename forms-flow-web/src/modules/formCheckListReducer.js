@@ -4,6 +4,7 @@ const initialState = {
   formList: [],
   formUploadFormList: [],
   formUploadCounter: 0,
+  formUploadFailureCounter: 0,
   designerFormLoading: false,
   searchFormLoading:false,
 };
@@ -17,9 +18,12 @@ const formCheckList = (state = initialState, action) => {
         ...state,
         formUploadFormList: action.payload,
         formUploadCounter: 0,
+        formUploadFailureCounter: 0,
       };
     case ACTION_CONSTANTS.FORM_UPLOAD_COUNTER:
       return { ...state, formUploadCounter: state.formUploadCounter + 1 };
+    case ACTION_CONSTANTS.FORM_UPLOAD_FAILURE_COUNTER:
+      return { ...state, formUploadFailureCounter: state.formUploadFailureCounter + 1 };
     case ACTION_CONSTANTS.IS_FORM_LOADING:
       return { ...state, designerFormLoading: action.payload };
     case ACTION_CONSTANTS.IS_FORM_SEARCH_LOADING:

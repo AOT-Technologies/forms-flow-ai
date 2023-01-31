@@ -4,7 +4,6 @@ import Button from "react-bootstrap/Button";
 import { useSelector } from "react-redux";
 import Spinner from "react-bootstrap/Spinner";
 import { Translation, useTranslation } from "react-i18next";
-import { toast } from "react-toastify";
 
 // eslint-disable-next-line no-unused-vars
 const FileModal = React.memo(({ modalOpen = false, onClose, forms }) => {
@@ -24,7 +23,6 @@ const FileModal = React.memo(({ modalOpen = false, onClose, forms }) => {
     if (formUploadList.length) {
       const uploadloded = (formUploadCounter / formUploadList.length) * 100;
       setFormsUploaded(uploadloded);
-      uploadloded === 100 ? toast.success(t("Form Sucessfully uploaded")) : '';
     }
   }, [formUploadCounter, formUploadList]);
   return (

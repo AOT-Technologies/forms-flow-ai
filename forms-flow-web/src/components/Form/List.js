@@ -245,10 +245,9 @@ const List = React.memo((props) => {
       // eslint-disable-next-line no-unused-vars
       saveFormProcessMapperPost(data, (err, res) => {
         if (!err) {
-          toast.success(t("Form Sucessfully uploaded"));
           fetchForms();
         } else {
-          toast.error(t("Error in creating form process mapper"));
+          dispatch(formUploadFailureCount());
         }
       })
     );
@@ -418,7 +417,7 @@ const List = React.memo((props) => {
         );
       }
     } catch (err) {
-      err ?  dispatch(formUploadFailureCount()) : '';
+      err ? dispatch(formUploadFailureCount()) : '';
     }
   };
 

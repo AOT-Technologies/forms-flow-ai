@@ -130,7 +130,7 @@ const Edit = React.memo(() => {
             count++;
           }
           return count;
-        },1);
+        },0);
         setVersion(`V${versionCount}`);
       }
     }
@@ -472,7 +472,7 @@ const Edit = React.memo(() => {
         <h3 className="ml-3 task-head">
           <i className="fa fa-wpforms" aria-hidden="true" /> &nbsp;{" "}
           {formData.title}
-          <span className="text-success ml-2">{version}</span>
+          <span className="text-success h5 ml-2">(Version {version})</span>
         </h3>
         <div className="d-flex align-items-center">
           <FormControlLabel

@@ -48,7 +48,7 @@ import {
   getApplicationCount,
 } from "../../apiManager/services/processServices";
 import { setBpmFormSearch } from "../../actions/formActions";
-import { checkAndAddTenantKey } from "../../helper/helper";
+import { addTenankey } from "../../helper/helper";
 import { formCreate, formUpdate } from "../../apiManager/services/FormServices";
 import { designerColums, getoptions, userColumns } from "./constants/table";
 import paginationFactory from "react-bootstrap-table2-paginator";
@@ -277,8 +277,8 @@ const List = React.memo((props) => {
               let tenantDetails = {};
               if (MULTITENANCY_ENABLED && tenantKey) {
                 tenantDetails = { tenantKey };
-                formData.path = checkAndAddTenantKey(formData.path, tenantKey);
-                formData.name = checkAndAddTenantKey(formData.name, tenantKey);
+                formData.path = addTenankey(formData.path, tenantKey);
+                formData.name = addTenankey(formData.name, tenantKey);
               }
               const newFormData = {
                 ...formData,

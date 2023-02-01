@@ -3,9 +3,8 @@ const replaceUrl = (URL, key, value) => {
 };
 
 const addTenankey = (value, tenankey) => {
-  let newValue = value.split("-");
-  let tenantId = newValue.shift();
-  if (tenankey.toLowerCase() === tenantId.toLowerCase()) {
+  const tenantKeyCheck = value.match(`${tenankey}-`);
+  if (tenantKeyCheck && tenantKeyCheck[0].toLowerCase() === `${tenankey.toLowerCase()}-`) {
     return value.toLowerCase();
   } else {
     return `${tenankey.toLowerCase()}-${value.toLowerCase()}`;
@@ -13,23 +12,13 @@ const addTenankey = (value, tenankey) => {
 };
 
 const removeTenantKey = (value, tenankey) => {
-  let newValue = value.split("-");
-  let tenantId = newValue.shift();
-  if (tenankey.toLowerCase() === tenantId.toLowerCase()) {
-    return newValue.join("-");
+  const tenantKeyCheck = value.match(`${tenankey}-`);
+  if (tenantKeyCheck && tenantKeyCheck[0].toLowerCase() === `${tenankey.toLowerCase()}-`) {
+      return  value.replace(`${tenankey.toLowerCase()}-`,"");
   } else {
     return false;
   }
 };
 
-const checkAndAddTenantKey = (value, tenankey) => {
-  let newValue = value.split("-");
-  let tenantId = newValue.shift();
-  if (tenankey.toLowerCase() === tenantId.toLowerCase()) {
-    return value;
-  } else {
-    return `${tenankey.toLowerCase()}-${value.toLowerCase()}`;
-  }
-};
 
-export { replaceUrl, addTenankey, removeTenantKey, checkAndAddTenantKey };
+export { replaceUrl, addTenankey, removeTenantKey };

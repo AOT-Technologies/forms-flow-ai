@@ -34,6 +34,7 @@ import {
   setFormSearchLoading,
   setFormUploadList,
   updateFormUploadCounter,
+  formUploadFailureCount
 } from "../../actions/checkListActions";
 import FileModal from "./FileUpload/fileUploadModal";
 import { useTranslation, Translation } from "react-i18next";
@@ -127,7 +128,6 @@ const List = React.memo((props) => {
     setIsLoading(false);
     dispatch(setBPMFormListLoading(true));
   }, []);
-
   const fetchForms = () => {
     setShowClearButton(searchText);
     let filters = [pageNo, limit, sortBy, sortOrder, searchText];
@@ -245,10 +245,9 @@ const List = React.memo((props) => {
       // eslint-disable-next-line no-unused-vars
       saveFormProcessMapperPost(data, (err, res) => {
         if (!err) {
-          toast.success(t("Form Sucessfully uploaded"));
           fetchForms();
         } else {
-          toast.error(t("Error in creating form process mapper"));
+          dispatch(formUploadFailureCount());
         }
       })
     );
@@ -374,7 +373,6 @@ const List = React.memo((props) => {
                                           setFormFailureErrorData("form", err)
                                         );
                                         toast.error(t(err.message));
-                                        setShowFormUploadModal(false);
                                         reject();
                                       });
                                   } else {
@@ -407,6 +405,7 @@ const List = React.memo((props) => {
                           })
                         );
                       } else {
+                        dispatch(formUploadFailureCount());
                         toast.error(err);
                         reject();
                       }
@@ -416,13 +415,9 @@ const List = React.memo((props) => {
             });
           })
         );
-      } else {
-        setShowFormUploadModal(false);
-        return toast.error(t("Error in JSON file structure"));
       }
     } catch (err) {
-      setShowFormUploadModal(false);
-      return toast.error(t("Error in JSON file structure"));
+      err ? dispatch(formUploadFailureCount()) : '';
     }
   };
 
@@ -598,8 +593,8 @@ const List = React.memo((props) => {
                       title={t("Sort by form name")}
                       style={{
                         opacity: `${sortOrder === "desc" || sortOrder === "-title"
-                            ? 1
-                            : 0.5
+                          ? 1
+                          : 0.5
                           }`,
                       }}
                     />
@@ -701,8 +696,8 @@ const List = React.memo((props) => {
                               ...base,
                               background: "rgba(255, 255, 255)",
                               height: `${limit > 5
-                                  ? "100% !important"
-                                  : "350px !important"
+                                ? "100% !important"
+                                : "350px !important"
                                 }`,
                               top: "65px",
                             }),

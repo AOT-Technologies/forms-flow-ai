@@ -20,10 +20,6 @@ const FormHistoryModal = ({ historyModal, handleModalChange, gotoEdit }) => {
     setSliceFormHistory(formHistory?.slice(0, showCount));
   },[showCount,formHistory]);
 
- 
-
- 
-
   useEffect(() => {
     historyRef?.current?.lastElementChild.scrollIntoView({
       behavior: "smooth",

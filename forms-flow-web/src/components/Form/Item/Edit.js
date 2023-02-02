@@ -71,7 +71,7 @@ const Edit = React.memo(() => {
   const [form, dispatchFormAction] = useReducer(reducer, _cloneDeep(formData));
   const errors = useSelector((state) => state.form.error);
   const formHistory = useSelector((state)=> state.formRestore?.formHistory || []);
-  const [version, setVersion] = useState(null); 
+  const version = formHistory[0]?.changeLog?.version;
   const prviousData = useSelector((state) => state.process.formPreviousData);
   const applicationCount = useSelector(
     (state) => state.process.applicationCount
@@ -120,21 +120,7 @@ const Edit = React.memo(() => {
   },[processListData]);
 
 
-  useEffect(()=>{
-    if(formHistory?.length){
-      if( formHistory[0].changeLog?.version){
-        setVersion(formHistory[0].changeLog?.version);
-      }else{
-        const versionCount = formHistory.reduce((count,item)=>{
-          if(item.changeLog.new_version){
-            count++;
-          }
-          return count;
-        },0);
-        setVersion(`V${versionCount}`);
-      }
-    }
-  },[formHistory]);
+ 
 
   useEffect(() => {
     if (restoredFormId) {

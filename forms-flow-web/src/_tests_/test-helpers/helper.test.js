@@ -1,7 +1,7 @@
 import {
   replaceUrl,
   removeTenantKey,
-  addTenankey,
+  addTenantkey,
 } from "../../helper/helper";
 import "@testing-library/jest-dom/extend-expect";
 
@@ -13,7 +13,7 @@ test("replace the second param in the first param with the third param ", () => 
 
 test("adding tenenkey based on value and tenenkey passed", () => {
   expect(
-    addTenankey(
+    addTenantkey(
       "path-of-the-form",
       "tenant-test"
     )

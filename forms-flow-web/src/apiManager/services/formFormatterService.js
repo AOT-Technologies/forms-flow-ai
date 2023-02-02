@@ -1,5 +1,5 @@
 import { addHiddenApplicationComponent } from "../../constants/applicationComponent";
-import { addTenankey } from "../../helper/helper";
+import { addTenantkey } from "../../helper/helper";
 
 export const manipulatingFormData = (
   form,
@@ -13,10 +13,10 @@ export const manipulatingFormData = (
   newFormData.access = formAccess;
   if (MULTITENANCY_ENABLED && tenantKey) {
     if (newFormData.path) {
-      newFormData.path = addTenankey(newFormData.path, tenantKey);
+      newFormData.path = addTenantkey(newFormData.path, tenantKey);
     }
     if (newFormData.name) {
-      newFormData.name = addTenankey(newFormData.name, tenantKey);
+      newFormData.name = addTenantkey(newFormData.name, tenantKey);
     }
   }
   return newFormData;

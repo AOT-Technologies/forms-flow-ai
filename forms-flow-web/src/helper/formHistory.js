@@ -18,9 +18,10 @@ export const setVersionNumberIfNotExist = (formHistory)=>{
         const {changeLog} = history;
         changeLog.version = (
             changeLog.version ? changeLog.version : (
-                changeLog.new_version ? `v${--versionNumber}` : `v${versionNumber}` 
+                changeLog.new_version ? `v${versionNumber}` : `v${versionNumber}` 
             )
         );
+        versionNumber--;
         return history;
     });
 };

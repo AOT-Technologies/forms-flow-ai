@@ -61,7 +61,7 @@ const FileModal = React.memo(({ modalOpen = false, onClose, forms }) => {
                 aria-valuenow={formsUploaded}
                 aria-label="upload-status"
                 aria-valuemax={`${formsUploaded}`}
-                style={{ width: `${formsUploaded === 100 ? "100%" : `${formsUploaded}%`}`, backgroundColor: `${formsUploaded === 100 ? "#00FF00" : ""}` }}
+                style={{ width: `${formsUploaded === 100 ? "100%" : `${formsUploaded}%`}`, backgroundColor: `${formsUploaded === 100 ? "#4d53fa" : ""}` }}
               ></div>
             </div>
           ) : (

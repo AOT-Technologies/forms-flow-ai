@@ -372,7 +372,7 @@ const List = React.memo((props) => {
                                         dispatch(
                                           setFormFailureErrorData("form", err)
                                         );
-                                        toast.error(t(err.message));
+                                        dispatch(formUploadFailureCount());
                                         reject();
                                       });
                                   } else {
@@ -395,7 +395,7 @@ const List = React.memo((props) => {
                                   resolve();
                                 })
                                 .catch((err) => {
-                                  toast.error(err);
+                                  err ? dispatch(formUploadFailureCount()) : '';
                                   reject();
                                 });
                             } else {
@@ -406,7 +406,6 @@ const List = React.memo((props) => {
                         );
                       } else {
                         dispatch(formUploadFailureCount());
-                        toast.error(err);
                         reject();
                       }
                     })

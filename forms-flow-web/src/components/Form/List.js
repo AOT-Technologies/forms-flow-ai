@@ -542,6 +542,7 @@ const List = React.memo((props) => {
                   </Button>
                   <input
                     type="file"
+                    value=''
                     className="d-none"
                     multiple={false}
                     accept=".json,application/json"

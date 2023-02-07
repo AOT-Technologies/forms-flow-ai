@@ -311,8 +311,7 @@ const List = React.memo((props) => {
                                   if (!error) {
                                     newFormData._id = formObj._id;
                                     newFormData.access = formObj.access;
-                                    newFormData.submissionAccess =
-                                      newFormData.access = formObj.submissionAccess;
+                                    newFormData.submissionAccess = formObj.submissionAccess;
                                     newFormData.componentChanged =
                                       (!_isEquial(newFormData.components, formObj.components) ||
                                         newFormData.display !== formObj.display ||

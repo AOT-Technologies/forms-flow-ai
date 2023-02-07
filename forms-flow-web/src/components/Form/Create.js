@@ -18,7 +18,7 @@ import {
   setFormFailureErrorData,
   setFormSuccessData,
 } from "../../actions/formActions";
-import { addTenankey } from "../../helper/helper";
+import { addTenantkey } from "../../helper/helper";
 import { formCreate } from "../../apiManager/services/FormServices";
 import { Checkbox, FormControlLabel } from "@material-ui/core";
 // reducer from react-formio code
@@ -140,10 +140,10 @@ const Create = React.memo(() => {
     if (MULTITENANCY_ENABLED && tenantKey) {
       newForm.tenantKey = tenantKey;
       if (newForm.path) {
-        newForm.path = addTenankey(newForm.path, tenantKey);
+        newForm.path = addTenantkey(newForm.path, tenantKey);
       }
       if (newForm.name) {
-        newForm.name = addTenankey(newForm.name, tenantKey);
+        newForm.name = addTenantkey(newForm.name, tenantKey);
       }
     }
     formCreate(newForm).then((res)=>{

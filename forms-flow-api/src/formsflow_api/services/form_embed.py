@@ -1,6 +1,7 @@
 """Module to handle form submission and application creation simultaneously."""
 
 from http import HTTPStatus
+from typing import Dict, List
 
 from flask import current_app
 from formsflow_api_utils.exceptions import BusinessException
@@ -19,6 +20,7 @@ class CombineFormAndApplicationCreate:  # pylint: disable=too-few-public-methods
         """Creates application after success submission."""
         try:
             application_schema = ApplicationSchema()
+            data = __class__.populate_default_keys(data)
             application_data = application_schema.load(data)
             formio_service = FormioService()
             form_io_token = formio_service.get_formio_access_token()
@@ -61,3 +63,12 @@ class CombineFormAndApplicationCreate:  # pylint: disable=too-few-public-methods
                 "message": "Invalid application request passed",
             }, HTTPStatus.BAD_REQUEST
             raise BusinessException(response, status) from application_err
+
+    @staticmethod
+    def populate_default_keys(form_data: Dict) -> Dict:
+        """Populate default keys to the form data if they are not present."""
+        default_keys: List[str] = ["applicationStatus", "applicationId"]
+        for key in default_keys:
+            if key not in form_data.get("data"):
+                form_data["data"][key] = ""
+        return form_data

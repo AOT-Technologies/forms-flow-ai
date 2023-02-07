@@ -202,8 +202,8 @@ const List = React.memo((props) => {
   };
   const handleSearch = () => {
     if (searchText != searchInputBox.current.value) {
+      searchInputBox.current.value === '' ? dispatch(setBPMFormLimit(5)) : '';
       dispatch(setBPMFormListPage(1));
-
       dispatch(setBpmFormSearch(searchInputBox.current.value));
     }
   };

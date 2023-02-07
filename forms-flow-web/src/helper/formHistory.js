@@ -21,7 +21,9 @@ export const setVersionNumberIfNotExist = (formHistory)=>{
                 changeLog.new_version ? `v${versionNumber}` : `v${versionNumber}` 
             )
         );
-        versionNumber--;
+        if(changeLog.new_version){
+            versionNumber--;
+        }
         return history;
     });
 };

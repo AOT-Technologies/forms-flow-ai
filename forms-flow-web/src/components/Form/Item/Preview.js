@@ -63,8 +63,6 @@ const Preview = ({handleNext, hideComponents, activeStep}) => {
   const handlePublishAsNewVersion = ()=>{
     setNewpublishClicked(true);
     setConfirmPublishModal(!confirmPublishModal);
-
-
     const newFormData = manipulatingFormData(
       _.cloneDeep(form),
       MULTITENANCY_ENABLED,
@@ -79,6 +77,7 @@ const Preview = ({handleNext, hideComponents, activeStep}) => {
     newFormData.name = newPathAndName;
     newFormData.componentChanged = true;
     delete newFormData.machineName;
+    delete newFormData.parentFormId;
     newFormData.newVersion = true;
     delete newFormData._id;
     formCreate(newFormData)

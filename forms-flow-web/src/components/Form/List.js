@@ -56,7 +56,7 @@ import filterFactory from "react-bootstrap-table2-filter";
 import overlayFactory from "react-bootstrap-table2-overlay";
 import { SpinnerSVG } from "../../containers/SpinnerSVG";
 import { getFormattedForm, INACTIVE } from "./constants/formListConstants";
-
+import searchValidator from "./constants/formSearchValicdation";
 
 const List = React.memo((props) => {
   const { t } = useTranslation();
@@ -85,7 +85,7 @@ const List = React.memo((props) => {
   const [isAscend, setIsAscending] = useState(true);
   const searchText = useSelector((state) => state.bpmForms.searchText);
   const [searchTextInput, setSearchTextInput] = useState(searchText);
-
+  const [isSearchValid, setIsSearchValid] = useState(true);
   const [isLoading, setIsLoading] = React.useState(false);
 
   const formType = useSelector((state) => state.bpmForms.formType);
@@ -151,7 +151,13 @@ const List = React.memo((props) => {
     searchText,
     formType
   ]);
-
+  useEffect(() => {
+    setIsSearchValid(searchValidator(searchTextInput) === false
+      ? false : true);
+    if (searchTextInput === '') {
+      setIsSearchValid(true);
+    }
+  }, [searchTextInput]);
 
   const formCheck = (formCheckList) => {
     const result = formCheckList.reduce(function (obj, v) {
@@ -201,11 +207,15 @@ const List = React.memo((props) => {
     dispatch(setBPMFormListPage(newState.page));
   };
   const handleSearch = () => {
-    if (searchText != searchInputBox.current.value) {
+    if (searchText != searchInputBox.current.value && isSearchValid) {
       dispatch(setBPMFormListPage(1));
 
       dispatch(setBpmFormSearch(searchInputBox.current.value));
     }
+      else {
+        searchInputBox.current.value !== '' ? toast.error("please remove the special charactor...! ") : '';
+      }
+    
   };
 
   const handleTypeChange = (type) => {
@@ -214,6 +224,7 @@ const List = React.memo((props) => {
     dispatch(setBpmFormType(type));
   };
   const onClear = () => {
+    setIsSearchValid(true);
     setSearchTextInput("");
     dispatch(setBpmFormSearch(''));
     dispatch(setBPMFormLimit(5));
@@ -600,12 +611,15 @@ const List = React.memo((props) => {
                     />
                   </span>
                   <div className="form-outline ml-3">
+                    {/* { searchValidation && <span>Remove validation erros</span>} */}
                     <input
+                      style={{ color: `${!isSearchValid ? "red" : ''}` }}
                       type="search"
                       id="form1"
                       ref={searchInputBox}
                       onKeyPress={(e) => e.key === "Enter" && handleSearch()}
                       onChange={(e) => {
+                        // const alpha = 'abcdefghijklmnopqrstuvwxyz. "123456789/';
                         setShowClearButton(e.target.value);
                         setSearchTextInput(e.target.value);
                         e.target.value === "" && handleSearch();
@@ -627,12 +641,12 @@ const List = React.memo((props) => {
                   )}
                   <button
                     type="button"
-                    className="btn btn-outline-primary ml-2"
+                    className={`${!isSearchValid ? 'btn bg-transparent ml-2 searchInvalid' : 'btn btn-outline-primary ml-2'}`}
                     name="search-button"
-                    title={t("Click to search")}
+                    title={t(`${!isSearchValid ? "Kindly remove the spechial charactor...!" : "Click to search"}`)}
                     onClick={() => handleSearch()}
                   >
-                    <i className="fa fa-search"></i>
+                    <i className="fa fa-search" style={{ color: `${!isSearchValid ? 'red' : ''}` }} ></i>
                   </button>
                   {isDesigner ? (
                     <select

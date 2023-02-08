@@ -714,3 +714,7 @@ div.upload input[type="file"] {
 .wizard-page {
   min-height: 100vh;
 }
+.searchInvalid {
+  border-color: #ff2727 !important;
+  background-color: rgb(255, 255, 255);
+ }

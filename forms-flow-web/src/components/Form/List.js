@@ -213,7 +213,7 @@ const List = React.memo((props) => {
       dispatch(setBpmFormSearch(searchInputBox.current.value));
     }
       else {
-        searchInputBox.current.value !== '' ? toast.error("please remove the special charactor...! ") : '';
+        searchInputBox.current.value !== '' ? toast.error("Please remove the special charactors...! ") : '';
       }
     
   };
@@ -643,7 +643,7 @@ const List = React.memo((props) => {
                     type="button"
                     className={`${!isSearchValid ? 'btn bg-transparent ml-2 searchInvalid' : 'btn btn-outline-primary ml-2'}`}
                     name="search-button"
-                    title={t(`${!isSearchValid ? "Kindly remove the spechial charactor...!" : "Click to search"}`)}
+                    title={t(`${!isSearchValid ? "Kindly remove the special charactors...!" : "Click to search"}`)}
                     onClick={() => handleSearch()}
                   >
                     <i className="fa fa-search" style={{ color: `${!isSearchValid ? 'red' : ''}` }} ></i>

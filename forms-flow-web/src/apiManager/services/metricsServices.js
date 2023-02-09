@@ -40,18 +40,10 @@ export const fetchMetricsSubmissionCount = (
           dispatch(setMetricsSubmissionCount(res.data.applications));
           dispatch(setMetricsTotalItems(res.data.totalCount));
           if (res.data.applications && res.data.applications[0]) {
-            dispatch(
-              fetchMetricsSubmissionStatusCount(
-                res.data.applications[0].mapperId,
-                fromDate,
-                toDate,
-                searchBy
-              )
-            );
+              dispatch(setSelectedMetricsId(res.data.applications[0].parentFormId));
+
           } else {
-            dispatch(setMetricsSubmissionStatusCount([]));
-            dispatch(setMetricsStatusLoader(false));
-            dispatch(setMetricsDateRangeLoading(false));
+            dispatch(setSelectedMetricsId(null));
           }
           done(null, res.data);
         } else {
@@ -79,14 +71,17 @@ export const fetchMetricsSubmissionStatusCount = (
   fromDate,
   toDate,
   setSearchBy,
+  options = {},
   ...rest
 ) => {
   const done = rest.length ? rest[0] : () => { };
   return (dispatch) => {
-    dispatch(setSelectedMetricsId(id));
+    if(options.parentId){
+      dispatch(setSelectedMetricsId(id));
+    }
 
     RequestService.httpGETRequest(
-      `${API.METRICS_SUBMISSIONS}/${id}?from=${fromDate}&to=${toDate}&orderBy=${setSearchBy}`
+      `${API.METRICS_SUBMISSIONS}/${id}?from=${fromDate}&to=${toDate}&orderBy=${setSearchBy}&formType=${options.parentId ? "parent" : "form"}`
     )
       .then((res) => {
         if (res.data) {

@@ -452,7 +452,9 @@ class Application(
                 Application.form_process_mapper_id,
                 FormProcessMapper.form_name,
                 FormProcessMapper.version,
-                func.count(Application.form_process_mapper_id).label("count"),
+                func.count(  # pylint: disable=not-callable
+                    Application.form_process_mapper_id
+                ).label("count"),
             )
             .join(
                 FormProcessMapper,
@@ -504,7 +506,9 @@ class Application(
                 Application.form_process_mapper_id,
                 FormProcessMapper.form_name,
                 FormProcessMapper.version,
-                func.count(Application.form_process_mapper_id).label("count"),
+                func.count(  # pylint: disable=not-callable
+                    Application.form_process_mapper_id
+                ).label("count"),
             )
             .join(
                 FormProcessMapper,
@@ -548,7 +552,9 @@ class Application(
             db.session.query(
                 Application.application_status,
                 FormProcessMapper.form_name.label("application_name"),
-                func.count(Application.application_status).label("count"),
+                func.count(  # pylint: disable=not-callable
+                    Application.application_status
+                ).label("count"),
             )
             .join(
                 FormProcessMapper,
@@ -575,7 +581,9 @@ class Application(
             db.session.query(
                 FormProcessMapper.form_name.label("application_name"),
                 Application.application_status,
-                func.count(FormProcessMapper.form_name).label("count"),
+                func.count(  # pylint: disable=not-callable
+                    FormProcessMapper.form_name
+                ).label("count"),
             )
             .join(
                 FormProcessMapper,
@@ -599,7 +607,11 @@ class Application(
     ):
         """Returns the total applications corresponding to a form_process_mapper_id."""
         result_proxy = (
-            db.session.query(func.count(Application.id).label("count"))
+            db.session.query(
+                func.count(Application.id).label(  # pylint: disable=not-callable
+                    "count"
+                )
+            )
             .join(
                 FormProcessMapper,
                 FormProcessMapper.id == Application.form_process_mapper_id,

@@ -107,8 +107,8 @@ class AggregatedApplicationsResource(Resource):
             form_name = dict_data.get("form_name")
             sort_by = dict_data.get("sort_by")
             sort_order = dict_data.get("sort_order")
-            if order_by == MetricsState.MODIFIED.value:
-                metrics_schema, metrics_count = AS.get_aggregated_applications_modified(
+ 
+            metrics_schema, metrics_count = AS.get_aggregated_applications(
                     from_date=from_date,
                     to_date=to_date,
                     page_no=page_no,
@@ -116,16 +116,7 @@ class AggregatedApplicationsResource(Resource):
                     form_name=form_name,
                     sort_by=sort_by,
                     sort_order=sort_order,
-                )
-            else:
-                metrics_schema, metrics_count = AS.get_aggregated_applications(
-                    from_date=from_date,
-                    to_date=to_date,
-                    page_no=page_no,
-                    limit=limit,
-                    form_name=form_name,
-                    sort_by=sort_by,
-                    sort_order=sort_order,
+                    order_by= order_by
                 )
             return (
                 {
@@ -160,7 +151,7 @@ class AggregatedApplicationsResource(Resource):
 
 
 @cors_preflight("GET,OPTIONS")
-@API.route("/<int:mapper_id>", methods=["GET", "OPTIONS"])
+@API.route("/<string:form_id>", methods=["GET", "OPTIONS"])
 class AggregatedApplicationStatusResource(Resource):
     """Resource for managing aggregated applications."""
 
@@ -199,7 +190,7 @@ class AggregatedApplicationStatusResource(Resource):
         403,
         "FORBIDDEN:- Authorization will not help.",
     )
-    def get(mapper_id):
+    def get(form_id):
         """
         Get application metrics corresponding to a mapper_id.
 
@@ -211,40 +202,42 @@ class AggregatedApplicationStatusResource(Resource):
             from_date = dict_data["from_date"]
             to_date = dict_data["to_date"]
             order_by = dict_data.get("order_by")
-
-            if order_by == MetricsState.MODIFIED.value:
+            form_type = dict_data.get('form_type')
+            if form_type == "parent":
                 response, status = (
                     (
                         {
-                            "applications": AS.get_applications_status_modified(
-                                mapper_id=mapper_id,
+                            "applications": AS.get_applications_status_by_parent_form_id(
+                                parent_form_id= form_id,
                                 from_date=from_date,
                                 to_date=to_date,
+                                order_by=order_by
                             )
                         }
                     ),
                     HTTPStatus.OK,
                 )
-
             else:
                 response, status = (
                     (
                         {
-                            "applications": AS.get_applications_status(
-                                mapper_id=mapper_id,
+                            "applications": AS.get_applications_status_by_form_id(
+                                form_id=form_id,
                                 from_date=from_date,
                                 to_date=to_date,
+                                order_by=order_by
                             )
                         }
                     ),
                     HTTPStatus.OK,
                 )
+                
             return response, status
         except PermissionError as err:
             response, status = (
                 {
                     "type": "Permission Denied",
-                    "message": f"Access to form id - {mapper_id} is prohibited.",
+                    "message": f"Access to form id - {form_id} is prohibited.",
                 },
                 HTTPStatus.FORBIDDEN,
             )

@@ -274,5 +274,6 @@ export const RESOURCE_BUNDLES_BG = {
     "URL copied":"URL адресът е копиран",
     "Click Here to Copy":"Щракнете тук, за да копирате",
     "Resources":"Ресурси",
-    "Duplicate form created successfully":"Дублираният формуляр е създаден успешно"
+    "Duplicate form created successfully":"Дублираният формуляр е създаден успешно",
+    "Revert": "Връщане"
 };

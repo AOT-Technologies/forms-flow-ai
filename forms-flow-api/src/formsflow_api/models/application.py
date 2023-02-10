@@ -2,22 +2,21 @@
 
 from __future__ import annotations
 
-from datetime import datetime
-
 from flask_sqlalchemy import BaseQuery
 from formsflow_api_utils.utils import (
     DRAFT_APPLICATION_STATUS,
     FILTER_MAPS,
     validate_sort_order_and_order_by,
 )
-from sqlalchemy import and_, func, or_,distinct, cast, Integer
-from sqlalchemy.sql.expression import text
 from formsflow_api_utils.utils.enums import MetricsState
+from sqlalchemy import Integer, and_, cast, distinct, func, or_, text
+
 from .audit_mixin import AuditDateTimeMixin, AuditUserMixin
 from .base_model import BaseModel
 from .db import db
-from .form_process_mapper import FormProcessMapper
 from .form_history_logs import FormHistory
+from .form_process_mapper import FormProcessMapper
+
 
 class Application(
     AuditDateTimeMixin, AuditUserMixin, BaseModel, db.Model
@@ -436,7 +435,8 @@ class Application(
         return FormProcessMapper.tenant_authorization(query=query).count()
 
     @classmethod
-    def find_aggregated_applications(  # pylint: disable=too-many-arguments
+    def find_aggregated_applications(
+        # pylint: disable-msg=too-many-arguments
         cls,
         from_date: str,
         to_date: str,
@@ -445,79 +445,117 @@ class Application(
         form_name: str,
         sort_by: str,
         sort_order: str,
-        order_by: str
+        order_by: str,
     ):
-        """Fetch aggregated applications ordered by created date."""
-        
-        def set_sort (sort_by, sort_order):
+        """Fetch aggregated applications."""
+        # pylint: disable-msg=too-many-locals
+        def set_sort(sort_by, sort_order):
             if sort_order == "asc":
                 return main_subquery.c[sort_by].asc()
-            else :
-                return main_subquery.c[sort_by].desc()
+            return main_subquery.c[sort_by].desc()
+
+        order = "created"
         if order_by == MetricsState.MODIFIED.value:
             order = "modified"
-        else:
-            order = "created"
+
         # to get the applicaiton count against formid
-        subquery_application_count = db.session.query(
-             Application.latest_form_id.label("form_id"),
-             db.func.count(Application.id).label('application_count'),
-        ).filter(
-                 and_(
-                    getattr(Application , order) >= from_date,
-                    getattr(Application , order) <= to_date,
+        subquery_application_count = (
+            db.session.query(
+                Application.latest_form_id.label("form_id"),
+                db.func.count(Application.id).label(  # pylint: disable=not-callable
+                    "application_count"
+                ),
+            )
+            .filter(
+                and_(
+                    getattr(Application, order) >= from_date,
+                    getattr(Application, order) <= to_date,
                 )
-        ).group_by(cls.latest_form_id).subquery('subquery_application_count')
-        
+            )
+            .group_by(cls.latest_form_id)
+            .subquery("subquery_application_count")
+        )
+
         # taking formid and count with its parent form id
-        distinct_form_id_count = db.session.query(
-            distinct(FormProcessMapper.form_id), 
-            subquery_application_count.c.application_count.label("application_count"), 
-            FormProcessMapper.parent_form_id.label("parent_form_id") 
-        ).join(
-            subquery_application_count,
-            subquery_application_count.c.form_id == FormProcessMapper.form_id
-        ).subquery('distinct_form_id_count')
-        
+        distinct_form_id_count = (
+            db.session.query(
+                distinct(FormProcessMapper.form_id),
+                subquery_application_count.c.application_count.label(
+                    "application_count"
+                ),
+                FormProcessMapper.parent_form_id.label("parent_form_id"),
+            )
+            .join(
+                subquery_application_count,
+                subquery_application_count.c.form_id == FormProcessMapper.form_id,
+            )
+            .subquery("distinct_form_id_count")
+        )
+
         # parent formid and its total application
-        parent_formid_and_sum_of_application = db.session.query(
-            distinct_form_id_count.c.parent_form_id,
-            db.func.sum(distinct_form_id_count.c.application_count).label("application_count")
-        ).select_from(
-            distinct_form_id_count
-        ).group_by(
-            distinct_form_id_count.c.parent_form_id
-        ).subquery("parent_formid_and_sum_of_application")
-        
+        parent_formid_and_sum_of_application = (
+            db.session.query(
+                distinct_form_id_count.c.parent_form_id,
+                db.func.sum(distinct_form_id_count.c.application_count).label(  # pylint: disable=not-callable
+                    "application_count"
+                ),
+            )
+            .select_from(distinct_form_id_count)
+            .group_by(distinct_form_id_count.c.parent_form_id)
+            .subquery("parent_formid_and_sum_of_application")
+        )
+
         # taking all data
-        main_subquery = db.session.query(
-            db.func.max(FormProcessMapper.form_name).label("form_name"), 
-            FormProcessMapper.parent_form_id, 
-             parent_formid_and_sum_of_application.c.application_count
-        ).join(
-           parent_formid_and_sum_of_application,
-           parent_formid_and_sum_of_application.c.parent_form_id == FormProcessMapper.parent_form_id 
-        ).group_by(
-            FormProcessMapper.parent_form_id,
-            parent_formid_and_sum_of_application.c.application_count,
-        ).subquery("main_subquery")
-         
-        result_proxy = db.session.query(
-            FormHistory.parent_form_id,
-            func.array_agg(func.json_build_object("formId", FormHistory.form_id, "version",text("form_history.change_log ->>'version'"))).label("form_versions"),
-            cast(main_subquery.c.application_count,Integer).label("submission_count"),
-            main_subquery.c.form_name
-         ).join(
-             main_subquery,
-             main_subquery.c.parent_form_id == FormHistory.parent_form_id
-         ).filter(
-             text("change_log ->>'new_version' = 'true'")
-         ).group_by(
-             FormHistory.parent_form_id,
-             main_subquery.c.application_count,
-             main_subquery.c.form_name
-         )
-         
+        main_subquery = (
+            db.session.query(
+                db.func.max(FormProcessMapper.form_name).label(
+                    "form_name"
+                ),  # pylint: disable=not-callable
+                FormProcessMapper.parent_form_id,
+                parent_formid_and_sum_of_application.c.application_count,
+            )
+            .join(
+                parent_formid_and_sum_of_application,
+                parent_formid_and_sum_of_application.c.parent_form_id
+                == FormProcessMapper.parent_form_id,
+            )
+            .group_by(
+                FormProcessMapper.parent_form_id,
+                parent_formid_and_sum_of_application.c.application_count,
+            )
+            .subquery("main_subquery")
+        )
+
+        result_proxy = (
+            db.session.query(
+                FormHistory.parent_form_id,
+                func.array_agg(  # pylint: disable=not-callable
+                    func.json_build_object(
+                        "formId",
+                        FormHistory.form_id,
+                        "version",
+                        text("form_history.change_log ->>'version'"),
+                    )
+                ).label(
+                    "form_versions"
+                ),
+                cast(main_subquery.c.application_count, Integer).label(
+                    "submission_count"
+                ),
+                main_subquery.c.form_name,
+            )
+            .join(
+                main_subquery,
+                main_subquery.c.parent_form_id == FormHistory.parent_form_id,
+            )
+            .filter(text("change_log ->>'new_version' = 'true'"))
+            .group_by(
+                FormHistory.parent_form_id,
+                main_subquery.c.application_count,
+                main_subquery.c.form_name,
+            )
+        )
+
         result_proxy = FormProcessMapper.tenant_authorization(result_proxy)
         if form_name:
             result_proxy = result_proxy.filter(
@@ -526,49 +564,44 @@ class Application(
 
         sort_by, sort_order = validate_sort_order_and_order_by(sort_by, sort_order)
         if sort_by and sort_order:
-            sort_query = set_sort(sort_by,sort_order)
+            sort_query = set_sort(sort_by, sort_order)
             result_proxy = result_proxy.order_by(sort_query)
         pagination = result_proxy.paginate(page_no, limit)
         total_count = result_proxy.count()
         return pagination.items, total_count
-   
 
- 
     @classmethod
     def find_aggregated_application_status_by_parent_form_id(
-        cls, form_id: str, from_date: str, to_date: str, order_by:str
+        cls, form_id: str, from_date: str, to_date: str, order_by: str
     ):
-        """Fetch application status corresponding to mapper_id by created date."""
-        
-        
-        sub_query_taking_form_ids = db.session.query(
-            FormProcessMapper.form_id
-        ).filter(
-            FormProcessMapper.parent_form_id == form_id
-        ).group_by(
-             FormProcessMapper.form_id
-        ).subquery()
-        
+        """Fetch application status corresponding to parent form id."""
+        sub_query_taking_form_ids = (
+            db.session.query(FormProcessMapper.form_id)
+            .filter(FormProcessMapper.parent_form_id == form_id)
+            .group_by(FormProcessMapper.form_id)
+            .subquery()
+        )
+
+        order = "created"
         if order_by == MetricsState.MODIFIED.value:
             order = "modified"
-        else:
-            order = "created"
 
         result_proxy = (
             db.session.query(
-                Application.application_status.label("application_status") , 
-                db.func.count(Application.id).label('count'),
-            ).join(
-                sub_query_taking_form_ids,
-                sub_query_taking_form_ids.c.form_id == Application.latest_form_id
-            ).filter(
-                and_(
-                    getattr(Application , order) >= from_date,
-                    getattr(Application , order) <= to_date,
-                )
-            ).group_by(
-                Application.application_status
+                Application.application_status.label("application_status"),
+                db.func.count(Application.id).label("count"),
             )
+            .join(
+                sub_query_taking_form_ids,
+                sub_query_taking_form_ids.c.form_id == Application.latest_form_id,
+            )
+            .filter(
+                and_(
+                    getattr(Application, order) >= from_date,
+                    getattr(Application, order) <= to_date,
+                )
+            )
+            .group_by(Application.application_status)
         )
         result_proxy = FormProcessMapper.tenant_authorization(result_proxy)
         return result_proxy
@@ -577,20 +610,20 @@ class Application(
     def find_aggregated_application_status_by_form_id(
         cls, form_id: int, from_date: str, to_date: str, order_by: str
     ):
-        """Get application status w.r.t to mapper_id ordered by modified date."""
+        """Get application status by form id."""
+        order = "created"
         if order_by == MetricsState.MODIFIED.value:
             order = "modified"
-        else:
-            order = "created"
+
         result_proxy = (
             db.session.query(
-                Application.application_status.label("application_status") , 
-                db.func.count(Application.id).label('count'),
+                Application.application_status.label("application_status"),
+                db.func.count(Application.id).label("count"),
             )
             .filter(
                 and_(
-                    getattr(Application , order) >= from_date,
-                    getattr(Application , order) <= to_date,
+                    getattr(Application, order) >= from_date,
+                    getattr(Application, order) <= to_date,
                     Application.latest_form_id == form_id,
                 )
             )

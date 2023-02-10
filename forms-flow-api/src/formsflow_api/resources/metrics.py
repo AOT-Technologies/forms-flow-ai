@@ -4,7 +4,6 @@ from http import HTTPStatus
 from flask import current_app, request
 from flask_restx import Namespace, Resource, fields
 from formsflow_api_utils.utils import auth, cors_preflight, profiletime
-from formsflow_api_utils.utils.enums import MetricsState
 from marshmallow.exceptions import ValidationError
 
 from formsflow_api.schemas.aggregated_application import (
@@ -14,13 +13,21 @@ from formsflow_api.services import ApplicationService as AS
 
 API = Namespace("Metrics", description="Application Metrics endpoint")
 
+version_model = API.model(
+    "FormVersions",
+    {
+        "formId": fields.String(),
+        "version": fields.String(),
+    },
+)
+
 metrics_model = API.model(
     "Metrics",
     {
-        "count": fields.Integer(),
+        "formversions": fields.List(fields.Nested(version_model)),
         "formName": fields.String(),
-        "mapperId": fields.Integer(),
-        "version": fields.String(),
+        "parentFormId": fields.Integer(),
+        "submission_count": fields.Integer(),
     },
 )
 
@@ -107,17 +114,17 @@ class AggregatedApplicationsResource(Resource):
             form_name = dict_data.get("form_name")
             sort_by = dict_data.get("sort_by")
             sort_order = dict_data.get("sort_order")
- 
+
             metrics_schema, metrics_count = AS.get_aggregated_applications(
-                    from_date=from_date,
-                    to_date=to_date,
-                    page_no=page_no,
-                    limit=limit,
-                    form_name=form_name,
-                    sort_by=sort_by,
-                    sort_order=sort_order,
-                    order_by= order_by
-                )
+                from_date=from_date,
+                to_date=to_date,
+                page_no=page_no,
+                limit=limit,
+                form_name=form_name,
+                sort_by=sort_by,
+                sort_order=sort_order,
+                order_by=order_by,
+            )
             return (
                 {
                     "applications": metrics_schema,
@@ -175,6 +182,11 @@ class AggregatedApplicationStatusResource(Resource):
                 "description": "Specify field for sorting the results.",
                 "default": "id",
             },
+            "formType": {
+                "in": "query",
+                "description": "Specify field for filtering by form type.",
+                "default": "form",
+            },
         }
     )
     @API.response(200, "OK:- Successful request.", model=metrics_detail_model)
@@ -202,16 +214,16 @@ class AggregatedApplicationStatusResource(Resource):
             from_date = dict_data["from_date"]
             to_date = dict_data["to_date"]
             order_by = dict_data.get("order_by")
-            form_type = dict_data.get('form_type')
+            form_type = dict_data.get("form_type")
             if form_type == "parent":
                 response, status = (
                     (
                         {
                             "applications": AS.get_applications_status_by_parent_form_id(
-                                parent_form_id= form_id,
+                                parent_form_id=form_id,
                                 from_date=from_date,
                                 to_date=to_date,
-                                order_by=order_by
+                                order_by=order_by,
                             )
                         }
                     ),
@@ -225,13 +237,13 @@ class AggregatedApplicationStatusResource(Resource):
                                 form_id=form_id,
                                 from_date=from_date,
                                 to_date=to_date,
-                                order_by=order_by
+                                order_by=order_by,
                             )
                         }
                     ),
                     HTTPStatus.OK,
                 )
-                
+
             return response, status
         except PermissionError as err:
             response, status = (

@@ -5,10 +5,20 @@ import ApplicationCounter from "../../../components/Dashboard/ApplicationCounter
 import {
   app,
   getStatusDetails,
-  selectedMetricsId,
   appcount,
 } from "./Constants";
+import { Provider } from "react-redux";
 
+import StoreService from "../../../services/StoreService";
+
+
+let store;
+
+beforeEach(() => {
+    store = StoreService.configureStore();
+});
+
+ 
 test("Should render error message if no applications in the selected range", () => {
   render(<ApplicationCounter noOfApplicationsAvailable={appcount} />);
   expect(
@@ -17,12 +27,16 @@ test("Should render error message if no applications in the selected range", () 
 });
 
 test("Render ApplicationCounter with props passed", () => {
+
+ 
   render(
+    <Provider store={store}>
     <ApplicationCounter
       application={app}
       getStatusDetails={getStatusDetails}
-      selectedMetricsId={selectedMetricsId}
     />
+    </Provider>
+
   );
   expect(screen.queryAllByText("Form Name")[0]).toBeInTheDocument();
   expect(screen.queryAllByText("Total Submissions")[0]).toBeInTheDocument();

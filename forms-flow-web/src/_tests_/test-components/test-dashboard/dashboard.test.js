@@ -40,13 +40,15 @@ it("Should render the dashboard without breaking", () => {
             metrics: {
                 submissionsList: [
                     {
-                        count: 26,
-                        mapperId: 22,
+                        applicationCount: 26,
+                        parentFormId: 22,
+                        formVersions: [{formId:324234214324, version:"v1"}],
                         formName: "New Business License Application",
                     },
                     {
-                        count: 29,
-                        mapperId: 23,
+                        applicationCount: 26,
+                        parentFormId: 22,
+                        formVersions: [{formId:324234214324, version:"v1"}],
                         formName: "Freedom of Information and Protection of Privacy",
                     },
                 ],
@@ -54,12 +56,10 @@ it("Should render the dashboard without breaking", () => {
                     {
                         statusName: "Approved",
                         count: 1,
-                        applicationName: "New Business License Application",
                     },
                     {
                         statusName: "New",
                         count: 21,
-                        applicationName: "New Business License Application",
                     },
                 ],
                 submissionsFullList: [{ length: 0 }],

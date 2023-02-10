@@ -18,6 +18,12 @@ const COLORS = [
 const ChartForm = React.memo((props) => {
   const { submissionsStatusList, submissionData } = props;
   const {formVersions, formName, parentFormId} = submissionData;
+  formVersions.sort((item1,item2)=>{
+    let version1 = item1.version.replace("v","");
+    let version2 = item2.version.replace("v","");
+    return version1 > version2 ? 1 : -1;
+  });
+
   const version = formVersions?.length && formVersions[formVersions.length - 1].version;
 
   const { t } = useTranslation();
@@ -50,7 +56,7 @@ const ChartForm = React.memo((props) => {
           {
             formVersions.length > 1 ? (
               <div className="col-3">
-            <p>select form versions</p>
+            <p className="form-label mb-0">Select form version</p>
             <select className="form-select" aria-label="Default select example"  onChange={(e) =>{ handlePieData(e.target.value);}}>
                 {
                   formVersions.map((option)=> <option key={option.formId} 

@@ -274,8 +274,8 @@ export const RESOURCE_BUNDLES_PT = {
   "URL copied":"URL copiado",
   "Click Here to Copy":"Clique aqui para copiar",
   "Resources":"Recursos",
-  "Duplicate form created successfully":"Formulário duplicado criado com sucesso"
-
+  "Duplicate form created successfully":"Formulário duplicado criado com sucesso",
+  "Revert": "Reverter"
 
 
 

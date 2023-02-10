@@ -276,7 +276,8 @@ export const RESOURCE_BUNDLES_DE = {
   "URL copied":"URL kopiert",
   "Click Here to Copy":"Klicken Sie hier, um zu kopieren",
   "Resources":"Bronnen",
-  "Duplicate form created successfully":"Doppeltes Formular erfolgreich erstellt"
+  "Duplicate form created successfully":"Doppeltes Formular erfolgreich erstellt",
+  "Revert": "Zurückkehren"
 
 
 

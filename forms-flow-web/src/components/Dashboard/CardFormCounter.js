@@ -1,16 +1,15 @@
 import React, { Fragment } from "react";
 import { OverlayTrigger, Tooltip } from "react-bootstrap";
-import { Translation,useTranslation } from "react-i18next";
+import { Translation } from "react-i18next";
 import { useSelector } from "react-redux";
 
 const CardFormCounter = React.memo((props) => {
-  const {t} = useTranslation();
+ 
   const { submitionData, getStatusDetails } = props;
   const selectedMetricsId = useSelector(
-    (state) => state.metrics.selectedMetricsId
+    (state) => state.metrics?.selectedMetricsId
   );
-  const { formName, parentFormId, applicationCount, formVersions } = submitionData;
-  const version = formVersions.length && formVersions[formVersions.length - 1]?.version;
+  const { formName, parentFormId, applicationCount } = submitionData;
   return (
     <Fragment>
       <div
@@ -30,8 +29,7 @@ const CardFormCounter = React.memo((props) => {
               delay={{ show: 0, hide: 400 }}
               overlay={(propsData) => (
                 <Tooltip id="overlay-example" {...propsData}>
-                  {formName}{" "}
-                  <span style={{ fontSize: "16px" }}>{t("Version")} {version}</span>
+                  {formName}
                 </Tooltip>
               )}
             >

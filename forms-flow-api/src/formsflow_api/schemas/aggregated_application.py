@@ -25,6 +25,7 @@ class ApplicationMetricsRequestSchema(Schema):
     sort_order = fields.Str(data_key="sortOrder", required=False)
     form_type = fields.Str(data_key="formType", required=False)
 
+
 class AggregatedApplicationSchema(Schema):
     """This class manages aggregated application response schema."""
 
@@ -33,12 +34,9 @@ class AggregatedApplicationSchema(Schema):
 
         unknown = EXCLUDE
 
-    form_process_mapper_id = fields.Int(data_key="mapperId")
-    form_name = fields.Str(data_key="formName")
-    version = fields.Str(data_key="version")
-    application_name = fields.Str(data_key="applicationName")
     application_status = fields.Str(data_key="statusName")
     count = fields.Int()
+
 
 class AggregatedApplicationsSchema(Schema):
     """This class manages aggregated application response schema."""
@@ -52,4 +50,3 @@ class AggregatedApplicationsSchema(Schema):
     form_versions = fields.List(fields.Dict, data_key="formVersions")
     submission_count = fields.Integer(data_key="applicationCount")
     form_name = fields.Str(data_key="formName")
- 

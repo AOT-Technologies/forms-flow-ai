@@ -20,10 +20,6 @@ const FormHistoryModal = ({ historyModal, handleModalChange, gotoEdit }) => {
     setSliceFormHistory(formHistory?.slice(0, showCount));
   },[showCount,formHistory]);
 
- 
-
- 
-
   useEffect(() => {
     historyRef?.current?.lastElementChild.scrollIntoView({
       behavior: "smooth",
@@ -109,7 +105,7 @@ const FormHistoryModal = ({ historyModal, handleModalChange, gotoEdit }) => {
                         </span>
                         <p className="mb-0">{getLocalDateTime(history.created)}</p>
                         {
-                          formHistory.length - 1 !== index && (
+                          formHistory.length > 1 && (
                             <span className="text-primary">{
                               history.changeLog?.new_version ? 
                               t(history.changeLog?.version ? `Version ${history.changeLog.version} created` : "New version created") : 

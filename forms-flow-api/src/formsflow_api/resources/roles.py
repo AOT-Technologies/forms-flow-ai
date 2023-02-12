@@ -107,7 +107,7 @@ class KeycloakRolesResource(Resource):
             raise unexpected_error
 
 
-@cors_preflight("GET, POST, OPTIONS")
+@cors_preflight("GET, PUT, DELETE, OPTIONS")
 @API.route("/<string:role_id>", methods=["GET", "PUT", "DELETE", "OPTIONS"])
 @API.doc(params={"role_id": "Group/Role details corresponding to group_id/role name"})
 class KeycloakRolesResourceById(Resource):

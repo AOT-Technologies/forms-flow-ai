@@ -31,11 +31,11 @@ const Preview = ({handleNext, hideComponents, activeStep}) => {
   const [newpublishClicked, setNewpublishClicked] = useState(false);
   const [confirmPublishModal, setConfirmPublishModal] = useState(false);
   const [historyModal, setHistoryModal] = useState(false);
+  const tenantKey = useSelector((state) => state.tenants?.tenantId);
   const redirectUrl = MULTITENANCY_ENABLED ? `/tenant/${tenantKey}/` : "/";
   const submissionAccess = useSelector((state) => state.user?.submissionAccess || []) ;
   const formAccess = useSelector((state) => state.user?.formAccess || []) ;
   const {form, isActive: isFormActive, errors} = useSelector(state => state.form || {});
-  const tenantKey = useSelector((state) => state.tenants?.tenantId);
   const lang = useSelector(state => state.user.lang);
   const formProcessList = useSelector(state => state.process?.formProcessList);
 
@@ -63,8 +63,6 @@ const Preview = ({handleNext, hideComponents, activeStep}) => {
   const handlePublishAsNewVersion = ()=>{
     setNewpublishClicked(true);
     setConfirmPublishModal(!confirmPublishModal);
-
-
     const newFormData = manipulatingFormData(
       _.cloneDeep(form),
       MULTITENANCY_ENABLED,
@@ -79,6 +77,7 @@ const Preview = ({handleNext, hideComponents, activeStep}) => {
     newFormData.name = newPathAndName;
     newFormData.componentChanged = true;
     delete newFormData.machineName;
+    delete newFormData.parentFormId;
     newFormData.newVersion = true;
     delete newFormData._id;
     formCreate(newFormData)

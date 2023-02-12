@@ -34,6 +34,7 @@ import {
   setFormSearchLoading,
   setFormUploadList,
   updateFormUploadCounter,
+  formUploadFailureCount
 } from "../../actions/checkListActions";
 import FileModal from "./FileUpload/fileUploadModal";
 import { useTranslation, Translation } from "react-i18next";
@@ -47,7 +48,7 @@ import {
   getApplicationCount,
 } from "../../apiManager/services/processServices";
 import { setBpmFormSearch } from "../../actions/formActions";
-import { checkAndAddTenantKey } from "../../helper/helper";
+import { addTenantkey } from "../../helper/helper";
 import { formCreate, formUpdate } from "../../apiManager/services/FormServices";
 import { designerColums, getoptions, userColumns } from "./constants/table";
 import paginationFactory from "react-bootstrap-table2-paginator";
@@ -127,7 +128,6 @@ const List = React.memo((props) => {
     setIsLoading(false);
     dispatch(setBPMFormListLoading(true));
   }, []);
-
   const fetchForms = () => {
     setShowClearButton(searchText);
     let filters = [pageNo, limit, sortBy, sortOrder, searchText];
@@ -202,8 +202,8 @@ const List = React.memo((props) => {
   };
   const handleSearch = () => {
     if (searchText != searchInputBox.current.value) {
+      searchInputBox.current.value === '' ? dispatch(setBPMFormLimit(5)) : '';
       dispatch(setBPMFormListPage(1));
-
       dispatch(setBpmFormSearch(searchInputBox.current.value));
     }
   };
@@ -245,10 +245,9 @@ const List = React.memo((props) => {
       // eslint-disable-next-line no-unused-vars
       saveFormProcessMapperPost(data, (err, res) => {
         if (!err) {
-          toast.success(t("Form Sucessfully uploaded"));
           fetchForms();
         } else {
-          toast.error(t("Error in creating form process mapper"));
+          dispatch(formUploadFailureCount());
         }
       })
     );
@@ -278,8 +277,8 @@ const List = React.memo((props) => {
               let tenantDetails = {};
               if (MULTITENANCY_ENABLED && tenantKey) {
                 tenantDetails = { tenantKey };
-                formData.path = checkAndAddTenantKey(formData.path, tenantKey);
-                formData.name = checkAndAddTenantKey(formData.name, tenantKey);
+                formData.path = addTenantkey(formData.path, tenantKey);
+                formData.name = addTenantkey(formData.name, tenantKey);
               }
               const newFormData = {
                 ...formData,
@@ -312,8 +311,7 @@ const List = React.memo((props) => {
                                   if (!error) {
                                     newFormData._id = formObj._id;
                                     newFormData.access = formObj.access;
-                                    newFormData.submissionAccess =
-                                      newFormData.access = formObj.submissionAccess;
+                                    newFormData.submissionAccess = formObj.submissionAccess;
                                     newFormData.componentChanged =
                                       (!_isEquial(newFormData.components, formObj.components) ||
                                         newFormData.display !== formObj.display ||
@@ -373,8 +371,7 @@ const List = React.memo((props) => {
                                         dispatch(
                                           setFormFailureErrorData("form", err)
                                         );
-                                        toast.error(t(err.message));
-                                        setShowFormUploadModal(false);
+                                        dispatch(formUploadFailureCount());
                                         reject();
                                       });
                                   } else {
@@ -397,7 +394,7 @@ const List = React.memo((props) => {
                                   resolve();
                                 })
                                 .catch((err) => {
-                                  toast.error(err);
+                                  err ? dispatch(formUploadFailureCount()) : '';
                                   reject();
                                 });
                             } else {
@@ -407,7 +404,7 @@ const List = React.memo((props) => {
                           })
                         );
                       } else {
-                        toast.error(err);
+                        dispatch(formUploadFailureCount());
                         reject();
                       }
                     })
@@ -416,13 +413,9 @@ const List = React.memo((props) => {
             });
           })
         );
-      } else {
-        setShowFormUploadModal(false);
-        return toast.error(t("Error in JSON file structure"));
       }
     } catch (err) {
-      setShowFormUploadModal(false);
-      return toast.error(t("Error in JSON file structure"));
+      err ? dispatch(formUploadFailureCount()) : '';
     }
   };
 
@@ -548,6 +541,7 @@ const List = React.memo((props) => {
                   </Button>
                   <input
                     type="file"
+                    value=''
                     className="d-none"
                     multiple={false}
                     accept=".json,application/json"
@@ -598,8 +592,8 @@ const List = React.memo((props) => {
                       title={t("Sort by form name")}
                       style={{
                         opacity: `${sortOrder === "desc" || sortOrder === "-title"
-                            ? 1
-                            : 0.5
+                          ? 1
+                          : 0.5
                           }`,
                       }}
                     />
@@ -701,8 +695,8 @@ const List = React.memo((props) => {
                               ...base,
                               background: "rgba(255, 255, 255)",
                               height: `${limit > 5
-                                  ? "100% !important"
-                                  : "350px !important"
+                                ? "100% !important"
+                                : "350px !important"
                                 }`,
                               top: "65px",
                             }),

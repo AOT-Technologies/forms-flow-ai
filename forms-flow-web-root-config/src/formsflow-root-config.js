@@ -10,6 +10,13 @@ import * as serviceWorkerRegistration from './serviceWorkerRegistration';
 
 const publish = (event, data) => PubSub.publish(event, data)
 const subscribe = (event, callback) => PubSub.subscribe(event, callback)
+let instance = null;
+subscribe("FF_AUTH", (msg, data)=>{
+  instance = data
+})
+
+const getKcInstance = ()=> instance
+
 // Register service worker and if new changes skip waiting and activate new service worker
 serviceWorkerRegistration.register({
   onUpdate: registration => {
@@ -40,6 +47,7 @@ applications.forEach((mfe)=>registerApplication({
   customProps: {
     publish,
     subscribe,
+    getKcInstance
   }
 }));
 layoutEngine.activate();

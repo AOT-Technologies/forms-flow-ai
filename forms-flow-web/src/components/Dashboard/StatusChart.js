@@ -137,7 +137,7 @@ const ChartForm = React.memo((props) => {
                 </div>
               ))}
             </div>
-              ) : "No data"
+              ) : "No submissions"
             }
           </div>
           </LoadingOverlay>

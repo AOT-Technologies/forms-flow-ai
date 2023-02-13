@@ -264,7 +264,8 @@ const View = React.memo((props) => {
             }}
           />
           {
-            <Form
+            <div className="form-view-wrapper">
+              <Form
               form={form}
               submission={submission.submission}
               url={url}
@@ -285,6 +286,7 @@ const View = React.memo((props) => {
               }}
               onCustomEvent={(evt) => onCustomEvent(evt, redirectUrl)}
             />
+            </div>
           }
         </div>
       </LoadingOverlay>

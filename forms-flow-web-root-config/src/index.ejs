@@ -68,9 +68,10 @@
         {
           "imports": {
             "@formsflow/root-config": "//localhost:3000/formsflow-root-config.js",
-            "@formsflow/nav": "//localhost:8080/formsflow-nav.js",
+            "@formsflow/nav": "//localhost:8080/forms-flow-nav.js",
             "@formsflow/formsflow-web": "//localhost:3001/single-spa-build.js",
-            "@formsflow/admin":"//localhost:3002/formsflow-admin.js",
+            "@formsflow/admin":"//localhost:8001/forms-flow-admin.js",
+            "@formsflow/service":"//localhost:8081/forms-flow-service.js",
             "react": "https://cdn.jsdelivr.net/npm/react@17.0.2/umd/react.development.js",
             "react-dom": "https://cdn.jsdelivr.net/npm/react-dom@17.0.2/umd/react-dom.development.js"
           }
@@ -84,6 +85,7 @@
               "@formsflow/nav": "<%= process.env.FORMSFLOW_NAV_URL %>",
               "@formsflow/formsflow-web": "<%= process.env.FORMSFLOW_WEB_URL %>",
               "@formsflow/admin":"<%= process.env.FORMSFLOW_ADMIN_URL %>",
+              "@formsflow/service":"<%= process.env.FORMSFLOW_SERVICE_URL %>",
               "react": "https://cdn.jsdelivr.net/npm/react@17.0.2/umd/react.production.min.js",
               "react-dom": "https://cdn.jsdelivr.net/npm/react-dom@17.0.2/umd/react-dom.production.min.js"
             }

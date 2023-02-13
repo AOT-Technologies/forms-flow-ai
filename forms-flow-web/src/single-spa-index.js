@@ -30,11 +30,11 @@ if (typeof window.__REACT_DEVTOOLS_GLOBAL_HOOK__ === "object") {
     }
   );
 const createRootComponent = (props)=>{
-    const {publish, subscribe} = props;
+    const {publish, subscribe, getKcInstance} = props;
     const store = StoreService.configureStore();
     const history = StoreService.history;
     return <FlagsProvider features={featureFlags}>
-        <App {...{ store, history, publish, subscribe }} />
+        <App {...{ store, history, publish, subscribe, getKcInstance }} />
     </FlagsProvider>;
 };
 

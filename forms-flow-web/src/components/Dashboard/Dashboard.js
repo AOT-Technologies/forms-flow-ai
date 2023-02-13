@@ -385,6 +385,7 @@ const Dashboard = React.memo(() => {
                           submissionsStatusList={submissionsStatusList}
                           submissionData={showSubmissionData}
                           getStatusDetails={getStatusDetails}
+                          submissionStatusCountLoader={submissionStatusCountLoader}
                         />
                       </Modal.Body>
                     </Modal>

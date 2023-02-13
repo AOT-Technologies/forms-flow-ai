@@ -1,5 +1,6 @@
-import React from "react";
+import React, { useMemo } from "react";
 import { useTranslation } from "react-i18next";
+import LoadingOverlay from "react-loading-overlay";
 
 import { Legend, PieChart, Pie, Cell, LabelList } from "recharts";
 
@@ -16,15 +17,30 @@ const COLORS = [
 
 // label={renderCustomizedLabel}
 const ChartForm = React.memo((props) => {
-  const { submissionsStatusList, submissionData } = props;
+  const { submissionsStatusList, submissionData, submissionStatusCountLoader } = props;
   const {formVersions, formName, parentFormId} = submissionData;
-  formVersions.sort((item1,item2)=>{
-    let version1 = item1.version.replace("v","");
-    let version2 = item2.version.replace("v","");
-    return version1 > version2 ? 1 : -1;
-  });
+  // here checked 
+  const checkedFormVersions =  useMemo(()=> {
+    if(formVersions[formVersions.length - 1].version){
+      return formVersions;
+      }
+    return formVersions.map((i,index)=>i.version === null ? 
+           {...i, version:`v${index + 1}`} : i );
+  },[formVersions]);
 
-  const version = formVersions?.length && formVersions[formVersions.length - 1].version;
+  const sortedFormVersions = useMemo(()=>{
+    if(checkedFormVersions.length > 1){
+      return checkedFormVersions.sort((item1, item2)=>{
+        const version1 = +item1.version?.replace("v");
+        const version2 = +item2.version?.replace("v");
+        return version1 > version2 ? -1 : 1 ;
+      });
+    }
+    return checkedFormVersions;
+  },[formVersions]);
+
+
+  const version = checkedFormVersions?.length;
 
   const { t } = useTranslation();
   const pieData = submissionsStatusList || [];
@@ -50,16 +66,16 @@ const ChartForm = React.memo((props) => {
           </div>
           <p>
             <span className="text-primary">{t("Version")} :</span>{" "}
-            {version}
+            {`v${version}`}
           </p>
           </div>
           {
-            formVersions.length > 1 ? (
+            sortedFormVersions.length > 1 ? (
               <div className="col-3">
             <p className="form-label mb-0">Select form version</p>
             <select className="form-select" aria-label="Default select example"  onChange={(e) =>{ handlePieData(e.target.value);}}>
                 {
-                  formVersions.map((option)=> <option key={option.formId} 
+                  sortedFormVersions.map((option)=> <option key={option.formId} 
                   value={option.formId}>{option.version}</option>)
                 }
                 <option selected value={"all"}>All</option>
@@ -68,6 +84,11 @@ const ChartForm = React.memo((props) => {
             ) : ""
           }
           </div>
+          <LoadingOverlay
+        active={submissionStatusCountLoader}
+        spinner
+        text={t("Loading...")}
+      >
           <div className="white-box status-container flex-row d-md-flex align-items-center">
             <div className="chart text-center">
               <PieChart width={400} height={400}>
@@ -119,6 +140,7 @@ const ChartForm = React.memo((props) => {
               ) : "No data"
             }
           </div>
+          </LoadingOverlay>
         </div>
       </div>
     </div>

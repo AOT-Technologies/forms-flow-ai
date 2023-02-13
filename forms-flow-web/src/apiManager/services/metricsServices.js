@@ -37,6 +37,7 @@ export const fetchMetricsSubmissionCount = (
         if (res.data) {
           dispatch(setMetricsDateRangeLoading(false));
           dispatch(setMetricsLoader(false));
+          dispatch(setMetricsStatusLoader(false));
           dispatch(setMetricsSubmissionCount(res.data.applications));
           dispatch(setMetricsTotalItems(res.data.totalCount));
           if (res.data.applications && res.data.applications[0]) {

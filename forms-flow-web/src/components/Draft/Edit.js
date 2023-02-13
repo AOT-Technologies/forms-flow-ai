@@ -45,7 +45,8 @@ import SubmissionError from "../../containers/SubmissionError";
 import SavingLoading from "../Loading/SavingLoading";
 import Confirm from "../../containers/Confirm";
 import { setDraftDelete } from "../../actions/draftActions";
-
+import { setFormStatusLoading } from "../../actions/processActions"; 
+import { getFormProcesses } from "../../apiManager/services/processServices";
 const View = React.memo((props) => {
   const { t } = useTranslation();
   const lang = useSelector((state) => state.user.lang);
@@ -114,6 +115,13 @@ const View = React.memo((props) => {
       }
     }
   };
+  const formStatusLoading = useSelector(
+    (state) => state.process?.formStatusLoading
+  );
+
+  const processData = useSelector(
+    (state) => state.process?.formProcessList
+  );
 
   /**
    * We will repeatedly update the current state to draft table
@@ -128,19 +136,33 @@ const View = React.memo((props) => {
   );
 
   useEffect(() => {
+    if (isAuthenticated) {
+      dispatch(setFormStatusLoading(true));
+      dispatch(
+        getFormProcesses(formId, (err,) => {
+          if (!err) {
+            dispatch(setFormStatusLoading(false));
+          }
+        })
+      );
+    }
+  }, [isAuthenticated,formId]);
+
+  useEffect(() => {
     return () => {
       let payload = getDraftReqFormat(formId, draftRef.current);
       if (poll) saveDraft(payload, exitType.current);
     };
   }, [poll, exitType.current, draftSubmission?.id]);
 
-  if (isActive || isPublicStatusLoading) {
+  if (isActive || isPublicStatusLoading || formStatusLoading) {
     return (
       <div data-testid="loading-view-component">
         <Loading />
       </div>
     );
   }
+  
 
   const deleteDraft = () => {
     dispatch(
@@ -263,9 +285,9 @@ const View = React.memo((props) => {
               onYes();
             }}
           />
-          {
-            <div className="form-view-wrapper">
-              <Form
+          { processData?.status === "active" ?
+          <div className="form-view-wrapper">
+            <Form
               form={form}
               submission={submission.submission}
               url={url}
@@ -287,6 +309,23 @@ const View = React.memo((props) => {
               onCustomEvent={(evt) => onCustomEvent(evt, redirectUrl)}
             />
             </div>
+             : <span>
+            <div
+              className="container"
+              style={{
+                maxWidth: "900px",
+                margin: "auto",
+                height: "50vh",
+                display: "flex",
+                flexDirection: "column",
+                alignItems: "center",
+                justifyContent: "center",
+              }}
+            >
+              <h3>{t("Form not published")}</h3>
+              <p>{t("You can't submit this form until it is published")}</p>
+            </div>
+          </span>
           }
         </div>
       </LoadingOverlay>

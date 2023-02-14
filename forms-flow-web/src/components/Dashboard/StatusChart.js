@@ -3,6 +3,7 @@ import { useTranslation } from "react-i18next";
 import LoadingOverlay from "react-loading-overlay";
 
 import { Legend, PieChart, Pie, Cell, LabelList } from "recharts";
+import { sortAlphaNum } from "../../helper/helper";
 
 const COLORS = [
   "#0088FE",
@@ -33,7 +34,7 @@ const ChartForm = React.memo((props) => {
     sorted by version so need to sort by asc order */
   const sortedFormVersions = useMemo(()=>{
     if(checkedFormVersions.length > 1   ){
-      return checkedFormVersions.sort((item1, item2)=> item2.version > item1.version ? -1 : 1);
+      return sortAlphaNum({data:checkedFormVersions,key:"version",order:"asc"});
     }
     return checkedFormVersions;
   },[formVersions]);

@@ -1,6 +1,4 @@
 import { RequestService } from "@formsflow/service";
-
-// httpGETRequest,
 import API from "../endpoints";
 import { setCustomSubmission } from "../../actions/checkListActions";
 import { replaceUrl } from "../../helper/helper";

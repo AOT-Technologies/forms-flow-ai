@@ -1,6 +1,5 @@
-import { httpGETRequest, httpPUTRequest } from "../httpRequestHandler";
 import API from "../endpoints/index";
-import UserService from "../../services/UserService";
+import { StorageService, RequestService } from "@formsflow/service";
 import { toast } from "react-toastify";
 import { Translation } from "react-i18next";
 import { setAccessForForm, setRoleIds } from "../../actions/roleActions";
@@ -12,7 +11,11 @@ export const updateUserlang = (data) => {
 
   // eslint-disable-next-line no-unused-vars
   return (dispatch) => {
-    httpPUTRequest(apiUpdatelang, { locale: data }, UserService.getToken())
+    RequestService.httpPUTRequest(
+      apiUpdatelang,
+      { locale: data },
+      StorageService.get(StorageService.User.AUTH_TOKEN)
+    )
       .then((res) => {
         if (res.data) {
           //toast.success(<Translation>{(t)=>t(""Successfully Updated"")}</Translation>);
@@ -32,7 +35,12 @@ export const getFormioRoleIds = (...rest) => {
   const done = rest.length ? rest[0] : () => {};
   const url = MULTITENANCY_ENABLED ? API.GET_TENANT_DATA : API.FORMIO_ROLES;
   return (dispatch) => {
-    httpGETRequest(url, {}, UserService.getToken(), true)
+    RequestService.httpGETRequest(
+      url,
+      {},
+      StorageService.get(StorageService.User.AUTH_TOKEN),
+      true
+    )
       .then((res) => {
         const token = res.headers["x-jwt-token"];
         if (res.data && res.data.form && token) {

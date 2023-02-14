@@ -19,7 +19,8 @@ const COLORS = [
 const ChartForm = React.memo((props) => {
   const { submissionsStatusList, submissionData, submissionStatusCountLoader } = props;
   const {formVersions, formName, parentFormId} = submissionData;
-  // here checked 
+
+  /* ----------------------- check form versions is null ---------------------- */
   const checkedFormVersions =  useMemo(()=> {
     if(formVersions[formVersions.length - 1].version){
       return formVersions;
@@ -28,13 +29,11 @@ const ChartForm = React.memo((props) => {
            {...i, version:`v${index + 1}`} : i );
   },[formVersions]);
 
+  /* sometimes formVersions array not 
+    sorted by version so need to sort by asc order */
   const sortedFormVersions = useMemo(()=>{
-    if(checkedFormVersions.length > 1){
-      return checkedFormVersions.sort((item1, item2)=>{
-        const version1 = +item1.version?.replace("v");
-        const version2 = +item2.version?.replace("v");
-        return version1 > version2 ? -1 : 1 ;
-      });
+    if(checkedFormVersions.length > 1   ){
+      return checkedFormVersions.sort((item1, item2)=> item2.version > item1.version ? -1 : 1);
     }
     return checkedFormVersions;
   },[formVersions]);

@@ -458,12 +458,12 @@ class Application(
         if order_by == MetricsState.MODIFIED.value:
             order = "modified"
 
-        #to get the max form id to take the latest form name
+        # to get the max form id to take the latest form name
         max_form_id = (
             db.session.query(
                 FormProcessMapper.form_id.label("form_id"),
                 FormProcessMapper.parent_form_id.label("parent_form_id"),
-                db.func.max(FormProcessMapper.id).label("id") # pylint: disable=not-callable
+                db.func.max(FormProcessMapper.id).label("id")  # pylint: disable=not-callable
             ).group_by(
                 FormProcessMapper.form_id,
                 FormProcessMapper.parent_form_id,
@@ -484,7 +484,7 @@ class Application(
             .filter(getattr(Application, order).between(from_date, to_date))
             .group_by(max_form_id.c.parent_form_id)
             .subquery("subquery_application_count"))
-        #taking latest form name
+        # taking latest form name
         latest_form_name = (
             db.session.query(
                 subquery_application_count.c.parent_form_id,

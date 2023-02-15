@@ -1,9 +1,8 @@
-import React, { useMemo } from "react";
+import React from "react";
 import { useTranslation } from "react-i18next";
 import LoadingOverlay from "react-loading-overlay";
 
 import { Legend, PieChart, Pie, Cell, LabelList } from "recharts";
-import { sortAlphaNum } from "../../helper/helper";
 
 const COLORS = [
   "#0088FE",
@@ -21,26 +20,7 @@ const ChartForm = React.memo((props) => {
   const { submissionsStatusList, submissionData, submissionStatusCountLoader } = props;
   const {formVersions, formName, parentFormId} = submissionData;
 
-  /* ----------------------- check form versions is null ---------------------- */
-  const checkedFormVersions =  useMemo(()=> {
-    if(formVersions[formVersions.length - 1].version){
-      return formVersions;
-      }
-    return formVersions.map((i,index)=>i.version === null ? 
-           {...i, version:`v${index + 1}`} : i );
-  },[formVersions]);
-
-  /* sometimes formVersions array not 
-    sorted by version so need to sort by asc order */
-  const sortedFormVersions = useMemo(()=>{
-    if(checkedFormVersions.length > 1   ){
-      return sortAlphaNum({data:checkedFormVersions,key:"version",order:"asc"});
-    }
-    return checkedFormVersions;
-  },[formVersions]);
-
-
-  const version = checkedFormVersions?.length;
+  const version = formVersions?.length;
 
   const { t } = useTranslation();
   const pieData = submissionsStatusList || [];
@@ -70,13 +50,13 @@ const ChartForm = React.memo((props) => {
           </p>
           </div>
           {
-            sortedFormVersions.length > 1 ? (
+            formVersions.length > 1 ? (
               <div className="col-3">
             <p className="form-label mb-0">Select form version</p>
             <select className="form-select" aria-label="Default select example"  onChange={(e) =>{ handlePieData(e.target.value);}}>
                 {
-                  sortedFormVersions.map((option)=> <option key={option.formId} 
-                  value={option.formId}>{option.version}</option>)
+                  formVersions.map((option)=> <option key={option.formId} 
+                  value={option.formId}>v{option.version}</option>)
                 }
                 <option selected value={"all"}>All</option>
             </select>

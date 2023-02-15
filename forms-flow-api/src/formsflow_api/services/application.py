@@ -368,6 +368,7 @@ class ApplicationService:  # pylint: disable=too-many-public-methods
             sort_order=sort_order,
             order_by=order_by,
         )
+
         schema = AggregatedApplicationsSchema()
         return (
             schema.dump(applications, many=True),

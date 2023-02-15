@@ -488,7 +488,7 @@ class Application(
         latest_form_name = (
             db.session.query(
                 subquery_application_count.c.parent_form_id,
-                FormProcessMapper.form_name,
+                FormProcessMapper.form_name.label("form_name"),
                 subquery_application_count.c.application_count,
             ).join(
                 subquery_application_count,
@@ -544,7 +544,7 @@ class Application(
         result_proxy = FormProcessMapper.tenant_authorization(result_proxy)
         if form_name:
             result_proxy = result_proxy.filter(
-                subquery_application_count.c.form_name.ilike(f"%{form_name}%")
+                latest_form_name.c.form_name.ilike(f"%{form_name}%")
             )
 
         sort_by, sort_order = validate_sort_order_and_order_by(sort_by, sort_order)

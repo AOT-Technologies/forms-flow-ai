@@ -257,13 +257,17 @@ const View = React.memo((props) => {
             ""
           )}
         </div>
-        <button
-          className="btn btn-danger mr-2"
-          style={{ width: "8.5em" }}
-          onClick={() => deleteDraft()}
-        >
-          {t("Discard Draft")}
-        </button>
+        {processData?.status === "active" ? (
+          <button
+            className="btn btn-danger mr-2"
+            style={{ width: "8.5em" }}
+            onClick={() => deleteDraft()}
+          >
+            {t("Discard Draft")}
+          </button>
+        ) : (
+          ""
+        )}
       </div>
       <Errors errors={errors} />
       <LoadingOverlay
@@ -285,48 +289,49 @@ const View = React.memo((props) => {
               onYes();
             }}
           />
-          { processData?.status === "active" ?
-          <div className="form-view-wrapper">
-            <Form
-              form={form}
-              submission={submission.submission}
-              url={url}
-              options={{
-                ...options,
-                language: lang,
-                i18n: formio_resourceBundles,
-              }}
-              hideComponents={hideComponents}
-              onChange={(formData) => {
-                setDraftData(formData.data);
-                draftRef.current = formData.data;
-              }}
-              onSubmit={(data) => {
-                setPoll(false);
-                exitType.current = "SUBMIT";
-                onSubmit(data, form._id, isPublic);
-              }}
-              onCustomEvent={(evt) => onCustomEvent(evt, redirectUrl)}
-            />
+          {processData?.status === "active" ? (
+            <div className="form-view-wrapper">
+              <Form
+                form={form}
+                submission={submission.submission}
+                url={url}
+                options={{
+                  ...options,
+                  language: lang,
+                  i18n: formio_resourceBundles,
+                }}
+                hideComponents={hideComponents}
+                onChange={(formData) => {
+                  setDraftData(formData.data);
+                  draftRef.current = formData.data;
+                }}
+                onSubmit={(data) => {
+                  setPoll(false);
+                  exitType.current = "SUBMIT";
+                  onSubmit(data, form._id, isPublic);
+                }}
+                onCustomEvent={(evt) => onCustomEvent(evt, redirectUrl)}
+              />
             </div>
-             : <span>
-            <div
-              className="container"
-              style={{
-                maxWidth: "900px",
-                margin: "auto",
-                height: "50vh",
-                display: "flex",
-                flexDirection: "column",
-                alignItems: "center",
-                justifyContent: "center",
-              }}
-            >
-              <h3>{t("Form not published")}</h3>
-              <p>{t("You can't submit this form until it is published")}</p>
-            </div>
-          </span>
-          }
+          ) : (
+            <span>
+              <div
+                className="container"
+                style={{
+                  maxWidth: "900px",
+                  margin: "auto",
+                  height: "50vh",
+                  display: "flex",
+                  flexDirection: "column",
+                  alignItems: "center",
+                  justifyContent: "center",
+                }}
+              >
+                <h3>{t("Form not published")}</h3>
+                <p>{t("You can't submit this form until it is published")}</p>
+              </div>
+            </span>
+          )}
         </div>
       </LoadingOverlay>
     </div>

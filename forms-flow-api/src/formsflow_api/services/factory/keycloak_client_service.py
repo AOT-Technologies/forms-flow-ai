@@ -1,7 +1,9 @@
 """Keycloak Admin implementation for client related operations."""
-from typing import Dict
+from http import HTTPStatus
+from typing import Dict, List
 
 from flask import current_app
+from formsflow_api_utils.exceptions import BusinessException
 
 from formsflow_api.services import KeycloakAdminAPIService
 
@@ -14,6 +16,14 @@ class KeycloakClientService(KeycloakAdmin):
     def __init__(self):
         """Initialize client."""
         self.client = KeycloakAdminAPIService()
+
+    def __populate_user_roles(self, user_list: List) -> List:
+        """Collects roles for a user list and populates the role attribute."""
+        for user in user_list:
+            user["role"] = (
+                self.client.get_user_roles(user.get("id")) if user.get("id") else []
+            )
+        return user_list
 
     def get_analytics_groups(self, page_no: int, limit: int):
         """Get analytics roles."""
@@ -28,15 +38,21 @@ class KeycloakClientService(KeycloakAdmin):
         response["id"] = response.get("name", None)
         return response
 
-    def get_users(self, **kwargs):
+    def get_users(self, page_no: int, limit: int, role: bool, group_name: str):
         """Get users under this client with formsflow-reviewer role."""
+        # group_name was hardcoded before as `formsflow-reviewer` make sure
+        # neccessary changes in the client side are made for role based env
         current_app.logger.debug(
             "Fetching client based users from keycloak with formsflow-reviewer role..."
         )
         client_id = self.client.get_client_id()
-        return self.client.get_request(
-            url_path=f"clients/{client_id}/roles/formsflow-reviewer/users"
-        )
+        url = f"clients/{client_id}/roles/{group_name}/users"
+        if page_no and limit:
+            url += f"?first={page_no}&max={limit}"
+        users_list = self.client.get_request(url)
+        if role:
+            users_list = self.__populate_user_roles(users_list)
+        return users_list
 
     def update_group(self, group_id: str, data: Dict):
         """Update keycloak role by role name."""
@@ -95,3 +111,14 @@ class KeycloakClientService(KeycloakAdmin):
         return self.client.delete_request(
             url_path=f"users/{user_id}/role-mappings/clients/{client_id}", data=[data]
         )
+
+    def search_realm_users(self, search: str, page_no: int, limit: int, role: bool):
+        """Search users in a realm."""
+        if page_no is None or limit is None:
+            raise BusinessException(
+                "Missing pagination parameters", HTTPStatus.BAD_REQUEST
+            )
+        user_list = self.client.get_realm_users(search, page_no, limit)
+        if role:
+            user_list = self.__populate_user_roles(user_list)
+        return user_list

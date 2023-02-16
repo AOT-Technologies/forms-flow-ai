@@ -637,21 +637,18 @@ class Application(
         cls, form_process_mapper_id: int
     ):
         """Returns the total applications corresponding to a form_process_mapper_id."""
-        result_proxy = (
-            db.session.query(
+        result_proxy =db.session.query(
                 func.count(Application.id).label(  # pylint: disable=not-callable
                     "count"
                 )
-            )
-            .join(
+            ).join(
                 FormProcessMapper,
                 FormProcessMapper.id == Application.form_process_mapper_id,
-            )
-            .filter(FormProcessMapper.id == form_process_mapper_id)
-            .filter(Application.application_status != DRAFT_APPLICATION_STATUS)
-        )
+            ).filter(FormProcessMapper.id == form_process_mapper_id)\
+            .filter(Application.application_status != DRAFT_APPLICATION_STATUS).one_or_none()
+
         # returns a list of one element with count of applications
-        return [dict(row) for row in result_proxy][0]["count"]
+        return result_proxy[0]
 
     @classmethod
     def get_form_mapper_by_application_id(cls, application_id: int):

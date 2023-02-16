@@ -7,8 +7,7 @@ from alembic import command
 from alembic.config import Config
 from formsflow_api_utils.utils import jwt as _jwt
 from formsflow_api_utils.utils.startup import setup_jwt_manager
-from sqlalchemy import create_engine, text
-from sqlalchemy.orm import scoped_session, sessionmaker
+from sqlalchemy import text
 
 from formsflow_api import create_app
 from formsflow_api.models import db as _db
@@ -50,20 +49,18 @@ def client_ctx(app):  # pylint: disable=redefined-outer-name
 
 
 @pytest.fixture(scope="session")
-def db(app):  # pylint: disable=redefined-outer-name, invalid-name
+def database(app):  # pylint: disable=redefined-outer-name, invalid-name
     """Return a session-wide initialised database.
 
     Drops all existing tables - Meta follows Postgres FKs
     """
     # Run database migrations
     with app.app_context():
-        drop_schema_sql = text(
-            """DROP SCHEMA public CASCADE;
+        drop_schema_sql = text("""DROP SCHEMA public CASCADE;
                              CREATE SCHEMA public;
                              GRANT ALL ON SCHEMA public TO postgres;
                              GRANT ALL ON SCHEMA public TO public;
-                          """
-        )
+                          """)
 
         sess = _db.session()
         sess.execute(drop_schema_sql)
@@ -73,29 +70,30 @@ def db(app):  # pylint: disable=redefined-outer-name, invalid-name
         command.upgrade(alembic_cfg, "head")
 
         _db.create_all()
-        yield _db
-        _db.drop_all()
+        return _db
 
 
 @pytest.fixture(scope="function")
-def session(app, db):  # pylint: disable=redefined-outer-name, invalid-name
+def session(app, database):  # pylint: disable=redefined-outer-name, invalid-name
     """Return a function-scoped session."""
     with app.app_context():
-        engine = create_engine(app.config["SQLALCHEMY_DATABASE_URI"])
+        # TODO, refactor to improve test execution time.
+        truncate_all_expr = text(
+            """SELECT 'TRUNCATE TABLE ' || table_schema || '.' || table_name || ' RESTART IDENTITY CASCADE;'
+            FROM information_schema.tables WHERE table_schema = 'public'; """)
 
-        connection = engine.connect()
-        transaction = connection.begin()
+        sess = _db.session()
+        for tr in sess.execute(truncate_all_expr).fetchall():
+            sess.execute(text(tr[0]))
 
-        options = dict(bind=connection, binds={})
-        session = scoped_session(sessionmaker(**options))
-        session.begin_nested()
-        db.session = session
+        conn = database.engine.connect()
+        sess = database.session
 
-        yield session
+        yield sess
 
-        transaction.rollback()
-        connection.close()
-        session.remove()
+        # Cleanup
+        sess.remove()
+        conn.close()
 
 
 @pytest.fixture(scope="session", autouse=True)

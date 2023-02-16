@@ -149,7 +149,7 @@ class Draft(AuditDateTimeMixin, BaseModel, db.Model):
         result = FormProcessMapper.tenant_authorization(result)
         total_count = result.count()
         limit = total_count if limit is None else limit
-        result = result.paginate(page_number, limit)
+        result = result.paginate(page=page_number, per_page=limit, error_out=False)
         return result.items, total_count
 
     @classmethod

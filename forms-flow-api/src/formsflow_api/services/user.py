@@ -14,6 +14,7 @@ class UserService:
             "email": user.get("email"),
             "firstName": user.get("firstName"),
             "lastName": user.get("lastName"),
+            "role": user.get("role"),
         }
 
     @staticmethod

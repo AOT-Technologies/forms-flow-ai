@@ -24,6 +24,7 @@ from formsflow_api.schemas.keycloak_groups import KeycloakDashboardGroupSchema
 from formsflow_api.schemas.user import (
     UserlocaleReqSchema,
     UserPermissionUpdateSchema,
+    UsersListSchema,
 )
 
 from .form_history_logs import FormHistorySchema

@@ -20,6 +20,7 @@ class AuthType(Enum):
     DASHBOARD = "DASHBOARD"
     FORM = "FORM"
     FILTER = "FILTER"
+    DESIGNER = "DESIGNER"
 
     def __str__(self):
         """To string value."""

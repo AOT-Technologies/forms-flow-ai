@@ -2,6 +2,7 @@
 
 from formsflow_api.schemas.aggregated_application import (
     AggregatedApplicationSchema,
+    AggregatedApplicationsSchema,
     ApplicationMetricsRequestSchema,
 )
 from formsflow_api.schemas.application import (

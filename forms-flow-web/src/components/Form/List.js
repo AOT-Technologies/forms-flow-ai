@@ -56,7 +56,7 @@ import filterFactory from "react-bootstrap-table2-filter";
 import overlayFactory from "react-bootstrap-table2-overlay";
 import { SpinnerSVG } from "../../containers/SpinnerSVG";
 import { getFormattedForm, INACTIVE } from "./constants/formListConstants";
-
+import searchValidator from '../../helper/regExp/formSearchValidation';
 
 const List = React.memo((props) => {
   const { t } = useTranslation();
@@ -85,7 +85,7 @@ const List = React.memo((props) => {
   const [isAscend, setIsAscending] = useState(true);
   const searchText = useSelector((state) => state.bpmForms.searchText);
   const [searchTextInput, setSearchTextInput] = useState(searchText);
-
+  const [isSearchValid, setIsSearchValid] = useState(true);
   const [isLoading, setIsLoading] = React.useState(false);
 
   const formType = useSelector((state) => state.bpmForms.formType);
@@ -151,7 +151,9 @@ const List = React.memo((props) => {
     searchText,
     formType
   ]);
-
+  useEffect(() => {
+    setIsSearchValid(searchValidator(searchTextInput));
+  }, [searchTextInput]);
 
   const formCheck = (formCheckList) => {
     const result = formCheckList.reduce(function (obj, v) {
@@ -201,7 +203,7 @@ const List = React.memo((props) => {
     dispatch(setBPMFormListPage(newState.page));
   };
   const handleSearch = () => {
-    if (searchText != searchInputBox.current.value) {
+    if (searchText != searchInputBox.current.value && isSearchValid) {
       searchInputBox.current.value === '' ? dispatch(setBPMFormLimit(5)) : '';
       dispatch(setBPMFormListPage(1));
       dispatch(setBpmFormSearch(searchInputBox.current.value));
@@ -569,7 +571,7 @@ const List = React.memo((props) => {
           <section className="custom-grid grid-forms">
             <Errors errors={errors} />
             <div className="  row mt-2 mx-2">
-              <div className="col" style={{ marginLeft: "5px" }}>
+              <div className="col" style={{ marginLeft: "5px", marginTop: "-18px" }}>
                 <div className="input-group">
                   <span
                     className="sort-span"
@@ -600,6 +602,7 @@ const List = React.memo((props) => {
                   </span>
                   <div className="form-outline ml-3">
                     <input
+                      style={{ color: `${!isSearchValid ? "red" : ''}` }}
                       type="search"
                       id="form1"
                       ref={searchInputBox}
@@ -626,12 +629,12 @@ const List = React.memo((props) => {
                   )}
                   <button
                     type="button"
-                    className="btn btn-outline-primary ml-2"
+                    className={`${!isSearchValid ? 'btn bg-transparent ml-2 searchInvalid' : 'btn btn-outline-primary ml-2'}`}
                     name="search-button"
-                    title={t("Click to search")}
+                    title={t(`${!isSearchValid ? "Kindly remove the special charactors...!" : "Click to search"}`)}
                     onClick={() => handleSearch()}
                   >
-                    <i className="fa fa-search"></i>
+                    <i className="fa fa-search" style={{ color: `${!isSearchValid ? 'red' : ''}` }} ></i>
                   </button>
                   {isDesigner ? (
                     <select
@@ -653,12 +656,14 @@ const List = React.memo((props) => {
                         {t("Resource")}
                       </option>
                     </select>
+
                   ) : (
                     ""
                   )}
                 </div>
               </div>
             </div>
+            {!isSearchValid && <span className="validation-err">Please remove the special charactors...!</span>}
             <ToolkitProvider
               bootstrap4
               keyField="id"

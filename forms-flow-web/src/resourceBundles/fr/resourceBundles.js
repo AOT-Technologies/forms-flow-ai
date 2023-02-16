@@ -275,7 +275,8 @@ export const RESOURCE_BUNDLES_FR = {
   "URL copied":"URL copiée",
   "Click Here to Copy":"Cliquez ici pour copier",
   "Resources":"Ressources",
-  "Duplicate form created successfully":"Formulaire en double créé avec succès"
+  "Duplicate form created successfully":"Formulaire en double créé avec succès",
+  "Revert": "Revenir"
 
 };
   

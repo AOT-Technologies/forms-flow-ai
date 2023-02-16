@@ -8,7 +8,6 @@ const ApplicationCounter = React.memo((props) => {
   const {
     application,
     getStatusDetails,
-    selectedMetricsId,
     noOfApplicationsAvailable,
     setSHowSubmissionData,
   } = props;
@@ -36,7 +35,6 @@ const ApplicationCounter = React.memo((props) => {
             <CardFormCounter
               submitionData={app}
               getStatusDetails={getStatusDetails}
-              selectedMetricsId={selectedMetricsId}
             />
           </div>
         ))}

@@ -273,7 +273,8 @@ export const RESOURCE_BUNDLES_ZH = {
   "URL copied":"已复制网址",
   "Click Here to Copy":"点击这里复制",
   "Resources":"资源",
-  "Duplicate form created successfully":"成功创建重复表单"
+  "Duplicate form created successfully":"成功创建重复表单",
+  "Revert": "恢复"
 
 };
 

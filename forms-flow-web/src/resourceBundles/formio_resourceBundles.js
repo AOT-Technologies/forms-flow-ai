@@ -292,7 +292,9 @@ export const formio_resourceBundles = {
     "Deployment Failed":"Deployment Failed",
     "Process name(s) must not be empty":"Process name(s) must not be empty",
     "URL copied":"URL copied",
-    "Click Here to Copy":"Click Here to Copy"
+    "Click Here to Copy":"Click Here to Copy",
+    "Revert": "Revert"
+  
   },
 
   "zh-CN": {
@@ -1199,7 +1201,8 @@ export const formio_resourceBundles = {
     "Deployment Failed":"部署失败",
     "Process name(s) must not be empty":"进程名称不能为空",
     "URL copied":"已复制网址",
-    "Click Here to Copy":"点击这里复制"
+    "Click Here to Copy":"点击这里复制",
+    "Revert": "恢复"
   },
 
   bg: {
@@ -2164,7 +2167,8 @@ export const formio_resourceBundles = {
     "Deployment Failed":"Неуспешно внедряване",
     "Process name(s) must not be empty":"Името(ата) на процесите не трябва да са празни",
     "URL copied":"URL адресът е копиран",
-    "Click Here to Copy":"Щракнете тук, за да копирате"
+    "Click Here to Copy":"Щракнете тук, за да копирате",
+    "Revert": "Връщане"
 
   },
 
@@ -3124,7 +3128,8 @@ export const formio_resourceBundles = {
     "Deployment Failed":"Falha na implantação",
     "Process name(s) must not be empty":"O(s) nome(s) do processo não deve(m) estar vazio(s)",
     "URL copied":"URL copiado",
-    "Click Here to Copy":"Clique aqui para copiar"
+    "Click Here to Copy":"Clique aqui para copiar",
+    "Revert": "Reverter"
 
   },
 
@@ -4092,7 +4097,8 @@ export const formio_resourceBundles = {
     "Deployment Failed":"Échec du déploiement",
     "Process name(s) must not be empty":"Le(s) nom(s) de processus ne doivent pas être vides",
     "URL copied":"URL copiée",
-    "Click Here to Copy":"Cliquez ici pour copier"
+    "Click Here to Copy":"Cliquez ici pour copier",
+    "Revert":"Revenir"
 
   },
 
@@ -5063,8 +5069,8 @@ export const formio_resourceBundles = {
     "Deployment Failed":"Bereitstellung fehlgeschlagen",
     "Process name(s) must not be empty":"Prozessname(n) dürfen nicht leer sein",
     "URL copied":"URL kopiert",
-    "Click Here to Copy":"Klicken Sie hier, um zu kopieren"
-
+    "Click Here to Copy":"Klicken Sie hier, um zu kopieren",
+    "Revert":"Zurückkehren"
 
 
 

@@ -1,7 +1,9 @@
-import React from "react";
+import React, { useMemo } from "react";
 import { useTranslation } from "react-i18next";
+import LoadingOverlay from "react-loading-overlay";
 
 import { Legend, PieChart, Pie, Cell, LabelList } from "recharts";
+import { sortAlphaNum } from "../../helper/helper";
 
 const COLORS = [
   "#0088FE",
@@ -16,28 +18,77 @@ const COLORS = [
 
 // label={renderCustomizedLabel}
 const ChartForm = React.memo((props) => {
-  const { submissionsStatusList, submissionData } = props;
+  const { submissionsStatusList, submissionData, submissionStatusCountLoader } = props;
+  const {formVersions, formName, parentFormId} = submissionData;
+
+  /* ----------------------- check form versions is null ---------------------- */
+  const checkedFormVersions =  useMemo(()=> {
+    if(formVersions[formVersions.length - 1].version){
+      return formVersions;
+      }
+    return formVersions.map((i,index)=>i.version === null ? 
+           {...i, version:`v${index + 1}`} : i );
+  },[formVersions]);
+
+  /* sometimes formVersions array not 
+    sorted by version so need to sort by asc order */
+  const sortedFormVersions = useMemo(()=>{
+    if(checkedFormVersions.length > 1   ){
+      return sortAlphaNum({data:checkedFormVersions,key:"version",order:"asc"});
+    }
+    return checkedFormVersions;
+  },[formVersions]);
+
+
+  const version = checkedFormVersions?.length;
+
   const { t } = useTranslation();
-  const pieData = submissionsStatusList;
+  const pieData = submissionsStatusList || [];
 
-  if (pieData?.length === 0) {
-    return <div>{t("No submission status")}</div>;
-  }
+  const handlePieData = (value) => {
+    const isParentId = value === "all";
+    const id = isParentId ? parentFormId : value;
+    const option = {parentId : isParentId};
+    props.getStatusDetails(id,option);
+  };
 
-  const { applicationName } = pieData[0];
+ 
 
   return (
     <div className="row">
       <div className="col-12">
         <div className="card-counter">
+          <div className=" d-flex align-items-center justify-content-between">
+          <div>
           <div className="d-flex align-items-center">
             <span className="text-primary mr-2">{t("Form Name")} : </span>
-            <h2>{applicationName}</h2>
+            <h2>{formName}</h2>
           </div>
           <p>
             <span className="text-primary">{t("Version")} :</span>{" "}
-            {submissionData?.version}
+            {`v${version}`}
           </p>
+          </div>
+          {
+            sortedFormVersions.length > 1 ? (
+              <div className="col-3">
+            <p className="form-label mb-0">Select form version</p>
+            <select className="form-select" aria-label="Default select example"  onChange={(e) =>{ handlePieData(e.target.value);}}>
+                {
+                  sortedFormVersions.map((option)=> <option key={option.formId} 
+                  value={option.formId}>{option.version}</option>)
+                }
+                <option selected value={"all"}>All</option>
+            </select>
+          </div>
+            ) : ""
+          }
+          </div>
+          <LoadingOverlay
+        active={submissionStatusCountLoader}
+        spinner
+        text={t("Loading...")}
+      >
           <div className="white-box status-container flex-row d-md-flex align-items-center">
             <div className="chart text-center">
               <PieChart width={400} height={400}>
@@ -69,7 +120,9 @@ const ChartForm = React.memo((props) => {
               </PieChart>
             </div>
 
-            <div className="d-flex border flex-wrap rounded p-4   ">
+            {
+              pieData.length ? (
+                <div className="d-flex border flex-wrap rounded p-4   ">
               {pieData.map((entry, index) => (
                 <div className=" d-flex align-items-center m-3" key={index}>
                   <span
@@ -84,7 +137,10 @@ const ChartForm = React.memo((props) => {
                 </div>
               ))}
             </div>
+              ) : "No submissions"
+            }
           </div>
+          </LoadingOverlay>
         </div>
       </div>
     </div>

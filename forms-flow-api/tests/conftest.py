@@ -56,11 +56,13 @@ def database(app):  # pylint: disable=redefined-outer-name, invalid-name
     """
     # Run database migrations
     with app.app_context():
-        drop_schema_sql = text("""DROP SCHEMA public CASCADE;
+        drop_schema_sql = text(
+            """DROP SCHEMA public CASCADE;
                              CREATE SCHEMA public;
                              GRANT ALL ON SCHEMA public TO postgres;
                              GRANT ALL ON SCHEMA public TO public;
-                          """)
+                          """
+        )
 
         sess = _db.session()
         sess.execute(drop_schema_sql)
@@ -80,7 +82,8 @@ def session(app, database):  # pylint: disable=redefined-outer-name, invalid-nam
         # TODO, refactor to improve test execution time.
         truncate_all_expr = text(
             """SELECT 'TRUNCATE TABLE ' || table_schema || '.' || table_name || ' RESTART IDENTITY CASCADE;'
-            FROM information_schema.tables WHERE table_schema = 'public'; """)
+            FROM information_schema.tables WHERE table_schema = 'public'; """
+        )
 
         sess = _db.session()
         for tr in sess.execute(truncate_all_expr).fetchall():

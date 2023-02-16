@@ -63,7 +63,9 @@ def test_metrics_list_view(orderBy, app, client, session, jwt):
 @pytest.mark.parametrize("orderBy", METRICS_ORDER_BY_VALUES)
 def test_metrics_detailed_get_401(orderBy, app, client, session):
     """Tests API/metrics/<form_id> endpoint with invalid data."""
-    rv = client.get(f"/metrics/63e333f56bda305e2ecbc86c?from=2021-10-10&to=2021-10-31&orderBy={orderBy}")
+    rv = client.get(
+        f"/metrics/63e333f56bda305e2ecbc86c?from=2021-10-10&to=2021-10-31&orderBy={orderBy}"
+    )
     assert rv.status_code == 401
 
 

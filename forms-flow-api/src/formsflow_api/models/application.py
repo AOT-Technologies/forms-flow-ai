@@ -140,7 +140,7 @@ class Application(
                 table_name = "form_process_mapper"
             query = query.order_by(text(f"{table_name}.{order_by} {sort_order}"))
         total_count = query.count()
-        pagination = query.paginate(page_no, limit)
+        pagination = query.paginate(page=page_no, per_page=limit)
         return pagination.items, total_count
 
     @classmethod
@@ -206,7 +206,7 @@ class Application(
                 table_name = "form_process_mapper"
             query = query.order_by(text(f"{table_name}.{order_by} {sort_order}"))
         total_count = query.count()
-        pagination = query.paginate(page_no, limit)
+        pagination = query.paginate(page=page_no, per_page=limit)
         return pagination.items, total_count
 
     @classmethod
@@ -282,7 +282,7 @@ class Application(
                 table_name = "form_process_mapper"
             query = query.order_by(text(f"{table_name}.{order_by} {sort_order}"))
         total_count = query.count()
-        pagination = query.paginate(page_no, limit)
+        pagination = query.paginate(page=page_no, per_page=limit)
         return pagination.items, total_count
 
     @classmethod
@@ -307,7 +307,7 @@ class Application(
                 table_name = "form_process_mapper"
             query = query.order_by(text(f"{table_name}.{order_by} {sort_order}"))
         total_count = query.count()
-        pagination = query.paginate(page_no, limit)
+        pagination = query.paginate(page=page_no, per_page=limit)
         return pagination.items, total_count
 
     @classmethod

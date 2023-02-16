@@ -200,7 +200,7 @@ class FormProcessMapper(AuditDateTimeMixin, AuditUserMixin, BaseModel, db.Model)
             cls.form_name,
         )
         limit = total_count if limit is None else limit
-        query = query.paginate(page_number, limit)
+        query = query.paginate(page=page_number, per_page=limit)
         return query.items, total_count
 
     @classmethod
@@ -230,7 +230,7 @@ class FormProcessMapper(AuditDateTimeMixin, AuditUserMixin, BaseModel, db.Model)
             cls.form_name,
         )
         limit = total_count if limit is None else limit
-        query = query.paginate(page_number, limit)
+        query = query.paginate(page=page_number, per_page=limit)
         return query.items, total_count
 
     @classmethod

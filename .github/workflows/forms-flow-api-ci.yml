@@ -7,6 +7,7 @@ on:
       - develop
       - master
       - release/**
+      - req_fix
   pull_request:
     branches:
       - develop

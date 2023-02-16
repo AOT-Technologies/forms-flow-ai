@@ -15,6 +15,7 @@ from marshmallow import ValidationError
 from formsflow_api.schemas import (
     UserlocaleReqSchema,
     UserPermissionUpdateSchema,
+    UsersListSchema,
 )
 from formsflow_api.services import KeycloakAdminAPIService, UserService
 from formsflow_api.services.factory import KeycloakFactory
@@ -144,9 +145,29 @@ class KeycloakUsersList(Resource):
         params={
             "memberOfGroup": {
                 "in": "query",
-                "description": "Group name for fetching users.",
-                "default": "formsflow/formsflow-reviewer",
-            }
+                "description": "Group/Role  name for fetching users.",
+                "default": "",
+            },
+            "search": {
+                "in": "query",
+                "description": "A String contained in username, first or last name, or email.",
+                "default": "",
+            },
+            "pageNo": {
+                "in": "query",
+                "description": "Page number.",
+                "default": "0",
+            },
+            "limit": {
+                "in": "query",
+                "description": "Max result size.",
+                "default": "5",
+            },
+            "role": {
+                "in": "query",
+                "description": "Boolean which defines whether roles are returned.",
+                "default": "false",
+            },
         }
     )
     @API.response(200, "OK:- Successful request.", model=[user_list_model])
@@ -159,12 +180,25 @@ class KeycloakUsersList(Resource):
         "BAD_REQUEST:- Invalid request.",
     )
     def get():
-        """Get users in a group/role."""
+        """Get users list."""
         try:
             group_name = request.args.get("memberOfGroup")
-            users_list = KeycloakFactory.get_instance().get_users(group_name=group_name)
-            user_service = UserService()
-            response = user_service.get_users(request.args, users_list)
+            search = request.args.get("search")
+            page_no = request.args.get("pageNo")
+            limit = request.args.get("limit")
+            role = request.args.get("role") == "true"
+            kc_admin = KeycloakFactory.get_instance()
+            if group_name:
+                users_list = kc_admin.get_users(page_no, limit, role, group_name)
+                user_service = UserService()
+                response = user_service.get_users(request.args, users_list)
+            else:
+                user_list = kc_admin.search_realm_users(search, page_no, limit, role)
+                user_list_response = []
+                for user in user_list:
+                    user = UsersListSchema().dump(user)
+                    user_list_response.append(user)
+                response = user_list_response
             return response, HTTPStatus.OK
         except requests.exceptions.RequestException as err:
             current_app.logger.warning(err)

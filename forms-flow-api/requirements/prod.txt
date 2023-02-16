@@ -11,8 +11,8 @@ python-dotenv
 psycopg2-binary
 marshmallow-sqlalchemy
 requests
-Werkzeug==2.1.2 # Watch out updates on https://github.com/python-restx/flask-restx/issues/460
+Werkzeug
 sqlalchemy_utils
 markupsafe
 PyJWT
-git+https://github.com/sreehari-aot/forms-flow-ai.git@FWF_1862#egg=formsflow_api_utils&subdirectory=forms-flow-api-utils
+git+https://github.com/sumesh-aot/forms-flow-ai.git@req_fix#egg=formsflow_api_utils&subdirectory=forms-flow-api-utils

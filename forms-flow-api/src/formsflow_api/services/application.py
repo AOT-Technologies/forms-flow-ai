@@ -138,8 +138,9 @@ class ApplicationService:  # pylint: disable=too-many-public-methods
             resource_list,
         )
 
+    # pylint: disable=too-many-arguments,too-many-locals
     @staticmethod
-    def get_auth_applications_and_count(  # pylint: disable=too-many-arguments,too-many-locals
+    def get_auth_applications_and_count(
         page_no: int,
         limit: int,
         order_by: str,

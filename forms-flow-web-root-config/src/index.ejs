@@ -72,6 +72,7 @@
             "@formsflow/formsflow-web": "//localhost:3001/single-spa-build.js",
             "@formsflow/admin":"//localhost:8001/forms-flow-admin.js",
             "@formsflow/service":"//localhost:8081/forms-flow-service.js",
+            "@formsflow/theme":"//localhost:8082/formsflow-theme.js",
             "react": "https://cdn.jsdelivr.net/npm/react@17.0.2/umd/react.development.js",
             "react-dom": "https://cdn.jsdelivr.net/npm/react-dom@17.0.2/umd/react-dom.development.js"
           }
@@ -86,6 +87,7 @@
               "@formsflow/formsflow-web": "<%= process.env.FORMSFLOW_WEB_URL %>",
               "@formsflow/admin":"<%= process.env.FORMSFLOW_ADMIN_URL %>",
               "@formsflow/service":"<%= process.env.FORMSFLOW_SERVICE_URL %>",
+              "@formsflow/theme":"<%= process.env.FORMSFLOW_THEME_URL %>",
               "react": "https://cdn.jsdelivr.net/npm/react@17.0.2/umd/react.production.min.js",
               "react-dom": "https://cdn.jsdelivr.net/npm/react-dom@17.0.2/umd/react-dom.production.min.js"
             }
@@ -115,6 +117,7 @@
   </noscript>
   <script>
     System.import('@formsflow/root-config');
+    System.import('@formsflow/theme');
   </script>
   <import-map-overrides-full show-when-local-storage="devtools" dev-libs></import-map-overrides-full>
 </body>

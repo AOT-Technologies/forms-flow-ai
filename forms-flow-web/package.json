@@ -31,7 +31,7 @@
     "@craco/craco": "6.4.5",
     "@testing-library/jest-dom": "^5.14.1",
     "@testing-library/react": "^12.1.1",
-    "craco-plugin-single-spa-application": "^2.0.1",
+    "craco-plugin-single-spa-application": "git+https://github.com/sreehari-aot/craco-plugin-single-spa-application.git",
     "msw": "^0.36.0",
     "redux-mock-store": "^1.5.4"
   },

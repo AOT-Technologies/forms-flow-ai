@@ -33,7 +33,7 @@ class Authorization(AuditDateTimeMixin, AuditUserMixin, BaseModel, db.Model):
     id = db.Column(db.Integer, primary_key=True, comment="Authorization ID")
     tenant = db.Column(db.String, nullable=True, comment="Tenant key")
     auth_type = db.Column(
-        ENUM(AuthType), nullable=False, index=True, comment="Auth Type"
+        ENUM(AuthType, name="AuthType"), nullable=False, index=True, comment="Auth Type"
     )
     resource_id = db.Column(
         db.String, nullable=False, index=True, comment="Resource identifier"

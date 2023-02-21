@@ -1,11 +1,13 @@
 """Common setup and fixtures for the pytest suite used by this service."""
 
+import os
+
 import pytest
-from flask_migrate import Migrate, upgrade
+from alembic import command
+from alembic.config import Config
 from formsflow_api_utils.utils import jwt as _jwt
 from formsflow_api_utils.utils.startup import setup_jwt_manager
-from sqlalchemy import event, text
-from sqlalchemy.schema import DropConstraint, MetaData
+from sqlalchemy import text
 
 from formsflow_api import create_app
 from formsflow_api.models import db as _db
@@ -47,85 +49,53 @@ def client_ctx(app):  # pylint: disable=redefined-outer-name
 
 
 @pytest.fixture(scope="session")
-def db(app):  # pylint: disable=redefined-outer-name, invalid-name
+def database(app):  # pylint: disable=redefined-outer-name, invalid-name
     """Return a session-wide initialised database.
 
     Drops all existing tables - Meta follows Postgres FKs
     """
+    # Run database migrations
     with app.app_context():
-        # Clear out any existing tables
-        metadata = MetaData(_db.engine)
-        metadata.reflect()
-        for table in metadata.tables.values():
-            for fk in table.foreign_keys:  # pylint: disable=invalid-name
-                _db.engine.execute(DropConstraint(fk.constraint))
-        metadata.drop_all()
-        _db.drop_all()
-
-        sequence_sql = """SELECT sequence_name FROM information_schema.sequences
-                          WHERE sequence_schema='public'
-                       """
+        drop_schema_sql = text(
+            """DROP SCHEMA public CASCADE;
+                             CREATE SCHEMA public;
+                             GRANT ALL ON SCHEMA public TO postgres;
+                             GRANT ALL ON SCHEMA public TO public;
+                          """
+        )
 
         sess = _db.session()
-        for seq in [name for (name,) in sess.execute(text(sequence_sql))]:
-            try:
-                sess.execute(text("DROP SEQUENCE public.%s ;" % seq))
-                print("DROP SEQUENCE public.%s " % seq)
-            except Exception as err:  # pylint: disable=broad-except
-                print(f"Error: {err}")
+        sess.execute(drop_schema_sql)
         sess.commit()
 
-        # ############################################
-        # There are 2 approaches, an empty database, or the same one that the app
-        # will use create the tables
-        #     _db.create_all()
-        # or
-        # Use Alembic to load all of the DB revisions including supporting lookup data
-        # This is the path we'll use in selfservice_api!!
+        alembic_cfg = Config(f"{os.getcwd()}/migrations/alembic.ini")
+        command.upgrade(alembic_cfg, "head")
 
-        # even though this isn't referenced directly,
-        # it sets up the internal configs that upgrade needs
-        Migrate(app, _db)
-        upgrade()
-
+        _db.create_all()
         return _db
 
 
 @pytest.fixture(scope="function")
-def session(app, db):  # pylint: disable=redefined-outer-name, invalid-name
+def session(app, database):  # pylint: disable=redefined-outer-name, invalid-name
     """Return a function-scoped session."""
     with app.app_context():
-        conn = db.engine.connect()
-        txn = conn.begin()
+        # TODO, refactor to improve test execution time.
+        truncate_all_expr = text(
+            """SELECT 'TRUNCATE TABLE ' || table_schema || '.' || table_name || ' RESTART IDENTITY CASCADE;'
+            FROM information_schema.tables WHERE table_schema = 'public'; """
+        )
 
-        options = dict(bind=conn, binds={})
-        sess = db.create_scoped_session(options=options)
+        sess = _db.session()
+        for tr in sess.execute(truncate_all_expr).fetchall():
+            sess.execute(text(tr[0]))
 
-        # establish  a SAVEPOINT just before beginning the test
-        # (http://docs.sqlalchemy.org/en/latest/orm/session_transaction.html#using-savepoint)
-        sess.begin_nested()
-
-        @event.listens_for(sess(), "after_transaction_end")
-        def restart_savepoint(sess2, trans):  # pylint: disable=unused-variable
-            # Detecting whether this is indeed the nested transaction of the test
-            if (
-                trans.nested and not trans._parent.nested
-            ):  # pylint: disable=protected-access
-                # Handle where test DOESN'T session.commit(),
-                sess2.expire_all()
-                sess.begin_nested()
-
-        db.session = sess
-
-        sql = text("select 1")
-        sess.execute(sql)
+        conn = database.engine.connect()
+        sess = database.session
 
         yield sess
 
         # Cleanup
         sess.remove()
-        # This instruction rollsback any commit that were executed in the tests.
-        txn.rollback()
         conn.close()
 
 

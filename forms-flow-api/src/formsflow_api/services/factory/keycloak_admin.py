@@ -23,7 +23,7 @@ class KeycloakAdmin(ABC):
         raise NotImplementedError("Method not implemented")
 
     @abstractmethod
-    def get_users(self, **kwargs):
+    def get_users(self, page_no: int, limit: int, role: bool, group_name: str):
         """Get users."""
         raise NotImplementedError("Method not implemented")
 
@@ -52,6 +52,11 @@ class KeycloakAdmin(ABC):
         self, user_id: str, group_id: str, payload: Dict = None
     ):
         """Remove user to role / group."""
+        raise NotImplementedError("Method not implemented")
+
+    @abstractmethod
+    def search_realm_users(self, search: str, page_no: int, limit: int, role: bool):
+        """Get users in a realm."""
         raise NotImplementedError("Method not implemented")
 
     def sort_results(self, data: List, sort_order: str):

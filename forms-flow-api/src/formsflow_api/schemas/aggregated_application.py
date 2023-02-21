@@ -48,5 +48,5 @@ class AggregatedApplicationsSchema(Schema):
 
     parent_form_id = fields.Str(data_key="parentFormId")
     form_versions = fields.List(fields.Dict, data_key="formVersions")
-    submission_count = fields.Integer(data_key="applicationCount")
+    submission_count = fields.Str(data_key="applicationCount")
     form_name = fields.Str(data_key="formName")

@@ -8,7 +8,7 @@ class TestKeycloakRolesResource:
 
     def test_keycloak_roles_list(self, app, client, session, jwt):
         """Test roles list API."""
-        token = get_token(jwt)
+        token = get_token(jwt, role="formsflow-admin")
         headers = {
             "Authorization": f"Bearer {token}",
             "content-type": "application/json",
@@ -18,7 +18,7 @@ class TestKeycloakRolesResource:
 
     def test_keycloak_role_crud(self, app, client, session, jwt):
         """Test role CRUD APIs."""
-        token = get_token(jwt)
+        token = get_token(jwt, role="formsflow-admin")
         headers = {
             "Authorization": f"Bearer {token}",
             "content-type": "application/json",

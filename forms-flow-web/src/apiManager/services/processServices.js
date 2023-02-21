@@ -17,6 +17,7 @@ import {
   setUnPublishApiError,
   setResetProcess,
   setAllDmnProcessList,
+  setFormStatusLoading,
 } from "../../actions/processActions";
 import { setApplicationCount } from "../../actions/processActions";
 import { replaceUrl } from "../../helper/helper";
@@ -177,6 +178,8 @@ export const getFormProcesses = (formId, ...rest) => {
       .catch((error) => {
         // dispatch(setProcessStatusLoading(false));
         dispatch(setFormProcessLoadError(true));
+      }).finally(()=>{
+        dispatch(setFormStatusLoading(false));
       });
   };
 };

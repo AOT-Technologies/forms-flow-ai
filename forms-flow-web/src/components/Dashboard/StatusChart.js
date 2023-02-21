@@ -21,7 +21,7 @@ const ChartForm = React.memo((props) => {
   const {formVersions, formName, parentFormId} = submissionData;
   
   const sortedVersions = useMemo(()=> 
-  (formVersions.sort((version1, version2)=> 
+  (formVersions?.sort((version1, version2)=> 
   version1.version > version2.version ? 1 : -1)),[formVersions]);
   
   const version = formVersions?.length;

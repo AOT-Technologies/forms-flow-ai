@@ -139,7 +139,9 @@ const View = React.memo((props) => {
     if (isAuthenticated) {
       dispatch(setFormStatusLoading(true));
       dispatch(
-        getFormProcesses(formId)
+        getFormProcesses(formId,()=>{
+          dispatch(setFormStatusLoading(false));
+        })
       );
     }
   }, [isAuthenticated,formId]);

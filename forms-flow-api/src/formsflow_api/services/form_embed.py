@@ -20,7 +20,7 @@ class CombineFormAndApplicationCreate:  # pylint: disable=too-few-public-methods
         """Creates application after success submission."""
         try:
             application_schema = ApplicationSchema()
-            data = __class__.__populate_default_keys(data)
+            data = CombineFormAndApplicationCreate.__populate_default_keys(data)
             application_data = application_schema.load(data)
             formio_service = FormioService()
             form_io_token = formio_service.get_formio_access_token()

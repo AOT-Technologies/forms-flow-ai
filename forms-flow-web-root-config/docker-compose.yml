@@ -4,7 +4,7 @@ services:
     build:
       context: .
       dockerfile: Dockerfile
-      args:
+    environment:
         - NODE_ENV=${NODE_ENV:-production}
         - REACT_APP_API_PROJECT_URL=${REACT_APP_API_PROJECT_URL}
         - REACT_APP_KEYCLOAK_CLIENT=${REACT_APP_KEYCLOAK_CLIENT:-forms-flow-web}
@@ -27,11 +27,6 @@ services:
         - REACT_APP_PUBLIC_WORKFLOW_ENABLED=${PUBLIC_WORKFLOW_ENABLED:-false}
         - REACT_APP_DOCUMENT_SERVICE_URL=${DOCUMENT_SERVICE_URL}
         - REACT_APP_OPENTELEMETRY_SERVICE=${OPENTELEMETRY_SERVICE:-false}
-    # environment:
-    #   - FORMSFLOW_WEB_URL: ${FORMSFLOW_WEB_URL}
-    #   - FORMSFLOW_NAV_URL=${FORMSFLOW_NAV_URL}
-    #   - FORMSFLOW_SERVICE_URL=${FORMSFLOW_SERVICE_URL}
-    #   - FORMSFLOW_ADMIN_URL=${FORMSFLOW_ADMIN_URL}
     ports:
       - "3000:8080"
     tty: true

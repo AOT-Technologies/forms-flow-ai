@@ -4,53 +4,6 @@ FROM node:14.17.0-alpine as build-stage
 # set working directory
 WORKDIR /forms-flow-web-root-config/app
 
-ARG NODE_ENV
-ARG REACT_APP_API_PROJECT_URL
-ARG REACT_APP_KEYCLOAK_CLIENT
-ARG REACT_APP_WEB_BASE_URL
-ARG REACT_APP_BPM_URL
-ARG REACT_APP_WEBSOCKET_ENCRYPT_KEY
-ARG REACT_APP_KEYCLOAK_URL_REALM
-ARG REACT_APP_KEYCLOAK_URL
-ARG REACT_APP_APPLICATION_NAME
-ARG REACT_APP_USER_ACCESS_PERMISSIONS
-ARG REACT_APP_WEB_BASE_CUSTOM_URL
-ARG REACT_APP_MULTI_TENANCY_ENABLED
-ARG REACT_APP_MT_ADMIN_BASE_URL
-ARG REACT_APP_MT_ADMIN_BASE_URL_VERSION
-ARG REACT_APP_CUSTOM_SUBMISSION_URL
-ARG REACT_APP_CUSTOM_SUBMISSION_ENABLED
-ARG REACT_APP_DRAFT_ENABLED
-ARG REACT_APP_DRAFT_POLLING_RATE
-ARG REACT_APP_EXPORT_PDF_ENABLED
-ARG REACT_APP_PUBLIC_WORKFLOW_ENABLED
-ARG REACT_APP_DOCUMENT_SERVICE_URL
-ARG REACT_APP_OPENTELEMETRY_SERVICE
-
-RUN touch .env
-RUN echo "NODE_ENV=${NODE_ENV}" >> .env
-RUN echo "REACT_APP_API_PROJECT_URL=${REACT_APP_API_PROJECT_URL}" >> .env
-RUN echo "REACT_APP_KEYCLOAK_CLIENT=${REACT_APP_KEYCLOAK_CLIENT}" >> .env
-RUN echo "REACT_APP_WEB_BASE_URL=${REACT_APP_WEB_BASE_URL}" >> .env
-RUN echo "REACT_APP_BPM_URL=${REACT_APP_BPM_URL}" >> .env
-RUN echo "REACT_APP_WEBSOCKET_ENCRYPT_KEY=${REACT_APP_WEBSOCKET_ENCRYPT_KEY}" >> .env
-RUN echo "REACT_APP_KEYCLOAK_URL_REALM=${REACT_APP_KEYCLOAK_URL_REALM}" >> .env
-RUN echo "REACT_APP_KEYCLOAK_URL=${REACT_APP_KEYCLOAK_URL}" >> .env
-RUN echo "REACT_APP_APPLICATION_NAME=${REACT_APP_APPLICATION_NAME}" >> .env
-RUN echo "REACT_APP_USER_ACCESS_PERMISSIONS=${REACT_APP_USER_ACCESS_PERMISSIONS}" >> .env
-RUN echo "REACT_APP_WEB_BASE_CUSTOM_URL=${REACT_APP_WEB_BASE_CUSTOM_URL}" >> .env
-RUN echo "REACT_APP_MULTI_TENANCY_ENABLED=${REACT_APP_MULTI_TENANCY_ENABLED}" >> .env
-RUN echo "REACT_APP_MT_ADMIN_BASE_URL=${REACT_APP_MT_ADMIN_BASE_URL}" >> .env
-RUN echo "REACT_APP_MT_ADMIN_BASE_URL_VERSION=${REACT_APP_MT_ADMIN_BASE_URL_VERSION}" >> .env
-RUN echo "REACT_APP_CUSTOM_SUBMISSION_URL=${REACT_APP_CUSTOM_SUBMISSION_URL}" >> .env
-RUN echo "REACT_APP_CUSTOM_SUBMISSION_ENABLED=${REACT_APP_CUSTOM_SUBMISSION_ENABLED}" >> .env
-RUN echo "REACT_APP_DRAFT_ENABLED=${REACT_APP_DRAFT_ENABLED}" >> .env
-RUN echo "REACT_APP_DRAFT_POLLING_RATE=${REACT_APP_DRAFT_POLLING_RATE}" >> .env
-RUN echo "REACT_APP_EXPORT_PDF_ENABLED=${REACT_APP_EXPORT_PDF_ENABLED}" >> .env
-RUN echo "REACT_APP_PUBLIC_WORKFLOW_ENABLED=${REACT_APP_PUBLIC_WORKFLOW_ENABLED}" >> .env
-RUN echo "REACT_APP_DOCUMENT_SERVICE_URL=${REACT_APP_DOCUMENT_SERVICE_URL}" >> .env
-RUN echo "REACT_APP_OPENTELEMETRY_SERVICE=${REACT_APP_OPENTELEMETRY_SERVICE}" >> .env
-
 # add `/app/node_modules/.bin` to $PATH
 ENV PATH /forms-flow-web-root-config/app/node_modules/.bin:$PATH
 
@@ -63,19 +16,21 @@ COPY package-lock.json /forms-flow-web-root-config/app/package-lock.json
 COPY package.json /forms-flow-web-root-config/app/package.json
 COPY env.sh /forms-flow-web-root-config/app/env.sh
 
-RUN chmod +x ./env.sh && ./env.sh 
+RUN npm ci
 
-RUN npm install --unsafe-perm --production
-#RUN npm install react-scripts@3.0.1 -g --silent
 COPY . /forms-flow-web-root-config/app/
-RUN npm run build
+RUN npm run build:webpack
 
-FROM nginx:1.22 as production-stage
+FROM nginx:1.15.2-alpine as production-stage
 
 RUN mkdir /app
 COPY --from=build-stage /forms-flow-web-root-config/app/dist /usr/share/nginx/html
-COPY --from=build-stage /forms-flow-web-root-config/app/config.js /usr/share/nginx/html/config/
+COPY --from=build-stage /forms-flow-web-root-config/app/env.sh /usr/share/nginx/html/
 COPY nginx.conf /etc/nginx/nginx.conf
 EXPOSE 8080:8080
+WORKDIR /usr/share/nginx/html
+COPY .env .
+RUN apk add --no-cache bash
+RUN chmod +x env.sh
 
-CMD ["nginx", "-g", "daemon off;"]
+CMD ["/bin/bash", "-c", "/usr/share/nginx/html/env.sh && nginx -g \"daemon off;\""]

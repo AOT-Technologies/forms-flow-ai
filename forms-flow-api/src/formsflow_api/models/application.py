@@ -139,7 +139,7 @@ class Application(
                 table_name = "form_process_mapper"
             query = query.order_by(text(f"{table_name}.{order_by} {sort_order}"))
         total_count = query.count()
-        pagination = query.paginate(page_no, limit)
+        pagination = query.paginate(page=page_no, per_page=limit, error_out=False)
         return pagination.items, total_count
 
     @classmethod
@@ -205,7 +205,7 @@ class Application(
                 table_name = "form_process_mapper"
             query = query.order_by(text(f"{table_name}.{order_by} {sort_order}"))
         total_count = query.count()
-        pagination = query.paginate(page_no, limit)
+        pagination = query.paginate(page=page_no, per_page=limit, error_out=False)
         return pagination.items, total_count
 
     @classmethod
@@ -256,7 +256,7 @@ class Application(
         else:
             result = (
                 FormProcessMapper.tenant_authorization(query=result)
-                .paginate(page_no, limit, False)
+                .paginate(page=page_no, per_page=limit, error_out=False)
                 .items
             )
         return result
@@ -281,7 +281,7 @@ class Application(
                 table_name = "form_process_mapper"
             query = query.order_by(text(f"{table_name}.{order_by} {sort_order}"))
         total_count = query.count()
-        pagination = query.paginate(page_no, limit)
+        pagination = query.paginate(page=page_no, per_page=limit, error_out=False)
         return pagination.items, total_count
 
     @classmethod
@@ -306,7 +306,7 @@ class Application(
                 table_name = "form_process_mapper"
             query = query.order_by(text(f"{table_name}.{order_by} {sort_order}"))
         total_count = query.count()
-        pagination = query.paginate(page_no, limit)
+        pagination = query.paginate(page=page_no, per_page=limit, error_out=False)
         return pagination.items, total_count
 
     @classmethod
@@ -390,7 +390,7 @@ class Application(
         else:
             result = (
                 FormProcessMapper.tenant_authorization(result)
-                .paginate(page_no, limit, False)
+                .paginate(page=page_no, per_page=limit, error_out=False)
                 .items
             )
         return result
@@ -409,7 +409,7 @@ class Application(
             result.filter(
                 or_(cls.latest_form_id == form_id for form_id in form_ids)
                 .order_by(Application.id.desc())
-                .paginate(page_no, limit, False)
+                .paginate(page=page_no, per_page=limit, error_out=False)
                 .items
             )
         return result
@@ -436,7 +436,7 @@ class Application(
 
     @classmethod
     def find_aggregated_applications(
-        # pylint: disable-msg=too-many-arguments
+        # pylint: disable-msg=too-many-arguments, too-many-locals
         cls,
         from_date: str,
         to_date: str,
@@ -448,7 +448,7 @@ class Application(
         order_by: str,
     ):
         """Fetch aggregated applications."""
-        # pylint: disable-msg=too-many-locals
+
         def set_sort(sort_by, sort_order):
             if sort_order == "asc":
                 return latest_form_name.c[sort_by].asc()
@@ -475,15 +475,16 @@ class Application(
                 max_form_id.c.parent_form_id,
                 db.func.max(max_form_id.c.id).label(
                     "id"
-                ),  # pylint: disable=not-callable
-                db.func.count(Application.id).label(  # pylint: disable=not-callable
+                ),
+                db.func.count(Application.id).label(
                     "application_count"
                 ),
             )
             .join(max_form_id, max_form_id.c.form_id == Application.latest_form_id)
             .filter(getattr(Application, order).between(from_date, to_date))
             .group_by(max_form_id.c.parent_form_id)
-            .subquery("subquery_application_count"))
+            .subquery("subquery_application_count")
+        )
         # taking latest form name
         latest_form_name = (
             db.session.query(
@@ -551,7 +552,9 @@ class Application(
         if sort_by and sort_order:
             sort_query = set_sort(sort_by, sort_order)
             result_proxy = result_proxy.order_by(sort_query)
-        pagination = result_proxy.paginate(page_no, limit)
+        pagination = result_proxy.paginate(
+            page=page_no, per_page=limit, error_out=False
+        )
         total_count = result_proxy.count()
         return pagination.items, total_count
 
@@ -634,9 +637,10 @@ class Application(
             )
             .filter(FormProcessMapper.id == form_process_mapper_id)
             .filter(Application.application_status != DRAFT_APPLICATION_STATUS)
+            .one_or_none()
         )
         # returns a list of one element with count of applications
-        return [dict(row) for row in result_proxy][0]["count"]
+        return result_proxy[0]
 
     @classmethod
     def get_form_mapper_by_application_id(cls, application_id: int):

@@ -20,8 +20,10 @@ class CombineFormAndApplicationCreate:  # pylint: disable=too-few-public-methods
         """Creates application after success submission."""
         try:
             application_schema = ApplicationSchema()
-            data = __class__.__populate_default_keys(
-                data
+            data = (
+                __class__.__populate_default_keys(  # pylint: disable=protected-access
+                    data
+                )
             )  # pylint: disable=protected-access
             application_data = application_schema.load(data)
             formio_service = FormioService()
@@ -67,9 +69,9 @@ class CombineFormAndApplicationCreate:  # pylint: disable=too-few-public-methods
             raise BusinessException(response, status) from application_err
 
     @staticmethod
-    def __populate_default_keys(
+    def __populate_default_keys(  # pylint: disable=unused-private-member
         form_data: Dict,
-    ) -> Dict:  # pylint: disable=unused-private-member
+    ) -> Dict:
         """Populate default keys to the form data if they are not present."""
         default_keys: List[str] = ["applicationStatus", "applicationId"]
         for key in default_keys:

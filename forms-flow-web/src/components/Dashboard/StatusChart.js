@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useMemo } from "react";
 import { useTranslation } from "react-i18next";
 import LoadingOverlay from "react-loading-overlay";
 
@@ -19,7 +19,11 @@ const COLORS = [
 const ChartForm = React.memo((props) => {
   const { submissionsStatusList, submissionData, submissionStatusCountLoader } = props;
   const {formVersions, formName, parentFormId} = submissionData;
-
+  
+  const sortedVersions = useMemo(()=> 
+  (formVersions.sort((version1, version2)=> 
+  version1.version > version2.version ? 1 : -1)),[formVersions]);
+  
   const version = formVersions?.length;
 
   const { t } = useTranslation();
@@ -50,12 +54,12 @@ const ChartForm = React.memo((props) => {
           </p>
           </div>
           {
-            formVersions.length > 1 ? (
+            sortedVersions.length > 1 ? (
               <div className="col-3">
             <p className="form-label mb-0">Select form version</p>
             <select className="form-select" aria-label="Default select example"  onChange={(e) =>{ handlePieData(e.target.value);}}>
                 {
-                  formVersions.map((option)=> <option key={option.formId} 
+                  sortedVersions.map((option)=> <option key={option.formId} 
                   value={option.formId}>v{option.version}</option>)
                 }
                 <option selected value={"all"}>All</option>

@@ -93,7 +93,7 @@ const View = React.memo((props) => {
   const dispatch = useDispatch();
 
   const saveDraft = (payload, exitType = exitType) => {
-    if (exitType === "SUBMIT") return;
+    if (exitType === "SUBMIT" || processData?.status !== "active") return;
     let dataChanged = !isEqual(payload.data, lastUpdatedDraft.data);
     if (draftSubmission?.id) {
       if (String(draftSubmission?.id) !== String(draftId)) return;
@@ -139,11 +139,7 @@ const View = React.memo((props) => {
     if (isAuthenticated) {
       dispatch(setFormStatusLoading(true));
       dispatch(
-        getFormProcesses(formId, (err,) => {
-          if (!err) {
-            dispatch(setFormStatusLoading(false));
-          }
-        })
+        getFormProcesses(formId)
       );
     }
   }, [isAuthenticated,formId]);
@@ -154,7 +150,7 @@ const View = React.memo((props) => {
       if (poll) saveDraft(payload, exitType.current);
     };
   }, [poll, exitType.current, draftSubmission?.id]);
-
+ 
   if (isActive || isPublicStatusLoading || formStatusLoading) {
     return (
       <div data-testid="loading-view-component">

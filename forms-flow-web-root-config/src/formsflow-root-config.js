@@ -14,8 +14,19 @@ let instance = null;
 subscribe("FF_AUTH", (msg, data)=>{
   instance = data
 })
-
 const getKcInstance = ()=> instance
+
+if(window._env_?.CUSTOM_THEME_URL){
+  fetch(window._env_?.CUSTOM_THEME_URL)
+  .then((response) => response.json())
+  .then((data) => {
+    if(typeof(data) == "object"){
+      for (let property in data){
+        document.documentElement.style.setProperty(property, data[property])
+      }
+    }
+  });
+}
 
 // Register service worker and if new changes skip waiting and activate new service worker
 serviceWorkerRegistration.register({

@@ -5,11 +5,21 @@ from tests.utilities.base_test import (
     get_embed_token,
     get_form_request_payload,
     get_token,
+    get_form_payload,
 )
 
 
 def test_get_external_form_valid_request(app, client, session, jwt):
     """Testing the external get form by pathname."""
+    token = get_token(jwt)
+    assert token is not None
+    headers = {"Authorization": f"Bearer {token}", "content-type": "application/json"}
+    response = client.post(
+        "/form",
+        headers=headers,
+        json=get_form_payload(),
+    )
+    assert response.status_code == 201
     token = get_embed_token()
     assert token is not None
     headers = {"Authorization": f"Bearer {token}", "content-type": "application/json"}
@@ -32,6 +42,12 @@ def test_get_internal_form_valid_request(app, client, session, jwt):
     token = get_token(jwt)
     assert token is not None
     headers = {"Authorization": f"Bearer {token}", "content-type": "application/json"}
+    response = client.post(
+        "/form",
+        headers=headers,
+        json=get_form_payload(),
+    )
+    assert response.status_code == 201
     rv = client.get("/embed/internal/form/selectcheckresouce", headers=headers)
     assert rv.status_code == 200
     assert len(rv.json) >= 1

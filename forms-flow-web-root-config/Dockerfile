@@ -25,12 +25,12 @@ FROM nginx:1.15.2-alpine as production-stage
 
 RUN mkdir /app
 COPY --from=build-stage /forms-flow-web-root-config/app/dist /usr/share/nginx/html
-COPY --from=build-stage /forms-flow-web-root-config/app/env.sh /usr/share/nginx/html/
+COPY --from=build-stage /forms-flow-web-root-config/app/env.sh /usr/share/nginx/html/config
 COPY nginx.conf /etc/nginx/nginx.conf
 EXPOSE 8080:8080
-WORKDIR /usr/share/nginx/html
+WORKDIR /usr/share/nginx/html/config
 COPY .env .
 RUN apk add --no-cache bash
 RUN chmod +x env.sh
 
-CMD ["/bin/bash", "-c", "/usr/share/nginx/html/env.sh && nginx -g \"daemon off;\""]
+CMD ["/bin/bash", "-c", "/usr/share/nginx/html/config/env.sh && nginx -g \"daemon off;\""]

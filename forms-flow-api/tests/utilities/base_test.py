@@ -146,6 +146,21 @@ def get_form_service_payload():
         "created_by": "test-user",
     }
 
+def get_form_payload():
+    """Return a form request payload object."""
+    return {
+        "formId": "63736e889fe51130648f0fe4",
+        "formName": "Sample form",
+        "processKey": "oneStepApproval",
+        "processName": "One Step Approval",
+        "status": "active",
+        "comments": "test",
+        "tenant": 12,
+        "anonymous": False,
+        "formType": "form",
+        "parentFormId": "1234",
+    }
+
 
 def update_dashboard_payload():
     """Return a payload for updating dashboard details."""

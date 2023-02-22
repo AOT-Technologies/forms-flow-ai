@@ -146,6 +146,7 @@ def get_form_service_payload():
         "created_by": "test-user",
     }
 
+
 def get_form_payload():
     """Return a form request payload object."""
     return {

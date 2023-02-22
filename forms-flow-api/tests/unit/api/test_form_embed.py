@@ -99,4 +99,3 @@ def test_form_embed_internal_submission(app, client, session, jwt):
         json=get_embed_application_create_payload(form_id),
     )
     assert res.status_code == 201
-    

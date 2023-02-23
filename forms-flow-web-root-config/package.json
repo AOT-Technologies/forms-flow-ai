@@ -1,0 +1,45 @@
+{
+  "name": "@formsflow/root-config",
+  "scripts": {
+    "start": "webpack serve --port 3000 --env isLocal",
+    "lint": "eslint src --ext js",
+    "test": "cross-env BABEL_ENV=test jest --passWithNoTests",
+    "format": "prettier --write .",
+    "check-format": "prettier --check .",
+    "build": "concurrently npm:build:*",
+    "build:webpack": "webpack --mode=production"
+  },
+  "devDependencies": {
+    "@babel/core": "^7.15.0",
+    "@babel/eslint-parser": "^7.15.0",
+    "@babel/plugin-transform-runtime": "^7.15.0",
+    "@babel/preset-env": "^7.15.0",
+    "@babel/runtime": "^7.15.3",
+    "copy-webpack-plugin": "^11.0.0",
+    "concurrently": "^6.2.1",
+    "cross-env": "^7.0.3",
+    "eslint": "^7.32.0",
+    "eslint-config-important-stuff": "^1.1.0",
+    "eslint-config-prettier": "^8.3.0",
+    "eslint-plugin-prettier": "^3.4.1",
+    "html-webpack-plugin": "^5.3.2",
+    "jest": "^27.0.6",
+    "jest-cli": "^27.0.6",
+    "prettier": "^2.3.2",
+    "pretty-quick": "^3.1.1",
+    "serve": "^12.0.0",
+    "webpack": "^5.75.0",
+    "webpack-cli": "^4.8.0",
+    "webpack-config-single-spa": "^5.0.0",
+    "webpack-dev-server": "^4.0.0",
+    "webpack-merge": "^5.8.0"
+  },
+  "dependencies": {
+    "@types/jest": "^27.0.1",
+    "@types/systemjs": "^6.1.1",
+    "dotenv": "^16.0.3",
+    "pubsub-js": "^1.9.4",
+    "single-spa": "^5.9.3",
+    "single-spa-layout": "^1.6.0"
+  }
+}

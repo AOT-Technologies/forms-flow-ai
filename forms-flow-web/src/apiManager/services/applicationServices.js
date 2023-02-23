@@ -1,9 +1,7 @@
 /* istanbul ignore file */
-import {
-  httpGETRequest,
-  httpPOSTRequest,
-  httpPOSTRequestWithoutToken,
-} from "../httpRequestHandler";
+
+import { RequestService } from "@formsflow/service";
+
 import API from "../endpoints";
 import {
   setApplicationListByFormId,
@@ -27,7 +25,7 @@ export const getAllApplicationsByFormId = (formId, ...rest) => {
   const done = rest.length ? rest[0] : () => {};
   return (dispatch) => {
     //TODO remove the pageNo and limit currently its mandatory from api
-    httpGETRequest(`${API.GET_ALL_APPLICATIONS_FROM_FORM_ID}/${formId}`)
+    RequestService.httpGETRequest(`${API.GET_ALL_APPLICATIONS_FROM_FORM_ID}/${formId}`)
       .then((res) => {
         if (res.data) {
           const applications = res.data.applications || [];
@@ -52,7 +50,7 @@ export const getAllApplications = (pageNo = 1, limit = 5, ...rest) => {
   return (dispatch) => {
     //TODO remove the pageNo and limit currently its mandatory from api
     //`${API.GET_ALL_APPLICATIONS}?pageNo=${pageNo}&limit=${limit}`
-    httpGETRequest(
+    RequestService.httpGETRequest(
       `${API.GET_ALL_APPLICATIONS}?pageNo=${pageNo}&limit=${limit}`
     )
       .then((res) => {
@@ -83,7 +81,7 @@ export const getApplicationById = (applicationId, ...rest) => {
   );
   return (dispatch) => {
     //TODO remove the pageNo and limit currently its mandatory from api
-    httpGETRequest(apiUrlgetApplication)
+    RequestService.httpGETRequest(apiUrlgetApplication)
       .then((res) => {
         if (res.data && Object.keys(res.data).length) {
           const application = res.data;
@@ -117,7 +115,7 @@ export const applicationCreate = (data, ...rest) => {
   const done = rest.length ? rest[1] : () => {};
   const URL = API.APPLICATION_START;
   return (dispatch) => {
-    httpPOSTRequest(URL, data)
+    RequestService.httpPOSTRequest(URL, data)
       .then((res) => {
         if (res.data) {
           done(null, res.data);
@@ -137,7 +135,7 @@ export const publicApplicationCreate = (data, ...rest) => {
   const done = rest.length ? rest[1] : () => {};
   const URL = API.PUBLIC_APPLICATION_START;
   return (dispatch) => {
-    httpPOSTRequestWithoutToken(URL, data)
+    RequestService.httpPOSTRequestWithoutToken(URL, data)
       .then((res) => {
         if (res.data) {
           done(null, res.data);
@@ -157,7 +155,7 @@ export const publicApplicationStatus = (formId, ...rest) => {
   const done = rest.length ? rest[0] : () => {};
   const URL = `${API.PUBLIC_APPLICATION_STATUS}/${formId}`;
   return (dispatch) => {
-    httpGETRequest(URL)
+    RequestService.httpGETRequest(URL)
       .then((res) => {
         if (res.data) {
           dispatch(
@@ -190,7 +188,7 @@ export const updateApplicationEvent = (data, ...rest) => {
 * */
   const done = rest.length ? rest[0] : () => {};
   return (dispatch) => {
-    httpPOSTRequest(API.APPLICATION_EVENT_UPDATE, data)
+    RequestService.httpPOSTRequest(API.APPLICATION_EVENT_UPDATE, data)
       .then((res) => {
         if (res.data) {
           done(null, res.data);
@@ -240,7 +238,7 @@ export const FilterApplications = (params, ...rest) => {
       url += `&sortBy=${params.sortField}&sortOrder=${params.sortOrder}`;
     }
 
-    httpGETRequest(url)
+    RequestService.httpGETRequest(url)
       .then((res) => {
         if (res.data) {
           const applications = res.data.applications || [];
@@ -265,7 +263,7 @@ export const getAllApplicationStatus = (params, ...rest) => {
   return (dispatch) => {
     //TODO remove the pageNo and limit currently its mandatory from api
     //`${API.GET_ALL_APPLICATIONS}?pageNo=${pageNo}&limit=${limit}`
-    httpGETRequest(`${API.GET_ALL_APPLICATIONS_STATUS}`)
+    RequestService.httpGETRequest(`${API.GET_ALL_APPLICATIONS_STATUS}`)
       .then((res) => {
         if (res.data) {
           dispatch(setApplicationStatusList(res.data.applicationStatus));

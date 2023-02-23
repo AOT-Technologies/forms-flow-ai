@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>formsflow.ai</title>
+  <script src="/config/config.js"></script>
+  <link rel="stylesheet" href="https://unpkg.com/bpmn-js-properties-panel/dist/assets/properties-panel.css">
+  <link rel="stylesheet" href="https://unpkg.com/bpmn-js-properties-panel/dist/assets/element-templates.css">
+  <!-- required dmn modeler styles -->
+  <link rel="stylesheet" href="https://unpkg.com/dmn-js@12.3.0/dist/assets/diagram-js.css">
+  <link rel="stylesheet" href="https://unpkg.com/dmn-js@12.3.0/dist/assets/dmn-js-shared.css">
+  <link rel="stylesheet" href="https://unpkg.com/dmn-js@12.3.0/dist/assets/dmn-js-drd.css">
+  <link rel="stylesheet" href="https://unpkg.com/dmn-js@12.3.0/dist/assets/dmn-js-decision-table.css">
+  <link rel="stylesheet" href="https://unpkg.com/dmn-js@12.3.0/dist/assets/dmn-js-decision-table-controls.css">
+  <link rel="stylesheet" href="https://unpkg.com/dmn-js@12.3.0/dist/assets/dmn-js-literal-expression.css">
+  <link rel="stylesheet" href="https://unpkg.com/dmn-js@12.3.0/dist/assets/dmn-font/css/dmn.css">
+
+  <!-- required styles from cdn -->
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Nunito+Sans:wght@400;600;700&display=swap">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/semantic-ui/2.4.1/semantic.min.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.0/dist/css/bootstrap.min.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/formiojs@4.13.1/dist/formio.full.min.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+  <!--
+    Remove this if you only support browsers that support async/await.
+    This is needed by babel to share largeish helper code for compiling async/await in older
+    browsers. More information at https://github.com/single-spa/create-single-spa/issues/112
+  -->
+  <script src="https://cdn.jsdelivr.net/npm/regenerator-runtime@0.13.7/runtime.min.js"></script>
+
+  <!--
+    This CSP allows any SSL-enabled host and for arbitrary eval(), but you should limit these directives further to increase your app's security.
+    Learn more about CSP policies at https://content-security-policy.com/#directive
+  -->
+  <% if (!isLocal) { %>
+    <meta http-equiv="Content-Security-Policy" content="default-src 'self' https: localhost:*; script-src 'unsafe-inline' 'unsafe-eval' https: localhost:*; connect-src https: localhost:* ws://localhost:*; style-src 'unsafe-inline' https:; object-src 'none';">
+  <% }  %>
+  <meta name="importmap-type" content="systemjs-importmap" />
+  <!-- If you wish to turn off import-map-overrides for specific environments (prod), uncomment the line below -->
+  <!-- More info at https://github.com/joeldenning/import-map-overrides/blob/master/docs/configuration.md#domain-list -->
+  <!-- <meta name="import-map-overrides-domains" content="denylist:prod.example.com" /> -->
+
+  <!-- Shared dependencies go into this import map. Your shared dependencies must be of one of the following formats:
+
+    1. System.register (preferred when possible) - https://github.com/systemjs/systemjs/blob/master/docs/system-register.md
+    2. UMD - https://github.com/umdjs/umd
+    3. Global variable
+
+    More information about shared dependencies can be found at https://single-spa.js.org/docs/recommended-setup#sharing-with-import-maps.
+  -->
+  <script type="systemjs-importmap">
+    {
+      "imports": {
+        "single-spa": "https://cdn.jsdelivr.net/npm/single-spa@5.9.0/lib/system/single-spa.min.js"
+      }
+    }
+  </script>
+  <link rel="preload" href="https://cdn.jsdelivr.net/npm/single-spa@5.9.0/lib/system/single-spa.min.js" as="script">
+
+  <!-- Add your organization's prod import map URL to this script's src  -->
+  <!-- <script type="systemjs-importmap" src="/importmap.json"></script> -->
+
+    <% if (isLocal) { %>
+      
+      <script type="systemjs-importmap">
+        {
+          "imports": {
+            "@formsflow/root-config": "//localhost:3000/formsflow-root-config.js",
+            "@formsflow/nav": "//localhost:8080/forms-flow-nav.js",
+            "@formsflow/formsflow-web": "//localhost:3001/single-spa-build.js",
+            "@formsflow/admin":"//localhost:8001/forms-flow-admin.js",
+            "@formsflow/service":"//localhost:8081/forms-flow-service.js",
+            "@formsflow/theme":"//localhost:8082/forms-flow-theme.js",
+            "react": "https://cdn.jsdelivr.net/npm/react@17.0.2/umd/react.development.js",
+            "react-dom": "https://cdn.jsdelivr.net/npm/react-dom@17.0.2/umd/react-dom.development.js"
+          }
+        }
+      </script>
+      <% } else { %>
+        <script type="systemjs-importmap">
+          {
+            "imports": {
+              "@formsflow/root-config": "/formsflow-root-config.js",
+              "@formsflow/nav": "<%= process.env.FORMSFLOW_NAV_URL %>",
+              "@formsflow/formsflow-web": "<%= process.env.FORMSFLOW_WEB_URL %>",
+              "@formsflow/admin":"<%= process.env.FORMSFLOW_ADMIN_URL %>",
+              "@formsflow/service":"<%= process.env.FORMSFLOW_SERVICE_URL %>",
+              "@formsflow/theme":"<%= process.env.FORMSFLOW_THEME_URL %>",
+              "react": "https://cdn.jsdelivr.net/npm/react@17.0.2/umd/react.production.min.js",
+              "react-dom": "https://cdn.jsdelivr.net/npm/react-dom@17.0.2/umd/react-dom.production.min.js"
+            }
+          }
+        </script>
+    <% } %>
+
+  <!--
+    If you need to support Angular applications, uncomment the script tag below to ensure only one instance of ZoneJS is loaded
+    Learn more about why at https://single-spa.js.org/docs/ecosystem-angular/#zonejs
+  -->
+  <!-- <script src="https://cdn.jsdelivr.net/npm/zone.js@0.11.3/dist/zone.min.js"></script> -->
+
+  <script src="https://cdn.jsdelivr.net/npm/import-map-overrides@2.2.0/dist/import-map-overrides.js"></script>
+  <% if (isLocal) { %>
+  <script src="https://cdn.jsdelivr.net/npm/systemjs@6.8.3/dist/system.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/systemjs@6.8.3/dist/extras/amd.js"></script>
+  <% } else { %>
+  <script src="https://cdn.jsdelivr.net/npm/systemjs@6.8.3/dist/system.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/systemjs@6.8.3/dist/extras/amd.min.js"></script>
+  <% } %>
+
+</head>
+<body>
+  <noscript>
+    You need to enable JavaScript to run this app.
+  </noscript>
+  <script>
+    System.import('@formsflow/root-config');
+    System.import('@formsflow/theme');
+  </script>
+  <import-map-overrides-full show-when-local-storage="devtools" dev-libs></import-map-overrides-full>
+</body>
+</html>

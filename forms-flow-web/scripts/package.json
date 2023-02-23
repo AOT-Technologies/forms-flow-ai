@@ -1,0 +1,17 @@
+{
+  "name": "scripts",
+  "version": "1.0.0",
+  "description": "scripts for formsflow",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "sreehari",
+  "license": "ISC",
+  "dependencies": {
+    "@root/walk": "^1.1.0",
+    "dotenv": "^16.0.3",
+    "minio": "^7.0.32"
+  },
+  "devDependencies": {}
+}

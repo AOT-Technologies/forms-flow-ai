@@ -7,12 +7,7 @@ import TableHead from "@material-ui/core/TableHead";
 import TableRow from "@material-ui/core/TableRow";
 import moment from "moment";
 import { withStyles } from "@material-ui/styles";
-const data = [
-  { id: 1, formName: "this is one", created: new Date() },
-  { id: 2, formName: "this is two", created: new Date() },
-  { id: 3, formName: "this is three", created: new Date() },
-  { id: 4, formName: "this is four", created: new Date() },
-];
+ 
 
 const StyledTableCell = withStyles(() => ({
   head: {
@@ -20,8 +15,12 @@ const StyledTableCell = withStyles(() => ({
     color: "white",
     fontSize: "1rem",
   },
+  body:{
+    fontSize: "1rem",
+    padding:"10px 16px"
+  }
 }))(TableCell);
-const SelectedForms = ({handleModalChange}) => {
+const SelectedForms = ({handleModalChange, selectedForms}) => {
   return (
     <div>
       <TableContainer style={{ border: "1px solid #dbdbdb" }}>
@@ -36,12 +35,12 @@ const SelectedForms = ({handleModalChange}) => {
             </TableRow>
           </TableHead>
           <TableBody>
-            {data.map((row, index) => (
-              <TableRow key={row.id}>
-                <TableCell>{index + 1}</TableCell>
-                <TableCell>{row.formName}</TableCell>
-                <TableCell>{moment(row.created).format()}</TableCell>
-                <TableCell align="right">
+            {selectedForms.map((form, index) => (
+              <TableRow key={form.id}>
+                <StyledTableCell>{index + 1}</StyledTableCell>
+                <StyledTableCell>{form.formName}</StyledTableCell>
+                <StyledTableCell>{moment(new Date()).format()}</StyledTableCell>
+                <StyledTableCell align="right">
                   <button className="btn btn-sm btn-outline-primary">
                     <i
                       className="fa fa-external-link mr-2"
@@ -49,15 +48,15 @@ const SelectedForms = ({handleModalChange}) => {
                     ></i>
                     View Form
                   </button>
-                </TableCell>
-                <TableCell align="right">
+                </StyledTableCell>
+                <StyledTableCell align="right">
                   <button className="btn btn-sm btn-outline-danger">
-                    <i className="fa fa-trash-o mr-2" aria-hidden="true"></i>
+                    <i className="fa fa-trash-o" aria-hidden="true"></i>
                   </button>
-                </TableCell>
+                </StyledTableCell>
               </TableRow>
             ))}
-            {!data.length ? (
+            {!selectedForms.length ? (
               <TableRow>
                 <TableCell align="center" colspan="5">
                   <h3>Add forms launch together</h3>

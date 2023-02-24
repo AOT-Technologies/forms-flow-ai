@@ -1,19 +1,177 @@
-import React from 'react';
+import React, { useEffect, useState } from "react";
 import Modal from "react-bootstrap/Modal";
- 
-const FormListModal = ({showModal,}) => {
+import Table from "@material-ui/core/Table";
+import TableBody from "@material-ui/core/TableBody";
+import TableCell from "@material-ui/core/TableCell";
+import TableContainer from "@material-ui/core/TableContainer";
+import TableHead from "@material-ui/core/TableHead";
+import TableRow from "@material-ui/core/TableRow";
+import Checkbox from "@material-ui/core/Checkbox";
+import Pagination from "react-js-pagination";
+import { withStyles } from "@material-ui/core";
+
+const SearchBar = () => {
+  return (
+    <>
+      <div className="form-outline">
+        <input
+          //   style={{ color: `${!isSearchValid ? "red" : ''}` }}
+          type="search"
+          id="form1"
+          //   ref={searchInputBox}
+          //   onKeyPress={(e) => e.key === "Enter" && handleSearch()}
+          //   onChange={(e) => {
+          //     setShowClearButton(e.target.value);
+          //     setSearchTextInput(e.target.value);
+          //     e.target.value === "" && handleSearch();
+          //   }}
+          autoComplete="off"
+          className="form-control"
+          //   value={searchTextInput}
+          placeholder={"Search..."}
+        />
+      </div>
+      <button
+        type="button"
+        className="btn btn-outline-primary ml-2"
+        //   onClick={() => onClear()}
+      >
+        <i className="fa fa-times"></i>
+      </button>
+      <button
+        type="button"
+        className={`btn btn-outline-primary ml-2`}
+        name="search-button"
+        // title={t(`${!isSearchValid ? "Kindly remove the special charactors...!" : "Click to search"}`)}
+        // onClick={() => handleSearch()}
+      >
+        <i className="fa fa-search"></i>
+      </button>
+    </>
+  );
+};
+
+const StyledTableCell = withStyles(() => ({
+  head: {
+    backgroundColor: "#4559b5",
+    color: "white",
+    fontSize: "1rem",
+  },
+  body: {
+    fontSize: "1rem",
+    padding:"5px"
+  },
+}))(TableCell);
+
+const FormListModal = ({
+  showModal,
+  handleModalChange,
+  formsAlreadySelected,
+  submitFormSelect
+}) => {
+  const forms = [
+    { id: "63f366cc3f7b8b8abb0ee6d3", formName: "hiii", type: "form" },
+    { id: "63ef20cfcfc4bacac50e1b24", formName: "sad", type: "form" },
+    { id: "63b3b711941f11594406e271", formName: "sd33", type: "form" },
+    { id: "63dcaca52f1b3dc6a48b96b7", formName: "cccccccc", type: "resource" },
+   
+  ];
+  const [seletedForms, setSelectedForms] = useState(formsAlreadySelected || []);
+  const [seletedFormIds, setSelectedFormIds] = useState([]);
+
+  useEffect(() => {
+    if (formsAlreadySelected?.length) {
+      const ids = formsAlreadySelected.map((form) => form.id);
+      setSelectedFormIds(ids);
+    }
+  }, [formsAlreadySelected]);
+
+  const handleFormSelect = (action, form) => {
+    if (action === "select") {
+      setSelectedFormIds((prev) => [...prev, form.id]);
+      setSelectedForms((prev) => [...prev, form]);
+    } else {
+      setSelectedFormIds((prev) => prev.filter((item) => item !== form.id));
+      setSelectedForms((prev) => prev.filter((item) => item.id !== form.id));
+    }
+  };
+  console.log(seletedForms);
   return (
     <div>
-        <Modal show={showModal}  >
+      <Modal show={showModal} size="lg">
         <Modal.Header>
-          <Modal.Title>
-                <h3>Select Form</h3>
-          </Modal.Title>
+          <div className="d-flex justify-content-between align-items-center w-100">
+            <h4>Select Form</h4>
+            <span style={{ cursor: "pointer" }} onClick={handleModalChange}>
+              <i className="fa fa-times" aria-hidden="true"></i>
+            </span>
+          </div>
         </Modal.Header>
         <Modal.Body>
-         
+          <div className="d-flex mb-2">{SearchBar()}</div>
+          <TableContainer style={{ border: "1px solid #dbdbdb" }}>
+            <Table aria-label="simple table">
+              <TableHead>
+                <TableRow>
+                  <StyledTableCell></StyledTableCell>
+                  <StyledTableCell>Form Name</StyledTableCell>
+                  <StyledTableCell>Type</StyledTableCell>
+                  <StyledTableCell >Action</StyledTableCell>
+                </TableRow>
+              </TableHead>
+              <TableBody>
+                {forms.map((form) => (
+                  <>
+                    <TableRow>
+                      <StyledTableCell align="left">
+                        <Checkbox
+                          checked={seletedFormIds?.includes(form.id)}
+                          onChange={(e) => {
+                            handleFormSelect(
+                              e.target.checked ? "select" : "unselect",
+                              form
+                            );
+                          }}
+                          inputProps={{ "aria-label": "primary checkbox" }}
+                        />
+                      </StyledTableCell>
+                      <StyledTableCell>{form.formName}</StyledTableCell>
+                      <StyledTableCell>{form.type}</StyledTableCell>
+                      <StyledTableCell >
+                        <button
+                          className="btn btn-sm btn-outline-primary"
+                          onClick={() =>
+                            handleFormSelect(
+                              seletedFormIds?.includes(form.id)
+                                ? "unselect"
+                                : "select",
+                              form
+                            )
+                          }
+                        >
+                          {seletedFormIds?.includes(form.id)
+                            ? "unselect"
+                            : "select"}
+                        </button>
+                      </StyledTableCell>
+                    </TableRow>
+                  </>
+                ))}
+              </TableBody>
+            </Table>
+          </TableContainer>
         </Modal.Body>
-        <Modal.Footer>
+        <Modal.Footer className="justify-content-between">
+          <Pagination
+            activePage={1}
+            itemsCountPerPage={10}
+            totalItemsCount={450}
+            pageRangeDisplayed={5}
+            itemClass="page-item"
+            linkClass="page-link"
+            //   onChange={this.handlePageChange.bind(this)}
+          />
+          <button className="btn btn-primary" onClick={()=>{submitFormSelect(seletedForms);}}>Submit</button>
         </Modal.Footer>
       </Modal>
     </div>

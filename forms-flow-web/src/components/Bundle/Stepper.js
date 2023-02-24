@@ -9,6 +9,13 @@ import BundleCreate from "./BundleCreate";
 import BundleEdit from './steps/BundleEdit';
 import BundlePreview from "./steps/PreviewBundle";
 import WorkflowAssociate from "./steps/WorkflowAssociate";
+import { withStyles } from '@material-ui/styles';
+
+const CustomStepperLabel = withStyles(() => ({
+  label: {
+    fontSize: "1rem",
+  },
+}))(StepLabel);
 const StepperComponent = () => {
     const params = useParams();
     const history = useHistory();
@@ -82,7 +89,7 @@ const StepperComponent = () => {
       <Stepper activeStep={activeStep} nonLinear alternativeLabel >
         {steps.map((label) => (
           <Step key={label}>
-            <StepLabel>{label}</StepLabel>
+            <CustomStepperLabel>{label}</CustomStepperLabel>
           </Step>
         ))}
       </Stepper>

@@ -41,6 +41,29 @@ def test_keycloak_users_list(app, client, session, jwt):
     headers = {"Authorization": f"Bearer {token}", "content-type": "application/json"}
     rv = client.get("/user?memberOfGroup=formsflow/formsflow-reviewer", headers=headers)
     assert rv.status_code == 200
+    users_list = rv.json
+    for user in users_list:
+        assert user.get("role") is None
+
+    user_list_with_role = client.get(
+        "/user?memberOfGroup=formsflow/formsflow-reviewer&role=true", headers=headers
+    )
+    assert user_list_with_role.status_code == 200
+    users_list = user_list_with_role.json
+    for user in users_list:
+        assert user.get("role") is not None
+        assert type(user.get("role")) == list
+        assert len(user["role"]) != 0
+
+    # Test without specifying group/role
+    realm_users = client.get("/user?pageNo=0&limit=5&role=true", headers=headers)
+    assert realm_users.status_code == 200
+    for user in realm_users.json:
+        assert user.get("role") is not None
+        assert type(user.get("role")) == list
+        assert len(user["role"]) != 0
+    realm_users = client.get("/user?role=true", headers=headers)
+    assert realm_users.status_code == 400
 
 
 def test_keycloak_users_list_invalid_group(app, client, session, jwt):

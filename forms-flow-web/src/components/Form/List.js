@@ -57,7 +57,8 @@ import overlayFactory from "react-bootstrap-table2-overlay";
 import { SpinnerSVG } from "../../containers/SpinnerSVG";
 import { getFormattedForm, INACTIVE } from "./constants/formListConstants";
 import searchValidator from '../../helper/regExp/formSearchValidation';
-
+import Tabs from '@material-ui/core/Tabs';
+import Tab from '@material-ui/core/Tab';
 const List = React.memo((props) => {
   const { t } = useTranslation();
   const [showFormUploadModal, setShowFormUploadModal] = useState(false);
@@ -102,6 +103,7 @@ const List = React.memo((props) => {
   const columns = isDesigner ? designerColums(t) : userColumns(t);
 
   const formAccess = useSelector((state) => state.user?.formAccess || []);
+  const [tabValue, setTabValue] = useState(0);
 
   const submissionAccess = useSelector(
     (state) => state.user?.submissionAccess || []
@@ -172,6 +174,10 @@ const List = React.memo((props) => {
         }`;
     }
     return toast.success(`${response} ${t("Downloaded Successfully")}`);
+  };
+
+  const handleTabChange = (e,value)=>{
+    setTabValue(value);
   };
 
   const downloadForms = async () => {
@@ -522,6 +528,15 @@ const List = React.memo((props) => {
               </div>
             </div>
             <div className="flex-item-right">
+            {isDesigner && (
+                <Link
+                  to={`${redirectUrl}bundle/create`}
+                  className="btn btn-primary btn-left btn-sm"
+                >
+                  <i className="fa fa-plus fa-lg" />{" "}
+                  <Translation>{(t) => t("Create Bundle")}</Translation>
+                </Link>
+              )}
               {isDesigner && (
                 <Link
                   to={`${redirectUrl}formflow/create`}
@@ -664,6 +679,18 @@ const List = React.memo((props) => {
               </div>
             </div>
             {!isSearchValid && <span className="validation-err">Please remove the special charactors...!</span>}
+            <Tabs
+        value={tabValue}
+        indicatorColor="primary"
+        textColor="primary"
+        onChange={handleTabChange} 
+      >
+        <Tab label="Forms" />
+        <Tab label="Bundle" />
+    
+      </Tabs>
+      {
+          tabValue === 0 ? (
             <ToolkitProvider
               bootstrap4
               keyField="id"
@@ -713,6 +740,9 @@ const List = React.memo((props) => {
                 );
               }}
             </ToolkitProvider>
+          ) : <h1>bundle</h1>
+      }
+            
           </section>
         </div>
       )}

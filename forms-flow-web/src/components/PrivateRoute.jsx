@@ -15,6 +15,7 @@ import NotFound from "./NotFound";
 import { setTenantFromId } from "../apiManager/services/tenantServices";
 
 const Form = lazy(() => import("./Form"));
+const Bundle = lazy(() => import("./Bundle"));
 const ServiceFlow = lazy(() => import("./ServiceFlow"));
 const DashboardPage = lazy(() => import("./Dashboard"));
 const InsightsPage = lazy(() => import("./Insights"));
@@ -140,6 +141,7 @@ const PrivateRoute = React.memo((props) => {
             <DraftRoute path={`${BASE_ROUTE}draft`} component={Drafts} />
             <DesignerRoute path={`${BASE_ROUTE}admin`} component={Admin} />
             <DesignerRoute path={`${BASE_ROUTE}formflow`} component={Form} />
+            <DesignerRoute path={`${BASE_ROUTE}bundle`} component={Bundle} />
             <DesignerRoute
               path={`${BASE_ROUTE}processes`}
               component={Modeler}

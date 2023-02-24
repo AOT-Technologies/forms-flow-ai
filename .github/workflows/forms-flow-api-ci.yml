@@ -12,6 +12,7 @@ on:
       - develop
       - master
       - release/**
+      - feature/**
     paths:
       - "forms-flow-api/**"
 

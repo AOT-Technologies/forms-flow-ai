@@ -12,7 +12,7 @@ import Loading from "../../containers/Loading";
 
 let user = "";
 
-const CreateBundleRoute = ({ component: Component, ...rest }) => (
+const DesignerBundleRoute = ({ component: Component, ...rest }) => (
   <Route
     {...rest}
     render={(props) => {
@@ -35,8 +35,8 @@ export default React.memo(() => {
   return (
     <div className="container" id="main" data-testid="Form-index">
       <Switch>
-        <CreateBundleRoute
-          path={`${BASE_ROUTE}bundle/:formId?/:step?`}
+        <DesignerBundleRoute
+          path={`${BASE_ROUTE}bundleflow/:formId?/:step?`}
           component={Stepper}
         />
       </Switch>

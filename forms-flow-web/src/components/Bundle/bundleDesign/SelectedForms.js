@@ -7,21 +7,29 @@ import TableHead from "@material-ui/core/TableHead";
 import TableRow from "@material-ui/core/TableRow";
 import moment from "moment";
 import { withStyles } from "@material-ui/styles";
-const data = [
-  { id: 1, formName: "this is one", created: new Date() },
-  { id: 2, formName: "this is two", created: new Date() },
-  { id: 3, formName: "this is three", created: new Date() },
-  { id: 4, formName: "this is four", created: new Date() },
-];
-
+import { useSelector } from "react-redux";
+import { MULTITENANCY_ENABLED } from "../../../constants/constants";
+ 
 const StyledTableCell = withStyles(() => ({
   head: {
     backgroundColor: "#4559b5",
     color: "white",
     fontSize: "1rem",
   },
+  body:{
+    fontSize:"1rem",
+  }
 }))(TableCell);
-const SelectedForms = ({handleModalChange}) => {
+
+
+const SelectedForms = ({handleModalChange, selectedForms,deleteForm}) => {
+  const tenantKey = useSelector((state) => state.tenants?.tenantId);
+  const redirectUrl = MULTITENANCY_ENABLED ? `/tenant/${tenantKey}/` : "/";
+
+  const viewForm = (formId)=>{
+    window.open(`${redirectUrl}form/${formId}/preview`,"_blank");
+  };
+
   return (
     <div>
       <TableContainer style={{ border: "1px solid #dbdbdb" }}>
@@ -36,31 +44,31 @@ const SelectedForms = ({handleModalChange}) => {
             </TableRow>
           </TableHead>
           <TableBody>
-            {data.map((row, index) => (
-              <TableRow key={row.id}>
-                <TableCell>{index + 1}</TableCell>
-                <TableCell>{row.formName}</TableCell>
-                <TableCell>{moment(row.created).format()}</TableCell>
-                <TableCell align="right">
-                  <button className="btn btn-sm btn-outline-primary">
+            {selectedForms?.map((form, index) => (
+              <TableRow key={form.id}>
+                <StyledTableCell>{index + 1}</StyledTableCell>
+                <StyledTableCell>{form.formName}</StyledTableCell>
+                <StyledTableCell>{moment(form.created).format()}</StyledTableCell>
+                <StyledTableCell align="right">
+                  <button className="btn btn-sm btn-outline-primary" onClick={()=>{viewForm(form.id);}}>
                     <i
                       className="fa fa-external-link mr-2"
                       aria-hidden="true"
                     ></i>
                     View Form
                   </button>
-                </TableCell>
-                <TableCell align="right">
-                  <button className="btn btn-sm btn-outline-danger">
-                    <i className="fa fa-trash-o mr-2" aria-hidden="true"></i>
+                </StyledTableCell>
+                <StyledTableCell align="right">
+                  <button className="btn btn-sm btn-outline-danger" onClick={()=>{deleteForm(form.id);}}>
+                    <i className="fa fa-trash-o" aria-hidden="true"></i>
                   </button>
-                </TableCell>
+                </StyledTableCell>
               </TableRow>
             ))}
-            {!data.length ? (
+            {!selectedForms?.length ? (
               <TableRow>
                 <TableCell align="center" colspan="5">
-                  <h3>Add forms launch together</h3>
+                  <h3>No forms launch together</h3>
                   <span>
                     Form bundles can save your time by grouping together forms
                     that you often launch together

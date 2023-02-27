@@ -5,8 +5,7 @@ import StepLabel from '@material-ui/core/StepLabel';
 import { Link ,useHistory,useParams} from 'react-router-dom';
 import {BUNDLE_CREATE_ROUTE, STEPPER_ROUTE} from "./constant/stepperConstant";
 const steps = ["Design Bundle", "Workflow", "Preview and Confirm"];
-import BundleCreate from "./BundleCreate";
-import BundleEdit from './steps/BundleEdit';
+import BundleCreateAndEdit from "./bundleDesign/BundleCreateAndEdit";
 import BundlePreview from "./steps/PreviewBundle";
 import WorkflowAssociate from "./steps/WorkflowAssociate";
 import { withStyles } from '@material-ui/styles';
@@ -60,25 +59,24 @@ const StepperComponent = () => {
     const getBundleMode = (props)=>{
       switch (mode){
         case BUNDLE_CREATE_ROUTE:
-          return <BundleCreate {...props}/>;
+          return <BundleCreateAndEdit {...props}/>;
         case STEPPER_ROUTE[0]:
-            return <BundleEdit {...props}/>;
+            return <BundleCreateAndEdit {...props} mode={mode}/>;
         case STEPPER_ROUTE[1]:
             return <BundlePreview {...props}/>;
-        case STEPPER_ROUTE[2]:
-            return <PreviewAndConfirm {...props}/>;
+ 
       }
 
     };
 
-    const getStep = ()=>{
+    const getStep = (props)=>{
       switch (activeStep){
         case 0:
-          return getBundleMode({handleNext,handleBack,isLastStep,activeStep});
+          return getBundleMode(props);
         case 1:
-          return <WorkflowAssociate/>;
+          return <WorkflowAssociate {...props}/>;
         case 2:
-          return <PreviewAndConfirm/>;
+          return <PreviewAndConfirm {...props}/>;
       }
     };
   return (
@@ -99,7 +97,7 @@ const StepperComponent = () => {
       </Stepper>
 
       {
-        getStep()
+        getStep({handleNext,handleBack,isLastStep,activeStep})
       }
           
     </div>

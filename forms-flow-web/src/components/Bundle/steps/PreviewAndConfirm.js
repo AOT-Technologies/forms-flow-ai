@@ -7,7 +7,7 @@ import CardContent from "@material-ui/core/CardContent";
 import TextField from "@material-ui/core/TextField";
 //import { useSelector } from "react-redux";
 import { useTranslation } from "react-i18next";
-import SaveNext from "../../Form/Steps/SaveNext";
+import SaveNext from "./SaveAndNext";
 
 
 const PreviewAndConfirm = React.memo(

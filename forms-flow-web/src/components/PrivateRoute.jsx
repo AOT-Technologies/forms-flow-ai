@@ -141,7 +141,7 @@ const PrivateRoute = React.memo((props) => {
             <DraftRoute path={`${BASE_ROUTE}draft`} component={Drafts} />
             <DesignerRoute path={`${BASE_ROUTE}admin`} component={Admin} />
             <DesignerRoute path={`${BASE_ROUTE}formflow`} component={Form} />
-            <DesignerRoute path={`${BASE_ROUTE}bundle`} component={Bundle} />
+            <DesignerRoute path={`${BASE_ROUTE}bundleflow`} component={Bundle} />
             <DesignerRoute
               path={`${BASE_ROUTE}processes`}
               component={Modeler}

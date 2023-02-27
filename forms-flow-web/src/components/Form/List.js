@@ -531,7 +531,7 @@ const List = React.memo((props) => {
             <div className="flex-item-right">
             {isDesigner && (
                 <Link
-                  to={`${redirectUrl}bundle/create`}
+                  to={`${redirectUrl}bundleflow/create`}
                   className="btn btn-primary btn-left btn-sm"
                 >
                   <i className="fa fa-plus fa-lg" />{" "}

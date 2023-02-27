@@ -1,12 +1,20 @@
 import React from 'react';
+import SaveNext from "./SaveAndNext";
 
-const WorkflowAssociate = ({handleNext}) => {
+const WorkflowAssociate = ({ handleNext, handleBack, activeStep, isLastStep}) => {
   return (
     <div>
-        <div className="d-flex justify-content-between align-items-center">
-            <h3>WOrkflow</h3>
-            <button className="btn btn-primary" onClick={handleNext}>Save & Preview</button>
+              <div className="d-flex align-items-center justify-content-between">
+        <h3>New Form</h3>
+        <div>
+          <SaveNext
+            handleNext={handleNext}
+            handleBack={handleBack}
+            activeStep={activeStep}
+            isLastStep={isLastStep}
+          />
         </div>
+      </div>
     </div>
   );
 };

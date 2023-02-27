@@ -70,19 +70,21 @@ const FormListModal = ({
   submitFormSelect
 }) => {
   const forms = [
-    { id: "63f366cc3f7b8b8abb0ee6d3", formName: "hiii", type: "form" },
-    { id: "63ef20cfcfc4bacac50e1b24", formName: "sad", type: "form" },
-    { id: "63b3b711941f11594406e271", formName: "sd33", type: "form" },
-    { id: "63dcaca52f1b3dc6a48b96b7", formName: "cccccccc", type: "resource" },
+    { id: "63fc41027e513a3995321307", formName: "hiii", type: "form" },
+    { id: "63fc4102513a3995321307", formName: "sad", type: "form" },
+    { id: "63fc41027e513a39953217", formName: "sd33", type: "form" },
+    { id: "63fc41027e513995321307", formName: "cccccccc", type: "resource" },
    
   ];
   const [seletedForms, setSelectedForms] = useState(formsAlreadySelected || []);
   const [seletedFormIds, setSelectedFormIds] = useState([]);
+ 
 
   useEffect(() => {
     if (formsAlreadySelected?.length) {
       const ids = formsAlreadySelected.map((form) => form.id);
       setSelectedFormIds(ids);
+      
     }
   }, [formsAlreadySelected]);
 
@@ -95,7 +97,7 @@ const FormListModal = ({
       setSelectedForms((prev) => prev.filter((item) => item.id !== form.id));
     }
   };
-  console.log(seletedForms);
+
   return (
     <div>
       <Modal show={showModal} size="lg">

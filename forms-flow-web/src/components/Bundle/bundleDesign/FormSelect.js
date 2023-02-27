@@ -15,11 +15,18 @@ const FormSelect = () => {
         setShowModal(false);
     };
 
+    const deleteForm = (formId) =>{
+      setSelectedForms((prev)=> prev.filter(form => form.id !== formId));
+    };
+
   return (
     <div>
-        <SelectedFormTable handleModalChange={handleModalChange} selectedForms={selectedForms}/>
+        <SelectedFormTable handleModalChange={handleModalChange}
+        deleteForm={deleteForm} selectedForms={selectedForms}/>
         <FormListModal handleModalChange={handleModalChange} 
-        submitFormSelect={submitFormSelect} showModal={showModal}/>
+        submitFormSelect={submitFormSelect} 
+        formsAlreadySelected={selectedForms}
+        setSelectedForms={setSelectedForms} showModal={showModal}/>
     </div>
   );
 };

@@ -50,7 +50,7 @@ import {
 import { setBpmFormSearch } from "../../actions/formActions";
 import { addTenantkey } from "../../helper/helper";
 import { formCreate, formUpdate } from "../../apiManager/services/FormServices";
-import { designerColums, getoptions, userColumns } from "./constants/table";
+import { bundleColumns, bundleData, designerColums, expandRow, getoptions, userColumns } from "./constants/table";
 import paginationFactory from "react-bootstrap-table2-paginator";
 import filterFactory from "react-bootstrap-table2-filter";
 import overlayFactory from "react-bootstrap-table2-overlay";
@@ -101,6 +101,7 @@ const List = React.memo((props) => {
   const sortOrder = useSelector((state) => state.bpmForms.sortOrder);
   const formCheckList = useSelector((state) => state.formCheckList.formList);
   const columns = isDesigner ? designerColums(t) : userColumns(t);
+  const bundleColumn = bundleColumns();
 
   const formAccess = useSelector((state) => state.user?.formAccess || []);
   const [tabValue, setTabValue] = useState(0);
@@ -740,7 +741,26 @@ const List = React.memo((props) => {
                 );
               }}
             </ToolkitProvider>
-          ) : <h1>bundle</h1>
+          ) : ( 
+          <ToolkitProvider
+          bootstrap4
+          keyField="id"
+          data={bundleData}
+          columns={bundleColumn}
+          search
+        >
+          {(props) => {
+            return (
+              <div>
+                  <BootstrapTable
+                    {...props.baseProps}
+                    expandRow= {expandRow }
+                  />
+              </div>
+            );
+          }}
+        </ToolkitProvider>
+        )
       }
             
           </section>

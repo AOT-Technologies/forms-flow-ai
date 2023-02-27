@@ -3,10 +3,43 @@ import SelectFormForDownload from "../FileUpload/SelectFormForDownload";
 import FormOperations from "../FormOperations/FormOperations";
 import { Translation } from "react-i18next";
 
-export const defaultSorted = [{
-  dataField: 'title',
-  order: 'desc'
-}];
+export const bundleData = [
+ { "id": 1,"name":"abi","date":"12-06-1999","connected forms":5, },
+ { "id": 2,"name":"abi","date":"12-06-1999","connected forms":5, },
+ { "id": 3,"name":"abi","date":"12-06-1999","connected forms":5, },
+ { "id": 4,"name":"abi","date":"12-06-1999","connected forms":5, },
+ { "id": 5,"name":"abi","date":"12-06-1999","connected forms":5, }
+];
+
+export const expandRow = {
+  renderer: () => (
+    <table className="table">
+  <thead>
+    <tr>
+      <th scope="col">Form Name</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>Form 1</td>
+    </tr>
+    <tr>
+      <td>Form 2</td>
+    </tr>
+    <tr>
+      <td>Form 3</td>
+    </tr>
+  </tbody>
+</table>
+  )
+};
+
+export const defaultSorted = [
+  {
+    dataField: "title",
+    order: "desc",
+  },
+];
 export const designerColums = () => [
   {
     dataField: "title",
@@ -43,6 +76,31 @@ export const userColumns = () => [
     },
   },
 ];
+
+export const bundleColumns = () => [
+  {
+    dataField: "id",
+    text: "Bundle ID",
+    headerClasses: "form_title",
+  },
+  {
+    dataField: "name",
+    text: "Bundle name",
+  },
+  {
+    dataField: "date",
+    text: "Date Created",
+  },
+  {
+    dataField: "connected forms",
+    text: "Connected forms",
+  },
+  { 
+    dataField: "operations",
+    text: "Operations",
+  },
+];
+
 const customDropUp = ({ options, currSizePerPage, onSizePerPageChange }) => {
   return (
     <DropdownButton
@@ -95,10 +153,10 @@ const customTotal = (from, to, size) => (
   <span className="react-bootstrap-table-pagination-total" role="main">
     <Translation>{(t) => t("Showing")}</Translation> {from}{" "}
     <Translation>{(t) => t("to")}</Translation> {to}{" "}
-    <Translation>{(t) => t("of")}</Translation> {size} <Translation>{(t) => t("Results")}</Translation>
+    <Translation>{(t) => t("of")}</Translation> {size}{" "}
+    <Translation>{(t) => t("Results")}</Translation>
   </span>
 );
-
 
 export const getoptions = (pageNo, limit, totalForms) => {
   return {

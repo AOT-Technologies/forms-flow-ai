@@ -20,9 +20,18 @@ const FormView = () => {
         }
     },[params]);
   return (
-    <div>
-          {getFormLoading ? <Loading /> : <Form form={formData} options={{readOnly:true}}/>} 
-    </div>
+          <div>
+             <div className="main-header">
+            <h3 className="ml-3">
+              <span className="task-head-details">
+                <i className="fa fa-wpforms" aria-hidden="true" /> &nbsp;{" "}
+                {"Bundle"}/
+              </span>{" "}
+              {formData.title}
+            </h3>
+            </div>
+           {getFormLoading ? <Loading /> : <Form form={formData} options={{readOnly:true}}/>} 
+          </div>
   );
 };
 

@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo, useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Navbar, Container, Nav, NavDropdown } from "react-bootstrap";
 import { Link, useLocation } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
@@ -15,7 +15,6 @@ import "./styles.scss";
 import {
   CLIENT,
   STAFF_REVIEWER,
-  APPLICATION_NAME,
   STAFF_DESIGNER,
   MULTITENANCY_ENABLED,
 } from "../constants/constants";
@@ -26,6 +25,8 @@ import { updateUserlang } from "../apiManager/services/userservices";
 
 import { fetchSelectLanguages } from "../apiManager/services/languageServices";
 
+//import "./Header.scss";
+
 const NavBar = React.memo(() => {
   const isAuthenticated = useSelector((state) => state.user.isAuthenticated);
   const location = useLocation();
@@ -34,9 +35,9 @@ const NavBar = React.memo(() => {
   const lang = useSelector((state) => state.user.lang);
   const userRoles = useSelector((state) => state.user.roles);
   const showApplications = useSelector((state) => state.user.showApplications);
-  const applicationTitle = useSelector(
-    (state) => state.tenants?.tenantData?.details?.applicationTitle
-  );
+  // const applicationTitle = useSelector(
+  //   (state) => state.tenants?.tenantData?.details?.applicationTitle
+  // );
   const tenantKey = useSelector((state) => state.tenants?.tenantId);
   const formTenant = useSelector((state)=>state.form?.form?.tenantKey);
   const baseUrl = MULTITENANCY_ENABLED ? `/tenant/${tenantKey}/` : "/";
@@ -51,18 +52,18 @@ const NavBar = React.memo(() => {
 
   const selectLanguages = useSelector((state) => state.user.selectLanguages);
   const dispatch = useDispatch();
-  const logoPath = "/logo.svg";
-  const getAppName = useMemo(
-    () => () => {
-      if (!MULTITENANCY_ENABLED) {
-        return APPLICATION_NAME;
-      }
-      // TODO: Need a propper fallback component prefered a skeleton.
-      return applicationTitle || "";
-    },
-    [MULTITENANCY_ENABLED, applicationTitle]
-  );
-  const appName = getAppName();
+  // const logoPath = "/logo.svg";
+  // const getAppName = useMemo(
+  //   () => () => {
+  //     if (!MULTITENANCY_ENABLED) {
+  //       return APPLICATION_NAME;
+  //     }
+  //     // TODO: Need a propper fallback component prefered a skeleton.
+  //     return applicationTitle || "";
+  //   },
+  //   [MULTITENANCY_ENABLED, applicationTitle]
+  // );
+  // const appName = getAppName();
   const { t } = useTranslation();
 
   useEffect(()=>{
@@ -91,27 +92,27 @@ const NavBar = React.memo(() => {
   const goToTask = () => {
     dispatch(push(`${baseUrl}task`));
   };
+
   return (
     <header>
       <Navbar
         expand="lg"
-        bg="white"
-        className="topheading-border-bottom"
         fixed="top"
+        style={{backgroundColor: '#003366', borderBottom: '2px solid #fcba19'}}
       >
-        <Container fluid>
-          <Navbar.Brand className="d-flex">
+        <Container fluid >
+          <Navbar.Brand className="d-flex" >
             <Link to={`${baseUrl}`}>
-              <img
-                className="img-fluid"
-                src={logoPath}
-                width="50"
-                height="55"
-                alt="Logo"
-              />
+            <img
+              src="https://developer.gov.bc.ca/static/BCID_H_rgb_rev-20eebe74aef7d92e02732a18b6aa6bbb.svg"
+              alt="Go to the onRouteBC Home Page"
+              height="50px"
+              style={{paddingBottom: '8px'}}
+            />
             </Link>
-            <div className="custom-app-name">{appName}</div>
+            <div className="custom-app-name">onRouteBC</div>
           </Navbar.Brand>
+          
           <Navbar.Toggle aria-controls="responsive-navbar-nav " />
           {isAuthenticated ? (
             <Navbar.Collapse id="responsive-navbar-nav" className="navbar-nav">

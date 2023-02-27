@@ -1,5 +1,13 @@
 @import "../assets/styles/themes.scss";
 
+header a i {
+  color: white;
+}
+
+.navbar-light .navbar-nav .nav-link {
+  color: white !important;
+}
+
 /*#sidebar {
   & .navbar {
     padding: 15px 10px;

@@ -156,12 +156,12 @@ class KeycloakUsersList(Resource):
             "pageNo": {
                 "in": "query",
                 "description": "Page number.",
-                "default": "0",
+                "default": 1,
             },
             "limit": {
                 "in": "query",
                 "description": "Max result size.",
-                "default": "5",
+                "default": 5,
             },
             "role": {
                 "in": "query",
@@ -184,8 +184,8 @@ class KeycloakUsersList(Resource):
         try:
             group_name = request.args.get("memberOfGroup")
             search = request.args.get("search")
-            page_no = request.args.get("pageNo")
-            limit = request.args.get("limit")
+            page_no = int(request.args.get("pageNo", 0))
+            limit = int(request.args.get("limit", 0))
             role = request.args.get("role") == "true"
             kc_admin = KeycloakFactory.get_instance()
             if group_name:

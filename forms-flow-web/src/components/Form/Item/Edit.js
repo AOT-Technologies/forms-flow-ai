@@ -190,6 +190,15 @@ const Edit = React.memo(() => {
     };
     dispatch(setFormProcessesData(newData));
   };
+ //set bundle value
+  const changeBundle = (setvalue, goBack) => {
+    let latestValue = goBack ? setvalue : !processListData.bundle;
+    let newData = {
+      ...processListData,
+      bundle: latestValue,
+    };
+    dispatch(setFormProcessesData(newData));
+  };
 
   //  chaning the form access
   useEffect(() => {
@@ -667,6 +676,20 @@ const Edit = React.memo(() => {
                     />
                   }
                   label={t("Make this form public ?")}
+                  labelPlacement="start"
+                />
+                <FormControlLabel
+                  control={
+                    <Checkbox
+                      checked={processListData.bundle || false}
+                      color="primary"
+                      aria-label="Publish"
+                      onChange={() => {
+                        changeBundle();
+                      }}
+                    />
+                  }
+                  label={"can bundle ?"}
                   labelPlacement="start"
                 />
               </div>

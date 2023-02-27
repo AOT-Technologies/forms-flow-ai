@@ -50,6 +50,7 @@ const reducer = (form, { type, value }) => {
 const Create = React.memo(() => {
   const dispatch = useDispatch();
   const [anonymous, setAnonymous] = useState(false);
+  const [bundle, setBundle] = useState(false);
   const formData = { display: "form" };
   const [form, dispatchFormAction] = useReducer(reducer, _cloneDeep(formData));
   const saveText = <Translation>{(t) => t("Save & Preview")}</Translation>;
@@ -158,6 +159,7 @@ const Create = React.memo(() => {
         titleChanged: true,
         formRevisionNumber: "V1", // to do
         anonymous: formAccess[0]?.roles.includes(roleIds.ANONYMOUS),
+        bundle:false
       };
       dispatch(setFormSuccessData("form", form));
       dispatch(
@@ -351,6 +353,21 @@ const Create = React.memo(() => {
                     />
                   }
                   label={t("Make this form public ?")}
+                  labelPlacement="start"
+                />
+                <FormControlLabel
+                  control={
+                    <Checkbox
+                      checked={bundle}
+                      id="bundle"
+                      color="primary"
+                      aria-label="Publish"
+                      onChange={() => {
+                        setBundle(!bundle);
+                      }}
+                    />
+                  }
+                  label={t("can bundle?")}
                   labelPlacement="start"
                 />
               </div>

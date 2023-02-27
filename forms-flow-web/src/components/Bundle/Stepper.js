@@ -10,7 +10,7 @@ import BundleEdit from './steps/BundleEdit';
 import BundlePreview from "./steps/PreviewBundle";
 import WorkflowAssociate from "./steps/WorkflowAssociate";
 import { withStyles } from '@material-ui/styles';
-
+import PreviewAndConfirm from './steps/PreviewAndConfirm';
 const CustomStepperLabel = withStyles(() => ({
   label: {
     fontSize: "1rem",
@@ -65,6 +65,8 @@ const StepperComponent = () => {
             return <BundleEdit {...props}/>;
         case STEPPER_ROUTE[1]:
             return <BundlePreview {...props}/>;
+        case STEPPER_ROUTE[2]:
+            return <PreviewAndConfirm {...props}/>;
       }
 
     };
@@ -75,6 +77,8 @@ const StepperComponent = () => {
           return getBundleMode({handleNext,handleBack,isLastStep,activeStep});
         case 1:
           return <WorkflowAssociate/>;
+        case 2:
+          return <PreviewAndConfirm/>;
       }
     };
   return (

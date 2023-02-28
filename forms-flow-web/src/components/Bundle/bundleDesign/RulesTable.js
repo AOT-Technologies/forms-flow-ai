@@ -5,7 +5,6 @@ import TableCell from "@material-ui/core/TableCell";
 import TableContainer from "@material-ui/core/TableContainer";
 import TableHead from "@material-ui/core/TableHead";
 import TableRow from "@material-ui/core/TableRow";
-import moment from "moment";
 import { withStyles } from "@material-ui/styles";
  
 const StyledTableCell = withStyles(() => ({
@@ -18,7 +17,8 @@ const StyledTableCell = withStyles(() => ({
     fontSize:"1rem",
   }
 }))(TableCell);
-const RulesTable = ({createdRules = [],handleModalChange}) => {
+const RulesTable = ({bundleRules = [],handleModalChange,
+  selectEditRule,deleteRule}) => {
   return (
     <TableContainer style={{ border: "1px solid #dbdbdb" }}>
     <Table aria-label="simple table">
@@ -26,35 +26,42 @@ const RulesTable = ({createdRules = [],handleModalChange}) => {
         <TableRow>
           <StyledTableCell>No</StyledTableCell>
           <StyledTableCell align="left">Form Name</StyledTableCell>
+          <StyledTableCell align="left">Path name</StyledTableCell>
           <StyledTableCell align="left">Criteria</StyledTableCell>
-          <StyledTableCell align="right">Actions</StyledTableCell>
+          <StyledTableCell align="left">Rule Action</StyledTableCell>
+          <StyledTableCell align="right">Action</StyledTableCell>
+ 
         </TableRow>
       </TableHead>
       <TableBody>
-        {createdRules?.map((row, index) => (
-          <TableRow key={row.id}>
+      {/* const data = {
+      criteria ,
+      formId: selectedFormDetails._id,
+      pathName: selectedFormDetails.path,
+      formName: selectedFormDetails.title,
+      action:action.value
+    }; */}
+        {bundleRules?.map((rule, index) => (
+          <TableRow key={rule.id}>
             <StyledTableCell>{index + 1}</StyledTableCell>
-            <StyledTableCell>{row.formName}</StyledTableCell>
-            <StyledTableCell>{moment(row.created).format()}</StyledTableCell>
+            <StyledTableCell>{rule.formName}</StyledTableCell>
+            <StyledTableCell>{rule.pathName}</StyledTableCell>
+            <StyledTableCell>{rule.criteria?.join(",")}</StyledTableCell>
+            <StyledTableCell>{rule.action}</StyledTableCell>
             <StyledTableCell align="right">
-              <button className="btn btn-sm btn-outline-primary">
-                <i
-                  className="fa fa-external-link mr-2"
-                  aria-hidden="true"
-                ></i>
-                View Form
+              <button className="btn btn-sm btn-outline-primary mr-2" onClick={()=>{selectEditRule(rule);}}>
+              <i className="fa fa-pencil " aria-hidden="true"></i>
               </button>
-            </StyledTableCell>
-            <StyledTableCell align="right">
-              <button className="btn btn-sm btn-outline-danger">
+              <button className="btn btn-sm btn-outline-danger" onClick={()=>{deleteRule(rule.id);}}>
                 <i className="fa fa-trash-o" aria-hidden="true"></i>
               </button>
             </StyledTableCell>
+ 
           </TableRow>
         ))}
-        {!createdRules?.length ? (
+        {!bundleRules?.length ? (
           <TableRow>
-            <TableCell align="center" colspan="5">
+            <TableCell align="center" colSpan="8">
               <h3>No Rules</h3>
               <span>
                 Form bundles can save your time by grouping together forms
@@ -66,7 +73,7 @@ const RulesTable = ({createdRules = [],handleModalChange}) => {
           ""
         )}
         <TableRow>
-          <TableCell align="center" colspan="5">
+          <TableCell align="center" colspan="8">
             <button className="btn btn-outline-primary" onClick={handleModalChange}>
               <i className="fa fa-plus mr-2"></i>
               Create Rules

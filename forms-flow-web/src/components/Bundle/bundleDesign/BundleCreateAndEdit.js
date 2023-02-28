@@ -119,7 +119,7 @@ const BundleCreate = ({mode}) => {
         </div>
         <div className="m-3">
         <label>Create Rules</label>
-          <Rule/>
+          <Rule />
         </div>
       </section>
     </div>

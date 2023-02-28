@@ -105,6 +105,7 @@ export const fetchProcessDefinitionList = (...rest) => {
     httpGETRequest(API.GET_BPM_PROCESS_LIST, {}, UserService.getToken())
       .then((res) => {
         if(res?.data) {
+          console.log("processs",res.data);
           dispatch(setBPMProcessList(res.data));
           //dispatch(setBPMLoader(false));
           done(null, res.data);

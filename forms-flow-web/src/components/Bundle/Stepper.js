@@ -4,18 +4,36 @@ import Step from '@material-ui/core/Step';
 import StepLabel from '@material-ui/core/StepLabel';
 import { Link ,useHistory,useParams} from 'react-router-dom';
 import {BUNDLE_CREATE_ROUTE, STEPPER_ROUTE} from "./constant/stepperConstant";
+import {
+  fetchAllBpmProcesses
+} from "../../apiManager/services/processServices";
+import { MULTITENANCY_ENABLED } from "../../constants/constants";
 const steps = ["Design Bundle", "Workflow", "Preview and Confirm"];
 import BundleCreateAndEdit from "./bundleDesign/BundleCreateAndEdit";
 import BundlePreview from "./steps/PreviewBundle";
 import WorkflowAssociate from "./steps/WorkflowAssociate";
 import { withStyles } from '@material-ui/styles';
 import PreviewAndConfirm from './steps/PreviewAndConfirm';
+import { useDispatch, useSelector } from 'react-redux';
 const CustomStepperLabel = withStyles(() => ({
   label: {
     fontSize: "1rem",
   },
 }))(StepLabel);
 const StepperComponent = () => {
+  const tenantKey = useSelector((state) => state.tenants?.tenantId);
+  const tenantIdIn = MULTITENANCY_ENABLED ? tenantKey : null;
+  const dispatch = useDispatch();
+  useEffect(()=>{
+    dispatch(
+      // eslint-disable-next-line no-unused-vars
+      fetchAllBpmProcesses(tenantIdIn, (err, res) => {
+        if (err) {
+          console.log(err);
+        }
+      })
+    );
+  },[dispatch]);
     const params = useParams();
     const history = useHistory();
     const [mode,setMode] = useState("preview");

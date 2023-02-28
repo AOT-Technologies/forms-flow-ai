@@ -12,7 +12,9 @@ sqlalchemy_url = current_app.config['SQLALCHEMY_DATABASE_URI']
 config.set_main_option('sqlalchemy.url', sqlalchemy_url)
 
 # Create target metadata for the database
-target_metadata = current_app.extensions['migrate'].db.metadata
+target_metadata = None
+if (meta := current_app.extensions.get('migrate')) is not None:
+    target_metadata = meta.db.metadata
 
 
 # Function for running migrations in the context of the Flask application

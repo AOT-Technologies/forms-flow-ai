@@ -1,0 +1,17 @@
+name: Push Forms flow root config to registry
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [ master, develop, release/*, 5.2.0-alpha ]
+    paths:
+      - "forms-flow-root-config/**"
+      - "VERSION"
+defaults:
+  run:
+    shell: bash
+jobs:
+  workflow-info:
+    runs-on: ubuntu-latest
+    steps:
+      - run: echo "Temporary workflow added to support feature branch"

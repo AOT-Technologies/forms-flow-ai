@@ -5,13 +5,13 @@ on:
   push:
     branches: [ master, develop, release/*, 5.2.0-alpha ]
     paths:
-      - "forms-flow-root-config/**"
+      - "forms-flow-web-root-config/**"
       - "VERSION"
 
 defaults:
   run:
     shell: bash
-    working-directory: ./forms-flow-root-config
+    working-directory: ./forms-flow-web-root-config
 
 jobs:
   build-and-push-image-to-dockerhub:
@@ -21,7 +21,7 @@ jobs:
       matrix:
         include:
           - image: formsflow/forms-flow-web
-            context: forms-flow-root-config
+            context: forms-flow-web-root-config
             dockerfile: Dockerfile
             name: forms-flow-web
     permissions:
@@ -77,7 +77,7 @@ jobs:
         if: ${{ github.ref != 'refs/heads/master' }}
         uses: docker/build-push-action@v2
         with:
-          context: forms-flow-root-config
+          context: forms-flow-web-root-config
           push: true
           tags: ${{ steps.meta.outputs.tags }}
           labels: ${{ steps.meta.outputs.labels }}
@@ -85,7 +85,7 @@ jobs:
         if: ${{ github.ref == 'refs/heads/master' }}
         uses: docker/build-push-action@v2
         with:
-          context: forms-flow-root-config
+          context: forms-flow-web-root-config
           push: true
           tags: ${{ steps.meta.outputs.tags }}, formsflow/forms-flow-web:latest
           labels: ${{ steps.meta.outputs.labels }}

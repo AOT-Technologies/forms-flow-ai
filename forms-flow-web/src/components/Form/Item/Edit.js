@@ -39,6 +39,7 @@ import { Checkbox, FormControlLabel } from "@material-ui/core";
 import { manipulatingFormData } from "../../../apiManager/services/formFormatterService";
 import SaveAsNewVersionConfirmationModal from "./SaveAsNewVersionConfirmationModal";
 import LoadingOverlay from "react-loading-overlay";
+import searchValidator from "../../../helper/regExp/formSearchValidation" ;
 const reducer = (form, { type, value }) => {
   const formCopy = _cloneDeep(form);
   switch (type) {
@@ -100,6 +101,7 @@ const Edit = React.memo(() => {
   const [currentFormLoading, setCurrentFormLoading] = useState(false);
   const [saveAsNewVersionselected, setSaveAsNewVersion] = useState(false);
   const [confirmModalShow, setConfirmModalShow] = useState(false);
+  const [isValidName, setIsValidName] = useState(true);
   const handleClose = () => setShow(false);
   const handleShow = () => setShow(true);
   const handleConfirmModalChange = () => setConfirmModalShow(!confirmModalShow);
@@ -172,6 +174,7 @@ const Edit = React.memo(() => {
 
   // setting the form data
   useEffect(() => {
+    setIsValidName(searchValidator(form.title));
     const newForm = formData;
     if (
       newForm &&
@@ -489,7 +492,10 @@ const Edit = React.memo(() => {
           <button
             className="btn btn-primary"
             disabled={formSubmitted}
-            onClick={() => handleChooseOption()}
+            onClick={() =>{
+              isValidName ? handleChooseOption() :  toast.error(t("Please remove the special charcters"));
+              
+            }}
           >
             {saveAsNewVersionselected ? saveNewVersion : saveText}
           </button>
@@ -535,13 +541,19 @@ const Edit = React.memo(() => {
                 <Translation>{(t) => t("Title")}</Translation>
               </label>
               <input
+              style={{ color: `${!isValidName ? "red" : ''}` }}
                 type="text"
                 className="form-control"
                 id="title"
                 placeholder={t("Enter the form title")}
                 value={form.title || ""}
-                onChange={(event) => handleChange("title", event)}
+                onChange={(event) => {
+                  setIsValidName(searchValidator(event.target.value));
+                  handleChange("title", event);
+                }
+              }
               />
+              {!isValidName && <span className="validation-err" style={{marginLeft: "0px"}}>Please remove the special charactors...!</span>}
             </div>
           </div>
           <div className="col-lg-4 col-md-4 col-sm-4">

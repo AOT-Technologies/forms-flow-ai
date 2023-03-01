@@ -151,9 +151,6 @@ const List = React.memo((props) => {
     searchText,
     formType
   ]);
-  useEffect(() => {
-    setIsSearchValid(searchValidator(searchTextInput));
-  }, [searchTextInput]);
 
   const formCheck = (formCheckList) => {
     const result = formCheckList.reduce(function (obj, v) {
@@ -608,6 +605,7 @@ const List = React.memo((props) => {
                       ref={searchInputBox}
                       onKeyPress={(e) => e.key === "Enter" && handleSearch()}
                       onChange={(e) => {
+                        setIsSearchValid(searchValidator(e.target.value));
                         setShowClearButton(e.target.value);
                         setSearchTextInput(e.target.value);
                         e.target.value === "" && handleSearch();

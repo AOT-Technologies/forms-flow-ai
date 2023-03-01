@@ -51,6 +51,9 @@ class FormProcessMapper(AuditDateTimeMixin, AuditUserMixin, BaseModel, db.Model)
     deleted = db.Column(db.Boolean, nullable=True, default=False)
     task_variable = db.Column(JSON, nullable=True)
     version = db.Column(db.Integer, nullable=False, default=1)
+    can_bundle = db.Column(db.Boolean, nullable=False, default=False)
+    is_bundle = db.Column(db.Boolean, nullable=False, default=False)
+    description = db.Column(db.String(300), nullable=True)
 
     __table_args__ = (
         UniqueConstraint("form_id", "version", "tenant", name="_form_version_uc"),
@@ -198,6 +201,8 @@ class FormProcessMapper(AuditDateTimeMixin, AuditUserMixin, BaseModel, db.Model)
             cls.process_key,
             cls.form_id,
             cls.form_name,
+            cls.form_type,
+            cls.status,
         )
         limit = total_count if limit is None else limit
         query = query.paginate(page=page_number, per_page=limit, error_out=False)

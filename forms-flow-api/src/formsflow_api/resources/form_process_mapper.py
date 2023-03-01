@@ -220,7 +220,9 @@ class FormResourceList(Resource):
             limit: int = dict_data.get("limit")
             sort_by: str = dict_data.get("sort_by", "id")
             sort_order: str = dict_data.get("sort_order", "desc")
-            form_type: str = dict_data.get("form_type", "form")
+            form_type: str = dict_data.get("form_type")
+            can_bundle: str = dict_data.get("can_bundle")
+            is_bundle: str = dict_data.get("is_bundle")
             auth_list = auth_form_details.get("authorizationList") or {}
             resource_list = [group["resourceId"] for group in auth_list]
             if auth.has_role([DESIGNER_GROUP]):
@@ -228,7 +230,14 @@ class FormResourceList(Resource):
                     form_process_mapper_schema,
                     form_process_mapper_count,
                 ) = FormProcessMapperService.get_all_forms(
-                    page_no, limit, form_name, sort_by, sort_order, form_type
+                    page_no,
+                    limit,
+                    form_name,
+                    sort_by,
+                    sort_order,
+                    form_type,
+                    can_bundle,
+                    is_bundle,
                 )
             elif (
                 auth_form_details.get("adminGroupEnabled") is True

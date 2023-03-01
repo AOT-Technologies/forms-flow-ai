@@ -31,6 +31,8 @@ class FormProcessMapperSchema(Schema):
     process_tenant = fields.Str(data_key="processTenant")
     deleted = fields.Boolean(data_key="deleted")
     can_bundle = fields.Str(data_key="canBundle")
+    is_bundle = fields.Str(data_key="isBundle")
+    description = fields.Str(data_key="description")
 
 
 class FormProcessMapperListReqSchema(Schema):
@@ -53,3 +55,4 @@ class FormProcessMapperListRequestSchema(FormProcessMapperListReqSchema):
     sort_order = fields.Str(data_key="sortOrder", required=False)
     form_type = fields.Str(data_key="formType", required=False)
     can_bundle = fields.Str(data_key="canBundle", required=False)
+    is_bundle = fields.Str(data_key="isBundle", required=False)

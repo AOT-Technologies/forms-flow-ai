@@ -62,6 +62,7 @@ const View = React.memo((props) => {
   const [formStatus, setFormStatus] = React.useState("");
   const { t } = useTranslation();
   const lang = useSelector((state) => state.user.lang);
+  const pubSub = useSelector((state) => state.pubSub);
   const formStatusLoading = useSelector(
     (state) => state.process?.formStatusLoading
   );
@@ -290,7 +291,7 @@ const View = React.memo((props) => {
   }, [publicFormStatus]);
 
   useEffect(()=>{
-    props.publish('ES_FORM', form);
+    pubSub.publish('ES_FORM', form);
   },[form]);
 
   if (isActive || isPublicStatusLoading || formStatusLoading) {

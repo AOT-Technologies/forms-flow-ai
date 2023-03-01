@@ -14,6 +14,7 @@ import { useDispatch } from "react-redux";
 import i18n from "../resourceBundles/i18n";
 import { updateUserlang } from "../apiManager/services/userservices";
 import { setLanguage } from "../actions/languageSetAction";
+import { initPubSub } from "../actions/pubSubActions";
 
 const BaseRouting = React.memo(({ store, publish, subscribe, getKcInstance }) => {
   const user = useSelector((state) => state.user);
@@ -24,6 +25,9 @@ const BaseRouting = React.memo(({ store, publish, subscribe, getKcInstance }) =>
 
   const [language, setLang] = React.useState(null);
 
+  React.useEffect(()=>{
+    dispatch(initPubSub({publish, subscribe}));  
+  },[publish, subscribe]);
 
   subscribe("ES_CHANGE_LANGUAGE", (msg, data) => {
     i18n.changeLanguage(data);

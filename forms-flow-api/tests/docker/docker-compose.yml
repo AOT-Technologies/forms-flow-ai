@@ -16,7 +16,7 @@ services:
     image: stoplight/prism:3.3.0
     command: >
       mock -p 4010 --host 0.0.0.0
-      https://raw.githubusercontent.com/AbijithS-aot/forms-flow-ai/form_embed_fix/forms-flow-forms/api-spec/forms-flow-forms-api-spec.yaml
+      https://raw.githubusercontent.com/AbijithS-aot/forms-flow-ai/develop/forms-flow-forms/api-spec/forms-flow-forms-api-spec.yaml
   proxy:
     image: nginx:alpine
     volumes:

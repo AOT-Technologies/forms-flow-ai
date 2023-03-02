@@ -229,7 +229,7 @@ class KeycloakAdminAPIService:
     @profiletime
     def get_realm_users(self, search: str, page_no: int, limit: int):
         """Return list of users in the realm."""
-        url = f"users?first={page_no}&max={limit}"
+        url = f"users?first={(page_no-1)*limit}&max={limit}"
         if search:
             url += f"&search={search}"
         return self.get_request(url_path=url)

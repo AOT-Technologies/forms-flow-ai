@@ -46,7 +46,7 @@ class KeycloakGroupService(KeycloakAdmin):
             group_id = group.get("id")
             url_path = f"groups/{group_id}/members"
             if page_no and limit:
-                url_path += f"?first={page_no}&max={limit}"
+                url_path += f"?first={(page_no-1)*limit}&max={limit}"
             response = self.client.get_request(url_path)
         if role:
             response = self.__populate_user_groups(response)
@@ -176,7 +176,7 @@ class KeycloakGroupService(KeycloakAdmin):
 
     def search_realm_users(self, search: str, page_no: int, limit: int, role: bool):
         """Search users in a realm."""
-        if page_no is None or limit is None:
+        if not page_no or not limit:
             raise BusinessException(
                 "Missing pagination parameters", HTTPStatus.BAD_REQUEST
             )

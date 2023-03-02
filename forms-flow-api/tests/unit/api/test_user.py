@@ -56,7 +56,7 @@ def test_keycloak_users_list(app, client, session, jwt):
         assert len(user["role"]) != 0
 
     # Test without specifying group/role
-    realm_users = client.get("/user?pageNo=0&limit=5&role=true", headers=headers)
+    realm_users = client.get("/user?pageNo=1&limit=5&role=true", headers=headers)
     assert realm_users.status_code == 200
     for user in realm_users.json:
         assert user.get("role") is not None

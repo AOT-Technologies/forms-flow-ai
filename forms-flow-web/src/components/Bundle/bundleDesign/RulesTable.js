@@ -26,7 +26,6 @@ const RulesTable = ({bundleRules = [],handleModalChange,
         <TableRow>
           <StyledTableCell>No</StyledTableCell>
           <StyledTableCell align="left">Form Name</StyledTableCell>
-          <StyledTableCell align="left">Path name</StyledTableCell>
           <StyledTableCell align="left">Criteria</StyledTableCell>
           <StyledTableCell align="left">Rule Action</StyledTableCell>
           <StyledTableCell align="right">Action</StyledTableCell>
@@ -34,25 +33,18 @@ const RulesTable = ({bundleRules = [],handleModalChange,
         </TableRow>
       </TableHead>
       <TableBody>
-      {/* const data = {
-      criteria ,
-      formId: selectedFormDetails._id,
-      pathName: selectedFormDetails.path,
-      formName: selectedFormDetails.title,
-      action:action.value
-    }; */}
+ 
         {bundleRules?.map((rule, index) => (
           <TableRow key={rule.id}>
             <StyledTableCell>{index + 1}</StyledTableCell>
             <StyledTableCell>{rule.formName}</StyledTableCell>
-            <StyledTableCell>{rule.pathName}</StyledTableCell>
             <StyledTableCell>{rule.criteria?.join(",")}</StyledTableCell>
             <StyledTableCell>{rule.action}</StyledTableCell>
             <StyledTableCell align="right">
               <button className="btn btn-sm btn-outline-primary mr-2" onClick={()=>{selectEditRule(rule);}}>
               <i className="fa fa-pencil " aria-hidden="true"></i>
               </button>
-              <button className="btn btn-sm btn-outline-danger" onClick={()=>{deleteRule(rule.id);}}>
+              <button className="btn btn-sm btn-outline-danger" onClick={()=>{deleteRule(rule.formId);}}>
                 <i className="fa fa-trash-o" aria-hidden="true"></i>
               </button>
             </StyledTableCell>

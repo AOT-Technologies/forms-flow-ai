@@ -1,25 +1,20 @@
 import React, { useEffect, useState } from "react";
 import { Modal } from "react-bootstrap";
-import { useDispatch, useSelector } from "react-redux";
-import { fetchFormById } from "../../../apiManager/services/bpmFormServices";
+import { useSelector } from "react-redux";
+
 import { Errors } from "react-formio";
 import { RuleActions } from "../constant/ruleActionConstant";
-import {
-  clearFormError,
-  setFormFailureErrorData,
-} from "../../../actions/formActions";
+
 import Select from "react-select";
 import { useMemo } from "react";
 const RuleCreateModal = React.memo(({ showModal, handleModalChange ,
   addRule , editRule, existingRule}) => {
 
-  const dispatch = useDispatch();
   const bundleSelectedForms = useSelector(
     (state) => state.bundle.selectedForms || []
   );
 
   const errors = useSelector((state) => state.form.error);
-  const [selectedFormDetails, setSelectedFormDeatils] = useState(null);
   const [criteria, setCriteria] = useState('');
   const [selectedFormDta, setSelectedFormData] = useState("");
   const [action, setAction] = useState();
@@ -29,21 +24,26 @@ const RuleCreateModal = React.memo(({ showModal, handleModalChange ,
     return bundleSelectedForms.map((item) => {
       return {
         label: item.formName,
-        value: item.id,
+        value: item.formId,
+        path:item.path
       };
     });
   }, [bundleSelectedForms]);
 
 
+  useEffect(()=>{
+    setCriteria("");
+    setAction("");
+    setSelectedFormData("");
+  },[showModal]);
 
  useEffect(()=>{
   
     if(existingRule){
-       const formData =  bundleSelectedForms.find(i=> i.id === existingRule.formId);
+       const formData =  bundleSelectedForms.find(i=> i.formId === existingRule.formId);
        if(formData){
-        setSelectedFormData({label:formData.formName, value:formData.id});
-        setSelectedFormDeatils({_id:existingRule.formId,path:existingRule.pathName,
-           title:existingRule.formName});
+        setSelectedFormData({label:formData.formName, value:formData.formId, 
+          path:formData.path});
        }
        const action =  RuleActions.find(action => action.value === existingRule.action);
        if(action){
@@ -56,28 +56,18 @@ const RuleCreateModal = React.memo(({ showModal, handleModalChange ,
 
 
 
-  useEffect(() => {
-    dispatch(clearFormError("form"));
-  }, [selectedFormDetails]);
+ 
 
   const handleFormSelectChange = (form) => {
     setSelectedFormData(form);
-    fetchFormById(form.value)
-      .then((res) => {
-        setSelectedFormDeatils(res.data);
-      })
-      .catch((err) => {
-        const error = err.response.data || err.message;
-        dispatch(setFormFailureErrorData("form", error));
-      });
   };
 
   const submitRule = ()=>{
     const data = {
       criteria: criteria.split(",") ,
-      formId: selectedFormDetails._id,
-      pathName: selectedFormDetails.path,
-      formName: selectedFormDetails.title,
+      formId: selectedFormDta.value,
+      path: selectedFormDta.path,
+      formName: selectedFormDta.label,
       action:action.value
     };
     if(existingRule){
@@ -89,7 +79,6 @@ const RuleCreateModal = React.memo(({ showModal, handleModalChange ,
     setCriteria("");
     setAction("");
     setSelectedFormData("");
-    setSelectedFormDeatils("");
   };
  
   return (

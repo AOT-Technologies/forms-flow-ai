@@ -11,6 +11,7 @@ import {
 } from "../../actions/formActions";
 import { replaceUrl } from "../../helper/helper";
 import { setFormSearchLoading } from "../../actions/checkListActions";
+import { setBundleForms } from "../../actions/bundleActions";
 
 export const fetchBPMFormList = (
   pageNo,
@@ -19,6 +20,7 @@ export const fetchBPMFormList = (
   sortOrder,
   formName,
   formType,
+  canBundle,
   ...rest
 ) => {
   const done = rest.length ? rest[0] : () => {};
@@ -31,14 +33,22 @@ export const fetchBPMFormList = (
     if (formName) {
       url += `&formName=${formName}`;
     }
+    if (canBundle) {
+      url += `&canBundle=${canBundle}`;
+    }
     httpGETRequest(url, {}, UserService.getToken())
       .then((res) => {
         if (res.data) {
-          dispatch(setBPMFormList(res.data));
-          dispatch(setBPMFormListLoading(false));
-          //dispatch(setBPMLoader(false));
-          dispatch(setBpmFormLoading(false));
-          dispatch(setFormSearchLoading(false));
+          if(canBundle){
+            dispatch(setBundleForms({forms:res.data.forms,totalCount:res.data.totalCount}));
+          }else{
+            dispatch(setBPMFormList(res.data));
+            dispatch(setBPMFormListLoading(false));
+            //dispatch(setBPMLoader(false));
+            dispatch(setBpmFormLoading(false));
+            dispatch(setFormSearchLoading(false));
+          }
+
 
           done(null, res.data);
         } else {
@@ -58,6 +68,19 @@ export const fetchBPMFormList = (
       });
   };
 };
+
+export const fetchCanBundleForms = (options)=>{
+  const {pageNo,formName,limit = 5,sortBy = "formName",sortOrder = "asc",canBundle} = options;
+  let url = 
+  `${API.FORM}?pageNo=${pageNo}&limit=${limit}&sortBy=${sortBy}&sortOrder=${sortOrder}&canBundle=${
+    canBundle}`;
+  if (formName) {
+    url += `&formName=${formName}`;
+  }
+  return httpGETRequest(url, {}, UserService.getToken());
+};
+
+
 
 export const fetchFormByAlias = (path, ...rest) => {
   const done = rest.length ? rest[0] : () => {};
@@ -93,9 +116,9 @@ export const fetchFormByAlias = (path, ...rest) => {
 
 
 
-export const fetchFormById = (id) => {
+export const fetchFormById = (id,options) => {
   let token = UserService.getFormioToken() ? {"x-jwt-token": UserService.getFormioToken()} : {};
-  return httpGETRequest(`${API.GET_FORM_BY_ID}/${id}`, {}, "", false, {
+  return httpGETRequest(`${API.GET_FORM_BY_ID}/${id}${options ? options : ""}`, {}, "", false, {
     ...token
   });
   

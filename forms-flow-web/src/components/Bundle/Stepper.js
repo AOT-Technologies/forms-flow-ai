@@ -15,6 +15,7 @@ import WorkflowAssociate from "./steps/WorkflowAssociate";
 import { withStyles } from '@material-ui/styles';
 import PreviewAndConfirm from './steps/PreviewAndConfirm';
 import { useDispatch, useSelector } from 'react-redux';
+import { resetBundleData } from '../../actions/bundleActions';
 const CustomStepperLabel = withStyles(() => ({
   label: {
     fontSize: "1rem",
@@ -29,14 +30,18 @@ const StepperComponent = () => {
       // eslint-disable-next-line no-unused-vars
       fetchAllBpmProcesses(tenantIdIn, (err, res) => {
         if (err) {
-          console.log(err);
+          console.error(err);
         }
       })
     );
+    return ()=>{
+      dispatch(resetBundleData());
+    };
   },[dispatch]);
     const params = useParams();
     const history = useHistory();
-    const [mode,setMode] = useState("preview");
+    const [activeMode,setActiveMode] = useState('');
+    const [initialMode,setInitialMode] = useState('');
     const [isLastStep, setIsLastStep] = useState(false);
 
     const [activeStep,setActiveStep] = useState(0);
@@ -52,35 +57,40 @@ const StepperComponent = () => {
         if(activeStep === steps.length - 1){
           setIsLastStep(false);
         }
-
-       
      };
+
+     const getMode = (params)=>{
+      if(params.formId === BUNDLE_CREATE_ROUTE && params.step === undefined){
+        return "create";
+      } 
+      if(params.formId !== BUNDLE_CREATE_ROUTE && STEPPER_ROUTE.includes(params.step)){
+        return params.step;
+      } 
+     };
+
     useEffect(()=>{
       if((params.formId !== BUNDLE_CREATE_ROUTE && !STEPPER_ROUTE.includes(params.step)) || 
       (params.formId == BUNDLE_CREATE_ROUTE && STEPPER_ROUTE.includes(params.step))){
         history.push("/form");
       } 
-        if(params.formId === BUNDLE_CREATE_ROUTE && params.step === undefined){
-          setMode("create");
-        } 
-        if(params.formId !== BUNDLE_CREATE_ROUTE && STEPPER_ROUTE.includes(params.step)){
-          if(params.step === STEPPER_ROUTE[2]){
-            setActiveStep(2);
-          }else{
-            setMode(params.step);
-          }
-        } 
-       
+      
+      setActiveMode(getMode(params));
 
     },[params]);
 
+    useEffect(()=>{
+      setInitialMode(getMode(params));
+    },[]);
+
+ 
+
     const getBundleMode = (props)=>{
-      switch (mode){
+      switch (activeMode){
         case BUNDLE_CREATE_ROUTE:
           return <BundleCreateAndEdit {...props}/>;
-        case STEPPER_ROUTE[0]:
-            return <BundleCreateAndEdit {...props} mode={mode}/>;
-        case STEPPER_ROUTE[1]:
+        case "edit":
+            return <BundleCreateAndEdit {...props} mode={activeMode}/>;
+        case "view-edit":
             return <BundlePreview {...props}/>;
  
       }
@@ -115,7 +125,7 @@ const StepperComponent = () => {
       </Stepper>
 
       {
-        getStep({handleNext,handleBack,isLastStep,activeStep})
+        getStep({handleNext,handleBack,isLastStep,activeStep,initialMode})
       }
           
     </div>

@@ -76,6 +76,7 @@ const Edit = React.memo(() => {
   const applicationCount = useSelector(
     (state) => state.process.applicationCount
   );
+  const [canBundle, setCanBundle] = useState(processListData.canBundle || false);
   const tenantKey = useSelector((state) => state.tenants?.tenantId);
   const restoredFormId = useSelector(
     (state) => state.formRestore?.restoredFormId
@@ -190,15 +191,8 @@ const Edit = React.memo(() => {
     };
     dispatch(setFormProcessesData(newData));
   };
- //set bundle value
-  const changeBundle = (setvalue, goBack) => {
-    let latestValue = goBack ? setvalue : !processListData.bundle;
-    let newData = {
-      ...processListData,
-      bundle: latestValue,
-    };
-    dispatch(setFormProcessesData(newData));
-  };
+
+ 
 
   //  chaning the form access
   useEffect(() => {
@@ -213,6 +207,8 @@ const Edit = React.memo(() => {
         }
       }
     });
+
+ 
 
     submissionAccess.forEach((access) => {
       if (processListData.anonymous) {
@@ -282,6 +278,7 @@ const Edit = React.memo(() => {
       formName: submittedData.title,
       parentFormId: processListData.parentFormId,
       formType: submittedData.type,
+      canBundle,
       status: processListData.status ? processListData.status : INACTIVE,
       taskVariable: processListData.taskVariable
         ? processListData.taskVariable
@@ -685,7 +682,7 @@ const Edit = React.memo(() => {
                       color="primary"
                       aria-label="Publish"
                       onChange={() => {
-                        changeBundle();
+                        setCanBundle(!canBundle);
                       }}
                     />
                   }

@@ -1,40 +1,37 @@
 import React, { useEffect, useState } from 'react';
-import { Card, CardContent, Grid, Tab, Tabs } from '@material-ui/core';
+import { Card, CardContent, Grid} from '@material-ui/core';
 import { Button } from 'react-bootstrap';
 import { useDispatch, useSelector } from 'react-redux';
-import { setWorkflowAssociation } from '../../../actions/processActions';
 import { listProcess } from '../../../apiManager/services/formatterService';
 import ProcessDiagram from '../../BPMN/ProcessDiagramHook';
 import SaveNext from "./SaveAndNext";
 import Select from "react-select";
 import { DEFAULT_WORKFLOW } from "../../../constants/taskConstants";
+import { setBundleWorkflow } from '../../../actions/bundleActions';
 
 
 
-const WorkflowAssociate = ({handleBack,handleNext,activeStep,steps,disableWorkflowAssociation}) => {
+const WorkflowAssociate = ({handleBack,handleNext,activeStep,steps,initialMode}) => {
   const dispatch = useDispatch();
   const process = useSelector((state) => state.process.processList);
-  const workflow = useSelector((state) => state.process.workflowAssociated);
+  const workflow = useSelector((state) => state.bundle.workflowAssociated);
+ 
   const processList = listProcess(process);
-  const [tabValue,setTabValue] = useState(0);
-  const [modified,setModified] = useState(false);
-
-
+  const [disableWorkflow, setDisableWorkflow] = useState(initialMode === "create" ? false : true);
+  
   useEffect(() => {
     if (!workflow) {
-      setModified(true);
-      dispatch(setWorkflowAssociation(DEFAULT_WORKFLOW));
+      dispatch(setBundleWorkflow(DEFAULT_WORKFLOW));
     }
   }, [workflow, dispatch]);
 
-  const handleChange = ()=>{
-    setTabValue(1);
-  };
+ 
 
   const handleListChange = (item) => {
-    setModified(true);
-    dispatch(setWorkflowAssociation(item));
+    dispatch(setBundleWorkflow(item));
   };
+ 
+
   return (
     <Grid
     container
@@ -42,39 +39,34 @@ const WorkflowAssociate = ({handleBack,handleNext,activeStep,steps,disableWorkfl
     justify="flex-start"
     alignItems="baseline"
   >
- <Grid item xs={12} sm={1} spacing={3}>
-          <Button variant="primary">
+          <div className='d-flex align-items-center justify-content-between w-100'>
+          <Button variant="primary" onClick={()=>{setDisableWorkflow(false);}}>
             Edit
           </Button>
-        </Grid>
-        <Grid item xs={12} sm={8} spacing={3} />
-        
-        <Grid item xs={12} sm={3} className="next-btn">
+          <div>
           <SaveNext
             handleBack={handleBack}
             handleNext={handleNext}
             activeStep={activeStep}
             steps={steps}
-            modified={modified}
           />
-        </Grid>
+          </div>
+          </div>
+        
+        
+        <Grid item xs={12} sm={8} spacing={3} />
+        
+        
         <Grid item xs={12} sm={12} spacing={3}>
           <br />
         </Grid>
-        <Tabs
-          value={tabValue}
-          indicatorColor="primary"
-          textColor="primary"
-          onChange={handleChange}
-        >
-          <Tab label="Workflow Associate" />
-        </Tabs>
+        
         <Grid
           item
           xs={12}
           sm={12}
           spacing={3}
-          // disabled={disableWorkflowAssociation}
+          disabled={disableWorkflow}
         >
           <Card variant="outlined" className="card-overflow">
               <CardContent>
@@ -88,7 +80,7 @@ const WorkflowAssociate = ({handleBack,handleNext,activeStep,steps,disableWorkfl
                     value={
                       processList.length && workflow?.value ? workflow : ""
                     }
-                    disabled={disableWorkflowAssociation}
+                    disabled={disableWorkflow}
                   />
                 </Grid>
                 <Grid item xs={12} sm={6} spacing={3} />
@@ -100,7 +92,7 @@ const WorkflowAssociate = ({handleBack,handleNext,activeStep,steps,disableWorkfl
                       tenant={workflow?.tenant}
                     />
                   </Grid>
-                {/* </FormControl> */}
+ 
               </CardContent>
             </Card>
         </Grid>

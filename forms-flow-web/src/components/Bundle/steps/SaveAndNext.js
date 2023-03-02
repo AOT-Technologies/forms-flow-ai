@@ -5,6 +5,7 @@ import { useTranslation } from "react-i18next";
 const SaveNext = React.memo(
   ({
     handleNext,
+    submitData,
     handleBack,
     activeStep,
     isLastStep,
@@ -22,7 +23,7 @@ const SaveNext = React.memo(
         >
           {t("Back")}
         </Buttons>
-        <Buttons variant="primary" onClick={handleNext}>
+        <Buttons variant="primary" onClick={isLastStep ? submitData : handleNext}>
           {isLastStep ? t("Save") : t("Next")}
         </Buttons>
       </>

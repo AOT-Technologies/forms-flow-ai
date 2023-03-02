@@ -1,11 +1,11 @@
-import React from "react";
+import React, { useState } from "react";
 import Checkbox from "@material-ui/core/Checkbox";
 import FormControlLabel from "@material-ui/core/FormControlLabel";
 import Grid from "@material-ui/core/Grid";
 import Card from "@material-ui/core/Card";
 import CardContent from "@material-ui/core/CardContent";
 import TextField from "@material-ui/core/TextField";
-//import { useSelector } from "react-redux";
+import { useSelector } from "react-redux";
 import { useTranslation } from "react-i18next";
 import SaveNext from "./SaveAndNext";
 
@@ -16,16 +16,15 @@ const PreviewAndConfirm = React.memo(
     handleBack,
     activeStep,
     steps,
-    //processData,
-    //setProcessData,
-    //workflow,
-    //formData,
-    submitData,
   }) => {
     const { t } = useTranslation();
-    // const processListData = useSelector(
-    //   (state) => state.process.formProcessList
-    // );
+    const bundleData = useSelector((state)=> state.bundle.bundleData);
+    const [status, setStatus] = useState(bundleData.status || false);
+
+ 
+    const submitData = ()=>{
+        
+    };
     
    const bundle = {name:"jaba",totalforms:"4",workflowname:"hhh"};
     return (
@@ -87,14 +86,8 @@ const PreviewAndConfirm = React.memo(
                         control={
                           <Checkbox
                             aria-label="Publish"
-                            checked={false}
-                            // onChange={(e) =>
-                            //   setProcessData({
-                            //     status: e.target.checked
-                            //       ? "active"
-                            //       : "inactive",
-                            //   })
-                            // }
+                            checked={status === "active" ? true : false}
+                            onChange={(e)=> setStatus(e.target.checked ? "active" : "inactive")}
                             name="Check box to associate form with a workflow"
                             color="primary"
                           />
@@ -113,10 +106,7 @@ const PreviewAndConfirm = React.memo(
                     variant="outlined"
                     className="text-field"
                     value={""}
-                    // onChange={(e) =>
-                    //     comments: e.target.value,
-                    //   )
-                    // }
+ 
                   />
                   </div>
                   

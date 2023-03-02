@@ -50,7 +50,6 @@ const reducer = (form, { type, value }) => {
 const Create = React.memo(() => {
   const dispatch = useDispatch();
   const [anonymous, setAnonymous] = useState(false);
-  const [bundle, setBundle] = useState(false);
   const formData = { display: "form" };
   const [form, dispatchFormAction] = useReducer(reducer, _cloneDeep(formData));
   const saveText = <Translation>{(t) => t("Save & Preview")}</Translation>;
@@ -63,7 +62,8 @@ const Create = React.memo(() => {
 
   const submissionAccess = useSelector((state) => state.user?.submissionAccess || []) ;
   const redirectUrl = MULTITENANCY_ENABLED ? `/tenant/${tenantKey}/` : "/";
-
+  const [canBundle, setCanBundle] = useState(false);
+  
   const { t } = useTranslation();
 
   useEffect(() => {
@@ -159,7 +159,7 @@ const Create = React.memo(() => {
         titleChanged: true,
         formRevisionNumber: "V1", // to do
         anonymous: formAccess[0]?.roles.includes(roleIds.ANONYMOUS),
-        bundle:false
+         
       };
       dispatch(setFormSuccessData("form", form));
       dispatch(
@@ -358,12 +358,12 @@ const Create = React.memo(() => {
                 <FormControlLabel
                   control={
                     <Checkbox
-                      checked={bundle}
+                      checked={canBundle}
                       id="bundle"
                       color="primary"
                       aria-label="Publish"
                       onChange={() => {
-                        setBundle(!bundle);
+                        setCanBundle(!canBundle);
                       }}
                     />
                   }

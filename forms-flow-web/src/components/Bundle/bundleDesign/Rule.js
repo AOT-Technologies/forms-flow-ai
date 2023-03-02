@@ -12,6 +12,10 @@ const Rule = () => {
     const [showRulesModal,setShowRulesModal] = useState(false);
 
     const handleModalChange = () =>{
+        // when close the modal if using submit or close button then clear the selectedRule value
+        if(showRulesModal){
+            setSelectedRule(null);
+        }
         setShowRulesModal(!showRulesModal);
     };
     const editRule = (editedRule)=>{

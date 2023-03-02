@@ -9,41 +9,51 @@ import TableRow from "@material-ui/core/TableRow";
 import Checkbox from "@material-ui/core/Checkbox";
 import Pagination from "react-js-pagination";
 import { withStyles } from "@material-ui/core";
+import {Errors} from 'react-formio';
+import { fetchBPMFormList, fetchFormById } from "../../../apiManager/services/bpmFormServices";
+import { useDispatch, useSelector } from "react-redux";
+import LoadingOverlay from "react-loading-overlay";
+import { setBundleFormListLoading, setBundleFormListPage, setBundleFormSearch } from "../../../actions/bundleActions";
+import Loading from "../../../containers/Loading";
+ 
 
-const SearchBar = () => {
+const SearchBar = ({searchText,setSearchText ,handleSearch}) => {
   return (
     <>
       <div className="form-outline">
         <input
-          //   style={{ color: `${!isSearchValid ? "red" : ''}` }}
           type="search"
           id="form1"
-          //   ref={searchInputBox}
-          //   onKeyPress={(e) => e.key === "Enter" && handleSearch()}
-          //   onChange={(e) => {
-          //     setShowClearButton(e.target.value);
-          //     setSearchTextInput(e.target.value);
-          //     e.target.value === "" && handleSearch();
-          //   }}
+            
+            onKeyPress={(e) => e.key === "Enter" && handleSearch()}
+            onChange={(e) => {
+  
+              setSearchText(e.target.value);
+              e.target.value === "" && handleSearch();
+            }}
           autoComplete="off"
           className="form-control"
-          //   value={searchTextInput}
+          value={searchText}
           placeholder={"Search..."}
         />
       </div>
-      <button
+     {
+      searchText ? (
+        <button
         type="button"
         className="btn btn-outline-primary ml-2"
-        //   onClick={() => onClear()}
+          onClick={() =>  handleSearch({clear:true})}
       >
         <i className="fa fa-times"></i>
       </button>
+      ) : ""
+     }
       <button
         type="button"
         className={`btn btn-outline-primary ml-2`}
         name="search-button"
-        // title={t(`${!isSearchValid ? "Kindly remove the special charactors...!" : "Click to search"}`)}
-        // onClick={() => handleSearch()}
+        disabled={!searchText}
+        onClick={() => handleSearch()}
       >
         <i className="fa fa-search"></i>
       </button>
@@ -63,40 +73,105 @@ const StyledTableCell = withStyles(() => ({
   },
 }))(TableCell);
 
-const FormListModal = ({
+const FormListModal = React.memo(({
   showModal,
   handleModalChange,
-  formsAlreadySelected,
   submitFormSelect
 }) => {
-  const forms = [
-    { id: "63b2729f65c3fc968d5e151a", formName: "hiii", type: "form" },
-    { id: "63b272b265c3fc968d5e1534", formName: "sad", type: "form" },
-    { id: "63b26a7d65c3fc968d5e1374", formName: "sd33", type: "form" },
-    { id: "63b270b165c3fc968d5e1466", formName: "cccccccc", type: "resource" },
-   
-  ];
+  const dispatch = useDispatch();
+  const formsAlreadySelected = useSelector(state => state.bundle?.selectedForms || []);
   const [seletedForms, setSelectedForms] = useState(formsAlreadySelected || []);
   const [seletedFormIds, setSelectedFormIds] = useState([]);
+  const [searchText, setSearchText] = useState('');
  
+  const forms = useSelector((state) => state.bundle?.bundleForms.forms);
+ 
+  const pageNo = useSelector((state) => state.bundle?.bundleForms.page);
+  const limit = useSelector((state) => state.bundle?.bundleForms.limit);
+  const totalForms = useSelector((state) => state.bundle?.bundleForms.totalForms);
+  const sortBy = useSelector((state) => state.bundle?.bundleForms.sortBy);
+  const sortOrder = useSelector((state) => state.bundle?.bundleForms.sortOrder);
+  const budnleSearchText = useSelector((state) => state.bundle?.bundleForms.searchText);
+  const [error,setError] = useState('');
+
+  const seachFormLoading = useSelector(
+    (state) => state.bundle?.bundleForms.bundleFormLoading
+  );
+  const [loadingForms, setLoadingForms] = useState(false);
+ 
+   
+ 
+
+  const fetchFormList = ()=>{
+    const canBudle = true;
+    const formType = "";
+    let filters = [pageNo, limit, sortBy, sortOrder, searchText,formType, canBudle];
+    dispatch(setBundleFormListLoading(true));
+    dispatch(fetchBPMFormList(...filters,()=>{
+      setLoadingForms(false);
+      dispatch(setBundleFormListLoading(false));
+    }));
+  };
+  useEffect(()=>{
+   if(showModal){
+    setLoadingForms(true);
+    fetchFormList();
+   }else{
+    setError("");
+    setSearchText("");
+    dispatch(setBundleFormSearch(""));
+    dispatch(setBundleFormListPage( 1));
+    setSelectedForms([]);
+    setSelectedFormIds([]);
+   }
+  },[pageNo,showModal,budnleSearchText]);
+
 
   useEffect(() => {
     if (formsAlreadySelected?.length) {
-      const ids = formsAlreadySelected.map((form) => form.id);
+      const ids = formsAlreadySelected.map((form) => form.formId);
       setSelectedFormIds(ids);
-      
+      setSelectedForms(formsAlreadySelected);
     }
   }, [formsAlreadySelected]);
 
   const handleFormSelect = (action, form) => {
+      setError("");
     if (action === "select") {
-      setSelectedFormIds((prev) => [...prev, form.id]);
-      setSelectedForms((prev) => [...prev, form]);
+      const options = "?select=path";
+      fetchFormById(form.formId,options).then((res)=>{
+        setSelectedFormIds((prev) => [...prev, form.formId]);
+        setSelectedForms((prev) => [...prev, {...form,path:res.data.path}]);
+      }).catch((err)=>{
+       let error ;
+      if (err.response?.data) {
+        error = err.response.data;
+      } else {
+        error = err.message;
+      }
+      
+      setError(error);
+    
+      });
+
     } else {
-      setSelectedFormIds((prev) => prev.filter((item) => item !== form.id));
-      setSelectedForms((prev) => prev.filter((item) => item.id !== form.id));
+      setSelectedFormIds((prev) => prev.filter((item) => item !== form.formId));
+      setSelectedForms((prev) => prev.filter((item) => item.formId !== form.formId));
     }
   };
+
+  const handleSearch = (options)=>{
+
+    if(options?.clear){
+      setSearchText("");
+      dispatch(setBundleFormSearch(""));
+    }else{
+      dispatch(setBundleFormSearch(searchText));
+    }
+
+    dispatch(setBundleFormListPage( options?.page ||  1));
+  };
+ 
 
   return (
     <div>
@@ -110,7 +185,15 @@ const FormListModal = ({
           </div>
         </Modal.Header>
         <Modal.Body>
-          <div className="d-flex mb-2">{SearchBar()}</div>
+         {loadingForms ?   <Loading/> : (
+          <>
+           <Errors errors={error} />
+           <div className="d-flex mb-2">{SearchBar({handleSearch,searchText,setSearchText})}</div>
+          <LoadingOverlay
+                      active={seachFormLoading}
+                      spinner
+                      text={"Loading..."}
+                    >
           <TableContainer style={{ border: "1px solid #dbdbdb" }}>
             <Table aria-label="simple table">
               <TableHead>
@@ -127,7 +210,7 @@ const FormListModal = ({
                     <TableRow>
                       <StyledTableCell align="left">
                         <Checkbox
-                          checked={seletedFormIds?.includes(form.id)}
+                          checked={seletedFormIds?.includes(form.formId)}
                           onChange={(e) => {
                             handleFormSelect(
                               e.target.checked ? "select" : "unselect",
@@ -138,20 +221,20 @@ const FormListModal = ({
                         />
                       </StyledTableCell>
                       <StyledTableCell>{form.formName}</StyledTableCell>
-                      <StyledTableCell>{form.type}</StyledTableCell>
+                      <StyledTableCell>{form.formType}</StyledTableCell>
                       <StyledTableCell >
                         <button
                           className="btn btn-sm btn-outline-primary"
                           onClick={() =>
                             handleFormSelect(
-                              seletedFormIds?.includes(form.id)
+                              seletedFormIds?.includes(form.formId)
                                 ? "unselect"
                                 : "select",
                               form
                             )
                           }
                         >
-                          {seletedFormIds?.includes(form.id)
+                          {seletedFormIds?.includes(form.formId)
                             ? "unselect"
                             : "select"}
                         </button>
@@ -162,22 +245,30 @@ const FormListModal = ({
               </TableBody>
             </Table>
           </TableContainer>
+          </LoadingOverlay>
+          </>
+         )}
+        
+         
         </Modal.Body>
         <Modal.Footer className="justify-content-between">
-          <Pagination
-            activePage={1}
-            itemsCountPerPage={10}
-            totalItemsCount={450}
+         <div className="d-flex align-items-center">
+         <Pagination
+            activePage={pageNo}
+            itemsCountPerPage={limit}
+            totalItemsCount={totalForms}
             pageRangeDisplayed={5}
             itemClass="page-item"
             linkClass="page-link"
-            //   onChange={this.handlePageChange.bind(this)}
+              onChange={(page)=>{handleSearch({page});}}
           />
+          <span className="ml-2 mb-3">Showing {(limit * pageNo ) - (limit - 1)} to {limit * pageNo > totalForms ? totalForms : limit * pageNo  } of {totalForms}</span>
+         </div>
           <button className="btn btn-primary" onClick={()=>{submitFormSelect(seletedForms);}}>Submit</button>
         </Modal.Footer>
       </Modal>
     </div>
   );
-};
+});
 
 export default FormListModal;

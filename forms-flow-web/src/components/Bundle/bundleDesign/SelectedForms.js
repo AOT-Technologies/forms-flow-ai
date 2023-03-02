@@ -5,7 +5,6 @@ import TableCell from "@material-ui/core/TableCell";
 import TableContainer from "@material-ui/core/TableContainer";
 import TableHead from "@material-ui/core/TableHead";
 import TableRow from "@material-ui/core/TableRow";
-import moment from "moment";
 import { withStyles } from "@material-ui/styles";
 import { useSelector } from "react-redux";
 import { MULTITENANCY_ENABLED } from "../../../constants/constants";
@@ -38,7 +37,7 @@ const SelectedForms = ({handleModalChange, selectedForms,deleteForm}) => {
             <TableRow>
               <StyledTableCell>No</StyledTableCell>
               <StyledTableCell align="left">Form Name</StyledTableCell>
-              <StyledTableCell align="left">Created at</StyledTableCell>
+              <StyledTableCell align="left">Type</StyledTableCell>
               <StyledTableCell align="right">View</StyledTableCell>
               <StyledTableCell align="right">Action</StyledTableCell>
             </TableRow>
@@ -48,9 +47,9 @@ const SelectedForms = ({handleModalChange, selectedForms,deleteForm}) => {
               <TableRow key={form.id}>
                 <StyledTableCell>{index + 1}</StyledTableCell>
                 <StyledTableCell>{form.formName}</StyledTableCell>
-                <StyledTableCell>{moment(form.created).format()}</StyledTableCell>
+                <StyledTableCell>{form.formType}</StyledTableCell>
                 <StyledTableCell align="right">
-                  <button className="btn btn-sm btn-outline-primary" onClick={()=>{viewForm(form.id);}}>
+                  <button className="btn btn-sm btn-outline-primary" onClick={()=>{viewForm(form.formId);}}>
                     <i
                       className="fa fa-external-link mr-2"
                       aria-hidden="true"
@@ -59,7 +58,7 @@ const SelectedForms = ({handleModalChange, selectedForms,deleteForm}) => {
                   </button>
                 </StyledTableCell>
                 <StyledTableCell align="right">
-                  <button className="btn btn-sm btn-outline-danger" onClick={()=>{deleteForm(form.id);}}>
+                  <button className="btn btn-sm btn-outline-danger" onClick={()=>{deleteForm(form.formId);}}>
                     <i className="fa fa-trash-o" aria-hidden="true"></i>
                   </button>
                 </StyledTableCell>

@@ -1,7 +1,6 @@
 import React, { useEffect } from "react";
 import { useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { useParams } from "react-router-dom";
 import {Errors} from "react-formio";
 import _camelCase from "lodash/camelCase";
 import { formCreate } from "../../../apiManager/services/FormServices";
@@ -12,26 +11,24 @@ import Rule from "./Rule";
 import { STEPPER_ROUTE } from "../constant/stepperConstant";
 import { push } from "connected-react-router";
 import { clearFormError, setFormFailureErrorData } from "../../../actions/formActions";
+import { setBundleSavedData } from "../../../actions/bundleActions";
 
 const BundleCreate = ({mode}) => {
   const dispatch = useDispatch();
-  const [bundleName, setBundleName] = useState('');
-  const params = useParams();
-  const [bundleDescription, setBundleDescription] = useState('');
+  const bundleData = useSelector(state => state.bundle.bundleData);
+   const [bundleName, setBundleName] =  useState(bundleData.bundleName || "");
+  const [bundleDescription, setBundleDescription] = useState(bundleData.discription || "");
   const submissionAccess = useSelector((state) => state.user?.submissionAccess || []) ;
   const formAccess = useSelector((state) => state.user?.formAccess || []) ;
   const tenantKey = useSelector((state) => state.tenants?.tenantId);
-  const roleIds = useSelector((state) => state.user?.roleIds || {}) ;
+  // const roleIds = useSelector((state) => state.user?.roleIds || {}) ;
   const buttonText = mode === STEPPER_ROUTE[0] ? "save bundle" : "save & preview";
   const errors = useSelector((state) => state.form.error);
+  const selectedForms = useSelector(state => state.bundle.selectedForms || []);
+  const rules = useSelector(state => state.bundle.rules || []);
 
   const redirectUrl = MULTITENANCY_ENABLED ? `/tenant/${tenantKey}/` : "/";
-  useEffect(()=>{
-    if(params.formId && mode ===  STEPPER_ROUTE[0]){
-      console.log(mode);
-    }
-  },[mode]);
-
+ 
   useEffect(() => {
     dispatch(clearFormError("form"));
   }, [dispatch]);
@@ -61,19 +58,14 @@ const BundleCreate = ({mode}) => {
     formCreate(newForm).then((res)=>{
       const form = res.data;
       const data = {
-        formId: form._id,
-        formName: form.title,
-        formType: form.type,
-        formTypeChanged:true, 
-        anonymousChanged:true,
-        parentFormId: form._id,
-        titleChanged: true,
-        isBundle:true,
-        bundleDescription:bundleDescription,
-        formRevisionNumber: "V1", // to do
-        anonymous: formAccess[0]?.roles.includes(roleIds.ANONYMOUS),
+        bundleId: form._id,
+        bundleName: form.title, 
+        discription:bundleDescription,
+        selectedForms,
+        rules
       };
-      console.log(data);
+
+      dispatch(setBundleSavedData(data));
       dispatch(push(`${redirectUrl}bundleflow/${form._id}/view-edit`));
     }).catch((err)=>{
       const error = err.response.data || err.message;
@@ -95,6 +87,7 @@ const BundleCreate = ({mode}) => {
           <div className="m-3">
             <label>Bundle Name</label>
             <input
+            value={bundleName}
               onChange={(e)=>{setBundleName(e.target.value);}}
               type="text"
               className="form-control"
@@ -104,6 +97,7 @@ const BundleCreate = ({mode}) => {
           <div className="m-3">
             <label>Bundle Description</label>
             <textarea
+            value={bundleDescription}
               onChange={(e)=>{setBundleDescription(e.target.value);}}
               type="text"
               className="form-control"

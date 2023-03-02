@@ -9,17 +9,20 @@ const FormSelect = React.memo(() => {
   const [showModal, setShowModal] = useState(false);
   const selectedForms = useSelector(state => state.bundle?.selectedForms || []);
 
+ 
+
+  
   const handleModalChange = ()=>{
       setShowModal(!showModal);
   };
 
   const submitFormSelect = (forms) =>{
-      dispatch(setBundleSelectedForms(forms));
+    dispatch(setBundleSelectedForms(forms));
       setShowModal(false);
   };
 
   const deleteForm = (formId) =>{
-    const filteredForms = selectedForms?.filter((i)=>i.id !== formId);
+    const filteredForms = selectedForms?.filter((i)=> i.formId !== formId);
     dispatch(setBundleSelectedForms(filteredForms));
 
   };

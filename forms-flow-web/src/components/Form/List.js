@@ -213,6 +213,7 @@ const List = React.memo((props) => {
     dispatch(setBpmFormType(type));
   };
   const onClear = () => {
+    setIsSearchValid(true);
     setSearchTextInput("");
     dispatch(setBpmFormSearch(''));
     dispatch(setBPMFormLimit(5));

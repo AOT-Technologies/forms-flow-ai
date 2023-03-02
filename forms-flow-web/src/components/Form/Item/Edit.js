@@ -591,7 +591,7 @@ const Edit = React.memo(() => {
                     {t("Form")}
                   </option>
                   <option label={t("Wizard")} value="wizard">
-                    {t("wizard")}
+                    {t("Wizard")}
                   </option>
                 </select>
               </div>

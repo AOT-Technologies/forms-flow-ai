@@ -548,7 +548,11 @@ const Edit = React.memo(() => {
                   placeholder={t("Enter the form title")}
                   value={form.title || ""}
                   onBlur={(event) => setIsValidName(inputValidator(event.target.value))}
-                  onChange={(event) => handleChange("title", event)}
+                  onChange={(event) => {
+                    event.target.name === '' ? setIsValidName(true) : '';
+                    handleChange("title", event);
+                  }
+                  }
                 />
                 {!isValidName && <span className="validation-err" style={{ marginLeft: "0px" }}>Please remove the special charactors...!</span>}
               </div>

@@ -56,7 +56,7 @@ import filterFactory from "react-bootstrap-table2-filter";
 import overlayFactory from "react-bootstrap-table2-overlay";
 import { SpinnerSVG } from "../../containers/SpinnerSVG";
 import { getFormattedForm, INACTIVE } from "./constants/formListConstants";
-import searchValidator from '../../helper/regExp/formSearchValidation';
+import inputValidater from '../../helper/regExp/inputValidater';
 
 const List = React.memo((props) => {
   const { t } = useTranslation();
@@ -605,7 +605,7 @@ const List = React.memo((props) => {
                       ref={searchInputBox}
                       onKeyPress={(e) => e.key === "Enter" && handleSearch()}
                       onChange={(e) => {
-                        setIsSearchValid(searchValidator(e.target.value));
+                        setIsSearchValid(inputValidater(e.target.value));
                         setShowClearButton(e.target.value);
                         setSearchTextInput(e.target.value);
                         e.target.value === "" && handleSearch();

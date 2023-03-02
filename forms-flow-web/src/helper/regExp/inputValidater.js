@@ -1,4 +1,4 @@
-const searchValidator = (searchText) => {
+const inputValidater = (searchText) => {
     let char = '';
     const a = searchText;
     if (searchText !== '') {
@@ -13,4 +13,4 @@ const searchValidator = (searchText) => {
     }
     return true;
 };
-export default searchValidator;
+export default inputValidater;

@@ -126,7 +126,7 @@ class FormProcessMapper(AuditDateTimeMixin, AuditUserMixin, BaseModel, db.Model)
         else:
             query = (
                 cls.query.order_by(FormProcessMapper.id.desc())
-                .paginate(page_number, limit, False)
+                .paginate(page=page_number, per_page=limit, error_out=False)
                 .items
             )
         return query
@@ -175,7 +175,11 @@ class FormProcessMapper(AuditDateTimeMixin, AuditUserMixin, BaseModel, db.Model)
         """Fetch all active and inactive forms which are not deleted."""
         # Get latest row for each form_id group
         filtered_form_query = (
-            db.session.query(func.max(cls.id).label("id")).group_by(cls.form_id).all()
+            db.session.query(
+                func.max(cls.id).label("id")  # pylint: disable=not-callable
+            )
+            .group_by(cls.form_id)
+            .all()
         )
         filtered_form_ids = [data.id for data in filtered_form_query]
         query = cls.filter_conditions(**filters)
@@ -196,7 +200,7 @@ class FormProcessMapper(AuditDateTimeMixin, AuditUserMixin, BaseModel, db.Model)
             cls.form_name,
         )
         limit = total_count if limit is None else limit
-        query = query.paginate(page_number, limit)
+        query = query.paginate(page=page_number, per_page=limit, error_out=False)
         return query.items, total_count
 
     @classmethod
@@ -226,7 +230,7 @@ class FormProcessMapper(AuditDateTimeMixin, AuditUserMixin, BaseModel, db.Model)
             cls.form_name,
         )
         limit = total_count if limit is None else limit
-        query = query.paginate(page_number, limit)
+        query = query.paginate(page=page_number, per_page=limit, error_out=False)
         return query.items, total_count
 
     @classmethod

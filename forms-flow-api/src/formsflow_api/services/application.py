@@ -17,6 +17,7 @@ from formsflow_api_utils.utils.user_context import UserContext, user_context
 from formsflow_api.models import Application, Draft, FormProcessMapper
 from formsflow_api.schemas import (
     AggregatedApplicationSchema,
+    AggregatedApplicationsSchema,
     ApplicationSchema,
     FormProcessMapperSchema,
 )
@@ -354,6 +355,7 @@ class ApplicationService:  # pylint: disable=too-many-public-methods
         form_name: str,
         sort_by: str,
         sort_order: str,
+        order_by: str,
     ):
         """Get aggregated applications."""
         applications, get_all_metrics_count = Application.find_aggregated_applications(
@@ -364,37 +366,10 @@ class ApplicationService:  # pylint: disable=too-many-public-methods
             form_name=form_name,
             sort_by=sort_by,
             sort_order=sort_order,
-        )
-        schema = AggregatedApplicationSchema(exclude=("application_status",))
-        return (
-            schema.dump(applications, many=True),
-            get_all_metrics_count,
+            order_by=order_by,
         )
 
-    @staticmethod
-    def get_aggregated_applications_modified(  # pylint: disable=too-many-arguments
-        from_date: datetime,
-        to_date: datetime,
-        page_no: int,
-        limit: int,
-        form_name: str,
-        sort_by: str,
-        sort_order: str,
-    ):
-        """Get aggregated applications."""
-        (
-            applications,
-            get_all_metrics_count,
-        ) = Application.find_aggregated_applications_modified(
-            from_date=from_date,
-            to_date=to_date,
-            page_no=page_no,
-            limit=limit,
-            form_name=form_name,
-            sort_by=sort_by,
-            sort_order=sort_order,
-        )
-        schema = AggregatedApplicationSchema(exclude=("application_status",))
+        schema = AggregatedApplicationsSchema()
         return (
             schema.dump(applications, many=True),
             get_all_metrics_count,
@@ -402,34 +377,43 @@ class ApplicationService:  # pylint: disable=too-many-public-methods
 
     @staticmethod
     @user_context
-    def get_applications_status(
-        mapper_id: int, from_date: datetime, to_date: datetime, **kwargs
+    def get_applications_status_by_parent_form_id(
+        parent_form_id: str,
+        from_date: datetime,
+        to_date: datetime,
+        order_by: str,
+        **kwargs,
     ):
-        """Get aggregated application status."""
+        """Get aggregated application status by parent form id."""
         user: UserContext = kwargs["user"]
-        application_status = Application.find_aggregated_application_status(
-            mapper_id=mapper_id, from_date=from_date, to_date=to_date
+        application_status = (
+            Application.find_aggregated_application_status_by_parent_form_id(
+                form_id=parent_form_id,
+                from_date=from_date,
+                to_date=to_date,
+                order_by=order_by,
+            )
         )
-        schema = AggregatedApplicationSchema(exclude=("form_process_mapper_id",))
+        schema = AggregatedApplicationSchema()
         result = schema.dump(application_status, many=True)
         if user.tenant_key and len(result) == 0:
-            raise PermissionError(f"Access to resource-{mapper_id} is denied.")
+            raise PermissionError(f"Access to resource-{parent_form_id} is denied.")
         return result
 
     @staticmethod
     @user_context
-    def get_applications_status_modified(
-        mapper_id: int, from_date: str, to_date: str, **kwargs
+    def get_applications_status_by_form_id(
+        form_id: int, from_date: str, to_date: str, order_by: str, **kwargs
     ):
-        """Get aggregated application status."""
+        """Get aggregated application status by form id."""
         user: UserContext = kwargs["user"]
-        application_status = Application.find_aggregated_application_status_modified(
-            mapper_id=mapper_id, from_date=from_date, to_date=to_date
+        application_status = Application.find_aggregated_application_status_by_form_id(
+            form_id=form_id, from_date=from_date, to_date=to_date, order_by=order_by
         )
-        schema = AggregatedApplicationSchema(exclude=("form_process_mapper_id",))
+        schema = AggregatedApplicationSchema()
         result = schema.dump(application_status, many=True)
         if user.tenant_key and len(result) == 0:
-            raise PermissionError(f"Access to resource-{mapper_id} is denied.")
+            raise PermissionError(f"Access to resource-{form_id} is denied.")
         return result
 
     @staticmethod

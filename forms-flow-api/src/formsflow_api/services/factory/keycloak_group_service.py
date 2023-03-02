@@ -18,6 +18,14 @@ class KeycloakGroupService(KeycloakAdmin):
         """Initialize client."""
         self.client = KeycloakAdminAPIService()
 
+    def __populate_user_groups(self, user_list: List) -> List:
+        """Collect groups for a user list and populate the role attribute."""
+        for user in user_list:
+            user["role"] = (
+                self.client.get_user_groups(user.get("id")) if user.get("id") else []
+            )
+        return user_list
+
     def get_analytics_groups(self, page_no: int, limit: int):
         """Get analytics groups."""
         return self.client.get_analytics_groups(page_no, limit)
@@ -27,17 +35,21 @@ class KeycloakGroupService(KeycloakAdmin):
         response = self.client.get_request(url_path=f"groups/{group_id}")
         return self.format_response(response)
 
-    def get_users(self, **kwargs):
+    def get_users(self, page_no: int, limit: int, role: bool, group_name: str):
         """Get users under formsflow-reviewer group."""
         response: List[Dict] = []
-        group_name = kwargs.get("group_name")
         current_app.logger.debug(
             f"Fetching users from keycloak under {group_name} group..."
         )
         if group_name:
             group = self.client.get_request(url_path=f"group-by-path/{group_name}")
             group_id = group.get("id")
-            response = self.client.get_request(url_path=f"groups/{group_id}/members")
+            url_path = f"groups/{group_id}/members"
+            if page_no and limit:
+                url_path += f"?first={page_no}&max={limit}"
+            response = self.client.get_request(url_path)
+        if role:
+            response = self.__populate_user_groups(response)
         return response
 
     def update_group(self, group_id: str, data: Dict):
@@ -144,3 +156,31 @@ class KeycloakGroupService(KeycloakAdmin):
                 else ""
             )
         return data
+
+    def add_user_to_group_role(self, user_id: str, group_id: str, payload: Dict):
+        """Add user to group."""
+        data = {
+            "realm": current_app.config.get("KEYCLOAK_URL_REALM"),
+            "userId": payload.get("userId"),
+            "groupId": payload.get("groupId"),
+        }
+        return self.client.update_request(
+            url_path=f"users/{user_id}/groups/{group_id}", data=data
+        )
+
+    def remove_user_from_group_role(
+        self, user_id: str, group_id: str, payload: Dict = None
+    ):
+        """Remove user to group."""
+        return self.client.delete_request(url_path=f"users/{user_id}/groups/{group_id}")
+
+    def search_realm_users(self, search: str, page_no: int, limit: int, role: bool):
+        """Search users in a realm."""
+        if page_no is None or limit is None:
+            raise BusinessException(
+                "Missing pagination parameters", HTTPStatus.BAD_REQUEST
+            )
+        user_list = self.client.get_realm_users(search, page_no, limit)
+        if role:
+            user_list = self.__populate_user_groups(user_list)
+        return user_list

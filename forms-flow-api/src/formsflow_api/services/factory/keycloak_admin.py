@@ -10,30 +10,54 @@ class KeycloakAdmin(ABC):
     @abstractmethod
     def get_analytics_groups(self, page_no: int, limit: int):
         """Get analytics groups."""
+        raise NotImplementedError("Method not implemented")
 
     @abstractmethod
     def get_group(self, group_id: str):
         """Get group by group_id."""
+        raise NotImplementedError("Method not implemented")
 
     @abstractmethod
     def update_group(self, group_id: str, data: Dict):
         """Update group."""
+        raise NotImplementedError("Method not implemented")
 
     @abstractmethod
-    def get_users(self, **kwargs):
+    def get_users(self, page_no: int, limit: int, role: bool, group_name: str):
         """Get users."""
+        raise NotImplementedError("Method not implemented")
 
     @abstractmethod
     def get_groups_roles(self, search: str, sort_order: str):
         """Get groups."""
+        raise NotImplementedError("Method not implemented")
 
     @abstractmethod
     def delete_group(self, group_id: str):
         """Delete group by group_id."""
+        raise NotImplementedError("Method not implemented")
 
     @abstractmethod
     def create_group_role(self, data: Dict):
         """Create group/role."""
+        raise NotImplementedError("Method not implemented")
+
+    @abstractmethod
+    def add_user_to_group_role(self, user_id: str, group_id: str, payload: Dict):
+        """Add user to role / group."""
+        raise NotImplementedError("Method not implemented")
+
+    @abstractmethod
+    def remove_user_from_group_role(
+        self, user_id: str, group_id: str, payload: Dict = None
+    ):
+        """Remove user to role / group."""
+        raise NotImplementedError("Method not implemented")
+
+    @abstractmethod
+    def search_realm_users(self, search: str, page_no: int, limit: int, role: bool):
+        """Get users in a realm."""
+        raise NotImplementedError("Method not implemented")
 
     def sort_results(self, data: List, sort_order: str):
         """Sort results by name."""

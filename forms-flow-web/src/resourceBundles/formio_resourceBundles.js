@@ -88,7 +88,7 @@ export const formio_resourceBundles = {
     "Save Form": "Save Form",
     "Cancel": "Cancel",
     "Confirm": "Confirm",
-    "wizard": "Wizard",
+    "Wizard": "Wizard",
     "Please fix the errors before submitting again.":
       "Please fix the errors before submitting again.",
     "Error in JSON file structure": "Error in JSON file structure",

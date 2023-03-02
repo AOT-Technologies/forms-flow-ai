@@ -605,8 +605,9 @@ const List = React.memo((props) => {
                       id="form1"
                       ref={searchInputBox}
                       onKeyPress={(e) => e.key === "Enter" && handleSearch()}
+                      onBlur={(e) => setIsSearchValid(inputValidator(e.target.value))}
                       onChange={(e) => {
-                        setIsSearchValid(inputValidator(e.target.value));
+                        e.target.name === '' ? setIsSearchValid(true) : '';
                         setShowClearButton(e.target.value);
                         setSearchTextInput(e.target.value);
                         e.target.value === "" && handleSearch();

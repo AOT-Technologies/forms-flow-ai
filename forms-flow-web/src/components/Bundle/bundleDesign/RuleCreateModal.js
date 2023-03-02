@@ -25,7 +25,8 @@ const RuleCreateModal = React.memo(({ showModal, handleModalChange ,
       return {
         label: item.formName,
         value: item.formId,
-        path:item.path
+        path:item.path,
+        mapperId:item.mapperId
       };
     });
   }, [bundleSelectedForms]);
@@ -43,7 +44,7 @@ const RuleCreateModal = React.memo(({ showModal, handleModalChange ,
        const formData =  bundleSelectedForms.find(i=> i.formId === existingRule.formId);
        if(formData){
         setSelectedFormData({label:formData.formName, value:formData.formId, 
-          path:formData.path});
+          path:formData.path, mapperId: selectedFormDta.mapperId});
        }
        const action =  RuleActions.find(action => action.value === existingRule.action);
        if(action){
@@ -68,7 +69,8 @@ const RuleCreateModal = React.memo(({ showModal, handleModalChange ,
       formId: selectedFormDta.value,
       path: selectedFormDta.path,
       formName: selectedFormDta.label,
-      action:action.value
+      action:action.value,
+      mapperId: selectedFormDta.mapperId
     };
     if(existingRule){
       editRule({...existingRule,...data});

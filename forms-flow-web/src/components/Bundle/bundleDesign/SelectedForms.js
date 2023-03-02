@@ -36,8 +36,7 @@ const SelectedForms = ({handleModalChange, selectedForms,deleteForm}) => {
           <TableHead>
             <TableRow>
               <StyledTableCell>No</StyledTableCell>
-              <StyledTableCell align="left">Form Name</StyledTableCell>
-              <StyledTableCell align="left">Type</StyledTableCell>
+              <StyledTableCell align="left">Form Name</StyledTableCell> 
               <StyledTableCell align="right">View</StyledTableCell>
               <StyledTableCell align="right">Action</StyledTableCell>
             </TableRow>
@@ -46,8 +45,7 @@ const SelectedForms = ({handleModalChange, selectedForms,deleteForm}) => {
             {selectedForms?.map((form, index) => (
               <TableRow key={form.id}>
                 <StyledTableCell>{index + 1}</StyledTableCell>
-                <StyledTableCell>{form.formName}</StyledTableCell>
-                <StyledTableCell>{form.formType}</StyledTableCell>
+                <StyledTableCell>{form.formName}</StyledTableCell> 
                 <StyledTableCell align="right">
                   <button className="btn btn-sm btn-outline-primary" onClick={()=>{viewForm(form.formId);}}>
                     <i

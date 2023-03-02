@@ -35,16 +35,16 @@ const RulesTable = ({bundleRules = [],handleModalChange,
       <TableBody>
  
         {bundleRules?.map((rule, index) => (
-          <TableRow key={rule.id}>
+          <TableRow key={index}>
             <StyledTableCell>{index + 1}</StyledTableCell>
             <StyledTableCell>{rule.formName}</StyledTableCell>
             <StyledTableCell>{rule.criteria?.join(",")}</StyledTableCell>
             <StyledTableCell>{rule.action}</StyledTableCell>
             <StyledTableCell align="right">
-              <button className="btn btn-sm btn-outline-primary mr-2" onClick={()=>{selectEditRule(rule);}}>
+              <button className="btn btn-sm btn-outline-primary mr-2" onClick={()=>{selectEditRule(rule,index);}}>
               <i className="fa fa-pencil " aria-hidden="true"></i>
               </button>
-              <button className="btn btn-sm btn-outline-danger" onClick={()=>{deleteRule(rule.formId);}}>
+              <button className="btn btn-sm btn-outline-danger" onClick={()=>{deleteRule(index);}}>
                 <i className="fa fa-trash-o" aria-hidden="true"></i>
               </button>
             </StyledTableCell>

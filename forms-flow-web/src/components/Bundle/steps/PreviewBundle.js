@@ -1,27 +1,23 @@
 import { Tab, Tabs } from "@material-ui/core";
 import React, { useEffect } from "react";
 import { useState } from "react";
-import { Form, Formio } from "react-formio";
-import { fetchFormById } from "../../../apiManager/services/bpmFormServices";
+import { Form, Formio, Errors} from "react-formio";
+import { fetchFormByAlias } from "../../../apiManager/services/bpmFormServices";
 import Loading from "../../../containers/Loading";
 import SaveNext from "./SaveAndNext";
 import { push } from "connected-react-router";
 import { MULTITENANCY_ENABLED } from "../../../constants/constants";
 import { useDispatch, useSelector } from "react-redux";
 const PreviewBundle = ({ handleNext, handleBack, activeStep, isLastStep }) => {
-  const forms = [
-    { id: "63fc41027e513a3995321307", formName: "hiii", type: "form" },
-    { id: "63abf8f883be32f0efe87989", formName: "sad", type: "form" },
-    { id: "63abf8f883be32f0efe87989", formName: "sd33", type: "form" },
-    { id: "63fc41027e513a3995321307", formName: "cccccccc", type: "resource" },
-  ];
+
   const tenantKey = useSelector((state) => state.tenants?.tenantId);
   const dispatch = useDispatch();
   const redirectUrl = MULTITENANCY_ENABLED ? `/tenant/${tenantKey}/` : "/";
-
-
+  const forms = useSelector((state)=> state.bundle.selectedForms);
+  const bundleData = useSelector(state => state.bundle.bundleData);
   const [tabValue, setTabValue] = useState(0);
-  const [getFormLoading, setGetFormLoading] = useState(true);
+  const [getFormLoading, setGetFormLoading] = useState(false);
+  const [error, setError] = useState("");
   const [form,setForm] = useState({});
  
   const handleTabChange = (e, value) => {
@@ -33,19 +29,33 @@ const PreviewBundle = ({ handleNext, handleBack, activeStep, isLastStep }) => {
   };
 
   useEffect(() => {
-    setGetFormLoading(true);
     Formio.cache = {};
-    fetchFormById(forms[tabValue].id).then((res)=>{
-      setForm(res.data);
-    }).finally(()=>{
-    setGetFormLoading(false);
-    });
+    if(forms.length){
+      setGetFormLoading(true);
+      dispatch(   fetchFormByAlias(forms[tabValue].path,(err,form)=>{
+        setForm({});
+        if(err){
+          let error;
+          if (err.response?.data) {
+            error = err.response.data;
+          } else {
+            error = err.message;
+          }
+  
+          setError(error);
+        }else{
+          setForm(form);
+        }
+          setGetFormLoading(false);
+      }) );
+    }
+  
   }, [tabValue]);
 
   return (
     <div>
       <div className="d-flex align-items-center justify-content-between">
-        <h3>New Form</h3>
+        <h3>{bundleData.bundleName}</h3>
         <div>
         <button
             className="btn btn-primary"
@@ -64,6 +74,7 @@ const PreviewBundle = ({ handleNext, handleBack, activeStep, isLastStep }) => {
           />
         </div>
       </div>
+      <Errors errors={error} />
       <div>
         <Tabs
           value={tabValue}
@@ -72,7 +83,7 @@ const PreviewBundle = ({ handleNext, handleBack, activeStep, isLastStep }) => {
           onChange={handleTabChange}
         >
           {forms.map((item) => (
-            <Tab key={item.id} label={item.formName} />
+            <Tab key={item.formId} label={item.formName} />
           ))}
         </Tabs>
         <div>{getFormLoading ? <Loading /> : <Form form={form} options={{readOnly:true}}/>}</div>

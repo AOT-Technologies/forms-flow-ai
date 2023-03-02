@@ -57,7 +57,7 @@ export const formio_resourceBundles = {
     "Enter Label": "Enter Label",
     "Select form field": "Select form field",
     "Add form fields to display in task list":
-      "Add form fields to display in task list",
+    "Add form fields to display in task list",
     "Latest Version": "Latest Version",
     "Dashboard": "Dashboard",
     "Dashboards": "Dashboards",

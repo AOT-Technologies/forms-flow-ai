@@ -21,7 +21,7 @@ import {
 import { addTenantkey } from "../../helper/helper";
 import { formCreate } from "../../apiManager/services/FormServices";
 import { Checkbox, FormControlLabel } from "@material-ui/core";
-import inputValidater from '../../helper/regExp/inputValidater';
+import inputValidator from '../../helper/regExp/inputValidator';
 // reducer from react-formio code
 const reducer = (form, { type, value }) => {
   const formCopy = _cloneDeep(form);
@@ -231,7 +231,7 @@ const Create = React.memo(() => {
                 placeholder={t("Enter the form title")}
                 value={form.title || ""}
                 onChange={(event) => {
-                  setIsValidName(inputValidater(event.target.value));
+                  setIsValidName(inputValidator(event.target.value));
                   handleChange("title", event);
 
                 }

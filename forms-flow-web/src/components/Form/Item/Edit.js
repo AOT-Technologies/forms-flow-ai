@@ -39,7 +39,7 @@ import { Checkbox, FormControlLabel } from "@material-ui/core";
 import { manipulatingFormData } from "../../../apiManager/services/formFormatterService";
 import SaveAsNewVersionConfirmationModal from "./SaveAsNewVersionConfirmationModal";
 import LoadingOverlay from "react-loading-overlay";
-import inputValidater from "../../../helper/regExp/inputValidater" ;
+import inputValidator from "../../../helper/regExp/inputValidator" ;
 const reducer = (form, { type, value }) => {
   const formCopy = _cloneDeep(form);
   switch (type) {
@@ -174,7 +174,7 @@ const Edit = React.memo(() => {
 
   // setting the form data
   useEffect(() => {
-    setIsValidName(inputValidater(form.title));
+    setIsValidName(inputValidator(form.title));
     const newForm = formData;
     if (
       newForm &&
@@ -548,7 +548,7 @@ const Edit = React.memo(() => {
                 placeholder={t("Enter the form title")}
                 value={form.title || ""}
                 onChange={(event) => {
-                  setIsValidName(inputValidater(event.target.value));
+                  setIsValidName(inputValidator(event.target.value));
                   handleChange("title", event);
                 }
               }

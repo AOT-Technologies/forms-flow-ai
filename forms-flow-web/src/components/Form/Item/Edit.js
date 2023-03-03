@@ -448,7 +448,7 @@ const Edit = React.memo(() => {
     );
   }
 
-  return (
+ return (
     <div className="container">
       {
         saveAsNewVersionselected && confirmModalShow && (

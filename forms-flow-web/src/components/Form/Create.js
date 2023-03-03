@@ -202,7 +202,7 @@ const Create = React.memo(() => {
       <div className="d-flex align-items-center flex-wrap justify-content-between my-4 bg-light p-3">
 
       <h2>
-        <Translation>{(t) => t("Create Form")}</Translation>
+        {t("Create Form")}
       </h2>
       <button className="btn btn-primary" disabled={formSubmitted} onClick={() => saveFormData()}>
         {saveText}
@@ -218,7 +218,7 @@ const Create = React.memo(() => {
             <div id="form-group-title" className="form-group">
               <label htmlFor="title" className="control-label field-required">
                 {" "}
-                <Translation>{(t) => t("Title")}</Translation>
+               {t("Title")}
               </label>
               <input
                 type="text"
@@ -233,7 +233,7 @@ const Create = React.memo(() => {
           <div className="col-lg-4 col-md-4 col-sm-4">
             <div id="form-group-name" className="form-group">
               <label htmlFor="name" className="control-label field-required">
-                <Translation>{(t) => t("Name")}</Translation>
+               {t("Name")}
                 {addingTenantKeyInformation("name")}
               </label>
               <div className="input-group mb-2">
@@ -261,7 +261,7 @@ const Create = React.memo(() => {
           <div className="col-lg-4 col-md-3 col-sm-3">
             <div id="form-group-display" className="form-group">
               <label htmlFor="name" className="control-label">
-                <Translation>{(t) => t("Display as")}</Translation>
+               {t("Display as")}
               </label>
               <div className="input-group">
                 <select
@@ -272,10 +272,10 @@ const Create = React.memo(() => {
                   onChange={(event) => handleChange("display", event)}
                 >
                   <option label={t("Form")} value="form">
-                    <Translation>{(t) => t("Form")}</Translation>
+                   {t("Form")}
                   </option>
                   <option label={t("Wizard")} value="wizard">
-                    <Translation>{(t) => t("Wizard")}</Translation>
+                    {t("Wizard")}
                   </option>
                 </select>
               </div>
@@ -284,7 +284,7 @@ const Create = React.memo(() => {
           <div className="col-lg-4 col-md-3 col-sm-3">
             <div id="form-group-type" className="form-group">
               <label htmlFor="form-type" className="control-label">
-                <Translation>{(t) => t("Type")}</Translation>
+                {t("Type")}
               </label>
               <div className="input-group">
                 <select
@@ -307,7 +307,7 @@ const Create = React.memo(() => {
           <div className="col-lg-4 col-md-4 col-sm-4">
             <div id="form-group-path" className="form-group">
               <label htmlFor="path" className="control-label field-required">
-                <Translation>{(t) => t("Path")}</Translation>
+                {t("Path")}
                 {addingTenantKeyInformation("path")}
               </label>
               <div className="input-group mb-2">

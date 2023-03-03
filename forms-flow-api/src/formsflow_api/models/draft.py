@@ -75,6 +75,19 @@ class Draft(AuditDateTimeMixin, BaseModel, db.Model):
         return FormProcessMapper.tenant_authorization(result).first()
 
     @classmethod
+    def get_draft_by_form_id(cls, form_id: str) -> Draft:
+        """Get all draft against one form id."""
+        result = cls.query.join(
+            Application, Application.id == cls.application_id
+        ).filter(
+            and_(
+                Application.latest_form_id == form_id,
+                Application.application_status == DRAFT_APPLICATION_STATUS,
+            )
+        )
+        return FormProcessMapper.tenant_authorization(result).all()
+
+    @classmethod
     def find_by_id(cls, draft_id: int, user_id: str) -> Draft:
         """Find draft that matches the provided id."""
         result = (

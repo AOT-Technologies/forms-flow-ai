@@ -57,6 +57,7 @@ import overlayFactory from "react-bootstrap-table2-overlay";
 import { SpinnerSVG } from "../../containers/SpinnerSVG";
 import { getFormattedForm, INACTIVE } from "./constants/formListConstants";
 import searchValidator from '../../helper/regExp/formSearchValidation';
+import { deleteDraftbyFormId } from "../../apiManager/services/draftService";
 
 const List = React.memo((props) => {
   const { t } = useTranslation();
@@ -749,6 +750,10 @@ const mapDispatchToProps = (dispatch, ownProps) => {
       if (!applicationCount) {
         dispatch(deleteForm("form", formId));
       }
+      // delete drafts when form delete
+      deleteDraftbyFormId(formId).catch(err=>{
+        console.error(err);
+      });
       if (formProcessData.id) {
         dispatch(
           unPublishForm(formProcessData.id, (err) => {

@@ -250,3 +250,9 @@ export const deleteDraftbyId = (draftId) => {
   let url = `${API.DRAFT_BASE}/${draftId}`;
   return httpDELETERequest(url);
 };
+
+export const deleteDraftbyFormId = (formId) => {
+  let url = `${API.DRAFT_BASE}/form/${formId}`;
+  return httpDELETERequest(url);
+};
+

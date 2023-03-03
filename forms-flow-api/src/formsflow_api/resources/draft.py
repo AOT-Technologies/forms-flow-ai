@@ -471,3 +471,26 @@ class PublicDraftUpdateResourceById(Resource):
             current_app.logger.warning(submission_err)
 
             return response, status
+
+
+@cors_preflight("DELETE,OPTIONS")
+@API.route("/form/<string:form_id>", methods=["DELETE", "OPTIONS"])
+class DraftResourcedByFormId(Resource):
+    """Resource for managing draft by form id."""
+
+    @staticmethod
+    @auth.require
+    @profiletime
+    @API.response(200, "OK:- Successful request.", model=message)
+    @API.response(
+        400,
+        "BAD_REQUEST:- Invalid request.",
+    )
+    def delete(form_id: str):
+        """Delete draft."""
+        try:
+            DraftService.delete_draft_by_form_id(form_id)
+            return {"message": "Drafts deleted successfully"}, HTTPStatus.OK
+        except BusinessException as err:
+            current_app.logger.warning(err)
+            return err.error, err.status_code

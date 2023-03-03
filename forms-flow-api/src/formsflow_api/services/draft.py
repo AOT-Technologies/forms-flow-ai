@@ -176,3 +176,18 @@ class DraftService:
                 "message": f"Invalid request data - draft id {draft_id} does not exist",
             }, HTTPStatus.BAD_REQUEST
             raise BusinessException(response, status)
+
+    @staticmethod
+    def delete_draft_by_form_id(form_id: str):
+        """Delete drafts by form id."""
+        assert form_id is not None
+        draft_list = Draft.get_draft_by_form_id(form_id=form_id)
+        if draft_list:
+            for drafat in draft_list:
+                drafat.delete()
+        else:
+            response, status = {
+                "type": "Bad request error",
+                "message": f"Invalid request data - form id {form_id} does not exist",
+            }, HTTPStatus.BAD_REQUEST
+            raise BusinessException(response, status)

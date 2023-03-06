@@ -1,8 +1,8 @@
 """Module for performing all rule related operations with form bundling."""
 from typing import Dict, List
 
-from rule_engine import Rule
-from rule_engine.errors import (
+from rule_engine import Rule  # pylint:disable=import-error
+from rule_engine.errors import (  # pylint:disable=import-error
     EvaluationError,
     RuleSyntaxError,
     SymbolResolutionError,

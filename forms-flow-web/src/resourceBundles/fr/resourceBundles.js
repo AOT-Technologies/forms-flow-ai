@@ -36,7 +36,7 @@ export const RESOURCE_BUNDLES_FR = {
   "Enter Label":"Entrez l'étiquette",
   "Select form field":"Sélectionnez le champ du formulaire",
   "Add form fields to display in task list":"Ajouter des champs de formulaire à afficher dans la liste des tâches",
-  "Version":"Version",
+  "Latest Version":"Dernière version",
   "Submission Status":"État de la soumission",
   "No submission status":"Aucun statut de soumission",
   "No Public url found":"Aucune URL publique trouvée",

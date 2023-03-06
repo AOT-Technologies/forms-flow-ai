@@ -65,7 +65,9 @@ class CombineFormAndApplicationCreate:  # pylint: disable=too-few-public-methods
             raise BusinessException(response, status) from application_err
 
     @staticmethod
-    def __populate_default_keys(form_data: Dict) -> Dict:
+    def __populate_default_keys(  # pylint: disable=unused-private-member
+        form_data: Dict,
+    ) -> Dict:
         """Populate default keys to the form data if they are not present."""
         default_keys: List[str] = ["applicationStatus", "applicationId"]
         for key in default_keys:

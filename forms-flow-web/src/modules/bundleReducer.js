@@ -2,7 +2,6 @@ import ACTION_CONSTANTS from "../actions/actionConstants";
 
 const initialState = {
  selectedForms: [],
- rules: [],
  bundleData:{},
  bundleForms :{
   error: "",
@@ -24,8 +23,6 @@ const bundle = (state = initialState, action) => {
   switch (action.type) {
     case ACTION_CONSTANTS.BUNDLE_SELECTED_FORMS:
         return { ...state, selectedForms: action.payload };
-    case ACTION_CONSTANTS.BUNDLE_RULES:
-        return { ...state, rules: action.payload };
     case ACTION_CONSTANTS.BUNDLE_FORM_LIST:
       return {...state, bundleForms:{...state.bundleForms, forms: action.payload.forms, 
         totalForms:action.payload.totalCount}};

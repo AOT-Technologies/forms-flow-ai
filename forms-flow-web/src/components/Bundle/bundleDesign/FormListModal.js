@@ -146,7 +146,7 @@ const FormListModal = React.memo(
 
     useEffect(() => {
       if (formsAlreadySelected?.length) {
-        const ids = formsAlreadySelected.map((form) => form.formId);
+        const ids = formsAlreadySelected.map((form) => form.mapperId);
         setSelectedFormIds(ids);
         setSelectedForms(formsAlreadySelected);
       }
@@ -158,14 +158,15 @@ const FormListModal = React.memo(
         const options = "?select=path";
         fetchFormById(form.formId, options)
           .then((res) => {
-            setSelectedFormIds((prev) => [...prev, form.formId]);
+            setSelectedFormIds((prev) => [...prev, form.id]);
             setSelectedForms((prev) => [
               ...prev,
               {
-                formId: form.formId,
                 formName: form.formName,
                 path: res.data.path,
-                mapperId: form.id
+                mapperId: form.id,
+                rules:[],
+                action:null
               },
             ]);
           })
@@ -181,10 +182,10 @@ const FormListModal = React.memo(
           });
       } else {
         setSelectedFormIds((prev) =>
-          prev.filter((item) => item !== form.formId)
+          prev.filter((item) => item !== form.id)
         );
         setSelectedForms((prev) =>
-          prev.filter((item) => item.formId !== form.formId)
+          prev.filter((item) => item.mapperId !== form.id)
         );
       }
     };
@@ -244,7 +245,7 @@ const FormListModal = React.memo(
                                 <StyledTableCell align="left">
                                   <Checkbox
                                     checked={seletedFormIds?.includes(
-                                      form.formId
+                                      form.id
                                     )}
                                     onChange={(e) => {
                                       handleFormSelect(
@@ -270,14 +271,14 @@ const FormListModal = React.memo(
                                     className="btn btn-sm btn-outline-primary"
                                     onClick={() =>
                                       handleFormSelect(
-                                        seletedFormIds?.includes(form.formId)
+                                        seletedFormIds?.includes(form.id)
                                           ? "unselect"
                                           : "select",
                                         form
                                       )
                                     }
                                   >
-                                    {seletedFormIds?.includes(form.formId)
+                                    {seletedFormIds?.includes(form.id)
                                       ? "unselect"
                                       : "select"}
                                   </button>

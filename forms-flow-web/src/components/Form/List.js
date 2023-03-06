@@ -500,14 +500,14 @@ const List = React.memo((props) => {
                   <div>
                     {`${t("Are you sure you wish to delete the form ")}`}
                     <span style={{ fontWeight: "bold" }}>{props.formName}</span>
-                      ?
+                       ?
                   </div>
                 )
               ) : (
                 <div>
                   {`${t("Are you sure you wish to delete the form ")} `}
                   <span style={{ fontWeight: "bold" }}>{props.formName}</span>
-                   ?
+                    ?
                 </div>
               )
             }

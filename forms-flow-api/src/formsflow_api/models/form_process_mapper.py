@@ -79,6 +79,7 @@ class FormProcessMapper(AuditDateTimeMixin, AuditUserMixin, BaseModel, db.Model)
                 mapper.is_anonymous = mapper_info.get("is_anonymous")
                 mapper.task_variable = mapper_info.get("task_variable")
                 mapper.version = mapper_info.get("version")
+                mapper.can_bundle = mapper_info.get("can_bundle")
                 mapper.save()
                 return mapper
         except Exception as err:  # pylint: disable=broad-except
@@ -105,6 +106,7 @@ class FormProcessMapper(AuditDateTimeMixin, AuditUserMixin, BaseModel, db.Model)
                 "is_anonymous",
                 "task_variable",
                 "process_tenant",
+                "can_bundle",
             ],
             mapper_info,
         )

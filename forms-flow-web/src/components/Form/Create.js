@@ -157,6 +157,7 @@ const Create = React.memo(() => {
         anonymousChanged:true,
         parentFormId: form._id,
         titleChanged: true,
+        canBundle:canBundle,
         formRevisionNumber: "V1", // to do
         anonymous: formAccess[0]?.roles.includes(roleIds.ANONYMOUS),
          

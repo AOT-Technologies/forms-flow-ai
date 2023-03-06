@@ -76,7 +76,7 @@ const Edit = React.memo(() => {
   const applicationCount = useSelector(
     (state) => state.process.applicationCount
   );
-  const [canBundle, setCanBundle] = useState(processListData.canBundle || false);
+  // const [canBundle, setCanBundle] = useState(processListData.canBundle || false);
   const tenantKey = useSelector((state) => state.tenants?.tenantId);
   const restoredFormId = useSelector(
     (state) => state.formRestore?.restoredFormId
@@ -187,10 +187,20 @@ const Edit = React.memo(() => {
     let latestValue = goBack ? setvalue : !processListData.anonymous;
     let newData = {
       ...processListData,
-      anonymous: latestValue,
+      anonymous: latestValue
     };
     dispatch(setFormProcessesData(newData));
   };
+
+ const changeCanBundle = (setvalue, goBack)=>{
+  let latestValue = goBack ? setvalue : !processListData.canBundle;
+    let newData = {
+      ...processListData,
+      canBundle: latestValue
+    };
+    dispatch(setFormProcessesData(newData));
+ };
+
 
  
 
@@ -254,7 +264,8 @@ const Edit = React.memo(() => {
       prviousData.formName !== newData.title ||
       prviousData.anonymous !== processListData.anonymous ||
       processListData.anonymous === null ||
-      processListData.formType !== newData.type
+      processListData.formType !== newData.type ||
+      prviousData.canBundle !== processListData.canBundle
     );
   };
   // to check the component changed or not
@@ -278,7 +289,7 @@ const Edit = React.memo(() => {
       formName: submittedData.title,
       parentFormId: processListData.parentFormId,
       formType: submittedData.type,
-      canBundle,
+      canBundle:processListData.canBundle,
       status: processListData.status ? processListData.status : INACTIVE,
       taskVariable: processListData.taskVariable
         ? processListData.taskVariable
@@ -369,7 +380,7 @@ const Edit = React.memo(() => {
         const { data: submittedData } = res;
         if (isMapperSaveNeeded(submittedData)) {
           const data = setFormProcessDataToVariable(submittedData);
-
+        
           // PUT request : when application count is zero.
           // POST request with updated version : when application count is positive.
 
@@ -384,7 +395,7 @@ const Edit = React.memo(() => {
 
             if (processListData && processListData.id) {
               // For created forms we would be having a mapper
-
+             
               dispatch(saveFormProcessMapperPut(data));
             } else {
               // For uploaded forms we have to create new mapper.
@@ -486,6 +497,7 @@ const Edit = React.memo(() => {
             className="btn btn-secondary mr-2"
             onClick={() => {
               changeAnonymous(prviousData.anonymous, true);
+              changeCanBundle(prviousData.canBundle,true);
               history.goBack();
               dispatch(clearFormError("form", formData.formName));
             }}
@@ -678,11 +690,11 @@ const Edit = React.memo(() => {
                 <FormControlLabel
                   control={
                     <Checkbox
-                      checked={processListData.bundle || false}
+                      checked={processListData.canBundle || false}
                       color="primary"
                       aria-label="Publish"
                       onChange={() => {
-                        setCanBundle(!canBundle);
+                        changeCanBundle();
                       }}
                     />
                   }

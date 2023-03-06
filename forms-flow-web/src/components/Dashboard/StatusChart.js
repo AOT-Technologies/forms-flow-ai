@@ -49,7 +49,7 @@ const ChartForm = React.memo((props) => {
             <h2>{formName}</h2>
           </div>
           <p>
-            <span className="text-primary">{t("Version")} :</span>{" "}
+            <span className="text-primary">{t("Latest Version")} :</span>{" "}
             {`v${version}`}
           </p>
           </div>

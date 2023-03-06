@@ -56,7 +56,7 @@ import filterFactory from "react-bootstrap-table2-filter";
 import overlayFactory from "react-bootstrap-table2-overlay";
 import { SpinnerSVG } from "../../containers/SpinnerSVG";
 import { getFormattedForm, INACTIVE } from "./constants/formListConstants";
-import searchValidator from '../../helper/regExp/formSearchValidation';
+import inputValidator from '../../helper/regExp/inputValidator';
 
 const List = React.memo((props) => {
   const { t } = useTranslation();
@@ -151,9 +151,6 @@ const List = React.memo((props) => {
     searchText,
     formType
   ]);
-  useEffect(() => {
-    setIsSearchValid(searchValidator(searchTextInput));
-  }, [searchTextInput]);
 
   const formCheck = (formCheckList) => {
     const result = formCheckList.reduce(function (obj, v) {
@@ -216,6 +213,7 @@ const List = React.memo((props) => {
     dispatch(setBpmFormType(type));
   };
   const onClear = () => {
+    setIsSearchValid(true);
     setSearchTextInput("");
     dispatch(setBpmFormSearch(''));
     dispatch(setBPMFormLimit(5));
@@ -607,7 +605,9 @@ const List = React.memo((props) => {
                       id="form1"
                       ref={searchInputBox}
                       onKeyPress={(e) => e.key === "Enter" && handleSearch()}
+                      onBlur={(e) => setIsSearchValid(inputValidator(e.target.value))}
                       onChange={(e) => {
+                        e.target.name === '' ? setIsSearchValid(true) : '';
                         setShowClearButton(e.target.value);
                         setSearchTextInput(e.target.value);
                         e.target.value === "" && handleSearch();

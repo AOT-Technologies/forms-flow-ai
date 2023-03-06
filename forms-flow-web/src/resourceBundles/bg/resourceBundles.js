@@ -36,7 +36,7 @@ export const RESOURCE_BUNDLES_BG = {
     "Enter Label":"Въведете етикет",
     "Select form field":"Изберете поле на формуляра",
     "Add form fields to display in task list":"Добавете полета на формуляра за показване в списъка със задачи",
-    "Version":"Версия",
+    "Latest Version":"Последна версия",
     "Submission Status":"Състояние на подаване",
     "No submission status":"Няма състояние на подаване",
     "No Public url found":"Не е намерен публичен URL адрес",

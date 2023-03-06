@@ -964,7 +964,7 @@ paths:
                 examples:
                   example-1:
                     value:
-                      __id: 63736e889fe51130648f0fe4
+                      _id: 63736e889fe51130648f0fe4
                       title: select check _resouce
                       name: selectCheckResouce
                       path: selectcheckresouce

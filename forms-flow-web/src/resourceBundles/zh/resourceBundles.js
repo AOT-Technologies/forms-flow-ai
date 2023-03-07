@@ -1,5 +1,6 @@
 /* eslint-disable max-len */
 export const RESOURCE_BUNDLES_ZH = {
+  "Please remove the special characters...!":"请删除特殊字符...！",
   "No histories found":"没有找到历史记录",
   "Continue":"继续",
   "This will create a new version of the form without changing the path name but with new form id.":"这将创建一个新版本的表单而不更改路径名但具有新的表单 ID。",

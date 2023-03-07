@@ -57,8 +57,8 @@ export const formio_resourceBundles = {
     "Enter Label": "Enter Label",
     "Select form field": "Select form field",
     "Add form fields to display in task list":
-      "Add form fields to display in task list",
-    "Version": "Version",
+    "Add form fields to display in task list",
+    "Latest Version": "Latest Version",
     "Dashboard": "Dashboard",
     "Dashboards": "Dashboards",
     "Submission Status": "Submission Status",
@@ -88,7 +88,7 @@ export const formio_resourceBundles = {
     "Save Form": "Save Form",
     "Cancel": "Cancel",
     "Confirm": "Confirm",
-    "wizard": "Wizard",
+    "Wizard": "Wizard",
     "Please fix the errors before submitting again.":
       "Please fix the errors before submitting again.",
     "Error in JSON file structure": "Error in JSON file structure",

@@ -35,7 +35,7 @@ export const RESOURCE_BUNDLES_EN = {
   "Enter Label":"Enter Label",
   "Select form field":"Select form field",
   "Add form fields to display in task list":"Add form fields to display in task list",
-  "Version":"Version",
+  "Latest Version":"Latest Version",
   "Submission Status":"Submission Status",
   "No submission status":"No submission status",
   "No Public url found":"No Public url found",

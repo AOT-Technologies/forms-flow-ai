@@ -21,6 +21,7 @@ import {
 import { addTenantkey } from "../../helper/helper";
 import { formCreate } from "../../apiManager/services/FormServices";
 import { Checkbox, FormControlLabel } from "@material-ui/core";
+import inputValidator from '../../helper/regExp/inputValidator';
 // reducer from react-formio code
 const reducer = (form, { type, value }) => {
   const formCopy = _cloneDeep(form);
@@ -56,16 +57,15 @@ const Create = React.memo(() => {
   const errors = useSelector((state) => state.form.error);
   const lang = useSelector((state) => state.user.lang);
   const tenantKey = useSelector((state) => state.tenants?.tenantId);
-  const formAccess = useSelector((state) => state.user?.formAccess || []) ;
-  const roleIds = useSelector((state) => state.user?.roleIds || {}) ;
-  const [formSubmitted , setFormSubmitted] = useState(false);
-
-  const submissionAccess = useSelector((state) => state.user?.submissionAccess || []) ;
+  const formAccess = useSelector((state) => state.user?.formAccess || []);
+  const roleIds = useSelector((state) => state.user?.roleIds || {});
+  const [formSubmitted, setFormSubmitted] = useState(false);
+  const [isValidName, setIsValidName] = useState(true);
+  const submissionAccess = useSelector((state) => state.user?.submissionAccess || []);
   const redirectUrl = MULTITENANCY_ENABLED ? `/tenant/${tenantKey}/` : "/";
   const [canBundle, setCanBundle] = useState(false);
   
   const { t } = useTranslation();
-
   useEffect(() => {
     dispatch(clearFormError("form"));
   }, [dispatch]);
@@ -111,7 +111,7 @@ const Create = React.memo(() => {
       );
     }
   };
- 
+
 
 
   // setting the form data
@@ -133,7 +133,7 @@ const Create = React.memo(() => {
       ...newFormData,
       tags: ["common"],
     };
-    
+
     newForm.submissionAccess = submissionAccess;
     newForm.componentChanged = true;
     newForm.newVersion = true;
@@ -147,14 +147,14 @@ const Create = React.memo(() => {
         newForm.name = addTenantkey(newForm.name, tenantKey);
       }
     }
-    formCreate(newForm).then((res)=>{
+    formCreate(newForm).then((res) => {
       const form = res.data;
       const data = {
         formId: form._id,
         formName: form.title,
         formType: form.type,
-        formTypeChanged:true, 
-        anonymousChanged:true,
+        formTypeChanged: true,
+        anonymousChanged: true,
         parentFormId: form._id,
         titleChanged: true,
         canBundle:canBundle,
@@ -175,17 +175,17 @@ const Create = React.memo(() => {
           }
         })
       );
- 
-    }).catch((err)=>{
-      let error ;
+
+    }).catch((err) => {
+      let error;
       if (err.response?.data) {
         error = err.response.data;
       } else {
         error = err.message;
       }
       dispatch(setFormFailureErrorData("form", error));
-     
-    }).finally(()=>{
+
+    }).finally(() => {
       setFormSubmitted(false);
     });
   };
@@ -203,52 +203,62 @@ const Create = React.memo(() => {
   return (
     <div>
       <div className="d-flex align-items-center flex-wrap justify-content-between my-4 bg-light p-3">
+        <h2>
+          <Translation>{(t) => t("Create Form")}</Translation>
+        </h2>
+        <button className="btn btn-primary" disabled={formSubmitted} onClick={() => {
+          isValidName ? saveFormData() : toast.error(t("Please remove the special charcters"));
+        }
+        }>
+          {saveText}
+        </button>
 
-      <h2>
-        <Translation>{(t) => t("Create Form")}</Translation>
-      </h2>
-      <button className="btn btn-primary" disabled={formSubmitted} onClick={() => saveFormData()}>
-        {saveText}
-       </button>
       </div>
-    
+
       <Errors errors={errors} />
       <div className="p-4"
         style={{ border: "1px solid #c2c0be", borderRadius: "5px" }}>
-         
+
         <div className="row align-item-center">
           <div className="col-lg-4 col-md-4 col-sm-4">
             <div id="form-group-title" className="form-group">
               <label htmlFor="title" className="control-label field-required">
                 {" "}
-                <Translation>{(t) => t("Title")}</Translation>
+               {t("Title")}
               </label>
               <input
+                style={{ color: `${!isValidName ? "red" : ''}` }}
                 type="text"
                 className="form-control"
                 id="title"
                 placeholder={t("Enter the form title")}
                 value={form.title || ""}
-                onChange={(event) => handleChange("title", event)}
+                onBlur={(event) => setIsValidName(inputValidator(event.target.value))}
+                onChange={(event) => {
+                  event.target.name === '' ? setIsValidName(true) : '';
+                  handleChange("title", event);
+                }
+                }
               />
+              {!isValidName && <span className="validation-err" style={{ marginLeft: "0px" }}>Please remove the special charactors...!</span>}
             </div>
           </div>
           <div className="col-lg-4 col-md-4 col-sm-4">
             <div id="form-group-name" className="form-group">
               <label htmlFor="name" className="control-label field-required">
-                <Translation>{(t) => t("Name")}</Translation>
+               {t("Name")}
                 {addingTenantKeyInformation("name")}
               </label>
               <div className="input-group mb-2">
-              {
+                {
                   MULTITENANCY_ENABLED && tenantKey ? <div className="input-group-prepend">
-                  <div
-                    className="input-group-text"
-                    style={{ maxWidth: "150px" }}
-                  >
-                    <span className="text-truncate">{tenantKey}</span>
-                  </div>
-                </div> : ""
+                    <div
+                      className="input-group-text"
+                      style={{ maxWidth: "150px" }}
+                    >
+                      <span className="text-truncate">{tenantKey}</span>
+                    </div>
+                  </div> : ""
                 }
                 <input
                   type="text"
@@ -264,7 +274,7 @@ const Create = React.memo(() => {
           <div className="col-lg-4 col-md-3 col-sm-3">
             <div id="form-group-display" className="form-group">
               <label htmlFor="name" className="control-label">
-                <Translation>{(t) => t("Display as")}</Translation>
+               {t("Display as")}
               </label>
               <div className="input-group">
                 <select
@@ -275,10 +285,10 @@ const Create = React.memo(() => {
                   onChange={(event) => handleChange("display", event)}
                 >
                   <option label={t("Form")} value="form">
-                    <Translation>{(t) => t("Form")}</Translation>
+                   {t("Form")}
                   </option>
                   <option label={t("Wizard")} value="wizard">
-                    <Translation>{(t) => t("Wizard")}</Translation>
+                    {t("Wizard")}
                   </option>
                 </select>
               </div>
@@ -287,7 +297,7 @@ const Create = React.memo(() => {
           <div className="col-lg-4 col-md-3 col-sm-3">
             <div id="form-group-type" className="form-group">
               <label htmlFor="form-type" className="control-label">
-                <Translation>{(t) => t("Type")}</Translation>
+                {t("Type")}
               </label>
               <div className="input-group">
                 <select
@@ -310,19 +320,19 @@ const Create = React.memo(() => {
           <div className="col-lg-4 col-md-4 col-sm-4">
             <div id="form-group-path" className="form-group">
               <label htmlFor="path" className="control-label field-required">
-                <Translation>{(t) => t("Path")}</Translation>
+                {t("Path")}
                 {addingTenantKeyInformation("path")}
               </label>
               <div className="input-group mb-2">
-              {
+                {
                   MULTITENANCY_ENABLED && tenantKey ? <div className="input-group-prepend">
-                  <div
-                    className="input-group-text"
-                    style={{ maxWidth: "150px" }}
-                  >
-                    <span className="text-truncate">{tenantKey}</span>
-                  </div>
-                </div> : ""
+                    <div
+                      className="input-group-text"
+                      style={{ maxWidth: "150px" }}
+                    >
+                      <span className="text-truncate">{tenantKey}</span>
+                    </div>
+                  </div> : ""
                 }
                 <input
                   type="text"
@@ -336,7 +346,7 @@ const Create = React.memo(() => {
               </div>
             </div>
           </div>
-          
+
           <div className="col-lg-4 col-md-4 col-sm-4">
             <div id="form-group-path" className="form-group">
               <label htmlFor="path" className="control-label "></label>

@@ -28,7 +28,7 @@ import {
   setRestoreFormData,
   setRestoreFormId,
 } from "../../../actions/formActions";
-import {  removeTenantKey } from "../../../helper/helper";
+import { removeTenantKey } from "../../../helper/helper";
 import { fetchFormById } from "../../../apiManager/services/bpmFormServices";
 import {
   formCreate,
@@ -39,6 +39,7 @@ import { Checkbox, FormControlLabel } from "@material-ui/core";
 import { manipulatingFormData } from "../../../apiManager/services/formFormatterService";
 import SaveAsNewVersionConfirmationModal from "./SaveAsNewVersionConfirmationModal";
 import LoadingOverlay from "react-loading-overlay";
+import inputValidator from "../../../helper/regExp/inputValidator";
 const reducer = (form, { type, value }) => {
   const formCopy = _cloneDeep(form);
   switch (type) {
@@ -70,7 +71,7 @@ const Edit = React.memo(() => {
   const formData = useSelector((state) => state.form.form);
   const [form, dispatchFormAction] = useReducer(reducer, _cloneDeep(formData));
   const errors = useSelector((state) => state.form.error);
-  const formHistory = useSelector((state)=> state.formRestore?.formHistory || []);
+  const formHistory = useSelector((state) => state.formRestore?.formHistory || []);
   const version = formHistory[0]?.changeLog?.version;
   const prviousData = useSelector((state) => state.process.formPreviousData);
   const applicationCount = useSelector(
@@ -101,6 +102,7 @@ const Edit = React.memo(() => {
   const [currentFormLoading, setCurrentFormLoading] = useState(false);
   const [saveAsNewVersionselected, setSaveAsNewVersion] = useState(false);
   const [confirmModalShow, setConfirmModalShow] = useState(false);
+  const [isValidName, setIsValidName] = useState(true);
   const handleClose = () => setShow(false);
   const handleShow = () => setShow(true);
   const handleConfirmModalChange = () => setConfirmModalShow(!confirmModalShow);
@@ -110,18 +112,18 @@ const Edit = React.memo(() => {
     saveFormData();
   };
 
-  useEffect(()=>{
-    if(processListData?.parentFormId && !formHistory.length){
-       getFormHistory(processListData?.parentFormId).then((res)=>{
-      dispatch(setFormHistories(res.data));
-    }).catch(()=>{
-      setFormHistories([]);
-    });
-  }
-  },[processListData]);
+  useEffect(() => {
+    if (processListData?.parentFormId && !formHistory.length) {
+      getFormHistory(processListData?.parentFormId).then((res) => {
+        dispatch(setFormHistories(res.data));
+      }).catch(() => {
+        setFormHistories([]);
+      });
+    }
+  }, [processListData]);
 
 
- 
+
 
   useEffect(() => {
     if (restoredFormId) {
@@ -173,6 +175,7 @@ const Edit = React.memo(() => {
 
   // setting the form data
   useEffect(() => {
+    setIsValidName(inputValidator(form.title));
     const newForm = formData;
     if (
       newForm &&
@@ -239,13 +242,13 @@ const Edit = React.memo(() => {
 
   const handleChooseOption = () => {
     if (saveAsNewVersionselected) {
-        setConfirmModalShow(true);
+      setConfirmModalShow(true);
     } else {
       saveFormWithDataChangeCheck();
     }
   };
 
-  const saveAsNewVersionOnCofirm = () =>{
+  const saveAsNewVersionOnCofirm = () => {
     setConfirmModalShow(false);
     saveAsNewVersion();
   };
@@ -280,7 +283,7 @@ const Edit = React.memo(() => {
       );
     }
   };
- 
+
 
   const setFormProcessDataToVariable = (submittedData) => {
     const data = {
@@ -303,7 +306,7 @@ const Edit = React.memo(() => {
     return data;
   };
 
-  const saveAsNewVersion = async() => {
+  const saveAsNewVersion = async () => {
     setFormSubmitted(true);
     const newFormData = manipulatingFormData(
       form,
@@ -323,7 +326,7 @@ const Edit = React.memo(() => {
     const newPathAndName = "-v" + Math.random().toString(16).slice(9);
     oldFormData.path += newPathAndName;
     oldFormData.name += newPathAndName;
-    await formUpdate(oldFormData._id,oldFormData);
+    await formUpdate(oldFormData._id, oldFormData);
     const previousformId = newFormData._id;
     newFormData.componentChanged = true;
     newFormData.newVersion = true;
@@ -342,8 +345,8 @@ const Edit = React.memo(() => {
         data.parentFormId = prviousData.parentFormId;
         Formio.cache = {};
         const prviousId = prviousData.id;
-        dispatch(saveFormProcessMapperPost(data,(err)=>{
-          if(!err){
+        dispatch(saveFormProcessMapperPost(data, (err) => {
+          if (!err) {
             dispatch(deleteFormProcessMapper(prviousId));
             dispatch(setFormSuccessData("form", submittedData));
             dispatch(setRestoreFormData({}));
@@ -389,7 +392,7 @@ const Edit = React.memo(() => {
             data["processKey"] = prviousData.processKey;
             data["processName"] = prviousData.processName;
             data.parentFormId = processListData.parentFormId;
-              dispatch(saveFormProcessMapperPost(data));
+            dispatch(saveFormProcessMapperPost(data));
           } else {
             // For hadling uploaded forms case.
 
@@ -462,13 +465,13 @@ const Edit = React.memo(() => {
     );
   }
 
-  return (
+ return (
     <div className="container">
       {
         saveAsNewVersionselected && confirmModalShow && (
-          <SaveAsNewVersionConfirmationModal modalOpen={confirmModalShow} 
-          handleModalChange={handleConfirmModalChange} 
-          onConfirm={saveAsNewVersionOnCofirm}/>
+          <SaveAsNewVersionConfirmationModal modalOpen={confirmModalShow}
+            handleModalChange={handleConfirmModalChange}
+            onConfirm={saveAsNewVersionOnCofirm} />
         )
       }
       <div className="d-flex align-items-center flex-wrap justify-content-between my-4 bg-light p-3">
@@ -507,7 +510,10 @@ const Edit = React.memo(() => {
           <button
             className="btn btn-primary"
             disabled={formSubmitted}
-            onClick={() => handleChooseOption()}
+            onClick={() => {
+              isValidName ? handleChooseOption() : toast.error(t("Please remove the special charcters"));
+
+            }}
           >
             {saveAsNewVersionselected ? saveNewVersion : saveText}
           </button>
@@ -528,8 +534,8 @@ const Edit = React.memo(() => {
           <Modal.Body>
             {t(
               "Changing the form title will not affect the existing applications. " +
-                "It will only update in the newly created applications. Press Save " +
-                "Changes to continue or cancel the changes."
+              "It will only update in the newly created applications. Press Save " +
+              "Changes to continue or cancel the changes."
             )}
           </Modal.Body>
           <Modal.Footer>
@@ -546,146 +552,25 @@ const Edit = React.memo(() => {
           spinner
           text={t("Loading...")}
         >
-        <div className="row">
-          <div className="col-lg-4 col-md-4 col-sm-4">
-            <div id="form-group-title" className="form-group">
-              <label htmlFor="title" className="control-label field-required">
-                <Translation>{(t) => t("Title")}</Translation>
-              </label>
-              <input
-                type="text"
-                className="form-control"
-                id="title"
-                placeholder={t("Enter the form title")}
-                value={form.title || ""}
-                onChange={(event) => handleChange("title", event)}
-              />
-            </div>
-          </div>
-          <div className="col-lg-4 col-md-4 col-sm-4">
-            <div id="form-group-name" className="form-group">
-              <label htmlFor="name" className="control-label field-required">
-                <Translation>{(t) => t("Name")}</Translation>
-                {addingTenantKeyInformation("name")}
-              </label>
-              <div className="input-group mb-2">
-                {MULTITENANCY_ENABLED && tenantKey ? (
-                  <div className="input-group-prepend">
-                    <div
-                      className="input-group-text"
-                      style={{ maxWidth: "150px" }}
-                    >
-                      <span className="text-truncate">{tenantKey}</span>
-                    </div>
-                  </div>
-                ) : (
-                  ""
-                )}
+          <div className="row">
+            <div className="col-lg-4 col-md-4 col-sm-4">
+              <div id="form-group-title" className="form-group">
+                <label htmlFor="title" className="control-label field-required">
+                  <Translation>{(t) => t("Title")}</Translation>
+                </label>
                 <input
+                  style={{ color: `${!isValidName ? "red" : ''}` }}
                   type="text"
                   className="form-control"
-                  id="name"
-                  placeholder={t("Enter the form machine name")}
-                  value={form.name || ""}
-                  onChange={(event) => handleChange("name", event)}
-                />
-              </div>
-            </div>
-          </div>
-          <div className="col-lg-4 col-md-3 col-sm-3">
-            <div id="form-group-display" className="form-group">
-              <label htmlFor="name" className="control-label">
-                <Translation>{(t) => t("Display as")}</Translation>
-              </label>
-              <div className="input-group">
-                <select
-                  className="form-control"
-                  name="form-display"
-                  id="form-display"
-                  value={form.display || ""}
-                  onChange={(event) => handleChange("display", event)}
-                >
-                  <option label="Form" value="form">
-                    <Translation>{(t) => t("Form")}</Translation>
-                  </option>
-                  <option label="Wizard" value="wizard">
-                    <Translation>{(t) => t("wizard")}</Translation>
-                  </option>
-                </select>
-              </div>
-            </div>
-          </div>
-          <div className="col-lg-4 col-md-3 col-sm-3">
-            <div id="form-group-type" className="form-group">
-              <label htmlFor="form-type" className="control-label">
-                <Translation>{(t) => t("Type")}</Translation>
-              </label>
-              <div className="input-group">
-                <select
-                  className="form-control"
-                  name="form-type"
-                  id="form-type"
-                  value={form.type}
-                  onChange={(event) => handleChange("type", event)}
-                >
-                  <option label="Form" value="form">
-                    <Translation>{(t) => t("form")}</Translation>
-                  </option>
-                  <option label="Resource" value="resource">
-                    {t("Resource")}
-                  </option>
-                </select>
-              </div>
-            </div>
-          </div>
-          <div className="col-lg-4 col-md-4 col-sm-4">
-            <div id="form-group-path" className="form-group">
-              <label htmlFor="path" className="control-label field-required">
-                <Translation>{(t) => t("Path")}</Translation>
-                {addingTenantKeyInformation("path")}
-              </label>
-              <div className="input-group mb-2">
-                {MULTITENANCY_ENABLED && tenantKey ? (
-                  <div className="input-group-prepend">
-                    <div
-                      className="input-group-text"
-                      style={{ maxWidth: "150px" }}
-                    >
-                      <span className="text-truncate">{tenantKey}</span>
-                    </div>
-                  </div>
-                ) : (
-                  ""
-                )}
-                <input
-                  type="text"
-                  className="form-control"
-                  id="path"
-                  placeholder="example"
-                  style={{ textTransform: "lowercase", width: "120px" }}
-                  value={form.path || ""}
-                  onChange={(event) => handleChange("path", event)}
-                />
-              </div>
-            </div>
-          </div>
-          <div className="col-lg-4 col-md-4 col-sm-4">
-            <div id="form-group-path" className="form-group">
-              <label htmlFor="path" className="control-label "></label>
-              <div className="input-group">
-                <FormControlLabel
-                  control={
-                    <Checkbox
-                      checked={processListData.anonymous || false}
-                      color="primary"
-                      aria-label="Publish"
-                      onChange={() => {
-                        changeAnonymous();
-                      }}
-                    />
+                  id="title"
+                  placeholder={t("Enter the form title")}
+                  value={form.title || ""}
+                  onBlur={(event) => setIsValidName(inputValidator(event.target.value))}
+                  onChange={(event) => {
+                    event.target.name === '' ? setIsValidName(true) : '';
+                    handleChange("title", event);
                   }
-                  label={t("Make this form public ?")}
-                  labelPlacement="start"
+                  }
                 />
                 <FormControlLabel
                   control={
@@ -704,16 +589,15 @@ const Edit = React.memo(() => {
               </div>
             </div>
           </div>
-        </div>
-        <FormBuilder
-          key={form._id}
-          form={form}
-          onChange={formChange}
-          options={{
-            language: lang,
-            i18n: formio_resourceBundles,
-          }}
-        />
+          <FormBuilder
+            key={form._id}
+            form={form}
+            onChange={formChange}
+            options={{
+              language: lang,
+              i18n: formio_resourceBundles,
+            }}
+          />
         </LoadingOverlay>
       </div>
     </div>

@@ -8,7 +8,6 @@ import TableRow from "@material-ui/core/TableRow";
 import { withStyles } from "@material-ui/styles";
 import { useSelector } from "react-redux";
 import { MULTITENANCY_ENABLED } from "../../../constants/constants";
-
 const StyledTableCell = withStyles(() => ({
   head: {
     backgroundColor: "#4559b5",

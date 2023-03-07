@@ -35,7 +35,7 @@ export const RESOURCE_BUNDLES_DE = {
   "Enter Label":"Bezeichnung eingeben",
   "Select form field":"Formularfeld auswählen",
   "Add form fields to display in task list":"Fügen Sie Formularfelder zur Anzeige in der Aufgabenliste hinzu",
-  "Version":"Ausführung",
+  "Latest Version":"Letzte Version",
   "Submission Status":"Submission Status",
   "No submission status":"Kein Übermittlungsstatus",
   "No Public url found":"Keine öffentliche URL gefunden",

@@ -56,8 +56,6 @@ import filterFactory from "react-bootstrap-table2-filter";
 import overlayFactory from "react-bootstrap-table2-overlay";
 import { SpinnerSVG } from "../../containers/SpinnerSVG";
 import { getFormattedForm, INACTIVE } from "./constants/formListConstants";
-import inputValidator from '../../helper/regExp/inputValidator';
-
 const List = React.memo((props) => {
   const { t } = useTranslation();
   const [showFormUploadModal, setShowFormUploadModal] = useState(false);
@@ -85,7 +83,6 @@ const List = React.memo((props) => {
   const [isAscend, setIsAscending] = useState(true);
   const searchText = useSelector((state) => state.bpmForms.searchText);
   const [searchTextInput, setSearchTextInput] = useState(searchText);
-  const [isSearchValid, setIsSearchValid] = useState(true);
   const [isLoading, setIsLoading] = React.useState(false);
 
   const formType = useSelector((state) => state.bpmForms.formType);
@@ -200,7 +197,7 @@ const List = React.memo((props) => {
     dispatch(setBPMFormListPage(newState.page));
   };
   const handleSearch = () => {
-    if (searchText != searchInputBox.current.value && isSearchValid) {
+    if (searchText != searchInputBox.current.value) {
       searchInputBox.current.value === '' ? dispatch(setBPMFormLimit(5)) : '';
       dispatch(setBPMFormListPage(1));
       dispatch(setBpmFormSearch(searchInputBox.current.value));
@@ -213,7 +210,6 @@ const List = React.memo((props) => {
     dispatch(setBpmFormType(type));
   };
   const onClear = () => {
-    setIsSearchValid(true);
     setSearchTextInput("");
     dispatch(setBpmFormSearch(''));
     dispatch(setBPMFormLimit(5));
@@ -600,14 +596,11 @@ const List = React.memo((props) => {
                   </span>
                   <div className="form-outline ml-3">
                     <input
-                      style={{ color: `${!isSearchValid ? "red" : ''}` }}
                       type="search"
                       id="form1"
                       ref={searchInputBox}
                       onKeyPress={(e) => e.key === "Enter" && handleSearch()}
-                      onBlur={(e) => setIsSearchValid(inputValidator(e.target.value))}
                       onChange={(e) => {
-                        e.target.name === '' ? setIsSearchValid(true) : '';
                         setShowClearButton(e.target.value);
                         setSearchTextInput(e.target.value);
                         e.target.value === "" && handleSearch();
@@ -629,12 +622,12 @@ const List = React.memo((props) => {
                   )}
                   <button
                     type="button"
-                    className={`${!isSearchValid ? 'btn bg-transparent ml-2 searchInvalid' : 'btn btn-outline-primary ml-2'}`}
+                    className='btn btn-outline-primary ml-2'
                     name="search-button"
-                    title={t(`${!isSearchValid ? "Kindly remove the special charactors...!" : "Click to search"}`)}
+                    title="Click to search"
                     onClick={() => handleSearch()}
                   >
-                    <i className="fa fa-search" style={{ color: `${!isSearchValid ? 'red' : ''}` }} ></i>
+                    <i className="fa fa-search" ></i>
                   </button>
                   {isDesigner ? (
                     <select
@@ -663,7 +656,6 @@ const List = React.memo((props) => {
                 </div>
               </div>
             </div>
-            {!isSearchValid && <span className="validation-err">Please remove the special charactors...!</span>}
             <ToolkitProvider
               bootstrap4
               keyField="id"

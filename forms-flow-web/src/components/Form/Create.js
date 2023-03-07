@@ -21,7 +21,6 @@ import {
 import { addTenantkey } from "../../helper/helper";
 import { formCreate } from "../../apiManager/services/FormServices";
 import { Checkbox, FormControlLabel } from "@material-ui/core";
-import inputValidator from '../../helper/regExp/inputValidator';
 // reducer from react-formio code
 const reducer = (form, { type, value }) => {
   const formCopy = _cloneDeep(form);
@@ -60,7 +59,6 @@ const Create = React.memo(() => {
   const formAccess = useSelector((state) => state.user?.formAccess || []);
   const roleIds = useSelector((state) => state.user?.roleIds || {});
   const [formSubmitted, setFormSubmitted] = useState(false);
-  const [isValidName, setIsValidName] = useState(true);
   const submissionAccess = useSelector((state) => state.user?.submissionAccess || []);
   const redirectUrl = MULTITENANCY_ENABLED ? `/tenant/${tenantKey}/` : "/";
 
@@ -203,10 +201,7 @@ const Create = React.memo(() => {
         <h2>
           <Translation>{(t) => t("Create Form")}</Translation>
         </h2>
-        <button className="btn btn-primary" disabled={formSubmitted} onClick={() => {
-          isValidName ? saveFormData() : toast.error(t("Please remove the special charcters"));
-        }
-        }>
+        <button className="btn btn-primary" disabled={formSubmitted} onClick={() => saveFormData()}>
           {saveText}
         </button>
 
@@ -221,29 +216,22 @@ const Create = React.memo(() => {
             <div id="form-group-title" className="form-group">
               <label htmlFor="title" className="control-label field-required">
                 {" "}
-               {t("Title")}
+                {t("Title")}
               </label>
               <input
-                style={{ color: `${!isValidName ? "red" : ''}` }}
                 type="text"
                 className="form-control"
                 id="title"
                 placeholder={t("Enter the form title")}
                 value={form.title || ""}
-                onBlur={(event) => setIsValidName(inputValidator(event.target.value))}
-                onChange={(event) => {
-                  event.target.name === '' ? setIsValidName(true) : '';
-                  handleChange("title", event);
-                }
-                }
+                onChange={(event) => handleChange("title", event)}
               />
-              {!isValidName && <span className="validation-err" style={{ marginLeft: "0px" }}>Please remove the special charactors...!</span>}
             </div>
           </div>
           <div className="col-lg-4 col-md-4 col-sm-4">
             <div id="form-group-name" className="form-group">
               <label htmlFor="name" className="control-label field-required">
-               {t("Name")}
+                {t("Name")}
                 {addingTenantKeyInformation("name")}
               </label>
               <div className="input-group mb-2">
@@ -271,7 +259,7 @@ const Create = React.memo(() => {
           <div className="col-lg-4 col-md-3 col-sm-3">
             <div id="form-group-display" className="form-group">
               <label htmlFor="name" className="control-label">
-               {t("Display as")}
+                {t("Display as")}
               </label>
               <div className="input-group">
                 <select
@@ -282,7 +270,7 @@ const Create = React.memo(() => {
                   onChange={(event) => handleChange("display", event)}
                 >
                   <option label={t("Form")} value="form">
-                   {t("Form")}
+                    {t("Form")}
                   </option>
                   <option label={t("Wizard")} value="wizard">
                     {t("Wizard")}

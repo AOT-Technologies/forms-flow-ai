@@ -79,7 +79,7 @@ const View = React.memo((props) => {
             url={url}
             hideComponents={hideComponents}
             onSubmit={onSubmit}
-            options={{ ...options, i18n: formio_resourceBundles }}
+            options={{ ...options, i18n: formio_resourceBundles, viewAsHtml: true }}
           />
         </div>
       </LoadingOverlay>

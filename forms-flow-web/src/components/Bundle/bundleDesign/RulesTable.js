@@ -17,8 +17,8 @@ const StyledTableCell = withStyles(() => ({
     fontSize:"1rem",
   }
 }))(TableCell);
-const RulesTable = ({bundleRules = [],handleModalChange,
-  selectEditRule,deleteRule}) => {
+const RulesTable = ({selectedForms = [],handleModalChange,
+  selectRuleForEdit,deleteRule}) => {
   return (
     <TableContainer style={{ border: "1px solid #dbdbdb" }}>
     <Table aria-label="simple table">
@@ -34,24 +34,27 @@ const RulesTable = ({bundleRules = [],handleModalChange,
       </TableHead>
       <TableBody>
  
-        {bundleRules?.map((rule, index) => (
-          <TableRow key={rule.id}>
+        {selectedForms?.map((form, index) => {
+          return form.rules?.length > 0 ?  (
+            <TableRow key={index}>
             <StyledTableCell>{index + 1}</StyledTableCell>
-            <StyledTableCell>{rule.formName}</StyledTableCell>
-            <StyledTableCell>{rule.criteria?.join(",")}</StyledTableCell>
-            <StyledTableCell>{rule.action}</StyledTableCell>
+            <StyledTableCell>{form.formName}</StyledTableCell>
+            <StyledTableCell>{form.rules?.join(",")}</StyledTableCell>
+            <StyledTableCell>{form.action}</StyledTableCell>
             <StyledTableCell align="right">
-              <button className="btn btn-sm btn-outline-primary mr-2" onClick={()=>{selectEditRule(rule);}}>
+              <button className="btn btn-sm btn-outline-primary mr-2" onClick={()=>{selectRuleForEdit(form);}}>
               <i className="fa fa-pencil " aria-hidden="true"></i>
               </button>
-              <button className="btn btn-sm btn-outline-danger" onClick={()=>{deleteRule(rule.formId);}}>
+              <button className="btn btn-sm btn-outline-danger" onClick={()=>{deleteRule(form.mapperId);}}>
                 <i className="fa fa-trash-o" aria-hidden="true"></i>
               </button>
             </StyledTableCell>
  
           </TableRow>
-        ))}
-        {!bundleRules?.length ? (
+          ) : "";
+        })
+        }
+        {!selectedForms.some((i)=> i.rules?.length > 0) ? (
           <TableRow>
             <TableCell align="center" colSpan="8">
               <h3>No Rules</h3>

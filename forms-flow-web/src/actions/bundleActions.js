@@ -7,12 +7,7 @@ export const setBundleSelectedForms = (data) => (dispatch) => {
     });
   };
 
-  export const setBundleRules = (data) => (dispatch) => {
-      dispatch({
-        type: ACTION_CONSTANTS.BUNDLE_RULES,
-        payload: data,
-      });
-    };
+ 
 
   
 export const setBundleForms = (data) => (dispatch) => {

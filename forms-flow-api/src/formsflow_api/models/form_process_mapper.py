@@ -53,7 +53,7 @@ class FormProcessMapper(AuditDateTimeMixin, AuditUserMixin, BaseModel, db.Model)
     version = db.Column(db.Integer, nullable=False, default=1)
     can_bundle = db.Column(db.Boolean, nullable=False, default=False)
     is_bundle = db.Column(db.Boolean, nullable=False, default=False)
-    description = db.Column(db.String(300), nullable=True)
+    description = db.Column(db.String, nullable=True)
 
     __table_args__ = (
         UniqueConstraint("form_id", "version", "tenant", name="_form_version_uc"),

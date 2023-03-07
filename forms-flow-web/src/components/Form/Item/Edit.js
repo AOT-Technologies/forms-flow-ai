@@ -586,6 +586,135 @@ const Edit = React.memo(() => {
                   label={"can bundle ?"}
                   labelPlacement="start"
                 />
+                {!isValidName && <span className="validation-err" style={{ marginLeft: "0px" }}>Please remove the special charactors...!</span>}
+              </div>
+            </div>
+            <div className="col-lg-4 col-md-4 col-sm-4">
+              <div id="form-group-name" className="form-group">
+                <label htmlFor="name" className="control-label field-required">
+                  <Translation>{(t) => t("Name")}</Translation>
+                  {addingTenantKeyInformation("name")}
+                </label>
+                <div className="input-group mb-2">
+                  {MULTITENANCY_ENABLED && tenantKey ? (
+                    <div className="input-group-prepend">
+                      <div
+                        className="input-group-text"
+                        style={{ maxWidth: "150px" }}
+                      >
+                        <span className="text-truncate">{tenantKey}</span>
+                      </div>
+                    </div>
+                  ) : (
+                    ""
+                  )}
+                  <input
+                    type="text"
+                    className="form-control"
+                    id="name"
+                    placeholder={t("Enter the form machine name")}
+                    value={form.name || ""}
+                    onChange={(event) => handleChange("name", event)}
+                  />
+                </div>
+              </div>
+            </div>
+            <div className="col-lg-4 col-md-3 col-sm-3">
+              <div id="form-group-display" className="form-group">
+                <label htmlFor="name" className="control-label">
+                  <Translation>{(t) => t("Display as")}</Translation>
+                </label>
+                <div className="input-group">
+                  <select
+                    className="form-control"
+                    name="form-display"
+                    id="form-display"
+                    value={form.display || ""}
+                    onChange={(event) => handleChange("display", event)}
+                  >
+                    <option label="Form" value="form">
+                      <Translation>{(t) => t("Form")}</Translation>
+                    </option>
+                    <option label="Wizard" value="wizard">
+                      <Translation>{(t) => t("wizard")}</Translation>
+                    </option>
+                  </select>
+                </div>
+              </div>
+            </div>
+            <div className="col-lg-4 col-md-3 col-sm-3">
+              <div id="form-group-type" className="form-group">
+                <label htmlFor="form-type" className="control-label">
+                  <Translation>{(t) => t("Type")}</Translation>
+                </label>
+                <div className="input-group">
+                  <select
+                    className="form-control"
+                    name="form-type"
+                    id="form-type"
+                    value={form.type}
+                    onChange={(event) => handleChange("type", event)}
+                  >
+                    <option label="Form" value="form">
+                      <Translation>{(t) => t("form")}</Translation>
+                    </option>
+                    <option label="Resource" value="resource">
+                      {t("Resource")}
+                    </option>
+                  </select>
+                </div>
+              </div>
+            </div>
+            <div className="col-lg-4 col-md-4 col-sm-4">
+              <div id="form-group-path" className="form-group">
+                <label htmlFor="path" className="control-label field-required">
+                  <Translation>{(t) => t("Path")}</Translation>
+                  {addingTenantKeyInformation("path")}
+                </label>
+                <div className="input-group mb-2">
+                  {MULTITENANCY_ENABLED && tenantKey ? (
+                    <div className="input-group-prepend">
+                      <div
+                        className="input-group-text"
+                        style={{ maxWidth: "150px" }}
+                      >
+                        <span className="text-truncate">{tenantKey}</span>
+                      </div>
+                    </div>
+                  ) : (
+                    ""
+                  )}
+                  <input
+                    type="text"
+                    className="form-control"
+                    id="path"
+                    placeholder="example"
+                    style={{ textTransform: "lowercase", width: "120px" }}
+                    value={form.path || ""}
+                    onChange={(event) => handleChange("path", event)}
+                  />
+                </div>
+              </div>
+            </div>
+            <div className="col-lg-4 col-md-4 col-sm-4">
+              <div id="form-group-path" className="form-group">
+                <label htmlFor="path" className="control-label "></label>
+                <div className="input-group">
+                  <FormControlLabel
+                    control={
+                      <Checkbox
+                        checked={processListData.anonymous || false}
+                        color="primary"
+                        aria-label="Publish"
+                        onChange={() => {
+                          changeAnonymous();
+                        }}
+                      />
+                    }
+                    label={t("Make this form public ?")}
+                    labelPlacement="start"
+                  />
+                </div>
               </div>
             </div>
           </div>

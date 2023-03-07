@@ -221,7 +221,7 @@ const Create = React.memo(() => {
             <div id="form-group-title" className="form-group">
               <label htmlFor="title" className="control-label field-required">
                 {" "}
-               {t("Title")}
+                {t("Title")}
               </label>
               <input
                 style={{ color: `${!isValidName ? "red" : ''}` }}
@@ -230,9 +230,9 @@ const Create = React.memo(() => {
                 id="title"
                 placeholder={t("Enter the form title")}
                 value={form.title || ""}
-                onBlur={(event) => setIsValidName(inputValidator(event.target.value))}
                 onChange={(event) => {
-                  event.target.name === '' ? setIsValidName(true) : '';
+                  setIsValidName(inputValidator(event.target.value));
+                  event.target.value === '' ? setIsValidName(true) : '';
                   handleChange("title", event);
                 }
                 }
@@ -243,7 +243,7 @@ const Create = React.memo(() => {
           <div className="col-lg-4 col-md-4 col-sm-4">
             <div id="form-group-name" className="form-group">
               <label htmlFor="name" className="control-label field-required">
-               {t("Name")}
+                {t("Name")}
                 {addingTenantKeyInformation("name")}
               </label>
               <div className="input-group mb-2">
@@ -271,7 +271,7 @@ const Create = React.memo(() => {
           <div className="col-lg-4 col-md-3 col-sm-3">
             <div id="form-group-display" className="form-group">
               <label htmlFor="name" className="control-label">
-               {t("Display as")}
+                {t("Display as")}
               </label>
               <div className="input-group">
                 <select
@@ -282,7 +282,7 @@ const Create = React.memo(() => {
                   onChange={(event) => handleChange("display", event)}
                 >
                   <option label={t("Form")} value="form">
-                   {t("Form")}
+                    {t("Form")}
                   </option>
                   <option label={t("Wizard")} value="wizard">
                     {t("Wizard")}

@@ -547,9 +547,9 @@ const Edit = React.memo(() => {
                   id="title"
                   placeholder={t("Enter the form title")}
                   value={form.title || ""}
-                  onBlur={(event) => setIsValidName(inputValidator(event.target.value))}
                   onChange={(event) => {
-                    event.target.name === '' ? setIsValidName(true) : '';
+                    setIsValidName(inputValidator(event.target.value));
+                    event.target.value === '' ? setIsValidName(true) : '';
                     handleChange("title", event);
                   }
                   }

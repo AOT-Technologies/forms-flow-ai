@@ -87,7 +87,6 @@ const List = React.memo((props) => {
   const [searchTextInput, setSearchTextInput] = useState(searchText);
   const [isSearchValid, setIsSearchValid] = useState(true);
   const [isLoading, setIsLoading] = React.useState(false);
-
   const formType = useSelector((state) => state.bpmForms.formType);
 
 
@@ -600,14 +599,13 @@ const List = React.memo((props) => {
                   </span>
                   <div className="form-outline ml-3">
                     <input
-                      style={{ color: `${!isSearchValid ? "red" : ''}` }}
+                      // style={{ color: `${!isSearchValid ? "red" : ''}` }}
                       type="search"
                       id="form1"
                       ref={searchInputBox}
                       onKeyPress={(e) => e.key === "Enter" && handleSearch()}
-                      onBlur={(e) => setIsSearchValid(inputValidator(e.target.value))}
                       onChange={(e) => {
-                        e.target.name === '' ? setIsSearchValid(true) : '';
+                        setIsSearchValid(inputValidator(searchInputBox.current.value));
                         setShowClearButton(e.target.value);
                         setSearchTextInput(e.target.value);
                         e.target.value === "" && handleSearch();
@@ -629,12 +627,12 @@ const List = React.memo((props) => {
                   )}
                   <button
                     type="button"
-                    className={`${!isSearchValid ? 'btn bg-transparent ml-2 searchInvalid' : 'btn btn-outline-primary ml-2'}`}
+                    className='btn btn-outline-primary ml-2'
                     name="search-button"
                     title={t(`${!isSearchValid ? "Kindly remove the special charactors...!" : "Click to search"}`)}
                     onClick={() => handleSearch()}
                   >
-                    <i className="fa fa-search" style={{ color: `${!isSearchValid ? 'red' : ''}` }} ></i>
+                    <i className="fa fa-search"></i>
                   </button>
                   {isDesigner ? (
                     <select
@@ -663,7 +661,7 @@ const List = React.memo((props) => {
                 </div>
               </div>
             </div>
-            {!isSearchValid && <span className="validation-err">Please remove the special charactors...!</span>}
+            {/* {!isSearchValid && <span className="validation-err">Please remove the special charactors...!</span>} */}
             <ToolkitProvider
               bootstrap4
               keyField="id"
@@ -679,7 +677,7 @@ const List = React.memo((props) => {
                       spinner
                       text={t("Loading...")}
                     >
-                      <BootstrapTable
+                      {isSearchValid ? <BootstrapTable
                         remote={{
                           pagination: true,
                           filter: true,
@@ -707,7 +705,7 @@ const List = React.memo((props) => {
                             }),
                           },
                         })}
-                      />
+                      /> : noDataFound()}
                     </LoadingOverlay>
                   </div>
                 );

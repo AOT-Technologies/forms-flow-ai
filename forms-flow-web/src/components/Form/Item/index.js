@@ -12,7 +12,7 @@ import {
 import View from "./View";
 import Edit from "./Edit";
 import Submission from "./Submission/index";
-import Preview from "./Preview";
+import FormView from "./FormView";
 import { checkIsObjectId } from "../../../apiManager/services/formatterService";
 import { fetchFormByAlias } from "../../../apiManager/services/bpmFormServices";
 import {
@@ -95,7 +95,7 @@ const Item = React.memo(() => {
         <Route exact path={`${BASE_ROUTE}form/:formId`} component={View} />
         <FormActionRoute
           path={`${BASE_ROUTE}form/:formId/preview`}
-          component={Preview}
+          component={FormView}
         />
         <FormActionRoute
           path={`${BASE_ROUTE}form/:formId/edit`}

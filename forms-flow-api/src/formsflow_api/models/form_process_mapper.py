@@ -51,6 +51,9 @@ class FormProcessMapper(AuditDateTimeMixin, AuditUserMixin, BaseModel, db.Model)
     deleted = db.Column(db.Boolean, nullable=True, default=False)
     task_variable = db.Column(JSON, nullable=True)
     version = db.Column(db.Integer, nullable=False, default=1)
+    can_bundle = db.Column(db.Boolean, nullable=False, default=False)
+    is_bundle = db.Column(db.Boolean, nullable=False, default=False)
+    description = db.Column(db.String, nullable=True)
 
     __table_args__ = (
         UniqueConstraint("form_id", "version", "tenant", name="_form_version_uc"),
@@ -76,6 +79,7 @@ class FormProcessMapper(AuditDateTimeMixin, AuditUserMixin, BaseModel, db.Model)
                 mapper.is_anonymous = mapper_info.get("is_anonymous")
                 mapper.task_variable = mapper_info.get("task_variable")
                 mapper.version = mapper_info.get("version")
+                mapper.can_bundle = mapper_info.get("can_bundle")
                 mapper.save()
                 return mapper
         except Exception as err:  # pylint: disable=broad-except
@@ -102,6 +106,7 @@ class FormProcessMapper(AuditDateTimeMixin, AuditUserMixin, BaseModel, db.Model)
                 "is_anonymous",
                 "task_variable",
                 "process_tenant",
+                "can_bundle",
             ],
             mapper_info,
         )
@@ -198,6 +203,8 @@ class FormProcessMapper(AuditDateTimeMixin, AuditUserMixin, BaseModel, db.Model)
             cls.process_key,
             cls.form_id,
             cls.form_name,
+            cls.form_type,
+            cls.status,
         )
         limit = total_count if limit is None else limit
         query = query.paginate(page=page_number, per_page=limit, error_out=False)

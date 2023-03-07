@@ -63,7 +63,8 @@ const Create = React.memo(() => {
   const [isValidName, setIsValidName] = useState(true);
   const submissionAccess = useSelector((state) => state.user?.submissionAccess || []);
   const redirectUrl = MULTITENANCY_ENABLED ? `/tenant/${tenantKey}/` : "/";
-
+  const [canBundle, setCanBundle] = useState(false);
+  
   const { t } = useTranslation();
   useEffect(() => {
     dispatch(clearFormError("form"));
@@ -156,8 +157,10 @@ const Create = React.memo(() => {
         anonymousChanged: true,
         parentFormId: form._id,
         titleChanged: true,
+        canBundle:canBundle,
         formRevisionNumber: "V1", // to do
         anonymous: formAccess[0]?.roles.includes(roleIds.ANONYMOUS),
+         
       };
       dispatch(setFormSuccessData("form", form));
       dispatch(
@@ -361,6 +364,21 @@ const Create = React.memo(() => {
                     />
                   }
                   label={t("Make this form public ?")}
+                  labelPlacement="start"
+                />
+                <FormControlLabel
+                  control={
+                    <Checkbox
+                      checked={canBundle}
+                      id="bundle"
+                      color="primary"
+                      aria-label="Publish"
+                      onChange={() => {
+                        setCanBundle(!canBundle);
+                      }}
+                    />
+                  }
+                  label={t("can bundle?")}
                   labelPlacement="start"
                 />
               </div>

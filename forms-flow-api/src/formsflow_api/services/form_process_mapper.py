@@ -23,6 +23,8 @@ class FormProcessMapperService:
         sort_by: str,
         sort_order: str,
         form_type: str,
+        can_bundle: str,
+        is_bundle: str,
     ):  # pylint: disable=too-many-arguments
         """Get all forms."""
         mappers, get_all_mappers_count = FormProcessMapper.find_all_forms(
@@ -32,6 +34,8 @@ class FormProcessMapperService:
             sort_by=sort_by,
             sort_order=sort_order,
             form_type=form_type,
+            can_bundle=can_bundle,
+            is_bundle=is_bundle,
         )
         mapper_schema = FormProcessMapperSchema()
         return (

@@ -7,7 +7,7 @@ from flask_restx import Namespace, Resource
 from formsflow_api_utils.utils import auth, cors_preflight, profiletime
 
 from formsflow_api.schemas import FormBundleProcessMapperSchema
-from formsflow_api.services import FormBundleService
+from formsflow_api.services import FormBundleService, FormProcessMapperService
 
 API = Namespace("bundle", description="Bundle flow")
 
@@ -74,9 +74,12 @@ class BundleList(Resource):
         try:
             mapper_schema = FormBundleProcessMapperSchema()
             mapper_data = mapper_schema.load(mapper_json)
+            mapper_id = FormProcessMapperService.create_mapper(mapper_data)
+            for form in mapper_data["selected_forms"]:
+                form["formProcessMapperId"] = mapper_id.id
             response = FormBundleService.create_bundle(mapper_data)
             return (
-                {"BundleId": response},
+                {"BundleId": mapper_id.id},
                 HTTPStatus.CREATED,
             )
         except BaseException as err:  # pylint: disable=broad-except

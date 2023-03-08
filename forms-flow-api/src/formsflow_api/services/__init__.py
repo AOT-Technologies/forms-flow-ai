@@ -9,6 +9,7 @@ from formsflow_api.services.draft import DraftService
 from formsflow_api.services.external.analytics_api import RedashAPIService
 from formsflow_api.services.external.keycloak import KeycloakAdminAPIService
 from formsflow_api.services.filter import FilterService
+from formsflow_api.services.form_bundling import FormBundleService
 from formsflow_api.services.form_embed import CombineFormAndApplicationCreate
 from formsflow_api.services.form_history_logs import FormHistoryService
 from formsflow_api.services.form_process_mapper import FormProcessMapperService
@@ -31,4 +32,5 @@ __all__ = [
     "FormHistoryService",
     "CombineFormAndApplicationCreate",
     "RuleEngine",
+    "FormBundleService",
 ]

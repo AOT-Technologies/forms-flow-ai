@@ -16,6 +16,7 @@ from formsflow_api.schemas.application_history import ApplicationHistorySchema
 from formsflow_api.schemas.draft import DraftListSchema, DraftSchema
 from formsflow_api.schemas.filter import FilterSchema
 from formsflow_api.schemas.form_process_mapper import (
+    FormBundleProcessMapperSchema,
     FormProcessMapperListReqSchema,
     FormProcessMapperListRequestSchema,
     FormProcessMapperSchema,

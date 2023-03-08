@@ -2,6 +2,8 @@
 
 from marshmallow import EXCLUDE, Schema, fields
 
+from formsflow_api.schemas.form_bundling import SelectedFormSchema
+
 
 class FormProcessMapperSchema(Schema):
     """This class manages form process mapper request and response schema."""
@@ -54,5 +56,16 @@ class FormProcessMapperListRequestSchema(FormProcessMapperListReqSchema):
     sort_by = fields.Str(data_key="sortBy", required=False)
     sort_order = fields.Str(data_key="sortOrder", required=False)
     form_type = fields.Str(data_key="formType", required=False)
-    can_bundle = fields.Boolean(data_key="canBundle", required=False)
-    is_bundle = fields.Boolean(data_key="isBundle", required=False)
+
+
+class FormBundleProcessMapperSchema(Schema):
+    """This class manages form bundle processmapper schema."""
+
+    form_name = fields.Str(data_key="formName", required=False)
+    description = fields.Str(data_key="description", required=False)
+    form_id = fields.Str(data_key="formId", required=True)
+    form_type = fields.Str(data_key="formType", required=False)
+    parent_form_id = fields.Str(data_key="parentFormId")
+    selected_forms = fields.List(
+        fields.Nested(SelectedFormSchema), data_key="selectedForms", required=True
+    )

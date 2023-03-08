@@ -36,10 +36,10 @@ const PreviewAndConfirm = React.memo(
           alignItems="baseline"
           spacing={3}
         >
-          <Grid item xs={12} sm={1} spacing={3}></Grid>
-          <Grid item xs={12} sm={8} spacing={3} />
-          <Grid item xs={12} sm={3} className="next-btn">
-            <SaveNext
+      
+          <div>
+            <h2>{bundleData.bundleName}</h2>
+          <SaveNext
               handleBack={handleBack}
               handleNext={handleNext}
               activeStep={activeStep}
@@ -47,7 +47,8 @@ const PreviewAndConfirm = React.memo(
               submitData={submitData}
               isLastStep={true}
             />
-          </Grid>
+          </div>
+        
           <Grid item xs={12} sm={8} spacing={3} disabled={false}>
             <Card variant="outlined">
               <CardContent>
@@ -114,7 +115,7 @@ const PreviewAndConfirm = React.memo(
               </CardContent>
             </Card>
           </Grid>
-        </Grid>
+       </Grid>
       </div>
     );
   }

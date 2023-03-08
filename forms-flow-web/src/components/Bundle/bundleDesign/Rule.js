@@ -1,48 +1,73 @@
-import React from 'react';
-import { useState } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
-import { setBundleRules } from '../../../actions/bundleActions';
-import RuleCreateModal from './RuleCreateModal';
-import RulesTable from './RulesTable';
+import React from "react";
+import { useState } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import { setBundleSelectedForms } from "../../../actions/bundleActions";
+import RuleCreateModal from "./RuleCreateModal";
+import RulesTable from "./RulesTable";
 
 const Rule = () => {
-    const dispatch = useDispatch();
-    const bundleRules = useSelector((state)=> state.bundle?.rules || []);
-    const [selectedRule, setSelectedRule] = useState(null);
-    const [showRulesModal,setShowRulesModal] = useState(false);
+  const dispatch = useDispatch();
+  const bundleSelectedForms = useSelector(
+    (state) => state.bundle?.selectedForms || []
+  );
+  const [selectedEditRule, setSelectedEditRule] = useState(null);
+  const [showRulesModal, setShowRulesModal] = useState(false);
+  const handleModalChange = () => {
+    // when close the modal if using submit or close button then clear the selectedRule value
+    if (showRulesModal) {
+      setSelectedEditRule(null);
+    }
+    setShowRulesModal(!showRulesModal);
+  };
+  const saveRule = (newRule, mapperId) => {
+    dispatch(
+      setBundleSelectedForms(
+        bundleSelectedForms.map((i) => {
+          if (
+            selectedEditRule &&
+            selectedEditRule.mapperId !== mapperId &&
+            i.mapperId === selectedEditRule.mapperId
+          ) {
+            return { ...i, rules: [], action: null };
+          } else if (mapperId === i.mapperId) {
+            return { ...i, ...newRule };
+          } else {
+            return i;
+          }
+        })
+      )
+    );
+    handleModalChange();
+  };
+  const deleteRule = (mapperId) => {
+    dispatch(
+      setBundleSelectedForms(
+        bundleSelectedForms.map((i) =>
+          i.mapperId === mapperId ? { ...i, rules: [], action: null } : i
+        )
+      )
+    );
+  };
 
-    const handleModalChange = () =>{
-        // when close the modal if using submit or close button then clear the selectedRule value
-        if(showRulesModal){
-            setSelectedRule(null);
-        }
-        setShowRulesModal(!showRulesModal);
-    };
-    const editRule = (editedRule)=>{
-        const newRules =  bundleRules.map(rule => rule.id === editedRule.id ? editedRule : rule);
-        dispatch(setBundleRules(newRules));
-        handleModalChange();
-        setSelectedRule(null);
-    };
-    const deleteRule = (ruleId)=>{
-        dispatch(setBundleRules(bundleRules.filter(rule => rule.id !== ruleId)));
-    };
-    const addRule = (newRule)=>{
-        dispatch(setBundleRules([...bundleRules,{id:Date.now(),...newRule}]));
-        handleModalChange();
-
-    };
-    const selectEditRule = (rule)=>{
-        setSelectedRule(rule);
-        handleModalChange();
-    };
+  const selectRuleForEdit = (rule) => {
+    setSelectedEditRule(rule);
+    handleModalChange();
+  };
 
   return (
     <div>
-        <RulesTable bundleRules={bundleRules} selectEditRule={selectEditRule} 
-         deleteRule={deleteRule} handleModalChange={handleModalChange}/>
-         <RuleCreateModal editRule={editRule} existingRule={selectedRule} addRule={addRule} 
-         handleModalChange={handleModalChange} showModal={showRulesModal}/>
+      <RulesTable
+        selectedForms={bundleSelectedForms}
+        selectRuleForEdit={selectRuleForEdit}
+        deleteRule={deleteRule}
+        handleModalChange={handleModalChange}
+      />
+      <RuleCreateModal
+        saveRule={saveRule}
+        existingRule={selectedEditRule}
+        handleModalChange={handleModalChange}
+        showModal={showRulesModal}
+      />
     </div>
   );
 };

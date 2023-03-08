@@ -8,25 +8,23 @@ import TableRow from "@material-ui/core/TableRow";
 import { withStyles } from "@material-ui/styles";
 import { useSelector } from "react-redux";
 import { MULTITENANCY_ENABLED } from "../../../constants/constants";
- 
 const StyledTableCell = withStyles(() => ({
   head: {
     backgroundColor: "#4559b5",
     color: "white",
     fontSize: "1rem",
   },
-  body:{
-    fontSize:"1rem",
-  }
+  body: {
+    fontSize: "1rem",
+  },
 }))(TableCell);
 
-
-const SelectedForms = ({handleModalChange, selectedForms,deleteForm}) => {
+const SelectedForms = ({ handleModalChange, selectedForms, deleteForm }) => {
   const tenantKey = useSelector((state) => state.tenants?.tenantId);
   const redirectUrl = MULTITENANCY_ENABLED ? `/tenant/${tenantKey}/` : "/";
 
-  const viewForm = (formId)=>{
-    window.open(`${redirectUrl}form/${formId}/preview`,"_blank");
+  const viewForm = (formId) => {
+    window.open(`${redirectUrl}form/${formId}/preview`, "_blank");
   };
 
   return (
@@ -37,7 +35,6 @@ const SelectedForms = ({handleModalChange, selectedForms,deleteForm}) => {
             <TableRow>
               <StyledTableCell>No</StyledTableCell>
               <StyledTableCell align="left">Form Name</StyledTableCell>
-              <StyledTableCell align="left">Type</StyledTableCell>
               <StyledTableCell align="right">View</StyledTableCell>
               <StyledTableCell align="right">Action</StyledTableCell>
             </TableRow>
@@ -47,9 +44,13 @@ const SelectedForms = ({handleModalChange, selectedForms,deleteForm}) => {
               <TableRow key={form.id}>
                 <StyledTableCell>{index + 1}</StyledTableCell>
                 <StyledTableCell>{form.formName}</StyledTableCell>
-                <StyledTableCell>{form.formType}</StyledTableCell>
                 <StyledTableCell align="right">
-                  <button className="btn btn-sm btn-outline-primary" onClick={()=>{viewForm(form.formId);}}>
+                  <button
+                    className="btn btn-sm btn-outline-primary"
+                    onClick={() => {
+                      viewForm(form.path);
+                    }}
+                  >
                     <i
                       className="fa fa-external-link mr-2"
                       aria-hidden="true"
@@ -58,7 +59,12 @@ const SelectedForms = ({handleModalChange, selectedForms,deleteForm}) => {
                   </button>
                 </StyledTableCell>
                 <StyledTableCell align="right">
-                  <button className="btn btn-sm btn-outline-danger" onClick={()=>{deleteForm(form.formId);}}>
+                  <button
+                    className="btn btn-sm btn-outline-danger"
+                    onClick={() => {
+                      deleteForm(form.mapperId);
+                    }}
+                  >
                     <i className="fa fa-trash-o" aria-hidden="true"></i>
                   </button>
                 </StyledTableCell>
@@ -79,7 +85,10 @@ const SelectedForms = ({handleModalChange, selectedForms,deleteForm}) => {
             )}
             <TableRow>
               <TableCell align="center" colspan="5">
-                <button className="btn btn-outline-primary" onClick={handleModalChange}>
+                <button
+                  className="btn btn-outline-primary"
+                  onClick={handleModalChange}
+                >
                   <i className="fa fa-plus mr-2"></i>
                   Add Form
                 </button>

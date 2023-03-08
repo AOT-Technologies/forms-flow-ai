@@ -487,18 +487,35 @@ const List = React.memo((props) => {
           <Confirm
             modalOpen={props.modalOpen}
             message={
-              formProcessData.id && applicationCount
-                ? applicationCountResponse
-                  ? `${applicationCount} ${applicationCount > 1
-                    ? `${t("Applications are submitted against")}`
-                    : `${t("Application is submitted against")}`
-                  } "${props.formName}". ${t(
-                    "Are you sure you wish to delete the form?"
-                  )}`
-                  : `${t("Are you sure you wish to delete the form ")} "${props.formName
-                  }"?`
-                : `${t("Are you sure you wish to delete the form ")} "${props.formName
-                }"?`
+              formProcessData.id && applicationCount ? (
+                applicationCountResponse ? (
+                  
+                 <div>
+                 {applicationCount}  
+                 {
+                    applicationCount > 1
+                      ? <span>{`${t(" Applications are submitted against")} `}</span> 
+                      : <span>{`${t(" Application is submitted against")} `}</span> 
+                  } 
+                  <span style={{ fontWeight: "bold" }}>{props.formName}</span>
+                  .
+                   {t("Are you sure you wish to delete the form?")}
+                  
+                   </div>
+                ) : (
+                  <div>
+                    {`${t("Are you sure you wish to delete the form ")}`}
+                    <span style={{ fontWeight: "bold" }}>{props.formName}</span>
+                    ?
+                  </div>
+                )
+              ) : (
+                <div>
+                  {`${t("Are you sure you wish to delete the form ")} `}
+                  <span style={{ fontWeight: "bold" }}>{props.formName}</span>
+                  ?
+                </div>
+              )
             }
             onNo={() => onNo()}
             onYes={(e) => {

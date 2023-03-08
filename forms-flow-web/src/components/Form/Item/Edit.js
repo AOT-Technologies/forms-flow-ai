@@ -572,6 +572,20 @@ const Edit = React.memo(() => {
                   }
                   }
                 />
+                <FormControlLabel
+                  control={
+                    <Checkbox
+                      checked={processListData.canBundle || false}
+                      color="primary"
+                      aria-label="Publish"
+                      onChange={() => {
+                        changeCanBundle();
+                      }}
+                    />
+                  }
+                  label={"can bundle ?"}
+                  labelPlacement="start"
+                />
                 {!isValidName && <span className="validation-err" style={{ marginLeft: "0px" }}>Please remove the special charactors...!</span>}
               </div>
             </div>

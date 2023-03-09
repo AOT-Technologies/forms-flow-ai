@@ -13,7 +13,7 @@ API = Namespace("bundle", description="Bundle flow")
 
 
 @cors_preflight("GET,POST,OPTIONS")
-@API.route("/create", methods=["GET", "POST", "OPTIONS"])
+@API.route("", methods=["GET", "POST", "OPTIONS"])
 class BundleList(Resource):
     """Resource for managing bundle."""
 
@@ -74,12 +74,12 @@ class BundleList(Resource):
         try:
             mapper_schema = FormBundleProcessMapperSchema()
             mapper_data = mapper_schema.load(mapper_json)
-            mapper_id = FormProcessMapperService.create_mapper(mapper_data)
+            mapper = FormProcessMapperService.create_mapper(mapper_data)
             for form in mapper_data["selected_forms"]:
-                form["formProcessMapperId"] = mapper_id.id
+                form["form_process_mapper_id"] = mapper.id
             response = FormBundleService.create_bundle(mapper_data)
             return (
-                {"BundleId": mapper_id.id},
+                {"BundleId": mapper.id},
                 HTTPStatus.CREATED,
             )
         except BaseException as err:  # pylint: disable=broad-except

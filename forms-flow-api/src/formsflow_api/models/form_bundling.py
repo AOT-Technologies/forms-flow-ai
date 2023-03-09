@@ -38,10 +38,12 @@ class FormBundling(BaseModel, db.Model):
             form_bundling = cls()
             form_bundling.rules = form_info.get("rules")
             form_bundling.path_name = form_info.get("path")
-            form_bundling.mapper_id = form_info.get("mapperId")
-            form_bundling.form_process_mapper_id = form_info.get("formProcessMapperId")
-            form_bundling.form_order = form_info.get("formOrder")
-            form_bundling.parent_form_id = form_info.get("parent_form_id")
+            form_bundling.mapper_id = form_info.get("mapper_id")
+            form_bundling.form_process_mapper_id = form_info.get(
+                "form_process_mapper_id"
+            )
+            form_bundling.form_order = form_info.get("form_order")
+            form_bundling.parent_form_id = form_info.get("parent_formId")
             form_bundlings.append(form_bundling)
         db.session.add_all(form_bundlings)
         db.session.commit()

@@ -225,7 +225,7 @@ class FormResourceList(Resource):
             resource_list = [group["resourceId"] for group in auth_list]
 
             if form_name:
-                form_name: str = form_name.replace("%", "\%").replace("_", "\_")
+                form_name: str = form_name.replace("%", r"\%").replace("_", r"\_")
 
             if auth.has_role([DESIGNER_GROUP]):
                 (

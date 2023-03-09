@@ -291,8 +291,10 @@ const View = React.memo((props) => {
   }, [publicFormStatus]);
 
   useEffect(()=>{
-    pubSub.publish('ES_FORM', form);
-  },[form]);
+    if(pubSub.publish){
+      pubSub.publish('ES_FORM', form);
+    }
+  },[form, pubSub.publish]);
 
   if (isActive || isPublicStatusLoading || formStatusLoading) {
     return (

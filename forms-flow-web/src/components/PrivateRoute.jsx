@@ -60,8 +60,7 @@ const setApiBaseUrlToLocalStorage = () => {
 };
 
 const PrivateRoute = React.memo((props) => {
-
-  const {publish, subscribe, getKcInstance} = props;
+  const { publish, subscribe, getKcInstance } = props;
   const dispatch = useDispatch();
   const isAuth = useSelector((state) => state.user.isAuthenticated);
   const userRoles = useSelector((state) => state.user.roles || []);
@@ -70,7 +69,7 @@ const PrivateRoute = React.memo((props) => {
 
   const [kcInstance, setKcInstance] = React.useState(getKcInstance());
 
-  const authenticate = (instance, store)=>{
+  const authenticate = (instance, store) => {
     dispatch(setUserAuth(instance.isAuthenticated()));
     store.dispatch(
       setUserRole(JSON.parse(StorageService.get(StorageService.User.USER_ROLE)))
@@ -95,7 +94,7 @@ const PrivateRoute = React.memo((props) => {
           // onAuthenticatedCallback();
         }
       })
-      );
+    );
   };
 
   useEffect(() => {
@@ -108,17 +107,17 @@ const PrivateRoute = React.memo((props) => {
       }
       sessionStorage.setItem("tenantKey", tenantId);
       dispatch(setTenantFromId(tenantId));
-    } 
+    }
     if (props.store) {
-      if(kcInstance){
+      if (kcInstance) {
         authenticate(kcInstance, props.store);
-      }else{
+      } else {
         instance.initKeycloak(() => {
           authenticate(instance, props.store);
           publish("FF_AUTH", instance);
         });
-    }
       }
+    }
   }, [props.store, tenantId, dispatch]);
 
   // useMemo prevents unneccessary rerendering caused by the route update.
@@ -133,7 +132,7 @@ const PrivateRoute = React.memo((props) => {
               userRoles.includes(STAFF_DESIGNER) ? (
                 <Component {...props} />
               ) : (
-                <Redirect exact to="/404" />
+                <>unauthorized</>
               )
             }
           />
@@ -151,7 +150,7 @@ const PrivateRoute = React.memo((props) => {
               userRoles.includes(STAFF_REVIEWER) ? (
                 <Component {...props} />
               ) : (
-                <Redirect exact to="/404" />
+                <>unauthorized</>
               )
             }
           />
@@ -170,7 +169,7 @@ const PrivateRoute = React.memo((props) => {
               userRoles.includes(CLIENT) ? (
                 <Component {...props} />
               ) : (
-                <Redirect exact to="/404" />
+                <>unauthorized</>
               )
             }
           />
@@ -190,7 +189,7 @@ const PrivateRoute = React.memo((props) => {
                 userRoles.includes(CLIENT)) ? (
                 <Component {...props} />
               ) : (
-                <Redirect exact to="/404" />
+                <>unauthorized</>
               )
             }
           />

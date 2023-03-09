@@ -438,7 +438,7 @@ const Edit = React.memo(() => {
       <div className="d-flex justify-content-center">
         <div className="spinner-grow" role="status">
           <span className="sr-only">
-            <Translation>{(t) => t("Loading...")}</Translation>
+            {t("Loading...")}
           </span>
         </div>
       </div>
@@ -484,7 +484,7 @@ const Edit = React.memo(() => {
               dispatch(clearFormError("form", formData.formName));
             }}
           >
-            <Translation>{(t) => t("Cancel")}</Translation>
+            {t("Cancel")}
           </span>
           <button
             className="btn btn-primary"
@@ -535,7 +535,7 @@ const Edit = React.memo(() => {
             <div className="col-lg-4 col-md-4 col-sm-4">
               <div id="form-group-title" className="form-group">
                 <label htmlFor="title" className="control-label field-required">
-                  <Translation>{(t) => t("Title")}</Translation>
+                  {t("Title")}
                 </label>
                 <input
                   type="text"
@@ -550,7 +550,7 @@ const Edit = React.memo(() => {
             <div className="col-lg-4 col-md-4 col-sm-4">
               <div id="form-group-name" className="form-group">
                 <label htmlFor="name" className="control-label field-required">
-                  <Translation>{(t) => t("Name")}</Translation>
+                 {t("Name")}
                   {addingTenantKeyInformation("name")}
                 </label>
                 <div className="input-group mb-2">
@@ -580,7 +580,7 @@ const Edit = React.memo(() => {
             <div className="col-lg-4 col-md-3 col-sm-3">
               <div id="form-group-display" className="form-group">
                 <label htmlFor="name" className="control-label">
-                  <Translation>{(t) => t("Display as")}</Translation>
+                  {t("Display as")}
                 </label>
                 <div className="input-group">
                   <select
@@ -590,11 +590,11 @@ const Edit = React.memo(() => {
                     value={form.display || ""}
                     onChange={(event) => handleChange("display", event)}
                   >
-                    <option label="Form" value="form">
-                      <Translation>{(t) => t("Form")}</Translation>
+                    <option label={t("Form")} value="form">
+                      {t("Form")}
                     </option>
-                    <option label="Wizard" value="wizard">
-                      <Translation>{(t) => t("wizard")}</Translation>
+                    <option label={t("Wizard")} value="wizard">
+                     {t("Wizard")}
                     </option>
                   </select>
                 </div>
@@ -603,7 +603,7 @@ const Edit = React.memo(() => {
             <div className="col-lg-4 col-md-3 col-sm-3">
               <div id="form-group-type" className="form-group">
                 <label htmlFor="form-type" className="control-label">
-                  <Translation>{(t) => t("Type")}</Translation>
+                  {t("Type")}
                 </label>
                 <div className="input-group">
                   <select
@@ -613,10 +613,10 @@ const Edit = React.memo(() => {
                     value={form.type}
                     onChange={(event) => handleChange("type", event)}
                   >
-                    <option label="Form" value="form">
-                      <Translation>{(t) => t("form")}</Translation>
+                    <option label={t("Form")} value="form">
+                     {t("Form")}
                     </option>
-                    <option label="Resource" value="resource">
+                    <option label={t("Resource")} value="resource">
                       {t("Resource")}
                     </option>
                   </select>
@@ -626,7 +626,7 @@ const Edit = React.memo(() => {
             <div className="col-lg-4 col-md-4 col-sm-4">
               <div id="form-group-path" className="form-group">
                 <label htmlFor="path" className="control-label field-required">
-                  <Translation>{(t) => t("Path")}</Translation>
+                  {t("Path")}
                   {addingTenantKeyInformation("path")}
                 </label>
                 <div className="input-group mb-2">

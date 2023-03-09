@@ -98,3 +98,30 @@ def test_execute_form_bundling_rules(app, client, session, jwt):
     )
     assert response.status_code == 200
     assert len(response.json) == 2
+
+    # create a new version of the form, and assert latest version form is returned.
+    mapper_1.status = "inactive"
+    mapper_1.save()
+    new_form_id = "100"
+    FormProcessMapper.create_from_dict(
+        {
+            "form_id": new_form_id,
+            "form_name": "Test_Form_V2",
+            "form_type": "form",
+            "parent_form_id": "123",
+            "status": "active",
+            "created_by": "test",
+        }
+    )
+    response = client.post(
+        f"/bundles/{bundle_mapper.id}/execute-rules",
+        headers=headers,
+        json={"data": {"isMinor": False, "isApplyingPermit": True}},
+    )
+    assert response.status_code == 200
+    assert len(response.json) == 2
+    found_new_version: bool = False
+    for form in response.json:
+        if form.get("formId") == new_form_id:
+            found_new_version = True
+    assert found_new_version

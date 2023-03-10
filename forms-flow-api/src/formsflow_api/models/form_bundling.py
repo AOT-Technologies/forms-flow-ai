@@ -1,9 +1,14 @@
 """This manages Form Bundling Database Models."""
 
+from __future__ import annotations
+
+from typing import List
+
 from sqlalchemy.dialects.postgresql import ARRAY
 
 from .base_model import BaseModel
 from .db import db
+from .form_process_mapper import FormProcessMapper
 
 
 class FormBundling(BaseModel, db.Model):
@@ -48,3 +53,12 @@ class FormBundling(BaseModel, db.Model):
         db.session.add_all(form_bundlings)
         db.session.commit()
         return form_bundlings
+
+    @classmethod
+    def find_by_form_process_mapper_id(cls, mapper_id: int) -> List[FormBundling]:
+        """Find and return the form bundling record by form process mapper id."""
+        query = cls.query.join(
+            FormProcessMapper, cls.form_process_mapper_id == FormProcessMapper.id
+        )
+        query = query.filter(cls.form_process_mapper_id == mapper_id)
+        return FormProcessMapper.tenant_authorization(query=query).all()

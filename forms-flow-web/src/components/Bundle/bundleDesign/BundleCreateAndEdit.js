@@ -11,13 +11,14 @@ import Rule from "./Rule";
 import { STEPPER_ROUTE } from "../constant/stepperConstant";
 import { push } from "connected-react-router";
 import { clearFormError, setFormFailureErrorData } from "../../../actions/formActions";
-import { setBundleSavedData } from "../../../actions/bundleActions";
+// import { setBundleProcessData } from "../../../actions/bundleActions";
+import { bundleCreate } from "../../../apiManager/services/bundleServices";
 
 const BundleCreate = ({mode}) => {
   const dispatch = useDispatch();
-  const bundleData = useSelector(state => state.bundle.bundleData);
-   const [bundleName, setBundleName] =  useState(bundleData.bundleName || "");
-  const [bundleDescription, setBundleDescription] = useState(bundleData.discription || "");
+  const bundleData = useSelector(state => state.bundle.processData);
+   const [bundleName, setBundleName] =  useState(bundleData.formName || "");
+  const [bundleDescription, setBundleDescription] = useState(bundleData.description || "");
   const submissionAccess = useSelector((state) => state.user?.submissionAccess || []) ;
   const formAccess = useSelector((state) => state.user?.formAccess || []) ;
   const tenantKey = useSelector((state) => state.tenants?.tenantId);
@@ -25,8 +26,6 @@ const BundleCreate = ({mode}) => {
   const buttonText = mode === STEPPER_ROUTE[0] ? "save bundle" : "save & preview";
   const errors = useSelector((state) => state.form.error);
   const selectedForms = useSelector(state => state.bundle.selectedForms || []);
-  const rules = useSelector(state => state.bundle.rules || []);
-
   const redirectUrl = MULTITENANCY_ENABLED ? `/tenant/${tenantKey}/` : "/";
  
   useEffect(() => {
@@ -55,17 +54,19 @@ const BundleCreate = ({mode}) => {
         newForm.name = addTenantkey(newForm.name, tenantKey);
       }
     }
+   
     formCreate(newForm).then((res)=>{
       const form = res.data;
       const data = {
-        bundleId: form._id,
-        bundleName: form.title, 
-        discription:bundleDescription,
-        selectedForms,
-        rules
+        formId: form._id,
+        parentFormId: form._id,
+        formName: form.title, 
+        description:bundleDescription,
+        selectedForms: selectedForms.map((i,index)=>{ return { ...i,formOrder:index + 1};}),
+        formType:"bundle",
       };
-
-      dispatch(setBundleSavedData(data));
+      dispatch(bundleCreate(data));
+      // dispatch(setBundleProcessData(data)); 
       dispatch(push(`${redirectUrl}bundleflow/${form._id}/view-edit`));
     }).catch((err)=>{
       const error = err.response.data || err.message;

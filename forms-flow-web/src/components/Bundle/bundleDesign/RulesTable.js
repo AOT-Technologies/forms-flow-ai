@@ -17,17 +17,17 @@ const StyledTableCell = withStyles(() => ({
     fontSize:"1rem",
   }
 }))(TableCell);
+
 const RulesTable = ({selectedForms = [],handleModalChange,
   selectRuleForEdit,deleteRule}) => {
   return (
     <TableContainer style={{ border: "1px solid #dbdbdb" }}>
     <Table aria-label="simple table">
       <TableHead>
-        <TableRow>
-          <StyledTableCell>No</StyledTableCell>
+        <TableRow> 
           <StyledTableCell align="left">Form Name</StyledTableCell>
           <StyledTableCell align="left">Criteria</StyledTableCell>
-          <StyledTableCell align="left">Rule Action</StyledTableCell>
+          {/* <StyledTableCell align="left">Rule Action</StyledTableCell> */}
           <StyledTableCell align="right">Action</StyledTableCell>
  
         </TableRow>
@@ -36,16 +36,15 @@ const RulesTable = ({selectedForms = [],handleModalChange,
  
         {selectedForms?.map((form, index) => {
           return form.rules?.length > 0 ?  (
-            <TableRow key={index}>
-            <StyledTableCell>{index + 1}</StyledTableCell>
+            <TableRow key={index}> 
             <StyledTableCell>{form.formName}</StyledTableCell>
             <StyledTableCell>{form.rules?.join(",")}</StyledTableCell>
-            <StyledTableCell>{form.action}</StyledTableCell>
+            {/* <StyledTableCell>{form.action}</StyledTableCell> */}
             <StyledTableCell align="right">
               <button className="btn btn-sm btn-outline-primary mr-2" onClick={()=>{selectRuleForEdit(form);}}>
               <i className="fa fa-pencil " aria-hidden="true"></i>
               </button>
-              <button className="btn btn-sm btn-outline-danger" onClick={()=>{deleteRule(form.mapperId);}}>
+              <button className="btn btn-sm btn-outline-danger" onClick={()=>{deleteRule(form.parentFormId);}}>
                 <i className="fa fa-trash-o" aria-hidden="true"></i>
               </button>
             </StyledTableCell>

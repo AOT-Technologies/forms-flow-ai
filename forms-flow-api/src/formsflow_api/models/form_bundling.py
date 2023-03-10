@@ -36,6 +36,25 @@ class FormBundling(BaseModel, db.Model):
     )
 
     @classmethod
+    def create_from_dict(cls, mapper_info: dict):
+        """Create new mapper between form and process."""
+        form_bundlings = []
+        for form_info in mapper_info["selected_forms"]:
+            form_bundling = cls()
+            form_bundling.rules = form_info.get("rules")
+            form_bundling.path_name = form_info.get("path")
+            form_bundling.mapper_id = form_info.get("mapper_id")
+            form_bundling.form_process_mapper_id = form_info.get(
+                "form_process_mapper_id"
+            )
+            form_bundling.form_order = form_info.get("form_order")
+            form_bundling.parent_form_id = form_info.get("parent_formId")
+            form_bundlings.append(form_bundling)
+        db.session.add_all(form_bundlings)
+        db.session.commit()
+        return form_bundlings
+
+    @classmethod
     def find_by_form_process_mapper_id(cls, mapper_id: int) -> List[FormBundling]:
         """Find and return the form bundling record by form process mapper id."""
         query = cls.query.join(

@@ -324,8 +324,8 @@ class FormResourceList(Resource):
 
             response = mapper_schema.dump(mapper)
             response["taskVariable"] = json.loads(response["taskVariable"])
-
-            FormHistoryService.create_form_logs_without_clone(data=mapper_json)
+            if response.get("formType") != "bundle":
+                FormHistoryService.create_form_logs_without_clone(data=mapper_json)
             return response, HTTPStatus.CREATED
         except BaseException as form_err:  # pylint: disable=broad-except
             response, status = {
@@ -451,7 +451,8 @@ class FormResourceById(Resource):
             )
             response = mapper_schema.dump(mapper)
             response["taskVariable"] = json.loads(response["taskVariable"])
-            FormHistoryService.create_form_logs_without_clone(data=application_json)
+            if response.get("formType") != "bundle":
+                FormHistoryService.create_form_logs_without_clone(data=application_json)
 
             return (
                 response,
@@ -748,63 +749,3 @@ class FormHistoryResource(Resource):
         except BusinessException as err:
             current_app.logger.warning(err.error)
             return err.error, err.status_code
-
-
-@cors_preflight("PUT,OPTIONS")
-@API.route("/<int:bundle_id>/bundle", methods=["PUT", "OPTIONS"])
-class BundleResource(Resource):
-    """Resource for bundle mapper update."""
-
-    @staticmethod
-    @auth.has_one_of_roles([DESIGNER_GROUP])
-    @API.doc(body=mapper_update_model)
-    @API.response(
-        200, "CREATED:- Successful request.", model=mapper_create_response_model
-    )
-    @API.response(
-        400,
-        "BAD_REQUEST:- Invalid request.",
-    )
-    @API.response(
-        401,
-        "UNAUTHORIZED:- Authorization header not provided or an invalid token passed.",
-    )
-    @API.response(
-        403,
-        "FORBIDDEN:- Authorization will not help.",
-    )
-    @profiletime
-    def put(bundle_id: int):
-        """Update form by bundle id."""
-        application_json = request.get_json()
-
-        try:
-            mapper_schema = FormProcessMapperSchema()
-            dict_data = mapper_schema.load(application_json)
-            mapper = FormProcessMapperService.update_mapper(
-                form_process_mapper_id=bundle_id, data=dict_data
-            )
-            response = mapper_schema.dump(mapper)
-            return (
-                response,
-                HTTPStatus.OK,
-            )
-        except PermissionError as err:
-            response, status = (
-                {
-                    "type": "Permission Denied",
-                    "message": f"Access to bundle id - {bundle_id} is prohibited.",
-                },
-                HTTPStatus.FORBIDDEN,
-            )
-            current_app.logger.warning(err)
-            return response, status
-        except BaseException as mapper_err:  # pylint: disable=broad-except
-            response, status = {
-                "type": "Bad Request Error",
-                "message": "Invalid request passed",
-            }, HTTPStatus.BAD_REQUEST
-
-            current_app.logger.warning(response)
-            current_app.logger.warning(mapper_err)
-            return response, status

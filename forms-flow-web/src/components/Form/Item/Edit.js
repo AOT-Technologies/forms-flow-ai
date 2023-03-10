@@ -39,7 +39,6 @@ import { Checkbox, FormControlLabel } from "@material-ui/core";
 import { manipulatingFormData } from "../../../apiManager/services/formFormatterService";
 import SaveAsNewVersionConfirmationModal from "./SaveAsNewVersionConfirmationModal";
 import LoadingOverlay from "react-loading-overlay";
-import inputValidator from "../../../helper/regExp/inputValidator";
 const reducer = (form, { type, value }) => {
   const formCopy = _cloneDeep(form);
   switch (type) {
@@ -101,7 +100,6 @@ const Edit = React.memo(() => {
   const [currentFormLoading, setCurrentFormLoading] = useState(false);
   const [saveAsNewVersionselected, setSaveAsNewVersion] = useState(false);
   const [confirmModalShow, setConfirmModalShow] = useState(false);
-  const [isValidName, setIsValidName] = useState(true);
   const handleClose = () => setShow(false);
   const handleShow = () => setShow(true);
   const handleConfirmModalChange = () => setConfirmModalShow(!confirmModalShow);
@@ -174,7 +172,6 @@ const Edit = React.memo(() => {
 
   // setting the form data
   useEffect(() => {
-    setIsValidName(inputValidator(form.title));
     const newForm = formData;
     if (
       newForm &&
@@ -448,7 +445,7 @@ const Edit = React.memo(() => {
     );
   }
 
- return (
+  return (
     <div className="container">
       {
         saveAsNewVersionselected && confirmModalShow && (
@@ -493,7 +490,7 @@ const Edit = React.memo(() => {
             className="btn btn-primary"
             disabled={formSubmitted}
             onClick={() => {
-              isValidName ? handleChooseOption() : toast.error(t("Please remove the special charcters"));
+              handleChooseOption();
 
             }}
           >
@@ -541,20 +538,13 @@ const Edit = React.memo(() => {
                   {t("Title")}
                 </label>
                 <input
-                  style={{ color: `${!isValidName ? "red" : ''}` }}
                   type="text"
                   className="form-control"
                   id="title"
                   placeholder={t("Enter the form title")}
                   value={form.title || ""}
-                  onBlur={(event) => setIsValidName(inputValidator(event.target.value))}
-                  onChange={(event) => {
-                    event.target.name === '' ? setIsValidName(true) : '';
-                    handleChange("title", event);
-                  }
-                  }
+                  onChange={(event) => handleChange("title", event)}
                 />
-                {!isValidName && <span className="validation-err" style={{ marginLeft: "0px" }}>{t("Please remove the special characters...!")}</span>}
               </div>
             </div>
             <div className="col-lg-4 col-md-4 col-sm-4">

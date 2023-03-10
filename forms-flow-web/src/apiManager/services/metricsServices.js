@@ -30,8 +30,9 @@ export const fetchMetricsSubmissionCount = (
     /*eslint max-len: ["error", { "code": 170 }]*/
     let url = `${API.METRICS_SUBMISSIONS}?from=${fromDate}&to=${toDate}&orderBy=${searchBy}&pageNo=${pageNo}&limit=${limit}&sortBy=${sortsBy}&sortOrder=${sortOrder}`;
     if (formName) {
-      url += `&formName=${formName}`;
+      url += `&formName=${encodeURIComponent(formName)}`;
     }
+
     httpGETRequest(url, {})
       .then((res) => {
         if (res.data) {

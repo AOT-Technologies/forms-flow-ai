@@ -38,8 +38,7 @@ import {
 import { Checkbox, FormControlLabel } from "@material-ui/core";
 import { manipulatingFormData } from "../../../apiManager/services/formFormatterService";
 import SaveAsNewVersionConfirmationModal from "./SaveAsNewVersionConfirmationModal";
-import LoadingOverlay from "react-loading-overlay";
-import inputValidator from "../../../helper/regExp/inputValidator";
+import LoadingOverlay from "react-loading-overlay"; 
 const reducer = (form, { type, value }) => {
   const formCopy = _cloneDeep(form);
   switch (type) {
@@ -101,8 +100,7 @@ const Edit = React.memo(() => {
   const [show, setShow] = useState(false);
   const [currentFormLoading, setCurrentFormLoading] = useState(false);
   const [saveAsNewVersionselected, setSaveAsNewVersion] = useState(false);
-  const [confirmModalShow, setConfirmModalShow] = useState(false);
-  const [isValidName, setIsValidName] = useState(true);
+  const [confirmModalShow, setConfirmModalShow] = useState(false); 
   const handleClose = () => setShow(false);
   const handleShow = () => setShow(true);
   const handleConfirmModalChange = () => setConfirmModalShow(!confirmModalShow);
@@ -175,7 +173,7 @@ const Edit = React.memo(() => {
 
   // setting the form data
   useEffect(() => {
-    setIsValidName(inputValidator(form.title));
+   
     const newForm = formData;
     if (
       newForm &&
@@ -558,8 +556,7 @@ const Edit = React.memo(() => {
                 <label htmlFor="title" className="control-label field-required">
                   {t("Title")}
                 </label>
-                <input
-                  style={{ color: `${!isValidName ? "red" : ''}` }}
+                <input 
                   type="text"
                   className="form-control"
                   id="title"

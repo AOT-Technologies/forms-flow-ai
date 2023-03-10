@@ -1,6 +1,7 @@
 /* eslint-disable max-len */
 export const formio_resourceBundles = {
   en: {
+    "Please remove the special characters...!":"Please remove the special characters...!",
     "No histories found":"No histories found",
     "Continue":"Continue",
     "This will create a new version of the form without changing the path name but with new form id.":"This will create a new version of the form without changing the path name but with new form id.",
@@ -298,6 +299,7 @@ export const formio_resourceBundles = {
   },
 
   "zh-CN": {
+    "Please remove the special characters...!":"请删除特殊字符...！",
     "No histories found":"没有找到历史记录",
     "Continue":"继续",
     "This will create a new version of the form without changing the path name but with new form id.":"这将创建一个新版本的表单而不更改路径名但具有新的表单 ID。",
@@ -1206,6 +1208,7 @@ export const formio_resourceBundles = {
   },
 
   bg: {
+    "Please remove the special characters...!":"Моля, премахнете специалните символи...!",
     "No histories found":"Няма намерени истории",
     "Continue":"продължи",
     "This will create a new version of the form without changing the path name but with new form id.":"Това ще създаде нова версия на формуляра без промяна на името на пътя, но с нов идентификатор на формуляра.",
@@ -2173,6 +2176,7 @@ export const formio_resourceBundles = {
   },
 
   pt: {
+    "Please remove the special characters...!":"Remova os caracteres especiais...!",
     "No histories found":"Nenhum histórico encontrado",
     "Continue":"Prosseguir",
     "This will create a new version of the form without changing the path name but with new form id.":"Isso criará uma nova versão do formulário sem alterar o nome do caminho, mas com o novo ID do formulário.",
@@ -3134,6 +3138,7 @@ export const formio_resourceBundles = {
   },
 
   fr: {
+    "Please remove the special characters...!":"Veuillez supprimer les caractères spéciaux... !",
     "No histories found":"Aucun historique trouvé",
     "Continue":"Continuez",
     "This will create a new version of the form without changing the path name but with new form id.":"Cela créera une nouvelle version du formulaire sans changer le nom du chemin mais avec un nouvel identifiant de formulaire.",
@@ -4103,6 +4108,7 @@ export const formio_resourceBundles = {
   },
 
   de: {
+    "Please remove the special characters...!":"Bitte entfernen Sie die Sonderzeichen...!",
     "No histories found":"Keine Historien gefunden",
     "Continue":"Weitermachen",
     "This will create a new version of the form without changing the path name but with new form id.":"Dadurch wird eine neue Version des Formulars erstellt, ohne den Pfadnamen zu ändern, aber mit einer neuen Formular-ID.",

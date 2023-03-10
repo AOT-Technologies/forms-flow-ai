@@ -35,6 +35,8 @@ const SelectedForms = ({ handleModalChange, selectedForms, deleteForm }) => {
             <TableRow>
               <StyledTableCell>No</StyledTableCell>
               <StyledTableCell align="left">Form Name</StyledTableCell>
+              <StyledTableCell align="left">Form Type</StyledTableCell>
+              <StyledTableCell align="left">Form Status</StyledTableCell>
               <StyledTableCell align="right">View</StyledTableCell>
               <StyledTableCell align="right">Action</StyledTableCell>
             </TableRow>
@@ -44,11 +46,13 @@ const SelectedForms = ({ handleModalChange, selectedForms, deleteForm }) => {
               <TableRow key={form.id}>
                 <StyledTableCell>{index + 1}</StyledTableCell>
                 <StyledTableCell>{form.formName}</StyledTableCell>
+                <StyledTableCell>{form.formType}</StyledTableCell>
+                <StyledTableCell>{form.status}</StyledTableCell>
                 <StyledTableCell align="right">
                   <button
                     className="btn btn-sm btn-outline-primary"
                     onClick={() => {
-                      viewForm(form.path);
+                      viewForm(form.formId);
                     }}
                   >
                     <i
@@ -62,7 +66,7 @@ const SelectedForms = ({ handleModalChange, selectedForms, deleteForm }) => {
                   <button
                     className="btn btn-sm btn-outline-danger"
                     onClick={() => {
-                      deleteForm(form.mapperId);
+                      deleteForm(form.parentFormId);
                     }}
                   >
                     <i className="fa fa-trash-o" aria-hidden="true"></i>
@@ -72,7 +76,7 @@ const SelectedForms = ({ handleModalChange, selectedForms, deleteForm }) => {
             ))}
             {!selectedForms?.length ? (
               <TableRow>
-                <TableCell align="center" colspan="5">
+                <TableCell align="center" colspan="8">
                   <h3>No forms launch together</h3>
                   <span>
                     Form bundles can save your time by grouping together forms
@@ -84,7 +88,7 @@ const SelectedForms = ({ handleModalChange, selectedForms, deleteForm }) => {
               ""
             )}
             <TableRow>
-              <TableCell align="center" colspan="5">
+              <TableCell align="center" colspan="8">
                 <button
                   className="btn btn-outline-primary"
                   onClick={handleModalChange}

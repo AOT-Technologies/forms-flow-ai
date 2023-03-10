@@ -1,5 +1,6 @@
 /* eslint-disable max-len */
 export const RESOURCE_BUNDLES_BG = {
+    "Please remove the special characters...!":"Моля, премахнете специалните символи...!",
     "No histories found":"Няма намерени истории",
     "Continue":"продължи",
     "This will create a new version of the form without changing the path name but with new form id.":"Това ще създаде нова версия на формуляра без промяна на името на пътя, но с нов идентификатор на формуляра.",

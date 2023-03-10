@@ -23,15 +23,14 @@ export const fetchBPMFormList = (
   canBundle,
   ...rest
 ) => {
-  const done = rest.length ? rest[0] : () => {};
+  const done = rest.length ? rest[0] : () => { };
   return (dispatch) => {
     let url = `${API.FORM}?pageNo=${pageNo}&limit=${limit}&sortBy=${sortBy}&sortOrder=${sortOrder}`;
-    if(formType){
+    if (formType) {
       url += `&formType=${formType}`;
     }
-
     if (formName) {
-      url += `&formName=${formName}`;
+      url += `&formName=${encodeURIComponent(formName)}`;
     }
     if (canBundle) {
       url += `&canBundle=${canBundle}`;
@@ -83,7 +82,7 @@ export const fetchCanBundleForms = (options)=>{
 
 
 export const fetchFormByAlias = (path, ...rest) => {
-  const done = rest.length ? rest[0] : () => {};
+  const done = rest.length ? rest[0] : () => { };
 
   const apiUrlGetFormByAlias = replaceUrl(
     API.GET_FORM_BY_ALIAS,
@@ -92,7 +91,7 @@ export const fetchFormByAlias = (path, ...rest) => {
   );
 
   return (dispatch) => {
-    let token = UserService.getFormioToken() ? {"x-jwt-token": UserService.getFormioToken()} : {};
+    let token = UserService.getFormioToken() ? { "x-jwt-token": UserService.getFormioToken() } : {};
     httpGETRequest(apiUrlGetFormByAlias, {}, "", false, {
       ...token
     })
@@ -116,11 +115,11 @@ export const fetchFormByAlias = (path, ...rest) => {
 
 
 
-export const fetchFormById = (id,options) => {
-  let token = UserService.getFormioToken() ? {"x-jwt-token": UserService.getFormioToken()} : {};
-  return httpGETRequest(`${API.GET_FORM_BY_ID}/${id}${options ? options : ""}`, {}, "", false, {
+export const fetchFormById = (id) => {
+  let token = UserService.getFormioToken() ? { "x-jwt-token": UserService.getFormioToken() } : {};
+  return httpGETRequest(`${API.GET_FORM_BY_ID}/${id}`, {}, "", false, {
     ...token
   });
-  
+
 };
 

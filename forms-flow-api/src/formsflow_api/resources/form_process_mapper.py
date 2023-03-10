@@ -225,6 +225,10 @@ class FormResourceList(Resource):
             is_bundle: str = dict_data.get("is_bundle")
             auth_list = auth_form_details.get("authorizationList") or {}
             resource_list = [group["resourceId"] for group in auth_list]
+
+            if form_name:
+                form_name: str = form_name.replace("%", r"\%").replace("_", r"\_")
+
             if auth.has_role([DESIGNER_GROUP]):
                 (
                     form_process_mapper_schema,

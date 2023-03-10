@@ -419,7 +419,7 @@ class Application(
         """Fetch all application."""
         query = cls.query.join(
             FormProcessMapper, cls.form_process_mapper_id == FormProcessMapper.id
-        ).filter(cls.latest_form_id == form_id)
+        ).filter(cls.latest_form_id == form_id, cls.application_status != DRAFT_APPLICATION_STATUS)
         return FormProcessMapper.tenant_authorization(query=query).count()
 
     @classmethod

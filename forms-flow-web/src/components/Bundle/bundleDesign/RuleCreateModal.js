@@ -3,7 +3,7 @@ import { Modal } from "react-bootstrap";
 import { useSelector } from "react-redux";
 
 import { Errors } from "react-formio";
-import { RuleActions } from "../constant/ruleActionConstant";
+// import { RuleActions } from "../constant/ruleActionConstant";
 
 import Select from "react-select";
 import { useMemo } from "react";
@@ -16,23 +16,21 @@ const RuleCreateModal = React.memo(
     const errors = useSelector((state) => state.form.error);
     const [criteria, setCriteria] = useState("");
     const [selectedFormDta, setSelectedFormData] = useState("");
-    const [action, setAction] = useState();
+    // const [action, setAction] = useState();
 
     const FormOptions = useMemo(() => {
       const filteredForms = bundleSelectedForms.filter((i) => !i.rules?.length);
       return filteredForms.map((item) => {
         return {
           label: item.formName,
-          value: item.path,
-          path: item.path,
-          mapperId: item.mapperId,
+          value: item.parentFormId, 
         };
       });
     }, [bundleSelectedForms]);
 
     useEffect(() => {
       setCriteria("");
-      setAction("");
+      // setAction("");
       setSelectedFormData("");
     }, [showModal]);
 
@@ -40,15 +38,13 @@ const RuleCreateModal = React.memo(
       if (existingRule) {
         setSelectedFormData({
           label: existingRule.formName,
-          value: existingRule.path,
-          path: existingRule.path,
-          mapperId: existingRule.mapperId,
+          value: existingRule.parentFormId,
         });
 
-        const action = RuleActions.find(
-          (action) => action.value === existingRule.action
-        );
-        setAction(action);
+        // const action = RuleActions.find(
+        //   (action) => action.value === existingRule.action
+        // );
+        // setAction(action);
         setCriteria(existingRule?.rules ? existingRule?.rules.join(",") : "");
       }
     }, [existingRule]);
@@ -60,11 +56,11 @@ const RuleCreateModal = React.memo(
     const submitRule = () => {
       const data = {
         rules: criteria.split(","),
-        action: action.value,
+        // action: action.value,
       };
-      saveRule(data, selectedFormDta.mapperId);
+      saveRule(data, selectedFormDta.value);
       setCriteria("");
-      setAction("");
+      // setAction("");
       setSelectedFormData("");
     };
 
@@ -104,7 +100,7 @@ const RuleCreateModal = React.memo(
                 />
               </div>
 
-              <div className="select-style mt-2">
+              {/* <div className="select-style mt-2">
                 <label>Select Action</label>
                 <Select
                   placeholder={"Select Action"}
@@ -112,7 +108,7 @@ const RuleCreateModal = React.memo(
                   value={action}
                   onChange={setAction}
                 />
-              </div>
+              </div> */}
             </div>
           </Modal.Body>
           <Modal.Footer className="justify-content-end">

@@ -1,14 +1,22 @@
 """This exposes form bundling service."""
 
 from http import HTTPStatus
-from typing import List, Set
+from typing import Dict, List, Set
 
 from formsflow_api_utils.exceptions import BusinessException
 from formsflow_api_utils.utils import DESIGNER_GROUP
 from formsflow_api_utils.utils.user_context import UserContext, user_context
 
 from formsflow_api.models import FormBundling, FormProcessMapper
-from formsflow_api.schemas import FormProcessMapperSchema
+from formsflow_api.schemas import (
+    FormBundleProcessMapperSchema,
+    FormProcessMapperSchema,
+)
+from formsflow_api.schemas.form_bundling import SelectedFormSchema
+
+bundle_schema = SelectedFormSchema()
+bundle_mapper_schema = FormBundleProcessMapperSchema()
+mapper_schema = FormProcessMapperSchema()
 
 
 class FormBundleService:  # pylint:disable=too-few-public-methods
@@ -42,8 +50,39 @@ class FormBundleService:  # pylint:disable=too-few-public-methods
                     forms = FormProcessMapper.find_forms_by_active_parent_from_ids(
                         parent_form_ids
                     )
-                mapper_schema = FormProcessMapperSchema()
                 bundle_forms = mapper_schema.dump(forms, many=True)
             return bundle_forms
         except AttributeError as err:
-            raise BusinessException("Bundle does not exist.", HTTPStatus.BAD_REQUEST) from err
+            raise BusinessException(
+                "Bundle does not exist.", HTTPStatus.BAD_REQUEST
+            ) from err
+
+    @staticmethod
+    def get_bundle_by_id(bundle_id: int):
+        """Get bundle details by bundle id."""
+        parent_form_ids: Set[str] = []
+        bundle_details: Dict = {}
+        bundle = FormProcessMapper.find_form_by_id(bundle_id)
+        if bundle and bundle.form_type == "bundle":
+            bundle_forms = FormBundling.find_by_form_process_mapper_id(bundle_id)
+            for form_bundle in bundle_forms:
+                parent_form_ids.append(form_bundle.parent_form_id)
+            bundle_form_detail = FormProcessMapper.find_forms_by_parent_from_ids(
+                parent_form_ids
+            )
+            bundle_forms_list = bundle_schema.dump(bundle_forms, many=True)
+            bundle_form_details = bundle_mapper_schema.dump(
+                bundle_form_detail, many=True
+            )
+
+            selected_forms = {}
+            for form in bundle_forms_list + bundle_form_details:
+                if form["parentFormId"] in selected_forms:
+                    selected_forms[form["parentFormId"]].update(form)
+                else:
+                    selected_forms[form["parentFormId"]] = form
+            bundle_details = {
+                "mapperData": mapper_schema.dump(bundle),
+                "selectedForms": list(selected_forms.values()),
+            }
+        return bundle_details

@@ -4,7 +4,12 @@ from http import HTTPStatus
 
 from flask import current_app, request
 from flask_restx import Namespace, Resource
-from formsflow_api_utils.utils import auth, cors_preflight, profiletime
+from formsflow_api_utils.utils import (
+    DESIGNER_GROUP,
+    auth,
+    cors_preflight,
+    profiletime,
+)
 
 from formsflow_api.schemas import FormBundleProcessMapperSchema
 from formsflow_api.services import (
@@ -194,3 +199,49 @@ class BundleFormsById(Resource):
         except Exception as unexpected_error:
             current_app.logger.warning(unexpected_error)
             raise unexpected_error
+
+
+@cors_preflight("GET,OPTIONS")
+@API.route("/<bundle_id>", methods=["GET", "OPTIONS"])
+class BundleResourceById(Resource):
+    """Resource for managing bundle by bundle_id."""
+
+    @staticmethod
+    @auth.has_one_of_roles([DESIGNER_GROUP])
+    @API.response(200, "OK:- Successful request.")
+    @API.response(
+        400,
+        "BAD_REQUEST:- Invalid request.",
+    )
+    @API.response(
+        401,
+        "UNAUTHORIZED:- Authorization header not provided or an invalid token passed.",
+    )
+    @profiletime
+    def get(bundle_id: int):
+        """Get bundle details by bundle id."""
+        try:
+            bundle_detail = FormBundleService.get_bundle_by_id(bundle_id)
+            return (
+                bundle_detail,
+                HTTPStatus.OK,
+            )
+        except PermissionError as err:
+            response, status = (
+                {
+                    "type": "Permission Denied",
+                    "message": f"Access to bundle id - {bundle_id} is prohibited.",
+                },
+                HTTPStatus.FORBIDDEN,
+            )
+            current_app.logger.warning(err)
+            return response, status
+        except BaseException as err:  # pylint: disable=broad-except
+            response, status = {
+                "type": "Bad Request Error",
+                "message": "Invalid request passed",
+            }, HTTPStatus.BAD_REQUEST
+
+            current_app.logger.warning(response)
+            current_app.logger.warning(err)
+            return response, status

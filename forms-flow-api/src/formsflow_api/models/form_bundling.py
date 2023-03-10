@@ -48,7 +48,7 @@ class FormBundling(BaseModel, db.Model):
                 "form_process_mapper_id"
             )
             form_bundling.form_order = form_info.get("form_order")
-            form_bundling.parent_form_id = form_info.get("parent_formId")
+            form_bundling.parent_form_id = form_info.get("parent_form_id")
             form_bundlings.append(form_bundling)
         db.session.add_all(form_bundlings)
         db.session.commit()

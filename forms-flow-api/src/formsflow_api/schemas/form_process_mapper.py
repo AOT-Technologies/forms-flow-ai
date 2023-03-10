@@ -68,6 +68,7 @@ class FormBundleProcessMapperSchema(Schema):
     form_id = fields.Str(data_key="formId", required=True)
     form_type = fields.Str(data_key="formType", required=False)
     parent_form_id = fields.Str(data_key="parentFormId")
+    status = fields.Str(required=False)
     selected_forms = fields.List(
         fields.Nested(SelectedFormSchema), data_key="selectedForms", required=True
     )

@@ -307,6 +307,23 @@ class FormProcessMapper(AuditDateTimeMixin, AuditUserMixin, BaseModel, db.Model)
         ).all()
 
     @classmethod
+    def find_forms_by_parent_from_ids(
+        cls, parent_form_ids: Set[str]
+    ) -> List[FormProcessMapper]:
+        """Find form process mapper that matches the provided parent_form_id."""
+        # Get latest row for each parent_id group
+        form_ids_query = (
+            db.session.query(
+                func.max(cls.id).label("id")  # pylint: disable=not-callable
+            )
+            .filter(cls.parent_form_id.in_(parent_form_ids))
+            .group_by(cls.parent_form_id)
+        )
+        form_ids = [data.id for data in form_ids_query.all()]
+        forms = cls.query.filter(FormProcessMapper.id.in_(form_ids))
+        return forms
+
+    @classmethod
     @user_context
     def tenant_authorization(cls, query: BaseQuery, **kwargs):
         """Modifies the query to include tenant check if needed."""

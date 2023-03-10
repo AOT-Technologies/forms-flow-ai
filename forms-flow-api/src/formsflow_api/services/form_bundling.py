@@ -1,7 +1,9 @@
 """This exposes form bundling service."""
 
+from http import HTTPStatus
 from typing import List, Set
 
+from formsflow_api_utils.exceptions import BusinessException
 from formsflow_api_utils.utils import DESIGNER_GROUP
 from formsflow_api_utils.utils.user_context import UserContext, user_context
 
@@ -25,18 +27,23 @@ class FormBundleService:  # pylint:disable=too-few-public-methods
         parent_form_ids: Set[str] = []
         user: UserContext = kwargs["user"]
         form = FormProcessMapper.find_form_by_id(bundle_id)
-        if (
-            DESIGNER_GROUP in user.roles and form.deleted is False
-        ) or form.status == "active":
-            form_bundles = FormBundling.find_by_form_process_mapper_id(bundle_id)
-            for form_bundle in form_bundles:
-                parent_form_ids.append(form_bundle.parent_form_id)
-            if DESIGNER_GROUP in user.roles:
-                forms = FormProcessMapper.find_forms_by_parent_from_ids(parent_form_ids)
-            else:
-                forms = FormProcessMapper.find_forms_by_active_parent_from_ids(
-                    parent_form_ids
-                )
-            mapper_schema = FormProcessMapperSchema()
-            bundle_forms = mapper_schema.dump(forms, many=True)
-        return bundle_forms
+        try:
+            if (
+                DESIGNER_GROUP in user.roles and form.deleted is False
+            ) or form.status == "active":
+                form_bundles = FormBundling.find_by_form_process_mapper_id(bundle_id)
+                for form_bundle in form_bundles:
+                    parent_form_ids.append(form_bundle.parent_form_id)
+                if DESIGNER_GROUP in user.roles:
+                    forms = FormProcessMapper.find_forms_by_parent_from_ids(
+                        parent_form_ids
+                    )
+                else:
+                    forms = FormProcessMapper.find_forms_by_active_parent_from_ids(
+                        parent_form_ids
+                    )
+                mapper_schema = FormProcessMapperSchema()
+                bundle_forms = mapper_schema.dump(forms, many=True)
+            return bundle_forms
+        except AttributeError as err:
+            raise BusinessException("Bundle does not exist.", HTTPStatus.BAD_REQUEST) from err

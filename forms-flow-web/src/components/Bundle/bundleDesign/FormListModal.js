@@ -8,11 +8,9 @@ import TableHead from "@material-ui/core/TableHead";
 import TableRow from "@material-ui/core/TableRow";
 import Checkbox from "@material-ui/core/Checkbox";
 import Pagination from "react-js-pagination";
-import { withStyles } from "@material-ui/core";
-import { Errors } from "react-formio";
+import { withStyles } from "@material-ui/core"; 
 import {
   fetchBPMFormList,
-  fetchFormById,
 } from "../../../apiManager/services/bpmFormServices";
 import { useDispatch, useSelector } from "react-redux";
 import LoadingOverlay from "react-loading-overlay";
@@ -103,7 +101,7 @@ const FormListModal = React.memo(
     const budnleSearchText = useSelector(
       (state) => state.bundle?.bundleForms.searchText
     );
-    const [error, setError] = useState("");
+ 
 
     const seachFormLoading = useSelector(
       (state) => state.bundle?.bundleForms.bundleFormLoading
@@ -134,8 +132,7 @@ const FormListModal = React.memo(
       if (showModal) {
         setLoadingForms(true);
         fetchFormList();
-      } else {
-        setError("");
+      } else { 
         setSearchText("");
         dispatch(setBundleFormSearch(""));
         dispatch(setBundleFormListPage(1));
@@ -146,46 +143,36 @@ const FormListModal = React.memo(
 
     useEffect(() => {
       if (formsAlreadySelected?.length) {
-        const ids = formsAlreadySelected.map((form) => form.mapperId);
+        const ids = formsAlreadySelected.map((form) => form.parentFormId);
         setSelectedFormIds(ids);
         setSelectedForms(formsAlreadySelected);
       }
     }, [formsAlreadySelected]);
 
     const handleFormSelect = (action, form) => {
-      setError("");
+  
       if (action === "select") {
-        const options = "?select=path";
-        fetchFormById(form.formId, options)
-          .then((res) => {
-            setSelectedFormIds((prev) => [...prev, form.id]);
+        setSelectedFormIds((prev) => [...prev, form.parentFormId]);
             setSelectedForms((prev) => [
               ...prev,
               {
                 formName: form.formName,
-                path: res.data.path,
+                path: "nothing",
                 mapperId: form.id,
                 rules:[],
-                action:null
+                parentFormId: form.parentFormId,
+                status:form.status,
+                formType: form.formType,
+                formId: form.formId,
               },
             ]);
-          })
-          .catch((err) => {
-            let error;
-            if (err.response?.data) {
-              error = err.response.data;
-            } else {
-              error = err.message;
-            }
-
-            setError(error);
-          });
+          
       } else {
         setSelectedFormIds((prev) =>
-          prev.filter((item) => item !== form.id)
+          prev.filter((item) => item !== form.parentFormId)
         );
         setSelectedForms((prev) =>
-          prev.filter((item) => item.mapperId !== form.id)
+          prev.filter((item) => item.parentFormId !== form.parentFormId)
         );
       }
     };
@@ -217,8 +204,7 @@ const FormListModal = React.memo(
             {loadingForms ? (
               <Loading />
             ) : (
-              <>
-                <Errors errors={error} />
+              <> 
                 <div className="d-flex mb-2">
                   {SearchBar({ handleSearch, searchText, setSearchText })}
                 </div>
@@ -245,7 +231,7 @@ const FormListModal = React.memo(
                                 <StyledTableCell align="left">
                                   <Checkbox
                                     checked={seletedFormIds?.includes(
-                                      form.id
+                                      form.parentFormId
                                     )}
                                     onChange={(e) => {
                                       handleFormSelect(
@@ -271,14 +257,14 @@ const FormListModal = React.memo(
                                     className="btn btn-sm btn-outline-primary"
                                     onClick={() =>
                                       handleFormSelect(
-                                        seletedFormIds?.includes(form.id)
+                                        seletedFormIds?.includes(form.parentFormId)
                                           ? "unselect"
                                           : "select",
                                         form
                                       )
                                     }
                                   >
-                                    {seletedFormIds?.includes(form.id)
+                                    {seletedFormIds?.includes(form.parentFormId)
                                       ? "unselect"
                                       : "select"}
                                   </button>

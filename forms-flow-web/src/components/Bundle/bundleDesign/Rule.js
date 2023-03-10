@@ -19,17 +19,17 @@ const Rule = () => {
     }
     setShowRulesModal(!showRulesModal);
   };
-  const saveRule = (newRule, mapperId) => {
+  const saveRule = (newRule, parentFormId) => {
     dispatch(
       setBundleSelectedForms(
         bundleSelectedForms.map((i) => {
           if (
             selectedEditRule &&
-            selectedEditRule.mapperId !== mapperId &&
-            i.mapperId === selectedEditRule.mapperId
+            selectedEditRule.parentFormId !== parentFormId &&
+            i.parentFormId === selectedEditRule.parentFormId
           ) {
             return { ...i, rules: [], action: null };
-          } else if (mapperId === i.mapperId) {
+          } else if (parentFormId === i.parentFormId) {
             return { ...i, ...newRule };
           } else {
             return i;
@@ -39,11 +39,11 @@ const Rule = () => {
     );
     handleModalChange();
   };
-  const deleteRule = (mapperId) => {
+  const deleteRule = (parentFormId) => {
     dispatch(
       setBundleSelectedForms(
         bundleSelectedForms.map((i) =>
-          i.mapperId === mapperId ? { ...i, rules: [], action: null } : i
+          i.parentFormId === parentFormId ? { ...i, rules: [], action: null } : i
         )
       )
     );

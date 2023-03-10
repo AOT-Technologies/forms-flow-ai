@@ -38,9 +38,10 @@ export const setBundleFormSearch = (data) => (dispatch) => {
         payload: data,
       });
     };
-export const setBundleSavedData = (data) => (dispatch) => {
+ 
+export const setBundleProcessData = (data) => (dispatch) => {
       dispatch({
-        type: ACTION_CONSTANTS.BUNDLE_SAVED_DATA,
+        type: ACTION_CONSTANTS.BUNDLE_PROCESS_DATA,
         payload: data,
       });
     };

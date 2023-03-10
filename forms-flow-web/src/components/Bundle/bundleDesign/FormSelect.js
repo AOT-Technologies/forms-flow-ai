@@ -20,8 +20,8 @@ const FormSelect = React.memo(() => {
     setShowModal(false);
   };
 
-  const deleteForm = (mapperId) => {
-    const filteredForms = selectedForms?.filter((i) => i.mapperId !== mapperId);
+  const deleteForm = (parentFormId) => {
+    const filteredForms = selectedForms?.filter((i) => i.parentFormId !== parentFormId);
     dispatch(setBundleSelectedForms(filteredForms));
   };
 

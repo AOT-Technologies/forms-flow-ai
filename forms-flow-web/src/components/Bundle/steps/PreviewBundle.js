@@ -2,7 +2,7 @@ import { Tab, Tabs } from "@material-ui/core";
 import React, { useEffect } from "react";
 import { useState } from "react";
 import { Form, Formio, Errors} from "react-formio";
-import { fetchFormByAlias } from "../../../apiManager/services/bpmFormServices";
+import { fetchFormById } from "../../../apiManager/services/bpmFormServices";
 import Loading from "../../../containers/Loading";
 import SaveNext from "./SaveAndNext";
 import { push } from "connected-react-router";
@@ -14,7 +14,7 @@ const PreviewBundle = ({ handleNext, handleBack, activeStep, isLastStep }) => {
   const dispatch = useDispatch();
   const redirectUrl = MULTITENANCY_ENABLED ? `/tenant/${tenantKey}/` : "/";
   const forms = useSelector((state)=> state.bundle.selectedForms);
-  const bundleData = useSelector(state => state.bundle.bundleData);
+  const bundleData = useSelector(state => state.bundle.processData);
   const [tabValue, setTabValue] = useState(0);
   const [getFormLoading, setGetFormLoading] = useState(false);
   const [error, setError] = useState("");
@@ -32,7 +32,7 @@ const PreviewBundle = ({ handleNext, handleBack, activeStep, isLastStep }) => {
     Formio.cache = {};
     if(forms.length){
       setGetFormLoading(true);
-      dispatch(   fetchFormByAlias(forms[tabValue].path,(err,form)=>{
+      dispatch(fetchFormById(forms[tabValue].formId,(err,form)=>{
         setForm({});
         if(err){
           let error;

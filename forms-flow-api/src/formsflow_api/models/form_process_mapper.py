@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 from http import HTTPStatus
+from typing import List, Set
 
 from flask import current_app
 from flask_sqlalchemy import BaseQuery
@@ -294,6 +295,16 @@ class FormProcessMapper(AuditDateTimeMixin, AuditUserMixin, BaseModel, db.Model)
             )
         ).first()
         return query
+
+    @classmethod
+    def find_forms_by_active_parent_from_ids(
+        cls, parent_form_ids: Set[str]
+    ) -> List[FormProcessMapper]:
+        """Find active form process mapper that matches the provided parent_form_id."""
+        return cls.query.filter(
+            FormProcessMapper.parent_form_id.in_(parent_form_ids),
+            FormProcessMapper.status == FormProcessMapperStatus.ACTIVE.value,
+        ).all()
 
     @classmethod
     @user_context

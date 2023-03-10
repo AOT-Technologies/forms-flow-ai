@@ -15,5 +15,6 @@ Werkzeug
 sqlalchemy_utils
 markupsafe
 PyJWT
+rule-engine
 git+https://github.com/shuhaib-aot/forms-flow-ai.git@form-bundling-dev#egg=formsflow_api_utils&subdirectory=forms-flow-api-utils
 

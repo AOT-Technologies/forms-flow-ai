@@ -1,5 +1,6 @@
 /* eslint-disable max-len */
 export const RESOURCE_BUNDLES_DE = {
+  "Please remove the special characters...!":"Bitte entfernen Sie die Sonderzeichen...!",
   "No histories found":"Keine Historien gefunden",
   "Continue":"Weitermachen",
   "This will create a new version of the form without changing the path name but with new form id.":"Dadurch wird eine neue Version des Formulars erstellt, ohne den Pfadnamen zu ändern, aber mit einer neuen Formular-ID.",

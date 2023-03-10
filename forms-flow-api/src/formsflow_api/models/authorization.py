@@ -68,15 +68,8 @@ class Authorization(AuditDateTimeMixin, AuditUserMixin, BaseModel, db.Model):
     @classmethod
     def _auth_query(cls, auth_type, roles, tenant, user_name):
         role_condition = [Authorization.roles.contains([role]) for role in roles]
-        query = (
-            cls.query.filter(Authorization.auth_type == auth_type)
-            .filter(or_(*role_condition))
-            .filter(
-                or_(
-                    Authorization.user_name.is_(None),
-                    Authorization.user_name == user_name,
-                )
-            )
+        query = cls.query.filter(Authorization.auth_type == auth_type).filter(
+            or_(*role_condition, Authorization.user_name.contains(user_name))
         )
 
         if tenant:

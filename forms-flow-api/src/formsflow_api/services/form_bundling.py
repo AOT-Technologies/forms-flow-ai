@@ -28,18 +28,23 @@ class FormBundleService:  # pylint:disable=too-few-public-methods
         return FormBundling.create_from_dict(data)
 
     @staticmethod
+    def update_bundle(mapper_id: int, data: Dict[str, any]):
+        """Update bundle details."""
+        return FormBundling.update_bundle_from_dict(mapper_id, data)
+
+    @staticmethod
     @user_context
-    def get_forms_bundle(bundle_id: int, **kwargs):
+    def get_forms_bundle(mapper_id: int, **kwargs):
         """Get forms inside a bundle."""
         bundle_forms: List = []
         parent_form_ids: Set[str] = []
         user: UserContext = kwargs["user"]
-        form = FormProcessMapper.find_form_by_id(bundle_id)
+        form = FormProcessMapper.find_form_by_id(mapper_id)
         try:
             if (
                 DESIGNER_GROUP in user.roles and form.deleted is False
             ) or form.status == "active":
-                form_bundles = FormBundling.find_by_form_process_mapper_id(bundle_id)
+                form_bundles = FormBundling.find_by_form_process_mapper_id(mapper_id)
                 for form_bundle in form_bundles:
                     parent_form_ids.append(form_bundle.parent_form_id)
                 if DESIGNER_GROUP in user.roles:
@@ -58,13 +63,13 @@ class FormBundleService:  # pylint:disable=too-few-public-methods
             ) from err
 
     @staticmethod
-    def get_bundle_by_id(bundle_id: int):
-        """Get bundle details by bundle id."""
+    def get_bundle_by_id(mapper_id: int):
+        """Get bundle details by mapper_id."""
         parent_form_ids: Set[str] = []
         bundle_details: Dict = {}
-        bundle = FormProcessMapper.find_form_by_id(bundle_id)
+        bundle = FormProcessMapper.find_form_by_id(mapper_id)
         if bundle and bundle.form_type == "bundle":
-            bundle_forms = FormBundling.find_by_form_process_mapper_id(bundle_id)
+            bundle_forms = FormBundling.find_by_form_process_mapper_id(mapper_id)
             for form_bundle in bundle_forms:
                 parent_form_ids.append(form_bundle.parent_form_id)
             bundle_form_detail = FormProcessMapper.find_forms_by_parent_from_ids(

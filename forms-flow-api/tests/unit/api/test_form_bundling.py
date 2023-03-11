@@ -34,7 +34,7 @@ def test_execute_form_bundling_rules(app, client, session, jwt):
         {
             "form_id": "789",
             "form_name": "My_Bundle_Form",
-            "form_type": "form",
+            "form_type": "bundle",
             "parent_form_id": "789",
             "status": "active",
             "created_by": "test",
@@ -60,7 +60,7 @@ def test_execute_form_bundling_rules(app, client, session, jwt):
 
     # No rules are created, so all forms should be returned.
     response = client.post(
-        f"/bundles/{bundle_mapper.id}/execute-rules",
+        f"/form/{bundle_mapper.id}/bundles/execute-rules",
         headers=headers,
         json={},
     )
@@ -72,7 +72,7 @@ def test_execute_form_bundling_rules(app, client, session, jwt):
     bundle_2.save()
     # Execute rules with no payload and assert only 1 is returned.
     response = client.post(
-        f"/bundles/{bundle_mapper.id}/execute-rules",
+        f"/form/{bundle_mapper.id}/bundles/execute-rules",
         headers=headers,
         json={},
     )
@@ -83,7 +83,7 @@ def test_execute_form_bundling_rules(app, client, session, jwt):
     # Assert both forms are returned when skip_rules is passed as True,
     # this is invoked for preview forms, or list forms without executing any rules.
     response = client.post(
-        f"/bundles/{bundle_mapper.id}/execute-rules?skipRules=true",
+        f"/form/{bundle_mapper.id}/bundles/execute-rules?skipRules=true",
         headers=headers,
         json={},
     )
@@ -92,7 +92,7 @@ def test_execute_form_bundling_rules(app, client, session, jwt):
 
     # Create a submission payload to pass the rule and assert both forms are returned.
     response = client.post(
-        f"/bundles/{bundle_mapper.id}/execute-rules",
+        f"/form/{bundle_mapper.id}/bundles/execute-rules",
         headers=headers,
         json={"data": {"isMinor": False, "isApplyingPermit": True}},
     )
@@ -114,7 +114,7 @@ def test_execute_form_bundling_rules(app, client, session, jwt):
         }
     )
     response = client.post(
-        f"/bundles/{bundle_mapper.id}/execute-rules",
+        f"/form/{bundle_mapper.id}/bundles/execute-rules",
         headers=headers,
         json={"data": {"isMinor": False, "isApplyingPermit": True}},
     )
@@ -152,12 +152,19 @@ def test_list_forms_inside_bundle(app, client, session, jwt):
             "created_by": "test",
         }
     )
+    # Create bundle form process mapper.
+    bundle_mapper: FormProcessMapper = FormProcessMapper.create_from_dict(
+        {
+            "form_id": "100",
+            "form_name": "Bundle Form",
+            "form_type": "bundle",
+            "parent_form_id": "100",
+            "status": "active",
+            "created_by": "test",
+        }
+    )
+    # Payload for adding forms undef bundle
     bundle_payload = {
-        "formName": "sample bundle",
-        "description": "sample bundle create",
-        "formId": "64008d37ca2cc522e336c7a3",
-        "formType": "bundle",
-        "parentFormId": "64008d37ca2cc522e336c7a3",
         "selectedForms": [
             {
                 "mapperId": mapper_1.id,
@@ -179,26 +186,26 @@ def test_list_forms_inside_bundle(app, client, session, jwt):
     token = get_token(jwt, role="formsflow-designer", username="designer")
     headers = {"Authorization": f"Bearer {token}", "content-type": "application/json"}
     response = client.post(
-        "/bundles",
+        f"/form/{bundle_mapper.id}/bundles",
         headers=headers,
         json=bundle_payload,
     )
+
     assert response.status_code == 201
-    assert response.json["BundleId"] is not None
+    assert response.json["bundleId"] is not None
     # Returns both active & inactive forms for designer.
-    bundle_id = response.json["BundleId"]
-    response = client.get(f"/bundles/{bundle_id}/forms", headers=headers)
+    response = client.get(f"/form/{bundle_mapper.id}/bundles/forms", headers=headers)
     assert response.status_code == 200
     assert len(response.json) == 2
     # Update a form inside bundle to inactive.
     # Designer can still get 2 forms(both active & inactive)
     mapper_1.update({"status": "inactive"})
-    response = client.get(f"/bundles/{bundle_id}/forms", headers=headers)
+    response = client.get(f"/form/{bundle_mapper.id}/bundles/forms", headers=headers)
     assert response.status_code == 200
     assert len(response.json) == 2
     # List active forms inside bundle for reviewer & client role only if bundle status is active.
     token = get_token(jwt)
     headers = {"Authorization": f"Bearer {token}", "content-type": "application/json"}
-    response = client.get(f"/bundles/{bundle_id}/forms", headers=headers)
+    response = client.get(f"/form/{bundle_mapper.id}/bundles/forms", headers=headers)
     assert response.status_code == 200
-    assert len(response.json) == 0
+    assert len(response.json) == 1

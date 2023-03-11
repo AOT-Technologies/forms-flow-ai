@@ -17,9 +17,9 @@ import WorkflowAssociate from "./steps/WorkflowAssociate";
 import { withStyles } from "@material-ui/styles";
 import PreviewAndConfirm from "./steps/PreviewAndConfirm";
 import { useDispatch, useSelector } from "react-redux";
-// import { getBundle } from "../../apiManager/services/bundleServices";
+import { getBundle } from "../../apiManager/services/bundleServices";
 import Loading from "../../containers/Loading";
-import { resetBundleData } from "../../actions/bundleActions";
+import { resetBundleData, setBundleSelectedForms } from "../../actions/bundleActions";
 import { toast } from "react-toastify";
 const CustomStepperLabel = withStyles(() => ({
   label: {
@@ -28,7 +28,7 @@ const CustomStepperLabel = withStyles(() => ({
 }))(StepLabel);
 const StepperComponent = () => {
   const tenantKey = useSelector((state) => state.tenants?.tenantId);
-  const tenantIdIn = MULTITENANCY_ENABLED ? tenantKey : null;
+   const tenantIdIn = MULTITENANCY_ENABLED ? tenantKey : null;
   const dispatch = useDispatch();
   const params = useParams();
   const history = useHistory();
@@ -66,11 +66,20 @@ const StepperComponent = () => {
 
   const getBundleData = (bundleId) => {
     dispatch(
-      getFormProcesses(bundleId, (err) => {
+      getFormProcesses(bundleId, (err,mapperData) => {
         if (err) {
           toast.error(err);
           setLoading(false);
-      }})
+        }else{
+          getBundle(mapperData.id).then((res)=>{
+            dispatch(setBundleSelectedForms(res.data.selectedForms));
+          }).catch((err)=>{
+            console.error(err);
+          }).finally(()=>{
+            setLoading(false);
+          });
+        }
+    })
     );
   };
 
@@ -84,13 +93,10 @@ const StepperComponent = () => {
       history.push("/form");
     } else {
       setActiveMode(getMode(params));
-      if (STEPPER_ROUTE.includes(params.step)){
-      //   getBundle(res.id).then((res) => {
-      //     console.log(res);
-      //  }).finally(()=>{setLoading(false);});
-      }
-
-    
+      if (STEPPER_ROUTE.includes(params.step)) {
+        setLoading(true);
+        getBundleData(params.formId);
+      } 
     }
   }, [params,]);
 

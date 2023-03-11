@@ -25,15 +25,17 @@ const PreviewBundle = ({ handleNext, handleBack, activeStep, isLastStep }) => {
   };
 
   const gotoEdit = () =>{
-    dispatch(push(`${redirectUrl}bundleflow/63fc41027e513a3995321307/edit`));
+    dispatch(push(`${redirectUrl}bundleflow/${bundleData.formId}/edit`));
   };
 
   useEffect(() => {
     Formio.cache = {};
     if(forms.length){
       setGetFormLoading(true);
-      fetchFormById(forms[tabValue].formId,(err,form)=>{
-        setForm({});
+      setForm({});
+      fetchFormById(forms[tabValue].formId).then((res)=>{
+        setForm(res.data);
+      }).catch((err)=>{
         if(err){
           let error;
           if (err.response?.data) {
@@ -43,10 +45,9 @@ const PreviewBundle = ({ handleNext, handleBack, activeStep, isLastStep }) => {
           }
   
           setError(error);
-        }else{
-          setForm(form);
         }
-          setGetFormLoading(false);
+      }).finally(()=>{
+        setGetFormLoading(false);
       });
     }
   

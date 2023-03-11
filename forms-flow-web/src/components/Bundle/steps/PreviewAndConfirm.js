@@ -19,7 +19,7 @@ const PreviewAndConfirm = React.memo(
     const bundleData = useSelector((state) => state.process.formProcessList);
     const selectedForms = useSelector((state) => state.bundle.selectedForms);
     const workflow = useSelector((state) => state.process.workflowAssociated);
-    const [status, setStatus] = useState(bundleData.status || false);
+    const [status, setStatus] = useState(bundleData.status || "inactive");
     const dispatch = useDispatch();
     const tenantKey = useSelector((state) => state.tenants?.tenantId);
     const redirectUrl = MULTITENANCY_ENABLED ? `/tenant/${tenantKey}/` : "/";
@@ -27,6 +27,10 @@ const PreviewAndConfirm = React.memo(
     const submitData = () => {
       const data = {
         ...bundleData,
+        anonymous:false,
+        comments: "",
+        processTenant:"",
+        modifiedBy:"shuhaib",
         status,
         processKey: workflow.value,
         processName: workflow.label,

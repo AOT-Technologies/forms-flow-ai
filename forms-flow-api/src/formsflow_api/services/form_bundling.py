@@ -66,28 +66,21 @@ class FormBundleService:  # pylint:disable=too-few-public-methods
     def get_bundle_by_id(mapper_id: int):
         """Get bundle details by mapper_id."""
         parent_form_ids: Set[str] = []
-        bundle_details: Dict = {}
-        bundle = FormProcessMapper.find_form_by_id(mapper_id)
-        if bundle and bundle.form_type == "bundle":
-            bundle_forms = FormBundling.find_by_form_process_mapper_id(mapper_id)
-            for form_bundle in bundle_forms:
-                parent_form_ids.append(form_bundle.parent_form_id)
-            bundle_form_detail = FormProcessMapper.find_forms_by_parent_from_ids(
-                parent_form_ids
-            )
-            bundle_forms_list = bundle_schema.dump(bundle_forms, many=True)
-            bundle_form_details = bundle_mapper_schema.dump(
-                bundle_form_detail, many=True
-            )
-
-            selected_forms = {}
-            for form in bundle_forms_list + bundle_form_details:
-                if form["parentFormId"] in selected_forms:
-                    selected_forms[form["parentFormId"]].update(form)
-                else:
-                    selected_forms[form["parentFormId"]] = form
-            bundle_details = {
-                "mapperData": mapper_schema.dump(bundle),
-                "selectedForms": list(selected_forms.values()),
-            }
+        bundle_forms = FormBundling.find_by_form_process_mapper_id(mapper_id)
+        for form_bundle in bundle_forms:
+            parent_form_ids.append(form_bundle.parent_form_id)
+        bundle_form_detail = FormProcessMapper.find_forms_by_parent_from_ids(
+            parent_form_ids
+        )
+        bundle_forms_list = bundle_schema.dump(bundle_forms, many=True)
+        bundle_form_details = mapper_schema.dump(bundle_form_detail, many=True)
+        selected_forms = {}
+        for form in bundle_forms_list + bundle_form_details:
+            if form["parentFormId"] in selected_forms:
+                selected_forms[form["parentFormId"]].update(form)
+            else:
+                selected_forms[form["parentFormId"]] = form
+        bundle_details = {
+            "selectedForms": list(selected_forms.values()),
+        }
         return bundle_details

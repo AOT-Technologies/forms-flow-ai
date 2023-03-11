@@ -81,6 +81,7 @@ class FormProcessMapper(AuditDateTimeMixin, AuditUserMixin, BaseModel, db.Model)
                 mapper.task_variable = mapper_info.get("task_variable")
                 mapper.version = mapper_info.get("version")
                 mapper.can_bundle = mapper_info.get("can_bundle")
+                mapper.description = mapper_info.get("description")
                 mapper.save()
                 return mapper
         except Exception as err:  # pylint: disable=broad-except
@@ -207,7 +208,7 @@ class FormProcessMapper(AuditDateTimeMixin, AuditUserMixin, BaseModel, db.Model)
             cls.form_name,
             cls.form_type,
             cls.status,
-            cls.parent_form_id
+            cls.parent_form_id,
         )
         limit = total_count if limit is None else limit
         query = query.paginate(page=page_number, per_page=limit, error_out=False)
@@ -321,7 +322,7 @@ class FormProcessMapper(AuditDateTimeMixin, AuditUserMixin, BaseModel, db.Model)
             .group_by(cls.parent_form_id)
         )
         form_ids = [data.id for data in form_ids_query.all()]
-        forms = cls.query.filter(FormProcessMapper.id.in_(form_ids))
+        forms = cls.query.filter(FormProcessMapper.id.in_(form_ids)).all()
         return forms
 
     @classmethod

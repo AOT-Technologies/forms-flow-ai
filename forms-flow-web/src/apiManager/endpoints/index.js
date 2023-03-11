@@ -70,8 +70,7 @@ const API = {
   DASHBOARD_AUTHORIZATION: `${WEB_BASE_URL}/authorizations/dashboard`,
   USER_DASHBOARDS: `${WEB_BASE_URL}/authorizations/users/dashboard`,
   // bundle
-  BUNDLE_BASE:`${WEB_BASE_URL}/bundles`,
-  BUNDLE_PROCESS_UPDATE:`${WEB_BASE_URL}/form/<bundle_id>/bundle`,
+  BUNDLE_BASE:`${WEB_BASE_URL}/form/<mapper_id>/bundles`,
 };
 
 export default API;

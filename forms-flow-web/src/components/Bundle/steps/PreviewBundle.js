@@ -14,7 +14,7 @@ const PreviewBundle = ({ handleNext, handleBack, activeStep, isLastStep }) => {
   const dispatch = useDispatch();
   const redirectUrl = MULTITENANCY_ENABLED ? `/tenant/${tenantKey}/` : "/";
   const forms = useSelector((state)=> state.bundle.selectedForms);
-  const bundleData = useSelector(state => state.bundle.processData);
+  const bundleData = useSelector(state => state.process.formProcessList);
   const [tabValue, setTabValue] = useState(0);
   const [getFormLoading, setGetFormLoading] = useState(false);
   const [error, setError] = useState("");
@@ -32,7 +32,7 @@ const PreviewBundle = ({ handleNext, handleBack, activeStep, isLastStep }) => {
     Formio.cache = {};
     if(forms.length){
       setGetFormLoading(true);
-      dispatch(fetchFormById(forms[tabValue].formId,(err,form)=>{
+      fetchFormById(forms[tabValue].formId,(err,form)=>{
         setForm({});
         if(err){
           let error;
@@ -47,7 +47,7 @@ const PreviewBundle = ({ handleNext, handleBack, activeStep, isLastStep }) => {
           setForm(form);
         }
           setGetFormLoading(false);
-      }) );
+      });
     }
   
   }, [tabValue]);
@@ -55,7 +55,7 @@ const PreviewBundle = ({ handleNext, handleBack, activeStep, isLastStep }) => {
   return (
     <div>
       <div className="d-flex align-items-center justify-content-between">
-        <h3>{bundleData.bundleName}</h3>
+        <h3>{bundleData.formName}</h3>
         <div>
         <button
             className="btn btn-primary"

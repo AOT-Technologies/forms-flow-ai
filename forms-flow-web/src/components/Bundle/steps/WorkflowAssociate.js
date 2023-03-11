@@ -7,28 +7,28 @@ import ProcessDiagram from '../../BPMN/ProcessDiagramHook';
 import SaveNext from "./SaveAndNext";
 import Select from "react-select";
 import { DEFAULT_WORKFLOW } from "../../../constants/taskConstants";
-import { setBundleWorkflow } from '../../../actions/bundleActions';
+import { setWorkflowAssociation } from '../../../actions/processActions';
 
 
 
 const WorkflowAssociate = ({handleBack,handleNext,activeStep,steps,initialMode}) => {
   const dispatch = useDispatch();
   const process = useSelector((state) => state.process.processList);
-  const workflow = useSelector((state) => state.bundle.workflowAssociated);
+  const workflow = useSelector((state) => state.process.workflowAssociated);
  
   const processList = listProcess(process);
   const [disableWorkflow, setDisableWorkflow] = useState(initialMode === "create" ? false : true);
   
   useEffect(() => {
     if (!workflow) {
-      dispatch(setBundleWorkflow(DEFAULT_WORKFLOW));
+      dispatch(setDisableWorkflow(DEFAULT_WORKFLOW));
     }
   }, [workflow, dispatch]);
 
  
 
   const handleListChange = (item) => {
-    dispatch(setBundleWorkflow(item));
+    dispatch(setWorkflowAssociation(item));
   };
  
 

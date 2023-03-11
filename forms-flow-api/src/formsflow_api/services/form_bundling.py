@@ -28,6 +28,11 @@ class FormBundleService:  # pylint:disable=too-few-public-methods
         return FormBundling.create_from_dict(data)
 
     @staticmethod
+    def update_bundle(mapper_id: int, data: Dict[str, any]):
+        """Update bundle details."""
+        return FormBundling.update_bundle_from_dict(mapper_id, data)
+
+    @staticmethod
     @user_context
     def get_forms_bundle(mapper_id: int, **kwargs):
         """Get forms inside a bundle."""

@@ -17,13 +17,13 @@ from formsflow_api.services import FormBundleService, RuleEngine
 API = Namespace("Form Bundles", description="APIs for form bundled")
 
 
-@cors_preflight("GET,POST,OPTIONS")
-@API.route("", methods=["GET", "POST", "OPTIONS"])
+@cors_preflight("GET,POST,PUT, OPTIONS")
+@API.route("", methods=["GET", "POST", "PUT", "OPTIONS"])
 class BundleList(Resource):
     """Resource for managing bundle."""
 
     @staticmethod
-    @auth.require
+    @auth.has_one_of_roles([DESIGNER_GROUP])
     @profiletime
     @API.response(200, "CREATED:- Successful request.")
     @API.response(204, "NO_CONTENT:- Successful request but nothing follows.")
@@ -78,6 +78,74 @@ class BundleList(Resource):
             for form in mapper_data["selected_forms"]:
                 form["form_process_mapper_id"] = mapper_id
             response = FormBundleService.create_bundle(mapper_data)
+            return (
+                {"bundleId": mapper_id},
+                HTTPStatus.CREATED,
+            )
+        except BaseException as err:  # pylint: disable=broad-except
+            response, status = {
+                "type": "Bad Request Error",
+                "message": "Invalid request passed",
+            }, HTTPStatus.BAD_REQUEST
+
+            current_app.logger.warning(response)
+            current_app.logger.warning(err)
+            return response, status
+
+    @staticmethod
+    @auth.has_one_of_roles([DESIGNER_GROUP])
+    @profiletime
+    @API.response(200, "CREATED:- Successful request.")
+    @API.response(204, "NO_CONTENT:- Successful request but nothing follows.")
+    @API.response(
+        400,
+        "BAD_REQUEST:- Invalid request.",
+    )
+    @API.response(
+        401,
+        "UNAUTHORIZED:- Authorization header not provided or an invalid token passed.",
+    )
+    @API.response(
+        403,
+        "FORBIDDEN:- Authorization will not help.",
+    )
+    def put(mapper_id: int):
+        """Create Form bundle against a mapper.
+
+        : data: bundle data for create bundle.
+        e.g,
+        ```
+        {
+            "selectedForms": [
+            {
+                "mapperId": "9",
+                "path": "duplicate-version-26c6b8",
+                "rules": [
+                    "teaxt == pageYOffset", "age == 30"
+                ],
+                "formOrder":1,
+                "parentFormId":"dfdsfadsf455151"
+            },
+            {
+                "mapperId": "6",
+                "path": "duplicate-version-b599e2",
+                "rules": [
+                    "teaxt == pageYOffset", "age == 30"
+                ],
+                "formOrder":2,
+                "parentFormId":"dfdsfadsf455151"
+            }
+            ]
+            }
+        ```
+        """
+        mapper_json = request.get_json()
+        try:
+            mapper_schema = FormBundleProcessMapperSchema()
+            mapper_data = mapper_schema.load(mapper_json)
+            for form in mapper_data["selected_forms"]:
+                form["form_process_mapper_id"] = mapper_id
+            response = FormBundleService.update_bundle(mapper_id, mapper_data)
             return (
                 {"bundleId": mapper_id},
                 HTTPStatus.CREATED,

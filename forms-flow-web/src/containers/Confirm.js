@@ -12,6 +12,7 @@ const Confirm = React.memo((props) => {
     message,
     yesText = t("Confirm"),
     noText = t("Cancel"),
+    draftDeleted
   } = props;
   
   return (
@@ -22,7 +23,7 @@ const Confirm = React.memo((props) => {
         </Modal.Header>
         <Modal.Body>{message}</Modal.Body>
         <Modal.Footer>
-          <Button className="btn btn-default" onClick={onYes}>
+          <Button className="btn btn-default" disabled={draftDeleted} onClick={onYes}>
             {yesText}
           </Button>
           <Button

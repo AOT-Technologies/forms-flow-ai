@@ -69,6 +69,7 @@ const View = React.memo((props) => {
   const draftSubmission = useSelector((state) => state.draft.submission);
   const [draftSaved, setDraftSaved] = useState(false);
   const [showNotification, setShowNotification] = useState(false);
+  const [draftDeleted, setDraftDeleted] = useState(false);
   /**
    * `draftData` is used for keeping the uptodate form entry,
    * this will get updated on every change the form is having.
@@ -172,7 +173,8 @@ const View = React.memo((props) => {
     );
   };
 
-  const onYes = () => {
+  const onYes = () => { 
+    setDraftDeleted(true);
     deleteDraftbyId(draftDelete.draftId)
       .then(() => {
         toast.success(t("Draft Deleted Successfully"));
@@ -277,6 +279,7 @@ const View = React.memo((props) => {
         <div className="ml-4 mr-4">
           <Confirm
             modalOpen={draftDelete.modalOpen}
+            draftDeleted={draftDeleted}
             message={`${t("Are you sure you wish to delete the draft")} "${
               draftDelete.draftName
             }" 

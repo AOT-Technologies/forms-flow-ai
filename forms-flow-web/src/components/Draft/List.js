@@ -1,4 +1,4 @@
-import React, { useEffect, useRef } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import BootstrapTable from "react-bootstrap-table-next";
 import filterFactory from "react-bootstrap-table2-filter";
@@ -58,7 +58,8 @@ export const DraftList = React.memo(() => {
   const redirectUrl = MULTITENANCY_ENABLED ? `/tenant/${tenantKey}/` : "/";
   const [lastModified, setLastModified] = React.useState(null);
   const [isLoading, setIsLoading] = React.useState(false);
-  const [invalidFilters, setInvalidFilters] = React.useState({});
+  const [invalidFilters, setInvalidFilters] = React.useState({}); 
+  const [draftDeleted, setDraftDeleted] = useState(false);
 
   useEffect(() => {
     setIsLoading(false);
@@ -79,6 +80,7 @@ export const DraftList = React.memo(() => {
   }, [dispatch, currentPage, countPerPageRef]);
 
   const onYes = () => {
+    setDraftDeleted(true);
     deleteDraftbyId(draftDelete.draftId)
       .then(() => {
         toast.success(t("Draft Deleted Successfully"));
@@ -199,6 +201,7 @@ export const DraftList = React.memo(() => {
         <div className="container" id="main" role="definition">
           <Confirm
             modalOpen={draftDelete.modalOpen}
+            draftDeleted={draftDeleted}
             message=
             {
             <div>

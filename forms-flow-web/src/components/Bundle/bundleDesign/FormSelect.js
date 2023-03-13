@@ -21,7 +21,8 @@ const FormSelect = React.memo(() => {
   };
 
   const deleteForm = (parentFormId) => {
-    const filteredForms = selectedForms?.filter((i) => i.parentFormId !== parentFormId);
+    let filteredForms = selectedForms?.filter((i) => i.parentFormId !== parentFormId);
+    filteredForms = filteredForms.map((form,index)=> { return {...form,formOrder: index + 1};});
     dispatch(setBundleSelectedForms(filteredForms));
   };
 

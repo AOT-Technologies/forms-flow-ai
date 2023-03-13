@@ -21,8 +21,11 @@ const PreviewBundle = ({ handleNext, handleBack, activeStep, isLastStep }) => {
   const [form,setForm] = useState({});
  
   const handleTabChange = (e, value) => {
+    setError('');
     setTabValue(value);
   };
+
+ 
 
   const gotoEdit = () =>{
     dispatch(push(`${redirectUrl}bundleflow/${bundleData.formId}/edit`));

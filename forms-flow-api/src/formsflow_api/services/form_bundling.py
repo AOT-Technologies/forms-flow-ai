@@ -75,7 +75,7 @@ class FormBundleService:  # pylint:disable=too-few-public-methods
         bundle_forms_list = bundle_schema.dump(bundle_forms, many=True)
         bundle_form_details = mapper_schema.dump(bundle_form_detail, many=True)
         selected_forms = {}
-        for form in bundle_forms_list + bundle_form_details:
+        for form in bundle_form_details + bundle_forms_list:
             if form["parentFormId"] in selected_forms:
                 selected_forms[form["parentFormId"]].update(form)
             else:

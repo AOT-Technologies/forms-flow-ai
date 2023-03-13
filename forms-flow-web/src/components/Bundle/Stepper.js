@@ -93,10 +93,6 @@ const StepperComponent = () => {
       history.push("/form");
     } else {
       setActiveMode(getMode(params));
-      if (STEPPER_ROUTE.includes(params.step)) {
-        setLoading(true);
-        getBundleData(params.formId);
-      } 
     }
   }, [params,]);
 

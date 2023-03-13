@@ -419,7 +419,10 @@ class Application(
         """Fetch all application."""
         query = cls.query.join(
             FormProcessMapper, cls.form_process_mapper_id == FormProcessMapper.id
-        ).filter(cls.latest_form_id == form_id, cls.application_status != DRAFT_APPLICATION_STATUS)
+        ).filter(
+            cls.latest_form_id == form_id,
+            cls.application_status != DRAFT_APPLICATION_STATUS,
+        )
         return FormProcessMapper.tenant_authorization(query=query).count()
 
     @classmethod
@@ -463,22 +466,22 @@ class Application(
             db.session.query(
                 FormProcessMapper.form_id.label("form_id"),
                 FormProcessMapper.parent_form_id.label("parent_form_id"),
-                db.func.max(FormProcessMapper.id).label("id")  # pylint: disable=not-callable
-            ).group_by(
+                db.func.max(FormProcessMapper.id).label(
+                    "id"
+                ),  # pylint: disable=not-callable
+            )
+            .group_by(
                 FormProcessMapper.form_id,
                 FormProcessMapper.parent_form_id,
-            ).subquery("max_form_id")
+            )
+            .subquery("max_form_id")
         )
 
         subquery_application_count = (
             db.session.query(
                 max_form_id.c.parent_form_id,
-                db.func.max(max_form_id.c.id).label(
-                    "id"
-                ),
-                db.func.count(Application.id).label(
-                    "application_count"
-                ),
+                db.func.max(max_form_id.c.id).label("id"),
+                db.func.count(Application.id).label("application_count"),
             )
             .join(max_form_id, max_form_id.c.form_id == Application.latest_form_id)
             .filter(getattr(Application, order).between(from_date, to_date))
@@ -491,10 +494,12 @@ class Application(
                 subquery_application_count.c.parent_form_id,
                 FormProcessMapper.form_name.label("form_name"),
                 subquery_application_count.c.application_count,
-            ).join(
+            )
+            .join(
                 subquery_application_count,
-                subquery_application_count.c.id == FormProcessMapper.id
-            ).subquery("latest_form_name")
+                subquery_application_count.c.id == FormProcessMapper.id,
+            )
+            .subquery("latest_form_name")
         )
 
         form_versions = (
@@ -531,8 +536,7 @@ class Application(
             .select_from(form_versions)
             .join(
                 latest_form_name,
-                latest_form_name.c.parent_form_id
-                == form_versions.c.parent_form_id,
+                latest_form_name.c.parent_form_id == form_versions.c.parent_form_id,
             )
             .group_by(
                 latest_form_name.c.parent_form_id,

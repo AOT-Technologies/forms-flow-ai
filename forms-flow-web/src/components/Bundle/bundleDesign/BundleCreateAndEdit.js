@@ -15,10 +15,13 @@ import {
   setFormFailureErrorData,
 } from "../../../actions/formActions";
 import { bundleCreate, bundleUpdate } from "../../../apiManager/services/bundleServices";
-import { saveFormProcessMapperPost } from "../../../apiManager/services/processServices";
+import { saveFormProcessMapperPost, saveFormProcessMapperPut } from "../../../apiManager/services/processServices";
+import { useHistory } from "react-router-dom";
+import { setBundleSelectedForms } from "../../../actions/bundleActions";
 
 const BundleCreate = ({ mode }) => {
   const dispatch = useDispatch();
+  const history = useHistory();
   const bundleData = useSelector((state) => state.process.formProcessList);
   const [bundleName, setBundleName] = useState(bundleData.formName || "");
   const [bundleDescription, setBundleDescription] = useState(
@@ -80,11 +83,9 @@ const BundleCreate = ({ mode }) => {
             if (err) {
               console.error(err);
             } else {
-              const forms = selectedForms.map((i, index) => {
-                return { ...i, formOrder: index + 1 };
-              });
-              bundleCreate({ selectedForms: forms }, mapperData.id).then(() => {
-                console.log("hiiii");
+
+              bundleCreate({ selectedForms }, mapperData.id).then((res) => {
+                dispatch(setBundleSelectedForms(res.data?.selectedForms));
                 dispatch(
                   push(`${redirectUrl}bundleflow/${form._id}/view-edit`)
                 );
@@ -105,17 +106,17 @@ const BundleCreate = ({ mode }) => {
       bundleData.description !== bundleDescription
     ) {
       dispatch(
-        saveFormProcessMapperPost({
-          ...bundleData,
-          formName: bundleName,
+        saveFormProcessMapperPut({
+          id: bundleData.id,
+          formName:bundleName,
+          formId: bundleData.formId,
           description: bundleDescription,
         })
       );
     }
-    const forms = selectedForms.map((i, index) => {
-      return { ...i, formOrder: index + 1 };
-    });
-    bundleUpdate({ selectedForms: forms }, bundleData.id).then(() => {
+
+    bundleUpdate({ selectedForms}, bundleData.id).then((res) => {
+      dispatch(setBundleSelectedForms(res.data?.selectedForms));
       dispatch(push(`${redirectUrl}bundleflow/${bundleData.formId}/view-edit`));
     });
   };
@@ -124,14 +125,28 @@ const BundleCreate = ({ mode }) => {
       <Errors errors={errors} />
       <div className="d-flex justify-content-between align-items-center">
         <h3>Create Bundle</h3>
+        <div>
+          {
+            (mode && mode !== BUNDLE_CREATE_ROUTE) ? <button
+            className="btn btn-secondary mr-2"
+            onClick={() => {
+              history.goBack();
+              dispatch(clearFormError("form"));
+            }}
+          >
+            cancel
+          </button> : ""
+          }
+
         <button
           className="btn btn-primary"
           onClick={() => {
-            mode !== BUNDLE_CREATE_ROUTE ? createBundle() : updateBundle();
+            (mode && mode !== BUNDLE_CREATE_ROUTE)  ? updateBundle() : createBundle() ;
           }}
         >
           {buttonText}
         </button>
+        </div>
       </div>
       <section>
         <div className="mt-2 align-items-center">

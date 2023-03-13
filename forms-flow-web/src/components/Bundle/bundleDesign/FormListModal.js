@@ -164,6 +164,7 @@ const FormListModal = React.memo(
                 status:form.status,
                 formType: form.formType,
                 formId: form.formId,
+                formOrder : prev.length + 1
               },
             ]);
           

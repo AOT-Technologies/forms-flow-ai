@@ -77,9 +77,11 @@ class BundleList(Resource):
             # mapper = FormProcessMapperService.create_mapper(mapper_data)
             for form in mapper_data["selected_forms"]:
                 form["form_process_mapper_id"] = mapper_id
-            response = FormBundleService.create_bundle(mapper_data)
+            FormBundleService.create_bundle(mapper_data)
+            response = FormBundleService.get_bundle_by_id(mapper_id=mapper_id)
+
             return (
-                {"bundleId": mapper_id},
+                response,
                 HTTPStatus.CREATED,
             )
         except BaseException as err:  # pylint: disable=broad-except
@@ -139,15 +141,16 @@ class BundleList(Resource):
             }
         ```
         """
-        mapper_json = request.get_json()
+        bundl_json = request.get_json()
         try:
-            mapper_schema = FormBundleProcessMapperSchema()
-            mapper_data = mapper_schema.load(mapper_json)
-            for form in mapper_data["selected_forms"]:
+            bundle_schema = FormBundleProcessMapperSchema()
+            bundle_data = bundle_schema.load(bundl_json)
+            for form in bundle_data["selected_forms"]:
                 form["form_process_mapper_id"] = mapper_id
-            response = FormBundleService.update_bundle(mapper_id, mapper_data)
+            FormBundleService.update_bundle(mapper_id, bundle_data)
+            response = FormBundleService.get_bundle_by_id(mapper_id=mapper_id)
             return (
-                {"bundleId": mapper_id},
+                response,
                 HTTPStatus.CREATED,
             )
         except BaseException as err:  # pylint: disable=broad-except

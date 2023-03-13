@@ -192,7 +192,6 @@ def test_list_forms_inside_bundle(app, client, session, jwt):
     )
 
     assert response.status_code == 201
-    assert response.json["bundleId"] is not None
     # Returns both active & inactive forms for designer.
     response = client.get(f"/form/{bundle_mapper.id}/bundles/forms", headers=headers)
     assert response.status_code == 200

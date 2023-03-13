@@ -26,11 +26,9 @@ const PreviewAndConfirm = React.memo(
 
     const submitData = () => {
       const data = {
-        ...bundleData,
-        anonymous:false,
-        comments: "",
-        processTenant:"",
-        modifiedBy:"shuhaib",
+        id: bundleData.id,
+        formName:bundleData.formName,
+        formId: bundleData.formId,
         status,
         processKey: workflow.value,
         processName: workflow.label,

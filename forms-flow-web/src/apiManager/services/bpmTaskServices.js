@@ -163,10 +163,10 @@ export const fetchUserListWithSearch = ({ searchType, query }, ...rest) => {
   return (dispatch) => {
     httpGETRequest(API.GET_API_USER_LIST, paramData, UserService.getToken())
       .then((res) => {
-        if (res.data) {
-          dispatch(setBPMUserList(res.data));
+        if (res.data?.data) {
+          dispatch(setBPMUserList(res.data?.data));
           //dispatch(setBPMLoader(false));
-          done(null, res.data);
+          done(null, res.data?.data);
         } else {
           done(null, []);
           dispatch(serviceActionError(res));

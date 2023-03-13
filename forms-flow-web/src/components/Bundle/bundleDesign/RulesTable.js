@@ -67,7 +67,7 @@ const RulesTable = ({selectedForms = [],handleModalChange,
           ""
         )}
         <TableRow>
-          <TableCell align="center" colspan="8">
+          <TableCell align="center" colSpan="8">
             <button className="btn btn-outline-primary" onClick={handleModalChange}>
               <i className="fa fa-plus mr-2"></i>
               Create Rules

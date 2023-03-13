@@ -42,7 +42,7 @@ class FormBundling(BaseModel, db.Model):
         for form_info in mapper_info["selected_forms"]:
             form_bundling = cls()
             form_bundling.rules = form_info.get("rules")
-            form_bundling.path_name = form_info.get("path")
+            form_bundling.path_name = form_info.get("path_name")
             form_bundling.mapper_id = form_info.get("mapper_id")
             form_bundling.form_process_mapper_id = form_info.get(
                 "form_process_mapper_id"
@@ -75,6 +75,7 @@ class FormBundling(BaseModel, db.Model):
             for existing_bundle in existing_bundles
             if existing_bundle.id not in updated_bundles
         ]
+
         form_bundles = []
         for form_info in form_bundle_info["selected_forms"]:
             if (_id := form_info.get("id")) is None:
@@ -84,7 +85,7 @@ class FormBundling(BaseModel, db.Model):
                 form_bundling = FormBundling.find_by_id(_id)
 
             form_bundling.rules = form_info.get("rules")
-            form_bundling.path_name = form_info.get("path")
+            form_bundling.path_name = form_info.get("path_name")
             form_bundling.mapper_id = form_info.get("mapper_id")
             form_bundling.form_process_mapper_id = form_info.get(
                 "form_process_mapper_id"

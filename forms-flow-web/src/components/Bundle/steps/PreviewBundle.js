@@ -14,26 +14,31 @@ const PreviewBundle = ({ handleNext, handleBack, activeStep, isLastStep }) => {
   const dispatch = useDispatch();
   const redirectUrl = MULTITENANCY_ENABLED ? `/tenant/${tenantKey}/` : "/";
   const forms = useSelector((state)=> state.bundle.selectedForms);
-  const bundleData = useSelector(state => state.bundle.processData);
+  const bundleData = useSelector(state => state.process.formProcessList);
   const [tabValue, setTabValue] = useState(0);
   const [getFormLoading, setGetFormLoading] = useState(false);
   const [error, setError] = useState("");
   const [form,setForm] = useState({});
  
   const handleTabChange = (e, value) => {
+    setError('');
     setTabValue(value);
   };
 
+ 
+
   const gotoEdit = () =>{
-    dispatch(push(`${redirectUrl}bundleflow/63fc41027e513a3995321307/edit`));
+    dispatch(push(`${redirectUrl}bundleflow/${bundleData.formId}/edit`));
   };
 
   useEffect(() => {
     Formio.cache = {};
     if(forms.length){
       setGetFormLoading(true);
-      dispatch(fetchFormById(forms[tabValue].formId,(err,form)=>{
-        setForm({});
+      setForm({});
+      fetchFormById(forms[tabValue].formId).then((res)=>{
+        setForm(res.data);
+      }).catch((err)=>{
         if(err){
           let error;
           if (err.response?.data) {
@@ -43,11 +48,10 @@ const PreviewBundle = ({ handleNext, handleBack, activeStep, isLastStep }) => {
           }
   
           setError(error);
-        }else{
-          setForm(form);
         }
-          setGetFormLoading(false);
-      }) );
+      }).finally(()=>{
+        setGetFormLoading(false);
+      });
     }
   
   }, [tabValue]);
@@ -55,7 +59,7 @@ const PreviewBundle = ({ handleNext, handleBack, activeStep, isLastStep }) => {
   return (
     <div>
       <div className="d-flex align-items-center justify-content-between">
-        <h3>{bundleData.bundleName}</h3>
+        <h3>{bundleData.formName}</h3>
         <div>
         <button
             className="btn btn-primary"

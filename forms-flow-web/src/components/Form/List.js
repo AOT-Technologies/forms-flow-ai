@@ -682,6 +682,12 @@ const List = React.memo((props) => {
                       >
                         {t("Resource")}
                       </option>
+                      <option
+                        selected={formType === "bundle"}
+                        value="bundle"
+                      >
+                        {t("Bundle")}
+                      </option>
                     </select>
 
                   ) : (

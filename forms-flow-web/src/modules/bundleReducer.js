@@ -2,8 +2,6 @@ import ACTION_CONSTANTS from "../actions/actionConstants";
 
 const initialState = {
  selectedForms: [],
- processData:{}, 
- workflowAssociated:null,
  bundleForms :{
   error: "",
   forms: [],
@@ -32,10 +30,6 @@ const bundle = (state = initialState, action) => {
       return {...state, bundleForms:{...state.bundleForms, page: action.payload}};
     case ACTION_CONSTANTS.BUNDLE_FORM__LIST_FORM_SEARCH:
       return {...state, bundleForms:{...state.bundleForms, searchText: action.payload}};
-    case ACTION_CONSTANTS.BUNDLE_PROCESS_DATA:
-        return {...state, processData:action.payload};
-    case ACTION_CONSTANTS.BUNDLE_WORKFLOW_SET:
-        return {...state, workflowAssociated:action.payload};
     case ACTION_CONSTANTS.BUNDLE_RESET:
       return {...initialState};
       

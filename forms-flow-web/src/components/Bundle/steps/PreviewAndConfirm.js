@@ -9,45 +9,51 @@ import { useDispatch, useSelector } from "react-redux";
 import { push } from "connected-react-router";
 import { useTranslation } from "react-i18next";
 import SaveNext from "./SaveAndNext";
-import { bundleProcessUpdate } from "../../../apiManager/services/bundleServices";
-import { MULTITENANCY_ENABLED } from "../../../constants/constants";
+ import { MULTITENANCY_ENABLED } from "../../../constants/constants";
+import { resetFormProcessData, saveFormProcessMapperPut } from "../../../apiManager/services/processServices";
+import { toast } from "react-toastify";
 
 const PreviewAndConfirm = React.memo(
   ({ handleNext, handleBack, activeStep, steps }) => {
     const { t } = useTranslation();
-    const bundleData = useSelector((state) => state.bundle.processData);
+    const bundleData = useSelector((state) => state.process.formProcessList);
     const selectedForms = useSelector((state) => state.bundle.selectedForms);
-    const workflow = useSelector((state) => state.bundle.workflowAssociated);
-    const [status, setStatus] = useState(bundleData.status || false);
+    const workflow = useSelector((state) => state.process.workflowAssociated);
+    const [status, setStatus] = useState(bundleData.status || "inactive");
     const dispatch = useDispatch();
     const tenantKey = useSelector((state) => state.tenants?.tenantId);
     const redirectUrl = MULTITENANCY_ENABLED ? `/tenant/${tenantKey}/` : "/";
 
     const submitData = () => {
       const data = {
+        id: bundleData.id,
+        formName:bundleData.formName,
         formId: bundleData.formId,
-        formName: bundleData.formName,
         status,
         processKey: workflow.value,
         processName: workflow.label,
       };
-      bundleProcessUpdate(data,bundleData.id).then((res)=>{
-        console.log(res);
-      }).catch((err)=>{
-        console.log(err);
-      });
+      dispatch(saveFormProcessMapperPut(data,(err)=>{
+        if (!err) {
+          toast.success(
+             t("Form Workflow Association Saved.")
+          );
+          dispatch(push(`${redirectUrl}form`));
+          dispatch(resetFormProcessData());
+        } else {
+          toast.error(
+            t("Form Workflow Association Failed.")
+          );
+        }
+      }));
       dispatch(push(`${redirectUrl}form`));
     };
 
-    const bundle = {
-      name: "jaba",
-      totalforms: selectedForms.length,
-      workflowname: workflow.label,
-    };
+ 
     return (
       <div>
         <div className="d-flex align-item-center justify-content-between">
-          <h2>{bundle.name}</h2>
+          <h2>{bundleData.formName}</h2>
           <div>
             <SaveNext
               handleBack={handleBack}
@@ -68,17 +74,17 @@ const PreviewAndConfirm = React.memo(
                   <span className="font-weight-bolder">
                     {t("Bundle Name")} :
                   </span>
-                  <span>{bundle.name}</span>
+                  <span>{bundleData.formName}</span>
                 </div>
                 <div>
                   <span className="font-weight-bolder">{"Total Forms"} :</span>
-                  <span>{bundle.totalforms}</span>
+                  <span>{selectedForms?.length}</span>
                 </div>
                 <div>
                   <span className="font-weight-bolder">
                     {t("Workflow Name")} :
                   </span>
-                  <span>{bundle.workflowname}</span>
+                  <span>{workflow.label}</span>
                 </div>
                 <div>
                   <label>

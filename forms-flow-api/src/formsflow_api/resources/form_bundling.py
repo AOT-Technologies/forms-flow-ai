@@ -141,10 +141,10 @@ class BundleList(Resource):
             }
         ```
         """
-        bundl_json = request.get_json()
+        bundle_json = request.get_json()
         try:
             bundle_schema = FormBundleProcessMapperSchema()
-            bundle_data = bundle_schema.load(bundl_json)
+            bundle_data = bundle_schema.load(bundle_json)
             for form in bundle_data["selected_forms"]:
                 form["form_process_mapper_id"] = mapper_id
             FormBundleService.update_bundle(mapper_id, bundle_data)

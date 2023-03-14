@@ -120,7 +120,7 @@ const PreviewAndConfirm = React.memo(
                     rows={4}
                     variant="outlined"
                     className="text-field"
-                    value={ comment || ""}
+                    value={comment}
                     onChange={(e) =>
                       setComment(e.target.value)
                     }

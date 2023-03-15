@@ -10,11 +10,12 @@ class UserService:
     def _as_dict(user):
         """Returns response dict for user."""
         return {
-            "id": user.get("username"),
+            "id": user.get("id"),
             "email": user.get("email"),
             "firstName": user.get("firstName"),
             "lastName": user.get("lastName"),
             "role": user.get("role"),
+            "username": user.get("username"),
         }
 
     @staticmethod

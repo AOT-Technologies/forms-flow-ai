@@ -8,15 +8,11 @@ from formsflow_api_utils.utils import DESIGNER_GROUP
 from formsflow_api_utils.utils.user_context import UserContext, user_context
 
 from formsflow_api.models import FormBundling, FormProcessMapper
-from formsflow_api.schemas import (
-    FormBundleProcessMapperSchema,
-    FormProcessMapperSchema,
-)
+from formsflow_api.schemas import FormBundleDetailSchema
 from formsflow_api.schemas.form_bundling import SelectedFormSchema
 
 bundle_schema = SelectedFormSchema()
-bundle_mapper_schema = FormBundleProcessMapperSchema()
-mapper_schema = FormProcessMapperSchema()
+form_detail_schema = FormBundleDetailSchema()
 
 
 class FormBundleService:  # pylint:disable=too-few-public-methods
@@ -55,7 +51,7 @@ class FormBundleService:  # pylint:disable=too-few-public-methods
                     forms = FormProcessMapper.find_forms_by_active_parent_from_ids(
                         parent_form_ids
                     )
-                bundle_forms = mapper_schema.dump(forms, many=True)
+                bundle_forms = form_detail_schema.dump(forms, many=True)
             return bundle_forms
         except AttributeError as err:
             raise BusinessException(
@@ -73,7 +69,7 @@ class FormBundleService:  # pylint:disable=too-few-public-methods
             parent_form_ids
         )
         bundle_forms_list = bundle_schema.dump(bundle_forms, many=True)
-        bundle_form_details = mapper_schema.dump(bundle_form_detail, many=True)
+        bundle_form_details = form_detail_schema.dump(bundle_form_detail, many=True)
         selected_forms = {}
         for form in bundle_form_details + bundle_forms_list:
             if form["parentFormId"] in selected_forms:

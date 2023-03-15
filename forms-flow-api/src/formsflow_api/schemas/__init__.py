@@ -28,6 +28,7 @@ from formsflow_api.schemas.user import (
     UsersListSchema,
 )
 
+from .form_bundling import FormBundleDetailSchema
 from .form_history_logs import FormHistorySchema
 from .process import ProcessListSchema
 from .roles import RolesGroupsSchema

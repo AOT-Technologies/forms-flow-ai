@@ -17,3 +17,19 @@ class SelectedFormSchema(Schema):
         """Exclude unknown fields in the deserialized output."""
 
         unknown = EXCLUDE
+
+
+class FormBundleDetailSchema(Schema):
+    """This class manages bundle form detail response schema."""
+
+    class Meta:  # pylint: disable=too-few-public-methods
+        """Exclude unknown fields in the deserialized output."""
+
+        unknown = EXCLUDE
+
+    id = fields.Integer(data_key="latestId")
+    form_name = fields.Str(data_key="formName")
+    form_id = fields.Str(data_key="formId")
+    form_type = fields.Str(data_key="formType")
+    status = fields.Str()
+    parent_form_id = fields.Str(data_key="parentFormId")

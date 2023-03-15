@@ -127,89 +127,6 @@ def test_execute_form_bundling_rules(app, client, session, jwt):
     assert found_new_version
 
 
-def test_list_forms_inside_bundle(app, client, session, jwt):
-    """Test the list forms inside bundle endpoint.."""
-    token = get_token(jwt)
-    headers = {"Authorization": f"Bearer {token}", "content-type": "application/json"}
-    # Create forms.
-    mapper_1: FormProcessMapper = FormProcessMapper.create_from_dict(
-        {
-            "form_id": "123",
-            "form_name": "Test_Form_1",
-            "form_type": "form",
-            "parent_form_id": "123",
-            "status": "active",
-            "created_by": "test",
-        }
-    )
-    mapper_2: FormProcessMapper = FormProcessMapper.create_from_dict(
-        {
-            "form_id": "456",
-            "form_name": "Test_Form_2",
-            "form_type": "form",
-            "parent_form_id": "456",
-            "status": "active",
-            "created_by": "test",
-        }
-    )
-    # Create bundle form process mapper.
-    bundle_mapper: FormProcessMapper = FormProcessMapper.create_from_dict(
-        {
-            "form_id": "100",
-            "form_name": "Bundle Form",
-            "form_type": "bundle",
-            "parent_form_id": "100",
-            "status": "active",
-            "created_by": "test",
-        }
-    )
-    # Payload for adding forms undef bundle
-    bundle_payload = {
-        "selectedForms": [
-            {
-                "mapperId": mapper_1.id,
-                "path": "",
-                "rules": ["teaxt == pageYOffset", "age == 30"],
-                "formOrder": 1,
-                "parentFormId": "123",
-            },
-            {
-                "mapperId": mapper_2.id,
-                "path": "",
-                "rules": [],
-                "formOrder": 2,
-                "parentFormId": "456",
-            },
-        ],
-    }
-    # Create bundle.
-    token = get_token(jwt, role="formsflow-designer", username="designer")
-    headers = {"Authorization": f"Bearer {token}", "content-type": "application/json"}
-    response = client.post(
-        f"/form/{bundle_mapper.id}/bundles",
-        headers=headers,
-        json=bundle_payload,
-    )
-
-    assert response.status_code == 201
-    # Returns both active & inactive forms for designer.
-    response = client.get(f"/form/{bundle_mapper.id}/bundles/forms", headers=headers)
-    assert response.status_code == 200
-    assert len(response.json) == 2
-    # Update a form inside bundle to inactive.
-    # Designer can still get 2 forms(both active & inactive)
-    mapper_1.update({"status": "inactive"})
-    response = client.get(f"/form/{bundle_mapper.id}/bundles/forms", headers=headers)
-    assert response.status_code == 200
-    assert len(response.json) == 2
-    # List active forms inside bundle for reviewer & client role only if bundle status is active.
-    token = get_token(jwt)
-    headers = {"Authorization": f"Bearer {token}", "content-type": "application/json"}
-    response = client.get(f"/form/{bundle_mapper.id}/bundles/forms", headers=headers)
-    assert response.status_code == 200
-    assert len(response.json) == 1
-
-
 def test_bundle_get_by_id(app, client, session, jwt):
     """Test bundle get by id endpoint.."""
     token = get_token(jwt)
@@ -280,12 +197,20 @@ def test_bundle_get_by_id(app, client, session, jwt):
         f"/form/{bundle_mapper.id}/bundles", headers=headers, json=bundle_payload
     )
     assert response.status_code == 200
-    assert len(response.json) == 1
-    assert len(response.json["selectedForms"]) == 2
-    # Access get bundle by id with invalid token
+    assert len(response.json) == 2
+    # Access get bundle by id with client token
     token = get_token(jwt)
     headers = {"Authorization": f"Bearer {token}", "content-type": "application/json"}
     response = client.get(
         f"/form/{bundle_mapper.id}/bundles", headers=headers, json=bundle_payload
     )
-    assert response.status_code == 401
+    assert response.status_code == 200
+    assert len(response.json) == 2
+    # Update bundle to inactive
+    bundle_mapper.update({"status": "inactive"})
+    # Since bundle is inactive client will get empty list.
+    response = client.get(
+        f"/form/{bundle_mapper.id}/bundles", headers=headers, json=bundle_payload
+    )
+    assert response.status_code == 200
+    assert len(response.json) == 0

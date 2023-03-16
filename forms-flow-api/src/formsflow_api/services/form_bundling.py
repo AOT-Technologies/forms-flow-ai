@@ -30,53 +30,35 @@ class FormBundleService:  # pylint:disable=too-few-public-methods
 
     @staticmethod
     @user_context
-    def get_forms_bundle(mapper_id: int, **kwargs):
-        """Get forms inside a bundle."""
-        bundle_forms: List = []
+    def get_bundle_by_id(mapper_id: int, **kwargs):
+        """Get bundle details by mapper_id."""
         parent_form_ids: Set[str] = []
+        bundle_forms: List = []
         user: UserContext = kwargs["user"]
-        form = FormProcessMapper.find_form_by_id(mapper_id)
+        bundle = FormProcessMapper.find_form_by_id(mapper_id)
         try:
             if (
-                DESIGNER_GROUP in user.roles and form.deleted is False
-            ) or form.status == "active":
-                form_bundles = FormBundling.find_by_form_process_mapper_id(mapper_id)
-                for form_bundle in form_bundles:
+                DESIGNER_GROUP in user.roles and bundle.deleted is False
+            ) or bundle.status == "active":
+                bundle_forms = FormBundling.find_by_form_process_mapper_id(mapper_id)
+                for form_bundle in bundle_forms:
                     parent_form_ids.append(form_bundle.parent_form_id)
-                if DESIGNER_GROUP in user.roles:
-                    forms = FormProcessMapper.find_forms_by_parent_from_ids(
-                        parent_form_ids
-                    )
-                else:
-                    forms = FormProcessMapper.find_forms_by_active_parent_from_ids(
-                        parent_form_ids
-                    )
-                bundle_forms = form_detail_schema.dump(forms, many=True)
+                bundle_form_detail = FormProcessMapper.find_forms_by_parent_from_ids(
+                    parent_form_ids
+                )
+                bundle_forms_list = bundle_schema.dump(bundle_forms, many=True)
+                bundle_form_details = form_detail_schema.dump(
+                    bundle_form_detail, many=True
+                )
+                selected_forms = {}
+                for form in bundle_form_details + bundle_forms_list:
+                    if form["parentFormId"] in selected_forms:
+                        selected_forms[form["parentFormId"]].update(form)
+                    else:
+                        selected_forms[form["parentFormId"]] = form
+                bundle_forms = list(selected_forms.values())
             return bundle_forms
         except AttributeError as err:
             raise BusinessException(
-                "Bundle does not exist.", HTTPStatus.BAD_REQUEST
+                "Bundle does not exist.", HTTPStatus.NOT_FOUND
             ) from err
-
-    @staticmethod
-    def get_bundle_by_id(mapper_id: int):
-        """Get bundle details by mapper_id."""
-        parent_form_ids: Set[str] = []
-        bundle_forms = FormBundling.find_by_form_process_mapper_id(mapper_id)
-        for form_bundle in bundle_forms:
-            parent_form_ids.append(form_bundle.parent_form_id)
-        bundle_form_detail = FormProcessMapper.find_forms_by_parent_from_ids(
-            parent_form_ids
-        )
-        bundle_forms_list = bundle_schema.dump(bundle_forms, many=True)
-        bundle_form_details = form_detail_schema.dump(bundle_form_detail, many=True)
-        selected_forms = {}
-        for form in bundle_form_details + bundle_forms_list:
-            if form["parentFormId"] in selected_forms:
-                selected_forms[form["parentFormId"]].update(form)
-            else:
-                selected_forms[form["parentFormId"]] = form
-        bundle_details = {
-            "selectedForms": list(selected_forms.values()),
-        }
-        return bundle_details

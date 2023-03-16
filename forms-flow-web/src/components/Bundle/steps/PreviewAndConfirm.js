@@ -54,8 +54,7 @@ const PreviewAndConfirm = React.memo(
  
     return (
       <div>
-        <div className="d-flex align-item-center justify-content-between">
-          <h2>{bundleData.formName}</h2>
+        <div className="d-flex align-items-center justify-content-end my-4">
           <div>
             <SaveNext
               handleBack={handleBack}

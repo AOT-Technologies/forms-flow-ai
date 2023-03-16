@@ -78,7 +78,8 @@ export const DraftList = React.memo(() => {
     dispatch(fetchDrafts(currentPage.current, countPerPageRef.current));
   }, [dispatch, currentPage, countPerPageRef]);
 
-  const onYes = () => {
+  const onYes = (e) => {
+    e.currentTarget.disabled = true;
     deleteDraftbyId(draftDelete.draftId)
       .then(() => {
         toast.success(t("Draft Deleted Successfully"));
@@ -210,7 +211,7 @@ export const DraftList = React.memo(() => {
             }
             
             onNo={() => onNo()}
-            onYes={() => onYes()}
+            onYes={(e) => onYes(e)}
           />
           <Head items={headerList()} page="Drafts" />
           <br />

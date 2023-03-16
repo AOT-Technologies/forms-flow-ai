@@ -6,7 +6,7 @@ from marshmallow import EXCLUDE, Schema, fields
 class SelectedFormSchema(Schema):
     """This class manages form bundling table schema."""
 
-    id = fields.Integer(data_key="id", required=False) 
+    id = fields.Integer(data_key="id", required=False)
     rules = fields.List(fields.String(), required=False)
     form_order = fields.Integer(data_key="formOrder", required=False)
     parent_form_id = fields.Str(data_key="parentFormId")

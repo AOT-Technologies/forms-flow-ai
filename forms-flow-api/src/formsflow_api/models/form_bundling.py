@@ -77,8 +77,6 @@ class FormBundling(BaseModel, db.Model):
                 form_bundling = FormBundling.find_by_id(_id)
 
             form_bundling.rules = form_info.get("rules")
-            form_bundling.path_name = form_info.get("path_name")
-            form_bundling.mapper_id = form_info.get("mapper_id")
             form_bundling.form_process_mapper_id = form_info.get(
                 "form_process_mapper_id"
             )

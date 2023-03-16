@@ -50,7 +50,7 @@ import {
 import { setBpmFormSearch } from "../../actions/formActions";
 import { addTenantkey } from "../../helper/helper";
 import { formCreate, formUpdate } from "../../apiManager/services/FormServices";
-import { bundleColumns, bundleData, designerColums, expandRow, getoptions, userColumns } from "./constants/table";
+import {  designerColums,  getoptions, userColumns } from "./constants/table";
 import paginationFactory from "react-bootstrap-table2-paginator";
 import filterFactory from "react-bootstrap-table2-filter";
 import overlayFactory from "react-bootstrap-table2-overlay";
@@ -58,6 +58,7 @@ import { SpinnerSVG } from "../../containers/SpinnerSVG";
 import { getFormattedForm, INACTIVE } from "./constants/formListConstants";
 import Tabs from '@material-ui/core/Tabs';
 import Tab from '@material-ui/core/Tab';
+import BundleTable from "./constants/BundleTable";
 
 const List = React.memo((props) => {
   const { t } = useTranslation();
@@ -100,7 +101,7 @@ const List = React.memo((props) => {
   const sortOrder = useSelector((state) => state.bpmForms.sortOrder);
   const formCheckList = useSelector((state) => state.formCheckList.formList);
   const columns = isDesigner ? designerColums(t) : userColumns(t);
-  const bundleColumn = bundleColumns();
+ 
 
   const formAccess = useSelector((state) => state.user?.formAccess || []);
   const [tabValue, setTabValue] = useState(0);
@@ -126,10 +127,21 @@ const List = React.memo((props) => {
     dispatch(setFormCheckList([]));
   }, [dispatch]);
 
+ 
+  useEffect(()=>{
+    dispatch(setBPMFormLimit(5));
+    if(tabValue === 1){
+      dispatch(setBpmFormType('bundle'));
+    }else{
+      dispatch(setBpmFormType('form'));
+    }
+  },[tabValue]);
+
   useEffect(() => {
     setIsLoading(false);
     dispatch(setBPMFormListLoading(true));
   }, []);
+  
   const fetchForms = () => {
     setShowClearButton(searchText);
     let filters = [pageNo, limit, sortBy, sortOrder, searchText];
@@ -177,6 +189,7 @@ const List = React.memo((props) => {
     setTabValue(value);
   };
 
+console.log("tab vlies sfdf,",tabValue);
   const downloadForms = async () => {
     let downloadForm = [];
     for (const form of formCheckList) {
@@ -256,6 +269,16 @@ const List = React.memo((props) => {
         }
       })
     );
+  };
+
+  const fetchBundles = ()=>{
+    setShowClearButton(searchText);
+    let filters = [pageNo, limit, sortBy, sortOrder, searchText];
+    if (isDesigner) {
+      filters.push('bundle');
+    }
+    dispatch(setFormSearchLoading(true));
+    dispatch(fetchBPMFormList(...filters));
   };
 
   const isMapperSaveNeeded = (mapperData, formdata, applicationData) => {
@@ -703,13 +726,14 @@ const List = React.memo((props) => {
         textColor="primary"
         onChange={handleTabChange} 
       >
-        <Tab label="Forms" />
-        <Tab label="Bundle" />
+        <Tab label="All Forms" />
+        <Tab label="Form Bundle" onClick={()=> fetchBundles()}/>
     
       </Tabs>
-      {
-          tabValue === 0 ? (
-            <ToolkitProvider
+      
+          {
+            tabValue === 0 ? (
+          <ToolkitProvider
               bootstrap4
               keyField="id"
               data={formData}
@@ -724,7 +748,7 @@ const List = React.memo((props) => {
                       spinner
                       text={t("Loading...")}
                     >
-                      <BootstrapTable
+                        <BootstrapTable
                         remote={{
                           pagination: true,
                           filter: true,
@@ -752,33 +776,23 @@ const List = React.memo((props) => {
                             }),
                           },
                         })}
+                        
                       />
+                     
+                    
+                      
                     </LoadingOverlay>
                   </div>
                 );
               }}
             </ToolkitProvider>
-          ) : ( 
-          <ToolkitProvider
-          bootstrap4
-          keyField="id"
-          data={bundleData}
-          columns={bundleColumn}
-          search
-        >
-          {(props) => {
-            return (
-              <div>
-                  <BootstrapTable
-                    {...props.baseProps}
-                    expandRow= {expandRow }
-                  />
-              </div>
-            );
-          }}
-        </ToolkitProvider>
-        )
-      }
+            ) : (
+              <BundleTable />
+            )
+          }
+            
+          
+      
             
           </section>
         </div>

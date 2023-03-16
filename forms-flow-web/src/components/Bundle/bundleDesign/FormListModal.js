@@ -157,12 +157,8 @@ const FormListModal = React.memo(
               ...prev,
               {
                 formName: form.formName,
-                path: "nothing",
-                mapperId: form.id,
                 rules:[],
                 parentFormId: form.parentFormId,
-                status:form.status,
-                formType: form.formType,
                 formId: form.formId,
                 formOrder : prev.length + 1
               },

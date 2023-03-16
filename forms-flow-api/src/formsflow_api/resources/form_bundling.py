@@ -120,8 +120,6 @@ class BundleList(Resource):
         {
             "selectedForms": [
             {
-                "mapperId": "9",
-                "path": "duplicate-version-26c6b8",
                 "rules": [
                     "teaxt == pageYOffset", "age == 30"
                 ],
@@ -129,8 +127,6 @@ class BundleList(Resource):
                 "parentFormId":"dfdsfadsf455151"
             },
             {
-                "mapperId": "6",
-                "path": "duplicate-version-b599e2",
                 "rules": [
                     "teaxt == pageYOffset", "age == 30"
                 ],

@@ -43,16 +43,12 @@ def test_execute_form_bundling_rules(app, client, session, jwt):
     # Create bundle records
     FormBundling(
         rules=[],
-        path_name="test_form_path_1",
-        mapper_id=mapper_1.id,
         form_process_mapper_id=bundle_mapper.id,
         form_order=1,
         parent_form_id="123",
     ).save()
     bundle_2: FormBundling = FormBundling(
         rules=[],
-        path_name="test_form_path_2",
-        mapper_id=mapper_2.id,
         form_process_mapper_id=bundle_mapper.id,
         form_order=2,
         parent_form_id="456",
@@ -250,15 +246,11 @@ def test_bundle_get_by_id(app, client, session, jwt):
     bundle_payload = {
         "selectedForms": [
             {
-                "mapperId": mapper_1.id,
-                "path": "",
                 "rules": ["teaxt == pageYOffset", "age == 30"],
                 "formOrder": 1,
                 "parentFormId": "123",
             },
             {
-                "mapperId": mapper_2.id,
-                "path": "",
                 "rules": [],
                 "formOrder": 2,
                 "parentFormId": "456",

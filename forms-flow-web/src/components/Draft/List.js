@@ -211,7 +211,7 @@ export const DraftList = React.memo(() => {
             }
             
             onNo={() => onNo()}
-            onYes={(e) => onYes(e)}
+            onYes={onYes}
           />
           <Head items={headerList()} page="Drafts" />
           <br />

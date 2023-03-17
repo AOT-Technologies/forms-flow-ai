@@ -1,4 +1,5 @@
 //TODO make it dynamic from env
 /* istanbul ignore file */
-import {MULTITENANCY_ENABLED} from "../constants/constants";
-export const REVIEWER_GROUP = MULTITENANCY_ENABLED ? "formsflow-reviewer" : "formsflow/formsflow-reviewer";
+import {KEYCLOAK_ENABLE_CLIENT_AUTH} from "../constants/constants";
+
+export const REVIEWER_GROUP = KEYCLOAK_ENABLE_CLIENT_AUTH ? "formsflow-reviewer" : "formsflow/formsflow-reviewer";

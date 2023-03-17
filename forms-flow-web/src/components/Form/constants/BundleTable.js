@@ -101,23 +101,19 @@ function BundleTable() {
   
   const noDataFound = () => {
     return (
-      <span >
+      <tbody >
+        <tr>
+      <td colSpan="10">
         <div
-          className="container"
-          style={{
-            maxWidth: "900px",
-            margin: "auto",
-            height: "50vh",
-            display: "flex",
-            flexDirection: "column",
-            alignItems: "center",
-            justifyContent: "center",
-          }}
+          className="d-flex align-items-center justify-content-center flex-column w-100"
+          style={{minHeight:"300px"}}
         >
           <h3>No forms found</h3>
           <p>Please change the selected filters to view Forms</p>
         </div>
-      </span>
+      </td>
+      </tr>
+      </tbody>
     );
   };
 
@@ -176,7 +172,7 @@ function BundleTable() {
               </InputGroup>
             </th>
           </tr>
-          <tr style={{backgroundColor:'#F2F2F2'}}>
+          <tr className="table-header table-bordered" style={{backgroundColor:'#F2F2F2'}}>
             <th scope="col">Bundle Name</th>
             <th scope="col">Date Created</th>
             <th scope="col">Operations</th>
@@ -184,11 +180,11 @@ function BundleTable() {
         </thead>
         {
         formData?.length ? (
-        <tbody>
+        <tbody className="table-bordered" >
         {
           formData.map((e, index) => {
             return (
-              <tr key={index}>
+              <tr key={index} >
                 <td>{e.title}</td>
                 <td>{formatDate(e.dateCreated)}</td>
                 <td>

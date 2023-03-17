@@ -473,23 +473,22 @@ const List = React.memo((props) => {
               );
             }}
           />
-          <div className="flex-container">
-            {/*<img src="/form.svg" width="30" height="30" alt="form" />*/}
-            <div className="flex-item-left">
-              <div style={{ display: "flex" }}>
-                <h3 className="task-head" style={{ marginTop: "3px" }}>
-                  <i className="fa fa-wpforms" aria-hidden="true" />
-                </h3>
-                <h3 className="task-head">
-                  {" "}
-                  <span className="forms-text" style={{ marginLeft: "1px" }}>
-                    {t("Forms")}
-                  </span>
-                </h3>
-              </div>
-            </div>
-            <div className="flex-item-right">
-             {(isDesigner && tabValue === 1) && (
+          <section className="custom-grid grid-forms">
+            <Errors errors={errors} />
+            
+            <div className="d-flex align-items-center justify-content-between">
+            <Tabs
+        value={tabValue}
+        indicatorColor="primary"
+        textColor="primary"
+        onChange={handleTabChange} 
+      >
+        <Tab label="Forms" />
+       { isDesigner && <Tab label="Form Bundle" onClick={()=> fetchBundles()}/>}
+    
+      </Tabs>
+      <div className="flex-item-right">
+             {(isDesigner && tabValue === 1) ?
                 <Link
                   to={`${redirectUrl}bundleflow/create`}
                   className="btn btn-primary btn-left btn-sm"
@@ -497,18 +496,19 @@ const List = React.memo((props) => {
                   <i className="fa fa-plus fa-lg" />{" "}
                   <Translation>{(t) => t("Create Bundle")}</Translation>
                 </Link>
-              )} 
+
+               : ""}
               {(isDesigner && tabValue === 0) && (
-                <Link
+                <>
+                 <Link
                   to={`${redirectUrl}formflow/create`}
                   className="btn btn-primary btn-left btn-sm"
                 >
                   <i className="fa fa-plus fa-lg" />{" "}
                   <Translation>{(t) => t("Create Form")}</Translation>
                 </Link>
-              )}
-              {(isDesigner && tabValue === 0) && (
-                <>
+ 
+               
                   <Button
                     className="btn btn-primary btn-sm form-btn pull-right btn-left"
                     onClick={uploadClick}
@@ -528,10 +528,6 @@ const List = React.memo((props) => {
                     }}
                     ref={uploadFormNode}
                   />
-                </>
-              )}
-              {(isDesigner && tabValue === 0) && (
-                <>
                   <button
                     className="btn btn-outline-primary pull-right btn-left "
                     onClick={downloadForms}
@@ -543,20 +539,8 @@ const List = React.memo((props) => {
                 </>
               )}
             </div>
-          </div>
-          <section className="custom-grid grid-forms">
-            <Errors errors={errors} />
-            
-            <Tabs
-        value={tabValue}
-        indicatorColor="primary"
-        textColor="primary"
-        onChange={handleTabChange} 
-      >
-        <Tab label="Forms" />
-       { isDesigner && <Tab label="Form Bundle" onClick={()=> fetchBundles()}/>}
-    
-      </Tabs>
+
+            </div>
       
           {
             tabValue === 0 ? (

@@ -72,7 +72,7 @@ const StepperComponent = () => {
           setLoading(false);
         }else{
           getBundle(mapperData.id).then((res)=>{
-            dispatch(setBundleSelectedForms(res.data.selectedForms));
+            dispatch(setBundleSelectedForms(res.data));
           }).catch((err)=>{
             console.error(err);
           }).finally(()=>{

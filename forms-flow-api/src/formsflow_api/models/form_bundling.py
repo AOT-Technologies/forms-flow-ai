@@ -16,12 +16,6 @@ class FormBundling(BaseModel, db.Model):
 
     id = db.Column(db.Integer, primary_key=True)
     rules = db.Column(ARRAY(db.String), nullable=True, comment="Rules for bundling")
-    path_name = db.Column(
-        db.String(100), nullable=False, comment="Path name of form inside bundle"
-    )
-    mapper_id = db.Column(
-        db.Integer, nullable=False, comment="mapper id of form inside bundle"
-    )
     form_process_mapper_id = db.Column(
         db.Integer,
         db.ForeignKey("form_process_mapper.id"),
@@ -42,8 +36,6 @@ class FormBundling(BaseModel, db.Model):
         for form_info in mapper_info["selected_forms"]:
             form_bundling = cls()
             form_bundling.rules = form_info.get("rules")
-            form_bundling.path_name = form_info.get("path_name")
-            form_bundling.mapper_id = form_info.get("mapper_id")
             form_bundling.form_process_mapper_id = form_info.get(
                 "form_process_mapper_id"
             )
@@ -85,8 +77,6 @@ class FormBundling(BaseModel, db.Model):
                 form_bundling = FormBundling.find_by_id(_id)
 
             form_bundling.rules = form_info.get("rules")
-            form_bundling.path_name = form_info.get("path_name")
-            form_bundling.mapper_id = form_info.get("mapper_id")
             form_bundling.form_process_mapper_id = form_info.get(
                 "form_process_mapper_id"
             )

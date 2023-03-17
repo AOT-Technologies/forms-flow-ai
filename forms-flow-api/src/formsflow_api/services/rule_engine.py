@@ -43,11 +43,10 @@ class RuleEngine:  # pylint:disable=too-few-public-methods
                 is_rule_passed = False
                 current_app.logger.info("Error on rule evaluation")
                 current_app.logger.info(e)
-
             current_app.logger.debug(
-                "Finished executing the rule {{ %s }} --> Mapper ID : %s",
+                "Finished executing the rule {{ %s }} --> Form bundle ID : %s",
                 form_bundle.rules,
-                form_bundle.mapper_id,
+                form_bundle.id,
             )
             if is_rule_passed:
                 parent_form_ids.append(form_bundle.parent_form_id)

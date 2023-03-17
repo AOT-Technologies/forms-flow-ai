@@ -23,6 +23,7 @@ const PreviewAndConfirm = React.memo(
     const dispatch = useDispatch();
     const tenantKey = useSelector((state) => state.tenants?.tenantId);
     const redirectUrl = MULTITENANCY_ENABLED ? `/tenant/${tenantKey}/` : "/";
+    const [comment , setComment] = useState(bundleData.comments || "");
 
     const submitData = () => {
       const data = {
@@ -30,6 +31,7 @@ const PreviewAndConfirm = React.memo(
         formName:bundleData.formName,
         formId: bundleData.formId,
         status,
+        comments: comment,
         processKey: workflow.value,
         processName: workflow.label,
       };
@@ -52,8 +54,7 @@ const PreviewAndConfirm = React.memo(
  
     return (
       <div>
-        <div className="d-flex align-item-center justify-content-between">
-          <h2>{bundleData.formName}</h2>
+        <div className="d-flex align-items-center justify-content-end my-4">
           <div>
             <SaveNext
               handleBack={handleBack}
@@ -118,7 +119,10 @@ const PreviewAndConfirm = React.memo(
                     rows={4}
                     variant="outlined"
                     className="text-field"
-                    value={""}
+                    value={comment}
+                    onChange={(e) =>
+                      setComment(e.target.value)
+                    }
                   />
                 </div>
               </form>

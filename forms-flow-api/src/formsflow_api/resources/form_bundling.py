@@ -120,8 +120,6 @@ class BundleList(Resource):
         {
             "selectedForms": [
             {
-                "mapperId": "9",
-                "path": "duplicate-version-26c6b8",
                 "rules": [
                     "teaxt == pageYOffset", "age == 30"
                 ],
@@ -129,8 +127,6 @@ class BundleList(Resource):
                 "parentFormId":"dfdsfadsf455151"
             },
             {
-                "mapperId": "6",
-                "path": "duplicate-version-b599e2",
                 "rules": [
                     "teaxt == pageYOffset", "age == 30"
                 ],
@@ -164,7 +160,7 @@ class BundleList(Resource):
             return response, status
 
     @staticmethod
-    @auth.has_one_of_roles([DESIGNER_GROUP])
+    @auth.require
     @API.response(200, "OK:- Successful request.")
     @API.response(
         400,
@@ -183,25 +179,9 @@ class BundleList(Resource):
                 bundle_detail,
                 HTTPStatus.OK,
             )
-        except PermissionError as err:
-            response, status = (
-                {
-                    "type": "Permission Denied",
-                    "message": f"Access to bundle id - {mapper_id} is prohibited.",
-                },
-                HTTPStatus.FORBIDDEN,
-            )
-            current_app.logger.warning(err)
-            return response, status
-        except BaseException as err:  # pylint: disable=broad-except
-            response, status = {
-                "type": "Bad Request Error",
-                "message": "Invalid request passed",
-            }, HTTPStatus.BAD_REQUEST
-
-            current_app.logger.warning(response)
-            current_app.logger.warning(err)
-            return response, status
+        except Exception as unexpected_error:
+            current_app.logger.warning(unexpected_error)
+            raise unexpected_error
 
 
 @cors_preflight("POST,OPTIONS")
@@ -272,33 +252,3 @@ class FormBundleExecuteRules(Resource):
             current_app.logger.warning(response)
             current_app.logger.warning(application_err)
             return response, status
-
-
-@cors_preflight("GET, OPTIONS")
-@API.route("/forms", methods=["GET", "OPTIONS"])
-@API.doc(params={"mapper_id": "Forms inside a bundle by mapper_id"})
-class BundleFormsById(Resource):
-    """Resource for listing forms inside a bundle."""
-
-    @staticmethod
-    @auth.require
-    @profiletime
-    @API.doc(
-        responses={
-            200: "OK:- Successful request.",
-            400: "BAD_REQUEST:- Invalid request.",
-            403: "FORBIDDEN:- Permission denied",
-        },
-    )
-    def get(mapper_id: int):
-        """
-        Get forms by mapper_id.
-
-        Get forms inside a bundle by mapper_id.
-        """
-        try:
-            response = FormBundleService.get_forms_bundle(mapper_id)
-            return response, HTTPStatus.OK
-        except Exception as unexpected_error:
-            current_app.logger.warning(unexpected_error)
-            raise unexpected_error

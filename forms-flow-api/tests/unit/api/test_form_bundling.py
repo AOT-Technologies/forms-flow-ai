@@ -19,7 +19,7 @@ def test_execute_form_bundling_rules(app, client, session, jwt):
             "created_by": "test",
         }
     )
-    mapper_2: FormProcessMapper = FormProcessMapper.create_from_dict(
+    FormProcessMapper.create_from_dict(
         {
             "form_id": "456",
             "form_name": "Test_Form_2",
@@ -43,16 +43,12 @@ def test_execute_form_bundling_rules(app, client, session, jwt):
     # Create bundle records
     FormBundling(
         rules=[],
-        path_name="test_form_path_1",
-        mapper_id=mapper_1.id,
         form_process_mapper_id=bundle_mapper.id,
         form_order=1,
         parent_form_id="123",
     ).save()
     bundle_2: FormBundling = FormBundling(
         rules=[],
-        path_name="test_form_path_2",
-        mapper_id=mapper_2.id,
         form_process_mapper_id=bundle_mapper.id,
         form_order=2,
         parent_form_id="456",
@@ -132,7 +128,7 @@ def test_bundle_get_by_id(app, client, session, jwt):
     token = get_token(jwt)
     headers = {"Authorization": f"Bearer {token}", "content-type": "application/json"}
     # Create forms.
-    mapper_1: FormProcessMapper = FormProcessMapper.create_from_dict(
+    FormProcessMapper.create_from_dict(
         {
             "form_id": "123",
             "form_name": "Test_Form_1",
@@ -142,7 +138,7 @@ def test_bundle_get_by_id(app, client, session, jwt):
             "created_by": "test",
         }
     )
-    mapper_2: FormProcessMapper = FormProcessMapper.create_from_dict(
+    FormProcessMapper.create_from_dict(
         {
             "form_id": "456",
             "form_name": "Test_Form_2",
@@ -167,15 +163,11 @@ def test_bundle_get_by_id(app, client, session, jwt):
     bundle_payload = {
         "selectedForms": [
             {
-                "mapperId": mapper_1.id,
-                "path": "",
                 "rules": ["teaxt == pageYOffset", "age == 30"],
                 "formOrder": 1,
                 "parentFormId": "123",
             },
             {
-                "mapperId": mapper_2.id,
-                "path": "",
                 "rules": [],
                 "formOrder": 2,
                 "parentFormId": "456",

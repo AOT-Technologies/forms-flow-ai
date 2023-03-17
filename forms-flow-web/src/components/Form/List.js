@@ -1,7 +1,5 @@
 import React, { useEffect, useRef, useState } from "react";
 import { connect, useDispatch, useSelector } from "react-redux";
-import BootstrapTable from "react-bootstrap-table-next";
-import ToolkitProvider from "react-bootstrap-table2-toolkit";
 import { Link } from "react-router-dom";
 import { Button } from "react-bootstrap";
 import { toast } from "react-toastify";
@@ -17,10 +15,10 @@ import {
   setFormFailureErrorData,
   setBPMFormLimit,
   setBPMFormListLoading,
-  setBPMFormListPage,
-  setBPMFormListSort,
   setFormDeleteStatus,
   setBpmFormType,
+  setBPMFormListPage,
+  setBpmFormSearch,
 } from "../../actions/formActions";
 import Confirm from "../../containers/Confirm";
 import {
@@ -39,7 +37,6 @@ import {
 import FileModal from "./FileUpload/fileUploadModal";
 import { useTranslation, Translation } from "react-i18next";
 import { addHiddenApplicationComponent } from "../../constants/applicationComponent";
-import LoadingOverlay from "react-loading-overlay";
 import {
   getFormProcesses,
   saveFormProcessMapperPost,
@@ -47,18 +44,13 @@ import {
   unPublishForm,
   getApplicationCount,
 } from "../../apiManager/services/processServices";
-import { setBpmFormSearch } from "../../actions/formActions";
 import { addTenantkey } from "../../helper/helper";
 import { formCreate, formUpdate } from "../../apiManager/services/FormServices";
-import {  designerColums,  getoptions, userColumns } from "./constants/table";
-import paginationFactory from "react-bootstrap-table2-paginator";
-import filterFactory from "react-bootstrap-table2-filter";
-import overlayFactory from "react-bootstrap-table2-overlay";
-import { SpinnerSVG } from "../../containers/SpinnerSVG";
 import { getFormattedForm, INACTIVE } from "./constants/formListConstants";
 import Tabs from '@material-ui/core/Tabs';
 import Tab from '@material-ui/core/Tab';
 import BundleTable from "./constants/BundleTable";
+import FormTable from "./constants/FormTable";
 
 const List = React.memo((props) => {
   const { t } = useTranslation();
@@ -75,32 +67,18 @@ const List = React.memo((props) => {
     onYes,
     tenants,
   } = props;
-  const searchInputBox = useRef("");
   const isBPMFormListLoading = useSelector((state) => state.bpmForms.isActive);
   const designerFormLoading = useSelector(
     (state) => state.formCheckList.designerFormLoading
   );
-  const seachFormLoading = useSelector(
-    (state) => state.formCheckList.searchFormLoading
-  );
-  const [showClearButton, setShowClearButton] = useState("");
-  const [isAscend, setIsAscending] = useState(true);
   const searchText = useSelector((state) => state.bpmForms.searchText);
-  const [searchTextInput, setSearchTextInput] = useState(searchText);
-  const [isLoading, setIsLoading] = React.useState(false);
-
   const formType = useSelector((state) => state.bpmForms.formType);
-
-
   const isDesigner = userRoles.includes(STAFF_DESIGNER);
-  const bpmForms = useSelector((state) => state.bpmForms);
   const pageNo = useSelector((state) => state.bpmForms.page);
   const limit = useSelector((state) => state.bpmForms.limit);
-  const totalForms = useSelector((state) => state.bpmForms.totalForms);
   const sortBy = useSelector((state) => state.bpmForms.sortBy);
   const sortOrder = useSelector((state) => state.bpmForms.sortOrder);
   const formCheckList = useSelector((state) => state.formCheckList.formList);
-  const columns = isDesigner ? designerColums(t) : userColumns(t);
  
 
   const formAccess = useSelector((state) => state.user?.formAccess || []);
@@ -130,6 +108,8 @@ const List = React.memo((props) => {
  
   useEffect(()=>{
     dispatch(setBPMFormLimit(5));
+    dispatch(setBPMFormListPage(1));
+    dispatch(setBpmFormSearch(''));
     if(tabValue === 1){
       dispatch(setBpmFormType('bundle'));
     }else{
@@ -138,12 +118,12 @@ const List = React.memo((props) => {
   },[tabValue]);
 
   useEffect(() => {
-    setIsLoading(false);
+    // setIsLoading(false);
     dispatch(setBPMFormListLoading(true));
   }, []);
   
   const fetchForms = () => {
-    setShowClearButton(searchText);
+    // setShowClearButton(searchText);
     let filters = [pageNo, limit, sortBy, sortOrder, searchText];
     if (isDesigner) {
       filters.push(formType);
@@ -189,7 +169,6 @@ const List = React.memo((props) => {
     setTabValue(value);
   };
 
-console.log("tab vlies sfdf,",tabValue);
   const downloadForms = async () => {
     let downloadForm = [];
     for (const form of formCheckList) {
@@ -213,38 +192,6 @@ console.log("tab vlies sfdf,",tabValue);
     e.preventDefault();
     uploadFormNode.current?.click();
     return false;
-  };
-  const handlePageChange = (type, newState) => {
-    dispatch(setBPMFormLimit(newState.sizePerPage));
-    dispatch(setBPMFormListPage(newState.page));
-  };
-  const handleSearch = () => {
-    if (searchText != searchInputBox.current.value) {
-      searchInputBox.current.value === '' ? dispatch(setBPMFormLimit(5)) : '';
-      dispatch(setBPMFormListPage(1));
-      dispatch(setBpmFormSearch(searchInputBox.current.value));
-    }
-  };
-
-  const handleTypeChange = (type) => {
-    dispatch(setBPMFormListPage(1));
-    dispatch(setBPMFormLimit(5));
-    dispatch(setBpmFormType(type));
-  };
-  const onClear = () => { 
-    setSearchTextInput("");
-    dispatch(setBpmFormSearch(''));
-    dispatch(setBPMFormLimit(5));
-    setShowClearButton(false);
-  };
-  useEffect(() => {
-    const updatedQuery = isAscend ? "asc" : "desc";
-    dispatch(setBPMFormListSort(updatedQuery));
-  }, [isAscend]);
-  const handleSort = () => {
-    setIsAscending(!isAscend);
-    dispatch(setBPMFormListPage(1));
-    dispatch(setFormSearchLoading(true));
   };
 
   const mapperHandler = (form) => {
@@ -272,7 +219,7 @@ console.log("tab vlies sfdf,",tabValue);
   };
 
   const fetchBundles = ()=>{
-    setShowClearButton(searchText);
+    // setShowClearButton(searchText);
     let filters = [pageNo, limit, sortBy, sortOrder, searchText];
     if (isDesigner) {
       filters.push('bundle');
@@ -468,29 +415,6 @@ console.log("tab vlies sfdf,",tabValue);
     });
   };
 
-  const noDataFound = () => {
-    return (
-      <span>
-        <div
-          className="container"
-          style={{
-            maxWidth: "900px",
-            margin: "auto",
-            height: "50vh",
-            display: "flex",
-            flexDirection: "column",
-            alignItems: "center",
-            justifyContent: "center",
-          }}
-        >
-          <h3>{t("No forms found")}</h3>
-          <p>{t("Please change the selected filters to view Forms")}</p>
-        </div>
-      </span>
-    );
-  };
-  const formData = (() => bpmForms.forms)() || [];
-
   return (
     <>
       <FileModal
@@ -565,7 +489,7 @@ console.log("tab vlies sfdf,",tabValue);
               </div>
             </div>
             <div className="flex-item-right">
-            {isDesigner && (
+             {(isDesigner && tabValue === 1) && (
                 <Link
                   to={`${redirectUrl}bundleflow/create`}
                   className="btn btn-primary btn-left btn-sm"
@@ -573,8 +497,8 @@ console.log("tab vlies sfdf,",tabValue);
                   <i className="fa fa-plus fa-lg" />{" "}
                   <Translation>{(t) => t("Create Bundle")}</Translation>
                 </Link>
-              )}
-              {isDesigner && (
+              )} 
+              {(isDesigner && tabValue === 0) && (
                 <Link
                   to={`${redirectUrl}formflow/create`}
                   className="btn btn-primary btn-left btn-sm"
@@ -583,7 +507,7 @@ console.log("tab vlies sfdf,",tabValue);
                   <Translation>{(t) => t("Create Form")}</Translation>
                 </Link>
               )}
-              {isDesigner && (
+              {(isDesigner && tabValue === 0) && (
                 <>
                   <Button
                     className="btn btn-primary btn-sm form-btn pull-right btn-left"
@@ -606,7 +530,7 @@ console.log("tab vlies sfdf,",tabValue);
                   />
                 </>
               )}
-              {isDesigner && (
+              {(isDesigner && tabValue === 0) && (
                 <>
                   <button
                     className="btn btn-outline-primary pull-right btn-left "
@@ -622,103 +546,6 @@ console.log("tab vlies sfdf,",tabValue);
           </div>
           <section className="custom-grid grid-forms">
             <Errors errors={errors} />
-            <div className="  row mt-2 mx-2">
-              <div className="col" style={{ marginLeft: "5px", marginTop: "-18px" }}>
-                <div className="input-group">
-                  <span
-                    className="sort-span"
-                    onClick={handleSort}
-                    style={{
-                      cursor: "pointer",
-                      marginBottom: "8px",
-                    }}
-                  >
-                    <i
-                      className="fa fa-long-arrow-up fa-lg mt-2 fa-lg-hover"
-                      title={t("Sort by form name")}
-                      style={{
-                        opacity: `${sortOrder === "asc" || sortOrder === "title" ? 1 : 0.5
-                          }`,
-                      }}
-                    />
-                    <i
-                      className="fa fa-long-arrow-down fa-lg mt-2 ml-1 fa-lg-hover"
-                      title={t("Sort by form name")}
-                      style={{
-                        opacity: `${sortOrder === "desc" || sortOrder === "-title"
-                          ? 1
-                          : 0.5
-                          }`,
-                      }}
-                    />
-                  </span>
-                  <div className="form-outline ml-3">
-                    <input
-                      type="search"
-                      id="form1"
-                      ref={searchInputBox}
-                      onKeyPress={(e) => e.key === "Enter" && handleSearch()}
-                      onChange={(e) => {setShowClearButton(e.target.value);
-                        setSearchTextInput(e.target.value);
-                        e.target.value === "" && handleSearch();
-                      }}
-                      autoComplete="off"
-                      className="form-control"
-                      value={searchTextInput}
-                      placeholder={t("Search...")}
-                    />
-                  </div>
-                  {showClearButton && (
-                    <button
-                      type="button"
-                      className="btn btn-outline-primary ml-2"
-                      onClick={() => onClear()}
-                    >
-                      <i className="fa fa-times"></i>
-                    </button>
-                  )}
-                  <button
-                    type="button"
-                    className='btn btn-outline-primary ml-2'
-                    name="search-button"
-                    title="Click to search"
-                    onClick={() => handleSearch()}
-                  >
-                    <i className="fa fa-search" ></i>
-                  </button>
-                  {isDesigner ? (
-                    <select
-                      className="form-control select"
-                      title={t("select form type")}
-                      style={{ maxWidth: "150px" }}
-                      onChange={(e) => {
-                        handleTypeChange(e.target.value);
-                      }}
-                      aria-label="Select Form Type"
-                    >
-                      <option selected={formType === "form"} value="form">
-                        {t("Form")}
-                      </option>
-                      <option
-                        selected={formType === "resource"}
-                        value="resource"
-                      >
-                        {t("Resource")}
-                      </option>
-                      <option
-                        selected={formType === "bundle"}
-                        value="bundle"
-                      >
-                        {t("Bundle")}
-                      </option>
-                    </select>
-
-                  ) : (
-                    ""
-                  )}
-                </div>
-              </div>
-            </div>
             
             <Tabs
         value={tabValue}
@@ -726,67 +553,16 @@ console.log("tab vlies sfdf,",tabValue);
         textColor="primary"
         onChange={handleTabChange} 
       >
-        <Tab label="All Forms" />
-        <Tab label="Form Bundle" onClick={()=> fetchBundles()}/>
+        <Tab label="Forms" />
+       { isDesigner && <Tab label="Form Bundle" onClick={()=> fetchBundles()}/>}
     
       </Tabs>
       
           {
             tabValue === 0 ? (
-          <ToolkitProvider
-              bootstrap4
-              keyField="id"
-              data={formData}
-              columns={columns}
-              search
-            >
-              {(props) => {
-                return (
-                  <div>
-                    <LoadingOverlay
-                      active={seachFormLoading}
-                      spinner
-                      text={t("Loading...")}
-                    >
-                        <BootstrapTable
-                        remote={{
-                          pagination: true,
-                          filter: true,
-                        }}
-                        Loading={isLoading}
-                        filter={filterFactory()}
-                        filterPosition={"top"}
-                        pagination={formData.length ? paginationFactory(
-                          getoptions(pageNo, limit, totalForms)
-                        ) : false}
-                        onTableChange={handlePageChange}
-                        {...props.baseProps}
-                        noDataIndication={() => !seachFormLoading ? noDataFound() : ""}
-                        overlay={overlayFactory({
-                          spinner: <SpinnerSVG />,
-                          styles: {
-                            overlay: (base) => ({
-                              ...base,
-                              background: "rgba(255, 255, 255)",
-                              height: `${limit > 5
-                                ? "100% !important"
-                                : "350px !important"
-                                }`,
-                              top: "65px",
-                            }),
-                          },
-                        })}
-                        
-                      />
-                     
-                    
-                      
-                    </LoadingOverlay>
-                  </div>
-                );
-              }}
-            </ToolkitProvider>
+            <FormTable />
             ) : (
+             
               <BundleTable />
             )
           }

@@ -818,3 +818,38 @@ div.upload input[type="file"] {
   margin-left: 52px;
   font-size: 13px;
 }
+
+
+/* Add vertical border to all cells */
+td, th {
+  border: 1px solid #DEE2E6;
+}
+
+/* Add extra border to left and right cells to create vertical lines */
+td:first-child, th:first-child {
+  border-left: none;
+}
+
+td:last-child, th:last-child {
+  border-right: none;
+}
+
+.input-group {
+  width: 30rem;
+  background-color: #ffff;
+}
+
+.sort-icons {
+  display: flex;
+  flex-direction: column;
+}
+
+.table-header{
+  background-color: #F2F2F2;
+}
+
+.input-group-text :hover{
+  cursor: pointer;
+  color: #4D61FC;
+ }
+ 

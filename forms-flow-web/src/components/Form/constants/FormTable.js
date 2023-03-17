@@ -4,30 +4,39 @@ import {
   FormControl,
   DropdownButton,
   Dropdown,
+  Form,
 } from "react-bootstrap";
 import { useDispatch, useSelector } from "react-redux";
 import Pagination from "react-js-pagination";
-import BundleOperations from "../../Bundle/bundleOperations/BundleOperations";
 import {
   setBPMFormLimit,
   setBPMFormListPage,
   setBPMFormListSort,
   setBpmFormSearch,
+  setBpmFormType,
 } from "../../../actions/formActions";
+import FormOperations from "../FormOperations/FormOperations";
+import SelectFormForDownload from "../FileUpload/SelectFormForDownload";
 import LoadingOverlay from "react-loading-overlay";
+import { STAFF_DESIGNER } from "../../../constants/constants";
 
-function BundleTable() {
+  
+
+function FormTable() {
   const dispatch = useDispatch();
   const inputRef = useRef(null);
   const bpmForms = useSelector((state) => state.bpmForms);
   const formData = (() => bpmForms.forms)() || [];
+  const userRoles = useSelector((state) => state.user.roles || []);
   const pageNo = useSelector((state) => state.bpmForms.page);
   const limit = useSelector((state) => state.bpmForms.limit);
   const totalForms = useSelector((state) => state.bpmForms.totalForms);
   const sortOrder = useSelector((state) => state.bpmForms.sortOrder);
+  const formType = useSelector((state) => state.bpmForms.formType);
+  const searchFormLoading = useSelector(state => state.formCheckList.searchFormLoading);
+  const isDesigner = userRoles.includes(STAFF_DESIGNER);
   const [pageLimit, setPageLimit] = useState(5);
   const isAscending = sortOrder === "asc" ? true : false;
-  const searchFormLoading = useSelector(state => state.formCheckList.searchFormLoading);
 
   const pageOptions = [
     {
@@ -52,17 +61,6 @@ function BundleTable() {
     },
   ];
 
-
-  function formatDate(dateString) {
-    let dateObj = new Date(dateString);
-  
-    let year = dateObj.getFullYear();
-    let month = dateObj.getMonth() + 1;
-    let day = dateObj.getDate();
-  
-    return year + "-" + month + "-" + day;
-  }
-
   const updateSort = () => {
     let updatedSort;
     // dispatch(setBpmFormLoading(false));
@@ -76,12 +74,18 @@ function BundleTable() {
     dispatch(setBPMFormListPage(1));
   };
 
+  const handleTypeChange = (type) => {
+    dispatch(setBPMFormListPage(1));
+    dispatch(setBPMFormLimit(5));
+    dispatch(setBpmFormType(type));
+  };
+
   const handleSearch = () => {
     const searchText = inputRef.current.value;
     searchText
       ? dispatch(setBpmFormSearch(searchText))
       : dispatch(setBpmFormSearch(""));
-      dispatch(setBPMFormListPage(1));
+    dispatch(setBPMFormListPage(1));
   };
 
   const handleClearSearch = () => {
@@ -98,44 +102,42 @@ function BundleTable() {
     dispatch(setBPMFormListPage(1));
   };
 
-  
   const noDataFound = () => {
-    return (
-      <span >
-        <div
-          className="container"
-          style={{
-            maxWidth: "900px",
-            margin: "auto",
-            height: "50vh",
-            display: "flex",
-            flexDirection: "column",
-            alignItems: "center",
-            justifyContent: "center",
-          }}
-        >
-          <h3>No forms found</h3>
-          <p>Please change the selected filters to view Forms</p>
-        </div>
-      </span>
-    );
-  };
-
+      return (
+        <span >
+          <div
+            className="container"
+            style={{
+              maxWidth: "900px",
+              margin: "auto",
+              height: "50vh",
+              display: "flex",
+              flexDirection: "column",
+              alignItems: "center",
+              justifyContent: "center",
+            }}
+          >
+            <h3>No forms found</h3>
+            <p>Please change the selected filters to view Forms</p>
+          </div>
+        </span>
+      );
+    };
   return (
     <>
-    <LoadingOverlay
+     <LoadingOverlay
     active={searchFormLoading}
     spinner
     text = "Loading..."
     >
-      <table className="table">
+            <table className="table table-header-color">
         <thead>
           <tr>
-            <th colSpan="4" >
+            <th colSpan="4">
               <InputGroup className="input-group">
                 <InputGroup.Prepend>
-                  <InputGroup.Text style={{ backgroundColor: "#ffff" }}>
-                    <div className="sort-icons">
+                  <InputGroup.Text  style={{ backgroundColor: "#ffff" }}>
+                    <div className="sort-icons" >
                       <i
                         className="fa fa-sort-up"
                         onClick={updateSort}
@@ -162,47 +164,70 @@ function BundleTable() {
                   style={{ backgroundColor: "#ffff" }}
                 />
                 {inputRef.current && inputRef.current.value && (
-                  <InputGroup.Append onClick={handleClearSearch}>
-                    <InputGroup.Text style={{ backgroundColor: "#ffff" }}>
+                  <InputGroup.Append  onClick={handleClearSearch}>
+                    <InputGroup.Text  >
                       <i className="fa fa-times"></i>
                     </InputGroup.Text>
                   </InputGroup.Append>
                 )}
-                <InputGroup.Append  onClick={handleSearch}  >
+                <InputGroup.Append  onClick={handleSearch}>
                   <InputGroup.Text style={{ backgroundColor: "#ffff" }}>
                     <i className="fa fa-search"></i>
                   </InputGroup.Text>
                 </InputGroup.Append>
+
+                {
+                isDesigner &&
+                (<Form.Control
+                  className="ml-3"
+                  onChange={(e) => {
+                    handleTypeChange(e.target.value);
+                  }}
+                  as="select"
+                  style={{ backgroundColor: "#ffff" }}
+                >
+                  <option selected={formType === "form"} value="form">
+                    Form
+                  </option>
+                  <option selected={formType === "resource"} value="resource">
+                    Resource
+                  </option>
+                </Form.Control>)}
               </InputGroup>
             </th>
           </tr>
-          <tr style={{backgroundColor:'#F2F2F2'}}>
-            <th scope="col">Bundle Name</th>
-            <th scope="col">Date Created</th>
+          <tr className="table-header">
+            <th scope="col">Form Name</th>
             <th scope="col">Operations</th>
+            <th scope="col">
+              <SelectFormForDownload type="all" />
+            </th>
           </tr>
         </thead>
+        <tbody >
         {
         formData?.length ? (
-        <tbody>
-        {
-          formData.map((e, index) => {
+          formData?.map((e, index) => {
             return (
               <tr key={index}>
                 <td>{e.title}</td>
-                <td>{formatDate(e.dateCreated)}</td>
                 <td>
-                  <BundleOperations formData={e} />
+                  <FormOperations formData={e} />
+                </td>
+                <td>
+                  <SelectFormForDownload form={e} />
                 </td>
               </tr>
             );
-          })  
+          })
+        ) : (<div className="no-data-found ml -4">
+            {noDataFound()}
+        </div>)
         }
-        </tbody>) : noDataFound()
-
-        }
+        </tbody>
       </table>
       </LoadingOverlay>
+      
       <div className="d-flex justify-content-between align-items-center">
         <div>
           <span>
@@ -249,4 +274,4 @@ function BundleTable() {
   );
 }
 
-export default BundleTable;
+export default FormTable;

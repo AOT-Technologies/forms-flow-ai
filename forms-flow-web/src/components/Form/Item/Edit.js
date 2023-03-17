@@ -691,6 +691,21 @@ const Edit = React.memo(() => {
                     label={t("Make this form public ?")}
                     labelPlacement="start"
                   />
+                  <FormControlLabel
+                  control={
+                    <Checkbox
+                      checked={processListData.canBundle || false}
+                      id="bundle"
+                      color="primary"
+                      aria-label="Publish"
+                      onChange={() => {
+                        changeCanBundle();
+                      }}
+                    />
+                  }
+                  label={t("can bundle?")}
+                  labelPlacement="start"
+                />
                 </div>
               </div>
             </div>

@@ -23,7 +23,9 @@ class KeycloakAdmin(ABC):
         raise NotImplementedError("Method not implemented")
 
     @abstractmethod
-    def get_users(self, page_no: int, limit: int, role: bool, group_name: str):
+    def get_users(  # pylint: disable-msg=too-many-arguments
+        self, page_no: int, limit: int, role: bool, group_name: str, count: bool
+    ):
         """Get users."""
         raise NotImplementedError("Method not implemented")
 
@@ -55,7 +57,9 @@ class KeycloakAdmin(ABC):
         raise NotImplementedError("Method not implemented")
 
     @abstractmethod
-    def search_realm_users(self, search: str, page_no: int, limit: int, role: bool):
+    def search_realm_users(  # pylint: disable-msg=too-many-arguments
+        self, search: str, page_no: int, limit: int, role: bool, count: bool
+    ):
         """Get users in a realm."""
         raise NotImplementedError("Method not implemented")
 

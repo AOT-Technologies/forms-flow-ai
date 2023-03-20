@@ -49,7 +49,7 @@ export default React.memo(() => {
   return (
     <div className="container" id="main" data-testid="Form-index">
       <Switch>
-        <Route exact path={`${BASE_ROUTE}form`} component={List} />
+        <Route exact path={[`${BASE_ROUTE}form`,`${BASE_ROUTE}bundle`]} component={List} />
         <CreateFormRoute
           path={`${BASE_ROUTE}formflow/:formId?/:step?`}
           component={Stepper}

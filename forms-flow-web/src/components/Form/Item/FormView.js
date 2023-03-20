@@ -25,7 +25,7 @@ const FormView = () => {
             <h3 className="ml-3">
               <span className="task-head-details">
                 <i className="fa fa-wpforms" aria-hidden="true" /> &nbsp;{" "}
-                {"Bundle"}/
+                {"Form"}/
               </span>{" "}
               {formData.title}
             </h3>

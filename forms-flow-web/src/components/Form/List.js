@@ -37,6 +37,7 @@ import {
 import FileModal from "./FileUpload/fileUploadModal";
 import { useTranslation, Translation } from "react-i18next";
 import { addHiddenApplicationComponent } from "../../constants/applicationComponent";
+import { useLocation } from 'react-router-dom';
 import {
   getFormProcesses,
   saveFormProcessMapperPost,
@@ -51,9 +52,11 @@ import Tabs from '@material-ui/core/Tabs';
 import Tab from '@material-ui/core/Tab';
 import BundleTable from "./constants/BundleTable";
 import FormTable from "./constants/FormTable";
+import { push } from "connected-react-router";
 
 const List = React.memo((props) => {
   const { t } = useTranslation();
+  const location = useLocation();
   const [showFormUploadModal, setShowFormUploadModal] = useState(false);
   const dispatch = useDispatch();
   const uploadFormNode = useRef();
@@ -80,6 +83,8 @@ const List = React.memo((props) => {
   const sortOrder = useSelector((state) => state.bpmForms.sortOrder);
   const formCheckList = useSelector((state) => state.formCheckList.formList);
  
+
+
 
   const formAccess = useSelector((state) => state.user?.formAccess || []);
   const [tabValue, setTabValue] = useState(0);
@@ -117,6 +122,14 @@ const List = React.memo((props) => {
     }
   },[tabValue]);
 
+  useEffect(()=>{
+    if(location.pathname === "/form"){
+     setTabValue(0);
+    }else if(location.pathname === "/bundle") {
+     setTabValue(1);
+    }
+ },[location.pathname]);
+
   useEffect(() => {
     // setIsLoading(false);
     dispatch(setBPMFormListLoading(true));
@@ -133,7 +146,7 @@ const List = React.memo((props) => {
   };
 
   useEffect(() => {
-    fetchForms();
+      fetchForms();
   }, [
     getFormsInit,
     dispatch,
@@ -143,7 +156,7 @@ const List = React.memo((props) => {
     sortBy,
     sortOrder,
     searchText,
-    formType
+    formType,
   ]);
 
   const formCheck = (formCheckList) => {
@@ -167,6 +180,11 @@ const List = React.memo((props) => {
 
   const handleTabChange = (e,value)=>{
     setTabValue(value);
+    if(value === 1){
+      dispatch(push(`${redirectUrl}bundle`));
+    }else{
+      dispatch(push(`${redirectUrl}form`));
+    }
   };
 
   const downloadForms = async () => {
@@ -218,15 +236,15 @@ const List = React.memo((props) => {
     );
   };
 
-  const fetchBundles = ()=>{
-    // setShowClearButton(searchText);
-    let filters = [pageNo, limit, sortBy, sortOrder, searchText];
-    if (isDesigner) {
-      filters.push('bundle');
-    }
-    dispatch(setFormSearchLoading(true));
-    dispatch(fetchBPMFormList(...filters));
-  };
+  // const fetchBundles = ()=>{
+  //   // setShowClearButton(searchText);
+  //   let filters = [pageNo, limit, sortBy, sortOrder, searchText];
+  //   if (isDesigner) {
+  //     filters.push('bundle');
+  //   }
+  //   dispatch(setFormSearchLoading(true));
+  //   dispatch(fetchBPMFormList(...filters));
+  // };
 
   const isMapperSaveNeeded = (mapperData, formdata, applicationData) => {
     const applicationCount = applicationData?.data.value;
@@ -455,7 +473,7 @@ const List = React.memo((props) => {
                 )
               ) : (
                 <div>
-                  {`${t("Are you sure you wish to delete the form ")} `}
+                  {t(`Are you sure you wish to delete the ${formType === 'form' ? 'form' : 'bundle'} `)}
                   <span style={{ fontWeight: "bold" }}>{props.formName}</span>
                   ?
                 </div>
@@ -469,7 +487,8 @@ const List = React.memo((props) => {
                 formProcessData,
                 formCheckList,
                 applicationCount,
-                fetchForms
+                fetchForms,
+                formType
               );
             }}
           />
@@ -484,7 +503,7 @@ const List = React.memo((props) => {
         onChange={handleTabChange} 
       >
         <Tab label="Forms" />
-       { isDesigner && <Tab label="Form Bundle" onClick={()=> fetchBundles()}/>}
+       { isDesigner && <Tab label="Form Bundle"/>}
     
       </Tabs>
       <div className="flex-item-right">
@@ -584,7 +603,8 @@ const mapDispatchToProps = (dispatch, ownProps) => {
       formProcessData,
       formCheckList,
       applicationCount,
-      fetchForms
+      fetchForms,
+      formType
     ) => {
       e.currentTarget.disabled = true;
       if (!applicationCount) {
@@ -596,12 +616,12 @@ const mapDispatchToProps = (dispatch, ownProps) => {
             if (err) {
               toast.error(
                 <Translation>
-                  {(t) => t("Form delete unsuccessfull")}
+                  {(t) => t(`${formType === 'form' ? 'Form' : 'Bundle'}  delete unsuccessfull`)}
                 </Translation>
               );
             } else {
               toast.success(
-                <Translation>{(t) => t("Form delete successfull")}</Translation>
+                <Translation>{(t) => t(`${formType === 'form' ? 'Form' : 'Bundle'} deleted successfull`)}</Translation>
               );
               const newFormCheckList = formCheckList.filter(
                 (i) => i.formId !== formId

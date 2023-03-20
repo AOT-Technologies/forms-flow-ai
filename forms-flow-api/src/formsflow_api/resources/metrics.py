@@ -114,7 +114,8 @@ class AggregatedApplicationsResource(Resource):
             form_name = dict_data.get("form_name")
             sort_by = dict_data.get("sort_by")
             sort_order = dict_data.get("sort_order")
-
+            if form_name:
+                form_name: str = form_name.replace("%", r"\%").replace("_", r"\_")
             metrics_schema, metrics_count = AS.get_aggregated_applications(
                 from_date=from_date,
                 to_date=to_date,

@@ -14,6 +14,7 @@
   overflow-y: auto;
   padding-right: 15px;
   border-right: 1px solid #d0d0d0;
+  padding-bottom: 40px;
 }
 .service-task-details {
   min-height: 80vh;
@@ -34,25 +35,25 @@
     color: #555;
     text-align: center;
     text-decoration: none;
-    margin:0px 5px;
+    margin: 0px 5px;
     display: inline-block;
     font-size: 12px;
     font-family: Nunito Sans, SemiBold;
   }
-  .name-value-container{
+  .name-value-container {
     font-size: 12px;
     margin-left: 5px;
     display: block;
   }
 
-  .check-box-design{
-    padding:0px;
+  .check-box-design {
+    padding: 0px;
   }
   .filter-action-container {
-    display:block;
+    display: block;
     float: right;
     padding: 5px;
-    .item-pos{
+    .item-pos {
       padding: 5px;
     }
   }
@@ -77,17 +78,16 @@
   background-color: #fff;
   background-clip: padding-box;
   z-index: 5;
-    border-radius: 0px;
-    margin-top: 0px;
+  border-radius: 0px;
+  margin-top: 0px;
 }
 
-
-.filters{
+.filters {
   margin-top: 3px;
   border-color: #555;
   //border: bold 1px solid;
 }
-.position-box{
+.position-box {
   margin-left: 2.3rem;
 }
 .sort-items {
@@ -101,7 +101,7 @@
   width: 12rem;
 }
 // .row-position{
-  //position: fixed;
+//position: fixed;
 // }
 .task-section-top {
   //min-height: 35px;
@@ -130,11 +130,11 @@
     }
   }
 }
-.variable-filter-item{
- padding: 5px;
- max-height: 250px;
- max-width: 250px;
- overflow: auto;
+.variable-filter-item {
+  padding: 5px;
+  max-height: 250px;
+  max-width: 250px;
+  overflow: auto;
 }
 .clickable {
   cursor: pointer;
@@ -149,7 +149,7 @@
   border-left: 3px solid #003366 !important;
 }
 
-.font-size-16{
+.font-size-16 {
   font-size: 16px;
   overflow-wrap: break-word;
 }
@@ -168,7 +168,7 @@
 .task-header {
   font-size: 30px;
   font-weight: 600;
-  line-height: 1.5em
+  line-height: 1.5em;
 }
 .task-name {
   font-size: 20px;
@@ -219,16 +219,16 @@
   text-align: center;
   align-self: flex-end;
 }
-.date-container{
+.date-container {
   align-self: flex-end;
 }
 .filter-details {
   background-color: #f2dede;
   border-color: #ebccd1;
- // margin: 0.5em;
- margin-top: 15px;
- margin-left: 5px;
- margin-right: 5px;
+  // margin: 0.5em;
+  margin-top: 15px;
+  margin-left: 5px;
+  margin-right: 5px;
   margin-bottom: 0;
   padding: 0 0px 4px 8px;
   font-size: 14px;
@@ -238,19 +238,19 @@
     font-size: 12px;
     margin-right: 8px;
   }
-  .condition-container{
+  .condition-container {
     z-index: 2;
     display: block;
   }
-  .btn-container{
+  .btn-container {
     float: right;
     display: block;
     margin-right: 5.4rem;
   }
 
-  .second-box{
+  .second-box {
     float: right;
-    .second-inner-box{
+    .second-inner-box {
       //margin-left: 10.3rem;
     }
   }
@@ -271,22 +271,24 @@
   .close-container {
     position: absolute;
   }
-  .box-container{
+  .box-container {
     position: relative;
     margin-left: 20px;
   }
-  .list-span{
+  .list-span {
     position: none !important;
-    }
+  }
 }
 span:hover {
   color: rgb(13, 13, 14);
   position: none;
 }
-.tooltips{
+.tooltips {
   color: black;
 }
-.date-container:hover:after,div[data-title]:hover:after,span[data-title]:hover:after {
+.date-container:hover:after,
+div[data-title]:hover:after,
+span[data-title]:hover:after {
   font-size: 12px;
   content: attr(data-title);
   padding: 4px 8px;
@@ -304,7 +306,13 @@ span:hover {
   -webkit-box-shadow: 0px 0px 4px #222;
   box-shadow: 0px 0px 4px #222;
   background-image: -moz-linear-gradient(top, #eeeeee, #cccccc);
-  background-image: -webkit-gradient(linear,left top,left bottom,color-stop(0, #eeeeee),color-stop(1, #cccccc));
+  background-image: -webkit-gradient(
+    linear,
+    left top,
+    left bottom,
+    color-stop(0, #eeeeee),
+    color-stop(1, #cccccc)
+  );
   background-image: -webkit-linear-gradient(top, #eeeeee, #cccccc);
   background-image: -moz-linear-gradient(top, #eeeeee, #cccccc);
   background-image: -ms-linear-gradient(top, #eeeeee, #cccccc);
@@ -328,13 +336,22 @@ span:hover {
   -webkit-box-shadow: 0px 0px 4px #222;
   box-shadow: 0px 0px 4px #222;
   background-image: -moz-linear-gradient(top, #eeeeee, #cccccc);
-  background-image: -webkit-gradient(linear,left top,left bottom,color-stop(0, #eeeeee),color-stop(1, #cccccc));
+  background-image: -webkit-gradient(
+    linear,
+    left top,
+    left bottom,
+    color-stop(0, #eeeeee),
+    color-stop(1, #cccccc)
+  );
   background-image: -webkit-linear-gradient(top, #eeeeee, #cccccc);
   background-image: -moz-linear-gradient(top, #eeeeee, #cccccc);
   background-image: -ms-linear-gradient(top, #eeeeee, #cccccc);
   background-image: -o-linear-gradient(top, #eeeeee, #cccccc);
 }
-span[dat-title]:hover:after,.ml-1[dat-title]:hover:after,.tooltips[dat-title]:hover:after,.task-name[dat-title]:hover:after {
+span[dat-title]:hover:after,
+.ml-1[dat-title]:hover:after,
+.tooltips[dat-title]:hover:after,
+.task-name[dat-title]:hover:after {
   font-size: 12px;
   content: attr(dat-title);
   padding: 4px 8px;
@@ -352,13 +369,20 @@ span[dat-title]:hover:after,.ml-1[dat-title]:hover:after,.tooltips[dat-title]:ho
   -webkit-box-shadow: 0px 0px 4px #222;
   box-shadow: 0px 0px 4px #222;
   background-image: -moz-linear-gradient(top, #eeeeee, #cccccc);
-  background-image: -webkit-gradient(linear,left top,left bottom,color-stop(0, #eeeeee),color-stop(1, #cccccc));
+  background-image: -webkit-gradient(
+    linear,
+    left top,
+    left bottom,
+    color-stop(0, #eeeeee),
+    color-stop(1, #cccccc)
+  );
   background-image: -webkit-linear-gradient(top, #eeeeee, #cccccc);
   background-image: -moz-linear-gradient(top, #eeeeee, #cccccc);
   background-image: -ms-linear-gradient(top, #eeeeee, #cccccc);
   background-image: -o-linear-gradient(top, #eeeeee, #cccccc);
 }
-.change-tooltip[dat-title]:hover:after,.center-position:hover:after {
+.change-tooltip[dat-title]:hover:after,
+.center-position:hover:after {
   font-size: 12px;
   content: attr(dat-title);
   padding: 4px 8px;
@@ -376,7 +400,13 @@ span[dat-title]:hover:after,.ml-1[dat-title]:hover:after,.tooltips[dat-title]:ho
   -webkit-box-shadow: 0px 0px 4px #222;
   box-shadow: 0px 0px 4px #222;
   background-image: -moz-linear-gradient(top, #eeeeee, #cccccc);
-  background-image: -webkit-gradient(linear,left top,left bottom,color-stop(0, #eeeeee),color-stop(1, #cccccc));
+  background-image: -webkit-gradient(
+    linear,
+    left top,
+    left bottom,
+    color-stop(0, #eeeeee),
+    color-stop(1, #cccccc)
+  );
   background-image: -webkit-linear-gradient(top, #eeeeee, #cccccc);
   background-image: -moz-linear-gradient(top, #eeeeee, #cccccc);
   background-image: -ms-linear-gradient(top, #eeeeee, #cccccc);
@@ -388,7 +418,7 @@ span[dat-title]:hover:after,.ml-1[dat-title]:hover:after,.tooltips[dat-title]:ho
   bottom: 0;
   margin-left: auto;
   margin-bottom: 1.3rem;
-  
+
   .pagination {
     background-color: #fff;
     li {
@@ -410,4 +440,3 @@ span[dat-title]:hover:after,.ml-1[dat-title]:hover:after,.tooltips[dat-title]:ho
     }
   }
 }
-

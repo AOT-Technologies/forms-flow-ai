@@ -40,7 +40,7 @@ const PreviewAndConfirm = React.memo(
           toast.success(
              t("Form Workflow Association Saved.")
           );
-          dispatch(push(`${redirectUrl}form`));
+          dispatch(push(`${redirectUrl}bundle`));
           dispatch(resetFormProcessData());
         } else {
           toast.error(
@@ -48,7 +48,7 @@ const PreviewAndConfirm = React.memo(
           );
         }
       }));
-      dispatch(push(`${redirectUrl}form`));
+      dispatch(push(`${redirectUrl}bundle`));
     };
 
  

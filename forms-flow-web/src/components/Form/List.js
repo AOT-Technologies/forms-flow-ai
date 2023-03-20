@@ -623,7 +623,7 @@ const mapDispatchToProps = (dispatch, ownProps) => {
               );
             } else {
               toast.success(
-                <Translation>{(t) => t(`${formType === 'form' ? 'Form' : 'Bundle'} deleted successfull`)}</Translation>
+                <Translation>{(t) => t(`${formType === 'form' ? 'Form' : 'Bundle'} deleted successfully`)}</Translation>
               );
               const newFormCheckList = formCheckList.filter(
                 (i) => i.formId !== formId

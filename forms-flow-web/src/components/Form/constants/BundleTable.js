@@ -15,7 +15,8 @@ import {
   setBpmFormSearch,
 } from "../../../actions/formActions";
 import LoadingOverlay from "react-loading-overlay";
-
+//import { format } from 'date-fns'; // 21K (gzipped: 5.8K)
+import moment from 'moment'; 
 function BundleTable() {
   const dispatch = useDispatch(); 
   const bpmForms = useSelector((state) => state.bpmForms);
@@ -56,12 +57,8 @@ function BundleTable() {
 
   function formatDate(dateString) {
     let dateObj = new Date(dateString);
-  
-    let year = dateObj.getFullYear();
-    let month = dateObj.getMonth() + 1;
-    let day = dateObj.getDate();
-  
-    return year + "/" + month + "/" + day;
+    
+    return moment(dateObj).format('DD/MM/YYYY');
   }
 
   const updateSort = () => {
@@ -183,7 +180,7 @@ function BundleTable() {
           </tr>
           <tr className="table-header table-bordered" style={{backgroundColor:'#F2F2F2'}}>
             <th scope="col">Bundle Name</th>
-            <th scope="col">Date Created</th>
+            <th scope="col">Created Date</th>
             <th scope="col">Operations</th>
           </tr>
         </thead>

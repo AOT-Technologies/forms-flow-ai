@@ -233,3 +233,11 @@ class KeycloakAdminAPIService:
         if search:
             url += f"&search={search}"
         return self.get_request(url_path=url)
+
+    @profiletime
+    def get_realm_users_count(self, search: str):
+        """Return users count in the realm."""
+        url = "users/count"
+        if search:
+            url += f"?search={search}"
+        return self.get_request(url_path=url)

@@ -7,8 +7,6 @@ class SelectedFormSchema(Schema):
     """This class manages form bundling table schema."""
 
     id = fields.Integer(data_key="id", required=False)
-    mapper_id = fields.Integer(data_key="mapperId", required=False)
-    path_name = fields.String(data_key="path", required=False)
     rules = fields.List(fields.String(), required=False)
     form_order = fields.Integer(data_key="formOrder", required=False)
     parent_form_id = fields.Str(data_key="parentFormId")
@@ -27,9 +25,8 @@ class FormBundleDetailSchema(Schema):
 
         unknown = EXCLUDE
 
-    id = fields.Integer(data_key="latestId")
+    id = fields.Integer(data_key="formMapperId")
     form_name = fields.Str(data_key="formName")
     form_id = fields.Str(data_key="formId")
     form_type = fields.Str(data_key="formType")
-    status = fields.Str()
     parent_form_id = fields.Str(data_key="parentFormId")

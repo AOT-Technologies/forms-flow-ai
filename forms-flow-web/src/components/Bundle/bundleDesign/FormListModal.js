@@ -9,6 +9,7 @@ import TableRow from "@material-ui/core/TableRow";
 import Checkbox from "@material-ui/core/Checkbox";
 import Pagination from "react-js-pagination";
 import { withStyles } from "@material-ui/core"; 
+import _capitalize from "lodash/capitalize";
 import {
   fetchBPMFormList,
 } from "../../../apiManager/services/bpmFormServices";
@@ -146,24 +147,24 @@ const FormListModal = React.memo(
         const ids = formsAlreadySelected.map((form) => form.parentFormId);
         setSelectedFormIds(ids);
         setSelectedForms(formsAlreadySelected);
+      }else{
+        setSelectedForms([]);
+        setSelectedFormIds([]);
       }
-    }, [formsAlreadySelected]);
+    }, [formsAlreadySelected,showModal]);
 
     const handleFormSelect = (action, form) => {
   
-      if (action === "select") {
+      if (action === "Select") {
         setSelectedFormIds((prev) => [...prev, form.parentFormId]);
             setSelectedForms((prev) => [
               ...prev,
               {
                 formName: form.formName,
-                path: "nothing",
-                mapperId: form.id,
                 rules:[],
                 parentFormId: form.parentFormId,
-                status:form.status,
-                formType: form.formType,
                 formId: form.formId,
+                formType: form.formType,
                 formOrder : prev.length + 1
               },
             ]);
@@ -195,9 +196,9 @@ const FormListModal = React.memo(
           
           <Modal.Header>
             <div className="d-flex justify-content-between align-items-center w-100">
-              <h4>Select Form</h4>
+              <h4>Select Forms</h4>
               <span style={{ cursor: "pointer" }} onClick={handleModalChange}>
-                <i className="fa fa-times" aria-hidden="true"></i>
+                <i className="fa fa-times" aria-hidden="true"></i> Close
               </span>
             </div>
           </Modal.Header>
@@ -237,8 +238,8 @@ const FormListModal = React.memo(
                                     onChange={(e) => {
                                       handleFormSelect(
                                         e.target.checked
-                                          ? "select"
-                                          : "unselect",
+                                          ? "Select"
+                                          : "Unselect",
                                         form
                                       );
                                     }}
@@ -251,7 +252,7 @@ const FormListModal = React.memo(
                                   {form.formName}
                                 </StyledTableCell>
                                 <StyledTableCell>
-                                  {form.formType}
+                                  {_capitalize(form.formType)}
                                 </StyledTableCell>
                                 <StyledTableCell>
                                   <button
@@ -259,15 +260,15 @@ const FormListModal = React.memo(
                                     onClick={() =>
                                       handleFormSelect(
                                         seletedFormIds?.includes(form.parentFormId)
-                                          ? "unselect"
-                                          : "select",
+                                          ? "Unselect"
+                                          : "Select",
                                         form
                                       )
                                     }
                                   >
                                     {seletedFormIds?.includes(form.parentFormId)
-                                      ? "unselect"
-                                      : "select"}
+                                      ? "Unselect"
+                                      : "Select"}
                                   </button>
                                 </StyledTableCell>
                               </TableRow>
@@ -307,6 +308,13 @@ const FormListModal = React.memo(
                 {totalForms}
               </span>
             </div>
+              <div>
+              <button
+              className="btn btn-secondary mr-2"
+              onClick={handleModalChange}
+            >
+              Cancel
+            </button>
             <button
               className="btn btn-primary"
               disabled={!seletedForms.length}
@@ -314,8 +322,9 @@ const FormListModal = React.memo(
                 submitFormSelect(seletedForms);
               }}
             >
-              Submit
+              Insert
             </button>
+              </div>
           </Modal.Footer>
             ) : ""
           }

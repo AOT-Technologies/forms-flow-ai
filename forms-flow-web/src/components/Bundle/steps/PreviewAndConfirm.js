@@ -54,8 +54,7 @@ const PreviewAndConfirm = React.memo(
  
     return (
       <div>
-        <div className="d-flex align-item-center justify-content-between">
-          <h2>{bundleData.formName}</h2>
+        <div className="d-flex align-items-center justify-content-end my-4">
           <div>
             <SaveNext
               handleBack={handleBack}
@@ -73,17 +72,17 @@ const PreviewAndConfirm = React.memo(
             <CardContent>
               <form noValidate autoComplete="off">
                 <div>
-                  <span className="font-weight-bolder">
+                  <span className="font-weight-bolder mr-2">
                     {t("Bundle Name")} :
                   </span>
                   <span>{bundleData.formName}</span>
                 </div>
                 <div>
-                  <span className="font-weight-bolder">{"Total Forms"} :</span>
+                  <span className="font-weight-bolder mr-2">{"Total Forms"} :</span>
                   <span>{selectedForms?.length}</span>
                 </div>
                 <div>
-                  <span className="font-weight-bolder">
+                  <span className="font-weight-bolder mr-2">
                     {t("Workflow Name")} :
                   </span>
                   <span>{workflow.label}</span>
@@ -91,7 +90,7 @@ const PreviewAndConfirm = React.memo(
                 <div>
                   <label>
                     <label className="fontsize-16 mx-1">
-                      {t("Publish this form for Client Users.")}
+                      {t("Publish this Bundle for Client Users.")}
                     </label>
                     <FormControlLabel
                       control={

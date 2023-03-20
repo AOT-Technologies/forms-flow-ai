@@ -14,8 +14,14 @@ import {
   clearFormError,
   setFormFailureErrorData,
 } from "../../../actions/formActions";
-import { bundleCreate, bundleUpdate } from "../../../apiManager/services/bundleServices";
-import { saveFormProcessMapperPost, saveFormProcessMapperPut } from "../../../apiManager/services/processServices";
+import {
+  bundleCreate,
+  bundleUpdate,
+} from "../../../apiManager/services/bundleServices";
+import {
+  saveFormProcessMapperPost,
+  saveFormProcessMapperPut,
+} from "../../../apiManager/services/processServices";
 import { useHistory } from "react-router-dom";
 import { setBundleSelectedForms } from "../../../actions/bundleActions";
 
@@ -31,9 +37,10 @@ const BundleCreate = ({ mode }) => {
     (state) => state.user?.submissionAccess || []
   );
   const formAccess = useSelector((state) => state.user?.formAccess || []);
-  const tenantKey = useSelector((state) => state.tenants?.tenantId); 
+  const tenantKey = useSelector((state) => state.tenants?.tenantId);
   const buttonText =
-    (mode && mode !== BUNDLE_CREATE_ROUTE) ? "save bundle" : "save & preview";
+    mode && mode !== BUNDLE_CREATE_ROUTE ? "Save Bundle" : "Save & Preview";
+
   const errors = useSelector((state) => state.form.error);
   const selectedForms = useSelector(
     (state) => state.bundle.selectedForms || []
@@ -83,9 +90,8 @@ const BundleCreate = ({ mode }) => {
             if (err) {
               console.error(err);
             } else {
-
               bundleCreate({ selectedForms }, mapperData.id).then((res) => {
-                dispatch(setBundleSelectedForms(res.data?.selectedForms));
+                dispatch(setBundleSelectedForms(res.data));
                 dispatch(
                   push(`${redirectUrl}bundleflow/${form._id}/view-edit`)
                 );
@@ -108,84 +114,102 @@ const BundleCreate = ({ mode }) => {
       dispatch(
         saveFormProcessMapperPut({
           id: bundleData.id,
-          formName:bundleName,
+          formName: bundleName,
           formId: bundleData.formId,
           description: bundleDescription,
         })
       );
     }
 
-    bundleUpdate({ selectedForms}, bundleData.id).then((res) => {
-      dispatch(setBundleSelectedForms(res.data?.selectedForms));
+    bundleUpdate({ selectedForms }, bundleData.id).then((res) => {
+      dispatch(setBundleSelectedForms(res.data));
       dispatch(push(`${redirectUrl}bundleflow/${bundleData.formId}/view-edit`));
     });
+  };
+
+  const setBundleTitle = () => {
+    if (mode && mode !== BUNDLE_CREATE_ROUTE) {
+      return (
+        <span>
+          <i className="fa fa-folder-o mr-2" aria-hidden="true"></i>
+          {bundleData.formName}
+        </span>
+      );
+    }
+    return "Design Bundle";
   };
   return (
     <div>
       <Errors errors={errors} />
-      <div className="d-flex justify-content-between align-items-center">
-        <h3>Create Bundle</h3>
+      <div className="d-flex align-items-center flex-wrap justify-content-between my-4 bg-light p-3">
+        <h3>{setBundleTitle()}</h3>
         <div>
-          {
-            (mode && mode !== BUNDLE_CREATE_ROUTE) ? <button
-            className="btn btn-secondary mr-2"
+          {mode && mode !== BUNDLE_CREATE_ROUTE ? (
+            <button
+              className="btn btn-secondary mr-2"
+              onClick={() => {
+                history.goBack();
+                dispatch(clearFormError("form"));
+              }}
+            >
+              Cancel
+            </button>
+          ) : (
+            ""
+          )}
+
+          <button
+            className="btn btn-primary"
             onClick={() => {
-              history.goBack();
-              dispatch(clearFormError("form"));
+              mode && mode !== BUNDLE_CREATE_ROUTE
+                ? updateBundle()
+                : createBundle();
             }}
           >
-            cancel
-          </button> : ""
-          }
-
-        <button
-          className="btn btn-primary"
-          onClick={() => {
-            (mode && mode !== BUNDLE_CREATE_ROUTE)  ? updateBundle() : createBundle() ;
-          }}
-        >
-          {buttonText}
-        </button>
+            {buttonText}
+          </button>
         </div>
       </div>
-      <section>
-        <div className="mt-2 align-items-center">
+      <div className="border">
+        <section>
+          <div className="mt-2 align-items-center">
+            <div className="m-3">
+              <label>Bundle Name</label>
+              <input
+                value={bundleName}
+                onChange={(e) => {
+                  setBundleName(e.target.value);
+                }}
+                type="text"
+                className="form-control"
+                placeholder="Enter name"
+              />
+            </div>
+            <div className="m-3">
+              <label>Bundle Description</label>
+              <textarea
+                value={bundleDescription}
+                onChange={(e) => {
+                  setBundleDescription(e.target.value);
+                }}
+                type="text"
+                className="form-control"
+                placeholder="Enter Description"
+              />
+            </div>
+          </div>
+        </section>
+        <section>
           <div className="m-3">
-            <label>Bundle Name</label>
-            <input
-              value={bundleName}
-              onChange={(e) => {
-                setBundleName(e.target.value);
-              }}
-              type="text"
-              className="form-control"
-              placeholder="Enter name"
-            />
+            <label>Forms</label>
+            <FormSelect />
           </div>
           <div className="m-3">
-            <label>Bundle Description</label>
-            <textarea
-              value={bundleDescription}
-              onChange={(e) => {
-                setBundleDescription(e.target.value);
-              }}
-              type="text"
-              className="form-control"
-              placeholder="Enter Description"
-            />
+            <label>Conditions (Optional)</label>
+            <Rule />
           </div>
-        </div>
-      </section>
-      <section>
-        <div className="m-3">
-          <label>Select Forms</label>
-          <FormSelect />
-        </div>
-        <div className="m-3">
-          <label>Create Rules</label>
-          <Rule />
-        </div>
-      </section>
+        </section>
+      </div>
     </div>
   );
 };

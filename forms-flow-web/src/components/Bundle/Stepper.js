@@ -72,7 +72,7 @@ const StepperComponent = () => {
           setLoading(false);
         }else{
           getBundle(mapperData.id).then((res)=>{
-            dispatch(setBundleSelectedForms(res.data.selectedForms));
+            dispatch(setBundleSelectedForms(res.data));
           }).catch((err)=>{
             console.error(err);
           }).finally(()=>{
@@ -135,7 +135,7 @@ const StepperComponent = () => {
   }
   return (
     <div className="p-3">
-      <Link to={`/form`} title={"Back to Form List"}>
+      <Link to={`/bundle`} title={"Back to Form List"}>
         <i className="fa fa-chevron-left fa-lg " />
       </Link>
 

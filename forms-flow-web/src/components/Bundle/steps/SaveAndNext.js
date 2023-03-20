@@ -15,15 +15,23 @@ const SaveNext = React.memo(
 
     return (
       <>
+        {activeStep !== 0 ? (
+          <Buttons
+            className="mx-2"
+            variant="outline-secondary"
+            disabled={activeStep === 0}
+            onClick={handleBack}
+          >
+            {t("Back")}
+          </Buttons>
+        ) : (
+          ""
+        )}
+
         <Buttons
-          className="mx-2"
-          variant="outline-secondary"
-          disabled={activeStep === 0}
-          onClick={handleBack}
+          variant="primary"
+          onClick={isLastStep ? submitData : handleNext}
         >
-          {t("Back")}
-        </Buttons>
-        <Buttons variant="primary" onClick={isLastStep ? submitData : handleNext}>
           {isLastStep ? t("Save") : t("Next")}
         </Buttons>
       </>

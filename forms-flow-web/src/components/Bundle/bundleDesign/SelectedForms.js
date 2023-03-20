@@ -8,6 +8,7 @@ import TableRow from "@material-ui/core/TableRow";
 import { withStyles } from "@material-ui/styles";
 import { useSelector } from "react-redux";
 import { MULTITENANCY_ENABLED } from "../../../constants/constants";
+import _capitalize from "lodash/capitalize";
 const StyledTableCell = withStyles(() => ({
   head: {
     backgroundColor: "#4559b5",
@@ -34,10 +35,9 @@ const SelectedForms = ({ handleModalChange, selectedForms, deleteForm }) => {
           <TableHead>
             <TableRow>
               <StyledTableCell>No</StyledTableCell>
+              <StyledTableCell align="left">Form Order</StyledTableCell> 
               <StyledTableCell align="left">Form Name</StyledTableCell>
               <StyledTableCell align="left">Form Type</StyledTableCell>
-              <StyledTableCell align="left">Form Order</StyledTableCell>
-              <StyledTableCell align="left">Form Status</StyledTableCell>
               <StyledTableCell align="right">View</StyledTableCell>
               <StyledTableCell align="right">Action</StyledTableCell>
             </TableRow>
@@ -46,10 +46,9 @@ const SelectedForms = ({ handleModalChange, selectedForms, deleteForm }) => {
             {selectedForms?.map((form, index) => (
               <TableRow key={form.id}>
                 <StyledTableCell>{index + 1}</StyledTableCell>
+                <StyledTableCell>{form.formOrder}</StyledTableCell> 
                 <StyledTableCell>{form.formName}</StyledTableCell>
-                <StyledTableCell>{form.formType}</StyledTableCell>
-                <StyledTableCell>{form.formOrder}</StyledTableCell>
-                <StyledTableCell>{form.status}</StyledTableCell>
+                <StyledTableCell>{_capitalize(form.formType)}</StyledTableCell>
                 <StyledTableCell align="right">
                   <button
                     className="btn btn-sm btn-outline-primary"
@@ -79,11 +78,10 @@ const SelectedForms = ({ handleModalChange, selectedForms, deleteForm }) => {
             {!selectedForms?.length ? (
               <TableRow>
                 <TableCell align="center" colSpan="8">
-                  <h3>No forms launch together</h3>
-                  <span>
-                    Form bundles can save your time by grouping together forms
-                    that you often launch together
-                  </span>
+                  <h4>Add Forms Launch together</h4>
+                  <h6>
+                    Form bundles can save your time by grouping forms together
+                  </h6>
                 </TableCell>
               </TableRow>
             ) : (
@@ -96,7 +94,7 @@ const SelectedForms = ({ handleModalChange, selectedForms, deleteForm }) => {
                   onClick={handleModalChange}
                 >
                   <i className="fa fa-plus mr-2"></i>
-                  Add Form
+                  Add Forms
                 </button>
               </TableCell>
             </TableRow>

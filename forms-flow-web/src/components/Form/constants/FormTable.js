@@ -1,4 +1,4 @@
-import React, { useState, useRef } from "react";
+import React, { useState,   useEffect } from "react";
 import {
   InputGroup,
   FormControl,
@@ -23,8 +23,7 @@ import { STAFF_DESIGNER } from "../../../constants/constants";
   
 
 function FormTable() {
-  const dispatch = useDispatch();
-  const inputRef = useRef(null);
+  const dispatch = useDispatch(); 
   const bpmForms = useSelector((state) => state.bpmForms);
   const formData = (() => bpmForms.forms)() || [];
   const userRoles = useSelector((state) => state.user.roles || []);
@@ -37,6 +36,9 @@ function FormTable() {
   const isDesigner = userRoles.includes(STAFF_DESIGNER);
   const [pageLimit, setPageLimit] = useState(5);
   const isAscending = sortOrder === "asc" ? true : false;
+  const searchText = useSelector((state) => state.bpmForms.searchText);
+  const [search, setSearch] = useState(searchText || "");
+
 
   const pageOptions = [
     {
@@ -80,16 +82,24 @@ function FormTable() {
     dispatch(setBpmFormType(type));
   };
 
+  useEffect(()=>{
+    setSearch(searchText);
+  },[searchText]);
+ 
+
+  useEffect(()=>{
+    if(!search.trim()){
+      dispatch(setBpmFormSearch(""));
+    }
+  },[search]);
+
   const handleSearch = () => {
-    const searchText = inputRef.current.value;
-    searchText
-      ? dispatch(setBpmFormSearch(searchText))
-      : dispatch(setBpmFormSearch(""));
+    dispatch(setBpmFormSearch(search));
     dispatch(setBPMFormListPage(1));
   };
 
   const handleClearSearch = () => {
-    inputRef.current.value = "";
+    setSearch("");
     dispatch(setBpmFormSearch(""));
   };
 
@@ -126,6 +136,7 @@ function FormTable() {
     spinner
     text = "Loading..."
     >
+      <div  style={{minHeight:"400px"}}>
         <table className="table table-header-color ">
         <thead>
           <tr>
@@ -154,19 +165,20 @@ function FormTable() {
                     </div>
                   </InputGroup.Text>
                 </InputGroup.Prepend>
-                <FormControl
-                  ref={inputRef}
+                <FormControl 
+                  value={search}
+                  onChange={(e)=>{setSearch(e.target.value);}}
                   placeholder="Search..."
                   style={{ backgroundColor: "#ffff" }}
                 />
-                {inputRef.current && inputRef.current.value && (
-                  <InputGroup.Append  onClick={handleClearSearch}>
+                { search && (
+                  <InputGroup.Append  onClick={handleClearSearch} >
                     <InputGroup.Text  >
                       <i className="fa fa-times"></i>
                     </InputGroup.Text>
                   </InputGroup.Append>
                 )}
-                <InputGroup.Append  onClick={handleSearch}>
+                <InputGroup.Append  onClick={handleSearch} disabled={!search.trim()}>
                   <InputGroup.Text style={{ backgroundColor: "#ffff" }}>
                     <i className="fa fa-search"></i>
                   </InputGroup.Text>
@@ -222,9 +234,12 @@ function FormTable() {
         ) : (!searchFormLoading ? noDataFound() : "")
         }
       </table>
+      </div>
       </LoadingOverlay>
       
-      <div className="d-flex justify-content-between align-items-center">
+      {
+        formData.length ? (
+          <div className="d-flex justify-content-between align-items-center">
         <div>
           <span>
             Rows per page
@@ -266,6 +281,8 @@ function FormTable() {
           />
         </div>
       </div>
+        ) : ""
+      }
     </>
   );
 }

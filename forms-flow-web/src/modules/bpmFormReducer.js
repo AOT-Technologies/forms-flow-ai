@@ -11,7 +11,7 @@ const initialState = {
   bpmFormLoading: false,
   sortBy: "formName",
   sortOrder: "asc",
-  formType:"form",
+  formType:null,
   searchText: "",
 };
 

@@ -32,6 +32,13 @@ export const setBundleFormListPage = (data) => (dispatch) => {
       });
     };
 
+export const setBundleFormListSort = (data) => (dispatch) => {
+      dispatch({
+        type: ACTION_CONSTANTS.BUNDLE_FORM__LIST_SORT_CHANGE,
+        payload: data,
+      });
+    };
+
 export const setBundleFormSearch = (data) => (dispatch) => {
       dispatch({
         type: ACTION_CONSTANTS.BUNDLE_FORM__LIST_FORM_SEARCH,

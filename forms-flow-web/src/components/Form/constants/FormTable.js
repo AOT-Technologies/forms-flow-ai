@@ -104,23 +104,19 @@ function FormTable() {
 
   const noDataFound = () => {
       return (
-        <span >
-          <div
-            className="container"
-            style={{
-              maxWidth: "900px",
-              margin: "auto",
-              height: "50vh",
-              display: "flex",
-              flexDirection: "column",
-              alignItems: "center",
-              justifyContent: "center",
-            }}
-          >
-            <h3>No forms found</h3>
-            <p>Please change the selected filters to view Forms</p>
-          </div>
-        </span>
+        <tbody >
+        <tr>
+      <td colSpan="10">
+        <div
+          className="d-flex align-items-center justify-content-center flex-column w-100"
+          style={{minHeight:"300px"}}
+        >
+          <h3>No forms found</h3>
+          <p>Please change the selected filters to view Forms</p>
+        </div>
+      </td>
+      </tr>
+      </tbody>
       );
     };
   return (
@@ -130,7 +126,7 @@ function FormTable() {
     spinner
     text = "Loading..."
     >
-            <table className="table table-header-color">
+        <table className="table table-header-color ">
         <thead>
           <tr>
             <th colSpan="4">
@@ -196,7 +192,7 @@ function FormTable() {
               </InputGroup>
             </th>
           </tr>
-          <tr className="table-header">
+          <tr className="table-header table-bordered">
             <th scope="col">Form Name</th>
             <th scope="col">Operations</th>
             <th scope="col">
@@ -204,10 +200,11 @@ function FormTable() {
             </th>
           </tr>
         </thead>
-        <tbody >
+        
         {
         formData?.length ? (
-          formData?.map((e, index) => {
+            <tbody className="table-bordered">
+         { formData?.map((e, index) => {
             return (
               <tr key={index}>
                 <td>{e.title}</td>
@@ -218,13 +215,12 @@ function FormTable() {
                   <SelectFormForDownload form={e} />
                 </td>
               </tr>
+         
             );
-          })
-        ) : (<div className="no-data-found ml -4">
-            {noDataFound()}
-        </div>)
+          })}
+          </tbody >
+        ) : (!searchFormLoading ? noDataFound() : "")
         }
-        </tbody>
       </table>
       </LoadingOverlay>
       

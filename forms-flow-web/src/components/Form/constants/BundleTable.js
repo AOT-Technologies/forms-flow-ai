@@ -1,4 +1,4 @@
-import React, { useState, useRef } from "react";
+import React, { useState, useEffect } from "react";
 import {
   InputGroup,
   FormControl,
@@ -17,8 +17,7 @@ import {
 import LoadingOverlay from "react-loading-overlay";
 
 function BundleTable() {
-  const dispatch = useDispatch();
-  const inputRef = useRef(null);
+  const dispatch = useDispatch(); 
   const bpmForms = useSelector((state) => state.bpmForms);
   const formData = (() => bpmForms.forms)() || [];
   const pageNo = useSelector((state) => state.bpmForms.page);
@@ -28,6 +27,8 @@ function BundleTable() {
   const [pageLimit, setPageLimit] = useState(5);
   const isAscending = sortOrder === "asc" ? true : false;
   const searchFormLoading = useSelector(state => state.formCheckList.searchFormLoading);
+  const searchText = useSelector((state) => state.bpmForms.searchText);
+  const [search, setSearch] = useState(searchText || "");
 
   const pageOptions = [
     {
@@ -77,17 +78,18 @@ function BundleTable() {
   };
 
   const handleSearch = () => {
-    const searchText = inputRef.current.value;
-    searchText
-      ? dispatch(setBpmFormSearch(searchText))
-      : dispatch(setBpmFormSearch(""));
+      dispatch(setBpmFormSearch(search));
       dispatch(setBPMFormListPage(1));
   };
 
   const handleClearSearch = () => {
-    inputRef.current.value = "";
+    setSearch("");
     dispatch(setBpmFormSearch(""));
   };
+
+  useEffect(()=>{
+    setSearch(searchText);
+  },[searchText]);
 
   const handlePageChange = (page) => {
     dispatch(setBPMFormListPage(page));
@@ -98,6 +100,11 @@ function BundleTable() {
     dispatch(setBPMFormListPage(1));
   };
 
+  useEffect(()=>{
+    if(!search.trim()){
+      dispatch(setBpmFormSearch(""));
+    }
+  },[search]);
   
   const noDataFound = () => {
     return (
@@ -108,8 +115,8 @@ function BundleTable() {
           className="d-flex align-items-center justify-content-center flex-column w-100"
           style={{minHeight:"300px"}}
         >
-          <h3>No forms found</h3>
-          <p>Please change the selected filters to view Forms</p>
+          <h3>No bundles found</h3>
+          <p>Please change the selected filters to view Bundles</p>
         </div>
       </td>
       </tr>
@@ -124,6 +131,7 @@ function BundleTable() {
     spinner
     text = "Loading..."
     >
+      <div style={{minHeight:"400px"}}>
       <table className="table">
         <thead>
           <tr>
@@ -152,19 +160,20 @@ function BundleTable() {
                     </div>
                   </InputGroup.Text>
                 </InputGroup.Prepend>
-                <FormControl
-                  ref={inputRef}
+                <FormControl 
+                  value={search}
+                  onChange={(e)=>{setSearch(e.target.value);}}
                   placeholder="Search..."
                   style={{ backgroundColor: "#ffff" }}
                 />
-                {inputRef.current && inputRef.current.value && (
+                {search && (
                   <InputGroup.Append onClick={handleClearSearch}>
                     <InputGroup.Text style={{ backgroundColor: "#ffff" }}>
                       <i className="fa fa-times"></i>
                     </InputGroup.Text>
                   </InputGroup.Append>
                 )}
-                <InputGroup.Append  onClick={handleSearch}  >
+                <InputGroup.Append  onClick={handleSearch} disabled={!search.trim()}>
                   <InputGroup.Text style={{ backgroundColor: "#ffff" }}>
                     <i className="fa fa-search"></i>
                   </InputGroup.Text>
@@ -194,53 +203,60 @@ function BundleTable() {
             );
           })  
         }
-        </tbody>) : noDataFound()
+        </tbody>) : !searchFormLoading ? noDataFound() : ""
 
         }
       </table>
-      </LoadingOverlay>
-      <div className="d-flex justify-content-between align-items-center">
-        <div>
-          <span>
-            Rows per page
-            <DropdownButton
-              className="ml-2"
-              drop="down"
-              variant="secondary"
-              title={pageLimit}
-              style={{ display: "inline" }}
-            >
-              {pageOptions.map((option, index) => (
-                <Dropdown.Item
-                  key={{ index }}
-                  type="button"
-                  onClick={() => {
-                    onSizePerPageChange(option.value);
-                  }}
-                >
-                  {option.text}
-                </Dropdown.Item>
-              ))}
-            </DropdownButton>
-          </span>
-          <span className="ml-2 mb-3">
-            Showing {(limit * pageNo ) - (limit - 1)} to{" "}
-                {limit * pageNo > totalForms ? totalForms : limit * pageNo} of{" "}
-                {totalForms} entries
-          </span>
-        </div>
-        <div className="d-flex align-items-center">
-          <Pagination
-            activePage={pageNo}
-            itemsCountPerPage={limit}
-            totalItemsCount={totalForms}
-            pageRangeDisplayed={5}
-            itemClass="page-item"
-            linkClass="page-link"
-            onChange={handlePageChange}
-          />
-        </div>
       </div>
+   
+      
+      </LoadingOverlay>
+      {
+        formData.length ? (
+          <div className="d-flex justify-content-between align-items-center">
+          <div>
+            <span>
+              Rows per page
+              <DropdownButton
+                className="ml-2"
+                drop="down"
+                variant="secondary"
+                title={pageLimit}
+                style={{ display: "inline" }}
+              >
+                {pageOptions.map((option, index) => (
+                  <Dropdown.Item
+                    key={{ index }}
+                    type="button"
+                    onClick={() => {
+                      onSizePerPageChange(option.value);
+                    }}
+                  >
+                    {option.text}
+                  </Dropdown.Item>
+                ))}
+              </DropdownButton>
+            </span>
+            <span className="ml-2 mb-3">
+              Showing {(limit * pageNo ) - (limit - 1)} to{" "}
+                  {limit * pageNo > totalForms ? totalForms : limit * pageNo} of{" "}
+                  {totalForms} entries
+            </span>
+          </div>
+          <div className="d-flex align-items-center">
+            <Pagination
+              activePage={pageNo}
+              itemsCountPerPage={limit}
+              totalItemsCount={totalForms}
+              pageRangeDisplayed={5}
+              itemClass="page-item"
+              linkClass="page-link"
+              onChange={handlePageChange}
+            />
+          </div>
+        </div>
+        ) : ""
+      }
     </>
   );
 }

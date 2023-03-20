@@ -111,28 +111,16 @@ const List = React.memo((props) => {
   }, [dispatch]);
 
  
-  useEffect(()=>{
-    dispatch(setBPMFormLimit(5));
-    dispatch(setBPMFormListPage(1));
-    dispatch(setBpmFormSearch(''));
-    if(tabValue === 1){
-      dispatch(setBpmFormType('bundle'));
-    }else{
-      dispatch(setBpmFormType('form'));
-    }
-  },[tabValue]);
-
-  useEffect(()=>{
-    if(location.pathname === "/form"){
-     setTabValue(0);
-    }else if(location.pathname === "/bundle") {
-     setTabValue(1);
-    }
- },[location.pathname]);
+ 
 
   useEffect(() => {
     // setIsLoading(false);
     dispatch(setBPMFormListLoading(true));
+    if(formType === "bundle"){
+      return () =>{
+        dispatch(setBpmFormType(null));
+      };
+    }
   }, []);
   
   const fetchForms = () => {
@@ -145,8 +133,24 @@ const List = React.memo((props) => {
     dispatch(fetchBPMFormList(...filters));
   };
 
+
+
+  useEffect(()=>{
+    if(location.pathname === "/form"){
+     setTabValue(0);
+     const type = formType || "form";
+     dispatch(setBpmFormType(type));
+    }else if(location.pathname === "/bundle") {
+     setTabValue(1);
+     dispatch(setBpmFormType('bundle'));
+    }
+ },[]);
+ 
+
   useEffect(() => {
-      fetchForms();
+      if(formType){
+        fetchForms();
+      }
   }, [
     getFormsInit,
     dispatch,
@@ -180,11 +184,17 @@ const List = React.memo((props) => {
 
   const handleTabChange = (e,value)=>{
     setTabValue(value);
+    dispatch(setBPMFormLimit(5));
+    dispatch(setBPMFormListPage(1));
+    dispatch(setBpmFormSearch(''));
     if(value === 1){
+      dispatch(setBpmFormType('bundle'));
       dispatch(push(`${redirectUrl}bundle`));
     }else{
+      dispatch(setBpmFormType('form'));
       dispatch(push(`${redirectUrl}form`));
     }
+ 
   };
 
   const downloadForms = async () => {
@@ -236,15 +246,7 @@ const List = React.memo((props) => {
     );
   };
 
-  // const fetchBundles = ()=>{
-  //   // setShowClearButton(searchText);
-  //   let filters = [pageNo, limit, sortBy, sortOrder, searchText];
-  //   if (isDesigner) {
-  //     filters.push('bundle');
-  //   }
-  //   dispatch(setFormSearchLoading(true));
-  //   dispatch(fetchBPMFormList(...filters));
-  // };
+ 
 
   const isMapperSaveNeeded = (mapperData, formdata, applicationData) => {
     const applicationCount = applicationData?.data.value;

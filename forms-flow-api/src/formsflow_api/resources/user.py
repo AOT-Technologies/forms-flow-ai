@@ -22,13 +22,24 @@ from formsflow_api.services.factory import KeycloakFactory
 
 API = Namespace("user", description="Keycloak user APIs")
 
-user_list_model = API.model(
-    "UserList",
+user_list_count_model = API.model(
+    "List",
     {
-        "id": fields.String(),
-        "email": fields.String(),
-        "firstName": fields.String(),
-        "lastName": fields.String(),
+        "data": fields.List(
+            fields.Nested(
+                API.model(
+                    "UserList",
+                    {
+                        "id": fields.String(),
+                        "email": fields.String(),
+                        "firstName": fields.String(),
+                        "lastName": fields.String(),
+                        "username": fields.String()
+                    },
+                )
+            )
+        ),
+        "count": fields.Integer(),
     },
 )
 
@@ -168,9 +179,14 @@ class KeycloakUsersList(Resource):
                 "description": "Boolean which defines whether roles are returned.",
                 "default": "false",
             },
+            "count": {
+                "in": "query",
+                "description": "Boolean which defines whether count is returned.",
+                "default": "false",
+            },
         }
     )
-    @API.response(200, "OK:- Successful request.", model=[user_list_model])
+    @API.response(200, "OK:- Successful request.", model=user_list_count_model)
     @API.response(
         401,
         "UNAUTHORIZED:- Authorization header not provided or an invalid token passed.",
@@ -179,7 +195,7 @@ class KeycloakUsersList(Resource):
         400,
         "BAD_REQUEST:- Invalid request.",
     )
-    def get():
+    def get():  # pylint: disable=too-many-locals
         """Get users list."""
         try:
             group_name = request.args.get("memberOfGroup")
@@ -187,18 +203,26 @@ class KeycloakUsersList(Resource):
             page_no = int(request.args.get("pageNo", 0))
             limit = int(request.args.get("limit", 0))
             role = request.args.get("role") == "true"
+            count = request.args.get("count") == "true"
             kc_admin = KeycloakFactory.get_instance()
             if group_name:
-                users_list = kc_admin.get_users(page_no, limit, role, group_name)
+                (users_list, users_count) = kc_admin.get_users(
+                    page_no, limit, role, group_name, count
+                )
                 user_service = UserService()
-                response = user_service.get_users(request.args, users_list)
+                response = {
+                    "data": user_service.get_users(request.args, users_list),
+                    "count": users_count,
+                }
             else:
-                user_list = kc_admin.search_realm_users(search, page_no, limit, role)
+                (user_list, user_count) = kc_admin.search_realm_users(
+                    search, page_no, limit, role, count
+                )
                 user_list_response = []
                 for user in user_list:
                     user = UsersListSchema().dump(user)
                     user_list_response.append(user)
-                response = user_list_response
+                response = {"data": user_list_response, "count": user_count}
             return response, HTTPStatus.OK
         except requests.exceptions.RequestException as err:
             current_app.logger.warning(err)

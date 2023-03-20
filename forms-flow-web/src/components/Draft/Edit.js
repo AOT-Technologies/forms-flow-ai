@@ -172,7 +172,8 @@ const View = React.memo((props) => {
     );
   };
 
-  const onYes = () => {
+  const onYes = (e) => {
+    e.currentTarget.disabled = true;
     deleteDraftbyId(draftDelete.draftId)
       .then(() => {
         toast.success(t("Draft Deleted Successfully"));
@@ -282,9 +283,9 @@ const View = React.memo((props) => {
             }" 
             ${t("with ID")} "${draftDelete.draftId}"`}
             onNo={() => onNo()}
-            onYes={() => {
+            onYes={(e) => {
               exitType.current = "SUBMIT";
-              onYes();
+              onYes(e);
             }}
           />
           {processData?.status === "active" ? (

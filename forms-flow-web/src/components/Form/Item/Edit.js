@@ -12,6 +12,7 @@ import { toast } from "react-toastify";
 import { useSelector, useDispatch } from "react-redux";
 import { setFormProcessesData } from "../../../actions/processActions";
 import { Translation, useTranslation } from "react-i18next";
+import utils from "formiojs/utils";
 import {
   deleteFormProcessMapper,
   saveFormProcessMapperPost,
@@ -273,13 +274,47 @@ const Edit = React.memo(() => {
   const isFormComponentsChanged = () => {
     if (restoredFormData && restoredFormId) {
       return true;
-    } else {
-      return (
-        !_isEquial(formData.components, form.components) ||
-        formData.display !== form.display ||
-        formData.type !== form.type
-      );
     }
+    let flatFormData = utils.flattenComponents(formData.components);
+    let flatForm = utils.flattenComponents(form.components);
+    const dateTimeOfFormData = Object.values(flatFormData).filter(
+      (component) => component.type == "day" || component.type == "datetime"
+    );
+    const dateTimeOfForm = Object.values(flatForm).filter(
+      (component) => component.type == "day" || component.type == "datetime"
+    );
+    let comparisonBetweenDateTimeComponent = true;
+    if (dateTimeOfFormData?.length === dateTimeOfForm.length) {
+      dateTimeOfFormData.forEach((formDataComponent) => {
+        if (comparisonBetweenDateTimeComponent) {
+          const isEqual = dateTimeOfForm.some(
+            (formComponent) => formComponent.type === formDataComponent.type
+          );
+          if (!isEqual) {
+            comparisonBetweenDateTimeComponent = isEqual;
+          }
+        }
+      });
+    } else {
+      return true;
+    }
+    // if existing all datetime components are same we need to remove those compoenent and need to check isEqual
+    if (comparisonBetweenDateTimeComponent) {
+      flatFormData = Object.values(flatFormData).filter(
+        (component) => component.type !== "day" && component.type !== "datetime"
+      );
+      flatForm = Object.values(flatForm).filter(
+        (component) => component.type !== "day" && component.type !== "datetime"
+      );
+    } else {
+      return true;
+    }
+
+    return (
+      !_isEquial(flatFormData, flatForm) ||
+      formData.display !== form.display ||
+      formData.type !== form.type
+    );
   };
 
 

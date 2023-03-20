@@ -166,6 +166,10 @@ const FormListModal = React.memo(
       dispatch(setBundleFormListPage(1));
     };
 
+    const handlePageChange = (page) => {
+      dispatch(setBundleFormListPage(page.page));
+    };
+
     return (
       <div>
         <Modal show={showModal} size="lg" >
@@ -315,7 +319,7 @@ const FormListModal = React.memo(
                 itemClass="page-item"
                 linkClass="page-link"
                 onChange={(page) => {
-                  handleSearch({ page });
+                  handlePageChange({ page });
                 }}
               />
               <span className="ml-2 mb-3">

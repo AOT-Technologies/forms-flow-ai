@@ -56,11 +56,7 @@ const RulesTable = ({selectedForms = [],handleModalChange,
         {!selectedForms.some((i)=> i.rules?.length > 0) ? (
           <TableRow>
             <TableCell align="center" colSpan="8">
-              <h3>No Rules</h3>
-              <span>
-                Form bundles can save your time by grouping together forms
-                that you often launch together
-              </span>
+              <h4>Create Conditions</h4>
             </TableCell>
           </TableRow>
         ) : (
@@ -70,7 +66,7 @@ const RulesTable = ({selectedForms = [],handleModalChange,
           <TableCell align="center" colSpan="8">
             <button className="btn btn-outline-primary" onClick={handleModalChange}>
               <i className="fa fa-plus mr-2"></i>
-              Create Rules
+              Add Conditions
             </button>
           </TableCell>
         </TableRow>

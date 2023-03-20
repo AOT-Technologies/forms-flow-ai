@@ -373,7 +373,7 @@ const Create = React.memo(() => {
                       }}
                     />
                   }
-                  label={t("can bundle?")}
+                  label={t("Can bundle?")}
                   labelPlacement="start"
                 />
               </div>

@@ -131,7 +131,7 @@ const BundleCreate = ({ mode }) => {
     if (mode && mode !== BUNDLE_CREATE_ROUTE) {
       return (
         <span>
-          <i className="fa fa-folder mr-2" aria-hidden="true"></i>
+          <i className="fa fa-folder-o mr-2" aria-hidden="true"></i>
           {bundleData.formName}
         </span>
       );
@@ -201,11 +201,11 @@ const BundleCreate = ({ mode }) => {
         </section>
         <section>
           <div className="m-3">
-            <label>Select Forms</label>
+            <label>Forms</label>
             <FormSelect />
           </div>
           <div className="m-3">
-            <label>Create Rules</label>
+            <label>Conditions (Optional)</label>
             <Rule />
           </div>
         </section>

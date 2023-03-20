@@ -69,7 +69,7 @@ const RuleCreateModal = React.memo(
         <Modal show={showModal} size="md">
           <Modal.Header>
             <div className="d-flex justify-content-between align-items-center w-100">
-              <h4>Create Rule</h4>
+              <h4>Create Condition</h4>
               <span style={{ cursor: "pointer" }} onClick={handleModalChange}>
                 <i className="fa fa-times" aria-hidden="true"></i>
               </span>
@@ -114,6 +114,7 @@ const RuleCreateModal = React.memo(
           <Modal.Footer className="justify-content-end">
             <button
               className="btn btn-primary"
+              disabled={!selectedFormDta || !criteria}
               onClick={() => {
                 submitRule();
               }}

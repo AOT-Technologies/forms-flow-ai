@@ -135,7 +135,7 @@ const StepperComponent = () => {
   }
   return (
     <div className="p-3">
-      <Link to={`/form`} title={"Back to Form List"}>
+      <Link to={`/bundle`} title={"Back to Form List"}>
         <i className="fa fa-chevron-left fa-lg " />
       </Link>
 

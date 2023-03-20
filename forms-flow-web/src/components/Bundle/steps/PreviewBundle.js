@@ -66,18 +66,18 @@ const PreviewBundle = ({ handleNext, handleBack, activeStep, isLastStep }) => {
     <div>
       <div className="d-flex align-items-center flex-wrap justify-content-between my-4 bg-light p-3">
         <h3>
-          <i className="fa fa-folder mr-2" aria-hidden="true"></i>
+          <i className="fa fa-folder-o mr-2" aria-hidden="true"></i>
           {bundleData.formName}
         </h3>
         <div>
           <button
-            className="btn btn-primary"
+            className="btn btn-primary mr-2"
             onClick={() => {
               gotoEdit();
             }}
           >
             <i className="fa fa-pencil" aria-hidden="true" />
-            &nbsp;&nbsp; Edit Form
+            &nbsp;&nbsp; Edit Bundle
           </button>
           <SaveNext
             handleNext={handleNext}
@@ -107,22 +107,26 @@ const PreviewBundle = ({ handleNext, handleBack, activeStep, isLastStep }) => {
                 <div className="px-3 py-2">
                   <Form form={form} options={{ readOnly: true }} />
                 </div>
-                <div className="d-flex align-items-center justify-content-end px-3 py-2">
-                  <button
-                    onClick={handleBackForm}
-                    disabled={formStep == 0}
-                    className="btn btn-secondary mr-2"
-                  >
-                    Previous Form
-                  </button>
-                  <button
-                    onClick={handleNextForm}
-                    disabled={forms.length - 1 === formStep}
-                    className="btn btn-primary"
-                  >
-                    Next Form
-                  </button>
-                </div>
+                {
+                  forms.length > 1 ? (
+                    <div className="d-flex align-items-center justify-content-end px-3 py-2">
+                    <button
+                      onClick={handleBackForm}
+                      disabled={formStep == 0}
+                      className="btn btn-secondary mr-2"
+                    >
+                      Previous Form
+                    </button>
+                    <button
+                      onClick={handleNextForm}
+                      disabled={forms.length - 1 === formStep}
+                      className="btn btn-primary"
+                    >
+                      Next Form
+                    </button>
+                  </div>
+                  ) : ""
+                }
               </div>
             )}
           </div>

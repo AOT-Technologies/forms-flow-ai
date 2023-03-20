@@ -137,7 +137,7 @@ const PrivateRoute = React.memo((props) => {
       {isAuth ? (
         <Suspense fallback={<Loading />}>
           <Switch>
-            <Route path={`${BASE_ROUTE}form`} component={Form} />
+            <Route path={[`${BASE_ROUTE}form`,`${BASE_ROUTE}bundle`]} component={Form} />
             <DraftRoute path={`${BASE_ROUTE}draft`} component={Drafts} />
             <DesignerRoute path={`${BASE_ROUTE}admin`} component={Admin} />
             <DesignerRoute path={`${BASE_ROUTE}formflow`} component={Form} />

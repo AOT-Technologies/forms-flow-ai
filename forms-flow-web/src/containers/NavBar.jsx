@@ -123,7 +123,7 @@ const NavBar = React.memo(() => {
                   as={Link}
                   to={`${baseUrl}form`}
                   className={`main-nav nav-item ${
-                    pathname.match(createURLPathMatchExp("form", baseUrl))
+                    pathname.match(createURLPathMatchExp("form", baseUrl)) || pathname.match(createURLPathMatchExp("bundle", baseUrl))
                       ? "active-tab"
                       : ""
                   }`}

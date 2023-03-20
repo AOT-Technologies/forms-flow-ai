@@ -213,7 +213,7 @@ def test_bundle_update(app, client, session, jwt):
     token = get_token(jwt)
     headers = {"Authorization": f"Bearer {token}", "content-type": "application/json"}
     # Create forms.
-    mapper_1: FormProcessMapper = FormProcessMapper.create_from_dict(
+    FormProcessMapper.create_from_dict(
         {
             "form_id": "123",
             "form_name": "Test_Form_1",
@@ -223,7 +223,7 @@ def test_bundle_update(app, client, session, jwt):
             "created_by": "test",
         }
     )
-    mapper_2: FormProcessMapper = FormProcessMapper.create_from_dict(
+    FormProcessMapper.create_from_dict(
         {
             "form_id": "456",
             "form_name": "Test_Form_2",
@@ -248,15 +248,11 @@ def test_bundle_update(app, client, session, jwt):
     bundle_payload = {
         "selectedForms": [
             {
-                "mapperId": mapper_1.id,
-                "path": "",
                 "rules": ["teaxt == pageYOffset", "age == 30"],
                 "formOrder": 1,
                 "parentFormId": "123",
             },
             {
-                "mapperId": mapper_2.id,
-                "path": "",
                 "rules": [],
                 "formOrder": 2,
                 "parentFormId": "456",
@@ -274,7 +270,7 @@ def test_bundle_update(app, client, session, jwt):
 
     assert response.status_code == 201
     # new form created
-    mapper_3: FormProcessMapper = FormProcessMapper.create_from_dict(
+    FormProcessMapper.create_from_dict(
         {
             "form_id": "789",
             "form_name": "Test_Form_2",
@@ -285,21 +281,13 @@ def test_bundle_update(app, client, session, jwt):
         }
     )
     # Update payload
-    # form with mapper_1 updated
-    # form with mapper_2 removed from bundle
-    # form with mapper_3 added to bundle
+    # form with parentId 123 updated
+    # form with parentId 456 removed from bundle
+    # form with parentId 789 added to bundle
     bundle_payload = {
         "selectedForms": [
+            {"rules": [], "formOrder": 1, "parentFormId": "123", "id": 1},
             {
-                "mapperId": mapper_1.id,
-                "path": "",
-                "rules": [],
-                "formOrder": 1,
-                "parentFormId": "123",
-            },
-            {
-                "mapperId": mapper_3.id,
-                "path": "",
                 "rules": ["teaxt == pageYOffset"],
                 "formOrder": 2,
                 "parentFormId": "789",
@@ -311,15 +299,17 @@ def test_bundle_update(app, client, session, jwt):
     )
     assert response.status_code == 201
     assert len(response.json) == 2
+    new_form_added = False
+    deleted_form = False
+    update_form = False
     for form in response.json:
-        if form.get("mapperId") == mapper_3.id:
+        if form.get("parentFormId") == "789":
             new_form_added = True
-        if form.get("mapperId") != mapper_2.id:
+        if form.get("parentFormId") != "456":
             deleted_form = True
-        if form.get("mapperId") == mapper_1.id:
-            # assert rules for with mapper id - mapper_1 updated.
+        if form.get("parentFormId") == "123" and form.get("id") == 1:
             assert form["rules"] == []
-    # assert form with mapper id - mapper_3 added to bundle.
+            update_form = True
     assert new_form_added
-    # assert form with mapper id - mapper_2 deleted from bundle.
     assert deleted_form
+    assert update_form

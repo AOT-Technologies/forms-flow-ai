@@ -25,7 +25,7 @@ const SelectedForms = ({ handleModalChange, selectedForms, deleteForm }) => {
   const redirectUrl = MULTITENANCY_ENABLED ? `/tenant/${tenantKey}/` : "/";
 
   const viewForm = (formId) => {
-    window.open(`${redirectUrl}form/${formId}/preview`, "_blank");
+    window.open(`${redirectUrl}formflow/${formId}/preview`, "_blank");
   };
 
   return (

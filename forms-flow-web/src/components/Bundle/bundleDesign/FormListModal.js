@@ -1,5 +1,9 @@
 import React, { useEffect, useState } from "react";
 import Modal from "react-bootstrap/Modal";
+import {
+  InputGroup,
+  FormControl
+} from "react-bootstrap";
 import Table from "@material-ui/core/Table";
 import TableBody from "@material-ui/core/TableBody";
 import TableCell from "@material-ui/core/TableCell";
@@ -18,51 +22,10 @@ import LoadingOverlay from "react-loading-overlay";
 import {
   setBundleFormListLoading,
   setBundleFormListPage,
+  setBundleFormListSort,
   setBundleFormSearch,
 } from "../../../actions/bundleActions";
 import Loading from "../../../containers/Loading";
-
-const SearchBar = ({ searchText, setSearchText, handleSearch }) => {
-  return (
-    <>
-      <div className="form-outline">
-        <input
-          type="search"
-          id="form1"
-          onKeyPress={(e) => e.key === "Enter" && handleSearch()}
-          onChange={(e) => {
-            setSearchText(e.target.value);
-            e.target.value === "" && handleSearch();
-          }}
-          autoComplete="off"
-          className="form-control"
-          value={searchText}
-          placeholder={"Search..."}
-        />
-      </div>
-      {searchText ? (
-        <button
-          type="button"
-          className="btn btn-outline-primary ml-2"
-          onClick={() => handleSearch({ clear: true })}
-        >
-          <i className="fa fa-times"></i>
-        </button>
-      ) : (
-        ""
-      )}
-      <button
-        type="button"
-        className={`btn btn-outline-primary ml-2`}
-        name="search-button"
-        disabled={!searchText}
-        onClick={() => handleSearch()}
-      >
-        <i className="fa fa-search"></i>
-      </button>
-    </>
-  );
-};
 
 const StyledTableCell = withStyles(() => ({
   head: {
@@ -86,7 +49,8 @@ const FormListModal = React.memo(
       formsAlreadySelected || []
     );
     const [seletedFormIds, setSelectedFormIds] = useState([]);
-    const [searchText, setSearchText] = useState("");
+    const [search, setSearch] = useState(searchText || "");
+
 
     const forms = useSelector((state) => state.bundle?.bundleForms.forms);
 
@@ -99,9 +63,10 @@ const FormListModal = React.memo(
     const sortOrder = useSelector(
       (state) => state.bundle?.bundleForms.sortOrder
     );
-    const budnleSearchText = useSelector(
+    const searchText = useSelector(
       (state) => state.bundle?.bundleForms.searchText
     );
+    const isAscending = sortOrder === "asc" ? true : false;
  
 
     const seachFormLoading = useSelector(
@@ -134,13 +99,13 @@ const FormListModal = React.memo(
         setLoadingForms(true);
         fetchFormList();
       } else { 
-        setSearchText("");
+        setSearch("");
         dispatch(setBundleFormSearch(""));
         dispatch(setBundleFormListPage(1));
         setSelectedForms([]);
         setSelectedFormIds([]);
       }
-    }, [pageNo, showModal, budnleSearchText]);
+    }, [pageNo, showModal, searchText,sortOrder]);
 
     useEffect(() => {
       if (formsAlreadySelected?.length) {
@@ -152,6 +117,23 @@ const FormListModal = React.memo(
         setSelectedFormIds([]);
       }
     }, [formsAlreadySelected,showModal]);
+
+    const updateSort = () => {
+      let updatedSort;
+      if (sortOrder === "asc") {
+        updatedSort = "desc";
+        dispatch(setBundleFormListSort(updatedSort));
+      } else {
+        updatedSort = "asc";
+        dispatch(setBundleFormListSort(updatedSort));
+      }
+      dispatch(setBundleFormListPage(1));
+    };
+
+    const handleClearSearch = () => {
+      setSearch("");
+      dispatch(setBundleFormSearch(""));
+    };
 
     const handleFormSelect = (action, form) => {
   
@@ -179,15 +161,9 @@ const FormListModal = React.memo(
       }
     };
 
-    const handleSearch = (options) => {
-      if (options?.clear) {
-        setSearchText("");
-        dispatch(setBundleFormSearch(""));
-      } else {
-        dispatch(setBundleFormSearch(searchText));
-      }
-
-      dispatch(setBundleFormListPage(options?.page || 1));
+    const handleSearch = () => {
+      dispatch(setBundleFormSearch(search));
+      dispatch(setBundleFormListPage(1));
     };
 
     return (
@@ -207,9 +183,49 @@ const FormListModal = React.memo(
               <Loading />
             ) : (
               <> 
-                <div className="d-flex mb-2">
-                  {SearchBar({ handleSearch, searchText, setSearchText })}
-                </div>
+                <InputGroup className="input-group mb-2">
+                <InputGroup.Prepend>
+                  <InputGroup.Text style={{ backgroundColor: "#ffff" }}>
+                    <div className="sort-icons">
+                      <i
+                        className="fa fa-sort-up"
+                        onClick={updateSort}
+                        style={{
+                          cursor: "pointer",
+                          opacity: `${isAscending ? 1 : 0.5}`,
+                        }}
+                      ></i>
+                      <i
+                        className="fa fa-sort-down"
+                        onClick={updateSort}
+                        style={{
+                          marginTop: "-8px",
+                          cursor: "pointer",
+                          opacity: `${!isAscending ? 1 : 0.5}`,
+                        }}
+                      ></i>
+                    </div>
+                  </InputGroup.Text>
+                </InputGroup.Prepend>
+                <FormControl 
+                  value={search}
+                  onChange={(e)=>{setSearch(e.target.value);}}
+                  placeholder="Search..."
+                  style={{ backgroundColor: "#ffff" }}
+                />
+                {search && (
+                  <InputGroup.Append onClick={handleClearSearch}>
+                    <InputGroup.Text style={{ backgroundColor: "#ffff" }}>
+                      <i className="fa fa-times"></i>
+                    </InputGroup.Text>
+                  </InputGroup.Append>
+                )}
+                <InputGroup.Append  onClick={handleSearch} disabled={!search.trim()}>
+                  <InputGroup.Text style={{ backgroundColor: "#ffff" }}>
+                    <i className="fa fa-search"></i>
+                  </InputGroup.Text>
+                </InputGroup.Append>
+              </InputGroup>
                 {forms.length > 0 && !seachFormLoading ? (
                   <LoadingOverlay
                     active={seachFormLoading}

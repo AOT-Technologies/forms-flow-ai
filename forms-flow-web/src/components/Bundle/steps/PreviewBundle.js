@@ -105,7 +105,7 @@ const PreviewBundle = ({ handleNext, handleBack, activeStep, isLastStep }) => {
                 <Errors errors={error} />
                 <h3 className="px-3 py-2">{form.title}</h3>
                 <div className="px-3 py-2">
-                  <Form form={form} options={{ readOnly: true }} />
+                  <Form form={form} options={{ readOnly: true, viewAsHtml: true }} />
                 </div>
                 {
                   forms.length > 1 ? (

@@ -34,7 +34,6 @@ const SelectedForms = ({ handleModalChange, selectedForms, deleteForm }) => {
         <Table aria-label="simple table">
           <TableHead>
             <TableRow>
-              <StyledTableCell>No</StyledTableCell>
               <StyledTableCell align="left">Form Order</StyledTableCell> 
               <StyledTableCell align="left">Form Name</StyledTableCell>
               <StyledTableCell align="left">Form Type</StyledTableCell>
@@ -43,9 +42,8 @@ const SelectedForms = ({ handleModalChange, selectedForms, deleteForm }) => {
             </TableRow>
           </TableHead>
           <TableBody>
-            {selectedForms?.map((form, index) => (
+            {selectedForms?.map((form) => (
               <TableRow key={form.id}>
-                <StyledTableCell>{index + 1}</StyledTableCell>
                 <StyledTableCell>{form.formOrder}</StyledTableCell> 
                 <StyledTableCell>{form.formName}</StyledTableCell>
                 <StyledTableCell>{_capitalize(form.formType)}</StyledTableCell>

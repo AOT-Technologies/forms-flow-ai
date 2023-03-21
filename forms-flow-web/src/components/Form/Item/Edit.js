@@ -12,6 +12,7 @@ import { toast } from "react-toastify";
 import { useSelector, useDispatch } from "react-redux";
 import { setFormProcessesData } from "../../../actions/processActions";
 import { Translation, useTranslation } from "react-i18next";
+import Switch from '@material-ui/core/Switch';
 import utils from "formiojs/utils";
 import {
   deleteFormProcessMapper,
@@ -607,7 +608,7 @@ const Edit = React.memo(() => {
                  {t("Name")}
                   {addingTenantKeyInformation("name")}
                 </label>
-                <div className="input-group mb-2">
+                <div className="input-group w-auto mb-2">
                   {MULTITENANCY_ENABLED && tenantKey ? (
                     <div className="input-group-prepend">
                       <div
@@ -636,7 +637,7 @@ const Edit = React.memo(() => {
                 <label htmlFor="name" className="control-label">
                   {t("Display as")}
                 </label>
-                <div className="input-group">
+                <div className="">
                   <select
                     className="form-control"
                     name="form-display"
@@ -659,7 +660,7 @@ const Edit = React.memo(() => {
                 <label htmlFor="form-type" className="control-label">
                   {t("Type")}
                 </label>
-                <div className="input-group">
+                <div className="">
                   <select
                     className="form-control"
                     name="form-type"
@@ -683,7 +684,7 @@ const Edit = React.memo(() => {
                   {t("Path")}
                   {addingTenantKeyInformation("path")}
                 </label>
-                <div className="input-group mb-2">
+                <div className="input-group w-auto mb-2">
                   {MULTITENANCY_ENABLED && tenantKey ? (
                     <div className="input-group-prepend">
                       <div
@@ -701,20 +702,20 @@ const Edit = React.memo(() => {
                     className="form-control"
                     id="path"
                     placeholder="example"
-                    style={{ textTransform: "lowercase", width: "120px" }}
+                    style={{ textTransform: "lowercase"}}
                     value={form.path || ""}
                     onChange={(event) => handleChange("path", event)}
                   />
                 </div>
               </div>
             </div>
-            <div className="col-lg-4 col-md-4 col-sm-4">
+            <div className="col-lg-4 col-md-4 col-sm-12">
               <div id="form-group-path" className="form-group">
                 <label htmlFor="path" className="control-label "></label>
-                <div className="input-group">
+                <div className="">
                   <FormControlLabel
                     control={
-                      <Checkbox
+                      <Switch
                         checked={processListData.anonymous || false}
                         color="primary"
                         aria-label="Publish"
@@ -728,7 +729,7 @@ const Edit = React.memo(() => {
                   />
                   <FormControlLabel
                   control={
-                    <Checkbox
+                    <Switch
                       checked={processListData.canBundle || false}
                       id="bundle"
                       color="primary"
@@ -738,7 +739,8 @@ const Edit = React.memo(() => {
                       }}
                     />
                   }
-                  label={t("Can bundle?")}
+                  title={"Enable bundling with other forms"}
+                  label={t("Enable bundling")}
                   labelPlacement="start"
                 />
                 </div>

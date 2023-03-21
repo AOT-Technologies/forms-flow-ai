@@ -13,6 +13,8 @@ import { useDispatch, useSelector } from "react-redux";
 import { toast } from "react-toastify";
 import { useTranslation, Translation } from "react-i18next";
 import { formio_resourceBundles } from "../../resourceBundles/formio_resourceBundles";
+import Switch from '@material-ui/core/Switch';
+
 import {
   clearFormError,
   setFormFailureErrorData,
@@ -20,7 +22,7 @@ import {
 } from "../../actions/formActions";
 import { addTenantkey } from "../../helper/helper";
 import { formCreate } from "../../apiManager/services/FormServices";
-import { Checkbox, FormControlLabel } from "@material-ui/core"; 
+import {FormControlLabel } from "@material-ui/core"; 
 // reducer from react-formio code
 const reducer = (form, { type, value }) => {
   const formCopy = _cloneDeep(form);
@@ -215,7 +217,7 @@ const Create = React.memo(() => {
         style={{ border: "1px solid #c2c0be", borderRadius: "5px" }}>
 
         <div className="row align-item-center">
-          <div className="col-lg-4 col-md-4 col-sm-4">
+          <div className="col-lg-4 col-md-4 col-sm-12">
             <div id="form-group-title" className="form-group">
               <label htmlFor="title" className="control-label field-required">
                 {" "}
@@ -244,7 +246,7 @@ const Create = React.memo(() => {
                 {t("Name")}
                 {addingTenantKeyInformation("name")}
               </label>
-              <div className="input-group mb-2">
+              <div className="input-group mb-2 w-auto">
                 {
                   MULTITENANCY_ENABLED && tenantKey ? <div className="input-group-prepend">
                     <div
@@ -271,7 +273,7 @@ const Create = React.memo(() => {
               <label htmlFor="name" className="control-label">
                 {t("Display as")}
               </label>
-              <div className="input-group">
+              <div className="">
                 <select
                   className="form-control"
                   name="form-display"
@@ -294,7 +296,7 @@ const Create = React.memo(() => {
               <label htmlFor="form-type" className="control-label">
                 {t("Type")}
               </label>
-              <div className="input-group">
+              <div className="">
                 <select
                   className="form-control"
                   name="form-type"
@@ -318,7 +320,7 @@ const Create = React.memo(() => {
                 {t("Path")}
                 {addingTenantKeyInformation("path")}
               </label>
-              <div className="input-group mb-2">
+              <div className="input-group w-auto mb-2">
                 {
                   MULTITENANCY_ENABLED && tenantKey ? <div className="input-group-prepend">
                     <div
@@ -334,7 +336,7 @@ const Create = React.memo(() => {
                   className="form-control"
                   id="path"
                   placeholder={t("Enter pathname")}
-                  style={{ textTransform: "lowercase", width: "120px" }}
+                  style={{ textTransform: "lowercase",}}
                   value={form.path || ""}
                   onChange={(event) => handleChange("path", event)}
                 />
@@ -342,13 +344,13 @@ const Create = React.memo(() => {
             </div>
           </div>
 
-          <div className="col-lg-4 col-md-4 col-sm-4">
+          <div className="col-lg-4 col-md-4 col-sm-12">
             <div id="form-group-path" className="form-group">
               <label htmlFor="path" className="control-label "></label>
-              <div className="input-group">
+              <div className="">
                 <FormControlLabel
                   control={
-                    <Checkbox
+                    <Switch
                       checked={anonymous}
                       id="anonymous"
                       color="primary"
@@ -358,12 +360,12 @@ const Create = React.memo(() => {
                       }}
                     />
                   }
-                  label={t("Make this form public ?")}
+                  label={t("Make this form public")}
                   labelPlacement="start"
                 />
                 <FormControlLabel
                   control={
-                    <Checkbox
+                    <Switch
                       checked={canBundle}
                       id="bundle"
                       color="primary"
@@ -373,7 +375,7 @@ const Create = React.memo(() => {
                       }}
                     />
                   }
-                  label={t("Can bundle?")}
+                  label={t("Enable bundling")}
                   labelPlacement="start"
                 />
               </div>

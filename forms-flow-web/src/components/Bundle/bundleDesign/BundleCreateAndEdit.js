@@ -173,8 +173,8 @@ const BundleCreate = ({ mode }) => {
       <div className="border">
         <section>
           <div className="mt-2 align-items-center">
-            <div className="m-3">
-              <label>Bundle Name</label>
+            <div className="m-3 font-weight-bold">
+              <label>Bundle Name<span className="ml-1 text-danger">*</span></label>
               <input
                 value={bundleName}
                 onChange={(e) => {
@@ -185,8 +185,8 @@ const BundleCreate = ({ mode }) => {
                 placeholder="Enter name"
               />
             </div>
-            <div className="m-3">
-              <label>Bundle Description</label>
+            <div className="m-3 font-weight-bold">
+              <label>Bundle Description<span className="ml-1 text-danger">*</span></label>
               <textarea
                 value={bundleDescription}
                 onChange={(e) => {
@@ -200,12 +200,12 @@ const BundleCreate = ({ mode }) => {
           </div>
         </section>
         <section>
-          <div className="m-3">
-            <label>Forms</label>
+          <div className="m-3 font-weight-bold">
+            <label>Forms<span className="ml-1 text-danger">*</span></label>
             <FormSelect />
           </div>
-          <div className="m-3">
-            <label>Conditions (Optional)</label>
+          <div className="m-3 font-weight-bold">
+            <label>Conditions</label>
             <Rule />
           </div>
         </section>

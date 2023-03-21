@@ -174,7 +174,7 @@ const BundleCreate = ({ mode }) => {
         <section>
           <div className="mt-2 align-items-center">
             <div className="m-3 font-weight-bold">
-              <label>Bundle Name</label>
+              <label>Bundle Name<span className="ml-1 text-danger">*</span></label>
               <input
                 value={bundleName}
                 onChange={(e) => {
@@ -186,7 +186,7 @@ const BundleCreate = ({ mode }) => {
               />
             </div>
             <div className="m-3 font-weight-bold">
-              <label>Bundle Description</label>
+              <label>Bundle Description<span className="ml-1 text-danger">*</span></label>
               <textarea
                 value={bundleDescription}
                 onChange={(e) => {
@@ -201,7 +201,7 @@ const BundleCreate = ({ mode }) => {
         </section>
         <section>
           <div className="m-3 font-weight-bold">
-            <label>Forms*</label>
+            <label>Forms<span className="ml-1 text-danger">*</span></label>
             <FormSelect />
           </div>
           <div className="m-3 font-weight-bold">

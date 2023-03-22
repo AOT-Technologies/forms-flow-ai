@@ -83,7 +83,7 @@ const View = React.memo((props) => {
     (state) => state.draft.draftSubmission?.id
   );
   // Holds the latest data saved by the server
-  const processLoadError = useSelector((state) => state.process.processLoadError);
+  const processLoadError = useSelector((state) => state.process?.processLoadError);
   const lastUpdatedDraft = useSelector((state) => state.draft.lastUpdated);
   const isPublic = !props.isAuthenticated;
   const tenantKey = useSelector((state) => state.tenants?.tenantId);

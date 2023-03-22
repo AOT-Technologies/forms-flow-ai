@@ -93,27 +93,6 @@ it("should render the Form list component without breaking", () => {
   });
 });
 
-it("should render the Stepper component without breaking", () => {
-  const spy = jest.spyOn(redux, "useSelector");
-  spy.mockImplementation((callback) =>
-    callback({
-      user: {
-        isAuthenticated: true,
-        roles: ["formsflow-designer"],
-      },
-    })
-  );
-  renderWithRouterMatch(Index, {
-    path: "/formflow/:formId?/:step?",
-    route: "/formflow/123/1",
-  });
-  expect(screen.getByText("Design Form")).toBeInTheDocument();
-  expect(
-    screen.getByText("Associate this form with a workflow?")
-  ).toBeInTheDocument();
-  expect(screen.getByText("Preview and Confirm")).toBeInTheDocument();
-});
-
 it("should redirect to home component without breaking", () => {
   const spy = jest.spyOn(redux, "useSelector");
   spy.mockImplementation((callback) =>

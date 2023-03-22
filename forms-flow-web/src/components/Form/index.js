@@ -1,5 +1,5 @@
 import React from "react";
-import { Route, Switch, Redirect } from "react-router-dom";
+import { Route, Switch } from "react-router-dom";
 import { useSelector } from "react-redux";
 
 import List from "./List";
@@ -22,7 +22,7 @@ const CreateFormRoute = ({ component: Component, ...rest }) => (
       if (user.includes(STAFF_DESIGNER)) {
         return <Component {...props} />;
       } else {
-        return <Redirect exact to="/" />;
+        return <>Unauthorized</>;
       }
     }}
   />
@@ -34,7 +34,7 @@ const FormSubmissionRoute = ({ component: Component, ...rest }) => (
       user.includes(STAFF_REVIEWER) || user.includes(CLIENT) ? (
         <Component {...props} />
       ) : (
-        <Redirect exact to="/" />
+        <>Unauthorized</>
       )
     }
   />

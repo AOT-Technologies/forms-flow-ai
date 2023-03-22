@@ -25,15 +25,12 @@ const BaseRouting = React.memo(({ store, publish, subscribe, getKcInstance }) =>
 
   const [language, setLang] = React.useState(null);
 
-  React.useEffect(()=>{
-    dispatch(initPubSub({publish, subscribe}));  
-  },[publish, subscribe]);
+  React.useEffect(() => {
+    dispatch(initPubSub({ publish, subscribe }));
+  }, [publish, subscribe]);
 
   subscribe("ES_CHANGE_LANGUAGE", (msg, data) => {
     i18n.changeLanguage(data);
-  });
-
-  subscribe("ES_UPDATE_LANGUAGE", (msg, data) => {
     setLang(data);
   });
 

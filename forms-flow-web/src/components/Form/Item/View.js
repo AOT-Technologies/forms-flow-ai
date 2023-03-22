@@ -57,6 +57,7 @@ import selectApplicationCreateAPI from "./apiSelectHelper";
 import { getApplicationCount, getFormProcesses } from "../../../apiManager/services/processServices";
 import { setFormStatusLoading } from "../../../actions/processActions";
 import SavingLoading from "../../Loading/SavingLoading";
+import NotFound from "../../NotFound/";
 
 const View = React.memo((props) => {
   const [formStatus, setFormStatus] = React.useState("");
@@ -82,6 +83,7 @@ const View = React.memo((props) => {
     (state) => state.draft.draftSubmission?.id
   );
   // Holds the latest data saved by the server
+  const processLoadError = useSelector((state) => state.process.processLoadError);
   const lastUpdatedDraft = useSelector((state) => state.draft.lastUpdated);
   const isPublic = !props.isAuthenticated;
   const tenantKey = useSelector((state) => state.tenants?.tenantId);
@@ -401,7 +403,7 @@ const View = React.memo((props) => {
               }}
               onCustomEvent={(evt) => onCustomEvent(evt, redirectUrl)}
             />
-          ) : formStatus === "inactive" || !formStatus ? (
+          ) : !processLoadError && (formStatus === "inactive" || !formStatus)  ? (
             <span>
               <div
                 className="container"
@@ -419,7 +421,10 @@ const View = React.memo((props) => {
                 <p>{t("You can't submit this form until it is published")}</p>
               </div>
             </span>
-          ) : null}
+          ) : <NotFound
+          errorMessage={t("Access Denied")}
+          errorCode={"403"}
+        />}
         </div>
       </LoadingOverlay>
     </div>

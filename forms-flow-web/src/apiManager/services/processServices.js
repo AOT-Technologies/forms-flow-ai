@@ -28,6 +28,7 @@ import { replaceUrl } from "../../helper/helper";
 import UserService from "../../services/UserService";
 import { toast } from "react-toastify";
 import { Translation } from "react-i18next";
+import { setFormStatusLoading } from "../../actions/processActions";
 export const getProcessStatusList = (processId, taskId) => {
   return (dispatch) => {
     dispatch(setProcessStatusLoading(true));
@@ -163,6 +164,7 @@ export const getFormProcesses = (formId, ...rest) => {
         } else {
           dispatch(setFormPreviosData([]));
           dispatch(setFormProcessesData([]));
+          dispatch(setFormStatusLoading(false));
           dispatch(setProcessLoadError(true));
           done("no data", null);
         }

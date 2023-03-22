@@ -1,5 +1,6 @@
 /* eslint-disable max-len */
 export const RESOURCE_BUNDLES_DE = {
+  "Bad Request":"Ungültige Anforderung",
   "Please remove the special characters...!":"Bitte entfernen Sie die Sonderzeichen...!",
   "No histories found":"Keine Historien gefunden",
   "Continue":"Weitermachen",

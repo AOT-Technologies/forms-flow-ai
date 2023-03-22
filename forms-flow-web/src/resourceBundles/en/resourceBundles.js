@@ -1,5 +1,6 @@
 /* eslint-disable max-len */
 export const RESOURCE_BUNDLES_EN = {
+  "Bad Request":"Bad Request",
   "Please remove the special characters...!":"Please remove the special characters...!",
   "No histories found":"No histories found",
   "Continue":"Continue",

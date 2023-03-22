@@ -6,7 +6,6 @@ import View from "./View";
 import Edit from "./Edit";
 import { getApplicationById } from "../../../../../apiManager/services/applicationServices";
 import { setApplicationDetailLoader } from "../../../../../actions/applicationActions";
-import NotFound from "../../../../NotFound";
 import { getUserRolePermission } from "../../../../../helper/user";
 import {
   BASE_ROUTE,
@@ -19,10 +18,13 @@ import { CLIENT_EDIT_STATUS } from "../../../../../constants/applicationConstant
 import Loading from "../../../../../containers/Loading";
 import { clearSubmissionError } from "../../../../../actions/formActions";
 import { getCustomSubmission } from "../../../../../apiManager/services/FormServices";
+import { useTranslation } from "react-i18next";
+import NotFound from "../../../../NotFound";
 
 const Item = React.memo(() => {
   const { formId, submissionId } = useParams();
   const dispatch = useDispatch();
+  const { t } = useTranslation();
   // const showViewSubmissions= useSelector((state) => state.user.showViewSubmissions);
   //const path = props.location.pathname;
   const applicationId = useSelector(
@@ -37,7 +39,7 @@ const Item = React.memo(() => {
   );
   const [showSubmissionLoading, setShowSubmissionLoading] = useState(true);
   const [editAllowed, setEditAllowed] = useState(false);
-  // const tenantKey = useSelector((state) => state.tenants?.tenantId)
+  const submissionError = useSelector((state) => state.submission?.error);
 
   // const redirectUrl = MULTITENANCY_ENABLED ? `/tenant/${tenantKey}/` : `/`
 
@@ -49,6 +51,7 @@ const Item = React.memo(() => {
       dispatch(getSubmission("submission", submissionId, formId));
     }
   }, [submissionId, formId, dispatch]);
+
 
   useEffect(() => {
     if (applicationId) {
@@ -96,11 +99,16 @@ const Item = React.memo(() => {
         }*/}
       </ul>
       <Switch>
+        {!submissionError ? (
         <Route
           exact
           path={`${BASE_ROUTE}form/:formId/submission/:submissionId`}
           component={View}
         />
+        ) : <NotFound
+        errorMessage={t("Bad Request")}
+        errorCode={400}
+      /> }
         <Redirect
           exact
           from={`${BASE_ROUTE}form/:formId/submission/:submissionId/edit/:notavailable`}

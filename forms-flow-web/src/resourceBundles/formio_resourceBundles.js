@@ -1,6 +1,7 @@
 /* eslint-disable max-len */
 export const formio_resourceBundles = {
   en: {
+    "Bad Request":"Bad Request",
     "Please remove the special characters...!":"Please remove the special characters...!",
     "No histories found":"No histories found",
     "Continue":"Continue",
@@ -299,6 +300,7 @@ export const formio_resourceBundles = {
   },
 
   "zh-CN": {
+    "Bad Request":"错误的请求",
     "Please remove the special characters...!":"请删除特殊字符...！",
     "No histories found":"没有找到历史记录",
     "Continue":"继续",
@@ -1208,6 +1210,7 @@ export const formio_resourceBundles = {
   },
 
   bg: {
+    "Bad Request":"Неправилна заявка",
     "Please remove the special characters...!":"Моля, премахнете специалните символи...!",
     "No histories found":"Няма намерени истории",
     "Continue":"продължи",
@@ -2176,6 +2179,7 @@ export const formio_resourceBundles = {
   },
 
   pt: {
+    "Bad Request":"Pedido ruim",
     "Please remove the special characters...!":"Remova os caracteres especiais...!",
     "No histories found":"Nenhum histórico encontrado",
     "Continue":"Prosseguir",
@@ -3138,6 +3142,7 @@ export const formio_resourceBundles = {
   },
 
   fr: {
+    "Bad Request":"Bad Request",
     "Please remove the special characters...!":"Veuillez supprimer les caractères spéciaux... !",
     "No histories found":"Aucun historique trouvé",
     "Continue":"Continuez",
@@ -4108,6 +4113,7 @@ export const formio_resourceBundles = {
   },
 
   de: {
+    "Bad Request":"Ungültige Anforderung",
     "Please remove the special characters...!":"Bitte entfernen Sie die Sonderzeichen...!",
     "No histories found":"Keine Historien gefunden",
     "Continue":"Weitermachen",

@@ -21,6 +21,7 @@ import {
   updateBPMTaskGroups,
   setBPMTaskGroupsLoading,
   setBPMTaskCount,
+  bpmActionError,
 } from "../../actions/bpmTaskActions";
 import { replaceUrl } from "../../helper/helper";
 import axios from "axios";
@@ -250,7 +251,7 @@ export const getBPMTaskDetail = (taskId, ...rest) => {
         })
       )
       .catch((error) => {
-        dispatch(serviceActionError(error));
+        dispatch(bpmActionError(error));
         dispatch(setBPMTaskDetailLoader(false));
         dispatch(setBPMTaskDetailUpdating(false));
         done(error);

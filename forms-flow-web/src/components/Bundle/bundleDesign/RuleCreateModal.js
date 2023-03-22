@@ -2,7 +2,6 @@ import React, { useEffect, useState } from "react";
 import { Modal } from "react-bootstrap";
 import { useSelector } from "react-redux";
 
-import { Errors } from "react-formio";
 // import { RuleActions } from "../constant/ruleActionConstant";
 
 import Select from "react-select";
@@ -13,7 +12,6 @@ const RuleCreateModal = React.memo(
       (state) => state.bundle.selectedForms || []
     );
 
-    const errors = useSelector((state) => state.form.error);
     const [criteria, setCriteria] = useState("");
     const [selectedFormDta, setSelectedFormData] = useState("");
     // const [action, setAction] = useState();
@@ -76,8 +74,6 @@ const RuleCreateModal = React.memo(
             </div>
           </Modal.Header>
           <Modal.Body>
-            <Errors errors={errors} />
-
             <div className="form-group">
               <label>Criteria</label>
               <textarea

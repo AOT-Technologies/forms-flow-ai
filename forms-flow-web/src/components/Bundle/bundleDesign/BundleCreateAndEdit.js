@@ -102,6 +102,9 @@ const BundleCreate = ({ mode }) => {
       })
       .catch((err) => {
         const error = err.response.data || err.message;
+        if(error?.errors){
+          error.errors = {name:error.errors["name"]} ;
+        }
         dispatch(setFormFailureErrorData("form", error));
       });
   };

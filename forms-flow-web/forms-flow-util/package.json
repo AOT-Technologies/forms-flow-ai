@@ -69,6 +69,8 @@
     "glob-parent": "5.1.2",
     "ansi-regex": "5.0.1",
     "nanoid": "3.2.0",
-    "ajv": "8.11.0"
+    "ajv": "8.11.0",
+    "minimatch": "3.0.5",
+    "json5": "2.2.2"
   }
 }

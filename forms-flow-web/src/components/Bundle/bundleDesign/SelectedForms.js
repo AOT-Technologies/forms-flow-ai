@@ -22,10 +22,8 @@ const StyledTableCell = withStyles(() => ({
 }))(TableCell);
 
 const SelectedForms = ({ handleModalChange, selectedForms, deleteForm }) => {
-  console.log("selected forms",selectedForms);
   const dispatch = useDispatch();
   const [items, setItems] = useState(selectedForms);
-  console.log("items",items);
   const tenantKey = useSelector((state) => state.tenants?.tenantId);
   const redirectUrl = MULTITENANCY_ENABLED ? `/tenant/${tenantKey}/` : "/";
 

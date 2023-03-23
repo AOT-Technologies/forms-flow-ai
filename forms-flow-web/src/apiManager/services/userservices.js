@@ -1,34 +1,8 @@
 import API from "../endpoints/index";
 import { StorageService, RequestService } from "@formsflow/service";
-import { toast } from "react-toastify";
-import { Translation } from "react-i18next";
 import { setAccessForForm, setRoleIds } from "../../actions/roleActions";
 import { MULTITENANCY_ENABLED } from "../../constants/constants";
 import { setTenantData } from "../../actions/tenantActions";
-
-export const updateUserlang = (data) => {
-  const apiUpdatelang = API.LANG_UPDATE;
-
-  // eslint-disable-next-line no-unused-vars
-  return (dispatch) => {
-    RequestService.httpPUTRequest(
-      apiUpdatelang,
-      { locale: data },
-      StorageService.get(StorageService.User.AUTH_TOKEN)
-    )
-      .then((res) => {
-        if (res.data) {
-          //toast.success(<Translation>{(t)=>t(""Successfully Updated"")}</Translation>);
-        } else {
-          //toast.error(<Translation>{(t)=>t("Failed")}</Translation>);
-        }
-      })
-      .catch((error) => {
-        console.log(error);
-        toast.error(<Translation>{(t) => t("Failed")}</Translation>);
-      });
-  };
-};
 
 export const getFormioRoleIds = (...rest) => {
   // eslint-disable-next-line

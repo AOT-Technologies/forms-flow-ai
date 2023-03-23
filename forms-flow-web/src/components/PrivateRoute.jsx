@@ -75,7 +75,7 @@ const PrivateRoute = React.memo((props) => {
       setUserRole(JSON.parse(StorageService.get(StorageService.User.USER_ROLE)))
     );
     store.dispatch(setUserToken(instance.getToken()));
-    store.dispatch(setLanguage("en"));
+    store.dispatch(setLanguage(instance.getUserData()?.locale || "en"));
     //Set Cammunda/Formio Base URL
     setApiBaseUrlToLocalStorage();
     // get formio roles

@@ -54,9 +54,13 @@ class FormBundleService:  # pylint:disable=too-few-public-methods
                 for form in bundle_form_details + bundle_forms_list:
                     if form["parentFormId"] in selected_forms:
                         selected_forms[form["parentFormId"]].update(form)
-                    else:
+                    elif form.get("deleted") is False:
                         selected_forms[form["parentFormId"]] = form
-                bundle_forms = sorted(list(selected_forms.values()), key=lambda d: d['formOrder'])
+                bundle_forms = sorted(
+                    list(selected_forms.values()), key=lambda d: d["formOrder"]
+                )
+                for index, value in enumerate(bundle_forms, start=1):
+                    value["formOrder"] = index
             return bundle_forms
         except AttributeError as err:
             raise BusinessException(

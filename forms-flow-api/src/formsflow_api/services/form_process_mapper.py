@@ -7,7 +7,7 @@ from formsflow_api_utils.exceptions import BusinessException
 from formsflow_api_utils.utils.enums import FormProcessMapperStatus
 from formsflow_api_utils.utils.user_context import UserContext, user_context
 
-from formsflow_api.models import Draft, FormProcessMapper
+from formsflow_api.models import Draft, FormBundling, FormProcessMapper
 from formsflow_api.schemas import FormProcessMapperSchema
 from formsflow_api.services.external.bpm import BPMService
 
@@ -197,6 +197,10 @@ class FormProcessMapperService:
             if draft_applications:
                 for draft in draft_applications:
                     draft.delete()
+            # delete form from formBundling table
+            FormBundling.delete_by_parent_form_id(
+                parent_form_id=application.parent_form_id
+            )
         else:
             raise BusinessException(
                 {

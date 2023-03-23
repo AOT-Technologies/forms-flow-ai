@@ -1,9 +1,10 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useMemo } from "react";
 import { useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { Errors } from "react-formio";
 import _camelCase from "lodash/camelCase";
-import { formCreate } from "../../../apiManager/services/FormServices";
+import _deepClone from "lodash/cloneDeep";
+import { formCreate, formUpdate } from "../../../apiManager/services/FormServices";
 import { MULTITENANCY_ENABLED } from "../../../constants/constants";
 import { addTenantkey } from "../../../helper/helper";
 import FormSelect from "./FormSelect";
@@ -45,12 +46,16 @@ const BundleCreate = ({ mode }) => {
   const selectedForms = useSelector(
     (state) => state.bundle.selectedForms || []
   );
+  
+  const selectedFormsBackup = useMemo(()=>_deepClone(selectedForms),[]);
+  
   const redirectUrl = MULTITENANCY_ENABLED ? `/tenant/${tenantKey}/` : "/";
 
   useEffect(() => {
     dispatch(clearFormError("form"));
   }, [dispatch]);
 
+ 
   const createBundle = () => {
     const newForm = {
       tags: ["common"],
@@ -102,6 +107,9 @@ const BundleCreate = ({ mode }) => {
       })
       .catch((err) => {
         const error = err.response.data || err.message;
+        if(error?.errors){
+          error.errors = {name:error.errors["name"]} ;
+        }
         dispatch(setFormFailureErrorData("form", error));
       });
   };
@@ -111,16 +119,47 @@ const BundleCreate = ({ mode }) => {
       bundleData.formName !== bundleName ||
       bundleData.description !== bundleDescription
     ) {
-      dispatch(
-        saveFormProcessMapperPut({
-          id: bundleData.id,
-          formName: bundleName,
-          formId: bundleData.formId,
-          description: bundleDescription,
+      const formData = {
+        title: bundleName,
+        path: _camelCase(bundleName).toLowerCase(),
+        name: _camelCase(bundleName),
+      };
+      if (MULTITENANCY_ENABLED && tenantKey) {
+        formData.tenantKey = tenantKey;
+        if (formData.path) {
+          formData.path = addTenantkey(formData.path, tenantKey);
+        }
+        if (formData.name) {
+          formData.name = addTenantkey(formData.name, tenantKey);
+        }
+      }
+      formUpdate(bundleData.formId, formData)
+        .then(() => {
+          dispatch(
+            saveFormProcessMapperPut({
+              id: bundleData.id,
+              formName: bundleName,
+              formId: bundleData.formId,
+              description: bundleDescription,
+            })
+          );
+          bundleUpdate({ selectedForms }, bundleData.id).then((res) => {
+            dispatch(setBundleSelectedForms(res.data));
+            dispatch(
+              push(`${redirectUrl}bundleflow/${bundleData.formId}/view-edit`)
+            );
+          });
         })
-      );
-    }
+        .catch((err) => {
+          const error = err.response.data || err.message;
+          if (error?.errors) {
+            error.errors = { name: error.errors["name"] };
+          }
+          dispatch(setFormFailureErrorData("form", error));
+        });
 
+      return true;
+    }
     bundleUpdate({ selectedForms }, bundleData.id).then((res) => {
       dispatch(setBundleSelectedForms(res.data));
       dispatch(push(`${redirectUrl}bundleflow/${bundleData.formId}/view-edit`));
@@ -150,6 +189,7 @@ const BundleCreate = ({ mode }) => {
               onClick={() => {
                 history.goBack();
                 dispatch(clearFormError("form"));
+                dispatch(setBundleSelectedForms(selectedFormsBackup));
               }}
             >
               Cancel
@@ -173,8 +213,8 @@ const BundleCreate = ({ mode }) => {
       <div className="border">
         <section>
           <div className="mt-2 align-items-center">
-            <div className="m-3">
-              <label>Bundle Name</label>
+            <div className="m-3 font-weight-bold">
+              <label>Bundle Name<span className="ml-1 text-danger">*</span></label>
               <input
                 value={bundleName}
                 onChange={(e) => {
@@ -185,8 +225,8 @@ const BundleCreate = ({ mode }) => {
                 placeholder="Enter name"
               />
             </div>
-            <div className="m-3">
-              <label>Bundle Description</label>
+            <div className="m-3 font-weight-bold">
+              <label>Bundle Description<span className="ml-1 text-danger">*</span></label>
               <textarea
                 value={bundleDescription}
                 onChange={(e) => {
@@ -200,12 +240,12 @@ const BundleCreate = ({ mode }) => {
           </div>
         </section>
         <section>
-          <div className="m-3">
-            <label>Forms</label>
+          <div className="m-3 font-weight-bold">
+            <label>Forms<span className="ml-1 text-danger">*</span></label>
             <FormSelect />
           </div>
-          <div className="m-3">
-            <label>Conditions (Optional)</label>
+          <div className="m-3 font-weight-bold">
+            <label>Conditions</label>
             <Rule />
           </div>
         </section>

@@ -206,3 +206,110 @@ def test_bundle_get_by_id(app, client, session, jwt):
     )
     assert response.status_code == 200
     assert len(response.json) == 0
+
+
+def test_bundle_update(app, client, session, jwt):
+    """Test update bundle endpoint.."""
+    token = get_token(jwt)
+    headers = {"Authorization": f"Bearer {token}", "content-type": "application/json"}
+    # Create forms.
+    FormProcessMapper.create_from_dict(
+        {
+            "form_id": "123",
+            "form_name": "Test_Form_1",
+            "form_type": "form",
+            "parent_form_id": "123",
+            "status": "active",
+            "created_by": "test",
+        }
+    )
+    FormProcessMapper.create_from_dict(
+        {
+            "form_id": "456",
+            "form_name": "Test_Form_2",
+            "form_type": "form",
+            "parent_form_id": "456",
+            "status": "active",
+            "created_by": "test",
+        }
+    )
+    # Create bundle form process mapper.
+    bundle_mapper: FormProcessMapper = FormProcessMapper.create_from_dict(
+        {
+            "form_id": "100",
+            "form_name": "Bundle Form",
+            "form_type": "bundle",
+            "parent_form_id": "100",
+            "status": "active",
+            "created_by": "test",
+        }
+    )
+    # Payload for adding forms undef bundle
+    bundle_payload = {
+        "selectedForms": [
+            {
+                "rules": ["teaxt == pageYOffset", "age == 30"],
+                "formOrder": 1,
+                "parentFormId": "123",
+            },
+            {
+                "rules": [],
+                "formOrder": 2,
+                "parentFormId": "456",
+            },
+        ],
+    }
+    # Create bundle.
+    token = get_token(jwt, role="formsflow-designer", username="designer")
+    headers = {"Authorization": f"Bearer {token}", "content-type": "application/json"}
+    response = client.post(
+        f"/form/{bundle_mapper.id}/bundles",
+        headers=headers,
+        json=bundle_payload,
+    )
+
+    assert response.status_code == 201
+    # new form created
+    FormProcessMapper.create_from_dict(
+        {
+            "form_id": "789",
+            "form_name": "Test_Form_2",
+            "form_type": "form",
+            "parent_form_id": "789",
+            "status": "active",
+            "created_by": "test",
+        }
+    )
+    # Update payload
+    # form with parentId 123 updated
+    # form with parentId 456 removed from bundle
+    # form with parentId 789 added to bundle
+    bundle_payload = {
+        "selectedForms": [
+            {"rules": [], "formOrder": 1, "parentFormId": "123", "id": 1},
+            {
+                "rules": ["teaxt == pageYOffset"],
+                "formOrder": 2,
+                "parentFormId": "789",
+            },
+        ],
+    }
+    response = client.put(
+        f"/form/{bundle_mapper.id}/bundles", headers=headers, json=bundle_payload
+    )
+    assert response.status_code == 201
+    assert len(response.json) == 2
+    new_form_added = False
+    deleted_form = False
+    update_form = False
+    for form in response.json:
+        if form.get("parentFormId") == "789":
+            new_form_added = True
+        if form.get("parentFormId") != "456":
+            deleted_form = True
+        if form.get("parentFormId") == "123" and form.get("id") == 1:
+            assert form["rules"] == []
+            update_form = True
+    assert new_form_added
+    assert deleted_form
+    assert update_form

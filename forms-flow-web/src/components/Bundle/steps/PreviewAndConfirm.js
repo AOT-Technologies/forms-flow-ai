@@ -40,7 +40,7 @@ const PreviewAndConfirm = React.memo(
           toast.success(
              t("Form Workflow Association Saved.")
           );
-          dispatch(push(`${redirectUrl}form`));
+          dispatch(push(`${redirectUrl}bundle`));
           dispatch(resetFormProcessData());
         } else {
           toast.error(
@@ -48,7 +48,7 @@ const PreviewAndConfirm = React.memo(
           );
         }
       }));
-      dispatch(push(`${redirectUrl}form`));
+      dispatch(push(`${redirectUrl}bundle`));
     };
 
  
@@ -67,10 +67,11 @@ const PreviewAndConfirm = React.memo(
           </div>
         </div>
 
-        <Grid item xs={12} sm={8} spacing={3} disabled={false}>
+        <Grid item xs={12} sm={12} spacing={3} disabled={false}>
           <Card variant="outlined">
             <CardContent>
-              <form noValidate autoComplete="off">
+              <form noValidate autoComplete="off" className="d-md-flex  align-items-center justify-content-between">
+                <div className="col-md-6">
                 <div>
                   <span className="font-weight-bolder mr-2">
                     {t("Bundle Name")} :
@@ -107,7 +108,9 @@ const PreviewAndConfirm = React.memo(
                     />
                   </label>
                 </div>
-                <label className="text-label font-weight-bold">
+                </div>
+              <div className="col-md-6">
+              <label className="text-label font-weight-bold">
                   {t("Comments")}
                 </label>
                 <div>
@@ -125,6 +128,7 @@ const PreviewAndConfirm = React.memo(
                     }
                   />
                 </div>
+              </div>
               </form>
             </CardContent>
           </Card>

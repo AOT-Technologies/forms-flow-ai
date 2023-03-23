@@ -1,4 +1,6 @@
 """This exposes application audit service."""
+import collections
+
 from flask import current_app
 from formsflow_api_utils.utils import get_form_and_submission_id_from_form_url
 
@@ -24,16 +26,25 @@ class ApplicationHistoryService:
     @staticmethod
     def get_application_history(application_id):
         """Get application by id."""
+        history_response = {"applications": [], "requests": []}
         application_history = ApplicationHistory.get_application_history(application_id)
         schema = ApplicationHistorySchema()
         history_data = schema.dump(application_history, many=True)
-        # This to make the API backward compatible by constructing the formUrl.
-        # Response is coming as single object and nor array if there is only 1 element. Need to investigate.
-        history_response = []
+
+        grouped_req_history = collections.defaultdict(list)
         for history in history_data:
             history["formUrl"] = (
                 f"{current_app.config.get('FORMIO_URL')}/form/"
                 f"{history['formId']}/submission/{history['submissionId']}"
             )
-            history_response.append(history)
+            if history.get("isRequest", False):
+                # Group the requests.
+                grouped_req_history[history["requestType"]].append(history)
+            else:
+                history_response.get("applications").append(history)
+
+        # Now iterate the group and create requests list.
+        for request_type, history_group in grouped_req_history.items():
+            request_type_history = {"requestType": request_type, "items": history_group}
+            history_response.get("requests").append(request_type_history)
         return history_response

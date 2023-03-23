@@ -29,4 +29,6 @@ def test_get_application_history(app, client, session):
     application_history = application_history_service.get_application_history(
         application_id=1
     )
-    assert not application_history
+    # it returns empty applications and requests json
+    assert not application_history.get("applications")
+    assert not application_history.get("requests")

@@ -12,7 +12,6 @@ import "react-toastify/dist/ReactToastify.css";
 import NotFound from "./NotFound";
 import { useDispatch } from "react-redux";
 import i18n from "../resourceBundles/i18n";
-import { updateUserlang } from "../apiManager/services/userservices";
 import { setLanguage } from "../actions/languageSetAction";
 import { initPubSub } from "../actions/pubSubActions";
 import { push } from "connected-react-router";
@@ -24,8 +23,6 @@ const BaseRouting = React.memo(
     const dispatch = useDispatch();
     const isAuth = user.isAuthenticated;
     const location = useLocation();
-    const [language, setLang] = React.useState(null);
-
     React.useEffect(() => {
       if (window.location.pathname !== location.pathname) {
         dispatch(push(window.location.pathname));
@@ -36,13 +33,12 @@ const BaseRouting = React.memo(
       dispatch(initPubSub({ publish, subscribe }));
     }, [publish, subscribe]);
 
-    subscribe("ES_CHANGE_LANGUAGE", (msg, data) => {
-      i18n.changeLanguage(data);
-    });
-
-    subscribe("ES_UPDATE_LANGUAGE", (msg, data) => {
-      setLang(data);
-    });
+    React.useEffect(() => {
+      subscribe("ES_CHANGE_LANGUAGE", (msg, data) => {
+        i18n.changeLanguage(data);
+        dispatch(setLanguage(data));
+      });
+    }, []);
 
     React.useEffect(() => {
       if (user) {
@@ -56,13 +52,6 @@ const BaseRouting = React.memo(
     React.useEffect(() => {
       publish("ES_ROUTE", location);
     }, [location]);
-
-    React.useEffect(() => {
-      if (language) {
-        dispatch(setLanguage(language));
-        dispatch(updateUserlang(language));
-      }
-    }, [language]);
 
     return (
       <>

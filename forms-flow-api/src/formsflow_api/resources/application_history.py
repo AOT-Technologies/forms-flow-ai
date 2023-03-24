@@ -23,12 +23,25 @@ application_history_model = API.model(
     },
 )
 
+request_history_model = API.model(
+    "ApplicationHistory",
+    {
+        "requestType": fields.String(),
+        "items": fields.List(
+            fields.Nested(application_history_model, description="Application History")
+        ),
+    },
+)
+
 application_history_list_model = API.model(
     "ApplicationHistoryList",
     {
         "applications": fields.List(
             fields.Nested(application_history_model, description="Application History")
-        )
+        ),
+        "requests": fields.List(
+            fields.Nested(request_history_model, description="Request History")
+        ),
     },
 )
 
@@ -62,12 +75,8 @@ class ApplicationHistoryResource(Resource):
     def get(application_id):
         """Get application history."""
         return (
-            (
-                {
-                    "applications": ApplicationHistoryService.get_application_history(
-                        application_id=application_id
-                    )
-                }
+            ApplicationHistoryService.get_application_history(
+                application_id=application_id
             ),
             HTTPStatus.OK,
         )

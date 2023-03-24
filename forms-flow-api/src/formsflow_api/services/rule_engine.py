@@ -10,7 +10,11 @@ from rule_engine.errors import (
 )
 
 from formsflow_api.models import FormBundling, FormProcessMapper
-from formsflow_api.schemas import FormProcessMapperSchema
+from formsflow_api.schemas import FormBundleDetailSchema
+from formsflow_api.schemas.form_bundling import SelectedFormSchema
+
+bundle_schema = SelectedFormSchema()
+form_detail_schema = FormBundleDetailSchema()
 
 
 class RuleEngine:  # pylint:disable=too-few-public-methods
@@ -50,10 +54,33 @@ class RuleEngine:  # pylint:disable=too-few-public-methods
             )
             if is_rule_passed:
                 parent_form_ids.append(form_bundle.parent_form_id)
-        bundled_forms = FormProcessMapper.find_forms_by_active_parent_from_ids(
+
+        # 1. get all form process mappers for the passed rule forms
+        # 2. Find matching parentFormId from the bundle with the one from mapper
+        # 3. Merge the dict, so that the result will have values from bundle and mapper together
+        form_mappers = FormProcessMapper.find_forms_by_active_parent_from_ids(
             parent_form_ids
         )
-        return FormProcessMapperSchema().dump(bundled_forms, many=True)
+        form_mappers_list = form_detail_schema.dump(form_mappers, many=True)
+
+        form_bundles_list = bundle_schema.dump(form_bundles, many=True)
+        # Merge the dictionary if parentFormId matches on both.
+        merged_list = [
+            {
+                **mapper,
+                **next(
+                    (
+                        bundle
+                        for bundle in form_bundles_list
+                        if bundle["parentFormId"] == mapper["parentFormId"]
+                    ),
+                    {},
+                ),
+            }
+            for mapper in form_mappers_list
+        ]
+
+        return merged_list
 
     @staticmethod
     def _rule(rule: str) -> Rule:

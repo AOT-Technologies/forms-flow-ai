@@ -29,4 +29,7 @@ class ApplicationHistorySchema(Schema):
     submitted_by = fields.Str(data_key="submittedBy", required=False, allow_none=True)
     form_id = fields.Str(data_key="formId", dump_only=True)
     submission_id = fields.Str(data_key="submissionId", dump_only=True)
+    request_status = fields.Str(data_key="requestStatus")
+    request_type = fields.Str(data_key="requestType")
+    is_request = fields.Boolean(data_key="isRequest")
     # count = fields.Int()

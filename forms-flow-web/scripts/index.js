@@ -49,15 +49,20 @@ const run = async (params) => {
  *
  * @param {string} file_name - artifact name
  * @param {string} file - artifact path
+ * @param {string} type - artifact content type
+ * @param {boolean} encode - is artifact encoded
  */
-async function upload(file_name, file) {
+async function upload(file_name, file, type = "application/javascript", encode = true) {
     const params = {
         Bucket: BUCKET, 
         Key: `${component}/${file_name}`, 
         Body: createReadStream(file), 
-        ContentType:"application/javascript",
+        ContentType: type,
         ContentEncoding:"gzip"
       };
+    if(!encode){
+      delete params.ContentEncoding;
+    }
     run(params);
     
 }
@@ -99,7 +104,8 @@ function walkFunc(err, pathname, dirent) {
                   dirent.name
                 }`,
                 `${path.dirname(pathname)}/${dirent.name}`,
-                { "Content-Type": "application/javascript" }
+                "application/javascript",
+                false
               );
             } else {
               upload(
@@ -107,7 +113,8 @@ function walkFunc(err, pathname, dirent) {
                   dirent.name
                 }`,
                 `${path.dirname(pathname)}/${dirent.name}`,
-                { "Content-Type": "application/octet-stream" }
+                "application/octet-stream",
+                false
               );
             }
           }

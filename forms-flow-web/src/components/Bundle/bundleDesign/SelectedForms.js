@@ -1,5 +1,5 @@
-import React, { useEffect, useState } from "react";
-import { Table } from "react-bootstrap";
+import React from "react";
+import  Table  from "@material-ui/core/Table";
 import TableBody from "@material-ui/core/TableBody";
 import TableCell from "@material-ui/core/TableCell";
 import TableContainer from "@material-ui/core/TableContainer";
@@ -22,14 +22,10 @@ const StyledTableCell = withStyles(() => ({
 }))(TableCell);
 
 const SelectedForms = ({ handleModalChange, selectedForms, deleteForm }) => {
-  const dispatch = useDispatch();
-  const [items, setItems] = useState(selectedForms);
+  const dispatch = useDispatch(); 
   const tenantKey = useSelector((state) => state.tenants?.tenantId);
   const redirectUrl = MULTITENANCY_ENABLED ? `/tenant/${tenantKey}/` : "/";
-
-  useEffect(()=>{
-    setItems(selectedForms);
-  },[selectedForms]);
+ 
 
   const viewForm = (formId) => {
     window.open(`${redirectUrl}formflow/${formId}/preview`, "_blank");
@@ -45,15 +41,15 @@ const SelectedForms = ({ handleModalChange, selectedForms, deleteForm }) => {
     
     const onDrop = (e, index) => {
     const oldIndex = e.dataTransfer.getData("index");
-    const newArray = [...items];
-    const draggedItem = newArray[oldIndex];
-    newArray.splice(oldIndex, 1);
-    newArray.splice(index, 0, draggedItem);
-    newArray.forEach((item, i) => {
-      item.formOrder = i + 1;
-    });
-    setItems(newArray);
-    dispatch(setBundleSelectedForms(newArray));
+    if( index != oldIndex){
+      const newArray = [...selectedForms];
+      const draggedItem = newArray[oldIndex];
+      newArray.splice(oldIndex, 1);
+      newArray.splice(index, 0, draggedItem);
+      newArray.forEach((item, index) => item.formOrder = index + 1);
+      dispatch(setBundleSelectedForms(newArray));
+    }
+
     };
   return (
     <div>
@@ -61,6 +57,7 @@ const SelectedForms = ({ handleModalChange, selectedForms, deleteForm }) => {
         <Table aria-label="simple table">
           <TableHead>
             <TableRow>
+            <StyledTableCell align="left"></StyledTableCell>
               <StyledTableCell align="left">Form Order</StyledTableCell>
               <StyledTableCell align="left">Form Name</StyledTableCell>
               <StyledTableCell align="left">Form Type</StyledTableCell>
@@ -69,22 +66,23 @@ const SelectedForms = ({ handleModalChange, selectedForms, deleteForm }) => {
             </TableRow>
           </TableHead>
           <TableBody style={{cursor:'move'}}>
-            {items?.map((item, index) => (
+            {selectedForms?.map((form, index) => (
               <TableRow
-                key={item.id}
+                key={form.id}
                 draggable
                 onDragStart={(e) => onDragStart(e, index)}
                 onDragOver={onDragOver}
                 onDrop={(e) => onDrop(e, index)}
               >
-                <StyledTableCell>{index + 1}</StyledTableCell>
-                <StyledTableCell>{item.formName}</StyledTableCell>
-                <StyledTableCell>{_capitalize(item.formType)}</StyledTableCell>
+                <StyledTableCell><span className="font-weight-bold">:::</span></StyledTableCell>
+                <StyledTableCell>{form.formOrder}</StyledTableCell>
+                <StyledTableCell>{form.formName}</StyledTableCell>
+                <StyledTableCell>{_capitalize(form.formType)}</StyledTableCell>
                 <StyledTableCell align="right">
                   <button
                     className="btn btn-sm btn-outline-primary"
                     onClick={() => {
-                      viewForm(item.formId);
+                      viewForm(form.formId);
                     }}
                   >
                     <i
@@ -98,7 +96,7 @@ const SelectedForms = ({ handleModalChange, selectedForms, deleteForm }) => {
                   <button
                     className="btn btn-sm btn-outline-danger"
                     onClick={() => {
-                      deleteForm(item.parentFormId);
+                      deleteForm(form.parentFormId);
                     }}
                   >
                     <i className="fa fa-trash-o" aria-hidden="true"></i>

@@ -242,6 +242,13 @@ const BundleCreate = ({ mode }) => {
         <section>
           <div className="m-3 font-weight-bold">
             <label>Forms<span className="ml-1 text-danger">*</span></label>
+            <span className="ml-1">
+          <i
+            className="fa fa-info-circle text-primary cursor-pointer"
+            data-toggle="tooltip"
+            title="You can change the form order by drag and drop"
+          ></i>
+        </span>
             <FormSelect />
           </div>
           <div className="m-3 font-weight-bold">

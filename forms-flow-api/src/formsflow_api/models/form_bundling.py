@@ -103,3 +103,9 @@ class FormBundling(BaseModel, db.Model):
     def find_by_id(cls, _id: int) -> FormBundling:
         """Find and return the form bundling record by id."""
         return cls.query.get(_id)
+
+    @classmethod
+    def delete_by_parent_form_id(cls, parent_form_id: str):
+        """Delete form bundling records by parent id."""
+        cls.query.filter(cls.parent_form_id == parent_form_id).delete()
+        db.session.commit()

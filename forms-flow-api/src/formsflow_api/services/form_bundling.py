@@ -56,7 +56,11 @@ class FormBundleService:  # pylint:disable=too-few-public-methods
                         selected_forms[form["parentFormId"]].update(form)
                     else:
                         selected_forms[form["parentFormId"]] = form
-                bundle_forms = sorted(list(selected_forms.values()), key=lambda d: d['formOrder'])
+                bundle_forms = sorted(
+                    list(selected_forms.values()), key=lambda d: d["formOrder"]
+                )
+                for index, value in enumerate(bundle_forms, start=1):
+                    value["formOrder"] = index
             return bundle_forms
         except AttributeError as err:
             raise BusinessException(

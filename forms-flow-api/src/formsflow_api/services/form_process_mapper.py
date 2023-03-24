@@ -7,7 +7,7 @@ from formsflow_api_utils.exceptions import BusinessException
 from formsflow_api_utils.utils.enums import FormProcessMapperStatus
 from formsflow_api_utils.utils.user_context import UserContext, user_context
 
-from formsflow_api.models import Draft, FormProcessMapper
+from formsflow_api.models import Draft, FormBundling, FormProcessMapper
 from formsflow_api.schemas import FormProcessMapperSchema
 from formsflow_api.services.external.bpm import BPMService
 
@@ -179,7 +179,9 @@ class FormProcessMapperService:
 
     @staticmethod
     @user_context
-    def mark_inactive_and_delete(form_process_mapper_id: int, **kwargs) -> None:
+    def mark_inactive_and_delete(
+        form_process_mapper_id: int, delete_bundle: bool, **kwargs
+    ) -> None:
         """Mark form process mapper as inactive and deleted."""
         user: UserContext = kwargs["user"]
         tenant_key = user.tenant_key
@@ -197,6 +199,11 @@ class FormProcessMapperService:
             if draft_applications:
                 for draft in draft_applications:
                     draft.delete()
+            # delete form from formBundling table
+            if delete_bundle:
+                FormBundling.delete_by_parent_form_id(
+                    parent_form_id=application.parent_form_id
+                )
         else:
             raise BusinessException(
                 {

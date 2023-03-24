@@ -358,27 +358,14 @@ export const resetFormProcessData = () => {
   };
 };
 
-export const unPublishForm = (mapperId, ...rest) => {
-  const done = rest.length ? rest[0] : () => {};
-  const url = replaceUrl(API.UNPUBLISH_FORMS, "<mapper id>", mapperId);
-  return (dispatch) => {
-    httpDELETERequest(url)
-      .then((res) => {
-        dispatch(resetFormProcessData());
-        done(null, res.data);
-      })
-      .catch((error) => {
-        console.log("error", error);
-        dispatch(setUnPublishApiError(true));
-        done(error);
-      });
-  };
-};
 
 
-export const deleteFormProcessMapper = (mapperId, ...rest) => {
+export const deleteFormProcessMapper = (mapperId, deleteBundle = false, ...rest) => {
   const done = rest.length ? rest[0] : () => {};
-  const url = replaceUrl(API.UNPUBLISH_FORMS, "<mapper id>", mapperId);
+  let url = replaceUrl(API.UNPUBLISH_FORMS, "<mapper id>", mapperId);
+  if(deleteBundle){
+    url += `?deleteBundle=${deleteBundle}`;
+  }
   return (dispatch) => {
     httpDELETERequest(url)
       .then((res) => {

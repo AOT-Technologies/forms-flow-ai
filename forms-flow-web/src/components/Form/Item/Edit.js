@@ -381,7 +381,7 @@ const Edit = React.memo(() => {
         const prviousId = prviousData.id;
         dispatch(saveFormProcessMapperPost(data, (err) => {
           if (!err) {
-            dispatch(deleteFormProcessMapper(prviousId));
+            dispatch(deleteFormProcessMapper(prviousId,));
             dispatch(setFormSuccessData("form", submittedData));
             dispatch(setRestoreFormData({}));
             dispatch(setRestoreFormId(null));

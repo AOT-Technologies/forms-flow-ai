@@ -34,7 +34,7 @@ user_list_count_model = API.model(
                         "email": fields.String(),
                         "firstName": fields.String(),
                         "lastName": fields.String(),
-                        "username": fields.String()
+                        "username": fields.String(),
                     },
                 )
             )

@@ -30,4 +30,3 @@ class FormBundleDetailSchema(Schema):
     form_id = fields.Str(data_key="formId")
     form_type = fields.Str(data_key="formType")
     parent_form_id = fields.Str(data_key="parentFormId")
-    deleted = fields.Boolean()

@@ -42,8 +42,9 @@ import {
   getFormProcesses,
   saveFormProcessMapperPost,
   saveFormProcessMapperPut,
-  unPublishForm,
   getApplicationCount,
+  resetFormProcessData,
+  deleteFormProcessMapper,
 } from "../../apiManager/services/processServices";
 import { addTenantkey } from "../../helper/helper";
 import { formCreate, formUpdate } from "../../apiManager/services/FormServices";
@@ -613,8 +614,10 @@ const mapDispatchToProps = (dispatch, ownProps) => {
         dispatch(deleteForm("form", formId));
       }
       if (formProcessData.id) {
+        // need to delete form from bundle table when form delete 
+        const deleteBundle = true ;
         dispatch(
-          unPublishForm(formProcessData.id, (err) => {
+          deleteFormProcessMapper(formProcessData.id,deleteBundle, (err) => {
             if (err) {
               toast.error(
                 <Translation>
@@ -622,6 +625,7 @@ const mapDispatchToProps = (dispatch, ownProps) => {
                 </Translation>
               );
             } else {
+              dispatch(resetFormProcessData());
               toast.success(
                 <Translation>{(t) => t(`${formType === 'form' ? 'Form' : 'Bundle'} deleted successfully`)}</Translation>
               );

@@ -179,7 +179,9 @@ class FormProcessMapperService:
 
     @staticmethod
     @user_context
-    def mark_inactive_and_delete(form_process_mapper_id: int, **kwargs) -> None:
+    def mark_inactive_and_delete(
+        form_process_mapper_id: int, delete_bundle: bool, **kwargs
+    ) -> None:
         """Mark form process mapper as inactive and deleted."""
         user: UserContext = kwargs["user"]
         tenant_key = user.tenant_key
@@ -198,9 +200,10 @@ class FormProcessMapperService:
                 for draft in draft_applications:
                     draft.delete()
             # delete form from formBundling table
-            FormBundling.delete_by_parent_form_id(
-                parent_form_id=application.parent_form_id
-            )
+            if delete_bundle:
+                FormBundling.delete_by_parent_form_id(
+                    parent_form_id=application.parent_form_id
+                )
         else:
             raise BusinessException(
                 {

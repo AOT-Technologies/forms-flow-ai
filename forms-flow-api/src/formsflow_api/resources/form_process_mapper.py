@@ -399,8 +399,9 @@ class FormResourceById(Resource):
     def delete(mapper_id: int):
         """Delete form by mapper_id."""
         try:
+            delete_bundle = request.args.get("deleteBundle")
             FormProcessMapperService.mark_inactive_and_delete(
-                form_process_mapper_id=mapper_id
+                form_process_mapper_id=mapper_id, delete_bundle=delete_bundle
             )
             return "Deleted", HTTPStatus.OK
         except PermissionError as err:

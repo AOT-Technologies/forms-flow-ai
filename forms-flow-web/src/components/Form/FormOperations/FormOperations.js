@@ -25,14 +25,13 @@ const FormOperations = React.memo(({ formData }) => {
   const redirectUrl = MULTITENANCY_ENABLED ? `/tenant/${tenantKey}/` : "/";
   const dispatch = useDispatch();
   const userRoles = useSelector((state) => state.user.roles);
-  const formType = useSelector((state) => state.bpmForms.formType);
   const submitNewForm = (formId) => {
     dispatch(push(`${redirectUrl}form/${formId}`));
   };
   const viewOrEditForm = (formId) => {
     dispatch(resetFormProcessData());
     dispatch(setResetProcess());
-    dispatch(push(`${redirectUrl}${formType === "bundle" ? 'bundleflow' : 'formflow'}/${formId}/view-edit`));
+    dispatch(push(`${redirectUrl}formflow/${formId}/view-edit`));
   };
   const deleteForms = (formData) => {
     dispatch(setIsApplicationCountLoading(true));

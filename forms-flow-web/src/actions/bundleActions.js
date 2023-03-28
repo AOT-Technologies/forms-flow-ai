@@ -34,14 +34,14 @@ export const setBundleFormListPage = (data) => (dispatch) => {
 
 export const setBundleFormListSort = (data) => (dispatch) => {
       dispatch({
-        type: ACTION_CONSTANTS.BUNDLE_FORM__LIST_SORT_CHANGE,
+        type: ACTION_CONSTANTS.BUNDLE_FORM_LIST_SORT_CHANGE,
         payload: data,
       });
     };
 
 export const setBundleFormSearch = (data) => (dispatch) => {
       dispatch({
-        type: ACTION_CONSTANTS.BUNDLE_FORM__LIST_FORM_SEARCH,
+        type: ACTION_CONSTANTS.BUNDLE_FORM_LIST_FORM_SEARCH,
         payload: data,
       });
     };
@@ -51,6 +51,13 @@ export const setBundleFormSearch = (data) => (dispatch) => {
 export const resetBundleData = (data) => (dispatch) => {
       dispatch({
         type: ACTION_CONSTANTS.BUNDLE_RESET,
+        payload: data,
+      });
+    };
+
+export const setBundleSubmissionData = (data) => (dispatch) => {
+      dispatch({
+        type: ACTION_CONSTANTS.BUNDLE_FORM_SUBMISSION,
         payload: data,
       });
     };

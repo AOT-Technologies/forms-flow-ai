@@ -7,6 +7,7 @@ import {
 import API from "../endpoints";
 import { setCustomSubmission } from "../../actions/checkListActions";
 import { replaceUrl } from "../../helper/helper";
+import UserService from "../../services/UserService";
 
 export const formCreate = (formData) => {
   return httpPOSTRequest(API.FORM_DESIGN, formData);
@@ -18,6 +19,15 @@ export const formUpdate = (form_id,formData) => {
 
 export const getFormHistory = (form_id) => {
   return httpGETRequest(`${API.FORM_HISTORY}/${form_id}`);
+};
+
+export const formioPostSubmission = (data,formId,skipSanitize)=>{
+  const header = UserService.getFormioToken() ? { "x-jwt-token": UserService.getFormioToken() } : {};
+  let url = `${API.GET_FORM_BY_ID}/${formId}/submission`;
+  if(skipSanitize){
+    url += `?skip-sanitize=${skipSanitize}`;
+  }
+  return httpPOSTRequest(url,data,"", false,header);
 };
 
 

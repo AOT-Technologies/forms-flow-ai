@@ -5,6 +5,7 @@ import { useSelector } from "react-redux";
 import List from "./List";
 import Stepper from "./Stepper";
 import Item from "./Item/index";
+import BundleItems from "../Bundle/item/index";
 import {
   STAFF_DESIGNER,
   STAFF_REVIEWER,
@@ -58,6 +59,8 @@ export default React.memo(() => {
           path={`${BASE_ROUTE}form/:formId/`}
           component={Item}
         />
+        <FormSubmissionRoute 
+        exact path={`${BASE_ROUTE}bundle/:bundleId/`} component={BundleItems} />
       </Switch>
     </div>
   );

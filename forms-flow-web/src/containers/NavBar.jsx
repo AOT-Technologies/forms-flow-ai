@@ -23,53 +23,54 @@ import { push } from "connected-react-router";
 import i18n from "../resourceBundles/i18n";
 import { setLanguage } from "../actions/languageSetAction";
 import { updateUserlang } from "../apiManager/services/userservices";
-
 import { fetchSelectLanguages } from "../apiManager/services/languageServices";
 
 const NavBar = React.memo(() => {
-  const isAuthenticated = useSelector((state) => state.user.isAuthenticated);
+  const {
+    isAuthenticated,
+    userDetail: user,
+    lang,
+    roles: userRoles,
+    showApplications
+  } = useSelector(state => state.user);
+  const tenantKey = useSelector((state) => state.tenants?.tenantId);
+  const formTenant = useSelector((state) => state.form?.form?.tenantKey);
+  const { applicationTitle, customLogo } = useSelector(
+    (state) => state.tenants?.tenantData?.details ?? {});
   const location = useLocation();
   const { pathname } = location;
-  const user = useSelector((state) => state.user.userDetail);
-  const lang = useSelector((state) => state.user.lang);
-  const userRoles = useSelector((state) => state.user.roles);
-  const showApplications = useSelector((state) => state.user.showApplications);
-  const applicationTitle = useSelector(
-    (state) => state.tenants?.tenantData?.details?.applicationTitle
-  );
-  const tenantKey = useSelector((state) => state.tenants?.tenantId);
-  const formTenant = useSelector((state)=>state.form?.form?.tenantKey);
   const baseUrl = MULTITENANCY_ENABLED ? `/tenant/${tenantKey}/` : "/";
-
   /**
    * For anonymous forms the only way to identify the tenant is through the
    * form data with current implementation. To redirect to the correact tenant
    * we will use form as the data source for the tenantKey
    */
-
   const [loginUrl, setLoginUrl] = useState(baseUrl);
-
   const selectLanguages = useSelector((state) => state.user.selectLanguages);
   const dispatch = useDispatch();
-  const logoPath = "/logo.svg";
-  const getAppName = useMemo(
-    () => () => {
-      if (!MULTITENANCY_ENABLED) {
-        return APPLICATION_NAME;
-      }
-      // TODO: Need a propper fallback component prefered a skeleton.
-      return applicationTitle || "";
-    },
-    [MULTITENANCY_ENABLED, applicationTitle]
+  const getAppName = useMemo(() => () => {
+    if (MULTITENANCY_ENABLED) {
+      return {
+        applicationTitle: applicationTitle || "",
+        appLogo: customLogo?.logo || "/logo.svg"
+      };
+    }
+    // TODO: Need a propper fallback component prefered a skeleton.
+    return {
+      applicationTitle: APPLICATION_NAME,
+      appLogo: "/logo.svg"
+    };
+  },
+    [MULTITENANCY_ENABLED, applicationTitle, APPLICATION_NAME]
   );
-  const appName = getAppName();
+  const { applicationTitle: appName, appLogo: logoPath } = getAppName();
   const { t } = useTranslation();
 
-  useEffect(()=>{
-    if(!isAuthenticated && formTenant && MULTITENANCY_ENABLED){ 
+  useEffect(() => {
+    if (!isAuthenticated && formTenant && MULTITENANCY_ENABLED) {
       setLoginUrl(`/tenant/${formTenant}/`);
     }
-  },[isAuthenticated, formTenant]);
+  }, [isAuthenticated, formTenant]);
 
   useEffect(() => {
     dispatch(fetchSelectLanguages());
@@ -122,11 +123,10 @@ const NavBar = React.memo(() => {
                 <Nav.Link
                   as={Link}
                   to={`${baseUrl}form`}
-                  className={`main-nav nav-item ${
-                    pathname.match(createURLPathMatchExp("form", baseUrl))
-                      ? "active-tab"
-                      : ""
-                  }`}
+                  className={`main-nav nav-item ${pathname.match(createURLPathMatchExp("form", baseUrl))
+                    ? "active-tab"
+                    : ""
+                    }`}
                 >
                   <i className="fa fa-wpforms fa-fw fa-lg mr-2" />
                   {t("Forms")}
@@ -135,11 +135,10 @@ const NavBar = React.memo(() => {
                   <Nav.Link
                     as={Link}
                     to={`${baseUrl}admin`}
-                    className={`main-nav nav-item ${
-                      pathname.match(createURLPathMatchExp("admin", baseUrl))
-                        ? "active-tab"
-                        : ""
-                    }`}
+                    className={`main-nav nav-item ${pathname.match(createURLPathMatchExp("admin", baseUrl))
+                      ? "active-tab"
+                      : ""
+                      }`}
                   >
                     <i className="fa fa-user-circle-o fa-lg mr-2" />
                     {t("Admin")}
@@ -150,13 +149,12 @@ const NavBar = React.memo(() => {
                   <Nav.Link
                     as={Link}
                     to={`${baseUrl}processes`}
-                    className={`main-nav nav-item ${
-                      pathname.match(
-                        createURLPathMatchExp("processes", baseUrl)
-                      )
-                        ? "active-tab"
-                        : ""
-                    }`}
+                    className={`main-nav nav-item ${pathname.match(
+                      createURLPathMatchExp("processes", baseUrl)
+                    )
+                      ? "active-tab"
+                      : ""
+                      }`}
                   >
                     <i className="fa fa-cogs fa-lg fa-fw mr-2" />
                     {t("Processes")}
@@ -165,21 +163,20 @@ const NavBar = React.memo(() => {
 
                 {showApplications ? (
                   getUserRolePermission(userRoles, STAFF_REVIEWER) ||
-                  getUserRolePermission(userRoles, CLIENT) ? (
+                    getUserRolePermission(userRoles, CLIENT) ? (
                     <Nav.Link
                       as={Link}
                       to={`${baseUrl}application`}
-                      className={`main-nav nav-item ${
-                        pathname.match(
-                          createURLPathMatchExp("application", baseUrl)
+                      className={`main-nav nav-item ${pathname.match(
+                        createURLPathMatchExp("application", baseUrl)
+                      )
+                        ? "active-tab"
+                        : pathname.match(
+                          createURLPathMatchExp("draft", baseUrl)
                         )
                           ? "active-tab"
-                          : pathname.match(
-                              createURLPathMatchExp("draft", baseUrl)
-                            )
-                          ? "active-tab"
                           : ""
-                      }`}
+                        }`}
                     >
                       {" "}
                       <i className="fa fa-list-alt fa-fw fa-lg mr-2" />
@@ -191,11 +188,10 @@ const NavBar = React.memo(() => {
                   <Nav.Link
                     as={Link}
                     to={`${baseUrl}task`}
-                    className={`main-nav nav-item taskDropdown ${
-                      pathname.match(createURLPathMatchExp("task", baseUrl))
-                        ? "active-tab"
-                        : ""
-                    }`}
+                    className={`main-nav nav-item taskDropdown ${pathname.match(createURLPathMatchExp("task", baseUrl))
+                      ? "active-tab"
+                      : ""
+                      }`}
                     onClick={goToTask}
                   >
                     {" "}
@@ -209,14 +205,13 @@ const NavBar = React.memo(() => {
                     as={Link}
                     to={`${baseUrl}metrics`}
                     data-testid="Dashboards"
-                    className={`main-nav nav-item ${
-                      pathname.match(
-                        createURLPathMatchExp("metrics", baseUrl)
-                      ) ||
+                    className={`main-nav nav-item ${pathname.match(
+                      createURLPathMatchExp("metrics", baseUrl)
+                    ) ||
                       pathname.match(createURLPathMatchExp("insights", baseUrl))
-                        ? "active-tab"
-                        : ""
-                    }`}
+                      ? "active-tab"
+                      : ""
+                      }`}
                   >
                     {" "}
                     <i className="fa fa-tachometer fa-lg fa-fw mr-2" />

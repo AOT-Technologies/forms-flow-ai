@@ -169,6 +169,7 @@ function FormTable() {
                   value={search}
                   onChange={(e)=>{setSearch(e.target.value);}}
                   placeholder="Search..."
+                  onKeyPress={(e)=> e.key === "Enter" ? handleSearch() : ""}
                   style={{ backgroundColor: "#ffff" }}
                 />
                 { search && (

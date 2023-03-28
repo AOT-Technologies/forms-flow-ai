@@ -170,6 +170,12 @@ const FormListModal = React.memo(
       dispatch(setBundleFormListPage(page.page));
     };
 
+    useEffect(()=>{
+      if(!search.trim()){
+        dispatch(setBundleFormSearch(""));
+      }
+    },[search]);
+
     return (
       <div>
         <Modal show={showModal} size="lg" >
@@ -215,6 +221,7 @@ const FormListModal = React.memo(
                   value={search}
                   onChange={(e)=>{setSearch(e.target.value);}}
                   placeholder="Search..."
+                  onKeyPress={(e)=> e.key === "Enter" ? handleSearch() : ""}
                   style={{ backgroundColor: "#ffff" }}
                 />
                 {search && (

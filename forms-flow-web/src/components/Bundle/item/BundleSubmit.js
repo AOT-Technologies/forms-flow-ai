@@ -45,6 +45,7 @@ const BundleSubmit = () => {
   useEffect(() => {
     if (isAuthenticated) {
       setLoading(true);
+      dispatch(setBundleSubmissionData({}));
       dispatch(
         getFormProcesses(bundleId, (err, data) => {
           if (err) {

@@ -613,7 +613,6 @@ const List = React.memo((props) => {
                   </span>
                   <div className="form-outline ml-3">
                     <input
-                      style={{ color: `${!isSearchValid ? "red" : ''}` }}
                       type="search"
                       id="form1"
                       ref={searchInputBox}
@@ -674,7 +673,6 @@ const List = React.memo((props) => {
                 </div>
               </div>
             </div>
-            {!isSearchValid && <span className="validation-err">Please remove the special charactors...!</span>}
             <ToolkitProvider
               bootstrap4
               keyField="id"

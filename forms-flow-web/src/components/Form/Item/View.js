@@ -54,7 +54,10 @@ import {
 } from "../../../constants/constants";
 import useInterval from "../../../customHooks/useInterval";
 import selectApplicationCreateAPI from "./apiSelectHelper";
-import { getApplicationCount, getFormProcesses } from "../../../apiManager/services/processServices";
+import {
+  getApplicationCount,
+  getFormProcesses,
+} from "../../../apiManager/services/processServices";
 import { setFormStatusLoading } from "../../../actions/processActions";
 import SavingLoading from "../../Loading/SavingLoading";
 
@@ -195,6 +198,10 @@ const View = React.memo((props) => {
           })
         );
       }
+      //show success toaster - no datachange, but still draft is createdgit
+      else {
+        toast.success(t("Submission saved to draft."));
+      }
     }
   };
 
@@ -324,7 +331,7 @@ const View = React.memo((props) => {
     <div className="container overflow-y-auto form-view-wrapper">
       {DRAFT_ENABLED &&
         isAuthenticated &&
-        isValidResource && 
+        isValidResource &&
         (formStatus === "active" ||
           (publicFormStatus?.anonymous === true &&
             publicFormStatus?.status === "active")) && (

@@ -56,8 +56,6 @@ import filterFactory from "react-bootstrap-table2-filter";
 import overlayFactory from "react-bootstrap-table2-overlay";
 import { SpinnerSVG } from "../../containers/SpinnerSVG";
 import { getFormattedForm, INACTIVE } from "./constants/formListConstants";
-import searchValidator from '../../helper/regExp/formSearchValidation';
-
 const List = React.memo((props) => {
   const { t } = useTranslation();
   const [showFormUploadModal, setShowFormUploadModal] = useState(false);
@@ -85,7 +83,6 @@ const List = React.memo((props) => {
   const [isAscend, setIsAscending] = useState(true);
   const searchText = useSelector((state) => state.bpmForms.searchText);
   const [searchTextInput, setSearchTextInput] = useState(searchText);
-  const [isSearchValid, setIsSearchValid] = useState(true);
   const [isLoading, setIsLoading] = React.useState(false);
 
   const formType = useSelector((state) => state.bpmForms.formType);
@@ -151,9 +148,6 @@ const List = React.memo((props) => {
     searchText,
     formType
   ]);
-  useEffect(() => {
-    setIsSearchValid(searchValidator(searchTextInput));
-  }, [searchTextInput]);
 
   const formCheck = (formCheckList) => {
     const result = formCheckList.reduce(function (obj, v) {
@@ -203,7 +197,7 @@ const List = React.memo((props) => {
     dispatch(setBPMFormListPage(newState.page));
   };
   const handleSearch = () => {
-    if (searchText != searchInputBox.current.value && isSearchValid) {
+    if (searchText != searchInputBox.current.value) {
       searchInputBox.current.value === '' ? dispatch(setBPMFormLimit(5)) : '';
       dispatch(setBPMFormListPage(1));
       dispatch(setBpmFormSearch(searchInputBox.current.value));
@@ -481,18 +475,35 @@ const List = React.memo((props) => {
           <Confirm
             modalOpen={props.modalOpen}
             message={
-              formProcessData.id && applicationCount
-                ? applicationCountResponse
-                  ? `${applicationCount} ${applicationCount > 1
-                    ? `${t("Applications are submitted against")}`
-                    : `${t("Application is submitted against")}`
-                  } "${props.formName}". ${t(
-                    "Are you sure you wish to delete the form?"
-                  )}`
-                  : `${t("Are you sure you wish to delete the form ")} "${props.formName
-                  }"?`
-                : `${t("Are you sure you wish to delete the form ")} "${props.formName
-                }"?`
+              formProcessData.id && applicationCount ? (
+                applicationCountResponse ? (
+                  
+                 <div>
+                 {applicationCount}  
+                 {
+                    applicationCount > 1
+                      ? <span>{`${t(" Applications are submitted against")} `}</span> 
+                      : <span>{`${t(" Application is submitted against")} `}</span> 
+                  } 
+                  <span style={{ fontWeight: "bold" }}>{props.formName}</span>
+                  .
+                   {t("Are you sure you wish to delete the form?")}
+                  
+                   </div>
+                ) : (
+                  <div>
+                    {`${t("Are you sure you wish to delete the form ")}`}
+                    <span style={{ fontWeight: "bold" }}>{props.formName}</span>
+                    ?
+                  </div>
+                )
+              ) : (
+                <div>
+                  {`${t("Are you sure you wish to delete the form ")} `}
+                  <span style={{ fontWeight: "bold" }}>{props.formName}</span>
+                  ?
+                </div>
+              )
             }
             onNo={() => onNo()}
             onYes={(e) => {
@@ -629,12 +640,12 @@ const List = React.memo((props) => {
                   )}
                   <button
                     type="button"
-                    className={`${!isSearchValid ? 'btn bg-transparent ml-2 searchInvalid' : 'btn btn-outline-primary ml-2'}`}
+                    className='btn btn-outline-primary ml-2'
                     name="search-button"
-                    title={t(`${!isSearchValid ? "Kindly remove the special charactors...!" : "Click to search"}`)}
+                    title="Click to search"
                     onClick={() => handleSearch()}
                   >
-                    <i className="fa fa-search" style={{ color: `${!isSearchValid ? 'red' : ''}` }} ></i>
+                    <i className="fa fa-search" ></i>
                   </button>
                   {isDesigner ? (
                     <select

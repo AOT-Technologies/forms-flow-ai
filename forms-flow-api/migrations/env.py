@@ -1,7 +1,7 @@
 from alembic import context
 from flask import current_app
 from flask_sqlalchemy import SQLAlchemy
-from sqlalchemy import pool
+from sqlalchemy import pool, engine_from_config
 
 # Get the existing instance of SQLAlchemy for the Flask app
 db = SQLAlchemy()
@@ -12,13 +12,15 @@ sqlalchemy_url = current_app.config['SQLALCHEMY_DATABASE_URI']
 config.set_main_option('sqlalchemy.url', sqlalchemy_url)
 
 # Create target metadata for the database
-target_metadata = db.metadata
+target_metadata = None
+if (meta := current_app.extensions.get('migrate')) is not None:
+    target_metadata = meta.db.metadata
 
 
 # Function for running migrations in the context of the Flask application
 def run_migrations_online():
     # Set up the context for Alembic migrations
-    connectable = context.engine_from_config(
+    connectable = engine_from_config(
         config.get_section(config.config_ini_section),
         prefix='sqlalchemy.',
         poolclass=pool.NullPool
@@ -35,5 +37,4 @@ def run_migrations_online():
 
 
 # Run migrations if this file is being executed directly
-if context.is_offline_mode():
-    run_migrations_online()
+run_migrations_online()

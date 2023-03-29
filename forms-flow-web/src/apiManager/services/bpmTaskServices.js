@@ -173,10 +173,10 @@ export const fetchUserListWithSearch = ({ searchType, query }, ...rest) => {
       StorageService.get(StorageService.User.AUTH_TOKEN)
     )
       .then((res) => {
-        if (res.data) {
-          dispatch(setBPMUserList(res.data));
+        if (res.data?.data) {
+          dispatch(setBPMUserList(res.data?.data));
           //dispatch(setBPMLoader(false));
-          done(null, res.data);
+          done(null, res.data?.data);
         } else {
           done(null, []);
           dispatch(serviceActionError(res));

@@ -1,5 +1,6 @@
 /* eslint-disable max-len */
 export const RESOURCE_BUNDLES_PT = {
+  "Please remove the special characters...!":"Remova os caracteres especiais...!",
   "No histories found":"Nenhum histórico encontrado",
   "Continue":"Prosseguir",
   "This will create a new version of the form without changing the path name but with new form id.":"Isso criará uma nova versão do formulário sem alterar o nome do caminho, mas com o novo ID do formulário.",
@@ -36,7 +37,7 @@ export const RESOURCE_BUNDLES_PT = {
   "Enter Label":"Digite o rótulo",
   "Select form field":"Selecione o campo do formulário",
   "Add form fields to display in task list":"Adicionar campos de formulário para exibir na lista de tarefas",
-  "Version":"Versão",
+  "Latest Version":"Última versão",
   "Submission Status":"Status de submissão",
   "No submission status":"Sem status de envio",
   "No Public url found":"Nenhum URL público encontrado",

@@ -25,6 +25,13 @@ class KeycloakClientService(KeycloakAdmin):
             )
         return user_list
 
+    # Keycloak doesn't provide count API for this one
+    def __get_users_count(self, client_id: str, group_name: str):
+        """Returns user list count under a group."""
+        url_path = f"clients/{client_id}/roles/{group_name}/users"
+        user_list = self.client.get_request(url_path)
+        return len(user_list)
+
     def get_analytics_groups(self, page_no: int, limit: int):
         """Get analytics roles."""
         return self.client.get_analytics_roles(page_no, limit)
@@ -38,7 +45,9 @@ class KeycloakClientService(KeycloakAdmin):
         response["id"] = response.get("name", None)
         return response
 
-    def get_users(self, page_no: int, limit: int, role: bool, group_name: str):
+    def get_users(  # pylint: disable-msg=too-many-arguments
+        self, page_no: int, limit: int, role: bool, group_name: str, count: bool
+    ):
         """Get users under this client with formsflow-reviewer role."""
         # group_name was hardcoded before as `formsflow-reviewer` make sure
         # neccessary changes in the client side are made for role based env
@@ -48,11 +57,12 @@ class KeycloakClientService(KeycloakAdmin):
         client_id = self.client.get_client_id()
         url = f"clients/{client_id}/roles/{group_name}/users"
         if page_no and limit:
-            url += f"?first={page_no}&max={limit}"
+            url += f"?first={(page_no-1)*limit}&max={limit}"
         users_list = self.client.get_request(url)
+        users_count = self.__get_users_count(client_id, group_name) if count else None
         if role:
             users_list = self.__populate_user_roles(users_list)
-        return users_list
+        return (users_list, users_count)
 
     def update_group(self, group_id: str, data: Dict):
         """Update keycloak role by role name."""
@@ -112,13 +122,16 @@ class KeycloakClientService(KeycloakAdmin):
             url_path=f"users/{user_id}/role-mappings/clients/{client_id}", data=[data]
         )
 
-    def search_realm_users(self, search: str, page_no: int, limit: int, role: bool):
+    def search_realm_users(  # pylint: disable-msg=too-many-arguments
+        self, search: str, page_no: int, limit: int, role: bool, count: bool
+    ):
         """Search users in a realm."""
-        if page_no is None or limit is None:
+        if not page_no or not limit:
             raise BusinessException(
                 "Missing pagination parameters", HTTPStatus.BAD_REQUEST
             )
         user_list = self.client.get_realm_users(search, page_no, limit)
+        users_count = self.client.get_realm_users_count(search) if count else None
         if role:
             user_list = self.__populate_user_roles(user_list)
-        return user_list
+        return (user_list, users_count)

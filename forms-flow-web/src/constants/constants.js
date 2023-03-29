@@ -15,7 +15,15 @@ export const WEB_BASE_CUSTOM_URL =
   (window._env_ && window._env_.REACT_APP_WEB_BASE_CUSTOM_URL) ||
   process.env.REACT_APP_WEB_BASE_CUSTOM_URL ||
   "";
-
+export const KEYCLOAK_ENABLE_CLIENT_AUTH_VARIABLE =
+  (window._env_ && window._env_.REACT_APP_KEYCLOAK_ENABLE_CLIENT_AUTH) ||
+  process.env.REACT_APP_KEYCLOAK_ENABLE_CLIENT_AUTH ||
+  false;
+export const KEYCLOAK_ENABLE_CLIENT_AUTH =
+  KEYCLOAK_ENABLE_CLIENT_AUTH_VARIABLE === "true" ||
+  KEYCLOAK_ENABLE_CLIENT_AUTH_VARIABLE === true
+    ? true
+    : false;
 export const CUSTOM_SUBMISSION_URL =
   (window._env_ && window._env_.REACT_APP_CUSTOM_SUBMISSION_URL) ||
   process.env.REACT_APP_CUSTOM_SUBMISSION_URL ||

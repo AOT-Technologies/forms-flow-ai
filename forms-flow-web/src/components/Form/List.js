@@ -138,14 +138,14 @@ const List = React.memo((props) => {
 
   useEffect(()=>{
     if(location.pathname === "/form"){
+      const type = formType && formType !== "bundle" ? formType : "form";
      setTabValue(0);
-     const type = formType || "form";
      dispatch(setBpmFormType(type));
     }else if(location.pathname === "/bundle") {
      setTabValue(1);
      dispatch(setBpmFormType('bundle'));
     }
- },[]);
+ },[location.pathname]);
  
 
   useEffect(() => {

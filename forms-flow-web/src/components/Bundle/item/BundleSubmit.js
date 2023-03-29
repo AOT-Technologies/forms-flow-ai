@@ -1,126 +1,144 @@
 import React, { useState, useEffect, useRef } from "react";
-import { Link, useParams } from "react-router-dom";
+import { Link } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { fetchFormById } from "../../../apiManager/services/bpmFormServices";
 import Loading from "../../../containers/Loading";
-import { Form, Formio, Errors } from "react-formio";
+import { Form,  Errors } from "react-formio";
 import Stepper from "@material-ui/core/Stepper";
 import Step from "@material-ui/core/Step";
 import StepLabel from "@material-ui/core/StepLabel";
 import { MULTITENANCY_ENABLED } from "../../../constants/constants";
-import { getFormProcesses } from "../../../apiManager/services/processServices";
-import { getBundle } from "../../../apiManager/services/bundleServices";
+import { Formio } from 'formiojs';
 import { toast } from "react-toastify";
-import { setBundleSubmissionData } from "../../../actions/bundleActions";
+import { setBundleSelectedForms, setBundleSubmissionData } from "../../../actions/bundleActions";
 import { formioPostSubmission } from "../../../apiManager/services/FormServices";
 import LoadingOverlay from "react-loading-overlay";
 import { push } from "connected-react-router";
+import {
+  clearFormError,
+  setFormFailureErrorData,
+  setFormSubmissionError,
+} from "../../../actions/formActions";
+import SubmissionError from "../../../containers/SubmissionError";
+import { executeRule } from "../../../apiManager/services/bundleServices";
 const BundleSubmit = () => {
+  const dispatch = useDispatch();
   const isAuthenticated = useSelector((state) => state.user.isAuthenticated);
   const tenantKey = useSelector((state) => state.tenants?.tenantId);
   const redirectUrl = MULTITENANCY_ENABLED ? `/tenant/${tenantKey}/` : "/";
-  const dispatch = useDispatch();
   const bundleData = useSelector((state) => state.process.formProcessList);
+  const selectedForms = useSelector((state) => state.bundle.selectedForms);
+  const loading = useSelector((state) => state.bundle.bundleLoading);
+  const { error } = useSelector((state) => state.form);
+  const formSubmissionError = useSelector(
+    (state) => state.formDelete.formSubmissionError
+  );
   const [formStep, setFormStep] = useState(0);
   const [getFormLoading, setGetFormLoading] = useState(false);
-  const [error, setError] = useState("");
   const [form, setForm] = useState({});
-  const [loading, setLoading] = useState(false);
-  const [selectedForms, setSelectedForms] = useState([]);
   const bundleSubmission = useSelector(
     (state) => state.bundle.bundleSubmission
   );
   const [submission, setSubmission] = useState(null);
   const [bundleSubmitLoading, setBundleSubmitLoading] = useState(false);
-  const { bundleId } = useParams();
   const formRef = useRef();
-  const handleFormSubmission = () => {
-    dispatch(
-      setBundleSubmissionData({
-        data: { ...bundleSubmission.data, ...submission.data },
-      })
-    );
-  };
+  const [formCach, setFormCach] = useState({});
 
-  useEffect(() => {
-    if (isAuthenticated) {
-      setLoading(true);
-      dispatch(setBundleSubmissionData({}));
-      dispatch(
-        getFormProcesses(bundleId, (err, data) => {
-          if (err) {
-            toast.error(err);
-            setLoading(false);
-          } else {
-            if (data.status === "active") {
-              getBundle(data.id)
-                .then((res) => {
-                  setSelectedForms(res.data);
-                })
-                .catch((err) => {
-                  console.error(err);
-                })
-                .finally(() => {
-                  setLoading(false);
-                });
-            } else {
-              setLoading(false);
-            }
-          }
-        })
-      );
-    }
-  }, [isAuthenticated]);
 
-  const handleNextForm = () => {
-    setError("");
-    handleFormSubmission();
-    if (formRef.current.formio.checkValidity()) {
-      setFormStep(formStep + 1);
-    }
-  };
+useEffect(() => {
+  getForm();
+}, [formStep]);
 
-  const handleBackForm = () => {
-    setError("");
-    setFormStep(formStep - 1);
-  };
+useEffect(() => {
+  // get fist form in initial stage
+  if (!submission && selectedForms.length) {
+    getForm();
+  }
+}, [selectedForms]);
 
-  const handleSubmit = () => {
-    handleFormSubmission();
-    setBundleSubmitLoading(true);
-    if (formRef.current.formio.checkValidity()) {
-      formioPostSubmission(bundleSubmission, bundleData.formId, true)
-        .then(() => {
-          toast.success("Submission Saved.");
-          dispatch(push(`${redirectUrl}bundle`));
-        }).catch((err)=>{
-          setError(err.response?.data || err.message);
-        })
-        .finally(() => {
-          setBundleSubmitLoading(false);
-        });
-    }
 
-  };
-  useEffect(() => {
-    Formio.cache = {};
+const getForm = () => {
     if (selectedForms?.length) {
+      Formio.cache = {};
+      dispatch(clearFormError("form"));
       setGetFormLoading(true);
-      setForm({});
       fetchFormById(selectedForms[formStep].formId)
         .then((res) => {
-          setForm(res.data);
+         !formCach[res.data._id] && setFormCach({ ...formCach, [res.data._id]: res.data });
+         setForm(res.data);
         })
         .catch((err) => {
-          if (err) {
-            setError(err.response?.data || err.message);
-          }
+          dispatch(
+            setFormFailureErrorData("form", err.response?.data || err.message)
+          );
         })
         .finally(() => {
           setGetFormLoading(false);
         });
     }
-  }, [formStep, selectedForms]);
+  };
+
+
+
+ const handleSubmisionData = () =>{
+  dispatch(
+    setBundleSubmissionData({
+      data: { ...bundleSubmission.data, ...submission.data },
+    })
+  );
+ };
+
+
+  const handleNextForm = () => { 
+    handleSubmisionData();
+    if (formRef.current.formio.checkValidity()) {
+    setBundleSubmitLoading(true);
+      executeRule(submission.data,bundleData.id).then((res)=>{
+        dispatch(setBundleSelectedForms(res.data));
+        setFormStep(formStep + 1);
+      }).finally(()=>{
+          setBundleSubmitLoading(false);
+      });
+    }
+  };
+
+  const handleBackForm = () => {
+    setFormStep(formStep - 1);
+  };
+
+  const handleSubmit = () => { 
+    handleSubmisionData(); 
+    if (formRef.current.formio.checkValidity()) {
+      setBundleSubmitLoading(true);
+      executeRule(submission.data, bundleData.id).then(()=>{
+        formioPostSubmission(bundleSubmission, bundleData.formId, true)
+        .then(() => {
+          toast.success("Submission Saved.");
+          dispatch(push(`${redirectUrl}bundle`));
+        })
+        .catch(() => {
+          const ErrorDetails = {
+            modalOpen: true,
+            message: "Submission cannot be done.",
+          };
+          toast.error("Submission cannot be done.");
+          dispatch(setFormSubmissionError(ErrorDetails));
+        })
+        .finally(() => {
+          setBundleSubmitLoading(false);
+        });
+      });
+      
+    } 
+  };
+
+  const onConfirmSubmissionError = () => {
+    const ErrorDetails = {
+      modalOpen: false,
+      message: "",
+    };
+    dispatch(setFormSubmissionError(ErrorDetails));
+  };
 
   if (loading) {
     return (
@@ -147,10 +165,15 @@ const BundleSubmit = () => {
         </h3>
       </div>
       <hr />
+      <SubmissionError
+        modalOpen={formSubmissionError.modalOpen}
+        message={formSubmissionError.message}
+        onConfirm={onConfirmSubmissionError}
+      ></SubmissionError>
 
       {bundleData?.status === "active" ? (
         <div>
-          <Errors errors={error} />
+          {!selectedForms.length ? <Errors errors={error} /> : ""}
           {selectedForms.length ? (
             <LoadingOverlay
               active={bundleSubmitLoading}

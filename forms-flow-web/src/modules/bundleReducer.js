@@ -2,6 +2,7 @@ import ACTION_CONSTANTS from "../actions/actionConstants";
 
 const initialState = {
  selectedForms: [],
+ bundleLoading:false,
  bundleSubmission:{},
  bundleForms :{
   error: "",
@@ -33,6 +34,8 @@ const bundle = (state = initialState, action) => {
       return {...state, bundleForms:{...state.bundleForms, searchText: action.payload}};
     case ACTION_CONSTANTS.BUNDLE_FORM_SUBMISSION:
         return {...state, bundleSubmission:action.payload};
+    case ACTION_CONSTANTS.BUNDLE_LOADING:
+        return {...state, bundleLoading:action.payload};
     case ACTION_CONSTANTS.BUNDLE_RESET:
       return {...initialState};
       

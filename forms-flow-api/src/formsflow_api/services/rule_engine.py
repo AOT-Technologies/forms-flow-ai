@@ -58,9 +58,7 @@ class RuleEngine:  # pylint:disable=too-few-public-methods
         # 1. get all form process mappers for the passed rule forms
         # 2. Find matching parentFormId from the bundle with the one from mapper
         # 3. Merge the dict, so that the result will have values from bundle and mapper together
-        form_mappers = FormProcessMapper.find_forms_by_active_parent_from_ids(
-            parent_form_ids
-        )
+        form_mappers = FormProcessMapper.find_forms_by_parent_from_ids(parent_form_ids)
         form_mappers_list = form_detail_schema.dump(form_mappers, many=True)
 
         form_bundles_list = bundle_schema.dump(form_bundles, many=True)
@@ -79,6 +77,10 @@ class RuleEngine:  # pylint:disable=too-few-public-methods
             }
             for mapper in form_mappers_list
         ]
+        # Sort list by form order & fill missing form order.
+        merged_list = sorted(merged_list, key=lambda d: d["formOrder"])
+        for index, value in enumerate(merged_list, start=1):
+            value["formOrder"] = index
 
         return merged_list
 

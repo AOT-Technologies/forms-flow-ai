@@ -15,6 +15,7 @@ import {
   clearFormError,
   setFormFailureErrorData,
 } from "../../../actions/formActions";
+import { toast } from "react-toastify";
 import {
   bundleCreate,
   bundleUpdate,
@@ -57,6 +58,8 @@ const BundleCreate = ({ mode }) => {
 
  
   const createBundle = () => {
+    dispatch(clearFormError("form"));
+
     const newForm = {
       tags: ["common"],
       title: bundleName,
@@ -64,7 +67,7 @@ const BundleCreate = ({ mode }) => {
       name: _camelCase(bundleName),
       type: "form",
     };
-
+    
     newForm.submissionAccess = submissionAccess;
     newForm.componentChanged = true;
     newForm.newVersion = true;
@@ -77,6 +80,12 @@ const BundleCreate = ({ mode }) => {
       if (newForm.name) {
         newForm.name = addTenantkey(newForm.name, tenantKey);
       }
+    }
+    
+    if (!bundleDescription.trim()){
+      
+      toast.error( "Bundle Description is Required");
+       throw "Description is empty";
     }
 
     formCreate(newForm)
@@ -101,6 +110,7 @@ const BundleCreate = ({ mode }) => {
                   push(`${redirectUrl}bundleflow/${form._id}/view-edit`)
                 );
               });
+              toast.success( "Bundle created successfully");
             }
           })
         );
@@ -119,6 +129,9 @@ const BundleCreate = ({ mode }) => {
       bundleData.formName !== bundleName ||
       bundleData.description !== bundleDescription
     ) {
+
+      dispatch(clearFormError("form"));
+      
       const formData = {
         title: bundleName,
         path: _camelCase(bundleName).toLowerCase(),
@@ -133,6 +146,12 @@ const BundleCreate = ({ mode }) => {
           formData.name = addTenantkey(formData.name, tenantKey);
         }
       }
+  
+      if (!bundleDescription.trim()){
+        toast.error( "Bundle Description is Required");
+         throw "Description is empty";
+      }
+
       formUpdate(bundleData.formId, formData)
         .then(() => {
           dispatch(
@@ -149,6 +168,7 @@ const BundleCreate = ({ mode }) => {
               push(`${redirectUrl}bundleflow/${bundleData.formId}/view-edit`)
             );
           });
+          toast.success( "Bundle updated successfully");
         })
         .catch((err) => {
           const error = err.response.data || err.message;

@@ -200,6 +200,7 @@ const BundleCreate = ({ mode }) => {
 
           <button
             className="btn btn-primary"
+            disabled={selectedForms.length === 0} 
             onClick={() => {
               mode && mode !== BUNDLE_CREATE_ROUTE
                 ? updateBundle()

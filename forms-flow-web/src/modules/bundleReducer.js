@@ -30,6 +30,8 @@ const bundle = (state = initialState, action) => {
       return {...state, bundleForms:{...state.bundleForms, page: action.payload}};
     case ACTION_CONSTANTS.BUNDLE_FORM__LIST_FORM_SEARCH:
       return {...state, bundleForms:{...state.bundleForms, searchText: action.payload}};
+    case ACTION_CONSTANTS.BUNDLE_FORM__LIST_SORT_CHANGE:
+      return {...state, bundleForms:{...state.bundleForms, sortOrder:action.payload}};
     case ACTION_CONSTANTS.BUNDLE_RESET:
       return {...initialState};
       

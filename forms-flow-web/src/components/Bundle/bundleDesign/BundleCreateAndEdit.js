@@ -58,7 +58,13 @@ const BundleCreate = ({ mode }) => {
 
  
   const createBundle = () => {
+
     dispatch(clearFormError("form"));
+
+    if (!bundleDescription.trim()){
+      toast.error( "Bundle Description is Required");
+       return "Description is empty"; 
+    }
 
     const newForm = {
       tags: ["common"],
@@ -82,11 +88,7 @@ const BundleCreate = ({ mode }) => {
       }
     }
     
-    if (!bundleDescription.trim()){
-      
-      toast.error( "Bundle Description is Required");
-       throw "Description is empty";
-    }
+
 
     formCreate(newForm)
       .then((res) => {
@@ -131,6 +133,11 @@ const BundleCreate = ({ mode }) => {
     ) {
 
       dispatch(clearFormError("form"));
+
+        if (!bundleDescription.trim()){
+        toast.error( "Bundle Description is Required");
+         return "Description is empty";
+      }
       
       const formData = {
         title: bundleName,
@@ -145,11 +152,6 @@ const BundleCreate = ({ mode }) => {
         if (formData.name) {
           formData.name = addTenantkey(formData.name, tenantKey);
         }
-      }
-  
-      if (!bundleDescription.trim()){
-        toast.error( "Bundle Description is Required");
-         throw "Description is empty";
       }
 
       formUpdate(bundleData.formId, formData)

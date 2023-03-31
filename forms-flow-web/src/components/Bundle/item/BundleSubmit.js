@@ -78,8 +78,6 @@ const getForm = () => {
     }
   };
 
-
-
  const handleSubmisionData = () =>{
   dispatch(
     setBundleSubmissionData({
@@ -108,27 +106,33 @@ const getForm = () => {
     setFormStep(formStep - 1);
   };
 
-  const handleSubmit = () => { 
+  const handleSubmit = async () => { 
     handleSubmisionData(); 
     if (formRef.current.formio.checkValidity()) {
       setBundleSubmitLoading(true);
-      executeRule({data:submission.data}, bundleData.id).then(()=>{
-        formioPostSubmission(bundleSubmission, bundleData.formId, true)
-        .then(() => {
-          toast.success("Submission Saved.");
-          dispatch(push(`${redirectUrl}bundle`));
-        })
-        .catch(() => {
-          const ErrorDetails = {
-            modalOpen: true,
-            message: "Submission cannot be done.",
-          };
-          toast.error("Submission cannot be done.");
-          dispatch(setFormSubmissionError(ErrorDetails));
-        })
-        .finally(() => {
+      const response = await executeRule({data:submission.data}, bundleData.id);
+      if(response && response.data.length - 1 > formStep){
+          dispatch(setBundleSelectedForms(response.data));
+          setFormStep(formStep + 1);
           setBundleSubmitLoading(false);
-        });
+          return;
+      }
+      
+      formioPostSubmission(bundleSubmission, bundleData.formId, true)
+      .then(() => {
+        toast.success("Submission Saved.");
+        dispatch(push(`${redirectUrl}bundle`));
+      })
+      .catch(() => {
+        const ErrorDetails = {
+          modalOpen: true,
+          message: "Submission cannot be done.",
+        };
+        toast.error("Submission cannot be done.");
+        dispatch(setFormSubmissionError(ErrorDetails));
+      })
+      .finally(() => {
+        setBundleSubmitLoading(false);
       });
       
     } 

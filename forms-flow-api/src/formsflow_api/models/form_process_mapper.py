@@ -81,6 +81,7 @@ class FormProcessMapper(AuditDateTimeMixin, AuditUserMixin, BaseModel, db.Model)
                 mapper.task_variable = mapper_info.get("task_variable")
                 mapper.version = mapper_info.get("version")
                 mapper.can_bundle = mapper_info.get("can_bundle")
+                mapper.is_bundle = mapper_info.get("is_bundle")
                 mapper.description = mapper_info.get("description")
                 mapper.save()
                 return mapper

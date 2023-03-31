@@ -26,7 +26,7 @@ const BundleOperations = React.memo(({ formData }) => {
   const dispatch = useDispatch();
   const userRoles = useSelector((state) => state.user.roles);
   const submitNewForm = (formId) => {
-    dispatch(push(`${redirectUrl}form/${formId}`));
+    dispatch(push(`${redirectUrl}bundle/${formId}`));
   };
   const viewOrEditForm = (formId) => {
     dispatch(resetFormProcessData());

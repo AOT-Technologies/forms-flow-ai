@@ -71,6 +71,7 @@ const API = {
   USER_DASHBOARDS: `${WEB_BASE_URL}/authorizations/users/dashboard`,
   // bundle
   BUNDLE_BASE:`${WEB_BASE_URL}/form/<mapper_id>/bundles`,
+  BUNDLE_EXECUTE_RULE:`${WEB_BASE_URL}/form/<mapper_id>/bundles/execute-rules`,
 };
 
 export default API;

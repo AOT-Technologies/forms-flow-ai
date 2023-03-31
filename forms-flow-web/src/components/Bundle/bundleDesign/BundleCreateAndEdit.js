@@ -58,12 +58,10 @@ const BundleCreate = ({ mode }) => {
 
  
   const createBundle = () => {
-
     dispatch(clearFormError("form"));
-
     if (!bundleDescription.trim()){
       toast.error( "Bundle Description is Required");
-       return "Description is empty"; 
+       return; 
     }
 
     const newForm = {
@@ -88,8 +86,6 @@ const BundleCreate = ({ mode }) => {
       }
     }
     
-
-
     formCreate(newForm)
       .then((res) => {
         const form = res.data;
@@ -99,6 +95,7 @@ const BundleCreate = ({ mode }) => {
           formName: form.title,
           description: bundleDescription,
           formType: "bundle",
+          isBundle:true,
         };
         dispatch(
           // eslint-disable-next-line no-unused-vars
@@ -126,19 +123,17 @@ const BundleCreate = ({ mode }) => {
       });
   };
 
+
   const updateBundle = () => {
+    if (!bundleDescription.trim()){
+       toast.error( "Bundle Description is Required");
+       return;
+    }
     if (
       bundleData.formName !== bundleName ||
       bundleData.description !== bundleDescription
     ) {
-
       dispatch(clearFormError("form"));
-
-        if (!bundleDescription.trim()){
-        toast.error( "Bundle Description is Required");
-         return "Description is empty";
-      }
-      
       const formData = {
         title: bundleName,
         path: _camelCase(bundleName).toLowerCase(),
@@ -182,12 +177,14 @@ const BundleCreate = ({ mode }) => {
 
       return true;
     }
+    
     bundleUpdate({ selectedForms }, bundleData.id).then((res) => {
       dispatch(setBundleSelectedForms(res.data));
       dispatch(push(`${redirectUrl}bundleflow/${bundleData.formId}/view-edit`));
     });
   };
 
+  
   const setBundleTitle = () => {
     if (mode && mode !== BUNDLE_CREATE_ROUTE) {
       return (

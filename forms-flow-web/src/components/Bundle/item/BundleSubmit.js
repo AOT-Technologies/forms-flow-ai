@@ -92,10 +92,12 @@ const getForm = () => {
   const handleNextForm = () => { 
     handleSubmisionData();
     if (formRef.current.formio.checkValidity()) {
-    setBundleSubmitLoading(true);
-      executeRule(submission.data,bundleData.id).then((res)=>{
+    setBundleSubmitLoading(true); 
+      executeRule({data:submission.data},bundleData.id).then((res)=>{
         dispatch(setBundleSelectedForms(res.data));
-        setFormStep(formStep + 1);
+        if(res.data.length - 1 > formStep){
+          setFormStep(formStep + 1);
+        }
       }).finally(()=>{
           setBundleSubmitLoading(false);
       });
@@ -110,7 +112,7 @@ const getForm = () => {
     handleSubmisionData(); 
     if (formRef.current.formio.checkValidity()) {
       setBundleSubmitLoading(true);
-      executeRule(submission.data, bundleData.id).then(()=>{
+      executeRule({data:submission.data}, bundleData.id).then(()=>{
         formioPostSubmission(bundleSubmission, bundleData.formId, true)
         .then(() => {
           toast.success("Submission Saved.");

@@ -36,6 +36,8 @@ const bundle = (state = initialState, action) => {
         return {...state, bundleSubmission:action.payload};
     case ACTION_CONSTANTS.BUNDLE_LOADING:
         return {...state, bundleLoading:action.payload};
+    case ACTION_CONSTANTS.BUNDLE_FORM_LIST_SORT_CHANGE:
+      return {...state, bundleForms:{...state.bundleForms, sortOrder:action.payload}};
     case ACTION_CONSTANTS.BUNDLE_RESET:
       return {...initialState};
       

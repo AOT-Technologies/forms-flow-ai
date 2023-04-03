@@ -1,12 +1,18 @@
 # Changelog for formsflow.ai
 
 Mark  items as `Added`, `Changed`, `Fixed`, `Removed`, `Untested Features`, `Upcoming Features`, `Known Issues`
-## 4.0.8 - 2023-03-27
+## 4.0.8 - 2023-04-03
 
 `Fixed`
 
 **forms-flow-web**
 * Fixed major vulnerabilities of tar.
+
+`Modified`
+
+**forms-flow-forms**
+
+* Modified formiojs version to 4.15.0-rc.10.
 ## 4.0.6 - 2022-07-19
 
 `Fixed`

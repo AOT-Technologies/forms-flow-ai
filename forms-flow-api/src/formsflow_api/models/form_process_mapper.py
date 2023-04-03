@@ -241,6 +241,8 @@ class FormProcessMapper(AuditDateTimeMixin, AuditUserMixin, BaseModel, db.Model)
             cls.process_key,
             cls.form_id,
             cls.form_name,
+            cls.form_type,
+            cls.description,
         )
         limit = total_count if limit is None else limit
         query = query.paginate(page=page_number, per_page=limit, error_out=False)

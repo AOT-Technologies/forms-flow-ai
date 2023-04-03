@@ -36,9 +36,9 @@ const BundleSubmit = () => {
   const formSubmissionError = useSelector(
     (state) => state.formDelete.formSubmissionError
   );
-  const [formStep, setFormStep] = useState(0);
+  const [formStep, setFormStep] = useState({step:0});
   const [getFormLoading, setGetFormLoading] = useState(false);
-  const [form, setForm] = useState({});
+  const [form, setForm] = useState({}); 
   const bundleSubmission = useSelector(
     (state) => state.bundle.bundleSubmission
   );
@@ -46,8 +46,7 @@ const BundleSubmit = () => {
   const [bundleSubmitLoading, setBundleSubmitLoading] = useState(false);
   const formRef = useRef();
   const [formCache, setFormCache] = useState({});
-  let formValidationNotOver = true;
-
+  let formValidationNotOver = true; 
   useEffect(() => {
     getForm();
   }, [formStep]);
@@ -59,11 +58,17 @@ const BundleSubmit = () => {
     }
   }, [selectedForms]);
 
+  useEffect(()=>{
+    return()=>{
+    dispatch(setBundleSelectedForms([]));
+    };
+  },[]);
+
   const getForm = () => {
     if (selectedForms?.length) {
       dispatch(clearFormError("form"));
       setGetFormLoading(true);
-      fetchFormById(selectedForms[formStep].formId)
+      fetchFormById(selectedForms[formStep.step].formId)
         .then((res) => {
           !formCache[res.data._id] &&
             setFormCache({ ...formCache, [res.data._id]: res.data });
@@ -88,16 +93,31 @@ const BundleSubmit = () => {
     );
   };
 
+  const checkFormStepChange = (responseData)=>{
+    let changed = null;
+    if (responseData) {
+      responseData.forEach((i,index)=> { 
+        if(changed === null && selectedForms[index]?.formId !== i.formId){
+          changed = index;
+        }
+      });
+    }
+    return changed;
+  };
+
   const handleNextForm = () => {
     handleSubmisionData();
     if (formRef.current.formio.checkValidity()) {
       setBundleSubmitLoading(true);
       executeRule({ data: submission.data }, bundleData.id)
         .then((res) => {
-          dispatch(setBundleSelectedForms(res.data));
-          if (res.data.length - 1 > formStep) {
-            setFormStep(formStep + 1);
+          let changed = null;
+          if(  res.data.length - 1 !== formStep.step){
+             changed = checkFormStepChange(res.data); 
           }
+          dispatch(setBundleSelectedForms(res.data));
+          setFormStep({step: changed ? changed : formStep.step + 1});
+         
         })
         .finally(() => {
           setBundleSubmitLoading(false);
@@ -106,13 +126,13 @@ const BundleSubmit = () => {
   };
 
   const handleBackForm = () => {
-    setFormStep(formStep - 1);
+    setFormStep({step:formStep.step - 1});
   };
 
   const bundleFormValidation = async (valid, index) => {
     if (!valid) {
       formValidationNotOver = valid;
-      setFormStep(index);
+      setFormStep({step:index});
       setBundleSubmitLoading(false);
       return;
     }
@@ -122,8 +142,10 @@ const BundleSubmit = () => {
         { data: submission.data },
         bundleData.id
       );
-      if (response && response.data.length - 1 !== formStep) {
+      if (response && response.data.length - 1 !== formStep.step) {
+        const changed = checkFormStepChange(response.data); 
         dispatch(setBundleSelectedForms(response.data));
+        setFormStep({step:changed});
         setBundleSubmitLoading(false);
         return;
       }
@@ -213,7 +235,7 @@ const BundleSubmit = () => {
               text={"Loading..."}
             >
               <div className="border py-2">
-                <Stepper activeStep={formStep} nonLinear>
+                <Stepper activeStep={formStep.step} nonLinear>
                   {selectedForms?.map((form) => (
                     <Step key={form.id}>
                       <StepLabel>{form.formName}</StepLabel>
@@ -240,7 +262,7 @@ const BundleSubmit = () => {
                       </div>
 
                       <div className="d-flex align-items-center justify-content-end px-3 py-2">
-                        {formStep === 0 ? (
+                        {formStep.step === 0 ? (
                           ""
                         ) : (
                           <button
@@ -252,14 +274,14 @@ const BundleSubmit = () => {
                         )}
                         <button
                           onClick={
-                            selectedForms.length - 1 === formStep
+                            selectedForms.length - 1 === formStep.step
                               ? handleSubmit
                               : handleNextForm
                           }
                           disabled={bundleSubmitLoading}
                           className="btn btn-primary"
                         >
-                          {selectedForms.length - 1 === formStep
+                          {selectedForms.length - 1 === formStep.step
                             ? "Submit Form"
                             : "Next Form"}
                         </button>

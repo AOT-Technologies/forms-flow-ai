@@ -25,13 +25,13 @@ const FormOperations = React.memo(({ formData }) => {
   const redirectUrl = MULTITENANCY_ENABLED ? `/tenant/${tenantKey}/` : "/";
   const dispatch = useDispatch();
   const userRoles = useSelector((state) => state.user.roles);
-  const submitNewForm = (formId) => {
-    dispatch(push(`${redirectUrl}form/${formId}`));
+  const submitNewForm = (formData) => {
+    dispatch(push(`${redirectUrl}${formData.formType === "bundle" ? 'bundle' : 'form'}/${formData._id}`));
   };
-  const viewOrEditForm = (formId) => {
+  const viewOrEditForm = (formData) => {
     dispatch(resetFormProcessData());
     dispatch(setResetProcess());
-    dispatch(push(`${redirectUrl}formflow/${formId}/view-edit`));
+    dispatch(push(`${redirectUrl}${formData.formType === "bundle" ? 'bundleflow' : 'formflow'}/${formData._id}/view-edit`));
   };
   const deleteForms = (formData) => {
     dispatch(setIsApplicationCountLoading(true));
@@ -62,7 +62,7 @@ const FormOperations = React.memo(({ formData }) => {
   const submitNew = (
     <button
       className="btn  btn-primary"
-      onClick={() => submitNewForm(formData._id)}
+      onClick={() => submitNewForm(formData)}
     >
       <i className="fa fa-pencil mr-1" />
       <Translation>{(t) => t("Submit New")}</Translation>
@@ -71,7 +71,7 @@ const FormOperations = React.memo(({ formData }) => {
   const viewOrEdit = (
     <button
       className="btn  btn-outline-primary"
-      onClick={() => viewOrEditForm(formData._id)}
+      onClick={() => viewOrEditForm(formData)}
     >
       <i className="fa fa-pencil-square-o mr-1"  />
       <Translation>{(t) => t("View/Edit Form")}</Translation>{" "}

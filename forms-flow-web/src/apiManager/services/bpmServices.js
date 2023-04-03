@@ -45,6 +45,8 @@ export const formatForms = (forms) => {
       mapperId:form.id,
       processKey: form.processKey,
       dateCreated:form.created,
+      formType: form.formType,
+      description: form.description,
     };
   });
 };

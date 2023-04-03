@@ -3,14 +3,17 @@ import { Link } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { fetchFormById } from "../../../apiManager/services/bpmFormServices";
 import Loading from "../../../containers/Loading";
-import { Form,  Errors } from "react-formio";
+import { Form, Errors } from "react-formio";
 import Stepper from "@material-ui/core/Stepper";
 import Step from "@material-ui/core/Step";
 import StepLabel from "@material-ui/core/StepLabel";
 import { MULTITENANCY_ENABLED } from "../../../constants/constants";
-import { Formio } from 'formiojs';
+import { Formio } from "formiojs";
 import { toast } from "react-toastify";
-import { setBundleSelectedForms, setBundleSubmissionData } from "../../../actions/bundleActions";
+import {
+  setBundleSelectedForms,
+  setBundleSubmissionData,
+} from "../../../actions/bundleActions";
 import { formioPostSubmission } from "../../../apiManager/services/FormServices";
 import LoadingOverlay from "react-loading-overlay";
 import { push } from "connected-react-router";
@@ -42,30 +45,29 @@ const BundleSubmit = () => {
   const [submission, setSubmission] = useState(null);
   const [bundleSubmitLoading, setBundleSubmitLoading] = useState(false);
   const formRef = useRef();
-  const [formCach, setFormCach] = useState({});
+  const [formCache, setFormCache] = useState({});
+  let formValidationNotOver = true;
 
-
-useEffect(() => {
-  getForm();
-}, [formStep]);
-
-useEffect(() => {
-  // get fist form in initial stage
-  if (!submission && selectedForms.length) {
+  useEffect(() => {
     getForm();
-  }
-}, [selectedForms]);
+  }, [formStep]);
 
+  useEffect(() => {
+    // get fist form in initial stage
+    if (!submission && selectedForms.length) {
+      getForm();
+    }
+  }, [selectedForms]);
 
-const getForm = () => {
+  const getForm = () => {
     if (selectedForms?.length) {
-      Formio.cache = {};
       dispatch(clearFormError("form"));
       setGetFormLoading(true);
       fetchFormById(selectedForms[formStep].formId)
         .then((res) => {
-         !formCach[res.data._id] && setFormCach({ ...formCach, [res.data._id]: res.data });
-         setForm(res.data);
+          !formCache[res.data._id] &&
+            setFormCache({ ...formCache, [res.data._id]: res.data });
+          setForm(res.data);
         })
         .catch((err) => {
           dispatch(
@@ -78,27 +80,28 @@ const getForm = () => {
     }
   };
 
- const handleSubmisionData = () =>{
-  dispatch(
-    setBundleSubmissionData({
-      data: { ...bundleSubmission.data, ...submission.data },
-    })
-  );
- };
+  const handleSubmisionData = () => {
+    dispatch(
+      setBundleSubmissionData({
+        data: { ...bundleSubmission.data, ...submission.data },
+      })
+    );
+  };
 
-
-  const handleNextForm = () => { 
+  const handleNextForm = () => {
     handleSubmisionData();
     if (formRef.current.formio.checkValidity()) {
-    setBundleSubmitLoading(true); 
-      executeRule({data:submission.data},bundleData.id).then((res)=>{
-        dispatch(setBundleSelectedForms(res.data));
-        if(res.data.length - 1 > formStep){
-          setFormStep(formStep + 1);
-        }
-      }).finally(()=>{
+      setBundleSubmitLoading(true);
+      executeRule({ data: submission.data }, bundleData.id)
+        .then((res) => {
+          dispatch(setBundleSelectedForms(res.data));
+          if (res.data.length - 1 > formStep) {
+            setFormStep(formStep + 1);
+          }
+        })
+        .finally(() => {
           setBundleSubmitLoading(false);
-      });
+        });
     }
   };
 
@@ -106,36 +109,60 @@ const getForm = () => {
     setFormStep(formStep - 1);
   };
 
-  const handleSubmit = async () => { 
-    handleSubmisionData(); 
+  const bundleFormValidation = async (valid, index) => {
+    if (!valid) {
+      formValidationNotOver = valid;
+      setFormStep(index);
+      setBundleSubmitLoading(false);
+      return;
+    }
+    if (valid && index === selectedForms.length - 1 && formValidationNotOver) {
+      formValidationNotOver = false;
+      const response = await executeRule(
+        { data: submission.data },
+        bundleData.id
+      );
+      if (response && response.data.length - 1 !== formStep) {
+        dispatch(setBundleSelectedForms(response.data));
+        setBundleSubmitLoading(false);
+        return;
+      }
+
+      formioPostSubmission(bundleSubmission, bundleData.formId, true)
+        .then(() => {
+          toast.success("Submission Saved.");
+          dispatch(push(`${redirectUrl}bundle`));
+        })
+        .catch(() => {
+          const ErrorDetails = {
+            modalOpen: true,
+            message: "Submission cannot be done.",
+          };
+          toast.error("Submission cannot be done.");
+          dispatch(setFormSubmissionError(ErrorDetails));
+        })
+        .finally(() => {
+          setBundleSubmitLoading(false);
+        });
+    }
+  };
+
+  const handleSubmit = async () => {
+    handleSubmisionData();
     if (formRef.current.formio.checkValidity()) {
       setBundleSubmitLoading(true);
-      const response = await executeRule({data:submission.data}, bundleData.id);
-      if(response && response.data.length - 1 > formStep){
-          dispatch(setBundleSelectedForms(response.data));
-          setFormStep(formStep + 1);
-          setBundleSubmitLoading(false);
-          return;
-      }
-      
-      formioPostSubmission(bundleSubmission, bundleData.formId, true)
-      .then(() => {
-        toast.success("Submission Saved.");
-        dispatch(push(`${redirectUrl}bundle`));
-      })
-      .catch(() => {
-        const ErrorDetails = {
-          modalOpen: true,
-          message: "Submission cannot be done.",
-        };
-        toast.error("Submission cannot be done.");
-        dispatch(setFormSubmissionError(ErrorDetails));
-      })
-      .finally(() => {
-        setBundleSubmitLoading(false);
+      selectedForms.forEach(async (form, index) => {
+        const formioForm = await Formio.createForm(formCache[form.formId]);
+        formioForm.submission = { data: submission.data };
+        formioForm.on("change", function (changed) {
+          const { isValid } = changed;
+          formioForm.setPristine(false);
+          formioForm.checkValidity();
+          formioForm.redraw();
+          bundleFormValidation(isValid, index);
+        });
       });
-      
-    } 
+    }
   };
 
   const onConfirmSubmissionError = () => {
@@ -176,7 +203,6 @@ const getForm = () => {
         message={formSubmissionError.message}
         onConfirm={onConfirmSubmissionError}
       ></SubmissionError>
-
       {bundleData?.status === "active" ? (
         <div>
           {!selectedForms.length ? <Errors errors={error} /> : ""}

@@ -3,7 +3,7 @@
 from http import HTTPStatus
 
 from flask import current_app, request
-from flask_restx import Namespace, Resource
+from flask_restx import Namespace, Resource, fields
 from formsflow_api_utils.utils import (
     DESIGNER_GROUP,
     auth,
@@ -16,6 +16,46 @@ from formsflow_api.services import FormBundleService, RuleEngine
 
 API = Namespace("Form Bundles", description="APIs for form bundled")
 
+bundle_create_forms = API.model(
+    "BundleCreateForms",
+    {
+        "parentFormId": fields.String(),
+        "formOrder": fields.Integer(),
+        "rules": fields.List(fields.String()),
+    },
+)
+bundle_create_model = API.model(
+    "BundleCreateModel",
+    {"selectedForms": fields.List(fields.Nested(bundle_create_forms))},
+)
+bundle_update_forms = API.inherit(
+    "BundleUpdateForms",
+    bundle_create_forms,
+    {
+        "id": fields.Integer(),
+    },
+)
+bundle_update_model = API.model(
+    "BundleUpdateModel",
+    {"selectedForms": fields.List(fields.Nested(bundle_update_forms))},
+)
+bundle_response = API.inherit(
+    "BundleResponse",
+    bundle_update_forms,
+    {
+        "formId": fields.String(),
+        "formName": fields.String(),
+        "formMapperId": fields.String(),
+        "formType": fields.String(),
+    },
+)
+execute_rule_request = API.model(
+    "ExecuteRuleRequest",
+    {
+        "data": fields.Raw(),
+    },
+)
+
 
 @cors_preflight("GET,POST,PUT, OPTIONS")
 @API.route("", methods=["GET", "POST", "PUT", "OPTIONS"])
@@ -25,8 +65,8 @@ class BundleList(Resource):
     @staticmethod
     @auth.has_one_of_roles([DESIGNER_GROUP])
     @profiletime
-    @API.response(200, "CREATED:- Successful request.")
-    @API.response(204, "NO_CONTENT:- Successful request but nothing follows.")
+    @API.doc(body=bundle_create_model)
+    @API.response(201, "CREATED:- Successful request.", model=[bundle_response])
     @API.response(
         400,
         "BAD_REQUEST:- Invalid request.",
@@ -48,8 +88,6 @@ class BundleList(Resource):
         {
             "selectedForms": [
             {
-                "mapperId": "9",
-                "path": "duplicate-version-26c6b8",
                 "rules": [
                     "teaxt == pageYOffset", "age == 30"
                 ],
@@ -57,8 +95,6 @@ class BundleList(Resource):
                 "parentFormId":"dfdsfadsf455151"
             },
             {
-                "mapperId": "6",
-                "path": "duplicate-version-b599e2",
                 "rules": [
                     "teaxt == pageYOffset", "age == 30"
                 ],
@@ -97,8 +133,8 @@ class BundleList(Resource):
     @staticmethod
     @auth.has_one_of_roles([DESIGNER_GROUP])
     @profiletime
-    @API.response(200, "CREATED:- Successful request.")
-    @API.response(204, "NO_CONTENT:- Successful request but nothing follows.")
+    @API.doc(body=bundle_update_model)
+    @API.response(200, "CREATED:- Successful request.", model=[bundle_response])
     @API.response(
         400,
         "BAD_REQUEST:- Invalid request.",
@@ -112,9 +148,9 @@ class BundleList(Resource):
         "FORBIDDEN:- Authorization will not help.",
     )
     def put(mapper_id: int):
-        """Create Form bundle against a mapper.
+        """Update Form bundle against a mapper.
 
-        : data: bundle data for create bundle.
+        : data: bundle data for update bundle.
         e.g,
         ```
         {
@@ -124,7 +160,8 @@ class BundleList(Resource):
                     "teaxt == pageYOffset", "age == 30"
                 ],
                 "formOrder":1,
-                "parentFormId":"dfdsfadsf455151"
+                "parentFormId":"dfdsfadsf455151",
+                "id":1,
             },
             {
                 "rules": [
@@ -161,7 +198,7 @@ class BundleList(Resource):
 
     @staticmethod
     @auth.require
-    @API.response(200, "OK:- Successful request.")
+    @API.response(200, "OK:- Successful request.", model=[bundle_response])
     @API.response(
         400,
         "BAD_REQUEST:- Invalid request.",
@@ -192,7 +229,8 @@ class FormBundleExecuteRules(Resource):
     @staticmethod
     @auth.require
     @profiletime
-    @API.response(200, "OK:- Rules executed.")
+    @API.doc(body=execute_rule_request)
+    @API.response(200, "OK:- Rules executed.", model=[bundle_response])
     @API.response(
         400,
         "BAD_REQUEST:- Invalid request.",

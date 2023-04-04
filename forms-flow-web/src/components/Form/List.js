@@ -142,8 +142,12 @@ const List = React.memo((props) => {
      setTabValue(0);
      dispatch(setBpmFormType(type));
     }else if(location.pathname === "/bundle") {
-     setTabValue(1);
-     dispatch(setBpmFormType('bundle'));
+      if(isDesigner){
+        setTabValue(1);
+        dispatch(setBpmFormType('bundle'));
+      }else{
+        dispatch(push(`${redirectUrl}form`));
+      }
     }
  },[location.pathname]);
  

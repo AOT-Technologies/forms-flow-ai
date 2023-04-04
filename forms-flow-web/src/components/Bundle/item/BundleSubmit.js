@@ -7,7 +7,7 @@ import { Form, Errors } from "react-formio";
 import Stepper from "@material-ui/core/Stepper";
 import Step from "@material-ui/core/Step";
 import StepLabel from "@material-ui/core/StepLabel";
-import { MULTITENANCY_ENABLED } from "../../../constants/constants";
+import { MULTITENANCY_ENABLED, STAFF_DESIGNER } from "../../../constants/constants";
 import { Formio } from "formiojs";
 import { toast } from "react-toastify";
 import {
@@ -32,7 +32,10 @@ const BundleSubmit = () => {
   const bundleData = useSelector((state) => state.process.formProcessList);
   const selectedForms = useSelector((state) => state.bundle.selectedForms);
   const loading = useSelector((state) => state.bundle.bundleLoading);
+  const userRoles = useSelector((state)=> state.user.roles);
+  const isDesigner = userRoles.includes(STAFF_DESIGNER);
   const { error } = useSelector((state) => state.form);
+  const [validationErrorIndex , setValidationErroIndex] = useState(null);
   const formSubmissionError = useSelector(
     (state) => state.formDelete.formSubmissionError
   );
@@ -108,6 +111,9 @@ const BundleSubmit = () => {
   const handleNextForm = () => {
     handleSubmisionData();
     if (formRef.current.formio.checkValidity()) {
+      if(validationErrorIndex !== null){
+        setValidationErroIndex(null);
+      }
       setBundleSubmitLoading(true);
       executeRule({ data: submission.data }, bundleData.id)
         .then((res) => {
@@ -130,8 +136,9 @@ const BundleSubmit = () => {
   };
 
   const bundleFormValidation = async (valid, index) => {
-    if (!valid) {
+    if (!valid && formValidationNotOver) {
       formValidationNotOver = valid;
+      setValidationErroIndex(index);
       setFormStep({step:index});
       setBundleSubmitLoading(false);
       return;
@@ -153,7 +160,7 @@ const BundleSubmit = () => {
       formioPostSubmission(bundleSubmission, bundleData.formId, true)
         .then(() => {
           toast.success("Submission Saved.");
-          dispatch(push(`${redirectUrl}bundle`));
+          dispatch(push(`${redirectUrl}${isDesigner ? 'bundle' : 'form'}`));
         })
         .catch(() => {
           const ErrorDetails = {
@@ -207,7 +214,7 @@ const BundleSubmit = () => {
     <div className="p-3">
       <div className="d-flex align-items-center">
         {isAuthenticated ? (
-          <Link title="go back" to={`${redirectUrl}bundle`}>
+          <Link title="go back" to={`${redirectUrl}${isDesigner ? 'bundle' : 'form'}`}>
             <i className="fa fa-chevron-left fa-lg" />
           </Link>
         ) : null}
@@ -235,10 +242,10 @@ const BundleSubmit = () => {
               text={"Loading..."}
             >
               <div className="border py-2">
-                <Stepper activeStep={formStep.step} nonLinear>
-                  {selectedForms?.map((form) => (
+                <Stepper activeStep={formStep.step} nonLinear alternativeLabel>
+                  {selectedForms?.map((form,index) => (
                     <Step key={form.id}>
-                      <StepLabel>{form.formName}</StepLabel>
+                      <StepLabel error={validationErrorIndex === index}>{form.formName}</StepLabel>
                     </Step>
                   ))}
                 </Stepper>

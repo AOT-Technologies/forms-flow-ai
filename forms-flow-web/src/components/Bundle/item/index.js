@@ -8,7 +8,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { setBundleLoading, setBundleSelectedForms, setBundleSubmissionData } from "../../../actions/bundleActions";
 import { getFormProcesses } from "../../../apiManager/services/processServices";
 import { clearFormError, clearSubmissionError, setFormFailureErrorData } from "../../../actions/formActions";
-import { getBundle } from "../../../apiManager/services/bundleServices";
+import { executeRule } from "../../../apiManager/services/bundleServices";
 
 const Item = React.memo(() => { 
   const { bundleId } = useParams();
@@ -28,7 +28,7 @@ const Item = React.memo(() => {
           dispatch(setFormFailureErrorData("form", err));
           dispatch(setBundleLoading(false));
         } else {
-          getBundle(data.id)
+          executeRule({},data.id)
           .then((res) => {
             dispatch(setBundleSelectedForms(res.data));
            })

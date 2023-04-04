@@ -2,6 +2,7 @@
 
 from http import HTTPStatus
 
+import requests
 from flask import current_app, request
 from flask_restx import Namespace, Resource, fields
 from formsflow_api_utils.exceptions import BusinessException
@@ -82,6 +83,15 @@ application_update_model = API.model(
 
 application_status_list_model = API.model(
     "StatusList", {"applicationStatus": fields.List(fields.String())}
+)
+
+application_resubmit_model = API.model(
+    "ApplicationResubmitModel",
+    {
+        "processInstanceId": fields.String(),
+        "messageName": fields.String(),
+        "data": fields.Raw(),
+    },
 )
 
 
@@ -575,3 +585,50 @@ class ApplicationResourceByApplicationStatus(Resource):
             )
         except BusinessException as err:
             return err.error, err.status_code
+
+
+@cors_preflight("POST,OPTIONS")
+@API.route("/<int:application_id>/resubmit", methods=["POST", "OPTIONS"])
+class ApplicationResubmitById(Resource):
+    """Resource for resubmit application."""
+
+    @staticmethod
+    @auth.require
+    @profiletime
+    @API.doc(body=application_resubmit_model)
+    @API.response(200, "OK:- Successful request.")
+    @API.response(
+        400,
+        "BAD_REQUEST:- Invalid request.",
+    )
+    @API.response(
+        401,
+        "UNAUTHORIZED:- Authorization header not provided or an invalid token passed.",
+    )
+    @API.response(403, "FORBIDDEN:- Permission denied")
+    def post(application_id: int):
+        """Resubmit application."""
+        try:
+            resubmit_json = request.get_json()
+            ApplicationService.resubmit_application(
+                application_id, resubmit_json, token=request.headers["Authorization"]
+            )
+            return "Message event updated successfully.", HTTPStatus.OK
+        except PermissionError as err:
+            response, status = (
+                {
+                    "type": "Permission Denied",
+                    "message": f"Access to application id - {application_id} is prohibited.",
+                },
+                HTTPStatus.FORBIDDEN,
+            )
+            current_app.logger.warning(response)
+            current_app.logger.warning(err)
+            return response, status
+        except BusinessException as err:
+            return err.error, err.status_code
+        except requests.exceptions.ConnectionError as err:
+            current_app.logger.warning(err)
+            return {
+                "message": "BPM Service Unavailable",
+            }, HTTPStatus.SERVICE_UNAVAILABLE

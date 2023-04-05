@@ -4,7 +4,10 @@ import { useDispatch, useSelector } from "react-redux";
 import { Errors } from "react-formio";
 import _camelCase from "lodash/camelCase";
 import _deepClone from "lodash/cloneDeep";
-import { formCreate, formUpdate } from "../../../apiManager/services/FormServices";
+import {
+  formCreate,
+  formUpdate,
+} from "../../../apiManager/services/FormServices";
 import { MULTITENANCY_ENABLED } from "../../../constants/constants";
 import { addTenantkey } from "../../../helper/helper";
 import FormSelect from "./FormSelect";
@@ -47,21 +50,23 @@ const BundleCreate = ({ mode }) => {
   const selectedForms = useSelector(
     (state) => state.bundle.selectedForms || []
   );
-  
-  const selectedFormsBackup = useMemo(()=>_deepClone(selectedForms),[]);
-  
+
+  const selectedFormsBackup = useMemo(() => _deepClone(selectedForms), []);
+
   const redirectUrl = MULTITENANCY_ENABLED ? `/tenant/${tenantKey}/` : "/";
 
   useEffect(() => {
     dispatch(clearFormError("form"));
   }, [dispatch]);
 
- 
   const createBundle = () => {
     dispatch(clearFormError("form"));
-    if (!bundleDescription.trim()){
-      toast.error( "Bundle Description is Required");
-       return; 
+    if (bundleName.trim() === "" && bundleDescription.trim() === "") {
+      toast.error("Bundle Name and Description is Required");
+      return;
+    } else if (!bundleDescription.trim()) {
+      toast.error("Bundle Description is Required");
+      return;
     }
 
     const newForm = {
@@ -71,7 +76,7 @@ const BundleCreate = ({ mode }) => {
       name: _camelCase(bundleName),
       type: "form",
     };
-    
+
     newForm.submissionAccess = submissionAccess;
     newForm.componentChanged = true;
     newForm.newVersion = true;
@@ -85,7 +90,7 @@ const BundleCreate = ({ mode }) => {
         newForm.name = addTenantkey(newForm.name, tenantKey);
       }
     }
-    
+
     formCreate(newForm)
       .then((res) => {
         const form = res.data;
@@ -95,7 +100,7 @@ const BundleCreate = ({ mode }) => {
           formName: form.title,
           description: bundleDescription,
           formType: "bundle",
-          isBundle:true,
+          isBundle: true,
         };
         dispatch(
           // eslint-disable-next-line no-unused-vars
@@ -109,25 +114,27 @@ const BundleCreate = ({ mode }) => {
                   push(`${redirectUrl}bundleflow/${form._id}/view-edit`)
                 );
               });
-              toast.success( "Bundle created successfully");
+              toast.success("Bundle created successfully");
             }
           })
         );
       })
       .catch((err) => {
         const error = err.response.data || err.message;
-        if(error?.errors){
-          error.errors = {name:error.errors["name"]} ;
+        if (error?.errors) {
+          error.errors = { name: error.errors["name"] };
         }
         dispatch(setFormFailureErrorData("form", error));
       });
   };
 
-
   const updateBundle = () => {
-    if (!bundleDescription.trim()){
-       toast.error( "Bundle Description is Required");
-       return;
+    if (bundleName.trim() === "" && bundleDescription.trim() === "") {
+      toast.error("Bundle Name and Description is Required");
+      return;
+    } else if (!bundleDescription.trim()) {
+      toast.error("Bundle Description is Required");
+      return;
     }
     if (
       bundleData.formName !== bundleName ||
@@ -165,7 +172,7 @@ const BundleCreate = ({ mode }) => {
               push(`${redirectUrl}bundleflow/${bundleData.formId}/view-edit`)
             );
           });
-          toast.success( "Bundle updated successfully");
+          toast.success("Bundle updated successfully");
         })
         .catch((err) => {
           const error = err.response.data || err.message;
@@ -177,14 +184,13 @@ const BundleCreate = ({ mode }) => {
 
       return true;
     }
-    
+
     bundleUpdate({ selectedForms }, bundleData.id).then((res) => {
       dispatch(setBundleSelectedForms(res.data));
       dispatch(push(`${redirectUrl}bundleflow/${bundleData.formId}/view-edit`));
     });
   };
 
-  
   const setBundleTitle = () => {
     if (mode && mode !== BUNDLE_CREATE_ROUTE) {
       return (
@@ -219,7 +225,7 @@ const BundleCreate = ({ mode }) => {
 
           <button
             className="btn btn-primary"
-            disabled={selectedForms.length === 0} 
+            disabled={selectedForms.length === 0}
             onClick={() => {
               mode && mode !== BUNDLE_CREATE_ROUTE
                 ? updateBundle()
@@ -234,7 +240,9 @@ const BundleCreate = ({ mode }) => {
         <section>
           <div className="mt-2 align-items-center">
             <div className="m-3 font-weight-bold">
-              <label>Bundle Name<span className="ml-1 text-danger">*</span></label>
+              <label>
+                Bundle Name<span className="ml-1 text-danger">*</span>
+              </label>
               <input
                 value={bundleName}
                 onChange={(e) => {
@@ -246,7 +254,9 @@ const BundleCreate = ({ mode }) => {
               />
             </div>
             <div className="m-3 font-weight-bold">
-              <label>Bundle Description<span className="ml-1 text-danger">*</span></label>
+              <label>
+                Bundle Description<span className="ml-1 text-danger">*</span>
+              </label>
               <textarea
                 value={bundleDescription}
                 onChange={(e) => {
@@ -261,14 +271,16 @@ const BundleCreate = ({ mode }) => {
         </section>
         <section>
           <div className="m-3 font-weight-bold">
-            <label>Forms<span className="ml-1 text-danger">*</span></label>
+            <label>
+              Forms<span className="ml-1 text-danger">*</span>
+            </label>
             <span className="ml-1">
-          <i
-            className="fa fa-info-circle text-primary cursor-pointer"
-            data-toggle="tooltip"
-            title="You can change the form order by drag and drop"
-          ></i>
-        </span>
+              <i
+                className="fa fa-info-circle text-primary cursor-pointer"
+                data-toggle="tooltip"
+                title="You can change the form order by drag and drop"
+              ></i>
+            </span>
             <FormSelect />
           </div>
           <div className="m-3 font-weight-bold">

@@ -1,47 +1,18 @@
-import React, { useEffect }  from "react"; 
-import { Route, Switch, Redirect, useParams } from "react-router-dom";
+import React  from "react"; 
+import { Route, Switch, Redirect } from "react-router-dom";
 import BundleSubmit from "./BundleSubmit"; 
 import {
   BASE_ROUTE, CLIENT, MULTITENANCY_ENABLED, STAFF_REVIEWER,
 } from "../../../constants/constants"; 
-import { useDispatch, useSelector } from "react-redux";
-import { setBundleLoading, setBundleSelectedForms, setBundleSubmissionData } from "../../../actions/bundleActions";
-import { getFormProcesses } from "../../../apiManager/services/processServices";
-import { clearFormError, clearSubmissionError, setFormFailureErrorData } from "../../../actions/formActions";
-import { executeRule } from "../../../apiManager/services/bundleServices";
-
+import {useSelector } from "react-redux";
+ 
 const Item = React.memo(() => { 
-  const { bundleId } = useParams();
+  
   const userRoles = useSelector((state) => state.user.roles || []);
   const tenantKey = useSelector((state) => state?.tenants?.tenantId);
   const redirectUrl = MULTITENANCY_ENABLED ? `/tenant/${tenantKey}/` : "/";
-  const dispatch = useDispatch();
 
-  useEffect(() => {
-    dispatch(setBundleLoading(true));
-    dispatch(setBundleSubmissionData({}));
-    dispatch(clearFormError("form"));
-    dispatch(clearSubmissionError("submission"));
-    dispatch(
-      getFormProcesses(bundleId, (err, data) => {
-        if (err) { 
-          dispatch(setFormFailureErrorData("form", err));
-          dispatch(setBundleLoading(false));
-        } else {
-          executeRule({},data.id)
-          .then((res) => {
-            dispatch(setBundleSelectedForms(res.data));
-           })
-          .catch((err) => {
-           dispatch(setFormFailureErrorData("form", err));
-          })
-          .finally(() => {
-            dispatch(setBundleLoading(false));
-          });
-        }
-      })
-    );
-  }, [bundleId, dispatch]);
+
 
   /**
    * Protected route to form submissions

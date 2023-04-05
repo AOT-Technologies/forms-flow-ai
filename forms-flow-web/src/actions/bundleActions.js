@@ -62,3 +62,10 @@ export const setBundleLoading = (data) => (dispatch) => {
     payload: data,
   });
 };
+
+export const setBundleSubmitLoading = (data) => (dispatch)=>{
+  dispatch({
+    type: ACTION_CONSTANTS.BUNDLE_SUBMIT_LOADING,
+    payload: data
+  });
+};

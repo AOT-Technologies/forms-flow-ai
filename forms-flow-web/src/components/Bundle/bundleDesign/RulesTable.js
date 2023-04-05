@@ -38,10 +38,14 @@ const RulesTable = ({selectedForms = [],handleModalChange,
           return form.rules?.length > 0 ?  (
             <TableRow key={index}> 
             <StyledTableCell>{form.formName}</StyledTableCell>
-            <StyledTableCell>{form.rules?.join(",")}</StyledTableCell>
+            <StyledTableCell>
+              <div className="wrap-text">
+                {form.rules?.join(",")}
+              </div>
+            </StyledTableCell>
             {/* <StyledTableCell>{form.action}</StyledTableCell> */}
             <StyledTableCell align="right">
-              <div className="d-flex justify-content-end">
+              <div className="d-flex">
               <button className="btn btn-sm btn-outline-primary mr-2" onClick={()=>{selectRuleForEdit(form);}}>
               <i className="fa fa-pencil " aria-hidden="true"></i>
               </button>

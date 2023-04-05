@@ -34,4 +34,8 @@ public class VariableConstants {
 
     public static final String WEB_FORM_URL = "webFormUrl";
 
+    public static final String REQUEST_TYPE = "requestType";
+
+    public static final String REQUEST_STATUS = "requestStatus";
+
 }

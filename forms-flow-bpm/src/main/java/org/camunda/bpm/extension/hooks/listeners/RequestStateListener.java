@@ -44,36 +44,19 @@ public class RequestStateListener extends BaseListener implements ExecutionListe
             handleException(delegateTask.getExecution(), ExceptionSource.TASK, e);
         }
     }
-    
+
     private void invokeRequestService(DelegateExecution execution) throws IOException {
-        ResponseEntity<String> response = httpServiceInvoker.execute(getRequestUrl(execution), HttpMethod.PUT, prepareRequestDataUrl(execution));
-        if (response.getStatusCodeValue() != HttpStatus.OK.value()) {
-            throw new ApplicationServiceException("Unable to update application " + ". Message Body: " +
-                    response.getBody());
-        }
-
-        ResponseEntity<String> auditResponse = httpServiceInvoker.execute(getRequestAuditUrl(execution), HttpMethod.POST, prepareRequestDataUrl(execution));
+        ResponseEntity<String> response = httpServiceInvoker.execute(getRequestAuditUrl(execution), HttpMethod.POST, prepareRequestDataUrl(execution));
         if (response.getStatusCodeValue() != HttpStatus.CREATED.value()) {
-            throw new ApplicationServiceException("Unable to capture audit for application " + ". Message Body: " +
+            throw new ApplicationServiceException("Unable to process request for application" + ". Message Body: " +
                     response.getBody());
         }
-    }
-
-
-    /**
-     * Returns the endpoint of application API.
-     *
-     * @param execution
-     * @return
-     */
-    private String getRequestUrl(DelegateExecution execution) {
-        return httpServiceInvoker.getProperties().getProperty("api.url") + "/application/" + execution.getVariable(APPLICATION_ID);
     }
 
     protected RequestStateData prepareRequestDataUrl(DelegateExecution execution) {
         String formUrl = String.valueOf(execution.getVariable(FORM_URL));
-        String requestName = String.valueOf(execution.getVariable("requestName"));
-        String requestStatus = String.valueOf(execution.getVariable("requestStatus"));
+        String requestType = String.valueOf(execution.getVariable(REQUEST_TYPE));
+        String requestStatus = String.valueOf(execution.getVariable(REQUEST_STATUS));
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         String submittedBy = null;
         if (authentication != null) {
@@ -86,9 +69,15 @@ public class RequestStateListener extends BaseListener implements ExecutionListe
         } else {
             submittedBy = SERVICE_ACCOUNT;
         }
-        return new RequestStateData(formUrl, submittedBy, requestName, requestStatus, true);
+        return new RequestStateData(formUrl, submittedBy, requestType, requestStatus, true);
     }
 
+    /**
+     * Returns the endpoint of application API.
+     *
+     * @param execution
+     * @return
+     */
     private String getRequestAuditUrl(DelegateExecution execution) {
         return httpServiceInvoker.getProperties().getProperty("api.url") + "/application/" + execution.getVariable(APPLICATION_ID) + "/history";
     }

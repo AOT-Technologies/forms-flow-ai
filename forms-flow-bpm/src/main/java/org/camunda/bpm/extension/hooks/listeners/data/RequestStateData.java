@@ -4,14 +4,15 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.io.Serializable;
+
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class RequestStateData {
-
+public class RequestStateData implements Serializable {
     private String formUrl;
     private String submittedBy;
-    private String requestName;
+    private String requestType;
     private String requestStatus;
     private boolean isRequest;
 }

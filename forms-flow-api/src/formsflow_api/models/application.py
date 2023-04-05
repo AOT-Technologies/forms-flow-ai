@@ -96,6 +96,7 @@ class Application(
                 FormProcessMapper.process_name,
                 FormProcessMapper.process_tenant,
                 FormProcessMapper.form_name.label("application_name"),
+                FormProcessMapper.form_type.label("form_type"),
             )
             .join(cls, FormProcessMapper.id == cls.form_process_mapper_id)
             .filter(Application.id == application_id)
@@ -179,6 +180,7 @@ class Application(
             FormProcessMapper.process_key.label("process_key"),
             FormProcessMapper.process_name.label("process_name"),
             FormProcessMapper.process_tenant.label("process_tenant"),
+            FormProcessMapper.form_type.label("form_type"),
         )
         query = query.filter(*filter_conditions) if filter_conditions else query
         return query
@@ -228,6 +230,7 @@ class Application(
                 cls.modified,
                 cls.modified_by,
                 FormProcessMapper.form_name.label("application_name"),
+                FormProcessMapper.form_type.label("form_type"),
                 FormProcessMapper.process_key.label("process_key"),
                 FormProcessMapper.process_name.label("process_name"),
                 FormProcessMapper.process_tenant.label("process_tenant"),
@@ -338,6 +341,7 @@ class Application(
                 FormProcessMapper.process_key.label("process_key"),
                 FormProcessMapper.process_name.label("process_name"),
                 FormProcessMapper.process_tenant.label("process_tenant"),
+                FormProcessMapper.form_type.label("form_type"),
             )
         )
         query = FormProcessMapper.tenant_authorization(query=query)
@@ -368,6 +372,7 @@ class Application(
                 cls.modified,
                 cls.modified_by,
                 FormProcessMapper.form_name.label("application_name"),
+                FormProcessMapper.form_type.label("form_type"),
                 FormProcessMapper.process_key.label("process_key"),
                 FormProcessMapper.process_name.label("process_name"),
                 FormProcessMapper.process_tenant.label("process_tenant"),
@@ -419,7 +424,10 @@ class Application(
         """Fetch all application."""
         query = cls.query.join(
             FormProcessMapper, cls.form_process_mapper_id == FormProcessMapper.id
-        ).filter(cls.latest_form_id == form_id, cls.application_status != DRAFT_APPLICATION_STATUS)
+        ).filter(
+            cls.latest_form_id == form_id,
+            cls.application_status != DRAFT_APPLICATION_STATUS,
+        )
         return FormProcessMapper.tenant_authorization(query=query).count()
 
     @classmethod

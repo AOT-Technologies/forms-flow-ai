@@ -5,21 +5,23 @@ import org.camunda.bpm.engine.delegate.DelegateTask;
 import org.camunda.bpm.engine.delegate.ExecutionListener;
 import org.camunda.bpm.engine.delegate.TaskListener;
 import org.camunda.bpm.extension.commons.connector.HTTPServiceInvoker;
+import org.camunda.bpm.extension.commons.utils.RestAPIBuilderUtil;
 import org.camunda.bpm.extension.hooks.exceptions.ApplicationServiceException;
 import org.camunda.bpm.extension.hooks.listeners.data.RequestStateData;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.oauth2.server.resource.authentication.JwtAuthenticationToken;
 import org.springframework.stereotype.Component;
 
 import java.io.IOException;
 
 import static org.camunda.bpm.extension.commons.utils.VariableConstants.*;
 
+/**
+ * Request State Listener.
+ * This class creates a request entry in formsflow.ai
+ */
 @Component
 public class RequestStateListener extends BaseListener implements ExecutionListener, TaskListener {
 
@@ -57,19 +59,7 @@ public class RequestStateListener extends BaseListener implements ExecutionListe
         String formUrl = String.valueOf(execution.getVariable(FORM_URL));
         String requestType = String.valueOf(execution.getVariable(REQUEST_TYPE));
         String requestStatus = String.valueOf(execution.getVariable(REQUEST_STATUS));
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        String submittedBy = null;
-        if (authentication != null) {
-            if (authentication instanceof JwtAuthenticationToken authToken) {
-                submittedBy = authToken.getToken().getClaimAsString("preferred_username");
-                if (submittedBy.startsWith("service-account")) {
-                    submittedBy = ANONYMOUS_USER;
-                }
-            }
-        } else {
-            submittedBy = SERVICE_ACCOUNT;
-        }
-        return new RequestStateData(formUrl, submittedBy, requestType, requestStatus, true);
+        return new RequestStateData(formUrl, RestAPIBuilderUtil.fetchUserName(), requestType, requestStatus, true);
     }
 
     /**

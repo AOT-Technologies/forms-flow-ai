@@ -41,12 +41,14 @@ const RulesTable = ({selectedForms = [],handleModalChange,
             <StyledTableCell>{form.rules?.join(",")}</StyledTableCell>
             {/* <StyledTableCell>{form.action}</StyledTableCell> */}
             <StyledTableCell align="right">
+              <div className="d-flex justify-content-end">
               <button className="btn btn-sm btn-outline-primary mr-2" onClick={()=>{selectRuleForEdit(form);}}>
               <i className="fa fa-pencil " aria-hidden="true"></i>
               </button>
               <button className="btn btn-sm btn-outline-danger" onClick={()=>{deleteRule(form.parentFormId);}}>
                 <i className="fa fa-trash-o" aria-hidden="true"></i>
               </button>
+              </div>
             </StyledTableCell>
  
           </TableRow>

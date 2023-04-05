@@ -53,6 +53,7 @@ class ApplicationSchema(Schema):
     process_instance_id = fields.Str(data_key="processInstanceId")
     process_key = fields.Str(data_key="processKey")
     process_name = fields.Str(data_key="processName")
+    form_type = fields.Str(data_key="formType")
     process_tenant = fields.Str(data_key="processTenant")
     created_by = fields.Str(data_key="createdBy")
     created = fields.Str()

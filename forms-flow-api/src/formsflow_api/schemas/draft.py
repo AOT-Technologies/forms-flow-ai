@@ -21,6 +21,7 @@ class DraftSchema(Schema):
     created_by = fields.Str(data_key="CreatedBy", dump_only=True)
     process_key = fields.Str(data_key="processKey", dump_only=True)
     process_name = fields.Str(data_key="processName", dump_only=True)
+    form_type = fields.Str(data_key="formType", dump_only=True)
 
 
 class DraftListSchema(Schema):

@@ -221,7 +221,7 @@ const FormListModal = React.memo(
                   value={search}
                   onChange={(e)=>{setSearch(e.target.value);}}
                   placeholder="Search..."
-                  onKeyPress={(e)=> e.key === "Enter" ? handleSearch() : ""}
+                  onKeyDown={(e)=> e.keyCode == 13 ? handleSearch() : ""}
                   style={{ backgroundColor: "#ffff" }}
                 />
                 {search && (

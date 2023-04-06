@@ -221,6 +221,7 @@ function FormTable() {
                       onChange={(e) => {
                         setSearch(e.target.value);
                       }}
+                      onKeyDown={(e)=> e.keyCode == 13 ? handleSearch() : ""}
                       placeholder="Search..."
                       style={{ backgroundColor: "#ffff" }}
                     />

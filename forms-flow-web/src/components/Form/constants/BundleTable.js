@@ -160,7 +160,7 @@ function BundleTable() {
                 <FormControl 
                   value={search}
                   onChange={(e)=>{setSearch(e.target.value);}}
-                  onKeyPress={(e)=> e.key === "Enter" ? handleSearch() : ""}
+                  onKeyDown={(e)=> e.keyCode == 13 ? handleSearch() : ""}
                   placeholder="Search..."
                   style={{ backgroundColor: "#ffff" }}
                 />

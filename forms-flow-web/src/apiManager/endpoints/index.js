@@ -32,7 +32,6 @@ const API = {
   FORM_HISTORY: `${WEB_BASE_URL}/form/form-history`,
   LANG_UPDATE: `${WEB_BASE_URL}/user/locale`,
   FORM_PROCESSES: `${WEB_BASE_URL}/form/formid`,
-  //APPLICATION_EVENT_UPDATE: `${BPM_BASE_URL_EXT}/v1/message`,APPLICATION_EVENT_UPDATE: `${BPM_BASE_URL_EXT}/v1/message`,
   GET_BPM_TASKS: `${BPM_BASE_URL_EXT}/v1/task`,
   GET_BPM_TASK_DETAIL: `${BPM_BASE_URL_EXT}/v1/task/<task_id>`,
   GET_BPM_TASK_VARIABLES: `${BPM_BASE_URL_EXT}/v1/task/<task_id>/variables`,

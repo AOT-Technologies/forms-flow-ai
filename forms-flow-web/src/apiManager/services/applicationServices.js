@@ -181,16 +181,23 @@ export const publicApplicationStatus = (formId, ...rest) => {
   };
 };
 
-export const updateApplicationEvent = (data, ...rest) => {
+export const updateApplicationEvent = (applicationId,data, ...rest) => {
   /* * Data Format
  {
   "messageName" : "application_resubmitted",
   "processInstanceId":"a8dad78e-fa3b-11ea-a119-0242ac1f0003"
 }
 * */
+
   const done = rest.length ? rest[0] : () => {};
   return (dispatch) => {
-    httpPOSTRequest(API.APPLICATION_EVENT_UPDATE, data)
+    
+    const apiUrlAppResubmit = replaceUrl(
+      API.APPLICATION_EVENT_UPDATE,
+      "<application_id>",
+      applicationId);
+
+    httpPOSTRequest(apiUrlAppResubmit, data)
       .then((res) => {
         if (res.data) {
           done(null, res.data);

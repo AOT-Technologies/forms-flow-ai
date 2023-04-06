@@ -323,6 +323,14 @@
 			<artifactId>spring-boot-starter-data-redis-reactive</artifactId>
 		</dependency>
 
+		<dependency>
+			<groupId>com.bpm.utils</groupId>
+			<artifactId>forms-flow-bpm-utils</artifactId>
+			<scope>system</scope>
+			<version>5.1.0</version>
+			<systemPath>${project.basedir}/forms-flow-bpm-utils-5.1.0.jar</systemPath>
+		</dependency>
+
 	</dependencies>
 
 	<repositories>

@@ -1,14 +1,13 @@
 package org.camunda.bpm.extension.hooks.rest;
 
-import org.camunda.bpm.engine.rest.dto.CountResultDto;
-import org.camunda.bpm.engine.rest.dto.VariableValueDto;
-import org.camunda.bpm.engine.rest.dto.task.CompleteTaskDto;
-import org.camunda.bpm.engine.rest.dto.task.IdentityLinkDto;
-import org.camunda.bpm.engine.rest.dto.task.TaskDto;
 import org.camunda.bpm.engine.rest.dto.task.TaskQueryDto;
 import org.camunda.bpm.engine.rest.hal.Hal;
-import org.camunda.bpm.extension.hooks.rest.dto.UserIdDto;
-import org.springframework.hateoas.EntityModel;
+import org.bpm.utils.dto.UserIdDto;
+import org.bpm.utils.dto.TaskDto;
+import org.bpm.utils.dto.IdentityLinkDto;
+import org.bpm.utils.dto.CompleteTaskDto;
+import org.bpm.utils.dto.VariableValueDto;
+import org.bpm.utils.dto.CountResultDto;
 
 import javax.ws.rs.Consumes;
 import javax.ws.rs.Path;
@@ -48,7 +47,7 @@ public interface TaskRestResource extends RestResource {
     @GET
     @Path("/count")
     @Produces(MediaType.APPLICATION_JSON)
-    EntityModel<CountResultDto> getTasksCount(@Context UriInfo uriInfo);
+    CountResultDto getTasksCount(@Context UriInfo uriInfo);
 
     @GET
     @Path("/{id}")

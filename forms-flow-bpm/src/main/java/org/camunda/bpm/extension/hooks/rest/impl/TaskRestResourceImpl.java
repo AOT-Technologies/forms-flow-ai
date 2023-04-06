@@ -1,17 +1,18 @@
 package org.camunda.bpm.extension.hooks.rest.impl;
 
+import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.camunda.bpm.engine.rest.TaskRestService;
-import org.camunda.bpm.engine.rest.dto.CountResultDto;
-import org.camunda.bpm.engine.rest.dto.VariableValueDto;
-import org.camunda.bpm.engine.rest.dto.task.CompleteTaskDto;
-import org.camunda.bpm.engine.rest.dto.task.IdentityLinkDto;
-import org.camunda.bpm.engine.rest.dto.task.TaskDto;
+import org.bpm.utils.dto.TaskDto;
+import org.bpm.utils.dto.IdentityLinkDto;
+import org.bpm.utils.dto.CompleteTaskDto;
+import org.bpm.utils.dto.VariableValueDto;
+import org.bpm.utils.dto.CountResultDto;
 import org.camunda.bpm.engine.rest.dto.task.TaskQueryDto;
 import org.camunda.bpm.extension.hooks.rest.TaskRestResource;
-import org.camunda.bpm.extension.hooks.rest.dto.UserIdDto;
+import org.bpm.utils.dto.UserIdDto;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.hateoas.EntityModel;
 
 import javax.ws.rs.core.Request;
 import javax.ws.rs.core.Response;
@@ -19,8 +20,6 @@ import javax.ws.rs.core.UriInfo;
 import java.util.List;
 import java.util.Map;
 
-import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
-import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
 
 public class TaskRestResourceImpl implements TaskRestResource {
 
@@ -28,39 +27,45 @@ public class TaskRestResourceImpl implements TaskRestResource {
 
     private final TaskRestService restService;
 
+    ObjectMapper bpmObjectMapper = new ObjectMapper();
+
     public TaskRestResourceImpl(TaskRestService taskRestService) {
         restService = taskRestService;
     }
 
     @Override
     public Object getTasks(Request request, UriInfo uriInfo, Integer firstResult, Integer maxResults) {
-        return restService.getTasks(request, uriInfo, firstResult, maxResults);
+        return bpmObjectMapper.convertValue(restService.getTasks(request, uriInfo, firstResult, maxResults),
+                new TypeReference<List<TaskDto>>(){});
     }
 
     @Override
     public List<TaskDto>  queryTasks(TaskQueryDto query, Integer firstResult, Integer maxResults) {
-       return restService.queryTasks(query, firstResult, maxResults);
+       return bpmObjectMapper.convertValue(restService.queryTasks(query, firstResult, maxResults),
+               new TypeReference<List<TaskDto>>(){});
     }
 
     @Override
-    public EntityModel<CountResultDto> getTasksCount(UriInfo uriInfo) {
-        CountResultDto dto = restService.getTasksCount(uriInfo);
-        return EntityModel.of(dto, linkTo(methodOn(TaskRestResourceImpl.class).getTasksCount(uriInfo)).withSelfRel());
+    public CountResultDto getTasksCount(UriInfo uriInfo) {
+        CountResultDto dto = bpmObjectMapper.convertValue(restService.getTasksCount(uriInfo), CountResultDto.class);
+        return dto;
     }
 
     @Override
     public Object getTask(Request request, String id) {
-        return restService.getTask(id).getTask(request);
+        return bpmObjectMapper.convertValue(restService.getTask(id).getTask(request),org.bpm.utils.dto.TaskDto.class);
     }
 
     @Override
     public void updateTask(TaskDto task, String id) {
-        restService.getTask(id).updateTask(task);
+        restService.getTask(id).updateTask(
+                bpmObjectMapper.convertValue(task, org.camunda.bpm.engine.rest.dto.task.TaskDto.class));
     }
 
     @Override
-    public void claim(UserIdDto userIdDto, String id) {
-        restService.getTask(id).claim(userIdDto);
+    public void claim(org.bpm.utils.dto.UserIdDto userIdDto, String id) {
+        restService.getTask(id).claim(
+                bpmObjectMapper.convertValue(userIdDto, org.camunda.bpm.engine.rest.dto.task.UserIdDto.class));
     }
 
     @Override
@@ -70,31 +75,39 @@ public class TaskRestResourceImpl implements TaskRestResource {
 
     @Override
     public void setAssignee(UserIdDto userIdDto, String id) {
-        restService.getTask(id).setAssignee(userIdDto);
+        restService.getTask(id).setAssignee(
+                bpmObjectMapper.convertValue(userIdDto, org.camunda.bpm.engine.rest.dto.task.UserIdDto.class));
     }
 
     @Override
     public Map<String, VariableValueDto> getVariables(boolean deserializeValues, String id) {
-        return restService.getTask(id).getVariables().getVariables(deserializeValues);
+        return bpmObjectMapper.convertValue(restService.getTask(id).getVariables().getVariables(deserializeValues),
+                new TypeReference<Map<String, VariableValueDto>>() {
+        });
     }
 
     @Override
     public List<IdentityLinkDto> getIdentityLinks(String type, String id) {
-        return restService.getTask(id).getIdentityLinks(type);
+        return bpmObjectMapper.convertValue(restService.getTask(id).getIdentityLinks(type),
+                new TypeReference<>() {
+                });
     }
 
     @Override
     public void addIdentityLink(IdentityLinkDto identityLink, String id) {
-        restService.getTask(id).addIdentityLink(identityLink);
+        restService.getTask(id).addIdentityLink(
+                bpmObjectMapper.convertValue(identityLink, org.camunda.bpm.engine.rest.dto.task.IdentityLinkDto.class));
     }
 
     @Override
     public void deleteIdentityLink(IdentityLinkDto identityLink, String id) {
-        restService.getTask(id).deleteIdentityLink(identityLink);
+        restService.getTask(id).deleteIdentityLink(
+                bpmObjectMapper.convertValue(identityLink, org.camunda.bpm.engine.rest.dto.task.IdentityLinkDto.class));
     }
 
     @Override
     public Response submit(CompleteTaskDto completeTaskDto, String id) {
-       return restService.getTask(id).submit(completeTaskDto);
+       return restService.getTask(id).submit(
+               bpmObjectMapper.convertValue(completeTaskDto, org.camunda.bpm.engine.rest.dto.task.CompleteTaskDto.class));
     }
 }

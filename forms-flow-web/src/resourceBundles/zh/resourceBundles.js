@@ -1,5 +1,6 @@
 /* eslint-disable max-len */
 export const RESOURCE_BUNDLES_ZH = {
+  "Please remove the special characters...!":"请删除特殊字符...！",
   "No histories found":"没有找到历史记录",
   "Continue":"继续",
   "This will create a new version of the form without changing the path name but with new form id.":"这将创建一个新版本的表单而不更改路径名但具有新的表单 ID。",
@@ -36,7 +37,7 @@ export const RESOURCE_BUNDLES_ZH = {
   "Enter Label":"输入标签",
   "Select form field":"选择表单域",
   "Add form fields to display in task list":"添加表单域以显示在任务列表中",
-  "Version":"版本",
+  "Latest Version":"最新版本",
   "Submission Status":"提交状态",
   "No submission status":"无提交状态",
   "No Public url found":"未找到公共网址",
@@ -273,7 +274,8 @@ export const RESOURCE_BUNDLES_ZH = {
   "URL copied":"已复制网址",
   "Click Here to Copy":"点击这里复制",
   "Resources":"资源",
-  "Duplicate form created successfully":"成功创建重复表单"
+  "Duplicate form created successfully":"成功创建重复表单",
+  "Revert": "恢复"
 
 };
 

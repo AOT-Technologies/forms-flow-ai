@@ -212,3 +212,32 @@ class KeycloakAdminAPIService:
             raise f"Request to Keycloak Admin APIs failed., {err_code}"
         response.raise_for_status()
         return response
+
+    @profiletime
+    def get_user_groups(self, user: str):
+        """Return list of groups that the given user is part of."""
+        return self.get_request(f"users/{user}/groups")
+
+    @profiletime
+    def get_user_roles(self, user: str):
+        """Return list of roles that the given user is part of."""
+        client_id = self.get_client_id()
+        return self.get_request(
+            f"users/{user}/role-mappings/clients/{client_id}/composite"
+        )
+
+    @profiletime
+    def get_realm_users(self, search: str, page_no: int, limit: int):
+        """Return list of users in the realm."""
+        url = f"users?first={(page_no-1)*limit}&max={limit}"
+        if search:
+            url += f"&search={search}"
+        return self.get_request(url_path=url)
+
+    @profiletime
+    def get_realm_users_count(self, search: str):
+        """Return users count in the realm."""
+        url = "users/count"
+        if search:
+            url += f"?search={search}"
+        return self.get_request(url_path=url)

@@ -1,10 +1,5 @@
 /* istanbul ignore file */
-import {
-  httpDELETERequest,
-  httpGETRequest,
-  httpPOSTRequest,
-  httpPUTRequest,
-} from "../httpRequestHandler";
+import { RequestService } from "@formsflow/service";
 import API from "../endpoints";
 import {
   setProcessStatusLoading,
@@ -25,7 +20,8 @@ import {
 } from "../../actions/processActions";
 import { setApplicationCount } from "../../actions/processActions";
 import { replaceUrl } from "../../helper/helper";
-import UserService from "../../services/UserService";
+import { StorageService } from "@formsflow/service";
+
 import { toast } from "react-toastify";
 import { Translation } from "react-i18next";
 export const getProcessStatusList = (processId, taskId) => {
@@ -40,7 +36,7 @@ export const getProcessStatusList = (processId, taskId) => {
 
     const apiURLWithtaskId = replaceUrl(apiUrlProcessId, "<task_key>", taskId);
 
-    httpGETRequest(apiURLWithtaskId)
+    RequestService.httpGETRequest(apiURLWithtaskId)
       .then((res) => {
         if (res.data) {
           dispatch(setProcessStatusLoading(false));
@@ -78,10 +74,15 @@ export const fetchAllBpmProcesses = (tenant_key = null, ...rest) => {
   if (tenant_key) {
     url = url + "&tenantIdIn=" + tenant_key;
   }
-  
+
   return (dispatch) => {
     // eslint-disable-next-line max-len
-    httpGETRequest(url, {}, UserService.getToken(), true)
+    RequestService.httpGETRequest(
+      url,
+      {},
+      StorageService.get(StorageService.User.AUTH_TOKEN),
+      true
+    )
       .then((res) => {
         if (res?.data) {
           let unique = removeTenantDuplicates(res.data, tenant_key);
@@ -115,7 +116,12 @@ export const fetchAllDmnProcesses = (tenant_key = null, ...rest) => {
 
   return (dispatch) => {
     // eslint-disable-next-line max-len
-    httpGETRequest(url, {}, UserService.getToken(), true)
+    RequestService.httpGETRequest(
+      url,
+      {},
+      StorageService.get(StorageService.User.AUTH_TOKEN),
+      true
+    )
       .then((res) => {
         if (res?.data) {
           let unique = removeTenantDuplicates(res.data, tenant_key);
@@ -148,14 +154,14 @@ const removeTenantDuplicates = (list, tenant_key) => {
 export const getFormProcesses = (formId, ...rest) => {
   const done = rest.length ? rest[0] : () => {};
   return (dispatch) => {
-    httpGETRequest(
+    RequestService.httpGETRequest(
       `${API.FORM_PROCESSES}/${formId}`,
       {},
-      UserService.getToken(),
+      StorageService.get(StorageService.User.AUTH_TOKEN),
       true
     )
       .then((res) => {
-        if (res.data) { 
+        if (res.data) {
           dispatch(setFormPreviosData(res.data));
           dispatch(setFormProcessesData(res.data));
           // need to check api and put exact respose
@@ -183,7 +189,7 @@ export const getApplicationCount = (mapperId, ...rest) => {
       "<mapper id>",
       mapperId
     );
-    await httpGETRequest(apiUrlClaimTask)
+    await RequestService.httpGETRequest(apiUrlClaimTask)
       .then((res) => {
         const applicationCount = +res.data?.value;
         dispatch(setApplicationCount(applicationCount));
@@ -199,7 +205,6 @@ export const getApplicationCount = (mapperId, ...rest) => {
       });
   };
 };
-
 
 export const getAllApplicationCount = (formId, ...rest) => {
   const done = rest.length ? rest[0] : () => {};
@@ -209,7 +214,7 @@ export const getAllApplicationCount = (formId, ...rest) => {
       "<form id>",
       formId
     );
-    await httpGETRequest(apiUrlClaimTask)
+    await RequestService.httpGETRequest(apiUrlClaimTask)
       .then((res) => {
         const applicationCount = +res.data?.value;
         dispatch(setApplicationCount(applicationCount));
@@ -226,11 +231,10 @@ export const getAllApplicationCount = (formId, ...rest) => {
   };
 };
 
-
 export const saveFormProcessMapperPost = (data, ...rest) => {
   const done = rest.length ? rest[0] : () => {};
   return async (dispatch) => {
-    httpPOSTRequest(`${API.FORM}`, data)
+    RequestService.httpPOSTRequest(`${API.FORM}`, data)
       .then(async (res) => {
         if (res.data) {
           dispatch(getApplicationCount(res.data.id));
@@ -258,7 +262,7 @@ export const saveFormProcessMapperPost = (data, ...rest) => {
 export const saveFormProcessMapperPut = (data, ...rest) => {
   const done = rest.length ? rest[0] : () => {};
   return async (dispatch) => {
-    httpPUTRequest(`${API.FORM}/${data.id}`, data)
+    RequestService.httpPUTRequest(`${API.FORM}/${data.id}`, data)
       .then(async (res) => {
         if (res.data) {
           dispatch(getApplicationCount(res.data.id));
@@ -296,7 +300,12 @@ export const getProcessActivities = (process_instance_id, ...rest) => {
     process_instance_id
   );
   return (dispatch) => {
-    httpGETRequest(apiUrlProcessActivities, {}, UserService.getToken(), true)
+    RequestService.httpGETRequest(
+      apiUrlProcessActivities,
+      {},
+      StorageService.get(StorageService.User.AUTH_TOKEN),
+      true
+    )
       .then((res) => {
         if (res.data) {
           dispatch(setProcessActivityData(res.data.childActivityInstances));
@@ -331,7 +340,12 @@ export const fetchDiagram = (
 
   const done = rest.length ? rest[0] : () => {};
   return (dispatch) => {
-    httpGETRequest(url, {}, UserService.getToken(), true)
+    RequestService.httpGETRequest(
+      url,
+      {},
+      StorageService.get(StorageService.User.AUTH_TOKEN),
+      true
+    )
       .then((res) => {
         if (res.data && (isDmn ? res.data.dmnXml : res.data.bpmn20Xml)) {
           dispatch(
@@ -362,7 +376,7 @@ export const unPublishForm = (mapperId, ...rest) => {
   const done = rest.length ? rest[0] : () => {};
   const url = replaceUrl(API.UNPUBLISH_FORMS, "<mapper id>", mapperId);
   return (dispatch) => {
-    httpDELETERequest(url)
+    RequestService.httpDELETERequest(url)
       .then((res) => {
         dispatch(resetFormProcessData());
         done(null, res.data);
@@ -375,12 +389,11 @@ export const unPublishForm = (mapperId, ...rest) => {
   };
 };
 
-
 export const deleteFormProcessMapper = (mapperId, ...rest) => {
   const done = rest.length ? rest[0] : () => {};
   const url = replaceUrl(API.UNPUBLISH_FORMS, "<mapper id>", mapperId);
   return (dispatch) => {
-    httpDELETERequest(url)
+    RequestService.httpDELETERequest(url)
       .then((res) => {
         done(null, res.data);
       })

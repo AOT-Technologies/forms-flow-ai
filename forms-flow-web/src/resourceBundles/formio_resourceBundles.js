@@ -1,6 +1,7 @@
 /* eslint-disable max-len */
 export const formio_resourceBundles = {
   en: {
+    "Please remove the special characters...!":"Please remove the special characters...!",
     "No histories found":"No histories found",
     "Continue":"Continue",
     "This will create a new version of the form without changing the path name but with new form id.":"This will create a new version of the form without changing the path name but with new form id.",
@@ -57,8 +58,8 @@ export const formio_resourceBundles = {
     "Enter Label": "Enter Label",
     "Select form field": "Select form field",
     "Add form fields to display in task list":
-      "Add form fields to display in task list",
-    "Version": "Version",
+    "Add form fields to display in task list",
+    "Latest Version": "Latest Version",
     "Dashboard": "Dashboard",
     "Dashboards": "Dashboards",
     "Submission Status": "Submission Status",
@@ -88,7 +89,7 @@ export const formio_resourceBundles = {
     "Save Form": "Save Form",
     "Cancel": "Cancel",
     "Confirm": "Confirm",
-    "wizard": "Wizard",
+    "Wizard": "Wizard",
     "Please fix the errors before submitting again.":
       "Please fix the errors before submitting again.",
     "Error in JSON file structure": "Error in JSON file structure",
@@ -292,10 +293,13 @@ export const formio_resourceBundles = {
     "Deployment Failed":"Deployment Failed",
     "Process name(s) must not be empty":"Process name(s) must not be empty",
     "URL copied":"URL copied",
-    "Click Here to Copy":"Click Here to Copy"
+    "Click Here to Copy":"Click Here to Copy",
+    "Revert": "Revert"
+  
   },
 
   "zh-CN": {
+    "Please remove the special characters...!":"请删除特殊字符...！",
     "No histories found":"没有找到历史记录",
     "Continue":"继续",
     "This will create a new version of the form without changing the path name but with new form id.":"这将创建一个新版本的表单而不更改路径名但具有新的表单 ID。",
@@ -1199,10 +1203,12 @@ export const formio_resourceBundles = {
     "Deployment Failed":"部署失败",
     "Process name(s) must not be empty":"进程名称不能为空",
     "URL copied":"已复制网址",
-    "Click Here to Copy":"点击这里复制"
+    "Click Here to Copy":"点击这里复制",
+    "Revert": "恢复"
   },
 
   bg: {
+    "Please remove the special characters...!":"Моля, премахнете специалните символи...!",
     "No histories found":"Няма намерени истории",
     "Continue":"продължи",
     "This will create a new version of the form without changing the path name but with new form id.":"Това ще създаде нова версия на формуляра без промяна на името на пътя, но с нов идентификатор на формуляра.",
@@ -2164,11 +2170,13 @@ export const formio_resourceBundles = {
     "Deployment Failed":"Неуспешно внедряване",
     "Process name(s) must not be empty":"Името(ата) на процесите не трябва да са празни",
     "URL copied":"URL адресът е копиран",
-    "Click Here to Copy":"Щракнете тук, за да копирате"
+    "Click Here to Copy":"Щракнете тук, за да копирате",
+    "Revert": "Връщане"
 
   },
 
   pt: {
+    "Please remove the special characters...!":"Remova os caracteres especiais...!",
     "No histories found":"Nenhum histórico encontrado",
     "Continue":"Prosseguir",
     "This will create a new version of the form without changing the path name but with new form id.":"Isso criará uma nova versão do formulário sem alterar o nome do caminho, mas com o novo ID do formulário.",
@@ -3124,11 +3132,13 @@ export const formio_resourceBundles = {
     "Deployment Failed":"Falha na implantação",
     "Process name(s) must not be empty":"O(s) nome(s) do processo não deve(m) estar vazio(s)",
     "URL copied":"URL copiado",
-    "Click Here to Copy":"Clique aqui para copiar"
+    "Click Here to Copy":"Clique aqui para copiar",
+    "Revert": "Reverter"
 
   },
 
   fr: {
+    "Please remove the special characters...!":"Veuillez supprimer les caractères spéciaux... !",
     "No histories found":"Aucun historique trouvé",
     "Continue":"Continuez",
     "This will create a new version of the form without changing the path name but with new form id.":"Cela créera une nouvelle version du formulaire sans changer le nom du chemin mais avec un nouvel identifiant de formulaire.",
@@ -4092,11 +4102,13 @@ export const formio_resourceBundles = {
     "Deployment Failed":"Échec du déploiement",
     "Process name(s) must not be empty":"Le(s) nom(s) de processus ne doivent pas être vides",
     "URL copied":"URL copiée",
-    "Click Here to Copy":"Cliquez ici pour copier"
+    "Click Here to Copy":"Cliquez ici pour copier",
+    "Revert":"Revenir"
 
   },
 
   de: {
+    "Please remove the special characters...!":"Bitte entfernen Sie die Sonderzeichen...!",
     "No histories found":"Keine Historien gefunden",
     "Continue":"Weitermachen",
     "This will create a new version of the form without changing the path name but with new form id.":"Dadurch wird eine neue Version des Formulars erstellt, ohne den Pfadnamen zu ändern, aber mit einer neuen Formular-ID.",
@@ -5063,8 +5075,8 @@ export const formio_resourceBundles = {
     "Deployment Failed":"Bereitstellung fehlgeschlagen",
     "Process name(s) must not be empty":"Prozessname(n) dürfen nicht leer sein",
     "URL copied":"URL kopiert",
-    "Click Here to Copy":"Klicken Sie hier, um zu kopieren"
-
+    "Click Here to Copy":"Klicken Sie hier, um zu kopieren",
+    "Revert":"Zurückkehren"
 
 
 

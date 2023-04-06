@@ -15,7 +15,6 @@ def test_application_model_can_create_application(app, client, session):
         created_by="test-user",
         form_type="form",
         parent_form_id=12324,
-
     )
     assert form.id == 1
     form.save()

@@ -76,7 +76,8 @@ const RuleCreateModal = React.memo(
           <Modal.Body>
             <div className="form-group">
               <label>Criteria</label>
-              <textarea
+              <textarea 
+                rows={5}
                 onChange={(e) => {
                   setCriteria(e.target.value);
                 }}

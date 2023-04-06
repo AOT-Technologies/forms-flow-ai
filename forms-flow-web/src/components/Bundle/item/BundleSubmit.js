@@ -73,14 +73,14 @@ const BundleSubmit = () => {
         .then((res) => { 
           const origin = `${window.location.origin}${redirectUrl}`;
           const data = getProcessReq({_id: bundleData.formId}, res.data._id, origin);
-          dispatch(applicationCreate(data),(err)=>{
+          dispatch(applicationCreate(data,null,(err)=>{ 
             if(err){
               toast.error("Application not created");
             }else{
               toast.success("Submission Saved.");
               dispatch(push(`${redirectUrl}${isDesigner ? 'bundle' : 'form'}`));
             }
-          });
+          }));
          
         })
         .catch(() => {

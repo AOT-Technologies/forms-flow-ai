@@ -220,7 +220,7 @@ const FormListModal = React.memo(
                             <StyledTableCell></StyledTableCell>
                             <StyledTableCell>
                             <span className="sort-cell">
-                            <span> Bundle Name</span>
+                            <span> Form Name</span>
                               <span >   
                              {isAscending ? (
                                 <i

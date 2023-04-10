@@ -3,14 +3,12 @@ import { Route } from "react-router-dom";
 import { connect } from "react-redux";
 import { getForm } from "react-formio";
 import View from "../components/Form/Item/View";
-import NavBar from "../containers/NavBar";
 import NotFound from "./NotFound";
 
-const PublicRoute = () => {
+const PublicRoute = ({publish}) => {
   return (
     <div className="container">
-      <NavBar />
-      <Route exact path="/public/form/:formId" component={View} />
+      <Route exact path="/public/form/:formId" render={(props) => <View {...props} publish={publish}  />} />
       <Route path="/public/form/:formId/:notavailable" component={NotFound} />
     </div>
   );

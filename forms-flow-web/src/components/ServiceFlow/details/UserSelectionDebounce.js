@@ -40,11 +40,11 @@ const UserSelectionDebounce = React.memo((props) => {
           if (!err) {
             const userListOptions = res.map((user) => {
               return {
-                value: user.id,
-                label: user.id,
+                value: user.username,
+                label: user.username,
                 email: user.email,
                 firstName: user.firstName,
-                id: user.id,
+                id: user.username,
                 lastName: user.lastName,
               };
             });

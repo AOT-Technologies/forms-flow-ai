@@ -15,20 +15,37 @@ from marshmallow import ValidationError
 from formsflow_api.schemas import (
     UserlocaleReqSchema,
     UserPermissionUpdateSchema,
+    UsersListSchema,
 )
 from formsflow_api.services import KeycloakAdminAPIService, UserService
 from formsflow_api.services.factory import KeycloakFactory
 
 API = Namespace("user", description="Keycloak user APIs")
 
-user_list_model = API.model(
-    "UserList",
+user_list_count_model = API.model(
+    "List",
     {
-        "id": fields.String(),
-        "email": fields.String(),
-        "firstName": fields.String(),
-        "lastName": fields.String(),
+        "data": fields.List(
+            fields.Nested(
+                API.model(
+                    "UserList",
+                    {
+                        "id": fields.String(),
+                        "email": fields.String(),
+                        "firstName": fields.String(),
+                        "lastName": fields.String(),
+                        "username": fields.String()
+                    },
+                )
+            )
+        ),
+        "count": fields.Integer(),
     },
+)
+
+user_permission_update_model = API.model(
+    "UserPermission",
+    {"userId": fields.String(), "groupId": fields.String(), "name": fields.String()},
 )
 
 user_permission_update_model = API.model(
@@ -144,12 +161,37 @@ class KeycloakUsersList(Resource):
         params={
             "memberOfGroup": {
                 "in": "query",
-                "description": "Group name for fetching users.",
-                "default": "formsflow/formsflow-reviewer",
-            }
+                "description": "Group/Role  name for fetching users.",
+                "default": "",
+            },
+            "search": {
+                "in": "query",
+                "description": "A String contained in username, first or last name, or email.",
+                "default": "",
+            },
+            "pageNo": {
+                "in": "query",
+                "description": "Page number.",
+                "default": 1,
+            },
+            "limit": {
+                "in": "query",
+                "description": "Max result size.",
+                "default": 5,
+            },
+            "role": {
+                "in": "query",
+                "description": "Boolean which defines whether roles are returned.",
+                "default": "false",
+            },
+            "count": {
+                "in": "query",
+                "description": "Boolean which defines whether count is returned.",
+                "default": "false",
+            },
         }
     )
-    @API.response(200, "OK:- Successful request.", model=[user_list_model])
+    @API.response(200, "OK:- Successful request.", model=user_list_count_model)
     @API.response(
         401,
         "UNAUTHORIZED:- Authorization header not provided or an invalid token passed.",
@@ -158,13 +200,34 @@ class KeycloakUsersList(Resource):
         400,
         "BAD_REQUEST:- Invalid request.",
     )
-    def get():
-        """Get users in a group/role."""
+    def get():  # pylint: disable=too-many-locals
+        """Get users list."""
         try:
             group_name = request.args.get("memberOfGroup")
-            users_list = KeycloakFactory.get_instance().get_users(group_name=group_name)
-            user_service = UserService()
-            response = user_service.get_users(request.args, users_list)
+            search = request.args.get("search")
+            page_no = int(request.args.get("pageNo", 0))
+            limit = int(request.args.get("limit", 0))
+            role = request.args.get("role") == "true"
+            count = request.args.get("count") == "true"
+            kc_admin = KeycloakFactory.get_instance()
+            if group_name:
+                (users_list, users_count) = kc_admin.get_users(
+                    page_no, limit, role, group_name, count
+                )
+                user_service = UserService()
+                response = {
+                    "data": user_service.get_users(request.args, users_list),
+                    "count": users_count,
+                }
+            else:
+                (user_list, user_count) = kc_admin.search_realm_users(
+                    search, page_no, limit, role, count
+                )
+                user_list_response = []
+                for user in user_list:
+                    user = UsersListSchema().dump(user)
+                    user_list_response.append(user)
+                response = {"data": user_list_response, "count": user_count}
             return response, HTTPStatus.OK
         except requests.exceptions.RequestException as err:
             current_app.logger.warning(err)

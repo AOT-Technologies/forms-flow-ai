@@ -223,6 +223,10 @@ class FormResourceList(Resource):
             form_type: str = dict_data.get("form_type", "form")
             auth_list = auth_form_details.get("authorizationList") or {}
             resource_list = [group["resourceId"] for group in auth_list]
+
+            if form_name:
+                form_name: str = form_name.replace("%", r"\%").replace("_", r"\_")
+
             if auth.has_role([DESIGNER_GROUP]):
                 (
                     form_process_mapper_schema,

@@ -1,5 +1,6 @@
 /* eslint-disable max-len */
 export const RESOURCE_BUNDLES_DE = {
+  "Please remove the special characters...!":"Bitte entfernen Sie die Sonderzeichen...!",
   "No histories found":"Keine Historien gefunden",
   "Continue":"Weitermachen",
   "This will create a new version of the form without changing the path name but with new form id.":"Dadurch wird eine neue Version des Formulars erstellt, ohne den Pfadnamen zu ändern, aber mit einer neuen Formular-ID.",
@@ -35,7 +36,7 @@ export const RESOURCE_BUNDLES_DE = {
   "Enter Label":"Bezeichnung eingeben",
   "Select form field":"Formularfeld auswählen",
   "Add form fields to display in task list":"Fügen Sie Formularfelder zur Anzeige in der Aufgabenliste hinzu",
-  "Version":"Ausführung",
+  "Latest Version":"Letzte Version",
   "Submission Status":"Submission Status",
   "No submission status":"Kein Übermittlungsstatus",
   "No Public url found":"Keine öffentliche URL gefunden",
@@ -276,7 +277,8 @@ export const RESOURCE_BUNDLES_DE = {
   "URL copied":"URL kopiert",
   "Click Here to Copy":"Klicken Sie hier, um zu kopieren",
   "Resources":"Bronnen",
-  "Duplicate form created successfully":"Doppeltes Formular erfolgreich erstellt"
+  "Duplicate form created successfully":"Doppeltes Formular erfolgreich erstellt",
+  "Revert": "Zurückkehren"
 
 
 

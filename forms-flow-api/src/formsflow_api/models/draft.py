@@ -149,7 +149,7 @@ class Draft(AuditDateTimeMixin, BaseModel, db.Model):
         result = FormProcessMapper.tenant_authorization(result)
         total_count = result.count()
         limit = total_count if limit is None else limit
-        result = result.paginate(page_number, limit)
+        result = result.paginate(page=page_number, per_page=limit, error_out=False)
         return result.items, total_count
 
     @classmethod
@@ -216,3 +216,23 @@ class Draft(AuditDateTimeMixin, BaseModel, db.Model):
         )
         draft_count = query.count()
         return draft_count
+
+    @classmethod
+    def get_draft_by_parent_form_id(cls, parent_form_id: str) -> Draft:
+        """Get all draft against one form id."""
+        get_all_mapper_id = (
+            db.session.query(FormProcessMapper.id)
+            .filter(FormProcessMapper.parent_form_id == parent_form_id)
+            .all()
+        )
+        result = cls.query.join(
+            Application, Application.id == cls.application_id
+        ).filter(
+            and_(
+                Application.form_process_mapper_id.in_(
+                    [id for id, in get_all_mapper_id]
+                ),
+                Application.application_status == DRAFT_APPLICATION_STATUS,
+            )
+        )
+        return FormProcessMapper.tenant_authorization(result).all()

@@ -1,9 +1,8 @@
 /* istanbul ignore file */
-import { httpGETRequest } from "../httpRequestHandler";
 import API from "../endpoints";
 import UserService from "../../services/UserService";
+import { StorageService, RequestService } from "@formsflow/service";
 import { serviceActionError } from "../../actions/bpmTaskActions";
-
 import {
   setBPMFormList,
   setBPMFormListLoading,
@@ -21,17 +20,16 @@ export const fetchBPMFormList = (
   formType,
   ...rest
 ) => {
-  const done = rest.length ? rest[0] : () => {};
+  const done = rest.length ? rest[0] : () => { };
   return (dispatch) => {
     let url = `${API.FORM}?pageNo=${pageNo}&limit=${limit}&sortBy=${sortBy}&sortOrder=${sortOrder}`;
-    if(formType){
+    if (formType) {
       url += `&formType=${formType}`;
     }
-
     if (formName) {
-      url += `&formName=${formName}`;
+      url += `&formName=${encodeURIComponent(formName)}`;
     }
-    httpGETRequest(url, {}, UserService.getToken())
+    RequestService.httpGETRequest(url, {}, StorageService.get(StorageService.User.AUTH_TOKEN))
       .then((res) => {
         if (res.data) {
           dispatch(setBPMFormList(res.data));
@@ -60,7 +58,7 @@ export const fetchBPMFormList = (
 };
 
 export const fetchFormByAlias = (path, ...rest) => {
-  const done = rest.length ? rest[0] : () => {};
+  const done = rest.length ? rest[0] : () => { };
 
   const apiUrlGetFormByAlias = replaceUrl(
     API.GET_FORM_BY_ALIAS,
@@ -69,8 +67,8 @@ export const fetchFormByAlias = (path, ...rest) => {
   );
 
   return (dispatch) => {
-    let token = UserService.getFormioToken() ? {"x-jwt-token": UserService.getFormioToken()} : {};
-    httpGETRequest(apiUrlGetFormByAlias, {}, "", false, {
+    let token = UserService.getFormioToken() ? { "x-jwt-token": UserService.getFormioToken() } : {};
+    RequestService.httpGETRequest(apiUrlGetFormByAlias, {}, "", false, {
       ...token
     })
       .then((res) => {
@@ -94,10 +92,10 @@ export const fetchFormByAlias = (path, ...rest) => {
 
 
 export const fetchFormById = (id) => {
-  let token = UserService.getFormioToken() ? {"x-jwt-token": UserService.getFormioToken()} : {};
-  return httpGETRequest(`${API.GET_FORM_BY_ID}/${id}`, {}, "", false, {
+  let token = UserService.getFormioToken() ? { "x-jwt-token": UserService.getFormioToken() } : {};
+  return RequestService.httpGETRequest(`${API.GET_FORM_BY_ID}/${id}`, {}, "", false, {
     ...token
   });
-  
+
 };
 

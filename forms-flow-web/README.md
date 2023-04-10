@@ -71,7 +71,7 @@ is mentioned on the [link](../forms-flow-idm/keycloak/README.md#create-forms-flo
 `OPENTELEMETRY_SERVICE`|Opentelemetry service ||`false`
 `MT_ADMIN_BASE_URL`|Multitenancy admin url||`http://{your-ip-address}:5010/api`
 `MT_ADMIN_BASE_URL_VERSION=v1`|Version of multitenancy admin|v1
-
+`KEYCLOAK_ENABLE_CLIENT_AUTH`|Client auth mechanism||`false`
 
 * NOTE - While configuring USER_ACCESS_PERMISSIONS the accessAllowApplications will hide / show application tab, the same way accessAllowSubmissions does for viewSubmission button. To enable this feature you need to add access-allow-applications, access-allow-submissions with the respective user group in keycloak.
 

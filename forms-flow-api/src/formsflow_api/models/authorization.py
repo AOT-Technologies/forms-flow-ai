@@ -20,6 +20,7 @@ class AuthType(Enum):
     DASHBOARD = "DASHBOARD"
     FORM = "FORM"
     FILTER = "FILTER"
+    DESIGNER = "DESIGNER"
 
     def __str__(self):
         """To string value."""
@@ -32,7 +33,7 @@ class Authorization(AuditDateTimeMixin, AuditUserMixin, BaseModel, db.Model):
     id = db.Column(db.Integer, primary_key=True, comment="Authorization ID")
     tenant = db.Column(db.String, nullable=True, comment="Tenant key")
     auth_type = db.Column(
-        ENUM(AuthType), nullable=False, index=True, comment="Auth Type"
+        ENUM(AuthType, name="AuthType"), nullable=False, index=True, comment="Auth Type"
     )
     resource_id = db.Column(
         db.String, nullable=False, index=True, comment="Resource identifier"
@@ -67,15 +68,8 @@ class Authorization(AuditDateTimeMixin, AuditUserMixin, BaseModel, db.Model):
     @classmethod
     def _auth_query(cls, auth_type, roles, tenant, user_name):
         role_condition = [Authorization.roles.contains([role]) for role in roles]
-        query = (
-            cls.query.filter(Authorization.auth_type == auth_type)
-            .filter(or_(*role_condition))
-            .filter(
-                or_(
-                    Authorization.user_name.is_(None),
-                    Authorization.user_name == user_name,
-                )
-            )
+        query = cls.query.filter(Authorization.auth_type == auth_type).filter(
+            or_(*role_condition, Authorization.user_name.contains(user_name))
         )
 
         if tenant:

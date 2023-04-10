@@ -124,7 +124,7 @@ const FormHistoryModal = ({ historyModal, handleModalChange, gotoEdit }) => {
                           }
                         >
                           <i className="fa fa-pencil" aria-hidden="true" />
-                          &nbsp;&nbsp; {t("Edit")}
+                          &nbsp;&nbsp; {t("Revert")}
                         </button>
                       </div>
                     </div>

@@ -45,6 +45,7 @@ const BundleView = ({bundleIdProp}) => {
     dispatch(setBundleSelectedForms([]));
     };
 },[bundleId, dispatch, bundleIdProp]);
+
 if (loading) {
   return (
     <div data-testid="loading-view-component">
@@ -53,16 +54,12 @@ if (loading) {
   );
 }
   return (
-    <div className="p-3">
+    < >
     <div className="d-flex align-items-center">
-      <h3 className="ml-3">
-        <span className="">
-          <i className="fa fa-folder-o" aria-hidden="true"></i> Bundle/
-        </span>
+      <h3 className="px-3 py-2 text-bold">
         {bundleData.formName}
       </h3>
     </div>
-    <hr />
       <div>
         {!selectedForms.length ? <Errors errors={error} /> : ""}
         {selectedForms.length ? (
@@ -70,7 +67,7 @@ if (loading) {
         ) : ""}
       </div>
     
-  </div>
+  </>
   );
 };
 

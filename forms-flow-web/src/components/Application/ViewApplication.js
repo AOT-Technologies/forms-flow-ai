@@ -114,7 +114,7 @@ const ViewApplication = React.memo(() => {
         </Tab>
         <Tab
           eventKey="form"
-          title={<Translation>{(t) => t("Form")}</Translation>}
+          title={<Translation>{(t) => t(applicationDetail.formType === "bundle" ? "Bundle" : "Form")}</Translation>}
         >
           {
             applicationDetail.formType === "bundle" ? <BundleView bundleIdProp={applicationDetail.formId}/> : <View page="application-detail" />

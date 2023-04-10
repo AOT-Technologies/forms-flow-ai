@@ -20,6 +20,8 @@ import { Translation,useTranslation } from "react-i18next";
 import { CUSTOM_SUBMISSION_URL,CUSTOM_SUBMISSION_ENABLE, MULTITENANCY_ENABLED } from "../../constants/constants";
 import { fetchAllBpmProcesses } from "../../apiManager/services/processServices";
 import { getCustomSubmission } from "../../apiManager/services/FormServices";
+import { setBundleSubmissionData } from "../../actions/bundleActions";
+import BundleView from "../Bundle/item/submission/View";
 
 const ViewApplication = React.memo(() => {
   const {t} = useTranslation();
@@ -45,12 +47,16 @@ const ViewApplication = React.memo(() => {
     dispatch(
       getApplicationById(applicationId, (err, res) => {
         if (!err) {
-          if (res.submissionId && res.formId) {
+          if (res.submissionId && res.formId) { 
             dispatch(getForm("form", res.formId));
             if(CUSTOM_SUBMISSION_URL && CUSTOM_SUBMISSION_ENABLE){
-              dispatch(getCustomSubmission(res.submissionId,res.formId));
+              dispatch(getCustomSubmission(res.submissionId,res.formId,(err,data)=>{
+                dispatch(setBundleSubmissionData({data}));
+              }));
             }else{
-              dispatch(getSubmission("submission", res.submissionId, res.formId));
+              dispatch(getSubmission("submission", res.submissionId, res.formId,(err,data)=>{
+                dispatch(setBundleSubmissionData({data:data.data}));
+              }));
             }
           }
         }
@@ -110,7 +116,10 @@ const ViewApplication = React.memo(() => {
           eventKey="form"
           title={<Translation>{(t) => t("Form")}</Translation>}
         >
-          <View page="application-detail" />
+          {
+            applicationDetail.formType === "bundle" ? <BundleView bundleIdProp={applicationDetail.formId}/> : <View page="application-detail" />
+          }
+         
         </Tab>
         <Tab
           eventKey="history"

@@ -44,9 +44,10 @@ const linkApplication = (cell, row, redirectUrl) => {
 };
 
 const linkSubmission = (cell, row, redirectUrl) => {
+  const type = row.formType === "bundle" ? "bundle" : "form";
   const url = row.isClientEdit
-    ? `${redirectUrl}form/${row.formId}/submission/${row.submissionId}/edit`
-    : `${redirectUrl}form/${row.formId}/submission/${row.submissionId}`;
+    ? `${redirectUrl}${type}/${row.formId}/submission/${row.submissionId}/edit`
+    : `${redirectUrl}${type}/${row.formId}/submission/${row.submissionId}`;
   const buttonText = row.isClientEdit ? (
     row.applicationStatus === AWAITING_ACKNOWLEDGEMENT ? (
       "Acknowledge"

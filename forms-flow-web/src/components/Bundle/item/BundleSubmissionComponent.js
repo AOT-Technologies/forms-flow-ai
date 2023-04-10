@@ -140,7 +140,7 @@ const BundleSubmit = ({readOnly, onSubmit}) => {
         dispatch(setBundleSubmitLoading(false));
         return;
       }
-      onSubmit(bundleSubmission, bundleData.formId);
+      onSubmit({data:submission.data}, bundleData.formId);
     }
   };
 

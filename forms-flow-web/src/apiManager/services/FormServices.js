@@ -72,6 +72,7 @@ export const getCustomSubmission = (submissionId, formId, ...rest) => {
     httpGETRequest(`${submissionUrl}/${submissionId}`, {})
       .then((res) => {
         if (res.data) {
+          done(null, res.data);
           dispatch(setCustomSubmission(res.data));
         } else {
           dispatch(setCustomSubmission({}));

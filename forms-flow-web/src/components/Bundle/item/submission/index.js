@@ -1,7 +1,7 @@
 import { Redirect, Route, Switch, useParams } from "react-router-dom";
 import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { getSubmission,resetSubmission, selectRoot } from "react-formio";
+import { resetSubmission, selectRoot } from "react-formio";
 import View from "./View";
 import Edit from "./Edit";
 import { getApplicationById } from "../../../../apiManager/services/applicationServices";
@@ -17,11 +17,20 @@ import {
 } from "../../../../constants/constants";
 import { CLIENT_EDIT_STATUS } from "../../../../constants/applicationConstants";
 import Loading from "../../../../containers/Loading";
-import { clearSubmissionError } from "../../../../actions/formActions";
-import { getCustomSubmission } from "../../../../apiManager/services/FormServices";
-import { setBundleSubmissionData } from "../../../../actions/bundleActions";
+import {
+  clearFormError,
+  clearSubmissionError,
+} from "../../../../actions/formActions";
+import {
+  formioGetSubmission,
+  getCustomSubmission,
+} from "../../../../apiManager/services/FormServices";
+import {
+  resetBundleData,
+  setBundleSubmissionData,
+} from "../../../../actions/bundleActions";
 
-const Item = React.memo(() => { 
+const Item = React.memo(() => {
   const { bundleId, submissionId } = useParams();
   const dispatch = useDispatch();
   // const showViewSubmissions= useSelector((state) => state.user.showViewSubmissions);
@@ -37,19 +46,19 @@ const Item = React.memo(() => {
     (state) => state.applications.applicationDetail?.applicationStatus || ""
   );
   const [showSubmissionLoading, setShowSubmissionLoading] = useState(true);
-  const [editAllowed, setEditAllowed] = useState(false); 
- 
+  const [editAllowed, setEditAllowed] = useState(false);
+
   useEffect(() => {
     dispatch(clearSubmissionError("submission"));
     dispatch(resetSubmission("submission"));
-    if(CUSTOM_SUBMISSION_URL && CUSTOM_SUBMISSION_ENABLE) {
-       dispatch(getCustomSubmission(submissionId,bundleId));
+    dispatch(clearFormError("form"));
+    dispatch(resetBundleData());
+    if (CUSTOM_SUBMISSION_URL && CUSTOM_SUBMISSION_ENABLE) {
+      dispatch(getCustomSubmission(submissionId, bundleId));
     } else {
-      dispatch(getSubmission("submission", submissionId, bundleId,(err,data)=>{
-       if(!err){
-        dispatch(setBundleSubmissionData({data:data.data}));
-       }
-       }));
+      formioGetSubmission(bundleId, submissionId).then((res) => {
+        dispatch(setBundleSubmissionData({ data: res.data.data }));
+      });
     }
   }, [submissionId, bundleId, dispatch]);
 
@@ -59,7 +68,7 @@ const Item = React.memo(() => {
       dispatch(getApplicationById(applicationId));
     }
   }, [applicationId, dispatch]);
- 
+
   useEffect(() => {
     if (getUserRolePermission(userRoles, STAFF_REVIEWER)) {
       setEditAllowed(true);

@@ -68,16 +68,9 @@ function FormTable() {
     },
   ];
 
-  const updateSort = () => {
-    let updatedSort;
+  const updateSort = (updatedSort) => {
     // dispatch(setBpmFormLoading(false));
-    if (sortOrder === "asc") {
-      updatedSort = "desc";
-      dispatch(setBPMFormListSort(updatedSort));
-    } else {
-      updatedSort = "asc";
-      dispatch(setBPMFormListSort(updatedSort));
-    }
+    dispatch(setBPMFormListSort(updatedSort));
     dispatch(setBPMFormListPage(1));
   };
 
@@ -188,30 +181,7 @@ function FormTable() {
             <thead>
               <tr>
                 <th colSpan="4">
-                  <InputGroup className="input-group">
-                    <InputGroup.Prepend>
-                      <InputGroup.Text style={{ backgroundColor: "#ffff" }}>
-                        <div className="sort-icons">
-                          <i
-                            className="fa fa-sort-up"
-                            onClick={updateSort}
-                            style={{
-                              cursor: "pointer",
-                              opacity: `${isAscending ? 1 : 0.5}`,
-                            }}
-                          ></i>
-                          <i
-                            className="fa fa-sort-down"
-                            onClick={updateSort}
-                            style={{
-                              marginTop: "-8px",
-                              cursor: "pointer",
-                              opacity: `${!isAscending ? 1 : 0.5}`,
-                            }}
-                          ></i>
-                        </div>
-                      </InputGroup.Text>
-                    </InputGroup.Prepend>
+                  <InputGroup className="input-group">             
                     <FormControl
                       value={search}
                       onChange={(e) => {
@@ -260,7 +230,39 @@ function FormTable() {
                 </th>
               </tr>
               <tr className="table-header table-bordered">
-                <th scope="col">Form Name</th>
+              <th scope="col">
+              <span className="sort-cell">
+                    <span> Form Name</span>
+                      <span > 
+                     {isAscending ? (
+                        <i
+                        className="fa fa-sort-alpha-asc m"
+                        onClick={() => {updateSort("desc");}}
+                        data-toggle="tooltip"  title="Descending"
+                        style={{
+                          cursor: "pointer",
+                          fontSize : "16px",
+                          marginTop : "3px"
+  
+                        }}
+                        ></i>
+                        ) : (
+                        <i
+                        className="fa fa-sort-alpha-desc"
+                        onClick={() => {updateSort("asc");}}
+                        data-toggle="tooltip"  title="Ascending" 
+                        style={{
+                          cursor: "pointer",
+                          fontSize : "16px",
+                          marginTop : "3px"
+                          
+                        }}
+                        ></i>
+                        )
+                      }
+                      </span>
+              </span>
+              </th>
                 <th scope="col">Operations</th>
                 {isDesigner && (
                   <th scope="col">

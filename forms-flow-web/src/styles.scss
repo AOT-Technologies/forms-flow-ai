@@ -829,6 +829,11 @@ div.upload input[type="file"] {
   flex-direction: column;
 }
 
+.sort-cell{
+  display: flex;
+  gap: 1rem;
+}
+
 .table-header{
   background-color: #F2F2F2;
 }

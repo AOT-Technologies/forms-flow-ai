@@ -102,11 +102,15 @@ const BundleSubmit = ({readOnly, onSubmit}) => {
       executeRule({ data: submission.data }, bundleData.id)
         .then((res) => {
           let changed = null;
-          if(  res.data.length - 1 !== formStep.step){
+          if(  res.data.length !== selectedForms.length ){
              changed = checkFormStepChange(res.data); 
+             if(changed == null){
+              changed = formStep.step;
+             }
           }
           dispatch(setBundleSelectedForms(res.data));
-          setFormStep({step: changed ? changed : formStep.step + 1});
+ 
+          setFormStep({step: changed !== null ? changed : formStep.step + 1});
          
         })
         .finally(() => {
@@ -133,7 +137,7 @@ const BundleSubmit = ({readOnly, onSubmit}) => {
         { data: submission.data },
         bundleData.id
       );
-      if (response && response.data.length - 1 !== formStep.step) {
+      if (response && response.data.length  !== selectedForms.length) {
         const changed = checkFormStepChange(response.data); 
         dispatch(setBundleSelectedForms(response.data));
         setFormStep({step:changed});
@@ -147,7 +151,7 @@ const BundleSubmit = ({readOnly, onSubmit}) => {
   const handleSubmit = async () => {
     handleSubmisionData();
     if (formRef.current.formio.checkValidity()) {
-        dispatch(setBundleSubmitLoading(true));
+      dispatch(setBundleSubmitLoading(true));
       selectedForms.forEach(async (form, index) => {
         const formioForm = await Formio.createForm(formCache[form.formId]);
         formioForm.submission = { data: submission.data };
@@ -191,7 +195,7 @@ if(!form.title && getFormLoading){
                       <div className="px-3 py-2">
                         <Form
                           form={form}
-                          options={{ hide: { submit: true },...options}}
+                          options={{ hide: { submit: true },...options, highlightErrors:true}}
                           ref={formRef}
                           submission={bundleSubmission}
                           onChange={(e) => {

@@ -45,7 +45,7 @@ const Item = React.memo(() => {
   const applicationStatus = useSelector(
     (state) => state.applications.applicationDetail?.applicationStatus || ""
   );
-  const [showSubmissionLoading, setShowSubmissionLoading] = useState(true);
+  const [showSubmissionLoading, setShowSubmissionLoading] = useState(false);
   const [editAllowed, setEditAllowed] = useState(false);
 
   useEffect(() => {

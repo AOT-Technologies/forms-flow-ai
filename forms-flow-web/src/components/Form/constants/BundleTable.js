@@ -98,7 +98,7 @@ function BundleTable() {
   };
 
   useEffect(()=>{
-    if(!search.trim()){
+    if(!search?.trim()){
       dispatch(setBpmFormSearch(""));
     }
   },[search]);
@@ -171,7 +171,7 @@ function BundleTable() {
                     </InputGroup.Text>
                   </InputGroup.Append>
                 )}
-                <InputGroup.Append  onClick={handleSearch} disabled={!search.trim()}>
+                <InputGroup.Append  onClick={handleSearch} disabled={!search?.trim()}>
                   <InputGroup.Text style={{ backgroundColor: "#ffff" }}>
                     <i className="fa fa-search"></i>
                   </InputGroup.Text>

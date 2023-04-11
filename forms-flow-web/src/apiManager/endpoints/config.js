@@ -46,3 +46,7 @@ export const MT_ADMIN_BASE_URL_VERSION = `${
   process.env.REACT_APP_MT_ADMIN_BASE_URL_VERSION ||
   "v1"
 }`;
+
+export const KEYCLOAK_ENABLE_CLIENT_AUTH =
+  (window._env_ && window._env_.REACT_APP_KEYCLOAK_ENABLE_CLIENT_AUTH) ||
+  process.env.REACT_APP_KEYCLOAK_ENABLE_CLIENT_AUTH;

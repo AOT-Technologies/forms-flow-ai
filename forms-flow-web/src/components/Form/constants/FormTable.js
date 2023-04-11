@@ -229,7 +229,7 @@ function FormTable() {
                     )}
                     <InputGroup.Append
                       onClick={handleSearch}
-                      disabled={!search.trim()}
+                      disabled={!search?.trim()}
                     >
                       <InputGroup.Text style={{ backgroundColor: "#ffff" }}>
                         <i className="fa fa-search"></i>

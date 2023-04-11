@@ -13,6 +13,7 @@ class BPMEndpointType(IntEnum):
 
     PROCESS_DEFINITION = 1
     FORM_AUTH_DETAILS = 2
+    MESSAGE_EVENT = 3
 
 
 class BPMService(BaseBPMService):
@@ -67,6 +68,12 @@ class BPMService(BaseBPMService):
         return cls.get_request(url, token)
 
     @classmethod
+    def send_message(cls, data, token):
+        """Correlate a Message."""
+        url = cls._get_url_(BPMEndpointType.MESSAGE_EVENT)
+        return cls.post_request(url, token, data)
+
+    @classmethod
     def _get_url_(cls, endpoint_type: BPMEndpointType):
         """Get Url."""
         bpm_api_base = current_app.config.get("BPM_API_URL")
@@ -75,6 +82,8 @@ class BPMService(BaseBPMService):
                 url = f"{bpm_api_base}/engine-rest-ext/v1/process-definition"
             elif endpoint_type == BPMEndpointType.FORM_AUTH_DETAILS:
                 url = f"{bpm_api_base}/engine-rest-ext/v1/admin/form/authorization"
+            elif endpoint_type == BPMEndpointType.MESSAGE_EVENT:
+                url = f"{bpm_api_base}/engine-rest-ext/v1/message"
             return url
 
         except BaseException:  # pylint: disable=broad-except

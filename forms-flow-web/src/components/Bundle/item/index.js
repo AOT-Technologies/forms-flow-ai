@@ -1,18 +1,19 @@
-import React  from "react"; 
+import React from "react";
 import { Route, Switch, Redirect } from "react-router-dom";
-import BundleSubmit from "./BundleSubmit"; 
+import BundleSubmit from "./BundleSubmit";
+import BundleSubmissionRouter from "./submission";
 import {
-  BASE_ROUTE, CLIENT, MULTITENANCY_ENABLED, STAFF_REVIEWER,
-} from "../../../constants/constants"; 
-import {useSelector } from "react-redux";
- 
-const Item = React.memo(() => { 
-  
+  BASE_ROUTE,
+  CLIENT,
+  MULTITENANCY_ENABLED,
+  STAFF_REVIEWER,
+} from "../../../constants/constants";
+import { useSelector } from "react-redux";
+
+const Item = React.memo(() => {
   const userRoles = useSelector((state) => state.user.roles || []);
   const tenantKey = useSelector((state) => state?.tenants?.tenantId);
   const redirectUrl = MULTITENANCY_ENABLED ? `/tenant/${tenantKey}/` : "/";
-
-
 
   /**
    * Protected route to form submissions
@@ -33,7 +34,18 @@ const Item = React.memo(() => {
   return (
     <div>
       <Switch>
-        <SubmissionRoute exact path={`${BASE_ROUTE}bundle/:bundleId`} component={BundleSubmit} />
+        <SubmissionRoute
+          exact
+          path={`${BASE_ROUTE}bundle/:bundleId`}
+          component={BundleSubmit}
+        />
+        <Route exact path={`${BASE_ROUTE}bundle/:bundleId/submission`}>
+          <Redirect exact to="/404" />
+        </Route>
+        <SubmissionRoute
+          path={`${BASE_ROUTE}bundle/:bundleId/submission/:submissionId`}
+          component={BundleSubmissionRouter}
+        />
         <Redirect exact to="/404" />
       </Switch>
     </div>

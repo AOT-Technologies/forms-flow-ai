@@ -1,5 +1,5 @@
 import React, { useEffect } from "react";
-import BundleSubmission from "./BundleSubmission";
+import BundleSubmission from "./BundleSubmissionComponent";
 import { useDispatch, useSelector } from "react-redux";
 import { setBundleLoading, setBundleSelectedForms, setBundleSubmissionData, setBundleSubmitLoading } from "../../../actions/bundleActions";
 import { clearFormError, clearSubmissionError, setFormFailureErrorData, setFormSubmissionError } from "../../../actions/formActions";

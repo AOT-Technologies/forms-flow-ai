@@ -28,7 +28,7 @@ The component is dependent on listed variables from camunda context,
 
 Below snapshot shows how to configure the **RequestStateListener** to a task. 
 
-!![image](https://user-images.githubusercontent.com/85665463/230157498-7fdbda43-923a-4648-86fa-d825423bb6cc.png)
+![image](https://user-images.githubusercontent.com/85665463/230157498-7fdbda43-923a-4648-86fa-d825423bb6cc.png)
 
 
    

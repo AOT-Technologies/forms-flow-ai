@@ -3,7 +3,7 @@ import json
 from datetime import datetime
 from functools import lru_cache
 from http import HTTPStatus
-from typing import Dict
+from typing import Dict, Set
 
 from flask import current_app
 from formsflow_api_utils.exceptions import BusinessException
@@ -14,7 +14,12 @@ from formsflow_api_utils.utils import (
 )
 from formsflow_api_utils.utils.user_context import UserContext, user_context
 
-from formsflow_api.models import Application, Draft, FormProcessMapper
+from formsflow_api.models import (
+    Application,
+    Draft,
+    FormBundling,
+    FormProcessMapper,
+)
 from formsflow_api.schemas import (
     AggregatedApplicationSchema,
     AggregatedApplicationsSchema,
@@ -37,10 +42,12 @@ class ApplicationService:  # pylint: disable=too-many-public-methods
         mapper: FormProcessMapper,
         form_url: str,
         web_form_url: str,
+        variables: Dict,
     ) -> Dict:
         """Returns the payload for initiating the task."""
         return {
             "variables": {
+                **variables,
                 "applicationId": {"value": application.id},
                 "formUrl": {"value": form_url},
                 "webFormUrl": {"value": web_form_url},
@@ -48,6 +55,7 @@ class ApplicationService:  # pylint: disable=too-many-public-methods
                 "submitterName": {"value": application.created_by},
                 "submissionDate": {"value": str(application.created)},
                 "tenantKey": {"value": mapper.tenant},
+                "formType": {"value": mapper.form_type},
             }
         }
 
@@ -86,6 +94,7 @@ class ApplicationService:  # pylint: disable=too-many-public-methods
         user: UserContext = kwargs["user"]
         user_id: str = user.user_name
         tenant_key = user.tenant_key
+        task_variables: Dict = {}
         if user_id is not None:
             # for anonymous form submission
             data["created_by"] = user_id
@@ -98,6 +107,10 @@ class ApplicationService:  # pylint: disable=too-many-public-methods
         if tenant_key is not None and mapper.tenant != tenant_key:
             raise PermissionError("Tenant authentication failed.")
         data["form_process_mapper_id"] = mapper.id
+        # While bundle submission, group all task variables of forms inside bundle
+        # and add to process instance variables
+        if mapper.form_type == "bundle":
+            task_variables = ApplicationService.get_bundle_task_variables(mapper, data)
         # Function to create application in DB
         application = Application.create_from_dict(data)
         # process_instance_id in request object is usually used in Scripts
@@ -108,7 +121,7 @@ class ApplicationService:  # pylint: disable=too-many-public-methods
             form_url = data["form_url"]
             web_form_url = data.get("web_form_url", "")
             payload = ApplicationService.get_start_task_payload(
-                application, mapper, form_url, web_form_url
+                application, mapper, form_url, web_form_url, task_variables
             )
             ApplicationService.start_task(mapper, payload, token, application)
         return application, HTTPStatus.CREATED
@@ -486,3 +499,23 @@ class ApplicationService:  # pylint: disable=too-many-public-methods
                 "No process definition or execution matches the parameters.",
                 HTTPStatus.BAD_REQUEST,
             )
+
+    @staticmethod
+    def get_bundle_task_variables(mapper, payload):
+        """Collect all task variables of forms inside bundle."""
+        bundle_forms = FormBundling.find_by_form_process_mapper_id(mapper.id)
+        parent_form_ids: Set[str] = []
+        task_variable: list = []
+        for form_bundle in bundle_forms:
+            parent_form_ids.append(form_bundle.parent_form_id)
+        forms = FormProcessMapper.find_forms_by_parent_from_ids(parent_form_ids)
+        for form in forms:
+            task_variable.extend(json.loads(form.task_variable))
+        form_data = payload.get("data")
+        variables: Dict = {}
+        if task_variable and form_data:
+            task_keys = [val["key"] for val in task_variable]
+            variables = {
+                key: {"value": form_data[key]} for key in task_keys if key in form_data
+            }
+        return variables

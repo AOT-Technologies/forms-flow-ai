@@ -140,6 +140,7 @@ class DraftService:
         """Makes the draft into an application."""
         user: UserContext = kwargs["user"]
         user_id: str = user.user_name or ANONYMOUS_USER
+        variables: Dict = {}
         draft = Draft.make_submission(draft_id, data, user_id)
         if not draft:
             response, status = {
@@ -154,8 +155,12 @@ class DraftService:
             # The form mapper version got updated after the draft entry
             # was created, update the application with new mapper
             application.update({"form_process_mapper_id": mapper.id})
+        # While bundle submission, group all task variables of forms inside bundle
+        # and add to process instance variables
+        if mapper.form_type == "bundle":
+            variables = ApplicationService.get_bundle_task_variables(mapper, data)
         payload = ApplicationService.get_start_task_payload(
-            application, mapper, data["form_url"], data["web_form_url"]
+            application, mapper, data["form_url"], data["web_form_url"], variables
         )
         ApplicationService.start_task(mapper, payload, token, application)
         return application

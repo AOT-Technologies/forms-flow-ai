@@ -10,6 +10,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { useParams } from "react-router-dom";
 import { Errors } from "react-formio/lib/components";
 import Loading from "../../../../containers/Loading";
+import DownloadPdfButton from "../../../Form/ExportAsPdf/downloadPdfButton";
 
 const BundleView = ({ bundleIdProp }) => {
   const { bundleId } = useParams();
@@ -57,8 +58,10 @@ const BundleView = ({ bundleIdProp }) => {
   }
   return (
     <>
-      <div className="d-flex align-items-center">
-        <h3 className="px-3 py-2 text-bold">{bundleData.formName}</h3>
+      <div className="d-flex align-items-center justify-content-between">
+        <h3 className="task-head px-2 py-2">{bundleData.formName}</h3>
+        <div className="btn-right d-flex flex-row px-4"><DownloadPdfButton /></div>
+      
       </div>
       <div>
         {!selectedForms.length ? <Errors errors={error} /> : ""}

@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useRef } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { fetchFormById } from "../../../../apiManager/services/bpmFormServices";
-import Loading from "../../../../containers/Loading";
+import { fetchFormById } from "../../../apiManager/services/bpmFormServices";
+import Loading from "../../../containers/Loading";
 import { Form, Errors } from "react-formio";
 import Stepper from "@material-ui/core/Stepper";
 import Step from "@material-ui/core/Step";
@@ -11,14 +11,14 @@ import StepLabel from "@material-ui/core/StepLabel";
   setBundleSelectedForms,
   setBundleSubmissionData,
   setBundleSubmitLoading,
-} from "../../../../actions/bundleActions";
+} from "../../../actions/bundleActions";
  import LoadingOverlay from "react-loading-overlay";
  import {
   clearFormError,
   setFormFailureErrorData, 
-} from "../../../../actions/formActions";
-import { executeRule } from "../../../../apiManager/services/bundleServices";
-const BundleSubmissionView = ({readOnly, onSubmit}) => {
+} from "../../../actions/formActions";
+import { executeRule } from "../../../apiManager/services/bundleServices";
+const BundleSubmit = ({readOnly, onSubmit}) => {
   const dispatch = useDispatch();
   const options = readOnly ? { readOnly: true, viewAsHtml: true } : {};
   const bundleData = useSelector((state) => state.process.formProcessList);
@@ -239,4 +239,4 @@ if(!form.title && getFormLoading){
   );
 };
 
-export default BundleSubmissionView;
+export default BundleSubmit;

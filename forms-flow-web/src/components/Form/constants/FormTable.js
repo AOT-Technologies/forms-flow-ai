@@ -97,6 +97,10 @@ function FormTable() {
     }
   }, [search]);
 
+  useEffect(() => {
+    setSelectedRow(null);
+  }, [pageNo]);
+
   const handleSearch = () => {
     dispatch(setBpmFormSearch(search));
     dispatch(setBPMFormListPage(1));

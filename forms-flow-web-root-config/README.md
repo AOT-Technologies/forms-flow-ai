@@ -80,5 +80,14 @@ Steps:
      we already containerized the root config implementation of formsflow.ai. [Ref](https://github.com/AOT-Technologies/forms-flow-ai/tree/5.2.0-alpha/forms-flow-web-root-config)
 
 
+# Integrate new modules into formsflow.ai 
 
+Integrating new module into formsflow is straight forward but the module should have the following prerequisites.
 
+   - The module should be of `System.register` format.
+   - The module should implement single-spa lifecycle methods. (Not applicable if built with `create-single-spa`) [Ref](https://single-spa.js.org/docs/building-applications/)
+   - If the module is built with frameworks other than React then the import maps should be updated with System.register versions of the libraries.
+   [Ref](https://github.com/esm-bundle)
+   - Update the import maps with the new module.
+   - Update the layout and specify the path to activate the module (Not applicable for utility modules).
+   - We recommend using single-spa CLI to create new module. 

@@ -26,7 +26,7 @@ const Preview = React.memo(
     setProcessData,
     workflow,
     formData,
-    submitData,
+    submitData
   }) => {
     const dispatch = useDispatch();
     const { t } = useTranslation();
@@ -40,8 +40,8 @@ const Preview = React.memo(
     const [clientOptions, setClientOptions] = useState([]);
     const [designerGroups,setDesignerGroups] = useState([]);
     const [clientGroups,setClientGroups] = useState([]);
- 
-
+    const isDisabled = (designerSelectedOption == "Specific Designers" && !designerGroups.length) || 
+    (clientSelectedOption == "Specific Clients" && !clientGroups.length);
     const id = show ? "simple-popover" : undefined;
     const copyPublicUrl = () => {
       const originUrl = window.origin;
@@ -65,19 +65,17 @@ const Preview = React.memo(
     };
 
    useEffect(() => {
-     getUserRoles()
-       .then((res) => {
-         dispatch(setUserGroups(res.data));
-       })
-       .catch((error) => console.error("error", error));
-   }, []);
-
+    getUserRoles()
+      .then((res) => {
+        dispatch(setUserGroups(res.data));
+      })
+      .catch((error) => console.error("error", error));
+  }, []);
+  
    useEffect(() => {
-     fetchUsers()
+     fetchUsers(processListData.formId)
        .then((res) => {
-         const resource = res?.data.find(
-           (item) => item.resourceId === processListData.formId
-         );
+         const resource = res.data;
          setDesignerGroups(resource?.roles || []);
          if (resource) {
            setDesignerSelectedOption(
@@ -94,11 +92,9 @@ const Preview = React.memo(
        })
        .catch((error) => console.error("error", error));
 
-     getClientList()
+     getClientList(processListData.formId)
        .then((res) => {
-         const resource = res?.data.find(
-           (item) => item.resourceId === processListData.formId
-         );
+         const resource = res.data;
          setClientGroups(resource?.roles || []);
          if (resource) {
            setClientSelectedOption(
@@ -112,8 +108,7 @@ const Preview = React.memo(
        .catch((error) => console.error("error", error));
    }, [userGroups]);
 
-  
-
+   
     const handleClick = (name) => {
       setShow(name);
     };
@@ -168,11 +163,11 @@ const Preview = React.memo(
         
       };
       if(clientSelectedOption === 'All Clients'){
-        payload.role = [];
+        payload.roles = [];
       }
       
       if(clientSelectedOption === 'Specific Clients'){
-        payload.role = clientGroups;
+        payload.roles = clientGroups;
       }
 
       addClients(payload).catch((error)=> console.error("error",error));
@@ -195,6 +190,7 @@ const Preview = React.memo(
               handleNext={handleNext}
               activeStep={activeStep}
               steps={steps}
+              isDisabled={isDisabled}
               submitData={()=>{
                 submitData(); 
                 saveDesigner();
@@ -289,7 +285,7 @@ const Preview = React.memo(
                           type="radio"
                           value="Specific Designers"
                           checked={designerSelectedOption === "Specific Designers"}
-                          onChange={(e) => setDesignerSelectedOption(e.target.value)}
+                          onChange={(e)=>{setDesignerSelectedOption(e.target.value);}}
                         />
                         Specific Designer Group
                       </label>
@@ -378,7 +374,7 @@ const Preview = React.memo(
                           type="radio"
                           value="Specific Clients"
                           checked={clientSelectedOption === "Specific Clients"}
-                          onChange={(e) => setClientSelectedOption(e.target.value)}
+                          onChange={(e)=>{setClientSelectedOption(e.target.value);}}
                         />
                         Specific Client Group
                       </label>

@@ -2,8 +2,12 @@
 import { httpGETRequest, httpPOSTRequest } from "../httpRequestHandler";
 import API from "../endpoints/index";
 
-export const fetchUsers = () => {
-  return httpGETRequest(API.USER_LIST);
+export const fetchUsers = (id) => {
+  let url = API.USER_LIST;
+  if(id){
+    url += `/${id}`;
+  }
+  return httpGETRequest(url);
 };
 
 export const addUsers = (data)=>{
@@ -16,8 +20,11 @@ export const getUserRoles = ()=>{
   return httpGETRequest(url);
 };
 
-export const getClientList = ()=>{
-  const url = API.CLIENT_LIST;
+export const getClientList = (id)=>{
+  let url = API.CLIENT_LIST;
+  if(id){
+    url += `/${id}`;
+  }
   return httpGETRequest(url);
 };
 

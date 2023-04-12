@@ -1,5 +1,5 @@
 """This exposes application service."""
-
+import json
 from datetime import datetime
 from functools import lru_cache
 from http import HTTPStatus
@@ -466,3 +466,22 @@ class ApplicationService:  # pylint: disable=too-many-public-methods
             )
         assert application_count is not None
         return application_count
+
+    @staticmethod
+    def resubmit_application(application_id: int, payload: Dict, token: str):
+        """Resubmit application and update process variables."""
+        mapper = ApplicationService.get_application_form_mapper_by_id(application_id)
+        task_variable = json.loads(mapper.get("taskVariable"))
+        form_data = payload.get("data")
+        if task_variable and form_data:
+            task_keys = [val["key"] for val in task_variable]
+            process_variables = {
+                key: {"value": form_data[key]} for key in task_keys if key in form_data
+            }
+            payload["processVariables"] = process_variables
+        response = BPMService.send_message(data=payload, token=token)
+        if not response:
+            raise BusinessException(
+                "No process definition or execution matches the parameters.",
+                HTTPStatus.BAD_REQUEST,
+            )

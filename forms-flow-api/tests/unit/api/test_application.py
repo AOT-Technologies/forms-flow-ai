@@ -303,3 +303,43 @@ def test_application_update_details_api(app, client, session, jwt):
     assert application.status_code == 200
     assert application.json.get("formId") == "980"
     assert application.json.get("submissionId") == "1234"
+
+
+def test_application_resubmit(app, client, session, jwt):
+    """Tests the application resubmit endpoint."""
+    token = get_token(jwt)
+    headers = {
+        "Authorization": f"Bearer {token}",
+        "content-type": "application/json",
+    }
+    payload = {
+        "formId": "1234",
+        "formName": "Sample form",
+        "processKey": "two-step-approval",
+        "processName": "Two Step Approval",
+        "status": "active",
+        "formType": "form",
+        "parentFormId": "1234",
+    }
+    rv = client.post("/form", headers=headers, json=payload)
+    assert rv.status_code == 201
+
+    form_id = rv.json.get("formId")
+
+    rv = client.post(
+        "/application/create",
+        headers=headers,
+        json=get_application_create_payload(form_id),
+    )
+    assert rv.status_code == 201
+    application_id = rv.json.get("id")
+    processInstanceId = rv.json.get("processInstanceId")
+    payload = {
+        "data": {"field1": "value1"},
+        "processInstanceId": processInstanceId,
+        "messageName": "application_resubmitted",
+    }
+    rv = client.post(
+        f"/application/{application_id}/resubmit", headers=headers, json=payload
+    )
+    assert rv.status_code == 200

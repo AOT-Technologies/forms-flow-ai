@@ -6,7 +6,7 @@ import { clearFormError, clearSubmissionError, setFormFailureErrorData, setFormS
 import { getFormProcesses } from "../../../apiManager/services/processServices";
 import { executeRule } from "../../../apiManager/services/bundleServices";
 import { Link, useParams } from "react-router-dom";
-import { MULTITENANCY_ENABLED, STAFF_DESIGNER } from "../../../constants/constants";
+import { DRAFT_ENABLED, MULTITENANCY_ENABLED, STAFF_DESIGNER } from "../../../constants/constants";
 import Loading from "../../../containers/Loading";
 import { Errors } from "react-formio/lib/components";
 import SubmissionError from "../../../containers/SubmissionError";
@@ -14,7 +14,7 @@ import { formioPostSubmission } from "../../../apiManager/services/FormServices"
 import { push } from "connected-react-router";
 import { toast } from "react-toastify";
 import { getProcessReq } from "../../../apiManager/services/bpmServices";
-import { applicationCreate } from "../../../apiManager/services/applicationServices";
+import selectApplicationCreateAPI from "../../Form/Item/apiSelectHelper";
 const BundleSubmit = () => {
  
     const { bundleId } = useParams();
@@ -27,6 +27,7 @@ const BundleSubmit = () => {
     const redirectUrl = MULTITENANCY_ENABLED ? `/tenant/${tenantKey}/` : "/";
     const bundleData = useSelector((state) => state.process.formProcessList);
     const selectedForms = useSelector((state) => state.bundle.selectedForms);
+    const draftId = useSelector((state)=> state.draft.draftSubmission?.id);
     const { error } = useSelector((state) => state.form);
     const formSubmissionError = useSelector(
       (state) => state.formDelete.formSubmissionError
@@ -60,6 +61,8 @@ const BundleSubmit = () => {
       };
   },[bundleId, dispatch]);
 
+
+
   const onConfirmSubmissionError = () => {
     const ErrorDetails = {
       modalOpen: false,
@@ -73,13 +76,23 @@ const BundleSubmit = () => {
         .then((res) => { 
           const origin = `${window.location.origin}${redirectUrl}`;
           const data = getProcessReq({_id: bundleData.formId}, res.data._id, origin);
-          dispatch(applicationCreate(data,null,(err)=>{ 
+          data.data = res.data?.data;
+          let isDraftCreated = draftId ? true : false;
+          const applicationCreateAPI = selectApplicationCreateAPI(
+            isAuthenticated,
+            isDraftCreated,
+            DRAFT_ENABLED
+          );
+          dispatch(applicationCreateAPI(data, draftId ? draftId : null,(err)=>{ 
             if(err){
               toast.error("Application not created");
             }else{
               toast.success("Submission Saved.");
+            }
+            if(isAuthenticated){
               dispatch(push(`${redirectUrl}${isDesigner ? 'bundle' : 'form'}`));
             }
+            dispatch(setBundleSubmitLoading(false));
           }));
          
         })
@@ -90,10 +103,9 @@ const BundleSubmit = () => {
           };
           toast.error("Submission cannot be done.");
           dispatch(setFormSubmissionError(ErrorDetails));
-        })
-        .finally(() => {
-           dispatch(setBundleSubmitLoading(false));
+          dispatch(setBundleSubmitLoading(false));
         });
+        
   };
 
   if (loading) {

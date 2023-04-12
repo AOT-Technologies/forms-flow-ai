@@ -217,11 +217,8 @@ const FormListModal = React.memo(
                       <Table aria-label="simple table">
                         <TableHead>
                           <TableRow>
-                            <StyledTableCell></StyledTableCell>
                             <StyledTableCell>
-                            <span className="sort-cell">
-                            <span> Form Name</span>
-                              <span >   
+                            <span >   
                              {isAscending ? (
                                 <i
                                 className="fa fa-sort-alpha-asc m"
@@ -249,8 +246,8 @@ const FormListModal = React.memo(
                                 )
                               }
                               </span>
-                      </span>
                             </StyledTableCell>
+                            <StyledTableCell>Form Name</StyledTableCell>
                             <StyledTableCell>Type</StyledTableCell>
                             <StyledTableCell>Action</StyledTableCell>
                           </TableRow>

@@ -1,7 +1,9 @@
 """This exposes authorization service."""
 import datetime
+from http import HTTPStatus
 from typing import Dict, List
 
+from formsflow_api_utils.exceptions import BusinessException
 from formsflow_api_utils.utils.user_context import UserContext, user_context
 
 from formsflow_api.models import Authorization, AuthType
@@ -75,13 +77,13 @@ class AuthorizationService:
         auth = Authorization.find_resource_by_id(
             auth_type=auth_type_enum,
             resource_id=resource.get("resourceId"),
-            user_name=user.user_name,
             tenant=user.tenant_key,
         )
         roles = resource.get("roles")
         if auth:
             auth.roles = roles
             auth.resource_details = resource.get("resourceDetails")
+            auth.user_name = resource.get("userName")
             auth.modified = datetime.datetime.now()
             auth.modified_by = user.user_name
         else:
@@ -90,10 +92,24 @@ class AuthorizationService:
                 auth_type=AuthType(auth_type),
                 resource_id=resource.get("resourceId"),
                 resource_details=resource.get("resourceDetails"),
-                roles=resource.get("roles"),
+                roles=roles,
                 user_name=resource.get("userName"),
                 created=datetime.datetime.now(),
                 created_by=user.user_name,
             )
         auth = auth.save()
         return self._as_dict(auth)
+
+    @user_context
+    def get_resource_by_id(self, auth_type: str, resource_id: str, **kwargs):
+        """Get authorization resource by id."""
+        user: UserContext = kwargs["user"]
+        auth_type_enum = AuthType(auth_type)
+        auth = Authorization.find_resource_by_id(
+            auth_type=auth_type_enum,
+            resource_id=resource_id,
+            tenant=user.tenant_key,
+        )
+        if auth:
+            return self._as_dict(auth)
+        raise BusinessException("Invalid resource id.", HTTPStatus.BAD_REQUEST)

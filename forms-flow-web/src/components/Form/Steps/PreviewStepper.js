@@ -10,9 +10,9 @@ import Card from "@material-ui/core/Card";
 import CardContent from "@material-ui/core/CardContent";
 import TextField from "@material-ui/core/TextField";
 import { useTranslation, Translation } from "react-i18next";
+import { setUserGroups } from "../../../actions/authorizationActions";
 import SaveNext from "./SaveNext";
 import { copyText } from "../../../apiManager/services/formatterService";
-import { setClientGroups, setDesignerGroups,setUserGroups } from "../../../actions/authorizationActions";
 import { addClients, getClientList, getUserRoles } from "../../../apiManager/services/authorizationService";
 import { addUsers, fetchUsers } from "../../../apiManager/services/authorizationService";
 
@@ -32,13 +32,16 @@ const Preview = React.memo(
     const { t } = useTranslation();
     const [copied, setCopied] = useState(false);
     const [show, setShow] = useState(false);
-    const [anchorEl, setAnchorEl] = useState(null);
     const [designerSelectedOption, setDesignerSelectedOption] = useState("");
     const [clientSelectedOption,setClientSelectedOption] = useState("");
     const processListData = useSelector((state) => state.process.formProcessList);
     const userGroups = useSelector((state) => state.userAuthorization?.userGroups);
-    const designerGroups = useSelector((state)=> state.userAuthorization?.designerGroups);
-    const clientGroups = useSelector((state)=> state.userAuthorization?.clientGroups);
+    const [designerOptions, setDesingerOptions] = useState([]);
+    const [clientOptions, setClientOptions] = useState([]);
+    const [designerGroups,setDesignerGroups] = useState([]);
+    const [clientGroups,setClientGroups] = useState([]);
+ 
+
     const id = show ? "simple-popover" : undefined;
     const copyPublicUrl = () => {
       const originUrl = window.origin;
@@ -59,110 +62,120 @@ const Preview = React.memo(
     
     const handleClose = () => {
       setShow(false);
-      setAnchorEl(null);
     };
 
-   useEffect(()=>{
-    getUserRoles()
-    .then((res) => {
-      dispatch(setUserGroups(res.data));
-    })
-    .catch((error) => console.error("error", error));
-   },[]);
+   useEffect(() => {
+     getUserRoles()
+       .then((res) => {
+         dispatch(setUserGroups(res.data));
+       })
+       .catch((error) => console.error("error", error));
+   }, []);
 
-    useEffect(()=>{
-      fetchUsers().then((res)=>{
-        res?.data.map((e)=>{
-          if(e.resourceId === processListData.formId){
-            dispatch(setDesignerGroups(e.roles));
-          }
-        });
-      }).catch((error)=> console.error("error",error));
+   useEffect(() => {
+     fetchUsers()
+       .then((res) => {
+         const resource = res?.data.find(
+           (item) => item.resourceId === processListData.formId
+         );
+         setDesignerGroups(resource?.roles || []);
+         if (resource) {
+           setDesignerSelectedOption(
+             resource.roles?.length
+               ? "Specific Designers"
+               :  resource.userName
+               ? "Private"
+               : "All Designers" 
+           );
+         }
+         setDesingerOptions(
+           userGroups?.filter((i) => !resource?.roles?.includes(i.name))
+         );
+       })
+       .catch((error) => console.error("error", error));
 
-      getClientList().then((res)=>{
-        res?.data.map((e)=>{
-          if(e.resourceId === processListData.formId){
-            dispatch(setClientGroups(e.roles));
-          }
-        });
-      }).catch((error)=> console.error("error",error));
-    },[]);
+     getClientList()
+       .then((res) => {
+         const resource = res?.data.find(
+           (item) => item.resourceId === processListData.formId
+         );
+         setClientGroups(resource?.roles || []);
+         if (resource) {
+           setClientSelectedOption(
+            resource.roles?.length ? "Specific Clients" : "All Clients" 
+           );
+         }
+         setClientOptions(
+           userGroups?.filter((i) => !resource?.roles?.includes(i.name))
+         );
+       })
+       .catch((error) => console.error("error", error));
+   }, [userGroups]);
 
-    const handleClick = (event) => {
-      setShow(!show);
-      setAnchorEl(event.currentTarget);
+  
+
+    const handleClick = (name) => {
+      setShow(name);
     };
 
     const addDesignerGroups = (data) => {
-      dispatch(setDesignerGroups([...designerGroups, data.name]));
-      setShow(!show);
+     setDesignerGroups([...designerGroups, data.name]);
+     setDesingerOptions(designerOptions?.filter((i)=> i.name !== data.name));
+     setShow(false);
     };
+
+
     const addClientGroups = (data) => {
-      dispatch(setClientGroups([...clientGroups, data.name]));
-      setShow(!show);
+    setClientGroups([...clientGroups, data.name]);
+    setClientOptions(clientOptions?.filter((i)=> i.name !== data.name));
+    setShow(false);
     };
 
     const removeDesignerUserGroup = (group) => {
-      let newGroups = designerGroups?.filter((item) => item !== group);
-      dispatch(setDesignerGroups(newGroups));
+      setDesignerGroups(designerGroups?.filter((item) => item !== group));
+      setDesingerOptions(prev => [userGroups.find(i=> i.name == group),...prev]);
     };
 
     const removeClientUserGroup = (group) => {
       let newGroups = clientGroups?.filter((item) => item !== group);
-      dispatch(setClientGroups(newGroups));
+       setClientGroups(newGroups);
+       setClientOptions(prev => [userGroups.find(i=> i.name == group),...prev,]);
     };
 
     const saveDesigner = ()=>{
-      let payload;
+      let payload = {
+        resourceId : processListData.formId,
+        resourceDetails:{},
+      };
       if(designerSelectedOption === 'All Designers'){
-        payload = {
-          resourceId : processListData.formId,
-          resourceDetails:{},
-          roles:[]
-        };
-        addUsers(payload).catch((error)=> console.error("error",error));
+        payload.roles = []; 
       }
       if(designerSelectedOption === 'Private'){
-        payload = {
-          resourceId : processListData.formId,
-          resourceDetails:{},
-          userName: processListData.createdBy
-        };
-        addUsers(payload).catch((error)=> console.error("error",error));
+        payload.userName = processListData.createdBy; 
+        payload.roles = [];
       }
       if(designerSelectedOption === 'Specific Designers'){
-        payload = {
-          resourceId : processListData.formId,
-          resourceDetails:{},
-          roles:designerGroups
-        };
-        addUsers(payload).catch((error)=> console.error("error",error));
+        payload.roles = designerGroups;
       }
+      addUsers(payload).catch((error)=> console.error("error",error));
     };
 
+    
     const saveClients = ()=>{
       let payload = {
         resourceId : processListData.formId,
         resourceDetails:{},
-        roles:clientGroups
+        
       };
       if(clientSelectedOption === 'All Clients'){
-        payload = {
-          resourceId : processListData.formId,
-          resourceDetails:{},
-          roles:[]
-        };
-        addClients(payload).catch((error)=> console.error("error",error));
-      }
-      if(clientSelectedOption === 'Specific Clients'){
-        payload = {
-          resourceId : processListData.formId,
-          resourceDetails:{},
-          roles:clientGroups
-        };
-        addClients(payload).catch((error)=> console.error("error",error));
+        payload.role = [];
       }
       
+      if(clientSelectedOption === 'Specific Clients'){
+        payload.role = clientGroups;
+      }
+
+      addClients(payload).catch((error)=> console.error("error",error));
     };
 
     return (
@@ -284,7 +297,7 @@ const Preview = React.memo(
                     {designerSelectedOption === "Specific Designers" ? (
                       <div className="form-group d-flex flex-wrap">
                         <Button
-                          onClick={(e) => handleClick(e)}
+                          onClick={() => handleClick("designer")}
                           className="btn btn-primary btn-md form-btn pull-left btn-left"
                         >
                           <Translation>{(t) => t("Add")}</Translation> <b>+</b>
@@ -292,8 +305,8 @@ const Preview = React.memo(
                         <Popover
                           data-testid="popup-component"
                           id={id}
-                          open={show}
-                          anchorEl={anchorEl}
+                          open={show === "designer"}
+                          
                           onClose={handleClose}
                           anchorOrigin={{
                             vertical: "bottom",
@@ -305,8 +318,8 @@ const Preview = React.memo(
                           }}
                         >
                           <ListGroup>
-                            {userGroups?.length > 0 ? (
-                              userGroups?.map((item, key) => (
+                            {designerOptions?.length > 0 ? (
+                              designerOptions?.map((item, key) => (
                                 <ListGroup.Item
                                   key={key}
                                   as="button"
@@ -374,7 +387,7 @@ const Preview = React.memo(
                       <div className="form-group d-flex flex-wrap">
                         <Button
                           //data-testid={rowIdx}
-                          onClick={(e) => handleClick(e)}
+                          onClick={() => handleClick("client")}
                           className="btn btn-primary btn-md form-btn pull-left btn-left"
                           //disabled={!isGroupUpdated}
                         >
@@ -383,8 +396,8 @@ const Preview = React.memo(
                         <Popover
                           data-testid="popup-component"
                           id={id}
-                          open={show}
-                          anchorEl={anchorEl}
+                          open={show === "client"}
+                       
                           onClose={handleClose}
                           anchorOrigin={{
                             vertical: "bottom",
@@ -396,8 +409,8 @@ const Preview = React.memo(
                           }}
                         >
                           <ListGroup>
-                            {userGroups?.length > 0 ? (
-                              userGroups?.map((item, key) => (
+                            {clientOptions?.length > 0 ? (
+                              clientOptions?.map((item, key) => (
                                 <ListGroup.Item
                                   key={key}
                                   as="button"

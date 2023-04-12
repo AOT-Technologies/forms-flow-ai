@@ -49,6 +49,7 @@ class AuthorizationService:
             "resourceId": auth.resource_id,
             "resourceDetails": auth.resource_details,
             "roles": auth.roles,
+            "userName": auth.user_name,
         }
 
     @user_context

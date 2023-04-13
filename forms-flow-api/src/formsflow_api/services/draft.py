@@ -158,7 +158,10 @@ class DraftService:
         # While bundle submission, group all task variables of forms inside bundle
         # and add to process instance variables
         if mapper.form_type == "bundle":
-            variables = ApplicationService.get_bundle_task_variables(mapper, data)
+            task_variables = ApplicationService.get_bundle_task_variables(mapper)
+            variables = ApplicationService.fetch_task_variable_values(
+                task_variables, data.get("data")
+            )
         payload = ApplicationService.get_start_task_payload(
             application, mapper, data["form_url"], data["web_form_url"], variables
         )

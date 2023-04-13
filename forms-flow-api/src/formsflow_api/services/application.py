@@ -94,7 +94,7 @@ class ApplicationService:  # pylint: disable=too-many-public-methods
         user: UserContext = kwargs["user"]
         user_id: str = user.user_name
         tenant_key = user.tenant_key
-        task_variables: Dict = {}
+        variables: Dict = {}
         if user_id is not None:
             # for anonymous form submission
             data["created_by"] = user_id
@@ -110,7 +110,10 @@ class ApplicationService:  # pylint: disable=too-many-public-methods
         # While bundle submission, group all task variables of forms inside bundle
         # and add to process instance variables
         if mapper.form_type == "bundle":
-            task_variables = ApplicationService.get_bundle_task_variables(mapper, data)
+            task_variables = ApplicationService.get_bundle_task_variables(mapper)
+            variables = ApplicationService.fetch_task_variable_values(
+                task_variables, data.get("data")
+            )
         # Function to create application in DB
         application = Application.create_from_dict(data)
         # process_instance_id in request object is usually used in Scripts
@@ -121,7 +124,7 @@ class ApplicationService:  # pylint: disable=too-many-public-methods
             form_url = data["form_url"]
             web_form_url = data.get("web_form_url", "")
             payload = ApplicationService.get_start_task_payload(
-                application, mapper, form_url, web_form_url, task_variables
+                application, mapper, form_url, web_form_url, variables
             )
             ApplicationService.start_task(mapper, payload, token, application)
         return application, HTTPStatus.CREATED
@@ -482,17 +485,27 @@ class ApplicationService:  # pylint: disable=too-many-public-methods
         return application_count
 
     @staticmethod
+    def fetch_task_variable_values(task_variable, form_data):
+        """Fetch task variable values from form data."""
+        variables: Dict = {}
+        if task_variable and form_data:
+            task_keys = [val["key"] for val in task_variable]
+            variables = {
+                key: {"value": form_data[key]} for key in task_keys if key in form_data
+            }
+        return variables
+
+    @staticmethod
     def resubmit_application(application_id: int, payload: Dict, token: str):
         """Resubmit application and update process variables."""
         mapper = ApplicationService.get_application_form_mapper_by_id(application_id)
-        task_variable = json.loads(mapper.get("taskVariable"))
-        form_data = payload.get("data")
-        if task_variable and form_data:
-            task_keys = [val["key"] for val in task_variable]
-            process_variables = {
-                key: {"value": form_data[key]} for key in task_keys if key in form_data
-            }
-            payload["processVariables"] = process_variables
+        if mapper.get("formType") == "bundle":
+            task_variable = ApplicationService.get_bundle_task_variables(mapper)
+        else:
+            task_variable = json.loads(mapper.get("taskVariable"))
+        payload["processVariables"] = ApplicationService.fetch_task_variable_values(
+            task_variable, payload.get("data")
+        )
         response = BPMService.send_message(data=payload, token=token)
         if not response:
             raise BusinessException(
@@ -501,7 +514,7 @@ class ApplicationService:  # pylint: disable=too-many-public-methods
             )
 
     @staticmethod
-    def get_bundle_task_variables(mapper, payload):
+    def get_bundle_task_variables(mapper):
         """Collect all task variables of forms inside bundle."""
         bundle_forms = FormBundling.find_by_form_process_mapper_id(mapper.id)
         parent_form_ids: Set[str] = []
@@ -511,11 +524,4 @@ class ApplicationService:  # pylint: disable=too-many-public-methods
         forms = FormProcessMapper.find_forms_by_parent_from_ids(parent_form_ids)
         for form in forms:
             task_variable.extend(json.loads(form.task_variable))
-        form_data = payload.get("data")
-        variables: Dict = {}
-        if task_variable and form_data:
-            task_keys = [val["key"] for val in task_variable]
-            variables = {
-                key: {"value": form_data[key]} for key in task_keys if key in form_data
-            }
-        return variables
+        return task_variable

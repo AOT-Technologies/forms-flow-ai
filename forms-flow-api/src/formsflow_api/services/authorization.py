@@ -1,9 +1,7 @@
 """This exposes authorization service."""
 import datetime
-from http import HTTPStatus
 from typing import Dict, List
 
-from formsflow_api_utils.exceptions import BusinessException
 from formsflow_api_utils.utils.user_context import UserContext, user_context
 
 from formsflow_api.models import Authorization, AuthType
@@ -112,4 +110,4 @@ class AuthorizationService:
         )
         if auth:
             return self._as_dict(auth)
-        raise BusinessException("Invalid resource id.", HTTPStatus.BAD_REQUEST)
+        return None

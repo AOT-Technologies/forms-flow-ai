@@ -18,25 +18,12 @@ import {
   setFormFailureErrorData,
 } from "../../../actions/formActions";
 import { executeRule } from "../../../apiManager/services/bundleServices";
-import useInterval from "../../../customHooks/useInterval";
-import { getDraftReqFormat } from "../../../apiManager/services/bpmServices";
-import {
-  DRAFT_ENABLED,
-  DRAFT_POLLING_RATE,
-} from "../../../constants/constants";
-import { toast } from "react-toastify";
-import { isEqual } from "lodash";
-import { useParams } from "react-router-dom";
-import SavingLoading from "../../Loading/SavingLoading";
-import {
-  draftCreate,
-  draftUpdate,
-  publicDraftCreate,
-  publicDraftUpdate,
-} from "../../../apiManager/services/draftService";
-const BundleSubmit = ({ readOnly, onSubmit }) => {
+
+
+const BundleSubmit = ({ readOnly, onSubmit ,onChange, draftRef}) => {
   const dispatch = useDispatch();
-  const { bundleId } = useParams();
+  const onChangeFunction = onChange ? onChange : ()=>{};
+  const draftReference = draftRef ? draftRef : {};
   const options = readOnly ? { readOnly: true, viewAsHtml: true } : {};
   const bundleData = useSelector((state) => state.process.formProcessList);
   const selectedForms = useSelector((state) => state.bundle.selectedForms);
@@ -55,109 +42,12 @@ const BundleSubmit = ({ readOnly, onSubmit }) => {
   );
   const formRef = useRef();
   const [formCache, setFormCache] = useState({});
-  const draftSubmissionId = useSelector(
-    (state) => state.draft.draftSubmission?.id
-  );
-  // Holds the latest data saved by the server
-  const lastUpdatedDraft = useSelector((state) => state.draft.lastUpdated);
-  const isAuthenticated = useSelector((state) => state.user.isAuthenticated);
-  const [isDraftCreated, setIsDraftCreated] = useState(false);
-  const exitType = useRef("UNMOUNT");
-  const [draftSaved, setDraftSaved] = useState(false);
-  const [notified, setNotified] = useState(false);
-  const draftCreateMethod = isAuthenticated ? draftCreate : publicDraftCreate;
-  const draftUpdateMethod = isAuthenticated ? draftUpdate : publicDraftUpdate;
-  const [poll, setPoll] = useState(DRAFT_ENABLED);
-  const [isValidResource, setIsValidResource] = useState(false);
-
+ 
   let formValidationNotOver = true;
 
   useEffect(() => {
     getForm();
   }, [formStep]);
-
-  useEffect(() => {
-    setTimeout(() => {
-      setNotified(true);
-    }, 5000);
-  }, []);
-
-  useEffect(() => {
-    if (isDraftCreated) {
-      setDraftSaved(true);
-    }
-  }, [isDraftCreated]);
-
-  useEffect(() => {
-    if (bundleId && !error) setIsValidResource(true);
-    return () => setIsValidResource(false);
-  }, [error, form._id]);
-  /**
-   * Will create a draft application when the form is selected for entry.
-   */
-  useEffect(() => {
-    if (
-      DRAFT_ENABLED &&
-      isValidResource &&
-      isAuthenticated &&
-      bundleData.status === "active"
-    ) {
-      let payload = getDraftReqFormat(bundleId, submission?.data);
-      dispatch(draftCreateMethod(payload, setIsDraftCreated));
-    }
-  }, [bundleId, isValidResource]);
-
-  /**
-   * Compares the current form data and last saved data
-   * Draft is updated only if the form is updated from the last saved form data.
-   */
-  const saveDraft = (payload, exitType = exitType) => {
-    if (exitType === "SUBMIT") return;
-    let dataChanged = !isEqual(payload.data, lastUpdatedDraft.data);
-    if (draftSubmissionId && isDraftCreated) {
-      if (dataChanged) {
-        setDraftSaved(false);
-        dispatch(
-          draftUpdateMethod(payload, draftSubmissionId, (err) => {
-            if (exitType === "UNMOUNT" && !err && isAuthenticated) {
-              toast.success("Submission saved to draft.");
-            }
-            if (!err) {
-              setDraftSaved(true);
-            } else {
-              setDraftSaved(false);
-            }
-          })
-        );
-      }
-      //show success toaster - no datachange, but still draft is createdgit
-      else {
-        toast.success("Submission saved to draft.");
-      }
-    }
-  };
-  /**
-   * We will repeatedly update the current state to draft table
-   * on purticular interval
-   */
-  useInterval(
-    () => {
-      let payload = getDraftReqFormat(bundleId, { ...submission?.data });
-      saveDraft(payload);
-    },
-    poll ? DRAFT_POLLING_RATE : null
-  );
-
-  /**
-   * Save the current state when the component unmounts.
-   * Save the data before submission to handle submission failure.
-   */
-  useEffect(() => {
-    return () => {
-      let payload = getDraftReqFormat(bundleId, submission?.data);
-      if (poll) saveDraft(payload, exitType.current);
-    };
-  }, [bundleId, draftSubmissionId, isDraftCreated, poll, exitType.current]);
 
   const getForm = (done = () => {}) => {
     if (selectedForms?.length) {
@@ -259,8 +149,6 @@ const BundleSubmit = ({ readOnly, onSubmit }) => {
         dispatch(setBundleSubmitLoading(false));
         return;
       }
-      setPoll(false);
-      exitType.current = "SUBMIT";
       onSubmit({ data: submission.data }, bundleData.formId);
     }
   };
@@ -289,23 +177,6 @@ const BundleSubmit = ({ readOnly, onSubmit }) => {
 
   return (
     <div className="p-3">
-      <>
-        <span className="pr-2  mr-2 d-flex justify-content-end align-items-center">
-          {!notified && (
-            <span className="text-primary">
-              <i className="fa fa-info-circle mr-2" aria-hidden="true"></i>
-              {"Unfinished applications will be saved to Applications/Drafts."}
-            </span>
-          )}
-
-          {notified && poll && (
-            <SavingLoading
-              text={draftSaved ? "Saved to Applications/Drafts" : "Saving..."}
-              saved={draftSaved}
-            />
-          )}
-        </span>
-      </>
       <div>
         <LoadingOverlay
           active={bundleSubmitLoading || getFormLoading}
@@ -334,9 +205,12 @@ const BundleSubmit = ({ readOnly, onSubmit }) => {
                       ...options,
                       highlightErrors: true,
                     }}
+
                     ref={formRef}
                     submission={bundleSubmission}
                     onChange={(e) => { 
+                      draftReference.current = e;
+                      onChangeFunction(e);
                       setSubmission(e);
                     }}
                   />

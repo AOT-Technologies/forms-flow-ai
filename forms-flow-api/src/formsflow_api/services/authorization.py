@@ -75,6 +75,7 @@ class AuthorizationService:
         auth = Authorization.find_resource_by_id(
             auth_type=auth_type_enum,
             resource_id=resource.get("resourceId"),
+            user_name=user.user_name,
             tenant=user.tenant_key,
         )
         roles = resource.get("roles")
@@ -107,6 +108,7 @@ class AuthorizationService:
             auth_type=auth_type_enum,
             resource_id=resource_id,
             tenant=user.tenant_key,
+            user_name=user.user_name,
         )
         if auth:
             return self._as_dict(auth)

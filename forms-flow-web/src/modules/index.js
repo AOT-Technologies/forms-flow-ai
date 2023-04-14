@@ -17,6 +17,7 @@ import dashboardReducer from "./dashboardReducer";
 import tenantReducer from "./tenantReducer";
 import draftSubmission from "./draftReducer";
 import formRestore from "./RestoreFormReducer";
+import pubSubReducer from "./pubSubReducer";
 import userAuthorization from "./authorizationReducer";
 
 const createRootReducer = (history) =>
@@ -46,6 +47,7 @@ const createRootReducer = (history) =>
     dashboardReducer,
     tenants: tenantReducer,
     draft: draftSubmission,
+    pubSub: pubSubReducer
     userAuthorization:userAuthorization
   });
 

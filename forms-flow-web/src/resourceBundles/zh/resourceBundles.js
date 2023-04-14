@@ -1,5 +1,6 @@
 /* eslint-disable max-len */
 export const RESOURCE_BUNDLES_ZH = {
+  "Select form version":"选择表格版本",
   "Please remove the special characters...!":"请删除特殊字符...！",
   "No histories found":"没有找到历史记录",
   "Continue":"继续",

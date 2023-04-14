@@ -20,10 +20,9 @@ import {
 import { executeRule } from "../../../apiManager/services/bundleServices";
 
 
-const BundleSubmit = ({ readOnly, onSubmit ,onChange, draftRef}) => {
+const BundleSubmissionComponent = ({ readOnly, onSubmit ,onChange}) => {
   const dispatch = useDispatch();
   const onChangeFunction = onChange ? onChange : ()=>{};
-  const draftReference = draftRef ? draftRef : {};
   const options = readOnly ? { readOnly: true, viewAsHtml: true } : {};
   const bundleData = useSelector((state) => state.process.formProcessList);
   const selectedForms = useSelector((state) => state.bundle.selectedForms);
@@ -209,7 +208,6 @@ const BundleSubmit = ({ readOnly, onSubmit ,onChange, draftRef}) => {
                     ref={formRef}
                     submission={bundleSubmission}
                     onChange={(e) => { 
-                      draftReference.current = e;
                       onChangeFunction(e);
                       setSubmission(e);
                     }}
@@ -254,4 +252,4 @@ const BundleSubmit = ({ readOnly, onSubmit ,onChange, draftRef}) => {
   );
 };
 
-export default BundleSubmit;
+export default BundleSubmissionComponent;

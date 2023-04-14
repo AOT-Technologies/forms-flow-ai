@@ -278,8 +278,11 @@ const BundleSubmit = () => {
       </>
           {!selectedForms.length ? <Errors errors={error} /> : ""}
           {selectedForms.length ? (
-           <BundleSubmission onSubmit={onSubmit} onChange={(e)=>{setDraftSubmission(e);}} 
-           draftRef={draftRef}/>
+           <BundleSubmission onSubmit={onSubmit} onChange={(e)=>{
+            draftRef.current = e;
+            setDraftSubmission(e);
+          }} 
+          />
           ) : (
             <h3 className="text-center">No Forms Selected</h3>
           )}

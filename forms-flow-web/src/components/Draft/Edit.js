@@ -326,8 +326,8 @@ const View = React.memo((props) => {
                 }}
                 onChange={(e) => {
                   setDraftData(e.data);
+                  draftRef.current = e.data;
                 }}
-                draftRef={draftRef}
               />
             ) : (
               <div className="form-view-wrapper">

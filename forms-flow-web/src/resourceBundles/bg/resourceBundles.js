@@ -277,9 +277,5 @@ export const RESOURCE_BUNDLES_BG = {
     "Click Here to Copy":"Щракнете тук, за да копирате",
     "Resources":"Ресурси",
     "Duplicate form created successfully":"Дублираният формуляр е създаден успешно",
-<<<<<<< HEAD
-    "Revert": "Връщане"
-=======
     "Revert": "Връщане",
->>>>>>> develop
 };

@@ -31,6 +31,7 @@ import java.util.Map;
 import java.util.Properties;
 import java.util.HashMap;
 
+import static org.camunda.bpm.extension.commons.utils.VariableConstants.FORM_TYPE;
 import static org.camunda.bpm.extension.commons.utils.VariableConstants.FORM_URL;
 /**
  * BPM Form Data Pipeline Listener.
@@ -89,8 +90,11 @@ public class BPMFormDataPipelineListener extends BaseListener implements TaskLis
         }
     }
 
-
     private String getUrl(DelegateExecution execution){
+        String formType = String.valueOf(execution.getVariable(FORM_TYPE));
+        if(formType != null && formType.equals("bundle")){
+            return execution.getVariables().get(FORM_URL) + "?skip-sanitize=true";
+        }
         return String.valueOf(execution.getVariables().get(FORM_URL));
     }
 

@@ -38,4 +38,6 @@ public class VariableConstants {
 
     public static final String REQUEST_STATUS = "requestStatus";
 
+    public static final String FORM_TYPE = "formType";
+
 }

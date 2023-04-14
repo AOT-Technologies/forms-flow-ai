@@ -1,5 +1,6 @@
 /* eslint-disable max-len */
 export const RESOURCE_BUNDLES_BG = {
+    "Select form version":"Изберете версия на формуляра",
     "Please remove the special characters...!":"Моля, премахнете специалните символи...!",
     "No histories found":"Няма намерени истории",
     "Continue":"продължи",
@@ -13,7 +14,7 @@ export const RESOURCE_BUNDLES_BG = {
     "Show more":"Покажи повече",
     "Modified By":"Променен от",
     "Created On" :"Създадено на",
-    "Formsflow automatically saves your previous form data. Now you can switch to the previous stage and edit.":"Formsflow автоматично запазва предишните ви данни за формуляри. Сега можете да преминете към предишния етап и да редактирате.",    
+    "Formsflow automatically saves your previous form data. Now you can switch to the previous stage and edit.":"Formsflow автоматично запазва предишните ви данни за формуляри. Сега можете да преминете към предишния етап и да редактирате.",
     "Duplicate Form":"Дублиран формуляр",
     "Form History":"История на формуляра",
     "No file chosen":"Няма избран файл",
@@ -63,7 +64,7 @@ export const RESOURCE_BUNDLES_BG = {
     "Please select from one of the following workflows.": "Моля, изберете един от следните работни потоци.",
     "Form Name": "Име на формуляра",
     "Workflow Name": "Име на работния процес",
-    "Publish this form for Client Users.": "Публикувайте този формуляр за Клиентски потребители.", 
+    "Publish this form for Client Users.": "Публикувайте този формуляр за Клиентски потребители.",
     "Comments": "Коментари",
     'Back': "обратно",
     "Edit Form": "Редактиране на формуляр",
@@ -276,5 +277,5 @@ export const RESOURCE_BUNDLES_BG = {
     "Click Here to Copy":"Щракнете тук, за да копирате",
     "Resources":"Ресурси",
     "Duplicate form created successfully":"Дублираният формуляр е създаден успешно",
-    "Revert": "Връщане"
+    "Revert": "Връщане",
 };

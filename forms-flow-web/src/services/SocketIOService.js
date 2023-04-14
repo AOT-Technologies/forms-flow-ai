@@ -2,10 +2,10 @@
 import SockJS from "sockjs-client";
 import Stomp from "stompjs";
 import { BPM_BASE_URL_SOCKET_IO } from "../apiManager/endpoints/config";
-import UserService from "./UserService";
 import { WEBSOCKET_ENCRYPT_KEY } from "../constants/socketIOConstants";
 import AES from "crypto-js/aes";
 import { MULTITENANCY_ENABLED } from "../constants/constants";
+import { StorageService } from "@formsflow/service";
 
 let tenantData = localStorage.getItem("tenantData");
 let tenantKey = '';
@@ -19,7 +19,7 @@ let reconnectTimeOut = null;
 
 const connect = (reloadCallback) => {
   const accessToken = AES.encrypt(
-    UserService.getToken(),
+    StorageService.get(StorageService.User.AUTH_TOKEN),
     WEBSOCKET_ENCRYPT_KEY
   ).toString();
   const socketUrl = `${BPM_BASE_URL_SOCKET_IO}?accesstoken=${accessToken}`;

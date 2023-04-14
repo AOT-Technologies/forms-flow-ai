@@ -185,30 +185,24 @@ export default React.memo(
 
     const deployXML = (xml) => {
       const form = createBpmnForm(xml);
-
+      setDeploymentLoading(true);
       deployBpmnDiagram(form)
         .then((res) => {
           if (res?.data) {
             toast.success(t(SUCCESS_MSG));
             // Reload the dropdown menu
             updateBpmProcesses(xml, res.data.deployedProcessDefinitions);
-            refreshModeller();
+            setDeploymentLoading(false);
           } else {
+            setDeploymentLoading(false);
             toast.error(t(ERROR_MSG));
           }
         })
         .catch((error) => {
+          setDeploymentLoading(false);
           showCamundaHTTTPErrors(error);
         });
     };
-
-    const refreshModeller = () => {
-      bpmnModeler.destroy();
-      setDeploymentLoading(true);
-      initializeModeler();
-      setDeploymentLoading(false);
-    };
-
     const showCamundaHTTTPErrors = (error) => {
       const errors = error.response.data.details;
       for (var key in errors) {

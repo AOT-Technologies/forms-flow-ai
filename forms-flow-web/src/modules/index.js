@@ -18,6 +18,7 @@ import tenantReducer from "./tenantReducer";
 import draftSubmission from "./draftReducer";
 import formRestore from "./RestoreFormReducer";
 import bundle from "./bundleReducer";
+import pubSubReducer from "./pubSubReducer";
 
 const createRootReducer = (history) =>
   combineReducers({
@@ -46,6 +47,7 @@ const createRootReducer = (history) =>
     dashboardReducer,
     tenants: tenantReducer,
     draft: draftSubmission,
+    pubSub: pubSubReducer,
     bundle,
   });
 

@@ -1,92 +1,34 @@
-name: Push Forms flow Web to registry
-
+name: forms-flow-web-CD
 on:
   workflow_dispatch:
   push:
-    branches: [ master, develop, release/* ]
+    branches:
+      - master
+      - 5.2.0-alpha
     paths:
       - "forms-flow-web/**"
-      - "VERSION"
-
 defaults:
   run:
     shell: bash
-    working-directory: ./forms-flow-web
-
 jobs:
-  build-and-push-image-to-dockerhub:
-    if: github.repository == 'AOT-Technologies/forms-flow-ai'
-    runs-on: ubuntu-latest
-    strategy:
-      matrix:
-        include:
-          - image: formsflow/forms-flow-web
-            context: forms-flow-web
-            dockerfile: Dockerfile
-            name: forms-flow-web
-    permissions:
-      contents: read
-      packages: write
-
+  build:
+    name: Build and push artifacts to s3
+    runs-on: ubuntu-20.04
     steps:
-      - name: Checkout repository
-        uses: actions/checkout@v2
-      - name: Set up Docker Buildx
-        id: buildx
-        uses: docker/setup-buildx-action@v1
+      - uses: actions/checkout@v3
+      - uses: actions/setup-node@v3
         with:
-          install: true
-      - name: Set version
-        if: ${{ github.ref != 'refs/heads/master' }}
-        working-directory: .
-        run: |
-          VER=$(cat VERSION)
-          echo "VERSION=$VER" >> $GITHUB_ENV
-      - name: Set version
-        if: ${{ github.ref == 'refs/heads/master' }}
-        working-directory: .
-        run: |
-          VER=$(cat VERSION)
-          VER=${VER/-alpha/''}
-          echo "VERSION=$VER" >> $GITHUB_ENV
-      
-      - run: echo ${{ env.VERSION }}
-
-      - name: Docker meta
-        id: meta
-        uses: docker/metadata-action@v3
+          node-version: '14.17.0'
+      - run: npm install
+        working-directory: ./forms-flow-web
+      - run: npm run build
+        working-directory: ./forms-flow-web
+      - uses: aws-actions/configure-aws-credentials@v1
         with:
-          images: ${{ matrix.image }}
-          tags: ${{ env.VERSION }}
-
-      - name: Log in to the Container registry
-        uses: docker/login-action@v1
-        with:
-          # registry: ${{ env.REGISTRY }}
-          username: ${{ secrets.DOCKER_USERNAME }}
-          password: ${{ secrets.DOCKER_ACCESS_TOKEN }}
-
-      - name: Cache Docker layers
-        uses: actions/cache@v2
-        with:
-          path: /tmp/.buildx-cache
-          key: ${{ runner.os }}-buildx-${{ matrix.name }}-${{ github.sha }}
-          restore-keys: |
-            ${{ runner.os }}-buildx-${{ matrix.name }}
-
-      - name: Build and push Docker image
-        if: ${{ github.ref != 'refs/heads/master' }}
-        uses: docker/build-push-action@v2
-        with:
-          context: forms-flow-web
-          push: true
-          tags: ${{ steps.meta.outputs.tags }}
-          labels: ${{ steps.meta.outputs.labels }}
-      - name: Build and push Docker image
-        if: ${{ github.ref == 'refs/heads/master' }}
-        uses: docker/build-push-action@v2
-        with:
-          context: forms-flow-web
-          push: true
-          tags: ${{ steps.meta.outputs.tags }}, formsflow/forms-flow-web:latest
-          labels: ${{ steps.meta.outputs.labels }}
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: ${{ secrets.REGION }}
+      - run: npm ci
+        working-directory: ./forms-flow-web/scripts
+      - run: BUCKET=${{ secrets.BUCKET}} node index
+        working-directory: ./forms-flow-web/scripts

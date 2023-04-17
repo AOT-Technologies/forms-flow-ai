@@ -61,16 +61,9 @@ function BundleTable() {
     return moment(dateObj).format('DD/MM/YYYY');
   }
 
-  const updateSort = () => {
-    let updatedSort;
+  const updateSort = (updatedSort) => {
     // dispatch(setBpmFormLoading(false));
-    if (sortOrder === "asc") {
-      updatedSort = "desc";
-      dispatch(setBPMFormListSort(updatedSort));
-    } else {
-      updatedSort = "asc";
-      dispatch(setBPMFormListSort(updatedSort));
-    }
+    dispatch(setBPMFormListSort(updatedSort));
     dispatch(setBPMFormListPage(1));
   };
 
@@ -98,7 +91,7 @@ function BundleTable() {
   };
 
   useEffect(()=>{
-    if(!search.trim()){
+    if(!search?.trim()){
       dispatch(setBpmFormSearch(""));
     }
   },[search]);
@@ -133,34 +126,11 @@ function BundleTable() {
         <thead>
           <tr>
             <th colSpan="4" >
-              <InputGroup className="input-group">
-                <InputGroup.Prepend>
-                  <InputGroup.Text style={{ backgroundColor: "#ffff" }}>
-                    <div className="sort-icons">
-                      <i
-                        className="fa fa-sort-up"
-                        onClick={updateSort}
-                        style={{
-                          cursor: "pointer",
-                          opacity: `${isAscending ? 1 : 0.5}`,
-                        }}
-                      ></i>
-                      <i
-                        className="fa fa-sort-down"
-                        onClick={updateSort}
-                        style={{
-                          marginTop: "-8px",
-                          cursor: "pointer",
-                          opacity: `${!isAscending ? 1 : 0.5}`,
-                        }}
-                      ></i>
-                    </div>
-                  </InputGroup.Text>
-                </InputGroup.Prepend>
+              <InputGroup className="input-group">          
                 <FormControl 
                   value={search}
                   onChange={(e)=>{setSearch(e.target.value);}}
-                  onKeyPress={(e)=> e.key === "Enter" ? handleSearch() : ""}
+                  onKeyDown={(e)=> e.keyCode == 13 ? handleSearch() : ""}
                   placeholder="Search..."
                   style={{ backgroundColor: "#ffff" }}
                 />
@@ -171,7 +141,7 @@ function BundleTable() {
                     </InputGroup.Text>
                   </InputGroup.Append>
                 )}
-                <InputGroup.Append  onClick={handleSearch} disabled={!search.trim()}>
+                <InputGroup.Append  onClick={handleSearch} disabled={!search?.trim()}>
                   <InputGroup.Text style={{ backgroundColor: "#ffff" }}>
                     <i className="fa fa-search"></i>
                   </InputGroup.Text>
@@ -180,7 +150,39 @@ function BundleTable() {
             </th>
           </tr>
           <tr className="table-header table-bordered" style={{backgroundColor:'#F2F2F2'}}>
-            <th scope="col">Bundle Name</th>
+            <th scope="col">
+            <span className="sort-cell">
+                  <span> Bundle Name</span>
+                    <span >       
+                   {isAscending ? (
+                      <i
+                      className="fa fa-sort-alpha-asc m"
+                      onClick={() => {updateSort("desc");}}
+                      data-toggle="tooltip"  title="Descending"
+                      style={{
+                        cursor: "pointer",
+                        fontSize : "16px",
+                        marginTop : "3px"
+
+                      }}
+                      ></i>
+                      ) : (
+                      <i
+                      className="fa fa-sort-alpha-desc"
+                      onClick={() => {updateSort("asc");}}
+                      data-toggle="tooltip"  title="Ascending" 
+                      style={{
+                        cursor: "pointer",
+                        fontSize : "16px",
+                        marginTop : "3px"
+                        
+                      }}
+                      ></i>
+                      )
+                    }
+                    </span> 
+            </span>
+            </th>
             <th scope="col">Created Date</th>
             <th scope="col">Operations</th>
           </tr>

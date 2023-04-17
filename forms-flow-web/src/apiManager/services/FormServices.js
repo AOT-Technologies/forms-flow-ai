@@ -3,6 +3,7 @@ import API from "../endpoints";
 import { setCustomSubmission } from "../../actions/checkListActions";
 import { replaceUrl } from "../../helper/helper";
 import UserService from "../../services/UserService";
+import axios from "axios";
 
 export const formCreate = (formData) => {
   return RequestService.httpPOSTRequest(API.FORM_DESIGN, formData);
@@ -23,6 +24,21 @@ export const formioPostSubmission = (data,formId,skipSanitize)=>{
     url += `?skip-sanitize=${skipSanitize}`;
   }
   return httpPOSTRequest(url,data,"", false,header);
+};
+
+export const formioUpdateSubmission = (data,formId,submissionId,skipSanitize)=>{
+  const header = UserService.getFormioToken() ? { "x-jwt-token": UserService.getFormioToken() } : {};
+  let url = `${API.GET_FORM_BY_ID}/${formId}/submission/${submissionId}`;
+  if(skipSanitize){
+    url += `?skip-sanitize=${skipSanitize}`;
+  }
+  return axios.put(url,data,{headers:header});
+};
+
+export const formioGetSubmission = (formId,submissionId)=>{
+  const header = UserService.getFormioToken() ? { "x-jwt-token": UserService.getFormioToken() } : {};
+  let url = `${API.GET_FORM_BY_ID}/${formId}/submission/${submissionId}`;
+  return httpGETRequest(url,"","",false,header);
 };
 
 
@@ -67,6 +83,7 @@ export const getCustomSubmission = (submissionId, formId, ...rest) => {
     RequestService.httpGETRequest(`${submissionUrl}/${submissionId}`, {})
       .then((res) => {
         if (res.data) {
+          done(null, res.data);
           dispatch(setCustomSubmission(res.data));
         } else {
           dispatch(setCustomSubmission({}));

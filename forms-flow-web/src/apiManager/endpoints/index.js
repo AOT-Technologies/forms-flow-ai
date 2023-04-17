@@ -72,6 +72,7 @@ const API = {
   // bundle
   BUNDLE_BASE:`${WEB_BASE_URL}/form/<mapper_id>/bundles`,
   BUNDLE_EXECUTE_RULE:`${WEB_BASE_URL}/form/<mapper_id>/bundles/execute-rules`,
+  APPLICATION_EVENT_UPDATE: `${WEB_BASE_URL}/application/<application_id>/resubmit`,
 };
 
 export default API;

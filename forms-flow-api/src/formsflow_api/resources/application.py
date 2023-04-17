@@ -43,6 +43,7 @@ application_base_model = API.model(
         "created": fields.String(),
         "createdBy": fields.String(),
         "formId": fields.String(),
+        "formType": fields.String(),
         "formProcessMapperId": fields.String(),
         "id": fields.Integer(),
         "modified": fields.String(),

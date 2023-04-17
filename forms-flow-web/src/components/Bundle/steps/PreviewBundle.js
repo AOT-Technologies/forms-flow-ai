@@ -90,7 +90,7 @@ const PreviewBundle = ({ handleNext, handleBack, activeStep, isLastStep }) => {
 
       {forms.length ? (
         <div className="border py-2">
-          <Stepper activeStep={formStep} nonLinear>
+          <Stepper activeStep={formStep} nonLinear alternativeLabel>
             {forms?.map((form) => (
               <Step key={form.id}>
                 <StepLabel>{form.formName}</StepLabel>

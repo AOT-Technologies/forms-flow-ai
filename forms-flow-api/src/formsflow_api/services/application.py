@@ -191,6 +191,7 @@ class ApplicationService:  # pylint: disable=too-many-public-methods
                 process_key=resource_list,
             )
         draft_count = Draft.get_draft_count()
+
         return (
             application_schema.dump(applications, many=True),
             get_all_applications_count,

@@ -60,7 +60,7 @@ export default React.memo(() => {
           component={Item}
         />
         <FormSubmissionRoute 
-        exact path={`${BASE_ROUTE}bundle/:bundleId/`} component={BundleItems} />
+         path={`${BASE_ROUTE}bundle/:bundleId/`} component={BundleItems} />
       </Switch>
     </div>
   );

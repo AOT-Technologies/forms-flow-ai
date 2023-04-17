@@ -9,6 +9,7 @@ import { MULTITENANCY_ENABLED } from "../../constants/constants";
 import { getDraftById } from "../../apiManager/services/draftService";
 import Edit from "./Edit";
 import { push } from "connected-react-router";
+import { setBundleSubmissionData } from "../../actions/bundleActions";
 
 const EditDraft = React.memo(() => {
   const { draftId } = useParams();
@@ -28,6 +29,9 @@ const EditDraft = React.memo(() => {
           if (res.id && res.formId) {
             dispatch(getForm("form", res.formId));
             dispatch(getSubmission("submission", res.submissionId, res.formId));
+          }
+          if(res.formType === "bundle"){
+            dispatch(setBundleSubmissionData({data:res.data}));
           }
         } else {
           dispatch(push(`${redirectUrl}404`));

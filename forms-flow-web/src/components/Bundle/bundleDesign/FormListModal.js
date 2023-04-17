@@ -118,15 +118,8 @@ const FormListModal = React.memo(
       }
     }, [formsAlreadySelected,showModal]);
 
-    const updateSort = () => {
-      let updatedSort;
-      if (sortOrder === "asc") {
-        updatedSort = "desc";
-        dispatch(setBundleFormListSort(updatedSort));
-      } else {
-        updatedSort = "asc";
-        dispatch(setBundleFormListSort(updatedSort));
-      }
+    const updateSort = (updatedSort) => {
+      dispatch(setBundleFormListSort(updatedSort));
       dispatch(setBundleFormListPage(1));
     };
 
@@ -193,35 +186,12 @@ const FormListModal = React.memo(
               <Loading />
             ) : (
               <> 
-                <InputGroup className="input-group mb-2">
-                <InputGroup.Prepend>
-                  <InputGroup.Text style={{ backgroundColor: "#ffff" }}>
-                    <div className="sort-icons">
-                      <i
-                        className="fa fa-sort-up"
-                        onClick={updateSort}
-                        style={{
-                          cursor: "pointer",
-                          opacity: `${isAscending ? 1 : 0.5}`,
-                        }}
-                      ></i>
-                      <i
-                        className="fa fa-sort-down"
-                        onClick={updateSort}
-                        style={{
-                          marginTop: "-8px",
-                          cursor: "pointer",
-                          opacity: `${!isAscending ? 1 : 0.5}`,
-                        }}
-                      ></i>
-                    </div>
-                  </InputGroup.Text>
-                </InputGroup.Prepend>
+                <InputGroup className="input-group mb-2">        
                 <FormControl 
                   value={search}
                   onChange={(e)=>{setSearch(e.target.value);}}
                   placeholder="Search..."
-                  onKeyPress={(e)=> e.key === "Enter" ? handleSearch() : ""}
+                  onKeyDown={(e)=> e.keyCode == 13 ? handleSearch() : ""}
                   style={{ backgroundColor: "#ffff" }}
                 />
                 {search && (
@@ -231,7 +201,7 @@ const FormListModal = React.memo(
                     </InputGroup.Text>
                   </InputGroup.Append>
                 )}
-                <InputGroup.Append  onClick={handleSearch} disabled={!search.trim()}>
+                <InputGroup.Append  onClick={handleSearch} disabled={!search?.trim()}>
                   <InputGroup.Text style={{ backgroundColor: "#ffff" }}>
                     <i className="fa fa-search"></i>
                   </InputGroup.Text>
@@ -248,7 +218,39 @@ const FormListModal = React.memo(
                         <TableHead>
                           <TableRow>
                             <StyledTableCell></StyledTableCell>
-                            <StyledTableCell>Form Name</StyledTableCell>
+                            <StyledTableCell>
+                            <span className="sort-cell">
+                            <span> Form Name</span>
+                              <span >   
+                             {isAscending ? (
+                                <i
+                                className="fa fa-sort-alpha-asc m"
+                                onClick={() => {updateSort("desc");}}
+                                data-toggle="tooltip"  title="Descending"
+                                style={{
+                                  cursor: "pointer",
+                                  fontSize : "16px",
+                                  marginTop : "3px"
+          
+                                }}
+                                ></i>
+                                ) : (
+                                <i
+                                className="fa fa-sort-alpha-desc"
+                                onClick={() => {updateSort("asc");}}
+                                data-toggle="tooltip"  title="Ascending" 
+                                style={{
+                                  cursor: "pointer",
+                                  fontSize : "16px",
+                                  marginTop : "3px"
+                                  
+                                }}
+                                ></i>
+                                )
+                              }
+                              </span>
+                      </span>
+                            </StyledTableCell>
                             <StyledTableCell>Type</StyledTableCell>
                             <StyledTableCell>Action</StyledTableCell>
                           </TableRow>

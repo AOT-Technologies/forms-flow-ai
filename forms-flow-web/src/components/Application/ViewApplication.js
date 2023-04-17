@@ -20,6 +20,8 @@ import { Translation,useTranslation } from "react-i18next";
 import { CUSTOM_SUBMISSION_URL,CUSTOM_SUBMISSION_ENABLE, MULTITENANCY_ENABLED } from "../../constants/constants";
 import { fetchAllBpmProcesses } from "../../apiManager/services/processServices";
 import { getCustomSubmission } from "../../apiManager/services/FormServices";
+import { setBundleSubmissionData } from "../../actions/bundleActions";
+import BundleView from "../Bundle/item/submission/View";
 
 const ViewApplication = React.memo(() => {
   const {t} = useTranslation();
@@ -45,12 +47,18 @@ const ViewApplication = React.memo(() => {
     dispatch(
       getApplicationById(applicationId, (err, res) => {
         if (!err) {
-          if (res.submissionId && res.formId) {
+          if (res.submissionId && res.formId) { 
             dispatch(getForm("form", res.formId));
             if(CUSTOM_SUBMISSION_URL && CUSTOM_SUBMISSION_ENABLE){
-              dispatch(getCustomSubmission(res.submissionId,res.formId));
+              dispatch(getCustomSubmission(res.submissionId,res.formId,(err,data)=>{
+                dispatch(setBundleSubmissionData({data}));
+              }));
             }else{
-              dispatch(getSubmission("submission", res.submissionId, res.formId));
+              dispatch(getSubmission("submission", res.submissionId, res.formId,(err,data)=>{
+                if(res.formType === "bundle"){
+                  dispatch(setBundleSubmissionData({data:data.data}));
+                }
+              }));
             }
           }
         }
@@ -108,9 +116,12 @@ const ViewApplication = React.memo(() => {
         </Tab>
         <Tab
           eventKey="form"
-          title={<Translation>{(t) => t("Form")}</Translation>}
+          title={<Translation>{(t) => t(applicationDetail.formType === "bundle" ? "Forms" : "Form")}</Translation>}
         >
-          <View page="application-detail" />
+          {
+            applicationDetail.formType === "bundle" ? <BundleView bundleIdProp={applicationDetail.formId} showPrintButton={true}/> : <View page="application-detail" />
+          }
+         
         </Tab>
         <Tab
           eventKey="history"

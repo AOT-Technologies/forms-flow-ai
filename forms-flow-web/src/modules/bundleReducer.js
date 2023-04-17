@@ -4,6 +4,7 @@ const initialState = {
  selectedForms: [],
  bundleLoading:false,
  bundleSubmission:{},
+ bundleSubmitLoading:false,
  bundleForms :{
   error: "",
   forms: [],
@@ -38,6 +39,8 @@ const bundle = (state = initialState, action) => {
         return {...state, bundleLoading:action.payload};
     case ACTION_CONSTANTS.BUNDLE_FORM_LIST_SORT_CHANGE:
       return {...state, bundleForms:{...state.bundleForms, sortOrder:action.payload}};
+    case ACTION_CONSTANTS.BUNDLE_SUBMIT_LOADING:
+        return {...state, bundleSubmitLoading:action.payload};
     case ACTION_CONSTANTS.BUNDLE_RESET:
       return {...initialState};
       

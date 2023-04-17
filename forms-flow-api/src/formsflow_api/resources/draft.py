@@ -43,6 +43,7 @@ draft_response = API.inherit(
         "id": fields.Integer(),
         "modified": fields.String(),
         "processName": fields.String(),
+        "formType": fields.String(),
     },
 )
 

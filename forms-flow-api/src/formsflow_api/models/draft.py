@@ -84,6 +84,7 @@ class Draft(AuditDateTimeMixin, BaseModel, db.Model):
                 Application.created_by,
                 FormProcessMapper.form_id,
                 FormProcessMapper.process_key,
+                FormProcessMapper.form_type,
                 FormProcessMapper.process_name,
                 cls.id,
                 cls.application_id,
@@ -122,6 +123,7 @@ class Draft(AuditDateTimeMixin, BaseModel, db.Model):
             .with_entities(
                 FormProcessMapper.form_name,
                 FormProcessMapper.process_name,
+                FormProcessMapper.form_type,
                 Application.created_by,
                 FormProcessMapper.form_id,
                 cls.id,

@@ -1,6 +1,13 @@
 package org.camunda.bpm.extension.commons.utils;
 
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.oauth2.server.resource.authentication.JwtAuthenticationToken;
+
 import java.text.MessageFormat;
+
+import static org.camunda.bpm.extension.commons.utils.VariableConstants.ANONYMOUS_USER;
+import static org.camunda.bpm.extension.commons.utils.VariableConstants.SERVICE_ACCOUNT;
 
 /**
  * RestAPI Builder Util.
@@ -44,5 +51,21 @@ public class RestAPIBuilderUtil {
 
     private static String format(String url, Object ... arg){
         return MessageFormat.format(url,arg);
+    }
+
+    public static String fetchUserName(){
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        String submittedBy = null;
+        if (authentication != null) {
+            if (authentication instanceof JwtAuthenticationToken authToken) {
+                submittedBy = authToken.getToken().getClaimAsString("preferred_username");
+                if (submittedBy.startsWith("service-account")) {
+                    submittedBy = ANONYMOUS_USER;
+                }
+            }
+        } else {
+            submittedBy = SERVICE_ACCOUNT;
+        }
+        return submittedBy;
     }
 }

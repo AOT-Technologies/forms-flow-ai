@@ -55,7 +55,9 @@ const ViewApplication = React.memo(() => {
               }));
             }else{
               dispatch(getSubmission("submission", res.submissionId, res.formId,(err,data)=>{
-                dispatch(setBundleSubmissionData({data:data.data}));
+                if(res.formType === "bundle"){
+                  dispatch(setBundleSubmissionData({data:data.data}));
+                }
               }));
             }
           }
@@ -117,7 +119,7 @@ const ViewApplication = React.memo(() => {
           title={<Translation>{(t) => t(applicationDetail.formType === "bundle" ? "Forms" : "Form")}</Translation>}
         >
           {
-            applicationDetail.formType === "bundle" ? <BundleView bundleIdProp={applicationDetail.formId}/> : <View page="application-detail" />
+            applicationDetail.formType === "bundle" ? <BundleView bundleIdProp={applicationDetail.formId} showPrintButton={true}/> : <View page="application-detail" />
           }
          
         </Tab>

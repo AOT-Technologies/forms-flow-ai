@@ -1,5 +1,5 @@
 import React, { useEffect } from "react";
-import BundleSubmissionView from "./BundleSubmissionView";
+import BundleSubmissionView from "../BundleSubmissionComponent";
 import {
   setBundleLoading,
   setBundleSelectedForms,
@@ -94,6 +94,7 @@ const Edit = ({ bundleIdProp, onBundleSubmit, submissionIdProp }) => {
           UPDATE_EVENT_STATUS.includes(applicationDetails.applicationStatus)
         ) {
           const data = getProcessDataReq(applicationDetails);
+          data.data = submission?.data;
           dispatch(
             updateApplicationEvent(data, () => {
               dispatch(setBundleSubmitLoading(false));

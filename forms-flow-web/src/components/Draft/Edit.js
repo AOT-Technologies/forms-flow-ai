@@ -20,11 +20,17 @@ import useInterval from "../../customHooks/useInterval";
 import { CUSTOM_EVENT_TYPE } from "../ServiceFlow/constants/customEventTypes";
 import selectApplicationCreateAPI from "../Form/Item/apiSelectHelper";
 import {
+  clearFormError,
+  clearSubmissionError,
+  setFormFailureErrorData,
   setFormSubmissionError,
   setFormSubmissionLoading,
   setFormSubmitted,
 } from "../../actions/formActions";
-import { postCustomSubmission } from "../../apiManager/services/FormServices";
+import {
+  formioPostSubmission,
+  postCustomSubmission,
+} from "../../apiManager/services/FormServices";
 import {
   getProcessReq,
   getDraftReqFormat,
@@ -45,8 +51,15 @@ import SubmissionError from "../../containers/SubmissionError";
 import SavingLoading from "../Loading/SavingLoading";
 import Confirm from "../../containers/Confirm";
 import { setDraftDelete } from "../../actions/draftActions";
-import { setFormStatusLoading } from "../../actions/processActions"; 
+import { setFormStatusLoading } from "../../actions/processActions";
 import { getFormProcesses } from "../../apiManager/services/processServices";
+import { executeRule } from "../../apiManager/services/bundleServices";
+import {
+  setBundleSelectedForms,
+  setBundleSubmissionData,
+  setBundleSubmitLoading,
+} from "../../actions/bundleActions";
+import BundleSubmit from "../Bundle/item/BundleSubmissionComponent";
 const View = React.memo((props) => {
   const { t } = useTranslation();
   const lang = useSelector((state) => state.user.lang);
@@ -69,6 +82,9 @@ const View = React.memo((props) => {
   const draftSubmission = useSelector((state) => state.draft.submission);
   const [draftSaved, setDraftSaved] = useState(false);
   const [showNotification, setShowNotification] = useState(false);
+  const bundleSubmitLoading = useSelector(
+    (state) => state.bundle.bundleSubmitLoading
+  );
   /**
    * `draftData` is used for keeping the uptodate form entry,
    * this will get updated on every change the form is having.
@@ -80,6 +96,11 @@ const View = React.memo((props) => {
   const { formId, draftId } = useParams();
   const [poll, setPoll] = useState(DRAFT_ENABLED);
   const exitType = useRef("UNMOUNT");
+  const formStatusLoading = useSelector(
+    (state) => state.process?.formStatusLoading
+  );
+
+  const processData = useSelector((state) => state.process?.formProcessList);
   const {
     isAuthenticated,
     submission,
@@ -115,13 +136,6 @@ const View = React.memo((props) => {
       }
     }
   };
-  const formStatusLoading = useSelector(
-    (state) => state.process?.formStatusLoading
-  );
-
-  const processData = useSelector(
-    (state) => state.process?.formProcessList
-  );
 
   /**
    * We will repeatedly update the current state to draft table
@@ -139,12 +153,27 @@ const View = React.memo((props) => {
     if (isAuthenticated) {
       dispatch(setFormStatusLoading(true));
       dispatch(
-        getFormProcesses(formId,()=>{
-          dispatch(setFormStatusLoading(false));
+        getFormProcesses(formId, (err, res) => {
+          dispatch(clearFormError("form"));
+          dispatch(clearSubmissionError("submission"));
+          if (res.formType === "bundle") {
+            executeRule(draftSubmission.data, res.id)
+              .then((bundleRes) => {
+                dispatch(setBundleSelectedForms(bundleRes.data));
+              })
+              .catch((err) => {
+                dispatch(setFormFailureErrorData("form", err));
+              })
+              .finally(() => {
+                dispatch(setFormStatusLoading(false));
+              });
+          } else {
+            dispatch(setFormStatusLoading(false));
+          }
         })
       );
     }
-  }, [isAuthenticated,formId]);
+  }, [isAuthenticated, formId]);
 
   useEffect(() => {
     return () => {
@@ -152,7 +181,7 @@ const View = React.memo((props) => {
       if (poll) saveDraft(payload, exitType.current);
     };
   }, [poll, exitType.current, draftSubmission?.id]);
- 
+
   if (isActive || isPublicStatusLoading || formStatusLoading) {
     return (
       <div data-testid="loading-view-component">
@@ -160,7 +189,6 @@ const View = React.memo((props) => {
       </div>
     );
   }
-  
 
   const deleteDraft = () => {
     dispatch(
@@ -270,7 +298,7 @@ const View = React.memo((props) => {
       </div>
       <Errors errors={errors} />
       <LoadingOverlay
-        active={isFormSubmissionLoading}
+        active={isFormSubmissionLoading && !bundleSubmitLoading}
         spinner
         text={<Translation>{(t) => t("Loading...")}</Translation>}
         className="col-12"
@@ -289,29 +317,43 @@ const View = React.memo((props) => {
             }}
           />
           {processData?.status === "active" ? (
-            <div className="form-view-wrapper">
-              <Form
-                form={form}
-                submission={submission.submission}
-                url={url}
-                options={{
-                  ...options,
-                  language: lang,
-                  i18n: formio_resourceBundles,
-                }}
-                hideComponents={hideComponents}
-                onChange={(formData) => {
-                  setDraftData(formData.data);
-                  draftRef.current = formData.data;
-                }}
+            processData.formType === "bundle" ? (
+              <BundleSubmit
                 onSubmit={(data) => {
                   setPoll(false);
                   exitType.current = "SUBMIT";
-                  onSubmit(data, form._id, isPublic);
+                  onSubmit(data, form._id, isPublic, processData);
                 }}
-                onCustomEvent={(evt) => onCustomEvent(evt, redirectUrl)}
+                onChange={(e) => {
+                  setDraftData(e.data);
+                  draftRef.current = e.data;
+                }}
               />
-            </div>
+            ) : (
+              <div className="form-view-wrapper">
+                <Form
+                  form={form}
+                  submission={submission.submission}
+                  url={url}
+                  options={{
+                    ...options,
+                    language: lang,
+                    i18n: formio_resourceBundles,
+                  }}
+                  hideComponents={hideComponents}
+                  onChange={(formData) => {
+                    setDraftData(formData.data);
+                    draftRef.current = formData.data;
+                  }}
+                  onSubmit={(data) => {
+                    setPoll(false);
+                    exitType.current = "SUBMIT";
+                    onSubmit(data, form._id, isPublic);
+                  }}
+                  onCustomEvent={(evt) => onCustomEvent(evt, redirectUrl)}
+                />
+              </div>
+            )
           ) : (
             <span>
               <div
@@ -347,11 +389,15 @@ const doProcessActions = (submission, ownProps) => {
     const state = getState();
     let form = state.form.form;
     let isAuth = state.user.isAuthenticated;
+    const processData = state.process.formProcessList;
     const tenantKey = state.tenants?.tenantId;
     const redirectUrl = MULTITENANCY_ENABLED ? `/tenant/${tenantKey}/` : `/`;
     dispatch(resetSubmissions("submission"));
     const origin = `${window.location.origin}${redirectUrl}`;
     const data = getProcessReq(form, submission._id, origin);
+    if (processData.formType === "bundle") {
+      data.data = submission.data;
+    }
     let draft_id = state.draft.submission?.id;
     let isDraftCreated = draft_id ? true : false;
     const applicationCreateAPI = selectApplicationCreateAPI(
@@ -400,7 +446,7 @@ const mapStateToProps = (state) => {
 
 const mapDispatchToProps = (dispatch, ownProps) => {
   return {
-    onSubmit: (submission, formId, isPublic) => {
+    onSubmit: (submission, formId, isPublic, processData) => {
       dispatch(setFormSubmissionLoading(true));
       // this is callback function for submission
       const callBack = (err, submission) => {
@@ -419,13 +465,31 @@ const mapDispatchToProps = (dispatch, ownProps) => {
             <Translation>{(t) => t("Error while Submission.")}</Translation>
           );
           dispatch(setFormSubmissionLoading(false));
+          dispatch(setBundleSubmitLoading(false));
           dispatch(setFormSubmissionError(ErrorDetails));
         }
       };
       if (CUSTOM_SUBMISSION_URL && CUSTOM_SUBMISSION_ENABLE) {
         postCustomSubmission(submission, formId, isPublic, callBack);
       } else {
-        dispatch(saveSubmission("submission", submission, formId, callBack));
+        if (processData.formType === "bundle") {
+          formioPostSubmission(submission, formId, true)
+            .then((res) => {
+              dispatch(setBundleSubmissionData({ data: res.data.data }));
+              callBack(null, res.data);
+            })
+            .catch(() => {
+              const ErrorDetails = {
+                modalOpen: true,
+                message: "Submission cannot be done.",
+              };
+              toast.error("Submission cannot be done.");
+              dispatch(setFormSubmissionError(ErrorDetails));
+              dispatch(setBundleSubmitLoading(false));
+            });
+        } else {
+          dispatch(saveSubmission("submission", submission, formId, callBack));
+        }
       }
     },
     onCustomEvent: (customEvent, redirectUrl) => {

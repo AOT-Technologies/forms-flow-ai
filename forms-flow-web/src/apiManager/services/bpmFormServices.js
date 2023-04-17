@@ -11,7 +11,7 @@ import {
 import { replaceUrl } from "../../helper/helper";
 import { setFormSearchLoading } from "../../actions/checkListActions";
 import { setBundleForms } from "../../actions/bundleActions";
-
+ 
 export const fetchBPMFormList = (
   pageNo,
   limit,
@@ -75,7 +75,7 @@ export const fetchCanBundleForms = (options)=>{
   if (formName) {
     url += `&formName=${formName}`;
   }
-  return httpGETRequest(url, {}, UserService.getToken());
+  return RequestService.httpGETRequest (url, {}, UserService.getToken());
 };
 
 

@@ -23,7 +23,7 @@ export const formioPostSubmission = (data,formId,skipSanitize)=>{
   if(skipSanitize){
     url += `?skip-sanitize=${skipSanitize}`;
   }
-  return httpPOSTRequest(url,data,"", false,header);
+  return RequestService.httpPOSTRequest(url,data,"", false,header);
 };
 
 export const formioUpdateSubmission = (data,formId,submissionId,skipSanitize)=>{
@@ -38,7 +38,7 @@ export const formioUpdateSubmission = (data,formId,submissionId,skipSanitize)=>{
 export const formioGetSubmission = (formId,submissionId)=>{
   const header = UserService.getFormioToken() ? { "x-jwt-token": UserService.getFormioToken() } : {};
   let url = `${API.GET_FORM_BY_ID}/${formId}/submission/${submissionId}`;
-  return httpGETRequest(url,"","",false,header);
+  return RequestService.httpGETRequest(url,"","",false,header);
 };
 
 

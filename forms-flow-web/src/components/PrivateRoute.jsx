@@ -18,7 +18,16 @@ import {
   setUserDetails,
 } from "../actions/bpmActions";
 import { setLanguage } from "../actions/languageSetAction";
-import { CLIENT, STAFF_REVIEWER, STAFF_DESIGNER } from "../constants/constants";
+import {
+  CLIENT,
+  STAFF_REVIEWER,
+  STAFF_DESIGNER,
+  ENABLE_APPLICATIONS_MODULE,
+  ENABLE_DASHBOARDS_MODULE,
+  ENABLE_FORMS_MODULE,
+  ENABLE_PROCESSES_MODULE,
+  ENABLE_TASKS_MODULE,
+} from "../constants/constants";
 
 import Loading from "../containers/Loading";
 import NotFound from "./NotFound";
@@ -197,7 +206,6 @@ const PrivateRoute = React.memo((props) => {
         ),
     [userRoles]
   );
-
   return (
     <>
       {isAuth ? (

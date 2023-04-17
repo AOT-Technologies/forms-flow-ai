@@ -1,6 +1,7 @@
 /* eslint-disable max-len */
 export const RESOURCE_BUNDLES_BG = {
     "Bad Request":"Неправилна заявка",
+    "Select form version":"Изберете версия на формуляра",
     "Please remove the special characters...!":"Моля, премахнете специалните символи...!",
     "No histories found":"Няма намерени истории",
     "Continue":"продължи",
@@ -277,5 +278,5 @@ export const RESOURCE_BUNDLES_BG = {
     "Click Here to Copy":"Щракнете тук, за да копирате",
     "Resources":"Ресурси",
     "Duplicate form created successfully":"Дублираният формуляр е създаден успешно",
-    "Revert": "Връщане"
+    "Revert": "Връщане",
 };

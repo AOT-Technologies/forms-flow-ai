@@ -764,7 +764,7 @@ const mapDispatchToProps = (dispatch, ownProps) => {
             if (err) {
               toast.error(
                 <Translation>
-                  {(t) => t("Form delete unsuccessfull")}
+                  {(t) => t("Form deletion unsuccessful")}
                 </Translation>
               );
             } else {

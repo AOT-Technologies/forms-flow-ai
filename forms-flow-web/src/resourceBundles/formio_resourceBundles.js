@@ -37,7 +37,7 @@ export const formio_resourceBundles = {
       "All groups have access to the dashboard",
     "Form unpublishing Failed": "Form unpublishing Failed",
     "Form process failed": "Form process failed",
-    "Form delete unsuccessfull":"Form delete unsuccessfull",
+    "Form deletion unsuccessful":"Form deletion unsuccessful",
     "Form deleted successfully": "Form deleted successfully",
     "Form Workflow Association Saved.": "Form Workflow Association Saved.",
     "Loading...": "Loading...",
@@ -336,7 +336,7 @@ export const formio_resourceBundles = {
     "All groups have access to the dashboard": "所有组都可以访问仪表板",
     "Form unpublishing Failed": "表单取消发布失败",
     "Form process failed": "表单处理失败",
-    "Form delete unsuccessfull":"表格删除不成功",
+    "Form deletion unsuccessful":"表单删除失败",
     "Form deleted successfully": "表格删除成功",
     "Loading...": "正在加载...",
     "Changing the form workflow will not affect the existing applications. It will only update in the newly created applications. Press Save Changes to continue or cancel the changes.":
@@ -1249,7 +1249,7 @@ export const formio_resourceBundles = {
     "Form unpublishing Failed":
       "Прекратяването на публикуването на формуляра не бе успешно",
     "Form process failed": "Обработката на формуляра не бе успешно",
-    "Form delete unsuccessfull":"Изтриването на формуляра е неуспешно",
+    "Form deletion unsuccessful":"Изтриването на формуляра е неуспешно",
     "Form deleted successfully": "Формулярът е изтрит успешно",
     "Form Workflow Association Saved.":
       "Асоциацията на работния поток на формуляра е запазена.",
@@ -2218,7 +2218,7 @@ export const formio_resourceBundles = {
       "Todos os grupos têm acesso ao painel",
     "Form unpublishing Failed": "Falha ao cancelar a publicação do formulário",
     "Form process failed": "Falha no processo do formulário",
-    "Form delete unsuccessfull":"Falha na exclusão do formulário",
+    "Form deletion unsuccessful":"Falha na exclusão do formulário",
     "Form deleted successfully": "Formulário excluído com sucesso",
     "Show in list": "Mostrar na lista",
     "Loading...": "Carregando...",
@@ -3182,7 +3182,7 @@ export const formio_resourceBundles = {
       "Tous les groupes ont accès au tableau de bord",
     "Form unpublishing Failed": "Échec de la dépublication du formulaire",
     "Form process failed": "Le processus de formulaire a échoué",
-    "Form delete unsuccessfull":"Échec de la suppression du formulaire",
+    "Form deletion unsuccessful":"Échec de la suppression du formulaire",
     "Form deleted successfully": "Formulaire supprimé avec succèsy",
     "Loading...": "Chargement...",
     "Changing the form workflow will not affect the existing applications. It will only update in the newly created applications. Press Save Changes to continue or cancel the changes.":
@@ -4155,7 +4155,7 @@ export const formio_resourceBundles = {
     "Form unpublishing Failed":
       "Das Aufheben der Veröffentlichung des Formulars ist fehlgeschlagen",
     "Form process failed": "Formularprozess fehlgeschlagen",
-    "Form delete unsuccessfull":"Formularlöschung fehlgeschlagen",
+    "Form deletion unsuccessful":"Formularlöschung fehlgeschlagen",
     "Form deleted successfully": "Formular erfolgreich gelöscht",
     "Form Workflow Association Saved.":
       "Formular-Workflow-Zuordnung gespeichert.",

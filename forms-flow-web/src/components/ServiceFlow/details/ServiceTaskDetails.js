@@ -22,6 +22,8 @@ import {
 } from "../../../apiManager/services/formatterService";
 import History from "../../Application/ApplicationHistory";
 import FormEdit from "../../Form/Item/Submission/Item/Edit";
+import BundleEdit from "../../Bundle/item/submission/Edit";
+import BundleVIew from "../../Bundle/item/submission/View";
 import FormView from "../../Form/Item/Submission/Item/View";
 import LoadingOverlay from "react-loading-overlay";
 import { getForm, getSubmission, Formio } from "react-formio";
@@ -41,6 +43,7 @@ import {
 } from "../../../constants/constants";
 import { getCustomSubmission } from "../../../apiManager/services/FormServices";
 import { getFormioRoleIds } from "../../../apiManager/services/userservices";
+import { setBundleSubmissionData } from "../../../actions/bundleActions";
 
 const ServiceFlowTaskDetails = React.memo(() => {
   const { t } = useTranslation();
@@ -88,7 +91,7 @@ const ServiceFlowTaskDetails = React.memo(() => {
   }, [bpmTaskId, dispatch]);
 
   useEffect(() => {
-    if (processList.length && task?.processDefinitionId) {
+    if (processList?.length && task?.processDefinitionId) {
       const pKey = getProcessDataObjectFromList(
         processList,
         task?.processDefinitionId
@@ -105,7 +108,7 @@ const ServiceFlowTaskDetails = React.memo(() => {
   }, [task?.processInstanceId]);
 
   const getFormSubmissionData = useCallback(
-    (formUrl) => {
+    (formUrl,taskDetail) => {
       const { formId, submissionId } = getFormIdSubmissionIdFromURL(formUrl);
       Formio.clearCache();
       dispatch(resetFormData("form"));
@@ -116,8 +119,12 @@ const ServiceFlowTaskDetails = React.memo(() => {
               if (CUSTOM_SUBMISSION_URL && CUSTOM_SUBMISSION_ENABLE) {
                 dispatch(getCustomSubmission(submissionId, formId));
               } else {
-                dispatch(getSubmission("submission", submissionId, formId));
-              }
+                dispatch(getSubmission("submission", submissionId, formId,(_,res)=>{
+                 if(taskDetail?.formType === "bundle"){
+                  dispatch(setBundleSubmissionData({data:res.data}));
+                 }
+                }));
+              } 
               dispatch(setFormSubmissionLoading(false));
             } else {
               if (err === "Bad Token" || err === "Token Expired") {
@@ -145,14 +152,14 @@ const ServiceFlowTaskDetails = React.memo(() => {
 
   useEffect(() => {
     if (task?.formUrl) {
-      getFormSubmissionData(task?.formUrl);
+      getFormSubmissionData(task?.formUrl,task);
     }
   }, [task?.formUrl, dispatch, getFormSubmissionData]);
 
   useEffect(() => {
     if (task?.formUrl && taskFormSubmissionReload) {
       dispatch(setFormSubmissionLoading(false));
-      getFormSubmissionData(task?.formUrl);
+      getFormSubmissionData(task?.formUrl,task);
       dispatch(reloadTaskFormSubmission(false));
     }
   }, [
@@ -176,7 +183,7 @@ const ServiceFlowTaskDetails = React.memo(() => {
         getBPMTaskDetail(task.id, (err, taskDetail) => {
           if (!err) {
             dispatch(setFormSubmissionLoading(true));
-            getFormSubmissionData(taskDetail?.formUrl);
+            getFormSubmissionData(taskDetail?.formUrl,taskDetail);
           }
         })
       ); // Refresh the Task Selected
@@ -255,25 +262,46 @@ const ServiceFlowTaskDetails = React.memo(() => {
           <TaskHeader />
           <Tabs defaultActiveKey="form" id="service-task-details" mountOnEnter>
             <Tab eventKey="form" title={t("Form")}>
-              <LoadingOverlay
-                active={task?.assignee !== currentUser}
-                styles={{
-                  overlay: (base) => ({
-                    ...base,
-                    background: "rgba(0, 0, 0, 0.2)",
-                    cursor: "not-allowed !important",
-                  }),
-                }}
-              >
-                {task?.assignee === currentUser ? (
-                  <FormEdit
-                    onFormSubmit={onFormSubmitCallback}
-                    onCustomEvent={onCustomEventCallBack}
-                  />
-                ) : (
-                  <FormView showPrintButton={false} />
-                )}
-              </LoadingOverlay>
+            
+              {
+                  task?.formType === "bundle" ? (
+                    task?.assignee === currentUser ? (
+                      <BundleEdit
+                        bundleIdProp={getFormIdSubmissionIdFromURL(task?.formUrl).formId}
+                        onCustomEvent={onCustomEventCallBack}
+                        onBundleSubmit={onFormSubmitCallback}
+                      />
+                    ) : (
+                      <BundleVIew showPrintButton={false} 
+                       bundleIdProp={getFormIdSubmissionIdFromURL(task?.formUrl).formId}/>
+                    )
+                  ) : (
+                    <LoadingOverlay
+                    active={task?.assignee !== currentUser}
+                    styles={{
+                      overlay: (base) => ({
+                        ...base,
+                        background: "rgba(0, 0, 0, 0.2)",
+                        cursor: "not-allowed !important",
+                      }),
+                    }}
+                  >
+                    {
+                      task?.assignee === currentUser ? (
+                        <FormEdit
+                          onFormSubmit={onFormSubmitCallback}
+                          onCustomEvent={onCustomEventCallBack}
+                        />
+                      ) : (
+                        <FormView showPrintButton={false} />
+                      )
+                    }
+                    </LoadingOverlay>
+                  )
+                }
+                 
+            
+          
             </Tab>
             <Tab eventKey="history" title={t("History")}>
               <History applicationId={task?.applicationId} />

@@ -16,7 +16,7 @@ const BundleView = ({ bundleIdProp , showPrintButton = true}) => {
   const { bundleId } = useParams();
   const dispatch = useDispatch();
   const bundleData = useSelector((state) => state.process.formProcessList);
-  const selectedForms = useSelector((state) => state.bundle.selectedForms);
+  const selectedForms = useSelector((state) => state.bundle.selectedForms || []);
   const bundleSubmission = useSelector(
     (state) => state.bundle.bundleSubmission
   );

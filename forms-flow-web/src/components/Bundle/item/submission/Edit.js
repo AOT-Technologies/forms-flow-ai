@@ -56,7 +56,7 @@ const Edit = ({ bundleIdProp, onBundleSubmit, submissionIdProp }) => {
   useEffect(() => {
     dispatch(setBundleLoading(true));
     dispatch(
-      getFormProcesses(bundleId, (err, data) => {
+      getFormProcesses(bundleIdProp || bundleId, (err, data) => {
         if (err) {
           dispatch(setFormFailureErrorData("form", err));
           dispatch(setBundleLoading(false));
@@ -147,7 +147,7 @@ const Edit = ({ bundleIdProp, onBundleSubmit, submissionIdProp }) => {
     } else {
       formioUpdateSubmission(
         bundleSubmission,
-        bundleId,
+        bundleIdProp || bundleId,
         submissionIdProp || submissionId,
         true
       )
@@ -176,10 +176,10 @@ const Edit = ({ bundleIdProp, onBundleSubmit, submissionIdProp }) => {
   return (
     <div className="p-3">
       <div className="d-flex align-items-center">
-        <h3 className="ml-3">
-          <span className="">
+        <h3 className="">
+          {/* <span className="">
             <i className="fa fa-folder-o" aria-hidden="true"></i> Bundle/
-          </span>
+          </span> */}
           {bundleData.formName}
         </h3>
       </div>
@@ -190,8 +190,8 @@ const Edit = ({ bundleIdProp, onBundleSubmit, submissionIdProp }) => {
         onConfirm={onConfirmSubmissionError}
       ></SubmissionError>
       <div>
-        {!selectedForms.length ? <Errors errors={error} /> : ""}
-        {selectedForms.length ? (
+        {!selectedForms?.length ? <Errors errors={error} /> : ""}
+        {selectedForms?.length ? (
           <BundleSubmissionView onSubmit={onSubmit} />
         ) : (
           ""

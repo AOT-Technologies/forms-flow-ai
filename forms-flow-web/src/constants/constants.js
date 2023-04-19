@@ -175,31 +175,31 @@ export const DRAFT_ENABLED =
     : false;
 
 export const ENABLE_FORMS_MODULE =
-  window._env_.ENABLE_FORMS_MODULE === "false" ||
-  window._env_.ENABLE_FORMS_MODULE === false
+  window._env_?.ENABLE_FORMS_MODULE === "false" ||
+  window._env_?.ENABLE_FORMS_MODULE === false
     ? false
     : true;
 
 export const ENABLE_TASKS_MODULE =
-  window._env_.ENABLE_TASKS_MODULE === "false" ||
-  window._env_.ENABLE_TASKS_MODULE === false
+  window._env_?.ENABLE_TASKS_MODULE === "false" ||
+  window._env_?.ENABLE_TASKS_MODULE === false
     ? false
     : true;
 
 export const ENABLE_DASHBOARDS_MODULE =
-  window._env_.ENABLE_DASHBOARDS_MODULE === "false" ||
-  window._env_.ENABLE_DASHBOARDS_MODULE === false
+  window._env_?.ENABLE_DASHBOARDS_MODULE === "false" ||
+  window._env_?.ENABLE_DASHBOARDS_MODULE === false
     ? false
     : true;
 
 export const ENABLE_PROCESSES_MODULE =
-  window._env_.ENABLE_PROCESSES_MODULE === "false" ||
-  window._env_.ENABLE_PROCESSES_MODULE === false
+  window._env_?.ENABLE_PROCESSES_MODULE === "false" ||
+  window._env_?.ENABLE_PROCESSES_MODULE === false
     ? false
     : true;
 
 export const ENABLE_APPLICATIONS_MODULE =
-  window._env_.ENABLE_APPLICATIONS_MODULE === "false" ||
-  window._env_.ENABLE_APPLICATIONS_MODULE === false
+  window._env_?.ENABLE_APPLICATIONS_MODULE === "false" ||
+  window._env_?.ENABLE_APPLICATIONS_MODULE === false
     ? false
     : true;

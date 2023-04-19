@@ -456,7 +456,7 @@ const Edit = React.memo(() => {
         dispatch(push(`${redirectUrl}formflow/${submittedData._id}/preview`));
       })
       .catch((err) => {
-        const error = err.response.data || err.message;
+        const error = err.response?.data || err.message;
         dispatch(setFormFailureErrorData("form", error));
       })
       .finally(() => {

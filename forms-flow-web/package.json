@@ -17,7 +17,10 @@
   "jest": {
     "transformIgnorePatterns": [
       "<rootDir>/node_modules/(?!d3)/"
-    ]
+    ],
+    "moduleNameMapper": {
+      "@formsflow/service": "<rootDir>/__mocks__/@formsflow/service.js"
+    }
   },
   "author": {
     "name": "Abhilash"

@@ -64,6 +64,10 @@ it("should render the View component without breaking", async () => {
       formDelete: { isFormSubmissionLoading: false },
       user: { lang: "" },
       draft: { draftSubmission: {}, lastUpdated: {} },
+      pubSub: {
+        publish: jest.fn,
+        subscribe: jest.fn
+      }
     })
   );
 
@@ -92,6 +96,10 @@ it("should render the public View component without breaking ", async () => {
       formDelete: { isFormSubmissionLoading: false },
       user: { lang: "" },
       draft: { draftSubmission: {}, lastUpdated: {} },
+      pubSub: {
+        publish: jest.fn,
+        subscribe: jest.fn
+      }
     })
   );
 
@@ -122,6 +130,10 @@ it("should call the custom submission when custom submission is on ", () => {
       formDelete: { isFormSubmissionLoading: false },
       user: { lang: "" },
       draft: { draftSubmission: {}, lastUpdated: {} },
+      pubSub: {
+        publish: jest.fn,
+        subscribe: jest.fn
+      }
     })
   );
   customSubmission.postCustomSubmission = jest.fn();
@@ -159,6 +171,10 @@ it("Should call the draft create when draft mode is on", () => {
       formDelete: { isFormSubmissionLoading: false },
       user: { lang: "", isAuthenticated: true },
       draft: { draftSubmission: {}, lastUpdated: {} },
+      pubSub: {
+        publish: jest.fn,
+        subscribe: jest.fn
+      }
     })
   );
   serviceSpy.mockImplementation((callback) => callback);
@@ -192,6 +208,10 @@ it("Should not call the draft create when draft mode is off", () => {
       formDelete: { isFormSubmissionLoading: false },
       user: { lang: "", isAuthenticated: true },
       draft: { draftSubmission: {}, lastUpdated: {} },
+      pubSub: {
+        publish: jest.fn,
+        subscribe: jest.fn
+      }
     })
   );
   serviceSpy.mockImplementation((callback) => callback);
@@ -221,6 +241,10 @@ it("Should not call the draft create when form status is not active", () => {
       formDelete: { isFormSubmissionLoading: false },
       user: { lang: "", isAuthenticated: true },
       draft: { draftSubmission: {}, lastUpdated: {} },
+      pubSub: {
+        publish: jest.fn,
+        subscribe: jest.fn
+      }
     })
   );
   serviceSpy.mockImplementation((callback) => callback);

@@ -240,6 +240,7 @@ export const RESOURCE_BUNDLES_EN = {
   "Changing the form workflow will not affect the existing applications. It will only update in the newly created applications. Press Save Changes to continue or cancel the changes.":"Changing the form workflow will not affect the existing applications. It will only update in the newly created applications. Press Save Changes to continue or cancel the changes.",
   "Form Workflow Association Saved.":"Form Workflow Association Saved.",
   "Form deleted successfully":"Form deleted successfully",
+  "Form deletion unsuccessful":"Form deletion unsuccessful",
   "Form process failed":"Form process failed",
   "Form unpublishing Failed":"Form unpublishing Failed",
   "All groups have access to the dashboard":"All groups have access to the dashboard",

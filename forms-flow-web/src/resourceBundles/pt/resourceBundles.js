@@ -240,6 +240,7 @@ export const RESOURCE_BUNDLES_PT = {
   "Save Changes":"Salvar alterações",
   "Changing the form workflow will not affect the existing applications. It will only update in the newly created applications. Press Save Changes to continue or cancel the changes.":"Alterar o fluxo de trabalho do formulário não afetará os aplicativos existentes. Ele só será atualizado nos aplicativos recém-criados. Pressione Salvar alterações para continuar ou cancelar as alterações.",
   "Form deleted successfully":"Formulário excluído com sucesso",
+  "Form deletion unsuccessful":"Falha na exclusão do formulário",
   "Form process failed":"Falha no processo do formulário",
   "Form unpublishing Failed":"Falha ao cancelar a publicação do formulário",
   "All groups have access to the dashboard":"Todos os grupos têm acesso ao painel",

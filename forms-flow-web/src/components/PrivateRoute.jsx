@@ -18,7 +18,16 @@ import {
   setUserDetails,
 } from "../actions/bpmActions";
 import { setLanguage } from "../actions/languageSetAction";
-import { CLIENT, STAFF_REVIEWER, STAFF_DESIGNER } from "../constants/constants";
+import {
+  CLIENT,
+  STAFF_REVIEWER,
+  STAFF_DESIGNER,
+  ENABLE_APPLICATIONS_MODULE,
+  ENABLE_DASHBOARDS_MODULE,
+  ENABLE_FORMS_MODULE,
+  ENABLE_PROCESSES_MODULE,
+  ENABLE_TASKS_MODULE,
+} from "../constants/constants";
 
 import Loading from "../containers/Loading";
 import NotFound from "./NotFound";
@@ -196,32 +205,53 @@ const PrivateRoute = React.memo((props) => {
         ),
     [userRoles]
   );
-
   return (
     <>
       {isAuth ? (
         <Suspense fallback={<Loading />}>
           <Switch>
-            <Route path={`${BASE_ROUTE}form`} component={Form} />
-            <DraftRoute path={`${BASE_ROUTE}draft`} component={Drafts} />
-            <DesignerRoute path={`${BASE_ROUTE}formflow`} component={Form} />
-            <DesignerRoute
-              path={`${BASE_ROUTE}processes`}
-              component={Modeler}
-            />
-            <ClientReviewerRoute
-              path={`${BASE_ROUTE}application`}
-              component={Application}
-            />
-            <ReviewerRoute
-              path={`${BASE_ROUTE}metrics`}
-              component={DashboardPage}
-            />
-            <ReviewerRoute path={`${BASE_ROUTE}task`} component={ServiceFlow} />
-            <ReviewerRoute
-              path={`${BASE_ROUTE}insights`}
-              component={InsightsPage}
-            />
+            {ENABLE_FORMS_MODULE && (
+              <Route path={`${BASE_ROUTE}form`} component={Form} />
+            )}
+            {ENABLE_FORMS_MODULE && (
+              <DesignerRoute path={`${BASE_ROUTE}formflow`} component={Form} />
+            )}
+            {ENABLE_APPLICATIONS_MODULE && (
+              <DraftRoute path={`${BASE_ROUTE}draft`} component={Drafts} />
+            )}
+            {ENABLE_APPLICATIONS_MODULE && (
+              <ClientReviewerRoute
+                path={`${BASE_ROUTE}application`}
+                component={Application}
+              />
+            )}
+
+            {ENABLE_PROCESSES_MODULE && (
+              <DesignerRoute
+                path={`${BASE_ROUTE}processes`}
+                component={Modeler}
+              />
+            )}
+
+            {ENABLE_DASHBOARDS_MODULE && (
+              <ReviewerRoute
+                path={`${BASE_ROUTE}metrics`}
+                component={DashboardPage}
+              />
+            )}
+            {ENABLE_DASHBOARDS_MODULE && (
+              <ReviewerRoute
+                path={`${BASE_ROUTE}insights`}
+                component={InsightsPage}
+              />
+            )}
+            {ENABLE_TASKS_MODULE && (
+              <ReviewerRoute
+                path={`${BASE_ROUTE}task`}
+                component={ServiceFlow}
+              />
+            )}
+
             <Route exact path={BASE_ROUTE}>
               <Redirect
                 to={

@@ -5,7 +5,7 @@ from __future__ import annotations
 from enum import Enum, unique
 from typing import List, Optional
 
-from sqlalchemy import JSON, or_
+from sqlalchemy import JSON, and_, or_
 from sqlalchemy.dialects.postgresql import ARRAY, ENUM
 
 from .audit_mixin import AuditDateTimeMixin, AuditUserMixin
@@ -112,3 +112,22 @@ class Authorization(AuditDateTimeMixin, AuditUserMixin, BaseModel, db.Model):
         if tenant:
             query = query.filter(Authorization.tenant == tenant)
         return query.one_or_none()
+
+    @classmethod
+    def find_all_resources_authorized(cls, auth_type, roles, tenant, user_name):
+        """Find all resources authorized to specific user/role or Accessible by all users/roles."""
+        role_condition = [Authorization.roles.contains([role]) for role in roles]
+        query = cls.query.filter(Authorization.auth_type == auth_type).filter(
+            or_(
+                *role_condition,
+                Authorization.user_name.contains(user_name),
+                and_(
+                    Authorization.user_name.is_(None),
+                    or_(Authorization.roles == {}, Authorization.roles.is_(None)),
+                ),
+            )
+        )
+
+        if tenant:
+            query = query.filter(Authorization.tenant == tenant)
+        return query.all()

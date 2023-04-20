@@ -170,18 +170,22 @@ class FormProcessMapper(AuditDateTimeMixin, AuditUserMixin, BaseModel, db.Model)
         limit=None,
         sort_by=None,
         sort_order=None,
+        form_ids=None,
         **filters,
     ):  # pylint: disable=too-many-arguments
         """Fetch all active and inactive forms which are not deleted."""
         # Get latest row for each form_id group
         filtered_form_query = (
             db.session.query(
-                func.max(cls.id).label("id")  # pylint: disable=not-callable
+                func.max(cls.id).label("id"),  # pylint: disable=not-callable
+                cls.form_id,
             )
             .group_by(cls.form_id)
             .all()
         )
-        filtered_form_ids = [data.id for data in filtered_form_query]
+        filtered_form_ids = [
+            data.id for data in filtered_form_query if data.form_id in form_ids
+        ]
         query = cls.filter_conditions(**filters)
         query = query.filter(
             and_(FormProcessMapper.deleted.is_(False)),

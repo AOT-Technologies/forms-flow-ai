@@ -33,8 +33,9 @@ import {
   UPDATE_EVENT_STATUS,
   getProcessDataReq,
 } from "../../../../constants/applicationConstants";
+import { CUSTOM_EVENT_TYPE } from "../../../ServiceFlow/constants/customEventTypes";
 
-const Edit = ({ bundleIdProp, onBundleSubmit, submissionIdProp }) => {
+const Edit = ({ bundleIdProp, onBundleSubmit, submissionIdProp, onCustomEvent }) => {
   const { bundleId, submissionId } = useParams();
   const dispatch = useDispatch();
   const bundleData = useSelector((state) => state.process.formProcessList);
@@ -52,6 +53,7 @@ const Edit = ({ bundleIdProp, onBundleSubmit, submissionIdProp }) => {
   const formSubmissionError = useSelector(
     (state) => state.formDelete.formSubmissionError
   );
+
 
   useEffect(() => {
     dispatch(setBundleLoading(true));
@@ -87,16 +89,16 @@ const Edit = ({ bundleIdProp, onBundleSubmit, submissionIdProp }) => {
     dispatch(setFormSubmissionError(ErrorDetails));
   };
 
-  const onSubmit = (bundleSubmission, bundleId) => {
+ 
+  const onSubmit = (bundleSubmission) => {
     const callBack = (err, submission) => {
       if (!err) {
         if (
           UPDATE_EVENT_STATUS.includes(applicationDetails.applicationStatus)
         ) {
-          const data = getProcessDataReq(applicationDetails);
-          data.data = submission?.data;
+          const data = getProcessDataReq(applicationDetails, submission?.data);
           dispatch(
-            updateApplicationEvent(data, () => {
+            updateApplicationEvent(applicationDetails.id, data, () => {
               dispatch(setBundleSubmitLoading(false));
               if (onBundleSubmit) {
                 onBundleSubmit();
@@ -153,7 +155,15 @@ const Edit = ({ bundleIdProp, onBundleSubmit, submissionIdProp }) => {
       )
         .then((res) => {
           dispatch(setBundleSubmissionData({ data: res.data.data }));
-          callBack(null, res.data);
+          const customEventData = {
+            type: CUSTOM_EVENT_TYPE.ACTION_COMPLETE,   
+            actionType: res.data?.data?.actionType
+          };
+          if(onCustomEvent){
+            onCustomEvent(customEventData);
+          }else{
+            callBack(null, res.data);
+          }
         })
         .catch(() => {
           const ErrorDetails = {

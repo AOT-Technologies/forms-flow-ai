@@ -193,7 +193,7 @@ const ServiceFlowTaskDetails = React.memo(() => {
     }
   };
 
-  const onCustomEventCallBack = (customEvent) => {
+  const onCustomEventCallBack = (customEvent) => { 
     switch (customEvent.type) {
       case CUSTOM_EVENT_TYPE.RELOAD_TASKS:
         reloadTasks();
@@ -209,7 +209,7 @@ const ServiceFlowTaskDetails = React.memo(() => {
     }
   };
 
-  const onFormSubmitCallback = (actionType = "") => {
+  const onFormSubmitCallback = (actionType = "") => { 
     if (bpmTaskId) {
       dispatch(setBPMTaskDetailLoader(true));
       const { formId, submissionId } = getFormIdSubmissionIdFromURL(
@@ -268,6 +268,7 @@ const ServiceFlowTaskDetails = React.memo(() => {
                     task?.assignee === currentUser ? (
                       <BundleEdit
                         bundleIdProp={getFormIdSubmissionIdFromURL(task?.formUrl).formId}
+                        submissionIdProp={getFormIdSubmissionIdFromURL(task?.formUrl).submissionId}
                         onCustomEvent={onCustomEventCallBack}
                         onBundleSubmit={onFormSubmitCallback}
                       />

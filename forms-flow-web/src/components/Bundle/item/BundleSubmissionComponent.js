@@ -182,7 +182,7 @@ const BundleSubmissionComponent = ({ readOnly, onSubmit ,onChange}) => {
           spinner
           text={"Loading..."}
         >
-          <div className="border py-2">
+          <div className="py-2">
             <Stepper activeStep={formStep.step} alternativeLabel>
               {selectedForms?.map((form, index) => (
                 <Step key={form.id}>

@@ -185,15 +185,11 @@ const Edit = ({ bundleIdProp, onBundleSubmit, submissionIdProp, onCustomEvent })
   }
   return (
     <div className="p-3">
-      <div className="d-flex align-items-center">
-        <h3 className="">
-          {/* <span className="">
-            <i className="fa fa-folder-o" aria-hidden="true"></i> Bundle/
-          </span> */}
-          {bundleData.formName}
-        </h3>
+         <div className="d-flex align-items-center justify-content-between">
+        <h3 className="task-head px-2 py-2">{bundleData.formName}</h3>
       </div>
       <hr />
+    
       <SubmissionError
         modalOpen={formSubmissionError.modalOpen}
         message={formSubmissionError.message}

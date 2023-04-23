@@ -107,7 +107,7 @@ const BundleSubmissionComponent = ({ readOnly, onSubmit ,onChange}) => {
       executeRule({ data: submission.data }, bundleData.id)
         .then((res) => {
           let changed = null;
-          if (res.data.length !== selectedForms.length) {
+          if (res.data?.length !== selectedForms?.length) {
             changed = checkFormStepChange(res.data);
             if (changed == null) {
               changed = formStep.step;
@@ -135,13 +135,13 @@ const BundleSubmissionComponent = ({ readOnly, onSubmit ,onChange}) => {
       dispatch(setBundleSubmitLoading(false));
       return;
     }
-    if (valid && index === selectedForms.length - 1 && formValidationNotOver) {
+    if (valid && index === selectedForms?.length - 1 && formValidationNotOver) {
       formValidationNotOver = false;
       const response = await executeRule(
         { data: submission.data },
         bundleData.id
       );
-      if (response && response.data.length !== selectedForms.length) {
+      if (response && response.data?.length !== selectedForms?.length) {
         const changed = checkFormStepChange(response.data);
         dispatch(setBundleSelectedForms(response.data));
         setFormStep({ step: changed });
@@ -225,19 +225,19 @@ const BundleSubmissionComponent = ({ readOnly, onSubmit ,onChange}) => {
                       Previous Form
                     </button>
                   )}
-                  {readOnly && selectedForms.length - 1 == formStep.step ? (
+                  {readOnly && selectedForms?.length - 1 == formStep.step ? (
                     ""
                   ) : (
                     <button
                       onClick={
-                        selectedForms.length - 1 === formStep.step
+                        selectedForms?.length - 1 === formStep.step
                           ? handleSubmit
                           : handleNextForm
                       }
                       disabled={bundleSubmitLoading}
                       className="btn btn-primary"
                     >
-                      {selectedForms.length - 1 === formStep.step
+                      {selectedForms?.length - 1 === formStep.step
                         ? "Submit Form"
                         : "Next Form"}
                     </button>

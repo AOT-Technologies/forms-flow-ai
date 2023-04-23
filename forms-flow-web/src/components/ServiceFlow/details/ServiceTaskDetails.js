@@ -261,7 +261,7 @@ const ServiceFlowTaskDetails = React.memo(() => {
         <LoadingOverlay active={isTaskUpdating} spinner text={t("Loading...")}>
           <TaskHeader />
           <Tabs defaultActiveKey="form" id="service-task-details" mountOnEnter>
-            <Tab eventKey="form" title={t("Form")}>
+            <Tab eventKey="form" title={t(task?.formType === "bundle" ? "Forms" : "Form")}>
             
               {
                   task?.formType === "bundle" ? (

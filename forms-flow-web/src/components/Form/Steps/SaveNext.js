@@ -11,6 +11,7 @@ const SaveNext = React.memo(
     isLastStep,
     submitData,
     modified,
+    isDisabled
   }) => {
     const applicationCount = useSelector(
       (state) => state.process.applicationCount
@@ -43,7 +44,7 @@ const SaveNext = React.memo(
         >
           {t("Back")}
         </Buttons>
-        <Buttons variant="primary" onClick={handleChanges}>
+        <Buttons variant="primary" onClick={handleChanges} disabled={isDisabled}>
           {isLastStep ? t("Save") : t("Next")}
         </Buttons>
         <Modal show={show} onHide={handleClose}>

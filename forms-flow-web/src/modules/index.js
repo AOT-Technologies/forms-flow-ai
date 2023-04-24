@@ -18,6 +18,7 @@ import tenantReducer from "./tenantReducer";
 import draftSubmission from "./draftReducer";
 import formRestore from "./RestoreFormReducer";
 import pubSubReducer from "./pubSubReducer";
+import userAuthorization from "./authorizationReducer";
 
 const createRootReducer = (history) =>
   combineReducers({
@@ -46,7 +47,8 @@ const createRootReducer = (history) =>
     dashboardReducer,
     tenants: tenantReducer,
     draft: draftSubmission,
-    pubSub: pubSubReducer
+    pubSub: pubSubReducer,
+    userAuthorization:userAuthorization
   });
 
 export default createRootReducer;

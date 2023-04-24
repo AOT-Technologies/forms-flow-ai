@@ -33,8 +33,7 @@ import {
   UPDATE_EVENT_STATUS,
   getProcessDataReq,
 } from "../../../../constants/applicationConstants";
-import { CUSTOM_EVENT_TYPE } from "../../../ServiceFlow/constants/customEventTypes";
-
+ 
 const Edit = ({ bundleIdProp, onBundleSubmit, submissionIdProp, onCustomEvent }) => {
   const { bundleId, submissionId } = useParams();
   const dispatch = useDispatch();
@@ -90,7 +89,7 @@ const Edit = ({ bundleIdProp, onBundleSubmit, submissionIdProp, onCustomEvent })
   };
 
  
-  const onSubmit = (bundleSubmission) => {
+  const onSubmit = (bundleSubmission,bundleId,customEventData) => {
     const callBack = (err, submission) => {
       if (!err) {
         if (
@@ -155,11 +154,7 @@ const Edit = ({ bundleIdProp, onBundleSubmit, submissionIdProp, onCustomEvent })
       )
         .then((res) => {
           dispatch(setBundleSubmissionData({ data: res.data.data }));
-          const customEventData = {
-            type: CUSTOM_EVENT_TYPE.ACTION_COMPLETE,   
-            actionType: res.data?.data?.actionType
-          };
-          if(onCustomEvent){
+          if(onCustomEvent && customEventData){
             onCustomEvent(customEventData);
           }else{
             callBack(null, res.data);

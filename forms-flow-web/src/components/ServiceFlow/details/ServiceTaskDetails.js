@@ -265,17 +265,22 @@ const ServiceFlowTaskDetails = React.memo(() => {
             
               {
                   task?.formType === "bundle" ? (
-                    task?.assignee === currentUser ? (
-                      <BundleEdit
-                        bundleIdProp={getFormIdSubmissionIdFromURL(task?.formUrl).formId}
-                        submissionIdProp={getFormIdSubmissionIdFromURL(task?.formUrl).submissionId}
-                        onCustomEvent={onCustomEventCallBack}
-                        onBundleSubmit={onFormSubmitCallback}
-                      />
-                    ) : (
-                      <BundleVIew showPrintButton={false} 
-                       bundleIdProp={getFormIdSubmissionIdFromURL(task?.formUrl).formId}/>
-                    )
+                   <div style={{marginBottom:"100px"}}>
+                    {
+                       task?.assignee === currentUser ? (
+                        <BundleEdit
+                          bundleIdProp={getFormIdSubmissionIdFromURL(task?.formUrl).formId}
+                          submissionIdProp=
+                          {getFormIdSubmissionIdFromURL(task?.formUrl).submissionId}
+                          onCustomEvent={onCustomEventCallBack}
+                          onBundleSubmit={onFormSubmitCallback}
+                        />
+                      ) : (
+                        <BundleVIew showPrintButton={false} 
+                         bundleIdProp={getFormIdSubmissionIdFromURL(task?.formUrl).formId}/>
+                      )
+                    }
+                   </div>
                   ) : (
                     <LoadingOverlay
                     active={task?.assignee !== currentUser}

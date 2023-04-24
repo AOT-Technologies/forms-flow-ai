@@ -170,6 +170,10 @@ const BundleSubmissionComponent = ({ readOnly, onSubmit ,onChange}) => {
     }
   };
 
+  const onCustomEvent = (customEventData)=>{
+    onSubmit({ data: submission.data }, bundleData.formId,customEventData);
+  };
+
   if (!form.title && getFormLoading) {
     return <Loading />;
   }
@@ -204,6 +208,7 @@ const BundleSubmissionComponent = ({ readOnly, onSubmit ,onChange}) => {
                       ...options,
                       highlightErrors: true,
                     }}
+                    onCustomEvent={onCustomEvent}
 
                     ref={formRef}
                     submission={bundleSubmission}

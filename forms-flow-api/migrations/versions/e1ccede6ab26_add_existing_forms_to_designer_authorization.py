@@ -1,5 +1,5 @@
-"""Script to set current forms accessible to all clients and designers.
-Existing forms are added to authorization table - DESIGNER, FORM
+"""Script to set current forms accessible to all designers.
+Existing forms are added to authorization table with auth_type DESIGNER.
 
 Revision ID: e1ccede6ab26
 Revises: 7dcad446d35c
@@ -30,7 +30,6 @@ def upgrade():
         for row in forms:
             # insert the values into the target table
             conn.execute(sa.text(insert_stmt), {'created': 'now()', 'created_by': 'designer','tenant': row[2], 'auth_type':'DESIGNER','resource_id':row[0]})
-            conn.execute(sa.text(insert_stmt), {'created': 'now()', 'created_by': 'designer','tenant': row[2], 'auth_type':'FORM','resource_id':row[0]})
     # ### end Alembic commands ###
 
 

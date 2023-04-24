@@ -115,3 +115,37 @@ class UserAuthorizationList(Resource):
         List all authorization for the current user based on authorization type.
         """
         return auth_service.get_user_authorizations(auth_type.upper()), HTTPStatus.OK
+
+
+@cors_preflight("GET, OPTIONS")
+@API.route("/<string:auth_type>/<string:resource_id>", methods=["GET", "OPTIONS"])
+@API.doc(
+    params={
+        "auth_type": "Type of authorization",
+        "resource_id": "Authorization Details corresponding to resource id.",
+    }
+)
+class AuthorizationDetail(Resource):
+    """Resource to fetch Authorization Details corresponding to resource id."""
+
+    @staticmethod
+    @API.doc("Authorization detail by Id")
+    @auth.require
+    @profiletime
+    @API.doc(
+        responses={
+            200: "OK:- Successful request.",
+            401: "UNAUTHORIZED:- Authorization header not provided or an invalid token passed.",
+        },
+        model=authorization_model,
+    )
+    def get(auth_type: str, resource_id: str):
+        """
+        Fetch Authorization details by resource id.
+
+        Fetch Authorization details by resource id based on authorization type.
+        """
+        return (
+            auth_service.get_resource_by_id(auth_type.upper(), resource_id),
+            HTTPStatus.OK,
+        )

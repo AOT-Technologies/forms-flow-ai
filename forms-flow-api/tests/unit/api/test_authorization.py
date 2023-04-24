@@ -20,13 +20,14 @@ class TestAuthorizationResource:
             "resourceDetails": {"name": "My Dashboard"},
             "roles": ["clerk"],
         }
+        auth_response = {**auth_payload, "userName": None}
 
         response = client.post(
             "/authorizations/dashboard", headers=headers, data=json.dumps(auth_payload)
         )
 
         assert response.status_code == 200
-        assert response.json == auth_payload
+        assert response.json == auth_response
 
         # Create another auth with same resourceId and assert previous one is over written.
         auth_payload = {
@@ -34,14 +35,14 @@ class TestAuthorizationResource:
             "resourceDetails": {"name": "My Dashboard"},
             "roles": ["clerk", "approver", "supervisor"],
         }
-
+        auth_response = {**auth_payload, "userName": None}
         client.post(
             "/authorizations/dashboard", headers=headers, data=json.dumps(auth_payload)
         )
 
         get_response = client.get("/authorizations/dashboard", headers=headers)
         assert get_response.status_code == 200
-        assert get_response.json[0] == auth_payload
+        assert get_response.json[0] == auth_response
 
     def test_current_user_dashboard_authorization(self, app, client, session, jwt):
         """Assert that authorization returns based on the user's role."""
@@ -103,12 +104,13 @@ class TestAuthorizationResource:
             "resourceDetails": {"name": "Clerk Filter", "conditions": {}},
             "roles": ["clerk"],
         }
+        auth_response = {**auth_payload, "userName": None}
         response = client.post(
             "/authorizations/filter", headers=headers, data=json.dumps(auth_payload)
         )
 
         assert response.status_code == 200
-        assert response.json == auth_payload
+        assert response.json == auth_response
 
         # Create another auth with same resourceId and assert previous one is over written.
         auth_payload = {
@@ -116,13 +118,14 @@ class TestAuthorizationResource:
             "resourceDetails": {"name": "Clerk Filter 2", "conditions": {}},
             "roles": ["clerk", "approver", "supervisor"],
         }
+        auth_response = {**auth_payload, "userName": None}
         client.post(
             "/authorizations/filter", headers=headers, data=json.dumps(auth_payload)
         )
         get_response = client.get("/authorizations/filter", headers=headers)
 
         assert get_response.status_code == 200
-        assert get_response.json[0] == auth_payload
+        assert get_response.json[0] == auth_response
 
     def test_create_form_authorization(self, app, client, session, jwt):
         """Assert that create formid authorization returns correct response."""
@@ -136,13 +139,13 @@ class TestAuthorizationResource:
             "resourceDetails": {},
             "roles": ["/formsflow/formsflow-reviewer"],
         }
-
+        auth_response = {**auth_payload, "userName": None}
         response = client.post(
             "/authorizations/form", headers=headers, data=json.dumps(auth_payload)
         )
 
         assert response.status_code == 200
-        assert response.json == auth_payload
+        assert response.json == auth_response
 
     def test_form_authorization_list(self, app, client, session, jwt):
         """Assert formid authorization list API when passed with valid token returns 200 status code."""

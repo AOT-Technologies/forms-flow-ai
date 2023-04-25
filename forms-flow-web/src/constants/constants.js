@@ -34,7 +34,7 @@ const CUSTOM_SUBMISSION_ENABLED_VARIABLE =
   "";
 export const CUSTOM_SUBMISSION_ENABLE =
   CUSTOM_SUBMISSION_ENABLED_VARIABLE === "true" ||
-    CUSTOM_SUBMISSION_ENABLED_VARIABLE === true
+  CUSTOM_SUBMISSION_ENABLED_VARIABLE === true
     ? true
     : false;
 //keycloak
@@ -49,13 +49,13 @@ const MULTITENANCY_ENABLED_VARIABLE =
   false;
 export const PUBLIC_WORKFLOW_ENABLED =
   (window._env_ && window._env_.REACT_APP_PUBLIC_WORKFLOW_ENABLED) === "true" ||
-    process.env.REACT_APP_PUBLIC_WORKFLOW_ENABLED === "true"
+  process.env.REACT_APP_PUBLIC_WORKFLOW_ENABLED === "true"
     ? true
     : false;
 
 export const MULTITENANCY_ENABLED =
   MULTITENANCY_ENABLED_VARIABLE === "true" ||
-    MULTITENANCY_ENABLED_VARIABLE === true
+  MULTITENANCY_ENABLED_VARIABLE === true
     ? true
     : false;
 
@@ -76,7 +76,6 @@ export const CLIENT = "formsflow-client";
 export const STAFF_DESIGNER = "formsflow-designer";
 export const STAFF_REVIEWER = "formsflow-reviewer";
 export const ANONYMOUS_USER = "anonymous";
-
 
 export const OPERATIONS = {
   insert: {
@@ -174,3 +173,33 @@ export const DRAFT_ENABLED =
   DRAFT_ENABLED_VARIABLE === "true" || DRAFT_ENABLED_VARIABLE === true
     ? true
     : false;
+
+export const ENABLE_FORMS_MODULE =
+  window._env_.ENABLE_FORMS_MODULE === "false" ||
+  window._env_.ENABLE_FORMS_MODULE === false
+    ? false
+    : true;
+
+export const ENABLE_TASKS_MODULE =
+  window._env_.ENABLE_TASKS_MODULE === "false" ||
+  window._env_.ENABLE_TASKS_MODULE === false
+    ? false
+    : true;
+
+export const ENABLE_DASHBOARDS_MODULE =
+  window._env_.ENABLE_DASHBOARDS_MODULE === "false" ||
+  window._env_.ENABLE_DASHBOARDS_MODULE === false
+    ? false
+    : true;
+
+export const ENABLE_PROCESSES_MODULE =
+  window._env_.ENABLE_PROCESSES_MODULE === "false" ||
+  window._env_.ENABLE_PROCESSES_MODULE === false
+    ? false
+    : true;
+
+export const ENABLE_APPLICATIONS_MODULE =
+  window._env_.ENABLE_APPLICATIONS_MODULE === "false" ||
+  window._env_.ENABLE_APPLICATIONS_MODULE === false
+    ? false
+    : true;

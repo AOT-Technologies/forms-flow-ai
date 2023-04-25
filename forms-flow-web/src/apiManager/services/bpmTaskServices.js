@@ -1,12 +1,7 @@
 /* istanbul ignore file */
-import {
-  httpGETRequest,
-  httpPOSTRequest,
-  httpPUTRequest,
-  httpPOSTRequestWithHAL,
-} from "../httpRequestHandler";
+
 import API from "../endpoints";
-import UserService from "../../services/UserService";
+import { StorageService, RequestService } from "@formsflow/service";
 import {
   setBPMTaskLoader,
   setBPMTaskList,
@@ -45,7 +40,11 @@ export const fetchServiceTaskList = (
   apiUrlgetTaskList = `${apiUrlgetTaskList}?firstResult=${firstResult}&maxResults=${MAX_RESULTS}`;
 
   return (dispatch) => {
-    httpPOSTRequestWithHAL(apiUrlgetTaskList, reqData, UserService.getToken())
+    RequestService.httpPOSTRequestWithHAL(
+      apiUrlgetTaskList,
+      reqData,
+      StorageService.get(StorageService.User.AUTH_TOKEN)
+    )
       .then((res) => {
         if (res.data) {
           let responseData = res.data;
@@ -102,9 +101,13 @@ export const fetchServiceTaskList = (
 export const fetchProcessDefinitionList = (...rest) => {
   const done = rest.length ? rest[0] : () => {};
   return (dispatch) => {
-    httpGETRequest(API.GET_BPM_PROCESS_LIST, {}, UserService.getToken())
+    RequestService.httpGETRequest(
+      API.GET_BPM_PROCESS_LIST,
+      {},
+      StorageService.get(StorageService.User.AUTH_TOKEN)
+    )
       .then((res) => {
-        if(res?.data) {
+        if (res?.data) {
           console.log("processs",res.data);
           dispatch(setBPMProcessList(res.data));
           //dispatch(setBPMLoader(false));
@@ -129,7 +132,11 @@ export const fetchUserList = (...rest) => {
   /*TODO search with query /user?lastNameLike=%${lastName}%&memberOfGroup=${group}*/
   const getReviewerUserListApi = `${API.GET_API_USER_LIST}?memberOfGroup=${REVIEWER_GROUP}`;
   return (dispatch) => {
-    httpGETRequest(getReviewerUserListApi, {}, UserService.getToken())
+    RequestService.httpGETRequest(
+      getReviewerUserListApi,
+      {},
+      StorageService.get(StorageService.User.AUTH_TOKEN)
+    )
       .then((res) => {
         if (res.data) {
           dispatch(setBPMUserList(res.data));
@@ -158,11 +165,14 @@ export const fetchUserListWithSearch = ({ searchType, query }, ...rest) => {
   if (searchType && query) {
     //getReviewerUserListApi = `${getReviewerUserListApi}&${searchType}=%${query||""}%`
     paramData[searchType] = `${query}`;
-    
   }
 
   return (dispatch) => {
-    httpGETRequest(API.GET_API_USER_LIST, paramData, UserService.getToken())
+    RequestService.httpGETRequest(
+      API.GET_API_USER_LIST,
+      paramData,
+      StorageService.get(StorageService.User.AUTH_TOKEN)
+    )
       .then((res) => {
         if (res.data?.data) {
           dispatch(setBPMUserList(res.data?.data));
@@ -187,7 +197,11 @@ export const fetchFilterList = (...rest) => {
   const done = rest.length ? rest[0] : () => {};
   const getTaskFiltersAPI = `${API.GET_BPM_FILTERS}?resourceType=Task&itemCount=true`;
   return (dispatch) => {
-    httpGETRequest(getTaskFiltersAPI, {}, UserService.getToken())
+    RequestService.httpGETRequest(
+      getTaskFiltersAPI,
+      {},
+      StorageService.get(StorageService.User.AUTH_TOKEN)
+    )
       .then((res) => {
         if (res.data) {
           dispatch(setBPMFilterList(res.data));
@@ -225,8 +239,8 @@ export const getBPMTaskDetail = (taskId, ...rest) => {
     taskId
   );
 
-  const taskDetailReq = httpGETRequest(apiUrlgetTaskDetail);
-  const taskDetailsWithVariableReq = httpGETRequest(apiUrlgetTaskVariables);
+  const taskDetailReq = RequestService.httpGETRequest(apiUrlgetTaskDetail);
+  const taskDetailsWithVariableReq = RequestService.httpGETRequest(apiUrlgetTaskVariables);
 
   return (dispatch) => {
     axios
@@ -265,7 +279,7 @@ export const getBPMGroups = (taskId, ...rest) => {
   const apiUrlgetGroups = replaceUrl(API.BPM_GROUP, "<task_id>", taskId);
 
   return (dispatch) => {
-    httpGETRequest(`${apiUrlgetGroups}?type=candidate`)
+    RequestService.httpGETRequest(`${apiUrlgetGroups}?type=candidate`)
       .then((responses) => {
         if (responses?.data) {
           const groups = responses.data;
@@ -294,7 +308,7 @@ export const removeBPMGroup = (taskId, group, ...rest) => {
   );
 
   return (dispatch) => {
-    httpPOSTRequest(apiUrlDeleteGroup, group)
+    RequestService.httpPOSTRequest(apiUrlDeleteGroup, group)
       .then((responses) => {
         if (responses?.data) {
           dispatch(setBPMTaskDetailLoader(false));
@@ -321,7 +335,7 @@ export const addBPMGroup = (taskId, group, ...rest) => {
   const apiUrlAddGroup = replaceUrl(API.BPM_GROUP, "<task_id>", taskId);
 
   return (dispatch) => {
-    httpPOSTRequest(apiUrlAddGroup, group)
+    RequestService.httpPOSTRequest(apiUrlAddGroup, group)
       .then((responses) => {
         if (responses?.data) {
           dispatch(setBPMTaskDetailLoader(false));
@@ -346,7 +360,7 @@ export const claimBPMTask = (taskId, user, ...rest) => {
   const done = rest.length ? rest[0] : () => {};
   const apiUrlClaimTask = replaceUrl(API.CLAIM_BPM_TASK, "<task_id>", taskId);
   return (dispatch) => {
-    httpPOSTRequest(apiUrlClaimTask, { userId: user })
+    RequestService.httpPOSTRequest(apiUrlClaimTask, { userId: user })
       .then((res) => {
         done(null, res.data);
       })
@@ -367,7 +381,7 @@ export const updateAssigneeBPMTask = (taskId, user, ...rest) => {
     taskId
   );
   return (dispatch) => {
-    httpPOSTRequest(apiUrlClaimTask, { userId: user })
+    RequestService.httpPOSTRequest(apiUrlClaimTask, { userId: user })
       .then((res) => {
         done(null, res.data);
       })
@@ -388,7 +402,7 @@ export const updateBPMTask = (taskId, task, ...rest) => {
     taskId
   );
   return (dispatch) => {
-    httpPUTRequest(taskDetailAPI, task)
+    RequestService.httpPUTRequest(taskDetailAPI, task)
       .then((res) => {
         // if (res.status === 200) {
         //TODO REMOVE
@@ -411,7 +425,7 @@ export const unClaimBPMTask = (taskId, ...rest) => {
     taskId
   );
   return (dispatch) => {
-    httpPOSTRequest(apiUrlUnClaimTask)
+    RequestService.httpPOSTRequest(apiUrlUnClaimTask)
       .then((res) => {
         // if (res.status === 204) {
         //TODO REMOVE
@@ -434,7 +448,7 @@ export const onBPMTaskFormSubmit = (taskId, formReq, ...rest) => {
     taskId
   );
   return (dispatch) => {
-    httpPOSTRequest(apiUrlOnFormSubmit, formReq)
+    RequestService.httpPOSTRequest(apiUrlOnFormSubmit, formReq)
       .then((res) => {
         // if (res.status === 204) {
         //TODO REMOVE

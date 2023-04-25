@@ -277,7 +277,7 @@ const FormListModal = React.memo(
                                     }}
                                   />
                                 </StyledTableCell>
-                                <StyledTableCell>
+                                <StyledTableCell style={{width : "25rem",maxWidth: "23rem", whiteSpace: "normal", wordBreak: "break-word"}}>
                                   {form.formName}
                                 </StyledTableCell>
                                 <StyledTableCell>

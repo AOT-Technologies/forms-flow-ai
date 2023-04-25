@@ -22,7 +22,7 @@ import {
 } from "../../actions/formActions";
 import { addTenantkey } from "../../helper/helper";
 import { formCreate } from "../../apiManager/services/FormServices";
-import {FormControlLabel } from "@material-ui/core"; 
+import {FormControlLabel } from "@material-ui/core";
 // reducer from react-formio code
 const reducer = (form, { type, value }) => {
   const formCopy = _cloneDeep(form);
@@ -64,7 +64,7 @@ const Create = React.memo(() => {
   const submissionAccess = useSelector((state) => state.user?.submissionAccess || []);
   const redirectUrl = MULTITENANCY_ENABLED ? `/tenant/${tenantKey}/` : "/";
   const [canBundle, setCanBundle] = useState(false);
-  
+
   const { t } = useTranslation();
   useEffect(() => {
     dispatch(clearFormError("form"));
@@ -160,7 +160,7 @@ const Create = React.memo(() => {
         canBundle:canBundle,
         formRevisionNumber: "V1", // to do
         anonymous: formAccess[0]?.roles.includes(roleIds.ANONYMOUS),
-         
+
       };
       dispatch(setFormSuccessData("form", form));
       dispatch(
@@ -224,20 +224,20 @@ const Create = React.memo(() => {
                 {t("Title")}
               </label>
               <input
-                 
+
                 type="text"
                 className="form-control"
                 id="title"
                 placeholder={t("Enter the form title")}
                 value={form.title || ""}
-                
+
                 onChange={(event) => {
-                  
+
                   handleChange("title", event);
                 }
                 }
               />
-               
+
             </div>
           </div>
           <div className="col-lg-4 col-md-4 col-sm-4">

@@ -1,11 +1,4 @@
-import {
-  httpDELETERequest,
-  httpGETRequest,
-  httpPOSTRequest,
-  httpPOSTRequestWithoutToken,
-  httpPUTRequest,
-  httpPUTRequestWithoutToken,
-} from "../httpRequestHandler";
+import { RequestService } from "@formsflow/service";
 import API from "../endpoints";
 import { replaceUrl } from "../../helper/helper";
 import {
@@ -24,7 +17,7 @@ export const draftCreate = (data, ...rest) => {
   const done = rest.length ? rest[0] : () => {};
   const URL = API.DRAFT_BASE;
   return (dispatch) => {
-    httpPOSTRequest(URL, data)
+    RequestService.httpPOSTRequest(URL, data)
       .then((res) => {
         if (res.data) {
           dispatch(setDraftSubmission(res.data));
@@ -46,7 +39,7 @@ export const draftUpdate = (data, ...rest) => {
   const done = draftId && rest.length > 1 ? rest[1] : () => {};
   const URL = replaceUrl(API.DRAFT_UPDATE, "<draft_id>", draftId);
   return (dispatch) => {
-    httpPUTRequest(URL, data)
+    RequestService.httpPUTRequest(URL, data)
       .then((res) => {
         if (res.data) {
           done(null, res.data);
@@ -66,7 +59,7 @@ export const draftSubmit = (data, ...rest) => {
   const done = draftId && rest.length > 1 ? rest[1] : () => {};
   const URL = replaceUrl(API.DRAFT_APPLICATION_CREATE, "<draft_id>", draftId);
   return () => {
-    httpPUTRequest(URL, data)
+    RequestService.httpPUTRequest(URL, data)
       .then((res) => {
         if (res.data) {
           done(null, res.data);
@@ -84,7 +77,7 @@ export const publicDraftCreate = (data, ...rest) => {
   const done = rest.length ? rest[0] : () => {};
   const URL = API.DRAFT_PUBLIC_CREATE;
   return (dispatch) => {
-    httpPOSTRequestWithoutToken(URL, data)
+    RequestService.httpPOSTRequestWithoutToken(URL, data)
       .then((res) => {
         if (res.data) {
           dispatch(setDraftSubmission(res.data));
@@ -106,7 +99,7 @@ export const publicDraftUpdate = (data, ...rest) => {
   const done = draftId && rest.length > 1 ? rest[1] : () => {};
   const URL = replaceUrl(API.DRAFT_UPDATE_PUBLIC, "<draft_id>", draftId);
   return (dispatch) => {
-    httpPUTRequestWithoutToken(URL, data)
+    RequestService.httpPUTRequestWithoutToken(URL, data)
       .then((res) => {
         if (res.data) {
           done(null, res.data);
@@ -130,7 +123,7 @@ export const publicDraftSubmit = (data, ...rest) => {
     draftId
   );
   return () => {
-    httpPUTRequestWithoutToken(URL, data)
+    RequestService.httpPUTRequestWithoutToken(URL, data)
       .then((res) => {
         if (res.data) {
           done(null, res.data);
@@ -148,7 +141,7 @@ export const fetchDrafts = (pageNo = 1, limit = 5, ...rest) => {
   const done = rest.length ? rest[0] : () => {};
   const URL = `${API.DRAFT_BASE}?pageNo=${pageNo}&limit=${limit}&sortBy=id&sortOrder=desc`;
   return (dispatch) => {
-    httpGETRequest(URL)
+    RequestService.httpGETRequest(URL)
       .then((res) => {
         if (res.data) {
           dispatch(setDraftlist(res.data.drafts));
@@ -168,7 +161,7 @@ export const getDraftById = (draftId, ...rest) => {
   const done = rest.length ? rest[0] : () => {};
   const apiUrlgetDraft = `${API.DRAFT_BASE}/${draftId}`;
   return (dispatch) => {
-    httpGETRequest(apiUrlgetDraft)
+    RequestService.httpGETRequest(apiUrlgetDraft)
       .then((res) => {
         if (res.data && Object.keys(res.data).length) {
           const draft = res.data;
@@ -227,7 +220,7 @@ export const FilterDrafts = (params, ...rest) => {
       url += `&sortBy=${params.sortField}&sortOrder=${params.sortOrder}`;
     }
 
-    httpGETRequest(url)
+    RequestService.httpGETRequest(url)
       .then((res) => {
         if (res.data) {
           const drafts = res.data.drafts || [];
@@ -248,5 +241,5 @@ export const FilterDrafts = (params, ...rest) => {
 
 export const deleteDraftbyId = (draftId) => {
   let url = `${API.DRAFT_BASE}/${draftId}`;
-  return httpDELETERequest(url);
+  return RequestService.httpDELETERequest(url);
 };

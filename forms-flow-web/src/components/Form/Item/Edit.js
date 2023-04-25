@@ -40,7 +40,7 @@ import {
 import { Checkbox, FormControlLabel } from "@material-ui/core";
 import { manipulatingFormData } from "../../../apiManager/services/formFormatterService";
 import SaveAsNewVersionConfirmationModal from "./SaveAsNewVersionConfirmationModal";
-import LoadingOverlay from "react-loading-overlay"; 
+import LoadingOverlay from "react-loading-overlay";
 const reducer = (form, { type, value }) => {
   const formCopy = _cloneDeep(form);
   switch (type) {
@@ -102,7 +102,7 @@ const Edit = React.memo(() => {
   const [show, setShow] = useState(false);
   const [currentFormLoading, setCurrentFormLoading] = useState(false);
   const [saveAsNewVersionselected, setSaveAsNewVersion] = useState(false);
-  const [confirmModalShow, setConfirmModalShow] = useState(false); 
+  const [confirmModalShow, setConfirmModalShow] = useState(false);
   const handleClose = () => setShow(false);
   const handleShow = () => setShow(true);
   const handleConfirmModalChange = () => setConfirmModalShow(!confirmModalShow);
@@ -111,6 +111,32 @@ const Edit = React.memo(() => {
     setShow(false);
     saveFormData();
   };
+
+  useEffect(() => {
+    if (processListData?.parentFormId && !formHistory.length) {
+      getFormHistory(processListData?.parentFormId).then((res) => {
+        dispatch(setFormHistories(res.data));
+      }).catch(() => {
+        setFormHistories([]);
+      });
+    }
+  }, [processListData]);
+
+
+
+
+  useEffect(() => {
+    if (processListData?.parentFormId && !formHistory.length) {
+      getFormHistory(processListData?.parentFormId).then((res) => {
+        dispatch(setFormHistories(res.data));
+      }).catch(() => {
+        setFormHistories([]);
+      });
+    }
+  }, [processListData]);
+
+
+
 
   useEffect(() => {
     if (processListData?.parentFormId && !formHistory.length) {
@@ -175,7 +201,7 @@ const Edit = React.memo(() => {
 
   // setting the form data
   useEffect(() => {
-   
+
     const newForm = formData;
     if (
       newForm &&
@@ -205,7 +231,7 @@ const Edit = React.memo(() => {
  };
 
 
- 
+
 
   //  chaning the form access
   useEffect(() => {
@@ -221,7 +247,7 @@ const Edit = React.memo(() => {
       }
     });
 
- 
+
 
     submissionAccess.forEach((access) => {
       if (processListData.anonymous) {
@@ -417,7 +443,7 @@ const Edit = React.memo(() => {
         const { data: submittedData } = res;
         if (isMapperSaveNeeded(submittedData)) {
           const data = setFormProcessDataToVariable(submittedData);
-        
+
           // PUT request : when application count is zero.
           // POST request with updated version : when application count is positive.
 
@@ -432,7 +458,7 @@ const Edit = React.memo(() => {
 
             if (processListData && processListData.id) {
               // For created forms we would be having a mapper
-             
+
               dispatch(saveFormProcessMapperPut(data));
             } else {
               // For uploaded forms we have to create new mapper.
@@ -592,7 +618,7 @@ const Edit = React.memo(() => {
                 <label htmlFor="title" className="control-label field-required">
                   {t("Title")}
                 </label>
-                <input 
+                <input
                   type="text"
                   className="form-control"
                   id="title"
@@ -741,8 +767,8 @@ const Edit = React.memo(() => {
                   }
                   title={"Enable bundling with other forms"}
                   label={t("Enable bundling")}
-                  labelPlacement="start"
-                />
+                    labelPlacement="start"
+                  />
                 </div>
               </div>
             </div>

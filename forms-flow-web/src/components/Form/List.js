@@ -83,7 +83,7 @@ const List = React.memo((props) => {
   const sortBy = useSelector((state) => state.bpmForms.sortBy);
   const sortOrder = useSelector((state) => state.bpmForms.sortOrder);
   const formCheckList = useSelector((state) => state.formCheckList.formList);
- 
+
 
 
 
@@ -111,8 +111,8 @@ const List = React.memo((props) => {
     dispatch(setFormCheckList([]));
   }, [dispatch]);
 
- 
- 
+
+
 
   useEffect(() => {
     // setIsLoading(false);
@@ -123,7 +123,7 @@ const List = React.memo((props) => {
       };
     }
   }, []);
-  
+
   const fetchForms = () => {
     // setShowClearButton(searchText);
     let filters = [pageNo, limit, sortBy, sortOrder, searchText];
@@ -150,7 +150,7 @@ const List = React.memo((props) => {
       }
     }
  },[location.pathname]);
- 
+
 
   useEffect(() => {
       if(formType){
@@ -199,7 +199,7 @@ const List = React.memo((props) => {
       dispatch(setBpmFormType('form'));
       dispatch(push(`${redirectUrl}form`));
     }
- 
+
   };
 
   const downloadForms = async () => {
@@ -251,7 +251,7 @@ const List = React.memo((props) => {
     );
   };
 
- 
+
 
   const isMapperSaveNeeded = (mapperData, formdata, applicationData) => {
     const applicationCount = applicationData?.data.value;
@@ -458,18 +458,18 @@ const List = React.memo((props) => {
             message={
               formProcessData.id && applicationCount ? (
                 applicationCountResponse ? (
-                  
+
                  <div>
-                 {applicationCount}  
+                 {applicationCount}
                  {
                     applicationCount > 1
-                      ? <span>{`${t(" Applications are submitted against")} `}</span> 
-                      : <span>{`${t(" Application is submitted against")} `}</span> 
-                  } 
+                      ? <span>{`${t(" Applications are submitted against")} `}</span>
+                      : <span>{`${t(" Application is submitted against")} `}</span>
+                  }
                   <span style={{ fontWeight: "bold" }}>{props.formName}</span>
                   .
                    {t("Are you sure you wish to delete the form?")}
-                  
+
                    </div>
                 ) : (
                   <div>
@@ -501,17 +501,17 @@ const List = React.memo((props) => {
           />
           <section className="custom-grid grid-forms">
             <Errors errors={errors} />
-            
+
             <div className="d-flex align-items-center justify-content-between">
             <Tabs
         value={tabValue}
         indicatorColor="primary"
         textColor="primary"
-        onChange={handleTabChange} 
+        onChange={handleTabChange}
       >
         <Tab label="Forms" />
        { isDesigner && <Tab label="Form Bundle"/>}
-    
+
       </Tabs>
       <div className="flex-item-right">
              {(isDesigner && tabValue === 1) ?
@@ -533,8 +533,8 @@ const List = React.memo((props) => {
                   <i className="fa fa-plus fa-lg" />{" "}
                   <Translation>{(t) => t("Create Form")}</Translation>
                 </Link>
- 
-               
+
+
                   <Button
                     className="btn btn-primary btn-sm form-btn pull-right btn-left"
                     onClick={uploadClick}
@@ -567,19 +567,19 @@ const List = React.memo((props) => {
             </div>
 
             </div>
-      
+
           {
             tabValue === 0 ? (
             <FormTable />
             ) : (
-             
+
               <BundleTable />
             )
           }
-            
-          
-      
-            
+
+
+
+
           </section>
         </div>
       )}
@@ -618,7 +618,7 @@ const mapDispatchToProps = (dispatch, ownProps) => {
         dispatch(deleteForm("form", formId));
       }
       if (formProcessData.id) {
-        // need to delete form from bundle table when form delete 
+        // need to delete form from bundle table when form delete
         const deleteBundle = true ;
         dispatch(
           deleteFormProcessMapper(formProcessData.id,deleteBundle, (err) => {

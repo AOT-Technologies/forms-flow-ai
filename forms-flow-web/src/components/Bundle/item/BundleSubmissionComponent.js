@@ -27,6 +27,7 @@ const BundleSubmissionComponent = ({ readOnly, onSubmit ,onChange}) => {
   const bundleData = useSelector((state) => state.process.formProcessList);
   const selectedForms = useSelector((state) => state.bundle.selectedForms);
   const { error } = useSelector((state) => state.form);
+  const [validationError, setValidationError] = useState('');
   const [validationErrorIndex, setValidationErroIndex] = useState(null);
 
   const [formStep, setFormStep] = useState({ step: 0 });
@@ -100,6 +101,8 @@ const BundleSubmissionComponent = ({ readOnly, onSubmit ,onChange}) => {
 
     handleSubmisionData();
     if (formRef.current.formio.checkValidity()) {
+      setValidationErroIndex(null);
+      setValidationError(false);
       dispatch(setBundleSubmitLoading(true));
       if (validationErrorIndex !== null) {
         setValidationErroIndex(null);
@@ -120,6 +123,9 @@ const BundleSubmissionComponent = ({ readOnly, onSubmit ,onChange}) => {
         .finally(() => {
           dispatch(setBundleSubmitLoading(false));
         });
+    }else{
+      setValidationErroIndex(formStep.step);
+      setValidationError(true);
     }
   };
 
@@ -156,6 +162,8 @@ const BundleSubmissionComponent = ({ readOnly, onSubmit ,onChange}) => {
     handleSubmisionData();
     if (formRef.current.formio.checkValidity()) {
       dispatch(setBundleSubmitLoading(true));
+      setValidationErroIndex(null);
+      setValidationError(false);
       selectedForms.forEach(async (form, index) => {
         const formioForm = await Formio.createForm(formCache[form.formId]);
         formioForm.submission = { data: submission.data };
@@ -167,6 +175,9 @@ const BundleSubmissionComponent = ({ readOnly, onSubmit ,onChange}) => {
           bundleFormValidation(isValid, index);
         });
       });
+    }else{
+      setValidationErroIndex(formStep.step);
+      setValidationError(true);
     }
   };
 
@@ -180,7 +191,12 @@ const BundleSubmissionComponent = ({ readOnly, onSubmit ,onChange}) => {
 
   return (
     <div className="p-3">
+
       <div>
+      {
+        validationError ? <span className="text-danger">Please check the form and correct all the errors
+        </span> : ""
+      }
         <LoadingOverlay
           active={bundleSubmitLoading || getFormLoading}
           spinner
@@ -248,6 +264,7 @@ const BundleSubmissionComponent = ({ readOnly, onSubmit ,onChange}) => {
                     </button>
                   )}
                 </div>
+               
               </div>
             </div>
           </div>

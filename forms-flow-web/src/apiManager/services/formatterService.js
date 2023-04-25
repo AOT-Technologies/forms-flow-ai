@@ -103,8 +103,8 @@ export const getFormUrlWithFormIdSubmissionId = (formId, submissionId) => {
   return `${AppConfig.projectUrl}/form/${formId}/submission/${submissionId}`;
 };
 
-export const getFormUrl = (formId, submissionId, redirectUrl) => {
-  return `${window.location.origin}${redirectUrl}form/${formId}/submission/${submissionId}`;
+export const getFormUrl = (formId, submissionId, redirectUrl,type = "form") => {
+  return `${window.location.origin}${redirectUrl}${type === "bundle" ? "bundle" : "form"}/${formId}/submission/${submissionId}`;
 };
 
 export const getISODateTime = (date) => {

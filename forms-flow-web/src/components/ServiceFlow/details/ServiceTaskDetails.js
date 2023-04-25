@@ -193,7 +193,7 @@ const ServiceFlowTaskDetails = React.memo(() => {
     }
   };
 
-  const onCustomEventCallBack = (customEvent) => {
+  const onCustomEventCallBack = (customEvent) => { 
     switch (customEvent.type) {
       case CUSTOM_EVENT_TYPE.RELOAD_TASKS:
         reloadTasks();
@@ -209,7 +209,7 @@ const ServiceFlowTaskDetails = React.memo(() => {
     }
   };
 
-  const onFormSubmitCallback = (actionType = "") => {
+  const onFormSubmitCallback = (actionType = "") => { 
     if (bpmTaskId) {
       dispatch(setBPMTaskDetailLoader(true));
       const { formId, submissionId } = getFormIdSubmissionIdFromURL(
@@ -261,20 +261,26 @@ const ServiceFlowTaskDetails = React.memo(() => {
         <LoadingOverlay active={isTaskUpdating} spinner text={t("Loading...")}>
           <TaskHeader />
           <Tabs defaultActiveKey="form" id="service-task-details" mountOnEnter>
-            <Tab eventKey="form" title={t("Form")}>
+            <Tab eventKey="form" title={t(task?.formType === "bundle" ? "Forms" : "Form")}>
             
               {
                   task?.formType === "bundle" ? (
-                    task?.assignee === currentUser ? (
-                      <BundleEdit
-                        bundleIdProp={getFormIdSubmissionIdFromURL(task?.formUrl).formId}
-                        onCustomEvent={onCustomEventCallBack}
-                        onBundleSubmit={onFormSubmitCallback}
-                      />
-                    ) : (
-                      <BundleVIew showPrintButton={false} 
-                       bundleIdProp={getFormIdSubmissionIdFromURL(task?.formUrl).formId}/>
-                    )
+                   <div style={{marginBottom:"100px"}}>
+                    {
+                       task?.assignee === currentUser ? (
+                        <BundleEdit
+                          bundleIdProp={getFormIdSubmissionIdFromURL(task?.formUrl).formId}
+                          submissionIdProp=
+                          {getFormIdSubmissionIdFromURL(task?.formUrl).submissionId}
+                          onCustomEvent={onCustomEventCallBack}
+                          onBundleSubmit={onFormSubmitCallback}
+                        />
+                      ) : (
+                        <BundleVIew showPrintButton={false} 
+                         bundleIdProp={getFormIdSubmissionIdFromURL(task?.formUrl).formId}/>
+                      )
+                    }
+                   </div>
                   ) : (
                     <LoadingOverlay
                     active={task?.assignee !== currentUser}

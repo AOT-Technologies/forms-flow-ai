@@ -51,7 +51,9 @@ const ViewApplication = React.memo(() => {
             dispatch(getForm("form", res.formId));
             if(CUSTOM_SUBMISSION_URL && CUSTOM_SUBMISSION_ENABLE){
               dispatch(getCustomSubmission(res.submissionId,res.formId,(err,data)=>{
+                if(res.formType === "bundle"){
                 dispatch(setBundleSubmissionData({data}));
+                }
               }));
             }else{
               dispatch(getSubmission("submission", res.submissionId, res.formId,(err,data)=>{
@@ -81,7 +83,7 @@ const ViewApplication = React.memo(() => {
   }
 
   if (
-    Object.keys(applicationDetail).length === 0 &&
+    Object.keys(applicationDetail)?.length === 0 &&
     applicationDetailStatusCode === 403
   ) {
     return (
@@ -119,7 +121,7 @@ const ViewApplication = React.memo(() => {
           title={<Translation>{(t) => t(applicationDetail.formType === "bundle" ? "Forms" : "Form")}</Translation>}
         >
           {
-            applicationDetail.formType === "bundle" ? <BundleView bundleIdProp={applicationDetail.formId} showPrintButton={true}/> : <View page="application-detail" />
+            applicationDetail.formType === "bundle" ? <BundleView bundleIdProp={applicationDetail.formId} showPrintButton={false}/> : <View page="application-detail" />
           }
          
         </Tab>

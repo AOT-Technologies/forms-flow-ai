@@ -33,8 +33,8 @@ import {
   UPDATE_EVENT_STATUS,
   getProcessDataReq,
 } from "../../../../constants/applicationConstants";
-
-const Edit = ({ bundleIdProp, onBundleSubmit, submissionIdProp }) => {
+ 
+const Edit = ({ bundleIdProp, onBundleSubmit, submissionIdProp, onCustomEvent }) => {
   const { bundleId, submissionId } = useParams();
   const dispatch = useDispatch();
   const bundleData = useSelector((state) => state.process.formProcessList);
@@ -52,6 +52,7 @@ const Edit = ({ bundleIdProp, onBundleSubmit, submissionIdProp }) => {
   const formSubmissionError = useSelector(
     (state) => state.formDelete.formSubmissionError
   );
+
 
   useEffect(() => {
     dispatch(setBundleLoading(true));
@@ -87,16 +88,16 @@ const Edit = ({ bundleIdProp, onBundleSubmit, submissionIdProp }) => {
     dispatch(setFormSubmissionError(ErrorDetails));
   };
 
-  const onSubmit = (bundleSubmission, bundleId) => {
+ 
+  const onSubmit = (bundleSubmission,bundleId,customEventData) => {
     const callBack = (err, submission) => {
       if (!err) {
         if (
           UPDATE_EVENT_STATUS.includes(applicationDetails.applicationStatus)
         ) {
-          const data = getProcessDataReq(applicationDetails);
-          data.data = submission?.data;
+          const data = getProcessDataReq(applicationDetails, submission?.data);
           dispatch(
-            updateApplicationEvent(data, () => {
+            updateApplicationEvent(applicationDetails.id, data, () => {
               dispatch(setBundleSubmitLoading(false));
               if (onBundleSubmit) {
                 onBundleSubmit();
@@ -153,7 +154,11 @@ const Edit = ({ bundleIdProp, onBundleSubmit, submissionIdProp }) => {
       )
         .then((res) => {
           dispatch(setBundleSubmissionData({ data: res.data.data }));
-          callBack(null, res.data);
+          if(onCustomEvent && customEventData){
+            onCustomEvent(customEventData);
+          }else{
+            callBack(null, res.data);
+          }
         })
         .catch(() => {
           const ErrorDetails = {
@@ -175,15 +180,11 @@ const Edit = ({ bundleIdProp, onBundleSubmit, submissionIdProp }) => {
   }
   return (
     <div className="p-3">
-      <div className="d-flex align-items-center">
-        <h3 className="">
-          {/* <span className="">
-            <i className="fa fa-folder-o" aria-hidden="true"></i> Bundle/
-          </span> */}
-          {bundleData.formName}
-        </h3>
+         <div className="d-flex align-items-center justify-content-between">
+        <h3 className="task-head px-2 py-2">{bundleData.formName}</h3>
       </div>
       <hr />
+    
       <SubmissionError
         modalOpen={formSubmissionError.modalOpen}
         message={formSubmissionError.message}

@@ -45,6 +45,9 @@ const Preview = React.memo(
     const processListData = useSelector(
       (state) => state.process.formProcessList
     );
+    const user =  useSelector(
+      (state) => state.user.userDetail
+    );
     const userGroups = useSelector(
       (state) => state.userAuthorization?.userGroups
     );
@@ -165,7 +168,7 @@ const Preview = React.memo(
         payload.roles = [];
       }
       if (designerSelectedOption === "Private") {
-        payload.userName = processListData.createdBy;
+        payload.userName = user.preferred_username;
         payload.roles = [];
       }
       if (designerSelectedOption === "Specific Designers") {

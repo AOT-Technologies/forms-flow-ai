@@ -108,7 +108,6 @@ export const fetchProcessDefinitionList = (...rest) => {
     )
       .then((res) => {
         if (res?.data) {
-          console.log("processs",res.data);
           dispatch(setBPMProcessList(res.data));
           //dispatch(setBPMLoader(false));
           done(null, res.data);

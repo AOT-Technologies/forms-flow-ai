@@ -22,7 +22,7 @@ import {
   addUsers,
   fetchUsers,
 } from "../../../apiManager/services/authorizationService";
-import Switch from "@material-ui/core/Switch";
+
 
 const Preview = React.memo(
   ({
@@ -57,7 +57,7 @@ const Preview = React.memo(
         !designerGroups.length) ||
       (clientSelectedOption == "Specific Clients" && !clientGroups.length);
     const id = show ? "simple-popover" : undefined;
-    const [clientUi, setClientUi] = useState(false);
+    const clientUi = false ; //no need will update once the client functionalities in effect
     const copyPublicUrl = () => {
       const originUrl = window.origin;
       const url = `${originUrl}/public/form/${formData.form.path}`;
@@ -379,24 +379,8 @@ const Preview = React.memo(
                     )}
                   </div>
                   <div>
-                    <>
-                      <FormControlLabel
-                        className="ml-0"
-                        control={
-                          <Switch
-                            checked={clientUi}
-                            id="clientui"
-                            color="primary"
-                            aria-label="Publish"
-                            onChange={() => {
-                              setClientUi(!clientUi);
-                            }}
-                          />
-                        }
-                        label={t("Enable Client Ui")}
-                        labelPlacement="start"
-                      />
-                      {clientUi && (
+                      {
+                      clientUi && (
                         <div>
                           <hr className="mt-1" />
                           <span className="font-weight-bold">
@@ -498,8 +482,8 @@ const Preview = React.memo(
                             ""
                           )}
                         </div>
-                      )}
-                    </>
+                      )
+                    }
                   </div>
                   <hr />
                   <div>

@@ -15,8 +15,8 @@ import Submission from "./Submission/index";
 import Preview from "./Preview";
 import { checkIsObjectId } from "../../../apiManager/services/formatterService";
 import { fetchFormByAlias } from "../../../apiManager/services/bpmFormServices";
+import {setBpmFormLoading} from '../../../actions/formActions';
 import {
-  setFormFailureErrorData,
   setFormRequestData,
   setFormSuccessData,
   resetFormData,
@@ -51,11 +51,11 @@ const Item = React.memo(() => {
             );
             dispatch(setFormSuccessData("form", formObj));
           } else {
-            dispatch(setFormFailureErrorData("form", err));
-          }
+            dispatch(setBpmFormLoading(false));          }
         })
       );
     }
+
   }, [formId, dispatch]);
 
   /**

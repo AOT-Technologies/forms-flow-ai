@@ -172,3 +172,9 @@ export const serviceActionError = (data) => (dispatch) => {
     payload: "Error Handling API",
   });
 };
+export const bpmActionError = (data) => (dispatch) => {
+  dispatch({
+    type: ACTION_CONSTANTS.BPM_ERROR,
+    payload: data,
+  });
+};

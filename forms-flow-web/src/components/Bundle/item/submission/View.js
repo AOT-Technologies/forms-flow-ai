@@ -12,11 +12,11 @@ import { Errors } from "react-formio/lib/components";
 import Loading from "../../../../containers/Loading";
 import DownloadPdfButton from "../../../Form/ExportAsPdf/downloadPdfButton";
 
-const BundleView = ({ bundleIdProp , showPrintButton = true}) => {
+const BundleView = ({ bundleIdProp , showPrintButton = false}) => {
   const { bundleId } = useParams();
   const dispatch = useDispatch();
   const bundleData = useSelector((state) => state.process.formProcessList);
-  const selectedForms = useSelector((state) => state.bundle.selectedForms);
+  const selectedForms = useSelector((state) => state.bundle.selectedForms || []);
   const bundleSubmission = useSelector(
     (state) => state.bundle.bundleSubmission
   );
@@ -61,8 +61,9 @@ const BundleView = ({ bundleIdProp , showPrintButton = true}) => {
       <div className="d-flex align-items-center justify-content-between">
         <h3 className="task-head px-2 py-2">{bundleData.formName}</h3>
         {showPrintButton && <div className="btn-right d-flex flex-row px-4"><DownloadPdfButton /></div>}
-      
       </div>
+      <hr />
+
       <div>
         {!selectedForms.length ? <Errors errors={error} /> : ""}
         {selectedForms.length ? <BundleSubmissionView readOnly={true} /> : ""}

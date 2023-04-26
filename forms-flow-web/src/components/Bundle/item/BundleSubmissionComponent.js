@@ -27,6 +27,7 @@ const BundleSubmissionComponent = ({ readOnly, onSubmit ,onChange}) => {
   const bundleData = useSelector((state) => state.process.formProcessList);
   const selectedForms = useSelector((state) => state.bundle.selectedForms);
   const { error } = useSelector((state) => state.form);
+  const [validationError, setValidationError] = useState('');
   const [validationErrorIndex, setValidationErroIndex] = useState(null);
 
   const [formStep, setFormStep] = useState({ step: 0 });
@@ -100,6 +101,8 @@ const BundleSubmissionComponent = ({ readOnly, onSubmit ,onChange}) => {
 
     handleSubmisionData();
     if (formRef.current.formio.checkValidity()) {
+      setValidationErroIndex(null);
+      setValidationError(false);
       dispatch(setBundleSubmitLoading(true));
       if (validationErrorIndex !== null) {
         setValidationErroIndex(null);
@@ -107,7 +110,7 @@ const BundleSubmissionComponent = ({ readOnly, onSubmit ,onChange}) => {
       executeRule({ data: submission.data }, bundleData.id)
         .then((res) => {
           let changed = null;
-          if (res.data.length !== selectedForms.length) {
+          if (res.data?.length !== selectedForms?.length) {
             changed = checkFormStepChange(res.data);
             if (changed == null) {
               changed = formStep.step;
@@ -120,6 +123,9 @@ const BundleSubmissionComponent = ({ readOnly, onSubmit ,onChange}) => {
         .finally(() => {
           dispatch(setBundleSubmitLoading(false));
         });
+    }else{
+      setValidationErroIndex(formStep.step);
+      setValidationError(true);
     }
   };
 
@@ -135,13 +141,13 @@ const BundleSubmissionComponent = ({ readOnly, onSubmit ,onChange}) => {
       dispatch(setBundleSubmitLoading(false));
       return;
     }
-    if (valid && index === selectedForms.length - 1 && formValidationNotOver) {
+    if (valid && index === selectedForms?.length - 1 && formValidationNotOver) {
       formValidationNotOver = false;
       const response = await executeRule(
         { data: submission.data },
         bundleData.id
       );
-      if (response && response.data.length !== selectedForms.length) {
+      if (response && response.data?.length !== selectedForms?.length) {
         const changed = checkFormStepChange(response.data);
         dispatch(setBundleSelectedForms(response.data));
         setFormStep({ step: changed });
@@ -156,6 +162,8 @@ const BundleSubmissionComponent = ({ readOnly, onSubmit ,onChange}) => {
     handleSubmisionData();
     if (formRef.current.formio.checkValidity()) {
       dispatch(setBundleSubmitLoading(true));
+      setValidationErroIndex(null);
+      setValidationError(false);
       selectedForms.forEach(async (form, index) => {
         const formioForm = await Formio.createForm(formCache[form.formId]);
         formioForm.submission = { data: submission.data };
@@ -167,7 +175,14 @@ const BundleSubmissionComponent = ({ readOnly, onSubmit ,onChange}) => {
           bundleFormValidation(isValid, index);
         });
       });
+    }else{
+      setValidationErroIndex(formStep.step);
+      setValidationError(true);
     }
+  };
+
+  const onCustomEvent = (customEventData)=>{
+    onSubmit({ data: submission.data }, bundleData.formId,customEventData);
   };
 
   if (!form.title && getFormLoading) {
@@ -176,13 +191,18 @@ const BundleSubmissionComponent = ({ readOnly, onSubmit ,onChange}) => {
 
   return (
     <div className="p-3">
+
       <div>
+      {
+        validationError ? <span className="text-danger">Please check the form and correct all the errors
+        </span> : ""
+      }
         <LoadingOverlay
           active={bundleSubmitLoading || getFormLoading}
           spinner
           text={"Loading..."}
         >
-          <div className="border py-2">
+          <div className="py-2">
             <Stepper activeStep={formStep.step} alternativeLabel>
               {selectedForms?.map((form, index) => (
                 <Step key={form.id}>
@@ -204,6 +224,7 @@ const BundleSubmissionComponent = ({ readOnly, onSubmit ,onChange}) => {
                       ...options,
                       highlightErrors: true,
                     }}
+                    onCustomEvent={onCustomEvent}
 
                     ref={formRef}
                     submission={bundleSubmission}
@@ -225,24 +246,25 @@ const BundleSubmissionComponent = ({ readOnly, onSubmit ,onChange}) => {
                       Previous Form
                     </button>
                   )}
-                  {readOnly && selectedForms.length - 1 == formStep.step ? (
+                  {readOnly && selectedForms?.length - 1 == formStep.step ? (
                     ""
                   ) : (
                     <button
                       onClick={
-                        selectedForms.length - 1 === formStep.step
+                        selectedForms?.length - 1 === formStep.step
                           ? handleSubmit
                           : handleNextForm
                       }
                       disabled={bundleSubmitLoading}
                       className="btn btn-primary"
                     >
-                      {selectedForms.length - 1 === formStep.step
+                      {selectedForms?.length - 1 === formStep.step
                         ? "Submit Form"
                         : "Next Form"}
                     </button>
                   )}
                 </div>
+               
               </div>
             </div>
           </div>

@@ -764,12 +764,12 @@ const mapDispatchToProps = (dispatch, ownProps) => {
             if (err) {
               toast.error(
                 <Translation>
-                  {(t) => t("Form delete unsuccessfull")}
+                  {(t) => t("Form deletion unsuccessful")}
                 </Translation>
               );
             } else {
               toast.success(
-                <Translation>{(t) => t("Form delete successfull")}</Translation>
+                <Translation>{(t) => t("Form deleted successfully")}</Translation>
               );
               const newFormCheckList = formCheckList.filter(
                 (i) => i.formId !== formId

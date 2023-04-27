@@ -62,7 +62,7 @@ public class RequestStateListener extends BaseListener implements ExecutionListe
         String formUrl = String.valueOf(execution.getVariable(FORM_URL));
         String requestType = String.valueOf(execution.getVariable(REQUEST_TYPE));
         String requestStatus = String.valueOf(execution.getVariable(REQUEST_STATUS));
-        return new RequestStateData(formUrl, RestAPIBuilderUtil.fetchUserName(restAPIBuilderConfigProperties.getUserNameAttribute()), requestType, requestStatus, true);
+        return new RequestStateData(formUrl, RestAPIBuilderUtil.fetchUserName(restAPIBuilderConfigProperties.getUserNameAttribute()), requestType, requestStatus, "true");
     }
 
     /**

@@ -14,5 +14,5 @@ public class RequestStateData implements Serializable {
     private String submittedBy;
     private String requestType;
     private String requestStatus;
-    private boolean isRequest;
+    private String isRequest;
 }

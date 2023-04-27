@@ -5,6 +5,7 @@ import org.camunda.bpm.engine.delegate.DelegateTask;
 import org.camunda.bpm.engine.delegate.ExecutionListener;
 import org.camunda.bpm.engine.delegate.TaskListener;
 import org.camunda.bpm.extension.commons.connector.HTTPServiceInvoker;
+import org.camunda.bpm.extension.commons.utils.RestAPIBuilderConfigProperties;
 import org.camunda.bpm.extension.commons.utils.RestAPIBuilderUtil;
 import org.camunda.bpm.extension.hooks.exceptions.ApplicationServiceException;
 import org.camunda.bpm.extension.hooks.listeners.data.RequestStateData;
@@ -25,9 +26,11 @@ import static org.camunda.bpm.extension.commons.utils.VariableConstants.*;
 @Component
 public class RequestStateListener extends BaseListener implements ExecutionListener, TaskListener {
 
-
     @Autowired
     private HTTPServiceInvoker httpServiceInvoker;
+
+    @Autowired
+    private RestAPIBuilderConfigProperties restAPIBuilderConfigProperties;
 
     @Override
     public void notify(DelegateExecution execution) {
@@ -59,10 +62,11 @@ public class RequestStateListener extends BaseListener implements ExecutionListe
         String formUrl = String.valueOf(execution.getVariable(FORM_URL));
         String requestType = String.valueOf(execution.getVariable(REQUEST_TYPE));
         String requestStatus = String.valueOf(execution.getVariable(REQUEST_STATUS));
-        return new RequestStateData(formUrl, RestAPIBuilderUtil.fetchUserName(), requestType, requestStatus, true);
+        return new RequestStateData(formUrl, RestAPIBuilderUtil.fetchUserName(restAPIBuilderConfigProperties.getUserNameAttribute()), requestType, requestStatus, true);
     }
 
     /**
+     *
      * Returns the endpoint of application API.
      *
      * @param execution

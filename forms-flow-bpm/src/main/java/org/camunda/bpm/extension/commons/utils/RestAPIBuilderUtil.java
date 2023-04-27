@@ -53,12 +53,13 @@ public class RestAPIBuilderUtil {
         return MessageFormat.format(url,arg);
     }
 
-    public static String fetchUserName(){
+    public static String fetchUserName(String userNameAttribute){
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+
         String submittedBy = null;
         if (authentication != null) {
             if (authentication instanceof JwtAuthenticationToken authToken) {
-                submittedBy = authToken.getToken().getClaimAsString("preferred_username");
+                submittedBy = authToken.getTokenAttributes().get(userNameAttribute).toString();
                 if (submittedBy.startsWith("service-account")) {
                     submittedBy = ANONYMOUS_USER;
                 }
@@ -68,4 +69,5 @@ public class RestAPIBuilderUtil {
         }
         return submittedBy;
     }
+
 }

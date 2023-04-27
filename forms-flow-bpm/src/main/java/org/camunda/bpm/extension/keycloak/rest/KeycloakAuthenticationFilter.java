@@ -13,6 +13,7 @@ import javax.servlet.ServletResponse;
 
 import org.apache.commons.lang3.StringUtils;
 import org.camunda.bpm.engine.IdentityService;
+import org.camunda.bpm.extension.commons.utils.RestAPIBuilderUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.security.core.Authentication;
@@ -34,6 +35,8 @@ public class KeycloakAuthenticationFilter implements Filter {
 	/** This class' logger. */
 	private static final Logger LOG = LoggerFactory.getLogger(KeycloakAuthenticationFilter.class);
 
+	private final String userNameAttribute;
+
 	/** Access to Camunda's IdentityService. */
 	private IdentityService identityService;
 
@@ -45,9 +48,10 @@ public class KeycloakAuthenticationFilter implements Filter {
 	 * 
 	 * @param identityService access to Camunda's IdentityService
 	 */
-	public KeycloakAuthenticationFilter(IdentityService identityService, OAuth2AuthorizedClientService clientService) {
+	public KeycloakAuthenticationFilter(IdentityService identityService, OAuth2AuthorizedClientService clientService, String userNameAttribute) {
 		this.identityService = identityService;
 		this.clientService = clientService;
+		this.userNameAttribute = userNameAttribute;
 	}
 
 	/**
@@ -62,7 +66,7 @@ public class KeycloakAuthenticationFilter implements Filter {
 		String userId = null;
 		Map<String, Object> claims;
 		if (authentication instanceof JwtAuthenticationToken) {
-			userId = ((JwtAuthenticationToken) authentication).getToken().getClaimAsString("preferred_username");
+			userId = ((JwtAuthenticationToken) authentication).getTokenAttributes().get(userNameAttribute).toString();
 			claims = ((JwtAuthenticationToken) authentication).getToken().getClaims();
 		} else if (authentication.getPrincipal() instanceof OidcUser) {
 			userId = ((OidcUser)authentication.getPrincipal()).getPreferredUsername();

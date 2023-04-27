@@ -5,6 +5,7 @@ import org.camunda.bpm.engine.delegate.DelegateTask;
 import org.camunda.bpm.engine.delegate.ExecutionListener;
 import org.camunda.bpm.engine.delegate.TaskListener;
 import org.camunda.bpm.extension.commons.connector.HTTPServiceInvoker;
+import org.camunda.bpm.extension.commons.utils.RestAPIBuilderConfigProperties;
 import org.camunda.bpm.extension.commons.utils.RestAPIBuilderUtil;
 import org.camunda.bpm.extension.hooks.exceptions.ApplicationServiceException;
 import org.camunda.bpm.extension.hooks.listeners.data.Application;
@@ -26,6 +27,9 @@ public class ApplicationAuditListener extends BaseListener implements ExecutionL
 
     @Autowired
     private HTTPServiceInvoker httpServiceInvoker;
+
+    @Autowired
+    private RestAPIBuilderConfigProperties restAPIBuilderConfigProperties;
 
     @Override
     public void notify(DelegateExecution execution) {
@@ -67,7 +71,7 @@ public class ApplicationAuditListener extends BaseListener implements ExecutionL
     protected Application prepareApplicationAudit(DelegateExecution execution) {
         String applicationStatus = String.valueOf(execution.getVariable(APPLICATION_STATUS));
         String formUrl = String.valueOf(execution.getVariable(FORM_URL));
-        return new Application(applicationStatus, formUrl, RestAPIBuilderUtil.fetchUserName());
+        return new Application(applicationStatus, formUrl, RestAPIBuilderUtil.fetchUserName((restAPIBuilderConfigProperties.getUserNameAttribute())));
     }
 
 

@@ -35,8 +35,8 @@ function TaskHead() {
          
           className='head-item padding-right-60'
         >
-          <h3 className="application-head">
-            <span className="application-text mr-5">
+          <h4 className="application-head"  style={{ fontSize: '21px' }}>
+            <span className="application-text mr-2  ">
                   <NavDropdown
                   className={`main-nav nav-item taskDropdown  ${
                     pathname.match(createURLPathMatchExp("task", baseUrl))
@@ -45,7 +45,7 @@ function TaskHead() {
                   }`}
                     title={
                       <>
-                        <i className="fa fa-list fa-lg fa-fw " />
+                        <i className="fa fa-list-ul px-2" />
                         {`${selectedFilter ? selectedFilter : 'Tasks'} ${" "}`}{count}
                       </>
                     }
@@ -54,8 +54,9 @@ function TaskHead() {
                     <ServiceFlowFilterListDropDown />
                   </NavDropdown>
             </span>
-          </h3>
+          </h4>
         </div>
+        <a href='#' style={{ textDecoration: 'underline' , fontSize: '15px' }} className='py-2'>Create new filter</a>
     </div>
     <hr className="head-rule" />
   </div>

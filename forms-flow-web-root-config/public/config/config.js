@@ -1,5 +1,4 @@
 window["_env_"] = {
-
 NODE_ENV:"development",
 REACT_APP_CLIENT_ROLE:"formsflow-client",
 REACT_APP_STAFF_DESIGNER_ROLE:"formsflow-designer",
@@ -21,5 +20,4 @@ REACT_APP_WEB_BASE_CUSTOM_URL:"https://bpm2.aot-technologies.com/camunda",
 REACT_APP_DRAFT_ENABLED:true,
 REACT_APP_DRAFT_POLLING_RATE:"1500000",
 REACT_APP_EXPORT_PDF_ENABLED:true,
-
 };

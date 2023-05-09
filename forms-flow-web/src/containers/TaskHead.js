@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React, { useEffect , useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useLocation } from 'react-router-dom';
 import { push } from 'connected-react-router';
@@ -7,6 +7,8 @@ import ServiceFlowFilterListDropDown from "../components/ServiceFlow/filter/Serv
 import createURLPathMatchExp from "../helper/regExp/pathMatch";
 import {MULTITENANCY_ENABLED} from "../constants/constants";
 import { fetchFilterList } from '../apiManager/services/bpmTaskServices';
+import MyComponent from '../components/ServiceFlow/list/sort/CreateNewFilter';
+// import ServiceFlowTaskList from '../components/ServiceFlow/list/ServiceTaskList';
 
 
 function TaskHead() {
@@ -22,10 +24,16 @@ function TaskHead() {
   const goToTask = () => {
     dispatch(push(`${baseUrl}task`));
   };
+  const [openFilter , setOpenFilter] = useState(false);
+
 
   useEffect(()=>{
     dispatch(fetchFilterList());
   },[itemCount]);
+
+  const handleClick = () => {
+    setOpenFilter(true);
+  };
 
   return (
     <div className="header-container">
@@ -56,7 +64,8 @@ function TaskHead() {
             </span>
           </h4>
         </div>
-        <a href='#' style={{ textDecoration: 'underline' , fontSize: '15px' }} className='py-2'>Create new filter</a>
+        <span style={{ textDecoration: 'underline' , fontSize: '15px' , cursor: 'pointer' }} className='py-2' onClick={handleClick}>Create new filter</span>
+        {openFilter && <MyComponent />}
     </div>
     <hr className="head-rule" />
   </div>

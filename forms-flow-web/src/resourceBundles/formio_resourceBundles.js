@@ -37,6 +37,7 @@ export const formio_resourceBundles = {
       "All groups have access to the dashboard",
     "Form unpublishing Failed": "Form unpublishing Failed",
     "Form process failed": "Form process failed",
+    "Form deletion unsuccessful":"Form deletion unsuccessful",
     "Form deleted successfully": "Form deleted successfully",
     "Form deletion unsuccessful":"Form deletion unsuccessful",
     "Form Workflow Association Saved.": "Form Workflow Association Saved.",
@@ -336,6 +337,7 @@ export const formio_resourceBundles = {
     "All groups have access to the dashboard": "所有组都可以访问仪表板",
     "Form unpublishing Failed": "表单取消发布失败",
     "Form process failed": "表单处理失败",
+    "Form deletion unsuccessful":"表单删除失败",
     "Form deleted successfully": "表格删除成功",
     "Form deletion unsuccessful":"表单删除失败",
     "Loading...": "正在加载...",
@@ -1249,6 +1251,7 @@ export const formio_resourceBundles = {
     "Form unpublishing Failed":
       "Прекратяването на публикуването на формуляра не бе успешно",
     "Form process failed": "Обработката на формуляра не бе успешно",
+    "Form deletion unsuccessful":"Изтриването на формуляра е неуспешно",
     "Form deleted successfully": "Формулярът е изтрит успешно",
     "Form deletion unsuccessful":"Изтриването на формуляра е неуспешно",
     "Form Workflow Association Saved.":
@@ -2218,6 +2221,7 @@ export const formio_resourceBundles = {
       "Todos os grupos têm acesso ao painel",
     "Form unpublishing Failed": "Falha ao cancelar a publicação do formulário",
     "Form process failed": "Falha no processo do formulário",
+    "Form deletion unsuccessful":"Falha na exclusão do formulário",
     "Form deleted successfully": "Formulário excluído com sucesso",
     "Form deletion unsuccessful":"Falha na exclusão do formulário",
     "Show in list": "Mostrar na lista",

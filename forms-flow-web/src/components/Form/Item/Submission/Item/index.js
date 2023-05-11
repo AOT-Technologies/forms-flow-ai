@@ -33,7 +33,8 @@ const Item = React.memo(() => {
     return selectRoot("user", state).roles;
   });
   const applicationStatus = useSelector(
-    (state) => state.applications.applicationDetail?.applicationStatus || ""
+    (state) => state.applications.applicationDetail?.applicationStatus ||
+      state.formDelete.customSubmission?.data?.applicationStatus || ""
   );
   const [showSubmissionLoading, setShowSubmissionLoading] = useState(true);
   const [editAllowed, setEditAllowed] = useState(false);
@@ -43,13 +44,12 @@ const Item = React.memo(() => {
 
   useEffect(() => {
     dispatch(clearSubmissionError("submission"));
-    if(CUSTOM_SUBMISSION_URL && CUSTOM_SUBMISSION_ENABLE) {
-       dispatch(getCustomSubmission(submissionId,formId));
+    if (CUSTOM_SUBMISSION_URL && CUSTOM_SUBMISSION_ENABLE) {
+      dispatch(getCustomSubmission(submissionId, formId));
     } else {
       dispatch(getSubmission("submission", submissionId, formId));
     }
   }, [submissionId, formId, dispatch]);
-
   useEffect(() => {
     if (applicationId) {
       dispatch(setApplicationDetailLoader(true));
@@ -74,27 +74,6 @@ const Item = React.memo(() => {
 
   return (
     <div>
-      <ul className="nav nav-tabs">
-        {/* {showViewSubmissions && getUserRolePermission(userRoles, STAFF_REVIEWER) ?
-        <li className="nav-item">
-          <Link className="nav-link" to={`${redirectUrl}form/${formId}/submission`}>
-            <i className="fa fa-chevron-left fa-lg" />
-          </Link>
-        </li>:null} */}
-        {/*{(path.indexOf("edit") > 0) ?
-          <li className="nav-item">
-            <Link className="nav-link" to={`/form/${formId}/submission/${submissionId}`}>
-            <img src="/webfonts/fa_eye.svg" alt="back"/> View
-            </Link>
-          </li>
-          :
-          editAllowed ? (<li className="nav-item">
-            <Link className="nav-link" to={`/form/${formId}/submission/${submissionId}/edit`}>
-              <img src="/webfonts/fa_edit.svg" alt="back"/> Edit
-            </Link>
-          </li>) : null
-        }*/}
-      </ul>
       <Switch>
         <Route
           exact

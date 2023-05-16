@@ -1,23 +1,24 @@
 /* istanbul ignore file */
-import { httpGETRequest, httpPOSTRequest } from "../httpRequestHandler";
+//import { httpGETRequest, httpPOSTRequest } from "../httpRequestHandler";
+import { RequestService } from "@formsflow/service";
 import API from "../endpoints/index";
 
-export const fetchUsers = (id) => {
-  let url = API.USER_LIST;
+export const fetchDesigners = (id) => {
+  let url = API.DESIGNER_LIST;
   if(id){
     url += `/${id}`;
   }
-  return httpGETRequest(url);
+  return RequestService.httpGETRequest(url);
 };
 
 export const addUsers = (data)=>{
-  const url = API.USER_LIST;
-  return httpPOSTRequest(url,data);
+  const url = API.DESIGNER_LIST;
+  return RequestService.httpPOSTRequest(url,data);
 };
 
 export const getUserRoles = ()=>{
   const url = API.USER_ROLES;
-  return httpGETRequest(url);
+  return RequestService.httpGETRequest(url);
 };
 
 export const getClientList = (id)=>{
@@ -25,10 +26,10 @@ export const getClientList = (id)=>{
   if(id){
     url += `/${id}`;
   }
-  return httpGETRequest(url);
+  return RequestService.httpGETRequest(url);
 };
 
 export const addClients = (data)=>{
   const url = API.CLIENT_LIST;
-  return httpPOSTRequest(url,data);
+  return RequestService.httpPOSTRequest(url,data);
 };

@@ -93,7 +93,6 @@ class AuthorizationService:
                 resource_details=resource.get("resourceDetails"),
                 roles=roles,
                 user_name=resource.get("userName"),
-                created=datetime.datetime.now(),
                 created_by=user.user_name,
             )
         auth = auth.save()

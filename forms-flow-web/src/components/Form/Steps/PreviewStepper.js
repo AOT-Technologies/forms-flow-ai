@@ -20,7 +20,7 @@ import {
 } from "../../../apiManager/services/authorizationService";
 import {
   addUsers,
-  fetchUsers,
+  fetchDesigners,
 } from "../../../apiManager/services/authorizationService";
 
 
@@ -91,7 +91,7 @@ const Preview = React.memo(
     }, []);
 
     useEffect(() => {
-      fetchUsers(processListData.formId)
+      fetchDesigners(processListData.formId)
         .then((res) => {
           const resource = res.data;
           setDesignerGroups(resource?.roles || []);

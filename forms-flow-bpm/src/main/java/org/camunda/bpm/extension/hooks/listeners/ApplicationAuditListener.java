@@ -5,6 +5,8 @@ import org.camunda.bpm.engine.delegate.DelegateTask;
 import org.camunda.bpm.engine.delegate.ExecutionListener;
 import org.camunda.bpm.engine.delegate.TaskListener;
 import org.camunda.bpm.extension.commons.connector.HTTPServiceInvoker;
+import org.camunda.bpm.extension.commons.utils.RestAPIBuilderConfigProperties;
+import org.camunda.bpm.extension.commons.utils.RestAPIBuilderUtil;
 import org.camunda.bpm.extension.hooks.exceptions.ApplicationServiceException;
 import org.camunda.bpm.extension.hooks.listeners.data.Application;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -12,14 +14,7 @@ import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
-
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.oauth2.core.oidc.user.OidcUser;
-import org.springframework.security.oauth2.server.resource.authentication.JwtAuthenticationToken;
-
 import java.io.IOException;
-import java.util.*;
 
 import static org.camunda.bpm.extension.commons.utils.VariableConstants.*;
 
@@ -32,6 +27,9 @@ public class ApplicationAuditListener extends BaseListener implements ExecutionL
 
     @Autowired
     private HTTPServiceInvoker httpServiceInvoker;
+
+    @Autowired
+    private RestAPIBuilderConfigProperties restAPIBuilderConfigProperties;
 
     @Override
     public void notify(DelegateExecution execution) {
@@ -73,21 +71,7 @@ public class ApplicationAuditListener extends BaseListener implements ExecutionL
     protected Application prepareApplicationAudit(DelegateExecution execution) {
         String applicationStatus = String.valueOf(execution.getVariable(APPLICATION_STATUS));
         String formUrl = String.valueOf(execution.getVariable(FORM_URL));
-        String submitterName = String.valueOf(execution.getVariable(SUBMITTER_NAME));
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        String submittedBy = null;
-        if (authentication != null) {
-            if (authentication instanceof JwtAuthenticationToken authToken) {
-                submittedBy = authToken.getToken().getClaimAsString("preferred_username");
-                if(submittedBy.startsWith("service-account")){
-                    submittedBy = ANONYMOUS_USER;
-                }
-            }
-        }
-        else {
-            submittedBy = SERVICE_ACCOUNT;
-        }
-        return new Application(applicationStatus, formUrl, submittedBy);
+        return new Application(applicationStatus, formUrl, RestAPIBuilderUtil.fetchUserName((restAPIBuilderConfigProperties.getUserNameAttribute())));
     }
 
 

@@ -241,7 +241,6 @@ export const RESOURCE_BUNDLES_EN = {
   "Form Workflow Association Saved.":"Form Workflow Association Saved.",
   "Form deletion unsuccessful":"Form deletion unsuccessful",
   "Form deleted successfully":"Form deleted successfully",
-  "Form deletion unsuccessful":"Form deletion unsuccessful",
   "Form process failed":"Form process failed",
   "Form unpublishing Failed":"Form unpublishing Failed",
   "All groups have access to the dashboard":"All groups have access to the dashboard",

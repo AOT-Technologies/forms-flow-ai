@@ -22,7 +22,7 @@
 		<failOnMissingWebXml>false</failOnMissingWebXml>
 
 		<!-- versions -->
-		<version.camundaKeycloak>2.2.3</version.camundaKeycloak>
+		<version.camundaKeycloak>7.18.0</version.camundaKeycloak>
 		<version.camunda>7.18.0</version.camunda><!-- 7.17.0 - 7.18.0 -->
 		<version.camundaConnect>1.5.4</version.camundaConnect><!-- 1.5.4 -->
 		<version.camundaMail>1.5.0</version.camundaMail><!-- 1.5.0 -->
@@ -51,7 +51,7 @@
 			<!-- modules -->
 			<dependency>
 				<groupId>org.camunda.bpm.extension</groupId>
-				<artifactId>camunda-bpm-identity-keycloak</artifactId>
+				<artifactId>camunda-platform-7-keycloak</artifactId>
 				<version>${version.camundaKeycloak}</version>
 				<scope>provided</scope>
 			</dependency>
@@ -121,7 +121,7 @@
 		<!-- Keycloak Identity Prover Plugin -->
 		<dependency>
 			<groupId>org.camunda.bpm.extension</groupId>
-			<artifactId>camunda-bpm-identity-keycloak</artifactId>
+			<artifactId>camunda-platform-7-keycloak</artifactId>
 		</dependency>
 
 		<!-- Add Email Component -->

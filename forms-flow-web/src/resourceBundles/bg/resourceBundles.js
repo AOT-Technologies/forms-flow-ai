@@ -241,7 +241,6 @@ export const RESOURCE_BUNDLES_BG = {
     "Form Workflow Association Saved.":"Асоциацията на работния поток на формуляра е запазена.",
     "Form deletion unsuccessful":"Изтриването на формуляра е неуспешно",
     "Form deleted successfully":"Формулярът е изтрит успешно",
-    "Form deletion unsuccessful":"Изтриването на формуляра е неуспешно",
     "Form process failed":"Обработката на формуляра не бе успешно",
     "Form unpublishing Failed":"Прекратяването на публикуването на формуляра не бе успешно",
     "All groups have access to the dashboard":"Всички групи имат достъп до таблото",

@@ -240,7 +240,6 @@ export const RESOURCE_BUNDLES_ZH = {
   "Form Workflow Association Saved.":"表单工作流关联已保存。",
   "Form deletion unsuccessful":"表单删除失败",
   "Form deleted successfully":"表格删除成功",
-  "Form deletion unsuccessful":"表单删除失败",
   "Form process failed":"表单处理失败",
   "Form unpublishing Failed":"表单取消发布失败",
   "All groups have access to the dashboard":"所有组都可以访问仪表板",

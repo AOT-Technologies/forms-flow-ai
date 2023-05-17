@@ -37,7 +37,6 @@ export const formio_resourceBundles = {
       "All groups have access to the dashboard",
     "Form unpublishing Failed": "Form unpublishing Failed",
     "Form process failed": "Form process failed",
-    "Form deletion unsuccessful":"Form deletion unsuccessful",
     "Form deleted successfully": "Form deleted successfully",
     "Form deletion unsuccessful":"Form deletion unsuccessful",
     "Form Workflow Association Saved.": "Form Workflow Association Saved.",
@@ -339,7 +338,6 @@ export const formio_resourceBundles = {
     "Form process failed": "表单处理失败",
     "Form deletion unsuccessful":"表单删除失败",
     "Form deleted successfully": "表格删除成功",
-    "Form deletion unsuccessful":"表单删除失败",
     "Loading...": "正在加载...",
     "Changing the form workflow will not affect the existing applications. It will only update in the newly created applications. Press Save Changes to continue or cancel the changes.":
       "更改表单工作流程不会影响现有应用程序。它只会在新创建的应用程序中更新。按保存更改以继续或取消更改。",
@@ -1253,7 +1251,6 @@ export const formio_resourceBundles = {
     "Form process failed": "Обработката на формуляра не бе успешно",
     "Form deletion unsuccessful":"Изтриването на формуляра е неуспешно",
     "Form deleted successfully": "Формулярът е изтрит успешно",
-    "Form deletion unsuccessful":"Изтриването на формуляра е неуспешно",
     "Form Workflow Association Saved.":
       "Асоциацията на работния поток на формуляра е запазена.",
     "Loading...": "Зареждане...",
@@ -2223,7 +2220,6 @@ export const formio_resourceBundles = {
     "Form process failed": "Falha no processo do formulário",
     "Form deletion unsuccessful":"Falha na exclusão do formulário",
     "Form deleted successfully": "Formulário excluído com sucesso",
-    "Form deletion unsuccessful":"Falha na exclusão do formulário",
     "Show in list": "Mostrar na lista",
     "Loading...": "Carregando...",
     "Changing the form workflow will not affect the existing applications. It will only update in the newly created applications. Press Save Changes to continue or cancel the changes.":

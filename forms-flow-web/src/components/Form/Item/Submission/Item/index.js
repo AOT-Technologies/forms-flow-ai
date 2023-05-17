@@ -33,7 +33,8 @@ const Item = React.memo(() => {
     return selectRoot("user", state).roles;
   });
   const applicationStatus = useSelector(
-    (state) => state.applications.applicationDetail?.applicationStatus || ""
+    (state) => state.applications.applicationDetail?.applicationStatus ||
+      state.formDelete.customSubmission?.data?.applicationStatus || ""
   );
   const [showSubmissionLoading, setShowSubmissionLoading] = useState(true);
   const [editAllowed, setEditAllowed] = useState(false);
@@ -43,8 +44,8 @@ const Item = React.memo(() => {
 
   useEffect(() => {
     dispatch(clearSubmissionError("submission"));
-    if(CUSTOM_SUBMISSION_URL && CUSTOM_SUBMISSION_ENABLE) {
-       dispatch(getCustomSubmission(submissionId,formId));
+    if (CUSTOM_SUBMISSION_URL && CUSTOM_SUBMISSION_ENABLE) {
+      dispatch(getCustomSubmission(submissionId, formId));
     } else {
       dispatch(getSubmission("submission", submissionId, formId));
     }

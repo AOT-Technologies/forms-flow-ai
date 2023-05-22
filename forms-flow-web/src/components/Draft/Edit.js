@@ -47,6 +47,8 @@ import Confirm from "../../containers/Confirm";
 import { setDraftDelete } from "../../actions/draftActions";
 import { setFormStatusLoading } from "../../actions/processActions"; 
 import { getFormProcesses } from "../../apiManager/services/processServices";
+import { textTruncate } from "../../helper/helper";
+
 const View = React.memo((props) => {
   const { t } = useTranslation();
   const lang = useSelector((state) => state.user.lang);
@@ -250,7 +252,7 @@ const View = React.memo((props) => {
                 <i className="fa fa-wpforms" aria-hidden="true" /> &nbsp;{" "}
                 {t("Drafts")}/
               </span>{" "}
-              {form.title.length > 60 ? form.title.substring(0, 40) + '...' : form.title}
+              {textTruncate(60,40,form.title)}
             </h3>
           ) : (
             ""
@@ -279,7 +281,7 @@ const View = React.memo((props) => {
           <Confirm
             modalOpen={draftDelete.modalOpen}
             message={`${t("Are you sure you wish to delete the draft")} "${
-              draftDelete.draftName.length > 14 ? draftDelete.draftName.substring(0, 12) + '...' : draftDelete.draftName
+              textTruncate(14,12,draftDelete.draftName)
             }" 
             ${t("with ID")} "${draftDelete.draftId}"`}
             onNo={() => onNo()}

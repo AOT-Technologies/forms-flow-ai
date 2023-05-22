@@ -1,15 +1,14 @@
 import React from 'react';
 import '../../ServiceFlow.scss';
+import NoFilterSelectedImage from './empty design.svg';
 
 function noFilterSelected() {
     return (
-        <div className='noFilterSelected-Container'>
-            {/* <svg viewBox="0 0 100 100" width="50" height="50">
-                <use href="../images/undraw_select_re_3kbd" />
-            </svg> */}
-            {/* <h1>Select a task in the List</h1>
-            <p>Lorem Ipsum is simply dummy text of the printing and typesetting industry. 
-            Lorem Ipsum has been the industrys standard dummy text ever since the 1500s</p> */}
+        <div>
+            <img src={NoFilterSelectedImage}  style={{ width : "100%" , height : "300PX"  }}/>
+            <h1 style={{ textAlign: 'center', lineHeight: '1.5' }}>Select a task in the List</h1>
+            <p style={{ textAlign: 'center', lineHeight: '1.5' }}>Lorem Ipsum is simply dummy text of the printing and typesetting industry. 
+            Lorem Ipsum <br /> has been the industrys standard dummy text ever since the 1500s</p>
         </div>
     );
 }

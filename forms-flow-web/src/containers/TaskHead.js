@@ -1,4 +1,4 @@
-import React, { useEffect , useState } from 'react';
+import React, { useEffect  } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useLocation } from 'react-router-dom';
 import { push } from 'connected-react-router';
@@ -24,16 +24,13 @@ function TaskHead() {
   const goToTask = () => {
     dispatch(push(`${baseUrl}task`));
   };
-  const [openFilter , setOpenFilter] = useState(false);
+   
 
 
   useEffect(()=>{
     dispatch(fetchFilterList());
   },[itemCount]);
 
-  const handleClick = () => {
-    setOpenFilter(true);
-  };
 
   return (
     <div className="header-container">
@@ -64,8 +61,8 @@ function TaskHead() {
             </span>
           </h4>
         </div>
-        <span style={{ textDecoration: 'underline' , fontSize: '15px' , cursor: 'pointer' }} className='py-2' onClick={handleClick}>Create new filter</span>
-        {openFilter && <MyComponent />}
+        
+       <MyComponent />
     </div>
     <hr className="head-rule" />
   </div>

@@ -250,7 +250,7 @@ const View = React.memo((props) => {
                 <i className="fa fa-wpforms" aria-hidden="true" /> &nbsp;{" "}
                 {t("Drafts")}/
               </span>{" "}
-              {form.title}
+              {form.title.length > 60 ? form.title.substring(0, 40) + '...' : form.title}
             </h3>
           ) : (
             ""
@@ -279,7 +279,7 @@ const View = React.memo((props) => {
           <Confirm
             modalOpen={draftDelete.modalOpen}
             message={`${t("Are you sure you wish to delete the draft")} "${
-              draftDelete.draftName
+              draftDelete.draftName.length > 14 ? draftDelete.draftName.substring(0, 12) + '...' : draftDelete.draftName
             }" 
             ${t("with ID")} "${draftDelete.draftId}"`}
             onNo={() => onNo()}

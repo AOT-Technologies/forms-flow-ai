@@ -63,10 +63,10 @@ camunda.bpm:
 
 spring:
   datasource:
-    jdbc-url : ${CAMUNDA_JDBC_URL:jdbc:h2:./camunda-db;DB_CLOSE_DELAY=-1;DB_CLOSE_ON_EXIT=FALSE}
-    username: ${CAMUNDA_JDBC_USER:sa}
-    password: ${CAMUNDA_JDBC_PASSWORD:sa}
-    driverClassName: ${CAMUNDA_JDBC_DRIVER:org.h2.Driver}
+    jdbc-url : ${CAMUNDA_JDBC_URL}
+    username: ${CAMUNDA_JDBC_USER}
+    password: ${CAMUNDA_JDBC_PASSWORD}
+    driverClassName: ${CAMUNDA_JDBC_DRIVER}
     type: com.zaxxer.hikari.HikariDataSource
     minimum-idle: 10
     maximumPoolSize: ${CAMUNDA_HIKARI_MAX_POOLSIZE:30}

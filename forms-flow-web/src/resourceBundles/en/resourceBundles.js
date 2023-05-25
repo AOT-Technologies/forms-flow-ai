@@ -1,5 +1,6 @@
 /* eslint-disable max-len */
 export const RESOURCE_BUNDLES_EN = {
+  "Select form version":"Select form version",
   "Please remove the special characters...!":"Please remove the special characters...!",
   "No histories found":"No histories found",
   "Continue":"Continue",
@@ -238,6 +239,7 @@ export const RESOURCE_BUNDLES_EN = {
   "Save Changes":"Save Changes",
   "Changing the form workflow will not affect the existing applications. It will only update in the newly created applications. Press Save Changes to continue or cancel the changes.":"Changing the form workflow will not affect the existing applications. It will only update in the newly created applications. Press Save Changes to continue or cancel the changes.",
   "Form Workflow Association Saved.":"Form Workflow Association Saved.",
+  "Form deletion unsuccessful":"Form deletion unsuccessful",
   "Form deleted successfully":"Form deleted successfully",
   "Form process failed":"Form process failed",
   "Form unpublishing Failed":"Form unpublishing Failed",

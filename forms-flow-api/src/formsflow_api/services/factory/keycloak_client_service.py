@@ -76,7 +76,7 @@ class KeycloakClientService(KeycloakAdmin):
         """Get roles."""
         response = self.client.get_roles(search)
         for role in response:
-            role["id"] = role.get("name")
+            role["id"] = role.get("id")
             role["description"] = role.get("description")
         return self.sort_results(response, sort_order)
 

@@ -179,16 +179,23 @@ export const publicApplicationStatus = (formId, ...rest) => {
   };
 };
 
-export const updateApplicationEvent = (data, ...rest) => {
+export const updateApplicationEvent = (applicationId,data, ...rest) => {
   /* * Data Format
  {
   "messageName" : "application_resubmitted",
   "processInstanceId":"a8dad78e-fa3b-11ea-a119-0242ac1f0003"
 }
 * */
+
   const done = rest.length ? rest[0] : () => {};
   return (dispatch) => {
-    RequestService.httpPOSTRequest(API.APPLICATION_EVENT_UPDATE, data)
+
+    const apiUrlAppResubmit = replaceUrl(
+      API.APPLICATION_EVENT_UPDATE,
+      "<application_id>",
+      applicationId);
+
+    RequestService.httpPOSTRequest(apiUrlAppResubmit, data)
       .then((res) => {
         if (res.data) {
           done(null, res.data);
@@ -217,7 +224,7 @@ export const FilterApplications = (params, ...rest) => {
     if (id && id !== "") {
       url += `&Id=${id.filterVal}`;
     }
-    
+
     if (applicationStatus && applicationStatus !== "") {
       url += `&applicationStatus=${applicationStatus?.filterVal}`;
     }

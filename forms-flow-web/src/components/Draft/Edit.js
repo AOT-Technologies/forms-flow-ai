@@ -45,8 +45,10 @@ import SubmissionError from "../../containers/SubmissionError";
 import SavingLoading from "../Loading/SavingLoading";
 import Confirm from "../../containers/Confirm";
 import { setDraftDelete } from "../../actions/draftActions";
-import { setFormStatusLoading } from "../../actions/processActions"; 
+import { setFormStatusLoading } from "../../actions/processActions";
 import { getFormProcesses } from "../../apiManager/services/processServices";
+import { textTruncate } from "../../helper/helper";
+
 const View = React.memo((props) => {
   const { t } = useTranslation();
   const lang = useSelector((state) => state.user.lang);
@@ -152,7 +154,7 @@ const View = React.memo((props) => {
       if (poll) saveDraft(payload, exitType.current);
     };
   }, [poll, exitType.current, draftSubmission?.id]);
- 
+
   if (isActive || isPublicStatusLoading || formStatusLoading) {
     return (
       <div data-testid="loading-view-component">
@@ -160,7 +162,7 @@ const View = React.memo((props) => {
       </div>
     );
   }
-  
+
 
   const deleteDraft = () => {
     dispatch(
@@ -250,7 +252,7 @@ const View = React.memo((props) => {
                 <i className="fa fa-wpforms" aria-hidden="true" /> &nbsp;{" "}
                 {t("Drafts")}/
               </span>{" "}
-              {form.title}
+              {textTruncate(60,40,form.title)}
             </h3>
           ) : (
             ""
@@ -279,8 +281,8 @@ const View = React.memo((props) => {
           <Confirm
             modalOpen={draftDelete.modalOpen}
             message={`${t("Are you sure you wish to delete the draft")} "${
-              draftDelete.draftName
-            }" 
+              textTruncate(14,12,draftDelete.draftName)
+            }"
             ${t("with ID")} "${draftDelete.draftId}"`}
             onNo={() => onNo()}
             onYes={(e) => {

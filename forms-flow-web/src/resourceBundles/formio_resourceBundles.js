@@ -1,6 +1,7 @@
 /* eslint-disable max-len */
 export const formio_resourceBundles = {
   en: {
+    "Select form version":"Select form version",
     "Please remove the special characters...!":"Please remove the special characters...!",
     "No histories found":"No histories found",
     "Continue":"Continue",
@@ -37,6 +38,7 @@ export const formio_resourceBundles = {
     "Form unpublishing Failed": "Form unpublishing Failed",
     "Form process failed": "Form process failed",
     "Form deleted successfully": "Form deleted successfully",
+    "Form deletion unsuccessful":"Form deletion unsuccessful",
     "Form Workflow Association Saved.": "Form Workflow Association Saved.",
     "Loading...": "Loading...",
     "Changing the form workflow will not affect the existing applications. It will only update in the newly created applications. Press Save Changes to continue or cancel the changes.":
@@ -295,10 +297,11 @@ export const formio_resourceBundles = {
     "URL copied":"URL copied",
     "Click Here to Copy":"Click Here to Copy",
     "Revert": "Revert"
-  
+
   },
 
   "zh-CN": {
+    "Select form version":"选择表格版本",
     "Please remove the special characters...!":"请删除特殊字符...！",
     "No histories found":"没有找到历史记录",
     "Continue":"继续",
@@ -333,6 +336,7 @@ export const formio_resourceBundles = {
     "All groups have access to the dashboard": "所有组都可以访问仪表板",
     "Form unpublishing Failed": "表单取消发布失败",
     "Form process failed": "表单处理失败",
+    "Form deletion unsuccessful":"表单删除失败",
     "Form deleted successfully": "表格删除成功",
     "Loading...": "正在加载...",
     "Changing the form workflow will not affect the existing applications. It will only update in the newly created applications. Press Save Changes to continue or cancel the changes.":
@@ -1208,6 +1212,7 @@ export const formio_resourceBundles = {
   },
 
   bg: {
+    "Select form version":"Изберете версия на формуляра",
     "Please remove the special characters...!":"Моля, премахнете специалните символи...!",
     "No histories found":"Няма намерени истории",
     "Continue":"продължи",
@@ -1244,6 +1249,7 @@ export const formio_resourceBundles = {
     "Form unpublishing Failed":
       "Прекратяването на публикуването на формуляра не бе успешно",
     "Form process failed": "Обработката на формуляра не бе успешно",
+    "Form deletion unsuccessful":"Изтриването на формуляра е неуспешно",
     "Form deleted successfully": "Формулярът е изтрит успешно",
     "Form Workflow Association Saved.":
       "Асоциацията на работния поток на формуляра е запазена.",
@@ -1442,7 +1448,7 @@ export const formio_resourceBundles = {
     "No forms found": "Няма намерени формуляри",
     "Powered by ": "Задвижвани от ",
     "No Process Diagram found": "Не е намерена диаграма на процеса",
-    "No applications found":"Няма намерени приложения", 
+    "No applications found":"Няма намерени приложения",
     "Successfully Updated": "Актуализирано успешно",
     "Failed": "Се провали",
     "Press Enter key or click here to search":
@@ -2176,6 +2182,7 @@ export const formio_resourceBundles = {
   },
 
   pt: {
+    "Select form version":"Selecione a versão do formulário",
     "Please remove the special characters...!":"Remova os caracteres especiais...!",
     "No histories found":"Nenhum histórico encontrado",
     "Continue":"Prosseguir",
@@ -2211,6 +2218,7 @@ export const formio_resourceBundles = {
       "Todos os grupos têm acesso ao painel",
     "Form unpublishing Failed": "Falha ao cancelar a publicação do formulário",
     "Form process failed": "Falha no processo do formulário",
+    "Form deletion unsuccessful":"Falha na exclusão do formulário",
     "Form deleted successfully": "Formulário excluído com sucesso",
     "Show in list": "Mostrar na lista",
     "Loading...": "Carregando...",
@@ -3138,6 +3146,7 @@ export const formio_resourceBundles = {
   },
 
   fr: {
+    "Select form version":"Sélectionnez la version du formulaire",
     "Please remove the special characters...!":"Veuillez supprimer les caractères spéciaux... !",
     "No histories found":"Aucun historique trouvé",
     "Continue":"Continuez",
@@ -3173,7 +3182,8 @@ export const formio_resourceBundles = {
       "Tous les groupes ont accès au tableau de bord",
     "Form unpublishing Failed": "Échec de la dépublication du formulaire",
     "Form process failed": "Le processus de formulaire a échoué",
-    "Form deleted successfully": "Form deleted successfully",
+    "Form deleted successfully": "Formulaire supprimé avec succèsy",
+    "Form deletion unsuccessful":"Échec de la suppression du formulaire",
     "Loading...": "Chargement...",
     "Changing the form workflow will not affect the existing applications. It will only update in the newly created applications. Press Save Changes to continue or cancel the changes.":
       "La modification du flux de travail du formulaire n'affectera pas les applications existantes. Il ne sera mis à jour que dans les applications nouvellement créées. Appuyez sur Enregistrer les modifications pour continuer ou annuler les modifications.",
@@ -4108,6 +4118,7 @@ export const formio_resourceBundles = {
   },
 
   de: {
+    "Select form version":"Formularversion auswählen",
     "Please remove the special characters...!":"Bitte entfernen Sie die Sonderzeichen...!",
     "No histories found":"Keine Historien gefunden",
     "Continue":"Weitermachen",
@@ -4144,7 +4155,8 @@ export const formio_resourceBundles = {
     "Form unpublishing Failed":
       "Das Aufheben der Veröffentlichung des Formulars ist fehlgeschlagen",
     "Form process failed": "Formularprozess fehlgeschlagen",
-    "Form deleted successfully": "Form deleted successfully",
+    "Form deleted successfully": "Formular erfolgreich gelöscht",
+    "Form deletion unsuccessful":"Formularlöschung fehlgeschlagen",
     "Form Workflow Association Saved.":
       "Formular-Workflow-Zuordnung gespeichert.",
     "Loading...": "Wird geladen...",

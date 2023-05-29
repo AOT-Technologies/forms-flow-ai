@@ -191,3 +191,4 @@ class TestAuthorizationResource:
         response = client.get("/authorizations/users/form", headers=headers)
         assert response.status_code == 200
         assert len(response.json) == 1
+        

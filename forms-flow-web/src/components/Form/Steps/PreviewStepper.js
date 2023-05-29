@@ -76,11 +76,11 @@ const Preview = React.memo(
                     <span className="font-weight-bolder">
                       {t("Form Name")} :{" "}
                     </span>
-                    <span>
+                    <h4 className="text-truncate">
                       {formData && formData.form && formData.form.title
                         ? formData.form.title
                         : "-"}
-                    </span>
+                    </h4>
                   </div>
                   <div>
                     <span className="font-weight-bolder">

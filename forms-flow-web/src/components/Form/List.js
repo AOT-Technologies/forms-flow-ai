@@ -485,7 +485,7 @@ const List = React.memo((props) => {
                       ? <span>{`${t(" Applications are submitted against")} `}</span> 
                       : <span>{`${t(" Application is submitted against")} `}</span> 
                   } 
-                  <span style={{ fontWeight: "bold" }}>{props.formName}</span>
+                    <h4 className=" text-truncate">{props.formName}</h4>
                   .
                    {t("Are you sure you wish to delete the form?")}
                   
@@ -493,14 +493,14 @@ const List = React.memo((props) => {
                 ) : (
                   <div>
                     {`${t("Are you sure you wish to delete the form ")}`}
-                    <span style={{ fontWeight: "bold" }}>{props.formName}</span>
+                      <h4 className=" text-truncate">{props.formName}</h4>
                     ?
                   </div>
                 )
               ) : (
                 <div>
                   {`${t("Are you sure you wish to delete the form ")} `}
-                  <span style={{ fontWeight: "bold" }}>{props.formName}</span>
+                    <h4 className=" text-truncate">{props.formName}</h4>
                   ?
                 </div>
               )

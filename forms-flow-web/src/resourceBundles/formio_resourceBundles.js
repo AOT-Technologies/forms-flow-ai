@@ -336,8 +336,8 @@ export const formio_resourceBundles = {
     "All groups have access to the dashboard": "所有组都可以访问仪表板",
     "Form unpublishing Failed": "表单取消发布失败",
     "Form process failed": "表单处理失败",
-    "Form deleted successfully": "表格删除成功",
     "Form deletion unsuccessful":"表单删除失败",
+    "Form deleted successfully": "表格删除成功",
     "Loading...": "正在加载...",
     "Changing the form workflow will not affect the existing applications. It will only update in the newly created applications. Press Save Changes to continue or cancel the changes.":
       "更改表单工作流程不会影响现有应用程序。它只会在新创建的应用程序中更新。按保存更改以继续或取消更改。",
@@ -1249,8 +1249,8 @@ export const formio_resourceBundles = {
     "Form unpublishing Failed":
       "Прекратяването на публикуването на формуляра не бе успешно",
     "Form process failed": "Обработката на формуляра не бе успешно",
-    "Form deleted successfully": "Формулярът е изтрит успешно",
     "Form deletion unsuccessful":"Изтриването на формуляра е неуспешно",
+    "Form deleted successfully": "Формулярът е изтрит успешно",
     "Form Workflow Association Saved.":
       "Асоциацията на работния поток на формуляра е запазена.",
     "Loading...": "Зареждане...",
@@ -2218,8 +2218,8 @@ export const formio_resourceBundles = {
       "Todos os grupos têm acesso ao painel",
     "Form unpublishing Failed": "Falha ao cancelar a publicação do formulário",
     "Form process failed": "Falha no processo do formulário",
-    "Form deleted successfully": "Formulário excluído com sucesso",
     "Form deletion unsuccessful":"Falha na exclusão do formulário",
+    "Form deleted successfully": "Formulário excluído com sucesso",
     "Show in list": "Mostrar na lista",
     "Loading...": "Carregando...",
     "Changing the form workflow will not affect the existing applications. It will only update in the newly created applications. Press Save Changes to continue or cancel the changes.":

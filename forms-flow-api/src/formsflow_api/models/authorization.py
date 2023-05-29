@@ -120,6 +120,7 @@ class Authorization(AuditDateTimeMixin, AuditUserMixin, BaseModel, db.Model):
         query = cls.query.filter(Authorization.auth_type == auth_type).filter(
             or_(
                 *role_condition,
+                Authorization.created_by == user_name,
                 Authorization.user_name.contains(user_name),
                 and_(
                     Authorization.user_name.is_(None),

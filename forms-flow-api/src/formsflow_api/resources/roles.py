@@ -73,7 +73,7 @@ class KeycloakRolesResource(Resource):
             raise unexpected_error
 
     @staticmethod
-    @auth.has_one_of_roles([ADMIN_GROUP, DESIGNER_GROUP])
+    @auth.has_one_of_roles([ADMIN_GROUP])
     @profiletime
     @API.doc(
         responses={

@@ -33,5 +33,5 @@ c. topic_name [Mandatory = Yes]
 
 Below snapshot shows how to configure the **KafkaProducerListener** to an execution. 
 
-![Kafka Producer Listener - Snapshot](./images/kafkaproducer-snp1.jpg)
+![Kafka Producer Listener - Snapshot](./images/kafkaproducer-snp1.png)
 

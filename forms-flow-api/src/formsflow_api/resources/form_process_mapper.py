@@ -210,10 +210,6 @@ class FormResourceList(Resource):
     def get():  # pylint: disable=too-many-locals
         """Get form process mapper."""
         try:
-            auth_form_details = ApplicationService.get_authorised_form_list(
-                token=request.headers["Authorization"]
-            )
-            current_app.logger.info(auth_form_details)
             dict_data = FormProcessMapperListRequestSchema().load(request.args) or {}
             form_name: str = dict_data.get("form_name")
             page_no: int = dict_data.get("page_no")
@@ -221,8 +217,6 @@ class FormResourceList(Resource):
             sort_by: str = dict_data.get("sort_by", "id")
             sort_order: str = dict_data.get("sort_order", "desc")
             form_type: str = dict_data.get("form_type", "form")
-            auth_list = auth_form_details.get("authorizationList") or {}
-            resource_list = [group["resourceId"] for group in auth_list]
 
             if form_name:
                 form_name: str = form_name.replace("%", r"\%").replace("_", r"\_")
@@ -234,22 +228,13 @@ class FormResourceList(Resource):
                 ) = FormProcessMapperService.get_all_forms(
                     page_no, limit, form_name, sort_by, sort_order, form_type
                 )
-            elif (
-                auth_form_details.get("adminGroupEnabled") is True
-                or "*" in resource_list
-            ):
-                (
-                    form_process_mapper_schema,
-                    form_process_mapper_count,
-                ) = FormProcessMapperService.get_all_mappers(
-                    page_no, limit, form_name, sort_by, sort_order
-                )
+
             else:
                 (
                     form_process_mapper_schema,
                     form_process_mapper_count,
                 ) = FormProcessMapperService.get_all_mappers(
-                    page_no, limit, form_name, sort_by, sort_order, resource_list
+                    page_no, limit, form_name, sort_by, sort_order
                 )
             return (
                 (

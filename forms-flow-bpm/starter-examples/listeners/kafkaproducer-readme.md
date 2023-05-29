@@ -17,7 +17,8 @@ Execution Listener
 
 This component reads the field injection properties and sends kafka message based on the property values.
 
-This component relies on listed parameters.
+This component relies on listed parameters. 
+
 a. bootstrap_servers_config [Mandatory = Yes]  
 b. messageKey [Mandatory = Yes]  
 c. messageValue [Mandatory = Yes]  

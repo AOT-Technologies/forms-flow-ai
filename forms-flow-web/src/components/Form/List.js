@@ -307,8 +307,7 @@ const List = React.memo((props) => {
                                   if (!error) {
                                     newFormData._id = formObj._id;
                                     newFormData.access = formObj.access;
-                                    newFormData.submissionAccess =
-                                       formObj.submissionAccess;
+                                    newFormData.submissionAccess = formObj.submissionAccess;
                                     newFormData.componentChanged =
                                       (!_isEquial(newFormData.components, formObj.components) ||
                                         newFormData.display !== formObj.display ||
@@ -481,28 +480,30 @@ const List = React.memo((props) => {
 
                  <div>
                  {applicationCount}
-                 {applicationCount > 1
-                    ? <span>{`${t(" Applications are submitted against")} `}</span>
-                    : <span>{`${t(" Application is submitted against")} `}</span>
+                 {
+                    applicationCount > 1
+                      ? <span>{`${t(" Applications are submitted against")} `}</span>
+                      : <span>{`${t(" Application is submitted against")} `}</span>
                   }
-                  <span style={{ fontWeight: "bold" }}>{props.formName}</span>
+                    <h4 className=" text-truncate">{props.formName}</h4>
                   .
-                    {t("Are you sure you wish to delete the form?")}
-                  </div>
+                   {t("Are you sure you wish to delete the form?")}
+
+                   </div>
                 ) : (
                   <div>
                     {`${t("Are you sure you wish to delete the form ")}`}
-                    <span style={{ fontWeight: "bold" }}>{props.formName}</span>
+                      <h4 className=" text-truncate">{props.formName}</h4>
                     ?
                   </div>
                 )
               ) : (
-                  <div>
+                <div>
                   {`${t("Are you sure you wish to delete the form ")} `}
-                  <span style={{ fontWeight: "bold" }}>{props.formName}</span>
+                    <h4 className=" text-truncate">{props.formName}</h4>
                   ?
                 </div>
-                )
+              )
             }
             onNo={() => onNo()}
             onYes={(e) => {
@@ -763,12 +764,12 @@ const mapDispatchToProps = (dispatch, ownProps) => {
             if (err) {
               toast.error(
                 <Translation>
-                  {(t) => t("Form delete unsuccessfull")}
+                  {(t) => t("Form deletion unsuccessful")}
                 </Translation>
               );
             } else {
               toast.success(
-                <Translation>{(t) => t("Form delete successfull")}</Translation>
+                <Translation>{(t) => t("Form deleted successfully")}</Translation>
               );
               const newFormCheckList = formCheckList.filter(
                 (i) => i.formId !== formId

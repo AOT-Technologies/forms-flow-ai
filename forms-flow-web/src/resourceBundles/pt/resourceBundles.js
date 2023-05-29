@@ -1,5 +1,6 @@
 /* eslint-disable max-len */
 export const RESOURCE_BUNDLES_PT = {
+  "Select form version":"Selecione a versão do formulário",
   "Please remove the special characters...!":"Remova os caracteres especiais...!",
   "No histories found":"Nenhum histórico encontrado",
   "Continue":"Prosseguir",
@@ -238,6 +239,7 @@ export const RESOURCE_BUNDLES_PT = {
   "Are you sure you wish to delete the form ":"Tem certeza de que deseja excluir o formulário",
   "Save Changes":"Salvar alterações",
   "Changing the form workflow will not affect the existing applications. It will only update in the newly created applications. Press Save Changes to continue or cancel the changes.":"Alterar o fluxo de trabalho do formulário não afetará os aplicativos existentes. Ele só será atualizado nos aplicativos recém-criados. Pressione Salvar alterações para continuar ou cancelar as alterações.",
+  "Form deletion unsuccessful":"Falha na exclusão do formulário",
   "Form deleted successfully":"Formulário excluído com sucesso",
   "Form process failed":"Falha no processo do formulário",
   "Form unpublishing Failed":"Falha ao cancelar a publicação do formulário",

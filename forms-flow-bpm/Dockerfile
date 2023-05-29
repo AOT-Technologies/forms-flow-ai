@@ -9,7 +9,7 @@ COPY pom*.xml .
 COPY forms-flow-bpm-utils/pom.xml ./forms-flow-bpm-utils/
 COPY forms-flow-bpm-camunda/pom.xml ./forms-flow-bpm-camunda/
 
-COPY src /tmp/src/
+# COPY src /tmp/src/
 COPY forms-flow-bpm-camunda/src ./forms-flow-bpm-camunda/src/
 COPY forms-flow-bpm-utils/src ./forms-flow-bpm-utils/src/
 

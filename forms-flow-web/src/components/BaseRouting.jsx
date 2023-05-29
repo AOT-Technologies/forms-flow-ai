@@ -41,13 +41,10 @@ const BaseRouting = React.memo(
     }, []);
 
     React.useEffect(() => {
-      if (user) {
-        publish("ES_USER", user);
-      }
       if (tenant) {
         publish("ES_TENANT", tenant);
       }
-    }, [user, tenant]);
+    }, [tenant]);
 
     React.useEffect(() => {
       publish("ES_ROUTE", location);

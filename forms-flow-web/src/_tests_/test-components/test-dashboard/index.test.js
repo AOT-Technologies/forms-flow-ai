@@ -7,6 +7,14 @@ import { Router, Route } from "react-router";
 import { createMemoryHistory } from "history";
 import StoreService from "../../../services/StoreService";
 
+jest.mock('@formsflow/service', () => ({
+  __esModule: true, 
+  default: jest.fn(() => ({})),
+  RequestService : {
+      "httpGETRequest": ()=>Promise.resolve(jest.fn(()=> ({data: {}})))
+  }
+}));
+
 let store;
 
 beforeEach(() => {

@@ -1,35 +1,58 @@
 import React from "react";
-import { render, screen } from "@testing-library/react";
+import { screen } from "@testing-library/react";
 import "@testing-library/jest-dom/extend-expect";
 import { Provider } from "react-redux";
 import { appState } from "../../test-redux-states/redux-state-sample";
 import Insights from "../../../components/Insights/Insights";
 import StoreService from "../../../services/StoreService";
 import { mock1 } from "./constant";
+import { Router, Route } from "react-router";
+import { render as rtlRender } from "@testing-library/react";
+import { createMemoryHistory } from "history";
+
 const store = StoreService.configureStore();
+jest.mock("@formsflow/service", () => ({
+  __esModule: true,
+  default: jest.fn(() => ({})),
+  RequestService: {
+    httpGETRequest: () => Promise.resolve(jest.fn(() => ({ data: {} }))),
+  },
+}));
+
+function renderWithRouterMatch(
+  Ui,
+  additionalProps,
+  {
+    path = "/",
+    route = "/",
+    history = createMemoryHistory({ initialEntries: [route] }),
+  } = {}
+) {
+  return {
+    ...rtlRender(
+      <Provider store={store}>
+        <Router history={history}>
+          <Route path={path} render={() => <Ui {...additionalProps} />} />
+        </Router>
+      </Provider>
+    ),
+  };
+}
 
 test("Render Insight  Component with insights prop passed", () => {
-  render(
-    <Provider store={store}>
-      <Insights
-        isDashboardLoading={appState.insights.isDashboardLoading}
-        isInsightLoading={appState.insights.isInsightLoading}
-        dashboards={appState.insights.dashboardsList}
-        activeDashboard={appState.insights.dashboardDetail}
-      />
-    </Provider>
-  );
+  renderWithRouterMatch(Insights, {
+    isDashboardLoading: appState.insights.isDashboardLoading,
+    isInsightLoading: appState.insights.isInsightLoading,
+    dashboards: appState.insights.dashboardsList,
+    activeDashboard: appState.insights.dashboardDetail,
+  });
   expect(screen.getByTestId("loading-component")).toBeInTheDocument();
 });
 test("Render Insight  Component with insights prop passed", () => {
-  render(
-    <Provider store={store}>
-      <Insights
-        isDashboardLoading={mock1.isDashboardLoading}
-        isInsightLoading={mock1.isInsightLoading}
-        dashboards={mock1.dashboardsList}
-        activeDashboard={mock1.dashboardDetail}
-      />
-    </Provider>
-  );
+  renderWithRouterMatch(Insights, {
+    isDashboardLoading: mock1.isDashboardLoading,
+    isInsightLoading: mock1.isInsightLoading,
+    dashboards: mock1.dashboardsList,
+    activeDashboard: mock1.dashboardDetail,
+  });
 });

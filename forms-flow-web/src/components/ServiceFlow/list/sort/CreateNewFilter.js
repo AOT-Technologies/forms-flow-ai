@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import { useSelector } from "react-redux";
 import clsx from "clsx";
 import { makeStyles } from "@material-ui/core/styles";
 import Drawer from "@material-ui/core/Drawer";
@@ -6,52 +7,75 @@ import Button from "@material-ui/core/Button";
 import List from "@material-ui/core/List";
 import Divider from "@material-ui/core/Divider";
 import "../../ServiceFlow.scss";
+import { saveFilters } from "../../../../apiManager/services/bpmTaskServices";
 
 const useStyles = makeStyles({
   list: {
     width: 380,
-    
-   
   },
   fullList: {
-    width: "auto",    
+    width: "auto",
   },
 });
 
 export default function MyComponent() {
   const [filterName, setFilterName] = useState("");
-  const [showUndefinedVaribale, setShowUndefinedVaribale] = useState(true);
-  const [variableName, setVariableName] = useState("");
-  const [labelName, setLabelName] = useState("");
-  const [newfilterArray, setNewFilterArray] = useState([]);
+  const [showUndefinedVaribale, setShowUndefinedVaribale] = useState(false);
   const [inputVisibility, setInputVisibility] = useState({});
   const [definitionKeyId, setDefinitionKeyId] = useState("");
-  const [roleValue, setRoleValue] = useState("");
-  const [userValue, setUserValue] = useState("");
-  const [rows, setRows] = useState([{ id: 1 }]);
-  const [selectedOption, setSelectedOption] = useState("");
+  const [candidateGroup, setCandidateGroup] = useState([]);
+  const [taskName, setTaskName] = useState([]);
+  const [includeAssignedTasks, setIncludeAssignedTasks] = useState(false);
+  const [rows, setRows] = useState([]);
+  const [newRow, setNewRow] = useState({ variableName: "", labelName: "" });
+  const [permissions, setPermissions] = useState("");
   const [identifierId, setIdentifierId] = useState("");
   const [selectedIcon, setSelectedIcon] = useState("");
   const [specificUserGroup, setSpecificUserGroup] = useState("");
+  const userName = useSelector((state) => state.user?.userDetail?.name);
 
+  //Function for collecting the input data
   const handleSubmit = () => {
-    const newFilter = {
-      filterName: filterName,
-      showUndefinedVaribale: showUndefinedVaribale,
-      variableName: variableName,
-      labelName: labelName,
-      definitionKeyId: definitionKeyId,
-      roleValue: roleValue,
-      userValue: userValue,
-      selectedOption: selectedOption,
+    const data = {
+      name: filterName,
+      criteria: {
+        processDefinitionKey: definitionKeyId,
+        candidateGroup: candidateGroup,
+        assignee: taskName,
+        includeAssignedTasks: false,
+      },
+      variables: rows.map((row) => ({
+        name: row.variableName,
+        label: row.labelName,
+      })),
+
+      users: [userName],
+      roles: [selectedIcon],
       identifierId: identifierId,
-      selectedIcon: selectedIcon,
     };
-    setNewFilterArray([...newfilterArray, newFilter]);
-    console.log(newFilter);
+    saveFilters(data).then(toggleDrawer("left", false)).catch((error) => {
+      console.error("error" , error);
+    });
+    console.log(data);
+
+
+    //clearing the input feild after submission
+    setFilterName("");
+    setShowUndefinedVaribale("");
+    setInputVisibility("");
+    setDefinitionKeyId("");
+    setCandidateGroup("");
+    setTaskName("");
+    setIncludeAssignedTasks("");
+    setPermissions("");
+    setIdentifierId("");
+    setSelectedIcon("");
+    setSpecificUserGroup("");
+    setRows([]);
+    setNewRow({ variableName: "", labelName: "" });
   };
 
-
+  // Function for setting visibility of input feild in criteria part
   const handleSpanClick = (spanId) => {
     setInputVisibility((prevVisibility) => ({
       ...prevVisibility,
@@ -59,27 +83,77 @@ export default function MyComponent() {
     }));
   };
 
-  const handleAddRow = () => {
-    const newRow = { id: rows.length + 1 };
-    setRows((prevRows) => [...prevRows, newRow]);
-  };
+  function uniqueId() {
+    const timestamp = Date.now().toString(36); // Convert current timestamp to base 36
+    const randomNum = Math.random().toString(36).substr(2, 5); // Generate a random number and convert to base 36
+    return timestamp + randomNum;
+  }
 
+  //Function for taking values form checkbox from permission part
   const handleRadioChange = (event) => {
-    setSelectedOption(event.target.value);
+    setPermissions(event.target.value);
   };
 
-  const handleCheckboxChange = (e) => {
+  //Function For checking  UndefinedVaribaleCheckbox is checked or not
+  const UndefinedVaribaleCheckboxChange = (e) => {
     setShowUndefinedVaribale(e.target.checked);
   };
 
+  //Function For checking  includeAssignedTasksCheckbox is checked or not
+  const includeAssignedTasksCheckboxChange = (e) => {
+    setIncludeAssignedTasks(e.target.checked);
+  };
+
+  //Function to checking which icon is selected
   const handleIconClick = (iconName) => {
     setSelectedIcon(iconName);
   };
 
+  //function for taking the value from the radio button Specific User/ Group
   const handleSpecificUserGroup = (e) => {
     setSpecificUserGroup(e.target.value);
   };
 
+  //Function for taking the values from name input feild
+  const handleVariableNameChange = (value, index) => {
+    setRows((prevRows) => {
+      const updatedRows = [...prevRows];
+      updatedRows[index].variableName = value;
+      return updatedRows;
+    });
+  };
+
+  //Function for taking the values from label input feild
+  const handleLabelNameChange = (value, index) => {
+    setRows((prevRows) => {
+      const updatedRows = [...prevRows];
+      updatedRows[index].labelName = value;
+      return updatedRows;
+    });
+  };
+
+  //Function for taking the new values from new name input feild
+  const handleNewVariableNameChange = (value) => {
+    setNewRow((prevNewRow) => ({ ...prevNewRow, variableName: value }));
+  };
+
+  //Function for taking the new values from new label input feild
+  const handleNewLabelNameChange = (value) => {
+    setNewRow((prevNewRow) => ({ ...prevNewRow, labelName: value }));
+  };
+
+  //Function for adding rows for new inputs
+  const handleAddRow = () => {
+    setRows((prevRows) => [...prevRows, { id: uniqueId(), ...newRow }]);
+    setNewRow({ variableName: "", labelName: "" });
+  };
+
+  //Function for delecting a row
+  const handleRemoveRow = (id) => {
+    setRows((prevRows) => prevRows.filter((row) => row.id !== id));
+  };
+
+  //bootstrap drawer
   const classes = useStyles();
   const [state, setState] = React.useState({
     top: false,
@@ -100,13 +174,12 @@ export default function MyComponent() {
   };
 
   const list = (anchor) => (
-    <div style={{ marginTop : "45px"}}
+    <div
+      style={{ marginTop: "45px" }}
       className={clsx(classes.list, {
         [classes.fullList]: anchor === "top" || anchor === "bottom",
       })}
       role="presentation"
-      //   onClick={toggleDrawer(anchor, false)}
-      //   onKeyDown={toggleDrawer(anchor, false)}
     >
       <List>
         <div
@@ -115,12 +188,13 @@ export default function MyComponent() {
             display: "flex",
             alignItems: "center",
             justifyContent: "space-between",
-            background: "rgb(248, 248, 248)",
           }}
         >
-          <h5 style={{ fontWeight: "bold" }}>Create new filter</h5>
+          <h5 style={{ fontWeight: "bold", fontSize: "16px" }}>
+            Create new filter
+          </h5>
           <span
-            style={{ cursor: "pointer" }}
+            style={{ cursor: "pointer", fontSize: "14px" }}
             onClick={toggleDrawer("left", false)}
           >
             Close
@@ -128,21 +202,27 @@ export default function MyComponent() {
         </div>
       </List>
       <List>
-        <h5 style={{ fontWeight: "bold" }}>Filter Name</h5>
+        <h5 style={{ fontWeight: "bold", fontSize: "18px" }}>Filter Name</h5>
         <input
           type="text"
           placeholder="Enter your text here"
-          style={{ width: "90%", padding: "3%" }}
+          style={{
+            width: "90%",
+            height: "44px",
+            padding: "3%",
+            border: "3px solid #C8C6C4",
+            fontSize: "18px",
+          }}
           value={filterName}
           onChange={(e) => setFilterName(e.target.value)}
         />
       </List>
       <Divider />
       <List>
-        <h5 style={{ fontWeight: "bold" }}>
+        <h5 style={{ fontWeight: "bold", fontSize: "18px" }}>
           Criteria <i className="fa fa-info-circle"></i>{" "}
         </h5>
-        <h5>Definition Key Id</h5>
+        <h5 style={{ fontSize: "18px" }}>Definition Key</h5>
         <span
           style={{
             textDecoration: "underline",
@@ -158,12 +238,17 @@ export default function MyComponent() {
         {inputVisibility[1] && (
           <input
             type="text"
-            style={{ width: "80%", height: "40px", padding: "3%" }}
+            style={{
+              width: "80%",
+              height: "40px",
+              padding: "3%",
+              border: "3px solid #C8C6C4",
+            }}
             value={definitionKeyId}
             onChange={(e) => setDefinitionKeyId(e.target.value)}
           />
         )}
-        <h5>Role</h5>
+        <h5>Candidate Group</h5>
         <span
           style={{
             textDecoration: "underline",
@@ -179,12 +264,17 @@ export default function MyComponent() {
         {inputVisibility[2] && (
           <input
             type="text"
-            style={{ width: "80%", height: "40px", padding: "3%" }}
-            value={roleValue}
-            onChange={(e) => setRoleValue(e.target.value)}
+            style={{
+              width: "80%",
+              height: "40px",
+              padding: "3%",
+              border: "3px solid #C8C6C4",
+            }}
+            value={candidateGroup}
+            onChange={(e) => setCandidateGroup(e.target.value)}
           />
         )}
-        <h5>User</h5>
+        <h5>Asignee</h5>
         <span
           style={{
             textDecoration: "underline",
@@ -200,66 +290,160 @@ export default function MyComponent() {
         {inputVisibility[3] && (
           <input
             type="text"
-            style={{ width: "80%", height: "40px", padding: "3%" }}
-            value={userValue}
-            onChange={(e) => setUserValue(e.target.value)}
+            style={{
+              width: "80%",
+              height: "40px",
+              padding: "3%",
+              border: "3px solid #C8C6C4",
+            }}
+            value={taskName}
+            onChange={(e) => setTaskName(e.target.value)}
           />
         )}
-      </List>
-      <Divider />
-      <List>
-        <h5 style={{ fontWeight: "bold" }}>
-          Variable <i className="fa fa-info-circle"></i>
-        </h5>
-        <div style={{ display: "flex", alignItems: "center" }}>
+
+        <div
+          style={{ display: "flex", alignItems: "center", marginTop: "10px" }}
+        >
           <input
             type="checkbox"
-            id="my-checkbox"
-            checked={showUndefinedVaribale}
-            onChange={handleCheckboxChange}
+            id="assignedTask-checkbox"
+            checked={includeAssignedTasks}
+            onChange={includeAssignedTasksCheckboxChange}
             style={{ marginRight: "6px" }}
           />
-          <h5>Show undefined variables</h5>
+          <h5 style={{ fontSize: "18px", marginBottom: "3px" }}>
+            Include Assigned Task
+          </h5>
         </div>
+        <Divider />
+        <List>
+          <h5 style={{ fontWeight: "bold", fontSize: "18px" }}>
+            Variable <i className="fa fa-info-circle"></i>
+          </h5>
 
-        <div style={{ display : "flex" , justifyContent : "space-between" , alignItems : "flex-end" }}>    
-          {rows.map((row) => (
+          <div style={{ display: "flex", alignItems: "center" }}>
+            <input
+              type="checkbox"
+              id="my-checkbox"
+              checked={showUndefinedVaribale}
+              onChange={UndefinedVaribaleCheckboxChange}
+              style={{ marginRight: "6px" }}
+            />
+            <h5 style={{ fontSize: "18px", marginBottom: "3px" }}>
+              Show undefined variables
+            </h5>
+          </div>
+
+          <div
+            style={{
+              display: "flex",
+              justifyContent: "space-between",
+              alignItems: "flex-end",
+              flexDirection: "column",
+            }}
+          >
+            {rows.map((row, index) => (
+              <div
+                key={row.id}
+                style={{
+                  display: "flex",
+                  alignItems: "center",
+                  marginTop: "10px",
+                  fontSize: "14px",
+                }}
+              >
+                <div>
+                  <label>Name</label> <br />
+                  <input
+                    type="text"
+                    placeholder="Name of variable"
+                    style={{
+                      width: "90%",
+                      height: "35px",
+                      border: "3px solid #C8C6C4",
+                    }}
+                    value={row.variableName}
+                    onChange={(e) =>
+                      handleVariableNameChange(e.target.value, index)
+                    }
+                  />
+                </div>
+                <div>
+                  <label>Label</label> <br />
+                  <input
+                    type="text"
+                    placeholder="Readable name"
+                    style={{
+                      width: "90%",
+                      height: "35px",
+                      border: "3px solid #C8C6C4",
+                    }}
+                    value={row.labelName}
+                    onChange={(e) =>
+                      handleLabelNameChange(e.target.value, index)
+                    }
+                  />
+                </div>
+                <i
+                  className="fa fa-minus-circle"
+                  style={{
+                    cursor: "pointer",
+                    fontSize: "36px",
+                    marginTop: "30px",
+                    marginRight: "10px",
+                    color: "red",
+                  }}
+                  onClick={() => handleRemoveRow(row.id)}
+                ></i>
+              </div>
+            ))}
+
             <div
-              key={row.id}
-              style={{ display: "flex", alignItems: "flex-end", gap: "10px" }}
+              style={{
+                display: "flex",
+                alignItems: "flex-end",
+                marginTop: "10px",
+                fontSize: "14px",
+              }}
             >
-              <div style={{ flex: "1" }}>
+              <div>
                 <label>Name</label> <br />
                 <input
                   type="text"
                   placeholder="Name of variable"
-                  style={{ width: "90%", height: "35px" }}
-                  value={variableName}
-                  onChange={(e) => setVariableName(e.target.value)}
+                  style={{
+                    width: "90%",
+                    height: "35px",
+                    fontSize: "14px",
+                    border: "3px solid #C8C6C4",
+                  }}
+                  value={newRow.variableName}
+                  onChange={(e) => handleNewVariableNameChange(e.target.value)}
                 />
               </div>
-              <div style={{ flex: "1" }}>
-                <label>Label</label>
+              <div>
+                <label>Label</label> <br />
                 <input
                   type="text"
                   placeholder="Readable name"
-                  style={{ width: "90%", height: "35px" }}
-                  value={labelName}
-                  onChange={(e) => setLabelName(e.target.value)}
+                  style={{
+                    width: "90%",
+                    height: "35px",
+                    fontSize: "14px",
+                    border: "3px solid #C8C6C4",
+                  }}
+                  value={newRow.labelName}
+                  onChange={(e) => handleNewLabelNameChange(e.target.value)}
                 />
               </div>
-            </div>
-          ))}
-          <div style={{ display: "flex", alignItems: "flex-end", gap: "10px" }}>
-            <div>
               <button
                 style={{
-                  width: "90%",
                   height: "40px",
                   background: "rgb(77, 97, 252)",
                   border: "none",
                   borderRadius: "5px",
                   color: "white",
+                  fontSize: "14px",
                 }}
                 onClick={handleAddRow}
               >
@@ -267,10 +451,8 @@ export default function MyComponent() {
               </button>
             </div>
           </div>
-        </div>
-      </List>
-      <Divider />
-      <List>
+        </List>
+        <Divider />
         <div className="child-container-two">
           <h5 style={{ fontWeight: "bold" }}>
             Permission <i className="fa fa-info-circle"></i>
@@ -281,10 +463,12 @@ export default function MyComponent() {
             id="my-radio"
             name="my-radio"
             value={"Accessible for all users"}
-            checked={selectedOption === "Accessible for all users"}
+            checked={permissions === "Accessible for all users"}
             onChange={handleRadioChange}
           />
-          <label style={{ marginRight: "3px" }}>Accessible for all users</label>{" "}
+          <label style={{ marginRight: "3px", fontSize: "18px" }}>
+            Accessible for all users
+          </label>{" "}
           <br />
           <input
             style={{ marginRight: "4px" }}
@@ -292,10 +476,10 @@ export default function MyComponent() {
             id="my-radio"
             name="my-radio"
             value={"Private (Only You)"}
-            checked={selectedOption === "Private (Only You)"}
+            checked={permissions === "Private (Only You)"}
             onChange={handleRadioChange}
           />
-          <label>Private (Only You)</label>
+          <label style={{ fontSize: "18px" }}>Private (Only You)</label>
           <br />
           <input
             style={{ marginRight: "4px" }}
@@ -303,16 +487,15 @@ export default function MyComponent() {
             id="my-radio"
             name="my-radio"
             value={"Specific User/ Group"}
-            // checked = {selectedOption === "Specific User/ Group"}
-            // onChange={handleRadioChange}
             checked={specificUserGroup === "Specific User/ Group"}
             onChange={handleSpecificUserGroup}
           />
-          <label>Specific User/ Group</label> <br />
+          <label style={{ fontSize: "18px" }}>Specific User/ Group</label>{" "}
+          <br />
           {specificUserGroup === "Specific User/ Group" && (
             <div className="inside-child-container-two d-flex">
               <div className="user-group-divisions d-flex">
-                <div >
+                <div style={{ fontSize: "14px" }}>
                   User
                   <i
                     className={`fa fa-user ${
@@ -322,7 +505,7 @@ export default function MyComponent() {
                     onClick={() => handleIconClick("user")}
                   />
                 </div>
-                <div >
+                <div style={{ fontSize: "14px" }}>
                   Group
                   <i
                     className={`fa fa-users ${
@@ -334,7 +517,7 @@ export default function MyComponent() {
                 </div>
               </div>
               <div>
-                <label>Identifier</label>
+                <label style={{ fontSize: "16px" }}>Identifier</label>
                 <input
                   type="text"
                   placeholder="Enter role ID"
@@ -357,9 +540,9 @@ export default function MyComponent() {
             justifyContent: "flex-end",
           }}
         >
-           <span
+          <span
             style={{ cursor: "pointer" }}
-            onClick={toggleDrawer('left', false)}
+            onClick={toggleDrawer("left", false)}
           >
             Cancel
           </span>
@@ -371,7 +554,9 @@ export default function MyComponent() {
               border: "none",
               borderRadius: "5px",
             }}
-            onClick={() => handleSubmit()}
+            onClick={() => {
+              handleSubmit();            
+            }}
           >
             Create Filter
           </button>
@@ -385,7 +570,11 @@ export default function MyComponent() {
       <React.Fragment key="left">
         <Button
           onClick={toggleDrawer("left", true)}
-          style={{ textDecoration: "underline", cursor: "pointer" , textTransform: "capitalize"  }}
+          style={{
+            textDecoration: "underline",
+            cursor: "pointer",
+            textTransform: "capitalize",
+          }}
         >
           Create new filter
         </Button>
@@ -399,11 +588,11 @@ export default function MyComponent() {
               overflowY: "auto",
               overflowX: "hidden",
               zIndex: "1500",
-              backdropFilter:" none !important"
+              backdropFilter: " none !important",
             },
           }}
-          sx = {{
-            width : 100
+          sx={{
+            width: 100,
           }}
         >
           {list("left")}

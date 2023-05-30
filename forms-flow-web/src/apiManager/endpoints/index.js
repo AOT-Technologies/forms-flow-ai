@@ -69,6 +69,7 @@ const API = {
   DASHBOARD_AUTHORIZATION: `${WEB_BASE_URL}/authorizations/dashboard`,
   USER_DASHBOARDS: `${WEB_BASE_URL}/authorizations/users/dashboard`,
   APPLICATION_EVENT_UPDATE: `${WEB_BASE_URL}/application/<application_id>/resubmit`,
+  GET_FILTERS : `${WEB_BASE_URL}/filter`
 };
 
 export default API;

@@ -71,6 +71,10 @@ COPY . /forms-flow-web/app/
 RUN npm run build
 
 FROM nginx:1.22 as production-stage
+
+# set label for image
+LABEL Name="formsflow"
+
 RUN mkdir /app
 COPY --from=build-stage /forms-flow-web/app/build /usr/share/nginx/html
 COPY nginx.conf /etc/nginx/nginx.conf

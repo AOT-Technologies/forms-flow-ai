@@ -198,6 +198,10 @@ const View = React.memo((props) => {
           })
         );
       }
+      //show success toaster - no datachange, but still draft is createdgit
+      else {
+        toast.success(t("Submission saved to draft."));
+      }
     }
   };
 
@@ -369,7 +373,7 @@ const View = React.memo((props) => {
           ) : null}
 
           {form.title ? (
-            <h3 className="ml-3">
+            <h3 className="ml-3 text-truncate">
               <span className="task-head-details">
                 <i className="fa fa-wpforms" aria-hidden="true" /> &nbsp;{" "}
                 {t("Forms")}/

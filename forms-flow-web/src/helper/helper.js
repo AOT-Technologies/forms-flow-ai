@@ -20,5 +20,9 @@ const removeTenantKey = (value, tenantkey) => {
   }
 };
 
+const textTruncate = (wordLength,targetLength,text) => {
+  return text?.length > wordLength ? text.substring(0, targetLength) + '...' : text;
+};
 
-export { replaceUrl, addTenantkey, removeTenantKey };
+
+export { replaceUrl, addTenantkey, removeTenantKey, textTruncate };

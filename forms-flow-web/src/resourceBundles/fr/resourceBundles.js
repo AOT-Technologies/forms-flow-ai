@@ -282,13 +282,13 @@ export const RESOURCE_BUNDLES_FR = {
   "Revert": "Revenir"
 
 };
-  
-
-  
 
 
 
 
 
-  
-  
+
+
+
+
+

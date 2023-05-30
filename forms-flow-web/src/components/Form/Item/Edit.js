@@ -427,7 +427,7 @@ const Edit = React.memo(() => {
         dispatch(push(`${redirectUrl}formflow/${submittedData._id}/preview`));
       })
       .catch((err) => {
-        const error = err.response.data || err.message;
+        const error = err.response?.data || err.message;
         dispatch(setFormFailureErrorData("form", error));
       })
       .finally(() => {
@@ -487,7 +487,7 @@ const Edit = React.memo(() => {
         )
       }
       <div className="d-flex align-items-center flex-wrap justify-content-between my-4 bg-light p-3">
-        <h3 className="ml-3 task-head">
+        <h3 className="ml-3 task-head  col-6 text-truncate">
           <i className="fa fa-wpforms" aria-hidden="true" /> &nbsp;{" "}
           {formData.title}
           <span className="text-success h5 ml-2">(Version {version})</span>

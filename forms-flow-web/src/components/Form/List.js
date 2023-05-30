@@ -477,30 +477,30 @@ const List = React.memo((props) => {
             message={
               formProcessData.id && applicationCount ? (
                 applicationCountResponse ? (
-                  
+
                  <div>
-                 {applicationCount}  
+                 {applicationCount}
                  {
                     applicationCount > 1
-                      ? <span>{`${t(" Applications are submitted against")} `}</span> 
-                      : <span>{`${t(" Application is submitted against")} `}</span> 
-                  } 
-                  <span style={{ fontWeight: "bold" }}>{props.formName}</span>
+                      ? <span>{`${t(" Applications are submitted against")} `}</span>
+                      : <span>{`${t(" Application is submitted against")} `}</span>
+                  }
+                    <h4 className=" text-truncate">{props.formName}</h4>
                   .
                    {t("Are you sure you wish to delete the form?")}
-                  
+
                    </div>
                 ) : (
                   <div>
                     {`${t("Are you sure you wish to delete the form ")}`}
-                    <span style={{ fontWeight: "bold" }}>{props.formName}</span>
+                      <h4 className=" text-truncate">{props.formName}</h4>
                     ?
                   </div>
                 )
               ) : (
                 <div>
                   {`${t("Are you sure you wish to delete the form ")} `}
-                  <span style={{ fontWeight: "bold" }}>{props.formName}</span>
+                    <h4 className=" text-truncate">{props.formName}</h4>
                   ?
                 </div>
               )

@@ -163,6 +163,21 @@ class FormProcessMapper(AuditDateTimeMixin, AuditUserMixin, BaseModel, db.Model)
             active = active.filter(FormProcessMapper.tenant == tenant_key)
         return active
 
+    def _get_latest_form_mapper_ids(self):
+        """Getting latest mapper id of a form, based on parentFormId."""
+        # Execute a query to retrieve the maximum ID of the form mapper and the parent form ID
+        # Since each form has one or more versions so we need latest from based on parentId
+        return (
+            db.session.query(
+                func.max(self.id).label("id"),  # pylint: disable=not-callable
+                self.parent_form_id,
+            )
+            # Group the results by the parent form ID
+            .group_by(self.parent_form_id)
+            # Retrieve all the results as a list of tuples
+            .all()
+        )
+
     @classmethod
     def find_all_forms(
         cls,
@@ -175,16 +190,9 @@ class FormProcessMapper(AuditDateTimeMixin, AuditUserMixin, BaseModel, db.Model)
     ):  # pylint: disable=too-many-arguments
         """Fetch all active and inactive forms which are not deleted."""
         # Get latest row for each form_id group
-        filtered_form_query = (
-            db.session.query(
-                func.max(cls.id).label("id"),  # pylint: disable=not-callable
-                cls.form_id,
-            )
-            .group_by(cls.form_id)
-            .all()
-        )
+        filtered_form_query = cls._get_latest_form_mapper_ids(cls)
         filtered_form_ids = [
-            data.id for data in filtered_form_query if data.form_id in form_ids
+            data.id for data in filtered_form_query if data.parent_form_id in form_ids
         ]
         query = cls.filter_conditions(**filters)
         query = query.filter(
@@ -218,10 +226,14 @@ class FormProcessMapper(AuditDateTimeMixin, AuditUserMixin, BaseModel, db.Model)
         **filters,
     ):  # pylint: disable=too-many-arguments
         """Fetch all active form process mappers."""
-        # Get latest row for each form_id group        
+        # Get latest row for each form_id group
+        filtered_form_query = cls._get_latest_form_mapper_ids(cls)
+        filtered_form_ids = [
+            data.id for data in filtered_form_query if data.parent_form_id in form_ids
+        ]
         query = cls.filter_conditions(**filters)
         query = query.filter(
-            FormProcessMapper.form_id.in_(form_ids),
+            FormProcessMapper.id.in_(filtered_form_ids),
         )
         query = cls.access_filter(query=query)
         sort_by, sort_order = validate_sort_order_and_order_by(sort_by, sort_order)

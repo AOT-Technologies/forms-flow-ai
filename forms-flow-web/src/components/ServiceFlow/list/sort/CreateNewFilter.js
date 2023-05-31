@@ -18,7 +18,14 @@ const useStyles = makeStyles({
   },
 });
 
-export default function MyComponent() {
+export default function CreateNewFilterDrawer() {
+  const classes = useStyles();
+  const [state, setState] = React.useState({
+    top: false,
+    left: false,
+    bottom: false,
+    right: false,
+  });
   const [filterName, setFilterName] = useState("");
   const [showUndefinedVaribale, setShowUndefinedVaribale] = useState(false);
   const [inputVisibility, setInputVisibility] = useState({});
@@ -30,7 +37,7 @@ export default function MyComponent() {
   const [newRow, setNewRow] = useState({ variableName: "", labelName: "" });
   const [permissions, setPermissions] = useState("");
   const [identifierId, setIdentifierId] = useState("");
-  const [selectedIcon, setSelectedIcon] = useState("");
+  const [selectUserGroupIcon, setSelectUserGroupIcon] = useState("");
   const [specificUserGroup, setSpecificUserGroup] = useState("");
   const userName = useSelector((state) => state.user?.userDetail?.name);
 
@@ -44,20 +51,25 @@ export default function MyComponent() {
         assignee: taskName,
         includeAssignedTasks: false,
       },
-      variables: rows.map((row) => ({
-        name: row.variableName,
-        label: row.labelName,
-      })),
-
+      variables: [
+        ...rows.map((row) => ({
+          name: row.variableName,
+          label: row.labelName,
+        })),
+        {
+          name: newRow.variableName,
+          label: newRow.labelName,
+        },
+      ],
       users: [userName],
-      roles: [selectedIcon],
+      roles: [selectUserGroupIcon],
       identifierId: identifierId,
     };
-    saveFilters(data).then(toggleDrawer("left", false)).catch((error) => {
-      console.error("error" , error);
-    });
-    console.log(data);
-
+    saveFilters(data)
+      .then(toggleDrawer("left", false))
+      .catch((error) => {
+        console.error("error", error);
+      });
 
     //clearing the input feild after submission
     setFilterName("");
@@ -69,7 +81,7 @@ export default function MyComponent() {
     setIncludeAssignedTasks("");
     setPermissions("");
     setIdentifierId("");
-    setSelectedIcon("");
+    setSelectUserGroupIcon("");
     setSpecificUserGroup("");
     setRows([]);
     setNewRow({ variableName: "", labelName: "" });
@@ -90,8 +102,11 @@ export default function MyComponent() {
   }
 
   //Function for taking values form checkbox from permission part
-  const handleRadioChange = (event) => {
-    setPermissions(event.target.value);
+  const handleRadioChange = (e) => {
+    setPermissions(e.target.value);
+    setSpecificUserGroup("");
+    setSelectUserGroupIcon("");
+    setIdentifierId("");
   };
 
   //Function For checking  UndefinedVaribaleCheckbox is checked or not
@@ -105,16 +120,22 @@ export default function MyComponent() {
   };
 
   //Function to checking which icon is selected
-  const handleIconClick = (iconName) => {
-    setSelectedIcon(iconName);
+  const handleClickUserGroupIcon = (icon) => {
+    setSelectUserGroupIcon(icon);
   };
 
   //function for taking the value from the radio button Specific User/ Group
   const handleSpecificUserGroup = (e) => {
-    setSpecificUserGroup(e.target.value);
+    if (e.target.value === "Specific User/ Group") {
+      setSpecificUserGroup(e.target.value);
+    } else {
+      setSpecificUserGroup("");
+      setSelectUserGroupIcon("");
+      setIdentifierId("");
+    }
   };
 
-  //Function for taking the values from name input feild
+  // Function for taking the values from the name input field
   const handleVariableNameChange = (value, index) => {
     setRows((prevRows) => {
       const updatedRows = [...prevRows];
@@ -123,7 +144,7 @@ export default function MyComponent() {
     });
   };
 
-  //Function for taking the values from label input feild
+  // Function for taking the values from the label input field
   const handleLabelNameChange = (value, index) => {
     setRows((prevRows) => {
       const updatedRows = [...prevRows];
@@ -132,14 +153,20 @@ export default function MyComponent() {
     });
   };
 
-  //Function for taking the new values from new name input feild
+  // Function for taking the new values from the new name input field
   const handleNewVariableNameChange = (value) => {
-    setNewRow((prevNewRow) => ({ ...prevNewRow, variableName: value }));
+    setNewRow((prevNewRow) => ({
+      ...prevNewRow,
+      variableName: value,
+    }));
   };
 
-  //Function for taking the new values from new label input feild
+  // Function for taking the new values from the new label input field
   const handleNewLabelNameChange = (value) => {
-    setNewRow((prevNewRow) => ({ ...prevNewRow, labelName: value }));
+    setNewRow((prevNewRow) => ({
+      ...prevNewRow,
+      labelName: value,
+    }));
   };
 
   //Function for adding rows for new inputs
@@ -152,15 +179,6 @@ export default function MyComponent() {
   const handleRemoveRow = (id) => {
     setRows((prevRows) => prevRows.filter((row) => row.id !== id));
   };
-
-  //bootstrap drawer
-  const classes = useStyles();
-  const [state, setState] = React.useState({
-    top: false,
-    left: false,
-    bottom: false,
-    right: false,
-  });
 
   const toggleDrawer = (anchor, open) => (event) => {
     if (
@@ -492,27 +510,27 @@ export default function MyComponent() {
           />
           <label style={{ fontSize: "18px" }}>Specific User/ Group</label>{" "}
           <br />
-          {specificUserGroup === "Specific User/ Group" && (
+          {specificUserGroup === "Specific User/ Group" ? (
             <div className="inside-child-container-two d-flex">
               <div className="user-group-divisions d-flex">
                 <div style={{ fontSize: "14px" }}>
                   User
                   <i
                     className={`fa fa-user ${
-                      selectedIcon === "user" ? "highlight" : ""
+                      selectUserGroupIcon === "user" ? "highlight" : ""
                     }`}
                     style={{ fontSize: "30px", cursor: "pointer" }}
-                    onClick={() => handleIconClick("user")}
+                    onClick={() => handleClickUserGroupIcon("user")}
                   />
                 </div>
                 <div style={{ fontSize: "14px" }}>
                   Group
                   <i
                     className={`fa fa-users ${
-                      selectedIcon === "group" ? "highlight" : ""
+                      selectUserGroupIcon === "group" ? "highlight" : ""
                     }`}
                     style={{ fontSize: "30px", cursor: "pointer" }}
-                    onClick={() => handleIconClick("group")}
+                    onClick={() => handleClickUserGroupIcon("group")}
                   />
                 </div>
               </div>
@@ -527,7 +545,7 @@ export default function MyComponent() {
                 />
               </div>
             </div>
-          )}
+          ) : null}
         </div>
       </List>
       <Divider />
@@ -555,7 +573,7 @@ export default function MyComponent() {
               borderRadius: "5px",
             }}
             onClick={() => {
-              handleSubmit();            
+              handleSubmit();
             }}
           >
             Create Filter

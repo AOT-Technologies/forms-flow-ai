@@ -7,7 +7,7 @@ import { Translation } from "react-i18next";
 const ApplicationDetails = React.memo((props) => {
   const application = props.application;
   return (
-    <Table responsive>
+    <Table>
       <tbody>
         <tr>
           <td className="border-0">

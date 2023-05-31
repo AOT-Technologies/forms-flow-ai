@@ -91,7 +91,7 @@ const Preview = React.memo(
     }, []);
 
     useEffect(() => {
-      fetchDesigners(processListData.formId)
+      fetchDesigners(processListData.parentFormId)
         .then((res) => {
           const resource = res.data;
           setDesignerGroups(resource?.roles || []);
@@ -110,7 +110,7 @@ const Preview = React.memo(
         })
         .catch((error) => console.error("error", error));
 
-      getClientList(processListData.formId)
+      getClientList(processListData.parentFormId)
         .then((res) => {
           const resource = res.data;
           setClientGroups(resource?.roles || []);
@@ -161,7 +161,7 @@ const Preview = React.memo(
 
     const saveDesigner = () => {
       let payload = {
-        resourceId: processListData.formId,
+        resourceId: processListData.parentFormId,
         resourceDetails: {},
       };
       if (designerSelectedOption === "All Designers") {
@@ -179,7 +179,7 @@ const Preview = React.memo(
 
     const saveClients = () => {
       let payload = {
-        resourceId: processListData.formId,
+        resourceId: processListData.parentFormId,
         resourceDetails: {},
       };
       if (clientSelectedOption === "All Clients") {

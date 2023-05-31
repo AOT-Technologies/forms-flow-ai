@@ -6,8 +6,8 @@ from flask import current_app, request
 from flask_restx import Namespace, Resource, fields
 from formsflow_api_utils.utils import (
     ADMIN_GROUP,
-    auth,
     DESIGNER_GROUP,
+    auth,
     cors_preflight,
     profiletime,
 )

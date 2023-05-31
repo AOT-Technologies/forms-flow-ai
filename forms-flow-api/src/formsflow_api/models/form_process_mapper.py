@@ -214,13 +214,15 @@ class FormProcessMapper(AuditDateTimeMixin, AuditUserMixin, BaseModel, db.Model)
         limit=None,
         sort_by=None,
         sort_order=None,
-        process_key=None,
+        form_ids=None,
         **filters,
     ):  # pylint: disable=too-many-arguments
         """Fetch all active form process mappers."""
+        # Get latest row for each form_id group        
         query = cls.filter_conditions(**filters)
-        if process_key is not None:
-            query = query.filter(FormProcessMapper.process_key.in_(process_key))
+        query = query.filter(
+            FormProcessMapper.form_id.in_(form_ids),
+        )
         query = cls.access_filter(query=query)
         sort_by, sort_order = validate_sort_order_and_order_by(sort_by, sort_order)
         if sort_by and sort_order:

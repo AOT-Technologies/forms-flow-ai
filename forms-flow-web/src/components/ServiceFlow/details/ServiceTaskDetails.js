@@ -71,14 +71,6 @@ const ServiceFlowTaskDetails = React.memo(() => {
   const redirectUrl = MULTITENANCY_ENABLED ? `/tenant/${tenantKey}/` : "/";
   const error = useSelector((state) => state.bpmTasks.error);
   
-  
-
-  // useEffect(() => {
-  //    return () => {
-  //     dispatch(bpmActionError(''));
-  //   };
-  // }, [dispatch]);
-
 
   useEffect(() => {
     if (taskId) {

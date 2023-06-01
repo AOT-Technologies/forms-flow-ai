@@ -60,7 +60,8 @@ import {
 } from "../../../apiManager/services/processServices";
 import { setFormStatusLoading } from "../../../actions/processActions";
 import SavingLoading from "../../Loading/SavingLoading";
-import NotFound from "../../NotFound/";
+//import NotFound from "../../NotFound/";
+import { renderPage } from "../../../helper/helper";
 
 const View = React.memo((props) => {
   const [formStatus, setFormStatus] = React.useState("");
@@ -390,52 +391,33 @@ const View = React.memo((props) => {
         text={<Translation>{(t) => t("Loading...")}</Translation>}
         className="col-12"
       >
-        <div className="ml-4 mr-4">
-          {isPublic || formStatus === "active" ? (
-            <Form
-              form={form}
-              submission={submission}
-              url={url}
-              options={{
-                ...options,
-                language: lang,
-                i18n: formio_resourceBundles,
-              }}
-              hideComponents={hideComponents}
-              onChange={(data) => {
-                setDraftData(data);
-                draftRef.current = data;
-              }}
-              onSubmit={(data) => {
-                setPoll(false);
-                exitType.current = "SUBMIT";
-                onSubmit(data, form._id, isPublic);
-              }}
-              onCustomEvent={(evt) => onCustomEvent(evt, redirectUrl)}
-            />
-          ) : !processLoadError && (formStatus === "inactive" || !formStatus)  ? (
-            <span>
-              <div
-                className="container"
-                style={{
-                  maxWidth: "900px",
-                  margin: "auto",
-                  height: "50vh",
-                  display: "flex",
-                  flexDirection: "column",
-                  alignItems: "center",
-                  justifyContent: "center",
-                }}
-              >
-                <h3>{t("Form not published")}</h3>
-                <p>{t("You can't submit this form until it is published")}</p>
-              </div>
-            </span>
-          ) : <NotFound
-          errorMessage={t("Access Denied")}
-          errorCode={"403"}
-        />}
-        </div>
+  <div className="ml-4 mr-4">
+    {isPublic || formStatus === "active" ? (
+      <Form
+        form={form}
+        submission={submission}
+        url={url}
+        options={{
+          ...options,
+          language: lang,
+          i18n: formio_resourceBundles,
+        }}
+        hideComponents={hideComponents}
+        onChange={(data) => {
+          setDraftData(data);
+          draftRef.current = data;
+        }}
+        onSubmit={(data) => {
+          setPoll(false);
+          exitType.current = "SUBMIT";
+          onSubmit(data, form._id, isPublic);
+        }}
+        onCustomEvent={(evt) => onCustomEvent(evt, redirectUrl)}
+      />
+    ) : (
+      renderPage(formStatus, processLoadError)
+    )}
+  </div>
       </LoadingOverlay>
     </div>
   );

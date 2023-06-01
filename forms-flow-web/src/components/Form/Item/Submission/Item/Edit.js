@@ -69,7 +69,7 @@ const Edit = React.memo((props) => {
   );
   const tenantKey = useSelector((state) => state.tenants?.tenantId);
   const customSubmission = useSelector(
-    (state) => state.customSubmission.submission
+    (state) => state.customSubmission?.submission || {}
   );
   const redirectUrl = MULTITENANCY_ENABLED ? `/tenant/${tenantKey}/` : "/";
   useEffect(() => {

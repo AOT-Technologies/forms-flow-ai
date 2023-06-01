@@ -13,4 +13,4 @@ const formDelete = (state = initialState, action) => {
   }
 };
 
-export default formDelete;
+export default customSubmission;

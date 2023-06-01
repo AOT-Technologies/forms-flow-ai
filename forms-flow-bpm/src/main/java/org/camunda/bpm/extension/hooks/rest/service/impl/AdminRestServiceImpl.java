@@ -202,15 +202,13 @@ public class AdminRestServiceImpl implements AdminRestService {
 
         List<org.camunda.bpm.engine.authorization.Authorization> authorizations;
         if (RestAPIBuilderUtil.fetchUserName(restAPIBuilderConfigProperties.getUserNameAttribute()).equals(ANONYMOUS_USER)) {
-            authorizations = ProcessEngines
-                    .getDefaultProcessEngine()
+            authorizations = ProcessEngines.getDefaultProcessEngine()
                     .getAuthorizationService()
                     .createAuthorizationQuery()
                     .resourceType(Resources.AUTHORIZATION.resourceType())
                     .list();
         } else {
-            authorizations = ProcessEngines
-                    .getDefaultProcessEngine()
+            authorizations = ProcessEngines.getDefaultProcessEngine()
                     .getAuthorizationService()
                     .createAuthorizationQuery()
                     .resourceType(Resources.PROCESS_DEFINITION.resourceType())

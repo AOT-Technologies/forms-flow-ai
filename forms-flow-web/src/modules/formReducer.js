@@ -26,7 +26,6 @@ const formDelete = (state = initialState, action) => {
       return { ...state, formSubmitted: action.payload };
     case ACTION_CONSTANTS.PUBLIC_FORM_STATUS:
       return { ...state, publicFormStatus: action.payload };
-    case ACTION_CONSTANTS.CUSTOM_SUBMISSION:
     default:
       return state;
   }

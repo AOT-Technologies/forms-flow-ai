@@ -204,7 +204,7 @@ export const DraftList = React.memo(() => {
             {
             <div>
             {t("Are you sure you wish to delete the draft")}
-            <span style={{ fontWeight: "bold" }}> {draftDelete.draftName} </span>
+            <h4 style={{ fontWeight: "bold" }} className="text-truncate"> {draftDelete.draftName} </h4>
             {t("with ID")} 
             <span style={{fontWeight: "bold"}}> {draftDelete.draftId}</span>
             </div>

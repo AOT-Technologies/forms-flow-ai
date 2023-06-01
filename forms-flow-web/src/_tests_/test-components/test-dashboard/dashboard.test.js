@@ -8,118 +8,124 @@ import { createMemoryHistory } from "history";
 import StoreService from "../../../services/StoreService";
 import * as redux from "react-redux";
 
+jest.mock("@formsflow/service", () => ({
+  __esModule: true,
+  default: jest.fn(() => ({})),
+  RequestService: {
+    httpGETRequest: () => Promise.resolve(jest.fn(() => ({ data: {} }))),
+  },
+}));
+
 let store;
 
 beforeEach(() => {
-    store = StoreService.configureStore();
+  store = StoreService.configureStore();
 });
 
 function renderWithRouterMatch(
-    ui,
-    {
-        path = "/",
-        route = "/",
-        history = createMemoryHistory({ initialEntries: [route] }),
-    } = {}
+  ui,
+  {
+    path = "/",
+    route = "/",
+    history = createMemoryHistory({ initialEntries: [route] }),
+  } = {}
 ) {
-    return {
-        ...rtlRender(
-            <Provider store={store}>
-                <Router history={history}>
-                    <Route path={path} component={ui} />
-                </Router>
-            </Provider>
-        ),
-    };
+  return {
+    ...rtlRender(
+      <Provider store={store}>
+        <Router history={history}>
+          <Route path={path} component={ui} />
+        </Router>
+      </Provider>
+    ),
+  };
 }
 
 it("Should render the dashboard without breaking", () => {
-    const spy = jest.spyOn(redux, "useSelector");
-    spy.mockImplementation((callback) =>
-        callback({
-            metrics: {
-                submissionsList: [
-                    {
-                        applicationCount: 26,
-                        parentFormId: 22,
-                        formVersions: [{formId:324234214324, version:"v1"}],
-                        formName: "New Business License Application",
-                    },
-                    {
-                        applicationCount: 26,
-                        parentFormId: 22,
-                        formVersions: [{formId:324234214324, version:"v1"}],
-                        formName: "Freedom of Information and Protection of Privacy",
-                    },
-                ],
-                submissionsStatusList: [
-                    {
-                        statusName: "Approved",
-                        count: 1,
-                    },
-                    {
-                        statusName: "New",
-                        count: 21,
-                    },
-                ],
-                submissionsFullList: [{ length: 0 }],
-                isMetricsLoading: false,
-                isMetricsStatusLoading: false,
-                selectedMetricsId: 22,
-                metricsLoadError: false,
-                metricsStatusLoadError: false,
-                sortOrder: "asc",
-                searchText: "",
-                totalItems: 0,
-                pagination: { numPages: 0 },
-                sort: "formName",
-                submissionStatusCountLoader: false,
-                metricsDateRangeLoader: false,
-                submissionDate: [],
-
-            },
-        })
-    );
-    renderWithRouterMatch(Dashboard, {
-        path: "/",
-        route: "/",
-    });
-    expect(screen.getByText("Metrics")).toBeInTheDocument();
-    expect(screen.getByText("Submissions")).toBeInTheDocument();
-    expect(
-        screen.getByText("New Business License Application")
-    ).toBeInTheDocument();
-    expect(
-        screen.getByText("Freedom of Information and Protection of Privacy")
-    ).toBeInTheDocument();
+  const spy = jest.spyOn(redux, "useSelector");
+  spy.mockImplementation((callback) =>
+    callback({
+      metrics: {
+        submissionsList: [
+          {
+            applicationCount: 26,
+            parentFormId: 22,
+            formVersions: [{ formId: 324234214324, version: "v1" }],
+            formName: "New Business License Application",
+          },
+          {
+            applicationCount: 26,
+            parentFormId: 22,
+            formVersions: [{ formId: 324234214324, version: "v1" }],
+            formName: "Freedom of Information and Protection of Privacy",
+          },
+        ],
+        submissionsStatusList: [
+          {
+            statusName: "Approved",
+            count: 1,
+          },
+          {
+            statusName: "New",
+            count: 21,
+          },
+        ],
+        submissionsFullList: [{ length: 0 }],
+        isMetricsLoading: false,
+        isMetricsStatusLoading: false,
+        selectedMetricsId: 22,
+        metricsLoadError: false,
+        metricsStatusLoadError: false,
+        sortOrder: "asc",
+        searchText: "",
+        totalItems: 0,
+        pagination: { numPages: 0 },
+        sort: "formName",
+        submissionStatusCountLoader: false,
+        metricsDateRangeLoader: false,
+        submissionDate: [],
+      },
+    })
+  );
+  renderWithRouterMatch(Dashboard, {
+    path: "/",
+    route: "/",
+  });
+  expect(screen.getByText("Metrics")).toBeInTheDocument();
+  expect(screen.getByText("Submissions")).toBeInTheDocument();
+  expect(
+    screen.getByText("New Business License Application")
+  ).toBeInTheDocument();
+  expect(
+    screen.getByText("Freedom of Information and Protection of Privacy")
+  ).toBeInTheDocument();
 });
 
 it("Should not render the dashboard in case of error", () => {
-    const spy = jest.spyOn(redux, "useSelector");
-    spy.mockImplementation((callback) =>
-        callback({
-            metrics: {
-                submissionsList: [],
-                submissionsStatusList: [],
-                pagination: [],
-                submissionsFullList: [],
-                isMetricsLoading: false,
-                isMetricsStatusLoading: false,
-                selectedMetricsId: 22,
-                metricsLoadError: true,
-                metricsStatusLoadError: false,
-                submissionDate: []
-            },
-        })
-    );
-    renderWithRouterMatch(Dashboard, {
-        path: "/",
-        route: "/",
-    });
-    expect(
-        screen.getByText(
-            "The operation couldn't be completed. Please try after sometime"
-        )
-    ).toBeInTheDocument();
+  const spy = jest.spyOn(redux, "useSelector");
+  spy.mockImplementation((callback) =>
+    callback({
+      metrics: {
+        submissionsList: [],
+        submissionsStatusList: [],
+        pagination: [],
+        submissionsFullList: [],
+        isMetricsLoading: false,
+        isMetricsStatusLoading: false,
+        selectedMetricsId: 22,
+        metricsLoadError: true,
+        metricsStatusLoadError: false,
+        submissionDate: [],
+      },
+    })
+  );
+  renderWithRouterMatch(Dashboard, {
+    path: "/",
+    route: "/",
+  });
+  expect(
+    screen.getByText(
+      "The operation couldn't be completed. Please try after sometime"
+    )
+  ).toBeInTheDocument();
 });
-

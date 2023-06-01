@@ -36,7 +36,7 @@ const View = React.memo((props) => {
   );
 
   const customSubmission = useSelector(
-    (state) => state.formDelete.customSubmission
+    (state) => state.customSubmission?.submission || {}
   );
 
   let updatedSubmission;

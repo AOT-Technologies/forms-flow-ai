@@ -27,7 +27,8 @@ const Item = React.memo(() => {
   //const path = props.location.pathname;
   const applicationId = useSelector(
     (state) =>
-      selectRoot("submission", state)?.submission?.data?.applicationId || null
+    state[CUSTOM_SUBMISSION_ENABLE ? "customSubmission" : "submission"]?.submission?.data?.applicationId ||
+    null
   );
   const userRoles = useSelector((state) => {
     return selectRoot("user", state).roles;

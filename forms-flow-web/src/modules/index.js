@@ -17,6 +17,7 @@ import dashboardReducer from "./dashboardReducer";
 import tenantReducer from "./tenantReducer";
 import draftSubmission from "./draftReducer";
 import formRestore from "./RestoreFormReducer";
+import customSubmissionReducer from "./customSubmissionReducer";
 
 const createRootReducer = (history) =>
   combineReducers({
@@ -24,6 +25,7 @@ const createRootReducer = (history) =>
     taskAppHistory,
     insights,
     formDelete,
+    customSubmission:customSubmissionReducer,
     applications,
     bpmTasks,
     bpmForms,

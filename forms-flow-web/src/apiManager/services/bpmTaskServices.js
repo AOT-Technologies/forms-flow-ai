@@ -463,6 +463,5 @@ export const onBPMTaskFormSubmit = (taskId, formReq, ...rest) => {
 };
 
 export const saveFilters = (data) => {
-  let url = `${API.GET_FILTERS}`;
-  return RequestService.httpPOSTRequest(url, data);
+  return RequestService.httpPOSTRequest(`${API.GET_FILTERS}`, data);
 };

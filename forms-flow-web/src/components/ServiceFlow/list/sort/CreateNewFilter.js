@@ -20,21 +20,18 @@ const useStyles = makeStyles({
 
 export default function CreateNewFilterDrawer() {
   const classes = useStyles();
-  const [state, setState] = React.useState({
-    top: false,
-    left: false,
-    bottom: false,
-    right: false,
-  });
+  const [openDrawer, setOpenDrawer] = useState(false);
   const [filterName, setFilterName] = useState("");
-  const [showUndefinedVaribale, setShowUndefinedVaribale] = useState(false);
+  const [showUndefinedVariable, setShowUndefinedVariable] = useState(false);
   const [inputVisibility, setInputVisibility] = useState({});
   const [definitionKeyId, setDefinitionKeyId] = useState("");
   const [candidateGroup, setCandidateGroup] = useState([]);
-  const [taskName, setTaskName] = useState([]);
+  const [taskName, setTaskName] = useState("");
   const [includeAssignedTasks, setIncludeAssignedTasks] = useState(false);
-  const [rows, setRows] = useState([]);
-  const [newRow, setNewRow] = useState({ variableName: "", labelName: "" });
+  const [rows, setRows] = useState([
+    { id: 1, name: "", label: "", add: true, delete: false },
+  ]);
+  const [newRow, setNewRow] = useState([]);
   const [permissions, setPermissions] = useState("");
   const [identifierId, setIdentifierId] = useState("");
   const [selectUserGroupIcon, setSelectUserGroupIcon] = useState("");
@@ -53,38 +50,34 @@ export default function CreateNewFilterDrawer() {
       },
       variables: [
         ...rows.map((row) => ({
-          name: row.variableName,
-          label: row.labelName,
+          name: row.name,
+          label: row.label,
         })),
-        {
-          name: newRow.variableName,
-          label: newRow.labelName,
-        },
       ],
       users: [userName],
       roles: [selectUserGroupIcon],
       identifierId: identifierId,
     };
     saveFilters(data)
-      .then(toggleDrawer("left", false))
+      .then(() => {
+        toggleDrawer(false);
+        // Clearing the input fields after submission
+        setFilterName("");
+        setShowUndefinedVariable("");
+        setInputVisibility("");
+        setDefinitionKeyId("");
+        setCandidateGroup("");
+        setTaskName("");
+        setIncludeAssignedTasks("");
+        setPermissions("");
+        setIdentifierId("");
+        setSelectUserGroupIcon("");
+        setSpecificUserGroup("");
+        setRows([{ id: 1, name: "", label: "", add: true, delete: false }]);
+      })
       .catch((error) => {
         console.error("error", error);
       });
-
-    //clearing the input feild after submission
-    setFilterName("");
-    setShowUndefinedVaribale("");
-    setInputVisibility("");
-    setDefinitionKeyId("");
-    setCandidateGroup("");
-    setTaskName("");
-    setIncludeAssignedTasks("");
-    setPermissions("");
-    setIdentifierId("");
-    setSelectUserGroupIcon("");
-    setSpecificUserGroup("");
-    setRows([]);
-    setNewRow({ variableName: "", labelName: "" });
   };
 
   // Function for setting visibility of input feild in criteria part
@@ -94,12 +87,6 @@ export default function CreateNewFilterDrawer() {
       [spanId]: !prevVisibility[spanId],
     }));
   };
-
-  function uniqueId() {
-    const timestamp = Date.now().toString(36); // Convert current timestamp to base 36
-    const randomNum = Math.random().toString(36).substr(2, 5); // Generate a random number and convert to base 36
-    return timestamp + randomNum;
-  }
 
   //Function for taking values form checkbox from permission part
   const handleRadioChange = (e) => {
@@ -111,7 +98,7 @@ export default function CreateNewFilterDrawer() {
 
   //Function For checking  UndefinedVaribaleCheckbox is checked or not
   const UndefinedVaribaleCheckboxChange = (e) => {
-    setShowUndefinedVaribale(e.target.checked);
+    setShowUndefinedVariable(e.target.checked);
   };
 
   //Function For checking  includeAssignedTasksCheckbox is checked or not
@@ -139,7 +126,7 @@ export default function CreateNewFilterDrawer() {
   const handleVariableNameChange = (value, index) => {
     setRows((prevRows) => {
       const updatedRows = [...prevRows];
-      updatedRows[index].variableName = value;
+      updatedRows[index].name = value;
       return updatedRows;
     });
   };
@@ -148,31 +135,15 @@ export default function CreateNewFilterDrawer() {
   const handleLabelNameChange = (value, index) => {
     setRows((prevRows) => {
       const updatedRows = [...prevRows];
-      updatedRows[index].labelName = value;
+      updatedRows[index].label = value;
       return updatedRows;
     });
   };
 
-  // Function for taking the new values from the new name input field
-  const handleNewVariableNameChange = (value) => {
-    setNewRow((prevNewRow) => ({
-      ...prevNewRow,
-      variableName: value,
-    }));
-  };
-
-  // Function for taking the new values from the new label input field
-  const handleNewLabelNameChange = (value) => {
-    setNewRow((prevNewRow) => ({
-      ...prevNewRow,
-      labelName: value,
-    }));
-  };
-
   //Function for adding rows for new inputs
   const handleAddRow = () => {
-    setRows((prevRows) => [...prevRows, { id: uniqueId(), ...newRow }]);
-    setNewRow({ variableName: "", labelName: "" });
+    setRows((prevRows) => [{ id: 1, ...newRow, delete: true }, ...prevRows]);
+    setNewRow({ name: "", label: "", delete: true });
   };
 
   //Function for delecting a row
@@ -180,16 +151,7 @@ export default function CreateNewFilterDrawer() {
     setRows((prevRows) => prevRows.filter((row) => row.id !== id));
   };
 
-  const toggleDrawer = (anchor, open) => (event) => {
-    if (
-      event.type === "keydown" &&
-      (event.key === "Tab" || event.key === "Shift")
-    ) {
-      return;
-    }
-
-    setState({ ...state, [anchor]: open });
-  };
+  const toggleDrawer = () => setOpenDrawer(!openDrawer);
 
   const list = (anchor) => (
     <div
@@ -200,20 +162,13 @@ export default function CreateNewFilterDrawer() {
       role="presentation"
     >
       <List>
-        <div
-          className="newFilterTaskContainer-header noPadding"
-          style={{
-            display: "flex",
-            alignItems: "center",
-            justifyContent: "space-between",
-          }}
-        >
+        <div className="newFilterTaskContainer-header noPadding d-flex align-items-center justify-content-between">
           <h5 style={{ fontWeight: "bold", fontSize: "16px" }}>
             Create new filter
           </h5>
           <span
             style={{ cursor: "pointer", fontSize: "14px" }}
-            onClick={toggleDrawer("left", false)}
+            onClick={() => toggleDrawer()}
           >
             Close
           </span>
@@ -224,13 +179,7 @@ export default function CreateNewFilterDrawer() {
         <input
           type="text"
           placeholder="Enter your text here"
-          style={{
-            width: "90%",
-            height: "44px",
-            padding: "3%",
-            border: "3px solid #C8C6C4",
-            fontSize: "18px",
-          }}
+          className="filterNameTextfeild"
           value={filterName}
           onChange={(e) => setFilterName(e.target.value)}
         />
@@ -256,12 +205,7 @@ export default function CreateNewFilterDrawer() {
         {inputVisibility[1] && (
           <input
             type="text"
-            style={{
-              width: "80%",
-              height: "40px",
-              padding: "3%",
-              border: "3px solid #C8C6C4",
-            }}
+            className="Criteria-addValueInputBox"
             value={definitionKeyId}
             onChange={(e) => setDefinitionKeyId(e.target.value)}
           />
@@ -282,12 +226,7 @@ export default function CreateNewFilterDrawer() {
         {inputVisibility[2] && (
           <input
             type="text"
-            style={{
-              width: "80%",
-              height: "40px",
-              padding: "3%",
-              border: "3px solid #C8C6C4",
-            }}
+            className="Criteria-addValueInputBox"
             value={candidateGroup}
             onChange={(e) => setCandidateGroup(e.target.value)}
           />
@@ -308,12 +247,7 @@ export default function CreateNewFilterDrawer() {
         {inputVisibility[3] && (
           <input
             type="text"
-            style={{
-              width: "80%",
-              height: "40px",
-              padding: "3%",
-              border: "3px solid #C8C6C4",
-            }}
+            className="Criteria-addValueInputBox"
             value={taskName}
             onChange={(e) => setTaskName(e.target.value)}
           />
@@ -343,7 +277,7 @@ export default function CreateNewFilterDrawer() {
             <input
               type="checkbox"
               id="my-checkbox"
-              checked={showUndefinedVaribale}
+              checked={showUndefinedVariable}
               onChange={UndefinedVaribaleCheckboxChange}
               style={{ marginRight: "6px" }}
             />
@@ -352,122 +286,51 @@ export default function CreateNewFilterDrawer() {
             </h5>
           </div>
 
-          <div
-            style={{
-              display: "flex",
-              justifyContent: "space-between",
-              alignItems: "flex-end",
-              flexDirection: "column",
-            }}
-          >
+          <div>
             {rows.map((row, index) => (
-              <div
-                key={row.id}
-                style={{
-                  display: "flex",
-                  alignItems: "center",
-                  marginTop: "10px",
-                  fontSize: "14px",
-                }}
-              >
-                <div>
-                  <label>Name</label> <br />
+              <div key={row.id} className="row-container">
+                <div className="input-container">
+                  <label>Name</label>
                   <input
                     type="text"
                     placeholder="Name of variable"
-                    style={{
-                      width: "90%",
-                      height: "35px",
-                      border: "3px solid #C8C6C4",
-                    }}
-                    value={row.variableName}
+                    className="varibleInputboxes"
+                    value={row.name}
                     onChange={(e) =>
                       handleVariableNameChange(e.target.value, index)
                     }
                   />
                 </div>
-                <div>
-                  <label>Label</label> <br />
+                <div className="input-container">
+                  <label>Label</label>
                   <input
                     type="text"
                     placeholder="Readable name"
-                    style={{
-                      width: "90%",
-                      height: "35px",
-                      border: "3px solid #C8C6C4",
-                    }}
-                    value={row.labelName}
+                    className="varibleInputboxes"
+                    value={row.label}
                     onChange={(e) =>
                       handleLabelNameChange(e.target.value, index)
                     }
                   />
                 </div>
-                <i
-                  className="fa fa-minus-circle"
-                  style={{
-                    cursor: "pointer",
-                    fontSize: "36px",
-                    marginTop: "30px",
-                    marginRight: "10px",
-                    color: "red",
-                  }}
-                  onClick={() => handleRemoveRow(row.id)}
-                ></i>
+                {row.delete ? (
+                  <i
+                    className="fa fa-minus-circle"
+                    onClick={() => handleRemoveRow(row.id)}
+                  ></i>
+                ) : (
+                  <></>
+                )}
+
+                {row.add ? (
+                  <button className="btn btn-primary" onClick={handleAddRow}>
+                    Add
+                  </button>
+                ) : (
+                  <></>
+                )}
               </div>
             ))}
-
-            <div
-              style={{
-                display: "flex",
-                alignItems: "flex-end",
-                marginTop: "10px",
-                fontSize: "14px",
-              }}
-            >
-              <div>
-                <label>Name</label> <br />
-                <input
-                  type="text"
-                  placeholder="Name of variable"
-                  style={{
-                    width: "90%",
-                    height: "35px",
-                    fontSize: "14px",
-                    border: "3px solid #C8C6C4",
-                  }}
-                  value={newRow.variableName}
-                  onChange={(e) => handleNewVariableNameChange(e.target.value)}
-                />
-              </div>
-              <div>
-                <label>Label</label> <br />
-                <input
-                  type="text"
-                  placeholder="Readable name"
-                  style={{
-                    width: "90%",
-                    height: "35px",
-                    fontSize: "14px",
-                    border: "3px solid #C8C6C4",
-                  }}
-                  value={newRow.labelName}
-                  onChange={(e) => handleNewLabelNameChange(e.target.value)}
-                />
-              </div>
-              <button
-                style={{
-                  height: "40px",
-                  background: "rgb(77, 97, 252)",
-                  border: "none",
-                  borderRadius: "5px",
-                  color: "white",
-                  fontSize: "14px",
-                }}
-                onClick={handleAddRow}
-              >
-                Add
-              </button>
-            </div>
           </div>
         </List>
         <Divider />
@@ -550,28 +413,15 @@ export default function CreateNewFilterDrawer() {
       </List>
       <Divider />
       <List>
-        <div
-          className="newFilterTaskContainer-footer"
-          style={{
-            display: "flex",
-            alignItems: "center",
-            justifyContent: "flex-end",
-          }}
-        >
+        <div className="newFilterTaskContainer-footer d-flex align-items-center justify-content-end">
           <span
             style={{ cursor: "pointer" }}
-            onClick={toggleDrawer("left", false)}
+            onClick={() => toggleDrawer(false)}
           >
             Cancel
           </span>
           <button
-            style={{
-              marginLeft: "20px",
-              background: "rgb(77, 97, 252)",
-              color: "white",
-              border: "none",
-              borderRadius: "5px",
-            }}
+            className="btn btn-primary ml-3 submitButton"
             onClick={() => {
               handleSubmit();
             }}
@@ -582,12 +432,11 @@ export default function CreateNewFilterDrawer() {
       </List>
     </div>
   );
-
   return (
     <div>
       <React.Fragment key="left">
         <Button
-          onClick={toggleDrawer("left", true)}
+          onClick={() => toggleDrawer(true)}
           style={{
             textDecoration: "underline",
             cursor: "pointer",
@@ -598,8 +447,8 @@ export default function CreateNewFilterDrawer() {
         </Button>
         <Drawer
           anchor="left"
-          open={state.left}
-          onClose={toggleDrawer("left", false)}
+          open={openDrawer}
+          onClose={() => toggleDrawer(false)}
           PaperProps={{
             style: {
               padding: "2%",

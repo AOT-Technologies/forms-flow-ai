@@ -1,6 +1,8 @@
 package org.camunda.bpm.extension.hooks.listeners.execution;
 
 import java.util.Collections;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Properties;
 import java.util.concurrent.CompletableFuture;
 
@@ -211,8 +213,9 @@ public class FormsflowKafkaConsumer {
 				key = "messageKey";
 			}
 			String value = record.value();
-			runtimeService.createMessageCorrelation(this.topicName).processInstanceVariableEquals(key, value)
-					.correlate();
+			Map<String, Object> variables = new HashMap();
+	        variables.put(key, value);
+	        runtimeService.correlateMessage(this.topicName, this.topicName+"-business-key", variables);
 		} else {
 			throw new RuntimeException("RuntimeService in KafkaConsumerListener is not initialized.");
 		}

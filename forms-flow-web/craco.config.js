@@ -18,10 +18,10 @@ const singleSpaAppPlugin = {
 // Keep any other configuration you are exporting from CRACO and add the plugin to the plugins array
 module.exports = {
     plugins: [singleSpaAppPlugin],
-  devServer: {
-    port: 3001,
-    headers: {
-      "Access-Control-Allow-Origin": "*",
-    },
-  },
+    devServer: {
+      port: 3001,
+      headers: {
+        "Access-Control-Allow-Origin": "*",
+      },
+   },
 };

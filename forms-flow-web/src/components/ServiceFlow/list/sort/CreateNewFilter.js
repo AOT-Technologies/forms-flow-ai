@@ -1,7 +1,5 @@
 import React, { useState } from "react";
 import { useSelector } from "react-redux";
-import clsx from "clsx";
-import { makeStyles } from "@material-ui/core/styles";
 import Drawer from "@material-ui/core/Drawer";
 import Button from "@material-ui/core/Button";
 import List from "@material-ui/core/List";
@@ -9,17 +7,7 @@ import Divider from "@material-ui/core/Divider";
 import "../../ServiceFlow.scss";
 import { saveFilters } from "../../../../apiManager/services/bpmTaskServices";
 
-const useStyles = makeStyles({
-  list: {
-    width: 380,
-  },
-  fullList: {
-    width: "auto",
-  },
-});
-
 export default function CreateNewFilterDrawer() {
-  const classes = useStyles();
   const [openDrawer, setOpenDrawer] = useState(false);
   const [filterName, setFilterName] = useState("");
   const [showUndefinedVariable, setShowUndefinedVariable] = useState(false);
@@ -29,7 +17,7 @@ export default function CreateNewFilterDrawer() {
   const [taskName, setTaskName] = useState("");
   const [includeAssignedTasks, setIncludeAssignedTasks] = useState(false);
   const [rows, setRows] = useState([
-    { id: 1, name: "", label: "", add: true, delete: false },
+    { id: 1000, name: "", label: "", add: true, delete: false },
   ]);
   const [newRow, setNewRow] = useState([]);
   const [permissions, setPermissions] = useState("");
@@ -73,7 +61,7 @@ export default function CreateNewFilterDrawer() {
         setIdentifierId("");
         setSelectUserGroupIcon("");
         setSpecificUserGroup("");
-        setRows([{ id: 1, name: "", label: "", add: true, delete: false }]);
+        setRows([{ id: 1000, name: "", label: "", add: true, delete: false }]);
       })
       .catch((error) => {
         console.error("error", error);
@@ -141,8 +129,11 @@ export default function CreateNewFilterDrawer() {
   };
 
   //Function for adding rows for new inputs
-  const handleAddRow = () => {
-    setRows((prevRows) => [{ id: 1, ...newRow, delete: true }, ...prevRows]);
+  const handleAddRow = (index) => {
+    setRows((prevRows) => [
+      { id: index, ...newRow, delete: true },
+      ...prevRows,
+    ]);
     setNewRow({ name: "", label: "", delete: true });
   };
 
@@ -153,21 +144,16 @@ export default function CreateNewFilterDrawer() {
 
   const toggleDrawer = () => setOpenDrawer(!openDrawer);
 
-  const list = (anchor) => (
-    <div
-      style={{ marginTop: "45px" }}
-      className={clsx(classes.list, {
-        [classes.fullList]: anchor === "top" || anchor === "bottom",
-      })}
-      role="presentation"
-    >
+  const list = () => (
+    <div style={{ marginTop: "45px" }} role="presentation">
       <List>
-        <div className="newFilterTaskContainer-header noPadding d-flex align-items-center justify-content-between">
+        <div className="newFilterTaskContainer-header p-0 d-flex align-items-center justify-content-between">
           <h5 style={{ fontWeight: "bold", fontSize: "16px" }}>
             Create new filter
           </h5>
           <span
-            style={{ cursor: "pointer", fontSize: "14px" }}
+            className="cursor-pointer"
+            style={{ fontSize: "14px" }}
             onClick={() => toggleDrawer()}
           >
             Close
@@ -194,10 +180,9 @@ export default function CreateNewFilterDrawer() {
           style={{
             textDecoration: "underline",
             fontSize: "14px",
-            cursor: "pointer",
           }}
           onClick={() => handleSpanClick(1)}
-          className="px-1 py-1"
+          className="px-1 py-1 cursor-pointer"
         >
           <i className="fa fa-plus-circle" style={{ marginRight: "6px" }} />
           Add Value
@@ -215,10 +200,9 @@ export default function CreateNewFilterDrawer() {
           style={{
             textDecoration: "underline",
             fontSize: "14px",
-            cursor: "pointer",
           }}
           onClick={() => handleSpanClick(2)}
-          className="px-1 py-1"
+          className="px-1 py-1 cursor-pointer"
         >
           <i className="fa fa-plus-circle" style={{ marginRight: "6px" }} />
           Add Value
@@ -236,10 +220,9 @@ export default function CreateNewFilterDrawer() {
           style={{
             textDecoration: "underline",
             fontSize: "14px",
-            cursor: "pointer",
           }}
           onClick={() => handleSpanClick(3)}
-          className="px-1 py-1"
+          className="px-1 py-1 cursor-pointer"
         >
           <i className="fa fa-plus-circle" style={{ marginRight: "6px" }} />
           Add Value
@@ -323,7 +306,10 @@ export default function CreateNewFilterDrawer() {
                 )}
 
                 {row.add ? (
-                  <button className="btn btn-primary" onClick={handleAddRow}>
+                  <button
+                    className="btn btn-primary"
+                    onClick={() => handleAddRow(index)}
+                  >
                     Add
                   </button>
                 ) : (
@@ -381,8 +367,8 @@ export default function CreateNewFilterDrawer() {
                   <i
                     className={`fa fa-user ${
                       selectUserGroupIcon === "user" ? "highlight" : ""
-                    }`}
-                    style={{ fontSize: "30px", cursor: "pointer" }}
+                    } cursor-pointer`}
+                    style={{ fontSize: "30px" }}
                     onClick={() => handleClickUserGroupIcon("user")}
                   />
                 </div>
@@ -391,8 +377,8 @@ export default function CreateNewFilterDrawer() {
                   <i
                     className={`fa fa-users ${
                       selectUserGroupIcon === "group" ? "highlight" : ""
-                    }`}
-                    style={{ fontSize: "30px", cursor: "pointer" }}
+                    } cursor-pointer`}
+                    style={{ fontSize: "30px" }}
                     onClick={() => handleClickUserGroupIcon("group")}
                   />
                 </div>
@@ -414,10 +400,7 @@ export default function CreateNewFilterDrawer() {
       <Divider />
       <List>
         <div className="newFilterTaskContainer-footer d-flex align-items-center justify-content-end">
-          <span
-            style={{ cursor: "pointer" }}
-            onClick={() => toggleDrawer(false)}
-          >
+          <span className="cursor-pointer" onClick={() => toggleDrawer(false)}>
             Cancel
           </span>
           <button
@@ -451,10 +434,10 @@ export default function CreateNewFilterDrawer() {
           onClose={() => toggleDrawer(false)}
           PaperProps={{
             style: {
+              width: "400px",
               padding: "2%",
               overflowY: "auto",
               overflowX: "hidden",
-              zIndex: "1500",
               backdropFilter: " none !important",
             },
           }}

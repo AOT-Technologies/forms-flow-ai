@@ -1,5 +1,4 @@
 import React from 'react';
-import '../../ServiceFlow.scss';
 import NoFilterSelectedImage from './empty design.svg';
 
 function noFilterSelected() {

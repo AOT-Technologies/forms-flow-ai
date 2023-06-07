@@ -4,7 +4,6 @@ import Drawer from "@material-ui/core/Drawer";
 import Button from "@material-ui/core/Button";
 import List from "@material-ui/core/List";
 import Divider from "@material-ui/core/Divider";
-import "../../ServiceFlow.scss";
 import { saveFilters } from "../../../../apiManager/services/bpmTaskServices";
 
 export default function CreateNewFilterDrawer() {
@@ -165,7 +164,7 @@ export default function CreateNewFilterDrawer() {
         <input
           type="text"
           placeholder="Enter your text here"
-          className="filterNameTextfeild"
+          className="filter-name-textfeild"
           value={filterName}
           onChange={(e) => setFilterName(e.target.value)}
         />
@@ -190,7 +189,7 @@ export default function CreateNewFilterDrawer() {
         {inputVisibility[1] && (
           <input
             type="text"
-            className="Criteria-addValueInputBox"
+            className="criteria-add-value-inputbox"
             value={definitionKeyId}
             onChange={(e) => setDefinitionKeyId(e.target.value)}
           />
@@ -210,7 +209,7 @@ export default function CreateNewFilterDrawer() {
         {inputVisibility[2] && (
           <input
             type="text"
-            className="Criteria-addValueInputBox"
+            className="criteria-add-value-inputbox"
             value={candidateGroup}
             onChange={(e) => setCandidateGroup(e.target.value)}
           />
@@ -230,7 +229,7 @@ export default function CreateNewFilterDrawer() {
         {inputVisibility[3] && (
           <input
             type="text"
-            className="Criteria-addValueInputBox"
+            className="criteria-add-value-inputbox"
             value={taskName}
             onChange={(e) => setTaskName(e.target.value)}
           />
@@ -277,7 +276,7 @@ export default function CreateNewFilterDrawer() {
                   <input
                     type="text"
                     placeholder="Name of variable"
-                    className="varibleInputboxes"
+                    className="varible-input-boxes"
                     value={row.name}
                     onChange={(e) =>
                       handleVariableNameChange(e.target.value, index)
@@ -289,7 +288,7 @@ export default function CreateNewFilterDrawer() {
                   <input
                     type="text"
                     placeholder="Readable name"
-                    className="varibleInputboxes"
+                    className="varible-input-boxes"
                     value={row.label}
                     onChange={(e) =>
                       handleLabelNameChange(e.target.value, index)

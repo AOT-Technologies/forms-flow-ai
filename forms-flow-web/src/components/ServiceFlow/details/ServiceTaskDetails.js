@@ -1,5 +1,5 @@
 import React, { useCallback, useEffect, useState } from "react";
-import { Row, Tab, Tabs } from "react-bootstrap";
+import { Tab, Tabs } from "react-bootstrap";
 import TaskHeader from "./TaskHeader";
 import {
   reloadTaskFormSubmission,
@@ -41,6 +41,7 @@ import {
 } from "../../../constants/constants";
 import { getCustomSubmission } from "../../../apiManager/services/FormServices";
 import { getFormioRoleIds } from "../../../apiManager/services/userservices";
+import  NoFilterSelected  from "../../../components/ServiceFlow/list/sort/NoFilterSelected";
 
 const ServiceFlowTaskDetails = React.memo(() => {
   const { t } = useTranslation();
@@ -236,10 +237,7 @@ const ServiceFlowTaskDetails = React.memo(() => {
 
   if (!bpmTaskId) {
     return (
-      <Row className="not-selected mt-2 ml-1 " style={{ color: "#757575" }}>
-        <i className="fa fa-info-circle mr-2 mt-1" />
-        {t("Select a task in the list.")}
-      </Row>
+      <NoFilterSelected />
     );
   } else if (isTaskLoading) {
     return (

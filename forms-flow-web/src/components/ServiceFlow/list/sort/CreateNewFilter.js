@@ -15,9 +15,8 @@ export default function CreateNewFilterDrawer() {
   const [candidateGroup, setCandidateGroup] = useState([]);
   const [taskName, setTaskName] = useState("");
   const [includeAssignedTasks, setIncludeAssignedTasks] = useState(false);
-  const [rows, setRows] = useState([
-    { id: 1000, name: "", label: "", add: true, delete: false },
-  ]);
+  const defaultRow = { id: "", name: "", label: "", add: true, delete: false };
+  const [rows, setRows] = useState([defaultRow]);
   const [newRow, setNewRow] = useState([]);
   const [permissions, setPermissions] = useState("");
   const [identifierId, setIdentifierId] = useState("");
@@ -60,7 +59,7 @@ export default function CreateNewFilterDrawer() {
         setIdentifierId("");
         setSelectUserGroupIcon("");
         setSpecificUserGroup("");
-        setRows([{ id: 1000, name: "", label: "", add: true, delete: false }]);
+        setRows([defaultRow]);
       })
       .catch((error) => {
         console.error("error", error);

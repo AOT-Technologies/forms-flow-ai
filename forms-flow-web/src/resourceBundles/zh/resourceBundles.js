@@ -277,7 +277,30 @@ export const RESOURCE_BUNDLES_ZH = {
   "Click Here to Copy":"点击这里复制",
   "Resources":"资源",
   "Duplicate form created successfully":"成功创建重复表单",
-  "Revert": "恢复"
+  "Revert": "恢复",
+  "Create new filter": "创建新过滤器",
+  "Filter Name": "过滤器名称",
+  "Enter your text here": "在这里输入您的文字",
+  "Criteria": "标准",
+  "Add Value": "增值",
+  "Definition Key": "定义键",
+  "Asignee": "受让人",
+  "Include Assigned task": "包括分配的任务",
+  "Variable": "多变的",
+  "Show undefined variables": "显示未定义的变量",
+  "Label": "标签",
+  "Name of variable": "变量名称",
+  "Readable name": "可读名称",
+  "Permission": "允许",
+  "Accessible for all users": "所有用户均可访问",
+  "Private (Only You)": "私人（只有你）",
+  "Specific User/Group": "特定用户/组",
+  "User": "用户",
+  "Group": "团体",
+  "Identifier": "标识符",
+  "Enter role ID": "输入角色 ID",
+  "Create Filter": "创建过滤器"
+
 
 };
 

@@ -279,7 +279,30 @@ export const RESOURCE_BUNDLES_FR = {
   "Click Here to Copy":"Cliquez ici pour copier",
   "Resources":"Ressources",
   "Duplicate form created successfully":"Formulaire en double créé avec succès",
-  "Revert": "Revenir"
+  "Revert": "Revenir",
+  "Create new filter": "Créer un nouveau filtre",
+  "Filter Name": "Nom du filtre",
+  "Enter your text here": "Entrez votre texte ici",
+  "Criteria": "Critère",
+  "Add Value": "Ajouter de la valeur",
+  "Definition Key": "Clé de définition",
+  "Asignee": "Cessionnaire",
+  "Include Assigned task": "Inclure la tâche assignée",
+  "Variable": "Variable",
+  "Show undefined variables": "Afficher les variables non définies",
+  "Label": "Étiqueter",
+  "Name of variable": "Nom de variable",
+  "Readable name": "Nom lisible",
+  "Permission": "Autorisation",
+  "Accessible for all users": "Accessible pour tous les utilisateurs",
+  "Private (Only You)": "Privé (seulement vous)",
+  "Specific User/Group": "Utilisateur/groupe spécifique",
+  "User": "Utilisateur",
+  "Group": "Groupe",
+  "Identifier": "Identifiant",
+  "Enter role ID": "Entrez l'ID du rôle",
+  "Create Filter": "Créer un filtre"
+
 
 };
 

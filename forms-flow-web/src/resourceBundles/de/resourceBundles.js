@@ -294,7 +294,7 @@ export const RESOURCE_BUNDLES_DE = {
   "Label":"Etikett",
   "Name of variable":"Name der Variablen",
   "Readable name":"Lesbarer Name",
-  "Permission":"",
+  "Permission":"Erlaubnis",
   "Accessible for all users":"Für alle Benutzer zugänglich",
   "Private (Only You)":"Privat (nur Sie)",
   "Specific User/ Group":"Bestimmter Benutzer/Gruppe",

@@ -1,10 +1,11 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
 import Drawer from "@material-ui/core/Drawer";
 import Button from "@material-ui/core/Button";
 import List from "@material-ui/core/List";
 import Divider from "@material-ui/core/Divider";
 import { saveFilters } from "../../../../apiManager/services/bpmTaskServices";
+import { ACCESSIBLE_FOR_ALL_GROUPS, PRIVATE_ONLY_YOU, SPECIFIC_USER_OR_GROUP } from "../../../../constants/taskConstants";
 
 export default function CreateNewFilterDrawer() {
   const [openDrawer, setOpenDrawer] = useState(false);
@@ -13,36 +14,59 @@ export default function CreateNewFilterDrawer() {
   const [inputVisibility, setInputVisibility] = useState({});
   const [definitionKeyId, setDefinitionKeyId] = useState("");
   const [candidateGroup, setCandidateGroup] = useState([]);
-  const [taskName, setTaskName] = useState("");
+  const [assignee, setAssignee] = useState("");
   const [includeAssignedTasks, setIncludeAssignedTasks] = useState(false);
-  const defaultRow = { id: "", name: "", label: "", add: true, delete: false };
-  const [rows, setRows] = useState([defaultRow]);
-  const [newRow, setNewRow] = useState([]);
   const [permissions, setPermissions] = useState("");
   const [identifierId, setIdentifierId] = useState("");
   const [selectUserGroupIcon, setSelectUserGroupIcon] = useState("");
   const [specificUserGroup, setSpecificUserGroup] = useState("");
-  const userName = useSelector((state) => state.user?.userDetail?.name);
+  const userName = useSelector((state) => state.user?.userDetail?.preferred_username);
+  const [variables,setVariables] = useState([]);
+  const [inputValues, setInputValues] = useState([{ name: '', label: '' }]);
 
-  //Function for collecting the input data
+  useEffect(()=>{
+    setVariables(() => {
+      if (inputValues.length === 1 && inputValues[0].name === '' && inputValues[0].label === '') {
+        return [];
+      } else {
+        return inputValues.map((row) => ({
+          name: row.name,
+          label: row.label,
+        }));
+      }
+    });
+  },[inputValues]);
+
   const handleSubmit = () => {
+    let users = [];
+    let roles = [];
+    if(permissions === ACCESSIBLE_FOR_ALL_GROUPS){
+      users = [];
+    }
+    if(permissions === PRIVATE_ONLY_YOU){
+      users.push(userName);
+    }
+    if(selectUserGroupIcon === 'user' && permissions === SPECIFIC_USER_OR_GROUP){
+      users.push(identifierId);
+    }
+    if(selectUserGroupIcon === 'group'){
+      roles.push(identifierId);
+    }
+
     const data = {
       name: filterName,
       criteria: {
-        processDefinitionKey: definitionKeyId,
+        processDefinitionNameLike: definitionKeyId,
         candidateGroup: candidateGroup,
-        assignee: taskName,
-        includeAssignedTasks: false,
+        assignee: assignee,
+        includeAssignedTasks: includeAssignedTasks,
       },
-      variables: [
-        ...rows.map((row) => ({
-          name: row.name,
-          label: row.label,
-        })),
-      ],
-      users: [userName],
-      roles: [selectUserGroupIcon],
-      identifierId: identifierId,
+      properties:{
+        showUndefinedVariable:showUndefinedVariable
+      },
+      variables: variables,
+      users: users,
+      roles: roles
     };
     saveFilters(data)
       .then(() => {
@@ -53,13 +77,13 @@ export default function CreateNewFilterDrawer() {
         setInputVisibility("");
         setDefinitionKeyId("");
         setCandidateGroup("");
-        setTaskName("");
+        setAssignee("");
         setIncludeAssignedTasks("");
         setPermissions("");
         setIdentifierId("");
         setSelectUserGroupIcon("");
         setSpecificUserGroup("");
-        setRows([defaultRow]);
+        setInputValues([{ name: '', label: '' }]);
       })
       .catch((error) => {
         console.error("error", error);
@@ -72,14 +96,6 @@ export default function CreateNewFilterDrawer() {
       ...prevVisibility,
       [spanId]: !prevVisibility[spanId],
     }));
-  };
-
-  //Function for taking values form checkbox from permission part
-  const handleRadioChange = (e) => {
-    setPermissions(e.target.value);
-    setSpecificUserGroup("");
-    setSelectUserGroupIcon("");
-    setIdentifierId("");
   };
 
   //Function For checking  UndefinedVaribaleCheckbox is checked or not
@@ -95,11 +111,13 @@ export default function CreateNewFilterDrawer() {
   //Function to checking which icon is selected
   const handleClickUserGroupIcon = (icon) => {
     setSelectUserGroupIcon(icon);
+
   };
 
   //function for taking the value from the radio button Specific User/ Group
   const handleSpecificUserGroup = (e) => {
-    if (e.target.value === "Specific User/ Group") {
+    setPermissions(e.target.value);
+    if (e.target.value === SPECIFIC_USER_OR_GROUP) {
       setSpecificUserGroup(e.target.value);
     } else {
       setSpecificUserGroup("");
@@ -108,36 +126,23 @@ export default function CreateNewFilterDrawer() {
     }
   };
 
-  // Function for taking the values from the name input field
-  const handleVariableNameChange = (value, index) => {
-    setRows((prevRows) => {
-      const updatedRows = [...prevRows];
-      updatedRows[index].name = value;
-      return updatedRows;
+  const handleAddClick = ()=>{
+    setInputValues([...inputValues, { name: '', label: '' }]);
+  };
+
+  const handleRowDelete = (index)=> {
+    setInputValues((prevInputValues) => {
+      const updatedValues = prevInputValues.filter((e, i) => i !== index);
+      return updatedValues;
     });
   };
 
-  // Function for taking the values from the label input field
-  const handleLabelNameChange = (value, index) => {
-    setRows((prevRows) => {
-      const updatedRows = [...prevRows];
-      updatedRows[index].label = value;
-      return updatedRows;
+  const handleVariableInputChange = (index, field, value) => {
+    setInputValues((prevInputValues) => {
+      const updatedValues = [...prevInputValues];
+      updatedValues[index][field] = value;
+      return updatedValues;
     });
-  };
-
-  //Function for adding rows for new inputs
-  const handleAddRow = (index) => {
-    setRows((prevRows) => [
-      { id: index, ...newRow, delete: true },
-      ...prevRows,
-    ]);
-    setNewRow({ name: "", label: "", delete: true });
-  };
-
-  //Function for delecting a row
-  const handleRemoveRow = (id) => {
-    setRows((prevRows) => prevRows.filter((row) => row.id !== id));
   };
 
   const toggleDrawer = () => setOpenDrawer(!openDrawer);
@@ -229,8 +234,8 @@ export default function CreateNewFilterDrawer() {
           <input
             type="text"
             className="criteria-add-value-inputbox"
-            value={taskName}
-            onChange={(e) => setTaskName(e.target.value)}
+            value={assignee}
+            onChange={(e) => setAssignee(e.target.value)}
           />
         )}
 
@@ -266,20 +271,18 @@ export default function CreateNewFilterDrawer() {
               Show undefined variables
             </h5>
           </div>
-
           <div>
-            {rows.map((row, index) => (
-              <div key={row.id} className="row-container">
+          {
+            inputValues?.map((input, index) => (
+              <div key={index}  className="row-container">
                 <div className="input-container">
                   <label>Name</label>
                   <input
                     type="text"
                     placeholder="Name of variable"
                     className="varible-input-boxes"
-                    value={row.name}
-                    onChange={(e) =>
-                      handleVariableNameChange(e.target.value, index)
-                    }
+                    value={input.name}
+                    onChange={(e)=>handleVariableInputChange(index,'name',e.target.value)}
                   />
                 </div>
                 <div className="input-container">
@@ -288,34 +291,25 @@ export default function CreateNewFilterDrawer() {
                     type="text"
                     placeholder="Readable name"
                     className="varible-input-boxes"
-                    value={row.label}
-                    onChange={(e) =>
-                      handleLabelNameChange(e.target.value, index)
-                    }
+                    value={input.label}
+                    onChange={(e)=>handleVariableInputChange(index,'label',e.target.value)}
                   />
                 </div>
-                {row.delete ? (
-                  <i
-                    className="fa fa-minus-circle"
-                    onClick={() => handleRemoveRow(row.id)}
-                  ></i>
-                ) : (
-                  <></>
-                )}
-
-                {row.add ? (
-                  <button
-                    className="btn btn-primary"
-                    onClick={() => handleAddRow(index)}
-                  >
-                    Add
-                  </button>
-                ) : (
-                  <></>
-                )}
+                {
+                  index === 0 ? <button
+                  className="btn btn-primary"
+                  onClick={() => handleAddClick()}
+                >
+                  Add
+                </button> : <i
+                  className="fa fa-minus-circle"
+                  onClick = {()=> handleRowDelete(index)}
+                ></i>
+                }
               </div>
-            ))}
+             ))}
           </div>
+
         </List>
         <Divider />
         <div className="child-container-two">
@@ -327,9 +321,9 @@ export default function CreateNewFilterDrawer() {
             type="radio"
             id="my-radio"
             name="my-radio"
-            value={"Accessible for all users"}
-            checked={permissions === "Accessible for all users"}
-            onChange={handleRadioChange}
+            value={ACCESSIBLE_FOR_ALL_GROUPS}
+            checked={permissions === ACCESSIBLE_FOR_ALL_GROUPS}
+            onChange={(e)=>setPermissions(e.target.value)}
           />
           <label style={{ marginRight: "3px", fontSize: "18px" }}>
             Accessible for all users
@@ -340,9 +334,9 @@ export default function CreateNewFilterDrawer() {
             type="radio"
             id="my-radio"
             name="my-radio"
-            value={"Private (Only You)"}
-            checked={permissions === "Private (Only You)"}
-            onChange={handleRadioChange}
+            value={PRIVATE_ONLY_YOU}
+            checked={permissions === PRIVATE_ONLY_YOU}
+            onChange={(e)=>setPermissions(e.target.value)}
           />
           <label style={{ fontSize: "18px" }}>Private (Only You)</label>
           <br />
@@ -351,13 +345,13 @@ export default function CreateNewFilterDrawer() {
             type="radio"
             id="my-radio"
             name="my-radio"
-            value={"Specific User/ Group"}
-            checked={specificUserGroup === "Specific User/ Group"}
+            value={SPECIFIC_USER_OR_GROUP}
+            checked={permissions === SPECIFIC_USER_OR_GROUP}
             onChange={handleSpecificUserGroup}
           />
           <label style={{ fontSize: "18px" }}>Specific User/ Group</label>{" "}
           <br />
-          {specificUserGroup === "Specific User/ Group" ? (
+          {specificUserGroup === SPECIFIC_USER_OR_GROUP ? (
             <div className="inside-child-container-two d-flex">
               <div className="user-group-divisions d-flex">
                 <div style={{ fontSize: "14px" }}>

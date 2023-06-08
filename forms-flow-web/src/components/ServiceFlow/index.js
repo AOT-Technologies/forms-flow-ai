@@ -1,5 +1,8 @@
 import React, { useCallback, useEffect, useRef } from "react";
 import ServiceFlowTaskList from "./list/ServiceTaskList";
+import ServiceTaskListView from "./list/ServiceTaskListView";
+let cardView = false;
+
 import ServiceFlowTaskDetails from "./details/ServiceTaskDetails";
 import { Col, Container, Row } from "react-bootstrap";
 import "./ServiceFlow.scss";
@@ -187,7 +190,7 @@ export default React.memo(() => {
   return (
     <Container fluid id="main" className="pt-0">
       <TaskHead/>
-      <Row className="p-2">
+      {cardView ?  ( <Row className="p-2">
         <Col lg={3} xs={12} sm={12} md={4} xl={3}>
           <section>
             <header className="task-section-top">
@@ -208,7 +211,10 @@ export default React.memo(() => {
             </Route>
           </Switch>
         </Col>
-      </Row>
+      </Row> ) : (<ServiceTaskListView/>)
+      
+  }
+
     </Container>
   );
 });

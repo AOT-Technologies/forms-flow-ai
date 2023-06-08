@@ -2,6 +2,19 @@
 
 Mark  items as `Added`, `Changed`, `Fixed`, `Removed`, `Untested Features`, `Upcoming Features`, `Known Issues`
 
+## 5.1.2 - 2023-06-08
+`Modified`
+
+*Upgrade notes:*
+
+**forms-flow-analytics**
+* Radash upgraded version from 10.1.4 to 10.1.5.
+
+`Fixed`
+
+**forms-flow-web**
+* Resolved an issue causing infinite loading of view submissions when utilizing the custom submission API.
+
 ## 5.1.1 - 2023-05-18
 
 `Added`
@@ -27,7 +40,6 @@ Mark  items as `Added`, `Changed`, `Fixed`, `Removed`, `Untested Features`, `Upc
 * groovy upgraded from 3.0.13 to 3.0.17.
 * graalVm upgraded from 22.1.0.1 to 22.3.2.
 * jackson upgraded from version 2.14.0 to 2.15.0.
-
 
 ## 5.1.0 - 2022-01-18
 

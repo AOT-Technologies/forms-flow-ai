@@ -278,8 +278,31 @@ export const RESOURCE_BUNDLES_EN = {
   "Click Here to Copy":"Click Here to Copy",
   "Resources":"Resources",
   "Duplicate form created successfully":"Duplicate form created successfully",
-  "Revert": "Revert"
-
+  "Revert": "Revert",
+  "Create new filter": "Create new filter",
+  "Filter Name": "Filter Name",
+  "Enter your text here": "Enter your text here",
+  "Criteria": "Criteria",
+  "Add Value": "Add Value",
+  "Definition Key": "Definition Key",
+  "Assignee": "Assignee",
+  "Include Assigned task": "Include Assigned task",
+  "Variable": "Variable",
+  "Show undefined variables": "Show undefined variables",
+  "Label": "Label",
+  "Name of variable": "Name of variable",
+  "Readable name": "Readable name",
+  "Permission": "Permission",
+  "Accessible for all users": "Accessible for all users",
+  "Private (Only You)": "Private (Only You)",
+  "Specific User/Group": "Specific User/Group",
+  "User": "User",
+  "Group": "Group",
+  "Identifier": "Identifier",
+  "Enter role ID": "Enter role ID",
+  "Create Filter": "Create Filter",
+  "Select a task in the List":"Select a task in the List",
+  "Select a specific task from the provided list of options. Your selection will determine the task you will be working on or interacting with.":"Select a specific task from the provided list of options. Your selection will determine the task you will be working on or interacting with."
 
 
 

@@ -6,6 +6,8 @@ import List from "@material-ui/core/List";
 import Divider from "@material-ui/core/Divider";
 import { saveFilters } from "../../../../apiManager/services/bpmTaskServices";
 import { ACCESSIBLE_FOR_ALL_GROUPS, PRIVATE_ONLY_YOU, SPECIFIC_USER_OR_GROUP } from "../../../../constants/taskConstants";
+import { useTranslation } from "react-i18next";
+import { Translation } from "react-i18next";
 
 export default function CreateNewFilterDrawer() {
   const [openDrawer, setOpenDrawer] = useState(false);
@@ -23,6 +25,7 @@ export default function CreateNewFilterDrawer() {
   const userName = useSelector((state) => state.user?.userDetail?.preferred_username);
   const [variables,setVariables] = useState([]);
   const [inputValues, setInputValues] = useState([{ name: '', label: '' }]);
+  const { t } = useTranslation();
 
   useEffect(()=>{
     setVariables(() => {
@@ -152,22 +155,26 @@ export default function CreateNewFilterDrawer() {
       <List>
         <div className="newFilterTaskContainer-header p-0 d-flex align-items-center justify-content-between">
           <h5 style={{ fontWeight: "bold", fontSize: "16px" }}>
-            Create new filter
+            <Translation>
+            {(t) =>
+              t("Create new filter")
+            }
+          </Translation>
           </h5>
           <span
             className="cursor-pointer"
             style={{ fontSize: "14px" }}
             onClick={() => toggleDrawer()}
           >
-            Close
+            <Translation>{(t) => t("Close")}</Translation>
           </span>
         </div>
       </List>
       <List>
-        <h5 style={{ fontWeight: "bold", fontSize: "18px" }}>Filter Name</h5>
+        <h5 style={{ fontWeight: "bold", fontSize: "18px" }}><Translation>{(t) => t("Filter Name")}</Translation></h5>
         <input
           type="text"
-          placeholder="Enter your text here"
+          placeholder={t("Enter your text here")}
           className="filter-name-textfeild"
           value={filterName}
           onChange={(e) => setFilterName(e.target.value)}
@@ -176,9 +183,9 @@ export default function CreateNewFilterDrawer() {
       <Divider />
       <List>
         <h5 style={{ fontWeight: "bold", fontSize: "18px" }}>
-          Criteria <i className="fa fa-info-circle"></i>{" "}
+        <Translation>{(t) => t("Criteria")}</Translation> <i className="fa fa-info-circle"></i>{" "}
         </h5>
-        <h5 style={{ fontSize: "18px" }}>Definition Key</h5>
+        <h5 style={{ fontSize: "18px" }}><Translation>{(t) => t("Definition Key")}</Translation></h5>
         <span
           style={{
             textDecoration: "underline",
@@ -188,7 +195,7 @@ export default function CreateNewFilterDrawer() {
           className="px-1 py-1 cursor-pointer"
         >
           <i className="fa fa-plus-circle" style={{ marginRight: "6px" }} />
-          Add Value
+          <Translation>{(t) => t("Add Value")}</Translation>
         </span>
         {inputVisibility[1] && (
           <input
@@ -198,7 +205,7 @@ export default function CreateNewFilterDrawer() {
             onChange={(e) => setDefinitionKeyId(e.target.value)}
           />
         )}
-        <h5>Candidate Group</h5>
+        <h5><Translation>{(t) => t("Candidate Group")}</Translation></h5>
         <span
           style={{
             textDecoration: "underline",
@@ -208,7 +215,7 @@ export default function CreateNewFilterDrawer() {
           className="px-1 py-1 cursor-pointer"
         >
           <i className="fa fa-plus-circle" style={{ marginRight: "6px" }} />
-          Add Value
+          <Translation>{(t) => t("Add Value")}</Translation>
         </span>
         {inputVisibility[2] && (
           <input
@@ -218,7 +225,7 @@ export default function CreateNewFilterDrawer() {
             onChange={(e) => setCandidateGroup(e.target.value)}
           />
         )}
-        <h5>Asignee</h5>
+        <h5><Translation>{(t) => t("Asignee")}</Translation></h5>
         <span
           style={{
             textDecoration: "underline",
@@ -228,7 +235,7 @@ export default function CreateNewFilterDrawer() {
           className="px-1 py-1 cursor-pointer"
         >
           <i className="fa fa-plus-circle" style={{ marginRight: "6px" }} />
-          Add Value
+          <Translation>{(t) => t("Add Value")}</Translation>
         </span>
         {inputVisibility[3] && (
           <input
@@ -250,13 +257,13 @@ export default function CreateNewFilterDrawer() {
             style={{ marginRight: "6px" }}
           />
           <h5 style={{ fontSize: "18px", marginBottom: "3px" }}>
-            Include Assigned Task
+          <Translation>{(t) => t("Include Assigned Task")}</Translation>
           </h5>
         </div>
         <Divider />
         <List>
           <h5 style={{ fontWeight: "bold", fontSize: "18px" }}>
-            Variable <i className="fa fa-info-circle"></i>
+          <Translation>{(t) => t("Variable")}</Translation> <i className="fa fa-info-circle"></i>
           </h5>
 
           <div style={{ display: "flex", alignItems: "center" }}>
@@ -268,7 +275,7 @@ export default function CreateNewFilterDrawer() {
               style={{ marginRight: "6px" }}
             />
             <h5 style={{ fontSize: "18px", marginBottom: "3px" }}>
-              Show undefined variables
+            <Translation>{(t) => t("Show undefined variables")}</Translation>
             </h5>
           </div>
           <div>
@@ -276,20 +283,20 @@ export default function CreateNewFilterDrawer() {
             inputValues?.map((input, index) => (
               <div key={index}  className="row-container">
                 <div className="input-container">
-                  <label>Name</label>
+                  <label><Translation>{(t) => t("Name")}</Translation></label>
                   <input
                     type="text"
-                    placeholder="Name of variable"
+                    placeholder={t("Name of variable")}
                     className="varible-input-boxes"
                     value={input.name}
                     onChange={(e)=>handleVariableInputChange(index,'name',e.target.value)}
                   />
                 </div>
                 <div className="input-container">
-                  <label>Label</label>
+                  <label><Translation>{(t) => t("Label")}</Translation></label>
                   <input
                     type="text"
-                    placeholder="Readable name"
+                    placeholder={t("Readable name")}
                     className="varible-input-boxes"
                     value={input.label}
                     onChange={(e)=>handleVariableInputChange(index,'label',e.target.value)}
@@ -300,7 +307,7 @@ export default function CreateNewFilterDrawer() {
                   className="btn btn-primary"
                   onClick={() => handleAddClick()}
                 >
-                  Add
+                <Translation>{(t) => t("Add")}</Translation>
                 </button> : <i
                   className="fa fa-minus-circle"
                   onClick = {()=> handleRowDelete(index)}
@@ -314,7 +321,7 @@ export default function CreateNewFilterDrawer() {
         <Divider />
         <div className="child-container-two">
           <h5 style={{ fontWeight: "bold" }}>
-            Permission <i className="fa fa-info-circle"></i>
+          <Translation>{(t) => t("Permission")}</Translation> <i className="fa fa-info-circle"></i>
           </h5>
           <input
             style={{ marginRight: "4px" }}
@@ -326,7 +333,7 @@ export default function CreateNewFilterDrawer() {
             onChange={(e)=>setPermissions(e.target.value)}
           />
           <label style={{ marginRight: "3px", fontSize: "18px" }}>
-            Accessible for all users
+          <Translation>{(t) => t("Accessible for all users")}</Translation>
           </label>{" "}
           <br />
           <input
@@ -338,7 +345,7 @@ export default function CreateNewFilterDrawer() {
             checked={permissions === PRIVATE_ONLY_YOU}
             onChange={(e)=>setPermissions(e.target.value)}
           />
-          <label style={{ fontSize: "18px" }}>Private (Only You)</label>
+          <label style={{ fontSize: "18px" }}><Translation>{(t) => t("Private (Only You)")}</Translation></label>
           <br />
           <input
             style={{ marginRight: "4px" }}
@@ -349,13 +356,13 @@ export default function CreateNewFilterDrawer() {
             checked={permissions === SPECIFIC_USER_OR_GROUP}
             onChange={handleSpecificUserGroup}
           />
-          <label style={{ fontSize: "18px" }}>Specific User/ Group</label>{" "}
+          <label style={{ fontSize: "18px" }}><Translation>{(t) => t("Specific User/ Group")}</Translation></label>{" "}
           <br />
           {specificUserGroup === SPECIFIC_USER_OR_GROUP ? (
             <div className="inside-child-container-two d-flex">
               <div className="user-group-divisions d-flex">
                 <div style={{ fontSize: "14px" }}>
-                  User
+                <Translation>{(t) => t("User")}</Translation>
                   <i
                     className={`fa fa-user ${
                       selectUserGroupIcon === "user" ? "highlight" : ""
@@ -365,7 +372,7 @@ export default function CreateNewFilterDrawer() {
                   />
                 </div>
                 <div style={{ fontSize: "14px" }}>
-                  Group
+                <Translation>{(t) => t("Group")}</Translation>
                   <i
                     className={`fa fa-users ${
                       selectUserGroupIcon === "group" ? "highlight" : ""
@@ -376,10 +383,10 @@ export default function CreateNewFilterDrawer() {
                 </div>
               </div>
               <div>
-                <label style={{ fontSize: "16px" }}>Identifier</label>
+                <label style={{ fontSize: "16px" }}><Translation>{(t) => t("Identifier")}</Translation></label>
                 <input
                   type="text"
-                  placeholder="Enter role ID"
+                  placeholder={t("Enter role ID")}
                   style={{ width: "100%", height: "35px" }}
                   value={identifierId}
                   onChange={(e) => setIdentifierId(e.target.value)}
@@ -393,7 +400,7 @@ export default function CreateNewFilterDrawer() {
       <List>
         <div className="newFilterTaskContainer-footer d-flex align-items-center justify-content-end">
           <span className="cursor-pointer" onClick={() => toggleDrawer(false)}>
-            Cancel
+          <Translation>{(t) => t("Cancel")}</Translation>
           </span>
           <button
             className="btn btn-primary ml-3 submitButton"
@@ -401,7 +408,7 @@ export default function CreateNewFilterDrawer() {
               handleSubmit();
             }}
           >
-            Create Filter
+           <Translation>{(t) => t("Create Filter")}</Translation>
           </button>
         </div>
       </List>
@@ -418,7 +425,7 @@ export default function CreateNewFilterDrawer() {
             textTransform: "capitalize",
           }}
         >
-          Create new filter
+          <Translation>{(t) => t("Create new filter")}</Translation>
         </Button>
         <Drawer
           anchor="left"

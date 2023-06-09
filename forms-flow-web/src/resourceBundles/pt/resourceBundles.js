@@ -278,7 +278,31 @@ export const RESOURCE_BUNDLES_PT = {
   "Click Here to Copy":"Clique aqui para copiar",
   "Resources":"Recursos",
   "Duplicate form created successfully":"Formulário duplicado criado com sucesso",
-  "Revert": "Reverter"
+  "Revert": "Reverter",
+  "Create new filter": "Criar novo filtro",
+  "Filter Name": "Nome do filtro",
+  "Enter your text here": "Digite seu texto aqui",
+  "Criteria": "Critério",
+  "Add Value": "Adicionar valor",
+  "Definition Key": "Chave de definição",
+  "Asignee": "Cessionário",
+  "Include Assigned Task": "Incluir tarefa atribuída",
+  "Variable": "Variável",
+  "Show undefined variables": "Mostrar variáveis indefinidas",
+  "Label": "Rótulo",
+  "Name of variable": "Nome da variável",
+  "Readable name": "nome legível",
+  "Permission": "Permissão",
+  "Accessible for all users": "Acessível para todos os usuários",
+  "Private (Only You)": "Privado (só você)",
+  "Specific User/ Group": "Usuário/Grupo Específico",
+  "User": "Do utilizador",
+  "Group": "Grupo",
+  "Identifier": "identificador",
+  "Enter role ID": "Digite o ID da função",
+  "Create Filter": "Criar filtro",
+  "Select a task in the List":"Selecione uma tarefa na Lista",
+  "Select a specific task from the provided list of options. Your selection will determine the task you will be working on or interacting with.":"Selecione uma tarefa específica na lista de opções fornecida. Sua seleção determinará a tarefa na qual você estará trabalhando ou interagindo."
 
 
 

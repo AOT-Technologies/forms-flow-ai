@@ -280,7 +280,31 @@ export const RESOURCE_BUNDLES_DE = {
   "Click Here to Copy":"Klicken Sie hier, um zu kopieren",
   "Resources":"Bronnen",
   "Duplicate form created successfully":"Doppeltes Formular erfolgreich erstellt",
-  "Revert": "Zurückkehren"
+  "Revert": "Zurückkehren",
+  "Create new filter":"Neuen Filter erstellen",
+  "Filter Name":"Filtername",
+  "Enter your text here":"Gib deinen Text hier ein",
+  "Criteria":"Kriterien",
+  "Add Value":"Mehrwert",
+  "Definition Key":"Definitionsschlüssel",
+  "Asignee":"Bevollmächtigter",
+  "Include Assigned Task":"Zugewiesene Aufgabe einschließen",
+  "Variable":"Variable",
+  "Show undefined variables":"Undefinierte Variablen anzeigen",
+  "Label":"Etikett",
+  "Name of variable":"Name der Variablen",
+  "Readable name":"Lesbarer Name",
+  "Permission":"Erlaubnis",
+  "Accessible for all users":"Für alle Benutzer zugänglich",
+  "Private (Only You)":"Privat (nur Sie)",
+  "Specific User/ Group":"Bestimmter Benutzer/Gruppe",
+  "User":"Benutzer",
+  "Group":"Gruppe",
+  "Identifier":"Kennung",
+  "Enter role ID":"Geben Sie die Rollen-ID ein",
+  "Create Filter":"Filter erstellen",
+  "Select a task in the List":"Wählen Sie eine Aufgabe in der Liste aus",
+  "Select a specific task from the provided list of options. Your selection will determine the task you will be working on or interacting with.":"Wählen Sie eine bestimmte Aufgabe aus der bereitgestellten Optionsliste aus. Ihre Auswahl bestimmt die Aufgabe, an der Sie arbeiten oder mit der Sie interagieren."
 
 
 

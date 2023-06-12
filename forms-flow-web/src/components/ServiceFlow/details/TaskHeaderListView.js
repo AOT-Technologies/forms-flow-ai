@@ -26,9 +26,9 @@ import UserSelectionDebounce from "./UserSelectionDebounce";
 import SocketIOService from "../../../services/SocketIOService";
 import { useTranslation } from "react-i18next";
 
-const TaskHeaderListView = React.memo(() => {
-  const task = useSelector((state) => state.bpmTasks.taskDetail);
-  const taskId = useSelector((state) => state.bpmTasks.taskId);
+const TaskHeaderListView = React.memo(({task,taskId}) => {
+  // const task = useSelector((state) => state.bpmTasks.taskDetail);
+  // const taskId = useSelector((state) => state.bpmTasks.taskId);
   const processList = useSelector((state) => state.bpmTasks.processList);
   const username = useSelector(
     (state) => state.user?.userDetail?.preferred_username || ""
@@ -44,6 +44,7 @@ const TaskHeaderListView = React.memo(() => {
   const dispatch = useDispatch();
   const { t } = useTranslation();
   useEffect(() => {
+    console.log(task,taskId)
     const followUp = task?.followUp ? new Date(task?.followUp) : null;
     setFollowUpDate(followUp);
   }, [task?.followUp]);
@@ -188,7 +189,7 @@ const TaskHeaderListView = React.memo(() => {
         {followUpDate ? (
           <span className="mr-4">{moment(followUpDate).fromNow()}</span>
         ) : (
-          t("Set follow-up Date")
+          t("Add Date")
         )}
       </div>
     );
@@ -202,7 +203,7 @@ const TaskHeaderListView = React.memo(() => {
         {dueDate ? (
           <span className="mr-4">{moment(dueDate).fromNow()}</span>
         ) : (
-          t("Set Due date")
+          t("Add Date")
         )}
       </div>
     );
@@ -221,16 +222,16 @@ const TaskHeaderListView = React.memo(() => {
       />
 
       <div className="d-flex">
-        <div>
-          <div className="col-12">
+        <div className="tab-width">
+          <div>
             <h6 className="font-weight-light">Follow-up Date</h6>
           </div>
           <div
-            className="actionable px-4"
+            className="actionable"
             data-title={
               followUpDate
                 ? getFormattedDateAndTime(followUpDate)
-                : t("Add Date")
+                : t("Set follow-up Date")
             }
           >
             <DatePicker
@@ -254,14 +255,14 @@ const TaskHeaderListView = React.memo(() => {
             />
           </div>
         </div>
-        <div>
-          <div className="col-12">
+        <div className="tab-width">
+          <div>
             <h6 className="font-weight-light">Due Date</h6>
           </div>
           <div
-            className="actionable px-4"
+            className="actionable"
             data-title={
-              dueDate ? getFormattedDateAndTime(dueDate) : t("Add Date")
+              dueDate ? getFormattedDateAndTime(dueDate) : t("Set Due date")
             }
           >
             <DatePicker
@@ -287,29 +288,29 @@ const TaskHeaderListView = React.memo(() => {
           </div>
         </div>
 
-        <div>
-          <div className="col-12">
+        <div className="tab-width">
+          <div>
             <h6 className="font-weight-light">Groups</h6>
           </div>
           <div
-            className="actionable px-4"
+            className="actionable"
             onClick={() => setModal(true)}
             data-title={t("groups")}
           >
             <i className="fa fa-group mr-1" />
             {taskGroups.length === 0 ? (
-              <span>{t("Add groups")}</span>
+              <span>{t("Add group")}</span>
             ) : (
               <span className="group-align">{getGroups(taskGroups)}</span>
             )}
           </div>
         </div>
 
-        <div>
-          <div className="col-12">
+        <div className="tab-width">
+          <div>
             <h6 className="font-weight-light">Assignee</h6>
           </div>
-          <div className="actionable px-4">
+          <div className="actionable">
             {isEditAssignee ? (
               task?.assignee ? (
                 <span>
@@ -345,7 +346,7 @@ const TaskHeaderListView = React.memo(() => {
                   </span>
                 ) : (
                   <span data-testid="clam-btn" onClick={onClaim}>
-                    {t("Claim")}
+                    {t("Assign to Me")}
                   </span>
                 )}
               </>

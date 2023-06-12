@@ -76,7 +76,6 @@ const ServiceTaskListView = React.memo(() => {
               key={index}
             >
               <div className="d-flex mt-4 justify-content-between">
-
                 <div>
                   <div className="col-12">
                     <h4 className="font-weight-bold">{task.name}</h4>
@@ -85,7 +84,7 @@ const ServiceTaskListView = React.memo(() => {
                     <h6 className="font-weight-light">{task.id}</h6>
                   </div>
                 </div>
-                <div>
+                <div className="tab-width">
                   <div className="col-12">
                     <h6 className="font-weight-light">Priority</h6>
                   </div>
@@ -105,8 +104,8 @@ const ServiceTaskListView = React.memo(() => {
                     </h6>
                   </div>
                 </div>
-                <TaskHeaderListView/>
-                 <div className="flex-fill"></div>
+                <TaskHeaderListView task={task} taskId={task.id} />
+                <div className="flex-fill"></div>
                 <div className="pr-4">
                   <div className="col-12 mt-3">
                     <h6>

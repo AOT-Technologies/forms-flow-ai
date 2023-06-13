@@ -2,7 +2,7 @@
 version: "3.7"
 
 x-redash-service: &redash-service
-  image: formsflow/redash:10.1.4
+  image: formsflow/redash:10.1.5
   depends_on:
       - postgres
       - redis

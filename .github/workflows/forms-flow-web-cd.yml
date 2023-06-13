@@ -5,6 +5,7 @@ on:
     branches:
       - master
       - 5.2.0-alpha
+      - develop
     paths:
       - "forms-flow-web/**"
 defaults:
@@ -12,6 +13,7 @@ defaults:
     shell: bash
 jobs:
   build:
+    if: github.repository == 'AOT-Technologies/forms-flow-ai'
     name: Build and push artifacts to s3
     runs-on: ubuntu-20.04
     steps:
@@ -30,5 +32,13 @@ jobs:
           aws-region: ${{ secrets.REGION }}
       - run: npm ci
         working-directory: ./forms-flow-web/scripts
-      - run: BUCKET=${{ secrets.BUCKET}} node index
+      - name: Set environment variable
+        run: |
+          if [[ "${{ github.ref }}" == "refs/heads/develop" ]]; then
+            echo "::set-env name=NODE_ENV::develop"
+          fi
+      - run: node index
+        env:
+          BUCKET: ${{ secrets.BUCKET}}
+          NODE_ENV: ${{ env.NODE_ENV }}
         working-directory: ./forms-flow-web/scripts

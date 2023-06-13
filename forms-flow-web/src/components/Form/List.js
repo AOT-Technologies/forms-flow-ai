@@ -8,6 +8,7 @@ import { toast } from "react-toastify";
 import _isEquial from "lodash/isEqual";
 import { selectRoot, selectError, Errors, deleteForm } from "react-formio";
 import Loading from "../../containers/Loading";
+import { textTruncate } from "../../helper/helper";
 import {
   MULTITENANCY_ENABLED,
   STAFF_DESIGNER,
@@ -485,7 +486,7 @@ const List = React.memo((props) => {
                       ? <span>{`${t(" Applications are submitted against")} `}</span> 
                       : <span>{`${t(" Application is submitted against")} `}</span> 
                   } 
-                    <h4 className=" text-truncate">{props.formName}</h4>
+                    <span style={{ fontWeight: "bold" }}>{props.formName.includes(' ') ? props.formName : textTruncate(50, 40, props.formName)}</span>
                   .
                    {t("Are you sure you wish to delete the form?")}
                   
@@ -493,14 +494,14 @@ const List = React.memo((props) => {
                 ) : (
                   <div>
                     {`${t("Are you sure you wish to delete the form ")}`}
-                      <h4 className=" text-truncate">{props.formName}</h4>
+                      <span style={{ fontWeight: "bold" }}>{textTruncate(60,40,props.formName)}</span>
                     ?
                   </div>
                 )
               ) : (
                 <div>
                   {`${t("Are you sure you wish to delete the form ")} `}
-                    <h4 className=" text-truncate">{props.formName}</h4>
+                    <span style={{ fontWeight: "bold" }}>{textTruncate(60, 40, props.formName)}</span>
                   ?
                 </div>
               )

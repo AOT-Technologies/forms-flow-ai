@@ -44,7 +44,7 @@ const TaskHeaderListView = React.memo(({task,taskId}) => {
   const dispatch = useDispatch();
   const { t } = useTranslation();
   useEffect(() => {
-    console.log(task,taskId)
+    console.log(task, taskId);
     const followUp = task?.followUp ? new Date(task?.followUp) : null;
     setFollowUpDate(followUp);
   }, [task?.followUp]);

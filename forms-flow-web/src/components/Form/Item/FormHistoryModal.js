@@ -85,11 +85,12 @@ const FormHistoryModal = ({ historyModal, handleModalChange, gotoEdit }) => {
                 {sliceFormHistory.map((history, index) => (
                   <li key={index}>
                     <div
-                      className={`d-flex justify-content-between history-details ${
+                      className={`d-flex flex-column flex-md-row 
+                      justify-content-between history-details ${
                         index === 0 ? "active" : ""
                       }`}
                     >
-                      <div>
+                      <div style={{maxWidth:"150px",minWidth:"150px"}}>
                         <span className="text-muted text-small">
                           {formHistory.length === 1
                             ? t("Created By")

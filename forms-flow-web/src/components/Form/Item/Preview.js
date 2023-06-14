@@ -26,6 +26,7 @@ import { INACTIVE } from "../constants/formListConstants";
 import LoadingOverlay from "react-loading-overlay";
 import FormHistoryModal from "./FormHistoryModal";
 import CreateTemplateConfirmModal from "./CreateTemplateConfirmModal";
+import { addClients, addUsers } from "../../../apiManager/services/authorizationService";
 const Preview = ({handleNext, hideComponents, activeStep}) => {
   const dispatch = useDispatch();
   const [newpublishClicked, setNewpublishClicked] = useState(false);
@@ -104,6 +105,13 @@ const Preview = ({handleNext, hideComponents, activeStep}) => {
         data.anonymousChanged = true;
 
         Formio.cache = {};
+        let payload = {
+          resourceId:data.formId,
+          resourceDetails: {},
+          roles : []
+        };
+        addUsers(payload).catch((error) => console.error("error", error));
+        addClients(payload).catch((error) => console.error("error", error));
         dispatch(setFormSuccessData("form", form));
         dispatch(
           // eslint-disable-next-line no-unused-vars

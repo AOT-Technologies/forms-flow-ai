@@ -57,6 +57,7 @@ import filterFactory from "react-bootstrap-table2-filter";
 import overlayFactory from "react-bootstrap-table2-overlay";
 import { SpinnerSVG } from "../../containers/SpinnerSVG";
 import { getFormattedForm, INACTIVE } from "./constants/formListConstants";
+import { addClients, addUsers } from "../../apiManager/services/authorizationService";
 const List = React.memo((props) => {
   const { t } = useTranslation();
   const [showFormUploadModal, setShowFormUploadModal] = useState(false);
@@ -100,7 +101,9 @@ const List = React.memo((props) => {
   const columns = isDesigner ? designerColums(t) : userColumns(t);
 
   const formAccess = useSelector((state) => state.user?.formAccess || []);
-
+  // const user =  useSelector(
+  //   (state) => state.user.userDetail
+  // );
   const submissionAccess = useSelector(
     (state) => state.user?.submissionAccess || []
   );
@@ -263,6 +266,19 @@ const List = React.memo((props) => {
       return "update";
     }
   };
+
+
+  const setDefaultAuthorization = (parentFormId) => {
+    let payload = {
+      resourceId:parentFormId,
+      resourceDetails: {},
+      roles : []
+    };
+    addUsers(payload).catch((error) => console.error("error", error));
+    addClients(payload).catch((error) => console.error("error", error));
+
+  }; 
+
   // upload file
   const uploadFileContents = async (fileContent) => {
     try {
@@ -290,6 +306,8 @@ const List = React.memo((props) => {
                 .then((res) => {
                   const { data } = res;
                   mapperHandler(data);
+                  // call the auth api
+                  setDefaultAuthorization(data._id);
                   dispatch(updateFormUploadCounter());
                 })
                 .catch(() => {
@@ -386,6 +404,8 @@ const List = React.memo((props) => {
                                 .then((res) => {
                                   if (res.data) {
                                     mapperHandler(res.data);
+                                    // call the auth api
+                                    setDefaultAuthorization(res.data._id);
                                   }
                                   dispatch(updateFormUploadCounter());
                                   resolve();

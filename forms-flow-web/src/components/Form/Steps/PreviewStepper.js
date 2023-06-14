@@ -22,6 +22,8 @@ import {
   addUsers,
   fetchDesigners,
 } from "../../../apiManager/services/authorizationService";
+import LoadingOverlay from "react-loading-overlay";
+import { Chip } from "@material-ui/core";
 
 
 const Preview = React.memo(
@@ -55,6 +57,9 @@ const Preview = React.memo(
     const [clientOptions, setClientOptions] = useState([]);
     const [designerGroups, setDesignerGroups] = useState([]);
     const [clientGroups, setClientGroups] = useState([]);
+    const [fetchDesingerLoading, setFetchDesignerLoading] = useState(false);
+    const [fetchClientLoading, setFetchClientLoading] = useState(false);
+    const [anchorEl,setAnchorEl] = useState(null);
     const isDisabled =
       (designerSelectedOption == "Specific Designers" &&
         !designerGroups.length) ||
@@ -91,6 +96,8 @@ const Preview = React.memo(
     }, []);
 
     useEffect(() => {
+      setFetchDesignerLoading(true);
+      setFetchClientLoading(true);
       fetchDesigners(processListData.parentFormId)
         .then((res) => {
           const resource = res.data;
@@ -108,7 +115,8 @@ const Preview = React.memo(
             userGroups?.filter((i) => !resource?.roles?.includes(i.name))
           );
         })
-        .catch((error) => console.error("error", error));
+        .catch((error) => console.error("error", error))
+        .finally(()=> setFetchDesignerLoading(false));
 
       getClientList(processListData.parentFormId)
         .then((res) => {
@@ -123,10 +131,12 @@ const Preview = React.memo(
             userGroups?.filter((i) => !resource?.roles?.includes(i.name))
           );
         })
-        .catch((error) => console.error("error", error));
+        .catch((error) => console.error("error", error))
+        .finally(()=> setFetchClientLoading(false));
     }, [userGroups]);
 
-    const handleClick = (name) => {
+    const handleClick = (name) => (event)=> {
+      setAnchorEl(event.currentTarget);
       setShow(name);
     };
 
@@ -143,20 +153,27 @@ const Preview = React.memo(
     };
 
     const removeDesignerUserGroup = (group) => {
-      setDesignerGroups(designerGroups?.filter((item) => item !== group));
+      setDesignerGroups((prev)=>prev.filter((item) => item !== group));
+      const deletedValue = userGroups.find((i) => i.name == group);
+      if(deletedValue){
       setDesingerOptions((prev) => [
-        userGroups.find((i) => i.name == group),
+        deletedValue,
         ...prev,
       ]);
+      }
     };
 
     const removeClientUserGroup = (group) => {
       let newGroups = clientGroups?.filter((item) => item !== group);
       setClientGroups(newGroups);
-      setClientOptions((prev) => [
-        userGroups.find((i) => i.name == group),
-        ...prev,
-      ]);
+      const deletedValue = userGroups.find((i) => i.name == group);
+      if(deletedValue){
+        setClientOptions((prev) => [
+          deletedValue,
+          ...prev,
+        ]);
+      }
+      
     };
 
     const saveDesigner = () => {
@@ -193,6 +210,8 @@ const Preview = React.memo(
       addClients(payload).catch((error) => console.error("error", error));
     };
 
+  
+  
     return (
       <div>
         <Grid
@@ -269,14 +288,41 @@ const Preview = React.memo(
                       </div>
                     </div>
                   )}
+                           <div>
+                    <label>
+                      <FormControlLabel
+                      className="mr-1"
+                        control={
+                          <Checkbox
+                            aria-label="Publish"
+                            checked={processData.status === "active"}
+                            onChange={(e) =>
+                              setProcessData({
+                                status: e.target.checked
+                                  ? "active"
+                                  : "inactive",
+                              })
+                            }
+                            name="Check box to associate form with a workflow"
+                            color="primary"
+                          />
+                        }
+                      />
+                      <label className="fontsize-16 ml-1">
+                        {t("Publish this form for Client Users.")}
+                      </label>
+                    </label>
+                  </div>
                   <hr />
-                  <div className="mt-2" style={{ height: "auto" }}>
+ 
+                  <LoadingOverlay active={fetchDesingerLoading || fetchClientLoading} spinner>
+                      <div className="mt-2" style={{ height: "auto" }}>
                     <span
                       className="font-weight-bold"
                       title={t("Give Designer Role Permissions")}
                     >
                       Designer Permission
-                      <i className="ml-1 fa fa-info-circle cursor-pointer" />
+                      <i className="ml-1 fa fa-info-circle cursor-pointer text-primary" />
                     </span>
 
                     <div>
@@ -320,9 +366,16 @@ const Preview = React.memo(
                       </label>
                     </div>
                     {designerSelectedOption === "Specific Designers" ? (
-                      <div className="form-group d-flex flex-wrap">
-                        <Button
-                          onClick={() => handleClick("designer")}
+                      <div className="d-flex align-items-center flex-wrap">
+                            {designerGroups?.map((e,) => 
+                            <Chip key={e} label={e}
+                             variant="outlined"
+                             className="mr-2"  
+                             onDelete={()=>{removeDesignerUserGroup(e);}}
+                         />)}
+                       
+                      <Button
+                          onClick={handleClick("designer")}
                           className="btn btn-primary btn-md form-btn pull-left btn-left"
                         >
                           <Translation>{(t) => t("Add")}</Translation> <b>+</b>
@@ -332,14 +385,7 @@ const Preview = React.memo(
                           id={id}
                           open={show === "designer"}
                           onClose={handleClose}
-                          anchorOrigin={{
-                            vertical: "bottom",
-                            horizontal: "center",
-                          }}
-                          transformOrigin={{
-                            vertical: "top",
-                            horizontal: "center",
-                          }}
+                          anchorEl={anchorEl} placement={"top"}
                         >
                           <ListGroup>
                             {designerOptions?.length > 0 ? (
@@ -359,23 +405,7 @@ const Preview = React.memo(
                             )}
                           </ListGroup>
                         </Popover>
-                        {designerGroups?.map((e, index) => {
-                          return (
-                            <div key={index} className="flex-wrap mt-2">
-                              <div className="chip-element mr-2">
-                                <span className="chip-label">
-                                  {e}:{""}
-                                  <span
-                                    className="chip-close"
-                                    onClick={() => removeDesignerUserGroup(e)}
-                                  >
-                                    <i className="fa fa-close"></i>
-                                  </span>
-                                </span>
-                              </div>
-                            </div>
-                          );
-                        })}
+                      
                       </div>
                     ) : (
                       ""
@@ -383,7 +413,7 @@ const Preview = React.memo(
                   </div>
                   <div>
                       {
-                      clientUi && (
+                      !clientUi && (
                         <div>
                           <hr className="mt-1" />
                           <span className="font-weight-bold">
@@ -418,12 +448,19 @@ const Preview = React.memo(
                             </label>
                           </div>
                           {clientSelectedOption === "Specific Clients" ? (
-                            <div className="form-group d-flex flex-wrap">
+                            <div className="d-flex align-items-center flex-wrap">
+                            {clientGroups?.map((e,) => {
+                                return (
+                                <Chip key={e} label={e}
+                                   variant="outlined"
+                                   className="mr-2" 
+                                   onDelete={()=>{removeClientUserGroup(e);}}
+                               />
+                                );
+                              })}
                               <Button
-                                //data-testid={rowIdx}
-                                onClick={() => handleClick("client")}
+                              onClick={handleClick("client")}
                                 className="btn btn-primary btn-md form-btn pull-left btn-left"
-                                //disabled={!isGroupUpdated}
                               >
                                 <Translation>{(t) => t("Add")}</Translation>{" "}
                                 <b>+</b>
@@ -433,14 +470,8 @@ const Preview = React.memo(
                                 id={id}
                                 open={show === "client"}
                                 onClose={handleClose}
-                                anchorOrigin={{
-                                  vertical: "bottom",
-                                  horizontal: "center",
-                                }}
-                                transformOrigin={{
-                                  vertical: "top",
-                                  horizontal: "center",
-                                }}
+                                anchorEl={anchorEl} 
+                                placement={"top"}
                               >
                                 <ListGroup>
                                   {clientOptions?.length > 0 ? (
@@ -460,26 +491,7 @@ const Preview = React.memo(
                                   )}
                                 </ListGroup>
                               </Popover>
-                              {clientGroups?.map((e, index) => {
-                                return (
-                                  <div key={index} className="flex-wrap mt-2">
-                                    <div className="chip-element mr-2">
-                                      <span className="chip-label">
-                                        {e}:{""}
-                                        <span
-                                          className="chip-close"
-                                          // data-testid={rowData.resourceDetails.name + label}
-                                          onClick={() =>
-                                            removeClientUserGroup(e)
-                                          }
-                                        >
-                                          <i className="fa fa-close"></i>
-                                        </span>
-                                      </span>
-                                    </div>
-                                  </div>
-                                );
-                              })}
+                          
                             </div>
                           ) : (
                             ""
@@ -488,31 +500,9 @@ const Preview = React.memo(
                       )
                     }
                   </div>
+                  </LoadingOverlay>
                   <hr />
-                  <div>
-                    <label>
-                      <FormControlLabel
-                        control={
-                          <Checkbox
-                            aria-label="Publish"
-                            checked={processData.status === "active"}
-                            onChange={(e) =>
-                              setProcessData({
-                                status: e.target.checked
-                                  ? "active"
-                                  : "inactive",
-                              })
-                            }
-                            name="Check box to associate form with a workflow"
-                            color="primary"
-                          />
-                        }
-                      />
-                      <label className="fontsize-16">
-                        {t("Publish this form for Client Users.")}
-                      </label>
-                    </label>
-                  </div>
+         
                   <label className="text-label">{t("Comments")}</label>
                   <TextField
                     label={t("Comments")}

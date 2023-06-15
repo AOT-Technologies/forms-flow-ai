@@ -76,6 +76,7 @@ class AuthorizationService:
             auth_type=auth_type_enum,
             resource_id=resource.get("resourceId"),
             user_name=user.user_name,
+            roles=user.group_or_roles,
             tenant=user.tenant_key,
         )
         roles = resource.get("roles")
@@ -106,6 +107,7 @@ class AuthorizationService:
         auth = Authorization.find_resource_by_id(
             auth_type=auth_type_enum,
             resource_id=resource_id,
+            roles=user.group_or_roles,
             tenant=user.tenant_key,
             user_name=user.user_name,
         )

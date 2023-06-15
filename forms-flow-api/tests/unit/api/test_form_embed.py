@@ -3,9 +3,9 @@
 from tests.utilities.base_test import (
     get_embed_application_create_payload,
     get_embed_token,
+    get_form_payload,
     get_form_request_payload,
     get_token,
-    get_form_payload,
 )
 
 

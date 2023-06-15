@@ -95,17 +95,24 @@ class Authorization(AuditDateTimeMixin, AuditUserMixin, BaseModel, db.Model):
         cls,
         auth_type: AuthType,
         resource_id: str,
+        roles: List[str] = None,
         user_name: str = None,
         tenant: str = None,
     ) -> Optional[Authorization]:
         """Find resource authorization by id."""
+        role_condition = [Authorization.roles.contains([role]) for role in roles]
         query = (
             cls.query.filter(Authorization.resource_id == str(resource_id))
             .filter(Authorization.auth_type == auth_type)
             .filter(
                 or_(
-                    Authorization.user_name.is_(None),
+                    *role_condition,
+                    Authorization.created_by == user_name,
                     Authorization.user_name == user_name,
+                    and_(
+                        Authorization.user_name.is_(None),
+                        or_(Authorization.roles == {}, Authorization.roles.is_(None)),
+                    ),
                 )
             )
         )

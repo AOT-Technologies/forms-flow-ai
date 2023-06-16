@@ -151,4 +151,4 @@ class AuthorizationDetail(Resource):
                 response,
                 HTTPStatus.OK,
             )
-        return {"message": "permission denied"}, HTTPStatus.UNAUTHORIZED
+        return {"message": "Permission denied"}, HTTPStatus.UNAUTHORIZED

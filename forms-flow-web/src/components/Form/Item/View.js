@@ -266,6 +266,8 @@ const View = React.memo((props) => {
             dispatch(getApplicationCount(data.id));
             setFormStatus(data.status);
             dispatch(setFormStatusLoading(false));
+          }else{
+            dispatch(setFormStatusLoading(false));
           }
         })
       );
@@ -411,7 +413,7 @@ const View = React.memo((props) => {
               }}
               onCustomEvent={(evt) => onCustomEvent(evt, redirectUrl)}
             />
-          ) : formStatus === "inactive" || !formStatus ? (
+          ) : ((formStatus === "inactive" || !formStatus) && !errors) ? (
             <span>
               <div
                 className="container"

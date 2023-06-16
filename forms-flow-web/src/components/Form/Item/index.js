@@ -21,35 +21,53 @@ import {
   setFormSuccessData,
   resetFormData,
   clearSubmissionError,
+  setFormAuthVerifyLoading,
 } from "../../../actions/formActions";
 
 import Draft from "../../Draft";
+import Loading from "../../../containers/Loading";
+import { getClientList } from "../../../apiManager/services/authorizationService";
+import { push } from "connected-react-router";
 
 const Item = React.memo(() => {
   const { formId } = useParams();
   const userRoles = useSelector((state) => state.user.roles || []);
   const tenantKey = useSelector((state) => state?.tenants?.tenantId);
   const redirectUrl = MULTITENANCY_ENABLED ? `/tenant/${tenantKey}/` : "/";
+  const formAuthVerifyLoading = useSelector((state)=>state.process.formAuthVerifyLoading);
   const dispatch = useDispatch();
 
+  const formAuthVerify = (formId,successCallBack)=>{
+    getClientList(formId).then(successCallBack).catch(()=>dispatch(push("/404"))).finally(()=>{
+      dispatch(setFormAuthVerifyLoading(false));
+    });
+  };
+  
   useEffect(() => {
+    dispatch(setFormAuthVerifyLoading(true));
     dispatch(resetFormData("form", formId));
     dispatch(clearSubmissionError("submission"));
     if (checkIsObjectId(formId)) {
-      dispatch(getForm("form", formId));
+      dispatch(getForm("form", formId,(err,res)=>{
+        formAuthVerify(res.parentFormId || res._id);
+      }));
     } else {
       dispatch(
         fetchFormByAlias(formId, async (err, formObj) => {
           if (!err) {
-            const form_id = formObj._id;
-            dispatch(
-              setFormRequestData(
-                "form",
-                form_id,
-                `${Formio.getProjectUrl()}/form/${form_id}`
-              )
-            );
-            dispatch(setFormSuccessData("form", formObj));
+       
+            formAuthVerify(formObj.parentFormId || formObj._id,()=>{
+              const form_id = formObj._id;
+              dispatch(
+                setFormRequestData(
+                  "form",
+                  form_id,
+                  `${Formio.getProjectUrl()}/form/${form_id}`
+                )
+              );
+              dispatch(setFormSuccessData("form", formObj));
+            });
+          
           } else {
             dispatch(setFormFailureErrorData("form", err));
           }
@@ -61,6 +79,11 @@ const Item = React.memo(() => {
   /**
    * Protected route to form submissions
    */
+
+  if(formAuthVerifyLoading){
+    return <Loading/>;
+  }
+
   const SubmissionRoute = ({ component: Component, ...rest }) => (
     <Route
       {...rest}

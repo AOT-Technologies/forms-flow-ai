@@ -25,7 +25,7 @@ import {
   saveFormProcessMapperPost,
   saveFormProcessMapperPut,
 } from "../../apiManager/services/processServices";
-import { selectRoot, selectError, getForm, Formio } from "react-formio";
+import { selectRoot, selectError, Formio, getForm} from "react-formio";
 import { MULTITENANCY_ENABLED } from "../../constants/constants";
 import { push } from "connected-react-router";
 import WorkFlow from "./Steps/WorkFlow";
@@ -37,7 +37,9 @@ import {
   FORM_CREATE_ROUTE,
   STEPPER_ROUTES,
 } from "./constants/stepperConstants";
-import { resetFormData } from "../../actions/formActions.js";
+import { resetFormData, setFormAuthVerifyLoading, setFormDesignerPermissionRoles } from "../../actions/formActions.js";
+import Loading from "../../containers/Loading.js";
+import { fetchDesigners } from "../../apiManager/services/authorizationService.js";
 class StepperPage extends PureComponent {
   constructor(props) {
     super(props);
@@ -59,9 +61,12 @@ class StepperPage extends PureComponent {
       disablePreview: false,
       tenantKey: props.tenants?.tenantId,
       redirectUrl: null,
+      checkPermissionLoading:false,
     };
+    
     this.setPreviewMode = this.setPreviewMode.bind(this);
     this.handleNext = this.handleNext.bind(this);
+    this.handleCheckPermissionLoading = this.handleCheckPermissionLoading.bind(this);
     // for edit
     this.setEditMode = this.setEditMode.bind(this);
     this.handleBack = this.handleBack.bind(this);
@@ -150,11 +155,8 @@ class StepperPage extends PureComponent {
     }
 
     return { ...stateData };
-
-    // else {
-    //   return { editMode: false, formId: "" };
-    // }
   }
+
 
   setActiveStep(val) {
     this.setState({ activeStep: val });
@@ -178,9 +180,7 @@ class StepperPage extends PureComponent {
         : "/",
     });
   }
-  // handleCheckboxChange = (event) =>
-  //   this.setState({ checked: event.target.checked });
-
+ 
   setProcessData = (data) => {
     this.setState((prevState) => ({
       processData: { ...prevState.processData, ...data },
@@ -211,6 +211,10 @@ class StepperPage extends PureComponent {
 
   handleBack() {
     this.setActiveStep(this.state.activeStep - 1);
+  }
+
+  handleCheckPermissionLoading(){
+    this.setState({checkPermissionLoading:!this.state?.checkPermissionLoading});
   }
 
   submitData = () => {
@@ -339,10 +343,16 @@ class StepperPage extends PureComponent {
   render() {
     // const { process } = this.props;
     const steps = this.getSteps();
-    const { t } = this.props;
+    const { t,formAuthVerifyLoading ,match} = this.props;
     const handleReset = () => {
       this.setActiveStep(0);
     };
+
+    
+
+    if(formAuthVerifyLoading && match?.params.formId !== FORM_CREATE_ROUTE){
+      return <Loading/>;
+    }
 
     return (
       <>
@@ -408,6 +418,7 @@ const mapStateToProps = (state) => {
     formProcessList: state.process.formProcessList,
     isAuthenticated: state.user.isAuthenticated,
     formPreviousData: state.process.formPreviousData,
+    formAuthVerifyLoading: state.process.formAuthVerifyLoading,
     applicationCount: state.process.applicationCount,
     tenants: state.tenants,
     workflow: state.process.workflowAssociated,
@@ -452,7 +463,18 @@ const mapDispatchToProps = (dispatch) => {
 
     getForm: (id) => {
       dispatch(resetFormData("form", id));
-      dispatch(getForm("form", id));
+      dispatch(setFormAuthVerifyLoading(true));
+      dispatch(getForm("form",id,(err,res)=>{
+        fetchDesigners(
+          res.parentFormId || res._id).then(response=>{ 
+            dispatch(setFormDesignerPermissionRoles(response.data));
+          }).catch(()=>{
+            dispatch(push("/404"));
+          }).finally(()=>{
+            dispatch(setFormAuthVerifyLoading(false));
+          });
+      }));
+         
     },
     getFormProcessesDetails: (formId) => {
       dispatch(

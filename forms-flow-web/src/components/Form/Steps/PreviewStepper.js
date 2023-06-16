@@ -20,10 +20,10 @@ import {
 } from "../../../apiManager/services/authorizationService";
 import {
   addUsers,
-  fetchDesigners,
 } from "../../../apiManager/services/authorizationService";
 import LoadingOverlay from "react-loading-overlay";
 import { Chip } from "@material-ui/core";
+import { setFormDesignerPermissionRoles } from "../../../actions/formActions";
 
 
 const Preview = React.memo(
@@ -55,14 +55,13 @@ const Preview = React.memo(
     );
     const [designerOptions, setDesingerOptions] = useState([]);
     const [clientOptions, setClientOptions] = useState([]);
-    const [designerGroups, setDesignerGroups] = useState([]);
+    const designerGroups = useSelector((state)=>state.process?.formDesignerPermissionRoles );
     const [clientGroups, setClientGroups] = useState([]);
-    const [fetchDesingerLoading, setFetchDesignerLoading] = useState(false);
     const [fetchClientLoading, setFetchClientLoading] = useState(false);
     const [anchorEl,setAnchorEl] = useState(null);
     const isDisabled =
       (designerSelectedOption == "Specific Designers" &&
-        !designerGroups.length) ||
+        !designerGroups?.roles?.length) ||
       (clientSelectedOption == "Specific Clients" && !clientGroups.length);
     const id = show ? "simple-popover" : undefined;
     const clientUi = false ; //no need will update once the client functionalities in effect
@@ -96,29 +95,19 @@ const Preview = React.memo(
     }, []);
 
     useEffect(() => {
-      setFetchDesignerLoading(true);
       setFetchClientLoading(true);
-      fetchDesigners(processListData.parentFormId)
-        .then((res) => {
-          const resource = res.data;
-          setDesignerGroups(resource?.roles || []);
-          if (resource) {
-            setDesignerSelectedOption(
-              resource.roles?.length
-                ? "Specific Designers"
-                : resource.userName
-                ? "Private"
-                : "All Designers"
-            );
-          }
-          setDesingerOptions(
-            userGroups?.filter((i) => !resource?.roles?.includes(i.name))
-          );
-        })
-        .catch((error) => console.error("error", error))
-        .finally(()=> setFetchDesignerLoading(false));
-
-      getClientList(processListData.parentFormId)
+        setDesignerSelectedOption(
+          designerGroups.roles?.length
+            ? "Specific Designers"
+            : designerGroups.userName
+            ? "Private"
+            : "All Designers"
+        );
+        setDesingerOptions(
+          userGroups?.filter((i) => !designerGroups?.roles?.includes(i.name))
+        );
+      if(clientUi){
+        getClientList(processListData.parentFormId)
         .then((res) => {
           const resource = res.data;
           setClientGroups(resource?.roles || []);
@@ -133,6 +122,9 @@ const Preview = React.memo(
         })
         .catch((error) => console.error("error", error))
         .finally(()=> setFetchClientLoading(false));
+      }else{
+        setFetchClientLoading(false);
+      }
     }, [userGroups]);
 
     const handleClick = (name) => (event)=> {
@@ -141,7 +133,8 @@ const Preview = React.memo(
     };
 
     const addDesignerGroups = (data) => {
-      setDesignerGroups([...designerGroups, data.name]);
+      dispatch(setFormDesignerPermissionRoles(
+        {...designerGroups,roles:[...designerGroups.roles, data.name]}));
       setDesingerOptions(designerOptions?.filter((i) => i.name !== data.name));
       setShow(false);
     };
@@ -153,7 +146,8 @@ const Preview = React.memo(
     };
 
     const removeDesignerUserGroup = (group) => {
-      setDesignerGroups((prev)=>prev.filter((item) => item !== group));
+      const filteredRoles = designerGroups?.roles?.filter((item) => item !== group);
+      dispatch( setFormDesignerPermissionRoles({...designerGroups,roles:filteredRoles}));
       const deletedValue = userGroups.find((i) => i.name == group);
       if(deletedValue){
       setDesingerOptions((prev) => [
@@ -189,7 +183,7 @@ const Preview = React.memo(
         payload.roles = [];
       }
       if (designerSelectedOption === "Specific Designers") {
-        payload.roles = designerGroups;
+        payload.roles = designerGroups.roles;
       }
       addUsers(payload).catch((error) => console.error("error", error));
     };
@@ -315,7 +309,7 @@ const Preview = React.memo(
                   </div>
                   <hr />
  
-                  <LoadingOverlay active={fetchDesingerLoading || fetchClientLoading} spinner>
+                  <LoadingOverlay active={fetchClientLoading} spinner>
                       <div className="mt-2" style={{ height: "auto" }}>
                     <span
                       className="font-weight-bold"
@@ -367,7 +361,7 @@ const Preview = React.memo(
                     </div>
                     {designerSelectedOption === "Specific Designers" ? (
                       <div className="d-flex align-items-center flex-wrap">
-                            {designerGroups?.map((e,) => 
+                            {designerGroups?.roles?.map((e,) => 
                             <Chip key={e} label={e}
                              variant="outlined"
                              className="mr-2"  
@@ -413,7 +407,7 @@ const Preview = React.memo(
                   </div>
                   <div>
                       {
-                      !clientUi && (
+                      clientUi && (
                         <div>
                           <hr className="mt-1" />
                           <span className="font-weight-bold">

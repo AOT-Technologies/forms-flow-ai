@@ -145,7 +145,10 @@ class AuthorizationDetail(Resource):
 
         Fetch Authorization details by resource id based on authorization type.
         """
-        return (
-            auth_service.get_resource_by_id(auth_type.upper(), resource_id),
-            HTTPStatus.OK,
-        )
+        response = auth_service.get_resource_by_id(auth_type.upper(), resource_id)
+        if response:
+            return (
+                response,
+                HTTPStatus.OK,
+            )
+        return {"message": "permission denied"}, HTTPStatus.UNAUTHORIZED

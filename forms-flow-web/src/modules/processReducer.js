@@ -19,6 +19,9 @@ const initialState = {
   unPublishApiError: false,
   workflowAssociated: null, //{label:'Workflow Name', value:'workflow_process_key'}
   formStatusLoading:false,
+  formDesignerPermissionRoles:{},
+  formAuthVerifyLoading:false,
+  
 };
 
 const process = (state = initialState, action) => {
@@ -79,6 +82,10 @@ const process = (state = initialState, action) => {
       return { ...state, workflowAssociated: action.payload };
     case ACTION_CONSTANTS.FORM_STATUS_LOADING:
       return { ...state, formStatusLoading: action.payload };
+    case ACTION_CONSTANTS.FORM_DESIGNER_PERMISSION_ROLES:
+        return { ...state, formDesignerPermissionRoles: action.payload };
+    case ACTION_CONSTANTS.FORM_AUTH_VERIFY_LOADING:
+        return { ...state, formAuthVerifyLoading: action.payload };
     default:
       return state;
   }

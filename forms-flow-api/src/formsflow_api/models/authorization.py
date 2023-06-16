@@ -79,6 +79,7 @@ class Authorization(AuditDateTimeMixin, AuditUserMixin, BaseModel, db.Model):
                 ),
             )
         )
+
         if tenant:
             query = query.filter(Authorization.tenant == tenant)
         return query
@@ -108,12 +109,14 @@ class Authorization(AuditDateTimeMixin, AuditUserMixin, BaseModel, db.Model):
         tenant: str = None,
     ) -> Optional[Authorization]:
         """Find resource authorization by id."""
-        query = cls._auth_query(auth_type, roles, user_name, tenant)
+        query = cls._auth_query(auth_type, roles, tenant, user_name)
         query = query.filter(Authorization.resource_id == str(resource_id))
+        if tenant:
+            query = query.filter(Authorization.tenant == tenant)
         return query.one_or_none()
 
     @classmethod
     def find_all_resources_authorized(cls, auth_type, roles, tenant, user_name):
         """Find all resources authorized to specific user/role or Accessible by all users/roles."""
-        query = cls._auth_query(auth_type, roles, user_name, tenant)
+        query = cls._auth_query(auth_type, roles, tenant, user_name)
         return query.all()

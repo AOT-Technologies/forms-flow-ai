@@ -20,6 +20,7 @@ import formRestore from "./RestoreFormReducer";
 import pubSubReducer from "./pubSubReducer";
 import userAuthorization from "./authorizationReducer";
 import customSubmissionReducer from "./customSubmissionReducer";
+import ErrorHandling from "./ErrorHandlingReducer";
 
 const createRootReducer = (history) =>
   combineReducers({
@@ -32,6 +33,7 @@ const createRootReducer = (history) =>
     bpmTasks,
     bpmForms,
     formRestore,
+    errors:ErrorHandling,
     form: form({ name: "form" }),
     forms: forms({
       name: "forms",

@@ -27,7 +27,8 @@ import {
 import Draft from "../../Draft";
 import Loading from "../../../containers/Loading";
 import { getClientList } from "../../../apiManager/services/authorizationService";
-import { push } from "connected-react-router";
+import NotFound from "../../NotFound";
+import { setApiCallError } from "../../../actions/ErroHandling";
 
 const Item = React.memo(() => {
   const { formId } = useParams();
@@ -35,21 +36,31 @@ const Item = React.memo(() => {
   const tenantKey = useSelector((state) => state?.tenants?.tenantId);
   const redirectUrl = MULTITENANCY_ENABLED ? `/tenant/${tenantKey}/` : "/";
   const formAuthVerifyLoading = useSelector((state)=>state.process.formAuthVerifyLoading);
+  const apiCallError = useSelector((state)=>state.errors.apiCallError);
   const dispatch = useDispatch();
 
   const formAuthVerify = (formId,successCallBack)=>{
-    getClientList(formId).then(successCallBack).catch(()=>dispatch(push("/404"))).finally(()=>{
+    getClientList(formId).then(successCallBack).catch((err)=>{
+      const {response} = err;
+      dispatch(setApiCallError({message:response?.data?.message || 
+        response.statusText,status:response.status}));
+    }).finally(()=>{
       dispatch(setFormAuthVerifyLoading(false));
     });
   };
   
   useEffect(() => {
+    dispatch(setApiCallError(null));
     dispatch(setFormAuthVerifyLoading(true));
     dispatch(resetFormData("form", formId));
     dispatch(clearSubmissionError("submission"));
     if (checkIsObjectId(formId)) {
       dispatch(getForm("form", formId,(err,res)=>{
-        formAuthVerify(res.parentFormId || res._id);
+        if(err){
+          dispatch(setFormAuthVerifyLoading(false));
+        }else{
+          formAuthVerify(res.parentFormId || res._id);
+        }
       }));
     } else {
       dispatch(
@@ -69,6 +80,7 @@ const Item = React.memo(() => {
             });
           
           } else {
+            dispatch(setFormAuthVerifyLoading(false));
             dispatch(setFormFailureErrorData("form", err));
           }
         })
@@ -82,6 +94,12 @@ const Item = React.memo(() => {
 
   if(formAuthVerifyLoading){
     return <Loading/>;
+  }
+  if(apiCallError){
+    return <NotFound
+    errorMessage={apiCallError.message}
+    errorCode={apiCallError.status}
+  />;
   }
 
   const SubmissionRoute = ({ component: Component, ...rest }) => (

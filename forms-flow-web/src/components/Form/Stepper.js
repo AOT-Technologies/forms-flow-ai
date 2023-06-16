@@ -40,6 +40,8 @@ import {
 import { resetFormData, setFormAuthVerifyLoading, setFormDesignerPermissionRoles } from "../../actions/formActions.js";
 import Loading from "../../containers/Loading.js";
 import { fetchDesigners } from "../../apiManager/services/authorizationService.js";
+import { setApiCallError } from "../../actions/ErroHandling.js";
+import NotFound from "../NotFound/index.js";
 class StepperPage extends PureComponent {
   constructor(props) {
     super(props);
@@ -343,7 +345,7 @@ class StepperPage extends PureComponent {
   render() {
     // const { process } = this.props;
     const steps = this.getSteps();
-    const { t,formAuthVerifyLoading ,match} = this.props;
+    const { t,formAuthVerifyLoading, apiCallError,match} = this.props;
     const handleReset = () => {
       this.setActiveStep(0);
     };
@@ -352,6 +354,13 @@ class StepperPage extends PureComponent {
 
     if(formAuthVerifyLoading && match?.params.formId !== FORM_CREATE_ROUTE){
       return <Loading/>;
+    }
+
+    if(apiCallError){
+      return <NotFound
+      errorMessage={apiCallError.message}
+      errorCode={apiCallError.status}
+    />;
     }
 
     return (
@@ -420,6 +429,7 @@ const mapStateToProps = (state) => {
     formPreviousData: state.process.formPreviousData,
     formAuthVerifyLoading: state.process.formAuthVerifyLoading,
     applicationCount: state.process.applicationCount,
+    apiCallError: state.errors.apiCallError,
     tenants: state.tenants,
     workflow: state.process.workflowAssociated,
   };
@@ -462,14 +472,17 @@ const mapDispatchToProps = (dispatch) => {
     },
 
     getForm: (id) => {
+      dispatch(setApiCallError(null));
       dispatch(resetFormData("form", id));
       dispatch(setFormAuthVerifyLoading(true));
       dispatch(getForm("form",id,(err,res)=>{
         fetchDesigners(
           res.parentFormId || res._id).then(response=>{ 
             dispatch(setFormDesignerPermissionRoles(response.data));
-          }).catch(()=>{
-            dispatch(push("/404"));
+          }).catch((err)=>{
+            const {response} = err;
+            dispatch(setApiCallError({message:response?.data?.message || 
+              response.statusText,status:response.status}));
           }).finally(()=>{
             dispatch(setFormAuthVerifyLoading(false));
           });

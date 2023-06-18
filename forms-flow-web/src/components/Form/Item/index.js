@@ -35,8 +35,8 @@ const Item = React.memo(() => {
   const userRoles = useSelector((state) => state.user.roles || []);
   const tenantKey = useSelector((state) => state?.tenants?.tenantId);
   const redirectUrl = MULTITENANCY_ENABLED ? `/tenant/${tenantKey}/` : "/";
-  const formAuthVerifyLoading = useSelector((state)=>state.process.formAuthVerifyLoading);
-  const apiCallError = useSelector((state)=>state.errors.apiCallError);
+  const formAuthVerifyLoading = useSelector((state)=>state.process?.formAuthVerifyLoading);
+  const apiCallError = useSelector((state)=>state.errors?.apiCallError);
   const dispatch = useDispatch();
 
   const formAuthVerify = (formId,successCallBack)=>{
@@ -97,8 +97,8 @@ const Item = React.memo(() => {
   }
   if(apiCallError){
     return <NotFound
-    errorMessage={apiCallError.message}
-    errorCode={apiCallError.status}
+    errorMessage={apiCallError?.message}
+    errorCode={apiCallError?.status}
   />;
   }
 

@@ -427,9 +427,9 @@ const mapStateToProps = (state) => {
     formProcessList: state.process.formProcessList,
     isAuthenticated: state.user.isAuthenticated,
     formPreviousData: state.process.formPreviousData,
-    formAuthVerifyLoading: state.process.formAuthVerifyLoading,
+    formAuthVerifyLoading: state.process?.formAuthVerifyLoading,
     applicationCount: state.process.applicationCount,
-    apiCallError: state.errors.apiCallError,
+    apiCallError: state.errors?.apiCallError,
     tenants: state.tenants,
     workflow: state.process.workflowAssociated,
   };

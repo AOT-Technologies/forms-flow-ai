@@ -141,7 +141,6 @@ For a production setup value should be true, which will work with Kubernetes and
 * Added environment variable `EXPORT_PDF_ENABLED`for pdf service.
 * Added environment variable `PUBLIC_WORKFLOW_ENABLED` for enabling public workflow creation for multitenancy users.
 * Added environment variable `DOCUMENT_SERVICE_URL`for document service.
-* Added environment variable `OPENTELEMETRY_SERVICE`for opentelemetry service.
 
 
 

@@ -43,9 +43,6 @@ window["_env_"] = {
   // Document Service api hosted from forms-flow-documents
   REACT_APP_DOCUMENT_SERVICE_URL: "<Custom Document URL>",
 
-  // Todo Check and delete this REACT_APP_OPENTELEMETRY_SERVICE if not used
-  REACT_APP_OPENTELEMETRY_SERVICE: false,
-
   // Enable Multitenancy
   REACT_APP_MULTI_TENANCY_ENABLED: false,
   // Enable creating workflow for all tenants

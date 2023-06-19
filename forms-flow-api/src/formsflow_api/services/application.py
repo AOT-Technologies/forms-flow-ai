@@ -3,7 +3,7 @@ import json
 from datetime import datetime
 from functools import lru_cache
 from http import HTTPStatus
-from typing import Dict
+from typing import Dict, Set
 
 from flask import current_app
 from formsflow_api_utils.exceptions import BusinessException
@@ -14,7 +14,13 @@ from formsflow_api_utils.utils import (
 )
 from formsflow_api_utils.utils.user_context import UserContext, user_context
 
-from formsflow_api.models import Application, Draft, FormProcessMapper
+from formsflow_api.models import (
+    Application,
+    Authorization,
+    AuthType,
+    Draft,
+    FormProcessMapper,
+)
 from formsflow_api.schemas import (
     AggregatedApplicationSchema,
     AggregatedApplicationsSchema,
@@ -139,6 +145,7 @@ class ApplicationService:  # pylint: disable=too-many-public-methods
         )
 
     @staticmethod
+    @user_context
     def get_auth_applications_and_count(  # pylint: disable=too-many-arguments,too-many-locals
         page_no: int,
         limit: int,
@@ -152,44 +159,38 @@ class ApplicationService:  # pylint: disable=too-many-public-methods
         application_status: str,
         created_by: str,
         sort_order: str,
-        token: str,
+        **kwargs,
     ):
         """Get applications only from authorized groups."""
-        access, resource_list = ApplicationService._application_access(token)
-        if access:
-            applications, get_all_applications_count = Application.find_all(
-                page_no=page_no,
-                limit=limit,
-                application_id=application_id,
-                application_name=application_name,
-                application_status=application_status,
-                created_by=created_by,
-                order_by=order_by,
-                modified_from=modified_from,
-                modified_to=modified_to,
-                sort_order=sort_order,
-                created_from=created_from,
-                created_to=created_to,
-            )
-        else:
-            (
-                applications,
-                get_all_applications_count,
-            ) = Application.find_applications_by_process_key(
-                application_id=application_id,
-                application_name=application_name,
-                application_status=application_status,
-                created_by=created_by,
-                page_no=page_no,
-                limit=limit,
-                order_by=order_by,
-                modified_from=modified_from,
-                modified_to=modified_to,
-                sort_order=sort_order,
-                created_from=created_from,
-                created_to=created_to,
-                process_key=resource_list,
-            )
+        user: UserContext = kwargs["user"]
+        form_ids: Set[str] = []
+
+        forms = Authorization.find_all_resources_authorized(
+            auth_type=AuthType.FORM,
+            roles=user.group_or_roles,
+            user_name=user.user_name,
+            tenant=user.tenant_key,
+        )
+        for form in forms:
+            form_ids.append(form.resource_id)
+        (
+            applications,
+            get_all_applications_count,
+        ) = Application.find_applications_by_auth_form_ids(
+            page_no=page_no,
+            limit=limit,
+            application_id=application_id,
+            application_name=application_name,
+            application_status=application_status,
+            created_by=created_by,
+            order_by=order_by,
+            modified_from=modified_from,
+            modified_to=modified_to,
+            sort_order=sort_order,
+            created_from=created_from,
+            created_to=created_to,
+            form_ids=form_ids,
+        )
         draft_count = Draft.get_draft_count()
         return (
             application_schema.dump(applications, many=True),

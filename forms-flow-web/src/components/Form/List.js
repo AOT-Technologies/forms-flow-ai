@@ -112,11 +112,11 @@ const List = React.memo((props) => {
     (state) => state.formCheckList.searchFormLoading
   );
   const applicationCountResponse = useSelector(
-    (state) => state.process.applicationCountResponse
+    (state) => state.process?.applicationCountResponse
   );
   const formProcessData = useSelector((state) => state.process.formProcessList);
   const applicationCount = useSelector(
-    (state) => state.process.applicationCount
+    (state) => state.process?.applicationCount
   );
   const tenantKey = tenants?.tenantId;
   const redirectUrl = MULTITENANCY_ENABLED ? `/tenant/${tenantKey}/` : "/";

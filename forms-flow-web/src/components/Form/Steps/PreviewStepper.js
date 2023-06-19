@@ -245,8 +245,8 @@ const Preview = React.memo(
                       {t("Form Name")} :{" "}
                     </span>
                     <span>
-                      {formData && formData.form && formData.form.title
-                        ? formData.form.title
+                      {formData && formData?.form && formData?.form?.title
+                        ? formData?.form?.title
                         : "-"}
                     </span>
                   </div>

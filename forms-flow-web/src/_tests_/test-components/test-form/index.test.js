@@ -118,7 +118,7 @@ it("should render the Stepper component without breaking", () => {
   );
   renderWithRouterMatch(Index, {
     path: "/formflow/:formId?/:step?",
-    route: "/formflow/123/1",
+    route: "/formflow/123/edit",
   });
   expect(screen.getByText("Design Form")).toBeInTheDocument();
   expect(

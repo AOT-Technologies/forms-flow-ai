@@ -62,7 +62,7 @@ const List = React.memo((props) => {
   const isApplicationsListLoading = useSelector(
     (state) => state.applications.isApplicationListLoading
   );
-  const form = useSelector((state) => state.form.form);
+  const form = useSelector((state) => state.form?.form);
   const [formData, setFormData] = useState();
   const [submissionListData, setSubmissionListData] = useState(
     defaultSubmissionData

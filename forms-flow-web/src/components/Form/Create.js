@@ -54,7 +54,7 @@ const Create = React.memo(() => {
   const formData = { display: "form" };
   const [form, dispatchFormAction] = useReducer(reducer, _cloneDeep(formData));
   const saveText = <Translation>{(t) => t("Save & Preview")}</Translation>;
-  const errors = useSelector((state) => state.form.error);
+  const errors = useSelector((state) => state.form?.error);
   const lang = useSelector((state) => state.user.lang);
   const tenantKey = useSelector((state) => state.tenants?.tenantId);
   const formAccess = useSelector((state) => state.user?.formAccess || []);

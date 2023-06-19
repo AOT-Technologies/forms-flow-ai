@@ -67,13 +67,13 @@ const reducer = (form, { type, value }) => {
 
 const Edit = React.memo(() => {
   const dispatch = useDispatch();
-  const processListData = useSelector((state) => state.process.formProcessList);
-  const formData = useSelector((state) => state.form.form);
+  const processListData = useSelector((state) => state.process?.formProcessList);
+  const formData = useSelector((state) => state.form?.form);
   const [form, dispatchFormAction] = useReducer(reducer, _cloneDeep(formData));
-  const errors = useSelector((state) => state.form.error);
+  const errors = useSelector((state) => state.form?.error);
   const formHistory = useSelector((state) => state.formRestore?.formHistory || []);
   const version = formHistory[0]?.changeLog?.version;
-  const prviousData = useSelector((state) => state.process.formPreviousData);
+  const prviousData = useSelector((state) => state.process?.formPreviousData);
   const applicationCount = useSelector(
     (state) => state.process.applicationCount
   );

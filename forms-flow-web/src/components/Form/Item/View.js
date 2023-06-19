@@ -442,7 +442,7 @@ const View = React.memo((props) => {
 const doProcessActions = (submission, ownProps) => {
   return (dispatch, getState) => {
     const state = getState();
-    let form = state.form.form;
+    let form = state.form?.form;
     let isAuth = state.user.isAuthenticated;
     const tenantKey = state.tenants?.tenantId;
     const redirectUrl = MULTITENANCY_ENABLED ? `/tenant/${tenantKey}/` : `/`;

@@ -258,7 +258,7 @@ const Create = React.memo(() => {
                   className="form-control"
                   id="name"
                   placeholder={t("Enter the form machine name")}
-                  value={form.name || ""}
+                  value={form?.name || ""}
                   onChange={(event) => handleChange("name", event)}
                 />
               </div>
@@ -333,7 +333,7 @@ const Create = React.memo(() => {
                   id="path"
                   placeholder={t("Enter pathname")}
                   style={{ textTransform: "lowercase", width: "120px" }}
-                  value={form.path || ""}
+                  value={form?.path || ""}
                   onChange={(event) => handleChange("path", event)}
                 />
               </div>

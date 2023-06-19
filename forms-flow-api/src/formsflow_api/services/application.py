@@ -450,17 +450,21 @@ class ApplicationService:  # pylint: disable=too-many-public-methods
 
     @staticmethod
     @user_context
-    def get_application_count(auth, token, **kwargs):
+    def get_application_count(auth, **kwargs):
         """Retrieves the active application count."""
         user: UserContext = kwargs["user"]
-        access, resource_list = ApplicationService._application_access(token=token)
         application_count = None
-        if auth.has_role([REVIEWER_GROUP]) and access:
-            application_count = Application.get_all_application_count()
-        elif auth.has_role([REVIEWER_GROUP]) and not access:
-            application_count = Application.get_authorized_application_count(
-                resource_list
-            )
+        form_ids: Set[str] = []
+        forms = Authorization.find_all_resources_authorized(
+            auth_type=AuthType.FORM,
+            roles=user.group_or_roles,
+            user_name=user.user_name,
+            tenant=user.tenant_key,
+        )
+        for form in forms:
+            form_ids.append(form.resource_id)
+        if auth.has_role([REVIEWER_GROUP]):
+            application_count = Application.get_authorized_application_count(form_ids)
         else:
             application_count = Application.get_user_based_application_count(
                 user.user_name

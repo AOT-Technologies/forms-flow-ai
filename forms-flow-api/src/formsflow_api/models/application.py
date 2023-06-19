@@ -688,7 +688,7 @@ class Application(
         return query.count()
 
     @classmethod
-    def get_authorized_application_count(cls, process_key):
+    def get_authorized_application_count(cls, form_ids):
         """Retrieves authorized application count."""
         query = FormProcessMapper.tenant_authorization(
             query=cls.query.join(
@@ -696,7 +696,12 @@ class Application(
             )
         )
         query = cls.filter_draft_applications(query=query)
-        query = query.filter(FormProcessMapper.process_key.in_(process_key))
+        filtered_form_query = FormProcessMapper.get_latest_form_mapper_ids()
+        filtered_form_ids = [
+            data.id for data in filtered_form_query if data.parent_form_id in form_ids
+        ]
+
+        query = query.filter(FormProcessMapper.id.in_(filtered_form_ids))
         return query.count()
 
     @classmethod

@@ -249,7 +249,7 @@ class StepperPage extends PureComponent {
         ? formProcessList.taskVariable
         : [],
       anonymous: formProcessList.anonymous ? true : false,
-      parentFormId: formProcessList.parentFormId,
+      parentFormId: formProcessList?.parentFormId,
       formType: formProcessList.formType
     };
 
@@ -428,7 +428,7 @@ const mapStateToProps = (state) => {
     isAuthenticated: state.user.isAuthenticated,
     formPreviousData: state.process.formPreviousData,
     formAuthVerifyLoading: state.process?.formAuthVerifyLoading,
-    applicationCount: state.process.applicationCount,
+    applicationCount: state.process?.applicationCount,
     apiCallError: state.errors?.apiCallError,
     tenants: state.tenants,
     workflow: state.process.workflowAssociated,
@@ -477,7 +477,7 @@ const mapDispatchToProps = (dispatch) => {
       dispatch(setFormAuthVerifyLoading(true));
       dispatch(getForm("form",id,(err,res)=>{
         fetchDesigners(
-          res.parentFormId || res._id).then(response=>{ 
+          res?.parentFormId || res._id).then(response=>{ 
             dispatch(setFormDesignerPermissionRoles(response.data));
           }).catch((err)=>{
             const {response} = err;

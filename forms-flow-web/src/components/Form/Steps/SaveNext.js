@@ -14,7 +14,7 @@ const SaveNext = React.memo(
     isDisabled
   }) => {
     const applicationCount = useSelector(
-      (state) => state.process.applicationCount
+      (state) => state.process?.applicationCount
     );
     const { t } = useTranslation();
     const handleChanges = () => {

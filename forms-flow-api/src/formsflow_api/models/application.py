@@ -297,7 +297,7 @@ class Application(
         """Fetch applications list based on searching parameters for Reviewer."""
         query = cls.filter_conditions(**filters)
         query = FormProcessMapper.tenant_authorization(query=query)
-        filtered_form_query = FormProcessMapper.get_latest_form_mapper_ids()
+        filtered_form_query = FormProcessMapper.get_latest_mapper_ids_by_form_id()
         filtered_form_ids = [
             data.id for data in filtered_form_query if data.parent_form_id in form_ids
         ]
@@ -696,7 +696,7 @@ class Application(
             )
         )
         query = cls.filter_draft_applications(query=query)
-        filtered_form_query = FormProcessMapper.get_latest_form_mapper_ids()
+        filtered_form_query = FormProcessMapper.get_latest_mapper_ids_by_form_id()
         filtered_form_ids = [
             data.id for data in filtered_form_query if data.parent_form_id in form_ids
         ]

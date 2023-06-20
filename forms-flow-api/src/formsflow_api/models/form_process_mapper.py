@@ -318,3 +318,16 @@ class FormProcessMapper(AuditDateTimeMixin, AuditUserMixin, BaseModel, db.Model)
         if tenant_key is not None:
             tenant_auth_query = tenant_auth_query.filter(cls.tenant == tenant_key)
         return tenant_auth_query
+
+    @classmethod
+    def get_latest_mapper_ids_by_form_id(cls):
+        """Getting latest mapper id of a form, based on formId."""
+        return (
+            db.session.query(
+                func.max(cls.id).label("id"),  # pylint: disable=not-callable
+                cls.form_id,
+                cls.parent_form_id,
+            )
+            .group_by(cls.form_id, cls.parent_form_id)
+            .all()
+        )

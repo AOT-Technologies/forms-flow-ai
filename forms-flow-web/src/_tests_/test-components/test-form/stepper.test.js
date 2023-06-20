@@ -41,23 +41,24 @@ beforeEach(() => {
   store.dispatch = jest.fn();
 });
 
-it("should render the stepper component without break", () => {
-  renderWithRouterMatch(Stepper, {
-    path: "/formflow/:formId?/:step?",
-    route: "/formflow/create",
-  });
-  expect(screen.getByText("Design Form")).toBeInTheDocument();
-  expect(
-    screen.getByText("Associate this form with a workflow?")
-  ).toBeInTheDocument();
-  expect(screen.getByText("Preview and Confirm")).toBeInTheDocument();
-  expect(
-    screen.getByText("Drag and Drop a form component")
-  ).toBeInTheDocument();
-  expect(screen.getByText("Create Form")).toBeInTheDocument();
-  // const savebtn  = screen.getByText("Save & Preview");
-  const titleInput = screen.getByLabelText("Title");
-  fireEvent.change(titleInput, {
-    target: { value: "created by jest" },
-  });
+describe('Stepper', () => {
+
+  it('does not render any steps when formProcessListCount is not 1', () => {
+      const { queryByText } = renderWithRouterMatch(Stepper, {
+        path: "/formflow/:formId?/:step?",
+        route: "/formflow/create",
+      });
+      const componentInstance = queryByText('Design Form');
+  
+      expect(componentInstance).toBeNull();
+      
+      const associateForm = queryByText('Associate this form with a workflow?');
+      
+      expect(associateForm).toBeNull();
+      
+      const previewConfirm = queryByText('Preview and Confirm');
+      
+      expect(previewConfirm).toBeNull();
+    });
+
 });

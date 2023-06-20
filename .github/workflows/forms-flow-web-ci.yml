@@ -7,11 +7,13 @@ on:
       - develop
       - master
       - release/**
+      - 5.2.0-alpha
   pull_request:
     branches:
       - develop
       - master
       - release/**
+      - 5.2.0-alpha
     paths:
       - "forms-flow-web/**"
 
@@ -34,7 +36,7 @@ jobs:
 
     strategy:
       matrix:
-        node-version: [14]
+        node-version: [14.17.0]
 
     steps:
       - uses: actions/checkout@v2
@@ -55,7 +57,7 @@ jobs:
 
     strategy:
       matrix:
-        node-version: [14]
+        node-version: [14.17.0]
 
     steps:
       - uses: actions/checkout@v2
@@ -75,10 +77,20 @@ jobs:
     if: always()
     needs: setup-job
     runs-on: ubuntu-20.04
+    strategy:
+      matrix:
+        node-version: [14.17.0]
 
     steps:
       - uses: actions/checkout@v2
+      - name: Use Node.js ${{ matrix.node-version }}
+        uses: actions/setup-node@v1
+        with:
+          node-version: ${{ matrix.node-version }}
+      - name: Install dependencies
+        run: |
+          npm ci
       - name: build to check strictness
         id: build
         run: |
-          docker build . -t forms-flow-web
+          npm run build

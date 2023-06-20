@@ -1,6 +1,7 @@
 /* eslint-disable max-len */
 export const formio_resourceBundles = {
   en: {
+    "Bad Request":"Bad Request",
     "Select form version":"Select form version",
     "Please remove the special characters...!":"Please remove the special characters...!",
     "No histories found":"No histories found",
@@ -37,8 +38,8 @@ export const formio_resourceBundles = {
       "All groups have access to the dashboard",
     "Form unpublishing Failed": "Form unpublishing Failed",
     "Form process failed": "Form process failed",
-    "Form deletion unsuccessful":"Form deletion unsuccessful",
     "Form deleted successfully": "Form deleted successfully",
+    "Form deletion unsuccessful":"Form deletion unsuccessful",
     "Form Workflow Association Saved.": "Form Workflow Association Saved.",
     "Loading...": "Loading...",
     "Changing the form workflow will not affect the existing applications. It will only update in the newly created applications. Press Save Changes to continue or cancel the changes.":
@@ -301,6 +302,7 @@ export const formio_resourceBundles = {
   },
 
   "zh-CN": {
+    "Bad Request":"错误的请求",
     "Select form version":"选择表格版本",
     "Please remove the special characters...!":"请删除特殊字符...！",
     "No histories found":"没有找到历史记录",
@@ -1212,6 +1214,7 @@ export const formio_resourceBundles = {
   },
 
   bg: {
+    "Bad Request":"Неправилна заявка",
     "Select form version":"Изберете версия на формуляра",
     "Please remove the special characters...!":"Моля, премахнете специалните символи...!",
     "No histories found":"Няма намерени истории",
@@ -2182,6 +2185,7 @@ export const formio_resourceBundles = {
   },
 
   pt: {
+    "Bad Request":"Pedido ruim",
     "Select form version":"Selecione a versão do formulário",
     "Please remove the special characters...!":"Remova os caracteres especiais...!",
     "No histories found":"Nenhum histórico encontrado",
@@ -3146,6 +3150,7 @@ export const formio_resourceBundles = {
   },
 
   fr: {
+    "Bad Request":"Bad Request",
     "Select form version":"Sélectionnez la version du formulaire",
     "Please remove the special characters...!":"Veuillez supprimer les caractères spéciaux... !",
     "No histories found":"Aucun historique trouvé",
@@ -3182,8 +3187,8 @@ export const formio_resourceBundles = {
       "Tous les groupes ont accès au tableau de bord",
     "Form unpublishing Failed": "Échec de la dépublication du formulaire",
     "Form process failed": "Le processus de formulaire a échoué",
-    "Form deletion unsuccessful":"Échec de la suppression du formulaire",
     "Form deleted successfully": "Formulaire supprimé avec succèsy",
+    "Form deletion unsuccessful":"Échec de la suppression du formulaire",
     "Loading...": "Chargement...",
     "Changing the form workflow will not affect the existing applications. It will only update in the newly created applications. Press Save Changes to continue or cancel the changes.":
       "La modification du flux de travail du formulaire n'affectera pas les applications existantes. Il ne sera mis à jour que dans les applications nouvellement créées. Appuyez sur Enregistrer les modifications pour continuer ou annuler les modifications.",
@@ -4118,6 +4123,7 @@ export const formio_resourceBundles = {
   },
 
   de: {
+    "Bad Request":"Ungültige Anforderung",
     "Select form version":"Formularversion auswählen",
     "Please remove the special characters...!":"Bitte entfernen Sie die Sonderzeichen...!",
     "No histories found":"Keine Historien gefunden",
@@ -4155,8 +4161,8 @@ export const formio_resourceBundles = {
     "Form unpublishing Failed":
       "Das Aufheben der Veröffentlichung des Formulars ist fehlgeschlagen",
     "Form process failed": "Formularprozess fehlgeschlagen",
-    "Form deletion unsuccessful":"Formularlöschung fehlgeschlagen",
     "Form deleted successfully": "Formular erfolgreich gelöscht",
+    "Form deletion unsuccessful":"Formularlöschung fehlgeschlagen",
     "Form Workflow Association Saved.":
       "Formular-Workflow-Zuordnung gespeichert.",
     "Loading...": "Wird geladen...",

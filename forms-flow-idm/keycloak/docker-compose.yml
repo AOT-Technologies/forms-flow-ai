@@ -14,7 +14,7 @@ services:
     restart: always
     container_name: keycloak_db
     volumes:
-      - ./postgres/keycloak:/data/postgres
+      - ./postgres/keycloak:/var/lib/postgresql/data
     environment:
       POSTGRES_DB: ${KEYCLOAK_JDBC_DB:-keycloak}
       POSTGRES_USER: ${KEYCLOAK_JDBC_USER:-admin}

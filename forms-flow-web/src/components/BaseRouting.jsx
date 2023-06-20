@@ -1,43 +1,86 @@
 import React from "react";
-import { Route, Switch, Redirect } from "react-router-dom";
+import { Route, Switch, Redirect, useLocation } from "react-router-dom";
 import { useSelector } from "react-redux";
 
 import PublicRoute from "./PublicRoute";
 import PrivateRoute from "./PrivateRoute";
 import { BASE_ROUTE } from "../constants/constants";
 
-/*import SideBar from "../containers/SideBar";*/
-import NavBar from "../containers/NavBar";
 import Footer from "../components/Footer";
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import NotFound from "./NotFound";
+import { useDispatch } from "react-redux";
+import i18n from "../resourceBundles/i18n";
+import { setLanguage } from "../actions/languageSetAction";
+import { initPubSub } from "../actions/pubSubActions";
+import { push } from "connected-react-router";
 
-const BaseRouting = React.memo(({ store }) => {
-  const isAuth = useSelector((state) => state.user.isAuthenticated);
+const BaseRouting = React.memo(
+  ({ store, publish, subscribe, getKcInstance }) => {
+    const user = useSelector((state) => state.user);
+    const tenant = useSelector((state) => state.tenants);
+    const dispatch = useDispatch();
+    const isAuth = user.isAuthenticated;
+    const location = useLocation();
+    React.useEffect(() => {
+      if (window.location.pathname !== location.pathname) {
+        dispatch(push(window.location.pathname));
+      }
+    }, []);
 
-  return (
-    <>
-      {isAuth ? <NavBar /> : null}
-      <div className="wrapper">
-        {/*{isAuth?<SideBar store={store} />:null}*/}
-        <div className="container-fluid content main-container">
-          <ToastContainer />
-          <Switch>
-            <Route path="/public">
-              <PublicRoute store={store} />
-            </Route>
-            <Route path={BASE_ROUTE}>
-              <PrivateRoute store={store} />
-            </Route>
-            <Route path="/404" exact={true} component={NotFound} />
-            <Redirect from="*" to="/404" />
-          </Switch>
-          {isAuth ? <Footer /> : null}
+    React.useEffect(() => {
+      dispatch(initPubSub({ publish, subscribe }));
+    }, [publish, subscribe]);
+
+    React.useEffect(() => {
+      subscribe("ES_CHANGE_LANGUAGE", (msg, data) => {
+        i18n.changeLanguage(data);
+        dispatch(setLanguage(data));
+      });
+    }, []);
+
+    React.useEffect(() => {
+      if (tenant) {
+        publish("ES_TENANT", tenant);
+      }
+    }, [tenant]);
+
+    React.useEffect(() => {
+      publish("ES_ROUTE", location);
+    }, [location]);
+
+    return (
+      <>
+        <div className="wrapper">
+          <div className="container-fluid content main-container">
+            <ToastContainer />
+            <Switch>
+              <Route path="/public">
+                <PublicRoute
+                  store={store}
+                  publish={publish}
+                  subscribe={subscribe}
+                  getKcInstance={getKcInstance}
+                />
+              </Route>
+              <Route path={BASE_ROUTE}>
+                <PrivateRoute
+                  store={store}
+                  publish={publish}
+                  subscribe={subscribe}
+                  getKcInstance={getKcInstance}
+                />
+              </Route>
+              <Route path="/404" exact={true} component={NotFound} />
+              <Redirect from="*" to="/404" />
+            </Switch>
+            {isAuth ? <Footer /> : null}
+          </div>
         </div>
-      </div>
-    </>
-  );
-});
+      </>
+    );
+  }
+);
 
 export default BaseRouting;

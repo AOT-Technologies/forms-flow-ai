@@ -1,6 +1,7 @@
 import axios from "axios";
 
-import UserService from "../../services/UserService";
+// import UserService from "../../services/UserService";
+import { StorageService } from "@formsflow/service";
 
 // const qs = require("querystring");
 
@@ -16,7 +17,7 @@ export const httpGETRequest = (
     headers: !headers
       ? {
           Authorization: isBearer
-            ? `Bearer ${token || UserService.getToken()}`
+            ? `Bearer ${token || StorageService.get(StorageService.User.AUTH_TOKEN)}`
             : token,
         }
       : headers,
@@ -36,7 +37,7 @@ export const httpGETBlobRequest = (
     headers: !headers
       ? {
           Authorization: isBearer
-            ? `Bearer ${token || UserService.getToken()}`
+            ? `Bearer ${token || StorageService.get(StorageService.User.AUTH_TOKEN)}`
             : token,
         }
       : headers,
@@ -54,7 +55,7 @@ export const httpPOSTRequest = (
     headers: !headers
       ? {
           Authorization: isBearer
-            ? `Bearer ${token || UserService.getToken()}`
+            ? `Bearer ${token || StorageService.get(StorageService.User.AUTH_TOKEN)}`
             : token,
         }
       : headers,
@@ -75,7 +76,7 @@ export const httpPOSTBlobRequest = (
     headers: !headers
       ? {
           Authorization: isBearer
-            ? `Bearer ${token || UserService.getToken()}`
+            ? `Bearer ${token || StorageService.get(StorageService.User.AUTH_TOKEN)}`
             : token,
         }
       : headers,
@@ -94,7 +95,7 @@ export const httpPOSTRequestWithHAL = (url, data, token, isBearer = true) => {
   return axios.post(url, data, {
     headers: {
       Authorization: isBearer
-        ? `Bearer ${token || UserService.getToken()}`
+        ? `Bearer ${token || StorageService.get(StorageService.User.AUTH_TOKEN)}`
         : token,
       Accept: "application/hal+json",
     },
@@ -105,7 +106,7 @@ export const httpPUTRequest = (url, data, token, isBearer = true) => {
   return axios.put(url, data, {
     headers: {
       Authorization: isBearer
-        ? `Bearer ${token || UserService.getToken()}`
+        ? `Bearer ${token || StorageService.get(StorageService.User.AUTH_TOKEN)}`
         : token,
     },
   });
@@ -115,7 +116,7 @@ export const httpDELETERequest = (url, token, isBearer = true) => {
   return axios.delete(url, {
     headers: {
       Authorization: isBearer
-        ? `Bearer ${token || UserService.getToken()}`
+        ? `Bearer ${token || StorageService.get(StorageService.User.AUTH_TOKEN)}`
         : token,
     },
   });

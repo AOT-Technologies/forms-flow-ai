@@ -7,7 +7,7 @@ import { Translation } from "react-i18next";
 const ApplicationDetails = React.memo((props) => {
   const application = props.application;
   return (
-    <Table responsive>
+    <Table>
       <tbody>
         <tr>
           <td className="border-0">
@@ -23,7 +23,7 @@ const ApplicationDetails = React.memo((props) => {
             <Translation>{(t) => t("Application Name")}</Translation>
           </td>
           <td className="border-0">:</td>
-          <td className="border-0" id="application-name">
+          <td className="border-0 text-truncate" id="application-name">
             {startCase(application.applicationName)}
           </td>
         </tr>

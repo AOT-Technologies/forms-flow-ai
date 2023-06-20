@@ -93,11 +93,13 @@
     display: flex;
     flex-direction: row;
     flex: 50%;
+    flex-wrap: wrap;
 }
 
 .btn-left {
     margin: 10px;
     height: 30px;
+    white-space: nowrap;
 }
 .progress-bar {
     background-color: #ff0000ab;
@@ -112,5 +114,6 @@
     .flex-item-right,
     .flex-item-left {
         flex: 100%;
+        justify-content: flex-start;
     }
 }

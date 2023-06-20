@@ -63,12 +63,11 @@ is mentioned on the [link](../forms-flow-idm/keycloak/README.md#create-forms-flo
  `USER_ACCESS_PERMISSIONS`| JSON formatted permissions to enable / disable few access on user login.|| `{"accessAllowApplications":false,"accessAllowSubmissions":false}`
  |`FORMIO_JWT_SECRET`|forms-flow-forms jwt secret| |`--- change me now ---`
 `MULTI_TENANCY_ENABLED`|Multi tenancy enabled flag for the environment|true/false | false
-` DRAFT_ENABLED`|Enable draft feature|true/false
+`DRAFT_ENABLED`|Enable draft feature|true/false
 `DRAFT_POLLING_RATE`|Control draft timing||15000
 `EXPORT_PDF_ENABLED`|Manage export to pdf feature|true/false
 `PUBLIC_WORKFLOW_ENABLED`|Enable creating workflow for all tenants
-`DOCUMENT_SERVICE_URL`|Formsflow document service api url||`http://{your-ip-address}:{port}`
-`OPENTELEMETRY_SERVICE`|Opentelemetry service ||`false`
+`DOCUMENT_SERVICE_URL`|Formsflow document service api url||`http://{your-ip-address}:5006`
 `MT_ADMIN_BASE_URL`|Multitenancy admin url||`http://{your-ip-address}:5010/api`
 `MT_ADMIN_BASE_URL_VERSION=v1`|Version of multitenancy admin|v1
 `KEYCLOAK_ENABLE_CLIENT_AUTH`|Client auth mechanism||`false`
@@ -103,8 +102,8 @@ is mentioned on the [link](../forms-flow-idm/keycloak/README.md#create-forms-flo
   * Default Logo can be changed to the users logo by replacing the logo.svg in public folder of forms-flow-web.
      The default width and height of the logo is 50 and 55 also the image format is svg
   * The icon can also be replaced to the users icon by replacing the favicon in the public folder of forms-flow-web
-   
-             
+
+
 ### Code coverage
   * Test cases for the files are provided at forms-flow-web using [testing-library/jest-dom](https://testing-library.com/docs/ecosystem-jest-dom/) , [testing-library/react](https://testing-library.com/docs/react-testing-library/intro/) , [msw](https://mswjs.io/) and [redux-mock-store](https://www.npmjs.com/package/redux-mock-store).
   * `cd {Your Directory}/forms-flow-ai/forms-flow-web`.
@@ -116,7 +115,7 @@ is mentioned on the [link](../forms-flow-idm/keycloak/README.md#create-forms-flo
   * Default language 'English' can be changed to other languages according to the   user.
   * The languages currently provided are `Chinese,Portuguese,French,German and Bulgarian`.
   * User can add more languages by following the steps mentioned [here](https://aot-technologies.github.io/forms-flow-ai-doc/#language)
-  
+
 ## forms-flow-web Events
  > This section elaborates events used in forms-flow-web.
  >  The Form.io renderer uses the [EventEmitter3](https://github.com/primus/eventemitter3) library to manage all of the event handling that occurs within the renderer.

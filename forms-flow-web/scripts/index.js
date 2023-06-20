@@ -10,7 +10,7 @@ const BUCKET = process.env.BUCKET;
 import Walk from "@root/walk";
 import path from "path";
 
-const component = `forms-flow-web-${version}`;
+const component = `forms-flow-web@${version}`;
 
 const compressFileAndUpload = (fileName, filePath) => {
   const stream = createReadStream(`${filePath}/${fileName}`);

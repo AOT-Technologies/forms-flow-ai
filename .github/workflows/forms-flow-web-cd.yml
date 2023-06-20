@@ -8,6 +8,7 @@ on:
       - develop
     paths:
       - "forms-flow-web/**"
+      - "VERSION"
 defaults:
   run:
     shell: bash
@@ -30,15 +31,18 @@ jobs:
           aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           aws-region: ${{ secrets.REGION }}
+      - name: Set version
+        if: ${{ github.ref != 'refs/heads/master' }}
+        working-directory: .
+        run: |
+          VER=$(cat VERSION)
+          echo "VERSION=$VER" >> $GITHUB_ENV
+
       - run: npm ci
         working-directory: ./forms-flow-web/scripts
-      - name: Set environment variable
-        run: |
-          if [[ "${{ github.ref }}" == "refs/heads/develop" ]]; then
-            echo "::set-env name=NODE_ENV::develop"
-          fi
+
       - run: node index
         env:
           BUCKET: ${{ secrets.BUCKET}}
-          NODE_ENV: ${{ env.NODE_ENV }}
+          NODE_ENV: ${{ env.VERSION }}
         working-directory: ./forms-flow-web/scripts

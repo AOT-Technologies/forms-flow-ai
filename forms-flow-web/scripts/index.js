@@ -1,5 +1,5 @@
 // Import required AWS SDK clients and commands for Node.js.
-import { version } from "../package.json";
+
 import { PutObjectCommand } from "@aws-sdk/client-s3";
 import { s3Client } from "./libs/s3Client.js";
 import { createReadStream, createWriteStream } from "fs";
@@ -9,8 +9,8 @@ const BUCKET = process.env.BUCKET;
 
 import Walk from "@root/walk";
 import path from "path";
-
-const component = `forms-flow-web@${version}`;
+const VERSION = process.env.VERSION;
+const component = `forms-flow-web@${VERSION}`;
 
 const compressFileAndUpload = (fileName, filePath) => {
   const stream = createReadStream(`${filePath}/${fileName}`);

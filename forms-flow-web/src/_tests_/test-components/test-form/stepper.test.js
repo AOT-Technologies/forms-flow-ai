@@ -1,5 +1,5 @@
 import React from "react";
-import { render as rtlRender, screen, fireEvent } from "@testing-library/react";
+import { render as rtlRender } from "@testing-library/react";
 import Stepper from "../../../components/Form/Stepper";
 import "@testing-library/jest-dom/extend-expect";
 import { Provider } from "react-redux";

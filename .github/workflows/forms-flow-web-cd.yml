@@ -37,6 +37,16 @@ jobs:
         run: |
           VER=$(cat VERSION)
           echo "VERSION=$VER" >> $GITHUB_ENV
+          
+      - name: Set version
+        if: ${{ github.ref == 'refs/heads/master' }}
+        working-directory: .
+        run: |
+          VER=$(cat VERSION)
+          VER=${VER/-alpha/''}
+          echo "VERSION=$VER" >> $GITHUB_ENV
+      
+      - run: echo ${{ env.VERSION }}
 
       - run: npm ci
         working-directory: ./forms-flow-web/scripts

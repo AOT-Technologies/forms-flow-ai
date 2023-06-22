@@ -19,7 +19,7 @@ const singleSpaAppPlugin = {
 module.exports = {
   plugins: [singleSpaAppPlugin],
   devServer: {
-    port: 3001,
+    port: 3002,
     headers: {
       "Access-Control-Allow-Origin": "*",
     },

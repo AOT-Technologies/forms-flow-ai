@@ -13,7 +13,6 @@ import Preview from "./Item/Preview.js";
 import Edit from "./Item/Edit.js";
 import { Translation, withTranslation } from "react-i18next";
 import "../../resourceBundles/i18n";
-import NotFound from "../NotFound/index";
 
 //TODO convert this code to functional component
 
@@ -60,7 +59,6 @@ class StepperPage extends PureComponent {
       disablePreview: false,
       tenantKey: props.tenants?.tenantId,
       redirectUrl: null,
-      formProcessListCount: null,
     };
     this.setPreviewMode = this.setPreviewMode.bind(this);
     this.handleNext = this.handleNext.bind(this);
@@ -73,20 +71,11 @@ class StepperPage extends PureComponent {
   }
 
   componentDidMount() {
-    if (this.state && this.state.displayMode === "view") {  
+    if (this.state && this.state.displayMode === "view") {
       this.setState({ disableWorkflowAssociation: true });
       this.setState({ disablePreview: true });
-
     }
     this.setRedirectUrl();
-  }
-  componentDidUpdate(prevProps) {
-    if (prevProps.formProcessList !== this.props.formProcessList) {
-      this.setState({
-        //check wheter there is data in the formProcessList 
-        formProcessListCount: this.props.formProcessList.length === 0 ? 0 : 1
-      });
-    }
   }
 
   static getDerivedStateFromProps(nextProps, prevState) {
@@ -200,14 +189,13 @@ class StepperPage extends PureComponent {
   };
 
   getSteps() {
-    //Dosplay stepper component only if there is data, 
-    return this.state.formProcessListCount === 1 ? [
+    return [
       <Translation key={1}>{(t) => t("Design Form")}</Translation>,
       <Translation key={2}>
         {(t) => t("Associate this form with a workflow?")}
       </Translation>,
       <Translation key={3}>{(t) => t("Preview and Confirm")}</Translation>,
-    ] : null;
+    ];
   }
 
   handleEdit() {
@@ -276,7 +264,7 @@ class StepperPage extends PureComponent {
     }
 
     data.workflowChanged = data?.processKey !== formPreviousData.processKey;
-    data.statusChanged = processData?.status !== formPreviousData.status;
+    data.statusChanged =  processData?.status !== formPreviousData.status;
 
     if (isNewVersionNeeded()) {
       // POST request for creating new mapper version of the current form.
@@ -355,12 +343,10 @@ class StepperPage extends PureComponent {
     const handleReset = () => {
       this.setActiveStep(0);
     };
-    //}
 
     return (
       <>
-        {/* display the view/edit only if there is data */}
-        {this.state.formProcessListCount === 1 ? <div>
+        <div>
           {this.props.isAuthenticated ? (
             <Link
               to={`${this.state.redirectUrl}form`}
@@ -407,10 +393,7 @@ class StepperPage extends PureComponent {
               </Grid>
             </Grid>
           </div>
-        </div> : this.state.formProcessListCount !== null && <NotFound
-          errorMessage={t("Bad Request")}
-          errorCode={400}
-        />}
+        </div>
       </>
     );
   }
@@ -477,7 +460,7 @@ const mapDispatchToProps = (dispatch) => {
         getFormProcesses(formId, (err, data) => {
           if (!err) {
             dispatch(getApplicationCount(data.id));
-          } else {
+          }else{
             console.error(err);
           }
         })

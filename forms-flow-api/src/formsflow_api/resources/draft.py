@@ -164,9 +164,10 @@ class DraftResource(Resource):
     def get():
         """Retrieve drafts."""
         try:
+            token = request.headers["Authorization"]
             dict_data = DraftListSchema().load(request.args) or {}
             draft_list, count = DraftService.get_all_drafts(dict_data)
-            application_count = ApplicationService.get_application_count(auth)
+            application_count = ApplicationService.get_application_count(auth, token)
             result = {
                 "drafts": draft_list,
                 "totalCount": count,

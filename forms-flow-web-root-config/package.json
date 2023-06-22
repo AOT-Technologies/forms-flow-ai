@@ -7,7 +7,8 @@
     "format": "prettier --write .",
     "check-format": "prettier --check .",
     "build": "concurrently npm:build:*",
-    "build:webpack": "webpack --mode=production"
+    "build:webpack": "webpack --mode=production",
+    "build-dev:webpack": "webpack --env isLocal --mode=development"
   },
   "devDependencies": {
     "@babel/core": "^7.15.0",

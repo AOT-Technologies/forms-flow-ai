@@ -1,4 +1,4 @@
-import React from "react";
+//import React from "react";
 //import { render as rtlRender } from "@testing-library/react";
 //import Stepper from "../../../components/Form/Stepper";
 import "@testing-library/jest-dom/extend-expect";
@@ -41,9 +41,10 @@ beforeEach(() => {
   store.dispatch = jest.fn();
 });
 
+/*
 describe('Stepper', () => {
 
-/*  it('does not render any steps when formProcessListCount is not 1', () => {
+it('does not render any steps when formProcessListCount is not 1', () => {
       const { queryByText } = renderWithRouterMatch(Stepper, {
         path: "/formflow/:formId?/:step?",
         route: "/formflow/create",
@@ -59,6 +60,6 @@ describe('Stepper', () => {
       const previewConfirm = queryByText('Preview and Confirm');
 
       expect(previewConfirm).toBeNull();
-    });*/
+    });
 
-});
+}); */

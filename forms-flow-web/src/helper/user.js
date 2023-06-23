@@ -1,6 +1,6 @@
 import { STAFF_REVIEWER, STAFF_DESIGNER } from "../constants/constants";
 import { GROUPS } from "../constants/groupConstants";
-import {featureFlags} from "../featureToogle";
+import { featureFlags } from "../featureToogle";
 
 /****
  * Default value of REACT_APP_ENABLE_APPLICATION_ACCESS_PERMISSION_CHECK is false
@@ -10,7 +10,10 @@ import {featureFlags} from "../featureToogle";
  * ["/formsflow/formsflow-reviewer/access-allow-applications",
  * "/formsflow/formsflow-client/access-allow-applications"]
  *  ****/
-const userAccessGroupCheckforApplications = featureFlags.enableApplicationAccessPermissionCheck;
+
+export const userAccessGroupCheck = {
+  accessAllowApplications:featureFlags.enableApplicationAccessPermissionCheck
+};
 
 const getUserRoleName = (userRoles) => {
   let role = "";
@@ -32,7 +35,7 @@ const getUserRolePermission = (userRoles, role) => {
 };
 
 const setShowApplications = (userGroups) => {
-  if (!userAccessGroupCheckforApplications) {
+  if (!userAccessGroupCheck.accessAllowApplications) {
     return true;
   } else if (userGroups?.length) {
     const applicationAccess = GROUPS.applicationsAccess.some((group) =>

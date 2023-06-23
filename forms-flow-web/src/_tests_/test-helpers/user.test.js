@@ -3,7 +3,6 @@ import {
   getUserRolePermission,
   getNameFromEmail,
   setShowApplications,
-  setShowViewSubmissions,
   defaultUserAccessGroupCheck,
 } from "../../helper/user";
 import "@testing-library/jest-dom/extend-expect";
@@ -61,18 +60,7 @@ test("should check wheather to show applications or not", () => {
   ).toBeTruthy();
 });
 
-// test cases for setShowViewSubmissions
 
-test("should check wheather to show submissions or not", () => {
-  expect(setShowViewSubmissions()).toBeTruthy();
-  defaultUserAccessGroupCheck.accessAllowSubmissions = true;
-  expect(setShowViewSubmissions([])).toBeFalsy();
-  expect(
-    setShowViewSubmissions([
-      "/formsflow/formsflow-reviewer/access-allow-submissions",
-    ])
-  ).toBeTruthy();
-});
 
 afterAll(() => {
   defaultUserAccessGroupCheck.accessAllowApplications = false;

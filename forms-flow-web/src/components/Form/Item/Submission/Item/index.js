@@ -25,8 +25,7 @@ const Item = React.memo(() => {
   const { formId, submissionId } = useParams();
   const dispatch = useDispatch();
   const { t } = useTranslation();
-  // const showViewSubmissions= useSelector((state) => state.user.showViewSubmissions);
-  //const path = props.location.pathname;
+
   const applicationId = useSelector(
     (state) =>
       state[CUSTOM_SUBMISSION_ENABLE ? "customSubmission" : "submission"]?.submission?.data?.applicationId ||

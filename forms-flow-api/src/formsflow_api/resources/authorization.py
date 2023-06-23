@@ -3,7 +3,12 @@ from http import HTTPStatus
 
 from flask import request
 from flask_restx import Namespace, Resource, fields
-from formsflow_api_utils.utils import auth, cors_preflight, profiletime
+from formsflow_api_utils.utils import (
+    DESIGNER_GROUP,
+    auth,
+    cors_preflight,
+    profiletime,
+)
 
 from formsflow_api.services import AuthorizationService
 
@@ -86,7 +91,11 @@ class AuthorizationList(Resource):
         ```
         """
         return (
-            auth_service.create_authorization(auth_type.upper(), request.get_json()),
+            auth_service.create_authorization(
+                auth_type.upper(),
+                request.get_json(),
+                bool(auth.has_role([DESIGNER_GROUP])),
+            ),
             HTTPStatus.OK,
         )
 
@@ -145,7 +154,9 @@ class AuthorizationDetail(Resource):
 
         Fetch Authorization details by resource id based on authorization type.
         """
-        response = auth_service.get_resource_by_id(auth_type.upper(), resource_id)
+        response = auth_service.get_resource_by_id(
+            auth_type.upper(), resource_id, bool(auth.has_role([DESIGNER_GROUP]))
+        )
         if response:
             return (
                 response,

@@ -104,12 +104,16 @@ class Authorization(AuditDateTimeMixin, AuditUserMixin, BaseModel, db.Model):
         cls,
         auth_type: AuthType,
         resource_id: str,
+        is_designer: bool = False,
         roles: List[str] = None,
         user_name: str = None,
         tenant: str = None,
     ) -> Optional[Authorization]:
         """Find resource authorization by id."""
-        query = cls._auth_query(auth_type, roles, tenant, user_name)
+        if is_designer:
+            query = cls.query.filter(Authorization.auth_type == auth_type)
+        else:
+            query = cls._auth_query(auth_type, roles, tenant, user_name)
         query = query.filter(Authorization.resource_id == str(resource_id))
         if tenant:
             query = query.filter(Authorization.tenant == tenant)

@@ -113,8 +113,8 @@ const Edit = React.memo((props) => {
       <Errors errors={errors} />
       <LoadingOverlay
         active={isFormSubmissionLoading}
-        spinnerLoading
-        text={t("...")}
+        spinner
+        text={t("Loading...")}
         className="col-12"
       >
         <div className="ml-4 mr-4">

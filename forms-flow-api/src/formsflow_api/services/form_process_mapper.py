@@ -60,7 +60,7 @@ class FormProcessMapperService:
 
     @staticmethod
     @user_context
-    def get_all_mappers(
+    def get_all_mappers_by_formid(
         page_number: int,
         limit: int,
         form_name: str,
@@ -68,7 +68,7 @@ class FormProcessMapperService:
         sort_order: str,
         **kwargs,
     ):  # pylint: disable=too-many-arguments
-        """Get all form process mappers."""
+        """Get all form process mappers by authorized forms."""
         user: UserContext = kwargs["user"]
         client_form_ids: Set[str] = []
         client_forms = Authorization.find_all_resources_authorized(
@@ -79,13 +79,37 @@ class FormProcessMapperService:
         )
         for forms in client_forms:
             client_form_ids.append(forms.resource_id)
-        mappers, get_all_mappers_count = FormProcessMapper.find_all_active(
+        mappers, get_all_mappers_count = FormProcessMapper.find_all_active_by_formid(
             page_number=page_number,
             limit=limit,
             form_name=form_name,
             sort_by=sort_by,
             sort_order=sort_order,
             form_ids=client_form_ids,
+        )
+        mapper_schema = FormProcessMapperSchema()
+        return (
+            mapper_schema.dump(mappers, many=True),
+            get_all_mappers_count,
+        )
+
+    @staticmethod
+    def get_all_mappers(
+        page_number: int,
+        limit: int,
+        form_name: str,
+        sort_by: str,
+        sort_order: str,
+        process_key: list = None,
+    ):  # pylint: disable=too-many-arguments
+        """Get all form process mappers."""
+        mappers, get_all_mappers_count = FormProcessMapper.find_all_active(
+            page_number=page_number,
+            limit=limit,
+            form_name=form_name,
+            sort_by=sort_by,
+            sort_order=sort_order,
+            process_key=process_key,
         )
         mapper_schema = FormProcessMapperSchema()
         return (

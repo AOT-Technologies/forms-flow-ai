@@ -217,7 +217,7 @@ class FormProcessMapper(AuditDateTimeMixin, AuditUserMixin, BaseModel, db.Model)
         return query.items, total_count
 
     @classmethod
-    def find_all_active(
+    def find_all_active_by_formid(
         cls,
         page_number=None,
         limit=None,
@@ -226,7 +226,7 @@ class FormProcessMapper(AuditDateTimeMixin, AuditUserMixin, BaseModel, db.Model)
         form_ids=None,
         **filters,
     ):  # pylint: disable=too-many-arguments
-        """Fetch all active form process mappers."""
+        """Fetch all active form process mappers by authorized forms."""
         # Get latest row for each form_id group
         filtered_form_query = cls.get_latest_form_mapper_ids()
         filtered_form_ids = [
@@ -236,6 +236,36 @@ class FormProcessMapper(AuditDateTimeMixin, AuditUserMixin, BaseModel, db.Model)
         query = query.filter(
             FormProcessMapper.id.in_(filtered_form_ids),
         )
+        query = cls.access_filter(query=query)
+        sort_by, sort_order = validate_sort_order_and_order_by(sort_by, sort_order)
+        if sort_by and sort_order:
+            query = query.order_by(text(f"form_process_mapper.{sort_by} {sort_order}"))
+
+        total_count = query.count()
+        query = query.with_entities(
+            cls.id,
+            cls.process_key,
+            cls.form_id,
+            cls.form_name,
+        )
+        limit = total_count if limit is None else limit
+        query = query.paginate(page=page_number, per_page=limit, error_out=False)
+        return query.items, total_count
+
+    @classmethod
+    def find_all_active(
+        cls,
+        page_number=None,
+        limit=None,
+        sort_by=None,
+        sort_order=None,
+        process_key=None,
+        **filters,
+    ):  # pylint: disable=too-many-arguments
+        """Fetch all active form process mappers."""
+        query = cls.filter_conditions(**filters)
+        if process_key is not None:
+            query = query.filter(FormProcessMapper.process_key.in_(process_key))
         query = cls.access_filter(query=query)
         sort_by, sort_order = validate_sort_order_and_order_by(sort_by, sort_order)
         if sort_by and sort_order:

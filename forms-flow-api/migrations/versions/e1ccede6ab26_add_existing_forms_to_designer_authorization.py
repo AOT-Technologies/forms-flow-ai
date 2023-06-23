@@ -22,15 +22,18 @@ def upgrade():
     conn = op.get_bind()
     # Get the latest row for each parent_form_id group
     # Each form has one or more versions so we need latest from based on parentId
-    forms = conn.execute(sa.text("""SELECT parent_form_id, max(id) as id, tenant FROM form_process_mapper 
-                                    WHERE deleted=false GROUP BY parent_form_id, tenant;"""))
+    forms = conn.execute(sa.text("""SELECT form.parent_form_id, form.id, form.tenant, form.created_by
+                                    FROM form_process_mapper form JOIN (
+                                    SELECT parent_form_id, max(id) as max_id FROM form_process_mapper
+                                    WHERE deleted = false 
+                                    GROUP BY parent_form_id, tenant) subq ON form.id = subq.max_id;"""))
     if forms:
         # insert the current forms to authorization table
         insert_stmt = """INSERT INTO public.authorization (created, created_by, tenant, auth_type, resource_id)
           VALUES (:created, :created_by, :tenant, :auth_type, :resource_id);"""
         for row in forms:
             # insert the values into the target table
-            conn.execute(sa.text(insert_stmt), {'created': 'now()', 'created_by': 'designer','tenant': row[2], 'auth_type':'DESIGNER','resource_id':row[0]})
+            conn.execute(sa.text(insert_stmt), {'created': 'now()', 'created_by': row[3],'tenant': row[2], 'auth_type':'DESIGNER','resource_id':row[0]})
     # ### end Alembic commands ###
 
 

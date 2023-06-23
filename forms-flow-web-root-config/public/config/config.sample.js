@@ -30,10 +30,7 @@ window["_env_"] = {
   // For Custom Submission/Form Adapter Enabled
   REACT_APP_CUSTOM_SUBMISSION_URL: "<Custom Submission URL>",
   REACT_APP_CUSTOM_SUBMISSION_ENABLED: false,
-  REACT_APP_USER_ACCESS_PERMISSIONS: {
-    accessAllowApplications: false,
-    accessAllowSubmissions: false,
-  },
+  REACT_APP_ENABLE_APPLICATION_ACCESS_PERMISSION_CHECK: false,
   // Enable Draft feature
   REACT_APP_DRAFT_ENABLED: false,
   REACT_APP_DRAFT_POLLING_RATE: 15000,

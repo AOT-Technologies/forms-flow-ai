@@ -122,15 +122,15 @@ it("should render the Stepper component without breaking", () => {
   });
   const componentInstance = queryByText('Design Form');
 
-  expect(componentInstance).toBeNull();
-  
+  expect(componentInstance).toBeInTheDocument();
+
   const associateForm = queryByText('Associate this form with a workflow?');
-  
-  expect(associateForm).toBeNull();
-  
+
+  expect(associateForm).toBeInTheDocument();
+
   const previewConfirm = queryByText('Preview and Confirm');
-  
-  expect(previewConfirm).toBeNull();
+
+  expect(previewConfirm).toBeInTheDocument();
 });
 
 it("should redirect to home component without breaking", () => {
@@ -150,13 +150,13 @@ it("should redirect to home component without breaking", () => {
   const componentInstance = queryByText('Design Form');
 
   expect(componentInstance).toBeNull();
-  
+
   const associateForm = queryByText('Associate this form with a workflow?');
-  
+
   expect(associateForm).toBeNull();
-  
+
   const previewConfirm = queryByText('Preview and Confirm');
-  
+
   expect(previewConfirm).toBeNull();
 });
 

@@ -42,7 +42,7 @@ objects:
             "REACT_APP_KEYCLOAK_URL": "${REACT_APP_KEYCLOAK_URL}",
             "REACT_APP_APPLICATION_NAME": "${REACT_APP_APPLICATION_NAME}",
             "REACT_APP_WEB_BASE_CUSTOM_URL": "${REACT_APP_WEB_BASE_CUSTOM_URL}",
-            "REACT_APP_USER_ACCESS_PERMISSIONS": "${REACT_APP_USER_ACCESS_PERMISSIONS}",
+            "REACT_APP_ENABLE_APPLICATION_ACCESS_PERMISSION_CHECK":${REACT_APP_ENABLE_APPLICATION_ACCESS_PERMISSION_CHECK}
             "REACT_APP_DRAFT_ENABLED":"${REACT_APP_DRAFT_ENABLED}",
             "REACT_APP_DRAFT_POLLING_RATE":"${REACT_APP_DRAFT_POLLING_RATE}",
             "REACT_APP_EXPORT_PDF_ENABLED":"${REACT_APP_EXPORT_PDF_ENABLED}",
@@ -258,9 +258,9 @@ parameters:
     displayName: REACT_APP_APPLICATION_NAME
     description: the name displayed in the application home page
     required: true
-  - name: REACT_APP_USER_ACCESS_PERMISSIONS
-    displayName: REACT_APP_USER_ACCESS_PERMISSIONS
-    description: JSON formatted permissions to enable / disable few access on user login
+  - name: REACT_APP_ENABLE_APPLICATION_ACCESS_PERMISSION_CHECK
+    displayName: REACT_APP_ENABLE_APPLICATION_ACCESS_PERMISSION_CHECK
+    description: To Enable Role level permission check for enabling Application
     required: true
   - name: REACT_APP_WEB_BASE_CUSTOM_URL
     displayName: REACT_APP_WEB_BASE_CUSTOM_URL

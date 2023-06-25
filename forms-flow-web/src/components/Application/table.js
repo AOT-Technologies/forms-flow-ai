@@ -78,7 +78,7 @@ function timeFormatter(cell) {
 const nameFormatter = (cell) => {
   const name = startCase(cell);
   return (
-    <label className="text-truncate w-100" style={{ maxWidth: "600px" }} title={name}>
+    <label className="text-truncate w-100" style={{ maxWidth: "550px" }} title={name}>
       {startCase(name)}
     </label>
   );

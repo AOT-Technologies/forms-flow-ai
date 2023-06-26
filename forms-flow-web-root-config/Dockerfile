@@ -29,7 +29,7 @@ COPY package-lock.json /forms-flow-web-root-config/app/package-lock.json
 COPY package.json /forms-flow-web-root-config/app/package.json
 COPY env.sh /forms-flow-web-root-config/app/env.sh
 
-RUN npm ci --production=false
+RUN npm ci
 
 COPY . /forms-flow-web-root-config/app/
 

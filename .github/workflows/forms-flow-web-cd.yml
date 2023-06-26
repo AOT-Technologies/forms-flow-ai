@@ -54,5 +54,5 @@ jobs:
       - run: node index
         env:
           BUCKET: ${{ secrets.BUCKET}}
-          NODE_ENV: ${{ env.VERSION }}
+          VERSION: ${{ env.VERSION }}
         working-directory: ./forms-flow-web/scripts

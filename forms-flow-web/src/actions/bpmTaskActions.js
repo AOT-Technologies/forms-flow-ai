@@ -172,3 +172,10 @@ export const serviceActionError = (data) => (dispatch) => {
     payload: "Error Handling API",
   });
 };
+
+export const setSelectedTaskVariables = (data) => (dispatch) => {
+  dispatch({
+    type: ACTION_CONSTANTS.SELETED_TASK_VARIABLES,
+    payload: data,
+  });
+};

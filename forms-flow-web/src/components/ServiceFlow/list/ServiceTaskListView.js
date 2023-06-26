@@ -13,7 +13,8 @@ import {
   getProcessDataObjectFromList,
   getFormattedDateAndTime,
 } from "../../../apiManager/services/formatterService";
-import TaskFilterComponent from "./search/TaskFilterComponent";
+import TaskSearchBarListView from "./search/TaskSearchBarListView";
+import Grid from "@material-ui/core/Grid";
 import Pagination from "react-js-pagination";
 import { push } from "connected-react-router";
 import { MAX_RESULTS } from "../constants/taskConstants";
@@ -39,6 +40,9 @@ const ServiceTaskListView = React.memo(() => {
   const redirectUrl = useRef(
     MULTITENANCY_ENABLED ? `/tenant/${tenantKey}/` : "/"
   );
+  const selectedTaskVariables = useSelector((state) => state.bpmTasks.selectedTaskVariables);
+ 
+
 
   useEffect(() => {
     if (selectedFilter) {
@@ -64,7 +68,6 @@ const ServiceTaskListView = React.memo(() => {
   };
 
   const renderTaskList = () => {
-    console.log(taskList);
     if ((tasksCount || taskList.length) && selectedFilter) {
       return (
         <>
@@ -75,16 +78,16 @@ const ServiceTaskListView = React.memo(() => {
               }`}
               key={index}
             >
-              <div className="d-flex mt-4 justify-content-between">
-                <div>
+              <Row className="mt-4 justify-content-between">
+                <Col  xs={2}>
                   <div className="col-12">
                     <h4 className="font-weight-bold">{task.name}</h4>
                   </div>
                   <div className="col-12" style={{ paddingTop: "1rem" }}>
-                    <h6 className="font-weight-light">{task.id}</h6>
+                    <h6 className="font-weight-light">Application Id#{task?._embedded?.variable?.filter((eachValue)=>eachValue.name ==="applicationId")[0]?.value}</h6>
                   </div>
-                </div>
-                <div className="tab-width">
+                </Col>
+                <Col  xs={2}>
                   <div className="col-12">
                     <h6 className="font-weight-light">Priority</h6>
                   </div>
@@ -94,7 +97,7 @@ const ServiceTaskListView = React.memo(() => {
                       width="16"
                       height="16"
                       fill="currentColor"
-                      class="bi bi-filter-right"
+                      className="bi bi-filter-right"
                       viewBox="0 0 16 16"
                     >
                       <path d="M14 10.5a.5.5 0 0 0-.5-.5h-3a.5.5 0 0 0 0 1h3a.5.5 0 0 0 .5-.5zm0-3a.5.5 0 0 0-.5-.5h-7a.5.5 0 0 0 0 1h7a.5.5 0 0 0 .5-.5zm0-3a.5.5 0 0 0-.5-.5h-11a.5.5 0 0 0 0 1h11a.5.5 0 0 0 .5-.5z" />
@@ -103,17 +106,40 @@ const ServiceTaskListView = React.memo(() => {
                       <u className="font-weight-bold p-2">{task.priority}</u>
                     </h6>
                   </div>
-                </div>
-                <TaskHeaderListView task={task} taskId={task.id} />
-                <div className="flex-fill"></div>
-                <div className="pr-4">
+                </Col>
+                <Col  xs={6}>
+                <TaskHeaderListView task={task} taskId={task.id} groupView = {false} />
+                </Col>
+                <Col  xs={2}>
+           
                   <div className="col-12 mt-3">
                     <h6>
                       <u className="font-weight-light">View Details</u>
                     </h6>
                   </div>
-                </div>
-              </div>
+                  </Col>
+              </Row>
+              <Row >
+                { task?._embedded?.variable?.map((eachVariable)=>{
+                  if(eachVariable.name!=="applicationId" && selectedTaskVariables[eachVariable.name]===true) return (
+
+                      <Col xs={2}>
+                      <div className="col-12" style={{wordBreak:"break-all"}}>
+                        <h6 className="font-weight-light">{eachVariable.name}</h6>
+                      </div>
+                      <div className="d-flex col-12">
+        
+                        <h6>
+                          <u className="font-weight-bold p-2">{eachVariable.value}</u>
+                        </h6>
+                      </div>
+                    </Col>
+                    )
+
+      })}
+          
+            </Row>
+
             </div>
           ))}
 
@@ -145,7 +171,8 @@ const ServiceTaskListView = React.memo(() => {
   return (
     <>
       <ListGroup className="service-task-list">
-        {/* <TaskFilterComponent totalTasks={isTaskListLoading ? 0 : tasksCount} /> */}
+        
+      <TaskSearchBarListView/>
         {isTaskListLoading ? <Loading /> : renderTaskList()}
       </ListGroup>
     </>

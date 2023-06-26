@@ -26,7 +26,7 @@ import UserSelectionDebounce from "./UserSelectionDebounce";
 import SocketIOService from "../../../services/SocketIOService";
 import { useTranslation } from "react-i18next";
 
-const TaskHeaderListView = React.memo(({task,taskId}) => {
+const TaskHeaderListView = React.memo(({task,taskId,groupView = true}) => {
   // const task = useSelector((state) => state.bpmTasks.taskDetail);
   // const taskId = useSelector((state) => state.bpmTasks.taskId);
   const processList = useSelector((state) => state.bpmTasks.processList);
@@ -287,7 +287,7 @@ const TaskHeaderListView = React.memo(({task,taskId}) => {
             />
           </div>
         </div>
-
+        {groupView &&        
         <div className="tab-width">
           <div>
             <h6 className="font-weight-light">Groups</h6>
@@ -304,7 +304,8 @@ const TaskHeaderListView = React.memo(({task,taskId}) => {
               <span className="group-align">{getGroups(taskGroups)}</span>
             )}
           </div>
-        </div>
+        </div>}
+ 
 
         <div className="tab-width">
           <div>

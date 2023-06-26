@@ -60,17 +60,6 @@ window["_env_"] = {
   ENABLE_PROCESSES_MODULE: true,
   ENABLE_APPLICATIONS_MODULE: true,
 
-  /* TODO Remove the MF variables from config.js Not being used anywhere as these are build time variables passed with .env only
-  // The MF Variables below are used to get MicroFrontend Components Created
-  // For running locally or if have custom changes then change the url to the one forms-flow-web folder content is running
-  MF_FORMSFLOW_WEB_URL: "https://s3.ap-northeast-1.amazonaws.com/formsflow.ai-micro-front-ends/forms-flow-web/single-spa-build.gz.js",
-  // Refer Github Repo https://github.com/AOT-Technologies/forms-flow-ai-micro-front-ends and update to your own custom implementation for the Components here
-  MF_FORMSFLOW_NAV_URL: "https://s3.ap-northeast-1.amazonaws.com/formsflow.ai-micro-front-ends/forms-flow-nav/forms-flow-nav.gz.js",
-  MF_FORMSFLOW_SERVICE_URL: "https://s3.ap-northeast-1.amazonaws.com/formsflow.ai-micro-front-ends/forms-flow-service/forms-flow-service.gz.js",
-  MF_FORMSFLOW_ADMIN_URL: "https://s3.ap-northeast-1.amazonaws.com/formsflow.ai-micro-front-ends/forms-flow-admin/forms-flow-admin.gz.js",
-  MF_FORMSFLOW_THEME_URL: "https://s3.ap-northeast-1.amazonaws.com/formsflow.ai-micro-front-ends/forms-flow-theme/forms-flow-theme.gz.js",
-  */
-
   /* Used for providing theming configuration in a url that returns json format
   Example to change the theme a theme.json can be given with content:
   `{

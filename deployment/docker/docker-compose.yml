@@ -131,11 +131,11 @@ services:
       context: ./../../forms-flow-web-root-config/
       dockerfile: Dockerfile
       args:
-        - MF_FORMSFLOW_WEB_URL=${MF_FORMSFLOW_WEB_URL}
-        - MF_FORMSFLOW_NAV_URL=${MF_FORMSFLOW_NAV_URL}
-        - MF_FORMSFLOW_SERVICE_URL=${MF_FORMSFLOW_SERVICE_URL}
-        - MF_FORMSFLOW_ADMIN_URL=${MF_FORMSFLOW_ADMIN_URL}
-        - MF_FORMSFLOW_THEME_URL=${MF_FORMSFLOW_THEME_URL}
+        - MF_FORMSFLOW_WEB_URL=${MF_FORMSFLOW_WEB_URL:-https://s3.ap-northeast-1.amazonaws.com/formsflow.ai-micro-front-ends/forms-flow-web@v5.2.0-alpha/single-spa-build.gz.js}
+        - MF_FORMSFLOW_NAV_URL=${MF_FORMSFLOW_NAV_URL:-https://s3.ap-northeast-1.amazonaws.com/formsflow.ai-micro-front-ends/forms-flow-nav/forms-flow-nav.gz.js}
+        - MF_FORMSFLOW_SERVICE_URL=${MF_FORMSFLOW_SERVICE_URL:-https://s3.ap-northeast-1.amazonaws.com/formsflow.ai-micro-front-ends/forms-flow-service/forms-flow-service.gz.js}
+        - MF_FORMSFLOW_ADMIN_URL=${MF_FORMSFLOW_ADMIN_URL:-https://s3.ap-northeast-1.amazonaws.com/formsflow.ai-micro-front-ends/forms-flow-admin/forms-flow-admin.gz.js}
+        - MF_FORMSFLOW_THEME_URL=${MF_FORMSFLOW_THEME_URL:-https://s3.ap-northeast-1.amazonaws.com/formsflow.ai-micro-front-ends/forms-flow-theme/forms-flow-theme.gz.js}
         - NODE_ENV=${NODE_ENV:-production}
     environment:
       - REACT_APP_API_SERVER_URL=${FORMIO_DEFAULT_PROJECT_URL}
@@ -147,7 +147,7 @@ services:
       - REACT_APP_KEYCLOAK_URL_REALM=${KEYCLOAK_URL_REALM:-forms-flow-ai}
       - REACT_APP_KEYCLOAK_URL=${KEYCLOAK_URL}
       - REACT_APP_APPLICATION_NAME=${APPLICATION_NAME:-formsflow.ai}
-      - REACT_APP_ENABLE_APPLICATION_ACCESS_PERMISSION_CHECK=${ENABLE_APPLICATION_ACCESS_PERMISSION_CHECK}
+      - REACT_APP_ENABLE_APPLICATION_ACCESS_PERMISSION_CHECK=${ENABLE_APPLICATION_ACCESS_PERMISSION_CHECK:-false}
       - REACT_APP_WEB_BASE_CUSTOM_URL=${WEB_BASE_CUSTOM_URL}
       - REACT_APP_MULTI_TENANCY_ENABLED=${MULTI_TENANCY_ENABLED:-false}
       - REACT_APP_MT_ADMIN_BASE_URL=${MT_ADMIN_BASE_URL}

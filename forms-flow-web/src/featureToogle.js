@@ -1,7 +1,6 @@
 function getEnv(env_string) {
   let ENV_BOOLEAN =
     (window._env_ && window._env_[env_string]) ||
-    process.env[env_string] ||
     false;
 
   return ENV_BOOLEAN === "true" || ENV_BOOLEAN === true

@@ -54,14 +54,20 @@ import {
 } from "../../../constants/constants";
 import useInterval from "../../../customHooks/useInterval";
 import selectApplicationCreateAPI from "./apiSelectHelper";
-import { getApplicationCount, getFormProcesses } from "../../../apiManager/services/processServices";
+import {
+  getApplicationCount,
+  getFormProcesses,
+} from "../../../apiManager/services/processServices";
 import { setFormStatusLoading } from "../../../actions/processActions";
 import SavingLoading from "../../Loading/SavingLoading";
+//import NotFound from "../../NotFound/";
+import { renderPage } from "../../../helper/helper";
 
 const View = React.memo((props) => {
   const [formStatus, setFormStatus] = React.useState("");
   const { t } = useTranslation();
   const lang = useSelector((state) => state.user.lang);
+  const pubSub = useSelector((state) => state.pubSub);
   const formStatusLoading = useSelector(
     (state) => state.process?.formStatusLoading
   );
@@ -82,6 +88,7 @@ const View = React.memo((props) => {
     (state) => state.draft.draftSubmission?.id
   );
   // Holds the latest data saved by the server
+  const processLoadError = useSelector((state) => state.process?.processLoadError);
   const lastUpdatedDraft = useSelector((state) => state.draft.lastUpdated);
   const isPublic = !props.isAuthenticated;
   const tenantKey = useSelector((state) => state.tenants?.tenantId);
@@ -289,6 +296,12 @@ const View = React.memo((props) => {
     }
   }, [publicFormStatus]);
 
+  useEffect(()=>{
+    if(pubSub.publish){
+      pubSub.publish('ES_FORM', form);
+    }
+  },[form, pubSub.publish]);
+
   if (isActive || isPublicStatusLoading || formStatusLoading) {
     return (
       <div data-testid="loading-view-component">
@@ -317,7 +330,7 @@ const View = React.memo((props) => {
     <div className="container overflow-y-auto form-view-wrapper">
       {DRAFT_ENABLED &&
         isAuthenticated &&
-        isValidResource && 
+        isValidResource &&
         (formStatus === "active" ||
           (publicFormStatus?.anonymous === true &&
             publicFormStatus?.status === "active")) && (
@@ -359,7 +372,7 @@ const View = React.memo((props) => {
           ) : null}
 
           {form.title ? (
-            <h3 className="ml-3">
+            <h3 className="ml-3 text-truncate" style={{height :"45px"}}>
               <span className="task-head-details">
                 <i className="fa fa-wpforms" aria-hidden="true" /> &nbsp;{" "}
                 {t("Forms")}/
@@ -378,49 +391,33 @@ const View = React.memo((props) => {
         text={<Translation>{(t) => t("Loading...")}</Translation>}
         className="col-12"
       >
-        <div className="ml-4 mr-4">
-          {isPublic || formStatus === "active" ? (
-            <Form
-              form={form}
-              submission={submission}
-              url={url}
-              options={{
-                ...options,
-                language: lang,
-                i18n: formio_resourceBundles,
-              }}
-              hideComponents={hideComponents}
-              onChange={(data) => {
-                setDraftData(data);
-                draftRef.current = data;
-              }}
-              onSubmit={(data) => {
-                setPoll(false);
-                exitType.current = "SUBMIT";
-                onSubmit(data, form._id, isPublic);
-              }}
-              onCustomEvent={(evt) => onCustomEvent(evt, redirectUrl)}
-            />
-          ) : formStatus === "inactive" || !formStatus ? (
-            <span>
-              <div
-                className="container"
-                style={{
-                  maxWidth: "900px",
-                  margin: "auto",
-                  height: "50vh",
-                  display: "flex",
-                  flexDirection: "column",
-                  alignItems: "center",
-                  justifyContent: "center",
-                }}
-              >
-                <h3>{t("Form not published")}</h3>
-                <p>{t("You can't submit this form until it is published")}</p>
-              </div>
-            </span>
-          ) : null}
-        </div>
+  <div className="ml-4 mr-4">
+    {isPublic || formStatus === "active" ? (
+      <Form
+        form={form}
+        submission={submission}
+        url={url}
+        options={{
+          ...options,
+          language: lang,
+          i18n: formio_resourceBundles,
+        }}
+        hideComponents={hideComponents}
+        onChange={(data) => {
+          setDraftData(data);
+          draftRef.current = data;
+        }}
+        onSubmit={(data) => {
+          setPoll(false);
+          exitType.current = "SUBMIT";
+          onSubmit(data, form._id, isPublic);
+        }}
+        onCustomEvent={(evt) => onCustomEvent(evt, redirectUrl)}
+      />
+    ) : (
+      renderPage(formStatus, processLoadError)
+    )}
+  </div>
       </LoadingOverlay>
     </div>
   );

@@ -53,6 +53,20 @@ jest.mock("camunda-dmn-moddle/resources/camunda", () => ({
   camundaModdleDescriptor: jest.fn,
 }));
 
+jest.mock('@formsflow/service', () => ({
+  __esModule: true, 
+  default: jest.fn(() => ({})),
+  RequestService : {
+      "httpGETRequest": ()=>Promise.resolve(jest.fn(()=> ({data: {}})))
+  },
+  StorageService : {
+      "get": ()=>jest.fn(()=> {}),
+      "User": {
+        "AUTH_TOKEN": ""
+      }
+  }
+}));
+
 let store;
 beforeEach(() => {
   store = StoreService.configureStore();

@@ -1,11 +1,11 @@
-import { httpGETRequest } from "../httpRequestHandler";
 import API from "../endpoints";
 import {
   setApplicationHistoryList,
   serviceActionError,
   setUpdateHistoryLoader,
 } from "../../actions/taskApplicationHistoryActions";
-import UserService from "../../services/UserService";
+import { StorageService, RequestService } from "@formsflow/service";
+
 import { replaceUrl } from "../../helper/helper";
 
 export const fetchApplicationAuditHistoryList = (applicationId, ...rest) => {
@@ -17,7 +17,12 @@ export const fetchApplicationAuditHistoryList = (applicationId, ...rest) => {
       applicationId
     );
 
-    httpGETRequest(apiUrlAppHistory, {}, UserService.getToken(), true)
+    RequestService.httpGETRequest(
+      apiUrlAppHistory,
+      {},
+      StorageService.get(StorageService.User.AUTH_TOKEN),
+      true
+    )
       .then((res) => {
         if (res.data) {
           const applications = res.data.applications;

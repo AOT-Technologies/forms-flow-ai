@@ -1,5 +1,8 @@
 /* eslint-disable max-len */
 export const RESOURCE_BUNDLES_DE = {
+  "Bad Request":"Ungültige Anforderung",
+  "Select form version":"Formularversion auswählen",
+  "Please remove the special characters...!":"Bitte entfernen Sie die Sonderzeichen...!",
   "No histories found":"Keine Historien gefunden",
   "Continue":"Weitermachen",
   "This will create a new version of the form without changing the path name but with new form id.":"Dadurch wird eine neue Version des Formulars erstellt, ohne den Pfadnamen zu ändern, aber mit einer neuen Formular-ID.",
@@ -35,7 +38,7 @@ export const RESOURCE_BUNDLES_DE = {
   "Enter Label":"Bezeichnung eingeben",
   "Select form field":"Formularfeld auswählen",
   "Add form fields to display in task list":"Fügen Sie Formularfelder zur Anzeige in der Aufgabenliste hinzu",
-  "Version":"Ausführung",
+  "Latest Version":"Letzte Version",
   "Submission Status":"Submission Status",
   "No submission status":"Kein Übermittlungsstatus",
   "No Public url found":"Keine öffentliche URL gefunden",
@@ -239,7 +242,8 @@ export const RESOURCE_BUNDLES_DE = {
   "Save Changes":"Save Changes",
   "Changing the form workflow will not affect the existing applications. It will only update in the newly created applications. Press Save Changes to continue or cancel the changes.":"Das Ändern des Formular-Workflows wirkt sich nicht auf die vorhandenen Anwendungen aus. Es wird nur in den neu erstellten Anwendungen aktualisiert. Drücken Sie Änderungen speichern, um fortzufahren oder die Änderungen abzubrechen.",
   "Form Workflow Association Saved.":"Formular-Workflow-Zuordnung gespeichert.",
-  "Form deleted successfully":"Form deleted successfully",
+  "Form deleted successfully":"Formular erfolgreich gelöscht",
+  "Form deletion unsuccessful":"Formularlöschung fehlgeschlagen",
   "Form process failed":"Formularprozess fehlgeschlagen",
   "Form unpublishing Failed":"Das Aufheben der Veröffentlichung des Formulars ist fehlgeschlagen",
   "All groups have access to the dashboard":"Alle Gruppen haben Zugriff auf das Dashboard",
@@ -276,7 +280,8 @@ export const RESOURCE_BUNDLES_DE = {
   "URL copied":"URL kopiert",
   "Click Here to Copy":"Klicken Sie hier, um zu kopieren",
   "Resources":"Bronnen",
-  "Duplicate form created successfully":"Doppeltes Formular erfolgreich erstellt"
+  "Duplicate form created successfully":"Doppeltes Formular erfolgreich erstellt",
+  "Revert": "Zurückkehren"
 
 
 

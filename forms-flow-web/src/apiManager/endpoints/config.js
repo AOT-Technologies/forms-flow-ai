@@ -1,8 +1,3 @@
-// export const INSIGHTS_BASE_API = `${(window._env_ && window._env_.REACT_APP_INSIGHT_API_BASE) ||
-//   process.env.REACT_APP_INSIGHT_API_BASE}/api`;
-// export const INSIGHTS_API_KEY =
-//   (window._env_ && window._env_.REACT_APP_INSIGHTS_API_KEY) ||
-//   process.env.REACT_APP_INSIGHTS_API_KEY;
 export const WEB_BASE_URL =
   (window._env_ && window._env_.REACT_APP_WEB_BASE_URL) ||
   process.env.REACT_APP_WEB_BASE_URL;
@@ -10,10 +5,6 @@ export const WEB_BASE_URL =
   export const DOCUMENT_SERVICE_URL =
   (window._env_ && window._env_.REACT_APP_DOCUMENT_SERVICE_URL) ||
   process.env.REACT_APP_DOCUMENT_SERVICE_URL;
-
-export const OPENTELEMETRY_SERVICE =
-  (window._env_ && window._env_.REACT_APP_OPENTELEMETRY_SERVICE) ||
-  process.env.REACT_APP_OPENTELEMETRY_SERVICE;
 
 export const WEB_BASE_CUSTOM_URL =
   (window._env_ && window._env_.REACT_APP_WEB_BASE_CUSTOM_URL) ||
@@ -46,3 +37,7 @@ export const MT_ADMIN_BASE_URL_VERSION = `${
   process.env.REACT_APP_MT_ADMIN_BASE_URL_VERSION ||
   "v1"
 }`;
+
+export const KEYCLOAK_ENABLE_CLIENT_AUTH =
+  (window._env_ && window._env_.REACT_APP_KEYCLOAK_ENABLE_CLIENT_AUTH) ||
+  process.env.REACT_APP_KEYCLOAK_ENABLE_CLIENT_AUTH;

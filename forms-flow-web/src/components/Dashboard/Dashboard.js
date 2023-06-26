@@ -38,15 +38,14 @@ const Dashboard = React.memo(() => {
   const submissionsStatusList = useSelector(
     (state) => state.metrics.submissionsStatusList
   );
+
   const isMetricsLoading = useSelector(
     (state) => state.metrics.isMetricsLoading
   );
   const isMetricsStatusLoading = useSelector(
     (state) => state.metrics.isMetricsStatusLoading
   );
-  const selectedMetricsId = useSelector(
-    (state) => state.metrics.selectedMetricsId
-  );
+
   const metricsLoadError = useSelector(
     (state) => state.metrics.metricsLoadError
   );
@@ -152,7 +151,7 @@ const Dashboard = React.memo(() => {
   if (isMetricsLoading) {
     return <Loading />;
   }
-  const getStatusDetails = (id) => {
+  const getStatusDetails = (id,options) => {
     const fromDate = getFormattedDate(dateRange[0]);
     const toDate = getFormattedDate(dateRange[1]);
     dispatch(SetSubmissionStatusCountLoader(true));
@@ -162,6 +161,7 @@ const Dashboard = React.memo(() => {
         fromDate,
         toDate,
         searchBy,
+        options,
         (err, data) => {
           dispatch(SetSubmissionStatusCountLoader(false));
           setShow(true);
@@ -321,7 +321,6 @@ const Dashboard = React.memo(() => {
                     className="dashboard-card"
                     application={submissionsList}
                     getStatusDetails={getStatusDetails}
-                    selectedMetricsId={selectedMetricsId}
                     noOfApplicationsAvailable={noOfApplicationsAvailable}
                     setSHowSubmissionData={setSHowSubmissionData}
                   />}
@@ -385,6 +384,8 @@ const Dashboard = React.memo(() => {
                         <StatusChart
                           submissionsStatusList={submissionsStatusList}
                           submissionData={showSubmissionData}
+                          getStatusDetails={getStatusDetails}
+                          submissionStatusCountLoader={submissionStatusCountLoader}
                         />
                       </Modal.Body>
                     </Modal>

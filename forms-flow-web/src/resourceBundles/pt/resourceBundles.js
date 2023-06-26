@@ -1,5 +1,8 @@
 /* eslint-disable max-len */
 export const RESOURCE_BUNDLES_PT = {
+  "Bad Request":"Pedido ruim",
+  "Select form version":"Selecione a versão do formulário",
+  "Please remove the special characters...!":"Remova os caracteres especiais...!",
   "No histories found":"Nenhum histórico encontrado",
   "Continue":"Prosseguir",
   "This will create a new version of the form without changing the path name but with new form id.":"Isso criará uma nova versão do formulário sem alterar o nome do caminho, mas com o novo ID do formulário.",
@@ -36,7 +39,7 @@ export const RESOURCE_BUNDLES_PT = {
   "Enter Label":"Digite o rótulo",
   "Select form field":"Selecione o campo do formulário",
   "Add form fields to display in task list":"Adicionar campos de formulário para exibir na lista de tarefas",
-  "Version":"Versão",
+  "Latest Version":"Última versão",
   "Submission Status":"Status de submissão",
   "No submission status":"Sem status de envio",
   "No Public url found":"Nenhum URL público encontrado",
@@ -237,6 +240,7 @@ export const RESOURCE_BUNDLES_PT = {
   "Are you sure you wish to delete the form ":"Tem certeza de que deseja excluir o formulário",
   "Save Changes":"Salvar alterações",
   "Changing the form workflow will not affect the existing applications. It will only update in the newly created applications. Press Save Changes to continue or cancel the changes.":"Alterar o fluxo de trabalho do formulário não afetará os aplicativos existentes. Ele só será atualizado nos aplicativos recém-criados. Pressione Salvar alterações para continuar ou cancelar as alterações.",
+  "Form deletion unsuccessful":"Falha na exclusão do formulário",
   "Form deleted successfully":"Formulário excluído com sucesso",
   "Form process failed":"Falha no processo do formulário",
   "Form unpublishing Failed":"Falha ao cancelar a publicação do formulário",
@@ -274,8 +278,8 @@ export const RESOURCE_BUNDLES_PT = {
   "URL copied":"URL copiado",
   "Click Here to Copy":"Clique aqui para copiar",
   "Resources":"Recursos",
-  "Duplicate form created successfully":"Formulário duplicado criado com sucesso"
-
+  "Duplicate form created successfully":"Formulário duplicado criado com sucesso",
+  "Revert": "Reverter"
 
 
 

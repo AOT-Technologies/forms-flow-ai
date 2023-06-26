@@ -7,7 +7,20 @@ import StoreService from "../../../services/StoreService";
 import { Router, Route } from "react-router";
 import { createMemoryHistory } from "history";
 import * as redux from "react-redux";
-
+jest.mock("@formsflow/service", () => ({
+  __esModule: true,
+  default: jest.fn(() => ({})),
+  RequestService: {
+    httpGETRequest: () => Promise.resolve(jest.fn(() => ({ data: {} }))),
+    httpPUTRequest: () => Promise.resolve(jest.fn(() => ({ data: {} }))),
+  },
+  StorageService: {
+    get: () => jest.fn(() => {}),
+    User: {
+      AUTH_TOKEN: "",
+    },
+  },
+}));
 let store;
 
 beforeEach(() => {
@@ -103,15 +116,21 @@ it("should render the Stepper component without breaking", () => {
       },
     })
   );
-  renderWithRouterMatch(Index, {
+  const { queryByText } = renderWithRouterMatch(Index, {
     path: "/formflow/:formId?/:step?",
     route: "/formflow/123/1",
   });
-  expect(screen.getByText("Design Form")).toBeInTheDocument();
-  expect(
-    screen.getByText("Associate this form with a workflow?")
-  ).toBeInTheDocument();
-  expect(screen.getByText("Preview and Confirm")).toBeInTheDocument();
+  const componentInstance = queryByText('Design Form');
+
+  expect(componentInstance).toBeInTheDocument();
+
+  const associateForm = queryByText('Associate this form with a workflow?');
+
+  expect(associateForm).toBeInTheDocument();
+
+  const previewConfirm = queryByText('Preview and Confirm');
+
+  expect(previewConfirm).toBeInTheDocument();
 });
 
 it("should redirect to home component without breaking", () => {
@@ -124,15 +143,21 @@ it("should redirect to home component without breaking", () => {
       },
     })
   );
-  renderWithRouterMatch(Index, {
+  const { queryByText } = renderWithRouterMatch(Index, {
     path: "/formflow/:formId?/:step?",
     route: "/formflow/123/1",
   });
-  expect(screen.queryByText("Design Form")).not.toBeInTheDocument();
-  expect(
-    screen.queryByText("Associate this form with a workflow?")
-  ).not.toBeInTheDocument();
-  expect(screen.queryByText("Preview and Confirm")).not.toBeInTheDocument();
+  const componentInstance = queryByText('Design Form');
+
+  expect(componentInstance).toBeNull();
+
+  const associateForm = queryByText('Associate this form with a workflow?');
+
+  expect(associateForm).toBeNull();
+
+  const previewConfirm = queryByText('Preview and Confirm');
+
+  expect(previewConfirm).toBeNull();
 });
 
 it("should render the item -> View component without breaking", () => {
@@ -151,6 +176,10 @@ it("should render the item -> View component without breaking", () => {
       },
       draft: {
         draftSubmission: {},
+      },
+      pubSub: {
+        publish: jest.fn,
+        subscribe: jest.fn,
       },
     })
   );
@@ -178,5 +207,5 @@ it("should redirect to base url  without breaking", () => {
     path: "/form/:formId",
     route: "/form/123",
   });
-  expect(screen.queryByTestId("Form-index")).not.toBeInTheDocument();
+  expect(screen.queryByText("Unauthorized")).toBeInTheDocument();
 });

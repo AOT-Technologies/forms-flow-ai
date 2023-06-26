@@ -8,8 +8,7 @@ export const initialstate = {
     },
     isAuthenticated: true,
     currentPage: "",
-    showApplications: true,
-    showViewSubmissions: true,
+    showApplications: true
   },
   bpmTasks: {
     taskGroups: [

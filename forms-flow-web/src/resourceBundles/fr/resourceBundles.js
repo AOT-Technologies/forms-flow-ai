@@ -1,5 +1,8 @@
 /* eslint-disable max-len */
 export const RESOURCE_BUNDLES_FR = {
+  "Bad Request":"Bad Request",
+  "Select form version":"Sélectionnez la version du formulaire",
+  "Please remove the special characters...!":"Veuillez supprimer les caractères spéciaux... !",
   "No histories found":"Aucun historique trouvé",
   "Continue":"Continuez",
   "This will create a new version of the form without changing the path name but with new form id.":"Cela créera une nouvelle version du formulaire sans changer le nom du chemin mais avec un nouvel identifiant de formulaire.",
@@ -36,7 +39,7 @@ export const RESOURCE_BUNDLES_FR = {
   "Enter Label":"Entrez l'étiquette",
   "Select form field":"Sélectionnez le champ du formulaire",
   "Add form fields to display in task list":"Ajouter des champs de formulaire à afficher dans la liste des tâches",
-  "Version":"Version",
+  "Latest Version":"Dernière version",
   "Submission Status":"État de la soumission",
   "No submission status":"Aucun statut de soumission",
   "No Public url found":"Aucune URL publique trouvée",
@@ -238,7 +241,8 @@ export const RESOURCE_BUNDLES_FR = {
   "Are you sure you wish to delete the form ":"Êtes-vous sûr de vouloir supprimer le formulaire",
   "Save Changes":"Save Changes",
   "Changing the form workflow will not affect the existing applications. It will only update in the newly created applications. Press Save Changes to continue or cancel the changes.":"La modification du flux de travail du formulaire n'affectera pas les applications existantes. Il ne sera mis à jour que dans les applications nouvellement créées. Appuyez sur Enregistrer les modifications pour continuer ou annuler les modifications.",
-  "Form deleted successfully":"Form deleted successfully",
+  "Form deleted successfully":"Formulaire supprimé avec succèsy",
+  "Form deletion unsuccessful":"Échec de la suppression du formulaire",
   "Form process failed":"Le processus de formulaire a échoué",
   "Form unpublishing Failed":"Échec de la dépublication du formulaire",
   "All groups have access to the dashboard":"Tous les groupes ont accès au tableau de bord",
@@ -275,7 +279,8 @@ export const RESOURCE_BUNDLES_FR = {
   "URL copied":"URL copiée",
   "Click Here to Copy":"Cliquez ici pour copier",
   "Resources":"Ressources",
-  "Duplicate form created successfully":"Formulaire en double créé avec succès"
+  "Duplicate form created successfully":"Formulaire en double créé avec succès",
+  "Revert": "Revenir"
 
 };
   

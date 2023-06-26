@@ -1,13 +1,14 @@
 # See https://help.github.com/ignore-files/ for more about ignoring files.
 
 # dependencies
-/node_modules
+**/node_modules
 
 # testing
 /coverage
 
 # production
 /build
+*/dist
 
 # misc
 .DS_Store
@@ -42,3 +43,4 @@ jobs/sentiment-analysis/dbms/__pycache__
 #Database
 postgres/
 mongodb/
+forms-flow-web/scripts/node_modules

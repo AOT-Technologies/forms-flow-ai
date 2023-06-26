@@ -94,13 +94,13 @@ paths:
               examples:
                 example-1:
                   value:
-                    - _id: 1
+                    - _id: "1"
                       machineName: formsflowReviewer
-                    - _id: 2
+                    - _id: "2"
                       machineName: administrator
-                    - _id: 3
+                    - _id: "3"
                       machineName: formsflowClient
-                    - _id: 4
+                    - _id: "4"
                       machineName: anonymous
   /user/login:
     post:
@@ -964,7 +964,7 @@ paths:
                 examples:
                   example-1:
                     value:
-                      __id: 63736e889fe51130648f0fe4
+                      _id: 63736e889fe51130648f0fe4
                       title: select check _resouce
                       name: selectCheckResouce
                       path: selectcheckresouce

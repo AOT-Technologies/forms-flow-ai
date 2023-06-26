@@ -11,8 +11,9 @@ export const CLIENT_EDIT_STATUS = [AWAITING_ACKNOWLEDGEMENT, RESUBMIT_STATUS];
 
 export const UPDATE_EVENT_STATUS = [RESUBMIT_STATUS, AWAITING_ACKNOWLEDGEMENT];
 
-export const getProcessDataReq = (applicationDetail) => {
+export const getProcessDataReq = (applicationDetail,submission) => {
   const data = {
+    data: submission,
     messageName: "",
     processInstanceId: applicationDetail.processInstanceId,
   };

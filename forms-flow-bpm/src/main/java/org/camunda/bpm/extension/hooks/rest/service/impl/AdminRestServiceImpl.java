@@ -10,6 +10,8 @@ import org.camunda.bpm.engine.authorization.Permissions;
 import org.camunda.bpm.engine.authorization.ProcessDefinitionPermissions;
 import org.camunda.bpm.engine.authorization.Resources;
 import org.camunda.bpm.engine.impl.persistence.entity.AuthorizationEntity;
+import org.camunda.bpm.extension.commons.utils.RestAPIBuilderConfigProperties;
+import org.camunda.bpm.extension.commons.utils.RestAPIBuilderUtil;
 import org.camunda.bpm.extension.hooks.controllers.data.Authorization;
 import org.camunda.bpm.extension.hooks.controllers.data.AuthorizationInfo;
 import org.camunda.bpm.extension.hooks.controllers.data.TenantAuthorizationDto;
@@ -17,6 +19,7 @@ import org.camunda.bpm.extension.hooks.exceptions.ApplicationServiceException;
 import org.camunda.bpm.extension.hooks.rest.service.AdminRestService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -30,10 +33,14 @@ import java.io.IOException;
 import java.util.*;
 
 import static org.camunda.bpm.engine.authorization.Authorization.AUTH_TYPE_GRANT;
+import static org.camunda.bpm.extension.commons.utils.VariableConstants.ANONYMOUS_USER;
 
 public class AdminRestServiceImpl implements AdminRestService {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(AdminRestServiceImpl.class);
+
+    @Autowired
+    private RestAPIBuilderConfigProperties restAPIBuilderConfigProperties;
 
     private final String adminGroupName;
     private final AuthorizationService authService;
@@ -49,18 +56,23 @@ public class AdminRestServiceImpl implements AdminRestService {
 
     @Override
     public Mono<ResponseEntity<AuthorizationInfo>> getFormAuthorization() throws ServletException {
-
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         LOGGER.debug("authentication" + authentication);
         List<String> groups = getGroups(authentication);
         AuthorizationInfo authorizationInfo = null;
-
         if (CollectionUtils.isNotEmpty(groups) && groups.contains(adminGroupName)) {
-            authorizationInfo = new AuthorizationInfo(true, null);
+            if (!RestAPIBuilderUtil.fetchUserName(restAPIBuilderConfigProperties.getUserNameAttribute()).equals(ANONYMOUS_USER)) {
+                groups = null;
+            }
+            authorizationInfo = fetchAuthorizationInfo(true, groups);
         } else {
-            authorizationInfo = new AuthorizationInfo(false, getAuthorization(groups));
+            authorizationInfo = fetchAuthorizationInfo(false, groups);
         }
         return Mono.just(ResponseEntity.ok(authorizationInfo));
+    }
+
+    private AuthorizationInfo fetchAuthorizationInfo(boolean adminGroupEnabled, List<String> groups){
+        return new AuthorizationInfo(adminGroupEnabled, groups!=null ? getAuthorization(groups) : null);
     }
 
     @Override
@@ -186,12 +198,24 @@ public class AdminRestServiceImpl implements AdminRestService {
     private Set<Authorization> getAuthorization(List<String> groups) {
     	LOGGER.debug("getAuthorization>>");
         Set<Authorization> authorizationList = new HashSet<>();
-
         String[] groupIds = groups.size() > 0 ? groups.toArray(new String[0]) : new String[]{};
-        List<org.camunda.bpm.engine.authorization.Authorization> authorizations = ProcessEngines.getDefaultProcessEngine().getAuthorizationService().createAuthorizationQuery()
-                .resourceType(Resources.PROCESS_DEFINITION.resourceType())
-                .hasPermission(ProcessDefinitionPermissions.CREATE_INSTANCE)
-                .groupIdIn(groupIds).list();
+
+        List<org.camunda.bpm.engine.authorization.Authorization> authorizations;
+        if (RestAPIBuilderUtil.fetchUserName(restAPIBuilderConfigProperties.getUserNameAttribute()).equals(ANONYMOUS_USER)) {
+            authorizations = ProcessEngines.getDefaultProcessEngine()
+                    .getAuthorizationService()
+                    .createAuthorizationQuery()
+                    .resourceType(Resources.AUTHORIZATION.resourceType())
+                    .list();
+        } else {
+            authorizations = ProcessEngines.getDefaultProcessEngine()
+                    .getAuthorizationService()
+                    .createAuthorizationQuery()
+                    .resourceType(Resources.PROCESS_DEFINITION.resourceType())
+                    .hasPermission(ProcessDefinitionPermissions.CREATE_INSTANCE)
+                    .groupIdIn(groupIds)
+                    .list();
+        }
         LOGGER.info(" authorizations {}", authorizations);
         authorizations.forEach(authorization -> {
             Authorization auth = new Authorization(authorization.getGroupId(), authorization.getUserId(), authorization.getResourceId());

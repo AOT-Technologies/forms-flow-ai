@@ -31,6 +31,7 @@ import {
 import { deleteDraftbyId } from "../../apiManager/services/draftService";
 import isValiResourceId from "../../helper/regExp/validResourceId";
 import { toast } from "react-toastify";
+import { textTruncate } from "../../helper/helper";
 
 export const DraftList = React.memo(() => {
   const { t } = useTranslation();
@@ -78,7 +79,8 @@ export const DraftList = React.memo(() => {
     dispatch(fetchDrafts(currentPage.current, countPerPageRef.current));
   }, [dispatch, currentPage, countPerPageRef]);
 
-  const onYes = () => {
+  const onYes = (e) => {
+    e.currentTarget.disabled = true;
     deleteDraftbyId(draftDelete.draftId)
       .then(() => {
         toast.success(t("Draft Deleted Successfully"));
@@ -199,12 +201,18 @@ export const DraftList = React.memo(() => {
         <div className="container" id="main" role="definition">
           <Confirm
             modalOpen={draftDelete.modalOpen}
-            message={`${t("Are you sure you wish to delete the draft")} "${
-              draftDelete.draftName
-            }" 
-          ${t("with ID")} "${draftDelete.draftId}"`}
+            message=
+            {
+            <div>
+            {t("Are you sure you wish to delete the draft")}
+            <span style={{ fontWeight: "bold" }} > {draftDelete.draftName.includes(' ') ? draftDelete.draftName : textTruncate(50,40,draftDelete.draftName)} </span>
+            {t("with ID")} 
+            <span style={{fontWeight: "bold"}}> {draftDelete.draftId}</span>?
+            </div>
+            }
+            
             onNo={() => onNo()}
-            onYes={() => onYes()}
+            onYes={onYes}
           />
           <Head items={headerList()} page="Drafts" />
           <br />

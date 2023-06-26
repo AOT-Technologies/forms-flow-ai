@@ -9,7 +9,7 @@ import { Helmet } from "react-helmet";
 import { KEYCLOAK_URL } from "../constants/constants";
 
 const App = React.memo((props) => {
-  const { store, history } = props;
+  const { store, history, publish, subscribe, getKcInstance } = props;
   return (
     <div>
       <Helmet>
@@ -17,7 +17,12 @@ const App = React.memo((props) => {
       </Helmet>
       <Provider store={store}>
         <ConnectedRouter history={history}>
-          <BaseRouting store={store} />
+          <BaseRouting
+            store={store}
+            publish={publish}
+            subscribe={subscribe}
+            getKcInstance={getKcInstance}
+          />
         </ConnectedRouter>
       </Provider>
     </div>

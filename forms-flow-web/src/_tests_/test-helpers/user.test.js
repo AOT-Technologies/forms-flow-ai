@@ -3,8 +3,7 @@ import {
   getUserRolePermission,
   getNameFromEmail,
   setShowApplications,
-  setShowViewSubmissions,
-  defaultUserAccessGroupCheck,
+  userAccessGroupCheck
 } from "../../helper/user";
 import "@testing-library/jest-dom/extend-expect";
 
@@ -49,7 +48,7 @@ test("should return the name from an email string", () => {
 
 test("should check wheather to show applications or not", () => {
   expect(setShowApplications()).toBeTruthy();
-  defaultUserAccessGroupCheck.accessAllowApplications = true;
+  userAccessGroupCheck.accessAllowApplications = true;
   expect(
     setShowApplications(["/camunda-admin", "/formsflow/formsflow-designer"])
   ).toBeFalsy();
@@ -61,20 +60,8 @@ test("should check wheather to show applications or not", () => {
   ).toBeTruthy();
 });
 
-// test cases for setShowViewSubmissions
 
-test("should check wheather to show submissions or not", () => {
-  expect(setShowViewSubmissions()).toBeTruthy();
-  defaultUserAccessGroupCheck.accessAllowSubmissions = true;
-  expect(setShowViewSubmissions([])).toBeFalsy();
-  expect(
-    setShowViewSubmissions([
-      "/formsflow/formsflow-reviewer/access-allow-submissions",
-    ])
-  ).toBeTruthy();
-});
 
 afterAll(() => {
-  defaultUserAccessGroupCheck.accessAllowApplications = false;
-  defaultUserAccessGroupCheck.accessAllowSubmissions = false;
+  userAccessGroupCheck.accessAllowApplications = false;
 });

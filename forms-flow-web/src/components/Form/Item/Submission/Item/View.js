@@ -36,7 +36,7 @@ const View = React.memo((props) => {
   );
 
   const customSubmission = useSelector(
-    (state) => state.formDelete.customSubmission
+    (state) => state.customSubmission?.submission || {}
   );
 
   let updatedSubmission;
@@ -52,8 +52,8 @@ const View = React.memo((props) => {
 
   return (
     <div className="container row task-container">
-      <div className="main-header">
-        <h3 className="task-head"> {form.title}</h3>
+      <div className="main-header" style={{ "height": "45px" }}>
+        <h3 className="task-head text-truncate"> {form.title}</h3>
         {showPrintButton && form?._id ? (
           <div className="btn-right d-flex flex-row">
             <DownloadPDFButton
@@ -79,7 +79,7 @@ const View = React.memo((props) => {
             url={url}
             hideComponents={hideComponents}
             onSubmit={onSubmit}
-            options={{ ...options, i18n: formio_resourceBundles }}
+            options={{ ...options, i18n: formio_resourceBundles, viewAsHtml: true }}
           />
         </div>
       </LoadingOverlay>

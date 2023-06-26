@@ -58,6 +58,9 @@ const ServiceTaskListView = React.memo(() => {
     }
   };
 
+  const handleViewDetails = (taskId) => {
+    getTaskDetails(taskId);
+  };
   const handlePageChange = (pageNumber) => {
     dispatch(setBPMTaskListActivePage(pageNumber));
     dispatch(setBPMTaskLoader(true));
@@ -114,7 +117,9 @@ const ServiceTaskListView = React.memo(() => {
            
                   <div className="col-12 mt-3">
                     <h6>
-                      <u className="font-weight-light">View Details</u>
+                      <u
+                        onClick={() => handleViewDetails(task.id)}
+                        className="font-weight-light">View Details</u>
                     </h6>
                   </div>
                   </Col>

@@ -1,6 +1,7 @@
 import React, { useCallback, useEffect, useRef } from "react";
 import ServiceFlowTaskList from "./list/ServiceTaskList";
 import ServiceTaskListView from "./list/ServiceTaskListView";
+import ServiceTaskListViewDetails from './list/ServiceTaskListViewDetails';
 let cardView = false;
 
 import ServiceFlowTaskDetails from "./details/ServiceTaskDetails";
@@ -189,8 +190,10 @@ export default React.memo(() => {
 
   return (
     <Container fluid id="main" className="pt-0">
-      <TaskHead/>
-      {cardView ?  ( <Row className="p-2">
+      {cardView ? (
+        <>
+        <TaskHead />
+        <Row className="p-2">
         <Col lg={3} xs={12} sm={12} md={4} xl={3}>
           <section>
             <header className="task-section-top">
@@ -211,10 +214,37 @@ export default React.memo(() => {
             </Route>
           </Switch>
         </Col>
-      </Row> ) : (<ServiceTaskListView/>)
-      
-  }
-
+        </Row>
+        </>
+      ) :
+        (
+          <Switch>
+            <Route
+              exact
+              path={`${BASE_ROUTE}task`}
+              render={() => (
+                <>
+                  <TaskHead />
+                  <ServiceTaskListView />
+                </>
+              )}
+            >
+            </Route>
+            <Route
+              path={`${BASE_ROUTE}task/:taskId`}
+              render={() => (
+                <>
+                  
+                  <ServiceTaskListViewDetails />
+                </>
+              )}
+              
+            ></Route>
+            <Route path={`${BASE_ROUTE}task/:taskId/:notAvailable`}>
+              <Redirect exact to="/404" />
+            </Route>
+          </Switch>
+        ) }
     </Container>
   );
 });

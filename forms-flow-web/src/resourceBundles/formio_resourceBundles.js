@@ -1,6 +1,7 @@
 /* eslint-disable max-len */
 export const formio_resourceBundles = {
   en: {
+    "Bad Request":"Bad Request",
     "Select form version":"Select form version",
     "Please remove the special characters...!":"Please remove the special characters...!",
     "No histories found":"No histories found",
@@ -300,6 +301,7 @@ export const formio_resourceBundles = {
   },
 
   "zh-CN": {
+    "Bad Request":"错误的请求",
     "Select form version":"选择表格版本",
     "Please remove the special characters...!":"请删除特殊字符...！",
     "No histories found":"没有找到历史记录",
@@ -1211,6 +1213,7 @@ export const formio_resourceBundles = {
   },
 
   bg: {
+    "Bad Request":"Неправилна заявка",
     "Select form version":"Изберете версия на формуляра",
     "Please remove the special characters...!":"Моля, премахнете специалните символи...!",
     "No histories found":"Няма намерени истории",
@@ -2181,6 +2184,7 @@ export const formio_resourceBundles = {
   },
 
   pt: {
+    "Bad Request":"Pedido ruim",
     "Select form version":"Selecione a versão do formulário",
     "Please remove the special characters...!":"Remova os caracteres especiais...!",
     "No histories found":"Nenhum histórico encontrado",
@@ -3145,6 +3149,7 @@ export const formio_resourceBundles = {
   },
 
   fr: {
+    "Bad Request":"Bad Request",
     "Select form version":"Sélectionnez la version du formulaire",
     "Please remove the special characters...!":"Veuillez supprimer les caractères spéciaux... !",
     "No histories found":"Aucun historique trouvé",
@@ -4117,6 +4122,7 @@ export const formio_resourceBundles = {
   },
 
   de: {
+    "Bad Request":"Ungültige Anforderung",
     "Select form version":"Formularversion auswählen",
     "Please remove the special characters...!":"Bitte entfernen Sie die Sonderzeichen...!",
     "No histories found":"Keine Historien gefunden",

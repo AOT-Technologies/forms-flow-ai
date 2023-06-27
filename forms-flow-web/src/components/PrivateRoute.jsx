@@ -255,7 +255,7 @@ const PrivateRoute = React.memo((props) => {
             <Route exact path={BASE_ROUTE}>
              {userRoles.length && <Redirect
                 to={
-                  userRoles.includes(STAFF_REVIEWER)
+                  userRoles?.includes(STAFF_REVIEWER)
                     ? `${redirecUrl}task`
                     : `${redirecUrl}form`
                 }

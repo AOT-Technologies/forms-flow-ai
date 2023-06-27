@@ -253,13 +253,13 @@ const PrivateRoute = React.memo((props) => {
             )}
 
             <Route exact path={BASE_ROUTE}>
-              <Redirect
+             {userRoles.length && <Redirect
                 to={
-                  userRoles.includes(STAFF_REVIEWER)
+                  userRoles?.includes(STAFF_REVIEWER)
                     ? `${redirecUrl}task`
                     : `${redirecUrl}form`
                 }
-              />
+              />}
             </Route>
             <Route path="/404" exact={true} component={NotFound} />
             <Redirect from="*" to="/404" />

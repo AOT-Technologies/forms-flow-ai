@@ -64,7 +64,6 @@ const Preview = React.memo(
         !designerGroups?.roles?.length) ||
       (clientSelectedOption == "Specific Clients" && !clientGroups.length);
     const id = show ? "simple-popover" : undefined;
-    const clientUi = false ; //no need will update once the client functionalities in effect
     const copyPublicUrl = () => {
       const originUrl = window.origin;
       const url = `${originUrl}/public/form/${formData.form.path}`;
@@ -106,7 +105,7 @@ const Preview = React.memo(
         setDesingerOptions(
           userGroups?.filter((i) => !designerGroups?.roles?.includes(i.name))
         );
-      if(clientUi){
+      
         getClientList(processListData.parentFormId)
         .then((res) => {
           const resource = res.data;
@@ -122,9 +121,6 @@ const Preview = React.memo(
         })
         .catch((error) => console.error("error", error))
         .finally(()=> setFetchClientLoading(false));
-      }else{
-        setFetchClientLoading(false);
-      }
     }, [userGroups]);
 
     const handleClick = (name) => (event)=> {
@@ -406,8 +402,6 @@ const Preview = React.memo(
                     )}
                   </div>
                   <div>
-                      {
-                      clientUi && (
                         <div>
                           <hr className="mt-1" />
                           <span className="font-weight-bold">
@@ -491,8 +485,6 @@ const Preview = React.memo(
                             ""
                           )}
                         </div>
-                      )
-                    }
                   </div>
                   </LoadingOverlay>
                   <hr />

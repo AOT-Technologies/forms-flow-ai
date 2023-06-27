@@ -36,7 +36,8 @@
     "@testing-library/react": "^12.1.1",
     "craco-plugin-single-spa-application": "git+https://github.com/AOT-Technologies/craco-plugin-single-spa-application.git",
     "msw": "^0.36.0",
-    "redux-mock-store": "^1.5.4"
+    "redux-mock-store": "^1.5.4",
+    "@babel/plugin-proposal-private-property-in-object": "7.21.11"
   },
   "dependencies": {
     "@bpmn-io/properties-panel": "^0.17.0",
@@ -115,7 +116,8 @@
     "loader-utils": "2.0.4",
     "minimatch": "3.0.5",
     "json5": "2.2.2",
-    "d3-color": "3.1.0"
+    "d3-color": "3.1.0",
+    "semver": "7.5.3"
   },
   "browserslist": [
     ">0.2%",

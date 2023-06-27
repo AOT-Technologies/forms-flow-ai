@@ -7,6 +7,8 @@ import org.camunda.bpm.extension.hooks.exceptions.FormioServiceException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.io.buffer.DataBuffer;
+import org.springframework.core.io.buffer.DataBufferUtils;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpHeaders;
@@ -14,8 +16,10 @@ import org.springframework.http.MediaType;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.client.WebClient;
+import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
+import java.nio.charset.StandardCharsets;
 import java.util.Properties;
 
 
@@ -63,28 +67,54 @@ public class FormAccessHandler extends AbstractAccessHandler implements IAccessH
                     .header("x-jwt-token", accessToken)
                     .accept(MediaType.APPLICATION_JSON)
                     .header(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
-                    .retrieve()
-                    .onStatus(HttpStatus::is4xxClientError,
-                            response -> Mono.error(new FormioServiceException(response.toString())))
-                    .toEntity(String.class);
-
+                    .exchangeToMono(response -> {
+                        if (response.statusCode().is4xxClientError()) {
+                            return response.bodyToMono(String.class)
+                                    .flatMap(errorBody -> Mono.error(new FormioServiceException(errorBody)));
+                        } else {
+                            Flux<DataBuffer> body = response.bodyToFlux(DataBuffer.class);
+                            return DataBufferUtils.join(body)
+                                    .map(dataBuffer -> {
+                                        byte[] bytes = new byte[dataBuffer.readableByteCount()];
+                                        dataBuffer.read(bytes);
+                                        DataBufferUtils.release(dataBuffer); // Release the buffer to avoid memory leaks
+                                        String responseBody = new String(bytes, StandardCharsets.UTF_8);
+                                        HttpStatus httpStatus = response.statusCode();
+                                        return ResponseEntity.status(httpStatus).body(responseBody);
+                                    });
+                        }
+                    });
             ResponseEntity<String> response = entityMono.block();
             if(response !=null && "Token Expired".equalsIgnoreCase(response.getBody())) {
                 return new ResponseEntity<>(response.getBody(), HttpStatus.valueOf(TOKEN_EXPIRY_CODE));
             }
             return response;
         } else {
-            return unauthenticatedWebClient.method(method)
+            Mono<ResponseEntity<String>> entityMono =  unauthenticatedWebClient.method(method)
                     .uri(url)
                     .accept(MediaType.APPLICATION_JSON)
                     .header(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
                     .header("x-jwt-token", accessToken)
                     .body(Mono.just(payload), String.class)
-                    .retrieve()
-                    .onStatus(HttpStatus::is4xxClientError,
-                            response -> Mono.error(new FormioServiceException(response.toString())))
-                    .toEntity(String.class)
-                    .block();
+                    .exchangeToMono(response -> {
+                        if (response.statusCode().is4xxClientError()) {
+                            return response.bodyToMono(String.class)
+                                    .flatMap(errorBody -> Mono.error(new FormioServiceException(errorBody)));
+                        } else {
+                            Flux<DataBuffer> body = response.bodyToFlux(DataBuffer.class);
+                            return DataBufferUtils.join(body)
+                                    .map(dataBuffer -> {
+                                        byte[] bytes = new byte[dataBuffer.readableByteCount()];
+                                        dataBuffer.read(bytes);
+                                        DataBufferUtils.release(dataBuffer); // Release the buffer to avoid memory leaks
+                                        String responseBody = new String(bytes, StandardCharsets.UTF_8);
+                                        HttpStatus httpStatus = response.statusCode();
+                                        return ResponseEntity.status(httpStatus).body(responseBody);
+                                    });
+                        }
+                    });
+            ResponseEntity<String> response = entityMono.block();
+            return response;
         }
     }
 }

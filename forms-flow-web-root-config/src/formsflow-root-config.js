@@ -17,8 +17,8 @@ subscribe("FF_AUTH", (msg, data) => {
 });
 const getKcInstance = () => instance;
 
-if (window._env_?.CUSTOM_THEME_URL) {
-  fetch(window._env_?.CUSTOM_THEME_URL)
+if (window._env_?.REACT_APP_CUSTOM_THEME_URL) {
+  fetch(window._env_?.REACT_APP_CUSTOM_THEME_URL)
     .then((response) => response.json())
     .then((data) => {
       if (typeof data == "object") {

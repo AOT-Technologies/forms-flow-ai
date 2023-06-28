@@ -141,7 +141,7 @@ const PrivateRoute = React.memo((props) => {
               userRoles.includes(STAFF_DESIGNER) ? (
                 <Component {...props} />
               ) : (
-                <>unauthorized</>
+                <Redirect exact to="/404" />
               )
             }
           />
@@ -159,7 +159,7 @@ const PrivateRoute = React.memo((props) => {
               userRoles.includes(STAFF_REVIEWER) ? (
                 <Component {...props} />
               ) : (
-                <>unauthorized</>
+                <Redirect exact to="/404" />
               )
             }
           />
@@ -178,7 +178,7 @@ const PrivateRoute = React.memo((props) => {
               userRoles.includes(CLIENT) ? (
                 <Component {...props} />
               ) : (
-                <>unauthorized</>
+                <Redirect exact to="/404" />
               )
             }
           />
@@ -198,7 +198,7 @@ const PrivateRoute = React.memo((props) => {
                 userRoles.includes(CLIENT)) ? (
                 <Component {...props} />
               ) : (
-                <>unauthorized</>
+                <Redirect exact to="/404" />
               )
             }
           />

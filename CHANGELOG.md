@@ -2,6 +2,33 @@
 
 Mark  items as `Added`, `Changed`, `Fixed`, `Removed`, `Untested Features`, `Upcoming Features`, `Known Issues`
 
+## 5.1.1 - 2023-05-18
+
+`Added`
+
+**forms-flow-bpm**
+
+* `External Task` APIs are exposed in bpm abstraction layer.
+
+`Modified`
+
+**forms-flow-bpm**
+
+*Upgrade notes:*
+
+* camunda upgraded from version 7.17.0 to 7.18.0.
+* camunda-keycloak upgraded from version 2.2.3 to 7.18.0.
+* camundaConnect upgraded from 1.5.0 to 1.5.4.
+* camundaMail upgraded from 1.3.0 to 1.5.0.
+* camunda-template-engines upgraded from 1.0.0 to 2.1.0
+* spring boot upgraded from version 2.6.6 to  2.7.11.
+* spring security Oauth2 upgraded from version 2.6.6 to 2.6.7.
+* camunda-bpm-assert upgraded from 12.0 to 13.0.
+* groovy upgraded from 3.0.13 to 3.0.17.
+* graalVm upgraded from 22.1.0.1 to 22.3.2.
+* jackson upgraded from version 2.14.0 to 2.15.0.
+
+
 ## 5.1.0 - 2022-01-18
 
 `Added`

@@ -420,14 +420,33 @@ const List = React.memo((props) => {
     FileService.uploadFile(evt, async (fileContent) => {
       let formToUpload;
       if ("forms" in fileContent) {
-        formToUpload = fileContent;
+        if (Array.isArray(fileContent.forms)) {
+          formToUpload = fileContent;
+        }
+        else {
+          const resourcesArray = Object.entries(fileContent.resources);
+          const formsData = Object.entries(fileContent.forms).concat(resourcesArray);
+          const formsArray = formsData.map(([, value]) => value);
+          formToUpload = { "forms": formsArray };
+        }
       }
       else {
-        ['_id', 'type', 'created', 'modified', 'machineName'].forEach(e => delete fileContent[e]);
-        const newArray = [];
-        newArray.push(fileContent);
+        const keysToRemove = ['_id', 'created', 'modified', 'machineName'];
+        let newArray = [];
+        if (Array.isArray(fileContent)) {
+          newArray = fileContent.map(obj => {
+            const newObj = { ...obj };
+            keysToRemove.forEach(key => delete newObj[key]);
+            return newObj;
+          });
+        }
+        else {
+          keysToRemove.forEach(e => delete fileContent[e]);
+          newArray.push(fileContent);
+        }
         formToUpload = { "forms": newArray };
       }
+
       if (formToUpload) {
         dispatch(setFormUploadList(formToUpload?.forms || []));
         setShowFormUploadModal(true);

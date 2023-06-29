@@ -426,14 +426,14 @@ const List = React.memo((props) => {
         const formsArray = formsData.map(([, value]) => value);
         formToUpload = { "forms": formsArray };
       }
-      // to upload forms downloaded form formsflow
+      // to upload forms downloaded from formsflow
       else if ("forms" in fileContent) {
         formToUpload = fileContent;
       }
       else {
         const keysToRemove = ['_id', 'created', 'modified', 'machineName'];
         let newArray = [];
-        // to upload multiple forms downloaded form from.io
+        // to upload multiple forms downloaded from from.io
         if (Array.isArray(fileContent)) {
           newArray = fileContent.map(obj => {
             const newObj = { ...obj };
@@ -441,7 +441,7 @@ const List = React.memo((props) => {
             return newObj;
           });
         }
-        //to upload a single form downloaded form form.io
+        //to upload a single form downloaded from form.io
         else {
           keysToRemove.forEach(e => delete fileContent[e]);
           newArray.push(fileContent);

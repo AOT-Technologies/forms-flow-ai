@@ -54,11 +54,11 @@ window["_env_"] = {
   REACT_APP_KEYCLOAK_ENABLE_CLIENT_AUTH: false,
 
   // Only use if need to disable a particular module in forms-flow-web, default is true for all.
-  ENABLE_FORMS_MODULE: true,
-  ENABLE_TASKS_MODULE: true,
-  ENABLE_DASHBOARDS_MODULE: true,
-  ENABLE_PROCESSES_MODULE: true,
-  ENABLE_APPLICATIONS_MODULE: true,
+   REACT_APP_ENABLE_FORMS_MODULE: true,
+   REACT_APP_ENABLE_TASKS_MODULE: true,
+   REACT_APP_ENABLE_DASHBOARDS_MODULE: true,
+   REACT_APP_ENABLE_PROCESSES_MODULE: true,
+   REACT_APP_ENABLE_APPLICATIONS_MODULE: true,
 
   /* Used for providing theming configuration in a url that returns json format
   Example to change the theme a theme.json can be given with content:
@@ -68,5 +68,5 @@ window["_env_"] = {
   "--navbar-active": "white"
   }`
   */
-  // CUSTOM_THEME_URL: "<custom theme URl>",
+  // REACT_APP_CUSTOM_THEME_URL: "<custom theme URl>",
 };

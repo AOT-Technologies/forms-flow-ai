@@ -419,15 +419,36 @@ const List = React.memo((props) => {
   const fileUploaded = async (evt) => {
     FileService.uploadFile(evt, async (fileContent) => {
       let formToUpload;
-      if ("forms" in fileContent) {
+      //  to upload forms of a project from form.io
+      if ("roles" in fileContent) {
+        const resourcesArray = Object.entries(fileContent.resources);
+        const formsData = Object.entries(fileContent.forms).concat(resourcesArray);
+        const formsArray = formsData.map(([, value]) => value);
+        formToUpload = { "forms": formsArray };
+      }
+      // to upload forms downloaded form formsflow
+      else if ("forms" in fileContent) {
         formToUpload = fileContent;
       }
       else {
-        ['_id', 'type', 'created', 'modified', 'machineName'].forEach(e => delete fileContent[e]);
-        const newArray = [];
-        newArray.push(fileContent);
+        const keysToRemove = ['_id', 'created', 'modified', 'machineName'];
+        let newArray = [];
+        // to upload multiple forms downloaded form from.io
+        if (Array.isArray(fileContent)) {
+          newArray = fileContent.map(obj => {
+            const newObj = { ...obj };
+            keysToRemove.forEach(key => delete newObj[key]);
+            return newObj;
+          });
+        }
+        //to upload a single form downloaded form form.io
+        else {
+          keysToRemove.forEach(e => delete fileContent[e]);
+          newArray.push(fileContent);
+        }
         formToUpload = { "forms": newArray };
       }
+
       if (formToUpload) {
         dispatch(setFormUploadList(formToUpload?.forms || []));
         setShowFormUploadModal(true);
@@ -478,30 +499,30 @@ const List = React.memo((props) => {
             message={
               formProcessData.id && applicationCount ? (
                 applicationCountResponse ? (
-                  
-                 <div>
-                 {applicationCount}  
-                 {
-                    applicationCount > 1
-                      ? <span>{`${t(" Applications are submitted against")} `}</span> 
-                      : <span>{`${t(" Application is submitted against")} `}</span> 
-                  } 
+
+                  <div>
+                    {applicationCount}
+                    {
+                      applicationCount > 1
+                        ? <span>{`${t(" Applications are submitted against")} `}</span>
+                        : <span>{`${t(" Application is submitted against")} `}</span>
+                    }
                     <span style={{ fontWeight: "bold" }}>{props.formName.includes(' ') ? props.formName : textTruncate(50, 40, props.formName)}</span>
-                  .
-                   {t("Are you sure you wish to delete the form?")}
-                  
-                   </div>
+                    .
+                    {t("Are you sure you wish to delete the form?")}
+
+                  </div>
                 ) : (
                   <div>
                     {`${t("Are you sure you wish to delete the form ")}`}
-                      <span style={{ fontWeight: "bold" }}>{textTruncate(60,40,props.formName)}</span>
+                    <span style={{ fontWeight: "bold" }}>{textTruncate(60, 40, props.formName)}</span>
                     ?
                   </div>
                 )
               ) : (
                 <div>
                   {`${t("Are you sure you wish to delete the form ")} `}
-                    <span style={{ fontWeight: "bold" }}>{textTruncate(60, 40, props.formName)}</span>
+                  <span style={{ fontWeight: "bold" }}>{textTruncate(60, 40, props.formName)}</span>
                   ?
                 </div>
               )

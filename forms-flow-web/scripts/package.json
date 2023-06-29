@@ -4,7 +4,8 @@
   "description": "scripts for formsflow",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "preinstall": "npx npm-force-resolutions"
   },
   "type": "module",
   "author": "sreehari",
@@ -14,5 +15,8 @@
     "dotenv": "^16.0.3",
     "@aws-sdk/client-s3": "^3.256.0"
   },
-  "devDependencies": {}
+  "devDependencies": {},
+  "resolutions": {
+    "fast-xml-parser": ">=4.2.4"
+  }
 }

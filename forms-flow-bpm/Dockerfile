@@ -11,7 +11,9 @@ COPY src /tmp/src/
 RUN mvn -s /usr/share/maven/ref/settings-docker.xml package -P default
 
 # Final custom slim java image (for apk command see 17-jdk-alpine-slim)
-FROM openjdk:17-jdk-alpine3.15
+FROM openjdk:17-jdk-alpine
+# Update packages including OpenSSL
+RUN apk update && apk upgrade
 
 # set label for image
 LABEL Name="formsflow"

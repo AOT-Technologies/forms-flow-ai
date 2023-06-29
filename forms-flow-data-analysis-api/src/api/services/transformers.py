@@ -25,7 +25,9 @@ def overall_sentiment_transformers(string_data: str):
     if prediction[0]["label"] == "LABEL_2":
         sentiment = "POSITIVE"
     if sentiment is None:
-        raise Exception("Failed to identify the sentiment.")
+        raise Exception(  # pylint: disable=broad-exception-raised
+            "Failed to identify the sentiment."
+        )
     return sentiment
 
 

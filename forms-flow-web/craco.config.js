@@ -1,6 +1,6 @@
 const SingleSpaAppcracoPlugin = require("craco-plugin-single-spa-application");
 
-const shouldMinimize = process.env.NODE_ENV !== "development";
+const shouldMinimize = process.env.NODE_ENV == "production";
 
 const singleSpaAppPlugin = {
   plugin: SingleSpaAppcracoPlugin,
@@ -19,7 +19,7 @@ const singleSpaAppPlugin = {
 module.exports = {
   plugins: [singleSpaAppPlugin],
   devServer: {
-    port: 3001,
+    port: 3004,
     headers: {
       "Access-Control-Allow-Origin": "*",
     },

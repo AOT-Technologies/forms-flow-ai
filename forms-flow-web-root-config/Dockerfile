@@ -3,7 +3,7 @@ FROM node:14.17.0-alpine as build-stage
 
 # set working directory
 WORKDIR /forms-flow-web-root-config/app
-
+ARG NODE_ENV
 ARG MF_FORMSFLOW_WEB_URL
 ARG MF_FORMSFLOW_NAV_URL
 ARG MF_FORMSFLOW_SERVICE_URL
@@ -15,6 +15,7 @@ ENV MF_FORMSFLOW_NAV_URL ${MF_FORMSFLOW_NAV_URL}
 ENV MF_FORMSFLOW_SERVICE_URL ${MF_FORMSFLOW_SERVICE_URL}
 ENV MF_FORMSFLOW_ADMIN_URL ${MF_FORMSFLOW_ADMIN_URL}
 ENV MF_FORMSFLOW_THEME_URL ${MF_FORMSFLOW_THEME_URL}
+ENV NODE_ENV ${NODE_ENV}
 
 # add `/app/node_modules/.bin` to $PATH
 ENV PATH /forms-flow-web-root-config/app/node_modules/.bin:$PATH
@@ -31,9 +32,18 @@ COPY env.sh /forms-flow-web-root-config/app/env.sh
 RUN npm ci
 
 COPY . /forms-flow-web-root-config/app/
-RUN npm run build:webpack
+
+RUN if [ $NODE_ENV == "development" ]; then \
+        npm run build-dev:webpack; \
+    else \
+        npm run build:webpack; \
+    fi
+
 
 FROM nginx:1.15.2-alpine as production-stage
+
+# set label for image
+LABEL Name="formsflow"
 
 RUN mkdir /app
 COPY --from=build-stage /forms-flow-web-root-config/app/dist /usr/share/nginx/html

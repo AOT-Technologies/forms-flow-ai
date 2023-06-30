@@ -37,6 +37,7 @@ const initialState = {
   firstResult: 0,
   selectedTaskVariables :{},
   viewType:true,
+  error: '',
 };
 
 const bpmTasks = (state = initialState, action) => {
@@ -136,6 +137,12 @@ const bpmTasks = (state = initialState, action) => {
     case ACTION_CONSTANTS.VIEW_TYPE:
         return { ...state, viewType: action.payload };
 
+    case ACTION_CONSTANTS.BPM_ERROR:
+        return {
+          ...state,
+          taskId: null,
+          error: action.payload
+        };
     default:
       return state;
   }

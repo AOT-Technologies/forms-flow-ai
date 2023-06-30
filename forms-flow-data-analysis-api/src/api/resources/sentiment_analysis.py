@@ -28,11 +28,11 @@ class SentimentAnalysisTransformerResource(Resource):
         """POST API definition for sentiment analysis API."""
         try:
             input_json = request.get_json()
-            response_json = dict(
-                applicationId=input_json["applicationId"],
-                formUrl=input_json["formUrl"],
-                data=[],
-            )
+            response_json = {
+                "applicationId": input_json["applicationId"],
+                "formUrl": input_json["formUrl"],
+                "data": [],
+            }
             for data in input_json["data"]:
                 text = data["text"]
                 response = sentiment_analysis_pipeline_transformers(text)

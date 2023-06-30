@@ -8,6 +8,7 @@ import { toast } from "react-toastify";
 import _isEquial from "lodash/isEqual";
 import { selectRoot, selectError, Errors, deleteForm } from "react-formio";
 import Loading from "../../containers/Loading";
+import { textTruncate } from "../../helper/helper";
 import {
   MULTITENANCY_ENABLED,
   STAFF_DESIGNER,
@@ -419,14 +420,33 @@ const List = React.memo((props) => {
     FileService.uploadFile(evt, async (fileContent) => {
       let formToUpload;
       if ("forms" in fileContent) {
-        formToUpload = fileContent;
+        if (Array.isArray(fileContent.forms)) {
+          formToUpload = fileContent;
+        }
+        else {
+          const resourcesArray = Object.entries(fileContent.resources);
+          const formsData = Object.entries(fileContent.forms).concat(resourcesArray);
+          const formsArray = formsData.map(([, value]) => value);
+          formToUpload = { "forms": formsArray };
+        }
       }
       else {
-        ['_id', 'type', 'created', 'modified', 'machineName'].forEach(e => delete fileContent[e]);
-        const newArray = [];
-        newArray.push(fileContent);
+        const keysToRemove = ['_id', 'created', 'modified', 'machineName'];
+        let newArray = [];
+        if (Array.isArray(fileContent)) {
+          newArray = fileContent.map(obj => {
+            const newObj = { ...obj };
+            keysToRemove.forEach(key => delete newObj[key]);
+            return newObj;
+          });
+        }
+        else {
+          keysToRemove.forEach(e => delete fileContent[e]);
+          newArray.push(fileContent);
+        }
         formToUpload = { "forms": newArray };
       }
+
       if (formToUpload) {
         dispatch(setFormUploadList(formToUpload?.forms || []));
         setShowFormUploadModal(true);
@@ -485,7 +505,7 @@ const List = React.memo((props) => {
                       ? <span>{`${t(" Applications are submitted against")} `}</span> 
                       : <span>{`${t(" Application is submitted against")} `}</span> 
                   } 
-                    <h4 className=" text-truncate">{props.formName}</h4>
+                    <span style={{ fontWeight: "bold" }}>{props.formName.includes(' ') ? props.formName : textTruncate(50, 40, props.formName)}</span>
                   .
                    {t("Are you sure you wish to delete the form?")}
                   
@@ -493,14 +513,14 @@ const List = React.memo((props) => {
                 ) : (
                   <div>
                     {`${t("Are you sure you wish to delete the form ")}`}
-                      <h4 className=" text-truncate">{props.formName}</h4>
+                      <span style={{ fontWeight: "bold" }}>{textTruncate(60,40,props.formName)}</span>
                     ?
                   </div>
                 )
               ) : (
                 <div>
                   {`${t("Are you sure you wish to delete the form ")} `}
-                    <h4 className=" text-truncate">{props.formName}</h4>
+                    <span style={{ fontWeight: "bold" }}>{textTruncate(60, 40, props.formName)}</span>
                   ?
                 </div>
               )

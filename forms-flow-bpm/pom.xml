@@ -26,7 +26,7 @@
 		<version.camunda>7.18.0</version.camunda><!-- 7.17.0 - 7.18.0 -->
 		<version.camundaConnect>1.5.4</version.camundaConnect><!-- 1.5.4 -->
 		<version.camundaMail>1.5.0</version.camundaMail><!-- 1.5.0 -->
-		<version.springBoot>2.7.11</version.springBoot><!-- 2.6.6 - 2.7.11 -->
+		<version.springBoot>2.7.12</version.springBoot><!-- 2.6.6 - 2.7.12 -->
 		<version.springSecurityOauth2>2.6.7</version.springSecurityOauth2><!--
 			2.6.6 - 2.6.7 -->
 		<version.jackson>2.15.0</version.jackson>

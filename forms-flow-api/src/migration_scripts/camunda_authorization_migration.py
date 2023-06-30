@@ -26,10 +26,10 @@ def find_latest_forms(workflow=None):
             query = query.filter(FormProcessMapper.process_key == workflow)
         return query.all()
 
-def is_form_exist(parent_form_id,auth_type,tenant: str = None):
+def is_form_exists(parent_form_id,auth_type,tenant: str = None):
         """"To check whether the form already exist in the authorization table"""
         query = (
-            query.filter(Authorization.resource_id == str(parent_form_id))
+            Authorization.query.filter(Authorization.resource_id == str(parent_form_id))
             .filter(Authorization.auth_type == auth_type)
         )
         if tenant:
@@ -73,7 +73,7 @@ def migrate_authorization():
             forms = find_latest_forms(resource_id)
         for form in forms:
             formId = form.parent_form_id
-            is_form_exist = Authorization.is_form_exist(formId, "FORM")
+            is_form_exist = is_form_exists(formId, "FORM")
             if is_form_exist is None:
                 is_form_exist = Authorization(
                     auth_type=auth_type,

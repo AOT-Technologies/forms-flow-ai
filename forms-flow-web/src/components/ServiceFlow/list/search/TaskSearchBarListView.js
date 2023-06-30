@@ -19,6 +19,13 @@ const TaskSearchBarListView = React.memo(() => {
   );
   const taskList = useSelector((state) => state.bpmTasks.tasksList);
   const dispatch = useDispatch();
+  const taskvariable = useSelector(
+    (state) => state.bpmTasks.selectedFilter?.properties?.variables || []
+  );
+  const getLabelOfSelectedVariable =(variable)=>{
+    if(variable) return taskvariable.find(item => item?.name === variable)?.label;
+   
+  }
   useEffect(() => {
     let taskVaribles = {};
     taskList?.map((eachTask) => {
@@ -104,7 +111,7 @@ const TaskSearchBarListView = React.memo(() => {
                  <div class="form-check" key={eachVariable} style={{wordBreak:"break-all"}} >
                  <input onChange={()=>{alterTaskVariableSelection(eachVariable)}} class="form-check-input"  type="checkbox" id={eachVariable} checked={selectedTaskVariables[eachVariable]} />
                  <label className="form-check-label" htmlFor={eachVariable}  >
-                 {eachVariable}
+                 {getLabelOfSelectedVariable(eachVariable)}
                  </label>
                </div>
                  )

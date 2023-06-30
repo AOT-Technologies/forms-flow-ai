@@ -41,7 +41,14 @@ const ServiceTaskListView = React.memo(() => {
     MULTITENANCY_ENABLED ? `/tenant/${tenantKey}/` : "/"
   );
   const selectedTaskVariables = useSelector((state) => state.bpmTasks.selectedTaskVariables);
+  const taskvariable = useSelector(
+    (state) => state.bpmTasks.selectedFilter?.properties?.variables || []
+  );
+  
+const getLabelOfSelectedVariable =(variable)=>{
+  if(variable) return taskvariable.find(item => item?.name === variable)?.label;
  
+}
 
 
   useEffect(() => {
@@ -130,7 +137,7 @@ const ServiceTaskListView = React.memo(() => {
 
                       <Col xs={2}>
                       <div className="col-12" style={{wordBreak:"break-all"}}>
-                        <h6 className="font-weight-light">{eachVariable.name}</h6>
+                        <h6 className="font-weight-light">{getLabelOfSelectedVariable(eachVariable.name)}</h6>
                       </div>
                       <div className="d-flex col-12">
         

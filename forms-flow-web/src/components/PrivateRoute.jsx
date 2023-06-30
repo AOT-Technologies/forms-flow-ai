@@ -79,10 +79,10 @@ const PrivateRoute = React.memo((props) => {
   const [kcInstance, setKcInstance] = React.useState(getKcInstance());
 
   const authenticate = (instance, store) => {
-    dispatch(setUserAuth(instance.isAuthenticated()));
     store.dispatch(
       setUserRole(JSON.parse(StorageService.get(StorageService.User.USER_ROLE)))
     );
+    dispatch(setUserAuth(instance.isAuthenticated()));
     store.dispatch(setUserToken(instance.getToken()));
     store.dispatch(setLanguage(instance.getUserData()?.locale || "en"));
     //Set Cammunda/Formio Base URL

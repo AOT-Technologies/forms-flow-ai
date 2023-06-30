@@ -2,7 +2,7 @@ import React, { useCallback, useEffect, useRef } from "react";
 import ServiceFlowTaskList from "./list/ServiceTaskList";
 import ServiceTaskListView from "./list/ServiceTaskListView";
 import ServiceTaskListViewDetails from './list/ServiceTaskListViewDetails';
-let cardView = false;
+
 
 import ServiceFlowTaskDetails from "./details/ServiceTaskDetails";
 import { Col, Container, Row } from "react-bootstrap";
@@ -63,6 +63,10 @@ export default React.memo(() => {
   const firstResultsRef = useRef(firstResult);
   const taskListRef = useRef(taskList);
   const tenantKey = useSelector((state) => state.tenants?.tenantId);
+  const cardView = useSelector(
+    (state) => state.bpmTasks.viewType
+  );
+  
   const redirectUrl = useRef(
     MULTITENANCY_ENABLED ? `/tenant/${tenantKey}/` : "/"
   );

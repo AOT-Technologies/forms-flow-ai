@@ -238,6 +238,7 @@ const ServiceTaskListViewDetails = React.memo(() => {
 
     const handleBackButton = () => {
         console.log("suuuu");
+        dispatch(setSelectedTaskID(null));
     };
 
     if (!bpmTaskId) {

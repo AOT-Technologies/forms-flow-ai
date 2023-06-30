@@ -24,7 +24,7 @@ const TaskSearchBarListView = React.memo(() => {
     taskList?.map((eachTask) => {
       eachTask?._embedded?.variable?.map((eachVariable) => {
         if (!(eachVariable.name in taskVaribles) && eachVariable.name!="applicationId")
-          taskVaribles[eachVariable.name] = false;
+          taskVaribles[eachVariable.name] = true;
       });
     });
     dispatch(setSelectedTaskVariables(taskVaribles));
@@ -101,7 +101,7 @@ const TaskSearchBarListView = React.memo(() => {
               {selectedTaskVariables &&
                 Object?.keys(selectedTaskVariables)?.map((eachVariable) => {
                  return ( 
-                 <div class="form-check" key={eachVariable} >
+                 <div class="form-check" key={eachVariable} style={{wordBreak:"break-all"}} >
                  <input onChange={()=>{alterTaskVariableSelection(eachVariable)}} class="form-check-input"  type="checkbox" id={eachVariable} checked={selectedTaskVariables[eachVariable]} />
                  <label className="form-check-label" htmlFor={eachVariable}  >
                  {eachVariable}

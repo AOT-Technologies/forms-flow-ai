@@ -179,3 +179,10 @@ export const setSelectedTaskVariables = (data) => (dispatch) => {
     payload: data,
   });
 };
+
+export const setViewType = (data) => (dispatch) => {
+  dispatch({
+    type: ACTION_CONSTANTS.VIEW_TYPE,
+    payload: data,
+  });
+};

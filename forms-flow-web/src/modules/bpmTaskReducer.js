@@ -35,7 +35,8 @@ const initialState = {
   taskFormSubmissionReload: false,
   activePage: 1,
   firstResult: 0,
-  selectedTaskVariables :{}
+  selectedTaskVariables :{},
+  viewType:true,
 };
 
 const bpmTasks = (state = initialState, action) => {
@@ -132,9 +133,13 @@ const bpmTasks = (state = initialState, action) => {
       };
     case ACTION_CONSTANTS.SELETED_TASK_VARIABLES:
         return { ...state, selectedTaskVariables: action.payload };
+    case ACTION_CONSTANTS.VIEW_TYPE:
+        return { ...state, viewType: action.payload };
+
     default:
       return state;
   }
+  
 };
 
 export default bpmTasks;

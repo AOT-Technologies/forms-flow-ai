@@ -12,6 +12,7 @@ services:
         - MF_FORMSFLOW_THEME_URL=${MF_FORMSFLOW_THEME_URL:-https://s3.ap-northeast-1.amazonaws.com/formsflow.ai-micro-front-ends/forms-flow-theme@v5.2.0-alpha/forms-flow-theme.gz.js}
         - NODE_ENV=${NODE_ENV:-production}
     environment:
+      - NODE_ENV=${NODE_ENV:-production}
       - REACT_APP_API_SERVER_URL=${FORMIO_DEFAULT_PROJECT_URL}
       - REACT_APP_API_PROJECT_URL=${FORMIO_DEFAULT_PROJECT_URL}
       - REACT_APP_KEYCLOAK_CLIENT=${KEYCLOAK_WEB_CLIENT_ID:-forms-flow-web}

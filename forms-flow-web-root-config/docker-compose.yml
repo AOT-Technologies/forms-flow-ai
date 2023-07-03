@@ -6,12 +6,13 @@ services:
       dockerfile: Dockerfile
       args:
         - MF_FORMSFLOW_WEB_URL=${MF_FORMSFLOW_WEB_URL:-https://s3.ap-northeast-1.amazonaws.com/formsflow.ai-micro-front-ends/forms-flow-web@v5.2.0-alpha/single-spa-build.gz.js}
-        - MF_FORMSFLOW_NAV_URL=${MF_FORMSFLOW_NAV_URL:-https://s3.ap-northeast-1.amazonaws.com/formsflow.ai-micro-front-ends/forms-flow-nav/forms-flow-nav.gz.js}
-        - MF_FORMSFLOW_SERVICE_URL=${MF_FORMSFLOW_SERVICE_URL:-https://s3.ap-northeast-1.amazonaws.com/formsflow.ai-micro-front-ends/forms-flow-service/forms-flow-service.gz.js}
-        - MF_FORMSFLOW_ADMIN_URL=${MF_FORMSFLOW_ADMIN_URL:-https://s3.ap-northeast-1.amazonaws.com/formsflow.ai-micro-front-ends/forms-flow-admin/forms-flow-admin.gz.js}
-        - MF_FORMSFLOW_THEME_URL=${MF_FORMSFLOW_THEME_URL:-https://s3.ap-northeast-1.amazonaws.com/formsflow.ai-micro-front-ends/forms-flow-theme/forms-flow-theme.gz.js}
+        - MF_FORMSFLOW_NAV_URL=${MF_FORMSFLOW_NAV_URL:-https://s3.ap-northeast-1.amazonaws.com/formsflow.ai-micro-front-ends/forms-flow-nav@v5.2.0-alpha/forms-flow-nav.gz.js}
+        - MF_FORMSFLOW_SERVICE_URL=${MF_FORMSFLOW_SERVICE_URL:-https://s3.ap-northeast-1.amazonaws.com/formsflow.ai-micro-front-ends/forms-flow-service@v5.2.0-alpha/forms-flow-service.gz.js}
+        - MF_FORMSFLOW_ADMIN_URL=${MF_FORMSFLOW_ADMIN_URL:-https://s3.ap-northeast-1.amazonaws.com/formsflow.ai-micro-front-ends/forms-flow-admin@v5.2.0-alpha/forms-flow-admin.gz.js}
+        - MF_FORMSFLOW_THEME_URL=${MF_FORMSFLOW_THEME_URL:-https://s3.ap-northeast-1.amazonaws.com/formsflow.ai-micro-front-ends/forms-flow-theme@v5.2.0-alpha/forms-flow-theme.gz.js}
         - NODE_ENV=${NODE_ENV:-production}
     environment:
+      - NODE_ENV=${NODE_ENV:-production}
       - REACT_APP_API_SERVER_URL=${FORMIO_DEFAULT_PROJECT_URL}
       - REACT_APP_API_PROJECT_URL=${FORMIO_DEFAULT_PROJECT_URL}
       - REACT_APP_KEYCLOAK_CLIENT=${KEYCLOAK_WEB_CLIENT_ID:-forms-flow-web}

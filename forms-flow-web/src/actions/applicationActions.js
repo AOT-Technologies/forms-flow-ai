@@ -59,6 +59,14 @@ export const serviceActionError = (data) => (dispatch) => {
   });
 };
 
+export const setApiFailure = (data) => (dispatch) => {
+  dispatch({
+    type: ACTION_CONSTANTS.API_FAILURE,
+    payload: data,
+  });
+};
+
+
 export const setApplicationProcess = (data) => (dispatch) => {
   dispatch({
     type: ACTION_CONSTANTS.APPLICATION_PROCESS,

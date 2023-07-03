@@ -15,43 +15,74 @@ import Submission from "./Submission/index";
 import Preview from "./Preview";
 import { checkIsObjectId } from "../../../apiManager/services/formatterService";
 import { fetchFormByAlias } from "../../../apiManager/services/bpmFormServices";
-import {setBpmFormLoading} from '../../../actions/formActions';
 import {
+  setFormFailureErrorData,
   setFormRequestData,
   setFormSuccessData,
   resetFormData,
   clearSubmissionError,
+  setFormAuthVerifyLoading,
 } from "../../../actions/formActions";
 
 import Draft from "../../Draft";
+import Loading from "../../../containers/Loading";
+import { getClientList } from "../../../apiManager/services/authorizationService";
+import NotFound from "../../NotFound";
+import { setApiCallError } from "../../../actions/ErroHandling";
 
 const Item = React.memo(() => {
   const { formId } = useParams();
   const userRoles = useSelector((state) => state.user.roles || []);
   const tenantKey = useSelector((state) => state?.tenants?.tenantId);
   const redirectUrl = MULTITENANCY_ENABLED ? `/tenant/${tenantKey}/` : "/";
+  const formAuthVerifyLoading = useSelector((state)=>state.process?.formAuthVerifyLoading);
+  const apiCallError = useSelector((state)=>state.errors?.apiCallError);
   const dispatch = useDispatch();
 
+  const formAuthVerify = (formId,successCallBack)=>{
+    getClientList(formId).then(successCallBack).catch((err)=>{
+      const {response} = err;
+      dispatch(setApiCallError({message:response?.data?.message || 
+        response.statusText,status:response.status}));
+    }).finally(()=>{
+      dispatch(setFormAuthVerifyLoading(false));
+    });
+  };
+  
   useEffect(() => {
+    dispatch(setApiCallError(null));
+    dispatch(setFormAuthVerifyLoading(true));
     dispatch(resetFormData("form", formId));
     dispatch(clearSubmissionError("submission"));
     if (checkIsObjectId(formId)) {
-      dispatch(getForm("form", formId));
+      dispatch(getForm("form", formId,(err,res)=>{
+        if(err){
+          dispatch(setFormAuthVerifyLoading(false));
+        }else{
+          formAuthVerify(res.parentFormId || res._id);
+        }
+      }));
     } else {
       dispatch(
         fetchFormByAlias(formId, async (err, formObj) => {
           if (!err) {
-            const form_id = formObj._id;
-            dispatch(
-              setFormRequestData(
-                "form",
-                form_id,
-                `${Formio.getProjectUrl()}/form/${form_id}`
-              )
-            );
-            dispatch(setFormSuccessData("form", formObj));
+       
+            formAuthVerify(formObj.parentFormId || formObj._id,()=>{
+              const form_id = formObj._id;
+              dispatch(
+                setFormRequestData(
+                  "form",
+                  form_id,
+                  `${Formio.getProjectUrl()}/form/${form_id}`
+                )
+              );
+              dispatch(setFormSuccessData("form", formObj));
+            });
+          
           } else {
-            dispatch(setBpmFormLoading(false));          }
+            dispatch(setFormAuthVerifyLoading(false));
+            dispatch(setFormFailureErrorData("form", err));
+          }
         })
       );
     }
@@ -61,6 +92,17 @@ const Item = React.memo(() => {
   /**
    * Protected route to form submissions
    */
+
+  if(formAuthVerifyLoading){
+    return <Loading/>;
+  }
+  if(apiCallError){
+    return <NotFound
+    errorMessage={apiCallError?.message}
+    errorCode={apiCallError?.status}
+  />;
+  }
+
   const SubmissionRoute = ({ component: Component, ...rest }) => (
     <Route
       {...rest}

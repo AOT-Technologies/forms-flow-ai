@@ -164,30 +164,79 @@ class FormProcessMapper(AuditDateTimeMixin, AuditUserMixin, BaseModel, db.Model)
         return active
 
     @classmethod
+    def get_latest_form_mapper_ids(cls):
+        """Getting latest mapper id of a form, based on parentFormId."""
+        # Execute a query to retrieve the maximum ID of the form mapper and the parent form ID
+        # Since each form has one or more versions so we need latest from based on parentId
+        return (
+            db.session.query(
+                func.max(cls.id).label("id"),  # pylint: disable=not-callable
+                cls.parent_form_id,
+            )
+            # Group the results by the parent form ID
+            .group_by(cls.parent_form_id)
+            # Retrieve all the results as a list of tuples
+            .all()
+        )
+
+    @classmethod
     def find_all_forms(
         cls,
         page_number=None,
         limit=None,
         sort_by=None,
         sort_order=None,
+        form_ids=None,
         **filters,
     ):  # pylint: disable=too-many-arguments
         """Fetch all active and inactive forms which are not deleted."""
         # Get latest row for each form_id group
-        filtered_form_query = (
-            db.session.query(
-                func.max(cls.id).label("id")  # pylint: disable=not-callable
-            )
-            .group_by(cls.form_id)
-            .all()
-        )
-        filtered_form_ids = [data.id for data in filtered_form_query]
+        filtered_form_query = cls.get_latest_form_mapper_ids()
+        filtered_form_ids = [
+            data.id for data in filtered_form_query if data.parent_form_id in form_ids
+        ]
         query = cls.filter_conditions(**filters)
         query = query.filter(
             and_(FormProcessMapper.deleted.is_(False)),
             FormProcessMapper.id.in_(filtered_form_ids),
         )
         query = cls.tenant_authorization(query=query)
+        sort_by, sort_order = validate_sort_order_and_order_by(sort_by, sort_order)
+        if sort_by and sort_order:
+            query = query.order_by(text(f"form_process_mapper.{sort_by} {sort_order}"))
+
+        total_count = query.count()
+        query = query.with_entities(
+            cls.id,
+            cls.process_key,
+            cls.form_id,
+            cls.form_name,
+        )
+        limit = total_count if limit is None else limit
+        query = query.paginate(page=page_number, per_page=limit, error_out=False)
+        return query.items, total_count
+
+    @classmethod
+    def find_all_active_by_formid(
+        cls,
+        page_number=None,
+        limit=None,
+        sort_by=None,
+        sort_order=None,
+        form_ids=None,
+        **filters,
+    ):  # pylint: disable=too-many-arguments
+        """Fetch all active form process mappers by authorized forms."""
+        # Get latest row for each form_id group
+        filtered_form_query = cls.get_latest_form_mapper_ids()
+        filtered_form_ids = [
+            data.id for data in filtered_form_query if data.parent_form_id in form_ids
+        ]
+        query = cls.filter_conditions(**filters)
+        query = query.filter(
+            FormProcessMapper.id.in_(filtered_form_ids),
+        )
+        query = cls.access_filter(query=query)
         sort_by, sort_order = validate_sort_order_and_order_by(sort_by, sort_order)
         if sort_by and sort_order:
             query = query.order_by(text(f"form_process_mapper.{sort_by} {sort_order}"))

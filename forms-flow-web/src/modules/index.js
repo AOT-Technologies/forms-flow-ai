@@ -18,7 +18,9 @@ import tenantReducer from "./tenantReducer";
 import draftSubmission from "./draftReducer";
 import formRestore from "./RestoreFormReducer";
 import pubSubReducer from "./pubSubReducer";
+import userAuthorization from "./authorizationReducer";
 import customSubmissionReducer from "./customSubmissionReducer";
+import ErrorHandling from "./ErrorHandlingReducer";
 
 const createRootReducer = (history) =>
   combineReducers({
@@ -31,6 +33,7 @@ const createRootReducer = (history) =>
     bpmTasks,
     bpmForms,
     formRestore,
+    errors:ErrorHandling,
     form: form({ name: "form" }),
     forms: forms({
       name: "forms",
@@ -48,7 +51,8 @@ const createRootReducer = (history) =>
     dashboardReducer,
     tenants: tenantReducer,
     draft: draftSubmission,
-    pubSub: pubSubReducer
+    pubSub: pubSubReducer,
+    userAuthorization:userAuthorization
   });
 
 export default createRootReducer;

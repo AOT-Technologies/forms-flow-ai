@@ -67,15 +67,15 @@ const reducer = (form, { type, value }) => {
 
 const Edit = React.memo(() => {
   const dispatch = useDispatch();
-  const processListData = useSelector((state) => state.process.formProcessList);
-  const formData = useSelector((state) => state.form.form);
+  const processListData = useSelector((state) => state.process?.formProcessList);
+  const formData = useSelector((state) => state.form?.form );
   const [form, dispatchFormAction] = useReducer(reducer, _cloneDeep(formData));
-  const errors = useSelector((state) => state.form.error);
+  const errors = useSelector((state) => state.form?.error);
   const formHistory = useSelector((state) => state.formRestore?.formHistory || []);
   const version = formHistory[0]?.changeLog?.version;
-  const prviousData = useSelector((state) => state.process.formPreviousData);
+  const prviousData = useSelector((state) => state.process?.formPreviousData);
   const applicationCount = useSelector(
-    (state) => state.process.applicationCount
+    (state) => state.process?.applicationCount
   );
   const tenantKey = useSelector((state) => state.tenants?.tenantId);
   const restoredFormId = useSelector(
@@ -151,22 +151,22 @@ const Edit = React.memo(() => {
 
   //remove tenatkey form path name
   useEffect(() => {
-    if (form.path && MULTITENANCY_ENABLED) {
+    if (form?.path && MULTITENANCY_ENABLED) {
       const newPath = removeTenantKey(form.path, tenantKey);
       if (newPath) {
         dispatchFormAction({ type: "path", value: newPath });
       }
     }
-  }, [form.path]);
+  }, [form?.path]);
   // remove tenant key from form name
   useEffect(() => {
-    if (form.name && MULTITENANCY_ENABLED) {
+    if (form?.name && MULTITENANCY_ENABLED) {
       const newName = removeTenantKey(form.name, tenantKey);
       if (newName) {
         dispatchFormAction({ type: "name", value: newName });
       }
     }
-  }, [form.name]);
+  }, [form?.name]);
 
   // setting the form data
   useEffect(() => {
@@ -465,7 +465,7 @@ const Edit = React.memo(() => {
     dispatchFormAction({ type: "formChange", value: newForm });
 
   // loading up to set the data to the form variable
-  if (!form._id || currentFormLoading) {
+  if (!form?._id || currentFormLoading) {
     return (
       <div className="d-flex justify-content-center">
         <div className="spinner-grow" role="status">
@@ -605,7 +605,7 @@ const Edit = React.memo(() => {
                     className="form-control"
                     id="name"
                     placeholder={t("Enter the form machine name")}
-                    value={form.name || ""}
+                    value={form?.name || ""}
                     onChange={(event) => handleChange("name", event)}
                   />
                 </div>
@@ -682,7 +682,7 @@ const Edit = React.memo(() => {
                     id="path"
                     placeholder="example"
                     style={{ textTransform: "lowercase", width: "120px" }}
-                    value={form.path || ""}
+                    value={form?.path || ""}
                     onChange={(event) => handleChange("path", event)}
                   />
                 </div>

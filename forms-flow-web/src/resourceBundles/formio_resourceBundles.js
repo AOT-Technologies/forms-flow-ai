@@ -39,7 +39,6 @@ export const formio_resourceBundles = {
     "Form unpublishing Failed": "Form unpublishing Failed",
     "Form process failed": "Form process failed",
     "Form deleted successfully": "Form deleted successfully",
-    "Form deletion unsuccessful":"Form deletion unsuccessful",
     "Form Workflow Association Saved.": "Form Workflow Association Saved.",
     "Loading...": "Loading...",
     "Changing the form workflow will not affect the existing applications. It will only update in the newly created applications. Press Save Changes to continue or cancel the changes.":

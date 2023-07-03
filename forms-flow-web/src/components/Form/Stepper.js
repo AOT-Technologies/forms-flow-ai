@@ -477,7 +477,7 @@ const mapDispatchToProps = (dispatch) => {
       dispatch(setFormAuthVerifyLoading(true));
       dispatch(getForm("form",id,(err,res)=>{
         fetchDesigners(
-          res?.parentFormId || res._id).then(response=>{ 
+          res?.parentFormId || res?._id).then(response=>{ 
             dispatch(setFormDesignerPermissionRoles(response.data));
           }).catch((err)=>{
             const {response} = err;

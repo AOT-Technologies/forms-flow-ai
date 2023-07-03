@@ -45,7 +45,7 @@ RUN if [ $NODE_ENV == "development" ]; then \
 
 
 # Production stage
-FROM nginx:1.21.3-alpine as production-stage
+FROM nginx:1.23-alpine-slim as production-stage
 
 # Set label for image
 LABEL Name="formsflow"

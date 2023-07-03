@@ -1,8 +1,10 @@
-# base image
-FROM node:14.17.0-alpine as build-stage
+# Base image
+FROM node:14.17.6-alpine as build-stage
 
-# set working directory
+# Set working directory
 WORKDIR /forms-flow-web-root-config/app
+
+# Set build arguments
 ARG NODE_ENV
 ARG MF_FORMSFLOW_WEB_URL
 ARG MF_FORMSFLOW_NAV_URL
@@ -10,6 +12,7 @@ ARG MF_FORMSFLOW_SERVICE_URL
 ARG MF_FORMSFLOW_ADMIN_URL
 ARG MF_FORMSFLOW_THEME_URL
 
+# Set environment variables
 ENV MF_FORMSFLOW_WEB_URL ${MF_FORMSFLOW_WEB_URL}
 ENV MF_FORMSFLOW_NAV_URL ${MF_FORMSFLOW_NAV_URL}
 ENV MF_FORMSFLOW_SERVICE_URL ${MF_FORMSFLOW_SERVICE_URL}
@@ -17,22 +20,23 @@ ENV MF_FORMSFLOW_ADMIN_URL ${MF_FORMSFLOW_ADMIN_URL}
 ENV MF_FORMSFLOW_THEME_URL ${MF_FORMSFLOW_THEME_URL}
 ENV NODE_ENV ${NODE_ENV}
 
-# add `/app/node_modules/.bin` to $PATH
+# Add `/app/node_modules/.bin` to $PATH
 ENV PATH /forms-flow-web-root-config/app/node_modules/.bin:$PATH
 
+# Install necessary packages
 RUN apk update && apk upgrade && \
     apk add --no-cache bash git openssh
 
-# install and cache app dependencies
-
+# Install and cache app dependencies
 COPY package-lock.json /forms-flow-web-root-config/app/package-lock.json
 COPY package.json /forms-flow-web-root-config/app/package.json
 COPY env.sh /forms-flow-web-root-config/app/env.sh
+RUN npm ci --only=production
 
-RUN npm ci
-
+# Copy source code
 COPY . /forms-flow-web-root-config/app/
 
+# Build the application
 RUN if [ $NODE_ENV == "development" ]; then \
         npm run build-dev:webpack; \
     else \
@@ -40,19 +44,31 @@ RUN if [ $NODE_ENV == "development" ]; then \
     fi
 
 
-FROM nginx:1.15.2-alpine as production-stage
+# Production stage
+FROM nginx:1.21.3-alpine as production-stage
 
-# set label for image
+# Set label for image
 LABEL Name="formsflow"
 
+# Create directories
 RUN mkdir /app
+WORKDIR /usr/share/nginx/html/config
+
+# Copy built files from build stage
 COPY --from=build-stage /forms-flow-web-root-config/app/dist /usr/share/nginx/html
 COPY --from=build-stage /forms-flow-web-root-config/app/env.sh /usr/share/nginx/html/config
-COPY nginx.conf /etc/nginx/nginx.conf
-EXPOSE 8080:8080
-WORKDIR /usr/share/nginx/html/config
-# COPY .env .
-RUN apk add --no-cache bash
-RUN chmod +x env.sh
 
+# Copy nginx configuration
+COPY nginx.conf /etc/nginx/nginx.conf
+
+# Expose port
+EXPOSE 8080
+
+# Install necessary packages
+RUN apk add --no-cache bash
+
+# Set execute permission for env.sh
+RUN chmod +x /usr/share/nginx/html/config/env.sh
+
+# Start Nginx server with environment setup
 CMD ["/bin/bash", "-c", "/usr/share/nginx/html/config/env.sh && nginx -g \"daemon off;\""]

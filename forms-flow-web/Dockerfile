@@ -1,28 +1,34 @@
-# base image
-FROM node:14.17.0-alpine as build-stage
+# Base image
+FROM node:14.17.6-alpine as build-stage
 
-# set working directory
+# Set working directory
 WORKDIR /forms-flow-web/app
- 
-# add `/app/node_modules/.bin` to $PATH
+
+# Add `/app/node_modules/.bin` to $PATH
 ENV PATH /forms-flow-web/app/node_modules/.bin:$PATH
 
-RUN apk update && apk upgrade && \
-    apk add --no-cache bash git openssh
-
-# install and cache app dependencies
-
+# Install and cache app dependencies
 COPY package-lock.json /forms-flow-web/app/package-lock.json
 COPY package.json /forms-flow-web/app/package.json
+RUN npm ci --only=production
 
-RUN npm install 
-#RUN npm install react-scripts@3.0.1 -g --silent
+# Copy source code
 COPY . /forms-flow-web/app/
+
+# Build the application
 RUN npm run build
 
-FROM nginx:1.22 as production-stage
-RUN mkdir /app
+# Production stage
+FROM nginx:1.21.3-alpine as production-stage
+
+# Copy built files from build stage
 COPY --from=build-stage /forms-flow-web/app/build /usr/share/nginx/html
+
+# Copy nginx configuration
 COPY nginx.conf /etc/nginx/nginx.conf
-EXPOSE 3004:8080
+
+# Expose port
+EXPOSE 8080
+
+# Start Nginx server
 CMD ["nginx", "-g", "daemon off;"]

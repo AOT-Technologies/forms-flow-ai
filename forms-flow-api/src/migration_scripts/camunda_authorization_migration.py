@@ -43,6 +43,9 @@ def migrate_authorization():
     bpm_client_secret = os.getenv("BPM_CLIENT_SECRET")
     bpm_grant_type = os.getenv("BPM_GRANT_TYPE","client_credentials")
     bpm_api_base = os.getenv("BPM_API_URL")
+    enable_client_auth = (
+        str(os.getenv("KEYCLOAK_ENABLE_CLIENT_AUTH", default="false")).lower() == "true"
+    )
 
     headers = {"Content-Type": "application/x-www-form-urlencoded"}
     payload = {
@@ -66,7 +69,7 @@ def migrate_authorization():
     for auth in authorization_list:
         resource_id = auth['resourceId']
         roles = auth['groupId']
-        roles = f'/{roles}'
+        roles = roles if enable_client_auth else f'/{roles}'
         if resource_id == "*":
             forms = find_latest_forms()
         else:

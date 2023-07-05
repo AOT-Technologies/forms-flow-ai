@@ -233,7 +233,9 @@ const Preview = React.memo(
               <CardContent>
                 <form noValidate autoComplete="off">
                   <div>
-                    <span className="font-weight-bold">Overview</span>
+                    <span className="font-weight-bold">
+                    {t("Overview")}
+                    </span>
                     <hr />
                   </div>
                   <div>
@@ -311,7 +313,7 @@ const Preview = React.memo(
                       className="font-weight-bold"
                       title={t("Give Designer Role Permissions")}
                     >
-                      Designer Permission
+                      {t("Designer Permission")}
                       <i className="ml-1 fa fa-info-circle cursor-pointer text-primary" />
                     </span>
 
@@ -326,7 +328,7 @@ const Preview = React.memo(
                             setDesignerSelectedOption(e.target.value)
                           }
                         />
-                        Accessible for all Designers
+                        {t("Accessible for all Designers")}
                       </label>
                       <label className="mr-4">
                         <input
@@ -338,7 +340,7 @@ const Preview = React.memo(
                             setDesignerSelectedOption(e.target.value)
                           }
                         />
-                        Private(Only You)
+                        {t("Private(Only You)")}
                       </label>
                       <label>
                         <input
@@ -352,7 +354,7 @@ const Preview = React.memo(
                             setDesignerSelectedOption(e.target.value);
                           }}
                         />
-                        Specific Designer Group
+                        {t("Specific Designer Group")}
                       </label>
                     </div>
                     {designerSelectedOption === "Specific Designers" ? (
@@ -405,7 +407,7 @@ const Preview = React.memo(
                         <div>
                           <hr className="mt-1" />
                           <span className="font-weight-bold">
-                            Client Permission
+                          {t("Client Permission")}
                           </span>
                           <div>
                             <label className="mr-4">
@@ -418,7 +420,7 @@ const Preview = React.memo(
                                   setClientSelectedOption(e.target.value)
                                 }
                               />
-                              All Clients
+                              {t("All Clients")}
                             </label>
                             <label className="mr-4">
                               <input
@@ -432,7 +434,7 @@ const Preview = React.memo(
                                   setClientSelectedOption(e.target.value);
                                 }}
                               />
-                              Specific Client Group
+                              {t("Specific Client Group")}
                             </label>
                           </div>
                           {clientSelectedOption === "Specific Clients" ? (

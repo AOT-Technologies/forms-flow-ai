@@ -296,7 +296,15 @@ export const formio_resourceBundles = {
     "Process name(s) must not be empty":"Process name(s) must not be empty",
     "URL copied":"URL copied",
     "Click Here to Copy":"Click Here to Copy",
-    "Revert": "Revert"
+    "Revert": "Revert",
+    "Overview": "Overview",
+    "Designer Permission": "Designer Permission",
+    "Accessible for all Designers": "Accessible for all Designers",
+    "Private(Only You)": "Private(Only You)",
+    "Specific Designer Group": "Specific Designer Group",
+    "Client Permission": "Client Permission",
+    "All Clients": "All Clients",
+    "Specific Client Group": "Specific Client Group"
   
   },
 
@@ -1209,7 +1217,15 @@ export const formio_resourceBundles = {
     "Process name(s) must not be empty":"进程名称不能为空",
     "URL copied":"已复制网址",
     "Click Here to Copy":"点击这里复制",
-    "Revert": "恢复"
+    "Revert": "恢复",
+    "Overview": "概述",
+    "Designer Permission": "设计师许可",
+    "Accessible for all Designers": "所有设计师均可使用",
+    "Private(Only You)": "私人（只有你）",
+    "Specific Designer Group": "特定设计师组",
+    "Client Permission": "客户许可",
+    "All Clients": "所有客户",
+    "Specific Client Group": "特定客户群"
   },
 
   bg: {
@@ -2179,7 +2195,15 @@ export const formio_resourceBundles = {
     "Process name(s) must not be empty":"Името(ата) на процесите не трябва да са празни",
     "URL copied":"URL адресът е копиран",
     "Click Here to Copy":"Щракнете тук, за да копирате",
-    "Revert": "Връщане"
+    "Revert": "Връщане",
+    "Overview": "Преглед",
+    "Designer Permission": "Разрешение на дизайнера",
+    "Accessible for all Designers": "Достъпно за всички дизайнери",
+    "Private(Only You)": "Лично (само ти)",
+    "Specific Designer Group": "Специфична дизайнерска група",
+    "Client Permission": "Клиентско разрешение",
+    "All Clients": "Всички клиенти",
+    "Specific Client Group": "Конкретна група клиенти"
 
   },
 
@@ -3144,7 +3168,15 @@ export const formio_resourceBundles = {
     "Process name(s) must not be empty":"O(s) nome(s) do processo não deve(m) estar vazio(s)",
     "URL copied":"URL copiado",
     "Click Here to Copy":"Clique aqui para copiar",
-    "Revert": "Reverter"
+    "Revert": "Reverter",
+    "Overview": "Visão geral",
+    "Designer Permission": "Permissão do Designer",
+    "Accessible for all Designers": "Acessível para todos os Designers",
+    "Private(Only You)": "Privado (Somente Você)",
+    "Specific Designer Group": "Grupo específico de designers",
+    "Client Permission": "Permissão do cliente",
+    "All Clients": "Todos os clientes",
+    "Specific Client Group": "Grupo específico de clientes"
 
   },
 
@@ -4117,7 +4149,15 @@ export const formio_resourceBundles = {
     "Process name(s) must not be empty":"Le(s) nom(s) de processus ne doivent pas être vides",
     "URL copied":"URL copiée",
     "Click Here to Copy":"Cliquez ici pour copier",
-    "Revert":"Revenir"
+    "Revert":"Revenir",
+    "Overview": "Aperçu",
+    "Designer Permission": "Autorisation du concepteur",
+    "Accessible for all Designers": "Accessible à tous les créateurs",
+    "Private(Only You)": "Privé (seulement vous)",
+    "Specific Designer Group": "Groupe de concepteurs spécifiques",
+    "Client Permission": "Autorisation client",
+    "All Clients": "Tous les clients",
+    "Specific Client Group": "Groupe de clients spécifique"
 
   },
 
@@ -5093,7 +5133,15 @@ export const formio_resourceBundles = {
     "Process name(s) must not be empty":"Prozessname(n) dürfen nicht leer sein",
     "URL copied":"URL kopiert",
     "Click Here to Copy":"Klicken Sie hier, um zu kopieren",
-    "Revert":"Zurückkehren"
+    "Revert":"Zurückkehren",
+    "Overview": "Überblick",
+    "Designer Permission": "Designer-Genehmigung",
+    "Accessible for all Designers": "Für alle Designer zugänglich",
+    "Private(Only You)": "Privat (Nur Sie)",
+    "Specific Designer Group": "Spezifische Designergruppe",
+    "Client Permission": "Kundenerlaubnis",
+    "All Clients": "Alle Kunden",
+    "Specific Client Group": "Spezifische Kundengruppe"
 
 
 

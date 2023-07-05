@@ -280,7 +280,15 @@ export const RESOURCE_BUNDLES_FR = {
   "Click Here to Copy":"Cliquez ici pour copier",
   "Resources":"Ressources",
   "Duplicate form created successfully":"Formulaire en double créé avec succès",
-  "Revert": "Revenir"
+  "Revert": "Revenir",
+  "Overview": "Aperçu",
+  "Designer Permission": "Autorisation du concepteur",
+  "Accessible for all Designers": "Accessible à tous les créateurs",
+  "Private(Only You)": "Privé (seulement vous)",
+  "Specific Designer Group": "Groupe de concepteurs spécifiques",
+  "Client Permission": "Autorisation client",
+  "All Clients": "Tous les clients",
+  "Specific Client Group": "Groupe de clients spécifique"
 
 };
   

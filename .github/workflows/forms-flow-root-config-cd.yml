@@ -75,29 +75,31 @@ jobs:
             ${{ runner.os }}-buildx-${{ matrix.name }}
       - name: Build and push Docker image
         if: ${{ github.ref != 'refs/heads/master' }}
-        uses: docker/build-push-action@v2
+        uses: docker/build-push-action@v4
         with:
           context: forms-flow-web-root-config
+          platforms: linux/amd64,linux/arm64/v8
           push: true
           tags: ${{ steps.meta.outputs.tags }}
           labels: ${{ steps.meta.outputs.labels }}
           build-args: |
-            MF_FORMSFLOW_WEB_URL=https://s3.ap-northeast-1.amazonaws.com/formsflow.ai-micro-front-ends/forms-flow-web@v5.2.0-alpha/single-spa-build.gz.js
-            MF_FORMSFLOW_NAV_URL=https://s3.ap-northeast-1.amazonaws.com/formsflow.ai-micro-front-ends/forms-flow-nav@v5.2.0-alpha/forms-flow-nav.gz.js
-            MF_FORMSFLOW_SERVICE_URL=https://s3.ap-northeast-1.amazonaws.com/formsflow.ai-micro-front-ends/forms-flow-service@v5.2.0-alpha/forms-flow-service.gz.js
-            MF_FORMSFLOW_ADMIN_URL=https://s3.ap-northeast-1.amazonaws.com/formsflow.ai-micro-front-ends/forms-flow-admin@v5.2.0-alpha/forms-flow-admin.gz.js
-            MF_FORMSFLOW_THEME_URL=https://s3.ap-northeast-1.amazonaws.com/formsflow.ai-micro-front-ends/forms-flow-theme@v5.2.0-alpha/forms-flow-theme.gz.js 
+            MF_FORMSFLOW_WEB_URL=https://forms-flow-microfrontends.aot-technologies.com/forms-flow-web@${{ env.VERSION }}/single-spa-build.gz.js
+            MF_FORMSFLOW_NAV_URL=https://forms-flow-microfrontends.aot-technologies.com/forms-flow-nav@${{ env.VERSION }}/forms-flow-nav.gz.js
+            MF_FORMSFLOW_SERVICE_URL=https://forms-flow-microfrontends.aot-technologies.com/forms-flow-service@${{ env.VERSION }}/forms-flow-service.gz.js
+            MF_FORMSFLOW_ADMIN_URL=https://forms-flow-microfrontends.aot-technologies.com/forms-flow-admin@${{ env.VERSION }}/forms-flow-admin.gz.js
+            MF_FORMSFLOW_THEME_URL=https://forms-flow-microfrontends.aot-technologies.com/forms-flow-theme@${{ env.VERSION }}/forms-flow-theme.gz.js 
       - name: Build and push Docker image
         if: ${{ github.ref == 'refs/heads/master' }}
-        uses: docker/build-push-action@v2
+        uses: docker/build-push-action@v4
         with:
           context: forms-flow-web-root-config
+          platforms: linux/amd64,linux/arm64/v8
           push: true
           tags: ${{ steps.meta.outputs.tags }}, formsflow/forms-flow-web:latest
           labels: ${{ steps.meta.outputs.labels }}
           build-args: |
-            MF_FORMSFLOW_WEB_URL=https://s3.ap-northeast-1.amazonaws.com/formsflow.ai-micro-front-ends/forms-flow-web@v5.2.0/single-spa-build.gz.js
-            MF_FORMSFLOW_NAV_URL=https://s3.ap-northeast-1.amazonaws.com/formsflow.ai-micro-front-ends/forms-flow-nav@v5.2.0/forms-flow-nav.gz.js
-            MF_FORMSFLOW_SERVICE_URL=https://s3.ap-northeast-1.amazonaws.com/formsflow.ai-micro-front-ends/forms-flow-service@v5.2.0/forms-flow-service.gz.js
-            MF_FORMSFLOW_ADMIN_URL=https://s3.ap-northeast-1.amazonaws.com/formsflow.ai-micro-front-ends/forms-flow-admin@v5.2.0/forms-flow-admin.gz.js
-            MF_FORMSFLOW_THEME_URL=https://s3.ap-northeast-1.amazonaws.com/formsflow.ai-micro-front-ends/forms-flow-theme@v5.2.0/forms-flow-theme.gz.js 
+            MF_FORMSFLOW_WEB_URL=https://forms-flow-microfrontends.aot-technologies.com/forms-flow-web@${{ env.VERSION }}/single-spa-build.gz.js
+            MF_FORMSFLOW_NAV_URL=https://forms-flow-microfrontends.aot-technologies.com/forms-flow-nav@${{ env.VERSION }}/forms-flow-nav.gz.js
+            MF_FORMSFLOW_SERVICE_URL=https://forms-flow-microfrontends.aot-technologies.com/forms-flow-service@${{ env.VERSION }}/forms-flow-service.gz.js
+            MF_FORMSFLOW_ADMIN_URL=https://forms-flow-microfrontends.aot-technologies.com/forms-flow-admin@${{ env.VERSION }}/forms-flow-admin.gz.js
+            MF_FORMSFLOW_THEME_URL=https://forms-flow-microfrontends.aot-technologies.com/forms-flow-theme@${{ env.VERSION }}/forms-flow-theme.gz.js 

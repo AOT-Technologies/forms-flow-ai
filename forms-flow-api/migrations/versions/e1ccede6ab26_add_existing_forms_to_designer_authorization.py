@@ -28,9 +28,13 @@ def upgrade():
                                     WHERE deleted = false 
                                     GROUP BY parent_form_id, tenant) subq ON form.id = subq.max_id;"""))
     if forms:
-        # insert the current forms to authorization table
-        insert_stmt = """INSERT INTO public.authorization (created, created_by, tenant, auth_type, resource_id)
-          VALUES (:created, :created_by, :tenant, :auth_type, :resource_id);"""
+        # insert the current forms to authorization table if combination of resource_id & DESIGNER not already exists.
+        insert_stmt = """ INSERT INTO public.authorization (created, created_by, tenant, auth_type, resource_id)
+                        SELECT :created, :created_by, :tenant, :auth_type, :resource_id
+                        WHERE NOT EXISTS (
+                        SELECT 1 
+                        FROM public.authorization
+                        WHERE resource_id = :resource_id AND auth_type = :auth_type);"""
         for row in forms:
             # insert the values into the target table
             conn.execute(sa.text(insert_stmt), {'created': 'now()', 'created_by': row[3],'tenant': row[2], 'auth_type':'DESIGNER','resource_id':row[0]})

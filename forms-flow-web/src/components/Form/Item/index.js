@@ -40,13 +40,13 @@ const Item = React.memo(() => {
   const dispatch = useDispatch();
 
   const formAuthVerify = (formId,successCallBack)=>{
-    getClientList(formId).then(successCallBack).catch((err)=>{
-      const {response} = err;
-      dispatch(setApiCallError({message:response?.data?.message || 
-        response.statusText,status:response.status}));
-    }).finally(()=>{
-      dispatch(setFormAuthVerifyLoading(false));
-    });
+      getClientList(formId).then(successCallBack).catch((err)=>{
+        const {response} = err;
+        dispatch(setApiCallError({message:response?.data?.message || 
+          response.statusText,status:response.status}));
+      }).finally(()=>{
+        dispatch(setFormAuthVerifyLoading(false));
+      });
   };
   
   useEffect(() => {
@@ -59,7 +59,11 @@ const Item = React.memo(() => {
         if(err){
           dispatch(setFormAuthVerifyLoading(false));
         }else{
+          if(userRoles.includes(CLIENT) || userRoles.includes(STAFF_DESIGNER)){
           formAuthVerify(res.parentFormId || res._id);
+          }else{
+            dispatch(setFormAuthVerifyLoading(false));
+          }
         }
       }));
     } else {

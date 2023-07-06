@@ -11,6 +11,7 @@ services:
         - MF_FORMSFLOW_ADMIN_URL=${MF_FORMSFLOW_ADMIN_URL:-https://forms-flow-microfrontends.aot-technologies.com/forms-flow-admin@v5.2.0-alpha/forms-flow-admin.gz.js}
         - MF_FORMSFLOW_THEME_URL=${MF_FORMSFLOW_THEME_URL:-https://forms-flow-microfrontends.aot-technologies.com/forms-flow-theme@v5.2.0-alpha/forms-flow-theme.gz.js}
         - NODE_ENV=${NODE_ENV:-production}
+    entrypoint: /bin/sh -c "/usr/share/nginx/html/config/env.sh && nginx -g 'daemon off;'"
     environment:
       - NODE_ENV=${NODE_ENV:-production}
       - REACT_APP_API_SERVER_URL=${FORMIO_DEFAULT_PROJECT_URL}

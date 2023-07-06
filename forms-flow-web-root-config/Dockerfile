@@ -71,4 +71,5 @@ RUN apk add --no-cache bash
 RUN chmod +x /usr/share/nginx/html/config/env.sh
 
 # Start Nginx server with environment setup
-CMD ["/bin/bash", "-c", "/usr/share/nginx/html/config/env.sh && nginx -g \"daemon off;\""]
+CMD ["/bin/bash", "-c", "nginx -g \"daemon off;\""]
+# CMD ["/bin/bash", "-c", "/usr/share/nginx/html/config/env.sh && nginx -g \"daemon off;\""]

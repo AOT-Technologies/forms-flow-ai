@@ -130,7 +130,7 @@ const Preview = React.memo(
 
     const addDesignerGroups = (data) => {
       dispatch(setFormDesignerPermissionRoles(
-        {...designerGroups,roles:[...designerGroups.roles, data.name]}));
+        {...designerGroups,roles:[...designerGroups.roles || [], data.name]}));
       setDesingerOptions(designerOptions?.filter((i) => i.name !== data.name));
       setShow(false);
     };

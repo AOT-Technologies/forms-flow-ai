@@ -289,7 +289,8 @@ export const RESOURCE_BUNDLES_DE = {
   "Specific Designer Group": "Spezifische Designergruppe",
   "Client Permission": "Kundenerlaubnis",
   "All Clients": "Alle Kunden",
-  "Specific Client Group": "Spezifische Kundengruppe"
+  "Specific Client Group": "Spezifische Kundengruppe",
+  "Give Designer Role Permissions": "Erteilen Sie Designer-Rollenberechtigungen"
 
 
 

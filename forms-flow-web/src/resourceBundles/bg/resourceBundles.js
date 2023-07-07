@@ -287,5 +287,6 @@ export const RESOURCE_BUNDLES_BG = {
     "Specific Designer Group": "Специфична дизайнерска група",
     "Client Permission": "Клиентско разрешение",
     "All Clients": "Всички клиенти",
-    "Specific Client Group": "Конкретна група клиенти"
+    "Specific Client Group": "Конкретна група клиенти",
+    "Give Designer Role Permissions": "Дайте разрешения за роля на дизайнер"
 };

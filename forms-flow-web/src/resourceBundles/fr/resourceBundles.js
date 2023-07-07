@@ -288,7 +288,8 @@ export const RESOURCE_BUNDLES_FR = {
   "Specific Designer Group": "Groupe de concepteurs spécifiques",
   "Client Permission": "Autorisation client",
   "All Clients": "Tous les clients",
-  "Specific Client Group": "Groupe de clients spécifique"
+  "Specific Client Group": "Groupe de clients spécifique",
+  "Give Designer Role Permissions": "Accorder des autorisations de rôle de concepteur"
 
 };
   

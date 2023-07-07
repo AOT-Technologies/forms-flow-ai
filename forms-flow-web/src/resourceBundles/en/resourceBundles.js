@@ -287,7 +287,8 @@ export const RESOURCE_BUNDLES_EN = {
   "Specific Designer Group": "Specific Designer Group",
   "Client Permission": "Client Permission",
   "All Clients": "All Clients",
-  "Specific Client Group": "Specific Client Group"
+  "Specific Client Group": "Specific Client Group",
+  "Give Designer Role Permissions": "Give Designer Role Permissions"
 
 };
 

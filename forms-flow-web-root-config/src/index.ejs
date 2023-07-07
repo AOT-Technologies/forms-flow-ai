@@ -38,7 +38,7 @@
     Learn more about CSP policies at https://content-security-policy.com/#directive
   -->
   <% if (!isLocal) { %>
-    <meta http-equiv="Content-Security-Policy" content="default-src 'self' https: http: ; script-src 'unsafe-inline' 'unsafe-eval' https: http:; connect-src https: http: ws://*:*; style-src 'unsafe-inline' https:; object-src 'none'; img-src 'self' data: https; font-src * data:">
+    <meta http-equiv="Content-Security-Policy" content="default-src 'self' https: http: ; script-src 'unsafe-inline' 'unsafe-eval' https: http:; connect-src https: http: ws://*:*; style-src 'unsafe-inline' https:; object-src 'none'; img-src 'self' data: https:; font-src * data:">
   <% }  %>
   <meta name="importmap-type" content="systemjs-importmap" />
   <!-- If you wish to turn off import-map-overrides for specific environments (prod), uncomment the line below -->

@@ -286,7 +286,8 @@ export const RESOURCE_BUNDLES_ZH = {
   "Specific Designer Group": "特定设计师组",
   "Client Permission": "客户许可",
   "All Clients": "所有客户",
-  "Specific Client Group": "特定客户群"
+  "Specific Client Group": "特定客户群",
+  "Give Designer Role Permissions": "授予设计师角色权限"
 
 };
 

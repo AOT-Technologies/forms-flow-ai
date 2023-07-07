@@ -304,7 +304,8 @@ export const formio_resourceBundles = {
     "Specific Designer Group": "Specific Designer Group",
     "Client Permission": "Client Permission",
     "All Clients": "All Clients",
-    "Specific Client Group": "Specific Client Group"
+    "Specific Client Group": "Specific Client Group",
+    "Give Designer Role Permissions": "Give Designer Role Permissions"
   
   },
 
@@ -1225,7 +1226,8 @@ export const formio_resourceBundles = {
     "Specific Designer Group": "特定设计师组",
     "Client Permission": "客户许可",
     "All Clients": "所有客户",
-    "Specific Client Group": "特定客户群"
+    "Specific Client Group": "特定客户群",
+    "Give Designer Role Permissions": "授予设计师角色权限"
   },
 
   bg: {
@@ -2203,7 +2205,8 @@ export const formio_resourceBundles = {
     "Specific Designer Group": "Специфична дизайнерска група",
     "Client Permission": "Клиентско разрешение",
     "All Clients": "Всички клиенти",
-    "Specific Client Group": "Конкретна група клиенти"
+    "Specific Client Group": "Конкретна група клиенти",
+    "Give Designer Role Permissions": "Дайте разрешения за роля на дизайнер"
 
   },
 
@@ -3176,7 +3179,8 @@ export const formio_resourceBundles = {
     "Specific Designer Group": "Grupo específico de designers",
     "Client Permission": "Permissão do cliente",
     "All Clients": "Todos os clientes",
-    "Specific Client Group": "Grupo específico de clientes"
+    "Specific Client Group": "Grupo específico de clientes",
+    "Give Designer Role Permissions": "Conceder permissões de função de designer"
 
   },
 
@@ -4157,7 +4161,9 @@ export const formio_resourceBundles = {
     "Specific Designer Group": "Groupe de concepteurs spécifiques",
     "Client Permission": "Autorisation client",
     "All Clients": "Tous les clients",
-    "Specific Client Group": "Groupe de clients spécifique"
+    "Specific Client Group": "Groupe de clients spécifique",
+    "Give Designer Role Permissions": "Accorder des autorisations de rôle de concepteur",
+    
 
   },
 
@@ -5141,7 +5147,8 @@ export const formio_resourceBundles = {
     "Specific Designer Group": "Spezifische Designergruppe",
     "Client Permission": "Kundenerlaubnis",
     "All Clients": "Alle Kunden",
-    "Specific Client Group": "Spezifische Kundengruppe"
+    "Specific Client Group": "Spezifische Kundengruppe",
+    "Give Designer Role Permissions": "Erteilen Sie Designer-Rollenberechtigungen"
 
 
 

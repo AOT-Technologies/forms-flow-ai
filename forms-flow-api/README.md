@@ -19,6 +19,7 @@ the system. It is built using Python :snake: .
    * [Step 4 : Verify the Application Status](#verify-the-application-status)
 3. [API Documentation](#api-documentation)
 4. [Unit Testing](#unit-testing)
+5. [Migration Script for existing users](#migration-script-for-existing-users) (For listing existing forms for clients)
 
 ## Prerequisites
 
@@ -146,6 +147,13 @@ Things to note when writing tests:
 
 * Isolated: Each test should be an introvert, working in their own isolated bubble. You should never have to think about what other tests have put in the database.
 * Tests functions should contain always `app, client, session`
+
+## Migration Script for existing users
+
+#### If existing forms are to be listed for clients, you need to migrate the existing Camunda authorizations. <br><br> For this, do the following:
+* Run a bash script inside the forms-flow-api. If you need to run this script in the instance or server, such as a Kubernetes cluster or Nginx, you have to access the Docker container of the FormsFlow web API and execute the bash script called [migration.sh](./migration.sh). 
+* Alternatively, if you are setting up the environment locally and running the Docker container locally, you can get inside the FormsFlow web API container and run the `migration.sh` command.
+* In the case of running the web API with Flask locally, you should activate the virtual environment and run the bash script within it. You can create the virtual environment by following the instructions provided in the [Makefile](./Makefile) inside the forms-flow-api.
 
 #### References for Testing in Python
 

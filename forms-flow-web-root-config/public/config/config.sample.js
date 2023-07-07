@@ -4,29 +4,35 @@ window["_env_"] = {
   // Environment Variables for forms-flow-web
 
   /* URL of forms-flow-forms
-   Form-IO API-URL */
+   Form-IO API-URL, default: https://{your-ip-address}:5000/api */
   REACT_APP_API_SERVER_URL: "<Forms-flow-forms URL>",
-  // Form-IO API-PROJECT-URL
+
+  // Form-IO API-PROJECT-URL, default: http://{your-ip-address}:3001
   REACT_APP_API_PROJECT_URL: "<Forms-flow-forms URL>",
+  
   // Keycloak-client-name for web
   REACT_APP_KEYCLOAK_CLIENT: "forms-flow-web",
   // Keycloak-Realm-name
   REACT_APP_KEYCLOAK_URL_REALM: "forms-flow-ai",
-  // Keycloak URL
+  // Keycloak URL, default: http://{your-ip-address}:8080
   REACT_APP_KEYCLOAK_URL: "<Keycloak URL>",
 
   //// Environment Variables for forms-flow-bpm ////
-  // bpm base api
+  // bpm base api, default: http://{your-ip-address}:8000/camunda
   REACT_APP_BPM_URL: "<Camunda base API>",
-  REACT_APP_WEBSOCKET_ENCRYPT_KEY: "<Web Socket encrypt key for Socket IO>",
 
-  // web Api End point
+//Web Socket encrypt key for Socket IO
+  REACT_APP_WEBSOCKET_ENCRYPT_KEY: "giert989jkwrgb@DR55",
+
+  // web Api End point, default: http://{your-ip-address}:3004/single-spa-build.js
   REACT_APP_WEB_BASE_URL: "<Web Api base end-point>",
 
   // application name
   REACT_APP_APPLICATION_NAME: "formsflow.ai",
-  // custom url to set into local Storage
+
+  // custom url to set into local Storage, eg: https://formsflow.ai
   REACT_APP_WEB_BASE_CUSTOM_URL: "<Custom URL>",
+
   // For Custom Submission/Form Adapter Enabled
   REACT_APP_CUSTOM_SUBMISSION_URL: "<Custom Submission URL>",
   REACT_APP_CUSTOM_SUBMISSION_ENABLED: false,
@@ -37,14 +43,14 @@ window["_env_"] = {
   // Enable Export Pdf feature
   REACT_APP_EXPORT_PDF_ENABLED: false,
 
-  // Document Service api hosted from forms-flow-documents
+  // Document Service api hosted from forms-flow-documents, default: http://{your-ip-address}:5006
   REACT_APP_DOCUMENT_SERVICE_URL: "<Custom Document URL>",
 
   // Enable Multitenancy
   REACT_APP_MULTI_TENANCY_ENABLED: false,
   // Enable creating workflow for all tenants
   REACT_APP_PUBLIC_WORKFLOW_ENABLED: false,
-  // Multitenancy Admin Api endpoint Required only if Multitenancy is enabled
+  // Multitenancy Admin Api endpoint Required only if Multitenancy is enabled, default: http://{your-ip-address}:5010/api
   REACT_APP_MT_ADMIN_BASE_URL: "<Multitenancy Admin Api Endpoint>",
   // Version of multitenancy admin api
   REACT_APP_MT_ADMIN_BASE_URL_VERSION: "v1",
@@ -54,11 +60,11 @@ window["_env_"] = {
   REACT_APP_KEYCLOAK_ENABLE_CLIENT_AUTH: false,
 
   // Only use if need to disable a particular module in forms-flow-web, default is true for all.
-   REACT_APP_ENABLE_FORMS_MODULE: true,
-   REACT_APP_ENABLE_TASKS_MODULE: true,
-   REACT_APP_ENABLE_DASHBOARDS_MODULE: true,
-   REACT_APP_ENABLE_PROCESSES_MODULE: true,
-   REACT_APP_ENABLE_APPLICATIONS_MODULE: true,
+  ENABLE_FORMS_MODULE: true,
+  ENABLE_TASKS_MODULE: true,
+  ENABLE_DASHBOARDS_MODULE: true,
+  ENABLE_PROCESSES_MODULE: true,
+  ENABLE_APPLICATIONS_MODULE: true,
 
   /* Used for providing theming configuration in a url that returns json format
   Example to change the theme a theme.json can be given with content:
@@ -68,5 +74,5 @@ window["_env_"] = {
   "--navbar-active": "white"
   }`
   */
-  // REACT_APP_CUSTOM_THEME_URL: "<custom theme URl>",
+  // CUSTOM_THEME_URL: "<custom theme URl>",
 };

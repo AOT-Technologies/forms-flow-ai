@@ -82,6 +82,7 @@ def migrate_authorization():
                     auth_type=auth_type,
                     resource_id=form.parent_form_id,
                     roles=[roles],
+                    tenant = form.tenant,
                     created=datetime.datetime.now(),
                     created_by=form.created_by
                 )

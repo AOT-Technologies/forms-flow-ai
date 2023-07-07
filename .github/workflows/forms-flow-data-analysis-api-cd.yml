@@ -77,20 +77,22 @@ jobs:
       
       - name: Build and push Docker image
         if: ${{ github.ref != 'refs/heads/master' }}
-        uses: docker/build-push-action@v2
+        uses: docker/build-push-action@v4
         with:
           context: forms-flow-data-analysis-api
           build-args: MODEL_ID=Seethal/sentiment_analysis_generic_dataset
           push: true
+          platforms: linux/amd64,linux/arm64/v8
           tags: ${{ steps.meta.outputs.tags }}
           labels: ${{ steps.meta.outputs.labels }}
       - name: Build and push Docker image
         if: ${{ github.ref == 'refs/heads/master' }}
-        uses: docker/build-push-action@v2
+        uses: docker/build-push-action@v4
         with:
           context: forms-flow-data-analysis-api
           build-args: MODEL_ID=Seethal/sentiment_analysis_generic_dataset
           push: true
+          platforms: linux/amd64,linux/arm64/v8
           tags: ${{ steps.meta.outputs.tags }}, formsflow/forms-flow-data-analysis-api:latest
           labels: ${{ steps.meta.outputs.labels }}
         

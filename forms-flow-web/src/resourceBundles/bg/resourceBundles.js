@@ -1,5 +1,6 @@
 /* eslint-disable max-len */
 export const RESOURCE_BUNDLES_BG = {
+    "Bad Request":"Неправилна заявка",
     "Select form version":"Изберете версия на формуляра",
     "Please remove the special characters...!":"Моля, премахнете специалните символи...!",
     "No histories found":"Няма намерени истории",
@@ -279,4 +280,12 @@ export const RESOURCE_BUNDLES_BG = {
     "Resources":"Ресурси",
     "Duplicate form created successfully":"Дублираният формуляр е създаден успешно",
     "Revert": "Връщане",
+    "Overview": "Преглед",
+    "Designer Permission": "Разрешение на дизайнера",
+    "Accessible for all Designers": "Достъпно за всички дизайнери",
+    "Private(Only You)": "Лично (само ти)",
+    "Specific Designer Group": "Специфична дизайнерска група",
+    "Client Permission": "Клиентско разрешение",
+    "All Clients": "Всички клиенти",
+    "Specific Client Group": "Конкретна група клиенти"
 };

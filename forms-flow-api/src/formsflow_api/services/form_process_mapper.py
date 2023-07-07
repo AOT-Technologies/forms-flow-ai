@@ -1,13 +1,19 @@
 """This exposes form process mapper service."""
 
 from http import HTTPStatus
+from typing import Set
 
 from flask import current_app
 from formsflow_api_utils.exceptions import BusinessException
 from formsflow_api_utils.utils.enums import FormProcessMapperStatus
 from formsflow_api_utils.utils.user_context import UserContext, user_context
 
-from formsflow_api.models import Draft, FormProcessMapper
+from formsflow_api.models import (
+    Authorization,
+    AuthType,
+    Draft,
+    FormProcessMapper,
+)
 from formsflow_api.schemas import FormProcessMapperSchema
 from formsflow_api.services.external.bpm import BPMService
 
@@ -16,6 +22,7 @@ class FormProcessMapperService:
     """This class manages form process mapper service."""
 
     @staticmethod
+    @user_context
     def get_all_forms(
         page_number: int,
         limit: int,
@@ -23,8 +30,19 @@ class FormProcessMapperService:
         sort_by: str,
         sort_order: str,
         form_type: str,
+        **kwargs,
     ):  # pylint: disable=too-many-arguments
         """Get all forms."""
+        user: UserContext = kwargs["user"]
+        designer_form_ids: Set[str] = []
+        designer_forms = Authorization.find_all_resources_authorized(
+            auth_type=AuthType.DESIGNER,
+            roles=user.group_or_roles,
+            user_name=user.user_name,
+            tenant=user.tenant_key,
+        )
+        for forms in designer_forms:
+            designer_form_ids.append(forms.resource_id)
         mappers, get_all_mappers_count = FormProcessMapper.find_all_forms(
             page_number=page_number,
             limit=limit,
@@ -32,6 +50,42 @@ class FormProcessMapperService:
             sort_by=sort_by,
             sort_order=sort_order,
             form_type=form_type,
+            form_ids=designer_form_ids,
+        )
+        mapper_schema = FormProcessMapperSchema()
+        return (
+            mapper_schema.dump(mappers, many=True),
+            get_all_mappers_count,
+        )
+
+    @staticmethod
+    @user_context
+    def get_all_mappers_by_formid(
+        page_number: int,
+        limit: int,
+        form_name: str,
+        sort_by: str,
+        sort_order: str,
+        **kwargs,
+    ):  # pylint: disable=too-many-arguments
+        """Get all form process mappers by authorized forms."""
+        user: UserContext = kwargs["user"]
+        client_form_ids: Set[str] = []
+        client_forms = Authorization.find_all_resources_authorized(
+            auth_type=AuthType.FORM,
+            roles=user.group_or_roles,
+            user_name=user.user_name,
+            tenant=user.tenant_key,
+        )
+        for forms in client_forms:
+            client_form_ids.append(forms.resource_id)
+        mappers, get_all_mappers_count = FormProcessMapper.find_all_active_by_formid(
+            page_number=page_number,
+            limit=limit,
+            form_name=form_name,
+            sort_by=sort_by,
+            sort_order=sort_order,
+            form_ids=client_form_ids,
         )
         mapper_schema = FormProcessMapperSchema()
         return (

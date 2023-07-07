@@ -21,6 +21,7 @@ import {
 import { addTenantkey } from "../../helper/helper";
 import { formCreate } from "../../apiManager/services/FormServices";
 import { Checkbox, FormControlLabel } from "@material-ui/core";
+import { addClients, addUsers } from "../../apiManager/services/authorizationService";
 // reducer from react-formio code
 const reducer = (form, { type, value }) => {
   const formCopy = _cloneDeep(form);
@@ -53,7 +54,7 @@ const Create = React.memo(() => {
   const formData = { display: "form" };
   const [form, dispatchFormAction] = useReducer(reducer, _cloneDeep(formData));
   const saveText = <Translation>{(t) => t("Save & Preview")}</Translation>;
-  const errors = useSelector((state) => state.form.error);
+  const errors = useSelector((state) => state.form?.error);
   const lang = useSelector((state) => state.user.lang);
   const tenantKey = useSelector((state) => state.tenants?.tenantId);
   const formAccess = useSelector((state) => state.user?.formAccess || []);
@@ -157,7 +158,14 @@ const Create = React.memo(() => {
         formRevisionNumber: "V1", // to do
         anonymous: formAccess[0]?.roles.includes(roleIds.ANONYMOUS),
       };
+      let payload = {
+        resourceId:data.formId,
+        resourceDetails: {},
+        roles : []
+      };
       dispatch(setFormSuccessData("form", form));
+      addUsers(payload).catch((error) => console.error("error", error));
+      addClients(payload).catch((error) => console.error("error", error));
       dispatch(
         // eslint-disable-next-line no-unused-vars
         saveFormProcessMapperPost(data, (err, res) => {
@@ -250,7 +258,7 @@ const Create = React.memo(() => {
                   className="form-control"
                   id="name"
                   placeholder={t("Enter the form machine name")}
-                  value={form.name || ""}
+                  value={form?.name || ""}
                   onChange={(event) => handleChange("name", event)}
                 />
               </div>
@@ -325,7 +333,7 @@ const Create = React.memo(() => {
                   id="path"
                   placeholder={t("Enter pathname")}
                   style={{ textTransform: "lowercase", width: "120px" }}
-                  value={form.path || ""}
+                  value={form?.path || ""}
                   onChange={(event) => handleChange("path", event)}
                 />
               </div>

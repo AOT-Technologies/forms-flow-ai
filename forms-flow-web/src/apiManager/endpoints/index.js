@@ -69,6 +69,9 @@ const API = {
   DASHBOARD_AUTHORIZATION: `${WEB_BASE_URL}/authorizations/dashboard`,
   USER_DASHBOARDS: `${WEB_BASE_URL}/authorizations/users/dashboard`,
   APPLICATION_EVENT_UPDATE: `${WEB_BASE_URL}/application/<application_id>/resubmit`,
+  DESIGNER_LIST: `${WEB_BASE_URL}/authorizations/designer`,
+  USER_ROLES:`${WEB_BASE_URL}/roles`,
+  CLIENT_LIST:`${WEB_BASE_URL}/authorizations/form`
 };
 
 export default API;

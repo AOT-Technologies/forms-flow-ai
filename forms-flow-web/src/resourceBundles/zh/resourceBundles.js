@@ -1,5 +1,6 @@
 /* eslint-disable max-len */
 export const RESOURCE_BUNDLES_ZH = {
+  "Bad Request":"错误的请求",
   "Select form version":"选择表格版本",
   "Please remove the special characters...!":"请删除特殊字符...！",
   "No histories found":"没有找到历史记录",
@@ -277,7 +278,15 @@ export const RESOURCE_BUNDLES_ZH = {
   "Click Here to Copy":"点击这里复制",
   "Resources":"资源",
   "Duplicate form created successfully":"成功创建重复表单",
-  "Revert": "恢复"
+  "Revert": "恢复",
+  "Overview": "概述",
+  "Designer Permission": "设计师许可",
+  "Accessible for all Designers": "所有设计师均可使用",
+  "Private(Only You)": "私人（只有你）",
+  "Specific Designer Group": "特定设计师组",
+  "Client Permission": "客户许可",
+  "All Clients": "所有客户",
+  "Specific Client Group": "特定客户群"
 
 };
 

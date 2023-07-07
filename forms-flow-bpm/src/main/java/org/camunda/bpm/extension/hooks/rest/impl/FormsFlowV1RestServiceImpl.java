@@ -69,4 +69,9 @@ public class FormsFlowV1RestServiceImpl {
         return new VersionRestResourceImpl(processEngineService.getVersionRestService());
     }
 
+    @Path(ExternalTaskRestResource.PATH)
+    public ExternalTaskRestResource getExternalTaskResource() {
+        return new ExternalTaskRestResourceImpl(processEngineService.getExternalTaskRestService());
+    }
+
 }

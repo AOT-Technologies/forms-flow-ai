@@ -75,19 +75,31 @@ jobs:
           restore-keys: |
             ${{ runner.os }}-buildx-${{ matrix.name }}
 
-      - name: Build and push Docker image
+      - name: Build and push Docker image - amd64
         if: ${{ github.ref != 'refs/heads/master' }}
-        uses: docker/build-push-action@v2
+        uses: docker/build-push-action@v4
         with:
           context: forms-flow-bpm
           push: true
+          file: forms-flow-bpm/Dockerfile
+          platforms: linux/amd64
           tags: ${{ steps.meta.outputs.tags }}
           labels: ${{ steps.meta.outputs.labels }}
-      - name: Build and push Docker image
+      - name: Build and push Docker image - amd64
         if: ${{ github.ref == 'refs/heads/master' }}
         uses: docker/build-push-action@v2
         with:
           context: forms-flow-bpm
           push: true
+          file: forms-flow-bpm/Dockerfile
           tags: ${{ steps.meta.outputs.tags }}, formsflow/forms-flow-bpm:latest
+          labels: ${{ steps.meta.outputs.labels }}
+      - name: Build and push Docker image - arm64
+        uses: docker/build-push-action@v4
+        with:
+          context: forms-flow-bpm
+          file: forms-flow-bpm/Dockerfile-ARM64
+          push: true
+          platforms: linux/arm64/v8
+          tags: ${{ steps.meta.outputs.tags }}-arm64
           labels: ${{ steps.meta.outputs.labels }}

@@ -1,5 +1,6 @@
 /* eslint-disable max-len */
 export const RESOURCE_BUNDLES_DE = {
+  "Bad Request":"Ungültige Anforderung",
   "Select form version":"Formularversion auswählen",
   "Please remove the special characters...!":"Bitte entfernen Sie die Sonderzeichen...!",
   "No histories found":"Keine Historien gefunden",
@@ -280,7 +281,15 @@ export const RESOURCE_BUNDLES_DE = {
   "Click Here to Copy":"Klicken Sie hier, um zu kopieren",
   "Resources":"Bronnen",
   "Duplicate form created successfully":"Doppeltes Formular erfolgreich erstellt",
-  "Revert": "Zurückkehren"
+  "Revert": "Zurückkehren",
+  "Overview": "Überblick",
+  "Designer Permission": "Designer-Genehmigung",
+  "Accessible for all Designers": "Für alle Designer zugänglich",
+  "Private(Only You)": "Privat (Nur Sie)",
+  "Specific Designer Group": "Spezifische Designergruppe",
+  "Client Permission": "Kundenerlaubnis",
+  "All Clients": "Alle Kunden",
+  "Specific Client Group": "Spezifische Kundengruppe"
 
 
 

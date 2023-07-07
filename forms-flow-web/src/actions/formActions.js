@@ -28,6 +28,18 @@ export const setFormDeleteStatus = (data) => (dispatch) => {
     payload: data,
   });
 };
+export const setFormDesignerPermissionRoles = (data) => (dispatch) => {
+  dispatch({
+    type: ACTION_CONSTANTS.FORM_DESIGNER_PERMISSION_ROLES,
+    payload: data,
+  });
+};
+export const setFormAuthVerifyLoading = (data) => (dispatch) => {
+  dispatch({
+    type: ACTION_CONSTANTS.FORM_AUTH_VERIFY_LOADING,
+    payload: data,
+  });
+};
 
 export const setFormWorkflowSaved = (data) => (dispatch) => {
   dispatch({

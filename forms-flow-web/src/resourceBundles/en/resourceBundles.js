@@ -1,5 +1,6 @@
 /* eslint-disable max-len */
 export const RESOURCE_BUNDLES_EN = {
+  "Bad Request":"Bad Request",
   "Select form version":"Select form version",
   "Please remove the special characters...!":"Please remove the special characters...!",
   "No histories found":"No histories found",
@@ -278,10 +279,15 @@ export const RESOURCE_BUNDLES_EN = {
   "Click Here to Copy":"Click Here to Copy",
   "Resources":"Resources",
   "Duplicate form created successfully":"Duplicate form created successfully",
-  "Revert": "Revert"
-
-
-
+  "Revert": "Revert",
+  "Overview": "Overview",
+  "Designer Permission": "Designer Permission",
+  "Accessible for all Designers": "Accessible for all Designers",
+  "Private(Only You)": "Private(Only You)",
+  "Specific Designer Group": "Specific Designer Group",
+  "Client Permission": "Client Permission",
+  "All Clients": "All Clients",
+  "Specific Client Group": "Specific Client Group"
 
 };
 

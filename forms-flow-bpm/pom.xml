@@ -11,6 +11,11 @@
 
 	<name>formsflow BPM Extension</name>
 	<description>formsflow BPM Extension</description>
+	<parent>
+		<groupId>org.springframework.boot</groupId>
+		<artifactId>spring-boot-starter-parent</artifactId>
+		<version>2.6.6</version>
+	</parent>
 
 	<properties>
 		<version.java>17</version.java>
@@ -38,6 +43,7 @@
 			<modules>
 				<module>forms-flow-bpm-utils</module>
 				<module>forms-flow-bpm-camunda</module>
+				<module>forms-flow-bpm-integration</module>
 			</modules>
 			<dependencyManagement>
 				<dependencies>
@@ -336,6 +342,7 @@
 	<modules>
 		<module>forms-flow-bpm-utils</module>
 		<module>forms-flow-bpm-camunda</module>
+		<module>forms-flow-bpm-integration</module>
 	</modules>
 
 

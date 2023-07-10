@@ -29,7 +29,7 @@ Mark  items as `Added`, `Changed`, `Fixed`, `Removed`, `Untested Features`, `Upc
 **forms-flow-api**
 
 * Added RBAC(Role Based Access Control) support in form listing for designer and client.
-* Added migration script for existing users to get all forms listed, checkout [here]( ./forms-flow-api/README.md#migration-script-for-existing-users)
+* Added migration script for existing users to get all forms listed, checkout [here]( ./forms-flow-api/README.md#migration-script-for-existing-users).
 * Added admin module for adding keycloak roles and user assignment.
 * Added formsflow-admin group for RBAC support.
 
@@ -43,7 +43,7 @@ Mark  items as `Added`, `Changed`, `Fixed`, `Removed`, `Untested Features`, `Upc
 
 **forms-flow-analytics**
 
-* Redash upgraded from version 10.1.4 to 10.1.5
+* Redash upgraded from version 10.1.4 to 10.1.5.
 
 `forms-flow-api`
 

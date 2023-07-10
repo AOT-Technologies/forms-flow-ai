@@ -1,6 +1,8 @@
 # formsflow.ai Web Application
 
 ![React](https://img.shields.io/badge/React-17.0.2-blue)
+![webpack](https://img.shields.io/badge/webpack-5.76.0-blue)
+
 
 **formsflow.ai** delivers progressive web application with React version `17.0.2` and webpack version `5.76.0`. Also currently uses  [form.io](https://github.com/formio/formio) version `2.4.1`.
 

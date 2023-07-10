@@ -1,4 +1,4 @@
--e git+https://github.com/sumesh-aot/forms-flow-ai.git@46b89ff0ba9abe9904d1f7e0445f12f22132c0ed#egg=forms_flow_data_analysis_api&subdirectory=forms-flow-data-analysis-api
+-e git+https://github.com/AOT-Technologies/forms-flow-ai.git@master#egg=forms_flow_data_analysis_api&subdirectory=forms-flow-data-analysis-api
 Flask-Migrate==4.0.4
 Flask-SQLAlchemy==3.0.5
 Flask==2.3.2

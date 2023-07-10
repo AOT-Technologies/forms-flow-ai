@@ -115,10 +115,7 @@ is mentioned on the [link](../forms-flow-idm/keycloak/README.md#create-forms-flo
    * Default user credentials are provided [here](../forms-flow-idm/keycloak/README.md#formsflow-ai-user-credentials).
 
 ### How to Create Your First Form
-  * Login to **http://localhost:3000/** using valid [designer](../forms-flow-idm/keycloak/README.md#default-user-credentials) credentials
-  * Navigate to menu **Forms**
-  * Click the button **+ Create Form** to launch the form designer studio.
-  * Design the form using **Drag and Drop** of components from LHS to RHS and publish by clicking the button **Create Form**.
+  * The user can create your own form, check [here](https://aot-technologies.github.io/forms-flow-ai-doc/#examples) for more details.
 
 ### Logo change
   * Default Logo can be changed to the users logo by replacing the logo.svg in public folder of forms-flow-web-root-config.

@@ -107,6 +107,8 @@ input {
     background-color: var(--main-theme); 
     margin-top: 10px;
     margin-bottom: 0px;
+    cursor: pointer;
+    text-decoration: none !important;
 }
 
 .pf-m-primary:hover {
@@ -755,4 +757,34 @@ login-pf-page-header{
    padding-top: 0;
    margin-top: 0;
 }
+}
+
+ 
+
+.ul-social-links {
+   display: flex !important;
+   padding: 0 !important;
+   flex-wrap: wrap !important;
+}
+
+.a-social-link {
+   margin-bottom: 0.5rem;
+   font-size: 15px;
+   text-align: center;
+   padding: 0 !important;
+   margin: 0 !important;
+   color: #06c;
+   text-decoration: none  !important;
+}
+.a-social-link:hover{
+   color: rgb(3, 67, 131);
+}
+
+.kc-social-provider-name{
+   top: 0 !important;
+}
+
+.login-with-social {
+   text-align: left !important;
+   margin-left: 1rem !important;
 }

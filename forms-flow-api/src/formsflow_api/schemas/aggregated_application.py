@@ -23,6 +23,7 @@ class ApplicationMetricsRequestSchema(Schema):
     form_name = fields.Str(data_key="formName", required=False)
     sort_by = fields.Str(data_key="sortBy", required=False)
     sort_order = fields.Str(data_key="sortOrder", required=False)
+    form_type = fields.Str(data_key="formType", required=False)
 
 
 class AggregatedApplicationSchema(Schema):
@@ -33,9 +34,19 @@ class AggregatedApplicationSchema(Schema):
 
         unknown = EXCLUDE
 
-    form_process_mapper_id = fields.Int(data_key="mapperId")
-    form_name = fields.Str(data_key="formName")
-    version = fields.Str(data_key="version")
-    application_name = fields.Str(data_key="applicationName")
     application_status = fields.Str(data_key="statusName")
     count = fields.Int()
+
+
+class AggregatedApplicationsSchema(Schema):
+    """This class manages aggregated application response schema."""
+
+    class Meta:  # pylint: disable=too-few-public-methods
+        """Exclude unknown fields in the deserialized output."""
+
+        unknown = EXCLUDE
+
+    parent_form_id = fields.Str(data_key="parentFormId")
+    form_versions = fields.List(fields.Dict, data_key="formVersions")
+    submission_count = fields.Str(data_key="applicationCount")
+    form_name = fields.Str(data_key="formName")

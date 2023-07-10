@@ -35,6 +35,7 @@ const initialState = {
   taskFormSubmissionReload: false,
   activePage: 1,
   firstResult: 0,
+  error: ''
 };
 
 const bpmTasks = (state = initialState, action) => {
@@ -129,6 +130,12 @@ const bpmTasks = (state = initialState, action) => {
         activePage: action.payload,
         firstResult: getFirstResultIndex(action.payload),
       };
+    case ACTION_CONSTANTS.BPM_ERROR:
+        return {
+          ...state,
+          taskId: null,
+          error: action.payload
+        };
     default:
       return state;
   }

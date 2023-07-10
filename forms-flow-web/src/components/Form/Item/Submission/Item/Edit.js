@@ -51,7 +51,7 @@ const Edit = React.memo((props) => {
     form: { form, isActive: isFormActive },
     submission: { submission, isActive: isSubActive, url },
   } = props;
-
+  
   const [updatedSubmissionData, setUpdatedSubmissionData] = useState({});
 
   const applicationStatus = useSelector(
@@ -63,12 +63,13 @@ const Edit = React.memo((props) => {
   const applicationDetail = useSelector(
     (state) => state.applications.applicationDetail
   );
+
   const isFormSubmissionLoading = useSelector(
     (state) => state.formDelete.isFormSubmissionLoading
   );
   const tenantKey = useSelector((state) => state.tenants?.tenantId);
   const customSubmission = useSelector(
-    (state) => state.formDelete.customSubmission
+    (state) => state.customSubmission?.submission || {}
   );
   const redirectUrl = MULTITENANCY_ENABLED ? `/tenant/${tenantKey}/` : "/";
   useEffect(() => {
@@ -107,7 +108,7 @@ const Edit = React.memo((props) => {
           message={props.submissionError.message}
           onConfirm={props.onConfirm}
         ></SubmissionError>
-        <h3 className="task-head">{form.title}</h3>
+        <h3 className="task-head text-truncate" style={{ height:"45px" }}>{form.title}</h3>
       </div>
       <Errors errors={errors} />
       <LoadingOverlay
@@ -190,9 +191,9 @@ const mapDispatchToProps = (dispatch, ownProps) => {
           if (
             UPDATE_EVENT_STATUS.includes(applicationDetail.applicationStatus)
           ) {
-            const data = getProcessDataReq(applicationDetail);
+            const data = getProcessDataReq(applicationDetail,submission.data);
             dispatch(
-              updateApplicationEvent(data, () => {
+              updateApplicationEvent(applicationDetail.id, data, () => {
                 dispatch(resetSubmissions("submission"));
                 dispatch(setFormSubmissionLoading(false));
                 if (onFormSubmit) {

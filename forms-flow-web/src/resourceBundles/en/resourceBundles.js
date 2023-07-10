@@ -1,5 +1,8 @@
 /* eslint-disable max-len */
 export const RESOURCE_BUNDLES_EN = {
+  "Bad Request":"Bad Request",
+  "Select form version":"Select form version",
+  "Please remove the special characters...!":"Please remove the special characters...!",
   "No histories found":"No histories found",
   "Continue":"Continue",
   "This will create a new version of the form without changing the path name but with new form id.":"This will create a new version of the form without changing the path name but with new form id.",
@@ -35,7 +38,7 @@ export const RESOURCE_BUNDLES_EN = {
   "Enter Label":"Enter Label",
   "Select form field":"Select form field",
   "Add form fields to display in task list":"Add form fields to display in task list",
-  "Version":"Version",
+  "Latest Version":"Latest Version",
   "Submission Status":"Submission Status",
   "No submission status":"No submission status",
   "No Public url found":"No Public url found",
@@ -237,6 +240,7 @@ export const RESOURCE_BUNDLES_EN = {
   "Save Changes":"Save Changes",
   "Changing the form workflow will not affect the existing applications. It will only update in the newly created applications. Press Save Changes to continue or cancel the changes.":"Changing the form workflow will not affect the existing applications. It will only update in the newly created applications. Press Save Changes to continue or cancel the changes.",
   "Form Workflow Association Saved.":"Form Workflow Association Saved.",
+  "Form deletion unsuccessful":"Form deletion unsuccessful",
   "Form deleted successfully":"Form deleted successfully",
   "Form process failed":"Form process failed",
   "Form unpublishing Failed":"Form unpublishing Failed",
@@ -274,10 +278,17 @@ export const RESOURCE_BUNDLES_EN = {
   "URL copied":"URL copied",
   "Click Here to Copy":"Click Here to Copy",
   "Resources":"Resources",
-  "Duplicate form created successfully":"Duplicate form created successfully"
-
-
-
+  "Duplicate form created successfully":"Duplicate form created successfully",
+  "Revert": "Revert",
+  "Overview": "Overview",
+  "Designer Permission": "Designer Permission",
+  "Accessible for all Designers": "Accessible for all Designers",
+  "Private(Only You)": "Private(Only You)",
+  "Specific Designer Group": "Specific Designer Group",
+  "Client Permission": "Client Permission",
+  "All Clients": "All Clients",
+  "Specific Client Group": "Specific Client Group",
+  "Give Designer Role Permissions": "Give Designer Role Permissions"
 
 };
 

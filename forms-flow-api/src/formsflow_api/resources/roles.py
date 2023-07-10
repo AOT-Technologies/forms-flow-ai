@@ -4,7 +4,13 @@ from http import HTTPStatus
 import requests
 from flask import current_app, request
 from flask_restx import Namespace, Resource, fields
-from formsflow_api_utils.utils import auth, cors_preflight, profiletime
+from formsflow_api_utils.utils import (
+    ADMIN_GROUP,
+    DESIGNER_GROUP,
+    auth,
+    cors_preflight,
+    profiletime,
+)
 from marshmallow.exceptions import ValidationError
 
 from formsflow_api.schemas import RolesGroupsSchema
@@ -31,7 +37,7 @@ class KeycloakRolesResource(Resource):
     """Resource to manage keycloak list and create roles/groups."""
 
     @staticmethod
-    @auth.require
+    @auth.has_one_of_roles([ADMIN_GROUP, DESIGNER_GROUP])
     @profiletime
     @API.doc(
         responses={
@@ -67,7 +73,7 @@ class KeycloakRolesResource(Resource):
             raise unexpected_error
 
     @staticmethod
-    @auth.require
+    @auth.has_one_of_roles([ADMIN_GROUP])
     @profiletime
     @API.doc(
         responses={
@@ -107,14 +113,14 @@ class KeycloakRolesResource(Resource):
             raise unexpected_error
 
 
-@cors_preflight("GET, POST, OPTIONS")
+@cors_preflight("GET, PUT, DELETE, OPTIONS")
 @API.route("/<string:role_id>", methods=["GET", "PUT", "DELETE", "OPTIONS"])
 @API.doc(params={"role_id": "Group/Role details corresponding to group_id/role name"})
 class KeycloakRolesResourceById(Resource):
     """Resource to manage keycloak roles/groups by id."""
 
     @staticmethod
-    @auth.require
+    @auth.has_one_of_roles([ADMIN_GROUP])
     @profiletime
     @API.doc(
         responses={
@@ -145,7 +151,7 @@ class KeycloakRolesResourceById(Resource):
             raise unexpected_error
 
     @staticmethod
-    @auth.require
+    @auth.has_one_of_roles([ADMIN_GROUP])
     @profiletime
     @API.doc(
         responses={
@@ -174,7 +180,7 @@ class KeycloakRolesResourceById(Resource):
             raise unexpected_error
 
     @staticmethod
-    @auth.require
+    @auth.has_one_of_roles([ADMIN_GROUP])
     @profiletime
     @API.doc(
         responses={

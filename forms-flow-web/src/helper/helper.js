@@ -1,35 +1,63 @@
+import NotFound from "../components/NotFound";
+import { Translation } from "react-i18next";
+
 const replaceUrl = (URL, key, value) => {
   return URL.replace(key, value);
 };
 
-const addTenankey = (value, tenankey) => {
-  let newValue = value.split("-");
-  let tenantId = newValue.shift();
-  if (tenankey.toLowerCase() === tenantId.toLowerCase()) {
+const addTenantkey = (value, tenantkey) => {
+  const tenantKeyCheck = value.match(`${tenantkey}-`);
+  if (
+    tenantKeyCheck &&
+    tenantKeyCheck[0].toLowerCase() === `${tenantkey.toLowerCase()}-`
+  ) {
     return value.toLowerCase();
   } else {
-    return `${tenankey.toLowerCase()}-${value.toLowerCase()}`;
+    return `${tenantkey.toLowerCase()}-${value.toLowerCase()}`;
   }
 };
 
-const removeTenantKey = (value, tenankey) => {
-  let newValue = value.split("-");
-  let tenantId = newValue.shift();
-  if (tenankey.toLowerCase() === tenantId.toLowerCase()) {
-    return newValue.join("-");
+const removeTenantKey = (value, tenantkey) => {
+  const tenantKeyCheck = value.match(`${tenantkey}-`);
+  if (
+    tenantKeyCheck &&
+    tenantKeyCheck[0].toLowerCase() === `${tenantkey.toLowerCase()}-`
+  ) {
+    return value.replace(`${tenantkey.toLowerCase()}-`, "");
   } else {
     return false;
   }
 };
 
-const checkAndAddTenantKey = (value, tenankey) => {
-  let newValue = value.split("-");
-  let tenantId = newValue.shift();
-  if (tenankey.toLowerCase() === tenantId.toLowerCase()) {
-    return value;
-  } else {
-    return `${tenankey.toLowerCase()}-${value.toLowerCase()}`;
-  }
+const textTruncate = (wordLength, targetLength, text) => {
+  return text?.length > wordLength
+    ? text.substring(0, targetLength) + "..."
+    : text;
 };
 
-export { replaceUrl, addTenankey, removeTenantKey, checkAndAddTenantKey };
+const renderPage = (formStatus, processLoadError) => {
+  if (!processLoadError && (formStatus === "inactive" || !formStatus)) {
+    return (
+      <span>
+        <div
+          className="container"
+          style={{
+            maxWidth: "900px",
+            margin: "auto",
+            height: "50vh",
+            display: "flex",
+            flexDirection: "column",
+            alignItems: "center",
+            justifyContent: "center",
+          }}
+        >
+          <h3>{<Translation>{(t) => t("Form not published")}</Translation>}</h3>
+          <p>{<Translation>{(t) => t("You can't submit this form until it is published")}</Translation>}</p>
+        </div>
+      </span>
+    );
+  } else {
+    return (<NotFound errorMessage={<Translation>{(t) => t("Access Denied") }</Translation> } errorCode={"403"} />);
+  }
+};
+export { replaceUrl, addTenantkey, removeTenantKey, textTruncate, renderPage };

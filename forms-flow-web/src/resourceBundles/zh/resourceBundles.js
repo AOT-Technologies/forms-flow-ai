@@ -1,5 +1,8 @@
 /* eslint-disable max-len */
 export const RESOURCE_BUNDLES_ZH = {
+  "Bad Request":"错误的请求",
+  "Select form version":"选择表格版本",
+  "Please remove the special characters...!":"请删除特殊字符...！",
   "No histories found":"没有找到历史记录",
   "Continue":"继续",
   "This will create a new version of the form without changing the path name but with new form id.":"这将创建一个新版本的表单而不更改路径名但具有新的表单 ID。",
@@ -36,7 +39,7 @@ export const RESOURCE_BUNDLES_ZH = {
   "Enter Label":"输入标签",
   "Select form field":"选择表单域",
   "Add form fields to display in task list":"添加表单域以显示在任务列表中",
-  "Version":"版本",
+  "Latest Version":"最新版本",
   "Submission Status":"提交状态",
   "No submission status":"无提交状态",
   "No Public url found":"未找到公共网址",
@@ -236,6 +239,7 @@ export const RESOURCE_BUNDLES_ZH = {
   "Save Changes":"保存更改",
   "Changing the form workflow will not affect the existing applications. It will only update in the newly created applications. Press Save Changes to continue or cancel the changes.":"更改表单工作流程不会影响现有应用程序。它只会在新创建的应用程序中更新。按保存更改以继续或取消更改。",
   "Form Workflow Association Saved.":"表单工作流关联已保存。",
+  "Form deletion unsuccessful":"表单删除失败",
   "Form deleted successfully":"表格删除成功",
   "Form process failed":"表单处理失败",
   "Form unpublishing Failed":"表单取消发布失败",
@@ -273,7 +277,17 @@ export const RESOURCE_BUNDLES_ZH = {
   "URL copied":"已复制网址",
   "Click Here to Copy":"点击这里复制",
   "Resources":"资源",
-  "Duplicate form created successfully":"成功创建重复表单"
+  "Duplicate form created successfully":"成功创建重复表单",
+  "Revert": "恢复",
+  "Overview": "概述",
+  "Designer Permission": "设计师许可",
+  "Accessible for all Designers": "所有设计师均可使用",
+  "Private(Only You)": "私人（只有你）",
+  "Specific Designer Group": "特定设计师组",
+  "Client Permission": "客户许可",
+  "All Clients": "所有客户",
+  "Specific Client Group": "特定客户群",
+  "Give Designer Role Permissions": "授予设计师角色权限"
 
 };
 

@@ -45,6 +45,9 @@ import SubmissionError from "../../containers/SubmissionError";
 import SavingLoading from "../Loading/SavingLoading";
 import Confirm from "../../containers/Confirm";
 import { setDraftDelete } from "../../actions/draftActions";
+import { setFormStatusLoading } from "../../actions/processActions"; 
+import { getFormProcesses } from "../../apiManager/services/processServices";
+import { textTruncate } from "../../helper/helper";
 
 const View = React.memo((props) => {
   const { t } = useTranslation();
@@ -92,7 +95,7 @@ const View = React.memo((props) => {
   const dispatch = useDispatch();
 
   const saveDraft = (payload, exitType = exitType) => {
-    if (exitType === "SUBMIT") return;
+    if (exitType === "SUBMIT" || processData?.status !== "active") return;
     let dataChanged = !isEqual(payload.data, lastUpdatedDraft.data);
     if (draftSubmission?.id) {
       if (String(draftSubmission?.id) !== String(draftId)) return;
@@ -114,6 +117,13 @@ const View = React.memo((props) => {
       }
     }
   };
+  const formStatusLoading = useSelector(
+    (state) => state.process?.formStatusLoading
+  );
+
+  const processData = useSelector(
+    (state) => state.process?.formProcessList
+  );
 
   /**
    * We will repeatedly update the current state to draft table
@@ -128,19 +138,31 @@ const View = React.memo((props) => {
   );
 
   useEffect(() => {
+    if (isAuthenticated) {
+      dispatch(setFormStatusLoading(true));
+      dispatch(
+        getFormProcesses(formId,()=>{
+          dispatch(setFormStatusLoading(false));
+        })
+      );
+    }
+  }, [isAuthenticated,formId]);
+
+  useEffect(() => {
     return () => {
       let payload = getDraftReqFormat(formId, draftRef.current);
       if (poll) saveDraft(payload, exitType.current);
     };
   }, [poll, exitType.current, draftSubmission?.id]);
-
-  if (isActive || isPublicStatusLoading) {
+ 
+  if (isActive || isPublicStatusLoading || formStatusLoading) {
     return (
       <div data-testid="loading-view-component">
         <Loading />
       </div>
     );
   }
+  
 
   const deleteDraft = () => {
     dispatch(
@@ -152,7 +174,8 @@ const View = React.memo((props) => {
     );
   };
 
-  const onYes = () => {
+  const onYes = (e) => {
+    e.currentTarget.disabled = true;
     deleteDraftbyId(draftDelete.draftId)
       .then(() => {
         toast.success(t("Draft Deleted Successfully"));
@@ -229,19 +252,23 @@ const View = React.memo((props) => {
                 <i className="fa fa-wpforms" aria-hidden="true" /> &nbsp;{" "}
                 {t("Drafts")}/
               </span>{" "}
-              {form.title}
+              {textTruncate(60,40,form.title)}
             </h3>
           ) : (
             ""
           )}
         </div>
-        <button
-          className="btn btn-danger mr-2"
-          style={{ width: "8.5em" }}
-          onClick={() => deleteDraft()}
-        >
-          {t("Discard Draft")}
-        </button>
+        {processData?.status === "active" ? (
+          <button
+            className="btn btn-danger mr-2"
+            style={{ width: "8.5em" }}
+            onClick={() => deleteDraft()}
+          >
+            {t("Discard Draft")}
+          </button>
+        ) : (
+          ""
+        )}
       </div>
       <Errors errors={errors} />
       <LoadingOverlay
@@ -254,38 +281,58 @@ const View = React.memo((props) => {
           <Confirm
             modalOpen={draftDelete.modalOpen}
             message={`${t("Are you sure you wish to delete the draft")} "${
-              draftDelete.draftName
+              textTruncate(14,12,draftDelete.draftName)
             }" 
             ${t("with ID")} "${draftDelete.draftId}"`}
             onNo={() => onNo()}
-            onYes={() => {
+            onYes={(e) => {
               exitType.current = "SUBMIT";
-              onYes();
+              onYes(e);
             }}
           />
-          {
-            <Form
-              form={form}
-              submission={submission.submission}
-              url={url}
-              options={{
-                ...options,
-                language: lang,
-                i18n: formio_resourceBundles,
-              }}
-              hideComponents={hideComponents}
-              onChange={(formData) => {
-                setDraftData(formData.data);
-                draftRef.current = formData.data;
-              }}
-              onSubmit={(data) => {
-                setPoll(false);
-                exitType.current = "SUBMIT";
-                onSubmit(data, form._id, isPublic);
-              }}
-              onCustomEvent={(evt) => onCustomEvent(evt, redirectUrl)}
-            />
-          }
+          {processData?.status === "active" ? (
+            <div className="form-view-wrapper">
+              <Form
+                form={form}
+                submission={submission.submission}
+                url={url}
+                options={{
+                  ...options,
+                  language: lang,
+                  i18n: formio_resourceBundles,
+                }}
+                hideComponents={hideComponents}
+                onChange={(formData) => {
+                  setDraftData(formData.data);
+                  draftRef.current = formData.data;
+                }}
+                onSubmit={(data) => {
+                  setPoll(false);
+                  exitType.current = "SUBMIT";
+                  onSubmit(data, form._id, isPublic);
+                }}
+                onCustomEvent={(evt) => onCustomEvent(evt, redirectUrl)}
+              />
+            </div>
+          ) : (
+            <span>
+              <div
+                className="container"
+                style={{
+                  maxWidth: "900px",
+                  margin: "auto",
+                  height: "50vh",
+                  display: "flex",
+                  flexDirection: "column",
+                  alignItems: "center",
+                  justifyContent: "center",
+                }}
+              >
+                <h3>{t("Form not published")}</h3>
+                <p>{t("You can't submit this form until it is published")}</p>
+              </div>
+            </span>
+          )}
         </div>
       </LoadingOverlay>
     </div>
@@ -300,7 +347,7 @@ const executeAuthSideEffects = (dispatch, redirectUrl) => {
 const doProcessActions = (submission, ownProps) => {
   return (dispatch, getState) => {
     const state = getState();
-    let form = state.form.form;
+    let form = state.form?.form;
     let isAuth = state.user.isAuthenticated;
     const tenantKey = state.tenants?.tenantId;
     const redirectUrl = MULTITENANCY_ENABLED ? `/tenant/${tenantKey}/` : `/`;

@@ -1,4 +1,4 @@
-import { httpGETRequest } from "../httpRequestHandler";
+import { RequestService } from "@formsflow/service";
 import API from "../endpoints";
 import {
   setMetricsDateRangeLoading,
@@ -30,28 +30,22 @@ export const fetchMetricsSubmissionCount = (
     /*eslint max-len: ["error", { "code": 170 }]*/
     let url = `${API.METRICS_SUBMISSIONS}?from=${fromDate}&to=${toDate}&orderBy=${searchBy}&pageNo=${pageNo}&limit=${limit}&sortBy=${sortsBy}&sortOrder=${sortOrder}`;
     if (formName) {
-      url += `&formName=${formName}`;
+      url += `&formName=${encodeURIComponent(formName)}`;
     }
-    httpGETRequest(url, {})
+
+    RequestService.httpGETRequest(url, {})
       .then((res) => {
         if (res.data) {
           dispatch(setMetricsDateRangeLoading(false));
           dispatch(setMetricsLoader(false));
+          dispatch(setMetricsStatusLoader(false));
           dispatch(setMetricsSubmissionCount(res.data.applications));
           dispatch(setMetricsTotalItems(res.data.totalCount));
           if (res.data.applications && res.data.applications[0]) {
-            dispatch(
-              fetchMetricsSubmissionStatusCount(
-                res.data.applications[0].mapperId,
-                fromDate,
-                toDate,
-                searchBy
-              )
-            );
+              dispatch(setSelectedMetricsId(res.data.applications[0].parentFormId));
+
           } else {
-            dispatch(setMetricsSubmissionStatusCount([]));
-            dispatch(setMetricsStatusLoader(false));
-            dispatch(setMetricsDateRangeLoading(false));
+            dispatch(setSelectedMetricsId(null));
           }
           done(null, res.data);
         } else {
@@ -79,14 +73,17 @@ export const fetchMetricsSubmissionStatusCount = (
   fromDate,
   toDate,
   setSearchBy,
+  options = {},
   ...rest
 ) => {
   const done = rest.length ? rest[0] : () => { };
   return (dispatch) => {
-    dispatch(setSelectedMetricsId(id));
+    if(options.parentId){
+      dispatch(setSelectedMetricsId(id));
+    }
 
-    httpGETRequest(
-      `${API.METRICS_SUBMISSIONS}/${id}?from=${fromDate}&to=${toDate}&orderBy=${setSearchBy}`
+    RequestService.httpGETRequest(
+      `${API.METRICS_SUBMISSIONS}/${id}?from=${fromDate}&to=${toDate}&orderBy=${setSearchBy}&formType=${options.parentId ? "parent" : "form"}`
     )
       .then((res) => {
         if (res.data) {

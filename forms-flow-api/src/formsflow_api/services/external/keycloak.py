@@ -136,7 +136,7 @@ class KeycloakAdminAPIService:
     def update_request(  # pylint: disable=inconsistent-return-statements
         self, url_path, data=None
     ):
-        """Method to fetch get request of Keycloak Admin APIs.
+        """Method to fetch PUT request of Keycloak Admin APIs.
 
         : url_path: The relative path of the API
         : data: The request data object
@@ -175,7 +175,7 @@ class KeycloakAdminAPIService:
         return roles
 
     @profiletime
-    def delete_request(self, url_path, data=None):
+    def delete_request(self, url_path, data=None) -> bool:
         """Method to invoke delete.
 
         : url_path: The relative path of the API
@@ -187,6 +187,7 @@ class KeycloakAdminAPIService:
         except Exception as err_code:
             raise f"Request to Keycloak Admin APIs failed., {err_code}"
         response.raise_for_status()
+        return response.status_code == 204
 
     @profiletime
     def create_request(  # pylint: disable=inconsistent-return-statements
@@ -211,3 +212,32 @@ class KeycloakAdminAPIService:
             raise f"Request to Keycloak Admin APIs failed., {err_code}"
         response.raise_for_status()
         return response
+
+    @profiletime
+    def get_user_groups(self, user: str):
+        """Return list of groups that the given user is part of."""
+        return self.get_request(f"users/{user}/groups")
+
+    @profiletime
+    def get_user_roles(self, user: str):
+        """Return list of roles that the given user is part of."""
+        client_id = self.get_client_id()
+        return self.get_request(
+            f"users/{user}/role-mappings/clients/{client_id}/composite"
+        )
+
+    @profiletime
+    def get_realm_users(self, search: str, page_no: int, limit: int):
+        """Return list of users in the realm."""
+        url = f"users?first={(page_no-1)*limit}&max={limit}"
+        if search:
+            url += f"&search={search}"
+        return self.get_request(url_path=url)
+
+    @profiletime
+    def get_realm_users_count(self, search: str):
+        """Return users count in the realm."""
+        url = "users/count"
+        if search:
+            url += f"?search={search}"
+        return self.get_request(url_path=url)

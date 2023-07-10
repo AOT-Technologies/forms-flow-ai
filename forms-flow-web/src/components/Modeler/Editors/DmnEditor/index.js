@@ -6,7 +6,7 @@ import { toast } from "react-toastify";
 import { useTranslation } from "react-i18next";
 import { extractDataFromDiagram } from "../../helpers/helper";
 import { createXML } from "../../helpers/deploy";
-import { MULTITENANCY_ENABLED, PUBLIC_WORKFLOW_ENABLED  } from "../../../../constants/constants";
+import { MULTITENANCY_ENABLED, PUBLIC_WORKFLOW_ENABLED } from "../../../../constants/constants";
 import { deployBpmnDiagram } from "../../../../apiManager/services/bpmServices";
 import Loading from "../../../../containers/Loading";
 import { SUCCESS_MSG, ERROR_MSG } from "../../constants/bpmnModelerConstants";
@@ -169,28 +169,23 @@ export default React.memo(
 
     const deployXML = (xml) => {
       const form = createForm(xml);
-
+      setDeploymentLoading(true);
       deployBpmnDiagram(form)
         .then((res) => {
           if (res?.data) {
             toast.success(t(SUCCESS_MSG));
             // Reload the dropdown menu
             updateDmnProcesses(xml, res.data.deployedDecisionDefinitions);
-            refreshModeller();
+            setDeploymentLoading(false);
           } else {
+            setDeploymentLoading(false);
             toast.error(t(ERROR_MSG));
           }
         })
         .catch((error) => {
+          setDeploymentLoading(false);
           showCamundaHTTTPErrors(error);
         });
-    };
-
-    const refreshModeller = () => {
-      dmnModeler.destroy();
-      setDeploymentLoading(true);
-      initializeModeler();
-      setDeploymentLoading(false);
     };
 
     const showCamundaHTTTPErrors = (error) => {
@@ -319,7 +314,7 @@ export default React.memo(
         </div>
 
         <div>
-        {MULTITENANCY_ENABLED && PUBLIC_WORKFLOW_ENABLED ? (
+          {MULTITENANCY_ENABLED && PUBLIC_WORKFLOW_ENABLED ? (
             <label className="deploy-checkbox">
               <input type="checkbox" checked={applyAllTenants} onClick={handleApplyAllTenants} /> Apply
               for all tenants

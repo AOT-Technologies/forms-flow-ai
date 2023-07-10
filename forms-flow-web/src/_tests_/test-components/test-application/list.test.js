@@ -13,6 +13,14 @@ import {
 import { BrowserRouter as Router } from "react-router-dom";
 import * as redux from "react-redux";
 
+jest.mock('@formsflow/service', () => ({
+  __esModule: true, 
+  default: jest.fn(() => ({})),
+  RequestService : {
+      "httpGETRequest": ()=>Promise.resolve(jest.fn(()=> ({data: {}})))
+  }
+}));
+
 const store = StoreService.configureStore();
 
 const render = (Component) =>

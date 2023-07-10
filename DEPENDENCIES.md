@@ -69,3 +69,14 @@ In the following document, we’ll describe the details of dependencies of vario
    | React  | 17.0.2 |
    | Formio | 2.4.1 |
    <br>
+
+## 7. forms-flow-web-root-config
+
+   To create new front-end modules<br>
+
+   | Component | Version |
+   |  --- | --- |
+   | React  | 17.0.2 |
+   | Formio | 2.4.1 |
+   | webpack| 5.76.0|
+   <br>

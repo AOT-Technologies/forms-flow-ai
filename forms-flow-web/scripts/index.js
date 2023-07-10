@@ -8,18 +8,17 @@ import Walk from "@root/walk";
 import path from "path";
 const VERSION = process.env.VERSION;
 const component = `forms-flow-web@${VERSION}`;
- 
 
 const compressFileAndUpload = (fileName, filePath) => {
   const stream = createReadStream(`${filePath}/${fileName}`);
   stream
     .pipe(createGzip())
-    .pipe(createWriteStream(`${filePath}/single-spa-build.gz.js`))
+    .pipe(createWriteStream(`${filePath}/forms-flow-web.gz.js`))
     .on("finish", () => {
       console.log(`Successfully compressed the file at ${filePath}`);
       upload(
-        `single-spa-build.gz.js`,
-        `${filePath}/single-spa-build.gz.js`
+        `forms-flow-web.gz.js`,
+        `${filePath}/forms-flow-web.gz.js`
       );
     });
 };
@@ -93,7 +92,7 @@ function walkFunc(err, pathname, dirent) {
         console.log(
             `Collecting artifact -> ${path.dirname(pathname)}/${dirent.name}`
           );
-          if (dirent.name === "single-spa-build.js") {
+          if (dirent.name === "forms-flow-web.js") {
             compressFileAndUpload(dirent.name, `${path.dirname(pathname)}`);
           }else if (path.dirname(pathname).includes("static")) {
             if (`${path.dirname(pathname).includes("js")}`) {

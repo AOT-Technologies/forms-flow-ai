@@ -16,9 +16,11 @@ Mark  items as `Added`, `Changed`, `Fixed`, `Removed`, `Untested Features`, `Upc
 
 **forms-flow-web-root-config**
 
+* Added micro-frontend integration using single-spa, for more details checkout [here](./forms-flow-web-root-config/README.md#integrate-micro-front-end-modules-into-host-applications).
 * Added environment variables `MF_FORMSFLOW_WEB_URL`, `MF_FORMSFLOW_NAV_URL`, `MF_FORMSFLOW_SERVICE_URL`, `MF_FORMSFLOW_ADMIN_URL`, `MF_FORMSFLOW_THEME_URL` to get MicroFrontend Components Created.
 * Added environment variables `ENABLE_FORMS_MODULE`, `ENABLE_TASKS_MODULE`, `ENABLE_DASHBOARDS_MODULE`, `ENABLE_PROCESSES_MODULE`, `ENABLE_APPLICATIONS_MODULE` to disable a particular module in forms-flow-web.
 * Added environment variable `CUSTOM_THEME_URL` for providing theming configuration.
+
 
 **forms-flow-bpm**
 

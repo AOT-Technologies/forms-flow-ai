@@ -2,7 +2,7 @@
 
 ![React](https://img.shields.io/badge/React-17.0.2-blue)
 
-**formsflow.ai** delivers progressive web application with React version `17.0.2` and `create-react-app`. Also currently uses  [form.io](https://github.com/formio/formio) version `2.4.1`.
+**formsflow.ai** delivers progressive web application with React version `17.0.2` and webpack version `5.76.0`. Also currently uses  [form.io](https://github.com/formio/formio) version `2.4.1`.
 
 A React library for rendering out forms based on the form.io platform.
 
@@ -10,9 +10,6 @@ The formsflow.ai micro-front ends are built with [create-single-spa](https://sin
 which can be used to create new front-end modules and migrate existing projects. All front-end modules require a root config to work. 
 The root config is responsible for orchestrating the modules, routing, and distributing the configurations.
 
-Also **formsflow.ai** provides a Vue.js based web user interface for easy integration of **formsflow.ai with your existing UI based on Vue**. To know more details checkout
-[formsflow-ai-extension repository](https://github.com/AOT-Technologies/forms-flow-ai-extensions/tree/master/camunda-formio-tasklist-vue), which can be easily intergrated
-with your project by installing our [npm package](https://www.npmjs.com/package/camunda-formio-tasklist-vue).
 
 ## Table of Content
 1. [Prerequisites](#prerequisites)
@@ -54,11 +51,11 @@ is mentioned on the [link](../forms-flow-idm/keycloak/README.md#create-forms-flo
 
  Variable name | Meaning | Possible values | Default value |
  --- | --- |----------| ---
- `MF_FORMSFLOW_WEB_URL`:triangular_flag_on_post:| For running locally/ if have custom changes | `https://s3.ap-northeast-1.amazonaws.com/formsflow.ai-micro-front-ends/forms-flow-web@v5.2.0/single-spa-build.gz.js` <br> <br> For custom changes: `http://{your-ip-address}:3004/single-spa-build.js` |  `https://s3.ap-northeast-1.amazonaws.com/formsflow.ai-micro-front-ends/forms-flow-web/single-spa-build.gz.js`
- `MF_FORMSFLOW_NAV_UR`:triangular_flag_on_post:|For custom implementation of Navbar component, refer [here](https://github.com/AOT-Technologies/forms-flow-ai-micro-front-ends/tree/main/forms-flow-nav)|          |`https://s3.ap-northeast-1.amazonaws.com/formsflow.ai-micro-front-ends/forms-flow-nav@v5.2.0/forms-flow-nav.gz.js`
- `MF_FORMSFLOW_SERVICE_URL`:triangular_flag_on_post:|For custom implementation of Service component, refer [here](https://github.com/AOT-Technologies/forms-flow-ai-micro-front-ends/tree/main/forms-flow-service)|          |`https://s3.ap-northeast-1.amazonaws.com/formsflow.ai-micro-front-ends/forms-flow-service@v5.2.0/forms-flow-service.gz.js`
- `MF_FORMSFLOW_ADMIN_URL`:triangular_flag_on_post:|For custom implementation of Admin component, refer [here](https://github.com/AOT-Technologies/forms-flow-ai-micro-front-ends/tree/main/forms-flow-admin)|          |`https://s3.ap-northeast-1.amazonaws.com/formsflow.ai-micro-front-ends/forms-flow-admin@v5.2.0/forms-flow-admin.gz.js`
- `MF_FORMSFLOW_THEME_URL`:triangular_flag_on_post:| For custom implementation of Theme component, refer [here](https://github.com/AOT-Technologies/forms-flow-ai-micro-front-ends/tree/main/forms-flow-theme) |          | `https://s3.ap-northeast-1.amazonaws.com/formsflow.ai-micro-front-ends/forms-flow-theme@v5.2.0/forms-flow-theme.gz.js`
+ `MF_FORMSFLOW_WEB_URL`:triangular_flag_on_post:| For running locally/ if have custom changes | `//forms-flow-microfrontends.aot-technologies.com/forms-flow-nav@v5.2.0/forms-flow-web.gz.js` <br> <br> For custom changes: `http://{your-ip-address}:3004/single-spa-build.js` |  `//forms-flow-microfrontends.aot-technologies.com/forms-flow-web@v5.2.0/forms-flow-nav.gz.js`
+ `MF_FORMSFLOW_NAV_UR`:triangular_flag_on_post:|For custom implementation of Navbar component, refer [here](https://github.com/AOT-Technologies/forms-flow-ai-micro-front-ends/tree/main/forms-flow-nav)|          |`//forms-flow-microfrontends.aot-technologies.com/forms-flow-nav@v5.2.0/forms-flow-nav.gz.js`
+ `MF_FORMSFLOW_SERVICE_URL`:triangular_flag_on_post:|For custom implementation of Service component, refer [here](https://github.com/AOT-Technologies/forms-flow-ai-micro-front-ends/tree/main/forms-flow-service)|          |`//forms-flow-microfrontends.aot-technologies.com/forms-flow-nav@v5.2.0/forms-flow-service.gz.js`
+ `MF_FORMSFLOW_ADMIN_URL`:triangular_flag_on_post:|For custom implementation of Admin component, refer [here](https://github.com/AOT-Technologies/forms-flow-ai-micro-front-ends/tree/main/forms-flow-admin)|          |`//forms-flow-microfrontends.aot-technologies.com/forms-flow-nav@v5.2.0/forms-flow-admin.gz.js`
+ `MF_FORMSFLOW_THEME_URL`:triangular_flag_on_post:| For custom implementation of Theme component, refer [here](https://github.com/AOT-Technologies/forms-flow-ai-micro-front-ends/tree/main/forms-flow-theme) |          | `//forms-flow-microfrontends.aot-technologies.com/forms-flow-nav@v5.2.0/forms-flow-theme.gz.js`
  `NODE_ENV`| Define project level configuration | `development, test, production` | `production`
  `FORMIO_DEFAULT_PROJECT_URL`:triangular_flag_on_post:|The URL of the form.io server|          |`http://{your-ip-address}:3001`
  `KEYCLOAK_WEB_CLIENTID`|Your Keycloak Client ID within the realm| eg. forms-flow-web | `forms-flow-web`
@@ -114,11 +111,11 @@ is mentioned on the [link](../forms-flow-idm/keycloak/README.md#create-forms-flo
 
 ### Health Check
 
-   * The application should be up and available for use at port defaulted to 3004 in  http://localhost:3004/
+   * The application should be up and available for use at port defaulted to 3004 in  http://localhost:3000/
    * Default user credentials are provided [here](../forms-flow-idm/keycloak/README.md#formsflow-ai-user-credentials).
 
 ### How to Create Your First Form
-  * Login to **http://localhost:3004/** using valid [designer](../forms-flow-idm/keycloak/README.md#default-user-credentials) credentials
+  * Login to **http://localhost:3000/** using valid [designer](../forms-flow-idm/keycloak/README.md#default-user-credentials) credentials
   * Navigate to menu **Forms**
   * Click the button **+ Create Form** to launch the form designer studio.
   * Design the form using **Drag and Drop** of components from LHS to RHS and publish by clicking the button **Create Form**.

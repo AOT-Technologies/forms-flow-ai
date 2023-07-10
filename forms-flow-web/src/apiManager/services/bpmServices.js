@@ -1,8 +1,7 @@
-import UserService from "../../services/UserService";
-import API from "../endpoints";
-import { httpPOSTRequest } from "../httpRequestHandler";
-
 /* istanbul ignore file */
+
+import { StorageService, RequestService } from "@formsflow/service";
+import API from "../endpoints";
 import {getFormUrlWithFormIdSubmissionId} from "./formatterService";
 
 export const getProcessReq = (form, submissionId, origin ) => {
@@ -89,11 +88,11 @@ export const deployBpmnDiagram = (data, token, isBearer = true) => {
   const headers = {
     'Content-Type': 'multipart/form-data',
     Authorization: isBearer
-      ? `Bearer ${token || UserService.getToken()}`
+      ? `Bearer ${token || StorageService.get(StorageService.User.AUTH_TOKEN)}`
       : token,
   };
 
-  return httpPOSTRequest(API.DEPLOY_BPM, data, token, isBearer, headers);
+  return RequestService.httpPOSTRequest(API.DEPLOY_BPM, data, token, isBearer, headers);
 
 };
 

@@ -7,7 +7,7 @@ from formsflow_api_utils.exceptions import BusinessException
 from formsflow_api_utils.utils.enums import FormProcessMapperStatus
 from formsflow_api_utils.utils.user_context import UserContext, user_context
 
-from formsflow_api.models import FormProcessMapper
+from formsflow_api.models import Draft, FormProcessMapper
 from formsflow_api.schemas import FormProcessMapperSchema
 from formsflow_api.services.external.bpm import BPMService
 
@@ -186,6 +186,13 @@ class FormProcessMapperService:
             if tenant_key is not None and application.tenant != tenant_key:
                 raise PermissionError("Tenant authentication failed.")
             application.mark_inactive()
+            # fetching all draft application application and delete it
+            draft_applications = Draft.get_draft_by_parent_form_id(
+                parent_form_id=application.parent_form_id
+            )
+            if draft_applications:
+                for draft in draft_applications:
+                    draft.delete()
         else:
             raise BusinessException(
                 {

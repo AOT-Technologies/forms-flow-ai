@@ -1,5 +1,5 @@
 /* istanbul ignore file */
-import { httpGETRequest } from "../httpRequestHandler";
+import { RequestService } from "@formsflow/service";
 import API from "../endpoints";
 //TODO move to a common action
 import {
@@ -13,7 +13,7 @@ import {
 export const fetchDashboardDetails = (id, ...rest) => {
   const done = rest.length ? rest[0] : () => {};
   return (dispatch) => {
-    httpGETRequest(`${API.GET_DASHBOARDS}/${id}`)
+    RequestService.httpGETRequest(`${API.GET_DASHBOARDS}/${id}`)
       .then((res) => {
         if (res.data) {
           dispatch(getDashboardDetail(res.data));
@@ -36,7 +36,7 @@ export const fetchDashboardDetails = (id, ...rest) => {
 
 export const fetchUserDashboards = () => {
   return (dispatch) => {
-    httpGETRequest(`${API.USER_DASHBOARDS}`)
+    RequestService.httpGETRequest(`${API.USER_DASHBOARDS}`)
       .then((res) => {
         if (res.data) {
           dispatch(getDashboards(res.data));

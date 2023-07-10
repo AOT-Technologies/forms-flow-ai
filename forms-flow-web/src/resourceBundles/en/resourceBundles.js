@@ -1,5 +1,7 @@
 /* eslint-disable max-len */
 export const RESOURCE_BUNDLES_EN = {
+  "Select form version":"Select form version",
+  "Please remove the special characters...!":"Please remove the special characters...!",
   "No histories found":"No histories found",
   "Continue":"Continue",
   "This will create a new version of the form without changing the path name but with new form id.":"This will create a new version of the form without changing the path name but with new form id.",
@@ -35,7 +37,7 @@ export const RESOURCE_BUNDLES_EN = {
   "Enter Label":"Enter Label",
   "Select form field":"Select form field",
   "Add form fields to display in task list":"Add form fields to display in task list",
-  "Version":"Version",
+  "Latest Version":"Latest Version",
   "Submission Status":"Submission Status",
   "No submission status":"No submission status",
   "No Public url found":"No Public url found",
@@ -237,6 +239,7 @@ export const RESOURCE_BUNDLES_EN = {
   "Save Changes":"Save Changes",
   "Changing the form workflow will not affect the existing applications. It will only update in the newly created applications. Press Save Changes to continue or cancel the changes.":"Changing the form workflow will not affect the existing applications. It will only update in the newly created applications. Press Save Changes to continue or cancel the changes.",
   "Form Workflow Association Saved.":"Form Workflow Association Saved.",
+  "Form deletion unsuccessful":"Form deletion unsuccessful",
   "Form deleted successfully":"Form deleted successfully",
   "Form process failed":"Form process failed",
   "Form unpublishing Failed":"Form unpublishing Failed",
@@ -274,12 +277,35 @@ export const RESOURCE_BUNDLES_EN = {
   "URL copied":"URL copied",
   "Click Here to Copy":"Click Here to Copy",
   "Resources":"Resources",
-  "Duplicate form created successfully":"Duplicate form created successfully"
-
+  "Duplicate form created successfully":"Duplicate form created successfully",
+  "Revert": "Revert",
+  "Create new filter": "Create new filter",
+  "Filter Name": "Filter Name",
+  "Enter your text here": "Enter your text here",
+  "Criteria": "Criteria",
+  "Add Value": "Add Value",
+  "Definition Key": "Definition Key",
+  "Assignee": "Assignee",
+  "Include Assigned task": "Include Assigned task",
+  "Variable": "Variable",
+  "Show undefined variables": "Show undefined variables",
+  "Label": "Label",
+  "Name of variable": "Name of variable",
+  "Readable name": "Readable name",
+  "Permission": "Permission",
+  "Accessible for all users": "Accessible for all users",
+  "Private (Only You)": "Private (Only You)",
+  "Specific User/Group": "Specific User/Group",
+  "User": "User",
+  "Group": "Group",
+  "Identifier": "Identifier",
+  "Enter role ID": "Enter role ID",
+  "Create Filter": "Create Filter",
+  "Select a task in the List":"Select a task in the List",
+  "Select a specific task from the provided list of options. Your selection will determine the task you will be working on or interacting with.":"Select a specific task from the provided list of options. Your selection will determine the task you will be working on or interacting with."
 
 
 
 };
-
 
 

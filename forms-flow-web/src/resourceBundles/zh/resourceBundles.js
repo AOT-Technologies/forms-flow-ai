@@ -1,5 +1,7 @@
 /* eslint-disable max-len */
 export const RESOURCE_BUNDLES_ZH = {
+  "Select form version":"选择表格版本",
+  "Please remove the special characters...!":"请删除特殊字符...！",
   "No histories found":"没有找到历史记录",
   "Continue":"继续",
   "This will create a new version of the form without changing the path name but with new form id.":"这将创建一个新版本的表单而不更改路径名但具有新的表单 ID。",
@@ -36,7 +38,7 @@ export const RESOURCE_BUNDLES_ZH = {
   "Enter Label":"输入标签",
   "Select form field":"选择表单域",
   "Add form fields to display in task list":"添加表单域以显示在任务列表中",
-  "Version":"版本",
+  "Latest Version":"最新版本",
   "Submission Status":"提交状态",
   "No submission status":"无提交状态",
   "No Public url found":"未找到公共网址",
@@ -236,6 +238,7 @@ export const RESOURCE_BUNDLES_ZH = {
   "Save Changes":"保存更改",
   "Changing the form workflow will not affect the existing applications. It will only update in the newly created applications. Press Save Changes to continue or cancel the changes.":"更改表单工作流程不会影响现有应用程序。它只会在新创建的应用程序中更新。按保存更改以继续或取消更改。",
   "Form Workflow Association Saved.":"表单工作流关联已保存。",
+  "Form deletion unsuccessful":"表单删除失败",
   "Form deleted successfully":"表格删除成功",
   "Form process failed":"表单处理失败",
   "Form unpublishing Failed":"表单取消发布失败",
@@ -273,7 +276,32 @@ export const RESOURCE_BUNDLES_ZH = {
   "URL copied":"已复制网址",
   "Click Here to Copy":"点击这里复制",
   "Resources":"资源",
-  "Duplicate form created successfully":"成功创建重复表单"
+  "Duplicate form created successfully":"成功创建重复表单",
+  "Revert": "恢复",
+  "Create new filter": "创建新过滤器",
+  "Filter Name": "过滤器名称",
+  "Enter your text here": "在这里输入您的文字",
+  "Criteria": "标准",
+  "Add Value": "增值",
+  "Definition Key": "定义键",
+  "Asignee": "受让人",
+  "Include Assigned Task": "包括分配的任务",
+  "Variable": "多变的",
+  "Show undefined variables": "显示未定义的变量",
+  "Label": "标签",
+  "Name of variable": "变量名称",
+  "Readable name": "可读名称",
+  "Permission": "允许",
+  "Accessible for all users": "所有用户均可访问",
+  "Private (Only You)": "私人（只有你）",
+  "Specific User/ Group": "特定用户/组",
+  "User": "用户",
+  "Group": "团体",
+  "Identifier": "标识符",
+  "Enter role ID": "输入角色 ID",
+  "Create Filter": "创建过滤器",
+  "Select a task in the List":"在列表中选择一个任务",
+  "Select a specific task from the provided list of options. Your selection will determine the task you will be working on or interacting with.":"从提供的选项列表中选择特定任务。 您的选择将决定您将处理或与之交互的任务。"
 
 };
 

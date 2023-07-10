@@ -26,3 +26,13 @@ class UserPermissionUpdateSchema(Schema):
     userId = fields.Str(data_key="userId", required=True)
     groupId = fields.Str(data_key="groupId", required=True)
     name = fields.Str(data_key="name", required=True)
+
+
+class UsersListSchema(Schema):
+    """Schema for user list."""
+
+    class Meta:  # pylint: disable=too-few-public-methods
+        """Exclude unknown fields in the deserialized output."""
+
+        fields = ("firstName", "lastName", "email", "id", "username", "role")
+        unknown = EXCLUDE

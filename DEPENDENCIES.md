@@ -78,5 +78,5 @@ In the following document, we’ll describe the details of dependencies of vario
    |  --- | --- |
    | React  | 17.0.2 |
    | Formio | 2.4.1 |
-   | webpack| 5.76.0|
+   | Webpack| 5.76.0|
    <br>

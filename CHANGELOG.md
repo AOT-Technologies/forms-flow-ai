@@ -39,6 +39,10 @@ Mark  items as `Added`, `Changed`, `Fixed`, `Removed`, `Untested Features`, `Upc
 * Application history is modified to Application status and Request status.
 * Environment variable `USER_ACCESS_PERMISSIONS` is replaced with `ENABLE_APPLICATION_ACCESS_PERMISSION_CHECK` to enable Role level permission.
 
+**forms-flow-analytics**
+
+* Redash upgraded from version 10.1.4 to 10.1.5
+
 `forms-flow-api`
 
 *Upgrade notes:*

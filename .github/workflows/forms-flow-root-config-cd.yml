@@ -3,7 +3,7 @@ name: Push Forms flow root config to registry
 on:
   workflow_dispatch:
   push:
-    branches: [ master, develop, release/*, 5.2.0-alpha ]
+    branches: [ master, develop, release/* ]
     paths:
       - "forms-flow-web-root-config/**"
       - "VERSION"

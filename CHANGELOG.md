@@ -31,7 +31,7 @@ Mark  items as `Added`, `Changed`, `Fixed`, `Removed`, `Untested Features`, `Upc
 * Added RBAC(Role Based Access Control) support in form listing for designer and client.
 * Added migration script for existing users to get all forms listed, checkout [here]( ./forms-flow-api/README.md#migration-script-for-existing-users)
 * Added admin module for adding keycloak roles and user assignment.
-* Added forms-flow-admin group for RBAC support.
+* Added formsflow-admin group for RBAC support.
 
 
 `Modified`

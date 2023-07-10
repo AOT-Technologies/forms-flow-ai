@@ -11,7 +11,7 @@ Mark  items as `Added`, `Changed`, `Fixed`, `Removed`, `Untested Features`, `Upc
 * Added `Form bundling` premium feature, refer [here](https://aot-technologies.github.io/forms-flow-ai-doc/#formBundling) for more details.
 * Added RBAC(Role Based Access Control) support in form listing for designer and client.
 * Added admin module for adding keycloak roles and user assignment.
-* Added forms-flow-admin group for RBAC support.
+* Added formsflow-admin group for RBAC support.
 
 
 **forms-flow-web-root-config**
@@ -22,7 +22,7 @@ Mark  items as `Added`, `Changed`, `Fixed`, `Removed`, `Untested Features`, `Upc
 
 **forms-flow-bpm**
 
-* Added RBAC(Role Based Access Control) support in form listing for designer and client.
+* Added migration to support new Role Based Access(RBAC) with existing camunda authorizations.
 
 **forms-flow-api**
 

@@ -26,7 +26,7 @@ import isEqual from "lodash/isEqual";
 import cloneDeep from "lodash/cloneDeep";
 import { Route, Redirect, Switch } from "react-router-dom";
 import { push } from "connected-react-router";
-import { BASE_ROUTE, MULTITENANCY_ENABLED } from "../../constants/constants";
+import { BASE_ROUTE,MULTITENANCY_ENABLED } from "../../constants/constants";
 import TaskHead from "../../containers/TaskHead";
 
 export default React.memo(() => {
@@ -186,29 +186,29 @@ export default React.memo(() => {
 
   return (
     <Container fluid id="main" className="pt-0">
-      <TaskHead/>
-      <Row className="p-2">
-        <Col lg={3} xs={12} sm={12} md={4} xl={3}>
-          <section>
-            <header className="task-section-top">
-              <TaskSortSelectedList />
-            </header>
-            <ServiceFlowTaskList />
-          </section>
-        </Col>
-        <Col className="pl-0" lg={9} xs={12} sm={12} md={8} xl={9}>
-          <Switch>
-            <Route
-              path={`${BASE_ROUTE}task/:taskId?`}
-              component={ServiceFlowTaskDetails}
-            ></Route>
-            <Route path={`${BASE_ROUTE}task/:taskId/:notAvailable`}>
-              {" "}
-              <Redirect exact to="/404" />
-            </Route>
-          </Switch>
-        </Col>
-      </Row>
-    </Container>
+    <TaskHead/>
+    <Row className="p-2 task-row" >
+      <Col lg={3} xs={12} sm={12} md={4} xl={3}>
+        <section>
+          <header className="task-section-top">
+            <TaskSortSelectedList />
+          </header>
+          <ServiceFlowTaskList />
+        </section>
+      </Col>
+      <Col className="pl-0" lg={9} xs={12} sm={12} md={8} xl={9}>
+        <Switch>
+          <Route
+            path={`${BASE_ROUTE}task/:taskId?`}
+            component={ServiceFlowTaskDetails}
+          ></Route>
+          <Route path={`${BASE_ROUTE}task/:taskId/:notAvailable`}>
+            {" "}
+            <Redirect exact to="/404" />
+          </Route>
+        </Switch>
+      </Col>
+    </Row>
+  </Container>
   );
 });

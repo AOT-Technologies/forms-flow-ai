@@ -74,5 +74,5 @@ window["_env_"] = {
   "--navbar-active": "white"
   }`
   */
-  // CUSTOM_THEME_URL: "<custom theme URl>",
+  // REACT_APP_CUSTOM_THEME_URL: "<custom theme URl>",
 };

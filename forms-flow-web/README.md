@@ -10,6 +10,8 @@ Also **formsflow.ai** provides a Vue.js based web user interface for easy integr
 [formsflow-ai-extension repository](https://github.com/AOT-Technologies/forms-flow-ai-extensions/tree/master/camunda-formio-tasklist-vue), which can be easily intergrated
 with your project by installing our [npm package](https://www.npmjs.com/package/camunda-formio-tasklist-vue).
 
+This component helps to create a customised web application.
+
 ## Table of Content
 1. [Prerequisites](#prerequisites)
 2. [Solution Setup](#solution-setup)
@@ -18,9 +20,8 @@ with your project by installing our [npm package](https://www.npmjs.com/package/
    - [Step 3 : Running the Application](#running-the-application)
    - [Step 4 : Health Check](#health-check)
 3. [How to Create Your First Form](#how-to-create-your-first-form)
-4. [Logo change](#logo-change)
-5. [Code coverage](#code-coverage)
-6. [Internationalization](#internationalization)
+4. [Code coverage](#code-coverage)
+5. [Internationalization](#internationalization)
 
 ## Prerequisites
 
@@ -40,6 +41,7 @@ is mentioned on the [link](../forms-flow-idm/keycloak/README.md#create-forms-flo
 ### Installation
 
    * Make sure you have a Docker machine up and running.
+   * Follow the steps mentioned [here](../forms-flow-web-root-config/README.md#installation)
    * Make sure your current working directory is "forms-flow-ai/forms-flow-web".
    * *Skip this if forms-flow-analytics setup is completed* - Start the **analytics server** by following the instructions given on  [readme](../forms-flow-analytics/README.md)
    * Rename the file [sample.env](./sample.env) to **.env**.
@@ -97,11 +99,6 @@ is mentioned on the [link](../forms-flow-idm/keycloak/README.md#create-forms-flo
   * Navigate to menu **Forms**
   * Click the button **+ Create Form** to launch the form designer studio.
   * Design the form using **Drag and Drop** of components from LHS to RHS and publish by clicking the button **Create Form**.
-
-### Logo change
-  * Default Logo can be changed to the users logo by replacing the logo.svg in public folder of forms-flow-web.
-     The default width and height of the logo is 50 and 55 also the image format is svg
-  * The icon can also be replaced to the users icon by replacing the favicon in the public folder of forms-flow-web
 
 
 ### Code coverage

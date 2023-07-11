@@ -4,8 +4,8 @@ on:
   push:
     branches:
       - master
-      - 5.2.0-alpha
       - develop
+      - release/*
     paths:
       - "forms-flow-web/**"
       - "VERSION"

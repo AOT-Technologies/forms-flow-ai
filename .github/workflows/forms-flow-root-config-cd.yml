@@ -3,7 +3,7 @@ name: Push Forms flow root config to registry
 on:
   workflow_dispatch:
   push:
-    branches: [ master, develop, release/*, 5.2.0-alpha ]
+    branches: [ master, develop, release/* ]
     paths:
       - "forms-flow-web-root-config/**"
       - "VERSION"
@@ -83,7 +83,7 @@ jobs:
           tags: ${{ steps.meta.outputs.tags }}
           labels: ${{ steps.meta.outputs.labels }}
           build-args: |
-            MF_FORMSFLOW_WEB_URL=https://forms-flow-microfrontends.aot-technologies.com/forms-flow-web@${{ env.VERSION }}/single-spa-build.gz.js
+            MF_FORMSFLOW_WEB_URL=https://forms-flow-microfrontends.aot-technologies.com/forms-flow-web@${{ env.VERSION }}/forms-flow-web.gz.js
             MF_FORMSFLOW_NAV_URL=https://forms-flow-microfrontends.aot-technologies.com/forms-flow-nav@${{ env.VERSION }}/forms-flow-nav.gz.js
             MF_FORMSFLOW_SERVICE_URL=https://forms-flow-microfrontends.aot-technologies.com/forms-flow-service@${{ env.VERSION }}/forms-flow-service.gz.js
             MF_FORMSFLOW_ADMIN_URL=https://forms-flow-microfrontends.aot-technologies.com/forms-flow-admin@${{ env.VERSION }}/forms-flow-admin.gz.js
@@ -98,7 +98,7 @@ jobs:
           tags: ${{ steps.meta.outputs.tags }}, formsflow/forms-flow-web:latest
           labels: ${{ steps.meta.outputs.labels }}
           build-args: |
-            MF_FORMSFLOW_WEB_URL=https://forms-flow-microfrontends.aot-technologies.com/forms-flow-web@${{ env.VERSION }}/single-spa-build.gz.js
+            MF_FORMSFLOW_WEB_URL=https://forms-flow-microfrontends.aot-technologies.com/forms-flow-web@${{ env.VERSION }}/forms-flow-web.gz.js
             MF_FORMSFLOW_NAV_URL=https://forms-flow-microfrontends.aot-technologies.com/forms-flow-nav@${{ env.VERSION }}/forms-flow-nav.gz.js
             MF_FORMSFLOW_SERVICE_URL=https://forms-flow-microfrontends.aot-technologies.com/forms-flow-service@${{ env.VERSION }}/forms-flow-service.gz.js
             MF_FORMSFLOW_ADMIN_URL=https://forms-flow-microfrontends.aot-technologies.com/forms-flow-admin@${{ env.VERSION }}/forms-flow-admin.gz.js

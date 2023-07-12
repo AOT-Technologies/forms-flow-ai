@@ -440,7 +440,10 @@ span[dat-title]:hover:after,
     }
   }
 }
-.task-row{
-  overflow: auto;
-  max-height: 80vh; 
+
+.tab-width{
+  width:12rem;
+}
+.task-variable-coloum{
+  width:80rem;
 }

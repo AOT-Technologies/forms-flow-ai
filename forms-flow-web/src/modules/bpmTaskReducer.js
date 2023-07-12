@@ -35,7 +35,9 @@ const initialState = {
   taskFormSubmissionReload: false,
   activePage: 1,
   firstResult: 0,
-  error: ''
+  selectedTaskVariables :{},
+  viewType:true,
+  error: '',
 };
 
 const bpmTasks = (state = initialState, action) => {
@@ -130,6 +132,11 @@ const bpmTasks = (state = initialState, action) => {
         activePage: action.payload,
         firstResult: getFirstResultIndex(action.payload),
       };
+    case ACTION_CONSTANTS.SELETED_TASK_VARIABLES:
+        return { ...state, selectedTaskVariables: action.payload };
+    case ACTION_CONSTANTS.VIEW_TYPE:
+        return { ...state, viewType: action.payload };
+
     case ACTION_CONSTANTS.BPM_ERROR:
         return {
           ...state,
@@ -139,6 +146,7 @@ const bpmTasks = (state = initialState, action) => {
     default:
       return state;
   }
+  
 };
 
 export default bpmTasks;

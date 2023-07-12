@@ -172,6 +172,20 @@ export const serviceActionError = (data) => (dispatch) => {
     payload: "Error Handling API",
   });
 };
+
+export const setSelectedTaskVariables = (data) => (dispatch) => {
+  dispatch({
+    type: ACTION_CONSTANTS.SELETED_TASK_VARIABLES,
+    payload: data,
+  });
+};
+
+export const setViewType = (data) => (dispatch) => {
+  dispatch({
+    type: ACTION_CONSTANTS.VIEW_TYPE,
+    payload: data,
+  });
+};
 export const bpmActionError = (data) => (dispatch) => {
   dispatch({
     type: ACTION_CONSTANTS.BPM_ERROR,

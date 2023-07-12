@@ -557,7 +557,7 @@ const List = React.memo((props) => {
               );
             }}
           />
-          <div className="flex-container">
+          <div className="flex-container m-0">
             {/*<img src="/form.svg" width="30" height="30" alt="form" />*/}
             <div className="flex-item-left">
               <div style={{ display: "flex" }}>

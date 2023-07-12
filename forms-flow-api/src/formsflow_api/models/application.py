@@ -685,7 +685,8 @@ class Application(
                 FormProcessMapper.process_name,
                 FormProcessMapper.process_tenant,
                 FormProcessMapper.task_variable,
-                FormProcessMapper.id.label("mapper_id"),
+                FormProcessMapper.form_type,
+                FormProcessMapper.id,
             )
             .join(cls, FormProcessMapper.id == cls.form_process_mapper_id)
             .filter(Application.id == application_id)

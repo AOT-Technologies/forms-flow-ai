@@ -422,9 +422,9 @@ class ApplicationService:  # pylint: disable=too-many-public-methods
             application_id=application_id
         )
         if mapper:
-            if mapper.mapper_id and tenant_key:
+            if mapper.id and tenant_key:
                 FormProcessMapperService.check_tenant_authorization(
-                    mapper_id=mapper.mapper_id, tenant_key=tenant_key
+                    mapper_id=mapper.id, tenant_key=tenant_key
                 )
             mapper_schema = FormProcessMapperSchema()
             return mapper_schema.dump(mapper)

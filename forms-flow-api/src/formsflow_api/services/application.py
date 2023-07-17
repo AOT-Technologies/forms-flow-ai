@@ -468,8 +468,7 @@ class ApplicationService:  # pylint: disable=too-many-public-methods
         """Resubmit application and update process variables."""
         mapper = ApplicationService.get_application_form_mapper_by_id(application_id)
         task_variable = json.loads(mapper.get("taskVariable"))
-        form_data = payload.get("data")
-        payload.pop("data", None)
+        form_data = payload.pop("data", None)
         if task_variable and form_data:
             task_keys = [val["key"] for val in task_variable]
             process_variables = {

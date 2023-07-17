@@ -31,16 +31,16 @@
   },
   "license": "MIT",
   "devDependencies": {
-    "@craco/craco": "6.4.5",
     "@testing-library/jest-dom": "^5.14.1",
     "@testing-library/react": "^12.1.1",
-    "craco-plugin-single-spa-application": "git+https://github.com/AOT-Technologies/craco-plugin-single-spa-application.git",
     "msw": "^0.36.0",
-    "redux-mock-store": "^1.5.4",
-    "@babel/plugin-proposal-private-property-in-object": "7.21.11"
+    "redux-mock-store": "^1.5.4"
   },
   "dependencies": {
     "@bpmn-io/properties-panel": "^0.17.0",
+    "@craco/craco": "6.4.5",
+    "craco-plugin-single-spa-application": "git+https://github.com/AOT-Technologies/craco-plugin-single-spa-application.git",
+    "@babel/plugin-proposal-private-property-in-object": "7.21.11",
     "@material-ui/core": "^4.11.4",
     "@ronchalant/react-loading-overlay": "^1.1.0",
     "@wojtekmaj/react-daterange-picker": "^3.1.0",

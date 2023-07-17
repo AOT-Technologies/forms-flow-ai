@@ -1,5 +1,5 @@
 # Base image
-FROM node:14.17.6-alpine as build-stage
+FROM node:14.17.6 as build-stage
 
 # Set working directory
 WORKDIR /forms-flow-web/app
@@ -8,8 +8,8 @@ WORKDIR /forms-flow-web/app
 ENV PATH /forms-flow-web/app/node_modules/.bin:$PATH
 
 # Install and cache app dependencies
-COPY package-lock.json /forms-flow-web/app/package-lock.json
 COPY package.json /forms-flow-web/app/package.json
+COPY package-lock.json /forms-flow-web/app/package-lock.json
 RUN npm ci --only=production
 
 # Copy source code

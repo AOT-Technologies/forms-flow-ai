@@ -17,6 +17,9 @@ class ApplicationHistory(ApplicationAuditDateTimeMixin, BaseModel, db.Model):
     submitted_by = db.Column(db.String(300), nullable=True)
     form_id = db.Column(db.String(100), nullable=False)
     submission_id = db.Column(db.String(100), nullable=False)
+    color = db.Column(db.String(50), nullable=True)
+    is_resubmit = db.Column(db.Boolean, nullable=True, default=False)
+    percentage = db.Column(db.Double, nullable=True)
 
     @classmethod
     def create_from_dict(cls, application_audit_info: dict) -> ApplicationHistory:
@@ -31,6 +34,9 @@ class ApplicationHistory(ApplicationAuditDateTimeMixin, BaseModel, db.Model):
             application_audit.submitted_by = application_audit_info["submitted_by"]
             application_audit.form_id = application_audit_info["form_id"]
             application_audit.submission_id = application_audit_info["submission_id"]
+            application_audit.color = application_audit_info.get("color")
+            application_audit.percentage = application_audit_info.get("percentage")
+            application_audit.is_resubmit = application_audit_info.get("is_resubmit")
             application_audit.save()
             return application_audit
         return None

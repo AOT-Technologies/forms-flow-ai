@@ -34,4 +34,10 @@ public class VariableConstants {
 
     public static final String WEB_FORM_URL = "webFormUrl";
 
+    public static final String COLOR = "color";
+
+    public static final String PERCENTAGE = "percentage";
+
+    public static final String IS_RESUBMIT = "isResubmit";
+
 }

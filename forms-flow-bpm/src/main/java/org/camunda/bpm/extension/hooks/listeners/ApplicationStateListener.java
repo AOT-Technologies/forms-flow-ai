@@ -5,7 +5,10 @@ import org.camunda.bpm.engine.delegate.DelegateTask;
 import org.camunda.bpm.engine.delegate.ExecutionListener;
 import org.camunda.bpm.engine.delegate.TaskListener;
 import org.camunda.bpm.extension.commons.connector.HTTPServiceInvoker;
+import org.camunda.bpm.extension.commons.utils.RestAPIBuilderConfigProperties;
+import org.camunda.bpm.extension.commons.utils.RestAPIBuilderUtil;
 import org.camunda.bpm.extension.hooks.exceptions.ApplicationServiceException;
+import org.camunda.bpm.extension.hooks.listeners.data.Application;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
@@ -15,7 +18,7 @@ import org.springframework.stereotype.Component;
 import java.io.IOException;
 import java.util.*;
 
-import static org.camunda.bpm.extension.commons.utils.VariableConstants.APPLICATION_ID;
+import static org.camunda.bpm.extension.commons.utils.VariableConstants.*;
 
 /**
  * Application State Listener.
@@ -27,6 +30,9 @@ public class ApplicationStateListener extends BaseListener implements ExecutionL
 
     @Autowired
     private HTTPServiceInvoker httpServiceInvoker;
+
+    @Autowired
+    private RestAPIBuilderConfigProperties restAPIBuilderConfigProperties;
 
     @Autowired
     private ApplicationAuditListener applicationAuditListener;
@@ -57,13 +63,24 @@ public class ApplicationStateListener extends BaseListener implements ExecutionL
      * @param execution
      */
     private void invokeApplicationService(DelegateExecution execution) throws IOException {
-        ResponseEntity<String> response = httpServiceInvoker.execute(getApplicationUrl(execution), HttpMethod.PUT,  applicationAuditListener.prepareApplicationAudit(execution));
+        ResponseEntity<String> response = httpServiceInvoker.execute(getApplicationUrl(execution), HttpMethod.PUT,  prepareApplication(execution));
         if(response.getStatusCodeValue() != HttpStatus.OK.value()) {
             throw new ApplicationServiceException("Unable to update application "+ ". Message Body: " +
                     response.getBody());
         }
     }
 
+    /**
+     * Prepares and returns the Application object.
+     *
+     * @param execution
+     * @return
+     */
+    protected Application prepareApplication(DelegateExecution execution) {
+        String applicationStatus = String.valueOf(execution.getVariable(APPLICATION_STATUS));
+        String formUrl = String.valueOf(execution.getVariable(FORM_URL));
+       return new Application(applicationStatus, formUrl, RestAPIBuilderUtil.fetchUserName((restAPIBuilderConfigProperties.getUserNameAttribute())));
+    }
 
     /**
      * Returns the endpoint of application API.

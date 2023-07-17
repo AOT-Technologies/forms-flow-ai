@@ -8,7 +8,9 @@ import org.camunda.bpm.extension.commons.connector.HTTPServiceInvoker;
 import org.camunda.bpm.extension.commons.utils.RestAPIBuilderConfigProperties;
 import org.camunda.bpm.extension.commons.utils.RestAPIBuilderUtil;
 import org.camunda.bpm.extension.hooks.exceptions.ApplicationServiceException;
-import org.camunda.bpm.extension.hooks.listeners.data.Application;
+import org.camunda.bpm.extension.hooks.listeners.data.ApplicationAudit;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
@@ -30,6 +32,8 @@ public class ApplicationAuditListener extends BaseListener implements ExecutionL
 
     @Autowired
     private RestAPIBuilderConfigProperties restAPIBuilderConfigProperties;
+
+    private Logger LOGGER = LoggerFactory.getLogger(ApplicationAuditListener.class);
 
     @Override
     public void notify(DelegateExecution execution) {
@@ -68,10 +72,21 @@ public class ApplicationAuditListener extends BaseListener implements ExecutionL
      * @param execution
      * @return
      */
-    protected Application prepareApplicationAudit(DelegateExecution execution) {
+    protected ApplicationAudit prepareApplicationAudit(DelegateExecution execution) {
         String applicationStatus = String.valueOf(execution.getVariable(APPLICATION_STATUS));
         String formUrl = String.valueOf(execution.getVariable(FORM_URL));
-        return new Application(applicationStatus, formUrl, RestAPIBuilderUtil.fetchUserName((restAPIBuilderConfigProperties.getUserNameAttribute())));
+        String color = (execution.getVariable(COLOR) != null) ? String.valueOf(execution.getVariable(COLOR)) : null;
+        String percentageStr = String.valueOf(execution.getVariable(PERCENTAGE));
+        Object resubmit = execution.getVariable(IS_RESUBMIT);
+        boolean isResubmit = (resubmit != null && resubmit instanceof Boolean) ? (Boolean) resubmit : false;
+        Double percentage = null;
+        try {
+            percentage = (execution.getVariable(PERCENTAGE) != null) ? Double.valueOf((percentageStr)) : null;
+        } catch (NumberFormatException e) {
+            LOGGER.error("Invalid percentage format: " + percentageStr);
+        }
+        return new ApplicationAudit(applicationStatus, formUrl, RestAPIBuilderUtil.fetchUserName((restAPIBuilderConfigProperties.getUserNameAttribute())),
+                color, percentage, isResubmit);
     }
 
 

@@ -13,7 +13,7 @@ RUN : \
 ADD . /forms-flow-data-analysis-api/app
 RUN pip install .
 
-EXPOSE 5001
+EXPOSE 5000
 RUN python3 -c "from transformers import pipeline; pipeline('sentiment-analysis', model='$MODEL_ID', truncation=True)"
 
 RUN chmod u+x ./entrypoint

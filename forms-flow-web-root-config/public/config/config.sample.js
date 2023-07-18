@@ -93,6 +93,6 @@ window["_env_"] = {
         "Submit New": "ABCD"
       }
     }
-   * REACT_APP_CUSTOM_RESOURCE_BUNDLE: <CUSTOM_RESOURCE_BUNDLE>
+   * REACT_APP_CUSTOM_RESOURCE_BUNDLE_URL: <CUSTOM_RESOURCE_BUNDLE_URL>
    */
 };

@@ -75,4 +75,21 @@ window["_env_"] = {
   }`
   */
   // REACT_APP_CUSTOM_THEME_URL: "<custom theme URl>",
+
+  /**
+   * Used for providing custom resource bundle to internationalization
+   * Example json file content :
+   * `{
+        "en": {
+            "Submit New": "ABCD"
+          },
+        "zh-CN": {
+            "Submit New": "ABCD"
+          },
+        "pt": {
+            "Submit New": "ABCD"
+          }
+       }`
+   * REACT_APP_CUSTOM_RESOURCE_BUNDLE: <CUSTOM_RESOURCE_BUNDLE>
+   */
 };

@@ -77,19 +77,22 @@ window["_env_"] = {
   // REACT_APP_CUSTOM_THEME_URL: "<custom theme URl>",
 
   /**
-   * Used for providing custom resource bundle to internationalization
-   * Example json file content :
-   * `{
-        "en": {
-            "Submit New": "ABCD"
-          },
-        "zh-CN": {
-            "Submit New": "ABCD"
-          },
-        "pt": {
-            "Submit New": "ABCD"
-          }
-       }`
+    You have the option to provide a URL or a JSON file for a custom resource bundle. 
+    If you choose to use a URL, please ensure that CORS (Cross-Origin Resource Sharing) is available. Alternatively, 
+    if you opt for a JSON file, please ensure that the file is located within the public folder. For example, 
+    if the file is inside the "languageConfig" folder, the URL should be formatted as follows: "/languageConfig/yourfilename.json".
+    Both the URL and JSON file should contain data in the JSON format with the following structure:
+    {
+      "en": {
+        "Submit New": "ABCD"
+      },
+      "zh-CN": {
+        "Submit New": "ABCD"
+      },
+      "pt": {
+        "Submit New": "ABCD"
+      }
+    }
    * REACT_APP_CUSTOM_RESOURCE_BUNDLE: <CUSTOM_RESOURCE_BUNDLE>
    */
 };

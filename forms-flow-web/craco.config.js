@@ -1,4 +1,4 @@
-const SingleSpaAppcracoPlugin = require("craco-plugin-single-spa-application");
+const SingleSpaAppcracoPlugin = require("craco-plugin-single-spa-app-aot");
 
 const shouldMinimize = process.env.NODE_ENV == "production";
 

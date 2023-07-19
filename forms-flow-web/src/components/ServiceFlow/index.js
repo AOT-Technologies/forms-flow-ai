@@ -29,7 +29,7 @@ import SocketIOService from "../../services/SocketIOService";
 import isEqual from "lodash/isEqual";
 import cloneDeep from "lodash/cloneDeep";
 import { Route, Redirect, Switch } from "react-router-dom";
-import { push } from "connected-react-router";
+import { push, replace } from "connected-react-router";
 import { BASE_ROUTE,MULTITENANCY_ENABLED } from "../../constants/constants";
 import TaskHead from "../../containers/TaskHead";
 
@@ -191,6 +191,10 @@ export default React.memo(() => {
       if (SocketIOService.isConnected()) SocketIOService.disconnect();
     };
   }, [SocketIOCallback, dispatch]);
+  //Reset the path when the 'cardView' changes
+  useEffect(() => {
+    dispatch(replace(`${BASE_ROUTE}task`));
+  }, [cardView, dispatch]);
 
   return (
     <Container fluid id="main" className="pt-0">

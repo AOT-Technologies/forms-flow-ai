@@ -167,7 +167,7 @@ const ServiceTaskListViewDetails = React.memo(() => {
     const reloadTasks = () => {
         dispatch(setBPMTaskDetailLoader(true));
         dispatch(setSelectedTaskID(null)); // unSelect the Task Selected
-        dispatch(fetchServiceTaskList(selectedFilter.id, firstResult, reqData)); //Refreshes the Tasks
+        dispatch(fetchServiceTaskList(selectedFilter?.id, firstResult, reqData)); //Refreshes the Tasks
         dispatch(push(`${redirectUrl}task/`));
     };
 
@@ -182,8 +182,8 @@ const ServiceTaskListViewDetails = React.memo(() => {
                     }
                 })
             ); // Refresh the Task Selected
-            dispatch(getBPMGroups(task.id));
-            dispatch(fetchServiceTaskList(selectedFilter.id, firstResult, reqData)); //Refreshes the Tasks
+            dispatch(getBPMGroups(task?.id));
+            dispatch(fetchServiceTaskList(selectedFilter?.id, firstResult, reqData)); //Refreshes the Tasks
 
         }
     };
@@ -237,7 +237,6 @@ const ServiceTaskListViewDetails = React.memo(() => {
     };
 
     const handleBackButton = () => {
-        console.log("suuuu");
         dispatch(setSelectedTaskID(null));
     };
 
@@ -267,7 +266,7 @@ const ServiceTaskListViewDetails = React.memo(() => {
                     <Card className="mr-2 bg-light">
                         <Card.Body>
                             <div className="d-flex justify-content-between">
-                                <Col>
+                                <Col xs={4}>
                                     <Row className="ml-0 task-header">{task?.name}</Row>
                                     <Row className="ml-0 task-name">
                                         <span className="application-id" data-title={t("Process Name")}>
@@ -285,8 +284,10 @@ const ServiceTaskListViewDetails = React.memo(() => {
                                         </span>
                                     </Row>
                                 </Col>
-                                <Col>
-                                    <TaskHeaderListView />
+                                <Col xs={8}>
+                                    <TaskHeaderListView
+                                        task={task} taskId={task?.id} groupView={true}
+                                    />
                                 </Col>
                            </div>
                         </Card.Body>

@@ -1,6 +1,5 @@
 package org.camunda.bpm.extension.hooks.adapter.mail;
 
-import org.camunda.bpm.extension.commons.connector.support.CustomSubmissionAccessHandler;
 import org.camunda.connect.spi.Connector;
 import org.camunda.connect.spi.ConnectorProvider;
 

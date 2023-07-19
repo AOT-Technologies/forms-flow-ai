@@ -15,94 +15,94 @@ defaults:
 
 jobs:
   build-and-push-image-to-dockerhub:
-#    if: github.repository == 'AOT-Technologies/forms-flow-ai'
+    if: github.repository == 'AOT-Technologies/forms-flow-ai'
     runs-on: ubuntu-latest
-#    strategy:
-#      matrix:
-#        include:
-#          - image: formsflow/forms-flow-web
-#            context: forms-flow-web-root-config
-#            dockerfile: Dockerfile
-#            name: forms-flow-web
-#    permissions:
-#      contents: read
-#      packages: write
+    strategy:
+      matrix:
+        include:
+          - image: formsflow/forms-flow-web
+            context: forms-flow-web-root-config
+            dockerfile: Dockerfile
+            name: forms-flow-web
+    permissions:
+      contents: read
+      packages: write
 
     steps:
       - name: Checkout repository
         uses: actions/checkout@v2
- #     - name: Set up Docker Buildx
- #       id: buildx
- #       uses: docker/setup-buildx-action@v1
- #       with:
- #         install: true
- #     - name: Set version
- #       if: ${{ github.ref != 'refs/heads/master' }}
- #       working-directory: .
-#        run: |
-#          VER=$(cat VERSION)
-#          echo "VERSION=$VER" >> $GITHUB_ENV
-#      - name: Set version
-#        if: ${{ github.ref == 'refs/heads/master' }}
-#        working-directory: .
-#        run: |
-#          VER=$(cat VERSION)
-#          VER=${VER/-alpha/''}
-#          echo "VERSION=$VER" >> $GITHUB_ENV
+      - name: Set up Docker Buildx
+        id: buildx
+        uses: docker/setup-buildx-action@v1
+        with:
+          install: true
+      - name: Set version
+        if: ${{ github.ref != 'refs/heads/master' }}
+        working-directory: .
+        run: |
+          VER=$(cat VERSION)
+          echo "VERSION=$VER" >> $GITHUB_ENV
+      - name: Set version
+        if: ${{ github.ref == 'refs/heads/master' }}
+        working-directory: .
+        run: |
+          VER=$(cat VERSION)
+          VER=${VER/-alpha/''}
+          echo "VERSION=$VER" >> $GITHUB_ENV
       
-#      - run: echo ${{ env.VERSION }}
+      - run: echo ${{ env.VERSION }}
 
-#      - name: Docker meta
-#        id: meta
-#        uses: docker/metadata-action@v3
-#        with:
-#          images: ${{ matrix.image }}
-#          tags: ${{ env.VERSION }}
+      - name: Docker meta
+        id: meta
+        uses: docker/metadata-action@v3
+        with:
+          images: ${{ matrix.image }}
+          tags: ${{ env.VERSION }}
 
-#      - name: Log in to the Container registry
-#        uses: docker/login-action@v1
-#        with:
+      - name: Log in to the Container registry
+        uses: docker/login-action@v1
+        with:
           # registry: ${{ env.REGISTRY }}
-#          username: ${{ secrets.DOCKER_USERNAME }}
-#          password: ${{ secrets.DOCKER_ACCESS_TOKEN }}
+          username: ${{ secrets.DOCKER_USERNAME }}
+          password: ${{ secrets.DOCKER_ACCESS_TOKEN }}
 
-#      - name: Cache Docker layers
-#        uses: actions/cache@v2
-#        with:
-#          path: /tmp/.buildx-cache
-#          key: ${{ runner.os }}-buildx-${{ matrix.name }}-${{ github.sha }}
-#          restore-keys: |
-#            ${{ runner.os }}-buildx-${{ matrix.name }}
-#      - name: Build and push Docker image
-#        if: ${{ github.ref != 'refs/heads/master' }}
-#        uses: docker/build-push-action@v4
-#        with:
-#          context: forms-flow-web-root-config
-#          platforms: linux/amd64,linux/arm64/v8
-#          push: true
-#          tags: ${{ steps.meta.outputs.tags }}
-#          labels: ${{ steps.meta.outputs.labels }}
-#          build-args: |
-#            MF_FORMSFLOW_WEB_URL=https://forms-flow-microfrontends.aot-technologies.com/forms-flow-web@${{ env.VERSION }}/forms-flow-web.gz.js
-#            MF_FORMSFLOW_NAV_URL=https://forms-flow-microfrontends.aot-technologies.com/forms-flow-nav@${{ env.VERSION }}/forms-flow-nav.gz.js
-#            MF_FORMSFLOW_SERVICE_URL=https://forms-flow-microfrontends.aot-technologies.com/forms-flow-service@${{ env.VERSION }}/forms-flow-service.gz.js
-#            MF_FORMSFLOW_ADMIN_URL=https://forms-flow-microfrontends.aot-technologies.com/forms-flow-admin@${{ env.VERSION }}/forms-flow-admin.gz.js
-#            MF_FORMSFLOW_THEME_URL=https://forms-flow-microfrontends.aot-technologies.com/forms-flow-theme@${{ env.VERSION }}/forms-flow-theme.gz.js 
-#      - name: Build and push Docker image
-#        if: ${{ github.ref == 'refs/heads/master' }}
-#        uses: docker/build-push-action@v4
-#        with:
-#          context: forms-flow-web-root-config
-#          platforms: linux/amd64,linux/arm64/v8
-#          push: true
-#          tags: ${{ steps.meta.outputs.tags }}, formsflow/forms-flow-web:latest
-#          labels: ${{ steps.meta.outputs.labels }}
-#          build-args: |
-#            MF_FORMSFLOW_WEB_URL=https://forms-flow-microfrontends.aot-technologies.com/forms-flow-web@${{ env.VERSION }}/forms-flow-web.gz.js
-#            MF_FORMSFLOW_NAV_URL=https://forms-flow-microfrontends.aot-technologies.com/forms-flow-nav@${{ env.VERSION }}/forms-flow-nav.gz.js
-#            MF_FORMSFLOW_SERVICE_URL=https://forms-flow-microfrontends.aot-technologies.com/forms-flow-service@${{ env.VERSION }}/forms-flow-service.gz.js
-#            MF_FORMSFLOW_ADMIN_URL=https://forms-flow-microfrontends.aot-technologies.com/forms-flow-admin@${{ env.VERSION }}/forms-flow-admin.gz.js
-#            MF_FORMSFLOW_THEME_URL=https://forms-flow-microfrontends.aot-technologies.com/forms-flow-theme@${{ env.VERSION }}/forms-flow-theme.gz.js 
+      - name: Cache Docker layers
+        uses: actions/cache@v2
+        with:
+          path: /tmp/.buildx-cache
+          key: ${{ runner.os }}-buildx-${{ matrix.name }}-${{ github.sha }}
+          restore-keys: |
+            ${{ runner.os }}-buildx-${{ matrix.name }}
+      - name: Build and push Docker image
+        if: ${{ github.ref != 'refs/heads/master' }}
+        uses: docker/build-push-action@v4
+        with:
+          context: forms-flow-web-root-config
+          platforms: linux/amd64,linux/arm64/v8
+          push: true
+          tags: ${{ steps.meta.outputs.tags }}
+          labels: ${{ steps.meta.outputs.labels }}
+          build-args: |
+            MF_FORMSFLOW_WEB_URL=https://forms-flow-microfrontends.aot-technologies.com/forms-flow-web@${{ env.VERSION }}/forms-flow-web.gz.js
+            MF_FORMSFLOW_NAV_URL=https://forms-flow-microfrontends.aot-technologies.com/forms-flow-nav@${{ env.VERSION }}/forms-flow-nav.gz.js
+            MF_FORMSFLOW_SERVICE_URL=https://forms-flow-microfrontends.aot-technologies.com/forms-flow-service@${{ env.VERSION }}/forms-flow-service.gz.js
+            MF_FORMSFLOW_ADMIN_URL=https://forms-flow-microfrontends.aot-technologies.com/forms-flow-admin@${{ env.VERSION }}/forms-flow-admin.gz.js
+            MF_FORMSFLOW_THEME_URL=https://forms-flow-microfrontends.aot-technologies.com/forms-flow-theme@${{ env.VERSION }}/forms-flow-theme.gz.js 
+      - name: Build and push Docker image
+        if: ${{ github.ref == 'refs/heads/master' }}
+        uses: docker/build-push-action@v4
+        with:
+          context: forms-flow-web-root-config
+          platforms: linux/amd64,linux/arm64/v8
+          push: true
+          tags: ${{ steps.meta.outputs.tags }}, formsflow/forms-flow-web:latest
+          labels: ${{ steps.meta.outputs.labels }}
+          build-args: |
+            MF_FORMSFLOW_WEB_URL=https://forms-flow-microfrontends.aot-technologies.com/forms-flow-web@${{ env.VERSION }}/forms-flow-web.gz.js
+            MF_FORMSFLOW_NAV_URL=https://forms-flow-microfrontends.aot-technologies.com/forms-flow-nav@${{ env.VERSION }}/forms-flow-nav.gz.js
+            MF_FORMSFLOW_SERVICE_URL=https://forms-flow-microfrontends.aot-technologies.com/forms-flow-service@${{ env.VERSION }}/forms-flow-service.gz.js
+            MF_FORMSFLOW_ADMIN_URL=https://forms-flow-microfrontends.aot-technologies.com/forms-flow-admin@${{ env.VERSION }}/forms-flow-admin.gz.js
+            MF_FORMSFLOW_THEME_URL=https://forms-flow-microfrontends.aot-technologies.com/forms-flow-theme@${{ env.VERSION }}/forms-flow-theme.gz.js 
 #####
       - name: Set up AWS CLI
         uses: aws-actions/configure-aws-credentials@v1

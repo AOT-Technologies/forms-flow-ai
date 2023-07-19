@@ -14,62 +14,45 @@ defaults:
     shell: bash
 jobs:
   build:
-#    if: github.repository == 'AOT-Technologies/forms-flow-ai'
+    if: github.repository == 'AOT-Technologies/forms-flow-ai'
     name: Build and push artifacts to s3
     runs-on: ubuntu-20.04
     steps:
-#      - uses: actions/checkout@v3
-#      - uses: actions/setup-node@v3
-#        with:
-#          node-version: '14.17.6'
-#      - run: npm install
-#        working-directory: ./forms-flow-web
-#      - run: npm run build
-#        working-directory: ./forms-flow-web
-#      - uses: aws-actions/configure-aws-credentials@v1
-#        with:
-#          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
-#          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-#          aws-region: ${{ secrets.REGION }}
-#      - name: Set version
-#        if: ${{ github.ref != 'refs/heads/master' }}
-#        working-directory: .
-#        run: |
-#          VER=$(cat VERSION)
-#          echo "VERSION=$VER" >> $GITHUB_ENV
-          
-#      - name: Set version
-#        if: ${{ github.ref == 'refs/heads/master' }}
-#        working-directory: .
-#        run: |
-#          VER=$(cat VERSION)
-#          VER=${VER/-alpha/''}
-#          echo "VERSION=$VER" >> $GITHUB_ENV
-      
-#      - run: echo ${{ env.VERSION }}
-
-#      - run: npm ci
-#        working-directory: ./forms-flow-web/scripts
-
-#      - run: node index
-#        env:
-#          BUCKET: ${{ secrets.BUCKET}}
-#          VERSION: ${{ env.VERSION }}
-#        working-directory: ./forms-flow-web/scripts
-#####
-      - name: Set up AWS CLI
-        uses: aws-actions/configure-aws-credentials@v1
+      - uses: actions/checkout@v3
+      - uses: actions/setup-node@v3
+        with:
+          node-version: '14.17.6'
+      - run: npm install
+        working-directory: ./forms-flow-web
+      - run: npm run build
+        working-directory: ./forms-flow-web
+      - uses: aws-actions/configure-aws-credentials@v1
         with:
           aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-          aws-region: ca-central-1  # Change this to your desired region
-      - name: Install kubectl
+          aws-region: ${{ secrets.REGION }}
+      - name: Set version
+        if: ${{ github.ref != 'refs/heads/master' }}
+        working-directory: .
         run: |
-          curl -LO "https://dl.k8s.io/release/$(curl -Ls https://dl.k8s.io/release/stable.txt)/bin/linux/amd64/kubectl"
-          chmod +x kubectl
-          sudo mv kubectl /usr/local/bin/
-      - name: Update Kube config
-        run: aws eks update-kubeconfig --region ca-central-1 --name formsflow-eks-qa
-      - name: Deploy to eks
+          VER=$(cat VERSION)
+          echo "VERSION=$VER" >> $GITHUB_ENV
+          
+      - name: Set version
+        if: ${{ github.ref == 'refs/heads/master' }}
+        working-directory: .
         run: |
-          kubectl -n app2 rollout restart deployment/forms-flow-web
+          VER=$(cat VERSION)
+          VER=${VER/-alpha/''}
+          echo "VERSION=$VER" >> $GITHUB_ENV
+      
+      - run: echo ${{ env.VERSION }}
+
+      - run: npm ci
+        working-directory: ./forms-flow-web/scripts
+
+      - run: node index
+        env:
+          BUCKET: ${{ secrets.BUCKET}}
+          VERSION: ${{ env.VERSION }}
+        working-directory: ./forms-flow-web/scripts

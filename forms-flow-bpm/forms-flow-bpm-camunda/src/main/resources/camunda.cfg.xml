@@ -1,0 +1,17 @@
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans   http://www.springframework.org/schema/beans/spring-beans.xsd">
+
+    <bean id="connectProcessEnginePlugin" class="org.camunda.connect.plugin.impl.ConnectProcessEnginePlugin">
+    <!--<property name="idGenerator" ref="uuidGenerator" />-->
+
+    <!-- engine plugins -->
+    <property name="customConnectorProviders">
+        <list>
+            <value>org.camunda.bpm.extension.hooks.adapter.mail.CustomConnectorProviderPlugin</value>
+        </list>
+    </property>
+
+</bean>
+
+</beans>

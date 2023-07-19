@@ -8,10 +8,10 @@ import java.util.List;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class CustomEmailDto {
+public class FormsFlowBPMEmailRequestDto {
 
-    private List<String> toRecipients;
-    private List<String> ccRecipients;
+    private String toRecipients;
+    private String ccRecipients;
     private String subject;
     private String body;
     private List<String> attachments;

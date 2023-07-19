@@ -1,22 +1,31 @@
 package org.camunda.bpm.extension.hooks.adapter.mail;
 
-import org.camunda.bpm.extension.hooks.adapter.mail.request.SendMailRequest;
+import org.camunda.bpm.extension.hooks.adapter.mail.request.ConnectorRequest;
 import org.camunda.bpm.extension.hooks.adapter.mail.response.EmptyResponse;
 import org.camunda.bpm.extension.mail.MailConnectorException;
 import org.camunda.connect.impl.AbstractConnector;
 import org.camunda.connect.spi.ConnectorResponse;
-import org.formsflow.ai.bpm.mail.service.CustomEmailAdapterService;
+import org.formsflow.ai.bpm.mail.model.dto.FormsFlowBPMEmailRequestDto;
+import org.formsflow.ai.bpm.mail.service.FormsFlowBPMEmailAdapterService;
 import org.springframework.beans.factory.annotation.Autowired;
 
+import java.util.List;
+import java.util.logging.Logger;
 
-public class CustomEmailConnector extends AbstractConnector<SendMailRequest, EmptyResponse> {
 
-    public static final String CONNECTOR_ID = "custom-email-send";
+public class CustomEmailConnector extends AbstractConnector<ConnectorRequest, EmptyResponse> {
+
+    private final Logger LOGGER = Logger.getLogger(CustomEmailConnector.class.getName());
+
+    public static final String CONNECTOR_ID = "camunda-email-connector";
 
     @Autowired
-    private CustomEmailAdapterService customEmailAdapterService;
+    private FormsFlowBPMEmailAdapterService customEmailAdapterService;
 
-    public CustomEmailConnector( ) {
+    @Autowired
+    private FormsFlowBPMEmailRequestDto emailRequestDto;
+
+    public CustomEmailConnector() {
         super(CONNECTOR_ID);
     }
 
@@ -26,8 +35,8 @@ public class CustomEmailConnector extends AbstractConnector<SendMailRequest, Emp
      * @return the connector-specific request object.
      */
     @Override
-    public SendMailRequest createRequest() {
-        return new SendMailRequest(this);
+    public ConnectorRequest createRequest() {
+        return new ConnectorRequest(this);
     }
 
     /**
@@ -37,17 +46,31 @@ public class CustomEmailConnector extends AbstractConnector<SendMailRequest, Emp
      * @return the result.
      */
     @Override
-    public ConnectorResponse execute(SendMailRequest request) {
+    public ConnectorResponse execute(ConnectorRequest request) {
         try {
-          //  var sendMailCommand = CustomEmailCommand.create(request);
-            var sendEmailRequest = request.getEmailDto();
-            customEmailAdapterService.sendMail(sendEmailRequest);
+            var sendMailCommand = createRequestCommand(request);
+            customEmailAdapterService.sendMail(sendMailCommand);
 
         } catch (Exception e) {
             throw new MailConnectorException("Failed to send mail: " + e.getMessage(), e);
         }
 
         return new EmptyResponse();
+    }
+
+    public FormsFlowBPMEmailRequestDto createRequestCommand(ConnectorRequest request) {
+        final String to = request.getTo();
+        final String cc = request.getCc();
+        final String subject = request.getSubject();
+        final String text = request.getText();
+        final List<String> attachments = request.getFileNames();
+        return new FormsFlowBPMEmailRequestDto(
+                to,
+                cc,
+                subject,
+                text,
+                attachments
+        );
     }
 }
 

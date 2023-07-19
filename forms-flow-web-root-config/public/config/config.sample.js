@@ -76,23 +76,19 @@ window["_env_"] = {
   */
   // REACT_APP_CUSTOM_THEME_URL: "<custom theme URl>",
 
-  /**
-    You have the option to provide a URL or a JSON file for a custom resource bundle. 
-    If you choose to use a URL, please ensure that CORS (Cross-Origin Resource Sharing) is available. Alternatively, 
-    if you opt for a JSON file, please ensure that the file is located within the public folder. For example, 
-    if the file is inside the "languageConfig" folder, the URL should be formatted as follows: "/languageConfig/yourfilename.json".
-    Both the URL and JSON file should contain data in the JSON format with the following structure:
+ /**
+  * CUSTOM_RESOURCE_BUNDLE_URL
+    You can provide custom resource bundle for internationalization by adding json data to following path
+    public/languageConfig/customResourceBundle.json inside forms-flow-web-root-config.
+    the json data should be below format.
     {
-      "en": {
-        "Submit New": "ABCD"
+      "language1": {
+        "key": "value"
       },
-      "zh-CN": {
-        "Submit New": "ABCD"
-      },
-      "pt": {
-        "Submit New": "ABCD"
+      "language2": {
+        "key": "value"
       }
     }
-   * REACT_APP_CUSTOM_RESOURCE_BUNDLE_URL: <CUSTOM_RESOURCE_BUNDLE_URL>
-   */
+    REACT_APP_CUSTOM_RESOURCE_BUNDLE_URL: <CUSTOM_RESOURCE_BUNDLE_URL>
+  */
 };

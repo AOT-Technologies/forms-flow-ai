@@ -116,7 +116,7 @@ jobs:
           chmod +x kubectl
           sudo mv kubectl /usr/local/bin/
       - name: Update Kube config
-        run: aws eks update-kubeconfig --region ca-central-1 --name ${{ github.event.inputs.cluster }}
+        run: aws eks update-kubeconfig --region ca-central-1 --name formsflow-eks-qa
       - name: Deploy to eks
         run: |
           kubectl -n app2 rollout restart deployment/forms-flow-web

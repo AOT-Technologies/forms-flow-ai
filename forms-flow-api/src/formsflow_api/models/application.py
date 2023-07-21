@@ -33,6 +33,8 @@ class Application(
     # Submission id will be null for drafts
     submission_id = db.Column(db.String(100), nullable=True)
     latest_form_id = db.Column(db.String(100), nullable=False)
+    is_resubmit = db.Column(db.Boolean, nullable=True, default=False)
+    event_name = db.Column(db.String(100), nullable=True)
 
     draft = db.relationship(
         "Draft", backref=db.backref("Application", cascade="save-update, merge, delete")
@@ -64,6 +66,8 @@ class Application(
                 "form_process_mapper_id",
                 "process_instance_id",
                 "modified_by",
+                "is_resubmit",
+                "event_name",
             ],
             mapper_info,
         )
@@ -93,6 +97,8 @@ class Application(
                 cls.created,
                 cls.modified,
                 cls.modified_by,
+                cls.is_resubmit,
+                cls.event_name,
                 FormProcessMapper.process_key,
                 FormProcessMapper.process_name,
                 FormProcessMapper.process_tenant,

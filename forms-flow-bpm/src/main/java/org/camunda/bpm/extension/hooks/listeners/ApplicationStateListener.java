@@ -79,7 +79,15 @@ public class ApplicationStateListener extends BaseListener implements ExecutionL
     protected Application prepareApplication(DelegateExecution execution) {
         String applicationStatus = String.valueOf(execution.getVariable(APPLICATION_STATUS));
         String formUrl = String.valueOf(execution.getVariable(FORM_URL));
-       return new Application(applicationStatus, formUrl, RestAPIBuilderUtil.fetchUserName((restAPIBuilderConfigProperties.getUserNameAttribute())));
+        Object resubmit = execution.getVariable(IS_RESUBMIT);
+        boolean isResubmit = (resubmit != null && resubmit instanceof Boolean) ? (Boolean) resubmit : false;
+        String eventName = (execution.getVariable(EVENT_NAME) != null) ? String.valueOf(execution.getVariable(EVENT_NAME)) : null;
+        if (isResubmit && eventName == null) {
+            eventName = DEFAULT_EVENT_NAME;
+        }
+        return new Application(applicationStatus, formUrl,
+                               RestAPIBuilderUtil.fetchUserName((restAPIBuilderConfigProperties.getUserNameAttribute())),
+                               isResubmit, eventName);
     }
 
     /**

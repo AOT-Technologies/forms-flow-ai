@@ -77,8 +77,6 @@ public class ApplicationAuditListener extends BaseListener implements ExecutionL
         String formUrl = String.valueOf(execution.getVariable(FORM_URL));
         String color = (execution.getVariable(COLOR) != null) ? String.valueOf(execution.getVariable(COLOR)) : null;
         String percentageStr = String.valueOf(execution.getVariable(PERCENTAGE));
-        Object resubmit = execution.getVariable(IS_RESUBMIT);
-        boolean isResubmit = (resubmit != null && resubmit instanceof Boolean) ? (Boolean) resubmit : false;
         Double percentage = null;
         try {
             percentage = (execution.getVariable(PERCENTAGE) != null) ? Double.valueOf((percentageStr)) : null;
@@ -86,7 +84,7 @@ public class ApplicationAuditListener extends BaseListener implements ExecutionL
             LOGGER.error("Invalid percentage format: " + percentageStr);
         }
         return new ApplicationAudit(applicationStatus, formUrl, RestAPIBuilderUtil.fetchUserName((restAPIBuilderConfigProperties.getUserNameAttribute())),
-                color, percentage, isResubmit);
+                color, percentage);
     }
 
 

@@ -31,4 +31,3 @@ class ApplicationHistorySchema(Schema):
     submission_id = fields.Str(data_key="submissionId", dump_only=True)
     color = fields.Str(allow_none=True)
     percentage = fields.Float(allow_none=True)
-    is_resubmit = fields.Bool(data_key="isResubmit")

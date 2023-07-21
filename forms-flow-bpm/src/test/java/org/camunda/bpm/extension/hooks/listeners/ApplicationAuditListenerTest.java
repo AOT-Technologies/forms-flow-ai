@@ -71,7 +71,6 @@ public class ApplicationAuditListenerTest {
         when(delegateExecution.getVariable(APPLICATION_STATUS)).thenReturn(applicationStatus);
         when(delegateExecution.getVariable(APPLICATION_ID)).thenReturn("id1");
         when(delegateExecution.getVariable(COLOR)).thenReturn(color);
-        when(delegateExecution.getVariable(IS_RESUBMIT)).thenReturn(isResubmit);
         when(delegateExecution.getVariable(PERCENTAGE)).thenReturn(percentage);
         SecurityContextHolder.getContext().setAuthentication(auth);
         Jwt jwt = Jwt.withTokenValue("72378")

@@ -13,5 +13,4 @@ public class ApplicationAudit {
     private String submittedBy;
     private String color;
     private Double percentage;
-    private Boolean isResubmit;
 }

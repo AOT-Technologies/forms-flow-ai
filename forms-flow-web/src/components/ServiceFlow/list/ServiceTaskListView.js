@@ -1,5 +1,5 @@
 import React, { useEffect, useRef } from "react";
-import { ListGroup, Row, Col } from "react-bootstrap";
+import { Row, Col, DropdownButton, Dropdown } from "react-bootstrap";
 import { useDispatch, useSelector } from "react-redux";
 import { fetchServiceTaskList } from "../../../apiManager/services/bpmTaskServices";
 import {
@@ -32,11 +32,11 @@ const ServiceTaskListView = React.memo(() => {
   const activePage = useSelector((state) => state.bpmTasks.activePage);
   const tasksPerPage = MAX_RESULTS;
 
-  let limit = 15;
-  let numberofSubmissionListFrom =
-    activePage === 1 ? 1 : (activePage * limit) - limit + 1;
-  let numberofSubmissionListTo = activePage === 1 ? limit : limit * activePage;
-  let selectedLimitValue = MAX_RESULTS;
+  // let limit = 15;
+  // let numberofSubmissionListFrom =
+    // activePage === 1 ? 1 : (activePage * limit) - limit + 1;
+  // let numberofSubmissionListTo = activePage === 1 ? limit : limit * activePage;
+  // let selectedLimitValue = MAX_RESULTS;
   const tenantKey = useSelector((state) => state.tenants?.tenantId);
   const redirectUrl = useRef(
     MULTITENANCY_ENABLED ? `/tenant/${tenantKey}/` : "/"
@@ -57,15 +57,8 @@ const ServiceTaskListView = React.memo(() => {
     { value: tasksCount, label: 'All' }
   ];
   const handleLimitChange = (limit) => {
-    const newPageNumber = Math.ceil(tasksCount / limit);
-    if (newPageNumber < activePage) {
-      dispatch(setBPMTaskListActivePage(newPageNumber));
-    }
-    dispatch(setBPMTaskLoader(true));
-    let firstResultIndex = getFirstResultIndex(newPageNumber);
-    dispatch(
-      fetchServiceTaskList(selectedFilter.id, firstResultIndex, reqData)
-    );
+    console.log("limit",limit);
+    dispatch(fetchServiceTaskList(selectedFilter.id,15,reqData,null,limit));
   };
 
 
@@ -98,7 +91,11 @@ const ServiceTaskListView = React.memo(() => {
   const renderTaskList = () => {
     if ((tasksCount || taskList.length) && selectedFilter) {
       return (
-        <div className="container">
+        <>
+        <hr className=" head-rule"/>
+        <div className="container list-container p-2"
+        style={{ maxHeight: "60vh" }}
+        >
           {taskList.map((task, index) => (
             <div
               className={`clickable shadow border  ${
@@ -106,6 +103,7 @@ const ServiceTaskListView = React.memo(() => {
               }`}
               key={index}
             >
+              
               <Row className="mt-4 justify-content-between">
                 <Col  xs={2}>
                   <div className="col-12">
@@ -139,7 +137,6 @@ const ServiceTaskListView = React.memo(() => {
                 <TaskHeaderListView task={task} taskId={task.id} groupView = {false} />
                 </Col>
                 <Col  xs={2}>
-           
                   <div className="col-12 mt-3">
                     <h6>
                       <u
@@ -168,43 +165,59 @@ const ServiceTaskListView = React.memo(() => {
                     }
                   })}
               </Row>
-
-
             </div>
           ))}
-
-          <Row style={{ justifyContent: "flex-end", alignItems: "center" }}>
-            <div className="pagination-wrapper">
+ <Row style={{ justifyContent: "flex-end", alignItems: "center" }}>
+ <div className="d-flex justify-content-between align-items-center">
+              <div>
+                <span>
+                  <DropdownButton
+                    className="ml-2"
+                    drop="down"
+                    variant="secondary"
+                    title={15}
+                    style={{ display: "inline" }}
+                  >
+                    {options.map(({ value, label }, index) => (
+                      <Dropdown.Item
+                        key={{ index }}
+                        type="button"
+                        onClick={() => {
+                          handleLimitChange(value);
+                        }}
+                      >
+                        {label}
+                      </Dropdown.Item>
+                    ))}
+                  </DropdownButton>
+                </span>
+                {/* <span className="ml-2 mb-3">
+                  {t("Showing")} {numberofSubmissionListFrom} {t("to")}{" "}
+                  {numberofSubmissionListTo > totalItems
+                    ? totalItems
+                    : numberofSubmissionListTo}{" "}
+                  {t("of")} {totalItems}
+                </span> */}
+              </div>
+              <div className="d-flex align-items-center">
               <Pagination
-                
                 activePage={activePage}
                 itemsCountPerPage={tasksPerPage}
                 totalItemsCount={tasksCount}
                 pageRangeDisplayed={4}
+                itemClass="page-item"
+                linkClass="page-link"
                 onChange={handlePageChange}
                 prevPageText="<"
                 nextPageText=">"
               />
-              <select
-                title="Choose page limit"
-                onChange={(e) => handleLimitChange(e.target.value)}
-                value={selectedLimitValue}
-                className="form-select mx-5 mb-3"
-                aria-label="Choose page limit"
-              >
-                {/* eslint max-len: ["error", { "code": 500 }] */}
-                {options.map(({ value, label }, index) => <option value={value} key={index} >{label}</option>)}
-              </select>
-              <span>
-                {t("Showing")} {numberofSubmissionListFrom} {t("to")}{" "}
-                {numberofSubmissionListTo > tasksCount
-                  ? tasksCount
-                  : numberofSubmissionListTo}{" "}
-                {t("of")} {tasksCount}
-              </span>
+              </div>
             </div>
           </Row>
         </div>
+       
+        </>
+        
       );
     } else {
       return (
@@ -218,13 +231,8 @@ const ServiceTaskListView = React.memo(() => {
 
   return (
     <>
-      <ListGroup className="service-task-list">
-        
         <TaskSearchBarListView />
-        <hr className="head-rule" />
         {isTaskListLoading ? <Loading /> : renderTaskList()}
-      </ListGroup>
-      
     </>
   );
 });

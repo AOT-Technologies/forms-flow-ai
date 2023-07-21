@@ -29,6 +29,7 @@ export const fetchServiceTaskList = (
   firstResult,
   reqData,
   taskIdToRemove,
+  maxResults,
   ...rest
 ) => {
   const done = rest.length ? rest[0] : () => {};
@@ -38,7 +39,9 @@ export const fetchServiceTaskList = (
     filterId
   );
 
-  apiUrlgetTaskList = `${apiUrlgetTaskList}?firstResult=${firstResult}&maxResults=${MAX_RESULTS}`;
+  apiUrlgetTaskList = `${apiUrlgetTaskList}?firstResult=${firstResult}&maxResults=${
+    maxResults ? maxResults : MAX_RESULTS
+  }`;
 
   return (dispatch) => {
     RequestService.httpPOSTRequestWithHAL(
@@ -240,7 +243,9 @@ export const getBPMTaskDetail = (taskId, ...rest) => {
   );
 
   const taskDetailReq = RequestService.httpGETRequest(apiUrlgetTaskDetail);
-  const taskDetailsWithVariableReq = RequestService.httpGETRequest(apiUrlgetTaskVariables);
+  const taskDetailsWithVariableReq = RequestService.httpGETRequest(
+    apiUrlgetTaskVariables
+  );
 
   return (dispatch) => {
     axios

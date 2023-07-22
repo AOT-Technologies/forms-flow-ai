@@ -1,4 +1,4 @@
-import React, { useEffect, useRef } from "react";
+import React, { useEffect, useRef,useState } from "react";
 import { Row, Col, DropdownButton, Dropdown } from "react-bootstrap";
 import { useDispatch, useSelector } from "react-redux";
 import { fetchServiceTaskList } from "../../../apiManager/services/bpmTaskServices";
@@ -31,12 +31,7 @@ const ServiceTaskListView = React.memo(() => {
   const selectedFilter = useSelector((state) => state.bpmTasks.selectedFilter);
   const activePage = useSelector((state) => state.bpmTasks.activePage);
   const tasksPerPage = MAX_RESULTS;
-
-  // let limit = 15;
-  // let numberofSubmissionListFrom =
-    // activePage === 1 ? 1 : (activePage * limit) - limit + 1;
-  // let numberofSubmissionListTo = activePage === 1 ? limit : limit * activePage;
-  // let selectedLimitValue = MAX_RESULTS;
+  const [selectedLimitValue, setSelectedLimitValue] = useState(MAX_RESULTS);
   const tenantKey = useSelector((state) => state.tenants?.tenantId);
   const redirectUrl = useRef(
     MULTITENANCY_ENABLED ? `/tenant/${tenantKey}/` : "/"
@@ -57,9 +52,13 @@ const ServiceTaskListView = React.memo(() => {
     { value: tasksCount, label: 'All' }
   ];
   const handleLimitChange = (limit) => {
-    console.log("limit",limit);
+    setSelectedLimitValue(limit);
     dispatch(fetchServiceTaskList(selectedFilter.id,15,reqData,null,limit));
   };
+  let numberofSubmissionListFrom =
+    activePage === 1 ? 1 : (activePage * selectedLimitValue) - selectedLimitValue + 1;
+  let numberofSubmissionListTo = activePage === 1 ? selectedLimitValue :
+    selectedLimitValue * activePage;
 
 
   useEffect(() => {
@@ -167,15 +166,16 @@ const ServiceTaskListView = React.memo(() => {
               </Row>
             </div>
           ))}
- <Row style={{ justifyContent: "flex-end", alignItems: "center" }}>
- <div className="d-flex justify-content-between align-items-center">
-              <div>
-                <span>
+           
+            <div className="d-flex justify-content-between">
+              <div className="ml-2">
+                  <span>
+                    Rows per Page :
                   <DropdownButton
                     className="ml-2"
                     drop="down"
                     variant="secondary"
-                    title={15}
+                      title={selectedLimitValue}
                     style={{ display: "inline" }}
                   >
                     {options.map(({ value, label }, index) => (
@@ -191,13 +191,13 @@ const ServiceTaskListView = React.memo(() => {
                     ))}
                   </DropdownButton>
                 </span>
-                {/* <span className="ml-2 mb-3">
+                <span className="ml-2 mb-3">
                   {t("Showing")} {numberofSubmissionListFrom} {t("to")}{" "}
-                  {numberofSubmissionListTo > totalItems
-                    ? totalItems
+                  {numberofSubmissionListTo > tasksCount
+                    ? tasksCount
                     : numberofSubmissionListTo}{" "}
-                  {t("of")} {totalItems}
-                </span> */}
+                  {t("of")} {tasksCount}
+                </span>
               </div>
               <div className="d-flex align-items-center">
               <Pagination
@@ -213,7 +213,6 @@ const ServiceTaskListView = React.memo(() => {
               />
               </div>
             </div>
-          </Row>
         </div>
        
         </>

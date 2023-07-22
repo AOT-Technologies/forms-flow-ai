@@ -5,7 +5,10 @@ import TaskFilterComponent from "./TaskFilterComponent";
 import "./TaskSearchBarListView.scss";
 import { setSelectedTaskVariables } from "../../../../actions/bpmTaskActions";
 import { fetchServiceTaskList } from "../../../../apiManager/services/bpmTaskServices";
-import { setFilterListParams } from "../../../../actions/bpmTaskActions";
+import {
+  setBPMTaskLoader,
+} from "../../../../actions/bpmTaskActions";
+// import { setFilterListParams } from "../../../../actions/bpmTaskActions";
 const TaskSearchBarListView = React.memo(() => {
   const isTaskListLoading = useSelector(
     (state) => state.bpmTasks.isTaskListLoading
@@ -15,8 +18,8 @@ const TaskSearchBarListView = React.memo(() => {
   const [displayFilter, setDisplayFilter] = useState(false);
   const [SortOptions, setSortOptions] = useState(false);
   const [selectTaskVariables, setSelectTaskVariables] = useState(false);
-  const [showClearButton, setShowClearButton] = useState("");
-  const [searchTaskInput, setSearchTaskInput] = useState();
+  const [showClearButton, setShowClearButton] = useState(false);
+  const [searchTaskInput, setSearchTaskInput] = useState("");
 
   const selectedTaskVariables = useSelector(
     (state) => state.bpmTasks.selectedTaskVariables
@@ -24,7 +27,7 @@ const TaskSearchBarListView = React.memo(() => {
   const taskList = useSelector((state) => state.bpmTasks.tasksList);
   const selectedFilter = useSelector((state) => state.bpmTasks.selectedFilter);
   const firstResult = useSelector((state) => state.bpmTasks.firstResult);
-  // const reqData = useSelector((state) => state.bpmTasks.listReqParams);
+  const reqData = useSelector((state) => state.bpmTasks.listReqParams);
   const dispatch = useDispatch();
   const taskvariable = useSelector(
     (state) => state.bpmTasks.selectedFilter?.properties?.variables || []
@@ -51,24 +54,44 @@ const TaskSearchBarListView = React.memo(() => {
   };
   
   const handleSearchTask = () => {
-    console.log(searchTaskInput);
-    // dispatch(fetchServiceTaskList(selectedFilter.id, firstResult, reqData));
-
+    dispatch(setBPMTaskLoader(true));
+    
+    const searchValue = parseInt(searchTaskInput, 10);
     const reqDataparams = {
-      operator: 'eq',
-      name: 'applicationId',
-      value: searchTaskInput,
+      sorting: [
+        {
+          sortBy: "created",
+          sortOrder: "desc",
+          label: {
+            key: null,
+            ref: null,
+            props: {},
+            _owner: null,
+            _store: {}
+          }
+        }
+      ],
+      processVariables: [
+        {
+          name: "applicationId",
+          operator: "eq",
+          value: searchValue 
+        }
+      ],
+      taskVariables: [],
+      variableNamesIgnoreCase: false,
+      variableValuesIgnoreCase: false
     };
-
-    dispatch(setFilterListParams(reqDataparams));
+    
     dispatch(fetchServiceTaskList(selectedFilter.id, firstResult, reqDataparams));
   };
-    
-    
-    
  
   const onClearSearch = () => {
+    dispatch(setBPMTaskLoader(true));
     setSearchTaskInput("");
+    
+    dispatch(fetchServiceTaskList(selectedFilter.id, firstResult, reqData));
+    setShowClearButton(false);
     
   };
   return (
@@ -76,11 +99,12 @@ const TaskSearchBarListView = React.memo(() => {
       <div className="d-flex justify-content-end filter-sort-bar mt-1">
         <div className="searchbar-container mr-auto">
           <div className="input-group">
+            
             <input
               type="search"
               value={searchTaskInput}
               onChange={(e) => {
-                setShowClearButton(e.target.value);
+                setShowClearButton(true);
                 setSearchTaskInput(e.target.value);
                 e.target.value === "" && handleSearchTask();
               }}
@@ -172,11 +196,15 @@ const TaskSearchBarListView = React.memo(() => {
               {selectedTaskVariables &&
                 Object?.keys(selectedTaskVariables)?.map((eachVariable) => {
                   return (
-                    <div className="form-check" key={eachVariable} style={{ wordBreak: "break-all" }} >
-                      <input onChange={() => { alterTaskVariableSelection(eachVariable); }} className="form-check-input" type="checkbox" id={eachVariable} checked={selectedTaskVariables[eachVariable]} />
-                      <label className="form-check-label" htmlFor={eachVariable}  >
-                        {getLabelOfSelectedVariable(eachVariable)}
+                    <div className="form-check pl-0" key={eachVariable} style={{ wordBreak: "break-all" }} >
+                      <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" className="bi bi-list mr-2" viewBox="0 0 16 16">
+                        <path fillRule="evenodd" d="M2.5 12a.5.5 0 0 1 .5-.5h10a.5.5 0 0 1 0 1H3a.5.5 0 0 1-.5-.5zm0-4a.5.5 0 0 1 .5-.5h10a.5.5 0 0 1 0 1H3a.5.5 0 0 1-.5-.5zm0-4a.5.5 0 0 1 .5-.5h10a.5.5 0 0 1 0 1H3a.5.5 0 0 1-.5-.5z" />
+                      </svg>
+                      <label className="form-check-label mr-4" htmlFor={eachVariable} style={{width :"200px"}} >
+                        <strong>{getLabelOfSelectedVariable(eachVariable)}</strong>
                       </label>
+                      <input onChange={() => { alterTaskVariableSelection(eachVariable); }} className="form-check-input" type="checkbox" id={eachVariable} checked={selectedTaskVariables[eachVariable]} />
+
                     </div>
                   );
                 })}

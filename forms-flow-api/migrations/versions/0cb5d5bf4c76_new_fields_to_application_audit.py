@@ -22,6 +22,9 @@ def upgrade():
     op.add_column('application', sa.Column('event_name', sa.String(length=100), nullable=True))
     op.add_column('application_audit', sa.Column('color', sa.String(length=50), nullable=True))
     op.add_column('application_audit', sa.Column('percentage', sa.Double(), nullable=True))
+    op.execute("UPDATE application SET is_resubmit = true, event_name = 'application_resubmitted' WHERE application_status = 'Resubmit'")
+    op.execute("UPDATE application SET is_resubmit = true, event_name = 'application_acknowledged' WHERE application_status = 'Awaiting Acknowledgement' ")
+    
     # ### end Alembic commands ###
 
 

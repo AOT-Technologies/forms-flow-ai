@@ -125,7 +125,7 @@ const PrivateRoute = React.memo((props) => {
         instance.initKeycloak((authenticated) => {
           if(!authenticated)
           {
-           toast.error("The user does not belong to this tenant.",{autoClose: 3000}); 
+           toast.error("Unauthorized Access.",{autoClose: 3000}); 
            setTimeout(function() {
             instance.userLogout();
           }, 3000);

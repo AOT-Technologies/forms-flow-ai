@@ -182,6 +182,8 @@ class Application(
             cls.created,
             cls.modified,
             cls.modified_by,
+            cls.is_resubmit,
+            cls.event_name,
             FormProcessMapper.form_name.label("application_name"),
             FormProcessMapper.process_key.label("process_key"),
             FormProcessMapper.process_name.label("process_name"),

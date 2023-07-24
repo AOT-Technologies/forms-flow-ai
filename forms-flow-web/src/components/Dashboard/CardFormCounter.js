@@ -4,7 +4,6 @@ import { Translation } from "react-i18next";
 import { useSelector } from "react-redux";
 
 const CardFormCounter = React.memo((props) => {
- 
   const { submitionData, getStatusDetails } = props;
   const selectedMetricsId = useSelector(
     (state) => state.metrics?.selectedMetricsId
@@ -14,7 +13,7 @@ const CardFormCounter = React.memo((props) => {
     <Fragment>
       <div
         className=" card-counter form-card-counter "
-        onClick={() => getStatusDetails(parentFormId,{parentId:true})}
+        onClick={() => getStatusDetails(parentFormId, { parentId: true })}
       >
         <div
           className={`white-box analytics-info submission-counter ${
@@ -22,19 +21,21 @@ const CardFormCounter = React.memo((props) => {
           }`}
         >
           <div className="name">
-            <i className="fa fa-wpforms p-1" />
+            <div className="d-flex align-items-center">
+              <i className="fa fa-wpforms p-1" />
+              <OverlayTrigger
+                placement="top"
+                delay={{ show: 0, hide: 400 }}
+                overlay={(propsData) => (
+                  <Tooltip id="overlay-example" {...propsData}>
+                    {formName}
+                  </Tooltip>
+                )}
+              >
+                <span className="form-title">{formName}</span>
+              </OverlayTrigger>
+            </div>
 
-            <OverlayTrigger
-              placement="top"
-              delay={{ show: 0, hide: 400 }}
-              overlay={(propsData) => (
-                <Tooltip id="overlay-example" {...propsData}>
-                  {formName}
-                </Tooltip>
-              )}
-            >
-              <span>{formName}</span>
-            </OverlayTrigger>
             <div>
               {" "}
               <span className="small-title">

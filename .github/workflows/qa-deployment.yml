@@ -1,4 +1,4 @@
-name: Push Forms flow components to QA environment
+name: Deploy to QA environment
 
 on:
   workflow_dispatch:

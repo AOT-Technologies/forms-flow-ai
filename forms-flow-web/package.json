@@ -9,9 +9,9 @@
     "build": "GENERATE_SOURCEMAP=false craco --max_old_space_size=6144 build",
     "winBuild": "set \"GENERATE_SOURCEMAP=false\" && craco build",
     "eject": "react-scripts eject",
-    "preinstall": "npx npm-force-resolutions",
     "test": "craco test --detectOpenHandles --silent",
     "coverage": "craco test --coverage --watchAll=false",
+    "preinstall": "npx npm-force-resolutions",
     "lint": "eslint src --no-fix --max-warnings 0"
   },
   "jest": {

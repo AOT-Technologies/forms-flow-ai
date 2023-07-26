@@ -17,6 +17,23 @@ jobs:
       packages: write
 
     steps:
+      - name: Set version
+        if: ${{ github.ref != 'refs/heads/master' }}
+        working-directory: .
+        run: |
+          VER=$(cat VERSION)
+          echo "VERSION=$VER" >> $GITHUB_ENV
+      
+      - name: Set version
+        if: ${{ github.ref == 'refs/heads/master' }}
+        working-directory: .
+        run: |
+          VER=$(cat VERSION)
+          VER=${VER/-alpha/''}
+          echo "VERSION=$VER" >> $GITHUB_ENV
+      
+      - run: echo ${{ env.VERSION }}
+      
       - name: Set up AWS CLI
         uses: aws-actions/configure-aws-credentials@v1
         with:

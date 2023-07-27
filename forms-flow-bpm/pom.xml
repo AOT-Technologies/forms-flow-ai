@@ -22,8 +22,8 @@
 		<failOnMissingWebXml>false</failOnMissingWebXml>
 
 		<!-- versions -->
-		<version.camundaKeycloak>7.18.0</version.camundaKeycloak>
-		<version.camunda>7.18.0</version.camunda><!-- 7.17.0 - 7.18.0 -->
+		<version.camundaKeycloak>7.19.0</version.camundaKeycloak>
+		<version.camunda>7.19.0</version.camunda><!-- 7.17.0 - 7.18.0 -->
 		<version.camundaConnect>1.5.4</version.camundaConnect><!-- 1.5.4 -->
 		<version.camundaMail>1.5.0</version.camundaMail><!-- 1.5.0 -->
 		<version.springBoot>2.7.12</version.springBoot><!-- 2.6.6 - 2.7.12 -->

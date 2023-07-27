@@ -2,6 +2,39 @@
 
 Mark  items as `Added`, `Changed`, `Fixed`, `Removed`, `Untested Features`, `Upcoming Features`, `Known Issues`
 
+## 5.2.1 - TBD
+
+`Added`
+
+**forms-flow-web**
+
+
+**forms-flow-web-root-config**
+
+
+**forms-flow-bpm**
+
+
+**forms-flow-api**
+
+
+`Modified`
+
+**forms-flow-api**
+* Camunda version upgraded to 7.19.0
+* Added Keycloak 21 support.
+  
+**forms-flow-web**
+
+
+**forms-flow-analytics**
+
+
+**forms-flow-api**
+
+
+
+
 ## 5.2.0 - 2023-06-30
 
 `Added`

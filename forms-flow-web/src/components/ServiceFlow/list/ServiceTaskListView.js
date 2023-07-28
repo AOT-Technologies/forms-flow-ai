@@ -53,6 +53,7 @@ const ServiceTaskListView = React.memo(() => {
   ];
   const handleLimitChange = (limit) => {
     setSelectedLimitValue(limit);
+    dispatch(setBPMTaskLoader(true));
     dispatch(fetchServiceTaskList(selectedFilter.id,15,reqData,null,limit));
   };
   let numberofSubmissionListFrom =
@@ -83,15 +84,15 @@ const ServiceTaskListView = React.memo(() => {
     dispatch(setBPMTaskLoader(true));
     let firstResultIndex = getFirstResultIndex(pageNumber);
     dispatch(
-      fetchServiceTaskList(selectedFilter.id, firstResultIndex, reqData)
+      fetchServiceTaskList(selectedFilter.id, firstResultIndex, reqData, null, selectedLimitValue)
     );
   };
-
+ 
   const renderTaskList = () => {
     if ((tasksCount || taskList.length) && selectedFilter) {
       return (
         <>
-        <hr className=" head-rule"/>
+        <hr className=" head-rule mt-1"/>
         <div className="container list-container p-2"
         style={{ maxHeight: "60vh" }}
         >
@@ -113,7 +114,7 @@ const ServiceTaskListView = React.memo(() => {
                   </div>
                 </Col>
                 <Col  xs={2} >
-                  <div className="col-12 ">
+                  <div className="col-12">
                     <h6 className="font-weight-light">Priority</h6>
                   </div>
                   <div className="d-flex col-12">
@@ -150,7 +151,7 @@ const ServiceTaskListView = React.memo(() => {
                   {task?._embedded?.variable?.map((eachVariable, index) => {
                     if ( eachVariable.name !== "applicationId" && selectedTaskVariables[eachVariable.name] === true) {
                       return (
-                        <Col xs={2} key={index} className="px-0">
+                        <Col xs={2} key={index} >
                           <div className="col-12" style={{ wordBreak: "break-all" }}>
                             <h6 className="font-weight-light">{getLabelOfSelectedVariable(eachVariable.name)}</h6>
                           </div>

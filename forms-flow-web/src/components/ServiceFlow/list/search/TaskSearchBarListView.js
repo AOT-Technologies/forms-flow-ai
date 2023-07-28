@@ -54,8 +54,8 @@ const TaskSearchBarListView = React.memo(() => {
   };
   
   const handleSearchTask = () => {
+    if ( searchTaskInput !== "") {
     dispatch(setBPMTaskLoader(true));
-    
     const searchValue = parseInt(searchTaskInput, 10);
     const reqDataparams = {
       sorting: [
@@ -82,8 +82,8 @@ const TaskSearchBarListView = React.memo(() => {
       variableNamesIgnoreCase: false,
       variableValuesIgnoreCase: false
     };
-    
     dispatch(fetchServiceTaskList(selectedFilter.id, firstResult, reqDataparams));
+    }
   };
  
   const onClearSearch = () => {

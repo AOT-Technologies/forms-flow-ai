@@ -469,12 +469,18 @@ class ApplicationService:  # pylint: disable=too-many-public-methods
         mapper = ApplicationService.get_application_form_mapper_by_id(application_id)
         task_variable = json.loads(mapper.get("taskVariable"))
         form_data = payload.pop("data", None)
+        process_variables = {"isResubmit": {"value": False}}
         if task_variable and form_data:
             task_keys = [val["key"] for val in task_variable]
-            process_variables = {
-                key: {"value": form_data[key]} for key in task_keys if key in form_data
-            }
-            payload["processVariables"] = process_variables
+            process_variables.update(
+                {
+                    key: {"value": form_data[key]}
+                    for key in task_keys
+                    if key in form_data
+                }
+            )
+        payload["processVariables"] = process_variables
+        ApplicationService.update_application(application_id, {"is_resubmit": False})
         response = BPMService.send_message(data=payload, token=token)
         if not response:
             raise BusinessException(

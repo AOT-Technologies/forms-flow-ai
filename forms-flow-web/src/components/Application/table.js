@@ -219,7 +219,7 @@ const customTotal = (from, to, size) => (
     <Translation>{(t) => t("Showing")}</Translation> {from}{" "}
     <Translation>{(t) => t("to")}</Translation> {to}{" "}
     <Translation>{(t) => t("of")}</Translation> {size}{" "}
-    <Translation>{(t) => t("Results")}</Translation>
+    <Translation>{(t) => t("results")}</Translation>
   </span>
 );
 export const customDropUp = ({

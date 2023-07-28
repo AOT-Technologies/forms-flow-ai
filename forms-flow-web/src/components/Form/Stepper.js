@@ -455,7 +455,7 @@ const mapDispatchToProps = (dispatch) => {
           if (!err) {
             toast.success(
               <Translation>
-                {(t) => t("Form Workflow Association Saved.")}
+                {(t) => t("Form-Workflow association saved.")}
               </Translation>
             );
             dispatch(push(`${redirectUrl}form`));
@@ -463,7 +463,7 @@ const mapDispatchToProps = (dispatch) => {
           } else {
             toast.error(
               <Translation>
-                {(t) => t("Form Workflow Association Failed.")}
+                {(t) => t("Form-Workflow association failed.")}
               </Translation>
             );
           }

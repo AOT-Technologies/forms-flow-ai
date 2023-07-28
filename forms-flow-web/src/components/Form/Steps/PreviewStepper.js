@@ -340,7 +340,7 @@ const Preview = React.memo(
                             setDesignerSelectedOption(e.target.value)
                           }
                         />
-                        {t("Private(Only You)")}
+                        {t("Private(only you)")}
                       </label>
                       <label>
                         <input

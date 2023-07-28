@@ -121,3 +121,4 @@ jobs:
       - name: Deploy to eks
         run: |
           kubectl -n app2 patch deployment forms-flow-bpm -p '{"spec":{"template":{"spec":{"containers":[{"name":"forms-flow-bpm","image":"docker.io/formsflow/forms-flow-bpm:${{ env.VERSION }}"}]}}}}'
+          kubectl -n app2 rollout restart deployment forms-flow-bpm

@@ -112,3 +112,4 @@ jobs:
       - name: Deploy to eks
         run: |
           kubectl -n app2  patch deployment forms-flow-api -p '{"spec":{"template":{"spec":{"containers":[{"name":"forms-flow-api","image":"docker.io/formsflow/forms-flow-webapi:${{ env.VERSION }}"}]}}}}'
+          kubectl -n app2 rollout restart deployment forms-flow-api

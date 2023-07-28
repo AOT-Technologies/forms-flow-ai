@@ -58,6 +58,10 @@ jobs:
           kubectl -n qa patch deployment forms-flow-bpm -p '{"spec":{"template":{"spec":{"containers":[{"name":"forms-flow-bpm","image":"docker.io/formsflow/forms-flow-bpm:${{ env.VERSION }}"}]}}}}'
           kubectl -n qa patch deployment forms-flow-documents-api -p '{"spec":{"template":{"spec":{"containers":[{"name":"forms-flow-documents-api","image":"docker.io/formsflow/forms-flow-documents-api:${{ env.VERSION }}"}]}}}}'
           kubectl -n qa patch deployment forms-flow-web -p '{"spec":{"template":{"spec":{"containers":[{"name":"forms-flow-web","image":"docker.io/formsflow/forms-flow-web:${{ env.VERSION }}"}]}}}}'
+          kubectl rollout restart deployment forms-flow-api -n qa
+          kubectl rollout restart deployment forms-flow-bpm -n qa
+          kubectl rollout restart deployment forms-flow-documents-api -n qa
+          kubectl rollout restart deployment forms-flow-web -n qa
       
       - name: Deploy to QA ee
         run: |
@@ -66,6 +70,11 @@ jobs:
           kubectl -n qaee patch deployment forms-flow-documents-api -p '{"spec":{"template":{"spec":{"containers":[{"name":"forms-flow-documents-api","image":"docker.io/formsflow/forms-flow-documents-api-ee:${{ env.VERSION }}"}]}}}}'
           kubectl -n qaee patch deployment forms-flow-web -p '{"spec":{"template":{"spec":{"containers":[{"name":"forms-flow-web","image":"docker.io/formsflow/forms-flow-web-ee:${{ env.VERSION }}"}]}}}}'
           kubectl -n qaee patch deployment forms-flow-admin -p '{"spec":{"template":{"spec":{"containers":[{"name":"forms-flow-admin","image":"docker.io/formsflow/forms-flow-ai-admin:${{ env.VERSION }}"}]}}}}'
+          kubectl rollout restart deployment forms-flow-api -n qaee
+          kubectl rollout restart deployment forms-flow-bpm -n qaee
+          kubectl rollout restart deployment forms-flow-documents-api -n qaee
+          kubectl rollout restart deployment forms-flow-web -n qaee
+          kubectl rollout restart deployment forms-flow-admin -n qaee
 
       - name: Deploy to QA multi
         run: |
@@ -74,5 +83,8 @@ jobs:
           kubectl -n qamulti patch deployment forms-flow-documents-api -p '{"spec":{"template":{"spec":{"containers":[{"name":"forms-flow-documents-api","image":"docker.io/formsflow/forms-flow-documents-api-ee:${{ env.VERSION }}"}]}}}}'
           kubectl -n qamulti patch deployment forms-flow-web -p '{"spec":{"template":{"spec":{"containers":[{"name":"forms-flow-web","image":"docker.io/formsflow/forms-flow-web-ee:${{ env.VERSION }}"}]}}}}'
           kubectl -n qamulti patch deployment forms-flow-admin -p '{"spec":{"template":{"spec":{"containers":[{"name":"forms-flow-admin","image":"docker.io/formsflow/forms-flow-ai-admin:${{ env.VERSION }}"}]}}}}'
-
-      
+          kubectl rollout restart deployment forms-flow-api -n qamulti
+          kubectl rollout restart deployment forms-flow-bpm -n qamulti
+          kubectl rollout restart deployment forms-flow-documents-api -n qamulti
+          kubectl rollout restart deployment forms-flow-web -n qamulti
+          kubectl rollout restart deployment forms-flow-admin -n qamulti

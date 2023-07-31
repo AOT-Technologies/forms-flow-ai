@@ -203,3 +203,17 @@ export const ENABLE_APPLICATIONS_MODULE =
   window._env_?.REACT_APP_ENABLE_APPLICATIONS_MODULE === false
     ? false
     : true;
+
+export const DATE_FORMAT =
+  (window._env_ && window._env_.REACT_APP_DATE_FORMAT) ||
+  process.env.REACT_APP_DATE_FORMAT
+    ? (window._env_ && window._env_.REACT_APP_DATE_FORMAT) ||
+      process.env.REACT_APP_DATE_FORMAT
+    : "DD-MM-YYYY";
+
+export const TIME_FORMAT =
+  (window._env_ && window._env_.REACT_APP_TIME_FORMAT) ||
+  process.env.REACT_APP_TIME_FORMAT
+    ? (window._env_ && window._env_.REACT_APP_TIME_FORMAT) ||
+      process.env.REACT_APP_TIME_FORMAT
+    : "hh:mm:ss A";

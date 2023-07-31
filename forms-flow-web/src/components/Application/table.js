@@ -7,13 +7,14 @@ import {
   customFilter,
   FILTER_TYPES,
 } from "react-bootstrap-table2-filter";
-import { getLocalDateTime } from "../../apiManager/services/formatterService";
 import { AWAITING_ACKNOWLEDGEMENT } from "../../constants/applicationConstants";
 import { Translation } from "react-i18next";
 import DateRangePicker from "@wojtekmaj/react-daterange-picker";
 import DropdownButton from "react-bootstrap/DropdownButton";
 import Dropdown from "react-bootstrap/Dropdown";
 import { toast } from "react-toastify";
+import { HelperServices} from "@formsflow/service";
+import { DATE_FORMAT, TIME_FORMAT } from "../../constants/constants";
 
 let statusFilter, idFilter, nameFilter, modifiedDateFilter;
 
@@ -71,7 +72,7 @@ const linkSubmission = (cell, row, redirectUrl) => {
 };
 
 function timeFormatter(cell) {
-  const localdate = getLocalDateTime(cell);
+  const localdate = HelperServices.getLocalDateAndTime(cell,DATE_FORMAT,TIME_FORMAT);
   return <label title={cell}>{localdate}</label>;
 }
 

@@ -8,6 +8,13 @@ export const setFormCheckList = (listData) => (dispatch) => {
   });
 };
 
+export const DesignerAccessDenied = (data) => (dispatch) => {
+  dispatch({
+    type: ACTION_CONSTANTS.DESIGNER_DENIED_ACCESS,
+    payload: data,
+  });
+};
+
 export const setFormUploadList = (listData) => (dispatch) => {
   dispatch({
     type: ACTION_CONSTANTS.FORM_UPLOAD_LIST,

@@ -76,7 +76,7 @@ const FileModal = React.memo(({ modalOpen = false, onClose, forms, }) => {
           )}
         </Modal.Body>
         <Modal.Footer style={{ justifyContent: `${noAccess ? "space-between" : ''}` }}>
-          {noAccess && <span className="fileupload-fail">Access restricted by its designer..!</span>}
+          {noAccess && <span className="fileupload-fail">{t("Access restricted by its designer..!")}</span>}
           <Button style={{ width: "20%" }} type="button" className="btn btn-default" onClick={() => {
             dispatch(DesignerAccessDenied(false));
             onClose();

@@ -13,7 +13,7 @@
 package org.camunda.bpm.extension.hooks.adapter.mail.request;
 
 import org.camunda.bpm.extension.hooks.adapter.mail.CustomEmailConnector;
-import org.camunda.bpm.extension.hooks.adapter.mail.response.EmptyResponse;
+import org.camunda.bpm.extension.hooks.adapter.response.EmptyResponse;
 import org.camunda.connect.impl.AbstractConnectorRequest;
 
 import java.util.Arrays;

@@ -1,7 +1,7 @@
 package org.camunda.bpm.extension.hooks.adapter.mail;
 
 import org.camunda.bpm.extension.hooks.adapter.mail.request.ConnectorRequest;
-import org.camunda.bpm.extension.hooks.adapter.mail.response.EmptyResponse;
+import org.camunda.bpm.extension.hooks.adapter.response.EmptyResponse;
 import org.camunda.bpm.extension.mail.MailConnectorException;
 import org.camunda.connect.impl.AbstractConnector;
 import org.camunda.connect.spi.ConnectorResponse;

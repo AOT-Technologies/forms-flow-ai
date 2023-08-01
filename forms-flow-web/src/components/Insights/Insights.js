@@ -73,7 +73,7 @@ const Insights = React.memo((props) => {
         name: "Metrics",
         count: totalItems,
         onClick: () => dispatch(push(`${redirectUrl}metrics`)),
-        icon: "pie-chart",
+        icon: "line-chart",
       },
       {
         name: "Insights",

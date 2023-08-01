@@ -75,4 +75,20 @@ window["_env_"] = {
   }`
   */
   // REACT_APP_CUSTOM_THEME_URL: "<custom theme URl>",
+
+ /**
+  * CUSTOM_RESOURCE_BUNDLE_URL
+    You can provide custom resource bundle for internationalization by adding json data to following path
+    public/languageConfig/customResourceBundle.json inside forms-flow-web-root-config.
+    the json data should be below format.
+    {
+      "language1": {
+        "key": "value"
+      },
+      "language2": {
+        "key": "value"
+      }
+    }
+    REACT_APP_CUSTOM_RESOURCE_BUNDLE_URL: <CUSTOM_RESOURCE_BUNDLE_URL>
+  */
 };

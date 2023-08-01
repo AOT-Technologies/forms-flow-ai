@@ -18,7 +18,7 @@ const initialState = {
   selectedMetricsId: 0,
   metricsLoadError: false,
   metricsStatusLoadError: false,
-  limit: 6,
+  limit: 9,
   pageno: 1,
   pagination: {
     numPages: 0,

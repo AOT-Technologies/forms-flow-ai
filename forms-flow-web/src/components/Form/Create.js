@@ -170,7 +170,7 @@ const Create = React.memo(() => {
         // eslint-disable-next-line no-unused-vars
         saveFormProcessMapperPost(data, (err, res) => {
           if (!err) {
-            toast.success(t("Form Saved"));
+            toast.success(t("Form saved"));
             dispatch(push(`${redirectUrl}formflow/${form._id}/view-edit/`));
           } else {
             setFormSubmitted(false);

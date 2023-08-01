@@ -401,19 +401,15 @@ class ApplicationService:  # pylint: disable=too-many-public-methods
         return result
 
     @staticmethod
-    @user_context
     def get_applications_status_by_form_id(
-        form_id: int, from_date: str, to_date: str, order_by: str, **kwargs
+        form_id: int, from_date: str, to_date: str, order_by: str
     ):
         """Get aggregated application status by form id."""
-        user: UserContext = kwargs["user"]
         application_status = Application.find_aggregated_application_status_by_form_id(
             form_id=form_id, from_date=from_date, to_date=to_date, order_by=order_by
         )
         schema = AggregatedApplicationSchema()
         result = schema.dump(application_status, many=True)
-        if user.tenant_key and len(result) == 0:
-            raise PermissionError(f"Access to resource-{form_id} is denied.")
         return result
 
     @staticmethod
@@ -426,9 +422,9 @@ class ApplicationService:  # pylint: disable=too-many-public-methods
             application_id=application_id
         )
         if mapper:
-            if mapper.mapper_id and tenant_key:
+            if mapper.id and tenant_key:
                 FormProcessMapperService.check_tenant_authorization(
-                    mapper_id=mapper.mapper_id, tenant_key=tenant_key
+                    mapper_id=mapper.id, tenant_key=tenant_key
                 )
             mapper_schema = FormProcessMapperSchema()
             return mapper_schema.dump(mapper)

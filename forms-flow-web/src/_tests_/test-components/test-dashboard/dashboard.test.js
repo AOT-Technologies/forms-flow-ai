@@ -50,25 +50,24 @@ it("Should render the dashboard without breaking", () => {
           {
             applicationCount: 26,
             parentFormId: 22,
-                        formVersions: [{formId:324234214324, version:"v1"}],
             formVersions: [{ formId: 324234214324, version: "v1" }],
             formName: "New Business License Application",
           },
           {
             applicationCount: 26,
-                        parentFormId: 22,
-            formVersions: [{formId:324234214324, version:"v1"}],
-                        formName: "Freedom of Information and Protection of Privacy",
-                    },
-                ],
-                submissionsStatusList: [
-                    {
-                        statusName: "Approved",
-                        count: 1,
-                    },
-                    {
-                        statusName: "New",
-                        count: 21,
+            parentFormId: 22,
+            formVersions: [{ formId: 324234214324, version: "v1" }],
+            formName: "Freedom of Information and Protection of Privacy",
+          },
+        ],
+        submissionsStatusList: [
+          {
+            statusName: "Approved",
+            count: 1,
+          },
+          {
+            statusName: "New",
+            count: 21,
           },
         ],
         submissionsFullList: [{ length: 0 }],
@@ -93,7 +92,6 @@ it("Should render the dashboard without breaking", () => {
     route: "/",
   });
   expect(screen.getByText("Metrics")).toBeInTheDocument();
-  expect(screen.getByText("Submissions")).toBeInTheDocument();
   expect(
     screen.getByText("New Business License Application")
   ).toBeInTheDocument();

@@ -31,6 +31,7 @@ import {
 import { deleteDraftbyId } from "../../apiManager/services/draftService";
 import isValiResourceId from "../../helper/regExp/validResourceId";
 import { toast } from "react-toastify";
+import { textTruncate } from "../../helper/helper";
 
 export const DraftList = React.memo(() => {
   const { t } = useTranslation();
@@ -204,9 +205,9 @@ export const DraftList = React.memo(() => {
             {
             <div>
             {t("Are you sure you wish to delete the draft")}
-            <h4 style={{ fontWeight: "bold" }} className="text-truncate"> {draftDelete.draftName} </h4>
+            <span style={{ fontWeight: "bold" }} > {draftDelete.draftName.includes(' ') ? draftDelete.draftName : textTruncate(50,40,draftDelete.draftName)} </span>
             {t("with ID")}
-            <span style={{fontWeight: "bold"}}> {draftDelete.draftId}</span>
+            <span style={{fontWeight: "bold"}}> {draftDelete.draftId}</span>?
             </div>
             }
 

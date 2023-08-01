@@ -69,7 +69,7 @@ const Edit = React.memo((props) => {
   );
   const tenantKey = useSelector((state) => state.tenants?.tenantId);
   const customSubmission = useSelector(
-    (state) => state.formDelete.customSubmission
+    (state) => state.customSubmission?.submission || {}
   );
   const redirectUrl = MULTITENANCY_ENABLED ? `/tenant/${tenantKey}/` : "/";
   useEffect(() => {
@@ -108,7 +108,7 @@ const Edit = React.memo((props) => {
           message={props.submissionError.message}
           onConfirm={props.onConfirm}
         ></SubmissionError>
-        <h3 className="task-head">{form.title}</h3>
+        <h3 className="task-head text-truncate" style={{ height:"45px" }}>{form.title}</h3>
       </div>
       <Errors errors={errors} />
       <LoadingOverlay

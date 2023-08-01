@@ -25,7 +25,6 @@ const ChartForm = React.memo((props) => {
   version1.version > version2.version ? 1 : -1)),[formVersions]);
 
   const version = formVersions?.length;
-
   const { t } = useTranslation();
   const pieData = submissionsStatusList || [];
 
@@ -37,7 +36,6 @@ const ChartForm = React.memo((props) => {
   };
 
 
-
   return (
     <div className="row">
       <div className="col-12">
@@ -46,7 +44,7 @@ const ChartForm = React.memo((props) => {
           <div>
           <div className="d-flex align-items-center">
             <span className="text-primary mr-2">{t("Form Name")} : </span>
-            <h2>{formName}</h2>
+            <h2 className="text-truncate" style={{ maxWidth: version > 1 ? "500px" : "700px"}}>{formName}</h2>
           </div>
           <p>
             <span className="text-primary">{t("Latest Version")} :</span>{" "}

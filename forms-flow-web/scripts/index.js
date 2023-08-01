@@ -3,25 +3,22 @@ import { PutObjectCommand } from "@aws-sdk/client-s3";
 import { s3Client } from "./libs/s3Client.js";
 import { createReadStream, createWriteStream } from "fs";
 import { createGzip } from "zlib";
-
 const BUCKET = process.env.BUCKET;
-
-
 import Walk from "@root/walk";
 import path from "path";
-
-const component = "forms-flow-web";
+const VERSION = process.env.VERSION;
+const component = `forms-flow-web@${VERSION}`;
 
 const compressFileAndUpload = (fileName, filePath) => {
   const stream = createReadStream(`${filePath}/${fileName}`);
   stream
     .pipe(createGzip())
-    .pipe(createWriteStream(`${filePath}/single-spa-build.gz.js`))
+    .pipe(createWriteStream(`${filePath}/forms-flow-web.gz.js`))
     .on("finish", () => {
       console.log(`Successfully compressed the file at ${filePath}`);
       upload(
-        `single-spa-build.gz.js`,
-        `${filePath}/single-spa-build.gz.js`
+        `forms-flow-web.gz.js`,
+        `${filePath}/forms-flow-web.gz.js`
       );
     });
 };
@@ -54,9 +51,9 @@ const run = async (params) => {
  */
 async function upload(file_name, file, type = "application/javascript", encode = true) {
     const params = {
-        Bucket: BUCKET, 
-        Key: `${component}/${file_name}`, 
-        Body: createReadStream(file), 
+        Bucket: BUCKET,
+        Key: `${component}/${file_name}`,
+        Body: createReadStream(file),
         ContentType: type,
         ContentEncoding:"gzip"
       };
@@ -64,7 +61,7 @@ async function upload(file_name, file, type = "application/javascript", encode =
       delete params.ContentEncoding;
     }
     run(params);
-    
+
 }
 
 Walk.walk(`../build`, walkFunc)
@@ -95,7 +92,7 @@ function walkFunc(err, pathname, dirent) {
         console.log(
             `Collecting artifact -> ${path.dirname(pathname)}/${dirent.name}`
           );
-          if (dirent.name === "single-spa-build.js") {
+          if (dirent.name === "forms-flow-web.js") {
             compressFileAndUpload(dirent.name, `${path.dirname(pathname)}`);
           }else if (path.dirname(pathname).includes("static")) {
             if (`${path.dirname(pathname).includes("js")}`) {

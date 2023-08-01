@@ -50,6 +50,7 @@ import {
 } from "../apiManager/endpoints/config";
 import { AppConfig } from "../config";
 import { getFormioRoleIds } from "../apiManager/services/userservices";
+import { toast } from "react-toastify";
 
 export const kcServiceInstance = (tenantId = null) => {
   return KeycloakService.getInstance(
@@ -79,10 +80,10 @@ const PrivateRoute = React.memo((props) => {
   const [kcInstance, setKcInstance] = React.useState(getKcInstance());
 
   const authenticate = (instance, store) => {
-    dispatch(setUserAuth(instance.isAuthenticated()));
     store.dispatch(
       setUserRole(JSON.parse(StorageService.get(StorageService.User.USER_ROLE)))
     );
+    dispatch(setUserAuth(instance.isAuthenticated()));
     store.dispatch(setUserToken(instance.getToken()));
     store.dispatch(setLanguage(instance.getUserData()?.locale || "en"));
     //Set Cammunda/Formio Base URL
@@ -121,9 +122,18 @@ const PrivateRoute = React.memo((props) => {
       if (kcInstance) {
         authenticate(kcInstance, props.store);
       } else {
-        instance.initKeycloak(() => {
-          authenticate(instance, props.store);
-          publish("FF_AUTH", instance);
+        instance.initKeycloak((authenticated) => {
+          if(!authenticated)
+          {
+           toast.error("Unauthorized Access.",{autoClose: 3000});
+           setTimeout(function() {
+            instance.userLogout();
+          }, 3000);
+          }
+          else{
+            authenticate(instance, props.store);
+            publish("FF_AUTH", instance);
+          }
         });
       }
     }
@@ -253,13 +263,13 @@ const PrivateRoute = React.memo((props) => {
             )}
 
             <Route exact path={BASE_ROUTE}>
-              <Redirect
+             {userRoles.length && <Redirect
                 to={
-                  userRoles.includes(STAFF_REVIEWER)
+                  userRoles?.includes(STAFF_REVIEWER)
                     ? `${redirecUrl}task`
                     : `${redirecUrl}form`
                 }
-              />
+              />}
             </Route>
             <Route path="/404" exact={true} component={NotFound} />
             <Redirect from="*" to="/404" />

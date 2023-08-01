@@ -72,7 +72,7 @@ class FormHistoryService:
         """Create form history."""
         user: UserContext = kwargs["user"]
         assert data is not None
-        user_name = (user.user_name,)
+        user_name = user.user_name
         form_logs_data = {"change_log": {}}
         if data.get("statusChanged") is True:
             form_logs_data["status"] = True

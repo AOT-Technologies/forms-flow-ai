@@ -7,7 +7,8 @@ import {
 import PubSub from "pubsub-js";
 import microfrontendLayout from "./microfrontend-layout.html";
 import multitenantLayout from "./microfrontend-multitenant-layout.html";
-import * as serviceWorkerRegistration from "./serviceWorkerRegistration";
+import { register as registerServiceWorker } from './serviceWorkerSetup';
+
 
 const publish = (event, data) => PubSub.publish(event, data);
 const subscribe = (event, callback) => PubSub.subscribe(event, callback);
@@ -17,8 +18,8 @@ subscribe("FF_AUTH", (msg, data) => {
 });
 const getKcInstance = () => instance;
 
-if (window._env_?.CUSTOM_THEME_URL) {
-  fetch(window._env_?.CUSTOM_THEME_URL)
+if (window._env_?.REACT_APP_CUSTOM_THEME_URL) {
+  fetch(window._env_?.REACT_APP_CUSTOM_THEME_URL)
     .then((response) => response.json())
     .then((data) => {
       if (typeof data == "object") {
@@ -30,10 +31,9 @@ if (window._env_?.CUSTOM_THEME_URL) {
 }
 
 // Register service worker and if new changes skip waiting and activate new service worker
-serviceWorkerRegistration.register({
+registerServiceWorker({
   onUpdate: (registration) => {
     const waitingServiceWorker = registration.waiting;
-
     if (waitingServiceWorker) {
       waitingServiceWorker.addEventListener("statechange", (event) => {
         if (event.target.state === "activated") {

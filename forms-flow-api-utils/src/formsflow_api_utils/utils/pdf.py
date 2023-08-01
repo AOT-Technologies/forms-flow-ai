@@ -6,6 +6,7 @@ import json
 from flask import current_app, make_response
 from selenium.common.exceptions import TimeoutException
 from selenium.webdriver.chrome.options import Options
+from selenium.webdriver.chrome.service import Service
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.support.ui import WebDriverWait
@@ -47,9 +48,10 @@ def get_pdf_from_html(path, chromedriver=None, p_options=None, args=None):
     options.add_argument("--log-level=3")
     sel_options = {"request_storage_base_dir": "/tmp"}
 
+    service = Service(executable_path=chromedriver)
     # pylint: disable=E1123
     driver = webdriver.Chrome(
-        chromedriver, options=options, seleniumwire_options=sel_options
+        service=service, options=options, seleniumwire_options=sel_options
     )
     driver.set_window_size(1920, 1080)
 

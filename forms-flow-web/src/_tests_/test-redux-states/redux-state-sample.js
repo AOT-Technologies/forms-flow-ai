@@ -22,7 +22,6 @@ export const appState = {
     isAuthenticated: false,
     currentPage: "",
     showApplications: false,
-    showViewSubmissions: false,
     lang: "",
   },
   tasks: {

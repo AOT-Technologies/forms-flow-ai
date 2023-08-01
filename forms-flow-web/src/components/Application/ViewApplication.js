@@ -90,7 +90,7 @@ const ViewApplication = React.memo(() => {
         <Link title={t("go back")} to={`${redirectUrl}application`}>
           <i className="fa fa-chevron-left fa-lg" />
         </Link>
-        <h3 className="ml-3 text-truncate">
+        <h3 className="ml-3 text-truncate" style={{height:"45px"}}>
           <span className="application-head-details">
             <i className="fa fa-list-alt" aria-hidden="true" />
             &nbsp; <Translation>{(t) => t("Applications")}</Translation> /

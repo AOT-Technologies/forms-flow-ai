@@ -35,7 +35,8 @@ import {
   setFormSearchLoading,
   setFormUploadList,
   updateFormUploadCounter,
-  formUploadFailureCount
+  formUploadFailureCount,
+  DesignerAccessDenied
 } from "../../actions/checkListActions";
 import FileModal from "./FileUpload/fileUploadModal";
 import { useTranslation, Translation } from "react-i18next";
@@ -58,6 +59,7 @@ import overlayFactory from "react-bootstrap-table2-overlay";
 import { SpinnerSVG } from "../../containers/SpinnerSVG";
 import { getFormattedForm, INACTIVE } from "./constants/formListConstants";
 import { addClients, addUsers } from "../../apiManager/services/authorizationService";
+import { fetchDesigners } from "../../apiManager/services/authorizationService.js";
 const List = React.memo((props) => {
   const { t } = useTranslation();
   const [showFormUploadModal, setShowFormUploadModal] = useState(false);
@@ -270,9 +272,9 @@ const List = React.memo((props) => {
 
   const setDefaultAuthorization = (parentFormId) => {
     let payload = {
-      resourceId:parentFormId,
+      resourceId: parentFormId,
       resourceDetails: {},
-      roles : []
+      roles: []
     };
     addUsers(payload).catch((error) => console.error("error", error));
     addClients(payload).catch((error) => console.error("error", error));
@@ -315,111 +317,120 @@ const List = React.memo((props) => {
                   dispatch(
                     fetchFormByAlias(newFormData.path, async (err, formObj) => {
                       if (!err) {
+                        fetchDesigners(formObj._id).then((response) => {
+                          if (response?.status != 401) {
+                            dispatch(
+                              // eslint-disable-next-line no-unused-vars
+                              getFormProcesses(formObj._id, (err, mapperData) => {
+                                // just update form
+                                if (mapperData) {
+                                  dispatch(
+                                    getApplicationCount(mapperData.id,
+                                      (error, applicationCount) => {
+                                        if (!error) {
+                                          newFormData._id = formObj._id;
+                                          newFormData.access = formObj.access;
+                                          newFormData.submissionAccess = formObj.submissionAccess;
+                                          newFormData.componentChanged =
+                                            (!_isEquial(newFormData.components,
+                                              formObj.components) ||
+                                              newFormData.display !== formObj.display ||
+                                              newFormData.type !== formObj.type
+                                            );
+                                          newFormData.parentFormId = mapperData.parentFormId;
+                                          formUpdate(newFormData._id, newFormData)
+                                            .then((formupdated) => {
+                                              const updatedForm = formupdated.data;
+                                              const data = {
+                                                anonymous:
+                                                  mapperData.anonymous === null
+                                                    ? false
+                                                    : mapperData.anonymous,
+                                                formName: updatedForm.title,
+                                                formType: updatedForm.type,
+                                                parentFormId: mapperData.parentFormId,
+                                                status: mapperData.status
+                                                  ? mapperData.status
+                                                  : INACTIVE,
+                                                taskVariable: mapperData.taskVariable
+                                                  ? mapperData.taskVariable
+                                                  : [],
+                                                id: mapperData.id,
+                                                formId: updatedForm._id,
+                                                formTypeChanged:
+                                                  mapperData.formType !==
+                                                  updatedForm.type,
+                                                titleChanged:
+                                                  mapperData.formName !==
+                                                  updatedForm.title,
+                                              };
 
-                        dispatch(
-                          // eslint-disable-next-line no-unused-vars
-                          getFormProcesses(formObj._id, (err, mapperData) => {
-                            // just update form
-                            if (mapperData) {
-                              dispatch(
-                                getApplicationCount(mapperData.id, (error, applicationCount) => {
-                                  if (!error) {
-                                    newFormData._id = formObj._id;
-                                    newFormData.access = formObj.access;
-                                    newFormData.submissionAccess = formObj.submissionAccess;
-                                    newFormData.componentChanged =
-                                      (!_isEquial(newFormData.components, formObj.components) ||
-                                        newFormData.display !== formObj.display ||
-                                        newFormData.type !== formObj.type
-                                      );
-                                    newFormData.parentFormId = mapperData.parentFormId;
-                                    formUpdate(newFormData._id, newFormData)
-                                      .then((formupdated) => {
-                                        const updatedForm = formupdated.data;
-                                        const data = {
-                                          anonymous:
-                                            mapperData.anonymous === null
-                                              ? false
-                                              : mapperData.anonymous,
-                                          formName: updatedForm.title,
-                                          formType: updatedForm.type,
-                                          parentFormId: mapperData.parentFormId,
-                                          status: mapperData.status
-                                            ? mapperData.status
-                                            : INACTIVE,
-                                          taskVariable: mapperData.taskVariable
-                                            ? mapperData.taskVariable
-                                            : [],
-                                          id: mapperData.id,
-                                          formId: updatedForm._id,
-                                          formTypeChanged:
-                                            mapperData.formType !==
-                                            updatedForm.type,
-                                          titleChanged:
-                                            mapperData.formName !==
-                                            updatedForm.title,
-                                        };
+                                              const isMapperNeed = isMapperSaveNeeded(
+                                                mapperData,
+                                                updatedForm,
+                                                applicationCount
+                                              );
 
-                                        const isMapperNeed = isMapperSaveNeeded(
-                                          mapperData,
-                                          updatedForm,
-                                          applicationCount
-                                        );
-
-                                        if (isMapperNeed === "new") {
-                                          data["version"] = String(
-                                            +mapperData.version + 1
-                                          );
-                                          dispatch(
-                                            saveFormProcessMapperPost(data)
-                                          );
-                                        } else if (isMapperNeed === "update") {
-                                          dispatch(
-                                            saveFormProcessMapperPut(data)
-                                          );
+                                              if (isMapperNeed === "new") {
+                                                data["version"] = String(
+                                                  +mapperData.version + 1
+                                                );
+                                                dispatch(
+                                                  saveFormProcessMapperPost(data)
+                                                );
+                                              } else if (isMapperNeed === "update") {
+                                                dispatch(
+                                                  saveFormProcessMapperPut(data)
+                                                );
+                                              }
+                                              fetchForms();
+                                              dispatch(updateFormUploadCounter());
+                                              resolve();
+                                            })
+                                            .catch((err) => {
+                                              dispatch(
+                                                setFormFailureErrorData("form", err)
+                                              );
+                                              dispatch(formUploadFailureCount());
+                                              reject();
+                                            });
+                                        } else {
+                                          reject();
+                                          toast.error("Error in application count");
                                         }
-                                        fetchForms();
-                                        dispatch(updateFormUploadCounter());
-                                        resolve();
                                       })
-                                      .catch((err) => {
-                                        dispatch(
-                                          setFormFailureErrorData("form", err)
-                                        );
-                                        dispatch(formUploadFailureCount());
-                                        reject();
-                                      });
-                                  } else {
-                                    reject();
-                                    toast.error("Error in application count");
-                                  }
-                                })
-                              );
-                            } else if (!mapperData) {
-                              newFormData.componentChanged = true;
-                              newFormData.newVersion = true;
-                              newFormData.path += "-" + Date.now();
-                              newFormData.name += "-" + Date.now();
-                              formCreate(newFormData)
-                                .then((res) => {
-                                  if (res.data) {
-                                    mapperHandler(res.data);
-                                    // call the auth api
-                                    setDefaultAuthorization(res.data._id);
-                                  }
-                                  dispatch(updateFormUploadCounter());
-                                  resolve();
-                                })
-                                .catch((err) => {
-                                  err ? dispatch(formUploadFailureCount()) : '';
+                                  );
+                                } else if (!mapperData) {
+                                  newFormData.componentChanged = true;
+                                  newFormData.newVersion = true;
+                                  newFormData.path += "-" + Date.now();
+                                  newFormData.name += "-" + Date.now();
+                                  formCreate(newFormData)
+                                    .then((res) => {
+                                      if (res.data) {
+                                        mapperHandler(res.data);
+                                        // call the auth api
+                                        setDefaultAuthorization(res.data._id);
+                                      }
+                                      dispatch(updateFormUploadCounter());
+                                      resolve();
+                                    })
+                                    .catch((err) => {
+                                      err ? dispatch(formUploadFailureCount()) : '';
+                                      reject();
+                                    });
+                                } else {
+                                  toast.error(err);
                                   reject();
-                                });
-                            } else {
-                              toast.error(err);
-                              reject();
-                            }
-                          })
-                        );
+                                }
+                              })
+                            );
+                          }
+                        }).catch(() => {
+                          dispatch(DesignerAccessDenied(true));
+                          dispatch(formUploadFailureCount());
+                          reject();
+                        });
                       } else {
                         dispatch(formUploadFailureCount());
                         reject();
@@ -518,29 +529,29 @@ const List = React.memo((props) => {
               formProcessData.id && applicationCount ? (
                 applicationCountResponse ? (
 
-                 <div>
-                 {applicationCount}
-                 {
-                    applicationCount > 1
-                      ? <span>{`${t(" Applications are submitted against")} `}</span>
-                      : <span>{`${t(" Application is submitted against")} `}</span>
-                  }
+                  <div>
+                    {applicationCount}
+                    {
+                      applicationCount > 1
+                        ? <span>{`${t(" Applications are submitted against")} `}</span>
+                        : <span>{`${t(" Application is submitted against")} `}</span>
+                    }
                     <span style={{ fontWeight: "bold" }}>{props.formName.includes(' ') ? props.formName : textTruncate(50, 40, props.formName)}</span>
-                  .
-                   {t("Are you sure you wish to delete the form?")}
+                    .
+                    {t("Are you sure you wish to delete the form?")}
 
-                   </div>
+                  </div>
                 ) : (
                   <div>
                     {`${t("Are you sure you wish to delete the form ")}`}
-                      <span style={{ fontWeight: "bold" }}>{textTruncate(60,40,props.formName)}</span>
+                    <span style={{ fontWeight: "bold" }}>{textTruncate(60, 40, props.formName)}</span>
                     ?
                   </div>
                 )
               ) : (
                 <div>
                   {`${t("Are you sure you wish to delete the form ")} `}
-                    <span style={{ fontWeight: "bold" }}>{textTruncate(60, 40, props.formName)}</span>
+                  <span style={{ fontWeight: "bold" }}>{textTruncate(60, 40, props.formName)}</span>
                   ?
                 </div>
               )

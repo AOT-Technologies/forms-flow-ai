@@ -3,6 +3,7 @@ package org.camunda.bpm.extension.hooks.listeners;
 import org.camunda.bpm.engine.delegate.DelegateExecution;
 import org.camunda.bpm.engine.delegate.DelegateTask;
 import org.camunda.bpm.extension.commons.connector.HTTPServiceInvoker;
+import org.camunda.bpm.extension.commons.utils.RestAPIBuilderConfigProperties;
 import org.camunda.bpm.extension.hooks.listeners.data.Application;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -48,6 +49,9 @@ public class ApplicationStateListenerTest {
     @Mock
     private Authentication auth;
 
+    @Mock
+    private RestAPIBuilderConfigProperties restAPIBuilderConfigProperties;
+
     /**
      * This test case perform a positive test over notify method in ApplicationStateListener
      *
@@ -83,7 +87,7 @@ public class ApplicationStateListenerTest {
         JwtAuthenticationConverter jwtAuthenticationConverter = new JwtAuthenticationConverter();
         JwtAuthenticationToken jwtAuthenticationToken = (JwtAuthenticationToken) jwtAuthenticationConverter.convert(jwt);
         ResponseEntity<String> responseEntity = new ResponseEntity<>(HttpStatus.OK);
-        doReturn(application).when(applicationAuditListener).prepareApplicationAudit(delegateExecution);
+        Application applicationData = applicationStateListener.prepareApplication(delegateExecution);
         when(httpServiceInvoker.execute(any(), any(HttpMethod.class), any(Application.class)))
                 .thenReturn(responseEntity);
         doNothing().when(applicationAuditListener)
@@ -120,7 +124,7 @@ public class ApplicationStateListenerTest {
         when(delegateExecution.getVariable(APPLICATION_ID)).thenReturn("id1");
         when(delegateExecution.getVariable("submittedBy")).thenReturn(submittedBy);
         ResponseEntity<String> responseEntity = new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
-        doReturn(application).when(applicationAuditListener).prepareApplicationAudit(delegateExecution);
+        Application applicationData = applicationStateListener.prepareApplication(delegateExecution);
         when(httpServiceInvoker.execute(any(), any(HttpMethod.class), any(Application.class)))
                 .thenReturn(responseEntity);
         assertThrows(RuntimeException.class, () -> {
@@ -155,7 +159,7 @@ public class ApplicationStateListenerTest {
         when(delegateExecution.getVariable(APPLICATION_STATUS)).thenReturn(applicationStatus);
         when(delegateExecution.getVariable(APPLICATION_ID)).thenReturn("id1");
         when(delegateExecution.getVariable("submittedBy")).thenReturn(submittedBy);
-        doReturn(application).when(applicationAuditListener).prepareApplicationAudit(delegateExecution);
+        Application applicationData = applicationStateListener.prepareApplication(delegateExecution);
         doThrow(new IOException("Unable to read submission for: " + formUrl)).
                 when(httpServiceInvoker).execute(any(), any(HttpMethod.class), any(Application.class));
         assertThrows(RuntimeException.class, () -> {
@@ -202,7 +206,7 @@ public class ApplicationStateListenerTest {
         JwtAuthenticationConverter jwtAuthenticationConverter = new JwtAuthenticationConverter();
         JwtAuthenticationToken jwtAuthenticationToken = (JwtAuthenticationToken) jwtAuthenticationConverter.convert(jwt);
         ResponseEntity<String> responseEntity = new ResponseEntity<>(HttpStatus.OK);
-        doReturn(application).when(applicationAuditListener).prepareApplicationAudit(delegateExecution);
+        Application applicationData = applicationStateListener.prepareApplication(delegateExecution);
         when(httpServiceInvoker.execute(any(), any(HttpMethod.class), any(Application.class)))
                 .thenReturn(responseEntity);
         doNothing().when(applicationAuditListener)
@@ -241,7 +245,7 @@ public class ApplicationStateListenerTest {
         when(delegateExecution.getVariable(APPLICATION_ID)).thenReturn("id1");
         when(delegateExecution.getVariable("submittedBy")).thenReturn(submittedBy);
         ResponseEntity<String> responseEntity = new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
-        doReturn(application).when(applicationAuditListener).prepareApplicationAudit(delegateExecution);
+        Application applicationData = applicationStateListener.prepareApplication(delegateExecution);
         when(httpServiceInvoker.execute(any(), any(HttpMethod.class), any(Application.class)))
                 .thenReturn(responseEntity);
         assertThrows(RuntimeException.class, () -> {
@@ -280,7 +284,7 @@ public class ApplicationStateListenerTest {
         when(delegateExecution.getVariable(APPLICATION_ID)).thenReturn("id1");
         when(delegateExecution.getVariable("submittedBy")).thenReturn(submittedBy);
         ResponseEntity<String> responseEntity = new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
-        doReturn(application).when(applicationAuditListener).prepareApplicationAudit(delegateExecution);
+        Application applicationData = applicationStateListener.prepareApplication(delegateExecution);
         doThrow(new IOException("Unable to read submission for: " + formUrl)).
                 when(httpServiceInvoker).execute(any(), any(HttpMethod.class), any(Application.class));
         assertThrows(RuntimeException.class, () -> {

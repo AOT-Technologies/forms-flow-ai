@@ -8,7 +8,7 @@ In the following document, we’ll describe the details of dependencies of vario
 
   | Component | Version|  
   | ---       | -----   |
-  |  Redash   | 10.1.4 |
+  |  Redash   | 10.1.5 |
 
 <br>
 
@@ -19,7 +19,7 @@ In the following document, we’ll describe the details of dependencies of vario
    | Component | Version |  
    | ---       | -----   |
    |  Python   |  3.9    |
-   | Flask     |  2.1.3  |
+   | Flask     |  2.3.2  |
    |  Postgres |  11.0   |
 
   <br>
@@ -30,8 +30,8 @@ In the following document, we’ll describe the details of dependencies of vario
 
    | Component | Version|  
    | ---       | -----  |
-   |  Camunda  |  7.17|
-   |  SpringBoot  | 2.6.6 |
+   |  Camunda  |  7.18.0|
+   |  SpringBoot  | 2.7.12 |
    | Postgres    | Latest |
   <br>
   
@@ -68,4 +68,15 @@ In the following document, we’ll describe the details of dependencies of vario
    |  --- | --- |
    | React  | 17.0.2 |
    | Formio | 2.4.1 |
+   <br>
+
+## 7. forms-flow-web-root-config
+
+   To create new front-end modules<br>
+
+   | Component | Version |
+   |  --- | --- |
+   | React  | 17.0.2 |
+   | Formio | 2.4.1 |
+   | Webpack| 5.76.0|
    <br>

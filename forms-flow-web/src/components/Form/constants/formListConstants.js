@@ -24,12 +24,12 @@ export const getFormattedForm = (form) => {
 export const ASCENDING = 'asc';
 export const DESCENDING = 'desc';
 export const INACTIVE = 'inactive';
-export const getOperations = (userRoles, showViewSubmissions) => {
+export const getOperations = (userRoles) => {
   let operations = [];
   if (userRoles.includes(CLIENT) || userRoles.includes(STAFF_REVIEWER)) {
     operations.push(OPERATIONS.insert);
   }
-  if (userRoles.includes(STAFF_REVIEWER) && showViewSubmissions) {
+  if (userRoles.includes(STAFF_REVIEWER)) {
     operations.push(OPERATIONS.submission);
   }
   if (userRoles.includes(STAFF_DESIGNER)) {

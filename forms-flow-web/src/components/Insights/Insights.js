@@ -114,9 +114,10 @@ const Insights = React.memo((props) => {
                     <Translation>{(t) => t("Dashboard")}</Translation>
                   </h3>
 
-                  <div className="col-3 mb-2">
+                  <div className="col-6 col-md-3 mb-2">
                     {options.length > 0 && (
                       <Select
+                      
                         aria-label="Select Dashboard"
                         options={options}
                         onChange={setDashboardSelected}

@@ -3,7 +3,7 @@ package org.camunda.bpm.extension.hooks.listeners.execution;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.camunda.bpm.engine.delegate.DelegateExecution;
 import org.camunda.bpm.engine.delegate.ExecutionListener;
 import org.camunda.bpm.engine.delegate.Expression;
@@ -81,7 +81,7 @@ public class ExternalSubmissionListener extends BaseListener implements Executio
         Map<String,Object> data = new HashMap<>();
         String formUrl = String.valueOf(execution.getVariable(FORM_URL));
         data.put(FORM_URL,formUrl);
-        data.put("formId",StringUtils.substringBetween(formUrl, "/form/", "/submission/"));
+        data.put("formId", StringUtils.substringBetween(formUrl, "/form/", "/submission/"));
         data.put("submissionId",StringUtils.substringAfter(formUrl, "/submission/"));
         data.put("processInstanceId",execution.getProcessInstanceId());
         ResponseEntity<String> response = httpServiceInvoker.execute(httpServiceInvoker.getProperties().getProperty("api.url")+"/application/create", HttpMethod.POST, bpmObjectMapper.writeValueAsString(data));

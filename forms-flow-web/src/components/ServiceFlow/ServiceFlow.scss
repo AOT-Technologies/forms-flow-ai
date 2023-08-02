@@ -440,7 +440,7 @@ span[dat-title]:hover:after,
     }
   }
 }
- 
+
 .filter-name-textfeild{
   width: 90%;
   height: 44px;
@@ -454,6 +454,10 @@ span[dat-title]:hover:after,
   height: 40px;
   padding: 3%;
   border: 3px solid #C8C6C4;
+}
+.task-row{
+  overflow: auto;
+  max-height: 80vh;
 }
 
 .row-container {

@@ -1,7 +1,7 @@
 {
   "name": "formsflow-ai-react",
   "description": "React web app for formsflow.ai project",
-  "version": "5.2.0",
+  "version": "5.2.1-alpha",
   "main": "single-spa-index.js",
   "scripts": {
     "analyze": "source-map-explorer 'build/static/js/*.js'",
@@ -10,8 +10,8 @@
     "winBuild": "set \"GENERATE_SOURCEMAP=false\" && craco build",
     "eject": "react-scripts eject",
     "test": "craco test --detectOpenHandles --silent",
-    "preinstall": "npx npm-force-resolutions",
     "coverage": "craco test --coverage --watchAll=false",
+    "preinstall": "npx npm-force-resolutions",
     "lint": "eslint src --no-fix --max-warnings 0"
   },
   "jest": {
@@ -43,6 +43,8 @@
     "@material-ui/core": "^4.11.4",
     "@ronchalant/react-loading-overlay": "^1.1.0",
     "@wojtekmaj/react-daterange-picker": "^3.1.0",
+    "@babel/plugin-proposal-private-property-in-object": "7.21.11",
+    "@craco/craco": "6.4.5",
     "axios": "^0.21.4",
     "bpmn-js": "^7.5.0",
     "bpmn-js-bpmnlint": "^0.19.0",
@@ -53,6 +55,7 @@
     "camunda-bpmn-moddle": "^6.1.2",
     "camunda-dmn-moddle": "^1.1.0",
     "connected-react-router": "^6.9.1",
+    "craco-plugin-single-spa-app-aot": "^2.0.2",
     "create-react-class": "^15.7.0",
     "crypto-js": "^4.0.0",
     "dmn-js": "^12.3.0",
@@ -118,7 +121,8 @@
     "loader-utils": "2.0.4",
     "minimatch": "3.0.5",
     "json5": "2.2.2",
-    "d3-color": "3.1.0"
+    "d3-color": "3.1.0",
+    "semver": "7.5.3"
   },
   "browserslist": [
     ">0.2%",

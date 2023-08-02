@@ -35,6 +35,8 @@ FILTER_MAPS = {
     "form_name": {"field": "form_name", "operator": "ilike"},
     "id": {"field": "id", "operator": "eq"},
     "form_type": {"field": "form_type", "operator": "eq"},
+    "can_bundle": {"field": "can_bundle", "operator": "eq"},
+    "is_bundle": {"field": "is_bundle", "operator": "eq"},
 }
 
 DEFAULT_PROCESS_KEY = "Defaultflow"

@@ -139,7 +139,7 @@ public class FormConnectorListenerTest {
 		
 		formConnectorListener.notify(delegateTask);
 		ArgumentCaptor<String> captor = ArgumentCaptor.forClass(String.class);
-		verify(delegateExecution).setVariable(anyString(), captor.capture());
+		verify(delegateExecution).setVariableLocal(anyString(), captor.capture());
 		assertEquals("http://localhost:3001/form/id2/submission/submissionid1", captor.getValue());
 	}
 	
@@ -196,7 +196,7 @@ public class FormConnectorListenerTest {
 		
 		formConnectorListener.notify(delegateTask);
 		ArgumentCaptor<String> captor = ArgumentCaptor.forClass(String.class);
-		verify(delegateExecution).setVariable(anyString(), captor.capture());
+		verify(delegateExecution).setVariableLocal(anyString(), captor.capture());
 		assertEquals("http://localhost:3001/form/id2/submission/submissionid1", captor.getValue());
 	}
 
@@ -255,7 +255,7 @@ public class FormConnectorListenerTest {
 		
 		formConnectorListener.notify(delegateTask);
 		ArgumentCaptor<String> captor = ArgumentCaptor.forClass(String.class);
-		verify(delegateExecution).setVariable(anyString(), captor.capture());
+		verify(delegateExecution).setVariableLocal(anyString(), captor.capture());
 		assertEquals("http://localhost:3001/form/null/submission/submissionid1", captor.getValue());
 	}
 

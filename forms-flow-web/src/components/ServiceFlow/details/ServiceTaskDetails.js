@@ -43,6 +43,7 @@ import { getCustomSubmission } from "../../../apiManager/services/FormServices";
 import { getFormioRoleIds } from "../../../apiManager/services/userservices";
 import  NoFilterSelected  from "../../../components/ServiceFlow/list/sort/NoFilterSelected";
 
+import { bpmActionError } from "../../../actions/bpmTaskActions";
 const ServiceFlowTaskDetails = React.memo(() => {
   const { t } = useTranslation();
   const { taskId } = useParams();
@@ -70,6 +71,8 @@ const ServiceFlowTaskDetails = React.memo(() => {
   const [processInstanceId, setProcessInstanceId] = useState("");
   const tenantKey = useSelector((state) => state.tenants?.tenantId);
   const redirectUrl = MULTITENANCY_ENABLED ? `/tenant/${tenantKey}/` : "/";
+  const error = useSelector((state) => state.bpmTasks.error);
+
 
   useEffect(() => {
     if (taskId) {
@@ -87,6 +90,15 @@ const ServiceFlowTaskDetails = React.memo(() => {
       Formio.clearCache();
     };
   }, [bpmTaskId, dispatch]);
+
+  useEffect(() => {
+    if (error) {
+      dispatch(push('/404'));
+    }
+    return () => {
+      dispatch(bpmActionError(''));
+    };
+  }, [error,dispatch]);
 
   useEffect(() => {
     if (processList.length && task?.processDefinitionId) {
@@ -183,7 +195,7 @@ const ServiceFlowTaskDetails = React.memo(() => {
       ); // Refresh the Task Selected
       dispatch(getBPMGroups(task.id));
       dispatch(fetchServiceTaskList(selectedFilter.id, firstResult, reqData)); //Refreshes the Tasks
-      
+
     }
   };
 

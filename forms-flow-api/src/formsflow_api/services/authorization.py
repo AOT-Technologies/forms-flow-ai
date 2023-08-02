@@ -49,6 +49,7 @@ class AuthorizationService:
             "resourceId": auth.resource_id,
             "resourceDetails": auth.resource_details,
             "roles": auth.roles,
+            "userName": auth.user_name,
         }
 
     @user_context
@@ -66,7 +67,7 @@ class AuthorizationService:
 
     @user_context
     def create_authorization(
-        self, auth_type: str, resource: Dict[str, str], **kwargs
+        self, auth_type: str, resource: Dict[str, str], is_designer: bool, **kwargs
     ) -> Dict[str, any]:
         """Create authorization record."""
         user: UserContext = kwargs["user"]
@@ -74,13 +75,16 @@ class AuthorizationService:
         auth = Authorization.find_resource_by_id(
             auth_type=auth_type_enum,
             resource_id=resource.get("resourceId"),
+            is_designer=is_designer,
             user_name=user.user_name,
+            roles=user.group_or_roles,
             tenant=user.tenant_key,
         )
         roles = resource.get("roles")
         if auth:
             auth.roles = roles
             auth.resource_details = resource.get("resourceDetails")
+            auth.user_name = resource.get("userName")
             auth.modified = datetime.datetime.now()
             auth.modified_by = user.user_name
         else:
@@ -89,10 +93,28 @@ class AuthorizationService:
                 auth_type=AuthType(auth_type),
                 resource_id=resource.get("resourceId"),
                 resource_details=resource.get("resourceDetails"),
-                roles=resource.get("roles"),
+                roles=roles,
                 user_name=resource.get("userName"),
-                created=datetime.datetime.now(),
                 created_by=user.user_name,
             )
         auth = auth.save()
         return self._as_dict(auth)
+
+    @user_context
+    def get_resource_by_id(
+        self, auth_type: str, resource_id: str, is_designer: bool, **kwargs
+    ):
+        """Get authorization resource by id."""
+        user: UserContext = kwargs["user"]
+        auth_type_enum = AuthType(auth_type)
+        auth = Authorization.find_resource_by_id(
+            auth_type=auth_type_enum,
+            resource_id=resource_id,
+            is_designer=is_designer,
+            roles=user.group_or_roles,
+            tenant=user.tenant_key,
+            user_name=user.user_name,
+        )
+        if auth:
+            return self._as_dict(auth)
+        return None

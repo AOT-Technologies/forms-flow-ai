@@ -1,6 +1,6 @@
 ## formsflow.ai Sentiment Analysis Job
 
-![Python](https://img.shields.io/badge/python-3.8-blue) ![Flask](https://img.shields.io/badge/Flask-2.1.3-blue) ![postgres](https://img.shields.io/badge/postgres-11.0-blue)
+![Python](https://img.shields.io/badge/python-3.9-blue) ![Flask](https://img.shields.io/badge/Flask-2.3.2-blue) ![postgres](https://img.shields.io/badge/postgres-11.0-blue)
 
 ### About Sentiment Analysis model
 Please [see](../../forms-flow-data-analysis-api/README.md) for details on sentiment analysis.

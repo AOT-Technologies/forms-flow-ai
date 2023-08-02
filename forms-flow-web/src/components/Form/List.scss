@@ -93,11 +93,20 @@
     display: flex;
     flex-direction: row;
     flex: 50%;
+flex-wrap: wrap;
 }
 
 .btn-left {
     margin: 10px;
-    height: 30px;
+    height: 30px;white-space: nowrap;
+}
+.progress-bar {
+    background-color: #ff0000ab;
+}
+.fileupload-fail {
+    color: #f85757;
+    float: right;
+    font-weight: normal
 }
 .progress-bar {
     background-color: #ff0000ab;
@@ -111,6 +120,6 @@
 @media (max-width: 800px) {
     .flex-item-right,
     .flex-item-left {
-        flex: 100%;
+        flex: 100%;justify-content: flex-start;
     }
 }

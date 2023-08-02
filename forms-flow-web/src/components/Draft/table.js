@@ -12,7 +12,6 @@ import DropdownButton from "react-bootstrap/DropdownButton";
 import Dropdown from "react-bootstrap/Dropdown";
 import { toast } from "react-toastify";
 import DraftOperations from "./DraftOperations";
-import { DATE_FORMAT, TIME_FORMAT } from "../../constants/constants";
 import { HelperServices} from "@formsflow/service";
 
 
@@ -38,7 +37,7 @@ const linkDraftDetail = (cell, row, redirectUrl) => {
 };
 
 function timeFormatter(cell) {
-  const localdate = HelperServices.getLocalDateAndTime(cell,DATE_FORMAT,TIME_FORMAT);
+  const localdate = HelperServices.getLocalDateAndTime(cell);
   return <label title={cell}>{localdate}</label>;
 }
 

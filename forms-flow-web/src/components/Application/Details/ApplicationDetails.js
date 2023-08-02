@@ -3,7 +3,6 @@ import { Table } from "react-bootstrap";
 import startCase from "lodash/startCase";
 import { Translation } from "react-i18next";
 import { HelperServices} from "@formsflow/service";
-import { DATE_FORMAT, TIME_FORMAT } from "../../../constants/constants";
 
 
 const ApplicationDetails = React.memo((props) => {
@@ -53,7 +52,7 @@ const ApplicationDetails = React.memo((props) => {
           </td>
           <td className="border-0">:</td>
           <td className="border-0" id="application-created">
-            {HelperServices.getLocalDateAndTime(application.created,DATE_FORMAT,TIME_FORMAT)}
+            {HelperServices.getLocalDateAndTime(application.created)}
           </td>
         </tr>
         <tr>
@@ -62,7 +61,7 @@ const ApplicationDetails = React.memo((props) => {
           </td>
           <td className="border-0">:</td>
           <td className="border-0" id="application-modified">
-            {HelperServices.getLocalDateAndTime(application.modified,DATE_FORMAT,TIME_FORMAT)}
+            {HelperServices.getLocalDateAndTime(application.modified)}
           </td>
         </tr>
       </tbody>

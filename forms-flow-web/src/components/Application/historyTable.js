@@ -3,7 +3,6 @@ import {
   getFormUrl,
 } from "../../apiManager/services/formatterService";
 import { Translation } from "react-i18next";
-import { DATE_FORMAT, TIME_FORMAT } from "../../constants/constants";
 import { HelperServices} from "@formsflow/service";
 
 
@@ -30,7 +29,7 @@ const linkSubmision = (row, redirectUrl) => {
 };
 
 function timeFormatter(cell) {
-  const localDate = HelperServices.getLocalDateAndTime(cell,DATE_FORMAT,TIME_FORMAT);
+  const localDate = HelperServices.getLocalDateAndTime(cell);
   return <label title={cell}>{localDate}</label>;
 }
 

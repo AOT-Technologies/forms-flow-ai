@@ -6,7 +6,6 @@ import {
 } from "../../../actions/formActions";
 import Loading from "../../../containers/Loading";
 import { useTranslation } from "react-i18next";
-import { DATE_FORMAT, TIME_FORMAT } from "../../../constants/constants";
 import { HelperServices} from "@formsflow/service";
 
 const FormHistoryModal = ({ historyModal, handleModalChange, gotoEdit }) => {
@@ -105,7 +104,7 @@ const FormHistoryModal = ({ historyModal, handleModalChange, gotoEdit }) => {
                             ? t("Created On")
                             : t("Modified On")}
                         </span>
-                        <p className="mb-0">{HelperServices.getLocalDateAndTime(history.created,DATE_FORMAT,TIME_FORMAT)}</p>
+                        <p className="mb-0">{HelperServices.getLocalDateAndTime(history.created)}</p>
                         {
                           formHistory.length > 1 && (
                             <span className="text-primary">{

@@ -71,8 +71,7 @@ const API = {
   APPLICATION_EVENT_UPDATE: `${WEB_BASE_URL}/application/<application_id>/resubmit`,
   DESIGNER_LIST: `${WEB_BASE_URL}/authorizations/designer`,
   USER_ROLES:`${WEB_BASE_URL}/roles`,
-  CLIENT_LIST:`${WEB_BASE_URL}/authorizations/form`
-  APPLICATION_EVENT_UPDATE: `${WEB_BASE_URL}/application/<application_id>/resubmit`,
+  CLIENT_LIST:`${WEB_BASE_URL}/authorizations/form`,
   GET_FILTERS : `${WEB_BASE_URL}/filter`,
 };
 

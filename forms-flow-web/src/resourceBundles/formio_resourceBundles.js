@@ -306,7 +306,7 @@ export const formio_resourceBundles = {
     "Client Permission": "Client Permission",
     "All Clients": "All Clients",
     "Specific Client Group": "Specific Client Group",
-    "Give Designer Role Permissions": "Give Designer Role Permissions"
+    "Give Designer Role Permissions": "Give Designer Role Permissions",
     "Create new filter": "Create new filter",
     "Filter Name": "Filter Name",
     "Enter your text here": "Enter your text here",
@@ -2229,7 +2229,7 @@ export const formio_resourceBundles = {
     "Client Permission": "Клиентско разрешение",
     "All Clients": "Всички клиенти",
     "Specific Client Group": "Конкретна група клиенти",
-    "Give Designer Role Permissions": "Дайте разрешения за роля на дизайнер"
+    "Give Designer Role Permissions": "Дайте разрешения за роля на дизайнер",
     "Create new filter":"Създайте нов филтър",
     "Filter Name":"Име на филтъра",
     "Enter your text here":"Въведете своя текст тук",
@@ -3226,7 +3226,7 @@ export const formio_resourceBundles = {
     "Client Permission": "Permissão do cliente",
     "All Clients": "Todos os clientes",
     "Specific Client Group": "Grupo específico de clientes",
-    "Give Designer Role Permissions": "Conceder permissões de função de designer"
+    "Give Designer Role Permissions": "Conceder permissões de função de designer",
     "Create new filter": "Criar novo filtro",
     "Filter Name": "Nome do filtro",
     "Enter your text here": "Digite seu texto aqui",
@@ -5239,7 +5239,7 @@ export const formio_resourceBundles = {
     "Client Permission": "Kundenerlaubnis",
     "All Clients": "Alle Kunden",
     "Specific Client Group": "Spezifische Kundengruppe",
-    "Give Designer Role Permissions": "Erteilen Sie Designer-Rollenberechtigungen"
+    "Give Designer Role Permissions": "Erteilen Sie Designer-Rollenberechtigungen",
     "Create new filter":"Neuen Filter erstellen",
     "Filter Name":"Filtername",
     "Enter your text here":"Gib deinen Text hier ein",

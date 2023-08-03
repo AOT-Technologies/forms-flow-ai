@@ -32,6 +32,5 @@ export const getProcessDataReq = (applicationDetail,submission) => {
         return null; //TODO check
     }
   }
-
   return data;
 };

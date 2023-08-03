@@ -203,7 +203,11 @@ class FormProcessMapper(AuditDateTimeMixin, AuditUserMixin, BaseModel, db.Model)
         )
 
         if is_active is not None:
-            query = query.filter(FormProcessMapper.status.is_(is_active))
+            if is_active:
+                value = FormProcessMapperStatus.ACTIVE.value
+            else:
+                value =  FormProcessMapperStatus.INACTIVE.value
+            query = query.filter(FormProcessMapper.status.is_(value))
 
         query = cls.tenant_authorization(query=query)
         sort_by, sort_order = validate_sort_order_and_order_by(sort_by, sort_order)

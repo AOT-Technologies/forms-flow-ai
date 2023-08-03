@@ -51,3 +51,4 @@ class FormProcessMapperListRequestSchema(FormProcessMapperListReqSchema):
     sort_by = fields.Str(data_key="sortBy", required=False)
     sort_order = fields.Str(data_key="sortOrder", required=False)
     form_type = fields.Str(data_key="formType", required=False)
+    is_active = fields.Bool(data_key="isActive", required=False)

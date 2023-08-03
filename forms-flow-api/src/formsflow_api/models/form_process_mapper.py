@@ -187,6 +187,7 @@ class FormProcessMapper(AuditDateTimeMixin, AuditUserMixin, BaseModel, db.Model)
         sort_by=None,
         sort_order=None,
         form_ids=None,
+        is_active=None,
         **filters,
     ):  # pylint: disable=too-many-arguments
         """Fetch all active and inactive forms which are not deleted."""
@@ -200,6 +201,11 @@ class FormProcessMapper(AuditDateTimeMixin, AuditUserMixin, BaseModel, db.Model)
             and_(FormProcessMapper.deleted.is_(False)),
             FormProcessMapper.id.in_(filtered_form_ids),
         )
+
+        if is_active is not None:
+            value = FormProcessMapperStatus["ACTIVE" if is_active else "INACTIVE"].value
+            query = query.filter(FormProcessMapper.status == value)
+
         query = cls.tenant_authorization(query=query)
         sort_by, sort_order = validate_sort_order_and_order_by(sort_by, sort_order)
         if sort_by and sort_order:

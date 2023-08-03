@@ -189,7 +189,8 @@ const mapDispatchToProps = (dispatch, ownProps) => {
       const callBack = (err, submission) => {
         if (!err) {
           if (
-            UPDATE_EVENT_STATUS.includes(applicationDetail.applicationStatus)
+            UPDATE_EVENT_STATUS.includes(applicationDetail.applicationStatus) ||
+            applicationDetail.isResubmit
           ) {
             const data = getProcessDataReq(applicationDetail,submission.data);
             dispatch(

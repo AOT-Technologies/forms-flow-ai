@@ -44,10 +44,10 @@ const linkApplication = (cell, row, redirectUrl) => {
 };
 
 const linkSubmission = (cell, row, redirectUrl) => {
-  const url = row.isClientEdit
+  const url = row.isClientEdit || row.isResubmit
     ? `${redirectUrl}form/${row.formId}/submission/${row.submissionId}/edit`
     : `${redirectUrl}form/${row.formId}/submission/${row.submissionId}`;
-  const buttonText = row.isClientEdit ? (
+  const buttonText = row.isClientEdit || row.isResubmit ? (
     row.applicationStatus === AWAITING_ACKNOWLEDGEMENT ? (
       "Acknowledge"
     ) : (

@@ -18,15 +18,20 @@ export const getProcessDataReq = (applicationDetail,submission) => {
     processInstanceId: applicationDetail.processInstanceId,
   };
 
-  switch (applicationDetail.applicationStatus) {
-    case AWAITING_ACKNOWLEDGEMENT:
-      data.messageName = ACKNOWLEDGED_EVENT;
-      break;
-    case RESUBMIT_STATUS:
-      data.messageName = RESUBMITTED_STATUS_EVENT;
-      break;
-    default:
-      return null; //TODO check
+  if (applicationDetail.isResubmit) {
+    data.messageName = applicationDetail.eventName;
+  } else {
+    switch (applicationDetail.applicationStatus) {
+      case AWAITING_ACKNOWLEDGEMENT:
+        data.messageName =  ACKNOWLEDGED_EVENT;
+        break;
+      case RESUBMIT_STATUS:
+        data.messageName = RESUBMITTED_STATUS_EVENT;
+        break;
+      default:
+        return null; //TODO check
+    }
   }
+
   return data;
 };

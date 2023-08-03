@@ -37,7 +37,7 @@ const linkDraftDetail = (cell, row, redirectUrl) => {
 };
 
 function timeFormatter(cell) {
-  const localdate = HelperServices.getLocalDateAndTime(cell);
+  const localdate = HelperServices?.getLocalDateAndTime(cell);
   return <label title={cell}>{localdate}</label>;
 }
 

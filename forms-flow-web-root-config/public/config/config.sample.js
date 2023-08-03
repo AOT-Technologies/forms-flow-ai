@@ -94,7 +94,7 @@ window["_env_"] = {
 
   /**
   Add date and time format default will be DD-MM-YY and hh:mm:ss A
-    DATE_FORMAT=
-    TIME_FORMAT=
+    #DATE_FORMAT=DD-MM-YY
+    #TIME_FORMAT=hh:mm:ss A
   */  
 };

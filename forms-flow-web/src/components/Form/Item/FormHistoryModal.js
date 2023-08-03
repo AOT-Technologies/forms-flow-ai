@@ -104,7 +104,7 @@ const FormHistoryModal = ({ historyModal, handleModalChange, gotoEdit }) => {
                             ? t("Created On")
                             : t("Modified On")}
                         </span>
-                        <p className="mb-0">{HelperServices.getLocalDateAndTime(history.created)}</p>
+                        <p className="mb-0">{HelperServices?.getLocalDateAndTime(history.created)}</p>
                         {
                           formHistory.length > 1 && (
                             <span className="text-primary">{

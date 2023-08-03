@@ -52,7 +52,7 @@ const ApplicationDetails = React.memo((props) => {
           </td>
           <td className="border-0">:</td>
           <td className="border-0" id="application-created">
-            {HelperServices.getLocalDateAndTime(application.created)}
+            {HelperServices?.getLocalDateAndTime(application.created)}
           </td>
         </tr>
         <tr>
@@ -61,7 +61,7 @@ const ApplicationDetails = React.memo((props) => {
           </td>
           <td className="border-0">:</td>
           <td className="border-0" id="application-modified">
-            {HelperServices.getLocalDateAndTime(application.modified)}
+            {HelperServices?.getLocalDateAndTime(application.modified)}
           </td>
         </tr>
       </tbody>

@@ -29,7 +29,7 @@ const linkSubmision = (row, redirectUrl) => {
 };
 
 function timeFormatter(cell) {
-  const localDate = HelperServices.getLocalDateAndTime(cell);
+  const localDate = HelperServices?.getLocalDateAndTime(cell);
   return <label title={cell}>{localDate}</label>;
 }
 

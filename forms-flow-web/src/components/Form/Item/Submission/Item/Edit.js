@@ -73,11 +73,14 @@ const Edit = React.memo((props) => {
   );
   const redirectUrl = MULTITENANCY_ENABLED ? `/tenant/${tenantKey}/` : "/";
   useEffect(() => {
+    // Check if the application is in "Resubmit" or "Awaiting Acknowledgement" status (old approach and it’s kept to have backward compatibility)
+    // In the new approach, we will use the "isResubmit" key
     if (applicationStatus && !onFormSubmit) {
       if (
         getUserRolePermission(userRoles, CLIENT) &&
         !CLIENT_EDIT_STATUS.includes(applicationStatus)
       ) {
+        // Redirect the user to the submission view page if not allowed to edit
         dispatch(push(`/form/${formId}/submission/${submissionId}`));
       }
     }

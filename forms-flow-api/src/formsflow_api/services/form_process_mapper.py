@@ -30,6 +30,7 @@ class FormProcessMapperService:
         sort_by: str,
         sort_order: str,
         form_type: str,
+        is_active,
         **kwargs,
     ):  # pylint: disable=too-many-arguments
         """Get all forms."""
@@ -51,6 +52,7 @@ class FormProcessMapperService:
             sort_order=sort_order,
             form_type=form_type,
             form_ids=designer_form_ids,
+            is_active=is_active,
         )
         mapper_schema = FormProcessMapperSchema()
         return (

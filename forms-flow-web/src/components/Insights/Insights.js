@@ -9,13 +9,10 @@ import {
 } from "../../apiManager/services/insightServices";
 import {
   setInsightDetailLoader,
-  setInsightDashboardListLoader,
 } from "../../actions/insightActions";
 import LoadingOverlay from "react-loading-overlay";
 import Loading from "../../containers/Loading";
 import { useTranslation, Translation } from "react-i18next";
-
-import { SpinnerSVG } from "../../containers/SpinnerSVG";
 import { BASE_ROUTE, MULTITENANCY_ENABLED } from "../../constants/constants";
 import { push } from "connected-react-router";
 import Head from "../../containers/Head";
@@ -26,7 +23,6 @@ const Insights = React.memo((props) => {
     getDashboardDetail,
     dashboards,
     activeDashboard,
-    isDashboardLoading,
     getDashboards,
     isDashboardListUpdated,
     isDashboardDetailUpdated,
@@ -92,9 +88,7 @@ const Insights = React.memo((props) => {
       </label>
     </div>
   );
-  if (isDashboardLoading) {
-    return <Loading />;
-  }
+
   return (
     <>
       <div className="container mb-4" id="main">
@@ -141,7 +135,6 @@ const Insights = React.memo((props) => {
                   background: "rgba(255, 255, 255)",
                 }),
               }}
-              spinner={<SpinnerSVG />}
               className="col-12"
             >
               {options.length > 0 ? (
@@ -158,8 +151,16 @@ const Insights = React.memo((props) => {
                     src={activeDashboard.public_url}
                   />
                 ) : !isDashboardDetailUpdated ? (
-                  <Loading />
-                ) : (
+                  <div 
+                  style={{
+                  position:'absolute',
+                  left: '52%',
+                  marginTop: '400px',
+                  transform: 'translate(-50%, -90%)',
+                  }}>
+                    <Loading />
+                  </div>
+                  ) : (
                   <NoPublicUrlMessage />
                 )
               ) : (
@@ -178,7 +179,6 @@ const Insights = React.memo((props) => {
 
 const mapStateToProps = (state) => {
   return {
-    isDashboardLoading: state.insights.isDashboardLoading,
     isInsightLoading: state.insights.isInsightLoading,
     dashboards: state.insights.dashboardsList,
     activeDashboard: state.insights.dashboardDetail,
@@ -195,7 +195,6 @@ const mapDispatchToProps = (dispatch) => {
       dispatch(fetchDashboardDetails(dashboardId));
     },
     getDashboards: () => {
-      dispatch(setInsightDashboardListLoader(true));
       dispatch(fetchUserDashboards());
     },
   };

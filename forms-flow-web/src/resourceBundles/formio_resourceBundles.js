@@ -298,14 +298,15 @@ export const formio_resourceBundles = {
     "Click Here to Copy":"Click Here to Copy",
     "Revert": "Revert",
     "Overview": "Overview",
-    "Designer Permission": "Designer Permission",
-    "Accessible for all Designers": "Accessible for all Designers",
+    "Design Permission": "Design Permission",
+    "All Designers": "All Designers",
     "Private(only you)": "Private(only you)",
     "Specific Designer Group": "Specific Designer Group",
-    "Client Permission": "Client Permission",
-    "All Clients": "All Clients",
-    "Specific Client Group": "Specific Client Group",
-    "Give Designer Role Permissions": "Give Designer Role Permissions"
+    "Submission Permission": "Submission Permission",
+    "All Users": "All Users",
+    "Specific User Group": "Specific User Group",
+    "Applicable for Designer Roled Users only.": "Applicable for Designer Roled Users only.",
+    "Applicable for Client and Reviewer Roled Users only.": "Applicable for Client and Reviewer Roled Users only."
   
   },
 
@@ -1220,14 +1221,16 @@ export const formio_resourceBundles = {
     "Click Here to Copy":"点击这里复制",
     "Revert": "恢复",
     "Overview": "概述",
-    "Designer Permission": "设计师许可",
-    "Accessible for all Designers": "所有设计师均可使用",
+    "Design Permission": "设计许可",
+    "All Designers": "所有设计师",
     "Private(only you)": "私人（只有你）",
     "Specific Designer Group": "特定设计师组",
-    "Client Permission": "客户许可",
-    "All Clients": "所有客户",
-    "Specific Client Group": "特定客户群",
-    "Give Designer Role Permissions": "授予设计师角色权限"
+    "Submission Permission": "提交许可",
+    "All Users": "全部用户",
+    "Specific User Group": "特定用户群",
+    "Applicable for Designer Roled Users only.": "仅适用于设计师角色用户。",
+    "Applicable for Client and Reviewer Roled Users only.": "仅适用于客户和审阅者角色用户。"
+
   },
 
   bg: {
@@ -2199,14 +2202,16 @@ export const formio_resourceBundles = {
     "Click Here to Copy":"Щракнете тук, за да копирате",
     "Revert": "Връщане",
     "Overview": "Преглед",
-    "Designer Permission": "Разрешение на дизайнера",
-    "Accessible for all Designers": "Достъпно за всички дизайнери",
+    "Design Permission": "Разрешение за проектиране",
+    "All Designers": "Всички дизайнери",
     "Private(only you)": "Лично (само ти)",
     "Specific Designer Group": "Специфична дизайнерска група",
-    "Client Permission": "Клиентско разрешение",
-    "All Clients": "Всички клиенти",
-    "Specific Client Group": "Конкретна група клиенти",
-    "Give Designer Role Permissions": "Дайте разрешения за роля на дизайнер"
+    "Submission Permission": "Разрешение за подаване",
+    "All Users": "Всички потребители",
+    "Specific User Group": "Конкретна потребителска група",
+    "Applicable for Designer Roled Users only.": "Приложимо само за потребители с права на дизайнер.",
+    "Applicable for Client and Reviewer Roled Users only.": "Приложимо само за потребители с права на клиент и рецензент."
+
 
   },
 
@@ -3173,14 +3178,16 @@ export const formio_resourceBundles = {
     "Click Here to Copy":"Clique aqui para copiar",
     "Revert": "Reverter",
     "Overview": "Visão geral",
-    "Designer Permission": "Permissão do Designer",
-    "Accessible for all Designers": "Acessível para todos os Designers",
+    "Design Permission": "Permissão de design",
+    "All Designers": "Todos os Designers",
     "Private(only you)": "Privado(só você)",
     "Specific Designer Group": "Grupo específico de designers",
-    "Client Permission": "Permissão do cliente",
-    "All Clients": "Todos os clientes",
-    "Specific Client Group": "Grupo específico de clientes",
-    "Give Designer Role Permissions": "Conceder permissões de função de designer"
+    "Submission Permission": "Permissão de envio",
+    "All Users": "Todos os usuários",
+    "Specific User Group": "Grupo de usuários específico",
+    "Applicable for Designer Roled Users only.": "Aplicável apenas para usuários com função de designer.",
+    "Applicable for Client and Reviewer Roled Users only.": "Aplicável apenas para usuários com função de cliente e revisor."
+
 
   },
 
@@ -4155,15 +4162,16 @@ export const formio_resourceBundles = {
     "Click Here to Copy":"Cliquez ici pour copier",
     "Revert":"Revenir",
     "Overview": "Aperçu",
-    "Designer Permission": "Autorisation du concepteur",
-    "Accessible for all Designers": "Accessible à tous les créateurs",
+    "Design Permission": "Autorisation de conception",
+    "All Designers": "Tous les créateurs",
     "Private(only you)": "Privé (seulement vous)",
     "Specific Designer Group": "Groupe de concepteurs spécifiques",
-    "Client Permission": "Autorisation client",
-    "All Clients": "Tous les clients",
-    "Specific Client Group": "Groupe de clients spécifique",
-    "Give Designer Role Permissions": "Accorder des autorisations de rôle de concepteur",
-    
+    "Submission Permission": "Autorisation de soumission",
+    "All Users": "Tous les utilisateurs",
+    "Specific User Group": "Groupe d'utilisateurs spécifique",
+    "Applicable for Designer Roled Users only.": "Applicable uniquement aux utilisateurs avec rôle de concepteur.",
+    "Applicable for Client and Reviewer Roled Users only.": "Applicable uniquement aux utilisateurs avec rôle de client et de réviseur."
+
 
   },
 
@@ -5140,17 +5148,15 @@ export const formio_resourceBundles = {
     "Click Here to Copy":"Klicken Sie hier, um zu kopieren",
     "Revert":"Zurückkehren",
     "Overview": "Überblick",
-    "Designer Permission": "Designer-Genehmigung",
-    "Accessible for all Designers": "Für alle Designer zugänglich",
+    "Design Permission": "Designgenehmigung",
+    "All Designers": "Alle Designer",
     "Private(only you)": "Privat (nur Sie)",
     "Specific Designer Group": "Spezifische Designergruppe",
-    "Client Permission": "Kundenerlaubnis",
-    "All Clients": "Alle Kunden",
-    "Specific Client Group": "Spezifische Kundengruppe",
-    "Give Designer Role Permissions": "Erteilen Sie Designer-Rollenberechtigungen"
-
-
-
+    "Submission Permission": "Einreichungserlaubnis",
+    "All Users": "Alle Nutzer",
+    "Specific User Group": "Spezifische Benutzergruppe",
+    "Applicable for Designer Roled Users only.": "Gilt nur für Benutzer mit Designer-Rolle.",
+    "Applicable for Client and Reviewer Roled Users only.": "Gilt nur für Benutzer mit Kunden- und Prüferrollen."
 
 
   },

@@ -23,12 +23,11 @@
 
       &.active,
       &:hover {
-        background-color: $dark-blue  !important;
+        background-color: $dark-blue !important;
         color: $white;
 
         & .small-title {
           font-size: 16px;
-          color: $white;
         }
       }
 
@@ -46,11 +45,11 @@
         font-weight: normal;
 
         & .counter {
-          font-size: 38px;
+          font-size: 24px;
+          font-weight: 700;
         }
       }
     }
-
   }
 
   & .progress {
@@ -139,14 +138,14 @@
 
   & .form-card-counter {
     & .counter {
-      font-size: 42px;
+      font-size: 24px;
+      font-weight: 700;
       text-align: center;
-      font-weight: bold;
     }
 
     & .form-title {
-      text-align: center;
-      color: #9eabc0 !important;
+      font-size: 16px !important;
+      font-weight: 700 !important;
     }
 
     .submission-counter {
@@ -166,7 +165,9 @@
 
     .small-title {
       font-size: 16px;
-      color: black;
+      font-weight: 400;
+      margin-left: 5px;
+      margin-top: 12px;
     }
   }
 
@@ -175,12 +176,14 @@
   }
 }
 
+
+
 .form-select {
   width: 80px;
   height: 35px;
   border-radius: 3px;
   border-color: rgba(222, 226, 230);
-  color: #0056B3
+  color: #0056b3;
 }
 
 .date-select {
@@ -202,7 +205,11 @@
   justify-content: center;
 }
 
-.dashboard_container {
-  overflow-y: scroll;
-  max-height: 100px;
-}
+
+
+
+
+
+
+
+

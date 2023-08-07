@@ -1,12 +1,14 @@
 import React, { useEffect, useState } from "react";
 import Modal from "react-bootstrap/Modal";
 import Button from "react-bootstrap/Button";
-import { useSelector } from "react-redux";
+import { useSelector, useDispatch } from "react-redux";
 import Spinner from "react-bootstrap/Spinner";
+import { DesignerAccessDenied } from "../../../actions/checkListActions";
 import { Translation, useTranslation } from "react-i18next";
 
 // eslint-disable-next-line no-unused-vars
-const FileModal = React.memo(({ modalOpen = false, onClose, forms }) => {
+const FileModal = React.memo(({ modalOpen = false, onClose, forms, }) => {
+  const dispatch = useDispatch();
   const formUploadList = useSelector(
     (state) => state.formCheckList.formUploadFormList
   );
@@ -15,6 +17,9 @@ const FileModal = React.memo(({ modalOpen = false, onClose, forms }) => {
   );
   const formUploadFailureCounter = useSelector(
     (state) => state.formCheckList.formUploadFailureCounter
+  );
+  const noAccess = useSelector(
+    (state) => state.formCheckList.designerAccessDenied
   );
   const [formsUploaded, setFormsUploaded] = useState(0);
   const { t } = useTranslation();
@@ -70,9 +75,12 @@ const FileModal = React.memo(({ modalOpen = false, onClose, forms }) => {
             </div>
           )}
         </Modal.Body>
-        <Modal.Footer>
-
-          <Button style={{ width: "20%" }} type="button" className="btn btn-default" onClick={onClose}>
+        <Modal.Footer style={{ justifyContent: `${noAccess ? "space-between" : ''}` }}>
+          {noAccess && <span className="fileupload-fail">{t("Access restricted by its designer..!")}</span>}
+          <Button style={{ width: "20%" }} type="button" className="btn btn-default" onClick={() => {
+            dispatch(DesignerAccessDenied(false));
+            onClose();
+          }}>
             <Translation>{(t) => t("Close")}</Translation>
           </Button>
         </Modal.Footer>

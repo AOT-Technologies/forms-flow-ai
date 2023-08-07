@@ -278,7 +278,7 @@ const WorkFlow = React.memo(
                     </Grid>
                   ) : (
                     <div className="border p-2 mb-2">
-                      <FormLabel>{t("No Task variable selected")}</FormLabel>
+                      <FormLabel>{t("No task variable selected")}</FormLabel>
                     </div>
                   )}
 

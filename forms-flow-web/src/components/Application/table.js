@@ -44,10 +44,11 @@ const linkApplication = (cell, row, redirectUrl) => {
 };
 
 const linkSubmission = (cell, row, redirectUrl) => {
-  const url = row.isClientEdit
+  // here isResubmit key is also checked for "url" and "buttonText"
+  const url = row.isClientEdit || row.isResubmit
     ? `${redirectUrl}form/${row.formId}/submission/${row.submissionId}/edit`
     : `${redirectUrl}form/${row.formId}/submission/${row.submissionId}`;
-  const buttonText = row.isClientEdit ? (
+  const buttonText = row.isClientEdit || row.isResubmit ? (
     row.applicationStatus === AWAITING_ACKNOWLEDGEMENT ? (
       "Acknowledge"
     ) : (
@@ -219,7 +220,7 @@ const customTotal = (from, to, size) => (
     <Translation>{(t) => t("Showing")}</Translation> {from}{" "}
     <Translation>{(t) => t("to")}</Translation> {to}{" "}
     <Translation>{(t) => t("of")}</Translation> {size}{" "}
-    <Translation>{(t) => t("Results")}</Translation>
+    <Translation>{(t) => t("results")}</Translation>
   </span>
 );
 export const customDropUp = ({

@@ -4,7 +4,8 @@
         position: absolute;
         z-index: 1000;
         background-color: white;
-        top:175px
+        top: 39px;;
+        min-width: 180px;
     }
 
     .filter-container-list {
@@ -15,6 +16,7 @@
         margin-left: 1rem; 
     }
     .task-filter-list-view{
+        position: relative;
         display: flex;
         flex-direction: column;
         align-items: flex-end;

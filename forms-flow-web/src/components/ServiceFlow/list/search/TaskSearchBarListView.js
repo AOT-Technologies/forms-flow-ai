@@ -197,10 +197,8 @@ const TaskSearchBarListView = React.memo(() => {
                 Object?.keys(selectedTaskVariables)?.map((eachVariable) => {
                   return (
                     <div className="form-check pl-0" key={eachVariable} style={{ wordBreak: "break-all" }} >
-                      <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" className="bi bi-list mr-2" viewBox="0 0 16 16">
-                        <path fillRule="evenodd" d="M2.5 12a.5.5 0 0 1 .5-.5h10a.5.5 0 0 1 0 1H3a.5.5 0 0 1-.5-.5zm0-4a.5.5 0 0 1 .5-.5h10a.5.5 0 0 1 0 1H3a.5.5 0 0 1-.5-.5zm0-4a.5.5 0 0 1 .5-.5h10a.5.5 0 0 1 0 1H3a.5.5 0 0 1-.5-.5z" />
-                      </svg>
-                      <label className="form-check-label mr-4" htmlFor={eachVariable} style={{width :"200px"}} >
+                      
+                      <label className="form-check-label mr-4" htmlFor={eachVariable} style={{ minWidth:"220px"}}>
                         <strong>{getLabelOfSelectedVariable(eachVariable)}</strong>
                       </label>
                       <input onChange={() => { alterTaskVariableSelection(eachVariable); }} className="form-check-input" type="checkbox" id={eachVariable} checked={selectedTaskVariables[eachVariable]} />
@@ -246,24 +244,6 @@ const TaskSearchBarListView = React.memo(() => {
 
           {displayFilter && (
             <div className="clickable shadow border filter-list-view">
-              <div className="search-filter">
-                <div className="form-group">
-                  <label htmlFor="assignee">Assignee:</label>
-                  <input type="text" id="assignee" className="form-control" placeholder="Assignee" />
-                </div>
-                <div className="form-group">
-                  <label htmlFor="dueDate">Due Date:</label>
-                  <input type="date" id="dueDate" className="form-control" placeholder="Due Date" />
-                </div>
-                <div className="form-group">
-                  <label htmlFor="followupDate">Follow-up Date:</label>
-                  <input type="date" id="followupDate" className="form-control" placeholder="Follow-up Date" />
-                </div>
-                <div className="form-group">
-                  <label htmlFor="group">Group:</label>
-                  <input type="text" id="group" className="form-control" placeholder="Group" />
-                </div>
-              </div>
               <TaskFilterComponent
                 totalTasks={isTaskListLoading ? 0 : tasksCount}
               />

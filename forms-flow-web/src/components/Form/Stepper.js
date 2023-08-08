@@ -8,13 +8,16 @@ import Typography from "@material-ui/core/Typography";
 import Grid from "@material-ui/core/Grid";
 import { toast } from "react-toastify";
 
+
 import Create from "./Create.js";
 import Preview from "./Item/Preview.js";
 import Edit from "./Item/Edit.js";
 import { Translation, withTranslation } from "react-i18next";
 import "../../resourceBundles/i18n";
 
+
 //TODO convert this code to functional component
+
 
 // for edit
 import {
@@ -30,6 +33,7 @@ import { MULTITENANCY_ENABLED } from "../../constants/constants";
 import { push } from "connected-react-router";
 import WorkFlow from "./Steps/WorkFlow";
 import PreviewStepper from "./Steps/PreviewStepper";
+
 
 import "./stepper.scss";
 import { Link } from "react-router-dom";
@@ -65,7 +69,7 @@ class StepperPage extends PureComponent {
       redirectUrl: null,
       checkPermissionLoading:false,
     };
-    
+   
     this.setPreviewMode = this.setPreviewMode.bind(this);
     this.handleNext = this.handleNext.bind(this);
     this.handleCheckPermissionLoading = this.handleCheckPermissionLoading.bind(this);
@@ -77,6 +81,7 @@ class StepperPage extends PureComponent {
     this.setRedirectUrl = this.setRedirectUrl.bind(this);
   }
 
+
   componentDidMount() {
     if (this.state && this.state.displayMode === "view") {
       this.setState({ disableWorkflowAssociation: true });
@@ -84,6 +89,7 @@ class StepperPage extends PureComponent {
     }
     this.setRedirectUrl();
   }
+
 
   static getDerivedStateFromProps(nextProps, prevState) {
     let stateData = null;
@@ -103,6 +109,7 @@ class StepperPage extends PureComponent {
         nextProps.getFormProcessesDetails(nextProps.match.params.formId);
       }
     }
+
 
     if (!prevState.processListLoaded) {
       stateData = {
@@ -138,11 +145,13 @@ class StepperPage extends PureComponent {
       };
     }
 
+
     if (nextProps.match.params.step === "view-edit") {
       stateData = {
         ...stateData,
         displayMode: "view",
       };
+
 
       if (!prevState.dataModified && nextProps.formProcessList) {
         stateData = {
@@ -156,8 +165,11 @@ class StepperPage extends PureComponent {
       }
     }
 
+
     return { ...stateData };
   }
+
+
 
 
   setActiveStep(val) {
@@ -190,6 +202,7 @@ class StepperPage extends PureComponent {
     }));
   };
 
+
   getSteps() {
     return [
       <Translation key={1}>{(t) => t("Design Form")}</Translation>,
@@ -199,6 +212,7 @@ class StepperPage extends PureComponent {
       <Translation key={3}>{(t) => t("Preview and Confirm")}</Translation>,
     ];
   }
+
 
   handleEdit() {
     this.setState((editState) => ({
@@ -211,13 +225,16 @@ class StepperPage extends PureComponent {
     }));
   }
 
+
   handleBack() {
     this.setActiveStep(this.state.activeStep - 1);
   }
 
+
   handleCheckPermissionLoading(){
     this.setState({checkPermissionLoading:!this.state?.checkPermissionLoading});
   }
+
 
   submitData = () => {
     const {
@@ -230,7 +247,9 @@ class StepperPage extends PureComponent {
     } = this.props;
     const { processData } = this.state;
 
+
     let saveMethod = saveFormProcessMapperPut;
+
 
     const isNewVersionNeeded = () => {
       // New mapper version is needed if the form metadata is updated and applications exist with old data.
@@ -253,6 +272,7 @@ class StepperPage extends PureComponent {
       formType: formProcessList.formType
     };
 
+
     if (workflow) {
       data["processKey"] = workflow && workflow.value;
       data["processName"] = workflow && workflow.label;
@@ -261,19 +281,24 @@ class StepperPage extends PureComponent {
       data["processName"] = "";
     }
 
+
     if (processData.comments) {
       data["comments"] = processData.comments;
     }
+
 
     if (formProcessList && formProcessList.id) {
       data.id = formProcessList.id;
     }
 
+
     data.workflowChanged = data?.processKey !== formPreviousData.processKey;
     data.statusChanged =  processData?.status !== formPreviousData.status;
 
+
     if (isNewVersionNeeded()) {
       // POST request for creating new mapper version of the current form.
+
 
       data["version"] = String(+formProcessList.version + 1);
       saveMethod = saveFormProcessMapperPost;
@@ -281,22 +306,27 @@ class StepperPage extends PureComponent {
       if (formProcessList && formProcessList.id) {
         // PUT request to modify the existing mapper if there is one.
 
+
         saveMethod = saveFormProcessMapperPut;
       } else {
         // For hadling uploaded forms case
         // There won't be any mapper in case of uploaded forms
 
+
         saveMethod = saveFormProcessMapperPost;
       }
     }
 
+
     onSaveFormProcessMapper(data, saveMethod, this.state.redirectUrl);
   };
+
 
   getStepContent(step) {
     const { previewMode, editMode, processData, activeStep } = this.state;
     // const { editMode } = this.state;
     const { form, formProcessList, workflow } = this.props;
+
 
     switch (step) {
       case 0:
@@ -342,6 +372,7 @@ class StepperPage extends PureComponent {
     }
   }
 
+
   render() {
     // const { process } = this.props;
     const steps = this.getSteps();
@@ -350,11 +381,14 @@ class StepperPage extends PureComponent {
       this.setActiveStep(0);
     };
 
-    
+
+   
+
 
     if(formAuthVerifyLoading && match?.params.formId !== FORM_CREATE_ROUTE){
       return <Loading/>;
     }
+
 
     if(apiCallError){
       return <NotFound
@@ -362,6 +396,7 @@ class StepperPage extends PureComponent {
       errorCode={apiCallError.status}
     />;
     }
+
 
     return (
       <>
@@ -418,6 +453,7 @@ class StepperPage extends PureComponent {
   }
 }
 
+
 const mapStateToProps = (state) => {
   return {
     form: selectRoot("form", state),
@@ -434,6 +470,7 @@ const mapStateToProps = (state) => {
     workflow: state.process.workflowAssociated,
   };
 };
+
 
 const mapDispatchToProps = (dispatch) => {
   return {
@@ -476,16 +513,25 @@ const mapDispatchToProps = (dispatch) => {
       dispatch(resetFormData("form", id));
       dispatch(setFormAuthVerifyLoading(true));
       dispatch(getForm("form",id,(err,res)=>{
-        fetchDesigners(
-          res?.parentFormId || res?._id).then(response=>{ 
-            dispatch(setFormDesignerPermissionRoles(response.data));
-          }).catch((err)=>{
-            const {response} = err;
-            dispatch(setApiCallError({message:response?.data?.message || 
-              response.statusText,status:response.status}));
-          }).finally(()=>{
-            dispatch(setFormAuthVerifyLoading(false));
-          });
+        if(err){
+          const {response} = err;
+          dispatch(setApiCallError({message:response?.data?.message || 'Bad Request' ||
+          response?.statusText || err.message,status:response?.status || '400'}));
+          dispatch(setFormAuthVerifyLoading(false));
+        }
+        else{
+          fetchDesigners(
+            res?.parentFormId || res._id).then(response=>{
+              dispatch(setFormDesignerPermissionRoles(response.data));
+            }).catch((err)=>{
+              const {response} = err;
+              dispatch(setApiCallError({message:response?.data?.message ||
+                response?.statusText || err.message,status:response?.status || '400'}));
+            }).finally(()=>{
+              dispatch(setFormAuthVerifyLoading(false));
+            });
+        }
+       
       }));
          
     },

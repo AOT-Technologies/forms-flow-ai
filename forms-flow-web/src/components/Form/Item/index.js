@@ -13,7 +13,6 @@ import Submission from "./Submission/index";
 import { checkIsObjectId } from "../../../apiManager/services/formatterService";
 import { fetchFormByAlias } from "../../../apiManager/services/bpmFormServices";
 import {
-  setFormFailureErrorData,
   setFormRequestData,
   setFormSuccessData,
   resetFormData,
@@ -82,7 +81,16 @@ const Item = React.memo(() => {
           
           } else {
             dispatch(setFormAuthVerifyLoading(false));
-            dispatch(setFormFailureErrorData("form", err));
+            const { response } = err;
+            dispatch(
+              setApiCallError({
+                message:
+                  response?.data?.message ||
+                  response?.statusText ||
+                  err.message,
+                status: response?.status ,
+              })
+            );
           }
         })
       );

@@ -9,7 +9,6 @@ from formsflow_api_utils.exceptions import BusinessException
 from formsflow_api_utils.services.external import FormioService
 from formsflow_api_utils.utils import (
     DESIGNER_GROUP,
-    REVIEWER_GROUP,
     auth,
     cors_preflight,
     profiletime,
@@ -230,32 +229,6 @@ class FormResourceList(Resource):
                 ) = FormProcessMapperService.get_all_forms(
                     page_no, limit, form_name, sort_by, sort_order, form_type, is_active
                 )
-            elif auth.has_role([REVIEWER_GROUP]):
-                auth_form_details = ApplicationService.get_authorised_form_list(
-                    token=request.headers["Authorization"]
-                )
-                current_app.logger.info(auth_form_details)
-                auth_list = auth_form_details.get("authorizationList") or {}
-                resource_list = [group["resourceId"] for group in auth_list]
-                if (
-                    auth_form_details.get("adminGroupEnabled") is True
-                    or "*" in resource_list
-                ):
-                    (
-                        form_process_mapper_schema,
-                        form_process_mapper_count,
-                    ) = FormProcessMapperService.get_all_mappers(
-                        page_no, limit, form_name, sort_by, sort_order
-                    )
-
-                else:
-                    (
-                        form_process_mapper_schema,
-                        form_process_mapper_count,
-                    ) = FormProcessMapperService.get_all_mappers(
-                        page_no, limit, form_name, sort_by, sort_order, resource_list
-                    )
-
             else:
                 (
                     form_process_mapper_schema,

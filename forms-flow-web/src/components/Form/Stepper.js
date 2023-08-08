@@ -8,16 +8,13 @@ import Typography from "@material-ui/core/Typography";
 import Grid from "@material-ui/core/Grid";
 import { toast } from "react-toastify";
 
-
 import Create from "./Create.js";
 import Preview from "./Item/Preview.js";
 import Edit from "./Item/Edit.js";
 import { Translation, withTranslation } from "react-i18next";
 import "../../resourceBundles/i18n";
 
-
 //TODO convert this code to functional component
-
 
 // for edit
 import {
@@ -28,12 +25,11 @@ import {
   saveFormProcessMapperPost,
   saveFormProcessMapperPut,
 } from "../../apiManager/services/processServices";
-import { selectRoot, selectError, Formio, getForm} from "react-formio";
+import { selectRoot, selectError, Formio, getForm } from "react-formio";
 import { MULTITENANCY_ENABLED } from "../../constants/constants";
 import { push } from "connected-react-router";
 import WorkFlow from "./Steps/WorkFlow";
 import PreviewStepper from "./Steps/PreviewStepper";
-
 
 import "./stepper.scss";
 import { Link } from "react-router-dom";
@@ -41,7 +37,11 @@ import {
   FORM_CREATE_ROUTE,
   STEPPER_ROUTES,
 } from "./constants/stepperConstants";
-import { resetFormData, setFormAuthVerifyLoading, setFormDesignerPermissionRoles } from "../../actions/formActions.js";
+import {
+  resetFormData,
+  setFormAuthVerifyLoading,
+  setFormDesignerPermissionRoles,
+} from "../../actions/formActions.js";
 import Loading from "../../containers/Loading.js";
 import { fetchDesigners } from "../../apiManager/services/authorizationService.js";
 import { setApiCallError } from "../../actions/ErroHandling.js";
@@ -67,12 +67,13 @@ class StepperPage extends PureComponent {
       disablePreview: false,
       tenantKey: props.tenants?.tenantId,
       redirectUrl: null,
-      checkPermissionLoading:false,
+      checkPermissionLoading: false,
     };
-   
+
     this.setPreviewMode = this.setPreviewMode.bind(this);
     this.handleNext = this.handleNext.bind(this);
-    this.handleCheckPermissionLoading = this.handleCheckPermissionLoading.bind(this);
+    this.handleCheckPermissionLoading =
+      this.handleCheckPermissionLoading.bind(this);
     // for edit
     this.setEditMode = this.setEditMode.bind(this);
     this.handleBack = this.handleBack.bind(this);
@@ -81,7 +82,6 @@ class StepperPage extends PureComponent {
     this.setRedirectUrl = this.setRedirectUrl.bind(this);
   }
 
-
   componentDidMount() {
     if (this.state && this.state.displayMode === "view") {
       this.setState({ disableWorkflowAssociation: true });
@@ -89,7 +89,6 @@ class StepperPage extends PureComponent {
     }
     this.setRedirectUrl();
   }
-
 
   static getDerivedStateFromProps(nextProps, prevState) {
     let stateData = null;
@@ -109,7 +108,6 @@ class StepperPage extends PureComponent {
         nextProps.getFormProcessesDetails(nextProps.match.params.formId);
       }
     }
-
 
     if (!prevState.processListLoaded) {
       stateData = {
@@ -145,13 +143,11 @@ class StepperPage extends PureComponent {
       };
     }
 
-
     if (nextProps.match.params.step === "view-edit") {
       stateData = {
         ...stateData,
         displayMode: "view",
       };
-
 
       if (!prevState.dataModified && nextProps.formProcessList) {
         stateData = {
@@ -165,12 +161,8 @@ class StepperPage extends PureComponent {
       }
     }
 
-
     return { ...stateData };
   }
-
-
-
 
   setActiveStep(val) {
     this.setState({ activeStep: val });
@@ -194,14 +186,13 @@ class StepperPage extends PureComponent {
         : "/",
     });
   }
- 
+
   setProcessData = (data) => {
     this.setState((prevState) => ({
       processData: { ...prevState.processData, ...data },
       dataModified: true,
     }));
   };
-
 
   getSteps() {
     return [
@@ -212,7 +203,6 @@ class StepperPage extends PureComponent {
       <Translation key={3}>{(t) => t("Preview and Confirm")}</Translation>,
     ];
   }
-
 
   handleEdit() {
     this.setState((editState) => ({
@@ -225,16 +215,15 @@ class StepperPage extends PureComponent {
     }));
   }
 
-
   handleBack() {
     this.setActiveStep(this.state.activeStep - 1);
   }
 
-
-  handleCheckPermissionLoading(){
-    this.setState({checkPermissionLoading:!this.state?.checkPermissionLoading});
+  handleCheckPermissionLoading() {
+    this.setState({
+      checkPermissionLoading: !this.state?.checkPermissionLoading,
+    });
   }
-
 
   submitData = () => {
     const {
@@ -247,9 +236,7 @@ class StepperPage extends PureComponent {
     } = this.props;
     const { processData } = this.state;
 
-
     let saveMethod = saveFormProcessMapperPut;
-
 
     const isNewVersionNeeded = () => {
       // New mapper version is needed if the form metadata is updated and applications exist with old data.
@@ -269,9 +256,8 @@ class StepperPage extends PureComponent {
         : [],
       anonymous: formProcessList.anonymous ? true : false,
       parentFormId: formProcessList?.parentFormId,
-      formType: formProcessList.formType
+      formType: formProcessList.formType,
     };
-
 
     if (workflow) {
       data["processKey"] = workflow && workflow.value;
@@ -281,24 +267,19 @@ class StepperPage extends PureComponent {
       data["processName"] = "";
     }
 
-
     if (processData.comments) {
       data["comments"] = processData.comments;
     }
-
 
     if (formProcessList && formProcessList.id) {
       data.id = formProcessList.id;
     }
 
-
     data.workflowChanged = data?.processKey !== formPreviousData.processKey;
-    data.statusChanged =  processData?.status !== formPreviousData.status;
-
+    data.statusChanged = processData?.status !== formPreviousData.status;
 
     if (isNewVersionNeeded()) {
       // POST request for creating new mapper version of the current form.
-
 
       data["version"] = String(+formProcessList.version + 1);
       saveMethod = saveFormProcessMapperPost;
@@ -306,27 +287,22 @@ class StepperPage extends PureComponent {
       if (formProcessList && formProcessList.id) {
         // PUT request to modify the existing mapper if there is one.
 
-
         saveMethod = saveFormProcessMapperPut;
       } else {
         // For hadling uploaded forms case
         // There won't be any mapper in case of uploaded forms
 
-
         saveMethod = saveFormProcessMapperPost;
       }
     }
 
-
     onSaveFormProcessMapper(data, saveMethod, this.state.redirectUrl);
   };
-
 
   getStepContent(step) {
     const { previewMode, editMode, processData, activeStep } = this.state;
     // const { editMode } = this.state;
     const { form, formProcessList, workflow } = this.props;
-
 
     switch (step) {
       case 0:
@@ -372,31 +348,26 @@ class StepperPage extends PureComponent {
     }
   }
 
-
   render() {
     // const { process } = this.props;
     const steps = this.getSteps();
-    const { t,formAuthVerifyLoading, apiCallError,match} = this.props;
+    const { t, formAuthVerifyLoading, apiCallError, match } = this.props;
     const handleReset = () => {
       this.setActiveStep(0);
     };
 
-
-   
-
-
-    if(formAuthVerifyLoading && match?.params.formId !== FORM_CREATE_ROUTE){
-      return <Loading/>;
+    if (formAuthVerifyLoading && match?.params.formId !== FORM_CREATE_ROUTE) {
+      return <Loading />;
     }
 
-
-    if(apiCallError){
-      return <NotFound
-      errorMessage={apiCallError.message}
-      errorCode={apiCallError.status}
-    />;
+    if (apiCallError) {
+      return (
+        <NotFound
+          errorMessage={apiCallError.message}
+          errorCode={apiCallError.status}
+        />
+      );
     }
-
 
     return (
       <>
@@ -453,7 +424,6 @@ class StepperPage extends PureComponent {
   }
 }
 
-
 const mapStateToProps = (state) => {
   return {
     form: selectRoot("form", state),
@@ -470,7 +440,6 @@ const mapStateToProps = (state) => {
     workflow: state.process.workflowAssociated,
   };
 };
-
 
 const mapDispatchToProps = (dispatch) => {
   return {
@@ -512,28 +481,44 @@ const mapDispatchToProps = (dispatch) => {
       dispatch(setApiCallError(null));
       dispatch(resetFormData("form", id));
       dispatch(setFormAuthVerifyLoading(true));
-      dispatch(getForm("form",id,(err,res)=>{
-        if(err){
-          const {response} = err;
-          dispatch(setApiCallError({message:response?.data?.message || 'Bad Request' ||
-          response?.statusText || err.message,status:response?.status || '400'}));
-          dispatch(setFormAuthVerifyLoading(false));
-        }
-        else{
-          fetchDesigners(
-            res?.parentFormId || res._id).then(response=>{
-              dispatch(setFormDesignerPermissionRoles(response.data));
-            }).catch((err)=>{
-              const {response} = err;
-              dispatch(setApiCallError({message:response?.data?.message ||
-                response?.statusText || err.message,status:response?.status || '400'}));
-            }).finally(()=>{
-              dispatch(setFormAuthVerifyLoading(false));
-            });
-        }
-       
-      }));
-         
+      dispatch(
+        getForm("form", id, (err, res) => {
+          if (err) {
+            const { response } = err;
+            dispatch(
+              setApiCallError({
+                message:
+                  response?.data?.message ||
+                  "Bad Request" ||
+                  response?.statusText ||
+                  err.message,
+                status: response?.status || "400",
+              })
+            );
+            dispatch(setFormAuthVerifyLoading(false));
+          } else {
+            fetchDesigners(res?.parentFormId || res._id)
+              .then((response) => {
+                dispatch(setFormDesignerPermissionRoles(response.data));
+              })
+              .catch((err) => {
+                const { response } = err;
+                dispatch(
+                  setApiCallError({
+                    message:
+                      response?.data?.message ||
+                      response?.statusText ||
+                      err.message,
+                    status: response?.status || "400",
+                  })
+                );
+              })
+              .finally(() => {
+                dispatch(setFormAuthVerifyLoading(false));
+              });
+          }
+        })
+      );
     },
     getFormProcessesDetails: (formId) => {
       dispatch(
@@ -541,7 +526,7 @@ const mapDispatchToProps = (dispatch) => {
         getFormProcesses(formId, (err, data) => {
           if (!err) {
             dispatch(getApplicationCount(data.id));
-          }else{
+          } else {
             console.error(err);
           }
         })

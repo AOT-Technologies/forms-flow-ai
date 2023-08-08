@@ -62,7 +62,7 @@ const Preview = React.memo(
     const isDisabled =
       (designerSelectedOption == "Specific Designers" &&
         !designerGroups?.roles?.length) ||
-      (clientSelectedOption == "Specific Clients" && !clientGroups.length);
+      (clientSelectedOption == "Specific Users" && !clientGroups.length);
     const id = show ? "simple-popover" : undefined;
     const copyPublicUrl = () => {
       const originUrl = window.origin;
@@ -112,7 +112,7 @@ const Preview = React.memo(
           setClientGroups(resource?.roles || []);
           if (resource) {
             setClientSelectedOption(
-              resource.roles?.length ? "Specific Clients" : "All Clients"
+              resource.roles?.length ? "Specific Users" : "All Users"
             );
           }
           setClientOptions(
@@ -189,11 +189,11 @@ const Preview = React.memo(
         resourceId: processListData.parentFormId,
         resourceDetails: {},
       };
-      if (clientSelectedOption === "All Clients") {
+      if (clientSelectedOption === "All Users") {
         payload.roles = [];
       }
 
-      if (clientSelectedOption === "Specific Clients") {
+      if (clientSelectedOption === "Specific Users") {
         payload.roles = clientGroups;
       }
 
@@ -311,9 +311,9 @@ const Preview = React.memo(
                       <div className="mt-2" style={{ height: "auto" }}>
                     <span
                       className="font-weight-bold"
-                      title={t("Give Designer Role Permissions")}
+                      title={t("Applicable for Designer Roled Users only.")}
                     >
-                      {t("Designer Permission")}
+                      {t("Design Permission")}
                       <i className="ml-1 fa fa-info-circle cursor-pointer text-primary" />
                     </span>
 
@@ -328,7 +328,7 @@ const Preview = React.memo(
                             setDesignerSelectedOption(e.target.value)
                           }
                         />
-                        {t("Accessible for all Designers")}
+                        {t("All Designers")}
                       </label>
                       <label className="mr-4">
                         <input
@@ -406,38 +406,42 @@ const Preview = React.memo(
                   <div>
                         <div>
                           <hr className="mt-1" />
-                          <span className="font-weight-bold">
-                          {t("Client Permission")}
-                          </span>
+                          <span
+                      className="font-weight-bold"
+                      title={t("Applicable for Client and Reviewer Roled Users only.")}
+                    >
+                      {t("Submission Permission")}
+                      <i className="ml-1 fa fa-info-circle cursor-pointer text-primary" />
+                    </span>
                           <div>
                             <label className="mr-4">
                               <input
                                 className="mr-1"
                                 type="radio"
-                                value="All Clients"
-                                checked={clientSelectedOption === "All Clients"}
+                                value="All Users"
+                                checked={clientSelectedOption === "All Users"}
                                 onChange={(e) =>
                                   setClientSelectedOption(e.target.value)
                                 }
                               />
-                              {t("All Clients")}
+                              {t("All Users")}
                             </label>
                             <label className="mr-4">
                               <input
                                 className="mr-1"
                                 type="radio"
-                                value="Specific Clients"
+                                value="Specific Users"
                                 checked={
-                                  clientSelectedOption === "Specific Clients"
+                                  clientSelectedOption === "Specific Users"
                                 }
                                 onChange={(e) => {
                                   setClientSelectedOption(e.target.value);
                                 }}
                               />
-                              {t("Specific Client Group")}
+                              {t("Specific User Group")}
                             </label>
                           </div>
-                          {clientSelectedOption === "Specific Clients" ? (
+                          {clientSelectedOption === "Specific Users" ? (
                             <div className="d-flex align-items-center flex-wrap">
                             {clientGroups?.map((e,) => {
                                 return (

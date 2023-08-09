@@ -21,6 +21,7 @@ class AuthType(Enum):
     FORM = "FORM"
     FILTER = "FILTER"
     DESIGNER = "DESIGNER"
+    APPLICATION = "APPLICATION"
 
     def __str__(self):
         """To string value."""

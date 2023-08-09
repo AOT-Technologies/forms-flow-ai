@@ -188,7 +188,6 @@ class ApplicationsResource(Resource):
                     application_id=application_id,
                     application_name=application_name,
                     application_status=application_status,
-                    token=request.headers["Authorization"],
                     page_no=page_no,
                     limit=limit,
                 )
@@ -275,7 +274,6 @@ class ApplicationResourceById(Resource):
                     status,
                 ) = ApplicationService.get_auth_by_application_id(
                     application_id=application_id,
-                    token=request.headers["Authorization"],
                 )
                 return (
                     application_schema_dump,

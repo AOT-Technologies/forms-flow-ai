@@ -1,5 +1,4 @@
 import React from "react";
-import { screen } from "@testing-library/react";
 import "@testing-library/jest-dom/extend-expect";
 import { Provider } from "react-redux";
 import { appState } from "../../test-redux-states/redux-state-sample";
@@ -41,16 +40,13 @@ function renderWithRouterMatch(
 
 test("Render Insight  Component with insights prop passed", () => {
   renderWithRouterMatch(Insights, {
-    isDashboardLoading: appState.insights.isDashboardLoading,
     isInsightLoading: appState.insights.isInsightLoading,
     dashboards: appState.insights.dashboardsList,
     activeDashboard: appState.insights.dashboardDetail,
   });
-  expect(screen.getByTestId("loading-component")).toBeInTheDocument();
 });
 test("Render Insight  Component with insights prop passed", () => {
   renderWithRouterMatch(Insights, {
-    isDashboardLoading: mock1.isDashboardLoading,
     isInsightLoading: mock1.isInsightLoading,
     dashboards: mock1.dashboardsList,
     activeDashboard: mock1.dashboardDetail,

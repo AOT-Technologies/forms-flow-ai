@@ -58,7 +58,7 @@ import filterFactory from "react-bootstrap-table2-filter";
 import overlayFactory from "react-bootstrap-table2-overlay";
 import { SpinnerSVG } from "../../containers/SpinnerSVG";
 import { getFormattedForm, INACTIVE } from "./constants/formListConstants";
-import { addClients, addUsers } from "../../apiManager/services/authorizationService";
+import { addClients, addUsers, addReviewers } from "../../apiManager/services/authorizationService";
 import { fetchDesigners } from "../../apiManager/services/authorizationService.js";
 const List = React.memo((props) => {
   const { t } = useTranslation();
@@ -278,6 +278,8 @@ const List = React.memo((props) => {
     };
     addUsers(payload).catch((error) => console.error("error", error));
     addClients(payload).catch((error) => console.error("error", error));
+    addReviewers(payload).catch((error) => console.error("error", error));
+
 
   };
 

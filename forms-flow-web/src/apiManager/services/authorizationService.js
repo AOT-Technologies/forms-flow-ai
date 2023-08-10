@@ -3,33 +3,53 @@
 import { RequestService } from "@formsflow/service";
 import API from "../endpoints/index";
 
+
 export const fetchDesigners = (id) => {
   let url = API.DESIGNER_LIST;
-  if(id){
+  if (id) {
     url += `/${id}`;
   }
   return RequestService.httpGETRequest(url);
 };
 
-export const addUsers = (data)=>{
+
+export const addUsers = (data) => {
   const url = API.DESIGNER_LIST;
-  return RequestService.httpPOSTRequest(url,data);
+  return RequestService.httpPOSTRequest(url, data);
 };
 
-export const getUserRoles = ()=>{
+
+export const getUserRoles = () => {
   const url = API.USER_ROLES;
   return RequestService.httpGETRequest(url);
 };
 
-export const getClientList = (id)=>{
+
+export const getClientList = (id) => {
   let url = API.CLIENT_LIST;
-  if(id){
+  if (id) {
     url += `/${id}`;
   }
   return RequestService.httpGETRequest(url);
 };
 
-export const addClients = (data)=>{
+
+export const addClients = (data) => {
   const url = API.CLIENT_LIST;
-  return RequestService.httpPOSTRequest(url,data);
+  return RequestService.httpPOSTRequest(url, data);
+};
+
+
+export const getReviewerList = (id) => {
+  let url = API.REVIEWER_LIST;
+  if (id) {
+    url += `/${id}`;
+  }
+  return RequestService.httpGETRequest(url);
+};
+
+
+export const addReviewers = (data) => {
+  const url = API.REVIEWER_LIST;
+  return RequestService.httpPOSTRequest(url, data);
 };

@@ -17,10 +17,10 @@ import {
   addClients,
   getClientList,
   getUserRoles,
+  getReviewerList,
+  addReviewers,
 } from "../../../apiManager/services/authorizationService";
-import {
-  addUsers,
-} from "../../../apiManager/services/authorizationService";
+import { addUsers } from "../../../apiManager/services/authorizationService";
 import LoadingOverlay from "react-loading-overlay";
 import { Chip } from "@material-ui/core";
 import { setFormDesignerPermissionRoles } from "../../../actions/formActions";
@@ -44,25 +44,30 @@ const Preview = React.memo(
     const [show, setShow] = useState(false);
     const [designerSelectedOption, setDesignerSelectedOption] = useState("");
     const [clientSelectedOption, setClientSelectedOption] = useState("");
+    const [reviewerSelectedOption, setReviewerSelectedOption] = useState("");
     const processListData = useSelector(
       (state) => state.process.formProcessList
     );
-    const user =  useSelector(
-      (state) => state.user.userDetail
-    );
+    const user = useSelector((state) => state.user.userDetail);
     const userGroups = useSelector(
       (state) => state.userAuthorization?.userGroups
     );
     const [designerOptions, setDesingerOptions] = useState([]);
     const [clientOptions, setClientOptions] = useState([]);
-    const designerGroups = useSelector((state)=>state.process?.formDesignerPermissionRoles );
+    const [reviewerOptions, setReviewerOptions] = useState([]);
+    const designerGroups = useSelector(
+      (state) => state.process?.formDesignerPermissionRoles
+    );
     const [clientGroups, setClientGroups] = useState([]);
+    const [reviewerGroups, setReviewerGroups] = useState([]);
     const [fetchClientLoading, setFetchClientLoading] = useState(false);
-    const [anchorEl,setAnchorEl] = useState(null);
+    const [anchorEl, setAnchorEl] = useState(null);
     const isDisabled =
       (designerSelectedOption == "Specific Designers" &&
         !designerGroups?.roles?.length) ||
-      (clientSelectedOption == "Specific Users" && !clientGroups.length);
+      (clientSelectedOption == "Specific Users" && !clientGroups.length) ||
+      (reviewerSelectedOption == "Specific Reviewers" &&
+        !reviewerGroups.length);
     const id = show ? "simple-popover" : undefined;
     const copyPublicUrl = () => {
       const originUrl = window.origin;
@@ -81,9 +86,11 @@ const Preview = React.memo(
         });
     };
 
+
     const handleClose = () => {
       setShow(false);
     };
+
 
     useEffect(() => {
       getUserRoles()
@@ -93,47 +100,70 @@ const Preview = React.memo(
         .catch((error) => console.error("error", error));
     }, []);
 
+
     useEffect(() => {
       setFetchClientLoading(true);
-        setDesignerSelectedOption(
-          designerGroups.roles?.length
-            ? "Specific Designers"
-            : designerGroups.userName
-            ? "Private"
-            : "All Designers"
+      setDesignerSelectedOption(
+        designerGroups.roles?.length
+          ? "Specific Designers"
+          : designerGroups.userName
+          ? "Private"
+          : "All Designers"
+      );
+      setDesingerOptions(
+        userGroups?.filter((i) => !designerGroups?.roles?.includes(i.name))
+      );
+
+
+      getClientList(processListData.parentFormId).then((res) => {
+        const resource = res.data;
+        setClientGroups(resource?.roles || []);
+        if (resource) {
+          setClientSelectedOption(
+            resource.roles?.length ? "Specific Users" : "All Users"
+          );
+        }
+        setClientOptions(
+          userGroups?.filter((i) => !resource?.roles?.includes(i.name))
         );
-        setDesingerOptions(
-          userGroups?.filter((i) => !designerGroups?.roles?.includes(i.name))
-        );
-      
-        getClientList(processListData.parentFormId)
+      });
+
+
+      getReviewerList(processListData.formId)
         .then((res) => {
           const resource = res.data;
-          setClientGroups(resource?.roles || []);
+          setReviewerGroups(resource?.roles || []);
           if (resource) {
-            setClientSelectedOption(
-              resource.roles?.length ? "Specific Users" : "All Users"
+            setReviewerSelectedOption(
+              resource.roles?.length ? "Specific Reviewers" : "All Reviewers"
             );
           }
-          setClientOptions(
+          setReviewerOptions(
             userGroups?.filter((i) => !resource?.roles?.includes(i.name))
           );
         })
         .catch((error) => console.error("error", error))
-        .finally(()=> setFetchClientLoading(false));
+        .finally(() => setFetchClientLoading(false));
     }, [userGroups]);
 
-    const handleClick = (name) => (event)=> {
+
+    const handleClick = (name) => (event) => {
       setAnchorEl(event.currentTarget);
       setShow(name);
     };
 
+
     const addDesignerGroups = (data) => {
-      dispatch(setFormDesignerPermissionRoles(
-        {...designerGroups,roles:[...designerGroups.roles || [], data.name]}));
+      dispatch(
+        setFormDesignerPermissionRoles({
+          ...designerGroups,
+          roles: [...(designerGroups.roles || []), data.name],
+        })
+      );
       setDesingerOptions(designerOptions?.filter((i) => i.name !== data.name));
       setShow(false);
     };
+
 
     const addClientGroups = (data) => {
       setClientGroups([...clientGroups, data.name]);
@@ -141,30 +171,50 @@ const Preview = React.memo(
       setShow(false);
     };
 
+
+    const addReviewerGroups = (data) => {
+      setReviewerGroups([...reviewerGroups, data.name]);
+      setReviewerOptions(reviewerOptions?.filter((i) => i.name !== data.name));
+      setShow(false);
+    };
+
+
     const removeDesignerUserGroup = (group) => {
-      const filteredRoles = designerGroups?.roles?.filter((item) => item !== group);
-      dispatch( setFormDesignerPermissionRoles({...designerGroups,roles:filteredRoles}));
+      const filteredRoles = designerGroups?.roles?.filter(
+        (item) => item !== group
+      );
+      dispatch(
+        setFormDesignerPermissionRoles({
+          ...designerGroups,
+          roles: filteredRoles,
+        })
+      );
       const deletedValue = userGroups.find((i) => i.name == group);
-      if(deletedValue){
-      setDesingerOptions((prev) => [
-        deletedValue,
-        ...prev,
-      ]);
+      if (deletedValue) {
+        setDesingerOptions((prev) => [deletedValue, ...prev]);
       }
     };
+
 
     const removeClientUserGroup = (group) => {
       let newGroups = clientGroups?.filter((item) => item !== group);
       setClientGroups(newGroups);
       const deletedValue = userGroups.find((i) => i.name == group);
-      if(deletedValue){
-        setClientOptions((prev) => [
-          deletedValue,
-          ...prev,
-        ]);
+      if (deletedValue) {
+        setClientOptions((prev) => [deletedValue, ...prev]);
       }
-      
     };
+
+
+    const removeReviewerUserGroup = (group) => {
+      let newReviewers = reviewerGroups?.filter((item) => item !== group);
+      setReviewerGroups(newReviewers);
+      const deletedValue = userGroups.find((i) => i.name == group);
+      if (deletedValue) {
+        setReviewerOptions((prev) => [deletedValue, ...prev]);
+      }
+    };
+
 
     const saveDesigner = () => {
       let payload = {
@@ -184,6 +234,7 @@ const Preview = React.memo(
       addUsers(payload).catch((error) => console.error("error", error));
     };
 
+
     const saveClients = () => {
       let payload = {
         resourceId: processListData.parentFormId,
@@ -193,15 +244,35 @@ const Preview = React.memo(
         payload.roles = [];
       }
 
+
       if (clientSelectedOption === "Specific Users") {
         payload.roles = clientGroups;
       }
 
+
       addClients(payload).catch((error) => console.error("error", error));
     };
 
-  
-  
+
+    const saveReviewers = () => {
+      let payload = {
+        resourceId: processListData.parentFormId,
+        resourceDetails: {},
+      };
+      if (reviewerSelectedOption === "All Reviewers") {
+        payload.roles = [];
+      }
+
+
+      if (reviewerSelectedOption === "Specific Reviewers") {
+        payload.roles = reviewerGroups;
+      }
+
+
+      addReviewers(payload).catch((error) => console.error("error", error));
+    };
+
+
     return (
       <div>
         <Grid
@@ -224,6 +295,7 @@ const Preview = React.memo(
                 submitData();
                 saveDesigner();
                 saveClients();
+                saveReviewers();
               }}
               isLastStep={true}
             />
@@ -233,9 +305,7 @@ const Preview = React.memo(
               <CardContent>
                 <form noValidate autoComplete="off">
                   <div>
-                    <span className="font-weight-bold">
-                    {t("Overview")}
-                    </span>
+                    <span className="font-weight-bold">{t("Overview")}</span>
                     <hr />
                   </div>
                   <div>
@@ -280,10 +350,10 @@ const Preview = React.memo(
                       </div>
                     </div>
                   )}
-                           <div>
+                  <div>
                     <label>
                       <FormControlLabel
-                      className="mr-1"
+                        className="mr-1"
                         control={
                           <Checkbox
                             aria-label="Publish"
@@ -306,154 +376,265 @@ const Preview = React.memo(
                     </label>
                   </div>
                   <hr />
- 
-                  <LoadingOverlay active={fetchClientLoading} spinner>
-                      <div className="mt-2" style={{ height: "auto" }}>
-                    <span
-                      className="font-weight-bold"
-                      title={t("Applicable for Designer Roled Users only.")}
-                    >
-                      {t("Design Permission")}
-                      <i className="ml-1 fa fa-info-circle cursor-pointer text-primary" />
-                    </span>
 
-                    <div>
-                      <label className="mr-4">
-                        <input
-                          className="mr-1"
-                          type="radio"
-                          value="All Designers"
-                          checked={designerSelectedOption === "All Designers"}
-                          onChange={(e) =>
-                            setDesignerSelectedOption(e.target.value)
-                          }
-                        />
-                        {t("All Designers")}
-                      </label>
-                      <label className="mr-4">
-                        <input
-                          className="mr-1"
-                          type="radio"
-                          value="Private"
-                          checked={designerSelectedOption === "Private"}
-                          onChange={(e) =>
-                            setDesignerSelectedOption(e.target.value)
-                          }
-                        />
-                        {t("Private(only you)")}
-                      </label>
-                      <label>
-                        <input
-                          className="mr-1"
-                          type="radio"
-                          value="Specific Designers"
-                          checked={
-                            designerSelectedOption === "Specific Designers"
-                          }
-                          onChange={(e) => {
-                            setDesignerSelectedOption(e.target.value);
-                          }}
-                        />
-                        {t("Specific Designer Group")}
-                      </label>
-                    </div>
-                    {designerSelectedOption === "Specific Designers" ? (
-                      <div className="d-flex align-items-center flex-wrap">
-                            {designerGroups?.roles?.map((e,) => 
-                            <Chip key={e} label={e}
-                             variant="outlined"
-                             className="mr-2"  
-                             onDelete={()=>{removeDesignerUserGroup(e);}}
-                         />)}
-                       
-                      <Button
-                          onClick={handleClick("designer")}
-                          className="btn btn-primary btn-md form-btn pull-left btn-left"
-                        >
-                          <Translation>{(t) => t("Add")}</Translation> <b>+</b>
-                        </Button>
-                        <Popover
-                          data-testid="popup-component"
-                          id={id}
-                          open={show === "designer"}
-                          onClose={handleClose}
-                          anchorEl={anchorEl} placement={"top"}
-                        >
-                          <ListGroup>
-                            {designerOptions?.length > 0 ? (
-                              designerOptions?.map((item, key) => (
-                                <ListGroup.Item
-                                  key={key}
-                                  as="button"
-                                  onClick={() => addDesignerGroups(item)}
-                                >
-                                  {item.name}
-                                </ListGroup.Item>
-                              ))
-                            ) : (
-                              <ListGroup.Item>{`${t(
-                                "All groups have access to the form"
-                              )}`}</ListGroup.Item>
-                            )}
-                          </ListGroup>
-                        </Popover>
-                      
+
+                  <LoadingOverlay active={fetchClientLoading} spinner>
+                    <div className="mt-2" style={{ height: "auto" }}>
+                      <span
+                        className="font-weight-bold"
+                        title={t("Applicable for Designer Roled Users only.")}
+                      >
+                        {t("Design Permission")}
+                        <i className="ml-1 fa fa-info-circle cursor-pointer text-primary" />
+                      </span>
+
+
+                      <div>
+                        <label className="mr-4">
+                          <input
+                            className="mr-1"
+                            type="radio"
+                            value="All Designers"
+                            checked={designerSelectedOption === "All Designers"}
+                            onChange={(e) =>
+                              setDesignerSelectedOption(e.target.value)
+                            }
+                          />
+                          {t("All Designers")}
+                        </label>
+                        <label className="mr-4">
+                          <input
+                            className="mr-1"
+                            type="radio"
+                            value="Private"
+                            checked={designerSelectedOption === "Private"}
+                            onChange={(e) =>
+                              setDesignerSelectedOption(e.target.value)
+                            }
+                          />
+                          {t("Private(only you)")}
+                        </label>
+                        <label>
+                          <input
+                            className="mr-1"
+                            type="radio"
+                            value="Specific Designers"
+                            checked={
+                              designerSelectedOption === "Specific Designers"
+                            }
+                            onChange={(e) => {
+                              setDesignerSelectedOption(e.target.value);
+                            }}
+                          />
+                          {t("Specific Designer Group")}
+                        </label>
                       </div>
-                    ) : (
-                      ""
-                    )}
-                  </div>
-                  <div>
+                      {designerSelectedOption === "Specific Designers" ? (
+                        <div className="d-flex align-items-center flex-wrap">
+                          {designerGroups?.roles?.map((e) => (
+                            <Chip
+                              key={e}
+                              label={e}
+                              variant="outlined"
+                              className="mr-2"
+                              onDelete={() => {
+                                removeDesignerUserGroup(e);
+                              }}
+                            />
+                          ))}
+
+
+                          <Button
+                            onClick={handleClick("designer")}
+                            className="btn btn-primary btn-md form-btn pull-left btn-left"
+                          >
+                            <Translation>{(t) => t("Add")}</Translation>{" "}
+                            <b>+</b>
+                          </Button>
+                          <Popover
+                            data-testid="popup-component"
+                            id={id}
+                            open={show === "designer"}
+                            onClose={handleClose}
+                            anchorEl={anchorEl}
+                            placement={"top"}
+                          >
+                            <ListGroup>
+                              {designerOptions?.length > 0 ? (
+                                designerOptions?.map((item, key) => (
+                                  <ListGroup.Item
+                                    key={key}
+                                    as="button"
+                                    onClick={() => addDesignerGroups(item)}
+                                  >
+                                    {item.name}
+                                  </ListGroup.Item>
+                                ))
+                              ) : (
+                                <ListGroup.Item>{`${t(
+                                  "All groups have access to the form"
+                                )}`}</ListGroup.Item>
+                              )}
+                            </ListGroup>
+                          </Popover>
+                        </div>
+                      ) : (
+                        ""
+                      )}
+                    </div>
+                    <div>
+                      <div>
+                        <hr className="mt-1" />
+                        <span
+                          className="font-weight-bold"
+                          title={t(
+                            "Applicable for Client and Reviewer Roled Users only."
+                          )}
+                        >
+                          {t("Submission Permission")}
+                          <i className="ml-1 fa fa-info-circle cursor-pointer text-primary" />
+                        </span>
+                        <div>
+                          <label className="mr-4">
+                            <input
+                              className="mr-1"
+                              type="radio"
+                              value="All Users"
+                              checked={clientSelectedOption === "All Users"}
+                              onChange={(e) =>
+                                setClientSelectedOption(e.target.value)
+                              }
+                            />
+                            {t("All Users")}
+                          </label>
+                          <label className="mr-4">
+                            <input
+                              className="mr-1"
+                              type="radio"
+                              value="Specific Users"
+                              checked={
+                                clientSelectedOption === "Specific Users"
+                              }
+                              onChange={(e) => {
+                                setClientSelectedOption(e.target.value);
+                              }}
+                            />
+                            {t("Specific User Group")}
+                          </label>
+                        </div>
+                        {clientSelectedOption === "Specific Users" ? (
+                          <div className="d-flex align-items-center flex-wrap">
+                            {clientGroups?.map((e) => {
+                              return (
+                                <Chip
+                                  key={e}
+                                  label={e}
+                                  variant="outlined"
+                                  className="mr-2"
+                                  onDelete={() => {
+                                    removeClientUserGroup(e);
+                                  }}
+                                />
+                              );
+                            })}
+                            <Button
+                              onClick={handleClick("client")}
+                              className="btn btn-primary btn-md form-btn pull-left btn-left"
+                            >
+                              <Translation>{(t) => t("Add")}</Translation>{" "}
+                              <b>+</b>
+                            </Button>
+                            <Popover
+                              data-testid="popup-component"
+                              id={id}
+                              open={show === "client"}
+                              onClose={handleClose}
+                              anchorEl={anchorEl}
+                              placement={"top"}
+                            >
+                              <ListGroup>
+                                {clientOptions?.length > 0 ? (
+                                  clientOptions?.map((item, key) => (
+                                    <ListGroup.Item
+                                      key={key}
+                                      as="button"
+                                      onClick={() => addClientGroups(item)}
+                                    >
+                                      {item.name}
+                                    </ListGroup.Item>
+                                  ))
+                                ) : (
+                                  <ListGroup.Item>{`${t(
+                                    "All groups have access to the form"
+                                  )}`}</ListGroup.Item>
+                                )}
+                              </ListGroup>
+                            </Popover>
+                          </div>
+                        ) : (
+                          ""
+                        )}
+                      </div>
+
+
+                      <div>
                         <div>
                           <hr className="mt-1" />
                           <span
-                      className="font-weight-bold"
-                      title={t("Applicable for Client and Reviewer Roled Users only.")}
-                    >
-                      {t("Submission Permission")}
-                      <i className="ml-1 fa fa-info-circle cursor-pointer text-primary" />
-                    </span>
+                            className="font-weight-bold"
+                            title={t("Applicable for application tracking")}
+                          >
+                            {t("Application Permission")}
+                            <i className="ml-1 fa fa-info-circle cursor-pointer text-primary" />
+                          </span>
                           <div>
                             <label className="mr-4">
                               <input
                                 className="mr-1"
                                 type="radio"
-                                value="All Users"
-                                checked={clientSelectedOption === "All Users"}
+                                value="All Reviewers"
+                                checked={
+                                  reviewerSelectedOption === "All Reviewers"
+                                }
                                 onChange={(e) =>
-                                  setClientSelectedOption(e.target.value)
+                                  setReviewerSelectedOption(e.target.value)
                                 }
                               />
-                              {t("All Users")}
+                              {t("All Reviewers")}
                             </label>
                             <label className="mr-4">
                               <input
                                 className="mr-1"
                                 type="radio"
-                                value="Specific Users"
+                                value="Specific Reviewers"
                                 checked={
-                                  clientSelectedOption === "Specific Users"
+                                  reviewerSelectedOption ===
+                                  "Specific Reviewers"
                                 }
                                 onChange={(e) => {
-                                  setClientSelectedOption(e.target.value);
+                                  setReviewerSelectedOption(e.target.value);
                                 }}
                               />
-                              {t("Specific User Group")}
+                              {t("Specific Reviewers")}
                             </label>
                           </div>
-                          {clientSelectedOption === "Specific Users" ? (
+                          {reviewerSelectedOption === "Specific Reviewers" ? (
                             <div className="d-flex align-items-center flex-wrap">
-                            {clientGroups?.map((e,) => {
+                              {reviewerGroups?.map((e) => {
                                 return (
-                                <Chip key={e} label={e}
-                                   variant="outlined"
-                                   className="mr-2" 
-                                   onDelete={()=>{removeClientUserGroup(e);}}
-                               />
+                                  <Chip
+                                    key={e}
+                                    label={e}
+                                    variant="outlined"
+                                    className="mr-2"
+                                    onDelete={() => {
+                                      removeReviewerUserGroup(e);
+                                    }}
+                                  />
                                 );
                               })}
                               <Button
-                              onClick={handleClick("client")}
+                                onClick={handleClick("reviewer")}
                                 className="btn btn-primary btn-md form-btn pull-left btn-left"
                               >
                                 <Translation>{(t) => t("Add")}</Translation>{" "}
@@ -462,18 +643,18 @@ const Preview = React.memo(
                               <Popover
                                 data-testid="popup-component"
                                 id={id}
-                                open={show === "client"}
+                                open={show === "reviewer"}
                                 onClose={handleClose}
-                                anchorEl={anchorEl} 
+                                anchorEl={anchorEl}
                                 placement={"top"}
                               >
                                 <ListGroup>
-                                  {clientOptions?.length > 0 ? (
-                                    clientOptions?.map((item, key) => (
+                                  {reviewerOptions?.length > 0 ? (
+                                    reviewerOptions?.map((item, key) => (
                                       <ListGroup.Item
                                         key={key}
                                         as="button"
-                                        onClick={() => addClientGroups(item)}
+                                        onClick={() => addReviewerGroups(item)}
                                       >
                                         {item.name}
                                       </ListGroup.Item>
@@ -485,16 +666,17 @@ const Preview = React.memo(
                                   )}
                                 </ListGroup>
                               </Popover>
-                          
                             </div>
                           ) : (
                             ""
                           )}
                         </div>
-                  </div>
+                      </div>
+                    </div>
                   </LoadingOverlay>
                   <hr />
-         
+
+
                   <label className="text-label">{t("Comments")}</label>
                   <TextField
                     label={t("Comments")}
@@ -520,3 +702,6 @@ const Preview = React.memo(
   }
 );
 export default Preview;
+
+
+

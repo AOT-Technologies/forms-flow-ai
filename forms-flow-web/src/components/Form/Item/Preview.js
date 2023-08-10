@@ -26,7 +26,7 @@ import { INACTIVE } from "../constants/formListConstants";
 import LoadingOverlay from "react-loading-overlay";
 import FormHistoryModal from "./FormHistoryModal";
 import CreateTemplateConfirmModal from "./CreateTemplateConfirmModal";
-import { addClients, addUsers } from "../../../apiManager/services/authorizationService";
+import { addClients, addUsers, addReviewers } from "../../../apiManager/services/authorizationService";
 const Preview = ({handleNext, hideComponents, activeStep}) => {
   const dispatch = useDispatch();
   const [newpublishClicked, setNewpublishClicked] = useState(false);
@@ -112,6 +112,8 @@ const Preview = ({handleNext, hideComponents, activeStep}) => {
         };
         addUsers(payload).catch((error) => console.error("error", error));
         addClients(payload).catch((error) => console.error("error", error));
+        addReviewers(payload).catch((error) => console.error("error", error));
+
         dispatch(setFormSuccessData("form", form));
         dispatch(
           // eslint-disable-next-line no-unused-vars

@@ -219,7 +219,7 @@ class ApplicationService:  # pylint: disable=too-many-public-methods
         )
         if application_auth:
             application = Application.find_auth_by_id(application_id=application_id)
-        else: 
+        else:
             # Reviewer lack application permissions can still have form permissions,
             # submit and view their application.
             application = Application.find_id_by_user(application_id, user.user_name)

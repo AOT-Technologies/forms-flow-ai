@@ -219,7 +219,11 @@ class ApplicationService:  # pylint: disable=too-many-public-methods
         )
         if application_auth:
             application = Application.find_auth_by_id(application_id=application_id)
-        if not application_auth or application is None and user.tenant_key is not None:
+        else: 
+            # Reviewer lack application permissions can still have form permissions,
+            # submit and view their application.
+            application = Application.find_id_by_user(application_id, user.user_name)
+        if application is None and user.tenant_key is not None:
             raise PermissionError(
                 f"Access to application - {application_id} is denied."
             )

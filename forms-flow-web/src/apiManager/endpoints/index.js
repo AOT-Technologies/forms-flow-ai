@@ -72,7 +72,7 @@ const API = {
   DESIGNER_LIST: `${WEB_BASE_URL}/authorizations/designer`,
   USER_ROLES:`${WEB_BASE_URL}/roles`,
   CLIENT_LIST:`${WEB_BASE_URL}/authorizations/form`,
-  REVIEWER_LIST: `${WEB_BASE_URL}/authorizations/application`,
+  APPLICATION_LIST: `${WEB_BASE_URL}/authorizations/application`,
 };
 
 export default API;

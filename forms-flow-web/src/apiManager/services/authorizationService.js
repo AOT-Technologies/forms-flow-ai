@@ -41,7 +41,7 @@ export const addClients = (data) => {
 
 
 export const getReviewerList = (id) => {
-  let url = API.REVIEWER_LIST;
+  let url = API.APPLICATION_LIST;
   if (id) {
     url += `/${id}`;
   }
@@ -50,6 +50,6 @@ export const getReviewerList = (id) => {
 
 
 export const addReviewers = (data) => {
-  const url = API.REVIEWER_LIST;
+  const url = API.APPLICATION_LIST;
   return RequestService.httpPOSTRequest(url, data);
 };

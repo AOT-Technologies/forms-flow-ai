@@ -582,7 +582,7 @@ const Preview = React.memo(
                           <hr className="mt-1" />
                           <span
                             className="font-weight-bold"
-                            title={t("Applicable for application tracking")}
+                            title={t("Permission for application tracking.")}
                           >
                             {t("Application Permission")}
                             <i className="ml-1 fa fa-info-circle cursor-pointer text-primary" />

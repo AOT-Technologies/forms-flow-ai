@@ -26,6 +26,15 @@ authorization_model = API.model(
     },
 )
 
+authorization_list_model = API.model(
+    "Authorization List",
+    {
+        "APPLICATION": fields.Nested(authorization_model),
+        "FORM": fields.Nested(authorization_model),
+        "DESIGNER": fields.Nested(authorization_model),
+    },
+)
+
 
 @cors_preflight("GET, POST, OPTIONS")
 @API.route("/<string:auth_type>", methods=["GET", "POST", "OPTIONS"])
@@ -154,9 +163,7 @@ class AuthorizationDetail(Resource):
 
         Fetch Authorization details by resource id based on authorization type.
         """
-        response = auth_service.get_resource_by_id(
-            auth_type.upper(), resource_id, bool(auth.has_role([DESIGNER_GROUP]))
-        )
+        response = auth_service.get_resource_by_id(auth_type.upper(), resource_id)
         if response:
             return (
                 response,
@@ -184,6 +191,7 @@ class AuthorizationListById(Resource):
             200: "OK:- Successful request.",
             401: "UNAUTHORIZED:- Authorization header not provided or an invalid token passed.",
         },
+        model=authorization_list_model,
     )
     def get(resource_id: str):
         """Fetch Authorization list by resource id."""

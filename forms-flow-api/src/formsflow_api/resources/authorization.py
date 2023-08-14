@@ -163,3 +163,34 @@ class AuthorizationDetail(Resource):
                 HTTPStatus.OK,
             )
         return {"message": "Permission denied"}, HTTPStatus.UNAUTHORIZED
+
+
+@cors_preflight("GET, OPTIONS")
+@API.route("/resource/<string:resource_id>", methods=["GET", "OPTIONS"])
+@API.doc(
+    params={
+        "resource_id": "Authorization list corresponding to resource id.",
+    }
+)
+class AuthorizationListById(Resource):
+    """Resource to fetch Authorization List corresponding to resource id."""
+
+    @staticmethod
+    @API.doc("Authorization list by Id")
+    @auth.has_one_of_roles([DESIGNER_GROUP])
+    @profiletime
+    @API.doc(
+        responses={
+            200: "OK:- Successful request.",
+            401: "UNAUTHORIZED:- Authorization header not provided or an invalid token passed.",
+        },
+    )
+    def get(resource_id: str):
+        """Fetch Authorization list by resource id."""
+        response = auth_service.get_auth_list_by_id(resource_id)
+        if response:
+            return (
+                response,
+                HTTPStatus.OK,
+            )
+        return {"message": "Invalid resource id."}, HTTPStatus.BAD_GATEWAY

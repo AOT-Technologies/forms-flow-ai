@@ -118,3 +118,13 @@ class AuthorizationService:
         if auth:
             return self._as_dict(auth)
         return None
+
+    @user_context
+    def get_auth_list_by_id(self, resource_id, **kwargs):
+        """Get authorization list for given resource id."""
+        user: UserContext = kwargs["user"]
+        auth_details = Authorization.find_auth_list_by_id(resource_id, user.tenant_key)
+        auth_detail = {}
+        for auth in auth_details:
+            auth_detail[auth.auth_type.value] = self._as_dict(auth)
+        return auth_detail

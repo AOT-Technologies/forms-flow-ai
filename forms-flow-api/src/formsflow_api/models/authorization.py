@@ -125,3 +125,15 @@ class Authorization(AuditDateTimeMixin, AuditUserMixin, BaseModel, db.Model):
         """Find all resources authorized to specific user/role or Accessible by all users/roles."""
         query = cls._auth_query(auth_type, roles, tenant, user_name)
         return query.all()
+
+    @classmethod
+    def find_auth_list_by_id(  # pylint: disable=too-many-arguments
+        cls,
+        resource_id: str,
+        tenant: str,
+    ) -> List[Authorization]:
+        """Find authorizations by id."""
+        query = cls.query.filter(Authorization.resource_id == str(resource_id))
+        if tenant:
+            query = query.filter(Authorization.tenant == tenant)
+        return query.all()

@@ -58,8 +58,7 @@ import filterFactory from "react-bootstrap-table2-filter";
 import overlayFactory from "react-bootstrap-table2-overlay";
 import { SpinnerSVG } from "../../containers/SpinnerSVG";
 import { getFormattedForm, INACTIVE } from "./constants/formListConstants";
-import { addClients, addUsers, addReviewers } from "../../apiManager/services/authorizationService";
-import { fetchDesigners } from "../../apiManager/services/authorizationService.js";
+import { handleAuthorization, fetchFormAuthorizationDetials } from "../../apiManager/services/authorizationService.js";
 const List = React.memo((props) => {
   const { t } = useTranslation();
   const [showFormUploadModal, setShowFormUploadModal] = useState(false);
@@ -101,11 +100,7 @@ const List = React.memo((props) => {
   const sortOrder = useSelector((state) => state.bpmForms.sortOrder);
   const formCheckList = useSelector((state) => state.formCheckList.formList);
   const columns = isDesigner ? designerColums(t) : userColumns(t);
-
   const formAccess = useSelector((state) => state.user?.formAccess || []);
-  // const user =  useSelector(
-  //   (state) => state.user.userDetail
-  // );
   const submissionAccess = useSelector(
     (state) => state.user?.submissionAccess || []
   );
@@ -276,11 +271,12 @@ const List = React.memo((props) => {
       resourceDetails: {},
       roles: []
     };
-    addUsers(payload).catch((error) => console.error("error", error));
-    addClients(payload).catch((error) => console.error("error", error));
-    addReviewers(payload).catch((error) => console.error("error", error));
-
-
+    handleAuthorization(
+      { application: payload, designer: payload, form: payload },
+      parentFormId
+    ).catch((err) => {
+      console.log(err);
+    });
   };
 
   // upload file
@@ -319,8 +315,9 @@ const List = React.memo((props) => {
                   dispatch(
                     fetchFormByAlias(newFormData.path, async (err, formObj) => {
                       if (!err) {
-                        fetchDesigners(formObj._id).then((response) => {
-                          if (response?.status != 401) {
+                        fetchFormAuthorizationDetials(formObj.parentFormId || 
+                          formObj._id).
+                          then(() => {
                             dispatch(
                               // eslint-disable-next-line no-unused-vars
                               getFormProcesses(formObj._id, (err, mapperData) => {
@@ -427,7 +424,8 @@ const List = React.memo((props) => {
                                 }
                               })
                             );
-                          }
+                       
+                        
                         }).catch(() => {
                           dispatch(DesignerAccessDenied(true));
                           dispatch(formUploadFailureCount());

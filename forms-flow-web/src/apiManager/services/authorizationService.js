@@ -2,19 +2,25 @@
 //import { httpGETRequest, httpPOSTRequest } from "../httpRequestHandler";
 import { RequestService } from "@formsflow/service";
 import API from "../endpoints/index";
+import { replaceUrl } from "../../helper/helper";
 
 
-export const fetchDesigners = (id) => {
-  let url = API.DESIGNER_LIST;
-  if (id) {
-    url += `/${id}`;
-  }
+export const fetchFormAuthorizationDetials = (formId) => {
+  const url = replaceUrl(
+    API.HANDLE_AUTHORIZATION_FOR_DESIGNER,
+    "<resource_id>",
+    formId
+  );
   return RequestService.httpGETRequest(url);
 };
 
 
-export const addUsers = (data) => {
-  const url = API.DESIGNER_LIST;
+export const handleAuthorization = (data,formId) => {
+  const url = replaceUrl(
+    API.HANDLE_AUTHORIZATION_FOR_DESIGNER,
+    "<resource_id>",
+    formId
+  );
   return RequestService.httpPOSTRequest(url, data);
 };
 
@@ -34,10 +40,7 @@ export const getClientList = (id) => {
 };
 
 
-export const addClients = (data) => {
-  const url = API.CLIENT_LIST;
-  return RequestService.httpPOSTRequest(url, data);
-};
+ 
 
 
 export const getReviewerList = (id) => {
@@ -49,7 +52,4 @@ export const getReviewerList = (id) => {
 };
 
 
-export const addReviewers = (data) => {
-  const url = API.APPLICATION_LIST;
-  return RequestService.httpPOSTRequest(url, data);
-};
+ 

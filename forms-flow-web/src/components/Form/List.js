@@ -583,57 +583,11 @@ const List = React.memo((props) => {
                 </h3>
               </div>
             </div>
-            <div className="flex-item-right">
-              {isDesigner && (
-                <Link
-                  to={`${redirectUrl}formflow/create`}
-                  className="btn btn-primary btn-left btn-sm"
-                >
-                  <i className="fa fa-plus fa-lg" />{" "}
-                  <Translation>{(t) => t("Create Form")}</Translation>
-                </Link>
-              )}
-              {isDesigner && (
-                <>
-                  <Button
-                    className="btn btn-primary btn-sm form-btn pull-right btn-left"
-                    onClick={uploadClick}
-                    title={t("Upload json form only")}
-                  >
-                    <i className="fa fa-upload fa-lg" aria-hidden="true" />{" "}
-                    {t("Upload Form")}{" "}
-                  </Button>
-                  <input
-                    type="file"
-                    value=''
-                    className="d-none"
-                    multiple={false}
-                    accept=".json,application/json"
-                    onChange={(e) => {
-                      fileUploaded(e);
-                    }}
-                    ref={uploadFormNode}
-                  />
-                </>
-              )}
-              {isDesigner && (
-                <>
-                  <button
-                    className="btn btn-outline-primary pull-right btn-left "
-                    onClick={downloadForms}
-                    disabled={formCheckList.length === 0}
-                  >
-                    <i className="fa fa-download fa-lg" aria-hidden="true" />{" "}
-                    {t("Download Form")}{" "}
-                  </button>
-                </>
-              )}
-            </div>
           </div>
           <section className="custom-grid grid-forms">
             <Errors errors={errors} />
             <div className="  row mt-2 mx-2">
-              <div className="col" style={{ marginLeft: "5px", marginTop: "-18px" }}>
+              <div className="col" style={{ marginLeft: "15px", marginTop: "-18px" }}>
                 <div className="input-group">
                   <span
                     className="sort-span"
@@ -662,7 +616,7 @@ const List = React.memo((props) => {
                       }}
                     />
                   </span>
-                  <div className="form-outline ml-3">
+                  <div className="form-outline ml-2">
                     <input
                       type="search"
                       id="form1"
@@ -682,7 +636,7 @@ const List = React.memo((props) => {
                   {showClearButton && (
                     <button
                       type="button"
-                      className="btn btn-outline-primary ml-2"
+                      className="btn btn-outline-primary search-clear ml-2"
                       onClick={() => onClear()}
                     >
                       <i className="fa fa-times"></i>
@@ -722,6 +676,52 @@ const List = React.memo((props) => {
                     ""
                   )}
                 </div>
+              </div>
+              <div className="d-flex">
+                {isDesigner && (
+                  <Link
+                    to={`${redirectUrl}formflow/create`}
+                    className="btn btn-primary btn-left btn-sm"
+                  >
+                    <i className="fa fa-plus fa-lg" />{" "}
+                    <Translation>{(t) => t("Create Form")}</Translation>
+                  </Link>
+                )}
+                {isDesigner && (
+                  <>
+                    <Button
+                      className="btn btn-primary btn-sm form-btn pull-right btn-left"
+                      onClick={uploadClick}
+                      title={t("Upload json form only")}
+                    >
+                      <i className="fa fa-upload fa-lg" aria-hidden="true" />{" "}
+                      {t("Upload Form")}{" "}
+                    </Button>
+                    <input
+                      type="file"
+                      value=''
+                      className="d-none"
+                      multiple={false}
+                      accept=".json,application/json"
+                      onChange={(e) => {
+                        fileUploaded(e);
+                      }}
+                      ref={uploadFormNode}
+                    />
+                  </>
+                )}
+                {isDesigner && (
+                  <>
+                    <button
+                      className="btn btn-primary pull-right btn-left "
+                      onClick={downloadForms}
+                      disabled={formCheckList.length === 0}
+                    >
+                      <i className="fa fa-download fa-lg" aria-hidden="true" />{" "}
+                      { formCheckList.length !== 0 && t("Download Form")}{" "}
+                    </button>
+                  </>
+                )}
               </div>
             </div>
             <ToolkitProvider

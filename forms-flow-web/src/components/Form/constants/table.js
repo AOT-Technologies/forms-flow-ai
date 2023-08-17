@@ -46,6 +46,7 @@ export const userColumns = () => [
 const customDropUp = ({ options, currSizePerPage, onSizePerPageChange }) => {
   return (
     <DropdownButton
+    className="ml-2"
       drop="down"
       variant="secondary"
       title={currSizePerPage}
@@ -92,7 +93,7 @@ const getpageList = (count) => {
 };
 
 const customTotal = (from, to, size) => (
-  <span className="react-bootstrap-table-pagination-total" role="main">
+  <span className="react-bootstrap-table-pagination-total ml-2" role="main">
     <Translation>{(t) => t("Showing")}</Translation> {from}{" "}
     <Translation>{(t) => t("to")}</Translation> {to}{" "}
     <Translation>{(t) => t("of")}</Translation> {size} <Translation>{(t) => t("results")}</Translation>

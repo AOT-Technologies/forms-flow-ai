@@ -28,9 +28,9 @@ export const setFormDeleteStatus = (data) => (dispatch) => {
     payload: data,
   });
 };
-export const setFormDesignerPermissionRoles = (data) => (dispatch) => {
+export const setFormAuthorizationDetails = (data) => (dispatch) => {
   dispatch({
-    type: ACTION_CONSTANTS.FORM_DESIGNER_PERMISSION_ROLES,
+    type: ACTION_CONSTANTS.FORM_AUTHORIZATION_HANDLE,
     payload: data,
   });
 };

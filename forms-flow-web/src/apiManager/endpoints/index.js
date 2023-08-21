@@ -71,7 +71,9 @@ const API = {
   APPLICATION_EVENT_UPDATE: `${WEB_BASE_URL}/application/<application_id>/resubmit`,
   DESIGNER_LIST: `${WEB_BASE_URL}/authorizations/designer`,
   USER_ROLES:`${WEB_BASE_URL}/roles`,
-  CLIENT_LIST:`${WEB_BASE_URL}/authorizations/form`
+  CLIENT_LIST:`${WEB_BASE_URL}/authorizations/form`,
+  APPLICATION_LIST: `${WEB_BASE_URL}/authorizations/application`,
+  HANDLE_AUTHORIZATION_FOR_DESIGNER: `${WEB_BASE_URL}/authorizations/resource/<resource_id>`,
 };
 
 export default API;

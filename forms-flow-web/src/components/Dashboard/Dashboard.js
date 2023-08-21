@@ -74,7 +74,7 @@ const Dashboard = React.memo(() => {
   const dateRange = useSelector((state) => state.metrics.submissionDate);
   const [selectedLimitValue, setSelectedLimitValue] = useState(limit);
   let numberofSubmissionListFrom =
-    activePage === 1 ? 1 : activePage * (limit - limit + 1);
+      activePage === 1 ? 1 : ((activePage - 1) * limit) + 1;
   let numberofSubmissionListTo = activePage === 1 ? limit : limit * activePage;
   const [isAscending, setIsAscending] = useState(true);
   const [searchBy, setSearchBy] = useState("created");

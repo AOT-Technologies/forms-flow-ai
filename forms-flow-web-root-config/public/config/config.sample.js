@@ -92,4 +92,10 @@ window["_env_"] = {
     }
     REACT_APP_CUSTOM_RESOURCE_BUNDLE_URL: <CUSTOM_RESOURCE_BUNDLE_URL>
   */
+
+  /**
+  Add date and time format default will be DD-MM-YY and hh:mm:ss A
+    #DATE_FORMAT=DD-MM-YY
+    #TIME_FORMAT=hh:mm:ss A
+  */  
 };

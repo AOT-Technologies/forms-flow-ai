@@ -1,5 +1,5 @@
-import React, { useEffect , useState} from "react";
-import { connect, useDispatch, useSelector } from "react-redux";
+import React, { useEffect , useState, useMemo} from "react";
+import { connect, useDispatch, useSelector} from "react-redux";
 import {
   selectRoot,
   resetSubmissions,
@@ -51,7 +51,7 @@ const Edit = React.memo((props) => {
     form: { form, isActive: isFormActive },
     submission: { submission, isActive: isSubActive, url },
   } = props;
-  
+
   const [updatedSubmissionData, setUpdatedSubmissionData] = useState({});
 
   const applicationStatus = useSelector(
@@ -92,13 +92,13 @@ const Edit = React.memo((props) => {
     formId,
     onFormSubmit,
   ]);
-  let updatedSubmission;
-  if (CUSTOM_SUBMISSION_URL && CUSTOM_SUBMISSION_ENABLE) {
-    updatedSubmission = customSubmission;
-  } else {
-    updatedSubmission = submission;
-  }
-
+  let updatedSubmission = useMemo(()=>{
+    if (CUSTOM_SUBMISSION_URL && CUSTOM_SUBMISSION_ENABLE) {
+      return customSubmission;
+    } else {
+      return submission;
+    }
+  },[customSubmission,submission]);
   if (isFormActive || (isSubActive && !isFormSubmissionLoading)) {
     return <Loading />;
   }
@@ -137,7 +137,7 @@ const Edit = React.memo((props) => {
                 redirectUrl
               );
             }
-              
+
             }
             options={{
               ...options,
@@ -264,7 +264,7 @@ const mapDispatchToProps = (dispatch, ownProps) => {
           )
         );
       }
-     
+
     },
     onConfirm: () => {
       const ErrorDetails = { modalOpen: false, message: "" };

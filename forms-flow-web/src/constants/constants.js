@@ -203,3 +203,5 @@ export const ENABLE_APPLICATIONS_MODULE =
   window._env_?.REACT_APP_ENABLE_APPLICATIONS_MODULE === false
     ? false
     : true;
+
+

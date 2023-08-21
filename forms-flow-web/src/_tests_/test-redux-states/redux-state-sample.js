@@ -34,7 +34,6 @@ export const appState = {
     isHistoryListLoading: true,
   },
   insights: {
-    isDashboardLoading: true,
     dashboardsList: [],
     dashboardDetail: {},
     isInsightLoading: true,

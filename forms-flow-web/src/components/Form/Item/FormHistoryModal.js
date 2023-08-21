@@ -4,9 +4,9 @@ import { useDispatch, useSelector } from "react-redux";
 import {
   setRestoreFormId,
 } from "../../../actions/formActions";
-import { getLocalDateTime } from "../../../apiManager/services/formatterService";
 import Loading from "../../../containers/Loading";
 import { useTranslation } from "react-i18next";
+import { HelperServices} from "@formsflow/service";
 
 const FormHistoryModal = ({ historyModal, handleModalChange, gotoEdit }) => {
   const { t } = useTranslation();
@@ -104,7 +104,7 @@ const FormHistoryModal = ({ historyModal, handleModalChange, gotoEdit }) => {
                             ? t("Created On")
                             : t("Modified On")}
                         </span>
-                        <p className="mb-0">{getLocalDateTime(history.created)}</p>
+                        <p className="mb-0">{HelperServices?.getLocalDateAndTime(history.created)}</p>
                         {
                           formHistory.length > 1 && (
                             <span className="text-primary">{

@@ -1,5 +1,4 @@
 import React from "react";
-import "./loading.scss";
 import { useTranslation } from "react-i18next";
 
 const Loading = React.memo(() => {

@@ -1,6 +1,9 @@
 #Author: Kurian Benoy
 FROM python:3.9.16-slim-buster
 
+# set label for image
+LABEL Name="formsflow"
+
 WORKDIR /forms-flow-data-analysis-api/app
 COPY requirements.txt .
 ENV PATH=/venv/bin:$PATH
@@ -13,7 +16,7 @@ RUN : \
 ADD . /forms-flow-data-analysis-api/app
 RUN pip install .
 
-EXPOSE 5001
+EXPOSE 5000
 RUN python3 -c "from transformers import pipeline; pipeline('sentiment-analysis', model='$MODEL_ID', truncation=True)"
 
 RUN chmod u+x ./entrypoint

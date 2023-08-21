@@ -3,8 +3,7 @@ package org.camunda.bpm.extension.hooks.controllers;
 import com.nimbusds.jose.shaded.json.JSONArray;
 import com.nimbusds.oauth2.sdk.util.CollectionUtils;
 
-import org.apache.commons.lang.StringEscapeUtils;
-import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.camunda.bpm.extension.hooks.controllers.data.Task;
 import org.camunda.bpm.extension.hooks.controllers.data.Variable;
 import org.springframework.beans.factory.annotation.Autowired;

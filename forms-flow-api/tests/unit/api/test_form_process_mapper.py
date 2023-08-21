@@ -1,5 +1,6 @@
 """Test suite for FormProcessMapper API endpoint."""
 import pytest
+import json
 
 from tests.utilities.base_test import (
     get_application_create_payload,
@@ -119,7 +120,7 @@ def test_form_process_mapper_by_formid(app, client, session, jwt):
 
 def test_form_process_mapper_id_deletion(app, client, session, jwt):
     """Testing form process mapper delete endpoint."""
-    token = get_token(jwt)
+    token = get_token(jwt, roles=["/formsflow/formsflow-designer"])
     headers = {"Authorization": f"Bearer {token}", "content-type": "application/json"}
     response = client.post(
         "/form",
@@ -127,6 +128,15 @@ def test_form_process_mapper_id_deletion(app, client, session, jwt):
         json=get_form_request_payload(),
     )
     assert response.status_code == 201
+    auth_payload = {
+        "resourceId": "1234",
+        "resourceDetails": {},
+        "roles": ["/formsflow/formsflow-designer"],
+    }
+    response = client.post(
+        "/authorizations/form", headers=headers, data=json.dumps(auth_payload)
+    )
+    assert response.status_code == 200
 
     response = client.get("/form", headers=headers)
     assert response.status_code == 200
@@ -140,7 +150,7 @@ def test_form_process_mapper_id_deletion(app, client, session, jwt):
 
 def test_form_process_mapper_test_update(app, client, session, jwt):
     """Testing form process mapper update endpoint."""
-    token = get_token(jwt)
+    token = get_token(jwt, roles=["/formsflow/formsflow-designer"])
     headers = {"Authorization": f"Bearer {token}", "content-type": "application/json"}
     response = client.post(
         "/form",
@@ -148,6 +158,16 @@ def test_form_process_mapper_test_update(app, client, session, jwt):
         json=get_form_request_payload(),
     )
     assert response.status_code == 201
+
+    auth_payload = {
+        "resourceId": "1234",
+        "resourceDetails": {},
+        "roles": ["/formsflow/formsflow-designer"],
+    }
+    response = client.post(
+        "/authorizations/form", headers=headers, data=json.dumps(auth_payload)
+    )
+    assert response.status_code == 200
 
     response = client.get("/form", headers=headers)
     assert response.status_code == 200
@@ -160,7 +180,7 @@ def test_form_process_mapper_test_update(app, client, session, jwt):
 
 def test_anonymous_form_process_mapper_test_update(app, client, session, jwt):
     """Testing anonymous form process mapper update endpoint."""
-    token = get_token(jwt)
+    token = get_token(jwt, roles=["/formsflow/formsflow-designer"])
     headers = {"Authorization": f"Bearer {token}", "content-type": "application/json"}
     response = client.post(
         "/form",
@@ -168,6 +188,16 @@ def test_anonymous_form_process_mapper_test_update(app, client, session, jwt):
         json=get_form_request_payload(),
     )
     assert response.status_code == 201
+
+    auth_payload = {
+        "resourceId": "1234",
+        "resourceDetails": {},
+        "roles": ["/formsflow/formsflow-designer"],
+    }
+    response = client.post(
+        "/authorizations/form", headers=headers, data=json.dumps(auth_payload)
+    )
+    assert response.status_code == 200
 
     response = client.get("/form", headers=headers)
     assert response.status_code == 200
@@ -183,7 +213,7 @@ def test_get_application_count_based_on_form_process_mapper_id(
     app, client, session, jwt
 ):
     """Testing the count API for applications corresponding to mapper id."""
-    token = get_token(jwt)
+    token = get_token(jwt, roles=["/formsflow/formsflow-designer"])
     headers = {"Authorization": f"Bearer {token}", "content-type": "application/json"}
     response = client.post(
         "/form",
@@ -191,6 +221,16 @@ def test_get_application_count_based_on_form_process_mapper_id(
         json=get_form_request_payload(),
     )
     assert response.status_code == 201
+
+    auth_payload = {
+        "resourceId": "1234",
+        "resourceDetails": {},
+        "roles": ["/formsflow/formsflow-designer"],
+    }
+    response = client.post(
+        "/authorizations/form", headers=headers, data=json.dumps(auth_payload)
+    )
+    assert response.status_code == 200
 
     response = client.get("/form", headers=headers)
     assert response.status_code == 200

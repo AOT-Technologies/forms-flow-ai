@@ -6,6 +6,7 @@ from flask import current_app, request
 from flask_restx import Namespace, Resource, fields
 from formsflow_api_utils.utils import (
     ADMIN_GROUP,
+    DESIGNER_GROUP,
     auth,
     cors_preflight,
     profiletime,
@@ -36,7 +37,7 @@ class KeycloakRolesResource(Resource):
     """Resource to manage keycloak list and create roles/groups."""
 
     @staticmethod
-    @auth.has_one_of_roles([ADMIN_GROUP])
+    @auth.has_one_of_roles([ADMIN_GROUP, DESIGNER_GROUP])
     @profiletime
     @API.doc(
         responses={

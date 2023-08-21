@@ -64,7 +64,8 @@ Install the components in the listed order. *(NOTE: Keycloak, form.io and redash
  * [forms-flow-analytics](../forms-flow-analytics) Redash analytics components
  * [forms-flow-bpm](../forms-flow-bpm) Camunda Workflow deployment and integration
  * [forms-flow-api](../forms-flow-api) REST API of formsflow.ai
- * [forms-flow-web](../forms-flow-web) formsflow.ai integration web UI
+ * [forms-flow-web-root-config](../forms-flow-web-root-config) formsflow.ai integration web UI
+ * [forms-flow-web](../forms-flow-web) formsflow.ai custom web UI
  
 ### Openshift Based Installation
 
@@ -82,6 +83,7 @@ Install the components in the listed order. *(NOTE: Keycloak, form.io and redash
 1|`Keycloak`|Authentication|`http://localhost:8080`| `admin/changeme`
 2|`forms-flow-forms`|form.io form building. This must be started earlier for resource role id's creation|`http://localhost:3001`|`admin@example.com/changeme`
 3|`forms-flow-analytics`|Redash analytics server, This must be started earlier for redash key creation|`http://localhost:7000`|Use the credentials used for registration / [Default user credentials](../forms-flow-idm/keycloak/README.md#formsflow-ai-user-credentials)
-4|`forms-flow-web`|formsflow Landing web app|`http://localhost:3000`|[Default user credentials](../forms-flow-idm/keycloak/README.md#formsflow-ai-user-credentials)
+4|`forms-flow-web-root-config`|formsflow Landing web app|`http://localhost:3000`|[Default user credentials](../forms-flow-idm/keycloak/README.md#formsflow-ai-user-credentials)
 5|`forms-flow-api`|API services|`http://localhost:5000`|`Authorization tocken from keycloak role based user credentials`
 6|`forms-flow-bpm`|Camunda integration|`http://localhost:8000/camunda`| [Default user credentials](../forms-flow-idm/keycloak/README.md#formsflow-ai-user-credentials) 
+7|`forms-flow-web`|Custom web UI|`http://localhost:3004`|[Default user credentials](../forms-flow-idm/keycloak/README.md#formsflow-ai-user-credentials)

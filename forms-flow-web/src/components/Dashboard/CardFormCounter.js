@@ -4,7 +4,6 @@ import { Translation } from "react-i18next";
 import { useSelector } from "react-redux";
 
 const CardFormCounter = React.memo((props) => {
- 
   const { submitionData, getStatusDetails } = props;
   const selectedMetricsId = useSelector(
     (state) => state.metrics?.selectedMetricsId
@@ -22,19 +21,20 @@ const CardFormCounter = React.memo((props) => {
           }`}
         >
           <div className="name">
-            <i className="fa fa-wpforms p-1" />
-
-            <OverlayTrigger
-              placement="top"
-              delay={{ show: 0, hide: 400 }}
-              overlay={(propsData) => (
-                <Tooltip id="overlay-example" {...propsData}>
-                  {formName}
+            <div className="d-flex align-items-center">
+              <i className="fa fa-wpforms p-1" />
+              <OverlayTrigger
+                placement="top"
+                delay={{ show: 0, hide: 400 }}
+                overlay={(propsData) => (
+                  <Tooltip id="overlay-example" {...propsData}>
+                    {formName}
                 </Tooltip>
-              )}
-            >
-              <span>{formName}</span>
-            </OverlayTrigger>
+                )}
+              >
+                <span className="form-title">{formName}</span>
+              </OverlayTrigger>
+            </div>
             <div>
               {" "}
               <span className="small-title">

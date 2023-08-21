@@ -1,6 +1,7 @@
 /* eslint-disable max-len */
 export const formio_resourceBundles = {
   en: {
+    "Bad Request":"Bad Request",
     "Select form version":"Select form version",
     "Please remove the special characters...!":"Please remove the special characters...!",
     "No histories found":"No histories found",
@@ -39,7 +40,7 @@ export const formio_resourceBundles = {
     "Form process failed": "Form process failed",
     "Form deleted successfully": "Form deleted successfully",
     "Form deletion unsuccessful":"Form deletion unsuccessful",
-    "Form Workflow Association Saved.": "Form Workflow Association Saved.",
+    "Form-Workflow association saved.": "Form-Workflow association saved.",
     "Loading...": "Loading...",
     "Changing the form workflow will not affect the existing applications. It will only update in the newly created applications. Press Save Changes to continue or cancel the changes.":
       "Changing the form workflow will not affect the existing applications. It will only update in the newly created applications. Press Save Changes to continue or cancel the changes.",
@@ -76,7 +77,7 @@ export const formio_resourceBundles = {
     "Changing the form title will not affect the existing applications. It will only update in the newly created applications. Press Save Changes to continue or cancel the changes.":
       "Changing the form title will not affect the existing applications. It will only update in the newly created applications. Press Save Changes to continue or cancel the changes.",
     "Create Your Task Variable": "Create Your Task Variable",
-    "No Task variable selected": "No Task variable selected",
+    "No task variable selected": "No task variable selected",
     "Workflow Associate": "Workflow Associate",
     "Task variable": "Task variable",
     "Enter pathname": "Enter pathname",
@@ -110,9 +111,9 @@ export const formio_resourceBundles = {
     "Path": "Path",
     "Make this form public ?": "Make this form public ?",
     "Save & Preview": "Save & Preview",
-    "Form Workflow Association Failed.": "Form Workflow Association Failed.",
+    "Form-Workflow association failed.": "Form-Workflow association failed.",
     "Error in getting Workflow Process.": "Error in getting Workflow Process.",
-    "Form Saved": "Form Saved.",
+    "Form saved": "Form saved.",
     "Error while saving Form.": "Error while saving Form.",
     "Create Form": "Create Form",
     "Design Form": "Design Form",
@@ -206,7 +207,7 @@ export const formio_resourceBundles = {
     "View Submission": "View Submission",
     "Showing": "Showing",
     "to": "to",
-    "Results": "Results",
+    "results": "results",
     "Acknowledge": "Acknowledge",
     "View": "View",
     "Select a task in the list.": "Select a task in the list.",
@@ -297,6 +298,15 @@ export const formio_resourceBundles = {
     "URL copied":"URL copied",
     "Click Here to Copy":"Click Here to Copy",
     "Revert": "Revert",
+    "Overview": "Overview",
+    "Designer Permission": "Designer Permission",
+    "Accessible for all Designers": "Accessible for all Designers",
+    "Private(only you)": "Private(only you)",
+    "Specific Designer Group": "Specific Designer Group",
+    "Client Permission": "Client Permission",
+    "All Clients": "All Clients",
+    "Specific Client Group": "Specific Client Group",
+    "Give Designer Role Permissions": "Give Designer Role Permissions",
     "Create new filter": "Create new filter",
     "Filter Name": "Filter Name",
     "Enter your text here": "Enter your text here",
@@ -323,6 +333,7 @@ export const formio_resourceBundles = {
   },
 
   "zh-CN": {
+    "Bad Request":"错误的请求",
     "Select form version":"选择表格版本",
     "Please remove the special characters...!":"请删除特殊字符...！",
     "No histories found":"没有找到历史记录",
@@ -390,7 +401,7 @@ export const formio_resourceBundles = {
       "请从以下工作流程之一中选择。",
     "Select Key": "选择键",
     "Create Your Task Variable": "创建您的任务变量",
-    "No Task variable selected": "未选择任务变量",
+    "No task variable selected": "未选择任务变量",
     "Workflow Associate": "工作流助理",
     "Changing the form title will not affect the existing applications. It will only update in the newly created applications. Press Save Changes to continue or cancel the changes.":
       "更改表单标题不会影响现有应用程序。它只会在新创建的应用程序中更新。按保存更改以继续或取消更改。",
@@ -420,7 +431,7 @@ export const formio_resourceBundles = {
     "Edit": "编辑",
     "Do you want to associate form with a workflow ?":
       "您想将表单与工作流相关联吗？",
-    "Form Workflow Association Saved.": "表单工作流关联已保存。",
+    "Form-Workflow association saved.": "表单-工作流程关联已保存。",
     "Yes": "是的",
     "No": "否",
     "Form Name": "表格名称 ",
@@ -502,7 +513,7 @@ export const formio_resourceBundles = {
     "View Submission": "查看提交",
     "Showing": "显示",
     "to": "到",
-    "Results": "结果",
+    "results": "结果",
     "Acknowledge": "承认",
     "View": "看法",
     "Select a task in the list.": "在列表中选择一个任务。",
@@ -569,9 +580,9 @@ export const formio_resourceBundles = {
     "Associate this form with a workflow?": "将此表单与工作流相关联？",
     "Preview and Confirm": "预览并确认",
     "All steps completed - you're finished": "已完成所有步骤 - 您已完成",
-    "Form Workflow Association Failed.": "表单工作流关联失败。",
+    "Form-Workflow association failed.": "表单-工作流关联失败。",
     "Error in getting Workflow Process.": "获取工作流过程时出错。",
-    "Form Saved": "表格已保存。",
+    "Form saved": "表格已保存。",
     "Error while saving Form.": "保存表单时出错。",
     "Enter the form title": "输入表格标题",
     "Text Field": "文本域",
@@ -1231,32 +1242,19 @@ export const formio_resourceBundles = {
     "URL copied":"已复制网址",
     "Click Here to Copy":"点击这里复制",
     "Revert": "恢复",
-    "Create new filter": "创建新过滤器",
-    "Filter Name": "过滤器名称",
-    "Enter your text here": "在这里输入您的文字",
-    "Criteria": "标准",
-    "Add Value": "增值",
-    "Definition Key": "定义键",
-    "Asignee": "受让人",
-    "Include Assigned Task": "包括分配的任务",
-    "Variable": "多变的",
-    "Show undefined variables": "显示未定义的变量",
-    "Name of variable": "变量名称",
-    "Readable name": "可读名称",
-    "Permission": "允许",
-    "Accessible for all users": "所有用户均可访问",
-    "Private (Only You)": "私人（只有你）",
-    "Specific User/ Group": "特定用户/组",
-    "User": "用户",
-    "Group": "团体",
-    "Identifier": "标识符",
-    "Enter role ID": "输入角色 ID",
-    "Create Filter": "创建过滤器",
-    "Select a task in the List":"在列表中选择一个任务",
-    "Select a specific task from the provided list of options. Your selection will determine the task you will be working on or interacting with.":"从提供的选项列表中选择特定任务。 您的选择将决定您将处理或与之交互的任务。"
+    "Overview": "概述",
+    "Designer Permission": "设计师许可",
+    "Accessible for all Designers": "所有设计师均可使用",
+    "Private(only you)": "私人（只有你）",
+    "Specific Designer Group": "特定设计师组",
+    "Client Permission": "客户许可",
+    "All Clients": "所有客户",
+    "Specific Client Group": "特定客户群",
+    "Give Designer Role Permissions": "授予设计师角色权限"
   },
 
   bg: {
+    "Bad Request":"Неправилна заявка",
     "Select form version":"Изберете версия на формуляра",
     "Please remove the special characters...!":"Моля, премахнете специалните символи...!",
     "No histories found":"Няма намерени истории",
@@ -1296,8 +1294,8 @@ export const formio_resourceBundles = {
     "Form process failed": "Обработката на формуляра не бе успешно",
     "Form deletion unsuccessful":"Изтриването на формуляра е неуспешно",
     "Form deleted successfully": "Формулярът е изтрит успешно",
-    "Form Workflow Association Saved.":
-      "Асоциацията на работния поток на формуляра е запазена.",
+    "Form-Workflow association saved.":
+      "Асоциацията на формуляр-работен процес е запазена.",
     "Loading...": "Зареждане...",
     "Changing the form workflow will not affect the existing applications. It will only update in the newly created applications. Press Save Changes to continue or cancel the changes.":
       "Промяната на работния процес на формуляра няма да засегне съществуващите приложения. Той ще се актуализира само в новосъздадените приложения. Натиснете Запазване на промените, за да продължите или отмените промените.",
@@ -1332,7 +1330,7 @@ export const formio_resourceBundles = {
       "Моля, изберете един от следните работни потоци.",
     "Select Key": "Изберете Ключ",
     "Create Your Task Variable": "Създайте своята променлива на задачата",
-    "No Task variable selected": "Не е избрана променлива задача",
+    "No task variable selected": "Няма избрана променлива на задачата",
     "Workflow Associate": "Работен сътрудник",
     "Task variable": "Променлива на задачата",
     "Enter pathname": "Въведете име на път",
@@ -1441,7 +1439,7 @@ export const formio_resourceBundles = {
     "View Submission": "Вижте подаване",
     "Showing": "Показване",
     "to": "да се",
-    "Results": "Резултати",
+    "results": "pезултати",
     "Acknowledge": "Признайте",
     "View": "Преглед",
     "Select a task in the list.": "Изберете задача от списъка.",
@@ -1513,11 +1511,11 @@ export const formio_resourceBundles = {
     "Preview and Confirm": "Преглед и потвърждение",
     "All steps completed - you're finished":
       "Всички стъпки завършени - сте готови",
-    "Form Workflow Association Failed.":
-      "Неуспешно свързване на работния поток на формуляра.",
+    "Form-Workflow association failed.":
+      "Неуспешно свързване на формуляр-работен процес.",
     "Error in getting Workflow Process.":
       "Грешка при получаване на процеса на работния процес.",
-    "Form Saved": "Формулярът е запазен.",
+    "Form saved": "Формулярът е запазен.",
     "Error while saving Form.": "Грешка при запазване на формуляра.",
     "Enter the form title": "Въведете заглавието на формуляра",
     "Enter the form machine name": "Въведете името на машината за формуляра",
@@ -2223,6 +2221,15 @@ export const formio_resourceBundles = {
     "URL copied":"URL адресът е копиран",
     "Click Here to Copy":"Щракнете тук, за да копирате",
     "Revert": "Връщане",
+    "Overview": "Преглед",
+    "Designer Permission": "Разрешение на дизайнера",
+    "Accessible for all Designers": "Достъпно за всички дизайнери",
+    "Private(only you)": "Лично (само ти)",
+    "Specific Designer Group": "Специфична дизайнерска група",
+    "Client Permission": "Клиентско разрешение",
+    "All Clients": "Всички клиенти",
+    "Specific Client Group": "Конкретна група клиенти",
+    "Give Designer Role Permissions": "Дайте разрешения за роля на дизайнер",
     "Create new filter":"Създайте нов филтър",
     "Filter Name":"Име на филтъра",
     "Enter your text here":"Въведете своя текст тук",
@@ -2250,6 +2257,7 @@ export const formio_resourceBundles = {
   },
 
   pt: {
+    "Bad Request":"Pedido ruim",
     "Select form version":"Selecione a versão do formulário",
     "Please remove the special characters...!":"Remova os caracteres especiais...!",
     "No histories found":"Nenhum histórico encontrado",
@@ -2323,7 +2331,7 @@ export const formio_resourceBundles = {
       "Selecione um dos fluxos de trabalho a seguir.",
     "Select Key": "Selecionar chave",
     "Create Your Task Variable": "Crie sua variável de tarefa",
-    "No Task variable selected": "Nenhuma variável de tarefa selecionada",
+    "No task variable selected": "Nenhuma variável de tarefa selecionada",
     "Workflow Associate": "Associado de fluxo de trabalho",
     "Changing the form title will not affect the existing applications. It will only update in the newly created applications. Press Save Changes to continue or cancel the changes.":
       "Alterar o título do formulário não afetará os aplicativos existentes. Ele só será atualizado nos aplicativos recém-criados. Pressione Salvar alterações para continuar ou cancelar as alterações.",
@@ -2364,8 +2372,8 @@ export const formio_resourceBundles = {
     "Preview and Confirm": "Pré-visualizar e confirmar",
     "All steps completed - you're finished":
       "Todas as etapas concluídas - você terminou",
-    "Form Workflow Association Failed.":
-      "Falha na associação do fluxo de trabalho do formulário.",
+    "Form-Workflow association failed.":
+      "Falha na associação Formulário-Fluxo de trabalho.",
     "Application Id": "ID do aplicativo",
     "Application Name": "Nome da Aplicação",
     "Created By": "Criado por",
@@ -3043,7 +3051,7 @@ export const formio_resourceBundles = {
     "Submission cannot be done.": "O envio não pode ser feito.",
     "Error in getting Workflow Process.":
       "Erro ao obter o processo de fluxo de trabalho.",
-    "Form Saved": "Formulário salvo.",
+    "Form saved": "Formulário salvo.",
     "Error while saving Form.": "Erro ao salvar o formulário.",
     "Are you sure you wish to delete the form":
       "Tem certeza que deseja deletar o formulário",
@@ -3122,7 +3130,7 @@ export const formio_resourceBundles = {
     "Application History": "Histórico da Aplicação",
     "View Submission": "Ver o envio",
     "Showing": "Mostrando",
-    "Results": "Resultados",
+    "results": "resultados",
     "Acknowledge": "Reconhecer",
     "Select a task in the list.": "Selecione uma tarefa na lista.",
     "No Filters Found": "Nenhum filtro encontrado",
@@ -3137,8 +3145,8 @@ export const formio_resourceBundles = {
     "Follow-up": "Acompanhamento",
     "Please fix the errors before submitting again.":
       "Corrija os erros antes de enviar novamente.",
-    "Form Workflow Association Saved.":
-      "Associação de fluxo de trabalho de formulário salva.",
+    "Form-Workflow association saved.":
+      "Associação formulário-fluxo de trabalho salva.",
     "Application Status": "Status do aplicativo",
     "Submitted On": "Enviado em",
     "Modified On": "Modificado em",
@@ -3210,6 +3218,15 @@ export const formio_resourceBundles = {
     "URL copied":"URL copiado",
     "Click Here to Copy":"Clique aqui para copiar",
     "Revert": "Reverter",
+    "Overview": "Visão geral",
+    "Designer Permission": "Permissão do Designer",
+    "Accessible for all Designers": "Acessível para todos os Designers",
+    "Private(only you)": "Privado(só você)",
+    "Specific Designer Group": "Grupo específico de designers",
+    "Client Permission": "Permissão do cliente",
+    "All Clients": "Todos os clientes",
+    "Specific Client Group": "Grupo específico de clientes",
+    "Give Designer Role Permissions": "Conceder permissões de função de designer",
     "Create new filter": "Criar novo filtro",
     "Filter Name": "Nome do filtro",
     "Enter your text here": "Digite seu texto aqui",
@@ -3237,6 +3254,7 @@ export const formio_resourceBundles = {
   },
 
   fr: {
+    "Bad Request":"Bad Request",
     "Select form version":"Sélectionnez la version du formulaire",
     "Please remove the special characters...!":"Veuillez supprimer les caractères spéciaux... !",
     "No histories found":"Aucun historique trouvé",
@@ -3311,7 +3329,7 @@ export const formio_resourceBundles = {
       "Veuillez sélectionner l'un des workflows suivants.",
     "Select Key": "Sélectionnez la clé",
     "Create Your Task Variable": "Créez votre variable de tâche",
-    "No Task variable selected": "Aucune variable de tâche sélectionnée",
+    "No task variable selected": "Aucune variable de tâche sélectionnée",
     "Workflow Associate": "Associé au flux de travail",
     "Changing the form title will not affect the existing applications. It will only update in the newly created applications. Press Save Changes to continue or cancel the changes.":
       "La modification du titre du formulaire n'affectera pas les applications existantes. Il ne sera mis à jour que dans les applications nouvellement créées. Appuyez sur Enregistrer les modifications pour continuer ou annuler les modifications.",
@@ -3352,11 +3370,11 @@ export const formio_resourceBundles = {
     "Associate this form with a workflow?":
       "Associer ce formulaire à un workflow ?",
     "Preview and Confirm": "Aperçu et confirmation",
-    "Form Workflow Association Failed.":
-      "Échec de l'association de flux de travail de formulaire.",
+    "Form-Workflow association failed.":
+      "L'association formulaire-workflow a échoué.",
     "Error in getting Workflow Process.":
       "Erreur lors de l'obtention du processus de workflow.",
-    "Form Saved": "Formulaire enregistré.",
+    "Form saved": "Formulaire enregistré.",
     "Error while saving Form.":
       "Erreur lors de l'enregistrement du formulaire.",
     "Create Form": "Créer un formulaire",
@@ -4038,8 +4056,8 @@ export const formio_resourceBundles = {
     "Error while Submission.": "Erreur lors de la soumission.",
     "Message": "Veuillez corriger les erreurs avant de soumettre à nouveau.",
     "Submission cannot be done.": "La soumission ne peut pas être faite.",
-    "Form Workflow Association Saved.":
-      "Association de workflow de formulaire enregistrée.",
+    "Form-Workflow association saved.":
+      "Association formulaire-workflow enregistrée.",
     "No Process Diagram found": "Aucun diagramme de processus trouvé",
     "No forms found": "Aucun formulaire trouvé",
     "All steps completed - you're finished":
@@ -4121,7 +4139,7 @@ export const formio_resourceBundles = {
     "Showing": "Affichage",
     "to": "à",
     "of": "de",
-    "Results": "Résultats",
+    "results": "résultats",
     "Acknowledge": "Accuser réception",
     "Select a task in the list.": "Sélectionnez une tâche dans la liste.",
     "No Filters Found": "Aucun filtre trouvé",
@@ -4205,6 +4223,15 @@ export const formio_resourceBundles = {
     "URL copied":"URL copiée",
     "Click Here to Copy":"Cliquez ici pour copier",
     "Revert":"Revenir",
+    "Overview": "Aperçu",
+    "Designer Permission": "Autorisation du concepteur",
+    "Accessible for all Designers": "Accessible à tous les créateurs",
+    "Private(only you)": "Privé (seulement vous)",
+    "Specific Designer Group": "Groupe de concepteurs spécifiques",
+    "Client Permission": "Autorisation client",
+    "All Clients": "Tous les clients",
+    "Specific Client Group": "Groupe de clients spécifique",
+    "Give Designer Role Permissions": "Accorder des autorisations de rôle de concepteur",
     "Create new filter": "Créer un nouveau filtre",
     "Filter Name": "Nom du filtre",
     "Enter your text here": "Entrez votre texte ici",
@@ -4228,11 +4255,12 @@ export const formio_resourceBundles = {
     "Create Filter": "Créer un filtre",
     "Select a task in the List":"Sélectionnez une tâche dans la liste",
     "Select a specific task from the provided list of options. Your selection will determine the task you will be working on or interacting with.":"Sélectionnez une tâche spécifique dans la liste d'options fournie. Votre sélection déterminera la tâche sur laquelle vous travaillerez ou avec laquelle vous interagirez."
-  
+
 
   },
 
   de: {
+    "Bad Request":"Ungültige Anforderung",
     "Select form version":"Formularversion auswählen",
     "Please remove the special characters...!":"Bitte entfernen Sie die Sonderzeichen...!",
     "No histories found":"Keine Historien gefunden",
@@ -4272,7 +4300,7 @@ export const formio_resourceBundles = {
     "Form process failed": "Formularprozess fehlgeschlagen",
     "Form deleted successfully": "Formular erfolgreich gelöscht",
     "Form deletion unsuccessful":"Formularlöschung fehlgeschlagen",
-    "Form Workflow Association Saved.":
+    "Form-Workflow association saved.":
       "Formular-Workflow-Zuordnung gespeichert.",
     "Loading...": "Wird geladen...",
     "Changing the form workflow will not affect the existing applications. It will only update in the newly created applications. Press Save Changes to continue or cancel the changes.":
@@ -4307,7 +4335,7 @@ export const formio_resourceBundles = {
       "Bitte wählen Sie einen der folgenden Workflows aus.",
     "Select Key": "Wählen Sie Schlüssel",
     "Create Your Task Variable": "Erstellen Sie Ihre Aufgabenvariable",
-    "No Task variable selected": "Keine Task-Variable ausgewählt",
+    "No task variable selected": "Keine Aufgabenvariable ausgewählt",
     "Workflow Associate": "Workflow-Mitarbeiter",
     "Changing the form title will not affect the existing applications. It will only update in the newly created applications. Press Save Changes to continue or cancel the changes.":
       "Das Ändern des Formulartitels wirkt sich nicht auf die bestehenden Anwendungen aus. Es wird nur in den neu erstellten Anwendungen aktualisiert. Drücken Sie Änderungen speichern, um fortzufahren oder die Änderungen abzubrechen.",
@@ -4335,11 +4363,11 @@ export const formio_resourceBundles = {
     "Path": "Weg",
     "Make this form public ?": "Dieses Formular öffentlich machen?",
     "Save & Preview": "Speichern & Vorschau",
-    "Form Workflow Association Failed.":
-      "Formular-Workflow-Zuordnung fehlgeschlagen.",
+    "Form-Workflow association failed.":
+      "Die Formular-Workflow-Zuordnung ist fehlgeschlagen.",
     "Error in getting Workflow Process.":
       "Fehler beim Abrufen des Workflow-Prozesses.",
-    "Form Saved": "Formular gespeichert.",
+    "Form saved": "Formular gespeichert.",
     "Error while saving Form.": "Fehler beim Speichern des Formulars.",
     "Create Form": "Formular erstellen",
     "Design Form": "Entwurfsformular",
@@ -4436,7 +4464,7 @@ export const formio_resourceBundles = {
     "View Submission": "Einreichung anzeigen",
     "Showing": "Anzeigen",
     "to": "zu",
-    "Results": "Ergebnisse",
+    "results": "Ergebnisse",
     "Acknowledge": "Anerkennen",
     "View": "Sicht",
     "Select a task in the list.": "Wählen Sie eine Aufgabe in der Liste aus.",
@@ -4465,7 +4493,6 @@ export const formio_resourceBundles = {
     "Last Modified": "Zuletzt geändert",
     "No dashboard found": "Kein Dashboard gefunden",
     "of": "von",
-    "results": "Ergebnisse",
     "Select Dashboard": "Wählen Sie Dashboard aus",
     "Total Submissions": "Einreichungen insgesamt",
     "Operations": "Operationen",
@@ -5204,6 +5231,15 @@ export const formio_resourceBundles = {
     "URL copied":"URL kopiert",
     "Click Here to Copy":"Klicken Sie hier, um zu kopieren",
     "Revert":"Zurückkehren",
+    "Overview": "Überblick",
+    "Designer Permission": "Designer-Genehmigung",
+    "Accessible for all Designers": "Für alle Designer zugänglich",
+    "Private(only you)": "Privat (nur Sie)",
+    "Specific Designer Group": "Spezifische Designergruppe",
+    "Client Permission": "Kundenerlaubnis",
+    "All Clients": "Alle Kunden",
+    "Specific Client Group": "Spezifische Kundengruppe",
+    "Give Designer Role Permissions": "Erteilen Sie Designer-Rollenberechtigungen",
     "Create new filter":"Neuen Filter erstellen",
     "Filter Name":"Filtername",
     "Enter your text here":"Gib deinen Text hier ein",

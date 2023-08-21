@@ -7,7 +7,7 @@ import { Translation } from "react-i18next";
 const DraftDetails = React.memo((props) => {
   const draft = props.draft;
   return (
-    <Table responsive>
+    <Table>
       <tbody>
         <tr>
           <td className="border-0">

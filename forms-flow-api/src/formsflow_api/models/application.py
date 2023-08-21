@@ -9,6 +9,7 @@ from formsflow_api_utils.utils import (
     validate_sort_order_and_order_by,
 )
 from formsflow_api_utils.utils.enums import MetricsState
+from formsflow_api_utils.utils.user_context import UserContext, user_context
 from sqlalchemy import and_, func, or_, text
 
 from .audit_mixin import AuditDateTimeMixin, AuditUserMixin
@@ -32,6 +33,8 @@ class Application(
     # Submission id will be null for drafts
     submission_id = db.Column(db.String(100), nullable=True)
     latest_form_id = db.Column(db.String(100), nullable=False)
+    is_resubmit = db.Column(db.Boolean, nullable=True, default=False)
+    event_name = db.Column(db.String(100), nullable=True)
 
     draft = db.relationship(
         "Draft", backref=db.backref("Application", cascade="save-update, merge, delete")
@@ -63,6 +66,8 @@ class Application(
                 "form_process_mapper_id",
                 "process_instance_id",
                 "modified_by",
+                "is_resubmit",
+                "event_name",
             ],
             mapper_info,
         )
@@ -92,6 +97,8 @@ class Application(
                 cls.created,
                 cls.modified,
                 cls.modified_by,
+                cls.is_resubmit,
+                cls.event_name,
                 FormProcessMapper.process_key,
                 FormProcessMapper.process_name,
                 FormProcessMapper.process_tenant,
@@ -175,6 +182,8 @@ class Application(
             cls.created,
             cls.modified,
             cls.modified_by,
+            cls.is_resubmit,
+            cls.event_name,
             FormProcessMapper.form_name.label("application_name"),
             FormProcessMapper.process_key.label("process_key"),
             FormProcessMapper.process_name.label("process_name"),
@@ -227,6 +236,8 @@ class Application(
                 cls.created,
                 cls.modified,
                 cls.modified_by,
+                cls.is_resubmit,
+                cls.event_name,
                 FormProcessMapper.form_name.label("application_name"),
                 FormProcessMapper.process_key.label("process_key"),
                 FormProcessMapper.process_name.label("process_name"),
@@ -334,6 +345,8 @@ class Application(
                 cls.created,
                 cls.modified,
                 cls.modified_by,
+                cls.is_resubmit,
+                cls.event_name,
                 FormProcessMapper.form_name.label("application_name"),
                 FormProcessMapper.process_key.label("process_key"),
                 FormProcessMapper.process_name.label("process_name"),
@@ -419,7 +432,10 @@ class Application(
         """Fetch all application."""
         query = cls.query.join(
             FormProcessMapper, cls.form_process_mapper_id == FormProcessMapper.id
-        ).filter(cls.latest_form_id == form_id, cls.application_status != DRAFT_APPLICATION_STATUS)
+        ).filter(
+            cls.latest_form_id == form_id,
+            cls.application_status != DRAFT_APPLICATION_STATUS,
+        )
         return FormProcessMapper.tenant_authorization(query=query).count()
 
     @classmethod
@@ -435,6 +451,7 @@ class Application(
         return FormProcessMapper.tenant_authorization(query=query).count()
 
     @classmethod
+    @user_context
     def find_aggregated_applications(
         # pylint: disable-msg=too-many-arguments, too-many-locals
         cls,
@@ -446,8 +463,11 @@ class Application(
         sort_by: str,
         sort_order: str,
         order_by: str,
+        **kwargs,
     ):
         """Fetch aggregated applications."""
+        user: UserContext = kwargs["user"]
+        tenant_key: str = user.tenant_key
 
         def set_sort(sort_by, sort_order):
             if sort_order == "asc":
@@ -463,38 +483,44 @@ class Application(
             db.session.query(
                 FormProcessMapper.form_id.label("form_id"),
                 FormProcessMapper.parent_form_id.label("parent_form_id"),
-                db.func.max(FormProcessMapper.id).label("id")  # pylint: disable=not-callable
-            ).group_by(
+                FormProcessMapper.tenant,
+                db.func.max(FormProcessMapper.id).label(
+                    "id"
+                ),  # pylint: disable=not-callable
+            )
+            .group_by(
                 FormProcessMapper.form_id,
                 FormProcessMapper.parent_form_id,
-            ).subquery("max_form_id")
+                FormProcessMapper.tenant,
+            )
+            .subquery("max_form_id")
         )
 
         subquery_application_count = (
             db.session.query(
                 max_form_id.c.parent_form_id,
-                db.func.max(max_form_id.c.id).label(
-                    "id"
-                ),
-                db.func.count(Application.id).label(
-                    "application_count"
-                ),
+                max_form_id.c.tenant,
+                db.func.max(max_form_id.c.id).label("id"),
+                db.func.count(Application.id).label("application_count"),
             )
             .join(max_form_id, max_form_id.c.form_id == Application.latest_form_id)
             .filter(getattr(Application, order).between(from_date, to_date))
-            .group_by(max_form_id.c.parent_form_id)
+            .group_by(max_form_id.c.parent_form_id, max_form_id.c.tenant)
             .subquery("subquery_application_count")
         )
         # taking latest form name
         latest_form_name = (
             db.session.query(
                 subquery_application_count.c.parent_form_id,
+                FormProcessMapper.tenant.label("tenant"),
                 FormProcessMapper.form_name.label("form_name"),
                 subquery_application_count.c.application_count,
-            ).join(
+            )
+            .join(
                 subquery_application_count,
-                subquery_application_count.c.id == FormProcessMapper.id
-            ).subquery("latest_form_name")
+                subquery_application_count.c.id == FormProcessMapper.id,
+            )
+            .subquery("latest_form_name")
         )
 
         form_versions = (
@@ -519,6 +545,7 @@ class Application(
                 latest_form_name.c.parent_form_id,
                 latest_form_name.c.application_count.label("submission_count"),
                 latest_form_name.c.form_name,
+                latest_form_name.c.tenant,
                 func.array_agg(  # pylint: disable=not-callable
                     func.json_build_object(
                         "formId",
@@ -538,11 +565,13 @@ class Application(
                 latest_form_name.c.parent_form_id,
                 latest_form_name.c.application_count,
                 latest_form_name.c.form_name,
+                latest_form_name.c.tenant,
                 form_versions.c.parent_form_id,
             )
+            .filter(latest_form_name.c.tenant == tenant_key)
         )
 
-        result_proxy = FormProcessMapper.tenant_authorization(result_proxy)
+
         if form_name:
             result_proxy = result_proxy.filter(
                 latest_form_name.c.form_name.ilike(f"%{form_name}%")
@@ -559,14 +588,17 @@ class Application(
         return pagination.items, total_count
 
     @classmethod
+    @user_context
     def find_aggregated_application_status_by_parent_form_id(
-        cls, form_id: str, from_date: str, to_date: str, order_by: str
+        cls, form_id: str, from_date: str, to_date: str, order_by: str, **kwargs
     ):
         """Fetch application status corresponding to parent form id."""
+        user: UserContext = kwargs["user"]
+        tenant_key: str = user.tenant_key
         sub_query_taking_form_ids = (
-            db.session.query(FormProcessMapper.form_id)
+            db.session.query(FormProcessMapper.form_id, FormProcessMapper.tenant)
             .filter(FormProcessMapper.parent_form_id == form_id)
-            .group_by(FormProcessMapper.form_id)
+            .group_by(FormProcessMapper.form_id, FormProcessMapper.tenant)
             .subquery()
         )
 
@@ -589,16 +621,32 @@ class Application(
                     getattr(Application, order) <= to_date,
                 )
             )
+            .filter(sub_query_taking_form_ids.c.tenant == tenant_key)
             .group_by(Application.application_status)
         )
-        result_proxy = FormProcessMapper.tenant_authorization(result_proxy)
         return result_proxy
 
     @classmethod
+    @user_context
     def find_aggregated_application_status_by_form_id(
-        cls, form_id: int, from_date: str, to_date: str, order_by: str
+        cls, form_id: int, from_date: str, to_date: str, order_by: str, **kwargs
     ):
         """Get application status by form id."""
+        user: UserContext = kwargs["user"]
+        tenant_key: str = user.tenant_key
+        if tenant_key is not None:
+            # Incase of multi-tenant environment verify the form_id is authorized for a specific tenant.
+            tenant_query = (
+                db.session.query(FormProcessMapper.tenant)
+                .filter(FormProcessMapper.form_id == form_id)
+                .distinct()
+            )
+            tenant_match = (
+                tenant_query.filter(FormProcessMapper.tenant == tenant_key).count() > 0
+            )
+            if not tenant_match:
+                raise PermissionError(f"Access to resource-{form_id} is denied.")
+
         order = "created"
         if order_by == MetricsState.MODIFIED.value:
             order = "modified"
@@ -617,7 +665,7 @@ class Application(
             )
             .group_by(Application.application_status)
         )
-        result_proxy = FormProcessMapper.tenant_authorization(result_proxy)
+
         return result_proxy
 
     @classmethod
@@ -651,7 +699,8 @@ class Application(
                 FormProcessMapper.process_name,
                 FormProcessMapper.process_tenant,
                 FormProcessMapper.task_variable,
-                FormProcessMapper.id.label("mapper_id"),
+                FormProcessMapper.form_type,
+                FormProcessMapper.id,
             )
             .join(cls, FormProcessMapper.id == cls.form_process_mapper_id)
             .filter(Application.id == application_id)

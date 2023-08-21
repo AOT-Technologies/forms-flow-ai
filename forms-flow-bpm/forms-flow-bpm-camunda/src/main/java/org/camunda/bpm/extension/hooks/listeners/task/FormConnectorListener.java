@@ -49,7 +49,7 @@ public class FormConnectorListener extends BaseListener implements TaskListener 
         try {
             String submissionId = createSubmission(getFormUrl(delegateTask),getNewFormSubmissionUrl(delegateTask), delegateTask);
             if(StringUtils.isNotBlank(submissionId)) {
-                delegateTask.getExecution().setVariable(FORM_URL, getModifiedFormUrl(delegateTask,submissionId));
+                delegateTask.getExecution().setVariableLocal(FORM_URL, getModifiedFormUrl(delegateTask,submissionId));
             }
         } catch (IOException e) {
            handleException(delegateTask.getExecution(), ExceptionSource.TASK, e);

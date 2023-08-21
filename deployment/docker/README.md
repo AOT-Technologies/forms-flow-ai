@@ -142,28 +142,27 @@ Variable name | Meaning | Possible values | Default value |
 --------------------------------------
 
 Variable name | Meaning | Possible values | Default value |
---- | --- | --- | ---
+--- | --- |-----------| ---
 `NODE_ENV`| Define project level configuration | `development, test, production` | `development`
-`APPLICATION_NAME`| Application_Name | eg: formsflow.ai| `formsflow.ai`
-`WEB_BASE_CUSTOM_URL`| Custom_URL | eg: https://formsflow.ai| `custom url`
-`FORMSFLOW_API_CORS_ORIGINS`| formsflow.ai Rest API allowed origins, for allowing multiple origins you can separate host address using a comma seperated string or use * to allow all origins |eg:`host1, host2, host3`| `*`
-`BPM_API_URL` :triangular_flag_on_post: |Camunda Rest API URL||`http://{your-ip-address}:8000/camunda`
-`FORMSFLOW_API_URL`:triangular_flag_on_post:|formsflow.ai Rest API URL||`http://{your-ip-address}:5000`
-`USER_ACCESS_PERMISSIONS`| JSON formatted permissions to enable / disable few access on user login.|| `{"accessAllowApplications":false,"accessAllowSubmissions":false}`
-`MULTI_TENANCY_ENABLED`|Multi tenancy enabled flag for the environment|true/false | false
-` DRAFT_ENABLED`|Enable draft feature|true/false
-`DRAFT_POLLING_RATE`|Control draft timing||15000
-`EXPORT_PDF_ENABLED`|Manage export to pdf feature|true/false
+`APPLICATION_NAME`| Application_Name | eg: formsflow.ai | `formsflow.ai`
+`WEB_BASE_CUSTOM_URL`| Custom_URL | eg: https://formsflow.ai | `custom url`
+`FORMSFLOW_API_CORS_ORIGINS`| formsflow.ai Rest API allowed origins, for allowing multiple origins you can separate host address using a comma seperated string or use * to allow all origins | eg:`host1, host2, host3` | `*`
+`BPM_API_URL` :triangular_flag_on_post: |Camunda Rest API URL|           |`http://{your-ip-address}:8000/camunda`
+`FORMSFLOW_API_URL`:triangular_flag_on_post:|formsflow.ai Rest API URL|           |`http://{your-ip-address}:5000`
+`ENABLE_APPLICATION_ACCESS_PERMISSION_CHECK`| To Enable Role level permission check for enabling Application| true/false| false
+`MULTI_TENANCY_ENABLED`|Multi tenancy enabled flag for the environment| true/false | false
+` DRAFT_ENABLED`|Enable draft feature| true/false 
+`DRAFT_POLLING_RATE`|Control draft timing|           |15000
+`EXPORT_PDF_ENABLED`|Manage export to pdf feature| true/false 
 `PUBLIC_WORKFLOW_ENABLED`|Enable creating workflow for all tenants
-`DOCUMENT_SERVICE_URL`|Formsflow document service api url||`http://{your-ip-address}:{port}`
-`OPENTELEMETRY_SERVICE`|Formsflow opentelemetry service||`false`
-`MT_ADMIN_BASE_URL`|Multitenancy admin url||`http://{your-ip-address}:5010/api`
-`MT_ADMIN_BASE_URL_VERSION=v1`|Version of multitenancy admin|v1
+`DOCUMENT_SERVICE_URL`|Formsflow document service api url|           |`http://{your-ip-address}:5006`
+`MT_ADMIN_BASE_URL`|Multitenancy admin url|           |`http://{your-ip-address}:5010/api`
+`MT_ADMIN_BASE_URL_VERSION=v1`|Version of multitenancy admin| v1        
 
 
 
 
-* NOTE - While configuring USER_ACCESS_PERMISSIONS the accessAllowApplications will hide / show application tab, the same way accessAllowSubmissions does for viewSubmission button. To enable this feature you need to add access-allow-applications, access-allow-submissions with the respective user group in keycloak.
+* NOTE - While configuring ENABLE_APPLICATION_ACCESS_PERMISSION_CHECK will hide / show application tab.To enable this feature you need to add access-allow-applications with the respective user group in keycloak.
 
 ##### CAMUNDA_JDBC : Dedicated camunda database.
 --------------------------------------

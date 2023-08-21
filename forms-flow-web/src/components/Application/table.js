@@ -78,7 +78,7 @@ function timeFormatter(cell) {
 const nameFormatter = (cell) => {
   const name = startCase(cell);
   return (
-    <label className="text-truncate w-100" title={name}>
+    <label className="text-truncate w-100" style={{ maxWidth: "550px" }} title={name}>
       {startCase(name)}
     </label>
   );
@@ -219,7 +219,7 @@ const customTotal = (from, to, size) => (
     <Translation>{(t) => t("Showing")}</Translation> {from}{" "}
     <Translation>{(t) => t("to")}</Translation> {to}{" "}
     <Translation>{(t) => t("of")}</Translation> {size}{" "}
-    <Translation>{(t) => t("Results")}</Translation>
+    <Translation>{(t) => t("results")}</Translation>
   </span>
 );
 export const customDropUp = ({

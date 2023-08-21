@@ -1,7 +1,6 @@
 import ACTION_CONSTANTS from "../actions/actionConstants";
 import {
   setShowApplications,
-  setShowViewSubmissions,
   setUserRolesToObject,
 } from "../helper/user";
 import { LANGUAGE } from "../constants/constants";
@@ -29,7 +28,6 @@ const initialState = {
   isAuthenticated: false,
   currentPage: "",
   showApplications: false,
-  showViewSubmissions: false,
   lang: localStorage.getItem("lang") ? localStorage.getItem("lang") : LANGUAGE,
   selectLanguages: getLanguages ? JSON.parse(getLanguages) : [],
 };
@@ -47,10 +45,7 @@ const user = (state = initialState, action) => {
       return {
         ...state,
         userDetail: action.payload,
-        showApplications: setShowApplications(action.payload?.groups || []),
-        showViewSubmissions: setShowViewSubmissions(
-          action.payload?.groups || []
-        ),
+        showApplications: setShowApplications(action.payload?.groups || [])
       };
     case ACTION_CONSTANTS.SET_USER_AUTHENTICATION:
       return { ...state, isAuthenticated: action.payload };

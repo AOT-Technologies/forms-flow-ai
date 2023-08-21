@@ -10,11 +10,11 @@ python-dotenv
 psycopg2-binary
 marshmallow-sqlalchemy
 requests
-Werkzeug==2.1.2 # Watch out updates on https://github.com/python-restx/flask-restx/issues/460
+Werkzeug
 sqlalchemy_utils
 markupsafe
 PyJWT
-selenium==3.141.0
-selenium-wire==3.0.0
+selenium
+selenium-wire
 nested-lookup
 git+https://github.com/AOT-Technologies/forms-flow-ai.git@master#egg=formsflow_api_utils&subdirectory=forms-flow-api-utils

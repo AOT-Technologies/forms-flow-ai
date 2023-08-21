@@ -110,10 +110,10 @@ const Preview = React.memo(
           : "All Designers"
       );
       setClientSelectedOption(
-        FORM.roles?.length ? "Specific Users" : "All Users"
+        FORM?.roles?.length ? "Specific Users" : "All Users"
       );
       setReviewerSelectedOption(
-        APPLICATION.roles?.length ? "Specific Reviewers" : "All Reviewers"
+        APPLICATION?.roles?.length ? "Specific Reviewers" : "All Reviewers"
       );
 
       setDesingerOptions(

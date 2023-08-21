@@ -37,9 +37,9 @@ import {
   FORM_CREATE_ROUTE,
   STEPPER_ROUTES,
 } from "./constants/stepperConstants";
-import { resetFormData, setFormAuthVerifyLoading, setFormDesignerPermissionRoles } from "../../actions/formActions.js";
+import { resetFormData, setFormAuthVerifyLoading, setFormAuthorizationDetails } from "../../actions/formActions.js";
 import Loading from "../../containers/Loading.js";
-import { fetchDesigners } from "../../apiManager/services/authorizationService.js";
+import { fetchFormAuthorizationDetials } from "../../apiManager/services/authorizationService.js";
 import { setApiCallError } from "../../actions/ErroHandling.js";
 import NotFound from "../NotFound/index.js";
 class StepperPage extends PureComponent {
@@ -476,9 +476,9 @@ const mapDispatchToProps = (dispatch) => {
       dispatch(resetFormData("form", id));
       dispatch(setFormAuthVerifyLoading(true));
       dispatch(getForm("form",id,(err,res)=>{
-        fetchDesigners(
+        fetchFormAuthorizationDetials(
           res?.parentFormId || res?._id).then(response=>{ 
-            dispatch(setFormDesignerPermissionRoles(response.data));
+            dispatch(setFormAuthorizationDetails(response.data));
           }).catch((err)=>{
             const {response} = err;
             dispatch(setApiCallError({message:response?.data?.message || 

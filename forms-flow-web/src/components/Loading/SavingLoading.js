@@ -1,5 +1,4 @@
 import React from "react";
-import "./loading.scss";
 
 const SavingLoading = ({ saved, text }) => {
   const [animate, setAnimate] = React.useState(false);

@@ -14,7 +14,6 @@ import {
   createNewProcess,
   extractDataFromDiagram,
 } from "./helpers/helper";
-import "./Modeler.scss";
 
 import {
   fetchAllBpmProcesses,

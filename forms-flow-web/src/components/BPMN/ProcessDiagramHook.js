@@ -12,7 +12,6 @@ import {
   setProcessDiagramLoading,
   setProcessDiagramXML,
 } from "../../actions/processActions";
-import "./bpm.scss";
 import usePrevious from "./UsePrevious";
 import Nodata from "../Nodata";
 import { useTranslation } from "react-i18next";

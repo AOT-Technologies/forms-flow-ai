@@ -2,7 +2,6 @@ import React, { useState } from "react";
 import AsyncSelect from "react-select/async";
 import { useDispatch } from "react-redux";
 import { Row, Col } from "react-bootstrap";
-import "./TaskDetail.scss";
 import { fetchUserListWithSearch } from "../../../apiManager/services/bpmTaskServices";
 import {
   SearchByEmail,

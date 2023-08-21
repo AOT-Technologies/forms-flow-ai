@@ -2,7 +2,6 @@ import React from "react";
 import { Route, Switch, Redirect } from "react-router-dom";
 import { BASE_ROUTE } from "../../constants/constants";
 import DraftList from "./List";
-import "../Application/Application.scss";
 import ViewDraft from "./ViewDraft";
 import EditDraft from "./EditDraft";
 

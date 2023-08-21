@@ -1,5 +1,4 @@
 import React from "react";
-import "./loadError.scss";
 import { Translation } from "react-i18next";
 
 const LoadError = React.memo(

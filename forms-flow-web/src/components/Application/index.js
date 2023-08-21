@@ -3,7 +3,6 @@ import { Route, Switch, Redirect } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import ApplicationList from "./List";
 import ViewApplication from "./ViewApplication";
-import "./Application.scss";
 import { setCurrentPage } from "../../actions/bpmActions";
 import { BASE_ROUTE } from "../../constants/constants";
 

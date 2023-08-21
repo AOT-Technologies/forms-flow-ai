@@ -13,7 +13,6 @@ import {
   MULTITENANCY_ENABLED,
   STAFF_DESIGNER,
 } from "../../constants/constants";
-import "../Form/List.scss";
 import {
   setFormFailureErrorData,
   setBPMFormLimit,
@@ -718,7 +717,7 @@ const List = React.memo((props) => {
                       disabled={formCheckList.length === 0}
                     >
                       <i className="fa fa-download fa-lg" aria-hidden="true" />{" "}
-                      { formCheckList.length !== 0 && t("Download Form")}{" "}
+                      {formCheckList.length !== 0 && t("Download Form")}{" "}
                     </button>
                   </>
                 )}

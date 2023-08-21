@@ -1,6 +1,5 @@
 import React, { useCallback, useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import "../Editor.scss";
 import Button from "react-bootstrap/Button";
 import { toast } from "react-toastify";
 import { useTranslation } from "react-i18next";

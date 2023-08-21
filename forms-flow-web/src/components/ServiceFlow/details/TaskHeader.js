@@ -9,7 +9,6 @@ import { useDispatch, useSelector } from "react-redux";
 import DatePicker from "react-datepicker";
 import moment from "moment";
 import "react-datepicker/dist/react-datepicker.css";
-import "./../ServiceFlow.scss";
 import AddGroupModal from "./AddGroupModal";
 import {
   claimBPMTask,

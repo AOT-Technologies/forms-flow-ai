@@ -31,7 +31,6 @@ import { push } from "connected-react-router";
 import WorkFlow from "./Steps/WorkFlow";
 import PreviewStepper from "./Steps/PreviewStepper";
 
-import "./stepper.scss";
 import { Link } from "react-router-dom";
 import {
   FORM_CREATE_ROUTE,

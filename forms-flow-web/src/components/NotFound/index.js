@@ -1,5 +1,4 @@
 import React from "react";
-import "./pagenotfound.scss";
 
 const NotFound = React.memo(({ errorMessage, errorCode }) => {
   return (

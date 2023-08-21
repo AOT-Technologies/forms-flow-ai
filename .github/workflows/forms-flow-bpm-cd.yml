@@ -3,7 +3,7 @@ name: Push Forms flow BPM to registry
 on:
   workflow_dispatch:
   push:
-    branches: [ master, develop, release/* ]
+    branches: [ master, develop, ZAP-changes, release/* ]
     paths:
       - "forms-flow-bpm/**"
       - "VERSION"
@@ -122,3 +122,8 @@ jobs:
         run: |
           kubectl -n app2 patch deployment forms-flow-bpm -p '{"spec":{"template":{"spec":{"containers":[{"name":"forms-flow-bpm","image":"docker.io/formsflow/forms-flow-bpm:${{ env.VERSION }}"}]}}}}'
           kubectl -n app2 rollout restart deployment forms-flow-bpm
+
+      - name: ZAP Scan
+        uses: zaproxy/action-full-scan@v0.6.0
+        with:
+          target: 'https://bpm2.aot-technologies.com'

@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project xmlns="http://maven.apache.org/POM/4.0.0"
-    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-    xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
     <parent>
@@ -67,6 +67,12 @@
         <dependency>
             <groupId>formsflow.ai</groupId>
             <artifactId>forms-flow-bpm-utils</artifactId>
+            <version>5.2.0</version>
+        </dependency>
+
+        <dependency>
+            <groupId>formsflow.ai</groupId>
+            <artifactId>forms-flow-bpm-integration</artifactId>
             <version>5.2.0</version>
         </dependency>
 
@@ -358,9 +364,11 @@
                         <exclude>org/camunda/bpm/extension/commons/io/socket/message/*.class</exclude>
                         <exclude>org/camunda/bpm/extension/commons/io/socket/*.class</exclude>
                         <exclude>
-                            org/camunda/bpm/extension/commons/connector/auth/FormioConfiguration.class</exclude>
+                            org/camunda/bpm/extension/commons/connector/auth/FormioConfiguration.class
+                        </exclude>
                         <exclude>
-                            org/camunda/bpm/extension/commons/connector/auth/FormioContext.class</exclude>
+                            org/camunda/bpm/extension/commons/connector/auth/FormioContext.class
+                        </exclude>
                         <exclude>org/camunda/bpm/extension/commons/connector/*.class</exclude>
                         <exclude>org/camunda/bpm/extension/CamundaApplication.class</exclude>
                         <exclude>org/camunda/bpm/extension/commons/exceptions/*.class</exclude>
@@ -368,7 +376,8 @@
                         <exclude>org/camunda/bpm/extension/hooks/controllers/mapper/*.class</exclude>
                         <exclude>org/camunda/bpm/extension/hooks/exceptions/*.class</exclude>
                         <exclude>
-                            org/camunda/bpm/extension/hooks/listeners/execution/FormAccessTokenCacheListener.class</exclude>
+                            org/camunda/bpm/extension/hooks/listeners/execution/FormAccessTokenCacheListener.class
+                        </exclude>
                         <exclude>org/camunda/bpm/extension/hooks/rest/exception/*.class</exclude>
                         <exclude>org/camunda/bpm/extension/commons/exceptions/*.class</exclude>
                         <exclude>org/camunda/bpm/extension/commons/config/*.class</exclude>

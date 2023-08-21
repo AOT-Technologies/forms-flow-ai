@@ -8,10 +8,12 @@ WORKDIR /tmp/
 COPY pom*.xml .
 COPY forms-flow-bpm-utils/pom.xml ./forms-flow-bpm-utils/
 COPY forms-flow-bpm-camunda/pom.xml ./forms-flow-bpm-camunda/
+COPY forms-flow-bpm-integration/pom.xml ./forms-flow-bpm-integration/
 
 # COPY src /tmp/src/
 COPY forms-flow-bpm-camunda/src ./forms-flow-bpm-camunda/src/
 COPY forms-flow-bpm-utils/src ./forms-flow-bpm-utils/src/
+COPY forms-flow-bpm-integration/src ./forms-flow-bpm-integration/src/
 
 # This allows Docker to cache most of the maven dependencies
 #TODO This needs to be fixed, It throws error saying sub modules cannot be found

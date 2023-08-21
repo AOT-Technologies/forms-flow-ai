@@ -1,0 +1,14 @@
+spring:
+  mail:
+    properties:
+      mail:
+        smtp:
+          starttls:
+            enable: 'true'
+          auth: 'true'
+    host: smtp.gmail.com
+    username: test@formsflowai.com
+    password: changeme
+    port: '587'
+  application:
+    name: Formsflow Integration

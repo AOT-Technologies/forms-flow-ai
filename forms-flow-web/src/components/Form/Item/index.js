@@ -97,7 +97,8 @@ const Item = React.memo(() => {
   if(formAuthVerifyLoading){
     return <Loading/>;
   }
-  if(apiCallError){
+
+  if(apiCallError && !formAuthVerifyLoading){
     return <NotFound
     errorMessage={apiCallError?.message}
     errorCode={apiCallError?.status}

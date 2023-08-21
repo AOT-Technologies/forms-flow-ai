@@ -1,7 +1,7 @@
 """Resource to get Dashboard APIs from redash."""
 from http import HTTPStatus
 
-from flask import request
+from flask import current_app, request
 from flask_restx import Namespace, Resource, fields
 from formsflow_api_utils.utils import (
     DESIGNER_GROUP,
@@ -196,14 +196,26 @@ class AuthorizationListById(Resource):
     )
     def get(resource_id: str):
         """Fetch Authorization list by resource id."""
-        response = auth_service.get_auth_list_by_id(resource_id)
-        if response:
-            return (
-                response,
-                HTTPStatus.OK,
-            )
+        try:
+            response = auth_service.get_auth_list_by_id(resource_id)
+            if response:
+                return (
+                    response,
+                    HTTPStatus.OK,
+                )
 
-        return {"message": "Invalid resource id."}, HTTPStatus.BAD_GATEWAY
+            return {"message": "Invalid resource id."}, HTTPStatus.BAD_GATEWAY
+        except PermissionError as err:
+            response, status = (
+                {
+                    "type": "Permission Denied",
+                    "message": "Access is prohibited.",
+                },
+                HTTPStatus.FORBIDDEN,
+            )
+            current_app.logger.warning(response)
+            current_app.logger.warning(err)
+            return response, status
 
     @staticmethod
     @API.doc("Authorization create by Id")

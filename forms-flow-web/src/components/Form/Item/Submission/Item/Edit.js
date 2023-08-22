@@ -78,7 +78,8 @@ const Edit = React.memo((props) => {
     if (applicationStatus && !onFormSubmit) {
       if (
         getUserRolePermission(userRoles, CLIENT) &&
-        !CLIENT_EDIT_STATUS.includes(applicationStatus)
+        !CLIENT_EDIT_STATUS.includes(applicationStatus) &&
+        !applicationDetail.isResubmit
       ) {
         // Redirect the user to the submission view page if not allowed to edit
         dispatch(push(`/form/${formId}/submission/${submissionId}`));

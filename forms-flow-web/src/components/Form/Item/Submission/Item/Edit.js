@@ -1,5 +1,5 @@
-import React, { useEffect , useState, useMemo} from "react";
-import { connect, useDispatch, useSelector} from "react-redux";
+import React, { useEffect, useState, useMemo } from "react";
+import { connect, useDispatch, useSelector } from "react-redux";
 import {
   selectRoot,
   resetSubmissions,
@@ -78,7 +78,8 @@ const Edit = React.memo((props) => {
     if (applicationStatus && !onFormSubmit) {
       if (
         getUserRolePermission(userRoles, CLIENT) &&
-        !CLIENT_EDIT_STATUS.includes(applicationStatus)
+        !CLIENT_EDIT_STATUS.includes(applicationStatus) &&
+        !applicationDetail.isResubmit
       ) {
         // Redirect the user to the submission view page if not allowed to edit
         dispatch(push(`/form/${formId}/submission/${submissionId}`));
@@ -92,13 +93,13 @@ const Edit = React.memo((props) => {
     formId,
     onFormSubmit,
   ]);
-  let updatedSubmission = useMemo(()=>{
+  let updatedSubmission = useMemo(() => {
     if (CUSTOM_SUBMISSION_URL && CUSTOM_SUBMISSION_ENABLE) {
       return customSubmission;
     } else {
       return submission;
     }
-  },[customSubmission,submission]);
+  }, [customSubmission, submission]);
   if (isFormActive || (isSubActive && !isFormSubmissionLoading)) {
     return <Loading />;
   }
@@ -111,7 +112,7 @@ const Edit = React.memo((props) => {
           message={props.submissionError.message}
           onConfirm={props.onConfirm}
         ></SubmissionError>
-        <h3 className="task-head text-truncate" style={{ height:"45px" }}>{form.title}</h3>
+        <h3 className="task-head text-truncate" style={{ height: "45px" }}>{form.title}</h3>
       </div>
       <Errors errors={errors} />
       <LoadingOverlay
@@ -126,7 +127,7 @@ const Edit = React.memo((props) => {
             submission={isFormSubmissionLoading ? updatedSubmissionData : updatedSubmission}
             url={url}
             hideComponents={hideComponents}
-            onSubmit={(submission) =>{
+            onSubmit={(submission) => {
 
               setUpdatedSubmissionData(submission);
               onSubmit(
@@ -153,7 +154,7 @@ const Edit = React.memo((props) => {
 });
 
 Edit.defaultProps = {
-  onCustomEvent: () => {},
+  onCustomEvent: () => { },
 };
 
 const mapStateToProps = (state) => {
@@ -195,7 +196,7 @@ const mapDispatchToProps = (dispatch, ownProps) => {
             UPDATE_EVENT_STATUS.includes(applicationDetail.applicationStatus) ||
             applicationDetail.isResubmit
           ) {
-            const data = getProcessDataReq(applicationDetail,submission.data);
+            const data = getProcessDataReq(applicationDetail, submission.data);
             dispatch(
               updateApplicationEvent(applicationDetail.id, data, () => {
                 dispatch(resetSubmissions("submission"));
@@ -254,7 +255,7 @@ const mapDispatchToProps = (dispatch, ownProps) => {
           onFormSubmit ? formId : ownProps.match.params.formId,
           callBack
         );
-      }else{
+      } else {
         dispatch(
           saveSubmission(
             "submission",

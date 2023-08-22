@@ -42,10 +42,9 @@ const linkApplication = (cell, row, redirectUrl) => {
     </Link>
   );
 };
-
 const linkSubmission = (cell, row, redirectUrl) => {
   // here isResubmit key is also checked for "url" and "buttonText"
-  const url = row.isClientEdit || row.isResubmit
+   const url = row.isClientEdit || row.isResubmit
     ? `${redirectUrl}form/${row.formId}/submission/${row.submissionId}/edit`
     : `${redirectUrl}form/${row.formId}/submission/${row.submissionId}`;
   const buttonText = row.isClientEdit || row.isResubmit ? (
@@ -57,7 +56,7 @@ const linkSubmission = (cell, row, redirectUrl) => {
   ) : (
     <Translation>{(t) => t("View")}</Translation>
   );
-  const icon = row.isClientEdit ? "fa fa-edit" : "fa fa-eye";
+  const icon =  row.isClientEdit || row.isResubmit ? "fa fa-edit" : "fa fa-eye";
   return (
     <div onClick={() => window.open(url, "_blank")}>
       <span style={{ color: "blue", cursor: "pointer" }}>

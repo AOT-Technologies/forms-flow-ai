@@ -126,4 +126,4 @@ jobs:
       - name: ZAP Scan
         uses: zaproxy/action-full-scan@v0.6.0
         with:
-          target: 'https://bpm2.aot-technologies.com'
+          target: 'https://bpm2.aot-technologies.com/camunda'

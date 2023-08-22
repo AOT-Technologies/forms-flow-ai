@@ -74,4 +74,9 @@ public class FormsFlowV1RestServiceImpl {
         return new ExternalTaskRestResourceImpl(processEngineService.getExternalTaskRestService());
     }
 
+    @Path(TaskFilterRestResource.PATH)
+    public TaskFilterRestResource getTaskFilterResource() {
+        return new TaskFilterRestResourceImpl(serviceFinder.getTaskFilterRestService());
+    }
+
 }

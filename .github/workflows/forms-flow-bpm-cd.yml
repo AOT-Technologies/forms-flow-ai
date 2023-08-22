@@ -123,8 +123,22 @@ jobs:
           kubectl -n app2 patch deployment forms-flow-bpm -p '{"spec":{"template":{"spec":{"containers":[{"name":"forms-flow-bpm","image":"docker.io/formsflow/forms-flow-bpm:${{ env.VERSION }}"}]}}}}'
           kubectl -n app2 rollout restart deployment forms-flow-bpm
 
+      - name: Wait for Application to Be Ready
+        run: |
+          # Poll the health check endpoint with a 10-second interval
+          while [ "$(curl -s -o /dev/null -w ''%{http_code}'' https://forms-flow-bpm-app2.aot-technologies.com/camunda" != "200" ]; do
+            echo "Application not yet ready, waiting..."
+            sleep 10
+          done
+        timeout-minutes: 15  # Set a timeout to prevent infinite waiting
+
       - name: ZAP Scan
-        uses: zaproxy/action-full-scan@v0.6.0
+        uses: zaproxy/action-baseline@v0.6.1
         with:
           issue_title: Vulnerability Scan Results
-          target: 'https://bpm2.aot-technologies.com/camunda'
+          docker_name: 'owasp/zap2docker-stable'
+          target: 'https://forms-flow-bpm-app2.aot-technologies.com/camunda'
+          rules_file_name: '.zap/rules.tsv'
+          cmd_options: '-a'
+          fail_action: true
+          allow_issue_writing: true

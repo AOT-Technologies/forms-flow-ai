@@ -57,7 +57,7 @@ const linkSubmission = (cell, row, redirectUrl) => {
   ) : (
     <Translation>{(t) => t("View")}</Translation>
   );
-  const icon = row.isClientEdit ? "fa fa-edit" : "fa fa-eye";
+  const icon =  row.isClientEdit || row.isResubmit ? "fa fa-edit" : "fa fa-eye";
   return (
     <div onClick={() => window.open(url, "_blank")}>
       <span style={{ color: "blue", cursor: "pointer" }}>

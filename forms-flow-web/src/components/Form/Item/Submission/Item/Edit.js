@@ -92,14 +92,15 @@ const Edit = React.memo((props) => {
     formId,
     onFormSubmit,
   ]);
-  let updatedSubmission = useMemo(()=>{
+  const updatedSubmission = useMemo(()=>{
     if (CUSTOM_SUBMISSION_URL && CUSTOM_SUBMISSION_ENABLE) {
       return customSubmission;
     } else {
       return submission;
     }
   },[customSubmission,submission]);
-  if (isFormActive || (isSubActive && !isFormSubmissionLoading)) {
+
+  if (isFormActive || (isSubActive && !isFormSubmissionLoading) || !updatedSubmission?.data) {
     return <Loading />;
   }
 

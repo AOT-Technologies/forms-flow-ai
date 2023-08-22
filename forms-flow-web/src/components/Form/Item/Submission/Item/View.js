@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useMemo } from "react";
 import { connect, useSelector } from "react-redux";
 import {
   selectRoot,
@@ -39,14 +39,15 @@ const View = React.memo((props) => {
     (state) => state.customSubmission?.submission || {}
   );
 
-  let updatedSubmission;
-  if (CUSTOM_SUBMISSION_URL && CUSTOM_SUBMISSION_ENABLE) {
-    updatedSubmission = customSubmission;
-  } else {
-    updatedSubmission = submission;
-  }
+  const updatedSubmission = useMemo(()=>{
+    if (CUSTOM_SUBMISSION_URL && CUSTOM_SUBMISSION_ENABLE) {
+      return customSubmission;
+    } else {
+      return submission;
+    }
+  },[customSubmission,submission]);
 
-  if (isFormActive || (isSubActive && !isFormSubmissionLoading)) {
+  if (isFormActive || (isSubActive && !isFormSubmissionLoading) || !updatedSubmission?.data) {
     return <Loading />;
   }
 

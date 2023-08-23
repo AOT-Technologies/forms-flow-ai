@@ -13,7 +13,6 @@
 
 .custom-grid {
     .col {
-        border-left: 1px solid #ced4da;
         min-height: 50px;
         text-align: start;
         padding-top: 15px;
@@ -34,6 +33,10 @@
     h5,
     .h5 {
         font-weight: 400 !important;
+    }
+    
+    .select {
+        max-width: 105px !important;
     }
 
     .btn-link {
@@ -61,8 +64,8 @@
     }
 
     .btn {
-        margin-right: 5px;
-        margin-top: 1px;
+        margin-right: 0px;
+        margin-top: 0px;
         margin-bottom: 7px;
     }
 }
@@ -108,16 +111,20 @@ flex-wrap: wrap;
     float: right;
     font-weight: normal
 }
+
 .progress-bar {
     background-color: #ff0000ab;
 }
+
 .fileupload-fail {
     color: #f85757;
     float: right;
     font-weight: normal
 }
+
 /* Responsive layout - makes a one column-layout instead of a two-column layout */
 @media (max-width: 800px) {
+
     .flex-item-right,
     .flex-item-left {
         flex: 100%;justify-content: flex-start;

@@ -6,7 +6,6 @@ import {
   getDashboards,
   getDashboardDetail,
   setInsightDetailLoader,
-  setInsightDashboardListLoader,
   setInsightError,
 } from "../../actions/insightActions";
 
@@ -40,15 +39,12 @@ export const fetchUserDashboards = () => {
       .then((res) => {
         if (res.data) {
           dispatch(getDashboards(res.data));
-          dispatch(setInsightDashboardListLoader(false));
         } else {
           dispatch(setInsightError(res));
-          dispatch(setInsightDashboardListLoader(false));
         }
       })
       .catch((error) => {
         dispatch(setInsightError(error.message));
-        dispatch(setInsightDashboardListLoader(false));
       });
   };
 };

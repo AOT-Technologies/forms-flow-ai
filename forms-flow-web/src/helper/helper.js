@@ -1,4 +1,3 @@
-import NotFound from "../components/NotFound";
 import { Translation } from "react-i18next";
 
 const replaceUrl = (URL, key, value) => {
@@ -56,8 +55,6 @@ const renderPage = (formStatus, processLoadError) => {
         </div>
       </span>
     );
-  } else {
-    return (<NotFound errorMessage={<Translation>{(t) => t("Access Denied") }</Translation> } errorCode={"403"} />);
-  }
+  } 
 };
 export { replaceUrl, addTenantkey, removeTenantKey, textTruncate, renderPage };

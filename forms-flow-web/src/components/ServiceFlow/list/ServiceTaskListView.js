@@ -1,6 +1,7 @@
 import React, { useEffect, useRef,useState } from "react";
 import { Row, Col, DropdownButton, Dropdown } from "react-bootstrap";
 import { useDispatch, useSelector } from "react-redux";
+import moment from "moment";
 import { fetchServiceTaskList } from "../../../apiManager/services/bpmTaskServices";
 import {
   setBPMTaskListActivePage,
@@ -8,7 +9,7 @@ import {
 } from "../../../actions/bpmTaskActions";
 import Loading from "../../../containers/Loading";
 import { useTranslation } from "react-i18next";
-
+import "./../ServiceFlow.scss";
 import TaskSearchBarListView from "./search/TaskSearchBarListView";
 
 import Pagination from "react-js-pagination";
@@ -31,6 +32,8 @@ const ServiceTaskListView = React.memo(() => {
   const selectedFilter = useSelector((state) => state.bpmTasks.selectedFilter);
   const activePage = useSelector((state) => state.bpmTasks.activePage);
   const tasksPerPage = MAX_RESULTS;
+  const [expandedTasks, setExpandedTasks] = useState({});
+  const [allTaskVariablesExpanded, setAllTaskVariablesExpanded] = useState(false);
   const [selectedLimitValue, setSelectedLimitValue] = useState(MAX_RESULTS);
   const tenantKey = useSelector((state) => state.tenants?.tenantId);
   const redirectUrl = useRef(
@@ -86,6 +89,31 @@ const ServiceTaskListView = React.memo(() => {
     dispatch(
       fetchServiceTaskList(selectedFilter.id, firstResultIndex, reqData, null, selectedLimitValue)
     );
+    setAllTaskVariablesExpanded(false);
+  };
+  
+
+//Toggle the expanded state of TaskVariables in single task
+  const handleToggleTaskVariable = (taskId) => {
+    setExpandedTasks((prevExpandedTasks) => ({
+      ...prevExpandedTasks,
+      [taskId]: !prevExpandedTasks[taskId],
+    }));
+  };
+  // Toggle expand or collapse the TaskVariables of all task
+  
+  const toggleAllTaskVariables = () => {
+    const newExpandedState = !allTaskVariablesExpanded;
+    const updatedExpandedTasks = {};
+
+    taskList.forEach(task => {
+      if (task?._embedded?.variable?.length > 1) {
+        updatedExpandedTasks[task.id] = newExpandedState;
+      }
+    });
+
+    setExpandedTasks(updatedExpandedTasks);
+    setAllTaskVariablesExpanded(newExpandedState);
   };
  
   const renderTaskList = () => {
@@ -98,22 +126,50 @@ const ServiceTaskListView = React.memo(() => {
         >
           {taskList.map((task, index) => (
             <div
-              className={`clickable shadow border  ${
+              className={`clickable shadow border rounded  ${
                 task?.id === bpmTaskId && "selected"
               }`}
               key={index}
             >
-              
-              <Row className="mt-4 justify-content-between">
-                <Col  xs={2}>
-                  <div className="col-12">
+              <Row className="task-title-container p-2 border-bottom">
+                <Col>
+                  <div className="">
                     <h4 className="font-weight-bold">{task.name}</h4>
                   </div>
-                  <div className="col-12" style={{ paddingTop: "1rem" }}>
-                    <h6 className="font-weight-light">Application Id#{task?._embedded?.variable?.filter((eachValue)=>eachValue.name === "applicationId")[0]?.value}</h6>
+                </Col>
+                <Col xs={2} className="ml-auto">
+                    <div>
+                      <h6>
+                        <u
+                          onClick={() => handleViewDetails(task.id)}
+                          className="font-weight-normal" style={{ color: "#1a5a96", textDecoration: 'none' }}>View Details</u>
+                      </h6>
+                    </div>
+                  </Col>
+              </Row>
+              
+              <Row className="mt-4 p-2 justify-content-between" style={{ marginBottom: "-2rem" }}>
+                <Col  xs={2}>
+                  <div className="col-12">
+                    <h6 className="font-weight-light">Application Id</h6>
+                    <h6>{task?._embedded?.variable?.filter((eachValue) => eachValue.name === "applicationId")[0]?.value}</h6>
                   </div>
                 </Col>
-                <Col  xs={2} >
+                <Col xs={2}>
+                  <div className="col-12">
+                    <h6>Created Date</h6>
+                    
+                    <h6>
+                      {moment(task.created).isSame(moment(), "day")
+                        ? moment(task.created).fromNow() 
+                        : task.created} 
+                    </h6>
+                  </div>
+                </Col>
+                <Col  xs={5} className="justify-content-between ">
+                <TaskHeaderListView task={task} taskId={task.id} groupView = {false} />
+                </Col>
+                <Col xs={2} >
                   <div className="col-12">
                     <h6 className="font-weight-light">Priority</h6>
                   </div>
@@ -133,21 +189,33 @@ const ServiceTaskListView = React.memo(() => {
                     </h6>
                   </div>
                 </Col>
-                <Col  xs={6} className="px-0">
-                <TaskHeaderListView task={task} taskId={task.id} groupView = {false} />
-                </Col>
-                <Col  xs={2}>
-                  <div className="col-12 mt-3">
-                    <h6>
-                      <u
-                        onClick={() => handleViewDetails(task.id)}
-                        className="font-weight-normal" style={{ color: "#1a5a96",textDecoration:'none' }}>View Details</u>
-                    </h6>
-                  </div>
-                  </Col>
+                {task?._embedded?.variable?.length > 1 ?
+                  <Col xs={1}>
+                    <div
+                      className="justify-content-center"
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        handleToggleTaskVariable(task.id);
+                      }}
+                      title="Click for task variables"
+                    >
+                      <i
+                        className="fa fa-angle-down"
+                        style={{
+                          transform: `${expandedTasks[task.id] ? "rotate(180deg)" : "rotate(0deg)"}`,
+                        }}
+                        aria-hidden="true"
+                      />
+                    </div>
+                  </Col> :
+                  <Col xs={1}>
+                  </Col>}
               </Row>
-              <Row style={{ marginTop: "-2rem",marginLeft:"16%" }}>
-
+              {
+                expandedTasks[task.id] &&
+                <>
+              <hr />
+              <Row className="p-2" >
                   {task?._embedded?.variable?.map((eachVariable, index) => {
                     if ( eachVariable.name !== "applicationId" && selectedTaskVariables[eachVariable.name] === true) {
                       return (
@@ -165,6 +233,8 @@ const ServiceTaskListView = React.memo(() => {
                     }
                   })}
               </Row>
+                </>
+              }             
             </div>
           ))}
            
@@ -231,7 +301,9 @@ const ServiceTaskListView = React.memo(() => {
 
   return (
     <>
-        <TaskSearchBarListView />
+      <TaskSearchBarListView
+        toggleAllTaskVariables={toggleAllTaskVariables}
+        allTaskVariablesExpanded={allTaskVariablesExpanded}  />
         {isTaskListLoading ? <Loading /> : renderTaskList()}
     </>
   );

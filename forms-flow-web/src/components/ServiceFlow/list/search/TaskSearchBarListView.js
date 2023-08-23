@@ -1,15 +1,14 @@
 import React, { useState, useEffect } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import TaskSortSelectedList from "../sort/TaskSortSelectedList";
-import TaskFilterComponent from "./TaskFilterComponent";
+import TaskFilterListViewComponent from "./TaskFilterListViewComponent";
 import "./TaskSearchBarListView.scss";
 import { setSelectedTaskVariables } from "../../../../actions/bpmTaskActions";
 import { fetchServiceTaskList } from "../../../../apiManager/services/bpmTaskServices";
 import {
   setBPMTaskLoader,
 } from "../../../../actions/bpmTaskActions";
-// import { setFilterListParams } from "../../../../actions/bpmTaskActions";
-const TaskSearchBarListView = React.memo(() => {
+const TaskSearchBarListView = React.memo(({ toggleAllTaskVariables, allTaskVariablesExpanded }) => {
   const isTaskListLoading = useSelector(
     (state) => state.bpmTasks.isTaskListLoading
   );
@@ -17,25 +16,16 @@ const TaskSearchBarListView = React.memo(() => {
 
   const [displayFilter, setDisplayFilter] = useState(false);
   const [SortOptions, setSortOptions] = useState(false);
-  const [selectTaskVariables, setSelectTaskVariables] = useState(false);
+
   const [showClearButton, setShowClearButton] = useState(false);
   const [searchTaskInput, setSearchTaskInput] = useState("");
 
-  const selectedTaskVariables = useSelector(
-    (state) => state.bpmTasks.selectedTaskVariables
-  );
+
   const taskList = useSelector((state) => state.bpmTasks.tasksList);
   const selectedFilter = useSelector((state) => state.bpmTasks.selectedFilter);
   const firstResult = useSelector((state) => state.bpmTasks.firstResult);
   const reqData = useSelector((state) => state.bpmTasks.listReqParams);
   const dispatch = useDispatch();
-  const taskvariable = useSelector(
-    (state) => state.bpmTasks.selectedFilter?.properties?.variables || []
-  );
-  const getLabelOfSelectedVariable = (variable) => {
-    if (variable) return taskvariable.find(item => item?.name === variable)?.label;
-   
-  };
   useEffect(() => {
     let taskVaribles = {};
     taskList?.map((eachTask) => {
@@ -47,11 +37,6 @@ const TaskSearchBarListView = React.memo(() => {
     dispatch(setSelectedTaskVariables(taskVaribles));
   }, [taskList]);
 
-  const alterTaskVariableSelection = (eachVariable) => {
-    let taskVaribles = { ...selectedTaskVariables };
-    taskVaribles[eachVariable] = !selectedTaskVariables[eachVariable];
-    dispatch(setSelectedTaskVariables(taskVaribles));
-  };
   
   const handleSearchTask = () => {
     if ( searchTaskInput !== "") {
@@ -89,10 +74,14 @@ const TaskSearchBarListView = React.memo(() => {
   const onClearSearch = () => {
     dispatch(setBPMTaskLoader(true));
     setSearchTaskInput("");
-    
     dispatch(fetchServiceTaskList(selectedFilter.id, firstResult, reqData));
     setShowClearButton(false);
     
+  };
+
+  const toggleDisplayFilter = () => {
+    setDisplayFilter(!displayFilter);
+    setSortOptions(false);
   };
   return (
     <>
@@ -139,7 +128,6 @@ const TaskSearchBarListView = React.memo(() => {
             className="btn btn-outline-secondary"
             onClick={() => {
               setSortOptions(!SortOptions);
-              setSelectTaskVariables(false);
               setDisplayFilter(false);
             }}
           >
@@ -158,14 +146,6 @@ const TaskSearchBarListView = React.memo(() => {
           {SortOptions && (
             <div className="clickable shadow border filter-list-view">
               <TaskSortSelectedList />
-              <div
-                style={{ "text-align": "right" }}
-                onClick={() => {
-                  setSortOptions(false);
-                }}
-              >
-                <u> close </u>{" "}
-              </div>
             </div>
           )}
         </div>
@@ -174,8 +154,8 @@ const TaskSearchBarListView = React.memo(() => {
             type="button"
             className="btn btn-outline-secondary"
             onClick={() => {
-              setSelectTaskVariables(!selectTaskVariables);
-              setDisplayFilter(false);
+              toggleAllTaskVariables();
+              setDisplayFilter(false); 
               setSortOptions(false);
             }}
           >
@@ -189,45 +169,15 @@ const TaskSearchBarListView = React.memo(() => {
             >
               <path d="M6 1v3H1V1h5zM1 0a1 1 0 0 0-1 1v3a1 1 0 0 0 1 1h5a1 1 0 0 0 1-1V1a1 1 0 0 0-1-1H1zm14 12v3h-5v-3h5zm-5-1a1 1 0 0 0-1 1v3a1 1 0 0 0 1 1h5a1 1 0 0 0 1-1v-3a1 1 0 0 0-1-1h-5zM6 8v7H1V8h5zM1 7a1 1 0 0 0-1 1v7a1 1 0 0 0 1 1h5a1 1 0 0 0 1-1V8a1 1 0 0 0-1-1H1zm14-6v7h-5V1h5zm-5-1a1 1 0 0 0-1 1v7a1 1 0 0 0 1 1h5a1 1 0 0 0 1-1V1a1 1 0 0 0-1-1h-5z" />
             </svg>
-            Columns
+            {allTaskVariablesExpanded ? "Collapse All" : "Expand All"}
           </button>
-          {selectTaskVariables && (
-            <div className="clickable shadow border filter-list-view">
-              {selectedTaskVariables &&
-                Object?.keys(selectedTaskVariables)?.map((eachVariable) => {
-                  return (
-                    <div className="form-check pl-0" key={eachVariable} style={{ wordBreak: "break-all" }} >
-                      
-                      <label className="form-check-label mr-4" htmlFor={eachVariable} style={{ minWidth:"220px"}}>
-                        <strong>{getLabelOfSelectedVariable(eachVariable)}</strong>
-                      </label>
-                      <input onChange={() => { alterTaskVariableSelection(eachVariable); }} className="form-check-input" type="checkbox" id={eachVariable} checked={selectedTaskVariables[eachVariable]} />
-
-                    </div>
-                  );
-                })}
-
-              <div
-                style={{ "textAlign": "right" }}
-                onClick={() => {
-                  setSelectTaskVariables(false);
-                }}
-              >
-                <u> close </u>{" "}
-              </div>
-            </div>
-          )}
         </div>
 
         <div className="filter-container-list task-filter-list-view">
           <button
             type="button"
             className="btn btn-outline-secondary "
-            onClick={() => {
-              setDisplayFilter(!displayFilter);
-              setSortOptions(false);
-              setSelectTaskVariables(false);
-            }}
+            onClick={() => { toggleDisplayFilter(); }}
           >
             <svg
               xmlns="http://www.w3.org/2000/svg"
@@ -243,18 +193,11 @@ const TaskSearchBarListView = React.memo(() => {
           </button>
 
           {displayFilter && (
-            <div className="clickable shadow border filter-list-view">
-              <TaskFilterComponent
+            <div className="clickable shadow border filter-list-view ">
+              <TaskFilterListViewComponent
                 totalTasks={isTaskListLoading ? 0 : tasksCount}
+                toggleDisplayFilter={toggleDisplayFilter}
               />
-              <div
-                style={{ "text-align": "right" }}
-                onClick={() => {
-                  setDisplayFilter(false);
-                }}
-              >
-                <u> close </u>{" "}
-              </div>
             </div>
           )}
         </div>

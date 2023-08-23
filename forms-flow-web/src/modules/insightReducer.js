@@ -1,7 +1,6 @@
 import ACTION_CONSTANTS from "../actions/actionConstants";
 
 const initialState = {
-  isDashboardLoading: true,
   dashboardsList: [],
   dashboardDetail: {},
   isInsightLoading: true,
@@ -13,13 +12,10 @@ const initialState = {
 
 const insights = (state = initialState, action) => {
   switch (action.type) {
-    case ACTION_CONSTANTS.IS_DASHBOARD_LOADING:
-      return { ...state, isDashboardLoading: action.payload };
     case ACTION_CONSTANTS.LIST_DASHBOARDS:
       return {
         ...state,
         dashboardsList: action.payload,
-        isDashboardLoading: false,
         isInsightLoading: false,
         isDashboardListUpdated: true,
       };

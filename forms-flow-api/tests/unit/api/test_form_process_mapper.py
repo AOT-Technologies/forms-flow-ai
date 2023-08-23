@@ -1,6 +1,7 @@
 """Test suite for FormProcessMapper API endpoint."""
-import pytest
 import json
+
+import pytest
 
 from tests.utilities.base_test import (
     get_application_create_payload,

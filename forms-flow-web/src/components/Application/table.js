@@ -7,13 +7,13 @@ import {
   customFilter,
   FILTER_TYPES,
 } from "react-bootstrap-table2-filter";
-import { getLocalDateTime } from "../../apiManager/services/formatterService";
 import { AWAITING_ACKNOWLEDGEMENT } from "../../constants/applicationConstants";
 import { Translation } from "react-i18next";
 import DateRangePicker from "@wojtekmaj/react-daterange-picker";
 import DropdownButton from "react-bootstrap/DropdownButton";
 import Dropdown from "react-bootstrap/Dropdown";
 import { toast } from "react-toastify";
+import { HelperServices} from "@formsflow/service";
 
 let statusFilter, idFilter, nameFilter, modifiedDateFilter;
 
@@ -57,7 +57,7 @@ const linkSubmission = (cell, row, redirectUrl) => {
   ) : (
     <Translation>{(t) => t("View")}</Translation>
   );
-  const icon = row.isClientEdit ? "fa fa-edit" : "fa fa-eye";
+  const icon =  row.isClientEdit || row.isResubmit ? "fa fa-edit" : "fa fa-eye";
   return (
     <div onClick={() => window.open(url, "_blank")}>
       <span style={{ color: "blue", cursor: "pointer" }}>
@@ -72,7 +72,7 @@ const linkSubmission = (cell, row, redirectUrl) => {
 };
 
 function timeFormatter(cell) {
-  const localdate = getLocalDateTime(cell);
+  const localdate = HelperServices?.getLocalDateAndTime(cell);
   return <label title={cell}>{localdate}</label>;
 }
 

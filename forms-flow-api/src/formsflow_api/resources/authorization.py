@@ -1,7 +1,7 @@
 """Resource to get Dashboard APIs from redash."""
 from http import HTTPStatus
 
-from flask import request
+from flask import current_app, request
 from flask_restx import Namespace, Resource, fields
 from formsflow_api_utils.utils import (
     DESIGNER_GROUP,
@@ -10,6 +10,7 @@ from formsflow_api_utils.utils import (
     profiletime,
 )
 
+from formsflow_api.models import AuthType
 from formsflow_api.services import AuthorizationService
 
 API = Namespace("authorization", description="Authorization APIs")
@@ -23,6 +24,15 @@ authorization_model = API.model(
         "resourceId": fields.String(),
         "resourceDetails": fields.Nested(resource_details_model),
         "roles": fields.List(fields.String(), description="Authorized Roles"),
+    },
+)
+
+authorization_list_model = API.model(
+    "Authorization List",
+    {
+        "APPLICATION": fields.Nested(authorization_model),
+        "FORM": fields.Nested(authorization_model),
+        "DESIGNER": fields.Nested(authorization_model),
     },
 )
 
@@ -154,12 +164,85 @@ class AuthorizationDetail(Resource):
 
         Fetch Authorization details by resource id based on authorization type.
         """
-        response = auth_service.get_resource_by_id(
-            auth_type.upper(), resource_id, bool(auth.has_role([DESIGNER_GROUP]))
-        )
+        response = auth_service.get_resource_by_id(auth_type.upper(), resource_id)
         if response:
             return (
                 response,
                 HTTPStatus.OK,
             )
         return {"message": "Permission denied"}, HTTPStatus.UNAUTHORIZED
+
+
+@cors_preflight("GET, OPTIONS")
+@API.route("/resource/<string:resource_id>", methods=["GET", "POST", "OPTIONS"])
+@API.doc(
+    params={
+        "resource_id": "Authorization list corresponding to resource id.",
+    }
+)
+class AuthorizationListById(Resource):
+    """Resource to fetch Authorization List corresponding to resource id."""
+
+    @staticmethod
+    @API.doc("Authorization list by Id")
+    @auth.has_one_of_roles([DESIGNER_GROUP])
+    @profiletime
+    @API.doc(
+        responses={
+            200: "OK:- Successful request.",
+            401: "UNAUTHORIZED:- Authorization header not provided or an invalid token passed.",
+        },
+        model=authorization_list_model,
+    )
+    def get(resource_id: str):
+        """Fetch Authorization list by resource id."""
+        try:
+            response = auth_service.get_auth_list_by_id(resource_id)
+            if response:
+                return (
+                    response,
+                    HTTPStatus.OK,
+                )
+
+            return {"message": "Invalid resource id."}, HTTPStatus.BAD_GATEWAY
+        except PermissionError as err:
+            response, status = (
+                {
+                    "type": "Permission Denied",
+                    "message": "Access is prohibited.",
+                },
+                HTTPStatus.FORBIDDEN,
+            )
+            current_app.logger.warning(response)
+            current_app.logger.warning(err)
+            return response, status
+
+    @staticmethod
+    @API.doc("Authorization create by Id")
+    @auth.has_one_of_roles([DESIGNER_GROUP])
+    @profiletime
+    @API.doc(
+        responses={
+            200: "OK:- Successful request.",
+            401: "UNAUTHORIZED:- Authorization header not provided or an invalid token passed.",
+        },
+        model=authorization_list_model,
+    )
+    def post(resource_id: str):
+        """Create or Update Authoization of Form by id."""
+        data = request.get_json()
+        for auth_type in AuthType:
+            if data.get(auth_type.value.lower()):
+                auth_service.create_authorization(
+                    auth_type.value.upper(),
+                    data.get(auth_type.value.lower()),
+                    bool(auth.has_role([DESIGNER_GROUP])),
+                )
+
+        response = auth_service.get_auth_list_by_id(resource_id)
+        if response:
+            return (
+                response,
+                HTTPStatus.OK,
+            )
+        return {"message": "Invalid resource id."}, HTTPStatus.BAD_GATEWAY

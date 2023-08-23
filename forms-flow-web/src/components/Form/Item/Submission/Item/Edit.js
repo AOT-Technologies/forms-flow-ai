@@ -1,5 +1,5 @@
-import React, { useEffect , useState} from "react";
-import { connect, useDispatch, useSelector } from "react-redux";
+import React, { useEffect , useState, useMemo} from "react";
+import { connect, useDispatch, useSelector} from "react-redux";
 import {
   selectRoot,
   resetSubmissions,
@@ -51,7 +51,7 @@ const Edit = React.memo((props) => {
     form: { form, isActive: isFormActive },
     submission: { submission, isActive: isSubActive, url },
   } = props;
-  
+
   const [updatedSubmissionData, setUpdatedSubmissionData] = useState({});
 
   const applicationStatus = useSelector(
@@ -78,7 +78,8 @@ const Edit = React.memo((props) => {
     if (applicationStatus && !onFormSubmit) {
       if (
         getUserRolePermission(userRoles, CLIENT) &&
-        !CLIENT_EDIT_STATUS.includes(applicationStatus)
+        !CLIENT_EDIT_STATUS.includes(applicationStatus) &&
+        !applicationDetail.isResubmit
       ) {
         // Redirect the user to the submission view page if not allowed to edit
         dispatch(push(`/form/${formId}/submission/${submissionId}`));
@@ -92,14 +93,15 @@ const Edit = React.memo((props) => {
     formId,
     onFormSubmit,
   ]);
-  let updatedSubmission;
-  if (CUSTOM_SUBMISSION_URL && CUSTOM_SUBMISSION_ENABLE) {
-    updatedSubmission = customSubmission;
-  } else {
-    updatedSubmission = submission;
-  }
+  const updatedSubmission = useMemo(()=>{
+    if (CUSTOM_SUBMISSION_URL && CUSTOM_SUBMISSION_ENABLE) {
+      return customSubmission;
+    } else {
+      return submission;
+    }
+  },[customSubmission,submission]);
 
-  if (isFormActive || (isSubActive && !isFormSubmissionLoading)) {
+  if (isFormActive || (isSubActive && !isFormSubmissionLoading) || !updatedSubmission?.data) {
     return <Loading />;
   }
 
@@ -137,7 +139,7 @@ const Edit = React.memo((props) => {
                 redirectUrl
               );
             }
-              
+
             }
             options={{
               ...options,
@@ -264,7 +266,7 @@ const mapDispatchToProps = (dispatch, ownProps) => {
           )
         );
       }
-     
+
     },
     onConfirm: () => {
       const ErrorDetails = { modalOpen: false, message: "" };

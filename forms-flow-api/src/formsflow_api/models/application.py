@@ -296,19 +296,32 @@ class Application(
         return pagination.items, total_count
 
     @classmethod
-    def find_applications_by_process_key(  # pylint: disable=too-many-arguments
+    def find_applications_by_auth_formids_user(  # pylint: disable=too-many-arguments
         cls,
         page_no: int,
         limit: int,
         order_by: str,
         sort_order: str,
-        process_key: str,
+        form_ids: str,
+        user_name: str,
         **filters,
     ):
-        """Fetch applications list based on searching parameters for Reviewer."""
+        """List applications for Reviewers.
+
+        Based on application auth permissions and user who submitted the application.
+        """
+        # Get latest row for each form_id group
+        filtered_form_query = FormProcessMapper.get_latest_form_mapper_ids()
+        filtered_form_ids = [
+            data.id for data in filtered_form_query if data.parent_form_id in form_ids
+        ]
         query = cls.filter_conditions(**filters)
         query = FormProcessMapper.tenant_authorization(query=query)
-        query = query.filter(FormProcessMapper.process_key.in_(process_key))
+        query = query.filter(
+            or_(
+                FormProcessMapper.id.in_(filtered_form_ids), cls.created_by == user_name
+            )
+        )
         query = cls.filter_draft_applications(query=query)
         order_by, sort_order = validate_sort_order_and_order_by(order_by, sort_order)
         if order_by and sort_order:
@@ -747,4 +760,35 @@ class Application(
         )
         query = cls.filter_draft_applications(query=query)
         query = query.filter(Application.created_by == user_id)
+        return query.count()
+
+    @classmethod
+    def find_form_parent_id_by_application_id(cls, application_id: int) -> Application:
+        """Find form parent id for the provided application id."""
+        return (
+            db.session.query(FormProcessMapper.parent_form_id)
+            .join(Application)
+            .filter(Application.id == application_id)
+            .scalar()
+        )
+
+    @classmethod
+    def get_auth_application_count_by_form_id_user(cls, form_ids, user_name):
+        """Retrieves authorized application count by form ids & submitted user."""
+        # Get latest row for each form_id group
+        filtered_form_query = FormProcessMapper.get_latest_form_mapper_ids()
+        filtered_form_ids = [
+            data.id for data in filtered_form_query if data.parent_form_id in form_ids
+        ]
+        query = FormProcessMapper.tenant_authorization(
+            query=cls.query.join(
+                FormProcessMapper, cls.form_process_mapper_id == FormProcessMapper.id
+            )
+        )
+        query = query.filter(
+            or_(
+                FormProcessMapper.id.in_(filtered_form_ids), cls.created_by == user_name
+            )
+        )
+        query = cls.filter_draft_applications(query=query)
         return query.count()

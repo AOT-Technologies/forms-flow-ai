@@ -27,7 +27,7 @@ jobs:
     permissions:
       contents: read
       packages: write
-
+      security-events: write
     steps:
       - name: Checkout repository
         uses: actions/checkout@v2

@@ -65,10 +65,6 @@ export const getRelevantApplications = (applications, submissionData) => {
   return submissionData;
 };
 
-export const getLocalDateTime = (date) => {
-  return date ? new Date(date.replace(" ", "T") + "Z").toLocaleString() : "-";
-};
-
 export const getProcessDataObjectFromList = (processList, processId) => {
   const process = processList.find((process) => process.id === processId);
   return process;

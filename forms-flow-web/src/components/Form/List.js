@@ -58,8 +58,7 @@ import filterFactory from "react-bootstrap-table2-filter";
 import overlayFactory from "react-bootstrap-table2-overlay";
 import { SpinnerSVG } from "../../containers/SpinnerSVG";
 import { getFormattedForm, INACTIVE } from "./constants/formListConstants";
-import { addClients, addUsers } from "../../apiManager/services/authorizationService";
-import { fetchDesigners } from "../../apiManager/services/authorizationService.js";
+import { handleAuthorization, fetchFormAuthorizationDetials } from "../../apiManager/services/authorizationService.js";
 const List = React.memo((props) => {
   const { t } = useTranslation();
   const [showFormUploadModal, setShowFormUploadModal] = useState(false);
@@ -101,11 +100,7 @@ const List = React.memo((props) => {
   const sortOrder = useSelector((state) => state.bpmForms.sortOrder);
   const formCheckList = useSelector((state) => state.formCheckList.formList);
   const columns = isDesigner ? designerColums(t) : userColumns(t);
-
   const formAccess = useSelector((state) => state.user?.formAccess || []);
-  // const user =  useSelector(
-  //   (state) => state.user.userDetail
-  // );
   const submissionAccess = useSelector(
     (state) => state.user?.submissionAccess || []
   );
@@ -276,9 +271,12 @@ const List = React.memo((props) => {
       resourceDetails: {},
       roles: []
     };
-    addUsers(payload).catch((error) => console.error("error", error));
-    addClients(payload).catch((error) => console.error("error", error));
-
+    handleAuthorization(
+      { application: payload, designer: payload, form: payload },
+      parentFormId
+    ).catch((err) => {
+      console.log(err);
+    });
   };
 
   // upload file
@@ -317,8 +315,9 @@ const List = React.memo((props) => {
                   dispatch(
                     fetchFormByAlias(newFormData.path, async (err, formObj) => {
                       if (!err) {
-                        fetchDesigners(formObj._id).then((response) => {
-                          if (response?.status != 401) {
+                        fetchFormAuthorizationDetials(formObj.parentFormId || 
+                          formObj._id).
+                          then(() => {
                             dispatch(
                               // eslint-disable-next-line no-unused-vars
                               getFormProcesses(formObj._id, (err, mapperData) => {
@@ -425,7 +424,8 @@ const List = React.memo((props) => {
                                 }
                               })
                             );
-                          }
+                       
+                        
                         }).catch(() => {
                           dispatch(DesignerAccessDenied(true));
                           dispatch(formUploadFailureCount());
@@ -583,57 +583,11 @@ const List = React.memo((props) => {
                 </h3>
               </div>
             </div>
-            <div className="flex-item-right">
-              {isDesigner && (
-                <Link
-                  to={`${redirectUrl}formflow/create`}
-                  className="btn btn-primary btn-left btn-sm"
-                >
-                  <i className="fa fa-plus fa-lg" />{" "}
-                  <Translation>{(t) => t("Create Form")}</Translation>
-                </Link>
-              )}
-              {isDesigner && (
-                <>
-                  <Button
-                    className="btn btn-primary btn-sm form-btn pull-right btn-left"
-                    onClick={uploadClick}
-                    title={t("Upload json form only")}
-                  >
-                    <i className="fa fa-upload fa-lg" aria-hidden="true" />{" "}
-                    {t("Upload Form")}{" "}
-                  </Button>
-                  <input
-                    type="file"
-                    value=''
-                    className="d-none"
-                    multiple={false}
-                    accept=".json,application/json"
-                    onChange={(e) => {
-                      fileUploaded(e);
-                    }}
-                    ref={uploadFormNode}
-                  />
-                </>
-              )}
-              {isDesigner && (
-                <>
-                  <button
-                    className="btn btn-outline-primary pull-right btn-left "
-                    onClick={downloadForms}
-                    disabled={formCheckList.length === 0}
-                  >
-                    <i className="fa fa-download fa-lg" aria-hidden="true" />{" "}
-                    {t("Download Form")}{" "}
-                  </button>
-                </>
-              )}
-            </div>
           </div>
           <section className="custom-grid grid-forms">
             <Errors errors={errors} />
             <div className="  row mt-2 mx-2">
-              <div className="col" style={{ marginLeft: "5px", marginTop: "-18px" }}>
+              <div className="col" style={{ marginLeft: "15px", marginTop: "-18px" }}>
                 <div className="input-group">
                   <span
                     className="sort-span"
@@ -662,7 +616,7 @@ const List = React.memo((props) => {
                       }}
                     />
                   </span>
-                  <div className="form-outline ml-3">
+                  <div className="form-outline ml-2">
                     <input
                       type="search"
                       id="form1"
@@ -682,7 +636,7 @@ const List = React.memo((props) => {
                   {showClearButton && (
                     <button
                       type="button"
-                      className="btn btn-outline-primary ml-2"
+                      className="btn btn-outline-primary search-clear ml-2"
                       onClick={() => onClear()}
                     >
                       <i className="fa fa-times"></i>
@@ -722,6 +676,52 @@ const List = React.memo((props) => {
                     ""
                   )}
                 </div>
+              </div>
+              <div className="d-flex">
+                {isDesigner && (
+                  <Link
+                    to={`${redirectUrl}formflow/create`}
+                    className="btn btn-primary btn-left btn-sm"
+                  >
+                    <i className="fa fa-plus fa-lg" />{" "}
+                    <Translation>{(t) => t("Create Form")}</Translation>
+                  </Link>
+                )}
+                {isDesigner && (
+                  <>
+                    <Button
+                      className="btn btn-primary btn-sm form-btn pull-right btn-left"
+                      onClick={uploadClick}
+                      title={t("Upload json form only")}
+                    >
+                      <i className="fa fa-upload fa-lg" aria-hidden="true" />{" "}
+                      {t("Upload Form")}{" "}
+                    </Button>
+                    <input
+                      type="file"
+                      value=''
+                      className="d-none"
+                      multiple={false}
+                      accept=".json,application/json"
+                      onChange={(e) => {
+                        fileUploaded(e);
+                      }}
+                      ref={uploadFormNode}
+                    />
+                  </>
+                )}
+                {isDesigner && (
+                  <>
+                    <button
+                      className="btn btn-primary pull-right btn-left "
+                      onClick={downloadForms}
+                      disabled={formCheckList.length === 0}
+                    >
+                      <i className="fa fa-download fa-lg" aria-hidden="true" />{" "}
+                      { formCheckList.length !== 0 && t("Download Form")}{" "}
+                    </button>
+                  </>
+                )}
               </div>
             </div>
             <ToolkitProvider

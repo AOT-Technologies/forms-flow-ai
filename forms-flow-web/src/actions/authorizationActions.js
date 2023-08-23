@@ -7,16 +7,3 @@ export const setUserGroups = (data) => (dispatch) => {
     });
   };
   
-  export const setDesignerGroups = (data) => (dispatch) => {
-    dispatch({
-      type: ACTION_CONSTANTS.SET_DESIGNER_GROUPS,
-      payload: data,
-    });
-  };
-
-  export const setClientGroups = (data) => (dispatch) => {
-    dispatch({
-      type: ACTION_CONSTANTS.SET_CLIENT_GROUPS,
-      payload: data,
-    });
-  };

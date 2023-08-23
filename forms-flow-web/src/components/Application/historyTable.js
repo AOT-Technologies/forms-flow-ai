@@ -1,9 +1,10 @@
 import React from "react";
 import {
   getFormUrl,
-  getLocalDateTime,
 } from "../../apiManager/services/formatterService";
 import { Translation } from "react-i18next";
+import { HelperServices} from "@formsflow/service";
+
 
 export const defaultSortedBy = [
   {
@@ -28,7 +29,7 @@ const linkSubmision = (row, redirectUrl) => {
 };
 
 function timeFormatter(cell) {
-  const localDate = getLocalDateTime(cell);
+  const localDate = HelperServices?.getLocalDateAndTime(cell);
   return <label title={cell}>{localDate}</label>;
 }
 

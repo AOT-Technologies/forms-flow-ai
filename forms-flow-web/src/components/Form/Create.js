@@ -21,7 +21,7 @@ import {
 import { addTenantkey } from "../../helper/helper";
 import { formCreate } from "../../apiManager/services/FormServices";
 import { Checkbox, FormControlLabel } from "@material-ui/core";
-import { addClients, addUsers } from "../../apiManager/services/authorizationService";
+import { handleAuthorization } from "../../apiManager/services/authorizationService";
 // reducer from react-formio code
 const reducer = (form, { type, value }) => {
   const formCopy = _cloneDeep(form);
@@ -164,8 +164,12 @@ const Create = React.memo(() => {
         roles : []
       };
       dispatch(setFormSuccessData("form", form));
-      addUsers(payload).catch((error) => console.error("error", error));
-      addClients(payload).catch((error) => console.error("error", error));
+      handleAuthorization(
+        { application: payload, designer: payload, form: payload },
+        data.formId
+      ).catch((err) => {
+        console.log(err);
+      });
       dispatch(
         // eslint-disable-next-line no-unused-vars
         saveFormProcessMapperPost(data, (err, res) => {

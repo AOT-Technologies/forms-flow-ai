@@ -25,7 +25,7 @@ import {
   saveFormProcessMapperPost,
   saveFormProcessMapperPut,
 } from "../../apiManager/services/processServices";
-import { selectRoot, selectError, Formio, getForm} from "react-formio";
+import { selectRoot, selectError, Formio, getForm } from "react-formio";
 import { MULTITENANCY_ENABLED } from "../../constants/constants";
 import { push } from "connected-react-router";
 import WorkFlow from "./Steps/WorkFlow";
@@ -63,12 +63,13 @@ class StepperPage extends PureComponent {
       disablePreview: false,
       tenantKey: props.tenants?.tenantId,
       redirectUrl: null,
-      checkPermissionLoading:false,
+      checkPermissionLoading: false,
     };
-    
+
     this.setPreviewMode = this.setPreviewMode.bind(this);
     this.handleNext = this.handleNext.bind(this);
-    this.handleCheckPermissionLoading = this.handleCheckPermissionLoading.bind(this);
+    this.handleCheckPermissionLoading =
+      this.handleCheckPermissionLoading.bind(this);
     // for edit
     this.setEditMode = this.setEditMode.bind(this);
     this.handleBack = this.handleBack.bind(this);
@@ -159,7 +160,6 @@ class StepperPage extends PureComponent {
     return { ...stateData };
   }
 
-
   setActiveStep(val) {
     this.setState({ activeStep: val });
   }
@@ -182,7 +182,7 @@ class StepperPage extends PureComponent {
         : "/",
     });
   }
- 
+
   setProcessData = (data) => {
     this.setState((prevState) => ({
       processData: { ...prevState.processData, ...data },
@@ -215,8 +215,10 @@ class StepperPage extends PureComponent {
     this.setActiveStep(this.state.activeStep - 1);
   }
 
-  handleCheckPermissionLoading(){
-    this.setState({checkPermissionLoading:!this.state?.checkPermissionLoading});
+  handleCheckPermissionLoading() {
+    this.setState({
+      checkPermissionLoading: !this.state?.checkPermissionLoading,
+    });
   }
 
   submitData = () => {
@@ -250,7 +252,7 @@ class StepperPage extends PureComponent {
         : [],
       anonymous: formProcessList.anonymous ? true : false,
       parentFormId: formProcessList?.parentFormId,
-      formType: formProcessList.formType
+      formType: formProcessList.formType,
     };
 
     if (workflow) {
@@ -270,7 +272,7 @@ class StepperPage extends PureComponent {
     }
 
     data.workflowChanged = data?.processKey !== formPreviousData.processKey;
-    data.statusChanged =  processData?.status !== formPreviousData.status;
+    data.statusChanged = processData?.status !== formPreviousData.status;
 
     if (isNewVersionNeeded()) {
       // POST request for creating new mapper version of the current form.
@@ -345,22 +347,22 @@ class StepperPage extends PureComponent {
   render() {
     // const { process } = this.props;
     const steps = this.getSteps();
-    const { t,formAuthVerifyLoading, apiCallError,match} = this.props;
+    const { t, formAuthVerifyLoading, apiCallError, match } = this.props;
     const handleReset = () => {
       this.setActiveStep(0);
     };
 
-    
-
-    if(formAuthVerifyLoading && match?.params.formId !== FORM_CREATE_ROUTE){
-      return <Loading/>;
+    if (formAuthVerifyLoading && match?.params.formId !== FORM_CREATE_ROUTE) {
+      return <Loading />;
     }
 
-    if(apiCallError){
-      return <NotFound
-      errorMessage={apiCallError.message}
-      errorCode={apiCallError.status}
-    />;
+    if (apiCallError) {
+      return (
+        <NotFound
+          errorMessage={apiCallError.message}
+          errorCode={apiCallError.status}
+        />
+      );
     }
 
     return (
@@ -475,19 +477,44 @@ const mapDispatchToProps = (dispatch) => {
       dispatch(setApiCallError(null));
       dispatch(resetFormData("form", id));
       dispatch(setFormAuthVerifyLoading(true));
-      dispatch(getForm("form",id,(err,res)=>{
-        fetchFormAuthorizationDetials(
-          res?.parentFormId || res?._id).then(response=>{ 
-            dispatch(setFormAuthorizationDetails(response.data));
-          }).catch((err)=>{
-            const {response} = err;
-            dispatch(setApiCallError({message:response?.data?.message || 
-              response.statusText,status:response.status}));
-          }).finally(()=>{
+      dispatch(
+        getForm("form", id, (err, res) => {
+          if (err) {
+            const { response } = err;
+            dispatch(
+              setApiCallError({
+                message:
+                  response?.data?.message ||
+                  "Bad Request" ||
+                  response?.statusText ||
+                  err.message,
+                status: response?.status || "400",
+              })
+            );
             dispatch(setFormAuthVerifyLoading(false));
-          });
-      }));
-         
+          } else {
+            fetchFormAuthorizationDetials(res?.parentFormId || res._id)
+              .then((response) => {
+                dispatch(setFormAuthorizationDetails(response.data));
+              })
+              .catch((err) => {
+                const { response } = err;
+                dispatch(
+                  setApiCallError({
+                    message:
+                      response?.data?.message ||
+                      response?.statusText ||
+                      err.message,
+                    status: response?.status || "400",
+                  })
+                );
+              })
+              .finally(() => {
+                dispatch(setFormAuthVerifyLoading(false));
+              });
+          }
+        })
+      );
     },
     getFormProcessesDetails: (formId) => {
       dispatch(
@@ -495,7 +522,7 @@ const mapDispatchToProps = (dispatch) => {
         getFormProcesses(formId, (err, data) => {
           if (!err) {
             dispatch(getApplicationCount(data.id));
-          }else{
+          } else {
             console.error(err);
           }
         })

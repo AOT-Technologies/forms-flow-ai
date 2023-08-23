@@ -60,6 +60,9 @@ camunda.bpm:
         frame-ancestors 'none';
         object-src 'none'
 
+  generic-properties:
+    properties:
+      enableExpressionsInAdhocQueries: true
 
 spring:
   datasource:

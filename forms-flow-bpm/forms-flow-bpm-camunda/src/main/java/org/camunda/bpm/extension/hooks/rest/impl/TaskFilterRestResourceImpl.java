@@ -14,6 +14,7 @@ import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
 
 import javax.ws.rs.core.Request;
+import javax.ws.rs.core.UriInfo;
 
 @Component
 public class TaskFilterRestResourceImpl implements TaskFilterRestResource {
@@ -32,5 +33,12 @@ public class TaskFilterRestResourceImpl implements TaskFilterRestResource {
         CountResultDto dto = restService.queryCount(filterQuery);
         return EntityModel.of(dto,
                 linkTo(methodOn(TaskFilterRestResourceImpl.class).queryCount(filterQuery)).withSelfRel());
+    }
+
+    @Override
+    public EntityModel<CountResultDto> getFiltersCount(UriInfo uriInfo) {
+        CountResultDto dto = restService.getFiltersCount(uriInfo);
+        return EntityModel.of(dto,
+                linkTo(methodOn(TaskFilterRestResourceImpl.class).getFiltersCount(uriInfo)).withSelfRel());
     }
 }

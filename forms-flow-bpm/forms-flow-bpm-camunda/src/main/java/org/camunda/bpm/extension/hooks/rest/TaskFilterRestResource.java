@@ -11,6 +11,8 @@ import javax.ws.rs.*;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Request;
+import javax.ws.rs.core.UriInfo;
+
 @Produces(MediaType.APPLICATION_JSON)
 public interface TaskFilterRestResource {
 
@@ -25,5 +27,10 @@ public interface TaskFilterRestResource {
     @Produces(MediaType.APPLICATION_JSON)
     @Consumes(MediaType.APPLICATION_JSON)
     EntityModel<CountResultDto> queryCount(TaskQueryDto filterQuery);
+
+    @GET
+    @Path("/count")
+    @Produces(MediaType.APPLICATION_JSON)
+    EntityModel<CountResultDto> getFiltersCount(@Context UriInfo uriInfo);
 
 }

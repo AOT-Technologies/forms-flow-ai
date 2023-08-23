@@ -3,8 +3,10 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.camunda.bpm.engine.ProcessEngine;
+import org.camunda.bpm.engine.filter.FilterQuery;
 import org.camunda.bpm.engine.query.Query;
 import org.camunda.bpm.engine.rest.dto.CountResultDto;
+import org.camunda.bpm.engine.rest.dto.runtime.FilterQueryDto;
 import org.camunda.bpm.engine.rest.dto.task.TaskDto;
 import org.camunda.bpm.engine.rest.exception.InvalidRequestException;
 import org.camunda.bpm.engine.rest.hal.Hal;
@@ -14,10 +16,8 @@ import org.camunda.bpm.extension.hooks.rest.dto.TaskQueryDto;
 import org.camunda.bpm.extension.hooks.rest.service.TaskFilterRestService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import javax.ws.rs.core.MediaType;
-import javax.ws.rs.core.Request;
-import javax.ws.rs.core.Response;
-import javax.ws.rs.core.Variant;
+
+import javax.ws.rs.core.*;
 import java.util.ArrayList;
 import java.util.List;
 public class TaskFilterRestServiceImpl implements TaskFilterRestService {
@@ -40,7 +40,16 @@ public class TaskFilterRestServiceImpl implements TaskFilterRestService {
         return new CountResultDto(executeFilterCount(filterQuery));
     }
 
-    /**
+    @Override
+    public CountResultDto getFiltersCount(UriInfo uriInfo) {
+        FilterQuery query = getQueryFromQueryParameters(uriInfo.getQueryParameters());
+        return new CountResultDto(query.count());
+    }
+
+    protected FilterQuery getQueryFromQueryParameters(MultivaluedMap<String, String> queryParameters) {
+        org.camunda.bpm.engine.rest.dto.runtime.FilterQueryDto queryDto = new FilterQueryDto(objectMapper, queryParameters); 
+        return queryDto.toQuery(processEngine);
+    }    /**
      * This method execute the query and returns the count
      *
      * @param filterQuery

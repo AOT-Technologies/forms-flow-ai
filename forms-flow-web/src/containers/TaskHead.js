@@ -64,11 +64,12 @@ function TaskHead() {
         <div style={{ marginLeft: "auto", marginRight: "3rem" }}>
           <button
             type="button"
-            className={viewType ? "btn btn-link" : "btn btn-outline-secondary"}
+            className={`btn ${viewType ? "btn-light" : "btn-secondary"} ${viewType ? "" : "active"
+              }`}
             onClick={() => {
               changeTaskView(false);
             }}
-            style={{ color: "black" }}
+            style={{ marginRight: "2px" }}
           >
             <svg
               xmlns="http://www.w3.org/2000/svg"
@@ -92,8 +93,8 @@ function TaskHead() {
           </button>
           <button
             type="button"
-            className={viewType ? "btn btn-outline-secondary" : "btn btn-link"}
-            style={{ color: "black" }}
+            className={`btn ${viewType ? "btn-secondary" : "btn-light"} ${viewType ? "active" : ""
+              }`}
             onClick={() => {
               changeTaskView(true);
             }}

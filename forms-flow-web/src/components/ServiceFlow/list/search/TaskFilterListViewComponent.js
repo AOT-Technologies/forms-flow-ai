@@ -1,8 +1,17 @@
 
-import React,{ useState } from "react";
+import React,{ useState   } from "react";
 import { Row,Col, } from "react-bootstrap";
 import DatePicker from "react-datepicker";
-import  "./TaskSearchBarListView.scss";
+import { useDispatch } from "react-redux";
+import AsyncSelect from "react-select/async";
+import "./TaskSearchBarListView.scss";
+
+import { fetchUserListWithSearch } from "../../../../apiManager/services/bpmTaskServices";
+import {
+   
+    UserSearchFilterTypes,
+} from "../../constants/userSearchFilterTypes";
+
 const TaskFilterListViewComponent = React.memo(({toggleDisplayFilter}) => {
 
 const [startDate, setStartDate] = useState(null);
@@ -11,10 +20,19 @@ const [startDate, setStartDate] = useState(null);
     const [candidateGroup, setCandidateGroup] = useState('');
     const [candidateUser, setCandidateUser] = useState('');
     const [processDefinitionName, setProcessDefinitionName] = useState('');
+    const dispatch = useDispatch();
+   
 
-    
-    const applyFilters = () => {
+
+  
         
+    const applyFilters = () => {
+        console.log(assignee);
+        toggleDisplayFilter();
+        applyAssigneeFilter();
+    };
+    const applyAssigneeFilter = () => {
+
     };
     const clearAllFilters = () => {
         setAssignee('');
@@ -24,6 +42,47 @@ const [startDate, setStartDate] = useState(null);
         setStartDate(null);
         setEndDate(null);
     };
+    const formatOptionLabel = (
+        { id, firstName, lastName, email },
+        { context }
+    ) => {
+        if (context === "value") {
+            return <div className="p-2">{id}</div>;
+        } else if (context === "menu") {
+            return (
+                <div
+                    className="p-2 click-element"
+                    style={{ display: "flex", flexDirection: "column" }}
+                >
+                    <div>{id}</div>
+                    <div>{(firstName, lastName, email)}</div>
+                </div>
+            );
+        }
+    };
+    const loadOptions = (inputValue = "", callback) => {
+        dispatch(
+            fetchUserListWithSearch(
+                { searchType: UserSearchFilterTypes[0].searchType, query: inputValue },
+                (err, res) => {
+                    if (!err) {
+                        const userListOptions = res.map((user) => {
+                            return {
+                                value: user.username,
+                                label: user.username,
+                                email: user.email,
+                                firstName: user.firstName,
+                                id: user.username,
+                                lastName: user.lastName,
+                            };
+                        });
+                        // setIsSearch(true);
+                        callback(userListOptions);
+                    }
+                }
+            )
+        );
+    };
 
   return (
       <>
@@ -32,23 +91,22 @@ const [startDate, setStartDate] = useState(null);
                   <span className="font-weight-bold" style={{ marginRight: "auto"}} >
                       Filters
                   </span>
-                  <span className="font-weight-light"
-                      style={{ marginLeft: "auto" }}
-                      onClick={clearAllFilters}
-                  >
-                     Clear All Filters
-                  </span>
                   
               </Row> 
               
               <Row className="mt-2">
                   <Col>
                       <label>Assignee</label>
-                      <input
-                          className="form-control"
-                          placeholder=""
-                          value={assignee}
-                          onChange={(e) => setAssignee(e.target.value)}
+                      <AsyncSelect
+                          cacheOptions
+                          
+                          loadOptions={loadOptions}
+                          isClearable
+                          defaultOptions
+                          value={assignee}  // Make sure to set the value prop
+                          onChange={(selectedOption) => setAssignee(selectedOption)}
+                          formatOptionLabel={formatOptionLabel} 
+                          
                       />
                   </Col>
                   <Col>
@@ -178,7 +236,15 @@ const [startDate, setStartDate] = useState(null);
                       </div>
                   </Col>
               </Row>
-              <Row className="mt-2 filter-cancel-btn-container ">
+              <hr />
+              <Row className="mt-3 filter-cancel-btn-container ">
+                  <Col className="text-left">
+                      <span className=" text-danger"
+                          onClick={clearAllFilters}
+                      >
+                          Clear All Filters
+                      </span>
+                  </Col>
                   <Col className="text-right">
                       <button className="btn btn-light mr-1 " onClick={toggleDisplayFilter}>Cancel</button>
                       <button className="btn btn-dark" onClick={applyFilters}>Show results</button>

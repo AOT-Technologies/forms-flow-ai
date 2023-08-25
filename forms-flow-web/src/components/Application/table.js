@@ -126,13 +126,13 @@ export const columns = (
   return [
     {
       dataField: "id",
-      text: <Translation>{(t) => t("Application Id")}</Translation>,
+      text: <Translation>{(t) => t("Application ID")}</Translation>,
       formatter: (cell, row) => linkApplication(cell, row, redirectUrl),
       headerClasses: "classApplicationId",
       sort: true,
       filter: textFilter({
         delay: 800,
-        placeholder: `\uf002 ${t("Application Id")}`, // custom the input placeholder
+        placeholder: `\uf002 ${t("Application ID")}`, // custom the input placeholder
         caseSensitive: false, // default is false, and true will only work when comparator is LIKE
         className: "icon-search",
         style: invalidFilters.APPLICATION_ID

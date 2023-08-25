@@ -153,7 +153,7 @@ const Dashboard = React.memo(() => {
   if (isMetricsLoading) {
     return <Loading />;
   }
-  const getStatusDetails = (id, options) => {
+  const getStatusDetails = (id,options) => {
     const fromDate = getFormattedDate(dateRange[0]);
     const toDate = getFormattedDate(dateRange[1]);
     dispatch(SetSubmissionStatusCountLoader(true));
@@ -400,15 +400,16 @@ const Dashboard = React.memo(() => {
                     submissionData={showSubmissionData}
                     getStatusDetails={getStatusDetails}
                     submissionStatusCountLoader={submissionStatusCountLoader}
-                  />
-                </Modal.Body>
-              </Modal>
-            )}
+                        />
+                      </Modal.Body>
+                    </Modal>
+                  )}
+
           </div>
         )}
         </div>
 
-       
+
 
         <Route path={"/metrics/:notAvailable"}>
           {" "}

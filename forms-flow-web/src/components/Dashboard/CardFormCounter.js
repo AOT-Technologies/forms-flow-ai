@@ -13,7 +13,7 @@ const CardFormCounter = React.memo((props) => {
     <Fragment>
       <div
         className=" card-counter form-card-counter "
-        onClick={() => getStatusDetails(parentFormId, { parentId: true })}
+        onClick={() => getStatusDetails(parentFormId,{parentId:true})}
       >
         <div
           className={`white-box analytics-info submission-counter ${
@@ -29,13 +29,12 @@ const CardFormCounter = React.memo((props) => {
                 overlay={(propsData) => (
                   <Tooltip id="overlay-example" {...propsData}>
                     {formName}
-                  </Tooltip>
+                </Tooltip>
                 )}
               >
                 <span className="form-title">{formName}</span>
               </OverlayTrigger>
             </div>
-
             <div>
               {" "}
               <span className="small-title">

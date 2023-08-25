@@ -27,7 +27,6 @@ const [startDate, setStartDate] = useState(null);
   
         
     const applyFilters = () => {
-        console.log(assignee);
         toggleDisplayFilter();
         applyAssigneeFilter();
     };

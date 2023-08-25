@@ -189,7 +189,7 @@ export const updateApplicationEvent = (applicationId,data, ...rest) => {
 
   const done = rest.length ? rest[0] : () => {};
   return (dispatch) => {
-    
+
     const apiUrlAppResubmit = replaceUrl(
       API.APPLICATION_EVENT_UPDATE,
       "<application_id>",
@@ -224,7 +224,7 @@ export const FilterApplications = (params, ...rest) => {
     if (id && id !== "") {
       url += `&Id=${id.filterVal}`;
     }
-    
+
     if (applicationStatus && applicationStatus !== "") {
       url += `&applicationStatus=${applicationStatus?.filterVal}`;
     }

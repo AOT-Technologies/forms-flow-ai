@@ -19,13 +19,12 @@ const COLORS = [
 const ChartForm = React.memo((props) => {
   const { submissionsStatusList, submissionData, submissionStatusCountLoader } = props;
   const {formVersions, formName, parentFormId} = submissionData;
-  
-  const sortedVersions = useMemo(()=> 
-  (formVersions?.sort((version1, version2)=> 
-  version1.version > version2.version ? 1 : -1)),[formVersions]);
-  
-  const version = formVersions?.length;
 
+  const sortedVersions = useMemo(()=>
+  (formVersions?.sort((version1, version2)=>
+  version1.version > version2.version ? 1 : -1)),[formVersions]);
+
+  const version = formVersions?.length;
   const { t } = useTranslation();
   const pieData = submissionsStatusList || [];
 
@@ -36,7 +35,6 @@ const ChartForm = React.memo((props) => {
     props.getStatusDetails(id,option);
   };
 
- 
 
   return (
     <div className="row">
@@ -59,7 +57,7 @@ const ChartForm = React.memo((props) => {
             <p className="form-label mb-0">{t("Select form version")}</p>
             <select className="form-select" aria-label="Default select example"  onChange={(e) =>{ handlePieData(e.target.value);}}>
                 {
-                  sortedVersions.map((option)=> <option key={option.formId} 
+                  sortedVersions.map((option)=> <option key={option.formId}
                   value={option.formId}>v{option.version}</option>)
                 }
                 <option selected value={"all"}>{t("All")}</option>

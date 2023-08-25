@@ -1,8 +1,8 @@
-import React, { useEffect } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
-import { useLocation } from 'react-router-dom';
-import { push } from 'connected-react-router';
-import { NavDropdown } from 'react-bootstrap';
+import React, { useEffect } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import { useLocation } from "react-router-dom";
+import { push } from "connected-react-router";
+import { NavDropdown } from "react-bootstrap";
 import ServiceFlowFilterListDropDown from "../components/ServiceFlow/filter/ServiceTaskFilterListDropDown";
 import createURLPathMatchExp from "../helper/regExp/pathMatch";
 import {MULTITENANCY_ENABLED} from "../constants/constants";
@@ -10,13 +10,20 @@ import { fetchFilterList } from '../apiManager/services/bpmTaskServices';
 import { setViewType } from '../actions/bpmTaskActions';
 
 
+
+import CreateNewFilterDrawer from "../components/ServiceFlow/list/sort/CreateNewFilter";
+
 function TaskHead() {
   const dispatch = useDispatch();
   const tenantKey = useSelector((state) => state.tenants?.tenantId);
-  const selectedFilter = useSelector(state => state.bpmTasks.selectedFilter?.name);
-  const itemCount = useSelector(state => state.bpmTasks.tasksCount);
-  const isTaskListLoading = useSelector(state => state.bpmTasks.isTaskListLoading);
-  const count = isTaskListLoading ? "" : itemCount ? `(${itemCount})` : '(0)';
+  const selectedFilter = useSelector(
+    (state) => state.bpmTasks.selectedFilter?.name
+  );
+  const itemCount = useSelector((state) => state.bpmTasks.tasksCount);
+  const isTaskListLoading = useSelector(
+    (state) => state.bpmTasks.isTaskListLoading
+  );
+  const count = isTaskListLoading ? "" : itemCount ? `(${itemCount})` : "(0)";
   const location = useLocation();
   const { pathname } = location;
   const baseUrl = MULTITENANCY_ENABLED ? `/tenant/${tenantKey}/` : "/";
@@ -29,7 +36,7 @@ function TaskHead() {
   
   useEffect(()=>{
     dispatch(fetchFilterList());
-  },[itemCount]);
+  }, [itemCount]);
 
   const changeTaskView = (view) => {
     dispatch(setViewType(view));
@@ -39,8 +46,8 @@ function TaskHead() {
     <div className="header-container">
       <div className="main-header">
         <div className="head-item padding-right-60">
-          <h3 className="application-head">
-            <span className="application-text mr-5">
+          <h4 className="application-head" style={{ fontSize: "21px" }}>
+            <span className="application-text mr-2  ">
               <NavDropdown
                 className={`main-nav nav-item taskDropdown  ${
                   pathname.match(createURLPathMatchExp("task", baseUrl))
@@ -49,7 +56,7 @@ function TaskHead() {
                 }`}
                 title={
                   <>
-                    <i className="fa fa-list fa-lg fa-fw " />
+                    <i className="fa fa-list-ul px-2" />
                     {`${selectedFilter ? selectedFilter : "Tasks"} ${" "}`}
                     {count}
                   </>
@@ -59,8 +66,9 @@ function TaskHead() {
                 <ServiceFlowFilterListDropDown />
               </NavDropdown>
             </span>
-          </h3>
+          </h4>
         </div>
+        <CreateNewFilterDrawer />
         <div style={{ marginLeft: "auto", marginRight: "3rem" }}>
           <button
             type="button"
@@ -113,8 +121,8 @@ function TaskHead() {
             Card View
           </button>
         </div>
-      </div>
 
+      </div>
       <hr className="head-rule" />
     </div>
   );

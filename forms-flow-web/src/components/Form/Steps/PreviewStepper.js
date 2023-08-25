@@ -64,7 +64,7 @@ const Preview = React.memo(
       (clientSelectedOption == "Specific Users" && !clientGroups.length) ||
       (reviewerSelectedOption == "Specific Reviewers" &&
         !reviewerGroups.length);
-        
+
     const id = show ? "simple-popover" : undefined;
 
     // copy anonymouse url
@@ -111,8 +111,8 @@ const Preview = React.memo(
       );
       setClientSelectedOption(
         FORM?.roles?.length ? "Specific Users" : "All Users"
-      );
-      setReviewerSelectedOption(
+        );
+setReviewerSelectedOption(
         APPLICATION?.roles?.length ? "Specific Reviewers" : "All Reviewers"
       );
 
@@ -166,7 +166,7 @@ const Preview = React.memo(
       if (deletedValue) {
         setClientOptions((prev) => [deletedValue, ...prev]);
       }
-    };
+};
 
     const removeReviewerUserGroup = (group) => {
       let newReviewers = reviewerGroups?.filter((item) => item !== group);
@@ -219,7 +219,7 @@ const Preview = React.memo(
         payload.roles = [];
       }
 
-      if (reviewerSelectedOption === "Specific Reviewers") {
+if (reviewerSelectedOption === "Specific Reviewers") {
         payload.roles = reviewerGroups;
       }
       return payload;
@@ -234,7 +234,6 @@ const Preview = React.memo(
         console.log(err);
       });
     };
-
     return (
       <div>
         <Grid
@@ -272,11 +271,11 @@ const Preview = React.memo(
                     <span className="font-weight-bolder">
                       {t("Form Name")} :{" "}
                     </span>
-                    <span>
+                    <h4 className="text-truncate">
                       {formData && formData?.form && formData?.form?.title
                         ? formData?.form?.title
                         : "-"}
-                    </span>
+                    </h4>
                   </div>
                   <div>
                     <span className="font-weight-bolder">
@@ -337,6 +336,7 @@ const Preview = React.memo(
                   </div>
                   <hr />
 
+
                   <div className="mt-2" style={{ height: "auto" }}>
                     <span
                       className="font-weight-bold"
@@ -388,19 +388,15 @@ const Preview = React.memo(
                     </div>
                     {designerSelectedOption === "Specific Designers" ? (
                       <div className="d-flex align-items-center flex-wrap">
-                        {designerGroups?.map((e) => (
-                          <Chip
-                            key={e}
-                            label={e}
-                            variant="outlined"
-                            className="mr-2"
-                            onDelete={() => {
-                              removeDesignerUserGroup(e);
-                            }}
+                        {designerGroups?.map((e) =>(
+                            <Chip key={e} label={e}
+                             variant="outlined"
+                             className="mr-2"
+                             onDelete={()=>{removeDesignerUserGroup(e);}}
                           />
                         ))}
 
-                        <Button
+                      <Button
                           onClick={handleClick("designer")}
                           className="btn btn-primary btn-md form-btn pull-left btn-left"
                         >
@@ -478,52 +474,48 @@ const Preview = React.memo(
                       {clientSelectedOption === "Specific Users" ? (
                         <div className="d-flex align-items-center flex-wrap">
                           {clientGroups?.map((e) => {
-                            return (
-                              <Chip
-                                key={e}
-                                label={e}
-                                variant="outlined"
-                                className="mr-2"
-                                onDelete={() => {
-                                  removeClientUserGroup(e);
-                                }}
-                              />
-                            );
-                          })}
-                          <Button
-                            onClick={handleClick("client")}
-                            className="btn btn-primary btn-md form-btn pull-left btn-left"
-                          >
-                            <Translation>{(t) => t("Add")}</Translation>{" "}
-                            <b>+</b>
-                          </Button>
-                          <Popover
-                            data-testid="popup-component"
-                            id={id}
-                            open={show === "client"}
-                            onClose={handleClose}
-                            anchorEl={anchorEl}
-                            placement={"top"}
-                          >
-                            <ListGroup>
-                              {clientOptions?.length > 0 ? (
-                                clientOptions?.map((item, key) => (
-                                  <ListGroup.Item
-                                    key={key}
-                                    as="button"
-                                    onClick={() => addClientGroups(item)}
-                                  >
-                                    {item.name}
-                                  </ListGroup.Item>
-                                ))
-                              ) : (
-                                <ListGroup.Item>{`${t(
-                                  "All groups have access to the form"
-                                )}`}</ListGroup.Item>
-                              )}
-                            </ListGroup>
-                          </Popover>
-                        </div>
+                                return (
+                                <Chip key={e} label={e}
+                                   variant="outlined"
+                                   className="mr-2"
+                                   onDelete={()=>{removeClientUserGroup(e);}}
+                               />
+                                );
+                              })}
+                              <Button
+                              onClick={handleClick("client")}
+                                className="btn btn-primary btn-md form-btn pull-left btn-left"
+                              >
+                                <Translation>{(t) => t("Add")}</Translation>{" "}
+                                <b>+</b>
+                              </Button>
+                              <Popover
+                                data-testid="popup-component"
+                                id={id}
+                                open={show === "client"}
+                                onClose={handleClose}
+                                anchorEl={anchorEl}
+                                placement={"top"}
+                              >
+                                <ListGroup>
+                                  {clientOptions?.length > 0 ? (
+                                    clientOptions?.map((item, key) => (
+                                      <ListGroup.Item
+                                        key={key}
+                                        as="button"
+                                        onClick={() => addClientGroups(item)}
+                                      >
+                                        {item.name}
+                                      </ListGroup.Item>
+                                    ))
+                                  ) : (
+                                    <ListGroup.Item>{`${t(
+                                      "All groups have access to the form"
+                                    )}`}</ListGroup.Item>
+                                  )}
+                                </ListGroup>
+                              </Popover>
+</div>
                       ) : (
                         ""
                       )}

@@ -198,7 +198,7 @@ export const fetchUserListWithSearch = ({ searchType, query }, ...rest) => {
 
 export const fetchFilterList = (...rest) => {
   const done = rest.length ? rest[0] : () => {};
-  const getTaskFiltersAPI = `${API.GET_BPM_FILTERS}?resourceType=Task&itemCount=true`;
+  const getTaskFiltersAPI = `${API.GET_FILTERS}/user`;
   return (dispatch) => {
     RequestService.httpGETRequest(
       getTaskFiltersAPI,
@@ -466,4 +466,8 @@ export const onBPMTaskFormSubmit = (taskId, formReq, ...rest) => {
         done(error);
       });
   };
+};
+
+export const saveFilters = (data) => {
+  return RequestService.httpPOSTRequest(`${API.GET_FILTERS}`, data);
 };

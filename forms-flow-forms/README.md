@@ -49,8 +49,8 @@ Not applicable.
 |`FORMIO_CLIENT_UI`|To setup FORMIO client ui |true / false|`false`
 |`FORMIO_DEFAULT_PROJECT_URL`:triangular_flag_on_post:|forms-flow-forms default url||`http://{your-ip-address}:3001`
 |`FORMIO_JWT_SECRET`|forms-flow-forms jwt secret| |`--- change me now ---`
-|`FORMIO_CLIENT_UI`|To setup FORMIO client ui |true / false|`false`
 |`MULTI_TENANCY_ENABLED`|To enable multit tenancy |true / false|`false`
+
 **Additionally, you may want to change these**
 
 * The value of Mongo database details (especially if this instance is not just for testing purposes)

@@ -205,7 +205,7 @@ public class AdminRestServiceImpl implements AdminRestService {
             authorizations = ProcessEngines.getDefaultProcessEngine()
                     .getAuthorizationService()
                     .createAuthorizationQuery()
-                    .resourceType(Resources.AUTHORIZATION.resourceType())
+                    .resourceType(Resources.PROCESS_DEFINITION.resourceType())
                     .list();
         } else {
             authorizations = ProcessEngines.getDefaultProcessEngine()

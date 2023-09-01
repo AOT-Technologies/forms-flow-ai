@@ -1,6 +1,18 @@
 # Changelog for formsflow.ai
 
 Mark  items as `Added`, `Changed`, `Fixed`, `Removed`, `Untested Features`, `Upcoming Features`, `Known Issues`
+## 5.2.1 - 2023-09-01
+
+`Fixed`
+
+**forms-flow-web**
+
+* Fixed bpmn property panel css issue.
+
+**forms-flow-documents**
+
+* Fixed the problem of conflicting versions between Chrome and Chrome Driver when downloading forms.
+
 
 ## 5.2.0 - 2023-06-30
 

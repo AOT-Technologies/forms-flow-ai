@@ -5,6 +5,7 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import org.camunda.bpm.engine.rest.dto.CountResultDto;
 import org.camunda.bpm.engine.rest.hal.Hal;
 import org.camunda.bpm.extension.hooks.rest.dto.TaskQueryDto;
+import org.springframework.hateoas.CollectionModel;
 import org.springframework.hateoas.EntityModel;
 
 import javax.ws.rs.*;
@@ -13,6 +14,7 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Request;
 import javax.ws.rs.core.UriInfo;
 import java.util.List;
+import java.util.Map;
 
 @Produces(MediaType.APPLICATION_JSON)
 public interface TaskFilterRestResource {
@@ -27,7 +29,7 @@ public interface TaskFilterRestResource {
     @Path("/count")
     @Produces(MediaType.APPLICATION_JSON)
     @Consumes(MediaType.APPLICATION_JSON)
-    EntityModel<CountResultDto> queryCount(List<TaskQueryDto> filterQuery);
+    List<Map<String, Object>> queryCount(List<TaskQueryDto> filterQuery);
 
     @GET
     @Path("/count")

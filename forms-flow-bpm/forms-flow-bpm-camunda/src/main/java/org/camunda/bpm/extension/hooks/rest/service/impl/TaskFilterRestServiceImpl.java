@@ -1,4 +1,5 @@
 package org.camunda.bpm.extension.hooks.rest.service.impl;
+
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -20,16 +21,21 @@ import org.slf4j.LoggerFactory;
 
 import javax.ws.rs.core.*;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+
 public class TaskFilterRestServiceImpl implements TaskFilterRestService {
     private static final Logger LOGGER = LoggerFactory.getLogger(TaskFilterRestServiceImpl.class);
     public static final List<Variant> VARIANTS = Variant.mediaTypes(MediaType.APPLICATION_JSON_TYPE, Hal.APPLICATION_HAL_JSON_TYPE).add().build();
     private final ObjectMapper objectMapper;
     private final ProcessEngine processEngine;
+
     public TaskFilterRestServiceImpl(ObjectMapper objectMapper, ProcessEngine processEngine) {
         this.objectMapper = objectMapper;
         this.processEngine = processEngine;
     }
+
     @Override
     public Object queryList(Request request, TaskQueryDto filterQuery, Integer firstResult, Integer maxResults) throws JsonProcessingException {
         return executeQueryList(request, filterQuery, firstResult, maxResults);
@@ -37,14 +43,14 @@ public class TaskFilterRestServiceImpl implements TaskFilterRestService {
     }
 
     @Override
-    public CountResultDto queryCount(List<TaskQueryDto> filterQuery) {
-        long count = 0;
-        long totalcount = 0;
+    public List<Map<String, Object>> queryCount(List<TaskQueryDto> filterQuery) {
+        Map<String, Object> taskFilterQuerydata;
+        List<Map<String, Object>> countList = new ArrayList<>();
         for (TaskQueryDto queryDto : filterQuery) {
-            count = executeFilterCount(queryDto);
-            totalcount += count;
+            taskFilterQuerydata = executeFilterCount(queryDto);
+            countList.add(taskFilterQuerydata);
         }
-        return new CountResultDto(totalcount);
+        return countList;
     }
 
     @Override
@@ -54,19 +60,24 @@ public class TaskFilterRestServiceImpl implements TaskFilterRestService {
     }
 
     protected FilterQuery getQueryFromQueryParameters(MultivaluedMap<String, String> queryParameters) {
-        org.camunda.bpm.engine.rest.dto.runtime.FilterQueryDto queryDto = new FilterQueryDto(objectMapper, queryParameters); 
+        org.camunda.bpm.engine.rest.dto.runtime.FilterQueryDto queryDto = new FilterQueryDto(objectMapper, queryParameters);
         return queryDto.toQuery(processEngine);
-    }    /**
+    }
+
+    /**
      * This method execute the query and returns the count
      *
      * @param filterQuery
      * @return
      */
-    protected long executeFilterCount(TaskQueryDto filterQuery) {
-      //  Query<?, ?> query = filterQuery.getCriteria().toQuery(processEngine);
+    protected Map<String, Object> executeFilterCount(TaskQueryDto filterQuery) {
+        //  Query<?, ?> query = filterQuery.getCriteria().toQuery(processEngine);
         filterQuery.getCriteria().setObjectMapper(objectMapper);
+        Map<String, Object> dataMap = new HashMap<>();
         TaskQuery query = filterQuery.getCriteria().toQuery(processEngine);
-        return query.count();
+        dataMap.put("name", filterQuery.getName());
+        dataMap.put("count", query.count());
+        return dataMap;
     }
 
     private Object executeQueryList(Request request, TaskQueryDto filterQuery, Integer firstResult, Integer maxResults) throws JsonProcessingException {
@@ -78,11 +89,13 @@ public class TaskFilterRestServiceImpl implements TaskFilterRestService {
         }
         return executeList(request, executeQuery(filterQuery.getCriteria()), firstResult, maxResults);
     }
+
     private Query<?, ?> executeQuery(org.camunda.bpm.engine.rest.dto.task.TaskQueryDto extendingQuery) throws JsonProcessingException {
         objectMapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
         extendingQuery.setObjectMapper(objectMapper);
         return extendingQuery.toQuery(processEngine);
     }
+
     /**
      * This method validate the request media type and returns the tasklist
      *
@@ -102,6 +115,7 @@ public class TaskFilterRestServiceImpl implements TaskFilterRestService {
         }
         throw new InvalidRequestException(Response.Status.NOT_ACCEPTABLE, "No acceptable content-type found");
     }
+
     /**
      * This method returns the Hal Tasklist
      *
@@ -115,6 +129,7 @@ public class TaskFilterRestServiceImpl implements TaskFilterRestService {
         List<Task> entities = (List<Task>) query.listPage(firstResult, maxResults);
         return HalTaskList.generate(entities, query.count(), processEngine);
     }
+
     /**
      * This method returns json list of Task.
      *

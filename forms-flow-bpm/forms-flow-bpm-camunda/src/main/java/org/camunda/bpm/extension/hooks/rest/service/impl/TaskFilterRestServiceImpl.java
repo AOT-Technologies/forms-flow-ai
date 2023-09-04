@@ -12,6 +12,7 @@ import org.camunda.bpm.engine.rest.exception.InvalidRequestException;
 import org.camunda.bpm.engine.rest.hal.Hal;
 import org.camunda.bpm.engine.rest.hal.task.HalTaskList;
 import org.camunda.bpm.engine.task.Task;
+import org.camunda.bpm.engine.task.TaskQuery;
 import org.camunda.bpm.extension.hooks.rest.dto.TaskQueryDto;
 import org.camunda.bpm.extension.hooks.rest.service.TaskFilterRestService;
 import org.slf4j.Logger;
@@ -36,8 +37,14 @@ public class TaskFilterRestServiceImpl implements TaskFilterRestService {
     }
 
     @Override
-    public CountResultDto queryCount(TaskQueryDto filterQuery) {
-        return new CountResultDto(executeFilterCount(filterQuery));
+    public CountResultDto queryCount(List<TaskQueryDto> filterQuery) {
+        long count = 0;
+        long totalcount = 0;
+        for (TaskQueryDto queryDto : filterQuery) {
+            count = executeFilterCount(queryDto);
+            totalcount += count;
+        }
+        return new CountResultDto(totalcount);
     }
 
     @Override
@@ -56,7 +63,9 @@ public class TaskFilterRestServiceImpl implements TaskFilterRestService {
      * @return
      */
     protected long executeFilterCount(TaskQueryDto filterQuery) {
-        Query<?, ?> query = filterQuery.getCriteria().toQuery(processEngine);
+      //  Query<?, ?> query = filterQuery.getCriteria().toQuery(processEngine);
+        filterQuery.getCriteria().setObjectMapper(objectMapper);
+        TaskQuery query = filterQuery.getCriteria().toQuery(processEngine);
         return query.count();
     }
 

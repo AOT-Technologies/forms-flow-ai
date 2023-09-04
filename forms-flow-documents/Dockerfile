@@ -17,14 +17,14 @@ RUN  apt-get update \
 
 # Install Chrome WebDriver - version 116.0.5845.96
 RUN mkdir -p /opt/chromedriver && \
-    curl -sS -o /tmp/chromedriver_linux64.zip https://d3nrunty6xywgz.cloudfront.net/chromedriver-linux64.zip && \
+    curl -sS -o /tmp/chromedriver_linux64.zip https://formsflow-documentsapi.aot-technologies.com/chromedriver-linux64.zip && \
     unzip -qq /tmp/chromedriver_linux64.zip -d /opt/chromedriver && \
     rm /tmp/chromedriver_linux64.zip && \
     chmod +x /opt/chromedriver/chromedriver-linux64/chromedriver && \
     ln -fs /opt/chromedriver/chromedriver-linux64/chromedriver /usr/local/bin/chromedriver
 
 # Install Google Chrome
-RUN wget --no-verbose -O /tmp/chrome.deb https://d3nrunty6xywgz.cloudfront.net/google-chrome-stable_116.0.5845.140-1_amd64.deb &&\
+RUN wget --no-verbose -O /tmp/chrome.deb https://formsflow-documentsapi.aot-technologies.com/google-chrome-stable_116.0.5845.140-1_amd64.deb &&\
     apt-get update  && \
     apt install -y /tmp/chrome.deb &&\
     rm /tmp/chrome.deb

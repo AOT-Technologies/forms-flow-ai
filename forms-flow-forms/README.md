@@ -46,11 +46,11 @@ Not applicable.
 |`FORMIO_DB_NAME`|Mongo Database  Name. Used on installation to create the database.Choose your own||`formio`
 |`FORMIO_ROOT_EMAIL`|forms-flow-forms admin login|eg. admin@example.com|`admin@example.com`
 |`FORMIO_ROOT_PASSWORD`|forms-flow-forms admin password|eg.changeme|`changeme`
-|`FORMIO_CLIENT_UI`|To setup FORMIO client ui |true / false|`false`
+|`NO_INSTALL`|to enable/disable UI for Formio client| 1 or 0 | `1`
 |`FORMIO_DEFAULT_PROJECT_URL`:triangular_flag_on_post:|forms-flow-forms default url||`http://{your-ip-address}:3001`
 |`FORMIO_JWT_SECRET`|forms-flow-forms jwt secret| |`--- change me now ---`
-|`FORMIO_CLIENT_UI`|To setup FORMIO client ui |true / false|`false`
 |`MULTI_TENANCY_ENABLED`|To enable multit tenancy |true / false|`false`
+
 **Additionally, you may want to change these**
 
 * The value of Mongo database details (especially if this instance is not just for testing purposes)

@@ -72,6 +72,7 @@ public class TaskFilterRestServiceImpl implements TaskFilterRestService {
      */
     protected Map<String, Object> executeFilterCount(TaskQueryDto filterQuery) {
         //  Query<?, ?> query = filterQuery.getCriteria().toQuery(processEngine);
+        objectMapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
         filterQuery.getCriteria().setObjectMapper(objectMapper);
         Map<String, Object> dataMap = new HashMap<>();
         TaskQuery query = filterQuery.getCriteria().toQuery(processEngine);

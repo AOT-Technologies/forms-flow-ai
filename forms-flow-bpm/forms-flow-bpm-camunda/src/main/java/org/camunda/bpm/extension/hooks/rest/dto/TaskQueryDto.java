@@ -12,10 +12,19 @@ import lombok.Data;
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class TaskQueryDto {
 
+    private String name;
     private String tenant;
     private String status;
     private org.camunda.bpm.engine.rest.dto.task.TaskQueryDto criteria;
     private List<VariableQueryParameterDto> variables;
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
 
     public String getTenant() {
         return tenant;

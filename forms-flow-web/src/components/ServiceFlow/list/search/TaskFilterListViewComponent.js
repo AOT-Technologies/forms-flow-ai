@@ -1,45 +1,143 @@
 
-import React,{ useState   } from "react";
+import React, { useState,useEffect,useRef } from "react";
 import { Row,Col, } from "react-bootstrap";
 import DatePicker from "react-datepicker";
-import { useDispatch } from "react-redux";
+import { useDispatch,useSelector } from "react-redux";
 import AsyncSelect from "react-select/async";
 import "./TaskSearchBarListView.scss";
-
+import { fetchServiceTaskList } from "../../../../apiManager/services/bpmTaskServices";
+import {
+    setBPMTaskLoader,
+} from "../../../../actions/bpmTaskActions";
 import { fetchUserListWithSearch } from "../../../../apiManager/services/bpmTaskServices";
 import {
    
     UserSearchFilterTypes,
 } from "../../constants/userSearchFilterTypes";
-
-const TaskFilterListViewComponent = React.memo(({toggleDisplayFilter}) => {
-
-const [startDate, setStartDate] = useState(null);
-    const [endDate, setEndDate] = useState(null);
-    const [assignee, setAssignee] = useState('');
-    const [candidateGroup, setCandidateGroup] = useState('');
-    const [candidateUser, setCandidateUser] = useState('');
-    const [processDefinitionName, setProcessDefinitionName] = useState('');
-    const dispatch = useDispatch();
+import {
+    //getFormattedDateAndTime,
+    getISODateTime,
+} from "../../../../apiManager/services/formatterService";
+const TaskFilterListViewComponent =
+    React.memo(({ toggleDisplayFilter, filterValues, setFilterValues }) => {
    
 
-
-  
-        
+        const [followStartDate, setFollowStartDate] = useState(filterValues.followStartDate);
+        const [followEndDate, setFollowEndDate] = useState(filterValues.followEndDate);
+        const [dueStartDate, setDueStartDate] = useState(filterValues.dueStartDate);
+        const [dueEndDate, setDueEndDate] = useState(filterValues.dueEndDate);
+        const [createdStartDate, setCreatedStartDate] = useState(filterValues.createdStartDate);
+        const [createdEndDate, setCreatedEndDate] = useState(filterValues.createdEndDate);
+    const createSearchNode = useRef();
+        const [assignee, setAssignee] = useState(filterValues.assignee);
+        const [candidateGroup, setCandidateGroup] = useState(filterValues.candidateGroup);
+        const [candidateUser, setCandidateUser] = useState(filterValues.candidateUser);
+        const [processDefinitionName, setProcessDefinitionName] =
+            useState(filterValues.processDefinitionName);
+    const dispatch = useDispatch();
+    const firstResult = useSelector((state) => state.bpmTasks.firstResult);
+    const reqData = useSelector((state) => state.bpmTasks.listReqParams);
+    const selectedFilter = useSelector((state) => state.bpmTasks.selectedFilter);
+    // const filterSelections = useSelector(
+    //     (state) => state.bpmTasks.filterSearchSelections
+    // );
+    // const queryType = useSelector((state) => state.bpmTasks.searchQueryType);
+    // const filterSearchSelections = useSelector(
+    //     (state) => state.bpmTasks.filterSearchSelections
+    // );
+    // const [filterSelections, setFilterSelections] = useState(
+    //     filterSearchSelections
+    // );
+    const handleClick = (e) => {
+        if (createSearchNode?.current?.contains(e.target)) {
+            return;
+        }
+        // outside click
+        toggleDisplayFilter();
+    };
+    useEffect(() => {
+        // add when mounted
+        document.addEventListener("mousedown", handleClick);
+        // return function to be called when unmounted
+        return () => {
+            document.removeEventListener("mousedown", handleClick);
+        };
+    }, []);     
     const applyFilters = () => {
         toggleDisplayFilter();
-        applyAssigneeFilter();
-    };
-    const applyAssigneeFilter = () => {
+        // applyAssigneeFilter();
 
+        dispatch(setBPMTaskLoader(true));
+        
+        const filterParams = {};
+        if (assignee.label !== '') {
+            filterParams.assigneeLike =  assignee.label;
+        }
+        if (candidateUser !== '') {
+            filterParams.candidateUser = candidateUser;
+        }
+
+        if (processDefinitionName !== '') {
+            filterParams.processDefinitionNameLike = '%' + processDefinitionName + '%';
+        }
+        if (dueStartDate !== null ) {
+            filterParams.dueAfter = getISODateTime(dueStartDate);
+        }
+        if (dueEndDate !== null) {
+            filterParams.dueBefore = getISODateTime(dueEndDate);
+        }
+        if (followStartDate !== null) {
+            filterParams.followUpAfter = getISODateTime(followStartDate);
+        }
+        if (followEndDate !== null) {
+            filterParams.followUpBefore = getISODateTime(followEndDate);
+        }
+        if (createdStartDate !== null) {
+            filterParams.createdAfter = getISODateTime(createdStartDate);
+        }
+        if (createdEndDate !== null) {
+            filterParams.createdBefore = getISODateTime(createdEndDate);
+        }
+        
+        console.log(filterParams);
+        if (Object.keys(filterParams).length > 0) {
+            const reqDataparams = {
+                ...reqData,
+                ...filterParams
+            };
+
+            dispatch(fetchServiceTaskList(selectedFilter.id, firstResult, reqDataparams));
+        } 
     };
+    // const applyAssigneeFilter = () => {
+    //     const assigneeFilter = taskFilters.find(filter => filter.key === "assignee");
+    //     const updatedSelectionsArray = [...filterSelections, { ...assigneeFilter }];
+    //     setFilterSelections(updatedSelectionsArray);
+    //     
+    // };
+  
     const clearAllFilters = () => {
-        setAssignee('');
-        setCandidateGroup('');
-        setCandidateUser('');
-        setProcessDefinitionName('');
-        setStartDate(null);
-        setEndDate(null);
+        // setAssignee('');
+        // setCandidateGroup('');
+        // setCandidateUser('');
+        // setProcessDefinitionName('');
+        // setFollowStartDate(null);
+        // setFollowEndDate(null);    
+        // setDueStartDate(null);
+        // setDueEndDate(null);
+        // setCreatedStartDate(null);
+        // setCreatedEndDate(null);
+        setFilterValues({
+            assignee: '',
+            candidateUser: '',
+            processDefinitionName: '',
+            dueStartDate: '',
+            dueEndDate: '',
+            followStartDate: '',
+            followEndDate: '',
+            createdStartDate: '',
+            createdEndDate: ''
+        });
     };
     const formatOptionLabel = (
         { id, firstName, lastName, email },
@@ -85,7 +183,7 @@ const [startDate, setStartDate] = useState(null);
 
   return (
       <>
-          <div className="Filter-listview" style={{ minWidth: "700px"}}>
+          <div className="Filter-listview" style={{ minWidth: "700px" }} ref={createSearchNode}>
               <Row className="border-bottom" style={{ margin: "auto" }}>
                   <span className="font-weight-bold" style={{ marginRight: "auto"}} >
                       Filters
@@ -148,23 +246,23 @@ const [startDate, setStartDate] = useState(null);
                               <DatePicker
                                   placeholderText="From"
                                   showTimeSelect
-                                  selected={startDate}
-                                  onChange={date => setStartDate(date)}
+                                  selected={dueStartDate}
+                                  onChange={date => setDueStartDate(date)}
                                   selectsStart
-                                  startDate={startDate}
-                                  endDate={endDate}
+                                  startDate={dueStartDate}
+                                  endDate={dueEndDate}
                               />
                           </Col>
                           <Col xs={6}>
                               <DatePicker
                                   placeholderText="To"
                                   showTimeSelect
-                                  selected={endDate}
-                                  onChange={date => setEndDate(date)}
+                                  selected={dueEndDate}
+                                  onChange={date => setDueEndDate(date)}
                                   selectsEnd
-                                  startDate={startDate}
-                                  endDate={endDate}
-                                  minDate={startDate}
+                                  startDate={dueStartDate}
+                                  endDate={dueEndDate}
+                                  minDate={dueStartDate}
                               />
                           </Col>
                       </Row>
@@ -177,11 +275,11 @@ const [startDate, setStartDate] = useState(null);
                                   <DatePicker
                                       placeholderText="From"
                                       showTimeSelect
-                                      selected={startDate}
-                                      onChange={date => setStartDate(date)}
+                                      selected={followStartDate}
+                                      onChange={date => setFollowStartDate(date)}
                                       selectsStart
-                                      startDate={startDate}
-                                      endDate={endDate}
+                                      startDate={followStartDate}
+                                      endDate={followEndDate}
                                   />
                               </Col>
                               <Col xs={6} max>
@@ -189,12 +287,12 @@ const [startDate, setStartDate] = useState(null);
 
                                       placeholderText="To"
                                       showTimeSelect
-                                      selected={endDate}
-                                      onChange={date => setEndDate(date)}
+                                      selected={followEndDate}
+                                      onChange={date => setFollowEndDate(date)}
                                       selectsEnd
-                                      startDate={startDate}
-                                      endDate={endDate}
-                                      minDate={startDate}
+                                      startDate={followStartDate}
+                                      endDate={followEndDate}
+                                      minDate={followStartDate}
                                   />
                               </Col>
                           </Row> 
@@ -211,11 +309,11 @@ const [startDate, setStartDate] = useState(null);
                                   <DatePicker
                                       placeholderText="From"
                                       showTimeSelect
-                                      selected={startDate}
-                                      onChange={date => setStartDate(date)}
+                                      selected={createdStartDate}
+                                      onChange={date => setCreatedStartDate(date)}
                                       selectsStart
-                                      startDate={startDate}
-                                      endDate={endDate}
+                                      startDate={createdStartDate}
+                                      endDate={createdEndDate}
                                   />
                               </Col>
                               <Col xs={6} max>
@@ -223,12 +321,12 @@ const [startDate, setStartDate] = useState(null);
 
                                       placeholderText="To"
                                       showTimeSelect
-                                      selected={endDate}
-                                      onChange={date => setEndDate(date)}
+                                      selected={createdEndDate}
+                                      onChange={date => setCreatedEndDate(date)}
                                       selectsEnd
-                                      startDate={startDate}
-                                      endDate={endDate}
-                                      minDate={startDate}
+                                      startDate={createdStartDate}
+                                      endDate={createdEndDate}
+                                      minDate={createdStartDate}
                                   />
                               </Col>
                           </Row>

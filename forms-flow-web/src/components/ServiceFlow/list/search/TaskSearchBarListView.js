@@ -19,7 +19,17 @@ const TaskSearchBarListView = React.memo(({ toggleAllTaskVariables, allTaskVaria
 
   const [showClearButton, setShowClearButton] = useState(false);
   const [searchTaskInput, setSearchTaskInput] = useState("");
-
+  const [filterValues, setFilterValues] = useState({
+    assignee: '',
+    candidateUser: '',
+    processDefinitionName: '',
+    dueStartDate: '',
+    dueEndDate: '',
+    followStartDate: '',
+    followEndDate: '',
+    createdStartDate: '',
+    createdEndDate:''
+  });
 
   const taskList = useSelector((state) => state.bpmTasks.tasksList);
   const selectedFilter = useSelector((state) => state.bpmTasks.selectedFilter);
@@ -41,32 +51,18 @@ const TaskSearchBarListView = React.memo(({ toggleAllTaskVariables, allTaskVaria
   const handleSearchTask = () => {
     if ( searchTaskInput !== "") {
     dispatch(setBPMTaskLoader(true));
-    const searchValue = parseInt(searchTaskInput, 10);
-    const reqDataparams = {
-      sorting: [
-        {
-          sortBy: "created",
-          sortOrder: "desc",
-          label: {
-            key: null,
-            ref: null,
-            props: {},
-            _owner: null,
-            _store: {}
+      const searchValue = parseInt(searchTaskInput, 10);
+      console.log(reqData);
+      const reqDataparams = {
+        ...reqData,
+        processVariables: [
+          {
+            name: "applicationId",
+            operator: "eq",
+            value: searchValue
           }
-        }
-      ],
-      processVariables: [
-        {
-          name: "applicationId",
-          operator: "eq",
-          value: searchValue 
-        }
-      ],
-      taskVariables: [],
-      variableNamesIgnoreCase: false,
-      variableValuesIgnoreCase: false
-    };
+        ]
+      };
     dispatch(fetchServiceTaskList(selectedFilter.id, firstResult, reqDataparams));
     }
   };
@@ -81,7 +77,7 @@ const TaskSearchBarListView = React.memo(({ toggleAllTaskVariables, allTaskVaria
 
   const toggleDisplayFilter = () => {
     setDisplayFilter(!displayFilter);
-    setSortOptions(false);
+    console.log(filterValues);
   };
   return (
     <>
@@ -177,7 +173,7 @@ const TaskSearchBarListView = React.memo(({ toggleAllTaskVariables, allTaskVaria
           <button
             type="button"
             className="btn btn-outline-secondary "
-            onClick={() => { toggleDisplayFilter(); }}
+            onClick={() => { toggleDisplayFilter(); setSortOptions(false); }}
           >
             <svg
               xmlns="http://www.w3.org/2000/svg"
@@ -197,6 +193,8 @@ const TaskSearchBarListView = React.memo(({ toggleAllTaskVariables, allTaskVaria
               <TaskFilterListViewComponent
                 totalTasks={isTaskListLoading ? 0 : tasksCount}
                 toggleDisplayFilter={toggleDisplayFilter}
+                filterValues={filterValues}
+                setFilterValues={setFilterValues}
               />
             </div>
           )}

@@ -162,14 +162,14 @@ const ServiceTaskListView = React.memo(() => {
                     <h6>
                       {moment(task.created).isSame(moment(), "day")
                         ? moment(task.created).fromNow() 
-                        : task.created} 
+                        : task.created.split('T')[0]} 
                     </h6>
                   </div>
                 </Col>
-                <Col  xs={5} className="justify-content-between ">
+                <Col  xs={6} className="justify-content-between ">
                 <TaskHeaderListView task={task} taskId={task.id} groupView = {false} />
                 </Col>
-                <Col xs={2} >
+                <Col xs={1} >
                   <div className="col-12">
                     <h6 className="font-weight-light">Priority</h6>
                   </div>

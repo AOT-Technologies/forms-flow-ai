@@ -24,10 +24,10 @@ class FilterSchema(Schema):
         unknown = EXCLUDE
 
     id = fields.Int()
-    tenant = fields.Str()
+    tenant = fields.Str(allow_none=True)
     name = fields.Str()
-    description = fields.Str()
-    resource_id = fields.Str(data_key="resourceId")
+    description = fields.Str(allow_none=True)
+    resource_id = fields.Str(data_key="resourceId", allow_none=True)
     criteria = fields.Dict()
     variables = fields.List(fields.Nested(VariableSchema))
     properties = fields.Dict()

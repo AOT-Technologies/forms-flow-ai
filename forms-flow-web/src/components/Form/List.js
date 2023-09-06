@@ -87,7 +87,6 @@ const List = React.memo((props) => {
   const searchText = useSelector((state) => state.bpmForms.searchText);
   const [searchTextInput, setSearchTextInput] = useState(searchText);
   const [isLoading, setIsLoading] = React.useState(false);
-
   const formType = useSelector((state) => state.bpmForms.formType);
 
 
@@ -589,33 +588,35 @@ const List = React.memo((props) => {
             <div className="  row mt-2 mx-2">
               <div className="col" style={{ marginLeft: "15px", marginTop: "-18px" }}>
                 <div className="input-group">
-                  <span
-                    className="sort-span"
-                    onClick={handleSort}
+                  <span className="d-flex align-items-center">
+                {isAscend ? (
+                  <i
+                    className="fa fa-sort-alpha-asc"
+                    onClick={() => {
+                      handleSort("desc");
+                    }}
+                    data-toggle="tooltip"
+                    title={t("Sort by form name")}
                     style={{
                       cursor: "pointer",
-                      marginBottom: "8px",
+                      fontSize: "20px",
                     }}
-                  >
-                    <i
-                      className="fa fa-long-arrow-up fa-lg mt-2 fa-lg-hover"
-                      title={t("Sort by form name")}
-                      style={{
-                        opacity: `${sortOrder === "asc" || sortOrder === "title" ? 1 : 0.5
-                          }`,
-                      }}
-                    />
-                    <i
-                      className="fa fa-long-arrow-down fa-lg mt-2 ml-1 fa-lg-hover"
-                      title={t("Sort by form name")}
-                      style={{
-                        opacity: `${sortOrder === "desc" || sortOrder === "-title"
-                          ? 1
-                          : 0.5
-                          }`,
-                      }}
-                    />
-                  </span>
+                  ></i>
+                ) : (
+                  <i
+                    className="fa fa-sort-alpha-desc"
+                    onClick={() => {
+                      handleSort("asc");
+                    }}
+                    data-toggle="tooltip"
+                    title={t("Sort by form name")}
+                    style={{
+                      cursor: "pointer",
+                      fontSize: "20px",
+                    }}
+                  ></i>
+                )}
+              </span>
                   <div className="form-outline ml-2">
                     <input
                       type="search"

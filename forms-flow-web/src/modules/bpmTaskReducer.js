@@ -136,6 +136,8 @@ const bpmTasks = (state = initialState, action) => {
         return { ...state, selectedTaskVariables: action.payload };
     case ACTION_CONSTANTS.VIEW_TYPE:
         return { ...state, viewType: action.payload };
+    case ACTION_CONSTANTS.UPDATE_FILTER_SEARCH_PARAMS:
+        return { ...state, filterListSearchParams: action.payload };    
 
     case ACTION_CONSTANTS.BPM_ERROR:
         return {

@@ -186,9 +186,17 @@ export const setViewType = (data) => (dispatch) => {
     payload: data,
   });
 };
+
 export const bpmActionError = (data) => (dispatch) => {
   dispatch({
     type: ACTION_CONSTANTS.BPM_ERROR,
+    payload: data,
+  });
+};
+
+export const setBPMFilterSearchParams = (data) => (dispatch) => {
+  dispatch({
+    type: ACTION_CONSTANTS.UPDATE_FILTER_SEARCH_PARAMS, 
     payload: data,
   });
 };

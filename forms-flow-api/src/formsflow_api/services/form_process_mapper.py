@@ -41,6 +41,7 @@ class FormProcessMapperService:
             roles=user.group_or_roles,
             user_name=user.user_name,
             tenant=user.tenant_key,
+            include_created_by=True,
         )
         for forms in designer_forms:
             designer_form_ids.append(forms.resource_id)

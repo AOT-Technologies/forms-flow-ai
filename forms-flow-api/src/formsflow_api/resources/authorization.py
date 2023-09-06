@@ -164,7 +164,9 @@ class AuthorizationDetail(Resource):
 
         Fetch Authorization details by resource id based on authorization type.
         """
-        response = auth_service.get_resource_by_id(auth_type.upper(), resource_id)
+        response = auth_service.get_resource_by_id(
+            auth_type.upper(), resource_id, bool(auth.has_role([DESIGNER_GROUP]))
+        )
         if response:
             return (
                 response,

@@ -320,9 +320,9 @@ export default React.memo(
               for all tenants
             </label>
           ) : null}
-          <Button onClick={deployProcess}>Deploy</Button>
+          <Button onClick={deployProcess}>{t("Deploy")}</Button>
           <Button className="ml-3" onClick={handleExport}>
-            Export
+            {t("Export")}
           </Button>
         </div>
       </>

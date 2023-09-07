@@ -67,7 +67,9 @@ class Authorization(AuditDateTimeMixin, AuditUserMixin, BaseModel, db.Model):
         return query.all()
 
     @classmethod
-    def _auth_query(cls, auth_type, roles, tenant, user_name, include_created_by=False):
+    def _auth_query(
+        cls, auth_type, roles, tenant, user_name, include_created_by=False
+    ):  # pylint: disable=too-many-arguments
         role_condition = [Authorization.roles.contains([role]) for role in roles]
         query = cls.query.filter(Authorization.auth_type == auth_type).filter(
             or_(
@@ -126,7 +128,7 @@ class Authorization(AuditDateTimeMixin, AuditUserMixin, BaseModel, db.Model):
     @classmethod
     def find_all_resources_authorized(
         cls, auth_type, roles, tenant, user_name, include_created_by=False
-    ):
+    ):  # pylint: disable=too-many-arguments
         """Find all resources authorized to specific user/role or Accessible by all users/roles."""
         query = cls._auth_query(auth_type, roles, tenant, user_name, include_created_by)
         return query.all()

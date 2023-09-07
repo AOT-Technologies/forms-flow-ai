@@ -232,19 +232,33 @@ class AuthorizationListById(Resource):
     )
     def post(resource_id: str):
         """Create or Update Authoization of Form by id."""
-        data = request.get_json()
-        for auth_type in AuthType:
-            if data.get(auth_type.value.lower()):
-                auth_service.create_authorization(
-                    auth_type.value.upper(),
-                    data.get(auth_type.value.lower()),
-                    bool(auth.has_role([DESIGNER_GROUP])),
+        try:
+            data = request.get_json()
+            for auth_type in AuthType:
+                if (
+                    data.get(auth_type.value.lower())
+                    and auth_type.value != AuthType.DASHBOARD.value
+                ):
+                    auth_service.create_authorization(
+                        auth_type.value.upper(),
+                        data.get(auth_type.value.lower()),
+                        bool(auth.has_role([DESIGNER_GROUP])),
+                    )
+            response = auth_service.get_auth_list_by_id(resource_id)
+            if response:
+                return (
+                    response,
+                    HTTPStatus.OK,
                 )
-
-        response = auth_service.get_auth_list_by_id(resource_id)
-        if response:
-            return (
-                response,
-                HTTPStatus.OK,
+            return {"message": "Invalid resource id."}, HTTPStatus.BAD_GATEWAY
+        except PermissionError as err:
+            response, status = (
+                {
+                    "type": "Permission Denied",
+                    "message": "Access is prohibited.",
+                },
+                HTTPStatus.FORBIDDEN,
             )
-        return {"message": "Invalid resource id."}, HTTPStatus.BAD_GATEWAY
+            current_app.logger.warning(response)
+            current_app.logger.warning(err)
+            return response, status

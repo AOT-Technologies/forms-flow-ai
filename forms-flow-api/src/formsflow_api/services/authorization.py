@@ -103,7 +103,7 @@ class AuthorizationService:
 
     @user_context
     def get_resource_by_id(
-        self, auth_type: str, resource_id: str, include_created_by: bool, **kwargs
+        self, auth_type: str, resource_id: str, is_designer: bool, **kwargs
     ):
         """Get authorization resource by id."""
         user: UserContext = kwargs["user"]
@@ -114,7 +114,9 @@ class AuthorizationService:
             roles=user.group_or_roles,
             tenant=user.tenant_key,
             user_name=user.user_name,
-            include_created_by=include_created_by,
+            include_created_by=True
+            if is_designer and auth_type == AuthType.DESIGNER
+            else False,
         )
         if auth:
             return self._as_dict(auth)

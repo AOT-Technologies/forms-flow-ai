@@ -114,9 +114,7 @@ class AuthorizationService:
             roles=user.group_or_roles,
             tenant=user.tenant_key,
             user_name=user.user_name,
-            include_created_by=True
-            if is_designer and auth_type == AuthType.DESIGNER
-            else False,
+            include_created_by=bool(is_designer and auth_type == AuthType.DESIGNER),
         )
         if auth:
             return self._as_dict(auth)

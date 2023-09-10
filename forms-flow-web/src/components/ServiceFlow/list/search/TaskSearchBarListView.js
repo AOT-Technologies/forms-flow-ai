@@ -23,14 +23,14 @@ const TaskSearchBarListView = React.memo(({ toggleAllTaskVariables, allTaskVaria
     assignee: '',
     candidateUser: '',
     processDefinitionName: '',
-    dueStartDate: '',
-    dueEndDate: '',
-    followStartDate: '',
-    followEndDate: '',
-    createdStartDate: '',
-    createdEndDate:''
+    dueStartDate: null,
+    dueEndDate: null,
+    followStartDate: null,
+    followEndDate: null,
+    createdStartDate: null,
+    createdEndDate: null
   });
-
+  const [filterParams, setFilterParams] = useState({});
   const taskList = useSelector((state) => state.bpmTasks.tasksList);
   const selectedFilter = useSelector((state) => state.bpmTasks.selectedFilter);
   const firstResult = useSelector((state) => state.bpmTasks.firstResult);
@@ -51,15 +51,13 @@ const TaskSearchBarListView = React.memo(({ toggleAllTaskVariables, allTaskVaria
   const handleSearchTask = () => {
     if ( searchTaskInput !== "") {
     dispatch(setBPMTaskLoader(true));
-      const searchValue = parseInt(searchTaskInput, 10);
-      console.log(reqData);
       const reqDataparams = {
         ...reqData,
         processVariables: [
           {
             name: "applicationId",
             operator: "eq",
-            value: searchValue
+            value: searchTaskInput
           }
         ]
       };
@@ -195,6 +193,8 @@ const TaskSearchBarListView = React.memo(({ toggleAllTaskVariables, allTaskVaria
                 toggleDisplayFilter={toggleDisplayFilter}
                 filterValues={filterValues}
                 setFilterValues={setFilterValues}
+                filterParams={filterParams}
+                setFilterParams={setFilterParams}
               />
             </div>
           )}

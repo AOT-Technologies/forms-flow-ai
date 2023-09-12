@@ -79,4 +79,9 @@ public class FormsFlowV1RestServiceImpl {
         return new TaskFilterRestResourceImpl(serviceFinder.getTaskFilterRestService());
     }
 
+    @Path(AuthorizationRestResource.PATH)
+    public AuthorizationRestResource getAuthorizationRestResource(){
+        return new AuthorizationRestResourceImpl(processEngineService.getAuthorizationRestService());
+    }
+
 }

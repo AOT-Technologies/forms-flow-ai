@@ -79,6 +79,7 @@ class AuthorizationService:
             user_name=user.user_name,
             roles=user.group_or_roles,
             tenant=user.tenant_key,
+            include_created_by=is_designer,
         )
         roles = resource.get("roles")
         if auth:
@@ -101,7 +102,9 @@ class AuthorizationService:
         return self._as_dict(auth)
 
     @user_context
-    def get_resource_by_id(self, auth_type: str, resource_id: str, **kwargs):
+    def get_resource_by_id(
+        self, auth_type: str, resource_id: str, is_designer: bool, **kwargs
+    ):
         """Get authorization resource by id."""
         user: UserContext = kwargs["user"]
         auth_type_enum = AuthType(auth_type)
@@ -111,6 +114,7 @@ class AuthorizationService:
             roles=user.group_or_roles,
             tenant=user.tenant_key,
             user_name=user.user_name,
+            include_created_by=bool(is_designer and auth_type == AuthType.DESIGNER),
         )
         if auth:
             return self._as_dict(auth)
@@ -126,6 +130,7 @@ class AuthorizationService:
             roles=user.group_or_roles,
             tenant=user.tenant_key,
             user_name=user.user_name,
+            include_created_by=True,
         )
         if auth_designer_details:
             auth_details = Authorization.find_auth_list_by_id(

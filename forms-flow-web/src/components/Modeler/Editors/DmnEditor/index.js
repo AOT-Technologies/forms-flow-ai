@@ -9,7 +9,7 @@ import { createXML } from "../../helpers/deploy";
 import { MULTITENANCY_ENABLED, PUBLIC_WORKFLOW_ENABLED } from "../../../../constants/constants";
 import { deployBpmnDiagram } from "../../../../apiManager/services/bpmServices";
 import Loading from "../../../../containers/Loading";
-import { SUCCESS_MSG, ERROR_MSG } from "../../constants/bpmnModelerConstants";
+import { SUCCESS_MSG_DMN, ERROR_MSG } from "../../constants/bpmnModelerConstants";
 
 import {
   fetchAllDmnProcesses,
@@ -173,7 +173,7 @@ export default React.memo(
       deployBpmnDiagram(form)
         .then((res) => {
           if (res?.data) {
-            toast.success(t(SUCCESS_MSG));
+            toast.success(t(SUCCESS_MSG_DMN));
             // Reload the dropdown menu
             updateDmnProcesses(xml, res.data.deployedDecisionDefinitions);
             setDeploymentLoading(false);

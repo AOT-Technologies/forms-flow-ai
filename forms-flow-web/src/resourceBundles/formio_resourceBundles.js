@@ -2211,8 +2211,6 @@ export const formio_resourceBundles = {
     "Specific User Group": "Конкретна потребителска група",
     "Applicable for Designer Roled Users only.": "Приложимо само за потребители с права на дизайнер.",
     "Applicable for Client and Reviewer Roled Users only.": "Приложимо само за потребители с права на клиент и рецензент."
-
-
   },
 
   pt: {
@@ -3187,7 +3185,6 @@ export const formio_resourceBundles = {
     "Specific User Group": "Grupo de usuários específico",
     "Applicable for Designer Roled Users only.": "Aplicável apenas para usuários com função de designer.",
     "Applicable for Client and Reviewer Roled Users only.": "Aplicável apenas para usuários com função de cliente e revisor."
-
 
   },
 
@@ -5157,7 +5154,5 @@ export const formio_resourceBundles = {
     "Specific User Group": "Spezifische Benutzergruppe",
     "Applicable for Designer Roled Users only.": "Gilt nur für Benutzer mit Designer-Rolle.",
     "Applicable for Client and Reviewer Roled Users only.": "Gilt nur für Benutzer mit Kunden- und Prüferrollen."
-
-
   },
 };

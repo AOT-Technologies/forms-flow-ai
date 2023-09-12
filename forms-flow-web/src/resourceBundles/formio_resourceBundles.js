@@ -306,8 +306,7 @@ export const formio_resourceBundles = {
     "All Users": "All Users",
     "Specific User Group": "Specific User Group",
     "Applicable for Designer Roled Users only.": "Applicable for Designer Roled Users only.",
-    "Applicable for Client and Reviewer Roled Users only.": "Applicable for Client and Reviewer Roled Users only.",
-    "Rules deployed successfully": "Rules deployed successfully"
+    "Applicable for Client and Reviewer Roled Users only.": "Applicable for Client and Reviewer Roled Users only."
   
   },
 
@@ -1230,8 +1229,7 @@ export const formio_resourceBundles = {
     "All Users": "全部用户",
     "Specific User Group": "特定用户群",
     "Applicable for Designer Roled Users only.": "仅适用于设计师角色用户。",
-    "Applicable for Client and Reviewer Roled Users only.": "仅适用于客户和审阅者角色用户。",
-    "Rules deployed successfully": "规则部署成功"
+    "Applicable for Client and Reviewer Roled Users only.": "仅适用于客户和审阅者角色用户。"
 
   },
 
@@ -2212,8 +2210,7 @@ export const formio_resourceBundles = {
     "All Users": "Всички потребители",
     "Specific User Group": "Конкретна потребителска група",
     "Applicable for Designer Roled Users only.": "Приложимо само за потребители с права на дизайнер.",
-    "Applicable for Client and Reviewer Roled Users only.": "Приложимо само за потребители с права на клиент и рецензент.",
-    "Rules deployed successfully": "Правилата са внедрени успешно"
+    "Applicable for Client and Reviewer Roled Users only.": "Приложимо само за потребители с права на клиент и рецензент."
   },
 
   pt: {
@@ -3187,8 +3184,7 @@ export const formio_resourceBundles = {
     "All Users": "Todos os usuários",
     "Specific User Group": "Grupo de usuários específico",
     "Applicable for Designer Roled Users only.": "Aplicável apenas para usuários com função de designer.",
-    "Applicable for Client and Reviewer Roled Users only.": "Aplicável apenas para usuários com função de cliente e revisor.",
-    "Rules deployed successfully": "Regras implantadas com sucesso"
+    "Applicable for Client and Reviewer Roled Users only.": "Aplicável apenas para usuários com função de cliente e revisor."
 
   },
 
@@ -4171,8 +4167,8 @@ export const formio_resourceBundles = {
     "All Users": "Tous les utilisateurs",
     "Specific User Group": "Groupe d'utilisateurs spécifique",
     "Applicable for Designer Roled Users only.": "Applicable uniquement aux utilisateurs avec rôle de concepteur.",
-    "Applicable for Client and Reviewer Roled Users only.": "Applicable uniquement aux utilisateurs avec rôle de client et de réviseur.",
-    "Rules deployed successfully": "Règles déployées avec succès"
+    "Applicable for Client and Reviewer Roled Users only.": "Applicable uniquement aux utilisateurs avec rôle de client et de réviseur."
+
 
   },
 
@@ -5157,7 +5153,6 @@ export const formio_resourceBundles = {
     "All Users": "Alle Nutzer",
     "Specific User Group": "Spezifische Benutzergruppe",
     "Applicable for Designer Roled Users only.": "Gilt nur für Benutzer mit Designer-Rolle.",
-    "Applicable for Client and Reviewer Roled Users only.": "Gilt nur für Benutzer mit Kunden- und Prüferrollen.",
-    "Rules deployed successfully": "Regeln erfolgreich bereitgestellt"
+    "Applicable for Client and Reviewer Roled Users only.": "Gilt nur für Benutzer mit Kunden- und Prüferrollen."
   },
 };

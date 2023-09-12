@@ -2,7 +2,6 @@ import React, { useState, useEffect, useRef } from "react";
 import { Row, Col } from "react-bootstrap";
 import DatePicker from "react-datepicker";
 import { useDispatch, useSelector } from "react-redux";
-import AsyncSelect from "react-select/async";
 import "./TaskSearchBarListView.scss";
 // import { fetchServiceTaskList } from "../../../../apiManager/services/bpmTaskServices";
 import {
@@ -16,36 +15,37 @@ import { UserSearchFilterTypes } from "../../constants/userSearchFilterTypes";
 import { setBPMFilterSearchParams } from "../../../../actions/bpmTaskActions";
 import { getISODateTime } from "../../../../apiManager/services/formatterService";
 const TaskFilterListViewComponent = React.memo(
-    ({ toggleDisplayFilter, filterValues, setFilterValues, setFilterParams, filterParams }) => {
+    ({ setDisplayFilter, setFilterParams, filterParams }) => {
     // to update the object according to different filters
     // const[filterParams,setSetFilterParams] = useState({});
     const [followStartDate, setFollowStartDate] = useState(
-      filterValues.followStartDate
+        filterParams.followStartDate || null
     );
     const [followEndDate, setFollowEndDate] = useState(
-      filterValues.followEndDate
+      filterParams.followEndDate || null
     );
-    const [dueStartDate, setDueStartDate] = useState(filterValues.dueStartDate);
-    const [dueEndDate, setDueEndDate] = useState(filterValues.dueEndDate);
+    const [dueStartDate, setDueStartDate] = useState(filterParams.dueStartDate || null);
+    const [dueEndDate, setDueEndDate] = useState(filterParams.dueEndDate || null);
     const [createdStartDate, setCreatedStartDate] = useState(
-      filterValues.createdStartDate
+      filterParams.createdStartDate || null 
     );
     const [createdEndDate, setCreatedEndDate] = useState(
-      filterValues.createdEndDate
+      filterParams.createdEndDate || null 
     );
     const createSearchNode = useRef();
-    const [assignee, setAssignee] = useState(filterValues.assignee);
+    const [assignee, setAssignee] = useState(filterParams.assignee || "");
     const [candidateGroup, setCandidateGroup] = useState(
-      filterValues.candidateGroup
+      filterParams.candidateGroup || ""
     );
     const [candidateUser, setCandidateUser] = useState(
-      filterValues.candidateUser
+      filterParams.candidateUser || ""
     );
     const [processDefinitionName, setProcessDefinitionName] = useState(
-      filterValues.processDefinitionName
+      filterParams.processDefinitionName || ""
     );
         const dispatch = useDispatch();
         const [filterCount, setFilterCount] = useState(0);
+        const [options, setOptions] = useState([]);
         // const [filterParams, setFilterParams] = useState({});
     // const [filterSelections, setFilterSelections] = useState(
     //     filterSearchSelections
@@ -65,13 +65,12 @@ const TaskFilterListViewComponent = React.memo(
     const filterSearchSelection = useSelector(
       (state) => state.bpmTasks?.filterListSearchParams
     );
-    console.log("filterseach selection", filterSearchSelection);
     const handleClick = (e) => {
       if (createSearchNode?.current?.contains(e.target)) {
         return;
       }
       // outside click
-      toggleDisplayFilter();
+        setDisplayFilter(false);
     };
     useEffect(() => {
       // add when mounted
@@ -84,18 +83,19 @@ const TaskFilterListViewComponent = React.memo(
 
         const applyFilters = () => {
         dispatch(setBPMTaskLoader(true));
-        console.log(filterSearchSelection, "filtersearchselactions");
-        console.log(filterParams, "filterparamsz");
-      if (assignee.label) {
-        filterParams["assignee"] = assignee.label;
+      if (assignee) {
+        filterParams["assignee"] = assignee;
+      }
+      if (candidateGroup) {
+        filterParams["candidateGroup"] = candidateGroup;
       }
       if (candidateUser) {
         filterParams["candidateUser"] = candidateUser;
       }
       if (processDefinitionName) {
         filterParams[
-          "processDefinitionNameLike"
-        ] = `%${processDefinitionName}%`;
+          "processDefinitionName"
+        ] = processDefinitionName;
       }
       if (dueStartDate) {
         filterParams["dueAfter"] = getISODateTime(dueStartDate);
@@ -118,24 +118,13 @@ const TaskFilterListViewComponent = React.memo(
       dispatch(setBPMFilterSearchParams(filterParams));
      // dispatch(fetchServiceTaskList(selectedFilter.id, firstResult, reqData));
       setFilterCount(Object.keys(filterParams).length);
-      toggleDisplayFilter();            
+      setDisplayFilter(false);            
         };
     useEffect(() => {
         // Update filterCount whenever filterParams changes
         setFilterCount(Object.keys(filterParams).length);
     }, [filterParams]);
     const clearAllFilters = () => {
-      setFilterValues({
-        assignee: '',
-        candidateUser: '',
-        processDefinitionName: '',
-        dueStartDate: null,
-        dueEndDate: null,
-        followStartDate: null,
-        followEndDate: null,
-        createdStartDate: null,
-        createdEndDate: null
-      });
         setFilterParams({});
         dispatch(setBPMFilterSearchParams(filterParams));
     };
@@ -159,50 +148,31 @@ const TaskFilterListViewComponent = React.memo(
                 </div>
             );
         });
-    const formatOptionLabel = (
-      { id, firstName, lastName, email },
-      { context }
-    ) => {
-      if (context === "value") {
-        return <div className="p-2">{id}</div>;
-      } else if (context === "menu") {
-        return (
-          <div
-            className="p-2 click-element"
-            style={{ display: "flex", flexDirection: "column" }}
-          >
-            <div>{id}</div>
-            <div>{(firstName, lastName, email)}</div>
-          </div>
-        );
-      }
-    };
-    const loadOptions = (inputValue = "", callback) => {
-      dispatch(
-        fetchUserListWithSearch(
-          {
-            searchType: UserSearchFilterTypes[0].searchType,
-            query: inputValue,
-          },
-          (err, res) => {
-            if (!err) {
-              const userListOptions = res.map((user) => {
-                return {
-                  value: user.username,
-                  label: user.username,
-                  email: user.email,
-                  firstName: user.firstName,
-                  id: user.username,
-                  lastName: user.lastName,
-                };
-              });
-              // setIsSearch(true);
-              callback(userListOptions);
-            }
+
+     const loadOptions = (inputValue = "") => {
+    dispatch(
+      fetchUserListWithSearch(
+        {
+          searchType: UserSearchFilterTypes[0].searchType,
+          query: inputValue,
+        },
+        (err, res) => {
+          if (!err) {
+            const userListOptions = res.map((user) => {
+              return {
+                value: user.username,
+                label: `${user.firstName} ${user.lastName} (${user.username})`,
+              };
+            });
+            setOptions(userListOptions);
           }
-        )
-      );
-    };
+        }
+      )
+    );
+  };
+    useEffect(() => {
+    loadOptions();
+  }, []);
 
     return (
       <>
@@ -223,14 +193,18 @@ const TaskFilterListViewComponent = React.memo(
           <Row className="mt-2">
             <Col>
               <label>Assignee</label>
-              <AsyncSelect
-                cacheOptions
-                loadOptions={loadOptions}
-                isClearable
-                defaultOptions
-                onChange={(selectedOption) => setAssignee(selectedOption)}
-                formatOptionLabel={formatOptionLabel}
-              />
+              <select
+                  value={assignee}
+                  onChange={(e) => setAssignee(e.target.value)}
+                  className="form-control"
+              >
+                  <option value="">Select a user</option>
+                  {options.map((option) => (
+                      <option key={option.value} value={option.value}>
+                          {option.label}
+                      </option>
+                  ))}
+              </select>
             </Col>
             <Col>
               <label>Candidate Group</label>
@@ -373,18 +347,18 @@ const TaskFilterListViewComponent = React.memo(
           <hr />
           <Row className="mt-3 filter-cancel-btn-container ">
             <Col className="text-left">
-              <span className=" text-danger" onClick={clearAllFilters}>
+              <span className=" text-danger" onClick={()=>clearAllFilters()}>
                 Clear All Filters
               </span>
             </Col>
             <Col className="text-right">
               <button
                 className="btn btn-light mr-1 "
-                onClick={toggleDisplayFilter}
+                onClick={() => setDisplayFilter(false)}
               >
                 Cancel
               </button>
-              <button className="btn btn-dark" onClick={applyFilters}>
+              <button className="btn btn-dark" onClick={() => applyFilters()}>
                 Show results
               </button>
             </Col>

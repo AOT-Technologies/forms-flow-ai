@@ -13,23 +13,12 @@ const TaskSearchBarListView = React.memo(({ toggleAllTaskVariables, allTaskVaria
     (state) => state.bpmTasks.isTaskListLoading
   );
   const tasksCount = useSelector((state) => state.bpmTasks.tasksCount);
-
   const [displayFilter, setDisplayFilter] = useState(false);
   const [SortOptions, setSortOptions] = useState(false);
 
   const [showClearButton, setShowClearButton] = useState(false);
   const [searchTaskInput, setSearchTaskInput] = useState("");
-  const [filterValues, setFilterValues] = useState({
-    assignee: '',
-    candidateUser: '',
-    processDefinitionName: '',
-    dueStartDate: null,
-    dueEndDate: null,
-    followStartDate: null,
-    followEndDate: null,
-    createdStartDate: null,
-    createdEndDate: null
-  });
+ 
   const [filterParams, setFilterParams] = useState({});
   const taskList = useSelector((state) => state.bpmTasks.tasksList);
   const selectedFilter = useSelector((state) => state.bpmTasks.selectedFilter);
@@ -73,10 +62,6 @@ const TaskSearchBarListView = React.memo(({ toggleAllTaskVariables, allTaskVaria
     
   };
 
-  const toggleDisplayFilter = () => {
-    setDisplayFilter(!displayFilter);
-    console.log(filterValues);
-  };
   return (
     <>
       <div className="d-flex justify-content-end filter-sort-bar mt-1">
@@ -171,7 +156,9 @@ const TaskSearchBarListView = React.memo(({ toggleAllTaskVariables, allTaskVaria
           <button
             type="button"
             className="btn btn-outline-secondary "
-            onClick={() => { toggleDisplayFilter(); setSortOptions(false); }}
+            onClick={() => {
+              setDisplayFilter(true); setSortOptions(false);
+            }}
           >
             <svg
               xmlns="http://www.w3.org/2000/svg"
@@ -190,9 +177,7 @@ const TaskSearchBarListView = React.memo(({ toggleAllTaskVariables, allTaskVaria
             <div className="clickable shadow border filter-list-view ">
               <TaskFilterListViewComponent
                 totalTasks={isTaskListLoading ? 0 : tasksCount}
-                toggleDisplayFilter={toggleDisplayFilter}
-                filterValues={filterValues}
-                setFilterValues={setFilterValues}
+                setDisplayFilter={setDisplayFilter}
                 filterParams={filterParams}
                 setFilterParams={setFilterParams}
               />

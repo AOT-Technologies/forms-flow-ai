@@ -14,18 +14,28 @@ import {
 import { UserSearchFilterTypes } from "../../constants/userSearchFilterTypes";
 import { setBPMFilterSearchParams } from "../../../../actions/bpmTaskActions";
 import { getISODateTime } from "../../../../apiManager/services/formatterService";
-const TaskFilterListViewComponent = React.memo(
-    ({ setDisplayFilter, setFilterParams, filterParams }) => {
+const TaskFilterListViewComponent = React.memo(({
+    setDisplayFilter, setFilterParams, filterParams }) => {
     // to update the object according to different filters
     // const[filterParams,setSetFilterParams] = useState({});
+    const [assignee, setAssignee] = useState(filterParams.assignee || "");
+    const [candidateGroup, setCandidateGroup] = useState(
+        filterParams.candidateGroup || ""
+    );
+    const [candidateUser, setCandidateUser] = useState(
+        filterParams.candidateUser || ""
+    );
+    const [processDefinitionName, setProcessDefinitionName] = useState(
+        filterParams.processDefinitionName || ""
+    );
+    const [dueStartDate, setDueStartDate] = useState(filterParams.dueStartDate || null);
+    const [dueEndDate, setDueEndDate] = useState(filterParams.dueEndDate || null);
     const [followStartDate, setFollowStartDate] = useState(
         filterParams.followStartDate || null
     );
     const [followEndDate, setFollowEndDate] = useState(
       filterParams.followEndDate || null
     );
-    const [dueStartDate, setDueStartDate] = useState(filterParams.dueStartDate || null);
-    const [dueEndDate, setDueEndDate] = useState(filterParams.dueEndDate || null);
     const [createdStartDate, setCreatedStartDate] = useState(
       filterParams.createdStartDate || null 
     );
@@ -33,19 +43,9 @@ const TaskFilterListViewComponent = React.memo(
       filterParams.createdEndDate || null 
     );
     const createSearchNode = useRef();
-    const [assignee, setAssignee] = useState(filterParams.assignee || "");
-    const [candidateGroup, setCandidateGroup] = useState(
-      filterParams.candidateGroup || ""
-    );
-    const [candidateUser, setCandidateUser] = useState(
-      filterParams.candidateUser || ""
-    );
-    const [processDefinitionName, setProcessDefinitionName] = useState(
-      filterParams.processDefinitionName || ""
-    );
-        const dispatch = useDispatch();
-        const [filterCount, setFilterCount] = useState(0);
-        const [options, setOptions] = useState([]);
+    const dispatch = useDispatch();
+    const [filterCount, setFilterCount] = useState(0);
+    const [assigneeOptions, setAssigneeOptions] = useState([]);
         // const [filterParams, setFilterParams] = useState({});
     // const [filterSelections, setFilterSelections] = useState(
     //     filterSearchSelections
@@ -81,8 +81,8 @@ const TaskFilterListViewComponent = React.memo(
       };
     }, []);
 
-        const applyFilters = () => {
-        dispatch(setBPMTaskLoader(true));
+    const applyFilters = () => {
+     dispatch(setBPMTaskLoader(true));
       if (assignee) {
         filterParams["assignee"] = assignee;
       }
@@ -125,8 +125,18 @@ const TaskFilterListViewComponent = React.memo(
         setFilterCount(Object.keys(filterParams).length);
     }, [filterParams]);
     const clearAllFilters = () => {
-        setFilterParams({});
-        dispatch(setBPMFilterSearchParams(filterParams));
+      setAssignee("");
+      setProcessDefinitionName("");
+      setCandidateGroup("");
+      setCandidateUser("");
+      setDueStartDate(null);
+      setDueEndDate(null);
+      setFollowStartDate(null);
+      setFollowEndDate(null);
+      setCreatedStartDate(null);
+      setCreatedEndDate(null);
+      setFilterParams({});
+      dispatch(setBPMFilterSearchParams(filterParams));
     };
         
    const DatepickerCustomInput = React.forwardRef(({ value, onClick, placeholder }, ref) => {
@@ -164,7 +174,7 @@ const TaskFilterListViewComponent = React.memo(
                 label: `${user.firstName} ${user.lastName} (${user.username})`,
               };
             });
-            setOptions(userListOptions);
+            setAssigneeOptions(userListOptions);
           }
         }
       )
@@ -199,7 +209,7 @@ const TaskFilterListViewComponent = React.memo(
                   className="form-control"
               >
                   <option value="">Select a user</option>
-                  {options.map((option) => (
+                  {assigneeOptions.map((option) => (
                       <option key={option.value} value={option.value}>
                           {option.label}
                       </option>
@@ -246,8 +256,8 @@ const TaskFilterListViewComponent = React.memo(
                     placeholderText="From"
                     showTimeSelect
                     selected={
-                      filterSearchSelection.dueAfter
-                        ? new Date(filterSearchSelection.dueAfter)
+                        filterParams.dueAfter
+                            ? new Date(filterParams.dueAfter)
                         : dueStartDate
                     }
                     onChange={(date) => setDueStartDate(date)}
@@ -281,8 +291,8 @@ const TaskFilterListViewComponent = React.memo(
                     <DatePicker
                       placeholderText="From"
                       showTimeSelect
-                      selected={filterSearchSelection.followUpAfter
-                        ? new Date(filterSearchSelection.followUpAfter) : followStartDate}
+                      selected={filterParams.followUpAfter
+                          ? new Date(filterParams.followUpAfter) : followStartDate}
                       onChange={(date) => setFollowStartDate(date)}
                       selectsStart
                       startDate={followStartDate}
@@ -294,8 +304,8 @@ const TaskFilterListViewComponent = React.memo(
                     <DatePicker
                       placeholderText="To"
                       showTimeSelect
-                      selected={filterSearchSelection.followUpBefore
-                        ? new Date(filterSearchSelection.followUpBefore) : followEndDate}
+                      selected={filterParams.followUpBefore
+                          ? new Date(filterParams.followUpBefore) : followEndDate}
                       onChange={(date) => setFollowEndDate(date)}
                       selectsEnd
                       startDate={followStartDate}
@@ -317,8 +327,8 @@ const TaskFilterListViewComponent = React.memo(
                     <DatePicker
                       placeholderText="From"
                       showTimeSelect
-                      selected={filterSearchSelection.createdAfter
-                        ? new Date(filterSearchSelection.createdAfter) : createdStartDate}
+                      selected={filterParams.createdAfter
+                          ? new Date(filterParams.createdAfter) : createdStartDate}
                       onChange={(date) => setCreatedStartDate(date)}
                       selectsStart
                       startDate={createdStartDate}

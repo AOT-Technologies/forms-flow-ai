@@ -128,6 +128,7 @@ Start the **analytics server** by following the instructions given [here](../../
 `FORMIO_ROOT_EMAIL`|forms-flow-forms admin login|eg. admin@example.com|`admin@example.com`
 `FORMIO_ROOT_PASSWORD`|forms-flow-forms admin password|eg.changeme|`changeme`
 `FORMIO_JWT_SECRET`|forms-flow-forms jwt secret| |`--- change me now ---`
+`NO_INSTALL`|to enable/disable UI for Formio client| 1 or 0 | `1`
  
 
 

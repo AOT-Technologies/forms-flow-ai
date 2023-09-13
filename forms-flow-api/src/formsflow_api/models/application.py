@@ -571,8 +571,7 @@ class Application(
             .select_from(form_versions)
             .join(
                 latest_form_name,
-                latest_form_name.c.parent_form_id
-                == form_versions.c.parent_form_id,
+                latest_form_name.c.parent_form_id == form_versions.c.parent_form_id,
             )
             .group_by(
                 latest_form_name.c.parent_form_id,
@@ -583,7 +582,6 @@ class Application(
             )
             .filter(latest_form_name.c.tenant == tenant_key)
         )
-
 
         if form_name:
             result_proxy = result_proxy.filter(

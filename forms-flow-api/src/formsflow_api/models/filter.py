@@ -27,6 +27,7 @@ class Filter(AuditDateTimeMixin, AuditUserMixin, BaseModel, db.Model):
     roles = db.Column(ARRAY(db.String), nullable=True, comment="Applicable roles")
     users = db.Column(ARRAY(db.String), nullable=True, comment="Applicable users")
     status = db.Column(db.String(10), nullable=True)
+    task_visible_attributes = db.Column(JSON, nullable=True)
 
     @classmethod
     def find_all_active_filters(cls, tenant: str = None) -> List[Filter]:
@@ -52,6 +53,9 @@ class Filter(AuditDateTimeMixin, AuditUserMixin, BaseModel, db.Model):
             filter_obj.roles = filter_data.get("roles")
             filter_obj.users = filter_data.get("users")
             filter_obj.status = str(FilterStatus.ACTIVE.value)
+            filter_obj.task_visible_attributes = filter_data.get(
+                "task_visible_attributes"
+            )
             filter_obj.save()
             return filter_obj
         return None
@@ -105,6 +109,7 @@ class Filter(AuditDateTimeMixin, AuditUserMixin, BaseModel, db.Model):
                 "users",
                 "modified_by",
                 "status",
+                "task_visible_attributes",
             ],
             filter_info,
         )

@@ -7,6 +7,7 @@ import org.camunda.bpm.extension.hooks.rest.TaskFilterRestResource;
 import org.camunda.bpm.extension.hooks.rest.dto.TaskQueryDto;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.hateoas.CollectionModel;
 import org.springframework.hateoas.EntityModel;
 import org.springframework.stereotype.Component;
 
@@ -15,6 +16,8 @@ import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
 
 import javax.ws.rs.core.Request;
 import javax.ws.rs.core.UriInfo;
+import java.util.List;
+import java.util.Map;
 
 @Component
 public class TaskFilterRestResourceImpl implements TaskFilterRestResource {
@@ -29,10 +32,8 @@ public class TaskFilterRestResourceImpl implements TaskFilterRestResource {
     }
 
     @Override
-    public EntityModel<CountResultDto> queryCount(TaskQueryDto filterQuery) {
-        CountResultDto dto = restService.queryCount(filterQuery);
-        return EntityModel.of(dto,
-                linkTo(methodOn(TaskFilterRestResourceImpl.class).queryCount(filterQuery)).withSelfRel());
+    public List<Map<String, Object>> queryCount(List<TaskQueryDto> filterQuery) {
+        return restService.queryCount(filterQuery);
     }
 
     @Override

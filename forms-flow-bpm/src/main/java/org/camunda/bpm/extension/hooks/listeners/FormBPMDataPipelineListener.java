@@ -6,6 +6,8 @@ import org.camunda.bpm.engine.delegate.DelegateTask;
 import org.camunda.bpm.engine.delegate.ExecutionListener;
 import org.camunda.bpm.engine.delegate.TaskListener;
 import org.camunda.bpm.extension.hooks.services.FormSubmissionService;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import javax.inject.Named;
@@ -19,6 +21,8 @@ import static org.camunda.bpm.extension.commons.utils.VariableConstants.FORM_URL
  */
 @Named("FormBPMDataPipelineListener")
 public class FormBPMDataPipelineListener  extends BaseListener implements TaskListener, ExecutionListener {
+
+    private static final Logger LOGGER = LoggerFactory.getLogger(FormBPMDataPipelineListener.class);
 
     @Autowired
     private FormSubmissionService formSubmissionService;

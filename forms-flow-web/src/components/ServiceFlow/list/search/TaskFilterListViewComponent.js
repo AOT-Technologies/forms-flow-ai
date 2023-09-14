@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useRef } from "react";
 import { Row, Col } from "react-bootstrap";
 import DatePicker from "react-datepicker";
-import { useDispatch, useSelector } from "react-redux";
+import { useDispatch } from "react-redux";
 import "./TaskSearchBarListView.scss";
 // import { fetchServiceTaskList } from "../../../../apiManager/services/bpmTaskServices";
 import {
@@ -62,9 +62,9 @@ const TaskFilterListViewComponent = React.memo(({
     // const queryType = useSelector((state) => state.bpmTasks.searchQueryType);
 
     // state for updating the values in inputboxs in the filter search
-    const filterSearchSelection = useSelector(
-      (state) => state.bpmTasks?.filterListSearchParams
-    );
+    // const filterSearchSelection = useSelector(
+    //   (state) => state.bpmTasks?.filterListSearchParams
+    // );
     const handleClick = (e) => {
       if (createSearchNode?.current?.contains(e.target)) {
         return;
@@ -142,7 +142,6 @@ const TaskFilterListViewComponent = React.memo(({
    const DatepickerCustomInput = React.forwardRef(({ value, onClick, placeholder }, ref) => {
             return (
                 <div className="input-group">
-
                     <input
                         value={value}
                         className="example-custom-input form-control"
@@ -158,8 +157,7 @@ const TaskFilterListViewComponent = React.memo(({
                 </div>
             );
         });
-
-     const loadOptions = (inputValue = "") => {
+    const loadOptions = (inputValue = "") => {
     dispatch(
       fetchUserListWithSearch(
         {
@@ -182,25 +180,24 @@ const TaskFilterListViewComponent = React.memo(({
   };
     useEffect(() => {
     loadOptions();
-  }, []);
+    }, []);
 
     return (
       <>
         <div
-          className="Filter-listview"
+          className="Filter-listview "
           style={{ minWidth: "700px" }}
           ref={createSearchNode}
-        >
-          <Row className="border-bottom" style={{ margin: "auto" }}>
-            <span className="font-weight-bold" style={{ marginRight: "auto" }}>
-              Filters
-                    </span> 
-                    <span className="font-weight-bold" style={{marginLeft:"auto"}}>
-                        Filter count : {filterCount}
-                    </span>
-          </Row>
-
-          <Row className="mt-2">
+            >
+        <div className="bg-light ">
+           <Row className="px-4 py-2" style={{ display: "flex", justifyContent: "space-between", alignItems: "center", margin: "auto" }}>
+             <span className="font-weight-bold ">Filters</span>
+             <span className="font-weight-bold">Filter count: {filterCount}</span>
+         </Row> 
+        </div>
+         <hr className="m-0 w-100"/>
+         <div className="m-4 px-2">
+            <Row className="mt-2" >
             <Col>
               <label>Assignee</label>
               <select
@@ -257,7 +254,7 @@ const TaskFilterListViewComponent = React.memo(({
                     showTimeSelect
                     selected={
                         filterParams.dueAfter
-                            ? new Date(filterParams.dueAfter)
+                        ? new Date(filterParams.dueAfter)
                         : dueStartDate
                     }
                     onChange={(date) => setDueStartDate(date)}
@@ -271,8 +268,8 @@ const TaskFilterListViewComponent = React.memo(({
                   <DatePicker
                     placeholderText="To"
                     showTimeSelect
-                    selected={ filterSearchSelection.dueBefore
-                        ? new Date(filterSearchSelection.dueBefore) : dueEndDate}
+                    selected={ filterParams.dueBefore
+                       ? new Date(filterParams.dueBefore) : dueEndDate}
                     onChange={(date) => setDueEndDate(date)}
                     selectsEnd
                     startDate={dueStartDate}
@@ -292,7 +289,7 @@ const TaskFilterListViewComponent = React.memo(({
                       placeholderText="From"
                       showTimeSelect
                       selected={filterParams.followUpAfter
-                          ? new Date(filterParams.followUpAfter) : followStartDate}
+                        ? new Date(filterParams.followUpAfter) : followStartDate}
                       onChange={(date) => setFollowStartDate(date)}
                       selectsStart
                       startDate={followStartDate}
@@ -305,7 +302,7 @@ const TaskFilterListViewComponent = React.memo(({
                       placeholderText="To"
                       showTimeSelect
                       selected={filterParams.followUpBefore
-                          ? new Date(filterParams.followUpBefore) : followEndDate}
+                        ? new Date(filterParams.followUpBefore) : followEndDate}
                       onChange={(date) => setFollowEndDate(date)}
                       selectsEnd
                       startDate={followStartDate}
@@ -328,7 +325,7 @@ const TaskFilterListViewComponent = React.memo(({
                       placeholderText="From"
                       showTimeSelect
                       selected={filterParams.createdAfter
-                          ? new Date(filterParams.createdAfter) : createdStartDate}
+                        ? new Date(filterParams.createdAfter) : createdStartDate}
                       onChange={(date) => setCreatedStartDate(date)}
                       selectsStart
                       startDate={createdStartDate}
@@ -340,8 +337,8 @@ const TaskFilterListViewComponent = React.memo(({
                     <DatePicker
                       placeholderText="To"
                       showTimeSelect
-                      selected={filterSearchSelection.createdBefore
-                        ? new Date(filterSearchSelection.createdBefore) : createdEndDate}
+                      selected={filterParams.createdBefore
+                        ? new Date(filterParams.createdBefore) : createdEndDate}
                       onChange={(date) => setCreatedEndDate(date)}
                       selectsEnd
                       startDate={createdStartDate}
@@ -354,10 +351,11 @@ const TaskFilterListViewComponent = React.memo(({
               </div>
             </Col>
           </Row>
-          <hr />
-          <Row className="mt-3 filter-cancel-btn-container ">
+         </div>
+          <hr className="mx-4"/>
+          <Row className="m-3 filter-cancel-btn-container ">
             <Col className="text-left">
-              <span className=" text-danger" onClick={()=>clearAllFilters()}>
+              <span className="text-danger small " onClick={()=>clearAllFilters()}>
                 Clear All Filters
               </span>
             </Col>

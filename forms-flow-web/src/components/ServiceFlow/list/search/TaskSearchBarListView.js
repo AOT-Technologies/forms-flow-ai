@@ -103,7 +103,6 @@ const TaskSearchBarListView = React.memo(({ toggleAllTaskVariables, allTaskVaria
         <div className="sort-container task-filter-list-view">
           <button
             type="button"
-            style={{ padding: "4px 8px" }}
             className="btn btn-outline-secondary"
             onClick={() => {
               setSortOptions(!SortOptions);
@@ -113,8 +112,8 @@ const TaskSearchBarListView = React.memo(({ toggleAllTaskVariables, allTaskVaria
             Sort by
             <svg
               xmlns="http://www.w3.org/2000/svg"
-              width="24"
-              height="24"
+              width="20"
+              height="20"
               viewBox="0 0 24 24"
               id="arrow-drop-down"
             >
@@ -174,7 +173,7 @@ const TaskSearchBarListView = React.memo(({ toggleAllTaskVariables, allTaskVaria
           </button>
 
           {displayFilter && (
-            <div className="clickable shadow border filter-list-view ">
+            <div className="clickable shadow border filter-list-view m-0 p-0">
               <TaskFilterListViewComponent
                 totalTasks={isTaskListLoading ? 0 : tasksCount}
                 setDisplayFilter={setDisplayFilter}

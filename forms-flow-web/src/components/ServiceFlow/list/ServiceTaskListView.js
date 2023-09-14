@@ -148,7 +148,7 @@ const ServiceTaskListView = React.memo(() => {
                   </Col>
               </Row>
               
-              <Row className="mt-4 p-2 justify-content-between" style={{ marginBottom: "-2rem" }}>
+              <Row className="mt-4 p-2 justify-content-between" style={{ marginBottom: "-2.5rem" }}>
                 <Col  xs={2}>
                   <div className="col-12">
                     <h6 className="font-weight-light">Application Id</h6>

@@ -222,20 +222,19 @@ class FormResourceList(Resource):
             if form_name:
                 form_name: str = form_name.replace("%", r"\%").replace("_", r"\_")
 
-            if auth.has_role([DESIGNER_GROUP]):
-                (
-                    form_process_mapper_schema,
-                    form_process_mapper_count,
-                ) = FormProcessMapperService.get_all_forms(
-                    page_no, limit, form_name, sort_by, sort_order, form_type, is_active
-                )
-            else:
-                (
-                    form_process_mapper_schema,
-                    form_process_mapper_count,
-                ) = FormProcessMapperService.get_all_mappers_by_formid(
-                    page_no, limit, form_name, sort_by, sort_order
-                )
+            (
+                form_process_mapper_schema,
+                form_process_mapper_count,
+            ) = FormProcessMapperService.get_all_forms(
+                page_number=page_no,
+                limit=limit,
+                form_name=form_name,
+                sort_by=sort_by,
+                sort_order=sort_order,
+                form_type=form_type,
+                is_active=is_active,
+                is_designer=auth.has_role([DESIGNER_GROUP]),
+            )
             return (
                 (
                     {

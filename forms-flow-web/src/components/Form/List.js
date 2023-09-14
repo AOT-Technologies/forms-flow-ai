@@ -36,7 +36,7 @@ import {
   setFormUploadList,
   updateFormUploadCounter,
   formUploadFailureCount,
-  DesignerAccessDenied
+  DesignerAccessDenied,
 } from "../../actions/checkListActions";
 import FileModal from "./FileUpload/fileUploadModal";
 import { useTranslation, Translation } from "react-i18next";
@@ -58,7 +58,10 @@ import filterFactory from "react-bootstrap-table2-filter";
 import overlayFactory from "react-bootstrap-table2-overlay";
 import { SpinnerSVG } from "../../containers/SpinnerSVG";
 import { getFormattedForm, INACTIVE } from "./constants/formListConstants";
-import { handleAuthorization, fetchFormAuthorizationDetials } from "../../apiManager/services/authorizationService.js";
+import {
+  handleAuthorization,
+  fetchFormAuthorizationDetials,
+} from "../../apiManager/services/authorizationService.js";
 const List = React.memo((props) => {
   const { t } = useTranslation();
   const [showFormUploadModal, setShowFormUploadModal] = useState(false);
@@ -87,9 +90,7 @@ const List = React.memo((props) => {
   const searchText = useSelector((state) => state.bpmForms.searchText);
   const [searchTextInput, setSearchTextInput] = useState(searchText);
   const [isLoading, setIsLoading] = React.useState(false);
-
   const formType = useSelector((state) => state.bpmForms.formType);
-
 
   const isDesigner = userRoles.includes(STAFF_DESIGNER);
   const bpmForms = useSelector((state) => state.bpmForms);
@@ -147,7 +148,7 @@ const List = React.memo((props) => {
     sortBy,
     sortOrder,
     searchText,
-    formType
+    formType,
   ]);
 
   const formCheck = (formCheckList) => {
@@ -159,12 +160,14 @@ const List = React.memo((props) => {
     let response = "";
 
     if (result.resource) {
-      response = `${result.resource} ${result.resource == 1 ? t("Resource") : t("Resources")
-        }`;
+      response = `${result.resource} ${
+        result.resource == 1 ? t("Resource") : t("Resources")
+      }`;
     }
     if (result.form) {
-      response += `${result.resource ? " ," : ""} ${result.form} ${result.form == 1 ? t("Form") : t("Forms")
-        }`;
+      response += `${result.resource ? " ," : ""} ${result.form} ${
+        result.form == 1 ? t("Form") : t("Forms")
+      }`;
     }
     return toast.success(`${response} ${t("Downloaded Successfully")}`);
   };
@@ -199,7 +202,7 @@ const List = React.memo((props) => {
   };
   const handleSearch = () => {
     if (searchText != searchInputBox.current.value) {
-      searchInputBox.current.value === '' ? dispatch(setBPMFormLimit(5)) : '';
+      searchInputBox.current.value === "" ? dispatch(setBPMFormLimit(5)) : "";
       dispatch(setBPMFormListPage(1));
       dispatch(setBpmFormSearch(searchInputBox.current.value));
     }
@@ -212,7 +215,7 @@ const List = React.memo((props) => {
   };
   const onClear = () => {
     setSearchTextInput("");
-    dispatch(setBpmFormSearch(''));
+    dispatch(setBpmFormSearch(""));
     dispatch(setBPMFormLimit(5));
     setShowClearButton(false);
   };
@@ -264,12 +267,11 @@ const List = React.memo((props) => {
     }
   };
 
-
   const setDefaultAuthorization = (parentFormId) => {
     let payload = {
       resourceId: parentFormId,
       resourceDetails: {},
-      roles: []
+      roles: [],
     };
     handleAuthorization(
       { application: payload, designer: payload, form: payload },
@@ -315,31 +317,41 @@ const List = React.memo((props) => {
                   dispatch(
                     fetchFormByAlias(newFormData.path, async (err, formObj) => {
                       if (!err) {
-                        fetchFormAuthorizationDetials(formObj.parentFormId || 
-                          formObj._id).
-                          then(() => {
-                            dispatch(
-                              // eslint-disable-next-line no-unused-vars
-                              getFormProcesses(formObj._id, (err, mapperData) => {
-                                // just update form
-                                if (mapperData) {
+                        dispatch(
+                          // eslint-disable-next-line no-unused-vars
+                          getFormProcesses(formObj._id, (err, mapperData) => {
+                            // just update form
+                            if (mapperData) {
+                              fetchFormAuthorizationDetials(
+                                formObj.parentFormId || formObj._id
+                              )
+                                .then(() => {
                                   dispatch(
-                                    getApplicationCount(mapperData.id,
+                                    getApplicationCount(
+                                      mapperData.id,
                                       (error, applicationCount) => {
                                         if (!error) {
                                           newFormData._id = formObj._id;
                                           newFormData.access = formObj.access;
-                                          newFormData.submissionAccess = formObj.submissionAccess;
+                                          newFormData.submissionAccess =
+                                            formObj.submissionAccess;
                                           newFormData.componentChanged =
-                                            (!_isEquial(newFormData.components,
-                                              formObj.components) ||
-                                              newFormData.display !== formObj.display ||
-                                              newFormData.type !== formObj.type
-                                            );
-                                          newFormData.parentFormId = mapperData.parentFormId;
-                                          formUpdate(newFormData._id, newFormData)
+                                            !_isEquial(
+                                              newFormData.components,
+                                              formObj.components
+                                            ) ||
+                                            newFormData.display !==
+                                              formObj.display ||
+                                            newFormData.type !== formObj.type;
+                                          newFormData.parentFormId =
+                                            mapperData.parentFormId;
+                                          formUpdate(
+                                            newFormData._id,
+                                            newFormData
+                                          )
                                             .then((formupdated) => {
-                                              const updatedForm = formupdated.data;
+                                              const updatedForm =
+                                                formupdated.data;
                                               const data = {
                                                 anonymous:
                                                   mapperData.anonymous === null
@@ -347,13 +359,15 @@ const List = React.memo((props) => {
                                                     : mapperData.anonymous,
                                                 formName: updatedForm.title,
                                                 formType: updatedForm.type,
-                                                parentFormId: mapperData.parentFormId,
+                                                parentFormId:
+                                                  mapperData.parentFormId,
                                                 status: mapperData.status
                                                   ? mapperData.status
                                                   : INACTIVE,
-                                                taskVariable: mapperData.taskVariable
-                                                  ? mapperData.taskVariable
-                                                  : [],
+                                                taskVariable:
+                                                  mapperData.taskVariable
+                                                    ? mapperData.taskVariable
+                                                    : [],
                                                 id: mapperData.id,
                                                 formId: updatedForm._id,
                                                 formTypeChanged:
@@ -364,73 +378,87 @@ const List = React.memo((props) => {
                                                   updatedForm.title,
                                               };
 
-                                              const isMapperNeed = isMapperSaveNeeded(
-                                                mapperData,
-                                                updatedForm,
-                                                applicationCount
-                                              );
+                                              const isMapperNeed =
+                                                isMapperSaveNeeded(
+                                                  mapperData,
+                                                  updatedForm,
+                                                  applicationCount
+                                                );
 
                                               if (isMapperNeed === "new") {
                                                 data["version"] = String(
                                                   +mapperData.version + 1
                                                 );
                                                 dispatch(
-                                                  saveFormProcessMapperPost(data)
+                                                  saveFormProcessMapperPost(
+                                                    data
+                                                  )
                                                 );
-                                              } else if (isMapperNeed === "update") {
+                                              } else if (
+                                                isMapperNeed === "update"
+                                              ) {
                                                 dispatch(
                                                   saveFormProcessMapperPut(data)
                                                 );
                                               }
                                               fetchForms();
-                                              dispatch(updateFormUploadCounter());
+                                              dispatch(
+                                                updateFormUploadCounter()
+                                              );
                                               resolve();
                                             })
                                             .catch((err) => {
                                               dispatch(
-                                                setFormFailureErrorData("form", err)
+                                                setFormFailureErrorData(
+                                                  "form",
+                                                  err
+                                                )
                                               );
-                                              dispatch(formUploadFailureCount());
+                                              dispatch(
+                                                formUploadFailureCount()
+                                              );
                                               reject();
                                             });
                                         } else {
                                           reject();
-                                          toast.error("Error in application count");
+                                          toast.error(
+                                            "Error in application count"
+                                          );
                                         }
-                                      })
-                                  );
-                                } else if (!mapperData) {
-                                  newFormData.componentChanged = true;
-                                  newFormData.newVersion = true;
-                                  newFormData.path += "-" + Date.now();
-                                  newFormData.name += "-" + Date.now();
-                                  formCreate(newFormData)
-                                    .then((res) => {
-                                      if (res.data) {
-                                        mapperHandler(res.data);
-                                        // call the auth api
-                                        setDefaultAuthorization(res.data._id);
                                       }
-                                      dispatch(updateFormUploadCounter());
-                                      resolve();
-                                    })
-                                    .catch((err) => {
-                                      err ? dispatch(formUploadFailureCount()) : '';
-                                      reject();
-                                    });
-                                } else {
-                                  toast.error(err);
+                                    )
+                                  );
+                                })
+                                .catch(() => {
+                                  dispatch(DesignerAccessDenied(true));
+                                  dispatch(formUploadFailureCount());
                                   reject();
-                                }
-                              })
-                            );
-                       
-                        
-                        }).catch(() => {
-                          dispatch(DesignerAccessDenied(true));
-                          dispatch(formUploadFailureCount());
-                          reject();
-                        });
+                                });
+                            } else if (!mapperData) {
+                              newFormData.componentChanged = true;
+                              newFormData.newVersion = true;
+                              newFormData.path += "-" + Date.now();
+                              newFormData.name += "-" + Date.now();
+                              formCreate(newFormData)
+                                .then((res) => {
+                                  if (res.data) {
+                                    mapperHandler(res.data);
+                                    // call the auth api
+                                    setDefaultAuthorization(res.data._id);
+                                  }
+                                  dispatch(updateFormUploadCounter());
+                                  resolve();
+                                })
+                                .catch((err) => {
+                                  err ? dispatch(formUploadFailureCount()) : "";
+                                  reject();
+                                });
+                            } else {
+                              toast.error(err);
+                              reject();
+                            }
+                          })
+                        );
                       } else {
                         dispatch(formUploadFailureCount());
                         reject();
@@ -443,7 +471,7 @@ const List = React.memo((props) => {
         );
       }
     } catch (err) {
-      err ? dispatch(formUploadFailureCount()) : '';
+      err ? dispatch(formUploadFailureCount()) : "";
     }
   };
 
@@ -453,29 +481,28 @@ const List = React.memo((props) => {
       if ("forms" in fileContent) {
         if (Array.isArray(fileContent.forms)) {
           formToUpload = fileContent;
-        }
-        else {
+        } else {
           const resourcesArray = Object.entries(fileContent.resources);
-          const formsData = Object.entries(fileContent.forms).concat(resourcesArray);
+          const formsData = Object.entries(fileContent.forms).concat(
+            resourcesArray
+          );
           const formsArray = formsData.map(([, value]) => value);
-          formToUpload = { "forms": formsArray };
+          formToUpload = { forms: formsArray };
         }
-      }
-      else {
-        const keysToRemove = ['_id', 'created', 'modified', 'machineName'];
+      } else {
+        const keysToRemove = ["_id", "created", "modified", "machineName"];
         let newArray = [];
         if (Array.isArray(fileContent)) {
-          newArray = fileContent.map(obj => {
+          newArray = fileContent.map((obj) => {
             const newObj = { ...obj };
-            keysToRemove.forEach(key => delete newObj[key]);
+            keysToRemove.forEach((key) => delete newObj[key]);
             return newObj;
           });
-        }
-        else {
-          keysToRemove.forEach(e => delete fileContent[e]);
+        } else {
+          keysToRemove.forEach((e) => delete fileContent[e]);
           newArray.push(fileContent);
         }
-        formToUpload = { "forms": newArray };
+        formToUpload = { forms: newArray };
       }
 
       if (formToUpload) {
@@ -517,7 +544,7 @@ const List = React.memo((props) => {
         onClose={() => setShowFormUploadModal(false)}
       />
       {(forms.isActive || designerFormLoading || isBPMFormListLoading) &&
-        !searchFormLoading ? (
+      !searchFormLoading ? (
         <div data-testid="Form-list-component-loader">
           <Loading />
         </div>
@@ -528,30 +555,39 @@ const List = React.memo((props) => {
             message={
               formProcessData.id && applicationCount ? (
                 applicationCountResponse ? (
-
                   <div>
                     {applicationCount}
-                    {
-                      applicationCount > 1
-                        ? <span>{`${t(" Applications are submitted against")} `}</span>
-                        : <span>{`${t(" Application is submitted against")} `}</span>
-                    }
-                    <span style={{ fontWeight: "bold" }}>{props.formName.includes(' ') ? props.formName : textTruncate(50, 40, props.formName)}</span>
-                    .
-                    {t("Are you sure you wish to delete the form?")}
-
+                    {applicationCount > 1 ? (
+                      <span>{`${t(
+                        " Applications are submitted against"
+                      )} `}</span>
+                    ) : (
+                      <span>{`${t(
+                        " Application is submitted against"
+                      )} `}</span>
+                    )}
+                    <span style={{ fontWeight: "bold" }}>
+                      {props.formName.includes(" ")
+                        ? props.formName
+                        : textTruncate(50, 40, props.formName)}
+                    </span>
+                    .{t("Are you sure you wish to delete the form?")}
                   </div>
                 ) : (
                   <div>
                     {`${t("Are you sure you wish to delete the form ")}`}
-                    <span style={{ fontWeight: "bold" }}>{textTruncate(60, 40, props.formName)}</span>
+                    <span style={{ fontWeight: "bold" }}>
+                      {textTruncate(60, 40, props.formName)}
+                    </span>
                     ?
                   </div>
                 )
               ) : (
                 <div>
                   {`${t("Are you sure you wish to delete the form ")} `}
-                  <span style={{ fontWeight: "bold" }}>{textTruncate(60, 40, props.formName)}</span>
+                  <span style={{ fontWeight: "bold" }}>
+                    {textTruncate(60, 40, props.formName)}
+                  </span>
                   ?
                 </div>
               )
@@ -587,34 +623,39 @@ const List = React.memo((props) => {
           <section className="custom-grid grid-forms">
             <Errors errors={errors} />
             <div className="  row mt-2 mx-2">
-              <div className="col" style={{ marginLeft: "15px", marginTop: "-18px" }}>
+              <div
+                className="col"
+                style={{ marginLeft: "15px", marginTop: "-18px" }}
+              >
                 <div className="input-group">
-                  <span
-                    className="sort-span"
-                    onClick={handleSort}
-                    style={{
-                      cursor: "pointer",
-                      marginBottom: "8px",
-                    }}
-                  >
-                    <i
-                      className="fa fa-long-arrow-up fa-lg mt-2 fa-lg-hover"
-                      title={t("Sort by form name")}
-                      style={{
-                        opacity: `${sortOrder === "asc" || sortOrder === "title" ? 1 : 0.5
-                          }`,
-                      }}
-                    />
-                    <i
-                      className="fa fa-long-arrow-down fa-lg mt-2 ml-1 fa-lg-hover"
-                      title={t("Sort by form name")}
-                      style={{
-                        opacity: `${sortOrder === "desc" || sortOrder === "-title"
-                          ? 1
-                          : 0.5
-                          }`,
-                      }}
-                    />
+                  <span className="d-flex align-items-center">
+                    {isAscend ? (
+                      <i
+                        className="fa fa-sort-alpha-asc"
+                        onClick={() => {
+                          handleSort("desc");
+                        }}
+                        data-toggle="tooltip"
+                        title={t("Sort by form name")}
+                        style={{
+                          cursor: "pointer",
+                          fontSize: "20px",
+                        }}
+                      ></i>
+                    ) : (
+                      <i
+                        className="fa fa-sort-alpha-desc"
+                        onClick={() => {
+                          handleSort("asc");
+                        }}
+                        data-toggle="tooltip"
+                        title={t("Sort by form name")}
+                        style={{
+                          cursor: "pointer",
+                          fontSize: "20px",
+                        }}
+                      ></i>
+                    )}
                   </span>
                   <div className="form-outline ml-2">
                     <input
@@ -644,12 +685,12 @@ const List = React.memo((props) => {
                   )}
                   <button
                     type="button"
-                    className='btn btn-outline-primary ml-2'
+                    className="btn btn-outline-primary ml-2"
                     name="search-button"
                     title="Click to search"
                     onClick={() => handleSearch()}
                   >
-                    <i className="fa fa-search" ></i>
+                    <i className="fa fa-search"></i>
                   </button>
                   {isDesigner ? (
                     <select
@@ -671,7 +712,6 @@ const List = React.memo((props) => {
                         {t("Resource")}
                       </option>
                     </select>
-
                   ) : (
                     ""
                   )}
@@ -699,7 +739,7 @@ const List = React.memo((props) => {
                     </Button>
                     <input
                       type="file"
-                      value=''
+                      value=""
                       className="d-none"
                       multiple={false}
                       accept=".json,application/json"
@@ -718,7 +758,7 @@ const List = React.memo((props) => {
                       disabled={formCheckList.length === 0}
                     >
                       <i className="fa fa-download fa-lg" aria-hidden="true" />{" "}
-                      { formCheckList.length !== 0 && t("Download Form")}{" "}
+                      {formCheckList.length !== 0 && t("Download Form")}{" "}
                     </button>
                   </>
                 )}
@@ -747,22 +787,29 @@ const List = React.memo((props) => {
                         Loading={isLoading}
                         filter={filterFactory()}
                         filterPosition={"top"}
-                        pagination={formData.length ? paginationFactory(
-                          getoptions(pageNo, limit, totalForms)
-                        ) : false}
+                        pagination={
+                          formData.length
+                            ? paginationFactory(
+                                getoptions(pageNo, limit, totalForms)
+                              )
+                            : false
+                        }
                         onTableChange={handlePageChange}
                         {...props.baseProps}
-                        noDataIndication={() => !seachFormLoading ? noDataFound() : ""}
+                        noDataIndication={() =>
+                          !seachFormLoading ? noDataFound() : ""
+                        }
                         overlay={overlayFactory({
                           spinner: <SpinnerSVG />,
                           styles: {
                             overlay: (base) => ({
                               ...base,
                               background: "rgba(255, 255, 255)",
-                              height: `${limit > 5
-                                ? "100% !important"
-                                : "350px !important"
-                                }`,
+                              height: `${
+                                limit > 5
+                                  ? "100% !important"
+                                  : "350px !important"
+                              }`,
                               top: "65px",
                             }),
                           },
@@ -820,7 +867,9 @@ const mapDispatchToProps = (dispatch, ownProps) => {
               );
             } else {
               toast.success(
-                <Translation>{(t) => t("Form deleted successfully")}</Translation>
+                <Translation>
+                  {(t) => t("Form deleted successfully")}
+                </Translation>
               );
               const newFormCheckList = formCheckList.filter(
                 (i) => i.formId !== formId

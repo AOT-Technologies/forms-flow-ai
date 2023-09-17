@@ -1,10 +1,10 @@
 import React, { useEffect, useState } from "react";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import Drawer from "@material-ui/core/Drawer";
 import Button from "@material-ui/core/Button";
 import List from "@material-ui/core/List";
 import Divider from "@material-ui/core/Divider";
-import { saveFilters } from "../../../../apiManager/services/bpmTaskServices";
+import { fetchBPMTaskCount, fetchFilterList, saveFilters } from "../../../../apiManager/services/bpmTaskServices";
 import {
   ACCESSIBLE_FOR_ALL_GROUPS,
   PRIVATE_ONLY_YOU,
@@ -12,8 +12,10 @@ import {
 } from "../../../../constants/taskConstants";
 import { useTranslation } from "react-i18next";
 import { Translation } from "react-i18next";
+import { setBPMFilterLoader, setBPMFiltersAndCount } from "../../../../actions/bpmTaskActions";
 
 export default function CreateNewFilterDrawer() {
+  const dispatch = useDispatch();
   const [openDrawer, setOpenDrawer] = useState(false);
   const [filterName, setFilterName] = useState("");
   const [showUndefinedVariable, setShowUndefinedVariable] = useState(false);
@@ -104,7 +106,21 @@ export default function CreateNewFilterDrawer() {
     removeEmptyValues(data);
 
     saveFilters(data)
-      .then(() => {
+      .then((res) => {
+        console.log("response data",res.data);
+        dispatch(fetchFilterList((err,data)=>{
+          if(data){
+            fetchBPMTaskCount(data).then((res)=>{
+              dispatch(setBPMFiltersAndCount(res.data));
+            }).catch((err)=>{
+              if(err){
+                console.error(err);
+              }
+            }).finally(()=>{
+              dispatch(setBPMFilterLoader(false));
+            });
+          }
+        }));
         toggleDrawer(false);
         // Clearing the input fields after submission
         setFilterName("");

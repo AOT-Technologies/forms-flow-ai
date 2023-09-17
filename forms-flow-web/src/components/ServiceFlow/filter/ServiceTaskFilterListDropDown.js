@@ -25,17 +25,18 @@ const ServiceFlowFilterListDropDown = React.memo(() => {
   const { t } = useTranslation();
   const tenantKey = useSelector((state) => state.tenants?.tenantId);
   const redirectUrl = MULTITENANCY_ENABLED ? `/tenant/${tenantKey}/` : "/";
+  
   const changeFilterSelection = (filter) => {
-    const SelectedBPMFilterId = bpmFiltersList.find(item => item.id === filter.id);
-    fetchBPMTaskDetail(SelectedBPMFilterId).then((res)=>{
+    dispatch(setBPMTaskLoader(true));
+    const selectedBPMFilterId = bpmFiltersList.find(item => item.id === filter.id);
+    fetchBPMTaskDetail(selectedBPMFilterId).then((res)=>{
       dispatch(setBPMTaskList(res.data));
     }).catch((err)=>{
-      console.err(err);
+      console.error(err);
     }).finally(()=>{
       dispatch(setBPMTaskLoader(false));
     });
     dispatch(setSelectedBPMFilter(filter));
-    dispatch(setBPMTaskLoader(true));
     dispatch(setSelectedTaskID(null));
   };
  

@@ -5,7 +5,11 @@ import Button from "@material-ui/core/Button";
 import List from "@material-ui/core/List";
 import Divider from "@material-ui/core/Divider";
 import { saveFilters } from "../../../../apiManager/services/bpmTaskServices";
-import { ACCESSIBLE_FOR_ALL_GROUPS, PRIVATE_ONLY_YOU, SPECIFIC_USER_OR_GROUP } from "../../../../constants/taskConstants";
+import {
+  ACCESSIBLE_FOR_ALL_GROUPS,
+  PRIVATE_ONLY_YOU,
+  SPECIFIC_USER_OR_GROUP,
+} from "../../../../constants/taskConstants";
 import { useTranslation } from "react-i18next";
 import { Translation } from "react-i18next";
 
@@ -22,14 +26,20 @@ export default function CreateNewFilterDrawer() {
   const [identifierId, setIdentifierId] = useState("");
   const [selectUserGroupIcon, setSelectUserGroupIcon] = useState("");
   const [specificUserGroup, setSpecificUserGroup] = useState("");
-  const userName = useSelector((state) => state.user?.userDetail?.preferred_username);
-  const [variables,setVariables] = useState([]);
-  const [inputValues, setInputValues] = useState([{ name: '', label: '' }]);
+  const userName = useSelector(
+    (state) => state.user?.userDetail?.preferred_username
+  );
+  const [variables, setVariables] = useState([]);
+  const [inputValues, setInputValues] = useState([{ name: "", label: "" }]);
   const { t } = useTranslation();
 
-  useEffect(()=>{
+  useEffect(() => {
     setVariables(() => {
-      if (inputValues.length === 1 && inputValues[0].name === '' && inputValues[0].label === '') {
+      if (
+        inputValues.length === 1 &&
+        inputValues[0].name === "" &&
+        inputValues[0].label === ""
+      ) {
         return [];
       } else {
         return inputValues.map((row) => ({
@@ -38,39 +48,61 @@ export default function CreateNewFilterDrawer() {
         }));
       }
     });
-  },[inputValues]);
+  }, [inputValues]);
+
+// Create a new object with non-empty (truthy) values
+  function removeEmptyValues(obj) {
+    for (let key in obj) {
+      if (typeof obj[key] === 'object' && !Array.isArray(obj[key])) {
+        removeEmptyValues(obj[key]);
+        if (Object.keys(obj[key]).length === 0) {
+          delete obj[key];
+        }
+      } else if (Array.isArray(obj[key]) && obj[key].length === 0) {
+        delete obj[key];
+      } else if (obj[key] === "" || obj[key] === undefined) {
+        delete obj[key];
+      }
+    }
+  }
 
   const handleSubmit = () => {
     let users = [];
     let roles = [];
-    if(permissions === ACCESSIBLE_FOR_ALL_GROUPS){
+    if (permissions === ACCESSIBLE_FOR_ALL_GROUPS) {
       users = [];
     }
-    if(permissions === PRIVATE_ONLY_YOU){
+    if (permissions === PRIVATE_ONLY_YOU) {
       users.push(userName);
     }
-    if(selectUserGroupIcon === 'user' && permissions === SPECIFIC_USER_OR_GROUP){
+    if (
+      selectUserGroupIcon === "user" &&
+      permissions === SPECIFIC_USER_OR_GROUP
+    ) {
       users.push(identifierId);
     }
-    if(selectUserGroupIcon === 'group'){
+    if (selectUserGroupIcon === "group") {
       roles.push(identifierId);
     }
 
     const data = {
       name: filterName,
       criteria: {
-        processDefinitionNameLike: definitionKeyId,
+        processDefinitionNameLike: `%${definitionKeyId}%`,
         candidateGroup: candidateGroup,
         assignee: assignee,
         includeAssignedTasks: includeAssignedTasks,
       },
-      properties:{
-        showUndefinedVariable:showUndefinedVariable
+      properties: {
+        showUndefinedVariable: showUndefinedVariable,
       },
       variables: variables,
       users: users,
-      roles: roles
+      roles: roles,
     };
+
+    removeEmptyValues(data);
+
     saveFilters(data)
       .then(() => {
         toggleDrawer(false);
@@ -86,7 +118,7 @@ export default function CreateNewFilterDrawer() {
         setIdentifierId("");
         setSelectUserGroupIcon("");
         setSpecificUserGroup("");
-        setInputValues([{ name: '', label: '' }]);
+        setInputValues([{ name: "", label: "" }]);
       })
       .catch((error) => {
         console.error("error", error);
@@ -114,7 +146,6 @@ export default function CreateNewFilterDrawer() {
   //Function to checking which icon is selected
   const handleClickUserGroupIcon = (icon) => {
     setSelectUserGroupIcon(icon);
-
   };
 
   //function for taking the value from the radio button Specific User/ Group
@@ -129,11 +160,11 @@ export default function CreateNewFilterDrawer() {
     }
   };
 
-  const handleAddClick = ()=>{
-    setInputValues([...inputValues, { name: '', label: '' }]);
+  const handleAddClick = () => {
+    setInputValues([...inputValues, { name: "", label: "" }]);
   };
 
-  const handleRowDelete = (index)=> {
+  const handleRowDelete = (index) => {
     setInputValues((prevInputValues) => {
       const updatedValues = prevInputValues.filter((e, i) => i !== index);
       return updatedValues;
@@ -155,11 +186,7 @@ export default function CreateNewFilterDrawer() {
       <List>
         <div className="newFilterTaskContainer-header p-0 d-flex align-items-center justify-content-between">
           <h5 style={{ fontWeight: "bold", fontSize: "16px" }}>
-            <Translation>
-            {(t) =>
-              t("Create new filter")
-            }
-          </Translation>
+            <Translation>{(t) => t("Create new filter")}</Translation>
           </h5>
           <span
             className="cursor-pointer"
@@ -171,7 +198,9 @@ export default function CreateNewFilterDrawer() {
         </div>
       </List>
       <List>
-        <h5 style={{ fontWeight: "bold", fontSize: "18px" }}><Translation>{(t) => t("Filter Name")}</Translation></h5>
+        <h5 style={{ fontWeight: "bold", fontSize: "18px" }}>
+          <Translation>{(t) => t("Filter Name")}</Translation>
+        </h5>
         <input
           type="text"
           placeholder={t("Enter your text here")}
@@ -183,9 +212,12 @@ export default function CreateNewFilterDrawer() {
       <Divider />
       <List>
         <h5 style={{ fontWeight: "bold", fontSize: "18px" }}>
-        <Translation>{(t) => t("Criteria")}</Translation> <i className="fa fa-info-circle"></i>{" "}
+          <Translation>{(t) => t("Criteria")}</Translation>{" "}
+          <i className="fa fa-info-circle"></i>{" "}
         </h5>
-        <h5 style={{ fontSize: "18px" }}><Translation>{(t) => t("Definition Key")}</Translation></h5>
+        <h5 style={{ fontSize: "18px" }}>
+          <Translation>{(t) => t("Definition Key")}</Translation>
+        </h5>
         <span
           style={{
             textDecoration: "underline",
@@ -205,7 +237,9 @@ export default function CreateNewFilterDrawer() {
             onChange={(e) => setDefinitionKeyId(e.target.value)}
           />
         )}
-        <h5><Translation>{(t) => t("Candidate Group")}</Translation></h5>
+        <h5>
+          <Translation>{(t) => t("Candidate Group")}</Translation>
+        </h5>
         <span
           style={{
             textDecoration: "underline",
@@ -225,7 +259,9 @@ export default function CreateNewFilterDrawer() {
             onChange={(e) => setCandidateGroup(e.target.value)}
           />
         )}
-        <h5><Translation>{(t) => t("Asignee")}</Translation></h5>
+        <h5>
+          <Translation>{(t) => t("Asignee")}</Translation>
+        </h5>
         <span
           style={{
             textDecoration: "underline",
@@ -246,7 +282,9 @@ export default function CreateNewFilterDrawer() {
           />
         )}
 
-        <div
+        {
+          candidateGroup?.length ?
+          <div
           style={{ display: "flex", alignItems: "center", marginTop: "10px" }}
         >
           <input
@@ -257,13 +295,14 @@ export default function CreateNewFilterDrawer() {
             style={{ marginRight: "6px" }}
           />
           <h5 style={{ fontSize: "18px", marginBottom: "3px" }}>
-          <Translation>{(t) => t("Include Assigned Task")}</Translation>
+            <Translation>{(t) => t("Include Assigned Task")}</Translation>
           </h5>
-        </div>
+        </div> : null}
         <Divider />
         <List>
           <h5 style={{ fontWeight: "bold", fontSize: "18px" }}>
-          <Translation>{(t) => t("Variable")}</Translation> <i className="fa fa-info-circle"></i>
+            <Translation>{(t) => t("Variable")}</Translation>{" "}
+            <i className="fa fa-info-circle"></i>
           </h5>
 
           <div style={{ display: "flex", alignItems: "center" }}>
@@ -275,53 +314,62 @@ export default function CreateNewFilterDrawer() {
               style={{ marginRight: "6px" }}
             />
             <h5 style={{ fontSize: "18px", marginBottom: "3px" }}>
-            <Translation>{(t) => t("Show undefined variables")}</Translation>
+              <Translation>{(t) => t("Show undefined variables")}</Translation>
             </h5>
           </div>
           <div>
-          {
-            inputValues?.map((input, index) => (
-              <div key={index}  className="row-container">
+            {inputValues?.map((input, index) => (
+              <div key={index} className="row-container">
                 <div className="input-container">
-                  <label><Translation>{(t) => t("Name")}</Translation></label>
+                  <label>
+                    <Translation>{(t) => t("Name")}</Translation>
+                  </label>
                   <input
                     type="text"
                     placeholder={t("Name of variable")}
                     className="varible-input-boxes"
                     value={input.name}
-                    onChange={(e)=>handleVariableInputChange(index,'name',e.target.value)}
+                    onChange={(e) =>
+                      handleVariableInputChange(index, "name", e.target.value)
+                    }
                   />
                 </div>
                 <div className="input-container">
-                  <label><Translation>{(t) => t("Label")}</Translation></label>
+                  <label>
+                    <Translation>{(t) => t("Label")}</Translation>
+                  </label>
                   <input
                     type="text"
                     placeholder={t("Readable name")}
                     className="varible-input-boxes"
                     value={input.label}
-                    onChange={(e)=>handleVariableInputChange(index,'label',e.target.value)}
+                    onChange={(e) =>
+                      handleVariableInputChange(index, "label", e.target.value)
+                    }
                   />
                 </div>
-                {
-                  index === 0 ? <button
-                  className="btn btn-primary"
-                  onClick={() => handleAddClick()}
-                >
-                <Translation>{(t) => t("Add")}</Translation>
-                </button> : <i
-                  className="fa fa-minus-circle"
-                  onClick = {()=> handleRowDelete(index)}
-                ></i>
-                }
+                {index === 0 ? (
+                  <button
+                    className="btn btn-primary"
+                    onClick={() => handleAddClick()}
+                  >
+                    <Translation>{(t) => t("Add")}</Translation>
+                  </button>
+                ) : (
+                  <i
+                    className="fa fa-minus-circle"
+                    onClick={() => handleRowDelete(index)}
+                  ></i>
+                )}
               </div>
-             ))}
+            ))}
           </div>
-
         </List>
         <Divider />
         <div className="child-container-two">
           <h5 style={{ fontWeight: "bold" }}>
-          <Translation>{(t) => t("Permission")}</Translation> <i className="fa fa-info-circle"></i>
+            <Translation>{(t) => t("Permission")}</Translation>{" "}
+            <i className="fa fa-info-circle"></i>
           </h5>
           <input
             style={{ marginRight: "4px" }}
@@ -330,10 +378,10 @@ export default function CreateNewFilterDrawer() {
             name="my-radio"
             value={ACCESSIBLE_FOR_ALL_GROUPS}
             checked={permissions === ACCESSIBLE_FOR_ALL_GROUPS}
-            onChange={(e)=>setPermissions(e.target.value)}
+            onChange={(e) => setPermissions(e.target.value)}
           />
           <label style={{ marginRight: "3px", fontSize: "18px" }}>
-          <Translation>{(t) => t("Accessible for all users")}</Translation>
+            <Translation>{(t) => t("Accessible for all users")}</Translation>
           </label>{" "}
           <br />
           <input
@@ -343,9 +391,11 @@ export default function CreateNewFilterDrawer() {
             name="my-radio"
             value={PRIVATE_ONLY_YOU}
             checked={permissions === PRIVATE_ONLY_YOU}
-            onChange={(e)=>setPermissions(e.target.value)}
+            onChange={(e) => setPermissions(e.target.value)}
           />
-          <label style={{ fontSize: "18px" }}><Translation>{(t) => t("Private (Only You)")}</Translation></label>
+          <label style={{ fontSize: "18px" }}>
+            <Translation>{(t) => t("Private (Only You)")}</Translation>
+          </label>
           <br />
           <input
             style={{ marginRight: "4px" }}
@@ -356,13 +406,15 @@ export default function CreateNewFilterDrawer() {
             checked={permissions === SPECIFIC_USER_OR_GROUP}
             onChange={handleSpecificUserGroup}
           />
-          <label style={{ fontSize: "18px" }}><Translation>{(t) => t("Specific User/ Group")}</Translation></label>{" "}
+          <label style={{ fontSize: "18px" }}>
+            <Translation>{(t) => t("Specific User/ Group")}</Translation>
+          </label>{" "}
           <br />
           {specificUserGroup === SPECIFIC_USER_OR_GROUP ? (
             <div className="inside-child-container-two d-flex">
               <div className="user-group-divisions d-flex">
                 <div style={{ fontSize: "14px" }}>
-                <Translation>{(t) => t("User")}</Translation>
+                  <Translation>{(t) => t("User")}</Translation>
                   <i
                     className={`fa fa-user ${
                       selectUserGroupIcon === "user" ? "highlight" : ""
@@ -372,7 +424,7 @@ export default function CreateNewFilterDrawer() {
                   />
                 </div>
                 <div style={{ fontSize: "14px" }}>
-                <Translation>{(t) => t("Group")}</Translation>
+                  <Translation>{(t) => t("Group")}</Translation>
                   <i
                     className={`fa fa-users ${
                       selectUserGroupIcon === "group" ? "highlight" : ""
@@ -383,7 +435,9 @@ export default function CreateNewFilterDrawer() {
                 </div>
               </div>
               <div>
-                <label style={{ fontSize: "16px" }}><Translation>{(t) => t("Identifier")}</Translation></label>
+                <label style={{ fontSize: "16px" }}>
+                  <Translation>{(t) => t("Identifier")}</Translation>
+                </label>
                 <input
                   type="text"
                   placeholder={t("Enter role ID")}
@@ -400,16 +454,16 @@ export default function CreateNewFilterDrawer() {
       <List>
         <div className="newFilterTaskContainer-footer d-flex align-items-center justify-content-end">
           <span className="cursor-pointer" onClick={() => toggleDrawer(false)}>
-          <Translation>{(t) => t("Cancel")}</Translation>
+            <Translation>{(t) => t("Cancel")}</Translation>
           </span>
           <button
             className="btn btn-primary ml-3 submitButton"
-            style={{textDecoration:"none",fontSize:"14px"}}
+            style={{ textDecoration: "none", fontSize: "14px" }}
             onClick={() => {
               handleSubmit();
             }}
           >
-           <Translation>{(t) => t("Create Filter")}</Translation>
+            <Translation>{(t) => t("Create Filter")}</Translation>
           </button>
         </div>
       </List>
@@ -421,7 +475,7 @@ export default function CreateNewFilterDrawer() {
         <Button
           onClick={() => toggleDrawer(true)}
           style={{
-            fontSize:"15px",
+            fontSize: "15px",
             cursor: "pointer",
             textTransform: "capitalize",
           }}

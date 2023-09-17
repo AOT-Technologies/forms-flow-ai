@@ -8,6 +8,7 @@ import ServiceFlowTaskDetails from "./details/ServiceTaskDetails";
 import { Col, Container, Row } from "react-bootstrap";
 import "./ServiceFlow.scss";
 import {
+  fetchBPMTaskCount,
   fetchFilterList,
   fetchProcessDefinitionList,
   fetchServiceTaskList,
@@ -19,6 +20,7 @@ import { ALL_TASKS } from "./constants/taskConstants";
 import {
   reloadTaskFormSubmission,
   setBPMFilterLoader,
+  setBPMFiltersAndCount,
   setBPMTaskDetailLoader,
   setFilterListParams,
   setSelectedBPMFilter,
@@ -81,6 +83,7 @@ export default React.memo(() => {
   });
 
   useEffect(() => {
+    console.log("affecting here");
     const reqParamData = {
       ...{ sorting: [...sortParams.sorting] },
       ...searchParams,
@@ -92,9 +95,20 @@ export default React.memo(() => {
 
   useEffect(() => {
     dispatch(setBPMFilterLoader(true));
-    dispatch(fetchFilterList());
+    dispatch(fetchFilterList((err,data)=>{
+      if(data){
+        fetchBPMTaskCount(data).then((res)=>{
+          dispatch(setBPMFiltersAndCount(res.data));
+        }).catch((err)=>{
+          if(err){
+            console.error(err);
+          }
+        }).finally(()=>{
+          dispatch(setBPMFilterLoader(false));
+        });
+      }
+    }));
     dispatch(fetchProcessDefinitionList());
-    // dispatch(fetchUserList());
   }, [dispatch]);
 
   useEffect(() => {

@@ -116,7 +116,6 @@ const TaskFilterListViewComponent = React.memo(({
         filterParams["createdBefore"] = getISODateTime(createdEndDate);
       }
       dispatch(setBPMFilterSearchParams(filterParams));
-     // dispatch(fetchServiceTaskList(selectedFilter.id, firstResult, reqData));
       setFilterCount(Object.keys(filterParams).length);
       setDisplayFilter(false);            
         };

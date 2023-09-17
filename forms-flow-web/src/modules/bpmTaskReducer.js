@@ -22,7 +22,7 @@ const initialState = {
   userList: [],
   filterList: [],
   isFilterLoading: true,
-  selectedFilter: null,
+  selectedFilter: {},
   taskId: null,
   filterListSortParams: { sorting: [{ ...TASK_FILTER_LIST_DEFAULT_PARAM }] },
   filterSearchSelections: [],
@@ -38,6 +38,7 @@ const initialState = {
   selectedTaskVariables :{},
   viewType:true,
   error: '',
+  filtersAndCount:[],
 };
 
 const bpmTasks = (state = initialState, action) => {
@@ -49,6 +50,7 @@ const bpmTasks = (state = initialState, action) => {
     case ACTION_CONSTANTS.IS_BPM_TASK_DETAIL_UPDATING:
       return { ...state, isTaskDetailUpdating: action.payload };
     case ACTION_CONSTANTS.BPM_LIST_TASKS:
+      console.log("action payload",action.payload);
       return { ...state, tasksList: action.payload };
     case ACTION_CONSTANTS.BPM_PROCESS_LIST:
       return { ...state, processList: action.payload };
@@ -145,6 +147,8 @@ const bpmTasks = (state = initialState, action) => {
           taskId: null,
           error: action.payload
         };
+    case ACTION_CONSTANTS.BPM_FILTERS_AND_COUNT:
+        return { ...state, filtersAndCount: action.payload };
     default:
       return state;
   }

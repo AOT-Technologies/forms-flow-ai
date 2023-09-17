@@ -4,7 +4,6 @@ import API from "../endpoints";
 import { StorageService, RequestService } from "@formsflow/service";
 import {
   setBPMTaskLoader,
-  setBPMTaskList,
   serviceActionError,
   setBPMTaskDetailLoader,
   setBPMTaskDetail,
@@ -56,7 +55,6 @@ export const fetchServiceTaskList = (
           if (!_embedded || !_embedded["task"] || !responseData["count"]) {
             // Display error if the necessary values are unavailable.
             // console.log("Error", res);
-            dispatch(setBPMTaskList([]));
             dispatch(setBPMTaskCount(0));
             dispatch(serviceActionError(res));
             dispatch(setBPMTaskLoader(false));
@@ -79,13 +77,12 @@ export const fetchServiceTaskList = (
               }
             }
             dispatch(setBPMTaskCount(taskCount));
-            dispatch(setBPMTaskList(taskData));
+            // dispatch(setBPMTaskList(taskData));
             dispatch(setBPMTaskLoader(false));
             done(null, taskData);
           }
         } else {
           // console.log("Error", res);
-          dispatch(setBPMTaskList([]));
           dispatch(setBPMTaskCount(0));
           dispatch(serviceActionError(res));
           dispatch(setBPMTaskLoader(false));
@@ -93,7 +90,6 @@ export const fetchServiceTaskList = (
       })
       .catch((error) => {
         // console.log("Error", error);
-        dispatch(setBPMTaskList([]));
         dispatch(setBPMTaskCount(0));
         dispatch(serviceActionError(error));
         dispatch(setBPMTaskLoader(false));
@@ -208,7 +204,6 @@ export const fetchFilterList = (...rest) => {
       .then((res) => {
         if (res.data) {
           dispatch(setBPMFilterList(res.data));
-          dispatch(setBPMFilterLoader(false));
           //dispatch(setBPMLoader(false));
           done(null, res.data);
         } else {
@@ -470,4 +465,12 @@ export const onBPMTaskFormSubmit = (taskId, formReq, ...rest) => {
 
 export const saveFilters = (data) => {
   return RequestService.httpPOSTRequest(`${API.GET_FILTERS}`, data);
+};
+
+export const fetchBPMTaskCount = (data) => {
+  return RequestService.httpPOSTRequest(`${API.GET_BPM_TASK_FILTERS}/count`, data);
+};
+
+export const fetchBPMTaskDetail = (data) => {
+  return RequestService.httpPOSTRequest(`${API.GET_BPM_TASK_FILTERS}`, data);
 };

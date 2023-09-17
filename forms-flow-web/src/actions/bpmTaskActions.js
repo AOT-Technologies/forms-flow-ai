@@ -200,3 +200,10 @@ export const setBPMFilterSearchParams = (data) => (dispatch) => {
     payload: data,
   });
 };
+
+export const setBPMFiltersAndCount = (data) => (dispatch) => {
+  dispatch({
+    type: ACTION_CONSTANTS.BPM_FILTERS_AND_COUNT, 
+    payload: data,
+  });
+};

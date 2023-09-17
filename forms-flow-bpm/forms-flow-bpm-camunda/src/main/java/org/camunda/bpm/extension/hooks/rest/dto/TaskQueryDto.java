@@ -13,6 +13,7 @@ import lombok.Data;
 public class TaskQueryDto {
 
     private String name;
+    private Integer id;
     private String tenant;
     private String status;
     private org.camunda.bpm.engine.rest.dto.task.TaskQueryDto criteria;
@@ -24,6 +25,14 @@ public class TaskQueryDto {
 
     public void setName(String name) {
         this.name = name;
+    }
+
+    public void setId(Integer id) {
+        this.id = id;
+    }
+
+    public Integer getId() {
+        return id;
     }
 
     public String getTenant() {

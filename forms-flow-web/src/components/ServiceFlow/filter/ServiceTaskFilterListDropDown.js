@@ -2,29 +2,43 @@ import React /*{useEffect}*/ from "react";
 import { NavDropdown } from "react-bootstrap";
 import { useDispatch, useSelector } from "react-redux";
 import {
+  setBPMTaskList,
+  setBPMTaskLoader,
   setSelectedBPMFilter,
   setSelectedTaskID,
 } from "../../../actions/bpmTaskActions";
 import { Link } from "react-router-dom";
-/*import {Link} from "react-router-dom";*/
 import { useTranslation } from "react-i18next";
 import { MULTITENANCY_ENABLED } from "../../../constants/constants";
+import { fetchBPMTaskDetail } from "../../../apiManager/services/bpmTaskServices";
 
 const ServiceFlowFilterListDropDown = React.memo(() => {
   const dispatch = useDispatch();
-  const filterList = useSelector((state) => state.bpmTasks.filterList);
+  const filterList = useSelector((state) => state.bpmTasks.filtersAndCount);
   const isFilterLoading = useSelector(
     (state) => state.bpmTasks.isFilterLoading
+  );
+  const bpmFiltersList = useSelector(
+    (state) => state.bpmTasks.filterList
   );
   const selectedFilter = useSelector((state) => state.bpmTasks.selectedFilter);
   const { t } = useTranslation();
   const tenantKey = useSelector((state) => state.tenants?.tenantId);
   const redirectUrl = MULTITENANCY_ENABLED ? `/tenant/${tenantKey}/` : "/";
   const changeFilterSelection = (filter) => {
+    const SelectedBPMFilterId = bpmFiltersList.find(item => item.id === filter.id);
+    fetchBPMTaskDetail(SelectedBPMFilterId).then((res)=>{
+      dispatch(setBPMTaskList(res.data));
+    }).catch((err)=>{
+      console.err(err);
+    }).finally(()=>{
+      dispatch(setBPMTaskLoader(false));
+    });
     dispatch(setSelectedBPMFilter(filter));
+    dispatch(setBPMTaskLoader(true));
     dispatch(setSelectedTaskID(null));
   };
-
+ 
   const renderFilterList = () => {
     if (filterList.length) {
       return (
@@ -39,7 +53,7 @@ const ServiceFlowFilterListDropDown = React.memo(() => {
               key={index}
               onClick={() => changeFilterSelection(filter)}
             >
-              {filter?.name} {`(${filter.itemCount || 0})`}
+              {filter?.name} {`(${filter.count || 0})`}
             </NavDropdown.Item>
           ))}
         </>

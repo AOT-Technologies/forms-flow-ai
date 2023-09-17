@@ -6,8 +6,7 @@ import { NavDropdown } from "react-bootstrap";
 import ServiceFlowFilterListDropDown from "../components/ServiceFlow/filter/ServiceTaskFilterListDropDown";
 import createURLPathMatchExp from "../helper/regExp/pathMatch";
 import {MULTITENANCY_ENABLED} from "../constants/constants";
-import { fetchFilterList } from '../apiManager/services/bpmTaskServices';
-import { setViewType } from '../actions/bpmTaskActions';
+import {  setSelectedBPMFilter, setViewType } from '../actions/bpmTaskActions';
 
 
 
@@ -16,30 +15,55 @@ import CreateNewFilterDrawer from "../components/ServiceFlow/list/sort/CreateNew
 function TaskHead() {
   const dispatch = useDispatch();
   const tenantKey = useSelector((state) => state.tenants?.tenantId);
+
   const selectedFilter = useSelector(
-    (state) => state.bpmTasks.selectedFilter?.name
+    (state) => state.bpmTasks.selectedFilter
   );
-  const itemCount = useSelector((state) => state.bpmTasks.tasksCount);
+
+  const isFilterLoading = useSelector(
+    (state) => state.bpmTasks.isFilterLoading
+  );
+
+  const filterListAndCount = useSelector(
+    (state) => state.bpmTasks.filtersAndCount
+  );
+
   const isTaskListLoading = useSelector(
     (state) => state.bpmTasks.isTaskListLoading
   );
-  const count = isTaskListLoading ? "" : itemCount ? `(${itemCount})` : "(0)";
+
+  const count = isTaskListLoading ? "" : selectedFilter ? `(${selectedFilter.count})` : "(0)";
   const location = useLocation();
   const { pathname } = location;
   const baseUrl = MULTITENANCY_ENABLED ? `/tenant/${tenantKey}/` : "/";
+
+
+  useEffect(()=>{
+    dispatch(setSelectedBPMFilter(filterListAndCount[0]));
+  },[filterListAndCount?.length]);
+
   const goToTask = () => {
     dispatch(push(`${baseUrl}task`));
   };
   const viewType = useSelector(
     (state) => state.bpmTasks.viewType
   );
-  
-  useEffect(()=>{
-    dispatch(fetchFilterList());
-  }, [itemCount]);
 
   const changeTaskView = (view) => {
     dispatch(setViewType(view));
+  };
+
+  const filterListLoading = ()=>{
+    return (
+      <>
+        { isFilterLoading && (
+          <>
+          <i className="fa fa-list-ul px-2" />
+          Loading...
+          </>
+        ) }
+      </>
+    );
   };
 
   return (
@@ -57,8 +81,7 @@ function TaskHead() {
                 title={
                   <>
                     <i className="fa fa-list-ul px-2" />
-                    {`${selectedFilter ? selectedFilter : "Tasks"} ${" "}`}
-                    {count}
+                    {selectedFilter ?  `${selectedFilter?.name} ${count}` : filterListLoading() }
                   </>
                 }
                 onClick={goToTask}
@@ -126,6 +149,7 @@ function TaskHead() {
       <hr className="head-rule" />
     </div>
   );
+  
 }
 
 export default TaskHead;

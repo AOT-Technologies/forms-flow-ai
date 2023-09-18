@@ -421,7 +421,7 @@ const Edit = React.memo(() => {
         }
         dispatch(setRestoreFormData({}));
         dispatch(setRestoreFormId(null));
-        toast.success(t("Form Saved"));
+        toast.success(t("Form saved"));
         dispatch(setFormSuccessData("form", submittedData));
         Formio.cache = {};
         dispatch(push(`${redirectUrl}formflow/${submittedData._id}/preview`));

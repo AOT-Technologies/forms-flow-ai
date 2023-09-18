@@ -14,6 +14,7 @@ import { useTranslation } from "react-i18next";
 import { Translation } from "react-i18next";
 import { setBPMFilterLoader, setBPMFiltersAndCount } from "../../../../actions/bpmTaskActions";
 
+import TaskAttributeComponent from "./TaskAttributeComponent";
 export default function CreateNewFilterDrawer() {
   const dispatch = useDispatch();
   const [openDrawer, setOpenDrawer] = useState(false);
@@ -34,6 +35,19 @@ export default function CreateNewFilterDrawer() {
   const [variables, setVariables] = useState([]);
   const [inputValues, setInputValues] = useState([{ name: "", label: "" }]);
   const { t } = useTranslation();
+  const [modalShow, setModalShow] = useState(false);
+  const [checkboxes, setCheckboxes] = useState({
+    applicationId:false,
+    assignee: false,
+    taskTitle: false,
+    createdDate: false,
+    dueDate: false,
+    followUp: false,
+    priority: false,
+    groups: false
+  }); 
+
+  const taskAttributesCount = Object.values(checkboxes).filter(value => value === true).length;
 
   useEffect(() => {
     setVariables(() => {
@@ -69,6 +83,7 @@ export default function CreateNewFilterDrawer() {
   }
 
   const handleSubmit = () => {
+    console.log(checkboxes);
     let users = [];
     let roles = [];
     if (permissions === ACCESSIBLE_FOR_ALL_GROUPS) {
@@ -101,6 +116,7 @@ export default function CreateNewFilterDrawer() {
       variables: variables,
       users: users,
       roles: roles,
+      taskVisibleAttributes:{...checkboxes}
     };
 
     removeEmptyValues(data);
@@ -196,11 +212,14 @@ export default function CreateNewFilterDrawer() {
   };
 
   const toggleDrawer = () => setOpenDrawer(!openDrawer);
-
+  const toggleModal = () => {
+    setModalShow(!modalShow);
+  };
+  
   const list = () => (
     <div style={{ marginTop: "45px" }} role="presentation">
       <List>
-        <div className="newFilterTaskContainer-header p-0 d-flex align-items-center justify-content-between">
+        <div className="newFilterTaskContainer-header p-0 d-flex align-items-center justify-content-between ">
           <h5 style={{ fontWeight: "bold", fontSize: "16px" }}>
             <Translation>{(t) => t("Create new filter")}</Translation>
           </h5>
@@ -465,8 +484,32 @@ export default function CreateNewFilterDrawer() {
             </div>
           ) : null}
         </div>
+        <Divider />
+        <div className="m-2">
+          <h5 className="font-weight-bold ">
+            <Translation>{(t) => t("Task attribute")}</Translation> <i className="fa fa-info-circle"></i>
+          </h5>
+          <input
+            type="text"
+            className="filter-name-textfeild"
+            onClick={toggleModal}
+            readOnly
+            placeholder={ taskAttributesCount === 0 ? "Select elements" : taskAttributesCount + " Task attribute selected"}
+          />
+          {modalShow &&
+          <div className="modal-overlay" >
+              <TaskAttributeComponent
+                show={modalShow}
+                onHide={() => setModalShow(false)}
+                checkboxes={checkboxes}
+                setCheckboxes={setCheckboxes}
+              />
+          </div>}
+          
+        </div>
+        <Divider />
       </List>
-      <Divider />
+
       <List>
         <div className="newFilterTaskContainer-footer d-flex align-items-center justify-content-end">
           <span className="cursor-pointer" onClick={() => toggleDrawer(false)}>
@@ -509,6 +552,7 @@ export default function CreateNewFilterDrawer() {
               overflowY: "auto",
               overflowX: "hidden",
               backdropFilter: " none !important",
+              zIndex: 1400         
             },
           }}
           sx={{

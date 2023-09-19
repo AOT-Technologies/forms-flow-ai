@@ -10,6 +10,7 @@ import { AppConfig } from "./config";
 import "react-bootstrap-table2-paginator/dist/react-bootstrap-table2-paginator.min.css";
 import "react-bootstrap-table-next/dist/react-bootstrap-table2.min.css";
 import "./resourceBundles/i18n.js";
+import customComponents from "./custom-components";
 
 if (typeof window.__REACT_DEVTOOLS_GLOBAL_HOOK__ === "object") {
     for (let [key, value] of Object.entries(
@@ -21,7 +22,7 @@ if (typeof window.__REACT_DEVTOOLS_GLOBAL_HOOK__ === "object") {
   }
   Formio.setProjectUrl(AppConfig.projectUrl);
   Formio.setBaseUrl(AppConfig.apiUrl);
-  
+  Components.setComponents(customComponents);
   // Set custom formio elements - Code splitted
   import("formsflow-formio-custom-elements/dist/customformio-ex").then(
     (FormioCustomEx) => {

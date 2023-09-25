@@ -39,7 +39,6 @@ export const formio_resourceBundles = {
     "Form unpublishing Failed": "Form unpublishing Failed",
     "Form process failed": "Form process failed",
     "Form deleted successfully": "Form deleted successfully",
-    "Form deletion unsuccessful":"Form deletion unsuccessful",
     "Form-Workflow association saved.": "Form-Workflow association saved.",
     "Loading...": "Loading...",
     "Changing the form workflow will not affect the existing applications. It will only update in the newly created applications. Press Save Changes to continue or cancel the changes.":
@@ -2256,7 +2255,6 @@ export const formio_resourceBundles = {
     "Create Filter":"Създаване на филтър",
     "Select a task in the List":"Изберете задача от списъка",
     "Select a specific task from the provided list of options. Your selection will determine the task you will be working on or interacting with.":"Изберете конкретна задача от предоставения списък с опции. Вашият избор ще определи задачата, върху която ще работите или с която ще взаимодействате."
-
   },
 
   pt: {
@@ -3254,7 +3252,6 @@ export const formio_resourceBundles = {
     "Create Filter": "Criar filtro",
     "Select a task in the List":"Selecione uma tarefa na Lista",
     "Select a specific task from the provided list of options. Your selection will determine the task you will be working on or interacting with.":"Selecione uma tarefa específica na lista de opções fornecida. Sua seleção determinará a tarefa na qual você estará trabalhando ou interagindo."
-
   },
 
   fr: {
@@ -5269,7 +5266,6 @@ export const formio_resourceBundles = {
     "Create Filter":"Filter erstellen",
     "Select a task in the List":"Wählen Sie eine Aufgabe in der Liste aus",
     "Select a specific task from the provided list of options. Your selection will determine the task you will be working on or interacting with.":"Wählen Sie eine bestimmte Aufgabe aus der bereitgestellten Optionsliste aus. Ihre Auswahl bestimmt die Aufgabe, an der Sie arbeiten oder mit der Sie interagieren."
-
 
 
 

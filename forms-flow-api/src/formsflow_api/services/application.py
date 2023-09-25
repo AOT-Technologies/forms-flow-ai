@@ -461,16 +461,16 @@ class ApplicationService:  # pylint: disable=too-many-public-methods
         user: UserContext = kwargs["user"]
         user_name = user.user_name
         form_ids: Set[str] = []
-        forms = Authorization.find_all_resources_authorized(
-            auth_type=AuthType.APPLICATION,
-            roles=user.group_or_roles,
-            user_name=user.user_name,
-            tenant=user.tenant_key,
-        )
-        for form in forms:
-            form_ids.append(form.resource_id)
         application_count = None
         if auth.has_role([REVIEWER_GROUP]):
+            forms = Authorization.find_all_resources_authorized(
+                auth_type=AuthType.APPLICATION,
+                roles=user.group_or_roles,
+                user_name=user.user_name,
+                tenant=user.tenant_key,
+            )
+            for form in forms:
+                form_ids.append(form.resource_id)
             application_count = Application.get_auth_application_count_by_form_id_user(
                 form_ids, user_name
             )

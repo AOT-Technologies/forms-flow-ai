@@ -13,8 +13,8 @@ export default class customButton extends ReactComponent {
     static get builderInfo() {
         return {
             title: 'Custom Button',
-            group: 'basic',
-            icon: 'fa fa-hand-pointer',
+            group: 'custom',
+            icon: 'stop',
             weight: 70,
             schema: customButton.schema(),
         };

@@ -13,8 +13,8 @@ export default class ToggleSwitch extends ReactComponent {
     static get builderInfo() {
       return {
         title: 'Toggle',
-        icon: 'toggle',
-        group: 'basic',
+        icon: 'toggle-off',
+        group: 'custom',
         documentation: '', //TODO
         weight: 110,
         schema: ToggleSwitch.schema()

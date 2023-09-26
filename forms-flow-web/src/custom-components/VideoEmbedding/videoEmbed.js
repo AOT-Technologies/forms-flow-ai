@@ -13,8 +13,8 @@ export default class VideoEmbed extends ReactComponent {
     static get builderInfo() {
       return {
         title: 'Video Embedding',
-        icon: 'upload',
-        group: 'basic',
+        icon: 'video-camera',
+        group: 'custom',
         documentation: '', //TODO
         weight: 110,
         schema: VideoEmbed.schema()

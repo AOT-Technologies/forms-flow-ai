@@ -13,7 +13,7 @@ export default class progressBar extends ReactComponent {
     static get builderInfo() {
         return {
             title: 'Progress Bar',
-            icon: 'progress',
+            icon: 'bars',
             group: 'basic',
             documentation: '', //TODO
             weight: 110,

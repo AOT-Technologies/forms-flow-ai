@@ -114,7 +114,12 @@
     float: right;
     font-weight: normal
 }
-
+.public-label {
+    margin-right: 12px;
+}
+.custom-control {
+    padding-bottom: 4px !important;
+}
 /* Responsive layout - makes a one column-layout instead of a two-column layout */
 @media (max-width: 800px) {
 

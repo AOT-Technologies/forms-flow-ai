@@ -1,0 +1,29 @@
+@import "../../../assets/styles/themes.scss";
+
+.badge-pill {
+    cursor: default;
+    border: 1px solid  !important;
+    color: $border-gray;
+    background-color: transparent !important;
+    height: 32px !important;
+    padding: 10px !important;
+}
+
+.badge-deleteIcon {
+    font-size: 18px;
+    color: $white;
+    border-radius: 22px;
+    background-color: $gray;
+    width: 18px !important;
+    cursor: pointer;
+    height: 18px !important;
+    -webkit-tap-highlight-color: transparent !important;
+}
+
+.badge-deleteIcon:hover {
+    background-color: $hover-gray !important;
+}
+.poper {
+   max-height: 444px;
+    overflow-y: auto;
+}

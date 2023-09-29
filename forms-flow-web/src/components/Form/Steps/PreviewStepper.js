@@ -2,7 +2,6 @@ import React, { useEffect, useState } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import Popover from "@material-ui/core/Popover";
 import Checkbox from "@material-ui/core/Checkbox";
-import FormControlLabel from "@material-ui/core/FormControlLabel";
 import ListGroup from "react-bootstrap/ListGroup";
 import { Button } from "react-bootstrap";
 import Grid from "@material-ui/core/Grid";
@@ -312,9 +311,6 @@ const Preview = React.memo(
                   )}
                   <div>
                     <label>
-                      <FormControlLabel
-                        className="mr-1"
-                        control={
                           <Checkbox
                             aria-label="Publish"
                             checked={processData.status === "active"}
@@ -327,10 +323,9 @@ const Preview = React.memo(
                             }
                             name="Check box to associate form with a workflow"
                             color="primary"
+                            id="form-publish"
                           />
-                        }
-                      />
-                      <label className="fontsize-16 ml-1">
+                      <label htmlFor="form-publish" className="fontsize-16 ml-1">
                         {t("Publish this form for Client Users.")}
                       </label>
                     </label>

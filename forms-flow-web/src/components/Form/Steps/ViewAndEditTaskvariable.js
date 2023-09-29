@@ -33,6 +33,7 @@ const ViewAndEditTaskvariable = ({
             disabled
             value={item.key}
             className="form-control"
+            title="Select form field"
           />
         </TableCell>
         <TableCell align="left">
@@ -44,6 +45,7 @@ const ViewAndEditTaskvariable = ({
               setTaskLable(e.target.value);
             }}
             className="form-control"
+            aria-labelledby="Task label"
           />
         </TableCell>
         <TableCell align="left">

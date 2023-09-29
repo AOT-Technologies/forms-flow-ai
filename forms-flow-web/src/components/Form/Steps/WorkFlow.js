@@ -201,9 +201,9 @@ const WorkFlow = React.memo(
             <Card variant="outlined" className="card-overflow">
               <CardContent>
                 <Grid item xs={12} sm={6} spacing={3}>
-                  <span className="fontsize-16">
+                  <label htmlFor="selectWorkflow" className="fontsize-16">
                     {t("Please select from one of the following workflows.")}
-                  </span>
+                  </label>
                   <Select
                     options={processList}
                     onChange={handleListChange}
@@ -211,6 +211,7 @@ const WorkFlow = React.memo(
                       processList.length && workflow?.value ? workflow : ""
                     }
                     disabled={disableWorkflowAssociation}
+                    inputId="selectWorkflow"
                   />
                 </Grid>
                 <Grid item xs={12} sm={6} spacing={3} />

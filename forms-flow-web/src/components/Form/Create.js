@@ -270,7 +270,7 @@ const Create = React.memo(() => {
           </div>
           <div className="col-lg-4 col-md-3 col-sm-3">
             <div id="form-group-display" className="form-group">
-              <label htmlFor="name" className="control-label">
+              <label htmlFor="form-display" className="control-label">
                 {t("Display as")}
               </label>
               <div className="input-group">
@@ -345,8 +345,7 @@ const Create = React.memo(() => {
           </div>
 
           <div className="col-lg-4 col-md-4 col-sm-4">
-            <div id="form-group-path" className="form-group">
-              <label htmlFor="path" className="control-label "></label>
+            <div  className="form-group">
               <div className="input-group">
                 <FormControlLabel
                   control={

@@ -168,9 +168,9 @@ export default React.memo(() => {
       <div className="flex-container">
         <div className="flex-item-left">
           <div style={{ display: "flex" }}>
-            <h3 className="task-head" style={{ marginTop: "3px" }}>
+            <span className="task-head" style={{ marginTop: "3px" }}>
               <i className="fa fa-cogs" aria-hidden="true" />
-            </h3>
+            </span>
             <h3 className="task-head">
               {" "}
               <span className="forms-text" style={{ marginLeft: "1px" }}>
@@ -197,9 +197,9 @@ export default React.memo(() => {
                 {t("Help")}
               </Button>
               <Grid item xs={12} sm={6}>
-                <span className="fontsize-16">
+                <label htmlFor="workflowDropdown" id="selectWorkflow" className="fontsize-16">
                   {t("Please select an existing workflow.")}
-                </span>
+                </label>
                 <div className="select-style">
                   <Select
                     placeholder={t("Select...")}
@@ -209,14 +209,18 @@ export default React.memo(() => {
                       processList.length && workflow?.value ? workflow : ""
                     }
                     styles={customDropdownStyles}
+                    id="workflowDropdown"
+                    aria-labelledby="selectWorkflow"
+                    
                   />
                 </div>
                 <div className="mt-2 toggle-bpm">
-                  <label className="switch">
+                  <span className="switch">
                     <input
                       type="checkbox"
                       checked={isBpmnModel}
                       onChange={handleToggle}
+                      title={t("switch to DMN")}
                     />
                     <span className="slider round"></span>
                     <span
@@ -224,7 +228,7 @@ export default React.memo(() => {
                       data-on="BPMN"
                       data-off="DMN"
                     ></span>
-                  </label>
+                  </span>
                 </div>
               </Grid>
               <div className="mt-2">
@@ -238,6 +242,7 @@ export default React.memo(() => {
                   <Button
                     className="btn-create-new mr-3"
                     onClick={() => handleCreateNew()}
+                    title={t("Create new workflow")}
                   >
                     {t("Create New")}
                   </Button>
@@ -250,7 +255,7 @@ export default React.memo(() => {
                       accept=".bpmn, .dmn"
                       onChange={(e) => handleChangeFile(e.target.files[0])}
                     />
-                    <label htmlFor="inputWorkflow">{t("Choose File")}</label>
+                    <span htmlFor="inputWorkflow">{t("Choose File")}</span>
                   </div>
                   <label htmlFor="inputWorkflow" style={{ padding: "4px" }} >
                     {fileName ? fileName : t("No file chosen")}

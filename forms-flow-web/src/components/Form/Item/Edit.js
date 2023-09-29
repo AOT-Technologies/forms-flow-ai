@@ -1,3 +1,4 @@
+
 import React, { useState, useEffect, useReducer } from "react";
 import { Errors, FormBuilder, Formio } from "react-formio";
 import { push } from "connected-react-router";
@@ -29,6 +30,7 @@ import {
   setRestoreFormData,
   setRestoreFormId,
 } from "../../../actions/formActions";
+import { Form } from 'react-bootstrap';
 import { removeTenantKey } from "../../../helper/helper";
 import { fetchFormById } from "../../../apiManager/services/bpmFormServices";
 import {
@@ -36,7 +38,6 @@ import {
   formUpdate,
   getFormHistory,
 } from "../../../apiManager/services/FormServices";
-import { Checkbox, FormControlLabel } from "@material-ui/core";
 import { manipulatingFormData } from "../../../apiManager/services/formFormatterService";
 import SaveAsNewVersionConfirmationModal from "./SaveAsNewVersionConfirmationModal";
 import LoadingOverlay from "react-loading-overlay";
@@ -68,7 +69,7 @@ const reducer = (form, { type, value }) => {
 const Edit = React.memo(() => {
   const dispatch = useDispatch();
   const processListData = useSelector((state) => state.process?.formProcessList);
-  const formData = useSelector((state) => state.form?.form );
+  const formData = useSelector((state) => state.form?.form);
   const [form, dispatchFormAction] = useReducer(reducer, _cloneDeep(formData));
   const errors = useSelector((state) => state.form?.error);
   const formHistory = useSelector((state) => state.formRestore?.formHistory || []);
@@ -110,15 +111,15 @@ const Edit = React.memo(() => {
     saveFormData();
   };
 
-  useEffect(()=>{
-    if(processListData?.parentFormId && !formHistory.length){
-       getFormHistory(processListData?.parentFormId).then((res)=>{
-      dispatch(setFormHistories(res.data));
-    }).catch(()=>{
-      setFormHistories([]);
-    });
-  }
-  },[processListData]);
+  useEffect(() => {
+    if (processListData?.parentFormId && !formHistory.length) {
+      getFormHistory(processListData?.parentFormId).then((res) => {
+        dispatch(setFormHistories(res.data));
+      }).catch(() => {
+        setFormHistories([]);
+      });
+    }
+  }, [processListData]);
 
   useEffect(() => {
     if (restoredFormId) {
@@ -486,19 +487,20 @@ const Edit = React.memo(() => {
             onConfirm={saveAsNewVersionOnCofirm} />
         )
       }
-      <div className="d-flex align-items-center flex-wrap justify-content-between my-4 bg-light p-3">   
-        <div style={{maxWidth:"60%",wordBreak:"break-word" }}>
+      <div className="d-flex align-items-center flex-wrap justify-content-between my-4 bg-light p-3">
+        <div style={{ maxWidth: "60%", wordBreak: "break-word" }}>
           <h3 className="ml-3 task-head">
             <i className="fa fa-wpforms" aria-hidden="true" /> &nbsp;{" "}
             {formData.title}
             <span className="text-success h5 ml-2">(Version {version})</span>
           </h3>
-        </div>  
+        </div>
         <div className="d-flex align-items-center">
-          <FormControlLabel
-            className="mr-2"
-            control={
-              <Checkbox
+          <Form.Group controlId="formPublish">
+            <div className="d-flex align-items-center mt-4 mr-4">
+              <label className="public-label mr-2">{t("Do you want to save a new version of this form?")}</label>
+              <Form.Check
+                className="form-check-box"
                 checked={saveAsNewVersionselected}
                 color="primary"
                 aria-label="Publish"
@@ -506,10 +508,8 @@ const Edit = React.memo(() => {
                   setSaveAsNewVersion(e.target.checked);
                 }}
               />
-            }
-            label={t("Do you want to save a new version of this form?")}
-            labelPlacement="start"
-          />
+            </div>
+          </Form.Group>
           <span
             className="btn btn-secondary mr-2"
             onClick={() => {
@@ -584,7 +584,7 @@ const Edit = React.memo(() => {
             <div className="col-lg-4 col-md-4 col-sm-4">
               <div id="form-group-name" className="form-group">
                 <label htmlFor="name" className="control-label field-required">
-                 {t("Name")}
+                  {t("Name")}
                   {addingTenantKeyInformation("name")}
                 </label>
                 <div className="input-group mb-2">
@@ -628,7 +628,7 @@ const Edit = React.memo(() => {
                       {t("Form")}
                     </option>
                     <option label={t("Wizard")} value="wizard">
-                     {t("Wizard")}
+                      {t("Wizard")}
                     </option>
                   </select>
                 </div>
@@ -648,7 +648,7 @@ const Edit = React.memo(() => {
                     onChange={(event) => handleChange("type", event)}
                   >
                     <option label={t("Form")} value="form">
-                     {t("Form")}
+                      {t("Form")}
                     </option>
                     <option label={t("Resource")} value="resource">
                       {t("Resource")}
@@ -692,9 +692,10 @@ const Edit = React.memo(() => {
               <div id="form-group-path" className="form-group">
                 <label htmlFor="path" className="control-label "></label>
                 <div className="input-group">
-                  <FormControlLabel
-                    control={
-                      <Checkbox
+                  <Form.Group controlId="formPublish">
+                    <div className="d-flex align-items-center mt-3 mr-4">
+                      <label className="public-label mr-2">{t("Make this form public ?")}</label>
+                      <Form.Check
                         checked={processListData.anonymous || false}
                         color="primary"
                         aria-label="Publish"
@@ -702,10 +703,8 @@ const Edit = React.memo(() => {
                           changeAnonymous();
                         }}
                       />
-                    }
-                    label={t("Make this form public ?")}
-                    labelPlacement="start"
-                  />
+                    </div>
+                  </Form.Group>
                 </div>
               </div>
             </div>

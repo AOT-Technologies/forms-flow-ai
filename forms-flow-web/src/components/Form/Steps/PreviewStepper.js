@@ -1,13 +1,12 @@
 import React, { useEffect, useState } from "react";
 import { useSelector, useDispatch } from "react-redux";
-import Popover from "@material-ui/core/Popover";
-import Checkbox from "@material-ui/core/Checkbox";
+import OverlayTrigger from 'react-bootstrap/OverlayTrigger';
+import Popover from 'react-bootstrap/Popover';
+import { Form } from 'react-bootstrap';
 import ListGroup from "react-bootstrap/ListGroup";
 import { Button } from "react-bootstrap";
-import Grid from "@material-ui/core/Grid";
-import Card from "@material-ui/core/Card";
-import CardContent from "@material-ui/core/CardContent";
-import TextField from "@material-ui/core/TextField";
+import { Container, Row, Col } from 'react-bootstrap';
+import { Card } from 'react-bootstrap';
 import { useTranslation, Translation } from "react-i18next";
 import { setUserGroups } from "../../../actions/authorizationActions";
 import SaveNext from "./SaveNext";
@@ -16,7 +15,8 @@ import {
   handleAuthorization,
   getUserRoles,
 } from "../../../apiManager/services/authorizationService";
-import { Chip } from "@material-ui/core";
+import { Badge } from 'react-bootstrap';
+import "../Steps/steps.scss";
 
 const Preview = React.memo(
   ({
@@ -33,7 +33,6 @@ const Preview = React.memo(
     const dispatch = useDispatch();
     const { t } = useTranslation();
     const [copied, setCopied] = useState(false);
-    const [show, setShow] = useState(false);
     const [designerSelectedOption, setDesignerSelectedOption] = useState("");
     const [clientSelectedOption, setClientSelectedOption] = useState("");
     const [reviewerSelectedOption, setReviewerSelectedOption] = useState("");
@@ -47,7 +46,6 @@ const Preview = React.memo(
     const authorizationDetails = useSelector(
       (state) => state.process?.authorizationDetails
     );
-
     const [designerOptions, setDesingerOptions] = useState([]);
     const [clientOptions, setClientOptions] = useState([]);
     const [reviewerOptions, setReviewerOptions] = useState([]);
@@ -55,18 +53,12 @@ const Preview = React.memo(
     const [clientGroups, setClientGroups] = useState([]);
     const [reviewerGroups, setReviewerGroups] = useState([]);
     const [designerGroups, setDesignerGroups] = useState([]);
-    const [anchorEl, setAnchorEl] = useState(null);
-
     const isDisabled =
       (designerSelectedOption == "Specific Designers" &&
         !designerGroups?.length) ||
       (clientSelectedOption == "Specific Users" && !clientGroups.length) ||
       (reviewerSelectedOption == "Specific Reviewers" &&
         !reviewerGroups.length);
-        
-    const id = show ? "simple-popover" : undefined;
-
-    // copy anonymouse url
     const copyPublicUrl = () => {
       const originUrl = window.origin;
       const url = `${originUrl}/public/form/${formData.form.path}`;
@@ -83,11 +75,6 @@ const Preview = React.memo(
           console.error(err);
         });
     };
-
-    const handleClose = () => {
-      setShow(false);
-    };
-
     useEffect(() => {
       getUserRoles()
         .then((res) => {
@@ -105,8 +92,8 @@ const Preview = React.memo(
         DESIGNER?.roles?.length
           ? "Specific Designers"
           : DESIGNER?.userName
-          ? "Private"
-          : "All Designers"
+            ? "Private"
+            : "All Designers"
       );
       setClientSelectedOption(
         FORM?.roles?.length ? "Specific Users" : "All Users"
@@ -126,27 +113,25 @@ const Preview = React.memo(
       );
     }, [userGroups]);
 
-    const handleClick = (name) => (event) => {
-      setAnchorEl(event.currentTarget);
-      setShow(name);
-    };
-
     const addDesignerGroups = (data) => {
       setDesignerGroups([...designerGroups, data.name]);
       setDesingerOptions(designerOptions?.filter((i) => i.name !== data.name));
-      setShow(false);
+      let button = document.getElementById("addDesigner");
+      button.click();
     };
 
     const addClientGroups = (data) => {
       setClientGroups([...clientGroups, data.name]);
       setClientOptions(clientOptions?.filter((i) => i.name !== data.name));
-      setShow(false);
+      let button = document.getElementById("addClient");
+      button.click();
     };
 
     const addReviewerGroups = (data) => {
       setReviewerGroups([...reviewerGroups, data.name]);
       setReviewerOptions(reviewerOptions?.filter((i) => i.name !== data.name));
-      setShow(false);
+      let button = document.getElementById("addReviewer");
+      button.click();
     };
 
     const removeDesignerUserGroup = (group) => {
@@ -235,17 +220,11 @@ const Preview = React.memo(
     };
 
     return (
-      <div>
-        <Grid
-          container
-          direction="row"
-          justify="flex-start"
-          alignItems="baseline"
-          spacing={3}
-        >
-          <Grid item xs={12} sm={1} spacing={3}></Grid>
-          <Grid item xs={12} sm={8} spacing={3} />
-          <Grid item xs={12} sm={3} className="next-btn">
+      <Container>
+        <Row>
+          <Col xs={12} sm={1} lg={1} xl={1}></Col>
+          <Col xs={12} sm={8} lg={8} xl={8}></Col>
+          <Col xs={12} sm={3} lg={3} xl={3} className="next-btn">
             <SaveNext
               handleBack={handleBack}
               handleNext={handleNext}
@@ -258,10 +237,10 @@ const Preview = React.memo(
               }}
               isLastStep={true}
             />
-          </Grid>
-          <Grid item xs={12} sm={8} spacing={3} disabled={false}>
-            <Card variant="outlined">
-              <CardContent>
+          </Col>
+          <Col xs={12} sm={8} lg={8} xl={8} spacing={3} disabled={false}>
+            <Card>
+              <Card.Body>
                 <form noValidate autoComplete="off">
                   <div>
                     <span className="font-weight-bold">{t("Overview")}</span>
@@ -296,9 +275,8 @@ const Preview = React.memo(
                         title={
                           copied ? t("URL copied") : t("Click Here to Copy")
                         }
-                        className={`coursor-pointer btn ${
-                          copied ? "text-success" : "text-primary"
-                        }`}
+                        className={`coursor-pointer btn ${copied ? "text-success" : "text-primary"
+                          }`}
                         onClick={() => {
                           copyPublicUrl();
                         }}
@@ -311,7 +289,10 @@ const Preview = React.memo(
                   )}
                   <div>
                     <label>
-                          <Checkbox
+                      <Form.Group controlId="formPublish">
+                        <div className="d-flex align-items-center mt-4 mr-4">
+                          <Form.Check
+                            className="mb-1"
                             aria-label="Publish"
                             checked={processData.status === "active"}
                             onChange={(e) =>
@@ -325,13 +306,12 @@ const Preview = React.memo(
                             color="primary"
                             id="form-publish"
                           />
-                      <label htmlFor="form-publish" className="fontsize-16 ml-1">
-                        {t("Publish this form for Client Users.")}
-                      </label>
+                          <label htmlFor="form-publish" className="fontsize-16 ml-1">{t("Publish this form for Client Users.")}</label>
+                        </div>
+                      </Form.Group>
                     </label>
                   </div>
                   <hr />
-
                   <div className="mt-2" style={{ height: "auto" }}>
                     <span
                       className="font-weight-bold"
@@ -384,49 +364,46 @@ const Preview = React.memo(
                     {designerSelectedOption === "Specific Designers" ? (
                       <div className="d-flex align-items-center flex-wrap">
                         {designerGroups?.map((e) => (
-                          <Chip
-                            key={e}
-                            label={e}
-                            variant="outlined"
-                            className="mr-2"
-                            onDelete={() => {
-                              removeDesignerUserGroup(e);
-                            }}
-                          />
+                          <Badge key={e} pill variant="outlined" className="d-flex align-items-center badge mr-2">
+                            {e}
+                            <div className="badge-deleteIcon ml-2"
+                              onClick={() => { removeDesignerUserGroup(e); }}>
+                              &times;
+                            </div>
+                          </Badge>
                         ))}
+                        <OverlayTrigger
+                          placement="right"
+                          trigger="click"
+                          overlay={(
+                            <Popover>
+                              <div className="poper">
+                                <ListGroup>
+                                  {designerOptions?.length > 0 ? (
+                                    designerOptions?.map((item, key) => (
+                                      <ListGroup.Item
+                                        key={key}
+                                        as="button"
+                                        onClick={() => addDesignerGroups(item)}
+                                      >
+                                        {item.name}
+                                      </ListGroup.Item>
+                                    ))
+                                  ) : (
+                                    <ListGroup.Item>{`${t(
+                                      "All groups have access to the form"
+                                    )}`}</ListGroup.Item>
+                                  )}
+                                </ListGroup>
+                              </div>
 
-                        <Button
-                          onClick={handleClick("designer")}
-                          className="btn btn-primary btn-md form-btn pull-left btn-left"
+                            </Popover>
+                          )}
                         >
-                          <Translation>{(t) => t("Add")}</Translation> <b>+</b>
-                        </Button>
-                        <Popover
-                          data-testid="popup-component"
-                          id={id}
-                          open={show === "designer"}
-                          onClose={handleClose}
-                          anchorEl={anchorEl}
-                          placement={"top"}
-                        >
-                          <ListGroup>
-                            {designerOptions?.length > 0 ? (
-                              designerOptions?.map((item, key) => (
-                                <ListGroup.Item
-                                  key={key}
-                                  as="button"
-                                  onClick={() => addDesignerGroups(item)}
-                                >
-                                  {item.name}
-                                </ListGroup.Item>
-                              ))
-                            ) : (
-                              <ListGroup.Item>{`${t(
-                                "All groups have access to the form"
-                              )}`}</ListGroup.Item>
-                            )}
-                          </ListGroup>
-                        </Popover>
+                          <Button id="addDesigner" className="btn btn-primary btn-md form-btn pull-left btn-left">
+                            <Translation>{(t) => t("Add")}</Translation> <b>+</b>
+                          </Button>
+                        </OverlayTrigger>
                       </div>
                     ) : (
                       ""
@@ -474,50 +451,47 @@ const Preview = React.memo(
                         <div className="d-flex align-items-center flex-wrap">
                           {clientGroups?.map((e) => {
                             return (
-                              <Chip
-                                key={e}
-                                label={e}
-                                variant="outlined"
-                                className="mr-2"
-                                onDelete={() => {
-                                  removeClientUserGroup(e);
-                                }}
-                              />
+                              <Badge key={e} pill variant="outlined" className="d-flex align-items-center badge mr-2">
+                                {e}
+                                <div className="badge-deleteIcon ml-2"
+                                  onClick={() => { removeClientUserGroup(e); }}>
+                                  &times;
+                                </div>
+                              </Badge>
                             );
                           })}
-                          <Button
-                            onClick={handleClick("client")}
-                            className="btn btn-primary btn-md form-btn pull-left btn-left"
+                          <OverlayTrigger
+                            placement="right"
+                            trigger="click"
+                            overlay={(
+                              <Popover>
+                                <div className="poper">
+                                  <ListGroup>
+                                    {clientOptions?.length > 0 ? (
+                                      clientOptions?.map((item, key) => (
+                                        <ListGroup.Item
+                                          key={key}
+                                          as="button"
+                                          onClick={() => addClientGroups(item)}
+                                        >
+                                          {item.name}
+                                        </ListGroup.Item>
+                                      ))
+                                    ) : (
+                                      <ListGroup.Item>{`${t(
+                                        "All groups have access to the form"
+                                      )}`}</ListGroup.Item>
+                                    )}
+                                  </ListGroup>
+                                </div>
+
+                              </Popover>
+                            )}
                           >
-                            <Translation>{(t) => t("Add")}</Translation>{" "}
-                            <b>+</b>
-                          </Button>
-                          <Popover
-                            data-testid="popup-component"
-                            id={id}
-                            open={show === "client"}
-                            onClose={handleClose}
-                            anchorEl={anchorEl}
-                            placement={"top"}
-                          >
-                            <ListGroup>
-                              {clientOptions?.length > 0 ? (
-                                clientOptions?.map((item, key) => (
-                                  <ListGroup.Item
-                                    key={key}
-                                    as="button"
-                                    onClick={() => addClientGroups(item)}
-                                  >
-                                    {item.name}
-                                  </ListGroup.Item>
-                                ))
-                              ) : (
-                                <ListGroup.Item>{`${t(
-                                  "All groups have access to the form"
-                                )}`}</ListGroup.Item>
-                              )}
-                            </ListGroup>
-                          </Popover>
+                            <Button id="addClient" className="btn btn-primary btn-md form-btn pull-left btn-left">
+                              <Translation>{(t) => t("Add")}</Translation> <b>+</b>
+                            </Button>
+                          </OverlayTrigger>
                         </div>
                       ) : (
                         ""
@@ -568,50 +542,48 @@ const Preview = React.memo(
                           <div className="d-flex align-items-center flex-wrap">
                             {reviewerGroups?.map((e) => {
                               return (
-                                <Chip
-                                  key={e}
-                                  label={e}
-                                  variant="outlined"
-                                  className="mr-2"
-                                  onDelete={() => {
-                                    removeReviewerUserGroup(e);
-                                  }}
-                                />
+                                <Badge key={e} pill variant="outlined" className="d-flex align-items-center badge mr-2">
+                                  {e}
+                                  <div className="badge-deleteIcon ml-2"
+                                    onClick={() => { removeReviewerUserGroup(e); }}>
+                                    &times;
+                                  </div>
+                                </Badge>
                               );
                             })}
-                            <Button
-                              onClick={handleClick("reviewer")}
-                              className="btn btn-primary btn-md form-btn pull-left btn-left"
+
+                            <OverlayTrigger
+                              placement="right"
+                              trigger="click"
+                              overlay={(
+                                <Popover>
+                                  <div className="poper">
+                                    <ListGroup>
+                                      {reviewerOptions?.length > 0 ? (
+                                        reviewerOptions?.map((item, key) => (
+                                          <ListGroup.Item
+                                            key={key}
+                                            as="button"
+                                            onClick={() => addReviewerGroups(item)}
+                                          >
+                                            {item.name}
+                                          </ListGroup.Item>
+                                        ))
+                                      ) : (
+                                        <ListGroup.Item>{`${t(
+                                          "All groups have access to the form"
+                                        )}`}</ListGroup.Item>
+                                      )}
+                                    </ListGroup>
+                                  </div>
+
+                                </Popover>
+                              )}
                             >
-                              <Translation>{(t) => t("Add")}</Translation>{" "}
-                              <b>+</b>
-                            </Button>
-                            <Popover
-                              data-testid="popup-component"
-                              id={id}
-                              open={show === "reviewer"}
-                              onClose={handleClose}
-                              anchorEl={anchorEl}
-                              placement={"top"}
-                            >
-                              <ListGroup>
-                                {reviewerOptions?.length > 0 ? (
-                                  reviewerOptions?.map((item, key) => (
-                                    <ListGroup.Item
-                                      key={key}
-                                      as="button"
-                                      onClick={() => addReviewerGroups(item)}
-                                    >
-                                      {item.name}
-                                    </ListGroup.Item>
-                                  ))
-                                ) : (
-                                  <ListGroup.Item>{`${t(
-                                    "All groups have access to the form"
-                                  )}`}</ListGroup.Item>
-                                )}
-                              </ListGroup>
-                            </Popover>
+                              <Button id="addReviewer" className="btn btn-primary btn-md form-btn pull-left btn-left">
+                                <Translation>{(t) => t("Add")}</Translation> <b>+</b>
+                              </Button>
+                            </OverlayTrigger>
                           </div>
                         ) : (
                           ""
@@ -623,12 +595,10 @@ const Preview = React.memo(
                   <hr />
 
                   <label className="text-label">{t("Comments")}</label>
-                  <TextField
+                  <textarea
                     label={t("Comments")}
                     id="comments"
-                    multiline
                     rows={4}
-                    variant="outlined"
                     className="text-field"
                     value={processData.comments || ""}
                     onChange={(e) =>
@@ -638,11 +608,11 @@ const Preview = React.memo(
                     }
                   />
                 </form>
-              </CardContent>
+              </Card.Body>
             </Card>
-          </Grid>
-        </Grid>
-      </div>
+          </Col>
+        </Row>
+      </Container>
     );
   }
 );

@@ -53,7 +53,7 @@ const TaskIgnoreCaseComponent = React.memo(() => {
               <Form.Check
                 type="checkbox"
                 id="value"
-                label={t("Value")}
+                label={t("value")}
                 checked={variableValueIgnoreCase}
                 onChange={() =>
                   setVariableValueIgnoreCase(!variableValueIgnoreCase)

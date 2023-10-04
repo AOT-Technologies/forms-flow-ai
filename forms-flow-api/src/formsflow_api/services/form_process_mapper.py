@@ -1,6 +1,5 @@
 """This exposes form process mapper service."""
 
-from http import HTTPStatus
 from typing import Set
 
 from flask import current_app
@@ -8,6 +7,7 @@ from formsflow_api_utils.exceptions import BusinessException
 from formsflow_api_utils.utils.enums import FormProcessMapperStatus
 from formsflow_api_utils.utils.user_context import UserContext, user_context
 
+from formsflow_api.constants import BusinessErrorCode
 from formsflow_api.models import (
     Authorization,
     AuthType,
@@ -117,13 +117,7 @@ class FormProcessMapperService:
             mapper_schema = FormProcessMapperSchema()
             return mapper_schema.dump(mapper)
 
-        raise BusinessException(
-            {
-                "type": "Invalid response data",
-                "message": f"Invalid form process mapper id - {form_process_mapper_id}",
-            },
-            HTTPStatus.BAD_REQUEST,
-        )
+        raise BusinessException(BusinessErrorCode.INVALID_FORM_PROCESS_MAPPER_ID)
 
     @staticmethod
     @user_context
@@ -140,15 +134,7 @@ class FormProcessMapperService:
             if response.get("deleted") is False:
                 return response
 
-        raise BusinessException(
-            {
-                "type": "No Response",
-                "message": (
-                    f"FormProcessMapper with FormID -{form_id} not stored in DB"
-                ),
-            },
-            HTTPStatus.NO_CONTENT,
-        )
+        raise BusinessException(BusinessErrorCode.INVALID_FORM_PROCESS_MAPPER_ID)
 
     @staticmethod
     @user_context
@@ -189,20 +175,12 @@ class FormProcessMapperService:
             data["comments"] = None
         if mapper:
             if tenant_key is not None and mapper.tenant != tenant_key:
-                raise PermissionError("Tenant authentication failed.")
+                raise BusinessException(BusinessErrorCode.PERMISSION_DENIED)
             FormProcessMapperService._update_process_tenant(data, user)
             mapper.update(data)
             return mapper
 
-        raise BusinessException(
-            {
-                "type": "Invalid response data",
-                "message": (
-                    f"Unable to update FormProcessMapperId- {form_process_mapper_id}"
-                ),
-            },
-            HTTPStatus.BAD_REQUEST,
-        )
+        raise BusinessException(BusinessErrorCode.INVALID_FORM_PROCESS_MAPPER_ID)
 
     @staticmethod
     @user_context
@@ -225,29 +203,18 @@ class FormProcessMapperService:
                 for draft in draft_applications:
                     draft.delete()
         else:
-            raise BusinessException(
-                {
-                    "type": "Invalid response data",
-                    "message": (
-                        "Unable to set FormProcessMapperId -"
-                        f"{form_process_mapper_id} inactive"
-                    ),
-                },
-                HTTPStatus.BAD_REQUEST,
-            )
+            raise BusinessException(BusinessErrorCode.INVALID_FORM_PROCESS_MAPPER_ID)
 
     @staticmethod
     def mark_unpublished(form_process_mapper_id):
         """Mark form process mapper as inactive."""
-        try:
-            mapper = FormProcessMapper.find_form_by_id_active_status(
-                form_process_mapper_id=form_process_mapper_id
-            )
-            if mapper:
-                mapper.mark_unpublished()
-                return
-        except Exception as err:
-            raise err
+        mapper = FormProcessMapper.find_form_by_id_active_status(
+            form_process_mapper_id=form_process_mapper_id
+        )
+        if mapper:
+            mapper.mark_unpublished()
+            return
+        raise BusinessException(BusinessErrorCode.INVALID_FORM_PROCESS_MAPPER_ID)
 
     @staticmethod
     def get_mapper_by_formid_and_version(form_id: int, version: int):
@@ -267,25 +234,18 @@ class FormProcessMapperService:
         : mapper_data: serialized create mapper payload
         : Should be called with create_mapper method
         """
-        try:
-            form_id = mapper_data.get("previous_form_id") or mapper_data.get("form_id")
-            version = mapper_data.get("version")
-            if version is None or form_id is None:
-                return
-            version = int(version) - 1
-            previous_mapper = FormProcessMapperService.get_mapper_by_formid_and_version(
-                form_id, version
-            )
-            previous_status = previous_mapper.get("status")
-            if (
-                previous_mapper
-                and previous_status == FormProcessMapperStatus.ACTIVE.value
-            ):
-                previous_mapper_id = previous_mapper.get("id")
-                FormProcessMapperService.mark_unpublished(previous_mapper_id)
-
-        except Exception as err:
-            raise err
+        form_id = mapper_data.get("previous_form_id") or mapper_data.get("form_id")
+        version = mapper_data.get("version")
+        if version is None or form_id is None:
+            return
+        version = int(version) - 1
+        previous_mapper = FormProcessMapperService.get_mapper_by_formid_and_version(
+            form_id, version
+        )
+        previous_status = previous_mapper.get("status")
+        if previous_mapper and previous_status == FormProcessMapperStatus.ACTIVE.value:
+            previous_mapper_id = previous_mapper.get("id")
+            FormProcessMapperService.mark_unpublished(previous_mapper_id)
 
     @staticmethod
     @user_context
@@ -297,7 +257,7 @@ class FormProcessMapperService:
             return 0
         mapper = FormProcessMapper.find_form_by_id(form_process_mapper_id=mapper_id)
         if mapper is not None and mapper.tenant != tenant_key:
-            raise PermissionError("Tenant authorization failed.")
+            raise BusinessException(BusinessErrorCode.PERMISSION_DENIED)
         return 0
 
     @staticmethod
@@ -310,5 +270,5 @@ class FormProcessMapperService:
             return
         mapper = FormProcessMapper.find_form_by_form_id(form_id=form_id)
         if mapper is not None and mapper.tenant != tenant_key:
-            raise PermissionError("Tenant authorization failed.")
+            raise BusinessException(BusinessErrorCode.PERMISSION_DENIED)
         return

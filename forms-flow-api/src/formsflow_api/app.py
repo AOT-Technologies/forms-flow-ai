@@ -7,8 +7,9 @@ import logging
 import os
 from http import HTTPStatus
 
-from flask import Flask, current_app, g, request
+from flask import Flask, g, request
 from flask.logging import default_handler
+from formsflow_api_utils.exceptions import register_error_handlers
 from formsflow_api_utils.utils import (
     ALLOW_ALL_ORIGINS,
     CORS_ORIGINS,
@@ -62,6 +63,8 @@ def create_app(run_mode=os.getenv("FLASK_ENV", "production")):
 
     API.init_app(app)
     setup_jwt_manager(app, jwt)
+    with app.app_context():
+        register_error_handlers(API, db.engine)
 
     @app.after_request
     def cors_origin(response):  # pylint: disable=unused-variable
@@ -86,27 +89,20 @@ def create_app(run_mode=os.getenv("FLASK_ENV", "production")):
     @app.after_request
     def translate_response(response):  # pylint: disable=unused-variable
         """Select the client specific language from the token locale attribute."""
-        try:
-            if response.status_code in [
-                HTTPStatus.BAD_REQUEST,
-                HTTPStatus.UNAUTHORIZED,
-                HTTPStatus.FORBIDDEN,
-                HTTPStatus.NOT_FOUND,
-            ]:
-                lang = g.token_info["locale"]
-                if lang == "en":
-                    return response
-                json_response = response.get_json()
-                translated_response = translate(lang, json_response)
-                str_response = json.dumps(translated_response)
-                response.set_data(str_response)
-            return response
-        except KeyError as err:
-            current_app.logger.warning(err)
-            return response
-        except Exception as err:  # pylint: disable=broad-except
-            current_app.logger.critical(err)
-            return response
+        if response.status_code in [
+            HTTPStatus.BAD_REQUEST,
+            HTTPStatus.UNAUTHORIZED,
+            HTTPStatus.FORBIDDEN,
+            HTTPStatus.NOT_FOUND,
+        ]:
+            lang = g.token_info.get("locale", "en") if "token_info" in g else "en"
+            if lang == "en":
+                return response
+            json_response = response.get_json()
+            translated_response = translate(lang, json_response)
+            str_response = json.dumps(translated_response)
+            response.set_data(str_response)
+        return response
 
     register_shellcontext(app)
     if not app.config["MULTI_TENANCY_ENABLED"]:

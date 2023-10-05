@@ -238,7 +238,6 @@ public class TaskFilterRestServiceImpl implements TaskFilterRestService {
     private List<HalResource<?>> getVariableValuesForTask(HalTask halTask, Map<String, List<VariableInstance>> variableInstances) {
         List<HalResource<?>> variableValues = new ArrayList<>();
         LinkedHashSet<String> variableScopeIds = getVariableScopeIds(halTask);
-        Set<String> knownVariableNames = new HashSet<>();
         for (String variableScopeId : variableScopeIds) {
             if (variableInstances.containsKey(variableScopeId)) {
                 for (VariableInstance variableInstance : variableInstances.get(variableScopeId)) {

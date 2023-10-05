@@ -193,6 +193,7 @@ export default React.memo(() => {
                 variant="info"
                 className="help-btn"
                 onClick={() => handleHelp()}
+                title="help"
               >
                 {t("Help")}
               </Button>

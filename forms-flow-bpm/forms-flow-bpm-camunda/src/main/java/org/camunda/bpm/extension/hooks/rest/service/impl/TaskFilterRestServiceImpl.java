@@ -14,7 +14,6 @@ import org.camunda.bpm.engine.rest.dto.runtime.FilterQueryDto;
 import org.camunda.bpm.engine.rest.dto.task.TaskDto;
 import org.camunda.bpm.engine.rest.exception.InvalidRequestException;
 import org.camunda.bpm.engine.rest.hal.Hal;
-import org.camunda.bpm.engine.rest.hal.HalCollectionResource;
 import org.camunda.bpm.engine.rest.hal.HalResource;
 import org.camunda.bpm.engine.rest.hal.HalVariableValue;
 import org.camunda.bpm.engine.rest.hal.task.HalTask;

@@ -216,7 +216,7 @@ export const columns = (
 };
 
 const customTotal = (from, to, size) => (
-  <span className="react-bootstrap-table-pagination-total">
+  <span className="react-bootstrap-table-pagination-total ml-2">
     <Translation>{(t) => t("Showing")}</Translation> {from}{" "}
     <Translation>{(t) => t("to")}</Translation> {to}{" "}
     <Translation>{(t) => t("of")}</Translation> {size}{" "}

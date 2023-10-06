@@ -31,7 +31,7 @@ class ErrorCodeMixin:
 class ExternalError(ErrorCodeMixin, Enum):
     INSIGHTS_SERVICE_UNAVAILABLE = "Insights service is not available", HTTPStatus.SERVICE_UNAVAILABLE
     BPM_SERVICE_UNAVAILABLE = "BPM service is not available", HTTPStatus.SERVICE_UNAVAILABLE
-    FORM_SERVICE_UNAVAILABLE = "Form is not available", HTTPStatus.SERVICE_UNAVAILABLE
+    FORM_SERVICE_UNAVAILABLE = "Form service is not available", HTTPStatus.SERVICE_UNAVAILABLE
     ERROR_RESPONSE_RECEIVED = "Error response received from server", HTTPStatus.BAD_REQUEST
     UNAUTHORIZED = "Invalid Token", HTTPStatus.UNAUTHORIZED
 

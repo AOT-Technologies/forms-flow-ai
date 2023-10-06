@@ -150,8 +150,11 @@ const View = React.memo((props) => {
 
   useEffect(() => {
     return () => {
-      let payload = getDraftReqFormat(formId, draftRef.current);
-      if (poll) saveDraft(payload, exitType.current);
+      if(draftRef.current)
+      {
+        let payload = getDraftReqFormat(formId, draftRef.current);
+        if (poll) saveDraft(payload, exitType.current);
+      }
     };
   }, [poll, exitType.current, draftSubmission?.id]);
  

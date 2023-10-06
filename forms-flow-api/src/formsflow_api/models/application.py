@@ -29,6 +29,7 @@ class Application(
     form_process_mapper_id = db.Column(
         db.Integer, db.ForeignKey("form_process_mapper.id"), nullable=False
     )
+    
     process_instance_id = db.Column(db.String(100), nullable=True)
     # Submission id will be null for drafts
     submission_id = db.Column(db.String(100), nullable=True)

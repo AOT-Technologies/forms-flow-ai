@@ -156,7 +156,7 @@ public class TaskFilterRestServiceImpl implements TaskFilterRestService {
     }
 
     /**
-     * This method returns the Hal Tasklist
+     * This method executes the filterquery
      *
      * @param extendingQuery
      */

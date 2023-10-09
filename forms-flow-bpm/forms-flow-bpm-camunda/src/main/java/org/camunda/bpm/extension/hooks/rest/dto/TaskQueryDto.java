@@ -17,6 +17,8 @@ public class TaskQueryDto {
     private String status;
     private org.camunda.bpm.engine.rest.dto.task.TaskQueryDto criteria;
     private List<VariableQueryParameterDto> variables;
+    private TaskVariableDto taskVisibleAttributes;
+    private List<String> candidateGroups;
 
     public String getName() {
         return name;
@@ -58,5 +60,20 @@ public class TaskQueryDto {
         this.variables = variables;
     }
 
+    public TaskVariableDto getTaskVisibleAttributes() {
+        return taskVisibleAttributes;
+    }
+
+    public void setTaskVisibleAttributes(TaskVariableDto taskVisibleAttributes) {
+        this.taskVisibleAttributes = taskVisibleAttributes;
+    }
+
+    public List<String> getCandidateGroups() {
+        return candidateGroups;
+    }
+
+    public void setCandidateGroups(List<String> candidateGroups) {
+        this.candidateGroups = candidateGroups;
+    }
 
 }

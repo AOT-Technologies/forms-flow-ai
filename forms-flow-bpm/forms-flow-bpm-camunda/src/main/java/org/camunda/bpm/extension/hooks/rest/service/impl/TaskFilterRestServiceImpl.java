@@ -16,9 +16,11 @@ import org.camunda.bpm.engine.rest.exception.InvalidRequestException;
 import org.camunda.bpm.engine.rest.hal.Hal;
 import org.camunda.bpm.engine.rest.hal.HalResource;
 import org.camunda.bpm.engine.rest.hal.HalVariableValue;
+import org.camunda.bpm.engine.rest.hal.identitylink.HalIdentityLink;
 import org.camunda.bpm.engine.rest.hal.task.HalTask;
 import org.camunda.bpm.engine.rest.hal.task.HalTaskList;
 import org.camunda.bpm.engine.runtime.VariableInstance;
+import org.camunda.bpm.engine.task.IdentityLink;
 import org.camunda.bpm.engine.task.Task;
 import org.camunda.bpm.engine.task.TaskQuery;
 import org.camunda.bpm.extension.hooks.rest.dto.TaskFilterResponse;
@@ -31,10 +33,15 @@ import javax.ws.rs.core.*;
 import java.util.*;
 
 public class TaskFilterRestServiceImpl implements TaskFilterRestService {
-    private static final Logger LOGGER = LoggerFactory.getLogger(TaskFilterRestServiceImpl.class);
+
     public static final List<Variant> VARIANTS = Variant.mediaTypes(MediaType.APPLICATION_JSON_TYPE, Hal.APPLICATION_HAL_JSON_TYPE).add().build();
+
+    private static final Logger LOGGER = LoggerFactory.getLogger(TaskFilterRestServiceImpl.class);
+
     private final ObjectMapper objectMapper;
+
     private final ProcessEngine processEngine;
+
 
     public TaskFilterRestServiceImpl(ObjectMapper objectMapper, ProcessEngine processEngine) {
         this.objectMapper = objectMapper;
@@ -65,7 +72,6 @@ public class TaskFilterRestServiceImpl implements TaskFilterRestService {
      * @return
      */
     protected Map<String, Object> executeFilterCount(TaskQueryDto filterQuery) {
-        //  Query<?, ?> query = filterQuery.getCriteria().toQuery(processEngine);
         objectMapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
         filterQuery.getCriteria().setObjectMapper(objectMapper);
         Map<String, Object> dataMap = new HashMap<>();
@@ -117,12 +123,13 @@ public class TaskFilterRestServiceImpl implements TaskFilterRestService {
 
     /**
      * This method returns json list of Task.
+     *
      * @param filterQuery
      * @param firstResult
      * @param maxResults
      */
     private List<Object> queryJsonList(TaskQueryDto filterQuery, Integer firstResult, Integer maxResults) throws JsonProcessingException {
-        Query<?, ?> query = executeQuery(filterQuery.getCriteria());
+        Query<?, ?> query = executeFilterQuery(filterQuery.getCriteria());
         List<?> entities = query.listPage(firstResult, maxResults);
         List<Object> jsonTaskList = new ArrayList<>();
         for (Object entity : entities) {
@@ -136,10 +143,9 @@ public class TaskFilterRestServiceImpl implements TaskFilterRestService {
 
     /**
      * This method returns the Hal Tasklist
-     *
      */
     private Object queryHalList(TaskQueryDto filterQuery, Integer firstResult, Integer maxResults) throws JsonProcessingException {
-        Query<?, ?> query = executeQuery(filterQuery.getCriteria());
+        Query<?, ?> query = executeFilterQuery(filterQuery.getCriteria());
         List<Task> entities = (List<Task>) query.listPage(firstResult, maxResults);
         HalTaskList halTasks = HalTaskList.generate(entities, query.count(), processEngine);
         List<Object> taskList = new ArrayList<>();
@@ -147,6 +153,7 @@ public class TaskFilterRestServiceImpl implements TaskFilterRestService {
         if (variableInstances != null) {
             for (HalTask halTask : (List<HalTask>) halTasks.getEmbedded("task")) {
                 embedVariableValuesInHalTask(halTask, variableInstances, filterQuery);
+                halTask.addEmbedded("candidateGroups", getCandidateGroups(halTask));
             }
         }
         taskList.add(halTasks);
@@ -156,16 +163,14 @@ public class TaskFilterRestServiceImpl implements TaskFilterRestService {
 
     /**
      * This method executes the filterquery
-     *
-     * @param extendingQuery
      */
-    private Query<?, ?> executeQuery(org.camunda.bpm.engine.rest.dto.task.TaskQueryDto extendingQuery) throws JsonProcessingException {
+    private Query<?, ?> executeFilterQuery(org.camunda.bpm.engine.rest.dto.task.TaskQueryDto extendingQuery) throws JsonProcessingException {
         objectMapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
         extendingQuery.setObjectMapper(objectMapper);
         return extendingQuery.toQuery(processEngine);
     }
 
-    private void embedVariableValuesInHalTask( HalTask halTask, Map<String, List<VariableInstance>> variableInstances, TaskQueryDto filterQuery) {
+    private void embedVariableValuesInHalTask(HalTask halTask, Map<String, List<VariableInstance>> variableInstances, TaskQueryDto filterQuery) {
         List<HalResource<?>> variableValues = getVariableValuesForTask(halTask, variableInstances);
         halTask.addEmbedded("variable", variableValues);
     }
@@ -178,13 +183,13 @@ public class TaskFilterRestServiceImpl implements TaskFilterRestService {
     private Map<String, List<VariableInstance>> getVariableInstancesForTasks(TaskQueryDto filterQuery, HalTask... halTasks) {
         if (halTasks != null && halTasks.length > 0) {
             List<String> variableNames = new ArrayList<>();
-            List<VariableQueryParameterDto> variables= filterQuery.getVariables();
+            List<VariableQueryParameterDto> variables = filterQuery.getVariables();
             for (VariableQueryParameterDto dto : variables) {
                 if (dto != null && dto.getName() != null) {
                     variableNames.add(dto.getName());
                 }
             }
-            if (variableNames != null && !variableNames.isEmpty()) {
+            if (!variableNames.isEmpty()) {
                 LinkedHashSet<String> variableScopeIds = getVariableScopeIds(halTasks);
                 return getSortedVariableInstances(variableNames, variableScopeIds);
             }
@@ -196,7 +201,7 @@ public class TaskFilterRestServiceImpl implements TaskFilterRestService {
         // collect scope ids
         // the ordering is important because it specifies which variables are visible from a single task
         LinkedHashSet<String> variableScopeIds = new LinkedHashSet<>();
-        if (halTasks != null && halTasks.length > 0) {
+        if (halTasks != null) {
             for (HalTask halTask : halTasks) {
                 variableScopeIds.add(halTask.getId());
                 variableScopeIds.add(halTask.getExecutionId());
@@ -240,11 +245,22 @@ public class TaskFilterRestServiceImpl implements TaskFilterRestService {
         for (String variableScopeId : variableScopeIds) {
             if (variableInstances.containsKey(variableScopeId)) {
                 for (VariableInstance variableInstance : variableInstances.get(variableScopeId)) {
-                        variableValues.add(HalVariableValue.generateVariableValue(variableInstance, variableScopeId));
+                    variableValues.add(HalVariableValue.generateVariableValue(variableInstance, variableScopeId));
                 }
             }
         }
 
         return variableValues;
+    }
+
+    private List<HalResource<?>> getCandidateGroups(HalTask halTask) {
+        List<IdentityLink> identityLinks = processEngine.getTaskService().getIdentityLinksForTask(halTask.getId());
+        List<HalResource<?>> result = new ArrayList<>();
+        if (identityLinks != null) {
+            for (IdentityLink link : identityLinks) {
+                result.add(HalIdentityLink.fromIdentityLink(link));
+            }
+        }
+        return result;
     }
 }

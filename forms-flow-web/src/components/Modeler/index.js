@@ -1,12 +1,15 @@
 import React, { useState, useEffect } from "react";
 import { useSelector, useDispatch } from "react-redux";
-import Grid from "@material-ui/core/Grid";
-import CardContent from "@material-ui/core/CardContent";
-import Card from "@material-ui/core/Card";
-import Select from "react-select";
+import {
+  Container,
+  Row,
+  Col,
+  Card,
+  Button,
+} from "react-bootstrap";
 import BpmnEditor from "./Editors/BpmnEditor";
 import DmnEditor from "./Editors/DmnEditor";
-import Button from "react-bootstrap/Button";
+import Select from "react-select";
 import { useTranslation } from "react-i18next";
 import { listProcess } from "../../apiManager/services/formatterService";
 import {
@@ -164,7 +167,7 @@ export default React.memo(() => {
   };
 
   return (
-    <div className="container" id="main">
+    <Container fluid id="main" style={{ maxHeight: "600px", overflowY: "auto" }}>
       <div className="flex-container">
         <div className="flex-item-left">
           <div style={{ display: "flex" }}>
@@ -179,90 +182,86 @@ export default React.memo(() => {
             </h3>
           </div>
         </div>
+        <div className="flex-item-right">
+          <Button
+            variant="info"
+            className="help-btn"
+            onClick={() => handleHelp()}
+          >
+            {t("Help")}
+          </Button>
+        </div>
       </div>
-      <Grid
-        container
-        direction="row"
-        justifyContent="flex-start"
-        alignItems="baseline"
-      >
-        <Grid item xs={12} sm={12}>
+      <Row>
+        <Col xs={12} sm={12}>
           <Card variant="outlined" className="card-overflow">
-            <CardContent>
-              <Button
-                variant="info"
-                className="help-btn"
-                onClick={() => handleHelp()}
-                title="help"
-              >
-                {t("Help")}
-              </Button>
-              <Grid item xs={12} sm={6}>
-                <label htmlFor="workflowDropdown" id="selectWorkflow" className="fontsize-16">
-                  {t("Please select an existing workflow.")}
-                </label>
-                <div className="select-style">
-                  <Select
-                    placeholder={t("Select...")}
-                    options={processList}
-                    onChange={handleListChange}
-                    value={
-                      processList.length && workflow?.value ? workflow : ""
-                    }
-                    styles={customDropdownStyles}
-                    id="workflowDropdown"
-                    aria-labelledby="selectWorkflow"
-                    
-                  />
-                </div>
-                <div className="mt-2 toggle-bpm">
-                  <span className="switch">
-                    <input
-                      type="checkbox"
-                      checked={isBpmnModel}
-                      onChange={handleToggle}
-                      title={t("switch to DMN")}
-                    />
-                    <span className="slider round"></span>
-                    <span
-                      className="labels"
-                      data-on="BPMN"
-                      data-off="DMN"
-                    ></span>
-                  </span>
-                </div>
-              </Grid>
-              <div className="mt-2">
-                <span className="fontsize-16">
-                  {t(
-                    "Or create new workflow or import a workflow from a local directory."
-                  )}
-                </span>
-
-                <div className="create-import-btns-container mt-2 mb-4">
-                  <Button
-                    className="btn-create-new mr-3"
-                    onClick={() => handleCreateNew()}
-                    title={t("Create new workflow")}
-                  >
-                    {t("Create New")}
-                  </Button>
-                  <div className="upload">
-                    <input
-                      id="inputWorkflow"
-                      style={{ display: "none" }}
-                      type="file"
-                      name="upload"
-                      accept=".bpmn, .dmn"
-                      onChange={(e) => handleChangeFile(e.target.files[0])}
-                    />
-                    <span htmlFor="inputWorkflow">{t("Choose File")}</span>
-                  </div>
-                  <label htmlFor="inputWorkflow" style={{ padding: "4px" }} >
-                    {fileName ? fileName : t("No file chosen")}
+            <Card.Body>
+              <Row>
+                <Col xs={12} sm={6} className="card-layout ">
+                  <label htmlFor="selectWorkflow" className="fontsize-16">
+                    {t("Please select an existing workflow.")}
                   </label>
-                </div>
-              </div>
+                  <div className="select-style">
+                    <Select
+                      placeholder={t("Select...")}
+                      options={processList}
+                      onChange={handleListChange}
+                      value={
+                        processList.length && workflow?.value ? workflow : ""
+                      }
+                      styles={customDropdownStyles}
+                      inputId="selectWorkflow"
+                    />
+                  </div>
+                  <div className="mt-2 toggle-bpm">
+                    <label className="switch">
+                      <input
+                        type="checkbox"
+                        checked={isBpmnModel}
+                        onChange={handleToggle}
+                      />
+                      <span className="slider round"></span>
+                      <span
+                        className="labels"
+                        data-on="BPMN"
+                        data-off="DMN"
+                      ></span>
+                    </label>
+                  </div>
+                </Col>
+                <Col className="card-layout card-border">
+                  <span className="fontsize-16">
+                    {t(
+                      "Or create a new workflow or import a workflow from a local directory."
+                    )}
+                  </span>
+
+                  <div className="create-import-btns-container mt-2 mb-4">
+                    <Button
+                      className="btn-create-new mr-3"
+                      onClick={() => handleCreateNew()}
+                    >
+                      {t("Create New")}
+                    </Button>
+                    <div className="upload">
+                      <input
+                        id="inputWorkflow"
+                        style={{ display: "none" }}
+                        type="file"
+                        name="upload"
+                        accept=".bpmn, .dmn"
+                        onChange={(e) =>
+                          handleChangeFile(e.target.files[0])
+                        }
+                      />
+                      <label htmlFor="inputWorkflow">{t("Choose File")}</label>
+                    </div>
+                    <label htmlFor="inputWorkflow" style={{ padding: "4px" }}>
+                      {fileName ? fileName : t("No file chosen")}
+                    </label>
+                  </div>
+                </Col>
+              </Row>
 
               {processList.length && workflow?.value && showModeler ? (
                 <div>
@@ -283,10 +282,10 @@ export default React.memo(() => {
                   )}
                 </div>
               ) : null}
-            </CardContent>
+            </Card.Body>
           </Card>
-        </Grid>
-      </Grid>
-    </div>
+        </Col>
+      </Row>
+    </Container>
   );
 });

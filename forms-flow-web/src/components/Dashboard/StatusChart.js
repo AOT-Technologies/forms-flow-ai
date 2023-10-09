@@ -45,11 +45,11 @@ const ChartForm = React.memo((props) => {
           <div className=" d-flex align-items-center justify-content-between">
           <div>
           <div className="d-flex align-items-center">
-            <span className="mr-2" style={{ color: " #0072ed" }}>{t("Form Name")} : </span>
+            <span className="text-primary mr-2" >{t("Form Name")} : </span>
             <h2 className="text-truncate" style={{ maxWidth: version > 1 ? "500px" : "700px"}}>{formName}</h2>
           </div>
           <p>
-            <span style={{ color:" #0072ed"}}>{t("Latest Version")} :</span>{" "}
+            <span className="text-primary" >{t("Latest Version")} :</span>{" "}
             {`v${version}`}
           </p>
           </div>

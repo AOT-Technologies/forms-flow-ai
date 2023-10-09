@@ -482,22 +482,30 @@ class ApplicationService:  # pylint: disable=too-many-public-methods
         return application_count
 
     @staticmethod
+    def fetch_task_variable_values(task_variable, form_data):
+        """Fetch task variable values from form data."""
+        variables: Dict = {}
+        if task_variable and form_data:
+            task_keys = [val["key"] for val in task_variable]
+            variables = {
+                key: {"value": json.dumps(form_data[key])}
+                if isinstance(form_data[key], (dict, list))
+                else {"value": form_data[key]}
+                for key in task_keys
+                if key in form_data
+            }
+        return variables
+
+    @staticmethod
     def resubmit_application(application_id: int, payload: Dict, token: str):
         """Resubmit application and update process variables."""
         mapper = ApplicationService.get_application_form_mapper_by_id(application_id)
         task_variable = json.loads(mapper.get("taskVariable"))
         form_data = payload.pop("data", None)
-        process_variables = {"isResubmit": {"value": False}}
-        if task_variable and form_data:
-            task_keys = [val["key"] for val in task_variable]
-            process_variables.update(
-                {
-                    key: {"value": form_data[key]}
-                    for key in task_keys
-                    if key in form_data
-                }
-            )
-        payload["processVariables"] = process_variables
+        payload["processVariables"] = ApplicationService.fetch_task_variable_values(
+            task_variable, form_data
+        )
+        payload["processVariables"].update({"isResubmit": {"value": False}})
         ApplicationService.update_application(application_id, {"is_resubmit": False})
         response = BPMService.send_message(data=payload, token=token)
         if not response:

@@ -374,6 +374,7 @@ const Preview = React.memo(
                         <OverlayTrigger
                           placement="right"
                           trigger="click"
+                          rootClose={true}
                           overlay={(
                             <Popover>
                               <div className="poper">

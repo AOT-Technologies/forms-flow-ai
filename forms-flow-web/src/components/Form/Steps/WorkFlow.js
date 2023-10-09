@@ -1,39 +1,16 @@
 import React, { useEffect, useState } from "react";
 import utils from "formiojs/utils";
 import { Button, Col, Row, Card, Table } from "react-bootstrap";
-// import {
-//   Card,
-//   Col,
-//   Row,
-//   Table,
-//   Button,
-//   Form,
-//   Container,
-// } from 'react-bootstrap';
-// import FormLabel from "@material-ui/core/FormLabel";
-// import Grid from "@material-ui/core/Grid";
-// import CardContent from "@material-ui/core/CardContent";
-// import Card from "@material-ui/core/Card";
-// import Tabs from "@material-ui/core/Tabs";
-// import Tab from "@material-ui/core/Tab";
 import Select from "react-select";
 import SaveNext from "./SaveNext";
 import ProcessDiagram from "../../BPMN/ProcessDiagramHook";
 import TaskvariableCreate from "./TaskvariableCreate";
 import { useSelector, useDispatch } from "react-redux";
-// import Table from "@material-ui/core/Table";
-// import TableBody from "@material-ui/core/TableBody";
-// import TableCell from "@material-ui/core/TableCell";
-// import TableContainer from "@material-ui/core/TableContainer";
-// import TableHead from "@material-ui/core/TableHead";
-// import TableRow from "@material-ui/core/TableRow";
-// import Paper from "@material-ui/core/Paper";
 import {
   setFormProcessesData,
   setWorkflowAssociation,
 } from "../../../actions/processActions";
 import ViewAndEditTaskvariable from "./ViewAndEditTaskvariable";
-// import Button from "react-bootstrap/Button";
 import { useTranslation } from "react-i18next";
 import { listProcess } from "../../../apiManager/services/formatterService";
 import { DEFAULT_WORKFLOW } from "../../../constants/taskConstants";
@@ -89,7 +66,6 @@ const WorkFlow = React.memo(
     );
 
     useEffect(() => {
-      console.log(showTaskVaribleCrete);
       if (!workflow) {
         setModified(true);
         dispatch(setWorkflowAssociation(DEFAULT_WORKFLOW));
@@ -157,11 +133,9 @@ const WorkFlow = React.memo(
       );
     };
     const handleChange = (tabNumber) => {
-      console.log(tabNumber);
       setTabValue(tabNumber);
     };
     const handleListChange = (item) => {
-      console.log("handle-item", item);
       setModified(true);
       dispatch(setWorkflowAssociation(item));
     };

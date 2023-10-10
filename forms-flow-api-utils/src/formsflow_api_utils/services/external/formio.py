@@ -65,13 +65,15 @@ class FormioService:
         return self._invoke_service(url, headers, data=data)
 
     @staticmethod
-    def _invoke_service(url, headers, data=None, is_get: bool = False):
+    def _invoke_service(url, headers, data=None, method: str = 'POST'):
         """Invoke formio service and handle error."""
         try:
-            if is_get:
+            if method == 'GET':
                 response = requests.get(url, headers=headers)
-            else:
+            elif method == 'POST':
                 response = requests.post(url, headers=headers, data=json.dumps(data))
+            elif method == 'PUT':
+                response = requests.put(url, headers=headers, data=json.dumps(data))
             if response.ok:
                 return response.json()
             else:
@@ -83,26 +85,26 @@ class FormioService:
         """Put request to formio API to update form."""
         headers = {"Content-Type": "application/json", "x-jwt-token": formio_token}
         url = f"{self.base_url}/form/{form_id}"
-        return self._invoke_service(url, headers, data=data)
+        return self._invoke_service(url, headers, data=data, method='PUT')
 
     def get_role_ids(self):
         """Get request to Formio API to retrieve role ids."""
         url = f"{self.base_url}/role"
         headers = {"x-jwt-token": self.get_formio_access_token()}
         current_app.logger.info("Role id fetching started...")
-        return self._invoke_service(url, headers, is_get=True)
+        return self._invoke_service(url, headers, method='GET')
 
     def get_user_resource_ids(self):
         """Get request to Formio API to retrieve user resource ids."""
         url = f"{self.base_url}/user"
         current_app.logger.info("Fetching user resource ids...")
-        return self._invoke_service(url, headers={}, is_get=True)
+        return self._invoke_service(url, headers={}, method='GET')
 
     def get_form(self, data, formio_token):
         """Get request to formio API to get form details."""
         headers = {"Content-Type": "application/json", "x-jwt-token": formio_token}
         url = f"{self.base_url}/form/" + data["form_id"]
-        return self._invoke_service(url, headers, is_get=True)
+        return self._invoke_service(url, headers, method='GET')
 
     def get_submission(self, data, formio_token):
         """Get request to formio API to get submission details."""
@@ -110,7 +112,7 @@ class FormioService:
         url = (
             f"{self.base_url}/form/" + data["form_id"] + "/submission/" + data["sub_id"]
         )
-        return self._invoke_service(url, headers, is_get=True)
+        return self._invoke_service(url, headers, method='GET')
 
     def post_submission(self, data, formio_token):
         """Post request to formio API to create submission details."""
@@ -124,5 +126,5 @@ class FormioService:
         """Get request to formio API to get form details from path."""
         headers = {"Content-Type": "application/json", "x-jwt-token": formio_token}
         url = f"{self.base_url}/{path_name}" 
-        return self._invoke_service(url, headers, is_get=True)
+        return self._invoke_service(url, headers, method='GET')
         

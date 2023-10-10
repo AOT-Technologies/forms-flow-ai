@@ -1,5 +1,5 @@
 gunicorn
-Flask
+Flask<3
 Flask-Caching
 Flask-Migrate
 Flask-Moment
@@ -17,4 +17,4 @@ PyJWT
 selenium
 selenium-wire
 nested-lookup
-git+https://github.com/AOT-Technologies/forms-flow-ai.git@master#egg=formsflow_api_utils&subdirectory=forms-flow-api-utils
+git+https://github.com/sumesh-aot/forms-flow-ai.git@error-handling#egg=formsflow_api_utils&subdirectory=forms-flow-api-utils

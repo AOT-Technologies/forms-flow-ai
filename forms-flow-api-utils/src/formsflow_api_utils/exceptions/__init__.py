@@ -110,7 +110,7 @@ def handle_sqlalchemy_error(e, model=None):
     raise BusinessException(error_message, code=error_code, details=details)
 
 
-def register_error_handlers(api, db):
+def register_error_handlers(api):
     @api.errorhandler(AuthError)
     def handle_forbidden_error(error):
         error_response = create_error_response("Invalid Token Error", code="INVALID_AUTH_TOKEN")
@@ -138,6 +138,8 @@ def register_error_handlers(api, db):
         error_response = ErrorResponse(message="HttpError occurred", code="HTTP_ERROR", details=[])
         return error_response.__dict__, 400
 
+
+def register_db_error_handlers(db):
     @event.listens_for(db, 'handle_error')
     def handle_sqlalchemy_exceptions(context):
         handle_sqlalchemy_error(context.original_exception)

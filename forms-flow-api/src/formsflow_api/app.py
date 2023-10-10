@@ -9,7 +9,7 @@ from http import HTTPStatus
 
 from flask import Flask, g, request
 from flask.logging import default_handler
-from formsflow_api_utils.exceptions import register_error_handlers
+from formsflow_api_utils.exceptions import register_db_error_handlers, register_error_handlers
 from formsflow_api_utils.utils import (
     ALLOW_ALL_ORIGINS,
     CORS_ORIGINS,
@@ -64,7 +64,8 @@ def create_app(run_mode=os.getenv("FLASK_ENV", "production")):
     API.init_app(app)
     setup_jwt_manager(app, jwt)
     with app.app_context():
-        register_error_handlers(API, db.engine)
+        register_error_handlers(API)
+        register_db_error_handlers(db.engine)
 
     @app.after_request
     def cors_origin(response):  # pylint: disable=unused-variable

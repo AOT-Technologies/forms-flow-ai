@@ -9,7 +9,10 @@ from http import HTTPStatus
 
 from flask import Flask, g, request
 from flask.logging import default_handler
-from formsflow_api_utils.exceptions import register_db_error_handlers, register_error_handlers
+from formsflow_api_utils.exceptions import (
+    register_db_error_handlers,
+    register_error_handlers,
+)
 from formsflow_api_utils.utils import (
     ALLOW_ALL_ORIGINS,
     CORS_ORIGINS,

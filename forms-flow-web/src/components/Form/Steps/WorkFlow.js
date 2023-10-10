@@ -226,7 +226,7 @@ const WorkFlow = React.memo(
         ) : (
           <>
             <Card className="mb-3">
-              <Card.Body >
+              <Card.Body disabled={disableWorkflowAssociation}>
                 <p >{t("Add form fields to display in task list")}</p>
                 {selectedTaskVariable.length !== 0 ? (
                   <div className="mb-2">
@@ -278,7 +278,6 @@ const WorkFlow = React.memo(
                       setShowTaskVaribleCrete(!showTaskVaribleCrete)
                     }
                     variant={showTaskVaribleCrete ? "secondary" : "primary"}
-                    disabled={disableWorkflowAssociation}
                   >
                     {showTaskVaribleCrete ? t("Cancel") : t("Add")}
                   </Button>

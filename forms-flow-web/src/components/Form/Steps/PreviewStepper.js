@@ -289,12 +289,13 @@ const Preview = React.memo(
                   )}
                   <div>
                     <label>
-                      <Form.Group controlId="formPublish">
-                        <div className="d-flex align-items-center mt-4 mr-4">
+                      <Form.Group controlId="formPublish" className="mb-0 text-hover">
+                        <div className="d-flex align-items-center mt-2 mr-2">
                           <Form.Check
                             className="mb-1"
                             aria-label="Publish"
                             checked={processData.status === "active"}
+                            label={t("Publish this form for Client Users.")}
                             onChange={(e) =>
                               setProcessData({
                                 status: e.target.checked
@@ -305,7 +306,6 @@ const Preview = React.memo(
                             name="Check box to associate form with a workflow"
                             color="primary"
                           />
-                          <label className="fontsize-16 ml-1">{t("Publish this form for Client Users.")}</label>
                         </div>
                       </Form.Group>
                     </label>

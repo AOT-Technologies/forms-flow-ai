@@ -25,8 +25,21 @@ window.camCockpitConf = {
 };
 
 export default {
-    bpmnJs: {},
+    bpmnJs: {
+        additionalModules: [
+            //     // if you have a folder called 'my-custom-module' (in the 'cockpit' folder)
+            //     // with a file called 'module.js' in it
+            //     'my-custom-module/module'
+            'scripts/robot-module.js'
+        ],
+    },
     customScripts: [
-        'custom/logout'
-    ]
+        'custom/logout',
+        'scripts/definition-historic-activities.js',
+        'scripts/instance-historic-activities.js',
+        'scripts/instance-route-history.js'
+    ],
+    disableWelcomeMessage: true,
+    // userOperationLogAnnotationLength: 5000,
+    previewHtml: true
 }

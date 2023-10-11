@@ -4,7 +4,13 @@ import Drawer from "@material-ui/core/Drawer";
 import Button from "@material-ui/core/Button";
 import List from "@material-ui/core/List";
 import Divider from "@material-ui/core/Divider";
-import { fetchBPMTaskCount, fetchFilterList, saveFilters } from "../../../../apiManager/services/bpmTaskServices";
+import {
+  deleteFilters,
+  editFilters,
+  fetchBPMTaskCount,
+  fetchFilterList,
+  saveFilters,
+} from "../../../../apiManager/services/bpmTaskServices";
 import {
   ACCESSIBLE_FOR_ALL_GROUPS,
   PRIVATE_ONLY_YOU,
@@ -12,12 +18,19 @@ import {
 } from "../../../../constants/taskConstants";
 import { useTranslation } from "react-i18next";
 import { Translation } from "react-i18next";
-import { setBPMFilterLoader, setBPMFiltersAndCount } from "../../../../actions/bpmTaskActions";
+import {
+  setBPMFilterLoader,
+  setBPMFiltersAndCount,
+} from "../../../../actions/bpmTaskActions";
 
 import TaskAttributeComponent from "./TaskAttributeComponent";
-export default function CreateNewFilterDrawer() {
+export default function CreateNewFilterDrawer({
+  selectedFilterData,
+  openFilterDrawer,
+  setOpenFilterDrawer,
+}) {
   const dispatch = useDispatch();
-  const [openDrawer, setOpenDrawer] = useState(false);
+  const userRole = useSelector((state) => state.user.roles);
   const [filterName, setFilterName] = useState("");
   const [showUndefinedVariable, setShowUndefinedVariable] = useState(false);
   const [inputVisibility, setInputVisibility] = useState({});
@@ -37,28 +50,98 @@ export default function CreateNewFilterDrawer() {
   const { t } = useTranslation();
   const [modalShow, setModalShow] = useState(false);
   const [checkboxes, setCheckboxes] = useState({
-    applicationId:false,
+    applicationId: false,
     assignee: false,
     taskTitle: false,
     createdDate: false,
     dueDate: false,
     followUp: false,
     priority: false,
-    groups: false
-  }); 
+    groups: false,
+  });
 
-  const taskAttributesCount = Object.values(checkboxes).filter(value => value === true).length;
+  const taskAttributesCount = Object.values(checkboxes).filter(
+    (value) => value === true
+  ).length;
+
+  const customTrim = (inputString) => {
+    // Remove '%' symbol from the start
+    const startIndex = inputString?.indexOf('%');
+    if (startIndex === 0) {
+      inputString = inputString?.substring(1);
+    }
+  
+    // Remove '%' symbol from the end
+    const endIndex = inputString?.lastIndexOf('%');
+    if (endIndex === inputString?.length - 1) {
+      inputString = inputString?.substring(0, endIndex);
+    }
+    return inputString;
+  };
+
+  useEffect(() => {
+    if (selectedFilterData) {
+      setFilterName(selectedFilterData?.name);
+      let processDefinitionName = selectedFilterData?.criteria?.processDefinitionNameLike;
+      setDefinitionKeyId(customTrim(processDefinitionName));
+      setCandidateGroup(selectedFilterData?.criteria?.candidateGroup);
+      setAssignee(selectedFilterData?.criteria?.assignee);
+      setIncludeAssignedTasks(
+        selectedFilterData?.criteria?.includeAssignedTasks
+      );
+      setShowUndefinedVariable(
+        selectedFilterData?.properties?.showUndefinedVariable
+      );
+      setInputValues(() => {
+        return selectedFilterData.variables?.map((row) => ({
+          name: row.name,
+          label: row.label,
+        }));
+      });
+      if (!selectedFilterData?.users && !selectedFilterData?.roles) {
+        setPermissions(ACCESSIBLE_FOR_ALL_GROUPS);
+      }
+      const isUserInRoles = userRole.some((user) =>
+        selectedFilterData?.users?.includes(user)
+      );
+      if (isUserInRoles) {
+        setPermissions(PRIVATE_ONLY_YOU);
+      }
+      if (selectedFilterData?.users) {
+        setPermissions(SPECIFIC_USER_OR_GROUP);
+        setSelectUserGroupIcon("user");
+        setIdentifierId(selectedFilterData?.users[0]);
+        setSpecificUserGroup(SPECIFIC_USER_OR_GROUP);
+      }
+      if (selectedFilterData?.roles) {
+        setPermissions(SPECIFIC_USER_OR_GROUP);
+        setSelectUserGroupIcon("group");
+        setIdentifierId(selectedFilterData?.roles[0]);
+        setSpecificUserGroup(SPECIFIC_USER_OR_GROUP);
+      }
+      setCheckboxes({
+        applicationId: selectedFilterData?.taskVisibleAttributes?.applicationId,
+        assignee: selectedFilterData?.taskVisibleAttributes?.assignee,
+        taskTitle: selectedFilterData?.taskVisibleAttributes?.taskTitle,
+        createdDate: selectedFilterData?.taskVisibleAttributes?.createdDate,
+        dueDate: selectedFilterData?.taskVisibleAttributes?.dueDate,
+        followUp: selectedFilterData?.taskVisibleAttributes?.followUp,
+        priority: selectedFilterData?.taskVisibleAttributes?.priority,
+        groups: selectedFilterData?.taskVisibleAttributes?.groups,
+      });
+    }
+  }, [selectedFilterData]);
 
   useEffect(() => {
     setVariables(() => {
       if (
-        inputValues.length === 1 &&
-        inputValues[0].name === "" &&
-        inputValues[0].label === ""
+        inputValues?.length === 1 &&
+        inputValues[0]?.name === "" &&
+        inputValues[0]?.label === ""
       ) {
         return [];
       } else {
-        return inputValues.map((row) => ({
+        return inputValues?.map((row) => ({
           name: row.name,
           label: row.label,
         }));
@@ -66,10 +149,33 @@ export default function CreateNewFilterDrawer() {
     });
   }, [inputValues]);
 
-// Create a new object with non-empty (truthy) values
+  const successCallBack = ()=>{
+    dispatch(
+      fetchFilterList((err, data) => {
+        if (data) {
+          fetchBPMTaskCount(data)
+            .then((res) => {
+              dispatch(setBPMFiltersAndCount(res.data));
+            })
+            .catch((err) => {
+              if (err) {
+                console.error(err);
+              }
+            })
+            .finally(() => {
+              dispatch(setBPMFilterLoader(false));
+            });
+        }
+      })
+    );
+    toggleDrawer(false);
+    clearAllFilters();
+  };
+
+  // Create a new object with non-empty (truthy) values
   function removeEmptyValues(obj) {
     for (let key in obj) {
-      if (typeof obj[key] === 'object' && !Array.isArray(obj[key])) {
+      if (typeof obj[key] === "object" && !Array.isArray(obj[key])) {
         removeEmptyValues(obj[key]);
         if (Object.keys(obj[key]).length === 0) {
           delete obj[key];
@@ -82,8 +188,22 @@ export default function CreateNewFilterDrawer() {
     }
   }
 
+  const clearAllFilters = () => {
+    setFilterName("");
+    setShowUndefinedVariable("");
+    setInputVisibility("");
+    setDefinitionKeyId("");
+    setCandidateGroup("");
+    setAssignee("");
+    setIncludeAssignedTasks("");
+    setPermissions("");
+    setIdentifierId("");
+    setSelectUserGroupIcon("");
+    setSpecificUserGroup("");
+    setInputValues([{ name: "", label: "" }]);
+  };
+
   const handleSubmit = () => {
-    console.log(checkboxes);
     let users = [];
     let roles = [];
     if (permissions === ACCESSIBLE_FOR_ALL_GROUPS) {
@@ -105,7 +225,7 @@ export default function CreateNewFilterDrawer() {
     const data = {
       name: filterName,
       criteria: {
-        processDefinitionNameLike: `%${definitionKeyId}%`,
+        processDefinitionNameLike: definitionKeyId && `%${definitionKeyId}%`,
         candidateGroup: candidateGroup,
         assignee: assignee,
         includeAssignedTasks: includeAssignedTasks,
@@ -116,42 +236,23 @@ export default function CreateNewFilterDrawer() {
       variables: variables,
       users: users,
       roles: roles,
-      taskVisibleAttributes:{...checkboxes}
+      taskVisibleAttributes: { ...checkboxes },
     };
 
     removeEmptyValues(data);
+    const submitFunction = selectedFilterData
+      ? editFilters(data, selectedFilterData?.id)
+      : saveFilters(data);
+    submitFunction
+      .then(successCallBack)
+      .catch((error) => {
+        console.error("error", error);
+      });
+  };
 
-    saveFilters(data)
-      .then((res) => {
-        console.log("response data",res.data);
-        dispatch(fetchFilterList((err,data)=>{
-          if(data){
-            fetchBPMTaskCount(data).then((res)=>{
-              dispatch(setBPMFiltersAndCount(res.data));
-            }).catch((err)=>{
-              if(err){
-                console.error(err);
-              }
-            }).finally(()=>{
-              dispatch(setBPMFilterLoader(false));
-            });
-          }
-        }));
-        toggleDrawer(false);
-        // Clearing the input fields after submission
-        setFilterName("");
-        setShowUndefinedVariable("");
-        setInputVisibility("");
-        setDefinitionKeyId("");
-        setCandidateGroup("");
-        setAssignee("");
-        setIncludeAssignedTasks("");
-        setPermissions("");
-        setIdentifierId("");
-        setSelectUserGroupIcon("");
-        setSpecificUserGroup("");
-        setInputValues([{ name: "", label: "" }]);
-      })
+  const handleFilterDelete = () => {
+    deleteFilters(selectedFilterData?.id)
+      .then(successCallBack)
       .catch((error) => {
         console.error("error", error);
       });
@@ -211,11 +312,14 @@ export default function CreateNewFilterDrawer() {
     });
   };
 
-  const toggleDrawer = () => setOpenDrawer(!openDrawer);
+  const toggleDrawer = () => {
+    setOpenFilterDrawer(!openFilterDrawer);
+  };
+
   const toggleModal = () => {
     setModalShow(!modalShow);
   };
-  
+
   const list = () => (
     <div style={{ marginTop: "45px" }} role="presentation">
       <List>
@@ -226,7 +330,9 @@ export default function CreateNewFilterDrawer() {
           <span
             className="cursor-pointer"
             style={{ fontSize: "14px" }}
-            onClick={() => toggleDrawer()}
+            onClick={() => {
+              toggleDrawer();
+            }}
           >
             <Translation>{(t) => t("Close")}</Translation>
           </span>
@@ -269,6 +375,7 @@ export default function CreateNewFilterDrawer() {
             type="text"
             className="criteria-add-value-inputbox"
             value={definitionKeyId}
+            name="definitionKeyId"
             onChange={(e) => setDefinitionKeyId(e.target.value)}
           />
         )}
@@ -317,22 +424,22 @@ export default function CreateNewFilterDrawer() {
           />
         )}
 
-        {
-          candidateGroup?.length ?
+        {candidateGroup?.length ? (
           <div
-          style={{ display: "flex", alignItems: "center", marginTop: "10px" }}
-        >
-          <input
-            type="checkbox"
-            id="assignedTask-checkbox"
-            checked={includeAssignedTasks}
-            onChange={includeAssignedTasksCheckboxChange}
-            style={{ marginRight: "6px" }}
-          />
-          <h5 style={{ fontSize: "18px", marginBottom: "3px" }}>
-            <Translation>{(t) => t("Include Assigned Task")}</Translation>
-          </h5>
-        </div> : null}
+            style={{ display: "flex", alignItems: "center", marginTop: "10px" }}
+          >
+            <input
+              type="checkbox"
+              id="assignedTask-checkbox"
+              checked={includeAssignedTasks}
+              onChange={includeAssignedTasksCheckboxChange}
+              style={{ marginRight: "6px" }}
+            />
+            <h5 style={{ fontSize: "18px", marginBottom: "3px" }}>
+              <Translation>{(t) => t("Include Assigned Task")}</Translation>
+            </h5>
+          </div>
+        ) : null}
         <Divider />
         <List>
           <h5 style={{ fontWeight: "bold", fontSize: "18px" }}>
@@ -487,43 +594,66 @@ export default function CreateNewFilterDrawer() {
         <Divider />
         <div className="m-2">
           <h5 className="font-weight-bold ">
-            <Translation>{(t) => t("Task attribute")}</Translation> <i className="fa fa-info-circle"></i>
+            <Translation>{(t) => t("Task attribute")}</Translation>{" "}
+            <i className="fa fa-info-circle"></i>
           </h5>
           <input
             type="text"
             className="filter-name-textfeild"
             onClick={toggleModal}
             readOnly
-            placeholder={ taskAttributesCount === 0 ? "Select elements" : taskAttributesCount + " Task attribute selected"}
+            placeholder={
+              taskAttributesCount === 0
+                ? "Select elements"
+                : taskAttributesCount + " Task attribute selected"
+            }
           />
-          {modalShow &&
-          <div className="modal-overlay" >
+          {modalShow && (
+            <div className="modal-overlay">
               <TaskAttributeComponent
                 show={modalShow}
                 onHide={() => setModalShow(false)}
                 checkboxes={checkboxes}
                 setCheckboxes={setCheckboxes}
               />
-          </div>}
-          
+            </div>
+          )}
         </div>
         <Divider />
       </List>
 
       <List>
-        <div className="newFilterTaskContainer-footer d-flex align-items-center justify-content-end">
-          <span className="cursor-pointer" onClick={() => toggleDrawer(false)}>
-            <Translation>{(t) => t("Cancel")}</Translation>
-          </span>
-          <button
-            className="btn btn-primary ml-3 submitButton"
-            style={{ textDecoration: "none", fontSize: "14px" }}
+        <div className="newFilterTaskContainer-footer d-flex align-items-center justify-content-between">
+          { selectedFilterData && <button
+            className="btn btn-link text-danger cursor-pointer"
             onClick={() => {
-              handleSubmit();
+              toggleDrawer();
+              handleFilterDelete();
             }}
           >
-            <Translation>{(t) => t("Create Filter")}</Translation>
-          </button>
+            <Translation>{(t) => t("Delete Filter")}</Translation>
+          </button>}
+          <div className="d-flex align-items-center">
+            <button
+              className="btn btn-outline-secondary mr-3"
+              onClick={() => {
+                toggleDrawer();
+              }}
+            >
+              <Translation>{(t) => t("Cancel")}</Translation>
+            </button>
+            <button
+              className="btn btn-primary submitButton"
+              style={{ textDecoration: "none", fontSize: "14px" }}
+              onClick={() => {
+                handleSubmit();
+              }}
+            >
+              <Translation>
+                {(t) => t(`${selectedFilterData ? "Edit" : "Create"} Filter`)}
+              </Translation>
+            </button>
+          </div>
         </div>
       </List>
     </div>
@@ -532,7 +662,9 @@ export default function CreateNewFilterDrawer() {
     <div>
       <React.Fragment key="left">
         <Button
-          onClick={() => toggleDrawer(true)}
+          onClick={() => {
+            toggleDrawer();
+          }}
           style={{
             fontSize: "15px",
             cursor: "pointer",
@@ -543,8 +675,10 @@ export default function CreateNewFilterDrawer() {
         </Button>
         <Drawer
           anchor="left"
-          open={openDrawer}
-          onClose={() => toggleDrawer(false)}
+          open={openFilterDrawer}
+          onClose={() => {
+            toggleDrawer();
+          }}
           PaperProps={{
             style: {
               width: "400px",
@@ -552,7 +686,7 @@ export default function CreateNewFilterDrawer() {
               overflowY: "auto",
               overflowX: "hidden",
               backdropFilter: " none !important",
-              zIndex: 1400         
+              zIndex: 1400,
             },
           }}
           sx={{

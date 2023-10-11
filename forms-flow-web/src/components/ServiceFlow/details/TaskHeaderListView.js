@@ -35,7 +35,7 @@ const TaskHeaderListView = React.memo(({task,taskId,groupView = true}) => {
   const taskGroups = useSelector((state) => state.bpmTasks.taskGroups);
   const selectedFilter = useSelector((state) => state.bpmTasks.selectedFilter);
   const reqData = useSelector((state) => state.bpmTasks.listReqParams);
-  const firstResult = useSelector((state) => state.bpmTasks.firstResult);
+  // const firstResult = useSelector((state) => state.bpmTasks.firstResult);
   const [followUpDate, setFollowUpDate] = useState(null);
   const [dueDate, setDueDate] = useState(null);
   const [showModal, setModal] = useState(false);
@@ -61,16 +61,18 @@ const TaskHeaderListView = React.memo(({task,taskId,groupView = true}) => {
           if (!SocketIOService.isConnected()) {
             if (selectedFilter) {
               dispatch(getBPMTaskDetail(taskId));
+              console.log("calling 12");
               dispatch(
-                fetchServiceTaskList(selectedFilter.id, firstResult, reqData)
+                fetchServiceTaskList(reqData)
               );
             } else {
               dispatch(setBPMTaskDetailUpdating(false));
             }
           }
           if(selectedFilter){
+            console.log("calling 13");
             dispatch(
-              fetchServiceTaskList(selectedFilter.id, firstResult, reqData)
+              fetchServiceTaskList(reqData)
             );
           }
            
@@ -94,8 +96,9 @@ const TaskHeaderListView = React.memo(({task,taskId,groupView = true}) => {
               }
             }
             if(selectedFilter){
+              console.log("calling 14");
               dispatch(
-                fetchServiceTaskList(selectedFilter.id, firstResult, reqData)
+                fetchServiceTaskList(reqData)
               );
             }
            
@@ -119,8 +122,9 @@ const TaskHeaderListView = React.memo(({task,taskId,groupView = true}) => {
             }
           }
           if(selectedFilter){
+            console.log("calling 15");
             dispatch(
-              fetchServiceTaskList(selectedFilter.id, firstResult, reqData)
+              fetchServiceTaskList(reqData)
             );
           }
           
@@ -144,8 +148,9 @@ const TaskHeaderListView = React.memo(({task,taskId,groupView = true}) => {
         if (!err) {
           if (!SocketIOService.isConnected()) {
             dispatch(getBPMTaskDetail(taskId));
+            console.log("calling 16");
             dispatch(
-              fetchServiceTaskList(selectedFilter.id, firstResult, reqData)
+              fetchServiceTaskList(reqData)
             );
           }
         } else {
@@ -168,8 +173,9 @@ const TaskHeaderListView = React.memo(({task,taskId,groupView = true}) => {
         if (!err) {
           if (!SocketIOService.isConnected()) {
             dispatch(getBPMTaskDetail(taskId));
+            console.log("calling 17");
             dispatch(
-              fetchServiceTaskList(selectedFilter.id, firstResult, reqData)
+              fetchServiceTaskList(reqData)
             );
           }
         } else {

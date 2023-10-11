@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { useLocation } from "react-router-dom";
 import { push } from "connected-react-router";
@@ -6,17 +6,19 @@ import { NavDropdown } from "react-bootstrap";
 import ServiceFlowFilterListDropDown from "../components/ServiceFlow/filter/ServiceTaskFilterListDropDown";
 import createURLPathMatchExp from "../helper/regExp/pathMatch";
 import {MULTITENANCY_ENABLED} from "../constants/constants";
-import {  setBPMTaskList, setBPMTaskLoader, setSelectedBPMFilter, setViewType } from '../actions/bpmTaskActions';
+import {setViewType } from '../actions/bpmTaskActions';
 
 
 
 import CreateNewFilterDrawer from "../components/ServiceFlow/list/sort/CreateNewFilter";
-import { fetchBPMTaskDetail } from "../apiManager/services/bpmTaskServices";
+// import { fetchBPMTaskDetail } from "../apiManager/services/bpmTaskServices";
 
 function TaskHead() {
   const dispatch = useDispatch();
   const tenantKey = useSelector((state) => state.tenants?.tenantId);
-
+  const itemCount = useSelector(state => state.bpmTasks.tasksCount);
+  const [filterSelectedForEdit,setFilterSelectedForEdit] = useState(null);
+  const [openFilterDrawer,setOpenFilterDrawer] = useState(false);
   const selectedFilter = useSelector(
     (state) => state.bpmTasks.selectedFilter
   );
@@ -25,34 +27,34 @@ function TaskHead() {
     (state) => state.bpmTasks.isFilterLoading
   );
 
-  const bpmFiltersList = useSelector(
-    (state) => state.bpmTasks.filterList
-  );
+  // const bpmFiltersList = useSelector(
+  //   (state) => state.bpmTasks.filterList
+  // );
 
-  const filterListAndCount = useSelector(
-    (state) => state.bpmTasks.filtersAndCount
-  );
+  // const filterListAndCount = useSelector(
+  //   (state) => state.bpmTasks.filtersAndCount
+  // );
 
   const isTaskListLoading = useSelector(
     (state) => state.bpmTasks.isTaskListLoading
   );
 
-  const count = isTaskListLoading ? "" : selectedFilter ? `(${selectedFilter.count})` : "(0)";
   const location = useLocation();
   const { pathname } = location;
   const baseUrl = MULTITENANCY_ENABLED ? `/tenant/${tenantKey}/` : "/";
 
-  useEffect(()=>{
-    const selectedBPMFilterId = bpmFiltersList.find(item => item.id === filterListAndCount[0]?.id);
-    dispatch(setSelectedBPMFilter(filterListAndCount[0]));
-    fetchBPMTaskDetail(selectedBPMFilterId).then((res)=>{
-      dispatch(setBPMTaskList(res.data));
-    }).catch((err)=>{
-      console.error(err);
-    }).finally(()=>{
-      dispatch(setBPMTaskLoader(false));
-    });
-  },[filterListAndCount?.length]);
+
+  // useEffect(()=>{
+  //   const selectedBPMFilterId = bpmFiltersList.find(item => item.id === filterListAndCount[0]?.id);
+  //   dispatch(setSelectedBPMFilter(filterListAndCount[0]));
+  //   fetchBPMTaskDetail(selectedBPMFilterId).then((res)=>{
+  //     dispatch(setBPMTaskList(res.data));
+  //   }).catch((err)=>{
+  //     console.error(err);
+  //   }).finally(()=>{
+  //     dispatch(setBPMTaskLoader(false));
+  //   });
+  // },[filterListAndCount?.length]);
 
   const goToTask = () => {
     dispatch(push(`${baseUrl}task`));
@@ -77,6 +79,8 @@ function TaskHead() {
     );
   };
 
+  const count = isTaskListLoading ? "" : `(${itemCount})`;
+
   return (
     <div className="header-container">
       <div className="main-header">
@@ -97,12 +101,14 @@ function TaskHead() {
                 }
                 onClick={goToTask}
               >
-                <ServiceFlowFilterListDropDown />
+                <ServiceFlowFilterListDropDown selectFilter = {setFilterSelectedForEdit} 
+                openFilterDrawer = {setOpenFilterDrawer}/>
               </NavDropdown>
             </span>
           </h4>
         </div>
-        <CreateNewFilterDrawer />
+        <CreateNewFilterDrawer selectedFilterData = {filterSelectedForEdit} 
+        openFilterDrawer = {openFilterDrawer} setOpenFilterDrawer = {setOpenFilterDrawer}/> 
         <div style={{ marginLeft: "auto", marginRight: "3rem" }}>
           <button
             type="button"

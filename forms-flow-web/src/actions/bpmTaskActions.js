@@ -207,3 +207,17 @@ export const setBPMFiltersAndCount = (data) => (dispatch) => {
     payload: data,
   });
 };
+
+export const setSelectEditFilter = (data) => (dispatch) => {
+  dispatch({
+    type: ACTION_CONSTANTS.SELECTED_EDIT_FILTER_ID, 
+    payload: data,
+  });
+};
+
+export const setOpenFilterModal = (data) => (dispatch) => {
+  dispatch({
+    type: ACTION_CONSTANTS.SET_FILTER_MODAL_OPEN, 
+    payload: data,
+  });
+};

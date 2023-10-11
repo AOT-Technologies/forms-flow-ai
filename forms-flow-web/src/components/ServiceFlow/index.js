@@ -38,12 +38,15 @@ import TaskHead from "../../containers/TaskHead";
 export default React.memo(() => {
   const dispatch = useDispatch();
   const filterList = useSelector((state) => state.bpmTasks.filterList);
-  const isFilterLoading = useSelector(
-    (state) => state.bpmTasks.isFilterLoading
-  );
-  const selectedFilter = useSelector((state) => state.bpmTasks.selectedFilter);
+  // const isFilterLoading = useSelector(
+  //   (state) => state.bpmTasks.isFilterLoading
+  // );
+  // const selectedFilter = useSelector((state) => state.bpmTasks.selectedFilter);
   const selectedFilterId = useSelector(
     (state) => state.bpmTasks.selectedFilter?.id || null
+  );
+  const bpmFiltersList = useSelector(
+    (state) => state.bpmTasks.filterList
   );
   const bpmTaskId = useSelector((state) => state.bpmTasks.taskId);
   const reqData = useSelector((state) => state.bpmTasks.listReqParams);
@@ -56,6 +59,9 @@ export default React.memo(() => {
   const listReqParams = useSelector((state) => state.bpmTasks.listReqParams);
   const currentUser = useSelector(
     (state) => state.user?.userDetail?.preferred_username || ""
+  );
+  const filterListAndCount = useSelector(
+    (state) => state.bpmTasks.filtersAndCount
   );
   const firstResult = useSelector((state) => state.bpmTasks.firstResult);
   const taskList = useSelector((state) => state.bpmTasks.tasksList);
@@ -73,6 +79,10 @@ export default React.memo(() => {
     MULTITENANCY_ENABLED ? `/tenant/${tenantKey}/` : "/"
   );
 
+  let selectedBPMFilterParams;
+
+
+console.log("selected filter id ",selectedFilterId);
   useEffect(() => {
     selectedFilterIdRef.current = selectedFilterId;
     bpmTaskIdRef.current = bpmTaskId;
@@ -83,15 +93,51 @@ export default React.memo(() => {
   });
 
   useEffect(() => {
-    console.log("affecting here");
+    console.log("inside useeffectt");
     const reqParamData = {
       ...{ sorting: [...sortParams.sorting] },
       ...searchParams,
     };
-    if (!isEqual(reqParamData, listReqParams)) {
-      dispatch(setFilterListParams(cloneDeep(reqParamData)));
+    selectedBPMFilterParams = bpmFiltersList.find(
+      (item) => item.id === selectedFilterId
+    );
+    if(selectedBPMFilterParams){
+      selectedBPMFilterParams = {
+        ...selectedBPMFilterParams,
+        criteria: {
+          ...selectedBPMFilterParams?.criteria,
+          ...reqParamData
+        }
+      };
+    }
+    if (!isEqual(selectedBPMFilterParams, listReqParams) && selectedBPMFilterParams) {
+      dispatch(setFilterListParams(cloneDeep(selectedBPMFilterParams)));
+    }
+  }, [selectedFilterId]);
+
+  useEffect(() => {
+    console.log("inside useeffectt 22");
+    const reqParamData = {
+      ...{ sorting: [...sortParams.sorting] },
+      ...searchParams,
+    };
+    selectedBPMFilterParams = bpmFiltersList.find(
+      (item) => item.id === selectedFilterId
+    );
+    if(selectedBPMFilterParams){
+      selectedBPMFilterParams = {
+        ...selectedBPMFilterParams,
+        criteria: {
+          ...selectedBPMFilterParams?.criteria,
+          ...reqParamData
+        }
+      };
+    }
+    if (!isEqual(selectedBPMFilterParams, listReqParams) && selectedBPMFilterParams) {
+      dispatch(setFilterListParams(cloneDeep(selectedBPMFilterParams)));
     }
   }, [searchParams, sortParams, dispatch, listReqParams]);
+
 
   useEffect(() => {
     dispatch(setBPMFilterLoader(true));
@@ -111,20 +157,20 @@ export default React.memo(() => {
     dispatch(fetchProcessDefinitionList());
   }, [dispatch]);
 
-  useEffect(() => {
-    if (!isFilterLoading && filterList.length && !selectedFilter) {
+  useEffect(()=>{
+    if(filterListAndCount?.length){
       let filterSelected;
       if (filterList.length > 1) {
-        filterSelected = filterList.find((filter) => filter.name === ALL_TASKS);
+        filterSelected = filterListAndCount?.find((filter) => filter.name === ALL_TASKS);
         if (!filterSelected) {
-          filterSelected = filterList[0];
+          filterSelected = filterListAndCount[0];
         }
       } else {
-        filterSelected = filterList[0];
+        filterSelected = filterListAndCount[0];
       }
       dispatch(setSelectedBPMFilter(filterSelected));
     }
-  }, [filterList, isFilterLoading, selectedFilter, dispatch]);
+  },[filterListAndCount?.length]);
 
   const checkIfTaskIDExistsInList = (list, id) => {
     return list.some((task) => task.id === id);
@@ -132,11 +178,10 @@ export default React.memo(() => {
   const SocketIOCallback = useCallback(
     (refreshedTaskId, forceReload, isUpdateEvent) => {
       if (forceReload) {
+        console.log("calling 1");
         dispatch(
           fetchServiceTaskList(
-            selectedFilterIdRef.current,
-            firstResultsRef.current,
-            reqDataRef.current,
+            selectedBPMFilterParams,
             refreshedTaskId
           )
         ); //Refreshes the Tasks
@@ -155,20 +200,18 @@ export default React.memo(() => {
                 refreshedTaskId
               ) === true
             ) {
+              console.log("calling 2");
               dispatch(
                 fetchServiceTaskList(
-                  selectedFilterIdRef.current,
-                  firstResultsRef.current,
-                  reqDataRef.current
+                  selectedBPMFilterParams
                 )
               ); //Refreshes the Task
             }
           } else {
+            console.log("calling 3");
             dispatch(
               fetchServiceTaskList(
-                selectedFilterIdRef.current,
-                firstResultsRef.current,
-                reqDataRef.current
+                selectedBPMFilterParams
               )
             ); //Refreshes the Task
           }

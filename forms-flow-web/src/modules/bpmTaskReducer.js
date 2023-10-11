@@ -39,6 +39,8 @@ const initialState = {
   viewType:true,
   error: '',
   filtersAndCount:[],
+  selectedEdiFilterId:null,
+  openFilterModal:false,
 };
 
 const bpmTasks = (state = initialState, action) => {
@@ -57,7 +59,7 @@ const bpmTasks = (state = initialState, action) => {
     case ACTION_CONSTANTS.BPM_USER_LIST:
       return { ...state, userList: action.payload };
     case ACTION_CONSTANTS.BPM_TASKS_COUNT:
-      return { ...state, tasksCount: action.payload.count };
+      return { ...state, tasksCount: action.payload};
     case ACTION_CONSTANTS.BPM_TASK_DETAIL:
       return { ...state, taskDetail: action.payload };
     case ACTION_CONSTANTS.IS_BPM_TASK_UPDATING:
@@ -149,6 +151,10 @@ const bpmTasks = (state = initialState, action) => {
         };
     case ACTION_CONSTANTS.BPM_FILTERS_AND_COUNT:
         return { ...state, filtersAndCount: action.payload };
+    case ACTION_CONSTANTS.SET_FILTER_MODAL_OPEN:
+          return { ...state, openFilterModal: action.payload };
+    case ACTION_CONSTANTS.SELECTED_EDIT_FILTER_ID:
+          return { ...state, selectedEdiFilterId: action.payload };  
     default:
       return state;
   }

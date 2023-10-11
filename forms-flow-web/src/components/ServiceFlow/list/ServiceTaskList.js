@@ -17,7 +17,7 @@ import TaskFilterComponent from "./search/TaskFilterComponent";
 import Pagination from "react-js-pagination";
 import { push } from "connected-react-router";
 import { MAX_RESULTS } from "../constants/taskConstants";
-import { getFirstResultIndex } from "../../../apiManager/services/taskSearchParamsFormatterService";
+// import { getFirstResultIndex } from "../../../apiManager/services/taskSearchParamsFormatterService";
 import TaskVariable from "./TaskVariable";
 import { MULTITENANCY_ENABLED } from "../../../constants/constants";
 const ServiceFlowTaskList = React.memo(() => {
@@ -43,9 +43,10 @@ const ServiceFlowTaskList = React.memo(() => {
     if (selectedFilter) {
       dispatch(setBPMTaskLoader(true));
       dispatch(setBPMTaskListActivePage(1));
-      dispatch(fetchServiceTaskList(selectedFilter.id, 0, reqData));
+      console.log("calling 18");
+      dispatch(fetchServiceTaskList(reqData));
     }
-  }, [dispatch, selectedFilter, reqData]);
+  }, [reqData]);
 
   const getTaskDetails = (taskId) => {
     if (taskId !== bpmTaskId) {
@@ -56,9 +57,10 @@ const ServiceFlowTaskList = React.memo(() => {
   const handlePageChange = (pageNumber) => {
     dispatch(setBPMTaskListActivePage(pageNumber));
     dispatch(setBPMTaskLoader(true));
-    let firstResultIndex = getFirstResultIndex(pageNumber);
+    // let firstResultIndex = getFirstResultIndex(pageNumber);
+    console.log("calling 19");
     dispatch(
-      fetchServiceTaskList(selectedFilter.id, firstResultIndex, reqData)
+      fetchServiceTaskList(reqData)
     );
   };
 

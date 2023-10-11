@@ -16,35 +16,25 @@ import {
   setBPMTaskGroupsLoading,
   setBPMTaskCount,
   bpmActionError,
+  setBPMTaskList,
 } from "../../actions/bpmTaskActions";
 import { replaceUrl } from "../../helper/helper";
 import axios from "axios";
 import { taskDetailVariableDataFormatter } from "./formatterService";
 import { REVIEWER_GROUP } from "../../constants/userContants";
-import { MAX_RESULTS } from "../../components/ServiceFlow/constants/taskConstants";
+// import { MAX_RESULTS } from "../../components/ServiceFlow/constants/taskConstants";
 
 export const fetchServiceTaskList = (
-  filterId,
-  firstResult,
   reqData,
   taskIdToRemove,
-  maxResults,
   ...rest
 ) => {
   const done = rest.length ? rest[0] : () => {};
-  let apiUrlgetTaskList = replaceUrl(
-    API.GET_BPM_TASK_LIST_WITH_FILTER,
-    "<filter_id>",
-    filterId
-  );
 
-  apiUrlgetTaskList = `${apiUrlgetTaskList}?firstResult=${firstResult}&maxResults=${
-    maxResults ? maxResults : MAX_RESULTS
-  }`;
 
   return (dispatch) => {
     RequestService.httpPOSTRequestWithHAL(
-      apiUrlgetTaskList,
+      API.GET_BPM_TASK_FILTERS,
       reqData,
       StorageService.get(StorageService.User.AUTH_TOKEN)
     )
@@ -55,6 +45,7 @@ export const fetchServiceTaskList = (
           if (!_embedded || !_embedded["task"] || !responseData["count"]) {
             // Display error if the necessary values are unavailable.
             // console.log("Error", res);
+            dispatch(setBPMTaskList([]));
             dispatch(setBPMTaskCount(0));
             dispatch(serviceActionError(res));
             dispatch(setBPMTaskLoader(false));
@@ -76,20 +67,22 @@ export const fetchServiceTaskList = (
                 taskCount["count"]--; // Count has to be decreased since one task id is removed.
               }
             }
-            dispatch(setBPMTaskCount(taskCount));
-            // dispatch(setBPMTaskList(taskData));
+            dispatch(setBPMTaskCount(taskCount.count));
+            dispatch(setBPMTaskList(taskData));
             dispatch(setBPMTaskLoader(false));
             done(null, taskData);
           }
         } else {
           // console.log("Error", res);
           dispatch(setBPMTaskCount(0));
+          dispatch(setBPMTaskList([]));
           dispatch(serviceActionError(res));
           dispatch(setBPMTaskLoader(false));
         }
       })
       .catch((error) => {
         // console.log("Error", error);
+        dispatch(setBPMTaskList([]));
         dispatch(setBPMTaskCount(0));
         dispatch(serviceActionError(error));
         dispatch(setBPMTaskLoader(false));
@@ -467,10 +460,18 @@ export const saveFilters = (data) => {
   return RequestService.httpPOSTRequest(`${API.GET_FILTERS}`, data);
 };
 
+export const editFilters = (data,id) => {
+  return RequestService.httpPUTRequest(`${API.GET_FILTERS}/${id}`, data);
+};
+
+export const deleteFilters = (id) => {
+  return RequestService.httpDELETERequest(`${API.GET_FILTERS}/${id}`);
+};
+
 export const fetchBPMTaskCount = (data) => {
   return RequestService.httpPOSTRequest(`${API.GET_BPM_TASK_FILTERS}/count`, data);
 };
 
-export const fetchBPMTaskDetail = (data) => {
-  return RequestService.httpPOSTRequest(`${API.GET_BPM_TASK_FILTERS}`, data);
-};
+// export const fetchBPMTaskDetail = (data) => {
+//   return RequestService.httpPOSTRequest(`${API.GET_BPM_TASK_FILTERS}`, data);
+// };

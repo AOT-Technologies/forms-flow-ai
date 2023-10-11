@@ -517,3 +517,8 @@ span[dat-title]:hover:after,
   background-color: rgba(0, 0, 0, 0.1);
  z-index: 1500;
 }
+.icon-and-text {
+  display: flex;
+  justify-content: space-between;
+  align-items: center; /* Vertically center the text and icon */
+}

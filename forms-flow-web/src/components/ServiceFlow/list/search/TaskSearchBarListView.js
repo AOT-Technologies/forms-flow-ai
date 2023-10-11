@@ -21,8 +21,8 @@ const TaskSearchBarListView = React.memo(({ toggleAllTaskVariables, allTaskVaria
  
   const [filterParams, setFilterParams] = useState({});
   const taskList = useSelector((state) => state.bpmTasks.tasksList);
-  const selectedFilter = useSelector((state) => state.bpmTasks.selectedFilter);
-  const firstResult = useSelector((state) => state.bpmTasks.firstResult);
+  // const selectedFilter = useSelector((state) => state.bpmTasks.selectedFilter);
+  // const firstResult = useSelector((state) => state.bpmTasks.firstResult);
   const reqData = useSelector((state) => state.bpmTasks.listReqParams);
   const dispatch = useDispatch();
   useEffect(() => {
@@ -50,14 +50,16 @@ const TaskSearchBarListView = React.memo(({ toggleAllTaskVariables, allTaskVaria
           }
         ]
       };
-    dispatch(fetchServiceTaskList(selectedFilter.id, firstResult, reqDataparams));
+      console.log("calling 25");
+    dispatch(fetchServiceTaskList(reqDataparams));
     }
   };
  
   const onClearSearch = () => {
     dispatch(setBPMTaskLoader(true));
     setSearchTaskInput("");
-    dispatch(fetchServiceTaskList(selectedFilter.id, firstResult, reqData));
+    console.log("calling 26");
+    dispatch(fetchServiceTaskList(reqData));
     setShowClearButton(false);
     
   };

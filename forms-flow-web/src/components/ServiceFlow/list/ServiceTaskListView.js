@@ -15,7 +15,7 @@ import TaskSearchBarListView from "./search/TaskSearchBarListView";
 import Pagination from "react-js-pagination";
 import { push } from "connected-react-router";
 import { MAX_RESULTS } from "../constants/taskConstants";
-import { getFirstResultIndex } from "../../../apiManager/services/taskSearchParamsFormatterService";
+// import { getFirstResultIndex } from "../../../apiManager/services/taskSearchParamsFormatterService";
 
 import { MULTITENANCY_ENABLED } from "../../../constants/constants";
 import TaskHeaderListView from "../details/TaskHeaderListView";
@@ -57,7 +57,8 @@ const ServiceTaskListView = React.memo(() => {
   const handleLimitChange = (limit) => {
     setSelectedLimitValue(limit);
     dispatch(setBPMTaskLoader(true));
-    dispatch(fetchServiceTaskList(selectedFilter.id,15,reqData,null,limit));
+    console.log("calling 20");
+    dispatch(fetchServiceTaskList(reqData));
   };
   let numberofSubmissionListFrom =
     activePage === 1 ? 1 : (activePage * selectedLimitValue) - selectedLimitValue + 1;
@@ -69,9 +70,10 @@ const ServiceTaskListView = React.memo(() => {
     if (selectedFilter) {
       dispatch(setBPMTaskLoader(true));
       dispatch(setBPMTaskListActivePage(1));
-      dispatch(fetchServiceTaskList(selectedFilter.id, 0, reqData));
+      console.log("calling 21");
+      dispatch(fetchServiceTaskList(reqData));
     }
-  }, [dispatch, selectedFilter, reqData]);
+  }, [dispatch, reqData]);
 
   const getTaskDetails = (taskId) => {
     if (taskId !== bpmTaskId) {
@@ -85,9 +87,10 @@ const ServiceTaskListView = React.memo(() => {
   const handlePageChange = (pageNumber) => {
     dispatch(setBPMTaskListActivePage(pageNumber));
     dispatch(setBPMTaskLoader(true));
-    let firstResultIndex = getFirstResultIndex(pageNumber);
+    // let firstResultIndex = getFirstResultIndex(pageNumber);
+    console.log("calling 22");
     dispatch(
-      fetchServiceTaskList(selectedFilter.id, firstResultIndex, reqData, null, selectedLimitValue)
+      fetchServiceTaskList(reqData)
     );
     setAllTaskVariablesExpanded(false);
   };

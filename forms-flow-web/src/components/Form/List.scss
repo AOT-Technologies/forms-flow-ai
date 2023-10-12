@@ -130,8 +130,8 @@
     }
 }
 .page-item .page-link {
-    color: #0072ed !important;
+    color: var(--color-primary)!important;
 }
 .page-item.active .page-link {
-    color: #fff !important;
+    color: var(--color-white) !important;
 }

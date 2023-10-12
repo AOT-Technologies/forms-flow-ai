@@ -672,7 +672,7 @@ const List = React.memo((props) => {
                       className="form-control"
                       value={searchTextInput}
                       placeholder={t("Search...")}
-                        title={t("Search forms here")}  
+                      title={t("Search forms here")}  
                     />
                   </div>
                   {showClearButton && (

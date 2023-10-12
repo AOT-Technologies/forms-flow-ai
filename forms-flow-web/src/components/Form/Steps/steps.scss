@@ -2,11 +2,22 @@
 
 .badge-pill {
     cursor: default;
-    border: 1px solid  !important;
+    border: 1px solid !important;
     color: $border-gray;
     background-color: transparent !important;
     height: 32px !important;
     padding: 10px !important;
+}
+
+.text-hover {
+    font-size: 18px;
+    transition: font-size 0.3s ease;
+    margin: 2px;
+    /* Add transition effect */
+}
+
+.text-hover:hover {
+    font-size: 18.14px !important;
 }
 
 .badge-deleteIcon {
@@ -23,10 +34,12 @@
 .badge-deleteIcon:hover {
     background-color: $hover-gray !important;
 }
+
 .poper {
-   max-height: 444px;
+    max-height: 444px;
     overflow-y: auto;
 }
-.workflow-taskVariable{
+
+.workflow-taskVariable {
     border-bottom: 3px solid $blue !important;
 }

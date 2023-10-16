@@ -38,10 +38,6 @@ import TaskHead from "../../containers/TaskHead";
 export default React.memo(() => {
   const dispatch = useDispatch();
   const filterList = useSelector((state) => state.bpmTasks.filterList);
-  // const isFilterLoading = useSelector(
-  //   (state) => state.bpmTasks.isFilterLoading
-  // );
-  // const selectedFilter = useSelector((state) => state.bpmTasks.selectedFilter);
   const selectedFilterId = useSelector(
     (state) => state.bpmTasks.selectedFilter?.id || null
   );
@@ -81,8 +77,6 @@ export default React.memo(() => {
 
   let selectedBPMFilterParams;
 
-
-console.log("selected filter id ",selectedFilterId);
   useEffect(() => {
     selectedFilterIdRef.current = selectedFilterId;
     bpmTaskIdRef.current = bpmTaskId;
@@ -93,7 +87,6 @@ console.log("selected filter id ",selectedFilterId);
   });
 
   useEffect(() => {
-    console.log("inside useeffectt");
     const reqParamData = {
       ...{ sorting: [...sortParams.sorting] },
       ...searchParams,

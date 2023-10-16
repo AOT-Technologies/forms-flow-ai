@@ -4,10 +4,7 @@ import TaskSortSelectedList from "../sort/TaskSortSelectedList";
 import TaskFilterListViewComponent from "./TaskFilterListViewComponent";
 import "./TaskSearchBarListView.scss";
 import { setSelectedTaskVariables } from "../../../../actions/bpmTaskActions";
-import { fetchServiceTaskList } from "../../../../apiManager/services/bpmTaskServices";
-import {
-  setBPMTaskLoader,
-} from "../../../../actions/bpmTaskActions";
+
 const TaskSearchBarListView = React.memo(({ toggleAllTaskVariables, allTaskVariablesExpanded }) => {
   const isTaskListLoading = useSelector(
     (state) => state.bpmTasks.isTaskListLoading
@@ -15,15 +12,8 @@ const TaskSearchBarListView = React.memo(({ toggleAllTaskVariables, allTaskVaria
   const tasksCount = useSelector((state) => state.bpmTasks.tasksCount);
   const [displayFilter, setDisplayFilter] = useState(false);
   const [SortOptions, setSortOptions] = useState(false);
-
-  const [showClearButton, setShowClearButton] = useState(false);
-  const [searchTaskInput, setSearchTaskInput] = useState("");
- 
   const [filterParams, setFilterParams] = useState({});
   const taskList = useSelector((state) => state.bpmTasks.tasksList);
-  // const selectedFilter = useSelector((state) => state.bpmTasks.selectedFilter);
-  // const firstResult = useSelector((state) => state.bpmTasks.firstResult);
-  const reqData = useSelector((state) => state.bpmTasks.listReqParams);
   const dispatch = useDispatch();
   useEffect(() => {
     let taskVaribles = {};
@@ -36,72 +26,9 @@ const TaskSearchBarListView = React.memo(({ toggleAllTaskVariables, allTaskVaria
     dispatch(setSelectedTaskVariables(taskVaribles));
   }, [taskList]);
 
-  
-  const handleSearchTask = () => {
-    if ( searchTaskInput !== "") {
-    dispatch(setBPMTaskLoader(true));
-      const reqDataparams = {
-        ...reqData,
-        processVariables: [
-          {
-            name: "applicationId",
-            operator: "eq",
-            value: searchTaskInput
-          }
-        ]
-      };
-      console.log("calling 25");
-    dispatch(fetchServiceTaskList(reqDataparams));
-    }
-  };
- 
-  const onClearSearch = () => {
-    dispatch(setBPMTaskLoader(true));
-    setSearchTaskInput("");
-    console.log("calling 26");
-    dispatch(fetchServiceTaskList(reqData));
-    setShowClearButton(false);
-    
-  };
-
   return (
     <>
       <div className="d-flex justify-content-end filter-sort-bar mt-1">
-        <div className="searchbar-container mr-auto">
-          <div className="input-group">
-            
-            <input
-              type="search"
-              value={searchTaskInput}
-              onChange={(e) => {
-                setShowClearButton(true);
-                setSearchTaskInput(e.target.value);
-                e.target.value === "" && handleSearchTask();
-              }}
-              className="form-control ml-1"
-              placeholder="Search by id"
-            />
-            {showClearButton && (
-              <button
-                type="button"
-                className="btn btn-outline-primary ml-2"
-                onClick={() => onClearSearch()}
-              >
-                <i className="fa fa-times"></i>
-              </button>
-            )}
-            <button
-              type="button"
-              className='btn btn-outline-primary ml-2'
-              name="search-button"
-              title="Click to search"
-              onClick={() => handleSearchTask()}
-
-            >
-              <i className="fa fa-search" ></i>
-            </button>
-          </div>
-        </div>
         <div className="sort-container task-filter-list-view">
           <button
             type="button"

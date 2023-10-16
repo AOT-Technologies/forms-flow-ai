@@ -39,8 +39,7 @@ const initialState = {
   viewType:true,
   error: '',
   filtersAndCount:[],
-  selectedEdiFilterId:null,
-  openFilterModal:false,
+  vissibleAttributes : {},
 };
 
 const bpmTasks = (state = initialState, action) => {
@@ -52,7 +51,6 @@ const bpmTasks = (state = initialState, action) => {
     case ACTION_CONSTANTS.IS_BPM_TASK_DETAIL_UPDATING:
       return { ...state, isTaskDetailUpdating: action.payload };
     case ACTION_CONSTANTS.BPM_LIST_TASKS:
-      console.log("action payload",action.payload);
       return { ...state, tasksList: action.payload };
     case ACTION_CONSTANTS.BPM_PROCESS_LIST:
       return { ...state, processList: action.payload };
@@ -73,6 +71,7 @@ const bpmTasks = (state = initialState, action) => {
     case ACTION_CONSTANTS.IS_BPM_FILTERS_LOADING:
       return { ...state, isFilterLoading: action.payload };
     case ACTION_CONSTANTS.BPM_SELECTED_FILTER:
+      console.log("action payalod in filter",action.payload);
       return { ...state, selectedFilter: action.payload };
     case ACTION_CONSTANTS.SELECTED_TASK_ID:
       return { ...state, taskId: action.payload, taskDetail: null };
@@ -151,14 +150,11 @@ const bpmTasks = (state = initialState, action) => {
         };
     case ACTION_CONSTANTS.BPM_FILTERS_AND_COUNT:
         return { ...state, filtersAndCount: action.payload };
-    case ACTION_CONSTANTS.SET_FILTER_MODAL_OPEN:
-          return { ...state, openFilterModal: action.payload };
-    case ACTION_CONSTANTS.SELECTED_EDIT_FILTER_ID:
-          return { ...state, selectedEdiFilterId: action.payload };  
+    case ACTION_CONSTANTS.BPM_VISSIBLE_ATTRIBUTES:
+        return { ...state, vissibleAttributes: action.payload };
     default:
       return state;
   }
-  
 };
 
 export default bpmTasks;

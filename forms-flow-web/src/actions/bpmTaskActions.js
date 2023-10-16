@@ -102,6 +102,7 @@ export const setBPMFilterList = (data) => (dispatch) => {
 };
 
 export const setSelectedBPMFilter = (data) => (dispatch) => {
+  console.log("data in actiom filter",data);
   dispatch({
     type: ACTION_CONSTANTS.BPM_SELECTED_FILTER,
     payload: data,
@@ -208,16 +209,9 @@ export const setBPMFiltersAndCount = (data) => (dispatch) => {
   });
 };
 
-export const setSelectEditFilter = (data) => (dispatch) => {
+export const setVissibleAttributes = (data) => (dispatch) => {
   dispatch({
-    type: ACTION_CONSTANTS.SELECTED_EDIT_FILTER_ID, 
-    payload: data,
-  });
-};
-
-export const setOpenFilterModal = (data) => (dispatch) => {
-  dispatch({
-    type: ACTION_CONSTANTS.SET_FILTER_MODAL_OPEN, 
+    type: ACTION_CONSTANTS.BPM_VISSIBLE_ATTRIBUTES, 
     payload: data,
   });
 };

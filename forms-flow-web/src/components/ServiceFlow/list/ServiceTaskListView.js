@@ -40,37 +40,43 @@ const ServiceTaskListView = React.memo(() => {
     MULTITENANCY_ENABLED ? `/tenant/${tenantKey}/` : "/"
   );
   const selectedTaskVariables = useSelector((state) => state.bpmTasks.selectedTaskVariables);
+  const vissibleAttributes = useSelector((state) => state.bpmTasks.vissibleAttributes);
   const taskvariable = useSelector(
-    (state) => state.bpmTasks.selectedFilter?.properties?.variables || []
+    (state) => state.bpmTasks.selectedFilter?.variables || []
   );
   
   const getLabelOfSelectedVariable = (variable) => {
-    if (variable) return taskvariable.find(item => item?.name === variable)?.label;
- 
+    console.log("variables",variable);
+    if (variable){ 
+    console.log("taskvariable.find",taskvariable.find(item => item?.name === variable));
+    return taskvariable.find(item => item?.name === variable)?.label;
+
+    }
   };
+
   const options = [
     { value: '6', label: '6' },
     { value: '12', label: '12' },
     { value: '30', label: '30' },
     { value: tasksCount, label: 'All' }
   ];
+
   const handleLimitChange = (limit) => {
     setSelectedLimitValue(limit);
     dispatch(setBPMTaskLoader(true));
-    console.log("calling 20");
     dispatch(fetchServiceTaskList(reqData));
   };
+
   let numberofSubmissionListFrom =
     activePage === 1 ? 1 : (activePage * selectedLimitValue) - selectedLimitValue + 1;
+
   let numberofSubmissionListTo = activePage === 1 ? selectedLimitValue :
     selectedLimitValue * activePage;
-
 
   useEffect(() => {
     if (selectedFilter) {
       dispatch(setBPMTaskLoader(true));
       dispatch(setBPMTaskListActivePage(1));
-      console.log("calling 21");
       dispatch(fetchServiceTaskList(reqData));
     }
   }, [dispatch, reqData]);
@@ -88,7 +94,6 @@ const ServiceTaskListView = React.memo(() => {
     dispatch(setBPMTaskListActivePage(pageNumber));
     dispatch(setBPMTaskLoader(true));
     // let firstResultIndex = getFirstResultIndex(pageNumber);
-    console.log("calling 22");
     dispatch(
       fetchServiceTaskList(reqData)
     );
@@ -152,13 +157,13 @@ const ServiceTaskListView = React.memo(() => {
               </Row>
               
               <Row className="mt-4 p-2 justify-content-between" style={{ marginBottom: "-2.5rem" }}>
-                <Col  xs={2}>
+               {vissibleAttributes.taskVisibleAttributes.applicationId && <Col  xs={2}>
                   <div className="col-12">
                     <h6 className="font-weight-light">Application Id</h6>
                     <h6>{task?._embedded?.variable?.filter((eachValue) => eachValue.name === "applicationId")[0]?.value}</h6>
                   </div>
-                </Col>
-                <Col xs={2}>
+                </Col>}
+              {vissibleAttributes.taskVisibleAttributes.createdDate &&  <Col xs={2}>
                   <div className="col-12">
                     <h6>Created Date</h6>
                     
@@ -168,11 +173,11 @@ const ServiceTaskListView = React.memo(() => {
                         : task.created.split('T')[0]} 
                     </h6>
                   </div>
-                </Col>
+                </Col>}
                 <Col  xs={6} className="justify-content-between ">
                 <TaskHeaderListView task={task} taskId={task.id} groupView = {false} />
                 </Col>
-                <Col xs={1} >
+              {vissibleAttributes.taskVisibleAttributes.priority &&  <Col xs={1} >
                   <div className="col-12">
                     <h6 className="font-weight-light">Priority</h6>
                   </div>
@@ -191,7 +196,7 @@ const ServiceTaskListView = React.memo(() => {
                       <u className="font-weight-bold text-decoration-none">{task.priority}</u>
                     </h6>
                   </div>
-                </Col>
+                </Col>}
                 {task?._embedded?.variable?.length > 1 ?
                   <Col xs={1}>
                     <div

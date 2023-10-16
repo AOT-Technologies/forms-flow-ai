@@ -1,14 +1,12 @@
 import React, { useState, useEffect, useRef } from "react";
 import { Row, Col } from "react-bootstrap";
 import DatePicker from "react-datepicker";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import "./TaskSearchBarListView.scss";
-// import { fetchServiceTaskList } from "../../../../apiManager/services/bpmTaskServices";
 import {
     setBPMTaskLoader,
 } from "../../../../actions/bpmTaskActions";
 import {
- //fetchServiceTaskList,
   fetchUserListWithSearch,
 } from "../../../../apiManager/services/bpmTaskServices";
 import { UserSearchFilterTypes } from "../../constants/userSearchFilterTypes";
@@ -16,8 +14,7 @@ import { setBPMFilterSearchParams } from "../../../../actions/bpmTaskActions";
 import { getISODateTime } from "../../../../apiManager/services/formatterService";
 const TaskFilterListViewComponent = React.memo(({
     setDisplayFilter, setFilterParams, filterParams }) => {
-    // to update the object according to different filters
-    // const[filterParams,setSetFilterParams] = useState({});
+    const vissibleAttributes = useSelector((state) => state.bpmTasks.vissibleAttributes);
     const [assignee, setAssignee] = useState(filterParams.assignee || "");
     const [candidateGroup, setCandidateGroup] = useState(
         filterParams.candidateGroup || ""
@@ -46,25 +43,7 @@ const TaskFilterListViewComponent = React.memo(({
     const dispatch = useDispatch();
     const [filterCount, setFilterCount] = useState(0);
     const [assigneeOptions, setAssigneeOptions] = useState([]);
-        // const [filterParams, setFilterParams] = useState({});
-    // const [filterSelections, setFilterSelections] = useState(
-    //     filterSearchSelections
-    //   );
-
-    // const firstResult = useSelector((state) => state.bpmTasks.firstResult);
-    // const reqData = useSelector((state) => state.bpmTasks.listReqParams);
-    // const selectedFilter = useSelector(
-    //   (state) => state.bpmTasks.selectedFilter
-    // );
-    // const filterSelections = useSelector(
-    //     (state) => state.bpmTasks.filterSearchSelections
-    // );
-    // const queryType = useSelector((state) => state.bpmTasks.searchQueryType);
-
-    // state for updating the values in inputboxs in the filter search
-    // const filterSearchSelection = useSelector(
-    //   (state) => state.bpmTasks?.filterListSearchParams
-    // );
+      
     const handleClick = (e) => {
       if (createSearchNode?.current?.contains(e.target)) {
         return;
@@ -197,7 +176,7 @@ const TaskFilterListViewComponent = React.memo(({
          <hr className="m-0 w-100"/>
          <div className="m-4 px-2">
             <Row className="mt-2" >
-            <Col>
+           { vissibleAttributes.taskVisibleAttributes?.assignee && <Col>
               <label>Assignee</label>
               <select
                   value={assignee}
@@ -211,8 +190,8 @@ const TaskFilterListViewComponent = React.memo(({
                       </option>
                   ))}
               </select>
-            </Col>
-            <Col>
+            </Col>}
+          {vissibleAttributes.taskVisibleAttributes?.groups &&  <Col>
               <label>Candidate Group</label>
               <input
                 className="form-control"
@@ -220,7 +199,7 @@ const TaskFilterListViewComponent = React.memo(({
                 value={candidateGroup}
                 onChange={(e) => setCandidateGroup(e.target.value)}
               />
-            </Col>
+            </Col>}
           </Row>
           <Row className="mt-2">
             <Col>
@@ -244,7 +223,7 @@ const TaskFilterListViewComponent = React.memo(({
           </Row>
 
           <Row className="mt-2 ">
-            <Col xs={6}>
+           {vissibleAttributes.taskVisibleAttributes?.dueDate && <Col xs={6}>
               <label>Due Date</label>
               <Row>
                 <Col xs={6}>
@@ -278,8 +257,8 @@ const TaskFilterListViewComponent = React.memo(({
                   />
                 </Col>
               </Row>
-            </Col>
-            <Col xs={6}>
+            </Col>}
+          {vissibleAttributes.taskVisibleAttributes?.followUp &&  <Col xs={6}>
               <label>Follow up Date</label>
               <div>
                 <Row>
@@ -312,10 +291,10 @@ const TaskFilterListViewComponent = React.memo(({
                   </Col>
                 </Row>
               </div>
-            </Col>
+            </Col>}
           </Row>
           <Row className="mt-2">
-            <Col xs={6}>
+          {vissibleAttributes.taskVisibleAttributes?.createdDate &&  <Col xs={6}>
               <label> Created Date</label>
               <div>
                 <Row>
@@ -348,7 +327,7 @@ const TaskFilterListViewComponent = React.memo(({
                   </Col>
                 </Row>
               </div>
-            </Col>
+            </Col>}
           </Row>
          </div>
           <hr className="mx-4"/>

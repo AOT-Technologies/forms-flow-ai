@@ -108,7 +108,9 @@ function TaskHead() {
           </h4>
         </div>
         <CreateNewFilterDrawer selectedFilterData = {filterSelectedForEdit} 
-        openFilterDrawer = {openFilterDrawer} setOpenFilterDrawer = {setOpenFilterDrawer}/> 
+        openFilterDrawer = {openFilterDrawer} setOpenFilterDrawer = {setOpenFilterDrawer}
+        setFilterSelectedForEdit={setFilterSelectedForEdit}
+        /> 
         <div style={{ marginLeft: "auto", marginRight: "3rem" }}>
           <button
             type="button"

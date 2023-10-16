@@ -77,6 +77,7 @@ public class TaskFilterRestServiceImpl implements TaskFilterRestService {
         Map<String, Object> dataMap = new HashMap<>();
         TaskQuery query = filterQuery.getCriteria().toQuery(processEngine);
         dataMap.put("name", filterQuery.getName());
+        dataMap.put("id", filterQuery.getId());
         dataMap.put("count", query.count());
         return dataMap;
     }
@@ -90,24 +91,6 @@ public class TaskFilterRestServiceImpl implements TaskFilterRestService {
     protected FilterQuery getQueryFromQueryParameters(MultivaluedMap<String, String> queryParameters) {
         org.camunda.bpm.engine.rest.dto.runtime.FilterQueryDto queryDto = new FilterQueryDto(objectMapper, queryParameters);
         return queryDto.toQuery(processEngine);
-    }
-
-    /**
-     * This method execute the query and returns the count
-     *
-     * @param filterQuery
-     * @return
-     */
-    protected Map<String, Object> executeFilterCount(TaskQueryDto filterQuery) {
-        //  Query<?, ?> query = filterQuery.getCriteria().toQuery(processEngine);
-        objectMapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
-        filterQuery.getCriteria().setObjectMapper(objectMapper);
-        Map<String, Object> dataMap = new HashMap<>();
-        TaskQuery query = filterQuery.getCriteria().toQuery(processEngine);
-        dataMap.put("name", filterQuery.getName());
-        dataMap.put("id", filterQuery.getId());
-        dataMap.put("count", query.count());
-        return dataMap;
     }
 
     private Object executeQueryList(Request request, TaskQueryDto filterQuery, Integer firstResult, Integer maxResults) throws JsonProcessingException {

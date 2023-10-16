@@ -9,6 +9,7 @@ import {
   editFilters,
   fetchBPMTaskCount,
   fetchFilterList,
+  fetchServiceTaskList,
   saveFilters,
 } from "../../../../apiManager/services/bpmTaskServices";
 import {
@@ -21,6 +22,7 @@ import { Translation } from "react-i18next";
 import {
   setBPMFilterLoader,
   setBPMFiltersAndCount,
+  setSelectedBPMFilter,
 } from "../../../../actions/bpmTaskActions";
 
 import TaskAttributeComponent from "./TaskAttributeComponent";
@@ -28,6 +30,7 @@ export default function CreateNewFilterDrawer({
   selectedFilterData,
   openFilterDrawer,
   setOpenFilterDrawer,
+  setFilterSelectedForEdit,
 }) {
   const dispatch = useDispatch();
   const userRole = useSelector((state) => state.user.roles);
@@ -42,37 +45,44 @@ export default function CreateNewFilterDrawer({
   const [identifierId, setIdentifierId] = useState("");
   const [selectUserGroupIcon, setSelectUserGroupIcon] = useState("");
   const [specificUserGroup, setSpecificUserGroup] = useState("");
+  const bpmFiltersList = useSelector((state) => state.bpmTasks.filterList);
   const userName = useSelector(
     (state) => state.user?.userDetail?.preferred_username
   );
+  const filterListAndCount = useSelector(
+    (state) => state.bpmTasks.filtersAndCount
+  );
+  const selectedFilter = useSelector((state) => state.bpmTasks.selectedFilter);
   const [variables, setVariables] = useState([]);
   const [inputValues, setInputValues] = useState([{ name: "", label: "" }]);
   const { t } = useTranslation();
   const [modalShow, setModalShow] = useState(false);
   const [checkboxes, setCheckboxes] = useState({
-    applicationId: false,
-    assignee: false,
-    taskTitle: false,
-    createdDate: false,
-    dueDate: false,
-    followUp: false,
-    priority: false,
-    groups: false,
+    applicationId: true,
+    assignee: true,
+    taskTitle: true,
+    createdDate: true,
+    dueDate: true,
+    followUp: true,
+    priority: true,
+    groups: true,
   });
-
+  const selectedBPMFilterParams = bpmFiltersList.find(
+    (item) => item.id === selectedFilterData?.id
+  );
+  console.log("selectedBpmfilter",selectedBPMFilterParams);
   const taskAttributesCount = Object.values(checkboxes).filter(
     (value) => value === true
   ).length;
-
   const customTrim = (inputString) => {
     // Remove '%' symbol from the start
-    const startIndex = inputString?.indexOf('%');
+    const startIndex = inputString?.indexOf("%");
     if (startIndex === 0) {
       inputString = inputString?.substring(1);
     }
-  
+
     // Remove '%' symbol from the end
-    const endIndex = inputString?.lastIndexOf('%');
+    const endIndex = inputString?.lastIndexOf("%");
     if (endIndex === inputString?.length - 1) {
       inputString = inputString?.substring(0, endIndex);
     }
@@ -82,7 +92,8 @@ export default function CreateNewFilterDrawer({
   useEffect(() => {
     if (selectedFilterData) {
       setFilterName(selectedFilterData?.name);
-      let processDefinitionName = selectedFilterData?.criteria?.processDefinitionNameLike;
+      let processDefinitionName =
+        selectedFilterData?.criteria?.processDefinitionNameLike;
       setDefinitionKeyId(customTrim(processDefinitionName));
       setCandidateGroup(selectedFilterData?.criteria?.candidateGroup);
       setAssignee(selectedFilterData?.criteria?.assignee);
@@ -93,10 +104,14 @@ export default function CreateNewFilterDrawer({
         selectedFilterData?.properties?.showUndefinedVariable
       );
       setInputValues(() => {
-        return selectedFilterData.variables?.map((row) => ({
-          name: row.name,
-          label: row.label,
-        }));
+        if (!selectedFilterData.variables) {
+          return [{ name: "", label: "" }];
+        } else {
+          return selectedFilterData.variables?.map((row) => ({
+            name: row.name,
+            label: row.label,
+          }));
+        }
       });
       if (!selectedFilterData?.users && !selectedFilterData?.roles) {
         setPermissions(ACCESSIBLE_FOR_ALL_GROUPS);
@@ -104,10 +119,11 @@ export default function CreateNewFilterDrawer({
       const isUserInRoles = userRole.some((user) =>
         selectedFilterData?.users?.includes(user)
       );
+      console.log("user in roles", isUserInRoles);
       if (isUserInRoles) {
         setPermissions(PRIVATE_ONLY_YOU);
       }
-      if (selectedFilterData?.users) {
+      if (selectedFilterData?.users && !isUserInRoles) {
         setPermissions(SPECIFIC_USER_OR_GROUP);
         setSelectUserGroupIcon("user");
         setIdentifierId(selectedFilterData?.users[0]);
@@ -149,13 +165,14 @@ export default function CreateNewFilterDrawer({
     });
   }, [inputValues]);
 
-  const successCallBack = ()=>{
+  const successCallBack = (resData) => {
     dispatch(
       fetchFilterList((err, data) => {
         if (data) {
           fetchBPMTaskCount(data)
             .then((res) => {
               dispatch(setBPMFiltersAndCount(res.data));
+              console.log("ivde 111");
             })
             .catch((err) => {
               if (err) {
@@ -163,12 +180,23 @@ export default function CreateNewFilterDrawer({
               }
             })
             .finally(() => {
+              if (selectedFilterData) {
+                console.log("ivde keruva");
+                const filterSelected = filterListAndCount?.find(
+                  (filter) => filter.id === selectedFilterData?.id
+                );
+                if (selectedFilterData?.id === selectedFilter?.id) {
+                  dispatch(fetchServiceTaskList(resData));
+                } else {
+                  dispatch(setSelectedBPMFilter(filterSelected));
+                }
+              }
               dispatch(setBPMFilterLoader(false));
             });
         }
       })
     );
-    toggleDrawer(false);
+    toggleDrawer();
     clearAllFilters();
   };
 
@@ -185,6 +213,11 @@ export default function CreateNewFilterDrawer({
       } else if (obj[key] === "" || obj[key] === undefined) {
         delete obj[key];
       }
+    }
+
+    // Check for the exceptional case for the 'variables' key
+    if (obj.variables === undefined) {
+      obj.variables = []; // Set it as an empty array
     }
   }
 
@@ -243,11 +276,9 @@ export default function CreateNewFilterDrawer({
     const submitFunction = selectedFilterData
       ? editFilters(data, selectedFilterData?.id)
       : saveFilters(data);
-    submitFunction
-      .then(successCallBack)
-      .catch((error) => {
-        console.error("error", error);
-      });
+    submitFunction.then(() => successCallBack(data)).catch((error) => {
+      console.error("error", error);
+    });
   };
 
   const handleFilterDelete = () => {
@@ -314,6 +345,7 @@ export default function CreateNewFilterDrawer({
 
   const toggleDrawer = () => {
     setOpenFilterDrawer(!openFilterDrawer);
+    !openFilterDrawer ? setFilterSelectedForEdit(false) : null;
   };
 
   const toggleModal = () => {
@@ -624,15 +656,17 @@ export default function CreateNewFilterDrawer({
 
       <List>
         <div className="newFilterTaskContainer-footer d-flex align-items-center justify-content-between">
-          { selectedFilterData && <button
-            className="btn btn-link text-danger cursor-pointer"
-            onClick={() => {
-              toggleDrawer();
-              handleFilterDelete();
-            }}
-          >
-            <Translation>{(t) => t("Delete Filter")}</Translation>
-          </button>}
+          {selectedFilterData && (
+            <button
+              className="btn btn-link text-danger cursor-pointer"
+              onClick={() => {
+                toggleDrawer();
+                handleFilterDelete();
+              }}
+            >
+              <Translation>{(t) => t("Delete Filter")}</Translation>
+            </button>
+          )}
           <div className="d-flex align-items-center">
             <button
               className="btn btn-outline-secondary mr-3"
@@ -664,6 +698,7 @@ export default function CreateNewFilterDrawer({
         <Button
           onClick={() => {
             toggleDrawer();
+            clearAllFilters();
           }}
           style={{
             fontSize: "15px",

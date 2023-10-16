@@ -35,6 +35,7 @@ const TaskHeaderListView = React.memo(({task,taskId,groupView = true}) => {
   const taskGroups = useSelector((state) => state.bpmTasks.taskGroups);
   const selectedFilter = useSelector((state) => state.bpmTasks.selectedFilter);
   const reqData = useSelector((state) => state.bpmTasks.listReqParams);
+  const vissibleAttributes = useSelector((state) => state.bpmTasks.vissibleAttributes);
   // const firstResult = useSelector((state) => state.bpmTasks.firstResult);
   const [followUpDate, setFollowUpDate] = useState(null);
   const [dueDate, setDueDate] = useState(null);
@@ -226,7 +227,7 @@ const TaskHeaderListView = React.memo(({task,taskId,groupView = true}) => {
       />
 
       <Row>
-        <Col xs={3} className="px-0">
+      {vissibleAttributes.taskVisibleAttributes.dueDate &&  <Col xs={3} className="px-0">
           <div className="tab-width">
             <div>
               <h6 className="font-weight-light">Follow-up Date</h6>
@@ -260,7 +261,7 @@ const TaskHeaderListView = React.memo(({task,taskId,groupView = true}) => {
               />
             </div>
           </div>
-        </Col>
+        </Col>}
         <Col xs={3}>
           <div className="tab-width">
             <div>
@@ -295,7 +296,7 @@ const TaskHeaderListView = React.memo(({task,taskId,groupView = true}) => {
             </div>
           </div>
         </Col>
-        <Col xs={3}>
+      {vissibleAttributes.taskVisibleAttributes.assignee &&  <Col xs={3}>
           <div className="tab-width">
             <div>
               <h6 className="font-weight-light">Assignee</h6>
@@ -343,7 +344,7 @@ const TaskHeaderListView = React.memo(({task,taskId,groupView = true}) => {
               )}
             </div>
           </div>
-        </Col>
+        </Col>}
         <Col xs={3}> 
           {groupView &&
             <div className="tab-width">

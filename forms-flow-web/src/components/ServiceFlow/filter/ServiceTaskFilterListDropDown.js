@@ -2,9 +2,6 @@ import React /*{useEffect}*/ from "react";
 import { NavDropdown } from "react-bootstrap";
 import { useDispatch, useSelector } from "react-redux";
 import {
-  setOpenFilterModal,
-  setSelectEditFilter,
-  // setBPMTaskList,
   setSelectedBPMFilter,
   setSelectedTaskID,
 } from "../../../actions/bpmTaskActions";
@@ -41,8 +38,6 @@ const ServiceFlowFilterListDropDown = React.memo(({selectFilter,openFilterDrawer
   };
 
   const handleFilterEdit = (id) => {
-    dispatch(setSelectEditFilter(id));
-    dispatch(setOpenFilterModal(true));
     selectFilter(filterList.find((item) => item.id === id));
   };
 

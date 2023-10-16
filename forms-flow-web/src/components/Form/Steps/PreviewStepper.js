@@ -305,6 +305,7 @@ const Preview = React.memo(
                             }
                             name="Check box to associate form with a workflow"
                             color="primary"
+                            id="form-publish"
                           />
                         </div>
                       </Form.Group>
@@ -594,7 +595,7 @@ const Preview = React.memo(
 
                   <hr />
 
-                  <label className="text-label">{t("Comments")}</label>
+                  <label htmlFor="comments" className="text-label">{t("Comments")}</label>
                   <textarea
                     label={t("Comments")}
                     id="comments"

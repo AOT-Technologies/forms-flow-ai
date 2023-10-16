@@ -608,9 +608,9 @@ const List = React.memo((props) => {
             {/*<img src="/form.svg" width="30" height="30" alt="form" />*/}
             <div className="flex-item-left">
               <div style={{ display: "flex" }}>
-                <h3 className="task-head" style={{ marginTop: "3px" }}>
+                <span className="task-head" style={{ marginTop: "3px" }}>
                   <i className="fa fa-wpforms" aria-hidden="true" />
-                </h3>
+                </span>
                 <h3 className="task-head">
                   {" "}
                   <span className="forms-text" style={{ marginLeft: "1px" }}>
@@ -672,6 +672,7 @@ const List = React.memo((props) => {
                       className="form-control"
                       value={searchTextInput}
                       placeholder={t("Search...")}
+                      title={t("Search forms here")}  
                     />
                   </div>
                   {showClearButton && (
@@ -747,6 +748,7 @@ const List = React.memo((props) => {
                         fileUploaded(e);
                       }}
                       ref={uploadFormNode}
+                      title={t("Upload json form only")}
                     />
                   </>
                 )}
@@ -756,6 +758,7 @@ const List = React.memo((props) => {
                       className="btn btn-primary pull-right btn-left "
                       onClick={downloadForms}
                       disabled={formCheckList.length === 0}
+                      title={t("Download form")}
                     >
                       <i className="fa fa-download fa-lg" aria-hidden="true" />{" "}
                       {formCheckList.length !== 0 && t("Download Form")}{" "}

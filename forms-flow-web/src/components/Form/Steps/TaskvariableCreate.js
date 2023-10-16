@@ -40,7 +40,7 @@ const TaskvariableCreate = ({ options, addTaskVariable }) => {
     <>
       <Row className="my-4">
         <Col xs={12} md={3}>
-          <label>{t("Form field")}</label>
+          <label htmlFor="selectTaskVariable">{t("Form field")}</label>
           <Select
             searchable
             options={options}
@@ -49,6 +49,7 @@ const TaskvariableCreate = ({ options, addTaskVariable }) => {
             }}
             formatOptionLabel={fomatOptionLabel}
             placeholder={t("Select form field")}
+            inputId="selectTaskVariable"
           />
         </Col>
         <Col xs={12} md={2}>

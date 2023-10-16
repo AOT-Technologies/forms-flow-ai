@@ -171,9 +171,9 @@ export default React.memo(() => {
       <div className="flex-container">
         <div className="flex-item-left">
           <div style={{ display: "flex" }}>
-            <h3 className="task-head" style={{ marginTop: "3px" }}>
+            <span className="task-head" style={{ marginTop: "3px" }}>
               <i className="fa fa-cogs" aria-hidden="true" />
-            </h3>
+            </span>
             <h3 className="task-head">
               {" "}
               <span className="forms-text" style={{ marginLeft: "1px" }}>
@@ -198,9 +198,9 @@ export default React.memo(() => {
             <Card.Body>
               <Row>
                 <Col xs={12} sm={6} className="card-layout ">
-                  <span className="fontsize-16">
+                  <label htmlFor="selectWorkflow" className="fontsize-16">
                     {t("Please select an existing workflow.")}
-                  </span>
+                  </label>
                   <div className="select-style">
                     <Select
                       placeholder={t("Select...")}
@@ -210,6 +210,7 @@ export default React.memo(() => {
                         processList.length && workflow?.value ? workflow : ""
                       }
                       styles={customDropdownStyles}
+                      inputId="selectWorkflow"
                     />
                   </div>
                   <div className="mt-2 toggle-bpm">

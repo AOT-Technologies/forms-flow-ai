@@ -22,7 +22,7 @@ const SavingLoading = ({ saved, text }) => {
       ) : (
         <i className="fa fa-spinner loading-animation" aria-hidden="true"></i>
       )}
-      <span className="px-2 text-success">{text}</span>
+      <span className="px-2 text-success" >{text}</span>
     </div>
   );
 };

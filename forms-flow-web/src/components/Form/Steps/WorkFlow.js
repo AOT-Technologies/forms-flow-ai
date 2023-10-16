@@ -195,9 +195,9 @@ const WorkFlow = React.memo(
         {tabValue === 0 ? (
           <Card className="border-1">
             <Card.Body>
-              <div className="fontsize-16  col-md-6">
+              <label htmlFor="select-workflow" className="fontsize-16  col-md-6">
                 {t("Please select from one of the following workflows.")}
-              </div>
+              </label>
               <Select
                 className="mb-3 col-md-6"
                 options={processList}
@@ -212,6 +212,7 @@ const WorkFlow = React.memo(
                   handleListChange(selectedOption)
                 }
                 isDisabled={disableWorkflowAssociation}
+                inputId="select-workflow"
               />
               {processList.length && workflow?.value ? (
                 <div className="mt-3">

@@ -129,3 +129,9 @@
         justify-content: flex-start;
     }
 }
+.page-item .page-link {
+    color: var(--color-primary)!important;
+}
+.page-item.active .page-link {
+    color: var(--color-white) !important;
+}

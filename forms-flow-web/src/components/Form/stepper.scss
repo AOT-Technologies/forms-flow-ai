@@ -162,18 +162,6 @@
   padding-right: var(--spacing);
   transition: color 0.2s ease-in-out, font-weight 0.2s ease-in-out;
 }
-.c-stepper__item:hover {
-  .c-stepper__label{
-    color:blue;
-    font-weight: bold;
-  }
-  .c-stepper__circle {
-    color: $white;
-    background-color: $blue;
-    cursor: pointer;
-  }
-
-}
 
 .c-stepper__label.active {
   color: $active-stepper;;

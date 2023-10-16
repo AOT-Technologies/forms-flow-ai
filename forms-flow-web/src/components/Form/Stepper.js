@@ -376,7 +376,7 @@ class StepperPage extends PureComponent {
                 <div className="wrapper option-1 option-1-1 stepper-bottom">
                   <ol className="c-stepper">
                     {steps.map((label, index) => (
-                      <li onClick={() => this.setActiveStep(index)} key={index} className={`c-stepper__item ${this.state.activeStep > index ? 'active' : ''}`}>
+                      <li key={index} className={`c-stepper__item ${this.state.activeStep > index ? 'active' : ''}`}>
                         <span className={`c-stepper__circle ${this.state.activeStep >= index ? 'active' : ''}`}>{index + 1}</span>
                         <span className={`c-stepper__label ${this.state.activeStep >= index ? 'active' : ''}`}>{label}</span>
                       </li>

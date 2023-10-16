@@ -36,21 +36,7 @@ $danger: $red;
 $light: $gray-100;
 $dark: $gray-800;
 
-.container,
-.container-sm,
-.container-md,
-.container-lg,
-.container-xl {
-  max-width: 100vw;
-}
-
-.container {
-  margin-top: 3px;
-  padding-left: 0;
-  padding-right: 0;
-  //height: 100vh;
-  height: 100%;
-}
+ 
 
 .overflow-x-auto {
   overflow-x: auto;
@@ -66,9 +52,7 @@ $dark: $gray-800;
   color: $primary;
 }
 
-.footer-text {
-  font-size: 18px;
-}
+ 
 
 .btn-primary {
   background-color: $primary;
@@ -96,14 +80,7 @@ h4 {
   font-size: 1.2rem;
 }
 
-#main {
-  /* margin-top: 2px;*/
-  min-height: 85vh;
-  //max-height: 85vh;
-  padding-bottom: 1.5rem;
-  overflow-y: auto;
-  overflow-x: hidden;
-}
+ 
 
 body {
   font-size: 16px;
@@ -584,12 +561,7 @@ select option:hover {
   margin: 8.75rem auto !important;
 }
 
-#main {
-  background-color: #fff;
-  padding: 10px;
-  box-shadow: 0 3px 3px -2px rgba(0, 0, 0, 0.2),
-    0px 3px 4px 0px rgba(0, 0, 0, 0.14), 0px 1px 8px 0px rgba(0, 0, 0, 0.12);
-}
+ 
 
 #sidebar {
   background: #fff;

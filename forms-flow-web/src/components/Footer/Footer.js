@@ -5,20 +5,17 @@ import { Translation } from "react-i18next";
 
 const version_org = version;
 const Footer = React.memo(() => {
-  //const today = new Date();
   return (
-    <div className="row footer">
-      <div className="col-12 text-center text-align footer-text" role="main">
-        <Translation>{(t) => t("Powered by ")}</Translation>
-        <a
-          href="https://formsflow.ai"
-          target="_blank"
-          style={{ color: "#0000FF" }}
-          rel="noreferrer"
-        >
-           formsflow.ai 
-        </a>
-        {` v${version_org}`} {/*{today.getFullYear()}*/}
+    <div>
+      <hr />
+      <div className="d-flex justify-content-end pb-2">
+        <div className="font-weight-bold">
+          <Translation>{(t) => t("Powered by ")}</Translation>{" "}
+          <a className="text-link" href="https://formsflow.ai/">
+            formflow.ai
+          </a>
+          {` v${version_org}`}
+        </div>
       </div>
     </div>
   );

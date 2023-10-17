@@ -2,47 +2,27 @@
 import gzip
 import os
 import shutil
-from datetime import datetime, timedelta
-from logging.handlers import TimedRotatingFileHandler
 
 
-class CustomTimedRotatingFileHandler(TimedRotatingFileHandler):
-    """Custom Handler for logging to a file."""
+def namer(name):
+    """Custom log file namer that appends ".gz" to the file name."""
+    return name + ".gz"
 
-    def __init__(  # pylint: disable=too-many-arguments
-        self,
-        filename,
-        when="D",
-        interval=1,
-        backup_count=0,
-        encoding=None,
-        delay=False,
-        utc=False,
-    ):
-        """Initializes the handler."""
-        super().__init__(filename, when, interval, backup_count, encoding, delay, utc)
 
-    def doRollover(self):
-        """Do a rollover. Compress the previous day's log file and move it to an archive folder."""
-        super().doRollover()
+def rotator(source, dest):
+    """
+    Custom log file rotator that compresses the log file and moves it to the archive folder.
 
-        log_dir = os.path.dirname(self.baseFilename)
-        base_name = os.path.splitext(os.path.basename(self.baseFilename))[0]
-        prev_day = datetime.now().strftime("%Y-%m-%d")
-        # prev_day = (datetime.now() - timedelta(days=1)).strftime('%Y-%m-%d')
-        prev_day_log = f"{base_name}.log.{prev_day}"
+    Args:
+        source (str): The path to the source log file.
+        dest (str): The path to the destination log file (within the archive folder).
+    """
+    archive_folder = os.path.join(os.path.dirname(dest), "archive")
+    if not os.path.exists(archive_folder):
+        os.makedirs(archive_folder)
+    dest_in_archive = os.path.join(archive_folder, os.path.basename(dest))
 
-        prev_day_log_path = os.path.join(log_dir, prev_day_log)
-        archive_dir = os.path.join(log_dir, "archive")
-
-        if os.path.exists(prev_day_log_path):
-            # Create the archive folder if it doesn't exist
-            if not os.path.exists(archive_dir):
-                os.makedirs(archive_dir)
-
-            # Zip and move the log file to the archive folder
-            archive_log_path = os.path.join(archive_dir, prev_day_log + ".gz")
-            with open(prev_day_log_path, "rb") as log_file:
-                with gzip.open(archive_log_path, "wb") as archive_file:
-                    shutil.copyfileobj(log_file, archive_file)
-            os.remove(prev_day_log_path)
+    with open(source, "rb") as f_in:
+        with gzip.open(dest_in_archive, "wb") as f_out:
+            shutil.copyfileobj(f_in, f_out)
+    os.remove(source)

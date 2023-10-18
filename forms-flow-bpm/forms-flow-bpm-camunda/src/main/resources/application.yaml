@@ -41,7 +41,7 @@ formsflow.ai:
 camunda.bpm:
   job-execution:
     enabled: true
-  history-level: ${CAMUNDA_BPM_HISTORY_LEVEL:audit}
+  history-level: ${CAMUNDA_BPM_HISTORY_LEVEL:none}
   authorization:
     enabled: ${CAMUNDA_AUTHORIZATION_FLAG:true}
     authorization-check-revokes: ${CAMUNDA_AUTHORIZATION_REVOKE_CHECK_FLAG:auto}

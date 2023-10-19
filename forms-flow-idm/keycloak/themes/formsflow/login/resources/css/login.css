@@ -221,9 +221,13 @@ img {
 }
 
 #kc-form-options span {
-   display: block;
-   text-align: right;
+   margin-top: 20px;
+   display: flex;
+   float: right;
+   width: 50%;
+   flex-direction: row-reverse;
 }
+
 
 
 #kc-form-options .checkbox {

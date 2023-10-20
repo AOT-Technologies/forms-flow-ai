@@ -22,11 +22,11 @@ const Confirm = React.memo((props) => {
         </Modal.Header>
         <Modal.Body>{message}</Modal.Body>
         <Modal.Footer>
-          <Button
+          <button
             type="button"
             className="btn btn-link text-dark"
             onClick={onNo}>
-            {noText}</Button>
+            {noText}</button>
 
           <Button className="btn btn-default" onClick={onYes}>
             {yesText}

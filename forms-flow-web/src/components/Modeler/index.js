@@ -214,7 +214,7 @@ export default React.memo(() => {
                     />
                   </div>
                   <div className="mt-2 toggle-bpm">
-                    <label className="switch">
+                    <label className="switch" aria-label="Toggle BPMN/DMN">
                       <input
                         type="checkbox"
                         checked={isBpmnModel}
@@ -256,7 +256,7 @@ export default React.memo(() => {
                       />
                       <label htmlFor="inputWorkflow">{t("Choose File")}</label>
                     </div>
-                    <label htmlFor="inputWorkflow" style={{ padding: "4px" }}>
+                    <label style={{ padding: "4px" }}>
                       {fileName ? fileName : t("No file chosen")}
                     </label>
                   </div>

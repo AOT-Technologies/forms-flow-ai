@@ -259,7 +259,7 @@
     font-size: 12px;
     padding: 0 2px;
     border: 1px solid #a79f9f;
-    width: 18px;
+    width: 28px;
     border-radius: 0px;
   }
   input {
@@ -426,7 +426,7 @@ span[dat-title]:hover:after,
       padding: 0 4px;
     }
     .active {
-      background-color: #2185d0;
+      background-color: #167ac5;
       a {
         color: white;
       }
@@ -435,7 +435,7 @@ span[dat-title]:hover:after,
       cursor: not-allowed;
       a {
         cursor: not-allowed;
-        color: #d4d4d5;
+        color: #767677;
       }
     }
   }

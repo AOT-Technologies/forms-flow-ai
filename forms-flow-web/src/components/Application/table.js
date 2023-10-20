@@ -142,6 +142,7 @@ export const columns = (
           idFilter = filter;
         },
       }),
+      headerAttrs: { id: "th-application-id" }
     },
     {
       dataField: "applicationName",
@@ -159,6 +160,7 @@ export const columns = (
           nameFilter = filter;
         },
       }),
+      headerAttrs: { id: "th-application-name" }
     },
     {
       dataField: "applicationStatus",
@@ -176,11 +178,14 @@ export const columns = (
             statusFilter = filter;
           },
         }),
+      headerAttrs: { id: "th-application-status" }
     },
     {
       dataField: "formUrl",
       text: <Translation>{(t) => t("Link To Form Submission")}</Translation>,
       formatter: (cell, row) => linkSubmission(cell, row, redirectUrl),
+      headerClasses: "classLinkToApplication",  
+      headerAttrs: { id: "th-Link-to-application" }
     },
 
     {
@@ -188,6 +193,7 @@ export const columns = (
       text: <Translation>{(t) => t("Last Modified")}</Translation>,
       formatter: timeFormatter,
       sort: true,
+      headerAttrs: { id: "th-modified" },
       filter: customFilter({
         type: FILTER_TYPES.DATE,
       }),
@@ -208,6 +214,10 @@ export const columns = (
             calendarAriaLabel={t("Select the date")}
             dayAriaLabel="Select the day"
             clearAriaLabel="Click to clear"
+            name="selectDateRange"
+            monthAriaLabel="Select the month"
+            yearAriaLabel="Select the year"
+            nativeInputAriaLabel="Date"
           />
         );
       },
@@ -216,7 +226,7 @@ export const columns = (
 };
 
 const customTotal = (from, to, size) => (
-  <span className="react-bootstrap-table-pagination-total">
+  <span className="react-bootstrap-table-pagination-total ml-2">
     <Translation>{(t) => t("Showing")}</Translation> {from}{" "}
     <Translation>{(t) => t("to")}</Translation> {to}{" "}
     <Translation>{(t) => t("of")}</Translation> {size}{" "}

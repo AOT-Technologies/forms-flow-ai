@@ -142,6 +142,10 @@ export const columns = (
             calendarAriaLabel={t("Select the date")}
             dayAriaLabel="Select the day"
             clearAriaLabel="Click to clear"
+            name="selectDateRange"
+            monthAriaLabel="Select the month"
+            yearAriaLabel="Select the year"
+            nativeInputAriaLabel="Date"
           />
         );
       },

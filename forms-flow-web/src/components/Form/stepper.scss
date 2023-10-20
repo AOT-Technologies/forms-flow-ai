@@ -1,86 +1,169 @@
+@import "../../assets/styles/themes.scss";
+
 .paper-root {
   padding: 10px 30px;
   min-height: calc(100vh - 200px);
 }
+
 .save-buttons {
   justify-content: flex-end;
   align-items: flex-end;
   display: flex;
 }
+
 .next-btn {
   justify-content: flex-end;
   display: flex;
 }
+
 .text-field,
 .text-label {
   width: 100%;
   margin: 10px 0;
   font-weight: bold;
 }
+
 .card-overflow {
   overflow: visible !important;
 }
-.MuiStepLabel-label.MuiStepLabel-alternativeLabel{
+
+.MuiStepLabel-label.MuiStepLabel-alternativeLabel {
   font-size: 16px;
 }
-.fontsize-16{
+
+.fontsize-16 {
   font-size: 18px;
 }
 
 
-.form-history-container{
+.form-history-container {
   max-height: 380px;
   overflow-y: auto;
-  margin:auto;
-  display:block;
+  margin: auto;
+  display: block;
   padding: 20px;
-  position:relative;
-}
- 
-.form-history-container  li{
-    padding-bottom:  10px ;
-    list-style: none;
-    margin:auto;
-    border-left:1px solid #c4c4c4;
-    position:relative;
+  position: relative;
 }
 
- 
+.form-history-container li {
+  padding-bottom: 10px;
+  list-style: none;
+  margin: auto;
+  border-left: 1px solid #c4c4c4;
+  position: relative;
+}
 
-.form-history-container .history-details{
-  padding:15px;
+
+
+.form-history-container .history-details {
+  padding: 15px;
   margin-left: 2rem;
   border: 1px solid #c4c4c4;
   border-radius: 4px;
 }
 
-.form-history-container .history-details.active{
+.form-history-container .history-details.active {
   border: 1px solid #1cbe2c;
 }
-.form-history-container  li:last-child{ border-left:0;}
- 
-.form-history-container  li::before{
-    position: absolute;
-    left: -10px;
-    top: 0;
-    content: " ";
-    border-radius: 500%;
-    background: #c4c4c4;
-    height: 20px;
-    width: 20px;
-    transition: all 500ms ease-in-out;
+
+.form-history-container li:last-child {
+  border-left: 0;
+}
+
+.form-history-container li::before {
+  position: absolute;
+  left: -10px;
+  top: 0;
+  content: " ";
+  border-radius: 500%;
+  background: #c4c4c4;
+  height: 20px;
+  width: 20px;
+  transition: all 500ms ease-in-out;
 
 }
-.form-history-container  li:first-child:before{
-    background-color:  #25c735;
-    content: '\2714 \fe0e';
-    color: #ffffff;
-    text-align: center;
-    transition: all 1000ms ease-in-out;
-    font-size: 12px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
+
+.form-history-container li:first-child:before {
+  background-color: #25c735;
+  content: '\2714 \fe0e';
+  color: #ffffff;
+  text-align: center;
+  transition: all 1000ms ease-in-out;
+  font-size: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
- 
- 
+
+.c-stepper {
+  display: flex;
+}
+
+.stepper-bottom {
+  border-bottom: solid 1px $border-line;
+  margin-bottom: 30px;
+  padding-bottom: 10px;
+}
+
+.c-stepper__item {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  align-items: center;
+  text-align: center;
+  cursor: pointer;
+
+  &:not(:last-child) {
+    &:after {
+      content: "";
+      position: relative;
+      top: calc(clamp(1.5rem, 23px, 2rem) / 2);
+      width: calc(100% + 2.94vw - 5vw);
+      left: calc(50% + 0px);
+      height: 1px;
+      background-color: $border-line;
+      order: -10;
+      transition: background-color .7s ease-in-out;
+    }
+  }
+
+  &.active {
+    &:after {
+      background-color: $stepper-line-active;
+      transition: background-color .7s ease-in-out;
+    }
+  }
+
+}
+
+.c-stepper__circle.active {
+  background-color: $active-stepper;;
+  color: $white;
+}
+
+.c-stepper__circle {
+  color: $white;
+  padding: 4px;
+  width: 22px;
+  height: 22px;
+  font-size: 10px;
+  border-radius: 50%;
+  background-color: $inactive-stepper;
+  margin-bottom: 0.5rem;
+  z-index: 5;
+  transition: color 1s ease-in-out, background-color 0.6s ease-in-out;
+}
+
+.c-stepper__label {
+
+  color: $inactive-stepper;
+  font-size: 16px;
+  padding-left: var(--spacing);
+  padding-right: var(--spacing);
+  transition: color 0.2s ease-in-out, font-weight 0.2s ease-in-out;
+}
+
+.c-stepper__label.active {
+  color: $active-stepper;;
+  font-weight: bold;
+}

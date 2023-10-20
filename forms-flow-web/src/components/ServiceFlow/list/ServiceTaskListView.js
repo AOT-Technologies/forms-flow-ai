@@ -46,11 +46,8 @@ const ServiceTaskListView = React.memo(() => {
   );
   
   const getLabelOfSelectedVariable = (variable) => {
-    console.log("variables",variable);
     if (variable){ 
-    console.log("taskvariable.find",taskvariable.find(item => item?.name === variable));
     return taskvariable.find(item => item?.name === variable)?.label;
-
     }
   };
 

@@ -13,7 +13,6 @@ import "./../ServiceFlow.scss";
 import AddGroupModal from "./AddGroupModal";
 import {
   claimBPMTask,
-  // fetchFilterList,
   fetchServiceTaskList,
   getBPMTaskDetail,
   unClaimBPMTask,
@@ -21,7 +20,6 @@ import {
   updateBPMTask,
 } from "../../../apiManager/services/bpmTaskServices";
 import { setBPMTaskDetailUpdating } from "../../../actions/bpmTaskActions";
-//import UserSelection from "./UserSelection";
 import UserSelectionDebounce from "./UserSelectionDebounce";
 import SocketIOService from "../../../services/SocketIOService";
 import { useTranslation } from "react-i18next";
@@ -62,7 +60,6 @@ const TaskHeader = React.memo(() => {
           if (!SocketIOService.isConnected()) {
             if (selectedFilter) {
               dispatch(getBPMTaskDetail(taskId));
-              console.log("calling 6");
               dispatch(
                 fetchServiceTaskList(reqData)
               );
@@ -71,7 +68,6 @@ const TaskHeader = React.memo(() => {
             }
           }
           if(selectedFilter){
-            console.log("calling 7");
             dispatch(
               fetchServiceTaskList(reqData)
             );
@@ -97,7 +93,6 @@ const TaskHeader = React.memo(() => {
               }
             }
             if(selectedFilter){
-              console.log("calling 8");
               dispatch(
                 fetchServiceTaskList(reqData)
               );
@@ -123,7 +118,6 @@ const TaskHeader = React.memo(() => {
             }
           }
           if(selectedFilter){
-            console.log("calling 9");
             dispatch(
               fetchServiceTaskList(reqData)
             );
@@ -149,7 +143,6 @@ const TaskHeader = React.memo(() => {
         if (!err) {
           if (!SocketIOService.isConnected()) {
             dispatch(getBPMTaskDetail(taskId));
-            console.log("calling 10");
             dispatch(
               fetchServiceTaskList(reqData)
             );
@@ -174,7 +167,6 @@ const TaskHeader = React.memo(() => {
         if (!err) {
           if (!SocketIOService.isConnected()) {
             dispatch(getBPMTaskDetail(taskId));
-            console.log("calling 11");
             dispatch(
               fetchServiceTaskList(reqData)
             );

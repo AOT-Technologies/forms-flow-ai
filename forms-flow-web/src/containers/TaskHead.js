@@ -7,11 +7,7 @@ import ServiceFlowFilterListDropDown from "../components/ServiceFlow/filter/Serv
 import createURLPathMatchExp from "../helper/regExp/pathMatch";
 import {MULTITENANCY_ENABLED} from "../constants/constants";
 import {setViewType } from '../actions/bpmTaskActions';
-
-
-
 import CreateNewFilterDrawer from "../components/ServiceFlow/list/sort/CreateNewFilter";
-// import { fetchBPMTaskDetail } from "../apiManager/services/bpmTaskServices";
 
 function TaskHead() {
   const dispatch = useDispatch();
@@ -27,14 +23,6 @@ function TaskHead() {
     (state) => state.bpmTasks.isFilterLoading
   );
 
-  // const bpmFiltersList = useSelector(
-  //   (state) => state.bpmTasks.filterList
-  // );
-
-  // const filterListAndCount = useSelector(
-  //   (state) => state.bpmTasks.filtersAndCount
-  // );
-
   const isTaskListLoading = useSelector(
     (state) => state.bpmTasks.isTaskListLoading
   );
@@ -42,19 +30,6 @@ function TaskHead() {
   const location = useLocation();
   const { pathname } = location;
   const baseUrl = MULTITENANCY_ENABLED ? `/tenant/${tenantKey}/` : "/";
-
-
-  // useEffect(()=>{
-  //   const selectedBPMFilterId = bpmFiltersList.find(item => item.id === filterListAndCount[0]?.id);
-  //   dispatch(setSelectedBPMFilter(filterListAndCount[0]));
-  //   fetchBPMTaskDetail(selectedBPMFilterId).then((res)=>{
-  //     dispatch(setBPMTaskList(res.data));
-  //   }).catch((err)=>{
-  //     console.error(err);
-  //   }).finally(()=>{
-  //     dispatch(setBPMTaskLoader(false));
-  //   });
-  // },[filterListAndCount?.length]);
 
   const goToTask = () => {
     dispatch(push(`${baseUrl}task`));
@@ -107,6 +82,7 @@ function TaskHead() {
             </span>
           </h4>
         </div>
+        
         <CreateNewFilterDrawer selectedFilterData = {filterSelectedForEdit} 
         openFilterDrawer = {openFilterDrawer} setOpenFilterDrawer = {setOpenFilterDrawer}
         setFilterSelectedForEdit={setFilterSelectedForEdit}

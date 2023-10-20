@@ -72,7 +72,10 @@ class Filter(AuditDateTimeMixin, AuditUserMixin, BaseModel, db.Model):
     @classmethod
     def _auth_query(cls, roles, user, tenant):
         role_condition = [Filter.roles.contains([role]) for role in roles]
-        query = cls.query.filter(or_(*role_condition, Filter.users.contains([user])))
+        query = cls.query.filter(or_(*role_condition, Filter.users.contains([user]),
+                and_(or_(cls.roles == {}, cls.roles.is_(None)),
+                or_(cls.users == {}, cls.users.is_(None))
+                )))
         if tenant:
             query = query.filter(Filter.tanant == tenant)
         return query

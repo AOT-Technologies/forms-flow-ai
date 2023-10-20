@@ -8,37 +8,27 @@ import {
 import { Link } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import { MULTITENANCY_ENABLED } from "../../../constants/constants";
-// import { fetchBPMTaskDetail } from "../../../apiManager/services/bpmTaskServices";
 
 const ServiceFlowFilterListDropDown = React.memo(({selectFilter,openFilterDrawer}) => {
   const dispatch = useDispatch();
-  const filterList = useSelector((state) => state.bpmTasks.filterList);
+  const filterList = useSelector((state) => state.bpmTasks.filtersAndCount);
+  const filterListItems = useSelector((state) => state.bpmTasks.filterList);
   const isFilterLoading = useSelector(
     (state) => state.bpmTasks.isFilterLoading
   );
-  // const bpmFiltersList = useSelector(
-  //   (state) => state.bpmTasks.filterList
-  // );
   const selectedFilter = useSelector((state) => state.bpmTasks.selectedFilter);
   const { t } = useTranslation();
   const tenantKey = useSelector((state) => state.tenants?.tenantId);
   const redirectUrl = MULTITENANCY_ENABLED ? `/tenant/${tenantKey}/` : "/";
 
   const changeFilterSelection = (filter) => {
-    // const selectedBPMFilterId = bpmFiltersList.find(item => item.id === filter.id);
-    // fetchBPMTaskDetail(selectedBPMFilterId).then((res)=>{
-    //   dispatch(setBPMTaskList(res.data));
-    // }).catch((err)=>{
-    //   console.error(err);
-    // }).finally(()=>{
-    //   dispatch(setBPMTaskLoader(false));
-    // });
-    dispatch(setSelectedBPMFilter(filter));
+    const selectedFilterItem = filterListItems.find((item) => item.id === filter.id);
+    dispatch(setSelectedBPMFilter(selectedFilterItem));
     dispatch(setSelectedTaskID(null));
   };
 
   const handleFilterEdit = (id) => {
-    selectFilter(filterList.find((item) => item.id === id));
+    selectFilter(filterListItems.find((item) => item.id === id));
   };
 
   const renderFilterList = () => {

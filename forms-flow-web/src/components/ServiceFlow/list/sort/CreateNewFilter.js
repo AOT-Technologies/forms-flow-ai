@@ -33,7 +33,9 @@ export default function CreateNewFilterDrawer({
   setFilterSelectedForEdit,
 }) {
   const dispatch = useDispatch();
-  const userRole = useSelector((state) => state.user.roles);
+  const userRole = useSelector(
+    (state) => state.user?.userDetail?.preferred_username
+  );
   const [filterName, setFilterName] = useState("");
   const [showUndefinedVariable, setShowUndefinedVariable] = useState(false);
   const [inputVisibility, setInputVisibility] = useState({});
@@ -45,7 +47,6 @@ export default function CreateNewFilterDrawer({
   const [identifierId, setIdentifierId] = useState("");
   const [selectUserGroupIcon, setSelectUserGroupIcon] = useState("");
   const [specificUserGroup, setSpecificUserGroup] = useState("");
-  const bpmFiltersList = useSelector((state) => state.bpmTasks.filterList);
   const userName = useSelector(
     (state) => state.user?.userDetail?.preferred_username
   );
@@ -67,10 +68,6 @@ export default function CreateNewFilterDrawer({
     priority: true,
     groups: true,
   });
-  const selectedBPMFilterParams = bpmFiltersList.find(
-    (item) => item.id === selectedFilterData?.id
-  );
-  console.log("selectedBpmfilter",selectedBPMFilterParams);
   const taskAttributesCount = Object.values(checkboxes).filter(
     (value) => value === true
   ).length;
@@ -103,33 +100,31 @@ export default function CreateNewFilterDrawer({
       setShowUndefinedVariable(
         selectedFilterData?.properties?.showUndefinedVariable
       );
-      setInputValues(() => {
-        if (!selectedFilterData.variables) {
-          return [{ name: "", label: "" }];
-        } else {
+      if (selectedFilterData.variables) {
+        setInputValues(() => {
           return selectedFilterData.variables?.map((row) => ({
             name: row.name,
             label: row.label,
           }));
-        }
-      });
-      if (!selectedFilterData?.users && !selectedFilterData?.roles) {
+        });
+      }
+      if (!selectedFilterData.variables?.length) {
+        setInputValues([{ name: "", label: "" }]);
+      }
+      if (!selectedFilterData?.users?.length && !selectedFilterData?.roles?.length) {
         setPermissions(ACCESSIBLE_FOR_ALL_GROUPS);
       }
-      const isUserInRoles = userRole.some((user) =>
-        selectedFilterData?.users?.includes(user)
-      );
-      console.log("user in roles", isUserInRoles);
+      const isUserInRoles = selectedFilterData?.users?.includes(userRole);
       if (isUserInRoles) {
         setPermissions(PRIVATE_ONLY_YOU);
       }
-      if (selectedFilterData?.users && !isUserInRoles) {
+      if (selectedFilterData?.users?.length && !isUserInRoles) {
         setPermissions(SPECIFIC_USER_OR_GROUP);
         setSelectUserGroupIcon("user");
         setIdentifierId(selectedFilterData?.users[0]);
         setSpecificUserGroup(SPECIFIC_USER_OR_GROUP);
       }
-      if (selectedFilterData?.roles) {
+      if (selectedFilterData?.roles?.length) {
         setPermissions(SPECIFIC_USER_OR_GROUP);
         setSelectUserGroupIcon("group");
         setIdentifierId(selectedFilterData?.roles[0]);
@@ -172,7 +167,6 @@ export default function CreateNewFilterDrawer({
           fetchBPMTaskCount(data)
             .then((res) => {
               dispatch(setBPMFiltersAndCount(res.data));
-              console.log("ivde 111");
             })
             .catch((err) => {
               if (err) {
@@ -181,7 +175,6 @@ export default function CreateNewFilterDrawer({
             })
             .finally(() => {
               if (selectedFilterData) {
-                console.log("ivde keruva");
                 const filterSelected = filterListAndCount?.find(
                   (filter) => filter.id === selectedFilterData?.id
                 );
@@ -199,27 +192,6 @@ export default function CreateNewFilterDrawer({
     toggleDrawer();
     clearAllFilters();
   };
-
-  // Create a new object with non-empty (truthy) values
-  function removeEmptyValues(obj) {
-    for (let key in obj) {
-      if (typeof obj[key] === "object" && !Array.isArray(obj[key])) {
-        removeEmptyValues(obj[key]);
-        if (Object.keys(obj[key]).length === 0) {
-          delete obj[key];
-        }
-      } else if (Array.isArray(obj[key]) && obj[key].length === 0) {
-        delete obj[key];
-      } else if (obj[key] === "" || obj[key] === undefined) {
-        delete obj[key];
-      }
-    }
-
-    // Check for the exceptional case for the 'variables' key
-    if (obj.variables === undefined) {
-      obj.variables = []; // Set it as an empty array
-    }
-  }
 
   const clearAllFilters = () => {
     setFilterName("");
@@ -272,13 +244,24 @@ export default function CreateNewFilterDrawer({
       taskVisibleAttributes: { ...checkboxes },
     };
 
-    removeEmptyValues(data);
+    // Remove empty keys inside criteria
+    for (const key in data.criteria) {
+      if (
+        Object.prototype.hasOwnProperty.call(data.criteria, key) &&
+        (data.criteria[key] === undefined || data.criteria[key] === "")
+      ) {
+        delete data.criteria[key];
+      }
+    }
+
     const submitFunction = selectedFilterData
       ? editFilters(data, selectedFilterData?.id)
       : saveFilters(data);
-    submitFunction.then(() => successCallBack(data)).catch((error) => {
-      console.error("error", error);
-    });
+    submitFunction
+      .then(() => successCallBack(data))
+      .catch((error) => {
+        console.error("error", error);
+      });
   };
 
   const handleFilterDelete = () => {
@@ -295,11 +278,6 @@ export default function CreateNewFilterDrawer({
       ...prevVisibility,
       [spanId]: !prevVisibility[spanId],
     }));
-  };
-
-  //Function For checking  UndefinedVaribaleCheckbox is checked or not
-  const UndefinedVaribaleCheckboxChange = (e) => {
-    setShowUndefinedVariable(e.target.checked);
   };
 
   //Function For checking  includeAssignedTasksCheckbox is checked or not
@@ -324,25 +302,6 @@ export default function CreateNewFilterDrawer({
     }
   };
 
-  const handleAddClick = () => {
-    setInputValues([...inputValues, { name: "", label: "" }]);
-  };
-
-  const handleRowDelete = (index) => {
-    setInputValues((prevInputValues) => {
-      const updatedValues = prevInputValues.filter((e, i) => i !== index);
-      return updatedValues;
-    });
-  };
-
-  const handleVariableInputChange = (index, field, value) => {
-    setInputValues((prevInputValues) => {
-      const updatedValues = [...prevInputValues];
-      updatedValues[index][field] = value;
-      return updatedValues;
-    });
-  };
-
   const toggleDrawer = () => {
     setOpenFilterDrawer(!openFilterDrawer);
     !openFilterDrawer ? setFilterSelectedForEdit(false) : null;
@@ -350,6 +309,7 @@ export default function CreateNewFilterDrawer({
 
   const toggleModal = () => {
     setModalShow(!modalShow);
+    setOpenFilterDrawer(!openFilterDrawer);
   };
 
   const list = () => (
@@ -473,72 +433,7 @@ export default function CreateNewFilterDrawer({
           </div>
         ) : null}
         <Divider />
-        <List>
-          <h5 style={{ fontWeight: "bold", fontSize: "18px" }}>
-            <Translation>{(t) => t("Variable")}</Translation>{" "}
-            <i className="fa fa-info-circle"></i>
-          </h5>
 
-          <div style={{ display: "flex", alignItems: "center" }}>
-            <input
-              type="checkbox"
-              id="my-checkbox"
-              checked={showUndefinedVariable}
-              onChange={UndefinedVaribaleCheckboxChange}
-              style={{ marginRight: "6px" }}
-            />
-            <h5 style={{ fontSize: "18px", marginBottom: "3px" }}>
-              <Translation>{(t) => t("Show undefined variables")}</Translation>
-            </h5>
-          </div>
-          <div>
-            {inputValues?.map((input, index) => (
-              <div key={index} className="row-container">
-                <div className="input-container">
-                  <label>
-                    <Translation>{(t) => t("Name")}</Translation>
-                  </label>
-                  <input
-                    type="text"
-                    placeholder={t("Name of variable")}
-                    className="varible-input-boxes"
-                    value={input.name}
-                    onChange={(e) =>
-                      handleVariableInputChange(index, "name", e.target.value)
-                    }
-                  />
-                </div>
-                <div className="input-container">
-                  <label>
-                    <Translation>{(t) => t("Label")}</Translation>
-                  </label>
-                  <input
-                    type="text"
-                    placeholder={t("Readable name")}
-                    className="varible-input-boxes"
-                    value={input.label}
-                    onChange={(e) =>
-                      handleVariableInputChange(index, "label", e.target.value)
-                    }
-                  />
-                </div>
-                {index === 0 ? (
-                  <button
-                    className="btn btn-primary"
-                    onClick={() => handleAddClick()}
-                  >
-                    <Translation>{(t) => t("Add")}</Translation>
-                  </button>
-                ) : (
-                  <i
-                    className="fa fa-minus-circle"
-                    onClick={() => handleRowDelete(index)}
-                  ></i>
-                )}
-              </div>
-            ))}
-          </div>
-        </List>
         <Divider />
         <div className="child-container-two">
           <h5 style={{ fontWeight: "bold" }}>
@@ -633,23 +528,12 @@ export default function CreateNewFilterDrawer({
             type="text"
             className="filter-name-textfeild"
             onClick={toggleModal}
-            readOnly
             placeholder={
               taskAttributesCount === 0
                 ? "Select elements"
                 : taskAttributesCount + " Task attribute selected"
             }
           />
-          {modalShow && (
-            <div className="modal-overlay">
-              <TaskAttributeComponent
-                show={modalShow}
-                onHide={() => setModalShow(false)}
-                checkboxes={checkboxes}
-                setCheckboxes={setCheckboxes}
-              />
-            </div>
-          )}
         </div>
         <Divider />
       </List>
@@ -708,6 +592,20 @@ export default function CreateNewFilterDrawer({
         >
           <Translation>{(t) => t("Create new filter")}</Translation>
         </Button>
+        {modalShow && (
+          <div>
+            <TaskAttributeComponent
+              show={modalShow}
+              onHide={toggleModal}
+              checkboxes={checkboxes}
+              setCheckboxes={setCheckboxes}
+              inputValues={inputValues}
+              setInputValues={setInputValues}
+              showUndefinedVariable={showUndefinedVariable}
+              setShowUndefinedVariable={setShowUndefinedVariable}
+            />
+          </div>
+        )}
         <Drawer
           anchor="left"
           open={openFilterDrawer}
@@ -728,7 +626,7 @@ export default function CreateNewFilterDrawer({
             width: 100,
           }}
         >
-          {list("left")}
+          {list("le ft")}
         </Drawer>
       </React.Fragment>
     </div>

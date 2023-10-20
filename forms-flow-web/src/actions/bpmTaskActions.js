@@ -102,7 +102,6 @@ export const setBPMFilterList = (data) => (dispatch) => {
 };
 
 export const setSelectedBPMFilter = (data) => (dispatch) => {
-  console.log("data in actiom filter",data);
   dispatch({
     type: ACTION_CONSTANTS.BPM_SELECTED_FILTER,
     payload: data,

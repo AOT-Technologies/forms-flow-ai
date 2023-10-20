@@ -56,9 +56,6 @@ export default React.memo(() => {
   const currentUser = useSelector(
     (state) => state.user?.userDetail?.preferred_username || ""
   );
-  const filterListAndCount = useSelector(
-    (state) => state.bpmTasks.filtersAndCount
-  );
   const firstResult = useSelector((state) => state.bpmTasks.firstResult);
   const taskList = useSelector((state) => state.bpmTasks.tasksList);
   const selectedFilterIdRef = useRef(selectedFilterId);
@@ -109,7 +106,6 @@ export default React.memo(() => {
   }, [selectedFilterId]);
 
   useEffect(() => {
-    console.log("inside useeffectt 22");
     const reqParamData = {
       ...{ sorting: [...sortParams.sorting] },
       ...searchParams,
@@ -151,19 +147,19 @@ export default React.memo(() => {
   }, [dispatch]);
 
   useEffect(()=>{
-    if(filterListAndCount?.length){
+    if(filterList?.length){
       let filterSelected;
       if (filterList.length > 1) {
-        filterSelected = filterListAndCount?.find((filter) => filter.name === ALL_TASKS);
+        filterSelected = filterList?.find((filter) => filter.name === ALL_TASKS);
         if (!filterSelected) {
-          filterSelected = filterListAndCount[0];
+          filterSelected = filterList[0];
         }
       } else {
-        filterSelected = filterListAndCount[0];
+        filterSelected = filterList[0];
       }
       dispatch(setSelectedBPMFilter(filterSelected));
     }
-  },[filterListAndCount?.length]);
+  },[filterList?.length]);
 
   const checkIfTaskIDExistsInList = (list, id) => {
     return list.some((task) => task.id === id);
@@ -171,7 +167,6 @@ export default React.memo(() => {
   const SocketIOCallback = useCallback(
     (refreshedTaskId, forceReload, isUpdateEvent) => {
       if (forceReload) {
-        console.log("calling 1");
         dispatch(
           fetchServiceTaskList(
             selectedBPMFilterParams,
@@ -193,7 +188,6 @@ export default React.memo(() => {
                 refreshedTaskId
               ) === true
             ) {
-              console.log("calling 2");
               dispatch(
                 fetchServiceTaskList(
                   selectedBPMFilterParams
@@ -201,7 +195,6 @@ export default React.memo(() => {
               ); //Refreshes the Task
             }
           } else {
-            console.log("calling 3");
             dispatch(
               fetchServiceTaskList(
                 selectedBPMFilterParams

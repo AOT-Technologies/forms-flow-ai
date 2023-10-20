@@ -3,7 +3,6 @@ import React, { useEffect, useState } from "react";
 import {
   getISODateTime,
   getFormattedDateAndTime,
-  // getProcessDataObjectFromList,
 } from "../../../apiManager/services/formatterService";
 import { useDispatch, useSelector } from "react-redux";
 import DatePicker from "react-datepicker";
@@ -13,7 +12,6 @@ import "./../ServiceFlow.scss";
 import AddGroupModal from "./AddGroupModal";
 import {
   claimBPMTask,
-  // fetchFilterList,
   fetchServiceTaskList,
   getBPMTaskDetail,
   unClaimBPMTask,
@@ -26,9 +24,6 @@ import SocketIOService from "../../../services/SocketIOService";
 import { useTranslation } from "react-i18next";
 
 const TaskHeaderListView = React.memo(({task,taskId,groupView = true}) => {
-  // const task = useSelector((state) => state.bpmTasks.taskDetail);
-  // const taskId = useSelector((state) => state.bpmTasks.taskId);
-  // const processList = useSelector((state) => state.bpmTasks.processList);
   const username = useSelector(
     (state) => state.user?.userDetail?.preferred_username || ""
   );
@@ -62,7 +57,6 @@ const TaskHeaderListView = React.memo(({task,taskId,groupView = true}) => {
           if (!SocketIOService.isConnected()) {
             if (selectedFilter) {
               dispatch(getBPMTaskDetail(taskId));
-              console.log("calling 12");
               dispatch(
                 fetchServiceTaskList(reqData)
               );
@@ -71,7 +65,6 @@ const TaskHeaderListView = React.memo(({task,taskId,groupView = true}) => {
             }
           }
           if(selectedFilter){
-            console.log("calling 13");
             dispatch(
               fetchServiceTaskList(reqData)
             );
@@ -97,7 +90,6 @@ const TaskHeaderListView = React.memo(({task,taskId,groupView = true}) => {
               }
             }
             if(selectedFilter){
-              console.log("calling 14");
               dispatch(
                 fetchServiceTaskList(reqData)
               );
@@ -123,7 +115,6 @@ const TaskHeaderListView = React.memo(({task,taskId,groupView = true}) => {
             }
           }
           if(selectedFilter){
-            console.log("calling 15");
             dispatch(
               fetchServiceTaskList(reqData)
             );
@@ -149,7 +140,6 @@ const TaskHeaderListView = React.memo(({task,taskId,groupView = true}) => {
         if (!err) {
           if (!SocketIOService.isConnected()) {
             dispatch(getBPMTaskDetail(taskId));
-            console.log("calling 16");
             dispatch(
               fetchServiceTaskList(reqData)
             );
@@ -174,7 +164,6 @@ const TaskHeaderListView = React.memo(({task,taskId,groupView = true}) => {
         if (!err) {
           if (!SocketIOService.isConnected()) {
             dispatch(getBPMTaskDetail(taskId));
-            console.log("calling 17");
             dispatch(
               fetchServiceTaskList(reqData)
             );

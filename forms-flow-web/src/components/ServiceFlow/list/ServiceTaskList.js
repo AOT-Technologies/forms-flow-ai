@@ -43,7 +43,6 @@ const ServiceFlowTaskList = React.memo(() => {
     if (selectedFilter) {
       dispatch(setBPMTaskLoader(true));
       dispatch(setBPMTaskListActivePage(1));
-      console.log("calling 18");
       dispatch(fetchServiceTaskList(reqData));
     }
   }, [reqData]);
@@ -58,7 +57,6 @@ const ServiceFlowTaskList = React.memo(() => {
     dispatch(setBPMTaskListActivePage(pageNumber));
     dispatch(setBPMTaskLoader(true));
     // let firstResultIndex = getFirstResultIndex(pageNumber);
-    console.log("calling 19");
     dispatch(
       fetchServiceTaskList(reqData)
     );

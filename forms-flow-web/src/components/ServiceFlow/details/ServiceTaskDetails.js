@@ -181,7 +181,6 @@ const ServiceFlowTaskDetails = React.memo(() => {
   const reloadTasks = () => {
     dispatch(setBPMTaskDetailLoader(true));
     dispatch(setSelectedTaskID(null)); // unSelect the Task Selected
-    console.log("calling 4");
     dispatch(fetchServiceTaskList(reqData)); //Refreshes the Tasks
     dispatch(push(`${redirectUrl}task/`));
   };
@@ -198,7 +197,6 @@ const ServiceFlowTaskDetails = React.memo(() => {
         })
       ); // Refresh the Task Selected
       dispatch(getBPMGroups(task.id));
-      console.log("calling 5");
       dispatch(fetchServiceTaskList(reqData)); //Refreshes the Tasks
 
     }

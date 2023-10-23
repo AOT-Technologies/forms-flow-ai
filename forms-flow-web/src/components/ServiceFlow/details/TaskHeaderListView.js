@@ -31,7 +31,7 @@ const TaskHeaderListView = React.memo(({task,taskId,groupView = true}) => {
   const selectedFilter = useSelector((state) => state.bpmTasks.selectedFilter);
   const reqData = useSelector((state) => state.bpmTasks.listReqParams);
   const vissibleAttributes = useSelector((state) => state.bpmTasks.vissibleAttributes);
-  // const firstResult = useSelector((state) => state.bpmTasks.firstResult);
+  const firstResult = useSelector((state) => state.bpmTasks.firstResult);
   const [followUpDate, setFollowUpDate] = useState(null);
   const [dueDate, setDueDate] = useState(null);
   const [showModal, setModal] = useState(false);
@@ -58,7 +58,7 @@ const TaskHeaderListView = React.memo(({task,taskId,groupView = true}) => {
             if (selectedFilter) {
               dispatch(getBPMTaskDetail(taskId));
               dispatch(
-                fetchServiceTaskList(reqData)
+                fetchServiceTaskList(reqData,null,firstResult)
               );
             } else {
               dispatch(setBPMTaskDetailUpdating(false));
@@ -66,7 +66,7 @@ const TaskHeaderListView = React.memo(({task,taskId,groupView = true}) => {
           }
           if(selectedFilter){
             dispatch(
-              fetchServiceTaskList(reqData)
+              fetchServiceTaskList(reqData,null,firstResult)
             );
           }
            
@@ -91,7 +91,7 @@ const TaskHeaderListView = React.memo(({task,taskId,groupView = true}) => {
             }
             if(selectedFilter){
               dispatch(
-                fetchServiceTaskList(reqData)
+                fetchServiceTaskList(reqData,null,firstResult)
               );
             }
            
@@ -116,7 +116,7 @@ const TaskHeaderListView = React.memo(({task,taskId,groupView = true}) => {
           }
           if(selectedFilter){
             dispatch(
-              fetchServiceTaskList(reqData)
+              fetchServiceTaskList(reqData,null,firstResult)
             );
           }
           
@@ -141,7 +141,7 @@ const TaskHeaderListView = React.memo(({task,taskId,groupView = true}) => {
           if (!SocketIOService.isConnected()) {
             dispatch(getBPMTaskDetail(taskId));
             dispatch(
-              fetchServiceTaskList(reqData)
+              fetchServiceTaskList(reqData,null,firstResult)
             );
           }
         } else {
@@ -165,7 +165,7 @@ const TaskHeaderListView = React.memo(({task,taskId,groupView = true}) => {
           if (!SocketIOService.isConnected()) {
             dispatch(getBPMTaskDetail(taskId));
             dispatch(
-              fetchServiceTaskList(reqData)
+              fetchServiceTaskList(reqData,null,firstResult)
             );
           }
         } else {

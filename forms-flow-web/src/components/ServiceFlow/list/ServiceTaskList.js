@@ -17,7 +17,7 @@ import TaskFilterComponent from "./search/TaskFilterComponent";
 import Pagination from "react-js-pagination";
 import { push } from "connected-react-router";
 import { MAX_RESULTS } from "../constants/taskConstants";
-// import { getFirstResultIndex } from "../../../apiManager/services/taskSearchParamsFormatterService";
+import { getFirstResultIndex } from "../../../apiManager/services/taskSearchParamsFormatterService";
 import TaskVariable from "./TaskVariable";
 import { MULTITENANCY_ENABLED } from "../../../constants/constants";
 const ServiceFlowTaskList = React.memo(() => {
@@ -32,6 +32,7 @@ const ServiceFlowTaskList = React.memo(() => {
   const dispatch = useDispatch();
   const processList = useSelector((state) => state.bpmTasks.processList);
   const selectedFilter = useSelector((state) => state.bpmTasks.selectedFilter);
+  const firstResult = useSelector((state) => state.bpmTasks.firstResult);
   const activePage = useSelector((state) => state.bpmTasks.activePage);
   const tasksPerPage = MAX_RESULTS;
   const tenantKey = useSelector((state) => state.tenants?.tenantId);
@@ -43,7 +44,7 @@ const ServiceFlowTaskList = React.memo(() => {
     if (selectedFilter) {
       dispatch(setBPMTaskLoader(true));
       dispatch(setBPMTaskListActivePage(1));
-      dispatch(fetchServiceTaskList(reqData));
+      dispatch(fetchServiceTaskList(reqData,null,firstResult));
     }
   }, [reqData]);
 
@@ -56,9 +57,9 @@ const ServiceFlowTaskList = React.memo(() => {
   const handlePageChange = (pageNumber) => {
     dispatch(setBPMTaskListActivePage(pageNumber));
     dispatch(setBPMTaskLoader(true));
-    // let firstResultIndex = getFirstResultIndex(pageNumber);
+    let firstResultIndex = getFirstResultIndex(pageNumber);
     dispatch(
-      fetchServiceTaskList(reqData)
+      fetchServiceTaskList(reqData,null,firstResultIndex)
     );
   };
 

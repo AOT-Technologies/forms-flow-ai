@@ -23,15 +23,16 @@ import { replaceUrl } from "../../helper/helper";
 import axios from "axios";
 import { taskDetailVariableDataFormatter } from "./formatterService";
 import { REVIEWER_GROUP } from "../../constants/userContants";
-// import { MAX_RESULTS } from "../../components/ServiceFlow/constants/taskConstants";
+import { MAX_RESULTS } from "../../components/ServiceFlow/constants/taskConstants";
 
-export const fetchServiceTaskList = (reqData, taskIdToRemove,firstResult, ...rest) => {
+export const fetchServiceTaskList = (reqData, taskIdToRemove, firstResult, maxResults, ...rest) => {
   const done = rest.length ? rest[0] : () => {};
-  // const apiUrlgetTaskList = 
-  // `${API.GET_BPM_TASK_FILTERS}?firstResult=${firstResult}&maxResults=${MAX_RESULTS}`;
+  const apiUrlgetTaskList =
+    `${API.GET_BPM_TASK_FILTERS}?firstResult=${firstResult}&maxResults=${ 
+      maxResults ? maxResults : MAX_RESULTS}`;
   return (dispatch) => {
     RequestService.httpPOSTRequestWithHAL(
-      API.GET_BPM_TASK_FILTERS,
+      apiUrlgetTaskList,
       reqData,
       StorageService.get(StorageService.User.AUTH_TOKEN)
     )

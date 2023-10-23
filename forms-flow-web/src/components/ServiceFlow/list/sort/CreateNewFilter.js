@@ -54,6 +54,7 @@ export default function CreateNewFilterDrawer({
     (state) => state.bpmTasks.filtersAndCount
   );
   const selectedFilter = useSelector((state) => state.bpmTasks.selectedFilter);
+  // const firstResult = useSelector((state) => state.bpmTasks.firstResult);
   const [variables, setVariables] = useState([]);
   const [inputValues, setInputValues] = useState([{ name: "", label: "" }]);
   const { t } = useTranslation();

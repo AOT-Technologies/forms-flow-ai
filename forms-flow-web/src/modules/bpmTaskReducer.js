@@ -1,7 +1,6 @@
 import ACTION_CONSTANTS from "../actions/actionConstants";
 import { TASK_FILTER_LIST_DEFAULT_PARAM } from "../constants/taskConstants";
 import {
-  getFirstResultIndex,
   getFormattedParams,
 } from "../apiManager/services/taskSearchParamsFormatterService";
 import { QUERY_TYPES } from "../components/ServiceFlow/constants/taskConstants";
@@ -132,7 +131,7 @@ const bpmTasks = (state = initialState, action) => {
       return {
         ...state,
         activePage: action.payload,
-        firstResult: getFirstResultIndex(action.payload),
+        firstResult: action.payload,
       };
     case ACTION_CONSTANTS.SELETED_TASK_VARIABLES:
         return { ...state, selectedTaskVariables: action.payload };

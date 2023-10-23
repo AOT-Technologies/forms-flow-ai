@@ -170,6 +170,7 @@ export default React.memo(() => {
         dispatch(
           fetchServiceTaskList(
             selectedBPMFilterParams,
+            firstResultsRef.current,
             refreshedTaskId
           )
         ); //Refreshes the Tasks
@@ -190,14 +191,16 @@ export default React.memo(() => {
             ) {
               dispatch(
                 fetchServiceTaskList(
-                  selectedBPMFilterParams
+                  selectedBPMFilterParams,
+                  firstResultsRef.current
                 )
               ); //Refreshes the Task
             }
           } else {
             dispatch(
               fetchServiceTaskList(
-                selectedBPMFilterParams
+                selectedBPMFilterParams,
+                firstResultsRef.current,
               )
             ); //Refreshes the Task
           }

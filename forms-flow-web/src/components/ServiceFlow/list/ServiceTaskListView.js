@@ -14,7 +14,7 @@ import TaskSearchBarListView from "./search/TaskSearchBarListView";
 
 import Pagination from "react-js-pagination";
 import { push } from "connected-react-router";
-import { MAX_RESULTS } from "../constants/taskConstants";
+// import { MAX_RESULTS } from "../constants/taskConstants";
 // import { getFirstResultIndex } from "../../../apiManager/services/taskSearchParamsFormatterService";
 
 import { MULTITENANCY_ENABLED } from "../../../constants/constants";
@@ -30,11 +30,11 @@ const ServiceTaskListView = React.memo(() => {
   const reqData = useSelector((state) => state.bpmTasks.listReqParams);
   const dispatch = useDispatch();
   const selectedFilter = useSelector((state) => state.bpmTasks.selectedFilter);
+  const firstResult = useSelector((state) => state.bpmTasks.firstResult);
   const activePage = useSelector((state) => state.bpmTasks.activePage);
-  const tasksPerPage = MAX_RESULTS;
   const [expandedTasks, setExpandedTasks] = useState({});
   const [allTaskVariablesExpanded, setAllTaskVariablesExpanded] = useState(false);
-  const [selectedLimitValue, setSelectedLimitValue] = useState(MAX_RESULTS);
+  const [selectedLimitValue, setSelectedLimitValue] = useState(15);
   const tenantKey = useSelector((state) => state.tenants?.tenantId);
   const redirectUrl = useRef(
     MULTITENANCY_ENABLED ? `/tenant/${tenantKey}/` : "/"
@@ -59,9 +59,9 @@ const ServiceTaskListView = React.memo(() => {
   ];
 
   const handleLimitChange = (limit) => {
-    setSelectedLimitValue(limit);
     dispatch(setBPMTaskLoader(true));
-    dispatch(fetchServiceTaskList(reqData));
+    setSelectedLimitValue(limit);
+    dispatch(fetchServiceTaskList(reqData,null,firstResult,limit));
   };
 
   let numberofSubmissionListFrom =
@@ -74,7 +74,7 @@ const ServiceTaskListView = React.memo(() => {
     if (selectedFilter) {
       dispatch(setBPMTaskLoader(true));
       dispatch(setBPMTaskListActivePage(1));
-      dispatch(fetchServiceTaskList(reqData));
+      dispatch(fetchServiceTaskList(reqData,null,firstResult));
     }
   }, [dispatch, reqData]);
 
@@ -90,9 +90,9 @@ const ServiceTaskListView = React.memo(() => {
   const handlePageChange = (pageNumber) => {
     dispatch(setBPMTaskListActivePage(pageNumber));
     dispatch(setBPMTaskLoader(true));
-    // let firstResultIndex = getFirstResultIndex(pageNumber);
+    let firstResultIndex = (selectedLimitValue * pageNumber) - selectedLimitValue;
     dispatch(
-      fetchServiceTaskList(reqData)
+      fetchServiceTaskList(reqData,null,firstResultIndex,selectedLimitValue)
     );
     setAllTaskVariablesExpanded(false);
   };
@@ -278,7 +278,7 @@ const ServiceTaskListView = React.memo(() => {
               <div className="d-flex align-items-center">
               <Pagination
                 activePage={activePage}
-                itemsCountPerPage={tasksPerPage}
+                itemsCountPerPage={selectedLimitValue}
                 totalItemsCount={tasksCount}
                 pageRangeDisplayed={4}
                 itemClass="page-item"

@@ -507,7 +507,8 @@ span[dat-title]:hover:after,
 
 .cursor-pointer{
   cursor:pointer
-  }
+}
+
 .modal-overlay {
   position: fixed;
   top: 0;
@@ -517,6 +518,7 @@ span[dat-title]:hover:after,
   background-color: rgba(0, 0, 0, 0.1);
  z-index: 1500;
 }
+
 .icon-and-text {
   display: flex;
   justify-content: space-between;

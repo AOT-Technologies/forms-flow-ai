@@ -30,13 +30,13 @@ const ServiceFlowFilterListDropDown = React.memo(({selectFilter,openFilterDrawer
   const handleFilterEdit = (id) => {
     selectFilter(filterListItems.find((item) => item.id === id));
   };
-
   const renderFilterList = () => {
     if (filterList.length) {
       return (
         <>
-          {filterList.map((filter, index) => (
-            <NavDropdown.Item
+          {filterList.map((filter, index) => {
+            return(
+              <NavDropdown.Item
               as={Link}
               to={`${redirectUrl}task`}
               className={`main-nav nav-item ${
@@ -57,7 +57,9 @@ const ServiceFlowFilterListDropDown = React.memo(({selectFilter,openFilterDrawer
                 />
               </div>
             </NavDropdown.Item>
-          ))}
+            );
+          }
+          )}
         </>
       );
     } else {

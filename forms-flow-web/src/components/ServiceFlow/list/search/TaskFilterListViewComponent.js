@@ -17,7 +17,7 @@ const TaskFilterListViewComponent = React.memo(
     const [candidateGroup, setCandidateGroup] = useState(
       filterParams.candidateGroup || ""
     );
-    const [processVariables,setProcessVariables] = useState([]);
+    const [processVariables, setProcessVariables] = useState(filterParams?.processVariables || []);
     const [dueStartDate, setDueStartDate] = useState(
       filterParams.dueStartDate || null
     );
@@ -49,6 +49,7 @@ const TaskFilterListViewComponent = React.memo(
       // outside click
       setDisplayFilter(false);
     };
+
     useEffect(() => {
       // add when mounted
       document.addEventListener("mousedown", handleClick);
@@ -61,23 +62,35 @@ const TaskFilterListViewComponent = React.memo(
     const handleProcessVariables = (name, value) => {
       setProcessVariables((prevProcessVariables) => {
         const numericValue = !isNaN(value) ? Number(value) : value;
-        const existingVariableIndex = prevProcessVariables.findIndex(
-          (variable) => variable.name === name
-        );
-    
-        if (existingVariableIndex !== -1) {
-          // If a variable with the same name exists, update its value
-          const updatedProcessVariables = [...prevProcessVariables];
-          updatedProcessVariables[existingVariableIndex].value = value;
-    
-          return updatedProcessVariables;
+
+        if (Array.isArray(prevProcessVariables)) {
+          const existingVariableIndex = prevProcessVariables?.findIndex(
+            (variable) => variable?.name === name
+          );
+
+          if (existingVariableIndex !== -1) {
+            // If a variable with the same name exists, update its value
+            const updatedProcessVariables = [...prevProcessVariables];
+            updatedProcessVariables[existingVariableIndex].value = value;
+
+            return updatedProcessVariables;
+          } else {
+            // If no variable with the same name exists, create a new one
+            return [
+              ...prevProcessVariables,
+              {
+                name: name,
+                operator: "eq",
+                value: numericValue,
+              },
+            ];
+          }
         } else {
-          // If no variable with the same name exists, create a new one
+          // If prevProcessVariables is not an array or is undefined, initialize it as an empty array.
           return [
-            ...prevProcessVariables,
             {
               name: name,
-              operator: 'eq',
+              operator: "eq",
               value: numericValue,
             },
           ];
@@ -96,7 +109,7 @@ const TaskFilterListViewComponent = React.memo(
       if (priority) {
         filterParams["priority"] = priority;
       }
-      if(processVariables){
+      if (processVariables) {
         filterParams["processVariables"] = processVariables;
       }
       if (dueStartDate) {
@@ -117,7 +130,9 @@ const TaskFilterListViewComponent = React.memo(
       if (createdEndDate) {
         filterParams["createdBefore"] = getISODateTime(createdEndDate);
       }
+
       dispatch(setBPMFilterSearchParams(filterParams));
+      setFilterParams(filterParams);
       setFilterCount(Object.keys(filterParams).length);
       setDisplayFilter(false);
     };
@@ -125,10 +140,12 @@ const TaskFilterListViewComponent = React.memo(
       // Update filterCount whenever filterParams changes
       setFilterCount(Object.keys(filterParams).length);
     }, [filterParams]);
+
     const clearAllFilters = () => {
       setAssignee("");
       setCandidateGroup("");
       setProcessVariables(null);
+      setPriority("");
       setDueStartDate(null);
       setDueEndDate(null);
       setFollowStartDate(null);
@@ -136,9 +153,9 @@ const TaskFilterListViewComponent = React.memo(
       setCreatedStartDate(null);
       setCreatedEndDate(null);
       setFilterParams({});
-      dispatch(setBPMFilterSearchParams(filterParams));
+      dispatch(setBPMFilterSearchParams({}));
     };
-
+    
     const DatepickerCustomInput = React.forwardRef(
       ({ value, onClick, placeholder }, ref) => {
         return (
@@ -241,6 +258,10 @@ const TaskFilterListViewComponent = React.memo(
             </Row>
             <Row className="mt-2">
               {vissibleAttributes.variables?.map((e, i) => {
+                const variable = processVariables?.find(
+                  (variable) => variable.name === e.name
+                );
+
                 return (
                   <Col key={i}>
                     <label>{e.name}</label>
@@ -248,8 +269,10 @@ const TaskFilterListViewComponent = React.memo(
                       className="form-control"
                       placeholder=""
                       name={e.name}
-                      // value={candidateUser}
-                      onChange={(e) => handleProcessVariables(e.target.name,e.target.value)}
+                      value={variable ? variable.value : ""}
+                      onChange={(e) =>
+                        handleProcessVariables(e.target.name, e.target.value)
+                      }
                     />
                   </Col>
                 );

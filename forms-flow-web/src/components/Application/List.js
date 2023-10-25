@@ -157,7 +157,7 @@ export const ApplicationList = React.memo(() => {
   const headerList = () => {
     return [
       {
-        name: "Applications",
+        name: "Submissions",
         count: applicationCount,
         onClick: () => dispatch(push(`${redirectUrl}application`)),
         icon: "list",
@@ -194,7 +194,7 @@ export const ApplicationList = React.memo(() => {
     >
       {(props) => (
         <div className="container" role="definition">
-          <Head items={headOptions} page="Applications" />
+          <Head items={headOptions} page="Submissions" />
           <br />
           <div>
             {applicationCount > 0 || filtermode ? (
@@ -231,7 +231,7 @@ export const ApplicationList = React.memo(() => {
             ) : iserror ? (
               <Alert variant={"danger"}>{error}</Alert>
             ) : (
-              <Nodata text={t("No Applications Found")} />
+              <Nodata text={t("No Submissions Found")} />
             )}
           </div>
         </div>

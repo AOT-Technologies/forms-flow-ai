@@ -161,7 +161,7 @@ export const DraftList = React.memo(() => {
   const headerList = () => {
     return [
       {
-        name: "Applications",
+        name: "Submissions",
         count: applicationCount,
         onClick: () => dispatch(push(`${redirectUrl}application`)),
         icon: "list",

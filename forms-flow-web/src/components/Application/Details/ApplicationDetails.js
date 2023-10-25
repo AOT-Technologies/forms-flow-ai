@@ -12,7 +12,7 @@ const ApplicationDetails = React.memo((props) => {
       <tbody>
         <tr>
           <td className="border-0">
-            <Translation>{(t) => t("Application Id")}</Translation>
+            <Translation>{(t) => t("Submission ID")}</Translation>
           </td>
           <td className="border-0">:</td>
           <td className="border-0" id="application-id">
@@ -21,7 +21,7 @@ const ApplicationDetails = React.memo((props) => {
         </tr>
         <tr>
           <td className="border-0">
-            <Translation>{(t) => t("Application Name")}</Translation>
+            <Translation>{(t) => t("Submission Name")}</Translation>
           </td>
           <td className="border-0">:</td>
           <td className="border-0 text-truncate" id="application-name">
@@ -39,7 +39,7 @@ const ApplicationDetails = React.memo((props) => {
         </tr>
         <tr>
           <td className="border-0">
-            <Translation>{(t) => t("Application Status")}</Translation>
+            <Translation>{(t) => t("Submission Status")}</Translation>
           </td>
           <td className="border-0">:</td>
           <td className="border-0" id="application-status">

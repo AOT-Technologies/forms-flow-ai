@@ -13,10 +13,9 @@ from formsflow_api_utils.utils import (
     ALLOW_ALL_ORIGINS,
     CORS_ORIGINS,
     FORMSFLOW_API_CORS_ORIGINS,
-    CustomFormatter,
-    CustomTimedRotatingFileHandler,
     cache,
     jwt,
+    register_log_handlers,
     setup_logging,
     translate,
 )
@@ -49,16 +48,15 @@ def create_app(
     )
     app.logger = flask_logger
     app.logger = logging.getLogger("app")
-    logs = logging.StreamHandler()
 
-    logs.setFormatter(CustomFormatter())
-    if not os.path.exists("logs"):
-        os.makedirs("logs")
-    log_file = "logs/forms-flow-webapi.log"
-    file_handler = CustomTimedRotatingFileHandler(
-        log_file, when="d", interval=1, backupCount=7
+    register_log_handlers(
+        app,
+        log_file="logs/forms-flow-webapi.log",
+        when=os.getenv("API_LOG_ROTATION_WHEN", "d"),
+        interval=int(os.getenv("API_LOG_ROTATION_INTERVAL", "1")),
+        backupCount=int(os.getenv("API_LOG_BACKUP_COUNT", "7")),
     )
-    app.logger.handlers = [logs, file_handler]
+
     app.logger.propagate = False
     logging.log.propagate = False
     with open("logo.txt") as file:  # pylint: disable=unspecified-encoding

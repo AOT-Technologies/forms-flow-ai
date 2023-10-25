@@ -22,7 +22,7 @@ from .constants import (
     HTTP_TIMEOUT
 )
 from .enums import ApplicationSortingParameters
-from .file_log_handler import CustomTimedRotatingFileHandler
+from .file_log_handler import CustomTimedRotatingFileHandler, register_log_handlers
 from .format import CustomFormatter
 from .logging import setup_logging, log_bpm_error
 from .profiler import profiletime

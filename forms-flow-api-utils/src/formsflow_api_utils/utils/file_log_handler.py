@@ -5,6 +5,8 @@ import logging.handlers
 import os
 import shutil
 
+from .format import CustomFormatter
+
 
 class CustomTimedRotatingFileHandler(logging.handlers.TimedRotatingFileHandler):
     """A custom log file handler that extends TimedRotatingFileHandler and customizes log rotation."""
@@ -35,10 +37,12 @@ class CustomTimedRotatingFileHandler(logging.handlers.TimedRotatingFileHandler):
 
         dest_in_archive = os.path.join(archive_folder, os.path.basename(dest))
 
-        with open(source, "rb") as f_in:
-            with gzip.open(dest_in_archive, "wb") as f_out:
-                shutil.copyfileobj(f_in, f_out)
-        os.remove(source)
+        if not os.path.exists(dest_in_archive):
+            with open(source, "rb") as f_in:
+                with gzip.open(dest_in_archive, "wb") as f_out:
+                    print(dest_in_archive, "open dest file")
+                    shutil.copyfileobj(f_in, f_out)
+            os.remove(source)
 
     def getFilesToDelete(self):
         """Override the getFilesToDelete method.
@@ -56,10 +60,23 @@ class CustomTimedRotatingFileHandler(logging.handlers.TimedRotatingFileHandler):
             if filename[:plen] == prefix:
                 suffix = filename[plen:]
                 if self.extMatch.match(suffix):
-                    result.append(os.path.join(dir_name, filename))        
+                    result.append(os.path.join(dir_name, filename))
         if len(result) < self.backupCount:
             result = []
         else:
             result.sort()
-            result = result[:len(result) - self.backupCount]
+            result = result[: len(result) - self.backupCount]
         return result
+
+
+def register_log_handlers(app, log_file, when, interval, backupCount):
+    """Configure log handlers."""
+    logs = logging.StreamHandler()
+    logs.setFormatter(CustomFormatter())
+    log_dir = os.path.dirname(log_file)
+
+    if not os.path.exists(log_dir):
+        os.makedirs(log_dir)
+    file_handler = CustomTimedRotatingFileHandler(log_file, when, interval, backupCount)
+
+    app.logger.handlers = [logs, file_handler]

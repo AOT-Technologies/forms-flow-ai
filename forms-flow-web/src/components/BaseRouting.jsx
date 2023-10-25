@@ -75,12 +75,9 @@ const BaseRouting = React.memo(
               <Route path="/404" exact={true} component={NotFound} />
               <Redirect from="*" to="/404" />
             </Switch>
-        </div>
-            
             {isAuth ? <Footer /> : null}
-         
         </div>
-    
+        </div>
     );
   }
 );

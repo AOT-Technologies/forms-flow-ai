@@ -46,7 +46,7 @@ test("should return the name from an email string", () => {
 
 // test cases for setShowApplications
 
-test("should check wheather to show applications or not", () => {
+test("should check wheather to show submissions or not", () => {
   expect(setShowApplications()).toBeTruthy();
   userAccessGroupCheck.accessAllowApplications = true;
   expect(

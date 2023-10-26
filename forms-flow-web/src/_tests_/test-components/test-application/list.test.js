@@ -30,7 +30,7 @@ const render = (Component) =>
     </Provider>
   );
 
-test("Should render No Applications Found when initial state is passed", () => {
+test("Should render No Submissions Found when initial state is passed", () => {
   const spy = jest.spyOn(redux, "useSelector");
   spy.mockImplementation((callback) =>
     callback({
@@ -44,7 +44,7 @@ test("Should render No Applications Found when initial state is passed", () => {
     })
   );
   render(<ApplicationList />);
-  expect(screen.getByText(/No Applications Found/i)).toBeInTheDocument();
+  expect(screen.getByText(/No Submissions Found/i)).toBeInTheDocument();
 });
 
 test("Should render Loading state when loading state variable is truthy", () => {
@@ -77,9 +77,9 @@ test("Should render the table with the data after data fetch is over with result
     })
   );
   render(<ApplicationList />);
-  expect(screen.getByText(/Applications/i)).toBeInTheDocument();
-  expect(screen.getAllByText(/Application ID/i).length).toBe(2);
-  expect(screen.getAllByText(/Application Name/i).length).toBe(2);
+  expect(screen.getByText(/Submissions/i)).toBeInTheDocument();
+  expect(screen.getAllByText(/Submission ID/i).length).toBe(2);
+  expect(screen.getAllByText(/Form Name/i).length).toBe(2);
   expect(screen.getByText("5434")).toBeInTheDocument();
   expect(screen.getAllByText(/Sample Form/i).length).toBe(3);
   expect(screen.getByText(/Showing 1 to 3 of 3 Results/i)).toBeInTheDocument();
@@ -101,10 +101,10 @@ test("Should render No results found when providing a filter value which is not 
   const statespy = jest.spyOn(React, "useState");
   statespy.mockImplementationOnce(() => React.useState({ filtermode: true }));
   render(<ApplicationList />);
-  expect(screen.getAllByText(/Applications/i).length).toBe(3);
+  expect(screen.getAllByText(/Submissions/i).length).toBe(3);
   expect(
     screen.queryByText(
-      "Please change the selected filters to view applications"
+      "Please change the selected filters to view submissions"
     )
   ).toBeInTheDocument();
 });

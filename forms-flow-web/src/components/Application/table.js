@@ -92,7 +92,7 @@ const styleForValidationFail = { border: "1px solid red" };
 export const columns_history = [
   {
     dataField: "applicationname",
-    text: <Translation>{(t) => t("Submission Name")}</Translation>,
+    text: <Translation>{(t) => t("Form Name")}</Translation>,
     sort: true,
   },
   {
@@ -146,13 +146,13 @@ export const columns = (
     },
     {
       dataField: "applicationName",
-      text: <Translation>{(t) => t("Submission Name")}</Translation>,
+      text: <Translation>{(t) => t("Form Name")}</Translation>,
       sort: true,
       headerClasses: "classApplicationName",
       formatter: nameFormatter,
       filter: textFilter({
         delay: 800,
-        placeholder: `\uf002 ${t("Submission Name")}`, // custom the input placeholder
+        placeholder: `\uf002 ${t("Form Name")}`, // custom the input placeholder
         caseSensitive: false, // default is false, and true will only work when comparator is LIKE
         className: "icon-search",
         style: customStyle,

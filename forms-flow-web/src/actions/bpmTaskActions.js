@@ -208,7 +208,7 @@ export const setBPMFiltersAndCount = (data) => (dispatch) => {
   });
 };
 
-export const setVissibleAttributes = (data) => (dispatch) => {
+export const setVisibleAttributes = (data) => (dispatch) => {
   dispatch({
     type: ACTION_CONSTANTS.BPM_VISSIBLE_ATTRIBUTES, 
     payload: data,

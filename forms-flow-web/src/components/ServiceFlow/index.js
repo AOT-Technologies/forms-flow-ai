@@ -134,11 +134,7 @@ export default React.memo(() => {
       if(data){
         fetchBPMTaskCount(data).then((res)=>{
           dispatch(setBPMFiltersAndCount(res.data));
-        }).catch((err)=>{
-          if(err){
-            console.error(err);
-          }
-        }).finally(()=>{
+        }).catch((err)=> console.error(err)).finally(()=>{
           dispatch(setBPMFilterLoader(false));
         });
       }

@@ -17,7 +17,7 @@ import {
   setBPMTaskCount,
   bpmActionError,
   setBPMTaskList,
-  setVissibleAttributes,
+  setVisibleAttributes,
 } from "../../actions/bpmTaskActions";
 import { replaceUrl } from "../../helper/helper";
 import axios from "axios";
@@ -66,7 +66,7 @@ export const fetchServiceTaskList = (reqData, taskIdToRemove, firstResult, maxRe
             }
             dispatch(setBPMTaskCount(taskCount.count));
             dispatch(setBPMTaskList(taskData));
-            dispatch(setVissibleAttributes(responseData[1]));
+            dispatch(setVisibleAttributes(responseData[1]));
             dispatch(setBPMTaskLoader(false));
             done(null, taskData);
           }

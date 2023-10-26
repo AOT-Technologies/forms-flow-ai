@@ -113,6 +113,7 @@ export default function CreateNewFilterDrawer({
         setInputValues([{ name: "", label: "" }]);
       }
       if (!selectedFilterData?.users?.length && !selectedFilterData?.roles?.length) {
+        setSpecificUserGroup("");
         setPermissions(ACCESSIBLE_FOR_ALL_GROUPS);
       }
       const isUserInRoles = selectedFilterData?.users?.includes(userRole);
@@ -480,7 +481,7 @@ export default function CreateNewFilterDrawer({
             <Translation>{(t) => t("Specific User/ Group")}</Translation>
           </label>{" "}
           <br />
-          {specificUserGroup === SPECIFIC_USER_OR_GROUP ? (
+          {specificUserGroup === SPECIFIC_USER_OR_GROUP  ? (
             <div className="inside-child-container-two d-flex">
               <div className="user-group-divisions d-flex">
                 <div style={{ fontSize: "14px" }}>

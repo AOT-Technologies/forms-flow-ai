@@ -131,7 +131,7 @@ function FormTable() {
     dispatch(setBPMFormListPage(1));
   };
 
-  const viewOrEdit = () => (
+  const viewOrEdit = (formData) => (
     <button
       className="btn btn-link mt-2"
       onClick={() => viewOrEditForm(formData._id)}
@@ -298,7 +298,7 @@ function FormTable() {
                       </td>
 
                       <td>
-                        <span> {viewOrEdit()}</span>
+                        <span> {viewOrEdit(e)}</span>
                       </td>
                       <td style={{ position: "relative" }}>
                         <div
@@ -309,7 +309,7 @@ function FormTable() {
                         </div>
                         {openIndex === index && (
                           <Dropdown className="delete_dropdown">
-                            <Dropdown.Item onClick={() => deleteForms(formData)}>
+                            <Dropdown.Item onClick={() => deleteForms(e)}>
                               <i className="fa fa-trash mr-2" />
                               Delete
                             </Dropdown.Item>

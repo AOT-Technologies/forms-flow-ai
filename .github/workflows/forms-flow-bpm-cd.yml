@@ -75,54 +75,6 @@ jobs:
           restore-keys: |
             ${{ runner.os }}-buildx-${{ matrix.name }}
 
-      - name: Build and push Docker image - amd64
-        if: ${{ github.ref != 'refs/heads/master' }}
-        uses: docker/build-push-action@v4
-        with:
-          context: forms-flow-bpm
-          push: true
-          file: forms-flow-bpm/Dockerfile
-          platforms: linux/amd64
-          tags: ${{ steps.meta.outputs.tags }}
-          labels: ${{ steps.meta.outputs.labels }}
-      - name: Build and push Docker image - amd64
-        if: ${{ github.ref == 'refs/heads/master' }}
-        uses: docker/build-push-action@v2
-        with:
-          context: forms-flow-bpm
-          push: true
-          file: forms-flow-bpm/Dockerfile
-          tags: ${{ steps.meta.outputs.tags }}, formsflow/forms-flow-bpm:latest
-          labels: ${{ steps.meta.outputs.labels }}
-      - name: Build and push Docker image - arm64
-        uses: docker/build-push-action@v4
-        with:
-          context: forms-flow-bpm
-          file: forms-flow-bpm/Dockerfile-ARM64
-          push: true
-          platforms: linux/arm64/v8
-          tags: ${{ steps.meta.outputs.tags }}-arm64
-          labels: ${{ steps.meta.outputs.labels }}
-
-#####
-      - name: Set up AWS CLI
-        uses: aws-actions/configure-aws-credentials@v1
-        with:
-          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
-          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-          aws-region: ca-central-1  # Change this to your desired region
-      - name: Install kubectl
-        run: |
-          curl -LO "https://dl.k8s.io/release/$(curl -Ls https://dl.k8s.io/release/stable.txt)/bin/linux/amd64/kubectl"
-          chmod +x kubectl
-          sudo mv kubectl /usr/local/bin/
-      - name: Update Kube config
-        run: aws eks update-kubeconfig --region ca-central-1 --name formsflow-eks-qa
-      - name: Deploy to eks
-        run: |
-          kubectl -n app2 patch deployment forms-flow-bpm -p '{"spec":{"template":{"spec":{"containers":[{"name":"forms-flow-bpm","image":"docker.io/formsflow/forms-flow-bpm:${{ env.VERSION }}"}]}}}}'
-          kubectl -n app2 rollout restart deployment forms-flow-bpm
-          
       - name: ZAP Scan
         uses: zaproxy/action-baseline@v0.6.1
         with:
@@ -130,6 +82,6 @@ jobs:
           docker_name: 'owasp/zap2docker-stable'
           target: 'https://forms-flow-bpm-app2.aot-technologies.com/camunda'
           rules_file_name: '.zap/rules.tsv'
-          cmd_options: '-a'
+          cmd_options: '-a -debug -verbose'
           fail_action: true
           allow_issue_writing: true

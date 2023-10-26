@@ -12,7 +12,7 @@ const initialState = {
   processActivityList: null,
   processDiagramXML: "",
   processActivityLoadError: false,
-  isProcessDiagramLoading: true,
+  isProcessDiagramLoading: false,
   applicationCount: 0,
   isApplicationCountLoading: false,
   applicationCountResponse: false,
@@ -21,6 +21,10 @@ const initialState = {
   formStatusLoading:false,
   authorizationDetails:{},
   formAuthVerifyLoading:false,
+  isBpmnModel:true,
+  selectedProcessDiagramXML:"",
+  bpmnSearchText:"",
+  dmnSearchText:"",
   
 };
 
@@ -28,6 +32,10 @@ const process = (state = initialState, action) => {
   switch (action.type) {
     case ACTION_CONSTANTS.IS_PROCESS_STATUS_LOADING:
       return { ...state, isProcessLoading: action.payload };
+    case ACTION_CONSTANTS.IS_BPMN_MODEL:
+      return { ...state, isBpmnModel: action.payload };
+    case ACTION_CONSTANTS.SELECTED_PROCESS_DIAGRAM_XML:
+      return { ...state, selectedProcessDiagramXML: action.payload };
     case ACTION_CONSTANTS.PROCESS_STATUS_LIST:
       return { ...state, processStatusList: action.payload };
     case ACTION_CONSTANTS.IS_PROCESS_STATUS_LOAD_ERROR:
@@ -86,6 +94,10 @@ const process = (state = initialState, action) => {
         return { ...state, authorizationDetails: action.payload };
     case ACTION_CONSTANTS.FORM_AUTH_VERIFY_LOADING:
         return { ...state, formAuthVerifyLoading: action.payload };
+    case ACTION_CONSTANTS.BPMN_SEARCH_TEXT:
+        return { ...state, bpmnSearchText: action.payload };
+    case ACTION_CONSTANTS.DMN_SEARCH_TEXT:
+        return { ...state, dmnSearchText: action.payload };
     default:
       return state;
   }

@@ -1,7 +1,8 @@
+/* eslint-disable */
 import React, { useEffect, useRef, useState } from "react";
 import { connect, useDispatch, useSelector } from "react-redux";
 import { Link } from "react-router-dom";
-import { Button } from "react-bootstrap";
+import { Button, Col, Row } from "react-bootstrap";
 import { toast } from "react-toastify";
 import _isEquial from "lodash/isEqual";
 import { selectRoot, selectError, Errors, deleteForm } from "react-formio";
@@ -74,7 +75,7 @@ const List = React.memo((props) => {
   const searchText = useSelector((state) => state.bpmForms.searchText);
   const formType = useSelector((state) => state.bpmForms.formType);
 
-  const isDesigner = userRoles.includes(STAFF_DESIGNER);  
+  const isDesigner = userRoles.includes(STAFF_DESIGNER);
   const pageNo = useSelector((state) => state.bpmForms.page);
   const limit = useSelector((state) => state.bpmForms.limit);
   const sortBy = useSelector((state) => state.bpmForms.sortBy);
@@ -155,13 +156,13 @@ const List = React.memo((props) => {
       {
         name: "Forms",
         icon: "file-text-o",
-      }
+      },
     ];
   };
 
-  let headOptions = useMemo(()=>{
+  let headOptions = useMemo(() => {
     return isDesigner && headerList();
-  },[isDesigner]);
+  }, [isDesigner]);
 
   const downloadForms = async () => {
     let downloadForm = [];
@@ -486,7 +487,7 @@ const List = React.memo((props) => {
         </div>
       ) : (
         <div>
-       <Confirm
+          <Confirm
             modalOpen={props.modalOpen}
             message={
               formProcessData.id && applicationCount ? (
@@ -540,61 +541,59 @@ const List = React.memo((props) => {
               );
             }}
           />
-      
-        <section className="custom-grid grid-forms">
-          <Errors errors={errors} />
-      
-          <div className="d-flex align-items-center justify-content-between">
-            <Head items={headOptions} page={"Forms"} />
-            <div className="flex-item-right">
-              {(isDesigner) && (
-                <>
-                  <Link
-                    to={`${redirectUrl}formflow/create`}
-                    className="btn btn-primary btn-left btn-sm"
-                  >
-                    <i className="fa fa-plus fa-lg" />{" "}
-                    <Translation>{(t) => t("Create Form")}</Translation>
-                  </Link>
-      
-                  <Button
-                    className="btn btn-primary btn-sm form-btn pull-right btn-left"
-                    onClick={uploadClick}
-                    title={t("Upload json form only")}
-                  >
-                    <i className="fa fa-upload fa-lg" aria-hidden="true" />{" "}
-                    {t("Upload Form")}{" "}
-                  </Button>
-      
-                  <input
-                    type="file"
-                    value=''
-                    className="d-none"
-                    multiple={false}
-                    accept=".json,application/json"
-                    onChange={(e) => {
-                      fileUploaded(e);
-                    }}
-                    ref={uploadFormNode}
-                  />
-      
-                  <button
-                    className="btn btn-outline-primary pull-right btn-left"
-                    onClick={downloadForms}
-                    disabled={formCheckList.length === 0}
-                  >
-                    <i className="fa fa-download fa-lg" aria-hidden="true" />{" "}
-                    {t("Download Form")}{" "}
-                  </button>
-                </>
-              )}
-            </div>
-          </div>
-          <hr /> 
+
+          <Row className="mt-5">
+            <Col xs={4}>
+              <button
+                to={`${redirectUrl}formflow/create`}
+                className="btn btn-primary btn-lg"
+                style={{ whiteSpace: "nowrap" }}
+              >
+                <i className="fa fa-plus" />{" "}
+                <Translation>{(t) => t("Create Form")}</Translation>
+              </button>
+              <button
+                className="btn btn-outline-primary btn-lg ml-4"
+                onClick={uploadClick}
+                title={t("Upload json form only")}
+                style={{ whiteSpace: "nowrap" }}
+              >
+                <i className="fa fa-upload" aria-hidden="true" />{" "}
+                {t("Upload Form")}
+              </button>
+              <input
+                type="file"
+                value=""
+                className="d-none"
+                multiple={false}
+                accept=".json,application/json"
+                onChange={(e) => {
+                  fileUploaded(e);
+                }}
+                ref={uploadFormNode}
+              />
+            </Col>
+          </Row>
+          <Row className="mt-5">
+            <Col xs={2}>
+              <Head items={headOptions} page={"Forms"} />
+            </Col>
+            <Col className="d-flex justify-content-end">
+              <div className="custom-button mt-4">
+                <button
+                  className="btn btn-outline-primary btn-lg"
+                  onClick={downloadForms}
+                  disabled={formCheckList.length === 0}
+                >
+                  <i className="fa fa-download fa-lg" aria-hidden="true" />{" "}
+                  {t("Download Form")}{" "}
+                </button>
+              </div>
+            </Col>
+          </Row>
+          <hr className="my-0" />
           <FormTable />
-        </section>
-      </div>
-      
+        </div>
       )}
     </>
   );

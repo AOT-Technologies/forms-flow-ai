@@ -5159,7 +5159,6 @@ export const formio_resourceBundles = {
     "Submissions are made against": "Einreichungen werden gemacht gegen",
     "Submission is made against": "Einreichung wird gemacht gegen",
     "Changing the form title will not affect the existing submissions. It will only update in the newly created submissions. Press Save Changes to continue or cancel the changes.": "Die Änderung des Formulartitels wird die bestehenden Einreichungen nicht beeinflussen. Es wird nur in den neu erstellten Einreichungen aktualisiert. Drücken Sie Speichern Sie die Änderungen, um fortzufahren oder die Änderungen abzubrechen.",
-    "Submissions": "Einreichungen",
     "Submission Id": "Einreichungs-ID",
     "Submission History": "Einreichungshistorie",
     "No Submission History found": "Keine Einreichungshistorie gefunden",

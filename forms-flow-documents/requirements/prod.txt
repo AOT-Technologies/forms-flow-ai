@@ -1,5 +1,5 @@
 gunicorn
-Flask
+Flask<3
 Flask-Caching
 Flask-Migrate
 Flask-Moment

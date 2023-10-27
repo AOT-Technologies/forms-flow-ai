@@ -10,6 +10,7 @@ from http import HTTPStatus
 
 from flask import Flask, current_app, g, request
 from flask.logging import default_handler
+from formsflow_api_utils.exceptions import register_error_handlers
 from formsflow_api_utils.utils import (
     ALLOW_ALL_ORIGINS,
     CORS_ORIGINS,
@@ -32,7 +33,9 @@ from formsflow_documents.filters import is_b64image
 from formsflow_documents.resources import API
 
 
-def create_app(run_mode=os.getenv("FLASK_ENV", "production")):
+def create_app(
+    run_mode=os.getenv("FLASK_ENV", "production")
+):  # pylint:disable=too-many-statements
     """Return a configured Flask App using the Factory method."""
     app = Flask(__name__)
     app.wsgi_app = ProxyFix(app.wsgi_app)
@@ -64,6 +67,9 @@ def create_app(run_mode=os.getenv("FLASK_ENV", "production")):
 
     API.init_app(app)
     setup_jwt_manager(app, jwt)
+
+    with app.app_context():
+        register_error_handlers(API)
 
     @app.after_request
     def cors_origin(response):  # pylint: disable=unused-variable

@@ -17,9 +17,9 @@ class TestApplicationResource:
         response = client.get("/application")
         assert response.status_code == 401
         assert response.json == {
-            "type": "Invalid Token Error",
-            "message": "Access to formsflow.ai API Denied. Check if the bearer token is passed for "
-            "Authorization or has expired.",
+            "message": "Invalid Token Error",
+            "code": "INVALID_AUTH_TOKEN",
+            "details": [],
         }
 
     def test_application_list(self, app, client, session, jwt):
@@ -98,6 +98,7 @@ class TestApplicationResource:
             headers=headers,
             json=get_application_create_payload(form_id),
         )
+
         assert rv.status_code == 201
         response = client.get(
             f"/application?pageNo={pageNo}&limit={limit}&{filters}",
@@ -132,9 +133,9 @@ class TestApplicationDetailView:
         response = client.get("/application/1")
         assert response.status_code == 401
         assert response.json == {
-            "type": "Invalid Token Error",
-            "message": "Access to formsflow.ai API Denied. Check if the "
-            "bearer token is passed for Authorization or has expired.",
+            "message": "Invalid Token Error",
+            "code": "INVALID_AUTH_TOKEN",
+            "details": [],
         }
 
     def test_application_detailed_view(self, app, client, session, jwt):
@@ -159,7 +160,7 @@ class TestApplicationDetailView:
         response = client.get(f"/application/{application_id}", headers=headers)
         assert response.status_code == 200
         assert response.json["applicationName"] == "Sample form"
-        assert response.json["processKey"] == "oneStepApproval"
+        assert response.json["processKey"] == "onestepapproval"
 
 
 def test_application_resource_by_form_id(app, client, session, jwt):

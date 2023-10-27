@@ -186,11 +186,10 @@ logging:
   pattern:
     console: '%d{yyyy-MM-dd HH:mm:ss} - %msg%n'
     file: '%d{yyyy-MM-dd HH:mm:ss} [%thread] %-5level %logger{36} - %msg%n'
-  file:
-    name: forms-flow-bpm.log
-    path: ./logs/
   logback:
     rollingpolicy:
       file-name-pattern: /logs/archive/forms-flow-bpm-%d{yyyy-MM-dd}.%i.log
-      max-history: 30
       clean-history-on-start: true
+      max-history: 30
+  file:
+    name: /logs/forms-flow-bpm.log

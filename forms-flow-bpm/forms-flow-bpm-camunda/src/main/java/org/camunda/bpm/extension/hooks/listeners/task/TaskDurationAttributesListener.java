@@ -8,6 +8,8 @@ import org.camunda.bpm.extension.hooks.listeners.BaseListener;
 import org.camunda.bpm.extension.hooks.services.IMessageEvent;
 import org.camunda.bpm.extension.hooks.services.IUser;
 import org.joda.time.DateTime;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Task Duration Attributes Listener.
@@ -16,6 +18,8 @@ import org.joda.time.DateTime;
  * NOTE: This class has made a assumption of applying SLA of 3 days by default. This could be overriden through the listener property.
  */
 public class TaskDurationAttributesListener extends BaseListener implements TaskListener, IUser, IMessageEvent {
+
+    private static final Logger LOGGER = LoggerFactory.getLogger(TaskDurationAttributesListener.class);
 
     private Expression SLAInDays;
 

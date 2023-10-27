@@ -186,3 +186,13 @@ logging:
     org.springframework.web: ${CAMUNDA_APP_ROOT_LOG_FLAG}
     org.springframework.jdbc: ${CAMUNDA_APP_ROOT_LOG_FLAG}
     org.camunda.bpm: ${CAMUNDA_APP_ROOT_LOG_FLAG}
+  pattern:
+    console: '%d{yyyy-MM-dd HH:mm:ss} - %msg%n'
+    file: '%d{yyyy-MM-dd HH:mm:ss} [%thread] %-5level %logger{36} - %msg%n'
+  logback:
+    rollingpolicy:
+      file-name-pattern: /logs/archive/forms-flow-bpm-%d{yyyy-MM-dd}.%i.log
+      clean-history-on-start: true
+      max-history: 30
+  file:
+    name: /logs/forms-flow-bpm.log

@@ -218,6 +218,7 @@ const Dashboard = React.memo(() => {
             <div className="input-group col-12 col-md-4">
               <FormControl
                 type="search"
+                title="Search"
                 ref={searchInputBox}
                 onKeyPress={(e) => e.key === "Enter" && handleSearch()}
                 onChange={(e) => {
@@ -275,6 +276,10 @@ const Dashboard = React.memo(() => {
                 dayAriaLabel="Select the day"
                 clearAriaLabel="Clear value"
                 clearIcon={null}
+                name="selectDateRange"
+                monthAriaLabel="Select the month"
+                yearAriaLabel="Select the year"
+                nativeInputAriaLabel="Date"
               />
               <div className="ml-3">
                 {isAscending ? (

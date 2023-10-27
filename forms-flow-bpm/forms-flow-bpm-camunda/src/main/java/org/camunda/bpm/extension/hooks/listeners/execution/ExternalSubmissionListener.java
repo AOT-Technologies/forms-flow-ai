@@ -14,26 +14,26 @@ import org.camunda.bpm.extension.hooks.services.FormSubmissionService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.stereotype.Component;
 
 import javax.annotation.Resource;
-import javax.inject.Named;
-
-
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 
-import static org.camunda.bpm.extension.commons.utils.VariableConstants.FORM_URL;
 import static org.camunda.bpm.extension.commons.utils.VariableConstants.APPLICATION_ID;
+import static org.camunda.bpm.extension.commons.utils.VariableConstants.FORM_URL;
 
 /**
  * External Submission Listener.
  * This class supports creation of submission for instances created from external system
  */
-@Named("ExternalSubmissionListener")
+@Qualifier("ExternalSubmissionListener")
+@Component
 public class ExternalSubmissionListener extends BaseListener implements ExecutionListener {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(ExternalSubmissionListener.class);

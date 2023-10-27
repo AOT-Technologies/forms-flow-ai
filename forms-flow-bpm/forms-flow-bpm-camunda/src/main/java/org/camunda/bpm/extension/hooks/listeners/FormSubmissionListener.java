@@ -6,12 +6,13 @@ import org.camunda.bpm.engine.delegate.DelegateTask;
 import org.camunda.bpm.engine.delegate.ExecutionListener;
 import org.camunda.bpm.engine.delegate.TaskListener;
 import org.camunda.bpm.extension.hooks.services.FormSubmissionService;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 
 import java.io.IOException;
-import java.util.logging.Logger;
 
 import static org.camunda.bpm.extension.commons.utils.VariableConstants.FORM_URL;
 import static org.camunda.bpm.extension.commons.utils.VariableConstants.WEB_FORM_URL;
@@ -22,6 +23,7 @@ import static org.camunda.bpm.extension.commons.utils.VariableConstants.WEB_FORM
 @Component
 public class FormSubmissionListener extends BaseListener implements ExecutionListener, TaskListener {
 
+    private static final Logger LOGGER = LoggerFactory.getLogger(FormSubmissionListener.class);
 
     @Autowired
     private FormSubmissionService formSubmissionService;

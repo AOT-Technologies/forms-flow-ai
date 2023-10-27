@@ -77,6 +77,7 @@ public class TaskFilterRestServiceImpl implements TaskFilterRestService {
         Map<String, Object> dataMap = new HashMap<>();
         TaskQuery query = filterQuery.getCriteria().toQuery(processEngine);
         dataMap.put("name", filterQuery.getName());
+        dataMap.put("id", filterQuery.getId());
         dataMap.put("count", query.count());
         return dataMap;
     }

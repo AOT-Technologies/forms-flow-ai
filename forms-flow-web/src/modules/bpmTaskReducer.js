@@ -1,7 +1,6 @@
 import ACTION_CONSTANTS from "../actions/actionConstants";
 import { TASK_FILTER_LIST_DEFAULT_PARAM } from "../constants/taskConstants";
 import {
-  getFirstResultIndex,
   getFormattedParams,
 } from "../apiManager/services/taskSearchParamsFormatterService";
 import { QUERY_TYPES } from "../components/ServiceFlow/constants/taskConstants";
@@ -22,7 +21,7 @@ const initialState = {
   userList: [],
   filterList: [],
   isFilterLoading: true,
-  selectedFilter: null,
+  selectedFilter: {},
   taskId: null,
   filterListSortParams: { sorting: [{ ...TASK_FILTER_LIST_DEFAULT_PARAM }] },
   filterSearchSelections: [],
@@ -35,7 +34,11 @@ const initialState = {
   taskFormSubmissionReload: false,
   activePage: 1,
   firstResult: 0,
-  error: ''
+  selectedTaskVariables :{},
+  viewType:true,
+  error: '',
+  filtersAndCount:[],
+  vissibleAttributes : {},
 };
 
 const bpmTasks = (state = initialState, action) => {
@@ -53,7 +56,7 @@ const bpmTasks = (state = initialState, action) => {
     case ACTION_CONSTANTS.BPM_USER_LIST:
       return { ...state, userList: action.payload };
     case ACTION_CONSTANTS.BPM_TASKS_COUNT:
-      return { ...state, tasksCount: action.payload.count };
+      return { ...state, tasksCount: action.payload};
     case ACTION_CONSTANTS.BPM_TASK_DETAIL:
       return { ...state, taskDetail: action.payload };
     case ACTION_CONSTANTS.IS_BPM_TASK_UPDATING:
@@ -128,14 +131,25 @@ const bpmTasks = (state = initialState, action) => {
       return {
         ...state,
         activePage: action.payload,
-        firstResult: getFirstResultIndex(action.payload),
+        firstResult: action.payload,
       };
+    case ACTION_CONSTANTS.SELETED_TASK_VARIABLES:
+        return { ...state, selectedTaskVariables: action.payload };
+    case ACTION_CONSTANTS.VIEW_TYPE:
+        return { ...state, viewType: action.payload };
+    case ACTION_CONSTANTS.UPDATE_FILTER_SEARCH_PARAMS:
+        return { ...state, filterListSearchParams: action.payload };    
+
     case ACTION_CONSTANTS.BPM_ERROR:
         return {
           ...state,
           taskId: null,
           error: action.payload
         };
+    case ACTION_CONSTANTS.BPM_FILTERS_AND_COUNT:
+        return { ...state, filtersAndCount: action.payload };
+    case ACTION_CONSTANTS.BPM_VISSIBLE_ATTRIBUTES:
+        return { ...state, vissibleAttributes: action.payload };
     default:
       return state;
   }

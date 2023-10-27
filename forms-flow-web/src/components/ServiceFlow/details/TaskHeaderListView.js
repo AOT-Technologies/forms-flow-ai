@@ -1,9 +1,8 @@
 import React, { useEffect, useState } from "react";
-import { Row, Col } from "react-bootstrap";
+ import { Row, Col } from "react-bootstrap";
 import {
   getISODateTime,
   getFormattedDateAndTime,
-  getProcessDataObjectFromList,
 } from "../../../apiManager/services/formatterService";
 import { useDispatch, useSelector } from "react-redux";
 import DatePicker from "react-datepicker";
@@ -24,16 +23,14 @@ import UserSelectionDebounce from "./UserSelectionDebounce";
 import SocketIOService from "../../../services/SocketIOService";
 import { useTranslation } from "react-i18next";
 
-const TaskHeader = React.memo(() => {
-  const task = useSelector((state) => state.bpmTasks.taskDetail);
-  const taskId = useSelector((state) => state.bpmTasks.taskId);
-  const processList = useSelector((state) => state.bpmTasks.processList);
+const TaskHeaderListView = React.memo(({task,taskId,groupView = true}) => {
   const username = useSelector(
     (state) => state.user?.userDetail?.preferred_username || ""
   );
   const taskGroups = useSelector((state) => state.bpmTasks.taskGroups);
   const selectedFilter = useSelector((state) => state.bpmTasks.selectedFilter);
   const reqData = useSelector((state) => state.bpmTasks.listReqParams);
+  const vissibleAttributes = useSelector((state) => state.bpmTasks.vissibleAttributes);
   const firstResult = useSelector((state) => state.bpmTasks.firstResult);
   const [followUpDate, setFollowUpDate] = useState(null);
   const [dueDate, setDueDate] = useState(null);
@@ -186,7 +183,7 @@ const TaskHeader = React.memo(() => {
         {followUpDate ? (
           <span className="mr-4">{moment(followUpDate).fromNow()}</span>
         ) : (
-          t("Set follow-up Date")
+          t("Add Date")
         )}
       </div>
     );
@@ -196,11 +193,11 @@ const TaskHeader = React.memo(() => {
   const DueDateInput = React.forwardRef(({ value, onClick }, ref) => {
     return (
       <div onClick={onClick} ref={ref}>
-        <i className="fa fa-bell mr-1" />{" "}
+        <i className="fa fa-calendar mr-1" />{" "}
         {dueDate ? (
           <span className="mr-4">{moment(dueDate).fromNow()}</span>
         ) : (
-          t("Set Due date")
+          t("Add Date")
         )}
       </div>
     );
@@ -217,137 +214,151 @@ const TaskHeader = React.memo(() => {
         onClose={() => setModal(false)}
         groups={taskGroups}
       />
-      <Row className="ml-0 task-header">{task?.name}</Row>
-      <Row className="ml-0 task-name">
-        <span className="application-id" data-title={t("Process Name")}>
-          {" "}
-          {
-            getProcessDataObjectFromList(processList, task?.processDefinitionId)
-              ?.name
-          }
-        </span>
-      </Row>
-      <Row className="ml-0">
-        <span data-title={t("Application ID")} className="application-id">
-          {t("Application ID")}# {task?.applicationId}
-        </span>
-      </Row>
-      <Row className="actionable mb-4">
-        <Col
-          sm={followUpDate ? 2 : "auto"}
-          data-title={
-            followUpDate
-              ? getFormattedDateAndTime(followUpDate)
-              : t("Set FollowUp Date")
-          }
-          className="date-container"
-        >
-          <DatePicker
-            selected={followUpDate}
-            onChange={onFollowUpDateUpdate}
-            showTimeSelect
-            isClearable
-            popperPlacement="bottom-start"
-            popperModifiers={{
-              offset: {
-                enabled: true,
-                offset: "5px, 10px",
-              },
-              preventOverflow: {
-                enabled: true,
-                escapeWithReference: false,
-                boundariesElement: "viewport",
-              },
-            }}
-            customInput={<FollowUpDateInput />}
-          />
+
+      <Row>
+      {vissibleAttributes.taskVisibleAttributes.dueDate &&  <Col xs={3} className="px-0">
+          <div className="tab-width">
+            <div>
+              <h6 className="font-weight-light">Follow-up Date</h6>
+            </div>
+            <div
+              className="actionable"
+              data-title={
+                followUpDate
+                  ? getFormattedDateAndTime(followUpDate)
+                  : t("Set follow-up Date")
+              }
+            >
+              <DatePicker
+                selected={followUpDate}
+                onChange={onFollowUpDateUpdate}
+                showTimeSelect
+                isClearable
+                popperPlacement="bottom-start"
+                popperModifiers={{
+                  offset: {
+                    enabled: true,
+                    offset: "5px, 10px",
+                  },
+                  preventOverflow: {
+                    enabled: true,
+                    escapeWithReference: false,
+                    boundariesElement: "viewport",
+                  },
+                }}
+                customInput={<FollowUpDateInput />}
+              />
+            </div>
+          </div>
+        </Col>}
+        <Col xs={3}>
+          <div className="tab-width">
+            <div>
+              <h6 className="font-weight-light">Due Date</h6>
+            </div>
+            <div
+              className="actionable"
+              data-title={
+                dueDate ? getFormattedDateAndTime(dueDate) : t("Set Due date")
+              }
+            >
+              <DatePicker
+                selected={dueDate}
+                onChange={onDueDateUpdate}
+                showTimeSelect
+                isClearable
+                shouldCloseOnSelect
+                popperPlacement="bottom-start"
+                popperModifiers={{
+                  offset: {
+                    enabled: true,
+                    offset: "5px, 10px",
+                  },
+                  preventOverflow: {
+                    enabled: true,
+                    escapeWithReference: false,
+                    boundariesElement: "viewport",
+                  },
+                }}
+                customInput={<DueDateInput />}
+              />
+            </div>
+          </div>
         </Col>
-        <Col
-          sm={dueDate ? 2 : "auto"}
-          data-title={
-            dueDate ? getFormattedDateAndTime(dueDate) : t("Set Due date")
-          }
-          className="date-container"
-        >
-          <DatePicker
-            selected={dueDate}
-            onChange={onDueDateUpdate}
-            showTimeSelect
-            isClearable
-            shouldCloseOnSelect
-            popperPlacement="bottom-start"
-            popperModifiers={{
-              offset: {
-                enabled: true,
-                offset: "5px, 10px",
-              },
-              preventOverflow: {
-                enabled: true,
-                escapeWithReference: false,
-                boundariesElement: "viewport",
-              },
-            }}
-            customInput={<DueDateInput />}
-          />
-        </Col>
-        <Col
-          className="center-position"
-          sm={4}
-          onClick={() => setModal(true)}
-          data-title={t("groups")}
-        >
-          <i className="fa fa-group mr-1" />
-          {taskGroups.length === 0 ? (
-            <span>{t("Add groups")}</span>
-          ) : (
-            <span className="group-align">{getGroups(taskGroups)}</span>
-          )}
-        </Col>
-        <Col className="right-side">
-          {isEditAssignee ? (
-            task?.assignee ? (
-              <span>
-                <UserSelectionDebounce
-                  onClose={() => setIsEditAssignee(false)}
-                  currentUser={task.assignee}
-                  onChangeClaim={onChangeClaim}
-                />
-              </span>
-            ) : (
-              <span data-testid="clam-btn" onClick={onClaim}>
-                {" "}
-                {t("Claim")}
-              </span>
-            )
-          ) : (
-            <>
-              <i className="fa fa-user mr-1" />
-              {task?.assignee ? (
-                <span>
-                  <span
-                    className="change-tooltip"
-                    onClick={() => setIsEditAssignee(true)}
-                    data-title={t("Click to Change Assignee")}
-                  >
-                    {task.assignee}
+      {vissibleAttributes.taskVisibleAttributes.assignee &&  <Col xs={3}>
+          <div className="tab-width">
+            <div>
+              <h6 className="font-weight-light">Assignee</h6>
+            </div>
+            <div className="actionable">
+              {isEditAssignee ? (
+                task?.assignee ? (
+                  <span>
+                    <UserSelectionDebounce
+                      onClose={() => setIsEditAssignee(false)}
+                      currentUser={task.assignee}
+                      onChangeClaim={onChangeClaim}
+                    />
                   </span>
-                  <i
-                    className="fa fa-times ml-1"
-                    onClick={onUnClaimTask}
-                    data-title={t("Reset Assignee")}
-                  />
-                </span>
+                ) : (
+                  <span data-testid="clam-btn" onClick={onClaim}>
+                    {" "}
+                    {t("Assign to Me")}
+                  </span>
+                )
               ) : (
-                <span data-testid="clam-btn" onClick={onClaim}>
-                  {t("Claim")}
-                </span>
+                <>
+                  <i className="fa fa-user mr-1" />
+                  {task?.assignee ? (
+                    <span>
+                      <span
+                        className="change-tooltip"
+                        onClick={() => setIsEditAssignee(true)}
+                        data-title={t("Click to Change Assignee")}
+                      >
+                        {task.assignee}
+                      </span>
+                      <i
+                        className="fa fa-times ml-1"
+                        onClick={onUnClaimTask}
+                        data-title={t("Reset Assignee")}
+                      />
+                    </span>
+                  ) : (
+                    <span data-testid="clam-btn" onClick={onClaim}>
+                      {t("Assign to Me")}
+                    </span>
+                  )}
+                </>
               )}
-            </>
-          )}
+            </div>
+          </div>
+        </Col>}
+        <Col xs={3}> 
+          {groupView &&
+            <div className="tab-width">
+              <div>
+                <h6 className="font-weight-light">Groups</h6>
+              </div>
+              <div
+                className="actionable"
+                onClick={() => setModal(true)}
+                data-title={t("groups")}
+              >
+                <i className="fa fa-group mr-1" />
+                {taskGroups.length === 0 ? (
+                  <span>{t("Add group")}</span>
+                ) : (
+                  <span className="group-align">{getGroups(taskGroups)}</span>
+                )}
+              </div>
+            </div>}
         </Col>
       </Row>
+
+      
     </>
   );
 });
 
-export default TaskHeader;
+export default TaskHeaderListView;

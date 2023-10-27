@@ -148,12 +148,6 @@ export const setDmnSearchText = (data) => (dispatch) => {
   });
 };
 
-export const setSelectedProcessDiagramXML = (data) => (dispatch) => {
-  dispatch({
-    type: ACTION_CONSTANTS.SELECTED_PROCESS_DIAGRAM_XML,
-    payload: data,
-  });
-};
 
 export const setBpmnModel = (data) => (dispatch) => {
   dispatch({

@@ -89,7 +89,6 @@ it("should render the Process list component without breaking", () => {
         processList: [],
         processLoadError: false,
         processStatusList: [],
-        selectedProcessDiagramXML: "",
         unPublishApiError: false,
         workflowAssociated: null
     },       

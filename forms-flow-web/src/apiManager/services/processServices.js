@@ -18,7 +18,6 @@ import {
   setResetProcess,
   setAllDmnProcessList,
   setBpmnModel,
-  setSelectedProcessDiagramXML,
 } from "../../actions/processActions";
 import { setApplicationCount } from "../../actions/processActions";
 import { replaceUrl } from "../../helper/helper";
@@ -432,11 +431,10 @@ export const fetchDiagram = (
           dispatch(
             setProcessDiagramXML(isDmn ? res.data.dmnXml : res.data.bpmn20Xml)
           );
-          dispatch(setSelectedProcessDiagramXML(isDmn ? res.data.dmnXml : res.data.bpmn20Xml));
+          
           // console.log('res.data.bpmn20Xml>>',res.data.bpmn20Xml);
         } else {
           dispatch(setProcessDiagramXML(""));
-          dispatch(setSelectedProcessDiagramXML(""));
         }
         dispatch(setProcessDiagramLoading(false));
         done(null, res.data);

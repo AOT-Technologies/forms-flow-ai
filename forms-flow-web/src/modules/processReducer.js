@@ -22,7 +22,6 @@ const initialState = {
   authorizationDetails:{},
   formAuthVerifyLoading:false,
   isBpmnModel:true,
-  selectedProcessDiagramXML:"",
   bpmnSearchText:"",
   dmnSearchText:"",
   
@@ -34,8 +33,6 @@ const process = (state = initialState, action) => {
       return { ...state, isProcessLoading: action.payload };
     case ACTION_CONSTANTS.IS_BPMN_MODEL:
       return { ...state, isBpmnModel: action.payload };
-    case ACTION_CONSTANTS.SELECTED_PROCESS_DIAGRAM_XML:
-      return { ...state, selectedProcessDiagramXML: action.payload };
     case ACTION_CONSTANTS.PROCESS_STATUS_LIST:
       return { ...state, processStatusList: action.payload };
     case ACTION_CONSTANTS.IS_PROCESS_STATUS_LOAD_ERROR:

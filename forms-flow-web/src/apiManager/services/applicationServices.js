@@ -61,12 +61,12 @@ export const getAllApplications = (pageNo = 1, limit = 5, ...rest) => {
           dispatch(setApplicationList(applications));
           done(null, applications);
         } else {
-          dispatch(setApplicationError("Applications not found"));
+          dispatch(setApplicationError("Submissions not found"));
         }
         done(null, res.data);
       })
       .catch((error) => {
-        dispatch(setApplicationError("Failed to fetch applications"));
+        dispatch(setApplicationError("Failed to fetch submissions"));
         done(error);
       });
   };
@@ -276,12 +276,12 @@ export const getAllApplicationStatus = (params, ...rest) => {
           dispatch(setApplicationStatusList(res.data.applicationStatus));
           //done(null, applications);
         } else {
-          dispatch(setApplicationError("Application status not found"));
+          dispatch(setApplicationError("Submission status not found"));
         }
         done(null, res.data);
       })
       .catch((error) => {
-        dispatch(setApplicationError("Failed to fetch application status"));
+        dispatch(setApplicationError("Failed to fetch submission status"));
         done(error);
       });
   };

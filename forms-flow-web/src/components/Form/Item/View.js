@@ -342,7 +342,7 @@ const View = React.memo((props) => {
                 <span className="text-primary">
                   <i className="fa fa-info-circle mr-2" aria-hidden="true"></i>
                   {t(
-                    "Unfinished applications will be saved to Applications/Drafts."
+                    "Unfinished submissions will be saved to Submissions/Drafts."
                   )}
                 </span>
               )}
@@ -351,7 +351,7 @@ const View = React.memo((props) => {
                 <SavingLoading
                   text={
                     draftSaved
-                      ? t("Saved to Applications/Drafts")
+                      ? t("Saved to Submissions/Drafts")
                       : t("Saving...")
                   }
                   saved={draftSaved}

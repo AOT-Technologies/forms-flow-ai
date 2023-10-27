@@ -419,7 +419,7 @@ const Preview = React.memo(
                           "Applicable for Client and Reviewer Roled Users only."
                         )}
                       >
-                        {t("Submission Permission")}
+                        {t("Client Permission")}
                         <i className="ml-1 fa fa-info-circle cursor-pointer text-primary" />
                       </span>
                       <div>
@@ -504,9 +504,9 @@ const Preview = React.memo(
                         <hr className="mt-1" />
                         <span
                           className="font-weight-bold"
-                          title={t("Permission for application tracking.")}
+                          title={t("Permission for submission tracking.")}
                         >
-                          {t("Application Permission")}
+                          {t("Reviewer Permission")}
                           <i className="ml-1 fa fa-info-circle cursor-pointer text-primary" />
                         </span>
                         <div>

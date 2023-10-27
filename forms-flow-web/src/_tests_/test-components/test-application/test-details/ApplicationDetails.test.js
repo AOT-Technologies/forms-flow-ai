@@ -20,27 +20,27 @@ afterEach(() => {
   useSelector.mockClear();
 });
 
-test("Render Application Detail Component with application prop passed", () => {
+test("Render Submission Detail Component with submission prop passed", () => {
   render(<ApplicationDetails application={mockApplication1} />);
-  expect(screen.getByText("Application Id"));
-  expect(screen.getByText("Application Name"));
+  expect(screen.getByText("Submission ID"));
+  expect(screen.getByText("Form Name"));
   expect(screen.getByText("Created By"));
-  expect(screen.getByText("Application Status"));
+  expect(screen.getByText("Submission Status"));
   expect(screen.getByText("Submitted On"));
   expect(screen.getByText("Modified On"));
 });
 
-test("Render Detail Component with application prop passed", () => {
+test("Render Detail Component with submission prop passed", () => {
   useSelector.mockImplementation((callback) => callback(appState));
   const { rerender } = render(<Details application={mockApplication1} />);
   expect(screen.queryByText("Loading...")).toBeNull();
-  expect(screen.getByText("Application Id"));
+  expect(screen.getByText("Submission ID"));
   expect(screen.getByTestId("application-id")).toHaveTextContent(
     mockApplication1.id
   );
-  expect(screen.getByText("Application Name"));
+  expect(screen.getByText("Form Name"));
   expect(screen.getByText("Created By"));
-  expect(screen.getByText("Application Status"));
+  expect(screen.getByText("Submission Status"));
   expect(screen.getByText("Submitted On"));
   expect(screen.getByText("Modified On"));
 
@@ -59,7 +59,7 @@ test("Render Detail Component with application prop passed", () => {
   );
 });
 
-test("calling render Application Detail with different Props", async () => {
+test("calling render Submission Detail with different Props", async () => {
   const { rerender } = render(
     <ApplicationDetails application={mockApplication1} />
   );

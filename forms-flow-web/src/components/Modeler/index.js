@@ -28,13 +28,13 @@ const DesignerProcessRoute = ({ component: Component, ...rest }) => (
  
 
 export default React.memo(() => {
-  user = useSelector((state) => state.user.roles || []);
-  const isAuthenticated = useSelector((state) => state.user.isAuthenticated);
+  user = useSelector((state) => state.user?.roles || []);
+  const isAuthenticated = useSelector((state) => state.user?.isAuthenticated);
   if (!isAuthenticated) {
     return <Loading />;
   }
   return (
-    <div className="container" id="main" data-testid="Form-index">
+    <div className="container" id="main" data-testid="Process-index">
       <Switch>
         <Route exact path={`${BASE_ROUTE}processes`} component={Base} />
         <DesignerProcessRoute

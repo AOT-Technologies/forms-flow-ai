@@ -18,7 +18,7 @@ export default React.memo(() => {
   const dispatch = useDispatch();
   const { t } = useTranslation();
   const [fileName, setFileName] = useState("");
-  const isBpmnModel = useSelector((state) => state.process.isBpmnModel);
+  const isBpmnModel = useSelector((state) => state.process?.isBpmnModel);
   const tenantKey = useSelector((state) => state.tenants?.tenantId);
   const [selectedTab, setSelectedTab] = useState(isBpmnModel ? "bpmn" : "dmn");
 

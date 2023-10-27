@@ -12,8 +12,8 @@ import { MULTITENANCY_ENABLED } from "../../../constants/constants";
 import { setDmnSearchText } from "../../../actions/processActions";
 function DmnTable() {
   const dispatch = useDispatch();
-  const dmn = useSelector((state) => state.process.dmnProcessList);
-  const searchText = useSelector((state) => state.process.dmnSearchText);
+  const dmn = useSelector((state) => state.process?.dmnProcessList);
+  const searchText = useSelector((state) => state.process?.dmnSearchText);
   const tenantKey = useSelector((state) => state.tenants?.tenantId);
   const [activePage, setActivePage] = useState(1);
   const [limit, setLimit] = useState(5);

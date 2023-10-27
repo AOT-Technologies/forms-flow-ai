@@ -17,9 +17,9 @@ from formsflow_api_utils.utils import (
     ALLOW_ALL_ORIGINS,
     CORS_ORIGINS,
     FORMSFLOW_API_CORS_ORIGINS,
-    CustomFormatter,
     cache,
     jwt,
+    register_log_handlers,
     setup_logging,
     translate,
 )
@@ -35,7 +35,9 @@ from formsflow_api.models import db, ma
 from formsflow_api.resources import API
 
 
-def create_app(run_mode=os.getenv("FLASK_ENV", "production")):
+def create_app(
+    run_mode=os.getenv("FLASK_ENV", "production")
+):  # pylint: disable=too-many-statements
     """Return a configured Flask App using the Factory method."""
     app = Flask(__name__)
     app.wsgi_app = ProxyFix(app.wsgi_app)
@@ -50,10 +52,15 @@ def create_app(run_mode=os.getenv("FLASK_ENV", "production")):
     )
     app.logger = flask_logger
     app.logger = logging.getLogger("app")
-    logs = logging.StreamHandler()
 
-    logs.setFormatter(CustomFormatter())
-    app.logger.handlers = [logs]
+    register_log_handlers(
+        app,
+        log_file="logs/forms-flow-webapi.log",
+        when=os.getenv("API_LOG_ROTATION_WHEN", "d"),
+        interval=int(os.getenv("API_LOG_ROTATION_INTERVAL", "1")),
+        backupCount=int(os.getenv("API_LOG_BACKUP_COUNT", "7")),
+    )
+
     app.logger.propagate = False
     logging.log.propagate = False
     with open("logo.txt") as file:  # pylint: disable=unspecified-encoding

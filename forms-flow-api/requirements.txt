@@ -26,7 +26,7 @@ ecdsa==0.18.0
 flask-jwt-oidc==0.3.0
 flask-marshmallow==0.15.0
 flask-restx==1.1.0
-formsflow-api-utils @ git+https://github.com/sumesh-aot/forms-flow-ai.git@8a52e518f9a2c5944b2e22854484cccdf624f694#subdirectory=forms-flow-api-utils
+formsflow-api-utils @ git+https://github.com/auslin-aot/forms-flow-ai.git@logs-webapi#subdirectory=forms-flow-api-utils
 gunicorn==21.2.0
 h11==0.14.0
 h2==4.1.0

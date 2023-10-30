@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { DropdownButton, Dropdown } from "react-bootstrap";
+import {  Dropdown } from "react-bootstrap";
 import { useSelector, useDispatch } from "react-redux";
 import Pagination from "react-js-pagination";
 import LoadingOverlay from "react-loading-overlay";
@@ -149,17 +149,15 @@ function BpmnTable() {
         </div>
 
         <div className="d-flex justify-content-between align-items-center">
-          <div>
-            <span>
-              {t("Rows per page")}
-              <DropdownButton
-                className="ml-2"
-                drop="down"
-                variant="secondary"
-                title={limit}
-                style={{ display: "inline" }}
-              >
-                {pageOptions.map((option, index) => (
+          <div className="d-flex" >
+             <span className="mr-2"> {t("Rows per page")}</span>
+              <Dropdown size="sm">
+              <Dropdown.Toggle variant="light" id="dropdown-basic">
+                {limit}
+              </Dropdown.Toggle>
+             
+              <Dropdown.Menu>
+              {pageOptions.map((option, index) => (
                   <Dropdown.Item
                     key={index}
                     type="button"
@@ -170,9 +168,9 @@ function BpmnTable() {
                     {option.text}
                   </Dropdown.Item>
                 ))}
-              </DropdownButton>
-            </span>
-            <span className="ml-2 mb-3 mr-2">
+              </Dropdown.Menu>
+              </Dropdown>
+            <span className="ml-2">
            {t("Showing")} {(limit * activePage) - (limit - 1)} {t("to")}&nbsp;
            {Math.min(limit * activePage, totalProcess)} {t("of")}&nbsp;
            {totalProcess} {t("entries")}

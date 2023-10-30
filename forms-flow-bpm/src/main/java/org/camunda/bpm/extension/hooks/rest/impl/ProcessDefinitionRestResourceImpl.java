@@ -1,5 +1,6 @@
 package org.camunda.bpm.extension.hooks.rest.impl;
 
+import org.camunda.bpm.engine.rest.dto.CountResultDto;
 import org.camunda.bpm.engine.rest.dto.repository.ProcessDefinitionDiagramDto;
 import org.camunda.bpm.engine.rest.dto.repository.ProcessDefinitionDto;
 import org.camunda.bpm.engine.rest.dto.runtime.ProcessInstanceDto;
@@ -68,5 +69,10 @@ public class ProcessDefinitionRestResourceImpl implements ProcessDefinitionRestR
         }
         return EntityModel.of(processInstanceDto,
                 linkTo(methodOn(ProcessDefinitionRestResourceImpl.class).startProcessInstanceByKey(context, parameters, key, tenantId)).withSelfRel());
+    }
+    
+    @Override
+    public CountResultDto getProcessDefinitionsCount(UriInfo uriInfo){
+        return restService.getProcessDefinitionsCount(uriInfo);
     }
 }

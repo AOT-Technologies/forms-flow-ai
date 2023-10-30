@@ -609,7 +609,7 @@ const List = React.memo((props) => {
             <div className="flex-item-left">
               <div style={{ display: "flex" }}>
                 <span className="task-head" style={{ marginTop: "3px" }}>
-                  <i className="fa fa-wpforms" aria-hidden="true" />
+                  <i className="fa-solid fa-file-lines" aria-hidden="true" />
                 </span>
                 <h3 className="task-head">
                   {" "}

@@ -157,15 +157,17 @@ table {
   table tr {
     background-color: #FFFFFF;
     box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    border: none;
   }
   
   table th {
     padding-top: 12px;
     padding-bottom: 12px;
     text-align: left;
-    background-color: #d9dff3;
+    background-color: #f0f6fb;
     padding: 8px; /* Adjust the padding to your liking */
     margin: 0;
+    border: none;
   }
   
 //   td:first-child, th:first-child {

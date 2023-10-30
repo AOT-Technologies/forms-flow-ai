@@ -187,10 +187,10 @@ function FormTable() {
     <>
       <LoadingOverlay active={searchFormLoading} spinner text="Loading...">
         <div style={{ minHeight: "400px" }}>
-          <table className="table table-header-color">
+          <table className="table">
             <thead>
-              <tr className="table-header table-bordered">
-                <th scope="col">
+              <tr >
+                <th >
                   <div style={{ display: "flex", alignItems: "center" }}>
                     {isDesigner && <SelectFormForDownload type="all" />}
                     <span className="ml-4 mt-1">{t("Form Title")}</span>

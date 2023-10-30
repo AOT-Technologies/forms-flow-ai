@@ -1,8 +1,6 @@
-/* eslint-disable */
 import React, { useEffect, useRef, useState } from "react";
 import { connect, useDispatch, useSelector } from "react-redux";
-import { Link } from "react-router-dom";
-import { Button, Col, Row } from "react-bootstrap";
+import { Col, Row } from "react-bootstrap";
 import { toast } from "react-toastify";
 import _isEquial from "lodash/isEqual";
 import { selectRoot, selectError, Errors, deleteForm } from "react-formio";
@@ -541,7 +539,7 @@ const List = React.memo((props) => {
               );
             }}
           />
-
+          <Errors errors={errors} />
           <Row className="mt-5">
             <Col xs={4}>
               <button

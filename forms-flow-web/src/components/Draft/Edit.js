@@ -227,7 +227,7 @@ const View = React.memo((props) => {
               <SavingLoading
                 text={
                   draftSaved
-                    ? t("Saved to Applications/Drafts")
+                    ? t("Saved to Submissions/Drafts")
                     : t("Saving...")
                 }
                 saved={draftSaved}

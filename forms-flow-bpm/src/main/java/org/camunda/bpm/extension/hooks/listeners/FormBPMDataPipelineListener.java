@@ -8,7 +8,7 @@ import org.camunda.bpm.engine.delegate.TaskListener;
 import org.camunda.bpm.extension.hooks.services.FormSubmissionService;
 import org.springframework.beans.factory.annotation.Autowired;
 
-import javax.inject.Named;
+import jakarta.inject.Named;
 import java.io.IOException;
 import java.util.Map;
 

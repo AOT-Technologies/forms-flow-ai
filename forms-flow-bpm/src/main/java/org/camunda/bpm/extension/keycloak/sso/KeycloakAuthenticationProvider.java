@@ -5,7 +5,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import org.springframework.security.core.context.SecurityContextHolder;
-import javax.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletRequest;
 
 import org.apache.commons.lang3.StringUtils;
 import org.camunda.bpm.engine.ProcessEngine;
@@ -17,7 +17,7 @@ import org.springframework.security.oauth2.client.authentication.OAuth2Authentic
 import org.springframework.security.oauth2.core.oidc.user.OidcUser;
 import org.springframework.util.ObjectUtils;
 
-import com.nimbusds.jose.shaded.json.JSONArray;
+import net.minidev.json.JSONArray;
 
 import org.springframework.security.oauth2.core.oidc.OidcIdToken;
 
@@ -59,9 +59,9 @@ public class KeycloakAuthenticationProvider extends ContainerBasedAuthentication
 	private List<String> getUserGroups(String userId, ProcessEngine engine, OidcUser principal) {
 		List<String> groupIds = new ArrayList<>();
 		// Find groups or roles from the idToken.
-		if (!enableClientAuth && principal.getIdToken().containsClaim("groups")) {
+		if (!enableClientAuth && principal.getIdToken().getClaims().containsKey("groups")) {
 			groupIds.addAll(getKeys(principal.getIdToken(), "groups"));
-		} else if (enableClientAuth && principal.getIdToken().containsClaim("roles")) {
+		} else if (enableClientAuth && principal.getIdToken().getClaims().containsKey("roles")) {
 			groupIds.addAll(getKeys(principal.getIdToken(), "roles"));
 		} else {
 			// query groups using KeycloakIdentityProvider plugin
@@ -73,7 +73,7 @@ public class KeycloakAuthenticationProvider extends ContainerBasedAuthentication
 
 	private List<String> getKeys(OidcIdToken token, String nodeName) {
 		List<String> keys = new ArrayList<>();
-		if (token.containsClaim(nodeName)) {
+		if (token.getClaims().containsKey(nodeName)) {
 			keys  = ((JSONArray) token.getClaim(nodeName)).stream()
 					.map(key ->
 							StringUtils.contains(key.toString(), "/") ?

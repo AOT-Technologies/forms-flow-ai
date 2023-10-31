@@ -1,7 +1,6 @@
 package org.camunda.bpm.extension.hooks.rest.service.impl;
 
-import com.nimbusds.jose.shaded.json.JSONArray;
-import com.nimbusds.oauth2.sdk.util.CollectionUtils;
+import net.minidev.json.JSONArray;
 import org.apache.commons.lang3.StringUtils;
 import org.camunda.bpm.engine.AuthorizationService;
 import org.camunda.bpm.engine.ProcessEngines;
@@ -28,7 +27,7 @@ import org.springframework.security.oauth2.server.resource.authentication.JwtAut
 import org.springframework.web.multipart.MultipartFile;
 import reactor.core.publisher.Mono;
 
-import javax.servlet.ServletException;
+import jakarta.servlet.ServletException;
 import java.io.IOException;
 import java.util.*;
 
@@ -60,7 +59,7 @@ public class AdminRestServiceImpl implements AdminRestService {
         LOGGER.debug("authentication" + authentication);
         List<String> groups = getGroups(authentication);
         AuthorizationInfo authorizationInfo = null;
-        if (CollectionUtils.isNotEmpty(groups) && groups.contains(adminGroupName)) {
+        if (groups != null && !groups.isEmpty() && groups.contains(adminGroupName)) {
             if (!RestAPIBuilderUtil.fetchUserName(restAPIBuilderConfigProperties.getUserNameAttribute()).equals(ANONYMOUS_USER)) {
                 groups = null;
             }

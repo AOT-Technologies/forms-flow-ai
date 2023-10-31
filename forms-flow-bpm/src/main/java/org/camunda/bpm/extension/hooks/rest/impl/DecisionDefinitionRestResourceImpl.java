@@ -6,7 +6,7 @@ import org.camunda.bpm.engine.rest.dto.repository.DecisionDefinitionDto;
 import org.camunda.bpm.extension.hooks.rest.DecisionDefinitionRestResource;
 import org.springframework.hateoas.EntityModel;
 
-import javax.ws.rs.core.UriInfo;
+import jakarta.ws.rs.core.UriInfo;
 import java.util.List;
 import java.util.logging.Logger;
 

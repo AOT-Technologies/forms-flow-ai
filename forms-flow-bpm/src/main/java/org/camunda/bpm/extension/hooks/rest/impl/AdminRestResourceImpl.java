@@ -10,8 +10,8 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.multipart.MultipartFile;
 import reactor.core.publisher.Mono;
 
-import javax.servlet.ServletException;
-import javax.ws.rs.core.UriInfo;
+import jakarta.servlet.ServletException;
+import jakarta.ws.rs.core.UriInfo;
 
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;

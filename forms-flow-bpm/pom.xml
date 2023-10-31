@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project xmlns="http://maven.apache.org/POM/4.0.0"
-		 xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-		 xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 
 	<groupId>org.camunda.bpm.extension</groupId>
@@ -22,14 +22,16 @@
 		<failOnMissingWebXml>false</failOnMissingWebXml>
 
 		<!-- versions -->
-		<version.camundaKeycloak>7.18.0</version.camundaKeycloak>
-		<version.camunda>7.18.0</version.camunda><!-- 7.17.0 - 7.18.0 -->
+		<version.camundaKeycloak>7.20.0</version.camundaKeycloak>
+		<version.camunda>7.20.0</version.camunda><!-- 7.17.0 - 7.18.0 -->
 		<version.camundaConnect>1.5.4</version.camundaConnect><!-- 1.5.4 -->
 		<version.camundaMail>1.5.0</version.camundaMail><!-- 1.5.0 -->
-		<version.springBoot>2.7.12</version.springBoot><!-- 2.6.6 - 2.7.12 -->
-		<version.springSecurityOauth2>2.6.7</version.springSecurityOauth2><!--
+		<version.springBoot>3.1.0</version.springBoot><!-- 2.6.6 - 2.7.12 -->
+		<version.springSecurityOauth2>2.6.8</version.springSecurityOauth2><!--
 			2.6.6 - 2.6.7 -->
 		<version.jackson>2.15.0</version.jackson>
+		<version.commonsFileUpload>1.5</version.commonsFileUpload>
+		<version.snakeyaml>2.0</version.snakeyaml>
 	</properties>
 
 	<dependencyManagement>
@@ -55,6 +57,8 @@
 				<version>${version.camundaKeycloak}</version>
 				<scope>provided</scope>
 			</dependency>
+
+
 		</dependencies>
 	</dependencyManagement>
 
@@ -69,6 +73,7 @@
 			<artifactId>camunda-bpm-spring-boot-starter-webapp</artifactId>
 			<version>${version.camunda}</version>
 		</dependency>
+
 
 		<dependency>
 			<groupId>org.camunda.bpm.springboot</groupId>
@@ -146,6 +151,14 @@
 			<groupId>org.camunda.bpm</groupId>
 			<artifactId>camunda-engine-plugin-connect</artifactId>
 		</dependency>
+		<!--
+		https://mvnrepository.com/artifact/org.camunda.bpm/camunda-engine-rest -->
+		<dependency>
+			<groupId>org.camunda.bpm</groupId>
+			<artifactId>camunda-engine-rest-core</artifactId>
+			<version>7.20.0</version>
+		</dependency>
+
 
 		<dependency>
 			<groupId>com.sun.mail</groupId>
@@ -239,7 +252,7 @@
 		<dependency>
 			<groupId>org.codehaus.groovy</groupId>
 			<artifactId>groovy-all</artifactId>
-			<version>3.0.17</version>
+			<version>3.0.19</version>
 			<type>pom</type>
 		</dependency>
 
@@ -252,25 +265,21 @@
 		<dependency>
 			<groupId>com.fasterxml.jackson.core</groupId>
 			<artifactId>jackson-databind</artifactId>
-			<version>${version.jackson}</version>
 		</dependency>
 
 		<dependency>
 			<groupId>com.fasterxml.jackson.core</groupId>
 			<artifactId>jackson-core</artifactId>
-			<version>${version.jackson}</version>
 		</dependency>
 
 		<dependency>
 			<groupId>com.fasterxml.jackson.dataformat</groupId>
 			<artifactId>jackson-dataformat-xml</artifactId>
-			<version>${version.jackson}</version>
 		</dependency>
 
 		<dependency>
 			<groupId>com.fasterxml.jackson.core</groupId>
 			<artifactId>jackson-annotations</artifactId>
-			<version>${version.jackson}</version>
 		</dependency>
 
 		<dependency>
@@ -307,7 +316,7 @@
 			<artifactId>js</artifactId>
 			<version>22.3.2</version>
 		</dependency>
-		
+
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-jersey</artifactId>
@@ -318,6 +327,14 @@
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-data-redis-reactive</artifactId>
 		</dependency>
+
+		<!-- Adding common file upload -->
+		<dependency>
+			<groupId>commons-fileupload</groupId>
+			<artifactId>commons-fileupload</artifactId>
+			<version>${version.commonsFileUpload}</version>
+		</dependency>
+
 
 	</dependencies>
 
@@ -330,7 +347,8 @@
 		<repository>
 			<id>camunda-bpm-nexus-snapshot</id>
 			<name>Camunda Maven Repository</name>
-			<url>https://app.camunda.com/nexus/repository/camunda-bpm-community-extensions-snapshots</url>
+			<url>
+				https://app.camunda.com/nexus/repository/camunda-bpm-community-extensions-snapshots</url>
 		</repository>
 
 	</repositories>
@@ -352,31 +370,55 @@
 					<excludes>
 						<exclude>org/camunda/bpm/extension/keycloak/sso/*.class</exclude>
 						<exclude>org/camunda/bpm/extension/keycloak/rest/*.class</exclude>
-						<exclude>org/camunda/bpm/extension/keycloak/rest/oauth2client/*.class</exclude>
-						<exclude>org/camunda/bpm/extension/keycloak/plugin/*.class</exclude>
-						<exclude>org/camunda/bpm/extension/hooks/controllers/mapper/*.class</exclude>
-						<exclude>org/camunda/bpm/extension/hooks/controllers/data/*.class</exclude>
-						<exclude>org/camunda/bpm/extension/hooks/listeners/data/*.class</exclude>
-						<exclude>org/camunda/bpm/extension/hooks/services/IUser.class</exclude>
-						<exclude>org/camunda/bpm/extension/hooks/delegates/data/*.class</exclude>
-						<exclude>org/camunda/bpm/extension/commons/io/socket/message/*.class</exclude>
-						<exclude>org/camunda/bpm/extension/commons/io/socket/*.class</exclude>
-						<exclude>org/camunda/bpm/extension/commons/connector/auth/FormioConfiguration.class</exclude>
-						<exclude>org/camunda/bpm/extension/commons/connector/auth/FormioContext.class</exclude>
-						<exclude>org/camunda/bpm/extension/commons/connector/*.class</exclude>
-						<exclude>org/camunda/bpm/extension/CamundaApplication.class</exclude>
-						<exclude>org/camunda/bpm/extension/commons/exceptions/*.class</exclude>
+						<exclude>
+							org/camunda/bpm/extension/keycloak/rest/oauth2client/*.class</exclude>
+						<exclude>
+							org/camunda/bpm/extension/keycloak/plugin/*.class</exclude>
+						<exclude>
+							org/camunda/bpm/extension/hooks/controllers/mapper/*.class</exclude>
+						<exclude>
+							org/camunda/bpm/extension/hooks/controllers/data/*.class</exclude>
+						<exclude>
+							org/camunda/bpm/extension/hooks/listeners/data/*.class</exclude>
+						<exclude>
+							org/camunda/bpm/extension/hooks/services/IUser.class</exclude>
+						<exclude>
+							org/camunda/bpm/extension/hooks/delegates/data/*.class</exclude>
+						<exclude>
+							org/camunda/bpm/extension/commons/io/socket/message/*.class</exclude>
+						<exclude>
+							org/camunda/bpm/extension/commons/io/socket/*.class</exclude>
+						<exclude>
+							org/camunda/bpm/extension/commons/connector/auth/FormioConfiguration.class</exclude>
+						<exclude>
+							org/camunda/bpm/extension/commons/connector/auth/FormioContext.class</exclude>
+						<exclude>
+							org/camunda/bpm/extension/commons/connector/*.class</exclude>
+						<exclude>
+							org/camunda/bpm/extension/CamundaApplication.class</exclude>
+						<exclude>
+							org/camunda/bpm/extension/commons/exceptions/*.class</exclude>
 						<exclude>org/camunda/bpm/extension/commons/utils/*.class</exclude>
-						<exclude>org/camunda/bpm/extension/hooks/controllers/mapper/*.class</exclude>
-						<exclude>org/camunda/bpm/extension/hooks/exceptions/*.class</exclude>
-						<exclude>org/camunda/bpm/extension/hooks/listeners/execution/FormAccessTokenCacheListener.class</exclude>
-						<exclude>org/camunda/bpm/extension/hooks/rest/exception/*.class</exclude>
-						<exclude>org/camunda/bpm/extension/commons/exceptions/*.class</exclude>
-						<exclude>org/camunda/bpm/extension/commons/config/*.class</exclude>
-						<exclude>org/camunda/bpm/extension/hooks/rest/constant/*.class</exclude>
-						<exclude>org/camunda/bpm/extension/hooks/services/IMessageEvent.class</exclude>
-						<exclude>org/camunda/bpm/extension/hooks/rest/dto/*.class</exclude>
-						<exclude>org/camunda/bpm/extension/hooks/rest/impl/*.class</exclude>
+						<exclude>
+							org/camunda/bpm/extension/hooks/controllers/mapper/*.class</exclude>
+						<exclude>
+							org/camunda/bpm/extension/hooks/exceptions/*.class</exclude>
+						<exclude>
+							org/camunda/bpm/extension/hooks/listeners/execution/FormAccessTokenCacheListener.class</exclude>
+						<exclude>
+							org/camunda/bpm/extension/hooks/rest/exception/*.class</exclude>
+						<exclude>
+							org/camunda/bpm/extension/commons/exceptions/*.class</exclude>
+						<exclude>
+							org/camunda/bpm/extension/commons/config/*.class</exclude>
+						<exclude>
+							org/camunda/bpm/extension/hooks/rest/constant/*.class</exclude>
+						<exclude>
+							org/camunda/bpm/extension/hooks/services/IMessageEvent.class</exclude>
+						<exclude>
+							org/camunda/bpm/extension/hooks/rest/dto/*.class</exclude>
+						<exclude>
+							org/camunda/bpm/extension/hooks/rest/impl/*.class</exclude>
 					</excludes>
 				</configuration>
 				<executions>

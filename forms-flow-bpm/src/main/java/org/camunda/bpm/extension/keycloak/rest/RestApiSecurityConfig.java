@@ -1,7 +1,6 @@
 package org.camunda.bpm.extension.keycloak.rest;
 
 import org.camunda.bpm.engine.IdentityService;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.boot.autoconfigure.security.SecurityProperties;
 import org.springframework.boot.web.servlet.FilterRegistrationBean;
@@ -11,16 +10,17 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.core.annotation.Order;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
-import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
+
+import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.oauth2.client.OAuth2AuthorizedClientService;
-import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.oauth2.core.DelegatingOAuth2TokenValidator;
 import org.springframework.security.oauth2.core.OAuth2TokenValidator;
 import org.springframework.security.oauth2.jwt.*;
 
-import javax.inject.Inject;
-import javax.ws.rs.HttpMethod;
-import java.util.Properties;
+
+
+import jakarta.inject.Inject;
+import jakarta.ws.rs.HttpMethod;
 
 
 /**
@@ -31,7 +31,7 @@ import java.util.Properties;
 @EnableWebSecurity
 @Order(SecurityProperties.BASIC_AUTH_ORDER - 20)
 @ConditionalOnProperty(name = "rest.security.enabled", havingValue = "true", matchIfMissing = true)
-public class RestApiSecurityConfig extends WebSecurityConfigurerAdapter {
+public class RestApiSecurityConfig {
 
 	/** Configuration for REST Api security. */
 	@Inject
@@ -52,23 +52,20 @@ public class RestApiSecurityConfig extends WebSecurityConfigurerAdapter {
 	 * {@inheritDoc}
 	 */
 
-	@Override
-	public void configure(final HttpSecurity http) throws Exception {
-		String jwkSetUri = applicationContext.getEnvironment().getRequiredProperty(
-				"spring.security.oauth2.client.provider." + configProps.getProvider() + ".jwk-set-uri");
+	@Bean
+    public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
+        http
+            .authorizeHttpRequests(auth ->
+                auth
+                    .requestMatchers(HttpMethod.OPTIONS).permitAll() // Allow HTTP OPTIONS without a JWT token
+                    .anyRequest().authenticated() // Require JWT token for all other requests
+            )
+            .csrf(csrf -> csrf.disable());
 
-		http.requestMatchers().antMatchers("/engine-rest/**","/engine-rest-ext/**","/forms-flow-bpm-socket/**", "/actuator/**").
-				and().authorizeRequests().antMatchers(HttpMethod.OPTIONS,"/engine-rest/**").permitAll()
-				.and().authorizeRequests().antMatchers(HttpMethod.OPTIONS,"/engine-rest-ext/**").permitAll()
-				.and().authorizeRequests().antMatchers(HttpMethod.OPTIONS,"/forms-flow-bpm-socket/**").permitAll()
-				.antMatchers("/engine-rest/**","/engine-rest-ext/**")
-				.authenticated().and().csrf().disable()
-				.sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
-				.and()
-				.oauth2ResourceServer()
-				.jwt()
-				.jwkSetUri(jwkSetUri);
-	}
+        return http.build();
+	
+
+    }
 
 
 	/**

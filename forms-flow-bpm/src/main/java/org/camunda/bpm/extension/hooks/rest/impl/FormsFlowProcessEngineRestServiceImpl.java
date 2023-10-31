@@ -4,7 +4,7 @@ import org.camunda.bpm.engine.rest.impl.DefaultProcessEngineRestServiceImpl;
 import org.camunda.bpm.extension.commons.config.ServiceFinder;
 import org.springframework.beans.factory.annotation.Autowired;
 
-import javax.ws.rs.Path;
+import jakarta.ws.rs.Path;
 
 @Path("")
 public class FormsFlowProcessEngineRestServiceImpl extends DefaultProcessEngineRestServiceImpl {

@@ -7,7 +7,7 @@ import org.camunda.bpm.engine.rest.dto.runtime.StartProcessInstanceDto;
 import org.camunda.bpm.extension.hooks.rest.ProcessDefinitionRestResource;
 import org.springframework.hateoas.EntityModel;
 
-import javax.ws.rs.core.UriInfo;
+import jakarta.ws.rs.core.UriInfo;
 import java.util.List;
 import java.util.logging.Logger;
 import java.util.stream.Collectors;

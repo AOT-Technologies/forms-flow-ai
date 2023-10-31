@@ -57,7 +57,8 @@ public class TextAnalyzerAccessHandler extends AbstractAccessHandler{
                 .header(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
                 .body((payload == null? BodyInserters.empty():BodyInserters.fromValue(payload)))
                 .retrieve()
-                .onStatus(HttpStatus::is4xxClientError, clientResponse -> Mono.error(new HttpClientErrorException(HttpStatus.BAD_REQUEST)))
+                .onStatus(HttpStatusCode::is4xxClientError,
+                        clientResponse -> Mono.error(new HttpClientErrorException(clientResponse.statusCode())))
                 .toEntity(responseClazz)
                 .block();
         return new ResponseEntity<>(response.getBody(), response.getStatusCode());

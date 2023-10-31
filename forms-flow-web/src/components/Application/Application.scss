@@ -27,30 +27,4 @@
     min-height: 434px;
     overflow: auto;
 }
-
-.dropdown-menu.show::before {
-    position: absolute !important;
-    left: 6px !important;
-    top: 154px !important;
-    width: 0 !important;
-    height: 0 !important;
-    border-left: 5px solid transparent !important;
-    border-bottom: 5px solid transparent !important;
-    border-right: 5px solid transparent !important;
-    border-top: 7.5px solid $gray !important;
-}
-.dropdown-menu.show::after {
-    position: absolute !important;
-    left: 8px !important;
-    top: 154px !important;
-    width: 0 !important;
-    height: 0 !important;
-    border-left: 5px solid transparent !important;
-    border-bottom: 5px solid transparent !important;
-    border-right: 5px solid transparent !important;
-    border-top: 7.5px solid rgb(255, 255, 255) !important;
-}
-
-.dropdown-menu {
-    transform: translate3d(0px, -37.8px, 0px) !important;
-}
+ 

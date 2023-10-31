@@ -4,10 +4,10 @@ import org.camunda.bpm.engine.rest.dto.repository.DecisionDefinitionDiagramDto;
 import org.camunda.bpm.engine.rest.dto.repository.DecisionDefinitionDto;
 import org.springframework.hateoas.EntityModel;
 
-import javax.ws.rs.*;
-import javax.ws.rs.core.Context;
-import javax.ws.rs.core.MediaType;
-import javax.ws.rs.core.UriInfo;
+import jakarta.ws.rs.*;
+import jakarta.ws.rs.core.Context;
+import jakarta.ws.rs.core.MediaType;
+import jakarta.ws.rs.core.UriInfo;
 import java.util.List;
 
 @Produces({MediaType.APPLICATION_JSON})

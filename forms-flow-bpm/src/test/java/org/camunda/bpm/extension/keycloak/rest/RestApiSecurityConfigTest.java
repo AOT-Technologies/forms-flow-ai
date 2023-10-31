@@ -7,7 +7,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import java.lang.reflect.Field;
 import java.util.Properties;
 
-import javax.inject.Inject;
+import jakarta.inject.Inject;
 
 import org.apache.ibatis.logging.LogFactory;
 import org.camunda.bpm.engine.IdentityService;

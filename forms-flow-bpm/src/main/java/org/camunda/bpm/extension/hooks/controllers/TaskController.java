@@ -1,7 +1,6 @@
 package org.camunda.bpm.extension.hooks.controllers;
 
-import com.nimbusds.jose.shaded.json.JSONArray;
-import com.nimbusds.oauth2.sdk.util.CollectionUtils;
+import net.minidev.json.JSONArray;
 
 import org.apache.commons.lang3.StringUtils;
 import org.camunda.bpm.extension.hooks.controllers.data.Task;
@@ -21,7 +20,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 
-import javax.servlet.ServletException;
+import jakarta.servlet.ServletException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;

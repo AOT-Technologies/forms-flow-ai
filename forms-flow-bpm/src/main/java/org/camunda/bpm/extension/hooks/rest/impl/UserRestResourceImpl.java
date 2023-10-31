@@ -6,7 +6,7 @@ import org.camunda.bpm.extension.hooks.rest.UserRestResource;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import javax.ws.rs.core.UriInfo;
+import jakarta.ws.rs.core.UriInfo;
 import java.util.List;
 
 public class UserRestResourceImpl implements UserRestResource {

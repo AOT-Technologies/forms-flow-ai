@@ -59,9 +59,11 @@ const SaveNext = React.memo(
             )}
           </Modal.Body>
           <Modal.Footer>
-            <Buttons variant="secondary" onClick={handleClose}>
+            <button type="button"
+              className="btn btn-link text-dark"
+              onClick={handleClose}>
               {t("Cancel")}
-            </Buttons>
+            </button>
             <Buttons
               variant="primary"
               onClick={!isLastStep ? handleNext : submitData}

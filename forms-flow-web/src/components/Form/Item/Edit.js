@@ -488,7 +488,7 @@ const Edit = React.memo(() => {
         )
       }
       <div className="d-flex align-items-center flex-wrap justify-content-between my-4 bg-light p-3">
-        <div style={{maxWidth:"60%",wordBreak:"break-word" }}>
+        <div style={{ maxWidth: "60%", wordBreak: "break-word" }}>
           <h3 className="ml-3 task-head  col-6 text-truncate">
             <i className="fa fa-wpforms" aria-hidden="true" /> &nbsp;{" "}
             {formData.title}
@@ -546,8 +546,8 @@ const Edit = React.memo(() => {
           </Modal.Header>
           <Modal.Body>
             {t(
-              "Changing the form title will not affect the existing applications. " +
-              "It will only update in the newly created applications. Press Save " +
+              "Changing the form title will not affect the existing submissions. " +
+              "It will only update in the newly created submissions. Press Save " +
               "Changes to continue or cancel the changes."
             )}
           </Modal.Body>

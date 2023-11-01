@@ -37,7 +37,7 @@ class TestFormResourceRenderPdf:
                 headers=headers,
             )
             assert response.status_code == 400
-            assert response.json == {"message": "Template not found!"}
+            assert response.json.get("message") == "Template not found!"
 
     def test_render_template_invalid_template_variable(self, app, client, jwt):
         """Assert that API /render when passed with token and invalid template variable name returns 400 status code."""
@@ -53,7 +53,7 @@ class TestFormResourceRenderPdf:
                 headers=headers,
             )
             assert response.status_code == 400
-            assert response.json == {"message": "Template variables not found!"}
+            assert response.json.get("message") == "Template variables not found!"
 
     def test_render_template_without_authentication(self, app, client):
         """Assert that API /render when passed without auth token should return error."""

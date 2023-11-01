@@ -31,6 +31,9 @@ services:
       FORMIO_JWT_SECRET: ${FORMIO_JWT_SECRET:---- change me now ---}
       MULTI_TENANCY_ENABLED: ${MULTI_TENANCY_ENABLED:-false}
       KEYCLOAK_ENABLE_CLIENT_AUTH: ${KEYCLOAK_ENABLE_CLIENT_AUTH:-false}
+      API_LOG_ROTATION_WHEN: ${API_LOG_ROTATION_WHEN:-d}
+      API_LOG_ROTATION_INTERVAL: ${API_LOG_ROTATION_INTERVAL:-1}
+      API_LOG_BACKUP_COUNT: ${API_LOG_BACKUP_COUNT:-7}
     stdin_open: true # -i
     tty: true # -t
     networks:

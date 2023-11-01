@@ -3,10 +3,7 @@
 Uses restx namespaces to mount individual api endpoints into the service.
 """
 
-from flask_jwt_oidc import AuthError
 from flask_restx import Api
-from formsflow_api_utils.exceptions import BusinessException
-from formsflow_api_utils.utils.constants import ALLOW_ALL_ORIGINS
 
 from formsflow_documents.resources.checkpoint import API as CHECKPOINT_API
 from formsflow_documents.resources.pdf import API as FORM_API
@@ -23,31 +20,6 @@ API = Api(
     authorizations=AUTHORIZATIONS,
     doc="/",
 )
-
-
-@API.errorhandler(BusinessException)
-def handle_business_exception(error: BusinessException):
-    """Handle Business exception."""
-    return (
-        {"message": error.error},
-        error.status_code,
-        {"Access-Control-Allow-Origin": ALLOW_ALL_ORIGINS},
-    )
-
-
-@API.errorhandler(AuthError)
-def handle_auth_error(error: AuthError):
-    """Handle Auth exception."""
-    return (
-        {
-            "type": "Invalid Token Error",
-            "message": "Access to formsflow.ai API Denied. Check if the "
-            "bearer token is passed for Authorization or has expired.",
-        },
-        error.status_code,
-        {"Access-Control-Allow-Origin": ALLOW_ALL_ORIGINS},
-    )
-
 
 API.add_namespace(FORM_API, path="/form")
 API.add_namespace(CHECKPOINT_API, path="/checkpoint")

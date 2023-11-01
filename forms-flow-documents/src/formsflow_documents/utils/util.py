@@ -1,11 +1,11 @@
 """Utility module for Document generation."""
 import base64
 import urllib.parse
-from http import HTTPStatus
 
 from formsflow_api_utils.exceptions import BusinessException
 
 from formsflow_documents.filters import is_b64image
+from formsflow_documents.utils.constants import BusinessErrorCode
 
 
 class DocUtils:
@@ -31,9 +31,7 @@ class DocUtils:
         try:
             return urllib.parse.unquote(template)
         except Exception as err:
-            raise BusinessException(
-                {"message": "URL decode failed!"}, HTTPStatus.BAD_REQUEST
-            ) from err
+            raise BusinessException(BusinessErrorCode.URL_DECODE_FAILED) from err
 
     @staticmethod
     def b64decode(template: str) -> str:
@@ -46,6 +44,4 @@ class DocUtils:
         try:
             return base64.b64decode(template).decode("utf-8")
         except Exception as err:
-            raise BusinessException(
-                {"message": "Failed to decode template!"}, HTTPStatus.BAD_REQUEST
-            ) from err
+            raise BusinessException(BusinessErrorCode.TEMPLATE_DECODE_FAILED) from err

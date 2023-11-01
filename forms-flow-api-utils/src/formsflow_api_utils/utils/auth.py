@@ -9,7 +9,7 @@ from flask_jwt_oidc import JwtManager
 from jose import jwt as json_web_token
 from jose.exceptions import JWTError
 
-from ..exceptions import BusinessException
+from ..exceptions import BusinessException, ExternalError
 
 jwt = JwtManager()  # pylint: disable=invalid-name
 
@@ -46,7 +46,7 @@ class Auth:
                 if jwt.contains_role(roles):
                     return f(*args, **kwargs)
 
-                raise BusinessException("Access Denied", HTTPStatus.UNAUTHORIZED)
+                raise BusinessException(ExternalError.UNAUTHORIZED)
 
             return wrapper
 
@@ -72,7 +72,7 @@ class Auth:
                 g.authorization_header = token
                 g.token_info = g.jwt_oidc_token_info = data
             except JWTError as err:
-                raise BusinessException("Invalid token", HTTPStatus.UNAUTHORIZED)
+                raise BusinessException(ExternalError.UNAUTHORIZED)
             except Exception as err:
                 raise err
             return f(*args, **kwargs)

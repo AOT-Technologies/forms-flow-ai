@@ -45,14 +45,14 @@ describe("Integration test for the ViewApplication component", () => {
     };
   }
 
-  test("it should render the application details", async () => {
+  test("it should render the Submission details", async () => {
     const spy = jest.spyOn(redux, "useSelector");
     spy.mockImplementation((callback) =>
       callback({
         applications: {
           applicationDetail: {
-            applicationName: "Sample Aplication Name",
-            applicationStatus: "Sample Application status",
+            applicationName: "Sample Form Name",
+            applicationStatus: "Sample Submission status",
             created: "2021-12-03 04:49:18.813383",
             createdBy: "firstName",
             formId: "0123456",
@@ -79,12 +79,12 @@ describe("Integration test for the ViewApplication component", () => {
     });
     expect(await screen.findByText(/firstName/i)).toBeInTheDocument();
     expect(
-      await screen.findByText(/Sample Application status/i)
+      await screen.findByText(/Sample Submission status/i)
     ).toBeInTheDocument();
     expect(await screen.findByText(/100/i)).toBeInTheDocument();
     const formLink = screen.getByText("Form");
     fireEvent.click(formLink);
-    expect(await screen.findByText(/Form/i)).toBeInTheDocument();
+    expect(await screen.findByText(/Submissions/i)).toBeInTheDocument();
     expect(await screen.findByText(/History/i)).toBeInTheDocument();
     expect(await screen.findByText(/Process Diagram/i)).toBeInTheDocument();
   });

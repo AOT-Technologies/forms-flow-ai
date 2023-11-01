@@ -1,5 +1,6 @@
 package org.camunda.bpm.extension.hooks.rest;
 
+import org.camunda.bpm.engine.rest.dto.CountResultDto;
 import org.camunda.bpm.engine.rest.dto.repository.DecisionDefinitionDiagramDto;
 import org.camunda.bpm.engine.rest.dto.repository.DecisionDefinitionDto;
 import org.springframework.hateoas.EntityModel;
@@ -30,4 +31,9 @@ public interface DecisionDefinitionRestResource extends RestResource {
     @Path("/key/{key}/xml")
     @Produces(MediaType.APPLICATION_JSON)
     EntityModel<DecisionDefinitionDiagramDto> getDecisionDefinitionDmnXml(@QueryParam("tenantId") String tenantId, @PathParam("key") String key);
+
+    @GET
+    @Path("/count")
+    @Produces(MediaType.APPLICATION_JSON)
+    CountResultDto getDecisionDefinitionsCount(@Context UriInfo uriInfo);
 }

@@ -1,5 +1,6 @@
 package org.camunda.bpm.extension.hooks.rest;
 
+import org.camunda.bpm.engine.rest.dto.CountResultDto;
 import org.camunda.bpm.engine.rest.dto.repository.ProcessDefinitionDiagramDto;
 import org.camunda.bpm.engine.rest.dto.repository.ProcessDefinitionDto;
 import org.camunda.bpm.engine.rest.dto.runtime.ProcessInstanceDto;
@@ -42,4 +43,9 @@ public interface ProcessDefinitionRestResource extends RestResource{
     @Consumes(MediaType.APPLICATION_JSON)
     EntityModel<ProcessInstanceDto> startProcessInstanceByKey(
             @Context UriInfo context, StartProcessInstanceDto parameters, @PathParam("key") String key, @QueryParam("tenantId") String tenantId);
+
+    @GET
+    @Path("/count")
+    @Produces(MediaType.APPLICATION_JSON)
+    CountResultDto getProcessDefinitionsCount(@Context UriInfo uriInfo);
 }

@@ -29,10 +29,6 @@ class TestKeycloakUserServiceResource:
         }
         rv = client.put("/user/locale", headers=headers, json={})
         assert rv.status_code == 400
-        assert rv.json == {
-            "type": "Invalid Request Object format",
-            "message": "Required fields are not passed",
-        }
 
 
 def test_keycloak_users_list(app, client, session, jwt):

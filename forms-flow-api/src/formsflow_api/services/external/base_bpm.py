@@ -4,7 +4,10 @@ import json
 
 import requests
 from flask import current_app
+from formsflow_api_utils.exceptions import BusinessException
 from formsflow_api_utils.utils import HTTP_TIMEOUT, log_bpm_error
+
+from formsflow_api.constants import BusinessErrorCode
 
 
 class BaseBPMService:
@@ -28,7 +31,7 @@ class BaseBPMService:
                 + ", "
                 + response.text
             )
-
+            raise BusinessException(BusinessErrorCode.INVALID_BPM_RESPONSE)
         return data
 
     @classmethod
@@ -53,7 +56,8 @@ class BaseBPMService:
                 + ", "
                 + response.text
             )
-            # response.raise_for_status()
+            raise BusinessException(BusinessErrorCode.INVALID_BPM_RESPONSE)
+
         return data
 
     @classmethod

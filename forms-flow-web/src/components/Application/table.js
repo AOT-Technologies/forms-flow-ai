@@ -92,12 +92,12 @@ const styleForValidationFail = { border: "1px solid red" };
 export const columns_history = [
   {
     dataField: "applicationname",
-    text: <Translation>{(t) => t("Application Name")}</Translation>,
+    text: <Translation>{(t) => t("Form Name")}</Translation>,
     sort: true,
   },
   {
     dataField: "applicationstatus",
-    text: <Translation>{(t) => t("Application Status")}</Translation>,
+    text: <Translation>{(t) => t("Submission Status")}</Translation>,
     sort: true,
   },
 ];
@@ -105,7 +105,7 @@ export const columns_history = [
 let applicationNotified = false;
 const notifyValidationError = () => {
   if (!applicationNotified) {
-    toast.error("Invalid application id");
+    toast.error("Invalid submission id");
     applicationNotified = true;
   }
 };
@@ -126,13 +126,13 @@ export const columns = (
   return [
     {
       dataField: "id",
-      text: <Translation>{(t) => t("Application ID")}</Translation>,
+      text: <Translation>{(t) => t("Submission ID")}</Translation>,
       formatter: (cell, row) => linkApplication(cell, row, redirectUrl),
       headerClasses: "classApplicationId",
       sort: true,
       filter: textFilter({
         delay: 800,
-        placeholder: `\uf002 ${t("Application ID")}`, // custom the input placeholder
+        placeholder: `\uf002 ${t("Submission ID")}`, // custom the input placeholder
         caseSensitive: false, // default is false, and true will only work when comparator is LIKE
         className: "icon-search",
         style: invalidFilters.APPLICATION_ID
@@ -146,13 +146,13 @@ export const columns = (
     },
     {
       dataField: "applicationName",
-      text: <Translation>{(t) => t("Application Name")}</Translation>,
+      text: <Translation>{(t) => t("Form Name")}</Translation>,
       sort: true,
       headerClasses: "classApplicationName",
       formatter: nameFormatter,
       filter: textFilter({
         delay: 800,
-        placeholder: `\uf002 ${t("Application Name")}`, // custom the input placeholder
+        placeholder: `\uf002 ${t("Form Name")}`, // custom the input placeholder
         caseSensitive: false, // default is false, and true will only work when comparator is LIKE
         className: "icon-search",
         style: customStyle,
@@ -164,7 +164,7 @@ export const columns = (
     },
     {
       dataField: "applicationStatus",
-      text: <Translation>{(t) => t("Application Status")}</Translation>,
+      text: <Translation>{(t) => t("Submission Status")}</Translation>,
       sort: true,
       filter:
         applicationStatus?.length > 0 &&

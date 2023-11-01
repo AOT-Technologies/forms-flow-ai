@@ -24,7 +24,7 @@ import { MULTITENANCY_ENABLED } from "../../constants/constants";
 import { push } from "connected-react-router";
 import WorkFlow from "./Steps/WorkFlow";
 import PreviewStepper from "./Steps/PreviewStepper";
-
+import Stepper from "../../containers/Stepper/index.js";
 import "./stepper.scss";
 import { Link } from "react-router-dom";
 import {
@@ -373,15 +373,8 @@ class StepperPage extends PureComponent {
           <Container fluid className="paper-root">
             <Row>
               <Col xs={12}>
-                <div className="wrapper option-1 option-1-1 stepper-bottom">
-                  <ol className="c-stepper">
-                    {steps.map((label, index) => (
-                      <li key={index} className={`c-stepper__item ${this.state.activeStep > index ? 'active' : ''}`}>
-                        <span className={`c-stepper__circle ${this.state.activeStep >= index ? 'active' : ''}`}>{index + 1}</span>
-                        <span className={`c-stepper__label ${this.state.activeStep >= index ? 'active' : ''}`}>{label}</span>
-                      </li>
-                    ))}
-                  </ol>
+                <div className="mb-3">
+                  <Stepper steps={steps} activeStep={this.state.activeStep}/>
                 </div>
                 <div>
                   {this.state.activeStep === steps.length ? (

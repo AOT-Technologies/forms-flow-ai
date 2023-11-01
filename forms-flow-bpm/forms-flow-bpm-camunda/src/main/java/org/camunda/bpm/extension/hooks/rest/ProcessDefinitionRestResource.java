@@ -4,6 +4,7 @@ import org.bpm.utils.dto.ProcessDefinitionDiagramDto;
 import org.bpm.utils.dto.ProcessInstanceDto;
 import org.bpm.utils.dto.ProcessDefinitionDto;
 import org.bpm.utils.dto.StartProcessInstanceDto;
+import org.camunda.bpm.engine.rest.dto.CountResultDto;
 
 import javax.ws.rs.Consumes;
 import javax.ws.rs.Path;
@@ -42,4 +43,9 @@ public interface ProcessDefinitionRestResource extends RestResource{
     @Consumes(MediaType.APPLICATION_JSON)
     ProcessInstanceDto startProcessInstanceByKey(
             @Context UriInfo context, StartProcessInstanceDto parameters, @PathParam("key") String key, @QueryParam("tenantId") String tenantId);
+
+    @GET
+    @Path("/count")
+    @Produces(MediaType.APPLICATION_JSON)
+    CountResultDto getProcessDefinitionsCount(@Context UriInfo uriInfo);
 }

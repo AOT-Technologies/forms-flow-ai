@@ -3,6 +3,7 @@ package org.camunda.bpm.extension.hooks.rest.impl;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.camunda.bpm.engine.rest.dto.runtime.StartProcessInstanceDto;
+import org.camunda.bpm.engine.rest.dto.CountResultDto;
 import org.camunda.bpm.extension.hooks.rest.ProcessDefinitionRestResource;
 import org.bpm.utils.dto.ProcessInstanceDto;
 import org.bpm.utils.dto.ProcessDefinitionDiagramDto;
@@ -80,5 +81,10 @@ public class ProcessDefinitionRestResourceImpl implements ProcessDefinitionRestR
                     ProcessInstanceDto.class);
         }
         return processInstanceDto;
+    }
+    
+    @Override
+    public CountResultDto getProcessDefinitionsCount(UriInfo uriInfo){
+        return restService.getProcessDefinitionsCount(uriInfo);
     }
 }

@@ -5,6 +5,7 @@ from formsflow_api_utils.utils import (
     NEW_APPLICATION_STATUS,
 )
 
+from formsflow_api.constants import BusinessErrorCode
 from formsflow_api.models import Application, Draft, FormProcessMapper
 from tests.utilities.base_test import (
     get_anonymous_form_model_object,
@@ -81,8 +82,7 @@ def test_draft_detail_view(app, client, session, jwt):
     rv = client.get(f"/draft/{draft_id}", headers=headers)
     assert rv.status_code == 400
     assert (
-        rv.json.get("message")
-        == f"Invalid request data - draft id {draft_id} does not exist"
+        rv.json.get("message") == BusinessErrorCode.DRAFT_APPLICATION_NOT_FOUND.message
     )
 
 
@@ -162,7 +162,11 @@ def test_draft_tenant_authorization(app, client, session, jwt):
         "/draft", headers=headers, json=get_draft_create_payload(form_id)
     )
     assert response.status_code == 403
-    assert response.json == "Tenant authentication failed."
+    assert response.json == {
+        "code": BusinessErrorCode.PERMISSION_DENIED.code,
+        "details": [],
+        "message": BusinessErrorCode.PERMISSION_DENIED.message,
+    }
 
 
 def test_anonymous_drafts(app, client, session, jwt):
@@ -209,10 +213,11 @@ def test_anonymous_drafts(app, client, session, jwt):
         "/draft/public/create", headers=headers, json=get_draft_create_payload(form_id2)
     )
     assert response.status_code == 403
-    assert (
-        response.json
-        == f"Permission denied, formId - {get_form_model_object()['form_id']}."
-    )
+    assert response.json == {
+        "code": BusinessErrorCode.PERMISSION_DENIED.code,
+        "details": [],
+        "message": BusinessErrorCode.PERMISSION_DENIED.message,
+    }
 
 
 def test_delete_draft(app, client, session, jwt):

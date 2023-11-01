@@ -1,11 +1,11 @@
 """Keycloak implementation for keycloak group related operations."""
-from http import HTTPStatus
 from typing import Dict, List
 
 import requests
 from flask import current_app
 from formsflow_api_utils.exceptions import BusinessException
 
+from formsflow_api.constants import BusinessErrorCode
 from formsflow_api.services import KeycloakAdminAPIService
 
 from .keycloak_admin import KeycloakAdmin
@@ -106,7 +106,7 @@ class KeycloakGroupService(KeycloakAdmin):
                     if err.response.status_code == 409:
                         if index == (groups_length - 1):
                             raise BusinessException(
-                                "Role already exists.", HTTPStatus.BAD_REQUEST
+                                BusinessErrorCode.DUPLICATE_ROLE
                             ) from err
                         group_path = "/".join(groups[: index + 1])
                         response = self.client.get_request(
@@ -189,9 +189,8 @@ class KeycloakGroupService(KeycloakAdmin):
     ):
         """Search users in a realm."""
         if not page_no or not limit:
-            raise BusinessException(
-                "Missing pagination parameters", HTTPStatus.BAD_REQUEST
-            )
+            raise BusinessException(BusinessErrorCode.MISSING_PAGINATION_PARAMETERS)
+
         user_list = self.client.get_realm_users(search, page_no, limit)
         users_count = self.client.get_realm_users_count(search) if count else None
         if role:

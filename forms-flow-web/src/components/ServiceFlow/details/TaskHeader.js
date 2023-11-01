@@ -228,8 +228,8 @@ const TaskHeader = React.memo(() => {
         </span>
       </Row>
       <Row className="ml-0">
-        <span data-title={t("Application ID")} className="application-id">
-          {t("Application ID")}# {task?.applicationId}
+        <span data-title={t("Submission ID")} className="application-id">
+          {t("Submission ID")}# {task?.applicationId}
         </span>
       </Row>
       <Row className="actionable mb-4">

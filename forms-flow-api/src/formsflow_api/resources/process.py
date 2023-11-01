@@ -2,7 +2,7 @@
 
 from http import HTTPStatus
 
-from flask import current_app, request
+from flask import request
 from flask_restx import Namespace, Resource, fields
 from formsflow_api_utils.utils import auth, cors_preflight, profiletime
 
@@ -48,23 +48,13 @@ class ProcessResource(Resource):
     )
     def get():
         """Get all process."""
-        try:
-            return (
-                (
-                    {
-                        "process": ProcessService.get_all_processes(
-                            token=request.headers["Authorization"]
-                        )
-                    }
-                ),
-                HTTPStatus.OK,
-            )
-        except BaseException as err:  # pylint: disable=broad-except
-            response, status = {
-                "type": "Bad request error",
-                "message": "Invalid request data object",
-            }, HTTPStatus.BAD_REQUEST
-
-            current_app.logger.warning(response)
-            current_app.logger.warning(err)
-            return response, status
+        return (
+            (
+                {
+                    "process": ProcessService.get_all_processes(
+                        token=request.headers["Authorization"]
+                    )
+                }
+            ),
+            HTTPStatus.OK,
+        )

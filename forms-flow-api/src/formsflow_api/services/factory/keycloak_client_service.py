@@ -1,10 +1,10 @@
 """Keycloak Admin implementation for client related operations."""
-from http import HTTPStatus
 from typing import Dict, List
 
 from flask import current_app
 from formsflow_api_utils.exceptions import BusinessException
 
+from formsflow_api.constants import BusinessErrorCode
 from formsflow_api.services import KeycloakAdminAPIService
 
 from .keycloak_admin import KeycloakAdmin
@@ -127,9 +127,8 @@ class KeycloakClientService(KeycloakAdmin):
     ):
         """Search users in a realm."""
         if not page_no or not limit:
-            raise BusinessException(
-                "Missing pagination parameters", HTTPStatus.BAD_REQUEST
-            )
+            raise BusinessException(BusinessErrorCode.MISSING_PAGINATION_PARAMETERS)
+
         user_list = self.client.get_realm_users(search, page_no, limit)
         users_count = self.client.get_realm_users_count(search) if count else None
         if role:

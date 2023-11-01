@@ -9,6 +9,7 @@ import {
   } from "../../apiManager/services/processServices";
 import { useTranslation } from "react-i18next";
 import Loading from '../../containers/Loading';
+import { setProcessDiagramXML } from '../../actions/processActions';
 const EditWorkflow = () => {
     //select typeOf workflow form useSelector / redux
      const tenantKey = useSelector((state) => state.tenants?.tenantId);
@@ -25,6 +26,13 @@ const EditWorkflow = () => {
           setDiagramLoading(false);
          }));
     },[processId]);
+
+    useEffect(()=>{
+      return () => {
+        dispatch(setProcessDiagramXML(''));
+      };
+    },[]);
+
 
     if(diagramLoading){
       return <Loading/>;

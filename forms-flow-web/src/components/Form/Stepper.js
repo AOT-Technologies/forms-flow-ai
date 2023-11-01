@@ -422,7 +422,7 @@ const mapDispatchToProps = (dispatch) => {
       const tenantIdIn = MULTITENANCY_ENABLED ? tenantKey : null;
       dispatch(
         // eslint-disable-next-line no-unused-vars
-        fetchAllBpmProcesses(tenantIdIn, (err, res) => {
+        fetchAllBpmProcesses({tenant_key:tenantIdIn}, (err, res) => {
           if (err) {
             console.log(err);
           }

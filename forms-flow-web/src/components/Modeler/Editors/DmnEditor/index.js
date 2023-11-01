@@ -18,7 +18,6 @@ import {
 } from "../../constants/bpmnModelerConstants";
 
 import {
-  fetchAllDmnProcesses,
   fetchDiagram,
 } from "../../../../apiManager/services/processServices";
 
@@ -179,9 +178,7 @@ export default React.memo(({ processKey, tenant, isNewDiagram }) => {
       .then((res) => {
         if (res?.data) {
           toast.success(t(SUCCESS_MSG_DMN));
-          // Reload the dropdown menu
-          updateDmnProcesses(xml, res.data.deployedDecisionDefinitions);
-          setDeploymentLoading(false);
+           setDeploymentLoading(false);
           dispatch(push(`${redirectUrl}processes`));
         } else {
           setDeploymentLoading(false);
@@ -209,19 +206,6 @@ export default React.memo(({ processKey, tenant, isNewDiagram }) => {
     if (!errors && error.response.data.message) {
       toast.error(t(error.response.data.message));
     }
-  };
-
-  const updateDmnProcesses = (xml, deployedDecisionDefinitions) => {
-    // Update drop down with all processes
-    dispatch(fetchAllDmnProcesses(tenantKey));
-    // Show the updated workflow as the current value in the dropdown
-    const updatedWorkflow = {
-      label: extractDataFromDiagram(xml, true).name,
-      value: extractDataFromDiagram(xml, true).processId,
-      xml: xml,
-      deployedDefinitions: deployedDecisionDefinitions,
-    };
-    dispatch(setWorkflowAssociation(updatedWorkflow));
   };
 
   const validateDecisionNames = (xml) => {

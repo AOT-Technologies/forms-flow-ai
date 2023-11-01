@@ -35,7 +35,8 @@ function DmnTable() {
     const firstResult = (activePage - 1) * limit;
     setIsLoading(true);
     dispatch(
-      fetchAllDmnProcesses(tenantKey,firstResult,limit,searchText, () => {
+      fetchAllDmnProcesses({tenant_key:tenantKey,firstResult:firstResult,
+        maxResults:limit,searchKey:searchText}, () => {
         setIsLoading(false);
       })
     );

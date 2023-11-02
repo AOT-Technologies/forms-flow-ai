@@ -13,6 +13,6 @@ import java.util.List;
 @NoArgsConstructor
 public class TaskFilterResponse {
 
-    private List<VariableQueryParameterDto> variables;
+    private List<TaskFilterVariableQueryDto> variables;
     private TaskVariableDto taskVisibleAttributes;
 }

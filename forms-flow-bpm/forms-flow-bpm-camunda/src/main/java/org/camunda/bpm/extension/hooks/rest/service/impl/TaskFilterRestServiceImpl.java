@@ -9,7 +9,6 @@ import org.camunda.bpm.engine.impl.VariableInstanceQueryImpl;
 import org.camunda.bpm.engine.impl.persistence.entity.VariableInstanceEntity;
 import org.camunda.bpm.engine.query.Query;
 import org.camunda.bpm.engine.rest.dto.CountResultDto;
-import org.camunda.bpm.engine.rest.dto.VariableQueryParameterDto;
 import org.camunda.bpm.engine.rest.dto.runtime.FilterQueryDto;
 import org.camunda.bpm.engine.rest.dto.task.TaskDto;
 import org.camunda.bpm.engine.rest.exception.InvalidRequestException;
@@ -24,6 +23,7 @@ import org.camunda.bpm.engine.task.IdentityLink;
 import org.camunda.bpm.engine.task.Task;
 import org.camunda.bpm.engine.task.TaskQuery;
 import org.camunda.bpm.extension.hooks.rest.dto.TaskFilterResponse;
+import org.camunda.bpm.extension.hooks.rest.dto.TaskFilterVariableQueryDto;
 import org.camunda.bpm.extension.hooks.rest.dto.TaskQueryDto;
 import org.camunda.bpm.extension.hooks.rest.service.TaskFilterRestService;
 import org.slf4j.Logger;
@@ -153,7 +153,7 @@ public class TaskFilterRestServiceImpl implements TaskFilterRestService {
         Map<String, List<VariableInstance>> variableInstances = getVariableInstancesForTasks(halTasks, filterQuery);
         if (variableInstances != null) {
             for (HalTask halTask : (List<HalTask>) halTasks.getEmbedded("task")) {
-                embedVariableValuesInHalTask(halTask, variableInstances, filterQuery);
+                embedVariableValuesInHalTask(halTask, variableInstances);
                 halTask.addEmbedded("candidateGroups", getCandidateGroups(halTask));
             }
         }
@@ -171,7 +171,7 @@ public class TaskFilterRestServiceImpl implements TaskFilterRestService {
         return extendingQuery.toQuery(processEngine);
     }
 
-    private void embedVariableValuesInHalTask(HalTask halTask, Map<String, List<VariableInstance>> variableInstances, TaskQueryDto filterQuery) {
+    private void embedVariableValuesInHalTask(HalTask halTask, Map<String, List<VariableInstance>> variableInstances) {
         List<HalResource<?>> variableValues = getVariableValuesForTask(halTask, variableInstances);
         halTask.addEmbedded("variable", variableValues);
     }
@@ -184,8 +184,8 @@ public class TaskFilterRestServiceImpl implements TaskFilterRestService {
     private Map<String, List<VariableInstance>> getVariableInstancesForTasks(TaskQueryDto filterQuery, HalTask... halTasks) {
         if (halTasks != null && halTasks.length > 0) {
             List<String> variableNames = new ArrayList<>();
-            List<VariableQueryParameterDto> variables = filterQuery.getVariables();
-            for (VariableQueryParameterDto dto : variables) {
+            List<TaskFilterVariableQueryDto> variables = filterQuery.getVariables();
+            for (TaskFilterVariableQueryDto dto : variables) {
                 if (dto != null && dto.getName() != null) {
                     variableNames.add(dto.getName());
                 }

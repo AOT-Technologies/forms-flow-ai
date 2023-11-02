@@ -156,7 +156,7 @@ const Preview = ({handleNext, hideComponents, activeStep}) => {
       <div className=" d-flex justify-content-between align-items-center  ">
         <h3 className="task-head col-8 text-truncate">
           {" "}
-          <i className="fa fa-wpforms" aria-hidden="true" /> &nbsp;{" "}
+          <i className="fa-solid fa-file-lines" aria-hidden="true" /> &nbsp;{" "}
           {form?.title}
         </h3>
 

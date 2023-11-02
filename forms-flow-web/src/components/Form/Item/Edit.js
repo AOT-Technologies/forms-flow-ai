@@ -490,7 +490,7 @@ const Edit = React.memo(() => {
       <div className="d-flex align-items-center flex-wrap justify-content-between my-4 bg-light p-3">
         <div style={{ maxWidth: "60%", wordBreak: "break-word" }}>
           <h3 className="ml-3 task-head">
-            <i className="fa fa-wpforms" aria-hidden="true" /> &nbsp;{" "}
+            <i className="fa-solid fa-file-lines" aria-hidden="true" /> &nbsp;{" "}
             {formData.title}
             <span className="text-success h5 ml-2">(Version {version})</span>
           </h3>

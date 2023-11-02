@@ -62,22 +62,35 @@ class Filter(AuditDateTimeMixin, AuditUserMixin, BaseModel, db.Model):
 
     @classmethod
     def find_user_filters(
-        cls, roles: List[str] = None, user: str = None, tenant: str = None
+        cls,
+        roles: List[str] = None,
+        user: str = None,
+        tenant: str = None,
+        admin: bool = False,
     ):
         """Find active filters of the user."""
-        query = cls._auth_query(roles, user, tenant)
+        query = cls._auth_query(roles, user, tenant, admin)
         query = query.filter(Filter.status == str(FilterStatus.ACTIVE.value))
         return query.all()
 
     @classmethod
-    def _auth_query(cls, roles, user, tenant):
-        role_condition = [Filter.roles.contains([role]) for role in roles]
-        query = cls.query.filter(or_(*role_condition, Filter.users.contains([user]),
-                and_(or_(cls.roles == {}, cls.roles.is_(None)),
-                or_(cls.users == {}, cls.users.is_(None))
-                )))
+    def _auth_query(cls, roles, user, tenant, admin):
+        query = cls.query
+        if not admin:
+            role_condition = [Filter.roles.contains([role]) for role in roles]
+            query = query.filter(
+                or_(
+                    *role_condition,
+                    Filter.users.contains([user]),
+                    and_(
+                        or_(cls.roles == {}, cls.roles.is_(None)),
+                        or_(cls.users == {}, cls.users.is_(None)),
+                    ),
+                    cls.created_by == user,
+                )
+            )
         if tenant:
-            query = query.filter(Filter.tanant == tenant)
+            query = query.filter(Filter.tenant == tenant)
         return query
 
     @classmethod
@@ -86,13 +99,29 @@ class Filter(AuditDateTimeMixin, AuditUserMixin, BaseModel, db.Model):
         return cls.query.filter(Filter.id == filter_id).first()
 
     @classmethod
-    def find_active_filter_by_id(cls, filter_id) -> Filter:
+    def find_active_filter_by_id(  # pylint: disable=too-many-arguments
+        cls, filter_id, roles, user, tenant, admin
+    ) -> Filter:
         """Find active filter by id."""
-        return cls.query.filter(
+        query = cls._auth_query(roles, user, tenant, admin)
+        return query.filter(
             and_(
                 Filter.id == filter_id, Filter.status == str(FilterStatus.ACTIVE.value)
             )
         ).first()
+
+    @classmethod
+    def find_active_auth_filter_by_id(cls, filter_id, user, admin) -> Filter:
+        """Find active filter by id with edit & delete permission.
+
+        User who created the filter or admin can edit/delete filter.
+        """
+        query = cls.query.filter(
+            Filter.id == filter_id, Filter.status == str(FilterStatus.ACTIVE.value)
+        )
+        if not admin:
+            query = query.filter(cls.created_by == user)
+        return query.first()
 
     def mark_inactive(self):
         """Mark filter as inactive."""

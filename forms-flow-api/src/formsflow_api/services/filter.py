@@ -1,6 +1,7 @@
 """This exposes filter service."""
 
 from formsflow_api_utils.exceptions import BusinessException
+from formsflow_api_utils.utils import ADMIN_GROUP
 from formsflow_api_utils.utils.user_context import UserContext, user_context
 
 from formsflow_api.constants import BusinessErrorCode
@@ -37,7 +38,10 @@ class FilterService:
         """Get filters for the user."""
         user: UserContext = kwargs["user"]
         filters = Filter.find_user_filters(
-            roles=user.group_or_roles, user=user.user_name, tenant=user.tenant_key
+            roles=user.group_or_roles,
+            user=user.user_name,
+            tenant=user.tenant_key,
+            admin=ADMIN_GROUP in user.roles,
         )
         return filter_schema.dump(filters, many=True)
 
@@ -47,10 +51,14 @@ class FilterService:
         """Get filter by filter id."""
         user: UserContext = kwargs["user"]
         tenant_key = user.tenant_key
-        filter_result = Filter.find_active_filter_by_id(filter_id=filter_id)
+        filter_result = Filter.find_active_filter_by_id(
+            filter_id=filter_id,
+            roles=user.group_or_roles,
+            user=user.user_name,
+            tenant=tenant_key,
+            admin=ADMIN_GROUP in user.roles,
+        )
         if filter_result:
-            if tenant_key is not None and filter_result.tenant != tenant_key:
-                raise PermissionError("Tenant authentication failed.")
             return filter_result
         raise BusinessException(BusinessErrorCode.FILTER_NOT_FOUND)
 
@@ -60,7 +68,11 @@ class FilterService:
         """Mark filter as inactive."""
         user: UserContext = kwargs["user"]
         tenant_key = user.tenant_key
-        filter_result = Filter.find_active_filter_by_id(filter_id=filter_id)
+        filter_result = Filter.find_active_auth_filter_by_id(
+            filter_id=filter_id,
+            user=user.user_name,
+            admin=ADMIN_GROUP in user.roles,
+        )
         if filter_result:
             if tenant_key is not None and filter_result.tenant != tenant_key:
                 raise PermissionError("Tenant authentication failed.")
@@ -75,7 +87,11 @@ class FilterService:
         user: UserContext = kwargs["user"]
         tenant_key = user.tenant_key
         filter_data["modified_by"] = user.user_name
-        filter_result = Filter.find_active_filter_by_id(filter_id=filter_id)
+        filter_result = Filter.find_active_auth_filter_by_id(
+            filter_id=filter_id,
+            user=user.user_name,
+            admin=ADMIN_GROUP in user.roles,
+        )
 
         if filter_result:
             if tenant_key is not None and filter_result.tenant != tenant_key:

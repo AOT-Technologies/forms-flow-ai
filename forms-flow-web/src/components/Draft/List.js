@@ -196,9 +196,23 @@ export const DraftList = React.memo(() => {
 
   return (
     <>
+     <Confirm
+            modalOpen={draftDelete.modalOpen}
+            message=
+            {
+            <div>
+            {t("Are you sure you wish to delete the draft")}
+            <span style={{ fontWeight: "bold" }} > {draftDelete.draftName.includes(' ') ? draftDelete.draftName : textTruncate(50,40,draftDelete.draftName)} </span>
+            {t("with ID")} 
+            <span style={{fontWeight: "bold"}}> {draftDelete.draftId}</span>?
+            </div>
+            }
+            
+            onNo={() => onNo()}
+            onYes={onYes}
+          />
     <Head items={headOptions} page="Drafts" />
     <DraftTable />
-
     </>
   );
 });

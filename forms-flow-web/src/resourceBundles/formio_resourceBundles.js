@@ -24,8 +24,8 @@ export const formio_resourceBundles = {
     "Choose any":"Choose any",
     "select form type":"select form type",
     "Draft Deleted Successfully":"Draft Deleted Successfully",
-    "Saved to Applications/Drafts":"Saved to Applications/Drafts",
-    "Unfinished applications will be saved to Applications/Drafts.":"Unfinished applications will be saved to Applications/Drafts.",
+    "Saved to Submissions/Drafts":"Saved to Submissions/Drafts",
+    "Unfinished Submissions will be saved to Submissions/Drafts.":"Unfinished Submissions will be saved to Submissions/Drafts.",
     "with ID":"with ID",
     "Are you sure you wish to delete the draft":"Are you sure you wish to delete the draft",
     "Discard Draft":"Discard Draft",
@@ -41,15 +41,15 @@ export const formio_resourceBundles = {
     "Form deleted successfully": "Form deleted successfully",
     "Form-Workflow association saved.": "Form-Workflow association saved.",
     "Loading...": "Loading...",
-    "Changing the form workflow will not affect the existing applications. It will only update in the newly created applications. Press Save Changes to continue or cancel the changes.":
-      "Changing the form workflow will not affect the existing applications. It will only update in the newly created applications. Press Save Changes to continue or cancel the changes.",
+    "Changing the form workflow will not affect the existing submissions. It will only update in the newly created submissions. Press Save Changes to continue or cancel the changes.":
+      "Changing the form workflow will not affect the existing submissions. It will only update in the newly created submissions. Press Save Changes to continue or cancel the changes.",
     "Save Changes": "Save Changes",
     "Are you sure you wish to delete the form ":
       "Are you sure you wish to delete the form ",
     "Are you sure you wish to delete the form?":
       "Are you sure you wish to delete the form?",
-    "Applications are submitted against": "Applications are submitted against",
-    "Application is submitted against": "Application is submitted against",
+    "Submissions are made against": "Submissions are made against",
+    "Submission is made against": "Submission is made against",
     ". Are you sure want to delete ?": ". Are you sure want to delete ?",
     "Click here to go back": "Click here to go back",
     "Error while saving Form": "Error while saving Form",
@@ -73,8 +73,8 @@ export const formio_resourceBundles = {
     "Please select from one of the following workflows.":
       "Please select from one of the following workflows.",
     "Select Key": "Select Key",
-    "Changing the form title will not affect the existing applications. It will only update in the newly created applications. Press Save Changes to continue or cancel the changes.":
-      "Changing the form title will not affect the existing applications. It will only update in the newly created applications. Press Save Changes to continue or cancel the changes.",
+    "Changing the form title will not affect the existing submissions. It will only update in the newly created submissions. Press Save Changes to continue or cancel the changes.":
+      "Changing the form title will not affect the existing submissions. It will only update in the newly created submissions. Press Save Changes to continue or cancel the changes.",
     "Create Your Task Variable": "Create Your Task Variable",
     "No task variable selected": "No task variable selected",
     "Workflow Associate": "Workflow Associate",
@@ -98,7 +98,7 @@ export const formio_resourceBundles = {
     "Metrics": "Metrics",
     "Insights": "Insights",
     "Tasks": "Tasks",
-    "Applications": "Applications",
+    "Submissions": "Submissions",
     "Forms": "Forms  ",
     "Admin": "Admin",
     "Powered by ": "Powered by ",
@@ -132,7 +132,6 @@ export const formio_resourceBundles = {
       "Do you want to associate form with a workflow ?",
     "Yes": "Yes",
     "No": "No",
-    "Form Name": "Form Name ",
     "Workflow Name": "Workflow Name",
     "Publish this form for Client Users.":
       "Publish this form for Client Users.",
@@ -176,7 +175,7 @@ export const formio_resourceBundles = {
     "name": "name",
     "value": "value",
     "No task matching filters found.": "No task matching filters found.",
-    "Application Id": "Application Id",
+    "Submission Id": "Submission Id",
     "Set follow-up Date": "Set follow-up Date",
     "Set Due date": "Set Due date",
     "Add groups": "Add groups",
@@ -202,7 +201,7 @@ export const formio_resourceBundles = {
     "All": "All",
     "ANY": "ANY",
     "Task assignee": "Task assignee",
-    "Application History": "Application History",
+    "Submission History": "Submission History",
     "View Submission": "View Submission",
     "Showing": "Showing",
     "to": "to",
@@ -221,9 +220,8 @@ export const formio_resourceBundles = {
     "Group ID": "Group ID",
     "Due": "Due",
     "Follow-up": "Follow-up",
-    "Application Name": "Application Name",
+    "Form Name": "Form Name",
     "Created By": "Created By",
-    "Application Status": "Application Status",
     "Submitted On": "Submitted On",
     "Modified On": "Modified On",
     "No History Found": "No History Found",
@@ -231,8 +229,7 @@ export const formio_resourceBundles = {
     "history": "history",
     "Details": "Details",
     "Status": "Status",
-    "Submissions": "Submissions",
-    "No Application History found": "No Application History found",
+    "No Submission History found": "No Submission History found",
     "Link To Form Submission": "Link To Form Submission",
     "Last Modified": "Last Modified",
     "No dashboard found": "No dashboard found",
@@ -255,9 +252,8 @@ export const formio_resourceBundles = {
     "Form Completed": "Form Completed",
     "No forms found": "No forms found",
     "Press Enter key or click here to search":
-      "Press Enter key or click here to search",
+    "Press Enter key or click here to search",
     "Click to clear": "Click to clear",
-    "No applications found": "No applications found",
     "Successfully Updated": "Successfully Updated",
     "Failed": "Failed",
     "Submission Failed.": "Submission Failed.",
@@ -285,7 +281,7 @@ export const formio_resourceBundles = {
     "Access Denied" : "Access Denied",
     "By default, the tenant key would be prefixed to form":"By default, the tenant key would be prefixed to form",
     "go back":"go back",
-    "No Applications Found":"No Applications Found",
+    "No submissions Found":"No submissions Found",
     "Submission saved to draft.":"Submission saved to draft.",
     "Saved to draft":"Saved to draft",
     "Saving...":"Saving...",
@@ -334,8 +330,6 @@ export const formio_resourceBundles = {
     "Choose any":"选择任何",
     "select form type":"选择表格类型",
     "Draft Deleted Successfully":"草稿删除成功",
-    "Saved to Applications/Drafts":"保存到申请/草稿",
-    "Unfinished applications will be saved to Applications/Drafts.":"未完成的申请将被保存到申请/草稿.",
     "with ID":"带身份证",
     "Are you sure you wish to delete the draft":"您确定要删除草稿吗",
     "Discard Draft":" 丢弃草稿",
@@ -350,11 +344,9 @@ export const formio_resourceBundles = {
     "Form deletion unsuccessful":"表单删除失败",
     "Form deleted successfully": "表格删除成功",
     "Loading...": "正在加载...",
-    "Changing the form workflow will not affect the existing applications. It will only update in the newly created applications. Press Save Changes to continue or cancel the changes.":
-      "更改表单工作流程不会影响现有应用程序。它只会在新创建的应用程序中更新。按保存更改以继续或取消更改。",
+    
     "Save Changes": "保存更改",
-    "Applications are submitted against": "申请是针对",
-    "Application is submitted against": "申请是针对",
+  
     ". Are you sure want to delete ?": ".确定要删除吗？",
     "Are you sure you wish to delete the form ": "您确定要删除表格吗 ",
     "Are you sure you wish to delete the form?": "您确定要删除表格吗?",
@@ -381,8 +373,7 @@ export const formio_resourceBundles = {
     "Create Your Task Variable": "创建您的任务变量",
     "No task variable selected": "未选择任务变量",
     "Workflow Associate": "工作流助理",
-    "Changing the form title will not affect the existing applications. It will only update in the newly created applications. Press Save Changes to continue or cancel the changes.":
-      "更改表单标题不会影响现有应用程序。它只会在新创建的应用程序中更新。按保存更改以继续或取消更改。",
+  
     "Task variable": "任务变量",
     "Enter pathname": "输入路径名",
     "Label": "标签",
@@ -429,7 +420,7 @@ export const formio_resourceBundles = {
     "Delete Form": "删除表格  ",
     "Delete": "删除",
     "Print As PDF": "打印为 PDF  ",
-    "Applications": "应用",
+ 
     "Tasks": "任务",
     "Insights": "洞察力",
     "Dashboard": "仪表盘  ",
@@ -460,7 +451,6 @@ export const formio_resourceBundles = {
     "name": "姓名",
     "Value": "价值",
     "No Filters Found": "未找到匹配过滤器的任务。",
-    "Application Id": "应用程序编号",
     "Set follow-up Date": "设置随访日期",
     "Set Due date": "设置截止日期",
     "Add groups": "添加群组",
@@ -487,7 +477,7 @@ export const formio_resourceBundles = {
     "All": "全部",
     "ANY": "任何",
     "Task assignee": "任务受让人",
-    "Application History": "应用历史",
+    "submission History": "应用历史",
     "View Submission": "查看提交",
     "Showing": "显示",
     "to": "到",
@@ -504,17 +494,15 @@ export const formio_resourceBundles = {
     "Group ID": "组ID",
     "Due": "到期的",
     "Follow-up": "跟进",
-    "Application Name": "应用名称",
+  
     "Created By": "由...制作",
-    "Application Status": "申请状态",
+    
     "Submitted On": "提交日期",
     "Modified On": "修改时间",
     "No History Found": "未找到历史记录",
     "Process Diagram": "流程图",
     "Details": "细节",
     "Status": "地位",
-    "Submissions": "提交",
-    "No Application History found": "未找到应用历史",
     "Link To Form Submission": "表单提交链接",
     "Last Modified": "最后修改",
     "Metrics": "指标",
@@ -541,7 +529,6 @@ export const formio_resourceBundles = {
     "No forms found": "没有找到表格",
     "Powered by ": "供电 ",
     "No Process Diagram found": "未找到流程图",
-    "No applications found": "未找到任何应​​用程序",
     "Successfully Updated": "成功更新",
     "Failed": "失败的",
     "Submission Failed.": "提交失败。",
@@ -1208,7 +1195,7 @@ export const formio_resourceBundles = {
     "Access Denied" : "拒绝访问",
     "By default, the tenant key would be prefixed to form":"默认情况下，租户键的前缀为 form",
     "go back":"回去",
-    "No Applications Found":"未找到任何应​​用程序",
+  
     "Submission saved to draft.":"提交已保存到草稿。",
     "Saved to draft":"已保存到草稿",
     "Saving...":"保存...",
@@ -1229,7 +1216,18 @@ export const formio_resourceBundles = {
     "All Users": "全部用户",
     "Specific User Group": "特定用户群",
     "Applicable for Designer Roled Users only.": "仅适用于设计师角色用户。",
-    "Applicable for Client and Reviewer Roled Users only.": "仅适用于客户和审阅者角色用户。"
+    "Applicable for Client and Reviewer Roled Users only.": "仅适用于客户和审阅者角色用户。",
+    "Saved to Submissions/Drafts": "保存到提交/草稿",
+    "Unfinished Submissions will be saved to Submissions/Drafts.": "未完成的提交将保存到提交/草稿。",
+    "Changing the form workflow will not affect the existing submissions. It will only update in the newly created submissions. Press Save Changes to continue or cancel the changes.": "更改表单工作流程不会影响现有的提交。它只会更新在新创建的提交中。按 Save Changes 继续或取消更改。",
+    "Submissions are made against": "提交是针对的",
+    "Submission is made against": "提交是针对的",
+    "Changing the form title will not affect the existing submissions. It will only update in the newly created submissions. Press Save Changes to continue or cancel the changes.": "更改表单标题不会影响现有的提交。它只会在新创建的提交中更新。按 Save Changes 继续或取消更改。",
+    "Submissions": "提交",
+    "Submission Id": "提交编号",
+    "Submission History": "提交历史",
+    "No Submission History found": "未找到提交历史",
+    "No submissions Found": "未找到提交",
 
   },
 
@@ -1257,8 +1255,7 @@ export const formio_resourceBundles = {
     "Choose any":"Изберете всяка",
     "select form type":"изберете тип формуляр",
     "Draft Deleted Successfully":"Черновата е изтрита успешно",
-    "Saved to Applications/Drafts":"Запазено в Приложения/Чернови",
-    "Unfinished applications will be saved to Applications/Drafts.":" Незавършените приложения ще бъдат запазени в Приложения/Чернови.",
+    
     "with ID":"с лична карта",
     "Are you sure you wish to delete the draft":"Сигурни ли сте, че искате да изтриете черновата",
     "Discard Draft":"Отхвърлете черновата",
@@ -1277,11 +1274,7 @@ export const formio_resourceBundles = {
     "Form-Workflow association saved.":
       "Асоциацията на формуляр-работен процес е запазена.",
     "Loading...": "Зареждане...",
-    "Changing the form workflow will not affect the existing applications. It will only update in the newly created applications. Press Save Changes to continue or cancel the changes.":
-      "Промяната на работния процес на формуляра няма да засегне съществуващите приложения. Той ще се актуализира само в новосъздадените приложения. Натиснете Запазване на промените, за да продължите или отмените промените.",
     "Save Changes": "Запазите промените",
-    "Applications are submitted against": "Заявленията се подават срещу",
-    "Application is submitted against": "Заявлението се подава срещу",
     ". Are you sure want to delete ?": ". Наистина ли искате да изтриете?",
     "Are you sure you wish to delete the form ":
       "Сигурни ли сте, че искате да изтриете формуляра",
@@ -1356,7 +1349,7 @@ export const formio_resourceBundles = {
     "Delete Form": "Изтриване на формуляр",
     "Delete": "Изтрий",
     "Print As PDF": "Печат като PDF",
-    "Applications": "Приложения",
+ 
     "Task": "Задачи",
     "Metrics": "Метрика",
     "Dashboard": "Табло",
@@ -1388,7 +1381,7 @@ export const formio_resourceBundles = {
     "value": "стойност",
     "No task matching filters found.":
       "Няма намерени филтри за съвпадение на задачи.",
-    "Application Id": "Идентификатор на приложението",
+  
     "Set follow-up Date": "Задайте дата за проследяване",
     "Set Due date": "Задайте крайна дата",
     "Add groups": "Добавете групи",
@@ -1415,7 +1408,7 @@ export const formio_resourceBundles = {
     "All": "ВСИЧКО",
     "ANY": "ВСЕКИ",
     "Task assignee": "Възложител на задачата",
-    "Application History": "История на приложенията",
+   
     "View Submission": "Вижте подаване",
     "Showing": "Показване",
     "to": "да се",
@@ -1434,17 +1427,15 @@ export const formio_resourceBundles = {
     "Group ID": "ID на групата",
     "Due": "В следствие",
     "Follow-up": "Проследяване",
-    "Application Name": "Име на приложението",
+ 
     "Created By": "Създадено от",
-    "Application Status": "Състояние на приложението",
+   
     "Submitted On": "Изпратено на",
     "Modified On": "Променено Включено",
     "No History Found": "Няма намерена история",
     "Process Diagram": "Диаграма на процеса",
     "Details": "Подробности",
     "Status": "Състояние",
-    "Submissions": "Изявления",
-    "No Application History found": "Няма намерена история на приложения",
     "Link To Form Submission": "Връзка към подаване на формуляр",
     "Last Modified": "Последно модифициран",
     "Insights": "Прозрения",
@@ -1471,7 +1462,6 @@ export const formio_resourceBundles = {
     "No forms found": "Няма намерени формуляри",
     "Powered by ": "Задвижвани от ",
     "No Process Diagram found": "Не е намерена диаграма на процеса",
-    "No applications found":"Няма намерени приложения", 
     "Successfully Updated": "Актуализирано успешно",
     "Failed": "Се провали",
     "Press Enter key or click here to search":
@@ -2166,8 +2156,8 @@ export const formio_resourceBundles = {
       "Задава текста за бутона Добавяне на ресурс.",
     "Auto Expand": "Автоматично разширяване",
     "Save & Preview": "Запазване и визуализация",
-    "Changing the form title will not affect the existing applications. It will only update in the newly created applications. Press Save Changes to continue or cancel the changes.":
-      "Промяната на заглавието на формуляра няма да засегне съществуващите приложения. Той ще се актуализира само в новосъздадените приложения. Натиснете Запазване на промените, за да продължите или отмените промените.",
+    
+    
     "Export PDF": "Експортиране на PDF",
     "Something went wrong. Please try again!":"Нещо се обърка. Моля, опитайте отново!",
     "No Dashboards Found":"Няма намерени табла за управление",
@@ -2188,7 +2178,6 @@ export const formio_resourceBundles = {
     "Access Denied" : "Отказан достъп",
     "By default, the tenant key would be prefixed to form":"По подразбиране ключът на клиента ще има префикс за форма",
     "go back":"Върни се",
-    "No Applications Found":"Няма намерени приложения",
     "Submission saved to draft.":"Изпращането е запазено в чернова.",
     "Saved to draft":"Запазено в чернова",
     "Saving...":"Запазва се...",
@@ -2210,7 +2199,19 @@ export const formio_resourceBundles = {
     "All Users": "Всички потребители",
     "Specific User Group": "Конкретна потребителска група",
     "Applicable for Designer Roled Users only.": "Приложимо само за потребители с права на дизайнер.",
-    "Applicable for Client and Reviewer Roled Users only.": "Приложимо само за потребители с права на клиент и рецензент."
+    "Applicable for Client and Reviewer Roled Users only.": "Приложимо само за потребители с права на клиент и рецензент.",
+    "Saved to Submissions/Drafts": "Запазено в Подавания/Чернови",
+    "Unfinished Submissions will be saved to Submissions/Drafts.": "Незавършените Подавания ще бъдат запазени в Подавания/Чернови.",
+    "Changing the form workflow will not affect the existing submissions. It will only update in the newly created submissions. Press Save Changes to continue or cancel the changes.": "Промяната на работния процес на формуляра няма да засегне съществуващите подавания. Това ще се актуализира само в новосъздадените подавания. Натиснете Запазване на промените, за да продължите или отмените промените.",
+    "Submissions are made against": "Подаванията се правят срещу",
+    "Submission is made against": "Подаването се прави срещу",
+    "Changing the form title will not affect the existing submissions. It will only update in the newly created submissions. Press Save Changes to continue or cancel the changes.": "Промяната на заглавието на формуляра няма да засегне съществуващите подавания. Това ще се актуализира само в новосъздадените подавания. Натиснете Запазване на промените, за да продължите или отмените промените.",
+    "Submissions": "Подавания",
+    "Submission Id": "Идентификационен Номер на Подаване",
+    "Submission History": "История на Подаването",
+    "No Submission History found": "Няма Намерен История на Подаването",
+    "No submissions Found": "Няма Намерени Подавания",
+    
   },
 
   pt: {
@@ -2237,8 +2238,7 @@ export const formio_resourceBundles = {
     "Choose any":"Escolha qualquer",
     "select form type":"selecione o tipo de formulário",
     "Draft Deleted Successfully":"Rascunho excluído com sucesso",
-    "Saved to Applications/Drafts":"Salvo em Aplicações/Rascunhos",
-    "Unfinished applications will be saved to Applications/Drafts.":"Os aplicativos inacabados serão salvos em Aplicativos/Rascunhos.",
+    
     "with ID":"com identidade",
     "Are you sure you wish to delete the draft":"Tem certeza de que deseja excluir o rascunho",
     "Discard Draft":"Descartar Rascunho",
@@ -2255,17 +2255,13 @@ export const formio_resourceBundles = {
     "Form deleted successfully": "Formulário excluído com sucesso",
     "Show in list": "Mostrar na lista",
     "Loading...": "Carregando...",
-    "Changing the form workflow will not affect the existing applications. It will only update in the newly created applications. Press Save Changes to continue or cancel the changes.":
-      "Alterar o fluxo de trabalho do formulário não afetará os aplicativos existentes. Ele só será atualizado nos aplicativos recém-criados. Pressione Salvar alterações para continuar ou cancelar as alterações.",
+    
     "Save Changes": "Salvar alterações",
     "Are you sure you wish to delete the form ":
       "Tem certeza de que deseja excluir o formulário",
     "Are you sure you wish to delete the form?":
       "Tem certeza de que deseja excluir o formulário?",
-    "Applications are submitted against":
-      "As candidaturas são apresentadas contra",
-    "Application is submitted against":
-      "As candidaturas são apresentadas contra",
+    
     ". Are you sure want to delete ?": ". Tem certeza de que deseja excluir?",
     "Click here to go back": "Clique aqui para voltar",
     "Dashboards": "Painéis",
@@ -2290,8 +2286,7 @@ export const formio_resourceBundles = {
     "Create Your Task Variable": "Crie sua variável de tarefa",
     "No task variable selected": "Nenhuma variável de tarefa selecionada",
     "Workflow Associate": "Associado de fluxo de trabalho",
-    "Changing the form title will not affect the existing applications. It will only update in the newly created applications. Press Save Changes to continue or cancel the changes.":
-      "Alterar o título do formulário não afetará os aplicativos existentes. Ele só será atualizado nos aplicativos recém-criados. Pressione Salvar alterações para continuar ou cancelar as alterações.",
+    
     "Task variable": "Variável de tarefa",
     "Enter pathname": "Digite o nome do caminho",
     "saved successfully": "Salvo com sucesso",
@@ -2311,7 +2306,7 @@ export const formio_resourceBundles = {
     "Insights": "Intuições",
     "Metrics": "Métricas",
     "Tasks": "Tarefas",
-    "Applications": "Formulários",
+ 
     "Admin": "Administrador",
     "Powered by ": "Distribuído por ",
     "Name": "Nome",
@@ -2331,8 +2326,7 @@ export const formio_resourceBundles = {
       "Todas as etapas concluídas - você terminou",
     "Form-Workflow association failed.":
       "Falha na associação Formulário-Fluxo de trabalho.",
-    "Application Id": "ID do aplicativo",
-    "Application Name": "Nome da Aplicação",
+
     "Created By": "Criado por",
     "Enter the form title": "Digite o título do formulário",
     "Enter the form machine name": "Digite o nome da máquina do formulário",
@@ -3084,7 +3078,7 @@ export const formio_resourceBundles = {
     "Filter Tasks": "Filtrar tarefas",
     "ANY": "ALGUMA",
     "Task assignee": "Responsável pela tarefa",
-    "Application History": "Histórico da Aplicação",
+  
     "View Submission": "Ver o envio",
     "Showing": "Mostrando",
     "results": "resultados",
@@ -3104,15 +3098,13 @@ export const formio_resourceBundles = {
       "Corrija os erros antes de enviar novamente.",
     "Form-Workflow association saved.":
       "Associação formulário-fluxo de trabalho salva.",
-    "Application Status": "Status do aplicativo",
+    
     "Submitted On": "Enviado em",
     "Modified On": "Modificado em",
     "No History Found": "Nenhum histórico encontrado",
     "Process Diagram": "Diagrama de Processo",
     "Details": "Detalhes",
     "Status": "Status",
-    "Submissions": "Submissões",
-    "No Application History found": "Nenhum histórico de aplicativo encontrado",
     "Link To Form Submission": "Link para o envio do formulário",
     "Last Modified": "Última modificação",
     "All": "Tudo",
@@ -3137,7 +3129,6 @@ export const formio_resourceBundles = {
     "Form Completed": "Formulário preenchido",
     "No forms found": "Nenhum formulário encontrado",
     "No Process Diagram found": "Nenhum diagrama de processo encontrado",
-    "No applications found": "Nenhum aplicativo encontrado",
     "Successfully Updated": "Atualizado com sucesso",
     "Failed": "Fracassada",
     "Press Enter key or click here to search":
@@ -3163,7 +3154,7 @@ export const formio_resourceBundles = {
     "Access Denied" : "Acesso negado",
     "By default, the tenant key would be prefixed to form":"Por padrão, a chave do locatário seria prefixada para formar",
     "go back":"volte",
-    "No Applications Found":"Nenhum aplicativo encontrado",
+   
     "Submission saved to draft.":"Envio salvo como rascunho.",
     "Saved to draft":"Salvo no rascunho",
     "Saving...":"Salvando...",
@@ -3184,7 +3175,18 @@ export const formio_resourceBundles = {
     "All Users": "Todos os usuários",
     "Specific User Group": "Grupo de usuários específico",
     "Applicable for Designer Roled Users only.": "Aplicável apenas para usuários com função de designer.",
-    "Applicable for Client and Reviewer Roled Users only.": "Aplicável apenas para usuários com função de cliente e revisor."
+    "Applicable for Client and Reviewer Roled Users only.": "Aplicável apenas para usuários com função de cliente e revisor.",
+    "Saved to Submissions/Drafts": "Salvo em Submissões/Rascunhos",
+    "Unfinished Submissions will be saved to Submissions/Drafts.": "As Submissões não concluídas serão salvas em Submissões/Rascunhos.",
+    "Changing the form workflow will not affect the existing submissions. It will only update in the newly created submissions. Press Save Changes to continue or cancel the changes.": "Mudar o fluxo de trabalho do formulário não afetará as submissões existentes. Isso só será atualizado nas submissões recém-criadas. Pressione Salvar Alterações para continuar ou cancelar as alterações.",
+    "Submissions are made against": "As Submissões são feitas contra",
+    "Submission is made against": "A Submissão é feita contra",
+    "Changing the form title will not affect the existing submissions. It will only update in the newly created submissions. Press Save Changes to continue or cancel the changes.": "Mudar o título do formulário não afetará as submissões existentes. Isso só será atualizado nas submissões recém-criadas. Pressione Salvar Alterações para continuar ou cancelar as alterações.",
+    "Submissions": "Submissões",
+    "Submission Id": "ID da Submissão",
+    "Submission History": "Histórico da Submissão",
+    "No Submission History found": "Nenhum Histórico de Submissão Encontrado",
+    "No submissions Found": "Nenhuma submissão encontrada",
 
   },
 
@@ -3212,8 +3214,7 @@ export const formio_resourceBundles = {
     "Choose any":"Choisissez n'importe quel",
     "select form type":"sélectionner le type de formulaire",
     "Draft Deleted Successfully":"Brouillon supprimé avec succès",
-    "Saved to Applications/Drafts":"Enregistré dans Candidatures/Brouillons",
-    "Unfinished applications will be saved to Applications/Drafts.":"Les candidatures non terminées seront enregistrées dans Candidatures/Brouillons.",
+    
     "with ID":"avec pièce d'identité",
     "Are you sure you wish to delete the draft":"Êtes-vous sûr de vouloir supprimer le brouillon",
     "Discard Draft":" Supprimer le brouillon",
@@ -3229,16 +3230,13 @@ export const formio_resourceBundles = {
     "Form deleted successfully": "Formulaire supprimé avec succèsy",
     "Form deletion unsuccessful":"Échec de la suppression du formulaire",
     "Loading...": "Chargement...",
-    "Changing the form workflow will not affect the existing applications. It will only update in the newly created applications. Press Save Changes to continue or cancel the changes.":
-      "La modification du flux de travail du formulaire n'affectera pas les applications existantes. Il ne sera mis à jour que dans les applications nouvellement créées. Appuyez sur Enregistrer les modifications pour continuer ou annuler les modifications.",
+    
     "Save Changes": "Save Changes",
     "Are you sure you wish to delete the form ":
       "Êtes-vous sûr de vouloir supprimer le formulaire",
     "Are you sure you wish to delete the form?":
       "Êtes-vous sûr de vouloir supprimer le formulaire?",
-    "Applications are submitted against":
-      "Les candidatures sont déposées contre",
-    "Application is submitted against": "La candidature est déposée contre",
+  
     ". Are you sure want to delete ?": ". Voulez-vous vraiment supprimer ?",
     "Click here to go back": "Cliquez ici pour revenir en arrière",
     "Dashboards": "Tableaux de bord",
@@ -3266,8 +3264,7 @@ export const formio_resourceBundles = {
     "Create Your Task Variable": "Créez votre variable de tâche",
     "No task variable selected": "Aucune variable de tâche sélectionnée",
     "Workflow Associate": "Associé au flux de travail",
-    "Changing the form title will not affect the existing applications. It will only update in the newly created applications. Press Save Changes to continue or cancel the changes.":
-      "La modification du titre du formulaire n'affectera pas les applications existantes. Il ne sera mis à jour que dans les applications nouvellement créées. Appuyez sur Enregistrer les modifications pour continuer ou annuler les modifications.",
+   
     "Task variable": "Variable de tâche",
     "Enter pathname": "Entrez le nom du chemin",
     "saved successfully": "enregistré avec succès",
@@ -3289,7 +3286,7 @@ export const formio_resourceBundles = {
     "Insights": "Connaissances",
     "Dashboard": "Tableau de bord",
     "Task": "Tâches",
-    "Applications": "Applications",
+    
     "Forms": "Formes",
     "Admin": "Administrateur",
     "Powered by ": "Alimenté par ",
@@ -4069,7 +4066,7 @@ export const formio_resourceBundles = {
     "Filter Tasks": "Filtrer les tâches",
     "ANY": "TOUTE",
     "Task assignee": "Responsable de la tâche",
-    "Application History": "Historique des candidatures",
+   
     "View Submission": "Voir la soumission",
     "Showing": "Affichage",
     "to": "à",
@@ -4087,18 +4084,15 @@ export const formio_resourceBundles = {
     "Group ID": "Identifiant du groupe",
     "Due": "Dû",
     "Follow-up": "Suivre",
-    "Application Id": "ID d'application",
-    "Application Name": "Nom de l'application",
+
     "Created By": "Créé par",
-    "Application Status": "État de la candidature",
+ 
     "Submitted On": "Soumis le",
     "Modified On": "Modifié le",
     "No History Found": "Aucun historique trouvé",
     "Process Diagram": "Diagramme de processus",
     "Details": "Des détails",
     "Status": "Statut",
-    "Submissions": "Soumissions",
-    "No Application History found": "Aucun historique des applications trouvé",
     "Link To Form Submission": "Lien vers la soumission de formulaire",
     "Last Modified": "Dernière modification",
     "All": "Toute",
@@ -4119,7 +4113,6 @@ export const formio_resourceBundles = {
     "File Upload Status": "État du téléchargement du fichier",
     "Forms Completed": "Formulaires remplis",
     "Form Completed": "Formulaire complété",
-    "No applications found":"Aucune application trouvée",
     "Successfully Updated": "Mise à jour réussie",
     "Failed": "Manquée",
     "Submission Failed.": "Изпращането не бе успешно.",
@@ -4146,7 +4139,7 @@ export const formio_resourceBundles = {
     "Access Denied" : "Accès refusé",
     "By default, the tenant key would be prefixed to form":"Par défaut, la clé du locataire serait préfixée pour former",
     "go back":"retourner",
-    "No Applications Found":"Aucune application trouvée",
+   
     "Submission saved to draft.":"Soumission enregistrée comme brouillon.",
     "Saved to draft":"Enregistré comme brouillon",
     "Saving...":"Économie...",
@@ -4167,7 +4160,18 @@ export const formio_resourceBundles = {
     "All Users": "Tous les utilisateurs",
     "Specific User Group": "Groupe d'utilisateurs spécifique",
     "Applicable for Designer Roled Users only.": "Applicable uniquement aux utilisateurs avec rôle de concepteur.",
-    "Applicable for Client and Reviewer Roled Users only.": "Applicable uniquement aux utilisateurs avec rôle de client et de réviseur."
+    "Applicable for Client and Reviewer Roled Users only.": "Applicable uniquement aux utilisateurs avec rôle de client et de réviseur.",
+    "Saved to Submissions/Drafts": "Enregistré dans Soumissions/Brouillons",
+    "Unfinished Submissions will be saved to Submissions/Drafts.": "Les Soumissions inachevées seront enregistrées dans Soumissions/Brouillons.",
+    "Changing the form workflow will not affect the existing submissions. It will only update in the newly created submissions. Press Save Changes to continue or cancel the changes.": "Changer le flux de travail du formulaire n'affectera pas les soumissions existantes. Il ne sera mis à jour que dans les nouvelles soumissions créées. Appuyez sur Enregistrer les modifications pour continuer ou annuler les modifications.",
+    "Submissions are made against": "Les Soumissions sont faites contre",
+    "Submission is made against": "La Soumission est faite contre",
+    "Changing the form title will not affect the existing submissions. It will only update in the newly created submissions. Press Save Changes to continue or cancel the changes.": "Changer le titre du formulaire n'affectera pas les soumissions existantes. Il ne sera mis à jour que dans les nouvelles soumissions créées. Appuyez sur Enregistrer les modifications pour continuer ou annuler les modifications.",
+    "Submissions": "Soumissions",
+    "Submission Id": "ID de Soumission",
+    "Submission History": "Historique de Soumission",
+    "No Submission History found": "Aucun Historique de Soumission Trouvé",
+    "No submissions Found": "Aucune soumission trouvée",
 
 
   },
@@ -4196,8 +4200,7 @@ export const formio_resourceBundles = {
     "Choose any":"Wählen Sie eine aus",
     "select form type":"Formulartyp auswählen",
     "Draft Deleted Successfully":"Entwurf erfolgreich gelöscht",
-    "Saved to Applications/Drafts":"Unter Anwendungen/Entwürfe gespeichert",
-    "Unfinished applications will be saved to Applications/Drafts.":" Unfertige Bewerbungen werden unter Bewerbungen/Entwürfe gespeichert.",
+   
     "with ID":"mit Ausweis",
     "Are you sure you wish to delete the draft":"Möchten Sie den Entwurf wirklich löschen",
     "Discard Draft":"Entwurf verwerfen",
@@ -4216,15 +4219,13 @@ export const formio_resourceBundles = {
     "Form-Workflow association saved.":
       "Formular-Workflow-Zuordnung gespeichert.",
     "Loading...": "Wird geladen...",
-    "Changing the form workflow will not affect the existing applications. It will only update in the newly created applications. Press Save Changes to continue or cancel the changes.":
-      "Das Ändern des Formular-Workflows wirkt sich nicht auf die vorhandenen Anwendungen aus. Es wird nur in den neu erstellten Anwendungen aktualisiert. Drücken Sie Änderungen speichern, um fortzufahren oder die Änderungen abzubrechen.",
+    
     "Save Changes": "Save Changes",
     "Are you sure you wish to delete the form ":
       "Möchten Sie das Formular wirklich löschen ",
     "Are you sure you wish to delete the form?":
       "Möchten Sie das Formular wirklich löschen? ",
-    "Applications are submitted against": "Anträge werden dagegen gestellt",
-    "Application is submitted against": "Antrag wird dagegen gestellt",
+
     ". Are you sure want to delete ?": ". Möchten Sie wirklich löschen?",
     "Click here to go back": "Klicke hier um zurück zu kommen",
     "Dashboards": "Dashboards",
@@ -4250,8 +4251,7 @@ export const formio_resourceBundles = {
     "Create Your Task Variable": "Erstellen Sie Ihre Aufgabenvariable",
     "No task variable selected": "Keine Aufgabenvariable ausgewählt",
     "Workflow Associate": "Workflow-Mitarbeiter",
-    "Changing the form title will not affect the existing applications. It will only update in the newly created applications. Press Save Changes to continue or cancel the changes.":
-      "Das Ändern des Formulartitels wirkt sich nicht auf die bestehenden Anwendungen aus. Es wird nur in den neu erstellten Anwendungen aktualisiert. Drücken Sie Änderungen speichern, um fortzufahren oder die Änderungen abzubrechen.",
+    
     "Task variable": "Aufgabenvariable",
     "Enter pathname": "Geben Sie den Pfadnamen ein",
     "saved successfully": "Erfolgreich gespeichert",
@@ -4264,7 +4264,7 @@ export const formio_resourceBundles = {
     "Dashboard": "Armaturenbrett",
     "Insights": "Einblicke",
     "Task": "Aufgaben",
-    "Applications": "Anwendungen",
+   
     "Forms": "Formen",
     "Admin": "Administrator",
     "Powered by ": "Bereitgestellt von ",
@@ -4347,7 +4347,7 @@ export const formio_resourceBundles = {
     "value": "Wert",
     "No Filters Found":
       "Keine Aufgabe gefunden, die mit Filtern übereinstimmt.",
-    "Application Id": "Anwendungs-ID",
+
     "Set follow-up Date": "Folgedatum festlegen",
     "Set Due date": "Fälligkeitsdatum festlegen",
     "Add groups": "Gruppen hinzufügen",
@@ -4373,7 +4373,7 @@ export const formio_resourceBundles = {
     "All": "Alle",
     "ANY": "IRGENDEIN",
     "Task assignee": "Aufgabenzuständiger",
-    "Application History": "Anwendungsgeschichte",
+  
     "View Submission": "Einreichung anzeigen",
     "Showing": "Anzeigen",
     "to": "zu",
@@ -4391,9 +4391,9 @@ export const formio_resourceBundles = {
     "Group ID": "Gruppen-ID",
     "Due": "Fällig",
     "Follow-up": "Nachverfolgen",
-    "Application Name": "Anwendungsname",
+  
     "Created By": "Erstellt von",
-    "Application Status": "Bewerbungsstatus",
+   
     "Submitted On": "Eingereicht am",
     "Modified On": "Geändert am",
     "No History Found": "Kein Verlauf gefunden",
@@ -4401,7 +4401,7 @@ export const formio_resourceBundles = {
     "Details": "Einzelheiten",
     "Status": "Status",
     "Submissions": "Einreichungen",
-    "No Application History found": "Keine Anwendungshistorie gefunden",
+    
     "Link To Form Submission": "Link zur Formularübermittlung",
     "Last Modified": "Zuletzt geändert",
     "No dashboard found": "Kein Dashboard gefunden",
@@ -4427,7 +4427,6 @@ export const formio_resourceBundles = {
       "Drücken Sie die Eingabetaste oder klicken Sie hier, um zu suchen",
     "Click to clear": "Zum Löschen klicken",
     "Search...": "Suche...",
-    "No applications found": "Keine Anwendungen gefunden",
     "Successfully Updated": "Erfolgreich aktualisiert",
     "Failed": "Gescheitert",
     "Submission Failed.": "Übermittlung fehlgeschlagen.",
@@ -5132,7 +5131,7 @@ export const formio_resourceBundles = {
     "Access Denied" : "Zugriff abgelehnt",
     "By default, the tenant key would be prefixed to form":"Standardmäßig wird dem Mandantenschlüssel form vorangestellt",
     "go back":"geh zurück",
-    "No Applications Found":"Keine Anwendungen gefunden",
+   
     "Submission saved to draft.":"Übermittlung als Entwurf gespeichert.",
     "Saved to draft":"Als Entwurf gespeichert",
     "Saving...":"Sparen...",
@@ -5153,6 +5152,16 @@ export const formio_resourceBundles = {
     "All Users": "Alle Nutzer",
     "Specific User Group": "Spezifische Benutzergruppe",
     "Applicable for Designer Roled Users only.": "Gilt nur für Benutzer mit Designer-Rolle.",
-    "Applicable for Client and Reviewer Roled Users only.": "Gilt nur für Benutzer mit Kunden- und Prüferrollen."
+    "Applicable for Client and Reviewer Roled Users only.": "Gilt nur für Benutzer mit Kunden- und Prüferrollen.",
+    "Saved to Submissions/Drafts": "Gespeichert in Einreichungen/Entwürfe",
+    "Unfinished Submissions will be saved to Submissions/Drafts.": "Unvollständige Einreichungen werden in Einreichungen/Entwürfe gespeichert.",
+    "Changing the form workflow will not affect the existing submissions. It will only update in the newly created submissions. Press Save Changes to continue or cancel the changes.": "Die Änderung des Formular-Workflows wird die bestehenden Einreichungen nicht beeinflussen. Es wird nur in den neu erstellten Einreichungen aktualisiert. Drücken Sie Speichern Sie die Änderungen, um fortzufahren oder die Änderungen abzubrechen.",
+    "Submissions are made against": "Einreichungen werden gemacht gegen",
+    "Submission is made against": "Einreichung wird gemacht gegen",
+    "Changing the form title will not affect the existing submissions. It will only update in the newly created submissions. Press Save Changes to continue or cancel the changes.": "Die Änderung des Formulartitels wird die bestehenden Einreichungen nicht beeinflussen. Es wird nur in den neu erstellten Einreichungen aktualisiert. Drücken Sie Speichern Sie die Änderungen, um fortzufahren oder die Änderungen abzubrechen.",
+    "Submission Id": "Einreichungs-ID",
+    "Submission History": "Einreichungshistorie",
+    "No Submission History found": "Keine Einreichungshistorie gefunden",
+    "No submissions Found": "Keine Einreichungen gefunden",
   },
 };

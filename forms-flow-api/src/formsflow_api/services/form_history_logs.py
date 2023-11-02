@@ -7,6 +7,7 @@ from formsflow_api_utils.exceptions import BusinessException
 from formsflow_api_utils.services.external import FormioService
 from formsflow_api_utils.utils.user_context import UserContext, user_context
 
+from formsflow_api.constants import BusinessErrorCode
 from formsflow_api.models import FormHistory
 from formsflow_api.schemas import FormHistorySchema
 
@@ -106,10 +107,4 @@ class FormHistoryService:
         if form_histories:
             form_history_schema = FormHistorySchema(many=True)
             return form_history_schema.dump(form_histories), HTTPStatus.OK
-        raise BusinessException(
-            {
-                "type": "Invalid response data",
-                "message": ("No form history found"),
-            },
-            HTTPStatus.BAD_REQUEST,
-        )
+        raise BusinessException(BusinessErrorCode.INVALID_FORM_ID)

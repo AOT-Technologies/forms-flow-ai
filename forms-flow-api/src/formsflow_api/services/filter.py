@@ -1,10 +1,9 @@
 """This exposes filter service."""
 
-from http import HTTPStatus
-
 from formsflow_api_utils.exceptions import BusinessException
 from formsflow_api_utils.utils.user_context import UserContext, user_context
 
+from formsflow_api.constants import BusinessErrorCode
 from formsflow_api.models import Filter
 from formsflow_api.schemas import FilterSchema
 
@@ -53,13 +52,7 @@ class FilterService:
             if tenant_key is not None and filter_result.tenant != tenant_key:
                 raise PermissionError("Tenant authentication failed.")
             return filter_result
-        raise BusinessException(
-            {
-                "type": "Invalid response data",
-                "message": ("Unable to get FilterId -" f"{filter_id}."),
-            },
-            HTTPStatus.BAD_REQUEST,
-        )
+        raise BusinessException(BusinessErrorCode.FILTER_NOT_FOUND)
 
     @staticmethod
     @user_context
@@ -73,13 +66,7 @@ class FilterService:
                 raise PermissionError("Tenant authentication failed.")
             filter_result.mark_inactive()
         else:
-            raise BusinessException(
-                {
-                    "type": "Invalid response data",
-                    "message": ("Unable to set FilterId -" f"{filter_id} inactive"),
-                },
-                HTTPStatus.BAD_REQUEST,
-            )
+            raise BusinessException(BusinessErrorCode.FILTER_NOT_FOUND)
 
     @staticmethod
     @user_context
@@ -95,10 +82,4 @@ class FilterService:
                 raise PermissionError("Tenant authentication failed.")
             filter_result.update(filter_data)
             return filter_result
-        raise BusinessException(
-            {
-                "type": "Invalid response data",
-                "message": ("Unable to update FilterId -" f"{filter_id}"),
-            },
-            HTTPStatus.BAD_REQUEST,
-        )
+        raise BusinessException(BusinessErrorCode.FILTER_NOT_FOUND)

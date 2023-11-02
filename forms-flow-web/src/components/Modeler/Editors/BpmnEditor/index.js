@@ -9,7 +9,7 @@ import { createXML } from "../../helpers/deploy";
 import { MULTITENANCY_ENABLED, PUBLIC_WORKFLOW_ENABLED } from "../../../../constants/constants";
 import { deployBpmnDiagram } from "../../../../apiManager/services/bpmServices";
 import Loading from "../../../../containers/Loading";
-
+import { push } from "connected-react-router";
 import {
   SUCCESS_MSG,
   ERROR_MSG,
@@ -17,7 +17,6 @@ import {
 } from "../../constants/bpmnModelerConstants";
 
 import {
-  fetchAllBpmProcesses,
   fetchDiagram,
 } from "../../../../apiManager/services/processServices";
 
@@ -45,7 +44,7 @@ import "bpmn-js-bpmnlint/dist/assets/css/bpmn-js-bpmnlint.css";
 import linterConfig from "../../lint-rules/packed-config";
 
 export default React.memo(
-  ({ setShowModeler, processKey, tenant, isNewDiagram }) => {
+  ({ processKey, tenant, isNewDiagram,bpmnXml }) => {
     const { t } = useTranslation();
     const dispatch = useDispatch();
     const diagramXML = useSelector((state) => state.process.processDiagramXML);
@@ -54,13 +53,16 @@ export default React.memo(
     const [applyAllTenants, setApplyAllTenants] = useState(false);
     const [lintErrors, setLintErrors] = useState([]);
     const [deploymentLoading, setDeploymentLoading] = useState(false);
+    const redirectUrl = MULTITENANCY_ENABLED ? `/tenant/${tenantKey}/` : "/";
 
     const containerRef = useCallback((node) => {
       if (node !== null) {
         initializeModeler();
       }
     }, []);
-
+    const cancel = () => {
+      dispatch(push(`${redirectUrl}processes`));
+    };
     const initializeModeler = () => {
       setBpmnModeler(
         new BpmnModeler({
@@ -99,16 +101,16 @@ export default React.memo(
       } else {
         dispatch(setProcessDiagramLoading(false));
       }
-      return () => {
-        dispatch(setProcessDiagramLoading(true));
-        dispatch(setProcessDiagramXML(""));
-      };
+      // return () => {
+      //   dispatch(setProcessDiagramLoading(true));
+      //   dispatch(setProcessDiagramXML(""));
+      // };
     }, [processKey, tenant, dispatch]);
 
     useEffect(() => {
-      if (diagramXML && bpmnModeler) {
+      if (bpmnXml && bpmnModeler) {
         bpmnModeler
-          .importXML(diagramXML)
+          .importXML(bpmnXml)
           .then(({ warnings }) => {
             if (warnings.length) {
               console.log("Warnings", warnings);
@@ -122,7 +124,7 @@ export default React.memo(
             handleError(err, "BPMN Import Error: ");
           });
       }
-    }, [diagramXML, bpmnModeler]);
+    }, [diagramXML, bpmnModeler, bpmnXml]);
 
     const handleApplyAllTenants = () => {
       setApplyAllTenants(!applyAllTenants);
@@ -189,10 +191,9 @@ export default React.memo(
       deployBpmnDiagram(form)
         .then((res) => {
           if (res?.data) {
-            toast.success(t(SUCCESS_MSG));
-            // Reload the dropdown menu
-            updateBpmProcesses(xml, res.data.deployedProcessDefinitions);
+            toast.success(t(SUCCESS_MSG)); 
             setDeploymentLoading(false);
+            dispatch(push(`${redirectUrl}processes`));
           } else {
             setDeploymentLoading(false);
             toast.error(t(ERROR_MSG));
@@ -247,18 +248,7 @@ export default React.memo(
       return isValidated;
     };
 
-    const updateBpmProcesses = (xml, deployedProcessDefinitions) => {
-      // Update drop down with all processes
-      dispatch(fetchAllBpmProcesses(tenantKey));
-      // Show the updated workflow as the current value in the dropdown
-      const updatedWorkflow = {
-        label: extractDataFromDiagram(xml).name,
-        value: extractDataFromDiagram(xml).processId,
-        xml: xml,
-        deployedDefinitions: deployedProcessDefinitions
-      };
-      dispatch(setWorkflowAssociation(updatedWorkflow));
-    };
+
 
     const handleExport = async () => {
       let xml = await createXML(bpmnModeler);
@@ -279,7 +269,7 @@ export default React.memo(
     const handleError = () => {
       document.getElementById("inputWorkflow").value = null;
       dispatch(setWorkflowAssociation(null));
-      setShowModeler(false);
+      //setShowModeler(false);
     };
 
     const zoom = () => {
@@ -295,6 +285,22 @@ export default React.memo(
 
     return (
       <>
+    <div className="task-head d-flex justify-content-end mb-2">
+          {MULTITENANCY_ENABLED && PUBLIC_WORKFLOW_ENABLED ? (
+            <label className="deploy-checkbox">
+              <input type="checkbox" checked={applyAllTenants} onClick={handleApplyAllTenants} /> Apply
+              for all tenants
+            </label>
+          ) : null}
+           <Button variant="light" onClick={cancel}>
+            {t("Cancel")}
+          </Button>
+          <Button variant="outline-dark" className="ml-3" onClick={handleExport}>
+            {t("Export")}
+          </Button>
+          <Button className="ml-3" onClick={deployProcess}>{t("Deploy")}</Button>
+          
+        </div>
         <div className="bpmn-main-container">
           <div className="bpmn-viewer-container">
             <div
@@ -312,21 +318,21 @@ export default React.memo(
               <div className="d-flex flex-column">
                 <button
                   className="mb-3 btn-zoom"
-                  title="Reset Zoom"
+                  title={t("Reset Zoom")}
                   onClick={() => zoomReset()}
                 >
                   <i className="fa fa-retweet" aria-hidden="true" />
                 </button>
                 <button
                   className="btn-zoom"
-                  title="Zoom In"
+                  title={t("Zoom In")}
                   onClick={() => zoom()}
                 >
                   <i className="fa fa-search-plus" aria-hidden="true" />
                 </button>
                 <button
                   className="btn-zoom"
-                  title="Zoom Out"
+                  title={t("Zoom Out")}
                   onClick={() => zoomOut()}
                 >
                   <i className="fa fa-search-minus" aria-hidden="true" />
@@ -338,19 +344,6 @@ export default React.memo(
             className="properties-panel-parent"
             id="js-properties-panel"
           ></div>
-        </div>
-
-        <div>
-          {MULTITENANCY_ENABLED && PUBLIC_WORKFLOW_ENABLED ? (
-            <label className="deploy-checkbox">
-              <input type="checkbox" checked={applyAllTenants} onClick={handleApplyAllTenants} /> Apply
-              for all tenants
-            </label>
-          ) : null}
-          <Button onClick={deployProcess}>{t("Deploy")}</Button>
-          <Button className="ml-3" onClick={handleExport}>
-            {t("Export")}
-          </Button>
         </div>
       </>
     );

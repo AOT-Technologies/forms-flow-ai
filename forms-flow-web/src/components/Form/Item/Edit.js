@@ -546,15 +546,15 @@ const Edit = React.memo(() => {
           </Modal.Header>
           <Modal.Body>
             {t(
-              "Changing the form title will not affect the existing applications. " +
-              "It will only update in the newly created applications. Press Save " +
+              "Changing the form title will not affect the existing submissions. " +
+              "It will only update in the newly created submissions. Press Save " +
               "Changes to continue or cancel the changes."
             )}
           </Modal.Body>
           <Modal.Footer>
-            <Button variant="secondary" onClick={handleClose}>
-              {t("Cancel")}
-            </Button>
+            <button type="button" className="btn btn-link text-dark" onClick={handleClose}>
+            {t("Cancel")}
+            </button>
             <Button variant="primary" onClick={() => handleSave()}>
               {t("Save Changes")}
             </Button>

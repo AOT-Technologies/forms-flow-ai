@@ -34,13 +34,13 @@ export const addApplicationDetailsToFormComponent = (formObjData) => {
       input: true,
       tableView: true,
       key: "applicationStatus",
-      title: "Application Status",
+      title: "Submission Status",
     });
     formObjData.components.unshift({
       input: true,
       tableView: true,
       key: "applicationId",
-      title: "Application Id",
+      title: "Submission ID",
     });
   }
   return formObjData;

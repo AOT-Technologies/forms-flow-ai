@@ -42,8 +42,8 @@ const SaveAsNewVersionConfirmationModal = ({modalOpen,handleModalChange,onConfir
     </Modal.Body>
     <Modal.Footer>
       <div className='d-flex justify-content-end'>
-          <button className='btn btn-danger mr-2' onClick={()=>{handleModalChange();}}>{t("Cancel")}</button>
-          <button className='btn btn-primary' onClick={()=>{onConfirm();}}>{t("Continue")}</button>
+      <button type="button" className="btn btn-link text-dark" onClick={()=>{handleModalChange();}}>{t("Cancel")}</button>
+      <button className='btn btn-primary' onClick={()=>{onConfirm();}}>{t("Continue")}</button>
       </div>
     </Modal.Footer>
   </Modal>

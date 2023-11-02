@@ -53,15 +53,17 @@ const SaveNext = React.memo(
           </Modal.Header>
           <Modal.Body>
             {t(
-              "Changing the form workflow will not affect the existing applications. " +
-                "It will only update in the newly created applications. " +
+              "Changing the form workflow will not affect the existing submissions. " +
+                "It will only update in the newly created submissions. " +
                 "Press Save Changes to continue or cancel the changes."
             )}
           </Modal.Body>
           <Modal.Footer>
-            <Buttons variant="secondary" onClick={handleClose}>
+            <button type="button"
+              className="btn btn-link text-dark"
+              onClick={handleClose}>
               {t("Cancel")}
-            </Buttons>
+            </button>
             <Buttons
               variant="primary"
               onClick={!isLastStep ? handleNext : submitData}

@@ -2,8 +2,10 @@
 import datetime
 from typing import Dict, List
 
+from formsflow_api_utils.exceptions import BusinessException
 from formsflow_api_utils.utils.user_context import UserContext, user_context
 
+from formsflow_api.constants import BusinessErrorCode
 from formsflow_api.models import Authorization, AuthType
 from formsflow_api.schemas import ApplicationSchema
 
@@ -140,4 +142,4 @@ class AuthorizationService:
             for auth in auth_details:
                 auth_detail[auth.auth_type.value] = self._as_dict(auth)
             return auth_detail
-        raise PermissionError
+        raise BusinessException(BusinessErrorCode.PERMISSION_DENIED)

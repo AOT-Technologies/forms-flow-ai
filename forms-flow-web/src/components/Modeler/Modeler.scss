@@ -159,3 +159,71 @@ input:checked+.slider:before {
 END: BPMN and DMN Toggle CSS 
 
 */
+.solid{
+  border-bottom: 3px solid #bbb;
+}
+.has-search .form-control {
+  padding-left: 2.375rem;
+}
+
+.has-search .form-control-feedback {
+  position: absolute;
+  z-index: 2;
+  display: block;
+  width: 2.375rem;
+  height: 2.375rem;
+  line-height: 2.375rem;
+  text-align: center;
+  pointer-events: none;
+  color: #aaa;
+}
+.scrolly{
+  overflow-y: scroll;
+}
+.containerbox{
+  box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2);
+  padding: 15px;
+  overflow-y: auto;
+  height: 700px;
+}
+
+
+.canvas {
+  width: 100%;
+  display: flex;
+  margin-bottom: 10px;
+}
+
+.card-container {
+  width: 50%;
+  display: flex;
+  justify-content: space-between;
+}
+
+.cardprocess {
+  flex: 1;
+  height: 124px;
+  padding-top: 6px;
+  padding-left: 6px;
+  padding-right: 6px;
+  margin-right: 10px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  text-align: center;
+}
+
+.card-content {
+  background-color: #F3F2F1;
+  height: 60%;
+  border-top-left-radius: 5px;
+  border-top-right-radius: 5px;
+  display: flex;
+  flex-direction: column;
+  padding: 10px; 
+  justify-content: center;
+}
+
+.card img {
+  width: 100%;
+}

@@ -422,7 +422,7 @@ const List = React.memo((props) => {
                                         } else {
                                           reject();
                                           toast.error(
-                                            "Error in application count"
+                                            "Error in submission count"
                                           );
                                         }
                                       }
@@ -559,11 +559,11 @@ const List = React.memo((props) => {
                     {applicationCount}
                     {applicationCount > 1 ? (
                       <span>{`${t(
-                        " Applications are submitted against"
+                        " Submissions are made against"
                       )} `}</span>
                     ) : (
                       <span>{`${t(
-                        " Application is submitted against"
+                        " Submission is made against"
                       )} `}</span>
                     )}
                     <span style={{ fontWeight: "bold" }}>

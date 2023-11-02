@@ -4,6 +4,9 @@ from enum import IntEnum
 from typing import Dict
 
 from flask import current_app
+from formsflow_api_utils.exceptions import BusinessException
+
+from formsflow_api.constants import BusinessErrorCode
 
 from .base_bpm import BaseBPMService
 
@@ -86,8 +89,5 @@ class BPMService(BaseBPMService):
                 url = f"{bpm_api_base}/engine-rest-ext/v1/message"
             return url
 
-        except BaseException:  # pylint: disable=broad-except
-            return {
-                "type": "Environment missing",
-                "message": "Missing environment variable BPM_API_URL",
-            }
+        except BaseException as e:  # pylint: disable=broad-except
+            raise BusinessException(BusinessErrorCode.BPM_BASE_URL_NOT_SET) from e

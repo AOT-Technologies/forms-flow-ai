@@ -65,7 +65,7 @@ export const getProcessStatusList = (processId, taskId) => {
 export const fetchAllBpmProcesses = (  {tenant_key = null,
   firstResult,
   maxResults,
-  searchKey,},
+  searchKey,} = {},
   ...rest) => {
   const done = rest.length ? rest[0] : () => {};
 
@@ -141,7 +141,7 @@ export const fetchAllBpmProcessesCount = (tenant_key,searchKey,) => {
 export const fetchAllDmnProcesses = ({tenant_key = null,
   firstResult,
   maxResults,
-  searchKey},
+  searchKey} = {},
   ...rest) => {
   const done = rest.length ? rest[0] : () => {};
 

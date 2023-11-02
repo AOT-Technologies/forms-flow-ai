@@ -117,6 +117,10 @@ function FormTable() {
     dispatch(push(`${redirectUrl}formflow/${formId}/view-edit`));
   };
 
+  const submitNewForm = (formId)=>{
+    dispatch(push(`${redirectUrl}form/${formId}`));
+  }
+
   const handleClearSearch = () => {
     setSearch("");
     dispatch(setBpmFormSearch(""));
@@ -137,6 +141,15 @@ function FormTable() {
       onClick={() => viewOrEditForm(formData._id)}
     >
       <Translation>{(t) => t("View Details")}</Translation>{" "}
+    </button>
+  );
+
+  const submitNew = (
+    <button
+      className="btn btn-link mt-2"
+      onClick={() => submitNewForm(formData._id)}
+    >
+      <Translation>{(t) => t("Submit New")}</Translation>
     </button>
   );
 
@@ -187,7 +200,7 @@ function FormTable() {
     <>
       <LoadingOverlay active={searchFormLoading} spinner text="Loading...">
         <div style={{ minHeight: "400px" }}>
-          <table className="table">
+          <table className="table custom-table">
             <thead>
               <tr >
                 <th >
@@ -225,7 +238,6 @@ function FormTable() {
                     </span>
                   </div>
                 </th>
-
                 <th scope="col">Created Date</th>
                 <th scope="col">Type</th>
                 <th scope="col">Visibility</th>
@@ -300,6 +312,8 @@ function FormTable() {
                       <td>
                         <span> {viewOrEdit(e)}</span>
                       </td>
+                      {!isDesigner &&
+                      <td>{submitNew(e)}</td>}
                       <td style={{ position: "relative" }}>
                         <div
                           className="dots mb-2 mr-5"

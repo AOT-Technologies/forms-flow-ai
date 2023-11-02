@@ -50,10 +50,7 @@ export const ApplicationList = React.memo(() => {
   const isApplicationListLoading = useSelector(
     (state) => state.applications.isApplicationListLoading
   );
-  const applicationCount = useSelector(
-    (state) => state.applications.applicationCount
-  );
-  const pageNo = useSelector((state) => state.totalApplications?.activePage);
+  const pageNo = useSelector((state) => state.applications?.activePage);
   const limit = useSelector((state) => state.applications?.countPerPage);
   const totalApplications = useSelector((state) => state.applications?.applicationCount);
   const draftCount = useSelector((state) => state.draft.draftCount);
@@ -72,13 +69,21 @@ export const ApplicationList = React.memo(() => {
   useEffect(() => {
     setIsLoading(false);
   }, [applications]);
+
   useEffect(() => {
     dispatch(getAllApplicationStatus());
   }, [dispatch]);
 
   useEffect(() => {
-    dispatch(getAllApplications(page,limit));
-  }, [dispatch, page,limit,totalApplications]);
+    let filterParams = {
+      applicationName:null,
+      id:null,
+      applicationStatus:null,
+      page:pageNo,
+      limit:limit,
+  };
+    dispatch(getAllApplications(filterParams));
+  }, [page,limit]);
 
   const isClientEdit = (applicationStatus) => {
     if (
@@ -137,7 +142,7 @@ export const ApplicationList = React.memo(() => {
       }
     }
     dispatch(setCountPerpage(newState.sizePerPage));
-    dispatch(FilterApplications(newState));
+    // dispatch(FilterApplications(newState));
     dispatch(setApplicationListActivePage(newState.page));
   };
 
@@ -153,7 +158,7 @@ export const ApplicationList = React.memo(() => {
     return [
       {
         name: "Submissions",
-        count: applicationCount,
+        count: totalApplications,
         onClick: () => dispatch(push(`${redirectUrl}application`)),
         icon: "list",
       },

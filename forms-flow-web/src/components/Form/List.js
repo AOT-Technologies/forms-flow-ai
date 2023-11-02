@@ -1,5 +1,6 @@
 import React, { useEffect, useRef, useState } from "react";
 import { connect, useDispatch, useSelector } from "react-redux";
+import { push } from "connected-react-router";
 import { Col, Row } from "react-bootstrap";
 import { toast } from "react-toastify";
 import _isEquial from "lodash/isEqual";
@@ -543,7 +544,7 @@ const List = React.memo((props) => {
           <Row className="mt-5">
             <Col xs={4}>
               <button
-                to={`${redirectUrl}formflow/create`}
+              onClick={() => dispatch(push(`${redirectUrl}formflow/create`))}
                 className="btn btn-primary btn-lg"
                 style={{ whiteSpace: "nowrap" }}
               >

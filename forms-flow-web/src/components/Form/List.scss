@@ -142,42 +142,6 @@ flex-wrap: wrap;
     color: var(--color-white) !important;
 }
 
-table {
-    font-family: Arial, Helvetica, sans-serif;
-    border-collapse: separate;
-    border-spacing: 0 15px;
-    width: 100%;
-    border: none;
-  }
-  
-  table td, table th {
-    padding: 20px;
-  }
-  
-  table tr {
-    background-color: #FFFFFF;
-    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-    border: none;
-  }
-  
-  table th {
-    padding-top: 12px;
-    padding-bottom: 12px;
-    text-align: left;
-    background-color: #f0f6fb;
-    padding: 8px; /* Adjust the padding to your liking */
-    margin: 0;
-    border: none;
-  }
-  
-//   td:first-child, th:first-child {
-//     border-radius: 10px 0 0 10px;
-//   }
-  
-//   td:last-child, th:last-child {
-//     border-radius: 0 10px 10px 0;
-//   }
-
 /* Style the dots */
 .dots {
     cursor: pointer;
@@ -194,4 +158,3 @@ table {
  .custom-button {
     width: auto;
   }
-  

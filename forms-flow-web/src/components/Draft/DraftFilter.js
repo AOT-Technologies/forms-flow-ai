@@ -2,17 +2,18 @@ import React, { useEffect, useRef, useState } from "react";
 import { Col, Row } from "react-bootstrap";
 import DateRangePicker from "@wojtekmaj/react-daterange-picker";
 import { useDispatch, useSelector } from "react-redux";
-import { getAllApplications } from "../../apiManager/services/applicationServices";
+import { fetchDrafts } from "../../apiManager/services/draftService";
 
-const ApplicationFilter = ({ setDisplayFilter,filterParams,setFilterParams }) => {
+const DraftFilter = ({ setDisplayFilter, filterParams, setFilterParams }) => {
   const dispatch = useDispatch();
   const createSearchNode = useRef();
-  const [applicationId,setApplicationId] = useState(filterParams.id || "");
-  const [applicationName,setApplicationName] = useState(filterParams.applicationName || "");
-  const [applicationStatus,setApplicationStatus] = useState(filterParams.applicationStatus || "");
-  const [lastModified,setLastModified] = useState(filterParams.modified || null);
-  const pageNo = useSelector((state) => state.applications?.activePage);
-  const limit = useSelector((state) => state.applications?.countPerPage);
+  const [draftId, setDraftId] = useState(filterParams.id || "");
+  const [draftName, setDraftName] = useState(filterParams.draftName || "");
+  const [lastModified, setLastModified] = useState(
+    filterParams.modified || null
+  );
+  const pageNo = useSelector((state) => state.draft?.activePage);
+  const limit = useSelector((state) => state.draft?.countPerPage);
   const handleClick = (e) => {
     if (createSearchNode?.current?.contains(e.target)) {
       return;
@@ -35,33 +36,30 @@ const ApplicationFilter = ({ setDisplayFilter,filterParams,setFilterParams }) =>
   };
 
   const clearAllFilters = () => {
-    setApplicationId("");
-    setApplicationStatus("");
-    setApplicationName("");
+    setDraftId("");
+    setDraftName("");
     setLastModified(null);
     setFilterParams({});
-    let filters =  {
-    applicationName:null,
-    id:null,
-    applicationStatus:null,
-    modified:null,
-    page:pageNo,
-    limit:limit,
+    let filters = {
+      draftName: null,
+      id: null,
+      modified: null,
+      page: pageNo,
+      limit: limit,
     };
-    dispatch(getAllApplications(filters));
+    dispatch(fetchDrafts(filters));
   };
 
-  const applyFilters = ()=>{
+  const applyFilters = () => {
     let filterParams = {
-        applicationName:applicationName,
-        id:applicationId,
-        applicationStatus:applicationStatus,
-        modified:lastModified,
-        page:pageNo,
-        limit:limit,
+      draftName: draftName,
+      id: draftId,
+      modified: lastModified,
+      page: pageNo,
+      limit: limit,
     };
     setFilterParams(filterParams);
-    dispatch(getAllApplications(filterParams));
+    dispatch(fetchDrafts(filterParams));
   };
 
   return (
@@ -85,38 +83,29 @@ const ApplicationFilter = ({ setDisplayFilter,filterParams,setFilterParams }) =>
       <div className="m-4 px-2">
         <Row className="mt-2">
           <Col>
-            <label>Application Id</label>
+            <label>Draft Id</label>
             <input
               className="form-control"
               placeholder=""
-              value={applicationId}
-              onChange={(e) => setApplicationId(e.target.value)}
+              value={draftId}
+              onChange={(e) => setDraftId(e.target.value)}
             />
           </Col>
           <Col>
-            <label>Application Name</label>
+            <label>Draft Name</label>
             <input
               className="form-control"
               placeholder=""
-              value={applicationName}
-              onChange={(e) => setApplicationName(e.target.value)}
+              value={draftName}
+              onChange={(e) => setDraftName(e.target.value)}
             />
           </Col>
         </Row>
       </div>
       <hr className="m-0 w-100" />
-      <div className="m-4 px-2">
-        <Row className="mt-2">
-          <Col>
-            <label>Application Status</label>
-            <input
-              className="form-control"
-              placeholder=""
-              value={applicationStatus}
-              onChange={(e) => setApplicationStatus(e.target.value)}
-            />
-          </Col>
-          <Col className="mr-2" style={{ marginTop: "33px" }}>
+      <div className="ml-4">
+        <Row >
+          <Col style={{ marginTop: "33px" }}>
             <DateRangePicker
               onChange={(selectedRange) => {
                 onSetDateRange(selectedRange);
@@ -151,10 +140,7 @@ const ApplicationFilter = ({ setDisplayFilter,filterParams,setFilterParams }) =>
           >
             Cancel
           </button>
-          <button
-            className="btn btn-dark"
-              onClick={() => applyFilters()}
-          >
+          <button className="btn btn-dark" onClick={() => applyFilters()}>
             Show results
           </button>
         </Col>
@@ -163,4 +149,4 @@ const ApplicationFilter = ({ setDisplayFilter,filterParams,setFilterParams }) =>
   );
 };
 
-export default ApplicationFilter;
+export default DraftFilter;

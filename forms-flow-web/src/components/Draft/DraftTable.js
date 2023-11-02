@@ -1,57 +1,33 @@
 /* eslint-disable */
 import React, { useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { getUserRolePermission } from "../../helper/user";
-import {
-  CLIENT,
-  MULTITENANCY_ENABLED,
-  STAFF_REVIEWER,
-} from "../../constants/constants";
-import { CLIENT_EDIT_STATUS } from "../../constants/applicationConstants";
+import { MULTITENANCY_ENABLED } from "../../constants/constants";
 import { HelperServices } from "@formsflow/service";
 import { Translation } from "react-i18next";
-import ApplicationFilter from "./ApplicationFilter";
 import { Dropdown, DropdownButton } from "react-bootstrap";
 import Pagination from "react-js-pagination";
-import {
-  setApplicationListActivePage,
-  setCountPerpage,
-} from "../../actions/applicationActions";
 import { push } from "connected-react-router";
+import {
+  setCountPerpage,
+  setDraftDelete,
+  setDraftListActivePage,
+} from "../../actions/draftActions";
+import DraftFilter from "./DraftFilter";
+import DraftOperations from "./DraftOperations";
 
-const ApplicationTable = () => {
+const DraftTable = () => {
   const dispatch = useDispatch();
   const [displayFilter, setDisplayFilter] = useState(false);
   const [filterParams, setFilterParams] = useState({});
   const [pageLimit, setPageLimit] = useState(5);
-  const applications = useSelector(
-    (state) => state.applications.applicationsList
-  );
+  const drafts = useSelector((state) => state.draft.draftList);
   const tenantKey = useSelector((state) => state.tenants?.tenantId);
   const redirectUrl = MULTITENANCY_ENABLED ? `/tenant/${tenantKey}/` : "/";
   const userRoles = useSelector((state) => state.user.roles);
-  const pageNo = useSelector((state) => state.applications?.activePage);
-  const limit = useSelector((state) => state.applications?.countPerPage);
-  const totalForms = useSelector(
-    (state) => state.applications?.applicationCount
-  );
-  const isClientEdit = (applicationStatus) => {
-    if (
-      getUserRolePermission(userRoles, CLIENT) ||
-      getUserRolePermission(userRoles, STAFF_REVIEWER)
-    ) {
-      return CLIENT_EDIT_STATUS.includes(applicationStatus);
-    } else {
-      return false;
-    }
-  };
-  const listApplications = (applications) => {
-    let totalApplications = applications.map((application) => {
-      application.isClientEdit = isClientEdit(application.applicationStatus);
-      return application;
-    });
-    return totalApplications;
-  };
+  const pageNo = useSelector((state) => state.draft?.activePage);
+  const limit = useSelector((state) => state.draft?.countPerPage);
+  const totalForms = useSelector((state) => state.draft?.draftCount);
+  console.log("drafts", drafts);
 
   const pageOptions = [
     {
@@ -76,41 +52,53 @@ const ApplicationTable = () => {
     },
   ];
 
-  const submittedForm = (data) => {
-    dispatch(push(`${redirectUrl}application/${data.id}`));
-  };
-
-  const viewSubmission = (data) => {};
-
-  const viewSubmittedForm = (data) => (
-    <button className="btn btn-link mt-2" onClick={() => submittedForm(data)}>
-      <Translation>{(t) => t("View Submitted Form")}</Translation>{" "}
+  const viewDraft = (data) => (
+    <button
+      className="btn btn-link mt-2"
+      onClick={() => dispatch(push(`${redirectUrl}draft/${data.id}`))}
+    >
+      <Translation>{(t) => t("View Draft Details")}</Translation>{" "}
     </button>
   );
 
-  const viewSubmissionDetails = (formData) => {
-    const url =
-    formData.isClientEdit || formData.isResubmit
-        ? `${redirectUrl}form/${formData.formId}/submission/${formData.submissionId}/edit`
-        : `${redirectUrl}form/${formData.formId}/submission/${formData.submissionId}`;
+  const editDraft = (formData) => {
+    const url = `${redirectUrl}form/${formData.formId}/draft/${formData.id}/edit`;
     return (
       <button
         className="btn btn-link mt-2"
         onClick={() => window.open(url, "_blank")}
       >
-        <Translation>{(t) => t("View Submission Detail")}</Translation>{" "}
+        <Translation>{(t) => t("Edit Draft")}</Translation>{" "}
       </button>
     );
   };
 
+//   const deleteDraft = (formData) => {
+//     const url = `${redirectUrl}form/${formData.formId}/draft/${formData.id}/edit`;
+//     return (
+//       <button
+//         className="btn btn-link text-danger mt-2"
+//         onClick={() => dispatch(
+//             setDraftDelete({
+//               modalOpen: true,
+//               draftId: formData.id,
+//               draftName: formData.DraftName
+//             })
+//           )}
+//       >
+//         <Translation>{(t) => t("Delete Draft")}</Translation>{" "}
+//       </button>
+//     );
+//   };
+
   const handlePageChange = (page) => {
-    dispatch(setApplicationListActivePage(page));
+    dispatch(setDraftListActivePage(page));
   };
 
   const onSizePerPageChange = (limit) => {
     setPageLimit(limit);
     dispatch(setCountPerpage(limit));
-    dispatch(setApplicationListActivePage(1));
+    dispatch(setDraftListActivePage(1));
   };
 
   return (
@@ -119,9 +107,8 @@ const ApplicationTable = () => {
         <table className="table custom-table">
           <thead>
             <tr>
-              <th>Submission Id</th>
-              <th>Form Title</th>
-              <th>Submission Status</th>
+              <th>Draft Id</th>
+              <th>Draft Title</th>
               <th>Last Modified</th>
               <th colSpan="4">
                 <div className="d-flex justify-content-end filter-sort-bar mt-1">
@@ -148,7 +135,7 @@ const ApplicationTable = () => {
 
                     {displayFilter && (
                       <div className="clickable shadow border filter-list-view m-0 p-0">
-                        <ApplicationFilter
+                        <DraftFilter
                           filterParams={filterParams}
                           setFilterParams={setFilterParams}
                           setDisplayFilter={setDisplayFilter}
@@ -161,15 +148,16 @@ const ApplicationTable = () => {
             </tr>
           </thead>
           <tbody>
-            {listApplications(applications)?.map((e, index) => {
+            {drafts?.map((e, index) => {
               return (
                 <tr key={index}>
                   <td>{e.id}</td>
-                  <td>{e.applicationName}</td>
-                  <td>{e.applicationStatus}</td>
+                  <td>{e.DraftName}</td>
+
                   <td>{HelperServices?.getLocalDateAndTime(e.modified)}</td>
-                  <td>{viewSubmittedForm(e)}</td>
-                  <td>{viewSubmissionDetails(e)}</td>
+                  <td>{viewDraft(e)}</td>
+                  <td>{editDraft(e)}</td>
+                  <td><DraftOperations row={e}/></td>
                 </tr>
               );
             })}
@@ -221,4 +209,4 @@ const ApplicationTable = () => {
   );
 };
 
-export default ApplicationTable;
+export default DraftTable;

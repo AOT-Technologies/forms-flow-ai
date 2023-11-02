@@ -73,23 +73,6 @@ const DraftTable = () => {
     );
   };
 
-//   const deleteDraft = (formData) => {
-//     const url = `${redirectUrl}form/${formData.formId}/draft/${formData.id}/edit`;
-//     return (
-//       <button
-//         className="btn btn-link text-danger mt-2"
-//         onClick={() => dispatch(
-//             setDraftDelete({
-//               modalOpen: true,
-//               draftId: formData.id,
-//               draftName: formData.DraftName
-//             })
-//           )}
-//       >
-//         <Translation>{(t) => t("Delete Draft")}</Translation>{" "}
-//       </button>
-//     );
-//   };
 
   const handlePageChange = (page) => {
     dispatch(setDraftListActivePage(page));

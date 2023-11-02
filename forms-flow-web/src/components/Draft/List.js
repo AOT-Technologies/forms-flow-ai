@@ -86,7 +86,7 @@ export const DraftList = React.memo(() => {
 
   useEffect(() => {
     dispatch(fetchDrafts(filterParams));
-  }, [dispatch, currentPage, countPerPageRef]);
+  }, [dispatch, page, countPerPage]);
 
   const onYes = (e) => {
     e.currentTarget.disabled = true;

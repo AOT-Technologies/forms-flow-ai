@@ -33,7 +33,8 @@ function BpmnTable() {
     const firstResult = (activePage - 1) * limit;
     setIsLoading(true);
     dispatch(
-      fetchAllBpmProcesses(tenantKey,firstResult,limit,searchText, () => {
+      fetchAllBpmProcesses({tenant_key:tenantKey,firstResult:firstResult,
+        maxResults:limit,searchKey:searchText}, () => {
         setIsLoading(false);
       })
     );

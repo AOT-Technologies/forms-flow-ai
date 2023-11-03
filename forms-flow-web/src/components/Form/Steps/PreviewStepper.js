@@ -418,7 +418,7 @@ if (reviewerSelectedOption === "Specific Reviewers") {
                           "Applicable for Client and Reviewer Roled Users only."
                         )}
                       >
-                        {t("Client Permission")}
+                        {t("Permission to create new submission")}
                         <i className="ml-1 fa fa-info-circle cursor-pointer text-primary" />
                       </span>
                       <div>
@@ -505,7 +505,7 @@ if (reviewerSelectedOption === "Specific Reviewers") {
                           className="font-weight-bold"
                           title={t("Permission for submission tracking.")}
                         >
-                          {t("Reviewer Permission")}
+                          {t("Reviewer permission to view submissions")}
                           <i className="ml-1 fa fa-info-circle cursor-pointer text-primary" />
                         </span>
                         <div>

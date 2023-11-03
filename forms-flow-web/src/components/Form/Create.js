@@ -68,7 +68,6 @@ const Create = React.memo(() => {
   const redirectUrl = MULTITENANCY_ENABLED ? `/tenant/${tenantKey}/` : "/";
   const [open, setOpen] = useState(false);
   const [formDescription,setFormDescription] = useState("");
-  console.log(formDescription);
   const { t } = useTranslation();
   useEffect(() => {
     dispatch(clearFormError("form"));
@@ -165,7 +164,7 @@ const Create = React.memo(() => {
         formRevisionNumber: "V1", // to do
         anonymous: formAccess[0]?.roles.includes(roleIds.ANONYMOUS),
       };
-      console.log(data);
+      
       let payload = {
         resourceId: data.formId,
         resourceDetails: {},

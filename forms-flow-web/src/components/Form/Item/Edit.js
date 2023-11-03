@@ -77,7 +77,7 @@ const Edit = React.memo(() => {
   const formHistory = useSelector((state) => state.formRestore?.formHistory || []);
   const version = formHistory[0]?.changeLog?.version;
   const prviousData = useSelector((state) => state.process?.formPreviousData);
-  console.log(form);
+  
   const applicationCount = useSelector(
     (state) => state.process?.applicationCount
   );
@@ -108,7 +108,6 @@ const Edit = React.memo(() => {
   const handleClose = () => setShow(false);
   const handleShow = () => setShow(true);
   const handleConfirmModalChange = () => setConfirmModalShow(!confirmModalShow);
- 
   const [open, setOpen] = useState(false);
 
   const handleSave = () => {

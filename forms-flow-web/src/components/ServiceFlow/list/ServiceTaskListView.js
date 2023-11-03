@@ -129,7 +129,7 @@ const ServiceTaskListView = React.memo(() => {
         <div className="container list-container p-2"
         style={{ maxHeight: "60vh" }}
         >
-          {taskList.map((task, index) => (
+          {taskList?.map((task, index) => (
             <div
               className={`clickable shadow border rounded  ${
                 task?.id === bpmTaskId && "selected"
@@ -154,13 +154,13 @@ const ServiceTaskListView = React.memo(() => {
               </Row>
               
               <Row className="mt-4 p-2 justify-content-between" style={{ marginBottom: "-2.5rem" }}>
-               {vissibleAttributes.taskVisibleAttributes.applicationId && <Col  xs={2}>
+               {vissibleAttributes?.taskVisibleAttributes?.applicationId && <Col  xs={2}>
                   <div className="col-12">
                     <h6 className="font-weight-light">Application Id</h6>
                     <h6>{task?._embedded?.variable?.filter((eachValue) => eachValue.name === "applicationId")[0]?.value}</h6>
                   </div>
                 </Col>}
-              {vissibleAttributes.taskVisibleAttributes.createdDate &&  <Col xs={2}>
+              {vissibleAttributes?.taskVisibleAttributes?.createdDate &&  <Col xs={2}>
                   <div className="col-12">
                     <h6>Created Date</h6>
                     
@@ -174,7 +174,7 @@ const ServiceTaskListView = React.memo(() => {
                 <Col  xs={6} className="justify-content-between ">
                 <TaskHeaderListView task={task} taskId={task.id} groupView = {false} />
                 </Col>
-              {vissibleAttributes.taskVisibleAttributes.priority &&  <Col xs={1} >
+              {vissibleAttributes?.taskVisibleAttributes?.priority &&  <Col xs={1} >
                   <div className="col-12">
                     <h6 className="font-weight-light">Priority</h6>
                   </div>

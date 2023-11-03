@@ -264,7 +264,7 @@ const TaskFilterListViewComponent = React.memo(
 
                 return (
                   <Col key={i}>
-                    <label>{e.name}</label>
+                    <label>{e.label}</label>
                     <input
                       className="form-control"
                       placeholder=""

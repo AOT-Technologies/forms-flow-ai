@@ -43,7 +43,13 @@ class FilterService:
             tenant=user.tenant_key,
             admin=ADMIN_GROUP in user.roles,
         )
-        return filter_schema.dump(filters, many=True)
+        filter_data = filter_schema.dump(filters, many=True)
+        # User who created the filter or admin have edit permission.
+        for filter_item in filter_data:
+            filter_item["editPermission"] = (
+                filter_item["createdBy"] == user.user_name or ADMIN_GROUP in user.roles
+            )
+        return filter_data
 
     @staticmethod
     @user_context

@@ -52,6 +52,7 @@ const BaseRouting = React.memo(
 
     return (
     
+ 
         <div className="container py-2 mt-4">
         <div className="min-container-height pl-md-3">
         <ToastContainer />
@@ -75,9 +76,13 @@ const BaseRouting = React.memo(
               <Route path="/404" exact={true} component={NotFound} />
               <Redirect from="*" to="/404" />
             </Switch>
+        </div>
+            
             {isAuth ? <Footer /> : null}
+ 
         </div>
         </div>
+ 
     );
   }
 );

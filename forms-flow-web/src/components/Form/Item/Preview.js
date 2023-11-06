@@ -151,8 +151,10 @@ const Preview = ({handleNext, hideComponents, activeStep}) => {
     return <Loading />;
   }
   return (
+ 
     <div className="mt-3">
        <h3 className="task-head col-12 text-truncate my-4 mx-0 px-0">
+ 
           <i className="fa-solid fa-file-lines" aria-hidden="true" /> &nbsp;{" "}
           {form?.title}
         </h3>

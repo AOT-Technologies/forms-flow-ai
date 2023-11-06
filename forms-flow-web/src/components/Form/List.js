@@ -539,6 +539,7 @@ const List = React.memo((props) => {
               );
             }}
           />
+ 
           <Errors errors={errors} />
           <div className="d-flex">
             
@@ -546,6 +547,7 @@ const List = React.memo((props) => {
               onClick={() => dispatch(push(`${redirectUrl}formflow/create`))}
                 className="btn btn-primary "
                 style={{ whiteSpace: "nowrap" }}
+ 
               >
                 <i className="fa fa-plus" />{" "}
                 <Translation>{(t) => t("Create Form")}</Translation>

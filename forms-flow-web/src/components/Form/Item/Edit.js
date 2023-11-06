@@ -496,8 +496,10 @@ const Edit = React.memo(() => {
             onConfirm={saveAsNewVersionOnCofirm} />
         )
       }
+ 
       <div className="bg-light p-3">
       <h3 className="ml-3 task-head">
+ 
             <i className="fa-solid fa-file-lines" aria-hidden="true" /> &nbsp;{" "}
             {formData.title}
             <span className="text-success h5 ml-2">(Version {version})</span>

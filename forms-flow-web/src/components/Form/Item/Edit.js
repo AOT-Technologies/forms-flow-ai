@@ -487,7 +487,7 @@ const Edit = React.memo(() => {
   }
 
   return (
-    <div className="container">
+    <div className="">
       {
         saveAsNewVersionselected && confirmModalShow && (
           <SaveAsNewVersionConfirmationModal modalOpen={confirmModalShow}
@@ -746,8 +746,8 @@ const Edit = React.memo(() => {
                                 type="text"
                                 className="form-control"
                                 id="path"
-                                placeholder={t("Enter pathname")}
-                                style={{ textTransform: "lowercase", width: "120px" }}
+                                placeholder={t("Enter the pathname")}
+                      
                                 value={form?.path || ""}
                                 onChange={(event) => handleChange("path", event)}
                               />

@@ -5,7 +5,7 @@ import Popover from 'react-bootstrap/Popover';
 import { Form } from 'react-bootstrap';
 import ListGroup from "react-bootstrap/ListGroup";
 import { Button } from "react-bootstrap";
-import { Container, Row, Col } from 'react-bootstrap';
+import { Row, Col } from 'react-bootstrap';
 import { Card } from 'react-bootstrap';
 import { useTranslation, Translation } from "react-i18next";
 import { setUserGroups } from "../../../actions/authorizationActions";
@@ -220,7 +220,7 @@ const Preview = React.memo(
     };
 
     return (
-      <Container>
+      <div>
         <Row>
           <Col xs={12} sm={1} lg={1} xl={1}></Col>
           <Col xs={12} sm={8} lg={8} xl={8}></Col>
@@ -613,7 +613,7 @@ const Preview = React.memo(
             </Card>
           </Col>
         </Row>
-      </Container>
+      </div>
     );
   }
 );

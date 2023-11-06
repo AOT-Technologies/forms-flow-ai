@@ -1,7 +1,6 @@
 import React, { useEffect, useRef, useState } from "react";
 import { connect, useDispatch, useSelector } from "react-redux";
 import { push } from "connected-react-router";
-import { Col, Row } from "react-bootstrap";
 import { toast } from "react-toastify";
 import _isEquial from "lodash/isEqual";
 import { selectRoot, selectError, Errors, deleteForm } from "react-formio";
@@ -541,18 +540,18 @@ const List = React.memo((props) => {
             }}
           />
           <Errors errors={errors} />
-          <Row className="mt-5">
-            <Col xs={4}>
+          <div className="d-flex">
+            
               <button
               onClick={() => dispatch(push(`${redirectUrl}formflow/create`))}
-                className="btn btn-primary btn-lg"
+                className="btn btn-primary "
                 style={{ whiteSpace: "nowrap" }}
               >
                 <i className="fa fa-plus" />{" "}
                 <Translation>{(t) => t("Create Form")}</Translation>
               </button>
               <button
-                className="btn btn-outline-primary btn-lg ml-4"
+                className="btn btn-outline-primary  ml-4"
                 onClick={uploadClick}
                 title={t("Upload json form only")}
                 style={{ whiteSpace: "nowrap" }}
@@ -571,26 +570,27 @@ const List = React.memo((props) => {
                 }}
                 ref={uploadFormNode}
               />
-            </Col>
-          </Row>
-          <Row className="mt-5">
-            <Col xs={2}>
-              <Head items={headOptions} page={"Forms"} />
-            </Col>
-            <Col className="d-flex justify-content-end">
-              <div className="custom-button mt-4">
+            
+          </div>
+          <div className="mt-4 d-md-flex  justify-content-between align-items-end">
+             
+            <Head items={headOptions} page={"Forms"} visibleHr={false} />
+            
+            <div className="d-flex flex-column flex-md-column justify-content-md-end mb-4">
+              
                 <button
-                  className="btn btn-outline-primary btn-lg"
+                  className="btn btn-outline-primary "
                   onClick={downloadForms}
                   disabled={formCheckList.length === 0}
                 >
                   <i className="fa fa-download fa-lg" aria-hidden="true" />{" "}
                   {t("Download Form")}{" "}
                 </button>
-              </div>
-            </Col>
-          </Row>
-          <hr className="my-0" />
+                
+              
+            </div>
+          </div>
+          <hr style={{marginTop:"-10px"}} />
           <FormTable />
         </div>
       )}

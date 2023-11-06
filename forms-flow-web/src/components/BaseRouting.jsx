@@ -52,8 +52,8 @@ const BaseRouting = React.memo(
 
     return (
     
-        <div className="container py-2">
-        <div className="min-hightcontainer">
+        <div className="container py-2 mt-4">
+        <div className="min-container-height pl-md-3">
         <ToastContainer />
             <Switch>
               <Route path="/public">

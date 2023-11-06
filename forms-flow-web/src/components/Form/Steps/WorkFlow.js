@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import utils from "formiojs/utils";
-import { Button, Col, Row, Card, Table } from "react-bootstrap";
+import { Button, Card, Table } from "react-bootstrap";
 import Select from "react-select";
 import SaveNext from "./SaveNext";
 import ProcessDiagram from "../../BPMN/ProcessDiagramHook";
@@ -142,33 +142,26 @@ const WorkFlow = React.memo(
 
     return (
       <>
-        <div className="container">
-          <Row className="mt-3">
-            <Col xs={12} sm={1}>
-              <Button variant="primary" onClick={handleEditAssociation}>
+        <div className="mt-3">
+          <div className="d-flex align-items-center justify-content-between">
+          <Button variant="primary" onClick={handleEditAssociation}>
                 {t("Edit")}
               </Button>
-            </Col>
-            <Col xs={12} sm={8} />
-            <Col xs={12} sm={3} className="next-btn">
-              <SaveNext
+             <div>
+             <SaveNext
                 handleBack={handleBack}
                 handleNext={handleNext}
                 activeStep={activeStep}
                 steps={steps}
                 modified={modified}
               />
-            </Col>
-          </Row>
+             </div>
+          </div>
 
-          <Row className="mt-3">
-            <Col xs={12} sm={12}>
-              <br />
-            </Col>
-          </Row>
+   
 
-          <Row className="mt-3">
-            <Col xs={12} sm={12}>
+          <div className="mt-3">
+            <div>
               <ul className="nav nav-tabs">
                 <li className="nav-item ">
                   <a
@@ -176,7 +169,7 @@ const WorkFlow = React.memo(
                     onClick={() => handleChange(0)}
                     href="#"
                   >
-                    {t("WORKFLOW ASSOCIATE")} 
+                    {t("Associate Workflow")} 
                   </a>
                 </li>
                 <li className="nav-item">
@@ -185,12 +178,12 @@ const WorkFlow = React.memo(
                     onClick={() => handleChange(1)}
                     href="#"
                   >
-                    {t("TASK VARIABLE")} 
+                    {t("Task Variable")} 
                   </a>
                 </li>
               </ul>
-            </Col>
-          </Row>
+            </div>
+          </div>
         </div>
         {tabValue === 0 ? (
           <Card className="border-1">

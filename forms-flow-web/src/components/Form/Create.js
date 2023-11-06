@@ -4,6 +4,7 @@ import _set from "lodash/set";
 import _cloneDeep from "lodash/cloneDeep";
 import _camelCase from "lodash/camelCase";
 import { push } from "connected-react-router";
+
 import {
   MULTITENANCY_ENABLED,
 } from "../../constants/constants";
@@ -403,8 +404,7 @@ const Create = React.memo(() => {
                               type="text"
                               className="form-control"
                               id="path"
-                              placeholder={t("Enter pathname")}
-                              style={{ textTransform: "lowercase", width: "120px" }}
+                              placeholder={t("Enter the pathname")} 
                               value={form?.path || ""}
                               onChange={(event) => handleChange("path", event)}
                             />

@@ -200,11 +200,11 @@ function FormTable() {
     <>
       <LoadingOverlay active={searchFormLoading} spinner text="Loading...">
         <div style={{ minHeight: "400px" }}>
-          <table className="table custom-table">
+          <table className="table custom-table table-responsive-sm">
             <thead>
               <tr >
                 <th >
-                  <div style={{ display: "flex", alignItems: "center" }}>
+                  <div className="d-flex align-items-center">
                     {isDesigner && <SelectFormForDownload type="all" />}
                     <span className="ml-4 mt-1">{t("Form Title")}</span>
                     <span>
@@ -250,7 +250,7 @@ function FormTable() {
                         setSearch(e.target.value);
                       }}
                       onKeyDown={(e) => (e.keyCode == 13 ? handleSearch() : "")}
-                      placeholder={t("Search...")}
+                      placeholder={t("Search by form title")}
                       style={{ backgroundColor: "#ffff" }}
                     />
                     {search && (

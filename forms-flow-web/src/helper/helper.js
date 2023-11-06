@@ -39,7 +39,7 @@ const renderPage = (formStatus, processLoadError) => {
     return (
       <span>
         <div
-          className="container"
+          className=""
           style={{
             maxWidth: "900px",
             margin: "auto",

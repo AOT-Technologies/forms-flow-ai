@@ -38,7 +38,7 @@ import {
 // a descriptor that defines Camunda related DMN 1.1 XML extensions
 import camundaModdleDescriptor from "camunda-dmn-moddle/resources/camunda";
 import { push } from "connected-react-router";
-export default React.memo(({ processKey, tenant, isNewDiagram }) => {
+export default React.memo(({ processKey, tenant, isNewDiagram, mode}) => {
   const { t } = useTranslation();
 
   const dispatch = useDispatch();
@@ -257,6 +257,15 @@ export default React.memo(({ processKey, tenant, isNewDiagram }) => {
   };
   return (
     <>
+      <div className="d-flex align-items-center justify-content-between">
+      <div  >
+          <h3 className="d-flex align-items-center font-weight-bold">
+              <i className="fa fa-cogs mr-2" aria-hidden="true" />
+              <span>
+                {t(`${mode} Processes`)}
+              </span>
+            </h3>
+        </div>
       <div className="task-head d-flex justify-content-end mb-2">
         {MULTITENANCY_ENABLED && PUBLIC_WORKFLOW_ENABLED ? (
           <label className="deploy-checkbox">
@@ -277,6 +286,7 @@ export default React.memo(({ processKey, tenant, isNewDiagram }) => {
         <Button className="ml-3" onClick={deployProcess}>
           {t("Deploy")}
         </Button>
+      </div>
       </div>
       <div className="bpmn-main-container">
         <div className="bpmn-viewer-container">

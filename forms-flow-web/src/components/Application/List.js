@@ -179,7 +179,7 @@ export const ApplicationList = React.memo(() => {
 
   return (
     <>
-    <Head items={headOptions} page="Applications" />
+    <Head items={headOptions} page="Submissions" />
     <ApplicationTable/>
     </>
   );

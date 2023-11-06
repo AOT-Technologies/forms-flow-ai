@@ -85,7 +85,7 @@ const ApplicationFilter = ({ setDisplayFilter,filterParams,setFilterParams }) =>
       <div className="m-4 px-2">
         <Row className="mt-2">
           <Col>
-            <label>Application Id</label>
+            <label>Submission Id</label>
             <input
               className="form-control"
               placeholder=""
@@ -94,7 +94,7 @@ const ApplicationFilter = ({ setDisplayFilter,filterParams,setFilterParams }) =>
             />
           </Col>
           <Col>
-            <label>Application Name</label>
+            <label>Submission Name</label>
             <input
               className="form-control"
               placeholder=""
@@ -108,7 +108,7 @@ const ApplicationFilter = ({ setDisplayFilter,filterParams,setFilterParams }) =>
       <div className="m-4 px-2">
         <Row className="mt-2">
           <Col>
-            <label>Application Status</label>
+            <label>Submission Status</label>
             <input
               className="form-control"
               placeholder=""
@@ -116,7 +116,8 @@ const ApplicationFilter = ({ setDisplayFilter,filterParams,setFilterParams }) =>
               onChange={(e) => setApplicationStatus(e.target.value)}
             />
           </Col>
-          <Col className="mr-2" style={{ marginTop: "33px" }}>
+          <Col className="mr-2" >
+          <label>Modified Date</label>
             <DateRangePicker
               onChange={(selectedRange) => {
                 onSetDateRange(selectedRange);

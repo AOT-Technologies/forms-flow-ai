@@ -603,7 +603,7 @@ const Preview = React.memo(
                     label={t("Comments")}
                     id="comments"
                     rows={4}
-                    className="text-field"
+                    className="form-control"
                     value={processData.comments || ""}
                     onChange={(e) =>
                       setProcessData({

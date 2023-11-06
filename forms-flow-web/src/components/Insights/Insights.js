@@ -96,10 +96,9 @@ const Insights = React.memo((props) => {
           <div className="row ">
             <div className="col-12" data-testid="Insight">
               <Head items={headerList()} page="Insights"/>
-              <hr className="line-hr" />
-              <div className="col-12">
+             
                 <div
-                  className="app-title-container mt-3"
+                  className="d-flex align-items-center justify-content-between mt-3"
                   data-testid="Insight"
                   role="main"
                 >
@@ -122,7 +121,7 @@ const Insights = React.memo((props) => {
                       />
                     )}
                   </div>
-                </div>
+                
               </div>
             </div>
             <LoadingOverlay

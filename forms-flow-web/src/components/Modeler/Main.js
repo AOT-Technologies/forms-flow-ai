@@ -76,7 +76,7 @@ export default React.memo(() => {
 
   return (
     <div>
-      <div className="container">
+      <div className="">
         <div className="canvas">
           <div className="card-container">
             <div className="cardprocess d-flex align-items-center justify-content-center" onClick={() => handleCreateNew()}>
@@ -114,7 +114,7 @@ export default React.memo(() => {
           </div>
         </div>
       </div>
-      <div>
+      <div className="pt-4">
         <Tabs
           defaultActiveKey="bpmn"
           activeKey={selectedTab}

@@ -6,7 +6,7 @@ import { Translation } from "react-i18next";
 const version_org = version;
 const Footer = React.memo(() => {
   return (
-    <div>
+    <div className="pl-md-3 pb-3">
       <hr />
       <div className="d-flex justify-content-end pb-2">
         <div className="font-weight-bold">

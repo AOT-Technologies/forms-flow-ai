@@ -44,7 +44,7 @@ import "bpmn-js-bpmnlint/dist/assets/css/bpmn-js-bpmnlint.css";
 import linterConfig from "../../lint-rules/packed-config";
 
 export default React.memo(
-  ({ processKey, tenant, isNewDiagram,bpmnXml }) => {
+  ({ processKey, tenant, isNewDiagram,bpmnXml, mode }) => {
     const { t } = useTranslation();
     const dispatch = useDispatch();
     const diagramXML = useSelector((state) => state.process.processDiagramXML);
@@ -285,6 +285,16 @@ export default React.memo(
 
     return (
       <>
+        <div className="d-flex align-items-center justify-content-between">
+      <div  >
+          <h3 className="d-flex align-items-center font-weight-bold">
+              <i className="fa fa-cogs mr-2" aria-hidden="true" />
+              <span>
+                {t(`${mode} Processes`)}
+              </span>
+            </h3>
+        </div>
+    
     <div className="task-head d-flex justify-content-end mb-2">
           {MULTITENANCY_ENABLED && PUBLIC_WORKFLOW_ENABLED ? (
             <label className="deploy-checkbox">
@@ -300,6 +310,7 @@ export default React.memo(
           </Button>
           <Button className="ml-3" onClick={deployProcess}>{t("Deploy")}</Button>
           
+        </div>
         </div>
         <div className="bpmn-main-container">
           <div className="bpmn-viewer-container">

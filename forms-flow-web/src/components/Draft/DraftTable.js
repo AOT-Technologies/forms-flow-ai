@@ -15,6 +15,8 @@ import {
 import DraftFilter from "./DraftFilter";
 import DraftOperations from "./DraftOperations";
 
+import { useTranslation } from "react-i18next";
+
 const DraftTable = () => {
   const dispatch = useDispatch();
   const [displayFilter, setDisplayFilter] = useState(false);
@@ -27,7 +29,7 @@ const DraftTable = () => {
   const pageNo = useSelector((state) => state.draft?.activePage);
   const limit = useSelector((state) => state.draft?.countPerPage);
   const totalForms = useSelector((state) => state.draft?.draftCount);
-  console.log("drafts", drafts);
+  const { t } = useTranslation();
 
   const pageOptions = [
     {
@@ -87,7 +89,7 @@ const DraftTable = () => {
   return (
     <>
       <div style={{ minHeight: "400px" }}>
-        <table className="table custom-table">
+        <table className="table custom-table table-responsive-sm">
           <thead>
             <tr>
               <th>Draft Id</th>
@@ -147,19 +149,17 @@ const DraftTable = () => {
           </tbody>
         </table>
       </div>
-      <div className="d-flex justify-content-between align-items-center">
-        <div>
-          <span>
-            <DropdownButton
-              className="ml-2"
-              drop="down"
-              variant="secondary"
-              title={pageLimit}
-              style={{ display: "inline" }}
-            >
-              {pageOptions.map((option, index) => (
+      <div className="d-flex justify-content-between align-items-center  flex-column flex-md-row">
+      <div className="d-flex align-items-center">
+        <span className="mr-2"> {t("Rows per page")}</span>
+        <Dropdown size="sm">
+            <Dropdown.Toggle variant="light" id="dropdown-basic">
+              {pageLimit}
+            </Dropdown.Toggle>
+            <Dropdown.Menu>
+            {pageOptions.map((option, index) => (
                 <Dropdown.Item
-                  key={{ index }}
+                  key={index}
                   type="button"
                   onClick={() => {
                     onSizePerPageChange(option.value);
@@ -168,14 +168,15 @@ const DraftTable = () => {
                   {option.text}
                 </Dropdown.Item>
               ))}
-            </DropdownButton>
-          </span>
-          <span className="ml-2 mb-3">
-            Showing {limit * pageNo - (limit - 1)} to{" "}
-            {limit * pageNo > totalForms ? totalForms : limit * pageNo} of{" "}
+            </Dropdown.Menu>
+        </Dropdown>
+          <span className="ml-2">
+            Showing {(limit * pageNo ) - (limit - 1)} to{" "}
+            {limit * pageNo > totalForms ? totalForms : limit * pageNo} of
             {totalForms} Results
           </span>
         </div>
+       
         <div className="d-flex align-items-center">
           <Pagination
             activePage={pageNo}

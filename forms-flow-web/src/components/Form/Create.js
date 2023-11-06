@@ -404,7 +404,7 @@ const Create = React.memo(() => {
                               type="text"
                               className="form-control"
                               id="path"
-                              placeholder={t("Enter the pathname")} 
+                              placeholder={t("Enter the path name")} 
                               value={form?.path || ""}
                               onChange={(event) => handleChange("path", event)}
                             />

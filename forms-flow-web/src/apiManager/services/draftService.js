@@ -193,7 +193,6 @@ export const getDraftById = (draftId, ...rest) => {
 
 // Draft filter handler
 export const fetchDrafts = (params, ...rest) => {
-  console.log("params",params);
   const done = rest.length ? rest[0] : () => {};
   return (dispatch) => {
     const { draftName, id, modified } = params;

@@ -216,11 +216,10 @@ export const updateApplicationEvent = (applicationId, data, ...rest) => {
 // filter endpoint
 
 export const getAllApplications = (params, ...rest) => {
-  console.log("params", params);
+
   const done = rest.length ? rest[0] : () => {};
   return (dispatch) => {
     const { applicationName, id, applicationStatus, modified } = params;
-    console.log("modified in params",modified);
     let url = `${API.GET_ALL_APPLICATIONS}?pageNo=${params.page}&limit=${params.limit}`;
     if (applicationName && applicationName !== "") {
       url += `&applicationName=${applicationName}`;
@@ -272,7 +271,6 @@ export const getAllApplications = (params, ...rest) => {
 };
 
 export const getAllApplicationStatus = (params, ...rest) => {
-  //console.log("hai",params)
   const done = rest.length ? rest[0] : () => {};
   return (dispatch) => {
     //TODO remove the pageNo and limit currently its mandatory from api

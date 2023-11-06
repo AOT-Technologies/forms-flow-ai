@@ -344,19 +344,19 @@ function FormTable() {
       </LoadingOverlay>
 
       {formData.length ? (
-        <div className="d-flex justify-content-between align-items-center">
-          <div>
-            <span>
-              <DropdownButton
-                className="ml-2"
-                drop="down"
-                variant="secondary"
-                title={pageLimit}
-                style={{ display: "inline" }}
-              >
-                {pageOptions.map((option, index) => (
+        <div className="d-flex justify-content-between align-items-center flex-column flex-md-row">
+          <div className="d-flex align-items-center">
+          <span className="mr-2"> {t("Rows per page")}</span>
+          <Dropdown>
+                <Dropdown.Toggle variant="light" id="dropdown-basic">
+                  {pageLimit}
+                </Dropdown.Toggle>
+
+                <Dropdown.Menu>
+                
+                    {pageOptions.map((option, index) => (
                   <Dropdown.Item
-                    key={{ index }}
+                    key={index}
                     type="button"
                     onClick={() => {
                       onSizePerPageChange(option.value);
@@ -365,9 +365,9 @@ function FormTable() {
                     {option.text}
                   </Dropdown.Item>
                 ))}
-              </DropdownButton>
-            </span>
-            <span className="ml-2 mb-3">
+                </Dropdown.Menu>
+              </Dropdown>
+            <span className="ml-2">
               {t("Showing")} {limit * pageNo - (limit - 1)} {t("to")}{" "}
               {limit * pageNo > totalForms ? totalForms : limit * pageNo}{" "}
               {t("of")} {totalForms} {t("Results")}

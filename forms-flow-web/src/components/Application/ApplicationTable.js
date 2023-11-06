@@ -1,4 +1,3 @@
-/* eslint-disable */
 import React, { useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { getUserRolePermission } from "../../helper/user";
@@ -11,8 +10,10 @@ import { CLIENT_EDIT_STATUS } from "../../constants/applicationConstants";
 import { HelperServices } from "@formsflow/service";
 import { Translation } from "react-i18next";
 import ApplicationFilter from "./ApplicationFilter";
-import { Dropdown, DropdownButton } from "react-bootstrap";
+import { Dropdown } from "react-bootstrap";
 import Pagination from "react-js-pagination";
+import { useTranslation } from "react-i18next";
+
 import {
   setApplicationListActivePage,
   setCountPerpage,
@@ -27,6 +28,8 @@ const ApplicationTable = () => {
   const applications = useSelector(
     (state) => state.applications.applicationsList
   );
+  const { t } = useTranslation();
+
   const tenantKey = useSelector((state) => state.tenants?.tenantId);
   const redirectUrl = MULTITENANCY_ENABLED ? `/tenant/${tenantKey}/` : "/";
   const userRoles = useSelector((state) => state.user.roles);
@@ -80,7 +83,7 @@ const ApplicationTable = () => {
     dispatch(push(`${redirectUrl}application/${data.id}`));
   };
 
-  const viewSubmission = (data) => {};
+ 
 
   const viewSubmittedForm = (data) => (
     <button className="btn btn-link mt-2" onClick={() => submittedForm(data)}>
@@ -98,7 +101,7 @@ const ApplicationTable = () => {
         className="btn btn-link mt-2"
         onClick={() => window.open(url, "_blank")}
       >
-        <Translation>{(t) => t("View Submission Detail")}</Translation>{" "}
+        <Translation>{(t) => t("View Details")}</Translation>{" "}
       </button>
     );
   };
@@ -116,12 +119,12 @@ const ApplicationTable = () => {
   return (
     <>
       <div style={{ minHeight: "400px" }}>
-        <table className="table custom-table">
+        <table className="table custom-table table-responsive-sm">
           <thead>
             <tr>
-              <th>Submission Id</th>
+              <th>Id</th>
               <th>Form Title</th>
-              <th>Submission Status</th>
+              <th>Status</th>
               <th>Last Modified</th>
               <th colSpan="4">
                 <div className="d-flex justify-content-end filter-sort-bar mt-1">
@@ -161,9 +164,9 @@ const ApplicationTable = () => {
             </tr>
           </thead>
           <tbody>
-            {listApplications(applications)?.map((e, index) => {
+            {listApplications(applications)?.map((e) => {
               return (
-                <tr key={index}>
+                <tr key={e.id}>
                   <td>{e.id}</td>
                   <td>{e.applicationName}</td>
                   <td>{e.applicationStatus}</td>
@@ -176,19 +179,17 @@ const ApplicationTable = () => {
           </tbody>
         </table>
       </div>
-      <div className="d-flex justify-content-between align-items-center">
-        <div>
-          <span>
-            <DropdownButton
-              className="ml-2"
-              drop="down"
-              variant="secondary"
-              title={pageLimit}
-              style={{ display: "inline" }}
-            >
-              {pageOptions.map((option, index) => (
+      <div className="d-flex justify-content-between align-items-center  flex-column flex-md-row">
+        <div className="d-flex align-items-center">
+        <span className="mr-2"> {t("Rows per page")}</span>
+        <Dropdown size="sm">
+            <Dropdown.Toggle variant="light" id="dropdown-basic">
+              {pageLimit}
+            </Dropdown.Toggle>
+            <Dropdown.Menu>
+            {pageOptions.map((option) => (
                 <Dropdown.Item
-                  key={{ index }}
+                  key={option.value}
                   type="button"
                   onClick={() => {
                     onSizePerPageChange(option.value);
@@ -197,10 +198,10 @@ const ApplicationTable = () => {
                   {option.text}
                 </Dropdown.Item>
               ))}
-            </DropdownButton>
-          </span>
-          <span className="ml-2 mb-3">
-            Showing {limit * pageNo - (limit - 1)} to{" "}
+            </Dropdown.Menu>
+        </Dropdown>
+          <span className="ml-2">
+            Showing {(limit * pageNo ) - (limit - 1)} to{" "}
             {limit * pageNo > totalForms ? totalForms : limit * pageNo} of{" "}
             {totalForms} Results
           </span>

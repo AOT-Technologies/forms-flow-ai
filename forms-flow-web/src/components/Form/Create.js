@@ -302,7 +302,7 @@ const Create = React.memo(() => {
               <div className="">
                 <div className="form-group">
                   <div className="input-group">
-                    <Form.Group controlId="formPublish">
+                    <Form.Group controlId="setForAnonymous">
                       <div className="d-flex align-items-center mt-3">
                         <label className="public-label mr-2 font-weight-bold">{t("Make this form public ?")}</label>
                         <Form.Check

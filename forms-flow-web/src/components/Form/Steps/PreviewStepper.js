@@ -4,8 +4,7 @@ import OverlayTrigger from 'react-bootstrap/OverlayTrigger';
 import Popover from 'react-bootstrap/Popover';
 import { Form } from 'react-bootstrap';
 import ListGroup from "react-bootstrap/ListGroup";
-import { Button } from "react-bootstrap";
-import { Row, Col } from 'react-bootstrap';
+import { Button } from "react-bootstrap"; 
 import { Card } from 'react-bootstrap';
 import { useTranslation, Translation } from "react-i18next";
 import { setUserGroups } from "../../../actions/authorizationActions";
@@ -220,12 +219,9 @@ const Preview = React.memo(
     };
 
     return (
-      <div>
-        <Row>
-          <Col xs={12} sm={1} lg={1} xl={1}></Col>
-          <Col xs={12} sm={8} lg={8} xl={8}></Col>
-          <Col xs={12} sm={3} lg={3} xl={3} className="next-btn">
-            <SaveNext
+      <div className="m-3">
+        <div className="d-flex justify-content-md-end align-items-center">
+        <SaveNext
               handleBack={handleBack}
               handleNext={handleNext}
               activeStep={activeStep}
@@ -237,38 +233,43 @@ const Preview = React.memo(
               }}
               isLastStep={true}
             />
-          </Col>
-          <Col xs={12} sm={8} lg={8} xl={8} spacing={3} disabled={false}>
+        </div>
+        <div className="mt-3">
+
+ 
+          
             <Card>
               <Card.Body>
-                <form noValidate autoComplete="off">
+                
                   <div>
                     <span className="font-weight-bold">{t("Overview")}</span>
                     <hr />
                   </div>
                   <div>
-                    <span className="font-weight-bolder">
+                  <div className="d-flex flex-column flex-md-row">
+                    <div className="font-weight-bold col-md-2 col-12">
                       {t("Form Name")} :{" "}
-                    </span>
-                    <span>
+                    </div>
+                    <span className="col-md-8 col-12">
                       {formData && formData?.form && formData?.form?.title
                         ? formData?.form?.title
                         : "-"}
                     </span>
                   </div>
-                  <div>
-                    <span className="font-weight-bolder">
+                  <div className="d-flex flex-column flex-md-row">
+                  <div className="font-weight-bold col-md-2 col-12">
                       {t("Workflow Name")} :{" "}
-                    </span>
-                    <span>
+                    </div>
+                    <span className="col-md-8 col-12">
                       {workflow && workflow.label ? workflow.label : "-"}
                     </span>
                   </div>
+                  </div>
                   {processListData.anonymous && (
-                    <div>
-                      <span className="fontsize-16">
+                    <div className="d-flex align-items-md-center px-3">
+                      <div className="font-weight-bold">
                         {t("Copy anonymous form URL")}
-                      </span>
+                      </div>
                       <div
                         data-toggle="tooltip"
                         data-placement="top"
@@ -287,15 +288,15 @@ const Preview = React.memo(
                       </div>
                     </div>
                   )}
-                  <div>
+                  <div className="px-3">
                     <label>
-                      <Form.Group controlId="formPublish" className="mb-0 text-hover">
-                        <div className="d-flex align-items-center mt-2 mr-2">
+                      <Form.Group controlId="publishForm" className="mb-0">
+                      <div className="d-flex align-items-center mr-4">
+                          <label className=" mr-2 font-weight-bold">{t("Publish this form for Client Users.")}</label>
                           <Form.Check
-                            className="mb-1"
-                            aria-label="Publish"
                             checked={processData.status === "active"}
-                            label={t("Publish this form for Client Users.")}
+                            type="switch"
+                            color="primary" 
                             onChange={(e) =>
                               setProcessData({
                                 status: e.target.checked
@@ -303,11 +304,13 @@ const Preview = React.memo(
                                   : "inactive",
                               })
                             }
+                            custom
                             name="Check box to associate form with a workflow"
-                            color="primary"
+                          
                             id="form-publish"
                           />
                         </div>
+                        
                       </Form.Group>
                     </label>
                   </div>
@@ -608,11 +611,11 @@ const Preview = React.memo(
                       })
                     }
                   />
-                </form>
+                 
               </Card.Body>
             </Card>
-          </Col>
-        </Row>
+        
+        </div>
       </div>
     );
   }

@@ -178,7 +178,7 @@ const WorkFlow = React.memo(
                     onClick={() => handleChange(1)}
                     href="#"
                   >
-                    {t("Task Variable")} 
+                    {t("Task Variables")} 
                   </a>
                 </li>
               </ul>

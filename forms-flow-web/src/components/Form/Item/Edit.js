@@ -486,8 +486,9 @@ const Edit = React.memo(() => {
     );
   }
 
+ 
   return (
-    <div className="">
+    <div className="mt-4">
       {
         saveAsNewVersionselected && confirmModalShow && (
           <SaveAsNewVersionConfirmationModal modalOpen={confirmModalShow}
@@ -495,15 +496,14 @@ const Edit = React.memo(() => {
             onConfirm={saveAsNewVersionOnCofirm} />
         )
       }
-      <div className="d-flex align-items-center flex-wrap justify-content-between my-4 bg-light p-3">
-        <div style={{ maxWidth: "60%", wordBreak: "break-word" }}>
-          <h3 className="ml-3 task-head">
+      <div className="bg-light p-3">
+      <h3 className="ml-3 task-head">
             <i className="fa-solid fa-file-lines" aria-hidden="true" /> &nbsp;{" "}
             {formData.title}
             <span className="text-success h5 ml-2">(Version {version})</span>
           </h3>
-        </div>
-        <div className="d-flex align-items-center">
+          
+        <div className="d-flex flex-md-row flex-column  align-items-md-center flex-wrap justify-content-end">
           <Form.Group controlId="formPublish">
             <div className="d-flex align-items-center mt-4 mr-4">
               <label className="public-label mr-2">{t("Do you want to save a new version of this form?")}</label>
@@ -511,15 +511,15 @@ const Edit = React.memo(() => {
                 className="form-check-box"
                 checked={saveAsNewVersionselected}
                 color="primary"
-                aria-label="Publish"
+                aria-label="Publish as new version"
                 onChange={(e) => {
                   setSaveAsNewVersion(e.target.checked);
                 }}
               />
             </div>
           </Form.Group>
-          <span
-            className="btn btn-secondary mr-2"
+          <button
+            className="btn btn-secondary mr-md-2 my-2 my-md-0"
             onClick={() => {
               changeAnonymous(prviousData.anonymous, true);
               history.goBack();
@@ -527,7 +527,7 @@ const Edit = React.memo(() => {
             }}
           >
             {t("Cancel")}
-          </span>
+          </button>
           <button
             className="btn btn-primary"
             disabled={formSubmitted}
@@ -539,7 +539,9 @@ const Edit = React.memo(() => {
             {saveAsNewVersionselected ? saveNewVersion : saveText}
           </button>
         </div>
+      
       </div>
+  
 
 
 
@@ -641,17 +643,16 @@ const Edit = React.memo(() => {
                   <div id="form-group-path" className="form-group">
                     <label htmlFor="path" className="control-label "></label>
                     <div className="input-group">
-                      <Form.Group controlId="formPublish">
+                      <Form.Group controlId="anonymous">
                         <div className="d-flex align-items-center mr-4">
                           <label className="public-label mr-2 font-weight-bold">{t("Make this form public ?")}</label>
                           <Form.Check
                             checked={processListData.anonymous || false}
                             type="switch"
                             color="primary"
-                            aria-label="Publish"
-                            onChange={() => {
-                              changeAnonymous();
-                            }}
+                            aria-label="Publish as anonymous"
+                            onChange={() => changeAnonymous()}
+                            custom
                           />
                         </div>
                       </Form.Group>

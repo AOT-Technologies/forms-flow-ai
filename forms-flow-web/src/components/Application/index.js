@@ -16,7 +16,7 @@ export default React.memo(() => {
   }, [dispatch]);
 
   return (
-    <div className="container" id="main">
+    <div className="" id="main">
       <Switch>
         {showApplications ? (
           <>

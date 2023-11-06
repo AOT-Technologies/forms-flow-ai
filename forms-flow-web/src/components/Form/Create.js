@@ -4,6 +4,7 @@ import _set from "lodash/set";
 import _cloneDeep from "lodash/cloneDeep";
 import _camelCase from "lodash/camelCase";
 import { push } from "connected-react-router";
+
 import {
   MULTITENANCY_ENABLED,
 } from "../../constants/constants";
@@ -22,6 +23,10 @@ import { addTenantkey } from "../../helper/helper";
 import { formCreate } from "../../apiManager/services/FormServices";
 import { Form } from 'react-bootstrap';
 import { handleAuthorization } from "../../apiManager/services/authorizationService";
+import RichText from "../Form/RichText";
+import { Collapse } from 'react-bootstrap';
+
+
 // reducer from react-formio code
 const reducer = (form, { type, value }) => {
   const formCopy = _cloneDeep(form);
@@ -62,7 +67,8 @@ const Create = React.memo(() => {
   const [formSubmitted, setFormSubmitted] = useState(false);
   const submissionAccess = useSelector((state) => state.user?.submissionAccess || []);
   const redirectUrl = MULTITENANCY_ENABLED ? `/tenant/${tenantKey}/` : "/";
-
+  const [open, setOpen] = useState(false);
+  const [formDescription,setFormDescription] = useState("");
   const { t } = useTranslation();
   useEffect(() => {
     dispatch(clearFormError("form"));
@@ -150,6 +156,7 @@ const Create = React.memo(() => {
       const data = {
         formId: form._id,
         formName: form.title,
+        Description: formDescription,
         formType: form.type,
         formTypeChanged: true,
         anonymousChanged: true,
@@ -158,6 +165,7 @@ const Create = React.memo(() => {
         formRevisionNumber: "V1", // to do
         anonymous: formAccess[0]?.roles.includes(roleIds.ANONYMOUS),
       };
+      
       let payload = {
         resourceId: data.formId,
         resourceDetails: {},
@@ -207,6 +215,10 @@ const Create = React.memo(() => {
   const formChange = (newForm) =>
     dispatchFormAction({ type: "formChange", value: newForm });
 
+    const handleToggle = () => {
+      setOpen(!open);
+    };
+
   return (
     <div>
       <div className="d-flex align-items-center flex-wrap justify-content-between my-4 bg-light p-3">
@@ -222,155 +234,201 @@ const Create = React.memo(() => {
       <Errors errors={errors} />
       <div className="p-4"
         style={{ border: "1px solid #c2c0be", borderRadius: "5px" }}>
-
-        <div className="row align-item-center">
-          <div className="col-lg-4 col-md-4 col-sm-4">
-            <div id="form-group-title" className="form-group">
-              <label htmlFor="title" className="control-label field-required">
+        <div className="d-flex pb-4 flex-wrap">
+          <div className="col-lg-6 col-md-6 col-sm-6 col-12">
+            <div>
+              <div id="form-group-title" className="form-group">
+                <label htmlFor="title" className="control-label field-required font-weight-bold">
+                  {" "}
+                  {t("Title")}
+                </label>
+                <input
+                  type="text"
+                  className="form-control "
+                  id="title"
+                  placeholder={t("Enter the form title")}
+                  value={form.title || ""}
+                  onChange={(event) => handleChange("title", event)}
+                />
+              </div>
+            </div>
+            <div >
+              <label htmlFor="Description" className="control-label field-required font-weight-bold">
                 {" "}
-                {t("Title")}
+                {t("Description")}
               </label>
-              <input
-                type="text"
-                className="form-control"
-                id="title"
-                placeholder={t("Enter the form title")}
-                value={form.title || ""}
-                onChange={(event) => handleChange("title", event)}
-              />
+              <RichText onChange={setFormDescription} value={formDescription}/>
             </div>
           </div>
-          <div className="col-lg-4 col-md-4 col-sm-4">
-            <div id="form-group-name" className="form-group">
-              <label htmlFor="name" className="control-label field-required">
-                {t("Name")}
-                {addingTenantKeyInformation("name")}
-              </label>
-              <div className="input-group mb-2">
-                {
-                  MULTITENANCY_ENABLED && tenantKey ? <div className="input-group-prepend">
-                    <div
-                      className="input-group-text"
-                      style={{ maxWidth: "150px" }}
-                    >
-                      <span className="text-truncate">{tenantKey}</span>
+          <div className="col-lg-6 col-md-6 col-sm-6 col-12">
+            <div className="d-flex justify-content-between">
+              <div className="">
+                <div id="form-group-display" className="form-group">
+                  <label htmlFor="form-display" className="control-label font-weight-bold">
+                    {t("Display as")}
+                  </label>
+                  <div className="input-group">
+                    <div className="form-check form-check-inline">
+                      <input
+                        className="form-check-input"
+                        type="radio"
+                        name="display"
+                        id="form-radio-form"
+                        value="form"
+                        checked={form.display === "form"}
+                        onChange={(event) => handleChange("display", event)}
+                      />
+                      <label className="form-check-label font-weight-light" htmlFor="form-radio-form">
+                        {t("Form")}
+                      </label>
                     </div>
-                  </div> : ""
-                }
-                <input
-                  type="text"
-                  className="form-control"
-                  id="name"
-                  placeholder={t("Enter the form machine name")}
-                  value={form?.name || ""}
-                  onChange={(event) => handleChange("name", event)}
-                />
-              </div>
-            </div>
-          </div>
-          <div className="col-lg-4 col-md-3 col-sm-3">
-            <div id="form-group-display" className="form-group">
-              <label htmlFor="form-display" className="control-label">
-                {t("Display as")}
-              </label>
-              <div className="input-group">
-                <select
-                  className="form-control"
-                  name="form-display"
-                  id="form-display"
-                  value={form.display || ""}
-                  onChange={(event) => handleChange("display", event)}
-                >
-                  <option label={t("Form")} value="form">
-                    {t("Form")}
-                  </option>
-                  <option label={t("Wizard")} value="wizard">
-                    {t("Wizard")}
-                  </option>
-                </select>
-              </div>
-            </div>
-          </div>
-          <div className="col-lg-4 col-md-3 col-sm-3">
-            <div id="form-group-type" className="form-group">
-              <label htmlFor="form-type" className="control-label">
-                {t("Type")}
-              </label>
-              <div className="input-group">
-                <select
-                  className="form-control"
-                  name="form-type"
-                  id="form-type"
-                  value={form.type}
-                  onChange={(event) => handleChange("type", event)}
-                >
-                  <option label={t("Form")} value="form">
-                    {t("Form")}
-                  </option>
-                  <option label={t("Resource")} value="resource">
-                    {t("Resource")}
-                  </option>
-                </select>
-              </div>
-            </div>
-          </div>
-          <div className="col-lg-4 col-md-4 col-sm-4">
-            <div id="form-group-path" className="form-group">
-              <label htmlFor="path" className="control-label field-required">
-                {t("Path")}
-                {addingTenantKeyInformation("path")}
-              </label>
-              <div className="input-group mb-2">
-                {
-                  MULTITENANCY_ENABLED && tenantKey ? <div className="input-group-prepend">
-                    <div
-                      className="input-group-text"
-                      style={{ maxWidth: "150px" }}
-                    >
-                      <span className="text-truncate">{tenantKey}</span>
+                    <div className="form-check form-check-inline">
+                      <input
+                        className="form-check-input"
+                        type="radio"
+                        name="display"
+                        id="form-radio-wizard"
+                        value="wizard"
+                        checked={form.display === "wizard"}
+                        onChange={(event) => handleChange("display", event)}
+                      />
+                      <label className="form-check-label font-weight-light" htmlFor="form-radio-wizard">
+                        {t("Wizard")}
+                      </label>
                     </div>
-                  </div> : ""
-                }
-                <input
-                  type="text"
-                  className="form-control"
-                  id="path"
-                  placeholder={t("Enter pathname")}
-                  style={{ textTransform: "lowercase", width: "120px" }}
-                  value={form?.path || ""}
-                  onChange={(event) => handleChange("path", event)}
-                />
-              </div>
-            </div>
-          </div>
-
-          <div className="col-lg-4 col-md-4 col-sm-4">
-            <div  className="form-group">
-              <div className="input-group">
-                <Form.Group controlId="formPublish">
-                  <div className="d-flex align-items-center mt-3">
-                    <label className="public-label mr-2">{ t("Make this form public ?")}</label>
-                    <Form.Check
-                      type="checkbox"
-                      checked={anonymous}
-                      id="anonymous"
-                      onChange={() => setAnonymous(!anonymous)}
-                      custom
-                    />
                   </div>
-                </Form.Group>
+                </div>
+              </div>
+              <div className="">
+                <div className="form-group">
+                  <div className="input-group">
+                    <Form.Group controlId="setForAnonymous">
+                      <div className="d-flex align-items-center mt-3">
+                        <label className="public-label mr-2 font-weight-bold">{t("Make this form public ?")}</label>
+                        <Form.Check
+                          type="switch"
+                          checked={anonymous}
+                          id="anonymous"
+                          onChange={() => setAnonymous(!anonymous)}
+                          custom
+                        />
+                      </div>
+                    </Form.Group>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div>
+              <div className="mt-3">
+                <div className="d-flex align-items-center cursor-pointer" onClick={handleToggle}>
+                  <i className={`fa ${open ? 'fa-chevron-up' : 'fa-chevron-down'} mr-2`}></i>
+                  <span className="text-primary font-weight-bold mr-4">Advanced Options</span>
+                  <hr className="flex-grow-1 ml-2 mr-2"/>
+                </div>
+                <Collapse in={open} className="mt-3">
+                  <div id="example-collapse-text">
+
+                      <div className="col-lg-12 col-md-12 col-sm-12">
+                        <div id="form-group-name" className="form-group">
+                          <label htmlFor="name" className="control-label field-required font-weight-bold">
+                            {t("Name")}
+                            {addingTenantKeyInformation("name")}
+                          </label>
+                          <div className="input-group mb-2">
+                            {
+                              MULTITENANCY_ENABLED && tenantKey ? <div className="input-group-prepend">
+                                <div
+                                  className="input-group-text"
+                                  style={{ maxWidth: "150px" }}
+                                >
+                                  <span className="text-truncate">{tenantKey}</span>
+                                </div>
+                              </div> : ""
+                            }
+                            <input
+                              type="text"
+                              className="form-control"
+                              id="name"
+                              placeholder={t("Enter the form machine name")}
+                              value={form?.name || ""}
+                              onChange={(event) => handleChange("name", event)}
+                            />
+                          </div>
+                        </div>
+                      </div>
+
+                      <div className="d-flex  flex-wrap">
+                      <div className="col-lg-6 col-md-6 col-sm-12 ">
+                        <div id="form-group-type" className="form-group">
+                          <label htmlFor="form-type" className="control-label font-weight-bold">
+                            {t("Type")}
+                          </label>
+                          <div className="input-group">
+                            <select
+                              className="form-control"
+                              name="form-type"
+                              id="form-type"
+                              value={form.type}
+                              onChange={(event) => handleChange("type", event)}
+                            >
+                              <option label={t("Form")} value="form">
+                                {t("Form")}
+                              </option>
+                              <option label={t("Resource")} value="resource">
+                                {t("Resource")}
+                              </option>
+                            </select>
+                          </div>
+                        </div>
+                      </div>
+
+                      <div className="col-lg-6 col-md-6 col-sm-12">
+                        <div id="form-group-path" className="form-group">
+                          <label htmlFor="path" className="control-label field-required font-weight-bold">
+                            {t("Path")}
+                            {addingTenantKeyInformation("path")}
+                          </label>
+                          <div className="input-group mb-2">
+                            {
+                              MULTITENANCY_ENABLED && tenantKey ? <div className="input-group-prepend">
+                                <div
+                                  className="input-group-text"
+                                  style={{ maxWidth: "150px" }}
+                                >
+                                  <span className="text-truncate">{tenantKey}</span>
+                                </div>
+                              </div> : ""
+                            }
+                            <input
+                              type="text"
+                              className="form-control"
+                              id="path"
+                              placeholder={t("Enter the pathname")} 
+                              value={form?.path || ""}
+                              onChange={(event) => handleChange("path", event)}
+                            />
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </Collapse>        
               </div>
             </div>
           </div>
         </div>
-        <FormBuilder
-          form={form}
-          onChange={formChange}
-          options={{
-            language: lang,
-            i18n: formio_resourceBundles,
-          }}
-        />
+        <hr></hr>
+        <div className="mt-4">
+          <FormBuilder
+            form={form}
+            onChange={formChange}
+            options={{
+              language: lang,
+              i18n: formio_resourceBundles,
+            }}
+          />
+        </div>
       </div>
     </div>
   );

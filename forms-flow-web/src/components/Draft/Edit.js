@@ -219,7 +219,7 @@ const View = React.memo((props) => {
   }
 
   return (
-    <div className="container overflow-y-auto">
+    <div className=" overflow-y-auto">
       {
         <>
           <span className="pr-2  mr-2 d-flex justify-content-end align-items-center">
@@ -244,7 +244,7 @@ const View = React.memo((props) => {
             onConfirm={props.onConfirm}
           ></SubmissionError>
           {isAuthenticated ? (
-            <Link title={t("go back")} to={`${redirectUrl}draft`}>
+            <Link title={t("Back to Drafts")} to={`${redirectUrl}draft`}>
               <i className="fa fa-chevron-left fa-lg" />
             </Link>
           ) : null}
@@ -320,7 +320,7 @@ const View = React.memo((props) => {
           ) : (
             <span>
               <div
-                className="container"
+                className=""
                 style={{
                   maxWidth: "900px",
                   margin: "auto",

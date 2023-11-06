@@ -2,7 +2,7 @@ import React from "react";
 import { Translation } from "react-i18next";
 
 const Head = React.memo((props) => {
-  const { items, page } = props;
+  const { items, page, visibleHr = true } = props;
   return (
     <div className="header-container">
       <div className="main-header">
@@ -29,7 +29,7 @@ const Head = React.memo((props) => {
           </div>
         ))}
       </div>
-      <hr className="head-rule" />
+      {visibleHr && <hr className="head-rule" />}
     </div>
   );
 });

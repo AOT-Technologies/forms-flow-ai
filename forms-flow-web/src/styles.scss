@@ -423,30 +423,8 @@ i.fa.fa-question-circle.text-muted {
   height: auto !important;
 }
 
-.table-bordered thead th,
-.table-bordered thead td {
-  background-color: #f2f2f2 !important;
-}
-
 .navbar-dark.navbar-toggler {
   border-color: white;
-}
-
-.main-header {
-  margin-left: 15px !important;
-  display: flex;
-  margin-top: 10px;
-  margin-bottom: 25px;
-  height: 30px;
-  width: 100%;
-}
-
-@media (max-width: 768px) {
-  .main-header {
-    height: 70px;
-    flex-direction: row;
-    flex-wrap: wrap;
-  }
 }
 
 .back-icon {

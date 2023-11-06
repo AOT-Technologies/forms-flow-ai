@@ -96,13 +96,20 @@
     display: flex;
     flex-direction: row;
     flex: 50%;
-    flex-wrap: wrap;
+flex-wrap: wrap;
 }
 
 .btn-left {
     margin: 10px;
-    height: 30px;
-    white-space: nowrap;
+    height: 30px;white-space: nowrap;
+}
+.progress-bar {
+    background-color: #ff0000ab;
+}
+.fileupload-fail {
+    color: #f85757;
+    float: right;
+    font-weight: normal
 }
 
 .progress-bar {
@@ -125,8 +132,7 @@
 
     .flex-item-right,
     .flex-item-left {
-        flex: 100%;
-        justify-content: flex-start;
+        flex: 100%;justify-content: flex-start;
     }
 }
 .page-item .page-link {
@@ -135,3 +141,20 @@
 .page-item.active .page-link {
     color: var(--color-white) !important;
 }
+
+/* Style the dots */
+.dots {
+    cursor: pointer;
+    user-select: none;
+    font-size: 24px;
+  }
+
+ .delete_dropdown{
+    position: absolute;
+    background-color: #FFFFFF;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); 
+ } 
+
+ .custom-button {
+    width: auto;
+  }

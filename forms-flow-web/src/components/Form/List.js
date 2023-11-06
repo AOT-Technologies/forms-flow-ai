@@ -1,13 +1,11 @@
 import React, { useEffect, useRef, useState } from "react";
 import { connect, useDispatch, useSelector } from "react-redux";
-import BootstrapTable from "react-bootstrap-table-next";
-import ToolkitProvider from "react-bootstrap-table2-toolkit";
-import { Link } from "react-router-dom";
-import { Button } from "react-bootstrap";
+import { push } from "connected-react-router";
 import { toast } from "react-toastify";
 import _isEquial from "lodash/isEqual";
 import { selectRoot, selectError, Errors, deleteForm } from "react-formio";
 import Loading from "../../containers/Loading";
+import Head from "../../containers/Head";
 import { textTruncate } from "../../helper/helper";
 import {
   MULTITENANCY_ENABLED,
@@ -16,12 +14,8 @@ import {
 import "../Form/List.scss";
 import {
   setFormFailureErrorData,
-  setBPMFormLimit,
   setBPMFormListLoading,
-  setBPMFormListPage,
-  setBPMFormListSort,
   setFormDeleteStatus,
-  setBpmFormType,
 } from "../../actions/formActions";
 import Confirm from "../../containers/Confirm";
 import {
@@ -41,7 +35,6 @@ import {
 import FileModal from "./FileUpload/fileUploadModal";
 import { useTranslation, Translation } from "react-i18next";
 import { addHiddenApplicationComponent } from "../../constants/applicationComponent";
-import LoadingOverlay from "react-loading-overlay";
 import {
   getFormProcesses,
   saveFormProcessMapperPost,
@@ -49,19 +42,15 @@ import {
   unPublishForm,
   getApplicationCount,
 } from "../../apiManager/services/processServices";
-import { setBpmFormSearch } from "../../actions/formActions";
 import { addTenantkey } from "../../helper/helper";
 import { formCreate, formUpdate } from "../../apiManager/services/FormServices";
-import { designerColums, getoptions, userColumns } from "./constants/table";
-import paginationFactory from "react-bootstrap-table2-paginator";
-import filterFactory from "react-bootstrap-table2-filter";
-import overlayFactory from "react-bootstrap-table2-overlay";
-import { SpinnerSVG } from "../../containers/SpinnerSVG";
 import { getFormattedForm, INACTIVE } from "./constants/formListConstants";
 import {
   handleAuthorization,
   fetchFormAuthorizationDetials,
 } from "../../apiManager/services/authorizationService.js";
+import FormTable from "./constants/FormTable";
+import { useMemo } from "react";
 const List = React.memo((props) => {
   const { t } = useTranslation();
   const [showFormUploadModal, setShowFormUploadModal] = useState(false);
@@ -77,30 +66,19 @@ const List = React.memo((props) => {
     onYes,
     tenants,
   } = props;
-  const searchInputBox = useRef("");
   const isBPMFormListLoading = useSelector((state) => state.bpmForms.isActive);
   const designerFormLoading = useSelector(
     (state) => state.formCheckList.designerFormLoading
   );
-  const seachFormLoading = useSelector(
-    (state) => state.formCheckList.searchFormLoading
-  );
-  const [showClearButton, setShowClearButton] = useState("");
-  const [isAscend, setIsAscending] = useState(true);
   const searchText = useSelector((state) => state.bpmForms.searchText);
-  const [searchTextInput, setSearchTextInput] = useState(searchText);
-  const [isLoading, setIsLoading] = React.useState(false);
   const formType = useSelector((state) => state.bpmForms.formType);
 
   const isDesigner = userRoles.includes(STAFF_DESIGNER);
-  const bpmForms = useSelector((state) => state.bpmForms);
   const pageNo = useSelector((state) => state.bpmForms.page);
   const limit = useSelector((state) => state.bpmForms.limit);
-  const totalForms = useSelector((state) => state.bpmForms.totalForms);
   const sortBy = useSelector((state) => state.bpmForms.sortBy);
   const sortOrder = useSelector((state) => state.bpmForms.sortOrder);
   const formCheckList = useSelector((state) => state.formCheckList.formList);
-  const columns = isDesigner ? designerColums(t) : userColumns(t);
   const formAccess = useSelector((state) => state.user?.formAccess || []);
   const submissionAccess = useSelector(
     (state) => state.user?.submissionAccess || []
@@ -124,11 +102,10 @@ const List = React.memo((props) => {
   }, [dispatch]);
 
   useEffect(() => {
-    setIsLoading(false);
     dispatch(setBPMFormListLoading(true));
   }, []);
+
   const fetchForms = () => {
-    setShowClearButton(searchText);
     let filters = [pageNo, limit, sortBy, sortOrder, searchText];
     if (isDesigner) {
       filters.push(formType);
@@ -172,6 +149,19 @@ const List = React.memo((props) => {
     return toast.success(`${response} ${t("Downloaded Successfully")}`);
   };
 
+  const headerList = () => {
+    return [
+      {
+        name: "Forms",
+        icon: "file-text-o",
+      },
+    ];
+  };
+
+  let headOptions = useMemo(() => {
+    return isDesigner && headerList();
+  }, [isDesigner]);
+
   const downloadForms = async () => {
     let downloadForm = [];
     for (const form of formCheckList) {
@@ -195,38 +185,6 @@ const List = React.memo((props) => {
     e.preventDefault();
     uploadFormNode.current?.click();
     return false;
-  };
-  const handlePageChange = (type, newState) => {
-    dispatch(setBPMFormLimit(newState.sizePerPage));
-    dispatch(setBPMFormListPage(newState.page));
-  };
-  const handleSearch = () => {
-    if (searchText != searchInputBox.current.value) {
-      searchInputBox.current.value === "" ? dispatch(setBPMFormLimit(5)) : "";
-      dispatch(setBPMFormListPage(1));
-      dispatch(setBpmFormSearch(searchInputBox.current.value));
-    }
-  };
-
-  const handleTypeChange = (type) => {
-    dispatch(setBPMFormListPage(1));
-    dispatch(setBPMFormLimit(5));
-    dispatch(setBpmFormType(type));
-  };
-  const onClear = () => {
-    setSearchTextInput("");
-    dispatch(setBpmFormSearch(""));
-    dispatch(setBPMFormLimit(5));
-    setShowClearButton(false);
-  };
-  useEffect(() => {
-    const updatedQuery = isAscend ? "asc" : "desc";
-    dispatch(setBPMFormListSort(updatedQuery));
-  }, [isAscend]);
-  const handleSort = () => {
-    setIsAscending(!isAscend);
-    dispatch(setBPMFormListPage(1));
-    dispatch(setFormSearchLoading(true));
   };
 
   const mapperHandler = (form) => {
@@ -514,29 +472,6 @@ const List = React.memo((props) => {
     });
   };
 
-  const noDataFound = () => {
-    return (
-      <span>
-        <div
-          className="container"
-          style={{
-            maxWidth: "900px",
-            margin: "auto",
-            height: "50vh",
-            display: "flex",
-            flexDirection: "column",
-            alignItems: "center",
-            justifyContent: "center",
-          }}
-        >
-          <h3>{t("No forms found")}</h3>
-          <p>{t("Please change the selected filters to view Forms")}</p>
-        </div>
-      </span>
-    );
-  };
-  const formData = (() => bpmForms.forms)() || [];
-
   return (
     <>
       <FileModal
@@ -549,7 +484,7 @@ const List = React.memo((props) => {
           <Loading />
         </div>
       ) : (
-        <div className="container">
+        <div>
           <Confirm
             modalOpen={props.modalOpen}
             message={
@@ -604,226 +539,61 @@ const List = React.memo((props) => {
               );
             }}
           />
-          <div className="flex-container m-0">
-            {/*<img src="/form.svg" width="30" height="30" alt="form" />*/}
-            <div className="flex-item-left">
-              <div style={{ display: "flex" }}>
-                <span className="task-head" style={{ marginTop: "3px" }}>
-                  <i className="fa-solid fa-file-lines" aria-hidden="true" />
-                </span>
-                <h3 className="task-head">
-                  {" "}
-                  <span className="forms-text" style={{ marginLeft: "1px" }}>
-                    {t("Forms")}
-                  </span>
-                </h3>
-              </div>
+ 
+          <Errors errors={errors} />
+          <div className="d-flex">
+            
+              <button
+              onClick={() => dispatch(push(`${redirectUrl}formflow/create`))}
+                className="btn btn-primary "
+                style={{ whiteSpace: "nowrap" }}
+ 
+              >
+                <i className="fa fa-plus" />{" "}
+                <Translation>{(t) => t("Create Form")}</Translation>
+              </button>
+              <button
+                className="btn btn-outline-primary  ml-4"
+                onClick={uploadClick}
+                title={t("Upload json form only")}
+                style={{ whiteSpace: "nowrap" }}
+              >
+                <i className="fa fa-upload" aria-hidden="true" />{" "}
+                {t("Upload Form")}
+              </button>
+              <input
+                type="file"
+                value=""
+                className="d-none"
+                multiple={false}
+                accept=".json,application/json"
+                onChange={(e) => {
+                  fileUploaded(e);
+                }}
+                ref={uploadFormNode}
+              />
+            
+          </div>
+          <div className="mt-4 d-md-flex  justify-content-between align-items-end">
+             
+            <Head items={headOptions} page={"Forms"} visibleHr={false} />
+            
+            <div className="d-flex flex-column flex-md-column justify-content-md-end mb-4">
+              
+                <button
+                  className="btn btn-outline-primary "
+                  onClick={downloadForms}
+                  disabled={formCheckList.length === 0}
+                >
+                  <i className="fa fa-download fa-lg" aria-hidden="true" />{" "}
+                  {t("Download Form")}{" "}
+                </button>
+                
+              
             </div>
           </div>
-          <section className="custom-grid grid-forms">
-            <Errors errors={errors} />
-            <div className="  row mt-2 mx-2">
-              <div
-                className="col"
-                style={{ marginLeft: "15px", marginTop: "-18px" }}
-              >
-                <div className="input-group">
-                  <span className="d-flex align-items-center">
-                    {isAscend ? (
-                      <i
-                        className="fa fa-sort-alpha-asc"
-                        onClick={() => {
-                          handleSort("desc");
-                        }}
-                        data-toggle="tooltip"
-                        title={t("Sort by form name")}
-                        style={{
-                          cursor: "pointer",
-                          fontSize: "20px",
-                        }}
-                      ></i>
-                    ) : (
-                      <i
-                        className="fa fa-sort-alpha-desc"
-                        onClick={() => {
-                          handleSort("asc");
-                        }}
-                        data-toggle="tooltip"
-                        title={t("Sort by form name")}
-                        style={{
-                          cursor: "pointer",
-                          fontSize: "20px",
-                        }}
-                      ></i>
-                    )}
-                  </span>
-                  <div className="form-outline ml-2">
-                    <input
-                      type="search"
-                      id="form1"
-                      ref={searchInputBox}
-                      onKeyPress={(e) => e.key === "Enter" && handleSearch()}
-                      onChange={(e) => {
-                        setShowClearButton(e.target.value);
-                        setSearchTextInput(e.target.value);
-                        e.target.value === "" && handleSearch();
-                      }}
-                      autoComplete="off"
-                      className="form-control"
-                      value={searchTextInput}
-                      placeholder={t("Search...")}
-                      title={t("Search forms here")}  
-                    />
-                  </div>
-                  {showClearButton && (
-                    <button
-                      type="button"
-                      className="btn btn-outline-primary search-clear ml-2"
-                      onClick={() => onClear()}
-                    >
-                      <i className="fa fa-times"></i>
-                    </button>
-                  )}
-                  <button
-                    type="button"
-                    className="btn btn-outline-primary ml-2"
-                    name="search-button"
-                    title="Click to search"
-                    onClick={() => handleSearch()}
-                  >
-                    <i className="fa fa-search"></i>
-                  </button>
-                  {isDesigner ? (
-                    <select
-                      className="form-control select"
-                      title={t("select form type")}
-                      style={{ maxWidth: "150px" }}
-                      onChange={(e) => {
-                        handleTypeChange(e.target.value);
-                      }}
-                      aria-label="Select Form Type"
-                    >
-                      <option selected={formType === "form"} value="form">
-                        {t("Form")}
-                      </option>
-                      <option
-                        selected={formType === "resource"}
-                        value="resource"
-                      >
-                        {t("Resource")}
-                      </option>
-                    </select>
-                  ) : (
-                    ""
-                  )}
-                </div>
-              </div>
-              <div className="d-flex">
-                {isDesigner && (
-                  <Link
-                    to={`${redirectUrl}formflow/create`}
-                    className="btn btn-primary btn-left btn-sm"
-                  >
-                    <i className="fa fa-plus fa-lg" />{" "}
-                    <Translation>{(t) => t("Create Form")}</Translation>
-                  </Link>
-                )}
-                {isDesigner && (
-                  <>
-                    <Button
-                      className="btn btn-primary btn-sm form-btn pull-right btn-left"
-                      onClick={uploadClick}
-                      title={t("Upload json form only")}
-                    >
-                      <i className="fa fa-upload fa-lg" aria-hidden="true" />{" "}
-                      {t("Upload Form")}{" "}
-                    </Button>
-                    <input
-                      type="file"
-                      value=""
-                      className="d-none"
-                      multiple={false}
-                      accept=".json,application/json"
-                      onChange={(e) => {
-                        fileUploaded(e);
-                      }}
-                      ref={uploadFormNode}
-                      title={t("Upload json form only")}
-                    />
-                  </>
-                )}
-                {isDesigner && (
-                  <>
-                    <button
-                      className="btn btn-primary pull-right btn-left "
-                      onClick={downloadForms}
-                      disabled={formCheckList.length === 0}
-                      title={t("Download form")}
-                    >
-                      <i className="fa fa-download fa-lg" aria-hidden="true" />{" "}
-                      {formCheckList.length !== 0 && t("Download Form")}{" "}
-                    </button>
-                  </>
-                )}
-              </div>
-            </div>
-            <ToolkitProvider
-              bootstrap4
-              keyField="id"
-              data={formData}
-              columns={columns}
-              search
-            >
-              {(props) => {
-                return (
-                  <div>
-                    <LoadingOverlay
-                      active={seachFormLoading}
-                      spinner
-                      text={t("Loading...")}
-                    >
-                      <BootstrapTable
-                        remote={{
-                          pagination: true,
-                          filter: true,
-                        }}
-                        Loading={isLoading}
-                        filter={filterFactory()}
-                        filterPosition={"top"}
-                        pagination={
-                          formData.length
-                            ? paginationFactory(
-                                getoptions(pageNo, limit, totalForms)
-                              )
-                            : false
-                        }
-                        onTableChange={handlePageChange}
-                        {...props.baseProps}
-                        noDataIndication={() =>
-                          !seachFormLoading ? noDataFound() : ""
-                        }
-                        overlay={overlayFactory({
-                          spinner: <SpinnerSVG />,
-                          styles: {
-                            overlay: (base) => ({
-                              ...base,
-                              background: "rgba(255, 255, 255)",
-                              height: `${
-                                limit > 5
-                                  ? "100% !important"
-                                  : "350px !important"
-                              }`,
-                              top: "65px",
-                            }),
-                          },
-                        })}
-                      />
-                    </LoadingOverlay>
-                  </div>
-                );
-              }}
-            </ToolkitProvider>
-          </section>
+          <hr style={{marginTop:"-10px"}} />
+          <FormTable />
         </div>
       )}
     </>

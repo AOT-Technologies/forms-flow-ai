@@ -190,7 +190,7 @@ const TaskFilterListViewComponent = React.memo(
               const userListOptions = res.map((user) => {
                 return {
                   value: user.username,
-                  label: `${user.firstName} ${user.lastName} (${user.username})`,
+                  label: `${user.firstName ? user.firstName : ""} ${user.lastName ? user.lastName : ""} (${user.username})`,
                 };
               });
               setAssigneeOptions(userListOptions);

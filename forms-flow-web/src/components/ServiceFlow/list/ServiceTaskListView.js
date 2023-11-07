@@ -191,7 +191,7 @@ const ServiceTaskListView = React.memo(() => {
                     </h6>
                   </div>
                 </Col>}
-                {task?._embedded?.variable?.length > 1 ?
+                {task?._embedded?.variable?.length > 2 ? 
                   <Col xs={1}>
                     <div
                       className="justify-content-center"

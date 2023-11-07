@@ -234,6 +234,9 @@ export default function CreateNewFilterDrawer({
       roles.push(identifierId);
     }
 
+    const applicationIdExists = variables.some((variable) => variable.name === 'applicationId');
+    const formNameExists = variables.some((variable) => variable.name === 'formName');
+
     const data = {
       name: filterName,
       criteria: {
@@ -246,9 +249,9 @@ export default function CreateNewFilterDrawer({
         showUndefinedVariable: showUndefinedVariable,
       },
       variables: [
-        ...variables, 
-        { name: 'applicationId', label: 'Application Id' }, // hard coded for applicationId
-        { name: 'formName', label: 'Form Name' } // hard coded for Form Name
+        ...variables,
+        ...(applicationIdExists ? [] : [{ name: 'applicationId', label: 'Application Id' }]),
+        ...(formNameExists ? [] : [{ name: 'formName', label: 'Form Name' }]),
       ],
       users: users,
       roles: roles,
@@ -551,7 +554,7 @@ export default function CreateNewFilterDrawer({
         <Divider />
         <div className="m-2">
           <h5 className="font-weight-bold ">
-            <Translation>{(t) => t("Task attributes")}</Translation>{" "}
+            <Translation>{(t) => t("Task Attributes")}</Translation>{" "}
             <i className="fa fa-info-circle"></i>
           </h5>
           <input
@@ -561,8 +564,8 @@ export default function CreateNewFilterDrawer({
             onClick={toggleModal}
             placeholder={
               taskAttributesCount === 0
-                ? "Select elements"
-                : taskAttributesCount + " Task attributes selected"
+                ? "Select Elements"
+                : taskAttributesCount + " Task Attributes Selected"
             }
           />
         </div>
@@ -626,7 +629,7 @@ export default function CreateNewFilterDrawer({
               onHide={toggleModal}
               checkboxes={checkboxes}
               setCheckboxes={setCheckboxes}
-              inputValues={inputValues}
+              inputValues={inputValues.filter((e) => e.name !== "applicationId" && e.name !== "formName")}
               setInputValues={setInputValues}
               showUndefinedVariable={showUndefinedVariable}
               setShowUndefinedVariable={setShowUndefinedVariable}

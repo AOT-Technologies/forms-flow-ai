@@ -158,7 +158,7 @@ const Preview = ({handleNext, hideComponents, activeStep}) => {
           <i className="fa-solid fa-file-lines" aria-hidden="true" /> &nbsp;{" "}
           {form?.title}
         </h3>
-      <div className=" d-flex flex-column flex-md-row justify-content-md-end align-items-md-center ">
+      <div className=" d-flex flex-column flex-md-row justify-content-md-end align-items-md-center mb-3">
     
         
           <button

@@ -20,8 +20,10 @@ import {
 import SelectFormForDownload from "../FileUpload/SelectFormForDownload";
 import LoadingOverlay from "react-loading-overlay";
 import {
+  CLIENT,
   MULTITENANCY_ENABLED,
   STAFF_DESIGNER,
+  STAFF_REVIEWER,
 } from "../../../constants/constants";
 import { useTranslation } from "react-i18next";
 import { Translation } from "react-i18next";
@@ -293,7 +295,7 @@ function FormTable() {
                           </div>
                         </td>
                       )}
-                      <td>{HelperServices?.getLocalDateAndTime(e.created)}</td>
+                      <td>{HelperServices?.getLocaldate(e.created)}</td>
                       <td>{e.formType}</td>
                       <td>{e.anonymous ? "Anonymous" : "Private"}</td>
                       <td>
@@ -308,8 +310,7 @@ function FormTable() {
                       <td>
                         <span> {viewOrEdit(e)}</span>
                       </td>
-                      {!isDesigner &&
-                      <td>{submitNew(e)}</td>}
+                       
                       <td style={{ position: "relative" }}>
                         <div
                           className="dots mb-2 mr-5"
@@ -318,11 +319,17 @@ function FormTable() {
                           ...
                         </div>
                         {openIndex === index && (
-                          <Dropdown className="delete_dropdown">
+                          <Dropdown className="shadow position-absolute bg-white" style={{zIndex:99}}>
                             <Dropdown.Item onClick={() => deleteForms(e)}>
-                              <i className="fa fa-trash mr-2" />
+                              <i className="fa fa-trash mr-2 text-danger" />
                               Delete
                             </Dropdown.Item>
+                           {(userRoles.includes(STAFF_REVIEWER) || userRoles.includes(CLIENT))?(
+                             <Dropdown.Item onClick={() => {console.log(e);submitNewForm(e?._id)}}>
+                             <i className="fa fa-pencil mr-2 text-primary" />
+                             {t("Submit New")}
+                           </Dropdown.Item>
+                           ) : null}
                           </Dropdown>
                         )}
                       </td>

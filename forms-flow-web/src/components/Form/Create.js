@@ -156,7 +156,7 @@ const Create = React.memo(() => {
       const data = {
         formId: form._id,
         formName: form.title,
-        Description: formDescription,
+        description: formDescription,
         formType: form.type,
         formTypeChanged: true,
         anonymousChanged: true,

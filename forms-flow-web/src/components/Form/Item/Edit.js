@@ -97,7 +97,7 @@ const Edit = React.memo(() => {
   const saveText = <Translation>{(t) => t("Save Form")}</Translation>;
   const saveNewVersion = <Translation>{(t) => t("Save New Version")}</Translation>;
   const [formSubmitted, setFormSubmitted] = useState(false);
-
+  const [formDescription,setFormDescription] = useState("");
   const lang = useSelector((state) => state.user.lang);
   const history = useHistory();
   const { t } = useTranslation();
@@ -124,6 +124,10 @@ const Edit = React.memo(() => {
       });
     }
   }, [processListData]);
+
+  useEffect(()=>{
+    setFormDescription(processListData.description);
+  },[processListData.description]);
 
   useEffect(() => {
     if (restoredFormId) {
@@ -252,7 +256,8 @@ const Edit = React.memo(() => {
       prviousData.formName !== newData.title ||
       prviousData.anonymous !== processListData.anonymous ||
       processListData.anonymous === null ||
-      processListData.formType !== newData.type
+      processListData.formType !== newData.type ||
+      processListData.description !== formDescription
     );
   };
   // to check the component changed or not
@@ -319,6 +324,7 @@ const Edit = React.memo(() => {
       formTypeChanged: prviousData.formType !== submittedData.type,
       titleChanged: prviousData.formName !== submittedData.title,
       anonymousChanged: prviousData.anonymous !== processListData.anonymous,
+      description: formDescription
     };
     return data;
   };
@@ -599,7 +605,7 @@ const Edit = React.memo(() => {
                   {" "}
                   {t("Description")}
                 </label>
-                <RichText value={form.Description || ""} />
+                <RichText value={formDescription} onChange={setFormDescription} />
               </div>
             </div>
 

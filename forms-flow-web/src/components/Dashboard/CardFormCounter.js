@@ -12,7 +12,7 @@ const CardFormCounter = React.memo((props) => {
   return (
     <Fragment>
       <div
-        className=" card-counter form-card-counter "
+        className="card-counter form-card-counter "
         onClick={() => getStatusDetails(parentFormId, { parentId: true })}
       >
         <div

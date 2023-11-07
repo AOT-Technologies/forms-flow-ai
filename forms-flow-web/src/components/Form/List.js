@@ -494,13 +494,9 @@ const List = React.memo((props) => {
                   <div>
                     {applicationCount}
                     {applicationCount > 1 ? (
-                      <span>{`${t(
-                        " Submissions are made against"
-                      )} `}</span>
+                      <span>{`${t(" Submissions are made against")} `}</span>
                     ) : (
-                      <span>{`${t(
-                        " Submission is made against"
-                      )} `}</span>
+                      <span>{`${t(" Submission is made against")} `}</span>
                     )}
                     <span style={{ fontWeight: "bold" }}>
                       {props.formName.includes(" ")
@@ -540,64 +536,69 @@ const List = React.memo((props) => {
               );
             }}
           />
- 
+
           <Errors errors={errors} />
           <div className="d-flex">
-          {isDesigner && (
-  <>
-    <button
-      onClick={() => dispatch(push(`${redirectUrl}formflow/create`))}
-      className="btn btn-primary"
-      style={{ whiteSpace: "nowrap" }}
-
-    >
-      <i className="fa fa-plus mr-2" />
-      <Translation>{(t) => t("Create Form")}</Translation>
-    </button>
-    <button
-      className="btn btn-outline-primary  ml-4"
-      onClick={uploadClick}
-      title={t("Upload json form only")}
-      style={{ whiteSpace: "nowrap" }}
-    >
-      <i className="fa fa-upload mr-2" aria-hidden="true" />
-      {t("Upload Form")}
-    </button>
-    <input
-      type="file"
-      value=""
-      className="d-none"
-      multiple={false}
-      accept=".json,application/json"
-      onChange={(e) => {
-        fileUploaded(e);
-      }}
-      ref={uploadFormNode}
-    />
-  </>
-)}
-
-            
-          </div>
-          <div className="mt-4 d-md-flex  justify-content-between align-items-end">
-             
-            <Head items={headOptions} page={"Forms"} visibleHr={false} />
-            
-            <div className="d-flex flex-column flex-md-column justify-content-md-end mb-4">
             {isDesigner && (
+              <>
                 <button
-                  className="btn btn-outline-primary "
-                  onClick={downloadForms}
-                  disabled={formCheckList.length === 0}
+                  onClick={() =>
+                    dispatch(push(`${redirectUrl}formflow/create`))
+                  }
+                  className="btn btn-primary"
+                  style={{ whiteSpace: "nowrap" }}
                 >
-                  <i className="fa fa-download mr-2" aria-hidden="true" />
-                  {t("Download Form")}
+                  <i className="fa fa-plus mr-2" />
+                  <Translation>{(t) => t("Create Form")}</Translation>
                 </button>
-                )} 
-            </div>
+                <button
+                  className="btn btn-outline-primary  ml-4"
+                  onClick={uploadClick}
+                  title={t("Upload json form only")}
+                  style={{ whiteSpace: "nowrap" }}
+                >
+                  <i className="fa fa-upload mr-2" aria-hidden="true" />
+                  {t("Upload Form")}
+                </button>
+                <input
+                  type="file"
+                  value=""
+                  className="d-none"
+                  multiple={false}
+                  accept=".json,application/json"
+                  onChange={(e) => {
+                    fileUploaded(e);
+                  }}
+                  ref={uploadFormNode}
+                />
+              </>
+            )}
           </div>
-          <hr style={{marginTop:"-10px"}} />
-          {isDesigner ? <FormTable /> : (!isDesigner ? <ClientTable /> : null)}
+          {isDesigner ? (
+            <>
+              <div className="mt-4 d-md-flex  justify-content-between align-items-end">
+                <Head items={headOptions} page={"Forms"} visibleHr={false} />
+
+                <div className="d-flex flex-column flex-md-column justify-content-md-end mb-4">
+                  {isDesigner && (
+                    <button
+                      className="btn btn-outline-primary "
+                      onClick={downloadForms}
+                      disabled={formCheckList.length === 0}
+                    >
+                      <i className="fa fa-download mr-2" aria-hidden="true" />
+                      {t("Download Form")}
+                    </button>
+                  )}
+                </div>
+              </div>
+              <hr style={{ marginTop: "-10px" }} />
+            </>
+          ) : (
+            <Head items={headerList()} page={"Forms"} />
+          )}
+
+          {isDesigner ? <FormTable /> : !isDesigner ? <ClientTable /> : null}
         </div>
       )}
     </>

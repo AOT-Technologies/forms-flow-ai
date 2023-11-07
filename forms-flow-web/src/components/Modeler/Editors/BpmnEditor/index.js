@@ -54,7 +54,8 @@ export default React.memo(
     const [lintErrors, setLintErrors] = useState([]);
     const [deploymentLoading, setDeploymentLoading] = useState(false);
     const redirectUrl = MULTITENANCY_ENABLED ? `/tenant/${tenantKey}/` : "/";
-
+    const [processName,setProcessName] = useState(true);
+    const bpmPropertyInput = document.getElementById("bio-properties-panel-name")?.value;
     const containerRef = useCallback((node) => {
       if (node !== null) {
         initializeModeler();
@@ -87,6 +88,13 @@ export default React.memo(
         })
       );
     };
+
+    useEffect(() => {
+        if (bpmPropertyInput) {
+          setProcessName(false);
+        }
+    }, [bpmPropertyInput]);
+
     useEffect(() => {
       if (PUBLIC_WORKFLOW_ENABLED) {
         tenant === null || tenant === undefined ? setApplyAllTenants(true)
@@ -125,6 +133,8 @@ export default React.memo(
           });
       }
     }, [diagramXML, bpmnModeler, bpmnXml]);
+
+
 
     const handleApplyAllTenants = () => {
       setApplyAllTenants(!applyAllTenants);
@@ -244,11 +254,8 @@ export default React.memo(
         toast.error(t("Process name(s) must not be empty"));
         isValidated = false;
       }
-
       return isValidated;
     };
-
-
 
     const handleExport = async () => {
       let xml = await createXML(bpmnModeler);
@@ -283,6 +290,10 @@ export default React.memo(
       bpmnModeler.get("zoomScroll").reset();
     };
 
+    const handleHelp = () => {
+      window.open("https://camunda.com/bpmn/");
+    };
+
     return (
       <>
     <div className="task-head d-flex justify-content-end mb-2">
@@ -292,14 +303,20 @@ export default React.memo(
               for all tenants
             </label>
           ) : null}
+              <Button
+                variant="info"
+                className="help-btn mr-2"
+                onClick={() => handleHelp()}
+              >
+                {t("Help")}
+              </Button>
            <Button variant="light" onClick={cancel}>
             {t("Cancel")}
           </Button>
-          <Button variant="outline-dark" className="ml-3" onClick={handleExport}>
+          <Button variant="outline-dark" className="ml-3" onClick={handleExport} disabled={processName}>
             {t("Export")}
           </Button>
-          <Button className="ml-3" onClick={deployProcess}>{t("Deploy")}</Button>
-          
+          <Button className="ml-3" onClick={deployProcess} disabled={processName}>{t("Deploy")}</Button>
         </div>
         <div className="bpmn-main-container">
           <div className="bpmn-viewer-container">

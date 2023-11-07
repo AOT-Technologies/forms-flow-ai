@@ -91,14 +91,14 @@ const Insights = React.memo((props) => {
 
   return (
     <>
-      <div className="container mb-4" id="main">
-        <div className="insights mb-2">
-          <div className="row ">
-            <div className="col-12" data-testid="Insight">
+       
+        <div className="mb-2">
+        
+            
               <Head items={headerList()} page="Insights"/>
-             
-                <div
-                  className="d-flex align-items-center justify-content-between p-2"
+           
+              
+                <div className="d-flex align-items-center flex-md-row flex-colum justify-content-between mt-3"
                   data-testid="Insight"
                   role="main"
                 >
@@ -121,9 +121,9 @@ const Insights = React.memo((props) => {
                       />
                     )}
                   </div>
-                
-              </div>
-            </div>
+                </div>
+             
+         
             <LoadingOverlay
               active={
                 !(isDashboardListUpdated || isDashboardDetailUpdated) && !error
@@ -145,7 +145,7 @@ const Insights = React.memo((props) => {
                       height: "auto",
                       overflow: "visible",
                       border: "none",
-                      minHeight: "100vh",
+                      minHeight: "60vh",
                     }}
                     src={activeDashboard.public_url}
                   />
@@ -166,9 +166,9 @@ const Insights = React.memo((props) => {
                 <NoData />
               )}
             </LoadingOverlay>
-          </div>
+           
         </div>
-      </div>
+      
       <Route path={`${BASE_ROUTE}insights/:notAvailable`}>
         <Redirect exact to="/404" />
       </Route>

@@ -2,11 +2,11 @@ import React from "react";
 import { Translation } from "react-i18next";
 
 const Head = React.memo((props) => {
-  const { items, page, visibleHr = true } = props;
+  const { items = [], page, visibleHr = true } = props;
   return (
     <div className="header-container">
       <div className="main-header">
-        {items?.map((item, key) => (
+        {items?.map?.((item, key) => (
           <div
             key={key}
             className={`head-item ${item.name === page ? "head-active" : ""} ${key > 0 ? 'padding-left-60' : ''}`}

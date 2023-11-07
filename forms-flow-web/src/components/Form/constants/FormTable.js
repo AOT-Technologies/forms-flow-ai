@@ -296,14 +296,8 @@ function FormTable() {
                       <td>{e.anonymous ? "Anonymous" : "Private"}</td>
                       <td>
                         {" "}
-                        <button
-                          type="button"
-                          class="btn btn-light"
-                          style={{
-                            backgroundColor: "rgba(144, 238, 144, 0.5)",
-                            borderRadius:"10px",
-                            color:"#326A48"
-                          }}
+                        <button 
+                          className={`btn ${e.status === 'active' ? 'published-forms-label' : 'unpublished-forms-label'}`}
                         >
                           {e.status === 'active' ? "Published" : "unpublished"}
                         </button>

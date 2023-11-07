@@ -237,20 +237,20 @@ const View = React.memo((props) => {
         </>
       }
       <div className="d-flex align-items-center justify-content-between">
-        <div className="main-header">
+        <div className="d-flex align-items-center">
           <SubmissionError
             modalOpen={props.submissionError.modalOpen}
             message={props.submissionError.message}
             onConfirm={props.onConfirm}
           ></SubmissionError>
           {isAuthenticated ? (
-            <Link title={t("Back to Drafts")} to={`${redirectUrl}draft`} className="mt-1">
+            <Link title={t("Back to Drafts")} to={`${redirectUrl}draft`} className="">
               <i className="fa fa-chevron-left fa-lg" />
             </Link>
           ) : null}
 
           {form.title ? (
-            <h3 className="ml-3">
+            <h3 className="">
               <span className="task-head-details">
                 <i className="fa-solid fa-file-lines" aria-hidden="true" /> &nbsp;{" "}
                 {t("Drafts")}/
@@ -278,9 +278,9 @@ const View = React.memo((props) => {
         active={isFormSubmissionLoading}
         spinner
         text={<Translation>{(t) => t("Loading...")}</Translation>}
-        className="col-12"
+        className="col-12 p-0"
       >
-        <div className="ml-4 mr-4">
+        <div className="mt-4">
           <Confirm
             modalOpen={draftDelete.modalOpen}
             message={`${t("Are you sure you wish to delete the draft")} "${

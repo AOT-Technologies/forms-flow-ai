@@ -71,6 +71,7 @@ export default function CreateNewFilterDrawer({
   const taskAttributesCount = Object.values(checkboxes).filter(
     (value) => value === true
   ).length;
+
   const customTrim = (inputString) => {
     // Remove '%' symbol from the start
     const startIndex = inputString?.indexOf("%");
@@ -214,7 +215,6 @@ export default function CreateNewFilterDrawer({
     setSpecificUserGroup("");
     setInputValues([{ name: "", label: "" }]);
   };
-
   const handleSubmit = () => {
     let users = [];
     let roles = [];
@@ -245,7 +245,11 @@ export default function CreateNewFilterDrawer({
       properties: {
         showUndefinedVariable: showUndefinedVariable,
       },
-      variables: variables,
+      variables: [
+        ...variables, 
+        { name: 'applicationId', label: 'Application Id' }, // hard coded for applicationId
+        { name: 'formName', label: 'Form Name' } // hard coded for Form Name
+      ],
       users: users,
       roles: roles,
       taskVisibleAttributes: { ...checkboxes },
@@ -547,7 +551,7 @@ export default function CreateNewFilterDrawer({
         <Divider />
         <div className="m-2">
           <h5 className="font-weight-bold ">
-            <Translation>{(t) => t("Task attribute")}</Translation>{" "}
+            <Translation>{(t) => t("Task attributes")}</Translation>{" "}
             <i className="fa fa-info-circle"></i>
           </h5>
           <input
@@ -558,7 +562,7 @@ export default function CreateNewFilterDrawer({
             placeholder={
               taskAttributesCount === 0
                 ? "Select elements"
-                : taskAttributesCount + " Task attribute selected"
+                : taskAttributesCount + " Task attributes selected"
             }
           />
         </div>

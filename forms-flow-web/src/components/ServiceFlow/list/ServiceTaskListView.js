@@ -106,7 +106,6 @@ const ServiceTaskListView = React.memo(() => {
     }));
   };
   // Toggle expand or collapse the TaskVariables of all task
-  
   const toggleAllTaskVariables = () => {
     const newExpandedState = !allTaskVariablesExpanded;
     const updatedExpandedTasks = {};
@@ -137,10 +136,8 @@ const ServiceTaskListView = React.memo(() => {
               key={index}
             >
               <Row className="task-title-container p-2 border-bottom">
-                <Col>
-                  <div className="">
-                    <h4 className="font-weight-bold">{task.name}</h4>
-                  </div>
+                <Col xs={8}>
+                    <h4 className="font-weight-bold">{task.name} - {task?._embedded?.variable?.filter((eachValue) => eachValue.name === "formName")[0]?.value}</h4>
                 </Col>
                 <Col xs={2} className="ml-auto">
                     <div>
@@ -222,7 +219,7 @@ const ServiceTaskListView = React.memo(() => {
               <hr />
               <Row className="p-2" >
                   {task?._embedded?.variable?.map((eachVariable, index) => {
-                    if ( eachVariable.name !== "applicationId" && selectedTaskVariables[eachVariable.name] === true) {
+                    if ( eachVariable.name !== "applicationId" && eachVariable.name !== "formName" && selectedTaskVariables[eachVariable.name] === true) {
                       return (
                         <Col xs={2} key={index} >
                           <div className="col-12" style={{ wordBreak: "break-all" }}>

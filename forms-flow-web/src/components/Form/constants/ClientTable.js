@@ -30,8 +30,7 @@ function ClientTable() {
   const searchText = useSelector((state) => state.bpmForms.searchText);
   const [search, setSearch] = useState(searchText || "");
   const redirectUrl = MULTITENANCY_ENABLED ? `/tenant/${tenantKey}/` : "/";
-  const [selectedRow, setSelectedRow] = useState(null);
-  const [bundleData, setBundleData] = useState([]);
+
 
 
 
@@ -95,16 +94,6 @@ function ClientTable() {
     dispatch(setBPMFormListPage(1));
   };
 
-  const handleRowExpansion = (mapperId, index) => {
-    setSelectedRow(index === selectedRow ? null : index);
-    getBundle(mapperId)
-      .then((res) => {
-        setBundleData(res.data);
-      })
-      .catch((err) => {
-        console.error("error", err);
-      });
-  };
 
   const submitNew = (formData) => (
     <div style={{ display: "flex", justifyContent: "center" }}>
@@ -113,6 +102,20 @@ function ClientTable() {
       </button>
     </div>
   );
+
+
+  const [selectedRow, setselectedRow] = useState([]);
+
+  const handleRowExpansion = (index) => {
+    const currentIndex = selectedRow.indexOf(index);
+    const newselectedRow = [...selectedRow];
+    if (currentIndex === -1) {
+      newselectedRow.push(index);
+    } else {
+      newselectedRow.splice(currentIndex, 1);
+    }
+    setselectedRow(newselectedRow);
+  };
 
   const noDataFound = () => {
     return (
@@ -205,39 +208,43 @@ function ClientTable() {
             </thead>
 
             {formData?.length ? (
-              <tbody>
-                {formData?.map((e, index) => {
-                  return (
-                    <tr key={index}>
-                      <td>
-                        <div style={{ display: "flex", alignItems: "center" }}>
-                          {!isDesigner && (
-                            <i
-                            className={`fa fa-chevron-${
-                              selectedRow === index ? "up" : "down"
-                            }`}
-                            onClick={() =>
-                              handleRowExpansion(e.mapperId, index)
-                            }
-                            style={{cursor:'pointer'}}
-                          ></i>
-                          )}
-                          <span className="ml-4 mt-2">{e.title}</span>
-                        </div>
-                      </td>
-                      <td>{e.description}</td>
-                      {!isDesigner && <td>{submitNew(e)}</td>}
-                      <td style={{ position: "relative" }}>
-                      </td>
-                    </tr>
-                  );
-                })}
-              </tbody>
-            ) : !searchFormLoading ? (
-              noDataFound()
-            ) : (
-              ""
-            )}
+        <tbody>
+          {formData?.map((e, index) => {
+            return (
+              <React.Fragment key={index}>
+                <tr>
+                  <td className="col-4">
+                    <div style={{ display: "flex", alignItems: "center" }}>
+                      {!isDesigner && (
+                        <i
+                          className={`fa fa-chevron-${
+                            selectedRow.includes(index) ? "up" : "down"
+                          }`}
+                          style={{ cursor: 'pointer' }}
+                          onClick={() => handleRowExpansion(index)}
+                        ></i>
+                      )}
+                      <span className="ml-2 mt-2">{e.title}</span>
+                    </div>
+                  </td>
+                  <td>{e.description}</td>
+                  {!isDesigner && <td>{submitNew(e)}</td>}
+                  <td style={{ position: "relative" }}></td>
+                </tr>
+                {selectedRow.includes(index) && (
+                  <tr>
+                    <td colSpan="4">{e.description}</td>
+                  </tr>
+                )}
+              </React.Fragment>
+            );
+          })}
+        </tbody>
+      ) : !searchFormLoading ? (
+        noDataFound()
+      ) : (
+        ""
+      )}
           </table>
         </div>
       </LoadingOverlay>

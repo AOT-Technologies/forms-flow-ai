@@ -172,7 +172,7 @@ const DraftTable = () => {
         </Dropdown>
           <span className="ml-2">
             Showing {(limit * pageNo ) - (limit - 1)} to{" "}
-            {limit * pageNo > totalForms ? totalForms : limit * pageNo} of
+            {limit * pageNo > totalForms ? totalForms : limit * pageNo} of{" "}
             {totalForms} Results
           </span>
         </div>

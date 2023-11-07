@@ -256,7 +256,7 @@ const Preview = React.memo(
                         : "-"}
                     </span>
                   </div>
-                  <div className="d-flex flex-column flex-md-row">
+                  <div className="d-flex flex-column flex-md-row my-2">
                   <div className="font-weight-bold col-md-2 col-12">
                       {t("Workflow Name")} :{" "}
                     </div>
@@ -266,7 +266,7 @@ const Preview = React.memo(
                   </div>
                   </div>
                   {processListData.anonymous && (
-                    <div className="d-flex align-items-md-center px-3">
+                    <div className="d-flex align-items-md-center px-3 my-2">
                       <div className="font-weight-bold">
                         {t("Copy anonymous form URL")}
                       </div>
@@ -288,7 +288,7 @@ const Preview = React.memo(
                       </div>
                     </div>
                   )}
-                  <div className="px-3">
+                  <div className="px-3 my-2">
                     <label>
                       <Form.Group controlId="publishForm" className="mb-0">
                       <div className="d-flex align-items-center mr-4">

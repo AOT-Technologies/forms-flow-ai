@@ -23,7 +23,7 @@ const ApplicationCounter = React.memo((props) => {
   }
   return (
     <Fragment>
-      <div className="row">
+      <div className="row m-0">
         {application.map((app, idx) => (
           <div
             className="col-lg-4 col-sm-6 col-xs-12"

@@ -16,7 +16,7 @@ const Details = React.memo((props) => {
       spinner
       text={t("Select a task in the list.")}
     >
-      <div className="row" style={{ marginTop: "26.5px", fontWeight: "500px" }}>
+      <div className="row m-0 bg-white p-3" style={{ fontWeight: "500px" }}>
         <div className="col-md-6">
           <DraftDetails draft={props.draft} />
         </div>

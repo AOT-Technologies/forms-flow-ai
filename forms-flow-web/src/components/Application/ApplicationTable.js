@@ -79,19 +79,19 @@ const ApplicationTable = () => {
     },
   ];
 
-  const submittedForm = (data) => {
+  const submissionDetails = (data) => {
     dispatch(push(`${redirectUrl}application/${data.id}`));
   };
 
  
 
-  const viewSubmittedForm = (data) => (
-    <button className="btn btn-link mt-2" onClick={() => submittedForm(data)}>
-      <Translation>{(t) => t("View Submitted Form")}</Translation>{" "}
+  const  viewSubmissionDetails = (data) => (
+    <button className="btn btn-link mt-2" onClick={() => submissionDetails(data)}>
+      <Translation>{(t) => t(" View Details")}</Translation>{" "}
     </button>
   );
 
-  const viewSubmissionDetails = (formData) => {
+  const viewSubmittedForm = (formData) => {
     const url =
     formData.isClientEdit || formData.isResubmit
         ? `${redirectUrl}form/${formData.formId}/submission/${formData.submissionId}/edit`
@@ -101,7 +101,7 @@ const ApplicationTable = () => {
         className="btn btn-link mt-2"
         onClick={() => window.open(url, "_blank")}
       >
-        <Translation>{(t) => t("View Details")}</Translation>{" "}
+        <Translation>{(t) => t("View Submitted Form")}</Translation>{" "}
       </button>
     );
   };

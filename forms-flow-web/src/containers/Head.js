@@ -3,10 +3,15 @@ import { Translation } from "react-i18next";
 
 const Head = React.memo((props) => {
   const { items, page, visibleHr = true } = props;
+  
+  if (!Array.isArray(items)) {
+    return null;
+  }
+
   return (
     <div className="header-container">
       <div className="main-header">
-        {items?.map((item, key) => (
+        {items.map((item, key) => (
           <div
             key={key}
             className={`head-item ${item.name === page ? "head-active" : ""} ${key > 0 ? 'padding-left-60' : ''}`}
@@ -21,10 +26,11 @@ const Head = React.memo((props) => {
               <span className="application-text">
                 <Translation>{(t) => t(item?.name)}</Translation>
               </span>
-              { item?.count ? 
+              {item?.count ? (
                 <div className="application-count" role="contentinfo">
-                ({item?.count})
-              </div> : null}
+                  ({item?.count})
+                </div>
+              ) : null}
             </h3>
           </div>
         ))}

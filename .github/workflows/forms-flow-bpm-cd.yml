@@ -102,13 +102,15 @@ jobs:
           platforms: linux/arm64/v8
           tags: ${{ steps.meta.outputs.tags }}-arm64
           labels: ${{ steps.meta.outputs.labels }}
-      - name: ZAP Scan
-        uses: zaproxy/action-baseline@v0.6.1
+      - name: Run ZAP Scan
+        run: |
+          # Install ZAP (if not already installed)
+          curl -sL https://github.com/zaproxy/zaproxy/releases/latest/download/ZAP_WEEKLY_Docker.sh | sh
+          docker pull owasp/zap2docker-stable
+          docker run --name zap-scan -u zap -v $(pwd):/zap/wrk/:rw --network=host owasp/zap2docker-stable zap-baseline.py -t https://forms-flow-bpm-app2.aot-technologies.com/camunda -J report.json -r report.html
+
+      - name: Upload ZAP Reports
+        uses: actions/upload-artifact@v2
         with:
-          issue_title: Vulnerability Scan Results
-          docker_name: 'owasp/zap2docker-stable'
-          target: 'https://forms-flow-bpm-app2.aot-technologies.com/camunda'
-          rules_file_name: '.zap/rules.tsv'
-          cmd_options: '-a -debug -verbose'
-          fail_action: true
-          allow_issue_writing: true
+          name: zap-reports
+          path: report.json, report.html

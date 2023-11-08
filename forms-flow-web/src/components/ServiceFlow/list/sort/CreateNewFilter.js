@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import Drawer from "@material-ui/core/Drawer";
-import Button from "@material-ui/core/Button";
 import List from "@material-ui/core/List";
 import Divider from "@material-ui/core/Divider";
 import {
@@ -26,6 +25,7 @@ import {
 } from "../../../../actions/bpmTaskActions";
 
 import TaskAttributeComponent from "./TaskAttributeComponent";
+import { toast } from "react-toastify";
 export default function CreateNewFilterDrawer({
   selectedFilterData,
   openFilterDrawer,
@@ -47,14 +47,13 @@ export default function CreateNewFilterDrawer({
   const [identifierId, setIdentifierId] = useState("");
   const [selectUserGroupIcon, setSelectUserGroupIcon] = useState("");
   const [specificUserGroup, setSpecificUserGroup] = useState("");
+  const firstResult = useSelector((state) => state.bpmTasks.firstResult);
+
   const userName = useSelector(
     (state) => state.user?.userDetail?.preferred_username
   );
-  const filterListAndCount = useSelector(
-    (state) => state.bpmTasks.filtersAndCount
-  );
   const selectedFilter = useSelector((state) => state.bpmTasks.selectedFilter);
-  // const firstResult = useSelector((state) => state.bpmTasks.firstResult);
+  const filterList = useSelector((state) => state.bpmTasks.filterList);
   const [variables, setVariables] = useState([]);
   const [inputValues, setInputValues] = useState([{ name: "", label: "" }]);
   const { t } = useTranslation();
@@ -72,6 +71,7 @@ export default function CreateNewFilterDrawer({
   const taskAttributesCount = Object.values(checkboxes).filter(
     (value) => value === true
   ).length;
+
   const customTrim = (inputString) => {
     // Remove '%' symbol from the start
     const startIndex = inputString?.indexOf("%");
@@ -112,7 +112,10 @@ export default function CreateNewFilterDrawer({
       if (!selectedFilterData.variables?.length) {
         setInputValues([{ name: "", label: "" }]);
       }
-      if (!selectedFilterData?.users?.length && !selectedFilterData?.roles?.length) {
+      if (
+        !selectedFilterData?.users?.length &&
+        !selectedFilterData?.roles?.length
+      ) {
         setSpecificUserGroup("");
         setPermissions(ACCESSIBLE_FOR_ALL_GROUPS);
       }
@@ -177,14 +180,17 @@ export default function CreateNewFilterDrawer({
             })
             .finally(() => {
               if (selectedFilterData) {
-                const filterSelected = filterListAndCount?.find(
+                const filterSelected = filterList?.find(
                   (filter) => filter.id === selectedFilterData?.id
                 );
                 if (selectedFilterData?.id === selectedFilter?.id) {
-                  dispatch(fetchServiceTaskList(resData));
+                  dispatch(fetchServiceTaskList(resData,null,firstResult));
                 } else {
                   dispatch(setSelectedBPMFilter(filterSelected));
                 }
+                toast.success(t("Changes Applied Successfully"));
+              }else{
+                toast.success(t("Filter Created Successfully"));
               }
               dispatch(setBPMFilterLoader(false));
             });
@@ -209,7 +215,6 @@ export default function CreateNewFilterDrawer({
     setSpecificUserGroup("");
     setInputValues([{ name: "", label: "" }]);
   };
-
   const handleSubmit = () => {
     let users = [];
     let roles = [];
@@ -229,6 +234,9 @@ export default function CreateNewFilterDrawer({
       roles.push(identifierId);
     }
 
+    const applicationIdExists = variables.some((variable) => variable.name === 'applicationId');
+    const formNameExists = variables.some((variable) => variable.name === 'formName');
+
     const data = {
       name: filterName,
       criteria: {
@@ -240,7 +248,11 @@ export default function CreateNewFilterDrawer({
       properties: {
         showUndefinedVariable: showUndefinedVariable,
       },
-      variables: variables,
+      variables: [
+        ...variables,
+        ...(applicationIdExists ? [] : [{ name: 'applicationId', label: 'Application Id' }]),
+        ...(formNameExists ? [] : [{ name: 'formName', label: 'Form Name' }]),
+      ],
       users: users,
       roles: roles,
       taskVisibleAttributes: { ...checkboxes },
@@ -262,14 +274,33 @@ export default function CreateNewFilterDrawer({
     submitFunction
       .then(() => successCallBack(data))
       .catch((error) => {
+        toast.error(t("Filter Creation Failed"));
         console.error("error", error);
       });
   };
 
   const handleFilterDelete = () => {
     deleteFilters(selectedFilterData?.id)
-      .then(successCallBack)
+      .then(() => {
+        dispatch(fetchFilterList((err, data) => {
+          if (data) {
+            fetchBPMTaskCount(data)
+              .then((res) => {
+                dispatch(setBPMFiltersAndCount(res.data));
+                dispatch(fetchServiceTaskList(data[0],null,firstResult));
+              })
+              .catch((err) => {
+                if (err) {
+                  console.error(err);
+                }
+              });
+          }
+          toast.success(t("Filter Deleted Successfully"));
+        }));
+      })
+
       .catch((error) => {
+        toast.error(t("Filter Creation Failed"));
         console.error("error", error);
       });
   };
@@ -481,7 +512,7 @@ export default function CreateNewFilterDrawer({
             <Translation>{(t) => t("Specific User/ Group")}</Translation>
           </label>{" "}
           <br />
-          {specificUserGroup === SPECIFIC_USER_OR_GROUP  ? (
+          {specificUserGroup === SPECIFIC_USER_OR_GROUP ? (
             <div className="inside-child-container-two d-flex">
               <div className="user-group-divisions d-flex">
                 <div style={{ fontSize: "14px" }}>
@@ -523,17 +554,18 @@ export default function CreateNewFilterDrawer({
         <Divider />
         <div className="m-2">
           <h5 className="font-weight-bold ">
-            <Translation>{(t) => t("Task attribute")}</Translation>{" "}
+            <Translation>{(t) => t("Task Attributes")}</Translation>{" "}
             <i className="fa fa-info-circle"></i>
           </h5>
           <input
+            readOnly
             type="text"
-            className="filter-name-textfeild"
+            className="filter-name-textfeild cursor-pointer"
             onClick={toggleModal}
             placeholder={
               taskAttributesCount === 0
-                ? "Select elements"
-                : taskAttributesCount + " Task attribute selected"
+                ? "Select Elements"
+                : taskAttributesCount + " Task Attributes Selected"
             }
           />
         </div>
@@ -570,7 +602,7 @@ export default function CreateNewFilterDrawer({
               }}
             >
               <Translation>
-                {(t) => t(`${selectedFilterData ? "Edit" : "Create"} Filter`)}
+                {(t) => t(`${selectedFilterData ? "Save" : "Create"} Filter`)}
               </Translation>
             </button>
           </div>
@@ -581,19 +613,15 @@ export default function CreateNewFilterDrawer({
   return (
     <div>
       <React.Fragment key="left">
-        <Button
+        <button
           onClick={() => {
             toggleDrawer();
             clearAllFilters();
           }}
-          style={{
-            fontSize: "15px",
-            cursor: "pointer",
-            textTransform: "capitalize",
-          }}
+          className="btn btn-link text-dark cursor-pointer"
         >
-          <Translation>{(t) => t("Create new filter")}</Translation>
-        </Button>
+          <Translation>{(t) => t("Create New Filter")}</Translation>
+        </button>
         {modalShow && (
           <div>
             <TaskAttributeComponent
@@ -601,7 +629,7 @@ export default function CreateNewFilterDrawer({
               onHide={toggleModal}
               checkboxes={checkboxes}
               setCheckboxes={setCheckboxes}
-              inputValues={inputValues}
+              inputValues={inputValues.filter((e) => e.name !== "applicationId" && e.name !== "formName")}
               setInputValues={setInputValues}
               showUndefinedVariable={showUndefinedVariable}
               setShowUndefinedVariable={setShowUndefinedVariable}

@@ -106,7 +106,6 @@ const ServiceTaskListView = React.memo(() => {
     }));
   };
   // Toggle expand or collapse the TaskVariables of all task
-  
   const toggleAllTaskVariables = () => {
     const newExpandedState = !allTaskVariablesExpanded;
     const updatedExpandedTasks = {};
@@ -129,7 +128,7 @@ const ServiceTaskListView = React.memo(() => {
         <div className="container list-container p-2"
         style={{ maxHeight: "60vh" }}
         >
-          {taskList.map((task, index) => (
+          {taskList?.map((task, index) => (
             <div
               className={`clickable shadow border rounded  ${
                 task?.id === bpmTaskId && "selected"
@@ -137,10 +136,8 @@ const ServiceTaskListView = React.memo(() => {
               key={index}
             >
               <Row className="task-title-container p-2 border-bottom">
-                <Col>
-                  <div className="">
-                    <h4 className="font-weight-bold">{task.name}</h4>
-                  </div>
+                <Col xs={8}>
+                    <h4 className="font-weight-bold">{task.name} - {task?._embedded?.variable?.filter((eachValue) => eachValue.name === "formName")[0]?.value}</h4>
                 </Col>
                 <Col xs={2} className="ml-auto">
                     <div>
@@ -154,13 +151,13 @@ const ServiceTaskListView = React.memo(() => {
               </Row>
               
               <Row className="mt-4 p-2 justify-content-between" style={{ marginBottom: "-2.5rem" }}>
-               {vissibleAttributes.taskVisibleAttributes.applicationId && <Col  xs={2}>
+               {vissibleAttributes?.taskVisibleAttributes?.applicationId && <Col  xs={2}>
                   <div className="col-12">
                     <h6 className="font-weight-light">Application Id</h6>
                     <h6>{task?._embedded?.variable?.filter((eachValue) => eachValue.name === "applicationId")[0]?.value}</h6>
                   </div>
                 </Col>}
-              {vissibleAttributes.taskVisibleAttributes.createdDate &&  <Col xs={2}>
+              {vissibleAttributes?.taskVisibleAttributes?.createdDate &&  <Col xs={2}>
                   <div className="col-12">
                     <h6>Created Date</h6>
                     
@@ -174,7 +171,7 @@ const ServiceTaskListView = React.memo(() => {
                 <Col  xs={6} className="justify-content-between ">
                 <TaskHeaderListView task={task} taskId={task.id} groupView = {false} />
                 </Col>
-              {vissibleAttributes.taskVisibleAttributes.priority &&  <Col xs={1} >
+              {vissibleAttributes?.taskVisibleAttributes?.priority &&  <Col xs={1} >
                   <div className="col-12">
                     <h6 className="font-weight-light">Priority</h6>
                   </div>
@@ -194,7 +191,7 @@ const ServiceTaskListView = React.memo(() => {
                     </h6>
                   </div>
                 </Col>}
-                {task?._embedded?.variable?.length > 1 ?
+                {task?._embedded?.variable?.length > 2 ? 
                   <Col xs={1}>
                     <div
                       className="justify-content-center"
@@ -222,7 +219,7 @@ const ServiceTaskListView = React.memo(() => {
               <hr />
               <Row className="p-2" >
                   {task?._embedded?.variable?.map((eachVariable, index) => {
-                    if ( eachVariable.name !== "applicationId" && selectedTaskVariables[eachVariable.name] === true) {
+                    if ( eachVariable.name !== "applicationId" && eachVariable.name !== "formName" && selectedTaskVariables[eachVariable.name] === true) {
                       return (
                         <Col xs={2} key={index} >
                           <div className="col-12" style={{ wordBreak: "break-all" }}>

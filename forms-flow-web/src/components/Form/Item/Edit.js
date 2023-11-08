@@ -552,9 +552,9 @@ const Edit = React.memo(() => {
             )}
           </Modal.Body>
           <Modal.Footer>
-            <Button variant="secondary" onClick={handleClose}>
-              {t("Cancel")}
-            </Button>
+            <button type="button" className="btn btn-link text-dark" onClick={handleClose}>
+            {t("Cancel")}
+            </button>
             <Button variant="primary" onClick={() => handleSave()}>
               {t("Save Changes")}
             </Button>

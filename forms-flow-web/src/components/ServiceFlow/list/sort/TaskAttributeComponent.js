@@ -20,19 +20,6 @@ function TaskAttributeComponent({
     setCheckboxes({ ...checkboxes, [name]: checked });
   };
 
-  const handleCancel = () => {
-    onHide();
-    setCheckboxes({
-      applicationId: false,
-      assignee: false,
-      taskTitle: false,
-      createdDate: false,
-      dueDate: false,
-      followUp: false,
-      priority: false,
-      groups: false,
-    });
-  };
   const handleVariableInputChange = (index, field, value) => {
     setInputValues((prevInputValues) => {
       const updatedValues = [...prevInputValues];
@@ -168,7 +155,7 @@ function TaskAttributeComponent({
             return (
               <Row key={index} className="align-items-center mt-1">
                 <Col>
-                  <Form.Group >
+                  <Form.Group>
                     <Form.Label>Name</Form.Label>
                     <Form.Control
                       type="text"
@@ -207,7 +194,9 @@ function TaskAttributeComponent({
                       Add
                     </button>
                   ) : (
-                    <i className="fa fa-minus-circle fa-lg" aria-hidden="true"
+                    <i
+                      className="fa fa-minus-circle fa-lg"
+                      aria-hidden="true"
                       onClick={() => handleRowDelete(index)}
                     />
                   )}
@@ -218,7 +207,7 @@ function TaskAttributeComponent({
         </Form>
       </Modal.Body>
       <Modal.Footer>
-        <button className="btn btn-secondary" onClick={handleCancel}>
+        <button className="btn btn-secondary" onClick={() => onHide()}>
           Cancel
         </button>
         <button className="btn btn-primary" onClick={onHide}>

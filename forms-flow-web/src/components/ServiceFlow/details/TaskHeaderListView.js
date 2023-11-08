@@ -216,7 +216,7 @@ const TaskHeaderListView = React.memo(({task,taskId,groupView = true}) => {
       />
 
       <Row>
-      {vissibleAttributes.taskVisibleAttributes.dueDate &&  <Col xs={3} className="px-0">
+      {vissibleAttributes?.taskVisibleAttributes?.followUp &&  <Col xs={3} className="px-0">
           <div className="tab-width">
             <div>
               <h6 className="font-weight-light">Follow-up Date</h6>
@@ -251,7 +251,8 @@ const TaskHeaderListView = React.memo(({task,taskId,groupView = true}) => {
             </div>
           </div>
         </Col>}
-        <Col xs={3}>
+        {
+          vissibleAttributes?.taskVisibleAttributes?.dueDate &&  <Col xs={3}>
           <div className="tab-width">
             <div>
               <h6 className="font-weight-light">Due Date</h6>
@@ -285,7 +286,9 @@ const TaskHeaderListView = React.memo(({task,taskId,groupView = true}) => {
             </div>
           </div>
         </Col>
-      {vissibleAttributes.taskVisibleAttributes.assignee &&  <Col xs={3}>
+        }
+       
+      {vissibleAttributes?.taskVisibleAttributes?.assignee &&  <Col xs={3}>
           <div className="tab-width">
             <div>
               <h6 className="font-weight-light">Assignee</h6>

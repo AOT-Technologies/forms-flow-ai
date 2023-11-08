@@ -87,7 +87,7 @@ const ViewApplication = React.memo(() => {
   return (
     <div className="container">
       <div className="main-header">
-        <Link title={t("go back")} to={`${redirectUrl}application`}>
+        <Link title={t("Back to Submissions")} to={`${redirectUrl}application`}>
           <i className="fa fa-chevron-left fa-lg" />
         </Link>
         <h3 className="ml-3 text-truncate" style={{height:"45px"}}>

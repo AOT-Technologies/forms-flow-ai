@@ -8,6 +8,7 @@ import { fetchUserListWithSearch } from "../../../../apiManager/services/bpmTask
 import { UserSearchFilterTypes } from "../../constants/userSearchFilterTypes";
 import { setBPMFilterSearchParams } from "../../../../actions/bpmTaskActions";
 import { getISODateTime } from "../../../../apiManager/services/formatterService";
+import { MAX_VARIABLES_PER_ROW } from "../../constants/taskConstants";
 const TaskFilterListViewComponent = React.memo(
   ({ setDisplayFilter, setFilterParams, filterParams }) => {
     const vissibleAttributes = useSelector(
@@ -17,7 +18,9 @@ const TaskFilterListViewComponent = React.memo(
     const [candidateGroup, setCandidateGroup] = useState(
       filterParams.candidateGroup || ""
     );
-    const [processVariables, setProcessVariables] = useState(filterParams?.processVariables || []);
+    const [processVariables, setProcessVariables] = useState(
+      filterParams?.processVariables || []
+    );
     const [dueStartDate, setDueStartDate] = useState(
       filterParams.dueStartDate || null
     );
@@ -41,7 +44,6 @@ const TaskFilterListViewComponent = React.memo(
     const dispatch = useDispatch();
     const [filterCount, setFilterCount] = useState(0);
     const [assigneeOptions, setAssigneeOptions] = useState([]);
-
     const handleClick = (e) => {
       if (createSearchNode?.current?.contains(e.target)) {
         return;
@@ -155,7 +157,7 @@ const TaskFilterListViewComponent = React.memo(
       setFilterParams({});
       dispatch(setBPMFilterSearchParams({}));
     };
-    
+
     const DatepickerCustomInput = React.forwardRef(
       ({ value, onClick, placeholder }, ref) => {
         return (
@@ -188,7 +190,7 @@ const TaskFilterListViewComponent = React.memo(
               const userListOptions = res.map((user) => {
                 return {
                   value: user.username,
-                  label: `${user.firstName} ${user.lastName} (${user.username})`,
+                  label: `${user.firstName ? user.firstName : ""} ${user.lastName ? user.lastName : ""} (${user.username})`,
                 };
               });
               setAssigneeOptions(userListOptions);
@@ -228,7 +230,7 @@ const TaskFilterListViewComponent = React.memo(
           <div className="m-4 px-2">
             <Row className="mt-2">
               {vissibleAttributes.taskVisibleAttributes?.assignee && (
-                <Col>
+                <Col xs={6}>
                   <label>Assignee</label>
                   <select
                     value={assignee}
@@ -245,7 +247,7 @@ const TaskFilterListViewComponent = React.memo(
                 </Col>
               )}
               {vissibleAttributes.taskVisibleAttributes?.priority && (
-                <Col>
+                <Col xs={6}>
                   <label>Priority</label>
                   <input
                     className="form-control"
@@ -256,15 +258,19 @@ const TaskFilterListViewComponent = React.memo(
                 </Col>
               )}
             </Row>
-            <Row className="mt-2">
-              {vissibleAttributes.variables?.map((e, i) => {
+            {vissibleAttributes.variables
+              ?.reduce((rows, e, i) => {
                 const variable = processVariables?.find(
                   (variable) => variable.name === e.name
                 );
 
-                return (
-                  <Col key={i}>
-                    <label>{e.name}</label>
+                if (i % MAX_VARIABLES_PER_ROW === 0) {
+                  rows.push([]);
+                }
+
+                rows[rows.length - 1].push(
+                  <Col  key={i} xs={6}>
+                    <label>{e.label}</label>
                     <input
                       className="form-control"
                       placeholder=""
@@ -276,9 +282,14 @@ const TaskFilterListViewComponent = React.memo(
                     />
                   </Col>
                 );
-              })}
-            </Row>
 
+                return rows;
+              }, [])
+              .map((row, i) => (
+                <Row key={i} className="mt-2">
+                  {row}
+                </Row>
+              ))}
             <Row className="mt-2 ">
               {vissibleAttributes.taskVisibleAttributes?.dueDate && (
                 <Col xs={6}>

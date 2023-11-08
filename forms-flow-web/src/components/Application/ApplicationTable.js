@@ -87,7 +87,7 @@ const ApplicationTable = () => {
 
   const  viewSubmissionDetails = (data) => (
     <button className="btn btn-link mt-2" onClick={() => submissionDetails(data)}>
-      <Translation>{(t) => t(" View Details")}</Translation>{" "}
+      <Translation>{(t) => t("View Details")}</Translation>{" "}
     </button>
   );
 

@@ -56,6 +56,7 @@ export default React.memo(
     const redirectUrl = MULTITENANCY_ENABLED ? `/tenant/${tenantKey}/` : "/";
     const [processName,setProcessName] = useState(true);
     const bpmPropertyInput = document.getElementById("bio-properties-panel-name")?.value;
+  
     const containerRef = useCallback((node) => {
       if (node !== null) {
         initializeModeler();
@@ -93,7 +94,7 @@ export default React.memo(
         if (bpmPropertyInput) {
           setProcessName(false);
         }
-    }, [bpmPropertyInput]);
+    }, [!bpmPropertyInput]);
 
     useEffect(() => {
       if (PUBLIC_WORKFLOW_ENABLED) {
@@ -313,10 +314,10 @@ export default React.memo(
            <Button variant="light" onClick={cancel}>
             {t("Cancel")}
           </Button>
-          <Button variant="outline-dark" className="ml-3" onClick={handleExport} disabled={processName}>
+          <Button variant="outline-dark" className="ml-3" onClick={handleExport} disabled={processName || !bpmPropertyInput}>
             {t("Export")}
           </Button>
-          <Button className="ml-3" onClick={deployProcess} disabled={processName}>{t("Deploy")}</Button>
+          <Button className="ml-3" onClick={deployProcess} disabled={processName || !bpmPropertyInput}>{t("Deploy")}</Button>
         </div>
         <div className="bpmn-main-container">
           <div className="bpmn-viewer-container">

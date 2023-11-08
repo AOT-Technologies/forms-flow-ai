@@ -91,7 +91,9 @@ export default React.memo(() => {
               <div className="card-content">
                 <img
                   className="card-img-top"
-                  src="../../../../forms-flow-web-root-config/public/assets/Images/undraw_export_files_re_99ar.svg"
+                  src={
+                    require("./Assets/undraw_export_files_re_99ar.svg").default
+                  }
                   width="100"
                   height="30"
                   alt="process"

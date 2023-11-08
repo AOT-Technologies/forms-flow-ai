@@ -1,7 +1,7 @@
 package org.camunda.bpm.extension.keycloak.sso;
 
-import java.util.Collections;
 import org.camunda.bpm.webapp.impl.security.auth.ContainerBasedAuthenticationFilter;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingClass;
 import org.springframework.boot.autoconfigure.security.SecurityProperties;
 import org.springframework.boot.web.servlet.FilterRegistrationBean;
@@ -11,12 +11,13 @@ import org.springframework.core.Ordered;
 import org.springframework.core.annotation.Order;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.web.SecurityFilterChain;
-import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 import org.springframework.web.context.request.RequestContextListener;
 import org.springframework.web.filter.ForwardedHeaderFilter;
-import org.springframework.beans.factory.annotation.Autowired;
+
+import java.util.Collections;
 
 import static org.springframework.security.config.Customizer.withDefaults;
+import static org.springframework.security.web.util.matcher.AntPathRequestMatcher.antMatcher;
 
 /**
  * OAuth2 Login Security Config.
@@ -33,21 +34,20 @@ public class OAuth2LoginSecurityConfig  {
 
 	@Bean
 	public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
-		http.csrf(csrf -> csrf.ignoringRequestMatchers("/api/**","/forms-flow-bpm-socket/**","/engine-rest/**","/engine-rest-ext/**","/camunda/engine-rest/**", "/camunda/engine-rest-ext/**", "/camunda/form-builder/**", "/actuator/**"))
+		http.csrf(csrf -> csrf.ignoringRequestMatchers(antMatcher("/api/**"), antMatcher("/forms-flow-bpm-socket/**"), antMatcher("/engine-rest/**"), antMatcher("/engine-rest-ext/**"), antMatcher("/camunda/engine-rest/**"), antMatcher("/camunda/engine-rest-ext/**"), antMatcher("/camunda/form-builder/**"), antMatcher("/actuator/**")))
 				.authorizeHttpRequests(
 						auth -> auth
-								.requestMatchers("/app/**").authenticated()
+								.requestMatchers(antMatcher("/app/**")).authenticated()
 								.anyRequest().permitAll()
 				)
 				.oauth2Login(withDefaults())
 				.oauth2Client(withDefaults())
 				.logout(logout -> logout
-						.logoutRequestMatcher(new AntPathRequestMatcher("/app/**/logout"))
+						.logoutRequestMatcher(antMatcher("/app/**/logout"))
 						.logoutSuccessHandler(keycloakLogoutHandler)
 				);
 		return http.build();
 	}
-
 
 	@SuppressWarnings({ "rawtypes", "unchecked" })
 	@Bean

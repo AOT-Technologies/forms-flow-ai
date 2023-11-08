@@ -1,6 +1,9 @@
 package org.camunda.bpm.extension.keycloak.rest;
 
+import jakarta.inject.Inject;
+import jakarta.ws.rs.HttpMethod;
 import org.camunda.bpm.engine.IdentityService;
+import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.boot.autoconfigure.security.SecurityProperties;
 import org.springframework.boot.web.servlet.FilterRegistrationBean;
@@ -10,17 +13,11 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.core.annotation.Order;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
-
-import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.oauth2.client.OAuth2AuthorizedClientService;
 import org.springframework.security.oauth2.core.DelegatingOAuth2TokenValidator;
 import org.springframework.security.oauth2.core.OAuth2TokenValidator;
 import org.springframework.security.oauth2.jwt.*;
-
-
-
-import jakarta.inject.Inject;
-import jakarta.ws.rs.HttpMethod;
+import org.springframework.security.web.SecurityFilterChain;
 
 
 /**
@@ -28,6 +25,7 @@ import jakarta.ws.rs.HttpMethod;
  * Optional Security Configuration for Camunda REST Api.
  */
 @Configuration
+@EnableAutoConfiguration
 @EnableWebSecurity
 @Order(SecurityProperties.BASIC_AUTH_ORDER - 20)
 @ConditionalOnProperty(name = "rest.security.enabled", havingValue = "true", matchIfMissing = true)
@@ -53,7 +51,7 @@ public class RestApiSecurityConfig {
 	 */
 
 	@Bean
-    public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
+    public SecurityFilterChain securityFilterChain(HttpSecurity http, JwtDecoder jwtDecoder) throws Exception {
         http
             .authorizeHttpRequests(auth ->
                 auth
@@ -63,7 +61,6 @@ public class RestApiSecurityConfig {
             .csrf(csrf -> csrf.disable());
 
         return http.build();
-	
 
     }
 
@@ -88,7 +85,6 @@ public class RestApiSecurityConfig {
 
 		return jwtDecoder;
 	}
-
 
 	/**
 	 * Registers the REST Api Keycloak Authentication Filter.

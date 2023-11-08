@@ -108,7 +108,7 @@ export default React.memo(() => {
                 onChange={(e) => handleChangeFile(e.target.files[0])}
               />
               <label className="p-2" htmlFor="inputWorkflow">
-                {fileName ? fileName : t("Choose File")}
+                {fileName ? fileName : t("Upload Workflow")}
               </label>
             </div>
           </div>

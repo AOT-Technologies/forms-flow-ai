@@ -325,8 +325,8 @@ const Create = React.memo(() => {
               <div className="mt-3">
                 <div className="d-flex align-items-center cursor-pointer" onClick={handleToggle}>
                   <i className={`fa ${open ? 'fa-chevron-up' : 'fa-chevron-down'} mr-2`}></i>
-                  <span className="text-primary font-weight-bold mr-4">Advanced Options</span>
-                  <hr className="flex-grow-1 ml-2 mr-2" />
+                  <span className="text-primary font-weight-bold mr-4">{t("Advanced Options")}</span>
+                  <hr className="flex-grow-1 ml-2 mr-2"/>
                 </div>
                 <Collapse in={open} className="mt-3">
                   <div id="example-collapse-text">

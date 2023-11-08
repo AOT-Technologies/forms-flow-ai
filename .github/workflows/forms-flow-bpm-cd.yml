@@ -105,10 +105,11 @@ jobs:
       - name: Run ZAP Scan
         run: |
           # Install ZAP (if not already installed)
+          echo "PATH: $PATH"
+          echo "SHELL: $SHELL"
           curl -sL https://github.com/zaproxy/zaproxy/releases/latest/download/ZAP_WEEKLY_Docker.sh | sh
           docker pull owasp/zap2docker-stable
           docker run --name zap-scan -u zap -v $(pwd):/zap/wrk/:rw --network=host owasp/zap2docker-stable zap-baseline.py -t https://forms-flow-bpm-app2.aot-technologies.com/camunda -J report.json -r report.html
-
       - name: Upload ZAP Reports
         uses: actions/upload-artifact@v2
         with:

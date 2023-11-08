@@ -39,3 +39,5 @@ class FilterSchema(Schema):
     created_by = fields.Str(data_key="createdBy", dump_only=True)
     modified_by = fields.Str(data_key="modifiedBy", dump_only=True)
     task_visible_attributes = fields.Dict(data_key="taskVisibleAttributes")
+    isMyTasksEnabled = fields.Bool(load_only=True)
+    isTasksForCurrentUserGroupsEnabled = fields.Bool(load_only=True)

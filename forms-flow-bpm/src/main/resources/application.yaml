@@ -59,7 +59,9 @@ camunda.bpm:
         form-action 'self';
         frame-ancestors 'none';
         object-src 'none'
-
+  generic-properties:
+    properties:
+      enforceHistoryTimeToLive: false
 
 spring:
   datasource:

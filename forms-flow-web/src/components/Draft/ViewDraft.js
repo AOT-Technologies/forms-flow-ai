@@ -67,12 +67,12 @@ const ViewDraft = React.memo(() => {
   }
 
   return (
-    <div className="container" id="main">
-      <div className="main-header">
-        <Link title={t("Back to Drafts")} to={`${redirectUrl}draft`}>
+    <div className="" id="main">
+      <div className="d-flex align-items-center">
+        <Link title={t("Back to Drafts")} to={`${redirectUrl}draft`} className="mt-1">
           <i className="fa fa-chevron-left fa-lg" />
         </Link>
-        <h3 className="ml-3">
+        <h3 className="">
           <span className="application-head-details">
             <i className="fa fa-list-alt" aria-hidden="true" />
             &nbsp; <Translation>{(t) => t("Drafts")}</Translation> /

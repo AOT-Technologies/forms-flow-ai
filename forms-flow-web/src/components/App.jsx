@@ -11,7 +11,7 @@ import { KEYCLOAK_URL } from "../constants/constants";
 const App = React.memo((props) => {
   const { store, history, publish, subscribe, getKcInstance } = props;
   return (
-    <div>
+    <div className="main-container">
       <Helmet>
         {KEYCLOAK_URL ? <link rel="preconnect" href={KEYCLOAK_URL} /> : null}
       </Helmet>

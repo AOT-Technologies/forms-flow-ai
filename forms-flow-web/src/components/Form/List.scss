@@ -11,6 +11,20 @@
     }
 }
 
+.published-forms-label{
+    color: #2F6846;
+    background: #EAFBE7 0% 0% no-repeat padding-box;
+    border: 1px solid #C6F0C2;
+    border-radius: 7px;
+}
+
+.unpublished-forms-label{
+    background: #EAF5FF 0% 0% no-repeat padding-box;
+    border-radius: 7px;
+    border: 1px solid #B8E1FF;
+    color: #006096;
+}
+
 .custom-grid {
     .col {
         min-height: 50px;
@@ -96,13 +110,20 @@
     display: flex;
     flex-direction: row;
     flex: 50%;
-    flex-wrap: wrap;
+flex-wrap: wrap;
 }
 
 .btn-left {
     margin: 10px;
-    height: 30px;
-    white-space: nowrap;
+    height: 30px;white-space: nowrap;
+}
+.progress-bar {
+    background-color: #ff0000ab;
+}
+.fileupload-fail {
+    color: #f85757;
+    float: right;
+    font-weight: normal
 }
 
 .progress-bar {
@@ -125,8 +146,7 @@
 
     .flex-item-right,
     .flex-item-left {
-        flex: 100%;
-        justify-content: flex-start;
+        flex: 100%;justify-content: flex-start;
     }
 }
 .page-item .page-link {
@@ -135,3 +155,16 @@
 .page-item.active .page-link {
     color: var(--color-white) !important;
 }
+
+/* Style the dots */
+.dots {
+    cursor: pointer;
+    user-select: none;
+    font-size: 24px;
+  }
+
+ 
+
+ .custom-button {
+    width: auto;
+  }

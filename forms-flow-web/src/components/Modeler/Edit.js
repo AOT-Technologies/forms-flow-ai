@@ -7,8 +7,7 @@ import { useDispatch } from 'react-redux';
 import {
     fetchDiagram,
   } from "../../apiManager/services/processServices";
-import { useTranslation } from "react-i18next";
-import Loading from '../../containers/Loading';
+ import Loading from '../../containers/Loading';
 import { setProcessDiagramXML } from '../../actions/processActions';
 const EditWorkflow = () => {
     //select typeOf workflow form useSelector / redux
@@ -16,8 +15,7 @@ const EditWorkflow = () => {
     const {processId, type} = useParams(); 
     const dispatch = useDispatch();
     const [diagramLoading, setDiagramLoading] = useState(false);
-    const { t } = useTranslation();
-    const diagramXML = useSelector((state) => state.process.processDiagramXML);
+     const diagramXML = useSelector((state) => state.process.processDiagramXML);
  
 
     useEffect(()=>{
@@ -39,21 +37,10 @@ const EditWorkflow = () => {
     }
   return (
     <div>
-        <div className="flex-item-left">
-          <div style={{ display: "flex" }}>
-            <h3 className="task-head" style={{ marginTop: "3px" }}>
-              <i className="fa fa-cogs" aria-hidden="true" />
-            </h3>
-            <h3 className="task-head">
-              {" "}
-              <span className="forms-text" style={{ marginLeft: "1px" }}>
-                {t("Processes")}
-              </span>
-            </h3>
-          </div>
-        </div>
+ 
          {type === "bpmn" ? (
             <BpmnEditor
+            mode="Edit"
               processKey={processId}
               tenant={tenantKey}
               isNewDiagram={false}
@@ -61,6 +48,7 @@ const EditWorkflow = () => {
             />
           ) : (
             <DmnEditor
+            mode="Edit"
               processKey={processId}
               tenant={tenantKey}
               isNewDiagram={false}

@@ -314,7 +314,7 @@ const Dashboard = React.memo(() => {
 
           <div className="dashboard d-flex">
             {submissionsList.length ? (
-              <div className="">
+              <div className="col-12 px-0">
                 {!metricsDateRangeLoader && (
                   <ApplicationCounter
                     className="dashboard-card"

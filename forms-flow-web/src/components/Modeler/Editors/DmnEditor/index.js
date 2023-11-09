@@ -255,38 +255,44 @@ export default React.memo(({ processKey, tenant, isNewDiagram, mode}) => {
   const cancel = () => {
     dispatch(push(`${redirectUrl}processes`));
   };
+
+  const handleHelp = () => {
+    window.open("https://camunda.com/dmn/");
+  };
   return (
     <>
       <div className="d-flex align-items-center justify-content-between">
-      <div  >
+        <div>
           <h3 className="d-flex align-items-center font-weight-bold">
-              <i className="fa fa-cogs mr-2" aria-hidden="true" />
-              <span>
-                {t(`${mode} Processes`)}
-              </span>
-            </h3>
+            <i className="fa fa-cogs mr-2" aria-hidden="true" />
+            <span>{t(`${mode} Processes`)}</span>
+          </h3>
         </div>
-      <div className="task-head d-flex justify-content-end mb-2">
-        {MULTITENANCY_ENABLED && PUBLIC_WORKFLOW_ENABLED ? (
-          <label className="deploy-checkbox">
-            <input
-              type="checkbox"
-              checked={applyAllTenants}
-              onClick={handleApplyAllTenants}
-            />{" "}
-            Apply for all tenants
-          </label>
-        ) : null}
-        <Button variant="light" onClick={cancel}>
-          {t("Cancel")}
-        </Button>
-        <Button variant="outline-dark" className="ml-3" onClick={handleExport}>
-          {t("Export")}
-        </Button>
-        <Button className="ml-3" onClick={deployProcess}>
-          {t("Deploy")}
-        </Button>
-      </div>
+        <div className="task-head d-flex justify-content-end mb-2">
+          {MULTITENANCY_ENABLED && PUBLIC_WORKFLOW_ENABLED ? (
+            <label className="deploy-checkbox">
+              <input
+                type="checkbox"
+                checked={applyAllTenants}
+                onClick={handleApplyAllTenants}
+              />{" "}
+              Apply for all tenants
+            </label>
+          ) : null}
+          <Button variant="light" onClick={cancel}>
+            {t("Cancel")}
+          </Button>
+          <Button
+            variant="outline-dark"
+            className="ml-3"
+            onClick={handleExport}
+          >
+            {t("Export")}
+          </Button>
+          <Button className="ml-3" onClick={deployProcess}>
+            {t("Deploy")}
+          </Button>
+        </div>
       </div>
       <div className="bpmn-main-container">
         <div className="bpmn-viewer-container">
@@ -330,6 +336,11 @@ export default React.memo(({ processKey, tenant, isNewDiagram, mode}) => {
           </div>
         </div>
         <div className="properties-panel-parent" id="js-properties-panel"></div>
+      </div>
+      <div className="d-flex justify-content-end">
+        <Button variant="info" className=" mr-2" onClick={handleHelp}>
+          {t("Help")}
+        </Button>
       </div>
     </>
   );

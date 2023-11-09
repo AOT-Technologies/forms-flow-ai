@@ -18,6 +18,7 @@ import org.springframework.security.oauth2.core.DelegatingOAuth2TokenValidator;
 import org.springframework.security.oauth2.core.OAuth2TokenValidator;
 import org.springframework.security.oauth2.jwt.*;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 
 
 /**
@@ -52,13 +53,12 @@ public class RestApiSecurityConfig {
 
 	@Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http, JwtDecoder jwtDecoder) throws Exception {
-        http
+        http.csrf(csrf -> csrf.disable())
             .authorizeHttpRequests(auth ->
-                auth
-                    .requestMatchers(HttpMethod.OPTIONS).permitAll() // Allow HTTP OPTIONS without a JWT token
-                    .anyRequest().authenticated() // Require JWT token for all other requests
-            )
-            .csrf(csrf -> csrf.disable());
+                auth.requestMatchers(AntPathRequestMatcher.antMatcher(HttpMethod.OPTIONS)).permitAll()   // Allow HTTP OPTIONS without a JWT token
+                        .requestMatchers(AntPathRequestMatcher.antMatcher("/engine-rest/**")).authenticated()
+                        .requestMatchers(AntPathRequestMatcher.antMatcher("/engine-rest-ext/**")).authenticated()
+                    .anyRequest().authenticated()); // Require JWT token for all other requests
 
         return http.build();
 

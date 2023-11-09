@@ -551,7 +551,11 @@ def factory_auth(
     ).save()
 
 
-def get_filter_payload(name: str = "Test Task", roles: list = [], users: list = []):
+def get_filter_payload(
+    name: str = "Test Task",
+    roles: list = [],
+    users: list = [],
+):
     """Return filter create payload."""
     return {
         "name": name,
@@ -561,6 +565,16 @@ def get_filter_payload(name: str = "Test Task", roles: list = [], users: list = 
         "properties": {"priority": 10},
         "users": users,
         "roles": roles,
+        "taskVisibleAttributes": {
+            "applicationId": True,
+            "assignee": True,
+            "taskTitle": True,
+            "createdDate": True,
+            "dueDate": True,
+            "followUp": True,
+            "priority": True,
+            "groups": True,
+        },
     }
 
 

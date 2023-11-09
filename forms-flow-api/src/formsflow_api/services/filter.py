@@ -23,12 +23,24 @@ class FilterService:
         return filter_schema.dump(filters, many=True)
 
     @staticmethod
+    def update_payload(filter_payload):
+        """Update filter payload."""
+        if filter_payload.get("isMyTasksEnabled", False):
+            filter_payload["criteria"]["assigneeExpression"] = "${ currentUser() }"
+        if filter_payload.get("isTasksForCurrentUserGroupsEnabled", False):
+            filter_payload["criteria"][
+                "candidateGroupsExpression"
+            ] = "${currentUserGroups()}"
+        return filter_payload
+
+    @staticmethod
     @user_context
     def create_filter(filter_payload, **kwargs):
         """Create Filter."""
         user: UserContext = kwargs["user"]
         filter_payload["tenant"] = user.tenant_key
         filter_payload["created_by"] = user.user_name
+        filter_payload = FilterService.update_payload(filter_payload)
         filter_data = Filter.create_filter_from_dict(filter_payload)
         return filter_schema.dump(filter_data)
 
@@ -102,6 +114,7 @@ class FilterService:
         if filter_result:
             if tenant_key is not None and filter_result.tenant != tenant_key:
                 raise PermissionError("Tenant authentication failed.")
+            filter_data = FilterService.update_payload(filter_data)
             filter_result.update(filter_data)
             return filter_result
         raise BusinessException(BusinessErrorCode.FILTER_NOT_FOUND)

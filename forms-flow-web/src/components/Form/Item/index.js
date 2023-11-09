@@ -54,12 +54,8 @@ const Item = React.memo(() => {
       dispatch(getForm("form", formId,(err,res)=>{
         if(err){
           dispatch(setFormAuthVerifyLoading(false));
-        }else{          
-          if(!userRoles.includes(STAFF_REVIEWER) && userRoles.includes(CLIENT)){
-            formAuthVerify(res.parentFormId || res._id);
-          }else{
-            dispatch(setFormAuthVerifyLoading(false));
-          }
+        }else{    
+          formAuthVerify(res.parentFormId || res._id);
         }
       }));
     } else {

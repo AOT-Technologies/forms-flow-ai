@@ -16,13 +16,14 @@ import org.camunda.bpm.extension.hooks.listeners.data.FormElement;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.http.HttpMethod;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.stereotype.Component;
 
 import javax.annotation.Resource;
-import javax.inject.Named;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -36,7 +37,8 @@ import static org.camunda.bpm.extension.commons.utils.VariableConstants.FORM_URL
  * BPM Form Data Pipeline Listener.
  * This class copies all the CAM variables into form document data.
  */
-@Named("BPMFormDataPipelineListener")
+@Qualifier("BPMFormDataPipelineListener")
+@Component
 public class BPMFormDataPipelineListener extends BaseListener implements TaskListener, ExecutionListener {
 
     private Logger LOGGER = LoggerFactory.getLogger(BPMFormDataPipelineListener.class);

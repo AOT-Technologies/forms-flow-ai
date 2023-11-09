@@ -1,8 +1,6 @@
 import React, { useState } from "react";
-import TableCell from "@material-ui/core/TableCell";
-import TableRow from "@material-ui/core/TableRow";
-import Checkbox from "@material-ui/core/Checkbox";
-import Button from "@material-ui/core/Button";
+import Form from "react-bootstrap/Form";
+import Button from "react-bootstrap/Button";
 const ViewAndEditTaskvariable = ({
   item,
   // eslint-disable-next-line no-unused-vars
@@ -10,7 +8,7 @@ const ViewAndEditTaskvariable = ({
   deleteTaskVariable,
   editTaskVariable,
 }) => {
-  const [taskLabel, setTaskLable] = useState(item.label);
+  const [taskLabel, setTaskLabel] = useState(item.label);
   const [showInList, setShowInList] = useState(item.showInList);
   const [enableEditTaskVariable, setEnableEditTaskVariable] = useState(true);
 
@@ -26,48 +24,49 @@ const ViewAndEditTaskvariable = ({
   };
   return (
     <>
-      <TableRow>
-        <TableCell scope="row">
+      <tr> 
+        <td className="p-3">
           <input
             type="text"
             disabled
             value={item.key}
             className="form-control"
+            title="Select form field"
           />
-        </TableCell>
-        <TableCell align="left">
+        </td>
+        <td className="p-3">
           <input
             type="text"
             disabled={enableEditTaskVariable}
             value={taskLabel}
             onChange={(e) => {
-              setTaskLable(e.target.value);
+              setTaskLabel(e.target.value);
             }}
             className="form-control"
+            aria-labelledby="Task label"
           />
-        </TableCell>
-        <TableCell align="left">
-          <Checkbox
+        </td>
+        <td className="p-3">
+          <Form.Check
+            className="" 
             disabled={enableEditTaskVariable}
             checked={showInList}
             onChange={() => {
               setShowInList(!showInList);
             }}
-            color="primary"
+            type="checkbox"
           />
-        </TableCell>
-        <TableCell align="right">
+        </td>
+        <td className="text-right p-3" >
           {!enableEditTaskVariable ? (
             <Button
-              variant="outlined"
-              color="primary"
-              size="small"
+              variant="outline-primary"
+              size="sm"
               onClick={() => {
                 saveData(item);
               }}
-              startIcon={<i className="fa fa-check"></i>}
             >
-              Save
+              <i className="fa fa-check"></i> Save
             </Button>
           ) : (
             <div>
@@ -84,12 +83,12 @@ const ViewAndEditTaskvariable = ({
                 onClick={() => {
                   setEnableEditTaskVariable(false);
                 }}
-                className=" btn btn-primary fa fa-edit"
+                className="btn btn-primary fa fa-edit"
               ></i>
             </div>
           )}
-        </TableCell>
-      </TableRow>
+        </td>
+      </tr>
     </>
   );
 };

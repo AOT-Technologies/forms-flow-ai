@@ -1,6 +1,7 @@
 """Test suite for application API public endpoint."""
 from pytest import mark
 
+from formsflow_api.constants import BusinessErrorCode
 from tests.utilities.base_test import (
     get_application_create_payload,
     get_form_request_anonymous_payload,
@@ -40,12 +41,13 @@ class TestApplicationAnonymousResourcesByIds:
         )
         assert response.status_code == 400
         assert response.json == {
-            "type": "Bad request error",
-            "message": "Invalid application request passed",
+            "message": BusinessErrorCode.FORM_ID_NOT_FOUND.message,
+            "code": BusinessErrorCode.FORM_ID_NOT_FOUND.name,
+            "details": [],
         }
 
     def test_application_unauthorized_post(self, app, client, session, jwt):
-        """Assert that public API /application when passed with valid payload returns 401 status code when the form is not anonymos."""
+        """Assert that public API /application when passed with valid payload returns 403 status code when the form is not anonymos."""
         token = get_token(jwt)
         headers = {
             "Authorization": f"Bearer {token}",
@@ -59,14 +61,15 @@ class TestApplicationAnonymousResourcesByIds:
         response = client.post(
             "/public/application/create", json=get_application_create_payload(form_id)
         )
-        assert response.status_code == 401
+        assert response.status_code == 403
         assert response.json == {
-            "type": "Authorization error",
-            "message": "Permission denied",
+            "message": BusinessErrorCode.PERMISSION_DENIED.message,
+            "code": BusinessErrorCode.PERMISSION_DENIED.code,
+            "details": [],
         }
 
     def test_application_inactive_post(self, app, client, session, jwt):
-        """Assert that public API /application when passed with valid payload returns 401 status code when the form is anonymous but Inactive."""
+        """Assert that public API /application when passed with valid payload returns 403 status code when the form is anonymous but Inactive."""
         token = get_token(jwt)
         headers = {
             "Authorization": f"Bearer {token}",
@@ -80,10 +83,11 @@ class TestApplicationAnonymousResourcesByIds:
         response = client.post(
             "/public/application/create", json=get_application_create_payload(form_id)
         )
-        assert response.status_code == 401
+        assert response.status_code == 403
         assert response.json == {
-            "type": "Authorization error",
-            "message": "Permission denied",
+            "message": BusinessErrorCode.PERMISSION_DENIED.message,
+            "code": BusinessErrorCode.PERMISSION_DENIED.code,
+            "details": [],
         }
 
 
@@ -112,6 +116,7 @@ class TestAnonymousFormById:
         response = client.get("/public/form/2ddse3")
         assert response.status_code == 400
         assert response.json == {
-            "type": "Bad request error",
-            "message": "Invalid application request passed",
+            "message": BusinessErrorCode.FORM_ID_NOT_FOUND.message,
+            "code": BusinessErrorCode.FORM_ID_NOT_FOUND.code,
+            "details": [],
         }

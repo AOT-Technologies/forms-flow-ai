@@ -39,7 +39,7 @@ const HistoryList = React.memo((props) => {
     return (
       <Nodata
         text={
-          <Translation>{(t) => t("No Application History found")}</Translation>
+          <Translation>{(t) => t("No Submission History found")}</Translation>
         }
         className={"div-no-application-list text-center"}
       />
@@ -73,7 +73,7 @@ const HistoryList = React.memo((props) => {
           <div className="main-header">
             <h3 className="task-head">
               <i className="fa fa-list" aria-hidden="true" />
-              &nbsp;<Translation>{(t) => t("Application History")}</Translation>
+              &nbsp;<Translation>{(t) => t("Submission History")}</Translation>
             </h3>
           </div>
           <br />
@@ -99,7 +99,7 @@ const HistoryList = React.memo((props) => {
   ) : (
     <Nodata
       text={
-        <Translation>{(t) => t("No Application History found")}</Translation>
+        <Translation>{(t) => t("No Submission History found")}</Translation>
       }
       className={"div-no-application-list text-center"}
     />

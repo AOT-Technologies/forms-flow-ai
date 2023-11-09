@@ -1,29 +1,16 @@
 import React, { useEffect, useState } from "react";
 import utils from "formiojs/utils";
-import FormLabel from "@material-ui/core/FormLabel";
-import Grid from "@material-ui/core/Grid";
-import CardContent from "@material-ui/core/CardContent";
-import Card from "@material-ui/core/Card";
-import Tabs from "@material-ui/core/Tabs";
-import Tab from "@material-ui/core/Tab";
+import { Button, Col, Row, Card, Table } from "react-bootstrap";
 import Select from "react-select";
 import SaveNext from "./SaveNext";
 import ProcessDiagram from "../../BPMN/ProcessDiagramHook";
 import TaskvariableCreate from "./TaskvariableCreate";
 import { useSelector, useDispatch } from "react-redux";
-import Table from "@material-ui/core/Table";
-import TableBody from "@material-ui/core/TableBody";
-import TableCell from "@material-ui/core/TableCell";
-import TableContainer from "@material-ui/core/TableContainer";
-import TableHead from "@material-ui/core/TableHead";
-import TableRow from "@material-ui/core/TableRow";
-import Paper from "@material-ui/core/Paper";
 import {
   setFormProcessesData,
   setWorkflowAssociation,
 } from "../../../actions/processActions";
 import ViewAndEditTaskvariable from "./ViewAndEditTaskvariable";
-import Button from "react-bootstrap/Button";
 import { useTranslation } from "react-i18next";
 import { listProcess } from "../../../apiManager/services/formatterService";
 import { DEFAULT_WORKFLOW } from "../../../constants/taskConstants";
@@ -145,8 +132,8 @@ const WorkFlow = React.memo(
         })
       );
     };
-    const handleChange = (event, newValue) => {
-      setTabValue(newValue);
+    const handleChange = (tabNumber) => {
+      setTabValue(tabNumber);
     };
     const handleListChange = (item) => {
       setModified(true);
@@ -154,156 +141,153 @@ const WorkFlow = React.memo(
     };
 
     return (
-      <Grid
-        container
-        direction="row"
-        justify="flex-start"
-        alignItems="baseline"
-      >
-        {/* <FormControl component="fieldset"> */}
+      <>
+        <div className="container">
+          <Row className="mt-3">
+            <Col xs={12} sm={1}>
+              <Button variant="primary" onClick={handleEditAssociation}>
+                {t("Edit")}
+              </Button>
+            </Col>
+            <Col xs={12} sm={8} />
+            <Col xs={12} sm={3} className="next-btn">
+              <SaveNext
+                handleBack={handleBack}
+                handleNext={handleNext}
+                activeStep={activeStep}
+                steps={steps}
+                modified={modified}
+              />
+            </Col>
+          </Row>
 
-        <Grid item xs={12} sm={1} spacing={3}>
-          <Button variant="primary" onClick={handleEditAssociation}>
-            {t("Edit")}
-          </Button>
-        </Grid>
-        <Grid item xs={12} sm={8} spacing={3} />
-        <Grid item xs={12} sm={3} className="next-btn">
-          <SaveNext
-            handleBack={handleBack}
-            handleNext={handleNext}
-            activeStep={activeStep}
-            steps={steps}
-            modified={modified}
-          />
-        </Grid>
-        <Grid item xs={12} sm={12} spacing={3}>
-          <br />
-        </Grid>
-        <Tabs
-          value={tabValue}
-          indicatorColor="primary"
-          textColor="primary"
-          onChange={handleChange}
-        >
-          <Tab label={t("Workflow Associate")} />
-          <Tab label={t("Task variable")} />
-        </Tabs>
+          <Row className="mt-3">
+            <Col xs={12} sm={12}>
+              <br />
+            </Col>
+          </Row>
 
-        <Grid
-          item
-          xs={12}
-          sm={12}
-          spacing={3}
-          disabled={disableWorkflowAssociation}
-        >
-          {tabValue === 0 ? (
-            <Card variant="outlined" className="card-overflow">
-              <CardContent>
-                <Grid item xs={12} sm={6} spacing={3}>
-                  <span className="fontsize-16">
-                    {t("Please select from one of the following workflows.")}
-                  </span>
-                  <Select
-                    options={processList}
-                    onChange={handleListChange}
-                    value={
-                      processList.length && workflow?.value ? workflow : ""
-                    }
-                    disabled={disableWorkflowAssociation}
+          <Row className="mt-3">
+            <Col xs={12} sm={12}>
+              <ul className="nav nav-tabs">
+                <li className="nav-item ">
+                  <a
+                    className={`nav-link ${tabValue === 0 ? "active workflow-taskVariable" : ""}`}
+                    onClick={() => handleChange(0)}
+                    href="#"
+                  >
+                    {t("WORKFLOW ASSOCIATE")} 
+                  </a>
+                </li>
+                <li className="nav-item">
+                  <a
+                    className={`nav-link ${tabValue === 1 ? "active workflow-taskVariable" : ""}`}
+                    onClick={() => handleChange(1)}
+                    href="#"
+                  >
+                    {t("TASK VARIABLE")} 
+                  </a>
+                </li>
+              </ul>
+            </Col>
+          </Row>
+        </div>
+        {tabValue === 0 ? (
+          <Card className="border-1">
+            <Card.Body>
+              <label htmlFor="select-workflow" className="fontsize-16  col-md-6">
+                {t("Please select from one of the following workflows.")}
+              </label>
+              <Select
+                className="mb-3 col-md-6"
+                options={processList}
+                value={
+                  processList.length && workflow?.value
+                    ? processList.find(
+                        (process) => process.value === workflow.value
+                      )
+                    : null
+                }
+                onChange={(selectedOption) =>
+                  handleListChange(selectedOption)
+                }
+                isDisabled={disableWorkflowAssociation}
+                inputId="select-workflow"
+              />
+              {processList.length && workflow?.value ? (
+                <div className="mt-3">
+                  <ProcessDiagram
+                    processKey={workflow?.value}
+                    tenant={workflow?.tenant}
                   />
-                </Grid>
-                <Grid item xs={12} sm={6} spacing={3} />
-                <br />
-                {processList.length && workflow?.value ? (
-                  <Grid item xs={12} spacing={3}>
-                    <ProcessDiagram
-                      processKey={workflow?.value}
-                      tenant={workflow?.tenant}
-                    />
-                  </Grid>
-                ) : null}
-                {/* </FormControl> */}
-              </CardContent>
-            </Card>
-          ) : (
-            <>
-              <Card variant="outlined" className="card-overflow">
-                <CardContent>
-                  <p> {t("Add form fields to display in task list")} </p>
-                  {selectedTaskVariable.length !== 0 ? (
-                    <Grid item xs={12} md={12} className="mb-2">
-                      <TableContainer
-                        component={Paper}
-                        style={{ maxHeight: "250px" }}
-                      >
-                        <Table stickyHeader aria-label="simple table">
-                          <TableHead>
-                            <TableRow>
-                              <TableCell className="font-weight-bold">
-                                {t("Form field")}
-                              </TableCell>
-                              <TableCell
-                                className="font-weight-bold"
-                                align="left"
-                              >
-                                {t("Label")}
-                              </TableCell>
-                              <TableCell
-                                className="font-weight-bold"
-                                align="left"
-                              >
-                                {t("Show in list")}
-                              </TableCell>
-                              <TableCell
-                                className="font-weight-bold"
-                                align="right"
-                              >
-                                {t("Action")}
-                              </TableCell>
-                            </TableRow>
-                          </TableHead>
-                          <TableBody>
-                            {selectedTaskVariable.map((item, index) => (
-                              <ViewAndEditTaskvariable
-                                key={index}
-                                item={item}
-                                deleteTaskVariable={deleteTaskVariable}
-                                editTaskVariable={editTaskVariable}
-                              />
-                            ))}
-                          </TableBody>
-                        </Table>
-                      </TableContainer>
-                    </Grid>
-                  ) : (
-                    <div className="border p-2 mb-2">
-                      <FormLabel>{t("No task variable selected")}</FormLabel>
-                    </div>
-                  )}
+                </div>
+              ) : null}
+            </Card.Body>
+          </Card>
+        ) : (
+          <>
+            <Card className="mb-3">
+              <Card.Body disabled={disableWorkflowAssociation}>
+                <p >{t("Add form fields to display in task list")}</p>
+                {selectedTaskVariable.length !== 0 ? (
+                  <div className="mb-2">
+                    <Table responsive striped bordered hover>
+                      <thead>
+                        <tr>
+                          <th className="font-weight-bold">
+                            {t("Form field")}
+                          </th>
+                          <th className="font-weight-bold" align="left">
+                            {t("Label")}
+                          </th>
+                          <th className="font-weight-bold" align="left">
+                            {t("Show in list")}
+                          </th>
+                          <th className="font-weight-bold" align="right">
+                            {t("Action")}
+                          </th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        {selectedTaskVariable.map((item, index) => (
+                          <ViewAndEditTaskvariable
+                            key={index}
+                            item={item}
+                            deleteTaskVariable={deleteTaskVariable}
+                            editTaskVariable={editTaskVariable}
+                          />
+                        ))}
+                      </tbody>
+                    </Table>
+                  </div>
+                ) : (
+                  <div className="border p-2 mb-2">
+                    <span>{t("No task variable selected")}</span>
+                  </div>
+                )}
 
-                  {showTaskVaribleCrete && (
-                    <TaskvariableCreate
-                      options={keyOfVariable}
-                      addTaskVariable={addTaskVariable}
-                    />
-                  )}
-                  {keyOfVariable.length !== 0 && (
-                    <Button
-                      onClick={() =>
-                        setShowTaskVaribleCrete(!showTaskVaribleCrete)
-                      }
-                      variant={showTaskVaribleCrete ? "secondary" : "primary"}
-                    >
-                      {showTaskVaribleCrete ? t("Cancel") : t("Add")}
-                    </Button>
-                  )}
-                </CardContent>
-              </Card>
-            </>
-          )}
-        </Grid>
-      </Grid>
+                {showTaskVaribleCrete && (
+                  <TaskvariableCreate
+                    options={keyOfVariable}
+                    addTaskVariable={addTaskVariable}
+                  />
+                )}
+
+                {keyOfVariable.length !== 0 && (
+                  <Button
+                    onClick={() =>
+                      setShowTaskVaribleCrete(!showTaskVaribleCrete)
+                    }
+                    variant={showTaskVaribleCrete ? "secondary" : "primary"}
+                  >
+                    {showTaskVaribleCrete ? t("Cancel") : t("Add")}
+                  </Button>
+                )}
+              </Card.Body>
+            </Card>
+          </>
+        )}
+      </>
     );
   }
 );

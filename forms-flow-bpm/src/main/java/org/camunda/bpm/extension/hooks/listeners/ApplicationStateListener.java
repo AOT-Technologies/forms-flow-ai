@@ -9,6 +9,8 @@ import org.camunda.bpm.extension.commons.utils.RestAPIBuilderConfigProperties;
 import org.camunda.bpm.extension.commons.utils.RestAPIBuilderUtil;
 import org.camunda.bpm.extension.hooks.exceptions.ApplicationServiceException;
 import org.camunda.bpm.extension.hooks.listeners.data.Application;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
@@ -27,6 +29,7 @@ import static org.camunda.bpm.extension.commons.utils.VariableConstants.*;
 @Component
 public class ApplicationStateListener extends BaseListener implements ExecutionListener, TaskListener {
 
+    private static final Logger LOGGER = LoggerFactory.getLogger(ApplicationStateListener.class);
 
     @Autowired
     private HTTPServiceInvoker httpServiceInvoker;

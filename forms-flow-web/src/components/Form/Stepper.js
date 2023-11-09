@@ -1,13 +1,7 @@
 import React, { PureComponent } from "react";
 import { connect } from "react-redux";
-import Stepper from "@material-ui/core/Stepper";
-import Step from "@material-ui/core/Step";
-import StepLabel from "@material-ui/core/StepLabel";
-import Button from "@material-ui/core/Button";
-import Typography from "@material-ui/core/Typography";
-import Grid from "@material-ui/core/Grid";
+import { Container, Row, Col, Button } from 'react-bootstrap';
 import { toast } from "react-toastify";
-
 import Create from "./Create.js";
 import Preview from "./Item/Preview.js";
 import Edit from "./Item/Edit.js";
@@ -30,7 +24,7 @@ import { MULTITENANCY_ENABLED } from "../../constants/constants";
 import { push } from "connected-react-router";
 import WorkFlow from "./Steps/WorkFlow";
 import PreviewStepper from "./Steps/PreviewStepper";
-
+import Stepper from "../../containers/Stepper/index.js";
 import "./stepper.scss";
 import { Link } from "react-router-dom";
 import {
@@ -376,45 +370,30 @@ class StepperPage extends PureComponent {
               <i className="fa fa-chevron-left fa-lg m-3" />
             </Link>
           ) : null}
-          <div className="paper-root">
-            <Grid
-              container
-              direction="row"
-              justify="flex-start"
-              alignItems="baseline"
-            >
-              <Grid item xs={12} spacing={3}>
-                <Stepper
-                  alternativeLabel
-                  nonLinear
-                  activeStep={this.state.activeStep}
-                >
-                  {steps.map((label, index) => {
-                    return (
-                      <Step key={index}>
-                        <StepLabel>{label}</StepLabel>
-                      </Step>
-                    );
-                  })}
-                </Stepper>
+          <Container fluid className="paper-root">
+            <Row>
+              <Col xs={12}>
+                <div className="mb-3">
+                  <Stepper steps={steps} activeStep={this.state.activeStep}/>
+                </div>
                 <div>
                   {this.state.activeStep === steps.length ? (
                     <div>
-                      <Typography>
+                      <h3>
                         <Translation>
                           {(t) => t("All steps completed - you're finished")}
                         </Translation>
-                      </Typography>
+                      </h3>
                       <Button onClick={handleReset}>Reset</Button>
                     </div>
                   ) : (
                     <div>{this.getStepContent(this.state.activeStep)}</div>
                   )}
                 </div>
-              </Grid>
-            </Grid>
-          </div>
-        </div>
+              </Col>
+            </Row>
+          </Container>
+        </div >
       </>
     );
   }
@@ -443,7 +422,7 @@ const mapDispatchToProps = (dispatch) => {
       const tenantIdIn = MULTITENANCY_ENABLED ? tenantKey : null;
       dispatch(
         // eslint-disable-next-line no-unused-vars
-        fetchAllBpmProcesses(tenantIdIn, (err, res) => {
+        fetchAllBpmProcesses({tenant_key:tenantIdIn}, (err, res) => {
           if (err) {
             console.log(err);
           }

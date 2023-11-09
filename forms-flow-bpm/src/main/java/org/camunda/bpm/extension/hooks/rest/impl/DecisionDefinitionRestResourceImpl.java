@@ -1,6 +1,7 @@
 package org.camunda.bpm.extension.hooks.rest.impl;
 
 import org.camunda.bpm.engine.rest.DecisionDefinitionRestService;
+import org.camunda.bpm.engine.rest.dto.CountResultDto;
 import org.camunda.bpm.engine.rest.dto.repository.DecisionDefinitionDiagramDto;
 import org.camunda.bpm.engine.rest.dto.repository.DecisionDefinitionDto;
 import org.camunda.bpm.extension.hooks.rest.DecisionDefinitionRestResource;
@@ -45,5 +46,10 @@ public class DecisionDefinitionRestResourceImpl implements DecisionDefinitionRes
         }
 
         return EntityModel.of(dto, linkTo(methodOn(DecisionDefinitionRestResourceImpl.class).getDecisionDefinitionDmnXml(tenantId, key)).withSelfRel());
+    }
+
+    @Override
+    public CountResultDto getDecisionDefinitionsCount(UriInfo uriInfo){
+        return restService.getDecisionDefinitionsCount(uriInfo);
     }
 }

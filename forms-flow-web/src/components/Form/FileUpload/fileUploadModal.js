@@ -54,7 +54,7 @@ const FileModal = React.memo(({ modalOpen = false, onClose, forms, }) => {
             )}
             {formUploadFailureCounter !== 0 && <span className="fileupload-fail">
               {
-                formUploadFailureCounter !== 0 ? `Failed to upload ${formUploadFailureCounter} ${formUploadFailureCounter > 1 ? "forms...!" : "form...!"}` : ''
+                formUploadFailureCounter !== 0 ? `${t("Failed to upload")} ${formUploadFailureCounter} ${formUploadFailureCounter > 1 ? t("forms...!") : t("form...!")}` : ''
               }
             </span>}
           </div>

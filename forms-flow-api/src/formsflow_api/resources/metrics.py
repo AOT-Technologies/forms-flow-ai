@@ -1,10 +1,9 @@
 """API endpoints for metrics resource."""
 from http import HTTPStatus
 
-from flask import current_app, request
+from flask import request
 from flask_restx import Namespace, Resource, fields
 from formsflow_api_utils.utils import auth, cors_preflight, profiletime
-from marshmallow.exceptions import ValidationError
 
 from formsflow_api.schemas.aggregated_application import (
     ApplicationMetricsRequestSchema,
@@ -103,59 +102,36 @@ class AggregatedApplicationsResource(Resource):
     )
     def get():
         """Get aggregated applications."""
-        try:
-            request_schema = ApplicationMetricsRequestSchema()
-            dict_data = request_schema.load(request.args)
-            from_date = dict_data["from_date"]
-            to_date = dict_data["to_date"]
-            order_by = dict_data.get("order_by")
-            page_no = dict_data.get("page_no")
-            limit = dict_data.get("limit")
-            form_name = dict_data.get("form_name")
-            sort_by = dict_data.get("sort_by")
-            sort_order = dict_data.get("sort_order")
-            if form_name:
-                form_name: str = form_name.replace("%", r"\%").replace("_", r"\_")
-            metrics_schema, metrics_count = AS.get_aggregated_applications(
-                from_date=from_date,
-                to_date=to_date,
-                page_no=page_no,
-                limit=limit,
-                form_name=form_name,
-                sort_by=sort_by,
-                sort_order=sort_order,
-                order_by=order_by,
-            )
-            return (
-                {
-                    "applications": metrics_schema,
-                    "totalCount": metrics_count,
-                    "pageNo": page_no,
-                    "limit": limit,
-                }
-            ), HTTPStatus.OK
-        except ValidationError as metrics_err:
-            response = {
-                "message": (
-                    "Missing from_date or to_date. Invalid"
-                    "request object for application metrics endpoint"
-                ),
-                "errors": "Bad request error",
+        request_schema = ApplicationMetricsRequestSchema()
+        dict_data = request_schema.load(request.args)
+        from_date = dict_data["from_date"]
+        to_date = dict_data["to_date"]
+        order_by = dict_data.get("order_by")
+        page_no = dict_data.get("page_no")
+        limit = dict_data.get("limit")
+        form_name = dict_data.get("form_name")
+        sort_by = dict_data.get("sort_by")
+        sort_order = dict_data.get("sort_order")
+        if form_name:
+            form_name: str = form_name.replace("%", r"\%").replace("_", r"\_")
+        metrics_schema, metrics_count = AS.get_aggregated_applications(
+            from_date=from_date,
+            to_date=to_date,
+            page_no=page_no,
+            limit=limit,
+            form_name=form_name,
+            sort_by=sort_by,
+            sort_order=sort_order,
+            order_by=order_by,
+        )
+        return (
+            {
+                "applications": metrics_schema,
+                "totalCount": metrics_count,
+                "pageNo": page_no,
+                "limit": limit,
             }
-
-            current_app.logger.warning(response)
-            current_app.logger.warning(metrics_err)
-            return response, HTTPStatus.BAD_REQUEST
-
-        except Exception as metrics_err:  # pylint: disable=broad-except
-            response, status = {
-                "message": "Error while getting application metrics",
-                "errors": metrics_err,
-            }, HTTPStatus.INTERNAL_SERVER_ERROR
-
-            current_app.logger.warning(response)
-            current_app.logger.warning(metrics_err)
-            return response, status
+        ), HTTPStatus.OK
 
 
 @cors_preflight("GET,OPTIONS")
@@ -209,72 +185,39 @@ class AggregatedApplicationStatusResource(Resource):
 
         : mapper_id:- Get aggregated application status.
         """
-        try:
-            request_schema = ApplicationMetricsRequestSchema()
-            dict_data = request_schema.load(request.args)
-            from_date = dict_data["from_date"]
-            to_date = dict_data["to_date"]
-            order_by = dict_data.get("order_by")
-            form_type = dict_data.get("form_type")
-            if form_type == "parent":
-                response, status = (
-                    (
-                        {
-                            "applications": AS.get_applications_status_by_parent_form_id(
-                                parent_form_id=form_id,
-                                from_date=from_date,
-                                to_date=to_date,
-                                order_by=order_by,
-                            )
-                        }
-                    ),
-                    HTTPStatus.OK,
-                )
-            else:
-                response, status = (
-                    (
-                        {
-                            "applications": AS.get_applications_status_by_form_id(
-                                form_id=form_id,
-                                from_date=from_date,
-                                to_date=to_date,
-                                order_by=order_by,
-                            )
-                        }
-                    ),
-                    HTTPStatus.OK,
-                )
-
-            return response, status
-        except PermissionError as err:
+        request_schema = ApplicationMetricsRequestSchema()
+        dict_data = request_schema.load(request.args)
+        from_date = dict_data["from_date"]
+        to_date = dict_data["to_date"]
+        order_by = dict_data.get("order_by")
+        form_type = dict_data.get("form_type")
+        if form_type == "parent":
             response, status = (
-                {
-                    "type": "Permission Denied",
-                    "message": f"Access to form id - {form_id} is prohibited.",
-                },
-                HTTPStatus.FORBIDDEN,
-            )
-            current_app.logger.warning(err)
-            return response, status
-        except ValidationError as metrics_err:
-            response, status = {
-                "message": (
-                    "Missing from_date or to_date. Invalid"
-                    "request object for application metrics endpoint"
+                (
+                    {
+                        "applications": AS.get_applications_status_by_parent_form_id(
+                            parent_form_id=form_id,
+                            from_date=from_date,
+                            to_date=to_date,
+                            order_by=order_by,
+                        )
+                    }
                 ),
-                "errors": metrics_err,
-            }, HTTPStatus.BAD_REQUEST
+                HTTPStatus.OK,
+            )
+        else:
+            response, status = (
+                (
+                    {
+                        "applications": AS.get_applications_status_by_form_id(
+                            form_id=form_id,
+                            from_date=from_date,
+                            to_date=to_date,
+                            order_by=order_by,
+                        )
+                    }
+                ),
+                HTTPStatus.OK,
+            )
 
-            current_app.logger.warning(response)
-            current_app.logger.warning(metrics_err)
-            return response, status
-
-        except Exception as metrics_err:  # pylint: disable=broad-except
-            response, status = {
-                "message": "Error while getting application metrics",
-                "errors": metrics_err,
-            }, HTTPStatus.INTERNAL_SERVER_ERROR
-
-            current_app.logger.warning(response)
-            current_app.logger.warning(metrics_err)
-            return response, status
+        return response, status

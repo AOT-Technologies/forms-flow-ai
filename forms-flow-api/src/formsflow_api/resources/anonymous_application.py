@@ -2,14 +2,16 @@
 
 from http import HTTPStatus
 
-from flask import current_app, request
+from flask import request
 from flask_restx import Namespace, Resource, fields
+from formsflow_api_utils.exceptions import BusinessException
 from formsflow_api_utils.utils import (
     ANONYMOUS_USER,
     cors_preflight,
     profiletime,
 )
 
+from formsflow_api.constants import BusinessErrorCode
 from formsflow_api.models import FormProcessMapper
 from formsflow_api.schemas import ApplicationSchema
 from formsflow_api.services import ApplicationService
@@ -62,33 +64,21 @@ class ApplicationAnonymousResourcesByIds(Resource):
     def post():
         """Post a new anonymous application using the request body."""
         application_json = request.get_json()
-        try:
-            application_schema = ApplicationSchema()
-            dict_data = application_schema.load(application_json)
-            mapper = FormProcessMapper.find_form_by_form_id(dict_data["form_id"])
-            is_anonymous = mapper.is_anonymous
-            status = mapper.status
-            if not is_anonymous or status != "active":
-                response, status = {
-                    "type": "Authorization error",
-                    "message": "Permission denied",
-                }, HTTPStatus.UNAUTHORIZED
-                return response, status
+        application_schema = ApplicationSchema()
+        dict_data = application_schema.load(application_json)
+        mapper = FormProcessMapper.find_form_by_form_id(dict_data["form_id"])
+        if mapper is None:
+            raise BusinessException(BusinessErrorCode.FORM_ID_NOT_FOUND)
 
-            dict_data["created_by"] = ANONYMOUS_USER
-            application = ApplicationService.create_application(
-                data=dict_data, token=None
-            )
-            response, status = application_schema.dump(application), HTTPStatus.CREATED
-            return response, status
-        except BaseException as application_err:  # pylint: disable=broad-except
-            response, status = {
-                "type": "Bad request error",
-                "message": "Invalid application request passed",
-            }, HTTPStatus.BAD_REQUEST
-            current_app.logger.warning(response)
-            current_app.logger.warning(application_err)
-            return response, status
+        is_anonymous = mapper.is_anonymous
+        status = mapper.status
+        if not is_anonymous or status != "active":
+            raise BusinessException(BusinessErrorCode.PERMISSION_DENIED)
+
+        dict_data["created_by"] = ANONYMOUS_USER
+        application = ApplicationService.create_application(data=dict_data, token=None)
+        response, status = application_schema.dump(application), HTTPStatus.CREATED
+        return response, status
 
 
 @cors_preflight("GET,OPTIONS")
@@ -105,17 +95,14 @@ class AnonymousResourceById(Resource):
     )
     def get(form_id: str):
         """Get form by form id and return is_anonymous and published status."""
-        try:
-            mapper = FormProcessMapper.find_form_by_form_id(form_id)
-            response, status = {
+        mapper = FormProcessMapper.find_form_by_form_id(form_id)
+        if mapper is None:
+            raise BusinessException(BusinessErrorCode.FORM_ID_NOT_FOUND)
+
+        return (
+            {
                 "is_anonymous": bool(mapper.is_anonymous),
                 "status": mapper.status,
-            }, HTTPStatus.OK
-        except BaseException as application_err:  # pylint: disable=broad-except
-            response, status = {
-                "type": "Bad request error",
-                "message": "Invalid application request passed",
-            }, HTTPStatus.BAD_REQUEST
-            current_app.logger.warning(response)
-            current_app.logger.warning(application_err)
-        return response, status
+            },
+            HTTPStatus.OK,
+        )

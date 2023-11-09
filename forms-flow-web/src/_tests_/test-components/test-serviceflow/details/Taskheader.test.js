@@ -55,7 +55,7 @@ it("Should render the Taskheader component without breaking", () => {
     </Provider>
   );
   expect(screen.getByText("Review Submission")).toBeInTheDocument();
-  expect(screen.getByText("Application ID# 35")).toBeInTheDocument();
+  expect(screen.getByText("Submission ID# 35")).toBeInTheDocument();
   expect(screen.getByText("Set follow-up Date")).toBeInTheDocument();
   expect(screen.getByText("Add groups")).toBeInTheDocument();
   expect(screen.getByText("Claim")).toBeInTheDocument();

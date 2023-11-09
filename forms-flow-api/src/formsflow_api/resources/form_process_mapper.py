@@ -3,9 +3,8 @@
 import json
 from http import HTTPStatus
 
-from flask import current_app, request
+from flask import request
 from flask_restx import Namespace, Resource, fields
-from formsflow_api_utils.exceptions import BusinessException
 from formsflow_api_utils.services.external import FormioService
 from formsflow_api_utils.utils import (
     DESIGNER_GROUP,
@@ -209,66 +208,42 @@ class FormResourceList(Resource):
     )
     def get():  # pylint: disable=too-many-locals
         """Get form process mapper."""
-        try:
-            dict_data = FormProcessMapperListRequestSchema().load(request.args) or {}
-            form_name: str = dict_data.get("form_name")
-            page_no: int = dict_data.get("page_no")
-            limit: int = dict_data.get("limit")
-            sort_by: str = dict_data.get("sort_by", "id")
-            sort_order: str = dict_data.get("sort_order", "desc")
-            form_type: str = dict_data.get("form_type", "form")
-            is_active = dict_data.get("is_active", None)
+        dict_data = FormProcessMapperListRequestSchema().load(request.args) or {}
+        form_name: str = dict_data.get("form_name")
+        page_no: int = dict_data.get("page_no")
+        limit: int = dict_data.get("limit")
+        sort_by: str = dict_data.get("sort_by", "id")
+        sort_order: str = dict_data.get("sort_order", "desc")
+        form_type: str = dict_data.get("form_type", "form")
+        is_active = dict_data.get("is_active", None)
 
-            if form_name:
-                form_name: str = form_name.replace("%", r"\%").replace("_", r"\_")
+        if form_name:
+            form_name: str = form_name.replace("%", r"\%").replace("_", r"\_")
 
-            if auth.has_role([DESIGNER_GROUP]):
-                (
-                    form_process_mapper_schema,
-                    form_process_mapper_count,
-                ) = FormProcessMapperService.get_all_forms(
-                    page_no, limit, form_name, sort_by, sort_order, form_type, is_active
-                )
-            else:
-                (
-                    form_process_mapper_schema,
-                    form_process_mapper_count,
-                ) = FormProcessMapperService.get_all_mappers_by_formid(
-                    page_no, limit, form_name, sort_by, sort_order
-                )
-            return (
-                (
-                    {
-                        "forms": form_process_mapper_schema,
-                        "totalCount": form_process_mapper_count,
-                        "pageNo": page_no,
-                        "limit": limit,
-                    }
-                ),
-                HTTPStatus.OK,
-            )
-        except KeyError as err:
-            response, status = (
+        (
+            form_process_mapper_schema,
+            form_process_mapper_count,
+        ) = FormProcessMapperService.get_all_forms(
+            page_number=page_no,
+            limit=limit,
+            form_name=form_name,
+            sort_by=sort_by,
+            sort_order=sort_order,
+            form_type=form_type,
+            is_active=is_active,
+            is_designer=auth.has_role([DESIGNER_GROUP]),
+        )
+        return (
+            (
                 {
-                    "type": "Invalid Request Object",
-                    "message": "Required fields are not passed",
-                },
-                HTTPStatus.BAD_REQUEST,
-            )
-
-            current_app.logger.critical(response)
-            current_app.logger.critical(err)
-            return response, status
-
-        except BaseException as form_err:  # pylint: disable=broad-except
-            response, status = {
-                "type": "Bad request error",
-                "message": "Invalid request data object",
-            }, HTTPStatus.BAD_REQUEST
-
-            current_app.logger.warning(response)
-            current_app.logger.warning(form_err)
-            return response, status
+                    "forms": form_process_mapper_schema,
+                    "totalCount": form_process_mapper_count,
+                    "pageNo": page_no,
+                    "limit": limit,
+                }
+            ),
+            HTTPStatus.OK,
+        )
 
     @staticmethod
     @auth.require
@@ -288,30 +263,18 @@ class FormResourceList(Resource):
     def post():
         """Post a form process mapper using the request body."""
         mapper_json = request.get_json()
-        try:
-            mapper_json["taskVariable"] = json.dumps(
-                mapper_json.get("taskVariable") or []
-            )
-            mapper_schema = FormProcessMapperSchema()
-            dict_data = mapper_schema.load(mapper_json)
-            mapper = FormProcessMapperService.create_mapper(dict_data)
+        mapper_json["taskVariable"] = json.dumps(mapper_json.get("taskVariable") or [])
+        mapper_schema = FormProcessMapperSchema()
+        dict_data = mapper_schema.load(mapper_json)
+        mapper = FormProcessMapperService.create_mapper(dict_data)
 
-            FormProcessMapperService.unpublish_previous_mapper(dict_data)
+        FormProcessMapperService.unpublish_previous_mapper(dict_data)
 
-            response = mapper_schema.dump(mapper)
-            response["taskVariable"] = json.loads(response["taskVariable"])
+        response = mapper_schema.dump(mapper)
+        response["taskVariable"] = json.loads(response["taskVariable"])
 
-            FormHistoryService.create_form_logs_without_clone(data=mapper_json)
-            return response, HTTPStatus.CREATED
-        except BaseException as form_err:  # pylint: disable=broad-except
-            response, status = {
-                "message": "Invalid request object passed",
-                "errors": form_err,
-            }, HTTPStatus.BAD_REQUEST
-
-            current_app.logger.warning(response)
-            current_app.logger.warning(form_err)
-            return response, status
+        FormHistoryService.create_form_logs_without_clone(data=mapper_json)
+        return response, HTTPStatus.CREATED
 
 
 @cors_preflight("GET,PUT,DELETE,OPTIONS")
@@ -337,24 +300,10 @@ class FormResourceById(Resource):
     )
     def get(mapper_id: int):
         """Get form by mapper_id."""
-        try:
-            return (
-                FormProcessMapperService.get_mapper(form_process_mapper_id=mapper_id),
-                HTTPStatus.OK,
-            )
-        except PermissionError as err:
-            response, status = (
-                {
-                    "type": "Permission Denied",
-                    "message": f"Access to form id - {mapper_id} is prohibited.",
-                },
-                HTTPStatus.FORBIDDEN,
-            )
-            current_app.logger.warning(err)
-            return response, status
-        except BusinessException as err:
-            current_app.logger.warning(err.error)
-            return err.error, err.status_code
+        return (
+            FormProcessMapperService.get_mapper(form_process_mapper_id=mapper_id),
+            HTTPStatus.OK,
+        )
 
     @staticmethod
     @auth.require
@@ -374,24 +323,10 @@ class FormResourceById(Resource):
     )
     def delete(mapper_id: int):
         """Delete form by mapper_id."""
-        try:
-            FormProcessMapperService.mark_inactive_and_delete(
-                form_process_mapper_id=mapper_id
-            )
-            return "Deleted", HTTPStatus.OK
-        except PermissionError as err:
-            response, status = (
-                {
-                    "type": "Permission Denied",
-                    "message": f"Access to form id - {mapper_id} is prohibited.",
-                },
-                HTTPStatus.FORBIDDEN,
-            )
-            current_app.logger.warning(err)
-            return response, status
-        except BusinessException as err:
-            current_app.logger.warning(err.error)
-            return err.error, err.status_code
+        FormProcessMapperService.mark_inactive_and_delete(
+            form_process_mapper_id=mapper_id
+        )
+        return "Deleted", HTTPStatus.OK
 
     @staticmethod
     @auth.require
@@ -415,43 +350,23 @@ class FormResourceById(Resource):
         """Update form by mapper_id."""
         application_json = request.get_json()
 
-        try:
-            if "taskVariable" in application_json:
-                application_json["taskVariable"] = json.dumps(
-                    application_json.get("taskVariable")
-                )
-            mapper_schema = FormProcessMapperSchema()
-            dict_data = mapper_schema.load(application_json)
-            mapper = FormProcessMapperService.update_mapper(
-                form_process_mapper_id=mapper_id, data=dict_data
+        if "taskVariable" in application_json:
+            application_json["taskVariable"] = json.dumps(
+                application_json.get("taskVariable")
             )
-            response = mapper_schema.dump(mapper)
-            response["taskVariable"] = json.loads(response["taskVariable"])
-            FormHistoryService.create_form_logs_without_clone(data=application_json)
+        mapper_schema = FormProcessMapperSchema()
+        dict_data = mapper_schema.load(application_json)
+        mapper = FormProcessMapperService.update_mapper(
+            form_process_mapper_id=mapper_id, data=dict_data
+        )
+        response = mapper_schema.dump(mapper)
+        response["taskVariable"] = json.loads(response["taskVariable"])
+        FormHistoryService.create_form_logs_without_clone(data=application_json)
 
-            return (
-                response,
-                HTTPStatus.OK,
-            )
-        except PermissionError as err:
-            response, status = (
-                {
-                    "type": "Permission Denied",
-                    "message": f"Access to form id - {mapper_id} is prohibited.",
-                },
-                HTTPStatus.FORBIDDEN,
-            )
-            current_app.logger.warning(err)
-            return response, status
-        except BaseException as mapper_err:  # pylint: disable=broad-except
-            response, status = {
-                "type": "Bad Request Error",
-                "message": "Invalid request passed",
-            }, HTTPStatus.BAD_REQUEST
-
-            current_app.logger.warning(response)
-            current_app.logger.warning(mapper_err)
-            return response, status
+        return (
+            response,
+            HTTPStatus.OK,
+        )
 
 
 @cors_preflight("GET,OPTIONS")
@@ -483,40 +398,13 @@ class FormResourceByFormId(Resource):
 
         : form_id:- Get details of only form corresponding to a particular formId
         """
-        try:
-            response = FormProcessMapperService.get_mapper_by_formid(form_id=form_id)
-            task_variable = response.get("taskVariable")
-            response["taskVariable"] = (
-                json.loads(task_variable) if task_variable else None
-            )
-            return (
-                response,
-                HTTPStatus.OK,
-            )
-        except PermissionError as err:
-            response, status = (
-                {
-                    "type": "Permission Denied",
-                    "message": f"Access to form id - {form_id} is prohibited.",
-                },
-                HTTPStatus.FORBIDDEN,
-            )
-            current_app.logger.warning(err)
-            return response, status
-        except BusinessException as err:
-            response, status = (
-                {
-                    "type": "No Response",
-                    "message": (
-                        "No Response found as FormProcessMapper with"
-                        f"FormID - {form_id} not stored in DB"
-                    ),
-                },
-                HTTPStatus.NO_CONTENT,
-            )
-            current_app.logger.info(response)
-            current_app.logger.warning(err)
-            return response, status
+        response = FormProcessMapperService.get_mapper_by_formid(form_id=form_id)
+        task_variable = response.get("taskVariable")
+        response["taskVariable"] = json.loads(task_variable) if task_variable else None
+        return (
+            response,
+            HTTPStatus.OK,
+        )
 
 
 @cors_preflight("GET,OPTIONS")
@@ -542,25 +430,14 @@ class FormResourceApplicationCount(Resource):
     )
     def get(mapper_id: int):
         """The method retrieves the total application count for the given mapper id."""
-        try:
-            FormProcessMapperService.check_tenant_authorization(mapper_id=mapper_id)
-            (
-                response,
-                status,
-            ) = ApplicationService.get_total_application_corresponding_to_mapper_id(
-                mapper_id
-            )
-            return response, status
-        except PermissionError as err:
-            response, status = (
-                {
-                    "type": "Permission Denied",
-                    "message": f"Access to form id - {mapper_id} is prohibited.",
-                },
-                HTTPStatus.FORBIDDEN,
-            )
-            current_app.logger.warning(err)
-            return response, status
+        FormProcessMapperService.check_tenant_authorization(mapper_id=mapper_id)
+        (
+            response,
+            status,
+        ) = ApplicationService.get_total_application_corresponding_to_mapper_id(
+            mapper_id
+        )
+        return response, status
 
 
 @cors_preflight("GET,OPTIONS")
@@ -586,24 +463,10 @@ class FormResourceTaskVariablesbyApplicationId(Resource):
     )
     def get(application_id: int):
         """The method retrieves task variables based on application id."""
-        try:
-            return (
-                ApplicationService.get_application_form_mapper_by_id(application_id),
-                HTTPStatus.OK,
-            )
-        except PermissionError as err:
-            response, status = (
-                {
-                    "type": "Permission Denied",
-                    "message": f"Access to resource - {application_id} is prohibited.",
-                },
-                HTTPStatus.FORBIDDEN,
-            )
-            current_app.logger.warning(err)
-            return response, status
-        except BusinessException as err:
-            current_app.logger.warning(err.error)
-            return err.error, err.status_code
+        return (
+            ApplicationService.get_application_form_mapper_by_id(application_id),
+            HTTPStatus.OK,
+        )
 
 
 @cors_preflight("POST,OPTIONS")
@@ -632,26 +495,22 @@ class FormioFormResource(Resource):
     )
     def post():
         """Formio form creation method."""
-        try:
-            data = request.get_json()
-            formio_service = FormioService()
-            form_io_token = formio_service.get_formio_access_token()
-            response, status = (
-                formio_service.create_form(data, form_io_token),
-                HTTPStatus.CREATED,
-            )
-            FormHistoryService.create_form_log_with_clone(
-                data={
-                    **response,
-                    "parentFormId": data.get("parentFormId"),
-                    "newVersion": data.get("newVersion"),
-                    "componentChanged": True,
-                }
-            )
-            return response, status
-        except BusinessException as err:
-            current_app.logger.warning(err.error)
-            return err.error, err.status_code
+        data = request.get_json()
+        formio_service = FormioService()
+        form_io_token = formio_service.get_formio_access_token()
+        response, status = (
+            formio_service.create_form(data, form_io_token),
+            HTTPStatus.CREATED,
+        )
+        FormHistoryService.create_form_log_with_clone(
+            data={
+                **response,
+                "parentFormId": data.get("parentFormId"),
+                "newVersion": data.get("newVersion"),
+                "componentChanged": True,
+            }
+        )
+        return response, status
 
 
 @cors_preflight("PUT,OPTIONS")
@@ -664,32 +523,16 @@ class FormioFormUpdateResource(Resource):
     @profiletime
     def put(form_id: str):
         """Formio form update method."""
-        try:
-            FormProcessMapperService.check_tenant_authorization_by_formid(
-                form_id=form_id
-            )
-            data = request.get_json()
-            formio_service = FormioService()
-            form_io_token = formio_service.get_formio_access_token()
-            response, status = (
-                formio_service.update_form(form_id, data, form_io_token),
-                HTTPStatus.OK,
-            )
-            FormHistoryService.create_form_log_with_clone(data=data)
-            return response, status
-        except PermissionError as err:
-            response, status = (
-                {
-                    "type": "Permission Denied",
-                    "message": f"Access to form id - {form_id} is prohibited.",
-                },
-                HTTPStatus.FORBIDDEN,
-            )
-            current_app.logger.warning(err)
-            return response, status
-        except BusinessException as err:
-            current_app.logger.warning(err.error)
-            return err.error, err.status_code
+        FormProcessMapperService.check_tenant_authorization_by_formid(form_id=form_id)
+        data = request.get_json()
+        formio_service = FormioService()
+        form_io_token = formio_service.get_formio_access_token()
+        response, status = (
+            formio_service.update_form(form_id, data, form_io_token),
+            HTTPStatus.OK,
+        )
+        FormHistoryService.create_form_log_with_clone(data=data)
+        return response, status
 
 
 @cors_preflight("GET,OPTIONS")
@@ -716,11 +559,5 @@ class FormHistoryResource(Resource):
     )
     def get(form_id: str):
         """Getting form history."""
-        try:
-            FormProcessMapperService.check_tenant_authorization_by_formid(
-                form_id=form_id
-            )
-            return FormHistoryService.get_all_history(form_id)
-        except BusinessException as err:
-            current_app.logger.warning(err.error)
-            return err.error, err.status_code
+        FormProcessMapperService.check_tenant_authorization_by_formid(form_id=form_id)
+        return FormHistoryService.get_all_history(form_id)

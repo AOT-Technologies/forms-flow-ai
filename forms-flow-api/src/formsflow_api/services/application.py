@@ -5,8 +5,9 @@ from functools import lru_cache
 from http import HTTPStatus
 from typing import Dict, Set
 
+import requests
 from flask import current_app
-from formsflow_api_utils.exceptions import BusinessException
+from formsflow_api_utils.exceptions import BusinessException, ExternalError
 from formsflow_api_utils.utils import (
     DRAFT_APPLICATION_STATUS,
     NEW_APPLICATION_STATUS,
@@ -14,6 +15,7 @@ from formsflow_api_utils.utils import (
 )
 from formsflow_api_utils.utils.user_context import UserContext, user_context
 
+from formsflow_api.constants import BusinessErrorCode
 from formsflow_api.models import (
     Application,
     Authorization,
@@ -77,7 +79,7 @@ class ApplicationService:  # pylint: disable=too-many-public-methods
                     token=token,
                     tenant_key=mapper.tenant,
                 )
-            application.update({"process_instance_id": camunda_start_task["id"]})
+            application.update({"process_instance_id": camunda_start_task.get("id")})
         except TypeError as camunda_error:
             response = {
                 "message": "Camunda workflow not able to create a task",
@@ -95,14 +97,15 @@ class ApplicationService:  # pylint: disable=too-many-public-methods
         if user_id is not None:
             # for anonymous form submission
             data["created_by"] = user_id
+
         data["application_status"] = NEW_APPLICATION_STATUS
         mapper = FormProcessMapper.find_form_by_form_id(data["form_id"])
         if mapper is None:
             if tenant_key:
-                raise PermissionError(f"Permission denied, formId - {data['form_id']}.")
-            raise KeyError(f"Mapper does not exist with formId - {data['form_id']}.")
+                raise BusinessException(BusinessErrorCode.PERMISSION_DENIED)
+            raise BusinessException(BusinessErrorCode.FORM_ID_NOT_FOUND)
         if tenant_key is not None and mapper.tenant != tenant_key:
-            raise PermissionError("Tenant authentication failed.")
+            raise BusinessException(BusinessErrorCode.PERMISSION_DENIED)
         data["form_process_mapper_id"] = mapper.id
         # Function to create application in DB
         application = Application.create_from_dict(data)
@@ -209,7 +212,7 @@ class ApplicationService:  # pylint: disable=too-many-public-methods
             application_id=application_id
         )
         if parent_form_ref is None:
-            raise BusinessException("Invalid application", HTTPStatus.BAD_REQUEST)
+            raise BusinessException(BusinessErrorCode.APPLICATION_ID_NOT_FOUND)
         application_auth = Authorization.find_resource_authorization(
             auth_type=AuthType.APPLICATION,
             roles=user.group_or_roles,
@@ -224,9 +227,7 @@ class ApplicationService:  # pylint: disable=too-many-public-methods
             # submit and view their application.
             application = Application.find_id_by_user(application_id, user.user_name)
         if application is None and user.tenant_key is not None:
-            raise PermissionError(
-                f"Access to application - {application_id} is denied."
-            )
+            raise BusinessException(BusinessErrorCode.PERMISSION_DENIED)
         return application_schema.dump(application), HTTPStatus.OK
 
     @staticmethod
@@ -351,11 +352,11 @@ class ApplicationService:  # pylint: disable=too-many-public-methods
         data["modified_by"] = user.user_name
         application = Application.find_by_id(application_id=application_id)
         if application is None and user.tenant_key is not None:
-            raise PermissionError(f"Access to application - {application_id} is denied")
+            raise BusinessException(BusinessErrorCode.PERMISSION_DENIED)
         if application:
             application.update(data)
         else:
-            raise BusinessException("Invalid application", HTTPStatus.BAD_REQUEST)
+            raise BusinessException(BusinessErrorCode.APPLICATION_ID_NOT_FOUND)
 
     @staticmethod
     def get_aggregated_applications(  # pylint: disable=too-many-arguments
@@ -408,7 +409,7 @@ class ApplicationService:  # pylint: disable=too-many-public-methods
         schema = AggregatedApplicationSchema()
         result = schema.dump(application_status, many=True)
         if user.tenant_key and len(result) == 0:
-            raise PermissionError(f"Access to resource-{parent_form_id} is denied.")
+            raise BusinessException(BusinessErrorCode.PERMISSION_DENIED)
         return result
 
     @staticmethod
@@ -440,7 +441,7 @@ class ApplicationService:  # pylint: disable=too-many-public-methods
             mapper_schema = FormProcessMapperSchema()
             return mapper_schema.dump(mapper)
 
-        raise BusinessException("Invalid application", HTTPStatus.BAD_REQUEST)
+        raise BusinessException(BusinessErrorCode.APPLICATION_ID_NOT_FOUND)
 
     @staticmethod
     def get_total_application_corresponding_to_mapper_id(mapper_id: int):
@@ -461,16 +462,16 @@ class ApplicationService:  # pylint: disable=too-many-public-methods
         user: UserContext = kwargs["user"]
         user_name = user.user_name
         form_ids: Set[str] = []
-        forms = Authorization.find_all_resources_authorized(
-            auth_type=AuthType.APPLICATION,
-            roles=user.group_or_roles,
-            user_name=user.user_name,
-            tenant=user.tenant_key,
-        )
-        for form in forms:
-            form_ids.append(form.resource_id)
         application_count = None
         if auth.has_role([REVIEWER_GROUP]):
+            forms = Authorization.find_all_resources_authorized(
+                auth_type=AuthType.APPLICATION,
+                roles=user.group_or_roles,
+                user_name=user.user_name,
+                tenant=user.tenant_key,
+            )
+            for form in forms:
+                form_ids.append(form.resource_id)
             application_count = Application.get_auth_application_count_by_form_id_user(
                 form_ids, user_name
             )
@@ -482,26 +483,35 @@ class ApplicationService:  # pylint: disable=too-many-public-methods
         return application_count
 
     @staticmethod
+    def fetch_task_variable_values(task_variable, form_data):
+        """Fetch task variable values from form data."""
+        variables: Dict = {}
+        if task_variable and form_data:
+            task_keys = [val["key"] for val in task_variable]
+            variables = {
+                key: {"value": json.dumps(form_data[key])}
+                if isinstance(form_data[key], (dict, list))
+                else {"value": form_data[key]}
+                for key in task_keys
+                if key in form_data
+            }
+        return variables
+
+    @staticmethod
     def resubmit_application(application_id: int, payload: Dict, token: str):
         """Resubmit application and update process variables."""
         mapper = ApplicationService.get_application_form_mapper_by_id(application_id)
         task_variable = json.loads(mapper.get("taskVariable"))
         form_data = payload.pop("data", None)
-        process_variables = {"isResubmit": {"value": False}}
-        if task_variable and form_data:
-            task_keys = [val["key"] for val in task_variable]
-            process_variables.update(
-                {
-                    key: {"value": form_data[key]}
-                    for key in task_keys
-                    if key in form_data
-                }
-            )
-        payload["processVariables"] = process_variables
+        payload["processVariables"] = ApplicationService.fetch_task_variable_values(
+            task_variable, form_data
+        )
+        payload["processVariables"].update({"isResubmit": {"value": False}})
         ApplicationService.update_application(application_id, {"is_resubmit": False})
-        response = BPMService.send_message(data=payload, token=token)
-        if not response:
-            raise BusinessException(
-                "No process definition or execution matches the parameters.",
-                HTTPStatus.BAD_REQUEST,
-            )
+        try:
+            response = BPMService.send_message(data=payload, token=token)
+            if not response:
+                raise BusinessException(BusinessErrorCode.PROCESS_DEF_NOT_FOUND)
+        except requests.exceptions.ConnectionError as err:
+            current_app.logger.warning(err)
+            raise BusinessException(ExternalError.BPM_SERVICE_UNAVAILABLE) from err

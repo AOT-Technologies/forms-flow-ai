@@ -5,7 +5,7 @@ from __future__ import annotations
 from http import HTTPStatus
 
 from flask import current_app
-from flask_sqlalchemy import BaseQuery
+from flask_sqlalchemy.query import Query
 from formsflow_api_utils.utils import (
     DEFAULT_PROCESS_KEY,
     DEFAULT_PROCESS_NAME,
@@ -150,10 +150,10 @@ class FormProcessMapper(AuditDateTimeMixin, AuditUserMixin, BaseModel, db.Model)
 
     @classmethod
     @user_context
-    def access_filter(cls, query: BaseQuery, **kwargs):
+    def access_filter(cls, query: Query, **kwargs):
         """Modifies the query to include active and tenant check."""
-        if not isinstance(query, BaseQuery):
-            raise TypeError("Query object must be of type BaseQuery")
+        if not isinstance(query, Query):
+            raise TypeError("Query object must be of type Query")
         user: UserContext = kwargs["user"]
         tenant_key: str = user.tenant_key
         active = query.filter(
@@ -246,10 +246,7 @@ class FormProcessMapper(AuditDateTimeMixin, AuditUserMixin, BaseModel, db.Model)
 
         total_count = query.count()
         query = query.with_entities(
-            cls.id,
-            cls.process_key,
-            cls.form_id,
-            cls.form_name,
+            cls.id, cls.process_key, cls.form_id, cls.form_name, cls.modified
         )
         limit = total_count if limit is None else limit
         query = query.paginate(page=page_number, per_page=limit, error_out=False)
@@ -341,13 +338,13 @@ class FormProcessMapper(AuditDateTimeMixin, AuditUserMixin, BaseModel, db.Model)
 
     @classmethod
     @user_context
-    def tenant_authorization(cls, query: BaseQuery, **kwargs):
+    def tenant_authorization(cls, query: Query, **kwargs):
         """Modifies the query to include tenant check if needed."""
-        tenant_auth_query: BaseQuery = query
+        tenant_auth_query: Query = query
         user: UserContext = kwargs["user"]
         tenant_key: str = user.tenant_key
-        if not isinstance(query, BaseQuery):
-            raise TypeError("Query object must be of type BaseQuery")
+        if not isinstance(query, Query):
+            raise TypeError("Query object must be of type Query")
         if tenant_key is not None:
             tenant_auth_query = tenant_auth_query.filter(cls.tenant == tenant_key)
         return tenant_auth_query

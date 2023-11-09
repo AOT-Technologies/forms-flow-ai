@@ -1,8 +1,9 @@
 """Resource to get Dashboard APIs from redash."""
 from http import HTTPStatus
 
-from flask import current_app, request
+from flask import request
 from flask_restx import Namespace, Resource, fields
+from formsflow_api_utils.exceptions import BusinessException
 from formsflow_api_utils.utils import (
     DESIGNER_GROUP,
     auth,
@@ -10,6 +11,7 @@ from formsflow_api_utils.utils import (
     profiletime,
 )
 
+from formsflow_api.constants import BusinessErrorCode
 from formsflow_api.models import AuthType
 from formsflow_api.services import AuthorizationService
 
@@ -164,7 +166,9 @@ class AuthorizationDetail(Resource):
 
         Fetch Authorization details by resource id based on authorization type.
         """
-        response = auth_service.get_resource_by_id(auth_type.upper(), resource_id)
+        response = auth_service.get_resource_by_id(
+            auth_type.upper(), resource_id, bool(auth.has_role([DESIGNER_GROUP]))
+        )
         if response:
             return (
                 response,
@@ -196,26 +200,14 @@ class AuthorizationListById(Resource):
     )
     def get(resource_id: str):
         """Fetch Authorization list by resource id."""
-        try:
-            response = auth_service.get_auth_list_by_id(resource_id)
-            if response:
-                return (
-                    response,
-                    HTTPStatus.OK,
-                )
-
-            return {"message": "Invalid resource id."}, HTTPStatus.BAD_GATEWAY
-        except PermissionError as err:
-            response, status = (
-                {
-                    "type": "Permission Denied",
-                    "message": "Access is prohibited.",
-                },
-                HTTPStatus.FORBIDDEN,
+        response = auth_service.get_auth_list_by_id(resource_id)
+        if response:
+            return (
+                response,
+                HTTPStatus.OK,
             )
-            current_app.logger.warning(response)
-            current_app.logger.warning(err)
-            return response, status
+
+        raise BusinessException(BusinessErrorCode.INVALID_AUTH_RESOURCE_ID)
 
     @staticmethod
     @API.doc("Authorization create by Id")
@@ -232,17 +224,19 @@ class AuthorizationListById(Resource):
         """Create or Update Authoization of Form by id."""
         data = request.get_json()
         for auth_type in AuthType:
-            if data.get(auth_type.value.lower()):
+            if (
+                data.get(auth_type.value.lower())
+                and auth_type.value != AuthType.DASHBOARD.value
+            ):
                 auth_service.create_authorization(
                     auth_type.value.upper(),
                     data.get(auth_type.value.lower()),
                     bool(auth.has_role([DESIGNER_GROUP])),
                 )
-
         response = auth_service.get_auth_list_by_id(resource_id)
         if response:
             return (
                 response,
                 HTTPStatus.OK,
             )
-        return {"message": "Invalid resource id."}, HTTPStatus.BAD_GATEWAY
+        raise BusinessException(BusinessErrorCode.INVALID_AUTH_RESOURCE_ID)

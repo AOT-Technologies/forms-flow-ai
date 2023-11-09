@@ -20,7 +20,7 @@ import {
 } from "../../actions/formActions";
 import { addTenantkey } from "../../helper/helper";
 import { formCreate } from "../../apiManager/services/FormServices";
-import { Checkbox, FormControlLabel } from "@material-ui/core";
+import { Form } from 'react-bootstrap';
 import { handleAuthorization } from "../../apiManager/services/authorizationService";
 // reducer from react-formio code
 const reducer = (form, { type, value }) => {
@@ -159,9 +159,9 @@ const Create = React.memo(() => {
         anonymous: formAccess[0]?.roles.includes(roleIds.ANONYMOUS),
       };
       let payload = {
-        resourceId:data.formId,
+        resourceId: data.formId,
         resourceDetails: {},
-        roles : []
+        roles: []
       };
       dispatch(setFormSuccessData("form", form));
       handleAuthorization(
@@ -270,7 +270,7 @@ const Create = React.memo(() => {
           </div>
           <div className="col-lg-4 col-md-3 col-sm-3">
             <div id="form-group-display" className="form-group">
-              <label htmlFor="name" className="control-label">
+              <label htmlFor="form-display" className="control-label">
                 {t("Display as")}
               </label>
               <div className="input-group">
@@ -345,24 +345,20 @@ const Create = React.memo(() => {
           </div>
 
           <div className="col-lg-4 col-md-4 col-sm-4">
-            <div id="form-group-path" className="form-group">
-              <label htmlFor="path" className="control-label "></label>
+            <div  className="form-group">
               <div className="input-group">
-                <FormControlLabel
-                  control={
-                    <Checkbox
+                <Form.Group controlId="formPublish">
+                  <div className="d-flex align-items-center mt-3">
+                    <label className="public-label mr-2">{ t("Make this form public ?")}</label>
+                    <Form.Check
+                      type="checkbox"
                       checked={anonymous}
                       id="anonymous"
-                      color="primary"
-                      aria-label="Publish"
-                      onChange={() => {
-                        setAnonymous(!anonymous);
-                      }}
+                      onChange={() => setAnonymous(!anonymous)}
+                      custom
                     />
-                  }
-                  label={t("Make this form public ?")}
-                  labelPlacement="start"
-                />
+                  </div>
+                </Form.Group>
               </div>
             </div>
           </div>

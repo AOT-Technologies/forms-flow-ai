@@ -3,8 +3,10 @@ from http import HTTPStatus
 
 from flask import request
 from flask_restx import Namespace, Resource, fields
+from formsflow_api_utils.exceptions import BusinessException
 from formsflow_api_utils.utils import auth, cors_preflight, profiletime
 
+from formsflow_api.constants import BusinessErrorCode
 from formsflow_api.schemas import ApplicationListReqSchema
 from formsflow_api.services.factory import KeycloakFactory
 
@@ -70,8 +72,6 @@ class KeycloakDashboardGroupList(Resource):
         )
 
         if not dashboard_group_list:
-            return {
-                "message": "No Dashboard authorized Group found"
-            }, HTTPStatus.NOT_FOUND
+            raise BusinessException(BusinessErrorCode.NO_DASHBOARD_AUTHORIZED)
 
         return dashboard_group_list, HTTPStatus.OK

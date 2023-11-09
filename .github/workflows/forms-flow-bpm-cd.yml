@@ -14,6 +14,23 @@ defaults:
     working-directory: ./forms-flow-bpm
     
 jobs:
+  zap_scan:
+    runs-on: ubuntu-latest
+    name: Scan the webapplication
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+        with:
+          ref: master
+      - name: ZAP Scan
+        uses: zaproxy/action-full-scan@v0.8.0
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          docker_name: 'ghcr.io/zaproxy/zaproxy:stable'
+          target: 'https://bpm2.aot-technologies.com/camunda'
+          rules_file_name: '.zap/rules.tsv'
+          cmd_options: '-a'
+
   build-and-push-image-to-dockerhub:
     if: github.repository == 'AOT-Technologies/forms-flow-ai'
     runs-on: ubuntu-latest
@@ -27,7 +44,7 @@ jobs:
     permissions:
       contents: read
       packages: write
-
+      security-events: write
     steps:
       - name: Checkout repository
         uses: actions/checkout@v2
@@ -102,15 +119,19 @@ jobs:
           platforms: linux/arm64/v8
           tags: ${{ steps.meta.outputs.tags }}-arm64
           labels: ${{ steps.meta.outputs.labels }}
-      - name: Run ZAP Scan
-        run: |
-          # Install ZAP (if not already installed)
-          curl -sL https://github.com/zaproxy/zaproxy/releases/latest/download/ZAP_WEEKLY_Docker.sh | sh
-          docker pull owasp/zap2docker-stable
-          docker run --name zap-scan -u zap -v $(pwd):/zap/wrk/:rw --network=host owasp/zap2docker-stable zap-baseline.py -t https://forms-flow-bpm-app2.aot-technologies.com/camunda -J report.json -r report.html
-
-      - name: Upload ZAP Reports
-        uses: actions/upload-artifact@v2
+      - name: Scan Docker image 🐳
+        uses: snyk/actions/docker@master
+        continue-on-error: true
         with:
-          name: zap-reports
-          path: report.json, report.html
+          image: ${{ steps.meta.outputs.tags }}
+          args: --severity-threshold=high --sarif-file-output=snyk.sarif
+        env:
+          SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
+
+      - name: Upload Snyk report as sarif 📦
+        uses: github/codeql-action/upload-sarif@v2
+        with:
+          sarif_file: snyk.sarif
+
+      - name: Set up AWS CLI
+        uses: aws-actions/configure-aws-credentials@v1

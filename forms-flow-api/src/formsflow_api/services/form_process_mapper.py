@@ -1,6 +1,5 @@
 """This exposes form process mapper service."""
 
-from http import HTTPStatus
 from typing import Set
 
 from flask import current_app
@@ -8,6 +7,7 @@ from formsflow_api_utils.exceptions import BusinessException
 from formsflow_api_utils.utils.enums import FormProcessMapperStatus
 from formsflow_api_utils.utils.user_context import UserContext, user_context
 
+from formsflow_api.constants import BusinessErrorCode
 from formsflow_api.models import (
     Authorization,
     AuthType,
@@ -31,63 +31,38 @@ class FormProcessMapperService:
         sort_order: str,
         form_type: str,
         is_active,
+        is_designer: bool,
         **kwargs,
-    ):  # pylint: disable=too-many-arguments
+    ):  # pylint: disable=too-many-arguments, too-many-locals
         """Get all forms."""
         user: UserContext = kwargs["user"]
-        designer_form_ids: Set[str] = []
-        designer_forms = Authorization.find_all_resources_authorized(
-            auth_type=AuthType.DESIGNER,
+        authorized_form_ids: Set[str] = []
+        form_ids = Authorization.find_all_resources_authorized(
+            auth_type=AuthType.DESIGNER if is_designer else AuthType.FORM,
             roles=user.group_or_roles,
             user_name=user.user_name,
             tenant=user.tenant_key,
+            include_created_by=is_designer,
         )
-        for forms in designer_forms:
-            designer_form_ids.append(forms.resource_id)
-        mappers, get_all_mappers_count = FormProcessMapper.find_all_forms(
+        for forms in form_ids:
+            authorized_form_ids.append(forms.resource_id)
+        designer_filters = {
+            "is_active": is_active,
+            "form_type": form_type,
+        }
+        list_form_mappers = (
+            FormProcessMapper.find_all_forms
+            if is_designer
+            else FormProcessMapper.find_all_active_by_formid
+        )
+        mappers, get_all_mappers_count = list_form_mappers(
             page_number=page_number,
             limit=limit,
             form_name=form_name,
             sort_by=sort_by,
             sort_order=sort_order,
-            form_type=form_type,
-            form_ids=designer_form_ids,
-            is_active=is_active,
-        )
-        mapper_schema = FormProcessMapperSchema()
-        return (
-            mapper_schema.dump(mappers, many=True),
-            get_all_mappers_count,
-        )
-
-    @staticmethod
-    @user_context
-    def get_all_mappers_by_formid(
-        page_number: int,
-        limit: int,
-        form_name: str,
-        sort_by: str,
-        sort_order: str,
-        **kwargs,
-    ):  # pylint: disable=too-many-arguments
-        """Get all form process mappers by authorized forms."""
-        user: UserContext = kwargs["user"]
-        client_form_ids: Set[str] = []
-        client_forms = Authorization.find_all_resources_authorized(
-            auth_type=AuthType.FORM,
-            roles=user.group_or_roles,
-            user_name=user.user_name,
-            tenant=user.tenant_key,
-        )
-        for forms in client_forms:
-            client_form_ids.append(forms.resource_id)
-        mappers, get_all_mappers_count = FormProcessMapper.find_all_active_by_formid(
-            page_number=page_number,
-            limit=limit,
-            form_name=form_name,
-            sort_by=sort_by,
-            sort_order=sort_order,
-            form_ids=client_form_ids,
+            form_ids=authorized_form_ids,
+            **designer_filters if is_designer else {},
         )
         mapper_schema = FormProcessMapperSchema()
         return (
@@ -142,13 +117,7 @@ class FormProcessMapperService:
             mapper_schema = FormProcessMapperSchema()
             return mapper_schema.dump(mapper)
 
-        raise BusinessException(
-            {
-                "type": "Invalid response data",
-                "message": f"Invalid form process mapper id - {form_process_mapper_id}",
-            },
-            HTTPStatus.BAD_REQUEST,
-        )
+        raise BusinessException(BusinessErrorCode.INVALID_FORM_PROCESS_MAPPER_ID)
 
     @staticmethod
     @user_context
@@ -165,15 +134,7 @@ class FormProcessMapperService:
             if response.get("deleted") is False:
                 return response
 
-        raise BusinessException(
-            {
-                "type": "No Response",
-                "message": (
-                    f"FormProcessMapper with FormID -{form_id} not stored in DB"
-                ),
-            },
-            HTTPStatus.NO_CONTENT,
-        )
+        raise BusinessException(BusinessErrorCode.INVALID_FORM_PROCESS_MAPPER_ID)
 
     @staticmethod
     @user_context
@@ -214,20 +175,12 @@ class FormProcessMapperService:
             data["comments"] = None
         if mapper:
             if tenant_key is not None and mapper.tenant != tenant_key:
-                raise PermissionError("Tenant authentication failed.")
+                raise BusinessException(BusinessErrorCode.PERMISSION_DENIED)
             FormProcessMapperService._update_process_tenant(data, user)
             mapper.update(data)
             return mapper
 
-        raise BusinessException(
-            {
-                "type": "Invalid response data",
-                "message": (
-                    f"Unable to update FormProcessMapperId- {form_process_mapper_id}"
-                ),
-            },
-            HTTPStatus.BAD_REQUEST,
-        )
+        raise BusinessException(BusinessErrorCode.INVALID_FORM_PROCESS_MAPPER_ID)
 
     @staticmethod
     @user_context
@@ -250,29 +203,18 @@ class FormProcessMapperService:
                 for draft in draft_applications:
                     draft.delete()
         else:
-            raise BusinessException(
-                {
-                    "type": "Invalid response data",
-                    "message": (
-                        "Unable to set FormProcessMapperId -"
-                        f"{form_process_mapper_id} inactive"
-                    ),
-                },
-                HTTPStatus.BAD_REQUEST,
-            )
+            raise BusinessException(BusinessErrorCode.INVALID_FORM_PROCESS_MAPPER_ID)
 
     @staticmethod
     def mark_unpublished(form_process_mapper_id):
         """Mark form process mapper as inactive."""
-        try:
-            mapper = FormProcessMapper.find_form_by_id_active_status(
-                form_process_mapper_id=form_process_mapper_id
-            )
-            if mapper:
-                mapper.mark_unpublished()
-                return
-        except Exception as err:
-            raise err
+        mapper = FormProcessMapper.find_form_by_id_active_status(
+            form_process_mapper_id=form_process_mapper_id
+        )
+        if mapper:
+            mapper.mark_unpublished()
+            return
+        raise BusinessException(BusinessErrorCode.INVALID_FORM_PROCESS_MAPPER_ID)
 
     @staticmethod
     def get_mapper_by_formid_and_version(form_id: int, version: int):
@@ -292,25 +234,18 @@ class FormProcessMapperService:
         : mapper_data: serialized create mapper payload
         : Should be called with create_mapper method
         """
-        try:
-            form_id = mapper_data.get("previous_form_id") or mapper_data.get("form_id")
-            version = mapper_data.get("version")
-            if version is None or form_id is None:
-                return
-            version = int(version) - 1
-            previous_mapper = FormProcessMapperService.get_mapper_by_formid_and_version(
-                form_id, version
-            )
-            previous_status = previous_mapper.get("status")
-            if (
-                previous_mapper
-                and previous_status == FormProcessMapperStatus.ACTIVE.value
-            ):
-                previous_mapper_id = previous_mapper.get("id")
-                FormProcessMapperService.mark_unpublished(previous_mapper_id)
-
-        except Exception as err:
-            raise err
+        form_id = mapper_data.get("previous_form_id") or mapper_data.get("form_id")
+        version = mapper_data.get("version")
+        if version is None or form_id is None:
+            return
+        version = int(version) - 1
+        previous_mapper = FormProcessMapperService.get_mapper_by_formid_and_version(
+            form_id, version
+        )
+        previous_status = previous_mapper.get("status")
+        if previous_mapper and previous_status == FormProcessMapperStatus.ACTIVE.value:
+            previous_mapper_id = previous_mapper.get("id")
+            FormProcessMapperService.mark_unpublished(previous_mapper_id)
 
     @staticmethod
     @user_context
@@ -322,7 +257,7 @@ class FormProcessMapperService:
             return 0
         mapper = FormProcessMapper.find_form_by_id(form_process_mapper_id=mapper_id)
         if mapper is not None and mapper.tenant != tenant_key:
-            raise PermissionError("Tenant authorization failed.")
+            raise BusinessException(BusinessErrorCode.PERMISSION_DENIED)
         return 0
 
     @staticmethod
@@ -335,5 +270,5 @@ class FormProcessMapperService:
             return
         mapper = FormProcessMapper.find_form_by_form_id(form_id=form_id)
         if mapper is not None and mapper.tenant != tenant_key:
-            raise PermissionError("Tenant authorization failed.")
+            raise BusinessException(BusinessErrorCode.PERMISSION_DENIED)
         return

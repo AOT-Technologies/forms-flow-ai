@@ -47,7 +47,7 @@ const customDropUp = ({ options, currSizePerPage, onSizePerPageChange }) => {
   return (
     <DropdownButton
     className="ml-2"
-      drop="down"
+      drop="up"
       variant="secondary"
       title={currSizePerPage}
       style={{ display: "inline" }}

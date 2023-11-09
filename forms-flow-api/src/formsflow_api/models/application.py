@@ -2,7 +2,7 @@
 
 from __future__ import annotations
 
-from flask_sqlalchemy import BaseQuery
+from flask_sqlalchemy.query import Query
 from formsflow_api_utils.utils import (
     DRAFT_APPLICATION_STATUS,
     FILTER_MAPS,
@@ -721,10 +721,10 @@ class Application(
         return query
 
     @classmethod
-    def filter_draft_applications(cls, query: BaseQuery):
+    def filter_draft_applications(cls, query: Query):
         """Modifies the query to filter draft applications."""
-        if not isinstance(query, BaseQuery):
-            raise TypeError("Query object must be of type BaseQuery")
+        if not isinstance(query, Query):
+            raise TypeError("Query object must be of type Query")
         return query.filter(cls.application_status != DRAFT_APPLICATION_STATUS)
 
     @classmethod

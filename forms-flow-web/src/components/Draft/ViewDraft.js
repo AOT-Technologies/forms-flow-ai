@@ -69,7 +69,7 @@ const ViewDraft = React.memo(() => {
   return (
     <div className="container" id="main">
       <div className="main-header">
-        <Link title="go back" to={`${redirectUrl}draft`}>
+        <Link title={t("Back to Drafts")} to={`${redirectUrl}draft`}>
           <i className="fa fa-chevron-left fa-lg" />
         </Link>
         <h3 className="ml-3">

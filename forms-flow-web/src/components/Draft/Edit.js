@@ -150,8 +150,11 @@ const View = React.memo((props) => {
 
   useEffect(() => {
     return () => {
-      let payload = getDraftReqFormat(formId, draftRef.current);
-      if (poll) saveDraft(payload, exitType.current);
+      if(draftRef.current)
+      {
+        let payload = getDraftReqFormat(formId, draftRef.current);
+        if (poll) saveDraft(payload, exitType.current);
+      }
     };
   }, [poll, exitType.current, draftSubmission?.id]);
  
@@ -224,7 +227,7 @@ const View = React.memo((props) => {
               <SavingLoading
                 text={
                   draftSaved
-                    ? t("Saved to Applications/Drafts")
+                    ? t("Saved to Submissions/Drafts")
                     : t("Saving...")
                 }
                 saved={draftSaved}
@@ -241,7 +244,7 @@ const View = React.memo((props) => {
             onConfirm={props.onConfirm}
           ></SubmissionError>
           {isAuthenticated ? (
-            <Link title={t("go back")} to={`${redirectUrl}draft`}>
+            <Link title={t("Back to Drafts")} to={`${redirectUrl}draft`}>
               <i className="fa fa-chevron-left fa-lg" />
             </Link>
           ) : null}

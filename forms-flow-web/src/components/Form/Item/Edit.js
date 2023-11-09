@@ -126,8 +126,10 @@ const Edit = React.memo(() => {
   }, [processListData]);
 
   useEffect(()=>{
-    setFormDescription(processListData.description);
-  },[processListData.description]);
+    if(processListData?.description){
+      setFormDescription(processListData?.description);
+    }
+  },[processListData?.description]);
 
   useEffect(() => {
     if (restoredFormId) {

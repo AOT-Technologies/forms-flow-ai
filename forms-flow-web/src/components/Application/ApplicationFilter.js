@@ -94,7 +94,7 @@ const ApplicationFilter = ({ setDisplayFilter,filterParams,setFilterParams }) =>
             />
           </Col>
           <Col>
-            <label>Submission Name</label>
+            <label>Form Title</label>
             <input
               className="form-control"
               placeholder=""

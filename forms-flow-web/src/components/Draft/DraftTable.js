@@ -92,9 +92,9 @@ const DraftTable = () => {
         <table className="table custom-table table-responsive-sm">
           <thead>
             <tr>
-              <th>Draft Id</th>
-              <th>Draft Title</th>
-              <th>Last Modified</th>
+              <th>{t("Draft Id")}</th>
+              <th>{t("Draft Title")}</th>
+              <th>{t("Last Modified")}</th>
               <th colSpan="4">
                 <div className="d-flex justify-content-end filter-sort-bar mt-1">
                   <div className="filter-container-list application-filter-list-view">
@@ -115,7 +115,7 @@ const DraftTable = () => {
                       >
                         <path d="M6 10.5a.5.5 0 0 1 .5-.5h3a.5.5 0 0 1 0 1h-3a.5.5 0 0 1-.5-.5zm-2-3a.5.5 0 0 1 .5-.5h7a.5.5 0 0 1 0 1h-7a.5.5 0 0 1-.5-.5zm-2-3a.5.5 0 0 1 .5-.5h11a.5.5 0 0 1 0 1h-11a.5.5 0 0 1-.5-.5z" />
                       </svg>
-                      Filter
+                      {t("Filter")}
                     </button>
 
                     {displayFilter && (
@@ -172,7 +172,7 @@ const DraftTable = () => {
         </Dropdown>
           <span className="ml-2">
             Showing {(limit * pageNo ) - (limit - 1)} to{" "}
-            {limit * pageNo > totalForms ? totalForms : limit * pageNo} of
+            {limit * pageNo > totalForms ? totalForms : limit * pageNo} of{" "}
             {totalForms} Results
           </span>
         </div>

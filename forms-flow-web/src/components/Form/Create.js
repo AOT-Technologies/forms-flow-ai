@@ -68,7 +68,7 @@ const Create = React.memo(() => {
   const submissionAccess = useSelector((state) => state.user?.submissionAccess || []);
   const redirectUrl = MULTITENANCY_ENABLED ? `/tenant/${tenantKey}/` : "/";
   const [open, setOpen] = useState(false);
-  const [formDescription,setFormDescription] = useState("");
+  const [formDescription, setFormDescription] = useState("");
   const { t } = useTranslation();
   useEffect(() => {
     dispatch(clearFormError("form"));
@@ -156,7 +156,7 @@ const Create = React.memo(() => {
       const data = {
         formId: form._id,
         formName: form.title,
-        Description: formDescription,
+        description: formDescription,
         formType: form.type,
         formTypeChanged: true,
         anonymousChanged: true,
@@ -165,7 +165,7 @@ const Create = React.memo(() => {
         formRevisionNumber: "V1", // to do
         anonymous: formAccess[0]?.roles.includes(roleIds.ANONYMOUS),
       };
-      
+
       let payload = {
         resourceId: data.formId,
         resourceDetails: {},
@@ -215,9 +215,9 @@ const Create = React.memo(() => {
   const formChange = (newForm) =>
     dispatchFormAction({ type: "formChange", value: newForm });
 
-    const handleToggle = () => {
-      setOpen(!open);
-    };
+  const handleToggle = () => {
+    setOpen(!open);
+  };
 
   return (
     <div>
@@ -252,12 +252,14 @@ const Create = React.memo(() => {
                 />
               </div>
             </div>
-            <div >
+            <div className="">
               <label htmlFor="Description" className="control-label field-required font-weight-bold">
                 {" "}
                 {t("Description")}
               </label>
-              <RichText onChange={setFormDescription} value={formDescription}/>
+              <div className="bg-white">
+                <RichText onChange={setFormDescription} value={formDescription} />
+              </div>
             </div>
           </div>
           <div className="col-lg-6 col-md-6 col-sm-6 col-12">
@@ -323,42 +325,42 @@ const Create = React.memo(() => {
               <div className="mt-3">
                 <div className="d-flex align-items-center cursor-pointer" onClick={handleToggle}>
                   <i className={`fa ${open ? 'fa-chevron-up' : 'fa-chevron-down'} mr-2`}></i>
-                  <span className="text-primary font-weight-bold mr-4">Advanced Options</span>
+                  <span className="text-primary font-weight-bold mr-4">{t("Advanced Options")}</span>
                   <hr className="flex-grow-1 ml-2 mr-2"/>
                 </div>
                 <Collapse in={open} className="mt-3">
                   <div id="example-collapse-text">
 
-                      <div className="col-lg-12 col-md-12 col-sm-12">
-                        <div id="form-group-name" className="form-group">
-                          <label htmlFor="name" className="control-label field-required font-weight-bold">
-                            {t("Name")}
-                            {addingTenantKeyInformation("name")}
-                          </label>
-                          <div className="input-group mb-2">
-                            {
-                              MULTITENANCY_ENABLED && tenantKey ? <div className="input-group-prepend">
-                                <div
-                                  className="input-group-text"
-                                  style={{ maxWidth: "150px" }}
-                                >
-                                  <span className="text-truncate">{tenantKey}</span>
-                                </div>
-                              </div> : ""
-                            }
-                            <input
-                              type="text"
-                              className="form-control"
-                              id="name"
-                              placeholder={t("Enter the form machine name")}
-                              value={form?.name || ""}
-                              onChange={(event) => handleChange("name", event)}
-                            />
-                          </div>
+                    <div className="col-lg-12 col-md-12 col-sm-12">
+                      <div id="form-group-name" className="form-group">
+                        <label htmlFor="name" className="control-label field-required font-weight-bold">
+                          {t("Name")}
+                          {addingTenantKeyInformation("name")}
+                        </label>
+                        <div className="input-group mb-2">
+                          {
+                            MULTITENANCY_ENABLED && tenantKey ? <div className="input-group-prepend">
+                              <div
+                                className="input-group-text"
+                                style={{ maxWidth: "150px" }}
+                              >
+                                <span className="text-truncate">{tenantKey}</span>
+                              </div>
+                            </div> : ""
+                          }
+                          <input
+                            type="text"
+                            className="form-control"
+                            id="name"
+                            placeholder={t("Enter the form machine name")}
+                            value={form?.name || ""}
+                            onChange={(event) => handleChange("name", event)}
+                          />
                         </div>
                       </div>
+                    </div>
 
-                      <div className="d-flex  flex-wrap">
+                    <div className="d-flex  flex-wrap">
                       <div className="col-lg-6 col-md-6 col-sm-12 ">
                         <div id="form-group-type" className="form-group">
                           <label htmlFor="form-type" className="control-label font-weight-bold">
@@ -404,7 +406,7 @@ const Create = React.memo(() => {
                               type="text"
                               className="form-control"
                               id="path"
-                              placeholder={t("Enter the path name")} 
+                              placeholder={t("Enter the path name")}
                               value={form?.path || ""}
                               onChange={(event) => handleChange("path", event)}
                             />
@@ -413,7 +415,7 @@ const Create = React.memo(() => {
                       </div>
                     </div>
                   </div>
-                </Collapse>        
+                </Collapse>
               </div>
             </div>
           </div>

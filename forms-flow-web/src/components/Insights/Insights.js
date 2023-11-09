@@ -98,8 +98,7 @@ const Insights = React.memo((props) => {
               <Head items={headerList()} page="Insights"/>
            
               
-                <div
-                  className="d-flex align-items-center flex-md-row flex-colum justify-content-between mt-3"
+                <div className="d-flex align-items-center flex-md-row flex-colum justify-content-between mt-3"
                   data-testid="Insight"
                   role="main"
                 >

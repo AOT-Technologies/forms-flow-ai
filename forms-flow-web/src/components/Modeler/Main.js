@@ -79,7 +79,7 @@ export default React.memo(() => {
       <div className="">
         <div className="canvas">
           <div className="card-container">
-            <div className="cardprocess d-flex align-items-center justify-content-center" onClick={() => handleCreateNew()}>
+            <div className="cardprocess cursor-pointer d-flex align-items-center justify-content-center" onClick={() => handleCreateNew()}>
               <div className="d-flex flex-column">
                 <h3>
                   <i className="fa fa-plus" aria-hidden="true"></i>
@@ -87,7 +87,7 @@ export default React.memo(() => {
                 <p>{t("Advanced Designer")}</p>
               </div>
             </div>
-            <div className="cardprocess">
+            <div className="cardprocess cursor-pointer">
               <div className="card-content">
                 <img
                   className="card-img-top"

@@ -79,19 +79,19 @@ const ApplicationTable = () => {
     },
   ];
 
-  const submittedForm = (data) => {
+  const submissionDetails = (data) => {
     dispatch(push(`${redirectUrl}application/${data.id}`));
   };
 
  
 
-  const viewSubmittedForm = (data) => (
-    <button className="btn btn-link mt-2" onClick={() => submittedForm(data)}>
-      <Translation>{(t) => t("View Submitted Form")}</Translation>{" "}
+  const  viewSubmissionDetails = (data) => (
+    <button className="btn btn-link mt-2" onClick={() => submissionDetails(data)}>
+      <Translation>{(t) => t("View Details")}</Translation>{" "}
     </button>
   );
 
-  const viewSubmissionDetails = (formData) => {
+  const viewSubmittedForm = (formData) => {
     const url =
     formData.isClientEdit || formData.isResubmit
         ? `${redirectUrl}form/${formData.formId}/submission/${formData.submissionId}/edit`
@@ -101,7 +101,7 @@ const ApplicationTable = () => {
         className="btn btn-link mt-2"
         onClick={() => window.open(url, "_blank")}
       >
-        <Translation>{(t) => t("View Details")}</Translation>{" "}
+        <Translation>{(t) => t("View Submitted Form")}</Translation>{" "}
       </button>
     );
   };
@@ -122,10 +122,10 @@ const ApplicationTable = () => {
         <table className="table custom-table table-responsive-sm">
           <thead>
             <tr>
-              <th>Id</th>
-              <th>Form Title</th>
-              <th>Status</th>
-              <th>Last Modified</th>
+              <th>{t("Id")}</th>
+              <th>{t("Form Title")}</th>
+              <th>{t("Status")}</th>
+              <th>{t("Last Modified")}</th>
               <th colSpan="4">
                 <div className="d-flex justify-content-end filter-sort-bar mt-1">
                   <div className="filter-container-list application-filter-list-view">
@@ -146,7 +146,7 @@ const ApplicationTable = () => {
                       >
                         <path d="M6 10.5a.5.5 0 0 1 .5-.5h3a.5.5 0 0 1 0 1h-3a.5.5 0 0 1-.5-.5zm-2-3a.5.5 0 0 1 .5-.5h7a.5.5 0 0 1 0 1h-7a.5.5 0 0 1-.5-.5zm-2-3a.5.5 0 0 1 .5-.5h11a.5.5 0 0 1 0 1h-11a.5.5 0 0 1-.5-.5z" />
                       </svg>
-                      Filter
+                      {t("Filter")}
                     </button>
 
                     {displayFilter && (

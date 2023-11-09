@@ -314,7 +314,7 @@ const Dashboard = React.memo(() => {
 
           <div className="dashboard d-flex">
             {submissionsList.length ? (
-              <div className="">
+              <div className="col-12 px-0">
                 {!metricsDateRangeLoader && (
                   <ApplicationCounter
                     className="dashboard-card"
@@ -337,7 +337,7 @@ const Dashboard = React.memo(() => {
           </div>
 
           {submissionsList.length && !metricsDateRangeLoader ? (
-            <div className="d-flex justify-content-between align-items-center mt-4">
+            <div className="d-flex justify-content-between align-items-center mt-3">
                  <div className="d-flex align-items-center">
           <span className="mr-2"> {t("Rows per page")}</span>
           <Dropdown>

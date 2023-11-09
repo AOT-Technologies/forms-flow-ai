@@ -9,7 +9,7 @@
     "build": "concurrently npm:build:*",
     "build:webpack": "webpack --mode=production",
     "build-dev:webpack": "webpack --env isLocal --mode=development",
-    "preinstall": "npx npm-force-resolutions"
+    "preinstall": "npm install --package-lock-only --ignore-scripts && npx npm-force-resolutions"
   },
   "devDependencies": {
     "concurrently": "^6.2.1",

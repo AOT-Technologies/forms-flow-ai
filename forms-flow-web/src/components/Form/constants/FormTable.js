@@ -298,13 +298,13 @@ function FormTable() {
                       )}
                       <td>{HelperServices?.getLocaldate(e.created)}</td>
                       <td>{_.capitalize(e.formType)}</td>
-                      <td>{e.anonymous ? "Anonymous" : "Private"}</td>
+                      <td>{e.anonymous ? t("Anonymous") : t("Private")}</td>
                       <td>
                         {" "}
                         <button 
                           className={`btn ${e.status === 'active' ? 'published-forms-label' : 'unpublished-forms-label'}`}
                         >
-                          {e.status === 'active' ? "Published" : "Unpublished"}
+                          {e.status === 'active' ? t("Published") : t("Unpublished")}
                         </button>
                       </td>
 
@@ -323,7 +323,7 @@ function FormTable() {
                           <Dropdown className="shadow position-absolute bg-white" style={{zIndex:99}}>
                             <Dropdown.Item onClick={() => deleteForms(e)}>
                               <i className="fa fa-trash mr-2 text-danger" />
-                              Delete
+                              {t("Delete")}
                             </Dropdown.Item>
                            {(userRoles.includes(STAFF_REVIEWER) || userRoles.includes(CLIENT))?(
                              <Dropdown.Item onClick={() => {console.log(e);submitNewForm(e?._id)}}>
@@ -374,7 +374,7 @@ function FormTable() {
             <span className="ml-2">
               {t("Showing")} {limit * pageNo - (limit - 1)} {t("to")}{" "}
               {limit * pageNo > totalForms ? totalForms : limit * pageNo}{" "}
-              {t("of")} {totalForms} {t("Results")}
+              {t("of")} {totalForms} {t("results")}
             </span>
           </div>
           <div className="d-flex align-items-center">

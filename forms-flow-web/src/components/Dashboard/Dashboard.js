@@ -365,7 +365,7 @@ const Dashboard = React.memo(() => {
                   {numberofSubmissionListTo > totalItems
                     ? totalItems
                     : numberofSubmissionListTo}{" "}
-                  {t("of")} {totalItems}
+                  {t("of")} {totalItems} {t("results")}
                 </span>
           </div>
               

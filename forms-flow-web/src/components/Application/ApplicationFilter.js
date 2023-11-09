@@ -3,6 +3,7 @@ import { Col, Row } from "react-bootstrap";
 import DateRangePicker from "@wojtekmaj/react-daterange-picker";
 import { useDispatch, useSelector } from "react-redux";
 import { getAllApplications } from "../../apiManager/services/applicationServices";
+import { useTranslation } from "react-i18next";
 
 const ApplicationFilter = ({ setDisplayFilter,filterParams,setFilterParams }) => {
   const dispatch = useDispatch();
@@ -13,6 +14,7 @@ const ApplicationFilter = ({ setDisplayFilter,filterParams,setFilterParams }) =>
   const [lastModified,setLastModified] = useState(filterParams.modified || null);
   const pageNo = useSelector((state) => state.applications?.activePage);
   const limit = useSelector((state) => state.applications?.countPerPage);
+  const { t } = useTranslation();
   const handleClick = (e) => {
     if (createSearchNode?.current?.contains(e.target)) {
       return;
@@ -85,7 +87,7 @@ const ApplicationFilter = ({ setDisplayFilter,filterParams,setFilterParams }) =>
       <div className="m-4 px-2">
         <Row className="mt-2">
           <Col>
-            <label>Submission Id</label>
+          <label>{t("Submission Id")}</label>
             <input
               className="form-control"
               placeholder=""
@@ -94,7 +96,7 @@ const ApplicationFilter = ({ setDisplayFilter,filterParams,setFilterParams }) =>
             />
           </Col>
           <Col>
-            <label>Form Title</label>
+            <label>{t("Form Title")}</label>
             <input
               className="form-control"
               placeholder=""
@@ -108,7 +110,7 @@ const ApplicationFilter = ({ setDisplayFilter,filterParams,setFilterParams }) =>
       <div className="m-4 px-2">
         <Row className="mt-2">
           <Col>
-            <label>Submission Status</label>
+            <label>{t("Submission Status")}</label>
             <input
               className="form-control"
               placeholder=""
@@ -117,7 +119,7 @@ const ApplicationFilter = ({ setDisplayFilter,filterParams,setFilterParams }) =>
             />
           </Col>
           <Col className="mr-2" >
-          <label>Modified Date</label>
+          <label>{t("Modified Date")}</label>
             <DateRangePicker
               onChange={(selectedRange) => {
                 onSetDateRange(selectedRange);
@@ -142,7 +144,7 @@ const ApplicationFilter = ({ setDisplayFilter,filterParams,setFilterParams }) =>
             className="text-danger small "
             onClick={() => clearAllFilters()}
           >
-            Clear All Filters
+            {t("Clear All Filters")}
           </span>
         </Col>
         <Col className="text-right">
@@ -150,13 +152,13 @@ const ApplicationFilter = ({ setDisplayFilter,filterParams,setFilterParams }) =>
             className="btn btn-light mr-1 "
             onClick={() => setDisplayFilter(false)}
           >
-            Cancel
+            {t("Cancel")}
           </button>
           <button
             className="btn btn-dark"
               onClick={() => applyFilters()}
           >
-            Show results
+            {t("Show results")}
           </button>
         </Col>
       </Row>

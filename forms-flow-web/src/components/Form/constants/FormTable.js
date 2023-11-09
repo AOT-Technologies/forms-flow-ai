@@ -238,10 +238,10 @@ function FormTable() {
                     </span>
                   </div>
                 </th>
-                <th scope="col">Created Date</th>
-                <th scope="col">Type</th>
-                <th scope="col">Visibility</th>
-                <th scope="col">Status</th>
+                <th scope="col">{t("Created Date")}</th>
+                <th scope="col">{t("Type")}</th>
+                <th scope="col">{t("Visibility")}</th>
+                <th scope="col">{t("Status")}</th>
                 <th colSpan="4">
                   <InputGroup className="input-group p-0">
                     <FormControl

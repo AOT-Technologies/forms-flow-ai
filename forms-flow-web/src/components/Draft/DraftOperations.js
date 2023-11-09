@@ -1,9 +1,11 @@
 import React from "react";
 import { useDispatch } from "react-redux";
 import { setDraftDelete } from "../../actions/draftActions";
+import { useTranslation } from "react-i18next";
 
 const DraftOperations = ({ row }) => {  
   const dispatch = useDispatch();
+  const { t } = useTranslation();
   const deleteDraft = () => {
     dispatch(
       setDraftDelete({
@@ -23,7 +25,7 @@ const DraftOperations = ({ row }) => {
               className="btn btn-link text-danger mt-2"
               onClick={() => deleteDraft()}
             >
-              Delete Draft
+              {t("Delete Draft")}
             </button>
             &nbsp;
           </span>

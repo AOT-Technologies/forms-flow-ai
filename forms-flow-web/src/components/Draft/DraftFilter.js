@@ -103,9 +103,9 @@ const DraftFilter = ({ setDisplayFilter, filterParams, setFilterParams }) => {
         </Row>
       </div>
       <hr className="m-0 w-100" />
-      <div className="ml-4">
-        <Row >
-          <Col style={{ marginTop: "33px" }}>
+      <div className="ml-3 d-flex flex-column col-4">
+         
+          <label>Modified Date</label>
             <DateRangePicker
               onChange={(selectedRange) => {
                 onSetDateRange(selectedRange);
@@ -120,8 +120,7 @@ const DraftFilter = ({ setDisplayFilter, filterParams, setFilterParams }) => {
               dayAriaLabel="Select the day"
               clearAriaLabel="Click to clear"
             />
-          </Col>
-        </Row>
+         
       </div>
       <hr className="mx-4" />
       <Row className="m-3 filter-cancel-btn-container ">

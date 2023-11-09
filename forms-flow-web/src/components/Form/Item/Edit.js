@@ -605,7 +605,9 @@ const Edit = React.memo(() => {
                   {" "}
                   {t("Description")}
                 </label>
-                <RichText value={formDescription} onChange={setFormDescription} />
+               <div className="bg-white">
+               <RichText value={formDescription} onChange={setFormDescription} />
+               </div>
               </div>
             </div>
 

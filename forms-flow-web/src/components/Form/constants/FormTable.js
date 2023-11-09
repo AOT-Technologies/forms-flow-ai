@@ -30,6 +30,7 @@ import { Translation } from "react-i18next";
 import { getAllApplicationCount, getFormProcesses, resetFormProcessData } from "../../../apiManager/services/processServices";
 import { setIsApplicationCountLoading, setResetProcess } from "../../../actions/processActions";
 import { HelperServices } from "@formsflow/service";
+import _ from "lodash";
 
 function FormTable() {
   const tenantKey = useSelector((state) => state.tenants?.tenantId);
@@ -296,14 +297,14 @@ function FormTable() {
                         </td>
                       )}
                       <td>{HelperServices?.getLocaldate(e.created)}</td>
-                      <td>{e.formType}</td>
+                      <td>{_.capitalize(e.formType)}</td>
                       <td>{e.anonymous ? "Anonymous" : "Private"}</td>
                       <td>
                         {" "}
                         <button 
                           className={`btn ${e.status === 'active' ? 'published-forms-label' : 'unpublished-forms-label'}`}
                         >
-                          {e.status === 'active' ? "Published" : "unpublished"}
+                          {e.status === 'active' ? "Published" : "Unpublished"}
                         </button>
                       </td>
 

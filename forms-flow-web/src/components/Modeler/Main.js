@@ -1,10 +1,8 @@
-import React from "react";
+import React, { useRef } from "react";
 import "./Modeler.scss";
-import { Tab, Tabs } from "react-bootstrap";
 import BpmnTable from "./constants/bpmnTable";
 import DmnTable from "./constants/dmnTable";
 import { useTranslation } from "react-i18next";
-import { useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { push } from "connected-react-router";
 import { extractDataFromDiagram } from "./helpers/helper";
@@ -14,17 +12,16 @@ import {
   setBpmnModel,
 } from "../../actions/processActions";
 import { MULTITENANCY_ENABLED } from "../../constants/constants";
+import Head from "../../containers/Head";
 export default React.memo(() => {
   const dispatch = useDispatch();
   const { t } = useTranslation();
-  const [fileName, setFileName] = useState("");
+  const uploadFormNode = useRef();
   const isBpmnModel = useSelector((state) => state.process?.isBpmnModel);
   const tenantKey = useSelector((state) => state.tenants?.tenantId);
-  const [selectedTab, setSelectedTab] = useState(isBpmnModel ? "bpmn" : "dmn");
 
   const handleChnageTab = (newValue) => {
-    setSelectedTab(newValue);
-    dispatch(setBpmnModel(newValue === "bpmn" ? true : false));
+    dispatch(setBpmnModel(newValue === "BPMN" ? true : false));
   };
   const redirectUrl = MULTITENANCY_ENABLED ? `/tenant/${tenantKey}/` : "/";
 
@@ -54,7 +51,7 @@ export default React.memo(() => {
   };
 
   const handleChangeFile = (file) => {
-    setFileName(file.name);
+    // setFileName(file.name);
     let fileData = new FileReader();
     try {
       fileData.onloadend = (e) => {
@@ -74,62 +71,65 @@ export default React.memo(() => {
     dispatch(push(`${redirectUrl}processes/create`));
   };
 
+  const uploadClick = (e) => {
+    e.preventDefault();
+    uploadFormNode.current?.click();
+    return false;
+  };
+
+  const headOptions = [
+    {
+      name: "BPMN",
+      icon: "fa-solid fa-gears",
+      onClick: () => {
+        handleChnageTab("BPMN");
+      },
+    },
+    {
+      name: "DMN",
+      icon: "fa-solid fa-gears",
+      onClick: () => {
+        handleChnageTab("DMN");
+      },
+    },
+  ];
+
   return (
     <div>
-      <div className="">
-        <div className="canvas">
-          <div className="card-container">
-            <div className="cardprocess cursor-pointer d-flex align-items-center justify-content-center" onClick={() => handleCreateNew()}>
-              <div className="d-flex flex-column">
-                <h3>
-                  <i className="fa fa-plus" aria-hidden="true"></i>
-                </h3>
-                <p>{t("Advanced Designer")}</p>
-              </div>
-            </div>
-            <div className="cardprocess cursor-pointer">
-              <div className="card-content">
-                <img
-                  className="card-img-top"
-                  src={
-                    require("./Assets/undraw_export_files_re_99ar.svg").default
-                  }
-                  width="100"
-                  height="30"
-                  alt="Card image cap"
-                />
-              </div>
-              <input
-                id="inputWorkflow"
-                style={{ display: "none" }}
-                type="file"
-                name="upload"
-                accept=".bpmn, .dmn"
-                onChange={(e) => handleChangeFile(e.target.files[0])}
-              />
-              <label className="p-2" htmlFor="inputWorkflow">
-                {fileName ? fileName : t("Choose File")}
-              </label>
-            </div>
-          </div>
-        </div>
-      </div>
-      <div className="pt-4">
-        <Tabs
-          defaultActiveKey="bpmn"
-          activeKey={selectedTab}
-          id="process-tab"
-          mountOnEnter
-          onSelect={handleChnageTab}
+      <div className="d-flex pb-2">
+        <button
+          onClick={handleCreateNew}
+          className="btn btn-primary"
+          style={{ whiteSpace: "nowrap" }}
         >
-          <Tab eventKey="bpmn" title={t("BPMN")}>
-            <BpmnTable />
-          </Tab>
-          <Tab eventKey="dmn" title={t("DMN")}>
-            <DmnTable />
-          </Tab>
-        </Tabs>
+          <i className="fa fa-plus mr-2" />
+          {t("Create Workflow")}
+        </button>
+        <button
+          className="btn btn-outline-primary  ml-4"
+          onClick={uploadClick}
+          title={t("Upload workflow")}
+          style={{ whiteSpace: "nowrap" }}
+        >
+          <i className="fa fa-upload mr-2" aria-hidden="true" />
+          {t("Upload Workflow")}
+        </button>
+        <input
+          ref={uploadFormNode}
+          id="inputWorkflow"
+          style={{ display: "none" }}
+          type="file"
+          name="upload"
+          accept=".bpmn, .dmn"
+          onChange={(e) => handleChangeFile(e.target.files[0])}
+        />
       </div>
+
+      <div className="mt-4">
+        <Head items={headOptions} page={isBpmnModel ? "BPMN" : "DMN"} />
+      </div>
+
+      {isBpmnModel ? <BpmnTable /> : <DmnTable />}
     </div>
   );
 });

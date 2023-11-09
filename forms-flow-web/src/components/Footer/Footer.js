@@ -12,7 +12,7 @@ const Footer = React.memo(() => {
         <div className="font-weight-bold">
           <Translation>{(t) => t("Powered by ")}</Translation>{" "}
           <a className="text-link" href="https://formsflow.ai/">
-            formflow.ai
+            formsflow.ai
           </a>
           {` v${version_org}`}
         </div>

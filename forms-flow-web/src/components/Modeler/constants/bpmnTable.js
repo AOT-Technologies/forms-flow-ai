@@ -92,8 +92,15 @@ function BpmnTable() {
         active={isLoading || countLoading}
       >
         <div style={{ minHeight: "400px" }}>
-          <div className="d-flex justify-content-md-end">
-            <InputGroup className="input-group p-0 col-md-3 col-12">
+ 
+          <table className="table custom-table table-responsive-sm mt-2">
+            <thead>
+              <tr>
+                <th scope="col">{t("Key")}</th>
+                <th scope="col">{t("Workflow Name")}</th>
+                <th scope="col">{t("Type")}</th>
+                <th colSpan="2">
+                <InputGroup className="input-group">
               <FormControl
                 value={search}
                 onChange={(e) => {
@@ -122,15 +129,7 @@ function BpmnTable() {
                 </InputGroup.Text>
               </InputGroup.Append>
             </InputGroup>
-          </div>
-
-          <table className="table custom-table table-responsive-sm mt-2">
-            <thead>
-              <tr>
-                <th scope="col">{t("Key")}</th>
-                <th scope="col">{t("Workflow Name")}</th>
-                <th scope="col">{t("Type")}</th>
-                <th scope="col">{t("Edit")}</th>
+                </th>
               </tr>
             </thead>
             {!totalProcess ? (
@@ -156,7 +155,7 @@ function BpmnTable() {
                       <Link
                         to={`${redirectUrl}processes/bpmn/${processItem.key}/edit`}
                       > 
-                        {t("Edit")}
+                        {t("Edit Workflow")}
                       </Link>
                     </td>
                   </tr>

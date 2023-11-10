@@ -1,33 +1,34 @@
 package org.camunda.bpm.extension.keycloak.rest;
 
 import jakarta.inject.Inject;
-import jakarta.ws.rs.HttpMethod;
 import org.camunda.bpm.engine.IdentityService;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
-import org.springframework.boot.autoconfigure.security.SecurityProperties;
 import org.springframework.boot.web.servlet.FilterRegistrationBean;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.annotation.Order;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
+import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
 import org.springframework.security.oauth2.client.OAuth2AuthorizedClientService;
 import org.springframework.security.oauth2.core.DelegatingOAuth2TokenValidator;
 import org.springframework.security.oauth2.core.OAuth2TokenValidator;
 import org.springframework.security.oauth2.jwt.*;
 import org.springframework.security.web.SecurityFilterChain;
-import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
+
+import static org.springframework.security.web.util.matcher.AntPathRequestMatcher.antMatcher;
 
 
 /**
  * RestApi Security Config.
  * Optional Security Configuration for Camunda REST Api.
  */
-//@Configuration
-//@EnableAutoConfiguration
-//@EnableWebSecurity
+@Configuration
+@EnableAutoConfiguration
+@EnableWebSecurity
 //@Order(SecurityProperties.BASIC_AUTH_ORDER - 20)
 @ConditionalOnProperty(name = "rest.security.enabled", havingValue = "true", matchIfMissing = true)
 public class RestApiSecurityConfig {
@@ -52,18 +53,28 @@ public class RestApiSecurityConfig {
 	 */
 
 	@Bean
-    public SecurityFilterChain securityFilterChain(HttpSecurity http, JwtDecoder jwtDecoder) throws Exception {
-        http.csrf(csrf -> csrf.disable())
-            .authorizeHttpRequests(auth ->
-                auth.requestMatchers(AntPathRequestMatcher.antMatcher(HttpMethod.OPTIONS)).permitAll()   // Allow HTTP OPTIONS without a JWT token
-                        .requestMatchers(AntPathRequestMatcher.antMatcher("/engine-rest/**")).authenticated()
-                        .requestMatchers(AntPathRequestMatcher.antMatcher("/engine-rest-ext/**")).authenticated()
-                    .anyRequest().authenticated()); // Require JWT token for all other requests
+	@Order(2)
+	public SecurityFilterChain httpSecurityFilterChain(HttpSecurity http, JwtDecoder jwtDecoder) throws Exception {
+		String jwkSetUri = applicationContext.getEnvironment().getRequiredProperty(
+				"spring.security.oauth2.client.provider." + configProps.getProvider() + ".jwk-set-uri");
 
-        return http.build();
-
-    }
-
+		return http
+				.csrf(AbstractHttpConfigurer::disable)
+				.authorizeHttpRequests(auth -> auth
+						.requestMatchers(
+								antMatcher(HttpMethod.OPTIONS,"/engine-rest/**"),
+								antMatcher(HttpMethod.OPTIONS,"/engine-rest-ext/**"),
+								antMatcher(HttpMethod.OPTIONS, "/forms-flow-bpm-socket/**"),
+								antMatcher(HttpMethod.OPTIONS, "/engine-rest/**"),
+								antMatcher("/engine-rest-ext/**"))
+						.permitAll()
+						.anyRequest().authenticated())
+				.oauth2ResourceServer(oauth2ResourceServer -> oauth2ResourceServer
+						.jwt(jwt -> jwt
+								.decoder(jwtDecoder)
+								.jwkSetUri(jwkSetUri)))
+				.build();
+	}
 
 	/**
 	 * Create a JWT decoder with issuer and audience claim validation.

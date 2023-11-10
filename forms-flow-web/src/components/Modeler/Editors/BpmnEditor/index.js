@@ -318,9 +318,10 @@ export default React.memo(
               </label>
             ) : null}
 
-            <Button variant="light" onClick={cancel}>
+            <button type="button"
+              className="btn btn-link text-dark" onClick={cancel}>
               {t("Cancel")}
-            </Button>
+            </button>
             <Button
               variant="outline-dark"
               className="ml-3"

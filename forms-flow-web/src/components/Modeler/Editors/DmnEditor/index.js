@@ -279,9 +279,10 @@ export default React.memo(({ processKey, tenant, isNewDiagram, mode}) => {
               Apply for all tenants
             </label>
           ) : null}
-          <Button variant="light" onClick={cancel}>
+          <button type="button"
+            className="btn btn-link text-dark" onClick={cancel}>
             {t("Cancel")}
-          </Button>
+          </button>
           <Button
             variant="outline-dark"
             className="ml-3"

@@ -25,10 +25,10 @@ import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
  * RestApi Security Config.
  * Optional Security Configuration for Camunda REST Api.
  */
-@Configuration
-@EnableAutoConfiguration
-@EnableWebSecurity
-@Order(SecurityProperties.BASIC_AUTH_ORDER - 20)
+//@Configuration
+//@EnableAutoConfiguration
+//@EnableWebSecurity
+//@Order(SecurityProperties.BASIC_AUTH_ORDER - 20)
 @ConditionalOnProperty(name = "rest.security.enabled", havingValue = "true", matchIfMissing = true)
 public class RestApiSecurityConfig {
 

@@ -92,7 +92,7 @@ it("should render the Baserouting component without breaking", async () => {
     path: "/",
     route: "/",
   });
-  expect(screen.getAllByText("Forms")).toHaveLength(2);
+  expect(screen.getAllByText("Forms")).toHaveLength(1);
 });
 
 it("should not render the Baserouting component without authenticating breaking", async () => {

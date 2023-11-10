@@ -3,7 +3,6 @@ import { useDispatch, useSelector } from "react-redux";
 
 import { Form, Errors, Formio } from "react-formio";
 import { push } from "connected-react-router";
-import { Button } from "react-bootstrap";
 import Loading from "../../../containers/Loading";
 import { Translation } from "react-i18next";
 import { formio_resourceBundles } from "../../../resourceBundles/formio_resourceBundles";
@@ -152,15 +151,16 @@ const Preview = ({handleNext, hideComponents, activeStep}) => {
     return <Loading />;
   }
   return (
-    <div className="container">
-      <div className=" d-flex justify-content-between align-items-center  ">
-        <h3 className="task-head col-8 text-truncate">
-          {" "}
-          <i className="fa fa-wpforms" aria-hidden="true" /> &nbsp;{" "}
+ 
+    <div className="mt-3">
+       <h3 className="task-head col-12 text-truncate my-4 mx-0 px-0">
+ 
+          <i className="fa-solid fa-file-lines" aria-hidden="true" /> &nbsp;{" "}
           {form?.title}
         </h3>
-
-        <div>
+      <div className=" d-flex flex-column flex-md-row justify-content-md-end align-items-md-center mb-3">
+    
+        
           <button
             className="btn btn-primary"
             onClick={() => {
@@ -171,7 +171,7 @@ const Preview = ({handleNext, hideComponents, activeStep}) => {
             &nbsp;&nbsp;<Translation>{(t) => t("Edit Form")}</Translation>
           </button>
           <button
-            className="btn btn-outline-secondary ml-2 "
+            className="btn btn-outline-secondary ml-md-2 my-md-0 my-2 "
             onClick={() => {
               handleModalChange();
             }}
@@ -180,7 +180,7 @@ const Preview = ({handleNext, hideComponents, activeStep}) => {
             &nbsp;&nbsp;<Translation>{(t) => t("Form History")}</Translation>
           </button>
           <button
-            className="btn btn-outline-primary ml-2"
+            className="btn btn-outline-primary ml-md-2 my-md-0 my-2"
             disabled={newpublishClicked}
             onClick={() => {
               publishConfirmModalChange();
@@ -190,17 +190,16 @@ const Preview = ({handleNext, hideComponents, activeStep}) => {
             &nbsp;&nbsp;
             <Translation>{(t) => t("Duplicate Form")}</Translation>
           </button>
-          <Button
-            variant="contained"
+          <button
             onClick={handleNext}
-            className="ml-3 btn btn-primary  "
+            className="ml-md-2 my-md-0 my-2 btn btn-primary"
           >
             {
               (activeStep === 1,
               (<Translation>{(t) => t("Next")}</Translation>))
             }
-          </Button>
-        </div>
+          </button>
+ 
       </div>
 
       <CreateTemplateConfirmModal modalOpen={confirmPublishModal}

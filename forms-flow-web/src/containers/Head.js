@@ -2,12 +2,13 @@ import React from "react";
 import { Translation } from "react-i18next";
 
 const Head = React.memo((props) => {
-  const { items, page } = props;
+  const { items = [], page, visibleHr = true, } = props;
   return (
     <div className="header-container">
       <div className="main-header">
-        {items?.map((item, key) => (
+        {items?.map?.((item, key) => (
           <div
+            onClick={item.onClick ? item.onClick :  ()=>{}}
             key={key}
             className={`head-item ${item.name === page ? "head-active" : ""} ${key > 0 ? 'padding-left-60' : ''}`}
             style={{ color: item.name !== page ? " #949494" : "" }}
@@ -21,15 +22,16 @@ const Head = React.memo((props) => {
               <span className="application-text">
                 <Translation>{(t) => t(item?.name)}</Translation>
               </span>
-              { item?.count ? 
+              {item?.count ? (
                 <div className="application-count" role="contentinfo">
-                ({item?.count})
-              </div> : null}
+                  ({item?.count})
+                </div>
+              ) : null}
             </h3>
           </div>
         ))}
       </div>
-      <hr className="head-rule" />
+      {visibleHr && <hr className="head-rule" />}
     </div>
   );
 });

@@ -69,7 +69,7 @@ const HistoryList = React.memo((props) => {
       search
     >
       {(props) => (
-        <div className="container">
+        <div className="">
           <div className="main-header">
             <h3 className="task-head">
               <i className="fa fa-list" aria-hidden="true" />

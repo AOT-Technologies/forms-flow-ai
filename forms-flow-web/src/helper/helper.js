@@ -35,11 +35,12 @@ const textTruncate = (wordLength, targetLength, text) => {
 };
 
 const renderPage = (formStatus, processLoadError) => {
-  if (!processLoadError && (formStatus === "inactive")) {
+  console.log(processLoadError,formStatus);
+  if (!processLoadError && ((formStatus === "inactive") || !formStatus)) {
     return (
       <span>
         <div
-          className="container"
+          className=""
           style={{
             maxWidth: "900px",
             margin: "auto",

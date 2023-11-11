@@ -8,11 +8,14 @@ import org.springframework.boot.web.servlet.FilterRegistrationBean;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.core.Ordered;
 import org.springframework.core.annotation.Order;
 import org.springframework.http.HttpMethod;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
+import org.springframework.security.config.annotation.web.configurers.oauth2.server.resource.OAuth2ResourceServerConfigurer;
+import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.oauth2.client.OAuth2AuthorizedClientService;
 import org.springframework.security.oauth2.core.DelegatingOAuth2TokenValidator;
 import org.springframework.security.oauth2.core.OAuth2TokenValidator;
@@ -53,26 +56,20 @@ public class RestApiSecurityConfig {
 	 */
 
 	@Bean
-	@Order(2)
+	@Order(1)
 	public SecurityFilterChain httpSecurityFilterChain(HttpSecurity http, JwtDecoder jwtDecoder) throws Exception {
 		String jwkSetUri = applicationContext.getEnvironment().getRequiredProperty(
 				"spring.security.oauth2.client.provider." + configProps.getProvider() + ".jwk-set-uri");
-
 		return http
-				.csrf(AbstractHttpConfigurer::disable)
-				.authorizeHttpRequests(auth -> auth
-						.requestMatchers(
-								antMatcher(HttpMethod.OPTIONS,"/engine-rest/**"),
-								antMatcher(HttpMethod.OPTIONS,"/engine-rest-ext/**"),
-								antMatcher(HttpMethod.OPTIONS, "/forms-flow-bpm-socket/**"),
-								antMatcher(HttpMethod.OPTIONS, "/engine-rest/**"),
-								antMatcher("/engine-rest-ext/**"))
-						.permitAll()
-						.anyRequest().authenticated())
-				.oauth2ResourceServer(oauth2ResourceServer -> oauth2ResourceServer
-						.jwt(jwt -> jwt
-								.decoder(jwtDecoder)
-								.jwkSetUri(jwkSetUri)))
+				.securityMatcher("/**")
+				.authorizeRequests()
+				.anyRequest().authenticated()
+				.and().sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
+				.and().oauth2ResourceServer()
+				.jwt().jwtAuthenticationConverter(new KeycloakJwtAuthenticationConverter()).and()
+				.and().csrf().disable()
+				.formLogin().disable()
+				.httpBasic().disable()
 				.build();
 	}
 
@@ -85,8 +82,7 @@ public class RestApiSecurityConfig {
 		String issuerUri = applicationContext.getEnvironment().getRequiredProperty(
 				"spring.security.oauth2.client.provider." + configProps.getProvider() + ".issuer-uri");
 
-		NimbusJwtDecoder jwtDecoder = (NimbusJwtDecoder)
-				JwtDecoders.fromOidcIssuerLocation(issuerUri);
+		NimbusJwtDecoder jwtDecoder = JwtDecoders.fromOidcIssuerLocation(issuerUri);
 
 		OAuth2TokenValidator<Jwt> audienceValidator = new AudienceValidator(configProps.getRequiredAudience());
 		OAuth2TokenValidator<Jwt> withIssuer = JwtValidators.createDefaultWithIssuer(issuerUri);
@@ -110,7 +106,7 @@ public class RestApiSecurityConfig {
 				"spring.security.oauth2.client.provider." + this.configProps.getProvider() + ".user-name-attribute");
 
 		filterRegistration.setFilter(new KeycloakAuthenticationFilter(identityService, clientService, userNameAttribute));
-		filterRegistration.setOrder(102); // make sure the filter is registered after the Spring Security Filter Chain
+		filterRegistration.setOrder(102);
 		filterRegistration.addUrlPatterns("/engine-rest/*");
 		filterRegistration.addUrlPatterns("/engine-rest-ext/*");
 		return filterRegistration;

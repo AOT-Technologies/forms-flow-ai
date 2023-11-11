@@ -33,16 +33,22 @@ public class OAuth2LoginSecurityConfig  {
 	private KeycloakLogoutHandler keycloakLogoutHandler;
 
 	@Bean
-	@Order(1)
+	@Order(2)
 	public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
-		http.csrf(csrf -> csrf.ignoringRequestMatchers(antMatcher("/api/**"), antMatcher("/forms-flow-bpm-socket/**"), antMatcher("/engine-rest/**"), antMatcher("/engine-rest-ext/**"), antMatcher("/camunda/engine-rest/**"), antMatcher("/camunda/engine-rest-ext/**"), antMatcher("/camunda/form-builder/**"), antMatcher("/actuator/**")))
-				.securityMatcher("/**")
+		http.csrf(csrf -> csrf.ignoringRequestMatchers(
+				antMatcher("/api/**"),
+						antMatcher("/forms-flow-bpm-socket/**"),
+						antMatcher("/engine-rest/**"),
+						antMatcher("/engine-rest-ext/**"),
+						antMatcher("/camunda/engine-rest/**"),
+						antMatcher("/camunda/engine-rest-ext/**"),
+						antMatcher("/camunda/form-builder/**"),
+						antMatcher("/actuator/**")))
+//				.securityMatcher("/**")
 				.authorizeHttpRequests(authz -> authz
 						.requestMatchers(
-								antMatcher("/assets/**"),
-								antMatcher("/app/**"),
-								antMatcher("/api/**"),
-								antMatcher("/lib/**"))
+								antMatcher("/app/**")
+						)
 						.authenticated()
 						.anyRequest()
 						.permitAll())

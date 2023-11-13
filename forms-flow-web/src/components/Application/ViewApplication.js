@@ -92,7 +92,7 @@ const ViewApplication = React.memo(() => {
         </Link>
         <h3 className=" text-truncate">
           <span className="application-head-details">
-            <i className="fa fa-list-alt" aria-hidden="true" />
+            <i className="fa fa-list-alt mr-2" aria-hidden="true" />
             &nbsp; <Translation>{(t) => t("Submissions")}</Translation> /
           </span>{" "}
           {`${startCase(applicationDetail.applicationName)}`}

@@ -71,8 +71,7 @@ const List = React.memo((props) => {
   const designerFormLoading = useSelector(
     (state) => state.formCheckList.designerFormLoading
   );
-  const searchText = useSelector((state) => state.bpmForms.searchText);
-  const formType = useSelector((state) => state.bpmForms.formType);
+  const searchText = useSelector((state) => state.bpmForms.searchText); 
 
   const isDesigner = userRoles.includes(STAFF_DESIGNER);
   const pageNo = useSelector((state) => state.bpmForms.page);
@@ -108,9 +107,6 @@ const List = React.memo((props) => {
 
   const fetchForms = () => {
     let filters = [pageNo, limit, sortBy, sortOrder, searchText];
-    if (isDesigner) {
-      filters.push(formType);
-    }
     dispatch(setFormSearchLoading(true));
     dispatch(fetchBPMFormList(...filters));
   };
@@ -126,7 +122,6 @@ const List = React.memo((props) => {
     sortBy,
     sortOrder,
     searchText,
-    formType,
   ]);
 
   const formCheck = (formCheckList) => {

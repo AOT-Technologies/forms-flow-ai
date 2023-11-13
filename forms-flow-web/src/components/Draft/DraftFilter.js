@@ -3,6 +3,7 @@ import { Col, Row } from "react-bootstrap";
 import DateRangePicker from "@wojtekmaj/react-daterange-picker";
 import { useDispatch, useSelector } from "react-redux";
 import { fetchDrafts } from "../../apiManager/services/draftService";
+import { useTranslation } from "react-i18next";
 
 const DraftFilter = ({ setDisplayFilter, filterParams, setFilterParams }) => {
   const dispatch = useDispatch();
@@ -14,6 +15,7 @@ const DraftFilter = ({ setDisplayFilter, filterParams, setFilterParams }) => {
   );
   const pageNo = useSelector((state) => state.draft?.activePage);
   const limit = useSelector((state) => state.draft?.countPerPage);
+  const { t } = useTranslation();
   const handleClick = (e) => {
     if (createSearchNode?.current?.contains(e.target)) {
       return;
@@ -83,7 +85,7 @@ const DraftFilter = ({ setDisplayFilter, filterParams, setFilterParams }) => {
       <div className="m-4 px-2">
         <Row className="mt-2">
           <Col>
-            <label>Draft Id</label>
+          <label>{t("Draft Id")}</label>
             <input
               className="form-control"
               placeholder=""
@@ -92,7 +94,7 @@ const DraftFilter = ({ setDisplayFilter, filterParams, setFilterParams }) => {
             />
           </Col>
           <Col>
-            <label>Draft Name</label>
+          <label>{t("Draft Name")}</label>
             <input
               className="form-control"
               placeholder=""
@@ -105,7 +107,7 @@ const DraftFilter = ({ setDisplayFilter, filterParams, setFilterParams }) => {
       <hr className="m-0 w-100" />
       <div className="ml-3 d-flex flex-column col-4">
          
-          <label>Modified Date</label>
+      <label>{t("Modified Date")}</label>
             <DateRangePicker
               onChange={(selectedRange) => {
                 onSetDateRange(selectedRange);
@@ -129,7 +131,7 @@ const DraftFilter = ({ setDisplayFilter, filterParams, setFilterParams }) => {
             className="text-danger small "
             onClick={() => clearAllFilters()}
           >
-            Clear All Filters
+           {t("Clear All Filters")}
           </span>
         </Col>
         <Col className="text-right">
@@ -137,10 +139,10 @@ const DraftFilter = ({ setDisplayFilter, filterParams, setFilterParams }) => {
             className="btn btn-light mr-1 "
             onClick={() => setDisplayFilter(false)}
           >
-            Cancel
+            {t("Cancel")}
           </button>
           <button className="btn btn-dark" onClick={() => applyFilters()}>
-            Show results
+          {t("Show results")}
           </button>
         </Col>
       </Row>

@@ -8,12 +8,12 @@ const Head = React.memo((props) => {
       <div className="main-header">
         {items?.map?.((item, key) => (
           <div
-            onClick={item.onClick ? item.onClick :  ()=>{}}
+            onClick={item.onClick}
             key={key}
             className={`head-item ${item.name === page ? "head-active" : ""} ${key > 0 ? 'padding-left-60' : ''}`}
             style={{ color: item.name !== page ? " #949494" : "" }}
           >
-            <h3 onClick={item?.onClick} className="application-head">
+            <h3   className="application-head">
               <i
                 className={`fa fa-${item?.icon}`}
                 style={{ marginTop: "5px" }}

@@ -171,9 +171,9 @@ const DraftTable = () => {
             </Dropdown.Menu>
         </Dropdown>
           <span className="ml-2">
-            {t("Showing")} {(limit * pageNo) - (limit - 1)} {t("to")}{" "}
+            {t("Showing")} {(limit * pageNo ) - (limit - 1)} {t("to")}{" "}
             {limit * pageNo > totalForms ? totalForms : limit * pageNo} {t("of")}{" "}
-            {totalForms} {t("Results")}
+            {totalForms} {t("results")}
           </span>
         </div>
        

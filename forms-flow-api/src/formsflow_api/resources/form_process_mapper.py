@@ -5,6 +5,7 @@ from http import HTTPStatus
 
 from flask import request
 from flask_restx import Namespace, Resource, fields
+from formsflow_api_utils.exceptions import BusinessException
 from formsflow_api_utils.services.external import FormioService
 from formsflow_api_utils.utils import (
     DESIGNER_GROUP,
@@ -214,9 +215,11 @@ class FormResourceList(Resource):
         limit: int = dict_data.get("limit")
         sort_by: str = dict_data.get("sort_by", "id")
         sort_order: str = dict_data.get("sort_order", "desc")
-        form_type: str = dict_data.get("form_type", "form")
+        form_type: str = dict_data.get("form_type", None)
         is_active = dict_data.get("is_active", None)
 
+        if form_type:
+            form_type = form_type.split(",")
         if form_name:
             form_name: str = form_name.replace("%", r"\%").replace("_", r"\_")
 
@@ -495,22 +498,30 @@ class FormioFormResource(Resource):
     )
     def post():
         """Formio form creation method."""
-        data = request.get_json()
-        formio_service = FormioService()
-        form_io_token = formio_service.get_formio_access_token()
-        response, status = (
-            formio_service.create_form(data, form_io_token),
-            HTTPStatus.CREATED,
-        )
-        FormHistoryService.create_form_log_with_clone(
-            data={
-                **response,
-                "parentFormId": data.get("parentFormId"),
-                "newVersion": data.get("newVersion"),
-                "componentChanged": True,
-            }
-        )
-        return response, status
+        try:
+            data = request.get_json()
+            formio_service = FormioService()
+            form_io_token = formio_service.get_formio_access_token()
+            response, status = (
+                formio_service.create_form(data, form_io_token),
+                HTTPStatus.CREATED,
+            )
+            FormHistoryService.create_form_log_with_clone(
+                data={
+                    **response,
+                    "parentFormId": data.get("parentFormId"),
+                    "newVersion": data.get("newVersion"),
+                    "componentChanged": True,
+                }
+            )
+            return response, status
+        except BusinessException as err:
+            message = (
+                err.details[0]["message"]
+                if hasattr(err, "details") and err.details
+                else err.message
+            )
+            return message, err.status_code
 
 
 @cors_preflight("PUT,OPTIONS")
@@ -523,16 +534,26 @@ class FormioFormUpdateResource(Resource):
     @profiletime
     def put(form_id: str):
         """Formio form update method."""
-        FormProcessMapperService.check_tenant_authorization_by_formid(form_id=form_id)
-        data = request.get_json()
-        formio_service = FormioService()
-        form_io_token = formio_service.get_formio_access_token()
-        response, status = (
-            formio_service.update_form(form_id, data, form_io_token),
-            HTTPStatus.OK,
-        )
-        FormHistoryService.create_form_log_with_clone(data=data)
-        return response, status
+        try:
+            FormProcessMapperService.check_tenant_authorization_by_formid(
+                form_id=form_id
+            )
+            data = request.get_json()
+            formio_service = FormioService()
+            form_io_token = formio_service.get_formio_access_token()
+            response, status = (
+                formio_service.update_form(form_id, data, form_io_token),
+                HTTPStatus.OK,
+            )
+            FormHistoryService.create_form_log_with_clone(data=data)
+            return response, status
+        except BusinessException as err:
+            message = (
+                err.details[0]["message"]
+                if hasattr(err, "details") and err.details
+                else err.message
+            )
+            return message, err.status_code
 
 
 @cors_preflight("GET,OPTIONS")

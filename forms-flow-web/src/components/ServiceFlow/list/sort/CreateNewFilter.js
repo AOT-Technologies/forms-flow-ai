@@ -823,6 +823,7 @@ export default function CreateNewFilterDrawer({
             <button
               className="btn btn-primary submitButton"
               style={{ textDecoration: "none", fontSize: "14px" }}
+              disabled={!permissions || !filterName}
               onClick={() => {
                 handleSubmit();
               }}

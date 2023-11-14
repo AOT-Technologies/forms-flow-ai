@@ -301,11 +301,11 @@ function FormTable() {
                       <td>{e.anonymous ? t("Anonymous") : t("Private")}</td>
                       <td>
                         {" "}
-                        <button 
-                          className={`btn ${e.status === 'active' ? 'published-forms-label' : 'unpublished-forms-label'}`}
+                        <span 
+                          className={`badge rounded-pill px-3 py-2 ${e.status === 'active' ? 'published-forms-label' : 'unpublished-forms-label'}`}
                         >
                           {e.status === 'active' ? t("Published") : t("Unpublished")}
-                        </button>
+                        </span>
                       </td>
 
                       <td>

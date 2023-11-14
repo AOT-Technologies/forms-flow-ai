@@ -190,7 +190,7 @@ function FormTable() {
   };
   return (
     <>
-      <LoadingOverlay active={searchFormLoading || isApplicationCountLoading} spinner text="Loading...">
+      <LoadingOverlay active={searchFormLoading || isApplicationCountLoading} spinner text={t("Loading...")}>
         <div style={{ minHeight: "400px" }}>
           <table className="table custom-table table-responsive-sm">
             <thead>
@@ -285,7 +285,7 @@ function FormTable() {
                       )}
                       <td>{HelperServices?.getLocaldate(e.created)}</td>
                       <td>{_.capitalize(e.formType)}</td>
-                      <td>{e.anonymous ? t("Anonymous") : t("Private")}</td>
+                      <td>{e.anonymous ? t("Public") : t("Private")}</td>
                       <td>
                         {" "}
                         <span 

@@ -88,7 +88,7 @@ const ViewApplication = React.memo(() => {
     <div className="">
       <div className="d-flex align-items-center">
         <Link title={t("Back to Submissions")} to={`${redirectUrl}application`} className="">
-          <i className="fa fa-chevron-left fa-lg" />
+          <i className="fa fa-chevron-left fa-lg mr-2" />
         </Link>
         <h3 className=" text-truncate">
           <span className="application-head-details">

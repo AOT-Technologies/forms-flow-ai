@@ -245,7 +245,7 @@ const View = React.memo((props) => {
           ></SubmissionError>
           {isAuthenticated ? (
             <Link title={t("Back to Drafts")} to={`${redirectUrl}draft`} className="">
-              <i className="fa fa-chevron-left fa-lg" />
+              <i className="fa fa-chevron-left fa-lg mr-2" />
             </Link>
           ) : null}
 

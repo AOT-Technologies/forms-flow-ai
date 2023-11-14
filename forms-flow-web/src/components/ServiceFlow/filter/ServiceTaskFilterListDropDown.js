@@ -20,6 +20,7 @@ const ServiceFlowFilterListDropDown = React.memo(({selectFilter,openFilterDrawer
   const { t } = useTranslation();
   const tenantKey = useSelector((state) => state.tenants?.tenantId);
   const redirectUrl = MULTITENANCY_ENABLED ? `/tenant/${tenantKey}/` : "/";
+ 
 
   const changeFilterSelection = (filter) => {
     const selectedFilterItem = filterListItems.find((item) => item.id === filter.id);
@@ -35,6 +36,8 @@ const ServiceFlowFilterListDropDown = React.memo(({selectFilter,openFilterDrawer
       return (
         <>
           {filterList.map((filter, index) => {
+             const matchingFilterItem = filterListItems.find(item => item.id === filter.id);
+             const showEditIcon = matchingFilterItem && matchingFilterItem.editPermission;
             return(
               <NavDropdown.Item
               as={Link}
@@ -48,13 +51,13 @@ const ServiceFlowFilterListDropDown = React.memo(({selectFilter,openFilterDrawer
                 <span onClick={() => changeFilterSelection(filter)}>
                   {filter?.name} {`(${filter.count || 0})`}
                 </span>
-                <i
-                  className="fa fa-pencil ml-5"
-                  onClick={() => {
-                    handleFilterEdit(filter?.id);
-                    openFilterDrawer(true);
-                  }}
-                />
+              {showEditIcon && <i
+                className="fa fa-pencil ml-5"
+                onClick={() => {
+                  handleFilterEdit(filter?.id);
+                  openFilterDrawer(true);
+                }}
+              />}
               </div>
             </NavDropdown.Item>
             );

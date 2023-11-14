@@ -23,7 +23,27 @@
     font-size: 14px;
 }
 
-.react-bootstrap-table {
-    min-height: 434px;
-    overflow: auto;
-   }
+.filter-sort-bar {
+    margin-bottom: 1rem;
+    .filter-list-view {
+        position: absolute;
+        z-index: 1000;
+        background-color: white;
+        top: 31px;;
+        min-width: 180px;
+    }
+    .sort-container{
+        min-width: 250px;
+    }
+    .filter-container-list {
+        
+        margin-left: 1rem;
+    }
+    .application-filter-list-view{
+        position: relative;
+        display: flex;
+        flex-direction: column;
+        align-items: flex-end;
+    }
+}
+ 

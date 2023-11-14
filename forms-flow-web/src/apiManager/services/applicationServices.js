@@ -19,13 +19,15 @@ import { replaceUrl } from "../../helper/helper";
 import moment from "moment";
 import { getFormattedProcess } from "./formatterService";
 import { setPublicFormStatus } from "../../actions/formActions";
-import {setDraftCount} from "../../actions/draftActions";
+import { setDraftCount } from "../../actions/draftActions";
 
 export const getAllApplicationsByFormId = (formId, ...rest) => {
   const done = rest.length ? rest[0] : () => {};
   return (dispatch) => {
     //TODO remove the pageNo and limit currently its mandatory from api
-    RequestService.httpGETRequest(`${API.GET_ALL_APPLICATIONS_FROM_FORM_ID}/${formId}`)
+    RequestService.httpGETRequest(
+      `${API.GET_ALL_APPLICATIONS_FROM_FORM_ID}/${formId}`
+    )
       .then((res) => {
         if (res.data) {
           const applications = res.data.applications || [];
@@ -45,32 +47,32 @@ export const getAllApplicationsByFormId = (formId, ...rest) => {
   };
 };
 
-export const getAllApplications = (pageNo = 1, limit = 5, ...rest) => {
-  const done = rest.length ? rest[0] : () => {};
-  return (dispatch) => {
-    //TODO remove the pageNo and limit currently its mandatory from api
-    //`${API.GET_ALL_APPLICATIONS}?pageNo=${pageNo}&limit=${limit}`
-    RequestService.httpGETRequest(
-      `${API.GET_ALL_APPLICATIONS}?pageNo=${pageNo}&limit=${limit}`
-    )
-      .then((res) => {
-        if (res.data) {
-          const applications = res.data.applications || [];
-          dispatch(setApplicationListCount(res.data.totalCount || 0));
-          dispatch(setDraftCount(res.data?.draftCount || 0));
-          dispatch(setApplicationList(applications));
-          done(null, applications);
-        } else {
-          dispatch(setApplicationError("Submissions not found"));
-        }
-        done(null, res.data);
-      })
-      .catch((error) => {
-        dispatch(setApplicationError("Failed to fetch submissions"));
-        done(error);
-      });
-  };
-};
+// export const getAllApplications = (pageNo = 1, limit = 5, ...rest) => {
+//   const done = rest.length ? rest[0] : () => {};
+//   return (dispatch) => {
+//     //TODO remove the pageNo and limit currently its mandatory from api
+//     //`${API.GET_ALL_APPLICATIONS}?pageNo=${pageNo}&limit=${limit}`
+//     RequestService.httpGETRequest(
+//       `${API.GET_ALL_APPLICATIONS}?pageNo=${pageNo}&limit=${limit}`
+//     )
+//       .then((res) => {
+//         if (res.data) {
+//           const applications = res.data.applications || [];
+//           dispatch(setApplicationListCount(res.data.totalCount || 0));
+//           dispatch(setDraftCount(res.data?.draftCount || 0));
+//           dispatch(setApplicationList(applications));
+//           done(null, applications);
+//         } else {
+//           dispatch(setApplicationError("Submissions not found"));
+//         }
+//         done(null, res.data);
+//       })
+//       .catch((error) => {
+//         dispatch(setApplicationError("Failed to fetch submissions"));
+//         done(error);
+//       });
+//   };
+// };
 
 export const getApplicationById = (applicationId, ...rest) => {
   const done = rest.length ? rest[0] : () => {};
@@ -179,7 +181,7 @@ export const publicApplicationStatus = (formId, ...rest) => {
   };
 };
 
-export const updateApplicationEvent = (applicationId,data, ...rest) => {
+export const updateApplicationEvent = (applicationId, data, ...rest) => {
   /* * Data Format
  {
   "messageName" : "application_resubmitted",
@@ -189,11 +191,11 @@ export const updateApplicationEvent = (applicationId,data, ...rest) => {
 
   const done = rest.length ? rest[0] : () => {};
   return (dispatch) => {
-
     const apiUrlAppResubmit = replaceUrl(
       API.APPLICATION_EVENT_UPDATE,
       "<application_id>",
-      applicationId);
+      applicationId
+    );
 
     RequestService.httpPOSTRequest(apiUrlAppResubmit, data)
       .then((res) => {
@@ -213,36 +215,39 @@ export const updateApplicationEvent = (applicationId,data, ...rest) => {
 
 // filter endpoint
 
-export const FilterApplications = (params, ...rest) => {
+export const getAllApplications = (params, ...rest) => {
+
   const done = rest.length ? rest[0] : () => {};
   return (dispatch) => {
-    const { applicationName, id, modified, applicationStatus } = params.filters;
-    let url = `${API.GET_ALL_APPLICATIONS}?pageNo=${params.page}&limit=${params.sizePerPage}`;
+    const { applicationName, id, applicationStatus, modified } = params;
+    let url = `${API.GET_ALL_APPLICATIONS}?pageNo=${params.page}&limit=${params.limit}`;
     if (applicationName && applicationName !== "") {
-      url += `&applicationName=${applicationName?.filterVal}`;
+      url += `&applicationName=${applicationName}`;
     }
     if (id && id !== "") {
-      url += `&Id=${id.filterVal}`;
+      url += `&Id=${id}`;
     }
 
     if (applicationStatus && applicationStatus !== "") {
-      url += `&applicationStatus=${applicationStatus?.filterVal}`;
+      url += `&applicationStatus=${applicationStatus}`;
     }
 
-    if (modified && modified?.filterVal?.length === 2) {
+    if (modified && modified?.length === 2) {
       let modifiedFrom = moment
-        .utc(modified.filterVal[0])
+        .utc(modified[0])
         .format("YYYY-MM-DDTHH:mm:ssZ")
         .replace(/\+/g, "%2B");
       let modifiedTo = moment
-        .utc(modified.filterVal[1])
+        .utc(modified[1])
         .format("YYYY-MM-DDTHH:mm:ssZ")
         .replace(/\+/g, "%2B");
       url += `&modifiedFrom=${modifiedFrom}&modifiedTo=${modifiedTo}`;
     }
 
-    if (params.sortField !== null) {
-      url += `&sortBy=${params.sortField}&sortOrder=${params.sortOrder}`;
+    if (params.sortField || params.sortOrder) {
+      url += `&sortBy=${params.sortField ? params.sortField : null}&sortOrder=${
+        params.sortOrder ? params.sortOrder : null
+      }`;
     }
 
     RequestService.httpGETRequest(url)
@@ -250,6 +255,7 @@ export const FilterApplications = (params, ...rest) => {
         if (res.data) {
           const applications = res.data.applications || [];
           dispatch(setApplicationListCount(res.data.totalCount || 0));
+          dispatch(setDraftCount(res.data?.draftCount || 0));
           dispatch(setApplicationList(applications));
           done(null, applications);
         } else {
@@ -265,7 +271,6 @@ export const FilterApplications = (params, ...rest) => {
 };
 
 export const getAllApplicationStatus = (params, ...rest) => {
-  //console.log("hai",params)
   const done = rest.length ? rest[0] : () => {};
   return (dispatch) => {
     //TODO remove the pageNo and limit currently its mandatory from api

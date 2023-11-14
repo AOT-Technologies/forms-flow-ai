@@ -119,7 +119,7 @@ const List = React.memo((props) => {
         <h3 className="ml-3">
           <span className="task-head-details d-flex align-items-center">
             {" "}
-            <i className="fa fa-wpforms" aria-hidden="true" />
+            <i className="fa-solid fa-file-lines mr-2" aria-hidden="true" />
             <span className="forms-text">
               <Translation>{(t) => t("Forms")}</Translation> /
             </span>

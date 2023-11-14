@@ -189,6 +189,7 @@ const ACTION_CONSTANTS = {
 
   //authorization
   SET_USER_GROUPS:"SET_USER_GROUPS",
+  SET_ROLES:"SET_ROLES",
 };
 
 export default ACTION_CONSTANTS;

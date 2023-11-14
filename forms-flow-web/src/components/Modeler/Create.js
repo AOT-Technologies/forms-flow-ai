@@ -10,14 +10,12 @@ import { useDispatch } from 'react-redux';
 import {
   setProcessDiagramXML, 
 } from "../../actions/processActions";
-import { useTranslation } from "react-i18next";
-const CreateWorkflow = () => {
+ const CreateWorkflow = () => {
     //select typeOf workflow form useSelector / redux
     const isBpmnModel = useSelector((state) => state.process.isBpmnModel);
     const diagramXML = useSelector((state) => state.process.processDiagramXML);
     const dispatch = useDispatch();
-    const { t } = useTranslation();
-   
+    
     useEffect(()=>{
        if(!diagramXML){
         const newProcess = isBpmnModel ? createNewProcess() : createNewDecision();
@@ -34,21 +32,10 @@ const CreateWorkflow = () => {
  
   return (
     <div>
-        <div className="flex-item-left">
-          <div style={{ display: "flex" }}>
-            <h3 className="task-head" style={{ marginTop: "3px" }}>
-              <i className="fa fa-cogs" aria-hidden="true" />
-            </h3>
-            <h3 className="task-head">
-              {" "}
-              <span className="forms-text" style={{ marginLeft: "1px" }}>
-                {t("Processes")}
-              </span>
-            </h3>
-          </div>
-        </div>
+ 
          {isBpmnModel ? (
             <BpmnEditor 
+              mode="Create"
               processKey={''}
               tenant={''}
               isNewDiagram={true}
@@ -56,6 +43,7 @@ const CreateWorkflow = () => {
             />
           ) : (
             <DmnEditor 
+            mode="Create"
               processKey={''}
               tenant={''}
               isNewDiagram={true}

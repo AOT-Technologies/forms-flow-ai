@@ -34,7 +34,7 @@ export default React.memo(() => {
     return <Loading />;
   }
   return (
-    <div className="container" id="main" data-testid="Process-index">
+    <div data-testid="Process-index">
       <Switch>
         <Route exact path={`${BASE_ROUTE}processes`} component={Base} />
         <DesignerProcessRoute

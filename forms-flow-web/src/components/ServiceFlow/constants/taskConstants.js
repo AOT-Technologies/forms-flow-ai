@@ -226,3 +226,10 @@ export const QUERY_TYPES = {
 export const MAX_RESULTS = 15; //maxResults
 export const MAX_VARIABLES_PER_ROW = 2;// for adjusting rows in filter inside task filters
 
+export const trimFirstSlash = (inputString) => {
+  if (inputString.startsWith('/')) {
+    return inputString.substring(1);
+  }
+  return inputString;
+};
+

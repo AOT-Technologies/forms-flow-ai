@@ -219,7 +219,7 @@ const View = React.memo((props) => {
   }
 
   return (
-    <div className="container overflow-y-auto">
+    <div className=" overflow-y-auto">
       {
         <>
           <span className="pr-2  mr-2 d-flex justify-content-end align-items-center">
@@ -237,22 +237,22 @@ const View = React.memo((props) => {
         </>
       }
       <div className="d-flex align-items-center justify-content-between">
-        <div className="main-header">
+        <div className="d-flex align-items-center">
           <SubmissionError
             modalOpen={props.submissionError.modalOpen}
             message={props.submissionError.message}
             onConfirm={props.onConfirm}
           ></SubmissionError>
           {isAuthenticated ? (
-            <Link title={t("Back to Drafts")} to={`${redirectUrl}draft`}>
-              <i className="fa fa-chevron-left fa-lg" />
+            <Link title={t("Back to Drafts")} to={`${redirectUrl}draft`} className="">
+              <i className="fa fa-chevron-left fa-lg mr-2" />
             </Link>
           ) : null}
 
           {form.title ? (
-            <h3 className="ml-3">
+            <h3 className="">
               <span className="task-head-details">
-                <i className="fa fa-wpforms" aria-hidden="true" /> &nbsp;{" "}
+                <i className="fa-solid fa-file-lines mr-2" aria-hidden="true" /> &nbsp;{" "}
                 {t("Drafts")}/
               </span>{" "}
               {textTruncate(60,40,form.title)}
@@ -278,9 +278,9 @@ const View = React.memo((props) => {
         active={isFormSubmissionLoading}
         spinner
         text={<Translation>{(t) => t("Loading...")}</Translation>}
-        className="col-12"
+        className="col-12 p-0"
       >
-        <div className="ml-4 mr-4">
+        <div className="mt-4">
           <Confirm
             modalOpen={draftDelete.modalOpen}
             message={`${t("Are you sure you wish to delete the draft")} "${
@@ -320,7 +320,7 @@ const View = React.memo((props) => {
           ) : (
             <span>
               <div
-                className="container"
+                className=""
                 style={{
                   maxWidth: "900px",
                   margin: "auto",

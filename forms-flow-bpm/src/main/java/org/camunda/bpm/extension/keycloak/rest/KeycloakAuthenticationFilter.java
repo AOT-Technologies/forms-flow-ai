@@ -91,6 +91,7 @@ public class KeycloakAuthenticationFilter implements Filter {
 				identityService.setAuthentication(userId, userGroups, tenantIds);
 			else
 				identityService.setAuthentication(userId, userGroups);
+			LOG.debug("Roles for user {} : {} ", userId, userGroups);
 			chain.doFilter(request, response);
 		} finally {
 			identityService.clearAuthentication();
@@ -129,6 +130,7 @@ public class KeycloakAuthenticationFilter implements Filter {
 				keys.add(keyValue);
 			}
 		}
+
 		return keys;
 	}
 

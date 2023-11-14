@@ -1,7 +1,7 @@
 """added field task visible attribute in filter table
 
 Revision ID: e8459a47ec29
-Revises: 1b4fa1bb6449
+Revises: 537aa072d731
 Create Date: 2023-08-24 11:55:11.320949
 
 """
@@ -11,7 +11,7 @@ import sqlalchemy as sa
 
 # revision identifiers, used by Alembic.
 revision = 'e8459a47ec29'
-down_revision = '1b4fa1bb6449'
+down_revision = '537aa072d731'
 branch_labels = None
 depends_on = None
 

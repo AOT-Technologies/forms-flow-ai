@@ -90,7 +90,7 @@ function DmnTable() {
     <div className="mt-3">
       <LoadingOverlay
         spinner
-        text="Loading..."
+        text={t("Loading...")}
         active={isLoading || countLoading}
       >
         <div style={{ minHeight: "400px" }}>

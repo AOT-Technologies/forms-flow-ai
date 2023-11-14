@@ -519,7 +519,9 @@ const mapDispatchToProps = (dispatch, ownProps) => {
     onCustomEvent: (customEvent, redirectUrl) => {
       switch (customEvent.type) {
         case CUSTOM_EVENT_TYPE.CUSTOM_SUBMIT_DONE:
-          toast.success("Submission Saved.");
+          toast.success(
+            <Translation>{(t) => t("Submission Saved")}</Translation>
+          );
           dispatch(push(`${redirectUrl}form`));
           break;
         case CUSTOM_EVENT_TYPE.CANCEL_SUBMISSION:

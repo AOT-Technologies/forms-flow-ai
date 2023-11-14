@@ -510,7 +510,7 @@ const Edit = React.memo(() => {
  
             <i className="fa-solid fa-file-lines" aria-hidden="true" /> &nbsp;{" "}
             {formData.title}
-            <span className="text-success h5 ml-2">(Version {version})</span>
+          <span className="text-success h5 ml-2">({t("Version")} {version})</span>
           </h3>
           
         <div className="d-flex flex-md-row flex-column  align-items-md-center flex-wrap justify-content-end">
@@ -678,7 +678,7 @@ const Edit = React.memo(() => {
                 <div className="mt-3">
                   <div className="d-flex align-items-center cursor-pointer" onClick={handleToggle}>
                     <i className={`fa ${open ? 'fa-chevron-up' : 'fa-chevron-down'} mr-2`}></i>
-                    <span className="text-primary font-weight-bold mr-4">Advanced Options</span>
+                    <span className="text-primary font-weight-bold mr-4">{t("Advanced Options")}</span>
                     <hr className="flex-grow-1 ml-2 mr-2" />
                   </div>
                   <Collapse in={open} className="mt-3">

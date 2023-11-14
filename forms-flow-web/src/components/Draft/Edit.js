@@ -245,14 +245,14 @@ const View = React.memo((props) => {
           ></SubmissionError>
           {isAuthenticated ? (
             <Link title={t("Back to Drafts")} to={`${redirectUrl}draft`} className="">
-              <i className="fa fa-chevron-left fa-lg" />
+              <i className="fa fa-chevron-left fa-lg mr-2" />
             </Link>
           ) : null}
 
           {form.title ? (
             <h3 className="">
               <span className="task-head-details">
-                <i className="fa-solid fa-file-lines" aria-hidden="true" /> &nbsp;{" "}
+                <i className="fa-solid fa-file-lines mr-2" aria-hidden="true" /> &nbsp;{" "}
                 {t("Drafts")}/
               </span>{" "}
               {textTruncate(60,40,form.title)}

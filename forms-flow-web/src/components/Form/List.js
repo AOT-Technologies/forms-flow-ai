@@ -149,7 +149,7 @@ const List = React.memo((props) => {
     return [
       {
         name: "Forms",
-        icon: "file-text-o",
+        icon: "file-text-o mr-2",
       },
     ];
   };

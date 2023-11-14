@@ -369,14 +369,14 @@ const View = React.memo((props) => {
           ></SubmissionError>
           {isAuthenticated ? (
             <Link title={t("Back to Form List")} to={`${redirectUrl}form`}>
-              <i className="fa fa-chevron-left fa-lg" />
+              <i className="fa fa-chevron-left fa-lg mr-2" />
             </Link>
           ) : null}
 
           {form.title ? (
             <h3 className="ml-3 text-truncate" style={{height :"45px"}}>
               <span className="task-head-details">
-                <i className="fa-solid fa-file-lines" aria-hidden="true" /> &nbsp;{" "}
+                <i className="fa-solid fa-file-lines mr-2" aria-hidden="true" /> &nbsp;{" "}
                 {t("Forms")}/
               </span>{" "}
               {form.title}

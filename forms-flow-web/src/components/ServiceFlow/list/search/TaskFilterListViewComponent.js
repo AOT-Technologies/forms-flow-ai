@@ -63,7 +63,7 @@ const TaskFilterListViewComponent = React.memo(
 
     const handleProcessVariables = (name, value) => {
       setProcessVariables((prevProcessVariables) => {
-        const numericValue = !isNaN(value) ? Number(value) : value;
+        // const numericValue = !isNaN(value) ? Number(value) : value;
 
         if (Array.isArray(prevProcessVariables)) {
           const existingVariableIndex = prevProcessVariables?.findIndex(
@@ -83,7 +83,7 @@ const TaskFilterListViewComponent = React.memo(
               {
                 name: name,
                 operator: "eq",
-                value: numericValue,
+                value: value,
               },
             ];
           }
@@ -93,7 +93,7 @@ const TaskFilterListViewComponent = React.memo(
             {
               name: name,
               operator: "eq",
-              value: numericValue,
+              value: value,
             },
           ];
         }

@@ -41,3 +41,19 @@ export const getFormioRoleIds = (...rest) => {
       });
   };
 };
+
+export const fetchUsers = (
+  group,
+  pageNo = 1,
+  search,
+  errorHandler,
+  role = true,
+  count = true
+) => {
+  let url = `${API.GET_API_USER_LIST}?role=${role}&count=${count}`;
+  if (group) url += `&memberOfGroup=${group}`;
+  if (pageNo) url += `&pageNo=${pageNo}&limit=5`;
+  if (search) url += `&search=${search}`;
+
+  return RequestService.httpGETRequest(url);
+};

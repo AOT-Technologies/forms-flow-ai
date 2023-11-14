@@ -26,6 +26,14 @@ import {
 
 import TaskAttributeComponent from "./TaskAttributeComponent";
 import { toast } from "react-toastify";
+import { getUserRoles } from "../../../../apiManager/services/authorizationService";
+import {
+  setUserGroups,
+  setUserRoles,
+} from "../../../../actions/authorizationActions";
+import { Badge, ListGroup, OverlayTrigger, Popover } from "react-bootstrap";
+import { fetchUsers } from "../../../../apiManager/services/userservices";
+import { trimFirstSlash } from "../../constants/taskConstants";
 export default function CreateNewFilterDrawer({
   selectedFilterData,
   openFilterDrawer,
@@ -43,12 +51,22 @@ export default function CreateNewFilterDrawer({
   const [candidateGroup, setCandidateGroup] = useState([]);
   const [assignee, setAssignee] = useState("");
   const [includeAssignedTasks, setIncludeAssignedTasks] = useState(false);
+  const [
+    isTasksForCurrentUserGroupsEnabled,
+    setIsTasksForCurrentUserGroupsEnabled,
+  ] = useState(false);
+  const [isMyTasksEnabled,setIsMyTasksEnabled] = useState(false);
   const [permissions, setPermissions] = useState("");
   const [identifierId, setIdentifierId] = useState("");
   const [selectUserGroupIcon, setSelectUserGroupIcon] = useState("");
   const [specificUserGroup, setSpecificUserGroup] = useState("");
   const firstResult = useSelector((state) => state.bpmTasks.firstResult);
-
+  const userGroups = useSelector(
+    (state) => state.userAuthorization?.userGroups
+  );
+  const userRoles = useSelector(
+    (state) => state.userAuthorization?.roles?.data
+  );
   const userName = useSelector(
     (state) => state.user?.userDetail?.preferred_username
   );
@@ -56,6 +74,11 @@ export default function CreateNewFilterDrawer({
   const filterList = useSelector((state) => state.bpmTasks.filterList);
   const [variables, setVariables] = useState([]);
   const [inputValues, setInputValues] = useState([{ name: "", label: "" }]);
+  const [overlayGroupShow, setOverlayGroupShow] = useState(false);
+  const [overlayUserShow, setOverlayUserShow] = useState(false);
+  const [overlayCandidateGroupShow, setOverlayCandidateGroupShow] =
+    useState(false);
+
   const { t } = useTranslation();
   const [modalShow, setModalShow] = useState(false);
   const [checkboxes, setCheckboxes] = useState({
@@ -102,6 +125,7 @@ export default function CreateNewFilterDrawer({
         selectedFilterData?.properties?.showUndefinedVariable
       );
       if (selectedFilterData.variables) {
+
         setInputValues(() => {
           return selectedFilterData.variables?.map((row) => ({
             name: row.name,
@@ -110,6 +134,9 @@ export default function CreateNewFilterDrawer({
         });
       }
       if (!selectedFilterData.variables?.length) {
+        setInputValues([{ name: "", label: "" }]);
+      }
+      if(selectedFilterData.variables?.length === 2){
         setInputValues([{ name: "", label: "" }]);
       }
       if (
@@ -135,6 +162,12 @@ export default function CreateNewFilterDrawer({
         setIdentifierId(selectedFilterData?.roles[0]);
         setSpecificUserGroup(SPECIFIC_USER_OR_GROUP);
       }
+      if(selectedFilterData?.criteria?.assigneeExpression){
+        setIsMyTasksEnabled(true);
+      }
+      if(selectedFilterData?.criteria?.candidateGroupsExpression){
+        setIsTasksForCurrentUserGroupsEnabled(true);
+      }
       setCheckboxes({
         applicationId: selectedFilterData?.taskVisibleAttributes?.applicationId,
         assignee: selectedFilterData?.taskVisibleAttributes?.assignee,
@@ -147,6 +180,24 @@ export default function CreateNewFilterDrawer({
       });
     }
   }, [selectedFilterData]);
+
+  useEffect(() => {
+    getUserRoles()
+      .then((res) => {
+        if (res) {
+          dispatch(setUserGroups(res.data));
+        }
+      })
+      .catch((error) => console.error("error", error));
+
+    fetchUsers()
+      .then((res) => {
+        if (res) {
+          dispatch(setUserRoles(res.data));
+        }
+      })
+      .catch((error) => console.error("error", error));
+  }, []);
 
   useEffect(() => {
     setVariables(() => {
@@ -184,12 +235,12 @@ export default function CreateNewFilterDrawer({
                   (filter) => filter.id === selectedFilterData?.id
                 );
                 if (selectedFilterData?.id === selectedFilter?.id) {
-                  dispatch(fetchServiceTaskList(resData,null,firstResult));
+                  dispatch(fetchServiceTaskList(resData, null, firstResult));
                 } else {
                   dispatch(setSelectedBPMFilter(filterSelected));
                 }
                 toast.success(t("Changes Applied Successfully"));
-              }else{
+              } else {
                 toast.success(t("Filter Created Successfully"));
               }
               dispatch(setBPMFilterLoader(false));
@@ -214,12 +265,16 @@ export default function CreateNewFilterDrawer({
     setSelectUserGroupIcon("");
     setSpecificUserGroup("");
     setInputValues([{ name: "", label: "" }]);
+    setIsTasksForCurrentUserGroupsEnabled(false);
+    setIsMyTasksEnabled(false);
   };
+
   const handleSubmit = () => {
     let users = [];
     let roles = [];
     if (permissions === ACCESSIBLE_FOR_ALL_GROUPS) {
       users = [];
+      roles = [];
     }
     if (permissions === PRIVATE_ONLY_YOU) {
       users.push(userName);
@@ -230,12 +285,19 @@ export default function CreateNewFilterDrawer({
     ) {
       users.push(identifierId);
     }
-    if (selectUserGroupIcon === "group") {
+    if (
+      selectUserGroupIcon === "group" &&
+      permissions === SPECIFIC_USER_OR_GROUP
+    ) {
       roles.push(identifierId);
     }
 
-    const applicationIdExists = variables.some((variable) => variable.name === 'applicationId');
-    const formNameExists = variables.some((variable) => variable.name === 'formName');
+    const applicationIdExists = variables.some(
+      (variable) => variable.name === "applicationId"
+    );
+    const formNameExists = variables.some(
+      (variable) => variable.name === "formName"
+    );
 
     const data = {
       name: filterName,
@@ -250,12 +312,16 @@ export default function CreateNewFilterDrawer({
       },
       variables: [
         ...variables,
-        ...(applicationIdExists ? [] : [{ name: 'applicationId', label: 'Application Id' }]),
-        ...(formNameExists ? [] : [{ name: 'formName', label: 'Form Name' }]),
+        ...(applicationIdExists
+          ? []
+          : [{ name: "applicationId", label: "Application Id" }]),
+        ...(formNameExists ? [] : [{ name: "formName", label: "Form Name" }]),
       ],
       users: users,
-      roles: roles,
+      roles: roles?.length ? roles : [],
       taskVisibleAttributes: { ...checkboxes },
+      isTasksForCurrentUserGroupsEnabled:isTasksForCurrentUserGroupsEnabled,
+      isMyTasksEnabled:isMyTasksEnabled,
     };
 
     // Remove empty keys inside criteria
@@ -282,21 +348,23 @@ export default function CreateNewFilterDrawer({
   const handleFilterDelete = () => {
     deleteFilters(selectedFilterData?.id)
       .then(() => {
-        dispatch(fetchFilterList((err, data) => {
-          if (data) {
-            fetchBPMTaskCount(data)
-              .then((res) => {
-                dispatch(setBPMFiltersAndCount(res.data));
-                dispatch(fetchServiceTaskList(data[0],null,firstResult));
-              })
-              .catch((err) => {
-                if (err) {
-                  console.error(err);
-                }
-              });
-          }
-          toast.success(t("Filter Deleted Successfully"));
-        }));
+        dispatch(
+          fetchFilterList((err, data) => {
+            if (data) {
+              fetchBPMTaskCount(data)
+                .then((res) => {
+                  dispatch(setBPMFiltersAndCount(res.data));
+                  dispatch(fetchServiceTaskList(data[0], null, firstResult));
+                })
+                .catch((err) => {
+                  if (err) {
+                    console.error(err);
+                  }
+                });
+            }
+            toast.success(t("Filter Deleted Successfully"));
+          })
+        );
       })
 
       .catch((error) => {
@@ -305,8 +373,20 @@ export default function CreateNewFilterDrawer({
       });
   };
 
+  const addGroups = (data) => {
+    setIdentifierId(data);
+    if (selectUserGroupIcon === "user") {
+      setOverlayUserShow(!overlayUserShow);
+    } else {
+      setOverlayGroupShow(!overlayGroupShow);
+    }
+  };
+
   // Function for setting visibility of input feild in criteria part
   const handleSpanClick = (spanId) => {
+    if (spanId === 2) {
+      setOverlayCandidateGroupShow(!overlayCandidateGroupShow);
+    }
     setInputVisibility((prevVisibility) => ({
       ...prevVisibility,
       [spanId]: !prevVisibility[spanId],
@@ -320,6 +400,13 @@ export default function CreateNewFilterDrawer({
 
   //Function to checking which icon is selected
   const handleClickUserGroupIcon = (icon) => {
+    if (icon === "user") {
+      setOverlayUserShow(!overlayUserShow);
+      setOverlayGroupShow(false);
+    } else {
+      setOverlayGroupShow(!overlayGroupShow);
+      setOverlayUserShow(false);
+    }
     setSelectUserGroupIcon(icon);
   };
 
@@ -345,10 +432,16 @@ export default function CreateNewFilterDrawer({
     setOpenFilterDrawer(!openFilterDrawer);
   };
 
+  const handleCandidateGroup = (data) => {
+    data = trimFirstSlash(data);
+    setOverlayCandidateGroupShow(!overlayCandidateGroupShow);
+    setCandidateGroup(data);
+  };
+
   const list = () => (
     <div style={{ marginTop: "45px" }} role="presentation">
       <List>
-        <div className="newFilterTaskContainer-header p-0 d-flex align-items-center justify-content-between ">
+        <div className="p-0 d-flex align-items-center justify-content-between ">
           <h5 style={{ fontWeight: "bold", fontSize: "16px" }}>
             <Translation>{(t) => t("Create new filter")}</Translation>
           </h5>
@@ -381,7 +474,37 @@ export default function CreateNewFilterDrawer({
           <Translation>{(t) => t("Criteria")}</Translation>{" "}
           <i className="fa fa-info-circle"></i>{" "}
         </h5>
-        <h5 style={{ fontSize: "18px" }}>
+        <div className="d-flex align-items-center mt-1">
+          <input
+            type="checkbox"
+            checked={isMyTasksEnabled}
+            onChange={(e) =>
+              setIsMyTasksEnabled(e.target.checked)
+            }
+            style={{ marginRight: "6px" }}
+          />
+          <h5 style={{ fontSize: "18px", marginBottom: "3px" }}>
+            <Translation>
+              {(t) => t("Show task based on logged user roles")}
+            </Translation>
+          </h5>
+        </div>
+        <div className="d-flex align-items-center mt-1">
+          <input
+            type="checkbox"
+            checked={isTasksForCurrentUserGroupsEnabled}
+            onChange={(e) =>
+              setIsTasksForCurrentUserGroupsEnabled(e.target.checked)
+            }
+            style={{ marginRight: "6px" }}
+          />
+          <h5 style={{ fontSize: "18px", marginBottom: "3px" }}>
+            <Translation>
+              {(t) => t("Show only current user assigned task")}
+            </Translation>
+          </h5>
+        </div>
+        <h5 className="mt-2" style={{ fontSize: "18px" }}>
           <Translation>{(t) => t("Definition Key")}</Translation>
         </h5>
         <span
@@ -407,24 +530,59 @@ export default function CreateNewFilterDrawer({
         <h5>
           <Translation>{(t) => t("Candidate Group")}</Translation>
         </h5>
-        <span
-          style={{
-            textDecoration: "underline",
-            fontSize: "14px",
-          }}
-          onClick={() => handleSpanClick(2)}
-          className="px-1 py-1 cursor-pointer"
+
+        <OverlayTrigger
+          placement="right"
+          trigger="click"
+          rootClose={true}
+          show={overlayCandidateGroupShow}
+          overlay={
+            <Popover style={{ zIndex: 9999 }}>
+              <div className="poper">
+                <ListGroup>
+                  {userGroups?.length > 0 &&
+                    userGroups?.map((e, i) => (
+                      <ListGroup.Item
+                        key={i}
+                        as="button"
+                        onClick={() => handleCandidateGroup(e.name)}
+                      >
+                        {e.name}
+                      </ListGroup.Item>
+                    ))}
+                </ListGroup>
+              </div>
+            </Popover>
+          }
         >
-          <i className="fa fa-plus-circle" style={{ marginRight: "6px" }} />
-          <Translation>{(t) => t("Add Value")}</Translation>
-        </span>
-        {inputVisibility[2] && (
-          <input
-            type="text"
-            className="criteria-add-value-inputbox"
-            value={candidateGroup}
-            onChange={(e) => setCandidateGroup(e.target.value)}
-          />
+          <span
+            style={{
+              textDecoration: "underline",
+              fontSize: "14px",
+            }}
+            onClick={() => handleSpanClick(2)}
+            className="px-1 py-1 cursor-pointer"
+          >
+            <i className="fa fa-plus-circle" style={{ marginRight: "6px" }} />
+            <Translation>{(t) => t("Add Value")}</Translation>
+          </span>
+        </OverlayTrigger>
+        {candidateGroup && (
+          <div className="d-flex">
+            <Badge
+              pill
+              variant="outlined"
+              className="d-flex align-items-center badge mr-2 mt-2"
+            >
+              {candidateGroup}
+              <div
+                className="badge-deleteIcon ml-2"
+                onClick={() => setCandidateGroup(null)}
+              >
+                &times;
+              </div>
+            </Badge>
+          </div>
         )}
         <h5>
           <Translation>{(t) => t("Asignee")}</Translation>
@@ -512,41 +670,109 @@ export default function CreateNewFilterDrawer({
             <Translation>{(t) => t("Specific User/ Group")}</Translation>
           </label>{" "}
           <br />
-          {specificUserGroup === SPECIFIC_USER_OR_GROUP ? (
-            <div className="inside-child-container-two d-flex">
-              <div className="user-group-divisions d-flex">
-                <div style={{ fontSize: "14px" }}>
-                  <Translation>{(t) => t("User")}</Translation>
-                  <i
-                    className={`fa fa-user ${
-                      selectUserGroupIcon === "user" ? "highlight" : ""
-                    } cursor-pointer`}
-                    style={{ fontSize: "30px" }}
-                    onClick={() => handleClickUserGroupIcon("user")}
-                  />
+          {permissions === SPECIFIC_USER_OR_GROUP &&
+          specificUserGroup === SPECIFIC_USER_OR_GROUP ? (
+            <div className="d-flex">
+              <OverlayTrigger
+                placement="right"
+                trigger="click"
+                rootClose={true}
+                show={overlayUserShow}
+                overlay={
+                  <Popover style={{ zIndex: 9999 }}>
+                    <div className="poper">
+                      <ListGroup>
+                        {userRoles.length > 0 &&
+                          userRoles?.map((e, i) => (
+                            <ListGroup.Item
+                              key={i}
+                              as="button"
+                              onClick={() => addGroups(e.username)}
+                            >
+                              {e.username}
+                            </ListGroup.Item>
+                          ))}
+                      </ListGroup>
+                    </div>
+                  </Popover>
+                }
+              >
+                <div onClick={() => handleClickUserGroupIcon("user")}>
+                  <div style={{ textAlign: "center" }}>
+                    <span style={{ fontSize: "14px" }}>
+                      <Translation>{(t) => t("User")}</Translation>
+                    </span>
+                  </div>
+                  <div style={{ textAlign: "center", marginBottom: "8px" }}>
+                    <i
+                      className={`fa fa-user ${
+                        selectUserGroupIcon === "user" ? "highlight" : ""
+                      } cursor-pointer`}
+                      style={{ fontSize: "30px", marginRight: "8px" }}
+                    />
+                  </div>
                 </div>
-                <div style={{ fontSize: "14px" }}>
-                  <Translation>{(t) => t("Group")}</Translation>
-                  <i
-                    className={`fa fa-users ${
-                      selectUserGroupIcon === "group" ? "highlight" : ""
-                    } cursor-pointer`}
-                    style={{ fontSize: "30px" }}
-                    onClick={() => handleClickUserGroupIcon("group")}
-                  />
+              </OverlayTrigger>
+
+              <OverlayTrigger
+                placement="right"
+                trigger="click"
+                rootClose={true}
+                show={overlayGroupShow}
+                overlay={
+                  <Popover style={{ zIndex: 9999 }}>
+                    <div className="poper">
+                      <ListGroup>
+                        {userGroups.length > 0 &&
+                          userGroups?.map((e, i) => (
+                            <ListGroup.Item
+                              key={i}
+                              as="button"
+                              onClick={() => addGroups(e.name)}
+                            >
+                              {e.name}
+                            </ListGroup.Item>
+                          ))}
+                      </ListGroup>
+                    </div>
+                  </Popover>
+                }
+              >
+                <div
+                  className="ml-3"
+                  onClick={() => handleClickUserGroupIcon("group")}
+                >
+                  <div style={{ textAlign: "center" }}>
+                    <span style={{ fontSize: "14px" }}>
+                      <Translation>{(t) => t("Group")}</Translation>
+                    </span>
+                  </div>
+                  <div style={{ textAlign: "center", marginBottom: "8px" }}>
+                    <i
+                      className={`fa fa-users ${
+                        selectUserGroupIcon === "group" ? "highlight" : ""
+                      } cursor-pointer`}
+                      style={{ fontSize: "30px", marginRight: "8px" }}
+                    />
+                  </div>
                 </div>
-              </div>
-              <div>
-                <label style={{ fontSize: "16px" }}>
-                  <Translation>{(t) => t("Identifier")}</Translation>
-                </label>
-                <input
-                  type="text"
-                  placeholder={t("Enter role ID")}
-                  style={{ width: "100%", height: "35px" }}
-                  value={identifierId}
-                  onChange={(e) => setIdentifierId(e.target.value)}
-                />
+              </OverlayTrigger>
+              <div className="mt-3">
+                {identifierId && (
+                  <Badge
+                    pill
+                    variant="outlined"
+                    className="d-flex align-items-center badge mr-2 mt-2"
+                  >
+                    {identifierId}
+                    <div
+                      className="badge-deleteIcon ml-2"
+                      onClick={() => setIdentifierId(null)}
+                    >
+                      &times;
+                    </div>
+                  </Badge>
+                )}
               </div>
             </div>
           ) : null}
@@ -573,7 +799,7 @@ export default function CreateNewFilterDrawer({
       </List>
 
       <List>
-        <div className="newFilterTaskContainer-footer d-flex align-items-center justify-content-between">
+        <div className="d-flex align-items-center justify-content-between">
           {selectedFilterData && (
             <button
               className="btn btn-link text-danger cursor-pointer"
@@ -629,7 +855,9 @@ export default function CreateNewFilterDrawer({
               onHide={toggleModal}
               checkboxes={checkboxes}
               setCheckboxes={setCheckboxes}
-              inputValues={inputValues.filter((e) => e.name !== "applicationId" && e.name !== "formName")}
+              inputValues={inputValues.filter(
+                (e) => e.name !== "applicationId" && e.name !== "formName"
+              )}
               setInputValues={setInputValues}
               showUndefinedVariable={showUndefinedVariable}
               setShowUndefinedVariable={setShowUndefinedVariable}

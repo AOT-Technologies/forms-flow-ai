@@ -11,6 +11,20 @@
     }
 }
 
+.published-forms-label{
+    color: #2F6846;
+    background: #EAFBE7 0% 0% no-repeat padding-box;
+    border: 1px solid #C6F0C2;
+    border-radius: 7px;
+}
+
+.unpublished-forms-label{
+    background: #EAF5FF 0% 0% no-repeat padding-box;
+    border-radius: 7px;
+    border: 1px solid #B8E1FF;
+    color: #006096;
+}
+
 .custom-grid {
     .col {
         min-height: 50px;
@@ -141,3 +155,16 @@ flex-wrap: wrap;
 .page-item.active .page-link {
     color: var(--color-white) !important;
 }
+
+/* Style the dots */
+.dots {
+    cursor: pointer;
+    user-select: none;
+    font-size: 24px;
+  }
+
+ 
+
+ .custom-button {
+    width: auto;
+  }

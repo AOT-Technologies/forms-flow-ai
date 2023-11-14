@@ -22,7 +22,7 @@ jobs:
       - uses: actions/setup-node@v3
         with:
           node-version: '14.17.6'
-      - run: npm install
+      - run: npm ci
         working-directory: ./forms-flow-web
       - run: npm run build
         working-directory: ./forms-flow-web

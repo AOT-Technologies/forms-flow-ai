@@ -12,8 +12,8 @@ const CardFormCounter = React.memo((props) => {
   return (
     <Fragment>
       <div
-        className=" card-counter form-card-counter "
-        onClick={() => getStatusDetails(parentFormId,{parentId:true})}
+        className="card-counter form-card-counter "
+        onClick={() => getStatusDetails(parentFormId, { parentId: true })}
       >
         <div
           className={`white-box analytics-info submission-counter ${
@@ -22,7 +22,7 @@ const CardFormCounter = React.memo((props) => {
         >
           <div className="name">
             <div className="d-flex align-items-center">
-              <i className="fa fa-wpforms p-1" />
+              <i className="fa-solid fa-file-lines p-1 mr-2" />
               <OverlayTrigger
                 placement="top"
                 delay={{ show: 0, hide: 400 }}

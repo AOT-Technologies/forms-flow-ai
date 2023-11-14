@@ -1,3 +1,5 @@
+/* eslint-disable */
+
 import React, { useEffect, useRef } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import BootstrapTable from "react-bootstrap-table-next";
@@ -12,7 +14,6 @@ import { columns, getoptions } from "./table";
 import { MULTITENANCY_ENABLED } from "../../constants/constants";
 import Alert from "react-bootstrap/Alert";
 import { Translation } from "react-i18next";
-
 import overlayFactory from "react-bootstrap-table2-overlay";
 import { SpinnerSVG } from "../../containers/SpinnerSVG";
 import {
@@ -32,6 +33,7 @@ import { deleteDraftbyId } from "../../apiManager/services/draftService";
 import isValiResourceId from "../../helper/regExp/validResourceId";
 import { toast } from "react-toastify";
 import { textTruncate } from "../../helper/helper";
+import DraftTable from "./DraftTable";
 
 export const DraftList = React.memo(() => {
   const { t } = useTranslation();
@@ -60,6 +62,13 @@ export const DraftList = React.memo(() => {
   const [lastModified, setLastModified] = React.useState(null);
   const [isLoading, setIsLoading] = React.useState(false);
   const [invalidFilters, setInvalidFilters] = React.useState({});
+  let filterParams = {
+      draftName: null,
+      id: null,
+      modified: null,
+      page: page,
+      limit: countPerPage,
+  }
 
   useEffect(() => {
     setIsLoading(false);
@@ -76,15 +85,15 @@ export const DraftList = React.memo(() => {
   const currentPage = useNoRenderRef(page);
 
   useEffect(() => {
-    dispatch(fetchDrafts(currentPage.current, countPerPageRef.current));
-  }, [dispatch, currentPage, countPerPageRef]);
+    dispatch(fetchDrafts(filterParams));
+  }, [dispatch, page, countPerPage]);
 
   const onYes = (e) => {
     e.currentTarget.disabled = true;
     deleteDraftbyId(draftDelete.draftId)
       .then(() => {
         toast.success(t("Draft Deleted Successfully"));
-        dispatch(fetchDrafts(currentPage.current, countPerPageRef.current));
+        dispatch(fetchDrafts(filterParams));
       })
       .catch((error) => {
         toast.error(error.message);
@@ -143,21 +152,21 @@ export const DraftList = React.memo(() => {
       return setInvalidFilters({ ...invalidFilters, DRAFT_ID: false });
     }
   };
-  const handlePageChange = (type, newState) => {
-    validateFilters(newState);
-    if (type === "filter") {
-      setfiltermode(true);
-    } else if (type === "pagination") {
-      if (countPerPage > 5) {
-        dispatch(setDraftListLoader(true));
-      } else {
-        setIsLoading(true);
-      }
-    }
-    dispatch(setCountPerpage(newState.sizePerPage));
-    dispatch(FilterDrafts(newState));
-    dispatch(setDraftListActivePage(newState.page));
-  };
+  // const handlePageChange = (type, newState) => {
+  //   validateFilters(newState);
+  //   if (type === "filter") {
+  //     setfiltermode(true);
+  //   } else if (type === "pagination") {
+  //     if (countPerPage > 5) {
+  //       dispatch(setDraftListLoader(true));
+  //     } else {
+  //       setIsLoading(true);
+  //     }
+  //   }
+  //   dispatch(setCountPerpage(newState.sizePerPage));
+  //   dispatch(FilterDrafts(newState));
+  //   dispatch(setDraftListActivePage(newState.page));
+  // };
   const headerList = () => {
     return [
       {
@@ -174,6 +183,8 @@ export const DraftList = React.memo(() => {
       },
     ];
   };
+  let headOptions = headerList();
+
 
   const getNoData = () => {
     if (iserror) {
@@ -184,22 +195,8 @@ export const DraftList = React.memo(() => {
   };
 
   return (
-    <ToolkitProvider
-      bootstrap4
-      keyField="id"
-      data={drafts}
-      columns={columns(
-        lastModified,
-        setLastModified,
-        t,
-        redirectUrl,
-        invalidFilters
-      )}
-      search
-    >
-      {(props) => (
-        <div className="container" id="main" role="definition">
-          <Confirm
+    <>
+     <Confirm
             modalOpen={draftDelete.modalOpen}
             message=
             {
@@ -214,46 +211,9 @@ export const DraftList = React.memo(() => {
             onNo={() => onNo()}
             onYes={onYes}
           />
-          <Head items={headerList()} page="Drafts" />
-          <br />
-          <div>
-            {drafts?.length > 0 || filtermode ? (
-              <BootstrapTable
-                remote={{ pagination: true, filter: true, sort: true }}
-                loading={isLoading}
-                filter={filterFactory()}
-                pagination={paginationFactory(
-                  getoptions(draftCount, page, countPerPage)
-                )}
-                onTableChange={handlePageChange}
-                filterPosition={"top"}
-                {...props.baseProps}
-                noDataIndication={() =>
-                  !isLoading && getNoDataIndicationContent()
-                }
-                overlay={overlayFactory({
-                  spinner: <SpinnerSVG />,
-                  styles: {
-                    overlay: (base) => ({
-                      ...base,
-                      background: "rgba(255, 255, 255)",
-                      height: `${
-                        countPerPage > 5
-                          ? "100% !important"
-                          : "350px !important"
-                      }`,
-                      top: "65px",
-                    }),
-                  },
-                })}
-              />
-            ) : (
-              getNoData()
-            )}
-          </div>
-        </div>
-      )}
-    </ToolkitProvider>
+    <Head items={headOptions} page="Drafts" />
+    <DraftTable />
+    </>
   );
 });
 

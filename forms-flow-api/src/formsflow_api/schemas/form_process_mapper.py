@@ -30,6 +30,7 @@ class FormProcessMapperSchema(Schema):
     version = fields.Str(data_key="version")
     process_tenant = fields.Str(data_key="processTenant")
     deleted = fields.Boolean(data_key="deleted")
+    description = fields.Str(data_key="description")
 
 
 class FormProcessMapperListReqSchema(Schema):

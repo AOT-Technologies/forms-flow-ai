@@ -53,7 +53,7 @@ public class RestApiSecurityConfig {
 	 */
 
 	@Bean
-	@Order(2)
+	@Order(1)
 	public SecurityFilterChain httpSecurityFilterChain(HttpSecurity http, JwtDecoder jwtDecoder) throws Exception {
 		String jwkSetUri = applicationContext.getEnvironment().getRequiredProperty(
 				"spring.security.oauth2.client.provider." + configProps.getProvider() + ".jwk-set-uri");

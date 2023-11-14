@@ -24,16 +24,16 @@ import static org.springframework.security.web.util.matcher.AntPathRequestMatche
  * Camunda Web application SSO configuration for usage with
  * Auth0IdentityProviderPlugin.
  */
-@ConditionalOnMissingClass("org.springframework.test.context.junit.jupiter.SpringExtension")
 @EnableWebSecurity
 @Configuration
+@ConditionalOnMissingClass("org.springframework.test.context.junit.jupiter.SpringExtension")
 public class OAuth2LoginSecurityConfig  {
 
 	@Inject
 	private KeycloakLogoutHandler keycloakLogoutHandler;
 
 	@Bean
-	@Order(1)
+	@Order(2)
 	public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
 		http.csrf(csrf -> csrf.ignoringRequestMatchers(antMatcher("/api/**"), antMatcher("/forms-flow-bpm-socket/**"), antMatcher("/engine-rest/**"), antMatcher("/engine-rest-ext/**"), antMatcher("/camunda/engine-rest/**"), antMatcher("/camunda/engine-rest-ext/**"), antMatcher("/camunda/form-builder/**"), antMatcher("/actuator/**")))
 				.securityMatcher("/**")

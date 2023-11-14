@@ -102,7 +102,7 @@ spring:
             user-name-attribute: preferred_username
             jwk-set-uri: ${keycloak.url}/auth/realms/${keycloak.url.realm}/protocol/openid-connect/certs
             issuer-uri: ${keycloak.url}/auth/realms/${keycloak.url.realm}
-      resource-server:
+      resourceserver:
         jwt:
           issuer-uri: ${keycloak.url}/auth/realms/${keycloak.url.realm}
   main:

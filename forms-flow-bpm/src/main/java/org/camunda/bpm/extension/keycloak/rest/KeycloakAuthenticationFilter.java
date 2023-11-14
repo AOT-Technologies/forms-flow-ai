@@ -1,19 +1,8 @@
 package org.camunda.bpm.extension.keycloak.rest;
 
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-
-import jakarta.servlet.Filter;
-import jakarta.servlet.FilterChain;
-import jakarta.servlet.ServletException;
-import jakarta.servlet.ServletRequest;
-import jakarta.servlet.ServletResponse;
-
+import jakarta.servlet.*;
 import org.apache.commons.lang3.StringUtils;
 import org.camunda.bpm.engine.IdentityService;
-import org.camunda.bpm.extension.commons.utils.RestAPIBuilderUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.security.core.Authentication;
@@ -22,7 +11,10 @@ import org.springframework.security.oauth2.client.OAuth2AuthorizedClientService;
 import org.springframework.security.oauth2.core.oidc.user.OidcUser;
 import org.springframework.security.oauth2.server.resource.authentication.JwtAuthenticationToken;
 
-import net.minidev.json.JSONArray;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
 
 
 
@@ -123,7 +115,7 @@ public class KeycloakAuthenticationFilter implements Filter {
 	private List<String> getKeys(Map<String, Object> claims, String nodeName, String tenantKey) {
 		List<String> keys = new ArrayList<>();
 		if (claims.containsKey(nodeName)) {
-			for (Object key : (JSONArray) claims.get(nodeName)) {
+			for (Object key : (List<String>) claims.get(nodeName)) {
 				String keyValue = key.toString();
 				keyValue = StringUtils.contains(keyValue, "/") ? StringUtils.substringAfter(keyValue, "/") : keyValue;
 				if (tenantKey != null)

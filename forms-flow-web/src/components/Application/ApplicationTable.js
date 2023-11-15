@@ -122,9 +122,9 @@ const ApplicationTable = () => {
         <table className="table custom-table table-responsive-sm">
           <thead>
             <tr>
-              <th>{t("Id")}</th>
+              <th>{t("Submission Id")}</th>
               <th>{t("Form Title")}</th>
-              <th>{t("Status")}</th>
+              <th>{t("Submission Status")}</th>
               <th>{t("Last Modified")}</th>
               <th colSpan="4">
                 <div className="d-flex justify-content-end filter-sort-bar mt-1">

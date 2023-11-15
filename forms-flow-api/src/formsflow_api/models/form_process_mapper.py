@@ -129,7 +129,7 @@ class FormProcessMapper(AuditDateTimeMixin, AuditUserMixin, BaseModel, db.Model)
         else:
             query = (
                 cls.query.order_by(FormProcessMapper.id.desc())
-                .paginate(page=page_number, per_page=limit, error_out=False)
+                .paginate(page_number, limit, False)
                 .items
             )
         return query

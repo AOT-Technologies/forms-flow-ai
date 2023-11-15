@@ -302,8 +302,29 @@ export const formio_resourceBundles = {
     "All Users": "All Users",
     "Specific User Group": "Specific User Group",
     "Applicable for Designer Roled Users only.": "Applicable for Designer Roled Users only.",
-    "Applicable for Client and Reviewer Roled Users only.": "Applicable for Client and Reviewer Roled Users only."
-  
+    "Applicable for Client and Reviewer Roled Users only.": "Applicable for Client and Reviewer Roled Users only.",
+    "Create new filter": "Create new filter",
+    "Filter Name": "Filter Name",
+    "Enter your text here": "Enter your text here",
+    "Criteria": "Criteria",
+    "Add Value": "Add Value",
+    "Definition Key": "Definition Key",
+    "Include Assigned task": "Include Assigned task",
+    "Variable": "Variable",
+    "Show undefined variables": "Show undefined variables",
+    "Name of variable": "Name of variable",
+    "Readable name": "Readable name",
+    "Permission": "Permission",
+    "Accessible for all users": "Accessible for all users",
+    "Private (Only You)": "Private (Only You)",
+    "Specific User/Group": "Specific User/Group",
+    "User": "User",
+    "Group": "Group",
+    "Identifier": "Identifier",
+    "Enter role ID": "Enter role ID",
+    "Create Filter": "Create Filter",
+    "Select a task in the List":"Select a task in the List",
+    "Select a specific task from the provided list of options. Your selection will determine the task you will be working on or interacting with.":"Select a specific task from the provided list of options. Your selection will determine the task you will be working on or interacting with."
   },
 
   "zh-CN": {
@@ -344,9 +365,9 @@ export const formio_resourceBundles = {
     "Form deletion unsuccessful":"表单删除失败",
     "Form deleted successfully": "表格删除成功",
     "Loading...": "正在加载...",
-    
+
     "Save Changes": "保存更改",
-  
+
     ". Are you sure want to delete ?": ".确定要删除吗？",
     "Are you sure you wish to delete the form ": "您确定要删除表格吗 ",
     "Are you sure you wish to delete the form?": "您确定要删除表格吗?",
@@ -373,7 +394,7 @@ export const formio_resourceBundles = {
     "Create Your Task Variable": "创建您的任务变量",
     "No task variable selected": "未选择任务变量",
     "Workflow Associate": "工作流助理",
-  
+
     "Task variable": "任务变量",
     "Enter pathname": "输入路径名",
     "Label": "标签",
@@ -420,7 +441,7 @@ export const formio_resourceBundles = {
     "Delete Form": "删除表格  ",
     "Delete": "删除",
     "Print As PDF": "打印为 PDF  ",
- 
+
     "Tasks": "任务",
     "Insights": "洞察力",
     "Dashboard": "仪表盘  ",
@@ -494,9 +515,9 @@ export const formio_resourceBundles = {
     "Group ID": "组ID",
     "Due": "到期的",
     "Follow-up": "跟进",
-  
+
     "Created By": "由...制作",
-    
+
     "Submitted On": "提交日期",
     "Modified On": "修改时间",
     "No History Found": "未找到历史记录",
@@ -1195,7 +1216,7 @@ export const formio_resourceBundles = {
     "Access Denied" : "拒绝访问",
     "By default, the tenant key would be prefixed to form":"默认情况下，租户键的前缀为 form",
     "go back":"回去",
-  
+
     "Submission saved to draft.":"提交已保存到草稿。",
     "Saved to draft":"已保存到草稿",
     "Saving...":"保存...",
@@ -1255,7 +1276,7 @@ export const formio_resourceBundles = {
     "Choose any":"Изберете всяка",
     "select form type":"изберете тип формуляр",
     "Draft Deleted Successfully":"Черновата е изтрита успешно",
-    
+
     "with ID":"с лична карта",
     "Are you sure you wish to delete the draft":"Сигурни ли сте, че искате да изтриете черновата",
     "Discard Draft":"Отхвърлете черновата",
@@ -1349,7 +1370,7 @@ export const formio_resourceBundles = {
     "Delete Form": "Изтриване на формуляр",
     "Delete": "Изтрий",
     "Print As PDF": "Печат като PDF",
- 
+
     "Task": "Задачи",
     "Metrics": "Метрика",
     "Dashboard": "Табло",
@@ -1381,7 +1402,7 @@ export const formio_resourceBundles = {
     "value": "стойност",
     "No task matching filters found.":
       "Няма намерени филтри за съвпадение на задачи.",
-  
+
     "Set follow-up Date": "Задайте дата за проследяване",
     "Set Due date": "Задайте крайна дата",
     "Add groups": "Добавете групи",
@@ -1408,7 +1429,7 @@ export const formio_resourceBundles = {
     "All": "ВСИЧКО",
     "ANY": "ВСЕКИ",
     "Task assignee": "Възложител на задачата",
-   
+
     "View Submission": "Вижте подаване",
     "Showing": "Показване",
     "to": "да се",
@@ -1427,9 +1448,9 @@ export const formio_resourceBundles = {
     "Group ID": "ID на групата",
     "Due": "В следствие",
     "Follow-up": "Проследяване",
- 
+
     "Created By": "Създадено от",
-   
+
     "Submitted On": "Изпратено на",
     "Modified On": "Променено Включено",
     "No History Found": "Няма намерена история",
@@ -2156,8 +2177,8 @@ export const formio_resourceBundles = {
       "Задава текста за бутона Добавяне на ресурс.",
     "Auto Expand": "Автоматично разширяване",
     "Save & Preview": "Запазване и визуализация",
-    
-    
+
+
     "Export PDF": "Експортиране на PDF",
     "Something went wrong. Please try again!":"Нещо се обърка. Моля, опитайте отново!",
     "No Dashboards Found":"Няма намерени табла за управление",
@@ -2211,7 +2232,30 @@ export const formio_resourceBundles = {
     "Submission History": "История на Подаването",
     "No Submission History found": "Няма Намерен История на Подаването",
     "No submissions Found": "Няма Намерени Подавания",
-    
+
+    "Create new filter":"Създайте нов филтър",
+    "Filter Name":"Име на филтъра",
+    "Enter your text here":"Въведете своя текст тук",
+    "Criteria":"Критерии",
+    "Add Value":"Добави стойност",
+    "Definition Key":"Ключ за дефиниция",
+    "Asignee":"Цесионер",
+    "Include Assigned Task":"Включете възложена задача",
+    "Variable":"Променлива",
+    "Show undefined variables":"Показване на недефинирани променливи",
+    "Name of variable":"Име на променлива",
+    "Readable name":"Четено име",
+    "Permission":"разрешение",
+    "Accessible for all users":"Достъпен за всички потребители",
+    "Private (Only You)":"Лично (само ти)",
+    "Specific User/ Group":"Конкретен потребител/група",
+    "User":"Потребител",
+    "Group":"Група",
+    "Identifier":"Идентификатор",
+    "Enter role ID":"Въведете ID на ролята",
+    "Create Filter":"Създаване на филтър",
+    "Select a task in the List":"Изберете задача от списъка",
+    "Select a specific task from the provided list of options. Your selection will determine the task you will be working on or interacting with.":"Изберете конкретна задача от предоставения списък с опции. Вашият избор ще определи задачата, върху която ще работите или с която ще взаимодействате."
   },
 
   pt: {
@@ -2238,7 +2282,7 @@ export const formio_resourceBundles = {
     "Choose any":"Escolha qualquer",
     "select form type":"selecione o tipo de formulário",
     "Draft Deleted Successfully":"Rascunho excluído com sucesso",
-    
+
     "with ID":"com identidade",
     "Are you sure you wish to delete the draft":"Tem certeza de que deseja excluir o rascunho",
     "Discard Draft":"Descartar Rascunho",
@@ -2255,13 +2299,13 @@ export const formio_resourceBundles = {
     "Form deleted successfully": "Formulário excluído com sucesso",
     "Show in list": "Mostrar na lista",
     "Loading...": "Carregando...",
-    
+
     "Save Changes": "Salvar alterações",
     "Are you sure you wish to delete the form ":
       "Tem certeza de que deseja excluir o formulário",
     "Are you sure you wish to delete the form?":
       "Tem certeza de que deseja excluir o formulário?",
-    
+
     ". Are you sure want to delete ?": ". Tem certeza de que deseja excluir?",
     "Click here to go back": "Clique aqui para voltar",
     "Dashboards": "Painéis",
@@ -2286,7 +2330,7 @@ export const formio_resourceBundles = {
     "Create Your Task Variable": "Crie sua variável de tarefa",
     "No task variable selected": "Nenhuma variável de tarefa selecionada",
     "Workflow Associate": "Associado de fluxo de trabalho",
-    
+
     "Task variable": "Variável de tarefa",
     "Enter pathname": "Digite o nome do caminho",
     "saved successfully": "Salvo com sucesso",
@@ -2306,7 +2350,7 @@ export const formio_resourceBundles = {
     "Insights": "Intuições",
     "Metrics": "Métricas",
     "Tasks": "Tarefas",
- 
+
     "Admin": "Administrador",
     "Powered by ": "Distribuído por ",
     "Name": "Nome",
@@ -3078,7 +3122,7 @@ export const formio_resourceBundles = {
     "Filter Tasks": "Filtrar tarefas",
     "ANY": "ALGUMA",
     "Task assignee": "Responsável pela tarefa",
-  
+
     "View Submission": "Ver o envio",
     "Showing": "Mostrando",
     "results": "resultados",
@@ -3098,7 +3142,7 @@ export const formio_resourceBundles = {
       "Corrija os erros antes de enviar novamente.",
     "Form-Workflow association saved.":
       "Associação formulário-fluxo de trabalho salva.",
-    
+
     "Submitted On": "Enviado em",
     "Modified On": "Modificado em",
     "No History Found": "Nenhum histórico encontrado",
@@ -3154,7 +3198,7 @@ export const formio_resourceBundles = {
     "Access Denied" : "Acesso negado",
     "By default, the tenant key would be prefixed to form":"Por padrão, a chave do locatário seria prefixada para formar",
     "go back":"volte",
-   
+
     "Submission saved to draft.":"Envio salvo como rascunho.",
     "Saved to draft":"Salvo no rascunho",
     "Saving...":"Salvando...",
@@ -3188,6 +3232,29 @@ export const formio_resourceBundles = {
     "No Submission History found": "Nenhum Histórico de Submissão Encontrado",
     "No submissions Found": "Nenhuma submissão encontrada",
 
+    "Create new filter": "Criar novo filtro",
+    "Filter Name": "Nome do filtro",
+    "Enter your text here": "Digite seu texto aqui",
+    "Criteria": "Critério",
+    "Add Value": "Adicionar valor",
+    "Definition Key": "Chave de definição",
+    "Asignee": "Cessionário",
+    "Include Assigned Task": "Incluir tarefa atribuída",
+    "Variable": "Variável",
+    "Show undefined variables": "Mostrar variáveis indefinidas",
+    "Name of variable": "Nome da variável",
+    "Readable name": "nome legível",
+    "Permission": "Permissão",
+    "Accessible for all users": "Acessível para todos os usuários",
+    "Private (Only You)": "Privado (só você)",
+    "Specific User/ Group": "Usuário/Grupo Específico",
+    "User": "Do utilizador",
+    "Group": "Grupo",
+    "Identifier": "identificador",
+    "Enter role ID": "Digite o ID da função",
+    "Create Filter": "Criar filtro",
+    "Select a task in the List":"Selecione uma tarefa na Lista",
+    "Select a specific task from the provided list of options. Your selection will determine the task you will be working on or interacting with.":"Selecione uma tarefa específica na lista de opções fornecida. Sua seleção determinará a tarefa na qual você estará trabalhando ou interagindo."
   },
 
   fr: {
@@ -3214,7 +3281,7 @@ export const formio_resourceBundles = {
     "Choose any":"Choisissez n'importe quel",
     "select form type":"sélectionner le type de formulaire",
     "Draft Deleted Successfully":"Brouillon supprimé avec succès",
-    
+
     "with ID":"avec pièce d'identité",
     "Are you sure you wish to delete the draft":"Êtes-vous sûr de vouloir supprimer le brouillon",
     "Discard Draft":" Supprimer le brouillon",
@@ -3230,13 +3297,13 @@ export const formio_resourceBundles = {
     "Form deleted successfully": "Formulaire supprimé avec succèsy",
     "Form deletion unsuccessful":"Échec de la suppression du formulaire",
     "Loading...": "Chargement...",
-    
+
     "Save Changes": "Save Changes",
     "Are you sure you wish to delete the form ":
       "Êtes-vous sûr de vouloir supprimer le formulaire",
     "Are you sure you wish to delete the form?":
       "Êtes-vous sûr de vouloir supprimer le formulaire?",
-  
+
     ". Are you sure want to delete ?": ". Voulez-vous vraiment supprimer ?",
     "Click here to go back": "Cliquez ici pour revenir en arrière",
     "Dashboards": "Tableaux de bord",
@@ -3264,7 +3331,7 @@ export const formio_resourceBundles = {
     "Create Your Task Variable": "Créez votre variable de tâche",
     "No task variable selected": "Aucune variable de tâche sélectionnée",
     "Workflow Associate": "Associé au flux de travail",
-   
+
     "Task variable": "Variable de tâche",
     "Enter pathname": "Entrez le nom du chemin",
     "saved successfully": "enregistré avec succès",
@@ -3286,7 +3353,7 @@ export const formio_resourceBundles = {
     "Insights": "Connaissances",
     "Dashboard": "Tableau de bord",
     "Task": "Tâches",
-    
+
     "Forms": "Formes",
     "Admin": "Administrateur",
     "Powered by ": "Alimenté par ",
@@ -4066,7 +4133,7 @@ export const formio_resourceBundles = {
     "Filter Tasks": "Filtrer les tâches",
     "ANY": "TOUTE",
     "Task assignee": "Responsable de la tâche",
-   
+
     "View Submission": "Voir la soumission",
     "Showing": "Affichage",
     "to": "à",
@@ -4086,7 +4153,7 @@ export const formio_resourceBundles = {
     "Follow-up": "Suivre",
 
     "Created By": "Créé par",
- 
+
     "Submitted On": "Soumis le",
     "Modified On": "Modifié le",
     "No History Found": "Aucun historique trouvé",
@@ -4139,7 +4206,7 @@ export const formio_resourceBundles = {
     "Access Denied" : "Accès refusé",
     "By default, the tenant key would be prefixed to form":"Par défaut, la clé du locataire serait préfixée pour former",
     "go back":"retourner",
-   
+
     "Submission saved to draft.":"Soumission enregistrée comme brouillon.",
     "Saved to draft":"Enregistré comme brouillon",
     "Saving...":"Économie...",
@@ -4172,6 +4239,29 @@ export const formio_resourceBundles = {
     "Submission History": "Historique de Soumission",
     "No Submission History found": "Aucun Historique de Soumission Trouvé",
     "No submissions Found": "Aucune soumission trouvée",
+    "Create new filter": "Créer un nouveau filtre",
+    "Filter Name": "Nom du filtre",
+    "Enter your text here": "Entrez votre texte ici",
+    "Criteria": "Critère",
+    "Add Value": "Ajouter de la valeur",
+    "Definition Key": "Clé de définition",
+    "Asignee": "Cessionnaire",
+    "Include Assigned Task": "Inclure la tâche assignée",
+    "Variable": "Variable",
+    "Show undefined variables": "Afficher les variables non définies",
+    "Name of variable": "Nom de variable",
+    "Readable name": "Nom lisible",
+    "Permission": "Autorisation",
+    "Accessible for all users": "Accessible pour tous les utilisateurs",
+    "Private (Only You)": "Privé (seulement vous)",
+    "Specific User/ Group": "Utilisateur/groupe spécifique",
+    "User": "Utilisateur",
+    "Group": "Groupe",
+    "Identifier": "Identifiant",
+    "Enter role ID": "Entrez l'ID du rôle",
+    "Create Filter": "Créer un filtre",
+    "Select a task in the List":"Sélectionnez une tâche dans la liste",
+    "Select a specific task from the provided list of options. Your selection will determine the task you will be working on or interacting with.":"Sélectionnez une tâche spécifique dans la liste d'options fournie. Votre sélection déterminera la tâche sur laquelle vous travaillerez ou avec laquelle vous interagirez."
 
 
   },
@@ -4200,7 +4290,7 @@ export const formio_resourceBundles = {
     "Choose any":"Wählen Sie eine aus",
     "select form type":"Formulartyp auswählen",
     "Draft Deleted Successfully":"Entwurf erfolgreich gelöscht",
-   
+
     "with ID":"mit Ausweis",
     "Are you sure you wish to delete the draft":"Möchten Sie den Entwurf wirklich löschen",
     "Discard Draft":"Entwurf verwerfen",
@@ -4219,7 +4309,7 @@ export const formio_resourceBundles = {
     "Form-Workflow association saved.":
       "Formular-Workflow-Zuordnung gespeichert.",
     "Loading...": "Wird geladen...",
-    
+
     "Save Changes": "Save Changes",
     "Are you sure you wish to delete the form ":
       "Möchten Sie das Formular wirklich löschen ",
@@ -4251,7 +4341,7 @@ export const formio_resourceBundles = {
     "Create Your Task Variable": "Erstellen Sie Ihre Aufgabenvariable",
     "No task variable selected": "Keine Aufgabenvariable ausgewählt",
     "Workflow Associate": "Workflow-Mitarbeiter",
-    
+
     "Task variable": "Aufgabenvariable",
     "Enter pathname": "Geben Sie den Pfadnamen ein",
     "saved successfully": "Erfolgreich gespeichert",
@@ -4264,7 +4354,7 @@ export const formio_resourceBundles = {
     "Dashboard": "Armaturenbrett",
     "Insights": "Einblicke",
     "Task": "Aufgaben",
-   
+
     "Forms": "Formen",
     "Admin": "Administrator",
     "Powered by ": "Bereitgestellt von ",
@@ -4373,7 +4463,7 @@ export const formio_resourceBundles = {
     "All": "Alle",
     "ANY": "IRGENDEIN",
     "Task assignee": "Aufgabenzuständiger",
-  
+
     "View Submission": "Einreichung anzeigen",
     "Showing": "Anzeigen",
     "to": "zu",
@@ -4391,9 +4481,9 @@ export const formio_resourceBundles = {
     "Group ID": "Gruppen-ID",
     "Due": "Fällig",
     "Follow-up": "Nachverfolgen",
-  
+
     "Created By": "Erstellt von",
-   
+
     "Submitted On": "Eingereicht am",
     "Modified On": "Geändert am",
     "No History Found": "Kein Verlauf gefunden",
@@ -4401,7 +4491,7 @@ export const formio_resourceBundles = {
     "Details": "Einzelheiten",
     "Status": "Status",
     "Submissions": "Einreichungen",
-    
+
     "Link To Form Submission": "Link zur Formularübermittlung",
     "Last Modified": "Zuletzt geändert",
     "No dashboard found": "Kein Dashboard gefunden",
@@ -5131,7 +5221,7 @@ export const formio_resourceBundles = {
     "Access Denied" : "Zugriff abgelehnt",
     "By default, the tenant key would be prefixed to form":"Standardmäßig wird dem Mandantenschlüssel form vorangestellt",
     "go back":"geh zurück",
-   
+
     "Submission saved to draft.":"Übermittlung als Entwurf gespeichert.",
     "Saved to draft":"Als Entwurf gespeichert",
     "Saving...":"Sparen...",
@@ -5163,5 +5253,32 @@ export const formio_resourceBundles = {
     "Submission History": "Einreichungshistorie",
     "No Submission History found": "Keine Einreichungshistorie gefunden",
     "No submissions Found": "Keine Einreichungen gefunden",
+    "Create new filter":"Neuen Filter erstellen",
+    "Filter Name":"Filtername",
+    "Enter your text here":"Gib deinen Text hier ein",
+    "Criteria":"Kriterien",
+    "Add Value":"Mehrwert",
+    "Definition Key":"Definitionsschlüssel",
+    "Asignee":"Bevollmächtigter",
+    "Include Assigned Task":"Zugewiesene Aufgabe einschließen",
+    "Variable":"Variable",
+    "Show undefined variables":"Undefinierte Variablen anzeigen",
+    "Name of variable":"Name der Variablen",
+    "Readable name":"Lesbarer Name",
+    "Permission":"Erlaubnis",
+    "Accessible for all users":"Für alle Benutzer zugänglich",
+    "Private (Only You)":"Privat (nur Sie)",
+    "Specific User/ Group":"Bestimmter Benutzer/Gruppe",
+    "User":"Benutzer",
+    "Group":"Gruppe",
+    "Identifier":"Kennung",
+    "Enter role ID":"Geben Sie die Rollen-ID ein",
+    "Create Filter":"Filter erstellen",
+    "Select a task in the List":"Wählen Sie eine Aufgabe in der Liste aus",
+    "Select a specific task from the provided list of options. Your selection will determine the task you will be working on or interacting with.":"Wählen Sie eine bestimmte Aufgabe aus der bereitgestellten Optionsliste aus. Ihre Auswahl bestimmt die Aufgabe, an der Sie arbeiten oder mit der Sie interagieren."
+
+
+
+
   },
 };

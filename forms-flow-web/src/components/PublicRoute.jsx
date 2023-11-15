@@ -6,7 +6,7 @@ import View from "../components/Form/Item/View";
 import NotFound from "./NotFound";
 
 const PublicRoute = ({publish}) => {
-  
+
   useEffect(()=>{
     publish("FF_PUBLIC");
   },[]);

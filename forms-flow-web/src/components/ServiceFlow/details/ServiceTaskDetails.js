@@ -1,5 +1,5 @@
 import React, { useCallback, useEffect, useState } from "react";
-import { Row, Tab, Tabs } from "react-bootstrap";
+import { Tab, Tabs } from "react-bootstrap";
 import TaskHeader from "./TaskHeader";
 import {
   reloadTaskFormSubmission,
@@ -41,6 +41,8 @@ import {
 } from "../../../constants/constants";
 import { getCustomSubmission } from "../../../apiManager/services/FormServices";
 import { getFormioRoleIds } from "../../../apiManager/services/userservices";
+import  NoFilterSelected  from "../../../components/ServiceFlow/list/sort/NoFilterSelected";
+
 import { bpmActionError } from "../../../actions/bpmTaskActions";
 import { setCustomSubmission } from "../../../actions/checkListActions";
 const ServiceFlowTaskDetails = React.memo(() => {
@@ -71,7 +73,7 @@ const ServiceFlowTaskDetails = React.memo(() => {
   const tenantKey = useSelector((state) => state.tenants?.tenantId);
   const redirectUrl = MULTITENANCY_ENABLED ? `/tenant/${tenantKey}/` : "/";
   const error = useSelector((state) => state.bpmTasks.error);
-  
+
 
   useEffect(() => {
     if (taskId) {
@@ -98,7 +100,7 @@ const ServiceFlowTaskDetails = React.memo(() => {
       dispatch(bpmActionError(''));
     };
   }, [error,dispatch]);
-  
+
   useEffect(() => {
     if (processList.length && task?.processDefinitionId) {
       const pKey = getProcessDataObjectFromList(
@@ -179,7 +181,7 @@ const ServiceFlowTaskDetails = React.memo(() => {
   const reloadTasks = () => {
     dispatch(setBPMTaskDetailLoader(true));
     dispatch(setSelectedTaskID(null)); // unSelect the Task Selected
-    dispatch(fetchServiceTaskList(selectedFilter.id, firstResult, reqData)); //Refreshes the Tasks
+    dispatch(fetchServiceTaskList(reqData,null,firstResult)); //Refreshes the Tasks
     dispatch(push(`${redirectUrl}task/`));
   };
 
@@ -195,8 +197,8 @@ const ServiceFlowTaskDetails = React.memo(() => {
         })
       ); // Refresh the Task Selected
       dispatch(getBPMGroups(task.id));
-      dispatch(fetchServiceTaskList(selectedFilter.id, firstResult, reqData)); //Refreshes the Tasks
-      
+      dispatch(fetchServiceTaskList(reqData,null,firstResult)); //Refreshes the Tasks
+
     }
   };
 
@@ -250,10 +252,7 @@ const ServiceFlowTaskDetails = React.memo(() => {
 
   if (!bpmTaskId) {
     return (
-      <Row className="not-selected mt-2 ml-1 " style={{ color: "#757575" }}>
-        <i className="fa fa-info-circle mr-2 mt-1" />
-        {t("Select a task in the list.")}
-      </Row>
+      <NoFilterSelected />
     );
   } else if (isTaskLoading) {
     return (

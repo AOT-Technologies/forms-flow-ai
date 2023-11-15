@@ -201,6 +201,10 @@ const View = React.memo((props) => {
           })
         );
       }
+      //show success toaster - no datachange, but still draft is createdgit
+      else {
+        toast.success(t("Submission saved to draft."));
+      }
     }
   };
 

@@ -9,7 +9,7 @@ window["_env_"] = {
 
   // Form-IO API-PROJECT-URL, default: http://{your-ip-address}:3001
   REACT_APP_API_PROJECT_URL: "<Forms-flow-forms URL>",
-  
+
   // Keycloak-client-name for web
   REACT_APP_KEYCLOAK_CLIENT: "forms-flow-web",
   // Keycloak-Realm-name

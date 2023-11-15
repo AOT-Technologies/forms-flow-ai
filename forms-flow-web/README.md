@@ -72,7 +72,7 @@ is mentioned on the [link](../forms-flow-idm/keycloak/README.md#create-forms-flo
 `DOCUMENT_SERVICE_URL`|Formsflow document service api url|          |`http://{your-ip-address}:5006`
 `MT_ADMIN_BASE_URL`|Multitenancy admin url|          |`http://{your-ip-address}:5010/api`
 `MT_ADMIN_BASE_URL_VERSION=v1`|Version of multitenancy admin| v1
-`KEYCLOAK_ENABLE_CLIENT_AUTH`|Client auth mechanism|          |`false`
+`KEYCLOAK_ENABLE_CLIENT_AUTH`|Client auth mechanism||`false`
 
 * NOTE - While configuring ENABLE_APPLICATION_ACCESS_PERMISSION_CHECK the accessAllowApplications will hide / show application tab. To enable this feature you need to add access-allow-applications with the user group in keycloak.
 

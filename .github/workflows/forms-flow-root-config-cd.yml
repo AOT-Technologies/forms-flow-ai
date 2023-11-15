@@ -87,7 +87,7 @@ jobs:
             MF_FORMSFLOW_NAV_URL=https://forms-flow-microfrontends.aot-technologies.com/forms-flow-nav@${{ env.VERSION }}/forms-flow-nav.gz.js
             MF_FORMSFLOW_SERVICE_URL=https://forms-flow-microfrontends.aot-technologies.com/forms-flow-service@${{ env.VERSION }}/forms-flow-service.gz.js
             MF_FORMSFLOW_ADMIN_URL=https://forms-flow-microfrontends.aot-technologies.com/forms-flow-admin@${{ env.VERSION }}/forms-flow-admin.gz.js
-            MF_FORMSFLOW_THEME_URL=https://forms-flow-microfrontends.aot-technologies.com/forms-flow-theme@${{ env.VERSION }}/forms-flow-theme.gz.js 
+            MF_FORMSFLOW_THEME_URL=https://forms-flow-microfrontends.aot-technologies.com/forms-flow-theme@${{ env.VERSION }}/forms-flow-theme.gz.js
       - name: Build and push Docker image
         if: ${{ github.ref == 'refs/heads/master' }}
         uses: docker/build-push-action@v4

@@ -48,7 +48,7 @@ function DmnTable() {
       )
     );
     setCountLoading(true);
-    fetchAllDmnProcessesCount(tenantKey, search)
+    fetchAllDmnProcessesCount(tenantKey, searchText)
       .then((result) => {
         setTotalProcess(result.data?.count || 0);
       })
@@ -90,15 +90,15 @@ function DmnTable() {
     <div className="mt-3">
       <LoadingOverlay
         spinner
-        text="Loading..."
+        text={t("Loading...")}
         active={isLoading || countLoading}
       >
         <div style={{ minHeight: "400px" }}>
           <table className="table custom-table  table-responsive-sm mt-2">
             <thead>
               <tr>
-                <th scope="col">{t("Key")}</th>
                 <th scope="col">{t("Workflow Name")}</th>
+                <th scope="col">{t("Key")}</th>
                 <th scope="col">{t("Type")}</th>
                 <th colSpan="2">
                 <InputGroup className="input-group">
@@ -141,7 +141,7 @@ function DmnTable() {
                     style={{ height: "300px" }}
                     className="text-center"
                   >
-                    {t("No DMN Found")}
+                   { isLoading ? null : t("No Process Found")}
                   </td>
                 </tr>
               </tbody>
@@ -149,13 +149,14 @@ function DmnTable() {
               <tbody>
                 {dmn.map((processItem) => (
                   <tr key={processItem.id}>
-                    <td>{processItem.key}</td>
                     <td>{processItem.name}</td>
+                    <td>{processItem.key}</td>
                     <td>{t("DMN")}</td>
-                    <td>
+                    <td className="d-flex justify-content-end w-100">
                       <Link
                         to={`${redirectUrl}processes/dmn/${processItem.key}/edit`}
                       >
+                        <i className="fas fa-edit mr-2"/>
                         {t("Edit Workflow")}
                       </Link>
                     </td>

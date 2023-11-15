@@ -282,18 +282,26 @@ const View = React.memo((props) => {
         className="col-12 p-0"
       >
         <div className="mt-4">
-          <Confirm
-            modalOpen={draftDelete.modalOpen}
-            message={`${t("Are you sure you wish to delete the draft")} "${
-              textTruncate(14,12,draftDelete.draftName)
-            }"
-            ${t("with ID")} "${draftDelete.draftId}"`}
-            onNo={() => onNo()}
-            onYes={(e) => {
-              exitType.current = "SUBMIT";
-              onYes(e);
-            }}
-          />
+        <Confirm
+  modalOpen={draftDelete.modalOpen}
+  message={
+    <>
+      {t("Are you sure to delete the draft")}
+      <span style={{ fontWeight: "bold" }}>&nbsp;
+        {textTruncate(14, 12, draftDelete.draftName)}
+      </span>&nbsp;
+      {t("with ID")}
+      <span style={{ fontWeight: "bold" }}>&nbsp;
+        {draftDelete.draftId}
+      </span> ?
+    </>
+  }
+  onNo={() => onNo()}
+  onYes={(e) => {
+    exitType.current = "SUBMIT";
+    onYes(e);
+  }}
+/>
           {processData?.status === "active" ? (
             <div className="form-view-wrapper">
               <Form
@@ -437,7 +445,9 @@ const mapDispatchToProps = (dispatch, ownProps) => {
     onCustomEvent: (customEvent, redirectUrl) => {
       switch (customEvent.type) {
         case CUSTOM_EVENT_TYPE.CUSTOM_SUBMIT_DONE:
-          toast.success("Submission Saved.");
+          toast.success(
+            <Translation>{(t) => t("Submission Saved")}</Translation>
+          );
           dispatch(push(`${redirectUrl}draft`));
           break;
         case CUSTOM_EVENT_TYPE.CANCEL_SUBMISSION:

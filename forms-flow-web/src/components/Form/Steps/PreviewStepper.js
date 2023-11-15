@@ -403,8 +403,9 @@ if (reviewerSelectedOption === "Specific Reviewers") {
                             </Popover>
                           )}
                         >
-                          <Button id="addDesigner" className="btn btn-primary btn-md form-btn pull-left btn-left">
-                            <Translation>{(t) => t("Add")}</Translation> <b>+</b>
+                          <Button id="addDesigner" className="btn btn-primary  btn-small">
+                          <i className="fa-solid fa-plus mr-2"></i>
+                            <Translation>{(t) => t("Add")}</Translation>
                           </Button>
                         </OverlayTrigger>
                       </div>
@@ -414,7 +415,7 @@ if (reviewerSelectedOption === "Specific Reviewers") {
                   </div>
                   <div>
                     <div>
-                      <hr className="mt-1" />
+                      <hr className="mt-3" />
                       <span
                         className="font-weight-bold"
                         title={t(
@@ -491,8 +492,9 @@ if (reviewerSelectedOption === "Specific Reviewers") {
                               </Popover>
                             )}
                           >
-                            <Button id="addClient" className="btn btn-primary btn-md form-btn pull-left btn-left">
-                              <Translation>{(t) => t("Add")}</Translation> <b>+</b>
+                            <Button id="addClient" className="btn btn-primary btn-small ">
+                            <i className="fa-solid fa-plus mr-2"></i>
+                              <Translation>{(t) => t("Add")}</Translation>
                             </Button>
                           </OverlayTrigger>
                         </div>
@@ -503,7 +505,7 @@ if (reviewerSelectedOption === "Specific Reviewers") {
 
                     <div>
                       <div>
-                        <hr className="mt-1" />
+                        <hr className="mt-3" />
                         <span
                           className="font-weight-bold"
                           title={t("Permission for submission tracking.")}
@@ -583,8 +585,9 @@ if (reviewerSelectedOption === "Specific Reviewers") {
                                 </Popover>
                               )}
                             >
-                              <Button id="addReviewer" className="btn btn-primary btn-md form-btn pull-left btn-left">
-                                <Translation>{(t) => t("Add")}</Translation> <b>+</b>
+                              <Button id="addReviewer" className="btn btn-primary  btn-small ">
+                              <i className="fa-solid fa-plus mr-2"></i>
+                                <Translation>{(t) => t("Add")}</Translation>
                               </Button>
                             </OverlayTrigger>
                           </div>

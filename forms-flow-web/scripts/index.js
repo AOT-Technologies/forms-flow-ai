@@ -51,9 +51,9 @@ const run = async (params) => {
  */
 async function upload(file_name, file, type = "application/javascript", encode = true) {
     const params = {
-        Bucket: BUCKET,
-        Key: `${component}/${file_name}`,
-        Body: createReadStream(file),
+        Bucket: BUCKET, 
+        Key: `${component}/${file_name}`, 
+        Body: createReadStream(file), 
         ContentType: type,
         ContentEncoding:"gzip"
       };
@@ -61,7 +61,7 @@ async function upload(file_name, file, type = "application/javascript", encode =
       delete params.ContentEncoding;
     }
     run(params);
-
+    
 }
 
 Walk.walk(`../build`, walkFunc)

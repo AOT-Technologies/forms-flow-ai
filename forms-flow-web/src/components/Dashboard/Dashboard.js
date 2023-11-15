@@ -208,7 +208,6 @@ const Dashboard = React.memo(() => {
       <LoadingOverlay active={submissionStatusCountLoader} spinner>
         <div
           className="mb-4"
-          style={{ maxHeight: "60vh" }}
           id="main"
           role="complementary"
         >

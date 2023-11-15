@@ -103,7 +103,7 @@ const List = React.memo((props) => {
         modalOpen={props.modalOpen}
         message={
           <Translation>
-            {(t) => t("Are you sure you wish to delete this submission?")}
+            {(t) => t("Are you sure to delete this submission ?")}
           </Translation>
         }
         onNo={() => onNo()}

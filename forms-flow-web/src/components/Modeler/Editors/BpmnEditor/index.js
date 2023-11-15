@@ -54,8 +54,8 @@ export default React.memo(
     const [lintErrors, setLintErrors] = useState([]);
     const [deploymentLoading, setDeploymentLoading] = useState(false);
     const redirectUrl = MULTITENANCY_ENABLED ? `/tenant/${tenantKey}/` : "/";
-    const [processName,setProcessName] = useState(true);
-    const bpmPropertyInput = document.getElementById("bio-properties-panel-name")?.value;
+    // const [processName,setProcessName] = useState(true);
+    // const bpmPropertyInput = document.getElementById("bio-properties-panel-name")?.value;
 
     const containerRef = useCallback((node) => {
       if (node !== null) {
@@ -63,11 +63,11 @@ export default React.memo(
       }
     }, []);
 
-    useEffect(() => {
-      if (bpmPropertyInput) {
-        setProcessName(false);
-      }
-  }, [!bpmPropertyInput]);
+  //   useEffect(() => {
+  //     if (bpmPropertyInput) {
+  //       setProcessName(false);
+  //     }
+  // }, [!bpmPropertyInput]);
 
     const cancel = () => {
       dispatch(push(`${redirectUrl}processes`));
@@ -318,21 +318,22 @@ export default React.memo(
               </label>
             ) : null}
 
-            <Button variant="light" onClick={cancel}>
+            <button type="button"
+              className="btn btn-link text-dark" onClick={cancel}>
               {t("Cancel")}
-            </Button>
+            </button>
             <Button
               variant="outline-dark"
               className="ml-3"
               onClick={handleExport}
-              disabled={processName || !bpmPropertyInput}
+              // disabled={processName || !bpmPropertyInput}
             >
               {t("Export")}
             </Button>
             <Button
               className="ml-3"
               onClick={deployProcess}
-              disabled={processName || !bpmPropertyInput}
+              // disabled={processName || !bpmPropertyInput}
             >
               {t("Deploy")}
             </Button>

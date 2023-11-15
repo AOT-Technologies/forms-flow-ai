@@ -71,8 +71,7 @@ const List = React.memo((props) => {
   const designerFormLoading = useSelector(
     (state) => state.formCheckList.designerFormLoading
   );
-  const searchText = useSelector((state) => state.bpmForms.searchText);
-  const formType = useSelector((state) => state.bpmForms.formType);
+  const searchText = useSelector((state) => state.bpmForms.searchText); 
 
   const isDesigner = userRoles.includes(STAFF_DESIGNER);
   const pageNo = useSelector((state) => state.bpmForms.page);
@@ -108,9 +107,6 @@ const List = React.memo((props) => {
 
   const fetchForms = () => {
     let filters = [pageNo, limit, sortBy, sortOrder, searchText];
-    if (isDesigner) {
-      filters.push(formType);
-    }
     dispatch(setFormSearchLoading(true));
     dispatch(fetchBPMFormList(...filters));
   };
@@ -126,7 +122,6 @@ const List = React.memo((props) => {
     sortBy,
     sortOrder,
     searchText,
-    formType,
   ]);
 
   const formCheck = (formCheckList) => {
@@ -154,7 +149,7 @@ const List = React.memo((props) => {
     return [
       {
         name: "Forms",
-        icon: "file-text-o",
+        icon: "file-text-o mr-2",
       },
     ];
   };
@@ -503,11 +498,11 @@ const List = React.memo((props) => {
                         ? props.formName
                         : textTruncate(50, 40, props.formName)}
                     </span>
-                    .{t("Are you sure you wish to delete the form?")}
+                    .<br />{t("Are you sure to delete the form ?")}
                   </div>
                 ) : (
                   <div>
-                    {`${t("Are you sure you wish to delete the form ")}`}
+                    {`${t("Are you sure to delete the form ")}`}
                     <span style={{ fontWeight: "bold" }}>
                       {textTruncate(60, 40, props.formName)}
                     </span>
@@ -516,7 +511,7 @@ const List = React.memo((props) => {
                 )
               ) : (
                 <div>
-                  {`${t("Are you sure you wish to delete the form ")} `}
+                  {`${t("Are you sure to delete the form ")} `}
                   <span style={{ fontWeight: "bold" }}>
                     {textTruncate(60, 40, props.formName)}
                   </span>

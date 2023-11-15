@@ -485,7 +485,7 @@ export default function CreateNewFilterDrawer({
           />
           <h5 style={{ fontSize: "18px", marginBottom: "3px" }}>
             <Translation>
-              {(t) => t("Show task based on logged user roles")}
+              {(t) => t("Show only current user assigned task")}
             </Translation>
           </h5>
         </div>
@@ -500,7 +500,7 @@ export default function CreateNewFilterDrawer({
           />
           <h5 style={{ fontSize: "18px", marginBottom: "3px" }}>
             <Translation>
-              {(t) => t("Show only current user assigned task")}
+              {(t) => t("Show task based on logged user roles")}
             </Translation>
           </h5>
         </div>

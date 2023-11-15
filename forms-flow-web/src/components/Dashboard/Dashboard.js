@@ -264,7 +264,7 @@ const Dashboard = React.memo(() => {
                   <option value="modified">{t("Modified Date")}</option>
                 </FormControl>
               </div>
-              <DateRangePicker
+              <DateRangePicker className = "bg-white"
                 onChange={onSetDateRange}
                 value={dateRange}
                 dayPlaceholder="dd"

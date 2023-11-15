@@ -286,11 +286,12 @@ const View = React.memo((props) => {
   modalOpen={draftDelete.modalOpen}
   message={
     <>
-      {t("Are you sure to delete the draft")}
+
+      {t("Are you sure to delete the draft")} 
       <span style={{ fontWeight: "bold" }}>&nbsp;
         {textTruncate(14, 12, draftDelete.draftName)}
       </span>&nbsp;
-      {t("with ID")}
+      {t("with ID")} 
       <span style={{ fontWeight: "bold" }}>&nbsp;
         {draftDelete.draftId}
       </span> ?

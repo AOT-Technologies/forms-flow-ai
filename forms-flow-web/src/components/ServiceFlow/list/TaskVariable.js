@@ -5,7 +5,7 @@ const TaskVariable = ({ variables }) => {
   const [showMore, setShowMore] = useState(false);
   let variableCount = 0;
   const taskvariable = useSelector(
-    (state) => state.bpmTasks.selectedFilter?.properties?.variables || []
+    (state) => state.bpmTasks.selectedFilter?.variables || []
   );
 
   const rowReturn = (taskItem, data, index) => {

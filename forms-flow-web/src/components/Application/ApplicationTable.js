@@ -122,9 +122,9 @@ const ApplicationTable = () => {
         <table className="table custom-table table-responsive-sm">
           <thead>
             <tr>
-              <th>{t("Id")}</th>
+              <th>{t("Submission Id")}</th>
               <th>{t("Form Title")}</th>
-              <th>{t("Status")}</th>
+              <th>{t("Submission Status")}</th>
               <th>{t("Last Modified")}</th>
               <th colSpan="4">
                 <div className="d-flex justify-content-end filter-sort-bar mt-1">
@@ -201,9 +201,9 @@ const ApplicationTable = () => {
             </Dropdown.Menu>
         </Dropdown>
           <span className="ml-2">
-            Showing {(limit * pageNo ) - (limit - 1)} to{" "}
-            {limit * pageNo > totalForms ? totalForms : limit * pageNo} of{" "}
-            {totalForms} Results
+            {t("Showing")} {(limit * pageNo ) - (limit - 1)} {t("to")}{" "}
+            {limit * pageNo > totalForms ? totalForms : limit * pageNo} {t("of")}{" "}
+            {totalForms} {t("results")}
           </span>
         </div>
         <div className="d-flex align-items-center">

@@ -183,12 +183,12 @@ const Dashboard = React.memo(() => {
         name: "Metrics",
         count: totalItems,
         onClick: () => dispatch(push(`${redirectUrl}metrics`)),
-        icon: "line-chart",
+        icon: "line-chart mr-2",
       },
       {
         name: "Insights",
         onClick: () => dispatch(push(`${redirectUrl}insights`)),
-        icon: "lightbulb-o",
+        icon: "lightbulb-o mr-2",
       },
     ];
   };
@@ -365,7 +365,7 @@ const Dashboard = React.memo(() => {
                   {numberofSubmissionListTo > totalItems
                     ? totalItems
                     : numberofSubmissionListTo}{" "}
-                  {t("of")} {totalItems}
+                  {t("of")} {totalItems} {t("results")}
                 </span>
           </div>
               

@@ -70,11 +70,11 @@ const ViewDraft = React.memo(() => {
     <div className="" id="main">
       <div className="d-flex align-items-center">
         <Link title={t("Back to Drafts")} to={`${redirectUrl}draft`} className="mt-1">
-          <i className="fa fa-chevron-left fa-lg" />
+          <i className="fa fa-chevron-left fa-lg mr-2" />
         </Link>
         <h3 className="">
           <span className="application-head-details">
-            <i className="fa fa-list-alt" aria-hidden="true" />
+            <i className="fa fa-list-alt mr-2" aria-hidden="true" />
             &nbsp; <Translation>{(t) => t("Drafts")}</Translation> /
           </span>{" "}
           {`${startCase(draftDetail.DraftName)}`}

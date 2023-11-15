@@ -1,16 +1,22 @@
-/* eslint-disable */
 import React, { useState, useEffect } from "react";
-import { InputGroup, FormControl, Dropdown } from "react-bootstrap";
+import { InputGroup, FormControl, Dropdown, Modal } from "react-bootstrap";
 import { useDispatch, useSelector } from "react-redux";
 import { push } from "connected-react-router";
 import Pagination from "react-js-pagination";
-import { setBPMFormLimit, setBPMFormListPage, setBPMFormListSort, setBpmFormSearch, setFormDeleteStatus } from "../../../actions/formActions";
-import SelectFormForDownload from "../FileUpload/SelectFormForDownload";
+import {
+  setBPMFormLimit,
+  setBPMFormListPage,
+  setBPMFormListSort,
+  setBpmFormSearch,
+} from "../../../actions/formActions";
 import LoadingOverlay from "react-loading-overlay";
-import { MULTITENANCY_ENABLED, STAFF_DESIGNER } from "../../../constants/constants";
+import {
+  MULTITENANCY_ENABLED,
+  STAFF_DESIGNER,
+} from "../../../constants/constants";
 import { useTranslation } from "react-i18next";
 import { Translation } from "react-i18next";
-
+import { sanitize } from "dompurify";
 
 function ClientTable() {
   const tenantKey = useSelector((state) => state.tenants?.tenantId);
@@ -23,28 +29,17 @@ function ClientTable() {
   const limit = useSelector((state) => state.bpmForms.limit);
   const totalForms = useSelector((state) => state.bpmForms.totalForms);
   const sortOrder = useSelector((state) => state.bpmForms.sortOrder);
-  const searchFormLoading = useSelector((state) => state.formCheckList.searchFormLoading);
+  const searchFormLoading = useSelector(
+    (state) => state.formCheckList.searchFormLoading
+  );
   const isDesigner = userRoles.includes(STAFF_DESIGNER);
   const [pageLimit, setPageLimit] = useState(5);
   const isAscending = sortOrder === "asc" ? true : false;
   const searchText = useSelector((state) => state.bpmForms.searchText);
   const [search, setSearch] = useState(searchText || "");
   const redirectUrl = MULTITENANCY_ENABLED ? `/tenant/${tenantKey}/` : "/";
-
-
-
-
-  const [openIndex, setOpenIndex] = useState(-1); 
-
-  const toggleDropdown = (index) => {
-    if (openIndex === index) {
-      
-      setOpenIndex(-1);
-    } else {
-      
-      setOpenIndex(index);
-    }
-  };
+  const [selectedForExpand, setSelectedForExpand] = useState(null);
+  const [openDetailsModal, setOpenDetailsModal] = useState(false);
 
   const pageOptions = [
     { text: "5", value: 5 },
@@ -59,7 +54,6 @@ function ClientTable() {
     dispatch(setBPMFormListPage(1));
   };
 
-  
   useEffect(() => {
     setSearch(searchText);
   }, [searchText]);
@@ -76,6 +70,7 @@ function ClientTable() {
   };
 
   const submitNewForm = (formId) => {
+    if(selectedForExpand) handleCloseModal();
     dispatch(push(`${redirectUrl}form/${formId}`));
   };
 
@@ -94,35 +89,15 @@ function ClientTable() {
     dispatch(setBPMFormListPage(1));
   };
 
-
-  const submitNew = (formData) => (
-    <div style={{ display: "flex", justifyContent: "center" }}>
-      <button className="btn btn-primary mt-2" onClick={() => submitNewForm(formData._id)}>
-        <Translation>{(t) => t("Submit New")}</Translation>
-      </button>
-    </div>
-  );
-
-
-  const [selectedRow, setselectedRow] = useState([]);
-
-  const handleRowExpansion = (index) => {
-    const currentIndex = selectedRow.indexOf(index);
-    const newselectedRow = [...selectedRow];
-    if (currentIndex === -1) {
-      newselectedRow.push(index);
-    } else {
-      newselectedRow.splice(currentIndex, 1);
-    }
-    setselectedRow(newselectedRow);
-  };
-
   const noDataFound = () => {
     return (
       <tbody>
         <tr>
           <td colSpan="3">
-            <div className="d-flex align-items-center justify-content-center flex-column w-100" style={{ minHeight: "300px" }}>
+            <div
+              className="d-flex align-items-center justify-content-center flex-column w-100"
+              style={{ minHeight: "300px" }}
+            >
               <h3>{t("No forms found")}</h3>
               <p>{t("Please change the selected filters to view Forms")}</p>
             </div>
@@ -132,8 +107,77 @@ function ClientTable() {
     );
   };
 
+  const extractContent = (htmlContent) => {
+    const sanitizedHtml = sanitize(htmlContent);
+
+    const tempElement = document.createElement("div");
+    tempElement.innerHTML = sanitizedHtml;
+
+    // Get the text content from the sanitized HTML
+    const textContent = tempElement.textContent || tempElement.innerText || "";
+    return textContent;
+  };
+
+  const handleCloseModal = () => {
+    setSelectedForExpand(null);
+    setOpenDetailsModal(false);
+  };
+
+  const handleModalOpen = (data) => {
+    setSelectedForExpand(data);
+    setOpenDetailsModal(true);
+  };
+
   return (
     <>
+      <Modal size="xl" show={openDetailsModal} onHide={handleCloseModal}>
+        <Modal.Header>
+          <div className="d-flex align-items-center justify-content-between w-100">
+            <h3>{t("Form Details")}</h3>
+            <div className="d-flex align-items-center">
+              <button
+                className="btn btn-primary mr-2"
+                onClick={() => submitNewForm(selectedForExpand?._id)}
+              >
+                <Translation>{(t) => t("Submit New")}</Translation>
+              </button>
+
+              <button
+                className="btn btn-sm border rounded"
+                onClick={handleCloseModal}
+              >
+                <i className="fa fa-times"></i>
+              </button>
+            </div>
+          </div>
+        </Modal.Header>
+        <Modal.Body>
+          <div className="d-flex flex-column w-100 p-3">
+            <div className="mb-4">
+              <h4>
+                <strong>{t("Form Title")}</strong>
+              </h4>
+              <h4 style={{ color: "#868e96" }}>{selectedForExpand?.title}</h4>
+            </div>
+
+            <div className="mb-4">
+              <h4>
+                <strong>{t("Form Description")}</strong>
+              </h4>
+
+              <div
+                className="form-description-p-tag "
+                dangerouslySetInnerHTML={{
+                  __html: sanitize(selectedForExpand?.description, {
+                    ADD_ATTR: ["target"],
+                  }),
+                }}
+              />
+            </div>
+          </div>
+        </Modal.Body>
+      </Modal>
+
       <LoadingOverlay active={searchFormLoading} spinner text="Loading...">
         <div style={{ minHeight: "400px" }}>
           <table className="table custom-table table-responsive-sm">
@@ -141,12 +185,11 @@ function ClientTable() {
               <tr>
                 <th>
                   <div className="d-flex align-items-center">
-                    {isDesigner && <SelectFormForDownload type="all" />}
-                    <span className="ml-4 mt-1">{t("Form Title")}</span>
+                    <span>{t("Form Title")}</span>
                     <span>
                       {isAscending ? (
                         <i
-                          className="fa fa-sort-alpha-asc ml-2 mt-1"
+                          className="fa fa-sort-alpha-asc ml-2"
                           onClick={() => {
                             updateSort("desc");
                           }}
@@ -159,7 +202,7 @@ function ClientTable() {
                         ></i>
                       ) : (
                         <i
-                          className="fa fa-sort-alpha-desc"
+                          className="fa fa-sort-alpha-desc ml-2"
                           onClick={() => {
                             updateSort("asc");
                           }}
@@ -175,14 +218,16 @@ function ClientTable() {
                   </div>
                 </th>
                 <th>{t("Form Description")}</th>
-                <th colSpan="2">
-                  <InputGroup className="input-group p-0">
+                <th colSpan="4">
+                  <InputGroup className="input-group p-0 w-100">
                     <FormControl
                       value={search}
                       onChange={(e) => {
                         setSearch(e.target.value);
                       }}
-                      onKeyDown={(e) => (e.keyCode === 13 ? handleSearch() : "")}
+                      onKeyDown={(e) =>
+                        e.keyCode === 13 ? handleSearch() : ""
+                      }
                       placeholder={t("Search by form title")}
                       style={{ backgroundColor: "#ffff" }}
                     />
@@ -206,45 +251,50 @@ function ClientTable() {
                 </th>
               </tr>
             </thead>
-
             {formData?.length ? (
-        <tbody>
-          {formData?.map((e, index) => {
-            return (
-              <React.Fragment key={index}>
-                <tr>
-                  <td className="col-4">
-                    <div style={{ display: "flex", alignItems: "center" }}>
-                      {!isDesigner && (
-                        <i
-                          className={`fa fa-chevron-${
-                            selectedRow.includes(index) ? "up" : "down"
-                          }`}
-                          style={{ cursor: 'pointer' }}
-                          onClick={() => handleRowExpansion(index)}
-                        ></i>
-                      )}
-                      <span className="ml-2 mt-2">{e.title}</span>
-                    </div>
-                  </td>
-                  <td>{e.description}</td>
-                  {!isDesigner && <td>{submitNew(e)}</td>}
-                  <td style={{ position: "relative" }}></td>
-                </tr>
-                {selectedRow.includes(index) && (
-                  <tr>
-                    <td colSpan="4">{e.description}</td>
-                  </tr>
-                )}
-              </React.Fragment>
-            );
-          })}
-        </tbody>
-      ) : !searchFormLoading ? (
-        noDataFound()
-      ) : (
-        ""
-      )}
+              <tbody>
+                {formData.map((e, index) => (
+                  <React.Fragment key={index}>
+                    <tr>
+                      <td className="col-4">
+                        <span className="ml-2 mt-2">{e.title}</span>
+                      </td>
+                      <td
+                        className="text-truncate"
+                        style={{
+                          maxWidth: "350px",
+                        }}
+                      >
+                        {extractContent(e.description)}
+                      </td>
+
+                      <td className="d-flex align-items-center justify-content-end">
+                        {!isDesigner && e.description && (
+                          <button
+                            className="btn btn-link mr-2"
+                            onClick={() => {
+                              handleModalOpen(e);
+                            }}
+                          >
+                            {t("Learn More")}
+                          </button>
+                        )}
+                        <button
+                          className="btn btn-primary"
+                          onClick={() => submitNewForm(e._id)}
+                        >
+                          <Translation>{(t) => t("Submit New")}</Translation>
+                        </button>
+                      </td>
+                    </tr>
+                  </React.Fragment>
+                ))}
+              </tbody>
+            ) : !searchFormLoading ? (
+              noDataFound()
+            ) : (
+              ""
+            )}
           </table>
         </div>
       </LoadingOverlay>
@@ -273,9 +323,9 @@ function ClientTable() {
               </Dropdown.Menu>
             </Dropdown>
             <span className="ml-2">
-              {t("Showing")} {limit * pageNo - (limit - 1)} {t("to")}{" "}
-              {limit * pageNo > totalForms ? totalForms : limit * pageNo} {t("of")}{" "}
-              {totalForms} {t("Results")}
+              {t("Showing")} {(limit * pageNo) - (limit - 1)} {t("to")}{" "}
+              {limit * pageNo > totalForms ? totalForms : limit * pageNo}{" "}
+              {t("of")} {totalForms} {t("Results")}
             </span>
           </div>
           <div className="d-flex align-items-center">

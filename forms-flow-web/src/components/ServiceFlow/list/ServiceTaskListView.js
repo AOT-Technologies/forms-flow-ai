@@ -125,8 +125,8 @@ const ServiceTaskListView = React.memo(() => {
       return (
         <>
         <hr className=" head-rule mt-1"/>
-        <div className="container list-container p-2"
-        style={{ maxHeight: "60vh" }}
+        <div className="list-container p-2"
+      
         >
           {taskList?.map((task, index) => (
             <div

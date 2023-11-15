@@ -7,13 +7,11 @@ on:
       - develop
       - master
       - release/**
-      - 5.2.0-alpha
   pull_request:
     branches:
       - develop
       - master
       - release/**
-      - 5.2.0-alpha
     paths:
       - "forms-flow-web/**"
 

@@ -45,7 +45,7 @@ import SubmissionError from "../../containers/SubmissionError";
 import SavingLoading from "../Loading/SavingLoading";
 import Confirm from "../../containers/Confirm";
 import { setDraftDelete } from "../../actions/draftActions";
-import { setFormStatusLoading } from "../../actions/processActions"; 
+import { setFormStatusLoading } from "../../actions/processActions";
 import { getFormProcesses } from "../../apiManager/services/processServices";
 import { textTruncate } from "../../helper/helper";
 
@@ -157,7 +157,7 @@ const View = React.memo((props) => {
       }
     };
   }, [poll, exitType.current, draftSubmission?.id]);
- 
+
   if (isActive || isPublicStatusLoading || formStatusLoading) {
     return (
       <div data-testid="loading-view-component">
@@ -165,7 +165,8 @@ const View = React.memo((props) => {
       </div>
     );
   }
-  
+
+
 
   const deleteDraft = () => {
     dispatch(
@@ -285,6 +286,7 @@ const View = React.memo((props) => {
   modalOpen={draftDelete.modalOpen}
   message={
     <>
+
       {t("Are you sure to delete the draft")} 
       <span style={{ fontWeight: "bold" }}>&nbsp;
         {textTruncate(14, 12, draftDelete.draftName)}

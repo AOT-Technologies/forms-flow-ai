@@ -1,17 +1,20 @@
-import os
-import sys
-import json
+"""Migrate existing camunda authorizations."""
+
 import datetime
+import json
+import os
+
 import requests
-from formsflow_api.models import Authorization
-from formsflow_api.models import FormProcessMapper
-from formsflow_api.models.db import db
+from bpm import BPMEndpointType, get_headers, get_url
+from flask import current_app
 from sqlalchemy import func
-from formsflow_api import create_app
+
+from formsflow_api.models import Authorization, FormProcessMapper
+from formsflow_api.models.db import db
 
 
 def find_latest_forms(workflow=None):
-    """Find latest forms from the mapper table based on camunda resource id"""
+    """Find latest forms from the mapper table based on camunda resource id."""
     filtered_form_query = (
         db.session.query(func.max(FormProcessMapper.id).label("id"))
         .group_by(FormProcessMapper.parent_form_id)
@@ -28,7 +31,7 @@ def find_latest_forms(workflow=None):
 
 
 def is_form_exists(parent_form_id, auth_type, tenant: str = None):
-    """To check whether the form already exist in the authorization table"""
+    """To check whether the form already exist in the authorization table."""
     query = Authorization.query.filter(
         Authorization.resource_id == str(parent_form_id)
     ).filter(Authorization.auth_type == auth_type)
@@ -38,29 +41,13 @@ def is_form_exists(parent_form_id, auth_type, tenant: str = None):
 
 
 def migrate_authorization(auth_type):
-    """To migrate all existing camunda authorizations"""
-    bpm_token_api = os.getenv("BPM_TOKEN_API")
-    bpm_client_id = os.getenv("BPM_CLIENT_ID")
-    bpm_client_secret = os.getenv("BPM_CLIENT_SECRET")
-    bpm_grant_type = os.getenv("BPM_GRANT_TYPE", "client_credentials")
-    bpm_api_base = os.getenv("BPM_API_URL")
+    """To migrate all existing camunda authorizations."""
+    current_app.logger.info(f"Migrating existing camunda authorizations:- {auth_type}")
     enable_client_auth = (
         str(os.getenv("KEYCLOAK_ENABLE_CLIENT_AUTH", default="false")).lower() == "true"
     )
-
-    headers = {"Content-Type": "application/x-www-form-urlencoded"}
-    payload = {
-        "client_id": bpm_client_id,
-        "client_secret": bpm_client_secret,
-        "grant_type": bpm_grant_type,
-    }
-    response = requests.post(bpm_token_api, headers=headers, data=payload)
-    data = json.loads(response.text)
-    url = f"{bpm_api_base}/engine-rest-ext/v1/admin/form/authorization"
-    headers = {
-        "Authorization": "Bearer " + data["access_token"],
-        "Content-Type": "application/json",
-    }
+    url = get_url(BPMEndpointType.AUTHORIZATION)
+    headers = get_headers()
     response = requests.get(url, headers=headers)
     data = json.loads(response.text)
     authorization_list = data["authorizationList"]
@@ -90,28 +77,3 @@ def migrate_authorization(auth_type):
                     is_form_exist.roles = [*is_form_exist.roles, roles]
                     is_form_exist.modified = datetime.datetime.now()
             auth = is_form_exist.save()
-
-
-def run(auth_type):
-    """Run the job."""
-    application = create_app()
-    application.app_context().push()
-    migrate_authorization(auth_type)
-
-
-if __name__ == "__main__":
-    if len(sys.argv) < 2:
-        argument = "form"
-    else:
-        argument = sys.argv[1]
-    auth_type = (
-        "APPLICATION"
-        if argument.lower() == "application"
-        else (
-            "FORM"
-            if argument.lower() == "form"
-            else sys.exit("Unsupported argument. Please use 'application' or 'form'.")
-        )
-    )
-
-    run(auth_type)

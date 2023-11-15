@@ -2,7 +2,7 @@ import React from "react";
 import { Route, Switch, Redirect } from "react-router-dom";
 import { useSelector } from "react-redux";
 
-import Base from "./Main"; 
+import Base from "./Main";
 import Edit from "./Edit";
 import CreateWorkflow from "./Create";
 import {
@@ -25,7 +25,7 @@ const DesignerProcessRoute = ({ component: Component, ...rest }) => (
     }}
   />
 );
- 
+
 
 export default React.memo(() => {
   user = useSelector((state) => state.user?.roles || []);
@@ -53,7 +53,7 @@ export default React.memo(() => {
           component={Edit}
         />
          <Redirect exact to="/404" />
-      
+
       </Switch>
     </div>
   );

@@ -7,8 +7,7 @@ const replaceUrl = (URL, key, value) => {
 const addTenantkey = (value, tenantkey) => {
   const tenantKeyCheck = value.match(`${tenantkey}-`);
   if (
-    tenantKeyCheck &&
-    tenantKeyCheck[0].toLowerCase() === `${tenantkey.toLowerCase()}-`
+    tenantKeyCheck && tenantKeyCheck[0].toLowerCase() === `${tenantkey.toLowerCase()}-`
   ) {
     return value.toLowerCase();
   } else {

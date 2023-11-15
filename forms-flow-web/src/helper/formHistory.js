@@ -1,6 +1,6 @@
 /**
- * 
- * @param {Array} formHistory 
+ *
+ * @param {Array} formHistory
  */
 export const setVersionNumberIfNotExist = (formHistory)=>{
     let versionNumber = 0;
@@ -18,7 +18,7 @@ export const setVersionNumberIfNotExist = (formHistory)=>{
         const {changeLog} = history;
         changeLog.version = (
             changeLog.version ? changeLog.version : (
-                changeLog.new_version ? `v${versionNumber}` : `v${versionNumber}` 
+                changeLog.new_version ? `v${versionNumber}` : `v${versionNumber}`
             )
         );
         if(changeLog.new_version){

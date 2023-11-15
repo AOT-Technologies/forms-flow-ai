@@ -96,8 +96,8 @@ const Preview = React.memo(
       );
       setClientSelectedOption(
         FORM?.roles?.length ? "Specific Users" : "All Users"
-      );
-      setReviewerSelectedOption(
+        );
+setReviewerSelectedOption(
         APPLICATION?.roles?.length ? "Specific Reviewers" : "All Reviewers"
       );
 
@@ -149,7 +149,7 @@ const Preview = React.memo(
       if (deletedValue) {
         setClientOptions((prev) => [deletedValue, ...prev]);
       }
-    };
+};
 
     const removeReviewerUserGroup = (group) => {
       let newReviewers = reviewerGroups?.filter((item) => item !== group);
@@ -202,7 +202,7 @@ const Preview = React.memo(
         payload.roles = [];
       }
 
-      if (reviewerSelectedOption === "Specific Reviewers") {
+if (reviewerSelectedOption === "Specific Reviewers") {
         payload.roles = reviewerGroups;
       }
       return payload;
@@ -217,7 +217,6 @@ const Preview = React.memo(
         console.log(err);
       });
     };
-
     return (
       <div className="m-3">
         <div className="d-flex justify-content-md-end align-items-center">
@@ -254,7 +253,7 @@ const Preview = React.memo(
                       {formData && formData?.form && formData?.form?.title
                         ? formData?.form?.title
                         : "-"}
-                    </span>
+                     </span>
                   </div>
                   <div className="d-flex flex-column flex-md-row my-2">
                   <div className="font-weight-bold col-md-2 col-12">

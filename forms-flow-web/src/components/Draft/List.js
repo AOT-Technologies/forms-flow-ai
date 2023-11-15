@@ -207,7 +207,7 @@ export const DraftList = React.memo(() => {
             <span style={{fontWeight: "bold"}}> {draftDelete.draftId}</span> ?
             </div>
             }
-            
+
             onNo={() => onNo()}
             onYes={onYes}
           />

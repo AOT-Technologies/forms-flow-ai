@@ -46,6 +46,11 @@ user_permission_update_model = API.model(
     {"userId": fields.String(), "groupId": fields.String(), "name": fields.String()},
 )
 
+user_permission_update_model = API.model(
+    "UserPermission",
+    {"userId": fields.String(), "groupId": fields.String(), "name": fields.String()},
+)
+
 locale_put_model = API.model("Locale", {"locale": fields.String()})
 
 

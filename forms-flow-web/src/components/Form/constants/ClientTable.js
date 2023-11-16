@@ -218,7 +218,7 @@ function ClientTable() {
                     <tr>
                       <td className="col-4">
                         {!isDesigner && (
-                          <button className="btn btn-light btn-small"   onClick={() => handleToggle(index) } disabled={!e.description}>
+                          <button className="btn btn-light btn-small mr-2"   onClick={() => handleToggle(index) } disabled={!e.description}>
                               <i
                             className={`fa ${
                               openIndex === index

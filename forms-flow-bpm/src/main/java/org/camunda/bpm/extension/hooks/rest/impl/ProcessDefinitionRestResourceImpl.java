@@ -1,19 +1,15 @@
 package org.camunda.bpm.extension.hooks.rest.impl;
 
+import jakarta.ws.rs.core.UriInfo;
 import org.camunda.bpm.engine.rest.dto.repository.ProcessDefinitionDiagramDto;
 import org.camunda.bpm.engine.rest.dto.repository.ProcessDefinitionDto;
 import org.camunda.bpm.engine.rest.dto.runtime.ProcessInstanceDto;
 import org.camunda.bpm.engine.rest.dto.runtime.StartProcessInstanceDto;
 import org.camunda.bpm.extension.hooks.rest.ProcessDefinitionRestResource;
-import org.springframework.hateoas.EntityModel;
 
-import jakarta.ws.rs.core.UriInfo;
 import java.util.List;
 import java.util.logging.Logger;
 import java.util.stream.Collectors;
-
-import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
-import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
 
 
 public class ProcessDefinitionRestResourceImpl implements ProcessDefinitionRestResource {
@@ -39,26 +35,25 @@ public class ProcessDefinitionRestResourceImpl implements ProcessDefinitionRestR
     }
 
     @Override
-    public EntityModel<ProcessDefinitionDto> getProcessDefinition(String key) {
-        ProcessDefinitionDto dto = restService.getProcessDefinitionByKey(key).getProcessDefinition();
-        return EntityModel.of(dto, linkTo(methodOn(ProcessDefinitionRestResourceImpl.class).getProcessDefinition(key)).withSelfRel());
+    public ProcessDefinitionDto getProcessDefinition(String key) {
+        return restService.getProcessDefinitionByKey(key).getProcessDefinition();
+
     }
 
     @Override
-    public EntityModel<ProcessDefinitionDiagramDto> getProcessDefinitionBpmn20Xml(String tenantId, String key) {
-        ProcessDefinitionDiagramDto dto;
-        if (tenantId!= null){
-            dto =  restService.getProcessDefinitionByKeyAndTenantId(key, tenantId).getProcessDefinitionBpmn20Xml();
+    public ProcessDefinitionDiagramDto getProcessDefinitionBpmn20Xml(String tenantId, String key) {
+        ProcessDefinitionDiagramDto processDefinitionDiagramDto;
+        if (tenantId != null) {
+            processDefinitionDiagramDto = restService.getProcessDefinitionByKeyAndTenantId(key, tenantId).getProcessDefinitionBpmn20Xml();
+        } else {
+            processDefinitionDiagramDto = restService.getProcessDefinitionByKey(key).getProcessDefinitionBpmn20Xml();
         }
-        else{
-            dto =  restService.getProcessDefinitionByKey(key).getProcessDefinitionBpmn20Xml();
-        }
+        return processDefinitionDiagramDto;
 
-        return EntityModel.of(dto, linkTo(methodOn(ProcessDefinitionRestResourceImpl.class).getProcessDefinitionBpmn20Xml(tenantId, key)).withSelfRel());
     }
 
     @Override
-    public EntityModel<ProcessInstanceDto> startProcessInstanceByKey(UriInfo context, StartProcessInstanceDto parameters, String key, String tenantId) {
+    public ProcessInstanceDto startProcessInstanceByKey(UriInfo context, StartProcessInstanceDto parameters, String key, String tenantId) {
         ProcessInstanceDto processInstanceDto;
         if (tenantId!= null){
             processInstanceDto = restService.getProcessDefinitionByKeyAndTenantId(key, tenantId).startProcessInstance(context, parameters);
@@ -66,7 +61,6 @@ public class ProcessDefinitionRestResourceImpl implements ProcessDefinitionRestR
         else{
             processInstanceDto = restService.getProcessDefinitionByKey(key).startProcessInstance(context, parameters);
         }
-        return EntityModel.of(processInstanceDto,
-                linkTo(methodOn(ProcessDefinitionRestResourceImpl.class).startProcessInstanceByKey(context, parameters, key, tenantId)).withSelfRel());
+        return processInstanceDto;
     }
 }

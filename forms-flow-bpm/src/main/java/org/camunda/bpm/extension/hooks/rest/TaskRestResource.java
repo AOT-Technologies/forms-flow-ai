@@ -8,7 +8,6 @@ import org.camunda.bpm.engine.rest.dto.task.TaskDto;
 import org.camunda.bpm.engine.rest.dto.task.TaskQueryDto;
 import org.camunda.bpm.engine.rest.hal.Hal;
 import org.camunda.bpm.extension.hooks.rest.dto.UserIdDto;
-import org.springframework.hateoas.EntityModel;
 
 import jakarta.ws.rs.Consumes;
 import jakarta.ws.rs.Path;
@@ -48,7 +47,7 @@ public interface TaskRestResource extends RestResource {
     @GET
     @Path("/count")
     @Produces(MediaType.APPLICATION_JSON)
-    EntityModel<CountResultDto> getTasksCount(@Context UriInfo uriInfo);
+    CountResultDto getTasksCount(@Context UriInfo uriInfo);
 
     @GET
     @Path("/{id}")

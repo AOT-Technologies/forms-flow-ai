@@ -2,7 +2,7 @@ package org.camunda.bpm.extension.hooks.rest;
 
 import org.camunda.bpm.extension.hooks.controllers.data.AuthorizationInfo;
 import org.camunda.bpm.extension.hooks.controllers.data.TenantAuthorizationDto;
-import org.springframework.hateoas.EntityModel;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -11,6 +11,7 @@ import jakarta.ws.rs.*;
 import jakarta.ws.rs.core.Context;
 import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.UriInfo;
+import reactor.core.publisher.Mono;
 
 @Produces({MediaType.APPLICATION_JSON})
 public interface AdminRestResource extends RestResource {
@@ -20,7 +21,7 @@ public interface AdminRestResource extends RestResource {
     @GET
     @Path("/form/authorization")
     @Produces({MediaType.APPLICATION_JSON})
-    EntityModel<AuthorizationInfo> getFormAuthorization() throws ServletException;
+    Mono<ResponseEntity<AuthorizationInfo>> getFormAuthorization() throws ServletException;
 
     @POST
     @Path("/tenant/authorization")

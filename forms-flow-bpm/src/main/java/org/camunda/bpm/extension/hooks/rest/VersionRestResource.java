@@ -1,7 +1,6 @@
 package org.camunda.bpm.extension.hooks.rest;
 
 import org.camunda.bpm.engine.rest.dto.VersionDto;
-import org.springframework.hateoas.EntityModel;
 
 import jakarta.ws.rs.GET;
 import jakarta.ws.rs.Produces;
@@ -14,5 +13,5 @@ public interface VersionRestResource  extends RestResource{
 
     @GET
     @Produces(MediaType.APPLICATION_JSON)
-    EntityModel<VersionDto> getVersion();
+    VersionDto getVersion();
 }

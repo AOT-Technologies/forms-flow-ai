@@ -1,19 +1,15 @@
 package org.camunda.bpm.extension.hooks.rest.impl;
 
+import jakarta.ws.rs.core.Request;
+import jakarta.ws.rs.core.UriInfo;
 import org.camunda.bpm.engine.rest.FilterRestService;
 import org.camunda.bpm.engine.rest.dto.CountResultDto;
 import org.camunda.bpm.engine.rest.dto.runtime.FilterDto;
 import org.camunda.bpm.extension.hooks.rest.FilterRestResource;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.hateoas.EntityModel;
 
-import jakarta.ws.rs.core.Request;
-import jakarta.ws.rs.core.UriInfo;
 import java.util.List;
-
-import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
-import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
 
 public class FilterRestResourceImpl implements FilterRestResource {
 
@@ -43,8 +39,7 @@ public class FilterRestResourceImpl implements FilterRestResource {
     }
 
     @Override
-    public EntityModel<CountResultDto> executeCount(String id) {
-        CountResultDto dto = restService.getFilter(id).executeCount();
-        return EntityModel.of(dto, linkTo(methodOn(FilterRestResourceImpl.class).executeCount(id)).withSelfRel().withSelfRel());
+    public CountResultDto executeCount(String id) {
+        return restService.getFilter(id).executeCount();
     }
 }

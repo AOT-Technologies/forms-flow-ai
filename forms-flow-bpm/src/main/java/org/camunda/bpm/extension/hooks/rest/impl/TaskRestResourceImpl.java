@@ -1,5 +1,8 @@
 package org.camunda.bpm.extension.hooks.rest.impl;
 
+import jakarta.ws.rs.core.Request;
+import jakarta.ws.rs.core.Response;
+import jakarta.ws.rs.core.UriInfo;
 import org.camunda.bpm.engine.rest.TaskRestService;
 import org.camunda.bpm.engine.rest.dto.CountResultDto;
 import org.camunda.bpm.engine.rest.dto.VariableValueDto;
@@ -11,16 +14,9 @@ import org.camunda.bpm.extension.hooks.rest.TaskRestResource;
 import org.camunda.bpm.extension.hooks.rest.dto.UserIdDto;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.hateoas.EntityModel;
 
-import jakarta.ws.rs.core.Request;
-import jakarta.ws.rs.core.Response;
-import jakarta.ws.rs.core.UriInfo;
 import java.util.List;
 import java.util.Map;
-
-import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
-import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
 
 public class TaskRestResourceImpl implements TaskRestResource {
 
@@ -43,9 +39,8 @@ public class TaskRestResourceImpl implements TaskRestResource {
     }
 
     @Override
-    public EntityModel<CountResultDto> getTasksCount(UriInfo uriInfo) {
-        CountResultDto dto = restService.getTasksCount(uriInfo);
-        return EntityModel.of(dto, linkTo(methodOn(TaskRestResourceImpl.class).getTasksCount(uriInfo)).withSelfRel());
+    public CountResultDto getTasksCount(UriInfo uriInfo) {
+        return restService.getTasksCount(uriInfo);
     }
 
     @Override

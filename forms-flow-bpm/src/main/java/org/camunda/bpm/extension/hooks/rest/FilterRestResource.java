@@ -3,7 +3,6 @@ package org.camunda.bpm.extension.hooks.rest;
 import org.camunda.bpm.engine.rest.dto.CountResultDto;
 import org.camunda.bpm.engine.rest.dto.runtime.FilterDto;
 import org.camunda.bpm.engine.rest.hal.Hal;
-import org.springframework.hateoas.EntityModel;
 import jakarta.ws.rs.Consumes;
 import jakarta.ws.rs.Path;
 import jakarta.ws.rs.GET;
@@ -43,6 +42,6 @@ public interface FilterRestResource extends RestResource {
     @GET
     @Path("/{id}/count")
     @Produces(MediaType.APPLICATION_JSON)
-    EntityModel<CountResultDto> executeCount(@PathParam("id") String id);
+    CountResultDto executeCount(@PathParam("id") String id);
 
 }

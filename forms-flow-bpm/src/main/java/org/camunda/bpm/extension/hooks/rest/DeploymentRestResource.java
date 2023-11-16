@@ -3,7 +3,6 @@ package org.camunda.bpm.extension.hooks.rest;
 import org.camunda.bpm.engine.rest.dto.repository.DeploymentDto;
 import org.camunda.bpm.engine.rest.dto.repository.DeploymentResourceDto;
 import org.camunda.bpm.engine.rest.mapper.MultipartFormData;
-import org.springframework.hateoas.EntityModel;
 
 import jakarta.ws.rs.Consumes;
 import jakarta.ws.rs.Path;
@@ -33,7 +32,7 @@ public interface DeploymentRestResource extends RestResource {
     @Path("/create")
     @Consumes(MediaType.MULTIPART_FORM_DATA)
     @Produces(MediaType.APPLICATION_JSON)
-    EntityModel<DeploymentDto> createDeployment(@Context UriInfo uriInfo, MultipartFormData multipartFormData);
+    DeploymentDto createDeployment(@Context UriInfo uriInfo, MultipartFormData multipartFormData);
 
     @GET
     @Path("/{id}/resources")

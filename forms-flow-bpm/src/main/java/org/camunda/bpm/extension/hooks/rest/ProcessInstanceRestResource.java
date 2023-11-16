@@ -11,7 +11,7 @@ import jakarta.ws.rs.QueryParam;
 import jakarta.ws.rs.core.MediaType;
 
 import org.camunda.bpm.engine.rest.dto.VariableValueDto;
-import org.springframework.hateoas.EntityModel;
+import org.camunda.bpm.engine.rest.dto.runtime.ActivityInstanceDto;
 
 @Produces(MediaType.APPLICATION_JSON)
 public interface ProcessInstanceRestResource extends RestResource {
@@ -23,7 +23,7 @@ public interface ProcessInstanceRestResource extends RestResource {
     @GET
     @Path("/{id}/activity-instances")
     @Produces(MediaType.APPLICATION_JSON)
-    EntityModel<org.camunda.bpm.engine.rest.dto.runtime.ActivityInstanceDto> getActivityInstanceTree(@PathParam("id") String id);
+    ActivityInstanceDto getActivityInstanceTree(@PathParam("id") String id);
     
     @GET
     @Path("/{id}/variables")

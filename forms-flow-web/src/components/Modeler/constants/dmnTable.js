@@ -10,9 +10,10 @@ import {
   fetchAllDmnProcessesCount,
 } from "../../../apiManager/services/processServices";
 import { useTranslation } from "react-i18next";
-import { Link } from "react-router-dom";
 import { MULTITENANCY_ENABLED } from "../../../constants/constants";
-import { setDmnSearchText } from "../../../actions/processActions";
+import { setDmnSearchText,setIsPublicDiagram } from "../../../actions/processActions";
+import { push } from "connected-react-router";
+
 function DmnTable() {
   const dispatch = useDispatch();
   const dmn = useSelector((state) => state.process?.dmnProcessList);
@@ -75,6 +76,13 @@ function DmnTable() {
     setSearch("");
     dispatch(setDmnSearchText(""));
     setActivePage(1);
+  };
+
+  const gotoEdit = (data) => {
+    if(MULTITENANCY_ENABLED){
+      dispatch(setIsPublicDiagram(data.tenantId ? true : false));
+    }
+   dispatch(push(`${redirectUrl}processes/dmn/${data.key}/edit`));
   };
 
   const pageOptions = [
@@ -141,7 +149,7 @@ function DmnTable() {
                     style={{ height: "300px" }}
                     className="text-center"
                   >
-                   { isLoading ? null : t("No Process Found")}
+                   { isLoading ? null : t("No Dmn Found")}
                   </td>
                 </tr>
               </tbody>
@@ -153,12 +161,9 @@ function DmnTable() {
                     <td>{processItem.key}</td>
                     <td>{t("DMN")}</td>
                     <td className="d-flex justify-content-end w-100">
-                      <Link
-                        to={`${redirectUrl}processes/dmn/${processItem.key}/edit`}
-                      >
-                        <i className="fas fa-edit mr-2"/>
-                        {t("Edit Workflow")}
-                      </Link>
+                    <button className="btn btn-link" onClick={()=>{gotoEdit(processItem);}}> 
+                       <i className="fas fa-edit mr-2"/>
+                        {t("Edit Workflow")}</button>
                     </td>
                   </tr>
                 ))}

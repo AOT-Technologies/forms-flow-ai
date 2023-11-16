@@ -466,13 +466,14 @@ export default function CreateNewFilterDrawer({
           className="filter-name-textfeild"
           value={filterName}
           onChange={(e) => setFilterName(e.target.value)}
+          title={t("Add fliter name")}
         />
       </List>
       <Divider />
       <List>
         <h5 style={{ fontWeight: "bold", fontSize: "18px" }}>
           <Translation>{(t) => t("Criteria")}</Translation>{" "}
-          <i className="fa fa-info-circle"></i>{" "}
+          <i title={t("This section is aimed to set the parameters used to filter the tasks")} className="fa fa-info-circle"></i>{" "}
         </h5>
         <div className="d-flex align-items-center mt-1">
           <input
@@ -629,7 +630,7 @@ export default function CreateNewFilterDrawer({
         <div className="child-container-two">
           <h5 style={{ fontWeight: "bold" }}>
             <Translation>{(t) => t("Permission")}</Translation>{" "}
-            <i className="fa fa-info-circle"></i>
+            <i title={t("This section is aimed to set read permissions for the filter")} className="fa fa-info-circle"></i>
           </h5>
           <input
             style={{ marginRight: "4px" }}
@@ -781,7 +782,7 @@ export default function CreateNewFilterDrawer({
         <div className="m-2">
           <h5 className="font-weight-bold ">
             <Translation>{(t) => t("Task Attributes")}</Translation>{" "}
-            <i className="fa fa-info-circle"></i>
+            <i title={t("This section is aimed to set select task attributes that will be visible in the task list view.")} className="fa fa-info-circle"></i>
           </h5>
           <input
             readOnly

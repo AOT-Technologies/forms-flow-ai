@@ -1,5 +1,9 @@
 import React, { useState, useEffect } from "react";
-import { InputGroup, FormControl, Dropdown, Modal } from "react-bootstrap";
+import {
+  InputGroup,
+  FormControl,
+  Dropdown,
+} from "react-bootstrap";
 import { useDispatch, useSelector } from "react-redux";
 import { push } from "connected-react-router";
 import Pagination from "react-js-pagination";
@@ -38,8 +42,7 @@ function ClientTable() {
   const searchText = useSelector((state) => state.bpmForms.searchText);
   const [search, setSearch] = useState(searchText || "");
   const redirectUrl = MULTITENANCY_ENABLED ? `/tenant/${tenantKey}/` : "/";
-  const [selectedForExpand, setSelectedForExpand] = useState(null);
-  const [openDetailsModal, setOpenDetailsModal] = useState(false);
+  const [openIndex, setOpenIndex] = useState(null);
 
   const pageOptions = [
     { text: "5", value: 5 },
@@ -50,6 +53,7 @@ function ClientTable() {
   ];
 
   const updateSort = (updatedSort) => {
+    resetIndex();
     dispatch(setBPMFormListSort(updatedSort));
     dispatch(setBPMFormListPage(1));
   };
@@ -65,21 +69,28 @@ function ClientTable() {
   }, [search]);
 
   const handleSearch = () => {
+    resetIndex();
     dispatch(setBpmFormSearch(search));
     dispatch(setBPMFormListPage(1));
   };
 
   const submitNewForm = (formId) => {
-    if(selectedForExpand) handleCloseModal();
+
     dispatch(push(`${redirectUrl}form/${formId}`));
   };
 
+  const resetIndex = () => {
+    if (openIndex !== null) setOpenIndex(null);
+  };
+
   const handleClearSearch = () => {
+    resetIndex();
     setSearch("");
     dispatch(setBpmFormSearch(""));
   };
 
   const handlePageChange = (page) => {
+    resetIndex();
     dispatch(setBPMFormListPage(page));
   };
 
@@ -118,68 +129,17 @@ function ClientTable() {
     return textContent;
   };
 
-  const handleCloseModal = () => {
-    setSelectedForExpand(null);
-    setOpenDetailsModal(false);
-  };
+ 
 
-  const handleModalOpen = (data) => {
-    setSelectedForExpand(data);
-    setOpenDetailsModal(true);
-  };
 
+
+  const handleToggle = (index) => {
+    setOpenIndex(openIndex === index ? null : index);
+  };
   return (
     <>
-      <Modal size="xl" show={openDetailsModal} onHide={handleCloseModal}>
-        <Modal.Header>
-          <div className="d-flex align-items-center justify-content-between w-100">
-            <h3>{t("Form Details")}</h3>
-            <div className="d-flex align-items-center">
-              <button
-                className="btn btn-primary mr-2"
-                onClick={() => submitNewForm(selectedForExpand?._id)}
-              >
-                <Translation>{(t) => t("Submit New")}</Translation>
-              </button>
-
-              <button
-                className="btn btn-sm border rounded"
-                onClick={handleCloseModal}
-              >
-                <i className="fa fa-times"></i>
-              </button>
-            </div>
-          </div>
-        </Modal.Header>
-        <Modal.Body>
-          <div className="d-flex flex-column w-100 p-3">
-            <div className="mb-4">
-              <h4>
-                <strong>{t("Form Title")}</strong>
-              </h4>
-              <h4 style={{ color: "#868e96" }}>{selectedForExpand?.title}</h4>
-            </div>
-
-            <div className="mb-4">
-              <h4>
-                <strong>{t("Form Description")}</strong>
-              </h4>
-
-              <div
-                className="form-description-p-tag "
-                dangerouslySetInnerHTML={{
-                  __html: sanitize(selectedForExpand?.description, {
-                    ADD_ATTR: ["target"],
-                  }),
-                }}
-              />
-            </div>
-          </div>
-        </Modal.Body>
-      </Modal>
-
       <LoadingOverlay active={searchFormLoading} spinner text="Loading...">
-        <div style={{ minHeight: "400px" }}>
+        <div style={{ minHeight: "400px"}}>
           <table className="table custom-table table-responsive-sm">
             <thead>
               <tr>
@@ -257,6 +217,18 @@ function ClientTable() {
                   <React.Fragment key={index}>
                     <tr>
                       <td className="col-4">
+                        {!isDesigner && (
+                          <button className="btn btn-light btn-small"   onClick={() => handleToggle(index) } disabled={!e.description}>
+                              <i
+                            className={`fa ${
+                              openIndex === index
+                                ? "fa-chevron-up"
+                                : "fa-chevron-down"
+                            }`}
+                          
+                          ></i>
+                          </button>
+                        )}
                         <span className="ml-2 mt-2">{e.title}</span>
                       </td>
                       <td
@@ -268,17 +240,7 @@ function ClientTable() {
                         {extractContent(e.description)}
                       </td>
 
-                      <td className="d-flex align-items-center justify-content-end">
-                        {!isDesigner && e.description && (
-                          <button
-                            className="btn btn-link mr-2"
-                            onClick={() => {
-                              handleModalOpen(e);
-                            }}
-                          >
-                            {t("Learn More")}
-                          </button>
-                        )}
+                      <td className="text-center">
                         <button
                           className="btn btn-primary"
                           onClick={() => submitNewForm(e._id)}
@@ -287,6 +249,31 @@ function ClientTable() {
                         </button>
                       </td>
                     </tr>
+
+                    {index === openIndex && 
+                        <tr>
+                          <td colSpan={10}>
+                            <div className="bg-white p-3">
+                              <h4>
+                                <strong>{t("Form Description")}</strong>
+                              </h4>
+
+                              <div
+                                style={{ maxWidth: "68vw" }}
+                                className="form-description-p-tag "
+                                dangerouslySetInnerHTML={{
+                                  __html: sanitize(
+                                    e?.description,
+                                    {
+                                      ADD_ATTR: ["target"],
+                                    }
+                                  ),
+                                }}
+                              />
+                            </div>
+                          </td>
+                        </tr>
+                    } 
                   </React.Fragment>
                 ))}
               </tbody>

@@ -288,8 +288,7 @@ const TaskHeaderListView = React.memo(({task,taskId,groupView = true}) => {
         </Col>
         }
        
-        {vissibleAttributes?.taskVisibleAttributes?.assignee &&
-          <Col xs={ groupView ? 3 : 6 } >
+      {vissibleAttributes?.taskVisibleAttributes?.assignee &&  <Col xs={3}>
           <div className="tab-width">
             <div>
               <h6 className="font-weight-light">Assignee</h6>

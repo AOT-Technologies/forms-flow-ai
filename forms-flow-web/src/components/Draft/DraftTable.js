@@ -10,6 +10,7 @@ import { push } from "connected-react-router";
 import {
   setCountPerpage,
   setDraftListActivePage,
+  setDraftListLoading,
   setDraftSortBy,
   setDraftSortOrder,
 } from "../../actions/draftActions";
@@ -17,6 +18,7 @@ import DraftFilter from "./DraftFilter";
 import DraftOperations from "./DraftOperations";
 
 import { useTranslation } from "react-i18next";
+import LoadingOverlay from "react-loading-overlay";
 
 const DraftTable = () => {
   const dispatch = useDispatch();
@@ -32,6 +34,7 @@ const DraftTable = () => {
   const totalForms = useSelector((state) => state.draft?.draftCount);
   const sortOrder = useSelector((state) => state.draft.sortOrder);
   const sortBy = useSelector((state) => state.draft.sortBy);
+  const isDraftLoading = useSelector((state) => state.draft.isDraftLoading);
   const isAscending = sortOrder === "asc" ? true : false;
   const { t } = useTranslation();
 
@@ -81,16 +84,19 @@ const DraftTable = () => {
 
 
   const handlePageChange = (page) => {
+    dispatch(setDraftListLoading(true));
     dispatch(setDraftListActivePage(page));
   };
 
   const onSizePerPageChange = (limit) => {
+    dispatch(setDraftListLoading(true));
     setPageLimit(limit);
     dispatch(setCountPerpage(limit));
     dispatch(setDraftListActivePage(1));
   };
 
   const updateSort = (sortOrder,sortBy) => {
+    dispatch(setDraftListLoading(true));
     dispatch(setDraftSortOrder(sortOrder));
     dispatch(setDraftSortBy(sortBy));
     dispatch(setDraftListActivePage(1));
@@ -99,6 +105,7 @@ const DraftTable = () => {
   return (
     <>
       <div style={{ minHeight: "400px" }}>
+      <LoadingOverlay active={isDraftLoading} spinner text={t("Loading...")}>
         <table className="table custom-table table-responsive-sm">
           <thead>
             <tr>
@@ -158,6 +165,7 @@ const DraftTable = () => {
             })}
           </tbody>
         </table>
+        </LoadingOverlay>
       </div>
       <div className="d-flex justify-content-between align-items-center  flex-column flex-md-row">
       <div className="d-flex align-items-center">

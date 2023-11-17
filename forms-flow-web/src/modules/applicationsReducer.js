@@ -18,6 +18,7 @@ export const initialState = {
   isPublicStatusLoading: false,
   sortOrder : "desc",
   sortBy : "id",
+  isApplicationLoading : false,
 };
 
 const applications = (state = initialState, action) => {
@@ -71,6 +72,8 @@ const applications = (state = initialState, action) => {
       return { ...state, sortOrder: action.payload };
     case ACTION_CONSTANTS.IS_APPLICATION_LIST_SORT_BY:
       return { ...state, sortBy: action.payload };
+    case ACTION_CONSTANTS.IS_APPLICATION_LOADING:
+      return { ...state, isApplicationLoading: action.payload };
     default:
       return state;
   }

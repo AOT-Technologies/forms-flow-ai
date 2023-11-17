@@ -91,3 +91,10 @@ export const setDraftSortBy = (data) => (dispatch) => {
     payload: data,
   });
 };
+
+export const setDraftListLoading = (data) => (dispatch) => {
+  dispatch({
+    type: ACTION_CONSTANTS.DRAFT_LIST_LOADING,
+    payload: data,
+  });
+};

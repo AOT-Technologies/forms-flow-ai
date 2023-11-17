@@ -28,6 +28,7 @@ import {
   setDraftListActivePage,
   setCountPerpage,
   setDraftDelete,
+  setDraftListLoading,
 } from "../../actions/draftActions";
 import { deleteDraftbyId } from "../../apiManager/services/draftService";
 import isValiResourceId from "../../helper/regExp/validResourceId";
@@ -90,7 +91,11 @@ export const DraftList = React.memo(() => {
   const currentPage = useNoRenderRef(page);
 
   useEffect(() => {
-    dispatch(fetchDrafts(filterParams));
+    dispatch(fetchDrafts(filterParams,(err,data) => {
+      if(data){
+      dispatch(setDraftListLoading(false));
+      }
+    }));
   }, [dispatch, page, countPerPage,sortOrder,sortBy]);
 
   const onYes = (e) => {
@@ -98,7 +103,11 @@ export const DraftList = React.memo(() => {
     deleteDraftbyId(draftDelete.draftId)
       .then(() => {
         toast.success(t("Draft Deleted Successfully"));
-        dispatch(fetchDrafts(filterParams));
+        dispatch(fetchDrafts(filterParams,(err,data) => {
+          if(data){
+          dispatch(setDraftListLoading(false));
+          }
+        }));
       })
       .catch((error) => {
         toast.error(error.message);

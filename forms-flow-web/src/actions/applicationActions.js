@@ -129,3 +129,10 @@ export const setApplicationSortBy = (data) => (dispatch) => {
     payload: data,
   });
 };
+
+export const setApplicationLoading = (data) => (dispatch) => {
+  dispatch({
+    type: ACTION_CONSTANTS.IS_APPLICATION_LOADING,
+    payload: data,
+  });
+};

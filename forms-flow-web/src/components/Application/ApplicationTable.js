@@ -16,11 +16,13 @@ import { useTranslation } from "react-i18next";
 
 import {
   setApplicationListActivePage,
+  setApplicationLoading,
   setApplicationSortBy,
   setApplicationSortOrder,
   setCountPerpage,
 } from "../../actions/applicationActions";
 import { push } from "connected-react-router";
+import LoadingOverlay from "react-loading-overlay";
 
 const ApplicationTable = () => {
   const dispatch = useDispatch();
@@ -39,6 +41,7 @@ const ApplicationTable = () => {
   const limit = useSelector((state) => state.applications?.countPerPage);
   const sortOrder = useSelector((state) => state.applications?.sortOrder);
   const sortBy = useSelector((state) => state.applications?.sortBy);
+  const isApplicationLoading = useSelector((state) => state.applications.isApplicationLoading);
   const isAscending = sortOrder === "asc" ? true : false;
   const totalForms = useSelector(
     (state) => state.applications?.applicationCount
@@ -110,16 +113,19 @@ const ApplicationTable = () => {
   };
 
   const handlePageChange = (page) => {
+    dispatch(setApplicationLoading(true));
     dispatch(setApplicationListActivePage(page));
   };
 
   const onSizePerPageChange = (limit) => {
+    dispatch(setApplicationLoading(true));
     setPageLimit(limit);
     dispatch(setCountPerpage(limit));
     dispatch(setApplicationListActivePage(1));
   };
 
   const updateSort = (sortOrder,sortBy) => {
+    dispatch(setApplicationLoading(true));
     dispatch(setApplicationSortOrder(sortOrder));
     dispatch(setApplicationSortBy(sortBy));
     dispatch(setApplicationListActivePage(1));
@@ -127,7 +133,7 @@ const ApplicationTable = () => {
 
   return (
     <>
-      <div style={{ minHeight: "400px" }}>
+    <LoadingOverlay active={isApplicationLoading} spinner text={t("Loading...")}>
         <table className="table custom-table table-responsive-sm">
           <thead>
             <tr>
@@ -187,7 +193,7 @@ const ApplicationTable = () => {
             })}
           </tbody>
         </table>
-      </div>
+      </LoadingOverlay>
       <div className="d-flex justify-content-between align-items-center  flex-column flex-md-row">
         <div className="d-flex align-items-center">
         <span className="mr-2"> {t("Rows per page")}</span>

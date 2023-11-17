@@ -10,6 +10,7 @@ import {
   setApplicationListActivePage,
   setCountPerpage,
   setApplicationListLoader,
+  setApplicationLoading,
 } from "../../actions/applicationActions";
 import {
   getAllApplications,
@@ -86,7 +87,11 @@ export const ApplicationList = React.memo(() => {
       sortOrder,
       sortBy
   };
-    dispatch(getAllApplications(filterParams));
+    dispatch(getAllApplications(filterParams,(err,data) => {
+      if(data){
+        dispatch(setApplicationLoading(false));
+      }
+    }));
   }, [page,limit,sortBy,sortOrder]);
 
   const isClientEdit = (applicationStatus) => {

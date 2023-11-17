@@ -4,6 +4,7 @@ import DateRangePicker from "@wojtekmaj/react-daterange-picker";
 import { useDispatch, useSelector } from "react-redux";
 import { getAllApplications } from "../../apiManager/services/applicationServices";
 import { useTranslation } from "react-i18next";
+import { setApplicationLoading } from "../../actions/applicationActions";
 
 const ApplicationFilter = ({ setDisplayFilter, filterParams, setFilterParams }) => {
   const dispatch = useDispatch();
@@ -42,6 +43,7 @@ const ApplicationFilter = ({ setDisplayFilter, filterParams, setFilterParams }) 
   };
 
   const clearAllFilters = () => {
+    dispatch(setApplicationLoading(true));
     setApplicationId("");
     setApplicationStatus("");
     setApplicationName("");
@@ -57,10 +59,15 @@ const ApplicationFilter = ({ setDisplayFilter, filterParams, setFilterParams }) 
       sortOrder,
       sortBy
     };
-    dispatch(getAllApplications(filters));
+    dispatch(getAllApplications(filters,(err,data) => {
+      if(data){
+        dispatch(setApplicationLoading(false));
+      }
+    }));
   };
 
   const applyFilters = () => {
+    dispatch(setApplicationLoading(true));
     let filterParams = {
       applicationName: applicationName,
       id: applicationId,
@@ -72,7 +79,11 @@ const ApplicationFilter = ({ setDisplayFilter, filterParams, setFilterParams }) 
       sortBy
     };
     setFilterParams(filterParams);
-    dispatch(getAllApplications(filterParams));
+    dispatch(getAllApplications(filterParams,(err,data) => {
+      if(data){
+        dispatch(setApplicationLoading(false));
+      }
+    }));
   };
 
   const getApplicationStatusOptions = (applicationStatusOptions) => {

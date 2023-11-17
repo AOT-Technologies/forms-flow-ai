@@ -4,6 +4,7 @@ import DateRangePicker from "@wojtekmaj/react-daterange-picker";
 import { useDispatch, useSelector } from "react-redux";
 import { fetchDrafts } from "../../apiManager/services/draftService";
 import { useTranslation } from "react-i18next";
+import { setDraftListLoading } from "../../actions/draftActions";
 
 const DraftFilter = ({ setDisplayFilter, filterParams, setFilterParams }) => {
   const dispatch = useDispatch();
@@ -40,6 +41,7 @@ const DraftFilter = ({ setDisplayFilter, filterParams, setFilterParams }) => {
   };
 
   const clearAllFilters = () => {
+    dispatch(setDraftListLoading(true));
     setDraftId("");
     setDraftName("");
     setLastModified(null);
@@ -53,10 +55,15 @@ const DraftFilter = ({ setDisplayFilter, filterParams, setFilterParams }) => {
       sortOrder,
       sortBy
     };
-    dispatch(fetchDrafts(filters));
+    dispatch(fetchDrafts(filters,(err,data) => {
+      if(data){
+      dispatch(setDraftListLoading(false));
+      }
+    }));
   };
 
   const applyFilters = () => {
+    dispatch(setDraftListLoading(true));
     let filterParams = {
       draftName: draftName,
       id: draftId,
@@ -67,7 +74,11 @@ const DraftFilter = ({ setDisplayFilter, filterParams, setFilterParams }) => {
       sortBy
     };
     setFilterParams(filterParams);
-    dispatch(fetchDrafts(filterParams));
+    dispatch(fetchDrafts(filterParams,(err,data) => {
+      if(data){
+      dispatch(setDraftListLoading(false));
+      }
+    }));
   };
 
   return (

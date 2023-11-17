@@ -18,6 +18,7 @@ const initialState = {
   lastUpdated: {},
   sortOrder : "desc",
   sortBy : "id",
+  isDraftLoading : false,
 };
 
 const draftSubmission = (state = initialState, action) => {
@@ -55,6 +56,8 @@ const draftSubmission = (state = initialState, action) => {
       return { ...state, sortOrder: action.payload };
     case ACTION_CONSTANTS.DRAFT_LIST_SORT_BY:
         return { ...state, sortBy: action.payload };
+    case ACTION_CONSTANTS.DRAFT_LIST_LOADING:
+        return { ...state, isDraftLoading : action.payload };
     default:
       return state;
   }

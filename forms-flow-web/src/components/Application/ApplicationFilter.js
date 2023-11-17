@@ -4,6 +4,7 @@ import DateRangePicker from "@wojtekmaj/react-daterange-picker";
 import { useDispatch, useSelector } from "react-redux";
 import { getAllApplications } from "../../apiManager/services/applicationServices";
 import { useTranslation } from "react-i18next";
+import { setApplicationLoading } from "../../actions/applicationActions";
 
 const ApplicationFilter = ({ setDisplayFilter, filterParams, setFilterParams }) => {
   const dispatch = useDispatch();
@@ -17,6 +18,8 @@ const ApplicationFilter = ({ setDisplayFilter, filterParams, setFilterParams }) 
   );
   const pageNo = useSelector((state) => state.applications?.activePage);
   const limit = useSelector((state) => state.applications?.countPerPage);
+  const sortOrder = useSelector((state) => state.applications?.sortOrder);
+  const sortBy = useSelector((state) => state.applications?.sortBy);
   const { t } = useTranslation();
   const handleClick = (e) => {
     if (createSearchNode?.current?.contains(e.target)) {
@@ -40,6 +43,7 @@ const ApplicationFilter = ({ setDisplayFilter, filterParams, setFilterParams }) 
   };
 
   const clearAllFilters = () => {
+    dispatch(setApplicationLoading(true));
     setApplicationId("");
     setApplicationStatus("");
     setApplicationName("");
@@ -52,11 +56,18 @@ const ApplicationFilter = ({ setDisplayFilter, filterParams, setFilterParams }) 
       modified: null,
       page: pageNo,
       limit: limit,
+      sortOrder,
+      sortBy
     };
-    dispatch(getAllApplications(filters));
+    dispatch(getAllApplications(filters,(err,data) => {
+      if(data){
+        dispatch(setApplicationLoading(false));
+      }
+    }));
   };
 
   const applyFilters = () => {
+    dispatch(setApplicationLoading(true));
     let filterParams = {
       applicationName: applicationName,
       id: applicationId,
@@ -64,9 +75,15 @@ const ApplicationFilter = ({ setDisplayFilter, filterParams, setFilterParams }) 
       modified: lastModified,
       page: pageNo,
       limit: limit,
+      sortOrder,
+      sortBy
     };
     setFilterParams(filterParams);
-    dispatch(getAllApplications(filterParams));
+    dispatch(getAllApplications(filterParams,(err,data) => {
+      if(data){
+        dispatch(setApplicationLoading(false));
+      }
+    }));
   };
 
   const getApplicationStatusOptions = (applicationStatusOptions) => {
@@ -97,7 +114,7 @@ const ApplicationFilter = ({ setDisplayFilter, filterParams, setFilterParams }) 
       <div className="m-4 px-2">
         <Row className="mt-2">
           <Col>
-            <label>{t("Submission Id")}</label>
+            <label>{t("Id")}</label>
             <input
               className="form-control"
               placeholder=""
@@ -120,7 +137,7 @@ const ApplicationFilter = ({ setDisplayFilter, filterParams, setFilterParams }) 
       <div className="m-4 px-2">
         <Row className="mt-2">
           <Col>
-            <label>{t("Submission Status")}</label>
+            <label>{t("Status")}</label>
             <select
               value={applicationStatus}
               onChange={(e) => setApplicationStatus(e.target.value)}

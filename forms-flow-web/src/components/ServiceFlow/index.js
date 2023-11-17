@@ -235,7 +235,7 @@ export default React.memo(() => {
   }, [SocketIOCallback, dispatch]);
   //Reset the path when the 'cardView' changes
   useEffect(() => {
-    dispatch(replace(`${BASE_ROUTE}task`));
+    dispatch(replace(`${redirectUrl.current}task`));
   }, [cardView, dispatch]);
 
   return (

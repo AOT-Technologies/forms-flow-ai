@@ -108,7 +108,7 @@ export default React.memo(
       if (diagramXML) {
         dispatch(setProcessDiagramLoading(true));
         dispatch(setProcessDiagramXML(diagramXML));
-      } else if (processKey && !isNewDiagram) {
+      } else if (processKey && !isNewDiagram && !bpmnXml) {
         dispatch(setProcessDiagramLoading(true));
         dispatch(fetchDiagram(processKey, tenant));
       } else {
@@ -302,7 +302,7 @@ export default React.memo(
           <div>
             <h3 className="d-flex align-items-center font-weight-bold">
               <i className="fa fa-cogs mr-2" aria-hidden="true" />
-              <span>{t(`${mode} Processes`)}</span>
+              <span>{t(`${mode} Process`)}</span>
             </h3>
           </div>
 
@@ -314,7 +314,7 @@ export default React.memo(
                   checked={applyAllTenants}
                   onClick={handleApplyAllTenants}
                 />{" "}
-                Apply for all tenants
+                {t("Apply for all tenants")}
               </label>
             ) : null}
 

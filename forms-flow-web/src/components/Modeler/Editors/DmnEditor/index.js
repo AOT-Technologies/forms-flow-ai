@@ -265,7 +265,7 @@ export default React.memo(({ processKey, tenant, isNewDiagram, mode}) => {
         <div>
           <h3 className="d-flex align-items-center font-weight-bold">
             <i className="fa fa-cogs mr-2" aria-hidden="true" />
-            <span>{t(`${mode} Processes`)}</span>
+            <span>{t(`${mode} Dmn`)}</span>
           </h3>
         </div>
         <div className="task-head d-flex justify-content-end mb-2">
@@ -276,7 +276,7 @@ export default React.memo(({ processKey, tenant, isNewDiagram, mode}) => {
                 checked={applyAllTenants}
                 onClick={handleApplyAllTenants}
               />{" "}
-              Apply for all tenants
+              {t("Apply for all tenants")}
             </label>
           ) : null}
           <button type="button"

@@ -69,12 +69,16 @@ class Filter(AuditDateTimeMixin, AuditUserMixin, BaseModel, db.Model):
         admin: bool = False,
     ):
         """Find active filters of the user."""
-        query = cls._auth_query(roles, user, tenant, admin)
+        query = cls._auth_query(
+            roles, user, tenant, admin, filter_empty_tenant_key=True
+        )
         query = query.filter(Filter.status == str(FilterStatus.ACTIVE.value))
         return query.all()
 
     @classmethod
-    def _auth_query(cls, roles, user, tenant, admin):
+    def _auth_query(  # pylint: disable=too-many-arguments
+        cls, roles, user, tenant, admin, filter_empty_tenant_key=False
+    ):
         query = cls.query
         if not admin:
             role_condition = [Filter.roles.contains([role]) for role in roles]
@@ -90,7 +94,12 @@ class Filter(AuditDateTimeMixin, AuditUserMixin, BaseModel, db.Model):
                 )
             )
         if tenant:
-            query = query.filter(Filter.tenant == tenant)
+            if filter_empty_tenant_key:
+                query = query.filter(
+                    or_(Filter.tenant == tenant, Filter.tenant.is_(None))
+                )
+            else:
+                query = query.filter(Filter.tenant == tenant)
         return query
 
     @classmethod

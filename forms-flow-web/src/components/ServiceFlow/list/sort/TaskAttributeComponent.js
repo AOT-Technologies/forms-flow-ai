@@ -3,7 +3,7 @@ import { Row, Col } from "react-bootstrap";
 import Modal from "react-bootstrap/Modal";
 import ModalTitle from "react-bootstrap/ModalTitle";
 import Form from "react-bootstrap/Form";
-import { Translation } from "react-i18next";
+import {Translation, useTranslation } from "react-i18next";
 
 function TaskAttributeComponent({
   show,
@@ -15,6 +15,7 @@ function TaskAttributeComponent({
   showUndefinedVariable,
   setShowUndefinedVariable,
 }) {
+  const { t } = useTranslation();
   const handleCheckboxChange = (event) => {
     const { name, checked } = event.target;
     setCheckboxes({ ...checkboxes, [name]: checked });
@@ -54,10 +55,10 @@ function TaskAttributeComponent({
       backdrop="static"
     >
       <Modal.Header closeButton className="bg-light">
-        <ModalTitle as={"h3"}>Task Attribute</ModalTitle>
+        <ModalTitle as={"h3"}><Translation>{(t) => t("Task Attribute")}</Translation></ModalTitle>
       </Modal.Header>
       <Modal.Body className="p-4">
-        <p>Only selected task attributes will be available on task list view</p>
+        <p><Translation>{(t) => t("Only selected task attributes will be available on task list view")}</Translation> </p>
 
         <Form>
           <Row>
@@ -135,7 +136,7 @@ function TaskAttributeComponent({
         <Form className="mt-2 pl-1">
           <h5 style={{ fontWeight: "bold", fontSize: "18px" }}>
             <Translation>{(t) => t("Variables")}</Translation>{" "}
-            <i className="fa fa-info-circle"></i>{" "}
+            <i title={t("You can define variables shown in the list")} className="fa fa-info-circle"></i>{" "}
           </h5>
 
           <div className="d-flex align-items-center mt-2">
@@ -156,7 +157,7 @@ function TaskAttributeComponent({
               <Row key={index} className="align-items-center mt-1">
                 <Col>
                   <Form.Group>
-                    <Form.Label>Name</Form.Label>
+                    <Form.Label>{t("Name")}</Form.Label>
                     <Form.Control
                       type="text"
                       placeholder="Enter name"
@@ -169,7 +170,7 @@ function TaskAttributeComponent({
                 </Col>
                 <Col>
                   <Form.Group>
-                    <Form.Label>Label</Form.Label>
+                    <Form.Label>{t("Label")}</Form.Label>
                     <Form.Control
                       type="text"
                       placeholder="Enter label"
@@ -191,7 +192,7 @@ function TaskAttributeComponent({
                       className="btn btn-primary"
                       onClick={() => handleAddClick()}
                     >
-                      Add
+                      {t("Add")}
                     </button>
                   ) : (
                     <i
@@ -208,10 +209,10 @@ function TaskAttributeComponent({
       </Modal.Body>
       <Modal.Footer>
         <button className="btn btn-secondary" onClick={() => onHide()}>
-          Cancel
+          {t("Cancel")}
         </button>
         <button className="btn btn-primary" onClick={onHide}>
-          Insert
+          {t("Insert")}
         </button>
       </Modal.Footer>
     </Modal>

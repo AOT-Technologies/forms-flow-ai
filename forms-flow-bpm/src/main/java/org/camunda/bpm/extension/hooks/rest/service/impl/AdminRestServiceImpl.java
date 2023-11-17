@@ -53,7 +53,7 @@ public class AdminRestServiceImpl implements AdminRestService {
     }
 
     @Override
-    public Mono<ResponseEntity<AuthorizationInfo>> getFormAuthorization() throws ServletException {
+    public AuthorizationInfo getFormAuthorization() throws ServletException {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         LOGGER.debug("authentication" + authentication);
         List<String> groups = getGroups(authentication);
@@ -66,7 +66,7 @@ public class AdminRestServiceImpl implements AdminRestService {
         } else {
             authorizationInfo = fetchAuthorizationInfo(false, groups);
         }
-        return Mono.just(ResponseEntity.ok(authorizationInfo));
+        return ResponseEntity.ok(authorizationInfo).getBody();
     }
 
     private AuthorizationInfo fetchAuthorizationInfo(boolean adminGroupEnabled, List<String> groups){

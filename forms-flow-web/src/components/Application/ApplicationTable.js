@@ -16,6 +16,8 @@ import { useTranslation } from "react-i18next";
 
 import {
   setApplicationListActivePage,
+  setApplicationSortBy,
+  setApplicationSortOrder,
   setCountPerpage,
 } from "../../actions/applicationActions";
 import { push } from "connected-react-router";
@@ -35,6 +37,9 @@ const ApplicationTable = () => {
   const userRoles = useSelector((state) => state.user.roles);
   const pageNo = useSelector((state) => state.applications?.activePage);
   const limit = useSelector((state) => state.applications?.countPerPage);
+  const sortOrder = useSelector((state) => state.applications?.sortOrder);
+  const sortBy = useSelector((state) => state.applications?.sortBy);
+  const isAscending = sortOrder === "asc" ? true : false;
   const totalForms = useSelector(
     (state) => state.applications?.applicationCount
   );
@@ -83,8 +88,6 @@ const ApplicationTable = () => {
     dispatch(push(`${redirectUrl}application/${data.id}`));
   };
 
- 
-
   const  viewSubmissionDetails = (data) => (
     <button className="btn btn-link mt-2" onClick={() => submissionDetails(data)}>
       <Translation>{(t) => t("View Details")}</Translation>{" "}
@@ -116,16 +119,22 @@ const ApplicationTable = () => {
     dispatch(setApplicationListActivePage(1));
   };
 
+  const updateSort = (sortOrder,sortBy) => {
+    dispatch(setApplicationSortOrder(sortOrder));
+    dispatch(setApplicationSortBy(sortBy));
+    dispatch(setApplicationListActivePage(1));
+  };
+
   return (
     <>
       <div style={{ minHeight: "400px" }}>
         <table className="table custom-table table-responsive-sm">
           <thead>
             <tr>
-              <th>{t("Submission Id")}</th>
-              <th>{t("Form Title")}</th>
-              <th>{t("Submission Status")}</th>
-              <th>{t("Last Modified")}</th>
+              <th>{t("Id")} {isAscending && sortBy === 'id' ? <i  onClick={() => updateSort('desc','id')} className="fa-sharp fa-solid fa-arrow-up-9-1" /> :  <i onClick={() => updateSort('asc','id')} className="fa-sharp fa-solid fa-arrow-down-1-9" />} </th>
+              <th>{t("Form Title")} {isAscending && sortBy === 'applicationName' ? <i onClick={() =>updateSort('desc','applicationName')} className="fa-sharp fa-solid fa-arrow-up-a-z"/> : <i onClick={() =>updateSort('asc','applicationName')}   className="fa-sharp fa-solid fa-arrow-down-z-a"/>}</th>
+              <th>{t("Status")}{isAscending && sortBy === 'applicationStatus' ? <i onClick={() =>updateSort('desc','applicationStatus')} className="fa-sharp fa-solid fa-arrow-up-a-z"/> : <i onClick={() =>updateSort('asc','applicationStatus')}   className="fa-sharp fa-solid fa-arrow-down-z-a"/>}</th>
+              <th>{t("Last Modified")}{isAscending && sortBy === 'modified' ? <i onClick={() =>updateSort('desc','modified')} className="fa-sharp fa-solid fa-arrow-up-9-1"/> : <i onClick={() =>updateSort('asc','modified')} className="fa-sharp fa-solid fa-arrow-down-1-9"/>}</th>
               <th colSpan="4">
                 <div className="d-flex justify-content-end filter-sort-bar mt-1">
                   <div className="filter-container-list application-filter-list-view">

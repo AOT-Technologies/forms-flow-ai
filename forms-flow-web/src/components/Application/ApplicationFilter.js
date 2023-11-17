@@ -17,6 +17,8 @@ const ApplicationFilter = ({ setDisplayFilter, filterParams, setFilterParams }) 
   );
   const pageNo = useSelector((state) => state.applications?.activePage);
   const limit = useSelector((state) => state.applications?.countPerPage);
+  const sortOrder = useSelector((state) => state.applications?.sortOrder);
+  const sortBy = useSelector((state) => state.applications?.sortBy);
   const { t } = useTranslation();
   const handleClick = (e) => {
     if (createSearchNode?.current?.contains(e.target)) {
@@ -52,6 +54,8 @@ const ApplicationFilter = ({ setDisplayFilter, filterParams, setFilterParams }) 
       modified: null,
       page: pageNo,
       limit: limit,
+      sortOrder,
+      sortBy
     };
     dispatch(getAllApplications(filters));
   };
@@ -64,6 +68,8 @@ const ApplicationFilter = ({ setDisplayFilter, filterParams, setFilterParams }) 
       modified: lastModified,
       page: pageNo,
       limit: limit,
+      sortOrder,
+      sortBy
     };
     setFilterParams(filterParams);
     dispatch(getAllApplications(filterParams));

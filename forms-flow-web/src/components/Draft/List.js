@@ -50,6 +50,9 @@ export const DraftList = React.memo(() => {
   const draftCount = useSelector((state) => state.draft.draftCount);
   const dispatch = useDispatch();
   const page = useSelector((state) => state.draft.activePage);
+  const sortOrder = useSelector((state) => state.draft.sortOrder);
+  const sortBy = useSelector((state) => state.draft.sortBy);
+
   const iserror = useSelector(
     (state) => state.draft.draftSubmissionError.error
   );
@@ -68,6 +71,8 @@ export const DraftList = React.memo(() => {
       modified: null,
       page: page,
       limit: countPerPage,
+      sortOrder,
+      sortBy
   }
 
   useEffect(() => {
@@ -86,7 +91,7 @@ export const DraftList = React.memo(() => {
 
   useEffect(() => {
     dispatch(fetchDrafts(filterParams));
-  }, [dispatch, page, countPerPage]);
+  }, [dispatch, page, countPerPage,sortOrder,sortBy]);
 
   const onYes = (e) => {
     e.currentTarget.disabled = true;

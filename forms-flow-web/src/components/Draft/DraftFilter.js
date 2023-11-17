@@ -15,6 +15,8 @@ const DraftFilter = ({ setDisplayFilter, filterParams, setFilterParams }) => {
   );
   const pageNo = useSelector((state) => state.draft?.activePage);
   const limit = useSelector((state) => state.draft?.countPerPage);
+  const sortOrder = useSelector((state) => state.draft.sortOrder);
+  const sortBy = useSelector((state) => state.draft.sortBy);
   const { t } = useTranslation();
   const handleClick = (e) => {
     if (createSearchNode?.current?.contains(e.target)) {
@@ -48,6 +50,8 @@ const DraftFilter = ({ setDisplayFilter, filterParams, setFilterParams }) => {
       modified: null,
       page: pageNo,
       limit: limit,
+      sortOrder,
+      sortBy
     };
     dispatch(fetchDrafts(filters));
   };
@@ -59,6 +63,8 @@ const DraftFilter = ({ setDisplayFilter, filterParams, setFilterParams }) => {
       modified: lastModified,
       page: pageNo,
       limit: limit,
+      sortOrder,
+      sortBy
     };
     setFilterParams(filterParams);
     dispatch(fetchDrafts(filterParams));

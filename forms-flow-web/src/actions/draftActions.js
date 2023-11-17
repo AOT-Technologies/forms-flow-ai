@@ -77,3 +77,17 @@ export const setDraftDelete = (data) => (dispatch) => {
     payload: data,
   });
 };
+
+export const setDraftSortOrder = (data) => (dispatch) => {
+  dispatch({
+    type: ACTION_CONSTANTS.DRAFT_LIST_SORT_ORDER,
+    payload: data,
+  });
+};
+
+export const setDraftSortBy = (data) => (dispatch) => {
+  dispatch({
+    type: ACTION_CONSTANTS.DRAFT_LIST_SORT_BY,
+    payload: data,
+  });
+};

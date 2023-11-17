@@ -9,8 +9,9 @@ import Pagination from "react-js-pagination";
 import { push } from "connected-react-router";
 import {
   setCountPerpage,
-  setDraftDelete,
   setDraftListActivePage,
+  setDraftSortBy,
+  setDraftSortOrder,
 } from "../../actions/draftActions";
 import DraftFilter from "./DraftFilter";
 import DraftOperations from "./DraftOperations";
@@ -29,6 +30,9 @@ const DraftTable = () => {
   const pageNo = useSelector((state) => state.draft?.activePage);
   const limit = useSelector((state) => state.draft?.countPerPage);
   const totalForms = useSelector((state) => state.draft?.draftCount);
+  const sortOrder = useSelector((state) => state.draft.sortOrder);
+  const sortBy = useSelector((state) => state.draft.sortBy);
+  const isAscending = sortOrder === "asc" ? true : false;
   const { t } = useTranslation();
 
   const pageOptions = [
@@ -86,15 +90,21 @@ const DraftTable = () => {
     dispatch(setDraftListActivePage(1));
   };
 
+  const updateSort = (sortOrder,sortBy) => {
+    dispatch(setDraftSortOrder(sortOrder));
+    dispatch(setDraftSortBy(sortBy));
+    dispatch(setDraftListActivePage(1));
+  };
+
   return (
     <>
       <div style={{ minHeight: "400px" }}>
         <table className="table custom-table table-responsive-sm">
           <thead>
             <tr>
-              <th>{t("Draft Id")}</th>
-              <th>{t("Draft Title")}</th>
-              <th>{t("Last Modified")}</th>
+              <th>{t("Id")} {isAscending && sortBy === 'id' ? <i  onClick={() => updateSort('desc','id')} className="fa-sharp fa-solid fa-arrow-up-9-1" /> :  <i onClick={() => updateSort('asc','id')} className="fa-sharp fa-solid fa-arrow-down-1-9" />}</th>
+              <th>{t("Title")}{isAscending && sortBy === 'DraftName' ? <i onClick={() =>updateSort('desc','DraftName')} className="fa-sharp fa-solid fa-arrow-up-a-z"/> : <i onClick={() =>updateSort('asc','DraftName')}   className="fa-sharp fa-solid fa-arrow-down-z-a"/>}</th>
+              <th>{t("Last Modified")} {isAscending && sortBy === 'modified' ? <i onClick={() =>updateSort('desc','modified')} className="fa-sharp fa-solid fa-arrow-up-9-1"/> : <i onClick={() =>updateSort('asc','modified')} className="fa-sharp fa-solid fa-arrow-down-1-9"/>}</th>
               <th colSpan="4">
                 <div className="d-flex justify-content-end filter-sort-bar mt-1">
                   <div className="filter-container-list application-filter-list-view">

@@ -8,9 +8,9 @@ import {
   fetchAllBpmProcessesCount,
 } from "../../../apiManager/services/processServices";
 import { useTranslation } from "react-i18next";
-import { Link } from "react-router-dom";
 import { MULTITENANCY_ENABLED } from "../../../constants/constants";
-import { setBpmnSearchText } from "../../../actions/processActions";
+import { setBpmnSearchText, setIsPublicDiagram } from "../../../actions/processActions";
+import { push } from "connected-react-router";
 function BpmnTable() {
   const dispatch = useDispatch();
   const process = useSelector((state) => state.process.processList);
@@ -73,6 +73,13 @@ function BpmnTable() {
     setSearch("");
     dispatch(setBpmnSearchText(""));
     setActivePage(1);
+  };
+ 
+  const gotoEdit = (data) => {
+    if(MULTITENANCY_ENABLED){
+      dispatch(setIsPublicDiagram(data.tenantId ? true : false));
+    }
+   dispatch(push(`${redirectUrl}processes/bpmn/${data.key}/edit`));
   };
 
   const pageOptions = [
@@ -152,12 +159,9 @@ function BpmnTable() {
                     <td>{processItem.key}</td>
                     <td>{t("BPMN")}</td>
                     <td className="d-flex justify-content-end w-100">
-                      <Link
-                        to={`${redirectUrl}processes/bpmn/${processItem.key}/edit`}
-                      > 
-                      <i className="fas fa-edit mr-2"/>
-                        {t("Edit Workflow")}
-                      </Link>
+                      <button className="btn btn-link" onClick={()=>{gotoEdit(processItem);}}> 
+                       <i className="fas fa-edit mr-2"/>
+                        {t("Edit Workflow")}</button>
                     </td>
                   </tr>
                 ))}

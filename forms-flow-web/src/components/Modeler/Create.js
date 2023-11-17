@@ -43,7 +43,7 @@ import {
             />
           ) : (
             <DmnEditor 
-            mode="Create"
+              mode="Create"
               processKey={''}
               tenant={''}
               isNewDiagram={true}

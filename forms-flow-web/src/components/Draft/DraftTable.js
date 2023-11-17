@@ -9,13 +9,16 @@ import Pagination from "react-js-pagination";
 import { push } from "connected-react-router";
 import {
   setCountPerpage,
-  setDraftDelete,
   setDraftListActivePage,
+  setDraftListLoading,
+  setDraftSortBy,
+  setDraftSortOrder,
 } from "../../actions/draftActions";
 import DraftFilter from "./DraftFilter";
 import DraftOperations from "./DraftOperations";
 
 import { useTranslation } from "react-i18next";
+import LoadingOverlay from "react-loading-overlay";
 
 const DraftTable = () => {
   const dispatch = useDispatch();
@@ -29,6 +32,10 @@ const DraftTable = () => {
   const pageNo = useSelector((state) => state.draft?.activePage);
   const limit = useSelector((state) => state.draft?.countPerPage);
   const totalForms = useSelector((state) => state.draft?.draftCount);
+  const sortOrder = useSelector((state) => state.draft.sortOrder);
+  const sortBy = useSelector((state) => state.draft.sortBy);
+  const isDraftLoading = useSelector((state) => state.draft.isDraftLoading);
+  const isAscending = sortOrder === "asc" ? true : false;
   const { t } = useTranslation();
 
   const pageOptions = [
@@ -77,24 +84,34 @@ const DraftTable = () => {
 
 
   const handlePageChange = (page) => {
+    dispatch(setDraftListLoading(true));
     dispatch(setDraftListActivePage(page));
   };
 
   const onSizePerPageChange = (limit) => {
+    dispatch(setDraftListLoading(true));
     setPageLimit(limit);
     dispatch(setCountPerpage(limit));
+    dispatch(setDraftListActivePage(1));
+  };
+
+  const updateSort = (sortOrder,sortBy) => {
+    dispatch(setDraftListLoading(true));
+    dispatch(setDraftSortOrder(sortOrder));
+    dispatch(setDraftSortBy(sortBy));
     dispatch(setDraftListActivePage(1));
   };
 
   return (
     <>
       <div style={{ minHeight: "400px" }}>
+      <LoadingOverlay active={isDraftLoading} spinner text={t("Loading...")}>
         <table className="table custom-table table-responsive-sm">
           <thead>
             <tr>
-              <th>{t("Draft Id")}</th>
-              <th>{t("Draft Title")}</th>
-              <th>{t("Last Modified")}</th>
+              <th>{t("Id")} {isAscending && sortBy === 'id' ? <i  onClick={() => updateSort('desc','id')} className="fa-sharp fa-solid fa-arrow-down-9-1" /> :  <i onClick={() => updateSort('asc','id')} className="fa-sharp fa-solid fa-arrow-up-1-9" />}</th>
+              <th>{t("Title")}{isAscending && sortBy === 'DraftName' ? <i onClick={() =>updateSort('desc','DraftName')} className="fa-sharp fa-solid fa-arrow-down-a-z"/> : <i onClick={() =>updateSort('asc','DraftName')}   className="fa-sharp fa-solid fa-arrow-up-z-a"/>}</th>
+              <th>{t("Last Modified")} {isAscending && sortBy === 'modified' ? <i onClick={() =>updateSort('desc','modified')} className="fa-sharp fa-solid fa-arrow-down-9-1 ml-2"/> : <i onClick={() =>updateSort('asc','modified')} className="fa-sharp fa-solid fa-arrow-up-1-9 ml-2"/>}</th>
               <th colSpan="4">
                 <div className="d-flex justify-content-end filter-sort-bar mt-1">
                   <div className="filter-container-list application-filter-list-view">
@@ -148,6 +165,7 @@ const DraftTable = () => {
             })}
           </tbody>
         </table>
+        </LoadingOverlay>
       </div>
       <div className="d-flex justify-content-between align-items-center  flex-column flex-md-row">
       <div className="d-flex align-items-center">

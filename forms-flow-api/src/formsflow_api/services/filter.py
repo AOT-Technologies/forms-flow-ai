@@ -56,11 +56,20 @@ class FilterService:
             admin=ADMIN_GROUP in user.roles,
         )
         filter_data = filter_schema.dump(filters, many=True)
+        default_variables = [
+            {"name": "applicationId", "label": "Application Id"},
+            {"name": "formName", "label": "Form Name"},
+        ]
         # User who created the filter or admin have edit permission.
         for filter_item in filter_data:
             filter_item["editPermission"] = (
                 filter_item["createdBy"] == user.user_name or ADMIN_GROUP in user.roles
             )
+            # Check and add default variables if not present
+            filter_item["variables"] = filter_item["variables"] or []
+            filter_item["variables"] += [
+                var for var in default_variables if var not in filter_item["variables"]
+            ]
         return filter_data
 
     @staticmethod

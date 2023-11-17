@@ -14,7 +14,7 @@ import Loading from "../../containers/Loading";
 import LoadError from "../Error";
 import DateRangePicker from "@wojtekmaj/react-daterange-picker";
 import moment from "moment";
-import { Translation, useTranslation } from "react-i18next";
+import { useTranslation } from "react-i18next";
 import {
   setMetricsDateRangeLoading,
   setMetricsSubmissionLimitChange,
@@ -257,11 +257,12 @@ const Dashboard = React.memo(() => {
             </div>
 
             <div className="d-flex justify-content-end align-items-center col-12 col-md-4 px-0">
-              <div className="input-group mr-4">
+              <div className="input-group mr-2">
                 <FormControl
                   as="select"
                   onChange={(e) => onChangeInput(e.target.value)}
                   className="form-control"
+                  style={{ padding: ".375rem .5rem" }}
                   title={t("Choose any")}
                   aria-label="Select date type"
                 >
@@ -269,7 +270,7 @@ const Dashboard = React.memo(() => {
                   <option value="modified">{t("Modified Date")}</option>
                 </FormControl>
               </div>
-              <DateRangePicker className = "bg-white"
+              <DateRangePicker className = "bg-white mr-2"
                 onChange={onSetDateRange}
                 value={dateRange}
                 dayPlaceholder="dd"

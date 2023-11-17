@@ -149,7 +149,7 @@ const List = React.memo((props) => {
     return [
       {
         name: "Forms",
-        icon: "file-text-o",
+        icon: "file-text-o mr-2",
       },
     ];
   };
@@ -498,11 +498,11 @@ const List = React.memo((props) => {
                         ? props.formName
                         : textTruncate(50, 40, props.formName)}
                     </span>
-                    .{t("Are you sure you wish to delete the form?")}
+                    .<br />{t("Are you sure to delete the form ?")}
                   </div>
                 ) : (
                   <div>
-                    {`${t("Are you sure you wish to delete the form ")}`}
+                    {`${t("Are you sure to delete the form ")}`}
                     <span style={{ fontWeight: "bold" }}>
                       {textTruncate(60, 40, props.formName)}
                     </span>
@@ -511,7 +511,7 @@ const List = React.memo((props) => {
                 )
               ) : (
                 <div>
-                  {`${t("Are you sure you wish to delete the form ")} `}
+                  {`${t("Are you sure to delete the form ")} `}
                   <span style={{ fontWeight: "bold" }}>
                     {textTruncate(60, 40, props.formName)}
                   </span>

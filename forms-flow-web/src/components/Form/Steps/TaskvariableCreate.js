@@ -52,7 +52,7 @@ const TaskvariableCreate = ({ options, addTaskVariable }) => {
             inputId="selectTaskVariable"
           />
         </Col>
-        <Col xs={12} md={2}>
+        <Col xs={12} md={3}>
           <label>{t("Label")}</label>
           <input
             type="text"
@@ -64,13 +64,14 @@ const TaskvariableCreate = ({ options, addTaskVariable }) => {
             placeholder={t("Enter Label")}
           />
         </Col>
-        <Col xs={12} md={2}>
+        <Col xs={12} md={3}>
 
           <Form.Group controlId="showInListCheckbox" style={{ marginTop: "34px" }}>
             <div className="d-flex align-items-center mt-3 mr-4">
               <Form.Label className="mr-2">{t("Show in list")}</Form.Label>
               <Form.Check
                 type="checkbox"
+
                 onChange={() => {
                   setShowInList(!showInList);
                 }}
@@ -79,15 +80,15 @@ const TaskvariableCreate = ({ options, addTaskVariable }) => {
           </Form.Group>
         </Col>
 
-        <Col xs={12} md={1}>
+        <Col xs={12} md={2}>
           <Button
-            style={{ marginTop: "30px" }}
+            style={{ marginTop: "25px" }}
             variant="outline-primary"
             onClick={() => {
               addTask();
             }}
           >
-            <i className="fa fa-check"></i> {t("Add")}
+            <i className="fa fa-check mr-2"></i> {t("Add")}
           </Button>
         </Col>
       </Row>

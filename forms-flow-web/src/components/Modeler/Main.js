@@ -80,14 +80,14 @@ export default React.memo(() => {
   const headOptions = [
     {
       name: "BPMN",
-      icon: "fa-solid fa-gears",
+      icon: "fa-solid fa-gears mr-2",
       onClick: () => {
         handleChnageTab("BPMN");
       },
     },
     {
       name: "DMN",
-      icon: "fa-solid fa-gears",
+      icon: "fa-solid fa-gears mr-2",
       onClick: () => {
         handleChnageTab("DMN");
       },

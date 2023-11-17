@@ -6,13 +6,13 @@ import {
   setSelectedTaskID,
 } from "../../../actions/bpmTaskActions";
 import { Link } from "react-router-dom";
-/*import {Link} from "react-router-dom";*/
 import { useTranslation } from "react-i18next";
 import { MULTITENANCY_ENABLED } from "../../../constants/constants";
 
-const ServiceFlowFilterListDropDown = React.memo(() => {
+const ServiceFlowFilterListDropDown = React.memo(({selectFilter,openFilterDrawer}) => {
   const dispatch = useDispatch();
-  const filterList = useSelector((state) => state.bpmTasks.filterList);
+  const filterList = useSelector((state) => state.bpmTasks.filtersAndCount);
+  const filterListItems = useSelector((state) => state.bpmTasks.filterList);
   const isFilterLoading = useSelector(
     (state) => state.bpmTasks.isFilterLoading
   );
@@ -20,28 +20,49 @@ const ServiceFlowFilterListDropDown = React.memo(() => {
   const { t } = useTranslation();
   const tenantKey = useSelector((state) => state.tenants?.tenantId);
   const redirectUrl = MULTITENANCY_ENABLED ? `/tenant/${tenantKey}/` : "/";
+ 
+
   const changeFilterSelection = (filter) => {
-    dispatch(setSelectedBPMFilter(filter));
+    const selectedFilterItem = filterListItems.find((item) => item.id === filter.id);
+    dispatch(setSelectedBPMFilter(selectedFilterItem));
     dispatch(setSelectedTaskID(null));
   };
 
+  const handleFilterEdit = (id) => {
+    selectFilter(filterListItems.find((item) => item.id === id));
+  };
   const renderFilterList = () => {
     if (filterList.length) {
       return (
         <>
-          {filterList.map((filter, index) => (
-            <NavDropdown.Item
+          {filterList.map((filter, index) => {
+             const matchingFilterItem = filterListItems.find(item => item.id === filter.id);
+             const showEditIcon = matchingFilterItem && matchingFilterItem.editPermission;
+            return(
+              <NavDropdown.Item
               as={Link}
               to={`${redirectUrl}task`}
               className={`main-nav nav-item ${
                 filter?.id === selectedFilter?.id ? "active-tab" : ""
               }`}
               key={index}
-              onClick={() => changeFilterSelection(filter)}
             >
-              {filter?.name} {`(${filter.itemCount || 0})`}
+              <div className="icon-and-text">
+                <span onClick={() => changeFilterSelection(filter)}>
+                  {filter?.name} {`(${filter.count || 0})`}
+                </span>
+              {showEditIcon && <i
+                className="fa fa-pencil ml-5"
+                onClick={() => {
+                  handleFilterEdit(filter?.id);
+                  openFilterDrawer(true);
+                }}
+              />}
+              </div>
             </NavDropdown.Item>
-          ))}
+            );
+          }
+          )}
         </>
       );
     } else {

@@ -440,7 +440,93 @@ span[dat-title]:hover:after,
     }
   }
 }
+
+.tab-width{
+  width:12rem;
+}
+.task-variable-coloum{
+  width:80rem;
+}
+.task-title-container{
+  margin-left: -10px;
+  margin-right: -10px;
+}
+.filter-name-textfeild{
+  width: 90%;
+  height: 44px;
+  padding: 3%;
+  border: 3px solid #C8C6C4;
+  font-size: 18px;
+}
+
+.criteria-add-value-inputbox{
+  width: 80%;
+  height: 40px;
+  padding: 3%;
+  border: 3px solid #C8C6C4;
+}
 .task-row{
   overflow: auto;
-  max-height: 80vh; 
+  max-height: 80vh;
+}
+
+.row-container {
+  display: flex;
+  align-items: flex-end;
+  margin-top: 10px;
+  font-size: 14px;
+}
+
+.input-container {
+  margin-right: 10px;
+}
+
+.varible-input-boxes {
+  width: 90%;
+  height: 35px;
+  border: 3px solid #C8C6C4;
+}
+
+.fa.fa-minus-circle {
+  cursor: pointer;
+  font-size: 36px;
+  color: red;
+  margin-left: 17px;
+}
+
+.add-button-container {
+  display: flex;
+  align-items: flex-end;
+  margin-top: 10px;
+  font-size: 14px;
+}
+
+.highlight {
+  color: rgb(77, 97, 252);
+}
+
+.cursor-pointer{
+  cursor:pointer
+}
+
+.modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.1);
+ z-index: 1500;
+}
+
+.icon-and-text {
+  display: flex;
+  justify-content: space-between;
+  align-items: center; /* Vertically center the text and icon */
+}
+.react-datepicker__close-icon {
+  padding: 0px !important ;
+}
+.react-datepicker-popper {
+  z-index: 1000 !important;
 }

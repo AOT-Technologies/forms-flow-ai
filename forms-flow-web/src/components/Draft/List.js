@@ -201,13 +201,13 @@ export const DraftList = React.memo(() => {
             message=
             {
             <div>
-            {t("Are you sure you wish to delete the draft")}
+            {t("Are you sure to delete the draft")}
             <span style={{ fontWeight: "bold" }} > {draftDelete.draftName.includes(' ') ? draftDelete.draftName : textTruncate(50,40,draftDelete.draftName)} </span>
-            {t("with ID")} 
-            <span style={{fontWeight: "bold"}}> {draftDelete.draftId}</span>?
+            {t("with ID")}
+            <span style={{fontWeight: "bold"}}> {draftDelete.draftId}</span> ?
             </div>
             }
-            
+
             onNo={() => onNo()}
             onYes={onYes}
           />

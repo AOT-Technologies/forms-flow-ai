@@ -172,9 +172,45 @@ export const serviceActionError = (data) => (dispatch) => {
     payload: "Error Handling API",
   });
 };
+
+export const setSelectedTaskVariables = (data) => (dispatch) => {
+  dispatch({
+    type: ACTION_CONSTANTS.SELETED_TASK_VARIABLES,
+    payload: data,
+  });
+};
+
+export const setViewType = (data) => (dispatch) => {
+  dispatch({
+    type: ACTION_CONSTANTS.VIEW_TYPE,
+    payload: data,
+  });
+};
+
 export const bpmActionError = (data) => (dispatch) => {
   dispatch({
     type: ACTION_CONSTANTS.BPM_ERROR,
+    payload: data,
+  });
+};
+
+export const setBPMFilterSearchParams = (data) => (dispatch) => {
+  dispatch({
+    type: ACTION_CONSTANTS.UPDATE_FILTER_SEARCH_PARAMS, 
+    payload: data,
+  });
+};
+
+export const setBPMFiltersAndCount = (data) => (dispatch) => {
+  dispatch({
+    type: ACTION_CONSTANTS.BPM_FILTERS_AND_COUNT, 
+    payload: data,
+  });
+};
+
+export const setVisibleAttributes = (data) => (dispatch) => {
+  dispatch({
+    type: ACTION_CONSTANTS.BPM_VISSIBLE_ATTRIBUTES, 
     payload: data,
   });
 };

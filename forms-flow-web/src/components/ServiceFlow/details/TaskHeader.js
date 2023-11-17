@@ -13,7 +13,6 @@ import "./../ServiceFlow.scss";
 import AddGroupModal from "./AddGroupModal";
 import {
   claimBPMTask,
-  // fetchFilterList,
   fetchServiceTaskList,
   getBPMTaskDetail,
   unClaimBPMTask,
@@ -21,7 +20,6 @@ import {
   updateBPMTask,
 } from "../../../apiManager/services/bpmTaskServices";
 import { setBPMTaskDetailUpdating } from "../../../actions/bpmTaskActions";
-//import UserSelection from "./UserSelection";
 import UserSelectionDebounce from "./UserSelectionDebounce";
 import SocketIOService from "../../../services/SocketIOService";
 import { useTranslation } from "react-i18next";
@@ -63,7 +61,7 @@ const TaskHeader = React.memo(() => {
             if (selectedFilter) {
               dispatch(getBPMTaskDetail(taskId));
               dispatch(
-                fetchServiceTaskList(selectedFilter.id, firstResult, reqData)
+                fetchServiceTaskList(reqData,null,firstResult)
               );
             } else {
               dispatch(setBPMTaskDetailUpdating(false));
@@ -71,7 +69,7 @@ const TaskHeader = React.memo(() => {
           }
           if(selectedFilter){
             dispatch(
-              fetchServiceTaskList(selectedFilter.id, firstResult, reqData)
+              fetchServiceTaskList(reqData,null,firstResult)
             );
           }
            
@@ -96,7 +94,7 @@ const TaskHeader = React.memo(() => {
             }
             if(selectedFilter){
               dispatch(
-                fetchServiceTaskList(selectedFilter.id, firstResult, reqData)
+                fetchServiceTaskList(reqData,null,firstResult)
               );
             }
            
@@ -121,7 +119,7 @@ const TaskHeader = React.memo(() => {
           }
           if(selectedFilter){
             dispatch(
-              fetchServiceTaskList(selectedFilter.id, firstResult, reqData)
+              fetchServiceTaskList(reqData,null,firstResult)
             );
           }
           
@@ -146,7 +144,7 @@ const TaskHeader = React.memo(() => {
           if (!SocketIOService.isConnected()) {
             dispatch(getBPMTaskDetail(taskId));
             dispatch(
-              fetchServiceTaskList(selectedFilter.id, firstResult, reqData)
+              fetchServiceTaskList(reqData,null,firstResult)
             );
           }
         } else {
@@ -170,7 +168,7 @@ const TaskHeader = React.memo(() => {
           if (!SocketIOService.isConnected()) {
             dispatch(getBPMTaskDetail(taskId));
             dispatch(
-              fetchServiceTaskList(selectedFilter.id, firstResult, reqData)
+              fetchServiceTaskList(reqData,null,firstResult)
             );
           }
         } else {

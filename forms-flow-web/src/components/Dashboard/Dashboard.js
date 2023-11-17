@@ -262,7 +262,7 @@ const Dashboard = React.memo(() => {
                   as="select"
                   onChange={(e) => onChangeInput(e.target.value)}
                   className="form-control"
-                  style={{ padding: ".375rem .5rem" }}
+                  style={{ padding: ".375rem .3rem" }}
                   title={t("Choose any")}
                   aria-label="Select date type"
                 >

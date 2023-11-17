@@ -137,10 +137,10 @@ const ApplicationTable = () => {
         <table className="table custom-table table-responsive-sm">
           <thead>
             <tr>
-              <th>{t("Id")} {isAscending && sortBy === 'id' ? <i  onClick={() => updateSort('desc','id')} className="fa-sharp fa-solid fa-arrow-up-9-1" /> :  <i onClick={() => updateSort('asc','id')} className="fa-sharp fa-solid fa-arrow-down-1-9" />} </th>
-              <th>{t("Form Title")} {isAscending && sortBy === 'applicationName' ? <i onClick={() =>updateSort('desc','applicationName')} className="fa-sharp fa-solid fa-arrow-up-a-z"/> : <i onClick={() =>updateSort('asc','applicationName')}   className="fa-sharp fa-solid fa-arrow-down-z-a"/>}</th>
-              <th>{t("Status")}{isAscending && sortBy === 'applicationStatus' ? <i onClick={() =>updateSort('desc','applicationStatus')} className="fa-sharp fa-solid fa-arrow-up-a-z"/> : <i onClick={() =>updateSort('asc','applicationStatus')}   className="fa-sharp fa-solid fa-arrow-down-z-a"/>}</th>
-              <th>{t("Last Modified")}{isAscending && sortBy === 'modified' ? <i onClick={() =>updateSort('desc','modified')} className="fa-sharp fa-solid fa-arrow-up-9-1"/> : <i onClick={() =>updateSort('asc','modified')} className="fa-sharp fa-solid fa-arrow-down-1-9"/>}</th>
+              <th>{t("Id")} {isAscending && sortBy === 'id' ? <i  onClick={() => updateSort('desc','id')} className="fa-sharp fa-solid fa-arrow-down-9-1" /> :  <i onClick={() => updateSort('asc','id')} className="fa-sharp fa-solid fa-arrow-up-1-9" />} </th>
+              <th>{t("Form Title")} {isAscending && sortBy === 'applicationName' ? <i onClick={() =>updateSort('desc','applicationName')} className="fa-sharp fa-solid fa-arrow-down-a-z"/> : <i onClick={() =>updateSort('asc','applicationName')}   className="fa-sharp fa-solid fa-arrow-up-z-a"/>}</th>
+              <th>{t("Status")}{isAscending && sortBy === 'applicationStatus' ? <i onClick={() =>updateSort('desc','applicationStatus')} className="fa-sharp fa-solid fa-arrow-down-a-z  ml-2"/> : <i onClick={() =>updateSort('asc','applicationStatus')}   className="fa-sharp fa-solid fa-arrow-up-z-a  ml-2"/>}</th>
+              <th>{t("Last Modified")}{isAscending && sortBy === 'modified' ? <i onClick={() =>updateSort('desc','modified')} className="fa-sharp fa-solid fa-arrow-down-9-1  ml-2"/> : <i onClick={() =>updateSort('asc','modified')} className="fa-sharp fa-solid fa-arrow-up-1-9  ml-2"/>}</th>
               <th colSpan="4">
                 <div className="d-flex justify-content-end filter-sort-bar mt-1">
                   <div className="filter-container-list application-filter-list-view">

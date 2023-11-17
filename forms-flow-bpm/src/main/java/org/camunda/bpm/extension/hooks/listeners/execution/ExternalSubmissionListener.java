@@ -18,8 +18,8 @@ import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 
-import javax.annotation.Resource;
-import javax.inject.Named;
+import jakarta.annotation.Resource;
+import jakarta.inject.Named;
 
 
 import java.io.IOException;

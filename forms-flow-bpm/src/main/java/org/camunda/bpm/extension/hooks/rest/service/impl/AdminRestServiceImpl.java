@@ -1,7 +1,6 @@
 package org.camunda.bpm.extension.hooks.rest.service.impl;
 
-import com.nimbusds.jose.shaded.json.JSONArray;
-import com.nimbusds.oauth2.sdk.util.CollectionUtils;
+import jakarta.servlet.ServletException;
 import org.apache.commons.lang3.StringUtils;
 import org.camunda.bpm.engine.AuthorizationService;
 import org.camunda.bpm.engine.ProcessEngines;
@@ -26,9 +25,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.oauth2.core.oidc.user.OidcUser;
 import org.springframework.security.oauth2.server.resource.authentication.JwtAuthenticationToken;
 import org.springframework.web.multipart.MultipartFile;
-import reactor.core.publisher.Mono;
 
-import javax.servlet.ServletException;
 import java.io.IOException;
 import java.util.*;
 
@@ -55,12 +52,12 @@ public class AdminRestServiceImpl implements AdminRestService {
     }
 
     @Override
-    public Mono<ResponseEntity<AuthorizationInfo>> getFormAuthorization() throws ServletException {
+    public AuthorizationInfo getFormAuthorization() throws ServletException {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         LOGGER.debug("authentication" + authentication);
         List<String> groups = getGroups(authentication);
         AuthorizationInfo authorizationInfo = null;
-        if (CollectionUtils.isNotEmpty(groups) && groups.contains(adminGroupName)) {
+        if (groups != null && !groups.isEmpty() && groups.contains(adminGroupName)) {
             if (!RestAPIBuilderUtil.fetchUserName(restAPIBuilderConfigProperties.getUserNameAttribute()).equals(ANONYMOUS_USER)) {
                 groups = null;
             }
@@ -68,7 +65,7 @@ public class AdminRestServiceImpl implements AdminRestService {
         } else {
             authorizationInfo = fetchAuthorizationInfo(false, groups);
         }
-        return Mono.just(ResponseEntity.ok(authorizationInfo));
+        return ResponseEntity.ok(authorizationInfo).getBody();
     }
 
     private AuthorizationInfo fetchAuthorizationInfo(boolean adminGroupEnabled, List<String> groups){
@@ -174,8 +171,7 @@ public class AdminRestServiceImpl implements AdminRestService {
 
     private List<String> getKeyValues(Map<String, Object> claims, String claimName, String tenantKey) {
         List<String> groupIds = new ArrayList<String>();
-        JSONArray groups = (JSONArray) claims.get(claimName);
-        for (Object group1 : groups) {
+        for (Object group1 : (List<String>) claims.get(claimName)){
             String groupName = group1.toString();
             if (StringUtils.startsWith(groupName, "/")) {
                 groupIds.add(StringUtils.substring(groupName, 1));

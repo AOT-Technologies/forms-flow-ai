@@ -14,6 +14,7 @@ import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.HttpStatusCode;
 import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.client.WebClient;
 import reactor.core.publisher.Flux;
@@ -79,7 +80,7 @@ public class FormAccessHandler extends AbstractAccessHandler implements IAccessH
                                         dataBuffer.read(bytes);
                                         DataBufferUtils.release(dataBuffer); // Release the buffer to avoid memory leaks
                                         String responseBody = new String(bytes, StandardCharsets.UTF_8);
-                                        HttpStatus httpStatus = response.statusCode();
+                                        HttpStatusCode httpStatus = response.statusCode();
                                         return ResponseEntity.status(httpStatus).body(responseBody);
                                     });
                         }
@@ -108,7 +109,7 @@ public class FormAccessHandler extends AbstractAccessHandler implements IAccessH
                                         dataBuffer.read(bytes);
                                         DataBufferUtils.release(dataBuffer); // Release the buffer to avoid memory leaks
                                         String responseBody = new String(bytes, StandardCharsets.UTF_8);
-                                        HttpStatus httpStatus = response.statusCode();
+                                        HttpStatusCode httpStatus = response.statusCode();
                                         return ResponseEntity.status(httpStatus).body(responseBody);
                                     });
                         }

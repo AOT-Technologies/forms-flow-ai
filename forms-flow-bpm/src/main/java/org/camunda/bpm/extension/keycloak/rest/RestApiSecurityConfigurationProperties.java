@@ -1,6 +1,6 @@
 package org.camunda.bpm.extension.keycloak.rest;
 
-import javax.validation.constraints.NotEmpty;
+import jakarta.validation.constraints.NotEmpty;
 
 import lombok.Data;
 import lombok.NoArgsConstructor;

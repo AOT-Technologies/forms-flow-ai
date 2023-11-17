@@ -10,7 +10,7 @@
     "winBuild": "set \"GENERATE_SOURCEMAP=false\" && craco build",
     "eject": "react-scripts eject",
     "test": "craco test --detectOpenHandles --silent",
-    "preinstall": "npx npm-force-resolutions",
+    "preinstall": "npm install --package-lock-only --ignore-scripts && npx npm-force-resolutions",
     "coverage": "craco test --coverage --watchAll=false",
     "lint": "eslint src --no-fix --max-warnings 0"
   },
@@ -55,7 +55,7 @@
     "camunda-dmn-moddle": "^1.1.0",
     "connected-react-router": "^6.9.1",
     "create-react-class": "^15.7.0",
-    "crypto-js": "^4.0.0",
+    "crypto-js": "^4.2.0",
     "dmn-js": "^12.3.0",
     "dmn-js-properties-panel": "^1.1.0",
     "flagged": "^2.0.5",
@@ -117,7 +117,12 @@
     "minimatch": "3.0.5",
     "json5": "2.2.2",
     "d3-color": "3.1.0",
-    "semver": "7.5.3"
+    "semver": "7.5.3",
+    "@babel/traverse": "7.23.2",
+    "browserify-sign": "4.2.2",
+    "@adobe/css-tools": "4.3.1",
+    "word-wrap": "1.2.4",
+    "tough-cookie": "4.1.3"
   },
   "browserslist": [
     ">0.2%",

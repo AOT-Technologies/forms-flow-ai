@@ -6,11 +6,11 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.multipart.MultipartFile;
 import reactor.core.publisher.Mono;
 
-import javax.servlet.ServletException;
+import jakarta.servlet.ServletException;
 
 public interface AdminRestService {
 
-    Mono<ResponseEntity<AuthorizationInfo>> getFormAuthorization() throws ServletException;
+    AuthorizationInfo getFormAuthorization() throws ServletException;
 
     void createTenant(TenantAuthorizationDto dto) throws ServletException;
 

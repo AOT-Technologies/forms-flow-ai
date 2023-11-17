@@ -102,7 +102,7 @@ const DraftFilter = ({ setDisplayFilter, filterParams, setFilterParams }) => {
       <div className="m-4 px-2">
         <Row className="mt-2">
           <Col>
-          <label>{t("Draft Id")}</label>
+          <label>{t("Id")}</label>
             <input
               className="form-control"
               placeholder=""
@@ -111,7 +111,7 @@ const DraftFilter = ({ setDisplayFilter, filterParams, setFilterParams }) => {
             />
           </Col>
           <Col>
-          <label>{t("Draft Name")}</label>
+          <label>{t("Title")}</label>
             <input
               className="form-control"
               placeholder=""

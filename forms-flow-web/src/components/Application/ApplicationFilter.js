@@ -114,7 +114,7 @@ const ApplicationFilter = ({ setDisplayFilter, filterParams, setFilterParams }) 
       <div className="m-4 px-2">
         <Row className="mt-2">
           <Col>
-            <label>{t("Submission Id")}</label>
+            <label>{t("Id")}</label>
             <input
               className="form-control"
               placeholder=""
@@ -137,7 +137,7 @@ const ApplicationFilter = ({ setDisplayFilter, filterParams, setFilterParams }) 
       <div className="m-4 px-2">
         <Row className="mt-2">
           <Col>
-            <label>{t("Submission Status")}</label>
+            <label>{t("Status")}</label>
             <select
               value={applicationStatus}
               onChange={(e) => setApplicationStatus(e.target.value)}

@@ -6,14 +6,8 @@ import org.camunda.bpm.extension.hooks.controllers.data.AuthorizationInfo;
 import org.camunda.bpm.extension.hooks.controllers.data.TenantAuthorizationDto;
 import org.camunda.bpm.extension.hooks.rest.AdminRestResource;
 import org.camunda.bpm.extension.hooks.rest.service.AdminRestService;
-import org.springframework.hateoas.EntityModel;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
 import org.springframework.web.multipart.MultipartFile;
-import reactor.core.publisher.Mono;
-
-import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
-import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
 
 @Component
 public class AdminRestResourceImpl implements AdminRestResource {

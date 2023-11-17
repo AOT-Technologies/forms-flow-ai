@@ -1,18 +1,14 @@
 package org.camunda.bpm.extension.hooks.rest;
 
-import org.camunda.bpm.extension.hooks.controllers.data.AuthorizationInfo;
-import org.camunda.bpm.extension.hooks.controllers.data.TenantAuthorizationDto;
-import org.springframework.hateoas.EntityModel;
-import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.multipart.MultipartFile;
-
 import jakarta.servlet.ServletException;
 import jakarta.ws.rs.*;
 import jakarta.ws.rs.core.Context;
 import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.UriInfo;
-import reactor.core.publisher.Mono;
+import org.camunda.bpm.extension.hooks.controllers.data.AuthorizationInfo;
+import org.camunda.bpm.extension.hooks.controllers.data.TenantAuthorizationDto;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.multipart.MultipartFile;
 
 @Produces({MediaType.APPLICATION_JSON})
 public interface AdminRestResource extends RestResource {

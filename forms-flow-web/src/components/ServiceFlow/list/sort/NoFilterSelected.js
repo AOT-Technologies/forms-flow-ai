@@ -10,7 +10,7 @@ function noFilterSelected() {
         style={{ width: "100%", height: "300PX" }}
       />
       <h1 style={{ textAlign: "center", lineHeight: "1.5" }}>
-        <Translation>{(t) => t("Select a task in the List")}</Translation>
+        <Translation>{(t) => t("Select a task in the List.")}</Translation>
       </h1>
       <p style={{ textAlign: "center", lineHeight: "1.5" }}>
         <Translation>

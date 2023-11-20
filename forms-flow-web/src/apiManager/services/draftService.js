@@ -218,8 +218,8 @@ export const fetchDrafts = (params, ...rest) => {
       url += `&modifiedFrom=${modifiedFrom}&modifiedTo=${modifiedTo}`;
     }
 
-    if (params.sortField !== null) {
-      url += `&sortBy=${params.sortField}&sortOrder=${params.sortOrder}`;
+    if (params.sortBy !== null) {
+      url += `&sortBy=${params.sortBy}&sortOrder=${params.sortOrder}`;
     }
 
     RequestService.httpGETRequest(url)

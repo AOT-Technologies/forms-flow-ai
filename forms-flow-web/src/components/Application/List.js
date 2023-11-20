@@ -10,6 +10,7 @@ import {
   setApplicationListActivePage,
   setCountPerpage,
   setApplicationListLoader,
+  setApplicationLoading,
 } from "../../actions/applicationActions";
 import {
   getAllApplications,
@@ -50,6 +51,8 @@ export const ApplicationList = React.memo(() => {
   const isApplicationListLoading = useSelector(
     (state) => state.applications.isApplicationListLoading
   );
+  const sortOrder = useSelector((state) => state.applications?.sortOrder);
+  const sortBy = useSelector((state) => state.applications?.sortBy);
   const pageNo = useSelector((state) => state.applications?.activePage);
   const limit = useSelector((state) => state.applications?.countPerPage);
   const totalApplications = useSelector((state) => state.applications?.applicationCount);
@@ -81,9 +84,15 @@ export const ApplicationList = React.memo(() => {
       applicationStatus:null,
       page:pageNo,
       limit:limit,
+      sortOrder,
+      sortBy
   };
-    dispatch(getAllApplications(filterParams));
-  }, [page,limit]);
+    dispatch(getAllApplications(filterParams,(err,data) => {
+      if(data){
+        dispatch(setApplicationLoading(false));
+      }
+    }));
+  }, [page,limit,sortBy,sortOrder]);
 
   const isClientEdit = (applicationStatus) => {
     if (

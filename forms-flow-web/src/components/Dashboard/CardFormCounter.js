@@ -32,7 +32,7 @@ const CardFormCounter = React.memo((props) => {
                 </Tooltip>
                 )}
               >
-                <span className="form-title">{formName}</span>
+                <span className="form-title text-truncate">{formName}</span>
               </OverlayTrigger>
             </div>
             <div>

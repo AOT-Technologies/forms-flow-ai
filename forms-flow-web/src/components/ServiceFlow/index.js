@@ -46,6 +46,7 @@ export default React.memo(() => {
   );
   const bpmTaskId = useSelector((state) => state.bpmTasks.taskId);
   const reqData = useSelector((state) => state.bpmTasks.listReqParams);
+  const selectedFilter = useSelector((state) => state.bpmTasks.selectedFilter);
   const sortParams = useSelector(
     (state) => state.bpmTasks.filterListSortParams
   );
@@ -67,7 +68,6 @@ export default React.memo(() => {
   const cardView = useSelector(
     (state) => state.bpmTasks.viewType
   );
-  
   const redirectUrl = useRef(
     MULTITENANCY_ENABLED ? `/tenant/${tenantKey}/` : "/"
   );
@@ -165,9 +165,9 @@ export default React.memo(() => {
       if (forceReload) {
         dispatch(
           fetchServiceTaskList(
-            selectedBPMFilterParams,
-            firstResultsRef.current,
-            refreshedTaskId
+            selectedFilter,
+            refreshedTaskId,
+            firstResultsRef.current
           )
         ); //Refreshes the Tasks
         if (bpmTaskIdRef.current && refreshedTaskId === bpmTaskIdRef.current) {
@@ -187,7 +187,8 @@ export default React.memo(() => {
             ) {
               dispatch(
                 fetchServiceTaskList(
-                  selectedBPMFilterParams,
+                  selectedFilter,
+                  null,
                   firstResultsRef.current
                 )
               ); //Refreshes the Task
@@ -195,7 +196,8 @@ export default React.memo(() => {
           } else {
             dispatch(
               fetchServiceTaskList(
-                selectedBPMFilterParams,
+                selectedFilter,
+                null,
                 firstResultsRef.current,
               )
             ); //Refreshes the Task

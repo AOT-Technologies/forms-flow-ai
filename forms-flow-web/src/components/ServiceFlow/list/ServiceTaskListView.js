@@ -144,7 +144,7 @@ const ServiceTaskListView = React.memo(() => {
                       <h6>
                         <u
                           onClick={() => handleViewDetails(task.id)}
-                          className="font-weight-normal" style={{ color: "#1a5a96", textDecoration: 'none' }}>View Details</u>
+                        className="font-weight-normal" style={{ color: "#1a5a96", textDecoration: 'none' }}>{t("View Details")}</u>
                       </h6>
                     </div>
                   </Col>
@@ -153,13 +153,13 @@ const ServiceTaskListView = React.memo(() => {
               <Row className="mt-4 p-2 justify-content-between" style={{ marginBottom: "-2.5rem" }}>
                {vissibleAttributes?.taskVisibleAttributes?.applicationId && <Col  xs={2}>
                   <div className="col-12">
-                    <h6 className="font-weight-light">Application Id</h6>
+                    <h6 className="font-weight-light">{t("Application Id")}</h6>
                     <h6>{task?._embedded?.variable?.filter((eachValue) => eachValue.name === "applicationId")[0]?.value}</h6>
                   </div>
                 </Col>}
               {vissibleAttributes?.taskVisibleAttributes?.createdDate &&  <Col xs={2}>
                   <div className="col-12">
-                    <h6>Created Date</h6>
+                    <h6>{t("Created Date")}</h6>
                     
                     <h6>
                       {moment(task.created).isSame(moment(), "day")
@@ -173,7 +173,7 @@ const ServiceTaskListView = React.memo(() => {
                 </Col>
               {vissibleAttributes?.taskVisibleAttributes?.priority &&  <Col xs={1} >
                   <div className="col-12">
-                    <h6 className="font-weight-light">Priority</h6>
+                    <h6 className="font-weight-light">{t("Priority")}</h6>
                   </div>
                   <div className="d-flex col-12">
                     <svg
@@ -243,7 +243,7 @@ const ServiceTaskListView = React.memo(() => {
             <div className="d-flex justify-content-between">
               <div className="ml-2">
                   <span>
-                    Rows per Page :
+                  {t("Rows per Page")} :
                   <DropdownButton
                     className="ml-2"
                     drop="down"

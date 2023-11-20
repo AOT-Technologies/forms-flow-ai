@@ -243,6 +243,7 @@ function FormTable() {
                       }}
                       onKeyDown={(e) => (e.keyCode == 13 ? handleSearch() : "")}
                       placeholder={t("Search by form title")}
+                      title={t("Search by form title")}
                       style={{ backgroundColor: "#ffff" }}
                     />
                     {search && (
@@ -298,10 +299,8 @@ function FormTable() {
                       <td>
                         <span> {viewOrEdit(e)}</span>
                       </td>
-                       
                       <td>
-                    
-                            <Dropdown  >
+                        <Dropdown title={t("More options")} >
                           <Dropdown.Toggle
                             as={CustomToggle} 
                             id="dropdown-basic"

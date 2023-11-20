@@ -118,6 +118,7 @@ function BpmnTable() {
                 }
                 placeholder={t("Search by workflow name")}
                 style={{ backgroundColor: "#ffff" }}
+                title={t("Search by workflow name")}
               />
               {search && (
                 <InputGroup.Append onClick={onClearSearch}>

@@ -1,3 +1,4 @@
+/* eslint-disable */
 import React, { useEffect, useRef } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import BootstrapTable from "react-bootstrap-table-next";
@@ -35,6 +36,7 @@ import { SpinnerSVG } from "../../containers/SpinnerSVG";
 import Head from "../../containers/Head";
 import { push } from "connected-react-router";
 import isValiResourceId from "../../helper/regExp/validResourceId";
+import ApplicationTable from "./ApplicationTable";
 
 export const ApplicationList = React.memo(() => {
   const { t } = useTranslation();
@@ -48,9 +50,9 @@ export const ApplicationList = React.memo(() => {
   const isApplicationListLoading = useSelector(
     (state) => state.applications.isApplicationListLoading
   );
-  const applicationCount = useSelector(
-    (state) => state.applications.applicationCount
-  );
+  const pageNo = useSelector((state) => state.applications?.activePage);
+  const limit = useSelector((state) => state.applications?.countPerPage);
+  const totalApplications = useSelector((state) => state.applications?.applicationCount);
   const draftCount = useSelector((state) => state.draft.draftCount);
   const dispatch = useDispatch();
   const userRoles = useSelector((state) => state.user.roles);
@@ -67,23 +69,21 @@ export const ApplicationList = React.memo(() => {
   useEffect(() => {
     setIsLoading(false);
   }, [applications]);
+
   useEffect(() => {
     dispatch(getAllApplicationStatus());
   }, [dispatch]);
 
-  const useNoRenderRef = (currentValue) => {
-    const ref = useRef(currentValue);
-    ref.current = currentValue;
-    return ref;
-  };
-
-  const countPerPageRef = useNoRenderRef(countPerPage);
-
-  const currentPage = useNoRenderRef(page);
-
   useEffect(() => {
-    dispatch(getAllApplications(currentPage.current, countPerPageRef.current));
-  }, [dispatch, currentPage, countPerPageRef]);
+    let filterParams = {
+      applicationName:null,
+      id:null,
+      applicationStatus:null,
+      page:pageNo,
+      limit:limit,
+  };
+    dispatch(getAllApplications(filterParams));
+  }, [page,limit]);
 
   const isClientEdit = (applicationStatus) => {
     if (
@@ -142,7 +142,7 @@ export const ApplicationList = React.memo(() => {
       }
     }
     dispatch(setCountPerpage(newState.sizePerPage));
-    dispatch(FilterApplications(newState));
+    // dispatch(FilterApplications(newState));
     dispatch(setApplicationListActivePage(newState.page));
   };
 
@@ -158,7 +158,7 @@ export const ApplicationList = React.memo(() => {
     return [
       {
         name: "Submissions",
-        count: applicationCount,
+        count: totalApplications,
         onClick: () => dispatch(push(`${redirectUrl}application`)),
         icon: "list",
       },
@@ -178,65 +178,10 @@ export const ApplicationList = React.memo(() => {
   }
 
   return (
-    <ToolkitProvider
-      bootstrap4
-      keyField="id"
-      data={listApplications(applications)}
-      columns={columns(
-        applicationStatus,
-        lastModified,
-        setLastModified,
-        t,
-        redirectUrl,
-        invalidFilters
-      )}
-      search
-    >
-      {(props) => (
-        <div className="container" role="definition">
-          <Head items={headOptions} page="Submissions" />
-          <br />
-          <div>
-            {applicationCount > 0 || filtermode ? (
-              <BootstrapTable
-                remote={{ pagination: true, filter: true, sort: true }}
-                loading={isLoading}
-                filter={filterFactory()}
-                pagination={paginationFactory(
-                  getoptions(applicationCount, page, countPerPage)
-                )}
-                onTableChange={handlePageChange}
-                filterPosition={"top"}
-                {...props.baseProps}
-                noDataIndication={() =>
-                  !isLoading && getNoDataIndicationContent()
-                }
-                defaultSorted={defaultSortedBy}
-                overlay={overlayFactory({
-                  spinner: <SpinnerSVG />,
-                  styles: {
-                    overlay: (base) => ({
-                      ...base,
-                      background: "rgba(255, 255, 255)",
-                      height: `${
-                        countPerPage > 5
-                          ? "100% !important"
-                          : "350px !important"
-                      }`,
-                      top: "65px",
-                    }),
-                  },
-                })}
-              />
-            ) : iserror ? (
-              <Alert variant={"danger"}>{error}</Alert>
-            ) : (
-              <Nodata text={t("No Submissions Found")} />
-            )}
-          </div>
-        </div>
-      )}
-    </ToolkitProvider>
+    <>
+    <Head items={headOptions} page="Submissions" />
+    <ApplicationTable/>
+    </>
   );
 });
 

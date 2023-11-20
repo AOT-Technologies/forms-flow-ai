@@ -44,7 +44,7 @@ import "bpmn-js-bpmnlint/dist/assets/css/bpmn-js-bpmnlint.css";
 import linterConfig from "../../lint-rules/packed-config";
 
 export default React.memo(
-  ({ processKey, tenant, isNewDiagram,bpmnXml }) => {
+  ({ processKey, tenant, isNewDiagram,bpmnXml, mode }) => {
     const { t } = useTranslation();
     const dispatch = useDispatch();
     const diagramXML = useSelector((state) => state.process.processDiagramXML);
@@ -54,14 +54,27 @@ export default React.memo(
     const [lintErrors, setLintErrors] = useState([]);
     const [deploymentLoading, setDeploymentLoading] = useState(false);
     const redirectUrl = MULTITENANCY_ENABLED ? `/tenant/${tenantKey}/` : "/";
+    const [processName,setProcessName] = useState(true);
+    const bpmPropertyInput = document.getElementById("bio-properties-panel-name")?.value;
 
     const containerRef = useCallback((node) => {
       if (node !== null) {
         initializeModeler();
       }
     }, []);
+
+    useEffect(() => {
+      if (bpmPropertyInput) {
+        setProcessName(false);
+      }
+  }, [!bpmPropertyInput]);
+
     const cancel = () => {
       dispatch(push(`${redirectUrl}processes`));
+    };
+
+    const handleHelp = () => {
+      window.open("https://camunda.com/bpmn/");
     };
     const initializeModeler = () => {
       setBpmnModeler(
@@ -285,21 +298,46 @@ export default React.memo(
 
     return (
       <>
-    <div className="task-head d-flex justify-content-end mb-2">
-          {MULTITENANCY_ENABLED && PUBLIC_WORKFLOW_ENABLED ? (
-            <label className="deploy-checkbox">
-              <input type="checkbox" checked={applyAllTenants} onClick={handleApplyAllTenants} /> Apply
-              for all tenants
-            </label>
-          ) : null}
-           <Button variant="light" onClick={cancel}>
-            {t("Cancel")}
-          </Button>
-          <Button variant="outline-dark" className="ml-3" onClick={handleExport}>
-            {t("Export")}
-          </Button>
-          <Button className="ml-3" onClick={deployProcess}>{t("Deploy")}</Button>
-          
+        <div className="d-flex align-items-center justify-content-between">
+          <div>
+            <h3 className="d-flex align-items-center font-weight-bold">
+              <i className="fa fa-cogs mr-2" aria-hidden="true" />
+              <span>{t(`${mode} Processes`)}</span>
+            </h3>
+          </div>
+
+          <div className="task-head d-flex justify-content-end mb-2">
+            {MULTITENANCY_ENABLED && PUBLIC_WORKFLOW_ENABLED ? (
+              <label className="deploy-checkbox">
+                <input
+                  type="checkbox"
+                  checked={applyAllTenants}
+                  onClick={handleApplyAllTenants}
+                />{" "}
+                Apply for all tenants
+              </label>
+            ) : null}
+
+            <button type="button"
+              className="btn btn-link text-dark" onClick={cancel}>
+              {t("Cancel")}
+            </button>
+            <Button
+              variant="outline-dark"
+              className="ml-3"
+              onClick={handleExport}
+              disabled={processName || !bpmPropertyInput}
+            >
+              {t("Export")}
+            </Button>
+            <Button
+              className="ml-3"
+              onClick={deployProcess}
+              disabled={processName || !bpmPropertyInput}
+            >
+              {t("Deploy")}
+            </Button>
+          </div>
         </div>
         <div className="bpmn-main-container">
           <div className="bpmn-viewer-container">
@@ -344,6 +382,11 @@ export default React.memo(
             className="properties-panel-parent"
             id="js-properties-panel"
           ></div>
+        </div>
+        <div className="d-flex justify-content-end">
+          <Button variant="info" className=" mr-2" onClick={handleHelp}>
+            {t("Help")}
+          </Button>
         </div>
       </>
     );

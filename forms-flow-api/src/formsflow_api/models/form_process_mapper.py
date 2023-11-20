@@ -51,6 +51,7 @@ class FormProcessMapper(AuditDateTimeMixin, AuditUserMixin, BaseModel, db.Model)
     deleted = db.Column(db.Boolean, nullable=True, default=False)
     task_variable = db.Column(JSON, nullable=True)
     version = db.Column(db.Integer, nullable=False, default=1)
+    description = db.Column(db.String, nullable=True)
 
     __table_args__ = (
         UniqueConstraint("form_id", "version", "tenant", name="_form_version_uc"),
@@ -76,6 +77,7 @@ class FormProcessMapper(AuditDateTimeMixin, AuditUserMixin, BaseModel, db.Model)
                 mapper.is_anonymous = mapper_info.get("is_anonymous")
                 mapper.task_variable = mapper_info.get("task_variable")
                 mapper.version = mapper_info.get("version")
+                mapper.description = mapper_info.get("description")
                 mapper.save()
                 return mapper
         except Exception as err:  # pylint: disable=broad-except
@@ -102,6 +104,7 @@ class FormProcessMapper(AuditDateTimeMixin, AuditUserMixin, BaseModel, db.Model)
                 "is_anonymous",
                 "task_variable",
                 "process_tenant",
+                "description",
             ],
             mapper_info,
         )
@@ -188,6 +191,7 @@ class FormProcessMapper(AuditDateTimeMixin, AuditUserMixin, BaseModel, db.Model)
         sort_order=None,
         form_ids=None,
         is_active=None,
+        form_type=None,
         **filters,
     ):  # pylint: disable=too-many-arguments
         """Fetch all active and inactive forms which are not deleted."""
@@ -201,6 +205,9 @@ class FormProcessMapper(AuditDateTimeMixin, AuditUserMixin, BaseModel, db.Model)
             and_(FormProcessMapper.deleted.is_(False)),
             FormProcessMapper.id.in_(filtered_form_ids),
         )
+        # form type is list of type to filter the form
+        if form_type:
+            query = query.filter(FormProcessMapper.form_type.in_(form_type))
 
         if is_active is not None:
             value = FormProcessMapperStatus["ACTIVE" if is_active else "INACTIVE"].value
@@ -213,7 +220,16 @@ class FormProcessMapper(AuditDateTimeMixin, AuditUserMixin, BaseModel, db.Model)
 
         total_count = query.count()
         query = query.with_entities(
-            cls.id, cls.process_key, cls.form_id, cls.form_name, cls.modified
+            cls.id,
+            cls.process_key,
+            cls.form_id,
+            cls.form_name,
+            cls.modified,
+            cls.status,
+            cls.is_anonymous,
+            cls.form_type,
+            cls.created,
+            cls.description,
         )
         limit = total_count if limit is None else limit
         query = query.paginate(page=page_number, per_page=limit, error_out=False)
@@ -246,7 +262,12 @@ class FormProcessMapper(AuditDateTimeMixin, AuditUserMixin, BaseModel, db.Model)
 
         total_count = query.count()
         query = query.with_entities(
-            cls.id, cls.process_key, cls.form_id, cls.form_name, cls.modified
+            cls.id,
+            cls.process_key,
+            cls.form_id,
+            cls.form_name,
+            cls.modified,
+            cls.description,
         )
         limit = total_count if limit is None else limit
         query = query.paginate(page=page_number, per_page=limit, error_out=False)

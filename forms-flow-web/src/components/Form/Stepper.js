@@ -1,6 +1,6 @@
 import React, { PureComponent } from "react";
 import { connect } from "react-redux";
-import { Container, Row, Col, Button } from 'react-bootstrap';
+import {  Row, Col, Button } from 'react-bootstrap';
 import { toast } from "react-toastify";
 import Create from "./Create.js";
 import Preview from "./Item/Preview.js";
@@ -367,10 +367,10 @@ class StepperPage extends PureComponent {
               to={`${this.state.redirectUrl}form`}
               title={t("Back to Form List")}
             >
-              <i className="fa fa-chevron-left fa-lg m-3" />
+              <i className="fa fa-chevron-left fa-lg m-2" />
             </Link>
           ) : null}
-          <Container fluid className="paper-root">
+          <div className="paper-root">
             <Row>
               <Col xs={12}>
                 <div className="mb-3">
@@ -392,7 +392,7 @@ class StepperPage extends PureComponent {
                 </div>
               </Col>
             </Row>
-          </Container>
+          </div>
         </div >
       </>
     );

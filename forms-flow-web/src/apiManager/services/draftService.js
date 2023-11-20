@@ -137,25 +137,25 @@ export const publicDraftSubmit = (data, ...rest) => {
   };
 };
 
-export const fetchDrafts = (pageNo = 1, limit = 5, ...rest) => {
-  const done = rest.length ? rest[0] : () => {};
-  const URL = `${API.DRAFT_BASE}?pageNo=${pageNo}&limit=${limit}&sortBy=id&sortOrder=desc`;
-  return (dispatch) => {
-    RequestService.httpGETRequest(URL)
-      .then((res) => {
-        if (res.data) {
-          dispatch(setDraftlist(res.data.drafts));
-          dispatch(setDraftCount(res.data?.totalCount || 0));
-          dispatch(setApplicationListCount(res.data?.applicationCount || 0));
-        } else {
-          done("Error fetching data");
-        }
-      })
-      .catch((error) => {
-        done(error);
-      });
-  };
-};
+// export const fetchDrafts = (pageNo = 1, limit = 5, ...rest) => {
+//   const done = rest.length ? rest[0] : () => {};
+//   const URL = `${API.DRAFT_BASE}?pageNo=${pageNo}&limit=${limit}&sortBy=id&sortOrder=desc`;
+//   return (dispatch) => {
+//     RequestService.httpGETRequest(URL)
+//       .then((res) => {
+//         if (res.data) {
+//           dispatch(setDraftlist(res.data.drafts));
+//           dispatch(setDraftCount(res.data?.totalCount || 0));
+//           dispatch(setApplicationListCount(res.data?.applicationCount || 0));
+//         } else {
+//           done("Error fetching data");
+//         }
+//       })
+//       .catch((error) => {
+//         done(error);
+//       });
+//   };
+// };
 
 export const getDraftById = (draftId, ...rest) => {
   const done = rest.length ? rest[0] : () => {};
@@ -192,25 +192,27 @@ export const getDraftById = (draftId, ...rest) => {
 };
 
 // Draft filter handler
-export const FilterDrafts = (params, ...rest) => {
+export const fetchDrafts = (params, ...rest) => {
   const done = rest.length ? rest[0] : () => {};
   return (dispatch) => {
-    const { DraftName, id, modified } = params.filters;
-    let url = `${API.DRAFT_BASE}?pageNo=${params.page}&limit=${params.sizePerPage}`;
-    if (DraftName && DraftName !== "") {
-      url += `&DraftName=${DraftName?.filterVal}`;
+    const { draftName, id, modified } = params;
+    let url = `${API.DRAFT_BASE}?pageNo=${params.page}&limit=${params.limit}`;
+    if (draftName) {
+      console.log("keri1");
+      url += `&DraftName=${draftName}`;
     }
-    if (id && id !== "") {
-      url += `&id=${id.filterVal}`;
+    if (id) {
+      console.log("keri2");
+      url += `&id=${id}`;
     }
 
-    if (modified && modified?.filterVal?.length === 2) {
+    if (modified && modified.length === 2) {
       let modifiedFrom = moment
-        .utc(modified.filterVal[0])
+        .utc(modified[0])
         .format("YYYY-MM-DDTHH:mm:ssZ")
         .replace(/\+/g, "%2B");
       let modifiedTo = moment
-        .utc(modified.filterVal[1])
+        .utc(modified[1])
         .format("YYYY-MM-DDTHH:mm:ssZ")
         .replace(/\+/g, "%2B");
       url += `&modifiedFrom=${modifiedFrom}&modifiedTo=${modifiedTo}`;
@@ -226,6 +228,7 @@ export const FilterDrafts = (params, ...rest) => {
           const drafts = res.data.drafts || [];
           dispatch(setDraftCount(res.data.totalCount || 0));
           dispatch(setDraftlist(drafts));
+          dispatch(setApplicationListCount(res.data?.applicationCount || 0));
           done(null, drafts);
         } else {
           // dispatch(serviceActionError(res));

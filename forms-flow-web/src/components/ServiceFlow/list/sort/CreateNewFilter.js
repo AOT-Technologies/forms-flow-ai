@@ -29,10 +29,10 @@ import { toast } from "react-toastify";
 import { getUserRoles } from "../../../../apiManager/services/authorizationService";
 import {
   setUserGroups,
-  setUserRoles,
+  // setUserRoles,
 } from "../../../../actions/authorizationActions";
 import { Badge, ListGroup, OverlayTrigger, Popover } from "react-bootstrap";
-import { fetchUsers } from "../../../../apiManager/services/userservices";
+// import { fetchUsers } from "../../../../apiManager/services/userservices";
 import { trimFirstSlash } from "../../constants/taskConstants";
 export default function CreateNewFilterDrawer({
   selectedFilterData,
@@ -41,9 +41,6 @@ export default function CreateNewFilterDrawer({
   setFilterSelectedForEdit,
 }) {
   const dispatch = useDispatch();
-  const userRole = useSelector(
-    (state) => state.user?.userDetail?.preferred_username
-  );
   const [filterName, setFilterName] = useState("");
   const [showUndefinedVariable, setShowUndefinedVariable] = useState(false);
   const [inputVisibility, setInputVisibility] = useState({});
@@ -63,9 +60,6 @@ export default function CreateNewFilterDrawer({
   const firstResult = useSelector((state) => state.bpmTasks.firstResult);
   const userGroups = useSelector(
     (state) => state.userAuthorization?.userGroups
-  );
-  const userRoles = useSelector(
-    (state) => state.userAuthorization?.roles?.data
   );
   const userName = useSelector(
     (state) => state.user?.userDetail?.preferred_username
@@ -146,16 +140,16 @@ export default function CreateNewFilterDrawer({
         setSpecificUserGroup("");
         setPermissions(ACCESSIBLE_FOR_ALL_GROUPS);
       }
-      const isUserInRoles = selectedFilterData?.users?.includes(userRole);
-      if (isUserInRoles) {
+      
+      if (selectedFilterData?.users?.length) {
         setPermissions(PRIVATE_ONLY_YOU);
       }
-      if (selectedFilterData?.users?.length && !isUserInRoles) {
-        setPermissions(SPECIFIC_USER_OR_GROUP);
-        setSelectUserGroupIcon("user");
-        setIdentifierId(selectedFilterData?.users[0]);
-        setSpecificUserGroup(SPECIFIC_USER_OR_GROUP);
-      }
+      // if (selectedFilterData?.users?.length && !isUserInRoles) {
+      //   setPermissions(SPECIFIC_USER_OR_GROUP);
+      //   setSelectUserGroupIcon("user");
+      //   setIdentifierId(selectedFilterData?.users[0]);
+      //   setSpecificUserGroup(SPECIFIC_USER_OR_GROUP);
+      // }
       if (selectedFilterData?.roles?.length) {
         setPermissions(SPECIFIC_USER_OR_GROUP);
         setSelectUserGroupIcon("group");
@@ -190,13 +184,13 @@ export default function CreateNewFilterDrawer({
       })
       .catch((error) => console.error("error", error));
 
-    fetchUsers()
-      .then((res) => {
-        if (res) {
-          dispatch(setUserRoles(res.data));
-        }
-      })
-      .catch((error) => console.error("error", error));
+    // fetchUsers()
+    //   .then((res) => {
+    //     if (res) {
+    //       dispatch(setUserRoles(res.data));
+    //     }
+    //   })
+    //   .catch((error) => console.error("error", error));
   }, []);
 
   useEffect(() => {
@@ -668,13 +662,13 @@ export default function CreateNewFilterDrawer({
             onChange={handleSpecificUserGroup}
           />
           <label style={{ fontSize: "18px" }}>
-            <Translation>{(t) => t("Specific User/ Group")}</Translation>
+            <Translation>{(t) => t("Specific Group")}</Translation>
           </label>{" "}
           <br />
           {permissions === SPECIFIC_USER_OR_GROUP &&
           specificUserGroup === SPECIFIC_USER_OR_GROUP ? (
             <div className="d-flex">
-              <OverlayTrigger
+              {/* <OverlayTrigger
                 placement="right"
                 trigger="click"
                 rootClose={true}
@@ -713,7 +707,7 @@ export default function CreateNewFilterDrawer({
                     />
                   </div>
                 </div>
-              </OverlayTrigger>
+              </OverlayTrigger> */}
 
               <OverlayTrigger
                 placement="right"

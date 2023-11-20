@@ -75,6 +75,8 @@ const API = {
   CLIENT_LIST:`${WEB_BASE_URL}/authorizations/form`,
   APPLICATION_LIST: `${WEB_BASE_URL}/authorizations/application`,
   HANDLE_AUTHORIZATION_FOR_DESIGNER: `${WEB_BASE_URL}/authorizations/resource/<resource_id>`,
+  GET_FILTERS : `${WEB_BASE_URL}/filter`,
+  GET_BPM_TASK_FILTERS : `${BPM_BASE_URL_EXT}/v1/task-filters`,
 };
 
 export default API;

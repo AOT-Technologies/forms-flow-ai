@@ -1,6 +1,5 @@
 import React from "react";
 import Modal from "react-bootstrap/Modal";
-import Button from "react-bootstrap/Button";
 import { useTranslation } from "react-i18next";
 
 const Confirm = React.memo((props) => {
@@ -10,7 +9,7 @@ const Confirm = React.memo((props) => {
     onYes,
     onNo,
     message,
-    yesText = t("Confirm"),
+    yesText = t("Delete"),
     noText = t("Cancel"),
   } = props;
   
@@ -28,9 +27,9 @@ const Confirm = React.memo((props) => {
             onClick={onNo}>
             {noText}</button>
 
-          <Button className="btn btn-default" onClick={onYes}>
+          <button className="btn btn-danger" onClick={onYes}>
             {yesText}
-          </Button>
+          </button>
 
         </Modal.Footer>
       </Modal>

@@ -1,9 +1,8 @@
-/* eslint-disable */
+
 import React, { useState, useEffect } from "react";
 import {
   InputGroup,
   FormControl,
-  DropdownButton,
   Dropdown,
 } from "react-bootstrap";
 import { useDispatch, useSelector } from "react-redux";
@@ -14,8 +13,7 @@ import {
   setBPMFormListPage,
   setBPMFormListSort,
   setBpmFormSearch,
-  setFormDeleteStatus,
-  // setBpmFormType,
+  setFormDeleteStatus, 
 } from "../../../actions/formActions";
 import SelectFormForDownload from "../FileUpload/SelectFormForDownload";
 import LoadingOverlay from "react-loading-overlay";
@@ -28,7 +26,7 @@ import {
 import { useTranslation } from "react-i18next";
 import { Translation } from "react-i18next";
 import { getAllApplicationCount, getFormProcesses, resetFormProcessData } from "../../../apiManager/services/processServices";
-import { setIsApplicationCountLoading, setResetProcess } from "../../../actions/processActions";
+import { setIsApplicationCountLoading } from "../../../actions/processActions";
 import { HelperServices } from "@formsflow/service";
 import _ from "lodash";
 
@@ -52,18 +50,7 @@ function FormTable() {
   const searchText = useSelector((state) => state.bpmForms.searchText);
   const [search, setSearch] = useState(searchText || "");
   const redirectUrl = MULTITENANCY_ENABLED ? `/tenant/${tenantKey}/` : "/";
-
-  const [openIndex, setOpenIndex] = useState(-1); // -1 means no dropdown open
-
-  const toggleDropdown = (index) => {
-    if (openIndex === index) {
-      // Clicking on the currently open row should close it
-      setOpenIndex(-1);
-    } else {
-      // Clicking on a different row should open it and close the previous one
-      setOpenIndex(index);
-    }
-  };
+  const isApplicationCountLoading = useSelector((state) => state.process.isApplicationCountLoading);
 
   const pageOptions = [
     {
@@ -92,12 +79,7 @@ function FormTable() {
     dispatch(setBPMFormListSort(updatedSort));
     dispatch(setBPMFormListPage(1));
   };
-
-  // const handleTypeChange = (type) => {
-  //   dispatch(setBPMFormListPage(1));
-  //   dispatch(setBPMFormLimit(5));
-  //   dispatch(setBpmFormType(type));
-  // };
+ 
 
   useEffect(() => {
     setSearch(searchText);
@@ -116,13 +98,12 @@ function FormTable() {
 
   const viewOrEditForm = (formId) => {
     dispatch(resetFormProcessData());
-    dispatch(setResetProcess());
     dispatch(push(`${redirectUrl}formflow/${formId}/view-edit`));
   };
 
   const submitNewForm = (formId)=>{
     dispatch(push(`${redirectUrl}form/${formId}`));
-  }
+  };
 
   const handleClearSearch = () => {
     setSearch("");
@@ -147,16 +128,7 @@ function FormTable() {
     </button>
   );
 
-  const submitNew = (formData) => {
-    return (
-      <button
-        className="btn btn-link mt-2"
-        onClick={() => submitNewForm(formData._id)}
-      >
-        <Translation>{(t) => t("Submit New")}</Translation>
-      </button>
-    );
-  };
+ 
 
   const deleteForms = (formData) => {
     dispatch(setIsApplicationCountLoading(true));
@@ -183,6 +155,21 @@ function FormTable() {
       })
     );
   };
+
+  const CustomToggle = React.forwardRef(({ children, onClick }, ref) => (
+    <button
+      className="btn btn-link text-dark"
+      ref={ref}
+      onClick={(e) => {
+        e.preventDefault();
+        onClick(e);
+      }}
+    >
+      {children}
+    </button>
+  ));
+
+
   
   const noDataFound = () => {
     return (
@@ -203,7 +190,7 @@ function FormTable() {
   };
   return (
     <>
-      <LoadingOverlay active={searchFormLoading} spinner text="Loading...">
+      <LoadingOverlay active={searchFormLoading || isApplicationCountLoading} spinner text={t("Loading...")}>
         <div style={{ minHeight: "400px" }}>
           <table className="table custom-table table-responsive-sm">
             <thead>
@@ -298,41 +285,47 @@ function FormTable() {
                       )}
                       <td>{HelperServices?.getLocaldate(e.created)}</td>
                       <td>{_.capitalize(e.formType)}</td>
-                      <td>{e.anonymous ? t("Anonymous") : t("Private")}</td>
+                      <td>{e.anonymous ? t("Public") : t("Private")}</td>
                       <td>
                         {" "}
-                        <button 
-                          className={`btn ${e.status === 'active' ? 'published-forms-label' : 'unpublished-forms-label'}`}
+                        <span 
+                          className={`badge rounded-pill px-3 py-2 ${e.status === 'active' ? 'published-forms-label' : 'unpublished-forms-label'}`}
                         >
                           {e.status === 'active' ? t("Published") : t("Unpublished")}
-                        </button>
+                        </span>
                       </td>
 
                       <td>
                         <span> {viewOrEdit(e)}</span>
                       </td>
                        
-                      <td style={{ position: "relative" }}>
-                        <div
-                          className="dots mb-2 mr-5"
-                          onClick={() => toggleDropdown(index)}
-                        >
-                          ...
-                        </div>
-                        {openIndex === index && (
-                          <Dropdown className="shadow position-absolute bg-white" style={{zIndex:99}}>
+                      <td>
+                    
+                            <Dropdown  >
+                          <Dropdown.Toggle
+                            as={CustomToggle} 
+                            id="dropdown-basic"
+                          >
+                            <i className="fa-solid fa-ellipsis"></i>
+                          </Dropdown.Toggle>
+                          <Dropdown.Menu className="shadow  bg-white">
+                            {userRoles.includes(STAFF_REVIEWER) ||
+                            userRoles.includes(CLIENT) ? (
+                              <Dropdown.Item
+                                onClick={() => {
+                                  submitNewForm(e?._id);
+                                }}
+                              >
+                                <i className="fa fa-pencil mr-2 text-primary" />
+                                {t("Submit New")}
+                              </Dropdown.Item>
+                            ) : null}
                             <Dropdown.Item onClick={() => deleteForms(e)}>
                               <i className="fa fa-trash mr-2 text-danger" />
                               {t("Delete")}
                             </Dropdown.Item>
-                           {(userRoles.includes(STAFF_REVIEWER) || userRoles.includes(CLIENT))?(
-                             <Dropdown.Item onClick={() => {console.log(e);submitNewForm(e?._id)}}>
-                             <i className="fa fa-pencil mr-2 text-primary" />
-                             {t("Submit New")}
-                           </Dropdown.Item>
-                           ) : null}
-                          </Dropdown>
-                        )}
+                          </Dropdown.Menu>
+                        </Dropdown>
                       </td>
                     </tr>
                   );
@@ -372,7 +365,7 @@ function FormTable() {
                 </Dropdown.Menu>
               </Dropdown>
             <span className="ml-2">
-              {t("Showing")} {limit * pageNo - (limit - 1)} {t("to")}{" "}
+              {t("Showing")} {(limit * pageNo) - (limit - 1)} {t("to")}{" "}
               {limit * pageNo > totalForms ? totalForms : limit * pageNo}{" "}
               {t("of")} {totalForms} {t("results")}
             </span>

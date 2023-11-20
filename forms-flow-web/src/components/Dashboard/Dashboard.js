@@ -14,7 +14,7 @@ import Loading from "../../containers/Loading";
 import LoadError from "../Error";
 import DateRangePicker from "@wojtekmaj/react-daterange-picker";
 import moment from "moment";
-import { Translation, useTranslation } from "react-i18next";
+import { useTranslation } from "react-i18next";
 import {
   setMetricsDateRangeLoading,
   setMetricsSubmissionLimitChange,
@@ -79,9 +79,7 @@ const Dashboard = React.memo(() => {
   const [searchBy, setSearchBy] = useState("created");
   const [sortsBy, setSortsBy] = useState("formName");
 
-  const [showSubmissionData, setSHowSubmissionData] = useState(
-    submissionsList[0]
-  );
+  const [showSubmissionData, setSHowSubmissionData] = useState(submissionsList[0]);
   const [show, setShow] = useState(false);
   // State to set search text for submission data
   const [showClearButton, setShowClearButton] = useState("");
@@ -152,7 +150,7 @@ const Dashboard = React.memo(() => {
   if (isMetricsLoading) {
     return <Loading />;
   }
-  const getStatusDetails = (id, options) => {
+  const getStatusDetails = (id,options) => {
     const fromDate = getFormattedDate(dateRange[0]);
     const toDate = getFormattedDate(dateRange[1]);
     dispatch(SetSubmissionStatusCountLoader(true));
@@ -172,10 +170,17 @@ const Dashboard = React.memo(() => {
   };
 
   const onSetDateRange = (date) => {
-    dispatch(setMetricsSubmissionLimitChange(limit));
-    dispatch(setMetricsSubmissionPageChange(1));
-    dispatch(setMetricsDateRangeLoading(true));
-    dispatch(setMetricsDateChange(date));
+    if (date) {
+      dispatch(setMetricsSubmissionLimitChange(limit));
+      dispatch(setMetricsSubmissionPageChange(1));
+      dispatch(setMetricsDateRangeLoading(true));
+      dispatch(setMetricsDateChange(date));
+    } else {
+      const now = new Date();
+      let firstDay = new Date(now.getFullYear(), now.getMonth(), 1);
+      let lastDay = new Date(now.getFullYear(), now.getMonth() + 1, 0);
+      dispatch(setMetricsDateChange([firstDay, lastDay]));
+    }
   };
   const headerList = () => {
     return [
@@ -208,7 +213,6 @@ const Dashboard = React.memo(() => {
       <LoadingOverlay active={submissionStatusCountLoader} spinner>
         <div
           className="mb-4"
-          style={{ maxHeight: "60vh" }}
           id="main"
           role="complementary"
         >
@@ -253,11 +257,12 @@ const Dashboard = React.memo(() => {
             </div>
 
             <div className="d-flex justify-content-end align-items-center col-12 col-md-4 px-0">
-              <div className="input-group mr-4">
+              <div className="input-group mr-2">
                 <FormControl
                   as="select"
                   onChange={(e) => onChangeInput(e.target.value)}
                   className="form-control"
+                  style={{ padding: ".375rem .3rem" }}
                   title={t("Choose any")}
                   aria-label="Select date type"
                 >
@@ -265,7 +270,7 @@ const Dashboard = React.memo(() => {
                   <option value="modified">{t("Modified Date")}</option>
                 </FormControl>
               </div>
-              <DateRangePicker
+              <DateRangePicker className = "bg-white mr-2"
                 onChange={onSetDateRange}
                 value={dateRange}
                 dayPlaceholder="dd"
@@ -274,7 +279,6 @@ const Dashboard = React.memo(() => {
                 calendarAriaLabel={t("Select the date")}
                 dayAriaLabel="Select the day"
                 clearAriaLabel="Clear value"
-                clearIcon={null}
                 name="selectDateRange"
                 monthAriaLabel="Select the month"
                 yearAriaLabel="Select the year"
@@ -312,7 +316,7 @@ const Dashboard = React.memo(() => {
             </div>
           </div>
 
-          <div className="dashboard d-flex">
+          <div className="dashboard d-flex" style={{ minHeight: "60vh" }}>
             {submissionsList.length ? (
               <div className="col-12 px-0">
                 {!metricsDateRangeLoader && (
@@ -326,20 +330,19 @@ const Dashboard = React.memo(() => {
                 )}
               </div>
             ) : (
-              <div className="col-12 col-sm-6 col-md-6 no_submission_main">
-                {!metricsDateRangeLoader && (
-                  <div className="col-12 col-sm-6 col-md-6 no_sumbsmission">
-                    <h3>{t("No submissions found")}</h3>
-                  </div>
-                )}
-              </div>
+              <>
+              {!metricsDateRangeLoader && (
+                
+                  <h3 className = "text-center w-100 p-5">{t("No submissions found")}</h3>
+                
+              )}</>
             )}
           </div>
 
           {submissionsList.length && !metricsDateRangeLoader ? (
             <div className="d-flex justify-content-between align-items-center mt-3">
                  <div className="d-flex align-items-center">
-          <span className="mr-2"> {t("Rows per page")}</span>
+          <span className="mr-2"> {t("Items per page")}</span>
           <Dropdown>
                 <Dropdown.Toggle variant="light" id="dropdown-basic">
                   {selectedLimitValue}
@@ -405,15 +408,16 @@ const Dashboard = React.memo(() => {
                     submissionData={showSubmissionData}
                     getStatusDetails={getStatusDetails}
                     submissionStatusCountLoader={submissionStatusCountLoader}
-                  />
-                </Modal.Body>
-              </Modal>
-            )}
+                        />
+                      </Modal.Body>
+                    </Modal>
+                  )}
+
           </div>
         )}
         </div>
 
-       
+
 
         <Route path={"/metrics/:notAvailable"}>
           {" "}

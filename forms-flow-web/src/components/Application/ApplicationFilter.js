@@ -4,16 +4,22 @@ import DateRangePicker from "@wojtekmaj/react-daterange-picker";
 import { useDispatch, useSelector } from "react-redux";
 import { getAllApplications } from "../../apiManager/services/applicationServices";
 import { useTranslation } from "react-i18next";
+import { setApplicationLoading } from "../../actions/applicationActions";
 
-const ApplicationFilter = ({ setDisplayFilter,filterParams,setFilterParams }) => {
+const ApplicationFilter = ({ setDisplayFilter, filterParams, setFilterParams }) => {
   const dispatch = useDispatch();
   const createSearchNode = useRef();
-  const [applicationId,setApplicationId] = useState(filterParams.id || "");
-  const [applicationName,setApplicationName] = useState(filterParams.applicationName || "");
-  const [applicationStatus,setApplicationStatus] = useState(filterParams.applicationStatus || "");
-  const [lastModified,setLastModified] = useState(filterParams.modified || null);
+  const [applicationId, setApplicationId] = useState(filterParams.id || "");
+  const [applicationName, setApplicationName] = useState(filterParams.applicationName || "");
+  const [applicationStatus, setApplicationStatus] = useState(filterParams.applicationStatus || "");
+  const [lastModified, setLastModified] = useState(filterParams.modified || null);
+  const applicationStatusOptions = useSelector(
+    (state) => state.applications.applicationStatus
+  );
   const pageNo = useSelector((state) => state.applications?.activePage);
   const limit = useSelector((state) => state.applications?.countPerPage);
+  const sortOrder = useSelector((state) => state.applications?.sortOrder);
+  const sortBy = useSelector((state) => state.applications?.sortBy);
   const { t } = useTranslation();
   const handleClick = (e) => {
     if (createSearchNode?.current?.contains(e.target)) {
@@ -37,33 +43,54 @@ const ApplicationFilter = ({ setDisplayFilter,filterParams,setFilterParams }) =>
   };
 
   const clearAllFilters = () => {
+    dispatch(setApplicationLoading(true));
     setApplicationId("");
     setApplicationStatus("");
     setApplicationName("");
     setLastModified(null);
     setFilterParams({});
-    let filters =  {
-    applicationName:null,
-    id:null,
-    applicationStatus:null,
-    modified:null,
-    page:pageNo,
-    limit:limit,
+    let filters = {
+      applicationName: null,
+      id: null,
+      applicationStatus: null,
+      modified: null,
+      page: pageNo,
+      limit: limit,
+      sortOrder,
+      sortBy
     };
-    dispatch(getAllApplications(filters));
+    dispatch(getAllApplications(filters,(err,data) => {
+      if(data){
+        dispatch(setApplicationLoading(false));
+      }
+    }));
   };
 
-  const applyFilters = ()=>{
+  const applyFilters = () => {
+    dispatch(setApplicationLoading(true));
     let filterParams = {
-        applicationName:applicationName,
-        id:applicationId,
-        applicationStatus:applicationStatus,
-        modified:lastModified,
-        page:pageNo,
-        limit:limit,
+      applicationName: applicationName,
+      id: applicationId,
+      applicationStatus: applicationStatus,
+      modified: lastModified,
+      page: pageNo,
+      limit: limit,
+      sortOrder,
+      sortBy
     };
     setFilterParams(filterParams);
-    dispatch(getAllApplications(filterParams));
+    dispatch(getAllApplications(filterParams,(err,data) => {
+      if(data){
+        dispatch(setApplicationLoading(false));
+      }
+    }));
+  };
+
+  const getApplicationStatusOptions = (applicationStatusOptions) => {
+    const selectOptions = applicationStatusOptions.map((option) => {
+      return { value: option, label: option };
+    });
+    return selectOptions;
   };
 
   return (
@@ -87,7 +114,7 @@ const ApplicationFilter = ({ setDisplayFilter,filterParams,setFilterParams }) =>
       <div className="m-4 px-2">
         <Row className="mt-2">
           <Col>
-          <label>{t("Submission Id")}</label>
+            <label>{t("Id")}</label>
             <input
               className="form-control"
               placeholder=""
@@ -96,7 +123,7 @@ const ApplicationFilter = ({ setDisplayFilter,filterParams,setFilterParams }) =>
             />
           </Col>
           <Col>
-          <label>{t("Form Title")}</label>
+            <label>{t("Form Title")}</label>
             <input
               className="form-control"
               placeholder=""
@@ -110,16 +137,22 @@ const ApplicationFilter = ({ setDisplayFilter,filterParams,setFilterParams }) =>
       <div className="m-4 px-2">
         <Row className="mt-2">
           <Col>
-          <label>{t("Submission Status")}</label>
-            <input
-              className="form-control"
-              placeholder=""
+            <label>{t("Status")}</label>
+            <select
               value={applicationStatus}
               onChange={(e) => setApplicationStatus(e.target.value)}
-            />
+              className="form-control p-1"
+            >
+              <option value=""></option>
+              {getApplicationStatusOptions(applicationStatusOptions).map((option) => (
+                <option key={option.value} value={option.value}>
+                  {option.label}
+                </option>
+              ))}
+            </select>
           </Col>
           <Col className="mr-2" >
-          <label>{t("Modified Date")}</label>
+            <label>{t("Modified Date")}</label>
             <DateRangePicker
               onChange={(selectedRange) => {
                 onSetDateRange(selectedRange);
@@ -144,7 +177,7 @@ const ApplicationFilter = ({ setDisplayFilter,filterParams,setFilterParams }) =>
             className="text-danger small "
             onClick={() => clearAllFilters()}
           >
-             {t("Clear All Filters")}
+            {t("Clear All Filters")}
           </span>
         </Col>
         <Col className="text-right">
@@ -152,11 +185,11 @@ const ApplicationFilter = ({ setDisplayFilter,filterParams,setFilterParams }) =>
             className="btn btn-light mr-1 "
             onClick={() => setDisplayFilter(false)}
           >
-           {t("Cancel")}
+            {t("Cancel")}
           </button>
           <button
             className="btn btn-dark"
-              onClick={() => applyFilters()}
+            onClick={() => applyFilters()}
           >
             {t("Show results")}
           </button>

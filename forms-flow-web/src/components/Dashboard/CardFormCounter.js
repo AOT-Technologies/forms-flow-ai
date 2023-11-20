@@ -29,13 +29,12 @@ const CardFormCounter = React.memo((props) => {
                 overlay={(propsData) => (
                   <Tooltip id="overlay-example" {...propsData}>
                     {formName}
-                  </Tooltip>
+                </Tooltip>
                 )}
               >
-                <span className="form-title">{formName}</span>
+                <span className="form-title text-truncate">{formName}</span>
               </OverlayTrigger>
             </div>
-
             <div>
               {" "}
               <span className="small-title">

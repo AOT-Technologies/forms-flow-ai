@@ -302,8 +302,29 @@ export const formio_resourceBundles = {
     "All Users": "All Users",
     "Specific User Group": "Specific User Group",
     "Applicable for Designer Roled Users only.": "Applicable for Designer Roled Users only.",
-    "Applicable for Client and Reviewer Roled Users only.": "Applicable for Client and Reviewer Roled Users only."
-  
+    "Applicable for Client and Reviewer Roled Users only.": "Applicable for Client and Reviewer Roled Users only.",
+    "Create new filter": "Create new filter",
+    "Filter Name": "Filter Name",
+    "Enter your text here": "Enter your text here",
+    "Criteria": "Criteria",
+    "Add Value": "Add Value",
+    "Definition Key": "Definition Key",
+    "Include Assigned task": "Include Assigned task",
+    "Variable": "Variable",
+    "Show undefined variables": "Show undefined variables",
+    "Name of variable": "Name of variable",
+    "Readable name": "Readable name",
+    "Permission": "Permission",
+    "Accessible for all users": "Accessible for all users",
+    "Private (Only You)": "Private (Only You)",
+    "Specific User/Group": "Specific User/Group",
+    "User": "User",
+    "Group": "Group",
+    "Identifier": "Identifier",
+    "Enter role ID": "Enter role ID",
+    "Create Filter": "Create Filter",
+    "Select a task in the List":"Select a task in the List",
+    "Select a specific task from the provided list of options. Your selection will determine the task you will be working on or interacting with.":"Select a specific task from the provided list of options. Your selection will determine the task you will be working on or interacting with."
   },
 
   "zh-CN": {
@@ -344,9 +365,9 @@ export const formio_resourceBundles = {
     "Form deletion unsuccessful":"表单删除失败",
     "Form deleted successfully": "表格删除成功",
     "Loading...": "正在加载...",
-    
+
     "Save Changes": "保存更改",
-  
+
     ". Are you sure want to delete ?": ".确定要删除吗？",
     "Are you sure you wish to delete the form ": "您确定要删除表格吗 ",
     "Are you sure you wish to delete the form?": "您确定要删除表格吗?",
@@ -373,7 +394,7 @@ export const formio_resourceBundles = {
     "Create Your Task Variable": "创建您的任务变量",
     "No task variable selected": "未选择任务变量",
     "Workflow Associate": "工作流助理",
-  
+
     "Task variable": "任务变量",
     "Enter pathname": "输入路径名",
     "Label": "标签",
@@ -420,7 +441,7 @@ export const formio_resourceBundles = {
     "Delete Form": "删除表格  ",
     "Delete": "删除",
     "Print As PDF": "打印为 PDF  ",
- 
+
     "Tasks": "任务",
     "Insights": "洞察力",
     "Dashboard": "仪表盘  ",
@@ -494,9 +515,9 @@ export const formio_resourceBundles = {
     "Group ID": "组ID",
     "Due": "到期的",
     "Follow-up": "跟进",
-  
+
     "Created By": "由...制作",
-    
+
     "Submitted On": "提交日期",
     "Modified On": "修改时间",
     "No History Found": "未找到历史记录",
@@ -1195,7 +1216,7 @@ export const formio_resourceBundles = {
     "Access Denied" : "拒绝访问",
     "By default, the tenant key would be prefixed to form":"默认情况下，租户键的前缀为 form",
     "go back":"回去",
-  
+
     "Submission saved to draft.":"提交已保存到草稿。",
     "Saved to draft":"已保存到草稿",
     "Saving...":"保存...",
@@ -1255,7 +1276,7 @@ export const formio_resourceBundles = {
     "Choose any":"Изберете всяка",
     "select form type":"изберете тип формуляр",
     "Draft Deleted Successfully":"Черновата е изтрита успешно",
-    
+
     "with ID":"с лична карта",
     "Are you sure you wish to delete the draft":"Сигурни ли сте, че искате да изтриете черновата",
     "Discard Draft":"Отхвърлете черновата",
@@ -1349,7 +1370,7 @@ export const formio_resourceBundles = {
     "Delete Form": "Изтриване на формуляр",
     "Delete": "Изтрий",
     "Print As PDF": "Печат като PDF",
- 
+
     "Task": "Задачи",
     "Metrics": "Метрика",
     "Dashboard": "Табло",
@@ -1381,7 +1402,7 @@ export const formio_resourceBundles = {
     "value": "стойност",
     "No task matching filters found.":
       "Няма намерени филтри за съвпадение на задачи.",
-  
+
     "Set follow-up Date": "Задайте дата за проследяване",
     "Set Due date": "Задайте крайна дата",
     "Add groups": "Добавете групи",
@@ -1408,7 +1429,7 @@ export const formio_resourceBundles = {
     "All": "ВСИЧКО",
     "ANY": "ВСЕКИ",
     "Task assignee": "Възложител на задачата",
-   
+
     "View Submission": "Вижте подаване",
     "Showing": "Показване",
     "to": "да се",
@@ -1427,9 +1448,9 @@ export const formio_resourceBundles = {
     "Group ID": "ID на групата",
     "Due": "В следствие",
     "Follow-up": "Проследяване",
- 
+
     "Created By": "Създадено от",
-   
+
     "Submitted On": "Изпратено на",
     "Modified On": "Променено Включено",
     "No History Found": "Няма намерена история",
@@ -2156,8 +2177,8 @@ export const formio_resourceBundles = {
       "Задава текста за бутона Добавяне на ресурс.",
     "Auto Expand": "Автоматично разширяване",
     "Save & Preview": "Запазване и визуализация",
-    
-    
+
+
     "Export PDF": "Експортиране на PDF",
     "Something went wrong. Please try again!":"Нещо се обърка. Моля, опитайте отново!",
     "No Dashboards Found":"Няма намерени табла за управление",
@@ -2211,7 +2232,30 @@ export const formio_resourceBundles = {
     "Submission History": "История на Подаването",
     "No Submission History found": "Няма Намерен История на Подаването",
     "No submissions Found": "Няма Намерени Подавания",
-    
+
+    "Create new filter":"Създайте нов филтър",
+    "Filter Name":"Име на филтъра",
+    "Enter your text here":"Въведете своя текст тук",
+    "Criteria":"Критерии",
+    "Add Value":"Добави стойност",
+    "Definition Key":"Ключ за дефиниция",
+    "Asignee":"Цесионер",
+    "Include Assigned Task":"Включете възложена задача",
+    "Variable":"Променлива",
+    "Show undefined variables":"Показване на недефинирани променливи",
+    "Name of variable":"Име на променлива",
+    "Readable name":"Четено име",
+    "Permission":"разрешение",
+    "Accessible for all users":"Достъпен за всички потребители",
+    "Private (Only You)":"Лично (само ти)",
+    "Specific User/ Group":"Конкретен потребител/група",
+    "User":"Потребител",
+    "Group":"Група",
+    "Identifier":"Идентификатор",
+    "Enter role ID":"Въведете ID на ролята",
+    "Create Filter":"Създаване на филтър",
+    "Select a task in the List":"Изберете задача от списъка",
+    "Select a specific task from the provided list of options. Your selection will determine the task you will be working on or interacting with.":"Изберете конкретна задача от предоставения списък с опции. Вашият избор ще определи задачата, върху която ще работите или с която ще взаимодействате."
   },
 
   pt: {
@@ -2238,7 +2282,7 @@ export const formio_resourceBundles = {
     "Choose any":"Escolha qualquer",
     "select form type":"selecione o tipo de formulário",
     "Draft Deleted Successfully":"Rascunho excluído com sucesso",
-    
+
     "with ID":"com identidade",
     "Are you sure you wish to delete the draft":"Tem certeza de que deseja excluir o rascunho",
     "Discard Draft":"Descartar Rascunho",
@@ -2255,13 +2299,13 @@ export const formio_resourceBundles = {
     "Form deleted successfully": "Formulário excluído com sucesso",
     "Show in list": "Mostrar na lista",
     "Loading...": "Carregando...",
-    
+
     "Save Changes": "Salvar alterações",
     "Are you sure you wish to delete the form ":
       "Tem certeza de que deseja excluir o formulário",
     "Are you sure you wish to delete the form?":
       "Tem certeza de que deseja excluir o formulário?",
-    
+
     ". Are you sure want to delete ?": ". Tem certeza de que deseja excluir?",
     "Click here to go back": "Clique aqui para voltar",
     "Dashboards": "Painéis",
@@ -2286,7 +2330,7 @@ export const formio_resourceBundles = {
     "Create Your Task Variable": "Crie sua variável de tarefa",
     "No task variable selected": "Nenhuma variável de tarefa selecionada",
     "Workflow Associate": "Associado de fluxo de trabalho",
-    
+
     "Task variable": "Variável de tarefa",
     "Enter pathname": "Digite o nome do caminho",
     "saved successfully": "Salvo com sucesso",
@@ -2306,7 +2350,7 @@ export const formio_resourceBundles = {
     "Insights": "Intuições",
     "Metrics": "Métricas",
     "Tasks": "Tarefas",
- 
+
     "Admin": "Administrador",
     "Powered by ": "Distribuído por ",
     "Name": "Nome",
@@ -3078,7 +3122,7 @@ export const formio_resourceBundles = {
     "Filter Tasks": "Filtrar tarefas",
     "ANY": "ALGUMA",
     "Task assignee": "Responsável pela tarefa",
-  
+
     "View Submission": "Ver o envio",
     "Showing": "Mostrando",
     "results": "resultados",
@@ -3098,7 +3142,7 @@ export const formio_resourceBundles = {
       "Corrija os erros antes de enviar novamente.",
     "Form-Workflow association saved.":
       "Associação formulário-fluxo de trabalho salva.",
-    
+
     "Submitted On": "Enviado em",
     "Modified On": "Modificado em",
     "No History Found": "Nenhum histórico encontrado",
@@ -3154,7 +3198,7 @@ export const formio_resourceBundles = {
     "Access Denied" : "Acesso negado",
     "By default, the tenant key would be prefixed to form":"Por padrão, a chave do locatário seria prefixada para formar",
     "go back":"volte",
-   
+
     "Submission saved to draft.":"Envio salvo como rascunho.",
     "Saved to draft":"Salvo no rascunho",
     "Saving...":"Salvando...",
@@ -3188,6 +3232,29 @@ export const formio_resourceBundles = {
     "No Submission History found": "Nenhum Histórico de Submissão Encontrado",
     "No submissions Found": "Nenhuma submissão encontrada",
 
+    "Create new filter": "Criar novo filtro",
+    "Filter Name": "Nome do filtro",
+    "Enter your text here": "Digite seu texto aqui",
+    "Criteria": "Critério",
+    "Add Value": "Adicionar valor",
+    "Definition Key": "Chave de definição",
+    "Asignee": "Cessionário",
+    "Include Assigned Task": "Incluir tarefa atribuída",
+    "Variable": "Variável",
+    "Show undefined variables": "Mostrar variáveis indefinidas",
+    "Name of variable": "Nome da variável",
+    "Readable name": "nome legível",
+    "Permission": "Permissão",
+    "Accessible for all users": "Acessível para todos os usuários",
+    "Private (Only You)": "Privado (só você)",
+    "Specific User/ Group": "Usuário/Grupo Específico",
+    "User": "Do utilizador",
+    "Group": "Grupo",
+    "Identifier": "identificador",
+    "Enter role ID": "Digite o ID da função",
+    "Create Filter": "Criar filtro",
+    "Select a task in the List":"Selecione uma tarefa na Lista",
+    "Select a specific task from the provided list of options. Your selection will determine the task you will be working on or interacting with.":"Selecione uma tarefa específica na lista de opções fornecida. Sua seleção determinará a tarefa na qual você estará trabalhando ou interagindo."
   },
 
   fr: {
@@ -3214,7 +3281,7 @@ export const formio_resourceBundles = {
     "Choose any":"Choisissez n'importe quel",
     "select form type":"sélectionner le type de formulaire",
     "Draft Deleted Successfully":"Brouillon supprimé avec succès",
-    
+
     "with ID":"avec pièce d'identité",
     "Are you sure you wish to delete the draft":"Êtes-vous sûr de vouloir supprimer le brouillon",
     "Discard Draft":" Supprimer le brouillon",
@@ -3230,13 +3297,13 @@ export const formio_resourceBundles = {
     "Form deleted successfully": "Formulaire supprimé avec succèsy",
     "Form deletion unsuccessful":"Échec de la suppression du formulaire",
     "Loading...": "Chargement...",
-    
+
     "Save Changes": "Save Changes",
     "Are you sure you wish to delete the form ":
       "Êtes-vous sûr de vouloir supprimer le formulaire",
     "Are you sure you wish to delete the form?":
       "Êtes-vous sûr de vouloir supprimer le formulaire?",
-  
+
     ". Are you sure want to delete ?": ". Voulez-vous vraiment supprimer ?",
     "Click here to go back": "Cliquez ici pour revenir en arrière",
     "Dashboards": "Tableaux de bord",
@@ -3264,7 +3331,7 @@ export const formio_resourceBundles = {
     "Create Your Task Variable": "Créez votre variable de tâche",
     "No task variable selected": "Aucune variable de tâche sélectionnée",
     "Workflow Associate": "Associé au flux de travail",
-   
+
     "Task variable": "Variable de tâche",
     "Enter pathname": "Entrez le nom du chemin",
     "saved successfully": "enregistré avec succès",
@@ -3286,7 +3353,7 @@ export const formio_resourceBundles = {
     "Insights": "Connaissances",
     "Dashboard": "Tableau de bord",
     "Task": "Tâches",
-    
+
     "Forms": "Formes",
     "Admin": "Administrateur",
     "Powered by ": "Alimenté par ",
@@ -4066,7 +4133,7 @@ export const formio_resourceBundles = {
     "Filter Tasks": "Filtrer les tâches",
     "ANY": "TOUTE",
     "Task assignee": "Responsable de la tâche",
-   
+
     "View Submission": "Voir la soumission",
     "Showing": "Affichage",
     "to": "à",
@@ -4086,7 +4153,7 @@ export const formio_resourceBundles = {
     "Follow-up": "Suivre",
 
     "Created By": "Créé par",
- 
+
     "Submitted On": "Soumis le",
     "Modified On": "Modifié le",
     "No History Found": "Aucun historique trouvé",
@@ -4139,7 +4206,7 @@ export const formio_resourceBundles = {
     "Access Denied" : "Accès refusé",
     "By default, the tenant key would be prefixed to form":"Par défaut, la clé du locataire serait préfixée pour former",
     "go back":"retourner",
-   
+
     "Submission saved to draft.":"Soumission enregistrée comme brouillon.",
     "Saved to draft":"Enregistré comme brouillon",
     "Saving...":"Économie...",
@@ -4172,6 +4239,29 @@ export const formio_resourceBundles = {
     "Submission History": "Historique de Soumission",
     "No Submission History found": "Aucun Historique de Soumission Trouvé",
     "No submissions Found": "Aucune soumission trouvée",
+    "Create new filter": "Créer un nouveau filtre",
+    "Filter Name": "Nom du filtre",
+    "Enter your text here": "Entrez votre texte ici",
+    "Criteria": "Critère",
+    "Add Value": "Ajouter de la valeur",
+    "Definition Key": "Clé de définition",
+    "Asignee": "Cessionnaire",
+    "Include Assigned Task": "Inclure la tâche assignée",
+    "Variable": "Variable",
+    "Show undefined variables": "Afficher les variables non définies",
+    "Name of variable": "Nom de variable",
+    "Readable name": "Nom lisible",
+    "Permission": "Autorisation",
+    "Accessible for all users": "Accessible pour tous les utilisateurs",
+    "Private (Only You)": "Privé (seulement vous)",
+    "Specific User/ Group": "Utilisateur/groupe spécifique",
+    "User": "Utilisateur",
+    "Group": "Groupe",
+    "Identifier": "Identifiant",
+    "Enter role ID": "Entrez l'ID du rôle",
+    "Create Filter": "Créer un filtre",
+    "Select a task in the List":"Sélectionnez une tâche dans la liste",
+    "Select a specific task from the provided list of options. Your selection will determine the task you will be working on or interacting with.":"Sélectionnez une tâche spécifique dans la liste d'options fournie. Votre sélection déterminera la tâche sur laquelle vous travaillerez ou avec laquelle vous interagirez."
 
 
   },
@@ -4181,7 +4271,7 @@ export const formio_resourceBundles = {
     "Select form version":"Formularversion auswählen",
     "Please remove the special characters...!":"Bitte entfernen Sie die Sonderzeichen...!",
     "No histories found":"Keine Historien gefunden",
-    "Continue":"Weitermachen",
+    "Continue":"Fortfahren",
     "This will create a new version of the form without changing the path name but with new form id.":"Dadurch wird eine neue Version des Formulars erstellt, ohne den Pfadnamen zu ändern, aber mit einer neuen Formular-ID.",
     "Save as a new version":"Als neue Version speichern",
     "Save New Version":"Neue Version speichern",
@@ -4189,23 +4279,22 @@ export const formio_resourceBundles = {
     "Do you want to create a duplicate form and associated workflow from existing form ?":"Möchten Sie ein Duplikat des Formulars und des zugehörigen Workflows aus einem vorhandenen Formular erstellen?",
     "New version created":"Neue Version erstellt",
     "Create a duplicate form":"Erstellen Sie ein Duplikat des Formulars",
-    "Show more":"Zeig mehr",
+    "Show more":"Mehr anzeigen",
     "Modified By":"Verändert von",
     "Created On" : "Erstellt am",
     "Formsflow automatically saves your previous form data. Now you can switch to the previous stage and edit.":"Formsflow speichert automatisch Ihre vorherigen Formulardaten. Jetzt können Sie zur vorherigen Stufe wechseln und bearbeiten.",
     "Duplicate Form":"Doppeltes Formular",
     "Form History":"Formulargeschichte",
     "No file chosen":"Keine Datei ausgewählt",
-    "Choose File":"Datei wählen",
+    "Choose File":"Datei auswählen",
     "Choose any":"Wählen Sie eine aus",
     "select form type":"Formulartyp auswählen",
-    "Draft Deleted Successfully":"Entwurf erfolgreich gelöscht",
-   
-    "with ID":"mit Ausweis",
+    "Draft Deleted Successfully":"Entwurf erfolgreich gelöscht",   
+    "with ID":"mit ID",
     "Are you sure you wish to delete the draft":"Möchten Sie den Entwurf wirklich löschen",
     "Discard Draft":"Entwurf verwerfen",
     "Search by form name": "Suche nach Formularnamen",
-    "Click to search": "Klicken Sie, um zu suchen",
+    "Click to search": "Klicken Sie hier, um zu suchen",
     "No submissions found": "Keine Einreichungen gefunden",
     "No submission avaliable in the selected date. Please select another date range":
       "Für das ausgewählte Datum ist keine Einreichung verfügbar. Bitte wählen Sie einen anderen Zeitraum aus",
@@ -4219,15 +4308,14 @@ export const formio_resourceBundles = {
     "Form-Workflow association saved.":
       "Formular-Workflow-Zuordnung gespeichert.",
     "Loading...": "Wird geladen...",
-    
-    "Save Changes": "Save Changes",
+    "Save Changes": "Änderungen speichern",
     "Are you sure you wish to delete the form ":
       "Möchten Sie das Formular wirklich löschen ",
     "Are you sure you wish to delete the form?":
       "Möchten Sie das Formular wirklich löschen? ",
 
     ". Are you sure want to delete ?": ". Möchten Sie wirklich löschen?",
-    "Click here to go back": "Klicke hier um zurück zu kommen",
+    "Click here to go back": "Klicken Sie hier um zurück zu kommen",
     "Dashboards": "Dashboards",
     "Error while saving Form": "Fehler beim Speichern des Formulars",
     "Confirmation": "Bestätigung",
@@ -4237,21 +4325,21 @@ export const formio_resourceBundles = {
     "Enter Label": "Bezeichnung eingeben",
     "Select form field": "Formularfeld auswählen",
     "Add form fields to display in task list":
-      "Fügen Sie Formularfelder zur Anzeige in der Aufgabenliste hinzu",
-    "Version": "Ausführung",
-    "Submission Status": "Submission Status",
+      "Fügen Sie Antragsfelder hinzu, die in der Aufgabenliste angezeigt werden sollen",
+    "Version": "Version",
+    "Submission Status": "Statusübersicht",
     "No submission status": "Kein Übermittlungsstatus",
     "No Public url found": "Keine öffentliche URL gefunden",
-    "Show in list": "In Liste anzeigen",
-    "Select Task Variable": "Wählen Sie Aufgabenvariable aus",
-    "Enter your Label": "Geben Sie Ihr Etikett ein",
+    "Show in list": "In der Liste anzeigen",
+    "Select Task Variable": "Wählen Sie eine Aufgabenvariable aus",
+    "Enter your Label": "Bezeichnung eingeben",
     "Please select from one of the following workflows.":
       "Bitte wählen Sie einen der folgenden Workflows aus.",
-    "Select Key": "Wählen Sie Schlüssel",
+    "Select Key": "Wählen Sie einen Identifikationsschlüssel aus",
     "Create Your Task Variable": "Erstellen Sie Ihre Aufgabenvariable",
     "No task variable selected": "Keine Aufgabenvariable ausgewählt",
     "Workflow Associate": "Workflow-Mitarbeiter",
-    
+
     "Task variable": "Aufgabenvariable",
     "Enter pathname": "Geben Sie den Pfadnamen ein",
     "saved successfully": "Erfolgreich gespeichert",
@@ -4261,11 +4349,10 @@ export const formio_resourceBundles = {
     "Confirm": "Bestätigen",
     "Cancel": "Stornieren",
     "Metrics": "Metriken",
-    "Dashboard": "Armaturenbrett",
+    "Dashboard": "Dashboard",
     "Insights": "Einblicke",
     "Task": "Aufgaben",
-   
-    "Forms": "Formen",
+    "Forms": "Formulare",
     "Admin": "Administrator",
     "Powered by ": "Bereitgestellt von ",
     "Anonymous Form ": "Anonymes Formular",
@@ -4273,7 +4360,7 @@ export const formio_resourceBundles = {
     "Name": "Name",
     "Display as": "Darstellen als",
     "Type": "Art",
-    "Path": "Weg",
+    "Path": "Pfad",
     "Make this form public ?": "Dieses Formular öffentlich machen?",
     "Save & Preview": "Speichern & Vorschau",
     "Form-Workflow association failed.":
@@ -4283,7 +4370,7 @@ export const formio_resourceBundles = {
     "Form saved": "Formular gespeichert.",
     "Error while saving Form.": "Fehler beim Speichern des Formulars.",
     "Create Form": "Formular erstellen",
-    "Design Form": "Entwurfsformular",
+    "Design Form": "Formular entwerfen",
     "Associate this form with a workflow?":
       "Dieses Formular einem Workflow zuordnen?",
     "Preview and Confirm": "Vorschau und bestätigen",
@@ -4291,15 +4378,15 @@ export const formio_resourceBundles = {
       "Alle Schritte abgeschlossen - Sie sind fertig",
     "Submission Saved": "Einreichung gespeichert.",
     "Error while Submission.": "Fehler beim Senden.",
-    "Message": "Bitte beheben Sie die Fehler, bevor Sie sie erneut senden.",
-    "Submission cannot be done.": "Eine Abgabe ist nicht möglich.",
+    "Message": "Bitte beheben Sie die Fehler, bevor Sie sie es erneut senden.",
+    "Submission cannot be done.": "Übermittlungsfehler.",
     "No Process Diagram found": "Kein Prozessdiagramm gefunden",
     "Are you sure you wish to delete the form":
       "Möchten Sie das Formular wirklich löschen?",
     "Edit": "Bearbeiten",
     "Do you want to associate form with a workflow ?":
       "Möchten Sie ein Formular mit einem Workflow verknüpfen?",
-    "Yes": "Jawohl",
+    "Yes": "Ja",
     "No": "Nein",
     "Form Name": "Formularname ",
     "Workflow Name": "Workflow-Name",
@@ -4308,7 +4395,7 @@ export const formio_resourceBundles = {
     "Comments": "Bemerkungen",
     "Back": "Zurück",
     "Edit Form": "Formular bearbeiten",
-    "Next": "Nächste",
+    "Next": "Weiter",
     "Are you sure you wish to delete this submission?":
       "Möchten Sie diesen Beitrag wirklich löschen?",
     "Save": "Speichern",
@@ -4328,13 +4415,13 @@ export const formio_resourceBundles = {
     "Task Variables": "Task-Variablen",
     "Process Variables": "Prozessvariablen",
     "Process Definition Name": "Name der Prozessdefinition",
-    "Assigne": "Abtretungsempfänger",
-    "Candidate Group": "Kandidatengruppe",
-    "Candidate User": "Candidate User",
+    "Assignee": "Zugewiesen an",
+    "Candidate Group": "Gruppe",
+    "Candidate User": "Benutzer",
     "Description": "Beschreibung",
     "Priority": "Priorität",
-    "Due Date": "Geburtstermin",
-    "Follow up Date": "Follow-up-Termin",
+    "Due Date": "Fälligkeitsdatum",
+    "Follow up Date": "Wiedervorlagedatum",
     "Task name": "Aufgabennname",
     "Remove sorting": "Sortierung entfernen",
     "AsCending": "Aufsteigend",
@@ -4348,77 +4435,76 @@ export const formio_resourceBundles = {
     "No Filters Found":
       "Keine Aufgabe gefunden, die mit Filtern übereinstimmt.",
 
-    "Set follow-up Date": "Folgedatum festlegen",
+    "Set follow-up Date": "Wiedervorlagedatum festlegen",
     "Set Due date": "Fälligkeitsdatum festlegen",
     "Add groups": "Gruppen hinzufügen",
-    "Claim": "Beanspruchen",
+    "Claim": "Zuordnen",
     "Search By Last Name": "Suche nach Nachnamen",
     "Search By First Name": "Suche nach Vornamen",
-    "Search By Email": "Per E-Mail suchen",
+    "Search By Email": "Suche nach E-Mail-Adresse",
     "You can add a group by typing a group ID into the input field and afterwards clicking the button with the plus sign.":
       "Sie können eine Gruppe hinzufügen, indem Sie eine Gruppen-ID in das Eingabefeld eingeben und anschließend auf die Schaltfläche mit dem Pluszeichen klicken.",
     "Add a group": "Gruppe hinzufügen",
-    "Process Name": "Process Name",
-    "Set FollowUp Date": "Nachsorgedatum festlegen",
+    "Process Name": "Prozessname",
+    "Set FollowUp Date": "Wiedervorlagedatum festlegen",
     "Groups": "Gruppen",
-    "Click to Change Assignee": "Klicken Sie auf Zugewiesenen ändern",
-    "Reset Assignee": "Zugewiesenen zurücksetzen",
+    "Click to Change Assignee": "Zuordnung ändern",
+    "Reset Assignee": "Zuordnung zurücksetzen",
     "Update User": "Benutzer aktualisieren",
-    "Close": "Nah dran",
+    "Close": "Schließen",
     "Remove search": "Suche entfernen",
-    "Property": "Eigentum",
+    "Property": "Eigenschaft",
     "Operator": "Operator",
     "Total number of results": "Gesamtzahl der Ergebnisse",
     "Filter Tasks": "Aufgaben filtern",
     "All": "Alle",
     "ANY": "IRGENDEIN",
     "Task assignee": "Aufgabenzuständiger",
-  
+
     "View Submission": "Einreichung anzeigen",
     "Showing": "Anzeigen",
     "to": "zu",
     "results": "Ergebnisse",
     "Acknowledge": "Anerkennen",
-    "View": "Sicht",
+    "View": "Anzeigen",
     "Select a task in the list.": "Wählen Sie eine Aufgabe in der Liste aus.",
     "Loading": "Wird geladen",
-    "Form": "Bilden",
-    "History": "Geschichte",
-    " Diagram": "Diagramm",
+    "Form": "Formular",
+    "History": "Historie",
+    " Diagram": " Diagramm",
     "Delete Confirmation": "Bestätigung löschen",
     "All tasks": "Alle Aufgaben",
     "Manage Groups": "Gruppen verwalten",
     "Group ID": "Gruppen-ID",
     "Due": "Fällig",
-    "Follow-up": "Nachverfolgen",
-  
+    "Follow-up": "Wiedervorlage",
     "Created By": "Erstellt von",
-   
+
     "Submitted On": "Eingereicht am",
     "Modified On": "Geändert am",
-    "No History Found": "Kein Verlauf gefunden",
+    "No History Found": "Keine Historie gefunden",
     "Process Diagram": "Prozessdiagramm",
     "Details": "Einzelheiten",
     "Status": "Status",
     "Submissions": "Einreichungen",
-    
+
     "Link To Form Submission": "Link zur Formularübermittlung",
     "Last Modified": "Zuletzt geändert",
     "No dashboard found": "Kein Dashboard gefunden",
     "of": "von",
     "Select Dashboard": "Wählen Sie Dashboard aus",
     "Total Submissions": "Einreichungen insgesamt",
-    "Operations": "Operationen",
-    "Access Groups": "Zugriffsgruppen",
+    "Operations": "Atkionen",
+    "Access Groups": "Nutzergruppen",
     "Action": "Aktion",
     "Add": "Addieren",
     "Upload Form": "Formular hochladen",
     "Download Form": "Formular herunterladen",
     "Upload json form only": "Laden Sie nur das JSON-Formular hoch",
     "Select atleast one form": "Wählen Sie mindestens ein Formular aus",
-    "Select All": "Wählen Sie Alle",
+    "Select All": "Wählen Sie alle",
     "Created Date": "Erstellungsdatum",
-    "Modified Date": "Geändertes Datum",
+    "Modified Date": "Änderungsdatum",
     "File Upload Status": "Datei-Upload-Status",
     "Forms Completed": "Formulare ausgefüllt",
     "Form Completed": "Formular ausgefüllt",
@@ -4432,7 +4518,7 @@ export const formio_resourceBundles = {
     "Submission Failed.": "Übermittlung fehlgeschlagen.",
     "Click here to back": "Klicken Sie hier, um zurück zu gelangen",
     "Enter the form machine name":
-      "Geben Sie den Namen der Formularmaschine ein",
+      "Geben Sie den Maschinennamen ein",
     "Enter the form title": "Geben Sie den Formulartitel ein",
     "Drag and Drop a form component":
       "Ziehen Sie eine Formularkomponente per Drag-and-Drop",
@@ -4443,12 +4529,12 @@ export const formio_resourceBundles = {
     "Select Boxes": "Wählen Sie Boxen aus",
     "Select": "Auswählen",
     "Radio": "Radio",
-    "Button": "Taste",
+    "Button": "Button",
     "Text Area With Analytics": "Textbereich mit Analytics",
     "Data": "Daten",
     "Display": "Anzeige",
     "on": "an",
-    "Submit": "einreichen",
+    "Submit": "Einreichen",
     "Email": "Email",
     "Url": "URL",
     "Phone Number": "Telefonnummer",
@@ -4462,13 +4548,13 @@ export const formio_resourceBundles = {
     "Signature": "Unterschrift",
     "HTML": "HTML",
     "Content": "Inhalt",
-    "Columns": "Säulen",
+    "Columns": "Spalten",
     "Field Set": "Feldsatz",
-    "Panel": "Tafel",
-    "Table": "die Tabelle",
+    "Panel": "Feld",
+    "Table": "Tabelle",
     "Tabs": "Registerkarten",
-    "Well": "Nun!",
-    "Hidden": "Escondida",
+    "Well": "Gut!",
+    "Hidden": "Versteckt",
     "Container": "Container",
     "Data Map": "Datenkarte",
     "Data Grid": "Datenraster",
@@ -4478,18 +4564,18 @@ export const formio_resourceBundles = {
     "Resource": "Ressource",
     "File": "Datei",
     "Nested": "Verschachtelt",
-    "Custom": "Brauch",
+    "Custom": "Benutzerdefiniert",
     "Basic": "Basic",
     "Advanced": "Fortschrittlich",
     "Layout": "Layout",
-    "Premium": "Prämie",
+    "Premium": "Premium",
     "Preview": "Vorschau",
     "The minimum length requirement this field must meet.":
       "Die Mindestlänge, die dieses Feld erfüllen muss.",
     "Label": "Etikette",
     "The label for this field that will appear next to it.":
       "Die Bezeichnung für dieses Feld, die daneben angezeigt wird.",
-    "Label Position": "Etikettenposition",
+    "Label Position": "Bezeichnungsposition",
     "Position for the label for this field.":
       "Position für die Beschriftung dieses Feldes.",
     "Placeholder": "Platzhalter",
@@ -4499,9 +4585,9 @@ export const formio_resourceBundles = {
       "Die Beschreibung ist Text, der unter dem Eingabefeld erscheint.",
     "Tooltip": "Kurzinfo",
     "Adds a tooltip to the side of this field.":
-      "Fügt einen Tooltip an der Seite dieses Felds hinzu.",
+      "Fügt eine Kurzinformation an der Seite dieses Felds hinzu.",
     "To add a tooltip to this field, enter text here.":
-      "Um diesem Feld einen Tooltip hinzuzufügen, geben Sie hier Text ein.",
+      "Um diesem Feld eine Kurzinformation hinzuzufügen, geben Sie hier Text ein.",
     "Description for this field.": "Beschreibung für dieses Feld.",
     "Prefix": "Präfix",
     "Suffix": "Suffix",
@@ -4512,15 +4598,15 @@ export const formio_resourceBundles = {
     "Left (Left-aligned)": "Links (linksbündig)",
     "Left (Right-aligned)": "Links (rechtsbündig)",
     "Right (Right-aligned)": "Rechts (rechtsbündig)",
-    "Bottom": "Unterseite",
+    "Bottom": "Unten",
     "Component": "Komponente",
     "Top": "oben",
-    "Label Width": "Etikettenbreite",
+    "Label Width": "Beschriftungsbreite",
     "The width of label on line in percentages.":
-      "Die Breite des Etiketts auf der Linie in Prozent.",
-    "Label Margin": "Etikettenrand",
+      "Die Breite der Beschriftung auf der Linie in Prozent.",
+    "Label Margin": "Beschriftungsrand",
     "The width of label margin on line in percentages.":
-      "Die Breite des Etikettenrands auf der Linie in Prozent.",
+      "Die Breite der Beschriftung auf der Linie in Prozent.",
     "Rows": "Reihen",
     "Input Field": "Eingabefeld",
     "Calendar Picker": "Kalenderauswahl",
@@ -4542,12 +4628,12 @@ export const formio_resourceBundles = {
       "Gibt an, ob die Werte von Eingabeelementen standardmäßig automatisch vom Browser vervollständigt werden können. Weitere Informationen finden Sie in der MDN-Dokumentation zur automatischen Vervollständigung.",
     "A hidden field is still a part of the form, but is hidden from view.":
       "Ein ausgeblendetes Feld ist immer noch Teil des Formulars, aber nicht sichtbar.",
-    "Hide Label": "Etikett ausblenden",
+    "Hide Label": "Beschriftung ausblenden",
     "Show Word Counter": "Wortzähler anzeigen",
     "Show a live count of the number of words.":
       "Zeigen Sie eine Live-Zählung der Anzahl der Wörter an.",
     "Hide the label (title, if no label) of this component. This allows you to show the label in the form builder, but not when it is rendered.":
-      "Blenden Sie die Bezeichnung (Titel, falls keine Bezeichnung) dieser Komponente aus. Dadurch können Sie das Etikett im Form Builder anzeigen, aber nicht, wenn es gerendert wird.",
+      "Blenden Sie die Bezeichnung (Titel, falls keine Bezeichnung) dieser Komponente aus. Dadurch können Sie die Beschriftung im Form Builder anzeigen, aber nicht, wenn es gerendert wird.",
     "Show Character Counter": "Zeichenzähler anzeigen",
     "Show a live count of the number of characters.":
       "Zeigen Sie eine Live-Zählung der Anzahl der Zeichen an.",
@@ -4572,7 +4658,7 @@ export const formio_resourceBundles = {
     "Default Value": "Standardwert",
     "The will be the value for this field, before user interaction. Having a default value will override the placeholder text.":
       "Dies ist der Wert für dieses Feld vor der Benutzerinteraktion. Ein Standardwert überschreibt den Platzhaltertext.",
-    "Persistent": "Hartnäckig",
+    "Persistent": "Persistent",
     "A persistent field will be stored in database when the form is submitted.":
       "Beim Absenden des Formulars wird ein persistentes Feld in der Datenbank gespeichert.",
     "None": "Keiner",
@@ -4602,7 +4688,7 @@ export const formio_resourceBundles = {
       "Verschlüsseln Sie dieses Feld auf dem Server. Dies ist eine Zwei-Wege-Verschlüsselung, die für Passwörter nicht geeignet ist.",
     "Redraw On": "Neuzeichnen an",
     "Redraw this component if another component changes. This is useful if interpolating parts of the component like the label.":
-      "Zeichnen Sie diese Komponente neu, wenn sich eine andere Komponente ändert. Dies ist nützlich, wenn Teile der Komponente wie das Etikett interpoliert werden.",
+      "Zeichnen Sie diese Komponente neu, wenn sich eine andere Komponente ändert. Dies ist nützlich, wenn Teile der Komponente wie die Beschriftung interpoliert werden.",
     "Any Change": "Jede Änderung",
     "Clear Value When Hidden": "Wert löschen, wenn ausgeblendet",
     "When a field is hidden, clear the value.":
@@ -4611,17 +4697,17 @@ export const formio_resourceBundles = {
       "Die folgenden Variablen sind in allen Skripten verfügbar.",
     "Custom Default Value": "Benutzerdefinierter Standardwert",
     "The complete form JSON object": "Das vollständige Formular-JSON-Objekt",
-    "submission": "Vorlage",
+    "submission": "Einreichung",
     "The complete submission object.": "Das vollständige Einreichungsobjekt.",
     "data": "Daten",
     "The complete submission data object.":
-      "Das vollständige Übermittlungsdatenobjekt.",
+      "Das vollständige Einreichungsdatenobjekt.",
     "row": "Reihe",
     'Contextual "row" data, used within DataGrid, EditGrid, and Container components':
       "Kontextbezogene „Zeilen“-Daten, die in DataGrid-, EditGrid- und Container-Komponenten verwendet werden",
     "component": "Komponente",
-    "The current component JSON": "Die aktuelle Komponente JSON",
-    "instance": "Beispiel",
+    "The current component JSON": "Die aktuelle Komponenten JSON",
+    "instance": "Instanz",
     "The current component instance.": "Die aktuelle Komponenteninstanz.",
     "Value": "Wert",
     "The current value of the component.": "Der aktuelle Wert der Komponente.",
@@ -4629,15 +4715,15 @@ export const formio_resourceBundles = {
     "The moment.js library for date manipulation.":
       "Die moment.js-Bibliothek zur Datumsmanipulation.",
     "utils": "Dienstprogramme",
-    "util": "util",
-    'An alias for "utils".': 'Ein Alias ​​für "utils".',
+    "util": "Dienst",
+    'An alias for "utils".': 'Ein Alias für "utils".',
     "JavaScript": "JavaScript",
     "Enter custom javascript code.":
       "Geben Sie einen benutzerdefinierten Javascript-Code ein.",
     "Example:": "Beispiel:",
-    "JSONLogic": "JSONLogic",
+    "JSONLogic": "JSON-Logik",
     "Execute custom logic using ":
-      "Führen Sie benutzerdefinierte Logik mit aus",
+      "Führen Sie benutzerdefinierte Logik aus",
     'support is provided using an "_" before each operation, such as {"_sum": {var: "data.a"}}':
       'Unterstützung wird durch ein "_" vor jeder Operation bereitgestellt, z. B. {"_sum": {var: "data.a"}}',
     "Full": "Voll",
@@ -4653,7 +4739,7 @@ export const formio_resourceBundles = {
     "When checked, this will allow the user to manually override the calculated value.":
       "Wenn diese Option aktiviert ist, kann der Benutzer den berechneten Wert manuell überschreiben.",
     "Remove": "Entfernen",
-    "Validate On": "Bestätigen Ein",
+    "Validate On": "Validierung ein",
     "Determines when this component should trigger front-end validation.":
       "Legt fest, wann diese Komponente die Front-End-Validierung auslösen soll.",
     "Change": "Ändern",
@@ -4663,7 +4749,7 @@ export const formio_resourceBundles = {
       "Ein Pflichtfeld muss ausgefüllt werden, bevor das Formular abgeschickt werden kann..",
     "Unique": "Einzigartig",
     "Makes sure the data submitted for this field is unique, and has not been submitted before.":
-      "Stellt sicher, dass die für dieses Feld übermittelten Daten eindeutig sind und noch nie zuvor übermittelt wurden.",
+      "Stellt sicher, dass die für dieses Feld übermittelten Daten einzigartig sind und noch nie zuvor übermittelt wurden.",
     "Minimum Length": "Minimale Länge",
     "The maximum length requirement this field must meet.":
       "Die maximale Länge, die dieses Feld erfüllen muss.",
@@ -4677,14 +4763,14 @@ export const formio_resourceBundles = {
     "Regular Expression Pattern": "Reguläres Ausdrucksmuster",
     "The regular expression pattern test that the field value must pass before the form can be submitted.":
       "Der Mustertest für reguläre Ausdrücke, den der Feldwert bestehen muss, bevor das Formular gesendet werden kann.",
-    "Error Label": "Fehleretikett",
+    "Error Label": "Fehlerbeschriftung",
     "The label for this field when an error occurs.":
       "Die Bezeichnung für dieses Feld, wenn ein Fehler auftritt.",
     "Custom Error Message": "Benutzerdefinierte Fehlermeldung",
     "Error message displayed if any error occurred.":
-      "Fehlermeldung wird angezeigt, wenn ein Fehler aufgetreten ist.",
+      "Fehlermeldung, die angezeigt wird, wenn ein Fehler aufgetreten ist.",
     "Custom Validation": "Benutzerdefinierte Validierung",
-    "input": "Eingang",
+    "input": "Eingabe",
     "The value that was input into this component":
       "Der Wert, der in diese Komponente eingegeben wurde",
     "Enter custom validation code.":
@@ -4694,17 +4780,17 @@ export const formio_resourceBundles = {
     "Secret Validation": "Geheime Validierung",
     "Check this if you wish to perform the validation ONLY on the server side. This keeps your validation logic private and secret.":
       "Aktivieren Sie dies, wenn Sie die Validierung NUR serverseitig durchführen möchten. Dadurch bleibt Ihre Validierungslogik privat und geheim.",
-    "JSONLogic Validation": "JSONLogic-Validierung",
+    "JSONLogic Validation": "JSON-Logik-Validierung",
     "Execute custom logic using": "Führen Sie benutzerdefinierte Logik mit aus",
     "Help": "Hilfe",
     "Validation": "Validierung",
     "API": "API",
-    "Property Name": "Name des Anwesens",
+    "Property Name": "Eigenschaftsname",
     "The name of this field in the API endpoint.":
       "Der Name dieses Felds im API-Endpunkt.",
-    "Field Tags": "Feld-Tags",
+    "Field Tags": "Feldstichworte",
     "Tag the field for use in custom logic.":
-      "Tag the field for use in custom logic.",
+      "Stichwort des Felds für benutzerdefinierte Logik",
     "Custom Properties": "Benutzerdefinierte Eigenschaften",
     "This allows you to configure any custom properties for this component.":
       "Auf diese Weise können Sie beliebige benutzerdefinierte Eigenschaften für diese Komponente konfigurieren.",
@@ -4716,17 +4802,17 @@ export const formio_resourceBundles = {
     "True": "Wahr",
     "False": "Falsch",
     "When the form component:": "Wenn die Formularkomponente:",
-    "Submit (submit)": "Absenden Absenden)",
+    "Submit (submit)": "Absenden (submit)",
     "Has the value:": "Hat den Wert:：",
     "Advanced Conditions": "Erweiterte Bedingungen",
     "Advanced Logic": "Erweiterte Logik",
     "Advanced Logic Configured": "Erweiterte Logik konfiguriert",
     "Logic": "Logik",
     "Add Logic": "Logik hinzufügen",
-    "Trigger": "Abzug",
+    "Trigger": "Auslöser",
     "JSON Logic": "JSON-Logik",
     '"row", "data", and "component" variables are available. Return "result".':
-      'Die Variablen "row", "data" und "component" sind verfügbar. Geben Sie "Ergebnis" zurück.',
+      'Die Variablen "row", "data" und "component" sind verfügbar. Geben Sie "result" zurück.',
     "Actions": "Aktionen",
     "Action Name": "Aktionsname",
     "Schema Defenition": "Schema-Definition",
@@ -4744,7 +4830,7 @@ export const formio_resourceBundles = {
     "Add Action": "Aktion hinzufügen",
     "Save Logic": "Logik speichern",
     "Logic Name": "Logikname",
-    "Event": "Fall",
+    "Event": "Ereignis",
     "The event that will trigger this logic. You can trigger events externally or via a button.":
       "Das Ereignis, das diese Logik auslöst. Sie können Ereignisse extern oder über eine Schaltfläche auslösen.",
     "Save Action": "Aktion speichern",
@@ -4758,7 +4844,7 @@ export const formio_resourceBundles = {
     "Style": "Stil",
     "Custom styles that should be applied to this component when rendered in PDF.":
       "Benutzerdefinierte Stile, die auf diese Komponente angewendet werden sollen, wenn sie in PDF gerendert werden.",
-    "Page": "Buchseite",
+    "Page": "Seite",
     "The PDF page to place this component.":
       "Die PDF-Seite zum Platzieren dieser Komponente.",
     "Left": "Links",
@@ -4774,7 +4860,7 @@ export const formio_resourceBundles = {
       "Die Höhe der Komponente (in Pixel).",
     "Use Thousands Separator": "Verwenden Sie das Tausendertrennzeichen",
     "Separate thousands by local delimiter.":
-      "Trennen Sie Tausende durch lokales Trennzeichen.",
+      "Trennen Sie Tausender durch lokales Trennzeichen.",
     "Decimal Places": "Nachkommastellen",
     "The maximum number of decimal places.":
       "Die maximale Anzahl von Dezimalstellen.",
@@ -4784,23 +4870,23 @@ export const formio_resourceBundles = {
     "Minimum Value": "Mindestwert",
     "The minimum value this field must have before the form can be submitted.":
       "Der Mindestwert, den dieses Feld haben muss, bevor das Formular gesendet werden kann.",
-    "Maximum Value": "Höchster Wert",
+    "Maximum Value": "Maximaler Wert",
     "The maximum value this field can have before the form can be submitted.":
       "Der maximale Wert, den dieses Feld haben kann, bevor das Formular gesendet werden kann.",
     "Editor": "Editor",
     "Select the type of WYSIWYG editor to use for this text area.":
       "Wählen Sie den Typ des WYSIWYG-Editors aus, der für diesen Textbereich verwendet werden soll.",
-    "ACE": "AS",
+    "ACE": "ACE",
     "Save As": "Speichern als",
     "This setting determines how the value should be entered and stored in the database.":
       "Diese Einstellung legt fest, wie der Wert eingegeben und in der Datenbank gespeichert werden soll.",
-    "String": "Schnur",
+    "String": "String",
     "JSON": "JSON",
     "Input Type": "Eingabetyp",
     "This is the input type used for this checkbox.":
       "Dies ist der Eingabetyp, der für dieses Kontrollkästchen verwendet wird.",
     "Shortcut": "Abkürzung",
-    "Shortcut for this component.": "Verknüpfung für diese Komponente.",
+    "Shortcut for this component.": "Abkürzung für diese Komponente.",
     "Password fields are automatically encrypted using 1-way salted bcrypt hashes. These hashes are also protected and not returned in the API.":
       "Passwortfelder werden automatisch mit 1-Way-Salted-Bcrypt-Hashes verschlüsselt. Diese Hashes sind ebenfalls geschützt und werden nicht in der API zurückgegeben.",
     "Options Label Position": "Position der Optionsbeschriftung",
@@ -4811,31 +4897,31 @@ export const formio_resourceBundles = {
     "Displays the checkboxes/radios horizontally.":
       "Zeigt die Kontrollkästchen/Radios horizontal an.",
     "Allow only available values": "Nur verfügbare Werte zulassen",
-    "Minimum checked number": "Mindestanzahl überprüft",
+    "Minimum checked number": "Mindest ausgewählte Anzahl",
     "Minimum checkboxes required before form can be submitted.":
       "Mindestens Kontrollkästchen erforderlich, bevor das Formular gesendet werden kann.",
-    "Maximum checked number": "Maximal überprüfte Anzahl",
+    "Maximum checked number": "Maximal ausgewählte Anzahl",
     "Maximum checkboxes possible before form can be submitted.":
-      "Maximale Anzahl an Kontrollkästchen möglich, bevor das Formular gesendet werden kann.",
+      "Maximale Anzahl der möglichen Kontrollkästchen, bevor das Formular gesendet werden kann.",
     "Minimum checked error message": "Minimum geprüfte Fehlermeldung",
     "Error message displayed if minimum number of items not checked.":
       "Fehlermeldung wird angezeigt, wenn die Mindestanzahl von Artikeln nicht angekreuzt ist.",
     "Maximum checked error message": "Maximal überprüfte Fehlermeldung",
     "Error message displayed if maximum number of items checked.":
       "Fehlermeldung wird angezeigt, wenn die maximale Anzahl von Elementen überprüft wird.",
-    "ChoicesJS": "AuswahlmöglichkeitenJS",
+    "ChoicesJS": "ChoicesJS",
     "HTML 5": "HTML55",
     "Unique Options": "Einzigartige Optionens",
     "Display only unique dropdown options.":
-      "Nur eindeutige Dropdown-Optionen anzeigen",
+      "Nur einzigartige Dropdown-Optionen anzeigen",
     "Data Source Type": "Datenquellentyp",
     "The source to use for the select data. Values lets you provide your own values and labels. JSON lets you provide raw JSON data. URL lets you provide a URL to retrieve the JSON data from.":
-      "Die Quelle, die für die ausgewählten Daten verwendet werden soll. Mit Values ​​können Sie Ihre eigenen Werte und Labels bereitstellen. Mit JSON können Sie JSON-Rohdaten bereitstellen. Mit URL können Sie eine URL angeben, von der die JSON-Daten abgerufen werden.",
+      "Die Quelle, die für die ausgewählten Daten verwendet werden soll. Mit Werte können Sie Ihre eigenen Werte und Labels bereitstellen. Mit JSON können Sie JSON-Rohdaten bereitstellen. Mit URL können Sie eine URL angeben, von der die JSON-Daten abgerufen werden.",
     "Values": "Werte",
     "Raw JSON": "Rohes JSON",
     "IndexedDB": "IndexedDB",
     "Database name": "Name der Datenbank",
-    "The name of the indexeddb database.": "Der Name der indexeddb-Datenbank.",
+    "The name of the indexeddb database.": "Der Name der Indexeddb-Datenbank.",
     "Storage Type": "Speichertyp",
     "The type to store the data. If you select something other than autotype, it will force it to that type.":
       "Der Typ zum Speichern der Daten. Wenn Sie etwas anderes als Autotyp auswählen, wird dieser Typ erzwungen.",
@@ -4846,11 +4932,11 @@ export const formio_resourceBundles = {
     "Path to the select option id.": "Pfad zur ausgewählten Options-ID.",
     "Table name": "Tabellenname",
     "The name of table in the indexeddb database.":
-      "Der Name der Tabelle in der indexeddb-Datenbank.",
+      "Der Name der Tabelle in der Indexeddb-Datenbank.",
     "Row Filter": "Zeilenfilter",
     "Filter table items that match the object.":
       "Filtern Sie Tabellenelemente, die mit dem Objekt übereinstimmen.",
-    "Item Template": "Artikelvorlage",
+    "Item Template": "Elementvorlage",
     "The HTML template for the result data items.":
       "Die HTML-Vorlage für die Ergebnisdatenelemente.",
     "Enable Static Search ": "Statische Suche aktivieren",
@@ -4858,10 +4944,10 @@ export const formio_resourceBundles = {
       "Wenn diese Option aktiviert ist, ermöglicht die Auswahl-Dropdown-Liste die Suche in der statischen Liste der bereitgestellten Elemente.",
     "Search Threshold": "Suchschwelle",
     "At what point does the match algorithm give up. A threshold of 0.0 requires a perfect match, a threshold of 1.0 would match anything.":
-      "An welchem ​​Punkt gibt der Match-Algorithmus auf? Ein Schwellenwert von 0,0 erfordert eine perfekte Übereinstimmung, ein Schwellenwert von 1,0 würde alles abgleichen.",
-    "Read Only Value": "Nur-Lese-Wert",
+      "An welchem Punkt gibt der Match-Algorithmus auf? Ein Schwellenwert von 0,0 erfordert eine perfekte Übereinstimmung, ein Schwellenwert von 1,0 würde alles abgleichen.",
+    "Read Only Value": "Schreibgeschützter Wert",
     "Check this if you would like to show just the value when in Read Only mode.":
-      "Aktivieren Sie dies, wenn Sie im Nur-Lesen-Modus nur den Wert anzeigen möchten.",
+      "Aktivieren Sie dies, wenn Sie im schreibgeschützten Modus nur den Wert anzeigen möchten.",
     "Choices.js options": "Choices.js-Optionen",
     "A raw JSON object to use as options for the Select component (Choices JS).":
       "Ein rohes JSON-Objekt, das als Optionen für die Select-Komponente (Choices JS) verwendet werden soll.",
@@ -4883,7 +4969,7 @@ export const formio_resourceBundles = {
       "Dies ist die vollständige Symbolklassenzeichenfolge zum Anzeigen des Symbols. Beispiel:",
     "Primary": "Primär",
     "Secondary": "Sekundär",
-    "Info": "Die Info",
+    "Info": "Info",
     "Success": "Erfolg",
     "Danger": "Achtung",
     "Warning": "Warnung",
@@ -4892,7 +4978,7 @@ export const formio_resourceBundles = {
     "Extra Small": "Extra klein",
     "Small": "Klein",
     "Large": "Groß",
-    "Disable on Form Invalid": "Deaktivieren auf Formular ungültig",
+    "Disable on Form Invalid": "Deaktivieren bei ungültigem Formular",
     "This will disable this field if the form is invalid.":
       "Dadurch wird dieses Feld deaktiviert, wenn das Formular ungültig ist.",
     "Key topics for Sentiment Analysis":
@@ -4905,17 +4991,17 @@ export const formio_resourceBundles = {
       "Kickbox-Validierung für dieses E-Mail-Feld aktivieren.",
     "Validate this email using the Kickbox email validation service.":
       "Validieren Sie diese E-Mail mit dem Kickbox-E-Mail-Validierungsdienst.",
-    "Input Mask Placeholder Char": "Eingabemaske Platzhalter Char",
+    "Input Mask Placeholder Char": "Eingabemaske Platzhalterzeichen",
     "Enable Manual Mode": "Manuellen Modus aktivieren",
     "Should Manual Mode be enabled for that component or not.":
       "Soll der manuelle Modus für diese Komponente aktiviert sein oder nicht.",
     "Switch To Manual Mode Label":
-      "Wechseln Sie zum Etikett für den manuellen Modus",
+      "Wechseln Sie zur Beschriftung für den manuellen Modus",
     "The label for the checkbox used to switch to manual mode.":
       "Die Bezeichnung für das Kontrollkästchen zum Umschalten in den manuellen Modus.",
     "Disable Clear Icon": "Deaktivieren Sie das Löschsymbol",
     "Clear Icon allows easily clear components value.":
-      "Clear Icon ermöglicht das einfache Löschen des Komponentenwerts.",
+      "Löschsymbol ermöglicht das einfache Löschen des Komponentenwerts.",
     "Provider": "Anbieter",
     "Which address search service should be used.":
       "Welcher Adresssuchdienst soll verwendet werden.",
@@ -4980,14 +5066,14 @@ export const formio_resourceBundles = {
     "Custom Disabled Dates": "Benutzerdefinierte deaktivierte Daten",
     "date": "Datum",
     "The date object.": "Das Datumsobjekt.",
-    "Data Format": "Datei Format",
+    "Data Format": "Dateiformat",
     "The moment.js format for saving the value of this field.":
-      "Das Moment.js-Format zum Speichern des Werts dieses Felds.",
+      "Das moment.js-Format zum Speichern des Werts dieses Felds.",
     "HTML5 Time Input": "HTML5-Zeiteingabe",
     "Text Input with Mask": "Texteingabe mit Maske",
     "Disable weekends": "Wochenenden deaktivieren",
     "Disable weekdays": "Wochentage deaktivieren",
-    "Check to disable weekends": "Check to disable weekends",
+    "Check to disable weekends": "Aktivieren Sie diese Option, um Wochendtage zu deaktivieren",
     "Check to disable weekdays":
       "Aktivieren Sie diese Option, um Wochentage zu deaktivieren",
     "Enable Time Input": "Zeiteingabe aktivieren",
@@ -5004,7 +5090,7 @@ export const formio_resourceBundles = {
     "12 Hour Time (AM/PM)": "12-Stunden-Zeit (AM/PM)",
     "Default Date": "Standarddatum",
     "You can use Moment.js functions to set the default value to a specific date. For example:":
-      "Sie können Moment.js-Funktionen verwenden, um den Standardwert auf ein bestimmtes Datum festzulegen. Zum Beispiel:",
+      "Sie können moment.js-Funktionen verwenden, um den Standardwert auf ein bestimmtes Datum festzulegen. Zum Beispiel:",
     "Flatpickr options": "Flatpickr-Optionen",
     "HTML Tag": "HTML-Tag",
     "The tag of this HTML element.": "Das Tag dieses HTML-Elements.",
@@ -5045,18 +5131,18 @@ export const formio_resourceBundles = {
     "Cell Alignment": "Zellausrichtung",
     "Horizontal alignment for cells of the table.":
       "Horizontale Ausrichtung für Zellen der Tabelle.",
-    "Center": "Center",
+    "Center": "Zentriert",
     "Striped": "Gestreift",
     "This will stripe the table if checked.":
       "Wenn dies aktiviert ist, wird die Tabelle gestreift.",
-    "Bordered": "abgegrenzt",
+    "Bordered": "Abgegrenzt",
     "This will border the table if checked.":
       "Wenn dies aktiviert ist, wird die Tabelle umrandet.",
-    "Hover": "Schweben",
+    "Hover": "Hover",
     "Highlight a row on hover.": "Markieren Sie eine Zeile beim Hover.",
-    "Condensed": "Kondensat",
+    "Condensed": "Zusammengefasst",
     "Condense the size of the table.":
-      "Kondensieren Sie die Größe der Tabelle.",
+      "Fassen Sie die Größe der Tabelle zusammen.",
     "Label for Key column": "Beschriftung für die Schlüsselspalte",
     "Provide a label text for Key column (otherwise Key will be used)":
       "Geben Sie einen Beschriftungstext für die Schlüsselspalte an (andernfalls wird der Schlüssel verwendet)",
@@ -5067,7 +5153,7 @@ export const formio_resourceBundles = {
     "Show key column before value": "Schlüsselspalte vor Wert anzeigen",
     "Check if you would like to show the Key before the Value column.":
       "Aktivieren Sie, ob Sie den Schlüssel vor der Spalte Wert anzeigen möchten.",
-    "Type of event": "Eine Art Veranstaltung",
+    "Type of event": "Ereignistyp",
     "Specify type of event that this reCAPTCHA would react to":
       "Geben Sie den Ereignistyp an, auf den dieses reCAPTCHA reagieren würde",
     "Form Load": "Formular laden",
@@ -5081,7 +5167,7 @@ export const formio_resourceBundles = {
       "Verwenden Sie die Originalbewertung, wenn Sie sich Einsendungen ansehen",
     "Using this option will make form load the original revision (the one which was used to make a submission) when viewing a submission.":
       "Wenn Sie diese Option verwenden, lädt das Formular beim Anzeigen einer Einreichung die ursprüngliche Revision (die zum Erstellen einer Einreichung verwendet wurde).",
-    "Save as reference": "als Referenz speichern",
+    "Save as reference": "Als Referenz speichern",
     "Using this option will save this field as a reference and link its value to the value of the origin record.":
       "Mit dieser Option wird dieses Feld als Referenz gespeichert und sein Wert mit dem Wert des Quelldatensatzes verknüpft.",
     "Select Fields": "Felder auswählen",
@@ -5102,8 +5188,8 @@ export const formio_resourceBundles = {
     "Add Resource Label": "Ressourcenbezeichnung hinzufügen",
     "Set the text of the Add Resource button.":
       "Legen Sie den Text für die Funktionsschaltfläche hinzufügen fest.",
-    "Auto Expand": "automatisch erweitern",
-    "Wizard": "Magier",
+    "Auto Expand": "Automatisch erweitern",
+    "Wizard": "Wizard",
     "Text Field": "Textfeld",
     "Downloaded Successfully": "Erfolgreich heruntergeladen",
     "Error in JSON file structure": "Fehler in der JSON-Dateistruktur",
@@ -5117,7 +5203,7 @@ export const formio_resourceBundles = {
     "No Dashboards Found":"Keine Dashboards gefunden",
     "Processes":"Prozesse",
     "Please select an existing workflow.":"Bitte wählen Sie einen bestehenden Workflow aus.",
-    "Create New":"Erstelle neu",
+    "Create New":"Neu erstellen",
   "Or create new workflow or import a workflow from a local directory.":"Oder erstellen Sie einen neuen Workflow oder importieren Sie einen Workflow aus einem lokalen Verzeichnis.",
   "The operation couldn't be completed. Please try after sometime":"Der Vorgang konnte nicht abgeschlossen werden. Bitte versuchen Sie es nach einiger Zeit erneut",
     "Select...":"Auswählen...",
@@ -5130,11 +5216,10 @@ export const formio_resourceBundles = {
     "Form not published":"Formular nicht veröffentlicht",
     "Access Denied" : "Zugriff abgelehnt",
     "By default, the tenant key would be prefixed to form":"Standardmäßig wird dem Mandantenschlüssel form vorangestellt",
-    "go back":"geh zurück",
-   
-    "Submission saved to draft.":"Übermittlung als Entwurf gespeichert.",
+    "go back":"zurück",
+    "Submission saved to draft.":"Einsendung als Entwurf gespeichert.",
     "Saved to draft":"Als Entwurf gespeichert",
-    "Saving...":"Sparen...",
+    "Saving...":"Speichern...",
     "Error in creating form process mapper":"Fehler beim Erstellen des Formularprozess-Mappers",
     "Select the date":"Wählen Sie das Datum aus",
     "Diagram Deployed":"Diagramm bereitgestellt",
@@ -5163,5 +5248,32 @@ export const formio_resourceBundles = {
     "Submission History": "Einreichungshistorie",
     "No Submission History found": "Keine Einreichungshistorie gefunden",
     "No submissions Found": "Keine Einreichungen gefunden",
+    "Create new filter":"Neuen Filter erstellen",
+    "Filter Name":"Filtername",
+    "Enter your text here":"Gib deinen Text hier ein",
+    "Criteria":"Kriterien",
+    "Add Value":"Mehrwert",
+    "Definition Key":"Definitionsschlüssel",
+    "Asignee":"Bevollmächtigter",
+    "Include Assigned Task":"Zugewiesene Aufgabe einschließen",
+    "Variable":"Variable",
+    "Show undefined variables":"Undefinierte Variablen anzeigen",
+    "Name of variable":"Name der Variablen",
+    "Readable name":"Lesbarer Name",
+    "Permission":"Erlaubnis",
+    "Accessible for all users":"Für alle Benutzer zugänglich",
+    "Private (Only You)":"Privat (nur Sie)",
+    "Specific User/ Group":"Bestimmter Benutzer/Gruppe",
+    "User":"Benutzer",
+    "Group":"Gruppe",
+    "Identifier":"Kennung",
+    "Enter role ID":"Geben Sie die Rollen-ID ein",
+    "Create Filter":"Filter erstellen",
+    "Select a task in the List":"Wählen Sie eine Aufgabe in der Liste aus",
+    "Select a specific task from the provided list of options. Your selection will determine the task you will be working on or interacting with.":"Wählen Sie eine bestimmte Aufgabe aus der bereitgestellten Optionsliste aus. Ihre Auswahl bestimmt die Aufgabe, an der Sie arbeiten oder mit der Sie interagieren."
+
+
+
+
   },
 };

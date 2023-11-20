@@ -45,7 +45,7 @@ import SubmissionError from "../../containers/SubmissionError";
 import SavingLoading from "../Loading/SavingLoading";
 import Confirm from "../../containers/Confirm";
 import { setDraftDelete } from "../../actions/draftActions";
-import { setFormStatusLoading } from "../../actions/processActions"; 
+import { setFormStatusLoading } from "../../actions/processActions";
 import { getFormProcesses } from "../../apiManager/services/processServices";
 import { textTruncate } from "../../helper/helper";
 
@@ -157,7 +157,7 @@ const View = React.memo((props) => {
       }
     };
   }, [poll, exitType.current, draftSubmission?.id]);
- 
+
   if (isActive || isPublicStatusLoading || formStatusLoading) {
     return (
       <div data-testid="loading-view-component">
@@ -165,7 +165,8 @@ const View = React.memo((props) => {
       </div>
     );
   }
-  
+
+
 
   const deleteDraft = () => {
     dispatch(
@@ -281,18 +282,27 @@ const View = React.memo((props) => {
         className="col-12 p-0"
       >
         <div className="mt-4">
-          <Confirm
-            modalOpen={draftDelete.modalOpen}
-            message={`${t("Are you sure you wish to delete the draft")} "${
-              textTruncate(14,12,draftDelete.draftName)
-            }" 
-            ${t("with ID")} "${draftDelete.draftId}"`}
-            onNo={() => onNo()}
-            onYes={(e) => {
-              exitType.current = "SUBMIT";
-              onYes(e);
-            }}
-          />
+        <Confirm
+  modalOpen={draftDelete.modalOpen}
+  message={
+    <>
+
+      {t("Are you sure to delete the draft")} 
+      <span style={{ fontWeight: "bold" }}>&nbsp;
+        {textTruncate(14, 12, draftDelete.draftName)}
+      </span>&nbsp;
+      {t("with ID")} 
+      <span style={{ fontWeight: "bold" }}>&nbsp;
+        {draftDelete.draftId}
+      </span> ?
+    </>
+  }
+  onNo={() => onNo()}
+  onYes={(e) => {
+    exitType.current = "SUBMIT";
+    onYes(e);
+  }}
+/>
           {processData?.status === "active" ? (
             <div className="form-view-wrapper">
               <Form
@@ -436,7 +446,9 @@ const mapDispatchToProps = (dispatch, ownProps) => {
     onCustomEvent: (customEvent, redirectUrl) => {
       switch (customEvent.type) {
         case CUSTOM_EVENT_TYPE.CUSTOM_SUBMIT_DONE:
-          toast.success("Submission Saved.");
+          toast.success(
+            <Translation>{(t) => t("Submission Saved")}</Translation>
+          );
           dispatch(push(`${redirectUrl}draft`));
           break;
         case CUSTOM_EVENT_TYPE.CANCEL_SUBMISSION:

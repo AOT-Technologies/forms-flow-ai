@@ -28,6 +28,7 @@ import {
   setDraftListActivePage,
   setCountPerpage,
   setDraftDelete,
+  setDraftListLoading,
 } from "../../actions/draftActions";
 import { deleteDraftbyId } from "../../apiManager/services/draftService";
 import isValiResourceId from "../../helper/regExp/validResourceId";
@@ -50,6 +51,9 @@ export const DraftList = React.memo(() => {
   const draftCount = useSelector((state) => state.draft.draftCount);
   const dispatch = useDispatch();
   const page = useSelector((state) => state.draft.activePage);
+  const sortOrder = useSelector((state) => state.draft.sortOrder);
+  const sortBy = useSelector((state) => state.draft.sortBy);
+
   const iserror = useSelector(
     (state) => state.draft.draftSubmissionError.error
   );
@@ -68,6 +72,8 @@ export const DraftList = React.memo(() => {
       modified: null,
       page: page,
       limit: countPerPage,
+      sortOrder,
+      sortBy
   }
 
   useEffect(() => {
@@ -85,15 +91,23 @@ export const DraftList = React.memo(() => {
   const currentPage = useNoRenderRef(page);
 
   useEffect(() => {
-    dispatch(fetchDrafts(filterParams));
-  }, [dispatch, page, countPerPage]);
+    dispatch(fetchDrafts(filterParams,(err,data) => {
+      if(data){
+      dispatch(setDraftListLoading(false));
+      }
+    }));
+  }, [dispatch, page, countPerPage,sortOrder,sortBy]);
 
   const onYes = (e) => {
     e.currentTarget.disabled = true;
     deleteDraftbyId(draftDelete.draftId)
       .then(() => {
         toast.success(t("Draft Deleted Successfully"));
-        dispatch(fetchDrafts(filterParams));
+        dispatch(fetchDrafts(filterParams,(err,data) => {
+          if(data){
+          dispatch(setDraftListLoading(false));
+          }
+        }));
       })
       .catch((error) => {
         toast.error(error.message);
@@ -201,13 +215,13 @@ export const DraftList = React.memo(() => {
             message=
             {
             <div>
-            {t("Are you sure you wish to delete the draft")}
+            {t("Are you sure to delete the draft")}
             <span style={{ fontWeight: "bold" }} > {draftDelete.draftName.includes(' ') ? draftDelete.draftName : textTruncate(50,40,draftDelete.draftName)} </span>
-            {t("with ID")} 
-            <span style={{fontWeight: "bold"}}> {draftDelete.draftId}</span>?
+            {t("with ID")}
+            <span style={{fontWeight: "bold"}}> {draftDelete.draftId}</span> ?
             </div>
             }
-            
+
             onNo={() => onNo()}
             onYes={onYes}
           />

@@ -54,8 +54,8 @@ export default React.memo(
     const [lintErrors, setLintErrors] = useState([]);
     const [deploymentLoading, setDeploymentLoading] = useState(false);
     const redirectUrl = MULTITENANCY_ENABLED ? `/tenant/${tenantKey}/` : "/";
-    const [processName,setProcessName] = useState(true);
-    const bpmPropertyInput = document.getElementById("bio-properties-panel-name")?.value;
+    // const [processName,setProcessName] = useState(true);
+    // const bpmPropertyInput = document.getElementById("bio-properties-panel-name")?.value;
 
     const containerRef = useCallback((node) => {
       if (node !== null) {
@@ -63,11 +63,11 @@ export default React.memo(
       }
     }, []);
 
-    useEffect(() => {
-      if (bpmPropertyInput) {
-        setProcessName(false);
-      }
-  }, [!bpmPropertyInput]);
+  //   useEffect(() => {
+  //     if (bpmPropertyInput) {
+  //       setProcessName(false);
+  //     }
+  // }, [!bpmPropertyInput]);
 
     const cancel = () => {
       dispatch(push(`${redirectUrl}processes`));
@@ -108,7 +108,7 @@ export default React.memo(
       if (diagramXML) {
         dispatch(setProcessDiagramLoading(true));
         dispatch(setProcessDiagramXML(diagramXML));
-      } else if (processKey && !isNewDiagram) {
+      } else if (processKey && !isNewDiagram && !bpmnXml) {
         dispatch(setProcessDiagramLoading(true));
         dispatch(fetchDiagram(processKey, tenant));
       } else {
@@ -302,7 +302,7 @@ export default React.memo(
           <div>
             <h3 className="d-flex align-items-center font-weight-bold">
               <i className="fa fa-cogs mr-2" aria-hidden="true" />
-              <span>{t(`${mode} Processes`)}</span>
+              <span>{t(`${mode} Process`)}</span>
             </h3>
           </div>
 
@@ -314,7 +314,7 @@ export default React.memo(
                   checked={applyAllTenants}
                   onClick={handleApplyAllTenants}
                 />{" "}
-                Apply for all tenants
+                {t("Apply for all tenants")}
               </label>
             ) : null}
 
@@ -326,14 +326,14 @@ export default React.memo(
               variant="outline-dark"
               className="ml-3"
               onClick={handleExport}
-              disabled={processName || !bpmPropertyInput}
+              // disabled={processName || !bpmPropertyInput}
             >
               {t("Export")}
             </Button>
             <Button
               className="ml-3"
               onClick={deployProcess}
-              disabled={processName || !bpmPropertyInput}
+              // disabled={processName || !bpmPropertyInput}
             >
               {t("Deploy")}
             </Button>

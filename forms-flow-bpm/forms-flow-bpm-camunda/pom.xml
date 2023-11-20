@@ -1,0 +1,418 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+
+    <parent>
+        <groupId>formsflow.ai</groupId>
+        <artifactId>forms-flow-bpm</artifactId>
+        <version>5.2.0</version>
+    </parent>
+
+    <artifactId>formsflow-bpm-camunda</artifactId>
+    <version>5.2.0</version>
+
+    <name>formsflow BPM Camunda Extension</name>
+    <description>formsflow BPM Camunda Extension</description>
+
+
+    <properties>
+        <version.java>17</version.java>
+        <maven.compiler.source>17</maven.compiler.source>
+        <maven.compiler.target>17</maven.compiler.target>
+        <encoding>UTF-8</encoding>
+        <project.build.sourceEncoding>${encoding}</project.build.sourceEncoding>
+        <project.build.resourceEncoding>${encoding}</project.build.resourceEncoding>
+        <failOnMissingWebXml>false</failOnMissingWebXml>
+
+        <!-- versions -->
+        <version.camundaKeycloak>7.18.0</version.camundaKeycloak>
+        <version.camunda>7.18.0</version.camunda><!-- 7.17.0 - 7.18.0 -->
+        <version.camundaConnect>1.5.4</version.camundaConnect><!-- 1.5.4 -->
+        <version.camundaMail>1.5.0</version.camundaMail><!-- 1.5.0 -->
+        <version.springBoot>2.7.12</version.springBoot><!-- 2.6.6 - 2.7.12 -->
+        <version.springSecurityOauth2>2.6.7</version.springSecurityOauth2><!--
+			2.6.6 - 2.6.7 -->
+        <version.jackson>2.15.0</version.jackson>
+    </properties>
+
+    <dependencyManagement>
+        <dependencies>
+            <dependency>
+                <groupId>org.camunda.bpm</groupId>
+                <artifactId>camunda-bom</artifactId>
+                <version>${version.camunda}</version>
+                <scope>import</scope>
+                <type>pom</type>
+            </dependency>
+            <dependency>
+                <groupId>org.springframework.boot</groupId>
+                <artifactId>spring-boot-dependencies</artifactId>
+                <version>${version.springBoot}</version>
+                <type>pom</type>
+                <scope>import</scope>
+            </dependency>
+            <!-- modules -->
+            <dependency>
+                <groupId>org.camunda.bpm.extension</groupId>
+                <artifactId>camunda-platform-7-keycloak</artifactId>
+                <version>${version.camundaKeycloak}</version>
+                <scope>provided</scope>
+            </dependency>
+        </dependencies>
+    </dependencyManagement>
+
+    <dependencies>
+        <dependency>
+            <groupId>formsflow.ai</groupId>
+            <artifactId>forms-flow-bpm-utils</artifactId>
+            <version>5.2.0</version>
+        </dependency>
+
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-webflux</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>org.camunda.bpm.springboot</groupId>
+            <artifactId>camunda-bpm-spring-boot-starter-webapp</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>org.camunda.bpm.springboot</groupId>
+            <artifactId>camunda-bpm-spring-boot-starter-rest</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-hateoas</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-devtools</artifactId>
+            <scope>provided</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-actuator</artifactId>
+        </dependency>
+
+        <!-- Spring Security -->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-security</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework.security.oauth.boot</groupId>
+            <artifactId>spring-security-oauth2-autoconfigure</artifactId>
+            <version>${version.springSecurityOauth2}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>org.springframework.security</groupId>
+            <artifactId>spring-security-oauth2-client</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>org.springframework.security</groupId>
+            <artifactId>spring-security-oauth2-resource-server</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>org.springframework.security</groupId>
+            <artifactId>spring-security-oauth2-jose</artifactId>
+        </dependency>
+
+        <!-- Keycloak Identity Prover Plugin -->
+        <dependency>
+            <groupId>org.camunda.bpm.extension</groupId>
+            <artifactId>camunda-platform-7-keycloak</artifactId>
+        </dependency>
+
+        <!-- Add Email Component -->
+        <dependency>
+            <groupId>org.camunda.connect</groupId>
+            <artifactId>camunda-connect-connectors-all</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>org.camunda.bpm.extension</groupId>
+            <artifactId>camunda-bpm-mail-core</artifactId>
+            <version>${version.camundaMail}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>org.camunda.connect</groupId>
+            <artifactId>camunda-connect-core</artifactId>
+            <version>${version.camundaConnect}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>org.camunda.bpm</groupId>
+            <artifactId>camunda-engine-plugin-connect</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>com.sun.mail</groupId>
+            <artifactId>javax.mail</artifactId>
+            <version>1.6.2</version>
+        </dependency>
+
+        <dependency>
+            <groupId>org.slf4j</groupId>
+            <artifactId>slf4j-api</artifactId>
+            <version>1.7.29</version>
+        </dependency>
+
+        <!-- Freemarker Template -->
+        <dependency>
+            <groupId>org.camunda.template-engines</groupId>
+            <artifactId>camunda-template-engines-freemarker</artifactId>
+            <version>2.1.0</version>
+        </dependency>
+
+        <dependency>
+            <groupId>org.camunda.template-engines</groupId>
+            <artifactId>camunda-template-engines-velocity</artifactId>
+            <version>2.1.0</version>
+        </dependency>
+
+        <!-- Database -->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-jdbc</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>org.postgresql</groupId>
+            <artifactId>postgresql</artifactId>
+            <!--version>9.4-1205-jdbc41</version -->
+            <version>42.4.3</version>
+        </dependency>
+
+        <dependency>
+            <groupId>com.microsoft.sqlserver</groupId>
+            <artifactId>mssql-jdbc</artifactId>
+            <version>7.4.1.jre11</version>
+        </dependency>
+
+        <!-- Required to use Spin dataformat support -->
+        <dependency>
+            <groupId>org.camunda.spin</groupId>
+            <artifactId>camunda-spin-dataformat-all</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.camunda.bpm</groupId>
+            <artifactId>camunda-engine-plugin-spin</artifactId>
+        </dependency>
+
+        <!-- Required to run with Java 11 -->
+        <dependency>
+            <groupId>javax.xml.bind</groupId>
+            <artifactId>jaxb-api</artifactId>
+            <version>2.2.3</version>
+        </dependency>
+
+        <!-- Test dependencies -->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-test</artifactId>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.camunda.bpm.assert</groupId>
+            <artifactId>camunda-bpm-assert</artifactId>
+            <version>13.0.0</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.assertj</groupId>
+            <artifactId>assertj-core</artifactId>
+            <version>3.21.0</version>
+            <scope>test</scope>
+        </dependency>
+
+        <!-- java util logging => slf4j -->
+        <dependency>
+            <groupId>org.slf4j</groupId>
+            <artifactId>jul-to-slf4j</artifactId>
+            <scope>test</scope>
+        </dependency>
+
+        <!-- Add your own dependencies here, if in compile scope, they are added 
+			to the jar -->
+        <dependency>
+            <groupId>org.codehaus.groovy</groupId>
+            <artifactId>groovy-all</artifactId>
+            <version>3.0.17</version>
+            <type>pom</type>
+        </dependency>
+
+        <dependency>
+            <groupId>org.jsoup</groupId>
+            <artifactId>jsoup</artifactId>
+            <version>1.15.3</version>
+        </dependency>
+
+        <dependency>
+            <groupId>com.fasterxml.jackson.core</groupId>
+            <artifactId>jackson-databind</artifactId>
+            <version>${version.jackson}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>com.fasterxml.jackson.core</groupId>
+            <artifactId>jackson-core</artifactId>
+            <version>${version.jackson}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>com.fasterxml.jackson.dataformat</groupId>
+            <artifactId>jackson-dataformat-xml</artifactId>
+            <version>${version.jackson}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>com.fasterxml.jackson.core</groupId>
+            <artifactId>jackson-annotations</artifactId>
+            <version>${version.jackson}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>org.apache.commons</groupId>
+            <artifactId>commons-collections4</artifactId>
+            <version>4.4</version>
+        </dependency>
+
+        <dependency>
+            <groupId>org.projectlombok</groupId>
+            <artifactId>lombok</artifactId>
+            <scope>compile</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-websocket</artifactId>
+            <version>5.3.20</version>
+        </dependency>
+
+        <dependency>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-messaging</artifactId>
+            <version>5.3.20</version>
+        </dependency>
+
+        <dependency>
+            <groupId>org.graalvm.js</groupId>
+            <artifactId>js-scriptengine</artifactId>
+            <version>22.3.2</version>
+        </dependency>
+
+        <dependency>
+            <groupId>org.graalvm.js</groupId>
+            <artifactId>js</artifactId>
+            <version>22.3.2</version>
+        </dependency>
+
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-jersey</artifactId>
+        </dependency>
+
+        <!-- Adding Redis Config for web sockets -->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-data-redis-reactive</artifactId>
+        </dependency>
+
+    </dependencies>
+
+    <build>
+        <finalName>forms-flow-bpm</finalName>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-surefire-plugin</artifactId>
+                <version>3.0.0-M7</version>
+            </plugin>
+            <plugin>
+                <groupId>org.jacoco</groupId>
+                <artifactId>jacoco-maven-plugin</artifactId>
+                <version>0.8.8</version>
+                <configuration>
+                    <outputDirectory>target/jacoco-ut</outputDirectory>
+                    <excludes>
+                        <exclude>org/camunda/bpm/extension/keycloak/sso/*.class</exclude>
+                        <exclude>org/camunda/bpm/extension/keycloak/rest/*.class</exclude>
+                        <exclude>org/camunda/bpm/extension/keycloak/rest/oauth2client/*.class</exclude>
+                        <exclude>org/camunda/bpm/extension/keycloak/plugin/*.class</exclude>
+                        <exclude>org/camunda/bpm/extension/hooks/controllers/mapper/*.class</exclude>
+                        <exclude>org/camunda/bpm/extension/hooks/controllers/data/*.class</exclude>
+                        <exclude>org/camunda/bpm/extension/hooks/listeners/data/*.class</exclude>
+                        <exclude>org/camunda/bpm/extension/hooks/services/IUser.class</exclude>
+                        <exclude>org/camunda/bpm/extension/hooks/delegates/data/*.class</exclude>
+                        <exclude>org/camunda/bpm/extension/commons/io/socket/message/*.class</exclude>
+                        <exclude>org/camunda/bpm/extension/commons/io/socket/*.class</exclude>
+                        <exclude>
+                            org/camunda/bpm/extension/commons/connector/auth/FormioConfiguration.class</exclude>
+                        <exclude>
+                            org/camunda/bpm/extension/commons/connector/auth/FormioContext.class</exclude>
+                        <exclude>org/camunda/bpm/extension/commons/connector/*.class</exclude>
+                        <exclude>org/camunda/bpm/extension/CamundaApplication.class</exclude>
+                        <exclude>org/camunda/bpm/extension/commons/exceptions/*.class</exclude>
+                        <exclude>org/camunda/bpm/extension/commons/utils/*.class</exclude>
+                        <exclude>org/camunda/bpm/extension/hooks/controllers/mapper/*.class</exclude>
+                        <exclude>org/camunda/bpm/extension/hooks/exceptions/*.class</exclude>
+                        <exclude>
+                            org/camunda/bpm/extension/hooks/listeners/execution/FormAccessTokenCacheListener.class</exclude>
+                        <exclude>org/camunda/bpm/extension/hooks/rest/exception/*.class</exclude>
+                        <exclude>org/camunda/bpm/extension/commons/exceptions/*.class</exclude>
+                        <exclude>org/camunda/bpm/extension/commons/config/*.class</exclude>
+                        <exclude>org/camunda/bpm/extension/hooks/rest/constant/*.class</exclude>
+                        <exclude>org/camunda/bpm/extension/hooks/services/IMessageEvent.class</exclude>
+                        <exclude>org/camunda/bpm/extension/hooks/rest/dto/*.class</exclude>
+                        <exclude>org/camunda/bpm/extension/hooks/rest/impl/*.class</exclude>
+                    </excludes>
+                </configuration>
+                <executions>
+                    <execution>
+                        <goals>
+                            <goal>prepare-agent</goal>
+                            <goal>report</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+            <plugin>
+                <groupId>org.springframework.boot</groupId>
+                <artifactId>spring-boot-maven-plugin</artifactId>
+                <version>${version.springBoot}</version>
+                <configuration>
+                    <mainClass>org.camunda.bpm.extension.CamundaApplication</mainClass>
+                    <layout>ZIP</layout>
+                </configuration>
+                <executions>
+                    <execution>
+                        <goals>
+                            <goal>repackage</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+            <plugin>
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>exec-maven-plugin</artifactId>
+                <version>3.0.0</version>
+                <configuration>
+                    <mainClass>org.camunda.bpm.extension.CamundaApplication</mainClass>
+                </configuration>
+            </plugin>
+        </plugins>
+    </build>
+
+
+</project>

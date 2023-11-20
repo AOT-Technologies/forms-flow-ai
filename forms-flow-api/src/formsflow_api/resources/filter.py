@@ -170,7 +170,7 @@ class UsersFilterList(Resource):
         return response, status
 
 
-@cors_preflight("PUT, OPTIONS")
+@cors_preflight("PUT, OPTIONS,DELETE,GET")
 @API.route("/<int:filter_id>", methods=["GET", "PUT", "DELETE", "OPTIONS"])
 @API.doc(params={"filter_id": "Filter details corresponding to filter_id"})
 class FilterResourceById(Resource):

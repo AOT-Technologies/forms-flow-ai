@@ -47,33 +47,6 @@ export const getAllApplicationsByFormId = (formId, ...rest) => {
   };
 };
 
-// export const getAllApplications = (pageNo = 1, limit = 5, ...rest) => {
-//   const done = rest.length ? rest[0] : () => {};
-//   return (dispatch) => {
-//     //TODO remove the pageNo and limit currently its mandatory from api
-//     //`${API.GET_ALL_APPLICATIONS}?pageNo=${pageNo}&limit=${limit}`
-//     RequestService.httpGETRequest(
-//       `${API.GET_ALL_APPLICATIONS}?pageNo=${pageNo}&limit=${limit}`
-//     )
-//       .then((res) => {
-//         if (res.data) {
-//           const applications = res.data.applications || [];
-//           dispatch(setApplicationListCount(res.data.totalCount || 0));
-//           dispatch(setDraftCount(res.data?.draftCount || 0));
-//           dispatch(setApplicationList(applications));
-//           done(null, applications);
-//         } else {
-//           dispatch(setApplicationError("Submissions not found"));
-//         }
-//         done(null, res.data);
-//       })
-//       .catch((error) => {
-//         dispatch(setApplicationError("Failed to fetch submissions"));
-//         done(error);
-//       });
-//   };
-// };
-
 export const getApplicationById = (applicationId, ...rest) => {
   const done = rest.length ? rest[0] : () => {};
   const apiUrlgetApplication = replaceUrl(
@@ -244,8 +217,8 @@ export const getAllApplications = (params, ...rest) => {
       url += `&modifiedFrom=${modifiedFrom}&modifiedTo=${modifiedTo}`;
     }
 
-    if (params.sortField || params.sortOrder) {
-      url += `&sortBy=${params.sortField ? params.sortField : null}&sortOrder=${
+    if (params.sortBy || params.sortOrder) {
+      url += `&sortBy=${params.sortBy ? params.sortBy : null}&sortOrder=${
         params.sortOrder ? params.sortOrder : null
       }`;
     }

@@ -8,9 +8,9 @@ import {
   fetchAllBpmProcessesCount,
 } from "../../../apiManager/services/processServices";
 import { useTranslation } from "react-i18next";
-import { Link } from "react-router-dom";
 import { MULTITENANCY_ENABLED } from "../../../constants/constants";
-import { setBpmnSearchText } from "../../../actions/processActions";
+import { setBpmnSearchText, setIsPublicDiagram } from "../../../actions/processActions";
+import { push } from "connected-react-router";
 function BpmnTable() {
   const dispatch = useDispatch();
   const process = useSelector((state) => state.process.processList);
@@ -46,7 +46,7 @@ function BpmnTable() {
       )
     );
     setCountLoading(true);
-    fetchAllBpmProcessesCount(tenantKey, search)
+    fetchAllBpmProcessesCount(tenantKey, searchText)
       .then((result) => {
         setTotalProcess(result.data?.count || 0);
       })
@@ -74,6 +74,13 @@ function BpmnTable() {
     dispatch(setBpmnSearchText(""));
     setActivePage(1);
   };
+ 
+  const gotoEdit = (data) => {
+    if(MULTITENANCY_ENABLED){
+      dispatch(setIsPublicDiagram(data.tenantId ? true : false));
+    }
+   dispatch(push(`${redirectUrl}processes/bpmn/${data.key}/edit`));
+  };
 
   const pageOptions = [
     { text: "5", value: 5 },
@@ -88,7 +95,7 @@ function BpmnTable() {
     <div className="mt-3">
       <LoadingOverlay
         spinner
-        text="Loading..."
+        text={t("Loading...")}
         active={isLoading || countLoading}
       >
         <div style={{ minHeight: "400px" }}>
@@ -96,8 +103,8 @@ function BpmnTable() {
           <table className="table custom-table table-responsive-sm mt-2">
             <thead>
               <tr>
-                <th scope="col">{t("Key")}</th>
                 <th scope="col">{t("Workflow Name")}</th>
+                <th scope="col">{t("Key")}</th>
                 <th scope="col">{t("Type")}</th>
                 <th colSpan="2">
                 <InputGroup className="input-group">
@@ -140,7 +147,7 @@ function BpmnTable() {
                     style={{ height: "300px" }}
                     className="text-center"
                   >
-                    {t("No Process Found")}
+                     { isLoading ? null : t("No Process Found")}
                   </td>
                 </tr>
               </tbody>
@@ -148,15 +155,13 @@ function BpmnTable() {
               <tbody>
                 {process.map((processItem) => (
                   <tr key={processItem.id}>
-                    <td>{processItem.key}</td>
                     <td>{processItem.name}</td>
+                    <td>{processItem.key}</td>
                     <td>{t("BPMN")}</td>
-                    <td>
-                      <Link
-                        to={`${redirectUrl}processes/bpmn/${processItem.key}/edit`}
-                      > 
-                        {t("Edit Workflow")}
-                      </Link>
+                    <td className="d-flex justify-content-end w-100">
+                      <button className="btn btn-link" onClick={()=>{gotoEdit(processItem);}}> 
+                       <i className="fas fa-edit mr-2"/>
+                        {t("Edit Workflow")}</button>
                     </td>
                   </tr>
                 ))}

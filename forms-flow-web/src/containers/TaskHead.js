@@ -5,20 +5,18 @@ import { push } from "connected-react-router";
 import { NavDropdown } from "react-bootstrap";
 import ServiceFlowFilterListDropDown from "../components/ServiceFlow/filter/ServiceTaskFilterListDropDown";
 import createURLPathMatchExp from "../helper/regExp/pathMatch";
-import {MULTITENANCY_ENABLED} from "../constants/constants";
-import {setViewType } from '../actions/bpmTaskActions';
+import { MULTITENANCY_ENABLED } from "../constants/constants";
+import { setViewType } from "../actions/bpmTaskActions";
 import CreateNewFilterDrawer from "../components/ServiceFlow/list/sort/CreateNewFilter";
 import { useTranslation } from "react-i18next"; 
 function TaskHead() {
   const dispatch = useDispatch();
   const { t } = useTranslation();
   const tenantKey = useSelector((state) => state.tenants?.tenantId);
-  const itemCount = useSelector(state => state.bpmTasks.tasksCount);
-  const [filterSelectedForEdit,setFilterSelectedForEdit] = useState(null);
-  const [openFilterDrawer,setOpenFilterDrawer] = useState(false);
-  const selectedFilter = useSelector(
-    (state) => state.bpmTasks.selectedFilter
-  );
+  const itemCount = useSelector((state) => state.bpmTasks.tasksCount);
+  const [filterSelectedForEdit, setFilterSelectedForEdit] = useState(null);
+  const [openFilterDrawer, setOpenFilterDrawer] = useState(false);
+  const selectedFilter = useSelector((state) => state.bpmTasks.selectedFilter);
 
   const isFilterLoading = useSelector(
     (state) => state.bpmTasks.isFilterLoading
@@ -35,24 +33,14 @@ function TaskHead() {
   const goToTask = () => {
     dispatch(push(`${baseUrl}task`));
   };
-  const viewType = useSelector(
-    (state) => state.bpmTasks.viewType
-  );
+  const viewType = useSelector((state) => state.bpmTasks.viewType);
 
   const changeTaskView = (view) => {
     dispatch(setViewType(view));
   };
-
-  const filterListLoading = ()=>{
-    return (
-      <>
-        { isFilterLoading && (
-          <>
-          Loading...
-          </>
-        ) }
-      </>
-    );
+  
+  const filterListLoading = () => {
+    return <>{isFilterLoading && <>Loading...</>}</>;
   };
 
   const count = isTaskListLoading ? "" : `(${itemCount})`;
@@ -72,27 +60,34 @@ function TaskHead() {
                 title={
                   <>
                     <i className="fa fa-list-ul px-2" />
-                    {selectedFilter ?  `${selectedFilter?.name} ${count}` : filterListLoading() }
+                    {selectedFilter.name ? `${selectedFilter.name} ${count}`
+                      : filterListLoading()
+                      }
                   </>
                 }
                 onClick={goToTask}
               >
-                <ServiceFlowFilterListDropDown selectFilter = {setFilterSelectedForEdit} 
-                openFilterDrawer = {setOpenFilterDrawer}/>
+                <ServiceFlowFilterListDropDown
+                  selectFilter={setFilterSelectedForEdit}
+                  openFilterDrawer={setOpenFilterDrawer}
+                />
               </NavDropdown>
             </span>
           </h4>
         </div>
-        
-        <CreateNewFilterDrawer selectedFilterData = {filterSelectedForEdit} 
-        openFilterDrawer = {openFilterDrawer} setOpenFilterDrawer = {setOpenFilterDrawer}
-        setFilterSelectedForEdit={setFilterSelectedForEdit}
-        /> 
+
+        <CreateNewFilterDrawer
+          selectedFilterData={filterSelectedForEdit}
+          openFilterDrawer={openFilterDrawer}
+          setOpenFilterDrawer={setOpenFilterDrawer}
+          setFilterSelectedForEdit={setFilterSelectedForEdit}
+        />
         <div style={{ marginLeft: "auto", marginRight: "3rem" }}>
           <button
             type="button"
-            className={`btn ${viewType ? "btn-light" : "btn-secondary"} ${viewType ? "" : "active"
-              }`}
+            className={`btn ${viewType ? "btn-light" : "btn-secondary"} ${
+              viewType ? "" : "active"
+            }`}
             onClick={() => {
               changeTaskView(false);
             }}
@@ -120,8 +115,9 @@ function TaskHead() {
           </button>
           <button
             type="button"
-            className={`btn ${viewType ? "btn-secondary" : "btn-light"} ${viewType ? "active" : ""
-              }`}
+            className={`btn ${viewType ? "btn-secondary" : "btn-light"} ${
+              viewType ? "active" : ""
+            }`}
             onClick={() => {
               changeTaskView(true);
             }}
@@ -140,12 +136,10 @@ function TaskHead() {
             {t("Card View")}
           </button>
         </div>
-
       </div>
       <hr className="head-rule" />
     </div>
   );
-  
 }
 
 export default TaskHead;

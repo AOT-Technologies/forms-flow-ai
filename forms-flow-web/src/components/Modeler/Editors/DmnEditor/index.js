@@ -265,7 +265,7 @@ export default React.memo(({ processKey, tenant, isNewDiagram, mode}) => {
         <div>
           <h3 className="d-flex align-items-center font-weight-bold">
             <i className="fa fa-cogs mr-2" aria-hidden="true" />
-            <span>{t(`${mode} Dmn`)}</span>
+            <span>{t(`${mode} DMN`)}</span>
           </h3>
         </div>
         <div className="task-head d-flex justify-content-end mb-2">

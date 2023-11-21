@@ -279,10 +279,7 @@
     position: none !important;
   }
 }
-span:hover {
-  color: rgb(13, 13, 14);
-  position: none;
-}
+ 
 .tooltips {
   color: black;
 }
@@ -529,4 +526,9 @@ span[dat-title]:hover:after,
 }
 .react-datepicker-popper {
   z-index: 1000 !important;
+}
+
+.filter-drop-down > .nav-link{
+  padding-left: 0 !important;
+  padding-right: 0 !important;
 }

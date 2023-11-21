@@ -52,6 +52,7 @@ import {
 import FormTable from "./constants/FormTable";
 import ClientTable from "./constants/ClientTable";
 import { useMemo } from "react";
+import _ from "lodash";
 const List = React.memo((props) => {
   const { t } = useTranslation();
   const [showFormUploadModal, setShowFormUploadModal] = useState(false);
@@ -633,13 +634,13 @@ const mapDispatchToProps = (dispatch, ownProps) => {
             if (err) {
               toast.error(
                 <Translation>
-                  {(t) => t("Form deletion unsuccessful")}
+                  {(t) => t(`${_.capitalize(formProcessData?.formType)} deletion unsuccessful`)}
                 </Translation>
               );
             } else {
               toast.success(
                 <Translation>
-                  {(t) => t("Form deleted successfully")}
+                  {(t) => t(`${_.capitalize(formProcessData?.formType)} deleted successfully`)}
                 </Translation>
               );
               const newFormCheckList = formCheckList.filter(

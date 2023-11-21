@@ -87,7 +87,7 @@ const TaskSortSelectedList = React.memo(() => {
 
   const selectedSortList = () => {
     return sortList.map((sort, index) => (
-      <div className="mr-3" key={index}>
+      <div className=" badge border rounded-pill  p-2 m-2 " key={index}>
         {sortList.length > 1 ? (
           <span
             className="mr-1 font-weight-bold click-element"

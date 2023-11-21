@@ -38,6 +38,14 @@ class Filter(AuditDateTimeMixin, AuditUserMixin, BaseModel, db.Model):
         return query.all()
 
     @classmethod
+    def find_all_filters(cls, tenant: str = None) -> List[Filter]:
+        """Find all filters."""
+        query = cls.query
+        if tenant:
+            query = query.filter(Filter.tenant == tenant)
+        return query.all()
+
+    @classmethod
     def create_filter_from_dict(cls, filter_data: dict) -> Filter:
         """Create Filter."""
         if filter_data:

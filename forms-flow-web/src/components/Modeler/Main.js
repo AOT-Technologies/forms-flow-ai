@@ -108,7 +108,7 @@ export default React.memo(() => {
         <button
           className="btn btn-outline-primary  ml-4"
           onClick={uploadClick}
-          title={t("Upload workflow")}
+          title={t("Upload Workflow")}
           style={{ whiteSpace: "nowrap" }}
         >
           <i className="fa fa-upload mr-2" aria-hidden="true" />

@@ -119,6 +119,7 @@ function DmnTable() {
                   e.keyCode == 13 ? handleSearchButtonClick() : ""
                 }
                 placeholder={t("Search by workflow name")}
+                title={t("Search by workflow name")}
                 style={{ backgroundColor: "#ffff" }}
               />
               {search && (

@@ -9,6 +9,8 @@ import { UserSearchFilterTypes } from "../../constants/userSearchFilterTypes";
 import { setBPMFilterSearchParams } from "../../../../actions/bpmTaskActions";
 import { getISODateTime } from "../../../../apiManager/services/formatterService";
 import { MAX_VARIABLES_PER_ROW } from "../../constants/taskConstants";
+import { useTranslation } from "react-i18next"; 
+
 const TaskFilterListViewComponent = React.memo(
   ({ setDisplayFilter, setFilterParams, filterParams }) => {
     const vissibleAttributes = useSelector(
@@ -42,6 +44,7 @@ const TaskFilterListViewComponent = React.memo(
     const [priority, setPriority] = useState(filterParams.priority || null);
     const createSearchNode = useRef();
     const dispatch = useDispatch();
+    const { t } = useTranslation();
     const [filterCount, setFilterCount] = useState(0);
     const [assigneeOptions, setAssigneeOptions] = useState([]);
     const handleClick = (e) => {
@@ -222,7 +225,7 @@ const TaskFilterListViewComponent = React.memo(
                 margin: "auto",
               }}
             >
-              <span className="font-weight-bold ">Filters</span>
+              <span className="font-weight-bold ">{t("Search")}</span>
               <span className="font-weight-bold">
                 Filter count: {filterCount}
               </span>
@@ -233,13 +236,13 @@ const TaskFilterListViewComponent = React.memo(
             <Row className="mt-2">
               {vissibleAttributes.taskVisibleAttributes?.assignee && (
                 <Col xs={6}>
-                  <label>Assignee</label>
+                  <label>{"Assignee"}</label>
                   <select
                     value={assignee}
                     onChange={(e) => setAssignee(e.target.value)}
                     className="form-control"
                   >
-                    <option value="">Select a user</option>
+                    <option value="">{t("Select a user")}</option>
                     {assigneeOptions.map((option) => (
                       <option key={option.value} value={option.value}>
                         {option.label}
@@ -250,7 +253,7 @@ const TaskFilterListViewComponent = React.memo(
               )}
               {vissibleAttributes.taskVisibleAttributes?.priority && (
                 <Col xs={6}>
-                  <label>Priority</label>
+                  <label>{t("Priority")}</label>
                   <input
                     className="form-control"
                     placeholder=""
@@ -295,7 +298,7 @@ const TaskFilterListViewComponent = React.memo(
             <Row className="mt-2 ">
               {vissibleAttributes.taskVisibleAttributes?.dueDate && (
                 <Col xs={6}>
-                  <label>Due Date</label>
+                  <label>{t("Due Date")}</label>
                   <Row>
                     <Col xs={6}>
                       <DatePicker
@@ -335,7 +338,7 @@ const TaskFilterListViewComponent = React.memo(
               )}
               {vissibleAttributes.taskVisibleAttributes?.followUp && (
                 <Col xs={6}>
-                  <label>Follow up Date</label>
+                  <label>{t("Follow up Date")}</label>
                   <div>
                     <Row>
                       <Col xs={6}>
@@ -379,7 +382,7 @@ const TaskFilterListViewComponent = React.memo(
             <Row className="mt-2">
               {vissibleAttributes.taskVisibleAttributes?.createdDate && (
                 <Col xs={6}>
-                  <label> Created Date</label>
+                  <label> {t("Created Date")}</label>
                   <div>
                     <Row>
                       <Col xs={6}>
@@ -428,7 +431,7 @@ const TaskFilterListViewComponent = React.memo(
                 className="text-danger small "
                 onClick={() => clearAllFilters()}
               >
-                Clear All Filters
+                {t("Clear All Filters")}
               </span>
             </Col>
             <Col className="text-right">
@@ -436,10 +439,10 @@ const TaskFilterListViewComponent = React.memo(
                 className="btn btn-light mr-1 "
                 onClick={() => setDisplayFilter(false)}
               >
-                Cancel
+                {t("Cancel")}
               </button>
               <button className="btn btn-dark" onClick={() => applyFilters()}>
-                Show results
+                {t("Show results")}
               </button>
             </Col>
           </Row>

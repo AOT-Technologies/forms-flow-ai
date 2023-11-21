@@ -302,13 +302,7 @@ i.fa.fa-question-circle.text-muted {
   filter: invert(36%) sepia(38%) saturate(7152%) hue-rotate(227deg) brightness(101%) contrast(98%);
 }
 
-.active-tab-dropdown>#task-dropdown {
-  //color: $lightblue !important;
-  //border-bottom: 1px solid red;
-  background-color: transparent;
-  filter: invert(36%) sepia(38%) saturate(7152%) hue-rotate(227deg) brightness(101%) contrast(98%);
-}
-
+ 
 .dropdown-item:hover {
   filter: none;
   background-color: #e9ecef;
@@ -776,3 +770,5 @@ box-shadow: 0 0 0 2px rgb(217, 217, 217);
       }
   }
 }
+
+ 

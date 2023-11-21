@@ -45,7 +45,6 @@ const TaskFilterListViewComponent = React.memo(
     const createSearchNode = useRef();
     const dispatch = useDispatch();
     const { t } = useTranslation();
-    const [filterCount, setFilterCount] = useState(0);
     const [assigneeOptions, setAssigneeOptions] = useState([]);
     const handleClick = (e) => {
       if (createSearchNode?.current?.contains(e.target)) {
@@ -140,13 +139,9 @@ const TaskFilterListViewComponent = React.memo(
 
       dispatch(setBPMFilterSearchParams(filterParams));
       setFilterParams(filterParams);
-      setFilterCount(Object.keys(filterParams).length);
       setDisplayFilter(false);
     };
-    useEffect(() => {
-      // Update filterCount whenever filterParams changes
-      setFilterCount(Object.keys(filterParams).length);
-    }, [filterParams]);
+
 
     const clearAllFilters = () => {
       setAssignee("");
@@ -226,9 +221,6 @@ const TaskFilterListViewComponent = React.memo(
               }}
             >
               <span className="font-weight-bold ">{t("Search")}</span>
-              <span className="font-weight-bold">
-                {t("Filter count:")} {filterCount}
-              </span>
             </Row>
           </div>
           <hr className="m-0 w-100" />

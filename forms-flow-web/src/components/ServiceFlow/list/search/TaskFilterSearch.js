@@ -34,7 +34,7 @@ const TaskFilterSearch = React.memo(
     const [showCalander, setCalander] = useState(false);
     useEffect(() => {
       if (selectedFilter) {
-        const taskVariable = selectedFilter?.properties?.variables || [];
+        const taskVariable = selectedFilter?.variables || [];
         setTaskVariable(taskVariable);
         setFilterTaskVariableArray(taskVariable);
       }

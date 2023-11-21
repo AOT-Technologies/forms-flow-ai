@@ -41,7 +41,7 @@ import {
 } from "../../../constants/constants";
 import { getCustomSubmission } from "../../../apiManager/services/FormServices";
 import { getFormioRoleIds } from "../../../apiManager/services/userservices";
-import  NoFilterSelected  from "../../../components/ServiceFlow/list/sort/NoFilterSelected";
+import  NoTaskSelectedMessage  from "../../../components/ServiceFlow/NoTaskSelected";
 
 import { bpmActionError } from "../../../actions/bpmTaskActions";
 import { setCustomSubmission } from "../../../actions/checkListActions";
@@ -252,7 +252,7 @@ const ServiceFlowTaskDetails = React.memo(() => {
 
   if (!bpmTaskId) {
     return (
-      <NoFilterSelected />
+      <NoTaskSelectedMessage />
     );
   } else if (isTaskLoading) {
     return (

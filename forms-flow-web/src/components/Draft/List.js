@@ -96,7 +96,7 @@ export const DraftList = React.memo(() => {
       dispatch(setDraftListLoading(false));
       }
     }));
-  }, [dispatch, page, countPerPage,sortOrder,sortBy,draf]);
+  }, [dispatch, page, countPerPage,sortOrder,sortBy,draftListSearchParams]);
 
   const onYes = (e) => {
     e.currentTarget.disabled = true;

@@ -136,10 +136,10 @@ const TaskSortSelectedList = React.memo(() => {
           <i
             className="fa fa-plus-circle"
             data-title={t("Add sorting")}
-            title="Add sorting"
+            title={t("Add sorting")}
             onClick={() => setShowSortListDropdown(!showSortListDropdown)}
           />
-          <span  style={{  textDecoration: 'underline' , fontSize: '14px' }} className="px-1 py-1">Add sorting</span>
+          <span  style={{  textDecoration: 'underline' , fontSize: '14px' }} className="px-1 py-1">{t("Add sorting")}</span>
 
           {showSortListDropdown ? (
             <TaskSort handleClick={addSort} options={sortOptions} />

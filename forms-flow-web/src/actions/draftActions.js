@@ -98,3 +98,10 @@ export const setDraftListLoading = (data) => (dispatch) => {
     payload: data,
   });
 };
+
+export const setDraftListSearchParams = (data) => (dispatch) => {
+  dispatch({
+    type: ACTION_CONSTANTS.DRAFT_LIST_SEARCH_PARAMS,
+    payload: data,
+  });
+};

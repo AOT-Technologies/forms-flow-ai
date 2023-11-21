@@ -2,24 +2,29 @@ import React, { useEffect, useRef, useState } from "react";
 import { Col, Row } from "react-bootstrap";
 import DateRangePicker from "@wojtekmaj/react-daterange-picker";
 import { useDispatch, useSelector } from "react-redux";
-import { getAllApplications } from "../../apiManager/services/applicationServices";
 import { useTranslation } from "react-i18next";
-import { setApplicationLoading } from "../../actions/applicationActions";
+import {
+  setApplicationListActivePage,
+  setApplicationListSearchParams,
+  setApplicationLoading,
+} from "../../actions/applicationActions";
 
-const ApplicationFilter = ({ setDisplayFilter, filterParams, setFilterParams }) => {
+const ApplicationFilter = ({
+  setDisplayFilter,
+  filterParams,
+  setFilterParams,
+}) => {
   const dispatch = useDispatch();
   const createSearchNode = useRef();
-  const [applicationId, setApplicationId] = useState(filterParams.id || "");
-  const [applicationName, setApplicationName] = useState(filterParams.applicationName || "");
-  const [applicationStatus, setApplicationStatus] = useState(filterParams.applicationStatus || "");
-  const [lastModified, setLastModified] = useState(filterParams.modified || null);
+  const [searchParams, setSearchParams] = useState({
+    id: filterParams.id || "",
+    applicationName: filterParams.applicationName || "",
+    applicationStatus: filterParams.applicationStatus || "",
+    modified: filterParams.modified || null,
+  });
   const applicationStatusOptions = useSelector(
     (state) => state.applications.applicationStatus
   );
-  const pageNo = useSelector((state) => state.applications?.activePage);
-  const limit = useSelector((state) => state.applications?.countPerPage);
-  const sortOrder = useSelector((state) => state.applications?.sortOrder);
-  const sortBy = useSelector((state) => state.applications?.sortBy);
   const { t } = useTranslation();
   const handleClick = (e) => {
     if (createSearchNode?.current?.contains(e.target)) {
@@ -38,52 +43,40 @@ const ApplicationFilter = ({ setDisplayFilter, filterParams, setFilterParams }) 
     };
   }, []);
 
-  const onSetDateRange = (selectedRange) => {
-    setLastModified(selectedRange);
+  const handleChange = (key, value) => {
+    setSearchParams((prevParams) => ({
+      ...prevParams,
+      [key]: value,
+    }));
   };
 
   const clearAllFilters = () => {
     dispatch(setApplicationLoading(true));
-    setApplicationId("");
-    setApplicationStatus("");
-    setApplicationName("");
-    setLastModified(null);
-    setFilterParams({});
-    let filters = {
-      applicationName: null,
-      id: null,
-      applicationStatus: null,
+    setSearchParams({
+      id: "",
+      applicationName: "",
+      applicationStatus: "",
       modified: null,
-      page: pageNo,
-      limit: limit,
-      sortOrder,
-      sortBy
-    };
-    dispatch(getAllApplications(filters,(err,data) => {
-      if(data){
-        dispatch(setApplicationLoading(false));
-      }
-    }));
+    });
+    dispatch(
+      setApplicationListSearchParams({
+        id: "",
+        applicationName: "",
+        applicationStatus: "",
+        modified: null,
+      })
+    );
+    setFilterParams({ id: "",
+    applicationName: "",
+    applicationStatus: "",
+    modified: null,});
   };
 
   const applyFilters = () => {
     dispatch(setApplicationLoading(true));
-    let filterParams = {
-      applicationName: applicationName,
-      id: applicationId,
-      applicationStatus: applicationStatus,
-      modified: lastModified,
-      page: pageNo,
-      limit: limit,
-      sortOrder,
-      sortBy
-    };
-    setFilterParams(filterParams);
-    dispatch(getAllApplications(filterParams,(err,data) => {
-      if(data){
-        dispatch(setApplicationLoading(false));
-      }
-    }));
+    dispatch(setApplicationListActivePage(1));
+    setFilterParams(searchParams);
+    dispatch(setApplicationListSearchParams(searchParams));
   };
 
   const getApplicationStatusOptions = (applicationStatusOptions) => {
@@ -118,8 +111,8 @@ const ApplicationFilter = ({ setDisplayFilter, filterParams, setFilterParams }) 
             <input
               className="form-control"
               placeholder=""
-              value={applicationId}
-              onChange={(e) => setApplicationId(e.target.value)}
+              value={searchParams.id}
+              onChange={(e) => handleChange("id", e.target.value)}
             />
           </Col>
           <Col>
@@ -127,8 +120,8 @@ const ApplicationFilter = ({ setDisplayFilter, filterParams, setFilterParams }) 
             <input
               className="form-control"
               placeholder=""
-              value={applicationName}
-              onChange={(e) => setApplicationName(e.target.value)}
+              value={searchParams.applicationName}
+              onChange={(e) => handleChange("applicationName", e.target.value)}
             />
           </Col>
         </Row>
@@ -139,25 +132,27 @@ const ApplicationFilter = ({ setDisplayFilter, filterParams, setFilterParams }) 
           <Col>
             <label>{t("Status")}</label>
             <select
-              value={applicationStatus}
-              onChange={(e) => setApplicationStatus(e.target.value)}
+              value={searchParams.applicationStatus}
+              onChange={(e) => handleChange("applicationStatus", e.target.value)}
               className="form-control p-1"
             >
               <option value=""></option>
-              {getApplicationStatusOptions(applicationStatusOptions).map((option) => (
-                <option key={option.value} value={option.value}>
-                  {option.label}
-                </option>
-              ))}
+              {getApplicationStatusOptions(applicationStatusOptions).map(
+                (option) => (
+                  <option key={option.value} value={option.value}>
+                    {option.label}
+                  </option>
+                )
+              )}
             </select>
           </Col>
-          <Col className="mr-2" >
+          <Col className="mr-2">
             <label>{t("Modified Date")}</label>
             <DateRangePicker
               onChange={(selectedRange) => {
-                onSetDateRange(selectedRange);
+                handleChange("modified", selectedRange);
               }}
-              value={lastModified}
+              value={searchParams.modified}
               maxDate={new Date()}
               minDate={new Date("January 1, 0999 01:01:00")}
               dayPlaceholder="dd"
@@ -187,10 +182,7 @@ const ApplicationFilter = ({ setDisplayFilter, filterParams, setFilterParams }) 
           >
             {t("Cancel")}
           </button>
-          <button
-            className="btn btn-dark"
-            onClick={() => applyFilters()}
-          >
+          <button className="btn btn-dark" onClick={() => applyFilters()}>
             {t("Show results")}
           </button>
         </Col>

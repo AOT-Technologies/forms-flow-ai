@@ -107,6 +107,26 @@ export const ApplicationList = React.memo(() => {
   if (isApplicationListLoading) {
     return <Loading />;
   }
+  const getNoDataIndicationContent = () => {
+    return (
+      <div className="div-no-application">
+        <label className="lbl-no-application">
+          {" "}
+          <Translation>{(t) => t("No submissions found")}</Translation>{" "}
+        </label>
+        <br />
+        <label className="lbl-no-application-desc">
+          {" "}
+          <Translation>
+            {(t) =>
+              t("Please change the selected filters to view submissions")
+            }
+          </Translation>
+        </label>
+        <br />
+      </div>
+    );
+  };
   
   const validateFilters = (newState) => {
     if (

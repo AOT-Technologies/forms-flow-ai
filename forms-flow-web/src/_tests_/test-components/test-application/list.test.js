@@ -103,5 +103,5 @@ test("Should render No results found when providing a filter value which is not 
   const statespy = jest.spyOn(React, "useState");
   statespy.mockImplementationOnce(() => React.useState({ filtermode: true }));
   render(<ApplicationList />);
-  expect(screen.getAllByText(/Submissions/i).length).toBe(1);
+  expect(screen.getAllByText(/Submissions/i).length).toBe(2);
 });

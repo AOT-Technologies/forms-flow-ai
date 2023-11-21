@@ -5,8 +5,7 @@ import ServiceTaskListViewDetails from './list/ServiceTaskListViewDetails';
 
 
 import ServiceFlowTaskDetails from "./details/ServiceTaskDetails";
-import { Col, Container, Row } from "react-bootstrap";
-import "./ServiceFlow.scss";
+ import "./ServiceFlow.scss";
 import {
   fetchBPMTaskCount,
   fetchFilterList,
@@ -241,20 +240,21 @@ export default React.memo(() => {
   }, [cardView, dispatch]);
 
   return (
-    <Container fluid id="main" className="pt-0">
+    <div>
+      <TaskHead />
       {cardView ? (
         <>
-        <TaskHead />
-        <Row className="p-2">
-        <Col lg={3} xs={12} sm={12} md={4} xl={3}>
+        
+        <div className="row mx-0">
+        <div className="col-12 px-0 col-md-4 col-xl-3">
           <section>
             <header className="task-section-top">
               <TaskSortSelectedList />
             </header>
             <ServiceFlowTaskList />
           </section>
-        </Col>
-        <Col className="pl-0" lg={9} xs={12} sm={12} md={8} xl={9}>
+        </div>
+        <div className="col-12 pr-0 pl-md-5 col-md-8 col-xl-9  px-2 pr-md-0 py-5 py-md-0 border ">
           <Switch>
             <Route
               path={`${BASE_ROUTE}task/:taskId?`}
@@ -265,8 +265,8 @@ export default React.memo(() => {
               <Redirect exact to="/404" />
             </Route>
           </Switch>
-        </Col>
-        </Row>
+        </div>
+        </div>
         </>
       ) :
         (
@@ -276,7 +276,6 @@ export default React.memo(() => {
               path={`${BASE_ROUTE}task`}
               render={() => (
                 <>
-                  <TaskHead />
                   <ServiceTaskListView />
                 </>
               )}
@@ -297,6 +296,6 @@ export default React.memo(() => {
             </Route>
           </Switch>
         ) }
-    </Container>
+    </div>
   );
 });

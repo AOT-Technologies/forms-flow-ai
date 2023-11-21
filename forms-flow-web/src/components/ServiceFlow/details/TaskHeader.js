@@ -217,8 +217,8 @@ const TaskHeader = React.memo(() => {
         onClose={() => setModal(false)}
         groups={taskGroups}
       />
-      <Row className="ml-0 task-header">{task?.name}</Row>
-      <Row className="ml-0 task-name">
+      <Row className="mx-0 task-header">{task?.name}</Row>
+      <Row className="mx-0 task-name">
         <span className="application-id" data-title={t("Process Name")}>
           {" "}
           {
@@ -227,12 +227,12 @@ const TaskHeader = React.memo(() => {
           }
         </span>
       </Row>
-      <Row className="ml-0">
+      <Row className="mx-0">
         <span data-title={t("Submission ID")} className="application-id">
           {t("Submission ID")}# {task?.applicationId}
         </span>
       </Row>
-      <Row className="actionable mb-4">
+      <Row className="actionable mb-4 mx-0">
         <Col
           sm={followUpDate ? 2 : "auto"}
           data-title={

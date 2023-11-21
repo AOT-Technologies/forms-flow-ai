@@ -1,5 +1,6 @@
 """This exposes filter service."""
 
+from flask import current_app
 from formsflow_api_utils.exceptions import BusinessException
 from formsflow_api_utils.utils import ADMIN_GROUP
 from formsflow_api_utils.utils.user_context import UserContext, user_context
@@ -49,10 +50,51 @@ class FilterService:
     def get_user_filters(**kwargs):
         """Get filters for the user."""
         user: UserContext = kwargs["user"]
+        tenant_key = user.tenant_key
+        # The migration script creates a default 'All Tasks' filter that is not specific to any tenant.
+        # In a multi-tenant environment, verify the existence of the 'All Tasks' filter.
+
+        # If the 'All Tasks' filter does not exist for the specific tenant, create it,
+        # ensuring that the tenant-specific 'All Tasks' filter is not deleted by the tenant admin.
+        if current_app.config.get("MULTI_TENANCY_ENABLED"):
+            all_filters = Filter.find_all_filters()
+            all_tasks_filter = any(
+                (item.name.lower() == "all tasks" and item.status == "active")
+                or (item.name.lower() == "all tasks" and item.tenant == tenant_key)
+                for item in all_filters
+            )
+
+            if not all_tasks_filter:
+                filter_obj = Filter(
+                    name="All Tasks",
+                    variables=[
+                        {"name": "applicationId", "label": "Application Id"},
+                        {"name": "formName", "label": "Form Name"},
+                    ],
+                    status="active",
+                    created_by="system",
+                    created="now()",
+                    criteria={},
+                    users={},
+                    roles={},
+                    tenant=tenant_key,
+                    task_visible_attributes={
+                        "applicationId": True,
+                        "dueDate": True,
+                        "priority": True,
+                        "assignee": True,
+                        "taskTitle": True,
+                        "createdDate": True,
+                        "groups": True,
+                        "followupDate": True,
+                    },
+                )
+                filter_obj.save()
+
         filters = Filter.find_user_filters(
             roles=user.group_or_roles,
             user=user.user_name,
-            tenant=user.tenant_key,
+            tenant=tenant_key,
             admin=ADMIN_GROUP in user.roles,
         )
         filter_data = filter_schema.dump(filters, many=True)
@@ -101,7 +143,11 @@ class FilterService:
             admin=ADMIN_GROUP in user.roles,
         )
         if filter_result:
-            if tenant_key is not None and filter_result.tenant != tenant_key:
+            if (
+                tenant_key is not None
+                and filter_result.tenant != tenant_key
+                and filter_result.tenant is not None
+            ):
                 raise PermissionError("Tenant authentication failed.")
             filter_result.mark_inactive()
         else:
@@ -121,7 +167,11 @@ class FilterService:
         )
 
         if filter_result:
-            if tenant_key is not None and filter_result.tenant != tenant_key:
+            if (
+                tenant_key is not None
+                and filter_result.tenant != tenant_key
+                and filter_result.tenant is not None
+            ):
                 raise PermissionError("Tenant authentication failed.")
             filter_data = FilterService.update_payload(filter_data)
             filter_result.update(filter_data)

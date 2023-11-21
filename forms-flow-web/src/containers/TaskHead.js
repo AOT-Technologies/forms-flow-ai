@@ -66,8 +66,6 @@ function TaskHead() {
         setFilterSelectedForEdit={setFilterSelectedForEdit}
         />
         </div>
-        
-         
         <div  >
           <button
             type="button"

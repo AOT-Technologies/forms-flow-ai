@@ -53,7 +53,9 @@ export const DraftList = React.memo(() => {
   const page = useSelector((state) => state.draft.activePage);
   const sortOrder = useSelector((state) => state.draft.sortOrder);
   const sortBy = useSelector((state) => state.draft.sortBy);
-
+  const draftListSearchParams = useSelector(
+    (state) => state.draft.searchParams
+  );
   const iserror = useSelector(
     (state) => state.draft.draftSubmissionError.error
   );
@@ -67,9 +69,7 @@ export const DraftList = React.memo(() => {
   const [isLoading, setIsLoading] = React.useState(false);
   const [invalidFilters, setInvalidFilters] = React.useState({});
   let filterParams = {
-      draftName: null,
-      id: null,
-      modified: null,
+      ...draftListSearchParams,
       page: page,
       limit: countPerPage,
       sortOrder,
@@ -96,7 +96,7 @@ export const DraftList = React.memo(() => {
       dispatch(setDraftListLoading(false));
       }
     }));
-  }, [dispatch, page, countPerPage,sortOrder,sortBy]);
+  }, [dispatch, page, countPerPage,sortOrder,sortBy,draftListSearchParams]);
 
   const onYes = (e) => {
     e.currentTarget.disabled = true;

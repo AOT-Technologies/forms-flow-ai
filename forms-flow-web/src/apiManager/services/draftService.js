@@ -202,7 +202,6 @@ export const fetchDrafts = (params, ...rest) => {
       url += `&DraftName=${draftName}`;
     }
     if (id) {
-      console.log("keri2");
       url += `&id=${id}`;
     }
 

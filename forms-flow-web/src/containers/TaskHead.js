@@ -43,7 +43,7 @@ function TaskHead() {
 
   return (
     <div>
-      <div className="d-flex align-items-center justify-content-between">
+      <div className="d-flex flex-md-row flex-column  align-items-md-center justify-content-between">
         <div className="d-flex align-items-center">
         <NavDropdown
         className="filter-drop-down"

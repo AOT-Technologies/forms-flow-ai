@@ -253,7 +253,7 @@ const Create = React.memo(() => {
               </div>
             </div>
             <div className="">
-              <label htmlFor="Description" className="control-label field-required font-weight-bold">
+              <label htmlFor="Description" className="control-label font-weight-bold">
                 {" "}
                 {t("Description")}
               </label>

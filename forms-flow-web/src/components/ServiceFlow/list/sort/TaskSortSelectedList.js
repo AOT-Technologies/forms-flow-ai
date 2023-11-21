@@ -87,7 +87,7 @@ const TaskSortSelectedList = React.memo(() => {
 
   const selectedSortList = () => {
     return sortList.map((sort, index) => (
-      <div className="mr-3" key={index}>
+      <div className=" badge border rounded-pill  p-2 m-2 " key={index}>
         {sortList.length > 1 ? (
           <span
             className="mr-1 font-weight-bold click-element"
@@ -133,13 +133,15 @@ const TaskSortSelectedList = React.memo(() => {
       {selectedSortList()}
       {sortOptions.length ? (
         <div className="ml-1">
-          <i
-            className="fa fa-plus-circle"
+          <button
+            className="btn btn-small btn-link text-dark"
             data-title={t("Add sorting")}
             title={t("Add sorting")}
             onClick={() => setShowSortListDropdown(!showSortListDropdown)}
-          />
-          <span  style={{  textDecoration: 'underline' , fontSize: '14px' }} className="px-1 py-1">{t("Add sorting")}</span>
+          >
+            <i className="fa fa-plus-circle mr-2" />
+            {t("Add sorting")}
+          </button>
 
           {showSortListDropdown ? (
             <TaskSort handleClick={addSort} options={sortOptions} />

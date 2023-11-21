@@ -123,9 +123,8 @@ const ServiceTaskListView = React.memo(() => {
   const renderTaskList = () => {
     if ((tasksCount || taskList.length) && selectedFilter) {
       return (
-        <>
-        <hr className=" head-rule mt-1"/>
-        <div className="list-container p-2"
+        <> 
+        <div className="list-container "
       
         >
           {taskList?.map((task, index) => (

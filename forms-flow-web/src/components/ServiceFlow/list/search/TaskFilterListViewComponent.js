@@ -227,7 +227,7 @@ const TaskFilterListViewComponent = React.memo(
             >
               <span className="font-weight-bold ">{t("Search")}</span>
               <span className="font-weight-bold">
-                Filter count: {filterCount}
+                {t("Filter count:")} {filterCount}
               </span>
             </Row>
           </div>
@@ -236,7 +236,7 @@ const TaskFilterListViewComponent = React.memo(
             <Row className="mt-2">
               {vissibleAttributes.taskVisibleAttributes?.assignee && (
                 <Col xs={6}>
-                  <label>{"Assignee"}</label>
+                  <label>{t("Assignee")}</label>
                   <select
                     value={assignee}
                     onChange={(e) => setAssignee(e.target.value)}

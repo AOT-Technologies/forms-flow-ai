@@ -35,6 +35,10 @@ class BusinessErrorCode(ErrorCodeMixin, Enum):
         "Invalid response received from insights",
         HTTPStatus.BAD_REQUEST,
     )
+    INSIGHTS_NOTFOUND = (
+        "Analytics is not enabled for this tenant",
+        HTTPStatus.BAD_REQUEST,
+    )
     INVALID_BPM_RESPONSE = "Invalid response received from bpm", HTTPStatus.BAD_REQUEST
     BPM_BASE_URL_NOT_SET = "BPM_API_URL not set environment", HTTPStatus.BAD_REQUEST
     MISSING_PAGINATION_PARAMETERS = (

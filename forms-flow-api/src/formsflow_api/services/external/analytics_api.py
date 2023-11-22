@@ -32,6 +32,8 @@ class RedashAPIService:  # pylint: disable=too-few-public-methods
             current_app.logger.debug("Response from analytics  %s", response.json())
             if response.ok:
                 return response.json()
+            if response.status_code == 404:
+                raise BusinessException(BusinessErrorCode.INSIGHTS_NOTFOUND)
             raise BusinessException(BusinessErrorCode.INVALID_INSIGHTS_RESPONSE)
         except requests.ConnectionError as e:
             raise BusinessException(ExternalError.INSIGHTS_SERVICE_UNAVAILABLE) from e

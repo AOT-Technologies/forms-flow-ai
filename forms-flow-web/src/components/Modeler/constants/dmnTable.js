@@ -200,7 +200,7 @@ function DmnTable() {
                 {t("Showing")} {(limit * activePage) - (limit - 1)} {t("to")}
                 &nbsp;
                 {Math.min(limit * activePage, totalProcess)} {t("of")}&nbsp;
-                {totalProcess} {t("entries")}
+                {totalProcess} {t("results")}
               </span>
             </div>
             <div className="d-flex align-items-center">

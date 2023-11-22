@@ -229,13 +229,14 @@ export const fetchDrafts = (params, ...rest) => {
           dispatch(setDraftlist(drafts));
           dispatch(setApplicationListCount(res.data?.applicationCount || 0));
           done(null, drafts);
-        } else {
-          // dispatch(serviceActionError(res));
+        }else{
+          done(null, res.data);
         }
-        done(null, res.data);
+        
       })
       .catch((error) => {
-        // dispatch(serviceActionError(error));
+        dispatch(setDraftCount(0));
+        dispatch(setDraftlist([]));
         done(error);
       });
   };

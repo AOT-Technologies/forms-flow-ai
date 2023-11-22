@@ -86,10 +86,8 @@ export const ApplicationList = React.memo(() => {
       sortOrder,
       sortBy
   };
-    dispatch(getAllApplications(filterParams,(err,data) => {
-      if(data){
+    dispatch(getAllApplications(filterParams,() => {
         dispatch(setApplicationLoading(false));
-      }
     }));
   }, [page,limit,sortBy,sortOrder,searchParams]);
 

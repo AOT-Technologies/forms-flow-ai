@@ -237,6 +237,8 @@ export const getAllApplications = (params, ...rest) => {
         done(null, res.data);
       })
       .catch((error) => {
+        dispatch(setApplicationListCount(0));
+        dispatch(setApplicationList([]));
         dispatch(serviceActionError(error));
         done(error);
       });

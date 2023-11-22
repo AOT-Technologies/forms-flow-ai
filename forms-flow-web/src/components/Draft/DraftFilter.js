@@ -27,6 +27,8 @@ const DraftFilter = ({ setDisplayFilter, filterParams, setFilterParams }) => {
     setDisplayFilter(false);
   };
 
+  const closeFilterModal = ()=> setDisplayFilter(false);
+
   useEffect(() => {
     // add when mounted
     document.addEventListener("mousedown", handleClick);
@@ -59,6 +61,7 @@ const DraftFilter = ({ setDisplayFilter, filterParams, setFilterParams }) => {
       })
     );
     setFilterParams({ id: "", draftName: "", modified: null });
+    closeFilterModal();
   };
 
   const applyFilters = () => {
@@ -66,6 +69,7 @@ const DraftFilter = ({ setDisplayFilter, filterParams, setFilterParams }) => {
     dispatch(setDraftListActivePage(1));
     dispatch(setDraftListSearchParams(searchParams));
     setFilterParams(searchParams);
+    closeFilterModal();
   };
 
   return (
@@ -74,18 +78,7 @@ const DraftFilter = ({ setDisplayFilter, filterParams, setFilterParams }) => {
       style={{ minWidth: "500px" }}
       ref={createSearchNode}
     >
-      <div className="bg-light ">
-        <Row
-          className="px-4 py-2"
-          style={{
-            display: "flex",
-            justifyContent: "space-between",
-            alignItems: "center",
-            margin: "auto",
-          }}
-        ></Row>
-      </div>
-      <hr className="m-0 w-100" />
+ 
       <div className="m-4 px-2">
         <Row className="mt-2">
           <Col>
@@ -109,7 +102,7 @@ const DraftFilter = ({ setDisplayFilter, filterParams, setFilterParams }) => {
         </Row>
       </div>
       <hr className="m-0 w-100" />
-      <div className="ml-3 d-flex flex-column col-4">
+      <div className="m-3 d-flex flex-column col-4">
         <label>{t("Modified Date")}</label>
         <DateRangePicker
           onChange={(selectedRange) => {
@@ -128,22 +121,22 @@ const DraftFilter = ({ setDisplayFilter, filterParams, setFilterParams }) => {
       </div>
       <hr className="mx-4" />
       <Row className="m-3 filter-cancel-btn-container ">
-        <Col className="text-left">
-          <span
-            className="text-danger small "
-            onClick={() => clearAllFilters()}
+        <Col className="text-left px-0">
+          <button
+            className="btn btn-link text-danger"
+            onClick={clearAllFilters}
           >
             {t("Clear All Filters")}
-          </span>
+          </button>
         </Col>
         <Col className="text-right">
           <button
-            className="btn btn-light mr-1 "
-            onClick={() => setDisplayFilter(false)}
+            className="btn btn-link text-dark mr-1 "
+            onClick={closeFilterModal}
           >
             {t("Cancel")}
           </button>
-          <button className="btn btn-dark" onClick={() => applyFilters()}>
+          <button className="btn btn-dark" onClick={applyFilters}>
             {t("Show results")}
           </button>
         </Col>

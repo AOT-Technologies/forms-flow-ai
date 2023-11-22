@@ -34,6 +34,8 @@ const ApplicationFilter = ({
     setDisplayFilter(false);
   };
 
+  const closeFilterModal = () =>  setDisplayFilter(false);
+
   useEffect(() => {
     // add when mounted
     document.addEventListener("mousedown", handleClick);
@@ -70,6 +72,7 @@ const ApplicationFilter = ({
     applicationName: "",
     applicationStatus: "",
     modified: null,});
+    closeFilterModal();
   };
 
   const applyFilters = () => {
@@ -77,6 +80,7 @@ const ApplicationFilter = ({
     dispatch(setApplicationListActivePage(1));
     setFilterParams(searchParams);
     dispatch(setApplicationListSearchParams(searchParams));
+    closeFilterModal();
   };
 
   const getApplicationStatusOptions = (applicationStatusOptions) => {
@@ -86,24 +90,14 @@ const ApplicationFilter = ({
     return selectOptions;
   };
 
+  
   return (
     <div
       className="Filter-listview "
       style={{ minWidth: "500px" }}
       ref={createSearchNode}
     >
-      <div className="bg-light ">
-        <Row
-          className="px-4 py-2"
-          style={{
-            display: "flex",
-            justifyContent: "space-between",
-            alignItems: "center",
-            margin: "auto",
-          }}
-        ></Row>
-      </div>
-      <hr className="m-0 w-100" />
+
       <div className="m-4 px-2">
         <Row className="mt-2">
           <Col>
@@ -166,23 +160,23 @@ const ApplicationFilter = ({
         </Row>
       </div>
       <hr className="mx-4" />
-      <Row className="m-3 filter-cancel-btn-container ">
-        <Col className="text-left">
-          <span
-            className="text-danger small "
-            onClick={() => clearAllFilters()}
+    <Row className="m-3 filter-cancel-btn-container ">
+        <Col className="px-0 text-left">
+          <button
+            className="btn btn-link text-danger"
+            onClick={clearAllFilters}
           >
             {t("Clear All Filters")}
-          </span>
+          </button>
         </Col>
         <Col className="text-right">
           <button
-            className="btn btn-light mr-1 "
-            onClick={() => setDisplayFilter(false)}
+            className="btn btn-link text-dark mr-1 "
+            onClick={closeFilterModal}
           >
             {t("Cancel")}
           </button>
-          <button className="btn btn-dark" onClick={() => applyFilters()}>
+          <button className="btn btn-dark" onClick={applyFilters}>
             {t("Show results")}
           </button>
         </Col>

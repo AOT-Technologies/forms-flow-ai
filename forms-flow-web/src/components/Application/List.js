@@ -56,6 +56,7 @@ export const ApplicationList = React.memo(() => {
   const pageNo = useSelector((state) => state.applications?.activePage);
   const limit = useSelector((state) => state.applications?.countPerPage);
   const totalApplications = useSelector((state) => state.applications?.applicationCount);
+  const searchParams = useSelector((state) => state.applications?.searchParams);
   const draftCount = useSelector((state) => state.draft.draftCount);
   const dispatch = useDispatch();
   const userRoles = useSelector((state) => state.user.roles);
@@ -79,9 +80,7 @@ export const ApplicationList = React.memo(() => {
 
   useEffect(() => {
     let filterParams = {
-      applicationName:null,
-      id:null,
-      applicationStatus:null,
+      ...searchParams,
       page:pageNo,
       limit:limit,
       sortOrder,
@@ -92,7 +91,7 @@ export const ApplicationList = React.memo(() => {
         dispatch(setApplicationLoading(false));
       }
     }));
-  }, [page,limit,sortBy,sortOrder]);
+  }, [page,limit,sortBy,sortOrder,searchParams]);
 
   const isClientEdit = (applicationStatus) => {
     if (
@@ -128,6 +127,7 @@ export const ApplicationList = React.memo(() => {
       </div>
     );
   };
+  
   const validateFilters = (newState) => {
     if (
       newState.filters?.id?.filterVal &&

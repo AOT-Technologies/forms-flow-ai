@@ -117,7 +117,7 @@ const TaskFilterComponent = React.memo(({ totalTasks }) => {
               placeholder={t("Filter Tasks")}
               onClick={() => {}}
               onFocus={() => setShowFilterItems(true)}
-              title="Filter tasks here"
+              title={t("Filter Tasks")}
             />
             {showFilterItems ? (
               <TaskFilterDropdown onFilterSelect={setFilter} />

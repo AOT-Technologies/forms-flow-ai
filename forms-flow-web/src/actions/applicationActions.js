@@ -136,3 +136,10 @@ export const setApplicationLoading = (data) => (dispatch) => {
     payload: data,
   });
 };
+
+export const setApplicationListSearchParams = (data) => (dispatch) => {
+  dispatch({
+    type: ACTION_CONSTANTS.APPLICATION_LIST_SEARCH_PARAMS,
+    payload: data,
+  });
+};

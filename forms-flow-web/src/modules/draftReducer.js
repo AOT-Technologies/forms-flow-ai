@@ -18,6 +18,7 @@ const initialState = {
   lastUpdated: {},
   sortOrder : "desc",
   sortBy : "id",
+  searchParams : {},
   isDraftLoading : false,
 };
 
@@ -58,6 +59,8 @@ const draftSubmission = (state = initialState, action) => {
         return { ...state, sortBy: action.payload };
     case ACTION_CONSTANTS.DRAFT_LIST_LOADING:
         return { ...state, isDraftLoading : action.payload };
+    case ACTION_CONSTANTS.DRAFT_LIST_SEARCH_PARAMS:
+        return { ...state, searchParams : action.payload };      
     default:
       return state;
   }

@@ -1,23 +1,23 @@
 import React, { useEffect, useRef, useState } from "react";
 import { Col, Row } from "react-bootstrap";
 import DateRangePicker from "@wojtekmaj/react-daterange-picker";
-import { useDispatch, useSelector } from "react-redux";
-import { fetchDrafts } from "../../apiManager/services/draftService";
+import { useDispatch } from "react-redux";
 import { useTranslation } from "react-i18next";
-import { setDraftListLoading } from "../../actions/draftActions";
+import {
+  setDraftListActivePage,
+  setDraftListLoading,
+  setDraftListSearchParams,
+} from "../../actions/draftActions";
 
 const DraftFilter = ({ setDisplayFilter, filterParams, setFilterParams }) => {
   const dispatch = useDispatch();
   const createSearchNode = useRef();
-  const [draftId, setDraftId] = useState(filterParams.id || "");
-  const [draftName, setDraftName] = useState(filterParams.draftName || "");
-  const [lastModified, setLastModified] = useState(
-    filterParams.modified || null
-  );
-  const pageNo = useSelector((state) => state.draft?.activePage);
-  const limit = useSelector((state) => state.draft?.countPerPage);
-  const sortOrder = useSelector((state) => state.draft.sortOrder);
-  const sortBy = useSelector((state) => state.draft.sortBy);
+  const [searchParams, setSearchParams] = useState({
+    id: filterParams.id || "",
+    draftName: filterParams.draftName || "",
+    modified: filterParams.modified || null,
+  });
+
   const { t } = useTranslation();
   const handleClick = (e) => {
     if (createSearchNode?.current?.contains(e.target)) {
@@ -36,49 +36,36 @@ const DraftFilter = ({ setDisplayFilter, filterParams, setFilterParams }) => {
     };
   }, []);
 
-  const onSetDateRange = (selectedRange) => {
-    setLastModified(selectedRange);
+  const handleChange = (key, value) => {
+    setSearchParams((prevParams) => ({
+      ...prevParams,
+      [key]: value,
+    }));
   };
 
   const clearAllFilters = () => {
     dispatch(setDraftListLoading(true));
-    setDraftId("");
-    setDraftName("");
-    setLastModified(null);
-    setFilterParams({});
-    let filters = {
-      draftName: null,
-      id: null,
+    setSearchParams({
+      id: "",
+      draftName: "",
       modified: null,
-      page: pageNo,
-      limit: limit,
-      sortOrder,
-      sortBy
-    };
-    dispatch(fetchDrafts(filters,(err,data) => {
-      if(data){
-      dispatch(setDraftListLoading(false));
-      }
-    }));
+    });
+
+    dispatch(
+      setDraftListSearchParams({
+        id: "",
+        draftName: "",
+        modified: null,
+      })
+    );
+    setFilterParams({ id: "", draftName: "", modified: null });
   };
 
   const applyFilters = () => {
     dispatch(setDraftListLoading(true));
-    let filterParams = {
-      draftName: draftName,
-      id: draftId,
-      modified: lastModified,
-      page: pageNo,
-      limit: limit,
-      sortOrder,
-      sortBy
-    };
-    setFilterParams(filterParams);
-    dispatch(fetchDrafts(filterParams,(err,data) => {
-      if(data){
-      dispatch(setDraftListLoading(false));
-      }
-    }));
+    dispatch(setDraftListActivePage(1));
+    dispatch(setDraftListSearchParams(searchParams));
+    setFilterParams(searchParams);
   };
 
   return (
@@ -102,44 +89,42 @@ const DraftFilter = ({ setDisplayFilter, filterParams, setFilterParams }) => {
       <div className="m-4 px-2">
         <Row className="mt-2">
           <Col>
-          <label>{t("Id")}</label>
+            <label>{t("Id")}</label>
             <input
               className="form-control"
               placeholder=""
-              value={draftId}
-              onChange={(e) => setDraftId(e.target.value)}
+              value={searchParams.id}
+              onChange={(e) => handleChange("id", e.target.value)}
             />
           </Col>
           <Col>
-          <label>{t("Title")}</label>
+            <label>{t("Title")}</label>
             <input
               className="form-control"
               placeholder=""
-              value={draftName}
-              onChange={(e) => setDraftName(e.target.value)}
+              value={searchParams.draftName}
+              onChange={(e) => handleChange("draftName", e.target.value)}
             />
           </Col>
         </Row>
       </div>
       <hr className="m-0 w-100" />
       <div className="ml-3 d-flex flex-column col-4">
-         
-      <label>{t("Modified Date")}</label>
-            <DateRangePicker
-              onChange={(selectedRange) => {
-                onSetDateRange(selectedRange);
-              }}
-              value={lastModified}
-              maxDate={new Date()}
-              minDate={new Date("January 1, 0999 01:01:00")}
-              dayPlaceholder="dd"
-              monthPlaceholder="mm"
-              yearPlaceholder="yyyy"
-              calendarAriaLabel="Select the date"
-              dayAriaLabel="Select the day"
-              clearAriaLabel="Click to clear"
-            />
-         
+        <label>{t("Modified Date")}</label>
+        <DateRangePicker
+          onChange={(selectedRange) => {
+            handleChange("modified", selectedRange);
+          }}
+          value={searchParams.modified}
+          maxDate={new Date()}
+          minDate={new Date("January 1, 0999 01:01:00")}
+          dayPlaceholder="dd"
+          monthPlaceholder="mm"
+          yearPlaceholder="yyyy"
+          calendarAriaLabel="Select the date"
+          dayAriaLabel="Select the day"
+          clearAriaLabel="Click to clear"
+        />
       </div>
       <hr className="mx-4" />
       <Row className="m-3 filter-cancel-btn-container ">
@@ -148,7 +133,7 @@ const DraftFilter = ({ setDisplayFilter, filterParams, setFilterParams }) => {
             className="text-danger small "
             onClick={() => clearAllFilters()}
           >
-           {t("Clear All Filters")}
+            {t("Clear All Filters")}
           </span>
         </Col>
         <Col className="text-right">
@@ -159,7 +144,7 @@ const DraftFilter = ({ setDisplayFilter, filterParams, setFilterParams }) => {
             {t("Cancel")}
           </button>
           <button className="btn btn-dark" onClick={() => applyFilters()}>
-          {t("Show results")}
+            {t("Show results")}
           </button>
         </Col>
       </Row>

@@ -21,6 +21,7 @@ import { Translation } from "react-i18next";
 import {
   setBPMFilterLoader,
   setBPMFiltersAndCount,
+  setFilterListParams,
   setSelectedBPMFilter,
 } from "../../../../actions/bpmTaskActions";
 
@@ -34,6 +35,7 @@ import {
 import { Badge, ListGroup, OverlayTrigger, Popover } from "react-bootstrap";
 // import { fetchUsers } from "../../../../apiManager/services/userservices";
 import { trimFirstSlash } from "../../constants/taskConstants";
+import { cloneDeep } from "lodash";
 export default function CreateNewFilterDrawer({
   selectedFilterData,
   openFilterDrawer,
@@ -64,6 +66,12 @@ export default function CreateNewFilterDrawer({
   const userName = useSelector(
     (state) => state.user?.userDetail?.preferred_username
   );
+  const sortParams = useSelector(
+    (state) => state.bpmTasks.filterListSortParams
+  );
+  const searchParams = useSelector(
+    (state) => state.bpmTasks.filterListSearchParams
+  );
   const selectedFilter = useSelector((state) => state.bpmTasks.selectedFilter);
   const filterList = useSelector((state) => state.bpmTasks.filterList);
   const [variables, setVariables] = useState([]);
@@ -88,6 +96,25 @@ export default function CreateNewFilterDrawer({
   const taskAttributesCount = Object.values(checkboxes).filter(
     (value) => value === true
   ).length;
+
+  const fetchTasks = (resData)=>{
+  
+    const reqParamData = {
+      ...{ sorting: [...sortParams.sorting] },
+      ...searchParams,
+    };
+    let selectedBPMFilterParams;
+   
+    
+      selectedBPMFilterParams = {
+        ...resData,
+        criteria: {
+          ...selectedBPMFilterParams?.criteria,
+          ...reqParamData
+        }
+      };
+      dispatch(setFilterListParams(cloneDeep(selectedBPMFilterParams)));
+  };
 
   const customTrim = (inputString) => {
     // Remove '%' symbol from the start
@@ -229,7 +256,7 @@ export default function CreateNewFilterDrawer({
                   (filter) => filter.id === selectedFilterData?.id
                 );
                 if (selectedFilterData?.id === selectedFilter?.id) {
-                  dispatch(fetchServiceTaskList(resData, null, firstResult));
+                  fetchTasks(resData);
                 } else {
                   dispatch(setSelectedBPMFilter(filterSelected));
                 }
@@ -332,7 +359,9 @@ export default function CreateNewFilterDrawer({
       ? editFilters(data, selectedFilterData?.id)
       : saveFilters(data);
     submitFunction
-      .then(() => successCallBack(data))
+      .then((res) => {
+        successCallBack(res.data);
+      })
       .catch((error) => {
         toast.error(t("Filter Creation Failed"));
         console.error("error", error);
@@ -583,7 +612,7 @@ export default function CreateNewFilterDrawer({
           </div>
         )}
         <h5>
-          <Translation>{(t) => t("Asignee")}</Translation>
+          <Translation>{(t) => t("Assignee")}</Translation>
         </h5>
         <span
           style={{

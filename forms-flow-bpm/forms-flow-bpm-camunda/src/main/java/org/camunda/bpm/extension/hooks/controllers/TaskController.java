@@ -1,8 +1,6 @@
 package org.camunda.bpm.extension.hooks.controllers;
 
-import com.nimbusds.jose.shaded.json.JSONArray;
-import com.nimbusds.oauth2.sdk.util.CollectionUtils;
-
+import net.minidev.json.JSONArray;
 import org.apache.commons.lang3.StringUtils;
 import org.camunda.bpm.extension.hooks.controllers.data.Task;
 import org.camunda.bpm.extension.hooks.controllers.data.Variable;
@@ -12,16 +10,17 @@ import org.springframework.jdbc.core.ResultSetExtractor;
 import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.security.core.Authentication;
-import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.oauth2.core.oidc.user.OidcUser;
-import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.security.oauth2.server.resource.authentication.JwtAuthenticationToken;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.server.ResponseStatusException;
 
-import javax.servlet.ServletException;
+import jakarta.servlet.ServletException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;

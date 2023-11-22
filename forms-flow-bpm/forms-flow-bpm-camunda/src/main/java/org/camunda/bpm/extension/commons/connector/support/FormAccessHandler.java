@@ -22,7 +22,7 @@ import reactor.core.publisher.Mono;
 import java.nio.charset.StandardCharsets;
 import java.util.Properties;
 
-
+import org.springframework.http.HttpStatusCode;
 /**
  * Form Access Handler.
  * This class serves as gateway for all formio interactions.
@@ -79,7 +79,7 @@ public class FormAccessHandler extends AbstractAccessHandler implements IAccessH
                                         dataBuffer.read(bytes);
                                         DataBufferUtils.release(dataBuffer); // Release the buffer to avoid memory leaks
                                         String responseBody = new String(bytes, StandardCharsets.UTF_8);
-                                        HttpStatus httpStatus = response.statusCode();
+                                        HttpStatusCode httpStatus = response.statusCode();
                                         return ResponseEntity.status(httpStatus).body(responseBody);
                                     });
                         }
@@ -108,7 +108,7 @@ public class FormAccessHandler extends AbstractAccessHandler implements IAccessH
                                         dataBuffer.read(bytes);
                                         DataBufferUtils.release(dataBuffer); // Release the buffer to avoid memory leaks
                                         String responseBody = new String(bytes, StandardCharsets.UTF_8);
-                                        HttpStatus httpStatus = response.statusCode();
+                                        HttpStatusCode httpStatus = response.statusCode();
                                         return ResponseEntity.status(httpStatus).body(responseBody);
                                     });
                         }

@@ -26,7 +26,7 @@ public class WebSocketConfig implements WebSocketMessageBrokerConfigurer  {
 
     @Override
     public void registerStompEndpoints(StompEndpointRegistry registry) {
-        registry.addEndpoint("/forms-flow-bpm-socket/**").setAllowedOrigins(getOrigins())
+        registry.addEndpoint("/forms-flow-bpm-socket/").setAllowedOrigins(getOrigins())
                 .withSockJS();
     }
 

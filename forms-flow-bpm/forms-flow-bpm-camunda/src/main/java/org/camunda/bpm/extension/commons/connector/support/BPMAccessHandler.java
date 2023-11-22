@@ -49,8 +49,10 @@ public class BPMAccessHandler extends AbstractAccessHandler{
                 .header(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
                 .body((payload == null? BodyInserters.empty():BodyInserters.fromValue(payload)))
                 .retrieve()
-                .onStatus(HttpStatus::is4xxClientError, clientResponse -> Mono.error(new HttpClientErrorException(HttpStatus.BAD_REQUEST)))
-                .onStatus(HttpStatus::is5xxServerError, clientResponse -> Mono.error(new HttpClientErrorException(HttpStatus.INTERNAL_SERVER_ERROR)))
+                .onStatus(HttpStatusCode::is4xxClientError,
+                        clientResponse -> Mono.error(new HttpClientErrorException(clientResponse.statusCode())))
+                .onStatus(HttpStatusCode::is5xxServerError,
+                        clientResponse -> Mono.error(new HttpClientErrorException(clientResponse.statusCode())))
                 .toEntity(String.class)
                 .block();
 

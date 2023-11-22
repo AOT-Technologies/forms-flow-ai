@@ -3,10 +3,10 @@ package org.camunda.bpm.extension.keycloak.rest;
 import java.io.IOException;
 import java.util.*;
 
-import javax.servlet.FilterChain;
-import javax.servlet.ServletException;
-import javax.servlet.ServletRequest;
-import javax.servlet.ServletResponse;
+import jakarta.servlet.FilterChain;
+import jakarta.servlet.ServletException;
+import jakarta.servlet.ServletRequest;
+import jakarta.servlet.ServletResponse;
 
 import org.camunda.bpm.engine.IdentityService;
 import org.junit.jupiter.api.Test;
@@ -20,7 +20,7 @@ import org.springframework.security.oauth2.client.OAuth2AuthorizedClientService;
 import org.springframework.security.oauth2.core.oidc.user.OidcUser;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
-import com.nimbusds.jose.shaded.json.JSONArray;
+import net.minidev.json.JSONArray;
 
 import static org.junit.Assert.assertEquals;
 import static org.mockito.Mockito.mock;

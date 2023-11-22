@@ -6,7 +6,7 @@ import static org.mockito.Mockito.when;
 import java.io.IOException;
 import java.util.List;
 
-import javax.servlet.ServletException;
+import jakarta.servlet.ServletException;
 
 import org.camunda.bpm.engine.identity.Group;
 import org.camunda.bpm.extension.keycloak.CacheableKeycloakGroupQuery;

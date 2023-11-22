@@ -14,6 +14,7 @@ import java.io.IOException;
 import java.util.Map;
 import java.util.Properties;
 import java.util.logging.Logger;
+import jakarta.annotation.Resource;
 
 /**
  *  Http Service Invoker.

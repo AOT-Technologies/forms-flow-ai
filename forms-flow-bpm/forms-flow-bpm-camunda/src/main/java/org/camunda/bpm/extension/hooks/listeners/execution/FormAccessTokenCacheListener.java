@@ -7,7 +7,7 @@ import org.camunda.bpm.extension.hooks.listeners.BaseListener;
 import org.camunda.bpm.extension.hooks.services.FormSubmissionService;
 import org.springframework.beans.factory.annotation.Autowired;
 
-import javax.inject.Named;
+import jakarta.inject.Named;
 import java.util.logging.Logger;
 
 /**

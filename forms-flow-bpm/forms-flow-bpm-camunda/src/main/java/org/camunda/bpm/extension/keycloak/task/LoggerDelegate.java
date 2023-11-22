@@ -2,7 +2,7 @@ package org.camunda.bpm.extension.keycloak.task;
 
 import java.util.logging.Logger;
 
-import javax.inject.Named;
+import jakarta.inject.Named;
 
 import org.camunda.bpm.engine.delegate.DelegateExecution;
 import org.camunda.bpm.engine.delegate.JavaDelegate;

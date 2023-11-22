@@ -1,5 +1,5 @@
 import React, { useEffect, useRef } from "react";
-import { ListGroup, Row } from "react-bootstrap";
+import { ListGroup } from "react-bootstrap";
 import { useDispatch, useSelector } from "react-redux";
 import { fetchServiceTaskList } from "../../../apiManager/services/bpmTaskServices";
 import {
@@ -67,6 +67,7 @@ const ServiceFlowTaskList = React.memo(() => {
     if ((tasksCount || taskList.length) && selectedFilter) {
       return (
         <>
+          <div style={{minHeight:"67vh"}}>
           {taskList.map((task, index) => (
             <div
               className={`clickable shadow border  ${
@@ -75,11 +76,11 @@ const ServiceFlowTaskList = React.memo(() => {
               key={index}
               onClick={() => getTaskDetails(task.id)}
             >
-              <Row>
-                <div className="col-12">
+             
+                <div className="col-12 px-0">
                   <h5 className="font-weight-bold">{task.name}</h5>
                 </div>
-              </Row>
+             
               <div className="font-size-16 d-flex justify-content-between">
                 <div className="pr-0" style={{ maxWidth: "65%" }}>
                   <span data-toggle="tooltip" title="Form Name">
@@ -148,35 +149,40 @@ const ServiceFlowTaskList = React.memo(() => {
             </div>
           ))}
 
-          <Row style={{justifyContent: "flex-end"}}>
-          <div className="pagination-wrapper">
+          </div>
+         
+              <div className="d-flex justify-content-end">
+                
             <Pagination
               activePage={activePage}
               itemsCountPerPage={tasksPerPage}
               totalItemsCount={tasksCount}
-              pageRangeDisplayed={3}
+              pageRangeDisplayed={5}
               onChange={handlePageChange}
               prevPageText="<"
               nextPageText=">"
+              itemClass="page-item"
+              linkClass="page-link"
             />
-          </div>
-          </Row>
+              </div>
+        
+       
 
         </>
       );
     } else {
       return (
-        <Row className="not-selected mt-2 ml-1">
-          <i className="fa fa-info-circle mr-2 mt-1" />
+        <div className="d-flex align-items-center justify-content-center py-4 px-2">
+          <i className="fa fa-info-circle mr-2" />
           {t("No task matching filters found.")}
-        </Row>
+        </div>
       );
     }
   };
 
   return (
     <>
-      <ListGroup className="service-task-list">
+      <ListGroup className="service-task-list d-block">
         <TaskFilterComponent  totalTasks={isTaskListLoading ? 0 : tasksCount} />
         {isTaskListLoading ? <Loading /> : renderTaskList()}
       </ListGroup>

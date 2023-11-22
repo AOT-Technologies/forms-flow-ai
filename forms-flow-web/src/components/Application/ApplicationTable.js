@@ -90,12 +90,36 @@ const ApplicationTable = () => {
   const submissionDetails = (data) => {
     dispatch(push(`${redirectUrl}application/${data.id}`));
   };
+  
 
   const  viewSubmissionDetails = (data) => (
     <button className="btn btn-link mt-2" onClick={() => submissionDetails(data)}>
       <Translation>{(t) => t("View Details")}</Translation>{" "}
     </button>
   );
+
+  const getNoDataIndicationContent = () => {
+    return (
+      <div className="div-no-application">
+        <label className="lbl-no-application">
+          {" "}
+          <Translation>{(t) => t("No submissions found")}</Translation>{" "}
+        </label>
+        <br />
+        {(filterParams.id || filterParams.applicationName ||  
+        filterParams.applicationStatus || filterParams.modified) && (
+        <label className="lbl-no-application-desc">
+          {" "}
+          <Translation>
+            {(t) =>
+              t("Please change the selected filters to view submissions")
+            }
+          </Translation>
+        </label>)}
+        <br />
+      </div>
+    );
+  };
 
   const viewSubmittedForm = (formData) => {
     const url =
@@ -179,7 +203,7 @@ const ApplicationTable = () => {
             </tr>
           </thead>
           <tbody>
-            {listApplications(applications)?.map((e) => {
+            {applications.length ? listApplications(applications)?.map((e) => {
               return (
                 <tr key={e.id}>
                   <td>{e.id}</td>
@@ -190,7 +214,9 @@ const ApplicationTable = () => {
                   <td>{viewSubmissionDetails(e)}</td>
                 </tr>
               );
-            })}
+            }) : <td colSpan="6" className="text-center">
+            {getNoDataIndicationContent()}
+          </td>}
           </tbody>
         </table>
       </LoadingOverlay>

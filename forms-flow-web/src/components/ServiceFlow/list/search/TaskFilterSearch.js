@@ -148,13 +148,13 @@ const TaskFilterSearch = React.memo(
                     nameBoxIndex === index ? (
                       <>
                         <button
-                          className="btn click-element"
+                          className="btn btn-small"
                           onClick={() => updateFilterName(index)}
                         >
                           <i className="fa fa-check" aria-hidden="true" />
                         </button>
                         <button
-                          className="btn click-element"
+                          className="btn btn-small"
                           onClick={() => setShowNameBoxIndex(null)}
                         >
                           <i className="fa fa-times" aria-hidden="true" />
@@ -221,7 +221,7 @@ const TaskFilterSearch = React.memo(
                       <span className="btn-container second-box">
                         <span className="second-inner-box">
                           {filter.type === Filter_Search_Types.VARIABLES ? (
-                            <button className="btn">
+                            <button className="btn btn-small">
                               <i
                                 className="fa fa-calendar"
                                 aria-hidden="true"
@@ -230,14 +230,14 @@ const TaskFilterSearch = React.memo(
                             </button>
                           ) : null}
                           <button
-                            className="btn click-element"
+                            className="btn btn-small"
                             onClick={() => updateFilterValue(index)}
                           >
                             <i className="fa fa-check" aria-hidden="true" />
                           </button>
 
                           <button
-                            className="btn click-element"
+                            className="btn btn-small"
                             onClick={() => {
                               setShowValueBoxIndex(null);
                               setCalander(false);

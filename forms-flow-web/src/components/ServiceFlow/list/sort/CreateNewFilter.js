@@ -609,7 +609,7 @@ export default function CreateNewFilterDrawer({
           </div>
         )}
         <h5>
-          <Translation>{(t) => t("Asignee")}</Translation>
+          <Translation>{(t) => t("Assignee")}</Translation>
         </h5>
         <span
           style={{

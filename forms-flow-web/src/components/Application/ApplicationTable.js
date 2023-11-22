@@ -131,7 +131,7 @@ const ApplicationTable = () => {
         className="btn btn-link mt-2"
         onClick={() => window.open(url, "_blank")}
       >
-        <Translation>{(t) => t(`${formData.isClientEdit ? "Edit Form" : "View Submitted Form"}`)}</Translation>{" "}
+        <Translation>{(t) => t(`${formData.isClientEdit || formData.isResubmit ? "Edit Form" : "View Submitted Form"}`)}</Translation>{" "}
       </button>
     );
   };

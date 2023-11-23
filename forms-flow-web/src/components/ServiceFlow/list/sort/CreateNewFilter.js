@@ -55,7 +55,7 @@ export default function CreateNewFilterDrawer({
     setIsTasksForCurrentUserGroupsEnabled,
   ] = useState(false);
   const [isMyTasksEnabled,setIsMyTasksEnabled] = useState(false);
-  const [permissions, setPermissions] = useState("");
+  const [permissions, setPermissions] = useState(PRIVATE_ONLY_YOU);
   const [identifierId, setIdentifierId] = useState("");
   const [selectUserGroupIcon, setSelectUserGroupIcon] = useState("");
   const [specificUserGroup, setSpecificUserGroup] = useState("");
@@ -282,7 +282,7 @@ export default function CreateNewFilterDrawer({
     setCandidateGroup("");
     setAssignee("");
     setIncludeAssignedTasks("");
-    setPermissions("");
+    setPermissions(PRIVATE_ONLY_YOU);
     setIdentifierId("");
     setSelectUserGroupIcon("");
     setSpecificUserGroup("");

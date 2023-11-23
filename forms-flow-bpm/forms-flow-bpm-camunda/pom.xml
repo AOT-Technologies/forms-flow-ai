@@ -165,8 +165,7 @@
             <artifactId>camunda-engine-plugin-connect</artifactId>
         </dependency>
 
-        <!--
-		https://mvnrepository.com/artifact/org.camunda.bpm/camunda-engine-rest -->
+<!--		https://mvnrepository.com/artifact/org.camunda.bpm/camunda-engine-rest -->
         <dependency>
             <groupId>org.camunda.bpm</groupId>
             <artifactId>camunda-engine-rest-core</artifactId>

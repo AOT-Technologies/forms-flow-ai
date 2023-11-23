@@ -347,7 +347,7 @@ const TaskHeaderListView = React.memo(({task,taskId,groupView = true}) => {
               <div
                 className="actionable"
                 onClick={() => setModal(true)}
-                data-title={t("groups")}
+                data-title={t("Groups")}
               >
                 <i className="fa fa-group mr-1" />
                 {taskGroups.length === 0 ? (

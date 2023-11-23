@@ -187,12 +187,14 @@ const ApplicationTable = () => {
                 {isAscending && sortBy === "id" ? (
                   <i
                     onClick={() => updateSort("desc", "id")}
-                    className="fa-sharp fa-solid fa-arrow-down-9-1 cursor-pointer"
+                    className="fa-sharp fa-solid fa-arrow-down-1-9 cursor-pointer"
+                    title={t("Descending")}
                   />
                 ) : (
                   <i
                     onClick={() => updateSort("asc", "id")}
-                    className="fa-sharp fa-solid fa-arrow-up-1-9 cursor-pointer"
+                    className="fa-sharp fa-solid fa-arrow-down-9-1 cursor-pointer"
+                    title={t("Ascending")}
                   />
                 )}{" "}
               </th>
@@ -202,11 +204,13 @@ const ApplicationTable = () => {
                   <i
                     onClick={() => updateSort("desc", "applicationName")}
                     className="fa-sharp fa-solid fa-arrow-down-a-z cursor-pointer"
+                    title={t("Descending")}
                   />
                 ) : (
                   <i
                     onClick={() => updateSort("asc", "applicationName")}
-                    className="fa-sharp fa-solid fa-arrow-up-z-a cursor-pointer"
+                    className="fa-sharp fa-solid fa-arrow-down-z-a cursor-pointer"
+                    title={t("Ascending")}
                   />
                 )}
               </th>
@@ -216,11 +220,13 @@ const ApplicationTable = () => {
                   <i
                     onClick={() => updateSort("desc", "applicationStatus")}
                     className="fa-sharp fa-solid fa-arrow-down-a-z  ml-2 cursor-pointer"
+                    title={t("Descending")}
                   />
                 ) : (
                   <i
                     onClick={() => updateSort("asc", "applicationStatus")}
-                    className="fa-sharp fa-solid fa-arrow-up-z-a  ml-2 cursor-pointer"
+                    className="fa-sharp fa-solid fa-arrow-down-z-a  ml-2 cursor-pointer"
+                    title={t("Ascending")}
                   />
                 )}
               </th>
@@ -229,12 +235,14 @@ const ApplicationTable = () => {
                 {isAscending && sortBy === "modified" ? (
                   <i
                     onClick={() => updateSort("desc", "modified")}
-                    className="fa-sharp fa-solid fa-arrow-down-9-1  ml-2 cursor-pointer"
+                    className="fa-sharp fa-solid fa-arrow-down-1-9  ml-2 cursor-pointer"
+                    title={t("Descending")}
                   />
                 ) : (
                   <i
                     onClick={() => updateSort("asc", "modified")}
-                    className="fa-sharp fa-solid fa-arrow-up-1-9  ml-2 cursor-pointer"
+                    className="fa-sharp fa-solid fa-arrow-down-9-1  ml-2 cursor-pointer"
+                    title={t("Ascending")}
                   />
                 )}
               </th>

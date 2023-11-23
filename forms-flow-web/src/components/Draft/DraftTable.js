@@ -135,12 +135,14 @@ const DraftTable = () => {
                   {isAscending && sortBy === "id" ? (
                     <i
                       onClick={() => updateSort("desc", "id")}
-                      className="fa-sharp fa-solid fa-arrow-down-9-1 cursor-pointer"
+                      className="fa-sharp fa-solid fa-arrow-down-1-9 cursor-pointer"
+                      title={t("Descending")}
                     />
                   ) : (
                     <i
                       onClick={() => updateSort("asc", "id")}
-                      className="fa-sharp fa-solid fa-arrow-up-1-9 cursor-pointer"
+                      className="fa-sharp fa-solid fa-arrow-down-9-1 cursor-pointer"
+                      title={t("Ascending")}
                     />
                   )}
                 </th>
@@ -149,12 +151,14 @@ const DraftTable = () => {
                   {isAscending && sortBy === "DraftName" ? (
                     <i
                       onClick={() => updateSort("desc", "DraftName")}
-                      className="fa-sharp fa-solid fa-arrow-down-a-z  ml-2 cursor-pointer"
+                      className="fa-sharp fa-solid fa-arrow-down-a-z cursor-pointer"
+                      title={t("Descending")}                      
                     />
                   ) : (
                     <i
                       onClick={() => updateSort("asc", "DraftName")}
-                      className="fa-sharp fa-solid fa-arrow-up-z-a  ml-2 cursor-pointer"
+                      className="fa-sharp fa-solid fa-arrow-down-z-a cursor-pointer"
+                      title={t("Ascending")}
                     />
                   )}
                 </th>
@@ -163,12 +167,14 @@ const DraftTable = () => {
                   {isAscending && sortBy === "modified" ? (
                     <i
                       onClick={() => updateSort("desc", "modified")}
-                      className="fa-sharp fa-solid fa-arrow-down-9-1 ml-2 cursor-pointer"
+                      className="fa-sharp fa-solid fa-arrow-down-1-9  ml-2 cursor-pointer"
+                      title={t("Descending")}
                     />
                   ) : (
                     <i
                       onClick={() => updateSort("asc", "modified")}
-                      className="fa-sharp fa-solid fa-arrow-up-1-9 ml-2 cursor-pointer"
+                      className="fa-sharp fa-solid fa-arrow-down-9-1  ml-2 cursor-pointer"
+                      title={t("Ascending")}
                     />
                   )}
                 </th>

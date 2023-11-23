@@ -256,6 +256,7 @@ export default function CreateNewFilterDrawer({
                   (filter) => filter.id === selectedFilterData?.id
                 );
                 if (selectedFilterData?.id === selectedFilter?.id) {
+                  dispatch(setSelectedBPMFilter(resData));
                   fetchTasks(resData);
                 } else {
                   dispatch(setSelectedBPMFilter(filterSelected));

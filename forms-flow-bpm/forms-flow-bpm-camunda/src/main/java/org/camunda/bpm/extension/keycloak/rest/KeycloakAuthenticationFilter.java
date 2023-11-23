@@ -22,7 +22,6 @@ import org.springframework.security.oauth2.client.OAuth2AuthorizedClientService;
 import org.springframework.security.oauth2.core.oidc.user.OidcUser;
 import org.springframework.security.oauth2.server.resource.authentication.JwtAuthenticationToken;
 
-import com.nimbusds.jose.shaded.json.JSONArray;
 
 
 
@@ -91,9 +90,9 @@ public class KeycloakAuthenticationFilter implements Filter {
 			userGroups = getUserGroups(userId, claims, tenantKey);
 			if (tenantKey != null)
 				identityService.setAuthentication(userId, userGroups, tenantIds);
-			LOG.debug("Roles for user {} : {} ", userId, userGroups);
 			else
 				identityService.setAuthentication(userId, userGroups);
+			LOG.debug("Roles for user {} : {} ", userId, userGroups);
 			chain.doFilter(request, response);
 		} finally {
 			identityService.clearAuthentication();

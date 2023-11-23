@@ -1,7 +1,7 @@
 package org.camunda.bpm.extension.hooks.rest.service;
 
-import javax.ws.rs.core.Request;
-import javax.ws.rs.core.UriInfo;
+import jakarta.ws.rs.core.Request;
+import jakarta.ws.rs.core.UriInfo;
 
 import org.camunda.bpm.engine.rest.dto.CountResultDto;
 import org.camunda.bpm.extension.hooks.rest.dto.TaskQueryDto;

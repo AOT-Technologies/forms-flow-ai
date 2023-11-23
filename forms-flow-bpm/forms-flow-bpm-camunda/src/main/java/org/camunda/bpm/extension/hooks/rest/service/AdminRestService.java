@@ -6,7 +6,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.multipart.MultipartFile;
 import reactor.core.publisher.Mono;
 import jakarta.servlet.ServletException;
-import javax.servlet.ServletException;
 
 public interface AdminRestService {
 

@@ -216,7 +216,7 @@ export default React.memo(() => {
         }
       }
     },
-    [dispatch, currentUser]
+    [dispatch, currentUser, selectedFilter]
   );
 
   useEffect(() => {

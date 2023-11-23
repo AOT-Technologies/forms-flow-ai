@@ -41,6 +41,21 @@ const ServiceTaskListView = React.memo(() => {
   );
   const selectedTaskVariables = useSelector((state) => state.bpmTasks.selectedTaskVariables);
   const vissibleAttributes = useSelector((state) => state.bpmTasks.vissibleAttributes);
+  const taskvariables = useSelector(
+    (state) => state.bpmTasks.selectedFilter?.variables || []
+  );
+  const [taskVariableLabels , setTaskVariableLabels] = useState({});
+
+  useEffect(()=>{
+    setTaskVariableLabels(()=>{
+      const data = {};
+      taskvariables.forEach((item)=>{
+        data[item.name] = item.label;
+      });
+      return data;
+    });
+  },[taskvariables]);
+
 
   const options = [
     { value: '6', label: '6' },
@@ -213,7 +228,7 @@ const ServiceTaskListView = React.memo(() => {
                       return (
                         <Col xs={2} key={index} >
                           <div className="col-12" style={{ wordBreak: "break-all" }}>
-                            <h6 className="font-weight-light">{eachVariable.name}</h6>
+                            <h6 className="font-weight-light">{taskVariableLabels[eachVariable.name]}</h6>
                           </div>
                           <div className="d-flex col-12">
                             <h6>

@@ -247,8 +247,9 @@ const TaskFilterListViewComponent = React.memo(
               )}
               {vissibleAttributes.taskVisibleAttributes?.priority && (
                 <Col xs={6}>
-                  <label>{t("Priority")}</label>
+                  <label htmlFor="priority">{t("Priority")}</label>
                   <input
+                    id="priority"
                     className="form-control"
                     placeholder=""
                     value={priority}
@@ -271,6 +272,7 @@ const TaskFilterListViewComponent = React.memo(
                   <Col  key={i} xs={6}>
                     <label>{e.label}</label>
                     <input
+                      title={t("Task variables")}
                       className="form-control"
                       placeholder=""
                       name={e.name}

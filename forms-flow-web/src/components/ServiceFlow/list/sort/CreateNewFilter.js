@@ -506,6 +506,7 @@ export default function CreateNewFilterDrawer({
               setIsMyTasksEnabled(e.target.checked)
             }
             style={{ marginRight: "6px" }}
+            title={t("Show only current user assigned task")}
           />
           <h5 style={{ fontSize: "18px", marginBottom: "3px" }}>
             <Translation>
@@ -521,6 +522,7 @@ export default function CreateNewFilterDrawer({
               setIsTasksForCurrentUserGroupsEnabled(e.target.checked)
             }
             style={{ marginRight: "6px" }}
+            title={t("Show task based on logged user roles")}
           />
           <h5 style={{ fontSize: "18px", marginBottom: "3px" }}>
             <Translation>
@@ -549,6 +551,7 @@ export default function CreateNewFilterDrawer({
             value={definitionKeyId}
             name="definitionKeyId"
             onChange={(e) => setDefinitionKeyId(e.target.value)}
+            title={t("Candidate Group")}
           />
         )}
         <h5>
@@ -658,39 +661,39 @@ export default function CreateNewFilterDrawer({
           <input
             style={{ marginRight: "4px" }}
             type="radio"
-            id="my-radio"
+            id="all-users"
             name="my-radio"
             value={ACCESSIBLE_FOR_ALL_GROUPS}
             checked={permissions === ACCESSIBLE_FOR_ALL_GROUPS}
             onChange={(e) => setPermissions(e.target.value)}
           />
-          <label style={{ marginRight: "3px", fontSize: "18px" }}>
+          <label htmlFor="all-users" style={{ marginRight: "3px", fontSize: "18px" }}>
             <Translation>{(t) => t("Accessible for all users")}</Translation>
           </label>{" "}
           <br />
           <input
             style={{ marginRight: "4px" }}
             type="radio"
-            id="my-radio"
+            id="private-only"
             name="my-radio"
             value={PRIVATE_ONLY_YOU}
             checked={permissions === PRIVATE_ONLY_YOU}
             onChange={(e) => setPermissions(e.target.value)}
           />
-          <label style={{ fontSize: "18px" }}>
+          <label htmlFor="private-only" style={{ fontSize: "18px" }}>
             <Translation>{(t) => t("Private (Only You)")}</Translation>
           </label>
           <br />
           <input
             style={{ marginRight: "4px" }}
             type="radio"
-            id="my-radio"
+            id="specific-grp"
             name="my-radio"
             value={SPECIFIC_USER_OR_GROUP}
             checked={permissions === SPECIFIC_USER_OR_GROUP}
             onChange={handleSpecificUserGroup}
           />
-          <label style={{ fontSize: "18px" }}>
+          <label htmlFor="specific-grp" style={{ fontSize: "18px" }}>
             <Translation>{(t) => t("Specific Group")}</Translation>
           </label>{" "}
           <br />
@@ -810,6 +813,7 @@ export default function CreateNewFilterDrawer({
           <input
             readOnly
             type="text"
+            aria-label="Task-attributes"
             className="filter-name-textfeild cursor-pointer"
             onClick={toggleModal}
             placeholder={

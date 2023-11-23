@@ -248,7 +248,7 @@ export default React.memo(() => {
         <div className="row mx-0">
         <div className="col-12 px-0 col-md-4 col-xl-3">
           <section>
-            <header className="d-flex flex-wrap align-items-center p-2 bg-white shadow mb-2">
+            <header className="d-flex flex-wrap align-items-center p-2 bg-light shadow mb-2">
               <TaskSortSelectedList />
             </header>
             <ServiceFlowTaskList />

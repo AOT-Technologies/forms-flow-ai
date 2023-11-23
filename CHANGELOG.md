@@ -8,10 +8,12 @@ Mark  items as `Added`, `Changed`, `Fixed`, `Removed`, `Untested Features`, `Upc
 
 **forms-flow-web**
 
-* Added new UI for forms, submissions, tasks, processes, dashboards 
+* Added new UI for forms, submissions, tasks, processes, dashboards, navbar
 * Added RBAC support in form listing for reviewer
 * Added RBAC support in submission(application) listing for client and reviewer
 * Added form description to form
+* Added a description input field for the form.
+* Added create custom filter for task in task page
 
 **forms-flow-api**
 
@@ -41,6 +43,12 @@ Mark  items as `Added`, `Changed`, `Fixed`, `Removed`, `Untested Features`, `Upc
 * Modified Applications to Submissions in UI
 * Modified accessibility enhancement
 
+  
+`Removed`
+
+**forms-flow-web**
+
+* Removed filter by form type from form listing table
  
 
 `Generic Changes`
@@ -53,6 +61,10 @@ Mark  items as `Added`, `Changed`, `Fixed`, `Removed`, `Untested Features`, `Upc
 **forms-flow-api**
 
 * Flask upgraded to 2.3.3 and fixed security vulnerabilities
+  
+**forms-flow-web**
+
+* Fixed security vulnerabilities
 
 **forms-flow-bpm**
 

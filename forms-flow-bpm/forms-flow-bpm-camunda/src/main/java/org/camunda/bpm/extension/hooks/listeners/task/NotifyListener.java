@@ -14,7 +14,7 @@ import org.camunda.bpm.extension.hooks.services.IMessageEvent;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import javax.annotation.Resource;
+import jakarta.annotation.Resource;
 import java.io.IOException;
 import java.util.*;
 import java.util.logging.Logger;

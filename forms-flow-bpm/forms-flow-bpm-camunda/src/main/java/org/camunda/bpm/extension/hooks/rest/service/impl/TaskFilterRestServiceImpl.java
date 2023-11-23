@@ -29,7 +29,7 @@ import org.camunda.bpm.extension.hooks.rest.service.TaskFilterRestService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import javax.ws.rs.core.*;
+import jakarta.ws.rs.core.*;
 import java.util.*;
 
 public class TaskFilterRestServiceImpl implements TaskFilterRestService {

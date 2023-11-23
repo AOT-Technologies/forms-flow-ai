@@ -9,11 +9,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.*;
 import org.springframework.stereotype.Component;
 
-import javax.annotation.Resource;
 import java.io.IOException;
 import java.util.Map;
 import java.util.Properties;
 import java.util.logging.Logger;
+import jakarta.annotation.Resource;
 
 /**
  *  Http Service Invoker.

@@ -6,7 +6,7 @@ import org.camunda.bpm.extension.hooks.rest.MessageRestResource;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import javax.ws.rs.core.Response;
+import jakarta.ws.rs.core.Response;
 
 public class MessageRestResourceImpl implements MessageRestResource {
 

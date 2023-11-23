@@ -161,10 +161,26 @@ export default React.memo(() => {
   };
   const SocketIOCallback = useCallback(
     (refreshedTaskId, forceReload, isUpdateEvent) => {
+
+      const reqParamData = {
+        ...{ sorting: [...sortParams.sorting] },
+        ...searchParams,
+      };
+      let selectedBPMFilterParams;
+     
+      
+        selectedBPMFilterParams = {
+          ...selectedFilter,
+          criteria: {
+            ...selectedBPMFilterParams?.criteria,
+            ...reqParamData
+          }
+        };
+
       if (forceReload) {
         dispatch(
           fetchServiceTaskList(
-            selectedFilter,
+            selectedBPMFilterParams,
             refreshedTaskId,
             firstResultsRef.current
           )
@@ -186,7 +202,7 @@ export default React.memo(() => {
             ) {
               dispatch(
                 fetchServiceTaskList(
-                  selectedFilter,
+                  selectedBPMFilterParams,
                   null,
                   firstResultsRef.current
                 )
@@ -195,7 +211,7 @@ export default React.memo(() => {
           } else {
             dispatch(
               fetchServiceTaskList(
-                selectedFilter,
+                selectedBPMFilterParams,
                 null,
                 firstResultsRef.current,
               )
@@ -216,7 +232,7 @@ export default React.memo(() => {
         }
       }
     },
-    [dispatch, currentUser, selectedFilter]
+    [dispatch, currentUser, selectedFilter,searchParams, sortParams]
   );
 
   useEffect(() => {

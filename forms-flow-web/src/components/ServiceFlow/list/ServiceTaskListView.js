@@ -233,7 +233,7 @@ const ServiceTaskListView = React.memo(() => {
             <div className="d-flex justify-content-between">
               <div className="ml-2">
                   <span>
-                  {t("Rows per Page")} :
+                  {t("Rows per page")} :
                   <DropdownButton
                     className="ml-2"
                     drop="down"

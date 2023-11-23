@@ -96,7 +96,7 @@ const DraftTable = () => {
     return (
       <button
         className="btn btn-link mt-2"
-        onClick={() => window.open(url, "_blank")}
+        onClick={() => dispatch(push(url))}
       >
         <Translation>{(t) => t("Edit Draft")}</Translation>{" "}
       </button>

@@ -94,7 +94,16 @@ const View = React.memo((props) => {
   } = props;
   const dispatch = useDispatch();
 
-  const saveDraft = (payload, exitType = exitType) => {
+  const formStatusLoading = useSelector(
+    (state) => state.process?.formStatusLoading
+  );
+
+  const processData = useSelector(
+    (state) => state.process?.formProcessList
+  );
+
+  
+  const saveDraft = (payload, exitType = exitType?.current) => {
     if (exitType === "SUBMIT" || processData?.status !== "active") return;
     let dataChanged = !isEqual(payload.data, lastUpdatedDraft.data);
     if (draftSubmission?.id) {
@@ -117,14 +126,6 @@ const View = React.memo((props) => {
       }
     }
   };
-  const formStatusLoading = useSelector(
-    (state) => state.process?.formStatusLoading
-  );
-
-  const processData = useSelector(
-    (state) => state.process?.formProcessList
-  );
-
   /**
    * We will repeatedly update the current state to draft table
    * on purticular interval
@@ -150,13 +151,13 @@ const View = React.memo((props) => {
 
   useEffect(() => {
     return () => {
-      if(draftRef.current)
+       if(draftRef.current)
       {
         let payload = getDraftReqFormat(formId, draftRef.current);
         if (poll) saveDraft(payload, exitType.current);
       }
     };
-  }, [poll, exitType.current, draftSubmission?.id]);
+  }, [poll, exitType.current, draftSubmission?.id, processData?.status]);
 
   if (isActive || isPublicStatusLoading || formStatusLoading) {
     return (

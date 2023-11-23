@@ -166,17 +166,16 @@ export default React.memo(() => {
         ...{ sorting: [...sortParams.sorting] },
         ...searchParams,
       };
-      let selectedBPMFilterParams;
-     
-      
-        selectedBPMFilterParams = {
+ 
+
+        const selectedBPMFilterParams = {
           ...selectedFilter,
           criteria: {
-            ...selectedBPMFilterParams?.criteria,
+            ...selectedFilter?.criteria,
             ...reqParamData
           }
         };
-
+       
       if (forceReload) {
         dispatch(
           fetchServiceTaskList(

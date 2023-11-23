@@ -103,13 +103,13 @@ export default function CreateNewFilterDrawer({
       ...{ sorting: [...sortParams.sorting] },
       ...searchParams,
     };
-    let selectedBPMFilterParams;
+     
    
     
-      selectedBPMFilterParams = {
+     const selectedBPMFilterParams = {
         ...resData,
         criteria: {
-          ...selectedBPMFilterParams?.criteria,
+          ...resData?.criteria,
           ...reqParamData
         }
       };

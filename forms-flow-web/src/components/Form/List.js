@@ -564,6 +564,7 @@ const List = React.memo((props) => {
                     fileUploaded(e);
                   }}
                   ref={uploadFormNode}
+                  title={t("Upload Form")}
                 />
               </>
             )}

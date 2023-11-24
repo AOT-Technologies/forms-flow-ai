@@ -9,7 +9,7 @@ import org.bpm.utils.dto.ProcessInstanceDto;
 import org.bpm.utils.dto.ProcessDefinitionDiagramDto;
 import org.bpm.utils.dto.ProcessDefinitionDto;
 
-import javax.ws.rs.core.UriInfo;
+import jakarta.ws.rs.core.UriInfo;
 import java.util.List;
 import java.util.logging.Logger;
 import java.util.stream.Collectors;

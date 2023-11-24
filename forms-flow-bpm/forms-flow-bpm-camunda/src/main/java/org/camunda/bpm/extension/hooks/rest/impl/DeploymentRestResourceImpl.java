@@ -9,8 +9,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.hateoas.EntityModel;
 
-import javax.ws.rs.core.Response;
-import javax.ws.rs.core.UriInfo;
+import jakarta.ws.rs.core.Response;
+import jakarta.ws.rs.core.UriInfo;
 import java.util.List;
 
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
@@ -32,9 +32,8 @@ public class DeploymentRestResourceImpl implements DeploymentRestResource {
     }
 
     @Override
-    public EntityModel<DeploymentDto> createDeployment(UriInfo uriInfo, MultipartFormData multipartFormData) {
-        DeploymentDto dto = restService.createDeployment(uriInfo, multipartFormData);
-        return EntityModel.of(dto, linkTo(methodOn(DeploymentRestResourceImpl.class).createDeployment(uriInfo, multipartFormData)).withSelfRel());
+    public DeploymentDto createDeployment(UriInfo uriInfo, MultipartFormData multipartFormData) {
+        return restService.createDeployment(uriInfo, multipartFormData);
     }
 
     @Override

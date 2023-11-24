@@ -657,8 +657,9 @@ const Edit = React.memo(() => {
                     <div className="input-group">
                       <Form.Group controlId="anonymous">
                         <div className="d-flex align-items-center mr-4">
-                          <label className="public-label mr-2 font-weight-bold">{t("Make this form public ?")}</label>
+                          <label htmlFor="anonymous" className="public-label mr-2 font-weight-bold">{t("Make this form public ?")}</label>
                           <Form.Check
+                          id="anonymous"
                             checked={processListData.anonymous || false}
                             type="switch"
                             color="primary"

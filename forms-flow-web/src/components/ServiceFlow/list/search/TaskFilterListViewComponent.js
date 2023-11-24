@@ -2,6 +2,7 @@ import React, { useState, useEffect, useRef } from "react";
 import { Row, Col } from "react-bootstrap";
 import DatePicker from "react-datepicker";
 import { useDispatch, useSelector } from "react-redux";
+import cloneDeep from "lodash/cloneDeep";
 import "./TaskSearchBarListView.scss";
 import { setBPMTaskLoader } from "../../../../actions/bpmTaskActions";
 import { fetchUserListWithSearch } from "../../../../apiManager/services/bpmTaskServices";
@@ -106,42 +107,43 @@ const TaskFilterListViewComponent = React.memo(
 
     const applyFilters = () => {
       dispatch(setBPMTaskLoader(true));
+      const updatedfilterParams = {...cloneDeep(filterParams)};
       if (assignee) {
-        filterParams["assignee"] = assignee;
+        updatedfilterParams["assignee"] = assignee;
       }
       if (candidateGroup) {
-        filterParams["candidateGroup"] = candidateGroup;
+        updatedfilterParams["candidateGroup"] = candidateGroup;
       }
       if (priority) {
-        filterParams["priority"] = priority;
+        updatedfilterParams["priority"] = priority;
       }
       if (processVariables) {
-        filterParams["processVariables"] = processVariables;
+        updatedfilterParams["processVariables"] = processVariables;
       }
       if (dueStartDate) {
-        filterParams["dueAfter"] = getISODateTime(dueStartDate);
+        updatedfilterParams["dueAfter"] = getISODateTime(dueStartDate);
       }
       if (dueEndDate) {
-        filterParams["dueBefore"] = getISODateTime(dueEndDate);
+        updatedfilterParams["dueBefore"] = getISODateTime(dueEndDate);
       }
       if (followStartDate) {
-        filterParams["followUpAfter"] = getISODateTime(followStartDate);
+        updatedfilterParams["followUpAfter"] = getISODateTime(followStartDate);
       }
       if (followEndDate) {
-        filterParams["followUpBefore"] = getISODateTime(followEndDate);
+        updatedfilterParams["followUpBefore"] = getISODateTime(followEndDate);
       }
       if (createdStartDate) {
-        filterParams["createdAfter"] = getISODateTime(createdStartDate);
+        updatedfilterParams["createdAfter"] = getISODateTime(createdStartDate);
       }
       if (createdEndDate) {
-        filterParams["createdBefore"] = getISODateTime(createdEndDate);
+        updatedfilterParams["createdBefore"] = getISODateTime(createdEndDate);
       }
 
-      dispatch(setBPMFilterSearchParams(filterParams));
-      setFilterParams(filterParams);
+ 
+      dispatch(setBPMFilterSearchParams(updatedfilterParams));
+      setFilterParams(updatedfilterParams);
       setDisplayFilter(false);
     };
-
 
     const clearAllFilters = () => {
       setAssignee("");
@@ -245,8 +247,9 @@ const TaskFilterListViewComponent = React.memo(
               )}
               {vissibleAttributes.taskVisibleAttributes?.priority && (
                 <Col xs={6}>
-                  <label>{t("Priority")}</label>
+                  <label htmlFor="priority">{t("Priority")}</label>
                   <input
+                    id="priority"
                     className="form-control"
                     placeholder=""
                     value={priority}
@@ -269,6 +272,7 @@ const TaskFilterListViewComponent = React.memo(
                   <Col  key={i} xs={6}>
                     <label>{e.label}</label>
                     <input
+                      title={t("Task variables")}
                       className="form-control"
                       placeholder=""
                       name={e.name}

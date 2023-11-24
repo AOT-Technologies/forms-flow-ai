@@ -5,11 +5,11 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-import javax.servlet.Filter;
-import javax.servlet.FilterChain;
-import javax.servlet.ServletException;
-import javax.servlet.ServletRequest;
-import javax.servlet.ServletResponse;
+import jakarta.servlet.Filter;
+import jakarta.servlet.FilterChain;
+import jakarta.servlet.ServletException;
+import jakarta.servlet.ServletRequest;
+import jakarta.servlet.ServletResponse;
 
 import org.apache.commons.lang3.StringUtils;
 import org.camunda.bpm.engine.IdentityService;
@@ -22,7 +22,6 @@ import org.springframework.security.oauth2.client.OAuth2AuthorizedClientService;
 import org.springframework.security.oauth2.core.oidc.user.OidcUser;
 import org.springframework.security.oauth2.server.resource.authentication.JwtAuthenticationToken;
 
-import com.nimbusds.jose.shaded.json.JSONArray;
 
 
 
@@ -93,6 +92,7 @@ public class KeycloakAuthenticationFilter implements Filter {
 				identityService.setAuthentication(userId, userGroups, tenantIds);
 			else
 				identityService.setAuthentication(userId, userGroups);
+			LOG.debug("Roles for user {} : {} ", userId, userGroups);
 			chain.doFilter(request, response);
 		} finally {
 			identityService.clearAuthentication();
@@ -123,7 +123,7 @@ public class KeycloakAuthenticationFilter implements Filter {
 	private List<String> getKeys(Map<String, Object> claims, String nodeName, String tenantKey) {
 		List<String> keys = new ArrayList<>();
 		if (claims.containsKey(nodeName)) {
-			for (Object key : (JSONArray) claims.get(nodeName)) {
+			for (Object key : (List<String>) claims.get(nodeName)) {
 				String keyValue = key.toString();
 				keyValue = StringUtils.contains(keyValue, "/") ? StringUtils.substringAfter(keyValue, "/") : keyValue;
 				if (tenantKey != null)

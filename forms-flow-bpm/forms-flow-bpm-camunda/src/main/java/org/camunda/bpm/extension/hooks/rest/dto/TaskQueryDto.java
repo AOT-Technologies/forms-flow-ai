@@ -1,12 +1,9 @@
 package org.camunda.bpm.extension.hooks.rest.dto;
 
-import java.util.List;
-
-import org.camunda.bpm.engine.rest.dto.VariableQueryParameterDto;
-
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-
 import lombok.Data;
+
+import java.util.List;
 
 @Data
 @JsonIgnoreProperties(ignoreUnknown = true)

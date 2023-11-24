@@ -41,7 +41,9 @@ const ApplicationTable = () => {
   const limit = useSelector((state) => state.applications?.countPerPage);
   const sortOrder = useSelector((state) => state.applications?.sortOrder);
   const sortBy = useSelector((state) => state.applications?.sortBy);
-  const isApplicationLoading = useSelector((state) => state.applications.isApplicationLoading);
+  const isApplicationLoading = useSelector(
+    (state) => state.applications.isApplicationLoading
+  );
   const isAscending = sortOrder === "asc" ? true : false;
   const totalForms = useSelector(
     (state) => state.applications?.applicationCount
@@ -90,10 +92,12 @@ const ApplicationTable = () => {
   const submissionDetails = (data) => {
     dispatch(push(`${redirectUrl}application/${data.id}`));
   };
-  
 
-  const  viewSubmissionDetails = (data) => (
-    <button className="btn btn-link mt-2" onClick={() => submissionDetails(data)}>
+  const viewSubmissionDetails = (data) => (
+    <button
+      className="btn btn-link mt-2"
+      onClick={() => submissionDetails(data)}
+    >
       <Translation>{(t) => t("View Details")}</Translation>{" "}
     </button>
   );
@@ -106,16 +110,19 @@ const ApplicationTable = () => {
           <Translation>{(t) => t("No submissions found")}</Translation>{" "}
         </label>
         <br />
-        {(filterParams.id || filterParams.applicationName ||  
-        filterParams.applicationStatus || filterParams.modified) && (
-        <label className="lbl-no-application-desc">
-          {" "}
-          <Translation>
-            {(t) =>
-              t("Please change the selected filters to view submissions")
-            }
-          </Translation>
-        </label>)}
+        {(filterParams.id ||
+          filterParams.applicationName ||
+          filterParams.applicationStatus ||
+          filterParams.modified) && (
+          <label className="lbl-no-application-desc">
+            {" "}
+            <Translation>
+              {(t) =>
+                t("Please change the selected filters to view submissions")
+              }
+            </Translation>
+          </label>
+        )}
         <br />
       </div>
     );
@@ -123,7 +130,7 @@ const ApplicationTable = () => {
 
   const viewSubmittedForm = (formData) => {
     const url =
-    formData.isClientEdit || formData.isResubmit
+      formData.isClientEdit || formData.isResubmit
         ? `${redirectUrl}form/${formData.formId}/submission/${formData.submissionId}/edit`
         : `${redirectUrl}form/${formData.formId}/submission/${formData.submissionId}`;
     return (
@@ -131,7 +138,17 @@ const ApplicationTable = () => {
         className="btn btn-link mt-2"
         onClick={() => window.open(url, "_blank")}
       >
-        <Translation>{(t) => t("View Submitted Form")}</Translation>{" "}
+        <Translation>
+          {(t) =>
+            t(
+              `${
+                formData.isClientEdit || formData.isResubmit
+                  ? "Edit Form"
+                  : "View Submitted Form"
+              }`
+            )
+          }
+        </Translation>{" "}
       </button>
     );
   };
@@ -148,7 +165,7 @@ const ApplicationTable = () => {
     dispatch(setApplicationListActivePage(1));
   };
 
-  const updateSort = (sortOrder,sortBy) => {
+  const updateSort = (sortOrder, sortBy) => {
     dispatch(setApplicationLoading(true));
     dispatch(setApplicationSortOrder(sortOrder));
     dispatch(setApplicationSortBy(sortBy));
@@ -157,14 +174,78 @@ const ApplicationTable = () => {
 
   return (
     <>
-    <LoadingOverlay active={isApplicationLoading} spinner text={t("Loading...")}>
+      <LoadingOverlay
+        active={isApplicationLoading}
+        spinner
+        text={t("Loading...")}
+      >
         <table className="table custom-table table-responsive-sm">
           <thead>
             <tr>
-              <th>{t("Id")} {isAscending && sortBy === 'id' ? <i  onClick={() => updateSort('desc','id')} className="fa-sharp fa-solid fa-arrow-down-9-1" /> :  <i onClick={() => updateSort('asc','id')} className="fa-sharp fa-solid fa-arrow-up-1-9" />} </th>
-              <th>{t("Form Title")} {isAscending && sortBy === 'applicationName' ? <i onClick={() =>updateSort('desc','applicationName')} className="fa-sharp fa-solid fa-arrow-down-a-z"/> : <i onClick={() =>updateSort('asc','applicationName')}   className="fa-sharp fa-solid fa-arrow-up-z-a"/>}</th>
-              <th>{t("Status")}{isAscending && sortBy === 'applicationStatus' ? <i onClick={() =>updateSort('desc','applicationStatus')} className="fa-sharp fa-solid fa-arrow-down-a-z  ml-2"/> : <i onClick={() =>updateSort('asc','applicationStatus')}   className="fa-sharp fa-solid fa-arrow-up-z-a  ml-2"/>}</th>
-              <th>{t("Last Modified")}{isAscending && sortBy === 'modified' ? <i onClick={() =>updateSort('desc','modified')} className="fa-sharp fa-solid fa-arrow-down-9-1  ml-2"/> : <i onClick={() =>updateSort('asc','modified')} className="fa-sharp fa-solid fa-arrow-up-1-9  ml-2"/>}</th>
+              <th>
+                {t("Id")}{" "}
+                {isAscending && sortBy === "id" ? (
+                  <i
+                    onClick={() => updateSort("desc", "id")}
+                    className="fa-sharp fa-solid fa-arrow-down-1-9 cursor-pointer"
+                    title={t("Descending")}
+                  />
+                ) : (
+                  <i
+                    onClick={() => updateSort("asc", "id")}
+                    className="fa-sharp fa-solid fa-arrow-down-9-1 cursor-pointer"
+                    title={t("Ascending")}
+                  />
+                )}{" "}
+              </th>
+              <th>
+                {t("Form Title")}{" "}
+                {isAscending && sortBy === "applicationName" ? (
+                  <i
+                    onClick={() => updateSort("desc", "applicationName")}
+                    className="fa-sharp fa-solid fa-arrow-down-a-z cursor-pointer"
+                    title={t("Descending")}
+                  />
+                ) : (
+                  <i
+                    onClick={() => updateSort("asc", "applicationName")}
+                    className="fa-sharp fa-solid fa-arrow-down-z-a cursor-pointer"
+                    title={t("Ascending")}
+                  />
+                )}
+              </th>
+              <th>
+                {t("Status")}
+                {isAscending && sortBy === "applicationStatus" ? (
+                  <i
+                    onClick={() => updateSort("desc", "applicationStatus")}
+                    className="fa-sharp fa-solid fa-arrow-down-a-z  ml-2 cursor-pointer"
+                    title={t("Descending")}
+                  />
+                ) : (
+                  <i
+                    onClick={() => updateSort("asc", "applicationStatus")}
+                    className="fa-sharp fa-solid fa-arrow-down-z-a  ml-2 cursor-pointer"
+                    title={t("Ascending")}
+                  />
+                )}
+              </th>
+              <th>
+                {t("Last Modified")}
+                {isAscending && sortBy === "modified" ? (
+                  <i
+                    onClick={() => updateSort("desc", "modified")}
+                    className="fa-sharp fa-solid fa-arrow-down-1-9  ml-2 cursor-pointer"
+                    title={t("Descending")}
+                  />
+                ) : (
+                  <i
+                    onClick={() => updateSort("asc", "modified")}
+                    className="fa-sharp fa-solid fa-arrow-down-9-1  ml-2 cursor-pointer"
+                    title={t("Ascending")}
+                  />
+                )}
+              </th>
               <th colSpan="4">
                 <div className="d-flex justify-content-end filter-sort-bar mt-1">
                   <div className="filter-container-list application-filter-list-view">
@@ -203,62 +284,69 @@ const ApplicationTable = () => {
             </tr>
           </thead>
           <tbody>
-            {applications.length ? listApplications(applications)?.map((e) => {
-              return (
-                <tr key={e.id}>
-                  <td>{e.id}</td>
-                  <td>{e.applicationName}</td>
-                  <td>{e.applicationStatus}</td>
-                  <td>{HelperServices?.getLocalDateAndTime(e.modified)}</td>
-                  <td>{viewSubmittedForm(e)}</td>
-                  <td>{viewSubmissionDetails(e)}</td>
-                </tr>
-              );
-            }) : <td colSpan="6" className="text-center">
-            {getNoDataIndicationContent()}
-          </td>}
+            {applications.length ? (
+              listApplications(applications)?.map((e) => {
+                return (
+                  <tr key={e.id}>
+                    <td>{e.id}</td>
+                    <td>{e.applicationName}</td>
+                    <td>{e.applicationStatus}</td>
+                    <td>{HelperServices?.getLocalDateAndTime(e.modified)}</td>
+                    <td>{viewSubmittedForm(e)}</td>
+                    <td>{viewSubmissionDetails(e)}</td>
+                  </tr>
+                );
+              })
+            ) : (
+              <td colSpan="6" className="text-center">
+                {getNoDataIndicationContent()}
+              </td>
+            )}
           </tbody>
         </table>
+
+        {applications.length ? (
+          <div className="d-flex justify-content-between align-items-center  flex-column flex-md-row">
+            <div className="d-flex align-items-center">
+              <span className="mr-2"> {t("Rows per page")}</span>
+              <Dropdown size="sm">
+                <Dropdown.Toggle variant="light" id="dropdown-basic">
+                  {pageLimit}
+                </Dropdown.Toggle>
+                <Dropdown.Menu>
+                  {pageOptions.map((option) => (
+                    <Dropdown.Item
+                      key={option.value}
+                      type="button"
+                      onClick={() => {
+                        onSizePerPageChange(option.value);
+                      }}
+                    >
+                      {option.text}
+                    </Dropdown.Item>
+                  ))}
+                </Dropdown.Menu>
+              </Dropdown>
+              <span className="ml-2">
+                {t("Showing")} {(limit * pageNo) - (limit - 1)} {t("to")}{" "}
+                {limit * pageNo > totalForms ? totalForms : limit * pageNo}{" "}
+                {t("of")} {totalForms} {t("results")}
+              </span>
+            </div>
+            <div className="d-flex align-items-center">
+              <Pagination
+                activePage={pageNo}
+                itemsCountPerPage={limit}
+                totalItemsCount={totalForms}
+                pageRangeDisplayed={5}
+                itemClass="page-item"
+                linkClass="page-link"
+                onChange={handlePageChange}
+              />
+            </div>
+          </div>
+        ) : null}
       </LoadingOverlay>
-      <div className="d-flex justify-content-between align-items-center  flex-column flex-md-row">
-        <div className="d-flex align-items-center">
-        <span className="mr-2"> {t("Rows per page")}</span>
-        <Dropdown size="sm">
-            <Dropdown.Toggle variant="light" id="dropdown-basic">
-              {pageLimit}
-            </Dropdown.Toggle>
-            <Dropdown.Menu>
-            {pageOptions.map((option) => (
-                <Dropdown.Item
-                  key={option.value}
-                  type="button"
-                  onClick={() => {
-                    onSizePerPageChange(option.value);
-                  }}
-                >
-                  {option.text}
-                </Dropdown.Item>
-              ))}
-            </Dropdown.Menu>
-        </Dropdown>
-          <span className="ml-2">
-            {t("Showing")} {(limit * pageNo ) - (limit - 1)} {t("to")}{" "}
-            {limit * pageNo > totalForms ? totalForms : limit * pageNo} {t("of")}{" "}
-            {totalForms} {t("results")}
-          </span>
-        </div>
-        <div className="d-flex align-items-center">
-          <Pagination
-            activePage={pageNo}
-            itemsCountPerPage={limit}
-            totalItemsCount={totalForms}
-            pageRangeDisplayed={5}
-            itemClass="page-item"
-            linkClass="page-link"
-            onChange={handlePageChange}
-          />
-        </div>
-      </div>
     </>
   );
 };

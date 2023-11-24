@@ -23,7 +23,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import  com.fasterxml.jackson.core.JsonProcessingException;
 
 
-import javax.annotation.Resource;
+import jakarta.annotation.Resource;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;

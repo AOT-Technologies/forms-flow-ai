@@ -207,7 +207,7 @@ function FormTable() {
                             updateSort("desc");
                           }}
                           data-toggle="tooltip"
-                          title={t("Descending")}
+                          title={t("Ascending")}
                           style={{
                             cursor: "pointer",
                             fontSize: "16px",
@@ -215,12 +215,12 @@ function FormTable() {
                         ></i>
                       ) : (
                         <i
-                          className="fa fa-sort-alpha-desc"
+                          className="fa fa-sort-alpha-desc ml-2 mt-1"
                           onClick={() => {
                             updateSort("asc");
                           }}
                           data-toggle="tooltip"
-                          title={t("Ascending")}
+                          title={t("Descending")}
                           style={{
                             cursor: "pointer",
                             fontSize: "16px",
@@ -234,7 +234,7 @@ function FormTable() {
                 <th scope="col">{t("Type")}</th>
                 <th scope="col">{t("Visibility")}</th>
                 <th scope="col">{t("Status")}</th>
-                <th colSpan="4">
+                <th colSpan="4" aria-label="Search Forms by form title">
                   <InputGroup className="input-group p-0">
                     <FormControl
                       value={search}
@@ -300,10 +300,11 @@ function FormTable() {
                         <span> {viewOrEdit(e)}</span>
                       </td>
                       <td>
-                        <Dropdown title={t("More options")} >
+                        <Dropdown aria-label="More options">
                           <Dropdown.Toggle
                             as={CustomToggle} 
                             id="dropdown-basic"
+                            title={t("More options")}
                           >
                             <i className="fa-solid fa-ellipsis"></i>
                           </Dropdown.Toggle>

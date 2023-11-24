@@ -174,8 +174,7 @@
 }
 
 .react-datepicker-popper {
-  z-index: 801;
-  //right: 56px;
+  z-index: 801 !important;
 }
 .react-datepicker__close-icon {
   padding-right: 0;
@@ -494,11 +493,11 @@ span[dat-title]:hover:after,
 .react-datepicker__close-icon {
   padding: 0px !important ;
 }
-.react-datepicker-popper {
-  z-index: 1000 !important;
-}
 
 .filter-drop-down > .nav-link{
   padding-left: 0 !important;
   padding-right: 0 !important;
+}
+.no-padding-left {
+  padding-left: 0px !important;
 }

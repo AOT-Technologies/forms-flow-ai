@@ -36,3 +36,13 @@ def test_get_dashboard_error_details(app, client, session, jwt):
 
     rv = client.get("/dashboards/10000", headers=headers)
     assert rv.json == {"message": "Dashboard - 10000 not accessible"}
+
+
+def test_get_dashboard_error_details_tenant(app, client, session, jwt):
+    """Get dashboards for tenant with analytics not created."""
+    token = get_token(jwt, tenant_key="test-tenant")
+    headers = {"Authorization": f"Bearer {token}", "content-type": "application/json"}
+
+    rv = client.get("/dashboards", headers=headers)
+    assert rv.status_code == 400
+    assert rv.json["message"] == "Analytics is not enabled for this tenant"

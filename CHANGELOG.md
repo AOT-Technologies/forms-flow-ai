@@ -14,6 +14,10 @@ Mark  items as `Added`, `Changed`, `Fixed`, `Removed`, `Untested Features`, `Upc
 * Added form description to form
 * Added a description input field for the form.
 * Added create custom filter for task in task page
+* Added environment variable `DATE_FORMAT` to change the date format
+* Added environment variable `TIME_FORMAT` to change the time format
+* Added environment variable `CUSTOM_THEME_URL` to override the theme
+* Added environment variable `CUSTOM_RESOURCE_BUNDLE_URL` to customize resource bundle for internationalization 
 
 **forms-flow-api**
 
@@ -42,7 +46,7 @@ Mark  items as `Added`, `Changed`, `Fixed`, `Removed`, `Untested Features`, `Upc
 * Modified Tasks page with List view and Card view of tasklist
 * Modified Applications to Submissions in UI
 * Modified accessibility enhancement
-
+* Modified Name, Type, Path as advanced options while form create 
   
 `Removed`
 

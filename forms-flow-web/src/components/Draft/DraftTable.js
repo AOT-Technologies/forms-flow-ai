@@ -96,7 +96,7 @@ const DraftTable = () => {
     return (
       <button
         className="btn btn-link mt-2"
-        onClick={() => window.open(url, "_blank")}
+        onClick={() => dispatch(push(url))}
       >
         <Translation>{(t) => t("Edit Draft")}</Translation>{" "}
       </button>
@@ -124,8 +124,9 @@ const DraftTable = () => {
 
   return (
     <>
+     <LoadingOverlay active={isDraftLoading} spinner text={t("Loading...")}>
       <div style={{ minHeight: "400px" }}>
-        <LoadingOverlay active={isDraftLoading} spinner text={t("Loading...")}>
+       
           <table className="table custom-table table-responsive-sm">
             <thead>
               <tr>
@@ -134,12 +135,14 @@ const DraftTable = () => {
                   {isAscending && sortBy === "id" ? (
                     <i
                       onClick={() => updateSort("desc", "id")}
-                      className="fa-sharp fa-solid fa-arrow-down-9-1"
+                      className="fa-sharp fa-solid fa-arrow-down-1-9 cursor-pointer"
+                      title={t("Descending")}
                     />
                   ) : (
                     <i
                       onClick={() => updateSort("asc", "id")}
-                      className="fa-sharp fa-solid fa-arrow-up-1-9"
+                      className="fa-sharp fa-solid fa-arrow-down-9-1 cursor-pointer"
+                      title={t("Ascending")}
                     />
                   )}
                 </th>
@@ -148,12 +151,14 @@ const DraftTable = () => {
                   {isAscending && sortBy === "DraftName" ? (
                     <i
                       onClick={() => updateSort("desc", "DraftName")}
-                      className="fa-sharp fa-solid fa-arrow-down-a-z"
+                      className="fa-sharp fa-solid fa-arrow-down-a-z cursor-pointer"
+                      title={t("Descending")}                      
                     />
                   ) : (
                     <i
                       onClick={() => updateSort("asc", "DraftName")}
-                      className="fa-sharp fa-solid fa-arrow-up-z-a"
+                      className="fa-sharp fa-solid fa-arrow-down-z-a cursor-pointer"
+                      title={t("Ascending")}
                     />
                   )}
                 </th>
@@ -162,12 +167,14 @@ const DraftTable = () => {
                   {isAscending && sortBy === "modified" ? (
                     <i
                       onClick={() => updateSort("desc", "modified")}
-                      className="fa-sharp fa-solid fa-arrow-down-9-1 ml-2"
+                      className="fa-sharp fa-solid fa-arrow-down-1-9  ml-2 cursor-pointer"
+                      title={t("Descending")}
                     />
                   ) : (
                     <i
                       onClick={() => updateSort("asc", "modified")}
-                      className="fa-sharp fa-solid fa-arrow-up-1-9 ml-2"
+                      className="fa-sharp fa-solid fa-arrow-down-9-1  ml-2 cursor-pointer"
+                      title={t("Ascending")}
                     />
                   )}
                 </th>
@@ -227,9 +234,10 @@ const DraftTable = () => {
                 </tr>}
             </tbody>
           </table>
-        </LoadingOverlay>
+        
       </div>
-      <div className="d-flex justify-content-between align-items-center  flex-column flex-md-row">
+
+      {drafts.length ? <div className="d-flex justify-content-between align-items-center  flex-column flex-md-row">
         <div className="d-flex align-items-center">
           <span className="mr-2"> {t("Rows per page")}</span>
           <Dropdown size="sm">
@@ -268,7 +276,8 @@ const DraftTable = () => {
             onChange={handlePageChange}
           />
         </div>
-      </div>
+      </div> : null}
+      </LoadingOverlay>
     </>
   );
 };

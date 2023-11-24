@@ -1,5 +1,5 @@
 gunicorn
-Flask
+Flask<3
 Flask-SQLAlchemy
 flask-restx
 flask-jwt-oidc

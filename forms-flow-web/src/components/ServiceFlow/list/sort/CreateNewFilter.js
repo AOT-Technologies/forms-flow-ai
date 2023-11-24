@@ -21,6 +21,7 @@ import { Translation } from "react-i18next";
 import {
   setBPMFilterLoader,
   setBPMFiltersAndCount,
+  setFilterListParams,
   setSelectedBPMFilter,
 } from "../../../../actions/bpmTaskActions";
 
@@ -34,6 +35,7 @@ import {
 import { Badge, ListGroup, OverlayTrigger, Popover } from "react-bootstrap";
 // import { fetchUsers } from "../../../../apiManager/services/userservices";
 import { trimFirstSlash } from "../../constants/taskConstants";
+import { cloneDeep } from "lodash";
 export default function CreateNewFilterDrawer({
   selectedFilterData,
   openFilterDrawer,
@@ -53,7 +55,7 @@ export default function CreateNewFilterDrawer({
     setIsTasksForCurrentUserGroupsEnabled,
   ] = useState(false);
   const [isMyTasksEnabled,setIsMyTasksEnabled] = useState(false);
-  const [permissions, setPermissions] = useState("");
+  const [permissions, setPermissions] = useState(PRIVATE_ONLY_YOU);
   const [identifierId, setIdentifierId] = useState("");
   const [selectUserGroupIcon, setSelectUserGroupIcon] = useState("");
   const [specificUserGroup, setSpecificUserGroup] = useState("");
@@ -63,6 +65,12 @@ export default function CreateNewFilterDrawer({
   );
   const userName = useSelector(
     (state) => state.user?.userDetail?.preferred_username
+  );
+  const sortParams = useSelector(
+    (state) => state.bpmTasks.filterListSortParams
+  );
+  const searchParams = useSelector(
+    (state) => state.bpmTasks.filterListSearchParams
   );
   const selectedFilter = useSelector((state) => state.bpmTasks.selectedFilter);
   const filterList = useSelector((state) => state.bpmTasks.filterList);
@@ -88,6 +96,25 @@ export default function CreateNewFilterDrawer({
   const taskAttributesCount = Object.values(checkboxes).filter(
     (value) => value === true
   ).length;
+
+  const fetchTasks = (resData)=>{
+  
+    const reqParamData = {
+      ...{ sorting: [...sortParams.sorting] },
+      ...searchParams,
+    };
+     
+   
+    
+     const selectedBPMFilterParams = {
+        ...resData,
+        criteria: {
+          ...resData?.criteria,
+          ...reqParamData
+        }
+      };
+      dispatch(setFilterListParams(cloneDeep(selectedBPMFilterParams)));
+  };
 
   const customTrim = (inputString) => {
     // Remove '%' symbol from the start
@@ -229,7 +256,8 @@ export default function CreateNewFilterDrawer({
                   (filter) => filter.id === selectedFilterData?.id
                 );
                 if (selectedFilterData?.id === selectedFilter?.id) {
-                  dispatch(fetchServiceTaskList(resData, null, firstResult));
+                  dispatch(setSelectedBPMFilter(resData));
+                  fetchTasks(resData);
                 } else {
                   dispatch(setSelectedBPMFilter(filterSelected));
                 }
@@ -254,7 +282,7 @@ export default function CreateNewFilterDrawer({
     setCandidateGroup("");
     setAssignee("");
     setIncludeAssignedTasks("");
-    setPermissions("");
+    setPermissions(PRIVATE_ONLY_YOU);
     setIdentifierId("");
     setSelectUserGroupIcon("");
     setSpecificUserGroup("");
@@ -332,7 +360,9 @@ export default function CreateNewFilterDrawer({
       ? editFilters(data, selectedFilterData?.id)
       : saveFilters(data);
     submitFunction
-      .then(() => successCallBack(data))
+      .then((res) => {
+        successCallBack(res.data);
+      })
       .catch((error) => {
         toast.error(t("Filter Creation Failed"));
         console.error("error", error);
@@ -477,6 +507,7 @@ export default function CreateNewFilterDrawer({
               setIsMyTasksEnabled(e.target.checked)
             }
             style={{ marginRight: "6px" }}
+            title={t("Show only current user assigned task")}
           />
           <h5 style={{ fontSize: "18px", marginBottom: "3px" }}>
             <Translation>
@@ -492,6 +523,7 @@ export default function CreateNewFilterDrawer({
               setIsTasksForCurrentUserGroupsEnabled(e.target.checked)
             }
             style={{ marginRight: "6px" }}
+            title={t("Show task based on logged user roles")}
           />
           <h5 style={{ fontSize: "18px", marginBottom: "3px" }}>
             <Translation>
@@ -520,6 +552,7 @@ export default function CreateNewFilterDrawer({
             value={definitionKeyId}
             name="definitionKeyId"
             onChange={(e) => setDefinitionKeyId(e.target.value)}
+            title={t("Candidate Group")}
           />
         )}
         <h5>
@@ -580,7 +613,7 @@ export default function CreateNewFilterDrawer({
           </div>
         )}
         <h5>
-          <Translation>{(t) => t("Asignee")}</Translation>
+          <Translation>{(t) => t("Assignee")}</Translation>
         </h5>
         <span
           style={{
@@ -629,39 +662,39 @@ export default function CreateNewFilterDrawer({
           <input
             style={{ marginRight: "4px" }}
             type="radio"
-            id="my-radio"
+            id="all-users"
             name="my-radio"
             value={ACCESSIBLE_FOR_ALL_GROUPS}
             checked={permissions === ACCESSIBLE_FOR_ALL_GROUPS}
             onChange={(e) => setPermissions(e.target.value)}
           />
-          <label style={{ marginRight: "3px", fontSize: "18px" }}>
+          <label htmlFor="all-users" style={{ marginRight: "3px", fontSize: "18px" }}>
             <Translation>{(t) => t("Accessible for all users")}</Translation>
           </label>{" "}
           <br />
           <input
             style={{ marginRight: "4px" }}
             type="radio"
-            id="my-radio"
+            id="private-only"
             name="my-radio"
             value={PRIVATE_ONLY_YOU}
             checked={permissions === PRIVATE_ONLY_YOU}
             onChange={(e) => setPermissions(e.target.value)}
           />
-          <label style={{ fontSize: "18px" }}>
+          <label htmlFor="private-only" style={{ fontSize: "18px" }}>
             <Translation>{(t) => t("Private (Only You)")}</Translation>
           </label>
           <br />
           <input
             style={{ marginRight: "4px" }}
             type="radio"
-            id="my-radio"
+            id="specific-grp"
             name="my-radio"
             value={SPECIFIC_USER_OR_GROUP}
             checked={permissions === SPECIFIC_USER_OR_GROUP}
             onChange={handleSpecificUserGroup}
           />
-          <label style={{ fontSize: "18px" }}>
+          <label htmlFor="specific-grp" style={{ fontSize: "18px" }}>
             <Translation>{(t) => t("Specific Group")}</Translation>
           </label>{" "}
           <br />
@@ -781,6 +814,7 @@ export default function CreateNewFilterDrawer({
           <input
             readOnly
             type="text"
+            aria-label="Task-attributes"
             className="filter-name-textfeild cursor-pointer"
             onClick={toggleModal}
             placeholder={

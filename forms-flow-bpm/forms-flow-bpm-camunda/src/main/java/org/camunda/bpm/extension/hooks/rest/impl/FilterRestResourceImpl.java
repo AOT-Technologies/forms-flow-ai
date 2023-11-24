@@ -8,8 +8,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.hateoas.EntityModel;
 
-import javax.ws.rs.core.Request;
-import javax.ws.rs.core.UriInfo;
+import jakarta.ws.rs.core.Request;
+import jakarta.ws.rs.core.UriInfo;
 import java.util.List;
 
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
@@ -47,8 +47,7 @@ public class FilterRestResourceImpl implements FilterRestResource {
 
     @Deprecated
     @Override
-    public EntityModel<CountResultDto> executeCount(String id) {
-        CountResultDto dto = restService.getFilter(id).executeCount();
-        return EntityModel.of(dto, linkTo(methodOn(FilterRestResourceImpl.class).executeCount(id)).withSelfRel().withSelfRel());
+    public CountResultDto executeCount(String id) {
+        return restService.getFilter(id).executeCount();
     }
 }

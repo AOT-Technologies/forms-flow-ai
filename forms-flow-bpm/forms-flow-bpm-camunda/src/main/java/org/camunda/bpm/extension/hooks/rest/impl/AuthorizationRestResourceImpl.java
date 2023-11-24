@@ -6,7 +6,7 @@ import org.camunda.bpm.extension.hooks.rest.AuthorizationRestResource;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import javax.ws.rs.core.UriInfo;
+import jakarta.ws.rs.core.UriInfo;
 import java.util.List;
 
 public class AuthorizationRestResourceImpl implements AuthorizationRestResource {

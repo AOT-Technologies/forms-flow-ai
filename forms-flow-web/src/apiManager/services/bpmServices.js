@@ -42,6 +42,11 @@ export const formatForms = (forms) => {
       _id: form.formId,
       title: form.formName,
       processKey: form.processKey,
+      status: form.status,
+      anonymous: form.anonymous,
+      description:form.description,
+      created: form.created,
+      formType: form.formType
     };
   });
 };

@@ -30,6 +30,7 @@ class FormProcessMapperSchema(Schema):
     version = fields.Str(data_key="version")
     process_tenant = fields.Str(data_key="processTenant")
     deleted = fields.Boolean(data_key="deleted")
+    description = fields.Str(data_key="description")
 
 
 class FormProcessMapperListReqSchema(Schema):
@@ -51,3 +52,4 @@ class FormProcessMapperListRequestSchema(FormProcessMapperListReqSchema):
     sort_by = fields.Str(data_key="sortBy", required=False)
     sort_order = fields.Str(data_key="sortOrder", required=False)
     form_type = fields.Str(data_key="formType", required=False)
+    is_active = fields.Bool(data_key="isActive", required=False)

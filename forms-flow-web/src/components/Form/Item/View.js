@@ -342,7 +342,7 @@ const View = React.memo((props) => {
                 <span className="text-primary">
                   <i className="fa fa-info-circle mr-2" aria-hidden="true"></i>
                   {t(
-                    "Unfinished applications will be saved to Applications/Drafts."
+                    "Unfinished submissions will be saved to Submissions/Drafts."
                   )}
                 </span>
               )}
@@ -351,7 +351,7 @@ const View = React.memo((props) => {
                 <SavingLoading
                   text={
                     draftSaved
-                      ? t("Saved to Applications/Drafts")
+                      ? t("Saved to Submissions/Drafts")
                       : t("Saving...")
                   }
                   saved={draftSaved}
@@ -368,15 +368,15 @@ const View = React.memo((props) => {
             onConfirm={props.onConfirm}
           ></SubmissionError>
           {isAuthenticated ? (
-            <Link title="go back" to={`${redirectUrl}form`}>
-              <i className="fa fa-chevron-left fa-lg" />
+            <Link title={t("Back to Form List")} to={`${redirectUrl}form`}>
+              <i className="fa fa-chevron-left fa-lg mr-2" />
             </Link>
           ) : null}
 
           {form.title ? (
             <h3 className="ml-3 text-truncate" style={{height :"45px"}}>
               <span className="task-head-details">
-                <i className="fa fa-wpforms" aria-hidden="true" /> &nbsp;{" "}
+                <i className="fa-solid fa-file-lines mr-2" aria-hidden="true" /> &nbsp;{" "}
                 {t("Forms")}/
               </span>{" "}
               {form.title}
@@ -519,7 +519,9 @@ const mapDispatchToProps = (dispatch, ownProps) => {
     onCustomEvent: (customEvent, redirectUrl) => {
       switch (customEvent.type) {
         case CUSTOM_EVENT_TYPE.CUSTOM_SUBMIT_DONE:
-          toast.success("Submission Saved.");
+          toast.success(
+            <Translation>{(t) => t("Submission Saved")}</Translation>
+          );
           dispatch(push(`${redirectUrl}form`));
           break;
         case CUSTOM_EVENT_TYPE.CANCEL_SUBMISSION:

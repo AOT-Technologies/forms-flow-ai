@@ -1,9 +1,11 @@
 """This exposes the analytics API."""
-from http import HTTPStatus
 
 import requests
 from flask import current_app
+from formsflow_api_utils.exceptions import BusinessException, ExternalError
 from formsflow_api_utils.utils import HTTP_TIMEOUT, UserContext, user_context
+
+from formsflow_api.constants import BusinessErrorCode
 
 
 class RedashAPIService:  # pylint: disable=too-few-public-methods
@@ -24,11 +26,14 @@ class RedashAPIService:  # pylint: disable=too-few-public-methods
         current_app.logger.debug("URL for getting dashboard  %s", url)
         analytics_admin_token = current_app.config.get("ANALYTICS_API_KEY")
         headers = {"Authorization": analytics_admin_token}
-        response = requests.get(url, headers=headers, timeout=HTTP_TIMEOUT)
-        current_app.logger.debug("Response from analytics  %s", response)
-        current_app.logger.debug("Response from analytics  %s", response.json())
-        if response.ok:
-            return response.json()
-        if response.status_code == HTTPStatus.NOT_FOUND:
-            return "unauthorized"
-        return None
+        try:
+            response = requests.get(url, headers=headers, timeout=HTTP_TIMEOUT)
+            current_app.logger.debug("Response from analytics  %s", response)
+            current_app.logger.debug("Response from analytics  %s", response.json())
+            if response.ok:
+                return response.json()
+            if response.status_code == 404:
+                raise BusinessException(BusinessErrorCode.INSIGHTS_NOTFOUND)
+            raise BusinessException(BusinessErrorCode.INVALID_INSIGHTS_RESPONSE)
+        except requests.ConnectionError as e:
+            raise BusinessException(ExternalError.INSIGHTS_SERVICE_UNAVAILABLE) from e

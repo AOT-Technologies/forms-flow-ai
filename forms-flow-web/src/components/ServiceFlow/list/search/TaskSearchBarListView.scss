@@ -1,0 +1,57 @@
+.filter-sort-bar {
+    margin-bottom: 1rem;
+    .filter-list-view {
+        position: absolute;
+        z-index: 1000;
+        background-color: white;
+        top: 31px;;
+        min-width: 180px;
+    }
+    .sort-container{
+        min-width: 250px;
+    }
+    .filter-container-list {
+        
+        margin-left: 1rem;
+    }
+    .Select-Task-Variables{
+        margin-left: 1rem; 
+    }
+    .task-filter-list-view{
+        position: relative;
+        display: flex;
+        flex-direction: column;
+        align-items: flex-end;
+    }
+}
+
+.react-datepicker {
+    font-size: 14px;
+    padding: 10px;
+}
+
+/* Adjust the size of the input field */
+.react-datepicker__input-container input {
+    width: 150px;
+    height: 30px;
+    padding: 5px;
+}
+
+/* Adjust the size of the calendar */
+.react-datepicker-popper {
+    width: 250px;
+}
+
+
+/* Style the calendar days */
+.react-datepicker__day {
+    width: 30px;
+    height: 30px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+.filter-cancel-btn-container {
+    margin-left: -10px;
+    margin-right: -10px;
+}

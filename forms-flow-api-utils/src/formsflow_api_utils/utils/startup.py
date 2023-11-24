@@ -38,7 +38,8 @@ def collect_role_ids(app):
             )
             app.logger.info("Role ids saved to cache successfully.")
     except BusinessException as err:
-        app.logger.error(err.error)
+        app.logger.error(err)
+        app.logger.error(err.message)
     except Exception as err:  # pylint: disable=broad-except
         app.logger.error(err)
 

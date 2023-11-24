@@ -1,3 +1,4 @@
+
 import React, { useState, useEffect, useReducer } from "react";
 import { Errors, FormBuilder, Formio } from "react-formio";
 import { push } from "connected-react-router";
@@ -29,6 +30,7 @@ import {
   setRestoreFormData,
   setRestoreFormId,
 } from "../../../actions/formActions";
+import { Form } from 'react-bootstrap';
 import { removeTenantKey } from "../../../helper/helper";
 import { fetchFormById } from "../../../apiManager/services/bpmFormServices";
 import {
@@ -36,10 +38,11 @@ import {
   formUpdate,
   getFormHistory,
 } from "../../../apiManager/services/FormServices";
-import { Checkbox, FormControlLabel } from "@material-ui/core";
 import { manipulatingFormData } from "../../../apiManager/services/formFormatterService";
 import SaveAsNewVersionConfirmationModal from "./SaveAsNewVersionConfirmationModal";
 import LoadingOverlay from "react-loading-overlay";
+import RichText from "../RichText/index";
+import { Collapse } from 'react-bootstrap';
 const reducer = (form, { type, value }) => {
   const formCopy = _cloneDeep(form);
   switch (type) {
@@ -68,12 +71,13 @@ const reducer = (form, { type, value }) => {
 const Edit = React.memo(() => {
   const dispatch = useDispatch();
   const processListData = useSelector((state) => state.process?.formProcessList);
-  const formData = useSelector((state) => state.form?.form );
+  const formData = useSelector((state) => state.form?.form);
   const [form, dispatchFormAction] = useReducer(reducer, _cloneDeep(formData));
   const errors = useSelector((state) => state.form?.error);
   const formHistory = useSelector((state) => state.formRestore?.formHistory || []);
   const version = formHistory[0]?.changeLog?.version;
   const prviousData = useSelector((state) => state.process?.formPreviousData);
+  
   const applicationCount = useSelector(
     (state) => state.process?.applicationCount
   );
@@ -93,7 +97,7 @@ const Edit = React.memo(() => {
   const saveText = <Translation>{(t) => t("Save Form")}</Translation>;
   const saveNewVersion = <Translation>{(t) => t("Save New Version")}</Translation>;
   const [formSubmitted, setFormSubmitted] = useState(false);
-
+  const [formDescription,setFormDescription] = useState("");
   const lang = useSelector((state) => state.user.lang);
   const history = useHistory();
   const { t } = useTranslation();
@@ -104,21 +108,28 @@ const Edit = React.memo(() => {
   const handleClose = () => setShow(false);
   const handleShow = () => setShow(true);
   const handleConfirmModalChange = () => setConfirmModalShow(!confirmModalShow);
+  const [open, setOpen] = useState(false);
 
   const handleSave = () => {
     setShow(false);
     saveFormData();
   };
 
+  useEffect(() => {
+    if (processListData?.parentFormId && !formHistory.length) {
+      getFormHistory(processListData?.parentFormId).then((res) => {
+        dispatch(setFormHistories(res.data));
+      }).catch(() => {
+        setFormHistories([]);
+      });
+    }
+  }, [processListData]);
+
   useEffect(()=>{
-    if(processListData?.parentFormId && !formHistory.length){
-       getFormHistory(processListData?.parentFormId).then((res)=>{
-      dispatch(setFormHistories(res.data));
-    }).catch(()=>{
-      setFormHistories([]);
-    });
-  }
-  },[processListData]);
+    if(processListData?.description){
+      setFormDescription(processListData?.description);
+    }
+  },[processListData?.description]);
 
   useEffect(() => {
     if (restoredFormId) {
@@ -247,7 +258,8 @@ const Edit = React.memo(() => {
       prviousData.formName !== newData.title ||
       prviousData.anonymous !== processListData.anonymous ||
       processListData.anonymous === null ||
-      processListData.formType !== newData.type
+      processListData.formType !== newData.type ||
+      processListData.description !== formDescription
     );
   };
   // to check the component changed or not
@@ -314,6 +326,7 @@ const Edit = React.memo(() => {
       formTypeChanged: prviousData.formType !== submittedData.type,
       titleChanged: prviousData.formName !== submittedData.title,
       anonymousChanged: prviousData.anonymous !== processListData.anonymous,
+      description: formDescription
     };
     return data;
   };
@@ -421,7 +434,7 @@ const Edit = React.memo(() => {
         }
         dispatch(setRestoreFormData({}));
         dispatch(setRestoreFormId(null));
-        toast.success(t("Form Saved"));
+        toast.success(t("Form saved"));
         dispatch(setFormSuccessData("form", submittedData));
         Formio.cache = {};
         dispatch(push(`${redirectUrl}formflow/${submittedData._id}/preview`));
@@ -464,6 +477,10 @@ const Edit = React.memo(() => {
   const formChange = (newForm) =>
     dispatchFormAction({ type: "formChange", value: newForm });
 
+  const handleToggle = () => {
+    setOpen(!open);
+  };
+
   // loading up to set the data to the form variable
   if (!form?._id || currentFormLoading) {
     return (
@@ -477,8 +494,9 @@ const Edit = React.memo(() => {
     );
   }
 
+ 
   return (
-    <div className="container">
+    <div className="mt-4">
       {
         saveAsNewVersionselected && confirmModalShow && (
           <SaveAsNewVersionConfirmationModal modalOpen={confirmModalShow}
@@ -486,32 +504,32 @@ const Edit = React.memo(() => {
             onConfirm={saveAsNewVersionOnCofirm} />
         )
       }
-      <div className="d-flex align-items-center flex-wrap justify-content-between my-4 bg-light p-3">   
-        <div style={{maxWidth:"60%",wordBreak:"break-word" }}>
-          <h3 className="ml-3 task-head">
-            <i className="fa fa-wpforms" aria-hidden="true" /> &nbsp;{" "}
+ 
+      <div className="bg-light p-3">
+      <h3 className="ml-3 task-head">
+ 
+            <i className="fa-solid fa-file-lines" aria-hidden="true" /> &nbsp;{" "}
             {formData.title}
-            <span className="text-success h5 ml-2">(Version {version})</span>
+          <span className="text-success h5 ml-2">({t("Version")} {version})</span>
           </h3>
-        </div>  
-        <div className="d-flex align-items-center">
-          <FormControlLabel
-            className="mr-2"
-            control={
-              <Checkbox
+          
+        <div className="d-flex flex-md-row flex-column  align-items-md-center flex-wrap justify-content-end">
+          <Form.Group controlId="formPublish">
+            <div className="d-flex align-items-center mt-4 mr-4">
+              <label className="public-label mr-2">{t("Do you want to save a new version of this form?")}</label>
+              <Form.Check
+                className="form-check-box"
                 checked={saveAsNewVersionselected}
                 color="primary"
-                aria-label="Publish"
+                aria-label="Publish as new version"
                 onChange={(e) => {
                   setSaveAsNewVersion(e.target.checked);
                 }}
               />
-            }
-            label={t("Do you want to save a new version of this form?")}
-            labelPlacement="start"
-          />
-          <span
-            className="btn btn-secondary mr-2"
+            </div>
+          </Form.Group>
+          <button
+            className="btn btn-secondary mr-md-2 my-2 my-md-0"
             onClick={() => {
               changeAnonymous(prviousData.anonymous, true);
               history.goBack();
@@ -519,7 +537,7 @@ const Edit = React.memo(() => {
             }}
           >
             {t("Cancel")}
-          </span>
+          </button>
           <button
             className="btn btn-primary"
             disabled={formSubmitted}
@@ -531,7 +549,9 @@ const Edit = React.memo(() => {
             {saveAsNewVersionselected ? saveNewVersion : saveText}
           </button>
         </div>
+      
       </div>
+  
 
 
 
@@ -546,15 +566,15 @@ const Edit = React.memo(() => {
           </Modal.Header>
           <Modal.Body>
             {t(
-              "Changing the form title will not affect the existing applications. " +
-              "It will only update in the newly created applications. Press Save " +
+              "Changing the form title will not affect the existing submissions. " +
+              "It will only update in the newly created submissions. Press Save " +
               "Changes to continue or cancel the changes."
             )}
           </Modal.Body>
           <Modal.Footer>
-            <Button variant="secondary" onClick={handleClose}>
+            <button type="button" className="btn btn-link text-dark" onClick={handleClose}>
               {t("Cancel")}
-            </Button>
+            </button>
             <Button variant="primary" onClick={() => handleSave()}>
               {t("Save Changes")}
             </Button>
@@ -565,151 +585,205 @@ const Edit = React.memo(() => {
           spinner
           text={t("Loading...")}
         >
-          <div className="row">
-            <div className="col-lg-4 col-md-4 col-sm-4">
-              <div id="form-group-title" className="form-group">
-                <label htmlFor="title" className="control-label field-required">
-                  {t("Title")}
-                </label>
-                <input
-                  type="text"
-                  className="form-control"
-                  id="title"
-                  placeholder={t("Enter the form title")}
-                  value={form.title || ""}
-                  onChange={(event) => handleChange("title", event)}
-                />
-              </div>
-            </div>
-            <div className="col-lg-4 col-md-4 col-sm-4">
-              <div id="form-group-name" className="form-group">
-                <label htmlFor="name" className="control-label field-required">
-                 {t("Name")}
-                  {addingTenantKeyInformation("name")}
-                </label>
-                <div className="input-group mb-2">
-                  {MULTITENANCY_ENABLED && tenantKey ? (
-                    <div className="input-group-prepend">
-                      <div
-                        className="input-group-text"
-                        style={{ maxWidth: "150px" }}
-                      >
-                        <span className="text-truncate">{tenantKey}</span>
-                      </div>
-                    </div>
-                  ) : (
-                    ""
-                  )}
+          <div className="d-flex pb-4 flex-wrap">
+            <div className="col-lg-6 col-md-6 col-sm-6 col-12">
+              <div>
+                <div id="form-group-title" className="form-group">
+                  <label htmlFor="title" className="control-label field-required font-weight-bold">
+                    {t("Title")}
+                  </label>
                   <input
                     type="text"
                     className="form-control"
-                    id="name"
-                    placeholder={t("Enter the form machine name")}
-                    value={form?.name || ""}
-                    onChange={(event) => handleChange("name", event)}
+                    id="title"
+                    placeholder={t("Enter the form title")}
+                    value={form.title || ""}
+                    onChange={(event) => handleChange("title", event)}
                   />
                 </div>
               </div>
-            </div>
-            <div className="col-lg-4 col-md-3 col-sm-3">
-              <div id="form-group-display" className="form-group">
-                <label htmlFor="name" className="control-label">
-                  {t("Display as")}
+              <div >
+                <label htmlFor="Description" className="control-label font-weight-bold">
+                  {" "}
+                  {t("Description")}
                 </label>
-                <div className="input-group">
-                  <select
-                    className="form-control"
-                    name="form-display"
-                    id="form-display"
-                    value={form.display || ""}
-                    onChange={(event) => handleChange("display", event)}
-                  >
-                    <option label={t("Form")} value="form">
-                      {t("Form")}
-                    </option>
-                    <option label={t("Wizard")} value="wizard">
-                     {t("Wizard")}
-                    </option>
-                  </select>
-                </div>
+               <div className="bg-white">
+               <RichText value={formDescription} onChange={setFormDescription} />
+               </div>
               </div>
             </div>
-            <div className="col-lg-4 col-md-3 col-sm-3">
-              <div id="form-group-type" className="form-group">
-                <label htmlFor="form-type" className="control-label">
-                  {t("Type")}
-                </label>
-                <div className="input-group">
-                  <select
-                    className="form-control"
-                    name="form-type"
-                    id="form-type"
-                    value={form.type}
-                    onChange={(event) => handleChange("type", event)}
-                  >
-                    <option label={t("Form")} value="form">
-                     {t("Form")}
-                    </option>
-                    <option label={t("Resource")} value="resource">
-                      {t("Resource")}
-                    </option>
-                  </select>
-                </div>
-              </div>
-            </div>
-            <div className="col-lg-4 col-md-4 col-sm-4">
-              <div id="form-group-path" className="form-group">
-                <label htmlFor="path" className="control-label field-required">
-                  {t("Path")}
-                  {addingTenantKeyInformation("path")}
-                </label>
-                <div className="input-group mb-2">
-                  {MULTITENANCY_ENABLED && tenantKey ? (
-                    <div className="input-group-prepend">
-                      <div
-                        className="input-group-text"
-                        style={{ maxWidth: "150px" }}
-                      >
-                        <span className="text-truncate">{tenantKey}</span>
-                      </div>
-                    </div>
-                  ) : (
-                    ""
-                  )}
-                  <input
-                    type="text"
-                    className="form-control"
-                    id="path"
-                    placeholder="example"
-                    style={{ textTransform: "lowercase", width: "120px" }}
-                    value={form?.path || ""}
-                    onChange={(event) => handleChange("path", event)}
-                  />
-                </div>
-              </div>
-            </div>
-            <div className="col-lg-4 col-md-4 col-sm-4">
-              <div id="form-group-path" className="form-group">
-                <label htmlFor="path" className="control-label "></label>
-                <div className="input-group">
-                  <FormControlLabel
-                    control={
-                      <Checkbox
-                        checked={processListData.anonymous || false}
-                        color="primary"
-                        aria-label="Publish"
-                        onChange={() => {
-                          changeAnonymous();
-                        }}
+
+            <div className="col-lg-6 col-md-6 col-sm-6 col-12">
+              <div className="d-flex justify-content-between">
+                <div id="form-group-display" className="form-group">
+                  <label htmlFor="form-display" className="control-label font-weight-bold">
+                    {t("Display as")}
+                  </label>
+                  <div className="input-group">
+                    <div className="form-check form-check-inline">
+                      <input
+                        className="form-check-input"
+                        type="radio"
+                        name="display"
+                        id="form-radio-form"
+                        value="form"
+                        checked={form.display === "form"}
+                        onChange={(event) => handleChange("display", event)}
                       />
-                    }
-                    label={t("Make this form public ?")}
-                    labelPlacement="start"
-                  />
+                      <label className="form-check-label font-weight-light" htmlFor="form-radio-form">
+                        {t("Form")}
+                      </label>
+                    </div>
+                    <div className="form-check form-check-inline">
+                      <input
+                        className="form-check-input"
+                        type="radio"
+                        name="display"
+                        id="form-radio-wizard"
+                        value="wizard"
+                        checked={form.display === "wizard"}
+                        onChange={(event) => handleChange("display", event)}
+                      />
+                      <label className="form-check-label font-weight-light" htmlFor="form-radio-wizard">
+                        {t("Wizard")}
+                      </label>
+                    </div>
+                  </div>
+                </div>
+
+                <div>
+                  <div id="form-group-path" className="form-group">
+                    <label htmlFor="path" className="control-label "></label>
+                    <div className="input-group">
+                      <Form.Group controlId="anonymous">
+                        <div className="d-flex align-items-center mr-4">
+                          <label htmlFor="anonymous" className="public-label mr-2 font-weight-bold">{t("Make this form public ?")}</label>
+                          <Form.Check
+                          id="anonymous"
+                            checked={processListData.anonymous || false}
+                            type="switch"
+                            color="primary"
+                            aria-label="Publish as anonymous"
+                            onChange={() => changeAnonymous()}
+                            custom
+                          />
+                        </div>
+                      </Form.Group>
+                    </div>
+                  </div>
+                </div>
+
+              </div>
+
+              <div>
+                <div className="mt-3">
+                  <div className="d-flex align-items-center cursor-pointer" onClick={handleToggle}>
+                    <i className={`fa ${open ? 'fa-chevron-up' : 'fa-chevron-down'} mr-2`}></i>
+                    <span className="text-primary font-weight-bold mr-4">{t("Advanced Options")}</span>
+                    <hr className="flex-grow-1 ml-2 mr-2" />
+                  </div>
+                  <Collapse in={open} className="mt-3">
+                    <div id="example-collapse-text">
+
+                      <div className="col-lg-12 col-md-12 col-sm-12">
+                        <div id="form-group-name" className="form-group">
+                          <label htmlFor="name" className="control-label field-required font-weight-bold">
+                            {t("Name")}
+                            {addingTenantKeyInformation("name")}
+                          </label>
+                          <div className="input-group mb-2">
+                            {
+                              MULTITENANCY_ENABLED && tenantKey ? <div className="input-group-prepend">
+                                <div
+                                  className="input-group-text"
+                                  style={{ maxWidth: "150px" }}
+                                >
+                                  <span className="text-truncate">{tenantKey}</span>
+                                </div>
+                              </div> : ""
+                            }
+                            <input
+                              type="text"
+                              className="form-control"
+                              id="name"
+                              placeholder={t("Enter the form machine name")}
+                              value={form?.name || ""}
+                              onChange={(event) => handleChange("name", event)}
+                            />
+                          </div>
+                        </div>
+                      </div>
+
+                      <div className="d-flex  flex-wrap">
+                        <div className="col-lg-6 col-md-6 col-sm-12 ">
+                          <div id="form-group-type" className="form-group">
+                            <label htmlFor="form-type" className="control-label font-weight-bold">
+                              {t("Type")}
+                            </label>
+                            <div className="input-group">
+                              <select
+                                className="form-control"
+                                name="form-type"
+                                id="form-type"
+                                value={form.type}
+                                onChange={(event) => handleChange("type", event)}
+                              >
+                                <option label={t("Form")} value="form">
+                                  {t("Form")}
+                                </option>
+                                <option label={t("Resource")} value="resource">
+                                  {t("Resource")}
+                                </option>
+                              </select>
+                            </div>
+                          </div>
+                        </div>
+
+                        <div className="col-lg-6 col-md-6 col-sm-12">
+                          <div id="form-group-path" className="form-group">
+                            <label htmlFor="path" className="control-label field-required font-weight-bold">
+                              {t("Path")}
+                              {addingTenantKeyInformation("path")}
+                            </label>
+                            <div className="input-group mb-2">
+                              {
+                                MULTITENANCY_ENABLED && tenantKey ? <div className="input-group-prepend">
+                                  <div
+                                    className="input-group-text"
+                                    style={{ maxWidth: "150px" }}
+                                  >
+                                    <span className="text-truncate">{tenantKey}</span>
+                                  </div>
+                                </div> : ""
+                              }
+                              <input
+                                type="text"
+                                className="form-control"
+                                id="path"
+                                placeholder={t("Enter the pathname")}
+                      
+                                value={form?.path || ""}
+                                onChange={(event) => handleChange("path", event)}
+                              />
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </Collapse>
                 </div>
               </div>
+
             </div>
+
+
+
+
+
+
           </div>
+          <hr></hr>
+          <div className="mt-4">
           <FormBuilder
             key={form._id}
             form={form}
@@ -719,6 +793,8 @@ const Edit = React.memo(() => {
               i18n: formio_resourceBundles,
             }}
           />
+          </div>
+          
         </LoadingOverlay>
       </div>
     </div>

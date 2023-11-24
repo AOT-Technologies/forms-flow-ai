@@ -11,9 +11,21 @@
     }
 }
 
+.published-forms-label{
+    color: #52C41A;
+    background: #EAFBE7 0% 0% no-repeat padding-box;
+    border: 1px solid #52C41A;
+    border-radius: 7px;
+}
+
+.unpublished-forms-label{
+    background: #E6F7FF 0% 0% no-repeat padding-box;
+    border-radius: 7px;
+    border: 1px solid #91D5FF;
+    color: #1890FF;
+}
 .custom-grid {
     .col {
-        border-left: 1px solid #ced4da;
         min-height: 50px;
         text-align: start;
         padding-top: 15px;
@@ -34,6 +46,10 @@
     h5,
     .h5 {
         font-weight: 400 !important;
+    }
+
+    .select {
+        max-width: 105px !important;
     }
 
     .btn-link {
@@ -61,8 +77,8 @@
     }
 
     .btn {
-        margin-right: 5px;
-        margin-top: 1px;
+        margin-right: 0px;
+        margin-top: 0px;
         margin-bottom: 7px;
     }
 }
@@ -93,13 +109,12 @@
     display: flex;
     flex-direction: row;
     flex: 50%;
-    flex-wrap: wrap;
+flex-wrap: wrap;
 }
 
 .btn-left {
     margin: 10px;
-    height: 30px;
-    white-space: nowrap;
+    height: 30px;white-space: nowrap;
 }
 .progress-bar {
     background-color: #ff0000ab;
@@ -109,11 +124,49 @@
     float: right;
     font-weight: normal
 }
+
+.progress-bar {
+    background-color: #ff0000ab;
+}
+
+.fileupload-fail {
+    color: #f85757;
+    float: right;
+    font-weight: normal
+}
+.public-label {
+    margin-right: 12px;
+}
+.custom-control {
+    padding-bottom: 4px !important;
+}
 /* Responsive layout - makes a one column-layout instead of a two-column layout */
 @media (max-width: 800px) {
+
     .flex-item-right,
     .flex-item-left {
-        flex: 100%;
-        justify-content: flex-start;
+        flex: 100%;justify-content: flex-start;
     }
+}
+.page-item .page-link {
+    color: var(--color-primary)!important;
+}
+.page-item.active .page-link {
+    color: var(--color-white) !important;
+}
+
+/* Style the dots */
+.dots {
+    cursor: pointer;
+    user-select: none;
+    font-size: 24px;
+  }
+
+ 
+
+ .custom-button {
+    width: auto;
+  }
+.form-description-p-tag > p{
+    word-wrap: break-word;
 }

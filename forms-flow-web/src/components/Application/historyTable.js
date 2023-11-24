@@ -1,9 +1,10 @@
 import React from "react";
 import {
   getFormUrl,
-  getLocalDateTime,
 } from "../../apiManager/services/formatterService";
 import { Translation } from "react-i18next";
+import { HelperServices} from "@formsflow/service";
+
 
 export const defaultSortedBy = [
   {
@@ -16,7 +17,7 @@ const linkSubmision = (row, redirectUrl) => {
   const { formId, submissionId } = row;
   const url = getFormUrl(formId, submissionId, redirectUrl);
   return (
-    <div title={url} onClick={() => window.open(url, "_blank")}>
+    <div onClick={() => window.open(url, "_blank")}>
       <span className="btn btn-primary btn-sm form-btn">
         <span>
           <i className="fa fa-eye" aria-hidden="true"></i>&nbsp;
@@ -28,7 +29,7 @@ const linkSubmision = (row, redirectUrl) => {
 };
 
 function timeFormatter(cell) {
-  const localDate = getLocalDateTime(cell);
+  const localDate = HelperServices?.getLocalDateAndTime(cell);
   return <label title={cell}>{localDate}</label>;
 }
 
@@ -60,7 +61,7 @@ const customTotal = (from, to, size) => (
   <span className="react-bootstrap-table-pagination-total" role="main">
     <Translation>{(t) => t("Showing")}</Translation> {from}{" "}
     <Translation>{(t) => t("to")}</Translation> {to}{" "}
-    <Translation>{(t) => t("of")}</Translation> {size} <Translation>{(t) => t("Results")}</Translation>
+    <Translation>{(t) => t("of")}</Translation> {size} <Translation>{(t) => t("results")}</Translation>
   </span>
 );
 

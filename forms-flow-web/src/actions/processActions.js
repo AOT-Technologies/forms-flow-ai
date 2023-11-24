@@ -133,3 +133,32 @@ export const setFormStatusLoading = (data) => (dispatch) => {
     payload: data,
   });
 };
+
+export const setBpmnSearchText = (data) => (dispatch) => {
+  dispatch({
+    type: ACTION_CONSTANTS.BPMN_SEARCH_TEXT,
+    payload: data,
+  });
+};
+
+export const setDmnSearchText = (data) => (dispatch) => {
+  dispatch({
+    type: ACTION_CONSTANTS.DMN_SEARCH_TEXT,
+    payload: data,
+  });
+};
+
+
+export const setBpmnModel = (data) => (dispatch) => {
+  dispatch({
+    type: ACTION_CONSTANTS.IS_BPMN_MODEL,
+    payload: data,
+  });
+};
+
+export const setIsPublicDiagram = (data) => (dispatch) => {
+  dispatch({
+    type: ACTION_CONSTANTS.IS_PUBLIC_DIAGRAM,
+    payload: data,
+  });
+};

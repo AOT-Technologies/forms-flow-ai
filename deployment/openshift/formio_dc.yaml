@@ -57,11 +57,11 @@ objects:
               secretKeyRef:
                 key: formio_jwt_secret
                 name: ${FORMIO_SECRET}    
-          - name: FORMIO_CLIENT_UI
+          - name: NO_INSTALL
             valueFrom:
               secretKeyRef:
-                key: formio_client_ui
-                name: ${FORMIO_CLIENT_UI}  
+                key: NO_INSTALL
+                name: ${NO_INSTALL}  
           image: ${IMAGE_NAMESPACE}/${NAME}:${TAG_NAME}
           name: ${NAME}
           ports:

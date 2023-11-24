@@ -1,4 +1,3 @@
-import NotFound from "../components/NotFound";
 import { Translation } from "react-i18next";
 
 const replaceUrl = (URL, key, value) => {
@@ -8,8 +7,7 @@ const replaceUrl = (URL, key, value) => {
 const addTenantkey = (value, tenantkey) => {
   const tenantKeyCheck = value.match(`${tenantkey}-`);
   if (
-    tenantKeyCheck &&
-    tenantKeyCheck[0].toLowerCase() === `${tenantkey.toLowerCase()}-`
+    tenantKeyCheck && tenantKeyCheck[0].toLowerCase() === `${tenantkey.toLowerCase()}-`
   ) {
     return value.toLowerCase();
   } else {
@@ -36,11 +34,12 @@ const textTruncate = (wordLength, targetLength, text) => {
 };
 
 const renderPage = (formStatus, processLoadError) => {
-  if (!processLoadError && (formStatus === "inactive" || !formStatus)) {
+  console.log(processLoadError,formStatus);
+  if (!processLoadError && ((formStatus === "inactive") || !formStatus)) {
     return (
       <span>
         <div
-          className="container"
+          className=""
           style={{
             maxWidth: "900px",
             margin: "auto",
@@ -56,8 +55,6 @@ const renderPage = (formStatus, processLoadError) => {
         </div>
       </span>
     );
-  } else {
-    return (<NotFound errorMessage={<Translation>{(t) => t("Access Denied") }</Translation> } errorCode={"403"} />);
-  }
+  } 
 };
 export { replaceUrl, addTenantkey, removeTenantKey, textTruncate, renderPage };

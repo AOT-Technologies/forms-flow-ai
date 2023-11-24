@@ -1,8 +1,8 @@
 import React from "react";
 import { Table } from "react-bootstrap";
 import startCase from "lodash/startCase";
-import { getLocalDateTime } from "../../../apiManager/services/formatterService";
 import { Translation } from "react-i18next";
+import { HelperServices} from "@formsflow/service";
 
 const DraftDetails = React.memo((props) => {
   const draft = props.draft;
@@ -43,7 +43,7 @@ const DraftDetails = React.memo((props) => {
           </td>
           <td className="border-0">:</td>
           <td className="border-0" id="application-created">
-            {getLocalDateTime(draft.created)}
+            {HelperServices?.getLocalDateAndTime(draft.created)}
           </td>
         </tr>
         <tr>
@@ -52,7 +52,7 @@ const DraftDetails = React.memo((props) => {
           </td>
           <td className="border-0">:</td>
           <td className="border-0" id="application-modified">
-            {getLocalDateTime(draft.modified)}
+            {HelperServices?.getLocalDateAndTime(draft.created)}
           </td>
         </tr>
       </tbody>

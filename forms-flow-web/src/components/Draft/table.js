@@ -6,13 +6,14 @@ import {
   customFilter,
   FILTER_TYPES,
 } from "react-bootstrap-table2-filter";
-import { getLocalDateTime } from "../../apiManager/services/formatterService";
 import { Translation } from "react-i18next";
 import DateRangePicker from "@wojtekmaj/react-daterange-picker";
 import DropdownButton from "react-bootstrap/DropdownButton";
 import Dropdown from "react-bootstrap/Dropdown";
 import { toast } from "react-toastify";
 import DraftOperations from "./DraftOperations";
+import { HelperServices} from "@formsflow/service";
+
 
 let statusFilter, idFilter, nameFilter, modifiedDateFilter;
 
@@ -36,7 +37,7 @@ const linkDraftDetail = (cell, row, redirectUrl) => {
 };
 
 function timeFormatter(cell) {
-  const localdate = getLocalDateTime(cell);
+  const localdate = HelperServices?.getLocalDateAndTime(cell);
   return <label title={cell}>{localdate}</label>;
 }
 
@@ -141,6 +142,10 @@ export const columns = (
             calendarAriaLabel={t("Select the date")}
             dayAriaLabel="Select the day"
             clearAriaLabel="Click to clear"
+            name="selectDateRange"
+            monthAriaLabel="Select the month"
+            yearAriaLabel="Select the year"
+            nativeInputAriaLabel="Date"
           />
         );
       },
@@ -153,7 +158,7 @@ const customTotal = (from, to, size) => (
     <Translation>{(t) => t("Showing")}</Translation> {from}{" "}
     <Translation>{(t) => t("to")}</Translation> {to}{" "}
     <Translation>{(t) => t("of")}</Translation> {size}{" "}
-    <Translation>{(t) => t("Results")}</Translation>
+    <Translation>{(t) => t("results")}</Translation>
   </span>
 );
 const customDropUp = ({ options, currSizePerPage, onSizePerPageChange }) => {

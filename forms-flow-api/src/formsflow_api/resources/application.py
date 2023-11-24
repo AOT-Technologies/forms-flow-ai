@@ -2,10 +2,8 @@
 
 from http import HTTPStatus
 
-import requests
-from flask import current_app, request
+from flask import request
 from flask_restx import Namespace, Resource, fields
-from formsflow_api_utils.exceptions import BusinessException
 from formsflow_api_utils.utils import (
     DESIGNER_GROUP,
     REVIEWER_GROUP,
@@ -14,7 +12,6 @@ from formsflow_api_utils.utils import (
     get_form_and_submission_id_from_form_url,
     profiletime,
 )
-from marshmallow.exceptions import ValidationError
 
 from formsflow_api.schemas import (
     ApplicationListReqSchema,
@@ -158,95 +155,69 @@ class ApplicationsResource(Resource):
     )
     def get():  # pylint:disable=too-many-locals
         """Get applications."""
-        try:
-            dict_data = ApplicationListRequestSchema().load(request.args) or {}
-            page_no = dict_data.get("page_no")
-            limit = dict_data.get("limit")
-            order_by = dict_data.get("order_by", "id")
-            application_id = dict_data.get("application_id")
-            application_name = dict_data.get("application_name")
-            application_status = dict_data.get("application_status")
-            created_by = dict_data.get("created_by")
-            created_from_date = dict_data.get("created_from_date")
-            created_to_date = dict_data.get("created_to_date")
-            modified_from_date = dict_data.get("modified_from_date")
-            modified_to_date = dict_data.get("modified_to_date")
-            sort_order = dict_data.get("sort_order", "desc")
-            if auth.has_role([REVIEWER_GROUP]):
-                (
-                    application_schema_dump,
-                    application_count,
-                    draft_count,
-                ) = ApplicationService.get_auth_applications_and_count(
-                    created_from=created_from_date,
-                    created_to=created_to_date,
-                    modified_from=modified_from_date,
-                    modified_to=modified_to_date,
-                    order_by=order_by,
-                    sort_order=sort_order,
-                    created_by=created_by,
-                    application_id=application_id,
-                    application_name=application_name,
-                    application_status=application_status,
-                    token=request.headers["Authorization"],
-                    page_no=page_no,
-                    limit=limit,
-                )
-            else:
-                (
-                    application_schema_dump,
-                    application_count,
-                    draft_count,
-                ) = ApplicationService.get_all_applications_by_user(
-                    page_no=page_no,
-                    limit=limit,
-                    order_by=order_by,
-                    sort_order=sort_order,
-                    created_from=created_from_date,
-                    created_to=created_to_date,
-                    modified_from=modified_from_date,
-                    modified_to=modified_to_date,
-                    created_by=created_by,
-                    application_id=application_id,
-                    application_name=application_name,
-                    application_status=application_status,
-                )
-            return (
-                (
-                    {
-                        "applications": application_schema_dump,
-                        "totalCount": application_count,
-                        "draftCount": draft_count,
-                        "limit": limit,
-                        "pageNo": page_no,
-                    }
-                ),
-                HTTPStatus.OK,
+        dict_data = ApplicationListRequestSchema().load(request.args) or {}
+        page_no = dict_data.get("page_no")
+        limit = dict_data.get("limit")
+        order_by = dict_data.get("order_by", "id")
+        application_id = dict_data.get("application_id")
+        application_name = dict_data.get("application_name")
+        application_status = dict_data.get("application_status")
+        created_by = dict_data.get("created_by")
+        created_from_date = dict_data.get("created_from_date")
+        created_to_date = dict_data.get("created_to_date")
+        modified_from_date = dict_data.get("modified_from_date")
+        modified_to_date = dict_data.get("modified_to_date")
+        sort_order = dict_data.get("sort_order", "desc")
+        if auth.has_role([REVIEWER_GROUP]):
+            (
+                application_schema_dump,
+                application_count,
+                draft_count,
+            ) = ApplicationService.get_auth_applications_and_count(
+                created_from=created_from_date,
+                created_to=created_to_date,
+                modified_from=modified_from_date,
+                modified_to=modified_to_date,
+                order_by=order_by,
+                sort_order=sort_order,
+                created_by=created_by,
+                application_id=application_id,
+                application_name=application_name,
+                application_status=application_status,
+                page_no=page_no,
+                limit=limit,
             )
-        except ValidationError as err:
-            response, status = (
+        else:
+            (
+                application_schema_dump,
+                application_count,
+                draft_count,
+            ) = ApplicationService.get_all_applications_by_user(
+                page_no=page_no,
+                limit=limit,
+                order_by=order_by,
+                sort_order=sort_order,
+                created_from=created_from_date,
+                created_to=created_to_date,
+                modified_from=modified_from_date,
+                modified_to=modified_to_date,
+                created_by=created_by,
+                application_id=application_id,
+                application_name=application_name,
+                application_status=application_status,
+            )
+        return (
+            (
                 {
-                    "type": "Invalid Request Object",
-                    "message": "Required fields are not passed",
-                },
-                HTTPStatus.BAD_REQUEST,
-            )
-
-            current_app.logger.critical(response)
-            current_app.logger.critical(err)
-            return response, status
-
-        except KeyError as err:
-            response, status = (
-                {
-                    "type": "Invalid Request Object",
-                    "message": "Required fields are not passed",
-                },
-                HTTPStatus.BAD_REQUEST,
-            )
-            current_app.logger.critical(response)
-            current_app.logger.critical(err)
-            return response, status
+                    "applications": application_schema_dump,
+                    "totalCount": application_count,
+                    "draftCount": draft_count,
+                    "limit": limit,
+                    "pageNo": page_no,
+                }
+            ),
+            HTTPStatus.OK,
+        )
 
 
 @cors_preflight("GET,PUT,OPTIONS")
@@ -268,36 +239,21 @@ class ApplicationResourceById(Resource):
     )
     def get(application_id: int):
         """Get application by id."""
-        try:
-            if auth.has_role([REVIEWER_GROUP]):
-                (
-                    application_schema_dump,
-                    status,
-                ) = ApplicationService.get_auth_by_application_id(
-                    application_id=application_id,
-                    token=request.headers["Authorization"],
-                )
-                return (
-                    application_schema_dump,
-                    status,
-                )
-            application, status = ApplicationService.get_application_by_user(
-                application_id=application_id
+        if auth.has_role([REVIEWER_GROUP]):
+            (
+                application_schema_dump,
+                status,
+            ) = ApplicationService.get_auth_by_application_id(
+                application_id=application_id,
             )
-            return (application, status)
-        except PermissionError as err:
-            response, status = (
-                {
-                    "type": "Permission Denied",
-                    "message": f"Access to form id - {application_id} is prohibited.",
-                },
-                HTTPStatus.FORBIDDEN,
+            return (
+                application_schema_dump,
+                status,
             )
-            current_app.logger.warning(response)
-            current_app.logger.warning(err)
-            return response, status
-        except BusinessException as err:
-            return err.error, err.status_code
+        application, status = ApplicationService.get_application_by_user(
+            application_id=application_id
+        )
+        return application, status
 
     @staticmethod
     @auth.require
@@ -315,43 +271,20 @@ class ApplicationResourceById(Resource):
     def put(application_id: int):
         """Update application details."""
         application_json = request.get_json()
-        try:
-            application_schema = ApplicationUpdateSchema()
-            dict_data = application_schema.load(application_json)
-            form_url = dict_data.get("form_url", None)
-            if form_url:
-                (
-                    latest_form_id,
-                    submission_id,
-                ) = get_form_and_submission_id_from_form_url(form_url)
-                dict_data["latest_form_id"] = latest_form_id
-                dict_data["submission_id"] = submission_id
-            ApplicationService.update_application(
-                application_id=application_id, data=dict_data
-            )
-            return "Updated successfully", HTTPStatus.OK
-        except PermissionError as err:
-            response, status = (
-                {
-                    "type": "Permission Denied",
-                    "message": f"Access to application-{application_id} is prohibited.",
-                },
-                HTTPStatus.FORBIDDEN,
-            )
-            current_app.logger.warning(response)
-            current_app.logger.warning(err)
-            return response, status
-
-        except BaseException as submission_err:  # pylint: disable=broad-except
-            response, status = {
-                "type": "Bad request error",
-                "message": "Invalid request data",
-            }, HTTPStatus.BAD_REQUEST
-
-            current_app.logger.warning(response)
-            current_app.logger.warning(submission_err)
-
-            return response, status
+        application_schema = ApplicationUpdateSchema()
+        dict_data = application_schema.load(application_json)
+        form_url = dict_data.get("form_url", None)
+        if form_url:
+            (
+                latest_form_id,
+                submission_id,
+            ) = get_form_and_submission_id_from_form_url(form_url)
+            dict_data["latest_form_id"] = latest_form_id
+            dict_data["submission_id"] = submission_id
+        ApplicationService.update_application(
+            application_id=application_id, data=dict_data
+        )
+        return "Updated successfully", HTTPStatus.OK
 
 
 @cors_preflight("GET,OPTIONS")
@@ -447,46 +380,18 @@ class ApplicationResourceCountByFormId(Resource):
     @profiletime
     def get(form_id: str):
         """Get application count by formId."""
-        try:
-            application_count = ApplicationService.get_all_applications_form_id_count(
-                form_id=form_id
-            )
-            return (
-                (
-                    {
-                        "message": f"Total Applications found are: {application_count}",
-                        "value": application_count,
-                    }
-                ),
-                HTTPStatus.OK,
-            )
-        except PermissionError as err:
-            response, status = (
+        application_count = ApplicationService.get_all_applications_form_id_count(
+            form_id=form_id
+        )
+        return (
+            (
                 {
-                    "type": "Permission Denied",
-                    "message": f"Access to application count of-{form_id} is prohibited",
-                },
-                HTTPStatus.FORBIDDEN,
-            )
-            current_app.logger.warning(response)
-            current_app.logger.warning(err)
-            return response, status
-        except KeyError as err:
-            response, status = {
-                "type": "Bad request error",
-                "message": "Invalid application request passed",
-            }, HTTPStatus.BAD_REQUEST
-            current_app.logger.warning(response)
-            current_app.logger.warning(err)
-            return response, status
-        except BaseException as application_err:  # pylint: disable=broad-except
-            response, status = {
-                "type": "Bad request error",
-                "message": "Invalid application request passed",
-            }, HTTPStatus.BAD_REQUEST
-            current_app.logger.warning(response)
-            current_app.logger.warning(application_err)
-            return response, status
+                    "message": f"Total Applications found are: {application_count}",
+                    "value": application_count,
+                }
+            ),
+            HTTPStatus.OK,
+        )
 
 
 @cors_preflight("POST,OPTIONS")
@@ -522,41 +427,13 @@ class ApplicationResourcesByIds(Resource):
         """
         application_json = request.get_json()
 
-        try:
-            application_schema = ApplicationSchema()
-            dict_data = application_schema.load(application_json)
-            application, status = ApplicationService.create_application(
-                data=dict_data, token=request.headers["Authorization"]
-            )
-            response = application_schema.dump(application)
-            return response, status
-        except PermissionError as err:
-            response, status = (
-                {
-                    "type": "Permission Denied",
-                    "message": f"Access to formId-{dict_data['form_id']} is prohibited",
-                },
-                HTTPStatus.FORBIDDEN,
-            )
-            current_app.logger.warning(response)
-            current_app.logger.warning(err)
-            return response, status
-        except KeyError as err:
-            response, status = {
-                "type": "Bad request error",
-                "message": "Invalid application request passed",
-            }, HTTPStatus.BAD_REQUEST
-            current_app.logger.warning(response)
-            current_app.logger.warning(err)
-            return response, status
-        except BaseException as application_err:  # pylint: disable=broad-except
-            response, status = {
-                "type": "Bad request error",
-                "message": "Invalid application request passed",
-            }, HTTPStatus.BAD_REQUEST
-            current_app.logger.warning(response)
-            current_app.logger.warning(application_err)
-            return response, status
+        application_schema = ApplicationSchema()
+        dict_data = application_schema.load(application_json)
+        application, status = ApplicationService.create_application(
+            data=dict_data, token=request.headers["Authorization"]
+        )
+        response = application_schema.dump(application)
+        return response, status
 
 
 @cors_preflight("GET,OPTIONS")
@@ -578,13 +455,10 @@ class ApplicationResourceByApplicationStatus(Resource):
     )
     def get():
         """Method to get the application status lists."""
-        try:
-            return (
-                ApplicationService.get_all_application_status(),
-                HTTPStatus.OK,
-            )
-        except BusinessException as err:
-            return err.error, err.status_code
+        return (
+            ApplicationService.get_all_application_status(),
+            HTTPStatus.OK,
+        )
 
 
 @cors_preflight("POST,OPTIONS")
@@ -608,27 +482,8 @@ class ApplicationResubmitById(Resource):
     @API.response(403, "FORBIDDEN:- Permission denied")
     def post(application_id: int):
         """Resubmit application."""
-        try:
-            resubmit_json = request.get_json()
-            ApplicationService.resubmit_application(
-                application_id, resubmit_json, token=request.headers["Authorization"]
-            )
-            return "Message event updated successfully.", HTTPStatus.OK
-        except PermissionError as err:
-            response, status = (
-                {
-                    "type": "Permission Denied",
-                    "message": f"Access to application id - {application_id} is prohibited.",
-                },
-                HTTPStatus.FORBIDDEN,
-            )
-            current_app.logger.warning(response)
-            current_app.logger.warning(err)
-            return response, status
-        except BusinessException as err:
-            return err.error, err.status_code
-        except requests.exceptions.ConnectionError as err:
-            current_app.logger.warning(err)
-            return {
-                "message": "BPM Service Unavailable",
-            }, HTTPStatus.SERVICE_UNAVAILABLE
+        resubmit_json = request.get_json()
+        ApplicationService.resubmit_application(
+            application_id, resubmit_json, token=request.headers["Authorization"]
+        )
+        return "Message event updated successfully.", HTTPStatus.OK

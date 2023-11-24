@@ -61,7 +61,7 @@ const FormOperations = React.memo(({ formData }) => {
   
   const submitNew = (
     <button
-      className="btn  btn-primary"
+      className="btn  btn-primary mr-2"
       onClick={() => submitNewForm(formData._id)}
     >
       <i className="fa fa-pencil mr-1" />
@@ -70,11 +70,10 @@ const FormOperations = React.memo(({ formData }) => {
   );
   const viewOrEdit = (
     <button
-      className="btn  btn-outline-primary"
+      className="btn btn-link mt-1"
       onClick={() => viewOrEditForm(formData._id)}
     >
-      <i className="fa fa-pencil-square-o mr-1"  />
-      <Translation>{(t) => t("View/Edit Form")}</Translation>{" "}
+      <Translation>{(t) => t("View Details")}</Translation>{" "}
     </button>
   );
   const deleteForm = (

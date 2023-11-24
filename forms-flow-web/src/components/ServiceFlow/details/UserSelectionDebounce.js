@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState,useEffect, useRef } from "react";
 import AsyncSelect from "react-select/async";
 import { useDispatch } from "react-redux";
 import { Row, Col } from "react-bootstrap";
@@ -13,7 +13,7 @@ import {
 import DropdownButton from "react-bootstrap/DropdownButton";
 import Dropdown from "react-bootstrap/Dropdown";
 import Form from "react-bootstrap/Form";
-import { useTranslation } from "react-i18next";
+
 const UserSelectionDebounce = React.memo((props) => {
   const { onClose, currentUser, onChangeClaim } = props;
   const dispatch = useDispatch();
@@ -23,6 +23,23 @@ const UserSelectionDebounce = React.memo((props) => {
       controlHeight: 25,
     },
   });
+  const userSelectionRef = useRef(null);
+  const handleClick = (e) => {
+    if (userSelectionRef?.current?.contains(e.target)) {
+      return;
+    }
+    // outside click
+    onClose();
+  };
+  
+  useEffect(() => {
+    // add when mounted
+    document.addEventListener("mousedown", handleClick);
+    // return function to be called when unmounted
+    return () => {
+      document.removeEventListener("mousedown", handleClick);
+    };
+  }, []);
   const [selectedValue, changeSelectedValue] = useState({
     value: currentUser,
     label: currentUser,
@@ -31,7 +48,6 @@ const UserSelectionDebounce = React.memo((props) => {
     UserSearchFilterTypes[0]
   );
   const [isSearch, setIsSearch] = useState(false);
-  const { t } = useTranslation();
   const loadOptions = (inputValue = "", callback) => {
     dispatch(
       fetchUserListWithSearch(
@@ -68,6 +84,10 @@ const UserSelectionDebounce = React.memo((props) => {
         return "";
     }
   };
+  const handleChange = (selectedOption) => {
+    changeSelectedValue(selectedOption);
+    onChangeClaim(selectedOption?.value || null);
+  };
 
   const formatOptionLabel = (
     { id, firstName, lastName, email },
@@ -90,35 +110,23 @@ const UserSelectionDebounce = React.memo((props) => {
 
   return (
     <>
-      <Row md={{ span: 3, offset: 3 }}>
-        <Col xs={12} md={10}>
-          <button
-            className="btn btn-pos"
-            title={t("Update User")}
-            onClick={() => onChangeClaim(selectedValue?.value || null)}
-          >
-            <i className="fa fa-check fa-lg mr-1" />
-          </button>
-          <button className="btn btn-pos" onClick={onClose} title={t("Close")}>
-            <i className="fa fa-times-circle fa-lg mr-1" />
-          </button>
-        </Col>
-      </Row>
-      <Row>
-        <Col sm={10}>
+      <Row ref={userSelectionRef}>
+        <Col sm={10} className="no-padding-left pr-1">
           <AsyncSelect
             cacheOptions
             theme={customThemeFn}
             loadOptions={loadOptions}
             isClearable
             defaultOptions
-            onChange={changeSelectedValue}
+            onChange={handleChange}
             className="select-user"
             placeholder={isSearch ? searchTypeOption.title || "Select..." : ""}
             formatOptionLabel={formatOptionLabel}
+            onMenuClose={onClose}
+            value={selectedValue}
           />
         </Col>
-        <Col sm={2} className="p-0">
+        <Col sm={2} className="p-0 no-padding-left">
           <DropdownButton
             id="dropdown-basic-button"
             title={<i className="fa fa-filter" />}

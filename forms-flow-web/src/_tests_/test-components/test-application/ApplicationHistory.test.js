@@ -102,7 +102,7 @@ describe("Integration test for HistoryList component", () => {
     expect(screen.queryByText("New")).not.toBeInTheDocument();
     expect(screen.queryByText("View Submission")).not.toBeInTheDocument();
     expect(
-      screen.getByText("No Application History found")
+      screen.getByText("No Submission History found")
     ).toBeInTheDocument();
   });
 });

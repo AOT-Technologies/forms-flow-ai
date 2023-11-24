@@ -1,18 +1,15 @@
 """API endpoints for filter resource."""
 
 from http import HTTPStatus
-from http.client import BAD_REQUEST
 
-from flask import current_app, request
+from flask import request
 from flask_restx import Namespace, Resource, fields
-from formsflow_api_utils.exceptions import BusinessException
 from formsflow_api_utils.utils import (
     REVIEWER_GROUP,
     auth,
     cors_preflight,
     profiletime,
 )
-from marshmallow.exceptions import ValidationError
 
 from formsflow_api.schemas import FilterSchema
 from formsflow_api.services import FilterService
@@ -96,12 +93,8 @@ class FilterResource(Resource):
 
         List all active filters for requests with ```reviewer permission```.
         """
-        try:
-            response, status = FilterService.get_all_filters(), HTTPStatus.OK
-            return response, status
-        except Exception as unexpected_error:
-            current_app.logger.warning(unexpected_error)
-            raise unexpected_error
+        response, status = FilterService.get_all_filters(), HTTPStatus.OK
+        return response, status
 
     @staticmethod
     @auth.has_one_of_roles([REVIEWER_GROUP])
@@ -144,23 +137,12 @@ class FilterResource(Resource):
         }
         ```
         """
-        try:
-            filter_data = filter_schema.load(request.get_json())
-            response, status = (
-                FilterService.create_filter(filter_data),
-                HTTPStatus.CREATED,
-            )
-            return response, status
-        except ValidationError as error:
-            current_app.logger.warning(error)
-            response, status = {
-                "type": "Bad request error",
-                "message": "Invalid request data",
-            }, BAD_REQUEST
-            return response, status
-        except Exception as unexpected_error:
-            current_app.logger.warning(unexpected_error)
-            raise unexpected_error
+        filter_data = filter_schema.load(request.get_json())
+        response, status = (
+            FilterService.create_filter(filter_data),
+            HTTPStatus.CREATED,
+        )
+        return response, status
 
 
 @cors_preflight("GET, OPTIONS")
@@ -184,15 +166,11 @@ class UsersFilterList(Resource):
 
         Get all active filters of current reviewer user for requests with ```reviewer permission```.
         """
-        try:
-            response, status = FilterService.get_user_filters(), HTTPStatus.OK
-            return response, status
-        except Exception as unexpected_error:
-            current_app.logger.warning(unexpected_error)
-            raise unexpected_error
+        response, status = FilterService.get_user_filters(), HTTPStatus.OK
+        return response, status
 
 
-@cors_preflight("PUT, OPTIONS")
+@cors_preflight("PUT, OPTIONS,DELETE,GET")
 @API.route("/<int:filter_id>", methods=["GET", "PUT", "DELETE", "OPTIONS"])
 @API.doc(params={"filter_id": "Filter details corresponding to filter_id"})
 class FilterResourceById(Resource):
@@ -215,27 +193,10 @@ class FilterResourceById(Resource):
 
         Get filter details corresponding to a filter id for requests with ```REVIEWER_GROUP``` permission.
         """
-        try:
-            filter_result = FilterService.get_filter_by_id(filter_id)
-            response, status = filter_schema.dump(filter_result), HTTPStatus.OK
+        filter_result = FilterService.get_filter_by_id(filter_id)
+        response, status = filter_schema.dump(filter_result), HTTPStatus.OK
 
-            return response, status
-        except PermissionError as err:
-            response, status = (
-                {
-                    "type": "Permission Denied",
-                    "message": f"Access to filter id - {filter_id} is prohibited.",
-                },
-                HTTPStatus.FORBIDDEN,
-            )
-            current_app.logger.warning(err)
-            return response, status
-        except BusinessException as err:
-            current_app.logger.warning(err.error)
-            return err.error, err.status_code
-        except Exception as unexpected_error:
-            current_app.logger.warning(unexpected_error)
-            raise unexpected_error
+        return response, status
 
     @staticmethod
     @auth.has_one_of_roles([REVIEWER_GROUP])
@@ -255,40 +216,13 @@ class FilterResourceById(Resource):
 
         Update filter details corresponding to a filter id for requests with ```REVIEWER_GROUP``` permission.
         """
-        try:
-            filter_data = filter_schema.load(request.get_json())
-            filter_result = FilterService.update_filter(filter_id, filter_data)
-            response, status = (
-                filter_schema.dump(filter_result),
-                HTTPStatus.OK,
-            )
-
-            return response, status
-        except PermissionError as err:
-            response, status = (
-                {
-                    "type": "Permission Denied",
-                    "message": f"Access to filter id - {filter_id} is prohibited.",
-                },
-                HTTPStatus.FORBIDDEN,
-            )
-            current_app.logger.warning(err)
-            return response, status
-        except BusinessException as err:
-            current_app.logger.warning(err)
-            error, status = err.error, err.status_code
-            return error, status
-
-        except BaseException as submission_err:  # pylint: disable=broad-except
-            response, status = {
-                "type": "Bad request error",
-                "message": "Invalid request data",
-            }, HTTPStatus.BAD_REQUEST
-
-            current_app.logger.warning(response)
-            current_app.logger.warning(submission_err)
-
-            return response, status
+        filter_data = filter_schema.load(request.get_json())
+        filter_result = FilterService.update_filter(filter_id, filter_data)
+        response, status = (
+            filter_schema.dump(filter_result),
+            HTTPStatus.OK,
+        )
+        return response, status
 
     @staticmethod
     @auth.has_one_of_roles([REVIEWER_GROUP])
@@ -306,24 +240,7 @@ class FilterResourceById(Resource):
 
         Delete filter corresponding to a filter id for requests with ```REVIEWER_GROUP``` permission.
         """
-        try:
-            FilterService.mark_inactive(filter_id=filter_id)
-            response, status = "Deleted", HTTPStatus.OK
+        FilterService.mark_inactive(filter_id=filter_id)
+        response, status = "Deleted", HTTPStatus.OK
 
-            return response, status
-        except PermissionError as err:
-            response, status = (
-                {
-                    "type": "Permission Denied",
-                    "message": f"Access to filter id - {filter_id} is prohibited.",
-                },
-                HTTPStatus.FORBIDDEN,
-            )
-            current_app.logger.warning(err)
-            return response, status
-        except BusinessException as err:
-            current_app.logger.warning(err.error)
-            return err.error, err.status_code
-        except Exception as unexpected_error:
-            current_app.logger.warning(unexpected_error)
-            raise unexpected_error
+        return response, status

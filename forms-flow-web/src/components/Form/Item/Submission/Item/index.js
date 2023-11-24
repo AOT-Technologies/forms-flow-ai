@@ -25,7 +25,9 @@ const Item = React.memo(() => {
   const { formId, submissionId } = useParams();
   const dispatch = useDispatch();
   const { t } = useTranslation();
-
+  const applicationDetail = useSelector(
+    (state) => state.applications.applicationDetail
+  );
   const applicationId = useSelector(
     (state) =>
       state[CUSTOM_SUBMISSION_ENABLE ? "customSubmission" : "submission"]?.submission?.data?.applicationId ||
@@ -45,8 +47,8 @@ const Item = React.memo(() => {
 
   useEffect(() => {
     dispatch(clearSubmissionError("submission"));
-    if(CUSTOM_SUBMISSION_URL && CUSTOM_SUBMISSION_ENABLE) {
-       dispatch(getCustomSubmission(submissionId,formId));
+    if (CUSTOM_SUBMISSION_URL && CUSTOM_SUBMISSION_ENABLE) {
+      dispatch(getCustomSubmission(submissionId, formId));
     } else {
       dispatch(getSubmission("submission", submissionId, formId));
     }
@@ -65,7 +67,8 @@ const Item = React.memo(() => {
       setEditAllowed(true);
     } else if (applicationStatus) {
       if (getUserRolePermission(userRoles, CLIENT)) {
-        setEditAllowed(CLIENT_EDIT_STATUS.includes(applicationStatus));
+        setEditAllowed(CLIENT_EDIT_STATUS.includes(applicationStatus)
+          || applicationDetail.isResubmit ? true : false);
         setShowSubmissionLoading(false);
       }
     }
@@ -100,15 +103,15 @@ const Item = React.memo(() => {
       </ul>
       <Switch>
         {!submissionError ? (
-        <Route
-          exact
-          path={`${BASE_ROUTE}form/:formId/submission/:submissionId`}
-          component={View}
-        />
+          <Route
+            exact
+            path={`${BASE_ROUTE}form/:formId/submission/:submissionId`}
+            component={View}
+          />
         ) : <NotFound
-        errorMessage={t("Bad Request")}
-        errorCode={400}
-      /> }
+          errorMessage={t("Bad Request")}
+          errorCode={400}
+        />}
         <Redirect
           exact
           from={`${BASE_ROUTE}form/:formId/submission/:submissionId/edit/:notavailable`}

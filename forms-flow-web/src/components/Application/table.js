@@ -7,13 +7,13 @@ import {
   customFilter,
   FILTER_TYPES,
 } from "react-bootstrap-table2-filter";
-import { getLocalDateTime } from "../../apiManager/services/formatterService";
 import { AWAITING_ACKNOWLEDGEMENT } from "../../constants/applicationConstants";
 import { Translation } from "react-i18next";
 import DateRangePicker from "@wojtekmaj/react-daterange-picker";
 import DropdownButton from "react-bootstrap/DropdownButton";
 import Dropdown from "react-bootstrap/Dropdown";
 import { toast } from "react-toastify";
+import { HelperServices} from "@formsflow/service";
 
 let statusFilter, idFilter, nameFilter, modifiedDateFilter;
 
@@ -44,10 +44,11 @@ const linkApplication = (cell, row, redirectUrl) => {
 };
 
 const linkSubmission = (cell, row, redirectUrl) => {
-  const url = row.isClientEdit
+  // here isResubmit key is also checked for "url" and "buttonText"
+  const url = row.isClientEdit || row.isResubmit
     ? `${redirectUrl}form/${row.formId}/submission/${row.submissionId}/edit`
     : `${redirectUrl}form/${row.formId}/submission/${row.submissionId}`;
-  const buttonText = row.isClientEdit ? (
+  const buttonText = row.isClientEdit || row.isResubmit ? (
     row.applicationStatus === AWAITING_ACKNOWLEDGEMENT ? (
       "Acknowledge"
     ) : (
@@ -56,7 +57,7 @@ const linkSubmission = (cell, row, redirectUrl) => {
   ) : (
     <Translation>{(t) => t("View")}</Translation>
   );
-  const icon = row.isClientEdit ? "fa fa-edit" : "fa fa-eye";
+  const icon =  row.isClientEdit || row.isResubmit ? "fa fa-edit" : "fa fa-eye";
   return (
     <div onClick={() => window.open(url, "_blank")}>
       <span style={{ color: "blue", cursor: "pointer" }}>
@@ -71,7 +72,7 @@ const linkSubmission = (cell, row, redirectUrl) => {
 };
 
 function timeFormatter(cell) {
-  const localdate = getLocalDateTime(cell);
+  const localdate = HelperServices?.getLocalDateAndTime(cell);
   return <label title={cell}>{localdate}</label>;
 }
 
@@ -91,12 +92,12 @@ const styleForValidationFail = { border: "1px solid red" };
 export const columns_history = [
   {
     dataField: "applicationname",
-    text: <Translation>{(t) => t("Application Name")}</Translation>,
+    text: <Translation>{(t) => t("Form Name")}</Translation>,
     sort: true,
   },
   {
     dataField: "applicationstatus",
-    text: <Translation>{(t) => t("Application Status")}</Translation>,
+    text: <Translation>{(t) => t("Submission Status")}</Translation>,
     sort: true,
   },
 ];
@@ -104,7 +105,7 @@ export const columns_history = [
 let applicationNotified = false;
 const notifyValidationError = () => {
   if (!applicationNotified) {
-    toast.error("Invalid application id");
+    toast.error("Invalid submission id");
     applicationNotified = true;
   }
 };
@@ -125,13 +126,13 @@ export const columns = (
   return [
     {
       dataField: "id",
-      text: <Translation>{(t) => t("Application Id")}</Translation>,
+      text: <Translation>{(t) => t("Submission ID")}</Translation>,
       formatter: (cell, row) => linkApplication(cell, row, redirectUrl),
       headerClasses: "classApplicationId",
       sort: true,
       filter: textFilter({
         delay: 800,
-        placeholder: `\uf002 ${t("Application Id")}`, // custom the input placeholder
+        placeholder: `\uf002 ${t("Submission ID")}`, // custom the input placeholder
         caseSensitive: false, // default is false, and true will only work when comparator is LIKE
         className: "icon-search",
         style: invalidFilters.APPLICATION_ID
@@ -141,16 +142,17 @@ export const columns = (
           idFilter = filter;
         },
       }),
+      headerAttrs: { id: "th-application-id" }
     },
     {
       dataField: "applicationName",
-      text: <Translation>{(t) => t("Application Name")}</Translation>,
+      text: <Translation>{(t) => t("Form Name")}</Translation>,
       sort: true,
       headerClasses: "classApplicationName",
       formatter: nameFormatter,
       filter: textFilter({
         delay: 800,
-        placeholder: `\uf002 ${t("Application Name")}`, // custom the input placeholder
+        placeholder: `\uf002 ${t("Form Name")}`, // custom the input placeholder
         caseSensitive: false, // default is false, and true will only work when comparator is LIKE
         className: "icon-search",
         style: customStyle,
@@ -158,10 +160,11 @@ export const columns = (
           nameFilter = filter;
         },
       }),
+      headerAttrs: { id: "th-application-name" }
     },
     {
       dataField: "applicationStatus",
-      text: <Translation>{(t) => t("Application Status")}</Translation>,
+      text: <Translation>{(t) => t("Submission Status")}</Translation>,
       sort: true,
       filter:
         applicationStatus?.length > 0 &&
@@ -175,11 +178,14 @@ export const columns = (
             statusFilter = filter;
           },
         }),
+      headerAttrs: { id: "th-application-status" }
     },
     {
       dataField: "formUrl",
       text: <Translation>{(t) => t("Link To Form Submission")}</Translation>,
       formatter: (cell, row) => linkSubmission(cell, row, redirectUrl),
+      headerClasses: "classLinkToApplication",  
+      headerAttrs: { id: "th-Link-to-application" }
     },
 
     {
@@ -187,6 +193,7 @@ export const columns = (
       text: <Translation>{(t) => t("Last Modified")}</Translation>,
       formatter: timeFormatter,
       sort: true,
+      headerAttrs: { id: "th-modified" },
       filter: customFilter({
         type: FILTER_TYPES.DATE,
       }),
@@ -207,6 +214,10 @@ export const columns = (
             calendarAriaLabel={t("Select the date")}
             dayAriaLabel="Select the day"
             clearAriaLabel="Click to clear"
+            name="selectDateRange"
+            monthAriaLabel="Select the month"
+            yearAriaLabel="Select the year"
+            nativeInputAriaLabel="Date"
           />
         );
       },
@@ -215,11 +226,11 @@ export const columns = (
 };
 
 const customTotal = (from, to, size) => (
-  <span className="react-bootstrap-table-pagination-total">
+  <span className="react-bootstrap-table-pagination-total ml-2">
     <Translation>{(t) => t("Showing")}</Translation> {from}{" "}
     <Translation>{(t) => t("to")}</Translation> {to}{" "}
     <Translation>{(t) => t("of")}</Translation> {size}{" "}
-    <Translation>{(t) => t("Results")}</Translation>
+    <Translation>{(t) => t("results")}</Translation>
   </span>
 );
 export const customDropUp = ({

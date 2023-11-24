@@ -3,6 +3,7 @@ from http import HTTPStatus
 
 from flask import request
 from flask_restx import Namespace, Resource, fields
+from formsflow_api_utils.exceptions import BusinessException
 from formsflow_api_utils.utils import (
     DESIGNER_GROUP,
     auth,
@@ -10,6 +11,8 @@ from formsflow_api_utils.utils import (
     profiletime,
 )
 
+from formsflow_api.constants import BusinessErrorCode
+from formsflow_api.models import AuthType
 from formsflow_api.services import AuthorizationService
 
 API = Namespace("authorization", description="Authorization APIs")
@@ -23,6 +26,15 @@ authorization_model = API.model(
         "resourceId": fields.String(),
         "resourceDetails": fields.Nested(resource_details_model),
         "roles": fields.List(fields.String(), description="Authorized Roles"),
+    },
+)
+
+authorization_list_model = API.model(
+    "Authorization List",
+    {
+        "APPLICATION": fields.Nested(authorization_model),
+        "FORM": fields.Nested(authorization_model),
+        "DESIGNER": fields.Nested(authorization_model),
     },
 )
 
@@ -163,3 +175,68 @@ class AuthorizationDetail(Resource):
                 HTTPStatus.OK,
             )
         return {"message": "Permission denied"}, HTTPStatus.UNAUTHORIZED
+
+
+@cors_preflight("GET, OPTIONS")
+@API.route("/resource/<string:resource_id>", methods=["GET", "POST", "OPTIONS"])
+@API.doc(
+    params={
+        "resource_id": "Authorization list corresponding to resource id.",
+    }
+)
+class AuthorizationListById(Resource):
+    """Resource to fetch Authorization List corresponding to resource id."""
+
+    @staticmethod
+    @API.doc("Authorization list by Id")
+    @auth.has_one_of_roles([DESIGNER_GROUP])
+    @profiletime
+    @API.doc(
+        responses={
+            200: "OK:- Successful request.",
+            401: "UNAUTHORIZED:- Authorization header not provided or an invalid token passed.",
+        },
+        model=authorization_list_model,
+    )
+    def get(resource_id: str):
+        """Fetch Authorization list by resource id."""
+        response = auth_service.get_auth_list_by_id(resource_id)
+        if response:
+            return (
+                response,
+                HTTPStatus.OK,
+            )
+
+        raise BusinessException(BusinessErrorCode.INVALID_AUTH_RESOURCE_ID)
+
+    @staticmethod
+    @API.doc("Authorization create by Id")
+    @auth.has_one_of_roles([DESIGNER_GROUP])
+    @profiletime
+    @API.doc(
+        responses={
+            200: "OK:- Successful request.",
+            401: "UNAUTHORIZED:- Authorization header not provided or an invalid token passed.",
+        },
+        model=authorization_list_model,
+    )
+    def post(resource_id: str):
+        """Create or Update Authoization of Form by id."""
+        data = request.get_json()
+        for auth_type in AuthType:
+            if (
+                data.get(auth_type.value.lower())
+                and auth_type.value != AuthType.DASHBOARD.value
+            ):
+                auth_service.create_authorization(
+                    auth_type.value.upper(),
+                    data.get(auth_type.value.lower()),
+                    bool(auth.has_role([DESIGNER_GROUP])),
+                )
+        response = auth_service.get_auth_list_by_id(resource_id)
+        if response:
+            return (
+                response,
+                HTTPStatus.OK,
+            )
+        raise BusinessException(BusinessErrorCode.INVALID_AUTH_RESOURCE_ID)

@@ -85,15 +85,15 @@ const ViewApplication = React.memo(() => {
   }
 
   return (
-    <div className="container">
-      <div className="main-header">
-        <Link title={t("go back")} to={`${redirectUrl}application`}>
-          <i className="fa fa-chevron-left fa-lg" />
+    <div className="">
+      <div className="d-flex align-items-center">
+        <Link title={t("Back to Submissions")} to={`${redirectUrl}application`} className="">
+          <i className="fa fa-chevron-left fa-lg mr-2" />
         </Link>
-        <h3 className="ml-3 text-truncate" style={{height:"45px"}}>
+        <h3 className=" text-truncate">
           <span className="application-head-details">
-            <i className="fa fa-list-alt" aria-hidden="true" />
-            &nbsp; <Translation>{(t) => t("Applications")}</Translation> /
+            <i className="fa fa-list-alt mr-2" aria-hidden="true" />
+            &nbsp; <Translation>{(t) => t("Submissions")}</Translation> /
           </span>{" "}
           {`${startCase(applicationDetail.applicationName)}`}
         </h3>

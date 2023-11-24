@@ -13,7 +13,6 @@ import "./../ServiceFlow.scss";
 import AddGroupModal from "./AddGroupModal";
 import {
   claimBPMTask,
-  // fetchFilterList,
   fetchServiceTaskList,
   getBPMTaskDetail,
   unClaimBPMTask,
@@ -21,7 +20,6 @@ import {
   updateBPMTask,
 } from "../../../apiManager/services/bpmTaskServices";
 import { setBPMTaskDetailUpdating } from "../../../actions/bpmTaskActions";
-//import UserSelection from "./UserSelection";
 import UserSelectionDebounce from "./UserSelectionDebounce";
 import SocketIOService from "../../../services/SocketIOService";
 import { useTranslation } from "react-i18next";
@@ -63,7 +61,7 @@ const TaskHeader = React.memo(() => {
             if (selectedFilter) {
               dispatch(getBPMTaskDetail(taskId));
               dispatch(
-                fetchServiceTaskList(selectedFilter.id, firstResult, reqData)
+                fetchServiceTaskList(reqData,null,firstResult)
               );
             } else {
               dispatch(setBPMTaskDetailUpdating(false));
@@ -71,7 +69,7 @@ const TaskHeader = React.memo(() => {
           }
           if(selectedFilter){
             dispatch(
-              fetchServiceTaskList(selectedFilter.id, firstResult, reqData)
+              fetchServiceTaskList(reqData,null,firstResult)
             );
           }
            
@@ -96,7 +94,7 @@ const TaskHeader = React.memo(() => {
             }
             if(selectedFilter){
               dispatch(
-                fetchServiceTaskList(selectedFilter.id, firstResult, reqData)
+                fetchServiceTaskList(reqData,null,firstResult)
               );
             }
            
@@ -121,7 +119,7 @@ const TaskHeader = React.memo(() => {
           }
           if(selectedFilter){
             dispatch(
-              fetchServiceTaskList(selectedFilter.id, firstResult, reqData)
+              fetchServiceTaskList(reqData,null,firstResult)
             );
           }
           
@@ -146,7 +144,7 @@ const TaskHeader = React.memo(() => {
           if (!SocketIOService.isConnected()) {
             dispatch(getBPMTaskDetail(taskId));
             dispatch(
-              fetchServiceTaskList(selectedFilter.id, firstResult, reqData)
+              fetchServiceTaskList(reqData,null,firstResult)
             );
           }
         } else {
@@ -170,7 +168,7 @@ const TaskHeader = React.memo(() => {
           if (!SocketIOService.isConnected()) {
             dispatch(getBPMTaskDetail(taskId));
             dispatch(
-              fetchServiceTaskList(selectedFilter.id, firstResult, reqData)
+              fetchServiceTaskList(reqData,null,firstResult)
             );
           }
         } else {
@@ -219,8 +217,8 @@ const TaskHeader = React.memo(() => {
         onClose={() => setModal(false)}
         groups={taskGroups}
       />
-      <Row className="ml-0 task-header">{task?.name}</Row>
-      <Row className="ml-0 task-name">
+      <Row className="mx-0 task-header">{task?.name}</Row>
+      <Row className="mx-0 task-name">
         <span className="application-id" data-title={t("Process Name")}>
           {" "}
           {
@@ -229,12 +227,12 @@ const TaskHeader = React.memo(() => {
           }
         </span>
       </Row>
-      <Row className="ml-0">
-        <span data-title={t("Application ID")} className="application-id">
-          {t("Application ID")}# {task?.applicationId}
+      <Row className="mx-0">
+        <span data-title={t("Submission ID")} className="application-id">
+          {t("Submission ID")}# {task?.applicationId}
         </span>
       </Row>
-      <Row className="actionable mb-4">
+      <Row className="actionable mb-4 mx-0">
         <Col
           sm={followUpDate ? 2 : "auto"}
           data-title={
@@ -296,7 +294,7 @@ const TaskHeader = React.memo(() => {
           className="center-position"
           sm={4}
           onClick={() => setModal(true)}
-          data-title={t("groups")}
+          data-title={t("Groups")}
         >
           <i className="fa fa-group mr-1" />
           {taskGroups.length === 0 ? (

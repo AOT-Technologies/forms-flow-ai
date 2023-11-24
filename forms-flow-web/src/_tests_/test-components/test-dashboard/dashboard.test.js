@@ -92,7 +92,6 @@ it("Should render the dashboard without breaking", () => {
     route: "/",
   });
   expect(screen.getByText("Metrics")).toBeInTheDocument();
-  expect(screen.getByText("Submissions")).toBeInTheDocument();
   expect(
     screen.getByText("New Business License Application")
   ).toBeInTheDocument();

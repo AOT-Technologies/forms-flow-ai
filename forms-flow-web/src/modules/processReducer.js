@@ -12,22 +12,27 @@ const initialState = {
   processActivityList: null,
   processDiagramXML: "",
   processActivityLoadError: false,
-  isProcessDiagramLoading: true,
+  isProcessDiagramLoading: false,
   applicationCount: 0,
   isApplicationCountLoading: false,
   applicationCountResponse: false,
   unPublishApiError: false,
   workflowAssociated: null, //{label:'Workflow Name', value:'workflow_process_key'}
   formStatusLoading:false,
-  formDesignerPermissionRoles:{},
+  authorizationDetails:{},
   formAuthVerifyLoading:false,
-  
+  isBpmnModel:true,
+  bpmnSearchText:"",
+  dmnSearchText:"",
+  isPublicDiagram:null,
 };
 
 const process = (state = initialState, action) => {
   switch (action.type) {
     case ACTION_CONSTANTS.IS_PROCESS_STATUS_LOADING:
       return { ...state, isProcessLoading: action.payload };
+    case ACTION_CONSTANTS.IS_BPMN_MODEL:
+      return { ...state, isBpmnModel: action.payload };
     case ACTION_CONSTANTS.PROCESS_STATUS_LIST:
       return { ...state, processStatusList: action.payload };
     case ACTION_CONSTANTS.IS_PROCESS_STATUS_LOAD_ERROR:
@@ -82,10 +87,16 @@ const process = (state = initialState, action) => {
       return { ...state, workflowAssociated: action.payload };
     case ACTION_CONSTANTS.FORM_STATUS_LOADING:
       return { ...state, formStatusLoading: action.payload };
-    case ACTION_CONSTANTS.FORM_DESIGNER_PERMISSION_ROLES:
-        return { ...state, formDesignerPermissionRoles: action.payload };
+    case ACTION_CONSTANTS.FORM_AUTHORIZATION_HANDLE:
+        return { ...state, authorizationDetails: action.payload };
     case ACTION_CONSTANTS.FORM_AUTH_VERIFY_LOADING:
         return { ...state, formAuthVerifyLoading: action.payload };
+    case ACTION_CONSTANTS.BPMN_SEARCH_TEXT:
+        return { ...state, bpmnSearchText: action.payload };
+    case ACTION_CONSTANTS.DMN_SEARCH_TEXT:
+        return { ...state, dmnSearchText: action.payload };
+    case ACTION_CONSTANTS.IS_PUBLIC_DIAGRAM:
+        return { ...state, isPublicDiagram: action.payload };
     default:
       return state;
   }

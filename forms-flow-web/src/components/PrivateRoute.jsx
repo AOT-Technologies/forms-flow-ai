@@ -50,6 +50,7 @@ import {
 } from "../apiManager/endpoints/config";
 import { AppConfig } from "../config";
 import { getFormioRoleIds } from "../apiManager/services/userservices";
+import { toast } from "react-toastify";
 
 export const kcServiceInstance = (tenantId = null) => {
   return KeycloakService.getInstance(
@@ -121,9 +122,18 @@ const PrivateRoute = React.memo((props) => {
       if (kcInstance) {
         authenticate(kcInstance, props.store);
       } else {
-        instance.initKeycloak(() => {
-          authenticate(instance, props.store);
-          publish("FF_AUTH", instance);
+        instance.initKeycloak((authenticated) => {
+          if(!authenticated)
+          {
+           toast.error("Unauthorized Access.",{autoClose: 3000});
+           setTimeout(function() {
+            instance.userLogout();
+          }, 3000);
+          }
+          else{
+            authenticate(instance, props.store);
+            publish("FF_AUTH", instance);
+          }
         });
       }
     }
@@ -141,7 +151,7 @@ const PrivateRoute = React.memo((props) => {
               userRoles.includes(STAFF_DESIGNER) ? (
                 <Component {...props} />
               ) : (
-                <Redirect exact to="/404" />
+                <>unauthorized</>
               )
             }
           />
@@ -159,7 +169,7 @@ const PrivateRoute = React.memo((props) => {
               userRoles.includes(STAFF_REVIEWER) ? (
                 <Component {...props} />
               ) : (
-                <Redirect exact to="/404" />
+                <>unauthorized</>
               )
             }
           />
@@ -178,7 +188,7 @@ const PrivateRoute = React.memo((props) => {
               userRoles.includes(CLIENT) ? (
                 <Component {...props} />
               ) : (
-                <Redirect exact to="/404" />
+                <>unauthorized</>
               )
             }
           />
@@ -198,7 +208,7 @@ const PrivateRoute = React.memo((props) => {
                 userRoles.includes(CLIENT)) ? (
                 <Component {...props} />
               ) : (
-                <Redirect exact to="/404" />
+                <>unauthorized</>
               )
             }
           />

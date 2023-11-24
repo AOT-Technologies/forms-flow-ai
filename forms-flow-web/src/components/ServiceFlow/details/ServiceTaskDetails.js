@@ -1,5 +1,5 @@
 import React, { useCallback, useEffect, useState } from "react";
-import { Row, Tab, Tabs } from "react-bootstrap";
+import { Tab, Tabs } from "react-bootstrap";
 import TaskHeader from "./TaskHeader";
 import {
   reloadTaskFormSubmission,
@@ -24,7 +24,7 @@ import History from "../../Application/ApplicationHistory";
 import FormEdit from "../../Form/Item/Submission/Item/Edit";
 import FormView from "../../Form/Item/Submission/Item/View";
 import LoadingOverlay from "react-loading-overlay";
-import { getForm, getSubmission, Formio } from "react-formio";
+import { getForm, getSubmission, Formio, resetSubmission } from "react-formio";
 import { CUSTOM_EVENT_TYPE } from "../constants/customEventTypes";
 import { getTaskSubmitFormReq } from "../../../apiManager/services/bpmServices";
 import { useParams } from "react-router-dom";
@@ -41,7 +41,10 @@ import {
 } from "../../../constants/constants";
 import { getCustomSubmission } from "../../../apiManager/services/FormServices";
 import { getFormioRoleIds } from "../../../apiManager/services/userservices";
+import  NoTaskSelectedMessage  from "../../../components/ServiceFlow/NoTaskSelected";
+
 import { bpmActionError } from "../../../actions/bpmTaskActions";
+import { setCustomSubmission } from "../../../actions/checkListActions";
 const ServiceFlowTaskDetails = React.memo(() => {
   const { t } = useTranslation();
   const { taskId } = useParams();
@@ -70,7 +73,7 @@ const ServiceFlowTaskDetails = React.memo(() => {
   const tenantKey = useSelector((state) => state.tenants?.tenantId);
   const redirectUrl = MULTITENANCY_ENABLED ? `/tenant/${tenantKey}/` : "/";
   const error = useSelector((state) => state.bpmTasks.error);
-  
+
 
   useEffect(() => {
     if (taskId) {
@@ -97,7 +100,7 @@ const ServiceFlowTaskDetails = React.memo(() => {
       dispatch(bpmActionError(''));
     };
   }, [error,dispatch]);
-  
+
   useEffect(() => {
     if (processList.length && task?.processDefinitionId) {
       const pKey = getProcessDataObjectFromList(
@@ -125,8 +128,10 @@ const ServiceFlowTaskDetails = React.memo(() => {
           getForm("form", formId, (err) => {
             if (!err) {
               if (CUSTOM_SUBMISSION_URL && CUSTOM_SUBMISSION_ENABLE) {
+                dispatch(setCustomSubmission({}));
                 dispatch(getCustomSubmission(submissionId, formId));
               } else {
+                dispatch(resetSubmission("submission"));
                 dispatch(getSubmission("submission", submissionId, formId));
               }
               dispatch(setFormSubmissionLoading(false));
@@ -176,7 +181,7 @@ const ServiceFlowTaskDetails = React.memo(() => {
   const reloadTasks = () => {
     dispatch(setBPMTaskDetailLoader(true));
     dispatch(setSelectedTaskID(null)); // unSelect the Task Selected
-    dispatch(fetchServiceTaskList(selectedFilter.id, firstResult, reqData)); //Refreshes the Tasks
+    dispatch(fetchServiceTaskList(reqData,null,firstResult)); //Refreshes the Tasks
     dispatch(push(`${redirectUrl}task/`));
   };
 
@@ -192,8 +197,8 @@ const ServiceFlowTaskDetails = React.memo(() => {
         })
       ); // Refresh the Task Selected
       dispatch(getBPMGroups(task.id));
-      dispatch(fetchServiceTaskList(selectedFilter.id, firstResult, reqData)); //Refreshes the Tasks
-      
+      dispatch(fetchServiceTaskList(reqData,null,firstResult)); //Refreshes the Tasks
+
     }
   };
 
@@ -247,10 +252,7 @@ const ServiceFlowTaskDetails = React.memo(() => {
 
   if (!bpmTaskId) {
     return (
-      <Row className="not-selected mt-2 ml-1 " style={{ color: "#757575" }}>
-        <i className="fa fa-info-circle mr-2 mt-1" />
-        {t("Select a task in the list.")}
-      </Row>
+      <NoTaskSelectedMessage />
     );
   } else if (isTaskLoading) {
     return (

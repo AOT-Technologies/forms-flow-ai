@@ -17,7 +17,7 @@ const linkSubmision = (row, redirectUrl) => {
   const { formId, submissionId } = row;
   const url = getFormUrl(formId, submissionId, redirectUrl);
   return (
-    <div title={url} onClick={() => window.open(url, "_blank")}>
+    <div onClick={() => window.open(url, "_blank")}>
       <span className="btn btn-primary btn-sm form-btn">
         <span>
           <i className="fa fa-eye" aria-hidden="true"></i>&nbsp;

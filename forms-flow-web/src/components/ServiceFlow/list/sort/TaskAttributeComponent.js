@@ -65,7 +65,7 @@ function TaskAttributeComponent({
             <Col xs={6}>
               <Form.Check
                 type="checkbox"
-                label="Application ID"
+                label={t("Application ID")}
                 name="applicationId"
                 checked={checkboxes.applicationId}
                 onChange={handleCheckboxChange}
@@ -73,7 +73,7 @@ function TaskAttributeComponent({
               />
               <Form.Check
                 type="checkbox"
-                label="Assignee"
+                label={t("Assignee")}
                 name="assignee"
                 checked={checkboxes.assignee}
                 onChange={handleCheckboxChange}
@@ -81,7 +81,7 @@ function TaskAttributeComponent({
               />
               <Form.Check
                 type="checkbox"
-                label="Task Title"
+                label={t("Task Title")}
                 name="taskTitle"
                 checked={checkboxes.taskTitle}
                 onChange={handleCheckboxChange}
@@ -89,7 +89,7 @@ function TaskAttributeComponent({
               />
               <Form.Check
                 type="checkbox"
-                label="Created Date"
+                label={t("Created Date")}
                 name="createdDate"
                 checked={checkboxes.createdDate}
                 onChange={handleCheckboxChange}
@@ -99,7 +99,7 @@ function TaskAttributeComponent({
             <Col xs={6}>
               <Form.Check
                 type="checkbox"
-                label="Due date"
+                label={t("Due Date")}
                 name="dueDate"
                 checked={checkboxes.dueDate}
                 onChange={handleCheckboxChange}
@@ -107,7 +107,7 @@ function TaskAttributeComponent({
               />
               <Form.Check
                 type="checkbox"
-                label="Follow-up date"
+                label={t("Follow up Date")}
                 name="followUp"
                 checked={checkboxes.followUp}
                 onChange={handleCheckboxChange}
@@ -115,7 +115,7 @@ function TaskAttributeComponent({
               />
               <Form.Check
                 type="checkbox"
-                label="Priority"
+                label={t("Priority")}
                 name="priority"
                 checked={checkboxes.priority}
                 onChange={handleCheckboxChange}
@@ -123,7 +123,7 @@ function TaskAttributeComponent({
               />
               <Form.Check
                 type="checkbox"
-                label="Groups"
+                label={t("Groups")}
                 name="groups"
                 checked={checkboxes.groups}
                 onChange={handleCheckboxChange}
@@ -160,7 +160,7 @@ function TaskAttributeComponent({
                     <Form.Label>{t("Name")}</Form.Label>
                     <Form.Control
                       type="text"
-                      placeholder="Enter name"
+                      placeholder={t("Enter name")}
                       value={input.name}
                       onChange={(e) =>
                         handleVariableInputChange(index, "name", e.target.value)
@@ -173,7 +173,7 @@ function TaskAttributeComponent({
                     <Form.Label>{t("Label")}</Form.Label>
                     <Form.Control
                       type="text"
-                      placeholder="Enter label"
+                      placeholder={t("Enter label")}
                       value={input.label}
                       onChange={(e) =>
                         handleVariableInputChange(

@@ -819,8 +819,8 @@ export default function CreateNewFilterDrawer({
             onClick={toggleModal}
             placeholder={
               taskAttributesCount === 0
-                ? "Select Elements"
-                : taskAttributesCount + " Task Attributes Selected"
+                ? t("Select Elements")
+                : taskAttributesCount + t(" Task Attributes Selected")
             }
           />
         </div>
@@ -858,7 +858,7 @@ export default function CreateNewFilterDrawer({
               }}
             >
               <Translation>
-                {(t) => t(`${selectedFilterData ? "Save" : "Create"} Filter`)}
+                {(t) => (`${selectedFilterData ? t("Save Filter") : t("Create Filter")} `)}
               </Translation>
             </button>
           </div>

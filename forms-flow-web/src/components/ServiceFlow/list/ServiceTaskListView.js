@@ -11,7 +11,9 @@ import Loading from "../../../containers/Loading";
 import { useTranslation } from "react-i18next";
 import "./../ServiceFlow.scss";
 import TaskSearchBarListView from "./search/TaskSearchBarListView";
-
+import {
+  getFormattedDateAndTime,
+} from "../../../apiManager/services/formatterService";
 import Pagination from "react-js-pagination";
 import { push } from "connected-react-router";
 // import { MAX_RESULTS } from "../constants/taskConstants";
@@ -155,8 +157,9 @@ const ServiceTaskListView = React.memo(() => {
               {vissibleAttributes?.taskVisibleAttributes?.createdDate &&  <Col xs={2}>
                   <div className="col-12">
                     <h6>{t("Created Date")}</h6>
-                    
-                    <h6>
+                    <h6 title={
+                      task.created ? getFormattedDateAndTime(task.created) : ""
+                    }>
                       {moment(task.created).isSame(moment(), "day")
                         ? moment(task.created).fromNow() 
                         : task.created.split('T')[0]} 

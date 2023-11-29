@@ -82,8 +82,9 @@ const DraftFilter = ({ setDisplayFilter, filterParams, setFilterParams }) => {
       <div className="m-4 px-2">
         <Row className="mt-2">
           <Col>
-            <label>{t("Id")}</label>
+          <label htmlFor="draftId">{t("Id")}</label>
             <input
+              id="draftId"
               className="form-control"
               placeholder=""
               value={searchParams.id}
@@ -91,8 +92,9 @@ const DraftFilter = ({ setDisplayFilter, filterParams, setFilterParams }) => {
             />
           </Col>
           <Col>
-            <label>{t("Title")}</label>
+          <label htmlFor="draftTitle">{t("Title")}</label>
             <input
+              id="draftTitle"
               className="form-control"
               placeholder=""
               value={searchParams.draftName}
@@ -117,6 +119,9 @@ const DraftFilter = ({ setDisplayFilter, filterParams, setFilterParams }) => {
           calendarAriaLabel="Select the date"
           dayAriaLabel="Select the day"
           clearAriaLabel="Click to clear"
+          monthAriaLabel="Select the month"
+          yearAriaLabel="Select the year"
+          nativeInputAriaLabel="Date"  
         />
       </div>
       <hr className="mx-4" />

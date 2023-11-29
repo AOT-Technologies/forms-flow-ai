@@ -117,11 +117,12 @@ export default React.memo(() => {
         <input
           ref={uploadFormNode}
           id="inputWorkflow"
-          style={{ display: "none" }}
+          className="d-none"
           type="file"
           name="upload"
           accept=".bpmn, .dmn"
           onChange={(e) => handleChangeFile(e.target.files[0])}
+          title={t("Upload Workflow")}
         />
       </div>
 

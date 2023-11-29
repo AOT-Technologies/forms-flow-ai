@@ -190,6 +190,7 @@ function ClientTable() {
                       }
                       placeholder={t("Search by form title")}
                       style={{ backgroundColor: "#ffff" }}
+                      title={t("Search by form title")}
                     />
                     {search && (
                       <InputGroup.Append onClick={handleClearSearch}>
@@ -218,7 +219,7 @@ function ClientTable() {
                     <tr>
                       <td className="col-4">
                         {!isDesigner && (
-                          <button className="btn btn-light btn-small mr-2"   onClick={() => handleToggle(index) } disabled={!e.description}>
+                          <button title={t("Form Description")} className="btn btn-light btn-small mr-2"   onClick={() => handleToggle(index) } disabled={!e.description}>
                               <i
                             className={`fa ${
                               openIndex === index

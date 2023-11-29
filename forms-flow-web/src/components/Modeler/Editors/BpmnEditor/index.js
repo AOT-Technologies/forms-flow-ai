@@ -313,6 +313,7 @@ export default React.memo(
                   type="checkbox"
                   checked={applyAllTenants}
                   onClick={handleApplyAllTenants}
+                  title={t("Apply for all tenants")}
                 />{" "}
                 {t("Apply for all tenants")}
               </label>

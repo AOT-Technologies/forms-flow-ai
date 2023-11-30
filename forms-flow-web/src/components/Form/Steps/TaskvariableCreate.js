@@ -53,9 +53,10 @@ const TaskvariableCreate = ({ options, addTaskVariable }) => {
           />
         </Col>
         <Col xs={12} md={3}>
-          <label>{t("Label")}</label>
+          <label htmlFor="taskLabel">{t("Label")}</label>
           <input
             type="text"
+            id="taskLabel"
             value={taskLabel}
             onChange={(e) => {
               setTaskLable(e.target.value);

@@ -43,7 +43,7 @@ const ViewAndEditTaskvariable = ({
               setTaskLabel(e.target.value);
             }}
             className="form-control"
-            aria-labelledby="Task label"
+            aria-label="Task Label"
           />
         </td>
         <td className="p-3">
@@ -51,6 +51,8 @@ const ViewAndEditTaskvariable = ({
             className="" 
             disabled={enableEditTaskVariable}
             checked={showInList}
+            id="uniqueCheckboxId"
+            label="Show in List"
             onChange={() => {
               setShowInList(!showInList);
             }}
@@ -65,6 +67,7 @@ const ViewAndEditTaskvariable = ({
               onClick={() => {
                 saveData(item);
               }}
+              aria-label="Save"
             >
               <i className="fa fa-check"></i> Save
             </Button>
@@ -75,6 +78,7 @@ const ViewAndEditTaskvariable = ({
                 onClick={() => {
                   deleteTaskVariable(item);
                 }}
+                aria-label="Delete"
                 className="mr-3 btn btn-danger btn fa fa-times"
               ></i>
 
@@ -83,6 +87,7 @@ const ViewAndEditTaskvariable = ({
                 onClick={() => {
                   setEnableEditTaskVariable(false);
                 }}
+                aria-label="Edit"
                 className="btn btn-primary fa fa-edit"
               ></i>
             </div>

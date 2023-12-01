@@ -101,8 +101,9 @@ const ApplicationFilter = ({
       <div className="m-4 px-2">
         <Row className="mt-2">
           <Col>
-            <label>{t("Id")}</label>
+          <label htmlFor="idInput">{t("Id")}</label>
             <input
+              id="idInput"
               className="form-control"
               placeholder=""
               value={searchParams.id}
@@ -110,8 +111,9 @@ const ApplicationFilter = ({
             />
           </Col>
           <Col>
-            <label>{t("Form Title")}</label>
+          <label htmlFor="applicationNameInput">{t("Form Title")}</label>
             <input
+              id="applicationNameInput"
               className="form-control"
               placeholder=""
               value={searchParams.applicationName}
@@ -124,8 +126,9 @@ const ApplicationFilter = ({
       <div className="m-4 px-2">
         <Row className="mt-2">
           <Col>
-            <label>{t("Status")}</label>
+          <label htmlFor="applicationStatus">{t("Status")}</label>
             <select
+              id="applicationStatus"
               value={searchParams.applicationStatus}
               onChange={(e) => handleChange("applicationStatus", e.target.value)}
               className="form-control p-1"
@@ -140,9 +143,10 @@ const ApplicationFilter = ({
               )}
             </select>
           </Col>
-          <Col className="mr-2">
-            <label>{t("Modified Date")}</label>
+          <Col className="mr-2" >
+            <label htmlFor="modifiedDateRange" >{t("Modified Date")}</label>
             <DateRangePicker
+              id="modifiedDateRange"
               onChange={(selectedRange) => {
                 handleChange("modified", selectedRange);
               }}
@@ -154,7 +158,10 @@ const ApplicationFilter = ({
               yearPlaceholder="yyyy"
               calendarAriaLabel="Select the date"
               dayAriaLabel="Select the day"
+              monthAriaLabel="Select the month"
+              yearAriaLabel="Select the year"
               clearAriaLabel="Click to clear"
+              nativeInputAriaLabel="Date"
             />
           </Col>
         </Row>

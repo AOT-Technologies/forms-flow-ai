@@ -121,7 +121,7 @@ function FormTable() {
 
   const viewOrEdit = (formData) => (
     <button
-      className="btn btn-link active-link mt-2"
+      className="btn btn-link text-primary mt-2"
       onClick={() => viewOrEditForm(formData._id)}
     >
       <Translation>{(t) => t("View Details")}</Translation>{" "}

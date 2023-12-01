@@ -95,7 +95,7 @@ const ApplicationTable = () => {
 
   const viewSubmissionDetails = (data) => (
     <button
-      className="btn btn-link active-link mt-2"
+      className="btn btn-link text-primary mt-2"
       onClick={() => submissionDetails(data)}
     >
       <Translation>{(t) => t("View Details")}</Translation>{" "}
@@ -135,7 +135,7 @@ const ApplicationTable = () => {
         : `${redirectUrl}form/${formData.formId}/submission/${formData.submissionId}`;
     return (
       <button
-        className="btn btn-link active-link mt-2"
+        className="btn btn-link text-primary mt-2"
         onClick={() => window.open(url, "_blank")}
       >
         <Translation>

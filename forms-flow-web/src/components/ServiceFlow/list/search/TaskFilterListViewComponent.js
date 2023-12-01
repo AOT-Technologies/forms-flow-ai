@@ -423,12 +423,12 @@ const TaskFilterListViewComponent = React.memo(
           <hr className="mx-4" />
           <Row className="m-3 filter-cancel-btn-container ">
             <Col className="text-left">
-              <span
-                className="text-danger small "
+              <button
+                className="btn btn-link text-danger"
                 onClick={() => clearAllFilters()}
               >
                 {t("Clear All Filters")}
-              </span>
+              </button>
             </Col>
             <Col className="text-right">
               <button

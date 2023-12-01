@@ -164,6 +164,7 @@ function FormTable() {
         e.preventDefault();
         onClick(e);
       }}
+      aria-label="CustomToggle"
     >
       {children}
     </button>

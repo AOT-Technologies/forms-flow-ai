@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import Form from "react-bootstrap/Form";
 import Button from "react-bootstrap/Button";
+import { useTranslation } from "react-i18next";
 const ViewAndEditTaskvariable = ({
   item,
   // eslint-disable-next-line no-unused-vars
@@ -11,6 +12,7 @@ const ViewAndEditTaskvariable = ({
   const [taskLabel, setTaskLabel] = useState(item.label);
   const [showInList, setShowInList] = useState(item.showInList);
   const [enableEditTaskVariable, setEnableEditTaskVariable] = useState(true);
+  const { t } = useTranslation();
 
   const saveData = (taskVariable) => {
     setEnableEditTaskVariable(true);
@@ -47,12 +49,12 @@ const ViewAndEditTaskvariable = ({
           />
         </td>
         <td className="p-3">
+          <span id="showInListLabel" className="sr-only">{t("Show in list")}</span>
           <Form.Check
             className="" 
             disabled={enableEditTaskVariable}
             checked={showInList}
-            id="uniqueCheckboxId"
-            label="Show in List"
+            aria-labelledby="showInListLabel"
             onChange={() => {
               setShowInList(!showInList);
             }}

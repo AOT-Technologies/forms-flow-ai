@@ -121,7 +121,7 @@ function FormTable() {
 
   const viewOrEdit = (formData) => (
     <button
-      className="btn btn-link mt-2"
+      className="btn btn-link text-primary mt-2"
       onClick={() => viewOrEditForm(formData._id)}
     >
       <Translation>{(t) => t("View Details")}</Translation>{" "}
@@ -301,11 +301,12 @@ function FormTable() {
                         <span> {viewOrEdit(e)}</span>
                       </td>
                       <td>
-                        <Dropdown aria-label="More options">
+                        <Dropdown >
                           <Dropdown.Toggle
                             as={CustomToggle} 
                             id="dropdown-basic"
                             title={t("More options")}
+                            aria-describedby="More-options"
                           >
                             <i className="fa-solid fa-ellipsis"></i>
                           </Dropdown.Toggle>
@@ -351,7 +352,6 @@ function FormTable() {
                 </Dropdown.Toggle>
 
                 <Dropdown.Menu>
-                
                     {pageOptions.map((option, index) => (
                   <Dropdown.Item
                     key={index}

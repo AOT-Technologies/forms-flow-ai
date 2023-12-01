@@ -11,7 +11,6 @@ const Head = React.memo((props) => {
             onClick={item.onClick}
             key={key}
             className={`head-item ${item.name === page ? "head-active" : ""} ${key > 0 ? 'padding-left-60' : ''}`}
-            style={{ color: item.name !== page ? " #949494" : "" }}
           >
             <h3   className="application-head">
               <i

@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import Form from "react-bootstrap/Form";
 import Button from "react-bootstrap/Button";
+import { useTranslation } from "react-i18next";
 const ViewAndEditTaskvariable = ({
   item,
   // eslint-disable-next-line no-unused-vars
@@ -11,6 +12,7 @@ const ViewAndEditTaskvariable = ({
   const [taskLabel, setTaskLabel] = useState(item.label);
   const [showInList, setShowInList] = useState(item.showInList);
   const [enableEditTaskVariable, setEnableEditTaskVariable] = useState(true);
+  const { t } = useTranslation();
 
   const saveData = (taskVariable) => {
     setEnableEditTaskVariable(true);
@@ -43,14 +45,16 @@ const ViewAndEditTaskvariable = ({
               setTaskLabel(e.target.value);
             }}
             className="form-control"
-            aria-labelledby="Task label"
+            aria-label="Task Label"
           />
         </td>
         <td className="p-3">
+          <span id="showInListLabel" className="sr-only">{t("Show in list")}</span>
           <Form.Check
             className="" 
             disabled={enableEditTaskVariable}
             checked={showInList}
+            aria-labelledby="showInListLabel"
             onChange={() => {
               setShowInList(!showInList);
             }}
@@ -65,6 +69,7 @@ const ViewAndEditTaskvariable = ({
               onClick={() => {
                 saveData(item);
               }}
+              aria-label="Save"
             >
               <i className="fa fa-check"></i> Save
             </Button>
@@ -75,6 +80,7 @@ const ViewAndEditTaskvariable = ({
                 onClick={() => {
                   deleteTaskVariable(item);
                 }}
+                aria-label="Delete"
                 className="mr-3 btn btn-danger btn fa fa-times"
               ></i>
 
@@ -83,6 +89,7 @@ const ViewAndEditTaskvariable = ({
                 onClick={() => {
                   setEnableEditTaskVariable(false);
                 }}
+                aria-label="Edit"
                 className="btn btn-primary fa fa-edit"
               ></i>
             </div>

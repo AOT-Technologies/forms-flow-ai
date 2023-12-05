@@ -95,7 +95,7 @@ const ApplicationTable = () => {
 
   const viewSubmissionDetails = (data) => (
     <button
-      className="btn btn-link mt-2"
+      className="btn btn-link text-primary mt-2"
       onClick={() => submissionDetails(data)}
     >
       <Translation>{(t) => t("View Details")}</Translation>{" "}
@@ -135,7 +135,7 @@ const ApplicationTable = () => {
         : `${redirectUrl}form/${formData.formId}/submission/${formData.submissionId}`;
     return (
       <button
-        className="btn btn-link mt-2"
+        className="btn btn-link text-primary mt-2"
         onClick={() => window.open(url, "_blank")}
       >
         <Translation>
@@ -251,7 +251,7 @@ const ApplicationTable = () => {
                   <div className="filter-container-list application-filter-list-view">
                     <button
                       type="button"
-                      className="btn btn-outline-secondary "
+                      className="btn btn-outline-secondary tooltiptext"
                       onClick={() => {
                         setDisplayFilter(true);
                       }}

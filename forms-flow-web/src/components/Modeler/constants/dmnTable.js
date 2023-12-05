@@ -162,7 +162,7 @@ function DmnTable() {
                     <td>{processItem.key}</td>
                     <td>{t("DMN")}</td>
                     <td className="d-flex justify-content-end w-100">
-                    <button className="btn btn-link" onClick={()=>{gotoEdit(processItem);}}> 
+                    <button className="btn btn-link text-primary" onClick={()=>{gotoEdit(processItem);}}> 
                        <i className="fas fa-edit mr-2"/>
                         {t("Edit Workflow")}</button>
                     </td>

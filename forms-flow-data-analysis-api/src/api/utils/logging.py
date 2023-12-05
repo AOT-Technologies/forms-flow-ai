@@ -15,6 +15,7 @@ def setup_logging(conf):
             f"Unable to configure logging, attempted conf:{conf}",
             file=sys.stderr,
         )
+    return logging.getLogger(__name__)
 
 
 def log_error(msg):

@@ -41,6 +41,9 @@ services:
       DATA_ANALYSIS_API_BASE_URL: ${DATA_ANALYSIS_API_BASE_URL}
       MODEL_ID: ${MODEL_ID:-Seethal/sentiment_analysis_generic_dataset}
       DATABASE_SUPPORT: ${DATABASE_SUPPORT:-DISABLED}
+      API_LOG_ROTATION_WHEN: ${API_LOG_ROTATION_WHEN:-d}
+      API_LOG_ROTATION_INTERVAL: ${API_LOG_ROTATION_INTERVAL:-1}
+      API_LOG_BACKUP_COUNT: ${API_LOG_BACKUP_COUNT:-7}
     stdin_open: true # -i
     tty: true # -t
     networks:

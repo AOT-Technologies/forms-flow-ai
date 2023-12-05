@@ -4,7 +4,7 @@ import { push } from "connected-react-router";
 import { NavDropdown } from "react-bootstrap";
 import ServiceFlowFilterListDropDown from "../components/ServiceFlow/filter/ServiceTaskFilterListDropDown";
  import {MULTITENANCY_ENABLED} from "../constants/constants";
-import {setViewType } from '../actions/bpmTaskActions';
+import {setSelectedTaskID, setViewType } from '../actions/bpmTaskActions';
 import CreateNewFilterDrawer from "../components/ServiceFlow/list/sort/CreateNewFilter";
 import { useTranslation } from "react-i18next"; 
 function TaskHead() {
@@ -15,7 +15,7 @@ function TaskHead() {
   const [filterSelectedForEdit, setFilterSelectedForEdit] = useState(null);
   const [openFilterDrawer, setOpenFilterDrawer] = useState(false);
   const selectedFilter = useSelector((state) => state.bpmTasks.selectedFilter);
-
+  const viewType = useSelector((state) => state.bpmTasks.viewType);
   const isFilterLoading = useSelector(
     (state) => state.bpmTasks.isFilterLoading
   );
@@ -29,10 +29,14 @@ function TaskHead() {
   const goToTask = () => {
     dispatch(push(`${baseUrl}task`));
   };
-  const viewType = useSelector((state) => state.bpmTasks.viewType);
+
 
   const changeTaskView = (view) => {
-    dispatch(setViewType(view));
+    if(viewType !== view){
+      dispatch(setSelectedTaskID(null));
+      dispatch(setViewType(view));
+    }
+
   };
   
   const filterListLoading = () => {

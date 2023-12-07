@@ -111,10 +111,10 @@ const ApplicationTable = () => {
           <Translation>{(t) => t("No submissions found")}</Translation>{" "}
         </label>
         <br />
-        {(filterParams.id ||
-          filterParams.applicationName ||
-          filterParams.applicationStatus ||
-          filterParams.modified) && (
+        {(filterParams?.id ||
+          filterParams?.applicationName ||
+          filterParams?.applicationStatus ||
+          filterParams?.modified) && (
           <label className="lbl-no-application-desc">
             {" "}
             <Translation>

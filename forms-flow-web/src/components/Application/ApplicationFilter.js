@@ -26,6 +26,9 @@ const ApplicationFilter = ({
     (state) => state.applications.applicationStatus
   );
   const { t } = useTranslation();
+
+  const [isSearchParamEntered, setSearchParamEntered] = useState(false);
+
   const handleClick = (e) => {
     if (createSearchNode?.current?.contains(e.target)) {
       return;
@@ -46,10 +49,19 @@ const ApplicationFilter = ({
   }, []);
 
   const handleChange = (key, value) => {
-    setSearchParams((prevParams) => ({
-      ...prevParams,
-      [key]: value,
-    }));
+    setSearchParams((prevParams) => {
+      const updatedParams = {
+        ...prevParams,
+        [key]: value,
+      };
+  
+      const isAnyParamEntered = Object.values(updatedParams).some(
+        (param) => param !== '' && param !== null
+      );
+  
+      setSearchParamEntered(isAnyParamEntered);
+      return updatedParams;
+    });
   };
 
   const clearAllFilters = () => {
@@ -69,9 +81,9 @@ const ApplicationFilter = ({
       })
     );
     setFilterParams({ id: "",
-    applicationName: "",
-    applicationStatus: "",
-    modified: null,});
+      applicationName: "",
+      applicationStatus: "",
+      modified: null,});
     closeFilterModal();
   };
 
@@ -90,7 +102,7 @@ const ApplicationFilter = ({
     return selectOptions;
   };
 
-  
+
   return (
     <div
       className="Filter-listview "
@@ -101,7 +113,7 @@ const ApplicationFilter = ({
       <div className="m-4 px-2">
         <Row className="mt-2">
           <Col>
-          <label htmlFor="idInput">{t("Id")}</label>
+            <label htmlFor="idInput">{t("Id")}</label>
             <input
               id="idInput"
               className="form-control"
@@ -111,7 +123,7 @@ const ApplicationFilter = ({
             />
           </Col>
           <Col>
-          <label htmlFor="applicationNameInput">{t("Form Title")}</label>
+            <label htmlFor="applicationNameInput">{t("Form Title")}</label>
             <input
               id="applicationNameInput"
               className="form-control"
@@ -126,14 +138,14 @@ const ApplicationFilter = ({
       <div className="m-4 px-2">
         <Row className="mt-2">
           <Col>
-          <label htmlFor="applicationStatus">{t("Status")}</label>
+            <label htmlFor="applicationStatus">{t("Status")}</label>
             <select
               id="applicationStatus"
               value={searchParams.applicationStatus}
               onChange={(e) => handleChange("applicationStatus", e.target.value)}
               className="form-control p-1"
             >
-              <option value=""></option>
+              <option value="">{t("Select a status")}</option>
               {getApplicationStatusOptions(applicationStatusOptions).map(
                 (option) => (
                   <option key={option.value} value={option.value}>
@@ -167,7 +179,7 @@ const ApplicationFilter = ({
         </Row>
       </div>
       <hr className="mx-4" />
-    <Row className="m-3 filter-cancel-btn-container ">
+      <Row className="m-3 filter-cancel-btn-container ">
         <Col className="px-0 text-left">
           <button
             className="btn btn-link text-danger"
@@ -183,7 +195,11 @@ const ApplicationFilter = ({
           >
             {t("Cancel")}
           </button>
-          <button className="btn btn-dark" onClick={applyFilters}>
+          <button
+            className="btn btn-dark"
+            onClick={applyFilters}
+            disabled={!isSearchParamEntered}
+          >
             {t("Show results")}
           </button>
         </Col>

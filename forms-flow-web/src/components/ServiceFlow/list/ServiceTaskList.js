@@ -41,10 +41,19 @@ const ServiceFlowTaskList = React.memo(() => {
   );
 
   useEffect(() => {
-    if (selectedFilter) {
+    if (selectedFilter?.id) {
+ 
+        const selectedBPMFilterParams = {
+          ...selectedFilter,
+          criteria: {
+            ...selectedFilter?.criteria,
+            ...reqData?.criteria
+          }
+        };
       dispatch(setBPMTaskLoader(true));
       dispatch(setBPMTaskListActivePage(1));
-      dispatch(fetchServiceTaskList(reqData,null,firstResult));
+
+      dispatch(fetchServiceTaskList(selectedBPMFilterParams,null,firstResult));
     }
   }, [reqData]);
 
@@ -63,7 +72,7 @@ const ServiceFlowTaskList = React.memo(() => {
     );
   };
 
-  const renderTaskList = () => {
+  const renderTaskList = () => { 
     if ((tasksCount || taskList.length) && selectedFilter) {
       return (
         <>
@@ -170,7 +179,7 @@ const ServiceFlowTaskList = React.memo(() => {
 
         </>
       );
-    } else {
+    } else { 
       return (
         <div className="d-flex align-items-center justify-content-center py-4 px-2">
           <i className="fa fa-info-circle mr-2" />

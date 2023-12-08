@@ -809,7 +809,7 @@ export default function CreateNewFilterDrawer({
         <div className="m-2">
           <h5 className="font-weight-bold ">
             <Translation>{(t) => t("Task Attributes")}</Translation>{" "}
-            <i title={t("This section is aimed to set select task attributes that will be visible in the task list view.")} className="fa fa-info-circle"></i>
+            <i title={t("This section is aimed to set select task attributes that will be visible in the task list view")} className="fa fa-info-circle"></i>
           </h5>
           <input
             readOnly

@@ -128,7 +128,9 @@ class DraftService:
             # The form mapper version got updated after the draft entry
             # was created, update the application with new mapper
             application.update({"form_process_mapper_id": mapper.id})
-        task_variables = json.loads(mapper.task_variable)
+        task_variables = (
+            json.loads(mapper.task_variable) if mapper.task_variable is not None else []
+        )
         variables = ApplicationService.fetch_task_variable_values(
             task_variables, data.get("data", {})
         )

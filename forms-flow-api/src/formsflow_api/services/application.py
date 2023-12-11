@@ -109,7 +109,9 @@ class ApplicationService:  # pylint: disable=too-many-public-methods
         if tenant_key is not None and mapper.tenant != tenant_key:
             raise BusinessException(BusinessErrorCode.PERMISSION_DENIED)
         data["form_process_mapper_id"] = mapper.id
-        task_variables = json.loads(mapper.task_variable)
+        task_variables = (
+            json.loads(mapper.task_variable) if mapper.task_variable is not None else []
+        )
         variables = ApplicationService.fetch_task_variable_values(
             task_variables, data.get("data", {})
         )

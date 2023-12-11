@@ -45,10 +45,12 @@ class ApplicationService:  # pylint: disable=too-many-public-methods
         mapper: FormProcessMapper,
         form_url: str,
         web_form_url: str,
+        variables: Dict,
     ) -> Dict:
         """Returns the payload for initiating the task."""
         return {
             "variables": {
+                **variables,
                 "applicationId": {"value": application.id},
                 "formUrl": {"value": form_url},
                 "webFormUrl": {"value": web_form_url},
@@ -107,6 +109,10 @@ class ApplicationService:  # pylint: disable=too-many-public-methods
         if tenant_key is not None and mapper.tenant != tenant_key:
             raise BusinessException(BusinessErrorCode.PERMISSION_DENIED)
         data["form_process_mapper_id"] = mapper.id
+        task_variables = json.loads(mapper.task_variable)
+        variables = ApplicationService.fetch_task_variable_values(
+            task_variables, data.get("data", {})
+        )
         # Function to create application in DB
         application = Application.create_from_dict(data)
         # process_instance_id in request object is usually used in Scripts
@@ -117,7 +123,7 @@ class ApplicationService:  # pylint: disable=too-many-public-methods
             form_url = data["form_url"]
             web_form_url = data.get("web_form_url", "")
             payload = ApplicationService.get_start_task_payload(
-                application, mapper, form_url, web_form_url
+                application, mapper, form_url, web_form_url, variables
             )
             ApplicationService.start_task(mapper, payload, token, application)
         return application, HTTPStatus.CREATED

@@ -1,5 +1,6 @@
 """This exposes submission service."""
 
+import json
 from typing import Dict
 
 from formsflow_api_utils.exceptions import BusinessException
@@ -127,8 +128,12 @@ class DraftService:
             # The form mapper version got updated after the draft entry
             # was created, update the application with new mapper
             application.update({"form_process_mapper_id": mapper.id})
+        task_variables = json.loads(mapper.task_variable)
+        variables = ApplicationService.fetch_task_variable_values(
+            task_variables, data.get("data", {})
+        )
         payload = ApplicationService.get_start_task_payload(
-            application, mapper, data["form_url"], data["web_form_url"]
+            application, mapper, data["form_url"], data["web_form_url"], variables
         )
         ApplicationService.start_task(mapper, payload, token, application)
         return application

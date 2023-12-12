@@ -145,7 +145,7 @@ const ApplicationFilter = ({
               onChange={(e) => handleChange("applicationStatus", e.target.value)}
               className="form-control p-1"
             >
-              <option value="" disabled selected>
+              <option value="" hidden>
                 {t("Select a status")}
               </option>
               {getApplicationStatusOptions(applicationStatusOptions).map(

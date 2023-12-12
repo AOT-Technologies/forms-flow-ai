@@ -145,7 +145,9 @@ const ApplicationFilter = ({
               onChange={(e) => handleChange("applicationStatus", e.target.value)}
               className="form-control p-1"
             >
-              <option value="">{t("Select a status")}</option>
+              <option value="" hidden>
+                {t("Select a status")}
+              </option>
               {getApplicationStatusOptions(applicationStatusOptions).map(
                 (option) => (
                   <option key={option.value} value={option.value}>

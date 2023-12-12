@@ -27,7 +27,8 @@ import LoadingOverlay from "react-loading-overlay";
 const ApplicationTable = () => {
   const dispatch = useDispatch();
   const [displayFilter, setDisplayFilter] = useState(false);
-  const [filterParams, setFilterParams] = useState({});
+  const searchParams = useSelector((state) => state.applications.searchParams);
+  const [filterParams, setFilterParams] = useState(searchParams);
   const [pageLimit, setPageLimit] = useState(5);
   const applications = useSelector(
     (state) => state.applications.applicationsList
@@ -110,10 +111,10 @@ const ApplicationTable = () => {
           <Translation>{(t) => t("No submissions found")}</Translation>{" "}
         </label>
         <br />
-        {(filterParams.id ||
-          filterParams.applicationName ||
-          filterParams.applicationStatus ||
-          filterParams.modified) && (
+        {(filterParams?.id ||
+          filterParams?.applicationName ||
+          filterParams?.applicationStatus ||
+          filterParams?.modified) && (
           <label className="lbl-no-application-desc">
             {" "}
             <Translation>

@@ -23,7 +23,8 @@ import LoadingOverlay from "react-loading-overlay";
 const DraftTable = () => {
   const dispatch = useDispatch();
   const [displayFilter, setDisplayFilter] = useState(false);
-  const [filterParams, setFilterParams] = useState({});
+  const searchParams = useSelector((state) => state.draft.searchParams);
+  const [filterParams, setFilterParams] = useState(searchParams);
   const [pageLimit, setPageLimit] = useState(5);
   const drafts = useSelector((state) => state.draft.draftList);
   const tenantKey = useSelector((state) => state.tenants?.tenantId);
@@ -69,7 +70,7 @@ const DraftTable = () => {
           <Translation>{(t) => t("No drafts found")}</Translation>{" "}
         </label>
         <br />
-        {(filterParams.id || filterParams.draftName || filterParams.modified) && (
+        {(filterParams?.id || filterParams?.draftName || filterParams?.modified) && (
           <label className="lbl-no-application-desc">
             {" "}
             <Translation>

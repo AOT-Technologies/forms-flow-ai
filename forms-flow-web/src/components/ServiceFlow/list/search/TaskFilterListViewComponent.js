@@ -236,7 +236,9 @@ const TaskFilterListViewComponent = React.memo(
                     onChange={(e) => setAssignee(e.target.value)}
                     className="form-control"
                   >
-                    <option value="">{t("Select a user")}</option>
+                    <option value="" hidden>
+                      {t("Select a user")}
+                    </option>
                     {assigneeOptions.map((option) => (
                       <option key={option.value} value={option.value}>
                         {option.label}

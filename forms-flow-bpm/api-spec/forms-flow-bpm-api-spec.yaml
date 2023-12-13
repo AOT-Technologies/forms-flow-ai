@@ -1851,3 +1851,53 @@ paths:
                 processVariables:
                   aVariable:
                     value: aNewValue
+  /engine-rest-ext/v1/process-instance/{id}/variables:
+    get:
+      tags:
+        - Process
+      summary: Get process instance variables by id
+      description: |-
+        Retrieves a process instance variables by id.
+        #### Method
+        GET /process-instance/{id}/variables
+      parameters:
+        - name: id
+          in: path
+          schema:
+            type: string
+          required: true
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json:
+              examples:
+                example-1:
+                  value:
+                    applicationStatus:
+                      type: String
+                      value: New
+                    formUrl:
+                      type: String
+                      value: 'http://localhost:3001/form/626ba203004a95dd15f6b3ad/submission/6273a24051ae2f25bd45793c'
+                    tenantKey:
+                      type: 'Null'
+                      value: null
+                    formName:
+                      type: String
+                      value: dashboard check
+                    webFormUrl:
+                      type: String
+                      value: 'http://localhost:3000/form/626ba203004a95dd15f6b3ad/submission/6273a24051ae2f25bd45793c'
+                    submissionDate:
+                      type: String
+                      value: '2023-02-02 05:53:49.708258'
+                    submitterName:
+                      type: String
+                      value: Test-user
+                    applicationId:
+                      type: Integer
+                      value: 1113
+                    textField:
+                      type: String
+                      value: Test

@@ -435,7 +435,7 @@ const doProcessActions = (submission, ownProps) => {
     const redirectUrl = MULTITENANCY_ENABLED ? `/tenant/${tenantKey}/` : `/`;
     const origin = `${window.location.origin}${redirectUrl}`;
     dispatch(resetSubmissions("submission"));
-    const data = getProcessReq(form, submission._id, origin);
+    const data = getProcessReq(form, submission._id, origin,submission?.data);
     let draft_id = state.draft.draftSubmission?.id;
     let isDraftCreated = draft_id ? true : false;
     const applicationCreateAPI = selectApplicationCreateAPI(

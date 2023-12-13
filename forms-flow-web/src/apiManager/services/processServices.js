@@ -80,14 +80,16 @@ export const fetchAllBpmProcesses = (  {tenant_key = null,
   if (tenant_key) {
     url = url + "&tenantIdIn=" + tenant_key;
   }
+ 
   if (firstResult) {
     url = url + "&firstResult=" + firstResult;
   }
   if (maxResults) {
     url = url + "&maxResults=" + maxResults;
   }
+  
   if (searchKey) {
-    url = url + `&nameLike=%${searchKey}%`;
+    url = url + `&nameLike=%25${searchKey}%25`;
   }
   return (dispatch) => {
     // eslint-disable-next-line max-len
@@ -127,7 +129,7 @@ export const fetchAllBpmProcessesCount = (tenant_key,searchKey,) => {
     url = url + "&tenantIdIn=" + tenant_key;
   }
   if(searchKey){
-    url = url + `&nameLike=%${searchKey}%`;
+    url = url + `&nameLike=%25${searchKey}%25`;
   }
 
   return RequestService.httpGETRequest(

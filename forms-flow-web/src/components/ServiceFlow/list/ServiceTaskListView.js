@@ -6,6 +6,7 @@ import { fetchServiceTaskList } from "../../../apiManager/services/bpmTaskServic
 import {
   setBPMTaskListActivePage,
   setBPMTaskLoader,
+  setIsAllTaskVariableExpand
 } from "../../../actions/bpmTaskActions";
 import Loading from "../../../containers/Loading";
 import { useTranslation } from "react-i18next";
@@ -35,7 +36,7 @@ const ServiceTaskListView = React.memo(() => {
   const firstResult = useSelector((state) => state.bpmTasks.firstResult);
   const activePage = useSelector((state) => state.bpmTasks.activePage);
   const [expandedTasks, setExpandedTasks] = useState({});
-  const [allTaskVariablesExpanded, setAllTaskVariablesExpanded] = useState(false);
+  const allTaskVariablesExpanded = useSelector((state) => state.bpmTasks.allTaskVariablesExpand);
   const [selectedLimitValue, setSelectedLimitValue] = useState(15);
   const tenantKey = useSelector((state) => state.tenants?.tenantId);
   const redirectUrl = useRef(
@@ -92,10 +93,17 @@ const ServiceTaskListView = React.memo(() => {
     dispatch(
       fetchServiceTaskList(reqData,null,firstResultIndex,selectedLimitValue)
     );
-    setAllTaskVariablesExpanded(false);
   };
-  
-
+  useEffect(() => {
+    // Initialize expandedTasks based on the initial value of allTaskVariablesExpanded
+    const updatedExpandedTasks = {};
+    if (allTaskVariablesExpanded) {
+      taskList.forEach((task) => {
+        updatedExpandedTasks[task.id] = allTaskVariablesExpanded;
+      });
+    }
+    setExpandedTasks(updatedExpandedTasks);
+  }, [allTaskVariablesExpanded, taskList]);
 //Toggle the expanded state of TaskVariables in single task
   const handleToggleTaskVariable = (taskId) => {
     setExpandedTasks((prevExpandedTasks) => ({
@@ -113,9 +121,8 @@ const ServiceTaskListView = React.memo(() => {
         updatedExpandedTasks[task.id] = newExpandedState;
       }
     });
-
     setExpandedTasks(updatedExpandedTasks);
-    setAllTaskVariablesExpanded(newExpandedState);
+    dispatch(setIsAllTaskVariableExpand(newExpandedState));
   };
  
   const renderTaskList = () => {
@@ -197,7 +204,7 @@ const ServiceTaskListView = React.memo(() => {
                         e.stopPropagation();
                         handleToggleTaskVariable(task.id);
                       }}
-                      title="Click for task variables"
+                      title={t("Click for task variables")}
                     >
                       <i
                         className="fa fa-angle-down"
@@ -305,8 +312,7 @@ const ServiceTaskListView = React.memo(() => {
   return (
     <>
       <TaskSearchBarListView
-        toggleAllTaskVariables={toggleAllTaskVariables}
-        allTaskVariablesExpanded={allTaskVariablesExpanded}  />
+        toggleAllTaskVariables={toggleAllTaskVariables}  />
         {isTaskListLoading ? <Loading /> : renderTaskList()}
     </>
   );

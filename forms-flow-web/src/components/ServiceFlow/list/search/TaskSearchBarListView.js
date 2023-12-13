@@ -7,7 +7,7 @@ import { setSelectedTaskVariables } from "../../../../actions/bpmTaskActions";
 import { useTranslation } from "react-i18next"; 
 
 
-const TaskSearchBarListView = React.memo(({ toggleAllTaskVariables, allTaskVariablesExpanded }) => {
+const TaskSearchBarListView = React.memo(({ toggleAllTaskVariables }) => {
   const isTaskListLoading = useSelector(
     (state) => state.bpmTasks.isTaskListLoading
   );
@@ -16,6 +16,7 @@ const TaskSearchBarListView = React.memo(({ toggleAllTaskVariables, allTaskVaria
   const [SortOptions, setSortOptions] = useState(false);
   const [filterParams, setFilterParams] = useState({});
   const taskList = useSelector((state) => state.bpmTasks.tasksList);
+  const allTaskVariablesExpanded = useSelector((state) => state.bpmTasks.allTaskVariablesExpand);
   const dispatch = useDispatch();
   const { t } = useTranslation();
   useEffect(() => {

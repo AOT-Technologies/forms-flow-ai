@@ -220,30 +220,37 @@ const ServiceTaskListView = React.memo(() => {
               </Row>
               {
                 expandedTasks[task.id] &&
-                <>
-              <hr />
-              <Row className="p-2" >
-                  {task?._embedded?.variable?.map((eachVariable, index) => {
-                    if ( eachVariable.name !== "applicationId" && eachVariable.name !== "formName" && selectedTaskVariables[eachVariable.name] === true) {
-                      const data = taskvariables?.find(
-                        (variableItem) => variableItem.name === eachVariable.name
-                      );
-                      return (
-                        <Col xs={2} key={index} >
-                          <div className="col-12" style={{ wordBreak: "break-all" }}>
-                            <h6 className="font-weight-light">{data?.label}</h6>
-                          </div>
-                          <div className="d-flex col-12">
-                            <h6>
-                              <u className="font-weight-bold text-decoration-none ">{eachVariable.value}</u>
-                            </h6>
-                          </div>
-                        </Col>
-                      );
-                    }
-                  })}
-              </Row>
-                </>
+                task?._embedded?.variable?.some(
+                  (eachVariable) =>
+                    eachVariable.name !== "applicationId" &&
+                    eachVariable.name !== "formName" &&
+                    selectedTaskVariables[eachVariable.name] === true
+                ) && (
+                  <>
+                    <hr />
+                    <Row className="p-2" >
+                      {task?._embedded?.variable?.map((eachVariable, index) => {
+                        if (eachVariable.name !== "applicationId" && eachVariable.name !== "formName" && selectedTaskVariables[eachVariable.name] === true) {
+                          const data = taskvariables?.find(
+                            (variableItem) => variableItem.name === eachVariable.name
+                          );
+                          return (
+                            <Col xs={2} key={index} >
+                              <div className="col-12" style={{ wordBreak: "break-all" }}>
+                                <h6 className="font-weight-light">{data?.label}</h6>
+                              </div>
+                              <div className="d-flex col-12">
+                                <h6>
+                                  <u className="font-weight-bold text-decoration-none ">{eachVariable.value}</u>
+                                </h6>
+                              </div>
+                            </Col>
+                          );
+                        }
+                      })}
+                    </Row>
+                  </>
+                )
               }             
             </div>
           ))}

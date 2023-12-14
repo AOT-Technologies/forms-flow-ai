@@ -29,7 +29,7 @@ def upgrade():
                 'All Tasks',
                 ARRAY['{"name": "applicationId", "label": "Application Id"}'::json, '{"name": "formName", "label": "Form Name"}'::json],
                 'active','system',now(),'{}'::json,'{}','{}',
-                '{"applicationId": true, "dueDate": true, "priority": true, "assignee": true, "taskTitle": true, "createdDate": true, "groups": true, "followupDate": true}'::json
+                '{"applicationId": true, "dueDate": true, "priority": true, "assignee": true, "taskTitle": true, "createdDate": true, "groups": true, "followUp": true}'::json
             )
         """
         conn.execute(sa.text(insert_stmt))

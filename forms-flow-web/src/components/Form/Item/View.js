@@ -337,10 +337,10 @@ const View = React.memo((props) => {
           (publicFormStatus?.anonymous === true &&
             publicFormStatus?.status === "active")) && (
           <>
-            <span className="pr-2  mr-2 d-flex justify-content-end align-items-center">
+            <span className="pe-2  me-2 d-flex justify-content-end align-items-center">
               {!notified && (
                 <span className="text-primary">
-                  <i className="fa fa-info-circle mr-2" aria-hidden="true"></i>
+                  <i className="fa fa-info-circle me-2" aria-hidden="true"></i>
                   {t(
                     "Unfinished submissions will be saved to Submissions/Drafts."
                   )}
@@ -369,14 +369,14 @@ const View = React.memo((props) => {
           ></SubmissionError>
           {isAuthenticated ? (
             <Link title={t("Back to Form List")} to={`${redirectUrl}form`}>
-              <i className="fa fa-chevron-left fa-lg mr-2" />
+              <i className="fa fa-chevron-left fa-lg me-2" />
             </Link>
           ) : null}
 
           {form.title ? (
-            <h3 className="ml-3 text-truncate" style={{height :"45px"}}>
+            <h3 className="ms-3 text-truncate" style={{height :"45px"}}>
               <span className="task-head-details">
-                <i className="fa-solid fa-file-lines mr-2" aria-hidden="true" /> &nbsp;{" "}
+                <i className="fa-solid fa-file-lines me-2" aria-hidden="true" /> &nbsp;{" "}
                 {t("Forms")}/
               </span>{" "}
               {form.title}
@@ -393,7 +393,7 @@ const View = React.memo((props) => {
         text={<Translation>{(t) => t("Loading...")}</Translation>}
         className="col-12"
       >
-  <div className="ml-4 mr-4">
+  <div className="ms-4 me-4">
     {isPublic || formStatus === "active" ? (
       <Form
         form={form}

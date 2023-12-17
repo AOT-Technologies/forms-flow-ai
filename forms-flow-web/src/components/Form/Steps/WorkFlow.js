@@ -227,16 +227,16 @@ const WorkFlow = React.memo(
                     <Table responsive striped bordered hover>
                       <thead>
                         <tr>
-                          <th className="font-weight-bold">
+                          <th className="fw-bold">
                             {t("Form field")}
                           </th>
-                          <th className="font-weight-bold" align="left">
+                          <th className="fw-bold" align="left">
                             {t("Label")}
                           </th>
-                          <th className="font-weight-bold" align="left">
+                          <th className="fw-bold" align="left">
                             {t("Show in list")}
                           </th>
-                          <th className="font-weight-bold" align="right">
+                          <th className="fw-bold" align="right">
                             {t("Action")}
                           </th>
                         </tr>

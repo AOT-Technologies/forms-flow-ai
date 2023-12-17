@@ -224,7 +224,7 @@ const View = React.memo((props) => {
     <div className=" overflow-y-auto">
       {
         <>
-          <span className="pr-2  mr-2 d-flex justify-content-end align-items-center">
+          <span className="pe-2  me-2 d-flex justify-content-end align-items-center">
             {poll && showNotification && (
               <SavingLoading
                 text={
@@ -247,14 +247,14 @@ const View = React.memo((props) => {
           ></SubmissionError>
           {isAuthenticated ? (
             <Link title={t("Back to Drafts")} to={`${redirectUrl}draft`} className="">
-              <i className="fa fa-chevron-left fa-lg mr-2" />
+              <i className="fa fa-chevron-left fa-lg me-2" />
             </Link>
           ) : null}
 
           {form.title ? (
             <h3 className="">
               <span className="task-head-details">
-                <i className="fa-solid fa-file-lines mr-2" aria-hidden="true" /> &nbsp;{" "}
+                <i className="fa-solid fa-file-lines me-2" aria-hidden="true" /> &nbsp;{" "}
                 {t("Drafts")}/
               </span>{" "}
               {textTruncate(60,40,form.title)}
@@ -265,7 +265,7 @@ const View = React.memo((props) => {
         </div>
         {processData?.status === "active" ? (
           <button
-            className="btn btn-danger mr-2"
+            className="btn btn-danger me-2"
             style={{ width: "8.5em" }}
             onClick={() => deleteDraft()}
           >

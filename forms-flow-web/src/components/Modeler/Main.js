@@ -80,14 +80,14 @@ export default React.memo(() => {
   const headOptions = [
     {
       name: "BPMN",
-      icon: "fa-solid fa-gears mr-2",
+      icon: "fa-solid fa-gears me-2",
       onClick: () => {
         handleChnageTab("BPMN");
       },
     },
     {
       name: "DMN",
-      icon: "fa-solid fa-gears mr-2",
+      icon: "fa-solid fa-gears me-2",
       onClick: () => {
         handleChnageTab("DMN");
       },
@@ -102,16 +102,16 @@ export default React.memo(() => {
           className="btn btn-primary"
           style={{ whiteSpace: "nowrap" }}
         >
-          <i className="fa fa-plus mr-2" />
+          <i className="fa fa-plus me-2" />
           {t("Create Workflow")}
         </button>
         <button
-          className="btn btn-outline-primary  ml-4"
+          className="btn btn-outline-primary  ms-4"
           onClick={uploadClick}
           title={t("Upload Workflow")}
           style={{ whiteSpace: "nowrap" }}
         >
-          <i className="fa fa-upload mr-2" aria-hidden="true" />
+          <i className="fa fa-upload me-2" aria-hidden="true" />
           {t("Upload Workflow")}
         </button>
         <input

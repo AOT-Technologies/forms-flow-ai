@@ -133,7 +133,7 @@ function TaskAttributeComponent({
           </Row>
         </Form>
         <hr />
-        <Form className="mt-2 pl-1">
+        <Form className="mt-2 ps-1">
           <h5 style={{ fontWeight: "bold", fontSize: "18px" }}>
             <Translation>{(t) => t("Variables")}</Translation>{" "}
             <i title={t("You can define variables shown in the list")} className="fa fa-info-circle"></i>{" "}
@@ -185,7 +185,7 @@ function TaskAttributeComponent({
                     />
                   </Form.Group>
                 </Col>
-                <Col xs="auto mt-3 mr-2">
+                <Col xs="auto mt-3 me-2">
                   {index === 0 ? (
                     <button
                       type="button"

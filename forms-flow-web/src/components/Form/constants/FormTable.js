@@ -199,11 +199,11 @@ function FormTable() {
                 <th >
                   <div className="d-flex align-items-center">
                     {isDesigner && <SelectFormForDownload type="all" />}
-                    <span className="ml-4 mt-1">{t("Form Title")}</span>
+                    <span className="ms-4 mt-1">{t("Form Title")}</span>
                     <span>
                       {isAscending ? (
                         <i
-                          className="fa fa-sort-alpha-asc ml-2 mt-1"
+                          className="fa fa-sort-alpha-asc ms-2 mt-1"
                           onClick={() => {
                             updateSort("desc");
                           }}
@@ -216,7 +216,7 @@ function FormTable() {
                         ></i>
                       ) : (
                         <i
-                          className="fa fa-sort-alpha-desc ml-2 mt-1"
+                          className="fa fa-sort-alpha-desc ms-2 mt-1"
                           onClick={() => {
                             updateSort("asc");
                           }}
@@ -281,7 +281,7 @@ function FormTable() {
                             <span className="mb-3">
                               <SelectFormForDownload form={e} />
                             </span>
-                            <span className="ml-4 mt-2">{e.title}</span>
+                            <span className="ms-4 mt-2">{e.title}</span>
                           </div>
                         </td>
                       )}
@@ -318,12 +318,12 @@ function FormTable() {
                                   submitNewForm(e?._id);
                                 }}
                               >
-                                <i className="fa fa-pencil mr-2 text-primary" />
+                                <i className="fa fa-pencil me-2 text-primary" />
                                 {t("Submit New")}
                               </Dropdown.Item>
                             ) : null}
                             <Dropdown.Item onClick={() => deleteForms(e)}>
-                              <i className="fa fa-trash mr-2 text-danger" />
+                              <i className="fa fa-trash me-2 text-danger" />
                               {t("Delete")}
                             </Dropdown.Item>
                           </Dropdown.Menu>
@@ -345,7 +345,7 @@ function FormTable() {
       {formData.length ? (
         <div className="d-flex justify-content-between align-items-center flex-column flex-md-row">
           <div className="d-flex align-items-center">
-          <span className="mr-2"> {t("Rows per page")}</span>
+          <span className="me-2"> {t("Rows per page")}</span>
           <Dropdown>
                 <Dropdown.Toggle variant="light" id="dropdown-basic">
                   {pageLimit}
@@ -365,7 +365,7 @@ function FormTable() {
                 ))}
                 </Dropdown.Menu>
               </Dropdown>
-            <span className="ml-2">
+            <span className="ms-2">
               {t("Showing")} {(limit * pageNo) - (limit - 1)} {t("to")}{" "}
               {limit * pageNo > totalForms ? totalForms : limit * pageNo}{" "}
               {t("of")} {totalForms} {t("results")}

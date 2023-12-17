@@ -182,9 +182,9 @@ const TaskHeader = React.memo(() => {
   const FollowUpDateInput = React.forwardRef(({ value, onClick }, ref) => {
     return (
       <div onClick={onClick} ref={ref}>
-        <i className="fa fa-calendar mr-1" />{" "}
+        <i className="fa fa-calendar me-1" />{" "}
         {followUpDate ? (
-          <span className="mr-4">{moment(followUpDate).fromNow()}</span>
+          <span className="me-4">{moment(followUpDate).fromNow()}</span>
         ) : (
           t("Set follow-up Date")
         )}
@@ -196,9 +196,9 @@ const TaskHeader = React.memo(() => {
   const DueDateInput = React.forwardRef(({ value, onClick }, ref) => {
     return (
       <div onClick={onClick} ref={ref}>
-        <i className="fa fa-bell mr-1" />{" "}
+        <i className="fa fa-bell me-1" />{" "}
         {dueDate ? (
-          <span className="mr-4">{moment(dueDate).fromNow()}</span>
+          <span className="me-4">{moment(dueDate).fromNow()}</span>
         ) : (
           t("Set Due date")
         )}
@@ -296,7 +296,7 @@ const TaskHeader = React.memo(() => {
           onClick={() => setModal(true)}
           data-title={t("Groups")}
         >
-          <i className="fa fa-group mr-1" />
+          <i className="fa fa-group me-1" />
           {taskGroups.length === 0 ? (
             <span>{t("Add groups")}</span>
           ) : (
@@ -321,7 +321,7 @@ const TaskHeader = React.memo(() => {
             )
           ) : (
             <>
-              <i className="fa fa-user mr-1" />
+              <i className="fa fa-user me-1" />
               {task?.assignee ? (
                 <span>
                   <span
@@ -332,7 +332,7 @@ const TaskHeader = React.memo(() => {
                     {task.assignee}
                   </span>
                   <i
-                    className="fa fa-times ml-1"
+                    className="fa fa-times ms-1"
                     onClick={onUnClaimTask}
                     data-title={t("Reset Assignee")}
                   />

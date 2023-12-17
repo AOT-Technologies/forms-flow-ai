@@ -149,7 +149,7 @@ function ClientTable() {
                     <span>
                       {isAscending ? (
                         <i
-                          className="fa fa-sort-alpha-asc ml-2"
+                          className="fa fa-sort-alpha-asc ms-2"
                           onClick={() => {
                             updateSort("desc");
                           }}
@@ -162,7 +162,7 @@ function ClientTable() {
                         ></i>
                       ) : (
                         <i
-                          className="fa fa-sort-alpha-desc ml-2"
+                          className="fa fa-sort-alpha-desc ms-2"
                           onClick={() => {
                             updateSort("asc");
                           }}
@@ -219,7 +219,7 @@ function ClientTable() {
                     <tr>
                       <td className="col-4">
                         {!isDesigner && (
-                          <button title={t("Form Description")} className="btn btn-light btn-small mr-2"   onClick={() => handleToggle(index) } disabled={!e.description}>
+                          <button title={t("Form Description")} className="btn btn-light btn-small me-2"   onClick={() => handleToggle(index) } disabled={!e.description}>
                               <i
                             className={`fa ${
                               openIndex === index
@@ -230,7 +230,7 @@ function ClientTable() {
                           ></i>
                           </button>
                         )}
-                        <span className="ml-2 mt-2">{e.title}</span>
+                        <span className="ms-2 mt-2">{e.title}</span>
                       </td>
                       <td
                         className="text-truncate"
@@ -290,7 +290,7 @@ function ClientTable() {
       {formData.length ? (
         <div className="d-flex justify-content-between align-items-center flex-column flex-md-row">
           <div className="d-flex align-items-center">
-            <span className="mr-2"> {t("Rows per page")}</span>
+            <span className="me-2"> {t("Rows per page")}</span>
             <Dropdown>
               <Dropdown.Toggle variant="light" id="dropdown-basic">
                 {pageLimit}
@@ -310,7 +310,7 @@ function ClientTable() {
                 ))}
               </Dropdown.Menu>
             </Dropdown>
-            <span className="ml-2">
+            <span className="ms-2">
               {t("Showing")} {(limit * pageNo) - (limit - 1)} {t("to")}{" "}
               {limit * pageNo > totalForms ? totalForms : limit * pageNo}{" "}
               {t("of")} {totalForms} {t("Results")}

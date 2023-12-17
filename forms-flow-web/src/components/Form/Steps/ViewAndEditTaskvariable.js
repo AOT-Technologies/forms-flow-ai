@@ -81,7 +81,7 @@ const ViewAndEditTaskvariable = ({
                   deleteTaskVariable(item);
                 }}
                 aria-label="Delete"
-                className="mr-3 btn btn-danger btn fa fa-times"
+                className="me-3 btn btn-danger btn fa fa-times"
               ></i>
 
               <i

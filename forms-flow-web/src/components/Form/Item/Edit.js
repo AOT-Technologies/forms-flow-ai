@@ -40,7 +40,7 @@ import {
 } from "../../../apiManager/services/FormServices";
 import { manipulatingFormData } from "../../../apiManager/services/formFormatterService";
 import SaveAsNewVersionConfirmationModal from "./SaveAsNewVersionConfirmationModal";
-import LoadingOverlay from "react-loading-overlay";
+import LoadingOverlay from "react-loading-overlay-ts";
 import RichText from "../RichText/index";
 import { Collapse } from 'react-bootstrap';
 const reducer = (form, { type, value }) => {

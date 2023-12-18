@@ -22,7 +22,7 @@ import {
   setCountPerpage,
 } from "../../actions/applicationActions";
 import { push } from "connected-react-router";
-import LoadingOverlay from "react-loading-overlay";
+import LoadingOverlay from "react-loading-overlay-ts";
 
 const ApplicationTable = () => {
   const dispatch = useDispatch();

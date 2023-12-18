@@ -13,7 +13,7 @@ import {
   setBPMFormListSort,
   setBpmFormSearch,
 } from "../../../actions/formActions";
-import LoadingOverlay from "react-loading-overlay";
+import LoadingOverlay from "react-loading-overlay-ts";
 import {
   MULTITENANCY_ENABLED,
   STAFF_DESIGNER,

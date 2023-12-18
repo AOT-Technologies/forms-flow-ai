@@ -10,7 +10,7 @@ import {
 import {
   setInsightDetailLoader,
 } from "../../actions/insightActions";
-import LoadingOverlay from "react-loading-overlay";
+import LoadingOverlay from "react-loading-overlay-ts";
 import Loading from "../../containers/Loading";
 import { useTranslation, Translation } from "react-i18next";
 import { BASE_ROUTE, MULTITENANCY_ENABLED } from "../../constants/constants";

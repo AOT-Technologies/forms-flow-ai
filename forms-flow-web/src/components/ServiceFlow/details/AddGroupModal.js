@@ -9,7 +9,7 @@ import {
   removeBPMGroup,
 } from "../../../apiManager/services/bpmTaskServices";
 import { setBPMTaskGroupsLoading } from "../../../actions/bpmTaskActions";
-import LoadingOverlay from "react-loading-overlay";
+import LoadingOverlay from "react-loading-overlay-ts";
 import { useTranslation, Translation } from "react-i18next";
 const AddGroupModal = React.memo((props) => {
   const { t } = useTranslation();

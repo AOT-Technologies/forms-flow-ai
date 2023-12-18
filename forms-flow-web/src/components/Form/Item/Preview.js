@@ -22,7 +22,7 @@ import { saveFormProcessMapperPost } from "../../../apiManager/services/processS
 import { toast } from "react-toastify";
 import { t } from "i18next";
 import { INACTIVE } from "../constants/formListConstants";
-import LoadingOverlay from "react-loading-overlay";
+import LoadingOverlay from "react-loading-overlay-ts";
 import FormHistoryModal from "./FormHistoryModal";
 import CreateTemplateConfirmModal from "./CreateTemplateConfirmModal";
 import { handleAuthorization } from "../../../apiManager/services/authorizationService";

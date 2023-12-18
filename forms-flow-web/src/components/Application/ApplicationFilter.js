@@ -146,7 +146,7 @@ const ApplicationFilter = ({
               value={searchParams.applicationStatus}
               onChange={(e) => handleChange("applicationStatus", e.target.value)}
               className="form-control p-1"
-              data-testid="submission-filter-applicationstatus-input"
+              data-testid="submission-filter-applicationstatus-dropdown"
             >
               <option value="" hidden>
                 {t("Select a status")}
@@ -156,7 +156,7 @@ const ApplicationFilter = ({
                   <option
                     key={option.value}
                     value={option.value}
-                    data-testid={`submission-filter-applicationstatus-input-${option.value}`}>
+                    data-testid={`submission-filter-applicationstatus-${option.value}`}>
                     {option.label}
                   </option>
                 )
@@ -182,7 +182,7 @@ const ApplicationFilter = ({
               yearAriaLabel="Select the year"
               clearAriaLabel="Click to clear"
               nativeInputAriaLabel="Date"
-              data-testid="submission-filter-modified-daterangepicker"
+              data-testid="submission-filter-modified-daterange"
             />
           </Col>
         </Row>

@@ -118,15 +118,7 @@ function FormTable() {
     dispatch(setBPMFormLimit(limit));
     dispatch(setBPMFormListPage(1));
   };
-
-  const viewOrEdit = (formData) => (
-    <button
-      className="btn btn-link text-primary mt-2"
-      onClick={() => viewOrEditForm(formData._id)}
-    >
-      <Translation>{(t) => t("View Details")}</Translation>{" "}
-    </button>
-  );
+ 
 
  
 
@@ -245,10 +237,11 @@ function FormTable() {
                       onKeyDown={(e) => (e.keyCode == 13 ? handleSearch() : "")}
                       placeholder={t("Search by form title")}
                       title={t("Search by form title")}
+                      data-testid="form-search-input-box"
                       style={{ backgroundColor: "#ffff" }}
                     />
                     {search && (
-                      <InputGroup.Append onClick={handleClearSearch}>
+                      <InputGroup.Append onClick={handleClearSearch} data-testid="form-search-cear-button">
                         <InputGroup.Text>
                           <i className="fa fa-times"></i>
                         </InputGroup.Text>
@@ -256,6 +249,7 @@ function FormTable() {
                     )}
                     <InputGroup.Append
                       onClick={handleSearch}
+                      data-testid="form-search-click-button"
                       disabled={!search?.trim()}
                       style={{ cursor: "pointer" }}
                     >
@@ -289,21 +283,34 @@ function FormTable() {
                       <td>{_.capitalize(e.formType)}</td>
                       <td>{e.anonymous ? t("Public") : t("Private")}</td>
                       <td>
-                        {" "}
-                        <span 
-                          className={`badge rounded-pill px-3 py-2 ${e.status === 'active' ? 'published-forms-label' : 'unpublished-forms-label'}`}
+                        <span
+                          data-testid={`form-status-${e._id}`}
+                          className={`badge rounded-pill px-3 py-2 ${
+                            e.status === "active"
+                              ? "published-forms-label"
+                              : "unpublished-forms-label"
+                          }`}
                         >
-                          {e.status === 'active' ? t("Published") : t("Unpublished")}
+                          {e.status === "active"
+                            ? t("Published")
+                            : t("Unpublished")}
                         </span>
                       </td>
 
                       <td>
-                        <span> {viewOrEdit(e)}</span>
+                        <button
+                          data-testid={`form-view-or-edit-button-${e._id}`}
+                          className="btn btn-link text-primary mt-2"
+                          onClick={() => viewOrEditForm(e._id)}
+                        >
+                          <Translation>{(t) => t("View Details")}</Translation>{" "}
+                        </button>
                       </td>
                       <td>
-                        <Dropdown >
+                        <Dropdown data-testid={`designer-form-option-${e._id}`}>
                           <Dropdown.Toggle
-                            as={CustomToggle} 
+                            data-testid={`designer-form-option-toggle-${e._id}`}
+                            as={CustomToggle}
                             id="dropdown-basic"
                             title={t("More options")}
                             aria-describedby="More-options"
@@ -317,12 +324,14 @@ function FormTable() {
                                 onClick={() => {
                                   submitNewForm(e?._id);
                                 }}
+                                data-testid={`designer-form-option-${e._id}-submit`}
                               >
                                 <i className="fa fa-pencil me-2 text-primary" />
                                 {t("Submit New")}
                               </Dropdown.Item>
                             ) : null}
-                            <Dropdown.Item onClick={() => deleteForms(e)}>
+                            <Dropdown.Item onClick={() => deleteForms(e)}
+                             data-testid={`designer-form-option-${e._id}-delete`}>
                               <i className="fa fa-trash me-2 text-danger" />
                               {t("Delete")}
                             </Dropdown.Item>
@@ -346,8 +355,8 @@ function FormTable() {
         <div className="d-flex justify-content-between align-items-center flex-column flex-md-row">
           <div className="d-flex align-items-center">
           <span className="me-2"> {t("Rows per page")}</span>
-          <Dropdown>
-                <Dropdown.Toggle variant="light" id="dropdown-basic">
+          <Dropdown data-testid="page-limit-dropdown">
+                <Dropdown.Toggle variant="light" id="dropdown-basic" data-testid="page-limit-dropdown-toggle">
                   {pageLimit}
                 </Dropdown.Toggle>
 
@@ -356,6 +365,7 @@ function FormTable() {
                   <Dropdown.Item
                     key={index}
                     type="button"
+                    data-testid={`page-limit-dropdown-item-${option.value}`}
                     onClick={() => {
                       onSizePerPageChange(option.value);
                     }}

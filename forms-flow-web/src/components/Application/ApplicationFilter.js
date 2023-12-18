@@ -120,6 +120,7 @@ const ApplicationFilter = ({
               placeholder=""
               value={searchParams.id}
               onChange={(e) => handleChange("id", e.target.value)}
+              data-testid="submission-filter-id-input"
             />
           </Col>
           <Col>
@@ -130,6 +131,7 @@ const ApplicationFilter = ({
               placeholder=""
               value={searchParams.applicationName}
               onChange={(e) => handleChange("applicationName", e.target.value)}
+              data-testid="submission-filter-applicationname-input"
             />
           </Col>
         </Row>
@@ -144,13 +146,17 @@ const ApplicationFilter = ({
               value={searchParams.applicationStatus}
               onChange={(e) => handleChange("applicationStatus", e.target.value)}
               className="form-control p-1"
+              data-testid="submission-filter-applicationstatus-input"
             >
               <option value="" hidden>
                 {t("Select a status")}
               </option>
               {getApplicationStatusOptions(applicationStatusOptions).map(
                 (option) => (
-                  <option key={option.value} value={option.value}>
+                  <option
+                    key={option.value}
+                    value={option.value}
+                    data-testid={`submission-filter-applicationstatus-input-${option.value}`}>
                     {option.label}
                   </option>
                 )
@@ -176,6 +182,7 @@ const ApplicationFilter = ({
               yearAriaLabel="Select the year"
               clearAriaLabel="Click to clear"
               nativeInputAriaLabel="Date"
+              data-testid="submission-filter-modified-daterangepicker"
             />
           </Col>
         </Row>
@@ -186,6 +193,7 @@ const ApplicationFilter = ({
           <button
             className="btn btn-link text-danger"
             onClick={clearAllFilters}
+            data-testid="submission-filter-clear-input-button"
           >
             {t("Clear All Filters")}
           </button>

@@ -256,6 +256,7 @@ const ApplicationTable = () => {
                       onClick={() => {
                         setDisplayFilter(true);
                       }}
+                      data-testid="submission-filter-btn"
                     >
                       <svg
                         xmlns="http://www.w3.org/2000/svg"
@@ -293,8 +294,8 @@ const ApplicationTable = () => {
                     <td>{e.applicationName}</td>
                     <td>{e.applicationStatus}</td>
                     <td>{HelperServices?.getLocalDateAndTime(e.modified)}</td>
-                    <td>{viewSubmittedForm(e)}</td>
-                    <td>{viewSubmissionDetails(e)}</td>
+                    <td data-testid="{`submitted-form-button-${e._id}`}">{viewSubmittedForm(e)}</td>
+                    <td data-testid="{`submitted-form-details-button-${e._id}`}">{viewSubmissionDetails(e)}</td>
                   </tr>
                 );
               })
@@ -311,7 +312,7 @@ const ApplicationTable = () => {
             <div className="d-flex align-items-center">
               <span className="me-2"> {t("Rows per page")}</span>
               <Dropdown size="sm">
-                <Dropdown.Toggle variant="light" id="dropdown-basic">
+                <Dropdown.Toggle variant="light" id="dropdown-basic" data-testid="page-limit-dropdown-toggle">
                   {pageLimit}
                 </Dropdown.Toggle>
                 <Dropdown.Menu>
@@ -322,6 +323,7 @@ const ApplicationTable = () => {
                       onClick={() => {
                         onSizePerPageChange(option.value);
                       }}
+                      data-testid={`page-limit-dropdown-item-${option.value}`}
                     >
                       {option.text}
                     </Dropdown.Item>

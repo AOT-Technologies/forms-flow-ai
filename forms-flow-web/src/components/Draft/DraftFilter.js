@@ -146,7 +146,7 @@ const DraftFilter = ({ setDisplayFilter, filterParams, setFilterParams }) => {
         </Col>
         <Col className="text-right">
           <button
-            className="btn btn-link text-dark mr-1 "
+            className="btn btn-link text-dark me-1 "
             onClick={closeFilterModal}
           >
             {t("Cancel")}

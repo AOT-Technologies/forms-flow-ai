@@ -171,7 +171,7 @@ const Preview = ({handleNext, hideComponents, activeStep}) => {
             &nbsp;&nbsp;<Translation>{(t) => t("Edit Form")}</Translation>
           </button>
           <button
-            className="btn btn-outline-secondary ml-md-2 my-md-0 my-2 "
+            className="btn btn-outline-secondary ms-md-2 my-md-0 my-2 "
             onClick={() => {
               handleModalChange();
             }}
@@ -180,7 +180,7 @@ const Preview = ({handleNext, hideComponents, activeStep}) => {
             &nbsp;&nbsp;<Translation>{(t) => t("Form History")}</Translation>
           </button>
           <button
-            className="btn btn-outline-primary ml-md-2 my-md-0 my-2"
+            className="btn btn-outline-primary ms-md-2 my-md-0 my-2"
             disabled={newpublishClicked}
             onClick={() => {
               publishConfirmModalChange();
@@ -192,7 +192,7 @@ const Preview = ({handleNext, hideComponents, activeStep}) => {
           </button>
           <button
             onClick={handleNext}
-            className="ml-md-2 my-md-0 my-2 btn btn-primary"
+            className="ms-md-2 my-md-0 my-2 btn btn-primary"
           >
             {
               (activeStep === 1,

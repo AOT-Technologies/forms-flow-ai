@@ -38,7 +38,7 @@ const TaskIgnoreCaseComponent = React.memo(() => {
         <div>
           <span className="name-value-container d-flex align-items-center">
             {t("For Variable, ignore case of")}
-            <Form className="ml-2">
+            <Form className="ms-2">
               <Form.Check
                 type="checkbox"
                 id="name"
@@ -49,7 +49,7 @@ const TaskIgnoreCaseComponent = React.memo(() => {
                 }
               />
             </Form>
-            <Form className="ml-2">
+            <Form className="ms-2">
               <Form.Check
                 type="checkbox"
                 id="value"

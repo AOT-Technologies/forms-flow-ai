@@ -72,7 +72,7 @@ const FormHistoryModal = ({ historyModal, handleModalChange, gotoEdit }) => {
 
         <Modal.Body>
           <div className="d-flex align-items-start p-3">
-            <i className="fa fa-info-circle text-primary mr-2"></i>
+            <i className="fa fa-info-circle text-primary me-2"></i>
             <span className="text-muted h6">
             {t("Formsflow automatically saves your previous form data. Now you can switch to the previous stage and edit.")}
             </span>
@@ -142,7 +142,7 @@ const FormHistoryModal = ({ historyModal, handleModalChange, gotoEdit }) => {
                   >
                     {t("Show more")}
                     <i
-                      className="fa fa-arrow-circle-down ml-2"
+                      className="fa fa-arrow-circle-down ms-2"
                       aria-hidden="true"
                     ></i>
                   </button>

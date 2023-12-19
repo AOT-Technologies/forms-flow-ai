@@ -32,7 +32,7 @@ const TaskFilterSearchType = React.memo(
 
     return (
       <span
-        className="click-element mr-1 list-span"
+        className="click-element me-1 list-span"
         title={t("Type")}
         ref={createSearchNode}
       >

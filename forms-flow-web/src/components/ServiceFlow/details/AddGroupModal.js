@@ -62,7 +62,7 @@ const AddGroupModal = React.memo((props) => {
         >
           <Modal.Body>
             <div className="modal-text">
-              <i className="fa fa-info-circle mr-2" />
+              <i className="fa fa-info-circle me-2" />
               {t(
                 "You can add a group by typing a group ID into the input field and afterwards "
                 + "clicking the button with the plus sign."
@@ -76,7 +76,7 @@ const AddGroupModal = React.memo((props) => {
                   disabled={!groupToAdd}
                 >
                   <span>{t("Add a group")}</span>
-                  <span className="ml-2">
+                  <span className="ms-2">
                     <i className="fa fa-plus fa-lg" />
                   </span>
                 </button>
@@ -104,7 +104,7 @@ const AddGroupModal = React.memo((props) => {
                   {groups.map((group, index) => (
                     <div className="mt-1" key={index}>
                       <i
-                        className="fa fa-times mr-2 click-element text-blue"
+                        className="fa fa-times me-2 click-element text-blue"
                         data-testid="remove-btn"
                         onClick={() => onDeleteGroup(group)}
                       />

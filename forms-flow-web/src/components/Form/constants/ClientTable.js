@@ -196,7 +196,7 @@ function ClientTable() {
                     {search && (
                       <InputGroup.Append
                         onClick={handleClearSearch}
-                        data-testid="form-search-cear-button"
+                        data-testid="form-search-clear-button"
                       >
                         <InputGroup.Text>
                           <i className="fa fa-times"></i>

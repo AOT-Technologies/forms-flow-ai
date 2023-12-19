@@ -518,6 +518,7 @@ const Edit = React.memo(() => {
             <div className="d-flex align-items-center mt-4 me-4">
               <label className="public-label me-2">{t("Do you want to save a new version of this form?")}</label>
               <Form.Check
+                data-testid="form-save-new-version"
                 className="form-check-box"
                 checked={saveAsNewVersionselected}
                 color="primary"
@@ -530,6 +531,7 @@ const Edit = React.memo(() => {
           </Form.Group>
           <button
             className="btn btn-secondary me-md-2 my-2 my-md-0"
+            data-testid="form-save-new-version-cancel"
             onClick={() => {
               changeAnonymous(prviousData.anonymous, true);
               history.goBack();
@@ -539,6 +541,7 @@ const Edit = React.memo(() => {
             {t("Cancel")}
           </button>
           <button
+            data-testid="form-save-new-version-save"
             className="btn btn-primary"
             disabled={formSubmitted}
             onClick={() => {
@@ -572,10 +575,10 @@ const Edit = React.memo(() => {
             )}
           </Modal.Body>
           <Modal.Footer>
-            <button type="button" className="btn btn-link text-dark" onClick={handleClose}>
+            <button data-testid="form-change-new-version-cancel" type="button" className="btn btn-link text-dark" onClick={handleClose}>
               {t("Cancel")}
             </button>
-            <Button variant="primary" onClick={() => handleSave()}>
+            <Button  data-testid="form-change-new-version-save" variant="primary" onClick={() => handleSave()}>
               {t("Save Changes")}
             </Button>
           </Modal.Footer>
@@ -593,6 +596,7 @@ const Edit = React.memo(() => {
                     {t("Title")}
                   </label>
                   <input
+                    data-testid="form-edit-title"
                     type="text"
                     className="form-control"
                     id="title"
@@ -608,7 +612,7 @@ const Edit = React.memo(() => {
                   {t("Description")}
                 </label>
                <div className="bg-white">
-               <RichText value={formDescription} onChange={setFormDescription} />
+               <RichText  data-testid="form-edit-description"value={formDescription} onChange={setFormDescription} />
                </div>
               </div>
             </div>
@@ -622,6 +626,7 @@ const Edit = React.memo(() => {
                   <div className="input-group">
                     <div className="form-check form-check-inline">
                       <input
+                        data-testid="form-edit-display-form"
                         className="form-check-input"
                         type="radio"
                         name="display"
@@ -636,6 +641,7 @@ const Edit = React.memo(() => {
                     </div>
                     <div className="form-check form-check-inline">
                       <input
+                        data-testid="form-edit-display-wizard" 
                         className="form-check-input"
                         type="radio"
                         name="display"
@@ -659,7 +665,8 @@ const Edit = React.memo(() => {
                         <div className="d-flex align-items-center me-4">
                           <label htmlFor="anonymous" className="public-label me-2 fw-bold">{t("Make this form public ?")}</label>
                           <Form.Check
-                          id="anonymous"
+                            data-testid="form-edit-public-form"
+                            id="anonymous"
                             checked={processListData.anonymous || false}
                             type="switch"
                             color="primary"
@@ -677,7 +684,7 @@ const Edit = React.memo(() => {
 
               <div>
                 <div className="mt-3">
-                  <div className="d-flex align-items-center cursor-pointer" onClick={handleToggle}>
+                  <div  data-testid="form-edit-display-advanced" className="d-flex align-items-center cursor-pointer" onClick={handleToggle}>
                     <i className={`fa ${open ? 'fa-chevron-up' : 'fa-chevron-down'} me-2`}></i>
                     <span className="text-primary fw-bold me-4">{t("Advanced Options")}</span>
                     <hr className="flex-grow-1 ms-2 me-2" />
@@ -703,6 +710,7 @@ const Edit = React.memo(() => {
                               </div> : ""
                             }
                             <input
+                              data-testid="form-edit-name"
                               type="text"
                               className="form-control"
                               id="name"
@@ -722,6 +730,7 @@ const Edit = React.memo(() => {
                             </label>
                             <div className="input-group">
                               <select
+                                data-testid="form-edit-type"
                                 className="form-control"
                                 name="form-type"
                                 id="form-type"
@@ -757,6 +766,7 @@ const Edit = React.memo(() => {
                                 </div> : ""
                               }
                               <input
+                                data-testid="form-edit-path"
                                 type="text"
                                 className="form-control"
                                 id="path"

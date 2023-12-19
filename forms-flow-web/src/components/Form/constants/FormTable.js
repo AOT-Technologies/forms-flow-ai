@@ -272,10 +272,10 @@ function FormTable() {
                           <div
                             style={{ display: "flex", alignItems: "center" }}
                           >
-                            <span className="mb-3">
+                            <span className="">
                               <SelectFormForDownload form={e} />
                             </span>
-                            <span className="ms-4 mt-2">{e.title}</span>
+                            <span className="ms-4">{e.title}</span>
                           </div>
                         </td>
                       )}

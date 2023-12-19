@@ -90,7 +90,7 @@ const ServiceFlowTaskList = React.memo(() => {
                   <h5 className="fw-bold">{task.name}</h5>
                 </div>
              
-              <div className="font-size-16 d-flex justify-content-between">
+              <div className="fs-16 d-flex justify-content-between">
                 <div className="pe-0" style={{ maxWidth: "65%" }}>
                   <span data-toggle="tooltip" title="Form Name">
                     {

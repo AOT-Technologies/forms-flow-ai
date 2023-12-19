@@ -51,7 +51,7 @@ const ViewAndEditTaskvariable = ({
         <td className="p-3">
           <span id="showInListLabel" className="sr-only">{t("Show in list")}</span>
           <Form.Check
-            className="" 
+            className="mb-3" 
             disabled={enableEditTaskVariable}
             checked={showInList}
             aria-labelledby="showInListLabel"

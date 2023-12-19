@@ -269,7 +269,7 @@ export default React.memo(() => {
             <ServiceFlowTaskList />
           </section>
         </div>
-        <div className="col-12 pr-0 pl-md-5 col-md-8 col-xl-9  px-2 pr-md-0 py-5 py-md-0 border ">
+        <div className="col-12 pe-0 ps-md-5 col-md-8 col-xl-9  px-2 pe-md-0 py-5 py-md-0 border ">
           <Switch>
             <Route
               path={`${BASE_ROUTE}task/:taskId?`}

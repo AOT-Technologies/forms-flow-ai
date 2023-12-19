@@ -148,7 +148,7 @@ const List = React.memo((props) => {
     return [
       {
         name: "Forms",
-        icon: "file-text-o mr-2",
+        icon: "file-text-o me-2",
       },
     ];
   };
@@ -542,16 +542,16 @@ const List = React.memo((props) => {
                   className="btn btn-primary"
                   style={{ whiteSpace: "nowrap" }}
                 >
-                  <i className="fa fa-plus mr-2" />
+                  <i className="fa fa-plus me-2" />
                   <Translation>{(t) => t("Create Form")}</Translation>
                 </button>
                 <button
-                  className="btn btn-outline-primary  ml-4"
+                  className="btn btn-outline-primary  ms-4"
                   onClick={uploadClick}
                   title={t("Upload json form only")}
                   style={{ whiteSpace: "nowrap" }}
                 >
-                  <i className="fa fa-upload mr-2" aria-hidden="true" />
+                  <i className="fa fa-upload me-2" aria-hidden="true" />
                   {t("Upload Form")}
                 </button>
                 <input
@@ -581,7 +581,7 @@ const List = React.memo((props) => {
                       onClick={downloadForms}
                       disabled={formCheckList.length === 0}
                     >
-                      <i className="fa fa-download mr-2" aria-hidden="true" />
+                      <i className="fa fa-download me-2" aria-hidden="true" />
                       {t("Download Form")}
                     </button>
                   )}

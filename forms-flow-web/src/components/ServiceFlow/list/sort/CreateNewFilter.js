@@ -600,11 +600,11 @@ export default function CreateNewFilterDrawer({
             <Badge
               pill
               variant="outlined"
-              className="d-flex align-items-center badge mr-2 mt-2"
+              className="d-flex align-items-center badge me-2 mt-2"
             >
               {candidateGroup}
               <div
-                className="badge-deleteIcon ml-2"
+                className="badge-deleteIcon ms-2"
                 onClick={() => setCandidateGroup(null)}
               >
                 &times;
@@ -767,7 +767,7 @@ export default function CreateNewFilterDrawer({
                 }
               >
                 <div
-                  className="ml-3"
+                  className="ms-3"
                   onClick={() => handleClickUserGroupIcon("group")}
                 >
                   <div style={{ textAlign: "center" }}>
@@ -790,11 +790,11 @@ export default function CreateNewFilterDrawer({
                   <Badge
                     pill
                     variant="outlined"
-                    className="d-flex align-items-center badge mr-2 mt-2"
+                    className="d-flex align-items-center badge me-2 mt-2"
                   >
                     {identifierId}
                     <div
-                      className="badge-deleteIcon ml-2"
+                      className="badge-deleteIcon ms-2"
                       onClick={() => setIdentifierId(null)}
                     >
                       &times;
@@ -807,7 +807,7 @@ export default function CreateNewFilterDrawer({
         </div>
         <Divider />
         <div className="m-2">
-          <h5 className="font-weight-bold ">
+          <h5 className="fw-bold ">
             <Translation>{(t) => t("Task Attributes")}</Translation>{" "}
             <i title={t("This section is aimed to set select task attributes that will be visible in the task list view")} className="fa fa-info-circle"></i>
           </h5>
@@ -842,7 +842,7 @@ export default function CreateNewFilterDrawer({
           )}
           <div className="d-flex align-items-center">
             <button
-              className="btn btn-outline-secondary mr-3"
+              className="btn btn-outline-secondary me-3"
               onClick={() => {
                 toggleDrawer();
               }}

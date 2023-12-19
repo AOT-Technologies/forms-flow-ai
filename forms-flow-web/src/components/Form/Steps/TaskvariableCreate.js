@@ -68,8 +68,8 @@ const TaskvariableCreate = ({ options, addTaskVariable }) => {
         <Col xs={12} md={3}>
 
           <Form.Group controlId="showInListCheckbox" style={{ marginTop: "34px" }}>
-            <div className="d-flex align-items-center mt-3 mr-4">
-              <Form.Label className="mr-2">{t("Show in list")}</Form.Label>
+            <div className="d-flex align-items-center mt-3 me-4">
+              <Form.Label className="me-2">{t("Show in list")}</Form.Label>
               <Form.Check
                 type="checkbox"
 
@@ -89,7 +89,7 @@ const TaskvariableCreate = ({ options, addTaskVariable }) => {
               addTask();
             }}
           >
-            <i className="fa fa-check mr-2"></i> {t("Add")}
+            <i className="fa fa-check me-2"></i> {t("Add")}
           </Button>
         </Col>
       </Row>

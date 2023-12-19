@@ -69,12 +69,12 @@ const Insights = React.memo((props) => {
         name: "Metrics",
         count: totalItems,
         onClick: () => dispatch(push(`${redirectUrl}metrics`)),
-        icon: "line-chart mr-2",
+        icon: "line-chart me-2",
       },
       {
         name: "Insights",
         onClick: () => dispatch(push(`${redirectUrl}insights`)),
-        icon: "lightbulb-o mr-2",
+        icon: "lightbulb-o me-2",
       },
     ];
   };
@@ -103,7 +103,7 @@ const Insights = React.memo((props) => {
           role="main"
         >
           <h3 className="insight-title" data-testid="Dashboard">
-            <i className="fa fa-bars mr-2" />{" "}
+            <i className="fa fa-bars me-2" />{" "}
             <Translation>{(t) => t("Dashboard")}</Translation>
           </h3>
 

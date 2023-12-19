@@ -263,8 +263,8 @@ export default React.memo(({ processKey, tenant, isNewDiagram, mode}) => {
     <>
       <div className="d-flex align-items-center justify-content-between">
         <div>
-          <h3 className="d-flex align-items-center font-weight-bold">
-            <i className="fa fa-cogs mr-2" aria-hidden="true" />
+          <h3 className="d-flex align-items-center fw-bold">
+            <i className="fa fa-cogs me-2" aria-hidden="true" />
             <span>{t(`${mode} DMN`)}</span>
           </h3>
         </div>
@@ -285,12 +285,12 @@ export default React.memo(({ processKey, tenant, isNewDiagram, mode}) => {
           </button>
           <Button
             variant="outline-dark"
-            className="ml-3"
+            className="ms-3"
             onClick={handleExport}
           >
             {t("Export")}
           </Button>
-          <Button className="ml-3" onClick={deployProcess}>
+          <Button className="ms-3" onClick={deployProcess}>
             {t("Deploy")}
           </Button>
         </div>
@@ -339,7 +339,7 @@ export default React.memo(({ processKey, tenant, isNewDiagram, mode}) => {
         <div className="properties-panel-parent" id="js-properties-panel"></div>
       </div>
       <div className="d-flex justify-content-end">
-        <Button variant="info" className=" mr-2" onClick={handleHelp}>
+        <Button variant="info" className=" me-2" onClick={handleHelp}>
           {t("Help")}
         </Button>
       </div>

@@ -43,7 +43,7 @@ const ChartForm = React.memo((props) => {
           <div className=" d-flex align-items-center justify-content-between">
           <div>
           <div className="d-flex align-items-center">
-            <span className="text-primary mr-2" >{t("Form Name")} : </span>
+            <span className="text-primary me-2" >{t("Form Name")} : </span>
             <h2 className="text-truncate" style={{ maxWidth: version > 1 ? "500px" : "700px"}}>{formName}</h2>
           </div>
           <p>
@@ -108,7 +108,7 @@ const ChartForm = React.memo((props) => {
               {pieData.map((entry, index) => (
                 <div className=" d-flex align-items-center m-3" key={index}>
                   <span
-                    className="rounded-circle shadow  mr-2"
+                    className="rounded-circle shadow  me-2"
                     style={{
                       backgroundColor: COLORS[index % COLORS.length],
                       width: "25px",

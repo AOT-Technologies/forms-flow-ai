@@ -74,7 +74,7 @@ const TaskSearchBarListView = React.memo(({ toggleAllTaskVariables, allTaskVaria
               width="16"
               height="16"
               fill="currentColor"
-              className="bi bi-columns-gap mr-2"
+              className="bi bi-columns-gap me-2"
               viewBox="0 0 16 16"
             >
               <path d="M6 1v3H1V1h5zM1 0a1 1 0 0 0-1 1v3a1 1 0 0 0 1 1h5a1 1 0 0 0 1-1V1a1 1 0 0 0-1-1H1zm14 12v3h-5v-3h5zm-5-1a1 1 0 0 0-1 1v3a1 1 0 0 0 1 1h5a1 1 0 0 0 1-1v-3a1 1 0 0 0-1-1h-5zM6 8v7H1V8h5zM1 7a1 1 0 0 0-1 1v7a1 1 0 0 0 1 1h5a1 1 0 0 0 1-1V8a1 1 0 0 0-1-1H1zm14-6v7h-5V1h5zm-5-1a1 1 0 0 0-1 1v7a1 1 0 0 0 1 1h5a1 1 0 0 0 1-1V1a1 1 0 0 0-1-1h-5z" />
@@ -96,7 +96,7 @@ const TaskSearchBarListView = React.memo(({ toggleAllTaskVariables, allTaskVaria
               width="16"
               height="16"
               fill="currentColor"
-              className="bi bi-filter mr-2"
+              className="bi bi-filter me-2"
               viewBox="0 0 16 16"
             >
               <path d="M6 10.5a.5.5 0 0 1 .5-.5h3a.5.5 0 0 1 0 1h-3a.5.5 0 0 1-.5-.5zm-2-3a.5.5 0 0 1 .5-.5h7a.5.5 0 0 1 0 1h-7a.5.5 0 0 1-.5-.5zm-2-3a.5.5 0 0 1 .5-.5h11a.5.5 0 0 1 0 1h-11a.5.5 0 0 1-.5-.5z" />

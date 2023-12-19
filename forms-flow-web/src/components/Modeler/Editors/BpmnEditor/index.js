@@ -300,8 +300,8 @@ export default React.memo(
       <>
         <div className="d-flex align-items-center justify-content-between">
           <div>
-            <h3 className="d-flex align-items-center font-weight-bold">
-              <i className="fa fa-cogs mr-2" aria-hidden="true" />
+            <h3 className="d-flex align-items-center fw-bold">
+              <i className="fa fa-cogs me-2" aria-hidden="true" />
               <span>{t(`${mode} Process`)}</span>
             </h3>
           </div>
@@ -325,14 +325,14 @@ export default React.memo(
             </button>
             <Button
               variant="outline-dark"
-              className="ml-3"
+              className="ms-3"
               onClick={handleExport}
               // disabled={processName || !bpmPropertyInput}
             >
               {t("Export")}
             </Button>
             <Button
-              className="ml-3"
+              className="ms-3"
               onClick={deployProcess}
               // disabled={processName || !bpmPropertyInput}
             >
@@ -385,7 +385,7 @@ export default React.memo(
           ></div>
         </div>
         <div className="d-flex justify-content-end">
-          <Button variant="info" className=" mr-2" onClick={handleHelp}>
+          <Button variant="info" className=" me-2" onClick={handleHelp}>
             {t("Help")}
           </Button>
         </div>

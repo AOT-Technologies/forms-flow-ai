@@ -18,7 +18,7 @@ import DraftFilter from "./DraftFilter";
 import DraftOperations from "./DraftOperations";
 
 import { useTranslation } from "react-i18next";
-import LoadingOverlay from "react-loading-overlay";
+import LoadingOverlay from "react-loading-overlay-ts";
 
 const DraftTable = () => {
   const dispatch = useDispatch();

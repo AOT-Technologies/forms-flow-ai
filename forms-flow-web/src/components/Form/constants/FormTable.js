@@ -16,7 +16,7 @@ import {
   setFormDeleteStatus, 
 } from "../../../actions/formActions";
 import SelectFormForDownload from "../FileUpload/SelectFormForDownload";
-import LoadingOverlay from "react-loading-overlay";
+import LoadingOverlay from "react-loading-overlay-ts";
 import {
   CLIENT,
   MULTITENANCY_ENABLED,

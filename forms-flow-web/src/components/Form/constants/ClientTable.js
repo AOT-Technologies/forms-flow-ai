@@ -149,7 +149,7 @@ function ClientTable() {
                     <span>
                       {isAscending ? (
                         <i
-                          className="fa fa-sort-alpha-asc ml-2"
+                          className="fa fa-sort-alpha-asc ms-2"
                           onClick={() => {
                             updateSort("desc");
                           }}
@@ -162,7 +162,7 @@ function ClientTable() {
                         ></i>
                       ) : (
                         <i
-                          className="fa fa-sort-alpha-desc ml-2"
+                          className="fa fa-sort-alpha-desc ms-2"
                           onClick={() => {
                             updateSort("asc");
                           }}
@@ -227,7 +227,7 @@ function ClientTable() {
                           <button
                             data-testid={`form-description-expand-button-${e._id}`}
                             title={t("Form Description")}
-                            className="btn btn-light btn-small mr-2"
+                            className="btn btn-light btn-small me-2"
                             onClick={() => handleToggle(index)}
                             disabled={!e.description}
                           >
@@ -242,7 +242,7 @@ function ClientTable() {
                         )}
                         <span
                           data-testid={`form-title-${e._id}`}
-                          className="ml-2 mt-2"
+                          className="ms-2 mt-2"
                         >
                           {e.title}
                         </span>
@@ -304,7 +304,7 @@ function ClientTable() {
       {formData.length ? (
         <div className="d-flex justify-content-between align-items-center flex-column flex-md-row">
           <div className="d-flex align-items-center">
-            <span className="mr-2"> {t("Rows per page")}</span>
+            <span className="me-2"> {t("Rows per page")}</span>
             <Dropdown data-testid="page-limit-dropdown">
               <Dropdown.Toggle
                 variant="light"
@@ -329,7 +329,7 @@ function ClientTable() {
                 ))}
               </Dropdown.Menu>
             </Dropdown>
-            <span className="ml-2">
+            <span className="ms-2">
               {t("Showing")} {(limit * pageNo) - (limit - 1)} {t("to")}{" "}
               {limit * pageNo > totalForms ? totalForms : limit * pageNo}{" "}
               {t("of")} {totalForms} {t("Results")}

@@ -113,13 +113,13 @@ const List = React.memo((props) => {
         <Link className="back-icon" to={`${redirectUrl}form`}>
           <i className="fa fa-chevron-left fa-lg" />
         </Link>
-        {/*        <span className="ml-3">
+        {/*        <span className="ms-3">
                         <img src="/form.svg" width="30" height="30" alt="form" />
                     </span>*/}
-        <h3 className="ml-3">
+        <h3 className="ms-3">
           <span className="task-head-details d-flex align-items-center">
             {" "}
-            <i className="fa-solid fa-file-lines mr-2" aria-hidden="true" />
+            <i className="fa-solid fa-file-lines me-2" aria-hidden="true" />
             <span className="forms-text">
               <Translation>{(t) => t("Forms")}</Translation> /
             </span>

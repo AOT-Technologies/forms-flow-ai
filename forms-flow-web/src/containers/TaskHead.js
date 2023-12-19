@@ -52,8 +52,8 @@ function TaskHead() {
         <NavDropdown
         className="filter-drop-down"
                 title={
-                  <span className="h4 font-weight-bold">
-                      <i className="fa fa-list-ul mr-2" />
+                  <span className="h4 fw-bold">
+                      <i className="fa fa-list-ul me-2" />
                     {selectedFilter?.name ?  
                     `${selectedFilter?.name} ${count}` : filterListLoading() } 
                   </span>
@@ -73,12 +73,12 @@ function TaskHead() {
         <div  >
           <button
             type="button"
-            className={`btn mr-1 ${viewType ? "btn-light" : "btn-secondary active"}`}
+            className={`btn me-1 ${viewType ? "btn-light" : "btn-secondary active"}`}
             onClick={() => {
               changeTaskView(false);
             }} 
           >
-              <i className="fa-solid fa-list mr-2"></i>
+              <i className="fa-solid fa-list me-2"></i>
           
               {t("List View")}
           </button>
@@ -89,7 +89,7 @@ function TaskHead() {
               changeTaskView(true);
             }}
           >
-           <i className="fa-regular fa-rectangle-list mr-2"></i>
+           <i className="fa-regular fa-rectangle-list me-2"></i>
            {t("Card View")}
           </button>
         </div>

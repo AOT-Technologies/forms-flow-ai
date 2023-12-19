@@ -163,7 +163,7 @@ const ApplicationFilter = ({
               )}
             </select>
           </Col>
-          <Col className="mr-2" >
+          <Col className="me-2" >
             <label htmlFor="modifiedDateRange" >{t("Modified Date")}</label>
             <DateRangePicker
               id="modifiedDateRange"
@@ -200,7 +200,7 @@ const ApplicationFilter = ({
         </Col>
         <Col className="text-right">
           <button
-            className="btn btn-link text-dark mr-1 "
+            className="btn btn-link text-dark me-1 "
             onClick={closeFilterModal}
           >
             {t("Cancel")}

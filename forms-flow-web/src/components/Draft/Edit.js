@@ -246,7 +246,7 @@ const View = React.memo((props) => {
             onConfirm={props.onConfirm}
           ></SubmissionError>
           {isAuthenticated ? (
-            <Link title={t("Back to Drafts")} to={`${redirectUrl}draft`} className="">
+            <Link data-testid="back-to-drafts-link" title={t("Back to Drafts")} to={`${redirectUrl}draft`} className="">
               <i className="fa fa-chevron-left fa-lg me-2" />
             </Link>
           ) : null}
@@ -265,6 +265,7 @@ const View = React.memo((props) => {
         </div>
         {processData?.status === "active" ? (
           <button
+            data-testid="draft-discard"
             className="btn btn-danger me-2"
             style={{ width: "8.5em" }}
             onClick={() => deleteDraft()}

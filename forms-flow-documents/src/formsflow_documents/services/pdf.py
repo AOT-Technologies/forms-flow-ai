@@ -294,7 +294,7 @@ class PDFService:
         except BaseException as err:  # pylint: disable=broad-except
             current_app.logger.error(err)
             current_app.logger.error(
-                f"Failed to delete template:- {file_name} not found"
+                f"Failed to delete template: {file_name} not found"
             )
 
     def generate_pdf(

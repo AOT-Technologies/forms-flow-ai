@@ -72,7 +72,7 @@ const TaskvariableCreate = ({ options, addTaskVariable }) => {
               <Form.Label className="me-2">{t("Show in list")}</Form.Label>
               <Form.Check
                 type="checkbox"
-
+                className="mb-3"
                 onChange={() => {
                   setShowInList(!showInList);
                 }}

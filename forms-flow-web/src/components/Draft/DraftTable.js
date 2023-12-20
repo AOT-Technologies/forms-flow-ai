@@ -185,6 +185,7 @@ const DraftTable = () => {
                   <div className="d-flex justify-content-end filter-sort-bar mt-1">
                     <div className="filter-container-list application-filter-list-view">
                       <button
+                        data-testid="draft-filter-button"
                         type="button"
                         className="btn btn-outline-secondary "
                         onClick={() => {

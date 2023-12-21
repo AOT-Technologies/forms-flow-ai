@@ -96,6 +96,7 @@ const ApplicationTable = () => {
 
   const viewSubmissionDetails = (data) => (
     <button
+      data-testid={`submission-details-button-${data.id}`}
       className="btn btn-link text-primary mt-2"
       onClick={() => submissionDetails(data)}
     >
@@ -137,6 +138,7 @@ const ApplicationTable = () => {
     return (
       <button
         className="btn btn-link text-primary mt-2"
+        data-testid={`submission-view-button-${formData.id}`}
         onClick={() => window.open(url, "_blank")}
       >
         <Translation>
@@ -294,8 +296,8 @@ const ApplicationTable = () => {
                     <td>{e.applicationName}</td>
                     <td>{e.applicationStatus}</td>
                     <td>{HelperServices?.getLocalDateAndTime(e.modified)}</td>
-                    <td data-testid="{`submitted-form-button-${e._id}`}">{viewSubmittedForm(e)}</td>
-                    <td data-testid="{`submitted-form-details-button-${e._id}`}">{viewSubmissionDetails(e)}</td>
+                    <td>{viewSubmittedForm(e)}</td>
+                    <td>{viewSubmissionDetails(e)}</td>
                   </tr>
                 );
               })

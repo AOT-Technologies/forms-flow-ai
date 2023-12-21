@@ -57,7 +57,7 @@ class KeycloakClientService(KeycloakAdmin):
         client_id = self.client.get_client_id()
         url = f"clients/{client_id}/roles/{group_name}/users"
         if page_no and limit:
-            url += f"?first={(page_no-1)*limit}&max={limit}"
+            url += f"?first={(page_no - 1) * limit}&max={limit}"
         users_list = self.client.get_request(url)
         users_count = self.__get_users_count(client_id, group_name) if count else None
         if role:

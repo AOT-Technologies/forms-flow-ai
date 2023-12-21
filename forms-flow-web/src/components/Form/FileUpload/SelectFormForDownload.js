@@ -70,7 +70,6 @@ const SelectFormForDownload = React.memo(({ form, type }) => {
       <div className="select_download">
        
       <Form.Check
-        className="form_check" 
       >
         <Form.Check.Input
           className="select_input"

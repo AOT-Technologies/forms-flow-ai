@@ -77,7 +77,7 @@ const Edit = React.memo(() => {
   const formHistory = useSelector((state) => state.formRestore?.formHistory || []);
   const version = formHistory[0]?.changeLog?.version;
   const prviousData = useSelector((state) => state.process?.formPreviousData);
-  
+
   const applicationCount = useSelector(
     (state) => state.process?.applicationCount
   );
@@ -494,7 +494,7 @@ const Edit = React.memo(() => {
     );
   }
 
- 
+
   return (
     <div className="mt-4">
       {
@@ -504,15 +504,15 @@ const Edit = React.memo(() => {
             onConfirm={saveAsNewVersionOnCofirm} />
         )
       }
- 
+
       <div className="bg-light p-3">
       <h3 className="ms-3 task-head">
- 
+
             <i className="fa-solid fa-file-lines" aria-hidden="true" /> &nbsp;{" "}
             {formData.title}
           <span className="text-success h5 ms-2">({t("Version")} {version})</span>
           </h3>
-          
+
         <div className="d-flex flex-md-row flex-column  align-items-md-center flex-wrap justify-content-end">
           <Form.Group controlId="formPublish">
             <div className="d-flex align-items-center mt-4 me-4">
@@ -552,9 +552,9 @@ const Edit = React.memo(() => {
             {saveAsNewVersionselected ? saveNewVersion : saveText}
           </button>
         </div>
-      
+
       </div>
-  
+
 
 
 
@@ -589,10 +589,10 @@ const Edit = React.memo(() => {
           text={t("Loading...")}
         >
           <div className="d-flex pb-4 flex-wrap">
-            <div className="col-lg-6 col-md-6 col-sm-6 col-12">
+            <div className="col-lg-6 col-md-6 col-sm-6 col-12 px-3">
               <div>
-                <div id="form-group-title" className="form-group">
-                  <label htmlFor="title" className="control-label field-required fw-bold">
+                <div id="form-group-title" className="form-group mb-3">
+                  <label htmlFor="title" className="control-label field-required fw-bold mb-3">
                     {t("Title")}
                   </label>
                   <input
@@ -607,7 +607,7 @@ const Edit = React.memo(() => {
                 </div>
               </div>
               <div >
-                <label htmlFor="Description" className="control-label fw-bold">
+                <label htmlFor="Description" className="control-label fw-bold mb-2">
                   {" "}
                   {t("Description")}
                 </label>
@@ -617,10 +617,10 @@ const Edit = React.memo(() => {
               </div>
             </div>
 
-            <div className="col-lg-6 col-md-6 col-sm-6 col-12">
+            <div className="col-lg-6 col-md-6 col-sm-6 col-12 px-3">
               <div className="d-flex justify-content-between">
                 <div id="form-group-display" className="form-group">
-                  <label htmlFor="form-display" className="control-label fw-bold">
+                  <label htmlFor="form-display" className="control-label fw-bold mb-2">
                     {t("Display as")}
                   </label>
                   <div className="input-group">
@@ -641,7 +641,7 @@ const Edit = React.memo(() => {
                     </div>
                     <div className="form-check form-check-inline">
                       <input
-                        data-testid="form-edit-display-wizard" 
+                        data-testid="form-edit-display-wizard"
                         className="form-check-input"
                         type="radio"
                         name="display"
@@ -657,23 +657,24 @@ const Edit = React.memo(() => {
                   </div>
                 </div>
 
-                <div>
+                <div className="mb-3">
                   <div id="form-group-path" className="form-group">
                     <label htmlFor="path" className="control-label "></label>
                     <div className="input-group">
                       <Form.Group controlId="anonymous">
-                        <div className="d-flex align-items-center me-4">
-                          <label htmlFor="anonymous" className="public-label me-2 fw-bold">{t("Make this form public ?")}</label>
-                          <Form.Check
+                        <div className="d-flex me-4 form-check form-switch ps-0 gap-5">
+                          <label htmlFor="anonymous" className="public-label me-2 fw-bold mb-2">{t("Make this form public ?")}</label>
+                          <input
+                          className="form-check-input"
+                          type="checkbox"
+                          role="switch"
                             data-testid="form-edit-public-form"
                             id="anonymous"
-                            checked={processListData.anonymous || false}
-                            type="switch"
-                            color="primary"
-                            aria-label="Publish as anonymous"
-                            onChange={() => changeAnonymous()}
-                            custom
-                          />
+                          checked={processListData.anonymous || false}
+                          color="primary"
+                          aria-label="Publish as anonymous"
+                          onChange={() => changeAnonymous()}>
+                          </input>
                         </div>
                       </Form.Group>
                     </div>
@@ -689,12 +690,12 @@ const Edit = React.memo(() => {
                     <span className="text-primary fw-bold me-4">{t("Advanced Options")}</span>
                     <hr className="flex-grow-1 ms-2 me-2" />
                   </div>
-                  <Collapse in={open} className="mt-3">
+                  <Collapse in={open} className="mt-3 px-4">
                     <div id="example-collapse-text">
 
-                      <div className="col-lg-12 col-md-12 col-sm-12">
+                      <div className="col-lg-12 col-md-12 col-sm-12 mb-3">
                         <div id="form-group-name" className="form-group">
-                          <label htmlFor="name" className="control-label field-required fw-bold">
+                          <label htmlFor="name" className="control-label field-required fw-bold mb-2">
                             {t("Name")}
                             {addingTenantKeyInformation("name")}
                           </label>
@@ -723,9 +724,9 @@ const Edit = React.memo(() => {
                       </div>
 
                       <div className="d-flex  flex-wrap">
-                        <div className="col-lg-6 col-md-6 col-sm-12 ">
+                        <div className="col-lg-6 col-md-6 col-sm-12 pe-3">
                           <div id="form-group-type" className="form-group">
-                            <label htmlFor="form-type" className="control-label fw-bold">
+                            <label htmlFor="form-type" className="control-label fw-bold mb-2">
                               {t("Type")}
                             </label>
                             <div className="input-group">
@@ -748,9 +749,9 @@ const Edit = React.memo(() => {
                           </div>
                         </div>
 
-                        <div className="col-lg-6 col-md-6 col-sm-12">
+                        <div className="col-lg-6 col-md-6 col-sm-12 ps-3">
                           <div id="form-group-path" className="form-group">
-                            <label htmlFor="path" className="control-label field-required fw-bold">
+                            <label htmlFor="path" className="control-label field-required fw-bold mb-2">
                               {t("Path")}
                               {addingTenantKeyInformation("path")}
                             </label>
@@ -771,7 +772,7 @@ const Edit = React.memo(() => {
                                 className="form-control"
                                 id="path"
                                 placeholder={t("Enter the pathname")}
-                      
+
                                 value={form?.path || ""}
                                 onChange={(event) => handleChange("path", event)}
                               />
@@ -804,7 +805,7 @@ const Edit = React.memo(() => {
             }}
           />
           </div>
-          
+
         </LoadingOverlay>
       </div>
     </div>

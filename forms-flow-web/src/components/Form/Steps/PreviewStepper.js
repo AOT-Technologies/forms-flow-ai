@@ -245,7 +245,7 @@ if (reviewerSelectedOption === "Specific Reviewers") {
                     <hr />
                   </div>
                   <div>
-                  <div className="d-flex flex-column flex-md-row">
+                  <div className="d-flex flex-column flex-md-row px-3">
                     <div className="fw-bold col-md-2 col-12">
                       {t("Form Name")} :{" "}
                     </div>
@@ -255,7 +255,7 @@ if (reviewerSelectedOption === "Specific Reviewers") {
                         : "-"}
                      </span>
                   </div>
-                  <div className="d-flex flex-column flex-md-row my-2">
+                  <div className="d-flex flex-column flex-md-row my-2 px-3">
                   <div className="fw-bold col-md-2 col-12">
                       {t("Workflow Name")} :{" "}
                     </div>
@@ -290,24 +290,24 @@ if (reviewerSelectedOption === "Specific Reviewers") {
                   <div className="px-3 my-2">
                     <label>
                       <Form.Group controlId="publishForm" className="mb-0">
-                      <div className="d-flex align-items-center me-4">
+                      <div className="d-flex align-items-center me-4 form-check form-switch ps-0 gap-5">
                           <label className=" me-2 fw-bold">{t("Publish this form for Client Users.")}</label>
-                          <Form.Check
-                            checked={processData.status === "active"}
-                            type="switch"
-                            color="primary" 
-                            onChange={(e) =>
-                              setProcessData({
-                                status: e.target.checked
-                                  ? "active"
-                                  : "inactive",
-                              })
-                            }
-                            custom
-                            name="Check box to associate form with a workflow"
-                          
-                            id="form-publish"
-                          />
+                          <input 
+                          checked={processData.status === "active"}
+                          className="form-check-input mb-1" 
+                          type="checkbox" 
+                          role="switch" 
+                          id="form-publish"
+                          color="primary"
+                          onChange={(e) =>
+                            setProcessData({
+                              status: e.target.checked
+                                ? "active"
+                                : "inactive",
+                            })
+                          } 
+                          name="Check box to associate form with a workflow"
+                          ></input>
                         </div>
                         
                       </Form.Group>

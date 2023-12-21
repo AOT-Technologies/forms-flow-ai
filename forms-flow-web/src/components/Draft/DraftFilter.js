@@ -160,7 +160,7 @@ const DraftFilter = ({ setDisplayFilter, filterParams, setFilterParams }) => {
             className="btn btn-dark"
             onClick={applyFilters}
             disabled={!isSearchParamEntered}
-            data-testid="draft-filter-apply-filter-button"
+            data-testid="draft-filter-apply-button"
           >
             {t("Show results")}
           </button>

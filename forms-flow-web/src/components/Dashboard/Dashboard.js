@@ -188,12 +188,12 @@ const Dashboard = React.memo(() => {
         name: "Metrics",
         count: totalItems,
         onClick: () => dispatch(push(`${redirectUrl}metrics`)),
-        icon: "line-chart mr-2",
+        icon: "line-chart me-2",
       },
       {
         name: "Insights",
         onClick: () => dispatch(push(`${redirectUrl}insights`)),
-        icon: "lightbulb-o mr-2",
+        icon: "lightbulb-o me-2",
       },
     ];
   };
@@ -217,7 +217,7 @@ const Dashboard = React.memo(() => {
           role="complementary"
         >
           <Head items={headerList()} page="Metrics" />
-          <div className="dashboard-container d-flex flex-wrap justify-content-between">
+          <div className="d-flex flex-wrap justify-content-between col-md-12">
             <div className="input-group col-12 col-md-4 px-0">
               <FormControl
                 type="search"
@@ -257,7 +257,7 @@ const Dashboard = React.memo(() => {
             </div>
 
             <div className="d-flex justify-content-end align-items-center col-12 col-md-4 px-0">
-              <div className="input-group mr-2">
+              <div className="input-group me-2">
                 <FormControl
                   as="select"
                   onChange={(e) => onChangeInput(e.target.value)}
@@ -270,7 +270,7 @@ const Dashboard = React.memo(() => {
                   <option value="modified">{t("Modified Date")}</option>
                 </FormControl>
               </div>
-              <DateRangePicker className = "bg-white mr-2"
+              <DateRangePicker className = "bg-white me-2"
                 onChange={onSetDateRange}
                 value={dateRange}
                 dayPlaceholder="dd"
@@ -284,7 +284,7 @@ const Dashboard = React.memo(() => {
                 yearAriaLabel="Select the year"
                 nativeInputAriaLabel="Date"
               />
-              <div className="ml-3">
+              <div className="ms-3">
                 {isAscending ? (
                   <i
                     className="fa fa-sort-alpha-asc"
@@ -342,7 +342,7 @@ const Dashboard = React.memo(() => {
           {submissionsList.length && !metricsDateRangeLoader ? (
             <div className="d-flex justify-content-between align-items-center mt-3">
                  <div className="d-flex align-items-center">
-          <span className="mr-2"> {t("Items per page")}</span>
+          <span className="me-2"> {t("Items per page")}</span>
           <Dropdown>
                 <Dropdown.Toggle variant="light" id="dropdown-basic">
                   {selectedLimitValue}
@@ -363,7 +363,7 @@ const Dashboard = React.memo(() => {
                 ))}
                 </Dropdown.Menu>
               </Dropdown>
-              <span className="ml-2">
+              <span className="ms-2">
                   {t("Showing")} {numberofSubmissionListFrom} {t("to")}{" "}
                   {numberofSubmissionListTo > totalItems
                     ? totalItems

@@ -51,7 +51,7 @@ const ViewAndEditTaskvariable = ({
         <td className="p-3">
           <span id="showInListLabel" className="sr-only">{t("Show in list")}</span>
           <Form.Check
-            className="" 
+            className="mb-3" 
             disabled={enableEditTaskVariable}
             checked={showInList}
             aria-labelledby="showInListLabel"
@@ -81,7 +81,7 @@ const ViewAndEditTaskvariable = ({
                   deleteTaskVariable(item);
                 }}
                 aria-label="Delete"
-                className="mr-3 btn btn-danger btn fa fa-times"
+                className="me-3 btn btn-danger btn fa fa-times"
               ></i>
 
               <i

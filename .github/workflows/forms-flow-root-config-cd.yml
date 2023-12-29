@@ -132,5 +132,7 @@ jobs:
         run: aws eks update-kubeconfig --region ca-central-1 --name formsflow-eks-qa
       - name: Deploy to eks
         run: |
-          kubectl -n app2 patch deployment forms-flow-web -p '{"spec":{"template":{"spec":{"containers":[{"name":"forms-flow-web","image":"docker.io/formsflow/forms-flow-web:${{ env.VERSION }}"}]}}}}'
-          kubectl -n app2 rollout restart deployment forms-flow-web
+          kubectl -n dev patch deployment forms-flow-web -p '{"spec":{"template":{"spec":{"containers":[{"name":"forms-flow-web","image":"docker.io/formsflow/forms-flow-web:${{ env.VERSION }}"}]}}}}'
+          kubectl -n dev rollout restart deployment forms-flow-web
+          kubectl -n devmt patch deployment forms-flow-web -p '{"spec":{"template":{"spec":{"containers":[{"name":"forms-flow-web","image":"docker.io/formsflow/forms-flow-web:${{ env.VERSION }}"}]}}}}'
+          kubectl -n devmt rollout restart deployment forms-flow-web

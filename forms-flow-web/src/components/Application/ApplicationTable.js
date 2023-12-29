@@ -22,7 +22,7 @@ import {
   setCountPerpage,
 } from "../../actions/applicationActions";
 import { push } from "connected-react-router";
-import LoadingOverlay from "react-loading-overlay";
+import LoadingOverlay from "react-loading-overlay-ts";
 
 const ApplicationTable = () => {
   const dispatch = useDispatch();
@@ -96,6 +96,7 @@ const ApplicationTable = () => {
 
   const viewSubmissionDetails = (data) => (
     <button
+      data-testid={`submission-details-button-${data.id}`}
       className="btn btn-link text-primary mt-2"
       onClick={() => submissionDetails(data)}
     >
@@ -137,6 +138,7 @@ const ApplicationTable = () => {
     return (
       <button
         className="btn btn-link text-primary mt-2"
+        data-testid={`submission-view-button-${formData.id}`}
         onClick={() => window.open(url, "_blank")}
       >
         <Translation>
@@ -220,13 +222,13 @@ const ApplicationTable = () => {
                 {isAscending && sortBy === "applicationStatus" ? (
                   <i
                     onClick={() => updateSort("desc", "applicationStatus")}
-                    className="fa-sharp fa-solid fa-arrow-down-a-z  ml-2 cursor-pointer"
+                    className="fa-sharp fa-solid fa-arrow-down-a-z  ms-2 cursor-pointer"
                     title={t("Descending")}
                   />
                 ) : (
                   <i
                     onClick={() => updateSort("asc", "applicationStatus")}
-                    className="fa-sharp fa-solid fa-arrow-down-z-a  ml-2 cursor-pointer"
+                    className="fa-sharp fa-solid fa-arrow-down-z-a  ms-2 cursor-pointer"
                     title={t("Ascending")}
                   />
                 )}
@@ -236,13 +238,13 @@ const ApplicationTable = () => {
                 {isAscending && sortBy === "modified" ? (
                   <i
                     onClick={() => updateSort("desc", "modified")}
-                    className="fa-sharp fa-solid fa-arrow-down-1-9  ml-2 cursor-pointer"
+                    className="fa-sharp fa-solid fa-arrow-down-1-9  ms-2 cursor-pointer"
                     title={t("Descending")}
                   />
                 ) : (
                   <i
                     onClick={() => updateSort("asc", "modified")}
-                    className="fa-sharp fa-solid fa-arrow-down-9-1  ml-2 cursor-pointer"
+                    className="fa-sharp fa-solid fa-arrow-down-9-1  ms-2 cursor-pointer"
                     title={t("Ascending")}
                   />
                 )}
@@ -256,13 +258,14 @@ const ApplicationTable = () => {
                       onClick={() => {
                         setDisplayFilter(true);
                       }}
+                      data-testid="submission-filter-btn"
                     >
                       <svg
                         xmlns="http://www.w3.org/2000/svg"
                         width="16"
                         height="16"
                         fill="currentColor"
-                        className="bi bi-filter mr-2"
+                        className="bi bi-filter me-2"
                         viewBox="0 0 16 16"
                       >
                         <path d="M6 10.5a.5.5 0 0 1 .5-.5h3a.5.5 0 0 1 0 1h-3a.5.5 0 0 1-.5-.5zm-2-3a.5.5 0 0 1 .5-.5h7a.5.5 0 0 1 0 1h-7a.5.5 0 0 1-.5-.5zm-2-3a.5.5 0 0 1 .5-.5h11a.5.5 0 0 1 0 1h-11a.5.5 0 0 1-.5-.5z" />
@@ -309,9 +312,9 @@ const ApplicationTable = () => {
         {applications.length ? (
           <div className="d-flex justify-content-between align-items-center  flex-column flex-md-row">
             <div className="d-flex align-items-center">
-              <span className="mr-2"> {t("Rows per page")}</span>
+              <span className="me-2"> {t("Rows per page")}</span>
               <Dropdown size="sm">
-                <Dropdown.Toggle variant="light" id="dropdown-basic">
+                <Dropdown.Toggle variant="light" id="dropdown-basic" data-testid="page-limit-dropdown-toggle">
                   {pageLimit}
                 </Dropdown.Toggle>
                 <Dropdown.Menu>
@@ -322,13 +325,14 @@ const ApplicationTable = () => {
                       onClick={() => {
                         onSizePerPageChange(option.value);
                       }}
+                      data-testid={`page-limit-dropdown-item-${option.value}`}
                     >
                       {option.text}
                     </Dropdown.Item>
                   ))}
                 </Dropdown.Menu>
               </Dropdown>
-              <span className="ml-2">
+              <span className="ms-2">
                 {t("Showing")} {(limit * pageNo) - (limit - 1)} {t("to")}{" "}
                 {limit * pageNo > totalForms ? totalForms : limit * pageNo}{" "}
                 {t("of")} {totalForms} {t("results")}

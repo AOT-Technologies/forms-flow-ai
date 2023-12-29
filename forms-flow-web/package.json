@@ -1,7 +1,7 @@
 {
   "name": "formsflow-ai-react",
   "description": "React web app for formsflow.ai project",
-  "version": "5.3.0",
+  "version": "5.3.1-alpha",
   "main": "single-spa-index.js",
   "scripts": {
     "analyze": "source-map-explorer 'build/static/js/*.js'",
@@ -83,7 +83,7 @@
     "react-helmet": "^6.1.0",
     "react-i18next": "^11.15.3",
     "react-js-pagination": "^3.0.3",
-    "react-loading-overlay": "^1.0.1",
+    "react-loading-overlay-ts": "^1.0.5",
     "react-quill": "^2.0.0",
     "react-redux": "^7.2.4",
     "react-router-dom": "^5.1.2",

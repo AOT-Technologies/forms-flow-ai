@@ -120,6 +120,7 @@ const ApplicationFilter = ({
               placeholder=""
               value={searchParams.id}
               onChange={(e) => handleChange("id", e.target.value)}
+              data-testid="submission-filter-id-input"
             />
           </Col>
           <Col>
@@ -130,6 +131,7 @@ const ApplicationFilter = ({
               placeholder=""
               value={searchParams.applicationName}
               onChange={(e) => handleChange("applicationName", e.target.value)}
+              data-testid="submission-filter-applicationname-input"
             />
           </Col>
         </Row>
@@ -144,20 +146,24 @@ const ApplicationFilter = ({
               value={searchParams.applicationStatus}
               onChange={(e) => handleChange("applicationStatus", e.target.value)}
               className="form-control p-1"
+              data-testid="submission-filter-applicationstatus-dropdown"
             >
               <option value="" hidden>
                 {t("Select a status")}
               </option>
               {getApplicationStatusOptions(applicationStatusOptions).map(
                 (option) => (
-                  <option key={option.value} value={option.value}>
+                  <option
+                    key={option.value}
+                    value={option.value}
+                    data-testid={`submission-filter-applicationstatus-${option.value}`}>
                     {option.label}
                   </option>
                 )
               )}
             </select>
           </Col>
-          <Col className="mr-2" >
+          <Col className="me-2" >
             <label htmlFor="modifiedDateRange" >{t("Modified Date")}</label>
             <DateRangePicker
               id="modifiedDateRange"
@@ -176,6 +182,7 @@ const ApplicationFilter = ({
               yearAriaLabel="Select the year"
               clearAriaLabel="Click to clear"
               nativeInputAriaLabel="Date"
+              data-testid="submission-filter-modified-daterange"
             />
           </Col>
         </Row>
@@ -186,13 +193,14 @@ const ApplicationFilter = ({
           <button
             className="btn btn-link text-danger"
             onClick={clearAllFilters}
+            data-testid="submission-filter-clear-input-button"
           >
             {t("Clear All Filters")}
           </button>
         </Col>
         <Col className="text-right">
           <button
-            className="btn btn-link text-dark mr-1 "
+            className="btn btn-link text-dark me-1 "
             onClick={closeFilterModal}
           >
             {t("Cancel")}

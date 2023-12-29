@@ -1,8 +1,6 @@
  
 import React, { useEffect } from "react";
-import { useDispatch, useSelector } from "react-redux";
- 
-import "react-bootstrap-table-next/dist/react-bootstrap-table2.min.css";
+import { useDispatch, useSelector } from "react-redux"; 
 import Loading from "../../containers/Loading";
  import { useTranslation } from "react-i18next"; 
 import { MULTITENANCY_ENABLED } from "../../constants/constants";

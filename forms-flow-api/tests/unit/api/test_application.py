@@ -1,10 +1,14 @@
 """Test suite for application API endpoint."""
+import os
+
 import pytest
+import requests
 
 from tests.utilities.base_test import (
     get_application_create_payload,
     get_draft_create_payload,
     get_form_request_payload,
+    get_formio_form_request_payload,
     get_token,
 )
 
@@ -344,3 +348,67 @@ def test_application_resubmit(app, client, session, jwt):
         f"/application/{application_id}/resubmit", headers=headers, json=payload
     )
     assert rv.status_code == 200
+
+
+def test_capture_process_variables_application_create(app, client, session, jwt):
+    """Tests the capturing of process variables in the application creation method."""
+    token = get_token(jwt, role="formsflow-designer", username="designer")
+    headers = {
+        "Authorization": f"Bearer {token}",
+        "content-type": "application/json",
+    }
+    # Design form
+    response = client.post(
+        "/form/form-design", headers=headers, json=get_formio_form_request_payload()
+    )
+    assert response.status_code == 201
+    form_id = response.json.get("_id")
+    # Added task variable to the form
+    payload = {
+        "formId": form_id,
+        "formName": "Sample form",
+        "processKey": "two-step-approval",
+        "processName": "Two Step Approval",
+        "status": "active",
+        "formType": "form",
+        "parentFormId": "1234",
+        "taskVariable": [
+            {
+                "key": "textField",
+                "defaultLabel": "Text Field",
+                "label": "Text Field",
+                "showInList": False,
+            }
+        ],
+    }
+    rv = client.post("/form", headers=headers, json=payload)
+    assert rv.status_code == 201
+    form_id = rv.json.get("formId")
+
+    # Submit new application as client
+    payload = get_application_create_payload(form_id)
+    payload["data"] = {
+        "textField": "Test",
+        "applicationId": "",
+        "applicationStatus": "",
+    }
+    token = get_token(jwt)
+    headers = {
+        "Authorization": f"Bearer {token}",
+        "content-type": "application/json",
+    }
+    rv = client.post(
+        "/application/create",
+        headers=headers,
+        json=payload,
+    )
+
+    assert rv.status_code == 201
+    processInstanceId = rv.json.get("processInstanceId")
+    assert processInstanceId is not None
+    # Check variable added to process
+    bpm_api_base = os.getenv("BPM_API_URL")
+    url = f"{bpm_api_base}/engine-rest-ext/v1/process-instance/{processInstanceId}/variables"
+    response = requests.get(url, headers=headers)
+    assert response.status_code == 200
+    assert response.json().get("textField") == {"type": "String", "value": "Test"}

@@ -179,9 +179,9 @@ const TaskHeaderListView = React.memo(({task,taskId,groupView = true}) => {
   const FollowUpDateInput = React.forwardRef(({ value, onClick }, ref) => {
     return (
       <div onClick={onClick} ref={ref}>
-        <i className="fa fa-calendar mr-1" />{" "}
+        <i className="fa fa-calendar me-1" />{" "}
         {followUpDate ? (
-          <span className="mr-4">{moment(followUpDate).fromNow()}</span>
+          <span className="me-4">{moment(followUpDate).fromNow()}</span>
         ) : (
           t("Add Date")
         )}
@@ -193,9 +193,9 @@ const TaskHeaderListView = React.memo(({task,taskId,groupView = true}) => {
   const DueDateInput = React.forwardRef(({ value, onClick }, ref) => {
     return (
       <div onClick={onClick} ref={ref}>
-        <i className="fa fa-calendar mr-1" />{" "}
+        <i className="fa fa-calendar me-1" />{" "}
         {dueDate ? (
-          <span className="mr-4">{moment(dueDate).fromNow()}</span>
+          <span className="me-4">{moment(dueDate).fromNow()}</span>
         ) : (
           t("Add Date")
         )}
@@ -219,7 +219,7 @@ const TaskHeaderListView = React.memo(({task,taskId,groupView = true}) => {
       {vissibleAttributes?.taskVisibleAttributes?.followUp &&  <Col xs={3} className="px-0">
           <div className="tab-width">
             <div>
-              <h6 className="font-weight-light">{t("Follow up Date")}</h6>
+              <h6 className="fw-light">{t("Follow up Date")}</h6>
             </div>
             <div
               className="actionable"
@@ -255,7 +255,7 @@ const TaskHeaderListView = React.memo(({task,taskId,groupView = true}) => {
           vissibleAttributes?.taskVisibleAttributes?.dueDate &&  <Col xs={3}>
           <div className="tab-width">
             <div>
-                <h6 className="font-weight-light">{t("Due Date")}</h6>
+                <h6 className="fw-light">{t("Due Date")}</h6>
             </div>
             <div
               className="actionable"
@@ -292,7 +292,7 @@ const TaskHeaderListView = React.memo(({task,taskId,groupView = true}) => {
           <Col xs={ groupView ? 3 : 6 } >
           <div className="tab-width">
             <div>
-                <h6 className="font-weight-light">{t("Assignee")}</h6>
+                <h6 className="fw-light">{t("Assignee")}</h6>
             </div>
             <div className="actionable">
               {isEditAssignee ? (
@@ -312,7 +312,7 @@ const TaskHeaderListView = React.memo(({task,taskId,groupView = true}) => {
                 )
               ) : (
                 <>
-                  <i className="fa fa-user mr-1" />
+                  <i className="fa fa-user me-1" />
                   {task?.assignee ? (
                     <span>
                       <span
@@ -323,7 +323,7 @@ const TaskHeaderListView = React.memo(({task,taskId,groupView = true}) => {
                         {task.assignee}
                       </span>
                       <i
-                        className="fa fa-times ml-1"
+                        className="fa fa-times ms-1"
                         onClick={onUnClaimTask}
                         data-title={t("Reset Assignee")}
                       />
@@ -342,14 +342,14 @@ const TaskHeaderListView = React.memo(({task,taskId,groupView = true}) => {
           {groupView &&
             <div className="tab-width">
               <div>
-                <h6 className="font-weight-light">{t("Groups")}</h6>
+                <h6 className="fw-light">{t("Groups")}</h6>
               </div>
               <div
                 className="actionable"
                 onClick={() => setModal(true)}
                 data-title={t("Groups")}
               >
-                <i className="fa fa-group mr-1" />
+                <i className="fa fa-group me-1" />
                 {taskGroups.length === 0 ? (
                   <span>{t("Add group")}</span>
                 ) : (

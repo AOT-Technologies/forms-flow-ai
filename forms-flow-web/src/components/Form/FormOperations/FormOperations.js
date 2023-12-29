@@ -61,10 +61,10 @@ const FormOperations = React.memo(({ formData }) => {
   
   const submitNew = (
     <button
-      className="btn  btn-primary mr-2"
+      className="btn  btn-primary me-2"
       onClick={() => submitNewForm(formData._id)}
     >
-      <i className="fa fa-pencil mr-1" />
+      <i className="fa fa-pencil me-1" />
       <Translation>{(t) => t("Submit New")}</Translation>
     </button>
   );

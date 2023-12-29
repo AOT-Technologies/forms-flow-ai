@@ -52,7 +52,7 @@ const ServiceFlowFilterListDropDown = React.memo(({selectFilter,openFilterDrawer
                   {filter?.name} {`(${filter.count || 0})`}
                 </span>
               {showEditIcon && <i
-                className="fa fa-pencil ml-5"
+                className="fa fa-pencil ms-5"
                 onClick={() => {
                   handleFilterEdit(filter?.id);
                   openFilterDrawer(true);
@@ -67,8 +67,8 @@ const ServiceFlowFilterListDropDown = React.memo(({selectFilter,openFilterDrawer
       );
     } else {
       return (
-        <NavDropdown.Item className="not-selected mt-2 ml-1">
-          <i className="fa fa-info-circle mr-2 mt-1" />
+        <NavDropdown.Item className="not-selected mt-2 ms-1">
+          <i className="fa fa-info-circle me-2 mt-1" />
           {t("No Filters Found")}
         </NavDropdown.Item>
       );

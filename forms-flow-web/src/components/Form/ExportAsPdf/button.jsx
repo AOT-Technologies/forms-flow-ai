@@ -14,11 +14,11 @@ export const ExportButton = React.memo(({ buttonState,
           <div className="d-flex justify-content-center">
             <InternalButton onClick={onClick} variant="primary" size="sm">
               {!isLoading && (
-               <i className="fa fa-print mr-2" aria-hidden="true" />
+               <i className="fa fa-print me-2" aria-hidden="true" />
               )}
               {isLoading && (
                 <Spinner
-                  className="mr-2"
+                  className="me-2"
                   as="span"
                   animation="border"
                   size="sm"

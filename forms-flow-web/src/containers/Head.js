@@ -18,7 +18,7 @@ const Head = React.memo((props) => {
                 style={{ marginTop: "5px" }}
                 aria-hidden="true"
               />
-              <span className="application-text ml-2">
+              <span className="application-text ms-2">
                 <Translation>{(t) => t(item?.name)}</Translation>
               </span>
               {item?.count ? (

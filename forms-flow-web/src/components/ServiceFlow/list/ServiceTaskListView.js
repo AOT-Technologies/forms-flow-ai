@@ -134,14 +134,14 @@ const ServiceTaskListView = React.memo(() => {
             >
               <Row className="task-title-container p-2 border-bottom">
                 <Col xs={8}>
-                    <h4 className="font-weight-bold">{task.name} - {task?._embedded?.variable?.filter((eachValue) => eachValue.name === "formName")[0]?.value}</h4>
+                    <h4 className="fw-bold">{task.name} - {task?._embedded?.variable?.filter((eachValue) => eachValue.name === "formName")[0]?.value}</h4>
                 </Col>
-                <Col xs={2} className="ml-auto">
+                <Col xs={2} className="ms-auto">
                     <div>
                       <h6>
                         <u
                           onClick={() => handleViewDetails(task.id)}
-                        className="font-weight-normal" style={{ color: "#1a5a96", textDecoration: 'none' }}>{t("View Details")}</u>
+                        className="fw-normal" style={{ color: "#1a5a96", textDecoration: 'none' }}>{t("View Details")}</u>
                       </h6>
                     </div>
                   </Col>
@@ -150,7 +150,7 @@ const ServiceTaskListView = React.memo(() => {
               <Row className="mt-4 p-2 justify-content-between" style={{ marginBottom: "-2.5rem" }}>
                {vissibleAttributes?.taskVisibleAttributes?.applicationId && <Col  xs={2}>
                   <div className="col-12">
-                    <h6 className="font-weight-light">{t("Application Id")}</h6>
+                    <h6 className="fw-light">{t("Application Id")}</h6>
                     <h6>{task?._embedded?.variable?.filter((eachValue) => eachValue.name === "applicationId")[0]?.value}</h6>
                   </div>
                 </Col>}
@@ -171,7 +171,7 @@ const ServiceTaskListView = React.memo(() => {
                 </Col>
               {vissibleAttributes?.taskVisibleAttributes?.priority &&  <Col xs={1} >
                   <div className="col-12">
-                    <h6 className="font-weight-light">{t("Priority")}</h6>
+                    <h6 className="fw-light">{t("Priority")}</h6>
                   </div>
                   <div className="d-flex col-12">
                     <svg
@@ -185,7 +185,7 @@ const ServiceTaskListView = React.memo(() => {
                       <path d="M14 10.5a.5.5 0 0 0-.5-.5h-3a.5.5 0 0 0 0 1h3a.5.5 0 0 0 .5-.5zm0-3a.5.5 0 0 0-.5-.5h-7a.5.5 0 0 0 0 1h7a.5.5 0 0 0 .5-.5zm0-3a.5.5 0 0 0-.5-.5h-11a.5.5 0 0 0 0 1h11a.5.5 0 0 0 .5-.5z" />
                     </svg>
                     <h6>
-                      <u className="font-weight-bold text-decoration-none">{task.priority}</u>
+                      <u className="fw-bold text-decoration-none">{task.priority}</u>
                     </h6>
                   </div>
                 </Col>}
@@ -224,11 +224,11 @@ const ServiceTaskListView = React.memo(() => {
                       return (
                         <Col xs={2} key={index} >
                           <div className="col-12" style={{ wordBreak: "break-all" }}>
-                            <h6 className="font-weight-light">{data?.label}</h6>
+                            <h6 className="fw-light">{data?.label}</h6>
                           </div>
                           <div className="d-flex col-12">
                             <h6>
-                              <u className="font-weight-bold text-decoration-none ">{eachVariable.value}</u>
+                              <u className="fw-bold text-decoration-none ">{eachVariable.value}</u>
                             </h6>
                           </div>
                         </Col>
@@ -242,11 +242,11 @@ const ServiceTaskListView = React.memo(() => {
           ))}
            
             <div className="d-flex justify-content-between">
-              <div className="ml-2">
+              <div className="ms-2">
                   <span>
                   {t("Rows per page")} :
                   <DropdownButton
-                    className="ml-2"
+                    className="ms-2"
                     drop="down"
                     variant="secondary"
                       title={selectedLimitValue}
@@ -265,7 +265,7 @@ const ServiceTaskListView = React.memo(() => {
                     ))}
                   </DropdownButton>
                 </span>
-                <span className="ml-2 mb-3">
+                <span className="ms-2 mb-3">
                   {t("Showing")} {numberofSubmissionListFrom} {t("to")}{" "}
                   {numberofSubmissionListTo > tasksCount
                     ? tasksCount
@@ -294,8 +294,8 @@ const ServiceTaskListView = React.memo(() => {
       );
     } else {
       return (
-        <Row className="not-selected mt-2 ml-1">
-          <i className="fa fa-info-circle mr-2 mt-1" />
+        <Row className="not-selected mt-2 ms-1">
+          <i className="fa fa-info-circle me-2 mt-1" />
           {t("No task matching filters found.")}
         </Row>
       );

@@ -131,8 +131,10 @@ jobs:
         run: aws eks update-kubeconfig --region ca-central-1 --name formsflow-eks-qa
       - name: Deploy to eks
         run: |
-          kubectl -n app2 patch deployment forms-flow-bpm -p '{"spec":{"template":{"spec":{"containers":[{"name":"forms-flow-bpm","image":"docker.io/formsflow/forms-flow-bpm:${{ env.VERSION }}"}]}}}}'
-          kubectl -n app2 rollout restart deployment forms-flow-bpm
+          kubectl -n dev patch deployment forms-flow-bpm -p '{"spec":{"template":{"spec":{"containers":[{"name":"forms-flow-bpm","image":"docker.io/formsflow/forms-flow-bpm:${{ env.VERSION }}"}]}}}}'
+          kubectl -n dev rollout restart deployment forms-flow-bpm
+          kubectl -n devmt patch deployment forms-flow-bpm -p '{"spec":{"template":{"spec":{"containers":[{"name":"forms-flow-bpm","image":"docker.io/formsflow/forms-flow-bpm:${{ env.VERSION }}"}]}}}}'
+          kubectl -n devmt rollout restart deployment forms-flow-bpm
 
   zap_scan:
     runs-on: ubuntu-latest

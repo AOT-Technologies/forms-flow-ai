@@ -21,7 +21,7 @@ certifi==2023.7.22
 cffi==1.16.0
 charset-normalizer==3.3.0
 click==8.1.7
-cryptography==41.0.4
+cryptography==41.0.7
 ecdsa==0.18.0
 flask-jwt-oidc==0.3.0
 flask-marshmallow==0.15.0
@@ -64,4 +64,5 @@ trio==0.22.2
 typing_extensions==4.8.0
 urllib3==2.0.7
 wsproto==1.2.0
-zstandard==0.21.0
+zstandard==0.22.0
+setuptools==69.0.2

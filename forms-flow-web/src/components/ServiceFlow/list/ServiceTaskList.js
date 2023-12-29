@@ -87,11 +87,11 @@ const ServiceFlowTaskList = React.memo(() => {
             >
              
                 <div className="col-12 px-0">
-                  <h5 className="font-weight-bold">{task.name}</h5>
+                  <h5 className="fw-bold">{task.name}</h5>
                 </div>
              
-              <div className="font-size-16 d-flex justify-content-between">
-                <div className="pr-0" style={{ maxWidth: "65%" }}>
+              <div className="fs-16 d-flex justify-content-between">
+                <div className="pe-0" style={{ maxWidth: "65%" }}>
                   <span data-toggle="tooltip" title="Form Name">
                     {
                       getProcessDataObjectFromList(
@@ -104,7 +104,7 @@ const ServiceFlowTaskList = React.memo(() => {
                 <div
                   data-toggle="tooltip"
                   title={t("Task assignee")}
-                  className="pr-0 text-right d-inline-block text-truncate"
+                  className="pe-0 text-right d-inline-block text-truncate"
                   style={{maxWidth:"150"}}
                 >
                   <span> {task.assignee}</span>
@@ -147,7 +147,7 @@ const ServiceFlowTaskList = React.memo(() => {
                     {t("Created")} {moment(task.created).fromNow()}
                   </span>
                 </div>
-                <div className="pr-0 text-right tooltips" title={t("Priority")}>
+                <div className="pe-0 text-right tooltips" title={t("Priority")}>
                   {task.priority}
                 </div>
               </div>
@@ -182,7 +182,7 @@ const ServiceFlowTaskList = React.memo(() => {
     } else { 
       return (
         <div className="d-flex align-items-center justify-content-center py-4 px-2">
-          <i className="fa fa-info-circle mr-2" />
+          <i className="fa fa-info-circle me-2" />
           {t("No task matching filters found.")}
         </div>
       );

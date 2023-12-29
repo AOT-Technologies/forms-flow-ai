@@ -23,7 +23,7 @@ import {
 import History from "../../Application/ApplicationHistory";
 import FormEdit from "../../Form/Item/Submission/Item/Edit";
 import FormView from "../../Form/Item/Submission/Item/View";
-import LoadingOverlay from "react-loading-overlay";
+import LoadingOverlay from "react-loading-overlay-ts";
 import { getForm, getSubmission, Formio } from "react-formio";
 import { CUSTOM_EVENT_TYPE } from "../constants/customEventTypes";
 import { getTaskSubmitFormReq } from "../../../apiManager/services/bpmServices";
@@ -242,8 +242,8 @@ const ServiceTaskListViewDetails = React.memo(() => {
 
     if (!bpmTaskId) {
         return (
-            <Row className="not-selected mt-2 ml-1 " style={{ color: "#757575" }}>
-                <i className="fa fa-info-circle mr-2 mt-1" />
+            <Row className="not-selected mt-2 ms-1 " style={{ color: "#757575" }}>
+                <i className="fa fa-info-circle me-2 mt-1" />
                 {t("Select a task in the list.")}
             </Row>
         );
@@ -263,12 +263,12 @@ const ServiceTaskListViewDetails = React.memo(() => {
                     </svg> {t("Back to task")}
                 </Link>
                 <LoadingOverlay active={isTaskUpdating} spinner text={t("Loading...")}>
-                    <Card className="mr-2 bg-light">
+                    <Card className="me-2 bg-light">
                         <Card.Body>
                             <div className="d-flex justify-content-between">
                                 <Col xs={4}>
-                                    <Row className="ml-0 task-header">{task?.name}</Row>
-                                    <Row className="ml-0 task-name">
+                                    <Row className="ms-0 task-header">{task?.name}</Row>
+                                    <Row className="ms-0 task-name">
                                         <span className="application-id" data-title={t("Process Name")}>
                                             {" "}
                                             {
@@ -278,7 +278,7 @@ const ServiceTaskListViewDetails = React.memo(() => {
                                             }
                                         </span>
                                     </Row>
-                                    <Row className="ml-0">
+                                    <Row className="ms-0">
                                         <span data-title={t("Application ID")} className="application-id">
                                             {t("Application ID")}# {task?.applicationId}
                                         </span>

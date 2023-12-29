@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import { Dropdown, FormControl, InputGroup } from "react-bootstrap";
 import { useSelector, useDispatch } from "react-redux";
 import Pagination from "react-js-pagination";
-import LoadingOverlay from "react-loading-overlay";
+import LoadingOverlay from "react-loading-overlay-ts";
 import {
   fetchAllBpmProcesses,
   fetchAllBpmProcessesCount,
@@ -161,7 +161,7 @@ function BpmnTable() {
                     <td>{t("BPMN")}</td>
                     <td className="d-flex justify-content-end w-100">
                       <button className="btn btn-link text-primary" onClick={()=>{gotoEdit(processItem);}}> 
-                       <i className="fas fa-edit mr-2"/>
+                       <i className="fas fa-edit me-2"/>
                         {t("Edit Workflow")}</button>
                     </td>
                   </tr>
@@ -174,7 +174,7 @@ function BpmnTable() {
        {
         process.length ?  <div className="d-flex justify-content-between align-items-center  flex-column flex-md-row">
         <div className="d-flex align-items-center">
-          <span className="mr-2"> {t("Rows per page")}</span>
+          <span className="me-2"> {t("Rows per page")}</span>
           <Dropdown size="sm">
             <Dropdown.Toggle variant="light" id="dropdown-basic">
               {limit}
@@ -194,7 +194,7 @@ function BpmnTable() {
               ))}
             </Dropdown.Menu>
           </Dropdown>
-          <span className="ml-2">
+          <span className="ms-2">
             {t("Showing")} {(limit * activePage) - (limit - 1)} {t("to")}&nbsp;
             {Math.min(limit * activePage, totalProcess)} {t("of")}&nbsp;
             {totalProcess} {t("results")}

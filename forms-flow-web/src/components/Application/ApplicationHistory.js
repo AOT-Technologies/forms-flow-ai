@@ -5,7 +5,7 @@ import BootstrapTable from "react-bootstrap-table-next";
 import filterFactory from "react-bootstrap-table2-filter";
 import paginationFactory from "react-bootstrap-table2-paginator";
 import ToolkitProvider from "react-bootstrap-table2-toolkit";
-import LoadingOverlay from "react-loading-overlay";
+import LoadingOverlay from "react-loading-overlay-ts";
 import "react-bootstrap-table-next/dist/react-bootstrap-table2.min.css";
 import { Translation, useTranslation } from "react-i18next";
 import { fetchApplicationAuditHistoryList } from "../../apiManager/services/applicationAuditServices";
@@ -72,7 +72,7 @@ const HistoryList = React.memo((props) => {
         <div className="">
           <div className="main-header">
             <h3 className="task-head">
-              <i className="fa fa-list mr-2" aria-hidden="true" />
+              <i className="fa fa-list me-2" aria-hidden="true" />
               &nbsp;<Translation>{(t) => t("Submission History")}</Translation>
             </h3>
           </div>

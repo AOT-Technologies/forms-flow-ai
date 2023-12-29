@@ -153,7 +153,6 @@ function TaskAttributeComponent({
           </div>
 
           {inputValues?.map((input, index) => {
-            console.log("index",index);
             return (
               <Row key={index} className="align-items-center mt-1">
                 <Col>

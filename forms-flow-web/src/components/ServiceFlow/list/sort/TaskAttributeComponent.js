@@ -43,7 +43,7 @@ function TaskAttributeComponent({
   const UndefinedVaribaleCheckboxChange = (e) => {
     setShowUndefinedVariable(e.target.checked);
   };
-
+  console.log("input values",inputValues);
   return (
     <Modal
       show={show}
@@ -153,6 +153,7 @@ function TaskAttributeComponent({
           </div>
 
           {inputValues?.map((input, index) => {
+            console.log("index",index);
             return (
               <Row key={index} className="align-items-center mt-1">
                 <Col>
@@ -186,7 +187,7 @@ function TaskAttributeComponent({
                   </Form.Group>
                 </Col>
                 <Col xs="auto mt-3 me-2">
-                  {index === 0 ? (
+                  {(inputValues.length - 1 === index) ? (
                     <button
                       type="button"
                       className="btn btn-primary"
@@ -194,13 +195,12 @@ function TaskAttributeComponent({
                     >
                       {t("Add")}
                     </button>
-                  ) : (
+                  ) :  (
                     <i
-                      className="fa fa-minus-circle fa-lg"
-                      aria-hidden="true"
-                      onClick={() => handleRowDelete(index)}
-                    />
-                  )}
+                    className="fa fa-minus-circle fa-lg"
+                    aria-hidden="true"
+                    onClick={() => handleRowDelete(index)}
+                  />)}
                 </Col>
               </Row>
             );

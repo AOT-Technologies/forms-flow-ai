@@ -22,13 +22,12 @@ const CreateTemplateConfirmModal = ({modalOpen,handleModalChange,onConfirm}) => 
             <div>
               <button
                 type="button"
-                className="close"
+                className="btn-close"
                 onClick={() => {
                   handleModalChange();
                 }}
                 aria-label="Close"
               >
-                <span aria-hidden="true">&times;</span>
               </button>
             </div>
           </Modal.Header>

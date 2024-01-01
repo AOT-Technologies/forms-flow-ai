@@ -193,7 +193,7 @@ const ApplicationFilter = ({
           <button
             className="btn btn-link text-danger"
             onClick={clearAllFilters}
-            data-testid="submission-filter-clear-input-button"
+            data-testid="submission-filter-clear-button"
           >
             {t("Clear All Filters")}
           </button>
@@ -202,6 +202,7 @@ const ApplicationFilter = ({
           <button
             className="btn btn-link text-dark me-1 "
             onClick={closeFilterModal}
+            data-testid="submission-filter-close-button"
           >
             {t("Cancel")}
           </button>
@@ -209,6 +210,7 @@ const ApplicationFilter = ({
             className="btn btn-dark"
             onClick={applyFilters}
             disabled={!isSearchParamEntered}
+            data-testid="submission-filter-apply-button"
           >
             {t("Show results")}
           </button>

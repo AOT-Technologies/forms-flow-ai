@@ -43,7 +43,7 @@ function TaskAttributeComponent({
   const UndefinedVaribaleCheckboxChange = (e) => {
     setShowUndefinedVariable(e.target.checked);
   };
-  console.log("input values",inputValues);
+
   return (
     <Modal
       show={show}

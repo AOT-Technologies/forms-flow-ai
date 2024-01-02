@@ -120,24 +120,22 @@ function DmnTable() {
                 }
                 placeholder={t("Search by DMN name")}
                 title={t("Search by DMN name")}
-                style={{ backgroundColor: "#ffff" }}
+               className="bg-white"
               />
               {search && (
-                <InputGroup.Append onClick={onClearSearch}>
-                  <InputGroup.Text className="h-100">
+            
+                  <InputGroup.Text onClick={onClearSearch} className="bg-white cursor-pointer">
                     <i className="fa fa-times"></i>
                   </InputGroup.Text>
-                </InputGroup.Append>
+             
               )}
-              <InputGroup.Append
-                onClick={handleSearchButtonClick}
+ 
+                <InputGroup.Text  onClick={handleSearchButtonClick}
                 disabled={!search?.trim()}
-                style={{ cursor: "pointer" }}
-              >
-                <InputGroup.Text style={{ backgroundColor: "#ffff" }} className="h-100">
+                className="bg-white cursor-pointer">
                   <i className="fa fa-search"></i>
                 </InputGroup.Text>
-              </InputGroup.Append>
+ 
             </InputGroup>
                 </th>
               </tr>

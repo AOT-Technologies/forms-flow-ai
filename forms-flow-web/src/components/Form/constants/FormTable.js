@@ -238,25 +238,23 @@ function FormTable() {
                       placeholder={t("Search by form title")}
                       title={t("Search by form title")}
                       data-testid="form-search-input-box"
-                      style={{ backgroundColor: "#ffff" }}
+                      style={{  backgroundColor: "#ffff" }}
                     />
                     {search && (
-                      <InputGroup.Append onClick={handleClearSearch} data-testid="form-search-cear-button">
-                        <InputGroup.Text className="h-100">
+                    
+                        <InputGroup.Text onClick={handleClearSearch} data-testid="form-search-cear-button" className="cursor-pointer bg-white">
                           <i className="fa fa-times"></i>
                         </InputGroup.Text>
-                      </InputGroup.Append>
+                     
                     )}
-                    <InputGroup.Append
-                      onClick={handleSearch}
+                 
+                      <InputGroup.Text  onClick={handleSearch}
                       data-testid="form-search-click-button"
                       disabled={!search?.trim()}
-                      style={{ cursor: "pointer" }}
-                    >
-                      <InputGroup.Text style={{ backgroundColor: "#ffff" }} className="h-100">
+                        className="cursor-pointer bg-white">
                         <i className="fa fa-search"></i>
                       </InputGroup.Text>
-                    </InputGroup.Append>
+                    
                   </InputGroup>
                 </th>
               </tr>

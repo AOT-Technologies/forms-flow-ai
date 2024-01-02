@@ -232,28 +232,23 @@ const Dashboard = React.memo(() => {
                 autoComplete="off"
                 value={searchTextInput}
                 placeholder={t("Search...")}
-                style={{ backgroundColor: "#ffff" }}
+                className="bg-white"
               />
               {showClearButton && (
-                <InputGroup.Append
-                  onClick={() => onClear()}
-                  style={{ cursor: "pointer" }}
-                >
-                  <InputGroup.Text style={{ backgroundColor: "#ffff" }}>
+ 
+                  <InputGroup.Text   onClick={() => onClear()}
+                  className="bg-white cursor-pointer">
                     <i className="fa fa-times"></i>
                   </InputGroup.Text>
-                </InputGroup.Append>
+            
               )}
-
-              <InputGroup.Append
-                title={t("Click to search")}
+ 
+                <InputGroup.Text  title={t("Click to search")}
                 onClick={() => handleSearch()}
-                style={{ cursor: "pointer" }}
-              >
-                <InputGroup.Text style={{ backgroundColor: "#ffff" }}>
+                 className="bg-white cursor-pointer">
                   <i className="fa fa-search"></i>
                 </InputGroup.Text>
-              </InputGroup.Append>
+ 
             </div>
 
             <div className="d-flex justify-content-end align-items-center col-12 col-md-4 px-0">

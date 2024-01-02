@@ -190,29 +190,25 @@ function ClientTable() {
                       }
                       data-testid="form-search-input-box"
                       placeholder={t("Search by form title")}
-                      style={{ backgroundColor: "#ffff" }}
+                      className="bg-white"
                       title={t("Search by form title")}
                     />
                     {search && (
-                      <InputGroup.Append
-                        onClick={handleClearSearch}
-                        data-testid="form-search-cear-button"
-                      >
-                        <InputGroup.Text className="h-100">
+ 
+                        <InputGroup.Text  onClick={handleClearSearch}
+                        data-testid="form-search-cear-button" className="bg-white cursor-pointer">
                           <i className="fa fa-times "></i>
                         </InputGroup.Text>
-                      </InputGroup.Append>
+ 
                     )}
-                    <InputGroup.Append
-                      onClick={handleSearch}
+ 
+                      <InputGroup.Text  onClick={handleSearch}
                       data-testid="form-search-click-button"
                       disabled={!search?.trim()}
-                      style={{ cursor: "pointer" }}
-                    >
-                      <InputGroup.Text style={{ backgroundColor: "#ffff" }} className="h-100">
+                     className="bg-white cursor-pointer">
                         <i className="fa fa-search"></i>
                       </InputGroup.Text>
-                    </InputGroup.Append>
+ 
                   </InputGroup>
                 </th>
               </tr>

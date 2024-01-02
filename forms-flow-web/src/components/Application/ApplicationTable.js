@@ -106,7 +106,7 @@ const ApplicationTable = () => {
 
   const getNoDataIndicationContent = () => {
     return (
-      <div className="div-no-application">
+      <div className="div-no-application bg-transparent">
         <label className="lbl-no-application">
           {" "}
           <Translation>{(t) => t("No submissions found")}</Translation>{" "}

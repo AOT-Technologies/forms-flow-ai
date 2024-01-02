@@ -214,3 +214,10 @@ export const setVisibleAttributes = (data) => (dispatch) => {
     payload: data,
   });
 };
+
+export const setIsAllTaskVariableExpand = (data) => (dispatch) => {
+  dispatch({
+    type: ACTION_CONSTANTS.IS_ALL_TASKVARIABLES_EXPAND,
+    payload: data,
+  });
+};

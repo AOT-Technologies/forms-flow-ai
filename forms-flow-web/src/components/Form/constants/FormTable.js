@@ -242,7 +242,7 @@ function FormTable() {
                     />
                     {search && (
                       <InputGroup.Append onClick={handleClearSearch} data-testid="form-search-cear-button">
-                        <InputGroup.Text>
+                        <InputGroup.Text className="h-100">
                           <i className="fa fa-times"></i>
                         </InputGroup.Text>
                       </InputGroup.Append>
@@ -253,7 +253,7 @@ function FormTable() {
                       disabled={!search?.trim()}
                       style={{ cursor: "pointer" }}
                     >
-                      <InputGroup.Text style={{ backgroundColor: "#ffff" }}>
+                      <InputGroup.Text style={{ backgroundColor: "#ffff" }} className="h-100">
                         <i className="fa fa-search"></i>
                       </InputGroup.Text>
                     </InputGroup.Append>

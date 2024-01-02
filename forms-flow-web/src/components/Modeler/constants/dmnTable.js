@@ -105,7 +105,7 @@ function DmnTable() {
           <table className="table custom-table  table-responsive-sm mt-2">
             <thead>
               <tr>
-                <th scope="col">{t("Workflow Name")}</th>
+                <th scope="col">{t("DMN Name")}</th>
                 <th scope="col">{t("Key")}</th>
                 <th scope="col">{t("Type")}</th>
                 <th colSpan="2">
@@ -118,13 +118,13 @@ function DmnTable() {
                 onKeyDown={(e) =>
                   e.keyCode == 13 ? handleSearchButtonClick() : ""
                 }
-                placeholder={t("Search by workflow name")}
-                title={t("Search by workflow name")}
+                placeholder={t("Search by DMN name")}
+                title={t("Search by DMN name")}
                 style={{ backgroundColor: "#ffff" }}
               />
               {search && (
                 <InputGroup.Append onClick={onClearSearch}>
-                  <InputGroup.Text>
+                  <InputGroup.Text className="h-100">
                     <i className="fa fa-times"></i>
                   </InputGroup.Text>
                 </InputGroup.Append>
@@ -134,7 +134,7 @@ function DmnTable() {
                 disabled={!search?.trim()}
                 style={{ cursor: "pointer" }}
               >
-                <InputGroup.Text style={{ backgroundColor: "#ffff" }}>
+                <InputGroup.Text style={{ backgroundColor: "#ffff" }} className="h-100">
                   <i className="fa fa-search"></i>
                 </InputGroup.Text>
               </InputGroup.Append>
@@ -164,7 +164,7 @@ function DmnTable() {
                     <td className="d-flex justify-content-end w-100">
                     <button className="btn btn-link" onClick={()=>{gotoEdit(processItem);}}> 
                        <i className="fas fa-edit me-2"/>
-                        {t("Edit Workflow")}</button>
+                        {t("Edit DMN")}</button>
                     </td>
                   </tr>
                 ))}

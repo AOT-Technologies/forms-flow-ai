@@ -403,7 +403,7 @@ if (reviewerSelectedOption === "Specific Reviewers") {
                             </Popover>
                           )}
                         >
-                          <Button id="addDesigner" className="btn btn-primary  btn-small">
+                          <Button id="addDesigner" className="btn btn-primary  btn-small mt-2">
                           <i className="fa-solid fa-plus me-2"></i>
                             <Translation>{(t) => t("Add")}</Translation>
                           </Button>
@@ -492,7 +492,7 @@ if (reviewerSelectedOption === "Specific Reviewers") {
                               </Popover>
                             )}
                           >
-                            <Button id="addClient" className="btn btn-primary btn-small ">
+                            <Button id="addClient" className="btn btn-primary btn-small mt-2">
                             <i className="fa-solid fa-plus me-2"></i>
                               <Translation>{(t) => t("Add")}</Translation>
                             </Button>
@@ -585,7 +585,7 @@ if (reviewerSelectedOption === "Specific Reviewers") {
                                 </Popover>
                               )}
                             >
-                              <Button id="addReviewer" className="btn btn-primary  btn-small ">
+                              <Button id="addReviewer" className="btn btn-primary  btn-small mt-2">
                               <i className="fa-solid fa-plus me-2"></i>
                                 <Translation>{(t) => t("Add")}</Translation>
                               </Button>

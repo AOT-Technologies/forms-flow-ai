@@ -85,6 +85,7 @@ const DraftTable = () => {
 
   const viewDraft = (data) => (
     <button
+      data-testid={`draft-view-button-${data.id}`}
       className="btn btn-link mt-2"
       onClick={() => dispatch(push(`${redirectUrl}draft/${data.id}`))}
     >
@@ -96,6 +97,7 @@ const DraftTable = () => {
     const url = `${redirectUrl}form/${formData.formId}/draft/${formData.id}/edit`;
     return (
       <button
+        data-testid={`draft-edit-button-${formData.id}`}
         className="btn btn-link mt-2"
         onClick={() => dispatch(push(url))}
       >
@@ -183,6 +185,7 @@ const DraftTable = () => {
                   <div className="d-flex justify-content-end filter-sort-bar mt-1">
                     <div className="filter-container-list application-filter-list-view">
                       <button
+                        data-testid="draft-filter-button"
                         type="button"
                         className="btn btn-outline-secondary "
                         onClick={() => {
@@ -241,8 +244,8 @@ const DraftTable = () => {
       {drafts.length ? <div className="d-flex justify-content-between align-items-center  flex-column flex-md-row">
         <div className="d-flex align-items-center">
           <span className="me-2"> {t("Rows per page")}</span>
-          <Dropdown size="sm">
-            <Dropdown.Toggle variant="light" id="dropdown-basic">
+          <Dropdown size="sm" data-testid="page-limit-dropdown">
+            <Dropdown.Toggle variant="light" id="dropdown-basic" data-testid="page-limit-dropdown-toggle">
               {pageLimit}
             </Dropdown.Toggle>
             <Dropdown.Menu>
@@ -250,6 +253,7 @@ const DraftTable = () => {
                 <Dropdown.Item
                   key={index}
                   type="button"
+                  data-testid={`page-limit-dropdown-item-${option.value}`}
                   onClick={() => {
                     onSizePerPageChange(option.value);
                   }}

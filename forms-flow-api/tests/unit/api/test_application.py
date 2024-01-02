@@ -350,7 +350,9 @@ def test_application_resubmit(app, client, session, jwt):
     assert rv.status_code == 200
 
 
-def test_capture_process_variables_application_create(app, client, session, jwt):
+def test_capture_process_variables_application_create(
+    app, client, session, jwt, mock_redis_client
+):
     """Tests the capturing of process variables in the application creation method."""
     token = get_token(jwt, role="formsflow-designer", username="designer")
     headers = {

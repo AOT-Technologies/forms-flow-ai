@@ -110,6 +110,9 @@ class _Config:  # pylint: disable=too-few-public-methods
         "FORM_EMBED_JWT_SECRET", "f6a69a42-7f8a-11ed-a1eb-0242ac120002"
     )
 
+    # REDIS CONFIG
+    REDIS_URL = os.getenv("REDIS_URL", "redis://redis:6379/0")
+
 
 class DevConfig(_Config):  # pylint: disable=too-few-public-methods
     """Development environment configuration."""

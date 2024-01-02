@@ -17,3 +17,4 @@ markupsafe
 PyJWT
 selenium
 selenium-wire
+redis

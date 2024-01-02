@@ -58,14 +58,13 @@ const FormHistoryModal = ({ historyModal, handleModalChange, gotoEdit }) => {
           <div>
             <button
               type="button"
-              className="close"
+              className="btn-close"
               onClick={() => {
                 setShowCount(3);
                 handleModalChange();
               }}
               aria-label="Close"
             >
-              <span aria-hidden="true">&times;</span>
             </button>
           </div>
         </Modal.Header>

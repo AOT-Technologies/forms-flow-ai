@@ -6,6 +6,7 @@ import { fetchServiceTaskList } from "../../../apiManager/services/bpmTaskServic
 import {
   setBPMTaskListActivePage,
   setBPMTaskLoader,
+  setIsAllTaskVariableExpand
 } from "../../../actions/bpmTaskActions";
 import Loading from "../../../containers/Loading";
 import { useTranslation } from "react-i18next";
@@ -35,7 +36,7 @@ const ServiceTaskListView = React.memo(() => {
   const firstResult = useSelector((state) => state.bpmTasks.firstResult);
   const activePage = useSelector((state) => state.bpmTasks.activePage);
   const [expandedTasks, setExpandedTasks] = useState({});
-  const [allTaskVariablesExpanded, setAllTaskVariablesExpanded] = useState(false);
+  const allTaskVariablesExpanded = useSelector((state) => state.bpmTasks.allTaskVariablesExpand);
   const [selectedLimitValue, setSelectedLimitValue] = useState(15);
   const tenantKey = useSelector((state) => state.tenants?.tenantId);
   const redirectUrl = useRef(
@@ -92,10 +93,17 @@ const ServiceTaskListView = React.memo(() => {
     dispatch(
       fetchServiceTaskList(reqData,null,firstResultIndex,selectedLimitValue)
     );
-    setAllTaskVariablesExpanded(false);
   };
-  
-
+  useEffect(() => {
+    // Initialize expandedTasks based on the initial value of allTaskVariablesExpanded
+    const updatedExpandedTasks = {};
+    if (allTaskVariablesExpanded) {
+      taskList.forEach((task) => {
+        updatedExpandedTasks[task.id] = allTaskVariablesExpanded;
+      });
+    }
+    setExpandedTasks(updatedExpandedTasks);
+  }, [allTaskVariablesExpanded, taskList]);
 //Toggle the expanded state of TaskVariables in single task
   const handleToggleTaskVariable = (taskId) => {
     setExpandedTasks((prevExpandedTasks) => ({
@@ -113,9 +121,8 @@ const ServiceTaskListView = React.memo(() => {
         updatedExpandedTasks[task.id] = newExpandedState;
       }
     });
-
     setExpandedTasks(updatedExpandedTasks);
-    setAllTaskVariablesExpanded(newExpandedState);
+    dispatch(setIsAllTaskVariableExpand(newExpandedState));
   };
  
   const renderTaskList = () => {
@@ -197,7 +204,7 @@ const ServiceTaskListView = React.memo(() => {
                         e.stopPropagation();
                         handleToggleTaskVariable(task.id);
                       }}
-                      title="Click for task variables"
+                      title={t("Click for task variables")}
                     >
                       <i
                         className="fa fa-angle-down"
@@ -213,30 +220,37 @@ const ServiceTaskListView = React.memo(() => {
               </Row>
               {
                 expandedTasks[task.id] &&
-                <>
-              <hr />
-              <Row className="p-2" >
-                  {task?._embedded?.variable?.map((eachVariable, index) => {
-                    if ( eachVariable.name !== "applicationId" && eachVariable.name !== "formName" && selectedTaskVariables[eachVariable.name] === true) {
-                      const data = taskvariables?.find(
-                        (variableItem) => variableItem.name === eachVariable.name
-                      );
-                      return (
-                        <Col xs={2} key={index} >
-                          <div className="col-12" style={{ wordBreak: "break-all" }}>
-                            <h6 className="fw-light">{data?.label}</h6>
-                          </div>
-                          <div className="d-flex col-12">
-                            <h6>
-                              <u className="fw-bold text-decoration-none ">{eachVariable.value}</u>
-                            </h6>
-                          </div>
-                        </Col>
-                      );
-                    }
-                  })}
-              </Row>
-                </>
+                task?._embedded?.variable?.some(
+                  (eachVariable) =>
+                    eachVariable.name !== "applicationId" &&
+                    eachVariable.name !== "formName" &&
+                    selectedTaskVariables[eachVariable.name] === true
+                ) && (
+                  <>
+                    <hr />
+                    <Row className="p-2" >
+                      {task?._embedded?.variable?.map((eachVariable, index) => {
+                        if (eachVariable.name !== "applicationId" && eachVariable.name !== "formName" && selectedTaskVariables[eachVariable.name] === true) {
+                          const data = taskvariables?.find(
+                            (variableItem) => variableItem.name === eachVariable.name
+                          );
+                          return (
+                            <Col xs={2} key={index} >
+                              <div className="col-12" style={{ wordBreak: "break-all" }}>
+                                <h6 className="fw-light">{data?.label}</h6>
+                              </div>
+                              <div className="d-flex col-12">
+                                <h6>
+                                  <u className="fw-bold text-decoration-none ">{eachVariable.value}</u>
+                                </h6>
+                              </div>
+                            </Col>
+                          );
+                        }
+                      })}
+                    </Row>
+                  </>
+                )
               }             
             </div>
           ))}
@@ -305,8 +319,7 @@ const ServiceTaskListView = React.memo(() => {
   return (
     <>
       <TaskSearchBarListView
-        toggleAllTaskVariables={toggleAllTaskVariables}
-        allTaskVariablesExpanded={allTaskVariablesExpanded}  />
+        toggleAllTaskVariables={toggleAllTaskVariables}  />
         {isTaskListLoading ? <Loading /> : renderTaskList()}
     </>
   );

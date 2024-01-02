@@ -12,7 +12,7 @@ export const ExportButton = React.memo(({ buttonState,
         const isLoading = buttonState === ButtonState.Loading;
         return (
           <div className="d-flex justify-content-center">
-            <InternalButton onClick={onClick} variant="primary" size="sm">
+            <InternalButton onClick={onClick} variant="primary" size="sm" data-testid="export-pdf-button">
               {!isLoading && (
                <i className="fa fa-print me-2" aria-hidden="true" />
               )}

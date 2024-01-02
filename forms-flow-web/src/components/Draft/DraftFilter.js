@@ -99,6 +99,7 @@ const DraftFilter = ({ setDisplayFilter, filterParams, setFilterParams }) => {
               placeholder=""
               value={searchParams.id}
               onChange={(e) => handleChange("id", e.target.value)}
+              data-testid="draft-filter-id-input"
             />
           </Col>
           <Col>
@@ -109,6 +110,7 @@ const DraftFilter = ({ setDisplayFilter, filterParams, setFilterParams }) => {
               placeholder=""
               value={searchParams.draftName}
               onChange={(e) => handleChange("draftName", e.target.value)}
+              data-testid="draft-filter-draftName-input"
             />
           </Col>
         </Row>
@@ -131,7 +133,8 @@ const DraftFilter = ({ setDisplayFilter, filterParams, setFilterParams }) => {
           clearAriaLabel="Click to clear"
           monthAriaLabel="Select the month"
           yearAriaLabel="Select the year"
-          nativeInputAriaLabel="Date"  
+          nativeInputAriaLabel="Date"
+          data-testid="draft-filter-modified-daterange"
         />
       </div>
       <hr className="mx-4" />
@@ -140,6 +143,7 @@ const DraftFilter = ({ setDisplayFilter, filterParams, setFilterParams }) => {
           <button
             className="btn btn-link text-danger"
             onClick={clearAllFilters}
+            data-testid="draft-filter-clear-button"
           >
             {t("Clear All Filters")}
           </button>
@@ -148,6 +152,7 @@ const DraftFilter = ({ setDisplayFilter, filterParams, setFilterParams }) => {
           <button
             className="btn btn-link text-dark me-1 "
             onClick={closeFilterModal}
+            data-testid="draft-filter-close-button"
           >
             {t("Cancel")}
           </button>
@@ -155,6 +160,7 @@ const DraftFilter = ({ setDisplayFilter, filterParams, setFilterParams }) => {
             className="btn btn-dark"
             onClick={applyFilters}
             disabled={!isSearchParamEntered}
+            data-testid="draft-filter-apply-button"
           >
             {t("Show results")}
           </button>

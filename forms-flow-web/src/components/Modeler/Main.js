@@ -97,23 +97,25 @@ export default React.memo(() => {
   return (
     <div>
       <div className="d-flex pb-2">
+      <button
+  onClick={handleCreateNew}
+  className="btn btn-primary"
+  style={{ whiteSpace: "nowrap" }}
+>
+  <i className="fa fa-plus me-2" />
+  {isBpmnModel ? t("Create Workflow") : t("Create DMN")}
+</button>
+
         <button
-          onClick={handleCreateNew}
-          className="btn btn-primary"
-          style={{ whiteSpace: "nowrap" }}
-        >
-          <i className="fa fa-plus me-2" />
-          {t("Create Workflow")}
-        </button>
-        <button
-          className="btn btn-outline-primary  ms-4"
-          onClick={uploadClick}
-          title={t("Upload Workflow")}
-          style={{ whiteSpace: "nowrap" }}
-        >
-          <i className="fa fa-upload me-2" aria-hidden="true" />
-          {t("Upload Workflow")}
-        </button>
+  className="btn btn-outline-primary  ms-4"
+  onClick={uploadClick}
+  title={isBpmnModel ? t("Upload Workflow") : t("Upload DMN")}
+  style={{ whiteSpace: "nowrap" }}
+>
+  <i className="fa fa-upload me-2" aria-hidden="true" />
+  {isBpmnModel ? t("Upload Workflow") : t("Upload DMN")}
+</button>
+
         <input
           ref={uploadFormNode}
           id="inputWorkflow"

@@ -198,8 +198,8 @@ function ClientTable() {
                         onClick={handleClearSearch}
                         data-testid="form-search-cear-button"
                       >
-                        <InputGroup.Text>
-                          <i className="fa fa-times"></i>
+                        <InputGroup.Text className="h-100">
+                          <i className="fa fa-times "></i>
                         </InputGroup.Text>
                       </InputGroup.Append>
                     )}
@@ -209,7 +209,7 @@ function ClientTable() {
                       disabled={!search?.trim()}
                       style={{ cursor: "pointer" }}
                     >
-                      <InputGroup.Text style={{ backgroundColor: "#ffff" }}>
+                      <InputGroup.Text style={{ backgroundColor: "#ffff" }} className="h-100">
                         <i className="fa fa-search"></i>
                       </InputGroup.Text>
                     </InputGroup.Append>

@@ -122,7 +122,7 @@ function BpmnTable() {
               />
               {search && (
                 <InputGroup.Append onClick={onClearSearch}>
-                  <InputGroup.Text>
+                  <InputGroup.Text className="h-100">
                     <i className="fa fa-times"></i>
                   </InputGroup.Text>
                 </InputGroup.Append>
@@ -132,7 +132,7 @@ function BpmnTable() {
                 disabled={!search?.trim()}
                 style={{ cursor: "pointer" }}
               >
-                <InputGroup.Text style={{ backgroundColor: "#ffff" }}>
+                <InputGroup.Text style={{ backgroundColor: "#ffff" }} className="h-100">
                   <i className="fa fa-search"></i>
                 </InputGroup.Text>
               </InputGroup.Append>

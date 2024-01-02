@@ -575,7 +575,7 @@ const List = React.memo((props) => {
           {isDesigner ? (
             <>
               <div className="mt-4 d-md-flex  justify-content-between align-items-end">
-                <Head data-testid="headder-form-btn-designer" items={headOptions} page={"Forms"} visibleHr={false} />
+                <Head data-testid="header-form-btn-designer" items={headOptions} page={"Forms"} visibleHr={false} />
 
                 <div className="d-flex flex-column flex-md-column justify-content-md-end mb-4">
                   {isDesigner && (
@@ -594,7 +594,7 @@ const List = React.memo((props) => {
               <hr style={{ marginTop: "-10px" }} />
             </>
           ) : (
-            <Head data-testid="headder-form-btn" items={headerList()} page={"Forms"} />
+            <Head data-testid="header-form-btn" items={headerList()} page={"Forms"} />
           )}
 
           {isDesigner ? <FormTable /> : !isDesigner ? <ClientTable /> : null}

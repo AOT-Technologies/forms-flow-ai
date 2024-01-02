@@ -58,7 +58,7 @@ const TaskVariable = ({ variables }) => {
       </Row>
       {taskvariable.length > 2 && variables.length > 2 && (
         <Row
-          className="justify-content-center"
+          className="justify-content-center text-center"
           onClick={(e) => {
             e.stopPropagation();
             setShowMore(!showMore);

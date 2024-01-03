@@ -111,7 +111,7 @@ class _Config:  # pylint: disable=too-few-public-methods
     )
 
     # REDIS CONFIG
-    REDIS_URL = os.getenv("REDIS_URL", "redis://redis:6379/0")
+    REDIS_URL = os.getenv("REDIS_URL", "redis://localhost:6379/0")
 
 
 class DevConfig(_Config):  # pylint: disable=too-few-public-methods

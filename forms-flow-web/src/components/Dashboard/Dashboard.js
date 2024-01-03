@@ -24,7 +24,7 @@ import {
   SetSubmissionStatusCountLoader,
   setMetricsDateChange,
 } from "../../actions/metricsActions";
-import LoadingOverlay from "@ronchalant/react-loading-overlay";
+import LoadingOverlay from "react-loading-overlay-ts";
 import {
   Dropdown, 
   FormControl,

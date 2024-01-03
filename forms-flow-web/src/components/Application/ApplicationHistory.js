@@ -6,7 +6,7 @@ import { fetchApplicationAuditHistoryList } from "../../apiManager/services/appl
 import Loading from "../../containers/Loading";
 import Nodata from "../../components/Nodata";
 import { setUpdateHistoryLoader } from "../../actions/taskApplicationHistoryActions";
-import HistoryTable from "./HistoryTable";
+import HistoryTable from "./historyTable";
 
 const HistoryList = React.memo((props) => {
   const dispatch = useDispatch();

@@ -237,7 +237,7 @@ const Dashboard = React.memo(() => {
         />
         {showClearButton && (
           <InputGroup.Append className="d-flex cursor-pointer"onClick={() => onClear()}>
-            <InputGroup.Text className= "clear-search">
+            <InputGroup.Text className= "bg-white rounded-0">
               <i className="fa fa-times"></i>
             </InputGroup.Text>
           </InputGroup.Append>
@@ -248,7 +248,7 @@ const Dashboard = React.memo(() => {
           onClick={() => handleSearch()}
           className="d-flex cursor-pointer"
         >
-          <InputGroup.Text className= "metrics-search">
+          <InputGroup.Text className= "bg-white rounded-start-0">
             <i className="fa fa-search"></i>
           </InputGroup.Text>
         </InputGroup.Append>

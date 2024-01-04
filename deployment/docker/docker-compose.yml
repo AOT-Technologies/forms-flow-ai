@@ -193,6 +193,13 @@ services:
     networks:
       - forms-flow-network
 
+  redis:
+    image: "redis:alpine"
+    ports:
+      - "6379:6379"
+    networks:
+      - forms-flow-network
+
   forms-flow-webapi:
     container_name: forms-flow-webapi
     build:
@@ -202,6 +209,7 @@ services:
     depends_on :
       - forms-flow-webapi-db
       - forms-flow-forms
+      - redis
     entrypoint: "/wait-for-service.sh forms-flow-webapi-db:5432 -s -- ./entrypoint.sh"
     ports:
       - '5000:5000'
@@ -236,6 +244,7 @@ services:
       API_LOG_ROTATION_WHEN: ${API_LOG_ROTATION_WHEN:-d}
       API_LOG_ROTATION_INTERVAL: ${API_LOG_ROTATION_INTERVAL:-1}
       API_LOG_BACKUP_COUNT: ${API_LOG_BACKUP_COUNT:-7}
+      REDIS_URL: ${REDIS_URL:-redis://localhost:6379/0}
 
     stdin_open: true # -i
     tty: true # -t

@@ -668,7 +668,7 @@ const Edit = React.memo(() => {
                           className="form-check-input"
                           type="checkbox"
                           role="switch"
-                            data-testid="form-edit-public-form"
+                            data-testid="form-edit-anonymous"
                             id="anonymous"
                           checked={processListData.anonymous || false}
                           color="primary"
@@ -685,7 +685,7 @@ const Edit = React.memo(() => {
 
               <div>
                 <div className="mt-3">
-                  <div  data-testid="form-edit-display-advanced" className="d-flex align-items-center cursor-pointer" onClick={handleToggle}>
+                  <div  data-testid="edit-advanced-form-display" className="d-flex align-items-center cursor-pointer" onClick={handleToggle}>
                     <i className={`fa ${open ? 'fa-chevron-up' : 'fa-chevron-down'} me-2`}></i>
                     <span className="text-primary fw-bold me-4">{t("Advanced Options")}</span>
                     <hr className="flex-grow-1 ms-2 me-2" />

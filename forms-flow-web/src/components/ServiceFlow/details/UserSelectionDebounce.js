@@ -111,7 +111,7 @@ const UserSelectionDebounce = React.memo((props) => {
   return (
     <>
       <Row ref={userSelectionRef}>
-        <Col sm={10} className="no-padding-left pr-1">
+        <Col sm={10} className="no-padding-left pe-1">
           <AsyncSelect
             cacheOptions
             theme={customThemeFn}

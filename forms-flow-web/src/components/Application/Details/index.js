@@ -1,5 +1,5 @@
 import React from "react";
-import LoadingOverlay from "react-loading-overlay";
+import LoadingOverlay from "react-loading-overlay-ts";
 
 import ApplicationDetails from "./ApplicationDetails";
 import { useSelector } from "react-redux";

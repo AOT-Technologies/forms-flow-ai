@@ -23,7 +23,7 @@ import {
 import History from "../../Application/ApplicationHistory";
 import FormEdit from "../../Form/Item/Submission/Item/Edit";
 import FormView from "../../Form/Item/Submission/Item/View";
-import LoadingOverlay from "react-loading-overlay";
+import LoadingOverlay from "react-loading-overlay-ts";
 import { getForm, getSubmission, Formio, resetSubmission } from "react-formio";
 import { CUSTOM_EVENT_TYPE } from "../constants/customEventTypes";
 import { getTaskSubmitFormReq } from "../../../apiManager/services/bpmServices";
@@ -270,6 +270,7 @@ const ServiceFlowTaskDetails = React.memo(() => {
             <Tab eventKey="form" title={t("Form")}>
               <LoadingOverlay
                 active={task?.assignee !== currentUser}
+                spinner={false}
                 styles={{
                   overlay: (base) => ({
                     ...base,

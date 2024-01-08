@@ -31,7 +31,7 @@ import {
 } from "../../../../../constants/applicationConstants";
 import { useParams } from "react-router-dom";
 import { updateApplicationEvent } from "../../../../../apiManager/services/applicationServices";
-import LoadingOverlay from "react-loading-overlay";
+import LoadingOverlay from "react-loading-overlay-ts";
 import { toast } from "react-toastify";
 import { Translation, useTranslation } from "react-i18next";
 import { updateCustomSubmission } from "../../../../../apiManager/services/FormServices";
@@ -122,7 +122,7 @@ const Edit = React.memo((props) => {
         text={t("Loading...")}
         className="col-12"
       >
-        <div className="ml-4 mr-4">
+        <div className="ms-4 me-4">
           <Form
             form={form}
             submission={isFormSubmissionLoading ? updatedSubmissionData : updatedSubmission}

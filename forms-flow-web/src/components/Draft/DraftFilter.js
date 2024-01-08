@@ -19,6 +19,7 @@ const DraftFilter = ({ setDisplayFilter, filterParams, setFilterParams }) => {
   });
 
   const { t } = useTranslation();
+  const [isSearchParamEntered, setSearchParamEntered] = useState(false);
   const handleClick = (e) => {
     if (createSearchNode?.current?.contains(e.target)) {
       return;
@@ -39,10 +40,19 @@ const DraftFilter = ({ setDisplayFilter, filterParams, setFilterParams }) => {
   }, []);
 
   const handleChange = (key, value) => {
-    setSearchParams((prevParams) => ({
-      ...prevParams,
-      [key]: value,
-    }));
+    setSearchParams((prevParams) => {
+      const updatedParams = {
+        ...prevParams,
+        [key]: value,
+      };
+
+      const isAnyParamEntered = Object.values(updatedParams).some(
+        (param) => param !== '' && param !== null
+      );
+
+      setSearchParamEntered(isAnyParamEntered);
+      return updatedParams;
+    });
   };
 
   const clearAllFilters = () => {
@@ -136,12 +146,16 @@ const DraftFilter = ({ setDisplayFilter, filterParams, setFilterParams }) => {
         </Col>
         <Col className="text-right">
           <button
-            className="btn btn-link text-dark mr-1 "
+            className="btn btn-link text-dark me-1 "
             onClick={closeFilterModal}
           >
             {t("Cancel")}
           </button>
-          <button className="btn btn-dark" onClick={applyFilters}>
+          <button
+            className="btn btn-dark"
+            onClick={applyFilters}
+            disabled={!isSearchParamEntered}
+          >
             {t("Show results")}
           </button>
         </Col>

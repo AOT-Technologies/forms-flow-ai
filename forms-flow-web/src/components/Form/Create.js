@@ -105,7 +105,7 @@ const Create = React.memo(() => {
   const addingTenantKeyInformation = (type) => {
     if (MULTITENANCY_ENABLED) {
       return (
-        <span className="ml-1">
+        <span className="ms-1">
           <i
             className="fa fa-info-circle text-primary cursor-pointer"
             data-toggle="tooltip"
@@ -235,10 +235,10 @@ const Create = React.memo(() => {
       <div className="p-4"
         style={{ border: "1px solid #c2c0be", borderRadius: "5px" }}>
         <div className="d-flex pb-4 flex-wrap">
-          <div className="col-lg-6 col-md-6 col-sm-6 col-12">
+          <div className="col-lg-6 col-md-6 col-sm-6 col-12 px-3">
             <div>
-              <div id="form-group-title" className="form-group">
-                <label htmlFor="title" className="control-label field-required font-weight-bold">
+              <div id="form-group-title" className="form-group mb-3">
+                <label htmlFor="title" className="control-label field-required fw-bold mb-2">
                   {" "}
                   {t("Title")}
                 </label>
@@ -253,7 +253,7 @@ const Create = React.memo(() => {
               </div>
             </div>
             <div className="">
-              <label htmlFor="Description" className="control-label font-weight-bold">
+              <label htmlFor="Description" className="control-label fw-bold mb-2">
                 {" "}
                 {t("Description")}
               </label>
@@ -262,11 +262,11 @@ const Create = React.memo(() => {
               </div>
             </div>
           </div>
-          <div className="col-lg-6 col-md-6 col-sm-6 col-12">
+          <div className="col-lg-6 col-md-6 col-sm-6 col-12 px-3">
             <div className="d-flex justify-content-between">
-              <div className="">
+              <div className="mb-3">
                 <div id="form-group-display" className="form-group">
-                  <label htmlFor="form-display" className="control-label font-weight-bold">
+                  <label htmlFor="form-display" className="control-label fw-bold mb-2">
                     {t("Display as")}
                   </label>
                   <div className="input-group">
@@ -280,7 +280,7 @@ const Create = React.memo(() => {
                         checked={form.display === "form"}
                         onChange={(event) => handleChange("display", event)}
                       />
-                      <label className="form-check-label font-weight-light" htmlFor="form-radio-form">
+                      <label className="form-check-label fw-light" htmlFor="form-radio-form">
                         {t("Form")}
                       </label>
                     </div>
@@ -294,26 +294,27 @@ const Create = React.memo(() => {
                         checked={form.display === "wizard"}
                         onChange={(event) => handleChange("display", event)}
                       />
-                      <label className="form-check-label font-weight-light" htmlFor="form-radio-wizard">
+                      <label className="form-check-label fw-light" htmlFor="form-radio-wizard">
                         {t("Wizard")}
                       </label>
                     </div>
                   </div>
                 </div>
               </div>
-              <div className="">
+              <div className="mb-3">
                 <div className="form-group">
                   <div className="input-group">
                     <Form.Group controlId="setForAnonymous">
-                      <div className="d-flex align-items-center mt-3">
-                        <label className="public-label mr-2 font-weight-bold">{t("Make this form public ?")}</label>
-                        <Form.Check
-                          type="switch"
-                          checked={anonymous}
-                          id="anonymous"
-                          onChange={() => setAnonymous(!anonymous)}
-                          custom
-                        />
+                      <div className="d-flex  mt-3 form-check form-switch ps-0 gap-5">
+                        <label className="public-label me-2 fw-bold mb-2">{t("Make this form public ?")}</label>
+                        <input 
+                        className="form-check-input" 
+                        type="checkbox" 
+                        role="switch" 
+                        id="anonymous"
+                        checked={anonymous}
+                        onChange={() => setAnonymous(!anonymous)}>
+                        </input>
                       </div>
                     </Form.Group>
                   </div>
@@ -324,16 +325,16 @@ const Create = React.memo(() => {
             <div>
               <div className="mt-3">
                 <div className="d-flex align-items-center cursor-pointer" onClick={handleToggle}>
-                  <i className={`fa ${open ? 'fa-chevron-up' : 'fa-chevron-down'} mr-2`}></i>
-                  <span className="text-primary font-weight-bold mr-4">{t("Advanced Options")}</span>
-                  <hr className="flex-grow-1 ml-2 mr-2"/>
+                  <i className={`fa ${open ? 'fa-chevron-up' : 'fa-chevron-down'} me-2`}></i>
+                  <span className="text-primary fw-bold me-4">{t("Advanced Options")}</span>
+                  <hr className="flex-grow-1 ms-2 me-2" />
                 </div>
-                <Collapse in={open} className="mt-3">
+                <Collapse in={open} className="mt-3 px-4">
                   <div id="example-collapse-text">
 
-                    <div className="col-lg-12 col-md-12 col-sm-12">
+                    <div className="col-lg-12 col-md-12 col-sm-12 mb-3">
                       <div id="form-group-name" className="form-group">
-                        <label htmlFor="name" className="control-label field-required font-weight-bold">
+                        <label htmlFor="name" className="control-label field-required fw-bold mb-2">
                           {t("Name")}
                           {addingTenantKeyInformation("name")}
                         </label>
@@ -361,9 +362,9 @@ const Create = React.memo(() => {
                     </div>
 
                     <div className="d-flex  flex-wrap">
-                      <div className="col-lg-6 col-md-6 col-sm-12 ">
+                      <div className="col-lg-6 col-md-6 col-sm-12 pe-3">
                         <div id="form-group-type" className="form-group">
-                          <label htmlFor="form-type" className="control-label font-weight-bold">
+                          <label htmlFor="form-type" className="control-label fw-bold mb-2">
                             {t("Type")}
                           </label>
                           <div className="input-group">
@@ -385,9 +386,9 @@ const Create = React.memo(() => {
                         </div>
                       </div>
 
-                      <div className="col-lg-6 col-md-6 col-sm-12">
+                      <div className="col-lg-6 col-md-6 col-sm-12 ps-3">
                         <div id="form-group-path" className="form-group">
-                          <label htmlFor="path" className="control-label field-required font-weight-bold">
+                          <label htmlFor="path" className="control-label field-required fw-bold mb-2">
                             {t("Path")}
                             {addingTenantKeyInformation("path")}
                           </label>

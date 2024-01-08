@@ -33,7 +33,7 @@ const SaveAsNewVersionConfirmationModal = ({modalOpen,handleModalChange,onConfir
 
     <Modal.Body>
       <div className="d-flex align-items-start p-3">
-        <i className="fa fa-info-circle text-primary mr-2"></i>
+        <i className="fa fa-info-circle text-primary me-2"></i>
         <span > 
         {t("This will create a new version of the form without changing the path name but with new form id.")}
         </span>

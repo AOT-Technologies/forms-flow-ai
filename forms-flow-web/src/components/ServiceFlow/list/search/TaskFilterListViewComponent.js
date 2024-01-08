@@ -222,7 +222,7 @@ const TaskFilterListViewComponent = React.memo(
                 margin: "auto",
               }}
             >
-              <span className="font-weight-bold ">{t("Search")}</span>
+              <span className="fw-bold ">{t("Search")}</span>
             </Row>
           </div>
           <hr className="m-0 w-100" />
@@ -236,7 +236,9 @@ const TaskFilterListViewComponent = React.memo(
                     onChange={(e) => setAssignee(e.target.value)}
                     className="form-control"
                   >
-                    <option value="">{t("Select a user")}</option>
+                    <option value="" hidden>
+                      {t("Select a user")}
+                    </option>
                     {assigneeOptions.map((option) => (
                       <option key={option.value} value={option.value}>
                         {option.label}
@@ -432,7 +434,7 @@ const TaskFilterListViewComponent = React.memo(
             </Col>
             <Col className="text-right">
               <button
-                className="btn btn-light mr-1 "
+                className="btn btn-light me-1 "
                 onClick={() => setDisplayFilter(false)}
               >
                 {t("Cancel")}

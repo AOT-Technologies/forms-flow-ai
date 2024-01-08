@@ -86,7 +86,7 @@ class FilterService:
                         "taskTitle": True,
                         "createdDate": True,
                         "groups": True,
-                        "followupDate": True,
+                        "followUp": True,
                     },
                 )
                 filter_obj.save()

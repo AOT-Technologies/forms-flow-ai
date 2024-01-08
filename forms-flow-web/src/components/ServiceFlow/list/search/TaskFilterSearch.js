@@ -114,7 +114,7 @@ const TaskFilterSearch = React.memo(
         <div onClick={onClick} ref={ref}>
           <i className="fa fa-calendar" />{" "}
           {inputDate ? (
-            <span className="mr-4">{getFormattedDateAndTime(inputDate)}</span>
+            <span className="me-4">{getFormattedDateAndTime(inputDate)}</span>
           ) : (
             "??"
           )}

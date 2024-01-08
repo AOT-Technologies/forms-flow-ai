@@ -4,7 +4,7 @@ import { push } from "connected-react-router";
 import { NavDropdown } from "react-bootstrap";
 import ServiceFlowFilterListDropDown from "../components/ServiceFlow/filter/ServiceTaskFilterListDropDown";
  import {MULTITENANCY_ENABLED} from "../constants/constants";
-import {setViewType } from '../actions/bpmTaskActions';
+import {setSelectedTaskID, setViewType } from '../actions/bpmTaskActions';
 import CreateNewFilterDrawer from "../components/ServiceFlow/list/sort/CreateNewFilter";
 import { useTranslation } from "react-i18next"; 
 function TaskHead() {
@@ -15,7 +15,7 @@ function TaskHead() {
   const [filterSelectedForEdit, setFilterSelectedForEdit] = useState(null);
   const [openFilterDrawer, setOpenFilterDrawer] = useState(false);
   const selectedFilter = useSelector((state) => state.bpmTasks.selectedFilter);
-
+  const viewType = useSelector((state) => state.bpmTasks.viewType);
   const isFilterLoading = useSelector(
     (state) => state.bpmTasks.isFilterLoading
   );
@@ -29,10 +29,14 @@ function TaskHead() {
   const goToTask = () => {
     dispatch(push(`${baseUrl}task`));
   };
-  const viewType = useSelector((state) => state.bpmTasks.viewType);
+
 
   const changeTaskView = (view) => {
-    dispatch(setViewType(view));
+    if(viewType !== view){
+      dispatch(setSelectedTaskID(null));
+      dispatch(setViewType(view));
+    }
+
   };
   
   const filterListLoading = () => {
@@ -48,8 +52,8 @@ function TaskHead() {
         <NavDropdown
         className="filter-drop-down"
                 title={
-                  <span className="h4 font-weight-bold">
-                      <i className="fa fa-list-ul mr-2" />
+                  <span className="h4 fw-bold">
+                      <i className="fa fa-list-ul me-2" />
                     {selectedFilter?.name ?  
                     `${selectedFilter?.name} ${count}` : filterListLoading() } 
                   </span>
@@ -69,12 +73,12 @@ function TaskHead() {
         <div  >
           <button
             type="button"
-            className={`btn mr-1 ${viewType ? "btn-light" : "btn-secondary active"}`}
+            className={`btn me-1 ${viewType ? "btn-light" : "btn-secondary active"}`}
             onClick={() => {
               changeTaskView(false);
             }} 
           >
-              <i className="fa-solid fa-list mr-2"></i>
+              <i className="fa-solid fa-list me-2"></i>
           
               {t("List View")}
           </button>
@@ -85,7 +89,7 @@ function TaskHead() {
               changeTaskView(true);
             }}
           >
-           <i className="fa-regular fa-rectangle-list mr-2"></i>
+           <i className="fa-regular fa-rectangle-list me-2"></i>
            {t("Card View")}
           </button>
         </div>

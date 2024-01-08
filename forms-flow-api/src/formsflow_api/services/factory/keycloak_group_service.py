@@ -55,7 +55,7 @@ class KeycloakGroupService(KeycloakAdmin):
             group_id = group.get("id")
             url_path = f"groups/{group_id}/members"
             if page_no and limit:
-                url_path += f"?first={(page_no-1)*limit}&max={limit}"
+                url_path += f"?first={(page_no - 1) * limit}&max={limit}"
             user_list = self.client.get_request(url_path)
             user_count = self.__get_users_count(group_id) if count else None
         if role:

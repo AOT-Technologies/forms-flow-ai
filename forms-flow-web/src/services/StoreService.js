@@ -1,30 +1,31 @@
-import thunk from "redux-thunk";
 import { createBrowserHistory } from "history";
 import { routerMiddleware } from "connected-react-router";
-import { applyMiddleware, compose, createStore } from "redux";
 import logger from "redux-logger";
-
+import { configureStore as configureStoreApp } from '@reduxjs/toolkit';
 import createRootReducer from "../modules";
 
 const history = createBrowserHistory();
 
 // eslint-disable-next-line no-unused-vars
 function configureStore(preloadedState) {
-  const enhancers = [];
+  const enhancers = [routerMiddleware(history)];
 
   const node_env =
     (window._env_ && window._env_.NODE_ENV) || process.env.NODE_ENV;
   if (node_env === "development") {
-    enhancers.push(applyMiddleware(logger));
+    enhancers.push(logger);
   }
+ // thunk midleware will come default in redux toolkit
+  // const middleware = [thunk, ];
 
-  const middleware = [thunk, routerMiddleware(history)];
-
-  const composedEnhancers = compose(
-    applyMiddleware(...middleware),
-    ...enhancers
-  );
-  return createStore(createRootReducer(history), composedEnhancers);
+  // const composedEnhancers = compose(
+  //   applyMiddleware(...middleware),
+  //   ...enhancers
+  // );
+  return configureStoreApp({reducer:createRootReducer(history), 
+    middleware: (getDefaultMiddleware) =>
+     getDefaultMiddleware({ serializableCheck: false,}).concat(enhancers)
+     });
 }
 
 const StoreService = {

@@ -626,7 +626,7 @@ const Edit = React.memo(() => {
                   <div className="input-group">
                     <div className="form-check form-check-inline">
                       <input
-                        data-testid="form-edit-display-form"
+                        data-testid="form-edit-form-display"
                         className="form-check-input"
                         type="radio"
                         name="display"
@@ -641,7 +641,7 @@ const Edit = React.memo(() => {
                     </div>
                     <div className="form-check form-check-inline">
                       <input
-                        data-testid="form-edit-display-wizard"
+                        data-testid="form-edit-wizard-display"
                         className="form-check-input"
                         type="radio"
                         name="display"
@@ -668,7 +668,7 @@ const Edit = React.memo(() => {
                           className="form-check-input"
                           type="checkbox"
                           role="switch"
-                            data-testid="form-edit-anonymous"
+                            data-testid="form-edit-anonymous-enable"
                             id="anonymous"
                           checked={processListData.anonymous || false}
                           color="primary"
@@ -731,7 +731,7 @@ const Edit = React.memo(() => {
                             </label>
                             <div className="input-group">
                               <select
-                                data-testid="form-edit-type"
+                                data-testid="form-edit-form-type"
                                 className="form-control"
                                 name="form-type"
                                 id="form-type"
@@ -767,7 +767,7 @@ const Edit = React.memo(() => {
                                 </div> : ""
                               }
                               <input
-                                data-testid="form-edit-path"
+                                data-testid="form-edit-pathname"
                                 type="text"
                                 className="form-control"
                                 id="path"

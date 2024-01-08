@@ -218,46 +218,44 @@ const Dashboard = React.memo(() => {
         >
           <Head items={headerList()} page="Metrics" />
           <div className="d-flex flex-wrap justify-content-between col-md-12">
-            <div className="input-group col-12 col-md-4 px-0">
-              <FormControl
-                type="search"
-                title="Search"
-                ref={searchInputBox}
-                onKeyPress={(e) => e.key === "Enter" && handleSearch()}
-                onChange={(e) => {
-                  setShowClearButton(e.target.value);
-                  setSearchTextInput(e.target.value);
-                  e.target.value === "" && handleSearch();
-                }}
-                autoComplete="off"
-                value={searchTextInput}
-                placeholder={t("Search...")}
-                className="bg-white"
-              />
-              {showClearButton && (
+          <div className="custom-input-group col-12 col-md-4 px-0">
+      <InputGroup>
+        <FormControl
+          type="search"
+          title="Search"
+          ref={searchInputBox}
+          onKeyPress={(e) => e.key === "Enter" && handleSearch()}
+          onChange={(e) => {
+            setShowClearButton(e.target.value);
+            setSearchTextInput(e.target.value);
+            e.target.value === "" && handleSearch();
+          }}
+          autoComplete="off"
+          value={searchTextInput}
+          placeholder={t("Search...")}
+          className="bg-white"
+        />
+        {showClearButton && (
+    
+            <InputGroup.Text className= "d-flex cursor-pointer bg-white rounded-0" onClick={onClear}>
+              <i className="fa fa-times"></i>
+            </InputGroup.Text>
+     
+        )}
  
-                  <InputGroup.Text   onClick={() => onClear()}
-                  className="bg-white cursor-pointer">
-                    <i className="fa fa-times"></i>
-                  </InputGroup.Text>
-            
-              )}
- 
-                <InputGroup.Text  title={t("Click to search")}
-                onClick={() => handleSearch()}
-                 className="bg-white cursor-pointer">
-                  <i className="fa fa-search"></i>
-                </InputGroup.Text>
- 
-            </div>
+          <InputGroup.Text   title={t("Click to search")}     onClick={handleSearch} className= "d-flex cursor-pointer bg-white rounded-start-0">
+            <i className="fa fa-search"></i>
+          </InputGroup.Text>
+     
+        </InputGroup>
+    </div>
 
             <div className="d-flex justify-content-end align-items-center col-12 col-md-4 px-0">
               <div className="input-group me-2">
                 <FormControl
                   as="select"
                   onChange={(e) => onChangeInput(e.target.value)}
-                  className="form-control"
-                  style={{ padding: ".375rem .3rem" }}
+                  className="form-select p-1"
                   title={t("Choose any")}
                   aria-label="Select date type"
                 >
@@ -279,7 +277,7 @@ const Dashboard = React.memo(() => {
                 yearAriaLabel="Select the year"
                 nativeInputAriaLabel="Date"
               />
-              <div className="ms-3">
+              <div className="ms-2">
                 {isAscending ? (
                   <i
                     className="fa fa-sort-alpha-asc"
@@ -392,11 +390,12 @@ const Dashboard = React.memo(() => {
                 onHide={() => setShow(false)}
                 aria-labelledby="example-custom-modal-styling-title"
               >
-                <Modal.Header closeButton>
+                <Modal.Header>
                   <Modal.Title id="example-custom-modal-styling-title">
                     {t("Submission Status")}
                   </Modal.Title>
-                </Modal.Header>
+                  <button type="button" className="btn-close me-2" onClick={() => setShow(false)}></button>
+                  </Modal.Header>
                 <Modal.Body>
                   <StatusChart
                     submissionsStatusList={submissionsStatusList}

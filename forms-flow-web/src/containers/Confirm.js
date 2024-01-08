@@ -24,10 +24,11 @@ const Confirm = React.memo((props) => {
           <button
             type="button"
             className="btn btn-link text-dark"
+            data-testid="delete-cancel-button"
             onClick={onNo}>
             {noText}</button>
 
-          <button className="btn btn-danger" onClick={onYes}>
+          <button className="btn btn-danger" onClick={onYes} data-testid="delete-confirm-button">
             {yesText}
           </button>
 

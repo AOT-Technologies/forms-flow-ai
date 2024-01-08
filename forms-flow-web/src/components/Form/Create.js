@@ -273,7 +273,7 @@ const Create = React.memo(() => {
                   <div className="input-group">
                     <div className="form-check form-check-inline">
                       <input
-                        data-testid="form-display"
+                        data-testid="form-create-form-display"
                         className="form-check-input"
                         type="radio"
                         name="display"
@@ -288,7 +288,7 @@ const Create = React.memo(() => {
                     </div>
                     <div className="form-check form-check-inline">
                       <input
-                        data-testid="form-wizard"
+                        data-testid="form-create-wizard-display"
                         className="form-check-input"
                         type="radio"
                         name="display"
@@ -312,7 +312,7 @@ const Create = React.memo(() => {
                         <label className="public-label me-2 fw-bold mb-2">{t("Make this form public ?")}</label>
                         <input
                         className="form-check-input"
-                        data-testid="form-anonymous"
+                        data-testid="form-anonymous-enable"
                           type="checkbox"
                         role="switch"
                         id="anonymous"
@@ -355,7 +355,7 @@ const Create = React.memo(() => {
                           }
                           <input
                             type="text"
-                            data-testid="form-name"
+                            data-testid="create-form-name"
                             className="form-control"
                             id="name"
                             placeholder={t("Enter the form machine name")}
@@ -374,7 +374,7 @@ const Create = React.memo(() => {
                           </label>
                           <div className="input-group">
                             <select
-                              data-testid="form-type"
+                              data-testid="create-form-choose-type"
                               className="form-control"
                               name="form-type"
                               id="form-type"
@@ -410,7 +410,7 @@ const Create = React.memo(() => {
                               </div> : ""
                             }
                             <input
-                              data-testid="form-path"
+                              data-testid="create-form-pathname"
                               type="text"
                               className="form-control"
                               id="path"

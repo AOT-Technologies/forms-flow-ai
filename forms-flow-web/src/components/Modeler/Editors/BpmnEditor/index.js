@@ -6,7 +6,10 @@ import { toast } from "react-toastify";
 import { useTranslation } from "react-i18next";
 import { extractDataFromDiagram } from "../../helpers/helper";
 import { createXML } from "../../helpers/deploy";
-import { MULTITENANCY_ENABLED, PUBLIC_WORKFLOW_ENABLED } from "../../../../constants/constants";
+import {
+  MULTITENANCY_ENABLED,
+  PUBLIC_WORKFLOW_ENABLED,
+} from "../../../../constants/constants";
 import { deployBpmnDiagram } from "../../../../apiManager/services/bpmServices";
 import Loading from "../../../../containers/Loading";
 import { push } from "connected-react-router";
@@ -16,9 +19,7 @@ import {
   ERROR_LINTING_CLASSNAME,
 } from "../../constants/bpmnModelerConstants";
 
-import {
-  fetchDiagram,
-} from "../../../../apiManager/services/processServices";
+import { fetchDiagram } from "../../../../apiManager/services/processServices";
 
 import {
   setProcessDiagramLoading,
@@ -26,29 +27,26 @@ import {
   setWorkflowAssociation,
 } from "../../../../actions/processActions";
 
-import BpmnModeler from 'bpmn-js/lib/Modeler';
+import BpmnModeler from "bpmn-js/lib/Modeler";
 import "bpmn-js/dist/assets/diagram-js.css";
 import "bpmn-js/dist/assets/bpmn-font/css/bpmn-embedded.css";
 
 import {
   BpmnPropertiesPanelModule,
   BpmnPropertiesProviderModule,
-  // CamundaPlatformPropertiesProviderModule,
+  CamundaPlatformPropertiesProviderModule,
 } from "bpmn-js-properties-panel";
 
-
-// import CamundaExtensionModule from "camunda-bpmn-moddle";
-// import camundaModdleDescriptors from "camunda-bpmn-moddle";
-import camundaModdle from 'camunda-bpmn-moddle/resources/camunda.json';
+//import CamundaExtensionModule from "camunda-bpmn-moddle/lib";
+import camundaPlatformBehaviors from 'camunda-bpmn-js-behaviors/lib/camunda-platform';
+import camundaModdleDescriptors from "camunda-bpmn-moddle/resources/camunda";
 
 import lintModule from "bpmn-js-bpmnlint";
 import "bpmn-js-bpmnlint/dist/assets/css/bpmn-js-bpmnlint.css";
 import linterConfig from "../../lint-rules/packed-config";
-import camundaCloudBehaviors from 'camunda-bpmn-js-behaviors/lib/camunda-cloud';
-
 
 export default React.memo(
-  ({ processKey, tenant, isNewDiagram,bpmnXml, mode }) => {
+  ({ processKey, tenant, isNewDiagram, bpmnXml, mode }) => {
     const { t } = useTranslation();
     const dispatch = useDispatch();
     const diagramXML = useSelector((state) => state.process.processDiagramXML);
@@ -67,11 +65,11 @@ export default React.memo(
       }
     }, []);
 
-  //   useEffect(() => {
-  //     if (bpmPropertyInput) {
-  //       setProcessName(false);
-  //     }
-  // }, [!bpmPropertyInput]);
+    //   useEffect(() => {
+    //     if (bpmPropertyInput) {
+    //       setProcessName(false);
+    //     }
+    // }, [!bpmPropertyInput]);
 
     const cancel = () => {
       dispatch(push(`${redirectUrl}processes`));
@@ -94,20 +92,21 @@ export default React.memo(
           additionalModules: [
             BpmnPropertiesPanelModule,
             BpmnPropertiesProviderModule,
-            camundaCloudBehaviors,
-            // CamundaPlatformPropertiesProviderModule,
-            // CamundaExtensionModule,
+            camundaPlatformBehaviors,
+            CamundaPlatformPropertiesProviderModule,
+            //CamundaExtensionModule,
             lintModule,
           ],
           moddleExtensions: {
-            camunda: camundaModdle,
+            camunda: camundaModdleDescriptors,
           },
         })
       );
     };
     useEffect(() => {
       if (PUBLIC_WORKFLOW_ENABLED) {
-        tenant === null || tenant === undefined ? setApplyAllTenants(true)
+        tenant === null || tenant === undefined
+          ? setApplyAllTenants(true)
           : setApplyAllTenants(false);
       }
       if (diagramXML) {
@@ -209,7 +208,7 @@ export default React.memo(
       deployBpmnDiagram(form)
         .then((res) => {
           if (res?.data) {
-            toast.success(t(SUCCESS_MSG)); 
+            toast.success(t(SUCCESS_MSG));
             setDeploymentLoading(false);
             dispatch(push(`${redirectUrl}processes`));
           } else {
@@ -265,8 +264,6 @@ export default React.memo(
 
       return isValidated;
     };
-
-
 
     const handleExport = async () => {
       let xml = await createXML(bpmnModeler);
@@ -324,8 +321,11 @@ export default React.memo(
               </label>
             ) : null}
 
-            <button type="button"
-              className="btn btn-link text-dark" onClick={cancel}>
+            <button
+              type="button"
+              className="btn btn-link text-dark"
+              onClick={cancel}
+            >
               {t("Cancel")}
             </button>
             <Button

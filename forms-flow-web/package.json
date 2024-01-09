@@ -59,6 +59,7 @@
     "craco-plugin-single-spa-app-aot": "^2.0.2",
     "create-react-class": "^15.7.0",
     "crypto-js": "^4.2.0",
+    "diagram-js": "^13.0.0",
     "dmn-js": "^15.0.0",
     "dmn-js-properties-panel": "^3.2.1",
     "dompurify": "^3.0.8",

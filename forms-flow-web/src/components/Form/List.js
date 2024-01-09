@@ -536,6 +536,7 @@ const List = React.memo((props) => {
             {isDesigner && (
               <>
                 <button
+                  data-testid="create-form-btn"
                   onClick={() =>
                     dispatch(push(`${redirectUrl}formflow/create`))
                   }
@@ -546,6 +547,7 @@ const List = React.memo((props) => {
                   <Translation>{(t) => t("Create Form")}</Translation>
                 </button>
                 <button
+                  data-testid="upload-form-btn"
                   className="btn btn-outline-primary  ms-4"
                   onClick={uploadClick}
                   title={t("Upload json form only")}
@@ -564,6 +566,7 @@ const List = React.memo((props) => {
                     fileUploaded(e);
                   }}
                   ref={uploadFormNode}
+                  data-testid="upload-form-content"
                   title={t("Upload Form")}
                 />
               </>
@@ -572,11 +575,12 @@ const List = React.memo((props) => {
           {isDesigner ? (
             <>
               <div className="mt-4 d-md-flex  justify-content-between align-items-end">
-                <Head items={headOptions} page={"Forms"} visibleHr={false} />
+                <Head data-testid="header-form-btn-designer" items={headOptions} page={"Forms"} visibleHr={false} />
 
                 <div className="d-flex flex-column flex-md-column justify-content-md-end mb-4">
                   {isDesigner && (
                     <button
+                      data-testid="download-form-btn"
                       className="btn btn-outline-primary "
                       onClick={downloadForms}
                       disabled={formCheckList.length === 0}
@@ -590,7 +594,7 @@ const List = React.memo((props) => {
               <hr style={{ marginTop: "-10px" }} />
             </>
           ) : (
-            <Head items={headerList()} page={"Forms"} />
+            <Head data-testid="header-form-btn" items={headerList()} page={"Forms"} />
           )}
 
           {isDesigner ? <FormTable /> : !isDesigner ? <ClientTable /> : null}

@@ -77,7 +77,7 @@ const Edit = React.memo(() => {
   const formHistory = useSelector((state) => state.formRestore?.formHistory || []);
   const version = formHistory[0]?.changeLog?.version;
   const prviousData = useSelector((state) => state.process?.formPreviousData);
-  
+
   const applicationCount = useSelector(
     (state) => state.process?.applicationCount
   );
@@ -494,7 +494,7 @@ const Edit = React.memo(() => {
     );
   }
 
- 
+
   return (
     <div className="mt-4">
       {
@@ -504,20 +504,21 @@ const Edit = React.memo(() => {
             onConfirm={saveAsNewVersionOnCofirm} />
         )
       }
- 
+
       <div className="bg-light p-3">
       <h3 className="ms-3 task-head">
- 
+
             <i className="fa-solid fa-file-lines" aria-hidden="true" /> &nbsp;{" "}
             {formData.title}
           <span className="text-success h5 ms-2">({t("Version")} {version})</span>
           </h3>
-          
+
         <div className="d-flex flex-md-row flex-column  align-items-md-center flex-wrap justify-content-end">
           <Form.Group controlId="formPublish">
             <div className="d-flex align-items-center mt-4 me-4">
               <label className="public-label me-2">{t("Do you want to save a new version of this form?")}</label>
               <Form.Check
+                data-testid="form-save-new-version"
                 className="form-check-box"
                 checked={saveAsNewVersionselected}
                 color="primary"
@@ -530,6 +531,7 @@ const Edit = React.memo(() => {
           </Form.Group>
           <button
             className="btn btn-secondary me-md-2 my-2 my-md-0"
+            data-testid="form-save-new-version-cancel"
             onClick={() => {
               changeAnonymous(prviousData.anonymous, true);
               history.goBack();
@@ -539,6 +541,7 @@ const Edit = React.memo(() => {
             {t("Cancel")}
           </button>
           <button
+            data-testid="form-save-new-version-save"
             className="btn btn-primary"
             disabled={formSubmitted}
             onClick={() => {
@@ -549,9 +552,9 @@ const Edit = React.memo(() => {
             {saveAsNewVersionselected ? saveNewVersion : saveText}
           </button>
         </div>
-      
+
       </div>
-  
+
 
 
 
@@ -572,10 +575,10 @@ const Edit = React.memo(() => {
             )}
           </Modal.Body>
           <Modal.Footer>
-            <button type="button" className="btn btn-link text-dark" onClick={handleClose}>
+            <button data-testid="form-change-new-version-cancel" type="button" className="btn btn-link text-dark" onClick={handleClose}>
               {t("Cancel")}
             </button>
-            <Button variant="primary" onClick={() => handleSave()}>
+            <Button  data-testid="form-change-new-version-save" variant="primary" onClick={() => handleSave()}>
               {t("Save Changes")}
             </Button>
           </Modal.Footer>
@@ -593,6 +596,7 @@ const Edit = React.memo(() => {
                     {t("Title")}
                   </label>
                   <input
+                    data-testid="form-edit-title"
                     type="text"
                     className="form-control"
                     id="title"
@@ -608,7 +612,7 @@ const Edit = React.memo(() => {
                   {t("Description")}
                 </label>
                <div className="bg-white">
-               <RichText value={formDescription} onChange={setFormDescription} />
+               <RichText  data-testid="form-edit-description"value={formDescription} onChange={setFormDescription} />
                </div>
               </div>
             </div>
@@ -622,6 +626,7 @@ const Edit = React.memo(() => {
                   <div className="input-group">
                     <div className="form-check form-check-inline">
                       <input
+                        data-testid="form-edit-form-display"
                         className="form-check-input"
                         type="radio"
                         name="display"
@@ -636,6 +641,7 @@ const Edit = React.memo(() => {
                     </div>
                     <div className="form-check form-check-inline">
                       <input
+                        data-testid="form-edit-wizard-display"
                         className="form-check-input"
                         type="radio"
                         name="display"
@@ -658,11 +664,12 @@ const Edit = React.memo(() => {
                       <Form.Group controlId="anonymous">
                         <div className="d-flex me-4 form-check form-switch ps-0 gap-5">
                           <label htmlFor="anonymous" className="public-label me-2 fw-bold mb-2">{t("Make this form public ?")}</label>
-                          <input 
-                          className="form-check-input" 
-                          type="checkbox" 
-                          role="switch" 
-                          id="anonymous"
+                          <input
+                          className="form-check-input"
+                          type="checkbox"
+                          role="switch"
+                            data-testid="form-edit-anonymous-enable"
+                            id="anonymous"
                           checked={processListData.anonymous || false}
                           color="primary"
                           aria-label="Publish as anonymous"
@@ -678,7 +685,7 @@ const Edit = React.memo(() => {
 
               <div>
                 <div className="mt-3">
-                  <div className="d-flex align-items-center cursor-pointer" onClick={handleToggle}>
+                  <div  data-testid="edit-advanced-form-display" className="d-flex align-items-center cursor-pointer" onClick={handleToggle}>
                     <i className={`fa ${open ? 'fa-chevron-up' : 'fa-chevron-down'} me-2`}></i>
                     <span className="text-primary fw-bold me-4">{t("Advanced Options")}</span>
                     <hr className="flex-grow-1 ms-2 me-2" />
@@ -704,6 +711,7 @@ const Edit = React.memo(() => {
                               </div> : ""
                             }
                             <input
+                              data-testid="form-edit-name"
                               type="text"
                               className="form-control"
                               id="name"
@@ -723,6 +731,7 @@ const Edit = React.memo(() => {
                             </label>
                             <div className="input-group">
                               <select
+                                data-testid="form-edit-form-type"
                                 className="form-control"
                                 name="form-type"
                                 id="form-type"
@@ -758,11 +767,12 @@ const Edit = React.memo(() => {
                                 </div> : ""
                               }
                               <input
+                                data-testid="form-edit-pathname"
                                 type="text"
                                 className="form-control"
                                 id="path"
                                 placeholder={t("Enter the pathname")}
-                      
+
                                 value={form?.path || ""}
                                 onChange={(event) => handleChange("path", event)}
                               />
@@ -795,7 +805,7 @@ const Edit = React.memo(() => {
             }}
           />
           </div>
-          
+
         </LoadingOverlay>
       </div>
     </div>

@@ -26,22 +26,26 @@ import {
   setWorkflowAssociation,
 } from "../../../../actions/processActions";
 
-import BpmnModeler from "bpmn-js/lib/Modeler";
+import BpmnModeler from 'bpmn-js/lib/Modeler';
 import "bpmn-js/dist/assets/diagram-js.css";
 import "bpmn-js/dist/assets/bpmn-font/css/bpmn-embedded.css";
 
 import {
   BpmnPropertiesPanelModule,
   BpmnPropertiesProviderModule,
-  CamundaPlatformPropertiesProviderModule,
+  // CamundaPlatformPropertiesProviderModule,
 } from "bpmn-js-properties-panel";
 
-import CamundaExtensionModule from "camunda-bpmn-moddle/lib";
-import camundaModdleDescriptors from "camunda-bpmn-moddle/resources/camunda";
+
+// import CamundaExtensionModule from "camunda-bpmn-moddle";
+// import camundaModdleDescriptors from "camunda-bpmn-moddle";
+import camundaModdle from 'camunda-bpmn-moddle/resources/camunda.json';
 
 import lintModule from "bpmn-js-bpmnlint";
 import "bpmn-js-bpmnlint/dist/assets/css/bpmn-js-bpmnlint.css";
 import linterConfig from "../../lint-rules/packed-config";
+import camundaCloudBehaviors from 'camunda-bpmn-js-behaviors/lib/camunda-cloud';
+
 
 export default React.memo(
   ({ processKey, tenant, isNewDiagram,bpmnXml, mode }) => {
@@ -90,12 +94,13 @@ export default React.memo(
           additionalModules: [
             BpmnPropertiesPanelModule,
             BpmnPropertiesProviderModule,
-            CamundaPlatformPropertiesProviderModule,
-            CamundaExtensionModule,
+            camundaCloudBehaviors,
+            // CamundaPlatformPropertiesProviderModule,
+            // CamundaExtensionModule,
             lintModule,
           ],
           moddleExtensions: {
-            camunda: camundaModdleDescriptors,
+            camunda: camundaModdle,
           },
         })
       );

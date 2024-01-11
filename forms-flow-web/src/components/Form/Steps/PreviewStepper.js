@@ -372,7 +372,9 @@ if (reviewerSelectedOption === "Specific Reviewers") {
                         {designerGroups?.map((e) => (
                           <Badge key={e} pill variant="outlined" className="d-flex align-items-center badge me-2">
                             {e}
-                            <div className="badge-deleteIcon ms-2"
+                            <div
+                              data-testid={`form-designer-delete-icon-${e}`}
+                              className="badge-deleteIcon ms-2"
                               onClick={() => { removeDesignerUserGroup(e); }}>
                               &times;
                             </div>
@@ -564,7 +566,9 @@ if (reviewerSelectedOption === "Specific Reviewers") {
                               return (
                                 <Badge key={e} pill variant="outlined" className="d-flex align-items-center badge me-2">
                                   {e}
-                                  <div className="badge-deleteIcon ms-2"
+                                  <div
+                                    data-testid={`form-reviewer-delete-icon-${e}`}
+                                    className="badge-deleteIcon ms-2"
                                     onClick={() => { removeReviewerUserGroup(e); }}>
                                     &times;
                                   </div>

@@ -43,7 +43,8 @@ const FormHistoryModal = ({ historyModal, handleModalChange, gotoEdit }) => {
 
   return (
     <>
-      <Modal
+      <Modal 
+        data-testid="form-history-modal"
         show={historyModal}
         size="lg"
         aria-labelledby="example-custom-modal-styling-title"

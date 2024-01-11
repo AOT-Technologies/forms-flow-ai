@@ -370,7 +370,7 @@ if (reviewerSelectedOption === "Specific Reviewers") {
                     {designerSelectedOption === "Specific Designers" ? (
                       <div className="d-flex align-items-center flex-wrap">
                         {designerGroups?.map((e) => (
-                          <Badge key={e} pill variant="outlined" className="d-flex align-items-center badge me-2">
+                          <Badge key={e} pill variant="outlined" className="d-flex align-items-center badge me-2 mt-2">
                             {e}
                             <div
                               data-testid={`form-designer-delete-icon-${e}`}
@@ -464,7 +464,7 @@ if (reviewerSelectedOption === "Specific Reviewers") {
                         <div className="d-flex align-items-center flex-wrap">
                           {clientGroups?.map((e) => {
                             return (
-                              <Badge key={e} pill variant="outlined" className="d-flex align-items-center badge me-2">
+                              <Badge key={e} pill variant="outlined" className="d-flex align-items-center badge me-2 mt-2">
                                 {e}
                                 <div
                                   data-testid={`form-user-delete-icon-${e}`}
@@ -564,7 +564,7 @@ if (reviewerSelectedOption === "Specific Reviewers") {
                           <div className="d-flex align-items-center flex-wrap">
                             {reviewerGroups?.map((e) => {
                               return (
-                                <Badge key={e} pill variant="outlined" className="d-flex align-items-center badge me-2">
+                                <Badge key={e} pill variant="outlined" className="d-flex align-items-center badge me-2 mt-2">
                                   {e}
                                   <div
                                     data-testid={`form-reviewer-delete-icon-${e}`}

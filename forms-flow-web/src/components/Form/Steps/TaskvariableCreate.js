@@ -50,6 +50,9 @@ const TaskvariableCreate = ({ options, addTaskVariable }) => {
             formatOptionLabel={fomatOptionLabel}
             placeholder={t("Select form field")}
             inputId="selectTaskVariable"
+            getOptionLabel={(option) => (
+              <span data-testid={`task-variable-option-${option.value}`}>{option.label}</span>
+            )}
           />
         </Col>
         <Col xs={12} md={3}>
@@ -63,6 +66,7 @@ const TaskvariableCreate = ({ options, addTaskVariable }) => {
             }}
             className="form-control"
             placeholder={t("Enter Label")}
+            data-testid="task-variable-label-input"
           />
         </Col>
         <Col xs={12} md={3}>
@@ -76,6 +80,7 @@ const TaskvariableCreate = ({ options, addTaskVariable }) => {
                 onChange={() => {
                   setShowInList(!showInList);
                 }}
+                data-testid="form-task-variable-showinlist-checkbox"
               />
             </div>
           </Form.Group>
@@ -88,6 +93,7 @@ const TaskvariableCreate = ({ options, addTaskVariable }) => {
             onClick={() => {
               addTask();
             }}
+            data-testid="form-task-variable-add-button"
           >
             <i className="fa fa-check me-2"></i> {t("Add")}
           </Button>

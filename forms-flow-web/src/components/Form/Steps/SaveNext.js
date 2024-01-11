@@ -41,10 +41,16 @@ const SaveNext = React.memo(
           variant="outline-secondary"
           disabled={activeStep === 0}
           onClick={handleBack}
+          data-testid="form-back-button"
         >
           {t("Back")}
         </Buttons>
-        <Buttons variant="primary" onClick={handleChanges} disabled={isDisabled}>
+        <Buttons
+          variant="primary"
+          onClick={handleChanges}
+          disabled={isDisabled}
+          data-testid="form-save-next-button"
+        >
           {isLastStep ? t("Save") : t("Next")}
         </Buttons>
         <Modal show={show} onHide={handleClose}>

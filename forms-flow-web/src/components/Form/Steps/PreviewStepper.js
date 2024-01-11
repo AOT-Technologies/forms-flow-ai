@@ -307,6 +307,7 @@ if (reviewerSelectedOption === "Specific Reviewers") {
                             })
                           } 
                           name="Check box to associate form with a workflow"
+                          data-testid="form-publish-switch"
                           ></input>
                         </div>
                         
@@ -333,6 +334,7 @@ if (reviewerSelectedOption === "Specific Reviewers") {
                           onChange={(e) =>
                             setDesignerSelectedOption(e.target.value)
                           }
+                          data-testid="form-design-permission-all-designers"
                         />
                         {t("All Designers")}
                       </label>
@@ -345,6 +347,7 @@ if (reviewerSelectedOption === "Specific Reviewers") {
                           onChange={(e) =>
                             setDesignerSelectedOption(e.target.value)
                           }
+                          data-testid="form-design-permission-private"
                         />
                         {t("Private(only you)")}
                       </label>
@@ -359,6 +362,7 @@ if (reviewerSelectedOption === "Specific Reviewers") {
                           onChange={(e) => {
                             setDesignerSelectedOption(e.target.value);
                           }}
+                          data-testid="form-design-permission-specific-designers"
                         />
                         {t("Specific Designer Group")}
                       </label>
@@ -388,6 +392,7 @@ if (reviewerSelectedOption === "Specific Reviewers") {
                                         key={key}
                                         as="button"
                                         onClick={() => addDesignerGroups(item)}
+                                        data-testid={`form-specific-designer-option-${key}`}
                                       >
                                         {item.name}
                                       </ListGroup.Item>
@@ -403,7 +408,7 @@ if (reviewerSelectedOption === "Specific Reviewers") {
                             </Popover>
                           )}
                         >
-                          <Button id="addDesigner" className="btn btn-primary  btn-small mt-2">
+                      <Button id="addDesigner" className="btn btn-primary  btn-small mt-2" data-testid="form-designer-group-add-button">
                           <i className="fa-solid fa-plus me-2"></i>
                             <Translation>{(t) => t("Add")}</Translation>
                           </Button>
@@ -435,6 +440,7 @@ if (reviewerSelectedOption === "Specific Reviewers") {
                             onChange={(e) =>
                               setClientSelectedOption(e.target.value)
                             }
+                            data-testid="form-create-submission-permission-all-users"
                           />
                           {t("All Users")}
                         </label>
@@ -447,6 +453,7 @@ if (reviewerSelectedOption === "Specific Reviewers") {
                             onChange={(e) => {
                               setClientSelectedOption(e.target.value);
                             }}
+                            data-testid="form-create-submission-permission-specific-users"
                           />
                           {t("Specific User Group")}
                         </label>
@@ -457,7 +464,9 @@ if (reviewerSelectedOption === "Specific Reviewers") {
                             return (
                               <Badge key={e} pill variant="outlined" className="d-flex align-items-center badge me-2">
                                 {e}
-                                <div className="badge-deleteIcon ms-2"
+                                <div
+                                  data-testid={`form-user-delete-icon-${e}`}
+                                  className="badge-deleteIcon ms-2"
                                   onClick={() => { removeClientUserGroup(e); }}>
                                   &times;
                                 </div>
@@ -477,6 +486,7 @@ if (reviewerSelectedOption === "Specific Reviewers") {
                                           key={key}
                                           as="button"
                                           onClick={() => addClientGroups(item)}
+                                          data-testid={`specific-user-option-${key}`}
                                         >
                                           {item.name}
                                         </ListGroup.Item>
@@ -492,7 +502,10 @@ if (reviewerSelectedOption === "Specific Reviewers") {
                               </Popover>
                             )}
                           >
-                            <Button id="addClient" className="btn btn-primary btn-small mt-2">
+                        <Button
+                          data-testid="form-user-group-add-button"
+                          id="addClient"
+                          className="btn btn-primary btn-small mt-2">
                             <i className="fa-solid fa-plus me-2"></i>
                               <Translation>{(t) => t("Add")}</Translation>
                             </Button>
@@ -525,6 +538,7 @@ if (reviewerSelectedOption === "Specific Reviewers") {
                               onChange={(e) =>
                                 setReviewerSelectedOption(e.target.value)
                               }
+                              data-testid="form-view-submission-permission-all-reviewers"
                             />
                             {t("All Reviewers")}
                           </label>
@@ -539,6 +553,7 @@ if (reviewerSelectedOption === "Specific Reviewers") {
                               onChange={(e) => {
                                 setReviewerSelectedOption(e.target.value);
                               }}
+                              data-testid="form-view-submission-permission-specific-reviewers"
                             />
                             {t("Specific Reviewers")}
                           </label>
@@ -570,6 +585,7 @@ if (reviewerSelectedOption === "Specific Reviewers") {
                                             key={key}
                                             as="button"
                                             onClick={() => addReviewerGroups(item)}
+                                            data-testid={`form-specific-reviewer-option-${key}`}
                                           >
                                             {item.name}
                                           </ListGroup.Item>
@@ -585,7 +601,9 @@ if (reviewerSelectedOption === "Specific Reviewers") {
                                 </Popover>
                               )}
                             >
-                              <Button id="addReviewer" className="btn btn-primary  btn-small mt-2">
+                          <Button data-testid="form-reviewer-group-add-button"
+                            id="addReviewer"
+                            className="btn btn-primary btn-small mt-2">
                               <i className="fa-solid fa-plus me-2"></i>
                                 <Translation>{(t) => t("Add")}</Translation>
                               </Button>
@@ -612,6 +630,7 @@ if (reviewerSelectedOption === "Specific Reviewers") {
                         comments: e.target.value,
                       })
                     }
+                    data-testid="form-comments"
                   />
                  
               </Card.Body>

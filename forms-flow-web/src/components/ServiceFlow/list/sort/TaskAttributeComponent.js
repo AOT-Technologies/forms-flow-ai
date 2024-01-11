@@ -211,7 +211,7 @@ function TaskAttributeComponent({
         <button className="btn btn-secondary" onClick={() => onHide()}>
           {t("Cancel")}
         </button>
-        <button className="btn btn-primary" onClick={onHide}>
+        <button disabled={!inputValues[0].name || !inputValues[0].label} className="btn btn-primary" onClick={onHide}>
           {t("Insert")}
         </button>
       </Modal.Footer>

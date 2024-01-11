@@ -375,7 +375,7 @@ const Create = React.memo(() => {
                           <div className="input-group">
                             <select
                               data-testid="create-form-choose-type"
-                              className="form-control"
+                              className="form-select"
                               name="form-type"
                               id="form-type"
                               value={form.type}

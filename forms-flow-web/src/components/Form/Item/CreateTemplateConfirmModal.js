@@ -27,6 +27,7 @@ const CreateTemplateConfirmModal = ({modalOpen,handleModalChange,onConfirm}) => 
                   handleModalChange();
                 }}
                 aria-label="Close"
+                data-testid="form-duplicate-modal-close-button"
               >
               </button>
             </div>
@@ -43,8 +44,8 @@ const CreateTemplateConfirmModal = ({modalOpen,handleModalChange,onConfirm}) => 
           </Modal.Body>
           <Modal.Footer>
             <div className='d-flex justify-content-end'>
-                <button className='btn btn-danger me-2' onClick={()=>{handleModalChange();}}>{t("No")}</button>
-                <button className='btn btn-primary' onClick={()=>{onConfirm();}}>{t("Yes")}</button>
+                <button data-testid="form-duplicate-no-button" className='btn btn-danger me-2' onClick={()=>{handleModalChange();}}>{t("No")}</button>
+                <button data-testid="form-duplicate-yes-button" className='btn btn-primary' onClick={()=>{onConfirm();}}>{t("Yes")}</button>
             </div>
           </Modal.Footer>
         </Modal>

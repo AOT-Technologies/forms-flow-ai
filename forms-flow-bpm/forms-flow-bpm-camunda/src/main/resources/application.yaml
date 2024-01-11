@@ -114,6 +114,15 @@ spring:
   main:
     allow-bean-definition-overriding: true
 
+# Keycloak JWT Client configuration
+keycloak.jwt.realm: ${KEYCLOAK_URL_REALM}
+keycloak.jwt.client.id: camunda-jwt
+
+# Camunda Cockpit JWT Plugin
+plugin.cockpit.keycloak:
+  keycloakUrl: ${keycloak.url}/auth
+  realm: ${keycloak.jwt.realm}
+  clientId: ${keycloak.jwt.client.id}
 
 # Camunda Rest API
 rest.security:

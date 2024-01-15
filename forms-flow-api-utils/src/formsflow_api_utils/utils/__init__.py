@@ -34,3 +34,4 @@ from .util import (
     validate_sort_order_and_order_by,
 )
 from .caching import Cache
+from .sentry import init_sentry

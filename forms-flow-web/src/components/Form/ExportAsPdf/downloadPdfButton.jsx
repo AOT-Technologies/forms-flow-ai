@@ -57,7 +57,7 @@ const DownloadPDFButton = React.memo(({ form_id, submission_id, title }) => {
 
   return (
     <Container className="d-flex flex-column">
-      <a href={url} download={name} className="hidden" ref={ref} />
+      <a href={url} download={name} className="hidden" ref={ref} id="export-btn"/>
       <ExportButton
         label={<Translation>{(t) => t("Export PDF")}</Translation>}
         labelLoading={<Translation>{(t) => t("Exporting..")}</Translation>}

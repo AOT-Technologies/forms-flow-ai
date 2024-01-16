@@ -18,3 +18,4 @@ PyJWT
 selenium
 selenium-wire
 redis
+sentry-sdk[flask]

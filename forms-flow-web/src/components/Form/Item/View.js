@@ -182,15 +182,15 @@ const View = React.memo((props) => {
    * Compares the current form data and last saved data
    * Draft is updated only if the form is updated from the last saved form data.
    */
-  const saveDraft = (payload, exitType = exitType) => {
-    if (exitType === "SUBMIT") return;
+  const saveDraft = (payload, latestExitType = exitType?.current) => {
+    if (latestExitType === "SUBMIT") return;
     let dataChanged = !isEqual(payload.data, lastUpdatedDraft.data);
     if (draftSubmissionId && isDraftCreated) {
       if (dataChanged) {
         setDraftSaved(false);
         dispatch(
           draftUpdateMethod(payload, draftSubmissionId, (err) => {
-            if (exitType === "UNMOUNT" && !err && isAuthenticated) {
+            if (latestExitType === "UNMOUNT" && !err && isAuthenticated) {
               toast.success(t("Submission saved to draft."));
             }
             if (!err) {

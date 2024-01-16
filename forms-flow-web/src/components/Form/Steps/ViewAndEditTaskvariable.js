@@ -46,6 +46,7 @@ const ViewAndEditTaskvariable = ({
             }}
             className="form-control"
             aria-label="Task Label"
+            data-testid="form-task-variable-edit-input"
           />
         </td>
         <td className="p-3">
@@ -59,6 +60,7 @@ const ViewAndEditTaskvariable = ({
               setShowInList(!showInList);
             }}
             type="checkbox"
+            data-testid="form-task-variable-showinlist-edit-checkbox"
           />
         </td>
         <td className="text-right p-3" >
@@ -70,6 +72,7 @@ const ViewAndEditTaskvariable = ({
                 saveData(item);
               }}
               aria-label="Save"
+              data-testid="form-task-variable-edit-save-button"
             >
               <i className="fa fa-check"></i> Save
             </Button>
@@ -82,6 +85,7 @@ const ViewAndEditTaskvariable = ({
                 }}
                 aria-label="Delete"
                 className="me-3 btn btn-danger btn fa fa-times"
+                data-testid="form-task-variable-delete-button"
               ></i>
 
               <i
@@ -91,6 +95,7 @@ const ViewAndEditTaskvariable = ({
                 }}
                 aria-label="Edit"
                 className="btn btn-primary fa fa-edit"
+                data-testid="form-task-variable-edit-button"
               ></i>
             </div>
           )}

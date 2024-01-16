@@ -178,7 +178,7 @@ function ClientTable() {
                   </div>
                 </th>
                 <th>{t("Form Description")}</th>
-                <th colSpan="4">
+                <th colSpan="4" aria-label="Search Forms by form title" >
                   <InputGroup className="input-group p-0 w-100">
                     <FormControl
                       value={search}
@@ -196,7 +196,7 @@ function ClientTable() {
                     {search && (
                       <InputGroup.Append
                         onClick={handleClearSearch}
-                        data-testid="form-search-cear-button"
+                        data-testid="form-search-clear-button"
                       >
                         <InputGroup.Text className="h-100">
                           <i className="fa fa-times "></i>

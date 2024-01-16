@@ -54,8 +54,9 @@ function TaskAttributeComponent({
       size="lg"
       backdrop="static"
     >
-      <Modal.Header closeButton className="bg-light">
+      <Modal.Header className="bg-light">
         <ModalTitle as={"h3"}><Translation>{(t) => t("Task Attribute")}</Translation></ModalTitle>
+        <button type="button" className="btn-close" aria-label="Close" onClick={onHide}></button>
       </Modal.Header>
       <Modal.Body className="p-4">
         <p><Translation>{(t) => t("Only selected task attributes will be available on task list view")}</Translation> </p>

@@ -1,6 +1,7 @@
 """Common setup and fixtures for the pytest suite used by this service."""
 
 import os
+from unittest.mock import patch
 
 import pytest
 from alembic import command
@@ -128,3 +129,29 @@ def docker_compose_files(pytestconfig):
     return [
         os.path.join(str(pytestconfig.rootdir), "tests/docker", "docker-compose.yml")
     ]
+
+
+@pytest.fixture
+def mock_redis_client():
+    """Mock Redis client that will act as a simple key-value store."""
+
+    class MockRedis:
+        """Mock redis class."""
+
+        def __init__(self):
+            self.store = {}
+
+        def set(self, key, value, ex=None):
+            self.store[key] = value
+
+        def get(self, key):
+            return self.store.get(key)
+
+    mock_redis = MockRedis()
+
+    # Patch the RedisManager.get_client to return the mock_redis
+    with patch(
+        "formsflow_api_utils.utils.caching.RedisManager.get_client",
+        return_value=mock_redis,
+    ) as _mock:  # noqa
+        yield mock_redis

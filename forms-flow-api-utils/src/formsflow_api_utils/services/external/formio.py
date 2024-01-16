@@ -7,7 +7,7 @@ import requests
 from flask import current_app
 
 from formsflow_api_utils.exceptions import BusinessException
-from formsflow_api_utils.utils import cache
+from formsflow_api_utils.utils import Cache
 from formsflow_api_utils.exceptions import ExternalError
 
 
@@ -27,10 +27,10 @@ class FormioService:
 
     def get_formio_access_token(self):
         """Method to get formio access token."""
-        formio_token = cache.get("formio_token")
+        formio_token = Cache.get("formio_token")
         if formio_token is None:
             formio_token = self.generate_formio_token()
-            cache.set(
+            Cache.set(
                 "formio_token",
                 formio_token,
                 timeout=self.decode_timeout(formio_token),

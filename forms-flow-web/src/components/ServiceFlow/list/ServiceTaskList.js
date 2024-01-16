@@ -111,7 +111,7 @@ const ServiceFlowTaskList = React.memo(() => {
                 </div>
               </div>
               <div
-                className="d-flex justify-content-between text-muted"
+                className="d-flex justify-content-between "
                 style={{ marginBottom: "-8px", fontSize: "14px" }}
               >
                 <div style={{ maxWidth: "70%" }}>

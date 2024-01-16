@@ -178,7 +178,7 @@ function ClientTable() {
                   </div>
                 </th>
                 <th>{t("Form Description")}</th>
-                <th colSpan="4">
+                <th colSpan="4" aria-label="Search Forms by form title" >
                   <InputGroup className="input-group p-0 w-100">
                     <FormControl
                       value={search}

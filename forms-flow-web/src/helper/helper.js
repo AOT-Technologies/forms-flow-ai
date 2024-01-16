@@ -34,7 +34,6 @@ const textTruncate = (wordLength, targetLength, text) => {
 };
 
 const renderPage = (formStatus, processLoadError) => {
-  console.log(processLoadError,formStatus);
   if (!processLoadError && ((formStatus === "inactive") || !formStatus)) {
     return (
       <span>

@@ -295,7 +295,7 @@ function ClientTable() {
             ) : !searchFormLoading ? (
               noDataFound()
             ) : (
-              ""
+              null
             )}
           </table>
         </div>

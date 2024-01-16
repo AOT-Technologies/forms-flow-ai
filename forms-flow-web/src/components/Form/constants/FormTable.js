@@ -299,7 +299,7 @@ function FormTable() {
 
                       <td>
                         <button
-                          data-testid={`form-view-or-edit-button-${e._id}`}
+                          data-testid={`form-edit-button-${e._id}`}
                           className="btn btn-link text-primary mt-2"
                           onClick={() => viewOrEditForm(e._id,'edit')}
                         >

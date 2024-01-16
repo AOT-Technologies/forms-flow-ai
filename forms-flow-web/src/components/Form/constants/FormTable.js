@@ -195,6 +195,7 @@ function FormTable() {
                     <span>
                       {isAscending ? (
                         <i
+                          data-testid="form-desc-sort-icon"
                           className="fa fa-sort-alpha-asc ms-2 mt-1"
                           onClick={() => {
                             updateSort("desc");
@@ -208,6 +209,7 @@ function FormTable() {
                         ></i>
                       ) : (
                         <i
+                          data-testid="form-asc-sort-icon"
                           className="fa fa-sort-alpha-desc ms-2 mt-1"
                           onClick={() => {
                             updateSort("asc");

@@ -51,7 +51,7 @@ const TaskHeader = React.memo(() => {
     setDueDate(due);
   }, [task?.due]);
 
-  const updateBpmTaskDetails = (err) =>{
+  const updateBpmTasksAndDetails = (err) =>{
     if (!err) {
       if (!SocketIOService.isConnected()) {
         if (selectedFilter) {
@@ -73,9 +73,7 @@ const TaskHeader = React.memo(() => {
     dispatch(setBPMTaskDetailUpdating(true));
     dispatch(
       // eslint-disable-next-line no-unused-vars
-      claimBPMTask(taskId, username, (err, response) => {
-        updateBpmTaskDetails(err,response);
-      })
+      claimBPMTask(taskId, username,updateBpmTasksAndDetails)
     );
   };
 
@@ -85,9 +83,7 @@ const TaskHeader = React.memo(() => {
       dispatch(setBPMTaskDetailUpdating(true));
       dispatch(
         // eslint-disable-next-line no-unused-vars
-        updateAssigneeBPMTask(taskId, userId, (err, response) => {
-          updateBpmTaskDetails(err,response);
-        })
+        updateAssigneeBPMTask(taskId, userId, updateBpmTasksAndDetails)
       );
     }
   };
@@ -96,9 +92,7 @@ const TaskHeader = React.memo(() => {
     dispatch(setBPMTaskDetailUpdating(true));
     dispatch(
       // eslint-disable-next-line no-unused-vars
-      unClaimBPMTask(taskId, (err, response) => {
-        updateBpmTaskDetails(err,response);
-      })
+      unClaimBPMTask(taskId, updateBpmTasksAndDetails)
     );
   };
 
@@ -111,9 +105,7 @@ const TaskHeader = React.memo(() => {
     };
     dispatch(
       // eslint-disable-next-line no-unused-vars
-      updateBPMTask(taskId, updatedTask, (err, response) => {
-        updateBpmTaskDetails(err,response);
-      })
+      updateBPMTask(taskId, updatedTask, updateBpmTasksAndDetails)
     );
   };
 
@@ -126,9 +118,7 @@ const TaskHeader = React.memo(() => {
     };
     dispatch(
       // eslint-disable-next-line no-unused-vars
-      updateBPMTask(taskId, updatedTask, (err, response) => {
-        updateBpmTaskDetails(err,response);
-      })
+      updateBPMTask(taskId, updatedTask, updateBpmTasksAndDetails)
     );
   };
 

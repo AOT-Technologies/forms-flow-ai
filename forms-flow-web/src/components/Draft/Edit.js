@@ -103,8 +103,8 @@ const View = React.memo((props) => {
   );
 
   
-  const saveDraft = (payload, latestExitType = exitType?.current) => {
-    if (latestExitType === "SUBMIT" || processData?.status !== "active") return;
+  const saveDraft = (payload, exitType) => {
+    if (exitType === "SUBMIT" || processData?.status !== "active") return;
     let dataChanged = !isEqual(payload.data, lastUpdatedDraft.data);
     if (draftSubmission?.id) {
       if (String(draftSubmission?.id) !== String(draftId)) return;
@@ -113,7 +113,7 @@ const View = React.memo((props) => {
         if (!showNotification) setShowNotification(true);
         dispatch(
           draftUpdate(payload, draftSubmission?.id, (err) => {
-            if (latestExitType === "UNMOUNT" && !err) {
+            if (exitType === "UNMOUNT" && !err) {
               toast.success(t("Submission saved to draft."));
             }
             if (!err) {

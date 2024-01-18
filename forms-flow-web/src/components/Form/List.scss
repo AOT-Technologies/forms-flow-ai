@@ -109,11 +109,11 @@ flex-wrap: wrap;
 }
 
 .progress-bar {
-    background-color: var(--color-red);
+    background-color: var(--color-danger);
 }
 
 .fileupload-fail {
-    color: var(--color-failure);
+    color: var(--color-error);
     float: right;
     font-weight: normal
 }

@@ -28,7 +28,7 @@
 }
 
 .text-blue {
-  color: var(--color-blue-dkr);
+  color: var(--color-primary-dkr);
 }
 
 .click-element {
@@ -78,7 +78,7 @@
   padding-right: 12px;
   background-color: var(--color-info-background);
   outline: none;
-  color: var(--color-blue-dkr);
+  color: var(--color-primary-dkr);
 }
 .operator-selector select {
   display: none; /*hide original SELECT element:*/

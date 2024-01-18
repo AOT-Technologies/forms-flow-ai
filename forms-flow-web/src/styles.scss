@@ -107,7 +107,7 @@ body {
 }
 
 .page-item.active .page-link {
-  background-color:  var(--color-background-blue) !important;
+  background-color:  var(--color-primary-dkst) !important;
   border-color: var(--color-secondary) !important;
 }
 
@@ -117,8 +117,8 @@ h5,
 }
 
 .bg-default {
-  background-color: var(--color-background-blue);
-  border: var(--color-background-blue);
+  background-color: var(--color-primary-dkst);
+  border: var(--color-primary-dkst);
   color: var(--color-white) !important;
 }
 
@@ -131,8 +131,8 @@ i.fa.fa-question-circle.text-muted {
 }
 
 .panel-heading {
-  background-color: var(--color-background-blue);
-  border: var(--color-background-blue);
+  background-color: var(--color-primary-dkst);
+  border: var(--color-primary-dkst);
   color: var(--color-white) !important;
   padding: 0.75rem 1.25rem;
   margin-bottom: 8px;
@@ -149,17 +149,17 @@ i.fa.fa-question-circle.text-muted {
 
 .formio-error-wrapper,
 .has-error {
-  color: var(--color-red);
+  color: var(--color-danger);
   background-color: var(--color-white);
-  border-color: var(--color-red);
+  border-color: var(--color-danger);
 
   label {
-    color: var(--color-red);
+    color: var(--color-danger);
   }
 }
 
 .formio-errors .error {
-  color: var(--color-red);
+  color: var(--color-danger);
 }
 
 .is-invalid {
@@ -189,7 +189,7 @@ i.fa.fa-question-circle.text-muted {
     padding: 0 0 0 0;
     font-size: 2rem;
     float: right;
-    color: var(--color-background-blue);;
+    color: var(--color-primary-dkst);;
   }
 }
 
@@ -208,7 +208,7 @@ i.fa.fa-question-circle.text-muted {
 }
 
 .nav-user-role {
-  color: var(--color-blue-dkst);
+  color: var(--color-primary-dkst);
   font-size: 15px;
   font-weight: bold;
   padding: 0 0;
@@ -227,7 +227,7 @@ i.fa.fa-question-circle.text-muted {
   font-size: 20px;
   padding: 0 0;
   font-weight: 600;
-  color: var(--color-dark:);
+  color: var(--color-dark);
 }
 
 .nav-logout {
@@ -576,7 +576,7 @@ div[disabled] {
 
 .delete_button {
   font-size: 25px;
-  color: var(--color-red);
+  color: var(--color-danger);
   cursor: pointer;
 }
 
@@ -673,12 +673,12 @@ div.upload input[type="file"] {
 }
 
 .searchInvalid {
-  border-color: var(--color-failure)!important;
+  border-color: var(--color-error)!important;
   background-color: var(--color-white);
 }
 
 .validation-err {
-  color: var(--color-red);
+  color: var(--color-danger);
   margin-left: 52px;
   font-size: 13px;
 }
@@ -708,7 +708,7 @@ div.upload input[type="file"] {
       justify-content: center;
 
       &:hover{
-          background-color: var(--color-failure);
+          background-color: var(--color-error);
           color: var(--color-white);
       }
   }

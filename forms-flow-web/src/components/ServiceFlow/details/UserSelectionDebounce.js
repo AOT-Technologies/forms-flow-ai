@@ -1,4 +1,4 @@
-import React, { useState,useEffect, useRef } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import AsyncSelect from "react-select/async";
 import { useDispatch } from "react-redux";
 import { Row, Col } from "react-bootstrap";
@@ -10,9 +10,7 @@ import {
   SearchByLastName,
   UserSearchFilterTypes,
 } from "../constants/userSearchFilterTypes";
-import DropdownButton from "react-bootstrap/DropdownButton";
 import Dropdown from "react-bootstrap/Dropdown";
-import Form from "react-bootstrap/Form";
 
 const UserSelectionDebounce = React.memo((props) => {
   const { onClose, currentUser, onChangeClaim } = props;
@@ -31,7 +29,7 @@ const UserSelectionDebounce = React.memo((props) => {
     // outside click
     onClose();
   };
-  
+
   useEffect(() => {
     // add when mounted
     document.addEventListener("mousedown", handleClick);
@@ -127,34 +125,33 @@ const UserSelectionDebounce = React.memo((props) => {
           />
         </Col>
         <Col sm={2} className="p-0 no-padding-left">
-          <DropdownButton
-            id="dropdown-basic-button"
-            title={<i className="fa fa-filter" />}
-            size="sm"
-            variant="secondary"
-          >
-            {UserSearchFilterTypes.map((UserSearchFilterType, idx) => {
-              return (
-                <Dropdown.Item
-                  key={idx}
-                  className="click-element"
-                  onClick={() => setSearchTypeOption(UserSearchFilterType)}
-                >
-                  <Form.Check
-                    type="radio"
-                    id={UserSearchFilterType.searchType}
-                    key={UserSearchFilterType.searchType}
-                    label={UserSearchFilterType.title}
-                    value={UserSearchFilterType.searchType}
-                    checked={
-                      searchTypeOption.searchType ===
-                      UserSearchFilterType.searchType
-                    }
-                  />
-                </Dropdown.Item>
-              );
-            })}
-          </DropdownButton>
+          <Dropdown>
+            <Dropdown.Toggle variant="secondary" id="dropdown-basic">
+              <i className="fa fa-filter" />
+            </Dropdown.Toggle>
+            <Dropdown.Menu className="searchtype-dropdown">
+              {UserSearchFilterTypes.map((UserSearchFilterType, idx) => (
+                <div key={idx} className="mb-2 mx-2">
+                  <label className="form-check-label">
+                    <input
+                      className="form-check-input me-2"
+                      type="radio"
+                      id={UserSearchFilterType.searchType}
+                      name="searchType"
+                      value={UserSearchFilterType.searchType}
+                      onChange={() => setSearchTypeOption(UserSearchFilterType)}
+                      checked={
+                        searchTypeOption.searchType ===
+                        UserSearchFilterType.searchType
+                      }
+                    />
+                    {UserSearchFilterType.title}
+                  </label>
+                  <br />
+                </div>
+              ))}
+            </Dropdown.Menu>
+          </Dropdown>
         </Col>
       </Row>
     </>

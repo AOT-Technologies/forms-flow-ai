@@ -51,10 +51,11 @@ const BaseRouting = React.memo(
     }, [location]);
 
     return (
-      <>
-        <div className="wrapper">
-          <div className="container-fluid content main-container">
-            <ToastContainer />
+    
+ 
+        <div className="container  mt-5">
+        <div className="min-container-height ps-md-3">
+        <ToastContainer />
             <Switch>
               <Route path="/public">
                 <PublicRoute
@@ -75,10 +76,10 @@ const BaseRouting = React.memo(
               <Route path="/404" exact={true} component={NotFound} />
               <Redirect from="*" to="/404" />
             </Switch>
-            {isAuth ? <Footer /> : null}
-          </div>
         </div>
-      </>
+            {isAuth ? <Footer /> : null}
+        </div>
+
     );
   }
 );

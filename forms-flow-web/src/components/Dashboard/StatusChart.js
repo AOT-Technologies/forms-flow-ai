@@ -1,6 +1,6 @@
 import React, { useMemo } from "react";
 import { useTranslation } from "react-i18next";
-import LoadingOverlay from "react-loading-overlay";
+import LoadingOverlay from "react-loading-overlay-ts";
 
 import { Legend, PieChart, Pie, Cell, LabelList } from "recharts";
 
@@ -19,13 +19,12 @@ const COLORS = [
 const ChartForm = React.memo((props) => {
   const { submissionsStatusList, submissionData, submissionStatusCountLoader } = props;
   const {formVersions, formName, parentFormId} = submissionData;
-  
-  const sortedVersions = useMemo(()=> 
-  (formVersions?.sort((version1, version2)=> 
-  version1.version > version2.version ? 1 : -1)),[formVersions]);
-  
-  const version = formVersions?.length;
 
+  const sortedVersions = useMemo(()=>
+  (formVersions?.sort((version1, version2)=>
+  version1.version > version2.version ? 1 : -1)),[formVersions]);
+
+  const version = formVersions?.length;
   const { t } = useTranslation();
   const pieData = submissionsStatusList || [];
 
@@ -36,7 +35,6 @@ const ChartForm = React.memo((props) => {
     props.getStatusDetails(id,option);
   };
 
- 
 
   return (
     <div className="row">
@@ -45,11 +43,11 @@ const ChartForm = React.memo((props) => {
           <div className=" d-flex align-items-center justify-content-between">
           <div>
           <div className="d-flex align-items-center">
-            <span className="text-primary mr-2">{t("Form Name")} : </span>
+            <span className="text-primary me-2" >{t("Form Name")} : </span>
             <h2 className="text-truncate" style={{ maxWidth: version > 1 ? "500px" : "700px"}}>{formName}</h2>
           </div>
           <p>
-            <span className="text-primary">{t("Latest Version")} :</span>{" "}
+            <span className="text-primary" >{t("Latest Version")} :</span>{" "}
             {`v${version}`}
           </p>
           </div>
@@ -59,7 +57,7 @@ const ChartForm = React.memo((props) => {
             <p className="form-label mb-0">{t("Select form version")}</p>
             <select className="form-select" aria-label="Default select example"  onChange={(e) =>{ handlePieData(e.target.value);}}>
                 {
-                  sortedVersions.map((option)=> <option key={option.formId} 
+                  sortedVersions.map((option)=> <option key={option.formId}
                   value={option.formId}>v{option.version}</option>)
                 }
                 <option selected value={"all"}>{t("All")}</option>
@@ -110,7 +108,7 @@ const ChartForm = React.memo((props) => {
               {pieData.map((entry, index) => (
                 <div className=" d-flex align-items-center m-3" key={index}>
                   <span
-                    className="rounded-circle shadow  mr-2"
+                    className="rounded-circle shadow  me-2"
                     style={{
                       backgroundColor: COLORS[index % COLORS.length],
                       width: "25px",

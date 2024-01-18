@@ -1,6 +1,7 @@
 """Common setup and fixtures for the pytest suite used by this service."""
 
 import os
+from unittest.mock import patch
 
 import pytest
 from alembic import command
@@ -102,14 +103,21 @@ def session(app, database):  # pylint: disable=redefined-outer-name, invalid-nam
 @pytest.fixture(scope="session", autouse=True)
 def auto(docker_services, app):
     """Spin up a keycloak instance and initialize jwt."""
+    print("HERE---->", app.config.get("USE_DOCKER_MOCK"))
     if app.config.get("USE_DOCKER_MOCK"):
+        print("starting Keycloak")
         docker_services.start("keycloak")
+        print("Waiting for Keycloak")
         docker_services.wait_for_service("keycloak", 8081)
+        print("Setting JWT manager")
         setup_jwt_manager(app, _jwt)
-
+        print("Starting BPM")
         docker_services.start("bpm")
+        print("Starting analytics")
         docker_services.start("analytics")
+        print("Starting forms")
         docker_services.start("forms")
+        print("Starting proxy")
         docker_services.start("proxy")
 
 
@@ -121,3 +129,29 @@ def docker_compose_files(pytestconfig):
     return [
         os.path.join(str(pytestconfig.rootdir), "tests/docker", "docker-compose.yml")
     ]
+
+
+@pytest.fixture
+def mock_redis_client():
+    """Mock Redis client that will act as a simple key-value store."""
+
+    class MockRedis:
+        """Mock redis class."""
+
+        def __init__(self):
+            self.store = {}
+
+        def set(self, key, value, ex=None):
+            self.store[key] = value
+
+        def get(self, key):
+            return self.store.get(key)
+
+    mock_redis = MockRedis()
+
+    # Patch the RedisManager.get_client to return the mock_redis
+    with patch(
+        "formsflow_api_utils.utils.caching.RedisManager.get_client",
+        return_value=mock_redis,
+    ) as _mock:  # noqa
+        yield mock_redis

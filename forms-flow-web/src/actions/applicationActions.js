@@ -115,3 +115,31 @@ export const setPublicStatusLoading = (data) => (dispatch) => {
     payload: data,
   });
 };
+
+export const setApplicationSortOrder = (data) => (dispatch) => {
+  dispatch({
+    type: ACTION_CONSTANTS.IS_APPLICATION_LIST_SORT_ORDER,
+    payload: data,
+  });
+};
+
+export const setApplicationSortBy = (data) => (dispatch) => {
+  dispatch({
+    type: ACTION_CONSTANTS.IS_APPLICATION_LIST_SORT_BY,
+    payload: data,
+  });
+};
+
+export const setApplicationLoading = (data) => (dispatch) => {
+  dispatch({
+    type: ACTION_CONSTANTS.IS_APPLICATION_LOADING,
+    payload: data,
+  });
+};
+
+export const setApplicationListSearchParams = (data) => (dispatch) => {
+  dispatch({
+    type: ACTION_CONSTANTS.APPLICATION_LIST_SEARCH_PARAMS,
+    payload: data,
+  });
+};

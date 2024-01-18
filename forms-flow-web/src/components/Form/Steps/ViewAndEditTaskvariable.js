@@ -1,8 +1,7 @@
 import React, { useState } from "react";
-import TableCell from "@material-ui/core/TableCell";
-import TableRow from "@material-ui/core/TableRow";
-import Checkbox from "@material-ui/core/Checkbox";
-import Button from "@material-ui/core/Button";
+import Form from "react-bootstrap/Form";
+import Button from "react-bootstrap/Button";
+import { useTranslation } from "react-i18next";
 const ViewAndEditTaskvariable = ({
   item,
   // eslint-disable-next-line no-unused-vars
@@ -10,9 +9,10 @@ const ViewAndEditTaskvariable = ({
   deleteTaskVariable,
   editTaskVariable,
 }) => {
-  const [taskLabel, setTaskLable] = useState(item.label);
+  const [taskLabel, setTaskLabel] = useState(item.label);
   const [showInList, setShowInList] = useState(item.showInList);
   const [enableEditTaskVariable, setEnableEditTaskVariable] = useState(true);
+  const { t } = useTranslation();
 
   const saveData = (taskVariable) => {
     setEnableEditTaskVariable(true);
@@ -26,48 +26,55 @@ const ViewAndEditTaskvariable = ({
   };
   return (
     <>
-      <TableRow>
-        <TableCell scope="row">
+      <tr> 
+        <td className="p-3">
           <input
             type="text"
             disabled
             value={item.key}
             className="form-control"
+            title="Select form field"
           />
-        </TableCell>
-        <TableCell align="left">
+        </td>
+        <td className="p-3">
           <input
             type="text"
             disabled={enableEditTaskVariable}
             value={taskLabel}
             onChange={(e) => {
-              setTaskLable(e.target.value);
+              setTaskLabel(e.target.value);
             }}
             className="form-control"
+            aria-label="Task Label"
+            data-testid="form-task-variable-edit-input"
           />
-        </TableCell>
-        <TableCell align="left">
-          <Checkbox
+        </td>
+        <td className="p-3">
+          <span id="showInListLabel" className="sr-only">{t("Show in list")}</span>
+          <Form.Check
+            className="mb-3" 
             disabled={enableEditTaskVariable}
             checked={showInList}
+            aria-labelledby="showInListLabel"
             onChange={() => {
               setShowInList(!showInList);
             }}
-            color="primary"
+            type="checkbox"
+            data-testid="form-task-variable-showinlist-edit-checkbox"
           />
-        </TableCell>
-        <TableCell align="right">
+        </td>
+        <td className="text-right p-3" >
           {!enableEditTaskVariable ? (
             <Button
-              variant="outlined"
-              color="primary"
-              size="small"
+              variant="outline-primary"
+              size="sm"
               onClick={() => {
                 saveData(item);
               }}
-              startIcon={<i className="fa fa-check"></i>}
+              aria-label="Save"
+              data-testid="form-task-variable-edit-save-button"
             >
-              Save
+              <i className="fa fa-check"></i> Save
             </Button>
           ) : (
             <div>
@@ -76,7 +83,9 @@ const ViewAndEditTaskvariable = ({
                 onClick={() => {
                   deleteTaskVariable(item);
                 }}
-                className="mr-3 btn btn-danger btn fa fa-times"
+                aria-label="Delete"
+                className="me-3 btn btn-danger btn fa fa-times"
+                data-testid="form-task-variable-delete-button"
               ></i>
 
               <i
@@ -84,12 +93,14 @@ const ViewAndEditTaskvariable = ({
                 onClick={() => {
                   setEnableEditTaskVariable(false);
                 }}
-                className=" btn btn-primary fa fa-edit"
+                aria-label="Edit"
+                className="btn btn-primary fa fa-edit"
+                data-testid="form-task-variable-edit-button"
               ></i>
             </div>
           )}
-        </TableCell>
-      </TableRow>
+        </td>
+      </tr>
     </>
   );
 };

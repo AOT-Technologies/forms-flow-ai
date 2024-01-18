@@ -17,6 +17,7 @@ import {
   setUnPublishApiError,
   setResetProcess,
   setAllDmnProcessList,
+  setBpmnModel,
 } from "../../actions/processActions";
 import { setApplicationCount } from "../../actions/processActions";
 import { replaceUrl } from "../../helper/helper";
@@ -61,7 +62,11 @@ export const getProcessStatusList = (processId, taskId) => {
  *
  * @param  {...any} rest
  */
-export const fetchAllBpmProcesses = (tenant_key = null, ...rest) => {
+export const fetchAllBpmProcesses = (  {tenant_key = null,
+  firstResult,
+  maxResults,
+  searchKey,} = {},
+  ...rest) => {
   const done = rest.length ? rest[0] : () => {};
 
   let url =
@@ -75,7 +80,17 @@ export const fetchAllBpmProcesses = (tenant_key = null, ...rest) => {
   if (tenant_key) {
     url = url + "&tenantIdIn=" + tenant_key;
   }
-
+ 
+  if (firstResult) {
+    url = url + "&firstResult=" + firstResult;
+  }
+  if (maxResults) {
+    url = url + "&maxResults=" + maxResults;
+  }
+  
+  if (searchKey) {
+    url = url + `&nameLike=%25${searchKey}%25`;
+  }
   return (dispatch) => {
     // eslint-disable-next-line max-len
     RequestService.httpGETRequest(
@@ -87,6 +102,7 @@ export const fetchAllBpmProcesses = (tenant_key = null, ...rest) => {
       .then((res) => {
         if (res?.data) {
           let unique = removeTenantDuplicates(res.data, tenant_key);
+          dispatch(setProcessStatusLoading(false));
           dispatch(setAllProcessList(unique));
           done(null, res.data);
         } else {
@@ -101,7 +117,34 @@ export const fetchAllBpmProcesses = (tenant_key = null, ...rest) => {
   };
 };
 
-export const fetchAllDmnProcesses = (tenant_key = null, ...rest) => {
+export const fetchAllBpmProcessesCount = (tenant_key,searchKey,) => {
+  let url =
+    API.GET_BPM_PROCESS_LIST_COUNT +
+    "?latestVersion=true" + 
+    "&includeProcessDefinitionsWithoutTenantId=true" +
+    "&sortBy=tenantId" +
+    "&sortOrder=asc";
+
+  if (tenant_key) {
+    url = url + "&tenantIdIn=" + tenant_key;
+  }
+  if(searchKey){
+    url = url + `&nameLike=%25${searchKey}%25`;
+  }
+
+  return RequestService.httpGETRequest(
+    url,
+    {},
+    StorageService.get(StorageService.User.AUTH_TOKEN),
+    true
+  );
+};
+
+export const fetchAllDmnProcesses = ({tenant_key = null,
+  firstResult,
+  maxResults,
+  searchKey} = {},
+  ...rest) => {
   const done = rest.length ? rest[0] : () => {};
 
   let url =
@@ -113,6 +156,15 @@ export const fetchAllDmnProcesses = (tenant_key = null, ...rest) => {
 
   if (tenant_key) {
     url = url + "&tenantIdIn=" + tenant_key;
+  }
+  if (firstResult) {
+    url = url + "&firstResult=" + firstResult;
+  }
+  if (maxResults) {
+    url = url + "&maxResults=" + maxResults;
+  }
+  if (searchKey) {
+    url = url + `&resourceNameLike=%${searchKey}%`;
   }
 
   return (dispatch) => {
@@ -127,6 +179,8 @@ export const fetchAllDmnProcesses = (tenant_key = null, ...rest) => {
         if (res?.data) {
           let unique = removeTenantDuplicates(res.data, tenant_key);
           dispatch(setAllDmnProcessList(unique));
+          dispatch(setProcessStatusLoading(false));
+          dispatch(setBpmnModel(false));
           done(null, res.data);
         } else {
           dispatch(setAllDmnProcessList([]));
@@ -181,6 +235,32 @@ export const getFormProcesses = (formId, ...rest) => {
         dispatch(setFormProcessLoadError(true));
       });
   };
+};
+
+export const fetchAllDmnProcessesCount = (tenant_key = null, searchKey) => {
+ 
+
+  let url =
+    API.GET_DMN_PROCESS_LIST_COUNT +
+    "?latestVersion=true" +
+    "&includeDecisionDefinitionsWithoutTenantId=true" +
+    "&sortBy=tenantId" +
+    "&sortOrder=asc";
+
+  if (tenant_key) {
+    url = url + "&tenantIdIn=" + tenant_key;
+  }
+ 
+  if(searchKey){
+    url = url + `&resourceNameLike=%${searchKey}%`;
+  }
+
+  return RequestService.httpGETRequest(
+    url,
+    {},
+    StorageService.get(StorageService.User.AUTH_TOKEN),
+    true
+  );
 };
 
 export const getApplicationCount = (mapperId, ...rest) => {
@@ -353,6 +433,7 @@ export const fetchDiagram = (
           dispatch(
             setProcessDiagramXML(isDmn ? res.data.dmnXml : res.data.bpmn20Xml)
           );
+          
           // console.log('res.data.bpmn20Xml>>',res.data.bpmn20Xml);
         } else {
           dispatch(setProcessDiagramXML(""));

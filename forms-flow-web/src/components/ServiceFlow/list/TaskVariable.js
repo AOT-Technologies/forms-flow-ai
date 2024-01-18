@@ -5,7 +5,7 @@ const TaskVariable = ({ variables }) => {
   const [showMore, setShowMore] = useState(false);
   let variableCount = 0;
   const taskvariable = useSelector(
-    (state) => state.bpmTasks.selectedFilter?.properties?.variables || []
+    (state) => state.bpmTasks.selectedFilter?.variables || []
   );
 
   const rowReturn = (taskItem, data, index) => {
@@ -58,7 +58,7 @@ const TaskVariable = ({ variables }) => {
       </Row>
       {taskvariable.length > 2 && variables.length > 2 && (
         <Row
-          className="justify-content-center"
+          className="justify-content-center text-center"
           onClick={(e) => {
             e.stopPropagation();
             setShowMore(!showMore);

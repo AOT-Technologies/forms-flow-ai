@@ -4,12 +4,13 @@ import { StorageService, RequestService } from "@formsflow/service";
 import API from "../endpoints";
 import {getFormUrlWithFormIdSubmissionId} from "./formatterService";
 
-export const getProcessReq = (form, submissionId, origin ) => {
+export const getProcessReq = (form, submissionId, origin, submissionData ) => {
   const requestFormat = {
     formId: form._id,
     submissionId: submissionId,
     formUrl: getFormUrlWithFormIdSubmissionId(form._id, submissionId),
-    webFormUrl: `${origin}form/${form._id}/submission/${submissionId}`
+    webFormUrl: `${origin}form/${form._id}/submission/${submissionId}`,
+    data: submissionData
   };
   return requestFormat;
 };
@@ -42,6 +43,11 @@ export const formatForms = (forms) => {
       _id: form.formId,
       title: form.formName,
       processKey: form.processKey,
+      status: form.status,
+      anonymous: form.anonymous,
+      description:form.description,
+      created: form.created,
+      formType: form.formType
     };
   });
 };

@@ -1,16 +1,14 @@
 """API endpoints for draft resource."""
 from http import HTTPStatus
 
-from flask import current_app, request
+from flask import request
 from flask_restx import Namespace, Resource, fields
-from formsflow_api_utils.exceptions import BusinessException
 from formsflow_api_utils.utils import (
     NEW_APPLICATION_STATUS,
     auth,
     cors_preflight,
     profiletime,
 )
-from marshmallow.exceptions import ValidationError
 
 from formsflow_api.schemas import (
     ApplicationSchema,
@@ -163,26 +161,15 @@ class DraftResource(Resource):
     )
     def get():
         """Retrieve drafts."""
-        try:
-            token = request.headers["Authorization"]
-            dict_data = DraftListSchema().load(request.args) or {}
-            draft_list, count = DraftService.get_all_drafts(dict_data)
-            application_count = ApplicationService.get_application_count(auth, token)
-            result = {
-                "drafts": draft_list,
-                "totalCount": count,
-                "applicationCount": application_count,
-            }
-            return (result, HTTPStatus.OK)
-
-        except BaseException as submission_err:  # pylint: disable=broad-except
-            response, status = {
-                "type": "Bad request error",
-                "message": "Invalid submission request passed",
-            }, HTTPStatus.BAD_REQUEST
-            current_app.logger.warning(response)
-            current_app.logger.warning(submission_err)
-            return response, status
+        dict_data = DraftListSchema().load(request.args) or {}
+        draft_list, count = DraftService.get_all_drafts(dict_data)
+        application_count = ApplicationService.get_application_count(auth)
+        result = {
+            "drafts": draft_list,
+            "totalCount": count,
+            "applicationCount": application_count,
+        }
+        return (result, HTTPStatus.OK)
 
     @staticmethod
     @auth.require
@@ -195,31 +182,18 @@ class DraftResource(Resource):
     )
     def post():
         """Create a new draft."""
-        try:
-            application_json = request.get_json()
-            application_schema = ApplicationSchema()
-            application_dict_data = application_schema.load(application_json)
-            draft_json = request.get_json()
-            draft_schema = DraftSchema()
-            draft_dict_data = draft_schema.load(draft_json)
-            token = request.headers["Authorization"]
-            res = DraftService.create_new_draft(
-                application_dict_data, draft_dict_data, token
-            )
-            response = draft_schema.dump(res)
-            return (response, HTTPStatus.CREATED)
-        except BusinessException as err:
-            current_app.logger.warning(err)
-            response, status = err.error, err.status_code
-            return response, status
-        except BaseException as draft_err:  # pylint: disable=broad-except
-            response, status = {
-                "type": "Bad request error",
-                "message": "Invalid submission request passed",
-            }, HTTPStatus.BAD_REQUEST
-            current_app.logger.warning(response)
-            current_app.logger.warning(draft_err)
-            return response, status
+        application_json = request.get_json()
+        application_schema = ApplicationSchema()
+        application_dict_data = application_schema.load(application_json)
+        draft_json = request.get_json()
+        draft_schema = DraftSchema()
+        draft_dict_data = draft_schema.load(draft_json)
+        token = request.headers["Authorization"]
+        res = DraftService.create_new_draft(
+            application_dict_data, draft_dict_data, token
+        )
+        response = draft_schema.dump(res)
+        return response, HTTPStatus.CREATED
 
 
 @cors_preflight("GET,PUT,DELETE,OPTIONS")
@@ -237,11 +211,7 @@ class DraftResourceById(Resource):
     )
     def get(draft_id: str):
         """Get draft by id."""
-        try:
-            return DraftService.get_draft(draft_id), HTTPStatus.OK
-        except BusinessException as err:
-            current_app.logger.warning(err)
-            return err.error, err.status_code
+        return DraftService.get_draft(draft_id), HTTPStatus.OK
 
     @staticmethod
     @auth.require
@@ -258,30 +228,13 @@ class DraftResourceById(Resource):
     def put(draft_id: int):
         """Update draft details."""
         draft_json = request.get_json()
-        try:
-            draft_schema = DraftSchema()
-            dict_data = draft_schema.load(draft_json)
-            DraftService.update_draft(draft_id=draft_id, data=dict_data)
-            return (
-                f"Updated {draft_id} successfully",
-                HTTPStatus.OK,
-            )
-        except BusinessException as err:
-            # exception from draft service
-            current_app.logger.warning(err)
-            error, status = err.error, err.status_code
-            return error, status
-
-        except BaseException as submission_err:  # pylint: disable=broad-except
-            response, status = {
-                "type": "Bad request error",
-                "message": "Invalid request data",
-            }, HTTPStatus.BAD_REQUEST
-
-            current_app.logger.warning(response)
-            current_app.logger.warning(submission_err)
-
-            return response, status
+        draft_schema = DraftSchema()
+        dict_data = draft_schema.load(draft_json)
+        DraftService.update_draft(draft_id=draft_id, data=dict_data)
+        return (
+            f"Updated {draft_id} successfully",
+            HTTPStatus.OK,
+        )
 
     @staticmethod
     @auth.require
@@ -293,12 +246,8 @@ class DraftResourceById(Resource):
     )
     def delete(draft_id: int):
         """Delete draft."""
-        try:
-            DraftService.delete_draft(draft_id)
-            return {"message": "Draft deleted successfully"}, HTTPStatus.OK
-        except BusinessException as err:
-            current_app.logger.warning(err)
-            return err.error, err.status_code
+        DraftService.delete_draft(draft_id)
+        return {"message": "Draft deleted successfully"}, HTTPStatus.OK
 
 
 @cors_preflight("PUT, OPTIONS")
@@ -317,34 +266,14 @@ class DraftSubmissionResource(Resource):
     )
     def put(draft_id: str):
         """Updates the application and draft entry to create a new submission."""
-        try:
-            payload = request.get_json()
-            token = request.headers["Authorization"]
-            application_schema = ApplicationSubmissionSchema()
-            dict_data = application_schema.load(payload)
-            dict_data["application_status"] = NEW_APPLICATION_STATUS
-            response = DraftService.make_submission_from_draft(
-                dict_data, draft_id, token
-            )
-            res = ApplicationSchema().dump(response)
-            return res, HTTPStatus.OK
-
-        except ValidationError as err:
-            current_app.logger.warning(err)
-            response, status = {
-                "type": "Bad request error",
-                "message": "Invalid request data",
-            }, HTTPStatus.BAD_REQUEST
-            return response, status
-
-        except BusinessException as err:
-            # exception from draft service
-            current_app.logger.warning(err)
-            error, status = err.error, err.status_code
-            return error, status
-
-        except Exception as unexpected_error:
-            raise unexpected_error
+        payload = request.get_json()
+        token = request.headers["Authorization"]
+        application_schema = ApplicationSubmissionSchema()
+        dict_data = application_schema.load(payload)
+        dict_data["application_status"] = NEW_APPLICATION_STATUS
+        response = DraftService.make_submission_from_draft(dict_data, draft_id, token)
+        res = ApplicationSchema().dump(response)
+        return res, HTTPStatus.OK
 
 
 @cors_preflight("POST, OPTIONS")
@@ -362,28 +291,15 @@ class PublicDraftResource(Resource):
     )
     def post():
         """Create a new draft submission."""
-        try:
-            application_json = draft_json = request.get_json()
-            application_schema = ApplicationSchema()
-            draft_schema = DraftSchema()
+        application_json = draft_json = request.get_json()
+        application_schema = ApplicationSchema()
+        draft_schema = DraftSchema()
 
-            application_dict_data = application_schema.load(application_json)
-            draft_dict_data = draft_schema.load(draft_json)
-            res = DraftService.create_new_draft(application_dict_data, draft_dict_data)
-            response = draft_schema.dump(res)
-            return (response, HTTPStatus.CREATED)
-        except BusinessException as err:
-            current_app.logger.warning(err)
-            response, status = err.error, err.status_code
-            return response, status
-        except BaseException as draft_err:  # pylint: disable=broad-except
-            response, status = {
-                "type": "Bad request error",
-                "message": "Invalid submission request passed",
-            }, HTTPStatus.BAD_REQUEST
-            current_app.logger.warning(response)
-            current_app.logger.warning(draft_err)
-            return response, status
+        application_dict_data = application_schema.load(application_json)
+        draft_dict_data = draft_schema.load(draft_json)
+        res = DraftService.create_new_draft(application_dict_data, draft_dict_data)
+        response = draft_schema.dump(res)
+        return response, HTTPStatus.CREATED
 
 
 @cors_preflight("PUT, OPTIONS")
@@ -401,31 +317,13 @@ class PublicDraftResourceById(Resource):
     )
     def put(draft_id: int):
         """Updates the application and draft entry to create a new submission."""
-        try:
-            payload = request.get_json()
-            application_schema = ApplicationSubmissionSchema()
-            dict_data = application_schema.load(payload)
-            dict_data["application_status"] = NEW_APPLICATION_STATUS
-            response = DraftService.make_submission_from_draft(dict_data, draft_id)
-            res = ApplicationSchema().dump(response)
-            return res, HTTPStatus.OK
-
-        except ValidationError as err:
-            current_app.logger.warning(err)
-            response, status = {
-                "type": "Bad request error",
-                "message": "Invalid request data",
-            }, HTTPStatus.BAD_REQUEST
-            return response, status
-
-        except BusinessException as err:
-            # exception from draft service
-            current_app.logger.warning(err)
-            error, status = err.error, err.status_code
-            return error, status
-
-        except Exception as unexpected_error:
-            raise unexpected_error
+        payload = request.get_json()
+        application_schema = ApplicationSubmissionSchema()
+        dict_data = application_schema.load(payload)
+        dict_data["application_status"] = NEW_APPLICATION_STATUS
+        response = DraftService.make_submission_from_draft(dict_data, draft_id)
+        res = ApplicationSchema().dump(response)
+        return res, HTTPStatus.OK
 
 
 @cors_preflight("PUT, OPTIONS")
@@ -447,27 +345,10 @@ class PublicDraftUpdateResourceById(Resource):
     def put(draft_id: int):
         """Update draft details."""
         draft_json = request.get_json()
-        try:
-            draft_schema = DraftSchema()
-            dict_data = draft_schema.load(draft_json)
-            DraftService.update_draft(draft_id=draft_id, data=dict_data)
-            return (
-                f"Updated {draft_id} successfully",
-                HTTPStatus.OK,
-            )
-        except BusinessException as err:
-            # exception from draft service
-            current_app.logger.warning(err)
-            error, status = err.error, err.status_code
-            return error, status
-
-        except BaseException as submission_err:  # pylint: disable=broad-except
-            response, status = {
-                "type": "Bad request error",
-                "message": "Invalid request data",
-            }, HTTPStatus.BAD_REQUEST
-
-            current_app.logger.warning(response)
-            current_app.logger.warning(submission_err)
-
-            return response, status
+        draft_schema = DraftSchema()
+        dict_data = draft_schema.load(draft_json)
+        DraftService.update_draft(draft_id=draft_id, data=dict_data)
+        return (
+            f"Updated {draft_id} successfully",
+            HTTPStatus.OK,
+        )

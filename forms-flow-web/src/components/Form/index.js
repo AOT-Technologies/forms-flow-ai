@@ -47,7 +47,7 @@ export default React.memo(() => {
     return <Loading />;
   }
   return (
-    <div className="container" id="main" data-testid="Form-index">
+    <div data-testid="Form-index">
       <Switch>
         <Route exact path={`${BASE_ROUTE}form`} component={List} />
         <CreateFormRoute

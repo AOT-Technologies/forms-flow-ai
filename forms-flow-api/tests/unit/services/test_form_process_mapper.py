@@ -18,7 +18,7 @@ def test_get_form_mapper_count(app, client, session):
     """Tets the get_mapper_count method."""
     rv = form_service.get_mapper_count()
     assert not rv
-    assert type(rv) == int
+    assert isinstance(rv, int)
 
 
 # def test_get_form_mapper(session):

@@ -19,7 +19,7 @@ In the following document, we’ll describe the details of dependencies of vario
    | Component | Version |  
    | ---       | -----   |
    |  Python   |  3.9    |
-   | Flask     |  2.3.2  |
+   | Flask     |  2.3.3  |
    |  Postgres |  11.0   |
 
   <br>
@@ -30,8 +30,8 @@ In the following document, we’ll describe the details of dependencies of vario
 
    | Component | Version|  
    | ---       | -----  |
-   |  Camunda  |  7.18.0|
-   |  SpringBoot  | 2.7.12 |
+   |  Camunda  |  7.20.0 |
+   |  SpringBoot  | 3.1.5 |
    | Postgres    | Latest |
   <br>
   

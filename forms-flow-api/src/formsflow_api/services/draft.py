@@ -1,6 +1,6 @@
 """This exposes submission service."""
 
-from http import HTTPStatus
+import json
 from typing import Dict
 
 from formsflow_api_utils.exceptions import BusinessException
@@ -8,6 +8,7 @@ from formsflow_api_utils.utils import ANONYMOUS_USER, DRAFT_APPLICATION_STATUS
 from formsflow_api_utils.utils.enums import FormProcessMapperStatus
 from formsflow_api_utils.utils.user_context import UserContext, user_context
 
+from formsflow_api.constants import BusinessErrorCode
 from formsflow_api.models import Application, Draft, FormProcessMapper
 from formsflow_api.schemas import DraftSchema
 
@@ -39,36 +40,21 @@ class DraftService:
         mapper = FormProcessMapper.find_form_by_form_id(application_payload["form_id"])
         if mapper is None:
             if tenant_key:
-                raise BusinessException(
-                    f"Permission denied, formId - {application_payload['form_id']}.",
-                    HTTPStatus.FORBIDDEN,
-                )
-            raise BusinessException(
-                f"Mapper does not exist with formId - {application_payload['form_id']}.",
-                HTTPStatus.BAD_REQUEST,
-            )
+                raise BusinessException(BusinessErrorCode.PERMISSION_DENIED)
+            raise BusinessException(BusinessErrorCode.FORM_ID_NOT_FOUND)
         if (mapper.status == FormProcessMapperStatus.INACTIVE.value) or (
             not token and not mapper.is_anonymous
         ):
-            raise BusinessException(
-                f"Permission denied, formId - {application_payload['form_id']}.",
-                HTTPStatus.FORBIDDEN,
-            )
+            raise BusinessException(BusinessErrorCode.PERMISSION_DENIED)
         if tenant_key is not None and mapper.tenant != tenant_key:
-            raise BusinessException(
-                "Tenant authentication failed.", HTTPStatus.FORBIDDEN
-            )
+            raise BusinessException(BusinessErrorCode.PERMISSION_DENIED)
         application_payload["form_process_mapper_id"] = mapper.id
 
         application_payload["application_status"] = DRAFT_APPLICATION_STATUS
         application_payload["submission_id"] = None
         application = cls.__create_draft_application(application_payload)
         if not application:
-            response, status = {
-                "type": "Internal server error",
-                "message": "Unable to create application",
-            }, HTTPStatus.INTERNAL_SERVER_ERROR
-            raise BusinessException(response, status)
+            raise BusinessException(BusinessErrorCode.APPLICATION_CREATE_ERROR)
         draft_payload["application_id"] = application.id
         draft = cls.__create_draft(draft_payload)
         return draft
@@ -84,11 +70,7 @@ class DraftService:
             draft_schema = DraftSchema()
             return draft_schema.dump(draft)
 
-        response, status = {
-            "type": "Bad request error",
-            "message": f"Invalid request data - draft id {draft_id} does not exist",
-        }, HTTPStatus.BAD_REQUEST
-        raise BusinessException(response, status)
+        raise BusinessException(BusinessErrorCode.DRAFT_APPLICATION_NOT_FOUND)
 
     @staticmethod
     @user_context
@@ -100,11 +82,7 @@ class DraftService:
         if draft:
             draft.update(data)
         else:
-            response, status = {
-                "type": "Bad request error",
-                "message": f"Invalid request data - draft id {draft_id} does not exist",
-            }, HTTPStatus.BAD_REQUEST
-            raise BusinessException(response, status)
+            raise BusinessException(BusinessErrorCode.DRAFT_APPLICATION_NOT_FOUND)
 
     @staticmethod
     @user_context
@@ -142,11 +120,7 @@ class DraftService:
         user_id: str = user.user_name or ANONYMOUS_USER
         draft = Draft.make_submission(draft_id, data, user_id)
         if not draft:
-            response, status = {
-                "type": "Bad request error",
-                "message": f"Invalid request data - draft id {draft_id} does not exist",
-            }, HTTPStatus.BAD_REQUEST
-            raise BusinessException(response, status)
+            raise BusinessException(BusinessErrorCode.DRAFT_APPLICATION_NOT_FOUND)
 
         application = Application.find_by_id(draft.application_id)
         mapper = FormProcessMapper.find_form_by_form_id(application.latest_form_id)
@@ -154,8 +128,14 @@ class DraftService:
             # The form mapper version got updated after the draft entry
             # was created, update the application with new mapper
             application.update({"form_process_mapper_id": mapper.id})
+        task_variables = (
+            json.loads(mapper.task_variable) if mapper.task_variable is not None else []
+        )
+        variables = ApplicationService.fetch_task_variable_values(
+            task_variables, data.get("data", {})
+        )
         payload = ApplicationService.get_start_task_payload(
-            application, mapper, data["form_url"], data["web_form_url"]
+            application, mapper, data["form_url"], data["web_form_url"], variables
         )
         ApplicationService.start_task(mapper, payload, token, application)
         return application
@@ -171,8 +151,4 @@ class DraftService:
             # deletes the draft and application entry related to the draft.
             draft.delete()
         else:
-            response, status = {
-                "type": "Bad request error",
-                "message": f"Invalid request data - draft id {draft_id} does not exist",
-            }, HTTPStatus.BAD_REQUEST
-            raise BusinessException(response, status)
+            raise BusinessException(BusinessErrorCode.DRAFT_APPLICATION_NOT_FOUND)

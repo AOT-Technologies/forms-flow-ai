@@ -62,7 +62,7 @@ def get_form_request_payload():
     return {
         "formId": "1234",
         "formName": "Sample form",
-        "processKey": "oneStepApproval",
+        "processKey": "onestepapproval",
         "processName": "One Step Approval",
         "status": "active",
         "comments": "test",
@@ -78,7 +78,7 @@ def get_form_request_payload_private():
     return {
         "formId": "12",
         "formName": "Sample private form",
-        "processKey": "oneStepApproval",
+        "processKey": "onestepapproval",
         "processName": "OneStep Approval",
         "status": "active",
         "comments": "test",
@@ -94,7 +94,7 @@ def get_form_request_payload_public_inactive():
     return {
         "formId": "12",
         "formName": "Sample private form",
-        "processKey": "oneStepApproval",
+        "processKey": "onestepapproval",
         "processName": "OneStep Approval",
         "status": "Inactive",
         "comments": "test",
@@ -152,7 +152,7 @@ def get_form_payload():
     return {
         "formId": "63736e889fe51130648f0fe4",
         "formName": "Sample form",
-        "processKey": "oneStepApproval",
+        "processKey": "onestepapproval",
         "processName": "One Step Approval",
         "status": "active",
         "comments": "test",
@@ -551,7 +551,11 @@ def factory_auth(
     ).save()
 
 
-def get_filter_payload(name: str = "Test Task", roles: list = [], users: list = []):
+def get_filter_payload(
+    name: str = "Test Task",
+    roles: list = [],
+    users: list = [],
+):
     """Return filter create payload."""
     return {
         "name": name,
@@ -561,6 +565,16 @@ def get_filter_payload(name: str = "Test Task", roles: list = [], users: list = 
         "properties": {"priority": 10},
         "users": users,
         "roles": roles,
+        "taskVisibleAttributes": {
+            "applicationId": True,
+            "assignee": True,
+            "taskTitle": True,
+            "createdDate": True,
+            "dueDate": True,
+            "followUp": True,
+            "priority": True,
+            "groups": True,
+        },
     }
 
 

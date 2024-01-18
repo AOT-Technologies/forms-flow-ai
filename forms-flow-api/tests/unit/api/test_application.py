@@ -1,10 +1,14 @@
 """Test suite for application API endpoint."""
+import os
+
 import pytest
+import requests
 
 from tests.utilities.base_test import (
     get_application_create_payload,
     get_draft_create_payload,
     get_form_request_payload,
+    get_formio_form_request_payload,
     get_token,
 )
 
@@ -17,9 +21,9 @@ class TestApplicationResource:
         response = client.get("/application")
         assert response.status_code == 401
         assert response.json == {
-            "type": "Invalid Token Error",
-            "message": "Access to formsflow.ai API Denied. Check if the bearer token is passed for "
-            "Authorization or has expired.",
+            "message": "Invalid Token Error",
+            "code": "INVALID_AUTH_TOKEN",
+            "details": [],
         }
 
     def test_application_list(self, app, client, session, jwt):
@@ -98,6 +102,7 @@ class TestApplicationResource:
             headers=headers,
             json=get_application_create_payload(form_id),
         )
+
         assert rv.status_code == 201
         response = client.get(
             f"/application?pageNo={pageNo}&limit={limit}&{filters}",
@@ -132,9 +137,9 @@ class TestApplicationDetailView:
         response = client.get("/application/1")
         assert response.status_code == 401
         assert response.json == {
-            "type": "Invalid Token Error",
-            "message": "Access to formsflow.ai API Denied. Check if the "
-            "bearer token is passed for Authorization or has expired.",
+            "message": "Invalid Token Error",
+            "code": "INVALID_AUTH_TOKEN",
+            "details": [],
         }
 
     def test_application_detailed_view(self, app, client, session, jwt):
@@ -159,7 +164,7 @@ class TestApplicationDetailView:
         response = client.get(f"/application/{application_id}", headers=headers)
         assert response.status_code == 200
         assert response.json["applicationName"] == "Sample form"
-        assert response.json["processKey"] == "oneStepApproval"
+        assert response.json["processKey"] == "onestepapproval"
 
 
 def test_application_resource_by_form_id(app, client, session, jwt):
@@ -343,3 +348,69 @@ def test_application_resubmit(app, client, session, jwt):
         f"/application/{application_id}/resubmit", headers=headers, json=payload
     )
     assert rv.status_code == 200
+
+
+def test_capture_process_variables_application_create(
+    app, client, session, jwt, mock_redis_client
+):
+    """Tests the capturing of process variables in the application creation method."""
+    token = get_token(jwt, role="formsflow-designer", username="designer")
+    headers = {
+        "Authorization": f"Bearer {token}",
+        "content-type": "application/json",
+    }
+    # Design form
+    response = client.post(
+        "/form/form-design", headers=headers, json=get_formio_form_request_payload()
+    )
+    assert response.status_code == 201
+    form_id = response.json.get("_id")
+    # Added task variable to the form
+    payload = {
+        "formId": form_id,
+        "formName": "Sample form",
+        "processKey": "two-step-approval",
+        "processName": "Two Step Approval",
+        "status": "active",
+        "formType": "form",
+        "parentFormId": "1234",
+        "taskVariable": [
+            {
+                "key": "textField",
+                "defaultLabel": "Text Field",
+                "label": "Text Field",
+                "showInList": False,
+            }
+        ],
+    }
+    rv = client.post("/form", headers=headers, json=payload)
+    assert rv.status_code == 201
+    form_id = rv.json.get("formId")
+
+    # Submit new application as client
+    payload = get_application_create_payload(form_id)
+    payload["data"] = {
+        "textField": "Test",
+        "applicationId": "",
+        "applicationStatus": "",
+    }
+    token = get_token(jwt)
+    headers = {
+        "Authorization": f"Bearer {token}",
+        "content-type": "application/json",
+    }
+    rv = client.post(
+        "/application/create",
+        headers=headers,
+        json=payload,
+    )
+
+    assert rv.status_code == 201
+    processInstanceId = rv.json.get("processInstanceId")
+    assert processInstanceId is not None
+    # Check variable added to process
+    bpm_api_base = os.getenv("BPM_API_URL")
+    url = f"{bpm_api_base}/engine-rest-ext/v1/process-instance/{processInstanceId}/variables"
+    response = requests.get(url, headers=headers)
+    assert response.status_code == 200
+    assert response.json().get("textField") == {"type": "String", "value": "Test"}

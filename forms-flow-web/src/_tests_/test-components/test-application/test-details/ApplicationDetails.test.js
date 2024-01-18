@@ -3,7 +3,6 @@ import { render, screen, configure } from "@testing-library/react";
 import "@testing-library/jest-dom/extend-expect";
 import startCase from "lodash/startCase";
 import ApplicationDetails from "../../../../components/Application/Details/ApplicationDetails";
-import { getLocalDateTime } from "../../../../apiManager/services/formatterService";
 import Details from "../../../../components/Application/Details";
 import { useSelector } from "react-redux";
 import { mockApplication1, mockApplication2 } from "./constant";
@@ -21,27 +20,27 @@ afterEach(() => {
   useSelector.mockClear();
 });
 
-test("Render Application Detail Component with application prop passed", () => {
+test("Render Submission Detail Component with submission prop passed", () => {
   render(<ApplicationDetails application={mockApplication1} />);
-  expect(screen.getByText("Application Id"));
-  expect(screen.getByText("Application Name"));
+  expect(screen.getByText("Submission ID"));
+  expect(screen.getByText("Form Name"));
   expect(screen.getByText("Created By"));
-  expect(screen.getByText("Application Status"));
+  expect(screen.getByText("Submission Status"));
   expect(screen.getByText("Submitted On"));
   expect(screen.getByText("Modified On"));
 });
 
-test("Render Detail Component with application prop passed", () => {
+test("Render Detail Component with submission prop passed", () => {
   useSelector.mockImplementation((callback) => callback(appState));
   const { rerender } = render(<Details application={mockApplication1} />);
   expect(screen.queryByText("Loading...")).toBeNull();
-  expect(screen.getByText("Application Id"));
+  expect(screen.getByText("Submission ID"));
   expect(screen.getByTestId("application-id")).toHaveTextContent(
     mockApplication1.id
   );
-  expect(screen.getByText("Application Name"));
+  expect(screen.getByText("Form Name"));
   expect(screen.getByText("Created By"));
-  expect(screen.getByText("Application Status"));
+  expect(screen.getByText("Submission Status"));
   expect(screen.getByText("Submitted On"));
   expect(screen.getByText("Modified On"));
 
@@ -60,7 +59,7 @@ test("Render Detail Component with application prop passed", () => {
   );
 });
 
-test("calling render Application Detail with different Props", () => {
+test("calling render Submission Detail with different Props", async () => {
   const { rerender } = render(
     <ApplicationDetails application={mockApplication1} />
   );
@@ -76,12 +75,6 @@ test("calling render Application Detail with different Props", () => {
   expect(screen.getByTestId("created-by")).toHaveTextContent(
     mockApplication1.createdBy
   );
-  expect(screen.getByTestId("application-created")).toHaveTextContent(
-    getLocalDateTime(mockApplication1.created)
-  );
-  expect(screen.getByTestId("application-modified")).toHaveTextContent(
-    getLocalDateTime(mockApplication1.modified)
-  );
 
   // re-render the same component with different props
   rerender(<ApplicationDetails application={mockApplication2} />);
@@ -96,11 +89,5 @@ test("calling render Application Detail with different Props", () => {
   );
   expect(screen.getByTestId("created-by")).toHaveTextContent(
     mockApplication2.createdBy
-  );
-  expect(screen.getByTestId("application-created")).toHaveTextContent(
-    getLocalDateTime(mockApplication2.created)
-  );
-  expect(screen.getByTestId("application-modified")).toHaveTextContent(
-    getLocalDateTime(mockApplication2.modified)
   );
 });

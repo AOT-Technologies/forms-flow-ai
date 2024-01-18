@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useMemo } from "react";
 import { connect, useSelector } from "react-redux";
 import {
   selectRoot,
@@ -11,7 +11,7 @@ import {
 import { push } from "connected-react-router";
 import Loading from "../../../../../containers/Loading";
 import { setFormSubmissionLoading } from "../../../../../actions/formActions";
-import LoadingOverlay from "react-loading-overlay";
+import LoadingOverlay from "react-loading-overlay-ts";
 import { useTranslation } from "react-i18next";
 import { formio_resourceBundles } from "../../../../../resourceBundles/formio_resourceBundles";
 import {
@@ -39,19 +39,20 @@ const View = React.memo((props) => {
     (state) => state.customSubmission?.submission || {}
   );
 
-  let updatedSubmission;
-  if (CUSTOM_SUBMISSION_URL && CUSTOM_SUBMISSION_ENABLE) {
-    updatedSubmission = customSubmission;
-  } else {
-    updatedSubmission = submission;
-  }
+  const updatedSubmission = useMemo(()=>{
+    if (CUSTOM_SUBMISSION_URL && CUSTOM_SUBMISSION_ENABLE) {
+      return customSubmission;
+    } else {
+      return submission;
+    }
+  },[customSubmission,submission]);
 
-  if (isFormActive || (isSubActive && !isFormSubmissionLoading)) {
+  if (isFormActive || (isSubActive && !isFormSubmissionLoading) || !updatedSubmission?.data) {
     return <Loading />;
   }
 
   return (
-    <div className="container row task-container">
+    <div className="container row task-container bg-white p-2 m-0">
       <div className="main-header" style={{ "height": "45px" }}>
         <h3 className="task-head text-truncate"> {form.title}</h3>
         {showPrintButton && form?._id ? (

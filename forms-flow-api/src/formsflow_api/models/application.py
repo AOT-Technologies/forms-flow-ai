@@ -2,7 +2,7 @@
 
 from __future__ import annotations
 
-from flask_sqlalchemy import BaseQuery
+from flask_sqlalchemy.query import Query
 from formsflow_api_utils.utils import (
     DRAFT_APPLICATION_STATUS,
     FILTER_MAPS,
@@ -33,6 +33,8 @@ class Application(
     # Submission id will be null for drafts
     submission_id = db.Column(db.String(100), nullable=True)
     latest_form_id = db.Column(db.String(100), nullable=False)
+    is_resubmit = db.Column(db.Boolean, nullable=True, default=False)
+    event_name = db.Column(db.String(100), nullable=True)
 
     draft = db.relationship(
         "Draft", backref=db.backref("Application", cascade="save-update, merge, delete")
@@ -64,6 +66,8 @@ class Application(
                 "form_process_mapper_id",
                 "process_instance_id",
                 "modified_by",
+                "is_resubmit",
+                "event_name",
             ],
             mapper_info,
         )
@@ -93,6 +97,8 @@ class Application(
                 cls.created,
                 cls.modified,
                 cls.modified_by,
+                cls.is_resubmit,
+                cls.event_name,
                 FormProcessMapper.process_key,
                 FormProcessMapper.process_name,
                 FormProcessMapper.process_tenant,
@@ -176,6 +182,8 @@ class Application(
             cls.created,
             cls.modified,
             cls.modified_by,
+            cls.is_resubmit,
+            cls.event_name,
             FormProcessMapper.form_name.label("application_name"),
             FormProcessMapper.process_key.label("process_key"),
             FormProcessMapper.process_name.label("process_name"),
@@ -228,6 +236,8 @@ class Application(
                 cls.created,
                 cls.modified,
                 cls.modified_by,
+                cls.is_resubmit,
+                cls.event_name,
                 FormProcessMapper.form_name.label("application_name"),
                 FormProcessMapper.process_key.label("process_key"),
                 FormProcessMapper.process_name.label("process_name"),
@@ -286,19 +296,32 @@ class Application(
         return pagination.items, total_count
 
     @classmethod
-    def find_applications_by_process_key(  # pylint: disable=too-many-arguments
+    def find_applications_by_auth_formids_user(  # pylint: disable=too-many-arguments
         cls,
         page_no: int,
         limit: int,
         order_by: str,
         sort_order: str,
-        process_key: str,
+        form_ids: str,
+        user_name: str,
         **filters,
     ):
-        """Fetch applications list based on searching parameters for Reviewer."""
+        """List applications for Reviewers.
+
+        Based on application auth permissions and user who submitted the application.
+        """
+        # Get latest row for each form_id group
+        filtered_form_query = FormProcessMapper.get_latest_form_mapper_ids()
+        filtered_form_ids = [
+            data.id for data in filtered_form_query if data.parent_form_id in form_ids
+        ]
         query = cls.filter_conditions(**filters)
         query = FormProcessMapper.tenant_authorization(query=query)
-        query = query.filter(FormProcessMapper.process_key.in_(process_key))
+        query = query.filter(
+            or_(
+                FormProcessMapper.id.in_(filtered_form_ids), cls.created_by == user_name
+            )
+        )
         query = cls.filter_draft_applications(query=query)
         order_by, sort_order = validate_sort_order_and_order_by(order_by, sort_order)
         if order_by and sort_order:
@@ -335,6 +358,8 @@ class Application(
                 cls.created,
                 cls.modified,
                 cls.modified_by,
+                cls.is_resubmit,
+                cls.event_name,
                 FormProcessMapper.form_name.label("application_name"),
                 FormProcessMapper.process_key.label("process_key"),
                 FormProcessMapper.process_name.label("process_name"),
@@ -696,10 +721,10 @@ class Application(
         return query
 
     @classmethod
-    def filter_draft_applications(cls, query: BaseQuery):
+    def filter_draft_applications(cls, query: Query):
         """Modifies the query to filter draft applications."""
-        if not isinstance(query, BaseQuery):
-            raise TypeError("Query object must be of type BaseQuery")
+        if not isinstance(query, Query):
+            raise TypeError("Query object must be of type Query")
         return query.filter(cls.application_status != DRAFT_APPLICATION_STATUS)
 
     @classmethod
@@ -735,4 +760,35 @@ class Application(
         )
         query = cls.filter_draft_applications(query=query)
         query = query.filter(Application.created_by == user_id)
+        return query.count()
+
+    @classmethod
+    def find_form_parent_id_by_application_id(cls, application_id: int) -> Application:
+        """Find form parent id for the provided application id."""
+        return (
+            db.session.query(FormProcessMapper.parent_form_id)
+            .join(Application)
+            .filter(Application.id == application_id)
+            .scalar()
+        )
+
+    @classmethod
+    def get_auth_application_count_by_form_id_user(cls, form_ids, user_name):
+        """Retrieves authorized application count by form ids & submitted user."""
+        # Get latest row for each form_id group
+        filtered_form_query = FormProcessMapper.get_latest_form_mapper_ids()
+        filtered_form_ids = [
+            data.id for data in filtered_form_query if data.parent_form_id in form_ids
+        ]
+        query = FormProcessMapper.tenant_authorization(
+            query=cls.query.join(
+                FormProcessMapper, cls.form_process_mapper_id == FormProcessMapper.id
+            )
+        )
+        query = query.filter(
+            or_(
+                FormProcessMapper.id.in_(filtered_form_ids), cls.created_by == user_name
+            )
+        )
+        query = cls.filter_draft_applications(query=query)
         return query.count()

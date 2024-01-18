@@ -74,10 +74,12 @@ Start the **analytics server** by following the instructions given [here](../../
 `FORMIO_DB_USERNAME`|Mongo Root Username. Used on installation, Choose your own||`admin`
 `FORMIO_DB_PASSWORD`|Mongo Root Password. Used on installation, Choose your own||`changeme`
 `FORMIO_DB_NAME`|Mongo Database  Name. Used on installation to create the database. Choose your own||`formio`
+`NO_INSTALL`|To setup FORMIO client ui disabled |1 / 0|`1`
 `FORMIO_DEFAULT_PROJECT_URL`:triangular_flag_on_post:|The URL of the forms-flow-forms server||`http://{your-ip-address}:3001`
 `FORMIO_ROOT_EMAIL`|forms-flow-forms admin login|eg. admin@example.com|`admin@example.com`
 `FORMIO_ROOT_PASSWORD`|forms-flow-forms admin password|eg.changeme|`changeme`
 `FORMIO_JWT_SECRET`|forms-flow-forms jwt secret| |`--- change me now ---`
+`NO_INSTALL`|to enable/disable UI for Formio client| 1 or 0 | `1`
  
 
 

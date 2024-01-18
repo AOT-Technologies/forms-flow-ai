@@ -2,8 +2,10 @@
 import datetime
 from typing import Dict, List
 
+from formsflow_api_utils.exceptions import BusinessException
 from formsflow_api_utils.utils.user_context import UserContext, user_context
 
+from formsflow_api.constants import BusinessErrorCode
 from formsflow_api.models import Authorization, AuthType
 from formsflow_api.schemas import ApplicationSchema
 
@@ -79,6 +81,7 @@ class AuthorizationService:
             user_name=user.user_name,
             roles=user.group_or_roles,
             tenant=user.tenant_key,
+            include_created_by=is_designer,
         )
         roles = resource.get("roles")
         if auth:
@@ -110,11 +113,33 @@ class AuthorizationService:
         auth = Authorization.find_resource_by_id(
             auth_type=auth_type_enum,
             resource_id=resource_id,
-            is_designer=is_designer,
             roles=user.group_or_roles,
             tenant=user.tenant_key,
             user_name=user.user_name,
+            include_created_by=bool(is_designer and auth_type == AuthType.DESIGNER),
         )
         if auth:
             return self._as_dict(auth)
         return None
+
+    @user_context
+    def get_auth_list_by_id(self, resource_id, **kwargs):
+        """Get authorization list for given resource id."""
+        user: UserContext = kwargs["user"]
+        auth_designer_details = Authorization.find_resource_by_id(
+            auth_type=AuthType.DESIGNER.value,
+            resource_id=resource_id,
+            roles=user.group_or_roles,
+            tenant=user.tenant_key,
+            user_name=user.user_name,
+            include_created_by=True,
+        )
+        if auth_designer_details:
+            auth_details = Authorization.find_auth_list_by_id(
+                resource_id, user.tenant_key
+            )
+            auth_detail = {}
+            for auth in auth_details:
+                auth_detail[auth.auth_type.value] = self._as_dict(auth)
+            return auth_detail
+        raise BusinessException(BusinessErrorCode.PERMISSION_DENIED)

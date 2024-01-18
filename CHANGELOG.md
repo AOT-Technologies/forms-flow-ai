@@ -1,6 +1,96 @@
 # Changelog for formsflow.ai
 
-Mark  items as `Added`, `Changed`, `Fixed`, `Removed`, `Untested Features`, `Upcoming Features`, `Known Issues`
+Mark  items as `Added`, `Changed`, `Fixed`, `Modified`, `Removed`, `Untested Features`, `Upcoming Features`, `Known Issues`
+
+## 5.3.0 - 2023-11-24
+
+`Added`
+
+**forms-flow-web**
+
+* Added new UI for forms, submissions, tasks, processes, dashboards, navbar
+* Added RBAC support in form listing for reviewer
+* Added RBAC support in submission(application) listing for client and reviewer
+* Added form description to form
+* Added a description input field for the form.
+* Added create custom filter for task in task page
+* Added environment variable `DATE_FORMAT` to change the date format
+* Added environment variable `TIME_FORMAT` to change the time format
+* Added environment variable `CUSTOM_THEME_URL` to override the theme
+* Added environment variable `CUSTOM_RESOURCE_BUNDLE_URL` to customize resource bundle for internationalization 
+
+**forms-flow-api**
+
+* Added RBAC support in form listing for reviewer
+* Added RBAC support in submission(application) listing for client and reviewer
+* Added migration script to move existing task filters from forms-flow-bpm to forms-flow-api, checkout [here]( ./forms-flow-api/README.md#migration-script-for-existing-users)
+* Added environment variable `API_LOG_ROTATION_WHEN` for specifying the frequency of log file rotation
+* Added environment variable `API_LOG_ROTATION_INTERVAL` for setting the time interval for log file rotation
+* Added environment variable `API_LOG_BACKUP_COUNT` for determining the number of backup log files to keep
+
+**forms-flow-bpm**
+
+* Added task filter custom implementation
+* Added multi-modules
+
+**forms-flow-documents**
+
+* Added environment variable `API_LOG_ROTATION_WHEN` for specifying the frequency of log file rotation
+* Added environment variable `API_LOG_ROTATION_INTERVAL` for setting the time interval for log file rotation
+* Added environment variable `API_LOG_BACKUP_COUNT` for determining the number of backup log files to keep
+
+`Modified`
+
+**forms-flow-web**
+
+* Modified Tasks page with List view and Card view of tasklist
+* Modified Applications to Submissions in UI
+* Modified accessibility enhancement
+* Modified Name, Type, Path as advanced options while form create 
+  
+`Removed`
+
+**forms-flow-web**
+
+* Removed filter by form type from form listing table
+ 
+
+`Generic Changes`
+
+* Move task filters from forms-flow-bpm to forms-flow-web
+* Support Resubmit/ Edit Submission dynamically in the application flow with respect to isResubmit Key
+
+`Solution Component Upgrades`
+
+**forms-flow-api**
+
+* Flask upgraded to 2.3.3 and fixed security vulnerabilities
+  
+**forms-flow-web**
+
+* Fixed security vulnerabilities
+
+**forms-flow-bpm**
+
+* Camunda upgraded to 7.20.0, SpringBoot upgraded to 3.1.5 and fixed security vulnerabilities
+
+**forms-flow-documents**
+
+* Flask upgraded to 2.3.3 and fixed security vulnerabilities
+
+
+## 5.2.1 - 2023-09-01
+
+`Fixed`
+
+**forms-flow-web**
+
+* Fixed bpmn property panel css issue.
+
+**forms-flow-documents**
+
+* Fixed the problem of conflicting versions between Chrome and Chrome Driver when downloading forms.
+
 
 ## 5.2.1 - TBD
 

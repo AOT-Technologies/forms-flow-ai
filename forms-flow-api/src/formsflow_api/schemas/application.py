@@ -63,6 +63,9 @@ class ApplicationSchema(Schema):
     submission_id = fields.Str(data_key="submissionId")
     form_url = fields.Str(data_key="formUrl", load_only=True)
     web_form_url = fields.Str(data_key="webFormUrl", load_only=True)
+    is_resubmit = fields.Bool(data_key="isResubmit", dump_only=True)
+    event_name = fields.Str(data_key="eventName", dump_only=True)
+    data = fields.Dict(data_key="data", load_only=True)
 
 
 class ApplicationUpdateSchema(Schema):
@@ -75,6 +78,8 @@ class ApplicationUpdateSchema(Schema):
 
     application_status = fields.Str(data_key="applicationStatus", required=True)
     form_url = fields.Str(data_key="formUrl", required=False)
+    is_resubmit = fields.Bool(data_key="isResubmit")
+    event_name = fields.Str(data_key="eventName", allow_none=True)
 
 
 class ApplicationSubmissionSchema(Schema):
@@ -88,3 +93,4 @@ class ApplicationSubmissionSchema(Schema):
     form_url = fields.Str(data_key="formUrl", required=True)
     submission_id = fields.Str(data_key="submissionId", required=True)
     web_form_url = fields.Str(data_key="webFormUrl", load_only=True)
+    data = fields.Dict(data_key="data", load_only=True)

@@ -7,7 +7,8 @@ import requests
 from flask import current_app
 
 from formsflow_api_utils.exceptions import BusinessException
-from formsflow_api_utils.utils import cache
+from formsflow_api_utils.utils import Cache
+from formsflow_api_utils.exceptions import ExternalError
 
 
 class FormioService:
@@ -26,10 +27,10 @@ class FormioService:
 
     def get_formio_access_token(self):
         """Method to get formio access token."""
-        formio_token = cache.get("formio_token")
+        formio_token = Cache.get("formio_token")
         if formio_token is None:
             formio_token = self.generate_formio_token()
-            cache.set(
+            Cache.set(
                 "formio_token",
                 formio_token,
                 timeout=self.decode_timeout(formio_token),
@@ -47,65 +48,63 @@ class FormioService:
             }
         }
         current_app.logger.info("Generate formio token using formio login API.")
-        response = requests.post(url, headers=headers, data=json.dumps(payload))
-        if response.ok:
-            form_io_token = response.headers["x-jwt-token"]
-            return form_io_token
-        raise BusinessException(
-            "Unable to get access token from formio server",
-            HTTPStatus.SERVICE_UNAVAILABLE,
-        )
+        try:
+            response = requests.post(url, headers=headers, data=json.dumps(payload))
+            if response.ok:
+                form_io_token = response.headers["x-jwt-token"]
+                return form_io_token
+            else:
+                raise BusinessException(ExternalError.ERROR_RESPONSE_RECEIVED, detail_message=response.json())
+        except requests.ConnectionError:
+            raise BusinessException(ExternalError.FORM_SERVICE_UNAVAILABLE)
 
     def create_form(self, data, formio_token):
         """Post request to formio API to create form."""
         headers = {"Content-Type": "application/json", "x-jwt-token": formio_token}
         url = f"{self.base_url}/form"
-        response = requests.post(url, headers=headers, data=json.dumps(data))
-        if response.ok:
-            return response.json()
-        raise BusinessException(response.json(), HTTPStatus.BAD_REQUEST)
-    
+        return self._invoke_service(url, headers, data=data)
+
+    @staticmethod
+    def _invoke_service(url, headers, data=None, method: str = 'POST'):
+        """Invoke formio service and handle error."""
+        try:
+            if method == 'GET':
+                response = requests.get(url, headers=headers)
+            elif method == 'POST':
+                response = requests.post(url, headers=headers, data=json.dumps(data))
+            elif method == 'PUT':
+                response = requests.put(url, headers=headers, data=json.dumps(data))
+            if response.ok:
+                return response.json()
+            else:
+                raise BusinessException(ExternalError.ERROR_RESPONSE_RECEIVED, detail_message=response.json())
+        except requests.ConnectionError:
+            raise BusinessException(ExternalError.FORM_SERVICE_UNAVAILABLE)
+
     def update_form(self, form_id, data, formio_token):
         """Put request to formio API to update form."""
         headers = {"Content-Type": "application/json", "x-jwt-token": formio_token}
         url = f"{self.base_url}/form/{form_id}"
-        response = requests.put(url, headers=headers, data=json.dumps(data))
-        if response.ok:
-            return response.json()
-        raise BusinessException(response.json(), HTTPStatus.BAD_REQUEST)
+        return self._invoke_service(url, headers, data=data, method='PUT')
 
     def get_role_ids(self):
         """Get request to Formio API to retrieve role ids."""
         url = f"{self.base_url}/role"
         headers = {"x-jwt-token": self.get_formio_access_token()}
         current_app.logger.info("Role id fetching started...")
-
-        response = requests.get(url, headers=headers)
-        if response.ok:
-            current_app.logger.info("Role ids collected successfully...")
-            return response.json()
-        current_app.logger.error("Failed to fetch role ids !!!")
-        raise BusinessException(response.json(), HTTPStatus.SERVICE_UNAVAILABLE)
+        return self._invoke_service(url, headers, method='GET')
 
     def get_user_resource_ids(self):
         """Get request to Formio API to retrieve user resource ids."""
         url = f"{self.base_url}/user"
         current_app.logger.info("Fetching user resource ids...")
-        response = requests.get(url)
-        if response.ok:
-            current_app.logger.info("User resource ids collected successfully.")
-            return response.json()
-        current_app.logger.error("Failed to fetch user resource ids!")
-        raise BusinessException(response.json(), HTTPStatus.SERVICE_UNAVAILABLE)
+        return self._invoke_service(url, headers={}, method='GET')
 
     def get_form(self, data, formio_token):
         """Get request to formio API to get form details."""
         headers = {"Content-Type": "application/json", "x-jwt-token": formio_token}
         url = f"{self.base_url}/form/" + data["form_id"]
-        response = requests.get(url, headers=headers)
-        if response.ok:
-            return response.json()
-        raise BusinessException(response.json(), HTTPStatus.BAD_REQUEST)
+        return self._invoke_service(url, headers, method='GET')
 
     def get_submission(self, data, formio_token):
         """Get request to formio API to get submission details."""
@@ -113,10 +112,7 @@ class FormioService:
         url = (
             f"{self.base_url}/form/" + data["form_id"] + "/submission/" + data["sub_id"]
         )
-        response = requests.get(url, headers=headers, data=json.dumps(data))
-        if response.ok:
-            return response.json()
-        raise BusinessException(response.json(), HTTPStatus.BAD_REQUEST)
+        return self._invoke_service(url, headers, method='GET')
 
     def post_submission(self, data, formio_token):
         """Post request to formio API to create submission details."""
@@ -124,17 +120,11 @@ class FormioService:
         url = (
             f"{self.base_url}/form/{data['formId']}/submission"
         )
-        response = requests.post(url, headers=headers, data=json.dumps(data))
-        if response.ok:
-            return response.json()
-        raise BusinessException(response.json(), HTTPStatus.BAD_REQUEST)
+        return self._invoke_service(url, headers, data=data)
 
     def get_form_by_path(self, path_name: str, formio_token: str) -> dict:
         """Get request to formio API to get form details from path."""
         headers = {"Content-Type": "application/json", "x-jwt-token": formio_token}
         url = f"{self.base_url}/{path_name}" 
-        response = requests.get(url, headers=headers)
-        if response.ok:
-            return response.json()
-        raise BusinessException(response.json(), HTTPStatus.BAD_REQUEST)
+        return self._invoke_service(url, headers, method='GET')
         

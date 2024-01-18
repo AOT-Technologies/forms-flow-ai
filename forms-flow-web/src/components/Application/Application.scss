@@ -1,27 +1,49 @@
-.div-no-application
-{
+@import "./../../assets/styles/themes.scss";
+.div-no-application {
     margin-top: 10%;
     margin-bottom: 10%;
 }
-.lbl-no-application
-{
+
+.lbl-no-application {
     font-size: 21px;
     font-weight: bold;
 }
-.lbl-no-application-desc
-{
+
+.lbl-no-application-desc {
     font-size: 15px;
 }
-.div-no-application-list
-{
+
+.div-no-application-list {
     margin-top: 15%;
     margin-bottom: 20%;
 }
+
 .icon-search {
-    font-family: Nunito Sans,SemiBold, FontAwesome;
+    font-family: Nunito Sans, SemiBold, FontAwesome;
     font-size: 14px;
-  }
-.react-bootstrap-table {
-    min-height: 450px;
-    overflow: auto;
-  }
+}
+
+.filter-sort-bar {
+    margin-bottom: 1rem;
+    .filter-list-view {
+        position: absolute;
+        z-index: 1000;
+        background-color: white;
+        top: 31px;;
+        min-width: 180px;
+    }
+    .sort-container{
+        min-width: 250px;
+    }
+    .filter-container-list {
+        
+        margin-left: 1rem;
+    }
+    .application-filter-list-view{
+        position: relative;
+        display: flex;
+        flex-direction: column;
+        align-items: flex-end;
+    }
+}
+ 

@@ -13,7 +13,6 @@ import "./../ServiceFlow.scss";
 import AddGroupModal from "./AddGroupModal";
 import {
   claimBPMTask,
-  // fetchFilterList,
   fetchServiceTaskList,
   getBPMTaskDetail,
   unClaimBPMTask,
@@ -21,7 +20,6 @@ import {
   updateBPMTask,
 } from "../../../apiManager/services/bpmTaskServices";
 import { setBPMTaskDetailUpdating } from "../../../actions/bpmTaskActions";
-//import UserSelection from "./UserSelection";
 import UserSelectionDebounce from "./UserSelectionDebounce";
 import SocketIOService from "../../../services/SocketIOService";
 import { useTranslation } from "react-i18next";
@@ -63,7 +61,7 @@ const TaskHeader = React.memo(() => {
             if (selectedFilter) {
               dispatch(getBPMTaskDetail(taskId));
               dispatch(
-                fetchServiceTaskList(selectedFilter.id, firstResult, reqData)
+                fetchServiceTaskList(reqData,null,firstResult)
               );
             } else {
               dispatch(setBPMTaskDetailUpdating(false));
@@ -71,7 +69,7 @@ const TaskHeader = React.memo(() => {
           }
           if(selectedFilter){
             dispatch(
-              fetchServiceTaskList(selectedFilter.id, firstResult, reqData)
+              fetchServiceTaskList(reqData,null,firstResult)
             );
           }
            
@@ -96,7 +94,7 @@ const TaskHeader = React.memo(() => {
             }
             if(selectedFilter){
               dispatch(
-                fetchServiceTaskList(selectedFilter.id, firstResult, reqData)
+                fetchServiceTaskList(reqData,null,firstResult)
               );
             }
            
@@ -121,7 +119,7 @@ const TaskHeader = React.memo(() => {
           }
           if(selectedFilter){
             dispatch(
-              fetchServiceTaskList(selectedFilter.id, firstResult, reqData)
+              fetchServiceTaskList(reqData,null,firstResult)
             );
           }
           
@@ -146,7 +144,7 @@ const TaskHeader = React.memo(() => {
           if (!SocketIOService.isConnected()) {
             dispatch(getBPMTaskDetail(taskId));
             dispatch(
-              fetchServiceTaskList(selectedFilter.id, firstResult, reqData)
+              fetchServiceTaskList(reqData,null,firstResult)
             );
           }
         } else {
@@ -170,7 +168,7 @@ const TaskHeader = React.memo(() => {
           if (!SocketIOService.isConnected()) {
             dispatch(getBPMTaskDetail(taskId));
             dispatch(
-              fetchServiceTaskList(selectedFilter.id, firstResult, reqData)
+              fetchServiceTaskList(reqData,null,firstResult)
             );
           }
         } else {
@@ -184,9 +182,9 @@ const TaskHeader = React.memo(() => {
   const FollowUpDateInput = React.forwardRef(({ value, onClick }, ref) => {
     return (
       <div onClick={onClick} ref={ref}>
-        <i className="fa fa-calendar mr-1" />{" "}
+        <i className="fa fa-calendar me-1" />{" "}
         {followUpDate ? (
-          <span className="mr-4">{moment(followUpDate).fromNow()}</span>
+          <span className="me-4">{moment(followUpDate).fromNow()}</span>
         ) : (
           t("Set follow-up Date")
         )}
@@ -198,9 +196,9 @@ const TaskHeader = React.memo(() => {
   const DueDateInput = React.forwardRef(({ value, onClick }, ref) => {
     return (
       <div onClick={onClick} ref={ref}>
-        <i className="fa fa-bell mr-1" />{" "}
+        <i className="fa fa-bell me-1" />{" "}
         {dueDate ? (
-          <span className="mr-4">{moment(dueDate).fromNow()}</span>
+          <span className="me-4">{moment(dueDate).fromNow()}</span>
         ) : (
           t("Set Due date")
         )}
@@ -219,9 +217,12 @@ const TaskHeader = React.memo(() => {
         onClose={() => setModal(false)}
         groups={taskGroups}
       />
-      <Row className="ml-0 task-header">{task?.name}</Row>
-      <Row className="ml-0 task-name">
-        <span className="application-id" data-title={t("Process Name")}>
+      <Row className="mx-0 task-header">{task?.name}</Row>
+      <Row className="mx-0 task-name">
+        <span className="application-id" 
+         title={t("Process Name")} 
+         data-bs-toggle="tooltip"  
+         >
           {" "}
           {
             getProcessDataObjectFromList(processList, task?.processDefinitionId)
@@ -229,15 +230,19 @@ const TaskHeader = React.memo(() => {
           }
         </span>
       </Row>
-      <Row className="ml-0">
-        <span data-title={t("Application ID")} className="application-id">
-          {t("Application ID")}# {task?.applicationId}
+      <Row className="mx-0">
+        <span 
+         title={t("Submission ID")} 
+         data-bs-toggle="tooltip" 
+         className="application-id">
+          {t("Submission ID")}# {task?.applicationId}
         </span>
       </Row>
-      <Row className="actionable mb-4">
+      <Row className="actionable mb-4 mx-0">
         <Col
           sm={followUpDate ? 2 : "auto"}
-          data-title={
+          data-bs-toggle="tooltip" 
+          title={
             followUpDate
               ? getFormattedDateAndTime(followUpDate)
               : t("Set FollowUp Date")
@@ -266,7 +271,8 @@ const TaskHeader = React.memo(() => {
         </Col>
         <Col
           sm={dueDate ? 2 : "auto"}
-          data-title={
+          data-bs-toggle="tooltip" 
+          title={
             dueDate ? getFormattedDateAndTime(dueDate) : t("Set Due date")
           }
           className="date-container"
@@ -296,9 +302,10 @@ const TaskHeader = React.memo(() => {
           className="center-position"
           sm={4}
           onClick={() => setModal(true)}
-          data-title={t("groups")}
+          title={t("Groups")}
+          data-bs-toggle="tooltip" 
         >
-          <i className="fa fa-group mr-1" />
+          <i className="fa fa-group me-1" />
           {taskGroups.length === 0 ? (
             <span>{t("Add groups")}</span>
           ) : (
@@ -323,20 +330,22 @@ const TaskHeader = React.memo(() => {
             )
           ) : (
             <>
-              <i className="fa fa-user mr-1" />
+              <i className="fa fa-user me-1" />
               {task?.assignee ? (
                 <span>
                   <span
                     className="change-tooltip"
                     onClick={() => setIsEditAssignee(true)}
-                    data-title={t("Click to Change Assignee")}
+                    title={t("Click to Change Assignee")}
+                    data-bs-toggle="tooltip" 
                   >
                     {task.assignee}
                   </span>
                   <i
-                    className="fa fa-times ml-1"
+                    className="fa fa-times ms-1"
                     onClick={onUnClaimTask}
-                    data-title={t("Reset Assignee")}
+                    title={t("Reset Assignee")}
+                    data-bs-toggle="tooltip" 
                   />
                 </span>
               ) : (

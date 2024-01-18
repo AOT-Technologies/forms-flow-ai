@@ -28,7 +28,7 @@ jobs:
     permissions:
       contents: read
       packages: write
-
+      security-events: write
     steps:
       - name: Checkout repository
         uses: actions/checkout@v2
@@ -103,3 +103,36 @@ jobs:
           platforms: linux/arm64/v8
           tags: ${{ steps.meta.outputs.tags }}-arm64
           labels: ${{ steps.meta.outputs.labels }}
+      - name: Scan Docker image 🐳
+        uses: snyk/actions/docker@master
+        continue-on-error: true
+        with:
+          image: ${{ steps.meta.outputs.tags }}
+          args: --severity-threshold=high --sarif-file-output=snyk.sarif
+        env:
+          SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
+
+      - name: Upload Snyk report as sarif 📦
+        uses: github/codeql-action/upload-sarif@v2
+        with:
+          sarif_file: snyk.sarif
+#####
+      - name: Set up AWS CLI
+        uses: aws-actions/configure-aws-credentials@v1
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: ca-central-1  # Change this to your desired region
+      - name: Install kubectl
+        run: |
+          curl -LO "https://dl.k8s.io/release/$(curl -Ls https://dl.k8s.io/release/stable.txt)/bin/linux/amd64/kubectl"
+          chmod +x kubectl
+          sudo mv kubectl /usr/local/bin/
+      - name: Update Kube config
+        run: aws eks update-kubeconfig --region ca-central-1 --name formsflow-eks-qa
+      - name: Deploy to eks
+        run: |
+          kubectl -n dev patch deployment forms-flow-documents-api -p '{"spec":{"template":{"spec":{"containers":[{"name":"forms-flow-documents-api","image":"docker.io/formsflow/forms-flow-documents-api:${{ env.VERSION }}"}]}}}}'
+          kubectl -n dev rollout restart deployment forms-flow-documents-api
+          kubectl -n devmt patch deployment forms-flow-documents-api -p '{"spec":{"template":{"spec":{"containers":[{"name":"forms-flow-documents-api","image":"docker.io/formsflow/forms-flow-documents-api:${{ env.VERSION }}"}]}}}}'
+          kubectl -n devmt rollout restart deployment forms-flow-documents-api

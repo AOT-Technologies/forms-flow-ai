@@ -4,7 +4,6 @@ from http import HTTPStatus
 
 from flask import current_app, request
 from flask_restx import Namespace, Resource, fields
-from formsflow_api_utils.exceptions import BusinessException
 from formsflow_api_utils.services.external import FormioService
 from formsflow_api_utils.utils import auth, cors_preflight, profiletime
 from formsflow_api_utils.utils.enums import FormProcessMapperStatus
@@ -42,19 +41,16 @@ class EmbedCommonMethods:
     @staticmethod
     def get(path):
         """Get form by form name."""
-        try:
-            formio_service = FormioService()
-            formio_token = formio_service.get_formio_access_token()
-            form = formio_service.get_form_by_path(path, formio_token)
-            form_status = FormProcessMapperService.get_mapper_by_formid(form["_id"])
-            if form_status["status"] == str(FormProcessMapperStatus.ACTIVE.value):
-                return formio_service.get_form_by_path(path, formio_token)
-            return (
-                {"message": "Form not published"},
-                HTTPStatus.BAD_REQUEST,
-            )
-        except BusinessException as err:
-            return err.error, err.status_code
+        formio_service = FormioService()
+        formio_token = formio_service.get_formio_access_token()
+        form = formio_service.get_form_by_path(path, formio_token)
+        form_status = FormProcessMapperService.get_mapper_by_formid(form["_id"])
+        if form_status["status"] == str(FormProcessMapperStatus.ACTIVE.value):
+            return formio_service.get_form_by_path(path, formio_token)
+        return (
+            {"message": "Form not published"},
+            HTTPStatus.BAD_REQUEST,
+        )
 
     @staticmethod
     def post(token=None):
@@ -62,16 +58,13 @@ class EmbedCommonMethods:
         formio_url = current_app.config.get("FORMIO_URL")
         web_url = current_app.config.get("WEB_BASE_URL")
         data = request.get_json()
-        try:
-            (
-                response,
-                status,
-            ) = CombineFormAndApplicationCreate.application_create_with_submission(
-                data, formio_url, web_url, token
-            )
-            return response, status
-        except BusinessException as err:
-            return err.error, err.status_code
+        (
+            response,
+            status,
+        ) = CombineFormAndApplicationCreate.application_create_with_submission(
+            data, formio_url, web_url, token
+        )
+        return response, status
 
 
 @cors_preflight("POST,OPTIONS")

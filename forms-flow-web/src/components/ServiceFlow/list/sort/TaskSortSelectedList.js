@@ -87,10 +87,10 @@ const TaskSortSelectedList = React.memo(() => {
 
   const selectedSortList = () => {
     return sortList.map((sort, index) => (
-      <div className="mr-3" key={index}>
+      <div className=" badge border rounded-pill text-dark p-2 m-2 " key={index}>
         {sortList.length > 1 ? (
           <span
-            className="mr-1 font-weight-bold click-element"
+            className="me-1 fw-bold click-element"
             title={t("Remove sorting")}
             onClick={() => deleteSort(sort, index)}
           >
@@ -98,7 +98,7 @@ const TaskSortSelectedList = React.memo(() => {
           </span>
         ) : null}
         <span
-          className="mr-1 click-element"
+          className="me-1 click-element"
           onClick={() => showSortList(index)}
         >
           {sort.label}
@@ -112,13 +112,13 @@ const TaskSortSelectedList = React.memo(() => {
         <span className="click-element">
           {sort.sortOrder === "asc" ? (
             <i
-              className="fa fa-angle-up fa-lg font-weight-bold"
+              className="fa fa-sort"
               title={t("Ascending")}
               onClick={() => updateSortOrder(index, "desc")}
             />
           ) : (
             <i
-              className="fa fa-angle-down fa-lg font-weight-bold"
+              className="fa fa-sort"
               data-title={t("Descending")}
               onClick={() => updateSortOrder(index, "asc")}
             />
@@ -129,15 +129,19 @@ const TaskSortSelectedList = React.memo(() => {
   };
 
   return (
-    <div className="d-flex flex-wrap" ref={createNode}>
+    <div className="d-flex flex-wrap align-items-center" ref={createNode}>
       {selectedSortList()}
       {sortOptions.length ? (
-        <div className="ml-1">
-          <i
-            className="fa fa-plus font-weight-bold"
+        <div className="ms-1">
+          <button
+            className="btn btn-small btn-link text-dark"
             data-title={t("Add sorting")}
+            title={t("Add sorting")}
             onClick={() => setShowSortListDropdown(!showSortListDropdown)}
-          />
+          >
+            <i className="fa fa-plus-circle me-2" />
+            {t("Add sorting")}
+          </button>
 
           {showSortListDropdown ? (
             <TaskSort handleClick={addSort} options={sortOptions} />

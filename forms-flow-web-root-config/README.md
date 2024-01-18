@@ -14,16 +14,20 @@ The root config is responsible for orchestrating the modules, routing, and distr
 
 
 ## Table of Content
-1. [Prerequisites](#prerequisites)
-2. [Solution Setup](#solution-setup)
-   - [Step 1 : Keycloak Setup](#keycloak-setup)
-   - [Step 2 : Installation](#installation)
-   - [Step 3 : Running the Application](#running-the-application)
-   - [Step 4 : Health Check](#health-check)
-3. [How to Create Your First Form](#how-to-create-your-first-form)
-4. [Logo change](#logo-change)
-5. [Integrate micro front-end modules into host applications](#integrate-micro-front-end-modules-into-host-applications)
-6. [Additional reference](#additional-reference)
+- [formsflow.ai Web Application](#formsflowai-web-application)
+  - [Table of Content](#table-of-content)
+  - [Prerequisites](#prerequisites)
+  - [Solution Setup](#solution-setup)
+    - [Keycloak Setup](#keycloak-setup)
+    - [Installation](#installation)
+    - [Running the application](#running-the-application)
+      - [To stop the application](#to-stop-the-application)
+    - [Health Check](#health-check)
+    - [How to Create Your First Form](#how-to-create-your-first-form)
+    - [Logo change](#logo-change)
+- [Integrate micro front-end modules into host applications](#integrate-micro-front-end-modules-into-host-applications)
+    - [Integrate new modules into formsflow.ai](#integrate-new-modules-into-formsflowai)
+    - [Additional reference](#additional-reference)
 
 ## Prerequisites
 
@@ -53,11 +57,11 @@ is mentioned on the [link](../forms-flow-idm/keycloak/README.md#create-forms-flo
 
  Variable name | Meaning | Possible values | Default value |
  --- | --- |----------| ---
- `MF_FORMSFLOW_WEB_URL`:triangular_flag_on_post:| For running locally/ if have custom changes | `//forms-flow-microfrontends.aot-technologies.com/forms-flow-web@v5.2.0/forms-flow-web.gz.js` <br> <br> For custom changes: `http://{your-ip-address}:3004/forms-flow-web.js` |  `//forms-flow-microfrontends.aot-technologies.com/forms-flow-web@v5.2.0/forms-flow-nav.gz.js`
- `MF_FORMSFLOW_NAV_UR`:triangular_flag_on_post:|For custom implementation of Navbar component, refer [here](https://github.com/AOT-Technologies/forms-flow-ai-micro-front-ends/tree/main/forms-flow-nav)|          |`//forms-flow-microfrontends.aot-technologies.com/forms-flow-nav@v5.2.0/forms-flow-nav.gz.js`
- `MF_FORMSFLOW_SERVICE_URL`:triangular_flag_on_post:|For custom implementation of Service component, refer [here](https://github.com/AOT-Technologies/forms-flow-ai-micro-front-ends/tree/main/forms-flow-service)|          |`//forms-flow-microfrontends.aot-technologies.com/forms-flow-nav@v5.2.0/forms-flow-service.gz.js`
- `MF_FORMSFLOW_ADMIN_URL`:triangular_flag_on_post:|For custom implementation of Admin component, refer [here](https://github.com/AOT-Technologies/forms-flow-ai-micro-front-ends/tree/main/forms-flow-admin)|          |`//forms-flow-microfrontends.aot-technologies.com/forms-flow-nav@v5.2.0/forms-flow-admin.gz.js`
- `MF_FORMSFLOW_THEME_URL`:triangular_flag_on_post:| For custom implementation of Theme component, refer [here](https://github.com/AOT-Technologies/forms-flow-ai-micro-front-ends/tree/main/forms-flow-theme) |          | `//forms-flow-microfrontends.aot-technologies.com/forms-flow-nav@v5.2.0/forms-flow-theme.gz.js`
+ `MF_FORMSFLOW_WEB_URL`:triangular_flag_on_post:| For running locally/ if have custom changes | `//forms-flow-microfrontends.aot-technologies.com/forms-flow-web@v5.3.0/forms-flow-web.gz.js` <br> <br> For custom changes: `http://{your-ip-address}:3004/forms-flow-web.js` |  `//forms-flow-microfrontends.aot-technologies.com/forms-flow-web@v5.3.0/forms-flow-nav.gz.js`
+ `MF_FORMSFLOW_NAV_UR`:triangular_flag_on_post:|For custom implementation of Navbar component, refer [here](https://github.com/AOT-Technologies/forms-flow-ai-micro-front-ends/tree/main/forms-flow-nav)|          |`//forms-flow-microfrontends.aot-technologies.com/forms-flow-nav@v5.3.0/forms-flow-nav.gz.js`
+ `MF_FORMSFLOW_SERVICE_URL`:triangular_flag_on_post:|For custom implementation of Service component, refer [here](https://github.com/AOT-Technologies/forms-flow-ai-micro-front-ends/tree/main/forms-flow-service)|          |`//forms-flow-microfrontends.aot-technologies.com/forms-flow-nav@v5.3.0/forms-flow-service.gz.js`
+ `MF_FORMSFLOW_ADMIN_URL`:triangular_flag_on_post:|For custom implementation of Admin component, refer [here](https://github.com/AOT-Technologies/forms-flow-ai-micro-front-ends/tree/main/forms-flow-admin)|          |`//forms-flow-microfrontends.aot-technologies.com/forms-flow-nav@v5.3.0/forms-flow-admin.gz.js`
+ `MF_FORMSFLOW_THEME_URL`:triangular_flag_on_post:| For custom implementation of Theme component, refer [here](https://github.com/AOT-Technologies/forms-flow-ai-micro-front-ends/tree/main/forms-flow-theme) |          | `//forms-flow-microfrontends.aot-technologies.com/forms-flow-nav@v5.3.0/forms-flow-theme.gz.js`
  `NODE_ENV`| Define project level configuration | `development, test, production` | `production`
  `FORMIO_DEFAULT_PROJECT_URL`:triangular_flag_on_post:|The URL of the form.io server|          |`http://{your-ip-address}:3001`
  `KEYCLOAK_WEB_CLIENTID`|Your Keycloak Client ID within the realm| eg. forms-flow-web | `forms-flow-web`
@@ -137,7 +141,7 @@ Import maps are used for the runtime loading of different modules.
 Steps:
 
    1. Setup root config for the project
-   Create-single-spa CLI can be used to quickly setup the root config, and also find the root config implementation for the [formsflow.ai](https://github.com/AOT-Technologies/forms-flow-ai/tree/5.2.0-alpha/forms-flow-web-root-config)
+   Create-single-spa CLI can be used to quickly setup the root config, and also find the root config implementation for the [formsflow.ai](https://github.com/AOT-Technologies/forms-flow-ai/tree/master/forms-flow-web-root-config)
    
    ![image](https://user-images.githubusercontent.com/93634377/230896120-8a6ba74d-32ea-4c35-9d11-2d2add4435af.png)
    
@@ -175,7 +179,7 @@ Steps:
   2. Migrate the existing application into a micro-front-end application.
   create-single-spa CLI can be used to create the boilerplate application and the business logic can be migrated to the new structure.
   For applications built with build tools like create-react-app, the recommended approach would be to use tools like the [CRACO](https://github.com/AOT-Technologies/craco-plugin-single-spa-application) plugin 
-  to apply configuration overrides. Find the [link](https://github.com/AOT-Technologies/forms-flow-ai/tree/5.2.0-alpha/forms-flow-web) to the reference.
+  to apply configuration overrides. Find the [link](https://github.com/AOT-Technologies/forms-flow-ai/tree/master/forms-flow-web) to the reference.
 
   3. Continue Step 4 from Case 1. 
   
@@ -199,7 +203,7 @@ Steps:
    - If anyone intends to use our hosted modules rather than building their own please make sure the `orgName` should be 
      same across all applications. So for using hosted instances make sure `formsflow` should be the `orgName` when creating root config and modules. [Ref](https://single-spa.js.org/docs/getting-started-overview/#create-a-root-config)
    - For production, we recommend pushing the host module artifacts to object storage and serving the root config with any web server, 
-     we already containerized the root config implementation of formsflow.ai. [Ref](https://github.com/AOT-Technologies/forms-flow-ai/tree/5.2.0-alpha/forms-flow-web-root-config)
+     we already containerized the root config implementation of formsflow.ai. [Ref](https://github.com/AOT-Technologies/forms-flow-ai/tree/master/forms-flow-web-root-config)
 
 
 ### Integrate new modules into formsflow.ai 

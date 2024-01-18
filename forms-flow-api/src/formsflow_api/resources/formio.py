@@ -7,12 +7,13 @@ from typing import Dict
 import jwt
 from flask import after_this_request, current_app
 from flask_restx import Namespace, Resource, fields
+from formsflow_api_utils.exceptions import BusinessException, ExternalError
 from formsflow_api_utils.utils import (
     CLIENT_GROUP,
     DESIGNER_GROUP,
     REVIEWER_GROUP,
+    Cache,
     auth,
-    cache,
     cors_preflight,
     get_role_ids_from_user_groups,
     profiletime,
@@ -134,32 +135,25 @@ class FormioResource(Resource):
                 return response
             return response
 
-        try:
-            user_role = user.roles
-            role_ids = cache.get("formio_role_ids")
-            formio_user_resource_id = cache.get("user_resource_id")
-            if not role_ids:
-                collect_role_ids(current_app)
-                role_ids = cache.get("formio_role_ids")
-            if not formio_user_resource_id:
-                collect_user_resource_ids(current_app)
-                formio_user_resource_id = cache.get("user_resource_id")
+        user_role = user.roles
+        role_ids = Cache.get("formio_role_ids")
+        formio_user_resource_id = Cache.get("user_resource_id")
+        if not role_ids:
+            collect_role_ids(current_app)
+            role_ids = Cache.get("formio_role_ids")
+        if not formio_user_resource_id:
+            collect_user_resource_ids(current_app)
+            formio_user_resource_id = Cache.get("user_resource_id")
 
-            roles = get_role_ids_from_user_groups(role_ids, user_role)
-            if roles is not None:
-                roles.append(
-                    {
-                        "roleId": formio_user_resource_id,
-                        "type": FormioRoles.RESOURCE_ID.value,
-                    }
-                )
-                result = {"form": roles}
-                return result, HTTPStatus.OK
-
-            return (
-                {"message": "Role ids not available on server"},
-                HTTPStatus.SERVICE_UNAVAILABLE,
+        roles = get_role_ids_from_user_groups(role_ids, user_role)
+        if roles is not None:
+            roles.append(
+                {
+                    "roleId": formio_user_resource_id,
+                    "type": FormioRoles.RESOURCE_ID.value,
+                }
             )
+            result = {"form": roles}
+            return result, HTTPStatus.OK
 
-        except Exception as err:
-            raise err
+        raise BusinessException(ExternalError.FORM_SERVICE_UNAVAILABLE)

@@ -1,17 +1,16 @@
 import React, { useState } from "react";
-import FormControlLabel from "@material-ui/core/FormControlLabel";
-import Grid from "@material-ui/core/Grid";
-import Button from "@material-ui/core/Button";
-
+import { Button } from "react-bootstrap";
 import Select from "react-select";
-import Checkbox from "@material-ui/core/Checkbox";
 import { useTranslation } from "react-i18next";
+import { Row, Col } from "react-bootstrap";
+import { Form } from 'react-bootstrap';
+
 const TaskvariableCreate = ({ options, addTaskVariable }) => {
   const { t } = useTranslation();
   const [selectedValue, setSelectedValue] = useState("");
   const [taskLabel, setTaskLable] = useState("");
   const [showInList, setShowInList] = useState(false);
-  //   this is for formatting label on select
+
   const fomatOptionLabel = ({ label, value }, { context }) => {
     if (context === "value") {
       return <div>{value}</div>;
@@ -20,7 +19,6 @@ const TaskvariableCreate = ({ options, addTaskVariable }) => {
     }
   };
 
-  // this function will work on select the task varibale
   const selectTaskVariable = (data) => {
     setSelectedValue(data);
     setTaskLable(data.label);
@@ -37,16 +35,12 @@ const TaskvariableCreate = ({ options, addTaskVariable }) => {
       addTaskVariable(data);
     }
   };
+
   return (
     <>
-      <Grid
-        container
-        spacing={2}
-        style={{ alignItems: "center" }}
-        className="my-4"
-      >
-        <Grid item xs={12} md={3}>
-          <label>{t("Form field")}</label>
+      <Row className="my-4">
+        <Col xs={12} md={3}>
+          <label htmlFor="selectTaskVariable">{t("Form field")}</label>
           <Select
             searchable
             options={options}
@@ -55,52 +49,56 @@ const TaskvariableCreate = ({ options, addTaskVariable }) => {
             }}
             formatOptionLabel={fomatOptionLabel}
             placeholder={t("Select form field")}
+            inputId="selectTaskVariable"
+            getOptionLabel={(option) => (
+              <span data-testid={`task-variable-option-${option.value}`}>{option.label}</span>
+            )}
           />
-        </Grid>
-        <Grid item xs={12} md={2}>
-          <label>{t("Label")}</label>
+        </Col>
+        <Col xs={12} md={3}>
+          <label htmlFor="taskLabel">{t("Label")}</label>
           <input
             type="text"
+            id="taskLabel"
             value={taskLabel}
             onChange={(e) => {
               setTaskLable(e.target.value);
             }}
             className="form-control"
             placeholder={t("Enter Label")}
+            data-testid="task-variable-label-input"
           />
-        </Grid>
-        <Grid item xs={12} md={2}>
-          <FormControlLabel
-            value="start"
-            control={
-              <Checkbox
+        </Col>
+        <Col xs={12} md={3}>
+
+          <Form.Group controlId="showInListCheckbox" style={{ marginTop: "34px" }}>
+            <div className="d-flex align-items-center mt-3 me-4">
+              <Form.Label className="me-2">{t("Show in list")}</Form.Label>
+              <Form.Check
+                type="checkbox"
+                className="mb-3"
                 onChange={() => {
                   setShowInList(!showInList);
                 }}
-                color="primary"
+                data-testid="form-task-variable-showinlist-checkbox"
               />
-            }
-            labelPlacement="start"
-            label={t("Show in list")}
-            style={{ marginTop: "30px" }}
-          />
-        </Grid>
+            </div>
+          </Form.Group>
+        </Col>
 
-        <Grid item xs={12} md={1}>
+        <Col xs={12} md={2}>
           <Button
-            style={{ marginTop: "20px" }}
-            variant="outlined"
-            color="primary"
-            size="small"
+            style={{ marginTop: "25px" }}
+            variant="outline-primary"
             onClick={() => {
               addTask();
             }}
-            startIcon={<i className="fa fa-check"></i>}
+            data-testid="form-task-variable-add-button"
           >
-            {t("Add")}
+            <i className="fa fa-check me-2"></i> {t("Add")}
           </Button>
-        </Grid>
-      </Grid>
+        </Col>
+      </Row>
     </>
   );
 };

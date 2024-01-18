@@ -67,14 +67,14 @@ const ViewDraft = React.memo(() => {
   }
 
   return (
-    <div className="container" id="main">
-      <div className="main-header">
-        <Link title="go back" to={`${redirectUrl}draft`}>
-          <i className="fa fa-chevron-left fa-lg" />
+    <div className="" id="main">
+      <div className="d-flex align-items-center">
+        <Link data-testid="back-to-drafts-link" title={t("Back to Drafts")} to={`${redirectUrl}draft`} className="mt-1">
+          <i className="fa fa-chevron-left fa-lg me-2" />
         </Link>
-        <h3 className="ml-3">
+        <h3 className="">
           <span className="application-head-details">
-            <i className="fa fa-list-alt" aria-hidden="true" />
+            <i className="fa fa-list-alt me-2" aria-hidden="true" />
             &nbsp; <Translation>{(t) => t("Drafts")}</Translation> /
           </span>{" "}
           {`${startCase(draftDetail.DraftName)}`}
@@ -83,18 +83,21 @@ const ViewDraft = React.memo(() => {
       <br />
       <Tabs id="application-details" defaultActiveKey="details" mountOnEnter>
         <Tab
+          data-testid="draft-details-tab"
           eventKey="details"
           title={<Translation>{(t) => t("Details")}</Translation>}
         >
           <Details draft={draftDetail} />
         </Tab>
         <Tab
+          data-testid="draft-form-tab"
           eventKey="form"
           title={<Translation>{(t) => t("Form")}</Translation>}
         >
           <View page="draft-detail" showPrintButton={false} />
         </Tab>
         <Tab
+          data-testid="draft-process-diagram-tab"
           eventKey="process-diagram"
           title={<Translation>{(t) => t("Process Diagram")}</Translation>}
         >

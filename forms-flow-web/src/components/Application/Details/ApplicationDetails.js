@@ -1,8 +1,9 @@
 import React from "react";
 import { Table } from "react-bootstrap";
 import startCase from "lodash/startCase";
-import { getLocalDateTime } from "../../../apiManager/services/formatterService";
 import { Translation } from "react-i18next";
+import { HelperServices} from "@formsflow/service";
+
 
 const ApplicationDetails = React.memo((props) => {
   const application = props.application;
@@ -11,7 +12,7 @@ const ApplicationDetails = React.memo((props) => {
       <tbody>
         <tr>
           <td className="border-0">
-            <Translation>{(t) => t("Application Id")}</Translation>
+            <Translation>{(t) => t("Submission ID")}</Translation>
           </td>
           <td className="border-0">:</td>
           <td className="border-0" id="application-id">
@@ -20,7 +21,7 @@ const ApplicationDetails = React.memo((props) => {
         </tr>
         <tr>
           <td className="border-0">
-            <Translation>{(t) => t("Application Name")}</Translation>
+            <Translation>{(t) => t("Form Name")}</Translation>
           </td>
           <td className="border-0">:</td>
           <td className="border-0 text-truncate" id="application-name">
@@ -38,7 +39,7 @@ const ApplicationDetails = React.memo((props) => {
         </tr>
         <tr>
           <td className="border-0">
-            <Translation>{(t) => t("Application Status")}</Translation>
+            <Translation>{(t) => t("Submission Status")}</Translation>
           </td>
           <td className="border-0">:</td>
           <td className="border-0" id="application-status">
@@ -51,7 +52,7 @@ const ApplicationDetails = React.memo((props) => {
           </td>
           <td className="border-0">:</td>
           <td className="border-0" id="application-created">
-            {getLocalDateTime(application.created)}
+            {HelperServices?.getLocalDateAndTime(application.created)}
           </td>
         </tr>
         <tr>
@@ -60,7 +61,7 @@ const ApplicationDetails = React.memo((props) => {
           </td>
           <td className="border-0">:</td>
           <td className="border-0" id="application-modified">
-            {getLocalDateTime(application.modified)}
+            {HelperServices?.getLocalDateAndTime(application.modified)}
           </td>
         </tr>
       </tbody>

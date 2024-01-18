@@ -46,7 +46,8 @@ export const userColumns = () => [
 const customDropUp = ({ options, currSizePerPage, onSizePerPageChange }) => {
   return (
     <DropdownButton
-      drop="down"
+    className="ms-2"
+      drop="up"
       variant="secondary"
       title={currSizePerPage}
       style={{ display: "inline" }}
@@ -92,10 +93,10 @@ const getpageList = (count) => {
 };
 
 const customTotal = (from, to, size) => (
-  <span className="react-bootstrap-table-pagination-total" role="main">
+  <span className="react-bootstrap-table-pagination-total ms-2" role="main">
     <Translation>{(t) => t("Showing")}</Translation> {from}{" "}
     <Translation>{(t) => t("to")}</Translation> {to}{" "}
-    <Translation>{(t) => t("of")}</Translation> {size} <Translation>{(t) => t("Results")}</Translation>
+    <Translation>{(t) => t("of")}</Translation> {size} <Translation>{(t) => t("results")}</Translation>
   </span>
 );
 

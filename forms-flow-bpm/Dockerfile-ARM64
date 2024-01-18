@@ -1,13 +1,21 @@
 
 # Maven build
 FROM arm64v8/maven:3.8.1-openjdk-17-slim AS MAVEN_TOOL_CHAIN
-COPY pom*.xml /tmp/
 COPY settings-docker.xml /usr/share/maven/ref/
 WORKDIR /tmp/
+
+COPY pom*.xml .
+COPY forms-flow-bpm-utils/pom.xml ./forms-flow-bpm-utils/
+COPY forms-flow-bpm-camunda/pom.xml ./forms-flow-bpm-camunda/
+
+# COPY src /tmp/src/
+COPY forms-flow-bpm-camunda/src ./forms-flow-bpm-camunda/src/
+COPY forms-flow-bpm-utils/src ./forms-flow-bpm-utils/src/
+
 # This allows Docker to cache most of the maven dependencies
-RUN mvn -s /usr/share/maven/ref/settings-docker.xml dependency:resolve-plugins dependency:resolve dependency:go-offline -B
-COPY src /tmp/src/
-RUN mvn -s /usr/share/maven/ref/settings-docker.xml package -P default
+#TODO This needs to be fixed, It throws error saying sub modules cannot be found
+# RUN mvn -s /usr/share/maven/ref/settings-docker.xml dependency:resolve-plugins dependency:resolve dependency:go-offline -B -P camunda
+RUN mvn -s /usr/share/maven/ref/settings-docker.xml install -P camunda
 
 # Final custom slim java image (for apk command see 17-jdk-alpine-slim)
 FROM arm64v8/openjdk:17-ea-16-jdk
@@ -24,7 +32,7 @@ EXPOSE 8080
 RUN test ! -d /app && mkdir /app || :
 # Add spring boot application
 RUN mkdir -p /app
-COPY --from=MAVEN_TOOL_CHAIN /tmp/target/forms-flow-bpm.jar ./app
+COPY --from=MAVEN_TOOL_CHAIN /tmp/forms-flow-bpm-camunda/target/forms-flow-bpm.jar ./app
 RUN chmod a+rwx -R /app
 WORKDIR /app
 VOLUME /tmp

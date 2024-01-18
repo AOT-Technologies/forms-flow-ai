@@ -6,7 +6,8 @@ const initialState = {
   formUploadCounter: 0,
   formUploadFailureCounter: 0,
   designerFormLoading: false,
-  searchFormLoading:false,
+  searchFormLoading: false,
+  designerAccessDenied: false
 };
 
 const formCheckList = (state = initialState, action) => {
@@ -28,6 +29,8 @@ const formCheckList = (state = initialState, action) => {
       return { ...state, designerFormLoading: action.payload };
     case ACTION_CONSTANTS.IS_FORM_SEARCH_LOADING:
       return { ...state, searchFormLoading: action.payload };
+    case ACTION_CONSTANTS.DESIGNER_DENIED_ACCESS:
+      return { ...state, designerAccessDenied: action.payload };
     default:
       return state;
   }

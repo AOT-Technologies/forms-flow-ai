@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import Checkbox from "@material-ui/core/Checkbox";
+import { Form } from 'react-bootstrap';
 import {
   setIsVariableNameIgnoreCase,
   setIsVariableValueIgnoreCase,
@@ -36,26 +36,30 @@ const TaskIgnoreCaseComponent = React.memo(() => {
     <>
       {filterSelections.length && isVariableTypeInFilter ? (
         <div>
-          <span className="name-value-container">
+          <span className="name-value-container d-flex align-items-center">
             {t("For Variable, ignore case of")}
-            <Checkbox
-              className="check-box-design"
-              checked={variableNameIgnoreCase}
-              onChange={() =>
-                setVariableNameIgnoreCase(!variableNameIgnoreCase)
-              }
-              inputProps={{ "aria-label": "primary checkbox" }}
-            />
-            {t("Name")}
-            <Checkbox
-              className="check-box-design"
-              checked={variableValueIgnoreCase}
-              onChange={() =>
-                setVariableValueIgnoreCase(!variableValueIgnoreCase)
-              }
-              inputProps={{ "aria-label": "primary checkbox" }}
-            />
-            {t("value")}
+            <Form className="ms-2">
+              <Form.Check
+                type="checkbox"
+                id="name"
+                label={t("Name")}
+                checked={variableNameIgnoreCase}
+                onChange={() =>
+                  setVariableNameIgnoreCase(!variableNameIgnoreCase)
+                }
+              />
+            </Form>
+            <Form className="ms-2">
+              <Form.Check
+                type="checkbox"
+                id="value"
+                label={t("value")}
+                checked={variableValueIgnoreCase}
+                onChange={() =>
+                  setVariableValueIgnoreCase(!variableValueIgnoreCase)
+                }
+              />
+            </Form>
           </span>
         </div>
       ) : null}

@@ -16,6 +16,7 @@ from werkzeug.utils import secure_filename
 
 from formsflow_documents.services import PDFService
 from formsflow_documents.utils import DocUtils
+from formsflow_documents.utils.constants import BusinessErrorCode
 
 API = Namespace("Form", description="Form")
 
@@ -47,13 +48,11 @@ class FormResourceRenderPdf(Resource):
             else None
         )
         if not pdf_service.search_template(template_name):
-            raise BusinessException("Template not found!", HTTPStatus.BAD_REQUEST)
+            raise BusinessException(BusinessErrorCode.TEMPLATE_NOT_FOUND)
         if template_variable_name and not pdf_service.search_template(
             template_variable_name
         ):
-            raise BusinessException(
-                "Template variables not found!", HTTPStatus.BAD_REQUEST
-            )
+            raise BusinessException(BusinessErrorCode.TEMPLATE_VARS_NOT_FOUND)
 
         render_data = pdf_service.get_render_data(
             use_template, template_variable_name, request.headers.get("Authorization")
@@ -87,46 +86,40 @@ class FormResourceExportPdf(Resource):
     @profiletime
     def post(form_id: string, submission_id: string):
         """PDF generation and rendering method."""
-        try:
+        timezone = request.args.get("timezone")
+        request_json = request.get_json()
+        template = request_json.get("template")
+        template_variables = request_json.get("templateVars")
+        token = request.headers.get("Authorization")
+        use_template = bool(template)
 
-            timezone = request.args.get("timezone")
-            request_json = request.get_json()
-            template = request_json.get("template")
-            template_variables = request_json.get("templateVars")
-            token = request.headers.get("Authorization")
-            use_template = bool(template)
+        pdf_service = PDFService(form_id=form_id, submission_id=submission_id)
 
-            pdf_service = PDFService(form_id=form_id, submission_id=submission_id)
-
-            template_name = None
-            template_variable_name = None
+        template_name = None
+        template_variable_name = None
+        if use_template:
+            (
+                template_name,
+                template_variable_name,
+            ) = pdf_service.create_template(template, template_variables)
+            current_app.logger.info(template_name)
+            current_app.logger.info(template_variable_name)
+        assert pdf_service.get_render_status(token, template_name) == 200
+        current_app.logger.info("Generating PDF...")
+        result = pdf_service.generate_pdf(
+            timezone, token, template_name, template_variable_name
+        )
+        if result:
             if use_template:
-                (
-                    template_name,
-                    template_variable_name,
-                ) = pdf_service.create_template(template, template_variables)
-                current_app.logger.info(template_name)
-                current_app.logger.info(template_variable_name)
-            assert pdf_service.get_render_status(token, template_name) == 200
-            current_app.logger.info("Generating PDF...")
-            result = pdf_service.generate_pdf(
-                timezone, token, template_name, template_variable_name
-            )
-            if result:
-                if use_template:
-                    current_app.logger.info("Removing temporary files...")
-                    pdf_service.delete_template(template_name)
-                    if template_variable_name:
-                        pdf_service.delete_template(template_variable_name)
-                return result
-            response, status = (
-                {
-                    "message": "Cannot render pdf.",
-                },
-                HTTPStatus.BAD_REQUEST,
-            )
-            return response, status
-
-        except BusinessException as err:
-            current_app.logger.warning(err.error)
-            return err.error, err.status_code
+                current_app.logger.info("Removing temporary files...")
+                pdf_service.delete_template(template_name)
+                if template_variable_name:
+                    pdf_service.delete_template(template_variable_name)
+            return result
+        response, status = (
+            {
+                "message": "Cannot render pdf.",
+            },
+            HTTPStatus.BAD_REQUEST,
+        )
+        return response, status

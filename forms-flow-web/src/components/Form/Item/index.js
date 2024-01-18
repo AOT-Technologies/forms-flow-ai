@@ -1,4 +1,4 @@
-import { Route, Switch, Redirect, useParams } from "react-router-dom";
+import { Route, Switch, Redirect, useParams, useLocation } from "react-router-dom";
 import React, { useEffect } from "react";
 import { Formio, getForm } from "react-formio";
 import { useDispatch, useSelector } from "react-redux";
@@ -13,7 +13,6 @@ import Submission from "./Submission/index";
 import { checkIsObjectId } from "../../../apiManager/services/formatterService";
 import { fetchFormByAlias } from "../../../apiManager/services/bpmFormServices";
 import {
-  setFormFailureErrorData,
   setFormRequestData,
   setFormSuccessData,
   resetFormData,
@@ -23,12 +22,14 @@ import {
 
 import Draft from "../../Draft";
 import Loading from "../../../containers/Loading";
-import { getClientList } from "../../../apiManager/services/authorizationService";
+import { getClientList, getReviewerList } from "../../../apiManager/services/authorizationService";
 import NotFound from "../../NotFound";
 import { setApiCallError } from "../../../actions/ErroHandling";
 
 const Item = React.memo(() => {
   const { formId } = useParams();
+  const location = useLocation(); // React Router's hook to get the current location
+  const pathname = location.pathname;
   const userRoles = useSelector((state) => state.user.roles || []);
   const tenantKey = useSelector((state) => state?.tenants?.tenantId);
   const redirectUrl = MULTITENANCY_ENABLED ? `/tenant/${tenantKey}/` : "/";
@@ -37,7 +38,13 @@ const Item = React.memo(() => {
   const dispatch = useDispatch();
 
   const formAuthVerify = (formId,successCallBack)=>{
-      getClientList(formId).then(successCallBack).catch((err)=>{
+      const isSubmissionRoute = pathname?.includes("/submission");
+      const authFunction = isSubmissionRoute
+      ? userRoles.includes(STAFF_REVIEWER)
+        ? getReviewerList
+        : getClientList
+      : getClientList;
+       authFunction(formId).then(successCallBack).catch((err)=>{
         const {response} = err;
         dispatch(setApiCallError({message:response?.data?.message || 
           response.statusText,status:response.status}));
@@ -55,12 +62,8 @@ const Item = React.memo(() => {
       dispatch(getForm("form", formId,(err,res)=>{
         if(err){
           dispatch(setFormAuthVerifyLoading(false));
-        }else{          
-          if(!userRoles.includes(STAFF_REVIEWER) && userRoles.includes(CLIENT)){
-            formAuthVerify(res.parentFormId || res._id);
-          }else{
-            dispatch(setFormAuthVerifyLoading(false));
-          }
+        }else{    
+          formAuthVerify(res.parentFormId || res._id);
         }
       }));
     } else {
@@ -82,7 +85,16 @@ const Item = React.memo(() => {
           
           } else {
             dispatch(setFormAuthVerifyLoading(false));
-            dispatch(setFormFailureErrorData("form", err));
+            const { response } = err;
+            dispatch(
+              setApiCallError({
+                message:
+                  response?.data?.message ||
+                  response?.statusText ||
+                  err.message,
+                status: response?.status ,
+              })
+            );
           }
         })
       );
@@ -97,7 +109,8 @@ const Item = React.memo(() => {
   if(formAuthVerifyLoading){
     return <Loading/>;
   }
-  if(apiCallError){
+
+  if(apiCallError && !formAuthVerifyLoading){
     return <NotFound
     errorMessage={apiCallError?.message}
     errorCode={apiCallError?.status}

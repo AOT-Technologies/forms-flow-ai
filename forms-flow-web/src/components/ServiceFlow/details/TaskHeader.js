@@ -51,57 +51,39 @@ const TaskHeader = React.memo(() => {
     setDueDate(due);
   }, [task?.due]);
 
+  const updateBpmTasksAndDetails = (err) =>{
+    if (!err) {
+      if (!SocketIOService.isConnected()) {
+        if (selectedFilter) {
+          dispatch(getBPMTaskDetail(taskId));
+          dispatch(
+            fetchServiceTaskList(reqData,null,firstResult)
+          );
+        } else {
+          dispatch(setBPMTaskDetailUpdating(false));
+        }
+      }
+       
+    } else {
+      dispatch(setBPMTaskDetailUpdating(false));
+    }
+  };
+
   const onClaim = () => {
     dispatch(setBPMTaskDetailUpdating(true));
     dispatch(
       // eslint-disable-next-line no-unused-vars
-      claimBPMTask(taskId, username, (err, response) => {
-        if (!err) {
-          if (!SocketIOService.isConnected()) {
-            if (selectedFilter) {
-              dispatch(getBPMTaskDetail(taskId));
-              dispatch(
-                fetchServiceTaskList(reqData,null,firstResult)
-              );
-            } else {
-              dispatch(setBPMTaskDetailUpdating(false));
-            }
-          }
-          if(selectedFilter){
-            dispatch(
-              fetchServiceTaskList(reqData,null,firstResult)
-            );
-          }
-           
-        } else {
-          dispatch(setBPMTaskDetailUpdating(false));
-        }
-      })
+      claimBPMTask(taskId, username,updateBpmTasksAndDetails)
     );
   };
+
   const onChangeClaim = (userId) => {
     setIsEditAssignee(false);
     if (userId && userId !== task.assignee) {
       dispatch(setBPMTaskDetailUpdating(true));
       dispatch(
         // eslint-disable-next-line no-unused-vars
-        updateAssigneeBPMTask(taskId, userId, (err, response) => {
-          if (!err) {
-            if (!SocketIOService.isConnected()) {
-              if (selectedFilter) {
-                dispatch(getBPMTaskDetail(taskId));
-              }
-            }
-            if(selectedFilter){
-              dispatch(
-                fetchServiceTaskList(reqData,null,firstResult)
-              );
-            }
-           
-          } else {
-            dispatch(setBPMTaskDetailUpdating(false));
-          }
-        })
+        updateAssigneeBPMTask(taskId, userId, updateBpmTasksAndDetails)
       );
     }
   };
@@ -110,23 +92,7 @@ const TaskHeader = React.memo(() => {
     dispatch(setBPMTaskDetailUpdating(true));
     dispatch(
       // eslint-disable-next-line no-unused-vars
-      unClaimBPMTask(taskId, (err, response) => {
-        if (!err) {
-          if (!SocketIOService.isConnected()) {
-            if (selectedFilter) {
-              dispatch(getBPMTaskDetail(taskId));
-            }
-          }
-          if(selectedFilter){
-            dispatch(
-              fetchServiceTaskList(reqData,null,firstResult)
-            );
-          }
-          
-        } else {
-          dispatch(setBPMTaskDetailUpdating(false));
-        }
-      })
+      unClaimBPMTask(taskId, updateBpmTasksAndDetails)
     );
   };
 
@@ -139,18 +105,7 @@ const TaskHeader = React.memo(() => {
     };
     dispatch(
       // eslint-disable-next-line no-unused-vars
-      updateBPMTask(taskId, updatedTask, (err, response) => {
-        if (!err) {
-          if (!SocketIOService.isConnected()) {
-            dispatch(getBPMTaskDetail(taskId));
-            dispatch(
-              fetchServiceTaskList(reqData,null,firstResult)
-            );
-          }
-        } else {
-          dispatch(setBPMTaskDetailUpdating(false));
-        }
-      })
+      updateBPMTask(taskId, updatedTask, updateBpmTasksAndDetails)
     );
   };
 
@@ -163,18 +118,7 @@ const TaskHeader = React.memo(() => {
     };
     dispatch(
       // eslint-disable-next-line no-unused-vars
-      updateBPMTask(taskId, updatedTask, (err, response) => {
-        if (!err) {
-          if (!SocketIOService.isConnected()) {
-            dispatch(getBPMTaskDetail(taskId));
-            dispatch(
-              fetchServiceTaskList(reqData,null,firstResult)
-            );
-          }
-        } else {
-          dispatch(setBPMTaskDetailUpdating(false));
-        }
-      })
+      updateBPMTask(taskId, updatedTask, updateBpmTasksAndDetails)
     );
   };
 

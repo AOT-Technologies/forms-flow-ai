@@ -108,7 +108,7 @@ const UserSelectionDebounce = React.memo((props) => {
 
   return (
     <>
-      <Row ref={userSelectionRef}>
+      <Row ref={userSelectionRef} data-testid="task-user-selection-row">
         <Col sm={10} className="no-padding-left pe-1">
           <AsyncSelect
             cacheOptions
@@ -122,16 +122,17 @@ const UserSelectionDebounce = React.memo((props) => {
             formatOptionLabel={formatOptionLabel}
             onMenuClose={onClose}
             value={selectedValue}
+            data-testid="task-async-user-select"
           />
         </Col>
         <Col sm={2} className="p-0 no-padding-left">
           <Dropdown>
-            <Dropdown.Toggle variant="secondary" id="dropdown-basic">
+            <Dropdown.Toggle variant="secondary" id="dropdown-basic" data-testid="assignee-search-filter-dropdown-toggle">
               <i className="fa fa-filter" />
             </Dropdown.Toggle>
             <Dropdown.Menu className="searchtype-dropdown">
               {UserSearchFilterTypes.map((UserSearchFilterType, idx) => (
-                <div key={idx} className="mb-2 mx-2">
+                <div key={idx} className="mb-2 mx-2" data-testid={`assignee-search-filter-option-${idx}`}>
                   <label className="form-check-label">
                     <input
                       className="form-check-input me-2"
@@ -144,6 +145,7 @@ const UserSelectionDebounce = React.memo((props) => {
                         searchTypeOption.searchType ===
                         UserSearchFilterType.searchType
                       }
+                      data-testid={`assignee-search-filter-radio-${UserSearchFilterType.searchType}`}
                     />
                     {UserSearchFilterType.title}
                   </label>

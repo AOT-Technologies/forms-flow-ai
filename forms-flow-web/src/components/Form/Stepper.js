@@ -366,7 +366,7 @@ class StepperPage extends PureComponent {
             <Link
               to={`${this.state.redirectUrl}form`}
               title={t("Back to Form List")}
-              data-testid="back-to-formlist-details"
+              data-testid="back-to-form-list"
             >
               <i className="fa fa-chevron-left fa-lg m-2" />
             </Link>

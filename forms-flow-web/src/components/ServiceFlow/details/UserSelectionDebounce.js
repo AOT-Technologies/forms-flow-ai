@@ -127,12 +127,20 @@ const UserSelectionDebounce = React.memo((props) => {
         </Col>
         <Col sm={2} className="p-0 no-padding-left">
           <Dropdown>
-            <Dropdown.Toggle variant="secondary" id="dropdown-basic" data-testid="assignee-search-filter-dropdown-toggle">
+            <Dropdown.Toggle
+              variant="secondary"
+              id="dropdown-basic"
+              data-testid="assignee-search-filter-dropdown-toggle"
+            >
               <i className="fa fa-filter" />
             </Dropdown.Toggle>
             <Dropdown.Menu className="searchtype-dropdown">
               {UserSearchFilterTypes.map((UserSearchFilterType, idx) => (
-                <div key={idx} className="mb-2 mx-2" data-testid={`assignee-search-filter-option-${idx}`}>
+                <div
+                  key={idx}
+                  className="mb-2 mx-2"
+                  data-testid={`assignee-search-filter-option-${idx}`}
+                >
                   <label className="form-check-label">
                     <input
                       className="form-check-input me-2"
@@ -145,7 +153,7 @@ const UserSelectionDebounce = React.memo((props) => {
                         searchTypeOption.searchType ===
                         UserSearchFilterType.searchType
                       }
-                      data-testid={`assignee-search-filter-radio-${UserSearchFilterType.searchType}`}
+                      data-testid={`assignee-filter-option-${UserSearchFilterType.searchType}`}
                     />
                     {UserSearchFilterType.title}
                   </label>

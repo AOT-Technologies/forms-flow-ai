@@ -9,6 +9,7 @@ const SaveAsNewVersionConfirmationModal = ({modalOpen,handleModalChange,onConfir
     show={modalOpen}
     size="md"
     aria-labelledby="example-custom-modal-styling-title"
+    data-testid="save-as-version-modal"
   >
     <Modal.Header>
       <div>
@@ -25,6 +26,7 @@ const SaveAsNewVersionConfirmationModal = ({modalOpen,handleModalChange,onConfir
             handleModalChange();
           }}
           aria-label="Close"
+          data-testid="save-as-version-modal-close-button"
         >
         </button>
       </div>
@@ -41,8 +43,15 @@ const SaveAsNewVersionConfirmationModal = ({modalOpen,handleModalChange,onConfir
     </Modal.Body>
     <Modal.Footer>
       <div className='d-flex justify-content-end'>
-      <button type="button" className="btn btn-link text-dark" onClick={()=>{handleModalChange();}}>{t("Cancel")}</button>
-      <button className='btn btn-primary' onClick={()=>{onConfirm();}}>{t("Continue")}</button>
+          <button
+            type="button"
+            className="btn btn-link text-dark"
+            data-testid="save-as-version-modal-cancel-button"
+            onClick={() => { handleModalChange(); }}>{t("Cancel")}</button>
+          <button
+            className='btn btn-primary'
+            data-testid="save-as-version-modal-continue-button"
+            onClick={() => { onConfirm(); }}>{t("Continue")}</button>
       </div>
     </Modal.Footer>
   </Modal>

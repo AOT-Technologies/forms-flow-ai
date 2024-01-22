@@ -103,7 +103,7 @@ const View = React.memo((props) => {
   );
 
   
-  const saveDraft = (payload, exitType = exitType?.current) => {
+  const saveDraft = (payload, exitType) => {
     if (exitType === "SUBMIT" || processData?.status !== "active") return;
     let dataChanged = !isEqual(payload.data, lastUpdatedDraft.data);
     if (draftSubmission?.id) {

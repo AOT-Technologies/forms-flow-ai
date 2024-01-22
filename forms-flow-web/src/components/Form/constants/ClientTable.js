@@ -149,6 +149,7 @@ function ClientTable() {
                     <span>
                       {isAscending ? (
                         <i
+                          data-testid="form-desc-sort-icon"
                           className="fa fa-sort-alpha-asc ms-2"
                           onClick={() => {
                             updateSort("desc");
@@ -162,6 +163,7 @@ function ClientTable() {
                         ></i>
                       ) : (
                         <i
+                          data-testid="form-asc-sort-icon"
                           className="fa fa-sort-alpha-desc ms-2"
                           onClick={() => {
                             updateSort("asc");
@@ -295,7 +297,7 @@ function ClientTable() {
             ) : !searchFormLoading ? (
               noDataFound()
             ) : (
-              ""
+              null
             )}
           </table>
         </div>

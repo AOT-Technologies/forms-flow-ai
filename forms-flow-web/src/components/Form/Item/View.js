@@ -182,7 +182,7 @@ const View = React.memo((props) => {
    * Compares the current form data and last saved data
    * Draft is updated only if the form is updated from the last saved form data.
    */
-  const saveDraft = (payload, exitType = exitType) => {
+  const saveDraft = (payload, exitType) => {
     if (exitType === "SUBMIT") return;
     let dataChanged = !isEqual(payload.data, lastUpdatedDraft.data);
     if (draftSubmissionId && isDraftCreated) {
@@ -368,7 +368,11 @@ const View = React.memo((props) => {
             onConfirm={props.onConfirm}
           ></SubmissionError>
           {isAuthenticated ? (
-            <Link title={t("Back to Form List")} to={`${redirectUrl}form`}>
+            <Link
+              title={t("Back to Form List")}
+              to={`${redirectUrl}form`}
+              data-testid="back-to-form-list"
+            >
               <i className="fa fa-chevron-left fa-lg me-2" />
             </Link>
           ) : null}

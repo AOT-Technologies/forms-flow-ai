@@ -225,7 +225,7 @@ const Preview = ({handleNext, hideComponents, activeStep}) => {
         <Form
           form={form}
           hideComponents={hideComponents}
-          options={{ hide: { submit: true }, language: lang, i18n: formio_resourceBundles }}
+          options={{ disabled: { submit: true }, language: lang, i18n: formio_resourceBundles }}
         />
       </LoadingOverlay>
     </div>

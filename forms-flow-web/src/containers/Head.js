@@ -8,7 +8,7 @@ const Head = React.memo((props) => {
       <div className="main-header">
         {items?.map?.((item, key) => (
           <div
-            data-testId={`head-item-${item.name}`}
+            data-testid={`head-item-${item.name}`}
             onClick={item.onClick}
             key={key}
             className={`head-item ${item.name === page ? "head-active" : ""} ${key > 0 ? 'padding-left-60' : ''}`}

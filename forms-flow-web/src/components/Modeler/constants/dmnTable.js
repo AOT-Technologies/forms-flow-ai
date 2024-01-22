@@ -121,15 +121,17 @@ function DmnTable() {
                 placeholder={t("Search by DMN name")}
                 title={t("Search by DMN name")}
                 style={{ backgroundColor: "#ffff" }}
+                data-testid="processes-search-dmn-input-box"
               />
               {search && (
-                <InputGroup.Append onClick={onClearSearch}>
+                <InputGroup.Append data-testid="processes-search-dmn-clear-button" onClick={onClearSearch}>
                   <InputGroup.Text className="h-100">
                     <i className="fa fa-times"></i>
                   </InputGroup.Text>
                 </InputGroup.Append>
               )}
               <InputGroup.Append
+              data-testid="processes-search-dmn-click-button"
                 onClick={handleSearchButtonClick}
                 disabled={!search?.trim()}
                 style={{ cursor: "pointer" }}
@@ -162,7 +164,10 @@ function DmnTable() {
                     <td>{processItem.key}</td>
                     <td>{t("DMN")}</td>
                     <td className="d-flex justify-content-end w-100">
-                    <button className="btn btn-link" onClick={()=>{gotoEdit(processItem);}}> 
+                      <button
+                        data-testid={`processes-edit-dmn-${processItem.key}`}
+                        className="btn btn-link"
+                        onClick={() => { gotoEdit(processItem); }}> 
                        <i className="fas fa-edit me-2"/>
                         {t("Edit DMN")}</button>
                     </td>
@@ -177,8 +182,8 @@ function DmnTable() {
           <div className="d-flex justify-content-between align-items-center  flex-column flex-md-row">
             <div className="d-flex align-items-center">
               <span className="me-2"> {t("Rows per page")}</span>
-              <Dropdown>
-                <Dropdown.Toggle variant="light" id="dropdown-basic">
+              <Dropdown data-testid="processes-dmn-pagination-dropdown">
+                <Dropdown.Toggle data-testid="processes--dmn-pagination-dropdown-limit" variant="light" id="dropdown-basic">
                   {limit}
                 </Dropdown.Toggle>
 
@@ -190,6 +195,7 @@ function DmnTable() {
                       onClick={() => {
                         onLimitChange(option.value);
                       }}
+                      data-testid={`processes-dmn-pagination-dropdown-limit-${index}`}
                     >
                       {option.text}
                     </Dropdown.Item>

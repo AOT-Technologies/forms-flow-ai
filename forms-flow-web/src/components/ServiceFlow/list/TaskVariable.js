@@ -1,14 +1,34 @@
-import React, { useState } from "react";
+import React, { useEffect } from "react";
 import { useSelector } from "react-redux";
 import { Row, Col } from "react-bootstrap";
-const TaskVariable = ({ variables }) => {
-  const [showMore, setShowMore] = useState(false);
+const TaskVariable = ({ expandedTasks, setExpandedTasks,taskId, variables }) => {
   let variableCount = 0;
   const taskvariable = useSelector(
     (state) => state.bpmTasks.selectedFilter?.variables || []
   );
+  const allTaskVariablesExpanded = useSelector((state) => state.bpmTasks.allTaskVariablesExpand);
+  const taskList = useSelector((state) => state.bpmTasks.tasksList);
 
-  const rowReturn = (taskItem, data, index) => {
+  useEffect(() => {
+    // Initialize expandedTasks based on the initial value of allTaskVariablesExpanded
+    const updatedExpandedTasks = {};
+    if (allTaskVariablesExpanded) {
+      taskList.forEach((task) => {
+        updatedExpandedTasks[task.id] = allTaskVariablesExpanded;
+      });
+    }
+    setExpandedTasks(updatedExpandedTasks);
+  }, [allTaskVariablesExpanded, taskList]);
+
+  //Toggle the expanded state of TaskVariables in single task
+  const handleToggleTaskVariable = (taskId) => {
+    setExpandedTasks((prevExpandedTasks) => ({
+      ...prevExpandedTasks,
+      [taskId]: !prevExpandedTasks[taskId],
+    }));
+  };
+
+  const rowReturn = (taskItem, data, index) => {  
     return (
       <Col xs={12} lg={6} key={index} className="mb-2">
         <div
@@ -46,7 +66,7 @@ const TaskVariable = ({ variables }) => {
               if (variableCount < 2) {
                 variableCount++;
                 return rowReturn(taskItem, data, index);
-              } else if (showMore) {
+              } else if (expandedTasks[taskId]) {
                 return rowReturn(taskItem, data, index);
               } else {
                 return false;
@@ -61,13 +81,13 @@ const TaskVariable = ({ variables }) => {
           className="justify-content-center text-center"
           onClick={(e) => {
             e.stopPropagation();
-            setShowMore(!showMore);
+            handleToggleTaskVariable(taskId);
           }}
         >
           <i
             className="fa fa-angle-down"
             style={{
-              transform: `${showMore ? "rotate(180deg)" : "rotate(0deg)"}`,
+              transform: `${expandedTasks[taskId] ? "rotate(180deg)" : "rotate(0deg)"}`,
             }}
             aria-hidden="true"
           />

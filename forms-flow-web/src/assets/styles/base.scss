@@ -1,35 +1,5 @@
-@import "./themes.scss";
-.text-white {
-  color: $white;
-}
-
-.bg-white {
-  background-color: $white;
-}
-.bg-yellow {
-  background-color: $yellow !important;
-}
-.text-yellow {
-  color: $yellow !important;
-}
-
-.bg-purple {
-  background-color: $purple !important;
-}
-.text-purple {
-  color: $purple !important;
-}
-
-.text-green {
-  color: $green !important;
-}
-
-.bg-green {
-  background-color: $green !important;
-}
-
 .text-blue {
-  color: $dark-blue;
+  color: var(--color-primary-dkr);
 }
 
 .click-element {
@@ -44,28 +14,26 @@
   font-weight: 300;
   content: attr(dat-title);
   padding: 4px 8px;
-  color: rgb(255, 255, 255);
+  color: var(--color-white);
   position: absolute;
-  background-color: black;
+  background-color: var(--color-black);
   //left: 1rem;
   white-space: nowrap;
   z-index: 1;
   -moz-border-radius: 5px;
   -webkit-border-radius: 5px;
   border-radius: 5px;
-  -moz-box-shadow: 0px 0px 4px #222;
-  -webkit-box-shadow: 0px 0px 4px #222;
-  box-shadow: 0px 0px 4px #222;
-  background-image: -moz-linear-gradient(top, #eeeeee, #cccccc);
-  background-image: -webkit-gradient(linear,left top,left bottom,color-stop(0, #eeeeee),color-stop(1, #cccccc));
-  background-image: -webkit-linear-gradient(top, #eeeeee, #cccccc);
-  background-image: -moz-linear-gradient(top, #eeeeee, #cccccc);
-  background-image: -ms-linear-gradient(top, #eeeeee, #cccccc);
-  background-image: -o-linear-gradient(top, #eeeeee, #cccccc);
+  -moz-box-shadow: 0px 0px 4px var(--color-deep-gray);
+  -webkit-box-shadow: 0px 0px 4px var(--color-deep-gray);
+  box-shadow: 0px 0px 4px var(--color-deep-gray);
+  background-image: -moz-linear-gradient(top, var(--color-gray-200), var(--color-gray-400));
+  background-image: -webkit-gradient(linear,left top,left bottom,color-stop(0, var(--color-gray-200)),color-stop(1, var(--color-gray-400)));
+  background-image: -webkit-linear-gradient(top, var(--color-gray-200), var(--color-gray-400));
+  background-image: -moz-linear-gradient(top, var(--color-gray-200), var(--color-gray-400));
+  background-image: -ms-linear-gradient(top, var(--color-gray-200), var(--color-gray-400));
+  background-image: -o-linear-gradient(top, var(--color-gray-200), var(--color-gray-400));
 }
-.operator-container{
 
-}
 .operator-box-container{
   display: inline-block;
 }
@@ -79,15 +47,15 @@
   //  width: 45px;
   padding: 0 0 0 3px;
   padding-right: 12px;
-  background-color: #f2dede;
+  background-color: var(--color-info-background);
   outline: none;
-  color: #155cb5;
+  color: var(--color-primary-dkr);
 }
 .operator-selector select {
   display: none; /*hide original SELECT element:*/
 }
 .selection-item{
-  background-color: white;
+  background-color: var(--color-white);
 }
 //TODO Remove this when Semantic UI css is removed. Semantic UI css override formio css tooltip
 [data-tooltip]:before {

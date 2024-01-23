@@ -23,7 +23,7 @@
 }
 
 .properties-panel-parent {
-  border: 1px solid rgb(0, 0, 0);
+  border: 1px solid var(--color-black);
   border-left: none;
 }
 
@@ -33,7 +33,7 @@
 }
 
 .highlight:not(.djs-connection) .djs-visual > :nth-child(1) {
-  fill: rgb(56, 89, 138) !important;
+  fill: var(--color-primary-dk) !important;
 }
 
 .zoom-container {

@@ -149,14 +149,12 @@ class KeycloakClientService(KeycloakAdmin):
         url = f"users?q=tenantKey:{tenant_key}"
         current_app.logger.debug("Getting tenant users...")
         result = self.client.get_request(url)
+        search_fields = ["username", "firstName", "lastName", "email"]
         if search:
             result = [
                 item
                 for item in result
-                if search in item["username"]
-                or search in item["firstName"]
-                or search in item["lastName"]
-                or search in item["email"]
+                if any(search in item[key] for key in search_fields)
             ]
         count = len(result) if count else None
         result = self.paginate(result, page_no, limit)

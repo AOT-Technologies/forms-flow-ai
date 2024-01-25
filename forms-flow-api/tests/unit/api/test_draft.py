@@ -247,7 +247,9 @@ def test_delete_draft(app, client, session, jwt):
     assert rv.status_code == 400
 
 
-def test_capture_process_variables_draft_create_method(app, client, session, jwt):
+def test_capture_process_variables_draft_create_method(
+    app, client, session, jwt, mock_redis_client
+):
     """Tests the capturing of process variables in the draft create method."""
     token = get_token(jwt, role="formsflow-designer", username="designer")
     headers = {

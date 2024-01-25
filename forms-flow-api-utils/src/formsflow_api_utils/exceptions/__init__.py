@@ -4,13 +4,15 @@ BusinessException - error, status_code - Business rules error
 error - a description of the error {code / description: classname / full text}
 status_code - where possible use HTTP Error Codes
 """
-from sqlalchemy import event
-from sqlalchemy.exc import SQLAlchemyError
-from flask_jwt_oidc import AuthError
-from marshmallow.exceptions import ValidationError
 from enum import Enum
 from http import HTTPStatus
+
 import requests
+import sentry_sdk
+from flask_jwt_oidc import AuthError
+from marshmallow.exceptions import ValidationError
+from sqlalchemy import event
+from sqlalchemy.exc import SQLAlchemyError
 
 
 class ErrorCodeMixin:
@@ -110,32 +112,44 @@ def handle_sqlalchemy_error(e, model=None):
     raise BusinessException(error_message, code=error_code, details=details)
 
 
-def register_error_handlers(api):
+def register_error_handlers(api, sentry_capture_handled_errors: bool = False):
     @api.errorhandler(AuthError)
     def handle_forbidden_error(error):
         error_response = create_error_response("Invalid Token Error", code="INVALID_AUTH_TOKEN")
+        _report_error(error_response)
         return error_response.__dict__, error.status_code
+
+    def _report_error(error_response: ErrorResponse):
+        if sentry_capture_handled_errors:
+            _message = f"{error_response.code} : {error_response.message}"
+            if error_response.details:
+                _message = f"{_message} - {error_response.details}"
+            sentry_sdk.capture_message(_message)
 
     @api.errorhandler(BusinessException)
     def handle_business_error(error):
         error_response = create_error_response(error.message, error.code, error.details)
+        _report_error(error_response)
         return error_response.__dict__, error.status_code
 
     @api.errorhandler(ValidationError)
     def handle_validation_error(error):
         error_details = [ErrorDetail(field, messages[0]).__dict__ for field, messages in error.messages.items()]
         error_response = ErrorResponse(message="Validation failed", code="VALIDATION_ERROR", details=error_details)
+        _report_error(error_response)
         return error_response.__dict__, 400
 
     @api.errorhandler(KeyError)
     def handle_key_error(error):
         error_detail = ErrorDetail(code="KeyError", message=str(error))
         error_response = ErrorResponse(message="KeyError occurred", code="KEY_ERROR", details=[error_detail.__dict__])
+        _report_error(error_response)
         return error_response.__dict__, 400
 
     @api.errorhandler(requests.exceptions.HTTPError)
     def handle_http_error(error):
         error_response = ErrorResponse(message="HttpError occurred", code="HTTP_ERROR", details=[])
+        _report_error(error_response)
         return error_response.__dict__, 400
 
 

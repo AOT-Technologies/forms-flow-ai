@@ -43,7 +43,8 @@ const FormHistoryModal = ({ historyModal, handleModalChange, gotoEdit }) => {
 
   return (
     <>
-      <Modal
+      <Modal 
+        data-testid="form-history-modal"
         show={historyModal}
         size="lg"
         aria-labelledby="example-custom-modal-styling-title"
@@ -64,6 +65,7 @@ const FormHistoryModal = ({ historyModal, handleModalChange, gotoEdit }) => {
                 handleModalChange();
               }}
               aria-label="Close"
+              data-testid="form-history-modal-close-button"
             >
             </button>
           </div>
@@ -122,6 +124,7 @@ const FormHistoryModal = ({ historyModal, handleModalChange, gotoEdit }) => {
                           onClick={() =>
                             selectHistory(history.changeLog.cloned_form_id)
                           }
+                          data-testid={`form-version-${index}-revert-button`}
                         >
                           <i className="fa fa-pencil" aria-hidden="true" />
                           &nbsp;&nbsp; {t("Revert")}
@@ -138,6 +141,7 @@ const FormHistoryModal = ({ historyModal, handleModalChange, gotoEdit }) => {
                     onClick={() => {
                       handleShowMore();
                     }}
+                    data-testid="form-history-show-more-button"
                   >
                     {t("Show more")}
                     <i

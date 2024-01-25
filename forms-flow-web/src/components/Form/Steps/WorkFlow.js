@@ -144,7 +144,7 @@ const WorkFlow = React.memo(
       <>
         <div className="mt-3">
           <div className="d-flex align-items-center justify-content-between">
-          <Button variant="primary" onClick={handleEditAssociation}>
+          <Button data-testid="form-workflow-edit-button" variant="primary" onClick={handleEditAssociation}>
                 {t("Edit")}
               </Button>
              <div>
@@ -168,6 +168,7 @@ const WorkFlow = React.memo(
                     className={`nav-link ${tabValue === 0 ? "active workflow-taskVariable" : ""}`}
                     onClick={() => handleChange(0)}
                     href="#"
+                    data-testid="form-workflow-tab"
                   >
                     {t("Associate Workflow")} 
                   </a>
@@ -177,6 +178,7 @@ const WorkFlow = React.memo(
                     className={`nav-link ${tabValue === 1 ? "active workflow-taskVariable" : ""}`}
                     onClick={() => handleChange(1)}
                     href="#"
+                    data-testid="form-task-variables-tab"
                   >
                     {t("Task Variables")} 
                   </a>
@@ -206,6 +208,9 @@ const WorkFlow = React.memo(
                 }
                 isDisabled={disableWorkflowAssociation}
                 inputId="select-workflow"
+                getOptionLabel={(option) => (
+                  <span data-testid={`form-workflow-option-${option.value}`}>{option.label}</span>
+                )}
               />
               {processList.length && workflow?.value ? (
                 <div className="mt-3">
@@ -272,6 +277,7 @@ const WorkFlow = React.memo(
                       setShowTaskVaribleCrete(!showTaskVaribleCrete)
                     }
                     variant={showTaskVaribleCrete ? "secondary" : "primary"}
+                    data-testid="form-task-variables-add-cancel-button"
                   >
                     {showTaskVaribleCrete ? t("Cancel") : t("Add")}
                   </Button>

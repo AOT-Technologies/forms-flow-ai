@@ -25,26 +25,29 @@ services:
       - keycloak-server-network
 
   keycloak:
-    image: quay.io/keycloak/keycloak:14.0.0
+    image: quay.io/keycloak/keycloak:21.1.1
     restart: unless-stopped
     container_name: keycloak
     volumes:
-      - ./imports:/opt/jboss/keycloak/imports
-      - ./themes/formsflow:/opt/jboss/keycloak/themes/formsflow
-      
-    command: 
-      - "-b 0.0.0.0 -Dkeycloak.import=/opt/jboss/keycloak/imports/formsflow-ai-realm.json -Dkeycloak.migration.strategy=OVERWRITE_EXISTING"
+      - ./imports:/opt/keycloak/data/import
+      - ./themes/formsflow:/opt/keycloak/themes/formsflow
+      - ./start-keycloak.sh:/opt/keycloak/bin/start-keycloak.sh
+    entrypoint: ["/bin/bash", "/opt/keycloak/bin/start-keycloak.sh"]
     environment:
       - DB_VENDOR=POSTGRES
       - DB_ADDR=keycloak-db
+      - DB_PORT=5432
       - DB_DATABASE=${KEYCLOAK_JDBC_DB:-keycloak}
       - DB_USER=${KEYCLOAK_JDBC_USER-admin}
       - DB_PASSWORD=${KEYCLOAK_JDBC_PASSWORD:-changeme}
-      - KEYCLOAK_USER=${KEYCLOAK_ADMIN_USER:-admin}
-      - KEYCLOAK_PASSWORD=${KEYCLOAK_ADMIN_PASSWORD:-changeme}
+      - KEYCLOAK_ADMIN=${KEYCLOAK_ADMIN_USER:-admin}
+      - KEYCLOAK_ADMIN_PASSWORD=${KEYCLOAK_ADMIN_PASSWORD:-changeme}
+      - KEYCLOAK_START_MODE=${KEYCLOAK_START_MODE:-start-dev}
+      - KEYCLOAK_HTTP_PATH=${KEYCLOAK_HTTP_PATH:-/auth}
+
     ports:
-      - 8080:8080
-    depends_on:
+      - "8080:8080"
+    links:
       - keycloak-db
     networks:
       - keycloak-server-network

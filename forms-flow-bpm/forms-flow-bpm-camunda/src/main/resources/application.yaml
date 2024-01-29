@@ -116,7 +116,7 @@ spring:
 
 # Keycloak JWT Client configuration
 keycloak.jwt.realm: ${KEYCLOAK_URL_REALM}
-keycloak.jwt.client.id: camunda-jwt
+keycloak.jwt.client.id: ${KEYCLOAK_WEB_CLIENTID}
 
 # Camunda Cockpit JWT Plugin
 plugin.cockpit.keycloak:

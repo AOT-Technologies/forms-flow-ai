@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { Row, Col } from "react-bootstrap";
+import { Row, Col, Tooltip, OverlayTrigger } from "react-bootstrap";
 import {
   getISODateTime,
   getFormattedDateAndTime,
@@ -51,19 +51,16 @@ const TaskHeader = React.memo(() => {
     setDueDate(due);
   }, [task?.due]);
 
-  const updateBpmTasksAndDetails = (err) =>{
+  const updateBpmTasksAndDetails = (err) => {
     if (!err) {
       if (!SocketIOService.isConnected()) {
         if (selectedFilter) {
           dispatch(getBPMTaskDetail(taskId));
-          dispatch(
-            fetchServiceTaskList(reqData,null,firstResult)
-          );
+          dispatch(fetchServiceTaskList(reqData, null, firstResult));
         } else {
           dispatch(setBPMTaskDetailUpdating(false));
         }
       }
-       
     } else {
       dispatch(setBPMTaskDetailUpdating(false));
     }
@@ -73,7 +70,7 @@ const TaskHeader = React.memo(() => {
     dispatch(setBPMTaskDetailUpdating(true));
     dispatch(
       // eslint-disable-next-line no-unused-vars
-      claimBPMTask(taskId, username,updateBpmTasksAndDetails)
+      claimBPMTask(taskId, username, updateBpmTasksAndDetails)
     );
   };
 
@@ -163,99 +160,121 @@ const TaskHeader = React.memo(() => {
       />
       <Row className="mx-0 task-header">{task?.name}</Row>
       <Row className="mx-0 task-name">
-        <span className="application-id" 
-         title={t("Process Name")} 
-         data-bs-toggle="tooltip"  
-         >
-          {" "}
-          {
-            getProcessDataObjectFromList(processList, task?.processDefinitionId)
-              ?.name
-          }
+        <span className="application-id">
+          <OverlayTrigger
+            placement="right"
+            overlay={<Tooltip id="process-name">{t("Process Name")}</Tooltip>}
+          >
+            <span>
+              {" "}
+              {
+                getProcessDataObjectFromList(
+                  processList,
+                  task?.processDefinitionId
+                )?.name
+              }
+            </span>
+          </OverlayTrigger>
         </span>
       </Row>
       <Row className="mx-0">
-        <span 
-         title={t("Submission ID")} 
-         data-bs-toggle="tooltip" 
-         className="application-id">
-          {t("Submission ID")}# {task?.applicationId}
+        <span className="application-id">
+          <OverlayTrigger
+            placement="right"
+            overlay={<Tooltip id="submission-id">{t("Submission ID")}</Tooltip>}
+          >
+            <span>
+              {t("Submission ID")}# {task?.applicationId}
+            </span>
+          </OverlayTrigger>
         </span>
       </Row>
       <Row className="actionable mb-4 mx-0">
-        <Col
-          sm={followUpDate ? 2 : "auto"}
-          data-bs-toggle="tooltip" 
-          title={
-            followUpDate
-              ? getFormattedDateAndTime(followUpDate)
-              : t("Set FollowUp Date")
+        <OverlayTrigger
+          placement="bottom"
+          overlay={
+            <Tooltip id="set-followup-date">
+              {followUpDate
+                ? getFormattedDateAndTime(followUpDate)
+                : t("Set FollowUp Date")}
+            </Tooltip>
           }
-          className="date-container"
         >
-          <DatePicker
-            selected={followUpDate}
-            onChange={onFollowUpDateUpdate}
-            showTimeSelect
-            isClearable
-            popperPlacement="bottom-start"
-            popperModifiers={{
-              offset: {
-                enabled: true,
-                offset: "5px, 10px",
-              },
-              preventOverflow: {
-                enabled: true,
-                escapeWithReference: false,
-                boundariesElement: "viewport",
-              },
-            }}
-            customInput={<FollowUpDateInput />}
-          />
-        </Col>
-        <Col
-          sm={dueDate ? 2 : "auto"}
-          data-bs-toggle="tooltip" 
-          title={
-            dueDate ? getFormattedDateAndTime(dueDate) : t("Set Due date")
+          <Col
+            sm={followUpDate ? 2 : "auto"}
+            className="text-center align-self-end"
+          >
+            <DatePicker
+              selected={followUpDate}
+              onChange={onFollowUpDateUpdate}
+              showTimeSelect
+              isClearable
+              popperPlacement="bottom-start"
+              popperModifiers={{
+                offset: {
+                  enabled: true,
+                  offset: "5px, 10px",
+                },
+                preventOverflow: {
+                  enabled: true,
+                  escapeWithReference: false,
+                  boundariesElement: "viewport",
+                },
+              }}
+              customInput={<FollowUpDateInput />}
+            />
+          </Col>
+        </OverlayTrigger>
+
+        <OverlayTrigger
+          placement="bottom"
+          overlay={
+            <Tooltip id="set-due-date">
+              {dueDate ? getFormattedDateAndTime(dueDate) : t("Set Due date")}
+            </Tooltip>
           }
-          className="date-container"
         >
-          <DatePicker
-            selected={dueDate}
-            onChange={onDueDateUpdate}
-            showTimeSelect
-            isClearable
-            shouldCloseOnSelect
-            popperPlacement="bottom-start"
-            popperModifiers={{
-              offset: {
-                enabled: true,
-                offset: "5px, 10px",
-              },
-              preventOverflow: {
-                enabled: true,
-                escapeWithReference: false,
-                boundariesElement: "viewport",
-              },
-            }}
-            customInput={<DueDateInput />}
-          />
-        </Col>
-        <Col
-          className="center-position"
-          sm={4}
-          onClick={() => setModal(true)}
-          title={t("Groups")}
-          data-bs-toggle="tooltip" 
+          <Col sm={dueDate ? 2 : "auto"} className="text-center align-self-end">
+            <DatePicker
+              selected={dueDate}
+              onChange={onDueDateUpdate}
+              showTimeSelect
+              isClearable
+              shouldCloseOnSelect
+              popperPlacement="bottom-start"
+              popperModifiers={{
+                offset: {
+                  enabled: true,
+                  offset: "5px, 10px",
+                },
+                preventOverflow: {
+                  enabled: true,
+                  escapeWithReference: false,
+                  boundariesElement: "viewport",
+                },
+              }}
+              customInput={<DueDateInput />}
+            />
+          </Col>
+        </OverlayTrigger>
+
+        <OverlayTrigger
+          placement="bottom"
+          overlay={<Tooltip id="groups">{t("Groups")}</Tooltip>}
         >
-          <i className="fa fa-group me-1" />
-          {taskGroups.length === 0 ? (
-            <span>{t("Add groups")}</span>
-          ) : (
-            <span className="group-align">{getGroups(taskGroups)}</span>
-          )}
-        </Col>
+          <Col
+            className="d-flex flex-column align-items-center align-self-end"
+            sm={4}
+            onClick={() => setModal(true)}
+          >
+            <i className="fa fa-group me-1" />
+            {taskGroups.length === 0 ? (
+              <span>{t("Add groups")}</span>
+            ) : (
+              <span className="group-align">{getGroups(taskGroups)}</span>
+            )}
+          </Col>
+        </OverlayTrigger>
         <Col className="right-side">
           {isEditAssignee ? (
             task?.assignee ? (
@@ -277,20 +296,28 @@ const TaskHeader = React.memo(() => {
               <i className="fa fa-user me-1" />
               {task?.assignee ? (
                 <span>
-                  <span
-                    className="change-tooltip"
-                    onClick={() => setIsEditAssignee(true)}
-                    title={t("Click to Change Assignee")}
-                    data-bs-toggle="tooltip" 
+                  <OverlayTrigger
+                    placement="bottom"
+                    overlay={
+                      <Tooltip id="change-assignee">
+                        {t("Click to Change Assignee")}
+                      </Tooltip>
+                    }
                   >
-                    {task.assignee}
-                  </span>
-                  <i
-                    className="fa fa-times ms-1"
-                    onClick={onUnClaimTask}
-                    title={t("Reset Assignee")}
-                    data-bs-toggle="tooltip" 
-                  />
+                    <span className="" onClick={() => setIsEditAssignee(true)}>
+                      {task.assignee}
+                    </span>
+                  </OverlayTrigger>
+                  <OverlayTrigger
+                    placement="bottom"
+                    overlay={
+                      <Tooltip id="reset-assignee">
+                        {t("Reset Assignee")}
+                      </Tooltip>
+                    }
+                  >
+                    <i className="fa fa-times ms-1" onClick={onUnClaimTask} />
+                  </OverlayTrigger>
                 </span>
               ) : (
                 <span data-testid="clam-btn" onClick={onClaim}>

@@ -435,7 +435,10 @@ span[dat-title]:hover:after,
   overflow: auto;
   max-height: 80vh;
 }
-
+.task-attr-row {
+  min-height: 110px;
+  margin-bottom: -2.5rem
+}
 .row-container {
   display: flex;
   align-items: flex-end;

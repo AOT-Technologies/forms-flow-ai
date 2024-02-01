@@ -3,6 +3,7 @@ from typing import Dict, List
 
 from flask import current_app
 from formsflow_api_utils.exceptions import BusinessException
+from formsflow_api_utils.utils.user_context import UserContext, user_context
 
 from formsflow_api.constants import BusinessErrorCode
 from formsflow_api.services import KeycloakAdminAPIService
@@ -129,8 +130,38 @@ class KeycloakClientService(KeycloakAdmin):
         if not page_no or not limit:
             raise BusinessException(BusinessErrorCode.MISSING_PAGINATION_PARAMETERS)
 
-        user_list = self.client.get_realm_users(search, page_no, limit)
-        users_count = self.client.get_realm_users_count(search) if count else None
+        user_list, users_count = self.get_tenant_users(search, page_no, limit, count)
         if role:
             user_list = self.__populate_user_roles(user_list)
         return (user_list, users_count)
+
+    @user_context
+    def get_tenant_users(
+        self, search: str, page_no: int, limit: int, count: bool, **kwargs
+    ):  # pylint: disable=too-many-arguments
+        """Return list of users in the tenant."""
+        # Search and attribute search (q) in Keycloak doesn't work together.
+        # Count endpoint doesn't accommodate attribute search.
+        # These issues have been addressed on the webapi.
+        # TODO: Upon Keycloak issue resolution, direct fetching will be done. # pylint: disable=fixme
+        user: UserContext = kwargs["user"]
+        tenant_key = user.tenant_key
+        url = f"users?q=tenantKey:{tenant_key}"
+        current_app.logger.debug("Getting tenant users...")
+        result = self.client.get_request(url)
+        search_fields = ["username", "firstName", "lastName", "email"]
+        if search:
+            result = [
+                item
+                for item in result
+                if any(search in item[key] for key in search_fields)
+            ]
+        count = len(result) if count else None
+        result = self.paginate(result, page_no, limit)
+        return result, count
+
+    def paginate(self, data, page_number, page_size):
+        """Paginate data."""
+        start_index = (page_number - 1) * page_size
+        end_index = start_index + page_size
+        return data[start_index:end_index]

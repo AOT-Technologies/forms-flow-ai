@@ -148,7 +148,7 @@ const ServiceFlowTaskList = React.memo((props) => {
                     {t("Created")} {moment(task.created).fromNow()}
                   </span>
                 </div>
-                <div className="pe-0 text-right tooltips" title={t("Priority")}>
+                <div className="pe-0 text-right" title={t("Priority")}>
                   {task.priority}
                 </div>
               </div>

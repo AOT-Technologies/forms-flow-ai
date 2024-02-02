@@ -102,15 +102,19 @@ class FormioService:
 
     def get_form(self, data, formio_token):
         """Get request to formio API to get form details."""
+        return self.get_form_by_id(data["form_id"], formio_token)
+
+    def get_form_by_id(self, form_id: str, formio_token):
+        """Get request to formio API to get form details."""
         headers = {"Content-Type": "application/json", "x-jwt-token": formio_token}
-        url = f"{self.base_url}/form/" + data["form_id"]
+        url = f"{self.base_url}/form/{form_id}"
         return self._invoke_service(url, headers, method='GET')
 
     def get_submission(self, data, formio_token):
         """Get request to formio API to get submission details."""
         headers = {"Content-Type": "application/json", "x-jwt-token": formio_token}
         url = (
-            f"{self.base_url}/form/" + data["form_id"] + "/submission/" + data["sub_id"]
+                f"{self.base_url}/form/" + data["form_id"] + "/submission/" + data["sub_id"]
         )
         return self._invoke_service(url, headers, method='GET')
 
@@ -125,6 +129,5 @@ class FormioService:
     def get_form_by_path(self, path_name: str, formio_token: str) -> dict:
         """Get request to formio API to get form details from path."""
         headers = {"Content-Type": "application/json", "x-jwt-token": formio_token}
-        url = f"{self.base_url}/{path_name}" 
+        url = f"{self.base_url}/{path_name}"
         return self._invoke_service(url, headers, method='GET')
-        

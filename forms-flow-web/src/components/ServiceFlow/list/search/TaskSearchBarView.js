@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import TaskSortSelectedList from "../sort/TaskSortSelectedList";
-import TaskFilterListViewComponent from "./TaskFilterListViewComponent";
+import TaskFilterViewComponent from "./TaskFilterViewComponent";
 import "./TaskSearchBarListView.scss";
 import { setSelectedTaskVariables } from "../../../../actions/bpmTaskActions";
 import { useTranslation } from "react-i18next"; 
@@ -107,7 +107,7 @@ const TaskSearchBarListView = React.memo(({ toggleAllTaskVariables }) => {
 
           {displayFilter && (
             <div className="clickable shadow border filter-list-view m-0 p-0">
-              <TaskFilterListViewComponent
+              <TaskFilterViewComponent
                 totalTasks={isTaskListLoading ? 0 : tasksCount}
                 setDisplayFilter={setDisplayFilter}
                 filterParams={filterParams}

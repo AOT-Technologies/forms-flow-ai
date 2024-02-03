@@ -1,15 +1,8 @@
-@import "./themes.scss";
-@import "./base.scss";
-
-.content {
- // padding-bottom: 2.5rem;
-}
-
- 
 .react-bootstrap-table table {
   table-layout: auto !important;
   position:relative !important;
 }
+
 .react-bootstrap-table{
   display: block;
   width: 100%;
@@ -17,7 +10,6 @@
   -webkit-overflow-scrolling: touch;
 }
  
-
 #app {
-  background: $white;
+  background: var(--color-white);
 }

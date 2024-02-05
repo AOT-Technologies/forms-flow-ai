@@ -59,7 +59,13 @@ class FilterService:
         if current_app.config.get("MULTI_TENANCY_ENABLED"):
             all_filters = Filter.find_all_filters()
             all_tasks_filter = any(
-                (item.name.lower() == "all tasks" and item.status == "active")
+                (
+                    item.name.lower() == "all tasks"
+                    and item.status == "active"
+                    and item.tenant is None
+                    and (not item.roles or item.roles is None)
+                    and (not item.users or item.users is None)
+                )
                 or (item.name.lower() == "all tasks" and item.tenant == tenant_key)
                 for item in all_filters
             )

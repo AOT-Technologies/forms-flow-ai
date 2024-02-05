@@ -141,7 +141,7 @@ const ServiceTaskListView = React.memo((props) => {
                {vissibleAttributes?.taskVisibleAttributes?.applicationId && <Col  xs={2}>
                   <div className="col-12">
                     <h6 className="fw-light">{t("Application Id")}</h6>
-                    <h6>{task?._embedded?.variable?.filter((eachValue) => eachValue.name === "applicationId")[0]?.value}</h6>
+                    <h6 title={t("Application ID")}>{task?._embedded?.variable?.filter((eachValue) => eachValue.name === "applicationId")[0]?.value}</h6>
                   </div>
                 </Col>}
               {vissibleAttributes?.taskVisibleAttributes?.createdDate &&  <Col xs={2}>
@@ -174,7 +174,7 @@ const ServiceTaskListView = React.memo((props) => {
                     >
                       <path d="M14 10.5a.5.5 0 0 0-.5-.5h-3a.5.5 0 0 0 0 1h3a.5.5 0 0 0 .5-.5zm0-3a.5.5 0 0 0-.5-.5h-7a.5.5 0 0 0 0 1h7a.5.5 0 0 0 .5-.5zm0-3a.5.5 0 0 0-.5-.5h-11a.5.5 0 0 0 0 1h11a.5.5 0 0 0 .5-.5z" />
                     </svg>
-                    <h6>
+                    <h6 title={t("Priority")}>
                       <u className="fw-bold text-decoration-none">{task.priority}</u>
                     </h6>
                   </div>

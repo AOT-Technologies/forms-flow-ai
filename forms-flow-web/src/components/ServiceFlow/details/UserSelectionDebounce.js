@@ -141,7 +141,7 @@ const UserSelectionDebounce = React.memo((props) => {
                   className="mb-2 mx-2"
                   data-testid={`assignee-search-filter-option-${idx}`}
                 >
-                  <label className="form-check-label">
+                  <label className="form-check-label fw-normal">
                     <input
                       className="form-check-input me-2"
                       type="radio"

@@ -140,10 +140,7 @@
   font-weight: 600;
   line-height: 1.5em;
 }
-.task-name {
-  font-size: 20px;
-  font-weight: 400;
-}
+
 .modal-text {
   font-size: 13px;
   font-style: italic;
@@ -184,13 +181,7 @@
   margin-right: 2em;
   align-self: flex-end;
 }
-.center-position {
-  text-align: center;
-  align-self: flex-end;
-}
-.date-container {
-  align-self: flex-end;
-}
+
 .filter-details {
   background-color: #f2dede;
   border-color: #ebccd1;
@@ -247,136 +238,6 @@
   .list-span {
     position: none !important;
   }
-}
- 
-.tooltips {
-  color: black;
-}
-.date-container:hover:after,
-div[data-title]:hover:after,
-span[data-title]:hover:after {
-  font-size: 12px;
-  content: attr(data-title);
-  padding: 4px 8px;
-  color: rgb(255, 255, 255);
-  position: absolute;
-  background-color: black;
-  left: 1rem;
-  top: 100%;
-  white-space: nowrap;
-  z-index: 1;
-  -moz-border-radius: 5px;
-  -webkit-border-radius: 5px;
-  border-radius: 5px;
-  -moz-box-shadow: 0px 0px 4px #222;
-  -webkit-box-shadow: 0px 0px 4px #222;
-  box-shadow: 0px 0px 4px #222;
-  background-image: -moz-linear-gradient(top, #eeeeee, #cccccc);
-  background-image: -webkit-gradient(
-    linear,
-    left top,
-    left bottom,
-    color-stop(0, #eeeeee),
-    color-stop(1, #cccccc)
-  );
-  background-image: -webkit-linear-gradient(top, #eeeeee, #cccccc);
-  background-image: -moz-linear-gradient(top, #eeeeee, #cccccc);
-  background-image: -ms-linear-gradient(top, #eeeeee, #cccccc);
-  background-image: -o-linear-gradient(top, #eeeeee, #cccccc);
-}
-.change-tooltip:hover:after {
-  font-size: 12px;
-  content: attr(data-title);
-  padding: 4px 8px;
-  color: rgb(255, 255, 255);
-  position: absolute;
-  background-color: black;
-  top: 100%;
-  //margin-left: 7rem;
-  white-space: nowrap;
-  z-index: 1;
-  -moz-border-radius: 5px;
-  -webkit-border-radius: 5px;
-  border-radius: 5px;
-  -moz-box-shadow: 0px 0px 4px #222;
-  -webkit-box-shadow: 0px 0px 4px #222;
-  box-shadow: 0px 0px 4px #222;
-  background-image: -moz-linear-gradient(top, #eeeeee, #cccccc);
-  background-image: -webkit-gradient(
-    linear,
-    left top,
-    left bottom,
-    color-stop(0, #eeeeee),
-    color-stop(1, #cccccc)
-  );
-  background-image: -webkit-linear-gradient(top, #eeeeee, #cccccc);
-  background-image: -moz-linear-gradient(top, #eeeeee, #cccccc);
-  background-image: -ms-linear-gradient(top, #eeeeee, #cccccc);
-  background-image: -o-linear-gradient(top, #eeeeee, #cccccc);
-}
-span[dat-title]:hover:after,
-.ms-1[dat-title]:hover:after,
-.tooltips[dat-title]:hover:after,
-.task-name[dat-title]:hover:after {
-  font-size: 12px;
-  content: attr(dat-title);
-  padding: 4px 8px;
-  color: rgb(255, 255, 255);
-  position: absolute;
-  background-color: rgb(0, 0, 0);
-  right: 0rem;
-  top: 100%;
-  white-space: nowrap;
-  z-index: 1;
-  -moz-border-radius: 5px;
-  -webkit-border-radius: 5px;
-  border-radius: 5px;
-  -moz-box-shadow: 0px 0px 4px #222;
-  -webkit-box-shadow: 0px 0px 4px #222;
-  box-shadow: 0px 0px 4px #222;
-  background-image: -moz-linear-gradient(top, #eeeeee, #cccccc);
-  background-image: -webkit-gradient(
-    linear,
-    left top,
-    left bottom,
-    color-stop(0, #eeeeee),
-    color-stop(1, #cccccc)
-  );
-  background-image: -webkit-linear-gradient(top, #eeeeee, #cccccc);
-  background-image: -moz-linear-gradient(top, #eeeeee, #cccccc);
-  background-image: -ms-linear-gradient(top, #eeeeee, #cccccc);
-  background-image: -o-linear-gradient(top, #eeeeee, #cccccc);
-}
-.change-tooltip[dat-title]:hover:after,
-.center-position:hover:after {
-  font-size: 12px;
-  content: attr(dat-title);
-  padding: 4px 8px;
-  color: rgb(255, 255, 255);
-  position: absolute;
-  background-color: rgb(0, 0, 0);
-  right: 3rem;
-  top: 100%;
-  white-space: nowrap;
-  z-index: 1;
-  -moz-border-radius: 5px;
-  -webkit-border-radius: 5px;
-  border-radius: 5px;
-  -moz-box-shadow: 0px 0px 4px #222;
-  -webkit-box-shadow: 0px 0px 4px #222;
-  box-shadow: 0px 0px 4px #222;
-  background-image: -moz-linear-gradient(top, #eeeeee, #cccccc);
-  background-image: -webkit-gradient(
-    linear,
-    left top,
-    left bottom,
-    color-stop(0, #eeeeee),
-    color-stop(1, #cccccc)
-  );
-  background-image: -webkit-linear-gradient(top, #eeeeee, #cccccc);
-  background-image: -moz-linear-gradient(top, #eeeeee, #cccccc);
-  background-image: -ms-linear-gradient(top, #eeeeee, #cccccc);
-  background-image: -o-linear-gradient(top, #eeeeee, #cccccc);
 }
 
 .pagination-wrapper {

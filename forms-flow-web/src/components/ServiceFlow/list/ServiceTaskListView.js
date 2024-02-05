@@ -137,7 +137,7 @@ const ServiceTaskListView = React.memo((props) => {
                   </Col>
               </Row>
               
-              <Row className="mt-4 p-2 justify-content-between" style={{ marginBottom: "-2.5rem" }}>
+              <Row className="mt-4 p-2 justify-content-between task-attr-row" >
                {vissibleAttributes?.taskVisibleAttributes?.applicationId && <Col  xs={2}>
                   <div className="col-12">
                     <h6 className="fw-light">{t("Application Id")}</h6>

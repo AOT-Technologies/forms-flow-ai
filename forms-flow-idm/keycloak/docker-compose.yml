@@ -32,7 +32,8 @@ services:
       - ./imports:/opt/keycloak/data/import
       - ./themes/formsflow:/opt/keycloak/themes/formsflow
     command: 
-      - "start-dev --import-realm --http-relative-path /auth"
+      - ./start-keycloak.sh:/opt/keycloak/bin/start-keycloak.sh
+    entrypoint: ["/bin/bash", "/opt/keycloak/bin/start-keycloak.sh"]
     environment:
       - DB_VENDOR=POSTGRES
       - DB_ADDR=keycloak-db
@@ -42,6 +43,9 @@ services:
       - DB_PASSWORD=${KEYCLOAK_JDBC_PASSWORD:-changeme}
       - KEYCLOAK_ADMIN=${KEYCLOAK_ADMIN_USER:-admin}
       - KEYCLOAK_ADMIN_PASSWORD=${KEYCLOAK_ADMIN_PASSWORD:-changeme}
+      - KEYCLOAK_START_MODE=${KEYCLOAK_START_MODE:-start-dev}
+      - KEYCLOAK_HTTP_PATH=${KEYCLOAK_HTTP_PATH:-/auth}
+
     ports:
       - "8080:8080"
     links:

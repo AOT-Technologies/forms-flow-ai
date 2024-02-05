@@ -6,23 +6,20 @@ import { fetchServiceTaskList } from "../../../apiManager/services/bpmTaskServic
 import {
   setBPMTaskListActivePage,
   setBPMTaskLoader,
-  setIsAllTaskVariableExpand
 } from "../../../actions/bpmTaskActions";
 import Loading from "../../../containers/Loading";
 import { useTranslation } from "react-i18next";
 import "./../ServiceFlow.scss";
-import TaskSearchBarListView from "./search/TaskSearchBarListView";
 import {
   getFormattedDateAndTime,
 } from "../../../apiManager/services/formatterService";
 import Pagination from "react-js-pagination";
 import { push } from "connected-react-router";
-// import { MAX_RESULTS } from "../constants/taskConstants";
-// import { getFirstResultIndex } from "../../../apiManager/services/taskSearchParamsFormatterService";
 
 import { MULTITENANCY_ENABLED } from "../../../constants/constants";
 import TaskHeaderListView from "../details/TaskHeaderListView";
-const ServiceTaskListView = React.memo(() => {
+const ServiceTaskListView = React.memo((props) => {
+  const {expandedTasks,setExpandedTasks} = props;
   const { t } = useTranslation();
   const taskList = useSelector((state) => state.bpmTasks.tasksList);
   const tasksCount = useSelector((state) => state.bpmTasks.tasksCount);
@@ -35,7 +32,6 @@ const ServiceTaskListView = React.memo(() => {
   const selectedFilter = useSelector((state) => state.bpmTasks.selectedFilter);
   const firstResult = useSelector((state) => state.bpmTasks.firstResult);
   const activePage = useSelector((state) => state.bpmTasks.activePage);
-  const [expandedTasks, setExpandedTasks] = useState({});
   const allTaskVariablesExpanded = useSelector((state) => state.bpmTasks.allTaskVariablesExpand);
   const [selectedLimitValue, setSelectedLimitValue] = useState(15);
   const tenantKey = useSelector((state) => state.tenants?.tenantId);
@@ -111,19 +107,6 @@ const ServiceTaskListView = React.memo(() => {
       [taskId]: !prevExpandedTasks[taskId],
     }));
   };
-  // Toggle expand or collapse the TaskVariables of all task
-  const toggleAllTaskVariables = () => {
-    const newExpandedState = !allTaskVariablesExpanded;
-    const updatedExpandedTasks = {};
-
-    taskList.forEach(task => {
-      if (task?._embedded?.variable?.length > 1) {
-        updatedExpandedTasks[task.id] = newExpandedState;
-      }
-    });
-    setExpandedTasks(updatedExpandedTasks);
-    dispatch(setIsAllTaskVariableExpand(newExpandedState));
-  };
  
   const renderTaskList = () => {
     if ((tasksCount || taskList.length) && selectedFilter) {
@@ -154,11 +137,11 @@ const ServiceTaskListView = React.memo(() => {
                   </Col>
               </Row>
               
-              <Row className="mt-4 p-2 justify-content-between" style={{ marginBottom: "-2.5rem" }}>
+              <Row className="mt-4 p-2 justify-content-between task-attr-row" >
                {vissibleAttributes?.taskVisibleAttributes?.applicationId && <Col  xs={2}>
                   <div className="col-12">
                     <h6 className="fw-light">{t("Application Id")}</h6>
-                    <h6>{task?._embedded?.variable?.filter((eachValue) => eachValue.name === "applicationId")[0]?.value}</h6>
+                    <h6 title={t("Application ID")}>{task?._embedded?.variable?.filter((eachValue) => eachValue.name === "applicationId")[0]?.value}</h6>
                   </div>
                 </Col>}
               {vissibleAttributes?.taskVisibleAttributes?.createdDate &&  <Col xs={2}>
@@ -191,7 +174,7 @@ const ServiceTaskListView = React.memo(() => {
                     >
                       <path d="M14 10.5a.5.5 0 0 0-.5-.5h-3a.5.5 0 0 0 0 1h3a.5.5 0 0 0 .5-.5zm0-3a.5.5 0 0 0-.5-.5h-7a.5.5 0 0 0 0 1h7a.5.5 0 0 0 .5-.5zm0-3a.5.5 0 0 0-.5-.5h-11a.5.5 0 0 0 0 1h11a.5.5 0 0 0 .5-.5z" />
                     </svg>
-                    <h6>
+                    <h6 title={t("Priority")}>
                       <u className="fw-bold text-decoration-none">{task.priority}</u>
                     </h6>
                   </div>
@@ -318,8 +301,6 @@ const ServiceTaskListView = React.memo(() => {
 
   return (
     <>
-      <TaskSearchBarListView
-        toggleAllTaskVariables={toggleAllTaskVariables}  />
         {isTaskListLoading ? <Loading /> : renderTaskList()}
     </>
   );

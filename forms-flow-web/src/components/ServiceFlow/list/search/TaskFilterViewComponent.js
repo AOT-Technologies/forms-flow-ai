@@ -12,7 +12,7 @@ import { getISODateTime } from "../../../../apiManager/services/formatterService
 import { MAX_VARIABLES_PER_ROW } from "../../constants/taskConstants";
 import { useTranslation } from "react-i18next"; 
 
-const TaskFilterListViewComponent = React.memo(
+const TaskFilterViewComponent = React.memo(
   ({ setDisplayFilter, setFilterParams, filterParams }) => {
     const vissibleAttributes = useSelector(
       (state) => state.bpmTasks.vissibleAttributes
@@ -139,7 +139,6 @@ const TaskFilterListViewComponent = React.memo(
         updatedfilterParams["createdBefore"] = getISODateTime(createdEndDate);
       }
 
- 
       dispatch(setBPMFilterSearchParams(updatedfilterParams));
       setFilterParams(updatedfilterParams);
       setDisplayFilter(false);
@@ -450,4 +449,4 @@ const TaskFilterListViewComponent = React.memo(
   }
 );
 
-export default TaskFilterListViewComponent;
+export default TaskFilterViewComponent;

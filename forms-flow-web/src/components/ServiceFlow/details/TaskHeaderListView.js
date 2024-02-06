@@ -166,7 +166,7 @@ const TaskHeaderListView = React.memo(({task,taskId,groupView = true}) => {
             </div>
             <div
               className="actionable"
-              data-title={
+              title={
                 followUpDate
                   ? getFormattedDateAndTime(followUpDate)
                   : t("Set follow-up Date")
@@ -202,7 +202,7 @@ const TaskHeaderListView = React.memo(({task,taskId,groupView = true}) => {
             </div>
             <div
               className="actionable"
-              data-title={
+              title={
                 dueDate ? getFormattedDateAndTime(dueDate) : t("Set Due date")
               }
             >
@@ -259,16 +259,16 @@ const TaskHeaderListView = React.memo(({task,taskId,groupView = true}) => {
                   {task?.assignee ? (
                     <span>
                       <span
-                        className="change-tooltip"
+                        className=""
                         onClick={() => setIsEditAssignee(true)}
-                        data-title={t("Click to Change Assignee")}
+                        title={t("Click to Change Assignee")}
                       >
                         {task.assignee}
                       </span>
                       <i
                         className="fa fa-times ms-1"
                         onClick={onUnClaimTask}
-                        data-title={t("Reset Assignee")}
+                        title={t("Reset Assignee")}
                       />
                     </span>
                   ) : (
@@ -290,7 +290,7 @@ const TaskHeaderListView = React.memo(({task,taskId,groupView = true}) => {
               <div
                 className="actionable"
                 onClick={() => setModal(true)}
-                data-title={t("Groups")}
+                title={t("Groups")}
               >
                 <i className="fa fa-group me-1" />
                 {taskGroups.length === 0 ? (

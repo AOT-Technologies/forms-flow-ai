@@ -51,6 +51,12 @@
     align-items: center;
     justify-content: center;
 }
+
+.react-datepicker__week {
+    white-space: nowrap;
+    display: flex;
+}
+
 .filter-cancel-btn-container {
     margin-left: -10px;
     margin-right: -10px;

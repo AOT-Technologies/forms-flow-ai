@@ -43,6 +43,7 @@ Below snapshot shows how to configure the **NotifyListener** to a task.
 ##### Below snapshot shows configuration of optional parameter (additionalEmailGroups).
 
 ![Notify listener (emailGroups) - Snapshot](./images/notify-listener-snp4.jpg)
+![Notify listener (emailAddress) - Snapshot](./images/notify-listener-snp5.jpg)
 
 
 

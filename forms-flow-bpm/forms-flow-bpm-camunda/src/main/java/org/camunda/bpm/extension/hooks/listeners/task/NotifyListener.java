@@ -100,17 +100,10 @@ public class NotifyListener extends BaseListener implements TaskListener, IMessa
     }
 
     private List<String> getEmailGroups(DelegateExecution delegateExecution) throws JsonProcessingException {
-        List<String> emailGroups = new ArrayList<>();
-        if (this.emailGroups != null &&
-                StringUtils.isNotBlank(String.valueOf(this.emailGroups.getValue(delegateExecution)))) {
-            emailGroups = this.emailGroups != null && this.emailGroups.getValue(delegateExecution) != null ?
-                    bpmObjectMapper.readValue(String.valueOf(this.emailGroups.getValue(delegateExecution)), List.class) : null;
-        }
-        return emailGroups;
+      return getInjectedFields(delegateExecution, this.emailGroups);
     }
 
     private String getGroupsOnly(DelegateExecution delegateExecution) {
-
         if (this.groupsOnly != null &&
                 StringUtils.isNotBlank(String.valueOf(this.groupsOnly.getValue(delegateExecution)))) {
             return this.groupsOnly != null && this.groupsOnly.getValue(delegateExecution) != null ?
@@ -120,14 +113,17 @@ public class NotifyListener extends BaseListener implements TaskListener, IMessa
     }
 
     private List<String> getEmailAddress(DelegateExecution delegateExecution) throws JsonProcessingException {
+        return getInjectedFields(delegateExecution, this.emailAddress);
+    }
 
-        List<String> emailList = new ArrayList<>();
-        if (this.emailGroups != null &&
-                StringUtils.isNotBlank(String.valueOf(this.emailGroups.getValue(delegateExecution)))) {
-            emailList = this.emailAddress != null && this.emailAddress.getValue(delegateExecution) != null ?
-                    bpmObjectMapper.readValue(String.valueOf(this.emailAddress.getValue(delegateExecution)), List.class) : null;
+    private List<String> getInjectedFields(DelegateExecution delegateExecution, Expression injectedField) throws JsonProcessingException {
+        List<String> fieldList = new ArrayList<>();
+        if (injectedField != null &&
+                StringUtils.isNotBlank(String.valueOf(injectedField.getValue(delegateExecution)))) {
+            fieldList = injectedField != null && injectedField.getValue(delegateExecution) != null ?
+                    bpmObjectMapper.readValue(String.valueOf(injectedField.getValue(delegateExecution)), List.class) : null;
         }
-        return emailList;
+        return fieldList;
     }
 
 }

@@ -1,5 +1,4 @@
 import React from "react";
-import "./footer.scss";
 import { version } from "../../../package.json";
 import { Translation } from "react-i18next";
 

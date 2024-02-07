@@ -14,7 +14,7 @@
    cursor: grab;
  }
 .highlight:not(.djs-connection) .djs-visual > :nth-child(1) {
-    fill: rgb(56,89,138) !important;
+    fill: var(--color-primary-dk) !important;
 }
 
 .btn_zoom{

@@ -15,7 +15,7 @@ const Confirm = React.memo((props) => {
   
   return (
     <>
-      <Modal show={modalOpen}>
+      <Modal data-testid="delete-modal" show={modalOpen}>
         <Modal.Header>
           <Modal.Title>{t("Delete Confirmation")}</Modal.Title>
         </Modal.Header>

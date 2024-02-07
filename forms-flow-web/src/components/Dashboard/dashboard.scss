@@ -1,10 +1,8 @@
-@import "./../../assets/styles/themes.scss";
-
 .dashboard {
    margin-top: 10px;
 
   & .line-hr {
-    border-top: 1px solid $light-blue;
+    border-top: 1px solid var(--color-primary-ltr);
   }
 
   & .card-counter {
@@ -13,8 +11,8 @@
     transition: 1s;
 
     & .white-box {
-      background: $white;
-      border: 1px solid $light-blue;
+      background: var(--color-white);
+      border: 1px solid var(--color-primary-ltr);
       padding: 25px;
       margin-bottom: 30px;
       font-size: larger;
@@ -22,8 +20,8 @@
 
       &.active,
       &:hover {
-        background-color: $dark-blue !important;
-        color: $white;
+        background-color: var(--color-primary-dkst) !important;
+        color: var(--color-white);
 
         & .small-title {
           font-size: 16px;
@@ -62,11 +60,11 @@
 
   & .application-title {
     margin-bottom: -5px;
-    color: $black;
+    color: var(--color-black);
   }
 
   & .dashboard-title {
-    color: $black;
+    color: var(--color-black);
   }
 
   & .dashboard-icon-style {
@@ -83,13 +81,13 @@
   }
 
   & .react-daterange-picker__wrapper {
-    color: $black;
+    color: var(--color-black);
     padding: 5px;
-    border: 1px solid $black;
-    background: $white;
+    border: 1px solid var(--color-black);
+    background: var(--color-white);
 
     & input {
-      color: #036;
+      color:  var(--color-primary-dkst);
     }
 
     & select {
@@ -97,7 +95,7 @@
       -moz-appearance: none;
       text-indent: 1px;
       text-overflow: "";
-      color: #036;
+      color:  var(--color-primary-dkst);
     }
 
     & .react-daterange-picker__range-divider {
@@ -113,7 +111,7 @@
       align-self: center;
       flex-direction: row;
       flex-wrap: wrap;
-      border: 1px solid $black;
+      border: 1px solid var(--color-black);
       padding: 30px;
       border-radius: 10px;
 
@@ -187,7 +185,7 @@
   width: 80px;
   height: 35px;
   border-radius: 3px;
-  border-color: rgba(222, 226, 230);
+  border-color: var(--color-primary-ltst);
 }
 
 

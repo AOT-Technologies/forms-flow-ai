@@ -139,7 +139,6 @@ const Preview = ({handleNext, hideComponents, activeStep}) => {
         setNewpublishClicked(false);
       });
   };
-
  
 
   const gotoEdit = () =>{
@@ -225,7 +224,14 @@ const Preview = ({handleNext, hideComponents, activeStep}) => {
         <Form
           form={form}
           hideComponents={hideComponents}
-          options={{ hide: { submit: true }, language: lang, i18n: formio_resourceBundles }}
+          options={{ disabled: { submit: true },
+          buttonSettings: {
+            showSubmit: false
+          },
+          disableAlerts: true,
+          noAlerts: true,
+          language: lang, i18n: formio_resourceBundles }}
+          
         />
       </LoadingOverlay>
     </div>

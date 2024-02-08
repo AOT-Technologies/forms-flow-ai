@@ -54,7 +54,7 @@ export default function CreateNewFilterDrawer({
     isTasksForCurrentUserGroupsEnabled,
     setIsTasksForCurrentUserGroupsEnabled,
   ] = useState(false);
-  const [isMyTasksEnabled,setIsMyTasksEnabled] = useState(false);
+  const [isMyTasksEnabled, setIsMyTasksEnabled] = useState(false);
   const [permissions, setPermissions] = useState(PRIVATE_ONLY_YOU);
   const [identifierId, setIdentifierId] = useState("");
   const [selectUserGroupIcon, setSelectUserGroupIcon] = useState("");
@@ -97,23 +97,20 @@ export default function CreateNewFilterDrawer({
     (value) => value === true
   ).length;
 
-  const fetchTasks = (resData)=>{
-  
+  const fetchTasks = (resData) => {
     const reqParamData = {
       ...{ sorting: [...sortParams.sorting] },
       ...searchParams,
     };
-     
-   
-    
-     const selectedBPMFilterParams = {
-        ...resData,
-        criteria: {
-          ...resData?.criteria,
-          ...reqParamData
-        }
-      };
-      dispatch(setFilterListParams(cloneDeep(selectedBPMFilterParams)));
+
+    const selectedBPMFilterParams = {
+      ...resData,
+      criteria: {
+        ...resData?.criteria,
+        ...reqParamData,
+      },
+    };
+    dispatch(setFilterListParams(cloneDeep(selectedBPMFilterParams)));
   };
 
   const customTrim = (inputString) => {
@@ -131,6 +128,7 @@ export default function CreateNewFilterDrawer({
     return inputString;
   };
 
+  console.log("include assigned tasks",includeAssignedTasks);
   useEffect(() => {
     if (selectedFilterData) {
       setFilterName(selectedFilterData?.name);
@@ -146,7 +144,6 @@ export default function CreateNewFilterDrawer({
         selectedFilterData?.properties?.showUndefinedVariable
       );
       if (selectedFilterData.variables) {
-
         setInputValues(() => {
           return selectedFilterData.variables?.map((row) => ({
             name: row.name,
@@ -157,7 +154,7 @@ export default function CreateNewFilterDrawer({
       if (!selectedFilterData.variables?.length) {
         setInputValues([{ name: "", label: "" }]);
       }
-      if(selectedFilterData.variables?.length === 2){
+      if (selectedFilterData.variables?.length === 2) {
         setInputValues([{ name: "", label: "" }]);
       }
       if (
@@ -167,7 +164,7 @@ export default function CreateNewFilterDrawer({
         setSpecificUserGroup("");
         setPermissions(ACCESSIBLE_FOR_ALL_GROUPS);
       }
-      
+
       if (selectedFilterData?.users?.length) {
         setPermissions(PRIVATE_ONLY_YOU);
       }
@@ -183,10 +180,10 @@ export default function CreateNewFilterDrawer({
         setIdentifierId(selectedFilterData?.roles[0]);
         setSpecificUserGroup(SPECIFIC_USER_OR_GROUP);
       }
-      if(selectedFilterData?.criteria?.assigneeExpression){
+      if (selectedFilterData?.criteria?.assigneeExpression) {
         setIsMyTasksEnabled(true);
       }
-      if(selectedFilterData?.criteria?.candidateGroupsExpression){
+      if (selectedFilterData?.criteria?.candidateGroupsExpression) {
         setIsTasksForCurrentUserGroupsEnabled(true);
       }
       setCheckboxes({
@@ -342,8 +339,8 @@ export default function CreateNewFilterDrawer({
       users: users,
       roles: roles?.length ? roles : [],
       taskVisibleAttributes: { ...checkboxes },
-      isTasksForCurrentUserGroupsEnabled:isTasksForCurrentUserGroupsEnabled,
-      isMyTasksEnabled:isMyTasksEnabled,
+      isTasksForCurrentUserGroupsEnabled: isTasksForCurrentUserGroupsEnabled,
+      isMyTasksEnabled: isMyTasksEnabled,
     };
 
     // Remove empty keys inside criteria
@@ -497,15 +494,18 @@ export default function CreateNewFilterDrawer({
       <List>
         <h5 style={{ fontWeight: "bold", fontSize: "18px" }}>
           <Translation>{(t) => t("Criteria")}</Translation>{" "}
-          <i title={t("This section is aimed to set the parameters used to filter the tasks")} className="fa fa-info-circle"></i>{" "}
+          <i
+            title={t(
+              "This section is aimed to set the parameters used to filter the tasks"
+            )}
+            className="fa fa-info-circle"
+          ></i>{" "}
         </h5>
         <div className="d-flex align-items-center mt-1">
           <input
             type="checkbox"
             checked={isMyTasksEnabled}
-            onChange={(e) =>
-              setIsMyTasksEnabled(e.target.checked)
-            }
+            onChange={(e) => setIsMyTasksEnabled(e.target.checked)}
             style={{ marginRight: "6px" }}
             title={t("Show only current user assigned task")}
           />
@@ -605,7 +605,10 @@ export default function CreateNewFilterDrawer({
               {candidateGroup}
               <div
                 className="badge-deleteIcon ms-2"
-                onClick={() => setCandidateGroup(null)}
+                onClick={() => {
+                  setCandidateGroup(null);
+                  setIncludeAssignedTasks(false);
+                }}
               >
                 &times;
               </div>
@@ -657,7 +660,12 @@ export default function CreateNewFilterDrawer({
         <div className="child-container-two">
           <h5 style={{ fontWeight: "bold" }}>
             <Translation>{(t) => t("Permission")}</Translation>{" "}
-            <i title={t("This section is aimed to set read permissions for the filter")} className="fa fa-info-circle"></i>
+            <i
+              title={t(
+                "This section is aimed to set read permissions for the filter"
+              )}
+              className="fa fa-info-circle"
+            ></i>
           </h5>
           <input
             style={{ marginRight: "4px" }}
@@ -668,7 +676,10 @@ export default function CreateNewFilterDrawer({
             checked={permissions === ACCESSIBLE_FOR_ALL_GROUPS}
             onChange={(e) => setPermissions(e.target.value)}
           />
-          <label htmlFor="all-users" style={{ marginRight: "3px", fontSize: "18px" }}>
+          <label
+            htmlFor="all-users"
+            style={{ marginRight: "3px", fontSize: "18px" }}
+          >
             <Translation>{(t) => t("Accessible for all users")}</Translation>
           </label>{" "}
           <br />
@@ -809,7 +820,12 @@ export default function CreateNewFilterDrawer({
         <div className="m-2">
           <h5 className="fw-bold ">
             <Translation>{(t) => t("Task Attributes")}</Translation>{" "}
-            <i title={t("This section is aimed to set select task attributes that will be visible in the task list view")} className="fa fa-info-circle"></i>
+            <i
+              title={t(
+                "This section is aimed to set select task attributes that will be visible in the task list view"
+              )}
+              className="fa fa-info-circle"
+            ></i>
           </h5>
           <input
             readOnly
@@ -858,7 +874,11 @@ export default function CreateNewFilterDrawer({
               }}
             >
               <Translation>
-                {(t) => (`${selectedFilterData ? t("Save Filter") : t("Create Filter")} `)}
+                {(t) =>
+                  `${
+                    selectedFilterData ? t("Save Filter") : t("Create Filter")
+                  } `
+                }
               </Translation>
             </button>
           </div>

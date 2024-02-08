@@ -268,8 +268,8 @@ const ServiceTaskListViewDetails = React.memo(() => {
                             <div className="d-flex justify-content-between">
                                 <Col xs={4}>
                                     <Row className="ms-0 task-header">{task?.name}</Row>
-                                    <Row className="ms-0 task-name">
-                                        <span className="application-id" data-title={t("Process Name")}>
+                                    <Row className="ms-0 fs-5 fw-normal">
+                                        <span className="application-id" title={t("Process Name")}>
                                             {" "}
                                             {
                                                 getProcessDataObjectFromList(processList,

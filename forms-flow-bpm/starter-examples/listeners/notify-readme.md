@@ -19,12 +19,14 @@ This component relies on listed parameters.
 a. messageId [Mandatory = Yes]  
 b. category [Mandatory = Yes]  
 c. groupsOnly [Mandatory = Yes]  
-c. emailGroups [Mandatory = Yes]  
+c. emailGroups [Mandatory = Yes] 
+d. emailAddress [Mandatory = Yes]
 
 - messageId (Listener field of type expression): This maps to the any process event.
 - category (Listener field of type expression): This maps to the email template DMN category.  
 - groupsOnly (Listener field of type expression): This flags that the email to be sent only to **emailGroups**.   
 - emailGroups (Listener field of type expression): Takes in email group names as array. For example. ["ADMO","ED-Operations"].
+- emailAddress (Listener field of type expression) Takes in email address names as array. For example ["${emailAddress}", "test@formsflow.com"]
 
 ### How to Use
 
@@ -41,3 +43,7 @@ Below snapshot shows how to configure the **NotifyListener** to a task.
 ##### Below snapshot shows configuration of optional parameter (additionalEmailGroups).
 
 ![Notify listener (emailGroups) - Snapshot](./images/notify-listener-snp4.jpg)
+![Notify listener (emailAddress) - Snapshot](./images/notify-listener-snp5.jpg)
+
+
+

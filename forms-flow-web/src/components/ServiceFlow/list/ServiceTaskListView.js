@@ -157,7 +157,7 @@ const ServiceTaskListView = React.memo(() => {
               <Row className="mt-4 p-2 justify-content-between" style={{ marginBottom: "-2.5rem" }}>
                {vissibleAttributes?.taskVisibleAttributes?.applicationId && <Col  xs={2}>
                   <div className="col-12">
-                    <h6 className="fw-light">{t("Application Id")}</h6>
+                    <h6 className="fw-light">{t("Submission ID")}</h6>
                     <h6>{task?._embedded?.variable?.filter((eachValue) => eachValue.name === "applicationId")[0]?.value}</h6>
                   </div>
                 </Col>}

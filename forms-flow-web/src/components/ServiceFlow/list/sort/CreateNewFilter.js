@@ -128,7 +128,6 @@ export default function CreateNewFilterDrawer({
     return inputString;
   };
 
-  console.log("include assigned tasks",includeAssignedTasks);
   useEffect(() => {
     if (selectedFilterData) {
       setFilterName(selectedFilterData?.name);
@@ -333,7 +332,7 @@ export default function CreateNewFilterDrawer({
         ...variables,
         ...(applicationIdExists
           ? []
-          : [{ name: "applicationId", label: "Application Id" }]),
+          : [{ name: "applicationId", label: "Submission ID" }]),
         ...(formNameExists ? [] : [{ name: "formName", label: "Form Name" }]),
       ],
       users: users,

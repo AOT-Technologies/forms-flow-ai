@@ -225,7 +225,7 @@ const Create = React.memo(() => {
         <h2>
           <Translation>{(t) => t("Create Form")}</Translation>
         </h2>
-        <button className="btn btn-primary" disabled={formSubmitted} onClick={() => saveFormData()}>
+        <button data-testid="create-form-btn-save" className="btn btn-primary" disabled={formSubmitted} onClick={() => saveFormData()}>
           {saveText}
         </button>
 
@@ -243,6 +243,7 @@ const Create = React.memo(() => {
                   {t("Title")}
                 </label>
                 <input
+                  data-testid="create-form-title"
                   type="text"
                   className="form-control "
                   id="title"
@@ -258,7 +259,7 @@ const Create = React.memo(() => {
                 {t("Description")}
               </label>
               <div className="bg-white">
-                <RichText onChange={setFormDescription} value={formDescription} />
+                <RichText data-testid="create-form-description" onChange={setFormDescription} value={formDescription} />
               </div>
             </div>
           </div>
@@ -272,6 +273,7 @@ const Create = React.memo(() => {
                   <div className="input-group">
                     <div className="form-check form-check-inline">
                       <input
+                        data-testid="form-create-form-display"
                         className="form-check-input"
                         type="radio"
                         name="display"
@@ -286,6 +288,7 @@ const Create = React.memo(() => {
                     </div>
                     <div className="form-check form-check-inline">
                       <input
+                        data-testid="form-create-wizard-display"
                         className="form-check-input"
                         type="radio"
                         name="display"
@@ -307,10 +310,11 @@ const Create = React.memo(() => {
                     <Form.Group controlId="setForAnonymous">
                       <div className="d-flex  mt-3 form-check form-switch ps-0 gap-5">
                         <label className="public-label me-2 fw-bold mb-2">{t("Make this form public ?")}</label>
-                        <input 
-                        className="form-check-input" 
-                        type="checkbox" 
-                        role="switch" 
+                        <input
+                        className="form-check-input"
+                        data-testid="form-anonymous-enable"
+                          type="checkbox"
+                        role="switch"
                         id="anonymous"
                         checked={anonymous}
                         onChange={() => setAnonymous(!anonymous)}>
@@ -324,7 +328,7 @@ const Create = React.memo(() => {
 
             <div>
               <div className="mt-3">
-                <div className="d-flex align-items-center cursor-pointer" onClick={handleToggle}>
+                <div className="d-flex align-items-center cursor-pointer" data-testid="advanced-form-option" onClick={handleToggle}>
                   <i className={`fa ${open ? 'fa-chevron-up' : 'fa-chevron-down'} me-2`}></i>
                   <span className="text-primary fw-bold me-4">{t("Advanced Options")}</span>
                   <hr className="flex-grow-1 ms-2 me-2" />
@@ -351,6 +355,7 @@ const Create = React.memo(() => {
                           }
                           <input
                             type="text"
+                            data-testid="create-form-name"
                             className="form-control"
                             id="name"
                             placeholder={t("Enter the form machine name")}
@@ -369,7 +374,8 @@ const Create = React.memo(() => {
                           </label>
                           <div className="input-group">
                             <select
-                              className="form-control"
+                              data-testid="create-form-choose-type"
+                              className="form-select"
                               name="form-type"
                               id="form-type"
                               value={form.type}
@@ -404,6 +410,7 @@ const Create = React.memo(() => {
                               </div> : ""
                             }
                             <input
+                              data-testid="create-form-pathname"
                               type="text"
                               className="form-control"
                               id="path"

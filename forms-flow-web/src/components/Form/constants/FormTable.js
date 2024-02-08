@@ -96,11 +96,11 @@ function FormTable() {
     dispatch(setBPMFormListPage(1));
   };
 
-  const viewOrEditForm = (formId) => {
+  const viewOrEditForm = (formId,path) => {
     dispatch(resetFormProcessData());
-    dispatch(push(`${redirectUrl}formflow/${formId}/view-edit`));
+    dispatch(push(`${redirectUrl}formflow/${formId}/${path}`));
   };
-
+ 
   const submitNewForm = (formId)=>{
     dispatch(push(`${redirectUrl}form/${formId}`));
   };
@@ -195,6 +195,7 @@ function FormTable() {
                     <span>
                       {isAscending ? (
                         <i
+                          data-testid="form-desc-sort-icon"
                           className="fa fa-sort-alpha-asc ms-2 mt-1"
                           onClick={() => {
                             updateSort("desc");
@@ -208,6 +209,7 @@ function FormTable() {
                         ></i>
                       ) : (
                         <i
+                          data-testid="form-asc-sort-icon"
                           className="fa fa-sort-alpha-desc ms-2 mt-1"
                           onClick={() => {
                             updateSort("asc");
@@ -299,11 +301,11 @@ function FormTable() {
 
                       <td>
                         <button
-                          data-testid={`form-view-or-edit-button-${e._id}`}
+                          data-testid={`form-edit-button-${e._id}`}
                           className="btn btn-link text-primary mt-2"
-                          onClick={() => viewOrEditForm(e._id)}
+                          onClick={() => viewOrEditForm(e._id,'edit')}
                         >
-                          <Translation>{(t) => t("View Details")}</Translation>{" "}
+                          <Translation>{(t) => t("Edit Form")}</Translation>{" "}
                         </button>
                       </td>
                       <td>
@@ -318,6 +320,16 @@ function FormTable() {
                             <i className="fa-solid fa-ellipsis"></i>
                           </Dropdown.Toggle>
                           <Dropdown.Menu className="shadow  bg-white">
+                          <Dropdown.Item
+                                onClick={() => {
+                                  viewOrEditForm(e?._id,'view-edit');
+                                }}
+                                data-testid={`designer-form-option-${e._id}-view-details`}
+                              > 
+                                <i className="fa-solid me-2 fa-arrow-up-right-from-square text-primary"></i>
+                                {t("View Details")}
+                              </Dropdown.Item>
+
                             {userRoles.includes(STAFF_REVIEWER) ||
                             userRoles.includes(CLIENT) ? (
                               <Dropdown.Item
@@ -330,6 +342,8 @@ function FormTable() {
                                 {t("Submit New")}
                               </Dropdown.Item>
                             ) : null}
+
+
                             <Dropdown.Item onClick={() => deleteForms(e)}
                              data-testid={`designer-form-option-${e._id}-delete`}>
                               <i className="fa fa-trash me-2 text-danger" />
@@ -345,7 +359,7 @@ function FormTable() {
             ) : !searchFormLoading ? (
               noDataFound()
             ) : (
-              ""
+              null
             )}
           </table>
         </div>

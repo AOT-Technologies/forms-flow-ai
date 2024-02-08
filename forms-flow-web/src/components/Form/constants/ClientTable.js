@@ -149,6 +149,7 @@ function ClientTable() {
                     <span>
                       {isAscending ? (
                         <i
+                          data-testid="form-desc-sort-icon"
                           className="fa fa-sort-alpha-asc ms-2"
                           onClick={() => {
                             updateSort("desc");
@@ -162,6 +163,7 @@ function ClientTable() {
                         ></i>
                       ) : (
                         <i
+                          data-testid="form-asc-sort-icon"
                           className="fa fa-sort-alpha-desc ms-2"
                           onClick={() => {
                             updateSort("asc");
@@ -178,7 +180,7 @@ function ClientTable() {
                   </div>
                 </th>
                 <th>{t("Form Description")}</th>
-                <th colSpan="4">
+                <th colSpan="4" aria-label="Search Forms by form title" >
                   <InputGroup className="input-group p-0 w-100">
                     <FormControl
                       value={search}
@@ -196,7 +198,7 @@ function ClientTable() {
                     {search && (
                       <InputGroup.Append
                         onClick={handleClearSearch}
-                        data-testid="form-search-cear-button"
+                        data-testid="form-search-clear-button"
                       >
                         <InputGroup.Text className="h-100">
                           <i className="fa fa-times "></i>
@@ -295,7 +297,7 @@ function ClientTable() {
             ) : !searchFormLoading ? (
               noDataFound()
             ) : (
-              ""
+              null
             )}
           </table>
         </div>

@@ -21,7 +21,6 @@ import {
 } from "../../../apiManager/services/bpmTaskServices";
 import { setBPMTaskDetailUpdating } from "../../../actions/bpmTaskActions";
 import UserSelectionDebounce from "./UserSelectionDebounce";
-import SocketIOService from "../../../services/SocketIOService";
 import { useTranslation } from "react-i18next";
 
 const TaskHeader = React.memo(() => {
@@ -51,32 +50,22 @@ const TaskHeader = React.memo(() => {
     setDueDate(due);
   }, [task?.due]);
 
+  const updateTaskListAndTaskDetails = (err)=>{
+    if (selectedFilter && !err) {
+      dispatch(getBPMTaskDetail(taskId));
+      dispatch(
+        fetchServiceTaskList(reqData,null,firstResult)
+      );
+    } else {
+      dispatch(setBPMTaskDetailUpdating(false));
+    }
+  };
+  
   const onClaim = () => {
     dispatch(setBPMTaskDetailUpdating(true));
     dispatch(
       // eslint-disable-next-line no-unused-vars
-      claimBPMTask(taskId, username, (err, response) => {
-        if (!err) {
-          if (!SocketIOService.isConnected()) {
-            if (selectedFilter) {
-              dispatch(getBPMTaskDetail(taskId));
-              dispatch(
-                fetchServiceTaskList(reqData,null,firstResult)
-              );
-            } else {
-              dispatch(setBPMTaskDetailUpdating(false));
-            }
-          }
-          if(selectedFilter){
-            dispatch(
-              fetchServiceTaskList(reqData,null,firstResult)
-            );
-          }
-           
-        } else {
-          dispatch(setBPMTaskDetailUpdating(false));
-        }
-      })
+      claimBPMTask(taskId, username, updateTaskListAndTaskDetails)
     );
   };
   const onChangeClaim = (userId) => {
@@ -85,23 +74,7 @@ const TaskHeader = React.memo(() => {
       dispatch(setBPMTaskDetailUpdating(true));
       dispatch(
         // eslint-disable-next-line no-unused-vars
-        updateAssigneeBPMTask(taskId, userId, (err, response) => {
-          if (!err) {
-            if (!SocketIOService.isConnected()) {
-              if (selectedFilter) {
-                dispatch(getBPMTaskDetail(taskId));
-              }
-            }
-            if(selectedFilter){
-              dispatch(
-                fetchServiceTaskList(reqData,null,firstResult)
-              );
-            }
-           
-          } else {
-            dispatch(setBPMTaskDetailUpdating(false));
-          }
-        })
+        updateAssigneeBPMTask(taskId, userId, updateTaskListAndTaskDetails)
       );
     }
   };
@@ -110,23 +83,7 @@ const TaskHeader = React.memo(() => {
     dispatch(setBPMTaskDetailUpdating(true));
     dispatch(
       // eslint-disable-next-line no-unused-vars
-      unClaimBPMTask(taskId, (err, response) => {
-        if (!err) {
-          if (!SocketIOService.isConnected()) {
-            if (selectedFilter) {
-              dispatch(getBPMTaskDetail(taskId));
-            }
-          }
-          if(selectedFilter){
-            dispatch(
-              fetchServiceTaskList(reqData,null,firstResult)
-            );
-          }
-          
-        } else {
-          dispatch(setBPMTaskDetailUpdating(false));
-        }
-      })
+      unClaimBPMTask(taskId, updateTaskListAndTaskDetails)
     );
   };
 
@@ -139,18 +96,7 @@ const TaskHeader = React.memo(() => {
     };
     dispatch(
       // eslint-disable-next-line no-unused-vars
-      updateBPMTask(taskId, updatedTask, (err, response) => {
-        if (!err) {
-          if (!SocketIOService.isConnected()) {
-            dispatch(getBPMTaskDetail(taskId));
-            dispatch(
-              fetchServiceTaskList(reqData,null,firstResult)
-            );
-          }
-        } else {
-          dispatch(setBPMTaskDetailUpdating(false));
-        }
-      })
+      updateBPMTask(taskId, updatedTask, updateTaskListAndTaskDetails)
     );
   };
 
@@ -163,18 +109,7 @@ const TaskHeader = React.memo(() => {
     };
     dispatch(
       // eslint-disable-next-line no-unused-vars
-      updateBPMTask(taskId, updatedTask, (err, response) => {
-        if (!err) {
-          if (!SocketIOService.isConnected()) {
-            dispatch(getBPMTaskDetail(taskId));
-            dispatch(
-              fetchServiceTaskList(reqData,null,firstResult)
-            );
-          }
-        } else {
-          dispatch(setBPMTaskDetailUpdating(false));
-        }
-      })
+      updateBPMTask(taskId, updatedTask, updateTaskListAndTaskDetails)
     );
   };
 

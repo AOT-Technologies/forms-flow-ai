@@ -41,10 +41,17 @@ const ServiceFlowTaskList = React.memo(() => {
   );
 
   useEffect(() => {
-    if (selectedFilter) {
+    if (selectedFilter?.id) {
+        const selectedBPMFilterParams = {
+          ...selectedFilter,
+          criteria: {
+            ...selectedFilter?.criteria,
+            ...reqData?.criteria
+          }
+        };
       dispatch(setBPMTaskLoader(true));
       dispatch(setBPMTaskListActivePage(1));
-      dispatch(fetchServiceTaskList(reqData,null,firstResult));
+      dispatch(fetchServiceTaskList(selectedBPMFilterParams,null,firstResult));
     }
   }, [reqData]);
 

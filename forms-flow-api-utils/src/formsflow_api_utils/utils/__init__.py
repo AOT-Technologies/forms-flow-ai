@@ -6,6 +6,7 @@ from .constants import (
     ALLOW_ALL_ORIGINS,
     ANONYMOUS_USER,
     ADMIN_GROUP,
+    CAMUNDA_ADMIN,
     CLIENT_GROUP,
     CORS_ORIGINS,
     DEFAULT_PROCESS_KEY,

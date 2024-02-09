@@ -171,7 +171,7 @@ const TaskFilterViewComponent = React.memo(
               placeholder={placeholder}
             />
             <div className="input-group-prepend">
-              <span className="input-group-text">
+              <span className="input-group-text p-2">
                 <i className="fa fa-calendar" />
               </span>
             </div>

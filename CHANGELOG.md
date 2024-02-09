@@ -9,7 +9,7 @@ Mark  items as `Added`, `Changed`, `Fixed`, `Modified`, `Removed`, `Untested Fea
 **forms-flow-web**
 
 * Fixed task page infinity loading issue
-* Fixed task list filter API breaking on initial time issue
+* Fixed task list filter API breaking on initial time
 * Fixed tenant based all tasks not showing issue
 
 **forms-flow-documents**

@@ -95,6 +95,10 @@
     flex: 10%;
 }
 
+.list-margin{
+    margin-top: -10px;
+}
+
 .flex-item-right {
     justify-content: flex-end;
     display: flex;
@@ -116,6 +120,40 @@ flex-wrap: wrap;
     color: var(--color-danger-ltr);
     float: right;
     font-weight: normal
+}
+
+.btn-upload-fail{
+    width: 20%;
+}
+
+.form-check-input{
+    width: 15px;
+    height: 15px;
+}
+
+.form-upload{
+    padding-bottom: 7px;
+    color: #450ccb;
+
+}
+.client-table{
+    min-height: 400px;
+}
+.sort-icon{
+  font-size: 16px;  
+}
+.description-title{
+  max-width: 350px;  
+}
+.description-content{
+    max-width: 68vw;
+}
+.clientForm-table-col{
+    min-height: 300px;
+}
+.upload-progress{
+    height: 5px;
+    margin-top: 11px;
 }
 
 .public-label {
@@ -153,4 +191,5 @@ flex-wrap: wrap;
   }
 .form-description-p-tag > p{
     word-wrap: break-word;
+    max-width: 68vw;
 }

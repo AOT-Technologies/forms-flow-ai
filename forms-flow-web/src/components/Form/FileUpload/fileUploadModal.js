@@ -41,7 +41,7 @@ const FileModal = React.memo(({ modalOpen = false, onClose, forms, }) => {
           </Modal.Title>
         </Modal.Header>
         <Modal.Body>
-          <div style={{ paddingBottom: "7px", color: "#450ccb", fontWeight: "bold" }}>
+          <div className="form-upload fw-bold">
             {`${formUploadCounter} of ${formUploadList.length} ${formUploadList.length > 1
               ? t("forms uploaded")
               : t("form uploaded")
@@ -59,7 +59,9 @@ const FileModal = React.memo(({ modalOpen = false, onClose, forms, }) => {
             </span>}
           </div>
           {formUploadList.length ? (
-            <div className="progress" style={{ height: "5px", marginTop: "11px" }}>
+            <div className="progress upload-progress" 
+            // style={{ height: "5px", marginTop: "11px" }}
+            >
               <div
                 className="progress-bar"
                 role="progressbar"
@@ -77,7 +79,7 @@ const FileModal = React.memo(({ modalOpen = false, onClose, forms, }) => {
         </Modal.Body>
         <Modal.Footer style={{ justifyContent: `${noAccess ? "space-between" : ''}` }}>
           {noAccess && <span className="fileupload-fail">{t("Access restricted by its designer..!")}</span>}
-          <Button style={{ width: "20%" }} type="button" className="btn btn-default" onClick={() => {
+          <Button type="button" className="btn btn-default btn-upload-fail" onClick={() => {
             dispatch(DesignerAccessDenied(false));
             onClose();
           }}>

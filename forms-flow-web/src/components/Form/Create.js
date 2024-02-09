@@ -4,6 +4,7 @@ import _set from "lodash/set";
 import _cloneDeep from "lodash/cloneDeep";
 import _camelCase from "lodash/camelCase";
 import { push } from "connected-react-router";
+import "../Form/Create.scss";
 
 import {
   MULTITENANCY_ENABLED,
@@ -232,8 +233,8 @@ const Create = React.memo(() => {
       </div>
 
       <Errors errors={errors} />
-      <div className="p-4"
-        style={{ border: "1px solid #c2c0be", borderRadius: "5px" }}>
+      <div className="p-4 create-border">
+        {/* /style={{ border: "1px solid #c2c0be", borderRadius: "5px" }} */}
         <div className="d-flex pb-4 flex-wrap">
           <div className="col-lg-6 col-md-6 col-sm-6 col-12 px-3">
             <div>
@@ -346,8 +347,8 @@ const Create = React.memo(() => {
                           {
                             MULTITENANCY_ENABLED && tenantKey ? <div className="input-group-prepend">
                               <div
-                                className="input-group-text"
-                                style={{ maxWidth: "150px" }}
+                                className="input-group-text input-width"
+                                // style={{ maxWidth: "150px" }}
                               >
                                 <span className="text-truncate">{tenantKey}</span>
                               </div>
@@ -402,8 +403,8 @@ const Create = React.memo(() => {
                             {
                               MULTITENANCY_ENABLED && tenantKey ? <div className="input-group-prepend">
                                 <div
-                                  className="input-group-text"
-                                  style={{ maxWidth: "150px" }}
+                                  className="input-group-text input-width"
+                                  // style={{ maxWidth: "150px" }}
                                 >
                                   <span className="text-truncate">{tenantKey}</span>
                                 </div>

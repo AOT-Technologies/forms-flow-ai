@@ -113,7 +113,7 @@ const Edit = React.memo((props) => {
           message={props.submissionError.message}
           onConfirm={props.onConfirm}
         ></SubmissionError>
-        <h3 className="task-head text-truncate" style={{ height:"45px" }}>{form.title}</h3>
+        <h3 className="task-head text-truncate form-title">{form.title}</h3>
       </div>
       <Errors errors={errors} />
       <LoadingOverlay

@@ -267,7 +267,6 @@ const View = React.memo((props) => {
           <button
             data-testid="draft-discard"
             className="btn btn-danger me-2"
-            style={{ width: "8.5em" }}
             onClick={() => deleteDraft()}
           >
             {t("Discard Draft")}
@@ -290,11 +289,11 @@ const View = React.memo((props) => {
     <>
 
       {t("Are you sure to delete the draft")} 
-      <span style={{ fontWeight: "bold" }}>&nbsp;
+      <span className="fw-bold">&nbsp;
         {textTruncate(14, 12, draftDelete.draftName)}
       </span>&nbsp;
       {t("with ID")} 
-      <span style={{ fontWeight: "bold" }}>&nbsp;
+      <span className="fw-bold">&nbsp;
         {draftDelete.draftId}
       </span> ?
     </>
@@ -332,17 +331,7 @@ const View = React.memo((props) => {
           ) : (
             <span>
               <div
-                className=""
-                style={{
-                  maxWidth: "900px",
-                  margin: "auto",
-                  height: "50vh",
-                  display: "flex",
-                  flexDirection: "column",
-                  alignItems: "center",
-                  justifyContent: "center",
-                }}
-              >
+                className="container-md d-flex align-items-center justify-content-center draft-edit">
                 <h3>{t("Form not published")}</h3>
                 <p>{t("You can't submit this form until it is published")}</p>
               </div>

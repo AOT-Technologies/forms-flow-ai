@@ -43,7 +43,7 @@ class KeycloakAdminAPIService:
         )
         self.base_url = (
             f"{current_app.config.get('KEYCLOAK_URL')}/"
-            f"{current_app.config.get('KEYCLOAK_URL_HTTP_RELATIVE_PATH', 'auth/')}/admin/realms/"
+            f"{current_app.config.get('KEYCLOAK_URL_HTTP_RELATIVE_PATH', 'auth/')}admin/realms/"
             f"{current_app.config.get('KEYCLOAK_URL_REALM')}"
         )
 

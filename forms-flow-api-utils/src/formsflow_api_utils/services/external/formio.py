@@ -74,6 +74,8 @@ class FormioService:
                 response = requests.post(url, headers=headers, data=json.dumps(data))
             elif method == 'PUT':
                 response = requests.put(url, headers=headers, data=json.dumps(data))
+            elif method == 'PATCH':
+                response = requests.patch(url, headers=headers, data=json.dumps(data))
             if response.ok:
                 return response.json()
             else:
@@ -125,6 +127,14 @@ class FormioService:
             f"{self.base_url}/form/{data['formId']}/submission"
         )
         return self._invoke_service(url, headers, data=data)
+
+    def patch_submission(self, form_id, submission_id, data, formio_token):
+        """Patch form submission data with the payload."""
+        headers = {"Content-Type": "application/json", "x-jwt-token": formio_token}
+        url = (
+            f"{self.base_url}/form/{form_id}/submission/{submission_id}"
+        )
+        return self._invoke_service(url, headers, data=data, method='PATCH')
 
     def get_form_by_path(self, path_name: str, formio_token: str) -> dict:
         """Get request to formio API to get form details from path."""

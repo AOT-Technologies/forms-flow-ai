@@ -23,7 +23,7 @@ def generate_formio_patch_request(data, path_prefix="/data"):
         else:
             # If non dictionary data, patch it
             patch.append({
-                "op": "replace",
+                "op": "add",
                 "path": current_path,
                 "value": sub_data
             })

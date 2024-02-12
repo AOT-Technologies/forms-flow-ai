@@ -117,7 +117,8 @@ function BpmnTable() {
                   e.keyCode == 13 ? handleSearchButtonClick() : ""
                 }
                 placeholder={t("Search by workflow name")}
-                style={{ backgroundColor: "#ffff" }}
+                className="bg-white"
+                // style={{ backgroundColor: "#ffff" }}
                 title={t("Search by workflow name")}
               />
               {search && (
@@ -130,9 +131,12 @@ function BpmnTable() {
               <InputGroup.Append
                 onClick={handleSearchButtonClick}
                 disabled={!search?.trim()}
-                style={{ cursor: "pointer" }}
+                className="cursor-pointer"
+                // style={{ cursor: "pointer" }}
               >
-                <InputGroup.Text style={{ backgroundColor: "#ffff" }} className="h-100">
+                <InputGroup.Text 
+                // style={{ backgroundColor: "#ffff" }} 
+                className="bg-white h-100">
                   <i className="fa fa-search"></i>
                 </InputGroup.Text>
               </InputGroup.Append>

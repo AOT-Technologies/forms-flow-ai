@@ -65,7 +65,7 @@ function TaskAttributeComponent({
             <Col xs={6}>
               <Form.Check
                 type="checkbox"
-                label={t("Application ID")}
+                label={t("Submission ID")}
                 name="applicationId"
                 checked={checkboxes.applicationId}
                 onChange={handleCheckboxChange}

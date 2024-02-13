@@ -4,17 +4,16 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.nimbusds.oauth2.sdk.util.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
-import org.camunda.bpm.engine.ProcessEngineException;
 import org.camunda.bpm.engine.delegate.DelegateExecution;
 import org.camunda.bpm.engine.delegate.DelegateTask;
 import org.camunda.bpm.engine.delegate.Expression;
 import org.camunda.bpm.engine.delegate.TaskListener;
 import org.camunda.bpm.extension.hooks.listeners.BaseListener;
 import org.camunda.bpm.extension.hooks.services.IMessageEvent;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import jakarta.annotation.Resource;
+
 import java.io.IOException;
 import java.util.*;
 import java.util.logging.Logger;
@@ -33,9 +32,9 @@ public class NotifyListener extends BaseListener implements TaskListener, IMessa
 
     private Expression messageId;
     private Expression category;
-
     private Expression emailGroups;
     private Expression groupsOnly;
+    private Expression emailAddress;
 
     @Resource(name = "bpmObjectMapper")
     private ObjectMapper bpmObjectMapper;
@@ -46,74 +45,85 @@ public class NotifyListener extends BaseListener implements TaskListener, IMessa
      * @param delegateTask: The task which sends the message
      */
     public void notify(DelegateTask delegateTask) {
-        Set<String> toEmails =  new HashSet<>();
-        if(!"Y".equals(getGroupsOnly(delegateTask.getExecution()))) {
+        Set<String> toEmails = new HashSet<>();
+        if (!"Y".equals(getGroupsOnly(delegateTask.getExecution()))) {
             toEmails.addAll(getEmailsOfUnassignedTask(delegateTask));
         }
         List<String> emailGroups = null;
         try {
             emailGroups = getEmailGroups(delegateTask.getExecution());
         } catch (IOException e) {
-           handleException(delegateTask.getExecution(), ExceptionSource.TASK, e);
+            handleException(delegateTask.getExecution(), ExceptionSource.TASK, e);
         }
         if (CollectionUtils.isNotEmpty(emailGroups)) {
             for (String entry : emailGroups) {
                 toEmails.addAll(getEmailsForGroup(delegateTask.getExecution(), entry));
             }
         }
-        sendEmailNotification(delegateTask, toEmails ,delegateTask.getId());
+        try {
+            sendEmailNotification(delegateTask, toEmails, delegateTask.getId());
+        } catch (JsonProcessingException e) {
+            throw new RuntimeException(e);
+        }
     }
 
     /**
-     *
      * @param delegateTask
      * @param toEmails
      * @param taskId
      */
-    private void sendEmailNotification(DelegateTask delegateTask,Set<String> toEmails,String taskId) {
-        String toAddress = CollectionUtils.isNotEmpty(toEmails) ? StringUtils.join(toEmails,",") : null;
-        if(StringUtils.isNotEmpty(toAddress)) {
+    private void sendEmailNotification(DelegateTask delegateTask, Set<String> toEmails, String taskId) throws JsonProcessingException {
+        toEmails.addAll(getEmailAddress(delegateTask.getExecution()));
+        String toAddress = CollectionUtils.isNotEmpty(toEmails) ? StringUtils.join(toEmails, ",") : null;
+        if (StringUtils.isNotEmpty(toAddress)) {
             Map<String, Object> emailAttributes = new HashMap<>();
             emailAttributes.put(EMAIL_TO, toAddress);
             emailAttributes.put("category", getCategory(delegateTask.getExecution()));
-            emailAttributes.put("name",getDefaultAddresseName());
-            emailAttributes.put("taskid",taskId);
-            if(StringUtils.isNotBlank(toAddress) && StringUtils.indexOf(toAddress,"@") > 0) {
-                sendMessage(delegateTask.getExecution(), emailAttributes,getMessageId(delegateTask.getExecution()));
+            emailAttributes.put("name", getDefaultAddresseName());
+            emailAttributes.put("taskid", taskId);
+            if (StringUtils.isNotBlank(toAddress) && StringUtils.indexOf(toAddress, "@") > 0) {
+                sendMessage(delegateTask.getExecution(), emailAttributes, getMessageId(delegateTask.getExecution()));
             }
         }
     }
-    private String getCategory(DelegateExecution delegateExecution){
+
+    private String getCategory(DelegateExecution delegateExecution) {
         return String.valueOf(this.category.getValue(delegateExecution));
     }
 
     /**
-     *
      * @param delegateExecution
      * @return
      */
-    private String getMessageId(DelegateExecution delegateExecution){
+    private String getMessageId(DelegateExecution delegateExecution) {
         return String.valueOf(this.messageId.getValue(delegateExecution));
     }
 
     private List<String> getEmailGroups(DelegateExecution delegateExecution) throws JsonProcessingException {
-        List<String> emailGroups = new ArrayList<>();
-        if(this.emailGroups != null &&
-                StringUtils.isNotBlank(String.valueOf(this.emailGroups.getValue(delegateExecution)))) {
-            emailGroups = this.emailGroups != null && this.emailGroups.getValue(delegateExecution) != null ?
-                    bpmObjectMapper.readValue(String.valueOf(this.emailGroups.getValue(delegateExecution)), List.class) : null;
-        }
-        return  emailGroups;
+      return getInjectedFields(delegateExecution, this.emailGroups);
     }
 
-    private String getGroupsOnly(DelegateExecution delegateExecution){
-
-        if(this.groupsOnly != null &&
+    private String getGroupsOnly(DelegateExecution delegateExecution) {
+        if (this.groupsOnly != null &&
                 StringUtils.isNotBlank(String.valueOf(this.groupsOnly.getValue(delegateExecution)))) {
             return this.groupsOnly != null && this.groupsOnly.getValue(delegateExecution) != null ?
                     String.valueOf(this.groupsOnly.getValue(delegateExecution)) : null;
         }
-        return  "N";
+        return "N";
+    }
+
+    private List<String> getEmailAddress(DelegateExecution delegateExecution) throws JsonProcessingException {
+        return getInjectedFields(delegateExecution, this.emailAddress);
+    }
+
+    private List<String> getInjectedFields(DelegateExecution delegateExecution, Expression injectedField) throws JsonProcessingException {
+        List<String> fieldList = new ArrayList<>();
+        if (injectedField != null &&
+                StringUtils.isNotBlank(String.valueOf(injectedField.getValue(delegateExecution)))) {
+            fieldList = injectedField != null && injectedField.getValue(delegateExecution) != null ?
+                    bpmObjectMapper.readValue(String.valueOf(injectedField.getValue(delegateExecution)), List.class) : null;
+        }
+        return fieldList;
     }
 
 }

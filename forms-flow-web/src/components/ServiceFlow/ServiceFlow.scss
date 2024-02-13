@@ -365,3 +365,8 @@
 .no-padding-left {
   padding-left: 0px !important;
 }
+
+.task-list{
+  max-height: 60vh;
+  overflow: auto;
+}

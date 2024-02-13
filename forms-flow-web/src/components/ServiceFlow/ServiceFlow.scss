@@ -368,3 +368,7 @@
 .filter-tooltip-icon {
   color: var(--color-primary);
 }
+.task-list{
+  max-height: 60vh;
+  overflow: auto;
+}

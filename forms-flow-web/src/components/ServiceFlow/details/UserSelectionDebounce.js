@@ -98,8 +98,8 @@ const UserSelectionDebounce = React.memo((props) => {
     } else if (context === "menu") {
       return (
         <div
-          className="p-2 click-element"
-          style={{ display: "flex", flexDirection: "column" }}
+          className="d-flex flex-column p-2 click-element"
+          // style={{ display: "flex", flexDirection: "column" }}
         >
           <div>{id}</div>
           <div>{formatNameLabel(firstName, lastName, email)}</div>

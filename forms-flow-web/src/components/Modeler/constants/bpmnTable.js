@@ -149,8 +149,8 @@ function BpmnTable() {
                 <tr className="no-results-row">
                   <td
                     colSpan="4"
-                    style={{ height: "300px" }}
-                    className="text-center"
+                    // style={{ height: "300px" }}
+                    className="text-center no-results"
                   >
                      { isLoading ? null : t("No Process Found")}
                   </td>

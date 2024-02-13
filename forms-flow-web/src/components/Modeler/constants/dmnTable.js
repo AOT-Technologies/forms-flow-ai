@@ -101,7 +101,7 @@ function DmnTable() {
         text={t("Loading...")}
         active={isLoading || countLoading}
       >
-        <div style={{ minHeight: "400px" }}>
+        <div className="dmn-table">
           <table className="table custom-table  table-responsive-sm mt-2">
             <thead>
               <tr>
@@ -120,7 +120,8 @@ function DmnTable() {
                 }
                 placeholder={t("Search by DMN name")}
                 title={t("Search by DMN name")}
-                style={{ backgroundColor: "#ffff" }}
+                className="bg-white"
+                // style={{ backgroundColor: "#ffff" }}
               />
               {search && (
                 <InputGroup.Append onClick={onClearSearch}>
@@ -130,11 +131,14 @@ function DmnTable() {
                 </InputGroup.Append>
               )}
               <InputGroup.Append
+              className="cursor-pointer"
                 onClick={handleSearchButtonClick}
                 disabled={!search?.trim()}
-                style={{ cursor: "pointer" }}
+                // style={{ cursor: "pointer" }}
               >
-                <InputGroup.Text style={{ backgroundColor: "#ffff" }} className="h-100">
+                <InputGroup.Text 
+                // style={{ backgroundColor: "#ffff" }} 
+                className="h-100 bg-white">
                   <i className="fa fa-search"></i>
                 </InputGroup.Text>
               </InputGroup.Append>
@@ -147,8 +151,8 @@ function DmnTable() {
                 <tr className="no-results-row">
                   <td
                     colSpan="4"
-                    style={{ height: "300px" }}
-                    className="text-center"
+                    // style={{ height: "300px" }}
+                    className="text-center no-results"
                   >
                    { isLoading ? null : t("No Dmn Found")}
                   </td>

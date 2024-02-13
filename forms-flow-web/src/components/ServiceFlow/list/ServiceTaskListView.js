@@ -140,8 +140,8 @@ const ServiceTaskListView = React.memo((props) => {
               <Row className="mt-4 p-2 justify-content-between task-attr-row" >
                {vissibleAttributes?.taskVisibleAttributes?.applicationId && <Col  xs={2}>
                   <div className="col-12">
-                    <h6 className="fw-bold">{t("Submission Id")}</h6>
-                    <h6 title={t("Application ID")}>{task?._embedded?.variable?.filter((eachValue) => eachValue.name === "applicationId")[0]?.value}</h6>
+                    <h6 className="fw-bold">{t("Submission ID")}</h6>
+                    <h6>{task?._embedded?.variable?.filter((eachValue) => eachValue.name === "applicationId")[0]?.value}</h6>
                   </div>
                 </Col>}
               {vissibleAttributes?.taskVisibleAttributes?.createdDate &&  <Col xs={2}>

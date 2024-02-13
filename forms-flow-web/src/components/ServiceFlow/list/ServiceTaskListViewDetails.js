@@ -297,6 +297,7 @@ const ServiceTaskListViewDetails = React.memo(() => {
                             <Tab eventKey="form" title={t("Form")}>
                                 <LoadingOverlay
                                     active={task?.assignee !== currentUser}
+                                    spinner={false}
                                     styles={{
                                         overlay: (base) => ({
                                             ...base,

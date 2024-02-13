@@ -74,6 +74,8 @@ class FormioService:
                 response = requests.post(url, headers=headers, data=json.dumps(data))
             elif method == 'PUT':
                 response = requests.put(url, headers=headers, data=json.dumps(data))
+            elif method == 'PATCH':
+                response = requests.patch(url, headers=headers, data=json.dumps(data))
             if response.ok:
                 return response.json()
             else:
@@ -102,15 +104,19 @@ class FormioService:
 
     def get_form(self, data, formio_token):
         """Get request to formio API to get form details."""
+        return self.get_form_by_id(data["form_id"], formio_token)
+
+    def get_form_by_id(self, form_id: str, formio_token):
+        """Get request to formio API to get form details."""
         headers = {"Content-Type": "application/json", "x-jwt-token": formio_token}
-        url = f"{self.base_url}/form/" + data["form_id"]
+        url = f"{self.base_url}/form/{form_id}"
         return self._invoke_service(url, headers, method='GET')
 
     def get_submission(self, data, formio_token):
         """Get request to formio API to get submission details."""
         headers = {"Content-Type": "application/json", "x-jwt-token": formio_token}
         url = (
-            f"{self.base_url}/form/" + data["form_id"] + "/submission/" + data["sub_id"]
+                f"{self.base_url}/form/" + data["form_id"] + "/submission/" + data["sub_id"]
         )
         return self._invoke_service(url, headers, method='GET')
 
@@ -122,9 +128,16 @@ class FormioService:
         )
         return self._invoke_service(url, headers, data=data)
 
+    def patch_submission(self, form_id, submission_id, data, formio_token):
+        """Patch form submission data with the payload."""
+        headers = {"Content-Type": "application/json", "x-jwt-token": formio_token}
+        url = (
+            f"{self.base_url}/form/{form_id}/submission/{submission_id}"
+        )
+        return self._invoke_service(url, headers, data=data, method='PATCH')
+
     def get_form_by_path(self, path_name: str, formio_token: str) -> dict:
         """Get request to formio API to get form details from path."""
         headers = {"Content-Type": "application/json", "x-jwt-token": formio_token}
-        url = f"{self.base_url}/{path_name}" 
+        url = f"{self.base_url}/{path_name}"
         return self._invoke_service(url, headers, method='GET')
-        

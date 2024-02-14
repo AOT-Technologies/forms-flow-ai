@@ -87,7 +87,7 @@ export const fetchAllBpmProcesses = (  {tenant_key = null,
     url = url + "&maxResults=" + maxResults;
   }
   if (searchKey) {
-    url = url + `&nameLike=%${searchKey}%`;
+    url = url + `&nameLike=%25${searchKey}%25`;
   }
   return (dispatch) => {
     // eslint-disable-next-line max-len

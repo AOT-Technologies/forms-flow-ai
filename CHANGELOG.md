@@ -2,7 +2,7 @@
 
 Mark  items as `Added`, `Changed`, `Fixed`, `Modified`, `Removed`, `Untested Features`, `Upcoming Features`, `Known Issues`
 
-## 5.3.1 - 2024-02-12
+## 5.3.1 - 2024-02-14
 
 `Fixed`
 
@@ -15,6 +15,10 @@ Mark  items as `Added`, `Changed`, `Fixed`, `Modified`, `Removed`, `Untested Fea
 **forms-flow-documents**
 
 * Fixed security vulnerabilities
+
+**forms-flow-data-analysis-api**
+
+* Fixed security vulnerabilities 
 
 ## 5.3.0 - 2023-11-24
 

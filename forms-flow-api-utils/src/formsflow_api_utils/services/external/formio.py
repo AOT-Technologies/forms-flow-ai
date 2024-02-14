@@ -65,7 +65,7 @@ class FormioService:
         return self._invoke_service(url, headers, data=data)
 
     @staticmethod
-    def _invoke_service(url, headers, data=None, method: str = 'POST'):
+    def _invoke_service(url, headers, data=None, method: str = 'POST', raise_for_error: bool = True):
         """Invoke formio service and handle error."""
         try:
             if method == 'GET':
@@ -76,10 +76,13 @@ class FormioService:
                 response = requests.put(url, headers=headers, data=json.dumps(data))
             elif method == 'PATCH':
                 response = requests.patch(url, headers=headers, data=json.dumps(data))
-            if response.ok:
-                return response.json()
+            if raise_for_error:
+                if response.ok:
+                    return response.json()
+                else:
+                    raise BusinessException(ExternalError.ERROR_RESPONSE_RECEIVED, detail_message=response.json())
             else:
-                raise BusinessException(ExternalError.ERROR_RESPONSE_RECEIVED, detail_message=response.json())
+                return response.json()
         except requests.ConnectionError:
             raise BusinessException(ExternalError.FORM_SERVICE_UNAVAILABLE)
 
@@ -128,13 +131,13 @@ class FormioService:
         )
         return self._invoke_service(url, headers, data=data)
 
-    def patch_submission(self, form_id, submission_id, data, formio_token):
+    def patch_submission(self, form_id, submission_id, data, formio_token, raise_for_error: bool = True):
         """Patch form submission data with the payload."""
         headers = {"Content-Type": "application/json", "x-jwt-token": formio_token}
         url = (
             f"{self.base_url}/form/{form_id}/submission/{submission_id}"
         )
-        return self._invoke_service(url, headers, data=data, method='PATCH')
+        return self._invoke_service(url, headers, data=data, method='PATCH', raise_for_error=raise_for_error)
 
     def get_form_by_path(self, path_name: str, formio_token: str) -> dict:
         """Get request to formio API to get form details from path."""

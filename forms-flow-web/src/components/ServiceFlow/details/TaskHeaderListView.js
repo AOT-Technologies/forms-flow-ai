@@ -285,7 +285,7 @@ const TaskHeaderListView = React.memo(({task,taskId,groupView = true}) => {
           {groupView &&
             <div className="tab-width">
               <div>
-                <h6 className="fw-light">{t("Groups")}</h6>
+                <h6 className="fw-bold">{t("Groups")}</h6>
               </div>
               <div
                 className="actionable"

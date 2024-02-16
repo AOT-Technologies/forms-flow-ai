@@ -493,12 +493,8 @@ export default function CreateNewFilterDrawer({
       <List>
         <h5 style={{ fontWeight: "bold", fontSize: "18px" }}>
           <Translation>{(t) => t("Criteria")}</Translation>{" "}
-          <i
-            title={t(
-              "This section is aimed to set the parameters used to filter the tasks"
-            )}
-            className="fa fa-info-circle"
-          ></i>{" "}
+          <i title={t("This section is aimed to set the parameters\nused to filter the tasks")}
+            className="fa fa-info-circle filter-tooltip-icon"></i>{" "}
         </h5>
         <div className="d-flex align-items-center mt-1">
           <input
@@ -533,7 +529,7 @@ export default function CreateNewFilterDrawer({
         <h5 className="mt-2" style={{ fontSize: "18px" }}>
           <Translation>{(t) => t("Definition Key")}</Translation>
         </h5>
-        <span
+        {!definitionKeyId && (<span
           style={{
             textDecoration: "underline",
             fontSize: "14px",
@@ -543,18 +539,18 @@ export default function CreateNewFilterDrawer({
         >
           <i className="fa fa-plus-circle" style={{ marginRight: "6px" }} />
           <Translation>{(t) => t("Add Value")}</Translation>
-        </span>
-        {inputVisibility[1] && (
+        </span>) }        
+        {(inputVisibility[1] || definitionKeyId ) && (
           <input
             type="text"
             className="criteria-add-value-inputbox"
             value={definitionKeyId}
             name="definitionKeyId"
             onChange={(e) => setDefinitionKeyId(e.target.value)}
-            title={t("Candidate Group")}
+            title={t("Definition Key")}
           />
         )}
-        <h5>
+        <h5 className="pt-2">
           <Translation>{(t) => t("Candidate Group")}</Translation>
         </h5>
 
@@ -614,10 +610,10 @@ export default function CreateNewFilterDrawer({
             </Badge>
           </div>
         )}
-        <h5>
+        <h5 className="pt-2">
           <Translation>{(t) => t("Assignee")}</Translation>
         </h5>
-        <span
+        { !assignee && <span
           style={{
             textDecoration: "underline",
             fontSize: "14px",
@@ -627,13 +623,14 @@ export default function CreateNewFilterDrawer({
         >
           <i className="fa fa-plus-circle" style={{ marginRight: "6px" }} />
           <Translation>{(t) => t("Add Value")}</Translation>
-        </span>
-        {inputVisibility[3] && (
+        </span>}
+        {(inputVisibility[3] || assignee) && (
           <input
             type="text"
             className="criteria-add-value-inputbox"
             value={assignee}
             onChange={(e) => setAssignee(e.target.value)}
+            title={t("Assignee")}
           />
         )}
 
@@ -656,15 +653,10 @@ export default function CreateNewFilterDrawer({
         <Divider />
 
         <Divider />
-        <div className="child-container-two">
+        <div className="child-container-two pt-2">
           <h5 style={{ fontWeight: "bold" }}>
             <Translation>{(t) => t("Permission")}</Translation>{" "}
-            <i
-              title={t(
-                "This section is aimed to set read permissions for the filter"
-              )}
-              className="fa fa-info-circle"
-            ></i>
+            <i title={t("This section is aimed to set read\npermissions for the filter")} className="fa fa-info-circle filter-tooltip-icon"></i>
           </h5>
           <input
             style={{ marginRight: "4px" }}
@@ -819,12 +811,8 @@ export default function CreateNewFilterDrawer({
         <div className="m-2">
           <h5 className="fw-bold ">
             <Translation>{(t) => t("Task Attributes")}</Translation>{" "}
-            <i
-              title={t(
-                "This section is aimed to set select task attributes that will be visible in the task list view"
-              )}
-              className="fa fa-info-circle"
-            ></i>
+            <i title={t("This section is aimed to set select\ntask attributes that will be visible in\nthe task list view")}
+              className="fa fa-info-circle filter-tooltip-icon"></i>
           </h5>
           <input
             readOnly

@@ -171,7 +171,7 @@ function FormTable() {
           <td colSpan="10">
             <div
               className="d-flex align-items-center justify-content-center clientForm-table-col flex-column w-100"
-              // style={{ minHeight: "300px" }}
+              
             >
               <h3>{t("No forms found")}</h3>
               <p>{t("Please change the selected filters to view Forms")}</p>
@@ -184,9 +184,7 @@ function FormTable() {
   return (
     <>
       <LoadingOverlay active={searchFormLoading || isApplicationCountLoading} spinner text={t("Loading...")}>
-        <div className="client-table" 
-        // style={{ minHeight: "400px" }}
-        >
+        <div className="client-table" >
           <table className="table custom-table table-responsive-sm">
             <thead>
               <tr >
@@ -203,12 +201,9 @@ function FormTable() {
                             updateSort("desc");
                           }}
                           data-toggle="tooltip"
-                          title={t("Ascending")}
-                          // style={{
-                          //   cursor: "pointer",
-                          //   fontSize: "16px",
-                          // }}
-                        ></i>
+                          title={t("Ascending")}>
+
+                          </i>
                       ) : (
                         <i
                           data-testid="form-asc-sort-icon"
@@ -217,12 +212,7 @@ function FormTable() {
                             updateSort("asc");
                           }}
                           data-toggle="tooltip"
-                          title={t("Descending")}
-                          // style={{
-                          //   cursor: "pointer",
-                          //   fontSize: "16px",
-                          // }}
-                        ></i>
+                          title={t("Descending")}></i>
                       )}
                     </span>
                   </div>
@@ -243,7 +233,6 @@ function FormTable() {
                       placeholder={t("Search by form title")}
                       title={t("Search by form title")}
                       data-testid="form-search-input-box"
-                      // style={{ backgroundColor: "#ffff" }}
                     />
                     {search && (
                       <InputGroup.Append onClick={handleClearSearch} data-testid="form-search-cear-button">
@@ -257,7 +246,6 @@ function FormTable() {
                       data-testid="form-search-click-button"
                       disabled={!search?.trim()}
                       className="cursor-pointer"
-                      // style={{ cursor: "pointer" }}
                     >
                       <InputGroup.Text className="h-100 bg-white">
                         <i className="fa fa-search"></i>
@@ -275,8 +263,7 @@ function FormTable() {
                     <tr key={index}>
                       {isDesigner && (
                         <td>
-                          <div className="d-flex justify-content-center"
-                            // style={{ display: "flex", alignItems: "center" }}
+                          <div className="d-flex"
                           >
                             <span className="">
                               <SelectFormForDownload form={e} />

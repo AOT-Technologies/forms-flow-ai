@@ -135,20 +135,21 @@ function TaskAttributeComponent({
         </Form>
         <hr />
         <Form className="mt-2 ps-1">
-          <h5 style={{ fontWeight: "bold", fontSize: "18px" }}>
+          <h5 className="fw-bold list-size"
+          >
             <Translation>{(t) => t("Variables")}</Translation>{" "}
             <i title={t("You can define variables shown in the list")} className="fa fa-info-circle"></i>{" "}
           </h5>
 
           <div className="d-flex align-items-center mt-2">
             <input
+            className="task-enable"
               type="checkbox"
               id="my-checkbox"
               checked={showUndefinedVariable}
               onChange={UndefinedVaribaleCheckboxChange}
-              style={{ marginRight: "6px" }}
             />
-            <h5 style={{ fontSize: "18px", marginBottom: "3px" }}>
+            <h5 className="assigned-user">
               <Translation>{(t) => t("Show undefined variables")}</Translation>
             </h5>
           </div>

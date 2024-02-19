@@ -703,7 +703,6 @@ const Edit = React.memo(() => {
                               MULTITENANCY_ENABLED && tenantKey ? <div className="input-group-prepend">
                                 <div
                                   className="input-group-text edit-input"
-                                  // style={{ maxWidth: "150px" }}
                                 >
                                   <span className="text-truncate">{tenantKey}</span>
                                 </div>
@@ -759,7 +758,6 @@ const Edit = React.memo(() => {
                                 MULTITENANCY_ENABLED && tenantKey ? <div className="input-group-prepend">
                                   <div
                                     className="input-group-text edit-input"
-                                    // style={{ maxWidth: "150px" }}
                                   >
                                     <span className="text-truncate">{tenantKey}</span>
                                   </div>

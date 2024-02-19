@@ -17,11 +17,11 @@ const TaskVariable = ({ variables }) => {
           data-placement="top"
           title={taskItem.label}
         >
-          <span style={{ margin: "0px", fontWeight: "bold" }}>
+          <span className="fw-bold task-item-label ">
             {taskItem.label}
           </span>
         </div>
-        <div className="text-truncate " style={{ fontSize: "14px" }}>
+        <div className="text-truncate ">
           <span
             data-toggle="tooltip"
             data-placement="top"

@@ -346,9 +346,6 @@ export default React.memo(
               id="canvas"
               ref={containerRef}
               className="bpm-modeler-container grab-cursor border border-dark border-1"
-              // style={{
-              //   border: "1px solid #000000",
-              // }}
             >
               {!deploymentLoading ? null : <Loading />}
             </div>

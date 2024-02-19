@@ -234,7 +234,6 @@ const Create = React.memo(() => {
 
       <Errors errors={errors} />
       <div className="p-4 create-border">
-        {/* /style={{ border: "1px solid #c2c0be", borderRadius: "5px" }} */}
         <div className="d-flex pb-4 flex-wrap">
           <div className="col-lg-6 col-md-6 col-sm-6 col-12 px-3">
             <div>
@@ -346,10 +345,7 @@ const Create = React.memo(() => {
                         <div className="input-group mb-2">
                           {
                             MULTITENANCY_ENABLED && tenantKey ? <div className="input-group-prepend">
-                              <div
-                                className="input-group-text input-width"
-                                // style={{ maxWidth: "150px" }}
-                              >
+                              <div className="input-group-text input-width">
                                 <span className="text-truncate">{tenantKey}</span>
                               </div>
                             </div> : ""
@@ -402,10 +398,7 @@ const Create = React.memo(() => {
                           <div className="input-group mb-2">
                             {
                               MULTITENANCY_ENABLED && tenantKey ? <div className="input-group-prepend">
-                                <div
-                                  className="input-group-text input-width"
-                                  // style={{ maxWidth: "150px" }}
-                                >
+                                <div className="input-group-text input-width">
                                   <span className="text-truncate">{tenantKey}</span>
                                 </div>
                               </div> : ""

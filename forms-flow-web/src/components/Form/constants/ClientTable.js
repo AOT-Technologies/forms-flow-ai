@@ -107,9 +107,7 @@ function ClientTable() {
         <tr>
           <td colSpan="3">
             <div
-              className="d-flex align-items-center justify-content-center clientForm-table-col flex-column w-100"
-              // style={{ minHeight: "300px" }}
-            >
+              className="d-flex align-items-center justify-content-center clientForm-table-col flex-column w-100">
               <h3>{t("No forms found")}</h3>
               <p>{t("Please change the selected filters to view Forms")}</p>
             </div>
@@ -156,12 +154,8 @@ function ClientTable() {
                             updateSort("desc");
                           }}
                           data-toggle="tooltip"
-                          title={t("Descending")}
-                          // style={{
-                          //   cursor: "pointer",
-                          //   fontSize: "16px",
-                          // }}
-                        ></i>
+                          title={t("Descending")}>
+                        </i>
                       ) : (
                         <i
                           data-testid="form-asc-sort-icon"
@@ -170,12 +164,8 @@ function ClientTable() {
                             updateSort("asc");
                           }}
                           data-toggle="tooltip"
-                          title={t("Ascending")}
-                          // style={{
-                          //   cursor: "pointer",
-                          //   fontSize: "16px",
-                          // }}
-                        ></i>
+                          title={t("Ascending")}>
+                        </i>
                       )}
                     </span>
                   </div>
@@ -194,7 +184,6 @@ function ClientTable() {
                       className="bg-white"
                       data-testid="form-search-input-box"
                       placeholder={t("Search by form title")}
-                      // style={{ backgroundColor: "#ffff" }}
                       title={t("Search by form title")}
                     />
                     {search && (
@@ -212,7 +201,6 @@ function ClientTable() {
                       onClick={handleSearch}
                       data-testid="form-search-click-button"
                       disabled={!search?.trim()}
-                      // style={{ cursor: "pointer" }}
                     >
                       <InputGroup.Text className="h-100 bg-white">
                         <i className="fa fa-search"></i>
@@ -254,11 +242,7 @@ function ClientTable() {
                       </td>
                       <td
                         data-testid={`form-description${e._id}`}
-                        className="text-truncate"
-                        // style={{
-                        //   maxWidth: "350px",
-                        // }}
-                      >
+                        className="text-truncate">
                         {extractContent(e.description)}
                       </td>
 
@@ -282,7 +266,6 @@ function ClientTable() {
                             </h4>
 
                             <div
-                              // style={{ maxWidth: "68vw" }}
                               className="form-description-p-tag "
                               dangerouslySetInnerHTML={{
                                 __html: sanitize(e?.description, {

@@ -148,13 +148,15 @@ const ServiceTaskListView = React.memo(() => {
                       <h6>
                         <u
                           onClick={() => handleViewDetails(task.id)}
-                        className="fw-normal" style={{ color: "#1a5a96", textDecoration: 'none' }}>{t("View Details")}</u>
+                        className="fw-normal handle-view-details" 
+                        >{t("View Details")}</u>
                       </h6>
                     </div>
                   </Col>
               </Row>
               
-              <Row className="mt-4 p-2 justify-content-between" style={{ marginBottom: "-2.5rem" }}>
+              <Row className="mt-4 p-2 justify-content-between task-attribute" 
+              >
                {vissibleAttributes?.taskVisibleAttributes?.applicationId && <Col  xs={2}>
                   <div className="col-12">
                     <h6 className="fw-light">{t("Application Id")}</h6>
@@ -236,7 +238,8 @@ const ServiceTaskListView = React.memo(() => {
                           );
                           return (
                             <Col xs={2} key={index} >
-                              <div className="col-12" style={{ wordBreak: "break-all" }}>
+                              <div className="col-12 word-break"
+                               >
                                 <h6 className="fw-light">{data?.label}</h6>
                               </div>
                               <div className="d-flex col-12">
@@ -260,11 +263,10 @@ const ServiceTaskListView = React.memo(() => {
                   <span>
                   {t("Rows per page")} :
                   <DropdownButton
-                    className="ms-2"
+                    className="ms-2 d-inline"
                     drop="down"
                     variant="secondary"
                       title={selectedLimitValue}
-                    style={{ display: "inline" }}
                   >
                     {options.map(({ value, label }, index) => (
                       <Dropdown.Item

@@ -121,7 +121,6 @@ function DmnTable() {
                 placeholder={t("Search by DMN name")}
                 title={t("Search by DMN name")}
                 className="bg-white"
-                // style={{ backgroundColor: "#ffff" }}
               />
               {search && (
                 <InputGroup.Append onClick={onClearSearch}>
@@ -134,10 +133,8 @@ function DmnTable() {
               className="cursor-pointer"
                 onClick={handleSearchButtonClick}
                 disabled={!search?.trim()}
-                // style={{ cursor: "pointer" }}
               >
                 <InputGroup.Text 
-                // style={{ backgroundColor: "#ffff" }} 
                 className="h-100 bg-white">
                   <i className="fa fa-search"></i>
                 </InputGroup.Text>
@@ -151,7 +148,6 @@ function DmnTable() {
                 <tr className="no-results-row">
                   <td
                     colSpan="4"
-                    // style={{ height: "300px" }}
                     className="text-center no-results"
                   >
                    { isLoading ? null : t("No Dmn Found")}

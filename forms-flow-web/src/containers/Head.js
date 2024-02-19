@@ -15,8 +15,7 @@ const Head = React.memo((props) => {
           >
             <h3   className="application-head">
               <i
-                className={`fa fa-${item?.icon}`}
-                style={{ marginTop: "5px" }}
+                className={`fa fa-${item?.icon} application-head-img`}
                 aria-hidden="true"
               />
               <span className="application-text ms-2">

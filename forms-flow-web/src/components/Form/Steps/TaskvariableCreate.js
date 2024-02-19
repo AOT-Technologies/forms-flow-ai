@@ -89,7 +89,6 @@ const TaskvariableCreate = ({ options, addTaskVariable }) => {
         <Col xs={12} md={2}>
           <Button
             className="add-task"
-            // style={{ marginTop: "25px" }}
             variant="outline-primary"
             onClick={() => {
               addTask();

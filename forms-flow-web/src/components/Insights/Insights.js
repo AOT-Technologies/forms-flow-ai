@@ -141,23 +141,10 @@ const Insights = React.memo((props) => {
               <iframe
                 title="dashboard"
                 className="w-100 h-auto min-vh-60 overflow-visible border-none"
-                // style={{
-                //   width: "100%",
-                //   height: "auto",
-                //   overflow: "visible",
-                //   border: "none",
-                //   minHeight: "60vh",
-                // }}
                 src={activeDashboard.public_url}
               />
             ) : !isDashboardDetailUpdated ? (
-              <div
-                style={{
-                  position:'absolute',
-                  left: '52%',
-                  marginTop: '400px',
-                  transform: 'translate(-50%, -90%)',
-                }}>
+              <div className="position-absolute no-dashboard-detail">
                 <Loading />
               </div>
             ) : (

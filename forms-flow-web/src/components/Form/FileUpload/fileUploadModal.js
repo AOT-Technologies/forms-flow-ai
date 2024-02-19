@@ -60,7 +60,6 @@ const FileModal = React.memo(({ modalOpen = false, onClose, forms, }) => {
           </div>
           {formUploadList.length ? (
             <div className="progress upload-progress" 
-            // style={{ height: "5px", marginTop: "11px" }}
             >
               <div
                 className="progress-bar"

@@ -1,3 +1,5 @@
+@import "./../../assets/styles/themes.scss";
+
 .not-selected {
   border: 3px solid #b3b3b3;
   padding: 10px;
@@ -21,6 +23,70 @@
   overflow-y: auto;
   overflow-x: hidden;
 }
+
+.service-task-action{
+  margin-bottom: -8px;
+  font-size: 14px;
+
+}
+
+.handle-view-details{
+  color: $dark-blue;
+  text-decoration: none;
+}
+.word-break{
+  word-break: break-all;
+}
+
+.no-filter-img{
+  height: 150px;
+
+}
+
+.task-attribute{
+ margin-bottom: -2.5rem; 
+}
+
+.task-item-label{
+  margin-bottom: 0px;
+}
+
+.truncate-size{
+  font-size: 14px;
+}
+
+.filter-listview{
+  min-width: 700px;
+}
+
+.filter-list{
+  margin-top: 45px;
+}
+
+.create-new-filter{
+ font-size: 16px; 
+}
+.list-size{
+  font-size: 18px;
+}
+.task-enable{
+  margin-right: 6px;
+}
+.assigned-user{
+  font-size: 18px;
+  margin-bottom: 3px;
+}
+.z-index{
+  z-index: 9999;
+}
+.text-bottom{
+  margin-bottom: 8px;
+}
+.group-icon{
+  font-size: 40px;
+  margin-right: 8px; 
+}
+
 .filter-container {
   position: relative;
   border: 1px solid #555;
@@ -430,6 +496,10 @@ span[dat-title]:hover:after,
   height: 40px;
   padding: 3%;
   border: 3px solid #C8C6C4;
+}
+
+.access-all{
+  margin-right: 4px;
 }
 .task-row{
   overflow: auto;

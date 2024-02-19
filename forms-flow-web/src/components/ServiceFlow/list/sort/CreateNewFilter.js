@@ -530,12 +530,15 @@ export default function CreateNewFilterDrawer({
         <h5 className="mt-2 list-size">
           <Translation>{(t) => t("Definition Key")}</Translation>
         </h5>
-        {!definitionKeyId && (<span
-          className="px-1 py-1 cursor-pointer text-decoration-underline truncate-size">
-          onClick={() => handleSpanClick(1)}
-          <i className="fa fa-plus-circle task-enable"/>
-          <Translation>{(t) => t("Add Value")}</Translation>
-        </span>) }        
+        {!definitionKeyId && (
+  <span
+    className="px-1 py-1 cursor-pointer text-decoration-underline truncate-size"
+    onClick={() => handleSpanClick(1)}
+  >
+    <i className="fa fa-plus-circle task-enable" />
+    <Translation>{(t) => t("Add Value")}</Translation>
+  </span>
+)}        
         {(inputVisibility[1] || definitionKeyId ) && (
           <input
             type="text"

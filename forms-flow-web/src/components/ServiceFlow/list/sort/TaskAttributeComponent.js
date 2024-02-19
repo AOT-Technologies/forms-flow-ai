@@ -43,7 +43,6 @@ function TaskAttributeComponent({
   const UndefinedVaribaleCheckboxChange = (e) => {
     setShowUndefinedVariable(e.target.checked);
   };
-  console.log("input values",inputValues);
   return (
     <Modal
       show={show}
@@ -66,7 +65,7 @@ function TaskAttributeComponent({
             <Col xs={6}>
               <Form.Check
                 type="checkbox"
-                label={t("Application ID")}
+                label={t("Submission ID")}
                 name="applicationId"
                 checked={checkboxes.applicationId}
                 onChange={handleCheckboxChange}
@@ -191,6 +190,7 @@ function TaskAttributeComponent({
                   {(inputValues.length - 1 === index) ? (
                     <button
                       type="button"
+                      disabled={!inputValues[index].name.length || !inputValues[index].label.length}
                       className="btn btn-primary mt-3"
                       onClick={() => handleAddClick()}
                     >
@@ -198,7 +198,7 @@ function TaskAttributeComponent({
                     </button>
                   ) :  (
                     <i
-                    className="fa fa-minus-circle fa-lg mt-4"
+                    className="fa fa-minus-circle fa-md mt-4"
                     aria-hidden="true"
                     onClick={() => handleRowDelete(index)}
                   />)}
@@ -212,8 +212,8 @@ function TaskAttributeComponent({
         <button className="btn btn-secondary" onClick={() => onHide()}>
           {t("Cancel")}
         </button>
-        <button disabled={!inputValues[0].name || !inputValues[0].label} className="btn btn-primary" onClick={onHide}>
-          {t("Insert")}
+        <button className="btn btn-primary" onClick={onHide}>
+          {t("Save")}
         </button>
       </Modal.Footer>
     </Modal>

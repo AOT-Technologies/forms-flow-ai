@@ -1,5 +1,3 @@
-@import "../../assets/styles/themes.scss";
-
 .paper-root {
   min-height: calc(100vh - 200px);
 }
@@ -45,7 +43,7 @@
   padding-bottom: 10px;
   list-style: none;
   margin: auto;
-  border-left: 1px solid #c4c4c4;
+  border-left: 1px solid var(--color-gray-400);
   position: relative;
 }
 
@@ -54,12 +52,12 @@
 .form-history-container .history-details {
   padding: 15px;
   margin-left: 2rem;
-  border: 1px solid #c4c4c4;
+  border: 1px solid var(--color-gray-400);
   border-radius: 4px;
 }
 
 .form-history-container .history-details.active {
-  border: 1px solid #1cbe2c;
+  border: 1px solid var(--color-success);
 }
 
 .form-history-container li:last-child {
@@ -72,7 +70,7 @@
   top: 0;
   content: " ";
   border-radius: 500%;
-  background: #c4c4c4;
+  background: var(--color-gray-400);
   height: 20px;
   width: 20px;
   transition: all 500ms ease-in-out;
@@ -80,9 +78,9 @@
 }
 
 .form-history-container li:first-child:before {
-  background-color: #25c735;
+  background-color: var(--color-success);
   content: '\2714 \fe0e';
-  color: #ffffff;
+  color: var(--color-white);
   text-align: center;
   transition: all 1000ms ease-in-out;
   font-size: 12px;

@@ -54,7 +54,7 @@ export default function CreateNewFilterDrawer({
     isTasksForCurrentUserGroupsEnabled,
     setIsTasksForCurrentUserGroupsEnabled,
   ] = useState(false);
-  const [isMyTasksEnabled,setIsMyTasksEnabled] = useState(false);
+  const [isMyTasksEnabled, setIsMyTasksEnabled] = useState(false);
   const [permissions, setPermissions] = useState(PRIVATE_ONLY_YOU);
   const [identifierId, setIdentifierId] = useState("");
   const [selectUserGroupIcon, setSelectUserGroupIcon] = useState("");
@@ -97,23 +97,20 @@ export default function CreateNewFilterDrawer({
     (value) => value === true
   ).length;
 
-  const fetchTasks = (resData)=>{
-  
+  const fetchTasks = (resData) => {
     const reqParamData = {
       ...{ sorting: [...sortParams.sorting] },
       ...searchParams,
     };
-     
-   
-    
-     const selectedBPMFilterParams = {
-        ...resData,
-        criteria: {
-          ...resData?.criteria,
-          ...reqParamData
-        }
-      };
-      dispatch(setFilterListParams(cloneDeep(selectedBPMFilterParams)));
+
+    const selectedBPMFilterParams = {
+      ...resData,
+      criteria: {
+        ...resData?.criteria,
+        ...reqParamData,
+      },
+    };
+    dispatch(setFilterListParams(cloneDeep(selectedBPMFilterParams)));
   };
 
   const customTrim = (inputString) => {
@@ -146,7 +143,6 @@ export default function CreateNewFilterDrawer({
         selectedFilterData?.properties?.showUndefinedVariable
       );
       if (selectedFilterData.variables) {
-
         setInputValues(() => {
           return selectedFilterData.variables?.map((row) => ({
             name: row.name,
@@ -157,7 +153,7 @@ export default function CreateNewFilterDrawer({
       if (!selectedFilterData.variables?.length) {
         setInputValues([{ name: "", label: "" }]);
       }
-      if(selectedFilterData.variables?.length === 2){
+      if (selectedFilterData.variables?.length === 2) {
         setInputValues([{ name: "", label: "" }]);
       }
       if (
@@ -167,7 +163,7 @@ export default function CreateNewFilterDrawer({
         setSpecificUserGroup("");
         setPermissions(ACCESSIBLE_FOR_ALL_GROUPS);
       }
-      
+
       if (selectedFilterData?.users?.length) {
         setPermissions(PRIVATE_ONLY_YOU);
       }
@@ -183,10 +179,10 @@ export default function CreateNewFilterDrawer({
         setIdentifierId(selectedFilterData?.roles[0]);
         setSpecificUserGroup(SPECIFIC_USER_OR_GROUP);
       }
-      if(selectedFilterData?.criteria?.assigneeExpression){
+      if (selectedFilterData?.criteria?.assigneeExpression) {
         setIsMyTasksEnabled(true);
       }
-      if(selectedFilterData?.criteria?.candidateGroupsExpression){
+      if (selectedFilterData?.criteria?.candidateGroupsExpression) {
         setIsTasksForCurrentUserGroupsEnabled(true);
       }
       setCheckboxes({
@@ -336,14 +332,14 @@ export default function CreateNewFilterDrawer({
         ...variables,
         ...(applicationIdExists
           ? []
-          : [{ name: "applicationId", label: "Application Id" }]),
+          : [{ name: "applicationId", label: "Submission ID" }]),
         ...(formNameExists ? [] : [{ name: "formName", label: "Form Name" }]),
       ],
       users: users,
       roles: roles?.length ? roles : [],
       taskVisibleAttributes: { ...checkboxes },
-      isTasksForCurrentUserGroupsEnabled:isTasksForCurrentUserGroupsEnabled,
-      isMyTasksEnabled:isMyTasksEnabled,
+      isTasksForCurrentUserGroupsEnabled: isTasksForCurrentUserGroupsEnabled,
+      isMyTasksEnabled: isMyTasksEnabled,
     };
 
     // Remove empty keys inside criteria
@@ -496,7 +492,8 @@ export default function CreateNewFilterDrawer({
       <List>
         <h5 className="fw-bold list-size">
           <Translation>{(t) => t("Criteria")}</Translation>{" "}
-          <i title={t("This section is aimed to set the parameters used to filter the tasks")} className="fa fa-info-circle"></i>{" "}
+          <i title={t("This section is aimed to set the parameters\nused to filter the tasks")}
+            className="fa fa-info-circle filter-tooltip-icon"></i>{" "}
         </h5>
         <div className="d-flex align-items-center mt-1">
           <input
@@ -533,24 +530,23 @@ export default function CreateNewFilterDrawer({
         <h5 className="mt-2 list-size">
           <Translation>{(t) => t("Definition Key")}</Translation>
         </h5>
-        <span 
+        {!definitionKeyId && (<span
+          className="px-1 py-1 cursor-pointer text-decoration-underline truncate-size">
           onClick={() => handleSpanClick(1)}
-          className="px-1 py-1 cursor-pointer text-decoration-underline truncate-size"
-        >
           <i className="fa fa-plus-circle task-enable"/>
           <Translation>{(t) => t("Add Value")}</Translation>
-        </span>
-        {inputVisibility[1] && (
+        </span>) }        
+        {(inputVisibility[1] || definitionKeyId ) && (
           <input
             type="text"
             className="criteria-add-value-inputbox"
             value={definitionKeyId}
             name="definitionKeyId"
             onChange={(e) => setDefinitionKeyId(e.target.value)}
-            title={t("Candidate Group")}
+            title={t("Definition Key")}
           />
         )}
-        <h5>
+        <h5 className="pt-2">
           <Translation>{(t) => t("Candidate Group")}</Translation>
         </h5>
 
@@ -596,29 +592,35 @@ export default function CreateNewFilterDrawer({
               {candidateGroup}
               <div
                 className="badge-deleteIcon ms-2"
-                onClick={() => setCandidateGroup(null)}
+                onClick={() => {
+                  setCandidateGroup(null);
+                  setIncludeAssignedTasks(false);
+                }}
               >
                 &times;
               </div>
             </Badge>
           </div>
         )}
-        <h5>
+        <h5 className="pt-2">
           <Translation>{(t) => t("Assignee")}</Translation>
         </h5>
-        <span
-          onClick={() => handleSpanClick(3)}
-          className="px-1 py-1 cursor-pointer text-decoration-underline truncate-size"
-        >
-          <i className="fa fa-plus-circle task-enable"/>
-          <Translation>{(t) => t("Add Value")}</Translation>
-        </span>
-        {inputVisibility[3] && (
+        {!assignee && (
+  <span
+    className="px-1 py-1 cursor-pointer text-decoration-underline truncate-size"
+    onClick={() => handleSpanClick(3)}
+  >
+    <i className="fa fa-plus-circle task-enable" />
+    <Translation>{(t) => t("Add Value")}</Translation>
+  </span>
+)}
+        {(inputVisibility[3] || assignee) && (
           <input
             type="text"
             className="criteria-add-value-inputbox"
             value={assignee}
             onChange={(e) => setAssignee(e.target.value)}
+            title={t("Assignee")}
           />
         )}
 
@@ -640,10 +642,10 @@ export default function CreateNewFilterDrawer({
         <Divider />
 
         <Divider />
-        <div className="child-container-two">
+        <div className="child-container-two pt-2">
           <h5 className="fw-bold">
             <Translation>{(t) => t("Permission")}</Translation>{" "}
-            <i title={t("This section is aimed to set read permissions for the filter")} className="fa fa-info-circle"></i>
+            <i title={t("This section is aimed to set read\npermissions for the filter")} className="fa fa-info-circle filter-tooltip-icon"></i>
           </h5>
           <input
           className="access-all"
@@ -794,7 +796,8 @@ export default function CreateNewFilterDrawer({
         <div className="m-2">
           <h5 className="fw-bold ">
             <Translation>{(t) => t("Task Attributes")}</Translation>{" "}
-            <i title={t("This section is aimed to set select task attributes that will be visible in the task list view")} className="fa fa-info-circle"></i>
+            <i title={t("This section is aimed to set select\ntask attributes that will be visible in\nthe task list view")}
+              className="fa fa-info-circle filter-tooltip-icon"></i>
           </h5>
           <input
             readOnly
@@ -842,7 +845,11 @@ export default function CreateNewFilterDrawer({
               }}
             >
               <Translation>
-                {(t) => (`${selectedFilterData ? t("Save Filter") : t("Create Filter")} `)}
+                {(t) =>
+                  `${
+                    selectedFilterData ? t("Save Filter") : t("Create Filter")
+                  } `
+                }
               </Translation>
             </button>
           </div>

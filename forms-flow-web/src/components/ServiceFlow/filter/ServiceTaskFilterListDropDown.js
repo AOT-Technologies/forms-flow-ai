@@ -76,11 +76,13 @@ const ServiceFlowFilterListDropDown = React.memo(({selectFilter,openFilterDrawer
   };
   return (
     <>
+    <div className="task-list">
       {isFilterLoading ? (
-        <NavDropdown.Item>{t("Loading")}...</NavDropdown.Item>
-      ) : (
-        renderFilterList()
-      )}
+      <NavDropdown.Item>{t("Loading")}...</NavDropdown.Item>
+    ) : (
+      renderFilterList()
+    )}
+    </div> 
     </>
   );
 });

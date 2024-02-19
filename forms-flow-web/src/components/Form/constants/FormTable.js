@@ -235,7 +235,7 @@ function FormTable() {
                       data-testid="form-search-input-box"
                     />
                     {search && (
-                      <InputGroup.Append onClick={handleClearSearch} data-testid="form-search-cear-button">
+                      <InputGroup.Append onClick={handleClearSearch} data-testid="form-search-clear-button">
                         <InputGroup.Text className="h-100">
                           <i className="fa fa-times"></i>
                         </InputGroup.Text>

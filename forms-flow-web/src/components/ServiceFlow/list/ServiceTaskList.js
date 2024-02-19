@@ -13,14 +13,14 @@ import {
   getProcessDataObjectFromList,
   getFormattedDateAndTime,
 } from "../../../apiManager/services/formatterService";
-import TaskFilterComponent from "./search/TaskFilterComponent";
 import Pagination from "react-js-pagination";
 import { push } from "connected-react-router";
 import { MAX_RESULTS } from "../constants/taskConstants";
 import { getFirstResultIndex } from "../../../apiManager/services/taskSearchParamsFormatterService";
 import TaskVariable from "./TaskVariable";
 import { MULTITENANCY_ENABLED } from "../../../constants/constants";
-const ServiceFlowTaskList = React.memo(() => {
+const ServiceFlowTaskList = React.memo((props) => {
+  const {expandedTasks,setExpandedTasks} = props;
   const { t } = useTranslation();
   const taskList = useSelector((state) => state.bpmTasks.tasksList);
   const tasksCount = useSelector((state) => state.bpmTasks.tasksCount);
@@ -52,7 +52,6 @@ const ServiceFlowTaskList = React.memo(() => {
         };
       dispatch(setBPMTaskLoader(true));
       dispatch(setBPMTaskListActivePage(1));
-
       dispatch(fetchServiceTaskList(selectedBPMFilterParams,null,firstResult));
     }
   }, [reqData]);
@@ -71,6 +70,8 @@ const ServiceFlowTaskList = React.memo(() => {
       fetchServiceTaskList(reqData,null,firstResultIndex)
     );
   };
+
+  
 
   const renderTaskList = () => { 
     if ((tasksCount || taskList.length) && selectedFilter) {
@@ -148,13 +149,17 @@ const ServiceFlowTaskList = React.memo(() => {
                     {t("Created")} {moment(task.created).fromNow()}
                   </span>
                 </div>
-                <div className="pe-0 text-right tooltips" title={t("Priority")}>
+                <div className="pe-0 text-right" title={t("Priority")}>
                   {task.priority}
                 </div>
               </div>
 
               {task._embedded?.variable && (
-                <TaskVariable variables={task._embedded?.variable || []} />
+                <TaskVariable 
+                expandedTasks={expandedTasks}
+                setExpandedTasks={setExpandedTasks}
+                taskId={task?.id}  
+                variables={task._embedded?.variable || []} />
               )}
             </div>
           ))}
@@ -193,7 +198,6 @@ const ServiceFlowTaskList = React.memo(() => {
   return (
     <>
       <ListGroup className="service-task-list d-block">
-        <TaskFilterComponent  totalTasks={isTaskListLoading ? 0 : tasksCount} />
         {isTaskListLoading ? <Loading /> : renderTaskList()}
       </ListGroup>
     </>

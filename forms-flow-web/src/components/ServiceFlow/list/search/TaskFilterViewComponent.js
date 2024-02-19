@@ -12,7 +12,7 @@ import { getISODateTime } from "../../../../apiManager/services/formatterService
 import { MAX_VARIABLES_PER_ROW } from "../../constants/taskConstants";
 import { useTranslation } from "react-i18next"; 
 
-const TaskFilterListViewComponent = React.memo(
+const TaskFilterViewComponent = React.memo(
   ({ setDisplayFilter, setFilterParams, filterParams }) => {
     const vissibleAttributes = useSelector(
       (state) => state.bpmTasks.vissibleAttributes
@@ -47,6 +47,8 @@ const TaskFilterListViewComponent = React.memo(
     const dispatch = useDispatch();
     const { t } = useTranslation();
     const [assigneeOptions, setAssigneeOptions] = useState([]);
+    const [inputValuesPresent, setInputValuesPresent] = useState(false); // State to track any input value is present or not
+
     const handleClick = (e) => {
       if (createSearchNode?.current?.contains(e.target)) {
         return;
@@ -139,12 +141,21 @@ const TaskFilterListViewComponent = React.memo(
         updatedfilterParams["createdBefore"] = getISODateTime(createdEndDate);
       }
 
- 
       dispatch(setBPMFilterSearchParams(updatedfilterParams));
       setFilterParams(updatedfilterParams);
       setDisplayFilter(false);
     };
 
+    //To disable the show results & clear filter btn if there no input values
+    useEffect(() => {
+      setInputValuesPresent(
+       ( assignee || candidateGroup || processVariables?.length || dueStartDate || dueEndDate ||
+          followStartDate || followEndDate || createdStartDate || createdEndDate ||
+          priority || Object.keys(filterParams)?.length)
+      );
+    }, [assignee, candidateGroup, processVariables, dueStartDate, dueEndDate,
+      followStartDate, followEndDate, createdStartDate, createdEndDate, priority]);
+      
     const clearAllFilters = () => {
       setAssignee("");
       setCandidateGroup("");
@@ -172,7 +183,7 @@ const TaskFilterListViewComponent = React.memo(
               placeholder={placeholder}
             />
             <div className="input-group-prepend">
-              <span className="input-group-text">
+              <span className="input-group-text p-2">
                 <i className="fa fa-calendar" />
               </span>
             </div>
@@ -421,18 +432,19 @@ const TaskFilterListViewComponent = React.memo(
               <button
                 className="btn btn-link text-danger"
                 onClick={() => clearAllFilters()}
+                disabled={!inputValuesPresent} 
               >
                 {t("Clear All Filters")}
               </button>
             </Col>
-            <Col className="text-right">
+            <Col className="text-end">
               <button
                 className="btn btn-light me-1 "
                 onClick={() => setDisplayFilter(false)}
               >
                 {t("Cancel")}
               </button>
-              <button className="btn btn-dark" onClick={() => applyFilters()}>
+              <button disabled={!inputValuesPresent} className="btn btn-dark" onClick={() => applyFilters()}>
                 {t("Show results")}
               </button>
             </Col>
@@ -443,4 +455,4 @@ const TaskFilterListViewComponent = React.memo(
   }
 );
 
-export default TaskFilterListViewComponent;
+export default TaskFilterViewComponent;

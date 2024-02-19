@@ -279,18 +279,25 @@ export default React.memo(({ processKey, tenant, isNewDiagram, mode}) => {
               {t("Apply for all tenants")}
             </label>
           ) : null}
-          <button type="button"
-            className="btn btn-link text-dark" onClick={cancel}>
+          <button
+            data-testid="prcosses-dmneditor-cancel-button"
+            type="button"
+            className="btn btn-link text-dark"
+            onClick={cancel}>
             {t("Cancel")}
           </button>
           <Button
             variant="outline-dark"
             className="ms-3"
             onClick={handleExport}
+            data-testid="prcosses-dmneditor-export-button"
           >
             {t("Export")}
           </Button>
-          <Button className="ms-3" onClick={deployProcess}>
+          <Button
+            data-testid="prcosses-dmneditor-deploy-button"
+            className="ms-3"
+            onClick={deployProcess}>
             {t("Deploy")}
           </Button>
         </div>
@@ -313,6 +320,7 @@ export default React.memo(({ processKey, tenant, isNewDiagram, mode}) => {
                 className="mb-3 btn-zoom"
                 title={t("Reset Zoom")}
                 onClick={() => zoomReset()}
+                data-testid="prcosses-dmneditor-zoomreset-button"
               >
                 <i className="fa fa-retweet" aria-hidden="true" />
               </button>
@@ -320,6 +328,7 @@ export default React.memo(({ processKey, tenant, isNewDiagram, mode}) => {
                 className="btn-zoom"
                 title={t("Zoom In")}
                 onClick={() => zoom()}
+                data-testid="prcosses-dmneditor-zoom-button"
               >
                 <i className="fa fa-search-plus" aria-hidden="true" />
               </button>
@@ -327,6 +336,7 @@ export default React.memo(({ processKey, tenant, isNewDiagram, mode}) => {
                 className="btn-zoom"
                 title={t("Zoom Out")}
                 onClick={() => zoomOut()}
+                data-testid="prcosses-dmneditor-zoomout-button"
               >
                 <i className="fa fa-search-minus" aria-hidden="true" />
               </button>
@@ -336,7 +346,11 @@ export default React.memo(({ processKey, tenant, isNewDiagram, mode}) => {
         <div className="properties-panel-parent" id="js-properties-panel"></div>
       </div>
       <div className="d-flex justify-content-end">
-        <Button variant="info" className=" me-2" onClick={handleHelp}>
+        <Button
+          data-testid="prcosses-dmneditorhelp-button"
+          variant="info"
+          className=" me-2"
+          onClick={handleHelp}>
           {t("Help")}
         </Button>
       </div>

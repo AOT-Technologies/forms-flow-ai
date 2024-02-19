@@ -3,7 +3,7 @@
     .filter-list-view {
         position: absolute;
         z-index: 1000;
-        background-color: white;
+        background-color: var(--color-white);
         top: 31px;;
         min-width: 180px;
     }
@@ -51,6 +51,12 @@
     align-items: center;
     justify-content: center;
 }
+
+.react-datepicker__week {
+    white-space: nowrap;
+    display: flex;
+}
+
 .filter-cancel-btn-container {
     margin-left: -10px;
     margin-right: -10px;

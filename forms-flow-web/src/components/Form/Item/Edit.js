@@ -377,7 +377,7 @@ const Edit = React.memo(() => {
             dispatch(setRestoreFormData({}));
             dispatch(setRestoreFormId(null));
             toast.success(t("New version created"));
-            dispatch(push(`${redirectUrl}formflow/${submittedData._id}/preview`));
+            dispatch(push(`${redirectUrl}formflow/${submittedData._id}/view-edit`));
           }
         }));
       })
@@ -437,7 +437,7 @@ const Edit = React.memo(() => {
         toast.success(t("Form saved"));
         dispatch(setFormSuccessData("form", submittedData));
         Formio.cache = {};
-        dispatch(push(`${redirectUrl}formflow/${submittedData._id}/preview`));
+        dispatch(push(`${redirectUrl}formflow/${submittedData._id}/view-edit`));
       })
       .catch((err) => {
         const error = err.response?.data || err.message;

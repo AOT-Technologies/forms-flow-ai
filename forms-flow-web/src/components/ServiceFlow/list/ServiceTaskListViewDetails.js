@@ -279,8 +279,8 @@ const ServiceTaskListViewDetails = React.memo(() => {
                                         </span>
                                     </Row>
                                     <Row className="ms-0">
-                                        <span title={t("Application ID")} className="application-id">
-                                            {t("Application ID")}# {task?.applicationId}
+                                        <span data-title={t("Submission ID")} className="application-id">
+                                            {t("Submission ID")}# {task?.applicationId}
                                         </span>
                                     </Row>
                                 </Col>
@@ -297,6 +297,7 @@ const ServiceTaskListViewDetails = React.memo(() => {
                             <Tab eventKey="form" title={t("Form")}>
                                 <LoadingOverlay
                                     active={task?.assignee !== currentUser}
+                                    spinner={false}
                                     styles={{
                                         overlay: (base) => ({
                                             ...base,

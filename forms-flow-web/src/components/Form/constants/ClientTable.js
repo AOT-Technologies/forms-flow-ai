@@ -21,7 +21,6 @@ import {
 import { useTranslation } from "react-i18next";
 import { Translation } from "react-i18next";
 import { sanitize } from "dompurify";
-import "../constants/constants.scss";
 
 function ClientTable() {
   const tenantKey = useSelector((state) => state.tenants?.tenantId);
@@ -138,7 +137,7 @@ function ClientTable() {
   return (
     <>
       <LoadingOverlay active={searchFormLoading} spinner text={t("Loading...")}>
-        <div className="client-table">
+        <div className="min-height-400">
           <table className="table custom-table table-responsive-sm">
             <thead>
               <tr>
@@ -149,7 +148,7 @@ function ClientTable() {
                       {isAscending ? (
                         <i 
                           data-testid="form-desc-sort-icon"
-                          className="fa fa-sort-alpha-asc ms-2 cursor-pointer sort-icon"
+                          className="fa fa-sort-alpha-asc ms-2 cursor-pointer fs-16"
                           onClick={() => {
                             updateSort("desc");
                           }}
@@ -159,7 +158,7 @@ function ClientTable() {
                       ) : (
                         <i
                           data-testid="form-asc-sort-icon"
-                          className="fa fa-sort-alpha-desc ms-2 cursor-pointer sort-icon"
+                          className="fa fa-sort-alpha-desc ms-2 cursor-pointer fs-16"
                           onClick={() => {
                             updateSort("asc");
                           }}

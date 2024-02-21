@@ -462,7 +462,7 @@ export default function CreateNewFilterDrawer({
     <div className="filter-list" role="presentation">
       <List>
         <div className="p-0 d-flex align-items-center justify-content-between ">
-          <h5 className="fw-bold create-new-filter">
+          <h5 className="fw-bold fs-16">
             <Translation>{(t) => t("Create new filter")}</Translation>
           </h5>
           <span
@@ -476,7 +476,7 @@ export default function CreateNewFilterDrawer({
         </div>
       </List>
       <List>
-        <h5 className="fw-bold list-size">
+        <h5 className="fw-bold fs-18">
           <Translation>{(t) => t("Filter Name")}</Translation>
         </h5>
         <input
@@ -490,14 +490,14 @@ export default function CreateNewFilterDrawer({
       </List>
       <Divider />
       <List>
-        <h5 className="fw-bold list-size">
+        <h5 className="fw-bold fs-18">
           <Translation>{(t) => t("Criteria")}</Translation>{" "}
           <i title={t("This section is aimed to set the parameters\nused to filter the tasks")}
             className="fa fa-info-circle filter-tooltip-icon"></i>{" "}
         </h5>
         <div className="d-flex align-items-center mt-1">
           <input
-            className="task-enable"
+            className="mr-6"
             type="checkbox"
             checked={isMyTasksEnabled}
             onChange={(e) =>
@@ -513,7 +513,7 @@ export default function CreateNewFilterDrawer({
         </div>
         <div className="d-flex align-items-center mt-1">
           <input
-            className="task-enable"
+            className="mr-6"
             type="checkbox"
             checked={isTasksForCurrentUserGroupsEnabled}
             onChange={(e) =>
@@ -527,7 +527,7 @@ export default function CreateNewFilterDrawer({
             </Translation>
           </h5>
         </div>
-        <h5 className="mt-2 list-size">
+        <h5 className="mt-2 fs-18">
           <Translation>{(t) => t("Definition Key")}</Translation>
         </h5>
         {!definitionKeyId && (
@@ -535,7 +535,7 @@ export default function CreateNewFilterDrawer({
     className="px-1 py-1 cursor-pointer text-decoration-underline truncate-size"
     onClick={() => handleSpanClick(1)}
   >
-    <i className="fa fa-plus-circle task-enable" />
+    <i className="fa fa-plus-circle mr-6" />
     <Translation>{(t) => t("Add Value")}</Translation>
   </span>
 )}        
@@ -581,7 +581,7 @@ export default function CreateNewFilterDrawer({
             onClick={() => handleSpanClick(2)}
             className="px-1 py-1 cursor-pointer text-decoration-underline truncate-size"
           >
-            <i className="fa fa-plus-circle task-enable"/>
+            <i className="fa fa-plus-circle mr-6"/>
             <Translation>{(t) => t("Add Value")}</Translation>
           </span>
         </OverlayTrigger>
@@ -613,7 +613,7 @@ export default function CreateNewFilterDrawer({
     className="px-1 py-1 cursor-pointer text-decoration-underline truncate-size"
     onClick={() => handleSpanClick(3)}
   >
-    <i className="fa fa-plus-circle task-enable" />
+    <i className="fa fa-plus-circle mr-6" />
     <Translation>{(t) => t("Add Value")}</Translation>
   </span>
 )}
@@ -631,7 +631,7 @@ export default function CreateNewFilterDrawer({
           <div className="d-flex align-items-center input-container"
           >
             <input
-              className="task-enable"
+              className="mr-6"
               type="checkbox"
               id="assignedTask-checkbox"
               checked={includeAssignedTasks}
@@ -672,7 +672,7 @@ export default function CreateNewFilterDrawer({
             checked={permissions === PRIVATE_ONLY_YOU}
             onChange={(e) => setPermissions(e.target.value)}
           />
-          <label htmlFor="private-only" className="list-size">
+          <label htmlFor="private-only" className="fs-18">
             <Translation>{(t) => t("Private (Only You)")}</Translation>
           </label>
           <br />
@@ -685,7 +685,7 @@ export default function CreateNewFilterDrawer({
             checked={permissions === SPECIFIC_USER_OR_GROUP}
             onChange={handleSpecificUserGroup}
           />
-          <label htmlFor="specific-grp" className="list-size">
+          <label htmlFor="specific-grp" className="fs-18">
             <Translation>{(t) => t("Specific Group")}</Translation>
           </label>{" "}
           <br />

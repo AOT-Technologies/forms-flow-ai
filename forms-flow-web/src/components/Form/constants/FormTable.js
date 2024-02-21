@@ -184,7 +184,7 @@ function FormTable() {
   return (
     <>
       <LoadingOverlay active={searchFormLoading || isApplicationCountLoading} spinner text={t("Loading...")}>
-        <div className="client-table" >
+        <div className="min-height-400" >
           <table className="table custom-table table-responsive-sm">
             <thead>
               <tr >
@@ -196,7 +196,7 @@ function FormTable() {
                       {isAscending ? (
                         <i
                           data-testid="form-desc-sort-icon"
-                          className="fa fa-sort-alpha-asc cursor-pointer sort-icon ms-2 mt-1"
+                          className="fa fa-sort-alpha-asc cursor-pointer fs-16 ms-2 mt-1"
                           onClick={() => {
                             updateSort("desc");
                           }}
@@ -207,7 +207,7 @@ function FormTable() {
                       ) : (
                         <i
                           data-testid="form-asc-sort-icon"
-                          className="fa fa-sort-alpha-desc cursor-pointer sort-icon ms-2 mt-1"
+                          className="fa fa-sort-alpha-desc cursor-pointer fs-16 ms-2 mt-1"
                           onClick={() => {
                             updateSort("asc");
                           }}

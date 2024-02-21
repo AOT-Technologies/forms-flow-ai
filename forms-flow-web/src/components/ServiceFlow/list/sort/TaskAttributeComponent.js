@@ -134,7 +134,7 @@ function TaskAttributeComponent({
         </Form>
         <hr />
         <Form className="mt-2 ps-1">
-          <h5 className="fw-bold list-size"
+          <h5 className="fw-bold fs-18"
           >
             <Translation>{(t) => t("Variables")}</Translation>{" "}
             <i title={t("You can define variables shown in the list")} className="fa fa-info-circle"></i>{" "}
@@ -142,7 +142,7 @@ function TaskAttributeComponent({
 
           <div className="d-flex align-items-center mt-2">
             <input
-            className="task-enable"
+            className="mr-6"
               type="checkbox"
               id="my-checkbox"
               checked={showUndefinedVariable}

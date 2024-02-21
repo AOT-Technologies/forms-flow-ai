@@ -136,6 +136,7 @@ def register_error_handlers(api, sentry_capture_handled_errors: bool = False):
     def handle_validation_error(error):
         error_details = [ErrorDetail(field, messages[0]).__dict__ for field, messages in error.messages.items()]
         error_response = ErrorResponse(message="Validation failed", code="VALIDATION_ERROR", details=error_details)
+        error.data = error_response.__dict__
         _report_error(error_response)
         return error_response.__dict__, 400
 

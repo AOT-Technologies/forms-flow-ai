@@ -154,7 +154,7 @@ class KeycloakClientService(KeycloakAdmin):
             result = [
                 item
                 for item in result
-                if any(search in item[key] for key in search_fields)
+                if any(search in item.get(key,'') for key in search_fields)
             ]
         count = len(result) if count else None
         result = self.paginate(result, page_no, limit)

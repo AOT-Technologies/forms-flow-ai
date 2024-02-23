@@ -92,7 +92,7 @@ const ServiceFlowTaskList = React.memo((props) => {
                 </div>
              
               <div className="fs-16 d-flex justify-content-between">
-                <div className="pe-0" style={{ maxWidth: "65%" }}>
+                <div className="pe-0 mw-65 text-truncate">
                   <span data-toggle="tooltip" title="Form Name">
                     {
                       getProcessDataObjectFromList(
@@ -105,7 +105,7 @@ const ServiceFlowTaskList = React.memo((props) => {
                 <div
                   data-toggle="tooltip"
                   title={t("Task assignee")}
-                  className="pe-0 text-right d-inline-block text-truncate"
+                  className="pe-0 ms-1 text-right d-inline-block text-truncate"
                   style={{maxWidth:"150"}}
                 >
                   <span> {task.assignee}</span>

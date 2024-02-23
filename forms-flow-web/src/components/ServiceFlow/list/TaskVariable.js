@@ -38,7 +38,7 @@ const TaskVariable = ({ expandedTasks, setExpandedTasks,taskId, variables }) => 
           title={taskItem.label}
         >
           <span style={{ margin: "0px", fontWeight: "bold" }}>
-            {taskItem.label}
+            {taskItem.label === "Application Id" ? "Submission Id" : taskItem.label}
           </span>
         </div>
         <div className="text-truncate " style={{ fontSize: "14px" }}>

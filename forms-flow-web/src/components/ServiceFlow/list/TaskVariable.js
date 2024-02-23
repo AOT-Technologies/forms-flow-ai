@@ -37,8 +37,8 @@ const TaskVariable = ({ expandedTasks, setExpandedTasks,taskId, variables }) => 
           data-placement="top"
           title={taskItem.label}
         >
-          <span className="fw-bold mb-0 ">
-            {taskItem.label}
+          <span className="fw-bold mb-0 ">   
+            {taskItem.label === "Application Id" ? "Submission Id" : taskItem.label}
           </span>
         </div>
         <div className="text-truncate ">

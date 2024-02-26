@@ -77,7 +77,8 @@ const ServiceFlowTaskList = React.memo((props) => {
     if ((tasksCount || taskList.length) && selectedFilter) {
       return (
         <>
-          <div style={{minHeight:"67vh"}}>
+          <div className="min-vh-67"
+          >
           {taskList.map((task, index) => (
             <div
               className={`clickable shadow border  ${
@@ -92,7 +93,7 @@ const ServiceFlowTaskList = React.memo((props) => {
                 </div>
              
               <div className="fs-16 d-flex justify-content-between">
-                <div className="pe-0 mw-65 text-truncate">
+              <div className="pe-0 mw-65 text-truncate">
                   <span data-toggle="tooltip" title="Form Name">
                     {
                       getProcessDataObjectFromList(
@@ -105,17 +106,16 @@ const ServiceFlowTaskList = React.memo((props) => {
                 <div
                   data-toggle="tooltip"
                   title={t("Task assignee")}
-                  className="pe-0 ms-1 text-right d-inline-block text-truncate"
-                  style={{maxWidth:"150"}}
+                  className="pe-0 text-right d-inline-block text-truncate"  
                 >
                   <span> {task.assignee}</span>
                 </div>
               </div>
               <div
-                className="d-flex justify-content-between "
-                style={{ marginBottom: "-8px", fontSize: "14px" }}
+                className="d-flex justify-content-between service-task-action "
               >
-                <div style={{ maxWidth: "70%" }}>
+                <div className="mw-70"
+                >
                   <span
                     className="tooltiptext"
                     title={task.due ? getFormattedDateAndTime(task.due) : ""}

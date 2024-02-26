@@ -241,7 +241,7 @@ const ServiceTaskListViewDetails = React.memo(() => {
 
     if (!bpmTaskId) {
         return (
-            <Row className="not-selected mt-2 ms-1 " style={{ color: "#757575" }}>
+            <Row className="not-selected mt-2 ms-1 ">
                 <i className="fa fa-info-circle me-2 mt-1" />
                 {t("Select a task in the list.")}
             </Row>

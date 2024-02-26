@@ -101,7 +101,7 @@ function DmnTable() {
         text={t("Loading...")}
         active={isLoading || countLoading}
       >
-        <div style={{ minHeight: "400px" }}>
+        <div className="dmn-table">
           <table className="table custom-table  table-responsive-sm mt-2">
             <thead>
               <tr>
@@ -111,6 +111,7 @@ function DmnTable() {
                 <th colSpan="2">
                 <InputGroup className="input-group">
               <FormControl
+                className="bg-white"
                 value={search}
                 onChange={(e) => {
                   setSearch(e.target.value);
@@ -120,7 +121,6 @@ function DmnTable() {
                 }
                 placeholder={t("Search by DMN name")}
                 title={t("Search by DMN name")}
-                style={{ backgroundColor: "#ffff" }}
                 data-testid="processes-search-dmn-input-box"
               />
               {search && (
@@ -130,13 +130,14 @@ function DmnTable() {
                   </InputGroup.Text>
                 </InputGroup.Append>
               )}
-              <InputGroup.Append
-              data-testid="processes-search-dmn-click-button"
-                onClick={handleSearchButtonClick}
-                disabled={!search?.trim()}
-                style={{ cursor: "pointer" }}
-              >
-                <InputGroup.Text style={{ backgroundColor: "#ffff" }} className="h-100">
+                    <InputGroup.Append
+                      className="cursor-pointer"
+                      data-testid="processes-search-dmn-click-button"
+                      onClick={handleSearchButtonClick}
+                      disabled={!search?.trim()}
+                    >
+                <InputGroup.Text 
+                className="h-100 bg-white">
                   <i className="fa fa-search"></i>
                 </InputGroup.Text>
               </InputGroup.Append>
@@ -149,8 +150,7 @@ function DmnTable() {
                 <tr className="no-results-row">
                   <td
                     colSpan="4"
-                    style={{ height: "300px" }}
-                    className="text-center"
+                    className="text-center no-results"
                   >
                    { isLoading ? null : t("No Dmn Found")}
                   </td>

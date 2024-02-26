@@ -105,8 +105,7 @@ const ApplicationFilter = ({
 
   return (
     <div
-      className="Filter-listview "
-      style={{ minWidth: "500px" }}
+      className="appFilter-list-view"
       ref={createSearchNode}
     >
 

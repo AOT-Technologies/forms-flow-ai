@@ -378,7 +378,7 @@ const View = React.memo((props) => {
           ) : null}
 
           {form.title ? (
-            <h3 className="ms-3 text-truncate" style={{height :"45px"}}>
+            <h3 className="ms-3 text-truncate form-title">
               <span className="task-head-details">
                 <i className="fa-solid fa-file-lines me-2" aria-hidden="true" /> &nbsp;{" "}
                 {t("Forms")}/

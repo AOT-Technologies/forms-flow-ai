@@ -459,15 +459,14 @@ export default function CreateNewFilterDrawer({
   };
 
   const list = () => (
-    <div style={{ marginTop: "45px" }} role="presentation">
+    <div className="filter-list" role="presentation">
       <List>
         <div className="p-0 d-flex align-items-center justify-content-between ">
-          <h5 style={{ fontWeight: "bold", fontSize: "16px" }}>
+          <h5 className="fw-bold fs-16">
             <Translation>{(t) => t("Create new filter")}</Translation>
           </h5>
           <span
-            className="cursor-pointer"
-            style={{ fontSize: "14px" }}
+            className="cursor-pointer truncate-size"
             onClick={() => {
               toggleDrawer();
             }}
@@ -477,7 +476,7 @@ export default function CreateNewFilterDrawer({
         </div>
       </List>
       <List>
-        <h5 style={{ fontWeight: "bold", fontSize: "18px" }}>
+        <h5 className="fw-bold fs-18">
           <Translation>{(t) => t("Filter Name")}</Translation>
         </h5>
         <input
@@ -491,20 +490,22 @@ export default function CreateNewFilterDrawer({
       </List>
       <Divider />
       <List>
-        <h5 style={{ fontWeight: "bold", fontSize: "18px" }}>
+        <h5 className="fw-bold fs-18">
           <Translation>{(t) => t("Criteria")}</Translation>{" "}
           <i title={t("This section is aimed to set the parameters\nused to filter the tasks")}
             className="fa fa-info-circle filter-tooltip-icon"></i>{" "}
         </h5>
         <div className="d-flex align-items-center mt-1">
           <input
+            className="mr-6"
             type="checkbox"
             checked={isMyTasksEnabled}
-            onChange={(e) => setIsMyTasksEnabled(e.target.checked)}
-            style={{ marginRight: "6px" }}
+            onChange={(e) =>
+              setIsMyTasksEnabled(e.target.checked)
+            }
             title={t("Show only current user assigned task")}
           />
-          <h5 style={{ fontSize: "18px", marginBottom: "3px" }}>
+          <h5 className="assigned-user">
             <Translation>
               {(t) => t("Show only current user assigned task")}
             </Translation>
@@ -512,34 +513,32 @@ export default function CreateNewFilterDrawer({
         </div>
         <div className="d-flex align-items-center mt-1">
           <input
+            className="mr-6"
             type="checkbox"
             checked={isTasksForCurrentUserGroupsEnabled}
             onChange={(e) =>
               setIsTasksForCurrentUserGroupsEnabled(e.target.checked)
             }
-            style={{ marginRight: "6px" }}
             title={t("Show task based on logged user roles")}
           />
-          <h5 style={{ fontSize: "18px", marginBottom: "3px" }}>
+          <h5 className="assigned-user">
             <Translation>
               {(t) => t("Show task based on logged user roles")}
             </Translation>
           </h5>
         </div>
-        <h5 className="mt-2" style={{ fontSize: "18px" }}>
+        <h5 className="mt-2 fs-18">
           <Translation>{(t) => t("Definition Key")}</Translation>
         </h5>
-        {!definitionKeyId && (<span
-          style={{
-            textDecoration: "underline",
-            fontSize: "14px",
-          }}
-          onClick={() => handleSpanClick(1)}
-          className="px-1 py-1 cursor-pointer"
-        >
-          <i className="fa fa-plus-circle" style={{ marginRight: "6px" }} />
-          <Translation>{(t) => t("Add Value")}</Translation>
-        </span>) }        
+        {!definitionKeyId && (
+  <span
+    className="px-1 py-1 cursor-pointer text-decoration-underline truncate-size"
+    onClick={() => handleSpanClick(1)}
+  >
+    <i className="fa fa-plus-circle mr-6" />
+    <Translation>{(t) => t("Add Value")}</Translation>
+  </span>
+)}        
         {(inputVisibility[1] || definitionKeyId ) && (
           <input
             type="text"
@@ -560,7 +559,7 @@ export default function CreateNewFilterDrawer({
           rootClose={true}
           show={overlayCandidateGroupShow}
           overlay={
-            <Popover style={{ zIndex: 9999 }}>
+            <Popover className="z-index">
               <div className="poper">
                 <ListGroup>
                   {userGroups?.length > 0 &&
@@ -579,14 +578,10 @@ export default function CreateNewFilterDrawer({
           }
         >
           <span
-            style={{
-              textDecoration: "underline",
-              fontSize: "14px",
-            }}
             onClick={() => handleSpanClick(2)}
-            className="px-1 py-1 cursor-pointer"
+            className="px-1 py-1 cursor-pointer text-decoration-underline truncate-size"
           >
-            <i className="fa fa-plus-circle" style={{ marginRight: "6px" }} />
+            <i className="fa fa-plus-circle mr-6"/>
             <Translation>{(t) => t("Add Value")}</Translation>
           </span>
         </OverlayTrigger>
@@ -613,17 +608,15 @@ export default function CreateNewFilterDrawer({
         <h5 className="pt-2">
           <Translation>{(t) => t("Assignee")}</Translation>
         </h5>
-        { !assignee && <span
-          style={{
-            textDecoration: "underline",
-            fontSize: "14px",
-          }}
-          onClick={() => handleSpanClick(3)}
-          className="px-1 py-1 cursor-pointer"
-        >
-          <i className="fa fa-plus-circle" style={{ marginRight: "6px" }} />
-          <Translation>{(t) => t("Add Value")}</Translation>
-        </span>}
+        {!assignee && (
+  <span
+    className="px-1 py-1 cursor-pointer text-decoration-underline truncate-size"
+    onClick={() => handleSpanClick(3)}
+  >
+    <i className="fa fa-plus-circle mr-6" />
+    <Translation>{(t) => t("Add Value")}</Translation>
+  </span>
+)}
         {(inputVisibility[3] || assignee) && (
           <input
             type="text"
@@ -635,17 +628,16 @@ export default function CreateNewFilterDrawer({
         )}
 
         {candidateGroup?.length ? (
-          <div
-            style={{ display: "flex", alignItems: "center", marginTop: "10px" }}
+          <div className="d-flex align-items-center input-container"
           >
             <input
+              className="mr-6"
               type="checkbox"
               id="assignedTask-checkbox"
               checked={includeAssignedTasks}
               onChange={includeAssignedTasksCheckboxChange}
-              style={{ marginRight: "6px" }}
             />
-            <h5 style={{ fontSize: "18px", marginBottom: "3px" }}>
+            <h5 className="assigned-user">
               <Translation>{(t) => t("Include Assigned Task")}</Translation>
             </h5>
           </div>
@@ -654,12 +646,12 @@ export default function CreateNewFilterDrawer({
 
         <Divider />
         <div className="child-container-two pt-2">
-          <h5 style={{ fontWeight: "bold" }}>
+          <h5 className="fw-bold">
             <Translation>{(t) => t("Permission")}</Translation>{" "}
             <i title={t("This section is aimed to set read\npermissions for the filter")} className="fa fa-info-circle filter-tooltip-icon"></i>
           </h5>
           <input
-            style={{ marginRight: "4px" }}
+          className="access-all"
             type="radio"
             id="all-users"
             name="my-radio"
@@ -667,15 +659,12 @@ export default function CreateNewFilterDrawer({
             checked={permissions === ACCESSIBLE_FOR_ALL_GROUPS}
             onChange={(e) => setPermissions(e.target.value)}
           />
-          <label
-            htmlFor="all-users"
-            style={{ marginRight: "3px", fontSize: "18px" }}
-          >
+          <label htmlFor="all-users" className="assigned-user">
             <Translation>{(t) => t("Accessible for all users")}</Translation>
           </label>{" "}
           <br />
           <input
-            style={{ marginRight: "4px" }}
+            className="access-all"
             type="radio"
             id="private-only"
             name="my-radio"
@@ -683,12 +672,12 @@ export default function CreateNewFilterDrawer({
             checked={permissions === PRIVATE_ONLY_YOU}
             onChange={(e) => setPermissions(e.target.value)}
           />
-          <label htmlFor="private-only" style={{ fontSize: "18px" }}>
+          <label htmlFor="private-only" className="fs-18">
             <Translation>{(t) => t("Private (Only You)")}</Translation>
           </label>
           <br />
           <input
-            style={{ marginRight: "4px" }}
+            className="access-all"
             type="radio"
             id="specific-grp"
             name="my-radio"
@@ -696,7 +685,7 @@ export default function CreateNewFilterDrawer({
             checked={permissions === SPECIFIC_USER_OR_GROUP}
             onChange={handleSpecificUserGroup}
           />
-          <label htmlFor="specific-grp" style={{ fontSize: "18px" }}>
+          <label htmlFor="specific-grp" className="fs-18">
             <Translation>{(t) => t("Specific Group")}</Translation>
           </label>{" "}
           <br />
@@ -750,7 +739,7 @@ export default function CreateNewFilterDrawer({
                 rootClose={true}
                 show={overlayGroupShow}
                 overlay={
-                  <Popover style={{ zIndex: 9999 }}>
+                  <Popover className="z-index">
                     <div className="poper">
                       <ListGroup>
                         {userGroups.length > 0 &&
@@ -772,17 +761,16 @@ export default function CreateNewFilterDrawer({
                   className="ms-3"
                   onClick={() => handleClickUserGroupIcon("group")}
                 >
-                  <div style={{ textAlign: "center" }}>
-                    <span style={{ fontSize: "14px" }}>
+                  <div className="text-center">
+                    <span className="truncate-size">
                       <Translation>{(t) => t("Group")}</Translation>
                     </span>
                   </div>
-                  <div style={{ textAlign: "center", marginBottom: "8px" }}>
+                  <div className="text-center text-bottom">
                     <i
                       className={`fa fa-users ${
                         selectUserGroupIcon === "group" ? "highlight" : ""
-                      } cursor-pointer`}
-                      style={{ fontSize: "30px", marginRight: "8px" }}
+                      } cursor-pointer group-icon`}
                     />
                   </div>
                 </div>
@@ -853,8 +841,7 @@ export default function CreateNewFilterDrawer({
               <Translation>{(t) => t("Cancel")}</Translation>
             </button>
             <button
-              className="btn btn-primary submitButton"
-              style={{ textDecoration: "none", fontSize: "14px" }}
+              className="btn btn-primary submitButton text-decoration-none truncate-size "
               disabled={!permissions || !filterName}
               onClick={() => {
                 handleSubmit();

@@ -131,13 +131,15 @@ const ServiceTaskListView = React.memo((props) => {
                       <h6>
                         <u
                           onClick={() => handleViewDetails(task.id)}
-                        className="fw-normal" style={{ color: "#1a5a96", textDecoration: 'none' }}>{t("View Details")}</u>
+                        className="fw-normal handle-view-details" 
+                        >{t("View Details")}</u>
                       </h6>
                     </div>
                   </Col>
               </Row>
               
-              <Row className="mt-4 p-2 justify-content-between task-attr-row" >
+              <Row className="mt-4 p-2 justify-content-between task-attribute" 
+              >
                {vissibleAttributes?.taskVisibleAttributes?.applicationId && <Col  xs={2}>
                   <div className="col-12">
                     <h6 className="fw-bold">{t("Submission ID")}</h6>
@@ -219,8 +221,8 @@ const ServiceTaskListView = React.memo((props) => {
                           );
                           return (
                             <Col xs={2} key={index} >
-                              <div className="col-12" style={{ wordBreak: "break-all" }}>
-                                <h6 className="fw-bold">{data?.label}</h6>
+                              <div className="col-12 word-break">
+                                <h6 className="fw-light">{data?.label}</h6>
                               </div>
                               <div className="d-flex col-12">
                                 <h6>
@@ -243,11 +245,10 @@ const ServiceTaskListView = React.memo((props) => {
                   <span>
                   {t("Rows per page")} :
                   <DropdownButton
-                    className="ms-2"
+                    className="ms-2 d-inline"
                     drop="down"
                     variant="secondary"
                       title={selectedLimitValue}
-                    style={{ display: "inline" }}
                   >
                     {options.map(({ value, label }, index) => (
                       <Dropdown.Item

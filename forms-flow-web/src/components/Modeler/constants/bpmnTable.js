@@ -98,7 +98,7 @@ function BpmnTable() {
         text={t("Loading...")}
         active={isLoading || countLoading}
       >
-        <div style={{ minHeight: "400px" }}>
+        <div className="dmn-table">
  
           <table className="table custom-table table-responsive-sm mt-2">
             <thead>
@@ -117,7 +117,7 @@ function BpmnTable() {
                   e.keyCode == 13 ? handleSearchButtonClick() : ""
                 }
                 placeholder={t("Search by workflow name")}
-                style={{ backgroundColor: "#ffff" }}
+                className="bg-white"
                 title={t("Search by workflow name")}
                 data-testid="processes-search-workflow-input-box"
               />
@@ -132,9 +132,10 @@ function BpmnTable() {
                 data-testid="processes-search-click-button"
                 onClick={handleSearchButtonClick}
                 disabled={!search?.trim()}
-                style={{ cursor: "pointer" }}
+                className="cursor-pointer"
               >
-                <InputGroup.Text style={{ backgroundColor: "#ffff" }} className="h-100">
+                <InputGroup.Text 
+                className="bg-white h-100">
                   <i className="fa fa-search"></i>
                 </InputGroup.Text>
               </InputGroup.Append>
@@ -147,8 +148,7 @@ function BpmnTable() {
                 <tr className="no-results-row">
                   <td
                     colSpan="4"
-                    style={{ height: "300px" }}
-                    className="text-center"
+                    className="text-center no-results"
                   >
                      { isLoading ? null : t("No Process Found")}
                   </td>

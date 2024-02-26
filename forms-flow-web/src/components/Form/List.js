@@ -492,7 +492,7 @@ const List = React.memo((props) => {
                     ) : (
                       <span>{`${t(" Submission is made against")} `}</span>
                     )}
-                    <span style={{ fontWeight: "bold" }}>
+                    <span className="fw-bold">
                       {props.formName.includes(" ")
                         ? props.formName
                         : textTruncate(50, 40, props.formName)}
@@ -502,7 +502,7 @@ const List = React.memo((props) => {
                 ) : (
                   <div>
                     <span>{`${t("Are you sure to delete the")} ${formProcessData.formType} `}</span>
-                    <span style={{ fontWeight: "bold" }}>
+                    <span className="fw-bold">
                       {textTruncate(60, 40, props.formName)}
                     </span>
                     ?
@@ -511,7 +511,7 @@ const List = React.memo((props) => {
               ) : (
                 <div>
                     <span>{`${t("Are you sure to delete the")} ${formProcessData.formType} `}</span>
-                    <span style={{ fontWeight: "bold" }}>
+                    <span className="fw-bold">
                       {textTruncate(60, 40, props.formName)}
                     </span>
                     ?
@@ -540,18 +540,15 @@ const List = React.memo((props) => {
                   onClick={() =>
                     dispatch(push(`${redirectUrl}formflow/create`))
                   }
-                  className="btn btn-primary"
-                  style={{ whiteSpace: "nowrap" }}
-                >
+                  className="btn btn-primary text-nowrap">
                   <i className="fa fa-plus me-2" />
                   <Translation>{(t) => t("Create Form")}</Translation>
                 </button>
                 <button
                   data-testid="upload-form-btn"
-                  className="btn btn-outline-primary  ms-4"
+                  className="btn btn-outline-primary text-nowrap  ms-4"
                   onClick={uploadClick}
                   title={t("Upload json form only")}
-                  style={{ whiteSpace: "nowrap" }}
                 >
                   <i className="fa fa-upload me-2" aria-hidden="true" />
                   {t("Upload Form")}
@@ -591,7 +588,7 @@ const List = React.memo((props) => {
                   )}
                 </div>
               </div>
-              <hr style={{ marginTop: "-10px" }} />
+              <hr className="list-margin" />
             </>
           ) : (
             <Head  items={headerList()} page={"Forms"} />

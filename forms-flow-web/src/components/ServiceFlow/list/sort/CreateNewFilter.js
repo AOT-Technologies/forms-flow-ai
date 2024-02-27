@@ -36,6 +36,7 @@ import { Badge, ListGroup, OverlayTrigger, Popover } from "react-bootstrap";
 // import { fetchUsers } from "../../../../apiManager/services/userservices";
 import { trimFirstSlash } from "../../constants/taskConstants";
 import { cloneDeep } from "lodash";
+import { MULTITENANCY_ENABLED } from "../../../../constants/constants";
 export default function CreateNewFilterDrawer({
   selectedFilterData,
   openFilterDrawer,
@@ -60,6 +61,7 @@ export default function CreateNewFilterDrawer({
   const [selectUserGroupIcon, setSelectUserGroupIcon] = useState("");
   const [specificUserGroup, setSpecificUserGroup] = useState("");
   const firstResult = useSelector((state) => state.bpmTasks.firstResult);
+  const tenantKey = useSelector((state) => state.tenants?.tenantId);
   const userGroups = useSelector(
     (state) => state.userAuthorization?.userGroups
   );
@@ -134,7 +136,11 @@ export default function CreateNewFilterDrawer({
       let processDefinitionName =
         selectedFilterData?.criteria?.processDefinitionNameLike;
       setDefinitionKeyId(customTrim(processDefinitionName));
-      setCandidateGroup(selectedFilterData?.criteria?.candidateGroup);
+      let candidateGroupName = selectedFilterData?.criteria?.candidateGroup;
+      if (MULTITENANCY_ENABLED && candidateGroupName && candidateGroupName.includes(tenantKey)) {
+        candidateGroupName = candidateGroupName.slice(tenantKey.length + 1);
+      }
+      setCandidateGroup(candidateGroupName);  
       setAssignee(selectedFilterData?.criteria?.assignee);
       setIncludeAssignedTasks(
         selectedFilterData?.criteria?.includeAssignedTasks
@@ -321,7 +327,7 @@ export default function CreateNewFilterDrawer({
       name: filterName,
       criteria: {
         processDefinitionNameLike: definitionKeyId && `%${definitionKeyId}%`,
-        candidateGroup: candidateGroup,
+        candidateGroup: MULTITENANCY_ENABLED && candidateGroup ? tenantKey + "-" + candidateGroup : candidateGroup,
         assignee: assignee,
         includeAssignedTasks: includeAssignedTasks,
       },
@@ -690,7 +696,7 @@ export default function CreateNewFilterDrawer({
           </label>{" "}
           <br />
           {permissions === SPECIFIC_USER_OR_GROUP &&
-          specificUserGroup === SPECIFIC_USER_OR_GROUP ? (
+            specificUserGroup === SPECIFIC_USER_OR_GROUP ? (
             <div className="d-flex">
               {/* <OverlayTrigger
                 placement="right"

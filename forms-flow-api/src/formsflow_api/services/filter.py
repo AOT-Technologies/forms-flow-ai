@@ -74,7 +74,7 @@ class FilterService:
                 filter_obj = Filter(
                     name="All Tasks",
                     variables=[
-                        {"name": "applicationId", "label": "Application Id"},
+                        {"name": "applicationId", "label": "Submission ID"},
                         {"name": "formName", "label": "Form Name"},
                     ],
                     status="active",
@@ -105,7 +105,7 @@ class FilterService:
         )
         filter_data = filter_schema.dump(filters, many=True)
         default_variables = [
-            {"name": "applicationId", "label": "Application Id"},
+            {"name": "applicationId", "label": "Submission ID"},
             {"name": "formName", "label": "Form Name"},
         ]
         # User who created the filter or admin have edit permission.

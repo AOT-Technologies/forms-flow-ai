@@ -1,4 +1,5 @@
 """Resource to call Keycloak Service API calls and filter responses."""
+
 from http import HTTPStatus
 
 from flask import current_app, g, request
@@ -165,7 +166,7 @@ class KeycloakUsersList(Resource):
         kc_admin = KeycloakFactory.get_instance()
         if group_name:
             (users_list, users_count) = kc_admin.get_users(
-                page_no, limit, role, group_name, count
+                page_no, limit, role, group_name, count, search
             )
             user_service = UserService()
             response = {

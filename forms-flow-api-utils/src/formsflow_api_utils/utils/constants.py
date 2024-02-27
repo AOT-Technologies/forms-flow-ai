@@ -12,6 +12,7 @@ CORS_ORIGINS = []
 if FORMSFLOW_API_CORS_ORIGINS != "*":
     CORS_ORIGINS = FORMSFLOW_API_CORS_ORIGINS.split(",")
 ADMIN_GROUP = "formsflow-admin"
+CAMUNDA_ADMIN = "camunda-admin"
 DESIGNER_GROUP = "formsflow-designer"
 REVIEWER_GROUP = "formsflow-reviewer"
 CLIENT_GROUP = "formsflow-client"

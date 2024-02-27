@@ -133,7 +133,7 @@ class StepperPage extends PureComponent {
       };
     }
 
-    if (nextProps.match.params.step === "view-edit") {
+    if (["view-edit", "preview"].includes(nextProps.match.params.step)) {
       stateData = {
         ...stateData,
         displayMode: "view",

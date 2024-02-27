@@ -91,7 +91,7 @@ const FormHistoryModal = ({ historyModal, handleModalChange, gotoEdit }) => {
                         index === 0 ? "active" : ""
                       }`}
                     >
-                      <div style={{ maxWidth: "150px", minWidth: "150px" }}>
+                      <div className="form-history">
                         <span className="text-muted text-small">
                           {formHistory.length === 1
                             ? t("Created By")

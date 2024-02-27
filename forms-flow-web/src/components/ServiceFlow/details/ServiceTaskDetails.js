@@ -281,8 +281,8 @@ const ServiceFlowTaskDetails = React.memo(() => {
                                         </span>
                                     </Row>
                                     <Row className="ms-0">
-                                        <span title={t("Application ID")} className="application-id">
-                                            {t("Application ID")}# {task?.applicationId}
+                                        <span title={t("Submission Id")} className="application-id">
+                                            {t("Submission Id")}# {task?.applicationId}
                                         </span>
                                     </Row>
                                     <Row className="ms-0 mt-3">

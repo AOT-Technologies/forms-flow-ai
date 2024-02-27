@@ -47,6 +47,8 @@ const TaskFilterViewComponent = React.memo(
     const dispatch = useDispatch();
     const { t } = useTranslation();
     const [assigneeOptions, setAssigneeOptions] = useState([]);
+    const [inputValuesPresent, setInputValuesPresent] = useState(false); // State to track any input value is present or not
+
     const handleClick = (e) => {
       if (createSearchNode?.current?.contains(e.target)) {
         return;
@@ -144,6 +146,16 @@ const TaskFilterViewComponent = React.memo(
       setDisplayFilter(false);
     };
 
+    //To disable the show results & clear filter btn if there no input values
+    useEffect(() => {
+      setInputValuesPresent(
+       ( assignee || candidateGroup || processVariables?.length || dueStartDate || dueEndDate ||
+          followStartDate || followEndDate || createdStartDate || createdEndDate ||
+          priority || Object.keys(filterParams)?.length)
+      );
+    }, [assignee, candidateGroup, processVariables, dueStartDate, dueEndDate,
+      followStartDate, followEndDate, createdStartDate, createdEndDate, priority]);
+      
     const clearAllFilters = () => {
       setAssignee("");
       setCandidateGroup("");
@@ -171,7 +183,7 @@ const TaskFilterViewComponent = React.memo(
               placeholder={placeholder}
             />
             <div className="input-group-prepend">
-              <span className="input-group-text">
+              <span className="input-group-text p-2">
                 <i className="fa fa-calendar" />
               </span>
             </div>
@@ -207,19 +219,12 @@ const TaskFilterViewComponent = React.memo(
     return (
       <>
         <div
-          className="Filter-listview "
-          style={{ minWidth: "700px" }}
+          className="filter-listview "
           ref={createSearchNode}
         >
           <div className="bg-light ">
             <Row
-              className="px-4 py-2"
-              style={{
-                display: "flex",
-                justifyContent: "space-between",
-                alignItems: "center",
-                margin: "auto",
-              }}
+              className="px-4 py-2 d-flex justify-content-between align-items-center mx-auto"
             >
               <span className="fw-bold ">{t("Search")}</span>
             </Row>
@@ -271,7 +276,7 @@ const TaskFilterViewComponent = React.memo(
 
                 rows[rows.length - 1].push(
                   <Col  key={i} xs={6}>
-                    <label>{e.label}</label>
+                    <label>{e.label === 'Application Id' ? 'Submission Id' : e.label}</label>
                     <input
                       title={t("Task variables")}
                       className="form-control"
@@ -427,18 +432,19 @@ const TaskFilterViewComponent = React.memo(
               <button
                 className="btn btn-link text-danger"
                 onClick={() => clearAllFilters()}
+                disabled={!inputValuesPresent} 
               >
                 {t("Clear All Filters")}
               </button>
             </Col>
-            <Col className="text-right">
+            <Col className="text-end">
               <button
                 className="btn btn-light me-1 "
                 onClick={() => setDisplayFilter(false)}
               >
                 {t("Cancel")}
               </button>
-              <button className="btn btn-dark" onClick={() => applyFilters()}>
+              <button disabled={!inputValuesPresent} className="btn btn-dark" onClick={() => applyFilters()}>
                 {t("Show results")}
               </button>
             </Col>

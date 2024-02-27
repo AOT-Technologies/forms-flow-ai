@@ -71,7 +71,7 @@ const TaskvariableCreate = ({ options, addTaskVariable }) => {
         </Col>
         <Col xs={12} md={3}>
 
-          <Form.Group controlId="showInListCheckbox" style={{ marginTop: "34px" }}>
+          <Form.Group controlId="showInListCheckbox" className="show-in-list">
             <div className="d-flex align-items-center mt-3 me-4">
               <Form.Label className="me-2">{t("Show in list")}</Form.Label>
               <Form.Check
@@ -88,7 +88,7 @@ const TaskvariableCreate = ({ options, addTaskVariable }) => {
 
         <Col xs={12} md={2}>
           <Button
-            style={{ marginTop: "25px" }}
+            className="add-task"
             variant="outline-primary"
             onClick={() => {
               addTask();

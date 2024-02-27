@@ -307,10 +307,7 @@ export default React.memo(({ processKey, tenant, isNewDiagram, mode}) => {
           <div
             id="canvas"
             ref={containerRef}
-            className="bpm-modeler-container"
-            style={{
-              border: "1px solid #000000",
-            }}
+            className="bpm-modeler-container border border-dark border-1"
           >
             {!deploymentLoading ? null : <Loading />}
           </div>

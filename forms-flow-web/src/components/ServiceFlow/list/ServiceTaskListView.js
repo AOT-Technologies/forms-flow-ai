@@ -128,22 +128,24 @@ const ServiceTaskListView = React.memo((props) => {
                       <h6>
                         <u
                           onClick={() => getTaskDetails(task.id)}
-                        className="fw-normal" style={{ color: "#1a5a96", textDecoration: 'none' }}>{t("View Details")}</u>
+                        className="fw-normal handle-view-details" 
+                        >{t("View Details")}</u>
                       </h6>
                     </div>
                   </Col>
               </Row>
               
-              <Row className="mt-4 p-2 justify-content-between task-attr-row" >
+              <Row className="mt-4 p-2 justify-content-between task-attribute" 
+              >
                {vissibleAttributes?.taskVisibleAttributes?.applicationId && <Col  xs={2}>
                   <div className="col-12">
-                    <h6 className="fw-light">{t("Application Id")}</h6>
-                    <h6 title={t("Application ID")}>{task?._embedded?.variable?.filter((eachValue) => eachValue.name === "applicationId")[0]?.value}</h6>
+                    <h6 className="fw-bold">{t("Submission ID")}</h6>
+                    <h6>{task?._embedded?.variable?.filter((eachValue) => eachValue.name === "applicationId")[0]?.value}</h6>
                   </div>
                 </Col>}
               {vissibleAttributes?.taskVisibleAttributes?.createdDate &&  <Col xs={2}>
                   <div className="col-12">
-                    <h6>{t("Created Date")}</h6>
+                    <h6 className="fw-bold">{t("Created Date")}</h6>
                     <h6 title={
                       task.created ? getFormattedDateAndTime(task.created) : ""
                     }>
@@ -158,7 +160,7 @@ const ServiceTaskListView = React.memo((props) => {
                 </Col>
               {vissibleAttributes?.taskVisibleAttributes?.priority &&  <Col xs={1} >
                   <div className="col-12">
-                    <h6 className="fw-light">{t("Priority")}</h6>
+                    <h6 className="fw-bold">{t("Priority")}</h6>
                   </div>
                   <div className="d-flex col-12">
                     <svg
@@ -172,7 +174,7 @@ const ServiceTaskListView = React.memo((props) => {
                       <path d="M14 10.5a.5.5 0 0 0-.5-.5h-3a.5.5 0 0 0 0 1h3a.5.5 0 0 0 .5-.5zm0-3a.5.5 0 0 0-.5-.5h-7a.5.5 0 0 0 0 1h7a.5.5 0 0 0 .5-.5zm0-3a.5.5 0 0 0-.5-.5h-11a.5.5 0 0 0 0 1h11a.5.5 0 0 0 .5-.5z" />
                     </svg>
                     <h6 title={t("Priority")}>
-                      <u className="fw-bold text-decoration-none">{task.priority}</u>
+                      <u className="fw-light text-decoration-none">{task.priority}</u>
                     </h6>
                   </div>
                 </Col>}
@@ -216,12 +218,12 @@ const ServiceTaskListView = React.memo((props) => {
                           );
                           return (
                             <Col xs={2} key={index} >
-                              <div className="col-12" style={{ wordBreak: "break-all" }}>
+                              <div className="col-12 word-break">
                                 <h6 className="fw-light">{data?.label}</h6>
                               </div>
                               <div className="d-flex col-12">
                                 <h6>
-                                  <u className="fw-bold text-decoration-none ">{eachVariable.value}</u>
+                                  <u className="fw-light text-decoration-none ">{eachVariable.value}</u>
                                 </h6>
                               </div>
                             </Col>
@@ -240,11 +242,10 @@ const ServiceTaskListView = React.memo((props) => {
                   <span>
                   {t("Rows per page")} :
                   <DropdownButton
-                    className="ms-2"
+                    className="ms-2 d-inline"
                     drop="down"
                     variant="secondary"
                       title={selectedLimitValue}
-                    style={{ display: "inline" }}
                   >
                     {options.map(({ value, label }, index) => (
                       <Dropdown.Item

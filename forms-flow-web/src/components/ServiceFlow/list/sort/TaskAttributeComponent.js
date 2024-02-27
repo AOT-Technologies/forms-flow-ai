@@ -65,7 +65,7 @@ function TaskAttributeComponent({
             <Col xs={6}>
               <Form.Check
                 type="checkbox"
-                label={t("Application ID")}
+                label={t("Submission ID")}
                 name="applicationId"
                 checked={checkboxes.applicationId}
                 onChange={handleCheckboxChange}
@@ -134,20 +134,21 @@ function TaskAttributeComponent({
         </Form>
         <hr />
         <Form className="mt-2 ps-1">
-          <h5 style={{ fontWeight: "bold", fontSize: "18px" }}>
+          <h5 className="fw-bold fs-18"
+          >
             <Translation>{(t) => t("Variables")}</Translation>{" "}
             <i title={t("You can define variables shown in the list")} className="fa fa-info-circle"></i>{" "}
           </h5>
 
           <div className="d-flex align-items-center mt-2">
             <input
+            className="mr-6"
               type="checkbox"
               id="my-checkbox"
               checked={showUndefinedVariable}
               onChange={UndefinedVaribaleCheckboxChange}
-              style={{ marginRight: "6px" }}
             />
-            <h5 style={{ fontSize: "18px", marginBottom: "3px" }}>
+            <h5 className="assigned-user">
               <Translation>{(t) => t("Show undefined variables")}</Translation>
             </h5>
           </div>
@@ -189,6 +190,7 @@ function TaskAttributeComponent({
                   {(inputValues.length - 1 === index) ? (
                     <button
                       type="button"
+                      disabled={!inputValues[index].name.length || !inputValues[index].label.length}
                       className="btn btn-primary mt-3"
                       onClick={() => handleAddClick()}
                     >
@@ -196,7 +198,7 @@ function TaskAttributeComponent({
                     </button>
                   ) :  (
                     <i
-                    className="fa fa-minus-circle fa-lg mt-4"
+                    className="fa fa-minus-circle fa-md mt-4"
                     aria-hidden="true"
                     onClick={() => handleRowDelete(index)}
                   />)}
@@ -210,8 +212,8 @@ function TaskAttributeComponent({
         <button className="btn btn-secondary" onClick={() => onHide()}>
           {t("Cancel")}
         </button>
-        <button disabled={!inputValues[0].name || !inputValues[0].label} className="btn btn-primary" onClick={onHide}>
-          {t("Insert")}
+        <button className="btn btn-primary" onClick={onHide}>
+          {t("Save")}
         </button>
       </Modal.Footer>
     </Modal>

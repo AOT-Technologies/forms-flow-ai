@@ -276,7 +276,7 @@ const TaskFilterViewComponent = React.memo(
 
                 rows[rows.length - 1].push(
                   <Col  key={i} xs={6}>
-                    <label>{e.label}</label>
+                    <label>{e.label === 'Application Id' ? 'Submission Id' : e.label}</label>
                     <input
                       title={t("Task variables")}
                       className="form-control"

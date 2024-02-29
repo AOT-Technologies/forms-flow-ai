@@ -90,7 +90,10 @@ class KeycloakAdminAPIService:
 
         for group in group_list_response:
             if group["name"] == KEYCLOAK_DASHBOARD_BASE_GROUP:
-                dashboard_group_list = list(group["subGroups"])
+                if group.get("subGroupCount", 0) > 0:
+                    dashboard_group_list = self.get_subgroups(group["id"])
+                else:
+                    dashboard_group_list = list(group["subGroups"])
         return dashboard_group_list
 
     def get_analytics_roles(self, page_no: int, limit: int):

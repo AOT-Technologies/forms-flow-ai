@@ -166,6 +166,15 @@ class KeycloakAdminAPIService:
         current_app.logger.debug("Groups %s", group_list_response)
         return group_list_response
 
+    def get_subgroups(self, group_id):
+        """Return sub groups."""
+        current_app.logger.debug(f"Getting subgroups for groupID: {group_id}")
+        group_list_response = self.get_request(
+            url_path=f"groups/{group_id}/children?briefRepresentation=false"
+        )
+        current_app.logger.debug("Sub Groups %s", group_list_response)
+        return group_list_response
+
     def get_roles(self, search: str = ""):
         """Return roles."""
         current_app.logger.debug("Getting roles")

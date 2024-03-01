@@ -90,7 +90,10 @@ class KeycloakAdminAPIService:
 
         for group in group_list_response:
             if group["name"] == KEYCLOAK_DASHBOARD_BASE_GROUP:
-                dashboard_group_list = list(group["subGroups"])
+                if group.get("subGroupCount", 0) > 0:
+                    dashboard_group_list = self.get_subgroups(group["id"])
+                else:
+                    dashboard_group_list = list(group["subGroups"])
         return dashboard_group_list
 
     def get_analytics_roles(self, page_no: int, limit: int):
@@ -164,6 +167,15 @@ class KeycloakAdminAPIService:
             url_path="groups?briefRepresentation=false"
         )
         current_app.logger.debug("Groups %s", group_list_response)
+        return group_list_response
+
+    def get_subgroups(self, group_id):
+        """Return sub groups."""
+        current_app.logger.debug(f"Getting subgroups for groupID: {group_id}")
+        group_list_response = self.get_request(
+            url_path=f"groups/{group_id}/children?briefRepresentation=false"
+        )
+        current_app.logger.debug("Sub Groups %s", group_list_response)
         return group_list_response
 
     def get_roles(self, search: str = ""):

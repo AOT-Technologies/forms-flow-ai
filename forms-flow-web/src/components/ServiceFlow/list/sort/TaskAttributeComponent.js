@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { Row, Col } from "react-bootstrap";
 import Modal from "react-bootstrap/Modal";
 import ModalTitle from "react-bootstrap/ModalTitle";
@@ -40,6 +40,13 @@ function TaskAttributeComponent({
     });
   };
 
+  useEffect(() => {
+    // If inputValues is empty , initialize it with a single object
+    if (Object.keys(inputValues).length === 0) {
+      setInputValues([{ name: "", label: "" }]);
+    }
+  }, [inputValues, setInputValues]);
+  
   const UndefinedVaribaleCheckboxChange = (e) => {
     setShowUndefinedVariable(e.target.checked);
   };

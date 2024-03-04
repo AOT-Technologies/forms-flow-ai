@@ -130,6 +130,16 @@ class KeycloakGroupService(KeycloakAdmin):
         data.pop("description", None)
         return data
 
+    def sub_groups(self, group_id, response):
+        """Fetch subgroups of the group if subGroupCount greater than 0."""
+        sub_group = self.client.get_subgroups(group_id)
+        for group in sub_group:
+            group = self.format_response(group)
+            response.append(group)
+            if group.get("subGroupCount", 0) > 0:
+                self.sub_groups(group.get("id"), response)
+        return response
+
     def flat(self, data, response):
         """Flatten response to single list of dictionary.
 
@@ -139,10 +149,11 @@ class KeycloakGroupService(KeycloakAdmin):
         for group in data:
             subgroups = group.pop("subGroups", data)
             group = self.format_response(group)
+            response.append(group)
             if subgroups == []:
-                response.append(group)
+                if group.get("subGroupCount", 0) > 0:
+                    response = self.sub_groups(group.get("id"), response)
             elif subgroups != []:
-                response.append(group)
                 self.flat(subgroups, response)
         return response
 

@@ -76,6 +76,7 @@ export const CLIENT = "formsflow-client";
 export const STAFF_DESIGNER = "formsflow-designer";
 export const STAFF_REVIEWER = "formsflow-reviewer";
 export const ANONYMOUS_USER = "anonymous";
+export const FORMSFLOW_ADMIN = "formsflow-admin";
 
 export const OPERATIONS = {
   insert: {

@@ -540,7 +540,7 @@ export default function CreateNewFilterDrawer({
             </div>
             {!isTasksForCurrentUserGroupsEnabled ? (
               <div className="alert alert-warning mt-1" role="alert">
-               <i className="fa-solid fa-triangle-exclamation me-2"></i> {t("If this option is unchecked, all tasks will be listed.")}
+               <i className="fa-solid fa-triangle-exclamation me-2"></i> {t("Unchecking this option will show all tasks, ignoring user roles")}
               </div>
             ) : null}
           </>

@@ -36,7 +36,7 @@ import { Badge, ListGroup, OverlayTrigger, Popover } from "react-bootstrap";
 // import { fetchUsers } from "../../../../apiManager/services/userservices";
 import { trimFirstSlash } from "../../constants/taskConstants";
 import { cloneDeep } from "lodash";
-import { MULTITENANCY_ENABLED } from "../../../../constants/constants";
+import { FORMSFLOW_ADMIN, MULTITENANCY_ENABLED } from "../../../../constants/constants";
 export default function CreateNewFilterDrawer({
   selectedFilterData,
   openFilterDrawer,
@@ -49,12 +49,13 @@ export default function CreateNewFilterDrawer({
   const [inputVisibility, setInputVisibility] = useState({});
   const [definitionKeyId, setDefinitionKeyId] = useState("");
   const [candidateGroup, setCandidateGroup] = useState([]);
+  const userRoles = useSelector((state) => state.user.roles || []);
   const [assignee, setAssignee] = useState("");
   const [includeAssignedTasks, setIncludeAssignedTasks] = useState(false);
   const [
     isTasksForCurrentUserGroupsEnabled,
     setIsTasksForCurrentUserGroupsEnabled,
-  ] = useState(false);
+  ] = useState(true);
   const [isMyTasksEnabled, setIsMyTasksEnabled] = useState(false);
   const [permissions, setPermissions] = useState(PRIVATE_ONLY_YOU);
   const [identifierId, setIdentifierId] = useState("");
@@ -289,7 +290,7 @@ export default function CreateNewFilterDrawer({
     setSelectUserGroupIcon("");
     setSpecificUserGroup("");
     setInputValues([{ name: "", label: "" }]);
-    setIsTasksForCurrentUserGroupsEnabled(false);
+    setIsTasksForCurrentUserGroupsEnabled(true);
     setIsMyTasksEnabled(false);
   };
 
@@ -498,17 +499,19 @@ export default function CreateNewFilterDrawer({
       <List>
         <h5 className="fw-bold fs-18">
           <Translation>{(t) => t("Criteria")}</Translation>{" "}
-          <i title={t("This section is aimed to set the parameters\nused to filter the tasks")}
-            className="fa fa-info-circle filter-tooltip-icon"></i>{" "}
+          <i
+            title={t(
+              "This section is aimed to set the parameters\nused to filter the tasks"
+            )}
+            className="fa fa-info-circle filter-tooltip-icon"
+          ></i>
         </h5>
         <div className="d-flex align-items-center mt-1">
           <input
             className="mr-6"
             type="checkbox"
             checked={isMyTasksEnabled}
-            onChange={(e) =>
-              setIsMyTasksEnabled(e.target.checked)
-            }
+            onChange={(e) => setIsMyTasksEnabled(e.target.checked)}
             title={t("Show only current user assigned task")}
           />
           <h5 className="assigned-user">
@@ -517,35 +520,44 @@ export default function CreateNewFilterDrawer({
             </Translation>
           </h5>
         </div>
-        <div className="d-flex align-items-center mt-1">
-          <input
-            className="mr-6"
-            type="checkbox"
-            checked={isTasksForCurrentUserGroupsEnabled}
-            onChange={(e) =>
-              setIsTasksForCurrentUserGroupsEnabled(e.target.checked)
-            }
-            title={t("Show task based on logged user roles")}
-          />
-          <h5 className="assigned-user">
-            <Translation>
-              {(t) => t("Show task based on logged user roles")}
-            </Translation>
-          </h5>
-        </div>
+        {userRoles.includes(FORMSFLOW_ADMIN) && (
+          <>
+            <div className="d-flex align-items-center mt-1">
+              <input
+                className="mr-6"
+                type="checkbox"
+                checked={isTasksForCurrentUserGroupsEnabled}
+                onChange={(e) =>
+                  setIsTasksForCurrentUserGroupsEnabled(e.target.checked)
+                }
+                title={t("Display authorized tasks based on user roles")}
+              />
+              <h5 className="assigned-user">
+                <Translation>
+                  {(t) => t("Display authorized tasks based on user roles")}
+                </Translation>
+              </h5>
+            </div>
+            {!isTasksForCurrentUserGroupsEnabled ? (
+              <div className="alert alert-warning mt-1" role="alert">
+               <i className="fa-solid fa-triangle-exclamation me-2"></i> {t("Unchecking this option will show all tasks, ignoring user roles")}
+              </div>
+            ) : null}
+          </>
+        )}
         <h5 className="mt-2 fs-18">
           <Translation>{(t) => t("Definition Key")}</Translation>
         </h5>
         {!definitionKeyId && (
-  <span
-    className="px-1 py-1 cursor-pointer text-decoration-underline truncate-size"
-    onClick={() => handleSpanClick(1)}
-  >
-    <i className="fa fa-plus-circle mr-6" />
-    <Translation>{(t) => t("Add Value")}</Translation>
-  </span>
-)}        
-        {(inputVisibility[1] || definitionKeyId ) && (
+          <span
+            className="px-1 py-1 cursor-pointer text-decoration-underline truncate-size"
+            onClick={() => handleSpanClick(1)}
+          >
+            <i className="fa fa-plus-circle mr-6" />
+            <Translation>{(t) => t("Add Value")}</Translation>
+          </span>
+        )}
+        {(inputVisibility[1] || definitionKeyId) && (
           <input
             type="text"
             className="criteria-add-value-inputbox"
@@ -587,7 +599,7 @@ export default function CreateNewFilterDrawer({
             onClick={() => handleSpanClick(2)}
             className="px-1 py-1 cursor-pointer text-decoration-underline truncate-size"
           >
-            <i className="fa fa-plus-circle mr-6"/>
+            <i className="fa fa-plus-circle mr-6" />
             <Translation>{(t) => t("Add Value")}</Translation>
           </span>
         </OverlayTrigger>
@@ -615,14 +627,14 @@ export default function CreateNewFilterDrawer({
           <Translation>{(t) => t("Assignee")}</Translation>
         </h5>
         {!assignee && (
-  <span
-    className="px-1 py-1 cursor-pointer text-decoration-underline truncate-size"
-    onClick={() => handleSpanClick(3)}
-  >
-    <i className="fa fa-plus-circle mr-6" />
-    <Translation>{(t) => t("Add Value")}</Translation>
-  </span>
-)}
+          <span
+            className="px-1 py-1 cursor-pointer text-decoration-underline truncate-size"
+            onClick={() => handleSpanClick(3)}
+          >
+            <i className="fa fa-plus-circle mr-6" />
+            <Translation>{(t) => t("Add Value")}</Translation>
+          </span>
+        )}
         {(inputVisibility[3] || assignee) && (
           <input
             type="text"
@@ -634,8 +646,7 @@ export default function CreateNewFilterDrawer({
         )}
 
         {candidateGroup?.length ? (
-          <div className="d-flex align-items-center input-container"
-          >
+          <div className="d-flex align-items-center input-container">
             <input
               className="mr-6"
               type="checkbox"
@@ -654,10 +665,15 @@ export default function CreateNewFilterDrawer({
         <div className="child-container-two pt-2">
           <h5 className="fw-bold">
             <Translation>{(t) => t("Permission")}</Translation>{" "}
-            <i title={t("This section is aimed to set read\npermissions for the filter")} className="fa fa-info-circle filter-tooltip-icon"></i>
+            <i
+              title={t(
+                "This section is aimed to set read\npermissions for the filter"
+              )}
+              className="fa fa-info-circle filter-tooltip-icon"
+            ></i>
           </h5>
           <input
-          className="access-all"
+            className="access-all"
             type="radio"
             id="all-users"
             name="my-radio"
@@ -696,7 +712,7 @@ export default function CreateNewFilterDrawer({
           </label>{" "}
           <br />
           {permissions === SPECIFIC_USER_OR_GROUP &&
-            specificUserGroup === SPECIFIC_USER_OR_GROUP ? (
+          specificUserGroup === SPECIFIC_USER_OR_GROUP ? (
             <div className="d-flex">
               {/* <OverlayTrigger
                 placement="right"
@@ -805,8 +821,12 @@ export default function CreateNewFilterDrawer({
         <div className="m-2">
           <h5 className="fw-bold ">
             <Translation>{(t) => t("Task Attributes")}</Translation>{" "}
-            <i title={t("This section is aimed to set select\ntask attributes that will be visible in\nthe task list view")}
-              className="fa fa-info-circle filter-tooltip-icon"></i>
+            <i
+              title={t(
+                "This section is aimed to set select\ntask attributes that will be visible in\nthe task list view"
+              )}
+              className="fa fa-info-circle filter-tooltip-icon"
+            ></i>
           </h5>
           <input
             readOnly

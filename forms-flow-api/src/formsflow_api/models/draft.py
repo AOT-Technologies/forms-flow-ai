@@ -1,6 +1,5 @@
 """This manages Submission Database Models."""
 
-
 from __future__ import annotations
 
 import uuid

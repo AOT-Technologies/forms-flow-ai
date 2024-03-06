@@ -1,4 +1,5 @@
 """This exposes application service."""
+
 import json
 from datetime import datetime
 from functools import lru_cache
@@ -497,9 +498,11 @@ class ApplicationService:  # pylint: disable=too-many-public-methods
         if task_variable and form_data:
             task_keys = [val["key"] for val in task_variable]
             variables = {
-                key: {"value": json.dumps(form_data[key])}
-                if isinstance(form_data[key], (dict, list))
-                else {"value": form_data[key]}
+                key: (
+                    {"value": json.dumps(form_data[key])}
+                    if isinstance(form_data[key], (dict, list))
+                    else {"value": form_data[key]}
+                )
                 for key in task_keys
                 if key in form_data
             }

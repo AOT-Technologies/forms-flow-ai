@@ -41,8 +41,8 @@ jobs:
       - name: Set up AWS CLI
         uses: aws-actions/configure-aws-credentials@v1
         with:
-          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
-          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-access-key-id: ${{ secrets.AWS_DEPLOYMENT_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_DEPLOYMENT_SECRET_ACCESS_KEY }}
           aws-region: ca-central-1  # Change this to your desired region
       - name: Install kubectl
         run: |

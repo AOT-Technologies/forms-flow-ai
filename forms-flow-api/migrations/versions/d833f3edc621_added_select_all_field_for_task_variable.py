@@ -1,4 +1,4 @@
-"""empty message
+"""added select_all_field in mapper for task_variable
 
 Revision ID: d833f3edc621
 Revises: 76ee53eb640a

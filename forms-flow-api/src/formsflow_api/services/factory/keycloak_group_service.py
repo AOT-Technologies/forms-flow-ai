@@ -1,4 +1,5 @@
 """Keycloak implementation for keycloak group related operations."""
+
 from typing import Dict, List
 
 import requests
@@ -6,7 +7,7 @@ from flask import current_app
 from formsflow_api_utils.exceptions import BusinessException
 
 from formsflow_api.constants import BusinessErrorCode
-from formsflow_api.services import KeycloakAdminAPIService
+from formsflow_api.services import KeycloakAdminAPIService, UserService
 
 from .keycloak_admin import KeycloakAdmin
 
@@ -17,6 +18,7 @@ class KeycloakGroupService(KeycloakAdmin):
     def __init__(self):
         """Initialize client."""
         self.client = KeycloakAdminAPIService()
+        self.user_service = UserService()
 
     def __populate_user_groups(self, user_list: List) -> List:
         """Collect groups for a user list and populate the role attribute."""
@@ -25,13 +27,6 @@ class KeycloakGroupService(KeycloakAdmin):
                 self.client.get_user_groups(user.get("id")) if user.get("id") else []
             )
         return user_list
-
-    # Keycloak doesn't provide count API for this one
-    def __get_users_count(self, group_id: str):
-        """Returns user list count under a group."""
-        url_path = f"groups/{group_id}/members?briefRepresentation=true"
-        user_list = self.client.get_request(url_path)
-        return len(user_list)
 
     def get_analytics_groups(self, page_no: int, limit: int):
         """Get analytics groups."""
@@ -43,7 +38,13 @@ class KeycloakGroupService(KeycloakAdmin):
         return self.format_response(response)
 
     def get_users(  # pylint: disable-msg=too-many-arguments
-        self, page_no: int, limit: int, role: bool, group_name: str, count: bool
+        self,
+        page_no: int,
+        limit: int,
+        role: bool,
+        group_name: str,
+        count: bool,
+        search: str,
     ):
         """Get users under formsflow-reviewer group."""
         user_list: List[Dict] = []
@@ -54,10 +55,12 @@ class KeycloakGroupService(KeycloakAdmin):
             group = self.client.get_request(url_path=f"group-by-path/{group_name}")
             group_id = group.get("id")
             url_path = f"groups/{group_id}/members"
-            if page_no and limit:
-                url_path += f"?first={(page_no - 1) * limit}&max={limit}"
             user_list = self.client.get_request(url_path)
-            user_count = self.__get_users_count(group_id) if count else None
+            if search:
+                user_list = self.user_service.user_search(search, user_list)
+            user_count = len(user_list) if count else None
+            if page_no and limit:
+                user_list = self.user_service.paginate(user_list, page_no, limit)
         if role:
             user_list = self.__populate_user_groups(user_list)
         return (user_list, user_count)
@@ -127,6 +130,16 @@ class KeycloakGroupService(KeycloakAdmin):
         data.pop("description", None)
         return data
 
+    def sub_groups(self, group_id, response):
+        """Fetch subgroups of the group if subGroupCount greater than 0."""
+        sub_group = self.client.get_subgroups(group_id)
+        for group in sub_group:
+            group = self.format_response(group)
+            response.append(group)
+            if group.get("subGroupCount", 0) > 0:
+                self.sub_groups(group.get("id"), response)
+        return response
+
     def flat(self, data, response):
         """Flatten response to single list of dictionary.
 
@@ -136,10 +149,11 @@ class KeycloakGroupService(KeycloakAdmin):
         for group in data:
             subgroups = group.pop("subGroups", data)
             group = self.format_response(group)
+            response.append(group)
             if subgroups == []:
-                response.append(group)
+                if group.get("subGroupCount", 0) > 0:
+                    response = self.sub_groups(group.get("id"), response)
             elif subgroups != []:
-                response.append(group)
                 self.flat(subgroups, response)
         return response
 

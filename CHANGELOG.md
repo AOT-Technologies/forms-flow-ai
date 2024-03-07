@@ -2,6 +2,30 @@
 
 Mark  items as `Added`, `Changed`, `Fixed`, `Modified`, `Removed`, `Untested Features`, `Upcoming Features`, `Known Issues`
 
+## 5.3.1 - 2024-02-14
+
+`Fixed`
+
+**forms-flow-web**
+
+* Fixed task page infinity loading issue
+* Fixed task list filter API breaking on initial time
+* Fixed tenant based all tasks not showing issue
+
+**forms-flow-documents**
+
+* Fixed security vulnerabilities
+
+**forms-flow-data-analysis-api**
+
+* Fixed security vulnerabilities
+
+`Modified`
+
+**forms-flow-api**
+
+* Changes have been made to the Roles and Groups endpoint to accommodate modifications related to subgroups in Keycloak 23.
+
 ## 5.3.0 - 2023-11-24
 
 `Added`

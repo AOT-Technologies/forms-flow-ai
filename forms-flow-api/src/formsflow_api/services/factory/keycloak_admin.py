@@ -24,7 +24,13 @@ class KeycloakAdmin(ABC):
 
     @abstractmethod
     def get_users(  # pylint: disable-msg=too-many-arguments
-        self, page_no: int, limit: int, role: bool, group_name: str, count: bool
+        self,
+        page_no: int,
+        limit: int,
+        role: bool,
+        group_name: str,
+        count: bool,
+        search: str,
     ):
         """Get users."""
         raise NotImplementedError("Method not implemented")

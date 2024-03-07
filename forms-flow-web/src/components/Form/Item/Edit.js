@@ -377,7 +377,7 @@ const Edit = React.memo(() => {
             dispatch(setRestoreFormData({}));
             dispatch(setRestoreFormId(null));
             toast.success(t("New version created"));
-            dispatch(push(`${redirectUrl}formflow/${submittedData._id}/preview`));
+            dispatch(push(`${redirectUrl}formflow/${submittedData._id}/view-edit`));
           }
         }));
       })
@@ -437,7 +437,7 @@ const Edit = React.memo(() => {
         toast.success(t("Form saved"));
         dispatch(setFormSuccessData("form", submittedData));
         Formio.cache = {};
-        dispatch(push(`${redirectUrl}formflow/${submittedData._id}/preview`));
+        dispatch(push(`${redirectUrl}formflow/${submittedData._id}/view-edit`));
       })
       .catch((err) => {
         const error = err.response?.data || err.message;
@@ -560,8 +560,7 @@ const Edit = React.memo(() => {
 
       <Errors errors={errors} />
       <div
-        className="p-4"
-        style={{ border: "1px solid #c2c0be", borderRadius: "5px" }}
+        className="p-4 edit-border"
       >
         <Modal show={show} onHide={handleClose}>
           <Modal.Header closeButton>
@@ -703,8 +702,7 @@ const Edit = React.memo(() => {
                             {
                               MULTITENANCY_ENABLED && tenantKey ? <div className="input-group-prepend">
                                 <div
-                                  className="input-group-text"
-                                  style={{ maxWidth: "150px" }}
+                                  className="input-group-text edit-input"
                                 >
                                   <span className="text-truncate">{tenantKey}</span>
                                 </div>
@@ -759,8 +757,7 @@ const Edit = React.memo(() => {
                               {
                                 MULTITENANCY_ENABLED && tenantKey ? <div className="input-group-prepend">
                                   <div
-                                    className="input-group-text"
-                                    style={{ maxWidth: "150px" }}
+                                    className="input-group-text edit-input"
                                   >
                                     <span className="text-truncate">{tenantKey}</span>
                                   </div>

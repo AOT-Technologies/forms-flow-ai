@@ -53,13 +53,14 @@ def create_app(
     app.logger = flask_logger
     app.logger = logging.getLogger("app")
 
-    register_log_handlers(
-        app,
-        log_file="logs/forms-flow-webapi.log",
-        when=os.getenv("API_LOG_ROTATION_WHEN", "d"),
-        interval=int(os.getenv("API_LOG_ROTATION_INTERVAL", "1")),
-        backupCount=int(os.getenv("API_LOG_BACKUP_COUNT", "7")),
-    )
+    if app.config["CONFIGURE_LOGS"]:
+        register_log_handlers(
+            app,
+            log_file="logs/forms-flow-webapi.log",
+            when=os.getenv("API_LOG_ROTATION_WHEN", "d"),
+            interval=int(os.getenv("API_LOG_ROTATION_INTERVAL", "1")),
+            backupCount=int(os.getenv("API_LOG_BACKUP_COUNT", "7")),
+        )
 
     app.logger.propagate = False
     logging.log.propagate = False

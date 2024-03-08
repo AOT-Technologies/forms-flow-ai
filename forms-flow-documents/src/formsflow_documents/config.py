@@ -84,6 +84,9 @@ class _Config:  # pylint: disable=too-few-public-methods
         str(os.getenv("MULTI_TENANCY_ENABLED", default="false")).lower() == "true"
     )
 
+    # Configure LOG
+    CONFIGURE_LOGS = str(os.getenv("CONFIGURE_LOGS", default="true")).lower() == "true"
+
 
 class DevConfig(_Config):  # pylint: disable=too-few-public-methods
     """Development environment configuration."""

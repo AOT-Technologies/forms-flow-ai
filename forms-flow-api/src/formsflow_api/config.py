@@ -85,6 +85,7 @@ class _Config:  # pylint: disable=too-few-public-methods
     # Keycloak Admin Service
     KEYCLOAK_URL = os.getenv("KEYCLOAK_URL")
     KEYCLOAK_URL_REALM = os.getenv("KEYCLOAK_URL_REALM")
+    KEYCLOAK_URL_HTTP_RELATIVE_PATH = os.getenv("KEYCLOAK_URL_HTTP_RELATIVE_PATH", "/auth")
 
     # Web url
     WEB_BASE_URL = os.getenv("WEB_BASE_URL")
@@ -109,6 +110,9 @@ class _Config:  # pylint: disable=too-few-public-methods
     FORM_EMBED_JWT_SECRET = os.getenv(
         "FORM_EMBED_JWT_SECRET", "f6a69a42-7f8a-11ed-a1eb-0242ac120002"
     )
+
+    # Configure LOG
+    CONFIGURE_LOGS = str(os.getenv("CONFIGURE_LOGS", default="true")).lower() == "true"
 
 
 class DevConfig(_Config):  # pylint: disable=too-few-public-methods

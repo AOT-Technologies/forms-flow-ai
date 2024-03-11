@@ -69,7 +69,6 @@ class _Config:  # pylint: disable=too-few-public-methods
     JWT_OIDC_CACHING_ENABLED = os.getenv("JWT_OIDC_CACHING_ENABLED")
     JWT_OIDC_JWKS_CACHE_TIMEOUT = 300
 
-    DATA_ANALYSIS_API_BASE_URL = os.getenv("DATA_ANALYSIS_API_BASE_URL", default="")
 
     DATABASE_SUPPORT = os.getenv("DATABASE_SUPPORT", default=Service.DISABLED.value)
 

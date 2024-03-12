@@ -139,15 +139,15 @@ function TaskAttributeComponent({
           </div>
           <Row  className="mt-3">
           {
-            taskVariables.map(i=>(
-              i.key !== 'applicationId' ?
-              <Col xs={6} key={i.key}>
+            taskVariables.map(variable=>(
+              variable.key !== 'applicationId' ?
+              <Col xs={6} key={variable.key}>
             <Form.Check
               type="checkbox"
-              label={i.label}
-              name={i.key}
-              checked={selectedTaskVariables[i.key] == i.key}
-              onChange={(e)=>{handleChangeTaskVariables(e,i);}}
+              label={variable.label}
+              name={variable.key}
+              checked={selectedTaskVariables[variable.key] == variable.key}
+              onChange={(e)=>{handleChangeTaskVariables(e,variable);}}
               className="m-2"
             />
             </Col> : null

@@ -166,7 +166,7 @@ export default function CreateNewFilterDrawer({
         selectedFilterData?.properties?.showUndefinedVariable
       );
      
-      setSelectedForm(selectedFilterData?.formId || null);
+      setSelectedForm(selectedFilterData?.properties?.formId || null);
       setVariables(selectedFilterData.variables || []);
       if(selectedFilterData.variables){
         // taking variable names to check it is already exist or not 
@@ -230,7 +230,7 @@ export default function CreateNewFilterDrawer({
 
   // if the create new filter open then need to fetch all forms
   useEffect(() => {
-    if (openFilterDrawer) {
+    if (openFilterDrawer && !forms?.data?.length) {
       fetchAllForms()
         .then((res) => {
           const data = res.data?.forms || [];
@@ -259,15 +259,28 @@ export default function CreateNewFilterDrawer({
   }, [selectedForm]);
 
 
-  // select or un select task variables
-  const handleChangeTaskVariables = (e, variable)=>{
-    const { checked} = e.target;
-    if(checked){
-      setVariables(prev=>([...prev,{name:variable.key, label:variable.label}]));
-    }else{
-     setVariables(prev=> prev.filter(i=> i.name !== variable.key));
+
+  /**
+   * Handles changing the selected task variables.
+   *
+   * When a variable is checked, adds it to the variables array.
+   * When a variable is unchecked, removes it from the variables array.
+   * Also updates the taskVariablesKeys object with the checked state.
+   */
+  const handleChangeTaskVariables = (e, variable) => {
+    const { checked } = e.target;
+    if (checked) {
+      setVariables((prev) => [
+        ...prev,
+        { name: variable.key, label: variable.label },
+      ]);
+    } else {
+      setVariables((prev) => prev.filter((i) => i.name !== variable.key));
     }
-    setTaskVariablesKeys(prev=>({...prev,[variable.key]:checked ? variable.key : null}));
+    setTaskVariablesKeys((prev) => ({
+      ...prev,
+      [variable.key]: checked ? variable.key : null,
+    }));
   };
 
 
@@ -385,8 +398,12 @@ export default function CreateNewFilterDrawer({
       isTasksForCurrentUserGroupsEnabled: isTasksForCurrentUserGroupsEnabled,
       isMyTasksEnabled: isMyTasksEnabled,
     };
-    if(selectedForm){
-      data.formId = selectedForm;
+    /**
+     * If a form is selected, set the formId property in the data object
+     * to the id of the selected form.
+     */
+    if (selectedForm) {
+      data.properties.formId = selectedForm;
     }
 
     // Remove empty keys inside criteria
@@ -591,28 +608,7 @@ export default function CreateNewFilterDrawer({
           </>
         )}
 
-        <div className="my-3">
-          <h5 className="fs-18">
-            <Translation>{(t) => t("Select a form")}</Translation>
-            <i
-              title={t(
-                "Select a form to add task variables"
-              )}
-              className="fa fa-info-circle ms-2 text-primary"
-            ></i>
-          </h5>
-          <Select
-            onChange={(e)=>{setSelectedForm(e.value);}}
-            value={
-              forms?.data.find(
-                (form) => form.value === selectedForm
-              )
-            || null
-            }
-            options={forms?.data}
-            isLoading={forms.isLoading}
-          />
-        </div>
+     
 
         <h5 className="mt-2 fs-18">
           <Translation>{(t) => t("Definition Key")}</Translation>
@@ -729,7 +725,37 @@ export default function CreateNewFilterDrawer({
           </div>
         ) : null}
         <Divider />
-
+        <div className="my-3">
+          <h5 className="fw-bold ">
+            <Translation>{(t) => t("Task Attributes")}</Translation>
+            <i
+              title={t(
+                "This section is aimed to set select\ntask attributes that will be visible in\nthe task list view"
+              )}
+              className="fa fa-info-circle ms-2 filter-tooltip-icon"
+            ></i>
+          </h5>
+          <div className="my-2">
+          <Select
+            onChange={(e)=>{setSelectedForm(e?.value);}}
+            value={
+              forms?.data.find(
+                (form) => form.value === selectedForm
+              )
+            }
+            isClearable
+            placeholder={t("select a form")}
+            options={forms?.data}
+            isLoading={forms.isLoading}
+          />
+        </div>
+            <button className="btn btn-outline-primary w-100" onClick={toggleModal}>{
+              taskAttributesCount === 0
+                ? t("Select Elements")
+                : taskAttributesCount + t(" Task Attributes Selected")
+            }</button>
+          
+        </div>
         <Divider />
         <div className="child-container-two pt-2">
           <h5 className="fw-bold">
@@ -886,30 +912,8 @@ export default function CreateNewFilterDrawer({
             </div>
           ) : null}
         </div>
-        <Divider />
-        <div className="m-2">
-          <h5 className="fw-bold ">
-            <Translation>{(t) => t("Task Attributes")}</Translation>{" "}
-            <i
-              title={t(
-                "This section is aimed to set select\ntask attributes that will be visible in\nthe task list view"
-              )}
-              className="fa fa-info-circle filter-tooltip-icon"
-            ></i>
-          </h5>
-          <input
-            readOnly
-            type="text"
-            aria-label="Task-attributes"
-            className="filter-name-textfeild cursor-pointer"
-            onClick={toggleModal}
-            placeholder={
-              taskAttributesCount === 0
-                ? t("Select Elements")
-                : taskAttributesCount + t(" Task Attributes Selected")
-            }
-          />
-        </div>
+        
+       
         <Divider />
       </List>
 

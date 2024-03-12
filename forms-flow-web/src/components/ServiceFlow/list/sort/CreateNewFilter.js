@@ -3,6 +3,8 @@ import { useDispatch, useSelector } from "react-redux";
 import Drawer from "@material-ui/core/Drawer";
 import List from "@material-ui/core/List";
 import Divider from "@material-ui/core/Divider";
+import Select from "react-select";
+
 import {
   deleteFilters,
   editFilters,
@@ -36,7 +38,12 @@ import { Badge, ListGroup, OverlayTrigger, Popover } from "react-bootstrap";
 // import { fetchUsers } from "../../../../apiManager/services/userservices";
 import { trimFirstSlash } from "../../constants/taskConstants";
 import { cloneDeep } from "lodash";
-import { FORMSFLOW_ADMIN, MULTITENANCY_ENABLED } from "../../../../constants/constants";
+import {
+  FORMSFLOW_ADMIN,
+  MULTITENANCY_ENABLED,
+} from "../../../../constants/constants";
+import { fetchAllForms } from "../../../../apiManager/services/bpmFormServices";
+import { getFormProcesses, resetFormProcessData } from "../../../../apiManager/services/processServices";
 export default function CreateNewFilterDrawer({
   selectedFilterData,
   openFilterDrawer,
@@ -52,6 +59,7 @@ export default function CreateNewFilterDrawer({
   const userRoles = useSelector((state) => state.user.roles || []);
   const [assignee, setAssignee] = useState("");
   const [includeAssignedTasks, setIncludeAssignedTasks] = useState(false);
+
   const [
     isTasksForCurrentUserGroupsEnabled,
     setIsTasksForCurrentUserGroupsEnabled,
@@ -77,8 +85,12 @@ export default function CreateNewFilterDrawer({
   );
   const selectedFilter = useSelector((state) => state.bpmTasks.selectedFilter);
   const filterList = useSelector((state) => state.bpmTasks.filterList);
+
   const [variables, setVariables] = useState([]);
-  const [inputValues, setInputValues] = useState([{ name: "", label: "" }]);
+   const [forms, setForms] = useState({ data: [], isLoading: true });
+  const [selectedForm, setSelectedForm] = useState(null);
+  const [taskVariablesKeys, setTaskVariablesKeys] = useState({});
+
   const [overlayGroupShow, setOverlayGroupShow] = useState(false);
   const [overlayUserShow, setOverlayUserShow] = useState(false);
   const [overlayCandidateGroupShow, setOverlayCandidateGroupShow] =
@@ -138,10 +150,14 @@ export default function CreateNewFilterDrawer({
         selectedFilterData?.criteria?.processDefinitionNameLike;
       setDefinitionKeyId(customTrim(processDefinitionName));
       let candidateGroupName = selectedFilterData?.criteria?.candidateGroup;
-      if (MULTITENANCY_ENABLED && candidateGroupName && candidateGroupName.includes(tenantKey)) {
+      if (
+        MULTITENANCY_ENABLED &&
+        candidateGroupName &&
+        candidateGroupName.includes(tenantKey)
+      ) {
         candidateGroupName = candidateGroupName.slice(tenantKey.length + 1);
       }
-      setCandidateGroup(candidateGroupName);  
+      setCandidateGroup(candidateGroupName);
       setAssignee(selectedFilterData?.criteria?.assignee);
       setIncludeAssignedTasks(
         selectedFilterData?.criteria?.includeAssignedTasks
@@ -149,20 +165,17 @@ export default function CreateNewFilterDrawer({
       setShowUndefinedVariable(
         selectedFilterData?.properties?.showUndefinedVariable
       );
-      if (selectedFilterData.variables) {
-        setInputValues(() => {
-          return selectedFilterData.variables?.map((row) => ({
-            name: row.name,
-            label: row.label,
-          }));
-        });
+     
+      setSelectedForm(selectedFilterData?.formId || null);
+      setVariables(selectedFilterData.variables || []);
+      if(selectedFilterData.variables){
+        // taking variable names to check it is already exist or not 
+        setTaskVariablesKeys(selectedFilterData.variables.reduce((i,variable)=>{
+          i[variable.name] = variable.name;
+          return i;
+        },{}));
       }
-      if (!selectedFilterData.variables?.length) {
-        setInputValues([{ name: "", label: "" }]);
-      }
-      if (selectedFilterData.variables?.length === 2) {
-        setInputValues([{ name: "", label: "" }]);
-      }
+
       if (
         !selectedFilterData?.users?.length &&
         !selectedFilterData?.roles?.length
@@ -213,32 +226,52 @@ export default function CreateNewFilterDrawer({
         }
       })
       .catch((error) => console.error("error", error));
-
-    // fetchUsers()
-    //   .then((res) => {
-    //     if (res) {
-    //       dispatch(setUserRoles(res.data));
-    //     }
-    //   })
-    //   .catch((error) => console.error("error", error));
   }, []);
 
+  // if the create new filter open then need to fetch all forms
   useEffect(() => {
-    setVariables(() => {
-      if (
-        inputValues?.length === 1 &&
-        inputValues[0]?.name === "" &&
-        inputValues[0]?.label === ""
-      ) {
-        return [];
-      } else {
-        return inputValues?.map((row) => ({
-          name: row.name,
-          label: row.label,
-        }));
-      }
-    });
-  }, [inputValues]);
+    if (openFilterDrawer) {
+      fetchAllForms()
+        .then((res) => {
+          const data = res.data?.forms || [];
+          setForms({
+            data: data.map((i) => ({ label: i.formName, value: i.formId })),
+            isLoading: false,
+          });
+        })
+        .catch((err) => {
+          console.error(err);
+        });
+    } else {
+        if(!modalShow){
+          setForms({data:[], isLoading:true});
+          setSelectedForm(null);
+          dispatch(resetFormProcessData());
+        }
+    }
+  }, [openFilterDrawer]);
+
+  //if a form selected then need fetch it's task variable
+  useEffect(() => {
+    if (selectedForm) {
+      dispatch(getFormProcesses(selectedForm));
+    }
+  }, [selectedForm]);
+
+
+  // select or un select task variables
+  const handleChangeTaskVariables = (e, variable)=>{
+    const { checked} = e.target;
+    if(checked){
+      setVariables(prev=>([...prev,{name:variable.key, label:variable.label}]));
+    }else{
+     setVariables(prev=> prev.filter(i=> i.name !== variable.key));
+    }
+    setTaskVariablesKeys(prev=>({...prev,[variable.key]:checked ? variable.key : null}));
+  };
+
+
+ 
 
   const successCallBack = (resData) => {
     dispatch(
@@ -289,9 +322,10 @@ export default function CreateNewFilterDrawer({
     setIdentifierId("");
     setSelectUserGroupIcon("");
     setSpecificUserGroup("");
-    setInputValues([{ name: "", label: "" }]);
     setIsTasksForCurrentUserGroupsEnabled(true);
     setIsMyTasksEnabled(false);
+    setSelectedForm(null);
+    dispatch(resetFormProcessData());
   };
 
   const handleSubmit = () => {
@@ -326,9 +360,12 @@ export default function CreateNewFilterDrawer({
 
     const data = {
       name: filterName,
-      criteria: {
+       criteria: {
         processDefinitionNameLike: definitionKeyId && `%${definitionKeyId}%`,
-        candidateGroup: MULTITENANCY_ENABLED && candidateGroup ? tenantKey + "-" + candidateGroup : candidateGroup,
+        candidateGroup:
+          MULTITENANCY_ENABLED && candidateGroup
+            ? tenantKey + "-" + candidateGroup
+            : candidateGroup,
         assignee: assignee,
         includeAssignedTasks: includeAssignedTasks,
       },
@@ -348,6 +385,9 @@ export default function CreateNewFilterDrawer({
       isTasksForCurrentUserGroupsEnabled: isTasksForCurrentUserGroupsEnabled,
       isMyTasksEnabled: isMyTasksEnabled,
     };
+    if(selectedForm){
+      data.formId = selectedForm;
+    }
 
     // Remove empty keys inside criteria
     for (const key in data.criteria) {
@@ -465,6 +505,8 @@ export default function CreateNewFilterDrawer({
     setCandidateGroup(data);
   };
 
+
+
   const list = () => (
     <div className="filter-list" role="presentation">
       <List>
@@ -540,11 +582,38 @@ export default function CreateNewFilterDrawer({
             </div>
             {!isTasksForCurrentUserGroupsEnabled ? (
               <div className="alert alert-warning mt-1" role="alert">
-               <i className="fa-solid fa-triangle-exclamation me-2"></i> {t("Unchecking this option will show all tasks, ignoring user roles")}
+                <i className="fa-solid fa-triangle-exclamation me-2"></i>{" "}
+                {t(
+                  "Unchecking this option will show all tasks, ignoring user roles"
+                )}
               </div>
             ) : null}
           </>
         )}
+
+        <div className="my-3">
+          <h5 className="fs-18">
+            <Translation>{(t) => t("Select a form")}</Translation>
+            <i
+              title={t(
+                "Select a form to add task variables"
+              )}
+              className="fa fa-info-circle ms-2 text-primary"
+            ></i>
+          </h5>
+          <Select
+            onChange={(e)=>{setSelectedForm(e.value);}}
+            value={
+              forms?.data.find(
+                (form) => form.value === selectedForm
+              )
+            || null
+            }
+            options={forms?.data}
+            isLoading={forms.isLoading}
+          />
+        </div>
+
         <h5 className="mt-2 fs-18">
           <Translation>{(t) => t("Definition Key")}</Translation>
         </h5>
@@ -904,11 +973,9 @@ export default function CreateNewFilterDrawer({
               show={modalShow}
               onHide={toggleModal}
               checkboxes={checkboxes}
-              setCheckboxes={setCheckboxes}
-              inputValues={inputValues.filter(
-                (e) => e.name !== "applicationId" && e.name !== "formName"
-              )}
-              setInputValues={setInputValues}
+              selectedTaskVariables={taskVariablesKeys}
+              handleChangeTaskVariables={handleChangeTaskVariables}
+              setCheckboxes={setCheckboxes} 
               showUndefinedVariable={showUndefinedVariable}
               setShowUndefinedVariable={setShowUndefinedVariable}
             />

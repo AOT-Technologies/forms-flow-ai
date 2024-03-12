@@ -1,51 +1,29 @@
-import React, { useEffect } from "react";
+import React from "react";
 import { Row, Col } from "react-bootstrap";
 import Modal from "react-bootstrap/Modal";
 import ModalTitle from "react-bootstrap/ModalTitle";
 import Form from "react-bootstrap/Form";
 import {Translation, useTranslation } from "react-i18next";
+import { useSelector } from "react-redux";
 
 function TaskAttributeComponent({
   show,
   onHide,
   setCheckboxes,
   checkboxes,
-  inputValues,
-  setInputValues,
   showUndefinedVariable,
   setShowUndefinedVariable,
+  handleChangeTaskVariables,
+  selectedTaskVariables
 }) {
+
+  const taskVariables = useSelector(state => state.process?.formProcessList?.taskVariable || []);
   const { t } = useTranslation();
   const handleCheckboxChange = (event) => {
     const { name, checked } = event.target;
     setCheckboxes({ ...checkboxes, [name]: checked });
   };
-
-  const handleVariableInputChange = (index, field, value) => {
-    setInputValues((prevInputValues) => {
-      const updatedValues = [...prevInputValues];
-      updatedValues[index][field] = value;
-      return updatedValues;
-    });
-  };
-
-  const handleAddClick = () => {
-    setInputValues([...inputValues, { name: "", label: "" }]);
-  };
-
-  const handleRowDelete = (index) => {
-    setInputValues((prevInputValues) => {
-      const updatedValues = prevInputValues.filter((e, i) => i !== index);
-      return updatedValues;
-    });
-  };
-
-  useEffect(() => {
-    // If inputValues is empty , initialize it with a single object
-    if (Object.keys(inputValues).length === 0) {
-      setInputValues([{ name: "", label: "" }]);
-    }
-  }, [inputValues, setInputValues]);
+ 
   
   const UndefinedVaribaleCheckboxChange = (e) => {
     setShowUndefinedVariable(e.target.checked);
@@ -159,64 +137,27 @@ function TaskAttributeComponent({
               <Translation>{(t) => t("Show undefined variables")}</Translation>
             </h5>
           </div>
-
-          {inputValues?.map((input, index) => {
-            return (
-              <Row key={index} className="align-items-center mt-1">
-                <Col>
-                  <Form.Group>
-                    <Form.Label>{t("Name")}</Form.Label>
-                    <Form.Control
-                      type="text"
-                      placeholder={t("Enter name")}
-                      value={input.name}
-                      onChange={(e) =>
-                        handleVariableInputChange(index, "name", e.target.value)
-                      }
-                    />
-                  </Form.Group>
-                </Col>
-                <Col>
-                  <Form.Group>
-                    <Form.Label>{t("Label")}</Form.Label>
-                    <Form.Control
-                      type="text"
-                      placeholder={t("Enter label")}
-                      value={input.label}
-                      onChange={(e) =>
-                        handleVariableInputChange(
-                          index,
-                          "label",
-                          e.target.value
-                        )
-                      }
-                    />
-                  </Form.Group>
-                </Col>
-                <Col xs="auto mt-3 me-2">
-                  {(inputValues.length - 1 === index) ? (
-                    <button
-                      type="button"
-                      disabled={!inputValues[index].name.length || !inputValues[index].label.length}
-                      className="btn btn-primary mt-3"
-                      onClick={() => handleAddClick()}
-                    >
-                      {t("Add")}
-                    </button>
-                  ) :  (
-                    <i
-                    className="fa fa-minus-circle fa-md mt-4"
-                    aria-hidden="true"
-                    onClick={() => handleRowDelete(index)}
-                  />)}
-                </Col>
-              </Row>
-            );
-          })}
+          <Row  className="mt-3">
+          {
+            taskVariables.map(i=>(
+              i.key !== 'applicationId' ?
+              <Col xs={6} key={i.key}>
+            <Form.Check
+              type="checkbox"
+              label={i.label}
+              name={i.key}
+              checked={selectedTaskVariables[i.key] == i.key}
+              onChange={(e)=>{handleChangeTaskVariables(e,i);}}
+              className="m-2"
+            />
+            </Col> : null
+            ))
+          }
+          </Row>
         </Form>
       </Modal.Body>
       <Modal.Footer>
-        <button className="btn btn-secondary" onClick={() => onHide()}>
+        <button className="btn btn-secondary" onClick={onHide}>
           {t("Cancel")}
         </button>
         <button className="btn btn-primary" onClick={onHide}>

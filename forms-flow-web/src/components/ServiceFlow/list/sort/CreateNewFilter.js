@@ -202,9 +202,13 @@ export default function CreateNewFilterDrawer({
       if (selectedFilterData?.criteria?.assigneeExpression) {
         setIsMyTasksEnabled(true);
       }
-      if (selectedFilterData?.criteria?.candidateGroupsExpression) {
-        setIsTasksForCurrentUserGroupsEnabled(true);
+
+      // if the user has this role then we will check the condition else it will always true
+      if(userRoles.includes(FORMSFLOW_ADMIN)){
+        setIsTasksForCurrentUserGroupsEnabled(selectedFilterData?.criteria?.
+          candidateGroupsExpression ? true : false);
       }
+
       setCheckboxes({
         applicationId: selectedFilterData?.taskVisibleAttributes?.applicationId,
         assignee: selectedFilterData?.taskVisibleAttributes?.assignee,
@@ -242,12 +246,6 @@ export default function CreateNewFilterDrawer({
         .catch((err) => {
           console.error(err);
         });
-    } else {
-        if(!modalShow){
-          setForms({data:[], isLoading:true});
-          setSelectedForm(null);
-          dispatch(resetFormProcessData());
-        }
     }
   }, [openFilterDrawer]);
 
@@ -255,6 +253,8 @@ export default function CreateNewFilterDrawer({
   useEffect(() => {
     if (selectedForm) {
       dispatch(getFormProcesses(selectedForm));
+    }else{
+      dispatch(resetFormProcessData());
     }
   }, [selectedForm]);
 
@@ -339,6 +339,7 @@ export default function CreateNewFilterDrawer({
     setIsMyTasksEnabled(false);
     setSelectedForm(null);
     dispatch(resetFormProcessData());
+    setForms({data:[], isLoading:true});
   };
 
   const handleSubmit = () => {

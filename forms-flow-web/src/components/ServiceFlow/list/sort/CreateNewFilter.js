@@ -86,12 +86,10 @@ export default function CreateNewFilterDrawer({
   const [checkboxes, setCheckboxes] = useState({
     applicationId: true,
     assignee: true,
-    taskTitle: true,
     createdDate: true,
     dueDate: true,
     followUp: true,
     priority: true,
-    groups: true,
   });
   const taskAttributesCount = Object.values(checkboxes).filter(
     (value) => value === true
@@ -188,12 +186,10 @@ export default function CreateNewFilterDrawer({
       setCheckboxes({
         applicationId: selectedFilterData?.taskVisibleAttributes?.applicationId,
         assignee: selectedFilterData?.taskVisibleAttributes?.assignee,
-        taskTitle: selectedFilterData?.taskVisibleAttributes?.taskTitle,
         createdDate: selectedFilterData?.taskVisibleAttributes?.createdDate,
         dueDate: selectedFilterData?.taskVisibleAttributes?.dueDate,
         followUp: selectedFilterData?.taskVisibleAttributes?.followUp,
         priority: selectedFilterData?.taskVisibleAttributes?.priority,
-        groups: selectedFilterData?.taskVisibleAttributes?.groups,
       });
     }
   }, [selectedFilterData]);

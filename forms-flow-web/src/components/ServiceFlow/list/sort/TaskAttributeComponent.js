@@ -14,7 +14,8 @@ function TaskAttributeComponent({
   showUndefinedVariable,
   setShowUndefinedVariable,
   handleChangeTaskVariables,
-  selectedTaskVariables
+  selectedTaskVariables,
+  selectedForm
 }) {
 
   const taskVariables = useSelector(state => state.process?.formProcessList?.taskVariable || []);
@@ -121,24 +122,17 @@ function TaskAttributeComponent({
         <Form className="mt-2 ps-1">
           <h5 className="fw-bold fs-18"
           >
-            <Translation>{(t) => t("Variables")}</Translation>{" "}
-            <i title={t("You can define variables shown in the list")} className="fa fa-info-circle"></i>{" "}
+            <Translation>{(t) => t("Task variables")}</Translation>
+            <i title={t("You can define variables shown in the list")} className="ms-1 fa fa-info-circle text-primary"></i>
           </h5>
-
-          <div className="d-flex align-items-center mt-2">
-            <input
-            className="mr-6"
+          <Form.Check
               type="checkbox"
-              id="my-checkbox"
+              label={ t("Show undefined variables")}
               checked={showUndefinedVariable}
               onChange={UndefinedVaribaleCheckboxChange}
             />
-            <h5 className="assigned-user">
-              <Translation>{(t) => t("Show undefined variables")}</Translation>
-            </h5>
-          </div>
           <Row  className="mt-3">
-          {
+          {selectedForm ? 
             taskVariables.map(variable=>(
               variable.key !== 'applicationId' ?
               <Col xs={6} key={variable.key}>
@@ -148,10 +142,11 @@ function TaskAttributeComponent({
               name={variable.key}
               checked={selectedTaskVariables[variable.key] == variable.key}
               onChange={(e)=>{handleChangeTaskVariables(e,variable);}}
-              className="m-2"
             />
             </Col> : null
-            ))
+            )) : <div className="alert alert-primary text-center w-100" role="alert">
+           {t("To display task variables, select a form as part of the filter")}
+          </div>
           }
           </Row>
         </Form>

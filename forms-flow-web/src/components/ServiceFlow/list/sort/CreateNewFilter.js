@@ -976,6 +976,7 @@ export default function CreateNewFilterDrawer({
           <div>
             <TaskAttributeComponent
               show={modalShow}
+              selectedForm={selectedForm}
               onHide={toggleModal}
               checkboxes={checkboxes}
               selectedTaskVariables={taskVariablesKeys}

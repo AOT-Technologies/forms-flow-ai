@@ -108,14 +108,14 @@ const ServiceTaskListView = React.memo((props) => {
   };
 
   const vissibleAttributesCount = Object.values(
-    vissibleAttributes?.taskVisibleAttributes
+    vissibleAttributes?.taskVisibleAttributes || {}
   )?.filter((value) => value === true).length;
 
   const adjustTaskAttributes = (variable) => {
      variable = variable?.filter(
       (e) => e.name !== "applicationId" && e.name !== "formName"
     );
-    const filteredArray = [...variable?.slice(0, 6 - vissibleAttributesCount)];
+    const filteredArray = [...(variable || []).slice(0, 6 - vissibleAttributesCount)];
     return filteredArray;
    
   };
@@ -137,7 +137,7 @@ const ServiceTaskListView = React.memo((props) => {
                 task?._embedded?.variable,
                 adjustedValues
               );
-              taskListAttributes = taskListAttributes.filter(
+              taskListAttributes = taskListAttributes?.filter(
                 (item) =>
                   item.name !== "applicationId" && item.name !== "formName"
               );

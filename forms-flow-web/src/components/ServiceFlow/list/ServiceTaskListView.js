@@ -75,15 +75,12 @@ const ServiceTaskListView = React.memo((props) => {
     }
   }, [dispatch, reqData]);
 
-  const getTaskDetails = (taskId) => {
-    if (taskId !== bpmTaskId) {
+  
+  
+    const getTaskDetails = (taskId) => {
       dispatch(push(`${redirectUrl.current}task/${taskId}`));
-    }
-  };
+    };  
 
-  const handleViewDetails = (taskId) => {
-    getTaskDetails(taskId);
-  };
   const handlePageChange = (pageNumber) => {
     dispatch(setBPMTaskListActivePage(pageNumber));
     dispatch(setBPMTaskLoader(true));
@@ -166,7 +163,7 @@ const ServiceTaskListView = React.memo((props) => {
                       <div>
                         <h6>
                           <u
-                            onClick={() => handleViewDetails(task.id)}
+                            onClick={() => getTaskDetails(task.id)}
                             className="fw-normal"
                             style={{ color: "#1a5a96", textDecoration: "none" }}
                           >

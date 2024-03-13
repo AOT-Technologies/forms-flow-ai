@@ -57,6 +57,10 @@ export const fetchBPMFormList = (
   };
 };
 
+export const fetchAllForms = ()=>{
+  return RequestService.httpGETRequest(`${API.FORM}`);
+};
+
 export const fetchFormByAlias = (path, ...rest) => {
   const done = rest.length ? rest[0] : () => { };
 

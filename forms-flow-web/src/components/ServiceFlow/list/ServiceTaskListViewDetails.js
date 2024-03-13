@@ -283,11 +283,11 @@ const ServiceTaskListViewDetails = React.memo(() => {
                                         </span>
                                     </Row>
                                 </Col>
-                                <Col xs={8}>
+                                    <Row>
                                     <TaskHeaderListView
                                         task={task} taskId={task?.id} groupView={true}
                                     />
-                                </Col>
+                                    </Row>
                            </div>
                         </Card.Body>
                     </Card>               

@@ -232,7 +232,7 @@ const TaskHeaderListView = React.memo(({task,taskId,groupView = true}) => {
         }
        
         {vissibleAttributes?.taskVisibleAttributes?.assignee &&
-          <Col xs={ groupView ? 2 : 6 } >
+          <Col xs={2} >
           <div className="tab-width">
             <div>
                 <h6 className="fw-bold">{t("Assignee")}</h6>
@@ -281,8 +281,9 @@ const TaskHeaderListView = React.memo(({task,taskId,groupView = true}) => {
             </div>
           </div>
         </Col>}
-        <Col xs={3}> 
+         
           {groupView &&
+          <Col xs={2}>
             <div className="tab-width">
               <div>
                 <h6 className="fw-bold">{t("Groups")}</h6>
@@ -299,8 +300,10 @@ const TaskHeaderListView = React.memo(({task,taskId,groupView = true}) => {
                   <span className="group-align">{getGroups(taskGroups)}</span>
                 )}
               </div>
-            </div>}
-        </Col>
+            </div>
+            </Col>
+            }
+        
      
 
       

@@ -79,7 +79,7 @@ const ServiceTaskListView = React.memo((props) => {
   
     const getTaskDetails = (taskId) => {
       dispatch(push(`${redirectUrl.current}task/${taskId}`));
-    };  
+    }; 
 
   const handlePageChange = (pageNumber) => {
     dispatch(setBPMTaskListActivePage(pageNumber));
@@ -111,20 +111,16 @@ const ServiceTaskListView = React.memo((props) => {
     vissibleAttributes?.taskVisibleAttributes
   )?.filter((value) => value === true).length;
 
-  const adjustTaskAttributes = (_embedded) => {
-    
-     _embedded.variable = _embedded?.variable?.filter(
+  const adjustTaskAttributes = (variable) => {
+     variable = variable?.filter(
       (e) => e.name !== "applicationId" && e.name !== "formName"
     );
-    console.log("_embedded?.variable",_embedded?.variable);
-    const filteredArray = [..._embedded?.variable?.slice(0, 6 - vissibleAttributesCount)];
-    console.log("filterd array",filteredArray);
+    const filteredArray = [...variable?.slice(0, 6 - vissibleAttributesCount)];
     return filteredArray;
    
   };
 
   const filterAdjustedAttributes = (taskListVariables, adjustedValues) => {
-    console.log("tasklist attributes",taskListVariables?.filter((e) => !adjustedValues.includes(e)));
     return taskListVariables?.filter((e) => !adjustedValues.includes(e));
   };
 
@@ -135,12 +131,17 @@ const ServiceTaskListView = React.memo((props) => {
           <div className="list-container ">
             {taskList?.map((task, index) => {
               const adjustedValues = adjustTaskAttributes(
-                task?._embedded
+                task?._embedded?.variable
               );
-              const taskListAttributes = filterAdjustedAttributes(
+              let  taskListAttributes = filterAdjustedAttributes(
                 task?._embedded?.variable,
                 adjustedValues
               );
+              taskListAttributes = taskListAttributes.filter(
+                (item) =>
+                  item.name !== "applicationId" && item.name !== "formName"
+              );
+
               return (
                 <div
                   className={`clickable shadow border rounded  ${
@@ -209,31 +210,41 @@ const ServiceTaskListView = React.memo((props) => {
                         </div>
                       </Col>
                     )}
-                    <Col
-                      className="justify-content-between "
-                      xs={
-                        vissibleAttributesCount === 6
-                          ? 6
-                          : vissibleAttributesCount === 5
-                          ? 6
-                          : vissibleAttributesCount === 4
-                          ? 5
-                          : vissibleAttributesCount === 3
-                          ? 4
-                          : vissibleAttributesCount === 2
-                          ? 2
-                          : 2
-                      }
-                    >
-                      <TaskHeaderListView
+                    <TaskHeaderListView
                         task={task}
                         taskId={task.id}
                         groupView={false}
                       />
-                    </Col>
-                    {vissibleAttributes?.taskVisibleAttributes?.priority &&
-                      taskListAttributes.length < 1 &&
-                      vissibleAttributesCount <= 6 && (
+                    {vissibleAttributesCount < 6 &&
+                    task?._embedded?.variable?.length > 2
+                      ? adjustedValues.map((e, i) => {
+                          const data = taskvariables?.find(
+                            (variableItem) => variableItem.name === e.name
+                          );
+                          return (
+                            <Col xs={2} key={i}>
+                              <div
+                                className="col-12"
+                                style={{ wordBreak: "break-all" }}
+                              >
+                                <h6 className="fw-bold">{data?.label}</h6>
+                              </div>
+                              <div className="d-flex col-12">
+                                <h6>
+                                  <u className="fw-light text-decoration-none ">
+                                    {e?.value}
+                                  </u>
+                                </h6>
+                              </div>
+                            </Col>
+                          );
+                        })
+                      : null}
+
+                    
+                   
+
+                      {vissibleAttributes?.taskVisibleAttributes?.priority &&
                         <Col xs={1}>
                           <div className="col-12">
                             <h6 className="fw-bold">{t("Priority")}</h6>
@@ -256,35 +267,10 @@ const ServiceTaskListView = React.memo((props) => {
                             </h6>
                           </div>
                         </Col>
-                      )}
+                      }
 
-                    {vissibleAttributesCount < 6 &&
-                    task?._embedded?.variable?.length > 2
-                      ? adjustedValues.map((e, i) => {
-                          const data = taskvariables?.find(
-                            (variableItem) => variableItem.name === e.name
-                          );
-                          return (
-                            <Col xs={1} key={i}>
-                              <div
-                                className="col-12"
-                                style={{ wordBreak: "break-all" }}
-                              >
-                                <h6 className="fw-bold">{data?.label}</h6>
-                              </div>
-                              <div className="d-flex col-12">
-                                <h6>
-                                  <u className="fw-light text-decoration-none ">
-                                    {e?.value}
-                                  </u>
-                                </h6>
-                              </div>
-                            </Col>
-                          );
-                        })
-                      : null}
 
-                    {taskListAttributes?.length >= 1 && (
+                    {taskListAttributes?.length >= 1  && (
                       <Col xs={1}>
                         <div
                           className="justify-content-center"
@@ -319,32 +305,6 @@ const ServiceTaskListView = React.memo((props) => {
                       <>
                         <hr />
                         <Row className="p-2">
-                          {vissibleAttributes?.taskVisibleAttributes
-                            ?.priority &&
-                            taskListAttributes.length > 0  && (
-                              <Col xs={1}>
-                                <div className="col-12">
-                                  <h6 className="fw-bold">{t("Priority")}</h6>
-                                </div>
-                                <div className="d-flex col-12">
-                                  <svg
-                                    xmlns="http://www.w3.org/2000/svg"
-                                    width="16"
-                                    height="16"
-                                    fill="currentColor"
-                                    className="bi bi-filter-right"
-                                    viewBox="0 0 16 16"
-                                  >
-                                    <path d="M14 10.5a.5.5 0 0 0-.5-.5h-3a.5.5 0 0 0 0 1h3a.5.5 0 0 0 .5-.5zm0-3a.5.5 0 0 0-.5-.5h-7a.5.5 0 0 0 0 1h7a.5.5 0 0 0 .5-.5zm0-3a.5.5 0 0 0-.5-.5h-11a.5.5 0 0 0 0 1h11a.5.5 0 0 0 .5-.5z" />
-                                  </svg>
-                                  <h6 title={t("Priority")}>
-                                    <u className="fw-light text-decoration-none">
-                                      {task.priority}
-                                    </u>
-                                  </h6>
-                                </div>
-                              </Col>
-                            )}
                           {taskListAttributes?.map((eachVariable, index) => {
                             if (
                               eachVariable.name !== "applicationId" &&

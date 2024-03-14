@@ -620,7 +620,7 @@ export default function CreateNewFilterDrawer({
           <Translation>{(t) => t("Workflow")}</Translation>
         </h5>
         {definitionKeyId ? (<div>
-          <div class="d-flex align-items-center justify-content-between custom-select p-3 pr-3">
+          <div className="d-flex align-items-center justify-content-between custom-select p-3 pr-3">
             <div className=" text-truncate">{definitionKeyId}</div>
             <div className="mr-3 custom-select-close"> <span className=" d-flex align-items-center justify-content-center badge-deleteIcon" onClick={() => setDefinitionKeyId("")}>&times;</span></div>
           </div>

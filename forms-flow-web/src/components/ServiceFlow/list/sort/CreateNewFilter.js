@@ -97,7 +97,7 @@ export default function CreateNewFilterDrawer({
   const [overlayUserShow, setOverlayUserShow] = useState(false);
   const [overlayCandidateGroupShow, setOverlayCandidateGroupShow] =
     useState(false);
-  const process = useSelector((state) => state.process.processList);
+  const process = useSelector((state) => state.process?.processList);
   const processList = listProcess(process, true);
 
   const { t } = useTranslation();

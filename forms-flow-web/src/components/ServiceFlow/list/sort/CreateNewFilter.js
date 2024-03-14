@@ -20,7 +20,6 @@ import {
 } from "../../../../constants/taskConstants";
 import { useTranslation } from "react-i18next";
 import { Translation } from "react-i18next";
-import Select from "react-select";
 import { listProcess } from "../../../../apiManager/services/formatterService";
 import { fetchAllBpmProcesses } from "../../../../apiManager/services/processServices";
 import {

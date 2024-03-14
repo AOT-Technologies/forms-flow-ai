@@ -60,7 +60,6 @@ Variable name | Meaning | Possible values | Default value |
 `DATA_ANALYSIS_DB_PASSWORD` |formsflow data analysis database postgres password|Used on installation to create the database.Choose your own|`changeme`
 `DATA_ANALYSIS_DB_NAME` |formsflow data analysis database name|Used on installation to create the database.Choose your own|`dataanalysis`
 `DATA_ANALYSIS_DB_URL` |JDBC DB Connection URL for formsflow||`postgresql://general:changeme@forms-flow-data-analysis-db:5432/dataanalysis`
-`DATA_ANALYSIS_API_BASE_URL`:triangular_flag_on_post:|formsflow.ai Data analysis API URL||`http://{your-ip-address}:5001`
 `MODEL_ID`:triangular_flag_on_post:|formsflow.ai Hugging face model id||`Seethal/sentiment_analysis_generic_dataset`
 
 **NOTE : Default realm is `forms-flow-ai`**

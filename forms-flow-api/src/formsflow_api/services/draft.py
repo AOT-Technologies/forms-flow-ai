@@ -1,7 +1,9 @@
 """This exposes submission service."""
-
+import asyncio
 import json
+
 from typing import Dict
+from flask import current_app
 
 from formsflow_api_utils.exceptions import BusinessException
 from formsflow_api_utils.utils import ANONYMOUS_USER, DRAFT_APPLICATION_STATUS
@@ -27,6 +29,7 @@ class DraftService:
     def __create_draft_application(data):
         """Create draft application."""
         application = Application.create_from_dict(data)
+        application.commit()
         return application
 
     @classmethod
@@ -118,26 +121,38 @@ class DraftService:
         """Makes the draft into an application."""
         user: UserContext = kwargs["user"]
         user_id: str = user.user_name or ANONYMOUS_USER
-        draft = Draft.make_submission(draft_id, data, user_id)
-        if not draft:
-            raise BusinessException(BusinessErrorCode.DRAFT_APPLICATION_NOT_FOUND)
+        application = None
+        try:
+            draft = Draft.make_submission(draft_id, data, user_id)
+            if not draft:
+                raise BusinessException(BusinessErrorCode.DRAFT_APPLICATION_NOT_FOUND)
 
-        application = Application.find_by_id(draft.application_id)
-        mapper = FormProcessMapper.find_form_by_form_id(application.latest_form_id)
-        if application.form_process_mapper_id != mapper.id:
-            # The form mapper version got updated after the draft entry
-            # was created, update the application with new mapper
-            application.update({"form_process_mapper_id": mapper.id})
-        task_variables = (
-            json.loads(mapper.task_variable) if mapper.task_variable is not None else []
-        )
-        variables = ApplicationService.fetch_task_variable_values(
-            task_variables, data.get("data", {})
-        )
-        payload = ApplicationService.get_start_task_payload(
-            application, mapper, data["form_url"], data["web_form_url"], variables
-        )
-        ApplicationService.start_task(mapper, payload, token, application)
+            application = Application.find_by_id(draft.application_id)
+            mapper = FormProcessMapper.find_form_by_form_id(application.latest_form_id)
+            if application.form_process_mapper_id != mapper.id:
+                # The form mapper version got updated after the draft entry
+                # was created, update the application with new mapper
+                application.update({"form_process_mapper_id": mapper.id})
+            task_variables = (
+                json.loads(mapper.task_variable) if mapper.task_variable is not None else []
+            )
+            variables = ApplicationService.fetch_task_variable_values(
+                task_variables, data.get("data", {})
+            )
+            payload = ApplicationService.get_start_task_payload(
+                application, mapper, data["form_url"], data["web_form_url"], variables
+            )
+            application.commit()
+
+            asyncio.run(
+                ApplicationService.start_task(mapper, payload, token, application.id)
+            )
+
+        except Exception as e:
+            current_app.logger.error("Error occurred during application creation %s", e)
+            if application:  # If application instance is created, rollback the transaction.
+                application.rollback()
+            raise BusinessException(BusinessErrorCode.APPLICATION_CREATE_ERROR) from e
         return application
 
     @staticmethod

@@ -32,6 +32,7 @@ def test_formio_roles(app, client, session, jwt, mock_redis_client):
         key=app.config["FORMIO_JWT_SECRET"],
     )
     assert decoded_token["form"]["_id"] == resource_id
+    assert decoded_token["user"]["customRoles"] == ["formsflow-client"]
 
     # Requesting from reviewer role
     token = get_token(jwt, role="formsflow-reviewer")

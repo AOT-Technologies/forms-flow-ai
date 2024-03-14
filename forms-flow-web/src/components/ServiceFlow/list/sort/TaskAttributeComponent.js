@@ -104,7 +104,7 @@ function TaskAttributeComponent({
           <Translation>
             {(t) =>
               t(
-                "Only selected task attributes will be available on task list view"
+                "Select the predefined attributes and custom task variables created as part of form submission you wish to display in the task list"
               )
             }
           </Translation>{" "}

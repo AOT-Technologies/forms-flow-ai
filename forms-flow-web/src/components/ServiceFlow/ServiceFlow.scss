@@ -15,6 +15,7 @@
   padding-right: 15px;
   border-right: 1px solid var(--color-gray-400);
 }
+
 .service-task-details {
   min-height: 80vh;
   max-height: 85vh;
@@ -22,63 +23,70 @@
   overflow-x: hidden;
 }
 
-.service-task-action{
+.service-task-action {
   margin-bottom: -8px;
   font-size: 14px;
 
 }
 
-.handle-view-details{
+.handle-view-details {
   color: var(--color-primary-dkr);
   text-decoration: none;
 }
-.word-break{
+
+.word-break {
   word-break: break-all;
 }
 
-.no-filter-img{
+.no-filter-img {
   height: 150px;
 
 }
 
-.task-attribute{
- margin-bottom: -2.5rem; 
+.task-attribute {
+  margin-bottom: -2.5rem;
 }
 
-.truncate-size{
+.truncate-size {
   font-size: 14px;
 }
 
-.filter-listview{
+.filter-listview {
   min-width: 700px;
 }
 
-.filter-list{
+.filter-list {
   margin-top: 45px;
 }
 
-.fs-16{
- font-size: 16px; 
+.fs-16 {
+  font-size: 16px;
 }
-.fs-18{
+
+.fs-18 {
   font-size: 18px;
 }
-.mr-6{
+
+.mr-6 {
   margin-right: 6px;
 }
-.assigned-user{
+
+.assigned-user {
   font-size: 18px;
   margin-bottom: 3px;
 }
-.z-index{
+
+.z-index {
   z-index: 9999;
 }
-.text-bottom{
+
+.text-bottom {
   margin-bottom: 8px;
 }
-.group-icon{
+
+.group-icon {
   font-size: 40px;
-  margin-right: 8px; 
+  margin-right: 8px;
 }
 
 .filter-container {
@@ -88,6 +96,7 @@
   width: 100%;
   padding: 0;
   margin-bottom: 4px;
+
   .button {
     border: 1px solid var(--color-gray-700);
     background-color: var(--color-white);
@@ -99,6 +108,7 @@
     font-size: 12px;
     font-family: Nunito Sans, SemiBold;
   }
+
   .name-value-container {
     font-size: 12px;
     margin-left: 5px;
@@ -108,15 +118,18 @@
   .check-box-design {
     padding: 0px;
   }
+
   .filter-action-container {
     display: block;
     float: right;
     padding: 5px;
+
     .item-pos {
       padding: 5px;
     }
   }
 }
+
 .filter {
   width: 85%;
   margin: 5px;
@@ -146,9 +159,11 @@
   border-color: var(--color-gray-700);
   //border: bold 1px solid;
 }
+
 .position-box {
   margin-left: 2.3rem;
 }
+
 .sort-items {
   border: 1px solid var(--color-gray-600);
   border-radius: 3%;
@@ -159,22 +174,25 @@
   padding: 5px;
   width: 12rem;
 }
- 
+
 .variable-filter-item {
   padding: 5px;
   max-height: 250px;
   max-width: 250px;
   overflow: auto;
 }
+
 .clickable {
   cursor: pointer;
   margin-bottom: 10px !important;
   padding: 10px;
   // border-left: 2px solid transparent;
 }
+
 .clickable:hover:not(.selected) {
-  border-left: 2px solid var(--color-primary-dkr) !important ;
+  border-left: 2px solid var(--color-primary-dkr) !important;
 }
+
 .selected {
   border-left: 3px solid var(--color-primary-dkst) !important;
 }
@@ -195,6 +213,7 @@
   height: 71px;
   position: relative;
 }
+
 .task-header {
   font-size: 30px;
   font-weight: 600;
@@ -205,11 +224,13 @@
   font-size: 13px;
   font-style: italic;
 }
+
 .add {
   color: var(--color-primary-dkr);
   font-size: 13px;
   cursor: pointer;
 }
+
 .text-color {
   color: var(--color-black);
   width: 100%;
@@ -217,15 +238,19 @@
   outline: none;
   cursor: default;
 }
+
 .react-datepicker {
   width: max-content;
 }
+
 #task-search-input.date-with-value .react-datepicker {
   right: 2rem;
 }
+
 #task-search-input .react-datepicker {
   right: 5.8rem;
 }
+
 .added-filters {
   margin-top: 1px;
 }
@@ -233,9 +258,11 @@
 .react-datepicker-popper {
   z-index: 801 !important;
 }
+
 .react-datepicker__close-icon {
   padding-right: 0;
 }
+
 .right-side {
   text-align: right;
   margin-right: 2em;
@@ -253,15 +280,18 @@
   padding: 0 0px 4px 8px;
   font-size: 14px;
   color: var(--color-primary-dkr);
+
   //border-radius: 5px;
   .close-btn {
     font-size: 12px;
     margin-right: 8px;
   }
+
   .condition-container {
     z-index: 2;
     display: block;
   }
+
   .btn-container {
     float: right;
     display: block;
@@ -270,10 +300,12 @@
 
   .second-box {
     float: right;
+
     .second-inner-box {
       //margin-left: 10.3rem;
     }
   }
+
   .btn {
     background-color: var(--color-white);
     font-size: 12px;
@@ -282,19 +314,23 @@
     width: 28px;
     border-radius: 0px;
   }
+
   input {
     //border: none;
     outline: none;
     border: 1px solid;
     //border-color: var(--color-gray-700);
   }
+
   .close-container {
     position: absolute;
   }
+
   .box-container {
     position: relative;
     margin-left: 20px;
   }
+
   .list-span {
     position: none !important;
   }
@@ -308,18 +344,23 @@
 
   .pagination {
     background-color: var(--color-white);
+
     li {
       border: 1px solid var(--color-gray-200);
       padding: 0 4px;
     }
+
     .active {
       background-color: var(--color-primary-dkr);
+
       a {
         color: var(--color-white);
       }
     }
+
     .disabled {
       cursor: not-allowed;
+
       a {
         cursor: not-allowed;
         color: var(--color-gray-600);
@@ -328,42 +369,79 @@
   }
 }
 
-.tab-width{
-  width:12rem;
+.tab-width {
+  width: 12rem;
 }
-.task-variable-coloum{
-  width:80rem;
+
+.task-variable-coloum {
+  width: 80rem;
 }
-.task-title-container{
+
+.task-title-container {
   margin-left: -10px;
   margin-right: -10px;
 }
-.filter-name-textfeild{
-  width: 90%;
-  height: 44px;
-  padding: 3%;
-  border: 3px solid var(--color-gray-400);
-  font-size: 18px;
+
+.filter-name-textfeild {
+  width: 90% !important;
+  // height: 44px;
+  // padding: 3%;
+  // border: 3px solid var(--color-gray-400) !important;
+  // font-size: 18px;
 }
 
-.criteria-add-value-inputbox{
+.custom-select {
+  width: 90% !important;
+  align-items: center;
+  background-color: hsl(0, 0%, 100%);
+  border: 3px solid var(--color-gray-400) !important;
+  border-radius: 0px;
+  border-style: solid;
+  border-width: 1px;
+  align-items: center;
+  cursor: default;
+  border-style: solid;
+  border-width: 3px !important;
+  border-radius: 0px !important;
+  border-width: 3px !important;
+  height: 44px;
+  font-size: 18px;
+}
+.custom-select-close {
+  width: 20px;
+  height: 21px;
+  border: 1px solid var(--color-gray-400);
+  border-right: 0;
+  border-top: 0;
+  border-bottom: 0;
+  padding: 2px;
+  padding-left: 7px;
+}
+.custom-select .css-yk16xz-control {
+  border: none !important;
+}
+
+.criteria-add-value-inputbox {
   width: 80%;
   height: 40px;
   padding: 3%;
   border: 3px solid var(--color-gray-400);
 }
 
-.access-all{
+.access-all {
   margin-right: 4px;
 }
-.task-row{
+
+.task-row {
   overflow: auto;
   max-height: 80vh;
 }
+
 .task-attr-row {
   min-height: 110px;
   margin-bottom: -2.5rem
 }
+
 .row-container {
   display: flex;
   align-items: flex-end;
@@ -399,8 +477,8 @@
   color: var(--color-primary-lt);
 }
 
-.cursor-pointer{
-  cursor:pointer
+.cursor-pointer {
+  cursor: pointer
 }
 
 .modal-overlay {
@@ -410,29 +488,34 @@
   width: 100%;
   height: 100%;
   background-color: var(--color-box-shadow);
- z-index: 1500;
+  z-index: 1500;
 }
 
 .icon-and-text {
   display: flex;
   justify-content: space-between;
-  align-items: center; /* Vertically center the text and icon */
-}
-.react-datepicker__close-icon {
-  padding: 0px !important ;
+  align-items: center;
+  /* Vertically center the text and icon */
 }
 
-.filter-drop-down > .nav-link{
+.react-datepicker__close-icon {
+  padding: 0px !important;
+}
+
+.filter-drop-down>.nav-link {
   padding-left: 0 !important;
   padding-right: 0 !important;
 }
+
 .no-padding-left {
   padding-left: 0px !important;
 }
+
 .filter-tooltip-icon {
   color: var(--color-primary);
 }
-.task-list{
+
+.task-list {
   max-height: 60vh;
   overflow: auto;
 }

@@ -152,9 +152,9 @@ export const checkIsObjectId = (data) => {
   return data.length === 24 && !isNaN(Number("0x" + data));
 };
 
-export const copyText = (text)=>{
-  if(navigator.clipboard){
-   return navigator.clipboard?.writeText(text);
+export const copyText = (text) => {
+  if (navigator.clipboard) {
+    return navigator.clipboard?.writeText(text);
   }
   const textArea = document.createElement("textarea");
   textArea.value = text;
@@ -164,13 +164,13 @@ export const copyText = (text)=>{
   return new Promise((res, rej) => {
     document.execCommand('copy') ? res() : rej();
     textArea.remove();
-});
+  });
 };
 
-export const listProcess = (processes) => {
+export const listProcess = (processes, excludeProcessKey) => {
   if (processes?.length > 0) {
     const data = processes.map((process) => {
-      const fullLabel = process.name + ` (${process.key})`;
+      const fullLabel = !excludeProcessKey ? process.name + ` (${process.key})` : process.name;
       return {
         label: fullLabel,
         value: process.key,

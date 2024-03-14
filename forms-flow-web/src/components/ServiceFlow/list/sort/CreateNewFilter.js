@@ -20,6 +20,9 @@ import {
 } from "../../../../constants/taskConstants";
 import { useTranslation } from "react-i18next";
 import { Translation } from "react-i18next";
+import Select from "react-select";
+import { listProcess } from "../../../../apiManager/services/formatterService";
+import { fetchAllBpmProcesses } from "../../../../apiManager/services/processServices";
 import {
   setBPMFilterLoader,
   setBPMFiltersAndCount,
@@ -95,6 +98,8 @@ export default function CreateNewFilterDrawer({
   const [overlayUserShow, setOverlayUserShow] = useState(false);
   const [overlayCandidateGroupShow, setOverlayCandidateGroupShow] =
     useState(false);
+  const process = useSelector((state) => state.process.processList);
+  const processList = listProcess(process, true);
 
   const { t } = useTranslation();
   const [modalShow, setModalShow] = useState(false);
@@ -508,6 +513,7 @@ export default function CreateNewFilterDrawer({
   };
 
   const toggleDrawer = () => {
+    dispatch(fetchAllBpmProcesses());
     setOpenFilterDrawer(!openFilterDrawer);
     !openFilterDrawer ? setFilterSelectedForEdit(false) : null;
   };
@@ -612,25 +618,25 @@ export default function CreateNewFilterDrawer({
      
 
         <h5 className="mt-2 fs-18">
-          <Translation>{(t) => t("Definition Key")}</Translation>
+          <Translation>{(t) => t("Workflow")}</Translation>
         </h5>
-        {!definitionKeyId && (
-          <span
-            className="px-1 py-1 cursor-pointer text-decoration-underline truncate-size"
-            onClick={() => handleSpanClick(1)}
-          >
-            <i className="fa fa-plus-circle mr-6" />
-            <Translation>{(t) => t("Add Value")}</Translation>
-          </span>
-        )}
-        {(inputVisibility[1] || definitionKeyId) && (
-          <input
-            type="text"
-            className="criteria-add-value-inputbox"
-            value={definitionKeyId}
-            name="definitionKeyId"
-            onChange={(e) => setDefinitionKeyId(e.target.value)}
-            title={t("Definition Key")}
+        {definitionKeyId ? (<div>
+          <div class="d-flex align-items-center justify-content-between custom-select p-3 pr-3">
+            <div className=" text-truncate">{definitionKeyId}</div>
+            <div className="mr-3 custom-select-close"> <span className=" d-flex align-items-center justify-content-center badge-deleteIcon" onClick={() => setDefinitionKeyId("")}>&times;</span></div>
+          </div>
+        </div>
+        ) : (
+          <Select
+            className="mb-3 custom-select"
+            options={processList}
+            value={definitionKeyId || null}
+            onChange={(selectedOption) =>
+              setDefinitionKeyId(selectedOption.label)}
+            inputId="select-workflow"
+            getOptionLabel={(option) => (
+              <span data-testid={`form-workflow-option-${option.value}`}>{option.label}</span>
+            )}
           />
         )}
         <h5 className="pt-2">
@@ -886,9 +892,8 @@ export default function CreateNewFilterDrawer({
                   </div>
                   <div className="text-center text-bottom">
                     <i
-                      className={`fa fa-users ${
-                        selectUserGroupIcon === "group" ? "highlight" : ""
-                      } cursor-pointer group-icon`}
+                      className={`fa fa-users ${selectUserGroupIcon === "group" ? "highlight" : ""
+                        } cursor-pointer group-icon`}
                     />
                   </div>
                 </div>
@@ -949,8 +954,7 @@ export default function CreateNewFilterDrawer({
             >
               <Translation>
                 {(t) =>
-                  `${
-                    selectedFilterData ? t("Save Filter") : t("Create Filter")
+                  `${selectedFilterData ? t("Save Filter") : t("Create Filter")
                   } `
                 }
               </Translation>

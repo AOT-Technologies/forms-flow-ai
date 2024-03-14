@@ -1,4 +1,5 @@
 """This manages Application audit data."""
+
 from __future__ import annotations
 
 from formsflow_api.models.audit_mixin import ApplicationAuditDateTimeMixin

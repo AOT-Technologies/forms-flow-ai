@@ -379,7 +379,6 @@ def test_capture_process_variables_application_create(
                 "key": "textField",
                 "defaultLabel": "Text Field",
                 "label": "Text Field",
-                "showInList": False,
             }
         ],
     }

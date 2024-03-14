@@ -1,7 +1,5 @@
 import React, { useState } from "react";
-import Form from "react-bootstrap/Form";
 import Button from "react-bootstrap/Button";
-import { useTranslation } from "react-i18next";
 const ViewAndEditTaskvariable = ({
   item,
   // eslint-disable-next-line no-unused-vars
@@ -10,17 +8,13 @@ const ViewAndEditTaskvariable = ({
   editTaskVariable,
 }) => {
   const [taskLabel, setTaskLabel] = useState(item.label);
-  const [showInList, setShowInList] = useState(item.showInList);
   const [enableEditTaskVariable, setEnableEditTaskVariable] = useState(true);
-  const { t } = useTranslation();
-
-  const saveData = (taskVariable) => {
+   const saveData = (taskVariable) => {
     setEnableEditTaskVariable(true);
     const data = {
       key: taskVariable.key,
       defaultLabel: taskVariable.defaultLabel,
-      label: taskLabel,
-      showInList,
+      label: taskLabel
     };
     editTaskVariable(data);
   };
@@ -49,20 +43,7 @@ const ViewAndEditTaskvariable = ({
             data-testid="form-task-variable-edit-input"
           />
         </td>
-        <td className="p-3">
-          <span id="showInListLabel" className="sr-only">{t("Show in list")}</span>
-          <Form.Check
-            className="mb-3" 
-            disabled={enableEditTaskVariable}
-            checked={showInList}
-            aria-labelledby="showInListLabel"
-            onChange={() => {
-              setShowInList(!showInList);
-            }}
-            type="checkbox"
-            data-testid="form-task-variable-showinlist-edit-checkbox"
-          />
-        </td>
+ 
         <td className="text-right p-3" >
           {!enableEditTaskVariable ? (
             <Button

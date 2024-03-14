@@ -1,4 +1,5 @@
 """API endpoints for metrics resource."""
+
 from http import HTTPStatus
 
 from flask import request

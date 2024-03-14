@@ -2,6 +2,7 @@
 
 Initialize app and the dependencies.
 """
+
 import json
 import logging
 import os

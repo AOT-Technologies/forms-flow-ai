@@ -219,7 +219,7 @@ const ServiceTaskListView = React.memo((props) => {
                           return (
                             <Col xs={2} key={index} >
                               <div className="col-12 word-break">
-                                <h6 className="fw-light">{data?.label}</h6>
+                                <h6 className="fw-bold">{data?.label}</h6>
                               </div>
                               <div className="d-flex col-12">
                                 <h6>

@@ -158,7 +158,6 @@ const TaskFilterViewComponent = React.memo(
      
       const handleDueStartDateChange = (date) => {
         setDueStartDate(date); 
-        console.log(date);
         const updatedParams = { ...filterParams, dueAfter: getISODateTime(date)}; 
         setFilterParams(updatedParams); 
       };

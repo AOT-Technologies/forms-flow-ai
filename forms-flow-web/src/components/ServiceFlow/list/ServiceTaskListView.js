@@ -223,10 +223,7 @@ const ServiceTaskListView = React.memo((props) => {
                           );
                           return (
                             <Col xs={2} key={i}>
-                              <div
-                                className="col-12"
-                                style={{ wordBreak: "break-all" }}
-                              >
+                              <div className="col-12 word-break">
                                 <h6 className="fw-bold">{data?.label}</h6>
                               </div>
                               <div className="d-flex col-12">

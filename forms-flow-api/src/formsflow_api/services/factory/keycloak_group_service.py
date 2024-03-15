@@ -161,9 +161,9 @@ class KeycloakGroupService(KeycloakAdmin):
         """Search group by name."""
         search_list = list(
             filter(
-                lambda data: search.lower() in data["name"].lower()
-                if data.get("name")
-                else "",
+                lambda data: (
+                    search.lower() in data["name"].lower() if data.get("name") else ""
+                ),
                 data,
             )
         )

@@ -245,6 +245,7 @@ class StepperPage extends PureComponent {
         ? formProcessList.taskVariable
         : [],
       anonymous: formProcessList.anonymous ? true : false,
+      selectedAllField: formProcessList.selectedAllField,
       parentFormId: formProcessList?.parentFormId,
       formType: formProcessList.formType,
     };

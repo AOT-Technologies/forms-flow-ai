@@ -1,4 +1,5 @@
 """This exposes the Keycloak Admin APIs."""
+
 import json
 
 import requests

@@ -78,3 +78,8 @@ class KeycloakAdmin(ABC):
         return sorted(
             data, key=lambda k: k["name"].lower() if k.get("name") else "", reverse=True
         )
+
+    @abstractmethod
+    def add_user_to_tenant(self, data: Dict):
+        """Add user in a tenant."""
+        raise NotImplementedError("Method not implemented")

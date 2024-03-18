@@ -1,5 +1,7 @@
 """Keycloak Admin implementation for client related operations."""
 
+import re
+from http import HTTPStatus
 from typing import Dict, List
 
 from flask import current_app
@@ -157,3 +159,50 @@ class KeycloakClientService(KeycloakAdmin):
         count = len(result) if count else None
         result = self.user_service.paginate(result, page_no, limit)
         return result, count
+
+    @user_context
+    def add_user_to_tenant(
+        self, data: Dict, **kwargs
+    ):  # pylint: disable=too-many-locals
+        """Add tenant to user."""
+        user: UserContext = kwargs["user"]
+        tenant_key = user.tenant_key
+        user_email = data.get("user")
+
+        current_app.logger.debug(f"Checking user: {user_email} exist in keycloak...")
+        # Check if the input matches the email pattern
+        is_email = re.match(r"^\S+@\S+\.\S+$", user_email) is not None
+        url = "users?exact=true&"
+        user_identifier = "email" if is_email else "username"
+        url += f"{user_identifier}={user_email}"
+        user_response = self.client.get_request(url)
+
+        if user_response:
+            current_app.logger.debug(f"User: {user_email} found.")
+            user = user_response[0]
+            user_id = user.get("id")
+            attributes = user.get("attributes", {})
+            tenant_keys = attributes.get("tenantKey", [])
+            current_app.logger.debug(f"Adding tenantKey {tenant_key} to user attribute")
+            # Add a new tenant key only if it's not already present
+            if tenant_key not in tenant_keys:
+                tenant_keys.append(tenant_key)
+            payload = {"attributes": {"tenantKey": tenant_keys}}
+            self.client.update_request(f"users/{user_id}", payload)
+            # Add user to role
+            client_id = self.client.get_client_id()
+            for role in data.get("roles"):
+                role_data = {
+                    "containerId": client_id,
+                    "id": role.get("role_id"),
+                    "name": role.get("name"),
+                }
+                current_app.logger.debug(
+                    f"Adding user: {user_email} to role {role.get('name')}."
+                )
+                self.client.create_request(
+                    url_path=f"users/{user_id}/role-mappings/clients/{client_id}",
+                    data=[role_data],
+                )
+            return {"message": "User added to tenant"}, HTTPStatus.OK
+        raise BusinessException(BusinessErrorCode.USER_NOT_FOUND)

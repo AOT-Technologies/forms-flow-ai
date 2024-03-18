@@ -1,50 +1,114 @@
-import React from "react";
+import React, { useState } from "react";
 import { Row, Col } from "react-bootstrap";
 import Modal from "react-bootstrap/Modal";
 import ModalTitle from "react-bootstrap/ModalTitle";
 import Form from "react-bootstrap/Form";
-import {Translation, useTranslation } from "react-i18next";
+import { Translation, useTranslation } from "react-i18next";
 import { useSelector } from "react-redux";
 
 function TaskAttributeComponent({
   show,
+  selectedForm,
   onHide,
-  setCheckboxes,
-  checkboxes,
-  showUndefinedVariable,
-  setShowUndefinedVariable,
-  handleChangeTaskVariables,
+  selectedTaskAttrbutes,
+  selectedTaskVariablesKeys,
   selectedTaskVariables,
-  selectedForm
+  onSaveTaskAttribute,
+  processLoading,
+  // showUndefinedVariable,
 }) {
-
-  const taskVariables = useSelector(state => state.process?.formProcessList?.taskVariable || []);
+  const taskVariables = useSelector(
+    (state) => state.process?.formProcessList?.taskVariable || []
+  );
   const { t } = useTranslation();
+
+  const [variables, setVariables] = useState(selectedTaskVariables);
+  const [taskVariablesKeys, setTaskVariablesKeys] = useState(
+    selectedTaskVariablesKeys
+  );
+  const [checkboxes, setCheckboxes] = useState(selectedTaskAttrbutes);
+  // const [selectUndefinedVariable, setSelectUndefinedVariable] = useState(
+  //   showUndefinedVariable
+  // );
+
+  // const UndefinedVaribaleCheckboxChange = (e) => {
+  //   setSelectUndefinedVariable(e.target.checked);
+  // };
+
   const handleCheckboxChange = (event) => {
     const { name, checked } = event.target;
     setCheckboxes({ ...checkboxes, [name]: checked });
   };
- 
-  
-  const UndefinedVaribaleCheckboxChange = (e) => {
-    setShowUndefinedVariable(e.target.checked);
+
+  /**
+   * Handles changing the selected task variables.
+   *
+   * When a variable is checked, adds it to the variables array.
+   * When a variable is unchecked, removes it from the variables array.
+   * Also updates the taskVariablesKeys object with the checked state.
+   */
+  const handleChangeTaskVariables = (e, variable) => {
+    const { checked } = e.target;
+    if (checked) {
+      setVariables((prev) => [
+        ...prev,
+        { name: variable.key, label: variable.label },
+      ]);
+    } else {
+      setVariables((prev) => prev.filter((i) => i.name !== variable.key));
+    }
+    /**
+     * Updates the taskVariablesKeys object with the checked state
+     * of the variable. If checked is true, adds the variable key.
+     * If checked is false, removes the variable key.
+     */
+    setTaskVariablesKeys((prev) => ({
+      ...prev,
+      [variable.key]: checked ? variable.key : null,
+    }));
   };
+
+  const handleSave = () => {
+    onSaveTaskAttribute(
+      taskVariablesKeys,
+      variables,
+      checkboxes,
+      // selectUndefinedVariable
+    );
+    onHide();
+  };
+
   return (
     <Modal
       show={show}
       onHide={onHide}
-      disableEnforceFocus={true}
+      disableenforcefocus={"true"}
       className="modal-overlay"
       keyboard={false}
       size="lg"
       backdrop="static"
     >
       <Modal.Header className="bg-light">
-        <ModalTitle as={"h3"}><Translation>{(t) => t("Task Attribute")}</Translation></ModalTitle>
-        <button type="button" className="btn-close" aria-label="Close" onClick={onHide}></button>
+        <ModalTitle as={"h3"}>
+          <Translation>{(t) => t("Task Attribute")}</Translation>
+        </ModalTitle>
+        <button
+          type="button"
+          className="btn-close"
+          aria-label="Close"
+          onClick={onHide}
+        ></button>
       </Modal.Header>
       <Modal.Body className="p-4">
-        <p><Translation>{(t) => t("Only selected task attributes will be available on task list view")}</Translation> </p>
+        <p>
+          <Translation>
+            {(t) =>
+              t(
+                "Select the predefined attributes and custom task variables created as part of form submission you wish to display in the task list"
+              )
+            }
+          </Translation>{" "}
+        </p>
 
         <Form>
           <Row>
@@ -120,42 +184,67 @@ function TaskAttributeComponent({
         </Form>
         <hr />
         <Form className="mt-2 ps-1">
-          <h5 className="fw-bold fs-18"
-          >
+          <h5 className="fw-bold fs-18">
             <Translation>{(t) => t("Task variables")}</Translation>
-            <i title={t("You can define variables shown in the list")} className="ms-1 fa fa-info-circle text-primary"></i>
+            <i
+              title={t("You can define variables shown in the list")}
+              className="ms-1 fa fa-info-circle text-primary"
+            ></i>
           </h5>
-          <Form.Check
-              type="checkbox"
-              label={ t("Show undefined variables")}
-              checked={showUndefinedVariable}
-              onChange={UndefinedVaribaleCheckboxChange}
-            />
-          <Row  className="mt-3">
-          {selectedForm ? 
-            taskVariables.map(variable=>(
-              variable.key !== 'applicationId' ?
-              <Col xs={6} key={variable.key}>
-            <Form.Check
-              type="checkbox"
-              label={variable.label}
-              name={variable.key}
-              checked={selectedTaskVariables[variable.key] == variable.key}
-              onChange={(e)=>{handleChangeTaskVariables(e,variable);}}
-            />
-            </Col> : null
-            )) : <div className="alert alert-primary text-center w-100" role="alert">
-           {t("To display task variables, select a form as part of the filter")}
+          {/* <Form.Check
+            type="checkbox"
+            label={t("Show undefined variables")}
+            checked={showUndefinedVariable}
+            onChange={UndefinedVaribaleCheckboxChange}
+          /> */}
+          <div className="d-flex mt-3 px-2 flex-wrap">
+            {selectedForm ? (
+              taskVariables?.length > 0 ? (
+                taskVariables.map((variable) =>
+                  variable.key !== "applicationId" ? (
+                    <Col xs={12} md={6} key={variable.key}>
+                      <Form.Check
+                        type="checkbox"
+                        label={variable.label}
+                        name={variable.key}
+                        checked={
+                          taskVariablesKeys[variable.key] == variable.key
+                        }
+                        onChange={(e) => {
+                          handleChangeTaskVariables(e, variable);
+                        }}
+                      />
+                    </Col>
+                  ) : null
+                )
+              ) : (
+                !processLoading && (
+                  <div
+                    className="alert alert-primary text-center w-100"
+                    role="alert"
+                  >
+                    {t("No task variables found")}
+                  </div>
+                )
+              )
+            ) : (
+              <div
+                className="alert alert-primary text-center w-100"
+                role="alert"
+              >
+                {t(
+                  "To display task variables, select a form as part of the filter"
+                )}
+              </div>
+            )}
           </div>
-          }
-          </Row>
         </Form>
       </Modal.Body>
       <Modal.Footer>
-        <button className="btn btn-secondary" onClick={onHide}>
+        <button className="btn btn-link text-dark " onClick={onHide}>
           {t("Cancel")}
         </button>
-        <button className="btn btn-primary" onClick={onHide}>
+        <button className="btn btn-primary" onClick={handleSave}>
           {t("Save")}
         </button>
       </Modal.Footer>

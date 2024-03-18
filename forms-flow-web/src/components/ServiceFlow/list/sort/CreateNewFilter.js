@@ -88,7 +88,7 @@ export default function CreateNewFilterDrawer({
   const [specificUserGroup, setSpecificUserGroup] = useState("");
   const firstResult = useSelector((state) => state.bpmTasks.firstResult);
   const tenantKey = useSelector((state) => state.tenants?.tenantId);
-  const process = useSelector((state) => state.process.processList);
+  const process = useSelector((state) => state.process?.processList);
   const processList = listProcess(process, true);
   const userGroups = useSelector(
     (state) => state.userAuthorization?.userGroups

@@ -131,14 +131,6 @@ function TaskAttributeComponent({
               />
               <Form.Check
                 type="checkbox"
-                label={t("Task Title")}
-                name="taskTitle"
-                checked={checkboxes.taskTitle}
-                onChange={handleCheckboxChange}
-                className="m-2"
-              />
-              <Form.Check
-                type="checkbox"
                 label={t("Created Date")}
                 name="createdDate"
                 checked={checkboxes.createdDate}
@@ -168,14 +160,6 @@ function TaskAttributeComponent({
                 label={t("Priority")}
                 name="priority"
                 checked={checkboxes.priority}
-                onChange={handleCheckboxChange}
-                className="m-2"
-              />
-              <Form.Check
-                type="checkbox"
-                label={t("Groups")}
-                name="groups"
-                checked={checkboxes.groups}
                 onChange={handleCheckboxChange}
                 className="m-2"
               />

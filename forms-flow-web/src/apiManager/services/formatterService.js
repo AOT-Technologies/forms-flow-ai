@@ -166,11 +166,10 @@ export const copyText = (text)=>{
     textArea.remove();
 });
 };
-
-export const listProcess = (processes) => {
+export const listProcess = (processes, excludeProcessKey) => {
   if (processes?.length > 0) {
     const data = processes.map((process) => {
-      const fullLabel = process.name + ` (${process.key})`;
+      const fullLabel = !excludeProcessKey ? process.name + ` (${process.key})` : process.name;
       return {
         label: fullLabel,
         value: process.key,

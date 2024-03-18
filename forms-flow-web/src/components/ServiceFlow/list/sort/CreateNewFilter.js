@@ -4,6 +4,8 @@ import Drawer from "@material-ui/core/Drawer";
 import List from "@material-ui/core/List";
 import Divider from "@material-ui/core/Divider";
 import Select from "react-select";
+import { fetchAllBpmProcesses } from "../../../../apiManager/services/processServices";
+import { listProcess } from "../../../../apiManager/services/formatterService";
 
 import {
   deleteFilters,
@@ -48,7 +50,7 @@ import {
   resetFormProcessData,
 } from "../../../../apiManager/services/processServices";
 
-const initialValueOfTaskAttribute  = {
+const initialValueOfTaskAttribute = {
   applicationId: true,
   assignee: true,
   taskTitle: true,
@@ -86,6 +88,8 @@ export default function CreateNewFilterDrawer({
   const [specificUserGroup, setSpecificUserGroup] = useState("");
   const firstResult = useSelector((state) => state.bpmTasks.firstResult);
   const tenantKey = useSelector((state) => state.tenants?.tenantId);
+  const process = useSelector((state) => state.process.processList);
+  const processList = listProcess(process, true);
   const userGroups = useSelector(
     (state) => state.userAuthorization?.userGroups
   );
@@ -184,7 +188,7 @@ export default function CreateNewFilterDrawer({
       if (selectedFilterData?.properties?.formId) {
         setSelectedForm(selectedFilterData?.properties?.formId || null);
         setProcessLoading(true);
-        dispatch(getFormProcesses(selectedFilterData?.properties?.formId,()=>{
+        dispatch(getFormProcesses(selectedFilterData?.properties?.formId, () => {
           setProcessLoading(false);
         }));
       }
@@ -274,7 +278,7 @@ export default function CreateNewFilterDrawer({
   const onChangeSelectForm = (e) => {
     if (e?.value) {
       setProcessLoading(true);
-      dispatch(getFormProcesses(e.value,()=>{
+      dispatch(getFormProcesses(e.value, () => {
         setProcessLoading(false);
       }));
       if (e?.value === selectedFilterData?.properties?.formId) {
@@ -512,6 +516,7 @@ export default function CreateNewFilterDrawer({
   };
 
   const toggleDrawer = () => {
+    dispatch(fetchAllBpmProcesses());
     setOpenFilterDrawer(!openFilterDrawer);
     !openFilterDrawer ? setFilterSelectedForEdit(false) : null;
   };
@@ -620,27 +625,26 @@ export default function CreateNewFilterDrawer({
         )}
 
         <h5 className="mt-2 fs-18">
-          <Translation>{(t) => t("Definition Key")}</Translation>
+          <Translation>{(t) => t("Workflow")}</Translation>
         </h5>
-        {!definitionKeyId && (
-          <span
-            className="px-1 py-1 cursor-pointer text-decoration-underline truncate-size"
-            onClick={() => handleSpanClick(1)}
-          >
-            <i className="fa fa-plus-circle mr-6" />
-            <Translation>{(t) => t("Add Value")}</Translation>
-          </span>
-        )}
-        {(inputVisibility[1] || definitionKeyId) && (
-          <input
-            type="text"
-            className="criteria-add-value-inputbox"
-            value={definitionKeyId}
-            name="definitionKeyId"
-            onChange={(e) => setDefinitionKeyId(e.target.value)}
-            title={t("Definition Key")}
-          />
-        )}
+        <Select
+          className="mb-3"
+          options={processList}
+          value={
+            processList?.find(
+              (list) => list.label === definitionKeyId
+            )
+          }
+          onChange={(selectedOption) => {
+            let Name = selectedOption.label;
+            setDefinitionKeyId(Name);
+          }
+          }
+          inputId="select-workflow"
+          getOptionLabel={(option) => (
+            <span data-testid={`form-workflow-option-${option.value}`}>{option.label}</span>
+          )}
+        />
         <h5 className="pt-2">
           <Translation>{(t) => t("Candidate Group")}</Translation>
         </h5>
@@ -817,7 +821,7 @@ export default function CreateNewFilterDrawer({
           </label>{" "}
           <br />
           {permissions === SPECIFIC_USER_OR_GROUP &&
-          specificUserGroup === SPECIFIC_USER_OR_GROUP ? (
+            specificUserGroup === SPECIFIC_USER_OR_GROUP ? (
             <div className="d-flex">
               {/* <OverlayTrigger
                 placement="right"
@@ -895,9 +899,8 @@ export default function CreateNewFilterDrawer({
                   </div>
                   <div className="text-center text-bottom">
                     <i
-                      className={`fa fa-users ${
-                        selectUserGroupIcon === "group" ? "highlight" : ""
-                      } cursor-pointer group-icon`}
+                      className={`fa fa-users ${selectUserGroupIcon === "group" ? "highlight" : ""
+                        } cursor-pointer group-icon`}
                     />
                   </div>
                 </div>
@@ -957,8 +960,7 @@ export default function CreateNewFilterDrawer({
             >
               <Translation>
                 {(t) =>
-                  `${
-                    selectedFilterData ? t("Save Filter") : t("Create Filter")
+                  `${selectedFilterData ? t("Save Filter") : t("Create Filter")
                   } `
                 }
               </Translation>

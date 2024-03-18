@@ -43,7 +43,22 @@ import {
   MULTITENANCY_ENABLED,
 } from "../../../../constants/constants";
 import { fetchAllForms } from "../../../../apiManager/services/bpmFormServices";
-import { getFormProcesses, resetFormProcessData } from "../../../../apiManager/services/processServices";
+import {
+  getFormProcesses,
+  resetFormProcessData,
+} from "../../../../apiManager/services/processServices";
+
+const initialValueOfTaskAttribute  = {
+  applicationId: true,
+  assignee: true,
+  taskTitle: true,
+  createdDate: true,
+  dueDate: true,
+  followUp: true,
+  priority: true,
+  groups: true,
+};
+
 export default function CreateNewFilterDrawer({
   selectedFilterData,
   openFilterDrawer,
@@ -87,9 +102,10 @@ export default function CreateNewFilterDrawer({
   const filterList = useSelector((state) => state.bpmTasks.filterList);
 
   const [variables, setVariables] = useState([]);
-   const [forms, setForms] = useState({ data: [], isLoading: true });
+  const [forms, setForms] = useState({ data: [], isLoading: true });
   const [selectedForm, setSelectedForm] = useState(null);
   const [taskVariablesKeys, setTaskVariablesKeys] = useState({});
+  const [processLoading, setProcessLoading] = useState(false);
 
   const [overlayGroupShow, setOverlayGroupShow] = useState(false);
   const [overlayUserShow, setOverlayUserShow] = useState(false);
@@ -98,17 +114,7 @@ export default function CreateNewFilterDrawer({
 
   const { t } = useTranslation();
   const [modalShow, setModalShow] = useState(false);
-  const [checkboxes, setCheckboxes] = useState({
-    applicationId: true,
-    assignee: true,
-    createdDate: true,
-    dueDate: true,
-    followUp: true,
-    priority: true,
-  });
-  const taskAttributesCount = Object.values(checkboxes).filter(
-    (value) => value === true
-  ).length;
+  const [checkboxes, setCheckboxes] = useState(initialValueOfTaskAttribute);
 
   const fetchTasks = (resData) => {
     const reqParamData = {
@@ -141,6 +147,17 @@ export default function CreateNewFilterDrawer({
     return inputString;
   };
 
+  const setTaskVariablesAndItsKeys = (variables = []) => {
+    setVariables(variables);
+    // taking variable names to check it is already exist or not
+    setTaskVariablesKeys(
+      variables.reduce((i, variable) => {
+        i[variable.name] = variable.name;
+        return i;
+      }, {})
+    );
+  };
+
   useEffect(() => {
     if (selectedFilterData) {
       setFilterName(selectedFilterData?.name);
@@ -163,16 +180,16 @@ export default function CreateNewFilterDrawer({
       setShowUndefinedVariable(
         selectedFilterData?.properties?.showUndefinedVariable
       );
-     
-      setSelectedForm(selectedFilterData?.properties?.formId || null);
-      setVariables(selectedFilterData.variables || []);
-      if(selectedFilterData.variables){
-        // taking variable names to check it is already exist or not 
-        setTaskVariablesKeys(selectedFilterData.variables.reduce((i,variable)=>{
-          i[variable.name] = variable.name;
-          return i;
-        },{}));
+
+      if (selectedFilterData?.properties?.formId) {
+        setSelectedForm(selectedFilterData?.properties?.formId || null);
+        setProcessLoading(true);
+        dispatch(getFormProcesses(selectedFilterData?.properties?.formId,()=>{
+          setProcessLoading(false);
+        }));
       }
+
+      setTaskVariablesAndItsKeys(selectedFilterData.variables);
 
       if (
         !selectedFilterData?.users?.length &&
@@ -202,9 +219,10 @@ export default function CreateNewFilterDrawer({
       }
 
       // if the user has this role then we will check the condition else it will always true
-      if(userRoles.includes(FORMSFLOW_ADMIN)){
-        setIsTasksForCurrentUserGroupsEnabled(selectedFilterData?.criteria?.
-          candidateGroupsExpression ? true : false);
+      if (userRoles.includes(FORMSFLOW_ADMIN)) {
+        setIsTasksForCurrentUserGroupsEnabled(
+          selectedFilterData?.criteria?.candidateGroupsExpression ? true : false
+        );
       }
 
       setCheckboxes({
@@ -245,42 +263,31 @@ export default function CreateNewFilterDrawer({
     }
   }, [openFilterDrawer]);
 
-  //if a form selected then need fetch it's task variable
-  useEffect(() => {
-    if (selectedForm) {
-      dispatch(getFormProcesses(selectedForm));
-    }else{
-      dispatch(resetFormProcessData());
-    }
-  }, [selectedForm]);
-
-
-
-  /**
-   * Handles changing the selected task variables.
-   *
-   * When a variable is checked, adds it to the variables array.
-   * When a variable is unchecked, removes it from the variables array.
-   * Also updates the taskVariablesKeys object with the checked state.
-   */
-  const handleChangeTaskVariables = (e, variable) => {
-    const { checked } = e.target;
-    if (checked) {
-      setVariables((prev) => [
-        ...prev,
-        { name: variable.key, label: variable.label },
-      ]);
-    } else {
-      setVariables((prev) => prev.filter((i) => i.name !== variable.key));
-    }
-    setTaskVariablesKeys((prev) => ({
-      ...prev,
-      [variable.key]: checked ? variable.key : null,
-    }));
+  const resetVariables = () => {
+    setVariables([]);
+    setTaskVariablesKeys({
+      applicationId: "applicationId",
+      formName: "formName",
+    });
   };
 
-
- 
+  const onChangeSelectForm = (e) => {
+    if (e?.value) {
+      setProcessLoading(true);
+      dispatch(getFormProcesses(e.value,()=>{
+        setProcessLoading(false);
+      }));
+      if (e?.value === selectedFilterData?.properties?.formId) {
+        setTaskVariablesAndItsKeys(selectedFilterData?.variables);
+      } else {
+        resetVariables();
+      }
+    } else {
+      resetVariables();
+      dispatch(resetFormProcessData());
+    }
+    setSelectedForm(e?.value);
+  };
 
   const successCallBack = (resData) => {
     dispatch(
@@ -335,7 +342,8 @@ export default function CreateNewFilterDrawer({
     setIsMyTasksEnabled(false);
     setSelectedForm(null);
     dispatch(resetFormProcessData());
-    setForms({data:[], isLoading:true});
+    setCheckboxes(initialValueOfTaskAttribute);
+    setForms({ data: [], isLoading: true });
   };
 
   const handleSubmit = () => {
@@ -370,7 +378,7 @@ export default function CreateNewFilterDrawer({
 
     const data = {
       name: filterName,
-       criteria: {
+      criteria: {
         processDefinitionNameLike: definitionKeyId && `%${definitionKeyId}%`,
         candidateGroup:
           MULTITENANCY_ENABLED && candidateGroup
@@ -519,39 +527,45 @@ export default function CreateNewFilterDrawer({
     setCandidateGroup(data);
   };
 
-
+  const onSaveTaskAttribute = (
+    taskVariablesKeys,
+    variables,
+    checkboxes,
+    showUndefinedVariable
+  ) => {
+    setVariables(variables);
+    setTaskVariablesKeys(taskVariablesKeys);
+    setCheckboxes(checkboxes);
+    setShowUndefinedVariable(showUndefinedVariable);
+  };
 
   const list = () => (
-    <div className="filter-list" role="presentation">
+    <div role="presentation">
       <List>
         <div className="p-0 d-flex align-items-center justify-content-between ">
           <h5 className="fw-bold fs-16">
             <Translation>{(t) => t("Create new filter")}</Translation>
           </h5>
-          <span
-            className="cursor-pointer truncate-size"
-            onClick={() => {
-              toggleDrawer();
-            }}
-          >
+          <button className="btn btn-link text-dark" onClick={toggleDrawer}>
             <Translation>{(t) => t("Close")}</Translation>
-          </span>
+          </button>
         </div>
       </List>
       <List>
-        <h5 className="fw-bold fs-18">
-          <Translation>{(t) => t("Filter Name")}</Translation>
-        </h5>
-        <input
-          type="text"
-          placeholder={t("Enter your text here")}
-          className="filter-name-textfeild"
-          value={filterName}
-          onChange={(e) => setFilterName(e.target.value)}
-          title={t("Add fliter name")}
-        />
+        <div className="form-group">
+          <label htmlFor="filterName">{t("Filter Name")}</label>
+          <input
+            type="text"
+            className="form-control"
+            id="filterName"
+            placeholder={t("Enter your text here")}
+            value={filterName}
+            onChange={(e) => setFilterName(e.target.value)}
+            title={t("Add fliter name")}
+          />
+        </div>
       </List>
-      <Divider />
+
       <List>
         <h5 className="fw-bold fs-18">
           <Translation>{(t) => t("Criteria")}</Translation>{" "}
@@ -604,8 +618,6 @@ export default function CreateNewFilterDrawer({
             ) : null}
           </>
         )}
-
-     
 
         <h5 className="mt-2 fs-18">
           <Translation>{(t) => t("Definition Key")}</Translation>
@@ -721,8 +733,22 @@ export default function CreateNewFilterDrawer({
             </h5>
           </div>
         ) : null}
-        <Divider />
+
         <div className="my-3">
+          <Divider />
+          <div className="my-3">
+            <h5 className="fw-bold ">
+              <Translation>{(t) => t("Select Form")}</Translation>
+            </h5>
+            <Select
+              onChange={onChangeSelectForm}
+              value={forms?.data.find((form) => form.value === selectedForm)}
+              isClearable
+              placeholder={t("select...")}
+              options={forms?.data}
+              isLoading={forms.isLoading}
+            />
+          </div>
           <h5 className="fw-bold ">
             <Translation>{(t) => t("Task Attributes")}</Translation>
             <i
@@ -732,26 +758,13 @@ export default function CreateNewFilterDrawer({
               className="fa fa-info-circle ms-2 filter-tooltip-icon"
             ></i>
           </h5>
-          <div className="my-2">
-          <Select
-            onChange={(e)=>{setSelectedForm(e?.value);}}
-            value={
-              forms?.data.find(
-                (form) => form.value === selectedForm
-              )
-            }
-            isClearable
-            placeholder={t("select a form")}
-            options={forms?.data}
-            isLoading={forms.isLoading}
-          />
-        </div>
-            <button className="btn btn-outline-primary w-100" onClick={toggleModal}>{
-              taskAttributesCount === 0
-                ? t("Select Elements")
-                : taskAttributesCount + t(" Task Attributes Selected")
-            }</button>
-          
+
+          <button
+            className="btn btn-outline-primary w-100"
+            onClick={toggleModal}
+          >
+            {t("Click here to select attributes")}
+          </button>
         </div>
         <Divider />
         <div className="child-container-two pt-2">
@@ -909,8 +922,7 @@ export default function CreateNewFilterDrawer({
             </div>
           ) : null}
         </div>
-        
-       
+
         <Divider />
       </List>
 
@@ -972,14 +984,14 @@ export default function CreateNewFilterDrawer({
           <div>
             <TaskAttributeComponent
               show={modalShow}
+              processLoading={processLoading}
               selectedForm={selectedForm}
               onHide={toggleModal}
-              checkboxes={checkboxes}
-              selectedTaskVariables={taskVariablesKeys}
-              handleChangeTaskVariables={handleChangeTaskVariables}
-              setCheckboxes={setCheckboxes} 
+              selectedTaskAttrbutes={checkboxes}
+              selectedTaskVariablesKeys={taskVariablesKeys}
+              selectedTaskVariables={variables}
+              onSaveTaskAttribute={onSaveTaskAttribute}
               showUndefinedVariable={showUndefinedVariable}
-              setShowUndefinedVariable={setShowUndefinedVariable}
             />
           </div>
         )}
@@ -1003,7 +1015,7 @@ export default function CreateNewFilterDrawer({
             width: 100,
           }}
         >
-          {list("le ft")}
+          {list()}
         </Drawer>
       </React.Fragment>
     </div>

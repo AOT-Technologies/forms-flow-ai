@@ -360,12 +360,12 @@ const WorkFlow = React.memo(
                   </div>
                 )}
 
-                {showTaskVaribleCrete && (
+                {(showTaskVaribleCrete && !selectAllFormFields) ?  (
                   <TaskvariableCreate
                     options={keyOfVariable}
                     addTaskVariable={addTaskVariable}
                   />
-                )}
+                ) : null }
 
                 {!selectAllFormFields && keyOfVariable.length !== 0 && (
                   <Button

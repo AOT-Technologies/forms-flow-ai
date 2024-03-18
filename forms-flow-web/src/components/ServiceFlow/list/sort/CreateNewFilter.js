@@ -32,10 +32,8 @@ import { toast } from "react-toastify";
 import { getUserRoles } from "../../../../apiManager/services/authorizationService";
 import {
   setUserGroups,
-  // setUserRoles,
 } from "../../../../actions/authorizationActions";
 import { Badge, ListGroup, OverlayTrigger, Popover } from "react-bootstrap";
-// import { fetchUsers } from "../../../../apiManager/services/userservices";
 import { trimFirstSlash } from "../../constants/taskConstants";
 import { cloneDeep } from "lodash";
 import {
@@ -47,6 +45,8 @@ import {
   getFormProcesses,
   resetFormProcessData,
 } from "../../../../apiManager/services/processServices";
+import { fetchUserList } from "../../../../apiManager/services/bpmTaskServices";
+
 
 const initialValueOfTaskAttribute  = {
   applicationId: true,
@@ -246,8 +246,11 @@ export default function CreateNewFilterDrawer({
       .catch((error) => console.error("error", error));
   }, []);
 
-  // if the create new filter open then need to fetch all forms
   useEffect(() => {
+    if (openFilterDrawer) {
+      dispatch(fetchUserList());
+    }
+    // if the create new filter open then need to fetch all forms
     if (openFilterDrawer && !forms?.data?.length) {
       fetchAllForms()
         .then((res) => {
@@ -519,12 +522,27 @@ export default function CreateNewFilterDrawer({
   const toggleModal = () => {
     setModalShow(!modalShow);
     setOpenFilterDrawer(!openFilterDrawer);
+
   };
 
-  const handleCandidateGroup = (data) => {
-    data = trimFirstSlash(data);
-    setOverlayCandidateGroupShow(!overlayCandidateGroupShow);
-    setCandidateGroup(data);
+  const candidateGroups = useSelector((state) => state.user?.userDetail?.groups || []);
+  const userListResponse = useSelector((state) => state.bpmTasks.userList) || { data: [] };
+  const userList = userListResponse?.data || [];
+  const assigneeOptions = userList.map(user => ({
+    value: `${user.firstName} ${user.lastName}`,
+    label: `${user.firstName} ${user.lastName}`
+  }));
+
+  const candidateOptions = candidateGroups.map(group => ({
+    value: group,
+    label: trimFirstSlash(group)
+  }));
+
+  const handleAssignee = selectedOption => {
+    setAssignee(selectedOption ? selectedOption.value : null);
+  };
+  const handleCandidate = selectedOption => {
+    setCandidateGroup(selectedOption ? selectedOption.value : null);
   };
 
   const onSaveTaskAttribute = (
@@ -641,86 +659,36 @@ export default function CreateNewFilterDrawer({
             title={t("Definition Key")}
           />
         )}
-        <h5 className="pt-2">
-          <Translation>{(t) => t("Candidate Group")}</Translation>
-        </h5>
+        <List>
+  <h5 className="fw-bold">
+    <Translation>{(t) => t("Candidate Group")}</Translation>
+  </h5>
+</List>
+<Select
+  onChange={handleCandidate}
+  value={candidateGroup ? { value: candidateGroup, label: candidateGroup } : null}
+  isClearable={true}
+  placeholder="Select Candidate Group"
+  options={candidateOptions}
+/>
 
-        <OverlayTrigger
-          placement="right"
-          trigger="click"
-          rootClose={true}
-          show={overlayCandidateGroupShow}
-          overlay={
-            <Popover className="z-index">
-              <div className="poper">
-                <ListGroup>
-                  {userGroups?.length > 0 &&
-                    userGroups?.map((e, i) => (
-                      <ListGroup.Item
-                        key={i}
-                        as="button"
-                        onClick={() => handleCandidateGroup(e.name)}
-                      >
-                        {e.name}
-                      </ListGroup.Item>
-                    ))}
-                </ListGroup>
-              </div>
-            </Popover>
-          }
-        >
-          <span
-            onClick={() => handleSpanClick(2)}
-            className="px-1 py-1 cursor-pointer text-decoration-underline truncate-size"
-          >
-            <i className="fa fa-plus-circle mr-6" />
-            <Translation>{(t) => t("Add Value")}</Translation>
-          </span>
-        </OverlayTrigger>
-        {candidateGroup && (
-          <div className="d-flex">
-            <Badge
-              pill
-              variant="outlined"
-              className="d-flex align-items-center badge me-2 mt-2"
-            >
-              {candidateGroup}
-              <div
-                className="badge-deleteIcon ms-2"
-                onClick={() => {
-                  setCandidateGroup(null);
-                  setIncludeAssignedTasks(false);
-                }}
-              >
-                &times;
-              </div>
-            </Badge>
-          </div>
-        )}
-        <h5 className="pt-2">
+    <List>
+    <h5 className="pt-2 fw-bold">
           <Translation>{(t) => t("Assignee")}</Translation>
-        </h5>
-        {!assignee && (
-          <span
-            className="px-1 py-1 cursor-pointer text-decoration-underline truncate-size"
-            onClick={() => handleSpanClick(3)}
-          >
-            <i className="fa fa-plus-circle mr-6" />
-            <Translation>{(t) => t("Add Value")}</Translation>
-          </span>
-        )}
-        {(inputVisibility[3] || assignee) && (
-          <input
-            type="text"
-            className="criteria-add-value-inputbox"
-            value={assignee}
-            onChange={(e) => setAssignee(e.target.value)}
-            title={t("Assignee")}
-          />
-        )}
+       </h5>
+       </List> 
+        
+       
+       <Select
+        onChange={handleAssignee}
+        value={assignee ? { value: assignee, label: assignee } : null}
+        isClearable={true}
+        placeholder="Select Assignee"
+        options={assigneeOptions}
+      />
 
         {candidateGroup?.length ? (
-          <div className="d-flex align-items-center input-container">
+          <div className="d-flex align-items-center input-container mt-2">
             <input
               className="mr-6"
               type="checkbox"

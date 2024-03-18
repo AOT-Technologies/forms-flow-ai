@@ -89,7 +89,7 @@ export default function CreateNewFilterDrawer({
   const firstResult = useSelector((state) => state.bpmTasks.firstResult);
   const tenantKey = useSelector((state) => state.tenants?.tenantId);
   const process = useSelector((state) => state.process?.processList);
-  const processList = useMemo( () => listProcess(process, true), [process] ); 
+  const processList = useMemo(() => listProcess(process, true), [process]);
   const userGroups = useSelector(
     (state) => state.userAuthorization?.userGroups
   );
@@ -250,8 +250,11 @@ export default function CreateNewFilterDrawer({
       .catch((error) => console.error("error", error));
   }, []);
 
-  // if the create new filter open then need to fetch all forms
   useEffect(() => {
+    if (openFilterDrawer) {
+      dispatch(fetchAllBpmProcesses());
+    }
+    // if the create new filter open then need to fetch all forms
     if (openFilterDrawer && !forms?.data?.length) {
       fetchAllForms()
         .then((res) => {
@@ -516,7 +519,6 @@ export default function CreateNewFilterDrawer({
   };
 
   const toggleDrawer = () => {
-    dispatch(fetchAllBpmProcesses());
     setOpenFilterDrawer(!openFilterDrawer);
     !openFilterDrawer ? setFilterSelectedForEdit(false) : null;
   };

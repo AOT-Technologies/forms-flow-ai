@@ -277,7 +277,14 @@ export default function CreateNewFilterDrawer({
       formName: "formName",
     });
   };
-
+  const onworkflowchange = (e) => {
+    if (e?.value) {
+      setDefinitionKeyId(e.value);
+    }
+    else {
+      resetVariables();
+    }
+  }
   const onChangeSelectForm = (e) => {
     if (e?.value) {
       setProcessLoading(true);
@@ -632,14 +639,14 @@ export default function CreateNewFilterDrawer({
         <Select
           className="mb-3"
           options={processList}
+          isClearable
           value={
             processList?.find(
               (list) => list.label === definitionKeyId
             )
           }
           onChange={(selectedOption) => {
-            let Name = selectedOption.label;
-            setDefinitionKeyId(Name);
+            onworkflowchange(selectedOption);
           }
           }
           inputId="select-workflow"

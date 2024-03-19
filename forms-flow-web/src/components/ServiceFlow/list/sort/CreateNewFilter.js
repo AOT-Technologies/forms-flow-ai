@@ -283,7 +283,7 @@ export default function CreateNewFilterDrawer({
     }
     else {
       resetVariables();
-    };
+    }
   };
   const onChangeSelectForm = (e) => {
     if (e?.value) {

@@ -39,7 +39,7 @@ import {
 import { Badge, ListGroup, OverlayTrigger, Popover } from "react-bootstrap";
 // import { fetchUsers } from "../../../../apiManager/services/userservices";
 import { trimFirstSlash } from "../../constants/taskConstants";
-import { cloneDeep } from "lodash";
+import { cloneDeep, omitBy } from "lodash";
 import {
   FORMSFLOW_ADMIN,
   MULTITENANCY_ENABLED,
@@ -251,6 +251,7 @@ export default function CreateNewFilterDrawer({
   }, []);
 
   useEffect(() => {
+    // if the create new filter open then need to fetch all bpm process
     if (openFilterDrawer) {
       dispatch(fetchAllBpmProcesses());
     }
@@ -419,14 +420,10 @@ export default function CreateNewFilterDrawer({
     }
 
     // Remove empty keys inside criteria
-    for (const key in data.criteria) {
-      if (
-        Object.prototype.hasOwnProperty.call(data.criteria, key) &&
-        (data.criteria[key] === undefined || data.criteria[key] === "")
-      ) {
-        delete data.criteria[key];
-      }
-    }
+    const cleanedCriteria = omitBy(data.criteria, value => 
+      value === undefined || value === '' || value === null
+    );
+    data.criteria = cleanedCriteria;
 
     const submitFunction = selectedFilterData
       ? editFilters(data, selectedFilterData?.id)
@@ -638,10 +635,10 @@ export default function CreateNewFilterDrawer({
             )
           }
           onChange={(selectedOption) => {
-            let Name = selectedOption.label;
-            setDefinitionKeyId(Name);
+            setDefinitionKeyId(selectedOption?.label);
           }
           }
+          isClearable
           inputId="select-workflow"
           getOptionLabel={(option) => (
             <span data-testid={`form-workflow-option-${option.value}`}>{option.label}</span>

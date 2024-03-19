@@ -272,7 +272,7 @@ class UserPermission(Resource):
 
 @cors_preflight("POST, OPTIONS")
 @API.route(
-    "/add-tenant-user",
+    "/add-user",
     methods=["POST", "OPTIONS"],
 )
 class TenantAddUser(Resource):

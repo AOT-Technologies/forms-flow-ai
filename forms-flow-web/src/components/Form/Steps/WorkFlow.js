@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import utils from "formiojs/utils";
 import { Button, Card, Table } from "react-bootstrap";
 import Select from "react-select";
@@ -95,6 +95,17 @@ const WorkFlow = React.memo(
       }
     }, [workflow, dispatch]);
 
+    const updateTaskvariableToProcessData = useCallback((updatedData) => {
+      dispatch(
+        setFormProcessesData({
+          ...formProcessList,
+          processKey: workflow.value, 
+          processName: workflow.label,
+          ...updatedData,
+        })
+      );
+    }, [dispatch, formProcessList, workflow.label, workflow.value]);
+
     useEffect(() => {
       if (selectAllFormFields) {
         const selectedFields = componentLabel?.map((component) => ({
@@ -104,13 +115,7 @@ const WorkFlow = React.memo(
         }));
         setSelectedTaskVariable(selectedFields);
         setKeyOfVariable([]);
-        dispatch(
-          setFormProcessesData({
-            ...formProcessList,
-            selectedAllField: true,
-            taskVariable: selectedFields,
-          })
-        );
+        updateTaskvariableToProcessData({selectedAllField:true,taskVariable: selectedFields});
       }
     }, [
       selectAllFormFields,
@@ -133,13 +138,8 @@ const WorkFlow = React.memo(
       if (!checked) {
         setSelectedTaskVariable(previousFormProcessList?.taskVariable || []);
         resetKeys(previousFormProcessList?.taskVariable);
-        dispatch(
-          setFormProcessesData({
-            ...formProcessList,
-            selectedAllField: false,
-            taskVariable: previousFormProcessList?.taskVariable,
-          })
-        );
+        updateTaskvariableToProcessData({selectedAllField: false,
+          taskVariable: previousFormProcessList?.taskVariable,});
       }
     };
 
@@ -149,12 +149,10 @@ const WorkFlow = React.memo(
       });
       resetKeys([...selectedTaskVariable, data]);
       setShowTaskVaribleCrete(false);
-      dispatch(
-        setFormProcessesData({
-          ...formProcessList,
+      updateTaskvariableToProcessData({
           taskVariable: [...selectedTaskVariable, data],
-        })
-      );
+        });
+    
     };
 
     // delete task variable
@@ -167,28 +165,24 @@ const WorkFlow = React.memo(
         { label: data.defaultLabel, value: data.key },
       ]);
 
-      dispatch(
-        setFormProcessesData({
-          ...formProcessList,
+      updateTaskvariableToProcessData({
           taskVariable: selectedTaskVariable.filter(
             (item) => item.key !== data.key
           ),
-        })
-      );
+        });
+       
     };
 
     const editTaskVariable = (data) => {
       setSelectedTaskVariable((prev) => {
         return prev.map((item) => (item.key === data.key ? { ...data } : item));
       });
-      dispatch(
-        setFormProcessesData({
-          ...formProcessList,
+  
+      updateTaskvariableToProcessData({ 
           taskVariable: selectedTaskVariable.map((variable) =>
             variable.key === data.key ? { ...data } : variable
           ),
-        })
-      );
+        });
     };
 
     const handleChange = (tabNumber) => {

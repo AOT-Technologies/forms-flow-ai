@@ -522,10 +522,13 @@ export default function CreateNewFilterDrawer({
       label: `${user.firstName} ${user.lastName}`
     }));
   }, [userList]);
-  const candidateOptions = candidateGroups.map(group => ({
+
+  const candidateOptions = useMemo(() => {
+    return candidateGroups.map(group => ({
     value: group,
     label: trimFirstSlash(group)
   }));
+}, [candidateGroups]);
 
   const handleAssignee = selectedOption => {
     setAssignee(selectedOption ? selectedOption.value : null);

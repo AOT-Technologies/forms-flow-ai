@@ -32,9 +32,7 @@ import {
 import TaskAttributeComponent from "./TaskAttributeComponent";
 import { toast } from "react-toastify";
 import { getUserRoles } from "../../../../apiManager/services/authorizationService";
-import {
-  setUserGroups,
-} from "../../../../actions/authorizationActions";
+import { setUserGroups } from "../../../../actions/authorizationActions";
 import { Badge, ListGroup, OverlayTrigger, Popover } from "react-bootstrap";
 import { trimFirstSlash } from "../../constants/taskConstants";
 import { cloneDeep, omitBy } from "lodash";
@@ -48,7 +46,6 @@ import {
   resetFormProcessData,
 } from "../../../../apiManager/services/processServices";
 import { fetchUserList } from "../../../../apiManager/services/bpmTaskServices";
-
 
 const initialValueOfTaskAttribute = {
   applicationId: true,
@@ -74,7 +71,6 @@ export default function CreateNewFilterDrawer({
   const [candidateGroup, setCandidateGroup] = useState([]);
   const userRoles = useSelector((state) => state.user.roles || []);
   const [assignee, setAssignee] = useState("");
-  const [includeAssignedTasks, setIncludeAssignedTasks] = useState(false);
 
   const [
     isTasksForCurrentUserGroupsEnabled,
@@ -112,7 +108,6 @@ export default function CreateNewFilterDrawer({
 
   const [overlayGroupShow, setOverlayGroupShow] = useState(false);
   const [overlayUserShow, setOverlayUserShow] = useState(false);
- 
 
   const { t } = useTranslation();
   const [modalShow, setModalShow] = useState(false);
@@ -176,9 +171,6 @@ export default function CreateNewFilterDrawer({
       }
       setCandidateGroup(candidateGroupName);
       setAssignee(selectedFilterData?.criteria?.assignee);
-      setIncludeAssignedTasks(
-        selectedFilterData?.criteria?.includeAssignedTasks
-      );
       setShowUndefinedVariable(
         selectedFilterData?.properties?.showUndefinedVariable
       );
@@ -186,9 +178,11 @@ export default function CreateNewFilterDrawer({
       if (selectedFilterData?.properties?.formId) {
         setSelectedForm(selectedFilterData?.properties?.formId || null);
         setProcessLoading(true);
-        dispatch(getFormProcesses(selectedFilterData?.properties?.formId, () => {
-          setProcessLoading(false);
-        }));
+        dispatch(
+          getFormProcesses(selectedFilterData?.properties?.formId, () => {
+            setProcessLoading(false);
+          })
+        );
       }
 
       setTaskVariablesAndItsKeys(selectedFilterData.variables);
@@ -280,9 +274,11 @@ export default function CreateNewFilterDrawer({
   const onChangeSelectForm = (e) => {
     if (e?.value) {
       setProcessLoading(true);
-      dispatch(getFormProcesses(e.value, () => {
-        setProcessLoading(false);
-      }));
+      dispatch(
+        getFormProcesses(e.value, () => {
+          setProcessLoading(false);
+        })
+      );
       if (e?.value === selectedFilterData?.properties?.formId) {
         setTaskVariablesAndItsKeys(selectedFilterData?.variables);
       } else {
@@ -338,7 +334,6 @@ export default function CreateNewFilterDrawer({
     setDefinitionKeyId("");
     setCandidateGroup("");
     setAssignee("");
-    setIncludeAssignedTasks("");
     setPermissions(PRIVATE_ONLY_YOU);
     setIdentifierId("");
     setSelectUserGroupIcon("");
@@ -390,7 +385,8 @@ export default function CreateNewFilterDrawer({
             ? tenantKey + "-" + candidateGroup
             : candidateGroup,
         assignee: assignee,
-        includeAssignedTasks: includeAssignedTasks,
+        includeAssignedTasks:
+          isTasksForCurrentUserGroupsEnabled || candidateGroup ? true : null,
       },
       properties: {
         showUndefinedVariable: showUndefinedVariable,
@@ -417,8 +413,9 @@ export default function CreateNewFilterDrawer({
     }
 
     // Remove empty keys inside criteria
-    const cleanedCriteria = omitBy(data.criteria, value =>
-      value === undefined || value === '' || value === null
+    const cleanedCriteria = omitBy(
+      data.criteria,
+      (value) => value === undefined || value === "" || value === null
     );
     data.criteria = cleanedCriteria;
 
@@ -472,12 +469,6 @@ export default function CreateNewFilterDrawer({
     }
   };
 
-
-  //Function For checking  includeAssignedTasksCheckbox is checked or not
-  const includeAssignedTasksCheckboxChange = (e) => {
-    setIncludeAssignedTasks(e.target.checked);
-  };
-
   //Function to checking which icon is selected
   const handleClickUserGroupIcon = (icon) => {
     if (icon === "user") {
@@ -510,30 +501,33 @@ export default function CreateNewFilterDrawer({
   const toggleModal = () => {
     setModalShow(!modalShow);
     setOpenFilterDrawer(!openFilterDrawer);
-
   };
 
-  const candidateGroups = useSelector((state) => state.user?.userDetail?.groups || []);
-  const userListResponse = useSelector((state) => state.bpmTasks.userList) || { data: [] };
+  const candidateGroups = useSelector(
+    (state) => state.user?.userDetail?.groups || []
+  );
+  const userListResponse = useSelector((state) => state.bpmTasks.userList) || {
+    data: [],
+  };
   const userList = userListResponse?.data || [];
   const assigneeOptions = useMemo(() => {
-    return userList.map(user => ({
+    return userList.map((user) => ({
       value: `${user.firstName} ${user.lastName}`,
-      label: `${user.firstName} ${user.lastName}`
+      label: `${user.firstName} ${user.lastName}`,
     }));
   }, [userList]);
 
   const candidateOptions = useMemo(() => {
-    return candidateGroups.map(group => ({
-    value: group,
-    label: trimFirstSlash(group)
-  }));
-}, [candidateGroups]);
+    return candidateGroups.map((group) => ({
+      value: group,
+      label: trimFirstSlash(group),
+    }));
+  }, [candidateGroups]);
 
-  const handleAssignee = selectedOption => {
+  const handleAssignee = (selectedOption) => {
     setAssignee(selectedOption ? selectedOption.value : null);
   };
-  const handleCandidate = selectedOption => {
+  const handleCandidate = (selectedOption) => {
     setCandidateGroup(selectedOption ? selectedOption.value : null);
   };
 
@@ -600,6 +594,7 @@ export default function CreateNewFilterDrawer({
             </Translation>
           </h5>
         </div>
+
         {userRoles.includes(FORMSFLOW_ADMIN) && (
           <>
             <div className="d-flex align-items-center mt-1">
@@ -629,75 +624,59 @@ export default function CreateNewFilterDrawer({
           </>
         )}
 
-        <h5 className="mt-2 fs-18 fw-bold">
-          <Translation>{(t) => t("Workflow")}</Translation>
-        </h5>
-        <Select
-          className="mb-3"
-          options={processList}
-          placeholder={t("Select Workflow")}
-          isClearable
-          value={
-            processList?.find(
-              (list) => list.label === definitionKeyId
-            )
-          }
-          onChange={(selectedOption) => {
-            setDefinitionKeyId(selectedOption?.label);
-          }
-          }
-          inputId="select-workflow"
-          getOptionLabel={(option) => (
-            <span data-testid={`form-workflow-option-${option.value}`}>{option.label}</span>
-          )}
-        />
+        <div className="my-2">
+          <h5 className="mt-2 fs-18 fw-bold">
+            <Translation>{(t) => t("Workflow")}</Translation>
+          </h5>
+          <Select
+            className="mb-3"
+            options={processList}
+            placeholder={t("Select Workflow")}
+            isClearable
+            value={processList?.find((list) => list.label === definitionKeyId)}
+            onChange={(selectedOption) => {
+              setDefinitionKeyId(selectedOption?.label);
+            }}
+            inputId="select-workflow"
+            getOptionLabel={(option) => (
+              <span data-testid={`form-workflow-option-${option.value}`}>
+                {option.label}
+              </span>
+            )}
+          />
+        </div>
 
-
-        <List>
+        <div className="my-2">
           <h5 className="fw-bold">
             <Translation>{(t) => t("Candidate Group")}</Translation>
           </h5>
-        </List>
-        <Select
-          onChange={handleCandidate}
-          value={candidateGroup ? { value: candidateGroup, label: candidateGroup } : null}
-          isClearable={true}
-          placeholder={t("Select Candidate Group")}
-          options={candidateOptions}
-        />
 
+          <Select
+            onChange={handleCandidate}
+            value={
+              candidateGroup
+                ? { value: candidateGroup, label: candidateGroup }
+                : null
+            }
+            isClearable={true}
+            placeholder={t("Select Candidate Group")}
+            options={candidateOptions}
+          />
+        </div>
 
-
-
-        <List>
+        <div className="my-2">
           <h5 className="pt-2 fw-bold">
             <Translation>{(t) => t("Assignee")}</Translation>
           </h5>
-        </List>
 
-
-        <Select
-          onChange={handleAssignee}
-          value={assignee ? { value: assignee, label: assignee } : null}
-          isClearable={true}
-          placeholder={t("Select Assignee")}
-          options={assigneeOptions}
-        />
-
-        {candidateGroup?.length ? (
-          <div className="d-flex align-items-center input-container mt-2">
-            <input
-              className="mr-6"
-              type="checkbox"
-              id="assignedTask-checkbox"
-              checked={includeAssignedTasks}
-              onChange={includeAssignedTasksCheckboxChange}
-            />
-            <h5 className="assigned-user">
-              <Translation>{(t) => t("Include Assigned Task")}</Translation>
-            </h5>
-          </div>
-        ) : null}
+          <Select
+            onChange={handleAssignee}
+            value={assignee ? { value: assignee, label: assignee } : null}
+            isClearable={true}
+            placeholder={t("Select Assignee")}
+            options={assigneeOptions}
+          />
+        </div>
 
         <div className="my-3">
           <Divider />
@@ -782,7 +761,7 @@ export default function CreateNewFilterDrawer({
           </label>{" "}
           <br />
           {permissions === SPECIFIC_USER_OR_GROUP &&
-            specificUserGroup === SPECIFIC_USER_OR_GROUP ? (
+          specificUserGroup === SPECIFIC_USER_OR_GROUP ? (
             <div className="d-flex">
               <OverlayTrigger
                 placement="right"
@@ -819,8 +798,9 @@ export default function CreateNewFilterDrawer({
                   </div>
                   <div className="text-center text-bottom">
                     <i
-                      className={`fa fa-users ${selectUserGroupIcon === "group" ? "highlight" : ""
-                        } cursor-pointer group-icon`}
+                      className={`fa fa-users ${
+                        selectUserGroupIcon === "group" ? "highlight" : ""
+                      } cursor-pointer group-icon`}
                     />
                   </div>
                 </div>
@@ -880,7 +860,8 @@ export default function CreateNewFilterDrawer({
             >
               <Translation>
                 {(t) =>
-                  `${selectedFilterData ? t("Save Filter") : t("Create Filter")
+                  `${
+                    selectedFilterData ? t("Save Filter") : t("Create Filter")
                   } `
                 }
               </Translation>

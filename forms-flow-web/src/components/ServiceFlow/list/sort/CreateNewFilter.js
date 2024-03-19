@@ -70,7 +70,6 @@ export default function CreateNewFilterDrawer({
   const dispatch = useDispatch();
   const [filterName, setFilterName] = useState("");
   const [showUndefinedVariable, setShowUndefinedVariable] = useState(false);
-  const [inputVisibility, setInputVisibility] = useState({});
   const [definitionKeyId, setDefinitionKeyId] = useState("");
   const [candidateGroup, setCandidateGroup] = useState([]);
   const userRoles = useSelector((state) => state.user.roles || []);
@@ -113,8 +112,7 @@ export default function CreateNewFilterDrawer({
 
   const [overlayGroupShow, setOverlayGroupShow] = useState(false);
   const [overlayUserShow, setOverlayUserShow] = useState(false);
-  const [overlayCandidateGroupShow, setOverlayCandidateGroupShow] =
-    useState(false);
+ 
 
   const { t } = useTranslation();
   const [modalShow, setModalShow] = useState(false);
@@ -337,7 +335,6 @@ export default function CreateNewFilterDrawer({
   const clearAllFilters = () => {
     setFilterName("");
     setShowUndefinedVariable("");
-    setInputVisibility("");
     setDefinitionKeyId("");
     setCandidateGroup("");
     setAssignee("");
@@ -475,16 +472,6 @@ export default function CreateNewFilterDrawer({
     }
   };
 
-  // Function for setting visibility of input feild in criteria part
-  const handleSpanClick = (spanId) => {
-    if (spanId === 2) {
-      setOverlayCandidateGroupShow(!overlayCandidateGroupShow);
-    }
-    setInputVisibility((prevVisibility) => ({
-      ...prevVisibility,
-      [spanId]: !prevVisibility[spanId],
-    }));
-  };
 
   //Function For checking  includeAssignedTasksCheckbox is checked or not
   const includeAssignedTasksCheckboxChange = (e) => {

@@ -278,7 +278,7 @@ export default function CreateNewFilterDrawer({
       formName: "formName",
     });
   };
-
+ 
   const onChangeSelectForm = (e) => {
     if (e?.value) {
       setProcessLoading(true);
@@ -629,6 +629,7 @@ export default function CreateNewFilterDrawer({
         <Select
           className="mb-3"
           options={processList}
+          isClearable
           value={
             processList?.find(
               (list) => list.label === definitionKeyId
@@ -638,7 +639,6 @@ export default function CreateNewFilterDrawer({
             setDefinitionKeyId(selectedOption?.label);
           }
           }
-          isClearable
           inputId="select-workflow"
           getOptionLabel={(option) => (
             <span data-testid={`form-workflow-option-${option.value}`}>{option.label}</span>

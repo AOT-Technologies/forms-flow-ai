@@ -1,9 +1,11 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useMemo } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import Drawer from "@material-ui/core/Drawer";
 import List from "@material-ui/core/List";
 import Divider from "@material-ui/core/Divider";
 import Select from "react-select";
+import { fetchAllBpmProcesses } from "../../../../apiManager/services/processServices";
+import { listProcess } from "../../../../apiManager/services/formatterService";
 
 import {
   deleteFilters,
@@ -35,7 +37,7 @@ import {
 } from "../../../../actions/authorizationActions";
 import { Badge, ListGroup, OverlayTrigger, Popover } from "react-bootstrap";
 import { trimFirstSlash } from "../../constants/taskConstants";
-import { cloneDeep } from "lodash";
+import { cloneDeep, omitBy } from "lodash";
 import {
   FORMSFLOW_ADMIN,
   MULTITENANCY_ENABLED,
@@ -48,7 +50,7 @@ import {
 import { fetchUserList } from "../../../../apiManager/services/bpmTaskServices";
 
 
-const initialValueOfTaskAttribute  = {
+const initialValueOfTaskAttribute = {
   applicationId: true,
   assignee: true,
   taskTitle: true,
@@ -86,6 +88,8 @@ export default function CreateNewFilterDrawer({
   const [specificUserGroup, setSpecificUserGroup] = useState("");
   const firstResult = useSelector((state) => state.bpmTasks.firstResult);
   const tenantKey = useSelector((state) => state.tenants?.tenantId);
+  const process = useSelector((state) => state.process?.processList);
+  const processList = useMemo(() => listProcess(process, true), [process]);
   const userGroups = useSelector(
     (state) => state.userAuthorization?.userGroups
   );
@@ -184,7 +188,7 @@ export default function CreateNewFilterDrawer({
       if (selectedFilterData?.properties?.formId) {
         setSelectedForm(selectedFilterData?.properties?.formId || null);
         setProcessLoading(true);
-        dispatch(getFormProcesses(selectedFilterData?.properties?.formId,()=>{
+        dispatch(getFormProcesses(selectedFilterData?.properties?.formId, () => {
           setProcessLoading(false);
         }));
       }
@@ -248,7 +252,8 @@ export default function CreateNewFilterDrawer({
 
   useEffect(() => {
     if (openFilterDrawer) {
-      dispatch(fetchUserList());
+      dispatch(fetchUserList()); // if the create new filter open then need to fetch list of users
+      dispatch(fetchAllBpmProcesses()); // if the create new filter open then need to fetch all bpm process
     }
     // if the create new filter open then need to fetch all forms
     if (openFilterDrawer && !forms?.data?.length) {
@@ -277,7 +282,7 @@ export default function CreateNewFilterDrawer({
   const onChangeSelectForm = (e) => {
     if (e?.value) {
       setProcessLoading(true);
-      dispatch(getFormProcesses(e.value,()=>{
+      dispatch(getFormProcesses(e.value, () => {
         setProcessLoading(false);
       }));
       if (e?.value === selectedFilterData?.properties?.formId) {
@@ -415,14 +420,10 @@ export default function CreateNewFilterDrawer({
     }
 
     // Remove empty keys inside criteria
-    for (const key in data.criteria) {
-      if (
-        Object.prototype.hasOwnProperty.call(data.criteria, key) &&
-        (data.criteria[key] === undefined || data.criteria[key] === "")
-      ) {
-        delete data.criteria[key];
-      }
-    }
+    const cleanedCriteria = omitBy(data.criteria, value =>
+      value === undefined || value === '' || value === null
+    );
+    data.criteria = cleanedCriteria;
 
     const submitFunction = selectedFilterData
       ? editFilters(data, selectedFilterData?.id)
@@ -528,11 +529,12 @@ export default function CreateNewFilterDrawer({
   const candidateGroups = useSelector((state) => state.user?.userDetail?.groups || []);
   const userListResponse = useSelector((state) => state.bpmTasks.userList) || { data: [] };
   const userList = userListResponse?.data || [];
-  const assigneeOptions = userList.map(user => ({
-    value: `${user.firstName} ${user.lastName}`,
-    label: `${user.firstName} ${user.lastName}`
-  }));
-
+  const assigneeOptions = useMemo(() => {
+    return userList.map(user => ({
+      value: `${user.firstName} ${user.lastName}`,
+      label: `${user.firstName} ${user.lastName}`
+    }));
+  }, [userList]);
   const candidateOptions = candidateGroups.map(group => ({
     value: group,
     label: trimFirstSlash(group)
@@ -637,55 +639,60 @@ export default function CreateNewFilterDrawer({
           </>
         )}
 
-        <h5 className="mt-2 fs-18">
-          <Translation>{(t) => t("Definition Key")}</Translation>
+        <h5 className="mt-2 fs-18 fw-bold">
+          <Translation>{(t) => t("Workflow")}</Translation>
         </h5>
-        {!definitionKeyId && (
-          <span
-            className="px-1 py-1 cursor-pointer text-decoration-underline truncate-size"
-            onClick={() => handleSpanClick(1)}
-          >
-            <i className="fa fa-plus-circle mr-6" />
-            <Translation>{(t) => t("Add Value")}</Translation>
-          </span>
-        )}
-        {(inputVisibility[1] || definitionKeyId) && (
-          <input
-            type="text"
-            className="criteria-add-value-inputbox"
-            value={definitionKeyId}
-            name="definitionKeyId"
-            onChange={(e) => setDefinitionKeyId(e.target.value)}
-            title={t("Definition Key")}
-          />
-        )}
-        <List>
-  <h5 className="fw-bold">
-    <Translation>{(t) => t("Candidate Group")}</Translation>
-  </h5>
-</List>
-<Select
-  onChange={handleCandidate}
-  value={candidateGroup ? { value: candidateGroup, label: candidateGroup } : null}
-  isClearable={true}
-  placeholder="Select Candidate Group"
-  options={candidateOptions}
-/>
+        <Select
+          className="mb-3"
+          options={processList}
+          placeholder={t("Select Workflow")}
+          isClearable
+          value={
+            processList?.find(
+              (list) => list.label === definitionKeyId
+            )
+          }
+          onChange={(selectedOption) => {
+            setDefinitionKeyId(selectedOption?.label);
+          }
+          }
+          inputId="select-workflow"
+          getOptionLabel={(option) => (
+            <span data-testid={`form-workflow-option-${option.value}`}>{option.label}</span>
+          )}
+        />
 
-    <List>
-    <h5 className="pt-2 fw-bold">
-          <Translation>{(t) => t("Assignee")}</Translation>
-       </h5>
-       </List> 
-        
-       
-       <Select
-        onChange={handleAssignee}
-        value={assignee ? { value: assignee, label: assignee } : null}
-        isClearable={true}
-        placeholder="Select Assignee"
-        options={assigneeOptions}
-      />
+
+        <List>
+          <h5 className="fw-bold">
+            <Translation>{(t) => t("Candidate Group")}</Translation>
+          </h5>
+        </List>
+        <Select
+          onChange={handleCandidate}
+          value={candidateGroup ? { value: candidateGroup, label: candidateGroup } : null}
+          isClearable={true}
+          placeholder={t("Select Candidate Group")}
+          options={candidateOptions}
+        />
+
+
+
+
+        <List>
+          <h5 className="pt-2 fw-bold">
+            <Translation>{(t) => t("Assignee")}</Translation>
+          </h5>
+        </List>
+
+
+        <Select
+          onChange={handleAssignee}
+          value={assignee ? { value: assignee, label: assignee } : null}
+          isClearable={true}
+          placeholder={t("Select Assignee")}
+          options={assigneeOptions}
+        />
 
         {candidateGroup?.length ? (
           <div className="d-flex align-items-center input-container mt-2">
@@ -712,7 +719,7 @@ export default function CreateNewFilterDrawer({
               onChange={onChangeSelectForm}
               value={forms?.data.find((form) => form.value === selectedForm)}
               isClearable
-              placeholder={t("select...")}
+              placeholder={t("Select Form")}
               options={forms?.data}
               isLoading={forms.isLoading}
             />
@@ -785,49 +792,8 @@ export default function CreateNewFilterDrawer({
           </label>{" "}
           <br />
           {permissions === SPECIFIC_USER_OR_GROUP &&
-          specificUserGroup === SPECIFIC_USER_OR_GROUP ? (
+            specificUserGroup === SPECIFIC_USER_OR_GROUP ? (
             <div className="d-flex">
-              {/* <OverlayTrigger
-                placement="right"
-                trigger="click"
-                rootClose={true}
-                show={overlayUserShow}
-                overlay={
-                  <Popover style={{ zIndex: 9999 }}>
-                    <div className="poper">
-                      <ListGroup>
-                        {userRoles.length > 0 &&
-                          userRoles?.map((e, i) => (
-                            <ListGroup.Item
-                              key={i}
-                              as="button"
-                              onClick={() => addGroups(e.username)}
-                            >
-                              {e.username}
-                            </ListGroup.Item>
-                          ))}
-                      </ListGroup>
-                    </div>
-                  </Popover>
-                }
-              >
-                <div onClick={() => handleClickUserGroupIcon("user")}>
-                  <div style={{ textAlign: "center" }}>
-                    <span style={{ fontSize: "14px" }}>
-                      <Translation>{(t) => t("User")}</Translation>
-                    </span>
-                  </div>
-                  <div style={{ textAlign: "center", marginBottom: "8px" }}>
-                    <i
-                      className={`fa fa-user ${
-                        selectUserGroupIcon === "user" ? "highlight" : ""
-                      } cursor-pointer`}
-                      style={{ fontSize: "30px", marginRight: "8px" }}
-                    />
-                  </div>
-                </div>
-              </OverlayTrigger> */}
-
               <OverlayTrigger
                 placement="right"
                 trigger="click"
@@ -863,9 +829,8 @@ export default function CreateNewFilterDrawer({
                   </div>
                   <div className="text-center text-bottom">
                     <i
-                      className={`fa fa-users ${
-                        selectUserGroupIcon === "group" ? "highlight" : ""
-                      } cursor-pointer group-icon`}
+                      className={`fa fa-users ${selectUserGroupIcon === "group" ? "highlight" : ""
+                        } cursor-pointer group-icon`}
                     />
                   </div>
                 </div>
@@ -925,8 +890,7 @@ export default function CreateNewFilterDrawer({
             >
               <Translation>
                 {(t) =>
-                  `${
-                    selectedFilterData ? t("Save Filter") : t("Create Filter")
+                  `${selectedFilterData ? t("Save Filter") : t("Create Filter")
                   } `
                 }
               </Translation>

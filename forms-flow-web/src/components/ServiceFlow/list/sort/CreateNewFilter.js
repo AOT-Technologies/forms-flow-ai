@@ -34,10 +34,8 @@ import { toast } from "react-toastify";
 import { getUserRoles } from "../../../../apiManager/services/authorizationService";
 import {
   setUserGroups,
-  // setUserRoles,
 } from "../../../../actions/authorizationActions";
 import { Badge, ListGroup, OverlayTrigger, Popover } from "react-bootstrap";
-// import { fetchUsers } from "../../../../apiManager/services/userservices";
 import { trimFirstSlash } from "../../constants/taskConstants";
 import { cloneDeep, omitBy } from "lodash";
 import {
@@ -49,6 +47,8 @@ import {
   getFormProcesses,
   resetFormProcessData,
 } from "../../../../apiManager/services/processServices";
+import { fetchUserList } from "../../../../apiManager/services/bpmTaskServices";
+
 
 const initialValueOfTaskAttribute = {
   applicationId: true,
@@ -70,7 +70,6 @@ export default function CreateNewFilterDrawer({
   const dispatch = useDispatch();
   const [filterName, setFilterName] = useState("");
   const [showUndefinedVariable, setShowUndefinedVariable] = useState(false);
-  const [inputVisibility, setInputVisibility] = useState({});
   const [definitionKeyId, setDefinitionKeyId] = useState("");
   const [candidateGroup, setCandidateGroup] = useState([]);
   const userRoles = useSelector((state) => state.user.roles || []);
@@ -113,8 +112,7 @@ export default function CreateNewFilterDrawer({
 
   const [overlayGroupShow, setOverlayGroupShow] = useState(false);
   const [overlayUserShow, setOverlayUserShow] = useState(false);
-  const [overlayCandidateGroupShow, setOverlayCandidateGroupShow] =
-    useState(false);
+ 
 
   const { t } = useTranslation();
   const [modalShow, setModalShow] = useState(false);
@@ -251,9 +249,9 @@ export default function CreateNewFilterDrawer({
   }, []);
 
   useEffect(() => {
-    // if the create new filter open then need to fetch all bpm process
     if (openFilterDrawer) {
-      dispatch(fetchAllBpmProcesses());
+      dispatch(fetchUserList()); // if the create new filter open then need to fetch list of users
+      dispatch(fetchAllBpmProcesses()); // if the create new filter open then need to fetch all bpm process
     }
     // if the create new filter open then need to fetch all forms
     if (openFilterDrawer && !forms?.data?.length) {
@@ -278,7 +276,7 @@ export default function CreateNewFilterDrawer({
       formName: "formName",
     });
   };
- 
+
   const onChangeSelectForm = (e) => {
     if (e?.value) {
       setProcessLoading(true);
@@ -337,7 +335,6 @@ export default function CreateNewFilterDrawer({
   const clearAllFilters = () => {
     setFilterName("");
     setShowUndefinedVariable("");
-    setInputVisibility("");
     setDefinitionKeyId("");
     setCandidateGroup("");
     setAssignee("");
@@ -420,7 +417,7 @@ export default function CreateNewFilterDrawer({
     }
 
     // Remove empty keys inside criteria
-    const cleanedCriteria = omitBy(data.criteria, value => 
+    const cleanedCriteria = omitBy(data.criteria, value =>
       value === undefined || value === '' || value === null
     );
     data.criteria = cleanedCriteria;
@@ -475,16 +472,6 @@ export default function CreateNewFilterDrawer({
     }
   };
 
-  // Function for setting visibility of input feild in criteria part
-  const handleSpanClick = (spanId) => {
-    if (spanId === 2) {
-      setOverlayCandidateGroupShow(!overlayCandidateGroupShow);
-    }
-    setInputVisibility((prevVisibility) => ({
-      ...prevVisibility,
-      [spanId]: !prevVisibility[spanId],
-    }));
-  };
 
   //Function For checking  includeAssignedTasksCheckbox is checked or not
   const includeAssignedTasksCheckboxChange = (e) => {
@@ -523,12 +510,31 @@ export default function CreateNewFilterDrawer({
   const toggleModal = () => {
     setModalShow(!modalShow);
     setOpenFilterDrawer(!openFilterDrawer);
+
   };
 
-  const handleCandidateGroup = (data) => {
-    data = trimFirstSlash(data);
-    setOverlayCandidateGroupShow(!overlayCandidateGroupShow);
-    setCandidateGroup(data);
+  const candidateGroups = useSelector((state) => state.user?.userDetail?.groups || []);
+  const userListResponse = useSelector((state) => state.bpmTasks.userList) || { data: [] };
+  const userList = userListResponse?.data || [];
+  const assigneeOptions = useMemo(() => {
+    return userList.map(user => ({
+      value: `${user.firstName} ${user.lastName}`,
+      label: `${user.firstName} ${user.lastName}`
+    }));
+  }, [userList]);
+
+  const candidateOptions = useMemo(() => {
+    return candidateGroups.map(group => ({
+    value: group,
+    label: trimFirstSlash(group)
+  }));
+}, [candidateGroups]);
+
+  const handleAssignee = selectedOption => {
+    setAssignee(selectedOption ? selectedOption.value : null);
+  };
+  const handleCandidate = selectedOption => {
+    setCandidateGroup(selectedOption ? selectedOption.value : null);
   };
 
   const onSaveTaskAttribute = (
@@ -623,12 +629,13 @@ export default function CreateNewFilterDrawer({
           </>
         )}
 
-        <h5 className="mt-2 fs-18">
+        <h5 className="mt-2 fs-18 fw-bold">
           <Translation>{(t) => t("Workflow")}</Translation>
         </h5>
         <Select
           className="mb-3"
           options={processList}
+          placeholder={t("Select Workflow")}
           isClearable
           value={
             processList?.find(
@@ -644,86 +651,41 @@ export default function CreateNewFilterDrawer({
             <span data-testid={`form-workflow-option-${option.value}`}>{option.label}</span>
           )}
         />
-        <h5 className="pt-2">
-          <Translation>{(t) => t("Candidate Group")}</Translation>
-        </h5>
 
-        <OverlayTrigger
-          placement="right"
-          trigger="click"
-          rootClose={true}
-          show={overlayCandidateGroupShow}
-          overlay={
-            <Popover className="z-index">
-              <div className="poper">
-                <ListGroup>
-                  {userGroups?.length > 0 &&
-                    userGroups?.map((e, i) => (
-                      <ListGroup.Item
-                        key={i}
-                        as="button"
-                        onClick={() => handleCandidateGroup(e.name)}
-                      >
-                        {e.name}
-                      </ListGroup.Item>
-                    ))}
-                </ListGroup>
-              </div>
-            </Popover>
-          }
-        >
-          <span
-            onClick={() => handleSpanClick(2)}
-            className="px-1 py-1 cursor-pointer text-decoration-underline truncate-size"
-          >
-            <i className="fa fa-plus-circle mr-6" />
-            <Translation>{(t) => t("Add Value")}</Translation>
-          </span>
-        </OverlayTrigger>
-        {candidateGroup && (
-          <div className="d-flex">
-            <Badge
-              pill
-              variant="outlined"
-              className="d-flex align-items-center badge me-2 mt-2"
-            >
-              {candidateGroup}
-              <div
-                className="badge-deleteIcon ms-2"
-                onClick={() => {
-                  setCandidateGroup(null);
-                  setIncludeAssignedTasks(false);
-                }}
-              >
-                &times;
-              </div>
-            </Badge>
-          </div>
-        )}
-        <h5 className="pt-2">
-          <Translation>{(t) => t("Assignee")}</Translation>
-        </h5>
-        {!assignee && (
-          <span
-            className="px-1 py-1 cursor-pointer text-decoration-underline truncate-size"
-            onClick={() => handleSpanClick(3)}
-          >
-            <i className="fa fa-plus-circle mr-6" />
-            <Translation>{(t) => t("Add Value")}</Translation>
-          </span>
-        )}
-        {(inputVisibility[3] || assignee) && (
-          <input
-            type="text"
-            className="criteria-add-value-inputbox"
-            value={assignee}
-            onChange={(e) => setAssignee(e.target.value)}
-            title={t("Assignee")}
-          />
-        )}
+
+        <List>
+          <h5 className="fw-bold">
+            <Translation>{(t) => t("Candidate Group")}</Translation>
+          </h5>
+        </List>
+        <Select
+          onChange={handleCandidate}
+          value={candidateGroup ? { value: candidateGroup, label: candidateGroup } : null}
+          isClearable={true}
+          placeholder={t("Select Candidate Group")}
+          options={candidateOptions}
+        />
+
+
+
+
+        <List>
+          <h5 className="pt-2 fw-bold">
+            <Translation>{(t) => t("Assignee")}</Translation>
+          </h5>
+        </List>
+
+
+        <Select
+          onChange={handleAssignee}
+          value={assignee ? { value: assignee, label: assignee } : null}
+          isClearable={true}
+          placeholder={t("Select Assignee")}
+          options={assigneeOptions}
+        />
 
         {candidateGroup?.length ? (
-          <div className="d-flex align-items-center input-container">
+          <div className="d-flex align-items-center input-container mt-2">
             <input
               className="mr-6"
               type="checkbox"
@@ -747,7 +709,7 @@ export default function CreateNewFilterDrawer({
               onChange={onChangeSelectForm}
               value={forms?.data.find((form) => form.value === selectedForm)}
               isClearable
-              placeholder={t("select...")}
+              placeholder={t("Select Form")}
               options={forms?.data}
               isLoading={forms.isLoading}
             />
@@ -822,47 +784,6 @@ export default function CreateNewFilterDrawer({
           {permissions === SPECIFIC_USER_OR_GROUP &&
             specificUserGroup === SPECIFIC_USER_OR_GROUP ? (
             <div className="d-flex">
-              {/* <OverlayTrigger
-                placement="right"
-                trigger="click"
-                rootClose={true}
-                show={overlayUserShow}
-                overlay={
-                  <Popover style={{ zIndex: 9999 }}>
-                    <div className="poper">
-                      <ListGroup>
-                        {userRoles.length > 0 &&
-                          userRoles?.map((e, i) => (
-                            <ListGroup.Item
-                              key={i}
-                              as="button"
-                              onClick={() => addGroups(e.username)}
-                            >
-                              {e.username}
-                            </ListGroup.Item>
-                          ))}
-                      </ListGroup>
-                    </div>
-                  </Popover>
-                }
-              >
-                <div onClick={() => handleClickUserGroupIcon("user")}>
-                  <div style={{ textAlign: "center" }}>
-                    <span style={{ fontSize: "14px" }}>
-                      <Translation>{(t) => t("User")}</Translation>
-                    </span>
-                  </div>
-                  <div style={{ textAlign: "center", marginBottom: "8px" }}>
-                    <i
-                      className={`fa fa-user ${
-                        selectUserGroupIcon === "user" ? "highlight" : ""
-                      } cursor-pointer`}
-                      style={{ fontSize: "30px", marginRight: "8px" }}
-                    />
-                  </div>
-                </div>
-              </OverlayTrigger> */}
-
               <OverlayTrigger
                 placement="right"
                 trigger="click"

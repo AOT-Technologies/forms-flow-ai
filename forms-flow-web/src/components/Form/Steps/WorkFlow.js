@@ -108,6 +108,8 @@ const WorkFlow = React.memo(
           setFormProcessesData({
             ...formProcessList,
             selectedAllField: true,
+            processKey: workflow.value,
+            processName: workflow.label,
             taskVariable: selectedFields,
           })
         );
@@ -137,6 +139,8 @@ const WorkFlow = React.memo(
           setFormProcessesData({
             ...formProcessList,
             selectedAllField: false,
+            processKey: workflow.value,
+            processName: workflow.label,
             taskVariable: previousFormProcessList?.taskVariable,
           })
         );
@@ -152,6 +156,8 @@ const WorkFlow = React.memo(
       dispatch(
         setFormProcessesData({
           ...formProcessList,
+          processKey: workflow.value,
+          processName: workflow.label,
           taskVariable: [...selectedTaskVariable, data],
         })
       );
@@ -170,6 +176,8 @@ const WorkFlow = React.memo(
       dispatch(
         setFormProcessesData({
           ...formProcessList,
+          processKey: workflow.value,
+          processName: workflow.label,
           taskVariable: selectedTaskVariable.filter(
             (item) => item.key !== data.key
           ),
@@ -184,6 +192,8 @@ const WorkFlow = React.memo(
       dispatch(
         setFormProcessesData({
           ...formProcessList,
+          processKey: workflow.value,
+          processName: workflow.label,
           taskVariable: selectedTaskVariable.map((variable) =>
             variable.key === data.key ? { ...data } : variable
           ),

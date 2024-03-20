@@ -512,15 +512,15 @@ export default function CreateNewFilterDrawer({
   const userList = userListResponse?.data || [];
   const assigneeOptions = useMemo(() => {
     return userList.map((user) => ({
-      value: `${user.firstName} ${user.lastName}`,
-      label: `${user.firstName} ${user.lastName}`,
+      value: `${user.username}`,
+      label: `${user.username}`,
     }));
   }, [userList]);
 
   const candidateOptions = useMemo(() => {
     return candidateGroups.map((group) => ({
-      value: group,
-      label: trimFirstSlash(group),
+      value: trimFirstSlash(group),
+      label: group,
     }));
   }, [candidateGroups]);
 

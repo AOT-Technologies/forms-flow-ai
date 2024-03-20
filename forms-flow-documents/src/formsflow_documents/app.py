@@ -15,7 +15,6 @@ from formsflow_api_utils.utils import (
     ALLOW_ALL_ORIGINS,
     CORS_ORIGINS,
     FORMSFLOW_API_CORS_ORIGINS,
-    cache,
     jwt,
     register_log_handlers,
     setup_logging,
@@ -64,7 +63,6 @@ def create_app(
         contents = file.read()
         print(contents)
     app.logger.info("Welcome to formsflow-export-API server...!")
-    cache.init_app(app)
 
     API.init_app(app)
     setup_jwt_manager(app, jwt)

@@ -648,7 +648,7 @@ export default function CreateNewFilterDrawer({
 
         <div className="my-2">
           <h5 className="fw-bold">
-            <Translation>{(t) => t("Candidate Group")}</Translation>
+            {MULTITENANCY_ENABLED ? <Translation>{(t) => t("User Role")}</Translation> : <Translation>{(t) => t("User Group")}</Translation>}
           </h5>
 
           <Select
@@ -659,7 +659,7 @@ export default function CreateNewFilterDrawer({
                 : null
             }
             isClearable={true}
-            placeholder={t("Select Candidate Group")}
+            placeholder={MULTITENANCY_ENABLED ? (t("Select User Role")) : (t("Select User Group"))}
             options={candidateOptions}
           />
         </div>

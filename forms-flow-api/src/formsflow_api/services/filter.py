@@ -74,13 +74,16 @@ class FilterService:
                 filter_obj = Filter(
                     name="All Tasks",
                     variables=[
-                        {"name": "applicationId", "label": "Submission ID"},
+                        {"name": "applicationId", "label": "Submission Id"},
                         {"name": "formName", "label": "Form Name"},
                     ],
                     status="active",
                     created_by="system",
                     created="now()",
-                    criteria={},
+                    criteria={
+                        "candidateGroupsExpression": "${currentUserGroups()}",
+                        "includeAssignedTasks": True,
+                    },
                     users={},
                     roles={},
                     tenant=tenant_key,

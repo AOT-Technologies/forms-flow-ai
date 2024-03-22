@@ -128,11 +128,11 @@ jobs:
           chmod +x kubectl
           sudo mv kubectl /usr/local/bin/
       - name: Update Kube config
-        run: aws eks update-kubeconfig --region ca-central-1 --name forms-flow-dev
+        run: aws eks update-kubeconfig --region ca-central-1 --name ${{ secrets.DEV_EKS_CLUSTER }}
       - name: Deploy to eks
         run: |
-          kubectl -n dev patch deployment forms-flow-bpm -p '{"spec":{"template":{"spec":{"containers":[{"name":"forms-flow-bpm","image":"docker.io/formsflow/forms-flow-bpm:${{ env.VERSION }}"}]}}}}'
-          kubectl -n dev rollout restart deployment forms-flow-bpm
+          kubectl -n ${{ secrets.DEV_OPENSOURCE_NAMESPACE }} patch deployment forms-flow-bpm -p '{"spec":{"template":{"spec":{"containers":[{"name":"forms-flow-bpm","image":"docker.io/formsflow/forms-flow-bpm:${{ env.VERSION }}"}]}}}}'
+          kubectl -n ${{ secrets.DEV_OPENSOURCE_NAMESPACE }} rollout restart deployment forms-flow-bpm
 
   zap_scan:
     runs-on: ubuntu-latest

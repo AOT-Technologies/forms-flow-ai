@@ -121,10 +121,8 @@ jobs:
           chmod +x kubectl
           sudo mv kubectl /usr/local/bin/
       - name: Update Kube config
-        run: aws eks update-kubeconfig --region ca-central-1 --name formsflow-eks-qa
+        run: aws eks update-kubeconfig --region ca-central-1 --name forms-flow-dev
       - name: Deploy to eks
         run: |
           kubectl -n dev  patch deployment forms-flow-api -p '{"spec":{"template":{"spec":{"containers":[{"name":"forms-flow-api","image":"docker.io/formsflow/forms-flow-webapi:${{ env.VERSION }}"}]}}}}'
           kubectl -n dev rollout restart deployment forms-flow-api
-          kubectl -n devmt  patch deployment forms-flow-api -p '{"spec":{"template":{"spec":{"containers":[{"name":"forms-flow-api","image":"docker.io/formsflow/forms-flow-webapi:${{ env.VERSION }}"}]}}}}'
-          kubectl -n devmt rollout restart deployment forms-flow-api

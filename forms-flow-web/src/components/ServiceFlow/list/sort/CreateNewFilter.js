@@ -548,7 +548,7 @@ export default function CreateNewFilterDrawer({
       <List>
         <div className="p-0 d-flex align-items-center justify-content-between ">
           <h5 className="fw-bold fs-16">
-            <Translation>{(t) => t("Create new filter")}</Translation>
+            <Translation>{(t) => `${selectedFilterData ? t("Edit filter") : t("Create new filter") }` }</Translation>
           </h5>
           <button className="btn btn-link text-dark" onClick={toggleDrawer}>
             <Translation>{(t) => t("Close")}</Translation>
@@ -565,7 +565,7 @@ export default function CreateNewFilterDrawer({
             placeholder={t("Enter your text here")}
             value={filterName}
             onChange={(e) => setFilterName(e.target.value)}
-            title={t("Add fliter name")}
+            title={t("Add filter name")}
           />
         </div>
       </List>

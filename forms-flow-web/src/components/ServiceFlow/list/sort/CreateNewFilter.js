@@ -512,6 +512,11 @@ export default function CreateNewFilterDrawer({
     setOpenFilterDrawer(!openFilterDrawer);
   };
 
+  const deleteConfirmationModalToggleDrawer = () => {
+    setOpenFilterDrawer(!openFilterDrawer);
+  };
+
+
   const candidateGroups = useSelector(
     (state) => state.user?.userDetail?.groups || []
   );
@@ -555,6 +560,7 @@ export default function CreateNewFilterDrawer({
 
   const hideDeleteConfirmation = () => {
     setShowDeleteModal(false);
+    deleteConfirmationModalToggleDrawer();
   };
 
   const showDeleteConfirmation = () => {

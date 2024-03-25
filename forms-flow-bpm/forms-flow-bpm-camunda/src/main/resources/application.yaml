@@ -6,7 +6,6 @@ keycloak.url.realm: ${KEYCLOAK_URL_REALM}
 keycloak.url.httpRelativePath: ${KEYCLOAK_URL_HTTP_RELATIVE_PATH:/auth}
 keycloak.clientId: ${KEYCLOAK_CLIENTID}
 keycloak.clientSecret: ${KEYCLOAK_CLIENTSECRET}
-keycloak.url.httpRelativePath: ${KEYCLOAK_URL_HTTP_RELATIVE_PATH:/auth}
 
 server:
   port: 8080

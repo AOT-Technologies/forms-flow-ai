@@ -69,3 +69,4 @@ typing_extensions==4.10.0
 urllib3==2.2.1
 wsproto==1.2.0
 zstandard==0.22.0
+setuptools==69.0.2

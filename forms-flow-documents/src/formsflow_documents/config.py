@@ -84,6 +84,9 @@ class _Config:  # pylint: disable=too-few-public-methods
         str(os.getenv("MULTI_TENANCY_ENABLED", default="false")).lower() == "true"
     )
 
+    # REDIS CONFIG
+    REDIS_URL = os.getenv("REDIS_URL", "redis://redis:6379/0")
+
     # Configure LOG
     CONFIGURE_LOGS = str(os.getenv("CONFIGURE_LOGS", default="true")).lower() == "true"
 

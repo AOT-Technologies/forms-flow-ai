@@ -1,5 +1,5 @@
 # Base image
-FROM node:14.17.6-alpine as build-stage
+FROM node:16.18.0-alpine as build-stage
 
 # Set working directory
 WORKDIR /forms-flow-web-root-config/app
@@ -31,7 +31,7 @@ RUN apk update && apk upgrade && \
 COPY package-lock.json /forms-flow-web-root-config/app/package-lock.json
 COPY package.json /forms-flow-web-root-config/app/package.json
 COPY env.sh /forms-flow-web-root-config/app/env.sh
-RUN npm ci --only=production
+RUN npm ci --omit=dev
 
 # Copy source code
 COPY . /forms-flow-web-root-config/app/

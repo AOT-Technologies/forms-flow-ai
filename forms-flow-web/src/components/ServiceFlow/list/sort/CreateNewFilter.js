@@ -518,11 +518,14 @@ export default function CreateNewFilterDrawer({
   }, [userList]);
 
   const candidateOptions = useMemo(() => {
-    return candidateGroups.map((group) => ({
+    return MULTITENANCY_ENABLED ? userRoles.map((role) => ({
+      value: role,
+      label: role
+    })) : candidateGroups.map((group) => ({
       value: trimFirstSlash(group),
-      label: group,
+      label: group
     }));
-  }, [candidateGroups]);
+  }, [candidateGroups, userRoles, MULTITENANCY_ENABLED]);
 
   const handleAssignee = (selectedOption) => {
     setAssignee(selectedOption ? selectedOption.value : null);

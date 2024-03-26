@@ -412,12 +412,6 @@
   background-color: var(--color-box-shadow);
  z-index: 1500;
 }
-
-.icon-and-text {
-  display: flex;
-  justify-content: space-between;
-  align-items: center; /* Vertically center the text and icon */
-}
 .react-datepicker__close-icon {
   padding: 0px !important ;
 }

@@ -526,15 +526,15 @@ export default function CreateNewFilterDrawer({
   const userList = userListResponse?.data || [];
   const assigneeOptions = useMemo(() => {
     return userList.map((user) => ({
-      value: `${user.firstName} ${user.lastName}`,
-      label: `${user.firstName} ${user.lastName}`,
+      value: `${user.username}`,
+      label: `${user.username}`,
     }));
   }, [userList]);
 
   const candidateOptions = useMemo(() => {
     return candidateGroups.map((group) => ({
-      value: group,
-      label: trimFirstSlash(group),
+      value: trimFirstSlash(group),
+      label: group,
     }));
   }, [candidateGroups]);
 
@@ -594,7 +594,7 @@ export default function CreateNewFilterDrawer({
       <List>
         <div className="p-0 d-flex align-items-center justify-content-between ">
           <h5 className="fw-bold fs-16">
-            <Translation>{(t) => t("Create new filter")}</Translation>
+            <Translation>{(t) => `${selectedFilterData ? t("Edit filter") : t("Create new filter") }` }</Translation>
           </h5>
           <button className="btn btn-link text-dark" onClick={toggleDrawer}>
             <Translation>{(t) => t("Close")}</Translation>
@@ -612,7 +612,6 @@ export default function CreateNewFilterDrawer({
             value={filterName}
             onChange={handleFilterName}
             title={t("Add fliter name")}
-            
           />
           {showAlert && (
           <p className="text-danger mt-2 fs-6">
@@ -700,7 +699,7 @@ export default function CreateNewFilterDrawer({
 
         <div className="my-2">
           <h5 className="fw-bold">
-            <Translation>{(t) => t("Candidate Group")}</Translation>
+            {MULTITENANCY_ENABLED ? <Translation>{(t) => t("User Role")}</Translation> : <Translation>{(t) => t("User Group")}</Translation>}
           </h5>
 
           <Select
@@ -711,7 +710,7 @@ export default function CreateNewFilterDrawer({
                 : null
             }
             isClearable={true}
-            placeholder={t("Select Candidate Group")}
+            placeholder={MULTITENANCY_ENABLED ? (t("Select User Role")) : (t("Select User Group"))}
             options={candidateOptions}
           />
         </div>

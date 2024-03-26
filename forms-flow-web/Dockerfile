@@ -19,7 +19,7 @@ COPY . /forms-flow-web/app/
 RUN npm run build
 
 # Production stage
-FROM nginx:1.25.3-alpine as production-stage
+FROM nginx:1.25.4-alpine as production-stage
 
 # Copy built files from build stage
 COPY --from=build-stage /forms-flow-web/app/build /usr/share/nginx/html

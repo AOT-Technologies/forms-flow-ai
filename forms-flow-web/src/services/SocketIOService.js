@@ -1,6 +1,4 @@
-/* istanbul ignore file */
 import SockJS from "sockjs-client";
-import Stomp from "stompjs";
 import { BPM_BASE_URL_SOCKET_IO } from "../apiManager/endpoints/config";
 import { WEBSOCKET_ENCRYPT_KEY } from "../constants/socketIOConstants";
 import AES from "crypto-js/aes";
@@ -9,12 +7,12 @@ import { StorageService } from "@formsflow/service";
 
 let tenantData = localStorage.getItem("tenantData");
 let tenantKey = '';
-if(tenantData){
+if (tenantData) {
   tenantData = JSON.parse(tenantData);
   tenantKey = tenantData["key"];
 }
 
-let stompClient = null;
+let socket = null;
 let reconnectTimeOut = null;
 
 const connect = (reloadCallback) => {
@@ -23,55 +21,46 @@ const connect = (reloadCallback) => {
     WEBSOCKET_ENCRYPT_KEY
   ).toString();
   const socketUrl = `${BPM_BASE_URL_SOCKET_IO}?accesstoken=${accessToken}`;
-  const socket = new SockJS(socketUrl);
-  stompClient = Stomp.over(socket);
-  stompClient.debug = null;
-  stompClient.connect(
-    {},
-    function () {
-      if (isConnected()) {
-        stompClient.subscribe("/topic/task-event", function (output) {
-          const taskUpdate = JSON.parse(output.body);
-    
-          /* taskUpdate format
-           {id:"taskId", eventName:"complete/update/create"}
-           On Complete/ create the pagination can change so Would need a refresh
-           For update can assume with current filter only if the same list has the
-           taskId available of the updated one then only Refresh.
-           (Would fail in filter/Search on the Same params)
-        */
-          
-           if(MULTITENANCY_ENABLED && tenantKey !== taskUpdate.tenantId){
-            //ignore this subscription if multitenancy is enabled and tenantkey does'nt match
-            return ;   
-           }
-           else{
-            const forceReload = taskUpdate.eventName === "complete";
-            const isUpdateEvent = taskUpdate.eventName === "update";
-            reloadCallback(taskUpdate.id, forceReload, isUpdateEvent);
-           }
-        });
-      }
-    },
-    function (error) {
-      console.log(error);
-      /* Try reconnect the websocket connection again after 5 seconds only if still in task page
-     and failure happens due to network/rebuilding time. */
-      if (window.location.pathname.includes("task")) {
-        reconnectTimeOut = setTimeout(() => {
-          connect(reloadCallback);
-        }, 5000);
-      }
+  socket = new SockJS(socketUrl);
+
+  socket.onopen = function () {
+    console.log("WebSocket connection established.");
+    socket.send("Connected to WebSocket server.");
+  };
+
+  socket.onmessage = function (event) {
+    const taskUpdate = JSON.parse(event.data);
+
+    if (MULTITENANCY_ENABLED && tenantKey !== taskUpdate.tenantId) {
+      // Ignore this subscription if multitenancy is enabled and tenantkey doesn't match
+      return;
+    } else {
+      const forceReload = taskUpdate.eventName === "complete";
+      const isUpdateEvent = taskUpdate.eventName === "update";
+      reloadCallback(taskUpdate.id, forceReload, isUpdateEvent);
     }
-  );
+  };
+
+  socket.onclose = function () {
+    console.log("WebSocket connection closed.");
+    // Try reconnecting the websocket connection again after 5 seconds only if still in task page
+    // and failure happens due to network/rebuilding time.
+    if (window.location.pathname.includes("task")) {
+      reconnectTimeOut = setTimeout(() => {
+        connect(reloadCallback);
+      }, 5000);
+    }
+  };
 };
 
 const isConnected = () => {
-  return stompClient?.connected || null;
+  return socket?.readyState === SockJS.OPEN || null;
 };
 
 const disconnect = () => {
-  stompClient.disconnect();
+  if (socket) {
+    socket.close();
+  }
   clearTimeout(reconnectTimeOut);
 };
 

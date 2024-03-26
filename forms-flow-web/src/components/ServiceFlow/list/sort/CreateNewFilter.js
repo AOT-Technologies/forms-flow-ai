@@ -33,7 +33,14 @@ import TaskAttributeComponent from "./TaskAttributeComponent";
 import { toast } from "react-toastify";
 import { getUserRoles } from "../../../../apiManager/services/authorizationService";
 import { setUserGroups } from "../../../../actions/authorizationActions";
-import { Badge, ListGroup, OverlayTrigger, Popover } from "react-bootstrap";
+import {
+  Badge,
+  ListGroup,
+  OverlayTrigger,
+  Popover,
+  Modal,
+  Button,
+} from "react-bootstrap";
 import { trimFirstSlash } from "../../constants/taskConstants";
 import { cloneDeep, omitBy } from "lodash";
 import {
@@ -112,6 +119,8 @@ export default function CreateNewFilterDrawer({
   const { t } = useTranslation();
   const [modalShow, setModalShow] = useState(false);
   const [checkboxes, setCheckboxes] = useState(initialValueOfTaskAttribute);
+  const [showDeleteModal, setShowDeleteModal] = useState(false);
+  const [showAlert, setShowAlert] = useState(false);
 
   const fetchTasks = (resData) => {
     const reqParamData = {
@@ -503,6 +512,11 @@ export default function CreateNewFilterDrawer({
     setOpenFilterDrawer(!openFilterDrawer);
   };
 
+  const deleteConfirmationModalToggleDrawer = () => {
+    setOpenFilterDrawer(!openFilterDrawer);
+  };
+
+
   const candidateGroups = useSelector(
     (state) => state.user?.userDetail?.groups || []
   );
@@ -543,6 +557,38 @@ export default function CreateNewFilterDrawer({
     setShowUndefinedVariable(showUndefinedVariable);
   };
 
+
+  const hideDeleteConfirmation = () => {
+    setShowDeleteModal(false);
+    deleteConfirmationModalToggleDrawer();
+  };
+
+  const showDeleteConfirmation = () => {
+    setShowDeleteModal(true);
+    toggleDrawer();
+  };
+
+  const FilterDelete = () => {
+    hideDeleteConfirmation();
+    handleFilterDelete();
+  };
+
+  const textTruncate = (wordLength, targetLength, text) => {
+    return text?.length > wordLength
+      ? text.substring(0, targetLength) + "..."
+      : text;
+  };
+
+  const handleFilterName = (e) => {
+    const value = e.target.value;
+    setFilterName(value);
+    if (value.length >= 50) {
+      setShowAlert(true);
+    } else {
+      setShowAlert(false);
+    }
+  };
+
   const list = () => (
     <div role="presentation">
       <List>
@@ -560,13 +606,18 @@ export default function CreateNewFilterDrawer({
           <label htmlFor="filterName">{t("Filter Name")}</label>
           <input
             type="text"
-            className="form-control"
+            className={`form-control ${showAlert ? 'is-invalid' : ''}`}
             id="filterName"
             placeholder={t("Enter your text here")}
             value={filterName}
-            onChange={(e) => setFilterName(e.target.value)}
-            title={t("Add filter name")}
+            onChange={handleFilterName}
+            title={t("Add fliter name")}
           />
+          {showAlert && (
+          <p className="text-danger mt-2 fs-6">
+            {t("Filter name should be less than 50 characters")}
+          </p>
+        )}
         </div>
       </List>
 
@@ -835,8 +886,7 @@ export default function CreateNewFilterDrawer({
             <button
               className="btn btn-link text-danger cursor-pointer"
               onClick={() => {
-                toggleDrawer();
-                handleFilterDelete();
+                showDeleteConfirmation();
               }}
             >
               <Translation>{(t) => t("Delete Filter")}</Translation>
@@ -853,7 +903,7 @@ export default function CreateNewFilterDrawer({
             </button>
             <button
               className="btn btn-primary submitButton text-decoration-none truncate-size "
-              disabled={!permissions || !filterName}
+              disabled={!permissions || !filterName || filterName.length >= 50}
               onClick={() => {
                 handleSubmit();
               }}
@@ -921,6 +971,37 @@ export default function CreateNewFilterDrawer({
           {list()}
         </Drawer>
       </React.Fragment>
+
+      {/* Delete confirmation modal */}
+      <Modal show={showDeleteModal} onHide={hideDeleteConfirmation}>
+        <Modal.Header>
+          <Modal.Title>
+            <Translation>{(t) => t("Delete Confirmation")}</Translation>
+          </Modal.Title>
+        </Modal.Header>
+        <Modal.Body>
+        <Translation>{(t) => t("Are you sure to delete")}</Translation>
+          {" "}
+          <span className="fw-bold">
+            {filterName.includes(" ")
+              ? filterName
+              : textTruncate(40, 30, filterName)}
+          </span>{" "}
+        <Translation>{(t) => t("filter?")}</Translation>
+        </Modal.Body>
+        <Modal.Footer>
+          <Button
+            variant=""
+            className="btn-link text-dark"
+            onClick={hideDeleteConfirmation}
+          >
+          <Translation>{(t) => t("Cancel")}</Translation>
+          </Button>
+          <Button variant="danger" onClick={FilterDelete}>
+          <Translation>{(t) => t("Delete")}</Translation>
+          </Button>
+        </Modal.Footer>
+      </Modal>
     </div>
   );
 }

@@ -300,12 +300,15 @@ function FormTable() {
                         </button>
                       </td>
                       <td>
-                        <Dropdown data-testid={`designer-form-option-${e._id}`}>
+                        <Dropdown 
+                         data-testid={`designer-form-option-${e._id}`}
+                         data-bs-toggle="tooltip" 
+                         data-bs-placement="bottom"
+                         title={t("More options")}>
                           <Dropdown.Toggle
                             data-testid={`designer-form-option-toggle-${e._id}`}
                             as={CustomToggle}
                             id="dropdown-basic"
-                            title={t("More options")}
                             aria-describedby="More-options"
                           >
                             <i className="fa-solid fa-ellipsis"></i>

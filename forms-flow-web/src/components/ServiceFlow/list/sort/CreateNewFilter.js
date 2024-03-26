@@ -572,7 +572,7 @@ export default function CreateNewFilterDrawer({
   };
 
   const FilterDelete = () => {
-    hideDeleteConfirmation();
+    setShowDeleteModal(false);
     handleFilterDelete();
   };
 

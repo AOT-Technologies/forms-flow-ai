@@ -287,6 +287,7 @@ services:
       API_LOG_ROTATION_WHEN: ${API_LOG_ROTATION_WHEN:-d}
       API_LOG_ROTATION_INTERVAL: ${API_LOG_ROTATION_INTERVAL:-1}
       API_LOG_BACKUP_COUNT: ${API_LOG_BACKUP_COUNT:-7}
+      REDIS_URL: ${REDIS_URL:-redis://redis:6379/0}
 
     stdin_open: true # -i
     tty: true # -t

@@ -53,6 +53,7 @@ import {
   resetFormProcessData,
 } from "../../../../apiManager/services/processServices";
 import { fetchUserList } from "../../../../apiManager/services/bpmTaskServices";
+import { filterSelectOptionByLabel } from "../../../../helper/helper";
 
 const initialValueOfTaskAttribute = {
   applicationId: true,
@@ -691,6 +692,7 @@ export default function CreateNewFilterDrawer({
             onChange={(selectedOption) => {
               setDefinitionKeyId(selectedOption?.label);
             }}
+            filterOption={filterSelectOptionByLabel}
             inputId="select-workflow"
             getOptionLabel={(option) => (
               <span data-testid={`form-workflow-option-${option.value}`}>

@@ -69,12 +69,10 @@ const WorkFlow = React.memo(
       });
 
       setFormFields(_.cloneDeep(components));
-
       const taskvariable = [];
       const keys = [];
       formProcessList?.taskVariable.forEach((i) => {
         if (components[i.key]) {
-          console.log(components[i.key]);
           delete components[i.key];
         }
         keys.push(i.key);

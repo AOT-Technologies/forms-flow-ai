@@ -8,6 +8,7 @@ import {
 import { Link } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import { MULTITENANCY_ENABLED } from "../../../constants/constants";
+import { Translation } from "react-i18next";
 
 const ServiceFlowFilterListDropDown = React.memo(({selectFilter,openFilterDrawer}) => {
   const dispatch = useDispatch();
@@ -47,17 +48,23 @@ const ServiceFlowFilterListDropDown = React.memo(({selectFilter,openFilterDrawer
               }`}
               key={index}
             >
-              <div className="icon-and-text">
-                <span onClick={() => changeFilterSelection(filter)}>
+              <div className="d-flex align-items-center">
+                <span onClick={() => changeFilterSelection(filter)} className="w-100"> 
                   {filter?.name} {`(${filter.count || 0})`}
                 </span>
-              {showEditIcon && <i
-                className="fa fa-pencil ms-5"
-                onClick={() => {
-                  handleFilterEdit(filter?.id);
-                  openFilterDrawer(true);
-                }}
-              />}
+              {showEditIcon && 
+              <button onClick={() => {
+                handleFilterEdit(filter?.id);
+                openFilterDrawer(true);
+              }} className="btn btn-link">
+                <i
+                className="fa fa-pencil"
+                
+              />
+              {" "}
+              <Translation>{(t) => t("Edit")}</Translation>
+              </button>
+                }
               </div>
             </NavDropdown.Item>
             );

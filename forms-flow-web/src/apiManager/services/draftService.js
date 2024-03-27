@@ -11,7 +11,6 @@ import {
   saveLastUpdatedDraft,
 } from "../../actions/draftActions";
 import moment from "moment";
-import { setApplicationListCount } from "../../actions/applicationActions";
 
 export const draftCreate = (data, ...rest) => {
   const done = rest.length ? rest[0] : () => {};
@@ -227,7 +226,6 @@ export const fetchDrafts = (params, ...rest) => {
           const drafts = res.data.drafts || [];
           dispatch(setDraftCount(res.data.totalCount || 0));
           dispatch(setDraftlist(drafts));
-          dispatch(setApplicationListCount(res.data?.applicationCount || 0));
           done(null, drafts);
         }else{
           done(null, res.data);

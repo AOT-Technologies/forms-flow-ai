@@ -31,7 +31,6 @@ class FormProcessMapperSchema(Schema):
     process_tenant = fields.Str(data_key="processTenant")
     deleted = fields.Boolean(data_key="deleted")
     description = fields.Str(data_key="description")
-    selected_all_field = fields.Bool(data_key="selectedAllField")
 
 
 class FormProcessMapperListReqSchema(Schema):

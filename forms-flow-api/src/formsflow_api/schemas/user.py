@@ -36,3 +36,27 @@ class UsersListSchema(Schema):
 
         fields = ("firstName", "lastName", "email", "id", "username", "role")
         unknown = EXCLUDE
+
+
+class AddUserRoleSchema(Schema):
+    """Schema for add user role."""
+
+    class Meta:  # pylint: disable=too-few-public-methods
+        """Exclude unknown fields."""
+
+        unknown = EXCLUDE
+
+    role_id = fields.Str(data_key="roleId", required=True)
+    name = fields.Str(data_key="name", required=True)
+
+
+class TenantUserAddSchema(Schema):
+    """Schema for add user to tenant."""
+
+    class Meta:  # pylint: disable=too-few-public-methods
+        """Exclude unknown fields in the deserialized output."""
+
+        unknown = EXCLUDE
+
+    user = fields.Str(data_key="user", required=True)
+    roles = fields.List(fields.Nested(AddUserRoleSchema))

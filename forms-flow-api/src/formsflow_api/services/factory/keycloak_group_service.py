@@ -1,5 +1,6 @@
 """Keycloak implementation for keycloak group related operations."""
 
+from http import HTTPStatus
 from typing import Dict, List
 
 import requests
@@ -210,3 +211,9 @@ class KeycloakGroupService(KeycloakAdmin):
         if role:
             user_list = self.__populate_user_groups(user_list)
         return (user_list, users_count)
+
+    def add_user_to_tenant(self, data: Dict):
+        """Add user to a tenant."""
+        return {
+            "message": "The requested operation is not supported."
+        }, HTTPStatus.BAD_REQUEST

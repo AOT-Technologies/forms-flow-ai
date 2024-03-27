@@ -1,10 +1,10 @@
 import React, { useEffect, useState } from "react";
 import utils from "formiojs/utils";
-import { Button, Card, Table } from "react-bootstrap";
+import { Button, Card } from "react-bootstrap";
 import Select from "react-select";
+import _ from "lodash";
 import SaveNext from "./SaveNext";
 import ProcessDiagram from "../../BPMN/ProcessDiagramHook";
-import TaskvariableCreate from "./TaskvariableCreate";
 import { useSelector, useDispatch } from "react-redux";
 import {
   setFormProcessesData,
@@ -28,7 +28,7 @@ const WorkFlow = React.memo(
     const dispatch = useDispatch();
     const [modified, setModified] = useState(false);
     const [tabValue, setTabValue] = useState(0);
-    const [showTaskVaribleCrete, setShowTaskVaribleCrete] = useState(false);
+ 
     const { form } = useSelector((state) => state.form);
     const process = useSelector((state) => state.process.processList);
 
@@ -36,57 +36,106 @@ const WorkFlow = React.memo(
     const formProcessList = useSelector(
       (state) => state.process.formProcessList
     );
-    const previousFormProcessList = useSelector(
-      (state) => state.process.formPreviousData
-    );
-
-    // select all fields form a form
-    const [selectAllFormFields, setSelecttAllFormFields] = useState(
-      formProcessList?.selectedAllField || false
-    );
-
+ 
     const workflow = useSelector((state) => state.process.workflowAssociated);
 
-    //all form component labels and keys
-    const [componentLabel, setComponentLabel] = useState([]);
+    // handle add new task variable
+    const [formFields, setFormFields] = useState({});
+    const [taskVariables, setTaskVariables] = useState([]);
+    const [selectedVariablekeys, setSelectedVariableKeys] = useState([]);
 
-    //selected task variable
-    const [selectedTaskVariable, setSelectedTaskVariable] = useState(
-      formProcessList.taskVariable ||  []
-    );
-
-    // keyofVariabl is using for balance form component for select on task variable
-    const [keyOfVariable, setKeyOfVariable] = useState([]);
+    const selectedAllFields = Object.keys(formFields).every(i=> selectedVariablekeys.includes(i));
 
     useEffect(() => {
-      const ignoredTypes = [
+      const formComponents = Object.values(
+        utils.flattenComponents(form.components)
+      );
+      const ignoredTypes = new Set([
         "button",
         "columns",
         "panel",
         "well",
         "container",
         "htmlelement",
-      ];
-      const flattedComponent = Object.values(
-        utils.flattenComponents(form.components)
-      );
-      const components = [];
-
-      flattedComponent.forEach((component) => {
-        if (!ignoredTypes.includes(component.type)) {
-          components.push({ label: component.label, value: component.key });
+      ]);
+      const components = {};
+      formComponents.forEach((component) => {
+        if (!ignoredTypes.has(component.type)) {
+          components[component.key] = {
+            key: component.key,
+            label: component.label,
+          };
         }
       });
-      setComponentLabel(components);
-      setKeyOfVariable(
-        components.filter(
-          (item) =>
-            !selectedTaskVariable.find(
-              (variable) => item.value === variable.key
-            )
-        )
+
+      setFormFields(_.cloneDeep(components));
+      const taskvariable = [];
+      const keys = [];
+      formProcessList?.taskVariable.forEach((i) => {
+        if (components[i.key]) {
+          delete components[i.key];
+        }
+        keys.push(i.key);
+        taskvariable.push({ ...i, checked: true });
+      });
+      setSelectedVariableKeys(keys);
+      taskvariable.push(...Object.values(components));
+      setTaskVariables(taskvariable);
+    }, []);
+
+    const updateTaskvariableToProcessData = (updatedData) => {
+      const selectedVariables = updatedData.reduce((filteredData, variable) => {
+        if (variable.checked) {
+          filteredData.push({ key: variable.key, label: variable.label });
+        }
+        return filteredData;
+      }, []);
+
+      dispatch(
+        setFormProcessesData({
+          ...formProcessList,
+          processKey: workflow.value,
+          processName: workflow.label,
+          taskVariable: selectedVariables,
+        })
       );
-    }, [form]);
+    };
+
+    const selectAllFormFeildToTaskVariable = (e)=>{
+      const updatedData = taskVariables.map((variable)=>(
+        {...variable, checked: e.target.checked}));
+      setSelectedVariableKeys(e.target.checked ? taskVariables.map(i=>(i.key)) : []);
+      setTaskVariables(updatedData);
+      updateTaskvariableToProcessData(updatedData);
+    };
+
+    const handleCheckAndUncheckTaskVariable = (selectedVariableKey) => {
+      
+      const updatedData = taskVariables.map((variable) =>
+       {
+        if( variable.key == selectedVariableKey){
+          if(!variable.checked){
+            setSelectedVariableKeys(prev =>([...prev, variable.key]));
+          }else{
+            setSelectedVariableKeys(prev => prev.filter(key => key !== variable.key));
+          }
+          return  { ...variable, checked: !variable.checked };
+        } 
+          return variable;
+
+       }
+      );
+      setTaskVariables(updatedData);
+      updateTaskvariableToProcessData(updatedData);
+    };
+
+    const editLableOfTaskVariable = (data) => {
+      const updatedData = taskVariables.map((variable) =>
+        variable.key == data.key ? {checked:variable.checked,...data} : variable
+      );
+      setTaskVariables(updatedData);
+      updateTaskvariableToProcessData(updatedData);
+    };
 
     useEffect(() => {
       if (!workflow) {
@@ -94,102 +143,6 @@ const WorkFlow = React.memo(
         dispatch(setWorkflowAssociation(DEFAULT_WORKFLOW));
       }
     }, [workflow, dispatch]);
-
-    useEffect(() => {
-      if (selectAllFormFields) {
-        const selectedFields = componentLabel?.map((component) => ({
-          key: component.value,
-          defaultLabel: component.label,
-          label: component.label,
-        }));
-        setSelectedTaskVariable(selectedFields);
-        setKeyOfVariable([]);
-        dispatch(
-          setFormProcessesData({
-            ...formProcessList,
-            selectedAllField: true,
-            taskVariable: selectedFields,
-          })
-        );
-      }
-    }, [
-      selectAllFormFields,
-      componentLabel,
-      formProcessList?.selectedAllField,
-    ]);
-
-    // resetting component keys after select a component opertaion
-    const resetKeys = (selectedData = []) => {
-      setKeyOfVariable(() =>
-        componentLabel.filter(
-          (item) =>
-            !selectedData.find((variable) => item.value === variable.key)
-        )
-      );
-    };
-
-    const toggleSelectAllFormField = (checked) => {
-      setSelecttAllFormFields(checked);
-      if (!checked) {
-        setSelectedTaskVariable(previousFormProcessList?.taskVariable || []);
-        resetKeys(previousFormProcessList?.taskVariable);
-        dispatch(
-          setFormProcessesData({
-            ...formProcessList,
-            selectedAllField: false,
-            taskVariable: previousFormProcessList?.taskVariable,
-          })
-        );
-      }
-    };
-
-    const addTaskVariable = (data) => {
-      setSelectedTaskVariable((prev) => {
-        return [...prev, data];
-      });
-      resetKeys([...selectedTaskVariable, data]);
-      setShowTaskVaribleCrete(false);
-      dispatch(
-        setFormProcessesData({
-          ...formProcessList,
-          taskVariable: [...selectedTaskVariable, data],
-        })
-      );
-    };
-
-    // delete task variable
-    const deleteTaskVariable = (data) => {
-      setSelectedTaskVariable((prev) =>
-        prev.filter((item) => item.key !== data.key)
-      );
-      setKeyOfVariable([
-        ...keyOfVariable,
-        { label: data.defaultLabel, value: data.key },
-      ]);
-
-      dispatch(
-        setFormProcessesData({
-          ...formProcessList,
-          taskVariable: selectedTaskVariable.filter(
-            (item) => item.key !== data.key
-          ),
-        })
-      );
-    };
-
-    const editTaskVariable = (data) => {
-      setSelectedTaskVariable((prev) => {
-        return prev.map((item) => (item.key === data.key ? { ...data } : item));
-      });
-      dispatch(
-        setFormProcessesData({
-          ...formProcessList,
-          taskVariable: selectedTaskVariable.map((variable) =>
-            variable.key === data.key ? { ...data } : variable
-          ),
-        })
-      );
-    };
 
     const handleChange = (tabNumber) => {
       setTabValue(tabNumber);
@@ -295,89 +248,55 @@ const WorkFlow = React.memo(
           <>
             <Card className="mb-3">
               <Card.Body disabled={disableWorkflowAssociation}>
-                <p>{t("Add form fields to display in task list")}</p>
+                <span className="p-3">{t("Select form fields to display in task list")}</span>
 
-                <div className="my-2">
-                  <label>
-                    <div className="d-flex align-items-center me-4 form-group form-check form-switch ps-0 gap-5">
-                      <label className=" me-2 fw-bold">
-                        {t("Select all fields")}
-                      </label>
-                      <input
-                        checked={selectAllFormFields}
-                        className="form-check-input mb-1 cursor-pointer"
-                        type="checkbox"
-                        role="switch"
-                        id="selectAllFormFeild"
-                        color="primary"
-                        onChange={(e) => {
-                          toggleSelectAllFormField(e.target.checked);
-                        }}
-                        name="check box for select all form fields "
-                        data-testid="select-all-form-field-for-task-variable"
-                      ></input>
-                    </div>
-                  </label>
+                {
+                  selectedAllFields ?  <div className="alert alert-warning mt-3" role="alert">
+                  <i className="fa-solid fa-triangle-exclamation me-2"></i>{" "}
+                  {t(`Selecting all form fields may affect performance. For the best
+                  performance, just pick the form fields you really need.`)}
+                </div> : null
+                }
+
+                <div className="mb-2 scrollable-table">
+                  <table className="table ">
+                    <thead>
+                      <tr>
+                        <th className="fw-bold" align="left">
+                          <div className="d-flex align-items-center">
+                            <div className="form-check">
+                              <input
+                                className="form-check-input border cursor-pointer border-dark"
+                                type="checkbox"
+                                checked={selectedAllFields}
+                                onChange={selectAllFormFeildToTaskVariable}
+                                title={t("Select all fields")}
+                              />
+                            </div>
+                            <span className="ms-2"> {t("Form field")}</span>
+                          </div>
+                        </th>
+                       
+                        <th className="fw-bold" align="left" >
+                          {t("Label")}
+                        </th>
+                        <th className="fw-bold col-3" align="right" >
+                          {t("Action")}
+                        </th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {taskVariables.map((item, index) => (
+                        <ViewAndEditTaskvariable
+                          key={index}
+                          variable={item}
+                          selectVariable={handleCheckAndUncheckTaskVariable}
+                          editVariable={editLableOfTaskVariable}
+                        />
+                      ))}
+                    </tbody>
+                  </table>
                 </div>
-
-                {!selectAllFormFields && selectedTaskVariable.length !== 0 ? (
-                  <div className="mb-2">
-                    <Table responsive striped bordered hover>
-                      <thead>
-                        <tr>
-                          <th className="fw-bold">{t("Form field")}</th>
-                          <th className="fw-bold" align="left">
-                            {t("Label")}
-                          </th>
-                          <th className="fw-bold" align="right">
-                            {t("Action")}
-                          </th>
-                        </tr>
-                      </thead>
-                      <tbody>
-                        {selectedTaskVariable.map((item, index) => (
-                          <ViewAndEditTaskvariable
-                            key={index}
-                            item={item}
-                            deleteTaskVariable={deleteTaskVariable}
-                            editTaskVariable={editTaskVariable}
-                          />
-                        ))}
-                      </tbody>
-                    </Table>
-                  </div>
-                ) : selectAllFormFields ? (
-                  <div className="alert alert-warning" role="alert">
-                    <i className="fa-solid fa-triangle-exclamation me-2"></i>{" "}
-                    {t(`Enabling this feature may affect performance. For the best
-                    performance, just pick the form fields you really need.
-                    Also, keep in mind that if you add, remove, or change
-                    anything in the form, it'll affect the task details too`)}
-                  </div>
-                ) : (
-                  <div className="border p-2 mb-2">
-                    <span>{t("No task variable selected")}</span>
-                  </div>
-                )}
-
-                {showTaskVaribleCrete && (
-                  <TaskvariableCreate
-                    options={keyOfVariable}
-                    addTaskVariable={addTaskVariable}
-                  />
-                )}
-
-                {!selectAllFormFields && keyOfVariable.length !== 0 && (
-                  <Button
-                    onClick={() =>
-                      setShowTaskVaribleCrete(!showTaskVaribleCrete)
-                    }
-                    variant={showTaskVaribleCrete ? "secondary" : "primary"}
-                    data-testid="form-task-variables-add-cancel-button"
-                  >
-                    {showTaskVaribleCrete ? t("Cancel") : t("Add")}
-                  </Button>
-                )}
               </Card.Body>
             </Card>
           </>

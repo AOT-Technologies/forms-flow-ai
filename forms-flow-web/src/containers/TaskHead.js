@@ -45,6 +45,12 @@ function TaskHead() {
 
   const count = isTaskListLoading ? "" : `(${itemCount})`;
 
+  const textTruncate = (wordLength, targetLength, text) => {
+    return text?.length > wordLength
+      ? text.substring(0, targetLength) + "..."
+      : text;
+  };
+
   return (
     <div>
       <div className="d-flex flex-md-row flex-column  align-items-md-center justify-content-between">
@@ -55,7 +61,8 @@ function TaskHead() {
                   <span className="h4 fw-bold">
                       <i className="fa fa-list-ul me-2" />
                     {selectedFilter?.name ?  
-                    `${selectedFilter?.name} ${count}` : filterListLoading() } 
+                    textTruncate(25, 23, `${selectedFilter?.name} ${count}`) :
+                    filterListLoading() } 
                   </span>
                 }
                 onClick={goToTask}

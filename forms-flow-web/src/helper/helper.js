@@ -48,4 +48,11 @@ const renderPage = (formStatus, processLoadError) => {
     );
   } 
 };
-export { replaceUrl, addTenantkey, removeTenantKey, textTruncate, renderPage };
+
+const filterSelectOptionByLabel = (option, searchText) => {
+  return option.data.label.toLowerCase().includes(searchText.toLowerCase());
+};
+
+
+export { replaceUrl, addTenantkey, removeTenantKey, textTruncate, renderPage, 
+  filterSelectOptionByLabel};

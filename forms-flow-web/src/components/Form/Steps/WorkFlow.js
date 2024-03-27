@@ -14,6 +14,7 @@ import ViewAndEditTaskvariable from "./ViewAndEditTaskvariable";
 import { useTranslation } from "react-i18next";
 import { listProcess } from "../../../apiManager/services/formatterService";
 import { DEFAULT_WORKFLOW } from "../../../constants/taskConstants";
+import { filterSelectOptionByLabel } from "../../../helper/helper";
 
 const WorkFlow = React.memo(
   ({
@@ -137,6 +138,7 @@ const WorkFlow = React.memo(
       updateTaskvariableToProcessData(updatedData);
     };
 
+
     useEffect(() => {
       if (!workflow) {
         setModified(true);
@@ -228,6 +230,7 @@ const WorkFlow = React.memo(
                 onChange={(selectedOption) => handleListChange(selectedOption)}
                 isDisabled={disableWorkflowAssociation}
                 inputId="select-workflow"
+                filterOption={filterSelectOptionByLabel}
                 getOptionLabel={(option) => (
                   <span data-testid={`form-workflow-option-${option.value}`}>
                     {option.label}

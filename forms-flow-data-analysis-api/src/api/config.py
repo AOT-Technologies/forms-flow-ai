@@ -86,6 +86,9 @@ class _Config:  # pylint: disable=too-few-public-methods
     )
     MODEL_ID = os.getenv("MODEL_ID")
 
+    # Configure LOG
+    CONFIGURE_LOGS = str(os.getenv("CONFIGURE_LOGS", default="true")).lower() == "true"
+
 
 class DevConfig(_Config):  # pylint: disable=too-few-public-methods
     """Development environment configuration."""

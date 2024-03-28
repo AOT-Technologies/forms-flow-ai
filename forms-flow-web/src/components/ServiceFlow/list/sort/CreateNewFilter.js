@@ -339,6 +339,7 @@ export default function CreateNewFilterDrawer({
   };
 
   const clearAllFilters = () => {
+    setShowAlert(false);
     setFilterName("");
     setShowUndefinedVariable("");
     setDefinitionKeyId("");
@@ -517,7 +518,6 @@ export default function CreateNewFilterDrawer({
     setOpenFilterDrawer(!openFilterDrawer);
   };
 
-
   const candidateGroups = useSelector(
     (state) => state.user?.userDetail?.groups || []
   );
@@ -533,13 +533,15 @@ export default function CreateNewFilterDrawer({
   }, [userList]);
 
   const candidateOptions = useMemo(() => {
-    return MULTITENANCY_ENABLED ? userRoles.map((role) => ({
-      value: role,
-      label: role
-    })) : candidateGroups.map((group) => ({
-      value: trimFirstSlash(group),
-      label: group
-    }));
+    return MULTITENANCY_ENABLED
+      ? userRoles.map((role) => ({
+          value: role,
+          label: role,
+        }))
+      : candidateGroups.map((group) => ({
+          value: trimFirstSlash(group),
+          label: group,
+        }));
   }, [candidateGroups, userRoles, MULTITENANCY_ENABLED]);
 
   const handleAssignee = (selectedOption) => {
@@ -560,7 +562,6 @@ export default function CreateNewFilterDrawer({
     setCheckboxes(checkboxes);
     setShowUndefinedVariable(showUndefinedVariable);
   };
-
 
   const hideDeleteConfirmation = () => {
     setShowDeleteModal(false);
@@ -598,9 +599,21 @@ export default function CreateNewFilterDrawer({
       <List>
         <div className="p-0 d-flex align-items-center justify-content-between ">
           <h5 className="fw-bold fs-16">
-            <Translation>{(t) => `${selectedFilterData ? t("Edit filter") : t("Create new filter") }` }</Translation>
+            <Translation>
+              {(t) =>
+                `${
+                  selectedFilterData ? t("Edit filter") : t("Create new filter")
+                }`
+              }
+            </Translation>
           </h5>
-          <button className="btn btn-link text-dark" onClick={toggleDrawer}>
+          <button
+            className="btn btn-link text-dark"
+            onClick={() => {
+              toggleDrawer();
+              setShowAlert(false);
+            }}
+          >
             <Translation>{(t) => t("Close")}</Translation>
           </button>
         </div>
@@ -610,7 +623,7 @@ export default function CreateNewFilterDrawer({
           <label htmlFor="filterName">{t("Filter Name")}</label>
           <input
             type="text"
-            className={`form-control ${showAlert ? 'is-invalid' : ''}`}
+            className={`form-control ${showAlert ? "is-invalid" : ""}`}
             id="filterName"
             placeholder={t("Enter your text here")}
             value={filterName}
@@ -618,10 +631,10 @@ export default function CreateNewFilterDrawer({
             title={t("Add fliter name")}
           />
           {showAlert && (
-          <p className="text-danger mt-2 fs-6">
-            {t("Filter name should be less than 50 characters")}
-          </p>
-        )}
+            <p className="text-danger mt-2 fs-6">
+              {t("Filter name should be less than 50 characters")}
+            </p>
+          )}
         </div>
       </List>
 
@@ -704,7 +717,11 @@ export default function CreateNewFilterDrawer({
 
         <div className="my-2">
           <h5 className="fw-bold">
-            {MULTITENANCY_ENABLED ? <Translation>{(t) => t("User Role")}</Translation> : <Translation>{(t) => t("User Group")}</Translation>}
+            {MULTITENANCY_ENABLED ? (
+              <Translation>{(t) => t("User Role")}</Translation>
+            ) : (
+              <Translation>{(t) => t("User Group")}</Translation>
+            )}
           </h5>
 
           <Select
@@ -715,7 +732,11 @@ export default function CreateNewFilterDrawer({
                 : null
             }
             isClearable={true}
-            placeholder={MULTITENANCY_ENABLED ? (t("Select User Role")) : (t("Select User Group"))}
+            placeholder={
+              MULTITENANCY_ENABLED
+                ? t("Select User Role")
+                : t("Select User Group")
+            }
             options={candidateOptions}
           />
         </div>
@@ -902,6 +923,7 @@ export default function CreateNewFilterDrawer({
               className="btn btn-outline-secondary me-3"
               onClick={() => {
                 toggleDrawer();
+                setShowAlert(false);
               }}
             >
               <Translation>{(t) => t("Cancel")}</Translation>
@@ -958,6 +980,7 @@ export default function CreateNewFilterDrawer({
           open={openFilterDrawer}
           onClose={() => {
             toggleDrawer();
+            setShowAlert(false);
           }}
           PaperProps={{
             style: {
@@ -985,14 +1008,13 @@ export default function CreateNewFilterDrawer({
           </Modal.Title>
         </Modal.Header>
         <Modal.Body>
-        <Translation>{(t) => t("Are you sure to delete")}</Translation>
-          {" "}
+          <Translation>{(t) => t("Are you sure to delete")}</Translation>{" "}
           <span className="fw-bold">
             {filterName.includes(" ")
               ? filterName
               : textTruncate(40, 30, filterName)}
           </span>{" "}
-        <Translation>{(t) => t("filter?")}</Translation>
+          <Translation>{(t) => t("filter?")}</Translation>
         </Modal.Body>
         <Modal.Footer>
           <Button
@@ -1000,10 +1022,10 @@ export default function CreateNewFilterDrawer({
             className="btn-link text-dark"
             onClick={hideDeleteConfirmation}
           >
-          <Translation>{(t) => t("Cancel")}</Translation>
+            <Translation>{(t) => t("Cancel")}</Translation>
           </Button>
           <Button variant="danger" onClick={FilterDelete}>
-          <Translation>{(t) => t("Delete")}</Translation>
+            <Translation>{(t) => t("Delete")}</Translation>
           </Button>
         </Modal.Footer>
       </Modal>

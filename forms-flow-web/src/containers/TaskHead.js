@@ -4,9 +4,10 @@ import { push } from "connected-react-router";
 import { NavDropdown } from "react-bootstrap";
 import ServiceFlowFilterListDropDown from "../components/ServiceFlow/filter/ServiceTaskFilterListDropDown";
  import {MULTITENANCY_ENABLED} from "../constants/constants";
-import {setSelectedTaskID, setViewType } from '../actions/bpmTaskActions';
+import {setBPMFilterLoader, setBPMFiltersAndCount, setSelectedTaskID, setViewType } from '../actions/bpmTaskActions';
 import CreateNewFilterDrawer from "../components/ServiceFlow/list/sort/CreateNewFilter";
 import { useTranslation } from "react-i18next"; 
+import { fetchBPMTaskCount } from "../apiManager/services/bpmTaskServices";
 function TaskHead() {
   const dispatch = useDispatch();
   const { t } = useTranslation();
@@ -19,7 +20,7 @@ function TaskHead() {
   const isFilterLoading = useSelector(
     (state) => state.bpmTasks.isFilterLoading
   );
-
+  const filterListItems = useSelector((state) => state.bpmTasks.filterList);
   const isTaskListLoading = useSelector(
     (state) => state.bpmTasks.isTaskListLoading
   );
@@ -27,6 +28,14 @@ function TaskHead() {
     const baseUrl = MULTITENANCY_ENABLED ? `/tenant/${tenantKey}/` : "/";
 
   const goToTask = () => {
+      fetchBPMTaskCount(filterListItems)
+      .then((res) => {
+        dispatch(setBPMFiltersAndCount(res.data));
+      })
+      .catch((err) => console.error(err))
+      .finally(() => {
+        dispatch(setBPMFilterLoader(false));
+      });
     dispatch(push(`${baseUrl}task`));
   };
 

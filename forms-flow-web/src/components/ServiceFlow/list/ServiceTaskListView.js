@@ -180,7 +180,7 @@ const ServiceTaskListView = React.memo((props) => {
                       ?.applicationId && (
                       <Col xs={2}>
                         <div className="col-12">
-                          <h6 className="fw-bold">{t("Submission ID")}</h6>
+                          <h6 className="fw-bold">{t("Submission Id")}</h6>
                           <h6>
                             {
                               task?._embedded?.variable?.filter(
@@ -222,9 +222,10 @@ const ServiceTaskListView = React.memo((props) => {
                             (variableItem) => variableItem.name === e.name
                           );
                           return (
-                            <Col xs={2} key={i}>
+                            <Col className= {`${i == adjustedValues.length - 1 ? 'd-flex' : ''}`} xs={2} key={i}>
+                              <div>
                               <div className="col-12 word-break">
-                                <h6 className="fw-bold">{data?.label}</h6>
+                                <h6 className="fw-bold">{data?.label}</h6> 
                               </div>
                               <div className="d-flex col-12">
                                 <h6>
@@ -233,6 +234,35 @@ const ServiceTaskListView = React.memo((props) => {
                                   </u>
                                 </h6>
                               </div>
+                              </div>
+                              
+                              {taskListAttributes?.length >= 1  
+                              && i == adjustedValues.length - 1 && 
+                               !vissibleAttributes?.taskVisibleAttributes?.priority &&
+                              (
+                     
+                     <div
+                       className="justify-content-center ms-4"
+                       onClick={(e) => {
+                         e.stopPropagation();
+                         handleToggleTaskVariable(task.id);
+                       }}
+                       title={t("Click for task variables")}
+                     >
+                       <i
+                         className="fa fa-angle-down"
+                         style={{
+                           transform: `${
+                             expandedTasks[task.id]
+                               ? "rotate(180deg)"
+                               : "rotate(0deg)"
+                           }`,
+                         }}
+                         aria-hidden="true"
+                       />
+                     </div>
+                   
+                 )}
                             </Col>
                           );
                         })
@@ -242,7 +272,8 @@ const ServiceTaskListView = React.memo((props) => {
                    
 
                       {vissibleAttributes?.taskVisibleAttributes?.priority &&
-                        <Col xs={1}>
+                        <Col xs={2} className="d-flex">
+                          <div>
                           <div className="col-12">
                             <h6 className="fw-bold">{t("Priority")}</h6>
                           </div>
@@ -263,34 +294,37 @@ const ServiceTaskListView = React.memo((props) => {
                               </u>
                             </h6>
                           </div>
+                          </div>
+                          
+                          {taskListAttributes?.length >= 1  && (
+                     
+                     <div
+                       className="justify-content-center ms-4"
+                       onClick={(e) => {
+                         e.stopPropagation();
+                         handleToggleTaskVariable(task.id);
+                       }}
+                       title={t("Click for task variables")}
+                     >
+                       <i
+                         className="fa fa-angle-down"
+                         style={{
+                           transform: `${
+                             expandedTasks[task.id]
+                               ? "rotate(180deg)"
+                               : "rotate(0deg)"
+                           }`,
+                         }}
+                         aria-hidden="true"
+                       />
+                     </div>
+                   
+                 )}
                         </Col>
                       }
 
 
-                    {taskListAttributes?.length >= 1  && (
-                      <Col xs={1}>
-                        <div
-                          className="justify-content-center"
-                          onClick={(e) => {
-                            e.stopPropagation();
-                            handleToggleTaskVariable(task.id);
-                          }}
-                          title={t("Click for task variables")}
-                        >
-                          <i
-                            className="fa fa-angle-down"
-                            style={{
-                              transform: `${
-                                expandedTasks[task.id]
-                                  ? "rotate(180deg)"
-                                  : "rotate(0deg)"
-                              }`,
-                            }}
-                            aria-hidden="true"
-                          />
-                        </div>
-                      </Col>
-                    )}
+                    
                   </Row>
                   {expandedTasks[task.id] &&
                     task?._embedded?.variable?.some(

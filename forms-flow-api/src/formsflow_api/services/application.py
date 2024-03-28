@@ -59,6 +59,7 @@ class ApplicationService:  # pylint: disable=too-many-public-methods
                 "submitterName": {"value": application.created_by},
                 "submissionDate": {"value": str(application.created)},
                 "tenantKey": {"value": mapper.tenant},
+                "formId": {"value": mapper.form_id},
             }
         }
 

@@ -418,16 +418,19 @@ export default function CreateNewFilterDrawer({
      * If a form is selected, set the formId property in the data object
      * to the id of the selected form.
      */
-    if (selectedForm) {
-      data.properties.formId = selectedForm;
-    }
-
+    
+    
     // Remove empty keys inside criteria
     const cleanedCriteria = omitBy(
       data.criteria,
       (value) => value === undefined || value === "" || value === null
-    );
-    data.criteria = cleanedCriteria;
+      );
+      data.criteria = cleanedCriteria;
+      
+      if (selectedForm) {
+        data.properties.formId = selectedForm;
+        data.criteria.processVariables = [{name: "formId", operator: "eq", value: selectedForm}];
+      }
 
     const submitFunction = selectedFilterData
       ? editFilters(data, selectedFilterData?.id)

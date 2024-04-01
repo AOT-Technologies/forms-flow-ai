@@ -2,6 +2,80 @@
 
 Mark  items as `Added`, `Changed`, `Fixed`, `Modified`, `Removed`, `Untested Features`, `Upcoming Features`, `Known Issues`
 
+## 6.0.0 - 2024-04-09
+
+**forms-flow-data-analysis-api**
+
+`Added`
+
+* Added environment variable API_LOG_ROTATION_WHEN for specifying the frequency of log file rotation
+* Added environment variable API_LOG_ROTATION_INTERVAL for setting the time interval for log file rotation
+* Added environment variable API_LOG_BACKUP_COUNT for determining the number of backup log files to keep
+
+`Fixed`
+
+* vulnerability fix
+
+**forms-flow-bpm**
+
+`Added`
+
+* added new field to notify listener to support email address injection
+
+
+**forms-flow-web**
+
+`Added`
+
+* Admin - User search by role
+* add user to tenant
+* Added form into task filter
+
+`Modified`
+
+* Update default Tasks Filter to display tasks authorized for current logged-in user
+* Modified candidate group listing based on logged user access in filter create
+* Modified Assignee in create filter from manual input to select from list
+* Modified Candidate group label to User group/ User role
+* Modified definition key to workflow name select for workflow selection
+* Modified "Show task based on logged user roles" to "Display authorized tasks based on user roles" which is visible to admin
+  users only, will be true by default
+* Task variable create UI and UX change
+* Adjusted task variables according to task attributes in card view 
+
+**forms-flow-api**
+
+`Added` 
+
+* Capture task variables on application creation without FormBPMFilteredDataPipelineListener during initial submission
+* Admin - User search by role
+* add user to tenant
+
+`Modified`
+
+* Update default All Tasks Filter to display tasks authorized for current logged-in user
+
+**froms-flow ee-repo specific changes**
+
+`Added` 
+
+**forms-flow-web**
+
+* ipaas integration 
+
+**forms-flow-bpm**
+
+* ipaas listener 
+
+**forms-flow-api**
+
+* new endpoints to support ipaas
+
+`Modified`
+
+* chatbot url port number updated
+
+
 ## 5.3.1 - 2024-02-14
 
 `Fixed`

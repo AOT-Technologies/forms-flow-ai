@@ -108,7 +108,7 @@ class FilterService:
         )
         filter_data = filter_schema.dump(filters, many=True)
         default_variables = [
-            {"name": "applicationId", "label": "Submission ID"},
+            {"name": "applicationId", "label": "Submission Id"},
             {"name": "formName", "label": "Form Name"},
         ]
         # User who created the filter or admin have edit permission.

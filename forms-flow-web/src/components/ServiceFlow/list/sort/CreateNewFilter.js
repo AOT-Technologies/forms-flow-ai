@@ -406,7 +406,7 @@ export default function CreateNewFilterDrawer({
         ...variables,
         ...(applicationIdExists
           ? []
-          : [{ name: "applicationId", label: "Submission ID" }]),
+          : [{ name: "applicationId", label: "Submission Id" }]),
         ...(formNameExists ? [] : [{ name: "formName", label: "Form Name" }]),
       ],
       users: users,

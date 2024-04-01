@@ -278,8 +278,8 @@ const ServiceTaskListViewDetails = React.memo(() => {
                                         </span>
                                     </Row>
                                     <Row className="ms-0">
-                                        <span data-title={t("Submission ID")} className="application-id">
-                                            {t("Submission ID")}# {task?.applicationId}
+                                        <span data-title={t("Submission Id")} className="application-id">
+                                            {t("Submission Id")}# {task?.applicationId}
                                         </span>
                                     </Row>
                                 </Col>

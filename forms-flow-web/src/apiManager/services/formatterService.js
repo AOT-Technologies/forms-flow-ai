@@ -40,7 +40,7 @@ export const addApplicationDetailsToFormComponent = (formObjData) => {
       input: true,
       tableView: true,
       key: "applicationId",
-      title: "Submission ID",
+      title: "Submission Id",
     });
   }
   return formObjData;

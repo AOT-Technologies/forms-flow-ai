@@ -11,7 +11,7 @@
     "eject": "react-scripts eject",
     "test": "craco test --detectOpenHandles --silent",
     "coverage": "craco test --coverage --watchAll=false",
-    "preinstall": "npx npm-force-resolutions",
+    "preinstall": "npm install --package-lock-only --ignore-scripts && npx npm-force-resolutions",
     "lint": "eslint src --no-fix --max-warnings 0"
   },
   "jest": {
@@ -38,6 +38,7 @@
   },
   "dependencies": {
     "@babel/plugin-proposal-private-property-in-object": "7.21.11",
+    "@babel/generator": "7.24.1",
     "@bpmn-io/properties-panel": "^0.17.0",
     "@craco/craco": "6.4.5",
     "@material-ui/core": "^4.11.4",

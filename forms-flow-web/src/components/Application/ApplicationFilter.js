@@ -135,7 +135,7 @@ const ApplicationFilter = ({
           </Col>
         </Row>
       </div>
-      <hr className="m-0 w-100" />
+      <hr className="mx-4" />
       <div className="m-4 px-2">
         <Row className="mt-2">
           <Col>
@@ -186,7 +186,7 @@ const ApplicationFilter = ({
           </Col>
         </Row>
       </div>
-      <hr className="mx-4" />
+      <hr className="w-100" />
       <Row className="m-3 filter-cancel-btn-container ">
         <Col className="px-0">
           <button

@@ -55,27 +55,6 @@ Mark  items as `Added`, `Changed`, `Fixed`, `Modified`, `Removed`, `Untested Fea
 
 * Update default All Tasks Filter to display tasks authorized for current logged-in user
 
-**froms-flow ee-repo specific changes**
-
-`Added` 
-
-**forms-flow-web**
-
-* ipaas integration 
-
-**forms-flow-bpm**
-
-* ipaas listener 
-
-**forms-flow-api**
-
-* new endpoints to support ipaas
-
-`Modified`
-
-* chatbot url port number updated
-
-
 ## 5.3.1 - 2024-02-14
 
 `Fixed`

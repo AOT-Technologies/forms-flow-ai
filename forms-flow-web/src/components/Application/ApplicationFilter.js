@@ -122,7 +122,7 @@ const ApplicationFilter = ({
               data-testid="submission-filter-id-input"
             />
           </Col>
-          <Col>
+          <Col className="px-2">
             <label htmlFor="applicationNameInput">{t("Form Title")}</label>
             <input
               id="applicationNameInput"
@@ -162,7 +162,7 @@ const ApplicationFilter = ({
               )}
             </select>
           </Col>
-          <Col className="me-2" >
+          <Col className="ms-2 me-4" >
             <label htmlFor="modifiedDateRange" >{t("Modified Date")}</label>
             <DateRangePicker
               id="modifiedDateRange"
@@ -188,7 +188,7 @@ const ApplicationFilter = ({
       </div>
       <hr className="mx-4" />
       <Row className="m-3 filter-cancel-btn-container ">
-        <Col className="px-0 text-left">
+        <Col className="px-0">
           <button
             className="btn btn-link text-danger"
             onClick={clearAllFilters}
@@ -197,7 +197,7 @@ const ApplicationFilter = ({
             {t("Clear All Filters")}
           </button>
         </Col>
-        <Col className="text-right">
+        <Col className="d-flex justify-content-end">
           <button
             className="btn btn-link text-dark me-1 "
             onClick={closeFilterModal}

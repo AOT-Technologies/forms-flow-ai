@@ -51,15 +51,15 @@ Mark  items as `Added`, `Changed`, `Fixed`, `Modified`, `Removed`, `Untested Fea
 
 **forms-flow-api**
 
-   * Python version upgraded t0 3.12.1
+   * Python version upgraded to 3.12.1
 
 **forms-flow-documents**
 
-   * Python version upgraded t0 3.12.1
+   * Python version upgraded to 3.12.1
 
 **forms-flow-data-analysis-api**
 
-   * Python version upgraded t0 3.11.7
+   * Python version upgraded to 3.11.7
 
 `Generic Changes`
 

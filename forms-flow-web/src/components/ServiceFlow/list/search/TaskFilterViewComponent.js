@@ -342,7 +342,7 @@ const TaskFilterViewComponent = React.memo(
                   <Row>
                     <Col xs={6}>
                       <DatePicker
-                        placeholderText="From"
+                        placeholderText={t("From")}
                         showTimeSelect
                         selected={
                           filterParams.dueAfter
@@ -358,7 +358,7 @@ const TaskFilterViewComponent = React.memo(
                     </Col>
                     <Col xs={6}>
                       <DatePicker
-                        placeholderText="To"
+                        placeholderText={t("To")}
                         showTimeSelect
                         selected={
                           filterParams.dueBefore
@@ -383,7 +383,7 @@ const TaskFilterViewComponent = React.memo(
                     <Row>
                       <Col xs={6}>
                         <DatePicker
-                          placeholderText="From"
+                          placeholderText={t("From")}
                           showTimeSelect
                           selected={
                             filterParams.followUpAfter
@@ -399,7 +399,7 @@ const TaskFilterViewComponent = React.memo(
                       </Col>
                       <Col xs={6}>
                         <DatePicker
-                          placeholderText="To"
+                          placeholderText={t("To")}
                           showTimeSelect
                           selected={
                             filterParams.followUpBefore
@@ -427,7 +427,7 @@ const TaskFilterViewComponent = React.memo(
                     <Row>
                       <Col xs={6}>
                         <DatePicker
-                          placeholderText="From"
+                          placeholderText={t("From")}
                           showTimeSelect
                           selected={
                             filterParams.createdAfter
@@ -443,7 +443,7 @@ const TaskFilterViewComponent = React.memo(
                       </Col>
                       <Col xs={6}>
                         <DatePicker
-                          placeholderText="To"
+                          placeholderText={t("To")}
                           showTimeSelect
                           selected={
                             filterParams.createdBefore

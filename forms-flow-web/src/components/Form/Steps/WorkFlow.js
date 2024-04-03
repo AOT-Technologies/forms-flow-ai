@@ -29,7 +29,7 @@ const WorkFlow = React.memo(
     const dispatch = useDispatch();
     const [modified, setModified] = useState(false);
     const [tabValue, setTabValue] = useState(0);
- 
+
     const { form } = useSelector((state) => state.form);
     const process = useSelector((state) => state.process.processList);
 
@@ -37,7 +37,7 @@ const WorkFlow = React.memo(
     const formProcessList = useSelector(
       (state) => state.process.formProcessList
     );
- 
+
     const workflow = useSelector((state) => state.process.workflowAssociated);
 
     // handle add new task variable
@@ -45,7 +45,7 @@ const WorkFlow = React.memo(
     const [taskVariables, setTaskVariables] = useState([]);
     const [selectedVariablekeys, setSelectedVariableKeys] = useState([]);
 
-    const selectedAllFields = Object.keys(formFields).every(i=> selectedVariablekeys.includes(i));
+    const selectedAllFields = Object.keys(formFields).every(i => selectedVariablekeys.includes(i));
 
     useEffect(() => {
       const formComponents = Object.values(
@@ -59,16 +59,16 @@ const WorkFlow = React.memo(
         "container",
         "htmlelement",
       ]);
+      const ignoredKeys = new Set(["applicationId"]);
       const components = {};
       formComponents.forEach((component) => {
-        if (!ignoredTypes.has(component.type)) {
+        if (!ignoredTypes.has(component.type) && !ignoredKeys.has(component.key)) {
           components[component.key] = {
             key: component.key,
             label: component.label,
           };
         }
       });
-
       setFormFields(_.cloneDeep(components));
       const taskvariable = [];
       const keys = [];
@@ -102,29 +102,28 @@ const WorkFlow = React.memo(
       );
     };
 
-    const selectAllFormFeildToTaskVariable = (e)=>{
-      const updatedData = taskVariables.map((variable)=>(
-        {...variable, checked: e.target.checked}));
-      setSelectedVariableKeys(e.target.checked ? taskVariables.map(i=>(i.key)) : []);
+    const selectAllFormFeildToTaskVariable = (e) => {
+      const updatedData = taskVariables.map((variable) => (
+        { ...variable, checked: e.target.checked }));
+      setSelectedVariableKeys(e.target.checked ? taskVariables.map(i => (i.key)) : []);
       setTaskVariables(updatedData);
       updateTaskvariableToProcessData(updatedData);
     };
 
     const handleCheckAndUncheckTaskVariable = (selectedVariableKey) => {
-      
-      const updatedData = taskVariables.map((variable) =>
-       {
-        if( variable.key == selectedVariableKey){
-          if(!variable.checked){
-            setSelectedVariableKeys(prev =>([...prev, variable.key]));
-          }else{
+
+      const updatedData = taskVariables.map((variable) => {
+        if (variable.key == selectedVariableKey) {
+          if (!variable.checked) {
+            setSelectedVariableKeys(prev => ([...prev, variable.key]));
+          } else {
             setSelectedVariableKeys(prev => prev.filter(key => key !== variable.key));
           }
-          return  { ...variable, checked: !variable.checked };
-        } 
-          return variable;
+          return { ...variable, checked: !variable.checked };
+        }
+        return variable;
 
-       }
+      }
       );
       setTaskVariables(updatedData);
       updateTaskvariableToProcessData(updatedData);
@@ -132,7 +131,7 @@ const WorkFlow = React.memo(
 
     const editLableOfTaskVariable = (data) => {
       const updatedData = taskVariables.map((variable) =>
-        variable.key == data.key ? {checked:variable.checked,...data} : variable
+        variable.key == data.key ? { checked: variable.checked, ...data } : variable
       );
       setTaskVariables(updatedData);
       updateTaskvariableToProcessData(updatedData);
@@ -182,9 +181,8 @@ const WorkFlow = React.memo(
               <ul className="nav nav-tabs">
                 <li className="nav-item ">
                   <a
-                    className={`nav-link ${
-                      tabValue === 0 ? "active workflow-taskVariable" : ""
-                    }`}
+                    className={`nav-link ${tabValue === 0 ? "active workflow-taskVariable" : ""
+                      }`}
                     onClick={() => handleChange(0)}
                     href="#"
                     data-testid="form-workflow-tab"
@@ -194,9 +192,8 @@ const WorkFlow = React.memo(
                 </li>
                 <li className="nav-item">
                   <a
-                    className={`nav-link ${
-                      tabValue === 1 ? "active workflow-taskVariable" : ""
-                    }`}
+                    className={`nav-link ${tabValue === 1 ? "active workflow-taskVariable" : ""
+                      }`}
                     onClick={() => handleChange(1)}
                     href="#"
                     data-testid="form-task-variables-tab"
@@ -223,8 +220,8 @@ const WorkFlow = React.memo(
                 value={
                   processList.length && workflow?.value
                     ? processList.find(
-                        (process) => process.value === workflow.value
-                      )
+                      (process) => process.value === workflow.value
+                    )
                     : null
                 }
                 onChange={(selectedOption) => handleListChange(selectedOption)}
@@ -254,11 +251,11 @@ const WorkFlow = React.memo(
                 <span className="p-3">{t("Select form fields to display in task list")}</span>
 
                 {
-                  selectedAllFields ?  <div className="alert alert-warning mt-3" role="alert">
-                  <i className="fa-solid fa-triangle-exclamation me-2"></i>{" "}
-                  {t(`Selecting all form fields may affect performance. For the best
+                  selectedVariablekeys?.length > 10 ? <div className="alert alert-warning mt-3" role="alert">
+                    <i className="fa-solid fa-triangle-exclamation me-2"></i>{" "}
+                    {t(`Selecting all form fields may affect performance. For the best
                   performance, just pick the form fields you really need.`)}
-                </div> : null
+                  </div> : null
                 }
 
                 <div className="mb-2 scrollable-table">
@@ -279,7 +276,7 @@ const WorkFlow = React.memo(
                             <span className="ms-2"> {t("Form field")}</span>
                           </div>
                         </th>
-                       
+
                         <th className="fw-bold" align="left" >
                           {t("Label")}
                         </th>

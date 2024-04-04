@@ -54,6 +54,14 @@ class Draft(AuditDateTimeMixin, BaseModel, db.Model):
         )
         self.save_and_flush()
 
+    def update_draft_data_and_commit(self, draft_info: dict):
+        """Update & commit draft data."""
+        self.update_from_dict(
+            ["data"],
+            draft_info,
+        )
+        self.commit()
+
     @classmethod
     def get_by_id(cls, draft_id: str, user_id: str) -> Draft:
         """Retrieves the draft entry by id."""

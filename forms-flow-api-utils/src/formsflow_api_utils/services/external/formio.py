@@ -139,12 +139,14 @@ class FormioService:
         )
         return self._invoke_service(url, headers, data=data)
 
-    def patch_submission(self, form_id, submission_id, data, formio_token, raise_for_error: bool = True):
+    def patch_submission(self, form_id, submission_id, data, formio_token, raise_for_error: bool = True, is_bundle: bool = False):
         """Patch form submission data with the payload."""
         headers = {"Content-Type": "application/json", "x-jwt-token": formio_token}
         url = (
             f"{self.base_url}/form/{form_id}/submission/{submission_id}"
         )
+        if is_bundle:
+            url += "?skip-sanitize=true"
         return self._invoke_service(url, headers, data=data, method='PATCH', raise_for_error=raise_for_error)
 
     def get_form_by_path(self, path_name: str, formio_token: str) -> dict:

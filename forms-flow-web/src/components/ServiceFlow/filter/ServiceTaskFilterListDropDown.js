@@ -4,6 +4,7 @@ import { useDispatch, useSelector } from "react-redux";
 import {
   setSelectedBPMFilter,
   setSelectedTaskID,
+  setBPMTaskListActivePage
 } from "../../../actions/bpmTaskActions";
 import { Link } from "react-router-dom";
 import { useTranslation } from "react-i18next";
@@ -27,6 +28,7 @@ const ServiceFlowFilterListDropDown = React.memo(({selectFilter,openFilterDrawer
     const selectedFilterItem = filterListItems.find((item) => item.id === filter.id);
     dispatch(setSelectedBPMFilter(selectedFilterItem));
     dispatch(setSelectedTaskID(null));
+    dispatch(setBPMTaskListActivePage(1));
   };
 
   const handleFilterEdit = (id) => {

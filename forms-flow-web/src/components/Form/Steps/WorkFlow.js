@@ -76,8 +76,12 @@ const WorkFlow = React.memo(
         if (components[i.key]) {
           delete components[i.key];
         }
-        keys.push(i.key);
-        taskvariable.push({ ...i, checked: true });
+        //if ignore types already exist in db need to avoid that
+        if(!ignoredKeys.has(i.key) ) {
+          taskvariable.push({ ...i, checked: true });
+          keys.push(i.key);
+        }
+        
       });
       setSelectedVariableKeys(keys);
       taskvariable.push(...Object.values(components));

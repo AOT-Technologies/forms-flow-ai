@@ -4,7 +4,7 @@ import Drawer from "@material-ui/core/Drawer";
 import List from "@material-ui/core/List";
 import Divider from "@material-ui/core/Divider";
 import Select from "react-select";
-import { fetchAllBpmProcesses } from "../../../../apiManager/services/processServices";
+import { fetchAllBpmProcesses, fetchTaskVariables } from "../../../../apiManager/services/processServices";
 import { listProcess } from "../../../../apiManager/services/formatterService";
 
 import {
@@ -48,10 +48,6 @@ import {
   MULTITENANCY_ENABLED,
 } from "../../../../constants/constants";
 import { fetchAllForms } from "../../../../apiManager/services/bpmFormServices";
-import {
-  getFormProcesses,
-  resetFormProcessData,
-} from "../../../../apiManager/services/processServices";
 import { fetchUserList } from "../../../../apiManager/services/bpmTaskServices";
 import { filterSelectOptionByLabel } from "../../../../helper/helper";
 
@@ -89,6 +85,7 @@ export default function CreateNewFilterDrawer({
   const [identifierId, setIdentifierId] = useState("");
   const [selectUserGroupIcon, setSelectUserGroupIcon] = useState("");
   const [specificUserGroup, setSpecificUserGroup] = useState("");
+  const [taskVariableFromMapperTable, setTaskVariableFromMapperTable] = useState([]);
   const firstResult = useSelector((state) => state.bpmTasks.firstResult);
   const tenantKey = useSelector((state) => state.tenants?.tenantId);
   const process = useSelector((state) => state.process?.processList);
@@ -154,6 +151,18 @@ export default function CreateNewFilterDrawer({
     return inputString;
   };
 
+  const handleFetchTaskVariables = (formId)=>{
+    setProcessLoading(true);
+      fetchTaskVariables(formId).then((res)=>{
+        setTaskVariableFromMapperTable(res.data?.taskVariable || []);
+        setProcessLoading(false);
+      }).catch((err)=>{
+        console.err(err);
+        setProcessLoading(false);
+      });
+  };
+
+
   const setTaskVariablesAndItsKeys = (variables = []) => {
     setVariables(variables);
     // taking variable names to check it is already exist or not
@@ -187,12 +196,7 @@ export default function CreateNewFilterDrawer({
 
       if (selectedFilterData?.properties?.formId) {
         setSelectedForm(selectedFilterData?.properties?.formId || null);
-        setProcessLoading(true);
-        dispatch(
-          getFormProcesses(selectedFilterData?.properties?.formId, () => {
-            setProcessLoading(false);
-          })
-        );
+        handleFetchTaskVariables(selectedFilterData?.properties?.formId);
       }
 
       setTaskVariablesAndItsKeys(selectedFilterData.variables);
@@ -283,12 +287,7 @@ export default function CreateNewFilterDrawer({
 
   const onChangeSelectForm = (e) => {
     if (e?.value) {
-      setProcessLoading(true);
-      dispatch(
-        getFormProcesses(e.value, () => {
-          setProcessLoading(false);
-        })
-      );
+      handleFetchTaskVariables(e?.value);
       if (e?.value === selectedFilterData?.properties?.formId) {
         setTaskVariablesAndItsKeys(selectedFilterData?.variables);
       } else {
@@ -296,7 +295,7 @@ export default function CreateNewFilterDrawer({
       }
     } else {
       resetVariables();
-      dispatch(resetFormProcessData());
+      setTaskVariableFromMapperTable([]);
     }
     setSelectedForm(e?.value);
   };
@@ -352,7 +351,7 @@ export default function CreateNewFilterDrawer({
     setIsTasksForCurrentUserGroupsEnabled(true);
     setIsMyTasksEnabled(false);
     setSelectedForm(null);
-    dispatch(resetFormProcessData());
+    setTaskVariableFromMapperTable([]);
     setCheckboxes(initialValueOfTaskAttribute);
     setForms({ data: [], isLoading: true });
   };
@@ -973,6 +972,7 @@ export default function CreateNewFilterDrawer({
               selectedTaskAttrbutes={checkboxes}
               selectedTaskVariablesKeys={taskVariablesKeys}
               selectedTaskVariables={variables}
+              taskVariableFromMapperTable={taskVariableFromMapperTable}
               onSaveTaskAttribute={onSaveTaskAttribute}
               showUndefinedVariable={showUndefinedVariable}
             />

@@ -58,7 +58,8 @@ export const fetchBPMFormList = (
 };
 
 export const fetchAllForms = ()=>{
-  return RequestService.httpGETRequest(`${API.FORM}`);
+  //isActive means published forms only : status = Active
+  return RequestService.httpGETRequest(`${API.FORM}?isActive=true`);
 };
 
 export const fetchFormByAlias = (path, ...rest) => {

@@ -4,8 +4,7 @@ import Modal from "react-bootstrap/Modal";
 import ModalTitle from "react-bootstrap/ModalTitle";
 import Form from "react-bootstrap/Form";
 import { Translation, useTranslation } from "react-i18next";
-import { useSelector } from "react-redux";
-
+ 
 function TaskAttributeComponent({
   show,
   selectedForm,
@@ -15,11 +14,10 @@ function TaskAttributeComponent({
   selectedTaskVariables,
   onSaveTaskAttribute,
   processLoading,
+  taskVariableFromMapperTable
   // showUndefinedVariable,
 }) {
-  const taskVariables = useSelector(
-    (state) => state.process?.formProcessList?.taskVariable || []
-  );
+ 
   const { t } = useTranslation();
 
   const [variables, setVariables] = useState(selectedTaskVariables);
@@ -183,8 +181,8 @@ function TaskAttributeComponent({
           /> */}
           <div className="d-flex mt-3 px-2 flex-wrap">
             {selectedForm ? (
-              taskVariables?.length > 0 ? (
-                taskVariables.map((variable) =>
+              taskVariableFromMapperTable?.length > 0 ? (
+                taskVariableFromMapperTable.map((variable) =>
                   variable.key !== "applicationId" ? (
                     <Col xs={12} md={6} key={variable.key}>
                       <Form.Check

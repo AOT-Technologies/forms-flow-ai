@@ -232,8 +232,8 @@ const TaskHeaderListView = React.memo(({task,taskId,groupView = true}) => {
         }
        
         {vissibleAttributes?.taskVisibleAttributes?.assignee &&
-          <Col xs={2} >
-          <div className="tab-width">
+          <Col xs={2}  onClick={(e)=> e.stopPropagation()} >
+          <div className="tab-width px-3">
             <div>
                 <h6 className="fw-bold">{t("Assignee")}</h6>
             </div>

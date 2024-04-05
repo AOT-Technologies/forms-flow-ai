@@ -84,6 +84,12 @@ Mark  items as `Added`, `Changed`, `Fixed`, `Modified`, `Removed`, `Untested Fea
 
 * Fixed security vulnerabilities
 
+`Modified`
+
+**forms-flow-api**
+
+* Changes have been made to the Roles and Groups endpoint to accommodate modifications related to subgroups in Keycloak 23.
+
 ## 5.3.0 - 2023-11-24
 
 `Added`

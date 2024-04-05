@@ -1,7 +1,7 @@
 # Workflow Engine
 
-[![FormsFlow BPM CI](https://github.com/AOT-Technologies/forms-flow-ai-dev/actions/workflows/forms-flow-api-ci.yml/badge.svg?branch=develop)](https://github.com/AOT-Technologies/forms-flow-ai-dev/actions)
-![Camunda](https://img.shields.io/badge/Camunda-7.20.0-blue)  ![Spring Boot](https://img.shields.io/badge/Spring_Boot-3.1.5-blue)  ![postgres](https://img.shields.io/badge/postgres-latest-blue)  
+[![FormsFlow BPM CI](https://github.com/AOT-Technologies/forms-flow-ai/actions/workflows/forms-flow-bpm-ci.yml/badge.svg)](https://github.com/AOT-Technologies/forms-flow-ai/actions)
+![Camunda](https://img.shields.io/badge/Camunda-7.20.0-blue)  ![Spring Boot](https://img.shields.io/badge/Spring_Boot-3.1.10-blue)  ![postgres](https://img.shields.io/badge/postgres-latest-blue)  
 **formsflow.ai** leverages Camunda for workflow and decision automation.
 
 To know more about Camunda, visit https://camunda.com/.
@@ -96,7 +96,7 @@ To know more about Camunda, visit https://camunda.com/.
  `WEBSOCKET_ENCRYPT_KEY`|Camunda task event streaming. AES encryption of token||`giert989jkwrgb@DR55`
  `MULTI_TENANCY_ENABLED`|Multi tenancy enabled flag for the environment||`true|false`
  `FORMSFLOW_ADMIN_URL`|Only needed if multi tenancy is enabled||`http://{your-ip-address}:5001/`
- `DATA_ANALYSIS_URL`|sentiment analysis url||`http://{your-ip-address}:6000/analysis`
+ `DATA_ANALYSIS_URL`|sentiment analysis url||`http://{your-ip-address}:6001`
  `REDIS_HOST`|Redis hostname||`localhost`
  `REDIS_PORT`|Redis portname||`6379`
  `REDIS_PASSCODE`|Redis passcode||`changeme`

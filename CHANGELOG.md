@@ -10,7 +10,7 @@ Mark  items as `Added`, `Changed`, `Fixed`, `Modified`, `Removed`, `Untested Fea
 
 * Added user search by role for Admin
 * Incorporate a user across multiple tenants
-* Added form into task filterAdded form select into task filter
+* Added form into task filter
 
 **forms-flow-bpm**
 
@@ -21,7 +21,6 @@ Mark  items as `Added`, `Changed`, `Fixed`, `Modified`, `Removed`, `Untested Fea
 * Added the feature to capture task variables on application creation without `FormBPMFilteredDataPipelineListener` during initial submission
 * Added user search by role for Admin
 * Incorporate a user across multiple tenants
-* Added invite user option for multitenant
 
 **forms-flow-data-analysis-api**
 

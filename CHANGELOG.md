@@ -10,7 +10,7 @@ Mark  items as `Added`, `Changed`, `Fixed`, `Modified`, `Removed`, `Untested Fea
 
 * Added user search by role for Admin
 * Incorporate a user across multiple tenants
-* Added form into task filter
+* Added form into task filterAdded form select into task filter
 
 **forms-flow-bpm**
 
@@ -21,6 +21,7 @@ Mark  items as `Added`, `Changed`, `Fixed`, `Modified`, `Removed`, `Untested Fea
 * Added the feature to capture task variables on application creation without `FormBPMFilteredDataPipelineListener` during initial submission
 * Added user search by role for Admin
 * Incorporate a user across multiple tenants
+* Added invite user option for multitenant
 
 **forms-flow-data-analysis-api**
 
@@ -42,12 +43,21 @@ Mark  items as `Added`, `Changed`, `Fixed`, `Modified`, `Removed`, `Untested Fea
    * Task variable create UI and UX change
    * Adjusted task variables according to task attributes in card view 
    * Updated default All Tasks Filter to display tasks authorized for current logged-in user
+* Modified user listings to exclusively display users associated with the respective tenant for multi-tenant admin
 
 **forms-flow-api**
 
 * Changes have been made to the Roles and Groups endpoint to accommodate modifications related to subgroups in Keycloak 23.
 
 *Upgrade notes:*
+
+**forms-flow-bpm**
+
+   * SpringBoot version upgraded to 3.1.10
+   * groovy version upgraded to 3.0.21
+   * postgresql version upgraded to 42.7.2
+   * graalvm version upgraded to 23.0.0
+   * snakeyaml version upgraded to 2.2
 
 **forms-flow-api**
 

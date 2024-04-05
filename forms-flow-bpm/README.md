@@ -96,7 +96,7 @@ To know more about Camunda, visit https://camunda.com/.
  `WEBSOCKET_ENCRYPT_KEY`|Camunda task event streaming. AES encryption of token||`giert989jkwrgb@DR55`
  `MULTI_TENANCY_ENABLED`|Multi tenancy enabled flag for the environment||`true|false`
  `FORMSFLOW_ADMIN_URL`|Only needed if multi tenancy is enabled||`http://{your-ip-address}:5001/`
- `DATA_ANALYSIS_URL`|sentiment analysis url||`http://{your-ip-address}:6000/analysis`
+ `DATA_ANALYSIS_URL`|sentiment analysis url||`http://{your-ip-address}:6001`
  `REDIS_HOST`|Redis hostname||`localhost`
  `REDIS_PORT`|Redis portname||`6379`
  `REDIS_PASSCODE`|Redis passcode||`changeme`

@@ -48,7 +48,6 @@ const TaskFilterViewComponent = React.memo(
     const { t } = useTranslation();
     const [assigneeOptions, setAssigneeOptions] = useState([]);
     const [inputValuesPresent, setInputValuesPresent] = useState(false); // State to track any input value is present or not
-    const selectedFilter = useSelector((state) => state.bpmTasks.selectedFilter);
     
     const handleClick = (e) => {
       if (createSearchNode?.current?.contains(e.target)) {
@@ -157,10 +156,6 @@ const TaskFilterViewComponent = React.memo(
     }, [assignee, candidateGroup, processVariables, dueStartDate, dueEndDate,
       followStartDate, followEndDate, createdStartDate, createdEndDate, priority]);
     
-    useEffect(() => {
-      //The search fields get clear when switching the filter
-      setFilterParams({});
-    }, [selectedFilter]);
      
       const handleDueStartDateChange = (date) => {
         setDueStartDate(date); 

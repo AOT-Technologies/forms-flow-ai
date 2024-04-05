@@ -17,6 +17,7 @@ const TaskSearchBarListView = React.memo(({ toggleAllTaskVariables }) => {
   const [filterParams, setFilterParams] = useState({});
   const taskList = useSelector((state) => state.bpmTasks.tasksList);
   const allTaskVariablesExpanded = useSelector((state) => state.bpmTasks.allTaskVariablesExpand);
+  const selectedFilter = useSelector((state) => state.bpmTasks.selectedFilter);
   const dispatch = useDispatch();
   const { t } = useTranslation();
   useEffect(() => {
@@ -29,6 +30,11 @@ const TaskSearchBarListView = React.memo(({ toggleAllTaskVariables }) => {
     });
     dispatch(setSelectedTaskVariables(taskVaribles));
   }, [taskList]);
+  
+  useEffect(() => {
+    //The search fields get clear when switching the filter
+    setFilterParams({});
+  }, [selectedFilter]);
 
   return (
     <>

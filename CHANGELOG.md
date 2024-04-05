@@ -2,14 +2,14 @@
 
 Mark  items as `Added`, `Changed`, `Fixed`, `Modified`, `Removed`, `Untested Features`, `Upcoming Features`, `Known Issues`
 
-## 6.0.0 - 2024-04-09
+## 6.0.0 - 2024-04-05
 
 `Added`
 
 **forms-flow-web**
 
 * Added user search by role for Admin
-* Add user to tenant
+* Incorporate a user across multiple tenants
 * Added form into task filter
 
 **forms-flow-bpm**
@@ -18,9 +18,9 @@ Mark  items as `Added`, `Changed`, `Fixed`, `Modified`, `Removed`, `Untested Fea
 
 **forms-flow-api**
 
-* Added the feature to capture task variables on application creation without FormBPMFilteredDataPipelineListener during initial submission
+* Added the feature to capture task variables on application creation without `FormBPMFilteredDataPipelineListener` during initial submission
 * Added user search by role for Admin
-* add user to tenant
+* Incorporate a user across multiple tenants
 
 **forms-flow-data-analysis-api**
 

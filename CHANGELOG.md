@@ -9,7 +9,7 @@ Mark  items as `Added`, `Changed`, `Fixed`, `Modified`, `Removed`, `Untested Fea
 **forms-flow-web**
 
 * Added user search by role for Admin
-* Incorporate a user across multiple tenants
+* Added option to Add registered user to the tenant
 * Implemented functionality to generate filters based on form
 
 
@@ -21,7 +21,7 @@ Mark  items as `Added`, `Changed`, `Fixed`, `Modified`, `Removed`, `Untested Fea
 
 * Added the feature to capture task variables on application creation without `FormBPMFilteredDataPipelineListener` during initial submission
 * Added user search by role for Admin
-* Incorporate a user across multiple tenants
+* Added option to Add registered user to the tenant
 
 **forms-flow-data-analysis-api**
 

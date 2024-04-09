@@ -1,8 +1,12 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useMemo } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import Drawer from "@material-ui/core/Drawer";
 import List from "@material-ui/core/List";
 import Divider from "@material-ui/core/Divider";
+import Select from "react-select";
+import { fetchAllBpmProcesses, fetchTaskVariables } from "../../../../apiManager/services/processServices";
+import { listProcess } from "../../../../apiManager/services/formatterService";
+
 import {
   deleteFilters,
   editFilters,
@@ -28,14 +32,36 @@ import {
 import TaskAttributeComponent from "./TaskAttributeComponent";
 import { toast } from "react-toastify";
 import { getUserRoles } from "../../../../apiManager/services/authorizationService";
+import { setUserGroups } from "../../../../actions/authorizationActions";
 import {
-  setUserGroups,
-  // setUserRoles,
-} from "../../../../actions/authorizationActions";
-import { Badge, ListGroup, OverlayTrigger, Popover } from "react-bootstrap";
-// import { fetchUsers } from "../../../../apiManager/services/userservices";
+  Badge,
+  ListGroup,
+  OverlayTrigger,
+  Popover,
+  Modal,
+  Button,
+} from "react-bootstrap";
 import { trimFirstSlash } from "../../constants/taskConstants";
-import { cloneDeep } from "lodash";
+import { cloneDeep, omitBy } from "lodash";
+import {
+  FORMSFLOW_ADMIN,
+  MULTITENANCY_ENABLED,
+} from "../../../../constants/constants";
+import { fetchAllForms } from "../../../../apiManager/services/bpmFormServices";
+import { fetchUserList } from "../../../../apiManager/services/bpmTaskServices";
+import { filterSelectOptionByLabel } from "../../../../helper/helper";
+
+const initialValueOfTaskAttribute = {
+  applicationId: true,
+  assignee: true,
+  taskTitle: true,
+  createdDate: true,
+  dueDate: true,
+  followUp: true,
+  priority: true,
+  groups: true,
+};
+
 export default function CreateNewFilterDrawer({
   selectedFilterData,
   openFilterDrawer,
@@ -45,21 +71,25 @@ export default function CreateNewFilterDrawer({
   const dispatch = useDispatch();
   const [filterName, setFilterName] = useState("");
   const [showUndefinedVariable, setShowUndefinedVariable] = useState(false);
-  const [inputVisibility, setInputVisibility] = useState({});
   const [definitionKeyId, setDefinitionKeyId] = useState("");
   const [candidateGroup, setCandidateGroup] = useState([]);
+  const userRoles = useSelector((state) => state.user.roles || []);
   const [assignee, setAssignee] = useState("");
-  const [includeAssignedTasks, setIncludeAssignedTasks] = useState(false);
+
   const [
     isTasksForCurrentUserGroupsEnabled,
     setIsTasksForCurrentUserGroupsEnabled,
-  ] = useState(false);
-  const [isMyTasksEnabled,setIsMyTasksEnabled] = useState(false);
+  ] = useState(true);
+  const [isMyTasksEnabled, setIsMyTasksEnabled] = useState(false);
   const [permissions, setPermissions] = useState(PRIVATE_ONLY_YOU);
   const [identifierId, setIdentifierId] = useState("");
   const [selectUserGroupIcon, setSelectUserGroupIcon] = useState("");
   const [specificUserGroup, setSpecificUserGroup] = useState("");
+  const [taskVariableFromMapperTable, setTaskVariableFromMapperTable] = useState([]);
   const firstResult = useSelector((state) => state.bpmTasks.firstResult);
+  const tenantKey = useSelector((state) => state.tenants?.tenantId);
+  const process = useSelector((state) => state.process?.processList);
+  const processList = useMemo(() => listProcess(process, true), [process]);
   const userGroups = useSelector(
     (state) => state.userAuthorization?.userGroups
   );
@@ -74,46 +104,36 @@ export default function CreateNewFilterDrawer({
   );
   const selectedFilter = useSelector((state) => state.bpmTasks.selectedFilter);
   const filterList = useSelector((state) => state.bpmTasks.filterList);
+
   const [variables, setVariables] = useState([]);
-  const [inputValues, setInputValues] = useState([{ name: "", label: "" }]);
+  const [forms, setForms] = useState({ data: [], isLoading: true });
+  const [selectedForm, setSelectedForm] = useState(null);
+  const [taskVariablesKeys, setTaskVariablesKeys] = useState({});
+  const [processLoading, setProcessLoading] = useState(false);
+
   const [overlayGroupShow, setOverlayGroupShow] = useState(false);
   const [overlayUserShow, setOverlayUserShow] = useState(false);
-  const [overlayCandidateGroupShow, setOverlayCandidateGroupShow] =
-    useState(false);
 
   const { t } = useTranslation();
   const [modalShow, setModalShow] = useState(false);
-  const [checkboxes, setCheckboxes] = useState({
-    applicationId: true,
-    assignee: true,
-    taskTitle: true,
-    createdDate: true,
-    dueDate: true,
-    followUp: true,
-    priority: true,
-    groups: true,
-  });
-  const taskAttributesCount = Object.values(checkboxes).filter(
-    (value) => value === true
-  ).length;
+  const [checkboxes, setCheckboxes] = useState(initialValueOfTaskAttribute);
+  const [showDeleteModal, setShowDeleteModal] = useState(false);
+  const [showAlert, setShowAlert] = useState(false);
 
-  const fetchTasks = (resData)=>{
-  
+  const fetchTasks = (resData) => {
     const reqParamData = {
       ...{ sorting: [...sortParams.sorting] },
       ...searchParams,
     };
-     
-   
-    
-     const selectedBPMFilterParams = {
-        ...resData,
-        criteria: {
-          ...resData?.criteria,
-          ...reqParamData
-        }
-      };
-      dispatch(setFilterListParams(cloneDeep(selectedBPMFilterParams)));
+
+    const selectedBPMFilterParams = {
+      ...resData,
+      criteria: {
+        ...resData?.criteria,
+        ...reqParamData,
+      },
+    };
+    dispatch(setFilterListParams(cloneDeep(selectedBPMFilterParams)));
   };
 
   const customTrim = (inputString) => {
@@ -131,35 +151,56 @@ export default function CreateNewFilterDrawer({
     return inputString;
   };
 
+  const handleFetchTaskVariables = (formId)=>{
+    setProcessLoading(true);
+      fetchTaskVariables(formId).then((res)=>{
+        setTaskVariableFromMapperTable(res.data?.taskVariable || []);
+        setProcessLoading(false);
+      }).catch((err)=>{
+        console.err(err);
+        setProcessLoading(false);
+      });
+  };
+
+
+  const setTaskVariablesAndItsKeys = (variables = []) => {
+    setVariables(variables);
+    // taking variable names to check it is already exist or not
+    setTaskVariablesKeys(
+      variables.reduce((i, variable) => {
+        i[variable.name] = variable.name;
+        return i;
+      }, {})
+    );
+  };
+
   useEffect(() => {
     if (selectedFilterData) {
       setFilterName(selectedFilterData?.name);
       let processDefinitionName =
         selectedFilterData?.criteria?.processDefinitionNameLike;
       setDefinitionKeyId(customTrim(processDefinitionName));
-      setCandidateGroup(selectedFilterData?.criteria?.candidateGroup);
+      let candidateGroupName = selectedFilterData?.criteria?.candidateGroup;
+      if (
+        MULTITENANCY_ENABLED &&
+        candidateGroupName &&
+        candidateGroupName.includes(tenantKey)
+      ) {
+        candidateGroupName = candidateGroupName.slice(tenantKey.length + 1);
+      }
+      setCandidateGroup(candidateGroupName);
       setAssignee(selectedFilterData?.criteria?.assignee);
-      setIncludeAssignedTasks(
-        selectedFilterData?.criteria?.includeAssignedTasks
-      );
       setShowUndefinedVariable(
         selectedFilterData?.properties?.showUndefinedVariable
       );
-      if (selectedFilterData.variables) {
 
-        setInputValues(() => {
-          return selectedFilterData.variables?.map((row) => ({
-            name: row.name,
-            label: row.label,
-          }));
-        });
+      if (selectedFilterData?.properties?.formId) {
+        setSelectedForm(selectedFilterData?.properties?.formId || null);
+        handleFetchTaskVariables(selectedFilterData?.properties?.formId);
       }
-      if (!selectedFilterData.variables?.length) {
-        setInputValues([{ name: "", label: "" }]);
-      }
-      if(selectedFilterData.variables?.length === 2){
-        setInputValues([{ name: "", label: "" }]);
-      }
+
+      setTaskVariablesAndItsKeys(selectedFilterData.variables);
+
       if (
         !selectedFilterData?.users?.length &&
         !selectedFilterData?.roles?.length
@@ -167,7 +208,7 @@ export default function CreateNewFilterDrawer({
         setSpecificUserGroup("");
         setPermissions(ACCESSIBLE_FOR_ALL_GROUPS);
       }
-      
+
       if (selectedFilterData?.users?.length) {
         setPermissions(PRIVATE_ONLY_YOU);
       }
@@ -183,21 +224,24 @@ export default function CreateNewFilterDrawer({
         setIdentifierId(selectedFilterData?.roles[0]);
         setSpecificUserGroup(SPECIFIC_USER_OR_GROUP);
       }
-      if(selectedFilterData?.criteria?.assigneeExpression){
+      if (selectedFilterData?.criteria?.assigneeExpression) {
         setIsMyTasksEnabled(true);
       }
-      if(selectedFilterData?.criteria?.candidateGroupsExpression){
-        setIsTasksForCurrentUserGroupsEnabled(true);
+
+      // if the user has this role then we will check the condition else it will always true
+      if (userRoles.includes(FORMSFLOW_ADMIN)) {
+        setIsTasksForCurrentUserGroupsEnabled(
+          selectedFilterData?.criteria?.candidateGroupsExpression ? true : false
+        );
       }
+
       setCheckboxes({
         applicationId: selectedFilterData?.taskVisibleAttributes?.applicationId,
         assignee: selectedFilterData?.taskVisibleAttributes?.assignee,
-        taskTitle: selectedFilterData?.taskVisibleAttributes?.taskTitle,
         createdDate: selectedFilterData?.taskVisibleAttributes?.createdDate,
         dueDate: selectedFilterData?.taskVisibleAttributes?.dueDate,
         followUp: selectedFilterData?.taskVisibleAttributes?.followUp,
         priority: selectedFilterData?.taskVisibleAttributes?.priority,
-        groups: selectedFilterData?.taskVisibleAttributes?.groups,
       });
     }
   }, [selectedFilterData]);
@@ -210,32 +254,51 @@ export default function CreateNewFilterDrawer({
         }
       })
       .catch((error) => console.error("error", error));
-
-    // fetchUsers()
-    //   .then((res) => {
-    //     if (res) {
-    //       dispatch(setUserRoles(res.data));
-    //     }
-    //   })
-    //   .catch((error) => console.error("error", error));
   }, []);
 
   useEffect(() => {
-    setVariables(() => {
-      if (
-        inputValues?.length === 1 &&
-        inputValues[0]?.name === "" &&
-        inputValues[0]?.label === ""
-      ) {
-        return [];
-      } else {
-        return inputValues?.map((row) => ({
-          name: row.name,
-          label: row.label,
-        }));
-      }
+    if (openFilterDrawer) {
+      dispatch(fetchUserList()); // if the create new filter open then need to fetch list of users
+      dispatch(fetchAllBpmProcesses()); // if the create new filter open then need to fetch all bpm process
+    }
+    // if the create new filter open then need to fetch all forms
+    if (openFilterDrawer && !forms?.data?.length) {
+      fetchAllForms()
+        .then((res) => {
+          const data = res.data?.forms || [];
+          setForms({
+            data: data.map((i) => ({ label: i.formName, value: i.formId })),
+            isLoading: false,
+          });
+        })
+        .catch((err) => {
+          console.error(err);
+        });
+    }
+  }, [openFilterDrawer]);
+
+  const resetVariables = () => {
+    setVariables([]);
+    setTaskVariablesKeys({
+      applicationId: "applicationId",
+      formName: "formName",
     });
-  }, [inputValues]);
+  };
+
+  const onChangeSelectForm = (e) => {
+    if (e?.value) {
+      handleFetchTaskVariables(e?.value);
+      if (e?.value === selectedFilterData?.properties?.formId) {
+        setTaskVariablesAndItsKeys(selectedFilterData?.variables);
+      } else {
+        resetVariables();
+      }
+    } else {
+      resetVariables();
+      setTaskVariableFromMapperTable([]);
+    }
+    setSelectedForm(e?.value);
+  };
 
   const successCallBack = (resData) => {
     dispatch(
@@ -275,20 +338,22 @@ export default function CreateNewFilterDrawer({
   };
 
   const clearAllFilters = () => {
+    setShowAlert(false);
     setFilterName("");
     setShowUndefinedVariable("");
-    setInputVisibility("");
     setDefinitionKeyId("");
     setCandidateGroup("");
     setAssignee("");
-    setIncludeAssignedTasks("");
     setPermissions(PRIVATE_ONLY_YOU);
     setIdentifierId("");
     setSelectUserGroupIcon("");
     setSpecificUserGroup("");
-    setInputValues([{ name: "", label: "" }]);
-    setIsTasksForCurrentUserGroupsEnabled(false);
+    setIsTasksForCurrentUserGroupsEnabled(true);
     setIsMyTasksEnabled(false);
+    setSelectedForm(null);
+    setTaskVariableFromMapperTable([]);
+    setCheckboxes(initialValueOfTaskAttribute);
+    setForms({ data: [], isLoading: true });
   };
 
   const handleSubmit = () => {
@@ -325,9 +390,13 @@ export default function CreateNewFilterDrawer({
       name: filterName,
       criteria: {
         processDefinitionNameLike: definitionKeyId && `%${definitionKeyId}%`,
-        candidateGroup: candidateGroup,
+        candidateGroup:
+          MULTITENANCY_ENABLED && candidateGroup
+            ? tenantKey + "-" + candidateGroup
+            : candidateGroup,
         assignee: assignee,
-        includeAssignedTasks: includeAssignedTasks,
+        includeAssignedTasks:
+          isTasksForCurrentUserGroupsEnabled || candidateGroup ? true : null,
       },
       properties: {
         showUndefinedVariable: showUndefinedVariable,
@@ -336,25 +405,32 @@ export default function CreateNewFilterDrawer({
         ...variables,
         ...(applicationIdExists
           ? []
-          : [{ name: "applicationId", label: "Application Id" }]),
+          : [{ name: "applicationId", label: "Submission Id" }]),
         ...(formNameExists ? [] : [{ name: "formName", label: "Form Name" }]),
       ],
       users: users,
       roles: roles?.length ? roles : [],
       taskVisibleAttributes: { ...checkboxes },
-      isTasksForCurrentUserGroupsEnabled:isTasksForCurrentUserGroupsEnabled,
-      isMyTasksEnabled:isMyTasksEnabled,
+      isTasksForCurrentUserGroupsEnabled: isTasksForCurrentUserGroupsEnabled,
+      isMyTasksEnabled: isMyTasksEnabled,
     };
-
+    /**
+     * If a form is selected, set the formId property in the data object
+     * to the id of the selected form.
+     */
+    
+    
     // Remove empty keys inside criteria
-    for (const key in data.criteria) {
-      if (
-        Object.prototype.hasOwnProperty.call(data.criteria, key) &&
-        (data.criteria[key] === undefined || data.criteria[key] === "")
-      ) {
-        delete data.criteria[key];
+    const cleanedCriteria = omitBy(
+      data.criteria,
+      (value) => value === undefined || value === "" || value === null
+      );
+      data.criteria = cleanedCriteria;
+      
+      if (selectedForm) {
+        data.properties.formId = selectedForm;
+        data.criteria.processVariables = [{name: "formId", operator: "eq", value: selectedForm}];
       }
-    }
 
     const submitFunction = selectedFilterData
       ? editFilters(data, selectedFilterData?.id)
@@ -406,22 +482,6 @@ export default function CreateNewFilterDrawer({
     }
   };
 
-  // Function for setting visibility of input feild in criteria part
-  const handleSpanClick = (spanId) => {
-    if (spanId === 2) {
-      setOverlayCandidateGroupShow(!overlayCandidateGroupShow);
-    }
-    setInputVisibility((prevVisibility) => ({
-      ...prevVisibility,
-      [spanId]: !prevVisibility[spanId],
-    }));
-  };
-
-  //Function For checking  includeAssignedTasksCheckbox is checked or not
-  const includeAssignedTasksCheckboxChange = (e) => {
-    setIncludeAssignedTasks(e.target.checked);
-  };
-
   //Function to checking which icon is selected
   const handleClickUserGroupIcon = (icon) => {
     if (icon === "user") {
@@ -456,211 +516,292 @@ export default function CreateNewFilterDrawer({
     setOpenFilterDrawer(!openFilterDrawer);
   };
 
-  const handleCandidateGroup = (data) => {
-    data = trimFirstSlash(data);
-    setOverlayCandidateGroupShow(!overlayCandidateGroupShow);
-    setCandidateGroup(data);
+  const deleteConfirmationModalToggleDrawer = () => {
+    setOpenFilterDrawer(!openFilterDrawer);
+  };
+
+  const candidateGroups = useSelector(
+    (state) => state.user?.userDetail?.groups || []
+  );
+  const userListResponse = useSelector((state) => state.bpmTasks.userList) || {
+    data: [],
+  };
+  const userList = userListResponse?.data || [];
+  const assigneeOptions = useMemo(() => {
+    return userList.map((user) => ({
+      value: `${user.username}`,
+      label: `${user.username}`,
+    }));
+  }, [userList]);
+
+  const candidateOptions = useMemo(() => {
+    return MULTITENANCY_ENABLED
+      ? userRoles.map((role) => ({
+          value: role,
+          label: role,
+        }))
+      : candidateGroups.map((group) => ({
+          value: trimFirstSlash(group),
+          label: group,
+        }));
+  }, [candidateGroups, userRoles, MULTITENANCY_ENABLED]);
+
+  const handleAssignee = (selectedOption) => {
+    setAssignee(selectedOption ? selectedOption.value : null);
+  };
+  const handleCandidate = (selectedOption) => {
+    setCandidateGroup(selectedOption ? selectedOption.value : null);
+  };
+
+  const onSaveTaskAttribute = (
+    taskVariablesKeys,
+    variables,
+    checkboxes,
+    showUndefinedVariable
+  ) => {
+    setVariables(variables);
+    setTaskVariablesKeys(taskVariablesKeys);
+    setCheckboxes(checkboxes);
+    setShowUndefinedVariable(showUndefinedVariable);
+  };
+
+  const hideDeleteConfirmation = () => {
+    setShowDeleteModal(false);
+    deleteConfirmationModalToggleDrawer();
+  };
+
+  const showDeleteConfirmation = () => {
+    setShowDeleteModal(true);
+    toggleDrawer();
+  };
+
+  const FilterDelete = () => {
+    setShowDeleteModal(false);
+    handleFilterDelete();
+  };
+
+  const textTruncate = (wordLength, targetLength, text) => {
+    return text?.length > wordLength
+      ? text.substring(0, targetLength) + "..."
+      : text;
+  };
+
+  const handleFilterName = (e) => {
+    const value = e.target.value;
+    setFilterName(value);
+    if (value.length >= 50) {
+      setShowAlert(true);
+    } else {
+      setShowAlert(false);
+    }
   };
 
   const list = () => (
-    <div style={{ marginTop: "45px" }} role="presentation">
+    <div role="presentation">
       <List>
         <div className="p-0 d-flex align-items-center justify-content-between ">
-          <h5 style={{ fontWeight: "bold", fontSize: "16px" }}>
-            <Translation>{(t) => t("Create new filter")}</Translation>
+          <h5 className="fw-bold fs-16">
+            <Translation>
+              {(t) =>
+                `${
+                  selectedFilterData ? t("Edit filter") : t("Create new filter")
+                }`
+              }
+            </Translation>
           </h5>
-          <span
-            className="cursor-pointer"
-            style={{ fontSize: "14px" }}
+          <button
+            className="btn btn-link text-dark"
             onClick={() => {
               toggleDrawer();
+              setShowAlert(false);
             }}
           >
             <Translation>{(t) => t("Close")}</Translation>
-          </span>
+          </button>
         </div>
       </List>
       <List>
-        <h5 style={{ fontWeight: "bold", fontSize: "18px" }}>
-          <Translation>{(t) => t("Filter Name")}</Translation>
-        </h5>
-        <input
-          type="text"
-          placeholder={t("Enter your text here")}
-          className="filter-name-textfeild"
-          value={filterName}
-          onChange={(e) => setFilterName(e.target.value)}
-          title={t("Add fliter name")}
-        />
+        <div className="form-group">
+          <label htmlFor="filterName">{t("Filter Name")}</label>
+          <input
+            type="text"
+            className={`form-control ${showAlert ? "is-invalid" : ""}`}
+            id="filterName"
+            placeholder={t("Enter your text here")}
+            value={filterName}
+            onChange={handleFilterName}
+            title={t("Add fliter name")}
+          />
+          {showAlert && (
+            <p className="text-danger mt-2 fs-6">
+              {t("Filter name should be less than 50 characters")}
+            </p>
+          )}
+        </div>
       </List>
-      <Divider />
+
       <List>
-        <h5 style={{ fontWeight: "bold", fontSize: "18px" }}>
+        <h5 className="fw-bold fs-18">
           <Translation>{(t) => t("Criteria")}</Translation>{" "}
-          <i title={t("This section is aimed to set the parameters used to filter the tasks")} className="fa fa-info-circle"></i>{" "}
+          <i
+            title={t(
+              "This section is aimed to set the parameters\nused to filter the tasks"
+            )}
+            className="fa fa-info-circle filter-tooltip-icon"
+          ></i>
         </h5>
         <div className="d-flex align-items-center mt-1">
           <input
+            className="mr-6"
             type="checkbox"
             checked={isMyTasksEnabled}
-            onChange={(e) =>
-              setIsMyTasksEnabled(e.target.checked)
-            }
-            style={{ marginRight: "6px" }}
+            onChange={(e) => setIsMyTasksEnabled(e.target.checked)}
             title={t("Show only current user assigned task")}
           />
-          <h5 style={{ fontSize: "18px", marginBottom: "3px" }}>
+          <h5 className="assigned-user">
             <Translation>
               {(t) => t("Show only current user assigned task")}
             </Translation>
           </h5>
         </div>
-        <div className="d-flex align-items-center mt-1">
-          <input
-            type="checkbox"
-            checked={isTasksForCurrentUserGroupsEnabled}
-            onChange={(e) =>
-              setIsTasksForCurrentUserGroupsEnabled(e.target.checked)
-            }
-            style={{ marginRight: "6px" }}
-            title={t("Show task based on logged user roles")}
-          />
-          <h5 style={{ fontSize: "18px", marginBottom: "3px" }}>
-            <Translation>
-              {(t) => t("Show task based on logged user roles")}
-            </Translation>
-          </h5>
-        </div>
-        <h5 className="mt-2" style={{ fontSize: "18px" }}>
-          <Translation>{(t) => t("Definition Key")}</Translation>
-        </h5>
-        <span
-          style={{
-            textDecoration: "underline",
-            fontSize: "14px",
-          }}
-          onClick={() => handleSpanClick(1)}
-          className="px-1 py-1 cursor-pointer"
-        >
-          <i className="fa fa-plus-circle" style={{ marginRight: "6px" }} />
-          <Translation>{(t) => t("Add Value")}</Translation>
-        </span>
-        {inputVisibility[1] && (
-          <input
-            type="text"
-            className="criteria-add-value-inputbox"
-            value={definitionKeyId}
-            name="definitionKeyId"
-            onChange={(e) => setDefinitionKeyId(e.target.value)}
-            title={t("Candidate Group")}
-          />
-        )}
-        <h5>
-          <Translation>{(t) => t("Candidate Group")}</Translation>
-        </h5>
 
-        <OverlayTrigger
-          placement="right"
-          trigger="click"
-          rootClose={true}
-          show={overlayCandidateGroupShow}
-          overlay={
-            <Popover style={{ zIndex: 9999 }}>
-              <div className="poper">
-                <ListGroup>
-                  {userGroups?.length > 0 &&
-                    userGroups?.map((e, i) => (
-                      <ListGroup.Item
-                        key={i}
-                        as="button"
-                        onClick={() => handleCandidateGroup(e.name)}
-                      >
-                        {e.name}
-                      </ListGroup.Item>
-                    ))}
-                </ListGroup>
+        {userRoles.includes(FORMSFLOW_ADMIN) && (
+          <>
+            <div className="d-flex align-items-center mt-1">
+              <input
+                className="mr-6"
+                type="checkbox"
+                checked={isTasksForCurrentUserGroupsEnabled}
+                onChange={(e) =>
+                  setIsTasksForCurrentUserGroupsEnabled(e.target.checked)
+                }
+                title={t("Display authorized tasks based on user roles")}
+              />
+              <h5 className="assigned-user">
+                <Translation>
+                  {(t) => t("Display authorized tasks based on user roles")}
+                </Translation>
+              </h5>
+            </div>
+            {!isTasksForCurrentUserGroupsEnabled ? (
+              <div className="alert alert-warning mt-1" role="alert">
+                <i className="fa-solid fa-triangle-exclamation me-2"></i>{" "}
+                {t(
+                  "Unchecking this option will show all tasks, ignoring user roles"
+                )}
               </div>
-            </Popover>
-          }
-        >
-          <span
-            style={{
-              textDecoration: "underline",
-              fontSize: "14px",
+            ) : null}
+          </>
+        )}
+
+        <div className="my-2">
+          <h5 className="mt-2 fs-18 fw-bold">
+            <Translation>{(t) => t("Workflow")}</Translation>
+          </h5>
+          <Select
+            className="mb-3"
+            options={processList}
+            placeholder={t("Select Workflow")}
+            isClearable
+            value={processList?.find((list) => list.label === definitionKeyId)}
+            onChange={(selectedOption) => {
+              setDefinitionKeyId(selectedOption?.label);
             }}
-            onClick={() => handleSpanClick(2)}
-            className="px-1 py-1 cursor-pointer"
-          >
-            <i className="fa fa-plus-circle" style={{ marginRight: "6px" }} />
-            <Translation>{(t) => t("Add Value")}</Translation>
-          </span>
-        </OverlayTrigger>
-        {candidateGroup && (
-          <div className="d-flex">
-            <Badge
-              pill
-              variant="outlined"
-              className="d-flex align-items-center badge mr-2 mt-2"
-            >
-              {candidateGroup}
-              <div
-                className="badge-deleteIcon ml-2"
-                onClick={() => setCandidateGroup(null)}
-              >
-                &times;
-              </div>
-            </Badge>
-          </div>
-        )}
-        <h5>
-          <Translation>{(t) => t("Assignee")}</Translation>
-        </h5>
-        <span
-          style={{
-            textDecoration: "underline",
-            fontSize: "14px",
-          }}
-          onClick={() => handleSpanClick(3)}
-          className="px-1 py-1 cursor-pointer"
-        >
-          <i className="fa fa-plus-circle" style={{ marginRight: "6px" }} />
-          <Translation>{(t) => t("Add Value")}</Translation>
-        </span>
-        {inputVisibility[3] && (
-          <input
-            type="text"
-            className="criteria-add-value-inputbox"
-            value={assignee}
-            onChange={(e) => setAssignee(e.target.value)}
+            filterOption={filterSelectOptionByLabel}
+            inputId="select-workflow"
+            getOptionLabel={(option) => (
+              <span data-testid={`form-workflow-option-${option.value}`}>
+                {option.label}
+              </span>
+            )}
           />
-        )}
+        </div>
 
-        {candidateGroup?.length ? (
-          <div
-            style={{ display: "flex", alignItems: "center", marginTop: "10px" }}
-          >
-            <input
-              type="checkbox"
-              id="assignedTask-checkbox"
-              checked={includeAssignedTasks}
-              onChange={includeAssignedTasksCheckboxChange}
-              style={{ marginRight: "6px" }}
-            />
-            <h5 style={{ fontSize: "18px", marginBottom: "3px" }}>
-              <Translation>{(t) => t("Include Assigned Task")}</Translation>
+        <div className="my-2">
+          <h5 className="fw-bold">
+            {MULTITENANCY_ENABLED ? (
+              <Translation>{(t) => t("User Role")}</Translation>
+            ) : (
+              <Translation>{(t) => t("User Group")}</Translation>
+            )}
+          </h5>
+
+          <Select
+            onChange={handleCandidate}
+            value={
+              candidateGroup
+                ? { value: candidateGroup, label: candidateGroup }
+                : null
+            }
+            isClearable={true}
+            placeholder={
+              MULTITENANCY_ENABLED
+                ? t("Select User Role")
+                : t("Select User Group")
+            }
+            options={candidateOptions}
+          />
+        </div>
+
+        <div className="my-2">
+          <h5 className="pt-2 fw-bold">
+            <Translation>{(t) => t("Assignee")}</Translation>
+          </h5>
+
+          <Select
+            onChange={handleAssignee}
+            value={assignee ? { value: assignee, label: assignee } : null}
+            isClearable={true}
+            placeholder={t("Select Assignee")}
+            options={assigneeOptions}
+          />
+        </div>
+
+        <div className="my-3">
+          <Divider />
+          <div className="my-3">
+            <h5 className="fw-bold ">
+              <Translation>{(t) => t("Select Form")}</Translation>
             </h5>
+            <Select
+              onChange={onChangeSelectForm}
+              value={forms?.data.find((form) => form.value === selectedForm)}
+              isClearable
+              placeholder={t("Select Form")}
+              options={forms?.data}
+              isLoading={forms.isLoading}
+            />
           </div>
-        ) : null}
-        <Divider />
+          <h5 className="fw-bold ">
+            <Translation>{(t) => t("Task Attributes")}</Translation>
+            <i
+              title={t(
+                "This section is aimed to set select\ntask attributes that will be visible in\nthe task list view"
+              )}
+              className="fa fa-info-circle ms-2 filter-tooltip-icon"
+            ></i>
+          </h5>
 
+          <button
+            className="btn btn-outline-primary w-100"
+            onClick={toggleModal}
+          >
+            {t("Click here to select attributes")}
+          </button>
+        </div>
         <Divider />
-        <div className="child-container-two">
-          <h5 style={{ fontWeight: "bold" }}>
+        <div className="child-container-two pt-2">
+          <h5 className="fw-bold">
             <Translation>{(t) => t("Permission")}</Translation>{" "}
-            <i title={t("This section is aimed to set read permissions for the filter")} className="fa fa-info-circle"></i>
+            <i
+              title={t(
+                "This section is aimed to set read\npermissions for the filter"
+              )}
+              className="fa fa-info-circle filter-tooltip-icon"
+            ></i>
           </h5>
           <input
-            style={{ marginRight: "4px" }}
+            className="access-all"
             type="radio"
             id="all-users"
             name="my-radio"
@@ -668,12 +809,12 @@ export default function CreateNewFilterDrawer({
             checked={permissions === ACCESSIBLE_FOR_ALL_GROUPS}
             onChange={(e) => setPermissions(e.target.value)}
           />
-          <label htmlFor="all-users" style={{ marginRight: "3px", fontSize: "18px" }}>
+          <label htmlFor="all-users" className="assigned-user">
             <Translation>{(t) => t("Accessible for all users")}</Translation>
           </label>{" "}
           <br />
           <input
-            style={{ marginRight: "4px" }}
+            className="access-all"
             type="radio"
             id="private-only"
             name="my-radio"
@@ -681,12 +822,12 @@ export default function CreateNewFilterDrawer({
             checked={permissions === PRIVATE_ONLY_YOU}
             onChange={(e) => setPermissions(e.target.value)}
           />
-          <label htmlFor="private-only" style={{ fontSize: "18px" }}>
+          <label htmlFor="private-only" className="fs-18">
             <Translation>{(t) => t("Private (Only You)")}</Translation>
           </label>
           <br />
           <input
-            style={{ marginRight: "4px" }}
+            className="access-all"
             type="radio"
             id="specific-grp"
             name="my-radio"
@@ -694,61 +835,20 @@ export default function CreateNewFilterDrawer({
             checked={permissions === SPECIFIC_USER_OR_GROUP}
             onChange={handleSpecificUserGroup}
           />
-          <label htmlFor="specific-grp" style={{ fontSize: "18px" }}>
+          <label htmlFor="specific-grp" className="fs-18">
             <Translation>{(t) => t("Specific Group")}</Translation>
           </label>{" "}
           <br />
           {permissions === SPECIFIC_USER_OR_GROUP &&
           specificUserGroup === SPECIFIC_USER_OR_GROUP ? (
             <div className="d-flex">
-              {/* <OverlayTrigger
-                placement="right"
-                trigger="click"
-                rootClose={true}
-                show={overlayUserShow}
-                overlay={
-                  <Popover style={{ zIndex: 9999 }}>
-                    <div className="poper">
-                      <ListGroup>
-                        {userRoles.length > 0 &&
-                          userRoles?.map((e, i) => (
-                            <ListGroup.Item
-                              key={i}
-                              as="button"
-                              onClick={() => addGroups(e.username)}
-                            >
-                              {e.username}
-                            </ListGroup.Item>
-                          ))}
-                      </ListGroup>
-                    </div>
-                  </Popover>
-                }
-              >
-                <div onClick={() => handleClickUserGroupIcon("user")}>
-                  <div style={{ textAlign: "center" }}>
-                    <span style={{ fontSize: "14px" }}>
-                      <Translation>{(t) => t("User")}</Translation>
-                    </span>
-                  </div>
-                  <div style={{ textAlign: "center", marginBottom: "8px" }}>
-                    <i
-                      className={`fa fa-user ${
-                        selectUserGroupIcon === "user" ? "highlight" : ""
-                      } cursor-pointer`}
-                      style={{ fontSize: "30px", marginRight: "8px" }}
-                    />
-                  </div>
-                </div>
-              </OverlayTrigger> */}
-
               <OverlayTrigger
                 placement="right"
                 trigger="click"
                 rootClose={true}
                 show={overlayGroupShow}
                 overlay={
-                  <Popover style={{ zIndex: 9999 }}>
+                  <Popover className="z-index">
                     <div className="poper">
                       <ListGroup>
                         {userGroups.length > 0 &&
@@ -767,20 +867,19 @@ export default function CreateNewFilterDrawer({
                 }
               >
                 <div
-                  className="ml-3"
+                  className="ms-3"
                   onClick={() => handleClickUserGroupIcon("group")}
                 >
-                  <div style={{ textAlign: "center" }}>
-                    <span style={{ fontSize: "14px" }}>
+                  <div className="text-center">
+                    <span className="truncate-size">
                       <Translation>{(t) => t("Group")}</Translation>
                     </span>
                   </div>
-                  <div style={{ textAlign: "center", marginBottom: "8px" }}>
+                  <div className="text-center text-bottom">
                     <i
                       className={`fa fa-users ${
                         selectUserGroupIcon === "group" ? "highlight" : ""
-                      } cursor-pointer`}
-                      style={{ fontSize: "30px", marginRight: "8px" }}
+                      } cursor-pointer group-icon`}
                     />
                   </div>
                 </div>
@@ -790,11 +889,11 @@ export default function CreateNewFilterDrawer({
                   <Badge
                     pill
                     variant="outlined"
-                    className="d-flex align-items-center badge mr-2 mt-2"
+                    className="d-flex align-items-center badge me-2 mt-2"
                   >
                     {identifierId}
                     <div
-                      className="badge-deleteIcon ml-2"
+                      className="badge-deleteIcon ms-2"
                       onClick={() => setIdentifierId(null)}
                     >
                       &times;
@@ -805,25 +904,7 @@ export default function CreateNewFilterDrawer({
             </div>
           ) : null}
         </div>
-        <Divider />
-        <div className="m-2">
-          <h5 className="font-weight-bold ">
-            <Translation>{(t) => t("Task Attributes")}</Translation>{" "}
-            <i title={t("This section is aimed to set select task attributes that will be visible in the task list view.")} className="fa fa-info-circle"></i>
-          </h5>
-          <input
-            readOnly
-            type="text"
-            aria-label="Task-attributes"
-            className="filter-name-textfeild cursor-pointer"
-            onClick={toggleModal}
-            placeholder={
-              taskAttributesCount === 0
-                ? t("Select Elements")
-                : taskAttributesCount + t(" Task Attributes Selected")
-            }
-          />
-        </div>
+
         <Divider />
       </List>
 
@@ -833,8 +914,7 @@ export default function CreateNewFilterDrawer({
             <button
               className="btn btn-link text-danger cursor-pointer"
               onClick={() => {
-                toggleDrawer();
-                handleFilterDelete();
+                showDeleteConfirmation();
               }}
             >
               <Translation>{(t) => t("Delete Filter")}</Translation>
@@ -842,23 +922,27 @@ export default function CreateNewFilterDrawer({
           )}
           <div className="d-flex align-items-center">
             <button
-              className="btn btn-outline-secondary mr-3"
+              className="btn btn-outline-secondary me-3"
               onClick={() => {
                 toggleDrawer();
+                setShowAlert(false);
               }}
             >
               <Translation>{(t) => t("Cancel")}</Translation>
             </button>
             <button
-              className="btn btn-primary submitButton"
-              style={{ textDecoration: "none", fontSize: "14px" }}
-              disabled={!permissions || !filterName}
+              className="btn btn-primary submitButton text-decoration-none truncate-size "
+              disabled={!permissions || !filterName || filterName.length >= 50}
               onClick={() => {
                 handleSubmit();
               }}
             >
               <Translation>
-                {(t) => (`${selectedFilterData ? t("Save Filter") : t("Create Filter")} `)}
+                {(t) =>
+                  `${
+                    selectedFilterData ? t("Save Filter") : t("Create Filter")
+                  } `
+                }
               </Translation>
             </button>
           </div>
@@ -882,15 +966,15 @@ export default function CreateNewFilterDrawer({
           <div>
             <TaskAttributeComponent
               show={modalShow}
+              processLoading={processLoading}
+              selectedForm={selectedForm}
               onHide={toggleModal}
-              checkboxes={checkboxes}
-              setCheckboxes={setCheckboxes}
-              inputValues={inputValues.filter(
-                (e) => e.name !== "applicationId" && e.name !== "formName"
-              )}
-              setInputValues={setInputValues}
+              selectedTaskAttrbutes={checkboxes}
+              selectedTaskVariablesKeys={taskVariablesKeys}
+              selectedTaskVariables={variables}
+              taskVariableFromMapperTable={taskVariableFromMapperTable}
+              onSaveTaskAttribute={onSaveTaskAttribute}
               showUndefinedVariable={showUndefinedVariable}
-              setShowUndefinedVariable={setShowUndefinedVariable}
             />
           </div>
         )}
@@ -899,6 +983,7 @@ export default function CreateNewFilterDrawer({
           open={openFilterDrawer}
           onClose={() => {
             toggleDrawer();
+            setShowAlert(false);
           }}
           PaperProps={{
             style: {
@@ -914,9 +999,39 @@ export default function CreateNewFilterDrawer({
             width: 100,
           }}
         >
-          {list("le ft")}
+          {list()}
         </Drawer>
       </React.Fragment>
+
+      {/* Delete confirmation modal */}
+      <Modal show={showDeleteModal} onHide={hideDeleteConfirmation}>
+        <Modal.Header>
+          <Modal.Title>
+            <Translation>{(t) => t("Delete Confirmation")}</Translation>
+          </Modal.Title>
+        </Modal.Header>
+        <Modal.Body>
+          <Translation>{(t) => t("Are you sure to delete")}</Translation>{" "}
+          <span className="fw-bold">
+            {filterName.includes(" ")
+              ? filterName
+              : textTruncate(40, 30, filterName)}
+          </span>{" "}
+          <Translation>{(t) => t("filter?")}</Translation>
+        </Modal.Body>
+        <Modal.Footer>
+          <Button
+            variant=""
+            className="btn-link text-dark"
+            onClick={hideDeleteConfirmation}
+          >
+            <Translation>{(t) => t("Cancel")}</Translation>
+          </Button>
+          <Button variant="danger" onClick={FilterDelete}>
+            <Translation>{(t) => t("Delete")}</Translation>
+          </Button>
+        </Modal.Footer>
+      </Modal>
     </div>
   );
 }

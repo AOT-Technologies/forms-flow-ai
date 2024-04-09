@@ -13,7 +13,7 @@ import {
   setBPMFormListSort,
   setBpmFormSearch,
 } from "../../../actions/formActions";
-import LoadingOverlay from "react-loading-overlay";
+import LoadingOverlay from "react-loading-overlay-ts";
 import {
   MULTITENANCY_ENABLED,
   STAFF_DESIGNER,
@@ -106,9 +106,7 @@ function ClientTable() {
         <tr>
           <td colSpan="3">
             <div
-              className="d-flex align-items-center justify-content-center flex-column w-100"
-              style={{ minHeight: "300px" }}
-            >
+              className="d-flex align-items-center justify-content-center clientForm-table-col flex-column w-100">
               <h3>{t("No forms found")}</h3>
               <p>{t("Please change the selected filters to view Forms")}</p>
             </div>
@@ -139,7 +137,7 @@ function ClientTable() {
   return (
     <>
       <LoadingOverlay active={searchFormLoading} spinner text={t("Loading...")}>
-        <div style={{ minHeight: "400px"}}>
+        <div className="min-height-400">
           <table className="table custom-table table-responsive-sm">
             <thead>
               <tr>
@@ -148,37 +146,31 @@ function ClientTable() {
                     <span>{t("Form Title")}</span>
                     <span>
                       {isAscending ? (
-                        <i
-                          className="fa fa-sort-alpha-asc ml-2"
+                        <i 
+                          data-testid="form-desc-sort-icon"
+                          className="fa fa-sort-alpha-asc ms-2 cursor-pointer fs-16"
                           onClick={() => {
                             updateSort("desc");
                           }}
                           data-toggle="tooltip"
-                          title={t("Descending")}
-                          style={{
-                            cursor: "pointer",
-                            fontSize: "16px",
-                          }}
-                        ></i>
+                          title={t("Descending")}>
+                        </i>
                       ) : (
                         <i
-                          className="fa fa-sort-alpha-desc ml-2"
+                          data-testid="form-asc-sort-icon"
+                          className="fa fa-sort-alpha-desc ms-2 cursor-pointer fs-16"
                           onClick={() => {
                             updateSort("asc");
                           }}
                           data-toggle="tooltip"
-                          title={t("Ascending")}
-                          style={{
-                            cursor: "pointer",
-                            fontSize: "16px",
-                          }}
-                        ></i>
+                          title={t("Ascending")}>
+                        </i>
                       )}
                     </span>
                   </div>
                 </th>
                 <th>{t("Form Description")}</th>
-                <th colSpan="4">
+                <th colSpan="4" aria-label="Search Forms by form title" >
                   <InputGroup className="input-group p-0 w-100">
                     <FormControl
                       value={search}
@@ -188,22 +180,28 @@ function ClientTable() {
                       onKeyDown={(e) =>
                         e.keyCode === 13 ? handleSearch() : ""
                       }
+                      className="bg-white"
+                      data-testid="form-search-input-box"
                       placeholder={t("Search by form title")}
-                      style={{ backgroundColor: "#ffff" }}
+                      title={t("Search by form title")}
                     />
                     {search && (
-                      <InputGroup.Append onClick={handleClearSearch}>
-                        <InputGroup.Text>
-                          <i className="fa fa-times"></i>
+                      <InputGroup.Append
+                        onClick={handleClearSearch}
+                        data-testid="form-search-clear-button"
+                      >
+                        <InputGroup.Text className="h-100">
+                          <i className="fa fa-times "></i>
                         </InputGroup.Text>
                       </InputGroup.Append>
                     )}
                     <InputGroup.Append
+                      className="cursor-pointer"
                       onClick={handleSearch}
+                      data-testid="form-search-click-button"
                       disabled={!search?.trim()}
-                      style={{ cursor: "pointer" }}
                     >
-                      <InputGroup.Text style={{ backgroundColor: "#ffff" }}>
+                      <InputGroup.Text className="h-100 bg-white">
                         <i className="fa fa-search"></i>
                       </InputGroup.Text>
                     </InputGroup.Append>
@@ -218,30 +216,38 @@ function ClientTable() {
                     <tr>
                       <td className="col-4">
                         {!isDesigner && (
-                          <button className="btn btn-light btn-small mr-2"   onClick={() => handleToggle(index) } disabled={!e.description}>
-                              <i
-                            className={`fa ${
-                              openIndex === index
-                                ? "fa-chevron-up"
-                                : "fa-chevron-down"
-                            }`}
-                          
-                          ></i>
+                          <button
+                            data-testid={`form-description-expand-button-${e._id}`}
+                            title={t("Form Description")}
+                            className="btn btn-light btn-small me-2"
+                            onClick={() => handleToggle(index)}
+                            disabled={!e.description}
+                          >
+                            <i
+                              className={`fa ${
+                                openIndex === index
+                                  ? "fa-chevron-up"
+                                  : "fa-chevron-down"
+                              }`}
+                            ></i>
                           </button>
                         )}
-                        <span className="ml-2 mt-2">{e.title}</span>
+                        <span
+                          data-testid={`form-title-${e._id}`}
+                          className="ms-2 mt-2"
+                        >
+                          {e.title}
+                        </span>
                       </td>
                       <td
-                        className="text-truncate"
-                        style={{
-                          maxWidth: "350px",
-                        }}
-                      >
+                        data-testid={`form-description${e._id}`}
+                        className="text-truncate">
                         {extractContent(e.description)}
                       </td>
 
                       <td className="text-center">
                         <button
+                          data-testid={`form-submit-button-${e._id}`}
                           className="btn btn-primary"
                           onClick={() => submitNewForm(e._id)}
                         >
@@ -250,37 +256,33 @@ function ClientTable() {
                       </td>
                     </tr>
 
-                    {index === openIndex && 
-                        <tr>
-                          <td colSpan={10}>
-                            <div className="bg-white p-3">
-                              <h4>
-                                <strong>{t("Form Description")}</strong>
-                              </h4>
+                    {index === openIndex && (
+                      <tr>
+                        <td colSpan={10}>
+                          <div className="bg-white p-3">
+                            <h4>
+                              <strong>{t("Form Description")}</strong>
+                            </h4>
 
-                              <div
-                                style={{ maxWidth: "68vw" }}
-                                className="form-description-p-tag "
-                                dangerouslySetInnerHTML={{
-                                  __html: sanitize(
-                                    e?.description,
-                                    {
-                                      ADD_ATTR: ["target"],
-                                    }
-                                  ),
-                                }}
-                              />
-                            </div>
-                          </td>
-                        </tr>
-                    } 
+                            <div
+                              className="form-description-p-tag "
+                              dangerouslySetInnerHTML={{
+                                __html: sanitize(e?.description, {
+                                  ADD_ATTR: ["target"],
+                                }),
+                              }}
+                            />
+                          </div>
+                        </td>
+                      </tr>
+                    )}
                   </React.Fragment>
                 ))}
               </tbody>
             ) : !searchFormLoading ? (
               noDataFound()
             ) : (
-              ""
+              null
             )}
           </table>
         </div>
@@ -289,9 +291,13 @@ function ClientTable() {
       {formData.length ? (
         <div className="d-flex justify-content-between align-items-center flex-column flex-md-row">
           <div className="d-flex align-items-center">
-            <span className="mr-2"> {t("Rows per page")}</span>
-            <Dropdown>
-              <Dropdown.Toggle variant="light" id="dropdown-basic">
+            <span className="me-2"> {t("Rows per page")}</span>
+            <Dropdown data-testid="page-limit-dropdown">
+              <Dropdown.Toggle
+                variant="light"
+                id="dropdown-basic"
+                data-testid="page-limit-dropdown-toggle"
+              >
                 {pageLimit}
               </Dropdown.Toggle>
 
@@ -303,13 +309,14 @@ function ClientTable() {
                     onClick={() => {
                       onSizePerPageChange(option.value);
                     }}
+                    data-testid={`page-limit-dropdown-item-${option.value}`} 
                   >
                     {option.text}
                   </Dropdown.Item>
                 ))}
               </Dropdown.Menu>
             </Dropdown>
-            <span className="ml-2">
+            <span className="ms-2">
               {t("Showing")} {(limit * pageNo) - (limit - 1)} {t("to")}{" "}
               {limit * pageNo > totalForms ? totalForms : limit * pageNo}{" "}
               {t("of")} {totalForms} {t("Results")}

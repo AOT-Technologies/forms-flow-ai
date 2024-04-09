@@ -1,9 +1,7 @@
-@import "../../../assets/styles/themes.scss";
-
 .badge-pill {
     cursor: default;
     border: 1px solid !important;
-    color: $border-gray;
+    color: var(--color-gray-800);
     background-color: transparent !important;
     height: 32px !important;
     padding: 10px !important;
@@ -22,9 +20,9 @@
 
 .badge-deleteIcon {
     font-size: 18px;
-    color: $white;
+    color: var(--color-white);
     border-radius: 22px;
-    background-color: $gray;
+    background-color: var(--color-gray-400);
     width: 18px !important;
     cursor: pointer;
     height: 18px !important;
@@ -32,7 +30,7 @@
 }
 
 .badge-deleteIcon:hover {
-    background-color: $hover-gray !important;
+    background-color: var(--color-gray-600) !important;
 }
 
 .poper {
@@ -41,5 +39,35 @@
 }
 
 .workflow-taskVariable {
-    border-bottom: 3px solid $blue !important;
+    border-bottom: 3px solid var(--color-primary) !important;
+}
+
+.add-task{
+    margin-top: 25px;
+}
+.show-in-list{
+    margin-top: 34px;    
+}
+
+
+.scrollable-table{
+    
+        overflow-y: auto;
+        height: 300px;
+      
+      table thead th {
+        position: sticky;
+        top: 0;
+      }
+      
+      table {
+        border-collapse: collapse;
+        width: 100%;
+      }
+      
+      th,
+      td {
+        padding: 8px 15px;
+      }
+        
 }

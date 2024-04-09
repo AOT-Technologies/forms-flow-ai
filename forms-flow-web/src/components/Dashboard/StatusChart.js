@@ -1,6 +1,6 @@
 import React, { useMemo } from "react";
 import { useTranslation } from "react-i18next";
-import LoadingOverlay from "react-loading-overlay";
+import LoadingOverlay from "react-loading-overlay-ts";
 
 import { Legend, PieChart, Pie, Cell, LabelList } from "recharts";
 
@@ -43,7 +43,7 @@ const ChartForm = React.memo((props) => {
           <div className=" d-flex align-items-center justify-content-between">
           <div>
           <div className="d-flex align-items-center">
-            <span className="text-primary mr-2" >{t("Form Name")} : </span>
+            <span className="text-primary me-2" >{t("Form Name")} : </span>
             <h2 className="text-truncate" style={{ maxWidth: version > 1 ? "500px" : "700px"}}>{formName}</h2>
           </div>
           <p>
@@ -71,7 +71,7 @@ const ChartForm = React.memo((props) => {
         spinner
         text={t("Loading...")}
       >
-          <div className="white-box status-container flex-row d-md-flex align-items-center">
+          <div className="white-box status-container flex-row d-md-flex flex-wrap align-items-center">
             <div className="chart text-center">
               <PieChart width={400} height={400}>
                 <Pie
@@ -108,7 +108,7 @@ const ChartForm = React.memo((props) => {
               {pieData.map((entry, index) => (
                 <div className=" d-flex align-items-center m-3" key={index}>
                   <span
-                    className="rounded-circle shadow  mr-2"
+                    className="rounded-circle shadow  me-2"
                     style={{
                       backgroundColor: COLORS[index % COLORS.length],
                       width: "25px",

@@ -1,14 +1,14 @@
 """This exposes the Formio APIs."""
 import json
-from http import HTTPStatus
+from typing import List
 
 import jwt
 import requests
 from flask import current_app
 
 from formsflow_api_utils.exceptions import BusinessException
-from formsflow_api_utils.utils import cache
 from formsflow_api_utils.exceptions import ExternalError
+from formsflow_api_utils.utils import Cache
 
 
 class FormioService:
@@ -27,10 +27,10 @@ class FormioService:
 
     def get_formio_access_token(self):
         """Method to get formio access token."""
-        formio_token = cache.get("formio_token")
+        formio_token = Cache.get("formio_token")
         if formio_token is None:
             formio_token = self.generate_formio_token()
-            cache.set(
+            Cache.set(
                 "formio_token",
                 formio_token,
                 timeout=self.decode_timeout(formio_token),
@@ -65,7 +65,7 @@ class FormioService:
         return self._invoke_service(url, headers, data=data)
 
     @staticmethod
-    def _invoke_service(url, headers, data=None, method: str = 'POST'):
+    def _invoke_service(url, headers, data=None, method: str = 'POST', raise_for_error: bool = True):
         """Invoke formio service and handle error."""
         try:
             if method == 'GET':
@@ -74,10 +74,15 @@ class FormioService:
                 response = requests.post(url, headers=headers, data=json.dumps(data))
             elif method == 'PUT':
                 response = requests.put(url, headers=headers, data=json.dumps(data))
-            if response.ok:
-                return response.json()
+            elif method == 'PATCH':
+                response = requests.patch(url, headers=headers, data=json.dumps(data))
+            if raise_for_error:
+                if response.ok:
+                    return response.json()
+                else:
+                    raise BusinessException(ExternalError.ERROR_RESPONSE_RECEIVED, detail_message=response.json())
             else:
-                raise BusinessException(ExternalError.ERROR_RESPONSE_RECEIVED, detail_message=response.json())
+                return response.json()
         except requests.ConnectionError:
             raise BusinessException(ExternalError.FORM_SERVICE_UNAVAILABLE)
 
@@ -102,15 +107,27 @@ class FormioService:
 
     def get_form(self, data, formio_token):
         """Get request to formio API to get form details."""
+        return self.get_form_by_id(data["form_id"], formio_token)
+
+    def get_form_by_id(self, form_id: str, formio_token):
+        """Get request to formio API to get form details."""
         headers = {"Content-Type": "application/json", "x-jwt-token": formio_token}
-        url = f"{self.base_url}/form/" + data["form_id"]
+        url = f"{self.base_url}/form/{form_id}"
+        return self._invoke_service(url, headers, method='GET')
+
+    def get_form_metadata(self, form_id: str, formio_token, is_bundle: bool = False, bundled_ids: List[str] = []):
+        """Get form metadata using the custom endpoint in form.io."""
+        headers = {"Content-Type": "application/json", "x-jwt-token": formio_token}
+        url = f"{self.base_url}/form/{form_id}/metadata"
+        if is_bundle:
+            url = f"{url}?isBundle=true&formIds={','.join(bundled_ids)}"
         return self._invoke_service(url, headers, method='GET')
 
     def get_submission(self, data, formio_token):
         """Get request to formio API to get submission details."""
         headers = {"Content-Type": "application/json", "x-jwt-token": formio_token}
         url = (
-            f"{self.base_url}/form/" + data["form_id"] + "/submission/" + data["sub_id"]
+                f"{self.base_url}/form/" + data["form_id"] + "/submission/" + data["sub_id"]
         )
         return self._invoke_service(url, headers, method='GET')
 
@@ -122,9 +139,18 @@ class FormioService:
         )
         return self._invoke_service(url, headers, data=data)
 
+    def patch_submission(self, form_id, submission_id, data, formio_token, raise_for_error: bool = True, is_bundle: bool = False):
+        """Patch form submission data with the payload."""
+        headers = {"Content-Type": "application/json", "x-jwt-token": formio_token}
+        url = (
+            f"{self.base_url}/form/{form_id}/submission/{submission_id}"
+        )
+        if is_bundle:
+            url += "?skip-sanitize=true"
+        return self._invoke_service(url, headers, data=data, method='PATCH', raise_for_error=raise_for_error)
+
     def get_form_by_path(self, path_name: str, formio_token: str) -> dict:
         """Get request to formio API to get form details from path."""
         headers = {"Content-Type": "application/json", "x-jwt-token": formio_token}
-        url = f"{self.base_url}/{path_name}" 
+        url = f"{self.base_url}/{path_name}"
         return self._invoke_service(url, headers, method='GET')
-        

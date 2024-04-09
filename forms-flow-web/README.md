@@ -2,7 +2,7 @@
 
 ![React](https://img.shields.io/badge/React-17.0.2-blue)
 
-**formsflow.ai** delivers progressive web application with React version `17.0.2` and `create-react-app`. Also currently uses  [form.io](https://github.com/formio/formio) version `2.4.1`.
+**formsflow.ai** delivers progressive web application with React version `17.0.2` and `create-react-app`. Also currently uses  [form.io](https://github.com/formio/formio) version `3.2.0`.
 
 A React library for rendering out forms based on the form.io platform.
 

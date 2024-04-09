@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
- import { Row, Col } from "react-bootstrap";
+ import { Col } from "react-bootstrap";
 import {
   getISODateTime,
   getFormattedDateAndTime,
@@ -48,32 +48,29 @@ const TaskHeaderListView = React.memo(({task,taskId,groupView = true}) => {
     setDueDate(due);
   }, [task?.due]);
 
+  const updateBpmTasksAndDetails = (err) =>{
+    if (!err) {
+      if (!SocketIOService.isConnected()) {
+        if (selectedFilter) {
+          dispatch(getBPMTaskDetail(taskId));
+          dispatch(
+            fetchServiceTaskList(reqData,null,firstResult)
+          );
+        } else {
+          dispatch(setBPMTaskDetailUpdating(false));
+        }
+      }
+       
+    } else {
+      dispatch(setBPMTaskDetailUpdating(false));
+    }
+  };
+
   const onClaim = () => {
     dispatch(setBPMTaskDetailUpdating(true));
     dispatch(
       // eslint-disable-next-line no-unused-vars
-      claimBPMTask(taskId, username, (err, response) => {
-        if (!err) {
-          if (!SocketIOService.isConnected()) {
-            if (selectedFilter) {
-              dispatch(getBPMTaskDetail(taskId));
-              dispatch(
-                fetchServiceTaskList(reqData,null,firstResult)
-              );
-            } else {
-              dispatch(setBPMTaskDetailUpdating(false));
-            }
-          }
-          if(selectedFilter){
-            dispatch(
-              fetchServiceTaskList(reqData,null,firstResult)
-            );
-          }
-           
-        } else {
-          dispatch(setBPMTaskDetailUpdating(false));
-        }
-      })
+      claimBPMTask(taskId, username,updateBpmTasksAndDetails)
     );
   };
   const onChangeClaim = (userId) => {
@@ -82,23 +79,7 @@ const TaskHeaderListView = React.memo(({task,taskId,groupView = true}) => {
       dispatch(setBPMTaskDetailUpdating(true));
       dispatch(
         // eslint-disable-next-line no-unused-vars
-        updateAssigneeBPMTask(taskId, userId, (err, response) => {
-          if (!err) {
-            if (!SocketIOService.isConnected()) {
-              if (selectedFilter) {
-                dispatch(getBPMTaskDetail(taskId));
-              }
-            }
-            if(selectedFilter){
-              dispatch(
-                fetchServiceTaskList(reqData,null,firstResult)
-              );
-            }
-           
-          } else {
-            dispatch(setBPMTaskDetailUpdating(false));
-          }
-        })
+        updateAssigneeBPMTask(taskId, userId, updateBpmTasksAndDetails)
       );
     }
   };
@@ -107,23 +88,7 @@ const TaskHeaderListView = React.memo(({task,taskId,groupView = true}) => {
     dispatch(setBPMTaskDetailUpdating(true));
     dispatch(
       // eslint-disable-next-line no-unused-vars
-      unClaimBPMTask(taskId, (err, response) => {
-        if (!err) {
-          if (!SocketIOService.isConnected()) {
-            if (selectedFilter) {
-              dispatch(getBPMTaskDetail(taskId));
-            }
-          }
-          if(selectedFilter){
-            dispatch(
-              fetchServiceTaskList(reqData,null,firstResult)
-            );
-          }
-          
-        } else {
-          dispatch(setBPMTaskDetailUpdating(false));
-        }
-      })
+      unClaimBPMTask(taskId, updateBpmTasksAndDetails)
     );
   };
 
@@ -136,18 +101,7 @@ const TaskHeaderListView = React.memo(({task,taskId,groupView = true}) => {
     };
     dispatch(
       // eslint-disable-next-line no-unused-vars
-      updateBPMTask(taskId, updatedTask, (err, response) => {
-        if (!err) {
-          if (!SocketIOService.isConnected()) {
-            dispatch(getBPMTaskDetail(taskId));
-            dispatch(
-              fetchServiceTaskList(reqData,null,firstResult)
-            );
-          }
-        } else {
-          dispatch(setBPMTaskDetailUpdating(false));
-        }
-      })
+      updateBPMTask(taskId, updatedTask, updateBpmTasksAndDetails)
     );
   };
 
@@ -160,18 +114,7 @@ const TaskHeaderListView = React.memo(({task,taskId,groupView = true}) => {
     };
     dispatch(
       // eslint-disable-next-line no-unused-vars
-      updateBPMTask(taskId, updatedTask, (err, response) => {
-        if (!err) {
-          if (!SocketIOService.isConnected()) {
-            dispatch(getBPMTaskDetail(taskId));
-            dispatch(
-              fetchServiceTaskList(reqData,null,firstResult)
-            );
-          }
-        } else {
-          dispatch(setBPMTaskDetailUpdating(false));
-        }
-      })
+      updateBPMTask(taskId, updatedTask, updateBpmTasksAndDetails)
     );
   };
 
@@ -179,9 +122,9 @@ const TaskHeaderListView = React.memo(({task,taskId,groupView = true}) => {
   const FollowUpDateInput = React.forwardRef(({ value, onClick }, ref) => {
     return (
       <div onClick={onClick} ref={ref}>
-        <i className="fa fa-calendar mr-1" />{" "}
+        <i className="fa fa-calendar me-1" />{" "}
         {followUpDate ? (
-          <span className="mr-4">{moment(followUpDate).fromNow()}</span>
+          <span className="me-4">{moment(followUpDate).fromNow()}</span>
         ) : (
           t("Add Date")
         )}
@@ -193,9 +136,9 @@ const TaskHeaderListView = React.memo(({task,taskId,groupView = true}) => {
   const DueDateInput = React.forwardRef(({ value, onClick }, ref) => {
     return (
       <div onClick={onClick} ref={ref}>
-        <i className="fa fa-calendar mr-1" />{" "}
+        <i className="fa fa-calendar me-1" />{" "}
         {dueDate ? (
-          <span className="mr-4">{moment(dueDate).fromNow()}</span>
+          <span className="me-4">{moment(dueDate).fromNow()}</span>
         ) : (
           t("Add Date")
         )}
@@ -215,15 +158,15 @@ const TaskHeaderListView = React.memo(({task,taskId,groupView = true}) => {
         groups={taskGroups}
       />
 
-      <Row>
-      {vissibleAttributes?.taskVisibleAttributes?.followUp &&  <Col xs={3} className="px-0">
+     
+      {vissibleAttributes?.taskVisibleAttributes?.followUp &&  <Col xs={2} className="px-0">
           <div className="tab-width">
             <div>
-              <h6 className="font-weight-light">{t("Follow up Date")}</h6>
+              <h6 className="fw-bold">{t("Follow up Date")}</h6>
             </div>
             <div
               className="actionable"
-              data-title={
+              title={
                 followUpDate
                   ? getFormattedDateAndTime(followUpDate)
                   : t("Set follow-up Date")
@@ -252,14 +195,14 @@ const TaskHeaderListView = React.memo(({task,taskId,groupView = true}) => {
           </div>
         </Col>}
         {
-          vissibleAttributes?.taskVisibleAttributes?.dueDate &&  <Col xs={3}>
+          vissibleAttributes?.taskVisibleAttributes?.dueDate &&  <Col xs={2}>
           <div className="tab-width">
             <div>
-                <h6 className="font-weight-light">{t("Due Date")}</h6>
+                <h6 className="fw-bold">{t("Due Date")}</h6>
             </div>
             <div
               className="actionable"
-              data-title={
+              title={
                 dueDate ? getFormattedDateAndTime(dueDate) : t("Set Due date")
               }
             >
@@ -289,10 +232,10 @@ const TaskHeaderListView = React.memo(({task,taskId,groupView = true}) => {
         }
        
         {vissibleAttributes?.taskVisibleAttributes?.assignee &&
-          <Col xs={ groupView ? 3 : 6 } >
-          <div className="tab-width">
+          <Col xs={2}  onClick={(e)=> e.stopPropagation()} >
+          <div className="tab-width px-3">
             <div>
-                <h6 className="font-weight-light">{t("Assignee")}</h6>
+                <h6 className="fw-bold">{t("Assignee")}</h6>
             </div>
             <div className="actionable">
               {isEditAssignee ? (
@@ -312,20 +255,20 @@ const TaskHeaderListView = React.memo(({task,taskId,groupView = true}) => {
                 )
               ) : (
                 <>
-                  <i className="fa fa-user mr-1" />
+                  <i className="fa fa-user me-1" />
                   {task?.assignee ? (
                     <span>
                       <span
-                        className="change-tooltip"
+                        className=""
                         onClick={() => setIsEditAssignee(true)}
-                        data-title={t("Click to Change Assignee")}
+                        title={t("Click to Change Assignee")}
                       >
                         {task.assignee}
                       </span>
                       <i
-                        className="fa fa-times ml-1"
+                        className="fa fa-times ms-1"
                         onClick={onUnClaimTask}
-                        data-title={t("Reset Assignee")}
+                        title={t("Reset Assignee")}
                       />
                     </span>
                   ) : (
@@ -338,27 +281,30 @@ const TaskHeaderListView = React.memo(({task,taskId,groupView = true}) => {
             </div>
           </div>
         </Col>}
-        <Col xs={3}> 
+         
           {groupView &&
+          <Col xs={2}>
             <div className="tab-width">
               <div>
-                <h6 className="font-weight-light">{t("Groups")}</h6>
+                <h6 className="fw-bold">{t("Groups")}</h6>
               </div>
               <div
                 className="actionable"
                 onClick={() => setModal(true)}
-                data-title={t("Groups")}
+                title={t("Groups")}
               >
-                <i className="fa fa-group mr-1" />
+                <i className="fa fa-group me-1" />
                 {taskGroups.length === 0 ? (
                   <span>{t("Add group")}</span>
                 ) : (
                   <span className="group-align">{getGroups(taskGroups)}</span>
                 )}
               </div>
-            </div>}
-        </Col>
-      </Row>
+            </div>
+            </Col>
+            }
+        
+     
 
       
     </>

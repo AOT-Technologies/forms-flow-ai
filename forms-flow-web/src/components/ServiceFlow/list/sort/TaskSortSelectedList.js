@@ -87,10 +87,10 @@ const TaskSortSelectedList = React.memo(() => {
 
   const selectedSortList = () => {
     return sortList.map((sort, index) => (
-      <div className=" badge border rounded-pill  p-2 m-2 " key={index}>
+      <div className=" badge border rounded-pill text-dark p-2 m-2 " key={index}>
         {sortList.length > 1 ? (
           <span
-            className="mr-1 font-weight-bold click-element"
+            className="me-1 fw-bold click-element"
             title={t("Remove sorting")}
             onClick={() => deleteSort(sort, index)}
           >
@@ -98,7 +98,7 @@ const TaskSortSelectedList = React.memo(() => {
           </span>
         ) : null}
         <span
-          className="mr-1 click-element"
+          className="me-1 click-element"
           onClick={() => showSortList(index)}
         >
           {sort.label}
@@ -119,7 +119,7 @@ const TaskSortSelectedList = React.memo(() => {
           ) : (
             <i
               className="fa fa-sort"
-              data-title={t("Descending")}
+              title={t("Descending")}
               onClick={() => updateSortOrder(index, "asc")}
             />
           )}
@@ -132,14 +132,13 @@ const TaskSortSelectedList = React.memo(() => {
     <div className="d-flex flex-wrap align-items-center" ref={createNode}>
       {selectedSortList()}
       {sortOptions.length ? (
-        <div className="ml-1">
+        <div className="ms-1">
           <button
             className="btn btn-small btn-link text-dark"
-            data-title={t("Add sorting")}
             title={t("Add sorting")}
             onClick={() => setShowSortListDropdown(!showSortListDropdown)}
           >
-            <i className="fa fa-plus-circle mr-2" />
+            <i className="fa fa-plus-circle me-2" />
             {t("Add sorting")}
           </button>
 

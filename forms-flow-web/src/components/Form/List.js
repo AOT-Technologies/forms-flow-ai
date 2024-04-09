@@ -148,7 +148,7 @@ const List = React.memo((props) => {
     return [
       {
         name: "Forms",
-        icon: "file-text-o mr-2",
+        icon: "file-text-o me-2",
       },
     ];
   };
@@ -492,7 +492,7 @@ const List = React.memo((props) => {
                     ) : (
                       <span>{`${t(" Submission is made against")} `}</span>
                     )}
-                    <span style={{ fontWeight: "bold" }}>
+                    <span className="fw-bold">
                       {props.formName.includes(" ")
                         ? props.formName
                         : textTruncate(50, 40, props.formName)}
@@ -502,7 +502,7 @@ const List = React.memo((props) => {
                 ) : (
                   <div>
                     <span>{`${t("Are you sure to delete the")} ${formProcessData.formType} `}</span>
-                    <span style={{ fontWeight: "bold" }}>
+                    <span className="fw-bold">
                       {textTruncate(60, 40, props.formName)}
                     </span>
                     ?
@@ -511,7 +511,7 @@ const List = React.memo((props) => {
               ) : (
                 <div>
                     <span>{`${t("Are you sure to delete the")} ${formProcessData.formType} `}</span>
-                    <span style={{ fontWeight: "bold" }}>
+                    <span className="fw-bold">
                       {textTruncate(60, 40, props.formName)}
                     </span>
                     ?
@@ -536,22 +536,21 @@ const List = React.memo((props) => {
             {isDesigner && (
               <>
                 <button
+                  data-testid="create-form-btn"
                   onClick={() =>
                     dispatch(push(`${redirectUrl}formflow/create`))
                   }
-                  className="btn btn-primary"
-                  style={{ whiteSpace: "nowrap" }}
-                >
-                  <i className="fa fa-plus mr-2" />
+                  className="btn btn-primary text-nowrap">
+                  <i className="fa fa-plus me-2" />
                   <Translation>{(t) => t("Create Form")}</Translation>
                 </button>
                 <button
-                  className="btn btn-outline-primary  ml-4"
+                  data-testid="upload-form-btn"
+                  className="btn btn-outline-primary text-nowrap  ms-4"
                   onClick={uploadClick}
                   title={t("Upload json form only")}
-                  style={{ whiteSpace: "nowrap" }}
                 >
-                  <i className="fa fa-upload mr-2" aria-hidden="true" />
+                  <i className="fa fa-upload me-2" aria-hidden="true" />
                   {t("Upload Form")}
                 </button>
                 <input
@@ -564,6 +563,7 @@ const List = React.memo((props) => {
                     fileUploaded(e);
                   }}
                   ref={uploadFormNode}
+                  data-testid="upload-form-content"
                   title={t("Upload Form")}
                 />
               </>
@@ -577,20 +577,21 @@ const List = React.memo((props) => {
                 <div className="d-flex flex-column flex-md-column justify-content-md-end mb-4">
                   {isDesigner && (
                     <button
+                      data-testid="download-form-btn"
                       className="btn btn-outline-primary "
                       onClick={downloadForms}
                       disabled={formCheckList.length === 0}
                     >
-                      <i className="fa fa-download mr-2" aria-hidden="true" />
+                      <i className="fa fa-download me-2" aria-hidden="true" />
                       {t("Download Form")}
                     </button>
                   )}
                 </div>
               </div>
-              <hr style={{ marginTop: "-10px" }} />
+              <hr className="list-margin" />
             </>
           ) : (
-            <Head items={headerList()} page={"Forms"} />
+            <Head  items={headerList()} page={"Forms"} />
           )}
 
           {isDesigner ? <FormTable /> : !isDesigner ? <ClientTable /> : null}

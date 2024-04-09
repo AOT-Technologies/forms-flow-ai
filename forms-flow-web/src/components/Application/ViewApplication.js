@@ -87,12 +87,12 @@ const ViewApplication = React.memo(() => {
   return (
     <div className="">
       <div className="d-flex align-items-center">
-        <Link title={t("Back to Submissions")} to={`${redirectUrl}application`} className="">
-          <i className="fa fa-chevron-left fa-lg mr-2" />
+        <Link data-testid="back-to-submissions-link" title={t("Back to Submissions")} to={`${redirectUrl}application`} className="">
+          <i className="fa fa-chevron-left fa-lg me-2" />
         </Link>
         <h3 className=" text-truncate">
           <span className="application-head-details">
-            <i className="fa fa-list-alt mr-2" aria-hidden="true" />
+            <i className="fa fa-list-alt me-2" aria-hidden="true" />
             &nbsp; <Translation>{(t) => t("Submissions")}</Translation> /
           </span>{" "}
           {`${startCase(applicationDetail.applicationName)}`}
@@ -101,24 +101,28 @@ const ViewApplication = React.memo(() => {
       <br />
       <Tabs id="application-details" defaultActiveKey="details" mountOnEnter>
         <Tab
+          data-testid="submissions-details-tab"
           eventKey="details"
           title={<Translation>{(t) => t("Details")}</Translation>}
         >
           <Details application={applicationDetail} />
         </Tab>
         <Tab
+          data-testid="submissions-form-tab"
           eventKey="form"
           title={<Translation>{(t) => t("Form")}</Translation>}
         >
           <View page="application-detail" />
         </Tab>
         <Tab
+          data-testid="submissions-history-tab"
           eventKey="history"
           title={<Translation>{(t) => t("History")}</Translation>}
         >
           <History page="application-detail" applicationId={applicationId} />
         </Tab>
         <Tab
+          data-testid="submissions-process-diagram-tab"
           eventKey="process-diagram"
           title={<Translation>{(t) => t("Process Diagram")}</Translation>}
         >

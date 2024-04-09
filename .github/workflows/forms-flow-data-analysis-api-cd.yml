@@ -120,4 +120,4 @@ jobs:
 #        run: aws eks update-kubeconfig --region ca-central-1 --name formsflow-eks-qa
 #      - name: Deploy to eks
 #        run: |
-#            kubectl -n app2 patch deployment forms-flow-data-analysis-api -p '{"spec":{"template":{"spec":{"containers":[{"name":"forms-flow-data-analysis-api","image":"docker.io/formsflow/forms-flow-data-analysis-api:${{ env.VERSION }}"}]}}}}'        
+#            kubectl -n dev patch deployment forms-flow-data-analysis-api -p '{"spec":{"template":{"spec":{"containers":[{"name":"forms-flow-data-analysis-api","image":"docker.io/formsflow/forms-flow-data-analysis-api:${{ env.VERSION }}"}]}}}}'        

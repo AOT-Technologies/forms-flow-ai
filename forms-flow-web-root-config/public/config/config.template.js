@@ -21,6 +21,8 @@ window["_env_"] = {
   // Keycloak URL
   REACT_APP_KEYCLOAK_URL: "${REACT_APP_KEYCLOAK_URL}",
 
+  REACT_APP_KEYCLOAK_URL_HTTP_RELATIVE_PATH: "${REACT_APP_KEYCLOAK_URL_HTTP_RELATIVE_PATH}",
+
   ////Environment Variables for forms-flow-bpm////
 
   //Insight Api End point

@@ -1,9 +1,8 @@
 """API definition for sentiment analysis module."""
-import logging
 import os
 from http import HTTPStatus
 
-from flask import jsonify, request
+from flask import current_app, jsonify, request
 from flask_restx import Namespace, Resource, cors
 
 from api import config
@@ -55,7 +54,7 @@ class SentimentAnalysisTransformerResource(Resource):
                 "type": "Bad Request Error",
                 "message": "Invalid request object passed passed",
             }, HTTPStatus.BAD_REQUEST
-            logging.info(response)
-            logging.info(err)
+            current_app.logger.warning(response)
+            current_app.logger.warning(err)
 
             return response, status

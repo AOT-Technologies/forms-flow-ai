@@ -3,7 +3,7 @@ import React, { useEffect, useState } from "react";
 import { Dropdown, FormControl, InputGroup } from "react-bootstrap";
 import { useSelector, useDispatch } from "react-redux";
 import Pagination from "react-js-pagination";
-import LoadingOverlay from "react-loading-overlay";
+import LoadingOverlay from "react-loading-overlay-ts";
 
 import {
   fetchAllDmnProcesses,
@@ -101,16 +101,17 @@ function DmnTable() {
         text={t("Loading...")}
         active={isLoading || countLoading}
       >
-        <div style={{ minHeight: "400px" }}>
+        <div className="dmn-table">
           <table className="table custom-table  table-responsive-sm mt-2">
             <thead>
               <tr>
-                <th scope="col">{t("Workflow Name")}</th>
+                <th scope="col">{t("DMN Name")}</th>
                 <th scope="col">{t("Key")}</th>
                 <th scope="col">{t("Type")}</th>
                 <th colSpan="2">
                 <InputGroup className="input-group">
               <FormControl
+                className="bg-white"
                 value={search}
                 onChange={(e) => {
                   setSearch(e.target.value);
@@ -118,23 +119,25 @@ function DmnTable() {
                 onKeyDown={(e) =>
                   e.keyCode == 13 ? handleSearchButtonClick() : ""
                 }
-                placeholder={t("Search by workflow name")}
-                title={t("Search by workflow name")}
-                style={{ backgroundColor: "#ffff" }}
+                placeholder={t("Search by DMN name")}
+                title={t("Search by DMN name")}
+                data-testid="processes-search-dmn-input-box"
               />
               {search && (
-                <InputGroup.Append onClick={onClearSearch}>
-                  <InputGroup.Text>
+                <InputGroup.Append data-testid="processes-search-dmn-clear-button" onClick={onClearSearch}>
+                  <InputGroup.Text className="h-100">
                     <i className="fa fa-times"></i>
                   </InputGroup.Text>
                 </InputGroup.Append>
               )}
-              <InputGroup.Append
-                onClick={handleSearchButtonClick}
-                disabled={!search?.trim()}
-                style={{ cursor: "pointer" }}
-              >
-                <InputGroup.Text style={{ backgroundColor: "#ffff" }}>
+                    <InputGroup.Append
+                      className="cursor-pointer"
+                      data-testid="processes-search-dmn-click-button"
+                      onClick={handleSearchButtonClick}
+                      disabled={!search?.trim()}
+                    >
+                <InputGroup.Text 
+                className="h-100 bg-white">
                   <i className="fa fa-search"></i>
                 </InputGroup.Text>
               </InputGroup.Append>
@@ -147,8 +150,7 @@ function DmnTable() {
                 <tr className="no-results-row">
                   <td
                     colSpan="4"
-                    style={{ height: "300px" }}
-                    className="text-center"
+                    className="text-center no-results"
                   >
                    { isLoading ? null : t("No Dmn Found")}
                   </td>
@@ -162,9 +164,12 @@ function DmnTable() {
                     <td>{processItem.key}</td>
                     <td>{t("DMN")}</td>
                     <td className="d-flex justify-content-end w-100">
-                    <button className="btn btn-link" onClick={()=>{gotoEdit(processItem);}}> 
-                       <i className="fas fa-edit mr-2"/>
-                        {t("Edit Workflow")}</button>
+                      <button
+                        data-testid={`processes-edit-dmn-${processItem.key}`}
+                        className="btn btn-link"
+                        onClick={() => { gotoEdit(processItem); }}> 
+                       <i className="fas fa-edit me-2"/>
+                        {t("Edit DMN")}</button>
                     </td>
                   </tr>
                 ))}
@@ -176,9 +181,9 @@ function DmnTable() {
         {dmn.length ? (
           <div className="d-flex justify-content-between align-items-center  flex-column flex-md-row">
             <div className="d-flex align-items-center">
-              <span className="mr-2"> {t("Rows per page")}</span>
-              <Dropdown>
-                <Dropdown.Toggle variant="light" id="dropdown-basic">
+              <span className="me-2"> {t("Rows per page")}</span>
+              <Dropdown data-testid="processes-dmn-pagination-dropdown">
+                <Dropdown.Toggle data-testid="processes--dmn-pagination-dropdown-limit" variant="light" id="dropdown-basic">
                   {limit}
                 </Dropdown.Toggle>
 
@@ -190,13 +195,14 @@ function DmnTable() {
                       onClick={() => {
                         onLimitChange(option.value);
                       }}
+                      data-testid={`processes-dmn-pagination-dropdown-limit-${index}`}
                     >
                       {option.text}
                     </Dropdown.Item>
                   ))}
                 </Dropdown.Menu>
               </Dropdown>
-              <span className="ml-2">
+              <span className="ms-2">
                 {t("Showing")} {(limit * activePage) - (limit - 1)} {t("to")}
                 &nbsp;
                 {Math.min(limit * activePage, totalProcess)} {t("of")}&nbsp;

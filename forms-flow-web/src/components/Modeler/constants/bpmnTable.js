@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import { Dropdown, FormControl, InputGroup } from "react-bootstrap";
 import { useSelector, useDispatch } from "react-redux";
 import Pagination from "react-js-pagination";
-import LoadingOverlay from "react-loading-overlay";
+import LoadingOverlay from "react-loading-overlay-ts";
 import {
   fetchAllBpmProcesses,
   fetchAllBpmProcessesCount,
@@ -98,7 +98,7 @@ function BpmnTable() {
         text={t("Loading...")}
         active={isLoading || countLoading}
       >
-        <div style={{ minHeight: "400px" }}>
+        <div className="dmn-table">
  
           <table className="table custom-table table-responsive-sm mt-2">
             <thead>
@@ -106,7 +106,7 @@ function BpmnTable() {
                 <th scope="col">{t("Workflow Name")}</th>
                 <th scope="col">{t("Key")}</th>
                 <th scope="col">{t("Type")}</th>
-                <th colSpan="2">
+                <th colSpan="2" aria-label="Search">
                 <InputGroup className="input-group">
               <FormControl
                 value={search}
@@ -117,22 +117,25 @@ function BpmnTable() {
                   e.keyCode == 13 ? handleSearchButtonClick() : ""
                 }
                 placeholder={t("Search by workflow name")}
-                style={{ backgroundColor: "#ffff" }}
+                className="bg-white"
                 title={t("Search by workflow name")}
+                data-testid="processes-search-workflow-input-box"
               />
               {search && (
-                <InputGroup.Append onClick={onClearSearch}>
-                  <InputGroup.Text>
+                <InputGroup.Append  data-testid="processes-search-clear-button" onClick={onClearSearch}>
+                  <InputGroup.Text className="h-100">
                     <i className="fa fa-times"></i>
                   </InputGroup.Text>
                 </InputGroup.Append>
               )}
               <InputGroup.Append
+                data-testid="processes-search-click-button"
                 onClick={handleSearchButtonClick}
                 disabled={!search?.trim()}
-                style={{ cursor: "pointer" }}
+                className="cursor-pointer"
               >
-                <InputGroup.Text style={{ backgroundColor: "#ffff" }}>
+                <InputGroup.Text 
+                className="bg-white h-100">
                   <i className="fa fa-search"></i>
                 </InputGroup.Text>
               </InputGroup.Append>
@@ -145,8 +148,7 @@ function BpmnTable() {
                 <tr className="no-results-row">
                   <td
                     colSpan="4"
-                    style={{ height: "300px" }}
-                    className="text-center"
+                    className="text-center no-results"
                   >
                      { isLoading ? null : t("No Process Found")}
                   </td>
@@ -160,8 +162,11 @@ function BpmnTable() {
                     <td>{processItem.key}</td>
                     <td>{t("BPMN")}</td>
                     <td className="d-flex justify-content-end w-100">
-                      <button className="btn btn-link" onClick={()=>{gotoEdit(processItem);}}> 
-                       <i className="fas fa-edit mr-2"/>
+                      <button
+                        data-testid={`processes-edit-workflow-${processItem.key}`}
+                        className="btn btn-link text-primary"
+                        onClick={() => { gotoEdit(processItem); }}> 
+                       <i className="fas fa-edit me-2"/>
                         {t("Edit Workflow")}</button>
                     </td>
                   </tr>
@@ -174,9 +179,9 @@ function BpmnTable() {
        {
         process.length ?  <div className="d-flex justify-content-between align-items-center  flex-column flex-md-row">
         <div className="d-flex align-items-center">
-          <span className="mr-2"> {t("Rows per page")}</span>
-          <Dropdown size="sm">
-            <Dropdown.Toggle variant="light" id="dropdown-basic">
+          <span className="me-2"> {t("Rows per page")}</span>
+          <Dropdown data-testid="processes-bpmn-pagination-dropdown" size="sm">
+            <Dropdown.Toggle data-testid="processes-bpmn-pagination-dropdown-limit" variant="light" id="dropdown-basic">
               {limit}
             </Dropdown.Toggle>
 
@@ -188,13 +193,14 @@ function BpmnTable() {
                   onClick={() => {
                     onLimitChange(option.value);
                   }}
+                  data-testid={`processes-bpmn-pagination-dropdown-limit-${index}`}
                 >
                   {option.text}
                 </Dropdown.Item>
               ))}
             </Dropdown.Menu>
           </Dropdown>
-          <span className="ml-2">
+          <span className="ms-2">
             {t("Showing")} {(limit * activePage) - (limit - 1)} {t("to")}&nbsp;
             {Math.min(limit * activePage, totalProcess)} {t("of")}&nbsp;
             {totalProcess} {t("results")}

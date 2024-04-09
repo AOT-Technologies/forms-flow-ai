@@ -2,6 +2,7 @@
 
 Initialize app and the dependencies.
 """
+
 import json
 import logging
 import os
@@ -17,7 +18,6 @@ from formsflow_api_utils.utils import (
     ALLOW_ALL_ORIGINS,
     CORS_ORIGINS,
     FORMSFLOW_API_CORS_ORIGINS,
-    cache,
     jwt,
     register_log_handlers,
     setup_logging,
@@ -59,6 +59,7 @@ def create_app(
         when=os.getenv("API_LOG_ROTATION_WHEN", "d"),
         interval=int(os.getenv("API_LOG_ROTATION_INTERVAL", "1")),
         backupCount=int(os.getenv("API_LOG_BACKUP_COUNT", "7")),
+        configure_log_file=app.config["CONFIGURE_LOGS"]
     )
 
     app.logger.propagate = False
@@ -69,8 +70,6 @@ def create_app(
     app.logger.info("Welcome to formsflow-API server...!")
     db.init_app(app)
     ma.init_app(app)
-    cache.init_app(app)
-
     API.init_app(app)
     setup_jwt_manager(app, jwt)
     with app.app_context():
@@ -120,6 +119,7 @@ def create_app(
         with app.app_context():
             collect_role_ids(app)
             collect_user_resource_ids(app)
+
     return app
 
 

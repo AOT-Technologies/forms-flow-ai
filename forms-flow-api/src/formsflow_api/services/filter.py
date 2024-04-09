@@ -74,13 +74,16 @@ class FilterService:
                 filter_obj = Filter(
                     name="All Tasks",
                     variables=[
-                        {"name": "applicationId", "label": "Application Id"},
+                        {"name": "applicationId", "label": "Submission Id"},
                         {"name": "formName", "label": "Form Name"},
                     ],
                     status="active",
                     created_by="system",
                     created="now()",
-                    criteria={},
+                    criteria={
+                        "candidateGroupsExpression": "${currentUserGroups()}",
+                        "includeAssignedTasks": True,
+                    },
                     users={},
                     roles={},
                     tenant=tenant_key,
@@ -92,7 +95,7 @@ class FilterService:
                         "taskTitle": True,
                         "createdDate": True,
                         "groups": True,
-                        "followupDate": True,
+                        "followUp": True,
                     },
                 )
                 filter_obj.save()
@@ -105,7 +108,7 @@ class FilterService:
         )
         filter_data = filter_schema.dump(filters, many=True)
         default_variables = [
-            {"name": "applicationId", "label": "Application Id"},
+            {"name": "applicationId", "label": "Submission Id"},
             {"name": "formName", "label": "Form Name"},
         ]
         # User who created the filter or admin have edit permission.

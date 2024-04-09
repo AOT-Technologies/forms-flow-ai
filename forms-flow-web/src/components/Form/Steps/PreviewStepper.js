@@ -241,12 +241,12 @@ if (reviewerSelectedOption === "Specific Reviewers") {
               <Card.Body>
                 
                   <div>
-                    <span className="font-weight-bold">{t("Overview")}</span>
+                    <span className="fw-bold">{t("Overview")}</span>
                     <hr />
                   </div>
                   <div>
-                  <div className="d-flex flex-column flex-md-row">
-                    <div className="font-weight-bold col-md-2 col-12">
+                  <div className="d-flex flex-column flex-md-row px-3">
+                    <div className="fw-bold col-md-2 col-12">
                       {t("Form Name")} :{" "}
                     </div>
                     <span className="col-md-8 col-12">
@@ -255,8 +255,8 @@ if (reviewerSelectedOption === "Specific Reviewers") {
                         : "-"}
                      </span>
                   </div>
-                  <div className="d-flex flex-column flex-md-row my-2">
-                  <div className="font-weight-bold col-md-2 col-12">
+                  <div className="d-flex flex-column flex-md-row my-2 px-3">
+                  <div className="fw-bold col-md-2 col-12">
                       {t("Workflow Name")} :{" "}
                     </div>
                     <span className="col-md-8 col-12">
@@ -266,7 +266,7 @@ if (reviewerSelectedOption === "Specific Reviewers") {
                   </div>
                   {processListData.anonymous && (
                     <div className="d-flex align-items-md-center px-3 my-2">
-                      <div className="font-weight-bold">
+                      <div className="fw-bold">
                         {t("Copy anonymous form URL")}
                       </div>
                       <div
@@ -290,67 +290,70 @@ if (reviewerSelectedOption === "Specific Reviewers") {
                   <div className="px-3 my-2">
                     <label>
                       <Form.Group controlId="publishForm" className="mb-0">
-                      <div className="d-flex align-items-center mr-4">
-                          <label className=" mr-2 font-weight-bold">{t("Publish this form for Client Users.")}</label>
-                          <Form.Check
-                            checked={processData.status === "active"}
-                            type="switch"
-                            color="primary" 
-                            onChange={(e) =>
-                              setProcessData({
-                                status: e.target.checked
-                                  ? "active"
-                                  : "inactive",
-                              })
-                            }
-                            custom
-                            name="Check box to associate form with a workflow"
-                          
-                            id="form-publish"
-                          />
+                      <div className="d-flex align-items-center me-4 form-check form-switch ps-0 gap-5">
+                          <label className=" me-2 fw-bold">{t("Publish this form for Client Users.")}</label>
+                          <input 
+                          checked={processData.status === "active"}
+                          className="form-check-input mb-1" 
+                          type="checkbox" 
+                          role="switch" 
+                          id="form-publish"
+                          color="primary"
+                          onChange={(e) =>
+                            setProcessData({
+                              status: e.target.checked
+                                ? "active"
+                                : "inactive",
+                            })
+                          } 
+                          name="Check box to associate form with a workflow"
+                          data-testid="form-publish-switch"
+                          ></input>
                         </div>
                         
                       </Form.Group>
                     </label>
                   </div>
                   <hr />
-                  <div className="mt-2" style={{ height: "auto" }}>
+                  <div className="mt-2 h-auto">
                     <span
-                      className="font-weight-bold"
+                      className="fw-bold"
                       title={t("Applicable for Designer Roled Users only.")}
                     >
                       {t("Design Permission")}
-                      <i className="ml-1 fa fa-info-circle cursor-pointer text-primary" />
+                      <i className="ms-1 fa fa-info-circle cursor-pointer text-primary" />
                     </span>
 
                     <div>
-                      <label className="mr-4">
+                      <label className="me-4">
                         <input
-                          className="mr-1"
+                          className="me-1"
                           type="radio"
                           value="All Designers"
                           checked={designerSelectedOption === "All Designers"}
                           onChange={(e) =>
                             setDesignerSelectedOption(e.target.value)
                           }
+                          data-testid="form-design-permission-all-designers"
                         />
                         {t("All Designers")}
                       </label>
-                      <label className="mr-4">
+                      <label className="me-4">
                         <input
-                          className="mr-1"
+                          className="me-1"
                           type="radio"
                           value="Private"
                           checked={designerSelectedOption === "Private"}
                           onChange={(e) =>
                             setDesignerSelectedOption(e.target.value)
                           }
+                          data-testid="form-design-permission-private"
                         />
                         {t("Private(only you)")}
                       </label>
                       <label>
                         <input
-                          className="mr-1"
+                          className="me-1"
                           type="radio"
                           value="Specific Designers"
                           checked={
@@ -359,6 +362,7 @@ if (reviewerSelectedOption === "Specific Reviewers") {
                           onChange={(e) => {
                             setDesignerSelectedOption(e.target.value);
                           }}
+                          data-testid="form-design-permission-specific-designers"
                         />
                         {t("Specific Designer Group")}
                       </label>
@@ -366,9 +370,11 @@ if (reviewerSelectedOption === "Specific Reviewers") {
                     {designerSelectedOption === "Specific Designers" ? (
                       <div className="d-flex align-items-center flex-wrap">
                         {designerGroups?.map((e) => (
-                          <Badge key={e} pill variant="outlined" className="d-flex align-items-center badge mr-2">
+                          <Badge key={e} pill variant="outlined" className="d-flex align-items-center badge me-2 mt-2">
                             {e}
-                            <div className="badge-deleteIcon ml-2"
+                            <div
+                              data-testid={`form-designer-delete-icon-${e}`}
+                              className="badge-deleteIcon ms-2"
                               onClick={() => { removeDesignerUserGroup(e); }}>
                               &times;
                             </div>
@@ -388,6 +394,7 @@ if (reviewerSelectedOption === "Specific Reviewers") {
                                         key={key}
                                         as="button"
                                         onClick={() => addDesignerGroups(item)}
+                                        data-testid={`form-specific-designer-option-${key}`}
                                       >
                                         {item.name}
                                       </ListGroup.Item>
@@ -403,8 +410,8 @@ if (reviewerSelectedOption === "Specific Reviewers") {
                             </Popover>
                           )}
                         >
-                          <Button id="addDesigner" className="btn btn-primary  btn-small">
-                          <i className="fa-solid fa-plus mr-2"></i>
+                      <Button id="addDesigner" className="btn btn-primary  btn-small mt-2" data-testid="form-designer-group-add-button">
+                          <i className="fa-solid fa-plus me-2"></i>
                             <Translation>{(t) => t("Add")}</Translation>
                           </Button>
                         </OverlayTrigger>
@@ -417,36 +424,38 @@ if (reviewerSelectedOption === "Specific Reviewers") {
                     <div>
                       <hr className="mt-3" />
                       <span
-                        className="font-weight-bold"
+                        className="fw-bold"
                         title={t(
                           "Applicable for Client and Reviewer Roled Users only."
                         )}
                       >
                         {t("Permission to create new submission")}
-                        <i className="ml-1 fa fa-info-circle cursor-pointer text-primary" />
+                        <i className="ms-1 fa fa-info-circle cursor-pointer text-primary" />
                       </span>
                       <div>
-                        <label className="mr-4">
+                        <label className="me-4">
                           <input
-                            className="mr-1"
+                            className="me-1"
                             type="radio"
                             value="All Users"
                             checked={clientSelectedOption === "All Users"}
                             onChange={(e) =>
                               setClientSelectedOption(e.target.value)
                             }
+                            data-testid="form-create-submission-permission-all-users"
                           />
                           {t("All Users")}
                         </label>
-                        <label className="mr-4">
+                        <label className="me-4">
                           <input
-                            className="mr-1"
+                            className="me-1"
                             type="radio"
                             value="Specific Users"
                             checked={clientSelectedOption === "Specific Users"}
                             onChange={(e) => {
                               setClientSelectedOption(e.target.value);
                             }}
+                            data-testid="form-create-submission-permission-specific-users"
                           />
                           {t("Specific User Group")}
                         </label>
@@ -455,9 +464,11 @@ if (reviewerSelectedOption === "Specific Reviewers") {
                         <div className="d-flex align-items-center flex-wrap">
                           {clientGroups?.map((e) => {
                             return (
-                              <Badge key={e} pill variant="outlined" className="d-flex align-items-center badge mr-2">
+                              <Badge key={e} pill variant="outlined" className="d-flex align-items-center badge me-2 mt-2">
                                 {e}
-                                <div className="badge-deleteIcon ml-2"
+                                <div
+                                  data-testid={`form-user-delete-icon-${e}`}
+                                  className="badge-deleteIcon ms-2"
                                   onClick={() => { removeClientUserGroup(e); }}>
                                   &times;
                                 </div>
@@ -477,6 +488,7 @@ if (reviewerSelectedOption === "Specific Reviewers") {
                                           key={key}
                                           as="button"
                                           onClick={() => addClientGroups(item)}
+                                          data-testid={`specific-user-option-${key}`}
                                         >
                                           {item.name}
                                         </ListGroup.Item>
@@ -492,8 +504,11 @@ if (reviewerSelectedOption === "Specific Reviewers") {
                               </Popover>
                             )}
                           >
-                            <Button id="addClient" className="btn btn-primary btn-small ">
-                            <i className="fa-solid fa-plus mr-2"></i>
+                        <Button
+                          data-testid="form-user-group-add-button"
+                          id="addClient"
+                          className="btn btn-primary btn-small mt-2">
+                            <i className="fa-solid fa-plus me-2"></i>
                               <Translation>{(t) => t("Add")}</Translation>
                             </Button>
                           </OverlayTrigger>
@@ -507,16 +522,16 @@ if (reviewerSelectedOption === "Specific Reviewers") {
                       <div>
                         <hr className="mt-3" />
                         <span
-                          className="font-weight-bold"
+                          className="fw-bold"
                           title={t("Permission for submission tracking.")}
                         >
                           {t("Reviewer permission to view submissions")}
-                          <i className="ml-1 fa fa-info-circle cursor-pointer text-primary" />
+                          <i className="ms-1 fa fa-info-circle cursor-pointer text-primary" />
                         </span>
                         <div>
-                          <label className="mr-4">
+                          <label className="me-4">
                             <input
-                              className="mr-1"
+                              className="me-1"
                               type="radio"
                               value="All Reviewers"
                               checked={
@@ -525,12 +540,13 @@ if (reviewerSelectedOption === "Specific Reviewers") {
                               onChange={(e) =>
                                 setReviewerSelectedOption(e.target.value)
                               }
+                              data-testid="form-view-submission-permission-all-reviewers"
                             />
                             {t("All Reviewers")}
                           </label>
-                          <label className="mr-4">
+                          <label className="me-4">
                             <input
-                              className="mr-1"
+                              className="me-1"
                               type="radio"
                               value="Specific Reviewers"
                               checked={
@@ -539,6 +555,7 @@ if (reviewerSelectedOption === "Specific Reviewers") {
                               onChange={(e) => {
                                 setReviewerSelectedOption(e.target.value);
                               }}
+                              data-testid="form-view-submission-permission-specific-reviewers"
                             />
                             {t("Specific Reviewers")}
                           </label>
@@ -547,9 +564,11 @@ if (reviewerSelectedOption === "Specific Reviewers") {
                           <div className="d-flex align-items-center flex-wrap">
                             {reviewerGroups?.map((e) => {
                               return (
-                                <Badge key={e} pill variant="outlined" className="d-flex align-items-center badge mr-2">
+                                <Badge key={e} pill variant="outlined" className="d-flex align-items-center badge me-2 mt-2">
                                   {e}
-                                  <div className="badge-deleteIcon ml-2"
+                                  <div
+                                    data-testid={`form-reviewer-delete-icon-${e}`}
+                                    className="badge-deleteIcon ms-2"
                                     onClick={() => { removeReviewerUserGroup(e); }}>
                                     &times;
                                   </div>
@@ -570,6 +589,7 @@ if (reviewerSelectedOption === "Specific Reviewers") {
                                             key={key}
                                             as="button"
                                             onClick={() => addReviewerGroups(item)}
+                                            data-testid={`form-specific-reviewer-option-${key}`}
                                           >
                                             {item.name}
                                           </ListGroup.Item>
@@ -585,8 +605,10 @@ if (reviewerSelectedOption === "Specific Reviewers") {
                                 </Popover>
                               )}
                             >
-                              <Button id="addReviewer" className="btn btn-primary  btn-small ">
-                              <i className="fa-solid fa-plus mr-2"></i>
+                          <Button data-testid="form-reviewer-group-add-button"
+                            id="addReviewer"
+                            className="btn btn-primary btn-small mt-2">
+                              <i className="fa-solid fa-plus me-2"></i>
                                 <Translation>{(t) => t("Add")}</Translation>
                               </Button>
                             </OverlayTrigger>
@@ -612,6 +634,7 @@ if (reviewerSelectedOption === "Specific Reviewers") {
                         comments: e.target.value,
                       })
                     }
+                    data-testid="form-comments"
                   />
                  
               </Card.Body>

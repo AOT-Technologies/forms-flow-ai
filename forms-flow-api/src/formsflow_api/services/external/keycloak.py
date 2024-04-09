@@ -1,4 +1,5 @@
 """This exposes the Keycloak Admin APIs."""
+
 import json
 
 import requests
@@ -42,7 +43,8 @@ class KeycloakAdminAPIService:
             }
         )
         self.base_url = (
-            f"{current_app.config.get('KEYCLOAK_URL')}/auth/admin/realms/"
+            f"{current_app.config.get('KEYCLOAK_URL')}{current_app.config.get('KEYCLOAK_URL_HTTP_RELATIVE_PATH')}"
+            f"/admin/realms/"
             f"{current_app.config.get('KEYCLOAK_URL_REALM')}"
         )
 
@@ -241,7 +243,7 @@ class KeycloakAdminAPIService:
     @profiletime
     def get_realm_users(self, search: str, page_no: int, limit: int):
         """Return list of users in the realm."""
-        url = f"users?first={(page_no-1)*limit}&max={limit}"
+        url = f"users?first={(page_no - 1) * limit}&max={limit}"
         if search:
             url += f"&search={search}"
         return self.get_request(url_path=url)

@@ -22,7 +22,7 @@ import { saveFormProcessMapperPost } from "../../../apiManager/services/processS
 import { toast } from "react-toastify";
 import { t } from "i18next";
 import { INACTIVE } from "../constants/formListConstants";
-import LoadingOverlay from "react-loading-overlay";
+import LoadingOverlay from "react-loading-overlay-ts";
 import FormHistoryModal from "./FormHistoryModal";
 import CreateTemplateConfirmModal from "./CreateTemplateConfirmModal";
 import { handleAuthorization } from "../../../apiManager/services/authorizationService";
@@ -139,7 +139,6 @@ const Preview = ({handleNext, hideComponents, activeStep}) => {
         setNewpublishClicked(false);
       });
   };
-
  
 
   const gotoEdit = () =>{
@@ -165,26 +164,29 @@ const Preview = ({handleNext, hideComponents, activeStep}) => {
             className="btn btn-primary"
             onClick={() => {
               gotoEdit();
-            }}
+          }}
+          data-testid="form-edit-button"
           >
             <i className="fa fa-pencil" aria-hidden="true" />
             &nbsp;&nbsp;<Translation>{(t) => t("Edit Form")}</Translation>
           </button>
           <button
-            className="btn btn-outline-secondary ml-md-2 my-md-0 my-2 "
+            className="btn btn-outline-secondary ms-md-2 my-md-0 my-2 "
             onClick={() => {
               handleModalChange();
             }}
+            data-testid="form-version-history-button"
           >
             <i className="fa fa-rotate-left  " aria-hidden="true" />
             &nbsp;&nbsp;<Translation>{(t) => t("Form History")}</Translation>
           </button>
           <button
-            className="btn btn-outline-primary ml-md-2 my-md-0 my-2"
+            className="btn btn-outline-primary ms-md-2 my-md-0 my-2"
             disabled={newpublishClicked}
             onClick={() => {
               publishConfirmModalChange();
             }}
+            data-testid="form-duplicate-button"
           >
             <i className="fa fa-clone" aria-hidden="true"></i>
             &nbsp;&nbsp;
@@ -192,7 +194,8 @@ const Preview = ({handleNext, hideComponents, activeStep}) => {
           </button>
           <button
             onClick={handleNext}
-            className="ml-md-2 my-md-0 my-2 btn btn-primary"
+            className="ms-md-2 my-md-0 my-2 btn btn-primary"
+            data-testid="form-next-button"
           >
             {
               (activeStep === 1,
@@ -221,7 +224,14 @@ const Preview = ({handleNext, hideComponents, activeStep}) => {
         <Form
           form={form}
           hideComponents={hideComponents}
-          options={{ readOnly:true, language: lang, i18n: formio_resourceBundles }}
+          options={{ disabled: { submit: true },
+          buttonSettings: {
+            showSubmit: false
+          },
+          disableAlerts: true,
+          noAlerts: true,
+          language: lang, i18n: formio_resourceBundles }}
+          
         />
       </LoadingOverlay>
     </div>

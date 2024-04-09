@@ -188,12 +188,12 @@ const Dashboard = React.memo(() => {
         name: "Metrics",
         count: totalItems,
         onClick: () => dispatch(push(`${redirectUrl}metrics`)),
-        icon: "line-chart mr-2",
+        icon: "line-chart me-2",
       },
       {
         name: "Insights",
         onClick: () => dispatch(push(`${redirectUrl}insights`)),
-        icon: "lightbulb-o mr-2",
+        icon: "lightbulb-o me-2",
       },
     ];
   };
@@ -217,52 +217,50 @@ const Dashboard = React.memo(() => {
           role="complementary"
         >
           <Head items={headerList()} page="Metrics" />
-          <div className="dashboard-container d-flex flex-wrap justify-content-between">
-            <div className="input-group col-12 col-md-4 px-0">
-              <FormControl
-                type="search"
-                title="Search"
-                ref={searchInputBox}
-                onKeyPress={(e) => e.key === "Enter" && handleSearch()}
-                onChange={(e) => {
-                  setShowClearButton(e.target.value);
-                  setSearchTextInput(e.target.value);
-                  e.target.value === "" && handleSearch();
-                }}
-                autoComplete="off"
-                value={searchTextInput}
-                placeholder={t("Search...")}
-                style={{ backgroundColor: "#ffff" }}
-              />
-              {showClearButton && (
-                <InputGroup.Append
-                  onClick={() => onClear()}
-                  style={{ cursor: "pointer" }}
-                >
-                  <InputGroup.Text style={{ backgroundColor: "#ffff" }}>
-                    <i className="fa fa-times"></i>
-                  </InputGroup.Text>
-                </InputGroup.Append>
-              )}
+          <div className="d-flex flex-wrap justify-content-between col-md-12">
+          <div className="custom-input-group col-12 col-md-4 px-0">
+      <InputGroup>
+        <FormControl
+          type="search"
+          title={t("Search")}
+          ref={searchInputBox}
+          onKeyPress={(e) => e.key === "Enter" && handleSearch()}
+          onChange={(e) => {
+            setShowClearButton(e.target.value);
+            setSearchTextInput(e.target.value);
+            e.target.value === "" && handleSearch();
+          }}
+          autoComplete="off"
+          value={searchTextInput}
+          placeholder={t("Search...")}
+          className="bg-white"
+        />
+        {showClearButton && (
+          <InputGroup.Append className="d-flex cursor-pointer"onClick={() => onClear()}>
+            <InputGroup.Text className= "bg-white rounded-0">
+              <i className="fa fa-times"></i>
+            </InputGroup.Text>
+          </InputGroup.Append>
+        )}
 
-              <InputGroup.Append
-                title={t("Click to search")}
-                onClick={() => handleSearch()}
-                style={{ cursor: "pointer" }}
-              >
-                <InputGroup.Text style={{ backgroundColor: "#ffff" }}>
-                  <i className="fa fa-search"></i>
-                </InputGroup.Text>
-              </InputGroup.Append>
-            </div>
+        <InputGroup.Append
+          title={t("Click to search")}
+          onClick={() => handleSearch()}
+          className="d-flex cursor-pointer"
+        >
+          <InputGroup.Text className= "bg-white rounded-start-0">
+            <i className="fa fa-search"></i>
+          </InputGroup.Text>
+        </InputGroup.Append>
+        </InputGroup>
+    </div>
 
             <div className="d-flex justify-content-end align-items-center col-12 col-md-4 px-0">
-              <div className="input-group mr-2">
+              <div className="input-group me-2">
                 <FormControl
                   as="select"
                   onChange={(e) => onChangeInput(e.target.value)}
-                  className="form-control"
-                  style={{ padding: ".375rem .3rem" }}
+                  className="form-select p-1"
                   title={t("Choose any")}
                   aria-label="Select date type"
                 >
@@ -270,7 +268,7 @@ const Dashboard = React.memo(() => {
                   <option value="modified">{t("Modified Date")}</option>
                 </FormControl>
               </div>
-              <DateRangePicker className = "bg-white mr-2"
+              <DateRangePicker className = "bg-white me-2"
                 onChange={onSetDateRange}
                 value={dateRange}
                 dayPlaceholder="dd"
@@ -284,39 +282,31 @@ const Dashboard = React.memo(() => {
                 yearAriaLabel="Select the year"
                 nativeInputAriaLabel="Date"
               />
-              <div className="ml-3">
+              <div className="ms-2">
                 {isAscending ? (
                   <i
-                    className="fa fa-sort-alpha-asc"
+                    className="fa fa-sort-alpha-asc dashboard-sort cursor-pointer"
                     onClick={() => {
                       handleSort("desc");
                     }}
                     data-toggle="tooltip"
                     title={t("Descending")}
-                    style={{
-                      cursor: "pointer",
-                      fontSize: "20px",
-                    }}
                   ></i>
                 ) : (
                   <i
-                    className="fa fa-sort-alpha-desc"
+                    className="fa fa-sort-alpha-desc dashboard-sort cursor-pointer"
                     onClick={() => {
                       handleSort("asc");
                     }}
                     data-toggle="tooltip"
                     title={t("Ascending")}
-                    style={{
-                      cursor: "pointer",
-                      fontSize: "20px",
-                    }}
                   ></i>
                 )}
               </div>
             </div>
           </div>
 
-          <div className="dashboard d-flex" style={{ minHeight: "60vh" }}>
+          <div className="dashboard dashboard-height d-flex">
             {submissionsList.length ? (
               <div className="col-12 px-0">
                 {!metricsDateRangeLoader && (
@@ -342,7 +332,7 @@ const Dashboard = React.memo(() => {
           {submissionsList.length && !metricsDateRangeLoader ? (
             <div className="d-flex justify-content-between align-items-center mt-3">
                  <div className="d-flex align-items-center">
-          <span className="mr-2"> {t("Items per page")}</span>
+          <span className="me-2"> {t("Items per page")}</span>
           <Dropdown>
                 <Dropdown.Toggle variant="light" id="dropdown-basic">
                   {selectedLimitValue}
@@ -363,7 +353,7 @@ const Dashboard = React.memo(() => {
                 ))}
                 </Dropdown.Menu>
               </Dropdown>
-              <span className="ml-2">
+              <span className="ms-2">
                   {t("Showing")} {numberofSubmissionListFrom} {t("to")}{" "}
                   {numberofSubmissionListTo > totalItems
                     ? totalItems
@@ -397,11 +387,12 @@ const Dashboard = React.memo(() => {
                 onHide={() => setShow(false)}
                 aria-labelledby="example-custom-modal-styling-title"
               >
-                <Modal.Header closeButton>
+                <Modal.Header>
                   <Modal.Title id="example-custom-modal-styling-title">
                     {t("Submission Status")}
                   </Modal.Title>
-                </Modal.Header>
+                  <button type="button" className="btn-close me-2" onClick={() => setShow(false)}></button>
+                  </Modal.Header>
                 <Modal.Body>
                   <StatusChart
                     submissionsStatusList={submissionsStatusList}

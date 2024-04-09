@@ -80,14 +80,14 @@ export default React.memo(() => {
   const headOptions = [
     {
       name: "BPMN",
-      icon: "fa-solid fa-gears mr-2",
+      icon: "fa-solid fa-gears me-2",
       onClick: () => {
         handleChnageTab("BPMN");
       },
     },
     {
       name: "DMN",
-      icon: "fa-solid fa-gears mr-2",
+      icon: "fa-solid fa-gears me-2",
       onClick: () => {
         handleChnageTab("DMN");
       },
@@ -97,31 +97,33 @@ export default React.memo(() => {
   return (
     <div>
       <div className="d-flex pb-2">
+      <button
+  onClick={handleCreateNew}
+  className="text-nowrap btn btn-primary"
+  
+>
+  <i className="fa fa-plus me-2" />
+  {isBpmnModel ? t("Create Workflow") : t("Create DMN")}
+</button>
+
         <button
-          onClick={handleCreateNew}
-          className="btn btn-primary"
-          style={{ whiteSpace: "nowrap" }}
-        >
-          <i className="fa fa-plus mr-2" />
-          {t("Create Workflow")}
-        </button>
-        <button
-          className="btn btn-outline-primary  ml-4"
-          onClick={uploadClick}
-          title={t("Upload Workflow")}
-          style={{ whiteSpace: "nowrap" }}
-        >
-          <i className="fa fa-upload mr-2" aria-hidden="true" />
-          {t("Upload Workflow")}
-        </button>
+  className="text-nowrap btn btn-outline-primary  ms-4"
+  onClick={uploadClick}
+  title={isBpmnModel ? t("Upload Workflow") : t("Upload DMN")}
+>
+  <i className="fa fa-upload me-2" aria-hidden="true" />
+  {isBpmnModel ? t("Upload Workflow") : t("Upload DMN")}
+</button>
+
         <input
           ref={uploadFormNode}
           id="inputWorkflow"
-          style={{ display: "none" }}
+          className="d-none"
           type="file"
           name="upload"
           accept=".bpmn, .dmn"
           onChange={(e) => handleChangeFile(e.target.files[0])}
+          title={t("Upload Workflow")}
         />
       </div>
 

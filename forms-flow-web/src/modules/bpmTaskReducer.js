@@ -39,7 +39,8 @@ const initialState = {
   viewType:true,
   error: '',
   filtersAndCount:[],
-  vissibleAttributes : {},
+  vissibleAttributes: {},
+  allTaskVariablesExpand:false
 };
 
 const bpmTasks = (state = initialState, action) => {
@@ -71,7 +72,7 @@ const bpmTasks = (state = initialState, action) => {
     case ACTION_CONSTANTS.IS_BPM_FILTERS_LOADING:
       return { ...state, isFilterLoading: action.payload };
     case ACTION_CONSTANTS.BPM_SELECTED_FILTER:
-      return { ...state, selectedFilter: action.payload };
+      return { ...state, selectedFilter: action.payload,filterListSearchParams:{} };
     case ACTION_CONSTANTS.SELECTED_TASK_ID:
       return { ...state, taskId: action.payload, taskDetail: null };
     case ACTION_CONSTANTS.IS_TASK_GROUP_LOADING:
@@ -150,7 +151,9 @@ const bpmTasks = (state = initialState, action) => {
     case ACTION_CONSTANTS.BPM_FILTERS_AND_COUNT:
         return { ...state, filtersAndCount: action.payload };
     case ACTION_CONSTANTS.BPM_VISSIBLE_ATTRIBUTES:
-        return { ...state, vissibleAttributes: action.payload };
+      return { ...state, vissibleAttributes: action.payload };
+    case ACTION_CONSTANTS.IS_ALL_TASKVARIABLES_EXPAND:
+      return { ...state, allTaskVariablesExpand: action.payload };
     default:
       return state;
   }

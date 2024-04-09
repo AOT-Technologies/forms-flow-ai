@@ -10,7 +10,7 @@ import {
 import {
   setInsightDetailLoader,
 } from "../../actions/insightActions";
-import LoadingOverlay from "react-loading-overlay";
+import LoadingOverlay from "react-loading-overlay-ts";
 import Loading from "../../containers/Loading";
 import { useTranslation, Translation } from "react-i18next";
 import { BASE_ROUTE, MULTITENANCY_ENABLED } from "../../constants/constants";
@@ -69,12 +69,12 @@ const Insights = React.memo((props) => {
         name: "Metrics",
         count: totalItems,
         onClick: () => dispatch(push(`${redirectUrl}metrics`)),
-        icon: "line-chart mr-2",
+        icon: "line-chart me-2",
       },
       {
         name: "Insights",
         onClick: () => dispatch(push(`${redirectUrl}insights`)),
-        icon: "lightbulb-o mr-2",
+        icon: "lightbulb-o me-2",
       },
     ];
   };
@@ -95,7 +95,7 @@ const Insights = React.memo((props) => {
       <div className="mb-2">
 
 
-        <Head items={headerList()} page="Insights"/>
+        <Head items={headerList()} page="Insights" />
 
 
         <div className="d-flex align-items-center flex-md-row flex-colum justify-content-between mt-3"
@@ -103,7 +103,7 @@ const Insights = React.memo((props) => {
           role="main"
         >
           <h3 className="insight-title" data-testid="Dashboard">
-            <i className="fa fa-bars mr-2" />{" "}
+            <i className="fa fa-bars me-2" />{" "}
             <Translation>{(t) => t("Dashboard")}</Translation>
           </h3>
 
@@ -139,24 +139,13 @@ const Insights = React.memo((props) => {
 
             {activeDashboard.public_url ? (
               <iframe
+                height="436"
                 title="dashboard"
-                style={{
-                  width: "100%",
-                  height: "auto",
-                  overflow: "visible",
-                  border: "none",
-                  minHeight: "60vh",
-                }}
+                className="w-100 min-vh-60 overflow-visible border-none"
                 src={activeDashboard.public_url}
               />
             ) : !isDashboardDetailUpdated ? (
-              <div
-                style={{
-                  position:'absolute',
-                  left: '52%',
-                  marginTop: '400px',
-                  transform: 'translate(-50%, -90%)',
-                }}>
+              <div className="position-absolute no-dashboard-detail">
                 <Loading />
               </div>
             ) : (

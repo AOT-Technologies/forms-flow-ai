@@ -23,7 +23,7 @@ services:
 
   forms-flow-forms:
     container_name: forms-flow-forms
-    image: formsflow/forms-flow-forms:v5.3.0
+    image: formsflow/forms-flow-forms:v6.0.0
 
     # The app will restart until Mongo is listening
     restart: always
@@ -77,6 +77,7 @@ services:
       - KEYCLOAK_URL_REALM=${KEYCLOAK_URL_REALM:-forms-flow-ai}
       - KEYCLOAK_CLIENTID=${KEYCLOAK_BPM_CLIENT_ID:-forms-flow-bpm}
       - KEYCLOAK_CLIENTSECRET=${KEYCLOAK_BPM_CLIENT_SECRET:-e4bdbd25-1467-4f7f-b993-bc4b1944c943}
+      - KEYCLOAK_URL_HTTP_RELATIVE_PATH=${KEYCLOAK_URL_HTTP_RELATIVE_PATH:-/auth}
       - CAMUNDA_JDBC_URL=${CAMUNDA_JDBC_URL:-jdbc:postgresql://forms-flow-bpm-db:5432/formsflow-bpm}
       - CAMUNDA_JDBC_USER=${CAMUNDA_JDBC_USER:-admin}
       - CAMUNDA_JDBC_PASSWORD=${CAMUNDA_JDBC_PASSWORD:-changeme}
@@ -131,11 +132,11 @@ services:
       context: ./../../forms-flow-web-root-config/
       dockerfile: Dockerfile
       args:
-        - MF_FORMSFLOW_WEB_URL=${MF_FORMSFLOW_WEB_URL:-https://forms-flow-microfrontends.aot-technologies.com/forms-flow-web@v5.3.1/forms-flow-web.gz.js}
-        - MF_FORMSFLOW_NAV_URL=${MF_FORMSFLOW_NAV_URL:-https://forms-flow-microfrontends.aot-technologies.com/forms-flow-nav@v5.3.1/forms-flow-nav.gz.js}
-        - MF_FORMSFLOW_SERVICE_URL=${MF_FORMSFLOW_SERVICE_URL:-https://forms-flow-microfrontends.aot-technologies.com/forms-flow-service@v5.3.1/forms-flow-service.gz.js}
-        - MF_FORMSFLOW_ADMIN_URL=${MF_FORMSFLOW_ADMIN_URL:-https://forms-flow-microfrontends.aot-technologies.com/forms-flow-admin@v5.3.1/forms-flow-admin.gz.js}
-        - MF_FORMSFLOW_THEME_URL=${MF_FORMSFLOW_THEME_URL:-https://forms-flow-microfrontends.aot-technologies.com/forms-flow-theme@v5.3.1/forms-flow-theme.gz.js}
+        - MF_FORMSFLOW_WEB_URL=${MF_FORMSFLOW_WEB_URL:-https://forms-flow-microfrontends.aot-technologies.com/forms-flow-web@v6.0.0/forms-flow-web.gz.js}
+        - MF_FORMSFLOW_NAV_URL=${MF_FORMSFLOW_NAV_URL:-https://forms-flow-microfrontends.aot-technologies.com/forms-flow-nav@v6.0.0/forms-flow-nav.gz.js}
+        - MF_FORMSFLOW_SERVICE_URL=${MF_FORMSFLOW_SERVICE_URL:-https://forms-flow-microfrontends.aot-technologies.com/forms-flow-service@v6.0.0/forms-flow-service.gz.js}
+        - MF_FORMSFLOW_ADMIN_URL=${MF_FORMSFLOW_ADMIN_URL:-https://forms-flow-microfrontends.aot-technologies.com/forms-flow-admin@v6.0.0/forms-flow-admin.gz.js}
+        - MF_FORMSFLOW_THEME_URL=${MF_FORMSFLOW_THEME_URL:-https://forms-flow-microfrontends.aot-technologies.com/forms-flow-theme@v6.0.0/forms-flow-theme.gz.js}
         - NODE_ENV=${NODE_ENV:-production}
     entrypoint: /bin/sh -c "/usr/share/nginx/html/config/env.sh && nginx -g 'daemon off;'"
     environment:
@@ -171,6 +172,7 @@ services:
       - REACT_APP_ENABLE_APPLICATIONS_MODULE=${ENABLE_APPLICATIONS_MODULE:-true}
       - REACT_APP_DATE_FORMAT=${DATE_FORMAT:-DD-MM-YY}
       - REACT_APP_TIME_FORMAT=${TIME_FORMAT:-hh:mm:ss A}
+      - REACT_APP_KEYCLOAK_URL_HTTP_RELATIVE_PATH=${KEYCLOAK_URL_HTTP_RELATIVE_PATH}
     ports:
       - '3000:8080'
     tty: true
@@ -193,6 +195,13 @@ services:
     networks:
       - forms-flow-network
 
+  redis:
+    image: "redis:alpine"
+    ports:
+      - "6379:6379"
+    networks:
+      - forms-flow-network
+
   forms-flow-webapi:
     container_name: forms-flow-webapi
     build:
@@ -202,6 +211,7 @@ services:
     depends_on :
       - forms-flow-webapi-db
       - forms-flow-forms
+      - redis
     entrypoint: "/wait-for-service.sh forms-flow-webapi-db:5432 -s -- ./entrypoint.sh"
     ports:
       - '5000:5000'
@@ -211,15 +221,15 @@ services:
       INSIGHT_API_KEY: ${INSIGHT_API_KEY}
       INSIGHT_API_URL: ${INSIGHT_API_URL}
       DATABASE_URL: ${FORMSFLOW_API_DB_URL:-postgresql://postgres:changeme@forms-flow-webapi-db:5432/webapi}
-      BPM_TOKEN_API: ${KEYCLOAK_URL}/auth/realms/${KEYCLOAK_URL_REALM:-forms-flow-ai}/protocol/openid-connect/token
+      BPM_TOKEN_API: ${KEYCLOAK_URL}${KEYCLOAK_URL_HTTP_RELATIVE_PATH:-/auth}/realms/${KEYCLOAK_URL_REALM:-forms-flow-ai}/protocol/openid-connect/token
       BPM_CLIENT_ID: ${KEYCLOAK_BPM_CLIENT_ID:-forms-flow-bpm}
       BPM_CLIENT_SECRET: ${KEYCLOAK_BPM_CLIENT_SECRET:-e4bdbd25-1467-4f7f-b993-bc4b1944c943}
       BPM_API_URL: ${BPM_API_URL}
       FORMSFLOW_API_CORS_ORIGINS: ${FORMSFLOW_API_CORS_ORIGINS:-*}
-      JWT_OIDC_WELL_KNOWN_CONFIG: ${KEYCLOAK_URL}/auth/realms/${KEYCLOAK_URL_REALM:-forms-flow-ai}/.well-known/openid-configuration
+      JWT_OIDC_WELL_KNOWN_CONFIG: ${KEYCLOAK_URL}${KEYCLOAK_URL_HTTP_RELATIVE_PATH:-/auth}/realms/${KEYCLOAK_URL_REALM:-forms-flow-ai}/.well-known/openid-configuration
       JWT_OIDC_ALGORITHMS: 'RS256'
-      JWT_OIDC_JWKS_URI: ${KEYCLOAK_URL}/auth/realms/${KEYCLOAK_URL_REALM:-forms-flow-ai}/protocol/openid-connect/certs
-      JWT_OIDC_ISSUER: ${KEYCLOAK_URL}/auth/realms/${KEYCLOAK_URL_REALM:-forms-flow-ai}
+      JWT_OIDC_JWKS_URI: ${KEYCLOAK_URL}${KEYCLOAK_URL_HTTP_RELATIVE_PATH:-/auth}/realms/${KEYCLOAK_URL_REALM:-forms-flow-ai}/protocol/openid-connect/certs
+      JWT_OIDC_ISSUER: ${KEYCLOAK_URL}${KEYCLOAK_URL_HTTP_RELATIVE_PATH:-/auth}/realms/${KEYCLOAK_URL_REALM:-forms-flow-ai}
       JWT_OIDC_AUDIENCE: ${KEYCLOAK_WEB_CLIENT_ID:-forms-flow-web}
       JWT_OIDC_CACHING_ENABLED: 'True'
       JWT_OIDC_JWKS_CACHE_TIMEOUT: 300
@@ -236,6 +246,7 @@ services:
       API_LOG_ROTATION_WHEN: ${API_LOG_ROTATION_WHEN:-d}
       API_LOG_ROTATION_INTERVAL: ${API_LOG_ROTATION_INTERVAL:-1}
       API_LOG_BACKUP_COUNT: ${API_LOG_BACKUP_COUNT:-7}
+      REDIS_URL: ${REDIS_URL:-redis://redis:6379/0}
 
     stdin_open: true # -i
     tty: true # -t
@@ -255,9 +266,9 @@ services:
     environment:
       DATABASE_URL: ${FORMSFLOW_API_DB_URL:-postgresql://postgres:changeme@forms-flow-webapi-db:5432/webapi}
       FORMSFLOW_API_CORS_ORIGINS: ${FORMSFLOW_API_CORS_ORIGINS:-*}
-      JWT_OIDC_WELL_KNOWN_CONFIG: ${KEYCLOAK_URL}/auth/realms/${KEYCLOAK_URL_REALM:-forms-flow-ai}/.well-known/openid-configuration
-      JWT_OIDC_JWKS_URI: ${KEYCLOAK_URL}/auth/realms/${KEYCLOAK_URL_REALM:-forms-flow-ai}/protocol/openid-connect/certs
-      JWT_OIDC_ISSUER: ${KEYCLOAK_URL}/auth/realms/${KEYCLOAK_URL_REALM:-forms-flow-ai}
+      JWT_OIDC_WELL_KNOWN_CONFIG: ${KEYCLOAK_URL}${KEYCLOAK_URL_HTTP_RELATIVE_PATH:-/auth}/realms/${KEYCLOAK_URL_REALM:-forms-flow-ai}/.well-known/openid-configuration
+      JWT_OIDC_JWKS_URI: ${KEYCLOAK_URL}${KEYCLOAK_URL_HTTP_RELATIVE_PATH:-/auth}/realms/${KEYCLOAK_URL_REALM:-forms-flow-ai}/protocol/openid-connect/certs
+      JWT_OIDC_ISSUER: ${KEYCLOAK_URL}${KEYCLOAK_URL_HTTP_RELATIVE_PATH:-/auth}/realms/${KEYCLOAK_URL_REALM:-forms-flow-ai}
       JWT_OIDC_AUDIENCE: ${KEYCLOAK_WEB_CLIENT_ID:-forms-flow-web}
       JWT_OIDC_CACHING_ENABLED: 'True'
       KEYCLOAK_URL: ${KEYCLOAK_URL}
@@ -276,6 +287,7 @@ services:
       API_LOG_ROTATION_WHEN: ${API_LOG_ROTATION_WHEN:-d}
       API_LOG_ROTATION_INTERVAL: ${API_LOG_ROTATION_INTERVAL:-1}
       API_LOG_BACKUP_COUNT: ${API_LOG_BACKUP_COUNT:-7}
+      REDIS_URL: ${REDIS_URL:-redis://redis:6379/0}
 
     stdin_open: true # -i
     tty: true # -t

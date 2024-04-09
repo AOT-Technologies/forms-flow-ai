@@ -1,6 +1,5 @@
 import React, { useCallback, useEffect, useState } from "react";
-import { Tab, Tabs } from "react-bootstrap";
-import TaskHeader from "./TaskHeader";
+import { Card, Col, Row, Tab, Tabs } from "react-bootstrap";
 import {
   reloadTaskFormSubmission,
   setBPMTaskDetailLoader,
@@ -23,7 +22,7 @@ import {
 import History from "../../Application/ApplicationHistory";
 import FormEdit from "../../Form/Item/Submission/Item/Edit";
 import FormView from "../../Form/Item/Submission/Item/View";
-import LoadingOverlay from "react-loading-overlay";
+import LoadingOverlay from "react-loading-overlay-ts";
 import { getForm, getSubmission, Formio, resetSubmission } from "react-formio";
 import { CUSTOM_EVENT_TYPE } from "../constants/customEventTypes";
 import { getTaskSubmitFormReq } from "../../../apiManager/services/bpmServices";
@@ -45,6 +44,7 @@ import  NoTaskSelectedMessage  from "../../../components/ServiceFlow/NoTaskSelec
 
 import { bpmActionError } from "../../../actions/bpmTaskActions";
 import { setCustomSubmission } from "../../../actions/checkListActions";
+import TaskHeaderListView from "./TaskHeaderListView";
 const ServiceFlowTaskDetails = React.memo(() => {
   const { t } = useTranslation();
   const { taskId } = useParams();
@@ -265,11 +265,41 @@ const ServiceFlowTaskDetails = React.memo(() => {
     return (
       <div className="service-task-details">
         <LoadingOverlay active={isTaskUpdating} spinner text={t("Loading...")}>
-          <TaskHeader />
+        <Card className="me-2 bg-light">
+                        <Card.Body>
+                            <div className="d-flex justify-content-between">
+                            <Col >
+                                    <Row className="ms-0 task-header">{task?.name}</Row>
+                                    <Row className="ms-0 fs-5 fw-normal">
+                                        <span className="application-id" title={t("Workflow")}>
+                                            {" "}
+                                            {
+                                                getProcessDataObjectFromList(processList,
+                                                    task?.processDefinitionId)
+                                                    ?.name
+                                            }
+                                        </span>
+                                    </Row>
+                                    <Row className="ms-0">
+                                        <span title={t("Submission Id")} className="application-id">
+                                            {t("Submission Id")}# {task?.applicationId}
+                                        </span>
+                                    </Row>
+                                    <Row className="ms-0 mt-3">
+                                    <TaskHeaderListView
+                                        task={task} taskId={task?.id} groupView={true}
+                                    />
+                                    </Row>
+                                </Col>
+                           </div>
+                        </Card.Body>
+                    </Card>   
           <Tabs defaultActiveKey="form" id="service-task-details" mountOnEnter>
+          
             <Tab eventKey="form" title={t("Form")}>
               <LoadingOverlay
                 active={task?.assignee !== currentUser}
+                spinner={false}
                 styles={{
                   overlay: (base) => ({
                     ...base,

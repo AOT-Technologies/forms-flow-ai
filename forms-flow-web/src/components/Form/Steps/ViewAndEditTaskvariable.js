@@ -1,91 +1,104 @@
 import React, { useState } from "react";
-import Form from "react-bootstrap/Form";
-import Button from "react-bootstrap/Button";
+import { useTranslation } from "react-i18next";
 const ViewAndEditTaskvariable = ({
-  item,
-  // eslint-disable-next-line no-unused-vars
-  index,
-  deleteTaskVariable,
-  editTaskVariable,
+  variable,
+  selectVariable,
+  editVariable,
 }) => {
-  const [taskLabel, setTaskLabel] = useState(item.label);
-  const [showInList, setShowInList] = useState(item.showInList);
-  const [enableEditTaskVariable, setEnableEditTaskVariable] = useState(true);
-
-  const saveData = (taskVariable) => {
-    setEnableEditTaskVariable(true);
+  const { t } = useTranslation();
+  const [taskLabel, setTaskLabel] = useState(variable.label || "");
+  const [enableEditTaskVariable, setEnableEditTaskVariable] = useState(false);
+  const saveData = () => {
     const data = {
-      key: taskVariable.key,
-      defaultLabel: taskVariable.defaultLabel,
+      key: variable.key,
       label: taskLabel,
-      showInList,
     };
-    editTaskVariable(data);
+    editVariable(data);
+    setEnableEditTaskVariable(false);
   };
+
+  const handleSelectTaskVariable = () => {
+    selectVariable(variable.key);
+  };
+
+  const cancelEdit = (label) =>{
+    setTaskLabel(label);
+    setEnableEditTaskVariable(false);
+  };
+
   return (
     <>
-      <tr> 
-        <td className="p-3">
-          <input
-            type="text"
-            disabled
-            value={item.key}
-            className="form-control"
-            title="Select form field"
-          />
+      <tr>
+        <td className="py-3">
+          <div className="d-flex justify-content-between align-items-center">
+            <div className="form-check me-2">
+              <input
+                className="form-check-input  cursor-pointer border-dark"
+                type="checkbox"
+                title={t("Select")}
+                checked={variable.checked ? true : false}
+                onChange={handleSelectTaskVariable}
+                data-testid={`select-task-variable-${variable.key}`}
+              />
+            </div>
+            <input
+              type="text"
+              disabled
+              value={variable.key}
+              className="form-control"
+              title={t("Select form field")}
+            />
+          </div>
         </td>
-        <td className="p-3">
+        <td className="py-3">
           <input
             type="text"
-            disabled={enableEditTaskVariable}
+            disabled={!enableEditTaskVariable}
             value={taskLabel}
             onChange={(e) => {
               setTaskLabel(e.target.value);
             }}
             className="form-control"
-            aria-labelledby="Task label"
+            aria-label="Task Label"
+            data-testid="form-task-variable-edit-input"
+            title={t("Add task label")}
           />
         </td>
-        <td className="p-3">
-          <Form.Check
-            className="" 
-            disabled={enableEditTaskVariable}
-            checked={showInList}
-            onChange={() => {
-              setShowInList(!showInList);
-            }}
-            type="checkbox"
-          />
-        </td>
-        <td className="text-right p-3" >
-          {!enableEditTaskVariable ? (
-            <Button
-              variant="outline-primary"
-              size="sm"
+
+        <td className="text-right py-3">
+          {enableEditTaskVariable ? (
+           <div className="d-flex align-items-center">
+             <button
+              disabled={!taskLabel?.trim()}
+              className="btn btn-sm btn-primary me-2"
+              onClick={saveData}
+              aria-label="Save"
+              type="button"
+              data-testid="form-task-variable-edit-save-button"
+            >
+              {t("Save")}
+            </button>
+            <button
+              className="btn btn-sm btn-link text-dark"
+              onClick={()=>{cancelEdit(variable.label);}}
+              aria-label="Save"
+              type="button"
+              data-testid="form-task-variable-edit-save-button"
+            >
+               {t("Cancel")}
+            </button>
+           </div>
+          ) : (
+            <button
+              className="btn btn-primary btn-sm"
+              type="button"
+              data-testid="form-task-variable-edit-button"
               onClick={() => {
-                saveData(item);
+                setEnableEditTaskVariable(true);
               }}
             >
-              <i className="fa fa-check"></i> Save
-            </Button>
-          ) : (
-            <div>
-              <i
-                role="button"
-                onClick={() => {
-                  deleteTaskVariable(item);
-                }}
-                className="mr-3 btn btn-danger btn fa fa-times"
-              ></i>
-
-              <i
-                role="button"
-                onClick={() => {
-                  setEnableEditTaskVariable(false);
-                }}
-                className="btn btn-primary fa fa-edit"
-              ></i>
-            </div>
+              {t("Edit Label")}<i aria-label="Edit" className="fa fa-edit ms-2"></i>
+            </button>
           )}
         </td>
       </tr>

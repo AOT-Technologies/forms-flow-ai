@@ -1,4 +1,7 @@
 """Test suite for 'draft' namespace API endpoints."""
+import os
+
+import requests
 from formsflow_api_utils.utils import (
     ANONYMOUS_USER,
     DRAFT_APPLICATION_STATUS,
@@ -13,6 +16,7 @@ from tests.utilities.base_test import (
     get_draft_create_payload,
     get_form_model_object,
     get_form_request_payload,
+    get_formio_form_request_payload,
     get_token,
 )
 
@@ -241,3 +245,66 @@ def test_delete_draft(app, client, session, jwt):
     headers = {"Authorization": f"Bearer {token}", "content-type": "application/json"}
     rv = client.delete(f"/draft/{draft_id}", headers=headers)
     assert rv.status_code == 400
+
+
+def test_capture_process_variables_draft_create_method(
+    app, client, session, jwt, mock_redis_client
+):
+    """Tests the capturing of process variables in the draft create method."""
+    token = get_token(jwt, role="formsflow-designer", username="designer")
+    headers = {
+        "Authorization": f"Bearer {token}",
+        "content-type": "application/json",
+    }
+    # Design form
+    response = client.post(
+        "/form/form-design", headers=headers, json=get_formio_form_request_payload()
+    )
+    assert response.status_code == 201
+    form_id = response.json.get("_id")
+    # Added task variable to the form
+    payload = {
+        "formId": form_id,
+        "formName": "Sample form",
+        "processKey": "two-step-approval",
+        "processName": "Two Step Approval",
+        "status": "active",
+        "formType": "form",
+        "parentFormId": "1234",
+        "taskVariable": [
+            {
+                "key": "textField",
+                "defaultLabel": "Text Field",
+                "label": "Text Field",
+            }
+        ],
+    }
+    rv = client.post("/form", headers=headers, json=payload)
+    assert rv.status_code == 201
+    form_id = rv.json.get("formId")
+    # Draft submission
+    token = get_token(jwt)
+    headers = {
+        "Authorization": f"Bearer {token}",
+        "content-type": "application/json",
+    }
+    draft = client.post(
+        "/draft", headers=headers, json=get_draft_create_payload(form_id)
+    )
+    assert draft.status_code == 201
+    draft_id = draft.json.get("id")
+    payload = get_application_create_payload()
+    payload["data"] = {
+        "textField": "Test",
+        "applicationId": "",
+        "applicationStatus": "",
+    }
+    response = client.put(f"/draft/{draft_id}/submit", headers=headers, json=payload)
+    processInstanceId = response.json.get("processInstanceId")
+    assert processInstanceId is not None
+    # Check variable added to process
+    bpm_api_base = os.getenv("BPM_API_URL")
+    url = f"{bpm_api_base}/engine-rest-ext/v1/process-instance/{processInstanceId}/variables"
+    response = requests.get(url, headers=headers)
+    assert response.status_code == 200
+    assert response.json().get("textField") == {"type": "String", "value": "Test"}

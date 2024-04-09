@@ -11,7 +11,7 @@ import {
 import { push } from "connected-react-router";
 import Loading from "../../../../../containers/Loading";
 import { setFormSubmissionLoading } from "../../../../../actions/formActions";
-import LoadingOverlay from "react-loading-overlay";
+import LoadingOverlay from "react-loading-overlay-ts";
 import { useTranslation } from "react-i18next";
 import { formio_resourceBundles } from "../../../../../resourceBundles/formio_resourceBundles";
 import {
@@ -53,7 +53,7 @@ const View = React.memo((props) => {
 
   return (
     <div className="container row task-container bg-white p-2 m-0">
-      <div className="main-header" style={{ "height": "45px" }}>
+      <div className="d-flex py-2 form-title">
         <h3 className="task-head text-truncate"> {form.title}</h3>
         {showPrintButton && form?._id ? (
           <div className="btn-right d-flex flex-row">

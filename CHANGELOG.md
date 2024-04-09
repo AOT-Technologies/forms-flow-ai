@@ -10,7 +10,8 @@ Mark  items as `Added`, `Changed`, `Fixed`, `Modified`, `Removed`, `Untested Fea
 
 * Added user search by role for Admin
 * Incorporate a user across multiple tenants
-* Added form into task filter
+* Implemented functionality to generate filters based on form
+
 
 **forms-flow-bpm**
 

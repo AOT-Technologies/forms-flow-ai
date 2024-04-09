@@ -46,7 +46,7 @@ const ViewAndEditTaskvariable = ({
               disabled
               value={variable.key}
               className="form-control"
-              title="Select form field"
+              title={t("Select form field")}
             />
           </div>
         </td>
@@ -61,6 +61,7 @@ const ViewAndEditTaskvariable = ({
             className="form-control"
             aria-label="Task Label"
             data-testid="form-task-variable-edit-input"
+            title={t("Add task label")}
           />
         </td>
 

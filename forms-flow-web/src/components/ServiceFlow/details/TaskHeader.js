@@ -23,7 +23,7 @@ import {
 import { setBPMTaskDetailUpdating } from "../../../actions/bpmTaskActions";
 //import UserSelection from "./UserSelection";
 import UserSelectionDebounce from "./UserSelectionDebounce";
-import SocketIOService from "../../../services/SocketIOService";
+//import SocketIOService from "../../../services/SocketIOService";
 import { useTranslation } from "react-i18next";
 
 const TaskHeader = React.memo(() => {

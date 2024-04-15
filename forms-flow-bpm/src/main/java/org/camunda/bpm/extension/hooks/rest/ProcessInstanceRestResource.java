@@ -30,4 +30,11 @@ public interface ProcessInstanceRestResource extends RestResource {
     @Produces(MediaType.APPLICATION_JSON)
     Map<String, VariableValueDto> getVariables(@QueryParam(DESERIALIZE_VALUE_QUERY_PARAM) @DefaultValue("true") boolean deserializeValues, @PathParam("id") String id);
 
+    @GET
+    @Path("/{id}/variables/{variableName}")
+    @Produces(MediaType.APPLICATION_JSON)
+    VariableValueDto getVariable(
+                    @PathParam("variableName") String variableName,
+                    @QueryParam(DESERIALIZE_VALUE_QUERY_PARAM) @DefaultValue("true") boolean deserializeValue,
+                    @PathParam("id") String id);
 }

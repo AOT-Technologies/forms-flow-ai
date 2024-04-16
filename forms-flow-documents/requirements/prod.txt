@@ -17,4 +17,4 @@ PyJWT
 selenium
 selenium-wire
 nested-lookup
-git+https://github.com/AOT-Technologies/forms-flow-ai.git@ignore-logs#egg=formsflow_api_utils&subdirectory=forms-flow-api-utils
+git+https://github.com/AOT-Technologies/forms-flow-ai.git@release/5.3.1#egg=formsflow_api_utils&subdirectory=forms-flow-api-utils

@@ -23,7 +23,7 @@ import {
 import { setBPMTaskDetailUpdating } from "../../../actions/bpmTaskActions";
 //import UserSelection from "./UserSelection";
 import UserSelectionDebounce from "./UserSelectionDebounce";
-import SocketIOService from "../../../services/SocketIOService";
+//import SocketIOService from "../../../services/SocketIOService";
 import { useTranslation } from "react-i18next";
 
 const TaskHeader = React.memo(() => {
@@ -56,31 +56,28 @@ const TaskHeader = React.memo(() => {
   const onClaim = () => {
     dispatch(setBPMTaskDetailUpdating(true));
     dispatch(
-      // eslint-disable-next-line no-unused-vars
-      claimBPMTask(taskId, username, (err, response) => {
-        if (!err) {
-          if (!SocketIOService.isConnected()) {
-            if (selectedFilter) {
+        // eslint-disable-next-line no-unused-vars
+          claimBPMTask(taskId, username, (err, response) => {
+            if (!err) {
+              /* '!SocketIOService.isConnected' commented out in all blocks below as when socket is connected, details are not sent as expected.
+              To be uncommented and used later when product team has released the fix for this issue  */
+              //if (!SocketIOService.isConnected()) {
               dispatch(getBPMTaskDetail(taskId));
-              dispatch(
-                fetchServiceTaskList(selectedFilter.id, firstResult, reqData)
-              );
             } else {
               dispatch(setBPMTaskDetailUpdating(false));
             }
-          }
-          if(selectedFilter){
-            dispatch(
-              fetchServiceTaskList(selectedFilter.id, firstResult, reqData)
-            );
-          }
-           
-        } else {
-          dispatch(setBPMTaskDetailUpdating(false));
-        }
-      })
-    );
+
+            if (selectedFilter) {
+              dispatch(
+                fetchServiceTaskList(selectedFilter.id, firstResult, reqData)
+              );
+              //}
+            } else {
+              dispatch(setBPMTaskDetailUpdating(false));
+            }
+      }));
   };
+
   const onChangeClaim = (userId) => {
     setIsEditAssignee(false);
     if (userId && userId !== task.assignee) {
@@ -89,22 +86,23 @@ const TaskHeader = React.memo(() => {
         // eslint-disable-next-line no-unused-vars
         updateAssigneeBPMTask(taskId, userId, (err, response) => {
           if (!err) {
-            if (!SocketIOService.isConnected()) {
-              if (selectedFilter) {
-                dispatch(getBPMTaskDetail(taskId));
-              }
-            }
-            if(selectedFilter){
-              dispatch(
-                fetchServiceTaskList(selectedFilter.id, firstResult, reqData)
-              );
-            }
-           
+            //if (!SocketIOService.isConnected()) {
+            //if (selectedFilter) {
+            dispatch(getBPMTaskDetail(taskId));
           } else {
             dispatch(setBPMTaskDetailUpdating(false));
           }
-        })
-      );
+
+          if (selectedFilter) {
+            dispatch(
+              fetchServiceTaskList(selectedFilter.id, firstResult, reqData)
+            );
+            //}
+
+          } else {
+            dispatch(setBPMTaskDetailUpdating(false));
+          }
+        }));
     }
   };
 
@@ -114,22 +112,23 @@ const TaskHeader = React.memo(() => {
       // eslint-disable-next-line no-unused-vars
       unClaimBPMTask(taskId, (err, response) => {
         if (!err) {
-          if (!SocketIOService.isConnected()) {
-            if (selectedFilter) {
-              dispatch(getBPMTaskDetail(taskId));
-            }
-          }
-          if(selectedFilter){
-            dispatch(
-              fetchServiceTaskList(selectedFilter.id, firstResult, reqData)
-            );
-          }
-          
+          //if (!SocketIOService.isConnected()) {
+          //if (selectedFilter) {
+          dispatch(getBPMTaskDetail(taskId));
         } else {
           dispatch(setBPMTaskDetailUpdating(false));
         }
-      })
-    );
+
+        if (selectedFilter) {
+          dispatch(
+            fetchServiceTaskList(selectedFilter.id, firstResult, reqData)
+          );
+          //}
+
+        } else {
+          dispatch(setBPMTaskDetailUpdating(false));
+        }
+      }));
   };
 
   const onFollowUpDateUpdate = (followUpDate) => {
@@ -143,12 +142,12 @@ const TaskHeader = React.memo(() => {
       // eslint-disable-next-line no-unused-vars
       updateBPMTask(taskId, updatedTask, (err, response) => {
         if (!err) {
-          if (!SocketIOService.isConnected()) {
-            dispatch(getBPMTaskDetail(taskId));
-            dispatch(
-              fetchServiceTaskList(selectedFilter.id, firstResult, reqData)
-            );
-          }
+          //if (!SocketIOService.isConnected()) {
+          dispatch(getBPMTaskDetail(taskId));
+          dispatch(
+            fetchServiceTaskList(selectedFilter.id, firstResult, reqData)
+          );
+          //}
         } else {
           dispatch(setBPMTaskDetailUpdating(false));
         }
@@ -167,12 +166,12 @@ const TaskHeader = React.memo(() => {
       // eslint-disable-next-line no-unused-vars
       updateBPMTask(taskId, updatedTask, (err, response) => {
         if (!err) {
-          if (!SocketIOService.isConnected()) {
-            dispatch(getBPMTaskDetail(taskId));
-            dispatch(
-              fetchServiceTaskList(selectedFilter.id, firstResult, reqData)
-            );
-          }
+          //if (!SocketIOService.isConnected()) {
+          dispatch(getBPMTaskDetail(taskId));
+          dispatch(
+            fetchServiceTaskList(selectedFilter.id, firstResult, reqData)
+          );
+          //}
         } else {
           dispatch(setBPMTaskDetailUpdating(false));
         }

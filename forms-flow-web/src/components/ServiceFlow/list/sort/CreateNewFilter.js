@@ -259,7 +259,7 @@ export default function CreateNewFilterDrawer({
   useEffect(() => {
     if (openFilterDrawer) {
       dispatch(fetchUserList()); // if the create new filter open then need to fetch list of users
-      dispatch(fetchAllBpmProcesses()); // if the create new filter open then need to fetch all bpm process
+      dispatch(fetchAllBpmProcesses({ tenant_key: tenantKey })); // if the create new filter open then need to fetch all bpm process
     }
     // if the create new filter open then need to fetch all forms
     if (openFilterDrawer && !forms?.data?.length) {

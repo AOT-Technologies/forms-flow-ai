@@ -1,3 +1,5 @@
+@import "../variables.scss";
+
 /*#sidebar {
   & .navbar {
     padding: 15px 10px;
@@ -287,7 +289,7 @@ margin-right: 1rem;
     height: 100%;
     width: 100%;
     position: fixed;
-    background-color: var(--color-gray-800);
+    background-color: $gray-800;
     z-index: 1300;
     -webkit-transition: all 0.2s ease-in;
     -o-transition: all 0.2s ease-in;
@@ -299,7 +301,7 @@ margin-right: 1rem;
     right: -50px;
     padding: 5px 13px;
     top: 67px;
-    background: var(--color-white);
+    background: $white;
     border-radius: 10px;
     font-size: x-large;
   }
@@ -318,8 +320,8 @@ margin-right: 1rem;
 
 .button_component
 {
-  background-color: var(--color-white);
-  color: var(--color-black);
+  background-color: $white;
+  color: $dark;
   border: none;
   padding: auto;
 }
@@ -329,7 +331,7 @@ margin-right: 1rem;
 }
 
 .head-item {
-  color: var(--color-gray-600);
+  color: $gray-600;
   cursor: pointer;
   padding-bottom: 3rem;
 }

@@ -217,6 +217,7 @@ class FormResourceList(Resource):
         sort_order: str = dict_data.get("sort_order", "desc")
         form_type: str = dict_data.get("form_type", None)
         is_active = dict_data.get("is_active", None)
+        active_forms = dict_data.get("active_forms", None)
 
         if form_type:
             form_type = form_type.split(",")
@@ -235,6 +236,7 @@ class FormResourceList(Resource):
             form_type=form_type,
             is_active=is_active,
             is_designer=auth.has_role([DESIGNER_GROUP]),
+            active_forms=active_forms,
         )
         return (
             (

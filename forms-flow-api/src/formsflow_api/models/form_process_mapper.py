@@ -369,3 +369,20 @@ class FormProcessMapper(AuditDateTimeMixin, AuditUserMixin, BaseModel, db.Model)
         if tenant_key is not None:
             tenant_auth_query = tenant_auth_query.filter(cls.tenant == tenant_key)
         return tenant_auth_query
+
+    @classmethod
+    def find_all_active_forms(
+        cls,
+        page_number=None,
+        limit=None,
+    ):  # pylint: disable=too-many-arguments
+        """Fetch all active forms."""
+        query = cls.access_filter(query=cls.query)
+        total_count = query.count()
+        query = query.with_entities(
+            cls.form_id,
+            cls.form_name,
+        )
+        limit = total_count if limit is None else limit
+        query = query.paginate(page=page_number, per_page=limit, error_out=False)
+        return query.items, total_count

@@ -32,38 +32,45 @@ class FormProcessMapperService:
         form_type: str,
         is_active,
         is_designer: bool,
+        active_forms: bool,
         **kwargs,
     ):  # pylint: disable=too-many-arguments, too-many-locals
         """Get all forms."""
         user: UserContext = kwargs["user"]
         authorized_form_ids: Set[str] = []
-        form_ids = Authorization.find_all_resources_authorized(
-            auth_type=AuthType.DESIGNER if is_designer else AuthType.FORM,
-            roles=user.group_or_roles,
-            user_name=user.user_name,
-            tenant=user.tenant_key,
-            include_created_by=is_designer,
-        )
-        for forms in form_ids:
-            authorized_form_ids.append(forms.resource_id)
-        designer_filters = {
-            "is_active": is_active,
-            "form_type": form_type,
-        }
-        list_form_mappers = (
-            FormProcessMapper.find_all_forms
-            if is_designer
-            else FormProcessMapper.find_all_active_by_formid
-        )
-        mappers, get_all_mappers_count = list_form_mappers(
-            page_number=page_number,
-            limit=limit,
-            form_name=form_name,
-            sort_by=sort_by,
-            sort_order=sort_order,
-            form_ids=authorized_form_ids,
-            **designer_filters if is_designer else {},
-        )
+        if active_forms:
+            mappers, get_all_mappers_count = FormProcessMapper.find_all_active_forms(
+                page_number=page_number,
+                limit=limit,
+            )
+        else:
+            form_ids = Authorization.find_all_resources_authorized(
+                auth_type=AuthType.DESIGNER if is_designer else AuthType.FORM,
+                roles=user.group_or_roles,
+                user_name=user.user_name,
+                tenant=user.tenant_key,
+                include_created_by=is_designer,
+            )
+            for forms in form_ids:
+                authorized_form_ids.append(forms.resource_id)
+            designer_filters = {
+                "is_active": is_active,
+                "form_type": form_type,
+            }
+            list_form_mappers = (
+                FormProcessMapper.find_all_forms
+                if is_designer
+                else FormProcessMapper.find_all_active_by_formid
+            )
+            mappers, get_all_mappers_count = list_form_mappers(
+                page_number=page_number,
+                limit=limit,
+                form_name=form_name,
+                sort_by=sort_by,
+                sort_order=sort_order,
+                form_ids=authorized_form_ids,
+                **designer_filters if is_designer else {},
+            )
         mapper_schema = FormProcessMapperSchema()
         return (
             mapper_schema.dump(mappers, many=True),

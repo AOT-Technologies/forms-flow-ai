@@ -335,7 +335,7 @@ const ServiceTaskListView = React.memo((props) => {
                     ) && (
                       <>
                         <hr />
-                        <Row className="p-2">
+                        <Row className="px-2">
                           {taskListAttributes?.map((eachVariable, index) => {
                             if (
                               eachVariable.name !== "applicationId" &&
@@ -347,16 +347,15 @@ const ServiceTaskListView = React.memo((props) => {
                                   variableItem.name === eachVariable.name
                               );
                               return (
-                                <Col xs={2} key={index}>
+                                <Col xs={2} key={index} className="p-2">
                                   <div
-                                    className="col-12"
-                                    style={{ wordBreak: "break-all" }}
+                                    className="col-12 text-break"
                                   >
                                     <h6 className="fw-bold">{data?.label}</h6>
                                   </div>
                                   <div className="d-flex col-12">
                                     <h6>
-                                      <u className="fw-light text-decoration-none ">
+                                      <u className="fw-light text-decoration-none text-break" >
                                         {eachVariable.value}
                                       </u>
                                     </h6>

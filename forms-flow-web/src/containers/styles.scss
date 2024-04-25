@@ -1,5 +1,16 @@
 @import "../variables.scss";
 
+.head-item {
+  color: $gray-600;
+  cursor: pointer;
+  padding-bottom: 3rem;
+}
+
+.head-active {
+  color: $primary !important;
+  border-bottom: 4px solid  $primary;
+}
+
 /*#sidebar {
   & .navbar {
     padding: 15px 10px;
@@ -329,13 +340,6 @@ margin-right: 1rem;
 .cursor-pointer{
   cursor: pointer;
 }
-
-.head-item {
-  color: $gray-600;
-  cursor: pointer;
-  padding-bottom: 3rem;
-}
-
  
 .padding-left-60 {
   margin-left: 60px;

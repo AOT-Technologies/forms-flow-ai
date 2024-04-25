@@ -13,19 +13,6 @@
   overflow-x: hidden;
 } 
 
-.btn-primary {
-  background-color: $info;
-}
-
-.btn-outline-primary:not(:disabled) {
-  border-color: $primary;
-  color: $primary;
-
-  &:hover {
-    color: $white;
-    background-color: $info;
-  }
-}
 
 .task-container {
   height: 100% !important;
@@ -137,9 +124,6 @@ i.fa.fa-question-circle.text-muted {
   min-height: 100vh;
 }
 
-.btn.signature-pad-refresh {
-  z-index: 99 !important;
-}
 
 
 .formio-error-wrapper,
@@ -417,20 +401,7 @@ i.fa.fa-question-circle.text-muted {
   margin-left: 10px;
 }
 
-.btn-right {
-  float: right;
-  margin-left: auto;
-}
 
-.btn-center {
-  float: right;
-  margin-left: auto;
-}
-
-.btn.btn-link:focus,
-.btn.btn-link.focus {
-  box-shadow: none;
-}
 
 .div-center {
   align-self: center;
@@ -487,16 +458,6 @@ header nav {
   width: 40px;
 }
 
-.sort-span {
-  cursor: pointer;
-  border: 1px solid $primary;
-  border-radius: 0.25rem;
-  padding: 4px;
-  padding-left: 6px;
-  padding-top: 0px;
-  border-radius: 6px;
-  width: 35px;
-}
 
 .sort-span:hover {
 
@@ -519,18 +480,7 @@ div[disabled] {
   opacity: 0.7;
 }
 
-.hide-scroll {
-  -ms-overflow-style: none;
-  scrollbar-width: none;
 
-  &::-webkit-scrollbar {
-    display: none;
-  }
-}
-
-.classApplicationId {
-  width: 15%;
-}
 
 .form_select {
   width: 15%;
@@ -561,11 +511,6 @@ div[disabled] {
   font-size: 1em;
 }
 
-.button_font {
-  font-size: 14px;
-  font-weight: bold;
-}
-
 .delete_button {
   font-size: 25px;
   color: $danger;
@@ -581,17 +526,10 @@ div[disabled] {
   flex-direction: row;
 }
 
-.select_text {
-  font-weight: bold;
-}
 
 .select_input {
   width: 15px;
   height: 15px;
-}
-
-.form_check {
-  margin-bottom: 20px;
 }
 
 a {
@@ -602,17 +540,6 @@ a {
   background-color: $danger-200;
 }
 
-.formio-wizard-nav-container {
-  display: flex;
-  flex-wrap: nowrap;
-  flex-direction: row;
-}
-
-.btn-wizard-nav-submit,
-.btn-wizard-nav-next,
-.btn-wizard-nav-previous {
-  margin-left: 5px;
-}
 
 div.upload {
   background-color: $gray-200;

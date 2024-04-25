@@ -56,7 +56,7 @@ const View = React.memo((props) => {
       <div className="d-flex py-2 form-title">
         <h3 className="task-head text-truncate"> {form.title}</h3>
         {showPrintButton && form?._id ? (
-          <div className="btn-right d-flex flex-row">
+          <div className="ms-auto float-auto d-flex flex-row">
             <DownloadPDFButton
               form_id={form._id}
               submission_id={updatedSubmission._id}

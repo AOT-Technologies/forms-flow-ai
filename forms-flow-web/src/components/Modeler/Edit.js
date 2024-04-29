@@ -1,7 +1,7 @@
 import React, {  useEffect, useState} from 'react';
 import { useSelector } from 'react-redux';
 import BpmnEditor from './Editors/BpmnEditor';
-import { useParams } from "react-router-dom";
+import { useParams } from "react-router-dom-v6";
 import DmnEditor from './Editors/DmnEditor';
 import { useDispatch } from 'react-redux';
 import { push } from "connected-react-router";

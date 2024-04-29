@@ -1,26 +1,26 @@
 import React, { useEffect } from "react";
-import { Route } from "react-router-dom";
+import {Route, Routes } from "react-router-dom-v6";
 import { connect } from "react-redux";
 import { getForm } from "react-formio";
 import View from "../components/Form/Item/View";
 import NotFound from "./NotFound";
 
-const PublicRoute = ({publish}) => {
-
-  useEffect(()=>{
+const PublicRoute = ({ publish }) => {
+  useEffect(() => {
     publish("FF_PUBLIC");
-  },[]);
+  }, []);
 
   return (
     <div className="container py-2 min-hightcontainer">
-      <Route exact path="/public/form/:formId" render={(props) => <View {...props} publish={publish}  />} />
-      <Route path="/public/form/:formId/:notavailable" component={NotFound} />
+      <Routes>
+        <Route path="public/form/:formId" element={<View publish={publish} />} />
+        <Route path="public/form/:formId/*" element={<NotFound />} />
+      </Routes>
     </div>
   );
 };
 
-// eslint-disable-next-line no-unused-vars
-const mapDispatchToProps = (dispatch, ownProps) => {
+const mapDispatchToProps = (dispatch) => {
   return {
     getForm: (id) => dispatch(getForm("form", id)),
   };

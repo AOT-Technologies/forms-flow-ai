@@ -27,7 +27,7 @@ import LoadingOverlay from "react-loading-overlay-ts";
 import { getForm, getSubmission, Formio, resetSubmission } from "react-formio";
 import { CUSTOM_EVENT_TYPE } from "../constants/customEventTypes";
 import { getTaskSubmitFormReq } from "../../../apiManager/services/bpmServices";
-import { useParams } from "react-router-dom";
+import { useParams } from "react-router-dom-v6";
 import { push } from "connected-react-router";
 import {
   resetFormData,

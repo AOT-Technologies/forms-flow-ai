@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { Link, useParams } from "react-router-dom";
+import { Link, useParams } from "react-router-dom-v6";
 import { connect, useDispatch, useSelector } from "react-redux";
 import { push } from "connected-react-router";
 import {

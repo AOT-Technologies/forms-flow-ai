@@ -2,7 +2,7 @@
 import React, { useState, useEffect, useReducer } from "react";
 import { Errors, FormBuilder, Formio } from "react-formio";
 import { push } from "connected-react-router";
-import { useHistory } from "react-router-dom";
+import { useNavigate} from "react-router-dom-v6";
 import _set from "lodash/set";
 import _cloneDeep from "lodash/cloneDeep";
 import _camelCase from "lodash/camelCase";
@@ -99,7 +99,7 @@ const Edit = React.memo(() => {
   const [formSubmitted, setFormSubmitted] = useState(false);
   const [formDescription,setFormDescription] = useState("");
   const lang = useSelector((state) => state.user.lang);
-  const history = useHistory();
+  const history = useNavigate();
   const { t } = useTranslation();
   const [show, setShow] = useState(false);
   const [currentFormLoading, setCurrentFormLoading] = useState(false);
@@ -532,7 +532,7 @@ const Edit = React.memo(() => {
             className="btn btn-secondary me-md-2 my-2 my-md-0"
             onClick={() => {
               changeAnonymous(prviousData.anonymous, true);
-              history.goBack();
+              history(-1);
               dispatch(clearFormError("form", formData.formName));
             }}
           >

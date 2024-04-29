@@ -1,31 +1,21 @@
 import React from "react";
-import { Route, Switch, Redirect } from "react-router-dom";
+import { Route, Routes, Navigate } from "react-router-dom-v6";
 import { useSelector } from "react-redux";
 
 import Base from "./Main";
 import Edit from "./Edit";
 import CreateWorkflow from "./Create";
-import {
-  STAFF_DESIGNER,
-  BASE_ROUTE,
-} from "../../constants/constants";
+import { STAFF_DESIGNER } from "../../constants/constants";
 import Loading from "../../containers/Loading";
 
 let user = "";
 
-const DesignerProcessRoute = ({ component: Component, ...rest }) => (
-  <Route
-    {...rest}
-    render={(props) => {
-      if (user.includes(STAFF_DESIGNER)) {
-        return <Component {...props} />;
-      } else {
-        return <>Unauthorized</>;
-      }
-    }}
-  />
-);
-
+const DesignerProcessRoute = ({ element }) =>
+  user.includes(STAFF_DESIGNER) ? (
+    element
+  ) : (
+    <Navigate to="/unauthorized" replace />
+  );
 
 export default React.memo(() => {
   user = useSelector((state) => state.user?.roles || []);
@@ -35,26 +25,24 @@ export default React.memo(() => {
   }
   return (
     <div data-testid="Process-index">
-      <Switch>
-        <Route exact path={`${BASE_ROUTE}processes`} component={Base} />
-        <DesignerProcessRoute
-        exact
-          path={`${BASE_ROUTE}processes/create`}
-          component={CreateWorkflow}
+      <Routes>
+        <Route path="" element={<Base />} />
+        <Route path={`/create`} element={<CreateWorkflow />} />
+        <Route
+          path={`/:processId`}
+          element={<DesignerProcessRoute element={<Base />} />}
         />
-        <DesignerProcessRoute
-        exact
-          path={`${BASE_ROUTE}processes/:processId`}
-          component={Base}
+        <Route
+          path={`/:processId`}
+          element={<DesignerProcessRoute element={<Base />} />}
         />
-        <DesignerProcessRoute
-        exact
-          path={`${BASE_ROUTE}processes/:type/:processId/edit`}
-          component={Edit}
+        <Route
+          path={`/:type/:processId/edit`}
+          element={<DesignerProcessRoute element={<Edit />} />}
         />
-         <Redirect exact to="/404" />
 
-      </Switch>
+        {/* <Navigate exact to="/404" /> */}
+      </Routes>
     </div>
   );
 });

@@ -29,7 +29,7 @@ import {
   UPDATE_EVENT_STATUS,
   getProcessDataReq,
 } from "../../../../../constants/applicationConstants";
-import { useParams } from "react-router-dom";
+import { useParams } from "react-router-dom-v6";
 import { updateApplicationEvent } from "../../../../../apiManager/services/applicationServices";
 import LoadingOverlay from "react-loading-overlay-ts";
 import { toast } from "react-toastify";

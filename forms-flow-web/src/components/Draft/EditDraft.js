@@ -1,5 +1,5 @@
 import React, { useEffect } from "react";
-import { useParams } from "react-router-dom";
+import { useParams } from "react-router-dom-v6";
 import { useDispatch, useSelector } from "react-redux";
 
 import Loading from "../../containers/Loading";

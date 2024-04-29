@@ -272,7 +272,7 @@ const ServiceTaskListView = React.memo((props) => {
                    
 
                       {vissibleAttributes?.taskVisibleAttributes?.priority &&
-                        <Col xs={2} className="d-flex">
+                        <Col xs={1} className="d-flex">
                           <div>
                           <div className="col-12">
                             <h6 className="fw-bold">{t("Priority")}</h6>

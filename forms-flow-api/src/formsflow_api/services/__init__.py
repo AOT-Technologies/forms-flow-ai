@@ -14,6 +14,7 @@ from formsflow_api.services.form_history_logs import FormHistoryService
 from formsflow_api.services.form_process_mapper import FormProcessMapperService
 from formsflow_api.services.process import ProcessService
 from formsflow_api.services.user import UserService
+from formsflow_api.services.theme import ThemeCustomizationService
 
 __all__ = [
     "ApplicationService",
@@ -29,4 +30,5 @@ __all__ = [
     "UserService",
     "FormHistoryService",
     "CombineFormAndApplicationCreate",
+    "ThemeCustomizationService",
 ]

@@ -9,6 +9,7 @@ from .draft import Draft
 from .filter import Filter
 from .form_history_logs import FormHistory
 from .form_process_mapper import FormProcessMapper
+from .theme import ThemeCustomization
 
 __all__ = [
     "db",
@@ -22,4 +23,5 @@ __all__ = [
     "Authorization",
     "Filter",
     "FormHistory",
+    "ThemeCustomization",
 ]

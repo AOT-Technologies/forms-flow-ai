@@ -52,7 +52,7 @@ class Application(
             ]
             application.submission_id = application_info["submission_id"]
             application.latest_form_id = application_info["form_id"]
-            application.save()
+            application.save_and_flush()
             return application
         return None
 
@@ -71,7 +71,7 @@ class Application(
             ],
             mapper_info,
         )
-        self.commit()
+        self.save_and_flush()
 
     @classmethod
     def find_by_id(cls, application_id: int) -> Application:

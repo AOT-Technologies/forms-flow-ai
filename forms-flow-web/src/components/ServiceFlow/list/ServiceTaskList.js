@@ -19,6 +19,7 @@ import { MAX_RESULTS } from "../constants/taskConstants";
 import { getFirstResultIndex } from "../../../apiManager/services/taskSearchParamsFormatterService";
 import TaskVariable from "./TaskVariable";
 import { MULTITENANCY_ENABLED } from "../../../constants/constants";
+import _ from "lodash";
 const ServiceFlowTaskList = React.memo((props) => {
   const {expandedTasks,setExpandedTasks} = props;
   const { t } = useTranslation();
@@ -42,12 +43,16 @@ const ServiceFlowTaskList = React.memo((props) => {
 
   useEffect(() => {
     if (selectedFilter?.id) {
- 
+        const reqDataProcessVariables = reqData?.criteria?.processVariables || [];
+        const selectedProcessVariables =  selectedFilter?.criteria?.processVariables || [];
+         
         const selectedBPMFilterParams = {
           ...selectedFilter,
           criteria: {
             ...selectedFilter?.criteria,
-            ...reqData?.criteria
+            ...reqData?.criteria,
+            processVariables:_.isEqual(reqDataProcessVariables, selectedProcessVariables) 
+            ? selectedProcessVariables : [...reqDataProcessVariables,...selectedProcessVariables]
           }
         };
       dispatch(setBPMTaskLoader(true));
@@ -94,7 +99,7 @@ const ServiceFlowTaskList = React.memo((props) => {
              
               <div className="fs-16 d-flex justify-content-between">
               <div className="pe-0 mw-65 text-truncate">
-                  <span data-toggle="tooltip" title="Form Name">
+                  <span data-toggle="tooltip" title={t("Workflow")}>
                     {
                       getProcessDataObjectFromList(
                         processList,

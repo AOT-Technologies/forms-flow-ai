@@ -75,15 +75,12 @@ const ServiceTaskListView = React.memo((props) => {
     }
   }, [dispatch, reqData]);
 
-  const getTaskDetails = (taskId) => {
-    if (taskId !== bpmTaskId) {
+  
+  
+    const getTaskDetails = (taskId) => {
       dispatch(push(`${redirectUrl.current}task/${taskId}`));
-    }
-  };
+    }; 
 
-  const handleViewDetails = (taskId) => {
-    getTaskDetails(taskId);
-  };
   const handlePageChange = (pageNumber) => {
     dispatch(setBPMTaskListActivePage(pageNumber));
     dispatch(setBPMTaskLoader(true));
@@ -111,23 +108,19 @@ const ServiceTaskListView = React.memo((props) => {
   };
 
   const vissibleAttributesCount = Object.values(
-    vissibleAttributes?.taskVisibleAttributes
+    vissibleAttributes?.taskVisibleAttributes || {}
   )?.filter((value) => value === true).length;
 
-  const adjustTaskAttributes = (_embedded) => {
-    
-     _embedded.variable = _embedded?.variable?.filter(
+  const adjustTaskAttributes = (variable) => {
+     variable = variable?.filter(
       (e) => e.name !== "applicationId" && e.name !== "formName"
     );
-    console.log("_embedded?.variable",_embedded?.variable);
-    const filteredArray = [..._embedded?.variable?.slice(0, 6 - vissibleAttributesCount)];
-    console.log("filterd array",filteredArray);
+    const filteredArray = [...(variable || []).slice(0, 6 - vissibleAttributesCount)];
     return filteredArray;
    
   };
 
   const filterAdjustedAttributes = (taskListVariables, adjustedValues) => {
-    console.log("tasklist attributes",taskListVariables?.filter((e) => !adjustedValues.includes(e)));
     return taskListVariables?.filter((e) => !adjustedValues.includes(e));
   };
 
@@ -138,12 +131,17 @@ const ServiceTaskListView = React.memo((props) => {
           <div className="list-container ">
             {taskList?.map((task, index) => {
               const adjustedValues = adjustTaskAttributes(
-                task?._embedded
+                task?._embedded?.variable
               );
-              const taskListAttributes = filterAdjustedAttributes(
+              let  taskListAttributes = filterAdjustedAttributes(
                 task?._embedded?.variable,
                 adjustedValues
               );
+              taskListAttributes = taskListAttributes?.filter(
+                (item) =>
+                  item.name !== "applicationId" && item.name !== "formName"
+              );
+
               return (
                 <div
                   className={`clickable shadow border rounded  ${
@@ -166,7 +164,7 @@ const ServiceTaskListView = React.memo((props) => {
                       <div>
                         <h6>
                           <u
-                            onClick={() => handleViewDetails(task.id)}
+                            onClick={() => getTaskDetails(task.id)}
                             className="fw-normal"
                             style={{ color: "#1a5a96", textDecoration: "none" }}
                           >
@@ -182,7 +180,7 @@ const ServiceTaskListView = React.memo((props) => {
                       ?.applicationId && (
                       <Col xs={2}>
                         <div className="col-12">
-                          <h6 className="fw-bold">{t("Submission ID")}</h6>
+                          <h6 className="fw-bold">{t("Submission Id")}</h6>
                           <h6>
                             {
                               task?._embedded?.variable?.filter(
@@ -212,32 +210,70 @@ const ServiceTaskListView = React.memo((props) => {
                         </div>
                       </Col>
                     )}
-                    <Col
-                      className="justify-content-between "
-                      xs={
-                        vissibleAttributesCount === 6
-                          ? 6
-                          : vissibleAttributesCount === 5
-                          ? 6
-                          : vissibleAttributesCount === 4
-                          ? 5
-                          : vissibleAttributesCount === 3
-                          ? 4
-                          : vissibleAttributesCount === 2
-                          ? 2
-                          : 2
-                      }
-                    >
-                      <TaskHeaderListView
+                    <TaskHeaderListView
                         task={task}
                         taskId={task.id}
                         groupView={false}
                       />
-                    </Col>
-                    {vissibleAttributes?.taskVisibleAttributes?.priority &&
-                      taskListAttributes.length < 1 &&
-                      vissibleAttributesCount <= 6 && (
-                        <Col xs={1}>
+                    {vissibleAttributesCount < 6 &&
+                    task?._embedded?.variable?.length > 2
+                      ? adjustedValues.map((e, i) => {
+                          const data = taskvariables?.find(
+                            (variableItem) => variableItem.name === e.name
+                          );
+                          return (
+                            <Col className= {`${i == adjustedValues.length - 1 ? 'd-flex' : ''}`} xs={2} key={i}>
+                              <div>
+                              <div className="col-12 word-break">
+                                <h6 className="fw-bold">{data?.label}</h6> 
+                              </div>
+                              <div className="d-flex col-12">
+                                <h6>
+                                  <u className="fw-light text-decoration-none ">
+                                    {e?.value}
+                                  </u>
+                                </h6>
+                              </div>
+                              </div>
+                              
+                              {taskListAttributes?.length >= 1  
+                              && i == adjustedValues.length - 1 && 
+                               !vissibleAttributes?.taskVisibleAttributes?.priority &&
+                              (
+                     
+                     <div
+                       className="justify-content-center ms-4"
+                       onClick={(e) => {
+                         e.stopPropagation();
+                         handleToggleTaskVariable(task.id);
+                       }}
+                       title={t("Click for task variables")}
+                     >
+                       <i
+                         className="fa fa-angle-down"
+                         style={{
+                           transform: `${
+                             expandedTasks[task.id]
+                               ? "rotate(180deg)"
+                               : "rotate(0deg)"
+                           }`,
+                         }}
+                         aria-hidden="true"
+                       />
+                     </div>
+                   
+                 )}
+                            </Col>
+                          );
+                        })
+                      : null}
+
+                    
+                   
+
+                      {vissibleAttributes?.taskVisibleAttributes?.priority &&
+                        <Col xs={2} className="d-flex">
+                          <div>
                           <div className="col-12">
                             <h6 className="fw-bold">{t("Priority")}</h6>
                           </div>
@@ -258,59 +294,37 @@ const ServiceTaskListView = React.memo((props) => {
                               </u>
                             </h6>
                           </div>
+                          </div>
+                          
+                          {taskListAttributes?.length >= 1  && (
+                     
+                     <div
+                       className="justify-content-center ms-4"
+                       onClick={(e) => {
+                         e.stopPropagation();
+                         handleToggleTaskVariable(task.id);
+                       }}
+                       title={t("Click for task variables")}
+                     >
+                       <i
+                         className="fa fa-angle-down"
+                         style={{
+                           transform: `${
+                             expandedTasks[task.id]
+                               ? "rotate(180deg)"
+                               : "rotate(0deg)"
+                           }`,
+                         }}
+                         aria-hidden="true"
+                       />
+                     </div>
+                   
+                 )}
                         </Col>
-                      )}
+                      }
 
-                    {vissibleAttributesCount < 6 &&
-                    task?._embedded?.variable?.length > 2
-                      ? adjustedValues.map((e, i) => {
-                          const data = taskvariables?.find(
-                            (variableItem) => variableItem.name === e.name
-                          );
-                          return (
-                            <Col xs={1} key={i}>
-                              <div
-                                className="col-12"
-                                style={{ wordBreak: "break-all" }}
-                              >
-                                <h6 className="fw-bold">{data?.label}</h6>
-                              </div>
-                              <div className="d-flex col-12">
-                                <h6>
-                                  <u className="fw-light text-decoration-none ">
-                                    {e?.value}
-                                  </u>
-                                </h6>
-                              </div>
-                            </Col>
-                          );
-                        })
-                      : null}
 
-                    {taskListAttributes?.length >= 1 && (
-                      <Col xs={1}>
-                        <div
-                          className="justify-content-center"
-                          onClick={(e) => {
-                            e.stopPropagation();
-                            handleToggleTaskVariable(task.id);
-                          }}
-                          title={t("Click for task variables")}
-                        >
-                          <i
-                            className="fa fa-angle-down"
-                            style={{
-                              transform: `${
-                                expandedTasks[task.id]
-                                  ? "rotate(180deg)"
-                                  : "rotate(0deg)"
-                              }`,
-                            }}
-                            aria-hidden="true"
-                          />
-                        </div>
-                      </Col>
-                    )}
+                    
                   </Row>
                   {expandedTasks[task.id] &&
                     task?._embedded?.variable?.some(
@@ -321,33 +335,7 @@ const ServiceTaskListView = React.memo((props) => {
                     ) && (
                       <>
                         <hr />
-                        <Row className="p-2">
-                          {vissibleAttributes?.taskVisibleAttributes
-                            ?.priority &&
-                            taskListAttributes.length > 0  && (
-                              <Col xs={1}>
-                                <div className="col-12">
-                                  <h6 className="fw-bold">{t("Priority")}</h6>
-                                </div>
-                                <div className="d-flex col-12">
-                                  <svg
-                                    xmlns="http://www.w3.org/2000/svg"
-                                    width="16"
-                                    height="16"
-                                    fill="currentColor"
-                                    className="bi bi-filter-right"
-                                    viewBox="0 0 16 16"
-                                  >
-                                    <path d="M14 10.5a.5.5 0 0 0-.5-.5h-3a.5.5 0 0 0 0 1h3a.5.5 0 0 0 .5-.5zm0-3a.5.5 0 0 0-.5-.5h-7a.5.5 0 0 0 0 1h7a.5.5 0 0 0 .5-.5zm0-3a.5.5 0 0 0-.5-.5h-11a.5.5 0 0 0 0 1h11a.5.5 0 0 0 .5-.5z" />
-                                  </svg>
-                                  <h6 title={t("Priority")}>
-                                    <u className="fw-light text-decoration-none">
-                                      {task.priority}
-                                    </u>
-                                  </h6>
-                                </div>
-                              </Col>
-                            )}
+                        <Row className="px-2">
                           {taskListAttributes?.map((eachVariable, index) => {
                             if (
                               eachVariable.name !== "applicationId" &&
@@ -359,16 +347,15 @@ const ServiceTaskListView = React.memo((props) => {
                                   variableItem.name === eachVariable.name
                               );
                               return (
-                                <Col xs={2} key={index}>
+                                <Col xs={2} key={index} className="p-2">
                                   <div
-                                    className="col-12"
-                                    style={{ wordBreak: "break-all" }}
+                                    className="col-12 text-break"
                                   >
                                     <h6 className="fw-bold">{data?.label}</h6>
                                   </div>
                                   <div className="d-flex col-12">
                                     <h6>
-                                      <u className="fw-light text-decoration-none ">
+                                      <u className="fw-light text-decoration-none text-break" >
                                         {eachVariable.value}
                                       </u>
                                     </h6>

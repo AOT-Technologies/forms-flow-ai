@@ -1,5 +1,6 @@
 """Keycloak implementation for keycloak group related operations."""
 
+from http import HTTPStatus
 from typing import Dict, List
 
 import requests
@@ -130,6 +131,16 @@ class KeycloakGroupService(KeycloakAdmin):
         data.pop("description", None)
         return data
 
+    def sub_groups(self, group_id, response):
+        """Fetch subgroups of the group if subGroupCount greater than 0."""
+        sub_group = self.client.get_subgroups(group_id)
+        for group in sub_group:
+            group = self.format_response(group)
+            response.append(group)
+            if group.get("subGroupCount", 0) > 0:
+                self.sub_groups(group.get("id"), response)
+        return response
+
     def flat(self, data, response):
         """Flatten response to single list of dictionary.
 
@@ -139,10 +150,11 @@ class KeycloakGroupService(KeycloakAdmin):
         for group in data:
             subgroups = group.pop("subGroups", data)
             group = self.format_response(group)
+            response.append(group)
             if subgroups == []:
-                response.append(group)
+                if group.get("subGroupCount", 0) > 0:
+                    response = self.sub_groups(group.get("id"), response)
             elif subgroups != []:
-                response.append(group)
                 self.flat(subgroups, response)
         return response
 
@@ -150,9 +162,9 @@ class KeycloakGroupService(KeycloakAdmin):
         """Search group by name."""
         search_list = list(
             filter(
-                lambda data: search.lower() in data["name"].lower()
-                if data.get("name")
-                else "",
+                lambda data: (
+                    search.lower() in data["name"].lower() if data.get("name") else ""
+                ),
                 data,
             )
         )
@@ -199,3 +211,9 @@ class KeycloakGroupService(KeycloakAdmin):
         if role:
             user_list = self.__populate_user_groups(user_list)
         return (user_list, users_count)
+
+    def add_user_to_tenant(self, data: Dict):
+        """Add user to a tenant."""
+        return {
+            "message": "The requested operation is not supported."
+        }, HTTPStatus.BAD_REQUEST

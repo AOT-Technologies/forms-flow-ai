@@ -12,6 +12,7 @@ from formsflow_api_utils.utils import (
 )
 
 from formsflow_api.schemas import (
+    TenantUserAddSchema,
     UserlocaleReqSchema,
     UserPermissionUpdateSchema,
     UsersListSchema,
@@ -47,9 +48,22 @@ user_permission_update_model = API.model(
     {"userId": fields.String(), "groupId": fields.String(), "name": fields.String()},
 )
 
-user_permission_update_model = API.model(
-    "UserPermission",
-    {"userId": fields.String(), "groupId": fields.String(), "name": fields.String()},
+tenant_add_user_model = API.model(
+    "AddUserToTenant",
+    {
+        "user": fields.String(),
+        "roles": fields.List(
+            fields.Nested(
+                API.model(
+                    "roles data",
+                    {
+                        "name": fields.String(),
+                        "roleId": fields.String(),
+                    },
+                )
+            )
+        ),
+    },
 )
 
 locale_put_model = API.model("Locale", {"locale": fields.String()})
@@ -254,3 +268,32 @@ class UserPermission(Resource):
                 "message": "Invalid request data",
             }, HTTPStatus.BAD_REQUEST
         return None, HTTPStatus.NO_CONTENT
+
+
+@cors_preflight("POST, OPTIONS")
+@API.route(
+    "/add-user",
+    methods=["POST", "OPTIONS"],
+)
+class TenantAddUser(Resource):
+    """Resource to manage add user to a tenant."""
+
+    @staticmethod
+    @auth.has_one_of_roles([ADMIN_GROUP])
+    @profiletime
+    @API.doc(body=tenant_add_user_model)
+    @API.response(200, "OK:- Successful request.")
+    @API.response(
+        400,
+        "BAD_REQUEST:- Invalid request.",
+    )
+    @API.response(
+        401,
+        "UNAUTHORIZED:- Authorization header not provided or an invalid token passed.",
+    )
+    def post():
+        """Add user to tenant."""
+        json_payload = request.get_json()
+        data = TenantUserAddSchema().load(json_payload)
+        response = KeycloakFactory.get_instance().add_user_to_tenant(data)
+        return response

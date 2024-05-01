@@ -1,4 +1,5 @@
 """Resource to get Dashboard APIs from redash."""
+
 from http import HTTPStatus
 
 from flask import request

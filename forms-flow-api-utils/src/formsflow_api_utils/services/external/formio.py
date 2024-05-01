@@ -1,14 +1,14 @@
 """This exposes the Formio APIs."""
 import json
-from http import HTTPStatus
+from typing import List
 
 import jwt
 import requests
 from flask import current_app
 
 from formsflow_api_utils.exceptions import BusinessException
-from formsflow_api_utils.utils import Cache
 from formsflow_api_utils.exceptions import ExternalError
+from formsflow_api_utils.utils import Cache
 
 
 class FormioService:
@@ -115,6 +115,14 @@ class FormioService:
         url = f"{self.base_url}/form/{form_id}"
         return self._invoke_service(url, headers, method='GET')
 
+    def get_form_metadata(self, form_id: str, formio_token, is_bundle: bool = False, bundled_ids: List[str] = []):
+        """Get form metadata using the custom endpoint in form.io."""
+        headers = {"Content-Type": "application/json", "x-jwt-token": formio_token}
+        url = f"{self.base_url}/form/{form_id}/metadata"
+        if is_bundle:
+            url = f"{url}?isBundle=true&formIds={','.join(bundled_ids)}"
+        return self._invoke_service(url, headers, method='GET')
+
     def get_submission(self, data, formio_token):
         """Get request to formio API to get submission details."""
         headers = {"Content-Type": "application/json", "x-jwt-token": formio_token}
@@ -131,12 +139,14 @@ class FormioService:
         )
         return self._invoke_service(url, headers, data=data)
 
-    def patch_submission(self, form_id, submission_id, data, formio_token, raise_for_error: bool = True):
+    def patch_submission(self, form_id, submission_id, data, formio_token, raise_for_error: bool = True, is_bundle: bool = False):
         """Patch form submission data with the payload."""
         headers = {"Content-Type": "application/json", "x-jwt-token": formio_token}
         url = (
             f"{self.base_url}/form/{form_id}/submission/{submission_id}"
         )
+        if is_bundle:
+            url += "?skip-sanitize=true"
         return self._invoke_service(url, headers, data=data, method='PATCH', raise_for_error=raise_for_error)
 
     def get_form_by_path(self, path_name: str, formio_token: str) -> dict:

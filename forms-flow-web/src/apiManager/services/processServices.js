@@ -237,6 +237,12 @@ export const getFormProcesses = (formId, ...rest) => {
   };
 };
 
+// fetching task variables
+export const fetchTaskVariables = (formId) =>{
+  let url =  `${API.FORM_PROCESSES}/${formId}`;
+  return  RequestService.httpGETRequest(url);
+};
+
 export const fetchAllDmnProcessesCount = (tenant_key = null, searchKey) => {
  
 

@@ -268,7 +268,7 @@ const ServiceTaskListViewDetails = React.memo(() => {
                                 <Col xs={4}>
                                     <Row className="ms-0 task-header">{task?.name}</Row>
                                     <Row className="ms-0 fs-5 fw-normal">
-                                        <span className="application-id" title={t("Process Name")}>
+                                        <span className="application-id" title={t("Workflow")}>
                                             {" "}
                                             {
                                                 getProcessDataObjectFromList(processList,
@@ -278,16 +278,16 @@ const ServiceTaskListViewDetails = React.memo(() => {
                                         </span>
                                     </Row>
                                     <Row className="ms-0">
-                                        <span data-title={t("Submission ID")} className="application-id">
-                                            {t("Submission ID")}# {task?.applicationId}
+                                        <span data-title={t("Submission Id")} className="application-id">
+                                            {t("Submission Id")}# {task?.applicationId}
                                         </span>
                                     </Row>
                                 </Col>
-                                <Col xs={8}>
+                                    <Row>
                                     <TaskHeaderListView
                                         task={task} taskId={task?.id} groupView={true}
                                     />
-                                </Col>
+                                    </Row>
                            </div>
                         </Card.Body>
                     </Card>               

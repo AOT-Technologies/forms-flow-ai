@@ -276,6 +276,14 @@
           "clientRole": true,
           
           "attributes": {}
+        },
+        {
+          "name": "formsflow-admin",
+          "description": "Provides access to use the formsflow.ai solution. Identifies the admin to work on admin panel.",
+          "composite": false,
+          "clientRole": true,
+          
+          "attributes": {}
         }
       ],
       "security-admin-console": [],
@@ -400,6 +408,18 @@
           "subGroups": []
         },
         {
+          "name": "formsflow-admin",
+          "path": "/formsflow/formsflow-admin",
+          "attributes": {},
+          "realmRoles": [],
+          "clientRoles": {
+            "forms-flow-web": [
+              "formsflow-admin"
+            ]
+          },
+          "subGroups": []
+        },
+        {
           "name": "formsflow-reviewer",
           "path": "/formsflow/formsflow-reviewer",
           "attributes": {},
@@ -409,6 +429,7 @@
               "formsflow-reviewer"
             ]
           },
+          
 		  "subGroups": [
 			{
 				"name": "clerk",

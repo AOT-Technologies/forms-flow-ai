@@ -16,6 +16,7 @@ window["_env_"] = {
   REACT_APP_KEYCLOAK_URL_REALM: "forms-flow-ai",
   // Keycloak URL, default: http://{your-ip-address}:8080
   REACT_APP_KEYCLOAK_URL: "<Keycloak URL>",
+  REACT_APP_KEYCLOAK_URL_HTTP_RELATIVE_PATH: "/auth",
 
   //// Environment Variables for forms-flow-bpm ////
   // bpm base api, default: http://{your-ip-address}:8000/camunda

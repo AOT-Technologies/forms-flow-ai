@@ -222,7 +222,7 @@ const Dashboard = React.memo(() => {
       <InputGroup>
         <FormControl
           type="search"
-          title="Search"
+          title={t("Search")}
           ref={searchInputBox}
           onKeyPress={(e) => e.key === "Enter" && handleSearch()}
           onChange={(e) => {

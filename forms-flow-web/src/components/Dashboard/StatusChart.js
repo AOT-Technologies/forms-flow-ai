@@ -71,7 +71,7 @@ const ChartForm = React.memo((props) => {
         spinner
         text={t("Loading...")}
       >
-          <div className="white-box status-container flex-row d-md-flex align-items-center">
+          <div className="white-box status-container flex-row d-md-flex flex-wrap align-items-center">
             <div className="chart text-center">
               <PieChart width={400} height={400}>
                 <Pie

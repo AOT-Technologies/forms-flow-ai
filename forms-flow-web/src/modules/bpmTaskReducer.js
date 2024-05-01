@@ -72,7 +72,7 @@ const bpmTasks = (state = initialState, action) => {
     case ACTION_CONSTANTS.IS_BPM_FILTERS_LOADING:
       return { ...state, isFilterLoading: action.payload };
     case ACTION_CONSTANTS.BPM_SELECTED_FILTER:
-      return { ...state, selectedFilter: action.payload };
+      return { ...state, selectedFilter: action.payload,filterListSearchParams:{} };
     case ACTION_CONSTANTS.SELECTED_TASK_ID:
       return { ...state, taskId: action.payload, taskDetail: null };
     case ACTION_CONSTANTS.IS_TASK_GROUP_LOADING:

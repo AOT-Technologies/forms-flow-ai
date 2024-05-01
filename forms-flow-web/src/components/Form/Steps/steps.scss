@@ -48,3 +48,26 @@
 .show-in-list{
     margin-top: 34px;    
 }
+
+
+.scrollable-table{
+    
+        overflow-y: auto;
+        height: 300px;
+      
+      table thead th {
+        position: sticky;
+        top: 0;
+      }
+      
+      table {
+        border-collapse: collapse;
+        width: 100%;
+      }
+      
+      th,
+      td {
+        padding: 8px 15px;
+      }
+        
+}

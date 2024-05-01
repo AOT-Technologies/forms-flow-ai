@@ -18,3 +18,4 @@ class ThemeCustomizationSchema(Schema):
     value = fields.Str(data_key="value")
     application_title = fields.Str(data_key="applicationTitle")
     theme = fields.Dict(data_key="themeJson")
+    created_by = fields.Str()

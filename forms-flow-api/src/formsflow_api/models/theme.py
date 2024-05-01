@@ -1,6 +1,7 @@
 """This manages theme Database Models."""
 
 from sqlalchemy import JSON
+
 from .audit_mixin import AuditDateTimeMixin, AuditUserMixin
 from .base_model import BaseModel
 from .db import db
@@ -12,26 +13,24 @@ class ThemeCustomization(AuditDateTimeMixin, AuditUserMixin, BaseModel, db.Model
     id = db.Column(db.Integer, primary_key=True)
     logo_name = db.Column(db.String(50), nullable=False)
     logo_type = db.Column(db.String(100), nullable=False)
-    value = db.Column(db.String(20), nullable=False)
+    value = db.Column(db.String(100), nullable=False)
     application_title = db.Column(db.String(50), nullable=False)
     theme = db.Column(JSON, nullable=False)
+    tenant = db.Column(db.String(20), nullable=True)
 
     @classmethod
     def create_theme(cls, theme_info: dict):
         """Create new theme."""
-        print("model",theme_info)
         if theme_info:
             theme = cls()
             theme.created_by = theme_info["created_by"]
-            theme.logo_name = theme_info["logo_name"]
-            theme.logo_type = theme_info["logo_type"]
-            theme.value = theme_info["value"]
-            theme.application_title = theme_info["application_title"]
-            theme.tenant = theme_info["tenant"]
-            theme.theme = theme_info["theme"]
-            print("before save")
+            theme.logo_name = theme_info.get("logo_name")
+            theme.logo_type = theme_info.get("logo_type")
+            theme.value = theme_info.get("value")
+            theme.application_title = theme_info.get("application_title")
+            theme.tenant = theme_info.get("tenant")
+            theme.theme = theme_info.get("theme")
             theme.save()
-            print("save")
             return theme
         return None
 
@@ -47,7 +46,7 @@ class ThemeCustomization(AuditDateTimeMixin, AuditUserMixin, BaseModel, db.Model
             ],
             theme_info,
         )
-        self.save_and_flush()
+        self.commit()
 
     @classmethod
     def get_theme(cls, tenant: str = None):

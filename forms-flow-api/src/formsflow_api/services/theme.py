@@ -1,11 +1,9 @@
 """This exposes theme service."""
 
-from http import HTTPStatus
-from formsflow_api_utils.exceptions import BusinessException
 from formsflow_api_utils.utils.user_context import UserContext, user_context
-from formsflow_api.schemas import ThemeCustomizationSchema
-from formsflow_api.models import ThemeCustomization
 
+from formsflow_api.models import ThemeCustomization
+from formsflow_api.schemas import ThemeCustomizationSchema
 
 
 class ThemeCustomizationService:
@@ -15,31 +13,29 @@ class ThemeCustomizationService:
     @user_context
     def create_theme(data, **kwargs):
         """Create new theme entry."""
+        theme_schema = ThemeCustomizationSchema()
         user: UserContext = kwargs["user"]
         data["created_by"] = user.user_name
-        # data["tenant"] = user.tenant_key
-        data["tenant"] = "Abi"
-        result = ThemeCustomizationSchema().dump(data)
-        return ThemeCustomization.create_theme(result)
+        data["tenant"] = user.tenant_key
+        theme_customization = ThemeCustomization.create_theme(data)
+        result = theme_schema.dump(theme_customization)
+        return result
 
     @staticmethod
     @user_context
-    def get_theme(**kwargs):
+    def get_theme(tenant_key):
         """Return theme using tenant key else default theme."""
-        user: UserContext = kwargs["user"]
-        theme = ThemeCustomization.get_theme(user.tenant_key)
-        result = ThemeCustomizationSchema().dump(theme)
+        theme = ThemeCustomization.get_theme(tenant_key)
+        theme_schema = ThemeCustomizationSchema()
+        result = theme_schema.dump(theme)
         return result
 
     @staticmethod
     @user_context
     def update_theme(data, **kwargs):
-        """updates theme"""
+        """Updates theme."""
         user: UserContext = kwargs["user"]
-        # theme = ThemeCustomization.get_theme(user.tenant_key)
-        theme = ThemeCustomization.get_theme("Abijith")
+        theme = ThemeCustomization.get_theme(user.tenant_key)
         if theme:
             theme.update(data)
-        else:
-            raise HTTPStatus.NOT_FOUND
         return theme

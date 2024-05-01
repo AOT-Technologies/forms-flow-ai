@@ -1,4 +1,4 @@
-"""API endpoints for filter resource."""
+"""API endpoints for theme resource."""
 
 from http import HTTPStatus
 
@@ -26,17 +26,18 @@ theme_model = API.model(
         "logoType": fields.String(),
         "value": fields.String(),
         "applicationTitle": fields.String(),
-        "theme": fields.Raw()
+        "theme": fields.Raw(),
     },
 )
 
+
 @cors_preflight("GET, POST,PUT, OPTIONS")
-@API.route("", methods=["GET", "POST","PUT", "OPTIONS"])
+@API.route("", methods=["GET", "POST", "PUT", "OPTIONS"])
 class ThemeCustomizationResource(Resource):
     """Resource to create theme."""
 
     @staticmethod
-    # @auth.has_one_of_roles([ADMIN_GROUP])
+    @auth.has_one_of_roles([ADMIN_GROUP])
     @profiletime
     @API.doc(
         responses={
@@ -48,8 +49,7 @@ class ThemeCustomizationResource(Resource):
         model=theme_model,
     )
     def post():
-        """ Create Theme. """
-        print("theme data",request.get_json())
+        """Create Theme."""
         theme_data = theme_schema.load(request.get_json())
         response, status = (
             ThemeCustomizationService.create_theme(theme_data),
@@ -67,12 +67,16 @@ class ThemeCustomizationResource(Resource):
         model=[theme_model],
     )
     def get():
-        """Get theme by tenant key. This is a public API"""
-        response, status = ThemeCustomizationService.get_theme(), HTTPStatus.OK
+        """Get theme by tenant key. This is a public API."""
+        tenant_key = request.args.get("tenantKey", default=None)
+        response, status = (
+            ThemeCustomizationService.get_theme(tenant_key),
+            HTTPStatus.OK,
+        )
         return response, status
 
     @staticmethod
-    # @auth.has_one_of_roles([ADMIN_GROUP])
+    @auth.has_one_of_roles([ADMIN_GROUP])
     @profiletime
     @API.doc(
         responses={
@@ -83,13 +87,8 @@ class ThemeCustomizationResource(Resource):
         model=theme_model,
     )
     def put():
-        """
-        Update Theme by tenant key.
-
-        Update filter details corresponding to a filter id for requests with ```REVIEWER_GROUP``` permission.
-        """
+        """Update Theme by tenant key."""
         theme_data = theme_schema.load(request.get_json())
-        print("theme data",theme_data)
         theme_result = ThemeCustomizationService.update_theme(theme_data)
         response, status = (
             theme_schema.dump(theme_result),

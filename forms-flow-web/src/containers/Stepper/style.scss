@@ -1,9 +1,9 @@
 @import "../../variables.scss";
 
-.fwf-stepper {
+.ff-stepper {
   display: flex;
   padding: 0;
-  .fwf-step {
+  .ff-step {
     display: flex;
     flex-direction: column;
     flex: 1;
@@ -32,7 +32,7 @@
     }
   }
 
-  .fwf-step-no {
+  .ff-step-no {
     color: $white;
     padding: 4px;
     width: 22px;
@@ -50,7 +50,7 @@
     }
   }
 
-  .fwf-step-label {
+  .ff-step-label {
     color: $gray-600;
     font-size: 16px;
     padding-left: var(--spacing);

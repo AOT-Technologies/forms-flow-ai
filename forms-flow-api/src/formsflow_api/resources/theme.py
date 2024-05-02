@@ -16,10 +16,10 @@ from formsflow_api.services import ThemeCustomizationService
 
 theme_schema = ThemeCustomizationSchema()
 
-API = Namespace("Theme", description="Theme Customization APIs")
+API = Namespace("Themes", description="Theme Customization APIs")
 
 theme_model = API.model(
-    "Theme",
+    "Themes",
     {
         "id": fields.Integer(),
         "logoName": fields.String(),
@@ -34,7 +34,7 @@ theme_model = API.model(
 @cors_preflight("GET, POST,PUT, OPTIONS")
 @API.route("", methods=["GET", "POST", "PUT", "OPTIONS"])
 class ThemeCustomizationResource(Resource):
-    """Resource to create theme."""
+    """Resource to manage create update and get theme."""
 
     @staticmethod
     @auth.has_one_of_roles([ADMIN_GROUP])

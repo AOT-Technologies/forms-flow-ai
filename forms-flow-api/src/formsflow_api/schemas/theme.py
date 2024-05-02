@@ -15,7 +15,7 @@ class ThemeCustomizationSchema(Schema):
     tenant = fields.Str(allow_none=True)
     logo_name = fields.Str(data_key="logoName")
     logo_type = fields.Str(data_key="type")
-    value = fields.Str(data_key="value")
+    logo_data = fields.Str(data_key="logoData")
     application_title = fields.Str(data_key="applicationTitle")
     theme = fields.Dict(data_key="themeJson")
     created_by = fields.Str()

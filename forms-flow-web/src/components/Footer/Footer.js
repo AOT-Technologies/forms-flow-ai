@@ -1,8 +1,8 @@
 import React from "react";
-import { version } from "../../../package.json";
+import packageInfo  from "../../../package.json";
 import { Translation } from "react-i18next";
 
-
+const version_org = packageInfo.version;
 const Footer = React.memo(() => {
   return (
     <div className="ps-md-3 pb-3">
@@ -13,7 +13,7 @@ const Footer = React.memo(() => {
           <a className="text-link" href="https://formsflow.ai/">
             formsflow.ai
           </a>
-          {` v${version}`}
+          {` v${version_org}`}
         </div>
       </div>
     </div>

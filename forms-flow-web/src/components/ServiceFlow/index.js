@@ -31,7 +31,7 @@ import isEqual from "lodash/isEqual";
 import cloneDeep from "lodash/cloneDeep";
 import { Route, Navigate, Routes } from "react-router-dom";
 import { push, replace } from "connected-react-router";
-import { BASE_ROUTE, MULTITENANCY_ENABLED } from "../../constants/constants";
+import { MULTITENANCY_ENABLED } from "../../constants/constants";
 import TaskHead from "../../containers/TaskHead";
 import TaskSearchBarView from "./list/search/TaskSearchBarView";
 
@@ -297,31 +297,20 @@ export default React.memo(() => {
           </div>
         </>
       ) : (
-        <Switch>
+        <Routes>
+          <Route 
+            path={`task`}
+            element={<ServiceTaskListView
+              expandedTasks={expandedTasks}
+              setExpandedTasks={setExpandedTasks}
+            />}
+          />
           <Route
-            exact
-            path={`${BASE_ROUTE}task`}
-            render={() => (
-              <>
-                <ServiceTaskListView
-                  expandedTasks={expandedTasks}
-                  setExpandedTasks={setExpandedTasks}
-                />
-              </>
-            )}
-          ></Route>
-          <Route
-            path={`${BASE_ROUTE}task/:taskId`}
-            render={() => (
-              <>
-                <ServiceTaskListViewDetails />
-              </>
-            )}
-          ></Route>
-          <Route path={`${BASE_ROUTE}task/:taskId/:notAvailable`}>
-            <Redirect exact to="/404" />
-          </Route>
-        </Switch>
+            path={`:taskId`}
+            element={ <ServiceTaskListViewDetails />}
+          />
+          <Route path={`*`} element={<Navigate to={`/404`} />} />
+        </Routes>
       )}
     </div>
   );

@@ -1,4 +1,4 @@
-import { Redirect, Route, Switch, useParams } from "react-router-dom";
+import { Navigate, Route, Routes, useParams } from "react-router-dom-v6";
 import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { getSubmission, selectRoot } from "react-formio";
@@ -7,8 +7,7 @@ import Edit from "./Edit";
 import { getApplicationById } from "../../../../../apiManager/services/applicationServices";
 import { setApplicationDetailLoader } from "../../../../../actions/applicationActions";
 import { getUserRolePermission } from "../../../../../helper/user";
-import {
-  BASE_ROUTE,
+import { 
   CLIENT,
   CUSTOM_SUBMISSION_URL,
   CUSTOM_SUBMISSION_ENABLE,
@@ -101,39 +100,38 @@ const Item = React.memo(() => {
           </li>) : null
         }*/}
       </ul>
-      <Switch>
-        {!submissionError ? (
+      <Routes>
+       
           <Route
-            exact
-            path={`${BASE_ROUTE}form/:formId/submission/:submissionId`}
-            component={View}
+            path={``}
+            element={!submissionError ? <View/> :  <NotFound
+            errorMessage={t("Bad Request")}
+            errorCode={400}
+          /> }
           />
-        ) : <NotFound
-          errorMessage={t("Bad Request")}
-          errorCode={400}
-        />}
-        <Redirect
-          exact
-          from={`${BASE_ROUTE}form/:formId/submission/:submissionId/edit/:notavailable`}
-          to="/404"
+      
+        
+        <Route
+          path={`edit/:notavailable`}
+          element={<Navigate to="/404"/>}
         />
         {showSubmissionLoading ? (
           <Route
-            path={`${BASE_ROUTE}form/:formId/submission/:submissionId/edit`}
-            component={Loading}
+            path={`edit`}
+            element={<Loading/>}
           />
         ) : null}
         {editAllowed ? (
           <Route
-            path={`${BASE_ROUTE}form/:formId/submission/:submissionId/edit`}
-            component={Edit}
+            path={`edit`}
+            element={<Edit/>}
           />
         ) : null}
         <Route
-          path={`${BASE_ROUTE}form/:formId/submission/:submissionId/:notavailable`}
-          component={NotFound}
+          path={`*`}
+          element={<Navigate to="/404"/>}
         />
-      </Switch>
+      </Routes>
     </div>
   );
 });

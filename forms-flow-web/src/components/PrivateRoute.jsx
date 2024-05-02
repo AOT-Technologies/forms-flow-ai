@@ -1,12 +1,10 @@
 /* eslint-disable no-unused-vars */
 import React, { useEffect, Suspense, useMemo } from "react";
 import {
-  Route,
-  Redirect,
+  Route, 
   useParams,
   Routes,
-  Navigate,
-  Outlet,
+  Navigate, 
 } from "react-router-dom-v6";
 import { useDispatch, useSelector } from "react-redux";
 import {
@@ -40,6 +38,7 @@ import Loading from "../containers/Loading";
 import NotFound from "./NotFound";
 import { setTenantFromId } from "../apiManager/services/tenantServices";
 import Form from "./Form";
+import FormDesignRoute from "./Form/formDesignRoute";
 import ServiceFlow from "./ServiceFlow";
 import DashboardPage from "./Dashboard";
 import InsightsPage from "./Insights";
@@ -203,7 +202,7 @@ const PrivateRoute = React.memo((props) => {
             {ENABLE_FORMS_MODULE && (
               <Route
                 path={`formflow/*`}
-                element={<DesignerRoute element={<Form />} />}
+                element={<DesignerRoute element={<FormDesignRoute />} />}
               />
             )}
             {ENABLE_APPLICATIONS_MODULE && (
@@ -255,7 +254,8 @@ const PrivateRoute = React.memo((props) => {
                 )
               }
             />
-            {/* <Route path="/404" exact={true} element={<NotFound />} /> */}
+            <Route path="/404" exact={true} element={<NotFound />} />
+            <Route path="*" element={<Navigate to="/404" />} />
           </Routes>
         </Suspense>
       ) : (

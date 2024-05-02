@@ -9,12 +9,12 @@ import NotFound from "../NotFound";
 export default React.memo(() => {
   return (
     <Routes>
-      <>
+ 
         <Route  path="" element={<DraftList/>} />
-        <Route path={`/:draftId`} element={<ViewDraft />}/>
-        <Route path={`/:draftId/:notavailable`} element={<NotFound />}/>
-        <Route path={`form/:formId/draft/:draftId/edit`} element={<EditDraft />}/>
-      </>
+        <Route path={`:draftId`} element={<ViewDraft />}/>
+        <Route path={`:draftId/edit`} element={<EditDraft />}/>
+        <Route path={`:draftId/*`} element={<NotFound />}/>
+      
     </Routes>
   );
 });

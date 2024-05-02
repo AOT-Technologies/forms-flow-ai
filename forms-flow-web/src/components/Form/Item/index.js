@@ -1,12 +1,11 @@
-import { Route, Switch, Redirect, useParams, useLocation } from "react-router-dom";
-import React, { useEffect } from "react";
+
+import React, { useEffect, useMemo } from "react";
 import { Formio, getForm } from "react-formio";
 import { useDispatch, useSelector } from "react-redux";
 import {
   STAFF_REVIEWER,
   CLIENT,
-  BASE_ROUTE,
-  MULTITENANCY_ENABLED,
+  // MULTITENANCY_ENABLED,
 } from "../../../constants/constants";
 import View from "./View";
 import Submission from "./Submission/index";
@@ -25,14 +24,16 @@ import Loading from "../../../containers/Loading";
 import { getClientList, getReviewerList } from "../../../apiManager/services/authorizationService";
 import NotFound from "../../NotFound";
 import { setApiCallError } from "../../../actions/ErroHandling";
+import { Routes,Route,useParams, useLocation, Navigate } from "react-router-dom-v6";
 
 const Item = React.memo(() => {
   const { formId } = useParams();
   const location = useLocation(); // React Router's hook to get the current location
   const pathname = location.pathname;
   const userRoles = useSelector((state) => state.user.roles || []);
-  const tenantKey = useSelector((state) => state?.tenants?.tenantId);
-  const redirectUrl = MULTITENANCY_ENABLED ? `/tenant/${tenantKey}/` : "/";
+  //NEED TO /404 URL WITH REDIRECT URL
+  // const tenantKey = useSelector((state) => state?.tenants?.tenantId);
+  // const redirectUrl = MULTITENANCY_ENABLED ? `/tenant/${tenantKey}/` : "/";
   const formAuthVerifyLoading = useSelector((state)=>state.process?.formAuthVerifyLoading);
   const apiCallError = useSelector((state)=>state.errors?.apiCallError);
   const dispatch = useDispatch();
@@ -117,17 +118,18 @@ const Item = React.memo(() => {
   />;
   }
 
-  const SubmissionRoute = ({ component: Component, ...rest }) => (
-    <Route
-      {...rest}
-      render={(props) =>
+ 
+
+  const FormSubmissionRoute = useMemo(
+    () =>
+      ({ element }) =>
         userRoles.includes(STAFF_REVIEWER) || userRoles.includes(CLIENT) ? (
-          <Component {...props} />
+          element
         ) : (
-          <Redirect exact to={`${redirectUrl}`} />
-        )
-      }
-    />
+          <Navigate to="/unauthorized" replace />
+        ),
+  
+    [userRoles]
   );
 
   /**
@@ -135,20 +137,12 @@ const Item = React.memo(() => {
    */
 
   return (
-    <div>
-      <Switch>
-        <Route exact path={`${BASE_ROUTE}form/:formId`} component={View} />
-        <SubmissionRoute
-          path={`${BASE_ROUTE}form/:formId/submission`}
-          component={Submission}
-        />
-        <SubmissionRoute
-          path={`${BASE_ROUTE}form/:formId/draft`}
-          component={Draft}
-        />
-        <Redirect exact to="/404" />
-      </Switch>
-    </div>
+      <Routes>
+        <Route path={``} element={<View/>} />
+        <Route path={"submission/*"} element={<FormSubmissionRoute element={<Submission/>} />} />
+        <Route path={"draft/*"} element={<FormSubmissionRoute element={<Draft/>} />} />
+        <Route path="*" element={<Navigate to="/404" />} />
+      </Routes>
   );
 });
 

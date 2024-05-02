@@ -12,17 +12,18 @@
 }
 
 .published-forms-label{
-    color: #52C41A;
-    background: #EAFBE7 0% 0% no-repeat padding-box;
-    border: 1px solid #52C41A;
+    color: var(--published-form-label);
+    // #52C41A;
+    background: var(--published-background) 0% 0% no-repeat padding-box;
+    border: 1px solid var(--published-form-label);
     border-radius: 7px;
 }
 
 .unpublished-forms-label{
-    background: #E6F7FF 0% 0% no-repeat padding-box;
+    background: var(--unpublished-background) 0% 0% no-repeat padding-box;
     border-radius: 7px;
-    border: 1px solid #91D5FF;
-    color: #1890FF;
+    border: 1px solid var(--unpublished-label);
+    color: var(--unpublished-label);
 }
 .custom-grid {
     .col {
@@ -32,17 +33,7 @@
         height: auto;
         word-break: break-all;
     }
-
-    .list-group-item {
-        border-top: 1px solid #ced4da !important;
-        padding: 0rem 1.25rem !important;
-    }
-
-    .list-group-item:first-child {
-        border-bottom: 1.5px solid #ced4da !important;
-        background-color: #F2F2F2 !important;
-    }
-
+    
     h5,
     .h5 {
         font-weight: 400 !important;
@@ -104,6 +95,10 @@
     flex: 10%;
 }
 
+.list-margin{
+    margin-top: -10px;
+}
+
 .flex-item-right {
     justify-content: flex-end;
     display: flex;
@@ -116,24 +111,43 @@ flex-wrap: wrap;
     margin: 10px;
     height: 30px;white-space: nowrap;
 }
+
 .progress-bar {
-    background-color: #ff0000ab;
+    background-color: var(--color-danger);
 }
+
 .fileupload-fail {
-    color: #f85757;
+    color: var(--color-danger-ltr);
     float: right;
     font-weight: normal
 }
 
-.progress-bar {
-    background-color: #ff0000ab;
+
+.form-check-input{
+    width: 15px;
+    height: 15px;
 }
 
-.fileupload-fail {
-    color: #f85757;
-    float: right;
-    font-weight: normal
+.min-height-400{
+    min-height: 400px;
 }
+.fs-16{
+  font-size: 16px;  
+}
+.description-title{
+  max-width: 350px;  
+}
+.description-content{
+    max-width: 68vw;
+}
+.clientForm-table-col{
+    min-height: 300px;
+}
+.upload-progress{
+    height: 5px;
+    margin-top: 11px;
+}
+
 .public-label {
     margin-right: 12px;
 }
@@ -169,4 +183,5 @@ flex-wrap: wrap;
   }
 .form-description-p-tag > p{
     word-wrap: break-word;
+    max-width: 68vw;
 }

@@ -1,6 +1,6 @@
 ## How to train on your own dataset
 
-![Python](https://img.shields.io/badge/python-3.9-blue) ![Transformers](https://img.shields.io/badge/Transformers-4.25.1-blue) ![Torch](https://img.shields.io/badge/torch-1.13.1-blue)
+![Python](https://img.shields.io/badge/python-3.11.7-blue) ![Transformers](https://img.shields.io/badge/Transformers-4.25.1-blue) ![Torch](https://img.shields.io/badge/torch-1.13.1-blue)
 
 Transformers provides APIs to easily download and train state-of-the-art pretrained models. Using pretrained models can reduce your compute costs, carbon footprint, and save you time from training a model from scratch. The models can be used across different modalities.
 It is built using Python :snake: .

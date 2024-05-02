@@ -56,3 +56,31 @@ class UserService:
         for user in users_list:
             response.append(UserService._as_dict(user))
         return response
+
+    def user_search(self, search, user_list):
+        """
+        Replicates Keycloak users search functionality.
+
+        Searches for a given string within usernames,
+        first names, last names, or email addresses.
+
+        Parameters:
+        - search (str): The string to search for within user attributes.
+        - user_list (list): A list of users to search within.
+
+        Returns:
+        - list: A filtered list of users matching the search criteria.
+        """
+        search_fields = ["username", "firstName", "lastName", "email"]
+        result = [
+            item
+            for item in user_list
+            if any(search in item.get(key, "") for key in search_fields)
+        ]
+        return result
+
+    def paginate(self, data, page_number, page_size):
+        """Paginate the provided data."""
+        start_index = (page_number - 1) * page_size
+        end_index = start_index + page_size
+        return data[start_index:end_index]

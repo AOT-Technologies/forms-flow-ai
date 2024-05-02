@@ -1,4 +1,4 @@
-import TaskHeader from "../../../../components/ServiceFlow/details/TaskHeader";
+import TaskHeaderListView from "../../../../components/ServiceFlow/details/TaskHeaderListView";
 import configureStore from "redux-mock-store";
 import { Provider } from "react-redux";
 import { fireEvent, render, screen } from "@testing-library/react";
@@ -7,7 +7,7 @@ import "@testing-library/jest-dom/extend-expect";
 let store;
 let mockStore = configureStore([]);
 
-it("Should render the Taskheader component without breaking", () => {
+it("Should render the Taskheader component without breaking", async() => {
   store = mockStore({
     bpmTasks: {
       taskDetail: {
@@ -41,7 +41,20 @@ it("Should render the Taskheader component without breaking", () => {
       selectedFilter: "",
       listReqParams: "",
       firstResult: "",
+      vissibleAttributes:{
+        taskVisibleAttributes:{
+          applicationId:true,
+          assignee:true,
+          createdDate:true,
+          dueDate:true,
+          followUp:true,
+          groups:true,
+          priority:true,
+          taskTitle:true,
+        }
+      },
     },
+    
     user: {
       userDetail: {
         preferred_username: "",
@@ -51,14 +64,13 @@ it("Should render the Taskheader component without breaking", () => {
   store.dispatch = jest.fn();
   render(
     <Provider store={store}>
-      <TaskHeader />
+      <TaskHeaderListView />
     </Provider>
   );
-  expect(screen.getByText("Review Submission")).toBeInTheDocument();
-  expect(screen.getByText("Submission ID# 35")).toBeInTheDocument();
-  expect(screen.getByText("Set follow-up Date")).toBeInTheDocument();
-  expect(screen.getByText("Add groups")).toBeInTheDocument();
-  expect(screen.getByText("Claim")).toBeInTheDocument();
+  
+  expect(screen.getByText("Follow up Date")).toBeInTheDocument();
+  expect(screen.getByText("Due Date")).toBeInTheDocument();
+  expect(screen.getByText("Assign to Me")).toBeInTheDocument();
   const claimbtn = screen.getByTestId("clam-btn");
   fireEvent.click(claimbtn);
   expect(store.dispatch.mock.calls).toHaveLength(2);

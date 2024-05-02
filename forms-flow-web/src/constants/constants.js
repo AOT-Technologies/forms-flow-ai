@@ -70,12 +70,18 @@ export const KEYCLOAK_REALM =
 export const KEYCLOAK_URL =
   (window._env_ && window._env_.REACT_APP_KEYCLOAK_URL) ||
   process.env.REACT_APP_KEYCLOAK_URL;
-export const KEYCLOAK_AUTH_URL = `${KEYCLOAK_URL}/auth`;
+export const KEYCLOAK_URL_HTTP_RELATIVE_PATH =
+  (window._env_ && window._env_.REACT_APP_KEYCLOAK_URL_HTTP_RELATIVE_PATH) || 
+  process.env.REACT_APP_KEYCLOAK_URL_HTTP_RELATIVE_PATH || 
+  '/auth';
+
+export const KEYCLOAK_AUTH_URL = `${KEYCLOAK_URL}${KEYCLOAK_URL_HTTP_RELATIVE_PATH}`;
 
 export const CLIENT = "formsflow-client";
 export const STAFF_DESIGNER = "formsflow-designer";
 export const STAFF_REVIEWER = "formsflow-reviewer";
 export const ANONYMOUS_USER = "anonymous";
+export const FORMSFLOW_ADMIN = "formsflow-admin";
 
 export const OPERATIONS = {
   insert: {

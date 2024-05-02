@@ -1,9 +1,9 @@
 """Test suit for formio role id cached endpoint."""
 
 import jwt as pyjwt
-
 from formsflow_api_utils.utils import Cache
 from formsflow_api_utils.utils.enums import FormioRoles
+
 from tests.utilities.base_test import get_formio_roles, get_token
 
 
@@ -32,6 +32,7 @@ def test_formio_roles(app, client, session, jwt, mock_redis_client):
         key=app.config["FORMIO_JWT_SECRET"],
     )
     assert decoded_token["form"]["_id"] == resource_id
+    assert decoded_token["user"]["customRoles"] == ["formsflow-client"]
 
     # Requesting from reviewer role
     token = get_token(jwt, role="formsflow-reviewer")

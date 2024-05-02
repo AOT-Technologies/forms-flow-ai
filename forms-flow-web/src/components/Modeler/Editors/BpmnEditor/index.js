@@ -322,13 +322,14 @@ export default React.memo(
             ) : null}
 
             <button
+              data-testid="prcosses-bpmneditor-cancel-button"
               type="button"
               className="btn btn-link text-dark"
-              onClick={cancel}
-            >
+              onClick={cancel}>
               {t("Cancel")}
             </button>
             <Button
+              data-testid="prcosses-bpmneditor-export-button"
               variant="outline-dark"
               className="ms-3"
               onClick={handleExport}
@@ -337,6 +338,7 @@ export default React.memo(
               {t("Export")}
             </Button>
             <Button
+              data-testid="prcosses-bpmneditor-deploy-button"
               className="ms-3"
               onClick={deployProcess}
               // disabled={processName || !bpmPropertyInput}
@@ -350,10 +352,7 @@ export default React.memo(
             <div
               id="canvas"
               ref={containerRef}
-              className="bpm-modeler-container grab-cursor"
-              style={{
-                border: "1px solid #000000",
-              }}
+              className="bpm-modeler-container grab-cursor border border-dark border-1"
             >
               {!deploymentLoading ? null : <Loading />}
             </div>
@@ -364,6 +363,7 @@ export default React.memo(
                   className="mb-3 btn-zoom"
                   title={t("Reset Zoom")}
                   onClick={() => zoomReset()}
+                  data-testid="prcosses-bpmneditor-zoomreset-button"
                 >
                   <i className="fa fa-retweet" aria-hidden="true" />
                 </button>
@@ -371,6 +371,7 @@ export default React.memo(
                   className="btn-zoom"
                   title={t("Zoom In")}
                   onClick={() => zoom()}
+                  data-testid="prcosses-bpmneditor-zoom-button"
                 >
                   <i className="fa fa-search-plus" aria-hidden="true" />
                 </button>
@@ -378,6 +379,7 @@ export default React.memo(
                   className="btn-zoom"
                   title={t("Zoom Out")}
                   onClick={() => zoomOut()}
+                  data-testid="prcosses-bpmneditor-zoomout-button"
                 >
                   <i className="fa fa-search-minus" aria-hidden="true" />
                 </button>
@@ -390,7 +392,11 @@ export default React.memo(
           ></div>
         </div>
         <div className="d-flex justify-content-end">
-          <Button variant="info" className=" me-2" onClick={handleHelp}>
+          <Button
+            data-testid="prcosses-bpmneditor-help-button"
+            variant="info"
+            className=" me-2"
+            onClick={handleHelp}>
             {t("Help")}
           </Button>
         </div>

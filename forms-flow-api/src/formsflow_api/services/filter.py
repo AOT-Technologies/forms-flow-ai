@@ -59,7 +59,13 @@ class FilterService:
         if current_app.config.get("MULTI_TENANCY_ENABLED"):
             all_filters = Filter.find_all_filters()
             all_tasks_filter = any(
-                (item.name.lower() == "all tasks" and item.status == "active")
+                (
+                    item.name.lower() == "all tasks"
+                    and item.status == "active"
+                    and item.tenant is None
+                    and (not item.roles or item.roles is None)
+                    and (not item.users or item.users is None)
+                )
                 or (item.name.lower() == "all tasks" and item.tenant == tenant_key)
                 for item in all_filters
             )
@@ -68,13 +74,16 @@ class FilterService:
                 filter_obj = Filter(
                     name="All Tasks",
                     variables=[
-                        {"name": "applicationId", "label": "Application Id"},
+                        {"name": "applicationId", "label": "Submission Id"},
                         {"name": "formName", "label": "Form Name"},
                     ],
                     status="active",
                     created_by="system",
                     created="now()",
-                    criteria={},
+                    criteria={
+                        "candidateGroupsExpression": "${currentUserGroups()}",
+                        "includeAssignedTasks": True,
+                    },
                     users={},
                     roles={},
                     tenant=tenant_key,
@@ -99,7 +108,7 @@ class FilterService:
         )
         filter_data = filter_schema.dump(filters, many=True)
         default_variables = [
-            {"name": "applicationId", "label": "Application Id"},
+            {"name": "applicationId", "label": "Submission Id"},
             {"name": "formName", "label": "Form Name"},
         ]
         # User who created the filter or admin have edit permission.

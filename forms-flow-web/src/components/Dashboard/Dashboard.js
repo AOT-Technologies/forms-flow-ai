@@ -222,7 +222,7 @@ const Dashboard = React.memo(() => {
       <InputGroup>
         <FormControl
           type="search"
-          title="Search"
+          title={t("Search")}
           ref={searchInputBox}
           onKeyPress={(e) => e.key === "Enter" && handleSearch()}
           onChange={(e) => {
@@ -280,36 +280,28 @@ const Dashboard = React.memo(() => {
               <div className="ms-2">
                 {isAscending ? (
                   <i
-                    className="fa fa-sort-alpha-asc"
+                    className="fa fa-sort-alpha-asc dashboard-sort cursor-pointer"
                     onClick={() => {
                       handleSort("desc");
                     }}
                     data-toggle="tooltip"
                     title={t("Descending")}
-                    style={{
-                      cursor: "pointer",
-                      fontSize: "20px",
-                    }}
                   ></i>
                 ) : (
                   <i
-                    className="fa fa-sort-alpha-desc"
+                    className="fa fa-sort-alpha-desc dashboard-sort cursor-pointer"
                     onClick={() => {
                       handleSort("asc");
                     }}
                     data-toggle="tooltip"
                     title={t("Ascending")}
-                    style={{
-                      cursor: "pointer",
-                      fontSize: "20px",
-                    }}
                   ></i>
                 )}
               </div>
             </div>
           </div>
 
-          <div className="dashboard d-flex" style={{ minHeight: "60vh" }}>
+          <div className="dashboard dashboard-height d-flex">
             {submissionsList.length ? (
               <div className="col-12 px-0">
                 {!metricsDateRangeLoader && (

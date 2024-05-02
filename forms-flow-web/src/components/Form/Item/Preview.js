@@ -139,7 +139,6 @@ const Preview = ({handleNext, hideComponents, activeStep}) => {
         setNewpublishClicked(false);
       });
   };
-
  
 
   const gotoEdit = () =>{
@@ -165,7 +164,8 @@ const Preview = ({handleNext, hideComponents, activeStep}) => {
             className="btn btn-primary"
             onClick={() => {
               gotoEdit();
-            }}
+          }}
+          data-testid="form-edit-button"
           >
             <i className="fa fa-pencil" aria-hidden="true" />
             &nbsp;&nbsp;<Translation>{(t) => t("Edit Form")}</Translation>
@@ -175,6 +175,7 @@ const Preview = ({handleNext, hideComponents, activeStep}) => {
             onClick={() => {
               handleModalChange();
             }}
+            data-testid="form-version-history-button"
           >
             <i className="fa fa-rotate-left  " aria-hidden="true" />
             &nbsp;&nbsp;<Translation>{(t) => t("Form History")}</Translation>
@@ -185,6 +186,7 @@ const Preview = ({handleNext, hideComponents, activeStep}) => {
             onClick={() => {
               publishConfirmModalChange();
             }}
+            data-testid="form-duplicate-button"
           >
             <i className="fa fa-clone" aria-hidden="true"></i>
             &nbsp;&nbsp;
@@ -193,6 +195,7 @@ const Preview = ({handleNext, hideComponents, activeStep}) => {
           <button
             onClick={handleNext}
             className="ms-md-2 my-md-0 my-2 btn btn-primary"
+            data-testid="form-next-button"
           >
             {
               (activeStep === 1,
@@ -221,7 +224,14 @@ const Preview = ({handleNext, hideComponents, activeStep}) => {
         <Form
           form={form}
           hideComponents={hideComponents}
-          options={{ readOnly:true, language: lang, i18n: formio_resourceBundles }}
+          options={{ disabled: { submit: true },
+          buttonSettings: {
+            showSubmit: false
+          },
+          disableAlerts: true,
+          noAlerts: true,
+          language: lang, i18n: formio_resourceBundles }}
+          
         />
       </LoadingOverlay>
     </div>

@@ -10,8 +10,8 @@
 
 .help-btn {
   float: right;
-  background-color: #008297;
-  color: #ffffff;
+  background-color: var(--color-help);
+  color: var(--color-white);
   margin-top: 16px;
   height: 32px;
 }
@@ -19,6 +19,14 @@
 .card-body {
   padding-top: 16px !important;
   padding-bottom: 16px !important;
+}
+
+.no-results{
+  height: 300px;  
+}
+
+.dmn-table{
+  min-height: 400px;  
 }
 
 .card-overflow {
@@ -30,7 +38,7 @@
   padding-top: 16px;
 }
 .card-border {
-  border-left: solid 1px #e8e7e7;
+  border-left: solid 1px var(--color-gray-200);
 }
 .select-style {
   margin-bottom: 21px;
@@ -74,7 +82,7 @@ START: BPMN and DMN Toggle CSS
   left: 0;
   right: 0;
   bottom: 0;
-  background-color: #2196f3;
+  background-color: var(--color-primary-ltr);
   -webkit-transition: 0.4s;
   transition: 0.4s;
 }
@@ -86,17 +94,17 @@ START: BPMN and DMN Toggle CSS
   width: 20px;
   left: 3px;
   bottom: 3px;
-  background-color: white;
+  background-color: var(--color-white);
   -webkit-transition: 0.4s;
   transition: 0.4s;
 }
 
 input:checked+.slider {
-  background-color: #2196f3;
+  background-color: var(--color-primary-ltr);
 }
 
 input:focus+.slider {
-  box-shadow: 0 0 1px #2196f3;
+  box-shadow: 0 0 1px var(--color-primary-ltr);
 }
 
 input:checked+.slider:before {
@@ -130,9 +138,9 @@ input:checked+.slider:before {
   content: attr(data-off);
   position: absolute;
   right: 14px;
-  color: #ffffff;
+  color: var(--color-white);
   opacity: 1;
-  text-shadow: 1px 1px 2px rgba(255, 255, 255, 0.4);
+  text-shadow: 1px 1px 2px var(--color-text-shadow);
   transition: all 0.4s ease-in-out;
 }
 
@@ -140,9 +148,9 @@ input:checked+.slider:before {
   content: attr(data-on);
   position: absolute;
   left: 8px;
-  color: #ffffff;
+  color: var(--color-white);
   opacity: 0;
-  text-shadow: 1px 1px 2px rgba(255, 255, 255, 0.4);
+  text-shadow: 1px 1px 2px var(--color-text-shadow);
   transition: all 0.4s ease-in-out;
 }
 
@@ -160,7 +168,7 @@ END: BPMN and DMN Toggle CSS
 
 */
 .solid{
-  border-bottom: 3px solid #bbb;
+  border-bottom: 3px solid var(--color-gray-400);
 }
 .has-search .form-control {
   padding-left: 2.375rem;
@@ -175,13 +183,13 @@ END: BPMN and DMN Toggle CSS
   line-height: 2.375rem;
   text-align: center;
   pointer-events: none;
-  color: #aaa;
+  color: var(--color-gray-500);
 }
 .scrolly{
   overflow-y: scroll;
 }
 .containerbox{
-  box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2);
+  box-shadow: 0 4px 8px 0 var(--color-box-shadow);
   padding: 15px;
   overflow-y: auto;
   height: 700px;
@@ -207,14 +215,14 @@ END: BPMN and DMN Toggle CSS
   padding-left: 6px;
   padding-right: 6px;
   margin-right: 10px;
-  border: 1px solid #ccc;
+  border: 1px solid var(--color-gray-400);
   border-radius: 5px;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  box-shadow: 0 2px 4px var(--color-box-shadow);
   text-align: center;
 }
 
 .card-content {
-  background-color: #F3F2F1;
+  background-color: var(--color-main-bg);
   height: 60%;
   border-top-left-radius: 5px;
   border-top-right-radius: 5px;

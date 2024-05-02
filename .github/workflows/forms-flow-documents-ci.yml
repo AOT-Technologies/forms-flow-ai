@@ -34,7 +34,7 @@ jobs:
 
     strategy:
       matrix:
-        python-version: [3.12.1]
+        python-version: [3.12.3]
 
     steps:
       - uses: actions/checkout@v2

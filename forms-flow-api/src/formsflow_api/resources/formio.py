@@ -120,7 +120,7 @@ class FormioResource(Resource):
             payload: Dict[str, any] = {
                 "external": True,
                 "form": {"_id": _resource_id},
-                "user": {"_id": unique_user_id, "roles": _role_ids},
+                "user": {"_id": unique_user_id, "roles": _role_ids, "customRoles": user.roles},
             }
             if project_id:
                 payload["project"] = {"_id": project_id}

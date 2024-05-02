@@ -36,8 +36,7 @@ import { useTranslation } from "react-i18next";
 import {
     CUSTOM_SUBMISSION_URL,
     CUSTOM_SUBMISSION_ENABLE,
-    MULTITENANCY_ENABLED,
-    BASE_ROUTE
+    MULTITENANCY_ENABLED
 } from "../../../constants/constants";
 import { getCustomSubmission } from "../../../apiManager/services/FormServices";
 import { getFormioRoleIds } from "../../../apiManager/services/userservices";
@@ -241,7 +240,7 @@ const ServiceTaskListViewDetails = React.memo(() => {
 
     if (!bpmTaskId) {
         return (
-            <Row className="not-selected mt-2 ms-1 " style={{ color: "#757575" }}>
+            <Row className="not-selected mt-2 ms-1 ">
                 <i className="fa fa-info-circle me-2 mt-1" />
                 {t("Select a task in the list.")}
             </Row>
@@ -256,7 +255,7 @@ const ServiceTaskListViewDetails = React.memo(() => {
         /*TODO split render*/
         return (
             <div className="service-task-details">
-                <Link to={`${BASE_ROUTE}task`} className="btn px-0 border-0" onClick={handleBackButton} >
+                <Link to={`${redirectUrl}task`} className="btn px-0 border-0" onClick={handleBackButton}>
                     <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" className="bi bi-arrow-left" viewBox="0 0 16 16">
                         <path d="M15 8a.5.5 0 0 0-.5-.5H2.707l3.147-3.146a.5.5 0 1 0-.708-.708l-4 4a.5.5 0 0 0 0 .708l4 4a.5.5 0 0 0 .708-.708L2.707 8.5H14.5A.5.5 0 0 0 15 8z" />
                     </svg> {t("Back to task")}
@@ -267,8 +266,8 @@ const ServiceTaskListViewDetails = React.memo(() => {
                             <div className="d-flex justify-content-between">
                                 <Col xs={4}>
                                     <Row className="ms-0 task-header">{task?.name}</Row>
-                                    <Row className="ms-0 task-name">
-                                        <span className="application-id" data-title={t("Process Name")}>
+                                    <Row className="ms-0 fs-5 fw-normal">
+                                        <span className="application-id" title={t("Workflow")}>
                                             {" "}
                                             {
                                                 getProcessDataObjectFromList(processList,
@@ -278,16 +277,16 @@ const ServiceTaskListViewDetails = React.memo(() => {
                                         </span>
                                     </Row>
                                     <Row className="ms-0">
-                                        <span data-title={t("Application ID")} className="application-id">
-                                            {t("Application ID")}# {task?.applicationId}
+                                        <span data-title={t("Submission Id")} className="application-id">
+                                            {t("Submission Id")}# {task?.applicationId}
                                         </span>
                                     </Row>
                                 </Col>
-                                <Col xs={8}>
+                                    <Row>
                                     <TaskHeaderListView
                                         task={task} taskId={task?.id} groupView={true}
                                     />
-                                </Col>
+                                    </Row>
                            </div>
                         </Card.Body>
                     </Card>               
@@ -296,6 +295,7 @@ const ServiceTaskListViewDetails = React.memo(() => {
                             <Tab eventKey="form" title={t("Form")}>
                                 <LoadingOverlay
                                     active={task?.assignee !== currentUser}
+                                    spinner={false}
                                     styles={{
                                         overlay: (base) => ({
                                             ...base,

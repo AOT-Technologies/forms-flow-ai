@@ -1,9 +1,7 @@
 import React from "react";
-import "./footer.scss";
-import packageInfo  from "../../../package.json";
+import { version } from "../../../package.json";
 import { Translation } from "react-i18next";
 
-const version_org = packageInfo.version;
 
 const Footer = React.memo(() => {
   return (
@@ -15,7 +13,7 @@ const Footer = React.memo(() => {
           <a className="text-link" href="https://formsflow.ai/">
             formsflow.ai
           </a>
-          {` v${version_org}`}
+          {` v${version}`}
         </div>
       </div>
     </div>

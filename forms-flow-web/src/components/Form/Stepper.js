@@ -138,7 +138,7 @@ class StepperPage extends PureComponent {
       };
     }
 
-    if (nextProps.params.step === "view-edit") {
+    if (["view-edit", "preview"].includes(nextProps.params.step)) {
       stateData = {
         ...stateData,
         displayMode: "view",
@@ -250,6 +250,7 @@ class StepperPage extends PureComponent {
         ? formProcessList.taskVariable
         : [],
       anonymous: formProcessList.anonymous ? true : false,
+      selectedAllField: formProcessList.selectedAllField,
       parentFormId: formProcessList?.parentFormId,
       formType: formProcessList.formType,
     };
@@ -371,6 +372,7 @@ class StepperPage extends PureComponent {
             <Link
               to={`${this.state.redirectUrl}form`}
               title={t("Back to Form List")}
+              data-testid="back-to-form-list"
             >
               <i className="fa fa-chevron-left fa-lg m-2" />
             </Link>

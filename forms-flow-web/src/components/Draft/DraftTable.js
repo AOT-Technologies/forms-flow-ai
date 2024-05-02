@@ -128,7 +128,7 @@ const DraftTable = () => {
   return (
     <>
      <LoadingOverlay active={isDraftLoading} spinner text={t("Loading...")}>
-      <div style={{ minHeight: "400px" }}>
+      <div className="draftTable">
        
           <table className="table custom-table table-responsive-sm">
             <thead>
@@ -137,12 +137,14 @@ const DraftTable = () => {
                   {t("Id")}{" "}
                   {isAscending && sortBy === "id" ? (
                     <i
+                      data-testid="draft-id-desc-sort-icon"
                       onClick={() => updateSort("desc", "id")}
                       className="fa-sharp fa-solid fa-arrow-down-1-9 cursor-pointer"
                       title={t("Descending")}
                     />
                   ) : (
                     <i
+                      data-testid="draft-id-asc-sort-icon"
                       onClick={() => updateSort("asc", "id")}
                       className="fa-sharp fa-solid fa-arrow-down-9-1 cursor-pointer"
                       title={t("Ascending")}
@@ -153,12 +155,14 @@ const DraftTable = () => {
                   {t("Title")}
                   {isAscending && sortBy === "DraftName" ? (
                     <i
+                      data-testid="draft-title-desc-sort-icon"
                       onClick={() => updateSort("desc", "DraftName")}
                       className="fa-sharp fa-solid fa-arrow-down-a-z cursor-pointer"
                       title={t("Descending")}                      
                     />
                   ) : (
                     <i
+                      data-testid="draft-title-asc-sort-icon"
                       onClick={() => updateSort("asc", "DraftName")}
                       className="fa-sharp fa-solid fa-arrow-down-z-a cursor-pointer"
                       title={t("Ascending")}
@@ -169,12 +173,14 @@ const DraftTable = () => {
                   {t("Last Modified")}{" "}
                   {isAscending && sortBy === "modified" ? (
                     <i
+                      data-testid="draft-modified-desc-sort-icon"
                       onClick={() => updateSort("desc", "modified")}
                       className="fa-sharp fa-solid fa-arrow-down-1-9  ms-2 cursor-pointer"
                       title={t("Descending")}
                     />
                   ) : (
                     <i
+                      data-testid="draft-modified-asc-sort-icon"
                       onClick={() => updateSort("asc", "modified")}
                       className="fa-sharp fa-solid fa-arrow-down-9-1  ms-2 cursor-pointer"
                       title={t("Ascending")}

@@ -1,5 +1,5 @@
 import React, { useEffect } from "react";
-import { Route, Routes } from "react-router-dom-v6";
+import { Route, Routes } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import ApplicationList from "./List";
 import ViewApplication from "./ViewApplication";

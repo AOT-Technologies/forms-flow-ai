@@ -9,7 +9,7 @@ import {
   Errors,
 } from "react-formio";
 import { push } from "connected-react-router";
-import { Link, useParams } from "react-router-dom-v6";
+import { Link, useParams } from "react-router-dom";
 import { useTranslation, Translation } from "react-i18next";
 import LoadingOverlay from "react-loading-overlay-ts";
 import { toast } from "react-toastify";

@@ -7,7 +7,7 @@ import "../assets/styles/user-styles.css";
 import BaseRouting from "./BaseRouting";
 import { Helmet } from "react-helmet";
 import { KEYCLOAK_URL } from "../constants/constants";
-import { BrowserRouter } from "react-router-dom-v6";
+import { BrowserRouter } from "react-router-dom";
 
 const App = React.memo((props) => {
   const { store, history, publish, subscribe, getKcInstance } = props;

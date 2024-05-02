@@ -1,5 +1,5 @@
 import React from "react";
-import { Route, Routes, useLocation, Navigate } from "react-router-dom-v6";
+import { Route, Routes, useLocation, Navigate } from "react-router-dom";
 import { useSelector } from "react-redux";
 import PublicRoute from "./PublicRoute";
 import PrivateRoute from "./PrivateRoute";

@@ -28,7 +28,7 @@ import WorkFlow from "./Steps/WorkFlow";
 import PreviewStepper from "./Steps/PreviewStepper";
 import Stepper from "../../containers/Stepper/index.js";
 import "./stepper.scss";
-import { Link } from "react-router-dom-v6";
+import { Link } from "react-router-dom";
 import {
   FORM_CREATE_ROUTE,
   STEPPER_ROUTES,

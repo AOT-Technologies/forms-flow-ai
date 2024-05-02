@@ -1,5 +1,5 @@
 import React, { useEffect } from "react";
-import {Route, Routes } from "react-router-dom-v6";
+import {Route, Routes } from "react-router-dom";
 import { connect } from "react-redux";
 import { getForm } from "react-formio";
 import View from "../components/Form/Item/View";

@@ -5,7 +5,7 @@ import {
   setSelectedBPMFilter,
   setSelectedTaskID,
 } from "../../../actions/bpmTaskActions";
-import { Link } from "react-router-dom-v6";
+import { Link } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import { MULTITENANCY_ENABLED } from "../../../constants/constants";
 

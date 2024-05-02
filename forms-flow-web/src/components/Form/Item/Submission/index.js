@@ -1,10 +1,9 @@
 import React from "react";
 import Item from "./Item/index";
-import { Routes, Route, Navigate } from "react-router-dom-v6";
+import { Routes, Route, Navigate } from "react-router-dom";
 
 const Form = React.memo(() => {
   return (
-    <div>
       <Routes>
        <Route path={``} element={<Navigate to="/404" replace/>} />
         <Route
@@ -12,7 +11,7 @@ const Form = React.memo(() => {
           element={<Item/>}
         />
       </Routes>
-    </div>
+     
   );
 });
 

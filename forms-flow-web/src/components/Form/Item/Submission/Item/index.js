@@ -1,4 +1,4 @@
-import { Navigate, Route, Routes, useParams } from "react-router-dom-v6";
+import { Navigate, Route, Routes, useParams } from "react-router-dom";
 import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { getSubmission, selectRoot } from "react-formio";
@@ -78,28 +78,7 @@ const Item = React.memo(() => {
   }, [applicationStatus, editAllowed]);
 
   return (
-    <div>
-      <ul className="nav nav-tabs">
-        {/* {showViewSubmissions && getUserRolePermission(userRoles, STAFF_REVIEWER) ?
-        <li className="nav-item">
-          <Link className="nav-link" to={`${redirectUrl}form/${formId}/submission`}>
-            <i className="fa fa-chevron-left fa-lg" />
-          </Link>
-        </li>:null} */}
-        {/*{(path.indexOf("edit") > 0) ?
-          <li className="nav-item">
-            <Link className="nav-link" to={`/form/${formId}/submission/${submissionId}`}>
-            <img src="/webfonts/fa_eye.svg" alt="back"/> View
-            </Link>
-          </li>
-          :
-          editAllowed ? (<li className="nav-item">
-            <Link className="nav-link" to={`/form/${formId}/submission/${submissionId}/edit`}>
-              <img src="/webfonts/fa_edit.svg" alt="back"/> Edit
-            </Link>
-          </li>) : null
-        }*/}
-      </ul>
+    
       <Routes>
        
           <Route
@@ -108,9 +87,7 @@ const Item = React.memo(() => {
             errorMessage={t("Bad Request")}
             errorCode={400}
           /> }
-          />
-      
-        
+          />        
         <Route
           path={`edit/:notavailable`}
           element={<Navigate to="/404"/>}
@@ -132,7 +109,7 @@ const Item = React.memo(() => {
           element={<Navigate to="/404"/>}
         />
       </Routes>
-    </div>
+    
   );
 });
 

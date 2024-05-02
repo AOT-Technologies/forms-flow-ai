@@ -5,7 +5,7 @@ import {
   STAFF_DESIGNER,
 } from "../../constants/constants";
 import Loading from "../../containers/Loading";
-import { Routes, Route, Navigate } from "react-router-dom-v6";
+import { Routes, Route, Navigate } from "react-router-dom";
 
  
 export default React.memo(() => {

@@ -1,5 +1,5 @@
 import React from "react";
-import { Route, Routes, Navigate } from "react-router-dom-v6";
+import { Route, Routes, Navigate } from "react-router-dom";
 import { useSelector } from "react-redux";
 
 import Base from "./Main";

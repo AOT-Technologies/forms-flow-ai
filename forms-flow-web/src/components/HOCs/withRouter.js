@@ -1,5 +1,5 @@
 import React from 'react';
-import { useParams } from 'react-router-dom-v6';
+import { useParams } from 'react-router-dom';
 
 const withRouteParams = (WrappedComponent) => {
   return (props) => {

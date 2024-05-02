@@ -5,7 +5,7 @@ import {
   useParams,
   Routes,
   Navigate, 
-} from "react-router-dom-v6";
+} from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import {
   BASE_ROUTE,
@@ -255,7 +255,7 @@ const PrivateRoute = React.memo((props) => {
               }
             />
             <Route path="/404" exact={true} element={<NotFound />} />
-            <Route path="*" element={<Navigate to="/404" />} />
+            <Route path="*" element={<Navigate to={`${redirecUrl}/404`} />} />
           </Routes>
         </Suspense>
       ) : (

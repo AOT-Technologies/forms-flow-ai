@@ -29,7 +29,7 @@ import TaskSortSelectedList from "./list/sort/TaskSortSelectedList";
 import SocketIOService from "../../services/SocketIOService";
 import isEqual from "lodash/isEqual";
 import cloneDeep from "lodash/cloneDeep";
-import { Route, Navigate, Routes } from "react-router-dom-v6";
+import { Route, Navigate, Routes } from "react-router-dom";
 import { push, replace } from "connected-react-router";
 import {MULTITENANCY_ENABLED } from "../../constants/constants";
 import TaskHead from "../../containers/TaskHead";

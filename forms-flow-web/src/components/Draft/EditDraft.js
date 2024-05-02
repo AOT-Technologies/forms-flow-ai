@@ -4,7 +4,6 @@ import { useDispatch, useSelector } from "react-redux";
 
 import Loading from "../../containers/Loading";
 import { getForm, getSubmission } from "react-formio";
-// import { Translation } from "react-i18next";
 import { MULTITENANCY_ENABLED } from "../../constants/constants";
 import { getDraftById } from "../../apiManager/services/draftService";
 import Edit from "./Edit";
@@ -34,10 +33,7 @@ const EditDraft = React.memo(() => {
         }
       })
     );
-    return () => {
-      //   dispatch(setApplicationDetailLoader(true));
-      //   dispatch(setApplicationDetailStatusCode(""));
-    };
+ 
   }, [draftId, dispatch]);
 
   if (isDraftDetailLoading) {

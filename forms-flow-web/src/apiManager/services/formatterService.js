@@ -40,7 +40,7 @@ export const addApplicationDetailsToFormComponent = (formObjData) => {
       input: true,
       tableView: true,
       key: "applicationId",
-      title: "Submission ID",
+      title: "Submission Id",
     });
   }
   return formObjData;
@@ -167,18 +167,18 @@ export const copyText = (text)=>{
 });
 };
 
-export const listProcess = (processes) => {
-  if (processes?.length > 0) {
-    const data = processes.map((process) => {
-      const fullLabel = process.name + ` (${process.key})`;
-      return {
-        label: fullLabel,
-        value: process.key,
-        tenant: process.tenantId,
-      };
-    });
-    return data;
-  } else {
-    return [];
-  }
+export const listProcess = (processes = [], excludeProcessKey) => {
+    /**
+   * Maps over the given processes array to generate a new array of objects
+   * with label and value properties for each process.
+   * If excludeProcessKey is truthy, the label will just contain the process name,
+   * otherwise it will contain the name and key.
+   */
+  return processes.length ? processes.map((process) => ({
+    label: !excludeProcessKey
+      ? process.name + ` (${process.key})`
+      : process.name,
+    value: process.key,
+    tenant: process.tenantId,
+  })) : [];
 };

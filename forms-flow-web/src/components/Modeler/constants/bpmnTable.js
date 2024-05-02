@@ -98,7 +98,7 @@ function BpmnTable() {
         text={t("Loading...")}
         active={isLoading || countLoading}
       >
-        <div style={{ minHeight: "400px" }}>
+        <div className="dmn-table">
  
           <table className="table custom-table table-responsive-sm mt-2">
             <thead>
@@ -119,21 +119,26 @@ function BpmnTable() {
                 placeholder={t("Search by workflow name")}
                 className="bg-white"
                 title={t("Search by workflow name")}
+                data-testid="processes-search-workflow-input-box"
               />
               {search && (
-            
-                  <InputGroup.Text onClick={onClearSearch} className="bg-white cursor-pointer">
+                <InputGroup.Append  data-testid="processes-search-clear-button" onClick={onClearSearch}>
+                  <InputGroup.Text className="h-100">
                     <i className="fa fa-times"></i>
                   </InputGroup.Text>
-                 
+                </InputGroup.Append>
               )}
- 
-                <InputGroup.Text   onClick={handleSearchButtonClick}
+              <InputGroup.Append
+                data-testid="processes-search-click-button"
+                onClick={handleSearchButtonClick}
                 disabled={!search?.trim()}
-                className="bg-white cursor-pointer">
+                className="cursor-pointer"
+              >
+                <InputGroup.Text 
+                className="bg-white h-100">
                   <i className="fa fa-search"></i>
                 </InputGroup.Text>
- 
+              </InputGroup.Append>
             </InputGroup>
                 </th>
               </tr>
@@ -143,8 +148,7 @@ function BpmnTable() {
                 <tr className="no-results-row">
                   <td
                     colSpan="4"
-                    style={{ height: "300px" }}
-                    className="text-center"
+                    className="text-center no-results"
                   >
                      { isLoading ? null : t("No Process Found")}
                   </td>
@@ -158,7 +162,10 @@ function BpmnTable() {
                     <td>{processItem.key}</td>
                     <td>{t("BPMN")}</td>
                     <td className="d-flex justify-content-end w-100">
-                      <button className="btn btn-link text-primary" onClick={()=>{gotoEdit(processItem);}}> 
+                      <button
+                        data-testid={`processes-edit-workflow-${processItem.key}`}
+                        className="btn btn-link text-primary"
+                        onClick={() => { gotoEdit(processItem); }}> 
                        <i className="fas fa-edit me-2"/>
                         {t("Edit Workflow")}</button>
                     </td>
@@ -173,8 +180,8 @@ function BpmnTable() {
         process.length ?  <div className="d-flex justify-content-between align-items-center  flex-column flex-md-row">
         <div className="d-flex align-items-center">
           <span className="me-2"> {t("Rows per page")}</span>
-          <Dropdown size="sm">
-            <Dropdown.Toggle variant="light" id="dropdown-basic">
+          <Dropdown data-testid="processes-bpmn-pagination-dropdown" size="sm">
+            <Dropdown.Toggle data-testid="processes-bpmn-pagination-dropdown-limit" variant="light" id="dropdown-basic">
               {limit}
             </Dropdown.Toggle>
 
@@ -186,6 +193,7 @@ function BpmnTable() {
                   onClick={() => {
                     onLimitChange(option.value);
                   }}
+                  data-testid={`processes-bpmn-pagination-dropdown-limit-${index}`}
                 >
                   {option.text}
                 </Dropdown.Item>

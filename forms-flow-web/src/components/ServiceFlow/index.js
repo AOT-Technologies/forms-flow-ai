@@ -1,11 +1,10 @@
-import React, { useCallback, useEffect, useRef } from "react";
+import React, { useCallback, useEffect, useRef, useState } from "react";
 import ServiceFlowTaskList from "./list/ServiceTaskList";
 import ServiceTaskListView from "./list/ServiceTaskListView";
-import ServiceTaskListViewDetails from './list/ServiceTaskListViewDetails';
-
+import ServiceTaskListViewDetails from "./list/ServiceTaskListViewDetails";
 
 import ServiceFlowTaskDetails from "./details/ServiceTaskDetails";
- import "./ServiceFlow.scss";
+import "./ServiceFlow.scss";
 import {
   fetchBPMTaskCount,
   fetchFilterList,
@@ -22,17 +21,19 @@ import {
   setBPMFiltersAndCount,
   setBPMTaskDetailLoader,
   setFilterListParams,
+  setIsAllTaskVariableExpand,
   setSelectedBPMFilter,
   setSelectedTaskID,
 } from "../../actions/bpmTaskActions";
-import TaskSortSelectedList from "./list/sort/TaskSortSelectedList";
+// import TaskSortSelectedList from "./list/sort/TaskSortSelectedList";
 import SocketIOService from "../../services/SocketIOService";
 import isEqual from "lodash/isEqual";
 import cloneDeep from "lodash/cloneDeep";
-import { Route, Redirect, Switch } from "react-router-dom";
+import { Route, Navigate, Routes } from "react-router-dom";
 import { push, replace } from "connected-react-router";
-import { BASE_ROUTE,MULTITENANCY_ENABLED } from "../../constants/constants";
+import { MULTITENANCY_ENABLED } from "../../constants/constants";
 import TaskHead from "../../containers/TaskHead";
+import TaskSearchBarView from "./list/search/TaskSearchBarView";
 
 export default React.memo(() => {
   const dispatch = useDispatch();
@@ -40,9 +41,7 @@ export default React.memo(() => {
   const selectedFilterId = useSelector(
     (state) => state.bpmTasks.selectedFilter?.id || null
   );
-  const bpmFiltersList = useSelector(
-    (state) => state.bpmTasks.filterList
-  );
+  const bpmFiltersList = useSelector((state) => state.bpmTasks.filterList);
   const bpmTaskId = useSelector((state) => state.bpmTasks.taskId);
   const reqData = useSelector((state) => state.bpmTasks.listReqParams);
   const selectedFilter = useSelector((state) => state.bpmTasks.selectedFilter);
@@ -58,15 +57,17 @@ export default React.memo(() => {
   );
   const firstResult = useSelector((state) => state.bpmTasks.firstResult);
   const taskList = useSelector((state) => state.bpmTasks.tasksList);
+  const allTaskVariablesExpanded = useSelector(
+    (state) => state.bpmTasks.allTaskVariablesExpand
+  );
   const selectedFilterIdRef = useRef(selectedFilterId);
   const bpmTaskIdRef = useRef(bpmTaskId);
   const reqDataRef = useRef(reqData);
   const firstResultsRef = useRef(firstResult);
   const taskListRef = useRef(taskList);
   const tenantKey = useSelector((state) => state.tenants?.tenantId);
-  const cardView = useSelector(
-    (state) => state.bpmTasks.viewType
-  );
+  const cardView = useSelector((state) => state.bpmTasks.viewType);
+  const [expandedTasks, setExpandedTasks] = useState({});
   const redirectUrl = useRef(
     MULTITENANCY_ENABLED ? `/tenant/${tenantKey}/` : "/"
   );
@@ -82,6 +83,7 @@ export default React.memo(() => {
     redirectUrl.current = MULTITENANCY_ENABLED ? `/tenant/${tenantKey}/` : "/";
   });
 
+// This useEffect will render if any changes happens in the depenendencies mentioned in the array and will update filter list params
   useEffect(() => {
     const reqParamData = {
       ...{ sorting: [...sortParams.sorting] },
@@ -90,62 +92,49 @@ export default React.memo(() => {
     selectedBPMFilterParams = bpmFiltersList.find(
       (item) => item.id === selectedFilterId
     );
-    if(selectedBPMFilterParams){
+    if (selectedBPMFilterParams) {
       selectedBPMFilterParams = {
         ...selectedBPMFilterParams,
         criteria: {
           ...selectedBPMFilterParams?.criteria,
-          ...reqParamData
-        }
+          ...reqParamData,
+        },
       };
     }
-    if (!isEqual(selectedBPMFilterParams, listReqParams) && selectedBPMFilterParams) {
+    if (
+      !isEqual(selectedBPMFilterParams, listReqParams) &&
+      selectedBPMFilterParams
+    ) {
       dispatch(setFilterListParams(cloneDeep(selectedBPMFilterParams)));
     }
-  }, [selectedFilterId]);
-
-  useEffect(() => {
-    const reqParamData = {
-      ...{ sorting: [...sortParams.sorting] },
-      ...searchParams,
-    };
-    selectedBPMFilterParams = bpmFiltersList.find(
-      (item) => item.id === selectedFilterId
-    );
-    if(selectedBPMFilterParams){
-      selectedBPMFilterParams = {
-        ...selectedBPMFilterParams,
-        criteria: {
-          ...selectedBPMFilterParams?.criteria,
-          ...reqParamData
-        }
-      };
-    }
-    if (!isEqual(selectedBPMFilterParams, listReqParams) && selectedBPMFilterParams) {
-      dispatch(setFilterListParams(cloneDeep(selectedBPMFilterParams)));
-    }
-  }, [searchParams, sortParams, dispatch, listReqParams]);
-
+  }, [selectedFilterId, searchParams, sortParams, dispatch, listReqParams]);
 
   useEffect(() => {
     dispatch(setBPMFilterLoader(true));
-    dispatch(fetchFilterList((err,data)=>{
-      if(data){
-        fetchBPMTaskCount(data).then((res)=>{
-          dispatch(setBPMFiltersAndCount(res.data));
-        }).catch((err)=> console.error(err)).finally(()=>{
-          dispatch(setBPMFilterLoader(false));
-        });
-      }
-    }));
+    dispatch(
+      fetchFilterList((err, data) => {
+        if (data) {
+          fetchBPMTaskCount(data)
+            .then((res) => {
+              dispatch(setBPMFiltersAndCount(res.data));
+            })
+            .catch((err) => console.error(err))
+            .finally(() => {
+              dispatch(setBPMFilterLoader(false));
+            });
+        }
+      })
+    );
     dispatch(fetchProcessDefinitionList());
   }, [dispatch]);
 
-  useEffect(()=>{
-    if(filterList?.length){
+  useEffect(() => {
+    if (filterList?.length) {
       let filterSelected;
       if (filterList.length > 1) {
-        filterSelected = filterList?.find((filter) => filter.name === ALL_TASKS);
+        filterSelected = filterList?.find(
+          (filter) => filter.name === ALL_TASKS
+        );
         if (!filterSelected) {
           filterSelected = filterList[0];
         }
@@ -154,28 +143,50 @@ export default React.memo(() => {
       }
       dispatch(setSelectedBPMFilter(filterSelected));
     }
-  },[filterList?.length]);
+  }, [filterList?.length]);
 
   const checkIfTaskIDExistsInList = (list, id) => {
     return list.some((task) => task.id === id);
   };
+
+  const toggleAllTaskVariables = () => {
+    const newExpandedState = !allTaskVariablesExpanded;
+    const updatedExpandedTasks = {};
+
+    taskList.forEach((task) => {
+      if (task?._embedded?.variable?.length > 1) {
+        updatedExpandedTasks[task.id] = newExpandedState;
+      }
+    });
+    setExpandedTasks(updatedExpandedTasks);
+    dispatch(setIsAllTaskVariableExpand(newExpandedState));
+  };
+
+  // if all tasks are expanded or collpased individually then update the  allTaskVariablesExpand variable
+  useEffect(() => {
+    if (taskList.every((task) => expandedTasks[task.id])) {
+      dispatch(setIsAllTaskVariableExpand(true));
+    }
+    if (taskList.every((task) => !expandedTasks[task.id])) {
+      dispatch(setIsAllTaskVariableExpand(false));
+    }
+
+  }, [expandedTasks]);
   const SocketIOCallback = useCallback(
     (refreshedTaskId, forceReload, isUpdateEvent) => {
-
       const reqParamData = {
         ...{ sorting: [...sortParams.sorting] },
         ...searchParams,
       };
- 
 
-        const selectedBPMFilterParams = {
-          ...selectedFilter,
-          criteria: {
-            ...selectedFilter?.criteria,
-            ...reqParamData
-          }
-        };
-       
+      const selectedBPMFilterParams = {
+        ...selectedFilter,
+        criteria: {
+          ...selectedFilter?.criteria,
+          ...reqParamData,
+        },
+      };
+
       if (forceReload) {
         dispatch(
           fetchServiceTaskList(
@@ -212,7 +223,7 @@ export default React.memo(() => {
               fetchServiceTaskList(
                 selectedBPMFilterParams,
                 null,
-                firstResultsRef.current,
+                firstResultsRef.current
               )
             ); //Refreshes the Task
           }
@@ -231,7 +242,7 @@ export default React.memo(() => {
         }
       }
     },
-    [dispatch, currentUser, selectedFilter,searchParams, sortParams]
+    [dispatch, currentUser, selectedFilter, searchParams, sortParams]
   );
 
   useEffect(() => {
@@ -257,60 +268,50 @@ export default React.memo(() => {
   return (
     <div>
       <TaskHead />
+      <TaskSearchBarView
+              toggleAllTaskVariables={toggleAllTaskVariables}
+            />
       {cardView ? (
         <>
-        
-        <div className="row mx-0">
-        <div className="col-12 px-0 col-md-4 col-xl-3">
-          <section>
-            <header className="d-flex flex-wrap align-items-center p-2 bg-light shadow mb-2">
+          <div className="row mx-0">
+           
+            <div className="col-12 px-0 col-md-4 col-xl-3">
+              <section>
+                {/* <header className="d-flex flex-wrap align-items-center p-2 bg-light shadow mb-2">
               <TaskSortSelectedList />
-            </header>
-            <ServiceFlowTaskList />
-          </section>
-        </div>
-        <div className="col-12 pe-0 ps-md-5 col-md-8 col-xl-9  px-2 pe-md-0 py-5 py-md-0 border ">
-          <Switch>
-            <Route
-              path={`${BASE_ROUTE}task/:taskId?`}
-              component={ServiceFlowTaskDetails}
-            ></Route>
-            <Route path={`${BASE_ROUTE}task/:taskId/:notAvailable`}>
-              {" "}
-              <Redirect exact to="/404" />
-            </Route>
-          </Switch>
-        </div>
-        </div>
+            </header> */}
+                <ServiceFlowTaskList 
+                  expandedTasks={expandedTasks}
+                  setExpandedTasks={setExpandedTasks}/>
+              </section>
+            </div>
+            <div className="col-12 pe-0 ps-md-5 col-md-8 col-xl-9  px-2 pe-md-0 py-5 py-md-0 border ">
+              <Routes>
+                <Route
+                  path={`:taskId?`}
+                  element={<ServiceFlowTaskDetails/>}
+                ></Route>
+                <Route path={`*`} element={<Navigate to={`/404`} />} />
+              </Routes>
+            </div>
+          </div>
         </>
-      ) :
-        (
-          <Switch>
-            <Route
-              exact
-              path={`${BASE_ROUTE}task`}
-              render={() => (
-                <>
-                  <ServiceTaskListView />
-                </>
-              )}
-            >
-            </Route>
-            <Route
-              path={`${BASE_ROUTE}task/:taskId`}
-              render={() => (
-                <>
-                  
-                  <ServiceTaskListViewDetails />
-                </>
-              )}
-              
-            ></Route>
-            <Route path={`${BASE_ROUTE}task/:taskId/:notAvailable`}>
-              <Redirect exact to="/404" />
-            </Route>
-          </Switch>
-        ) }
+      ) : (
+        <Routes>
+          <Route 
+            path={`task`}
+            element={<ServiceTaskListView
+              expandedTasks={expandedTasks}
+              setExpandedTasks={setExpandedTasks}
+            />}
+          />
+          <Route
+            path={`:taskId`}
+            element={ <ServiceTaskListViewDetails />}
+          />
+          <Route path={`*`} element={<Navigate to={`/404`} />} />
+        </Routes>
+      )}
     </div>
   );
 });

@@ -1,10 +1,8 @@
 import React from "react";
-import "./footer.scss";
 import packageInfo  from "../../../package.json";
 import { Translation } from "react-i18next";
 
 const version_org = packageInfo.version;
-
 const Footer = React.memo(() => {
   return (
     <div className="ps-md-3 pb-3">

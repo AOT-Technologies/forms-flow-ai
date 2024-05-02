@@ -99,18 +99,17 @@ export default React.memo(() => {
       <div className="d-flex pb-2">
       <button
   onClick={handleCreateNew}
-  className="btn btn-primary"
-  style={{ whiteSpace: "nowrap" }}
+  className="text-nowrap btn btn-primary"
+  
 >
   <i className="fa fa-plus me-2" />
   {isBpmnModel ? t("Create Workflow") : t("Create DMN")}
 </button>
 
         <button
-  className="btn btn-outline-primary  ms-4"
+  className="text-nowrap btn btn-outline-primary  ms-4"
   onClick={uploadClick}
   title={isBpmnModel ? t("Upload Workflow") : t("Upload DMN")}
-  style={{ whiteSpace: "nowrap" }}
 >
   <i className="fa fa-upload me-2" aria-hidden="true" />
   {isBpmnModel ? t("Upload Workflow") : t("Upload DMN")}

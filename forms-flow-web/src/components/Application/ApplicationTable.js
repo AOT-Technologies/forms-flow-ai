@@ -189,12 +189,14 @@ const ApplicationTable = () => {
                 {t("Id")}{" "}
                 {isAscending && sortBy === "id" ? (
                   <i
+                    data-testid="submission-id-desc-sort-icon"
                     onClick={() => updateSort("desc", "id")}
                     className="fa-sharp fa-solid fa-arrow-down-1-9 cursor-pointer"
                     title={t("Descending")}
                   />
                 ) : (
                   <i
+                    data-testid="submission-id-asc-sort-icon"
                     onClick={() => updateSort("asc", "id")}
                     className="fa-sharp fa-solid fa-arrow-down-9-1 cursor-pointer"
                     title={t("Ascending")}
@@ -205,12 +207,14 @@ const ApplicationTable = () => {
                 {t("Form Title")}{" "}
                 {isAscending && sortBy === "applicationName" ? (
                   <i
+                    data-testid="submission-title-desc-sort-icon"
                     onClick={() => updateSort("desc", "applicationName")}
                     className="fa-sharp fa-solid fa-arrow-down-a-z cursor-pointer"
                     title={t("Descending")}
                   />
                 ) : (
                   <i
+                    data-testid="submission-title-asc-sort-icon"
                     onClick={() => updateSort("asc", "applicationName")}
                     className="fa-sharp fa-solid fa-arrow-down-z-a cursor-pointer"
                     title={t("Ascending")}
@@ -221,12 +225,14 @@ const ApplicationTable = () => {
                 {t("Status")}
                 {isAscending && sortBy === "applicationStatus" ? (
                   <i
+                    data-testid="submission-status-desc-sort-icon"
                     onClick={() => updateSort("desc", "applicationStatus")}
                     className="fa-sharp fa-solid fa-arrow-down-a-z  ms-2 cursor-pointer"
                     title={t("Descending")}
                   />
                 ) : (
                   <i
+                    data-testid="submission-status-asc-sort-icon"
                     onClick={() => updateSort("asc", "applicationStatus")}
                     className="fa-sharp fa-solid fa-arrow-down-z-a  ms-2 cursor-pointer"
                     title={t("Ascending")}
@@ -237,12 +243,14 @@ const ApplicationTable = () => {
                 {t("Last Modified")}
                 {isAscending && sortBy === "modified" ? (
                   <i
+                    data-testid="submission-modified-desc-sort-icon"
                     onClick={() => updateSort("desc", "modified")}
                     className="fa-sharp fa-solid fa-arrow-down-1-9  ms-2 cursor-pointer"
                     title={t("Descending")}
                   />
                 ) : (
                   <i
+                    data-testid="submission-modified-asc-sort-icon"
                     onClick={() => updateSort("asc", "modified")}
                     className="fa-sharp fa-solid fa-arrow-down-9-1  ms-2 cursor-pointer"
                     title={t("Ascending")}

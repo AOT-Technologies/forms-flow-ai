@@ -2,6 +2,7 @@
 
 Constants file needed for the static values.
 """
+
 from enum import Enum
 from http import HTTPStatus
 
@@ -52,6 +53,8 @@ class BusinessErrorCode(ErrorCodeMixin, Enum):
         HTTPStatus.BAD_REQUEST,
     )
     FILTER_NOT_FOUND = "The specified filter does not exist", HTTPStatus.BAD_REQUEST
+    PROCESS_START_ERROR = "Cannot start process instance", HTTPStatus.BAD_REQUEST
+    USER_NOT_FOUND = "User not found", HTTPStatus.BAD_REQUEST
 
     def __new__(cls, message, status_code):
         """Constructor."""

@@ -1,4 +1,5 @@
 """Keycloak factory implementation."""
+
 from flask import current_app
 
 from .keycloak_admin import KeycloakAdmin

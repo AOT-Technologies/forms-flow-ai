@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import TaskSortSelectedList from "../sort/TaskSortSelectedList";
-import TaskFilterListViewComponent from "./TaskFilterListViewComponent";
+import TaskFilterViewComponent from "./TaskFilterViewComponent";
 import "./TaskSearchBarListView.scss";
 import { setSelectedTaskVariables } from "../../../../actions/bpmTaskActions";
 import { useTranslation } from "react-i18next"; 
@@ -17,6 +17,7 @@ const TaskSearchBarListView = React.memo(({ toggleAllTaskVariables }) => {
   const [filterParams, setFilterParams] = useState({});
   const taskList = useSelector((state) => state.bpmTasks.tasksList);
   const allTaskVariablesExpanded = useSelector((state) => state.bpmTasks.allTaskVariablesExpand);
+  const selectedFilter = useSelector((state) => state.bpmTasks.selectedFilter);
   const dispatch = useDispatch();
   const { t } = useTranslation();
   useEffect(() => {
@@ -29,9 +30,15 @@ const TaskSearchBarListView = React.memo(({ toggleAllTaskVariables }) => {
     });
     dispatch(setSelectedTaskVariables(taskVaribles));
   }, [taskList]);
+  
+  useEffect(() => {
+    //The search fields get clear when switching the filter
+    setFilterParams({});
+  }, [selectedFilter]);
 
   return (
     <>
+     {tasksCount > 0 ? (
       <div className="d-flex justify-content-end filter-sort-bar mt-1">
         <div className="sort-container task-filter-list-view">
           <button
@@ -107,7 +114,7 @@ const TaskSearchBarListView = React.memo(({ toggleAllTaskVariables }) => {
 
           {displayFilter && (
             <div className="clickable shadow border filter-list-view m-0 p-0">
-              <TaskFilterListViewComponent
+              <TaskFilterViewComponent
                 totalTasks={isTaskListLoading ? 0 : tasksCount}
                 setDisplayFilter={setDisplayFilter}
                 filterParams={filterParams}
@@ -117,6 +124,7 @@ const TaskSearchBarListView = React.memo(({ toggleAllTaskVariables }) => {
           )}
         </div>
       </div>
+      ) : null}
     </>
   );
 });

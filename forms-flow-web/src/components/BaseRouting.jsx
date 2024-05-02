@@ -1,7 +1,6 @@
 import React from "react";
-import { Route, Switch, Redirect, useLocation } from "react-router-dom";
+import { Route, Routes, useLocation, Navigate } from "react-router-dom";
 import { useSelector } from "react-redux";
-
 import PublicRoute from "./PublicRoute";
 import PrivateRoute from "./PrivateRoute";
 import { BASE_ROUTE } from "../constants/constants";
@@ -51,35 +50,39 @@ const BaseRouting = React.memo(
     }, [location]);
 
     return (
-    
- 
-        <div className="container  mt-5">
+      <div className="container  mt-5">
         <div className="min-container-height ps-md-3">
-        <ToastContainer />
-            <Switch>
-              <Route path="/public">
+          <ToastContainer />
+
+          <Routes>
+            <Route
+              path="public"
+              element={
                 <PublicRoute
                   store={store}
                   publish={publish}
                   subscribe={subscribe}
                   getKcInstance={getKcInstance}
                 />
-              </Route>
-              <Route path={BASE_ROUTE}>
+              }
+            />
+            <Route
+              path={`${BASE_ROUTE}*`}
+              element={
                 <PrivateRoute
                   store={store}
                   publish={publish}
                   subscribe={subscribe}
                   getKcInstance={getKcInstance}
                 />
-              </Route>
-              <Route path="/404" exact={true} component={NotFound} />
-              <Redirect from="*" to="/404" />
-            </Switch>
+              }
+            />
+            <Route path="/404" element={<NotFound />} />
+            <Route path="*" element={<Navigate to={"/404"} />} />
+          </Routes>
         </div>
-            {isAuth ? <Footer /> : null}
-        </div>
-
+        {isAuth ? <Footer /> : null}
+      </div>
     );
   }
 );

@@ -12,7 +12,7 @@ const ApplicationDetails = React.memo((props) => {
       <tbody>
         <tr>
           <td className="border-0">
-            <Translation>{(t) => t("Submission ID")}</Translation>
+            <Translation>{(t) => t("Submission Id")}</Translation>
           </td>
           <td className="border-0">:</td>
           <td className="border-0" id="application-id">

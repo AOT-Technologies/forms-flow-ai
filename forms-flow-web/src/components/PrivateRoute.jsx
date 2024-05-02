@@ -1,6 +1,11 @@
 /* eslint-disable no-unused-vars */
-import React, { useEffect, Suspense, lazy, useMemo } from "react";
-import { Route, Switch, Redirect, useParams } from "react-router-dom";
+import React, { useEffect, Suspense, useMemo } from "react";
+import {
+  Route, 
+  useParams,
+  Routes,
+  Navigate, 
+} from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import {
   BASE_ROUTE,
@@ -32,10 +37,8 @@ import {
 import Loading from "../containers/Loading";
 import NotFound from "./NotFound";
 import { setTenantFromId } from "../apiManager/services/tenantServices";
-
-// Lazy imports is having issues with micro-front-end build
-
 import Form from "./Form";
+import FormDesignRoute from "./Form/formDesignRoute";
 import ServiceFlow from "./ServiceFlow";
 import DashboardPage from "./Dashboard";
 import InsightsPage from "./Insights";
@@ -123,14 +126,12 @@ const PrivateRoute = React.memo((props) => {
         authenticate(kcInstance, props.store);
       } else {
         instance.initKeycloak((authenticated) => {
-          if(!authenticated)
-          {
-           toast.error("Unauthorized Access.",{autoClose: 3000});
-           setTimeout(function() {
-            instance.userLogout();
-          }, 3000);
-          }
-          else{
+          if (!authenticated) {
+            toast.error("Unauthorized Access.", { autoClose: 3000 });
+            setTimeout(function () {
+              instance.userLogout();
+            }, 3000);
+          } else {
             authenticate(instance, props.store);
             publish("FF_AUTH", instance);
           }
@@ -143,137 +144,119 @@ const PrivateRoute = React.memo((props) => {
 
   const DesignerRoute = useMemo(
     () =>
-      ({ component: Component, ...rest }) =>
-        (
-          <Route
-            {...rest}
-            render={(props) =>
-              userRoles.includes(STAFF_DESIGNER) ? (
-                <Component {...props} />
-              ) : (
-                <>unauthorized</>
-              )
-            }
-          />
+      ({ element }) =>
+        userRoles.includes(STAFF_DESIGNER) ? (
+          element
+        ) : (
+          <Navigate to="/unauthorized" replace />
         ),
+
     [userRoles]
   );
 
   const ReviewerRoute = useMemo(
     () =>
-      ({ component: Component, ...rest }) =>
-        (
-          <Route
-            {...rest}
-            render={(props) =>
-              userRoles.includes(STAFF_REVIEWER) ? (
-                <Component {...props} />
-              ) : (
-                <>unauthorized</>
-              )
-            }
-          />
+      ({ element }) =>
+        userRoles.includes(STAFF_REVIEWER) ? (
+          element
+        ) : (
+          <Navigate to="/unauthorized" replace />
         ),
+
     [userRoles]
   );
 
   const ClientReviewerRoute = useMemo(
     () =>
-      ({ component: Component, ...rest }) =>
-        (
-          <Route
-            {...rest}
-            render={(props) =>
-              userRoles.includes(STAFF_REVIEWER) ||
-              userRoles.includes(CLIENT) ? (
-                <Component {...props} />
-              ) : (
-                <>unauthorized</>
-              )
-            }
-          />
+      ({ element }) =>
+        userRoles.includes(STAFF_REVIEWER) || userRoles.includes(CLIENT) ? (
+          element
+        ) : (
+          <Navigate to="/unauthorized" replace />
         ),
+
     [userRoles]
   );
 
   const DraftRoute = useMemo(
     () =>
-      ({ component: Component, ...rest }) =>
-        (
-          <Route
-            {...rest}
-            render={(props) =>
-              DRAFT_ENABLED &&
-              (userRoles.includes(STAFF_REVIEWER) ||
-                userRoles.includes(CLIENT)) ? (
-                <Component {...props} />
-              ) : (
-                <>unauthorized</>
-              )
-            }
-          />
+      ({ element }) =>
+        DRAFT_ENABLED &&
+        (userRoles.includes(STAFF_REVIEWER) || userRoles.includes(CLIENT)) ? (
+          element
+        ) : (
+          <Navigate to="/unauthorized" replace />
         ),
+
     [userRoles]
   );
+
   return (
     <>
       {isAuth ? (
         <Suspense fallback={<Loading />}>
-          <Switch>
+          <Routes>
             {ENABLE_FORMS_MODULE && (
-              <Route path={`${BASE_ROUTE}form`} component={Form} />
+              <Route path={`form/*`} element={<Form />} />
             )}
             {ENABLE_FORMS_MODULE && (
-              <DesignerRoute path={`${BASE_ROUTE}formflow`} component={Form} />
+              <Route
+                path={`formflow/*`}
+                element={<DesignerRoute element={<FormDesignRoute />} />}
+              />
             )}
             {ENABLE_APPLICATIONS_MODULE && (
-              <DraftRoute path={`${BASE_ROUTE}draft`} component={Drafts} />
+              <Route
+                path={`draft/*`}
+                element={<DraftRoute element={<Drafts />} />}
+              />
             )}
             {ENABLE_APPLICATIONS_MODULE && (
-              <ClientReviewerRoute
-                path={`${BASE_ROUTE}application`}
-                component={Application}
+              <Route
+                path={`application/*`}
+                element={<ClientReviewerRoute element={<Application />} />}
               />
             )}
 
             {ENABLE_PROCESSES_MODULE && (
-              <DesignerRoute
-                path={`${BASE_ROUTE}processes`}
-                component={Modeler}
+              <Route
+                path={`processes/*`}
+                element={<DesignerRoute element={<Modeler />} />}
               />
             )}
 
             {ENABLE_DASHBOARDS_MODULE && (
-              <ReviewerRoute
-                path={`${BASE_ROUTE}metrics`}
-                component={DashboardPage}
+              <Route
+                path={`metrics/*`}
+                element={<ReviewerRoute element={<DashboardPage />} />}
               />
             )}
             {ENABLE_DASHBOARDS_MODULE && (
-              <ReviewerRoute
-                path={`${BASE_ROUTE}insights`}
-                component={InsightsPage}
+              <Route
+                path={`insights/*`}
+                element={<ReviewerRoute element={<InsightsPage />} />}
               />
             )}
             {ENABLE_TASKS_MODULE && (
-              <ReviewerRoute
-                path={`${BASE_ROUTE}task`}
-                component={ServiceFlow}
+              <Route
+                path={`task/*`}
+                element={<ReviewerRoute element={<ServiceFlow />} />}
               />
             )}
 
-            <Route exact path={BASE_ROUTE}>
-             {userRoles.length && <Redirect
-                to={
-                  userRoles?.includes(STAFF_REVIEWER)
-                    ? `${redirecUrl}task`
-                    : `${redirecUrl}form`
-                }
-              />}
-            </Route>
-            <Route path="/404" exact={true} component={NotFound} />
-            <Redirect from="*" to="/404" />
-          </Switch>
+            <Route
+              path="/"
+              element={
+                userRoles.includes(STAFF_REVIEWER) ? (
+                  <Navigate to={`${redirecUrl}task`} />
+                ) : (
+                  <Navigate to={`${redirecUrl}form`} />
+                )
+              }
+            />
+            <Route path="/404" exact={true} element={<NotFound />} />
+            <Route path="*" element={<Navigate to={`${redirecUrl}/404`} />} />
+          </Routes>
         </Suspense>
       ) : (
         <Loading />

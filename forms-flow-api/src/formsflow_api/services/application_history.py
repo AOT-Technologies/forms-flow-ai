@@ -1,4 +1,5 @@
 """This exposes application audit service."""
+
 from flask import current_app
 from formsflow_api_utils.utils import get_form_and_submission_id_from_form_url
 

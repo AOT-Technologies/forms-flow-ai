@@ -95,7 +95,7 @@ const Insights = React.memo((props) => {
       <div className="mb-2">
 
 
-        <Head items={headerList()} page="Insights"/>
+        <Head items={headerList()} page="Insights" />
 
 
         <div className="d-flex align-items-center flex-md-row flex-colum justify-content-between mt-3"
@@ -139,24 +139,13 @@ const Insights = React.memo((props) => {
 
             {activeDashboard.public_url ? (
               <iframe
+                height="436"
                 title="dashboard"
-                style={{
-                  width: "100%",
-                  height: "auto",
-                  overflow: "visible",
-                  border: "none",
-                  minHeight: "60vh",
-                }}
+                className="w-100 min-vh-60 overflow-visible border-none"
                 src={activeDashboard.public_url}
               />
             ) : !isDashboardDetailUpdated ? (
-              <div
-                style={{
-                  position:'absolute',
-                  left: '52%',
-                  marginTop: '400px',
-                  transform: 'translate(-50%, -90%)',
-                }}>
+              <div className="position-absolute no-dashboard-detail">
                 <Loading />
               </div>
             ) : (

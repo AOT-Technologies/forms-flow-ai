@@ -1,7 +1,9 @@
 """This exposes theme service."""
 
+from formsflow_api_utils.exceptions import BusinessException
 from formsflow_api_utils.utils.user_context import UserContext, user_context
 
+from formsflow_api.constants import BusinessErrorCode
 from formsflow_api.models import Themes
 from formsflow_api.schemas import ThemeCustomizationSchema
 
@@ -27,7 +29,9 @@ class ThemeCustomizationService:
         """Return theme using tenant key else default theme."""
         theme = Themes.get_theme(tenant_key)
         result = theme_schema.dump(theme)
-        return result
+        if result:
+            return result
+        raise BusinessException(BusinessErrorCode.THEME_NOT_FOUND)
 
     @staticmethod
     @user_context
@@ -37,4 +41,5 @@ class ThemeCustomizationService:
         theme = Themes.get_theme(user.tenant_key)
         if theme:
             theme.update(data)
-        return theme
+            return theme
+        raise BusinessException(BusinessErrorCode.THEME_NOT_FOUND)

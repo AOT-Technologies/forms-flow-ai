@@ -1,7 +1,7 @@
 """capture_process_data
 
 Revision ID: f1599a5bd658
-Revises: fdfe787a197c
+Revises: 95387de7067e
 Create Date: 2024-04-26 12:30:03.513372
 
 """
@@ -11,7 +11,7 @@ from sqlalchemy.dialects import postgresql
 
 # revision identifiers, used by Alembic.
 revision = 'f1599a5bd658'
-down_revision = 'fdfe787a197c'
+down_revision = '95387de7067e'
 branch_labels = None
 depends_on = None
 

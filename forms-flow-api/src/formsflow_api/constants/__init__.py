@@ -59,6 +59,7 @@ class BusinessErrorCode(ErrorCodeMixin, Enum):
         "The specified process ID does not exist",
         HTTPStatus.BAD_REQUEST,
     )
+    THEME_NOT_FOUND = "The specified theme not exist", HTTPStatus.BAD_REQUEST
 
     def __new__(cls, message, status_code):
         """Constructor."""

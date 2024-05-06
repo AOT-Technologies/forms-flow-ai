@@ -36,3 +36,4 @@ from .process import (
     ProcessRequestSchema,
 )
 from .roles import RolesGroupsSchema
+from .theme import ThemeCustomizationSchema

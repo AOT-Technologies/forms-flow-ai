@@ -33,5 +33,6 @@ from .process import (
     ProcessDataSchema,
     ProcessListRequestSchema,
     ProcessListSchema,
+    ProcessRequestSchema,
 )
 from .roles import RolesGroupsSchema

@@ -8,7 +8,11 @@ from formsflow_api_utils.utils.user_context import UserContext, user_context
 
 from formsflow_api.constants import BusinessErrorCode
 from formsflow_api.models import Process
-from formsflow_api.schemas import ProcessDataSchema, ProcessListRequestSchema
+from formsflow_api.schemas import (
+    ProcessDataSchema,
+    ProcessListRequestSchema,
+    ProcessRequestSchema,
+)
 
 processSchema = ProcessDataSchema()
 
@@ -61,19 +65,14 @@ class ProcessService:  # pylint: disable=too-few-public-methods
         user: UserContext = kwargs["user"]
         tenant_key = user.tenant_key
         current_app.logger.debug("Save process data..")
-        process_data = (
-            json.dumps(payload["processData"])
-            if payload["processType"] == "LOWCODE"
-            else payload["processData"]
-        )
-        data = processSchema.load(payload)
+        data = ProcessRequestSchema().load(payload)
         process = Process(
-            name=data["name"],
-            process_type=data["process_type"],
-            status=data["status"],
+            name=data.get("name"),
+            process_type=data.get("process_type").upper(),
+            status=data.get("status").upper(),
             tenant=tenant_key,
-            process_data=process_data,
-            form_process_mapper_id=data.get("formProcessMapperId"),
+            process_data=data.get("process_data"),
+            form_process_mapper_id=data.get("form_process_mapper_id"),
             created_by=user.user_name,
         )
         if process:

@@ -103,3 +103,29 @@ class ProcessListRequestSchema(Schema):
         data_key="modifiedTo", format="%Y-%m-%dT%H:%M:%S+00:00"
     )
     sort_order = fields.Str(data_key="sortOrder", required=False)
+
+
+class ProcessRequestSchema(Schema):
+    """This class manages process request schema."""
+
+    class Meta:  # pylint: disable=too-few-public-methods
+        """Exclude unknown fields in the deserialized output."""
+
+        unknown = EXCLUDE
+
+    name = fields.Str(required=True)
+    process_type = fields.Str(data_key="processType", required=True)
+    process_data = fields.Str(data_key="processData", required=True)
+    status = fields.Str(required=True)
+    form_process_mapper_id = fields.Int(
+        data_key="formProcessMapperId", required=False, allow_none=True
+    )
+
+    def load(self, data, *args):
+        """Load method for deserializing data."""
+        process_type = data.get("processType")
+        process_data = data.get("processData")
+        # For "LOWCODE" process type, convert JSON string input of processData to string before loading.
+        if process_type and process_type.upper() == "LOWCODE" and process_data:
+            data["processData"] = json.dumps(process_data)
+        return super().load(data, *args)

@@ -121,11 +121,11 @@ class ProcessRequestSchema(Schema):
         data_key="formProcessMapperId", required=False, allow_none=True
     )
 
-    def load(self, data, *args):
+    def load(self, data, *args, **kwargs):
         """Load method for deserializing data."""
         process_type = data.get("processType")
         process_data = data.get("processData")
         # For "LOWCODE" process type, convert JSON string input of processData to string before loading.
         if process_type and process_type.upper() == "LOWCODE" and process_data:
             data["processData"] = json.dumps(process_data)
-        return super().load(data, *args)
+        return super().load(data, *args, **kwargs)

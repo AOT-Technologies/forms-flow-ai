@@ -212,7 +212,6 @@ const WorkFlow = React.memo(
         )
           .then((res) => {
             if (res?.data) {
-              console.log("haaaaaaaai");
               let unique = removeTenantDuplicates(res.data, tenant_key);
               dispatch(setProcessLoadError(true));
               dispatch(setProcessStatusLoading(false));

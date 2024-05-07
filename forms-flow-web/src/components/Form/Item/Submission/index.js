@@ -1,23 +1,17 @@
-import { Route, Switch, Redirect } from "react-router-dom";
 import React from "react";
-
-// import List from './List'
 import Item from "./Item/index";
-import { BASE_ROUTE } from "../../../../constants/constants";
+import { Routes, Route, Navigate } from "react-router-dom";
 
 const Form = React.memo(() => {
   return (
-    <div>
-      <Switch>
-        <Route exact path={`${BASE_ROUTE}form/:formId/submission`}>
-          <Redirect exact to="/404" />
-        </Route>
+      <Routes>
+       <Route path={``} element={<Navigate to="/404" replace/>} />
         <Route
-          path={`${BASE_ROUTE}form/:formId/submission/:submissionId`}
-          component={Item}
+          path={`:submissionId`}
+          element={<Item/>}
         />
-      </Switch>
-    </div>
+      </Routes>
+     
   );
 });
 

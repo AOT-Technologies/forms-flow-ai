@@ -24,7 +24,7 @@ import {
   SetSubmissionStatusCountLoader,
   setMetricsDateChange,
 } from "../../actions/metricsActions";
-import LoadingOverlay from "@ronchalant/react-loading-overlay";
+import LoadingOverlay from "react-loading-overlay-ts";
 import {
   Dropdown, 
   FormControl,
@@ -236,22 +236,17 @@ const Dashboard = React.memo(() => {
           className="bg-white"
         />
         {showClearButton && (
-          <InputGroup.Append className="d-flex cursor-pointer"onClick={() => onClear()}>
-            <InputGroup.Text className= "bg-white rounded-0">
+    
+            <InputGroup.Text className= "d-flex cursor-pointer bg-white rounded-0" onClick={onClear}>
               <i className="fa fa-times"></i>
             </InputGroup.Text>
-          </InputGroup.Append>
+     
         )}
-
-        <InputGroup.Append
-          title={t("Click to search")}
-          onClick={() => handleSearch()}
-          className="d-flex cursor-pointer"
-        >
-          <InputGroup.Text className= "bg-white rounded-start-0">
+ 
+          <InputGroup.Text   title={t("Click to search")}     onClick={handleSearch} className= "d-flex cursor-pointer bg-white rounded-start-0">
             <i className="fa fa-search"></i>
           </InputGroup.Text>
-        </InputGroup.Append>
+     
         </InputGroup>
     </div>
 

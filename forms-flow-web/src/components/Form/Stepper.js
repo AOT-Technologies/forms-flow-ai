@@ -4,6 +4,8 @@ import {  Row, Col, Button } from 'react-bootstrap';
 import { toast } from "react-toastify";
 import Create from "./Create.js";
 import Preview from "./Item/Preview.js";
+import { compose } from 'redux';
+
 import Edit from "./Item/Edit.js";
 import { Translation, withTranslation } from "react-i18next";
 import "../../resourceBundles/i18n";
@@ -36,9 +38,10 @@ import Loading from "../../containers/Loading.js";
 import { fetchFormAuthorizationDetials } from "../../apiManager/services/authorizationService.js";
 import { setApiCallError } from "../../actions/ErroHandling.js";
 import NotFound from "../NotFound/index.js";
+import withRouter from "../HOCs/withRouter.js";
 class StepperPage extends PureComponent {
   constructor(props) {
-    super(props);
+    super(props); 
     this.state = {
       // checked: false,
       activeStep: 0,
@@ -81,21 +84,23 @@ class StepperPage extends PureComponent {
   }
 
   static getDerivedStateFromProps(nextProps, prevState) {
+    console.log(nextProps,prevState);
     let stateData = null;
+    console.log(nextProps,prevState);
     if (
-      nextProps.match.params.step !== undefined &&
-      !STEPPER_ROUTES.includes(nextProps.match.params.step)
+      nextProps.params.step !== undefined &&
+      !STEPPER_ROUTES.includes(nextProps.params.step)
     ) {
       nextProps.goToPageNotFound();
     }
     if (
-      nextProps.match.params.formId &&
-      nextProps.match.params.formId !== prevState.formId
+      nextProps.params.formId &&
+      nextProps.params.formId !== prevState.formId
     ) {
-      if (nextProps.match.params.formId !== FORM_CREATE_ROUTE) {
+      if (nextProps.params.formId !== FORM_CREATE_ROUTE) {
         Formio.cache = {};
-        nextProps.getForm(nextProps.match.params.formId);
-        nextProps.getFormProcessesDetails(nextProps.match.params.formId);
+        nextProps.getForm(nextProps.params.formId);
+        nextProps.getFormProcessesDetails(nextProps.params.formId);
       }
     }
 
@@ -108,8 +113,8 @@ class StepperPage extends PureComponent {
       nextProps.getAllProcesses(prevState.tenantKey);
     }
     if (
-      nextProps.match.params.formId === FORM_CREATE_ROUTE &&
-      nextProps.match.params.step === undefined
+      nextProps.params.formId === FORM_CREATE_ROUTE &&
+      nextProps.params.step === undefined
     ) {
       stateData = {
         ...stateData,
@@ -117,23 +122,23 @@ class StepperPage extends PureComponent {
         formId: "",
         previewMode: false,
       };
-    } else if (nextProps.match.params.step === "edit") {
+    } else if (nextProps.params.step === "edit") {
       stateData = {
         ...stateData,
-        formId: nextProps.match.params.formId,
+        formId: nextProps.params.formId,
         editMode: true,
         previewMode: false,
       };
     } else {
       stateData = {
         ...stateData,
-        formId: nextProps.match.params.formId,
+        formId: nextProps.params.formId,
         editMode: false,
         previewMode: true,
       };
     }
 
-    if (["view-edit", "preview"].includes(nextProps.match.params.step)) {
+    if (["view-edit", "preview"].includes(nextProps.params.step)) {
       stateData = {
         ...stateData,
         displayMode: "view",
@@ -342,12 +347,12 @@ class StepperPage extends PureComponent {
   render() {
     // const { process } = this.props;
     const steps = this.getSteps();
-    const { t, formAuthVerifyLoading, apiCallError, match } = this.props;
+    const { t, formAuthVerifyLoading, apiCallError, params } = this.props;
     const handleReset = () => {
       this.setActiveStep(0);
     };
 
-    if (formAuthVerifyLoading && match?.params.formId !== FORM_CREATE_ROUTE) {
+    if (formAuthVerifyLoading && params?.formId !== FORM_CREATE_ROUTE) {
       return <Loading />;
     }
 
@@ -513,7 +518,8 @@ const mapDispatchToProps = (dispatch) => {
   };
 };
 
-export default connect(
-  mapStateToProps,
-  mapDispatchToProps
-)(withTranslation()(StepperPage));
+export default compose(
+  withRouter,
+  connect(mapStateToProps, mapDispatchToProps),
+  withTranslation()
+)(StepperPage);

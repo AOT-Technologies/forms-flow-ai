@@ -190,7 +190,12 @@ class FilterService:
     @staticmethod
     @user_context
     def update_filter_variables(task_variables, form_id, **kwargs):
-        """Update filter variables when task variables are updated in form mapper table by form id."""
+        """Update filter variables for all active filters associated with a given form ID.
+
+        It retrieves the task variables from the form mapper table,
+        creates a mapping of task variable keys to their labels & updates the filter variables for each active filter.
+        The function ensures that default filter variables ("applicationId" and "formName") are always included
+        """
         current_app.logger.debug("Updating filter variables..")
         user: UserContext = kwargs["user"]
         filters = Filter.find_all_active_filters_formid(
@@ -200,9 +205,10 @@ class FilterService:
             # Create a dictionary mapping keys to labels from task_variables
             key_to_label = {task_var["key"]: task_var for task_var in task_variables}
             default_filter_variables = ["applicationId", "formName"]
-            # Update labels in filter_variables
-            # Remove names from filter_variables that are not found in task_variables
-            # Don't exclude default variables from filter_variables
+            # For each filter variable:
+            # - Include it in the result if its name is in task variables or default filter variables
+            # - Use the task variable label if available, otherwise keep the existing label
+            # - Retain the existing labels for default filter variables
 
             result = [
                 {
@@ -216,8 +222,7 @@ class FilterService:
                     ),
                 }
                 for filter_variable in filter_item.variables
-                if filter_variable["name"]
-                in [task_variable["key"] for task_variable in task_variables]
+                if filter_variable["name"] in key_to_label.keys()
                 or filter_variable["name"] in default_filter_variables
             ]
             # Update filter variables in database

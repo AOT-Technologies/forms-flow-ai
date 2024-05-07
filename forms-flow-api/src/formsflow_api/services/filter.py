@@ -186,3 +186,41 @@ class FilterService:
             filter_result.update(filter_data)
             return filter_result
         raise BusinessException(BusinessErrorCode.FILTER_NOT_FOUND)
+
+    @staticmethod
+    @user_context
+    def update_filter_variables(task_variables, form_id, **kwargs):
+        """Update filter variables when task variables are updated in form mapper table by form id."""
+        current_app.logger.debug("Updating filter variables..")
+        user: UserContext = kwargs["user"]
+        filters = Filter.find_all_active_filters_formid(
+            form_id=form_id, tenant=user.tenant_key
+        )
+        for filter_item in filters:
+            # Create a dictionary mapping keys to labels from task_variables
+            key_to_label = {task_var["key"]: task_var for task_var in task_variables}
+            default_filter_variables = ["applicationId", "formName"]
+            # Update labels in filter_variables
+            # Remove names from filter_variables that are not found in task_variables
+            # Don't exclude default variables from filter_variables
+
+            result = [
+                {
+                    "name": filter_variable["name"],
+                    "label": (
+                        filter_variable["label"]
+                        if filter_variable["name"] in default_filter_variables
+                        else key_to_label.get(
+                            filter_variable["name"], filter_variable
+                        ).get("label", filter_variable["label"])
+                    ),
+                }
+                for filter_variable in filter_item.variables
+                if filter_variable["name"]
+                in [task_variable["key"] for task_variable in task_variables]
+                or filter_variable["name"] in default_filter_variables
+            ]
+            # Update filter variables in database
+            filter_obj = Filter.query.get(filter_item.id)
+            filter_obj.variables = result
+            filter_obj.save()

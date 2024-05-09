@@ -9,18 +9,13 @@ import { useSelector, useDispatch } from "react-redux";
 import {
   setFormProcessesData,
   setWorkflowAssociation,
-  setProcessStatusLoading,
-  setAllProcessList,
-  setProcessLoadError, 
 } from "../../../actions/processActions";
 import ViewAndEditTaskvariable from "./ViewAndEditTaskvariable";
 import { useTranslation } from "react-i18next";
 import { listProcess } from "../../../apiManager/services/formatterService";
 import { DEFAULT_WORKFLOW } from "../../../constants/taskConstants";
 import { filterSelectOptionByLabel } from "../../../helper/helper";
-import API from "../../../apiManager/endpoints";
-import { RequestService } from "@formsflow/service";
-import { StorageService } from "@formsflow/service";
+import { fetchBpmProcesses } from "../../../apiManager/services/processServices";
 
 const WorkFlow = React.memo(
   ({
@@ -172,69 +167,6 @@ const WorkFlow = React.memo(
       dispatch(setWorkflowAssociation(item));
     };
 
-    const fetchBpmProcesses = ({
-      tenant_key = null,
-      firstResult,
-      maxResults,
-      searchKey,
-    } = {}) => {
-
-      let url =
-        API.GET_BPM_PROCESS_LIST +
-        "?latestVersion=true" +
-        "&excludeInternal=true" +
-        "&includeProcessDefinitionsWithoutTenantId=true" +
-        "&sortBy=tenantId" +
-        "&sortOrder=asc";
-    
-      if (tenant_key) {
-        url = url + "&tenantIdIn=" + tenant_key;
-      }
-    
-      if (firstResult) {
-        url = url + "&firstResult=" + firstResult;
-      }
-      if (maxResults) {
-        url = url + "&maxResults=" + maxResults;
-      }
-    
-      if (searchKey) {
-        url = url + `&nameLike=%25${searchKey}%25`;
-      }
-    
-      return (dispatch) => {
-        // eslint-disable-next-line max-len
-        RequestService.httpGETRequest(
-          url,
-          {},
-          StorageService.get(StorageService.User.AUTH_TOKEN),
-          true
-        )
-          .then((res) => {
-            if (res?.data) {
-              let unique = removeTenantDuplicates(res.data, tenant_key);
-              dispatch(setProcessLoadError(true));
-              dispatch(setProcessStatusLoading(false));
-              dispatch(setAllProcessList(unique));
-            } else {
-              dispatch(setAllProcessList([]));
-            }
-          })
-          .catch((error) => {
-            console.log(error);
-            dispatch(setProcessLoadError(true));
-          });
-      };
-    };
-    
-    const removeTenantDuplicates = (list, tenant_key) => {
-      let seen = new Set();
-      return list.filter((item) => {
-        let key = item.key;
-        if (item.tenantId != tenant_key && item.tenantId != null) return false;
-        return seen.has(key) ? false : seen.add(key);
-      });
-    };
 
     return (
       <>

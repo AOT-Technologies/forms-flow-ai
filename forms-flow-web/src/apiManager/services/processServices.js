@@ -116,6 +116,62 @@ export const fetchAllBpmProcesses = (  {tenant_key = null,
   };
 };
 
+
+export const fetchBpmProcesses = ({tenant_key = null,
+  firstResult,
+  maxResults,
+  searchKey,} = {},
+  ...rest) => {
+  const done = rest.length ? rest[0] : () => {};
+
+  let url =
+    API.GET_BPM_PROCESS_LIST +
+    "?latestVersion=true" +
+    "&excludeInternal=true" +
+    "&includeProcessDefinitionsWithoutTenantId=true" +
+    "&sortBy=tenantId" +
+    "&sortOrder=asc";
+
+  if (tenant_key) {
+    url = url + "&tenantIdIn=" + tenant_key;
+  }
+
+  if (firstResult) {
+    url = url + "&firstResult=" + firstResult;
+  }
+  if (maxResults) {
+    url = url + "&maxResults=" + maxResults;
+  }
+
+  if (searchKey) {
+    url = url + `&nameLike=%25${searchKey}%25`;
+  }
+
+  return (dispatch) => {
+    // eslint-disable-next-line max-len
+    RequestService.httpGETRequest(
+      url,
+      {},
+      StorageService.get(StorageService.User.AUTH_TOKEN),
+      true
+    )
+      .then((res) => {
+        if (res?.data) {
+          let unique = removeTenantDuplicates(res.data, tenant_key);
+          dispatch(setProcessStatusLoading(false));
+          dispatch(setAllProcessList(unique));
+          done(null, res.data);
+        } else {
+          dispatch(setAllProcessList([]));
+        }
+      })
+      .catch((error) => {
+        console.log(error);
+        dispatch(setProcessLoadError(true));
+      });
+  };
+};
+
 export const fetchAllBpmProcessesCount = (tenant_key,searchKey,) => {
   let url =
     API.GET_BPM_PROCESS_LIST_COUNT +

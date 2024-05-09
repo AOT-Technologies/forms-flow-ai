@@ -164,3 +164,16 @@ class Filter(AuditDateTimeMixin, AuditUserMixin, BaseModel, db.Model):
             filter_info,
         )
         self.commit()
+
+    @classmethod
+    def find_all_active_filters_formid(
+        cls, form_id, tenant: str = None
+    ) -> List[Filter]:
+        """Find all active filters with specific form id."""
+        query = cls.query.filter(
+            Filter.status == str(FilterStatus.ACTIVE.value),
+            Filter.properties.op("->>")("formId") == form_id,
+        )
+        if tenant:
+            query = query.filter(Filter.tenant == tenant)
+        return query.all() or []

@@ -20,6 +20,7 @@ from .enums import (
     ApplicationSortingParameters,
     DraftSortingParameters,
     FormioRoles,
+    ProcessSortingParameters,
 )
 from .translations.translations import translations
 
@@ -60,6 +61,9 @@ def validate_sort_order_and_order_by(order_by: str, sort_order: str) -> bool:
         ApplicationSortingParameters.Modified,
         ApplicationSortingParameters.FormName,
         DraftSortingParameters.Name,
+        ProcessSortingParameters.Name,
+        ProcessSortingParameters.Created,
+        ProcessSortingParameters.Modified,
     ]:
         order_by = None
     else:

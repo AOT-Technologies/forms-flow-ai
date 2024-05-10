@@ -8,7 +8,6 @@ const urlsToCache = [
 
 // Install a service worker
 self.addEventListener("install", (event) => {
-  console.log("installing");
   if (doCache) {
     event.waitUntil(
       caches.open(CACHE_NAME).then((cache) => {

@@ -175,7 +175,7 @@ const ServiceTaskListView = React.memo((props) => {
                     </Col>
                   </Row>
 
-                  <Row className="mt-4 p-2 justify-content-between task-attr-row">
+                  <Row className="mt-4 p-2 justify-content-between">
                     {vissibleAttributes?.taskVisibleAttributes
                       ?.applicationId && (
                       <Col xs={2}>

@@ -20,6 +20,7 @@ from formsflow_api.schemas import (
 )
 from formsflow_api.services import (
     ApplicationService,
+    FilterService,
     FormHistoryService,
     FormProcessMapperService,
 )
@@ -356,6 +357,9 @@ class FormResourceById(Resource):
         application_json = request.get_json()
 
         if "taskVariable" in application_json:
+            FilterService.update_filter_variables(
+                application_json.get("taskVariable"), application_json.get("formId")
+            )
             application_json["taskVariable"] = json.dumps(
                 application_json.get("taskVariable")
             )

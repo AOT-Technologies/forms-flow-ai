@@ -227,7 +227,7 @@ const ServiceTaskListView = React.memo((props) => {
                               <div className="col-12 word-break">
                                 <h6 className="fw-bold">{data?.label}</h6> 
                               </div>
-                              <div className="d-flex col-12">
+                              <div className="d-flex col-12 word-break pb-4">
                                 <h6>
                                   <u className="fw-light text-decoration-none ">
                                     {e?.value}
@@ -353,7 +353,7 @@ const ServiceTaskListView = React.memo((props) => {
                                   >
                                     <h6 className="fw-bold">{data?.label}</h6>
                                   </div>
-                                  <div className="d-flex col-12">
+                                  <div className="d-flex col-12 word-break">
                                     <h6>
                                       <u className="fw-light text-decoration-none text-break" >
                                         {eachVariable.value}

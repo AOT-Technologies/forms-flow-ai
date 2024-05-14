@@ -68,3 +68,11 @@ class FilterStatus(Enum):
 
     ACTIVE = "active"
     INACTIVE = "inactive"
+
+
+class ProcessSortingParameters:  # pylint: disable=too-few-public-methods
+    """This enum provides the list of Sorting Parameters."""
+
+    Name = "name"
+    Created = "created"
+    Modified= "modified"

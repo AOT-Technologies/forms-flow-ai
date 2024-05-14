@@ -15,7 +15,7 @@ import { useTranslation } from "react-i18next";
 import { listProcess } from "../../../apiManager/services/formatterService";
 import { DEFAULT_WORKFLOW } from "../../../constants/taskConstants";
 import { filterSelectOptionByLabel } from "../../../helper/helper";
-import { fetchBpmProcesses } from "../../../apiManager/services/processServices";
+import { fetchAllBpmProcesses } from "../../../apiManager/services/processServices";
 
 const WorkFlow = React.memo(
   ({
@@ -90,7 +90,7 @@ const WorkFlow = React.memo(
       setSelectedVariableKeys(keys);
       taskvariable.push(...Object.values(components));
       setTaskVariables(taskvariable);
-      dispatch(fetchBpmProcesses());
+      dispatch(fetchAllBpmProcesses({ excludeInternal: true }));
     }, []);
 
     const updateTaskvariableToProcessData = (updatedData) => {

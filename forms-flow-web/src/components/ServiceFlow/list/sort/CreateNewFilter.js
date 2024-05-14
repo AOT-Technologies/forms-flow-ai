@@ -54,12 +54,10 @@ import { filterSelectOptionByLabel } from "../../../../helper/helper";
 const initialValueOfTaskAttribute = {
   applicationId: true,
   assignee: true,
-  taskTitle: true,
   createdDate: true,
   dueDate: true,
   followUp: true,
   priority: true,
-  groups: true,
 };
 
 export default function CreateNewFilterDrawer({

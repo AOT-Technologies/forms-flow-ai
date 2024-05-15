@@ -175,7 +175,7 @@ const ServiceTaskListView = React.memo((props) => {
                     </Col>
                   </Row>
 
-                  <Row className="mt-4 p-2 justify-content-between">
+                  <Row className="mt-4 p-2 justify-content-evenly">
                     {vissibleAttributes?.taskVisibleAttributes
                       ?.applicationId && (
                       <Col xs={2}>
@@ -335,7 +335,7 @@ const ServiceTaskListView = React.memo((props) => {
                     ) && (
                       <>
                         <hr />
-                        <Row className="px-2">
+                        <Row className="px-4">
                           {taskListAttributes?.map((eachVariable, index) => {
                             if (
                               eachVariable.name !== "applicationId" &&

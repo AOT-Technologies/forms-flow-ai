@@ -184,6 +184,7 @@ function ClientTable() {
                       data-testid="form-search-input-box"
                       placeholder={t("Search by form title")}
                       title={t("Search by form title")}
+                      aria-label="Search by form title"
                     />
                     {search && (
                       <InputGroup.Append

@@ -657,7 +657,7 @@ const Edit = React.memo(() => {
                 </div>
 
                 <div className="mb-3">
-                  <div id="form-group-path" className="form-group">
+                  <div  className="form-group">
                     <label htmlFor="path" className="control-label "></label>
                     <div className="input-group">
                       <Form.Group controlId="anonymous">
@@ -667,8 +667,8 @@ const Edit = React.memo(() => {
                           className="form-check-input"
                           type="checkbox"
                           role="switch"
-                            data-testid="form-edit-anonymous-enable"
-                            id="anonymous"
+                          data-testid="form-edit-anonymous-enable"
+                          id="anonymous"
                           checked={processListData.anonymous || false}
                           color="primary"
                           aria-label="Publish as anonymous"
@@ -769,7 +769,6 @@ const Edit = React.memo(() => {
                                 className="form-control"
                                 id="path"
                                 placeholder={t("Enter the pathname")}
-
                                 value={form?.path || ""}
                                 onChange={(event) => handleChange("path", event)}
                               />

@@ -120,7 +120,7 @@ function BpmnTable() {
                   className="bg-white"
                   title={t("Search by workflow name")}
                   data-testid="processes-search-workflow-input-box"
-                  aria-label="Search by workflow name"               
+                  aria-label={t("Search by workflow name")}               
                 />
               {search && (
                 <InputGroup.Append  data-testid="processes-search-clear-button" onClick={onClearSearch}>

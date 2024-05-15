@@ -122,7 +122,7 @@ function DmnTable() {
                 placeholder={t("Search by DMN name")}
                 title={t("Search by DMN name")}
                 data-testid="processes-search-dmn-input-box"
-                aria-label="Search by DMN name"
+                aria-label={t("Search by DMN name")}
                 />
               {search && (
                 <InputGroup.Append data-testid="processes-search-dmn-clear-button" onClick={onClearSearch}>

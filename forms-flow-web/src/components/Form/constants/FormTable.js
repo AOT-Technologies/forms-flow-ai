@@ -233,7 +233,7 @@ function FormTable() {
                       placeholder={t("Search by form title")}
                       title={t("Search by form title")}
                       data-testid="form-search-input-box"
-                      aria-label="Search by form title"
+                      aria-label={t("Search by form title")}
                     />
                     {search && (
                       <InputGroup.Append onClick={handleClearSearch} data-testid="form-search-clear-button">

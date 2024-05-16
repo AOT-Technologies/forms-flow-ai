@@ -41,7 +41,7 @@ class Themes(AuditDateTimeMixin, AuditUserMixin, BaseModel, db.Model):
             [
                 "logo_name",
                 "logo_type",
-                "value",
+                "logo_data",
                 "application_title",
                 "theme",
             ],

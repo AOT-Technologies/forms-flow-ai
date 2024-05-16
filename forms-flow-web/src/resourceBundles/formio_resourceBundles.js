@@ -5450,7 +5450,7 @@ export const formio_resourceBundles = {
  "No dashboard found": "No se encontró ningún panel de control",
  "of": "de",
  "results": "resultados",
- "Dashbaord": "Panel de control",
+ "Dashboard": "Panel de control",
  "Dashboards": "Paneles de control",
  "Select Dashboard": "Seleccionar panel de control",
  "Total Submissions": "Total de envíos",

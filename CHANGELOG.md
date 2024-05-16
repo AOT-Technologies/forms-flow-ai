@@ -2,6 +2,13 @@
 
 Mark  items as `Added`, `Changed`, `Fixed`, `Modified`, `Removed`, `Untested Features`, `Upcoming Features`, `Known Issues`
 
+## 6.0.1 - 2024-16-05
+
+`Added`
+
+**forms-flow-web-root-config**
+* Added resouce bundle for Spanish 
+  
 ## 6.0.0 - 2024-04-05
 
 `Added`

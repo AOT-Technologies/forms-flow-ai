@@ -81,6 +81,7 @@ class BPMService(BaseBPMService):
         """Get Url."""
         bpm_api_base = current_app.config.get("BPM_API_URL")
         try:
+            url = None
             if endpoint_type == BPMEndpointType.PROCESS_DEFINITION:
                 url = f"{bpm_api_base}/engine-rest-ext/v1/process-definition"
             elif endpoint_type == BPMEndpointType.FORM_AUTH_DETAILS:

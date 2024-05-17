@@ -70,8 +70,8 @@ class PDFService:
 
     def __get_form_data(self) -> Any:
         """Returns the form data from formio."""
-        return self.formio.get_form(
-            {"form_id": self.form_id}, self.__get_formio_access_token()
+        return self.formio.get_form_by_id(
+            self.form_id, self.__get_formio_access_token()
         )
 
     def __get_chrome_driver_path(self) -> str:

@@ -18,11 +18,14 @@ class ThemeCustomizationService:
     def create_theme(data, **kwargs):
         """Create new theme entry."""
         user: UserContext = kwargs["user"]
+        tenant = user.tenant_key
         data["created_by"] = user.user_name
-        data["tenant"] = user.tenant_key
+        data["tenant"] = tenant
+        theme = Themes.get_theme(tenant)
+        if theme:
+            raise BusinessException(BusinessErrorCode.THEME_EXIST)
         theme_customization = Themes.create_theme(data)
-        result = theme_schema.dump(theme_customization)
-        return result
+        return theme_schema.dump(theme_customization)
 
     @staticmethod
     def get_theme(tenant_key):

@@ -196,7 +196,7 @@ i.fa.fa-question-circle.text-muted {
 .nav-user-email {
   font-size: 14px;
   padding: 0 0;
-  color: var(--color-dark);
+  color: $dark;
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
@@ -206,7 +206,7 @@ i.fa.fa-question-circle.text-muted {
   font-size: 20px;
   padding: 0 0;
   font-weight: 600;
-  color: var(--color-dark);
+  color: $dark;
 }
 
 .nav-logout {
@@ -256,7 +256,7 @@ i.fa.fa-question-circle.text-muted {
 
 .lbl-logout {
   font-size: 16px;
-  color: var(--color-dark);
+  color: $dark;
   margin-left: 10px;
   cursor: pointer;
 }
@@ -439,7 +439,7 @@ select option:hover {
 }
 
 .content {
-  background-color: var(--color-light);
+  background-color: $gray-100;
 }
 
 #sidebar ul li.active>a,

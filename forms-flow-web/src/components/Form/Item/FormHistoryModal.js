@@ -56,7 +56,7 @@ const FormHistoryModal = ({ historyModal, handleModalChange, gotoEdit }) => {
             </Modal.Title>
           </div>
 
-          <div>
+          <div className="d-flex align-items-center">
             <button
               type="button"
               className="btn-close"

@@ -650,13 +650,13 @@ export default function CreateNewFilterDrawer({
         </h5>
         <div className="d-flex align-items-center mt-1">
           <input
-            className="mr-6"
+            className="mr-6 mt-3"
             type="checkbox"
             checked={isMyTasksEnabled}
             onChange={(e) => setIsMyTasksEnabled(e.target.checked)}
             title={t("Show only current user assigned task")}
           />
-          <h5 className="assigned-user">
+          <h5 className="assigned-user mt-3">
             <Translation>
               {(t) => t("Show only current user assigned task")}
             </Translation>

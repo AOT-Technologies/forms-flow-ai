@@ -595,7 +595,7 @@ export default function CreateNewFilterDrawer({
   };
 
   const list = () => (
-    <div role="presentation">
+    <div role="none">
       <List>
         <div className="p-0 d-flex align-items-center justify-content-between ">
           <h5 className="fw-bold fs-16">
@@ -693,9 +693,11 @@ export default function CreateNewFilterDrawer({
         )}
 
         <div className="my-2">
-          <h5 className="mt-2 fs-18 fw-bold">
-            <Translation>{(t) => t("Workflow")}</Translation>
-          </h5>
+          <label htmlFor="select-workflow">
+            <h5 className="mt-2 fs-18 fw-bold">
+              <Translation>{(t) => t("Workflow")}</Translation>
+            </h5>
+          </label>
           <Select
             className="mb-3"
             options={processList}
@@ -716,15 +718,18 @@ export default function CreateNewFilterDrawer({
         </div>
 
         <div className="my-2">
-          <h5 className="fw-bold">
-            {MULTITENANCY_ENABLED ? (
-              <Translation>{(t) => t("User Role")}</Translation>
-            ) : (
-              <Translation>{(t) => t("User Group")}</Translation>
-            )}
-          </h5>
+          <label htmlFor="select-user-group">
+            <h5 className="fw-bold">
+              {MULTITENANCY_ENABLED ? (
+                <Translation>{(t) => t("User Role")}</Translation>
+              ) : (
+                <Translation>{(t) => t("User Group")}</Translation>
+              )}
+            </h5>
+          </label>
 
           <Select
+            inputId="select-user-group"
             onChange={handleCandidate}
             value={
               candidateGroup
@@ -742,11 +747,14 @@ export default function CreateNewFilterDrawer({
         </div>
 
         <div className="my-2">
-          <h5 className="pt-2 fw-bold">
-            <Translation>{(t) => t("Assignee")}</Translation>
-          </h5>
+          <label htmlFor="select-assignee">
+            <h5 className="pt-2 fw-bold">
+              <Translation>{(t) => t("Assignee")}</Translation>
+            </h5>
+          </label>
 
           <Select
+            inputId="select-assignee"
             onChange={handleAssignee}
             value={assignee ? { value: assignee, label: assignee } : null}
             isClearable={true}
@@ -758,10 +766,13 @@ export default function CreateNewFilterDrawer({
         <div className="my-3">
           <Divider />
           <div className="my-3">
-            <h5 className="fw-bold ">
-              <Translation>{(t) => t("Select Form")}</Translation>
-            </h5>
+            <label htmlFor="select-form">
+              <h5 className="fw-bold ">
+                <Translation>{(t) => t("Select Form")}</Translation>
+              </h5>
+            </label>           
             <Select
+              inputId="select-form"
               onChange={onChangeSelectForm}
               value={forms?.data.find((form) => form.value === selectedForm)}
               isClearable

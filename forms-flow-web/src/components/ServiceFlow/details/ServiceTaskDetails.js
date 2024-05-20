@@ -285,7 +285,7 @@ const ServiceFlowTaskDetails = React.memo(() => {
                                             {t("Submission Id")}# {task?.applicationId}
                                         </span>
                                     </Row>
-                                    <Row className="ms-0 mt-3">
+                                    <Row className="ms-0 me-0 mt-3 justify-content-around">
                                     <TaskHeaderListView
                                         task={task} taskId={task?.id} groupView={true}
                                     />

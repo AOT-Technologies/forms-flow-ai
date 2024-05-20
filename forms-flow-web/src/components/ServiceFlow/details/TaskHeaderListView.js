@@ -160,7 +160,7 @@ const TaskHeaderListView = React.memo(({task,taskId,groupView = true}) => {
 
      
       {vissibleAttributes?.taskVisibleAttributes?.followUp &&  <Col xs={2} className="px-0">
-          <div className="tab-width">
+          <div className="">
             <div>
               <h6 className="fw-bold">{t("Follow up Date")}</h6>
             </div>
@@ -196,7 +196,7 @@ const TaskHeaderListView = React.memo(({task,taskId,groupView = true}) => {
         </Col>}
         {
           vissibleAttributes?.taskVisibleAttributes?.dueDate &&  <Col xs={2}>
-          <div className="tab-width">
+          <div className="">
             <div>
                 <h6 className="fw-bold">{t("Due Date")}</h6>
             </div>
@@ -233,11 +233,11 @@ const TaskHeaderListView = React.memo(({task,taskId,groupView = true}) => {
        
         {vissibleAttributes?.taskVisibleAttributes?.assignee &&
           <Col xs={2}  onClick={(e)=> e.stopPropagation()} >
-          <div className="tab-width px-3">
+          <div className="px-3">
             <div>
                 <h6 className="fw-bold">{t("Assignee")}</h6>
             </div>
-            <div className="actionable">
+            <div className="actionable word-break">
               {isEditAssignee ? (
                 task?.assignee ? (
                   <span>
@@ -283,8 +283,8 @@ const TaskHeaderListView = React.memo(({task,taskId,groupView = true}) => {
         </Col>}
          
           {groupView &&
-          <Col xs={2}>
-            <div className="tab-width">
+          <Col xs={3}>
+            <div className="">
               <div>
                 <h6 className="fw-bold">{t("Groups")}</h6>
               </div>

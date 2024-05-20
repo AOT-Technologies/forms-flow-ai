@@ -192,7 +192,6 @@
   margin: 10px 0;
   font-size: 14px;
   font-weight: bold;
-  height: 71px;
   position: relative;
 }
 .task-header {
@@ -326,9 +325,6 @@
   }
 }
 
-.tab-width{
-  width:12rem;
-}
 .task-variable-coloum{
   width:80rem;
 }
@@ -357,10 +353,6 @@
 .task-row{
   overflow: auto;
   max-height: 80vh;
-}
-.task-attr-row {
-  min-height: 110px;
-  margin-bottom: -2.5rem
 }
 .row-container {
   display: flex;

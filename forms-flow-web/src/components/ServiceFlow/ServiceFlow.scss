@@ -399,7 +399,7 @@
   left: 0;
   width: 100%;
   height: 100%;
-  background-color: $gray-200;
+  background-color: rgba($gray-100, 0.5);
  z-index: 1500;
 }
 .react-datepicker__close-icon {

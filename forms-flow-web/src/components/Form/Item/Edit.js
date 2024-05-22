@@ -97,7 +97,7 @@ const Edit = React.memo(() => {
   const saveText = <Translation>{(t) => t("Save Form")}</Translation>;
   const saveNewVersion = <Translation>{(t) => t("Save New Version")}</Translation>;
   const [formSubmitted, setFormSubmitted] = useState(false);
-  const [formDescription,setFormDescription] = useState("");
+  const [formDescription, setFormDescription] = useState("");
   const lang = useSelector((state) => state.user.lang);
   const history = useHistory();
   const { t } = useTranslation();
@@ -125,11 +125,11 @@ const Edit = React.memo(() => {
     }
   }, [processListData]);
 
-  useEffect(()=>{
-    if(processListData?.description){
+  useEffect(() => {
+    if (processListData?.description) {
       setFormDescription(processListData?.description);
     }
-  },[processListData?.description]);
+  }, [processListData?.description]);
 
   useEffect(() => {
     if (restoredFormId) {
@@ -506,12 +506,12 @@ const Edit = React.memo(() => {
       }
 
       <div className="bg-light p-3">
-      <h3 className="ms-3 task-head">
+        <h3 className="ms-3 task-head">
 
-            <i className="fa-solid fa-file-lines" aria-hidden="true" /> &nbsp;{" "}
-            {formData.title}
+          <i className="fa-solid fa-file-lines" aria-hidden="true" /> &nbsp;{" "}
+          {formData.title}
           <span className="text-success h5 ms-2">({t("Version")} {version})</span>
-          </h3>
+        </h3>
 
         <div className="d-flex flex-md-row flex-column  align-items-md-center flex-wrap justify-content-end">
           <Form.Group controlId="formPublish">
@@ -563,8 +563,22 @@ const Edit = React.memo(() => {
         className="p-4 edit-border"
       >
         <Modal show={show} onHide={handleClose}>
-          <Modal.Header closeButton>
-            <Modal.Title>{t("Confirmation")}</Modal.Title>
+          <Modal.Header>
+            <div>
+              <Modal.Title id="example-custom-modal-styling-title">
+                {t("Confirmation")}
+              </Modal.Title>
+            </div>
+            <div className="d-flex align-items-center">
+              <button
+                type="button"
+                className="btn-close"
+                onClick={() => handleClose()}
+                aria-label="Close"
+                data-testid="Change-form-name-confirm-modal-close-button"
+              >
+              </button>
+            </div>
           </Modal.Header>
           <Modal.Body>
             {t(
@@ -577,7 +591,7 @@ const Edit = React.memo(() => {
             <button data-testid="form-change-new-version-cancel" type="button" className="btn btn-link text-dark" onClick={handleClose}>
               {t("Cancel")}
             </button>
-            <Button  data-testid="form-change-new-version-save" variant="primary" onClick={() => handleSave()}>
+            <Button data-testid="form-change-new-version-save" variant="primary" onClick={() => handleSave()}>
               {t("Save Changes")}
             </Button>
           </Modal.Footer>
@@ -610,9 +624,9 @@ const Edit = React.memo(() => {
                   {" "}
                   {t("Description")}
                 </label>
-               <div className="bg-white">
-               <RichText  data-testid="form-edit-description"value={formDescription} onChange={setFormDescription} />
-               </div>
+                <div className="bg-white">
+                  <RichText data-testid="form-edit-description" value={formDescription} onChange={setFormDescription} />
+                </div>
               </div>
             </div>
 
@@ -657,22 +671,22 @@ const Edit = React.memo(() => {
                 </div>
 
                 <div className="mb-3">
-                  <div  className="form-group">
+                  <div className="form-group">
                     <label htmlFor="path" className="control-label "></label>
                     <div className="input-group">
                       <Form.Group controlId="anonymous">
                         <div className="d-flex me-4 form-check form-switch ps-0 gap-5">
                           <label htmlFor="anonymous" className="public-label me-2 fw-bold mb-2">{t("Make this form public ?")}</label>
                           <input
-                          className="form-check-input"
-                          type="checkbox"
-                          role="switch"
-                          data-testid="form-edit-anonymous-enable"
-                          id="anonymous"
-                          checked={processListData.anonymous || false}
-                          color="primary"
-                          aria-label="Publish as anonymous"
-                          onChange={() => changeAnonymous()}>
+                            className="form-check-input"
+                            type="checkbox"
+                            role="switch"
+                            data-testid="form-edit-anonymous-enable"
+                            id="anonymous"
+                            checked={processListData.anonymous || false}
+                            color="primary"
+                            aria-label="Publish as anonymous"
+                            onChange={() => changeAnonymous()}>
                           </input>
                         </div>
                       </Form.Group>
@@ -684,7 +698,7 @@ const Edit = React.memo(() => {
 
               <div>
                 <div className="mt-3">
-                  <div  data-testid="edit-advanced-form-display" className="d-flex align-items-center cursor-pointer" onClick={handleToggle}>
+                  <div data-testid="edit-advanced-form-display" className="d-flex align-items-center cursor-pointer" onClick={handleToggle}>
                     <i className={`fa ${open ? 'fa-chevron-up' : 'fa-chevron-down'} me-2`}></i>
                     <span className="text-primary fw-bold me-4">{t("Advanced Options")}</span>
                     <hr className="flex-grow-1 ms-2 me-2" />
@@ -791,15 +805,15 @@ const Edit = React.memo(() => {
           </div>
           <hr></hr>
           <div className="mt-4">
-          <FormBuilder
-            key={form._id}
-            form={form}
-            onChange={formChange}
-            options={{
-              language: lang,
-              i18n: formio_resourceBundles,
-            }}
-          />
+            <FormBuilder
+              key={form._id}
+              form={form}
+              onChange={formChange}
+              options={{
+                language: lang,
+                i18n: formio_resourceBundles,
+              }}
+            />
           </div>
 
         </LoadingOverlay>

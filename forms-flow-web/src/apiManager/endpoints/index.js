@@ -77,6 +77,7 @@ const API = {
   HANDLE_AUTHORIZATION_FOR_DESIGNER: `${WEB_BASE_URL}/authorizations/resource/<resource_id>`,
   GET_FILTERS : `${WEB_BASE_URL}/filter`,
   GET_BPM_TASK_FILTERS : `${BPM_BASE_URL_EXT}/v1/task-filters`,
+  VALIDATE_TENANT: `${MT_ADMIN_BASE_URL}/${MT_ADMIN_BASE_URL_VERSION}/tenants/tenant_id/validate`,
 };
 
 export default API;

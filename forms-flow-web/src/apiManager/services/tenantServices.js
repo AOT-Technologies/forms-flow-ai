@@ -1,9 +1,12 @@
 import { tenantDetail } from "../../constants/tenantConstant";
+import { RequestService } from "@formsflow/service";
 import {
   setTenantDetails,
   setTenantID,
 } from "../../actions/tenantActions";
 import { Keycloak_Tenant_Client } from "../../constants/constants";
+import { replaceUrl } from "../../helper/helper";
+import API from "../endpoints";
 
 
 
@@ -24,4 +27,13 @@ export const setTenantFromId = (tenantKey, ...rest) => {
     dispatch(setTenantDetails(tenantData));
     done(null, tenantDetail);
   };
+};
+
+export const validateTenant = (tenantId) => {
+  const validateTenantUrl = replaceUrl(
+    API.VALIDATE_TENANT,
+    "<tenant_id>",
+    tenantId
+  );
+  return RequestService.httpGETRequest(validateTenantUrl);
 };

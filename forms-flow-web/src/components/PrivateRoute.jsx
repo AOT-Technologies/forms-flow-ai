@@ -42,6 +42,7 @@ import InsightsPage from "./Insights";
 import Application from "./Application";
 import Modeler from "./Modeler";
 import Drafts from "./Draft";
+import LandingPage from "./MultiTenant";
 import {
   BPM_API_URL_WITH_VERSION,
   WEB_BASE_URL,
@@ -222,6 +223,9 @@ const PrivateRoute = React.memo((props) => {
           <Switch>
             {ENABLE_FORMS_MODULE && (
               <Route path={`${BASE_ROUTE}form`} component={Form} />
+            )}
+            {ENABLE_FORMS_MODULE && (
+              <Route path={`${BASE_ROUTE}landing`} component={LandingPage} />
             )}
             {ENABLE_FORMS_MODULE && (
               <DesignerRoute path={`${BASE_ROUTE}formflow`} component={Form} />

@@ -150,7 +150,7 @@ const PrivateRoute = React.memo((props) => {
       tenant?.tenantData?.details?.locale ||
       selectedLanguage;
     dispatch(setLanguage(lang));
-  }, [kcInstance, tenant.tenantData]);
+  }, [kcInstance, tenant?.tenantData]);
 
   // useMemo prevents unneccessary rerendering caused by the route update.
 

@@ -38,6 +38,7 @@ const TaskSearchBarListView = React.memo(({ toggleAllTaskVariables }) => {
 
   return (
     <>
+     {tasksCount > 0 ? (
       <div className="d-flex justify-content-end filter-sort-bar mt-1">
         <div className="sort-container task-filter-list-view">
           <button
@@ -123,6 +124,7 @@ const TaskSearchBarListView = React.memo(({ toggleAllTaskVariables }) => {
           )}
         </div>
       </div>
+      ) : null}
     </>
   );
 });

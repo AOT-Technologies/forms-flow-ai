@@ -1,13 +1,15 @@
+@import "../../variables.scss";
+
 .insights {
   margin-top: 10px;
   & .line-hr {
-    border-top: 1px solid var(--color-primary-ltr);
+    border-top: 1px solid $primary-200;
   }
   & .card-counter {
     width: 100%;
     margin: 25px 0px;
     & .white-box {
-      background: var(--color-white);
+      background: $white;
       padding: 25px;
       margin-bottom: 30px;
       & .box-title {
@@ -29,7 +31,7 @@
   }
   & .insight-title {
     margin-bottom: -5px;
-    color: var(--color-black);
+    color: $dark;
   }
 }
 .div-middle
@@ -37,7 +39,7 @@
   margin-top: 10%;
 }
 #app {
-  background: var(--color-white);
+  background: $white;
 }
 .no-dashboard-detail{
   left: 52%;

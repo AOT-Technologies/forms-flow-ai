@@ -55,6 +55,12 @@ class BusinessErrorCode(ErrorCodeMixin, Enum):
     FILTER_NOT_FOUND = "The specified filter does not exist", HTTPStatus.BAD_REQUEST
     PROCESS_START_ERROR = "Cannot start process instance", HTTPStatus.BAD_REQUEST
     USER_NOT_FOUND = "User not found", HTTPStatus.BAD_REQUEST
+    PROCESS_ID_NOT_FOUND = (
+        "The specified process ID does not exist",
+        HTTPStatus.BAD_REQUEST,
+    )
+    THEME_NOT_FOUND = "The specified theme not exist", HTTPStatus.BAD_REQUEST
+    THEME_EXIST = "The specified theme already exist", HTTPStatus.BAD_REQUEST
 
     def __new__(cls, message, status_code):
         """Constructor."""

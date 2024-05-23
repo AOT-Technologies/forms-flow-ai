@@ -144,7 +144,7 @@ const ApplicationFilter = ({
               id="applicationStatus"
               value={searchParams.applicationStatus}
               onChange={(e) => handleChange("applicationStatus", e.target.value)}
-              className="form-select p-1 w-100"
+              className="form-select w-100 text-truncate"
               data-testid="submission-filter-applicationstatus-dropdown"
             >
               <option value="" hidden>

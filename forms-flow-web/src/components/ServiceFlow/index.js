@@ -162,6 +162,16 @@ export default React.memo(() => {
     dispatch(setIsAllTaskVariableExpand(newExpandedState));
   };
 
+  // if all tasks are expanded or collpased individually then update the  allTaskVariablesExpand variable
+  useEffect(() => {
+    if (taskList.every((task) => expandedTasks[task.id])) {
+      dispatch(setIsAllTaskVariableExpand(true));
+    }
+    if (taskList.every((task) => !expandedTasks[task.id])) {
+      dispatch(setIsAllTaskVariableExpand(false));
+    }
+
+  }, [expandedTasks]);
   const SocketIOCallback = useCallback(
     (refreshedTaskId, forceReload, isUpdateEvent) => {
       const reqParamData = {

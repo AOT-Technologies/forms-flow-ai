@@ -36,6 +36,25 @@
 .card-border {
   border-left: solid 1px $gray-200;
 }
+
+.card-header.bg-default .card-title {
+  color: $white;
+}
+
+.card-header .card-title {
+  color: $dark; 
+}
+
+
+.bg-default {
+  background-color: $primary-700;
+  border: $primary-700;
+  color: $white !important;
+}
+
+.text-muted{
+  color: $gray-700 !important;
+}
 .select-style {
   margin-bottom: 21px;
   margin-top: 10px;

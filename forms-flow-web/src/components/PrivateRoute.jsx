@@ -50,8 +50,8 @@ import {
 } from "../apiManager/endpoints/config";
 import { AppConfig } from "../config";
 import { getFormioRoleIds } from "../apiManager/services/userservices";
-import { toast } from "react-toastify";
-
+//import { toast } from "react-toastify";
+import AccessDenied from "./AccessDenied";
 export const kcServiceInstance = (tenantId = null) => {
   return KeycloakService.getInstance(
     KEYCLOAK_AUTH_URL,
@@ -76,7 +76,7 @@ const PrivateRoute = React.memo((props) => {
   const userRoles = useSelector((state) => state.user.roles || []);
   const { tenantId } = useParams();
   const redirecUrl = MULTITENANCY_ENABLED ? `/tenant/${tenantId}/` : `/`;
-
+  const [authError, setAuthError] = React.useState(false);
   const [kcInstance, setKcInstance] = React.useState(getKcInstance());
 
   const authenticate = (instance, store) => {
@@ -125,10 +125,7 @@ const PrivateRoute = React.memo((props) => {
         instance.initKeycloak((authenticated) => {
           if(!authenticated)
           {
-           toast.error("Unauthorized Access.",{autoClose: 3000});
-           setTimeout(function() {
-            instance.userLogout();
-          }, 3000);
+           setAuthError(true);
           }
           else{
             authenticate(instance, props.store);
@@ -217,7 +214,9 @@ const PrivateRoute = React.memo((props) => {
   );
   return (
     <>
-      {isAuth ? (
+      {authError ? (
+        <AccessDenied />
+      ) : isAuth ? (
         <Suspense fallback={<Loading />}>
           <Switch>
             {ENABLE_FORMS_MODULE && (
@@ -263,7 +262,7 @@ const PrivateRoute = React.memo((props) => {
             )}
 
             <Route exact path={BASE_ROUTE}>
-             {userRoles.length && <Redirect
+              {userRoles.length && <Redirect
                 to={
                   userRoles?.includes(STAFF_REVIEWER)
                     ? `${redirecUrl}task`

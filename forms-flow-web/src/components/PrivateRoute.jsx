@@ -50,8 +50,8 @@ import {
 } from "../apiManager/endpoints/config";
 import { AppConfig } from "../config";
 import { getFormioRoleIds } from "../apiManager/services/userservices";
-//import { toast } from "react-toastify";
 import AccessDenied from "./AccessDenied";
+
 export const kcServiceInstance = (tenantId = null) => {
   return KeycloakService.getInstance(
     KEYCLOAK_AUTH_URL,
@@ -76,6 +76,8 @@ const PrivateRoute = React.memo((props) => {
   const userRoles = useSelector((state) => state.user.roles || []);
   const { tenantId } = useParams();
   const redirecUrl = MULTITENANCY_ENABLED ? `/tenant/${tenantId}/` : `/`;
+  const selectedLanguage = useSelector((state) => state.user.lang);
+  const tenant = useSelector((state) => state.tenants);
   const [authError, setAuthError] = React.useState(false);
   const [kcInstance, setKcInstance] = React.useState(getKcInstance());
 
@@ -85,7 +87,6 @@ const PrivateRoute = React.memo((props) => {
     );
     dispatch(setUserAuth(instance.isAuthenticated()));
     store.dispatch(setUserToken(instance.getToken()));
-    store.dispatch(setLanguage(instance.getUserData()?.locale || "en"));
     //Set Cammunda/Formio Base URL
     setApiBaseUrlToLocalStorage();
     // get formio roles
@@ -125,7 +126,7 @@ const PrivateRoute = React.memo((props) => {
         instance.initKeycloak((authenticated) => {
           if(!authenticated)
           {
-           setAuthError(true);
+            setAuthError(true);
           }
           else{
             authenticate(instance, props.store);
@@ -135,6 +136,18 @@ const PrivateRoute = React.memo((props) => {
       }
     }
   }, [props.store, tenantId, dispatch]);
+
+  /**
+   * Retrieves the user's locale from the Keycloak instance or the tenant data, and dispatches an action to set the language in the application state.
+   * This effect is triggered whenever the Keycloak instance or the tenant data changes.
+   */
+  useEffect(() => {
+    const lang =
+      kcInstance?.getInstance()?.getUserData().locale ||
+      tenant?.tenantData?.details?.locale ||
+      selectedLanguage;
+    dispatch(setLanguage(lang));
+  }, [kcInstance, tenant?.tenantData]);
 
   // useMemo prevents unneccessary rerendering caused by the route update.
 

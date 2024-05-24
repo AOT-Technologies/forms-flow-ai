@@ -52,6 +52,7 @@ class KeycloakGroupService(KeycloakAdmin):
         current_app.logger.debug(
             f"Fetching users from keycloak under {group_name} group..."
         )
+        user_count = None
         if group_name:
             group = self.client.get_request(url_path=f"group-by-path/{group_name}")
             group_id = group.get("id")

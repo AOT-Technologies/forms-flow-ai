@@ -108,19 +108,20 @@ function BpmnTable() {
                 <th scope="col">{t("Type")}</th>
                 <th colSpan="2" aria-label="Search">
                 <InputGroup className="input-group">
-              <FormControl
-                value={search}
-                onChange={(e) => {
-                  setSearch(e.target.value);
-                }}
-                onKeyDown={(e) =>
-                  e.keyCode == 13 ? handleSearchButtonClick() : ""
-                }
-                placeholder={t("Search by workflow name")}
-                className="bg-white"
-                title={t("Search by workflow name")}
-                data-testid="processes-search-workflow-input-box"
-              />
+                <FormControl
+                  value={search}
+                  onChange={(e) => {
+                    setSearch(e.target.value);
+                  }}
+                  onKeyDown={(e) =>
+                    e.keyCode == 13 ? handleSearchButtonClick() : ""
+                  }
+                  placeholder={t("Search by workflow name")}
+                  className="bg-white"
+                  title={t("Search by workflow name")}
+                  data-testid="processes-search-workflow-input-box"
+                  aria-label={t("Search by workflow name")}               
+                />
               {search && (
                 <InputGroup.Append  data-testid="processes-search-clear-button" onClick={onClearSearch}>
                   <InputGroup.Text className="h-100">

@@ -19,5 +19,5 @@ RUN pip install .
 EXPOSE 5000
 RUN python3 -c "from transformers import pipeline; pipeline('sentiment-analysis', model='$MODEL_ID', truncation=True)"
 
-RUN chmod u+x ./entrypoint
-ENTRYPOINT ["/bin/sh", "entrypoint"]
+RUN chmod u+x ./entrypoint.sh
+ENTRYPOINT ["/bin/sh", "entrypoint.sh"]

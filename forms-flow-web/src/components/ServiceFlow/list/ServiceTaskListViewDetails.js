@@ -265,7 +265,7 @@ const ServiceTaskListViewDetails = React.memo(() => {
                     <Card className="me-2 bg-light">
                         <Card.Body>
                             <div className="d-flex justify-content-between">
-                                <Col xs={4}>
+                                <Col xs={3}>
                                     <Row className="ms-0 task-header">{task?.name}</Row>
                                     <Row className="ms-0 fs-5 fw-normal">
                                         <span className="application-id" title={t("Workflow")}>
@@ -283,7 +283,7 @@ const ServiceTaskListViewDetails = React.memo(() => {
                                         </span>
                                     </Row>
                                 </Col>
-                                    <Row>
+                                    <Row className="justify-content-around col-9">
                                     <TaskHeaderListView
                                         task={task} taskId={task?.id} groupView={true}
                                     />

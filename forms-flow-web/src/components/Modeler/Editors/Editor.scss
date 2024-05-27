@@ -35,7 +35,11 @@
 }
 
 .highlight:not(.djs-connection) .djs-visual > :nth-child(1) {
-  fill: $primary-400 !important;
+  fill: $primary-500 !important;
+}
+
+.highlight .djs-label {
+  fill: $white !important;
 }
 
 .zoom-container {

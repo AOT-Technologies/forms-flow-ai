@@ -36,7 +36,8 @@ const ServiceFlowFilterListDropDown = React.memo(
       dispatch(setBPMTaskListActivePage(1));
     };
 
-    const handleFilterEdit = (id, viewMode) => {
+    const handleFilter = (id, viewMode) => {
+      openFilterDrawer(true);
       const selectedFilter = filterListItems.find((item) => item.id === id);
       selectFilter(selectedFilter, viewMode);
     };
@@ -70,8 +71,7 @@ const ServiceFlowFilterListDropDown = React.memo(
                     {showEditIcon ? (
                       <button
                         onClick={() => {
-                          handleFilterEdit(filter?.id, false);
-                          openFilterDrawer(true);
+                          handleFilter(filter?.id, false);
                         }}
                         className="btn btn-link"
                       >
@@ -81,8 +81,7 @@ const ServiceFlowFilterListDropDown = React.memo(
                     ) : (
                       <button
                         onClick={() => {
-                          handleFilterEdit(filter?.id, true);
-                          openFilterDrawer(true);
+                          handleFilter(filter?.id, true);
                         }}
                         className="btn btn-link"
                       >

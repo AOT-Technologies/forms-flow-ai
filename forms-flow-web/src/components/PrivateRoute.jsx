@@ -142,10 +142,13 @@ const PrivateRoute = React.memo((props) => {
    * This effect is triggered whenever the Keycloak instance or the tenant data changes.
    */
   useEffect(() => {
-    const lang =
-      kcInstance?.getInstance()?.getUserData().locale ||
-      tenant?.tenantData?.details?.locale ||
-      selectedLanguage;
+    // const lang =
+    //   kcInstance?.getInstance()?.getUserData().locale ||
+    //   tenant?.tenantData?.details?.locale ||
+    //   selectedLanguage;
+    const lang = kcInstance?.userData.locale ||
+       tenant?.tenantData?.details?.locale ||
+      selectedLanguage ;
     dispatch(setLanguage(lang));
   }, [kcInstance, tenant?.tenantData]);
 

@@ -65,6 +65,7 @@ export default function CreateNewFilterDrawer({
   openFilterDrawer,
   setOpenFilterDrawer,
   setFilterSelectedForEdit,
+  viewMode
 }) {
   const dispatch = useDispatch();
   const [filterName, setFilterName] = useState("");
@@ -629,6 +630,7 @@ export default function CreateNewFilterDrawer({
             value={filterName}
             onChange={handleFilterName}
             title={t("Add fliter name")}
+            disabled={viewMode}
           />
           {showAlert && (
             <p className="text-danger mt-2 fs-6">
@@ -655,6 +657,7 @@ export default function CreateNewFilterDrawer({
             checked={isMyTasksEnabled}
             onChange={(e) => setIsMyTasksEnabled(e.target.checked)}
             title={t("Show only current user assigned task")}
+            disabled={viewMode}
           />
           <h5 className="assigned-user mt-3">
             <Translation>
@@ -674,6 +677,7 @@ export default function CreateNewFilterDrawer({
                   setIsTasksForCurrentUserGroupsEnabled(e.target.checked)
                 }
                 title={t("Display authorized tasks based on user roles")}
+                disabled={viewMode}
               />
               <h5 className="assigned-user">
                 <Translation>
@@ -699,6 +703,7 @@ export default function CreateNewFilterDrawer({
             </h5>
           </label>
           <Select
+            isDisabled={viewMode}
             className="mb-3"
             options={processList}
             placeholder={t("Select Workflow")}
@@ -729,6 +734,7 @@ export default function CreateNewFilterDrawer({
           </label>
 
           <Select
+            isDisabled={viewMode}
             inputId="select-user-group"
             onChange={handleCandidate}
             value={
@@ -754,6 +760,7 @@ export default function CreateNewFilterDrawer({
           </label>
 
           <Select
+            isDisabled={viewMode}
             inputId="select-assignee"
             onChange={handleAssignee}
             value={assignee ? { value: assignee, label: assignee } : null}
@@ -772,6 +779,7 @@ export default function CreateNewFilterDrawer({
               </h5>
             </label>           
             <Select
+              isDisabled={viewMode}
               inputId="select-form"
               onChange={onChangeSelectForm}
               value={forms?.data.find((form) => form.value === selectedForm)}
@@ -817,6 +825,7 @@ export default function CreateNewFilterDrawer({
             value={ACCESSIBLE_FOR_ALL_GROUPS}
             checked={permissions === ACCESSIBLE_FOR_ALL_GROUPS}
             onChange={(e) => setPermissions(e.target.value)}
+            disabled={viewMode}
           />
           <label htmlFor="all-users" className="assigned-user">
             <Translation>{(t) => t("Accessible for all users")}</Translation>
@@ -830,6 +839,7 @@ export default function CreateNewFilterDrawer({
             value={PRIVATE_ONLY_YOU}
             checked={permissions === PRIVATE_ONLY_YOU}
             onChange={(e) => setPermissions(e.target.value)}
+            disabled={viewMode}
           />
           <label htmlFor="private-only" className="fs-18">
             <Translation>{(t) => t("Private (Only You)")}</Translation>
@@ -843,6 +853,7 @@ export default function CreateNewFilterDrawer({
             value={SPECIFIC_USER_OR_GROUP}
             checked={permissions === SPECIFIC_USER_OR_GROUP}
             onChange={handleSpecificUserGroup}
+            disabled={viewMode}
           />
           <label htmlFor="specific-grp" className="fs-18">
             <Translation>{(t) => t("Specific Group")}</Translation>
@@ -919,7 +930,7 @@ export default function CreateNewFilterDrawer({
 
       <List>
         <div className="d-flex align-items-center justify-content-between">
-          {selectedFilterData && (
+          {selectedFilterData &&  !viewMode && (
             <button
               className="btn btn-link text-danger cursor-pointer"
               onClick={() => {
@@ -930,7 +941,7 @@ export default function CreateNewFilterDrawer({
             </button>
           )}
           <div className="d-flex align-items-center">
-            <button
+            {!viewMode && <button
               className="btn btn-outline-secondary me-3"
               onClick={() => {
                 toggleDrawer();
@@ -938,10 +949,12 @@ export default function CreateNewFilterDrawer({
               }}
             >
               <Translation>{(t) => t("Cancel")}</Translation>
-            </button>
-            <button
+            </button> }
+            
+            { !viewMode &&
+              <button
               className="btn btn-primary submitButton text-decoration-none truncate-size "
-              disabled={!permissions || !filterName || filterName.length >= 50}
+              disabled={viewMode || !permissions || !filterName || filterName.length >= 50}
               onClick={() => {
                 handleSubmit();
               }}
@@ -954,6 +967,7 @@ export default function CreateNewFilterDrawer({
                 }
               </Translation>
             </button>
+            }
           </div>
         </div>
       </List>
@@ -984,6 +998,7 @@ export default function CreateNewFilterDrawer({
               taskVariableFromMapperTable={taskVariableFromMapperTable}
               onSaveTaskAttribute={onSaveTaskAttribute}
               showUndefinedVariable={showUndefinedVariable}
+              viewMode={viewMode}
             />
           </div>
         )}

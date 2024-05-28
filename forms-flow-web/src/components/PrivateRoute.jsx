@@ -146,7 +146,7 @@ const PrivateRoute = React.memo((props) => {
     //   kcInstance?.getInstance()?.getUserData().locale ||
     //   tenant?.tenantData?.details?.locale ||
     //   selectedLanguage;
-    const lang = kcInstance?.userData.locale ||
+    const lang = kcInstance?.userData?.locale ||
        tenant?.tenantData?.details?.locale ||
       selectedLanguage ;
     dispatch(setLanguage(lang));

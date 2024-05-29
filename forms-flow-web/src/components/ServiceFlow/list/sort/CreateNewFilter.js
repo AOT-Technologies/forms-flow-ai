@@ -303,7 +303,7 @@ export default function CreateNewFilterDrawer({
     dispatch(
       fetchFilterList((err, data) => {
         if (data) {
-          fetchBPMTaskCount(data)
+          fetchBPMTaskCount(data.filters)
             .then((res) => {
               dispatch(setBPMFiltersAndCount(res.data));
             })
@@ -450,10 +450,11 @@ export default function CreateNewFilterDrawer({
         dispatch(
           fetchFilterList((err, data) => {
             if (data) {
-              fetchBPMTaskCount(data)
+              fetchBPMTaskCount(data.filters)
                 .then((res) => {
                   dispatch(setBPMFiltersAndCount(res.data));
-                  dispatch(fetchServiceTaskList(data[0], null, firstResult));
+                  dispatch(fetchServiceTaskList(data.defaultFilter || data.filters[0]
+                    , null, firstResult));
                 })
                 .catch((err) => {
                   if (err) {

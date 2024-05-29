@@ -1,13 +1,15 @@
-import React, { useState } from "react";
+import React, { useCallback, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { push } from "connected-react-router";
 import { NavDropdown } from "react-bootstrap";
 import ServiceFlowFilterListDropDown from "../components/ServiceFlow/filter/ServiceTaskFilterListDropDown";
 import { MULTITENANCY_ENABLED } from "../constants/constants";
-import { setBPMFilterLoader, setBPMFiltersAndCount, setSelectedTaskID, setViewType } from '../actions/bpmTaskActions';
+import { setBPMFilterLoader, setBPMFiltersAndCount, setDefaultFilter, setSelectedTaskID, setViewType } from '../actions/bpmTaskActions';
 import CreateNewFilterDrawer from "../components/ServiceFlow/list/sort/CreateNewFilter";
 import { useTranslation } from "react-i18next"; 
 import { fetchBPMTaskCount } from "../apiManager/services/bpmTaskServices";
+import { toast } from "react-toastify";
+import { updateDifaultFilter } from "../apiManager/services/userservices";
 
 function TaskHead() {
   const dispatch = useDispatch();
@@ -22,6 +24,7 @@ function TaskHead() {
   const isFilterLoading = useSelector((state) => state.bpmTasks.isFilterLoading);
   const filterListItems = useSelector((state) => state.bpmTasks.filterList);
   const isTaskListLoading = useSelector((state) => state.bpmTasks.isTaskListLoading);
+  const defaultFilter = useSelector((state)=> state.user.defaultFilter);
 
   const baseUrl = MULTITENANCY_ENABLED ? `/tenant/${tenantKey}/` : "/";
 
@@ -56,6 +59,15 @@ function TaskHead() {
       : text;
   };
 
+  const defaultFilterChange = useCallback(()=>{
+    updateDifaultFilter(selectedFilter.id == defaultFilter ? null : selectedFilter.id).then((res)=>{
+      dispatch(setDefaultFilter(res.data.defaultFilter));
+      toast.success(t("Default filter updated successfully"));
+    }).catch((err)=>{
+      console.error(err);
+    });
+  },[selectedFilter,defaultFilter]);
+
   return (
     <div>
       <div className="d-flex flex-md-row flex-column align-items-md-center justify-content-between">
@@ -80,6 +92,10 @@ function TaskHead() {
               openFilterDrawer={setOpenFilterDrawer}
             />
           </NavDropdown>
+          <div className="form-check form-switch">
+  <input className="form-check-input" onChange={defaultFilterChange} disabled={!selectedFilter?.id} checked={defaultFilter == selectedFilter?.id} type="checkbox" role="switch" id="flexSwitchCheckDefault"/>
+  <label className="form-check-label" htmlFor="flexSwitchCheckDefault">Default Filter</label>
+</div>
           <CreateNewFilterDrawer 
             selectedFilterData={filterSelectedForEdit} 
             openFilterDrawer={openFilterDrawer} 

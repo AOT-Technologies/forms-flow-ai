@@ -147,11 +147,13 @@ const PrivateRoute = React.memo((props) => {
    * This effect is triggered whenever the Keycloak instance or the tenant data changes.
    */
   useEffect(() => {
-    const lang = kcInstance?.userData?.locale ||
-       tenant?.tenantData?.details?.locale ||
-       selectedLanguage ;
-    dispatch(setLanguage(lang));
-  }, [kcInstance, tenant.tenantData]);
+    if(kcInstance){
+      const lang = kcInstance?.userData?.locale ||
+      tenant?.tenantData?.details?.locale ||
+      selectedLanguage ;
+      dispatch(setLanguage(lang));
+    }
+  }, [kcInstance, tenant?.tenantData]);
 
   // useMemo prevents unneccessary rerendering caused by the route update.
 

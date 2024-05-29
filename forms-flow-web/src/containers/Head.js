@@ -14,7 +14,8 @@ const Head = React.memo((props) => {
             key={key}
             className={`head-item ${item.name === page ? "head-active" : ""} ${key > 0 ? 'padding-left-60' : ''}`}
           >
-            <h1 className="application-head">
+            <h1 className="sr-only" >{page}</h1>
+            <h2 className="application-head">
               <i
                 className={`mt-1 fa fa-${item?.icon}`}
                 aria-hidden="true"
@@ -27,7 +28,7 @@ const Head = React.memo((props) => {
                   ({item?.count})
                 </div>
               ) : null}
-            </h1>
+            </h2>
           </div>
         ))}
       </div>

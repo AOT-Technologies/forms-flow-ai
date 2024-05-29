@@ -269,7 +269,7 @@ const WorkFlow = React.memo(
                 </span>
 
                 {selectedVariablekeys?.length > 10 ? (
-                  <div className="alert alert-warning mt-3" role="alert">
+                  <div className="alert taskvariable-aler mt-3" role="alert">
                     <i className="fa-solid fa-triangle-exclamation me-2"></i>{" "}
                     {t(
                       "Selecting all form fields may affect performance. For the best performance, just pick the form fields you really need."

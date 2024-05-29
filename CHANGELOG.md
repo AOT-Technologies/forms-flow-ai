@@ -2,6 +2,18 @@
 
 Mark  items as `Added`, `Changed`, `Fixed`, `Modified`, `Removed`, `Untested Features`, `Upcoming Features`, `Known Issues`
 
+## 6.0.2 - 2024-05-29
+
+`Added`
+
+**forms-flow-web-root-config**
+* Added env variable `LANGUAGE` for default language setting
+  
+`Modified`
+
+**forms-flow-web**
+* The tenant user's default language is set from their data, tenant data, or the default application language.
+
 ## 6.0.1 - 2024-05-21
 
 `Added`

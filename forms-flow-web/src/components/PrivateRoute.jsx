@@ -51,6 +51,7 @@ import {
 import { AppConfig } from "../config";
 import { getFormioRoleIds } from "../apiManager/services/userservices";
 import { toast } from "react-toastify";
+import { set } from "lodash";
 
 export const kcServiceInstance = (tenantId = null) => {
   return KeycloakService.getInstance(
@@ -82,6 +83,7 @@ const PrivateRoute = React.memo((props) => {
   const [kcInstance, setKcInstance] = React.useState(getKcInstance());
 
   const authenticate = (instance, store) => {
+    setKcInstance(instance);
     store.dispatch(
       setUserRole(JSON.parse(StorageService.get(StorageService.User.USER_ROLE)))
     );
@@ -145,10 +147,9 @@ const PrivateRoute = React.memo((props) => {
    * This effect is triggered whenever the Keycloak instance or the tenant data changes.
    */
   useEffect(() => {
-    const lang =
-      kcInstance?.getInstance()?.getUserData().locale ||
-      tenant?.tenantData?.details?.locale ||
-      selectedLanguage;
+    const lang = kcInstance?.userData?.locale ||
+       tenant?.tenantData?.details?.locale ||
+       selectedLanguage ;
     dispatch(setLanguage(lang));
   }, [kcInstance, tenant.tenantData]);
 

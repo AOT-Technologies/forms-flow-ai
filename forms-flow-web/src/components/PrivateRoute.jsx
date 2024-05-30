@@ -51,6 +51,7 @@ import {
 import { AppConfig } from "../config";
 import { getFormioRoleIds } from "../apiManager/services/userservices";
 import { toast } from "react-toastify";
+import { set } from "lodash";
 
 export const kcServiceInstance = (tenantId = null) => {
   return KeycloakService.getInstance(
@@ -76,16 +77,18 @@ const PrivateRoute = React.memo((props) => {
   const userRoles = useSelector((state) => state.user.roles || []);
   const { tenantId } = useParams();
   const redirecUrl = MULTITENANCY_ENABLED ? `/tenant/${tenantId}/` : `/`;
+  const selectedLanguage = useSelector((state) => state.user.lang);
+  const tenant = useSelector((state) => state.tenants);
 
   const [kcInstance, setKcInstance] = React.useState(getKcInstance());
 
   const authenticate = (instance, store) => {
+    setKcInstance(instance);
     store.dispatch(
       setUserRole(JSON.parse(StorageService.get(StorageService.User.USER_ROLE)))
     );
     dispatch(setUserAuth(instance.isAuthenticated()));
     store.dispatch(setUserToken(instance.getToken()));
-    store.dispatch(setLanguage(instance.getUserData()?.locale || "en"));
     //Set Cammunda/Formio Base URL
     setApiBaseUrlToLocalStorage();
     // get formio roles
@@ -138,6 +141,19 @@ const PrivateRoute = React.memo((props) => {
       }
     }
   }, [props.store, tenantId, dispatch]);
+
+  /**
+   * Retrieves the user's locale from the Keycloak instance or the tenant data, and dispatches an action to set the language in the application state.
+   * This effect is triggered whenever the Keycloak instance or the tenant data changes.
+   */
+  useEffect(() => {
+    if(kcInstance){
+      const lang = kcInstance?.userData?.locale ||
+      tenant?.tenantData?.details?.locale ||
+      selectedLanguage ;
+      dispatch(setLanguage(lang));
+    }
+  }, [kcInstance, tenant?.tenantData]);
 
   // useMemo prevents unneccessary rerendering caused by the route update.
 

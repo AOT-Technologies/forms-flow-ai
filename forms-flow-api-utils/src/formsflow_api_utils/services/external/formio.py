@@ -105,9 +105,13 @@ class FormioService:
         current_app.logger.info("Fetching user resource ids...")
         return self._invoke_service(url, headers={}, method='GET')
 
-    def get_form(self, data, formio_token):
+    def get_form(self, query_params, formio_token):
         """Get request to formio API to get form details."""
-        return self.get_form_by_id(data["form_id"], formio_token)
+        headers = {"Content-Type": "application/json", "x-jwt-token": formio_token}
+        url = f"{self.base_url}/form"
+        if query_params:
+            url = f"{url}?{query_params}"
+        return self._invoke_service(url, headers, method='GET')
 
     def get_form_by_id(self, form_id: str, formio_token):
         """Get request to formio API to get form details."""

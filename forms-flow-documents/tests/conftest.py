@@ -1,4 +1,6 @@
 """Common setup and fixtures for the pytest suite used by this service."""
+import time
+
 import pytest
 from unittest.mock import patch
 from formsflow_api_utils.utils import jwt as _jwt
@@ -67,6 +69,7 @@ def auto(docker_services, app):
 
         docker_services.start("forms")
         docker_services.start("proxy")
+        time.sleep(15)
 
 
 @pytest.fixture(scope="session")

@@ -97,17 +97,12 @@ class UserService:
         user: UserContext = kwargs["user"]
         user_data = User.get_user_by_user_name(user_name=user.user_name)
         if user_data:
-            if (
-                user_data.tenant is not None
-                and user.tenant_key is not None
-                and user.tenant_key not in user_data.tenant
-            ):
-                data["tenant"] = [*user_data.tenant, user.tenant_key]
-
+            if user_data.tenant is None and user.tenant_key:
+                data["tenant"] = user.tenant_key
             user_data.update(data)
         else:
             data["user_name"] = user.user_name
-            data["tenant"] = [user.tenant_key] if user.tenant_key else None
+            data["tenant"] = user.tenant_key if user.tenant_key else None
             data["created_by"] = user.user_name
             user_data = User.create_user(data)
         return UserSchema().dump(user_data)

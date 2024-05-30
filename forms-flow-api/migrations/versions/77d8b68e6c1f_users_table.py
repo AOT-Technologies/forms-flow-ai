@@ -1,8 +1,8 @@
-"""USER TABLE
+"""Users table
 
-Revision ID: da8f310d1f4b
+Revision ID: 77d8b68e6c1f
 Revises: f1599a5bd658
-Create Date: 2024-05-30 10:54:33.831618
+Create Date: 2024-05-30 16:01:37.273907
 
 """
 from alembic import op
@@ -10,7 +10,7 @@ import sqlalchemy as sa
 from sqlalchemy.dialects import postgresql
 
 # revision identifiers, used by Alembic.
-revision = 'da8f310d1f4b'
+revision = '77d8b68e6c1f'
 down_revision = 'f1599a5bd658'
 branch_labels = None
 depends_on = None
@@ -23,14 +23,14 @@ def upgrade():
     sa.Column('user_name', sa.String(length=50), nullable=False),
     sa.Column('default_filter', sa.Integer(), nullable=True),
     sa.Column('locale', sa.String(), nullable=True, comment='language code'),
-    sa.Column('tenant', postgresql.ARRAY(sa.String()), nullable=True, comment='tenant keys'),
+    sa.Column('tenant', sa.String(), nullable=True, comment='tenant key'),
     sa.Column('created', sa.DateTime(), nullable=False),
     sa.Column('modified', sa.DateTime(), nullable=True),
     sa.Column('created_by', sa.String(), nullable=False),
     sa.Column('modified_by', sa.String(), nullable=True),
     sa.ForeignKeyConstraint(['default_filter'], ['filter.id'], ondelete='SET NULL'),
     sa.PrimaryKeyConstraint('id'),
-    sa.UniqueConstraint('user_name', name='uq_user_user_name')
+    sa.UniqueConstraint('user_name', 'tenant', name='uq_tenant_user_name')
     )
     op.alter_column('themes', 'logo_type',
                existing_type=sa.VARCHAR(length=100),

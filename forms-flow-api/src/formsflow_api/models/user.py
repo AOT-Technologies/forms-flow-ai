@@ -1,7 +1,5 @@
 """This manages User Database Models."""
 
-from flask_sqlalchemy.query import Query
-from formsflow_api_utils.utils.user_context import UserContext, user_context
 from sqlalchemy import UniqueConstraint
 from sqlalchemy.dialects.postgresql import ARRAY
 
@@ -48,22 +46,8 @@ class User(AuditDateTimeMixin, AuditUserMixin, BaseModel, db.Model):
         self.commit()
 
     @classmethod
-    @user_context
-    def tenant_authorization(cls, query: Query, **kwargs):
-        """Modifies the query to include tenant check if needed."""
-        tenant_auth_query: Query = query
-        user: UserContext = kwargs["user"]
-        tenant_key: str = user.tenant_key
-        if not isinstance(query, Query):
-            raise TypeError("Query object must be of type Query")
-        if tenant_key is not None:
-            tenant_auth_query = tenant_auth_query.filter(cls.tenant.any(tenant_key))
-        return tenant_auth_query
-
-    @classmethod
     def get_user_by_user_name(cls, user_name: str = None):
         """Find user data by username."""
         assert user_name is not None
         query = cls.query.filter(cls.user_name == user_name)
-        query = cls.tenant_authorization(query)
         return query.one_or_none()

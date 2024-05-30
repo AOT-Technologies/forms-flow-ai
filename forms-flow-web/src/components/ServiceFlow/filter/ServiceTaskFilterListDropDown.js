@@ -36,10 +36,10 @@ const ServiceFlowFilterListDropDown = React.memo(
       dispatch(setBPMTaskListActivePage(1));
     };
 
-    const handleFilter = (id, viewMode) => {
+    const handleFilter = (id, editPermission) => {
       openFilterDrawer(true);
       const selectedFilter = filterListItems.find((item) => item.id === id);
-      selectFilter(selectedFilter, viewMode);
+      selectFilter(selectedFilter, editPermission);
     };
 
     const renderFilterList = () => {
@@ -50,7 +50,7 @@ const ServiceFlowFilterListDropDown = React.memo(
               const matchingFilterItem = filterListItems.find(
                 (item) => item.id === filter.id
               );
-              const showEditIcon =
+              const editPermission =
                 matchingFilterItem && matchingFilterItem.editPermission;
               return (
                 <NavDropdown.Item
@@ -68,27 +68,15 @@ const ServiceFlowFilterListDropDown = React.memo(
                     >
                       {filter?.name} {`(${filter.count || 0})`}
                     </span>
-                    {showEditIcon ? (
-                      <button
+                    <button
                         onClick={() => {
-                          handleFilter(filter?.id, false);
+                          handleFilter(filter?.id, editPermission);
                         }}
                         className="btn btn-link"
                       >
-                        <i className="fa fa-pencil" />{" "}
-                        <Translation>{(t) => t("Edit")}</Translation>
+                        <i className={`me-1 fa fa-${editPermission ? "pencil" : "eye"}`} />
+                        <Translation>{(t) => t(editPermission ? `Edit` : `View`)}</Translation>
                       </button>
-                    ) : (
-                      <button
-                        onClick={() => {
-                          handleFilter(filter?.id, true);
-                        }}
-                        className="btn btn-link"
-                      >
-                        <i className="fa fa-eye" />{" "}
-                        <Translation>{(t) => t("View")}</Translation>
-                      </button>
-                    )}
                   </div>
                 </NavDropdown.Item>
               );

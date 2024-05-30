@@ -65,7 +65,8 @@ export default function CreateNewFilterDrawer({
   openFilterDrawer,
   setOpenFilterDrawer,
   setFilterSelectedForEdit,
-  viewMode
+  viewMode,
+  resetViewMode
 }) {
   const dispatch = useDispatch();
   const [filterName, setFilterName] = useState("");
@@ -507,6 +508,7 @@ export default function CreateNewFilterDrawer({
 
   const toggleDrawer = () => {
     setOpenFilterDrawer(!openFilterDrawer);
+    resetViewMode();
     !openFilterDrawer ? setFilterSelectedForEdit(false) : null;
   };
 

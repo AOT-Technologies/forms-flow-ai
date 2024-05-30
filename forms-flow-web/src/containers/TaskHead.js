@@ -73,7 +73,7 @@ function TaskHead() {
             onClick={goToTask}
           >
             <ServiceFlowFilterListDropDown
-              selectFilter={(filter, viewMode) => {
+              selectFilter={(filter,viewMode) => {
                 setFilterSelectedForEdit(filter);
                 setViewMode(viewMode);
               }}
@@ -86,6 +86,7 @@ function TaskHead() {
             setOpenFilterDrawer={setOpenFilterDrawer}
             setFilterSelectedForEdit={setFilterSelectedForEdit}
             viewMode={viewMode}
+            onClose={() => setViewMode(false)} 
           />
         </div>
         <div>

@@ -982,7 +982,7 @@ export default function CreateNewFilterDrawer({
             toggleDrawer();
             clearAllFilters();
           }}
-          className="btn btn-link text-dark cursor-pointer"
+          className="btn  btn-outline-primary"
         >
           <Translation>{(t) => t("Create New Filter")}</Translation>
         </button>

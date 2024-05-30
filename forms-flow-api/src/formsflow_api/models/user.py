@@ -2,6 +2,8 @@
 
 from flask_sqlalchemy.query import Query
 from formsflow_api_utils.utils.user_context import UserContext, user_context
+from sqlalchemy import UniqueConstraint
+from sqlalchemy.dialects.postgresql import ARRAY
 
 from .audit_mixin import AuditDateTimeMixin, AuditUserMixin
 from .base_model import BaseModel
@@ -12,12 +14,13 @@ class User(AuditDateTimeMixin, AuditUserMixin, BaseModel, db.Model):
     """This class manages user information."""
 
     id = db.Column(db.Integer, primary_key=True)
-    user_name = db.Column(db.String(50), nullable=False, unique=True)
+    user_name = db.Column(db.String(50), nullable=False)
     default_filter = db.Column(
         db.Integer, db.ForeignKey("filter.id", ondelete="SET NULL"), nullable=True
     )
     locale = db.Column(db.String(), nullable=True, comment="language code")
-    tenant = db.Column(db.String(), nullable=True, comment="tenant key")
+    tenant = db.Column(ARRAY(db.String), nullable=True, comment="tenant keys")
+    __table_args__ = (UniqueConstraint("user_name", name="uq_user_user_name"),)
 
     @classmethod
     def create_user(cls, user_data: dict):
@@ -37,6 +40,7 @@ class User(AuditDateTimeMixin, AuditUserMixin, BaseModel, db.Model):
         self.update_from_dict(
             [
                 "locale",
+                "tenant",
                 "default_filter",
             ],
             user_data,
@@ -53,7 +57,7 @@ class User(AuditDateTimeMixin, AuditUserMixin, BaseModel, db.Model):
         if not isinstance(query, Query):
             raise TypeError("Query object must be of type Query")
         if tenant_key is not None:
-            tenant_auth_query = tenant_auth_query.filter(cls.tenant == tenant_key)
+            tenant_auth_query = tenant_auth_query.filter(cls.tenant.any(tenant_key))
         return tenant_auth_query
 
     @classmethod

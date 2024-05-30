@@ -10,7 +10,7 @@ import { useTranslation } from "react-i18next";
 import { fetchBPMTaskCount } from "../apiManager/services/bpmTaskServices";
 import { toast } from "react-toastify";
 import { updateDifaultFilter } from "../apiManager/services/userservices";
-
+import _ from "lodash";
 function TaskHead() {
   const dispatch = useDispatch();
   const { t } = useTranslation();
@@ -62,7 +62,12 @@ function TaskHead() {
   const defaultFilterChange = useCallback(()=>{
     updateDifaultFilter(selectedFilter.id == defaultFilter ? null : selectedFilter.id).then((res)=>{
       dispatch(setDefaultFilter(res.data.defaultFilter));
-      toast.success(t("Default filter updated successfully"));
+      if (selectedFilter.id == defaultFilter){
+        toast.success(t(`Default filter removed`));
+      }else{
+        toast.success(t(`${_.startCase(selectedFilter.name)} added as default filter`));
+      }
+        
     }).catch((err)=>{
       console.error(err);
     });
@@ -71,15 +76,15 @@ function TaskHead() {
   return (
     <div>
       <div className="d-flex flex-md-row flex-column align-items-md-center justify-content-between">
-        <div className="d-flex align-items-center">
+        <div className="d-flex align-items-center gap-3" style={{transition: "0.5s"}}>
           <NavDropdown
             className="filter-drop-down"
             title={
               <span className="h4 fw-bold">
                 <i className="fa fa-list-ul me-2" />
-                {selectedFilter?.name ?  
-                  textTruncate(25, 23, `${selectedFilter?.name} ${count}`) :
-                  filterListLoading() } 
+                {selectedFilter?.name
+                  ? textTruncate(25, 23, `${selectedFilter?.name} ${count}`)
+                  : filterListLoading()}
               </span>
             }
             onClick={goToTask}
@@ -92,13 +97,30 @@ function TaskHead() {
               openFilterDrawer={setOpenFilterDrawer}
             />
           </NavDropdown>
-          <div className="form-check form-switch">
-  <input className="form-check-input" onChange={defaultFilterChange} disabled={!selectedFilter?.id} checked={defaultFilter == selectedFilter?.id} type="checkbox" role="switch" id="flexSwitchCheckDefault"/>
-  <label className="form-check-label" htmlFor="flexSwitchCheckDefault">Default Filter</label>
-</div>
-          <CreateNewFilterDrawer 
-            selectedFilterData={filterSelectedForEdit} 
-            openFilterDrawer={openFilterDrawer} 
+          {
+            selectedFilter?.id ? <div className="form-check mx-2 mb-0 form-switch">
+
+            <input
+              className="form-check-input cursor-pointer"
+              onChange={defaultFilterChange}
+              disabled={!selectedFilter?.id}
+              checked={defaultFilter == selectedFilter?.id}
+              type="checkbox"
+              role="switch"
+              id="defaultFilter"
+              data-testid="defaultFilter"
+            />
+               <label
+              className="form-check-label cursor-pointer set-default-filter-label"
+              htmlFor="defaultFilter"
+            >
+              {t("Set default filter")}
+            </label>
+
+          </div> : null }
+          <CreateNewFilterDrawer
+            selectedFilterData={filterSelectedForEdit}
+            openFilterDrawer={openFilterDrawer}
             setOpenFilterDrawer={setOpenFilterDrawer}
             setFilterSelectedForEdit={setFilterSelectedForEdit}
             viewMode={viewMode}
@@ -107,10 +129,12 @@ function TaskHead() {
         <div>
           <button
             type="button"
-            className={`btn me-1 ${viewType ? "btn-light" : "btn-secondary active"}`}
+            className={`btn me-1 ${
+              viewType ? "btn-light" : "btn-secondary active"
+            }`}
             onClick={() => {
               changeTaskView(false);
-            }} 
+            }}
           >
             <i className="fa-solid fa-list me-2"></i>
             {t("List View")}

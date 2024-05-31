@@ -16,4 +16,4 @@ sqlalchemy_utils
 markupsafe
 PyJWT
 redis
-git+https://github.com/auslin-aot/forms-flow-ai.git@FWF_3242_process_data_apis#egg=formsflow_api_utils&subdirectory=forms-flow-api-utils
+git+https://github.com/abilpraju-aot/forms-flow-ai.git@feature/FWF-3361-get-permission#egg=formsflow_api_utils&subdirectory=forms-flow-api-utils

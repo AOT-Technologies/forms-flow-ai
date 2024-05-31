@@ -600,8 +600,8 @@ export default function CreateNewFilterDrawer({
   const list = () => (
     <div role="none">
       <List>
-        <div className="p-0 d-flex align-items-center justify-content-between ">
-          <h5 className="fw-bold fs-16">
+        <div className={`p-0 d-flex align-items-center justify-content-${viewMode ? "end" : "between"}`}>
+          {!viewMode ? <h5 className="fw-bold fs-16">
             <Translation>
               {(t) =>
                 `${
@@ -609,7 +609,7 @@ export default function CreateNewFilterDrawer({
                 }`
               }
             </Translation>
-          </h5>
+          </h5> : null }
           <button
             className="btn btn-link text-dark"
             onClick={() => {

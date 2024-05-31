@@ -9,7 +9,7 @@ import CreateNewFilterDrawer from "../components/ServiceFlow/list/sort/CreateNew
 import { useTranslation } from "react-i18next"; 
 import { fetchBPMTaskCount } from "../apiManager/services/bpmTaskServices";
 import { toast } from "react-toastify";
-import { updateDifaultFilter } from "../apiManager/services/userservices";
+import { updateDefaultFilter } from "../apiManager/services/userservices";
 import _ from "lodash";
 function TaskHead() {
   const dispatch = useDispatch();
@@ -60,7 +60,7 @@ function TaskHead() {
   };
 
   const defaultFilterChange = useCallback(()=>{
-    updateDifaultFilter(selectedFilter.id == defaultFilter ? null : selectedFilter.id).then((res)=>{
+    updateDefaultFilter(selectedFilter.id == defaultFilter ? null : selectedFilter.id).then((res)=>{
       dispatch(setDefaultFilter(res.data.defaultFilter));
       if (selectedFilter.id == defaultFilter){
         toast.success(t(`Default filter removed`));
@@ -114,7 +114,7 @@ function TaskHead() {
               className="form-check-label cursor-pointer set-default-filter-label"
               htmlFor="defaultFilter"
             >
-              {t("Set default filter")}
+              {t("Set as default filter")}
             </label>
 
           </div> : null }

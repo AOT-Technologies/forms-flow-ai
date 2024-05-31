@@ -76,7 +76,7 @@ def test_keycloak_users_list_invalid_group(app, client, session, jwt):
     assert rv.status_code == 400
 
 
-def test_default_fitler(app, client, session, jwt):
+def test_default_filter(app, client, session, jwt):
     """Test create a filter and update default filter of a user."""
     token = get_token(jwt, role="formsflow-reviewer", username="reviewer")
     headers = {"Authorization": f"Bearer {token}", "content-type": "application/json"}

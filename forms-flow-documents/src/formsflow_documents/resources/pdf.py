@@ -1,4 +1,5 @@
 """API endpoints for managing form resource."""
+
 import string
 from http import HTTPStatus
 

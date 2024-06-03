@@ -417,6 +417,11 @@
   color: $primary;
 }
 .task-list{
+  width: 22rem;
   max-height: 60vh;
   overflow: auto;
+}
+.select-task-text{
+  font-size:  1.28571429rem;
+  font-weight: 700;
 }

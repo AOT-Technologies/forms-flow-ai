@@ -1,16 +1,4 @@
 const form_options = { readOnly: true, renderMode: "flat" };
-// Function to get submission data if formadapter is enabled
-async function fetchSubmission() {
-  const submission = await fetch(form_info.submission_url);
-  // const submission = await fetch(form_info.submission_url, {
-  //   headers: {
-  //     "Content-Type": "application/json",
-  //     Authorization: form_info.auth_token,
-  //   },
-  // });
-  const result = await submission.json();
-  return result;
-}
 
 // Help web driver to idetify the form rendered completely.
 function formReady() {
@@ -24,12 +12,10 @@ function renderFormWithSubmission() {
     form_info.form_url,
     form_options
   ).then((form) => {
-    fetchSubmission().then((submission) => {
-      form.submission = submission;
+      form.submission = form_info.submission_data;
       form.ready.then(() => {
         formReady();
       });
-    });
   });
 }
 

@@ -2,6 +2,7 @@
 
 Constants file needed for the static values.
 """
+
 from enum import Enum
 from http import HTTPStatus
 

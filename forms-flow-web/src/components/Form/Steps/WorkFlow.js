@@ -44,7 +44,7 @@ const WorkFlow = React.memo(
     const [formFields, setFormFields] = useState({});
     const [taskVariables, setTaskVariables] = useState([]);
     const [selectedVariablekeys, setSelectedVariableKeys] = useState([]);
-
+    const tenantKey = useSelector((state) => state.tenants?.tenantId);
     const selectedAllFields = Object.keys(formFields).every((i) =>
       selectedVariablekeys.includes(i)
     );
@@ -90,7 +90,7 @@ const WorkFlow = React.memo(
       setSelectedVariableKeys(keys);
       taskvariable.push(...Object.values(components));
       setTaskVariables(taskvariable);
-      dispatch(fetchAllBpmProcesses({ excludeInternal: true }));
+      dispatch(fetchAllBpmProcesses({ tenant_key: tenantKey, excludeInternal: true }));
     }, []);
 
     const updateTaskvariableToProcessData = (updatedData) => {

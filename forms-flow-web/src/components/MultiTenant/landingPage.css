@@ -1,115 +1,120 @@
 .landing {
-    display: flex;
-    justify-content: center;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 20px;
+  height: 100vh;
+}
+
+.imageContainer {
+  width: 100%;
+  max-width: 50%; /* Adjust as needed */
+  margin-right: 20px; /* Add margin for spacing */
+}
+
+.image {
+  width: 100%;
+  height: auto;
+}
+
+.formContainer {
+  width: 100%;
+  max-width: 500px; /* Adjust as needed */
+  padding: 20px;
+  background-color: #f9f9f9;
+  border-radius: 10px;
+  box-shadow:
+    0 2.8px 2.2px rgba(0, 0, 0, 0.034),
+    0 6.7px 5.3px rgba(0, 0, 0, 0.048),
+    0 12.5px 10px rgba(0, 0, 0, 0.06),
+    0 22.3px 17.9px rgba(0, 0, 0, 0.072),
+    0 41.8px 33.4px rgba(0, 0, 0, 0.086),
+    0 100px 80px rgba(0, 0, 0, 0.12),
+    0 0 10px rgba(0, 0, 0, 0.1); /* Add top border shadow */
+}
+
+.innerContainer {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.logo {
+  max-width: 150px;
+  margin-top: 20px;
+}
+
+.heading {
+  margin-bottom: 20px;
+  font-size: 24px;
+}
+
+.form-tenant {
+  width: 100%;
+}
+
+.form-group-tenant {
+  width: 100%;
+  margin-bottom: 20px;
+  text-align: left;
+}
+
+.form-label-tenant {
+  display: block;
+  margin-bottom: 10px;
+  font-size: 16px;
+  font-weight: 200;
+}
+
+.form-control-tenant {
+  width: 100%;
+}
+
+.btn-tenant {
+  display: block;
+  width: 100%;
+  margin-bottom: 20px;
+}
+
+.line-tenant {
+  width: 100%;
+  height: 1px;
+  background-color: #ccc;
+  margin-bottom: 20px;
+}
+
+.supportText {
+  color: black;
+}
+
+.supportLink {
+  margin-bottom: 20px;
+}
+
+.supportLink a {
+  color: #007bff;
+  text-decoration: none;
+}
+
+.supportLink a:hover {
+  text-decoration: underline;
+}
+
+/* Media Queries for Responsive Design */
+@media (max-width: 768px) {
+  .landing {
+    flex-direction: column;
     align-items: center;
-    /* height: 100vh; */
   }
   
   .imageContainer {
-    flex: 1;
-    text-align: center;
-  }
-  
-  .image {
-    background-repeat: no-repeat;
-   background-position: top ;
-   background-color:transparent;
-   overflow: visible;
-   white-space: nowrap;
-   height: 100%;
-   vertical-align: middle;
-   margin: 0;
-   padding: 0 50px;
-   width: 572px;
+    max-width: 100%;
+    margin-right: 0;
+    margin-bottom: 20px;
   }
   
   .formContainer {
-    flex: 1;
-    margin-left: 20px;
-    display: flex;
-    justify-content: center;
-    align-items: center;
+    max-width: 100%;
+    margin-right: 0;
   }
-  
-  .innerContainer {
-    width: 100%;
-    max-width: 400px;
-    display: flex;
-    flex-direction: column;
-    align-items: flex-start;
-  }
-  
-  .logo {
-    max-width: 150px;
-    margin-bottom: 20px;
-  }
-  
-  .heading {
-    margin-bottom: 20px;
-    font-size: 24px;
-  }
-  
-  .formControls {
-    width: 100%;
-    margin-bottom: 20px;
-  }
-  
-  .label {
-    display: block;
-    margin-bottom: 20px;
-  }
-  
-  .input {
-    width: 100%;
-    padding: 10px;
-    margin-bottom: 20px;
-    border-radius: 5px;
-    border: 1px solid rgb(147, 157, 162);
-    color: #000;
-    background-color: #E8F0FE;
-  }
-  
-  .input::placeholder {
-    color: #ccc;
-  }
-  
-  .button {
-    width: 150px;
-    padding: 8px;
-    font-size: 14px;
-    border-radius: 5px;
-    border: none;
-    background-color: #007bff;
-    color: #fff;
-    cursor: pointer;
-    margin-bottom: 60px;
-  }
-  
-  .buttonDisabled {
-    width: 150px;
-    padding: 8px;
-    font-size: 14px;
-    border-radius: 5px;
-    border: none;
-    color: #fff;
-    margin-bottom: 60px;
-    background-color: #cccccc;
-    cursor: not-allowed;
-  }
-  
-  
-  .line {
-    width: 100%;
-    height: 1px;
-    background-color: #ccc;
-    margin-bottom: 20px;
-  }
-  
-  .supportText {
-    color: black;
-  }
-  
-  .supportLink {
-    margin-bottom: 20px;
-  }
-  
+}

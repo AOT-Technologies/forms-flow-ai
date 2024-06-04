@@ -81,7 +81,7 @@ const PrivateRoute = React.memo((props) => {
   const tenant = useSelector((state) => state.tenants);
   const [authError, setAuthError] = React.useState(false);
   const [kcInstance, setKcInstance] = React.useState(getKcInstance());
-
+  
   const authenticate = (instance, store) => {
     setKcInstance(instance);
     store.dispatch(

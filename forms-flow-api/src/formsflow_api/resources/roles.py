@@ -166,5 +166,5 @@ class Permissions(Resource):
         },
     )
     def get():
-        """Return false to get the web going with implementation."""
+        """Return permission list."""
         return PERMISSIONS

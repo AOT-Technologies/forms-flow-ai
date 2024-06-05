@@ -9,7 +9,7 @@ import {
   Errors,
 } from "react-formio";
 import { push } from "connected-react-router";
-import { formio_resourceBundles } from "../../../../../resourceBundles/formio_resourceBundles";
+import { RESOURCE_BUNDLES_DATA } from "../../../../../resourceBundles/i18n";
 import Loading from "../../../../../containers/Loading";
 
 import {
@@ -143,7 +143,7 @@ const Edit = React.memo((props) => {
             }
             options={{
               ...options,
-              i18n: formio_resourceBundles,
+              i18n: RESOURCE_BUNDLES_DATA,
               language: lang,
             }}
             onCustomEvent={onCustomEvent}

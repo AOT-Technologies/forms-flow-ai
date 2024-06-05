@@ -19,7 +19,7 @@ def test_formio_roles(app, client, session, jwt, mock_redis_client):
     Cache.set("user_resource_id", resource_id, timeout=0)
 
     # Requesting from client role
-    token = get_token(jwt, role="formsflow-client")
+    token = get_token(jwt, role="/formsflow/formsflow-designer")
     headers = {"Authorization": f"Bearer {token}", "content-type": "application/json"}
     response = client.get("/formio/roles", headers=headers)
 
@@ -32,7 +32,7 @@ def test_formio_roles(app, client, session, jwt, mock_redis_client):
         key=app.config["FORMIO_JWT_SECRET"],
     )
     assert decoded_token["form"]["_id"] == resource_id
-    assert decoded_token["user"]["customRoles"] == ["formsflow-client"]
+    assert decoded_token["user"]["customRoles"] == ["/formsflow/formsflow-designer"]
 
     # Requesting from reviewer role
     token = get_token(jwt, role="formsflow-reviewer")

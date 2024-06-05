@@ -5,7 +5,7 @@ import { Form, Errors, Formio } from "react-formio";
 import { push } from "connected-react-router";
 import Loading from "../../../containers/Loading";
 import { Translation } from "react-i18next";
-import { formio_resourceBundles } from "../../../resourceBundles/formio_resourceBundles";
+import { RESOURCE_BUNDLES_DATA } from "../../../resourceBundles/i18n";
 import { MULTITENANCY_ENABLED } from "../../../constants/constants";
 import {
   setFormFailureErrorData,
@@ -230,7 +230,7 @@ const Preview = ({handleNext, hideComponents, activeStep}) => {
           },
           disableAlerts: true,
           noAlerts: true,
-          language: lang, i18n: formio_resourceBundles }}
+          language: lang, i18n: RESOURCE_BUNDLES_DATA }}
           
         />
       </LoadingOverlay>

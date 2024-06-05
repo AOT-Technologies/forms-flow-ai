@@ -12,6 +12,7 @@ from formsflow_api.constants import BusinessErrorCode
 from formsflow_api.services import KeycloakAdminAPIService, UserService
 
 from .keycloak_admin import KeycloakAdmin
+from .keycloak_group_service import KeycloakGroupService
 
 
 class KeycloakClientService(KeycloakAdmin):
@@ -93,14 +94,21 @@ class KeycloakClientService(KeycloakAdmin):
             url_path=f"clients/{client_id}/roles/{group_id}"
         )
 
-    def create_group_role(self, data: Dict):
+    @user_context
+    def create_group_role(self, data: Dict, **kwargs):
         """Create role."""
-        client_id = self.client.get_client_id()
-        response = self.client.create_request(
-            url_path=f"clients/{client_id}/roles", data=data
-        )
-        role_name = response.headers["Location"].split("/")[-1]
-        return {"id": role_name}
+        current_app.logger.debug("Creating tenant group...")
+        user: UserContext = kwargs["user"]
+        tenant_key = user.tenant_key
+        # Append tenantKey to group in the group hierarchy.
+        # If user input is "group/sub-group" append tenantKey to each group
+        groups = [group for group in data["name"].split("/") if group]
+        appended_groups = [f"{tenant_key}-{group}" for group in groups]
+
+        data["name"] = "/".join(appended_groups)
+        current_app.logger.debug(f"Tenant group: {data['name']}")
+        group_servie = KeycloakGroupService()
+        return group_servie.create_group_role(data)
 
     def add_user_to_group_role(self, user_id: str, group_id: str, payload: Dict):
         """Add user to role."""

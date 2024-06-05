@@ -67,11 +67,11 @@ const LandingPage = () => {
              {t("Proceed to Sign In")}
             </button>
           </form>
-          <div className="line-tenant"></div>
+          {/* <div className="line-tenant"></div>
           <div className="supportText">{t("Contact formsflow.ai support")}</div>
           <div className="supportLink">
             <a href="/contact">info@formsflow.ai</a>
-          </div>
+          </div> */}
         </div>
       </div>
     </div>

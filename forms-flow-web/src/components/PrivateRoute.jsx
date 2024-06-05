@@ -156,75 +156,76 @@ const PrivateRoute = React.memo((props) => {
   const DesignerRoute = useMemo(
     () =>
       ({ component: Component, ...rest }) =>
-        (
-          <Route
-            {...rest}
-            render={(props) =>
-              userRoles.includes(STAFF_DESIGNER) ? (
-                <Component {...props} />
-              ) : (
-                <AccessDenied />
-              )
-            }
-          />
-        ),
+      (
+        <Route
+          {...rest}
+          render={(props) =>
+            userRoles.includes(STAFF_DESIGNER) ? (
+              <Component {...props} />
+            ) : (
+              <AccessDenied showReturnToLogin={userRoles.length === 0} 
+              showReturnToHome={userRoles.length > 0} />
+            )
+          }
+        />
+      ),
     [userRoles]
   );
 
   const ReviewerRoute = useMemo(
     () =>
       ({ component: Component, ...rest }) =>
-        (
-          <Route
-            {...rest}
-            render={(props) =>
-              userRoles.includes(STAFF_REVIEWER) ? (
-                <Component {...props} />
-              ) : (
-                <AccessDenied />
-              )
-            }
-          />
-        ),
+      (
+        <Route
+          {...rest}
+          render={(props) =>
+            userRoles.includes(STAFF_REVIEWER) ? (
+              <Component {...props} />
+            ) : (
+              <AccessDenied showReturnToLogin={userRoles.length === 0} 
+              showReturnToHome={userRoles.length > 0} />
+            )
+          }
+        />
+      ),
     [userRoles]
   );
 
   const ClientReviewerRoute = useMemo(
     () =>
       ({ component: Component, ...rest }) =>
-        (
-          <Route
-            {...rest}
-            render={(props) =>
-              userRoles.includes(STAFF_REVIEWER) ||
-              userRoles.includes(CLIENT) ? (
-                <Component {...props} />
-              ) : (
-                <AccessDenied />
-              )
-            }
-          />
-        ),
+      (
+        <Route
+          {...rest}
+          render={(props) =>
+            userRoles.includes(STAFF_REVIEWER) || userRoles.includes(CLIENT) ? (
+              <Component {...props} />
+            ) : (
+              <AccessDenied showReturnToLogin={userRoles.length === 0} 
+              showReturnToHome={userRoles.length > 0} />
+            )
+          }
+        />
+      ),
     [userRoles]
   );
 
   const DraftRoute = useMemo(
     () =>
       ({ component: Component, ...rest }) =>
-        (
-          <Route
-            {...rest}
-            render={(props) =>
-              DRAFT_ENABLED &&
-              (userRoles.includes(STAFF_REVIEWER) ||
-                userRoles.includes(CLIENT)) ? (
-                <Component {...props} />
-              ) : (
-                <AccessDenied />
-              )
-            }
-          />
-        ),
+      (
+        <Route
+          {...rest}
+          render={(props) =>
+            DRAFT_ENABLED && (userRoles.includes(STAFF_REVIEWER) || userRoles.includes(CLIENT)) ? (
+              <Component {...props} />
+            ) : (
+              <AccessDenied showReturnToLogin={userRoles.length === 0} 
+              showReturnToHome={userRoles.length > 0} />
+            )
+          }
+        />
+      ),
     [userRoles]
   );
   return (

@@ -12,6 +12,8 @@ import {
   BASE_ROUTE,
 } from "../../constants/constants";
 import Loading from "../../containers/Loading";
+import AccessDenied from "../AccessDenied";
+
 
 let user = "";
 
@@ -22,7 +24,7 @@ const CreateFormRoute = ({ component: Component, ...rest }) => (
       if (user.includes(STAFF_DESIGNER)) {
         return <Component {...props} />;
       } else {
-        return <>Unauthorized</>;
+        return <AccessDenied />;
       }
     }}
   />
@@ -34,7 +36,7 @@ const FormSubmissionRoute = ({ component: Component, ...rest }) => (
       user.includes(STAFF_REVIEWER) || user.includes(CLIENT) ? (
         <Component {...props} />
       ) : (
-        <>Unauthorized</>
+        <AccessDenied />
       )
     }
   />

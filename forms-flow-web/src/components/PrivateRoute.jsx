@@ -231,7 +231,8 @@ const PrivateRoute = React.memo((props) => {
   return (
     <>
       {authError ? (
-        <AccessDenied />
+        <AccessDenied showReturnToLogin={userRoles.length === 0} 
+        showReturnToHome={userRoles.length > 0} />
       ) : isAuth ? (
         <Suspense fallback={<Loading />}>
           <Switch>

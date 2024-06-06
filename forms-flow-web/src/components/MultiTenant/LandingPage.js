@@ -43,10 +43,10 @@ const LandingPage = () => {
             className="logo"
           />
           <h1 className="heading">{t("Enter your Tenant Name")}</h1>
-          <form onSubmit={handleSubmit} className="form-tenant">
-            <div className="form-group-tenant">
-              <label htmlFor="username" className="form-label-tenant">
-              {t("Please provide your tenant name to sign in")}
+          <form onSubmit={handleSubmit} className="formTenant">
+            <div className="formGroupTenant">
+              <label htmlFor="username" className="formLabelTenant">
+                {t("Please provide your tenant name to sign in")}
               </label>
               <input
                 type="text"
@@ -61,13 +61,13 @@ const LandingPage = () => {
             </div>
             <button
               type="submit"
-              className="btn btn-primary btn-tenant"
+              className="btn btn-primary btnTenant"
               disabled={!username}
             >
-             {t("Proceed to Sign In")}
+              {t("Proceed to Sign In")}
             </button>
           </form>
-          {/* <div className="line-tenant"></div>
+          {/* <div className="lineTenant"></div>
           <div className="supportText">{t("Contact formsflow.ai support")}</div>
           <div className="supportLink">
             <a href="/contact">info@formsflow.ai</a>

@@ -9,7 +9,7 @@ import {
   SubmissionGrid,
   Errors,
   deleteSubmission,
-} from "react-formio";
+} from "@arun-s-aot/formio-react";
 import cloneDeep from "lodash/cloneDeep";
 
 import Loading from "../../../../containers/Loading";

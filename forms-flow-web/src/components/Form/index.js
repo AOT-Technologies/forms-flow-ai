@@ -24,8 +24,7 @@ const CreateFormRoute = ({ component: Component, ...rest }) => (
       if (user.includes(STAFF_DESIGNER)) {
         return <Component {...props} />;
       } else {
-        return <AccessDenied showReturnToLogin={user.length === 0} 
-        showReturnToHome={user.length > 0} />;
+        return <AccessDenied userRoles={user} />;
       }
     }}
   />
@@ -37,8 +36,7 @@ const FormSubmissionRoute = ({ component: Component, ...rest }) => (
       user.includes(STAFF_REVIEWER) || user.includes(CLIENT) ? (
         <Component {...props} />
       ) : (
-        <AccessDenied showReturnToLogin={user.length === 0} 
-              showReturnToHome={user.length > 0} />
+        <AccessDenied userRoles={user} />
       )
     }
   />

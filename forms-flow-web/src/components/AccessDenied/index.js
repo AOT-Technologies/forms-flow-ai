@@ -7,7 +7,7 @@ import { BASE_ROUTE } from "../../constants/constants";
 import { useHistory } from "react-router-dom";
 
 
-const AccessDenied = ({ showReturnToLogin, showReturnToHome }) => {
+const AccessDenied = ({ userRoles }) => {
   const { t } = useTranslation();
   const history = useHistory();
 
@@ -19,6 +19,9 @@ const AccessDenied = ({ showReturnToLogin, showReturnToHome }) => {
   const handleReturn = () => {
     history.push(BASE_ROUTE);
   };
+
+  const showReturnToLogin = userRoles?.length === 0;
+  const showReturnToHome = userRoles?.length > 0;
 
   return (
     <div className="d-flex flex-column align-items-center text-center" data-testid="access-denied-component">

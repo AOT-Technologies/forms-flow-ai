@@ -21,8 +21,7 @@ const DesignerProcessRoute = ({ component: Component, ...rest }) => (
       if (user.includes(STAFF_DESIGNER)) {
         return <Component {...props} />;
       } else {
-        return <AccessDenied showReturnToLogin={user.length === 0} 
-        showReturnToHome={user.length > 0} />;
+        return <AccessDenied userRoles={user} />;
       }
     }}
   />

@@ -163,8 +163,7 @@ const PrivateRoute = React.memo((props) => {
             userRoles.includes(STAFF_DESIGNER) ? (
               <Component {...props} />
             ) : (
-              <AccessDenied showReturnToLogin={userRoles.length === 0} 
-              showReturnToHome={userRoles.length > 0} />
+              <AccessDenied userRoles={userRoles} />
             )
           }
         />
@@ -182,8 +181,7 @@ const PrivateRoute = React.memo((props) => {
             userRoles.includes(STAFF_REVIEWER) ? (
               <Component {...props} />
             ) : (
-              <AccessDenied showReturnToLogin={userRoles.length === 0} 
-              showReturnToHome={userRoles.length > 0} />
+              <AccessDenied userRoles={userRoles} />
             )
           }
         />
@@ -201,8 +199,7 @@ const PrivateRoute = React.memo((props) => {
             userRoles.includes(STAFF_REVIEWER) || userRoles.includes(CLIENT) ? (
               <Component {...props} />
             ) : (
-              <AccessDenied showReturnToLogin={userRoles.length === 0} 
-              showReturnToHome={userRoles.length > 0} />
+              <AccessDenied userRoles={userRoles} />
             )
           }
         />
@@ -220,8 +217,7 @@ const PrivateRoute = React.memo((props) => {
             DRAFT_ENABLED && (userRoles.includes(STAFF_REVIEWER) || userRoles.includes(CLIENT)) ? (
               <Component {...props} />
             ) : (
-              <AccessDenied showReturnToLogin={userRoles.length === 0} 
-              showReturnToHome={userRoles.length > 0} />
+              <AccessDenied userRoles={userRoles} />
             )
           }
         />
@@ -231,8 +227,7 @@ const PrivateRoute = React.memo((props) => {
   return (
     <>
       {authError ? (
-        <AccessDenied showReturnToLogin={userRoles.length === 0} 
-        showReturnToHome={userRoles.length > 0} />
+        <AccessDenied userRoles={userRoles} />
       ) : isAuth ? (
         <Suspense fallback={<Loading />}>
           <Switch>

@@ -1,5 +1,9 @@
-FROM jboss/keycloak
+FROM formsflow/forms-flow-idm-theme
 
-RUN sed -i -E "s/(<staticMaxAge>)2592000(<\/staticMaxAge>)/\1\-1\2/" /opt/jboss/keycloak/standalone/configuration/standalone.xml
-RUN sed -i -E "s/(<cacheThemes>)true(<\/cacheThemes>)/\1false\2/" /opt/jboss/keycloak/standalone/configuration/standalone.xml
-RUN sed -i -E "s/(<cacheTemplates>)true(<\/cacheTemplates>)/\1false\2/" /opt/jboss/keycloak/standalone/configuration/standalone.xml
+RUN mkdir -p /opt/keycloak/themes/formsflow
+# Remove any existing theme files
+RUN rm -rf /opt/keycloak/themes/formsflow/*
+# Copy the new theme files
+COPY themes/formsflow /opt/keycloak/themes/formsflow
+# Copy the import files
+COPY imports /opt/keycloak/data/import

@@ -96,19 +96,16 @@ class KeycloakClientService(KeycloakAdmin):
 
     @user_context
     def create_group_role(self, data: Dict, **kwargs):
-        """Create role."""
+        """Create tenant group."""
         current_app.logger.debug("Creating tenant group...")
         user: UserContext = kwargs["user"]
         tenant_key = user.tenant_key
-        # Append tenantKey to group in the group hierarchy.
-        # If user input is "group/sub-group" append tenantKey to each group
-        groups = [group for group in data["name"].split("/") if group]
-        appended_groups = [f"{tenant_key}-{group}" for group in groups]
-
-        data["name"] = "/".join(appended_groups)
+        name = data["name"].lstrip("/")
+        # Prefix the tenant_key to the main group
+        data["name"] = f"{tenant_key}-{name}"
         current_app.logger.debug(f"Tenant group: {data['name']}")
-        group_servie = KeycloakGroupService()
-        return group_servie.create_group_role(data)
+        group_service = KeycloakGroupService()
+        return group_service.create_group_role(data)
 
     def add_user_to_group_role(self, user_id: str, group_id: str, payload: Dict):
         """Add user to role."""

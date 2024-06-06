@@ -102,7 +102,7 @@ class UserService:
             user_data.update(data)
         else:
             data["user_name"] = user.user_name
-            data["tenant"] = user.tenant_key if user.tenant_key else None
+            data["tenant"] = user.tenant_key
             data["created_by"] = user.user_name
             user_data = User.create_user(data)
         return UserSchema().dump(user_data)

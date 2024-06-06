@@ -6,7 +6,7 @@ from formsflow_api_utils.utils import ADMIN_GROUP
 from formsflow_api_utils.utils.user_context import UserContext, user_context
 
 from formsflow_api.constants import BusinessErrorCode
-from formsflow_api.models import Filter
+from formsflow_api.models import Filter, User
 from formsflow_api.schemas import FilterSchema
 
 filter_schema = FilterSchema()
@@ -121,7 +121,11 @@ class FilterService:
             filter_item["variables"] += [
                 var for var in default_variables if var not in filter_item["variables"]
             ]
-        return filter_data
+        response = {"filters": filter_data}
+        # get user default filter
+        user_data = User.get_user_by_user_name(user_name=user.user_name)
+        response["defaultFilter"] = user_data.default_filter if user_data else None
+        return response
 
     @staticmethod
     @user_context

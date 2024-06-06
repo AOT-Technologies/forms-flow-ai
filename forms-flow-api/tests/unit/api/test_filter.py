@@ -37,9 +37,9 @@ def test_get_user_filters(app, client, session, jwt):
     # Since reviewer created both filters response will include both.
     response = client.get("/filter/user", headers=headers)
     assert response.status_code == 200
-    assert len(response.json) == 2
-    assert response.json[0].get("name") == "Clerk Task"
-    assert response.json[1].get("name") == "Reviewer Task"
+    assert len(response.json.get("filters")) == 2
+    assert response.json.get("filters")[0].get("name") == "Clerk Task"
+    assert response.json.get("filters")[1].get("name") == "Reviewer Task"
 
 
 def test_filter_update(app, client, session, jwt):

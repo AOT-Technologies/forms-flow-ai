@@ -6,6 +6,7 @@ from flask import current_app, g, request
 from flask_restx import Namespace, Resource, fields
 from formsflow_api_utils.utils import (
     ADMIN_GROUP,
+    REVIEWER_GROUP,
     auth,
     cors_preflight,
     profiletime,
@@ -15,6 +16,7 @@ from formsflow_api.schemas import (
     TenantUserAddSchema,
     UserlocaleReqSchema,
     UserPermissionUpdateSchema,
+    UserSchema,
     UsersListSchema,
 )
 from formsflow_api.services import KeycloakAdminAPIService, UserService
@@ -67,6 +69,7 @@ tenant_add_user_model = API.model(
 )
 
 locale_put_model = API.model("Locale", {"locale": fields.String()})
+default_filter_model = API.model("DefaulFilter", {"defaultFilter": fields.String()})
 
 
 @cors_preflight("PUT, OPTIONS")
@@ -115,6 +118,29 @@ class KeycloakUserService(Resource):
         response = self.client.update_request(url_path=f"users/{user['id']}", data=user)
         if response is None:
             return {"message": "User not found"}, HTTPStatus.NOT_FOUND
+        # Capture "locale" changes in user table
+        UserService.update_user_data({"locale": dict_data["locale"]})
+        return response, HTTPStatus.OK
+
+
+@cors_preflight("POST, OPTIONS")
+@API.route("/default-filter", methods=["OPTIONS", "POST"])
+class UserDefaultFilter(Resource):
+    """Resource to create or update user's default filter."""
+
+    @staticmethod
+    @auth.has_one_of_roles([ADMIN_GROUP, REVIEWER_GROUP])
+    @profiletime
+    @API.doc(body=default_filter_model)
+    @API.response(200, "OK:- Successful request.")
+    @API.response(
+        400,
+        "BAD_REQUEST:- Invalid request.",
+    )
+    def post():
+        """Update the user's default task filter."""
+        data = UserSchema().load(request.get_json())
+        response = UserService().update_user_data(data=data)
         return response, HTTPStatus.OK
 
 

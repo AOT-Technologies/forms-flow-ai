@@ -24,7 +24,7 @@ class TestKeycloakRolesResource:
             "content-type": "application/json",
         }
         # Create new user group.
-        data = {"name": "new-test-group", "description": "Group"}
+        data = {"name": "new-test-group", "description": "Group", "permissions": ["view_designs", "create_designs"]}
         rv = client.post("/roles", headers=headers, json=data)
         assert rv.status_code == 201
         assert rv.json.get("id") is not None

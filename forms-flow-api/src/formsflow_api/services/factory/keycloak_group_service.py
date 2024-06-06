@@ -91,6 +91,7 @@ class KeycloakGroupService(KeycloakAdmin):
 
         Split name parameter to create group/subgroups
         """
+        permissions = data.pop("permissions")
         data = self.add_description(data)
         data["name"] = (
             data["name"].lstrip("/") if data["name"].startswith("/") else data["name"]
@@ -119,6 +120,8 @@ class KeycloakGroupService(KeycloakAdmin):
                         )
                         group_id = response["id"]
                 url_path = f"groups/{group_id}/children"
+        client_id = self.client.get_client_id()
+        self.create_group_permission_mapping(group_id, permissions, client_id)
         return {"id": group_id}
 
     def add_description(self, data: Dict):
@@ -218,3 +221,22 @@ class KeycloakGroupService(KeycloakAdmin):
         return {
             "message": "The requested operation is not supported."
         }, HTTPStatus.BAD_REQUEST
+
+    def create_group_permission_mapping(self, group_id, permissions, client_id):
+        """Set permission mapping to group."""
+        current_app.logger.debug("Setting permission mapping to group")
+        roles = self.client.get_roles()
+        role_data_list = []
+        for role in roles:
+            if permissions and role.get("name") in permissions:
+                role_data = {
+                    "containerId": client_id,
+                    "id": role.get("id"),
+                    "clientRole": True,
+                    "name": role.get("name"),
+                }
+                role_data_list.append(role_data)
+        self.client.create_request(
+            url_path=f"groups/{group_id}/role-mappings/clients/{client_id}",
+            data=role_data_list,
+        )

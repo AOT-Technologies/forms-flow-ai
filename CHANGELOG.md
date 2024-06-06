@@ -8,11 +8,21 @@ Mark  items as `Added`, `Changed`, `Fixed`, `Modified`, `Removed`, `Untested Fea
 
 **forms-flow-web-root-config**
 * Added env variable `LANGUAGE` for default language setting
-  
+
+`Fixed`
+
+**forms-flow-web-root-config**
+* Fixed service worker cache issue
+
+**forms-flow-bpm**
+* Fixed white label error on login to bpm
+
+
 `Modified`
 
 **forms-flow-web**
 * The tenant user's default language is set from their data, tenant data, or the default application language.
+  
 
 ## 6.0.1 - 2024-05-21
 

@@ -18,6 +18,7 @@ import {
   bpmActionError,
   setBPMTaskList,
   setVisibleAttributes,
+  setDefaultFilter,
 } from "../../actions/bpmTaskActions";
 import { replaceUrl } from "../../helper/helper";
 import axios from "axios";
@@ -194,7 +195,8 @@ export const fetchFilterList = (...rest) => {
     )
       .then((res) => {
         if (res.data) {
-          dispatch(setBPMFilterList(res.data));
+          dispatch(setDefaultFilter(res.data.defaultFilter));
+          dispatch(setBPMFilterList(res.data.filters));
           //dispatch(setBPMLoader(false));
           done(null, res.data);
         } else {

@@ -304,7 +304,7 @@ export default function CreateNewFilterDrawer({
     dispatch(
       fetchFilterList((err, data) => {
         if (data) {
-          fetchBPMTaskCount(data)
+          fetchBPMTaskCount(data.filters)
             .then((res) => {
               dispatch(setBPMFiltersAndCount(res.data));
             })
@@ -451,10 +451,11 @@ export default function CreateNewFilterDrawer({
         dispatch(
           fetchFilterList((err, data) => {
             if (data) {
-              fetchBPMTaskCount(data)
+              fetchBPMTaskCount(data.filters)
                 .then((res) => {
                   dispatch(setBPMFiltersAndCount(res.data));
-                  dispatch(fetchServiceTaskList(data[0], null, firstResult));
+                  dispatch(fetchServiceTaskList(data.defaultFilter || data.filters[0]
+                    , null, firstResult));
                 })
                 .catch((err) => {
                   if (err) {
@@ -983,7 +984,7 @@ export default function CreateNewFilterDrawer({
             toggleDrawer();
             clearAllFilters();
           }}
-          className="btn btn-link text-dark cursor-pointer"
+          className="btn  btn-outline-primary"
         >
           <Translation>{(t) => t("Create New Filter")}</Translation>
         </button>

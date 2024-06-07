@@ -192,7 +192,9 @@ class KeycloakGroupService(KeycloakAdmin):
                 else ""
             )
         if data.get("clientRoles") != {}:  # Reaarange permissions
-            client_role = f"{tenant_key}-forms-flow-web" if tenant_key else "forms-flow-web"
+            client_name = current_app.config.get("JWT_OIDC_AUDIENCE")
+            client_role = f"{tenant_key}-{client_name}" if tenant_key else client_name
+            current_app.logger.debug("Client name %s", client_role)
             client_roles = data['clientRoles'].get(client_role)
             if client_roles:
                 data["permissions"] = client_roles

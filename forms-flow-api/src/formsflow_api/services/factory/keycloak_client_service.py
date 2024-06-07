@@ -9,20 +9,12 @@ from formsflow_api_utils.exceptions import BusinessException
 from formsflow_api_utils.utils.user_context import UserContext, user_context
 
 from formsflow_api.constants import BusinessErrorCode
-from formsflow_api.services import KeycloakAdminAPIService, UserService
 
-from .keycloak_admin import KeycloakAdmin
 from .keycloak_group_service import KeycloakGroupService
 
 
-class KeycloakClientService(KeycloakAdmin):
+class KeycloakClientService(KeycloakGroupService):
     """Keycloak Admin implementation for client related operations."""
-
-    def __init__(self):
-        """Initialize client."""
-        self.client = KeycloakAdminAPIService()
-        self.user_service = UserService()
-        self.group_service = KeycloakGroupService()
 
     def __populate_user_roles(self, user_list: List) -> List:
         """Collects roles for a user list and populates the role attribute."""
@@ -35,10 +27,6 @@ class KeycloakClientService(KeycloakAdmin):
     def get_analytics_groups(self, page_no: int, limit: int):
         """Get analytics roles."""
         return self.client.get_analytics_roles(page_no, limit)
-
-    def get_group(self, group_id: str):
-        """Get group by group_id."""
-        return self.group_service.get_group(group_id)
 
     def get_users(  # pylint: disable-msg=too-many-arguments
         self,
@@ -70,21 +58,13 @@ class KeycloakClientService(KeycloakAdmin):
     def update_group(self, group_id: str, data: Dict):
         """Update keycloak group."""
         data = self.append_tenant_key(data)
-        return self.group_service.update_group(group_id, data)
-
-    def get_groups_roles(self, search: str, sort_order: str):
-        """Get groups."""
-        return self.group_service.get_groups_roles(search, sort_order)
-
-    def delete_group(self, group_id: str):
-        """Delete group."""
-        return self.client.delete_request(url_path=f"groups/{group_id}")
+        return super().update_group(group_id, data)
 
     def create_group_role(self, data: Dict):
         """Create group."""
         current_app.logger.debug("Creating tenant group...")
         self.append_tenant_key(data)
-        return self.group_service.create_group_role(data)
+        return super().create_group_role(data)
 
     def add_user_to_group_role(self, user_id: str, group_id: str, payload: Dict):
         """Add user to role."""

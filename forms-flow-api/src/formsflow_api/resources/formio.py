@@ -117,10 +117,20 @@ class FormioResource(Resource):
                 user.email or f"{user.user_name}@formsflow.ai"
             )  # Email is not mandatory in keycloak
             project_id: str = current_app.config.get("FORMIO_PROJECT_URL")
+            groups = user._groups
+            if user.tenant_key:
+                groups = [
+                    group for group in groups if group.startswith(f"/{user.tenant_key}")
+                ]
+
             payload: Dict[str, any] = {
                 "external": True,
                 "form": {"_id": _resource_id},
-                "user": {"_id": unique_user_id, "roles": _role_ids, "customRoles": user.roles},
+                "user": {
+                    "_id": unique_user_id,
+                    "roles": _role_ids,
+                    "customRoles": user._groups,
+                },
             }
             if project_id:
                 payload["project"] = {"_id": project_id}

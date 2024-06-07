@@ -2,6 +2,11 @@
 
 from typing import Dict, List
 
+from formsflow_api_utils.utils.user_context import UserContext, user_context
+
+from formsflow_api.models import User
+from formsflow_api.schemas import UserSchema
+
 
 class UserService:
     """This class manages keycloak user service."""
@@ -84,3 +89,20 @@ class UserService:
         start_index = (page_number - 1) * page_size
         end_index = start_index + page_size
         return data[start_index:end_index]
+
+    @staticmethod
+    @user_context
+    def update_user_data(data, **kwargs):
+        """Update user data."""
+        user: UserContext = kwargs["user"]
+        user_data = User.get_user_by_user_name(user_name=user.user_name)
+        if user_data:
+            if user_data.tenant is None and user.tenant_key:
+                data["tenant"] = user.tenant_key
+            user_data.update(data)
+        else:
+            data["user_name"] = user.user_name
+            data["tenant"] = user.tenant_key
+            data["created_by"] = user.user_name
+            user_data = User.create_user(data)
+        return UserSchema().dump(user_data)

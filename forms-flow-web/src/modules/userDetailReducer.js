@@ -30,6 +30,7 @@ const initialState = {
   showApplications: false,
   lang: localStorage.getItem("lang") ? localStorage.getItem("lang") : LANGUAGE,
   selectLanguages: getLanguages ? JSON.parse(getLanguages) : [],
+  defaultFilter: "",
 };
 
 const user = (state = initialState, action) => {
@@ -41,6 +42,8 @@ const user = (state = initialState, action) => {
       return { ...state, bearerToken: action.payload };
     case ACTION_CONSTANTS.SET_USER_ROLES:
       return { ...state, roles: action.payload };
+    case ACTION_CONSTANTS.DEFAULT_FILTER:
+      return { ...state, defaultFilter: action.payload };
     case ACTION_CONSTANTS.SET_USER_DETAILS:
       return {
         ...state,

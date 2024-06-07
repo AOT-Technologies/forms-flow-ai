@@ -25,6 +25,7 @@ from formsflow_api.schemas.user import (
     TenantUserAddSchema,
     UserlocaleReqSchema,
     UserPermissionUpdateSchema,
+    UserSchema,
     UsersListSchema,
 )
 

@@ -4,7 +4,10 @@ import Drawer from "@material-ui/core/Drawer";
 import List from "@material-ui/core/List";
 import Divider from "@material-ui/core/Divider";
 import Select from "react-select";
-import { fetchAllBpmProcesses, fetchTaskVariables } from "../../../../apiManager/services/processServices";
+import {
+  fetchAllBpmProcesses,
+  fetchTaskVariables,
+} from "../../../../apiManager/services/processServices";
 import { listProcess } from "../../../../apiManager/services/formatterService";
 
 import {
@@ -66,7 +69,7 @@ export default function CreateNewFilterDrawer({
   setOpenFilterDrawer,
   setFilterSelectedForEdit,
   viewMode,
-  resetViewMode
+  resetViewMode,
 }) {
   const dispatch = useDispatch();
   const [filterName, setFilterName] = useState("");
@@ -85,7 +88,8 @@ export default function CreateNewFilterDrawer({
   const [identifierId, setIdentifierId] = useState("");
   const [selectUserGroupIcon, setSelectUserGroupIcon] = useState("");
   const [specificUserGroup, setSpecificUserGroup] = useState("");
-  const [taskVariableFromMapperTable, setTaskVariableFromMapperTable] = useState([]);
+  const [taskVariableFromMapperTable, setTaskVariableFromMapperTable] =
+    useState([]);
   const firstResult = useSelector((state) => state.bpmTasks.firstResult);
   const tenantKey = useSelector((state) => state.tenants?.tenantId);
   const process = useSelector((state) => state.process?.processList);
@@ -151,17 +155,18 @@ export default function CreateNewFilterDrawer({
     return inputString;
   };
 
-  const handleFetchTaskVariables = (formId)=>{
+  const handleFetchTaskVariables = (formId) => {
     setProcessLoading(true);
-      fetchTaskVariables(formId).then((res)=>{
+    fetchTaskVariables(formId)
+      .then((res) => {
         setTaskVariableFromMapperTable(res.data?.taskVariable || []);
         setProcessLoading(false);
-      }).catch((err)=>{
+      })
+      .catch((err) => {
         console.err(err);
         setProcessLoading(false);
       });
   };
-
 
   const setTaskVariablesAndItsKeys = (variables = []) => {
     setVariables(variables);
@@ -418,19 +423,20 @@ export default function CreateNewFilterDrawer({
      * If a form is selected, set the formId property in the data object
      * to the id of the selected form.
      */
-    
-    
+
     // Remove empty keys inside criteria
     const cleanedCriteria = omitBy(
       data.criteria,
       (value) => value === undefined || value === "" || value === null
-      );
-      data.criteria = cleanedCriteria;
-      
-      if (selectedForm) {
-        data.properties.formId = selectedForm;
-        data.criteria.processVariables = [{name: "formId", operator: "eq", value: selectedForm}];
-      }
+    );
+    data.criteria = cleanedCriteria;
+
+    if (selectedForm) {
+      data.properties.formId = selectedForm;
+      data.criteria.processVariables = [
+        { name: "formId", operator: "eq", value: selectedForm },
+      ];
+    }
 
     const submitFunction = selectedFilterData
       ? editFilters(data, selectedFilterData?.id)
@@ -601,16 +607,24 @@ export default function CreateNewFilterDrawer({
   const list = () => (
     <div role="none">
       <List>
-        <div className={`p-0 d-flex align-items-center justify-content-${viewMode ? "end" : "between"}`}>
-          {!viewMode ? <h5 className="fw-bold fs-16">
-            <Translation>
-              {(t) =>
-                `${
-                  selectedFilterData ? t("Edit filter") : t("Create new filter")
-                }`
-              }
-            </Translation>
-          </h5> : null }
+        <div
+          className={`p-0 d-flex align-items-center justify-content-${
+            viewMode ? "end" : "between"
+          }`}
+        >
+          {!viewMode ? (
+            <h5 className="fw-bold fs-16">
+              <Translation>
+                {(t) =>
+                  `${
+                    selectedFilterData
+                      ? t("Edit filter")
+                      : t("Create new filter")
+                  }`
+                }
+              </Translation>
+            </h5>
+          ) : null}
           <button
             className="btn btn-link text-dark"
             onClick={() => {
@@ -780,7 +794,7 @@ export default function CreateNewFilterDrawer({
               <h5 className="fw-bold ">
                 <Translation>{(t) => t("Select Form")}</Translation>
               </h5>
-            </label>           
+            </label>
             <Select
               isDisabled={viewMode}
               inputId="select-form"
@@ -891,7 +905,9 @@ export default function CreateNewFilterDrawer({
               >
                 <div
                   className="ms-3"
-                  onClick={() => handleClickUserGroupIcon("group")}
+                  onClick={
+                    !viewMode ? () => handleClickUserGroupIcon("group") : null
+                  }
                 >
                   <div className="text-center">
                     <span className="truncate-size">
@@ -915,12 +931,14 @@ export default function CreateNewFilterDrawer({
                     className="d-flex align-items-center badge me-2 mt-2"
                   >
                     {identifierId}
-                    <div
-                      className="badge-deleteIcon ms-2"
-                      onClick={() => setIdentifierId(null)}
-                    >
-                      &times;
-                    </div>
+                    {!viewMode && (
+                      <div
+                        className="badge-deleteIcon ms-2"
+                        onClick={() => setIdentifierId(null)}
+                      >
+                        &times;
+                      </div>
+                    )}
                   </Badge>
                 )}
               </div>
@@ -933,7 +951,7 @@ export default function CreateNewFilterDrawer({
 
       <List>
         <div className="d-flex align-items-center justify-content-between">
-          {selectedFilterData &&  !viewMode && (
+          {selectedFilterData && !viewMode && (
             <button
               className="btn btn-link text-danger cursor-pointer"
               onClick={() => {
@@ -944,33 +962,40 @@ export default function CreateNewFilterDrawer({
             </button>
           )}
           <div className="d-flex align-items-center">
-            {!viewMode && <button
-              className="btn btn-outline-secondary me-3"
-              onClick={() => {
-                toggleDrawer();
-                setShowAlert(false);
-              }}
-            >
-              <Translation>{(t) => t("Cancel")}</Translation>
-            </button> }
-            
-            { !viewMode &&
+            {!viewMode && (
               <button
-              className="btn btn-primary submitButton text-decoration-none truncate-size "
-              disabled={viewMode || !permissions || !filterName || filterName.length >= 50}
-              onClick={() => {
-                handleSubmit();
-              }}
-            >
-              <Translation>
-                {(t) =>
-                  `${
-                    selectedFilterData ? t("Save Filter") : t("Create Filter")
-                  } `
+                className="btn btn-outline-secondary me-3"
+                onClick={() => {
+                  toggleDrawer();
+                  setShowAlert(false);
+                }}
+              >
+                <Translation>{(t) => t("Cancel")}</Translation>
+              </button>
+            )}
+
+            {!viewMode && (
+              <button
+                className="btn btn-primary submitButton text-decoration-none truncate-size "
+                disabled={
+                  viewMode ||
+                  !permissions ||
+                  !filterName ||
+                  filterName.length >= 50
                 }
-              </Translation>
-            </button>
-            }
+                onClick={() => {
+                  handleSubmit();
+                }}
+              >
+                <Translation>
+                  {(t) =>
+                    `${
+                      selectedFilterData ? t("Save Filter") : t("Create Filter")
+                    } `
+                  }
+                </Translation>
+              </button>
+            )}
           </div>
         </div>
       </List>

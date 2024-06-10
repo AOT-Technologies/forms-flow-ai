@@ -1,0 +1,37 @@
+.App {
+    font-family: sans-serif;
+    text-align: center;
+}
+
+.marvel-device {
+    display: block;
+    margin: 3em auto;
+}
+
+.marvel-device img {
+    width: 100%;
+    height: auto;
+}
+
+.device-container {
+    padding: 24px;
+    height: 100%;
+    overflow-y: auto;
+}
+
+.ui.fluid.dropdown {
+    display: block;
+    width: auto !important;
+    min-width: 0;
+}
+
+.form-control {
+    width: 96% !important;
+}
+
+        /* @media (min-width: 768px) {
+            .col-md-6 {
+                flex: 0 0 auto;
+                width: 100% !important;
+            }
+        } */

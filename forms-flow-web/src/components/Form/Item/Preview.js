@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 
-import { Form, Errors, Formio } from "react-formio";
+import { Form, Errors, Formio } from "react-formio";  
 import { push } from "connected-react-router";
 import Loading from "../../../containers/Loading";
 import { Translation } from "react-i18next";
@@ -24,43 +24,49 @@ import { t } from "i18next";
 import { INACTIVE } from "../constants/formListConstants";
 import LoadingOverlay from "react-loading-overlay-ts";
 import FormHistoryModal from "./FormHistoryModal";
+import DeviceView from "./deviceView";
 import CreateTemplateConfirmModal from "./CreateTemplateConfirmModal";
 import { handleAuthorization } from "../../../apiManager/services/authorizationService";
-const Preview = ({handleNext, hideComponents, activeStep}) => {
+const Preview = ({ handleNext, hideComponents, activeStep }) => {
   const dispatch = useDispatch();
   const [newpublishClicked, setNewpublishClicked] = useState(false);
   const [confirmPublishModal, setConfirmPublishModal] = useState(false);
   const [historyModal, setHistoryModal] = useState(false);
+  const [deviceView, setDeviceView] = useState(false);
+
   const tenantKey = useSelector((state) => state.tenants?.tenantId);
   const redirectUrl = MULTITENANCY_ENABLED ? `/tenant/${tenantKey}/` : "/";
-  const submissionAccess = useSelector((state) => state.user?.submissionAccess || []) ;
-  const formAccess = useSelector((state) => state.user?.formAccess || []) ;
-  const {form, isActive: isFormActive, errors} = useSelector(state => state.form || {});
+  const submissionAccess = useSelector((state) => state.user?.submissionAccess || []);
+  const formAccess = useSelector((state) => state.user?.formAccess || []);
+  const { form, isActive: isFormActive, errors } = useSelector(state => state.form || {});
   const lang = useSelector(state => state.user.lang);
   const formProcessList = useSelector(state => state.process?.formProcessList);
 
   const handleModalChange = () => {
     setHistoryModal(!historyModal);
   };
+  const handleViewModalChange = () => {
+    setDeviceView(!deviceView);
+  };
 
-  const publishConfirmModalChange = ()=> {
+  const publishConfirmModalChange = () => {
     setConfirmPublishModal(!confirmPublishModal);
   };
- 
-  useEffect(()=>{
-    if(formProcessList?.parentFormId){
+
+  useEffect(() => {
+    if (formProcessList?.parentFormId) {
       getFormHistory(formProcessList?.parentFormId).then((res) => {
         dispatch(setFormHistories(res.data));
       })
-      .catch(() => {
-        dispatch(setFormHistories([]));
-      });
+        .catch(() => {
+          dispatch(setFormHistories([]));
+        });
     }
-  },[formProcessList]);
+  }, [formProcessList]);
 
 
 
-  const handlePublishAsNewVersion = ()=>{
+  const handlePublishAsNewVersion = () => {
     setNewpublishClicked(true);
     setConfirmPublishModal(!confirmPublishModal);
     const newFormData = manipulatingFormData(
@@ -105,14 +111,14 @@ const Preview = ({handleNext, hideComponents, activeStep}) => {
 
         Formio.cache = {};
         const payload = {
-          resourceId:data.formId,
+          resourceId: data.formId,
           resourceDetails: {},
-          roles : []
+          roles: []
         };
 
-        handleAuthorization( { application: payload, designer: payload, form: payload }
-          ,data.formId).catch((err)=>console.error(err));
-        
+        handleAuthorization({ application: payload, designer: payload, form: payload }
+          , data.formId).catch((err) => console.error(err));
+
         dispatch(setFormSuccessData("form", form));
         dispatch(
           // eslint-disable-next-line no-unused-vars
@@ -139,81 +145,101 @@ const Preview = ({handleNext, hideComponents, activeStep}) => {
         setNewpublishClicked(false);
       });
   };
- 
 
-  const gotoEdit = () =>{
+
+  const gotoEdit = () => {
     dispatch(push(`${redirectUrl}formflow/${form._id}/edit`));
   };
 
- 
+
   if (isFormActive) {
     return <Loading />;
   }
   return (
- 
+
     <div className="mt-3">
-       <h3 className="task-head col-12 text-truncate my-4 mx-0 px-0">
- 
-          <i className="fa-solid fa-file-lines" aria-hidden="true" /> &nbsp;{" "}
-          {form?.title}
-        </h3>
+      <h3 className="task-head col-12 text-truncate my-4 mx-0 px-0">
+
+        <i className="fa-solid fa-file-lines" aria-hidden="true" /> &nbsp;{" "}
+        {form?.title}
+      </h3>
       <div className=" d-flex flex-column flex-md-row justify-content-md-end align-items-md-center mb-3">
-    
-        
-          <button
-            className="btn btn-primary"
-            onClick={() => {
-              gotoEdit();
+
+
+        <button
+          className="btn btn-primary"
+          onClick={() => {
+            gotoEdit();
           }}
           data-testid="form-edit-button"
-          >
-            <i className="fa fa-pencil" aria-hidden="true" />
-            &nbsp;&nbsp;<Translation>{(t) => t("Edit Form")}</Translation>
-          </button>
-          <button
-            className="btn btn-outline-secondary ms-md-2 my-md-0 my-2 "
-            onClick={() => {
-              handleModalChange();
-            }}
-            data-testid="form-version-history-button"
-          >
-            <i className="fa fa-rotate-left  " aria-hidden="true" />
-            &nbsp;&nbsp;<Translation>{(t) => t("Form History")}</Translation>
-          </button>
-          <button
-            className="btn btn-outline-primary ms-md-2 my-md-0 my-2"
-            disabled={newpublishClicked}
-            onClick={() => {
-              publishConfirmModalChange();
-            }}
-            data-testid="form-duplicate-button"
-          >
-            <i className="fa fa-clone" aria-hidden="true"></i>
-            &nbsp;&nbsp;
-            <Translation>{(t) => t("Duplicate Form")}</Translation>
-          </button>
-          <button
-            onClick={handleNext}
-            className="ms-md-2 my-md-0 my-2 btn btn-primary"
-            data-testid="form-next-button"
-          >
-            {
-              (activeStep === 1,
+        >
+          <i className="fa fa-pencil" aria-hidden="true" />
+          &nbsp;&nbsp;<Translation>{(t) => t("Edit Form")}</Translation>
+        </button>
+
+        {/* ????????????????????????????????????????????? */}
+        <button
+          className="btn btn-primary mx-4"
+          onClick={() => {
+            handleViewModalChange();
+          }}
+          data-testid="form-edit-button"
+        >
+          <i className="fa fa-device" aria-hidden="true" />{ deviceView ? "Close Device View" : "Device View"}   
+        </button>
+        {/* /////////////////// */}
+
+        <button
+          className="btn btn-outline-secondary ms-md-2 my-md-0 my-2 "
+          onClick={() => {
+            handleModalChange();
+          }}
+          data-testid="form-version-history-button"
+        >
+          <i className="fa fa-rotate-left  " aria-hidden="true" />
+          &nbsp;&nbsp;<Translation>{(t) => t("Form History")}</Translation>
+        </button>
+        <button
+          className="btn btn-outline-primary ms-md-2 my-md-0 my-2"
+          disabled={newpublishClicked}
+          onClick={() => {
+            publishConfirmModalChange();
+          }}
+          data-testid="form-duplicate-button"
+        >
+          <i className="fa fa-clone" aria-hidden="true"></i>
+          &nbsp;&nbsp;
+          <Translation>{(t) => t("Duplicate Form")}</Translation>
+        </button>
+        <button
+          onClick={handleNext}
+          className="ms-md-2 my-md-0 my-2 btn btn-primary"
+          data-testid="form-next-button"
+        >
+          {
+            (activeStep === 1,
               (<Translation>{(t) => t("Next")}</Translation>))
-            }
-          </button>
- 
+          }
+        </button>
+
       </div>
 
       <CreateTemplateConfirmModal modalOpen={confirmPublishModal}
-      handleModalChange={publishConfirmModalChange}
-      onConfirm = {handlePublishAsNewVersion}
+        handleModalChange={publishConfirmModalChange}
+        onConfirm={handlePublishAsNewVersion}
       />
-      
+
       <FormHistoryModal historyModal={historyModal}
-       handleModalChange={handleModalChange}
-       gotoEdit={gotoEdit}
-       />
+        handleModalChange={handleModalChange}
+        gotoEdit={gotoEdit}
+      />
+      <DeviceView
+      deviceView={deviceView}
+      form={form}
+      hideComponents={hideComponents}
+      handleViewModalChange={handleViewModalChange}
+      gotoEdit={gotoEdit}
+      />
 
       <Errors errors={errors} />
       <LoadingOverlay
@@ -224,14 +250,16 @@ const Preview = ({handleNext, hideComponents, activeStep}) => {
         <Form
           form={form}
           hideComponents={hideComponents}
-          options={{ disabled: { submit: true },
-          buttonSettings: {
-            showSubmit: false
-          },
-          disableAlerts: true,
-          noAlerts: true,
-          language: lang, i18n: formio_resourceBundles }}
-          
+          options={{
+            disabled: { submit: true },
+            buttonSettings: {
+              showSubmit: false
+            },
+            disableAlerts: true,
+            noAlerts: true,
+            language: lang, i18n: formio_resourceBundles
+          }}
+
         />
       </LoadingOverlay>
     </div>
@@ -240,6 +268,6 @@ const Preview = ({handleNext, hideComponents, activeStep}) => {
 
 
 
- 
+
 
 export default Preview;

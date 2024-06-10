@@ -30,7 +30,7 @@ class TestKeycloakRolesResource:
         assert rv.json.get("id") is not None
         id = rv.json.get("id")
         # Update group.
-        data = {"name": "new-test-group", "description": "Test Group"}
+        data = {"name": "new-test-group", "description": "Test Group", "permissions": ["view_designs", "create_designs"]}
         rv = client.put(f"/roles/{id}", headers=headers, json=data)
         assert rv.status_code == 200
         # Get group by id.

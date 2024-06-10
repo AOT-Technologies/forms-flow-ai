@@ -6,6 +6,7 @@ from typing import Dict, List
 import requests
 from flask import current_app
 from formsflow_api_utils.exceptions import BusinessException
+from formsflow_api_utils.utils.user_context import UserContext, user_context
 
 from formsflow_api.constants import BusinessErrorCode
 from formsflow_api.services import KeycloakAdminAPIService, UserService
@@ -69,8 +70,10 @@ class KeycloakGroupService(KeycloakAdmin):
 
     def update_group(self, group_id: str, data: Dict):
         """Update group details."""
+        permissions = data.pop("permissions")
         data = self.add_description(data)
         data["name"] = data["name"].split("/")[-1]
+        self.update_group_permission_mapping(group_id, permissions)
         return self.client.update_request(url_path=f"groups/{group_id}", data=data)
 
     def get_groups_roles(self, search: str, sort_order: str):
@@ -174,9 +177,13 @@ class KeycloakGroupService(KeycloakAdmin):
         )
         return search_list
 
-    def format_response(self, data):
+    @user_context
+    def format_response(self, data, **kwargs):
         """Format group response."""
+        user: UserContext = kwargs["user"]
+        tenant_key = user.tenant_key
         data["description"] = ""
+        data["permissions"] = []
         data["name"] = data.get("path")
         if data.get("attributes") != {}:  # Reaarange description
             data["description"] = (
@@ -184,6 +191,13 @@ class KeycloakGroupService(KeycloakAdmin):
                 if data["attributes"].get("description")
                 else ""
             )
+        if data.get("clientRoles") != {}:  # Reaarange permissions
+            client_name = current_app.config.get("JWT_OIDC_AUDIENCE")
+            client_role = f"{tenant_key}-{client_name}" if tenant_key else client_name
+            current_app.logger.debug("Client name %s", client_role)
+            client_roles = data['clientRoles'].get(client_role)
+            if client_roles:
+                data["permissions"] = client_roles
         return data
 
     def add_user_to_group_role(self, user_id: str, group_id: str, payload: Dict):
@@ -240,3 +254,22 @@ class KeycloakGroupService(KeycloakAdmin):
             url_path=f"groups/{group_id}/role-mappings/clients/{client_id}",
             data=role_data_list,
         )
+
+    def update_group_permission_mapping(self, group_id, permissions):
+        """Update permission mapping to group."""
+        current_app.logger.debug("Updating permission mapping to group")
+        client_id = self.client.get_client_id()
+        permission_list = self.client.get_request(
+            url_path=f"groups/{group_id}/role-mappings/clients/{client_id}"
+        )
+
+        # Determine permissions to remove
+        role_remove_data_list = []
+        for permission in permission_list:
+            if permission['name'] not in permissions:
+                role_remove_data_list.append(permission)
+        self.client.delete_request(
+            url_path=f"groups/{group_id}/role-mappings/clients/{client_id}", data=role_remove_data_list
+        )
+        # Add permissions
+        self.create_group_permission_mapping(group_id, permissions, client_id)

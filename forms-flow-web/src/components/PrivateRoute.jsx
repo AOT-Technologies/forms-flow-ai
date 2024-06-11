@@ -156,81 +156,78 @@ const PrivateRoute = React.memo((props) => {
   const DesignerRoute = useMemo(
     () =>
       ({ component: Component, ...rest }) =>
-        (
-          <Route
-            {...rest}
-            render={(props) =>
-              userRoles.includes(STAFF_DESIGNER) ? (
-                <Component {...props} />
-              ) : (
-                <>unauthorized</>
-              )
-            }
-          />
-        ),
+      (
+        <Route
+          {...rest}
+          render={(props) =>
+            userRoles.includes(STAFF_DESIGNER) ? (
+              <Component {...props} />
+            ) : (
+              <AccessDenied userRoles={userRoles} />
+            )
+          }
+        />
+      ),
     [userRoles]
   );
 
   const ReviewerRoute = useMemo(
     () =>
       ({ component: Component, ...rest }) =>
-        (
-          <Route
-            {...rest}
-            render={(props) =>
-              userRoles.includes(STAFF_REVIEWER) ? (
-                <Component {...props} />
-              ) : (
-                <>unauthorized</>
-              )
-            }
-          />
-        ),
+      (
+        <Route
+          {...rest}
+          render={(props) =>
+            userRoles.includes(STAFF_REVIEWER) ? (
+              <Component {...props} />
+            ) : (
+              <AccessDenied userRoles={userRoles} />
+            )
+          }
+        />
+      ),
     [userRoles]
   );
 
   const ClientReviewerRoute = useMemo(
     () =>
       ({ component: Component, ...rest }) =>
-        (
-          <Route
-            {...rest}
-            render={(props) =>
-              userRoles.includes(STAFF_REVIEWER) ||
-              userRoles.includes(CLIENT) ? (
-                <Component {...props} />
-              ) : (
-                <>unauthorized</>
-              )
-            }
-          />
-        ),
+      (
+        <Route
+          {...rest}
+          render={(props) =>
+            userRoles.includes(STAFF_REVIEWER) || userRoles.includes(CLIENT) ? (
+              <Component {...props} />
+            ) : (
+              <AccessDenied userRoles={userRoles} />
+            )
+          }
+        />
+      ),
     [userRoles]
   );
 
   const DraftRoute = useMemo(
     () =>
       ({ component: Component, ...rest }) =>
-        (
-          <Route
-            {...rest}
-            render={(props) =>
-              DRAFT_ENABLED &&
-              (userRoles.includes(STAFF_REVIEWER) ||
-                userRoles.includes(CLIENT)) ? (
-                <Component {...props} />
-              ) : (
-                <>unauthorized</>
-              )
-            }
-          />
-        ),
+      (
+        <Route
+          {...rest}
+          render={(props) =>
+            DRAFT_ENABLED && (userRoles.includes(STAFF_REVIEWER) || userRoles.includes(CLIENT)) ? (
+              <Component {...props} />
+            ) : (
+              <AccessDenied userRoles={userRoles} />
+            )
+          }
+        />
+      ),
     [userRoles]
   );
   return (
     <>
       {authError ? (
-        <AccessDenied />
+        <AccessDenied userRoles={userRoles} />
       ) : isAuth ? (
         <Suspense fallback={<Loading />}>
           <Switch>

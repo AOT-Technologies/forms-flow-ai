@@ -12,6 +12,6 @@ FROM alpine:latest
 WORKDIR /custom
 
 # COPY --from=builder /build/idp-selector/target/*.jar /custom/providers/
-COPY themes /custom/themes
-COPY imports /custom/imports
-COPY start-keycloak.sh /custom/start-keycloak.sh
+COPY ./themes /custom/themes
+COPY ./imports /custom/imports
+COPY ./start-keycloak.sh /custom/start-keycloak.sh

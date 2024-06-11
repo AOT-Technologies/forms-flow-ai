@@ -3,7 +3,7 @@ version: "3.7"
 
 volumes:
   postgres:
-  custom_data:
+  keycloak_custom_data:
   
 networks:
   keycloak-server-network:
@@ -30,11 +30,8 @@ services:
     restart: unless-stopped
     container_name: keycloak
     volumes:
-      - custom_data:/custom
-      - ./start-keycloak.sh:/opt/keycloak/bin/start-keycloak.sh
-    command: ["sh", "-c", "cp -r /custom/themes /opt/jboss/keycloak/themes && cp -r /custom/imports /opt/jboss/keycloak/data/import"]
-    entrypoint: ["/bin/bash", "/opt/keycloak/bin/start-keycloak.sh"]
-
+      - keycloak_custom_data:/keycloak_custom_data
+    entrypoint: ["/bin/bash", "-c", "/keycloak_custom_data/start-keycloak.sh"]
     environment:
       - DB_VENDOR=POSTGRES
       - DB_ADDR=keycloak-db
@@ -46,18 +43,20 @@ services:
       - KEYCLOAK_ADMIN_PASSWORD=${KEYCLOAK_ADMIN_PASSWORD:-changeme}
       - KEYCLOAK_START_MODE=${KEYCLOAK_START_MODE:-start-dev}
       - KEYCLOAK_HTTP_PATH=${KEYCLOAK_HTTP_PATH:-/auth}
-
     ports:
       - "8080:8080"
-    links:
+    depends_on:
       - keycloak-db
+      - keycloak-customizations
     networks:
       - keycloak-server-network
 
   keycloak-customizations:
-    image: formsflow/keycloak-customizations:latest
+    build:
+      context: .
+      dockerfile: Dockerfile
     volumes:
-      - custom_data:/custom
+      - keycloak_custom_data:/custom
     command: /bin/sh
     tty: true
     stdin_open: true    

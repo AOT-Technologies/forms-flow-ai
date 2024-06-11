@@ -1,9 +1,17 @@
-FROM formsflow/forms-flow-idm-theme:v7.0
+# FROM maven:3.8.6-jdk-11 AS builder
 
-RUN mkdir -p /opt/bitnami/keycloak/themes/formsflow
-# Remove any existing theme files
-RUN rm -rf /opt/bitnami/keycloak/themes/formsflow/*
-# Copy the new theme files
-COPY themes/formsflow /opt/bitnami/keycloak/themes/formsflow
-# Copy the import files
-COPY imports /opt/bitnami/keycloak/data/import
+# WORKDIR /build
+
+# COPY idp-selector/pom.xml idp-selector/
+# COPY idp-selector/src idp-selector/src/
+
+# RUN mvn -f idp-selector/pom.xml clean package
+
+FROM alpine:latest
+
+WORKDIR /custom
+
+# COPY --from=builder /build/idp-selector/target/*.jar /custom/providers/
+COPY themes /custom/themes
+COPY imports /custom/imports
+COPY start-keycloak.sh /custom/start-keycloak.sh

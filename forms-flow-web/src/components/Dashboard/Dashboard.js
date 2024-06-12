@@ -371,6 +371,10 @@ const Dashboard = React.memo(() => {
                   itemClass="page-item"
                   linkClass="page-link"
                   onChange={handlePageChange}
+                  firstPageText={<span aria-label="Go to first page" title="Go to first page">«</span>}
+                  lastPageText={<span aria-label="Go to last page" title="Go to last page">»</span>}
+                  prevPageText={<span aria-label="Go to previous page" title="Go to previous page">⟨</span>}
+                  nextPageText={<span aria-label="Go to next page" title="Go to next page">⟩</span>}
                 />
               </div>
             </div>

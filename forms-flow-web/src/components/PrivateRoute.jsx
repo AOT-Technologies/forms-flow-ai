@@ -31,7 +31,7 @@ import {
 
 import Loading from "../containers/Loading";
 import NotFound from "./NotFound";
-import { setTenantFromId } from "../apiManager/services/tenantServices";
+import { setTenantFromId, validateTenant } from "../apiManager/services/tenantServices";
 
 // Lazy imports is having issues with micro-front-end build
 
@@ -42,7 +42,6 @@ import InsightsPage from "./Insights";
 import Application from "./Application";
 import Modeler from "./Modeler";
 import Drafts from "./Draft";
-import LandingPage from "./MultiTenant";
 import {
   BPM_API_URL_WITH_VERSION,
   WEB_BASE_URL,
@@ -81,7 +80,8 @@ const PrivateRoute = React.memo((props) => {
   const tenant = useSelector((state) => state.tenants);
   const [authError, setAuthError] = React.useState(false);
   const [kcInstance, setKcInstance] = React.useState(getKcInstance());
-  
+  const [tenantValid, setTenantValid] = React.useState(true); // State to track tenant validity
+
   const authenticate = (instance, store) => {
     setKcInstance(instance);
     store.dispatch(
@@ -89,70 +89,81 @@ const PrivateRoute = React.memo((props) => {
     );
     dispatch(setUserAuth(instance.isAuthenticated()));
     store.dispatch(setUserToken(instance.getToken()));
-    //Set Cammunda/Formio Base URL
+    // Set Cammunda/Formio Base URL
     setApiBaseUrlToLocalStorage();
-    // get formio roles
+    // Get formio roles
     store.dispatch(
       getFormioRoleIds((err) => {
         if (err) {
           console.error(err);
-          // doLogout();
         } else {
           store.dispatch(
             setUserDetails(
               JSON.parse(StorageService.get(StorageService.User.USER_DETAILS))
             )
           );
-
-          // onAuthenticatedCallback();
         }
       })
     );
   };
 
   useEffect(() => {
-    let instance = tenantId ? kcServiceInstance(tenantId) : kcServiceInstance();
-    if (tenantId && props.store) {
-      let currentTenant = sessionStorage.getItem("tenantKey");
-      if (currentTenant && currentTenant !== tenantId) {
-        sessionStorage.clear();
-        localStorage.clear();
-      }
-      sessionStorage.setItem("tenantKey", tenantId);
-      dispatch(setTenantFromId(tenantId));
-    }
-    if (props.store) {
+    if (tenantId) {
+      validateTenant(tenantId)
+        .then((res) => {
+          if (res.data.status === "INVALID") {
+            setTenantValid(false);
+          } else {
+            setTenantValid(true);
+            let instance = kcServiceInstance(tenantId);
+            if (tenantId && props.store) {
+              let currentTenant = sessionStorage.getItem("tenantKey");
+              if (currentTenant && currentTenant !== tenantId) {
+                sessionStorage.clear();
+                localStorage.clear();
+              }
+              sessionStorage.setItem("tenantKey", tenantId);
+              dispatch(setTenantFromId(tenantId));
+              instance.initKeycloak((authenticated) => {
+                if (!authenticated) {
+                  setAuthError(true);
+                } else {
+                  authenticate(instance, props.store);
+                  publish("FF_AUTH", instance);
+                }
+              });
+            }
+          }
+        })
+        .catch((err) => {
+          console.error("Error validating tenant", err);
+          setTenantValid(false);
+        });
+    } else if (props.store) {
       if (kcInstance) {
         authenticate(kcInstance, props.store);
       } else {
+        let instance = kcServiceInstance();
         instance.initKeycloak((authenticated) => {
-          if(!authenticated)
-          {
+          if (!authenticated) {
             setAuthError(true);
-          }
-          else{
+          } else {
             authenticate(instance, props.store);
             publish("FF_AUTH", instance);
           }
         });
       }
     }
-  }, [props.store, tenantId, dispatch]);
+  }, [tenantId, props.store, dispatch]);
 
-  /**
-   * Retrieves the user's locale from the Keycloak instance or the tenant data, and dispatches an action to set the language in the application state.
-   * This effect is triggered whenever the Keycloak instance or the tenant data changes.
-   */
   useEffect(() => {
-    if(kcInstance){
+    if (kcInstance) {
       const lang = kcInstance?.userData?.locale ||
-      tenant?.tenantData?.details?.locale ||
-      selectedLanguage ;
+        tenant?.tenantData?.details?.locale ||
+        selectedLanguage;
       dispatch(setLanguage(lang));
     }
   }, [kcInstance, tenant?.tenantData]);
-
-  // useMemo prevents unneccessary rerendering caused by the route update.
 
   const DesignerRoute = useMemo(
     () =>
@@ -228,6 +239,11 @@ const PrivateRoute = React.memo((props) => {
         ),
     [userRoles]
   );
+
+  if (!tenantValid) {
+    return <NotFound/>;
+  }
+
   return (
     <>
       {authError ? (
@@ -237,9 +253,6 @@ const PrivateRoute = React.memo((props) => {
           <Switch>
             {ENABLE_FORMS_MODULE && (
               <Route path={`${BASE_ROUTE}form`} component={Form} />
-            )}
-            {ENABLE_FORMS_MODULE && (
-              <Route path={`${BASE_ROUTE}landing`} component={LandingPage} />
             )}
             {ENABLE_FORMS_MODULE && (
               <DesignerRoute path={`${BASE_ROUTE}formflow`} component={Form} />
@@ -253,14 +266,12 @@ const PrivateRoute = React.memo((props) => {
                 component={Application}
               />
             )}
-
             {ENABLE_PROCESSES_MODULE && (
               <DesignerRoute
                 path={`${BASE_ROUTE}processes`}
                 component={Modeler}
               />
             )}
-
             {ENABLE_DASHBOARDS_MODULE && (
               <ReviewerRoute
                 path={`${BASE_ROUTE}metrics`}
@@ -281,13 +292,15 @@ const PrivateRoute = React.memo((props) => {
             )}
 
             <Route exact path={BASE_ROUTE}>
-              {userRoles.length && <Redirect
-                to={
-                  userRoles?.includes(STAFF_REVIEWER)
-                    ? `${redirecUrl}task`
-                    : `${redirecUrl}form`
-                }
-              />}
+              {userRoles.length && (
+                <Redirect
+                  to={
+                    userRoles?.includes(STAFF_REVIEWER)
+                      ? `${redirecUrl}task`
+                      : `${redirecUrl}form`
+                  }
+                />
+              )}
             </Route>
             <Route path="/404" exact={true} component={NotFound} />
             <Redirect from="*" to="/404" />

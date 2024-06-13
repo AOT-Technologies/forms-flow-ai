@@ -16,6 +16,7 @@ import org.camunda.bpm.engine.IdentityService;
 import org.camunda.bpm.extension.commons.utils.RestAPIBuilderUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.slf4j.MDC;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.oauth2.client.OAuth2AuthorizedClientService;
@@ -86,6 +87,7 @@ public class KeycloakAuthenticationFilter implements Filter {
 			if (claims != null && claims.containsKey("tenantKey")) {
 				tenantKey = claims.get("tenantKey").toString();
 				tenantIds.add(tenantKey);
+				MDC.put("tenantKey", tenantKey);
 			}
 			userGroups = getUserGroups(userId, claims, tenantKey);
 			if (tenantKey != null)

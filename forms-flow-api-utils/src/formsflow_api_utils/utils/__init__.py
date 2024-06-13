@@ -19,7 +19,8 @@ from .constants import (
     KEYCLOAK_DASHBOARD_BASE_GROUP,
     NEW_APPLICATION_STATUS,
     REVIEWER_GROUP,
-    HTTP_TIMEOUT
+    HTTP_TIMEOUT,
+    PERMISSIONS
 )
 from .enums import ApplicationSortingParameters
 from .file_log_handler import CustomTimedRotatingFileHandler, register_log_handlers

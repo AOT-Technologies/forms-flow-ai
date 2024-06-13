@@ -7,6 +7,7 @@ from flask_restx import Namespace, Resource, fields
 from formsflow_api_utils.utils import (
     ADMIN_GROUP,
     DESIGNER_GROUP,
+    PERMISSIONS,
     REVIEWER_GROUP,
     auth,
     cors_preflight,
@@ -147,3 +148,23 @@ class KeycloakRolesResourceById(Resource):
         request_data = roles_schema.load(request.get_json())
         response = KeycloakFactory.get_instance().update_group(role_id, request_data)
         return {"message": response}, HTTPStatus.OK
+
+
+@cors_preflight("GET, OPTIONS")
+@API.route("/permissions", methods=["GET", "OPTIONS"])
+class Permissions(Resource):
+    """Resource to list permissions."""
+
+    @staticmethod
+    @auth.has_one_of_roles([ADMIN_GROUP])
+    @profiletime
+    @API.doc(
+        responses={
+            200: "OK:- Successful request.",
+            400: "BAD_REQUEST:- Invalid request.",
+            401: "UNAUTHORIZED:- Authorization header not provided or an invalid token passed.",
+        },
+    )
+    def get():
+        """Return permission list."""
+        return PERMISSIONS

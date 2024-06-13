@@ -21,7 +21,7 @@ import {
 } from "../../../apiManager/services/processServices";
 import Button from "react-bootstrap/Button";
 import Modal from "react-bootstrap/Modal";
-import { formio_resourceBundles } from "../../../resourceBundles/formio_resourceBundles";
+import { RESOURCE_BUNDLES_DATA } from "../../../resourceBundles/i18n";
 import {
   clearFormError,
   setFormFailureErrorData,
@@ -811,7 +811,7 @@ const Edit = React.memo(() => {
               onChange={formChange}
               options={{
                 language: lang,
-                i18n: formio_resourceBundles,
+                i18n: RESOURCE_BUNDLES_DATA,
               }}
             />
           </div>

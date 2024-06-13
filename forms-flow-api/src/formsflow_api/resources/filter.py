@@ -71,6 +71,14 @@ filter_response = API.inherit(
     },
 )
 
+filter_response_with_default_filter = API.model(
+    "FilterResponse",
+    {
+        "filters": fields.List(fields.Nested(filter_response)),
+        "defaultFilter": fields.String(description="Default filter"),
+    },
+)
+
 
 @cors_preflight("GET, POST, OPTIONS")
 @API.route("", methods=["GET", "POST", "OPTIONS"])
@@ -158,7 +166,7 @@ class UsersFilterList(Resource):
             200: "OK:- Successful request.",
             403: "FORBIDDEN:- Permission denied",
         },
-        model=[filter_response],
+        model=filter_response_with_default_filter,
     )
     def get():
         """

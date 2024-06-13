@@ -1,7 +1,7 @@
 /* eslint-disable no-unused-vars */
-import React, { useEffect, Suspense, lazy, useMemo } from "react";
+import React, { useEffect, Suspense, lazy, useMemo,useCallback } from "react";
 import { Route, Switch, Redirect, useParams } from "react-router-dom";
-import { useDispatch, useSelector } from "react-redux";
+import { useDispatch, useSelector} from "react-redux";
 import {
   BASE_ROUTE,
   DRAFT_ENABLED,
@@ -31,7 +31,10 @@ import {
 
 import Loading from "../containers/Loading";
 import NotFound from "./NotFound";
-import { setTenantFromId, validateTenant } from "../apiManager/services/tenantServices";
+import {
+  setTenantFromId,
+  validateTenant,
+} from "../apiManager/services/tenantServices";
 
 // Lazy imports is having issues with micro-front-end build
 
@@ -107,43 +110,12 @@ const PrivateRoute = React.memo((props) => {
     );
   };
 
-  useEffect(() => {
-    if (tenantId) {
-      validateTenant(tenantId)
-        .then((res) => {
-          if (res.data.status === "INVALID") {
-            setTenantValid(false);
-          } else {
-            setTenantValid(true);
-            let instance = kcServiceInstance(tenantId);
-            if (tenantId && props.store) {
-              let currentTenant = sessionStorage.getItem("tenantKey");
-              if (currentTenant && currentTenant !== tenantId) {
-                sessionStorage.clear();
-                localStorage.clear();
-              }
-              sessionStorage.setItem("tenantKey", tenantId);
-              dispatch(setTenantFromId(tenantId));
-              instance.initKeycloak((authenticated) => {
-                if (!authenticated) {
-                  setAuthError(true);
-                } else {
-                  authenticate(instance, props.store);
-                  publish("FF_AUTH", instance);
-                }
-              });
-            }
-          }
-        })
-        .catch((err) => {
-          console.error("Error validating tenant", err);
-          setTenantValid(false);
-        });
-    } else if (props.store) {
+  const keycloakInitialize = useCallback(() => {
+    let instance = tenantId ? kcServiceInstance(tenantId) : kcServiceInstance();
+    if (props.store) {
       if (kcInstance) {
         authenticate(kcInstance, props.store);
       } else {
-        let instance = kcServiceInstance();
         instance.initKeycloak((authenticated) => {
           if (!authenticated) {
             setAuthError(true);
@@ -154,11 +126,42 @@ const PrivateRoute = React.memo((props) => {
         });
       }
     }
+  }, [props.store, kcInstance, tenantId]);
+
+  useEffect(() => {
+    if (tenantId && MULTITENANCY_ENABLED) {
+      validateTenant(tenantId)
+        .then((res) => {
+          if (res.data.status === "INVALID") {
+            setTenantValid(false);
+          } else {
+            setTenantValid(true);
+
+            if (tenantId && props.store) {
+              let currentTenant = sessionStorage.getItem("tenantKey");
+              if (currentTenant && currentTenant !== tenantId) {
+                sessionStorage.clear();
+                localStorage.clear();
+              }
+              sessionStorage.setItem("tenantKey", tenantId);
+              dispatch(setTenantFromId(tenantId));
+              keycloakInitialize();
+            }
+          }
+        })
+        .catch((err) => {
+          console.error("Error validating tenant", err);
+          setTenantValid(false);
+        });
+    } else {
+      keycloakInitialize();
+    }
   }, [tenantId, props.store, dispatch]);
 
   useEffect(() => {
     if (kcInstance) {
-      const lang = kcInstance?.userData?.locale ||
+      const lang =
+        kcInstance?.userData?.locale ||
         tenant?.tenantData?.details?.locale ||
         selectedLanguage;
       dispatch(setLanguage(lang));
@@ -238,7 +241,7 @@ const PrivateRoute = React.memo((props) => {
   );
 
   if (!tenantValid) {
-    return <NotFound/>;
+    return <NotFound />;
   }
 
   return (

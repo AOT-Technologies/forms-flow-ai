@@ -232,8 +232,10 @@ const Dashboard = React.memo(() => {
           }}
           autoComplete="off"
           value={searchTextInput}
-          placeholder={t("Search...")}
+          placeholder={t("Search by form name")}
           className="bg-white"
+          aria-label={t("Search by form name")}
+          
         />
         {showClearButton && (
           <InputGroup.Append className="d-flex cursor-pointer"onClick={() => onClear()}>

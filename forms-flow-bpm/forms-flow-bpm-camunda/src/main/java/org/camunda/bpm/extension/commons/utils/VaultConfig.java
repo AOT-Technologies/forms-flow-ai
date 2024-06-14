@@ -47,7 +47,7 @@ public class VaultConfig {
                 return objectMapper.writeValueAsString(vaultResponse.getData());
             } else {
                 LOGGER.debug("No data found for vault for path: {} and secret: {}", vaultPath, vaultSecret);
-                return "No data found for secret " + vaultSecret;
+                return null;
             }
         } catch (JsonProcessingException e) {
             LOGGER.error("Error processing JSON: {}", e.getMessage());

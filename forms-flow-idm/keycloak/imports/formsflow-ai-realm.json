@@ -475,7 +475,6 @@
             ],
             "forms-flow-web": [
               "manage_roles",
-              "manage_integrations",
               "manage_users"
             ]
           }
@@ -502,7 +501,8 @@
           "clientRoles": {
             "forms-flow-web": [
               "create_designs",
-              "view_designs"
+              "view_designs",
+              "manage_integrations"
             ]
           }
         },

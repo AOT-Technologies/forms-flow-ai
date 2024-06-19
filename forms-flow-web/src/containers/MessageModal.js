@@ -1,9 +1,9 @@
 import React from "react";
 import Modal from "react-bootstrap/Modal";
-// import { useTranslation } from "react-i18next";
+import { useTranslation } from "react-i18next";
 
 const MessageModal = React.memo((props) => {
-    // const { t } = useTranslation();
+    const { t } = useTranslation();
     const {
         modalTitle = null,
         modalOpen = false,
@@ -26,9 +26,9 @@ const MessageModal = React.memo((props) => {
                     <button
                         type="button"
                         className="btn btn-primary"
-                        data-testid="delete-cancel-button"
+                        data-testid="ok-button"
                         onClick={onNo}>
-                        Ok
+                        {t("Ok")}
                     </button>
 
                 </Modal.Footer>

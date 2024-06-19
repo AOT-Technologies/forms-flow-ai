@@ -381,7 +381,6 @@ const List = React.memo((props) => {
                                                 resolve();
                                               })
                                               .catch((err) => {
-                                                console.log("====err 11", err);
                                                 dispatch(
                                                   setFormFailureErrorData(
                                                     "form",
@@ -403,8 +402,7 @@ const List = React.memo((props) => {
                                       )
                                     );
                                   })
-                                  .catch((err) => {
-                                    console.log("====err2", err);
+                                  .catch(() => {
                                     dispatch(DesignerAccessDenied(true));
                                     dispatch(formUploadFailureCount());
                                     reject();
@@ -416,7 +414,6 @@ const List = React.memo((props) => {
                                 newFormData.name += "-" + Date.now();
                                 formCreate(newFormData)
                                   .then((res) => {
-                                    console.log("second call================>>", res.data);
                                     if (res.data) {
                                       mapperHandler(res.data);
                                       // call the auth api
@@ -426,7 +423,6 @@ const List = React.memo((props) => {
                                     resolve();
                                   })
                                   .catch((err) => {
-                                    console.log("second error================>>", err);
                                     err ? dispatch(formUploadFailureCount()) : "";
                                     reject();
                                   });
@@ -437,7 +433,6 @@ const List = React.memo((props) => {
                             })
                           );
                         } else {
-                          console.log("yeah it is failed", err.response);
                           dispatch(formUploadFailureCount());
                           reject();
                         }

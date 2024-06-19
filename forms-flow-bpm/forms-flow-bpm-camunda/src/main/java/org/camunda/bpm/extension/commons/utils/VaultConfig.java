@@ -1,6 +1,6 @@
 package org.camunda.bpm.extension.commons.utils;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -35,7 +35,7 @@ public class VaultConfig {
         vaultSecret = secret;
     }
 
-    public static String getSecret() {
+    public static String getSecret(String key) {
         try {
             VaultResponse vaultResponse = vaultTemplate
                     .opsForKeyValue(vaultPath, KeyValueBackend.KV_2)
@@ -44,14 +44,21 @@ public class VaultConfig {
             if (vaultResponse != null && vaultResponse.getData() != null) {
                 LOGGER.debug("Fetching vault data from path: {} and Secret: {}", vaultPath, vaultSecret);
                 ObjectMapper objectMapper = new ObjectMapper();
-                return objectMapper.writeValueAsString(vaultResponse.getData());
+                JsonNode jsonNode = objectMapper.valueToTree(vaultResponse.getData());
+
+                if (jsonNode.has(key)) {
+                    return jsonNode.get(key).asText();
+                } else {
+                    LOGGER.debug("Key {} not found in vault data", key);
+                    return null;
+                }
             } else {
                 LOGGER.debug("No data found for vault for path: {} and secret: {}", vaultPath, vaultSecret);
                 return null;
             }
-        } catch (JsonProcessingException e) {
-            LOGGER.error("Error processing JSON: {}", e.getMessage());
-            return "Error processing JSON: " + e.getMessage();
+        } catch (Exception e) {
+            LOGGER.error("Error fetching secret: {}", e.getMessage());
+            return "Error fetching secret: " + e.getMessage();
         }
     }
 }

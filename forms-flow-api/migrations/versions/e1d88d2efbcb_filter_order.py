@@ -1,8 +1,8 @@
-"""Filter_order_added
+"""filter_order
 
-Revision ID: 794497fcac83
-Revises: 77d8b68e6c1f
-Create Date: 2024-06-20 11:35:43.762882
+Revision ID: e1d88d2efbcb
+Revises: c8e7baa093ba
+Create Date: 2024-06-20 13:55:11.434204
 
 """
 from alembic import op
@@ -10,15 +10,15 @@ import sqlalchemy as sa
 
 
 # revision identifiers, used by Alembic.
-revision = '794497fcac83'
-down_revision = '77d8b68e6c1f'
+revision = 'e1d88d2efbcb'
+down_revision = 'c8e7baa093ba'
 branch_labels = None
 depends_on = None
 
 
 def upgrade():
-    # ### Added order for display the filter by this order! ###
-    op.add_column('filter', sa.Column('order', sa.String(), nullable=True))
+    # ### Added order for filter to display based on this order! ###
+    op.add_column('filter', sa.Column('order', sa.Integer(), nullable=True, comment='Display order'))
     # ### end Alembic commands ###
 
 

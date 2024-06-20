@@ -5,7 +5,7 @@ from __future__ import annotations
 from typing import List
 
 from formsflow_api_utils.utils.enums import FilterStatus
-from sqlalchemy import JSON, and_, case, or_
+from sqlalchemy import JSON, and_, asc, case, or_
 from sqlalchemy.dialects.postgresql import ARRAY
 
 from formsflow_api.models.base_model import BaseModel
@@ -29,7 +29,7 @@ class Filter(AuditDateTimeMixin, AuditUserMixin, BaseModel, db.Model):
     users = db.Column(ARRAY(db.String), nullable=True, comment="Applicable users")
     status = db.Column(db.String(10), nullable=True)
     task_visible_attributes = db.Column(JSON, nullable=True)
-    order = db.Column(db.String, nullable=True, comment="Display order")
+    order = db.Column(db.Integer, nullable=True, comment="Display order")
 
     @classmethod
     def find_all_active_filters(cls, tenant: str = None) -> List[Filter]:
@@ -85,7 +85,9 @@ class Filter(AuditDateTimeMixin, AuditUserMixin, BaseModel, db.Model):
         )
         query = query.filter(Filter.status == str(FilterStatus.ACTIVE.value))
         order_by_user_first = case((Filter.created_by == user, 1), else_=2)
-        query = query.order_by(order_by_user_first, Filter.order, Filter.created_by)
+        query = query.order_by(
+            order_by_user_first, Filter.order, Filter.created_by, asc(Filter.name)
+        )
         return query.all()
 
     @classmethod

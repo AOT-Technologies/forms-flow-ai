@@ -114,14 +114,14 @@ def test_get_user_filters_by_order(app, client, session, jwt):
     response = client.post(
         "/filter",
         headers=headers,
-        json=get_filter_payload(name="Clerk Task", order="2", roles=["clerk"]),
+        json=get_filter_payload(name="Clerk Task", order=2, roles=["clerk"]),
     )
     assert response.status_code == 201
     # Create filter for reviewer role and giving display order 1
     response = client.post(
         "/filter",
         headers=headers,
-        json=get_filter_payload(name="Reviewer Task", order="1", roles=["formsflow-reviewer"]),
+        json=get_filter_payload(name="Reviewer Task", order=1, roles=["formsflow-reviewer"]),
     )
     assert response.status_code == 201
     # Test '/filter/user' endpoint with reviewer token

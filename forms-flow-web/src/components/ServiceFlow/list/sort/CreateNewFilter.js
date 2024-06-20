@@ -78,7 +78,7 @@ export default function CreateNewFilterDrawer({
   const [candidateGroup, setCandidateGroup] = useState([]);
   const userRoles = useSelector((state) => state.user.roles || []);
   const [assignee, setAssignee] = useState("");
-  const [filterDisplayOrder, setFIlterDisplayOrder] = useState("");
+  const [filterDisplayOrder, setFIlterDisplayOrder] = useState(null);
 
   const [
     isTasksForCurrentUserGroupsEnabled,
@@ -362,7 +362,7 @@ export default function CreateNewFilterDrawer({
     setTaskVariableFromMapperTable([]);
     setCheckboxes(initialValueOfTaskAttribute);
     setForms({ data: [], isLoading: true });
-    setFIlterDisplayOrder("");
+    setFIlterDisplayOrder(null);
   };
 
   const handleSubmit = () => {
@@ -613,7 +613,7 @@ export default function CreateNewFilterDrawer({
     const value = e.target.value;
     const pattern = /^[1-9]\d*$/;
     const validInput = pattern.test(e.target.value);
-    setFIlterDisplayOrder(()=> value ? (validInput ? value : filterDisplayOrder) : "");
+    setFIlterDisplayOrder(()=> value ? Number(validInput ? value : filterDisplayOrder) : null);
   };
 
   const list = () => (

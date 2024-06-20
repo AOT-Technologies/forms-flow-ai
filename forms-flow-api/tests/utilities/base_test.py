@@ -556,7 +556,7 @@ def get_filter_payload(
     name: str = "Test Task",
     roles: list = [],
     users: list = [],
-    order: str = "",
+    order: int = None,
 ):
     """Return filter create payload."""
     return {

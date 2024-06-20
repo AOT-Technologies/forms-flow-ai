@@ -130,5 +130,5 @@ def test_get_user_filters_by_order(app, client, session, jwt):
     response = client.get("/filter/user", headers=headers)
     assert response.status_code == 200
     assert len(response.json.get("filters")) == 2
-    assert response.json.get("filters")[1].get("name") == "Reviewer Task"
-    assert response.json.get("filters")[0].get("name") == "Clerk Task"
+    assert response.json.get("filters")[0].get("name") == "Reviewer Task"
+    assert response.json.get("filters")[1].get("name") == "Clerk Task"

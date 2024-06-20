@@ -78,6 +78,7 @@ export default function CreateNewFilterDrawer({
   const [candidateGroup, setCandidateGroup] = useState([]);
   const userRoles = useSelector((state) => state.user.roles || []);
   const [assignee, setAssignee] = useState("");
+  const [filterDisplayOrder, setFIlterDisplayOrder] = useState("");
 
   const [
     isTasksForCurrentUserGroupsEnabled,
@@ -181,7 +182,8 @@ export default function CreateNewFilterDrawer({
 
   useEffect(() => {
     if (selectedFilterData) {
-      setFilterName(selectedFilterData?.name);
+      setFilterName(selectedFilterData.name);
+      setFIlterDisplayOrder(selectedFilterData.order);
       let processDefinitionName =
         selectedFilterData?.criteria?.processDefinitionNameLike;
       setDefinitionKeyId(customTrim(processDefinitionName));
@@ -359,6 +361,7 @@ export default function CreateNewFilterDrawer({
     setTaskVariableFromMapperTable([]);
     setCheckboxes(initialValueOfTaskAttribute);
     setForms({ data: [], isLoading: true });
+    setFIlterDisplayOrder("");
   };
 
   const handleSubmit = () => {
@@ -393,6 +396,7 @@ export default function CreateNewFilterDrawer({
 
     const data = {
       name: filterName,
+      order: filterDisplayOrder, 
       criteria: {
         processDefinitionNameLike: definitionKeyId && `%${definitionKeyId}%`,
         candidateGroup:
@@ -604,6 +608,13 @@ export default function CreateNewFilterDrawer({
     }
   };
 
+  const handleOrderChange = (e)=>{
+    const value = e.target.value;
+    const pattern = /^[1-9]\d*$/;
+    const validInput = pattern.test(e.target.value);
+    setFIlterDisplayOrder(()=> value ? (validInput ? value : filterDisplayOrder) : "");
+  };
+
   const list = () => (
     <div role="none">
       <List>
@@ -654,6 +665,22 @@ export default function CreateNewFilterDrawer({
               {t("Filter name should be less than 50 characters")}
             </p>
           )}
+        </div>
+      </List>
+      <List>
+        <div className="form-group">
+          <label htmlFor="filterDisplayOrder">{t("Filter display order")}</label>
+          <input
+            type="text"
+            className="form-control"
+            id="filterDisplayOrder"
+            placeholder={t("Enter filter display order")}
+            value={filterDisplayOrder}
+            min={1}
+            onChange={handleOrderChange}
+            title={t("Enter fliter display order")}
+            disabled={viewMode}
+          />
         </div>
       </List>
 

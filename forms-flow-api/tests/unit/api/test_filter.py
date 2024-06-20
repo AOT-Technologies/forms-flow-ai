@@ -105,3 +105,29 @@ def test_create_filter_current_user_group_task(app, client, session, jwt):
         response.json.get("criteria", {}).get("candidateGroupsExpression")
         == "${currentUserGroups()}"
     )
+
+def test_get_user_filters_by_order(app, client, session, jwt):
+    """Test - Get filters based on user role and based on the order."""
+    token = get_token(jwt, role="formsflow-reviewer", username="reviewer")
+    headers = {"Authorization": f"Bearer {token}", "content-type": "application/json"}
+    # Create filter for clerk role and giving display order 2
+    response = client.post(
+        "/filter",
+        headers=headers,
+        json=get_filter_payload(name="Clerk Task", order="2", roles=["clerk"]),
+    )
+    assert response.status_code == 201
+    # Create filter for reviewer role and giving display order 1
+    response = client.post(
+        "/filter",
+        headers=headers,
+        json=get_filter_payload(name="Reviewer Task", order="1", roles=["formsflow-reviewer"]),
+    )
+    assert response.status_code == 201
+    # Test '/filter/user' endpoint with reviewer token
+    # Since reviewer created both filters response will include both.
+    response = client.get("/filter/user", headers=headers)
+    assert response.status_code == 200
+    assert len(response.json.get("filters")) == 2
+    assert response.json.get("filters")[1].get("name") == "Reviewer Task"
+    assert response.json.get("filters")[0].get("name") == "Clerk Task"

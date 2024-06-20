@@ -41,3 +41,4 @@ class FilterSchema(Schema):
     task_visible_attributes = fields.Dict(data_key="taskVisibleAttributes")
     isMyTasksEnabled = fields.Bool(load_only=True)
     isTasksForCurrentUserGroupsEnabled = fields.Bool(load_only=True)
+    order = fields.Str(data_key="order")

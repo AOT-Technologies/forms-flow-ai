@@ -106,6 +106,7 @@ def test_create_filter_current_user_group_task(app, client, session, jwt):
         == "${currentUserGroups()}"
     )
 
+
 def test_get_user_filters_by_order(app, client, session, jwt):
     """Test - Get filters based on user role and based on the order."""
     token = get_token(jwt, role="formsflow-reviewer", username="reviewer")

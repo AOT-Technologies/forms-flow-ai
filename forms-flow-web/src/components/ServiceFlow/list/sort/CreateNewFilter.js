@@ -95,6 +95,7 @@ export default function CreateNewFilterDrawer({
   const tenantKey = useSelector((state) => state.tenants?.tenantId);
   const process = useSelector((state) => state.process?.processList);
   const processList = useMemo(() => listProcess(process, true), [process]);
+  
   const userGroups = useSelector(
     (state) => state.userAuthorization?.userGroups
   );
@@ -141,20 +142,20 @@ export default function CreateNewFilterDrawer({
     dispatch(setFilterListParams(cloneDeep(selectedBPMFilterParams)));
   };
 
-  const customTrim = (inputString) => {
-    // Remove '%' symbol from the start
-    const startIndex = inputString?.indexOf("%");
-    if (startIndex === 0) {
-      inputString = inputString?.substring(1);
-    }
+  // const customTrim = (inputString) => {
+  //   // Remove '%' symbol from the start
+  //   const startIndex = inputString?.indexOf("%");
+  //   if (startIndex === 0) {
+  //     inputString = inputString?.substring(1);
+  //   }
 
-    // Remove '%' symbol from the end
-    const endIndex = inputString?.lastIndexOf("%");
-    if (endIndex === inputString?.length - 1) {
-      inputString = inputString?.substring(0, endIndex);
-    }
-    return inputString;
-  };
+  //   // Remove '%' symbol from the end
+  //   const endIndex = inputString?.lastIndexOf("%");
+  //   if (endIndex === inputString?.length - 1) {
+  //     inputString = inputString?.substring(0, endIndex);
+  //   }
+  //   return inputString;
+  // };
 
   const handleFetchTaskVariables = (formId) => {
     setProcessLoading(true);
@@ -185,8 +186,8 @@ export default function CreateNewFilterDrawer({
       setFilterName(selectedFilterData.name);
       setFIlterDisplayOrder(selectedFilterData.order);
       let processDefinitionName =
-        selectedFilterData?.criteria?.processDefinitionNameLike;
-      setDefinitionKeyId(customTrim(processDefinitionName));
+        selectedFilterData?.criteria?.processDefinitionKey;
+      setDefinitionKeyId(processDefinitionName);
       let candidateGroupName = selectedFilterData?.criteria?.candidateGroup;
       if (
         MULTITENANCY_ENABLED &&
@@ -398,7 +399,7 @@ export default function CreateNewFilterDrawer({
       name: filterName,
       order: filterDisplayOrder, 
       criteria: {
-        processDefinitionNameLike: definitionKeyId && `%${definitionKeyId}%`,
+        processDefinitionKey : definitionKeyId ,
         candidateGroup:
           MULTITENANCY_ENABLED && candidateGroup
             ? tenantKey + "-" + candidateGroup
@@ -752,9 +753,9 @@ export default function CreateNewFilterDrawer({
             options={processList}
             placeholder={t("Select Workflow")}
             isClearable
-            value={processList?.find((list) => list.label === definitionKeyId)}
+            value={processList?.find((list) => list.value === definitionKeyId)}
             onChange={(selectedOption) => {
-              setDefinitionKeyId(selectedOption?.label);
+              setDefinitionKeyId(selectedOption?.value);
             }}
             filterOption={filterSelectOptionByLabel}
             inputId="select-workflow"

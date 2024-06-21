@@ -50,37 +50,40 @@ const BaseRouting = React.memo(
     React.useEffect(() => {
       publish("ES_ROUTE", location);
     }, [location]);
-    
-    if (MULTITENANCY_ENABLED && !location.pathname.startsWith("/tenant/")) {
+
+    if (
+      MULTITENANCY_ENABLED &&
+      !location.pathname.startsWith("/tenant/") &&
+      !location.pathname.startsWith("/public")
+    ) {
       return <LandingPage />;
     }
     return (
-        <div className="container  mt-5">
+      <div className="container  mt-5">
         <div className="min-container-height ps-md-3">
-        <ToastContainer />
-            <Switch>
-              <Route path="/public">
-                <PublicRoute
-                  store={store}
-                  publish={publish}
-                  subscribe={subscribe}
-                  getKcInstance={getKcInstance}
-                />
-              </Route>
-              <Route path={BASE_ROUTE}>
-                <PrivateRoute
-                  store={store}
-                  publish={publish}
-                  subscribe={subscribe}
-                  getKcInstance={getKcInstance}
-                />
-              </Route>
-              <Route path="/404" exact={true} component={NotFound} />
-           </Switch>
+          <ToastContainer />
+          <Switch>
+            <Route path="/public">
+              <PublicRoute
+                store={store}
+                publish={publish}
+                subscribe={subscribe}
+                getKcInstance={getKcInstance}
+              />
+            </Route>
+            <Route path={BASE_ROUTE}>
+              <PrivateRoute
+                store={store}
+                publish={publish}
+                subscribe={subscribe}
+                getKcInstance={getKcInstance}
+              />
+            </Route>
+            <Route path="/404" exact={true} component={NotFound} />
+          </Switch>
         </div>
-            {isAuth ? <Footer /> : null}
-        </div>
-
+        {isAuth ? <Footer /> : null}
+      </div>
     );
   }
 );

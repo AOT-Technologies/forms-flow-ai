@@ -55,15 +55,9 @@
         "description": "${role_default-roles}",
         "composite": true,
         "composites": {
-          "realm": [
-            "offline_access",
-            "uma_authorization"
-          ],
+          "realm": ["offline_access", "uma_authorization"],
           "client": {
-            "account": [
-              "view-profile",
-              "manage-account"
-            ]
+            "account": ["view-profile", "manage-account"]
           }
         },
         "clientRole": false,
@@ -108,9 +102,7 @@
           "composite": true,
           "composites": {
             "client": {
-              "realm-management": [
-                "query-clients"
-              ]
+              "realm-management": ["query-clients"]
             }
           },
           "clientRole": true,
@@ -164,10 +156,7 @@
           "composite": true,
           "composites": {
             "client": {
-              "realm-management": [
-                "query-groups",
-                "query-users"
-              ]
+              "realm-management": ["query-groups", "query-users"]
             }
           },
           "clientRole": true,
@@ -255,6 +244,13 @@
         }
       ],
       "forms-flow-web": [
+        {
+          "name": "admin",
+          "description": "Administrator Role",
+          "composite": false,
+          "clientRole": true,
+          "attributes": {}
+        },
         {
           "name": "manage_tasks",
           "description": "Can claim and work on tasks",
@@ -403,9 +399,7 @@
           "composite": true,
           "composites": {
             "client": {
-              "account": [
-                "view-consent"
-              ]
+              "account": ["view-consent"]
             }
           },
           "clientRole": true,
@@ -417,9 +411,7 @@
           "composite": true,
           "composites": {
             "client": {
-              "account": [
-                "manage-account-links"
-              ]
+              "account": ["manage-account-links"]
             }
           },
           "clientRole": true,
@@ -474,6 +466,8 @@
               "query-users"
             ],
             "forms-flow-web": [
+              "admin",
+              "manage_dashboard_authorizations",
               "manage_roles",
               "manage_users"
             ]
@@ -486,10 +480,7 @@
           "attributes": {},
           "realmRoles": [],
           "clientRoles": {
-            "forms-flow-web": [
-              "view_submissions",
-              "create_submissions"
-            ]
+            "forms-flow-web": ["view_submissions", "create_submissions"]
           }
         },
         {
@@ -578,14 +569,8 @@
     "clientRole": false,
     "containerId": "forms-flow-ai"
   },
-  "defaultGroups": [
-    "/camunda-admin",
-    "/formsflow",
-    "/formsflow-analytics"
-  ],
-  "requiredCredentials": [
-    "password"
-  ],
+  "defaultGroups": ["/camunda-admin", "/formsflow", "/formsflow-analytics"],
+  "requiredCredentials": ["password"],
   "otpPolicyType": "totp",
   "otpPolicyAlgorithm": "HmacSHA1",
   "otpPolicyInitialCounter": 0,
@@ -600,9 +585,7 @@
   ],
   "localizationTexts": {},
   "webAuthnPolicyRpEntityName": "keycloak",
-  "webAuthnPolicySignatureAlgorithms": [
-    "ES256"
-  ],
+  "webAuthnPolicySignatureAlgorithms": ["ES256"],
   "webAuthnPolicyRpId": "",
   "webAuthnPolicyAttestationConveyancePreference": "not specified",
   "webAuthnPolicyAuthenticatorAttachment": "not specified",
@@ -613,9 +596,7 @@
   "webAuthnPolicyAcceptableAaguids": [],
   "webAuthnPolicyExtraOrigins": [],
   "webAuthnPolicyPasswordlessRpEntityName": "keycloak",
-  "webAuthnPolicyPasswordlessSignatureAlgorithms": [
-    "ES256"
-  ],
+  "webAuthnPolicyPasswordlessSignatureAlgorithms": ["ES256"],
   "webAuthnPolicyPasswordlessRpId": "",
   "webAuthnPolicyPasswordlessAttestationConveyancePreference": "not specified",
   "webAuthnPolicyPasswordlessAuthenticatorAttachment": "not specified",
@@ -646,12 +627,8 @@
         }
       ],
       "disableableCredentialTypes": [],
-      "requiredActions": [
-        "UPDATE_PASSWORD"
-      ],
-      "realmRoles": [
-        "default-roles-forms-flow-ai"
-      ],
+      "requiredActions": ["UPDATE_PASSWORD"],
+      "realmRoles": ["default-roles-forms-flow-ai"],
       "notBefore": 0,
       "groups": [
         "/camunda-admin",
@@ -679,9 +656,7 @@
         }
       ],
       "disableableCredentialTypes": [],
-      "requiredActions": [
-        "UPDATE_PASSWORD"
-      ],
+      "requiredActions": ["UPDATE_PASSWORD"],
       "notBefore": 0,
       "groups": [
         "/formsflow/formsflow-reviewer/approver",
@@ -708,9 +683,7 @@
         }
       ],
       "disableableCredentialTypes": [],
-      "requiredActions": [
-        "UPDATE_PASSWORD"
-      ],
+      "requiredActions": ["UPDATE_PASSWORD"],
       "notBefore": 0,
       "groups": [
         "/camunda-admin",
@@ -737,24 +710,13 @@
         }
       ],
       "disableableCredentialTypes": [],
-      "requiredActions": [
-        "UPDATE_PASSWORD"
-      ],
-      "realmRoles": [
-        "offline_access",
-        "uma_authorization"
-      ],
+      "requiredActions": ["UPDATE_PASSWORD"],
+      "realmRoles": ["offline_access", "uma_authorization"],
       "clientRoles": {
-        "account": [
-          "view-profile",
-          "manage-account"
-        ]
+        "account": ["view-profile", "manage-account"]
       },
       "notBefore": 0,
-      "groups": [
-        "/camunda-admin",
-        "/formsflow/formsflow-client"
-      ]
+      "groups": ["/camunda-admin", "/formsflow/formsflow-client"]
     },
     {
       "createdTimestamp": 1621862546931,
@@ -775,28 +737,14 @@
         }
       ],
       "disableableCredentialTypes": [],
-      "requiredActions": [
-        "UPDATE_PASSWORD"
-      ],
-      "realmRoles": [
-        "offline_access",
-        "uma_authorization"
-      ],
+      "requiredActions": ["UPDATE_PASSWORD"],
+      "realmRoles": ["offline_access", "uma_authorization"],
       "clientRoles": {
-        "forms-flow-web": [
-          "create_designs",
-          "view_designs"
-        ],
-        "account": [
-          "view-profile",
-          "manage-account"
-        ]
+        "forms-flow-web": ["create_designs", "view_designs"],
+        "account": ["view-profile", "manage-account"]
       },
       "notBefore": 0,
-      "groups": [
-        "/camunda-admin",
-        "/formsflow/formsflow-designer"
-      ]
+      "groups": ["/camunda-admin", "/formsflow/formsflow-designer"]
     },
     {
       "createdTimestamp": 1621862578318,
@@ -808,9 +756,7 @@
       "lastName": "FFA",
       "email": "formsflow-reviewer@example.com",
       "attributes": {
-        "locale": [
-          "en"
-        ]
+        "locale": ["en"]
       },
       "credentials": [
         {
@@ -822,18 +768,10 @@
         }
       ],
       "disableableCredentialTypes": [],
-      "requiredActions": [
-        "UPDATE_PASSWORD"
-      ],
-      "realmRoles": [
-        "offline_access",
-        "uma_authorization"
-      ],
+      "requiredActions": ["UPDATE_PASSWORD"],
+      "realmRoles": ["offline_access", "uma_authorization"],
       "clientRoles": {
-        "account": [
-          "view-profile",
-          "manage-account"
-        ]
+        "account": ["view-profile", "manage-account"]
       },
       "notBefore": 0,
       "groups": [
@@ -852,10 +790,7 @@
       "credentials": [],
       "disableableCredentialTypes": [],
       "requiredActions": [],
-      "realmRoles": [
-        "offline_access",
-        "uma_authorization"
-      ],
+      "realmRoles": ["offline_access", "uma_authorization"],
       "clientRoles": {
         "realm-management": [
           "query-groups",
@@ -865,33 +800,23 @@
           "manage-users",
           "query-users"
         ],
-        "account": [
-          "view-profile",
-          "manage-account"
-        ]
+        "account": ["view-profile", "manage-account"]
       },
       "notBefore": 0,
-      "groups": [
-        "/camunda-admin"
-      ]
+      "groups": ["/camunda-admin"]
     }
   ],
   "scopeMappings": [
     {
       "clientScope": "offline_access",
-      "roles": [
-        "offline_access"
-      ]
+      "roles": ["offline_access"]
     }
   ],
   "clientScopeMappings": {
     "account": [
       {
         "client": "account-console",
-        "roles": [
-          "manage-account",
-          "view-groups"
-        ]
+        "roles": ["manage-account", "view-groups"]
       }
     ]
   },
@@ -906,9 +831,7 @@
       "alwaysDisplayInConsole": false,
       "clientAuthenticatorType": "client-secret",
       "secret": "**********",
-      "redirectUris": [
-        "/realms/forms-flow-ai/account/*"
-      ],
+      "redirectUris": ["/realms/forms-flow-ai/account/*"],
       "webOrigins": [],
       "notBefore": 0,
       "bearerOnly": false,
@@ -926,12 +849,7 @@
       "authenticationFlowBindingOverrides": {},
       "fullScopeAllowed": false,
       "nodeReRegistrationTimeout": 0,
-      "defaultClientScopes": [
-        "web-origins",
-        "roles",
-        "profile",
-        "email"
-      ],
+      "defaultClientScopes": ["web-origins", "roles", "profile", "email"],
       "optionalClientScopes": [
         "address",
         "phone",
@@ -949,9 +867,7 @@
       "alwaysDisplayInConsole": false,
       "clientAuthenticatorType": "client-secret",
       "secret": "**********",
-      "redirectUris": [
-        "/realms/forms-flow-ai/account/*"
-      ],
+      "redirectUris": ["/realms/forms-flow-ai/account/*"],
       "webOrigins": [],
       "notBefore": 0,
       "bearerOnly": false,
@@ -980,12 +896,7 @@
           "config": {}
         }
       ],
-      "defaultClientScopes": [
-        "web-origins",
-        "roles",
-        "profile",
-        "email"
-      ],
+      "defaultClientScopes": ["web-origins", "roles", "profile", "email"],
       "optionalClientScopes": [
         "address",
         "phone",
@@ -1019,12 +930,7 @@
       "authenticationFlowBindingOverrides": {},
       "fullScopeAllowed": false,
       "nodeReRegistrationTimeout": 0,
-      "defaultClientScopes": [
-        "web-origins",
-        "roles",
-        "profile",
-        "email"
-      ],
+      "defaultClientScopes": ["web-origins", "roles", "profile", "email"],
       "optionalClientScopes": [
         "address",
         "phone",
@@ -1058,12 +964,7 @@
       "authenticationFlowBindingOverrides": {},
       "fullScopeAllowed": false,
       "nodeReRegistrationTimeout": 0,
-      "defaultClientScopes": [
-        "web-origins",
-        "roles",
-        "profile",
-        "email"
-      ],
+      "defaultClientScopes": ["web-origins", "roles", "profile", "email"],
       "optionalClientScopes": [
         "address",
         "phone",
@@ -1080,10 +981,7 @@
       "alwaysDisplayInConsole": false,
       "clientAuthenticatorType": "client-secret",
       "secret": "**********",
-      "redirectUris": [
-        "http://localhost:7000/*",
-        "*"
-      ],
+      "redirectUris": ["http://localhost:7000/*", "*"],
       "webOrigins": [],
       "notBefore": 0,
       "bearerOnly": false,
@@ -1142,9 +1040,7 @@
           }
         }
       ],
-      "defaultClientScopes": [
-        "role_list"
-      ],
+      "defaultClientScopes": ["role_list"],
       "optionalClientScopes": []
     },
     {
@@ -1155,13 +1051,8 @@
       "alwaysDisplayInConsole": false,
       "clientAuthenticatorType": "client-secret",
       "secret": "e4bdbd25-1467-4f7f-b993-bc4b1944c943",
-      "redirectUris": [
-        "http://localhost:8000/camunda/*",
-        "*"
-      ],
-      "webOrigins": [
-        "*"
-      ],
+      "redirectUris": ["http://localhost:8000/camunda/*", "*"],
+      "webOrigins": ["*"],
       "notBefore": 0,
       "bearerOnly": false,
       "consentRequired": false,
@@ -1308,13 +1199,8 @@
       "alwaysDisplayInConsole": false,
       "clientAuthenticatorType": "client-secret",
       "secret": "**********",
-      "redirectUris": [
-        "http://localhost:3000/*",
-        "*"
-      ],
-      "webOrigins": [
-        "*"
-      ],
+      "redirectUris": ["http://localhost:3000/*", "*"],
+      "webOrigins": ["*"],
       "notBefore": 0,
       "bearerOnly": false,
       "consentRequired": false,
@@ -1438,12 +1324,7 @@
       "authenticationFlowBindingOverrides": {},
       "fullScopeAllowed": false,
       "nodeReRegistrationTimeout": 0,
-      "defaultClientScopes": [
-        "web-origins",
-        "roles",
-        "profile",
-        "email"
-      ],
+      "defaultClientScopes": ["web-origins", "roles", "profile", "email"],
       "optionalClientScopes": [
         "address",
         "phone",
@@ -1460,12 +1341,8 @@
       "alwaysDisplayInConsole": false,
       "clientAuthenticatorType": "client-secret",
       "secret": "**********",
-      "redirectUris": [
-        "/admin/forms-flow-ai/console/*"
-      ],
-      "webOrigins": [
-        "+"
-      ],
+      "redirectUris": ["/admin/forms-flow-ai/console/*"],
+      "webOrigins": ["+"],
       "notBefore": 0,
       "bearerOnly": false,
       "consentRequired": false,
@@ -1499,12 +1376,7 @@
           }
         }
       ],
-      "defaultClientScopes": [
-        "web-origins",
-        "roles",
-        "profile",
-        "email"
-      ],
+      "defaultClientScopes": ["web-origins", "roles", "profile", "email"],
       "optionalClientScopes": [
         "address",
         "phone",
@@ -2055,9 +1927,7 @@
   "adminTheme": "",
   "emailTheme": "",
   "eventsEnabled": false,
-  "eventsListeners": [
-    "jboss-logging"
-  ],
+  "eventsListeners": ["jboss-logging"],
   "enabledEventTypes": [],
   "adminEventsEnabled": false,
   "adminEventsDetailsEnabled": false,
@@ -2072,9 +1942,7 @@
         "subType": "anonymous",
         "subComponents": {},
         "config": {
-          "max-clients": [
-            "200"
-          ]
+          "max-clients": ["200"]
         }
       },
       {
@@ -2083,9 +1951,7 @@
         "subType": "authenticated",
         "subComponents": {},
         "config": {
-          "allow-default-scopes": [
-            "true"
-          ]
+          "allow-default-scopes": ["true"]
         }
       },
       {
@@ -2126,9 +1992,7 @@
         "subType": "anonymous",
         "subComponents": {},
         "config": {
-          "allow-default-scopes": [
-            "true"
-          ]
+          "allow-default-scopes": ["true"]
         }
       },
       {
@@ -2137,12 +2001,8 @@
         "subType": "anonymous",
         "subComponents": {},
         "config": {
-          "host-sending-registration-request-must-match": [
-            "true"
-          ],
-          "client-uris-must-match": [
-            "true"
-          ]
+          "host-sending-registration-request-must-match": ["true"],
+          "client-uris-must-match": ["true"]
         }
       },
       {
@@ -2171,15 +2031,9 @@
         "providerId": "aes-generated",
         "subComponents": {},
         "config": {
-          "kid": [
-            "70affbd9-d904-4dcc-8838-70beb8f73aa3"
-          ],
-          "secret": [
-            "62t32DLzCqO31BzHJ7KKgQ"
-          ],
-          "priority": [
-            "100"
-          ]
+          "kid": ["70affbd9-d904-4dcc-8838-70beb8f73aa3"],
+          "secret": ["62t32DLzCqO31BzHJ7KKgQ"],
+          "priority": ["100"]
         }
       },
       {
@@ -2193,9 +2047,7 @@
           "certificate": [
             "MIICqTCCAZECBgGPw87+UDANBgkqhkiG9w0BAQsFADAYMRYwFAYDVQQDDA1mb3Jtcy1mbG93LWFpMB4XDTI0MDUyOTEwMDI1M1oXDTM0MDUyOTEwMDQzM1owGDEWMBQGA1UEAwwNZm9ybXMtZmxvdy1haTCCASIwDQYJKoZIhvcNAQEBBQADggEPADCCAQoCggEBAOm2Mr8ngqJ7wJFgW4l8qWuFFhTCyYYrrXJtgtxhJU0kI7KA6K8+/yo97+bLyntvzV5cupbzXG1etzreXVH69i7zYHrXzB/G13/epGXjsmcTxRoT7yOCI0FlXMajmzLA92bWDizNUNWKDb9tEbPFIWZ6sGK6rKvunhhGjf1ADDePjuU9WcUrSjUgyDxE6mSTr6MyoYGO7mADcR0kQywvxWEvstzWhETQ3rtXgzfEIvGfqdQQWaPANQOa89Kbs6yt29iv1uGz2shnOxByAPC4hn4iV84V9v1ee3c1tajMujo1Hbet1Iz0b8TXIHpGz9QzqXS0JAZQjvBeg8TWOFSA1xkCAwEAATANBgkqhkiG9w0BAQsFAAOCAQEAIXZ1wxy9msKuXQRzLXZ6obmymetOliWjAU7rQpXktUDj6X33JLNxYr6MFFd4jb5E6nKPXmZEXRMq2Q/iOAFun8DUIqVd1ZoYUvYMVsSgrafT25A0v0kvuENBTI/Jz9no+2z3mHw34s4BbhZRxO0lue7ms8OFs+2lR2jSLTzlxzlY/vG9fCG7t3Q/WAm7kfLa7+mDOn9ELHG0T+xZtmhuZ2QVSNmriFK6KEBpXA7GdUJBXWKmuQeBBqFDE7Jo+mt2FSK8JpKCw4MP1IVf5Ft/OU2DFJkI4GTJagQjWYcQ1IIs0fFy3TtQv3ToJHfrr81sDFX6Ua3pEnRwfXhz3a+k2Q=="
           ],
-          "priority": [
-            "100"
-          ]
+          "priority": ["100"]
         }
       },
       {
@@ -2203,18 +2055,12 @@
         "providerId": "hmac-generated",
         "subComponents": {},
         "config": {
-          "kid": [
-            "927e4878-e36e-45b3-a979-dc53a7ee0fde"
-          ],
+          "kid": ["927e4878-e36e-45b3-a979-dc53a7ee0fde"],
           "secret": [
             "tOFkTA2NWJ9cZhqAyf1dNar3zKTuKMtMY7_5d0ED7md22CZqNMAjd3MWwawjk1FR6EVL-KkiTJ7g90Y5Jp094A"
           ],
-          "priority": [
-            "100"
-          ],
-          "algorithm": [
-            "HS256"
-          ]
+          "priority": ["100"],
+          "algorithm": ["HS256"]
         }
       }
     ]

@@ -54,6 +54,7 @@ import FormTable from "./constants/FormTable";
 import ClientTable from "./constants/ClientTable";
 import { useMemo } from "react";
 import _ from "lodash";
+import { ExportButton,ButtonState } from "./ExportAsPdf/button.jsx";
 const List = React.memo((props) => {
   const { t } = useTranslation();
   const [showFormUploadModal, setShowFormUploadModal] = useState(false);
@@ -84,6 +85,7 @@ const List = React.memo((props) => {
   const sortOrder = useSelector((state) => state.bpmForms.sortOrder);
   const formCheckList = useSelector((state) => state.formCheckList.formList);
   const formAccess = useSelector((state) => state.user?.formAccess || []);
+  const [downloadButtonState, setDownloadButtonState] = useState(ButtonState.Primary);
   const submissionAccess = useSelector(
     (state) => state.user?.submissionAccess || []
   );
@@ -101,6 +103,8 @@ const List = React.memo((props) => {
   const tenantKey = tenants?.tenantId;
   const redirectUrl = MULTITENANCY_ENABLED ? `/tenant/${tenantKey}/` : "/";
 
+  const preDownloading = ()=> setDownloadButtonState(ButtonState.Loading);
+  const postDownloading = ()=> setDownloadButtonState(ButtonState.Primary);
   useEffect(() => {
     dispatch(setFormCheckList([]));
   }, [dispatch]);
@@ -169,6 +173,7 @@ const List = React.memo((props) => {
   }, [isDesigner]);
 
   const downloadForms = async () => {
+    preDownloading();
     let downloadForm = [];
     for (const form of formCheckList) {
       let newFormData = await fetchFormById(form._id);
@@ -184,6 +189,7 @@ const List = React.memo((props) => {
     } else {
       toast.error(`Download Failed`);
     }
+    postDownloading();
   };
 
   const uploadClick = (e) => {
@@ -495,32 +501,43 @@ const List = React.memo((props) => {
         modalOpen={showFormUploadModal}
         onClose={() => setShowFormUploadModal(false)}
         pathErrorMessage={pathErrorMessage}
-
       />
       {(forms.isActive || designerFormLoading || isBPMFormListLoading) &&
-        !searchFormLoading ? (
+      !searchFormLoading ? (
         <div data-testid="Form-list-component-loader">
           <Loading />
         </div>
       ) : (
         <div>
-          {applicationCount ? <MessageModal
-            modalOpen={props.modalOpen}
-            modalTitle={t("The form cannot be deleted..!")}
-            message={
-              applicationCountResponse && <div>
-                <span>{`${t(" This form cannot be deleted as it has ")}`}{applicationCount}{`${applicationCount > 1 ? t(" existing submissions.") : t(" existing submission.")}`}</span>
-              </div>
-
-            }
-            onNo={() => onNo()}
-
-          /> :
+          {applicationCount ? (
+            <MessageModal
+              modalOpen={props.modalOpen}
+              modalTitle={t("The form cannot be deleted..!")}
+              message={
+                applicationCountResponse && (
+                  <div>
+                    <span>
+                      {`${t(" This form cannot be deleted as it has ")}`}
+                      {applicationCount}
+                      {`${
+                        applicationCount > 1
+                          ? t(" existing submissions.")
+                          : t(" existing submission.")
+                      }`}
+                    </span>
+                  </div>
+                )
+              }
+              onNo={() => onNo()}
+            />
+          ) : (
             <Confirm
               modalOpen={props.modalOpen}
               message={
                 <div>
-                  <span>{`${t("Are you sure to delete the")} ${formProcessData.formType} `}</span>
+                  <span>{`${t("Are you sure to delete the")} ${
+                    formProcessData.formType
+                  } `}</span>
                   <span className="fw-bold">
                     {textTruncate(60, 40, props.formName)}
                   </span>
@@ -538,8 +555,8 @@ const List = React.memo((props) => {
                   fetchForms
                 );
               }}
-            />}
-
+            />
+          )}
 
           <Errors errors={errors} />
           <div className="d-flex">
@@ -550,7 +567,8 @@ const List = React.memo((props) => {
                   onClick={() =>
                     dispatch(push(`${redirectUrl}formflow/create`))
                   }
-                  className="btn btn-primary text-nowrap">
+                  className="btn btn-primary text-nowrap"
+                >
                   <i className="fa fa-plus me-2" />
                   <Translation>{(t) => t("Create Form")}</Translation>
                 </button>
@@ -586,15 +604,23 @@ const List = React.memo((props) => {
 
                 <div className="d-flex flex-column flex-md-column justify-content-md-end mb-4">
                   {isDesigner && (
-                    <button
+                    <ExportButton
+                      label={
+                        <Translation>{(t) => t("Download Form")}</Translation>
+                      }
+                      labelLoading={
+                        <Translation>{(t) => t("Downloading..")}</Translation>
+                      }
+                      icon={
+                        <i className="fa fa-download me-2" aria-hidden="true" />
+                      }
+                      buttonState={downloadButtonState}
                       data-testid="download-form-btn"
-                      className="btn btn-outline-primary "
+                      variant="outline-primary"
                       onClick={downloadForms}
-                      disabled={formCheckList.length === 0}
-                    >
-                      <i className="fa fa-download me-2" aria-hidden="true" />
-                      {t("Download Form")}
-                    </button>
+                      disabled={formCheckList.length === 0 ||
+                         downloadButtonState === ButtonState.Loading}
+                    />
                   )}
                 </div>
               </div>

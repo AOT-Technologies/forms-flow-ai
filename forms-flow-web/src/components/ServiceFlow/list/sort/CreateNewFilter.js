@@ -697,14 +697,14 @@ export default function CreateNewFilterDrawer({
         </h5>
         <div className="d-flex align-items-center mt-1">
           <input
-            className="mr-6 mt-3"
+            className="me-1 mt-3"
             type="checkbox"
             checked={isMyTasksEnabled}
             onChange={(e) => setIsMyTasksEnabled(e.target.checked)}
             title={t("Show only current user assigned task")}
             disabled={viewMode}
           />
-          <h5 className="assigned-user mt-3">
+          <h5 className="mt-3">
             <Translation>
               {(t) => t("Show only current user assigned task")}
             </Translation>
@@ -715,7 +715,7 @@ export default function CreateNewFilterDrawer({
           <>
             <div className="d-flex align-items-center mt-1">
               <input
-                className="mr-6"
+                className="me-1 mt-3"
                 type="checkbox"
                 checked={isTasksForCurrentUserGroupsEnabled}
                 onChange={(e) =>
@@ -724,7 +724,7 @@ export default function CreateNewFilterDrawer({
                 title={t("Display authorized tasks based on user roles")}
                 disabled={viewMode}
               />
-              <h5 className="assigned-user">
+              <h5 className="mt-3">
                 <Translation>
                   {(t) => t("Display authorized tasks based on user roles")}
                 </Translation>
@@ -743,7 +743,7 @@ export default function CreateNewFilterDrawer({
 
         <div className="my-2">
           <label htmlFor="select-workflow">
-            <h5 className="mt-2 fs-18 fw-bold">
+            <h5 className="mt-2 fw-bold">
               <Translation>{(t) => t("Workflow")}</Translation>
             </h5>
           </label>

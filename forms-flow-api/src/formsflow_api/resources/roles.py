@@ -7,7 +7,7 @@ from flask_restx import Namespace, Resource, fields
 from formsflow_api_utils.utils import (
     ADMIN_GROUP,
     DESIGNER_GROUP,
-    PERMISSIONS,
+    PERMISSION_DETAILS,
     REVIEWER_GROUP,
     auth,
     cors_preflight,
@@ -167,4 +167,4 @@ class Permissions(Resource):
     )
     def get():
         """Return permission list."""
-        return PERMISSIONS
+        return PERMISSION_DETAILS

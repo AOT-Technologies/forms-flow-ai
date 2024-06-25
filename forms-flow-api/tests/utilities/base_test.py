@@ -556,6 +556,7 @@ def get_filter_payload(
     name: str = "Test Task",
     roles: list = [],
     users: list = [],
+    order: int = None,
 ):
     """Return filter create payload."""
     return {
@@ -566,6 +567,7 @@ def get_filter_payload(
         "properties": {"priority": 10},
         "users": users,
         "roles": roles,
+        "order": order,
         "taskVisibleAttributes": {
             "applicationId": True,
             "assignee": True,

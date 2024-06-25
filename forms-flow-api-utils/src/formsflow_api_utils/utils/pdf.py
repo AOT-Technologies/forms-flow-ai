@@ -73,6 +73,9 @@ def get_pdf_from_html(path, chromedriver=None, p_options=None, args=None):
         "role": token_info.get("roles", None) or token_info.get(
             "role", None
         ),
+        "roles": token_info.get("roles", None) or token_info.get(
+            "role", None
+        ),
         "name": token_info.get("name", None),
         "groups": token_info.get("groups", None),
         "preferred_username": token_info.get("preferred_username", None),

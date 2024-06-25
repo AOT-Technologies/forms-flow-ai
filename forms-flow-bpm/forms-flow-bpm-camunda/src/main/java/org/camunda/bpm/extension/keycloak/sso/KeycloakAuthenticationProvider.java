@@ -66,7 +66,7 @@ public class KeycloakAuthenticationProvider extends ContainerBasedAuthentication
 	private List<String> getUserGroups(String userId, ProcessEngine engine, OidcUser principal) {
 		List<String> groupIds = new ArrayList<>();
 		// Find groups or roles from the idToken.
-		// TODO Fix this to get the values from here itself
+		// TODO Fix this to get the values from here itself, currently in all case if - else if are always FALSE. Fix this
 		if (!enableClientAuth && principal.getIdToken().getClaims().containsKey("groups")) {
 			groupIds.addAll(getKeys(principal.getIdToken(), "groups"));
 		} else if (enableClientAuth && principal.getIdToken().getClaims().containsKey("roles")) {

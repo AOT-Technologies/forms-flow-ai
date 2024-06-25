@@ -14,7 +14,7 @@ const LandingPage = () => {
     event.preventDefault();
     validateTenant(username)
       .then((res) => {
-        if (res.data.status === "INVALID") {
+        if (!res.data.tenantKeyExist) {
           setError(t("Tenant not found"));
         } else {
           setError(null); // Clear the error if validation is successful

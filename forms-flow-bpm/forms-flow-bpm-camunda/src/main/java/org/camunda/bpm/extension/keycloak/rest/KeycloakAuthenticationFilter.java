@@ -16,6 +16,7 @@ import org.camunda.bpm.engine.IdentityService;
 import org.camunda.bpm.extension.commons.utils.RestAPIBuilderUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.oauth2.client.OAuth2AuthorizedClientService;
@@ -35,6 +36,9 @@ public class KeycloakAuthenticationFilter implements Filter {
 	private static final Logger LOG = LoggerFactory.getLogger(KeycloakAuthenticationFilter.class);
 
 	private final String userNameAttribute;
+
+	@Value("${plugin.identity.keycloak.enableMultiTenancy}")
+	private boolean enableMultiTenancy;
 
 	/** Access to Camunda's IdentityService. */
 	private IdentityService identityService;
@@ -109,11 +113,14 @@ public class KeycloakAuthenticationFilter implements Filter {
 	private List<String> getUserGroups(String userId, Map<String, Object> claims, String tenantKey) {
 		List<String> groupIds = new ArrayList<>();
 
-		if (claims != null && claims.containsKey("groups")) {
+//		LOG.debug(enableMultiTenancy+ "multitenancy enabled.."); // returning false
+		if (claims != null && claims.containsKey("groups") && tenantKey != null) {
+			groupIds.addAll(getKeys(claims, "groups", tenantKey));
+		}
+		else if (claims != null && claims.containsKey("groups")) {
 			groupIds.addAll(getKeys(claims, "groups", null));
-		} else if (claims != null && claims.containsKey("roles")) { // Treat roles as alternative to groups
-			groupIds.addAll(getKeys(claims, "roles", tenantKey));
-		} else {
+		}
+		else {
 			identityService.createGroupQuery().groupMember(userId).list().forEach(g -> groupIds.add(g.getId()));
 		}
 		return groupIds;
@@ -126,10 +133,15 @@ public class KeycloakAuthenticationFilter implements Filter {
 			for (Object key : (List<String>) claims.get(nodeName)) {
 				String keyValue = key.toString();
 				keyValue = StringUtils.contains(keyValue, "/") ? StringUtils.substringAfter(keyValue, "/") : keyValue;
-				if (tenantKey != null)
-					keyValue = tenantKey + "-" + keyValue;
-				keys.add(keyValue);
+				if (tenantKey != null) {
+					if (StringUtils.startsWith(keyValue, tenantKey)) {
+						keys.add(keyValue);
+					}
+				} else {
+					keys.add(keyValue);
+				}
 			}
+			// keys.add("camunda-admin");
 		}
 		return keys;
 	}

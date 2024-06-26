@@ -35,3 +35,14 @@ PERMISSION_DETAILS = [
     {"name": Permissions.MANAGE_ROLES.value, "description": "Manage Roles", "depends_on": [Permissions.MANAGE_USERS.value]},
     {"name": Permissions.ADMIN.value, "description": "Administrator Role", "depends_on": []},
 ]
+
+
+def build_permission_dict():
+    """
+    Builds a dictionary of permissions where the key is the permission name and 
+    the value is the permission detail.
+
+    Returns:
+        dict: A dictionary of permission details.
+    """
+    return {permission["name"]: permission for permission in PERMISSION_DETAILS}

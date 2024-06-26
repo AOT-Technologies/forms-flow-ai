@@ -148,8 +148,22 @@ public class KeycloakAuthenticationFilter implements Filter {
 		} else {
 			identityService.createGroupQuery().groupMember(userId).list().forEach(g -> groupIds.add(g.getId()));
 		}
-		// TODO - Set the permission roles to match with the authorizations.
-		// TODO Here iterate the user's roles with HARD_CODED_ROLES, and set the matching ones as groups. Reason for this is, we could use these groups to set the authorization in camunda.
+		// Set the permission roles to match with the authorizations.
+		// Iterate the user's roles with HARD_CODED_ROLES, and set the matching ones as groups.
+		if (claims != null &&  claims.containsKey("roles")) {
+
+			List<String> roles = getKeys(claims, "roles");
+			for (String role : roles) {
+				if (HARD_CODED_ROLES.contains(role)) {
+					if (enableMultiTenancy) {
+					groupIds.add(tenantKey+"-"+role);
+					}else{
+						groupIds.add(role);
+					}
+				}
+		}
+		
+	}
 		return groupIds;
 	}
 

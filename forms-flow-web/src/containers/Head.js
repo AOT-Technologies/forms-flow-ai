@@ -19,7 +19,7 @@ const Head = React.memo((props) => {
                 className={`fa fa-${item?.icon}`}
                 aria-hidden="true"
               />
-              <span className="application-text ms-2 pt-1">
+              <span className="ms-2 pt-1">
                 <Translation>{(t) => t(item?.name)}</Translation>
               </span>
               {item?.count ? (

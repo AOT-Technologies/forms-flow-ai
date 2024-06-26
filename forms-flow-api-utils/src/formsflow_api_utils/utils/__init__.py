@@ -20,9 +20,9 @@ from .constants import (
     NEW_APPLICATION_STATUS,
     REVIEWER_GROUP,
     HTTP_TIMEOUT,
-    PERMISSIONS
 )
 from .enums import ApplicationSortingParameters
+from .permisions import PERMISSION_DETAILS, Permissions
 from .file_log_handler import CustomTimedRotatingFileHandler, register_log_handlers
 from .format import CustomFormatter
 from .logging import setup_logging, log_bpm_error

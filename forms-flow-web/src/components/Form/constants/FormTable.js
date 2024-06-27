@@ -224,7 +224,7 @@ function FormTable() {
                 <th colSpan="4" aria-label="Search Forms by form title">
                   <InputGroup className="input-group p-0">
                     <FormControl
-                    className="bg-white"
+                    className="bg-white out-line"
                       value={search}
                       onChange={(e) => {
                         setSearch(e.target.value);

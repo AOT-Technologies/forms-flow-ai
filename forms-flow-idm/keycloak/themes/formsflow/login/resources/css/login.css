@@ -383,14 +383,12 @@
   @media (max-width: 767px) {
   
       .login-pf body {
-         background: url("../img/img2.png") no-repeat;
+         background: none;
          /* background-size: cover; */
          background-size:  50rem 40rem;
       }
   
       #kc-header {
-          padding-left: 15px;
-          padding-right: 15px;
           float: none;
           text-align: left;
       }
@@ -398,9 +396,9 @@
       #kc-header-wrapper {
           font-size: 16px;
           font-weight: bold;
-          padding: 20px 60px 0 0;
           color: #72767b;
           letter-spacing: 0;
+          padding: 0 0 0;
       }
   
       div.kc-logo-text {
@@ -527,10 +525,9 @@
       .login-pf-page .card-pf {
           /* max-width: none; */
           /* margin-left: 0; */
-          margin-right: 5rem;
-          padding-top: 0;
           border-top: 0;
           /* box-shadow: 0 0; */
+          margin: 0 10px !important;
       }
   
       .kc-social-grid {
@@ -541,8 +538,15 @@
       .kc-social-grid .kc-social-icon-text {
           left: -15px;
       }
+      .card-pf {
+      padding: 1.5rem !important;
+      }
+      .login-pf-page {
+        padding-top: 0 !important;
+      }
   }
-  
+
+
   .login-pf-page .login-pf-signup {
       font-size: 15px;
       color: #72767b;

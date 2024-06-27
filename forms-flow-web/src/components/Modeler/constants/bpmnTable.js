@@ -117,7 +117,7 @@ function BpmnTable() {
                     e.keyCode == 13 ? handleSearchButtonClick() : ""
                   }
                   placeholder={t("Search by workflow name")}
-                  className="bg-white"
+                  className="bg-white out-line"
                   title={t("Search by workflow name")}
                   data-testid="processes-search-workflow-input-box"
                   aria-label={t("Search by workflow name")}               

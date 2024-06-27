@@ -6,18 +6,16 @@ import Base from "./Main";
 import Edit from "./Edit";
 import CreateWorkflow from "./Create";
 import {
-  STAFF_DESIGNER,
   BASE_ROUTE,
 } from "../../constants/constants";
 import Loading from "../../containers/Loading";
+import userRoles from "../../constants/permissions";
 
-let user = "";
-
-const DesignerProcessRoute = ({ component: Component, ...rest }) => (
+const DesignerProcessRoute = ({ component: Component, hasAccess, ...rest }) => (
   <Route
     {...rest}
     render={(props) => {
-      if (user.includes(STAFF_DESIGNER)) {
+      if (hasAccess) {
         return <Component {...props} />;
       } else {
         return <>Unauthorized</>;
@@ -26,35 +24,40 @@ const DesignerProcessRoute = ({ component: Component, ...rest }) => (
   />
 );
 
-
-export default React.memo(() => {
-  user = useSelector((state) => state.user?.roles || []);
+const Processes = () => {
   const isAuthenticated = useSelector((state) => state.user?.isAuthenticated);
+  const { createDesigns } = userRoles();
+
   if (!isAuthenticated) {
     return <Loading />;
   }
+
   return (
     <div data-testid="Process-index">
       <Switch>
         <Route exact path={`${BASE_ROUTE}processes`} component={Base} />
         <DesignerProcessRoute
-        exact
+          exact
           path={`${BASE_ROUTE}processes/create`}
           component={CreateWorkflow}
+          hasAccess={createDesigns}
         />
         <DesignerProcessRoute
-        exact
+          exact
           path={`${BASE_ROUTE}processes/:processId`}
           component={Base}
+          hasAccess={createDesigns}
         />
         <DesignerProcessRoute
-        exact
+          exact
           path={`${BASE_ROUTE}processes/:type/:processId/edit`}
           component={Edit}
+          hasAccess={createDesigns}
         />
-         <Redirect exact to="/404" />
-
+        <Redirect exact to="/404" />
       </Switch>
     </div>
   );
-});
+};
+
+export default React.memo(Processes);

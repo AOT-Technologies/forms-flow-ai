@@ -5,21 +5,15 @@ import { useSelector } from "react-redux";
 import List from "./List";
 import Stepper from "./Stepper";
 import Item from "./Item/index";
-import {
-  STAFF_DESIGNER,
-  STAFF_REVIEWER,
-  CLIENT,
-  BASE_ROUTE,
-} from "../../constants/constants";
+import { BASE_ROUTE } from "../../constants/constants";
 import Loading from "../../containers/Loading";
+import userRoles from "../../constants/permissions";
 
-let user = "";
-
-const CreateFormRoute = ({ component: Component, ...rest }) => (
+const CreateFormRoute = ({ component: Component, createDesigns, viewDesigns, ...rest }) => (
   <Route
     {...rest}
     render={(props) => {
-      if (user.includes(STAFF_DESIGNER)) {
+      if (createDesigns || viewDesigns) {
         return <Component {...props} />;
       } else {
         return <>Unauthorized</>;
@@ -27,11 +21,13 @@ const CreateFormRoute = ({ component: Component, ...rest }) => (
     }}
   />
 );
-const FormSubmissionRoute = ({ component: Component, ...rest }) => (
+
+
+const FormSubmissionRoute = ({ component: Component, createSubmissions, ...rest }) => (
   <Route
     {...rest}
     render={(props) =>
-      user.includes(STAFF_REVIEWER) || user.includes(CLIENT) ? (
+      createSubmissions ? (
         <Component {...props} />
       ) : (
         <>Unauthorized</>
@@ -41,11 +37,17 @@ const FormSubmissionRoute = ({ component: Component, ...rest }) => (
 );
 
 export default React.memo(() => {
-  user = useSelector((state) => state.user.roles || []);
   const isAuthenticated = useSelector((state) => state.user.isAuthenticated);
+  const {
+    createDesigns,
+    viewDesigns,
+    createSubmissions,
+  } = userRoles();
+
   if (!isAuthenticated) {
     return <Loading />;
   }
+
   return (
     <div data-testid="Form-index">
       <Switch>
@@ -53,10 +55,13 @@ export default React.memo(() => {
         <CreateFormRoute
           path={`${BASE_ROUTE}formflow/:formId?/:step?`}
           component={Stepper}
+          createDesigns={createDesigns}
+          viewDesigns={viewDesigns}
         />
         <FormSubmissionRoute
           path={`${BASE_ROUTE}form/:formId/`}
           component={Item}
+          createSubmissions={createSubmissions}
         />
       </Switch>
     </div>

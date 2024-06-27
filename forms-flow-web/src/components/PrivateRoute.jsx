@@ -19,9 +19,6 @@ import {
 } from "../actions/bpmActions";
 import { setLanguage } from "../actions/languageSetAction";
 import {
-  CLIENT,
-  STAFF_REVIEWER,
-  STAFF_DESIGNER,
   ENABLE_APPLICATIONS_MODULE,
   ENABLE_DASHBOARDS_MODULE,
   ENABLE_FORMS_MODULE,
@@ -32,9 +29,6 @@ import {
 import Loading from "../containers/Loading";
 import NotFound from "./NotFound";
 import { setTenantFromId } from "../apiManager/services/tenantServices";
-
-// Lazy imports is having issues with micro-front-end build
-
 import Form from "./Form";
 import ServiceFlow from "./ServiceFlow";
 import DashboardPage from "./Dashboard";
@@ -51,6 +45,7 @@ import {
 import { AppConfig } from "../config";
 import { getFormioRoleIds } from "../apiManager/services/userservices";
 import AccessDenied from "./AccessDenied";
+import userRoles from "../constants/permissions";
 
 export const kcServiceInstance = (tenantId = null) => {
   return KeycloakService.getInstance(
@@ -73,13 +68,22 @@ const PrivateRoute = React.memo((props) => {
   const { publish, subscribe, getKcInstance } = props;
   const dispatch = useDispatch();
   const isAuth = useSelector((state) => state.user.isAuthenticated);
-  const userRoles = useSelector((state) => state.user.roles || []);
   const { tenantId } = useParams();
   const redirecUrl = MULTITENANCY_ENABLED ? `/tenant/${tenantId}/` : `/`;
   const selectedLanguage = useSelector((state) => state.user.lang);
   const tenant = useSelector((state) => state.tenants);
   const [authError, setAuthError] = React.useState(false);
   const [kcInstance, setKcInstance] = React.useState(getKcInstance());
+  
+  const {
+    createDesigns,
+    viewDesigns,
+    createSubmissions,
+    viewSubmissions,
+    viewTasks,
+    manageTasks,
+    viewDashboards,
+  } = userRoles();
 
   const authenticate = (instance, store) => {
     setKcInstance(instance);
@@ -160,15 +164,15 @@ const PrivateRoute = React.memo((props) => {
           <Route
             {...rest}
             render={(props) =>
-              userRoles.includes(STAFF_DESIGNER) ? (
+              createDesigns || viewDesigns ? (
                 <Component {...props} />
               ) : (
-                <>unauthorized</>
+                <>Unauthorized</>
               )
             }
           />
         ),
-    [userRoles]
+    [createDesigns, viewDesigns]
   );
 
   const ReviewerRoute = useMemo(
@@ -178,15 +182,15 @@ const PrivateRoute = React.memo((props) => {
           <Route
             {...rest}
             render={(props) =>
-              userRoles.includes(STAFF_REVIEWER) ? (
+              viewTasks || manageTasks || viewDashboards ? (
                 <Component {...props} />
               ) : (
-                <>unauthorized</>
+                <>Unauthorized</>
               )
             }
           />
         ),
-    [userRoles]
+    [viewTasks, manageTasks, viewDashboards]
   );
 
   const ClientReviewerRoute = useMemo(
@@ -196,16 +200,15 @@ const PrivateRoute = React.memo((props) => {
           <Route
             {...rest}
             render={(props) =>
-              userRoles.includes(STAFF_REVIEWER) ||
-              userRoles.includes(CLIENT) ? (
+              viewSubmissions ? (
                 <Component {...props} />
               ) : (
-                <>unauthorized</>
+                <>Unauthorized</>
               )
             }
           />
         ),
-    [userRoles]
+    [viewSubmissions]
   );
 
   const DraftRoute = useMemo(
@@ -215,18 +218,17 @@ const PrivateRoute = React.memo((props) => {
           <Route
             {...rest}
             render={(props) =>
-              DRAFT_ENABLED &&
-              (userRoles.includes(STAFF_REVIEWER) ||
-                userRoles.includes(CLIENT)) ? (
+              DRAFT_ENABLED && viewSubmissions ? (
                 <Component {...props} />
               ) : (
-                <>unauthorized</>
+                <>Unauthorized</>
               )
             }
           />
         ),
-    [userRoles]
+    [viewSubmissions]
   );
+
   return (
     <>
       {authError ? (
@@ -234,13 +236,16 @@ const PrivateRoute = React.memo((props) => {
       ) : isAuth ? (
         <Suspense fallback={<Loading />}>
           <Switch>
-            {ENABLE_FORMS_MODULE && (
-              <Route path={`${BASE_ROUTE}form`} component={Form} />
+            {ENABLE_FORMS_MODULE && 
+            (createDesigns || 
+              viewDesigns || 
+              createSubmissions) && (
+            <Route path={`${BASE_ROUTE}form`} component={Form} />
             )}
             {ENABLE_FORMS_MODULE && (
               <DesignerRoute path={`${BASE_ROUTE}formflow`} component={Form} />
             )}
-            {ENABLE_APPLICATIONS_MODULE && (
+            {(ENABLE_APPLICATIONS_MODULE && viewSubmissions) && (
               <DraftRoute path={`${BASE_ROUTE}draft`} component={Drafts} />
             )}
             {ENABLE_APPLICATIONS_MODULE && (
@@ -249,37 +254,34 @@ const PrivateRoute = React.memo((props) => {
                 component={Application}
               />
             )}
-
             {ENABLE_PROCESSES_MODULE && (
               <DesignerRoute
                 path={`${BASE_ROUTE}processes`}
                 component={Modeler}
               />
             )}
-
-            {ENABLE_DASHBOARDS_MODULE && (
+            {ENABLE_DASHBOARDS_MODULE && (viewDashboards) && (
               <ReviewerRoute
                 path={`${BASE_ROUTE}metrics`}
                 component={DashboardPage}
               />
             )}
-            {ENABLE_DASHBOARDS_MODULE && (
+            {ENABLE_DASHBOARDS_MODULE && (viewDashboards) && (
               <ReviewerRoute
                 path={`${BASE_ROUTE}insights`}
                 component={InsightsPage}
               />
             )}
-            {ENABLE_TASKS_MODULE && (
+            {ENABLE_TASKS_MODULE && (viewTasks || manageTasks) && (
               <ReviewerRoute
                 path={`${BASE_ROUTE}task`}
                 component={ServiceFlow}
               />
             )}
-
             <Route exact path={BASE_ROUTE}>
               {userRoles.length && <Redirect
                 to={
-                  userRoles?.includes(STAFF_REVIEWER)
+                  viewTasks
                     ? `${redirecUrl}task`
                     : `${redirecUrl}form`
                 }

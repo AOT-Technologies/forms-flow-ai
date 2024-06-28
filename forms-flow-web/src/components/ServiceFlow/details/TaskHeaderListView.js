@@ -24,7 +24,7 @@ import SocketIOService from "../../../services/SocketIOService";
 import { useTranslation } from "react-i18next";
 import  userRoles   from "../../../constants/permissions";
 
-const TaskHeaderListView = React.memo(({ task, taskId, groupView = true }) => {
+const TaskHeaderListView = React.memo(({task,taskId,groupView = true}) => {
   const username = useSelector(
     (state) => state.user?.userDetail?.preferred_username || ""
   );
@@ -52,13 +52,13 @@ const TaskHeaderListView = React.memo(({ task, taskId, groupView = true }) => {
     setDueDate(due);
   }, [task?.due]);
 
-  const updateBpmTasksAndDetails = (err) => {
+  const updateBpmTasksAndDetails = (err) =>{
     if (!err) {
       if (!SocketIOService.isConnected()) {
         if (selectedFilter) {
           dispatch(getBPMTaskDetail(taskId));
           dispatch(
-            fetchServiceTaskList(reqData, null, firstResult)
+            fetchServiceTaskList(reqData,null,firstResult)
           );
         } else {
           dispatch(setBPMTaskDetailUpdating(false));
@@ -72,7 +72,8 @@ const TaskHeaderListView = React.memo(({ task, taskId, groupView = true }) => {
   const onClaim = () => {
     dispatch(setBPMTaskDetailUpdating(true));
     dispatch(
-      claimBPMTask(taskId, username, updateBpmTasksAndDetails)
+      // eslint-disable-next-line no-unused-vars
+      claimBPMTask(taskId, username,updateBpmTasksAndDetails)
     );
   };
 
@@ -81,6 +82,7 @@ const TaskHeaderListView = React.memo(({ task, taskId, groupView = true }) => {
     if (userId && userId !== task.assignee) {
       dispatch(setBPMTaskDetailUpdating(true));
       dispatch(
+        // eslint-disable-next-line no-unused-vars
         updateAssigneeBPMTask(taskId, userId, updateBpmTasksAndDetails)
       );
     }
@@ -89,6 +91,7 @@ const TaskHeaderListView = React.memo(({ task, taskId, groupView = true }) => {
   const onUnClaimTask = () => {
     dispatch(setBPMTaskDetailUpdating(true));
     dispatch(
+      // eslint-disable-next-line no-unused-vars
       unClaimBPMTask(taskId, updateBpmTasksAndDetails)
     );
   };
@@ -101,6 +104,7 @@ const TaskHeaderListView = React.memo(({ task, taskId, groupView = true }) => {
       ...{ followUp: followUpDate ? getISODateTime(followUpDate) : null },
     };
     dispatch(
+      // eslint-disable-next-line no-unused-vars
       updateBPMTask(taskId, updatedTask, updateBpmTasksAndDetails)
     );
   };
@@ -198,7 +202,7 @@ const TaskHeaderListView = React.memo(({ task, taskId, groupView = true }) => {
         <Col xs={2}>
           <div className="">
             <div>
-              <h6 className="fw-bold">{t("Due Date")}</h6>
+               <h6 className="fw-bold">{t("Due Date")}</h6>
             </div>
             <div
               className="actionable"

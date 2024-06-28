@@ -11,11 +11,12 @@ import { fetchBPMTaskCount } from "../apiManager/services/bpmTaskServices";
 import { toast } from "react-toastify";
 import { updateDefaultFilter } from "../apiManager/services/userservices";
 import _ from "lodash";
+
 function TaskHead() {
   const dispatch = useDispatch();
   const { t } = useTranslation();
   const tenantKey = useSelector((state) => state.tenants?.tenantId);
-  const itemCount = useSelector((state) => state.bpmTasks.tasksCount);
+  const filtersAndCount = useSelector((state) => state.bpmTasks.filtersAndCount);
   const [filterSelectedForEdit, setFilterSelectedForEdit] = useState(null);
   const [openFilterDrawer, setOpenFilterDrawer] = useState(false);
   const [viewMode, setViewMode] = useState(false);
@@ -48,10 +49,15 @@ function TaskHead() {
   };
 
   const filterListLoading = () => {
-    return <>{isFilterLoading && <>  {t("Loading...")}</>}</>;
+    return <>{isFilterLoading && <>{t("Loading...")}</>}</>;
   };
 
-  const count = isTaskListLoading ? "" : `(${itemCount})`;
+  const getItemCount = (filterName) => {
+    const filter = filtersAndCount?.find(f => f.name === filterName);
+    return filter ? filter.count : 0;
+  };
+
+  const count = isTaskListLoading ? "" : `(${getItemCount(selectedFilter?.name)})`;
 
   const textTruncate = (wordLength, targetLength, text) => {
     return text?.length > wordLength
@@ -158,3 +164,4 @@ function TaskHead() {
 }
 
 export default TaskHead;
+

@@ -95,7 +95,7 @@ export default function CreateNewFilterDrawer({
   const tenantKey = useSelector((state) => state.tenants?.tenantId);
   const process = useSelector((state) => state.process?.processList);
   const processList = useMemo(() => listProcess(process, true), [process]);
-  
+
   const userGroups = useSelector(
     (state) => state.userAuthorization?.userGroups
   );
@@ -397,9 +397,9 @@ export default function CreateNewFilterDrawer({
 
     const data = {
       name: filterName,
-      order: filterDisplayOrder, 
+      order: filterDisplayOrder,
       criteria: {
-        processDefinitionKey : definitionKeyId ,
+        processDefinitionKey: definitionKeyId,
         candidateGroup:
           MULTITENANCY_ENABLED && candidateGroup
             ? tenantKey + "-" + candidateGroup
@@ -465,8 +465,9 @@ export default function CreateNewFilterDrawer({
               fetchBPMTaskCount(data.filters)
                 .then((res) => {
                   dispatch(setBPMFiltersAndCount(res.data));
-                  dispatch(fetchServiceTaskList(data.defaultFilter || data.filters[0]
-                    , null, firstResult));
+                  const filter = data.filters.find((i) => data.defaultFilter == i) ||
+                    data.filters[0];
+                  dispatch(fetchServiceTaskList(filter, null, firstResult));
                 })
                 .catch((err) => {
                   if (err) {
@@ -609,11 +610,13 @@ export default function CreateNewFilterDrawer({
     }
   };
 
-  const handleOrderChange = (e)=>{
+  const handleOrderChange = (e) => {
     const value = e.target.value;
     const pattern = /^[1-9]\d*$/;
     const validInput = pattern.test(e.target.value);
-    setFIlterDisplayOrder(()=> value ? Number(validInput ? value : filterDisplayOrder) : null);
+    setFIlterDisplayOrder(() =>
+      value ? Number(validInput ? value : filterDisplayOrder) : null
+    );
   };
 
   const list = () => (
@@ -670,7 +673,9 @@ export default function CreateNewFilterDrawer({
       </List>
       <List>
         <div className="form-group">
-          <label htmlFor="filterDisplayOrder">{t("Filter display order")}</label>
+          <label htmlFor="filterDisplayOrder">
+            {t("Filter display order")}
+          </label>
           <input
             type="text"
             className="form-control"

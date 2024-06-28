@@ -72,9 +72,16 @@ class Auth:
         return decorated
 
     @classmethod
-    def has_role(cls, role):
+    def has_role(cls, roles):
         """Method to validate the role."""
-        return jwt.validate_roles(role)
+        PERMISSIONS = build_permission_dict()
+        all_roles = []
+        for role in roles:
+            permission = PERMISSIONS[role]
+            if permission:
+                all_roles.extend(permission["depends_on"])
+            all_roles.append(role)
+        return jwt.validate_roles(all_roles)
 
     @classmethod
     def require_custom(cls, f):

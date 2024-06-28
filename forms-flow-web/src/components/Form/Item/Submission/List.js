@@ -107,7 +107,7 @@ const List = React.memo((props) => {
         onYes={() => onYes(submissionFormId, submissionId, submissions)}
       ></Confirm>
       <div className="main-header">
-        <Link className="back-icon" to={`${redirectUrl}form`}>
+        <Link className="d-flex" to={`${redirectUrl}form`}>
           <i className="fa fa-chevron-left fa-lg" />
         </Link>
         {/*        <span className="ms-3">

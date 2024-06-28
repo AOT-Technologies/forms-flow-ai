@@ -4,7 +4,10 @@ import Drawer from "@material-ui/core/Drawer";
 import List from "@material-ui/core/List";
 import Divider from "@material-ui/core/Divider";
 import Select from "react-select";
-import { fetchAllBpmProcesses, fetchTaskVariables } from "../../../../apiManager/services/processServices";
+import {
+  fetchAllBpmProcesses,
+  fetchTaskVariables,
+} from "../../../../apiManager/services/processServices";
 import { listProcess } from "../../../../apiManager/services/formatterService";
 import userRoles from "../../../../constants/permissions";
 
@@ -66,7 +69,7 @@ export default function CreateNewFilterDrawer({
   setOpenFilterDrawer,
   setFilterSelectedForEdit,
   viewMode,
-  resetViewMode
+  resetViewMode,
 }) {
   const dispatch = useDispatch();
   const [filterName, setFilterName] = useState("");
@@ -74,6 +77,7 @@ export default function CreateNewFilterDrawer({
   const [definitionKeyId, setDefinitionKeyId] = useState("");
   const [candidateGroup, setCandidateGroup] = useState([]);
   const [assignee, setAssignee] = useState("");
+  const [filterDisplayOrder, setFIlterDisplayOrder] = useState(null);
 
   const [
     isTasksForCurrentUserGroupsEnabled,
@@ -84,7 +88,8 @@ export default function CreateNewFilterDrawer({
   const [identifierId, setIdentifierId] = useState("");
   const [selectUserGroupIcon, setSelectUserGroupIcon] = useState("");
   const [specificUserGroup, setSpecificUserGroup] = useState("");
-  const [taskVariableFromMapperTable, setTaskVariableFromMapperTable] = useState([]);
+  const [taskVariableFromMapperTable, setTaskVariableFromMapperTable] =
+    useState([]);
   const firstResult = useSelector((state) => state.bpmTasks.firstResult);
   const tenantKey = useSelector((state) => state.tenants?.tenantId);
   const process = useSelector((state) => state.process?.processList);
@@ -136,32 +141,33 @@ export default function CreateNewFilterDrawer({
     dispatch(setFilterListParams(cloneDeep(selectedBPMFilterParams)));
   };
 
-  const customTrim = (inputString) => {
-    // Remove '%' symbol from the start
-    const startIndex = inputString?.indexOf("%");
-    if (startIndex === 0) {
-      inputString = inputString?.substring(1);
-    }
+  // const customTrim = (inputString) => {
+  //   // Remove '%' symbol from the start
+  //   const startIndex = inputString?.indexOf("%");
+  //   if (startIndex === 0) {
+  //     inputString = inputString?.substring(1);
+  //   }
 
-    // Remove '%' symbol from the end
-    const endIndex = inputString?.lastIndexOf("%");
-    if (endIndex === inputString?.length - 1) {
-      inputString = inputString?.substring(0, endIndex);
-    }
-    return inputString;
-  };
+  //   // Remove '%' symbol from the end
+  //   const endIndex = inputString?.lastIndexOf("%");
+  //   if (endIndex === inputString?.length - 1) {
+  //     inputString = inputString?.substring(0, endIndex);
+  //   }
+  //   return inputString;
+  // };
 
-  const handleFetchTaskVariables = (formId)=>{
+  const handleFetchTaskVariables = (formId) => {
     setProcessLoading(true);
-      fetchTaskVariables(formId).then((res)=>{
+    fetchTaskVariables(formId)
+      .then((res) => {
         setTaskVariableFromMapperTable(res.data?.taskVariable || []);
         setProcessLoading(false);
-      }).catch((err)=>{
+      })
+      .catch((err) => {
         console.err(err);
         setProcessLoading(false);
       });
   };
-
 
   const setTaskVariablesAndItsKeys = (variables = []) => {
     setVariables(variables);
@@ -176,10 +182,11 @@ export default function CreateNewFilterDrawer({
 
   useEffect(() => {
     if (selectedFilterData) {
-      setFilterName(selectedFilterData?.name);
+      setFilterName(selectedFilterData.name);
+      setFIlterDisplayOrder(selectedFilterData.order);
       let processDefinitionName =
-        selectedFilterData?.criteria?.processDefinitionNameLike;
-      setDefinitionKeyId(customTrim(processDefinitionName));
+        selectedFilterData?.criteria?.processDefinitionKey;
+      setDefinitionKeyId(processDefinitionName);
       let candidateGroupName = selectedFilterData?.criteria?.candidateGroup;
       if (
         MULTITENANCY_ENABLED &&
@@ -354,6 +361,7 @@ export default function CreateNewFilterDrawer({
     setTaskVariableFromMapperTable([]);
     setCheckboxes(initialValueOfTaskAttribute);
     setForms({ data: [], isLoading: true });
+    setFIlterDisplayOrder(null);
   };
 
   const handleSubmit = () => {
@@ -388,8 +396,9 @@ export default function CreateNewFilterDrawer({
 
     const data = {
       name: filterName,
+      order: filterDisplayOrder, 
       criteria: {
-        processDefinitionNameLike: definitionKeyId && `%${definitionKeyId}%`,
+        processDefinitionKey : definitionKeyId ,
         candidateGroup:
           MULTITENANCY_ENABLED && candidateGroup
             ? tenantKey + "-" + candidateGroup
@@ -418,19 +427,20 @@ export default function CreateNewFilterDrawer({
      * If a form is selected, set the formId property in the data object
      * to the id of the selected form.
      */
-    
-    
+
     // Remove empty keys inside criteria
     const cleanedCriteria = omitBy(
       data.criteria,
       (value) => value === undefined || value === "" || value === null
-      );
-      data.criteria = cleanedCriteria;
-      
-      if (selectedForm) {
-        data.properties.formId = selectedForm;
-        data.criteria.processVariables = [{name: "formId", operator: "eq", value: selectedForm}];
-      }
+    );
+    data.criteria = cleanedCriteria;
+
+    if (selectedForm) {
+      data.properties.formId = selectedForm;
+      data.criteria.processVariables = [
+        { name: "formId", operator: "eq", value: selectedForm },
+      ];
+    }
 
     const submitFunction = selectedFilterData
       ? editFilters(data, selectedFilterData?.id)
@@ -598,19 +608,34 @@ export default function CreateNewFilterDrawer({
     }
   };
 
+  const handleOrderChange = (e)=>{
+    const value = e.target.value;
+    const pattern = /^[1-9]\d*$/;
+    const validInput = pattern.test(e.target.value);
+    setFIlterDisplayOrder(()=> value ? Number(validInput ? value : filterDisplayOrder) : null);
+  };
+
   const list = () => (
     <div role="none">
       <List>
-        <div className={`p-0 d-flex align-items-center justify-content-${viewMode ? "end" : "between"}`}>
-          {!viewMode ? <h5 className="fw-bold fs-16">
-            <Translation>
-              {(t) =>
-                `${
-                  selectedFilterData ? t("Edit filter") : t("Create new filter")
-                }`
-              }
-            </Translation>
-          </h5> : null }
+        <div
+          className={`p-0 d-flex align-items-center justify-content-${
+            viewMode ? "end" : "between"
+          }`}
+        >
+          {!viewMode ? (
+            <h5 className="fw-bold fs-16">
+              <Translation>
+                {(t) =>
+                  `${
+                    selectedFilterData
+                      ? t("Edit filter")
+                      : t("Create new filter")
+                  }`
+                }
+              </Translation>
+            </h5>
+          ) : null}
           <button
             className="btn btn-link text-dark"
             onClick={() => {
@@ -640,6 +665,22 @@ export default function CreateNewFilterDrawer({
               {t("Filter name should be less than 50 characters")}
             </p>
           )}
+        </div>
+      </List>
+      <List>
+        <div className="form-group">
+          <label htmlFor="filterDisplayOrder">{t("Filter display order")}</label>
+          <input
+            type="text"
+            className="form-control"
+            id="filterDisplayOrder"
+            placeholder={t("Enter filter display order")}
+            value={filterDisplayOrder}
+            min={1}
+            onChange={handleOrderChange}
+            title={t("Enter fliter display order")}
+            disabled={viewMode}
+          />
         </div>
       </List>
 
@@ -689,7 +730,7 @@ export default function CreateNewFilterDrawer({
               </h5>
             </div>
             {!isTasksForCurrentUserGroupsEnabled ? (
-              <div className="alert alert-warning mt-1" role="alert">
+              <div className="alert taskvariable-alert mt-1" role="alert">
                 <i className="fa-solid fa-triangle-exclamation me-2"></i>{" "}
                 {t(
                   "Unchecking this option will show all tasks, ignoring user roles"
@@ -711,9 +752,9 @@ export default function CreateNewFilterDrawer({
             options={processList}
             placeholder={t("Select Workflow")}
             isClearable
-            value={processList?.find((list) => list.label === definitionKeyId)}
+            value={processList?.find((list) => list.value === definitionKeyId)}
             onChange={(selectedOption) => {
-              setDefinitionKeyId(selectedOption?.label);
+              setDefinitionKeyId(selectedOption?.value);
             }}
             filterOption={filterSelectOptionByLabel}
             inputId="select-workflow"
@@ -780,7 +821,7 @@ export default function CreateNewFilterDrawer({
               <h5 className="fw-bold ">
                 <Translation>{(t) => t("Select Form")}</Translation>
               </h5>
-            </label>           
+            </label>
             <Select
               isDisabled={viewMode}
               inputId="select-form"
@@ -891,7 +932,9 @@ export default function CreateNewFilterDrawer({
               >
                 <div
                   className="ms-3"
-                  onClick={() => handleClickUserGroupIcon("group")}
+                  onClick={
+                    !viewMode ? () => handleClickUserGroupIcon("group") : null
+                  }
                 >
                   <div className="text-center">
                     <span className="truncate-size">
@@ -915,12 +958,14 @@ export default function CreateNewFilterDrawer({
                     className="d-flex align-items-center badge me-2 mt-2"
                   >
                     {identifierId}
-                    <div
-                      className="badge-deleteIcon ms-2"
-                      onClick={() => setIdentifierId(null)}
-                    >
-                      &times;
-                    </div>
+                    {!viewMode && (
+                      <div
+                        className="badge-deleteIcon ms-2"
+                        onClick={() => setIdentifierId(null)}
+                      >
+                        &times;
+                      </div>
+                    )}
                   </Badge>
                 )}
               </div>
@@ -933,7 +978,7 @@ export default function CreateNewFilterDrawer({
 
       <List>
         <div className="d-flex align-items-center justify-content-between">
-          {selectedFilterData &&  !viewMode && (
+          {selectedFilterData && !viewMode && (
             <button
               className="btn btn-link text-danger cursor-pointer"
               onClick={() => {
@@ -944,33 +989,40 @@ export default function CreateNewFilterDrawer({
             </button>
           )}
           <div className="d-flex align-items-center">
-            {!viewMode && <button
-              className="btn btn-outline-secondary me-3"
-              onClick={() => {
-                toggleDrawer();
-                setShowAlert(false);
-              }}
-            >
-              <Translation>{(t) => t("Cancel")}</Translation>
-            </button> }
-            
-            { !viewMode &&
+            {!viewMode && (
               <button
-              className="btn btn-primary submitButton text-decoration-none truncate-size "
-              disabled={viewMode || !permissions || !filterName || filterName.length >= 50}
-              onClick={() => {
-                handleSubmit();
-              }}
-            >
-              <Translation>
-                {(t) =>
-                  `${
-                    selectedFilterData ? t("Save Filter") : t("Create Filter")
-                  } `
+                className="btn btn-outline-secondary me-3"
+                onClick={() => {
+                  toggleDrawer();
+                  setShowAlert(false);
+                }}
+              >
+                <Translation>{(t) => t("Cancel")}</Translation>
+              </button>
+            )}
+
+            {!viewMode && (
+              <button
+                className="btn btn-primary submitButton text-decoration-none truncate-size "
+                disabled={
+                  viewMode ||
+                  !permissions ||
+                  !filterName ||
+                  filterName.length >= 50
                 }
-              </Translation>
-            </button>
-            }
+                onClick={() => {
+                  handleSubmit();
+                }}
+              >
+                <Translation>
+                  {(t) =>
+                    `${
+                      selectedFilterData ? t("Save Filter") : t("Create Filter")
+                    } `
+                  }
+                </Translation>
+              </button>
+            )}
           </div>
         </div>
       </List>

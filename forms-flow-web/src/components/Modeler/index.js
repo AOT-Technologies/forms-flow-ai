@@ -9,24 +9,27 @@ import {
   BASE_ROUTE,
 } from "../../constants/constants";
 import Loading from "../../containers/Loading";
-import userRoles from "../../constants/permissions";
+import AccessDenied from "../AccessDenied";
 
-const DesignerProcessRoute = ({ component: Component, hasAccess, ...rest }) => (
+let user = "";
+
+
+const DesignerProcessRoute = ({ component: Component, ...rest }) => (
   <Route
     {...rest}
     render={(props) => {
-      if (hasAccess) {
+      if (user.includes('create_designs')) {
         return <Component {...props} />;
       } else {
-        return <>Unauthorized</>;
+        return <AccessDenied userRoles={user} />;
       }
     }}
   />
 );
 
 const Processes = () => {
+  user = useSelector((state) => state.user?.roles || []);
   const isAuthenticated = useSelector((state) => state.user?.isAuthenticated);
-  const { createDesigns } = userRoles();
 
   if (!isAuthenticated) {
     return <Loading />;
@@ -40,19 +43,16 @@ const Processes = () => {
           exact
           path={`${BASE_ROUTE}processes/create`}
           component={CreateWorkflow}
-          hasAccess={createDesigns}
         />
         <DesignerProcessRoute
           exact
           path={`${BASE_ROUTE}processes/:processId`}
           component={Base}
-          hasAccess={createDesigns}
         />
         <DesignerProcessRoute
           exact
           path={`${BASE_ROUTE}processes/:type/:processId/edit`}
           component={Edit}
-          hasAccess={createDesigns}
         />
         <Redirect exact to="/404" />
       </Switch>

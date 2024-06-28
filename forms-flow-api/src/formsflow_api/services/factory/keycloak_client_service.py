@@ -9,18 +9,12 @@ from formsflow_api_utils.exceptions import BusinessException
 from formsflow_api_utils.utils.user_context import UserContext, user_context
 
 from formsflow_api.constants import BusinessErrorCode
-from formsflow_api.services import KeycloakAdminAPIService, UserService
 
-from .keycloak_admin import KeycloakAdmin
+from .keycloak_group_service import KeycloakGroupService
 
 
-class KeycloakClientService(KeycloakAdmin):
+class KeycloakClientService(KeycloakGroupService):
     """Keycloak Admin implementation for client related operations."""
-
-    def __init__(self):
-        """Initialize client."""
-        self.client = KeycloakAdminAPIService()
-        self.user_service = UserService()
 
     def __populate_user_roles(self, user_list: List) -> List:
         """Collects roles for a user list and populates the role attribute."""
@@ -33,15 +27,6 @@ class KeycloakClientService(KeycloakAdmin):
     def get_analytics_groups(self, page_no: int, limit: int):
         """Get analytics roles."""
         return self.client.get_analytics_roles(page_no, limit)
-
-    def get_group(self, group_id: str):
-        """Get role by role name."""
-        client_id = self.client.get_client_id()
-        response = self.client.get_request(
-            url_path=f"clients/{client_id}/roles/{group_id}"
-        )
-        response["id"] = response.get("name", None)
-        return response
 
     def get_users(  # pylint: disable-msg=too-many-arguments
         self,
@@ -71,36 +56,15 @@ class KeycloakClientService(KeycloakAdmin):
         return (users_list, users_count)
 
     def update_group(self, group_id: str, data: Dict):
-        """Update keycloak role by role name."""
-        client_id = self.client.get_client_id()
-        return self.client.update_request(
-            url_path=f"clients/{client_id}/roles/{group_id}",
-            data=data,
-        )
-
-    def get_groups_roles(self, search: str, sort_order: str):
-        """Get roles."""
-        response = self.client.get_roles(search)
-        for role in response:
-            role["id"] = role.get("id")
-            role["description"] = role.get("description")
-        return self.sort_results(response, sort_order)
-
-    def delete_group(self, group_id: str):
-        """Delete role by role name."""
-        client_id = self.client.get_client_id()
-        return self.client.delete_request(
-            url_path=f"clients/{client_id}/roles/{group_id}"
-        )
+        """Update keycloak group."""
+        data = self.append_tenant_key(data)
+        return super().update_group(group_id, data)
 
     def create_group_role(self, data: Dict):
-        """Create role."""
-        client_id = self.client.get_client_id()
-        response = self.client.create_request(
-            url_path=f"clients/{client_id}/roles", data=data
-        )
-        role_name = response.headers["Location"].split("/")[-1]
-        return {"id": role_name}
+        """Create group."""
+        current_app.logger.debug("Creating tenant group...")
+        self.append_tenant_key(data)
+        return super().create_group_role(data)
 
     def add_user_to_group_role(self, user_id: str, group_id: str, payload: Dict):
         """Add user to role."""
@@ -206,3 +170,14 @@ class KeycloakClientService(KeycloakAdmin):
                 )
             return {"message": "User added to tenant"}, HTTPStatus.OK
         raise BusinessException(BusinessErrorCode.USER_NOT_FOUND)
+
+    @user_context
+    def append_tenant_key(self, data, **kwargs):  # pylint: disable=too-many-locals
+        """Append tenantkey to main group."""
+        user: UserContext = kwargs["user"]
+        tenant_key = user.tenant_key
+        name = data["name"].lstrip("/")
+        # Prefix the tenant_key to the main group
+        data["name"] = f"{tenant_key}-{name}"
+        current_app.logger.debug(f"Tenant group: {data['name']}")
+        return data

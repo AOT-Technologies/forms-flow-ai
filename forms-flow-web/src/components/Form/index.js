@@ -7,43 +7,38 @@ import Stepper from "./Stepper";
 import Item from "./Item/index";
 import { BASE_ROUTE } from "../../constants/constants";
 import Loading from "../../containers/Loading";
-import userRoles from "../../constants/permissions";
+import AccessDenied from "../AccessDenied";
 
-const CreateFormRoute = ({ component: Component, createDesigns, viewDesigns, ...rest }) => (
+let user = "";
+
+const CreateFormRoute = ({ component: Component, ...rest }) => (
   <Route
     {...rest}
     render={(props) => {
-      if (createDesigns || viewDesigns) {
+      if (user.includes('create_designs') || user.includes('view_designs')) {
         return <Component {...props} />;
       } else {
-        return <>Unauthorized</>;
+        return <AccessDenied userRoles={user} />;
       }
     }}
   />
 );
-
-
-const FormSubmissionRoute = ({ component: Component, createSubmissions, ...rest }) => (
+const FormSubmissionRoute = ({ component: Component, ...rest }) => (
   <Route
     {...rest}
     render={(props) =>
-      createSubmissions ? (
+      user.includes('create_submissions')  ? (
         <Component {...props} />
       ) : (
-        <>Unauthorized</>
+        <AccessDenied userRoles={user} />
       )
     }
   />
 );
 
 export default React.memo(() => {
+  user = useSelector((state) => state.user.roles || []);
   const isAuthenticated = useSelector((state) => state.user.isAuthenticated);
-  const {
-    createDesigns,
-    viewDesigns,
-    createSubmissions,
-  } = userRoles();
-
   if (!isAuthenticated) {
     return <Loading />;
   }
@@ -55,13 +50,10 @@ export default React.memo(() => {
         <CreateFormRoute
           path={`${BASE_ROUTE}formflow/:formId?/:step?`}
           component={Stepper}
-          createDesigns={createDesigns}
-          viewDesigns={viewDesigns}
         />
         <FormSubmissionRoute
           path={`${BASE_ROUTE}form/:formId/`}
           component={Item}
-          createSubmissions={createSubmissions}
         />
       </Switch>
     </div>

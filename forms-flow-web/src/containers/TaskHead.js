@@ -53,7 +53,7 @@ function TaskHead() {
   };
 
   const getItemCount = (filterName) => {
-    const filter = filtersAndCount.find(f => f.name === filterName);
+    const filter = filtersAndCount?.find(f => f.name === filterName);
     return filter ? filter.count : 0;
   };
 

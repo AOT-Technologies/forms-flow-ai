@@ -465,7 +465,7 @@ export default function CreateNewFilterDrawer({
               fetchBPMTaskCount(data.filters)
                 .then((res) => {
                   dispatch(setBPMFiltersAndCount(res.data));
-                  const filter = data.filters.find((i) => data.defaultFilter == i) ||
+                  const filter = data.filters.find((i) => data.defaultFilter == i.id) ||
                     data.filters[0];
                   dispatch(fetchServiceTaskList(filter, null, firstResult));
                 })

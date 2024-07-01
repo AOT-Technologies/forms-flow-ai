@@ -709,7 +709,7 @@ export default function CreateNewFilterDrawer({
             title={t("Show only current user assigned task")}
             disabled={viewMode}
           />
-          <h5 className="mt-3">
+          <h5 className="mt-3 fw-normal">
             <Translation>
               {(t) => t("Show only current user assigned task")}
             </Translation>
@@ -729,7 +729,7 @@ export default function CreateNewFilterDrawer({
                 title={t("Display authorized tasks based on user roles")}
                 disabled={viewMode}
               />
-              <h5 className="mt-3">
+              <h5 className="mt-3 fw-normal">
                 <Translation>
                   {(t) => t("Display authorized tasks based on user roles")}
                 </Translation>
@@ -858,7 +858,7 @@ export default function CreateNewFilterDrawer({
         </div>
         <Divider />
         <div className="child-container-two pt-2">
-          <h5 className="fw-bold">
+          <h5>
             <Translation>{(t) => t("Permission")}</Translation>{" "}
             <i
               title={t(
@@ -877,7 +877,7 @@ export default function CreateNewFilterDrawer({
             onChange={(e) => setPermissions(e.target.value)}
             disabled={viewMode}
           />
-          <label htmlFor="all-users" className="assigned-user">
+          <label htmlFor="all-users" className="assigned-user fs-18">
             <Translation>{(t) => t("Accessible for all users")}</Translation>
           </label>{" "}
           <br />

@@ -527,7 +527,7 @@
           /* margin-left: 0; */
           border-top: 0;
           /* box-shadow: 0 0; */
-          margin: 0 10px !important;
+          margin: 0 10px ;
       }
   
       .kc-social-grid {
@@ -539,10 +539,10 @@
           left: -15px;
       }
       .card-pf {
-      padding: 1.5rem !important;
+      padding: 1.5rem ;
       }
       .login-pf-page {
-        padding-top: 0 !important;
+        padding-top: 0 ;
       }
   }
 

@@ -51,7 +51,7 @@ pyparsing==3.1.2
 python-dotenv==1.0.1
 python-jose==3.3.0
 pytz==2024.1
-redis==5.0.3
+redis==5.0.5
 referencing==0.34.0
 requests==2.31.0
 rpds-py==0.18.0

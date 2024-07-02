@@ -132,7 +132,7 @@ const PrivateRoute = React.memo((props) => {
     if (tenantId && MULTITENANCY_ENABLED) {
       validateTenant(tenantId)
         .then((res) => {
-          if (res.data.status === "INVALID") {
+          if (!res.data.tenantKeyExist) {
             setTenantValid(false);
           } else {
             setTenantValid(true);

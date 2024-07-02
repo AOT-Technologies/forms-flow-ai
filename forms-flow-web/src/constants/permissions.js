@@ -20,6 +20,4 @@ const userRoles = () => {
   };
 };
 
-//in progress to be changed
-
 export default userRoles;

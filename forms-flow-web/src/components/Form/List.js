@@ -7,9 +7,9 @@ import { selectRoot, selectError, Errors, deleteForm } from "react-formio";
 import Loading from "../../containers/Loading";
 import Head from "../../containers/Head";
 import { textTruncate } from "../../helper/helper";
+import  userRoles  from "../../constants/permissions.js";
 import {
   MULTITENANCY_ENABLED,
-  STAFF_DESIGNER,
 } from "../../constants/constants";
 import "../Form/List.scss";
 import {
@@ -56,6 +56,7 @@ import { useMemo } from "react";
 import _ from "lodash";
 import { ExportButton,ButtonState } from "./ExportAsPdf/button.jsx";
 const List = React.memo((props) => {
+  const { createDesigns, createSubmissions, viewDesigns} = userRoles();
   const { t } = useTranslation();
   const [showFormUploadModal, setShowFormUploadModal] = useState(false);
   const [isloading, setIsLoading] = useState(true);
@@ -66,8 +67,7 @@ const List = React.memo((props) => {
     forms,
     getFormsInit,
     errors,
-    userRoles,
-    formId,
+        formId,
     onNo,
     onYes,
     tenants,
@@ -77,8 +77,6 @@ const List = React.memo((props) => {
     (state) => state.formCheckList.designerFormLoading
   );
   const searchText = useSelector((state) => state.bpmForms.searchText);
-
-  const isDesigner = userRoles.includes(STAFF_DESIGNER);
   const pageNo = useSelector((state) => state.bpmForms.page);
   const limit = useSelector((state) => state.bpmForms.limit);
   const sortBy = useSelector((state) => state.bpmForms.sortBy);
@@ -132,7 +130,7 @@ const List = React.memo((props) => {
   }, [
     getFormsInit,
     dispatch,
-    isDesigner,
+    createDesigns,
     pageNo,
     limit,
     sortBy,
@@ -169,8 +167,8 @@ const List = React.memo((props) => {
   };
 
   let headOptions = useMemo(() => {
-    return isDesigner && headerList();
-  }, [isDesigner]);
+    return createDesigns && headerList();
+  }, [createDesigns]);
 
   const downloadForms = async () => {
     preDownloading();
@@ -560,7 +558,7 @@ const List = React.memo((props) => {
 
           <Errors errors={errors} />
           <div className="d-flex">
-            {isDesigner && (
+            {createDesigns && (
               <>
                 <button
                   data-testid="create-form-btn"
@@ -597,13 +595,13 @@ const List = React.memo((props) => {
               </>
             )}
           </div>
-          {isDesigner ? (
+          {createDesigns ? (
             <>
               <div className="mt-4 d-md-flex  justify-content-between align-items-end">
                 <Head items={headOptions} page={"Forms"} visibleHr={false} />
 
                 <div className="d-flex flex-column flex-md-column justify-content-md-end mb-4">
-                  {isDesigner && (
+                  {createDesigns && (
                     <ExportButton
                       label={
                         <Translation>{(t) => t("Download Form")}</Translation>
@@ -630,7 +628,8 @@ const List = React.memo((props) => {
             <Head items={headerList()} page={"Forms"} />
           )}
 
-          {isDesigner ? <FormTable /> : !isDesigner ? <ClientTable /> : null}
+          {createDesigns || viewDesigns ? <FormTable /> : 
+          createSubmissions ? <ClientTable /> : null}
         </div>
       )}
     </>

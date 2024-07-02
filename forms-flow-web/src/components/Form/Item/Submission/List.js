@@ -15,7 +15,6 @@ import cloneDeep from "lodash/cloneDeep";
 import Loading from "../../../../containers/Loading";
 import {
   OPERATIONS,
-  CLIENT,
   STAFF_REVIEWER,
   MULTITENANCY_ENABLED,
 } from "../../../../constants/constants";
@@ -32,11 +31,9 @@ import { Translation } from "react-i18next";
 
 const getOperations = (userRoles) => {
   let operations = [];
-  if (userRoles.includes(STAFF_REVIEWER)) {
+  if (userRoles.includes('view_submissions')) {
     operations.push(OPERATIONS.view /*, OPERATIONS.deleteSubmission*/);
-  } else if (userRoles.includes(CLIENT)) {
-    operations.push(OPERATIONS.view);
-  }
+  } 
   return operations;
 };
 

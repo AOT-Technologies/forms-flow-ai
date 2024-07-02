@@ -9,6 +9,7 @@ import {
 import { Link } from "react-router-dom";
 import { useTranslation, Translation } from "react-i18next";
 import { MULTITENANCY_ENABLED } from "../../../constants/constants";
+import userRoles from "../../../constants/permissions";
 
 const ServiceFlowFilterListDropDown = React.memo(
   ({ selectFilter, openFilterDrawer }) => {
@@ -26,6 +27,8 @@ const ServiceFlowFilterListDropDown = React.memo(
     const { t } = useTranslation();
     const tenantKey = useSelector((state) => state.tenants?.tenantId);
     const redirectUrl = MULTITENANCY_ENABLED ? `/tenant/${tenantKey}/` : "/";
+    const { viewFilters } = userRoles();
+
 
     const changeFilterSelection = (filter) => {
       const selectedFilterItem = filterListItems.find(
@@ -74,9 +77,9 @@ const ServiceFlowFilterListDropDown = React.memo(
                         }}
                         className="btn btn-link"
                       >
-                        <i className={`me-1 fa fa-${editPermission ? "pencil" : "eye"}`} />
-                        <Translation>{(t) => t(editPermission ? `Edit` : `View`)}</Translation>
-                      </button>
+                        <i className={`me-1 fa fa-${editPermission ? "pencil" : (viewFilters ? `eye` : '')}`} />
+                        <Translation>{(t) => t(editPermission ? `Edit` : (viewFilters ? `View` : ''))}</Translation>
+                        </button>
                   </div>
                 </NavDropdown.Item>
               );

@@ -17,9 +17,7 @@ import {
   setFormSubmissionLoading,
 } from "../../../../../actions/formActions";
 import SubmissionError from "../../../../../containers/SubmissionError";
-import { getUserRolePermission } from "../../../../../helper/user";
 import {
-  CLIENT,
   CUSTOM_SUBMISSION_URL,
   CUSTOM_SUBMISSION_ENABLE,
   MULTITENANCY_ENABLED,
@@ -77,7 +75,7 @@ const Edit = React.memo((props) => {
     // In the new approach, we will use the "isResubmit" key
     if (applicationStatus && !onFormSubmit) {
       if (
-        getUserRolePermission(userRoles, CLIENT) &&
+        userRoles.includes('create_submissions') &&
         !CLIENT_EDIT_STATUS.includes(applicationStatus) &&
         !applicationDetail.isResubmit
       ) {

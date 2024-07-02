@@ -19,9 +19,6 @@ import {
 } from "../actions/bpmActions";
 import { setLanguage } from "../actions/languageSetAction";
 import {
-  CLIENT,
-  STAFF_REVIEWER,
-  STAFF_DESIGNER,
   ENABLE_APPLICATIONS_MODULE,
   ENABLE_DASHBOARDS_MODULE,
   ENABLE_FORMS_MODULE,
@@ -175,7 +172,7 @@ const PrivateRoute = React.memo((props) => {
         <Route
           {...rest}
           render={(props) =>
-            userRoles.includes(STAFF_DESIGNER) ? (
+            userRoles.includes('create_designs') || userRoles.includes('view_designs')  ? (
               <Component {...props} />
             ) : (
               <AccessDenied userRoles={userRoles} />
@@ -193,7 +190,7 @@ const PrivateRoute = React.memo((props) => {
         <Route
           {...rest}
           render={(props) =>
-            userRoles.includes(STAFF_REVIEWER) ? (
+            userRoles.includes('view_tasks') || userRoles.includes('manage_tasks') || userRoles.includes('view_dashboards') ? (
               <Component {...props} />
             ) : (
               <AccessDenied userRoles={userRoles} />
@@ -211,7 +208,7 @@ const PrivateRoute = React.memo((props) => {
         <Route
           {...rest}
           render={(props) =>
-            userRoles.includes(STAFF_REVIEWER) || userRoles.includes(CLIENT) ? (
+            userRoles.includes('view_submissions') ? (
               <Component {...props} />
             ) : (
               <AccessDenied userRoles={userRoles} />
@@ -229,7 +226,7 @@ const PrivateRoute = React.memo((props) => {
         <Route
           {...rest}
           render={(props) =>
-            DRAFT_ENABLED && (userRoles.includes(STAFF_REVIEWER) || userRoles.includes(CLIENT)) ? (
+            DRAFT_ENABLED && (userRoles.includes('view_submissions')) ? (
               <Component {...props} />
             ) : (
               <AccessDenied userRoles={userRoles} />
@@ -292,15 +289,16 @@ const PrivateRoute = React.memo((props) => {
             )}
 
             <Route exact path={BASE_ROUTE}>
-              {userRoles.length && (
-                <Redirect
-                  to={
-                    userRoles?.includes(STAFF_REVIEWER)
-                      ? `${redirecUrl}task`
-                      : `${redirecUrl}form`
-                  }
-                />
-              )}
+            {userRoles.length && (
+  <Redirect
+    to={
+      userRoles?.includes('view_tasks') || userRoles?.includes('manage_tasks')
+        ? `${redirecUrl}task`
+        : `${redirecUrl}form`
+    }
+  />
+)}
+
             </Route>
             <Route path="/404" exact={true} component={NotFound} />
             <Redirect from="*" to="/404" />

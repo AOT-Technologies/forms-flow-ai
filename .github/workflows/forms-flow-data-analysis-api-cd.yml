@@ -3,7 +3,7 @@ name: Push Forms flow Analysis API to registry
 on:
   workflow_dispatch:
   push:
-    branches: [ master, develop, release/* ]
+    branches: [ master, develop, release/*, feature/FWF-3316-permission-matrix ]
     paths:
       - "forms-flow-data-analysis-api/**"
       - "VERSION"

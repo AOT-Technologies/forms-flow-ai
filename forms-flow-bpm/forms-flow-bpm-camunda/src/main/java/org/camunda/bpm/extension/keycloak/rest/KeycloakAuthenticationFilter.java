@@ -126,7 +126,7 @@ public class KeycloakAuthenticationFilter implements Filter {
 	 */
 	private List<String> getUserGroups(String userId, Map<String, Object> claims, String tenantKey) {
 		List<String> groupIds = new ArrayList<>();
-		//
+
 		if (claims != null && claims.containsKey("groups")) {
 			List<String> groups = getKeys(claims, "groups");
 			if (enableMultiTenancy) { // For multi-tenant setup filter out the groups which are not part of the current tenant.

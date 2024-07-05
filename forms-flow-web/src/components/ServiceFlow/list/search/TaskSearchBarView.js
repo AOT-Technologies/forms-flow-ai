@@ -38,9 +38,11 @@ const TaskSearchBarListView = React.memo(({ toggleAllTaskVariables }) => {
 
   return (
     <>
-     {tasksCount > 0 ? (
       <div className="d-flex justify-content-end filter-sort-bar mt-1">
-        <div className="sort-container task-filter-list-view">
+        {
+          tasksCount > 0 ? (
+          <>
+          <div className="sort-container task-filter-list-view">
           <button
             type="button"
             className="btn btn-outline-secondary"
@@ -48,7 +50,7 @@ const TaskSearchBarListView = React.memo(({ toggleAllTaskVariables }) => {
               setSortOptions(!SortOptions);
               setDisplayFilter(false);
             }}
-          >
+           >
             {t("Sort by")}
             <svg
               xmlns="http://www.w3.org/2000/svg"
@@ -66,8 +68,8 @@ const TaskSearchBarListView = React.memo(({ toggleAllTaskVariables }) => {
               <TaskSortSelectedList />
             </div>
           )}
-        </div>
-        <div className="Select-Task-Variables task-filter-list-view">
+           </div>
+           <div className="Select-Task-Variables task-filter-list-view">
           <button
             type="button"
             className="btn btn-outline-secondary"
@@ -89,8 +91,10 @@ const TaskSearchBarListView = React.memo(({ toggleAllTaskVariables }) => {
             </svg>
             {allTaskVariablesExpanded ? t("Collapse All") : t("Expand All")}
           </button>
-        </div>
-
+           </div>
+            </>
+          ) : null
+        }
         <div className="filter-container-list task-filter-list-view">
           <button
             type="button"
@@ -124,7 +128,6 @@ const TaskSearchBarListView = React.memo(({ toggleAllTaskVariables }) => {
           )}
         </div>
       </div>
-      ) : null}
     </>
   );
 });

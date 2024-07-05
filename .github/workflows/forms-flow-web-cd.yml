@@ -6,6 +6,7 @@ on:
       - master
       - develop
       - release/*
+      - feature/FWF-3316-permission-matrix
     paths:
       - "forms-flow-web/**"
       - "VERSION"

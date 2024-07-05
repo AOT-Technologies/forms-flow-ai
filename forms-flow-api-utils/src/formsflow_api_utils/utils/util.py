@@ -12,9 +12,6 @@ from typing import Tuple
 
 from .constants import (
     ALLOW_ALL_ORIGINS,
-    CLIENT_GROUP,
-    DESIGNER_GROUP,
-    REVIEWER_GROUP,
 )
 from .enums import (
     ApplicationSortingParameters,

@@ -4,7 +4,12 @@ from http import HTTPStatus
 
 from flask import request
 from flask_restx import Namespace, Resource, fields
-from formsflow_api_utils.utils import auth, cors_preflight, profiletime,PERMISSIONS
+from formsflow_api_utils.utils import (
+    PERMISSIONS,
+    auth,
+    cors_preflight,
+    profiletime,
+)
 
 from formsflow_api.schemas.aggregated_application import (
     ApplicationMetricsRequestSchema,

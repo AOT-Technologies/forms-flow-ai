@@ -5,10 +5,8 @@ from http import HTTPStatus
 from flask import current_app, g, request
 from flask_restx import Namespace, Resource, fields
 from formsflow_api_utils.utils import (
-    ADMIN_GROUP,
-    REVIEWER_GROUP,
+    PERMISSIONS,
     auth,
-    Permissions,
     cors_preflight,
     profiletime,
 )
@@ -99,7 +97,7 @@ class KeycloakUserService(Resource):
             return {"message": "User not found"}, HTTPStatus.NOT_FOUND
         return response
 
-    @auth.has_one_of_roles([Permissions.ADMIN])
+    @auth.has_one_of_roles([PERMISSIONS.ADMIN])
     @profiletime
     @API.doc(body=locale_put_model)
     @API.response(200, "OK:- Successful request.")
@@ -130,7 +128,9 @@ class UserDefaultFilter(Resource):
     """Resource to create or update user's default filter."""
 
     @staticmethod
-    @auth.has_one_of_roles([Permissions.ADMIN, Permissions.CREATE_FILTERS, Permissions.MANAGE_ALL_FILTERS])
+    @auth.has_one_of_roles(
+        [PERMISSIONS.ADMIN, PERMISSIONS.CREATE_FILTERS, PERMISSIONS.MANAGE_ALL_FILTERS]
+    )
     @profiletime
     @API.doc(body=default_filter_model)
     @API.response(200, "OK:- Successful request.")
@@ -151,7 +151,9 @@ class KeycloakUsersList(Resource):
     """Resource to fetch keycloak users."""
 
     @staticmethod
-    @auth.has_one_of_roles([Permissions.ADMIN, Permissions.CREATE_FILTERS, Permissions.MANAGE_ALL_FILTERS])
+    @auth.has_one_of_roles(
+        [PERMISSIONS.ADMIN, PERMISSIONS.CREATE_FILTERS, PERMISSIONS.MANAGE_ALL_FILTERS]
+    )
     @profiletime
     @API.doc(
         params={
@@ -235,7 +237,7 @@ class UserPermission(Resource):
     """Resource to manage keycloak user permissions."""
 
     @staticmethod
-    @auth.has_one_of_roles([Permissions.ADMIN])
+    @auth.has_one_of_roles([PERMISSIONS.ADMIN])
     @profiletime
     @API.doc(body=user_permission_update_model)
     @API.response(204, "NO CONTENT:- Successful request.")
@@ -264,7 +266,7 @@ class UserPermission(Resource):
         return None, HTTPStatus.NO_CONTENT
 
     @staticmethod
-    @auth.has_one_of_roles([Permissions.ADMIN])
+    @auth.has_one_of_roles([PERMISSIONS.ADMIN])
     @profiletime
     @API.doc(body=user_permission_update_model)
     @API.response(204, "NO CONTENT:- Successful request.")
@@ -306,7 +308,7 @@ class TenantAddUser(Resource):
     """Resource to manage add user to a tenant."""
 
     @staticmethod
-    @auth.has_one_of_roles([Permissions.ADMIN])
+    @auth.has_one_of_roles([PERMISSIONS.ADMIN])
     @profiletime
     @API.doc(body=tenant_add_user_model)
     @API.response(200, "OK:- Successful request.")

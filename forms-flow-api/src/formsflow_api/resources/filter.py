@@ -5,9 +5,8 @@ from http import HTTPStatus
 from flask import request
 from flask_restx import Namespace, Resource, fields
 from formsflow_api_utils.utils import (
-    REVIEWER_GROUP,
-    auth,
     PERMISSIONS,
+    auth,
     cors_preflight,
     profiletime,
 )
@@ -87,7 +86,7 @@ class FilterResource(Resource):
     """Resource to create and list filter."""
 
     @staticmethod
-    @auth.has_one_of_roles([PERMISSIONS.MANAGE_ALL_FILTERS,PERMISSIONS.VIEW_FILTERS])
+    @auth.has_one_of_roles([PERMISSIONS.MANAGE_ALL_FILTERS, PERMISSIONS.VIEW_FILTERS])
     @profiletime
     @API.doc(
         responses={
@@ -106,7 +105,7 @@ class FilterResource(Resource):
         return response, status
 
     @staticmethod
-    @auth.has_one_of_roles([PERMISSIONS.MANAGE_ALL_FILTERS,PERMISSIONS.CREATE_FILTERS])
+    @auth.has_one_of_roles([PERMISSIONS.MANAGE_ALL_FILTERS, PERMISSIONS.CREATE_FILTERS])
     @profiletime
     @API.doc(
         responses={
@@ -160,7 +159,7 @@ class UsersFilterList(Resource):
     """Resource to list filters specific to current user."""
 
     @staticmethod
-    @auth.has_one_of_roles([PERMISSIONS.MANAGE_ALL_FILTERS,PERMISSIONS.VIEW_FILTERS])
+    @auth.has_one_of_roles([PERMISSIONS.MANAGE_ALL_FILTERS, PERMISSIONS.VIEW_FILTERS])
     @profiletime
     @API.doc(
         responses={

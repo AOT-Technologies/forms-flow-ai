@@ -5,10 +5,8 @@ from http import HTTPStatus
 from flask import request
 from flask_restx import Namespace, Resource, fields
 from formsflow_api_utils.utils import (
-    ADMIN_GROUP,
-    DESIGNER_GROUP,
     PERMISSION_DETAILS,
-    REVIEWER_GROUP,
+    PERMISSIONS,
     auth,
     cors_preflight,
     profiletime,
@@ -38,7 +36,15 @@ class KeycloakRolesResource(Resource):
     """Resource to manage keycloak list and create roles/groups."""
 
     @staticmethod
-    @auth.has_one_of_roles([ADMIN_GROUP, DESIGNER_GROUP, REVIEWER_GROUP])
+    @auth.has_one_of_roles(
+        [
+            PERMISSIONS.ADMIN,
+            PERMISSIONS.CREATE_DESIGNS,
+            PERMISSIONS.MANAGE_ALL_FILTERS,
+            PERMISSIONS.CREATE_FILTERS,
+            PERMISSIONS.VIEW_FILTERS,
+        ]
+    )
     @profiletime
     @API.doc(
         responses={
@@ -62,7 +68,7 @@ class KeycloakRolesResource(Resource):
         return response, HTTPStatus.OK
 
     @staticmethod
-    @auth.has_one_of_roles([ADMIN_GROUP])
+    @auth.has_one_of_roles([PERMISSIONS.ADMIN])
     @profiletime
     @API.doc(
         responses={
@@ -89,7 +95,7 @@ class KeycloakRolesResourceById(Resource):
     """Resource to manage keycloak roles/groups by id."""
 
     @staticmethod
-    @auth.has_one_of_roles([ADMIN_GROUP])
+    @auth.has_one_of_roles([PERMISSIONS.ADMIN])
     @profiletime
     @API.doc(
         responses={
@@ -110,7 +116,7 @@ class KeycloakRolesResourceById(Resource):
         return response, HTTPStatus.OK
 
     @staticmethod
-    @auth.has_one_of_roles([ADMIN_GROUP])
+    @auth.has_one_of_roles([PERMISSIONS.ADMIN])
     @profiletime
     @API.doc(
         responses={
@@ -129,7 +135,7 @@ class KeycloakRolesResourceById(Resource):
         return {"message": "Deleted successfully."}, HTTPStatus.OK
 
     @staticmethod
-    @auth.has_one_of_roles([ADMIN_GROUP])
+    @auth.has_one_of_roles([PERMISSIONS.ADMIN])
     @profiletime
     @API.doc(
         responses={
@@ -156,7 +162,7 @@ class Permissions(Resource):
     """Resource to list permissions."""
 
     @staticmethod
-    @auth.has_one_of_roles([ADMIN_GROUP])
+    @auth.has_one_of_roles([PERMISSIONS.ADMIN])
     @profiletime
     @API.doc(
         responses={

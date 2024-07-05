@@ -5,10 +5,8 @@ from http import HTTPStatus
 from flask import request
 from flask_restx import Namespace, Resource, fields
 from formsflow_api_utils.utils import (
-    DESIGNER_GROUP,
-    REVIEWER_GROUP,
-    auth,
     PERMISSIONS,
+    auth,
     cors_preflight,
     get_form_and_submission_id_from_form_url,
     profiletime,
@@ -99,7 +97,9 @@ class ApplicationsResource(Resource):
     """Resource for managing applications."""
 
     @staticmethod
-    @auth.has_one_of_roles([PERMISSIONS.VIEW_SUBMISSIONS])
+    @auth.has_one_of_roles(
+        [PERMISSIONS.VIEW_SUBMISSIONS, PERMISSIONS.VIEW_TASKS, PERMISSIONS.MANAGE_TASKS]
+    )
     @profiletime
     @API.doc(
         params={
@@ -169,7 +169,7 @@ class ApplicationsResource(Resource):
         modified_from_date = dict_data.get("modified_from_date")
         modified_to_date = dict_data.get("modified_to_date")
         sort_order = dict_data.get("sort_order", "desc")
-        if auth.has_role([REVIEWER_GROUP]):
+        if auth.has_role([PERMISSIONS.VIEW_TASKS, PERMISSIONS.MANAGE_TASKS]):
             (
                 application_schema_dump,
                 application_count,
@@ -227,7 +227,9 @@ class ApplicationResourceById(Resource):
     """Resource for getting application by id."""
 
     @staticmethod
-    @auth.has_one_of_roles([PERMISSIONS.VIEW_SUBMISSIONS])
+    @auth.has_one_of_roles(
+        [PERMISSIONS.VIEW_SUBMISSIONS, PERMISSIONS.VIEW_TASKS, PERMISSIONS.MANAGE_TASKS]
+    )
     @profiletime
     @API.response(200, "OK:- Successful request.", model=application_model)
     @API.response(
@@ -240,7 +242,7 @@ class ApplicationResourceById(Resource):
     )
     def get(application_id: int):
         """Get application by id."""
-        if auth.has_role([REVIEWER_GROUP]):
+        if auth.has_role([PERMISSIONS.VIEW_TASKS, PERMISSIONS.MANAGE_TASKS]):
             (
                 application_schema_dump,
                 status,

@@ -195,7 +195,7 @@ class KeycloakGroupService(KeycloakAdmin):
             client_name = current_app.config.get("JWT_OIDC_AUDIENCE")
             client_role = f"{tenant_key}-{client_name}" if tenant_key else client_name
             current_app.logger.debug("Client name %s", client_role)
-            client_roles = data['clientRoles'].get(client_role)
+            client_roles = data["clientRoles"].get(client_role)
             if client_roles:
                 data["permissions"] = client_roles
         return data
@@ -266,10 +266,11 @@ class KeycloakGroupService(KeycloakAdmin):
         # Determine permissions to remove
         role_remove_data_list = []
         for permission in permission_list:
-            if permission['name'] not in permissions:
+            if permission["name"] not in permissions:
                 role_remove_data_list.append(permission)
         self.client.delete_request(
-            url_path=f"groups/{group_id}/role-mappings/clients/{client_id}", data=role_remove_data_list
+            url_path=f"groups/{group_id}/role-mappings/clients/{client_id}",
+            data=role_remove_data_list,
         )
         # Add permissions
         self.create_group_permission_mapping(group_id, permissions, client_id)

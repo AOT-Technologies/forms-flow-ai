@@ -8,9 +8,8 @@ from flask_restx import Namespace, Resource, fields
 from formsflow_api_utils.exceptions import BusinessException
 from formsflow_api_utils.services.external import FormioService
 from formsflow_api_utils.utils import (
-    DESIGNER_GROUP,
-    auth,
     PERMISSIONS,
+    auth,
     cors_preflight,
     profiletime,
 )
@@ -169,8 +168,16 @@ class FormResourceList(Resource):
     """Resource for getting forms."""
 
     @staticmethod
-    @auth.has_one_of_roles([PERMISSIONS.CREATE_DESIGNS
-                            ,PERMISSIONS.VIEW_DESIGNS,PERMISSIONS.CREATE_SUBMISSIONS,PERMISSIONS.CREATE_FILTERS,PERMISSIONS.VIEW_FILTERS,PERMISSIONS.MANAGE_ALL_FILTERS])
+    @auth.has_one_of_roles(
+        [
+            PERMISSIONS.CREATE_DESIGNS,
+            PERMISSIONS.VIEW_DESIGNS,
+            PERMISSIONS.CREATE_SUBMISSIONS,
+            PERMISSIONS.CREATE_FILTERS,
+            PERMISSIONS.VIEW_FILTERS,
+            PERMISSIONS.MANAGE_ALL_FILTERS,
+        ]
+    )
     @profiletime
     @API.doc(
         params={
@@ -386,7 +393,16 @@ class FormResourceByFormId(Resource):
     """Resource for managing forms by corresponding form_id."""
 
     @staticmethod
-    @auth.has_one_of_roles([PERMISSIONS.CREATE_DESIGNS,PERMISSIONS.VIEW_DESIGNS,PERMISSIONS.CREATE_SUBMISSIONS,PERMISSIONS.CREATE_FILTERS,PERMISSIONS.VIEW_FILTERS,PERMISSIONS.MANAGE_ALL_FILTERS])
+    @auth.has_one_of_roles(
+        [
+            PERMISSIONS.CREATE_DESIGNS,
+            PERMISSIONS.VIEW_DESIGNS,
+            PERMISSIONS.CREATE_SUBMISSIONS,
+            PERMISSIONS.CREATE_FILTERS,
+            PERMISSIONS.VIEW_FILTERS,
+            PERMISSIONS.MANAGE_ALL_FILTERS,
+        ]
+    )
     @profiletime
     @API.response(
         200, "CREATED:- Successful request.", model=mapper_create_response_model
@@ -424,7 +440,13 @@ class FormResourceApplicationCount(Resource):
     """Resource for getting applications count according to a mapper id."""
 
     @staticmethod
-    @auth.has_one_of_roles([PERMISSIONS.CREATE_DESIGNS,PERMISSIONS.VIEW_DESIGNS,PERMISSIONS.CREATE_SUBMISSIONS])
+    @auth.has_one_of_roles(
+        [
+            PERMISSIONS.CREATE_DESIGNS,
+            PERMISSIONS.VIEW_DESIGNS,
+            PERMISSIONS.CREATE_SUBMISSIONS,
+        ]
+    )
     @profiletime
     @API.response(200, "OK:- Successful request.", model=application_count_model)
     @API.response(

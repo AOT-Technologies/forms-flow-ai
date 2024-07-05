@@ -39,29 +39,31 @@ process_response = API.inherit(
 )
 
 process_list_model = API.model(
-        "ProcessList",
-        {
-            "process": fields.List(
-                fields.Nested(
-                    API.model(
-                        "Process",
-                        {
-                            "id": fields.Integer(description="Unique id of the process"),
-                            "name": fields.String(description="Process name"),
-                            "status": fields.String(description="Process status"),
-                            "processType": fields.String(description="Process Type"),
-                            "processData": fields.String(description="Process data"),
-                            "tenant": fields.String(description="Authorized Tenant to the process"),
-                            "created": fields.DateTime(description="Created time"),
-                            "modified": fields.DateTime(description="Modified time"),
-                            "createdBy": fields.String(),
-                            "modifiedBy": fields.String()
-                        }
-                    )
+    "ProcessList",
+    {
+        "process": fields.List(
+            fields.Nested(
+                API.model(
+                    "Process",
+                    {
+                        "id": fields.Integer(description="Unique id of the process"),
+                        "name": fields.String(description="Process name"),
+                        "status": fields.String(description="Process status"),
+                        "processType": fields.String(description="Process Type"),
+                        "processData": fields.String(description="Process data"),
+                        "tenant": fields.String(
+                            description="Authorized Tenant to the process"
+                        ),
+                        "created": fields.DateTime(description="Created time"),
+                        "modified": fields.DateTime(description="Modified time"),
+                        "createdBy": fields.String(),
+                        "modifiedBy": fields.String(),
+                    },
                 )
-            ),
-            "totalCount": fields.Integer(),
-        }
+            )
+        ),
+        "totalCount": fields.Integer(),
+    },
 )
 
 

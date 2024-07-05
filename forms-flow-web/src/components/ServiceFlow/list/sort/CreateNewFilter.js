@@ -9,6 +9,7 @@ import {
   fetchTaskVariables,
 } from "../../../../apiManager/services/processServices";
 import { listProcess } from "../../../../apiManager/services/formatterService";
+import userRoles from "../../../../constants/permissions";
 
 import {
   deleteFilters,
@@ -47,7 +48,6 @@ import {
 import { trimFirstSlash } from "../../constants/taskConstants";
 import { cloneDeep, omitBy } from "lodash";
 import {
-  FORMSFLOW_ADMIN,
   MULTITENANCY_ENABLED,
 } from "../../../../constants/constants";
 import { fetchAllForms } from "../../../../apiManager/services/bpmFormServices";
@@ -76,7 +76,6 @@ export default function CreateNewFilterDrawer({
   const [showUndefinedVariable, setShowUndefinedVariable] = useState(false);
   const [definitionKeyId, setDefinitionKeyId] = useState("");
   const [candidateGroup, setCandidateGroup] = useState([]);
-  const userRoles = useSelector((state) => state.user.roles || []);
   const [assignee, setAssignee] = useState("");
   const [filterDisplayOrder, setFIlterDisplayOrder] = useState(null);
 
@@ -95,7 +94,7 @@ export default function CreateNewFilterDrawer({
   const tenantKey = useSelector((state) => state.tenants?.tenantId);
   const process = useSelector((state) => state.process?.processList);
   const processList = useMemo(() => listProcess(process, true), [process]);
-  
+  const { createFilters, admin, manageAllFilters } = userRoles();
   const userGroups = useSelector(
     (state) => state.userAuthorization?.userGroups
   );
@@ -237,7 +236,7 @@ export default function CreateNewFilterDrawer({
       }
 
       // if the user has this role then we will check the condition else it will always true
-      if (userRoles.includes(FORMSFLOW_ADMIN)) {
+      if (admin) {
         setIsTasksForCurrentUserGroupsEnabled(
           selectedFilterData?.criteria?.candidateGroupsExpression ? true : false
         );
@@ -711,7 +710,7 @@ export default function CreateNewFilterDrawer({
           </h5>
         </div>
 
-        {userRoles.includes(FORMSFLOW_ADMIN) && (
+        {admin && (
           <>
             <div className="d-flex align-items-center mt-1">
               <input
@@ -1032,15 +1031,17 @@ export default function CreateNewFilterDrawer({
   return (
     <div>
       <React.Fragment key="left">
-        <button
-          onClick={() => {
-            toggleDrawer();
-            clearAllFilters();
-          }}
-          className="btn  btn-outline-primary"
-        >
-          <Translation>{(t) => t("Create New Filter")}</Translation>
-        </button>
+        {(createFilters || manageAllFilters) && (
+      <button
+        onClick={() => {
+          toggleDrawer();
+          clearAllFilters();
+        }}
+        className="btn btn-outline-primary"
+      >
+        <Translation>{(t) => t("Create New Filter")}</Translation>
+      </button>
+    )}
         {modalShow && (
           <div>
             <TaskAttributeComponent

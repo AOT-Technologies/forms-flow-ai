@@ -60,12 +60,12 @@ public class KeycloakUserService  extends org.camunda.bpm.extension.keycloak.Key
     @Override
     public List<User> requestUsersByGroupId(CacheableKeycloakUserQuery query) {
         List<User> users;
-        if (enableClientAuth) {
-            if (enableMultiTenancy) {
-                users = this.requestUsersByClientRoleAndTenantId();
-            } else {
+        if (enableClientAuth && !enableMultiTenancy) {
+//            if (enableMultiTenancy) {
+//                users = this.requestUsersByClientRoleAndTenantId();
+//            } else {
                 users = this.requestUsersByClientRole();
-            }
+//            }
         } else {
             users = super.requestUsersByGroupId(query);
         }
@@ -76,12 +76,12 @@ public class KeycloakUserService  extends org.camunda.bpm.extension.keycloak.Key
     @Override
     public List<User> requestUsersWithoutGroupId(CacheableKeycloakUserQuery query) {
         List<User> users;
-        if (enableClientAuth) {
-            if (enableMultiTenancy) {
-                users = this.requestUsersByClientRoleAndTenantId();
-            } else {
-                users = this.requestUsersByClientRole();
-            }
+        if (enableClientAuth && !enableMultiTenancy) {
+//            if (enableMultiTenancy) {
+//                users = this.requestUsersByClientRoleAndTenantId();
+//            } else {
+            users = this.requestUsersByClientRole();
+//            }
         } else {
             users = super.requestUsersWithoutGroupId(query);
         }
@@ -106,7 +106,7 @@ public class KeycloakUserService  extends org.camunda.bpm.extension.keycloak.Key
 
             // get groups of this user
             ResponseEntity<String> response = restTemplate.exchange(keycloakConfiguration.getKeycloakAdminUrl()
-                            + "/clients/" + keycloakClientID + "/roles/formsflow-reviewer/users", HttpMethod.GET,
+                            + "/clients/" + keycloakClientID + "/roles/view_tasks/users", HttpMethod.GET,
                     String.class);
             if (!response.getStatusCode().equals(HttpStatus.OK)) {
                 throw new IdentityProviderException(
@@ -163,7 +163,7 @@ public class KeycloakUserService  extends org.camunda.bpm.extension.keycloak.Key
 
             // get groups of this user
             ResponseEntity<String> response = restTemplate.exchange(keycloakConfiguration.getKeycloakAdminUrl()
-                            + "/clients/" + keycloakClientID + "/roles/formsflow-reviewer/users", HttpMethod.GET,
+                            + "/clients/" + keycloakClientID + "/roles/view_tasks/users", HttpMethod.GET,
                     String.class);
             if (!response.getStatusCode().equals(HttpStatus.OK)) {
                 throw new IdentityProviderException(

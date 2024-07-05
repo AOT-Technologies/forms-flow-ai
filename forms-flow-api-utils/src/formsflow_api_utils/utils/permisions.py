@@ -17,7 +17,9 @@ class Permissions(Enum):
     MANAGE_USERS = "manage_users"
     MANAGE_ROLES = "manage_roles"
     ADMIN= "admin"
-    
+
+PERMISSIONS = {perm.name: perm.value for perm in Permissions}
+
 PERMISSION_DETAILS = [
     {"name": Permissions.CREATE_DESIGNS.value, "description": "Create Form, workflow designs", "depends_on": [Permissions.VIEW_DESIGNS.value]},
     {"name": Permissions.VIEW_DESIGNS.value, "description": "Access to design", "depends_on": []},

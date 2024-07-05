@@ -7,6 +7,7 @@ from flask_restx import Namespace, Resource, fields
 from formsflow_api_utils.utils import (
     ADMIN_GROUP,
     auth,
+    Permissions,
     cors_preflight,
     profiletime,
 )
@@ -37,7 +38,7 @@ class ThemeCustomizationResource(Resource):
     """Resource to manage create update and get theme."""
 
     @staticmethod
-    @auth.has_one_of_roles([ADMIN_GROUP])
+    @auth.has_one_of_roles([Permissions.ADMIN])
     @profiletime
     @API.doc(
         responses={
@@ -76,7 +77,7 @@ class ThemeCustomizationResource(Resource):
         return response, status
 
     @staticmethod
-    @auth.has_one_of_roles([ADMIN_GROUP])
+    @auth.has_one_of_roles([Permissions.ADMIN])
     @profiletime
     @API.doc(
         responses={

@@ -8,7 +8,7 @@ from flask_jwt_oidc import JwtManager
 
 from jose import jwt as json_web_token
 from jose.exceptions import JWTError
-from .permisions import build_permission_dict
+
 from ..exceptions import BusinessException, ExternalError
 
 jwt = JwtManager()  # pylint: disable=invalid-name
@@ -43,28 +43,9 @@ class Auth:
             @Auth.require
             @wraps(f)
             def wrapper(*args, **kwargs):
-                PERMISSIONS = build_permission_dict()
-                # Set to store roles that do not have any dependencies
-                non_dependencies_roles = set()
-                
-                # Set to store roles that have dependencies
-                dependent_roles = set()
-
-                for role in roles:
-                    permission = PERMISSIONS.get(role)
-                    if permission:
-                        # Check if the role depends on any other roles
-                        if permission["depends_on"]:
-                            dependent_roles.add(role)
-                            dependent_roles.update(permission["depends_on"])
-                        else:
-                            non_dependencies_roles.add(role)
-
-                if non_dependencies_roles and jwt.contains_role(list(non_dependencies_roles)):
+                if jwt.contains_role(roles):
                     return f(*args, **kwargs)
 
-                if dependent_roles and jwt.validate_roles(list(dependent_roles)):
-                    return f(*args, **kwargs)
                 raise BusinessException(ExternalError.UNAUTHORIZED)
 
             return wrapper
@@ -72,16 +53,9 @@ class Auth:
         return decorated
 
     @classmethod
-    def has_role(cls, roles):
+    def has_role(cls, role):
         """Method to validate the role."""
-        PERMISSIONS = build_permission_dict()
-        all_roles = []
-        for role in roles:
-            permission = PERMISSIONS[role]
-            if permission:
-                all_roles.extend(permission["depends_on"])
-            all_roles.append(role)
-        return jwt.validate_roles(all_roles)
+        return jwt.validate_roles(role)
 
     @classmethod
     def require_custom(cls, f):

@@ -8,6 +8,7 @@ from formsflow_api_utils.utils import (
     DESIGNER_GROUP,
     REVIEWER_GROUP,
     auth,
+    PERMISSIONS,
     cors_preflight,
     get_form_and_submission_id_from_form_url,
     profiletime,
@@ -98,7 +99,7 @@ class ApplicationsResource(Resource):
     """Resource for managing applications."""
 
     @staticmethod
-    @auth.require
+    @auth.has_one_of_roles([PERMISSIONS.VIEW_SUBMISSIONS])
     @profiletime
     @API.doc(
         params={
@@ -226,7 +227,7 @@ class ApplicationResourceById(Resource):
     """Resource for getting application by id."""
 
     @staticmethod
-    @auth.require
+    @auth.has_one_of_roles([PERMISSIONS.VIEW_SUBMISSIONS])
     @profiletime
     @API.response(200, "OK:- Successful request.", model=application_model)
     @API.response(
@@ -256,7 +257,7 @@ class ApplicationResourceById(Resource):
         return application, status
 
     @staticmethod
-    @auth.require
+    @auth.has_one_of_roles([PERMISSIONS.VIEW_SUBMISSIONS])
     @profiletime
     @API.doc(body=application_update_model)
     @API.response(200, "OK:- Successful request.")
@@ -376,7 +377,7 @@ class ApplicationResourceCountByFormId(Resource):
     """Resource for getting applications count on formid."""
 
     @staticmethod
-    @auth.has_one_of_roles([DESIGNER_GROUP])
+    @auth.has_one_of_roles([PERMISSIONS.CREATE_DESIGNS])
     @profiletime
     def get(form_id: str):
         """Get application count by formId."""
@@ -400,7 +401,7 @@ class ApplicationResourcesByIds(Resource):
     """Resource for application creation."""
 
     @staticmethod
-    @auth.require
+    @auth.has_one_of_roles([PERMISSIONS.CREATE_SUBMISSIONS])
     @profiletime
     @API.doc(body=application_create_model)
     @API.response(201, "CREATED:- Successful request.", model=application_base_model)
@@ -442,7 +443,7 @@ class ApplicationResourceByApplicationStatus(Resource):
     """Get application status list."""
 
     @staticmethod
-    @auth.require
+    @auth.has_one_of_roles([PERMISSIONS.VIEW_SUBMISSIONS])
     @profiletime
     @API.response(200, "OK:- Successful request.", model=application_status_list_model)
     @API.response(
@@ -467,7 +468,7 @@ class ApplicationResubmitById(Resource):
     """Resource for resubmit application."""
 
     @staticmethod
-    @auth.require
+    @auth.has_one_of_roles([PERMISSIONS.CREATE_SUBMISSIONS])
     @profiletime
     @API.doc(body=application_resubmit_model)
     @API.response(200, "OK:- Successful request.")

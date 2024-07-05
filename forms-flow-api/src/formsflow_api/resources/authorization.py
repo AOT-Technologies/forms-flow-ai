@@ -8,6 +8,7 @@ from formsflow_api_utils.exceptions import BusinessException
 from formsflow_api_utils.utils import (
     DESIGNER_GROUP,
     auth,
+    PERMISSIONS,
     cors_preflight,
     profiletime,
 )
@@ -48,7 +49,7 @@ class AuthorizationList(Resource):
 
     @staticmethod
     @API.doc("list_authorization")
-    @auth.require
+    @auth.has_one_of_roles([PERMISSIONS.ADMIN])
     @profiletime
     @API.doc(
         responses={
@@ -121,7 +122,7 @@ class UserAuthorizationList(Resource):
 
     @staticmethod
     @API.doc("list_authorization")
-    @auth.require
+    @auth.has_one_of_roles([PERMISSIONS.VIEW_DASHBOARDS])
     @profiletime
     @API.doc(
         responses={
@@ -152,7 +153,7 @@ class AuthorizationDetail(Resource):
 
     @staticmethod
     @API.doc("Authorization detail by Id")
-    @auth.require
+    @auth.has_one_of_roles([PERMISSIONS.CREATE_DESIGNS,PERMISSIONS.VIEW_DESIGNS])
     @profiletime
     @API.doc(
         responses={
@@ -190,7 +191,7 @@ class AuthorizationListById(Resource):
 
     @staticmethod
     @API.doc("Authorization list by Id")
-    @auth.has_one_of_roles([DESIGNER_GROUP])
+    @auth.has_one_of_roles([PERMISSIONS.CREATE_DESIGNS])
     @profiletime
     @API.doc(
         responses={
@@ -212,7 +213,7 @@ class AuthorizationListById(Resource):
 
     @staticmethod
     @API.doc("Authorization create by Id")
-    @auth.has_one_of_roles([DESIGNER_GROUP])
+    @auth.has_one_of_roles([PERMISSIONS.CREATE_DESIGNS])
     @profiletime
     @API.doc(
         responses={

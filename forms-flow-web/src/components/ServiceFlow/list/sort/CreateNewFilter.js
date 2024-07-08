@@ -78,6 +78,7 @@ export default function CreateNewFilterDrawer({
   const [candidateGroup, setCandidateGroup] = useState([]);
   const userRoles = useSelector((state) => state.user.roles || []);
   const [assignee, setAssignee] = useState("");
+  const [filterDisplayOrder, setFIlterDisplayOrder] = useState(null);
 
   const [
     isTasksForCurrentUserGroupsEnabled,
@@ -94,6 +95,7 @@ export default function CreateNewFilterDrawer({
   const tenantKey = useSelector((state) => state.tenants?.tenantId);
   const process = useSelector((state) => state.process?.processList);
   const processList = useMemo(() => listProcess(process, true), [process]);
+
   const userGroups = useSelector(
     (state) => state.userAuthorization?.userGroups
   );
@@ -140,20 +142,20 @@ export default function CreateNewFilterDrawer({
     dispatch(setFilterListParams(cloneDeep(selectedBPMFilterParams)));
   };
 
-  const customTrim = (inputString) => {
-    // Remove '%' symbol from the start
-    const startIndex = inputString?.indexOf("%");
-    if (startIndex === 0) {
-      inputString = inputString?.substring(1);
-    }
+  // const customTrim = (inputString) => {
+  //   // Remove '%' symbol from the start
+  //   const startIndex = inputString?.indexOf("%");
+  //   if (startIndex === 0) {
+  //     inputString = inputString?.substring(1);
+  //   }
 
-    // Remove '%' symbol from the end
-    const endIndex = inputString?.lastIndexOf("%");
-    if (endIndex === inputString?.length - 1) {
-      inputString = inputString?.substring(0, endIndex);
-    }
-    return inputString;
-  };
+  //   // Remove '%' symbol from the end
+  //   const endIndex = inputString?.lastIndexOf("%");
+  //   if (endIndex === inputString?.length - 1) {
+  //     inputString = inputString?.substring(0, endIndex);
+  //   }
+  //   return inputString;
+  // };
 
   const handleFetchTaskVariables = (formId) => {
     setProcessLoading(true);
@@ -181,10 +183,11 @@ export default function CreateNewFilterDrawer({
 
   useEffect(() => {
     if (selectedFilterData) {
-      setFilterName(selectedFilterData?.name);
+      setFilterName(selectedFilterData.name);
+      setFIlterDisplayOrder(selectedFilterData.order);
       let processDefinitionName =
-        selectedFilterData?.criteria?.processDefinitionNameLike;
-      setDefinitionKeyId(customTrim(processDefinitionName));
+        selectedFilterData?.criteria?.processDefinitionKey;
+      setDefinitionKeyId(processDefinitionName);
       let candidateGroupName = selectedFilterData?.criteria?.candidateGroup;
       if (
         MULTITENANCY_ENABLED &&
@@ -359,6 +362,7 @@ export default function CreateNewFilterDrawer({
     setTaskVariableFromMapperTable([]);
     setCheckboxes(initialValueOfTaskAttribute);
     setForms({ data: [], isLoading: true });
+    setFIlterDisplayOrder(null);
   };
 
   const handleSubmit = () => {
@@ -393,8 +397,9 @@ export default function CreateNewFilterDrawer({
 
     const data = {
       name: filterName,
+      order: filterDisplayOrder,
       criteria: {
-        processDefinitionNameLike: definitionKeyId && `%${definitionKeyId}%`,
+        processDefinitionKey: definitionKeyId,
         candidateGroup:
           MULTITENANCY_ENABLED && candidateGroup
             ? tenantKey + "-" + candidateGroup
@@ -460,8 +465,9 @@ export default function CreateNewFilterDrawer({
               fetchBPMTaskCount(data.filters)
                 .then((res) => {
                   dispatch(setBPMFiltersAndCount(res.data));
-                  dispatch(fetchServiceTaskList(data.defaultFilter || data.filters[0]
-                    , null, firstResult));
+                  const filter = data.filters.find((i) => data.defaultFilter == i.id) ||
+                    data.filters[0];
+                  dispatch(fetchServiceTaskList(filter, null, firstResult));
                 })
                 .catch((err) => {
                   if (err) {
@@ -604,6 +610,15 @@ export default function CreateNewFilterDrawer({
     }
   };
 
+  const handleOrderChange = (e) => {
+    const value = e.target.value;
+    const pattern = /^[1-9]\d*$/;
+    const validInput = pattern.test(e.target.value);
+    setFIlterDisplayOrder(() =>
+      value ? Number(validInput ? value : filterDisplayOrder) : null
+    );
+  };
+
   const list = () => (
     <div role="none">
       <List>
@@ -656,6 +671,24 @@ export default function CreateNewFilterDrawer({
           )}
         </div>
       </List>
+      <List>
+        <div className="form-group">
+          <label htmlFor="filterDisplayOrder">
+            {t("Filter display order")}
+          </label>
+          <input
+            type="text"
+            className="form-control"
+            id="filterDisplayOrder"
+            placeholder={t("Enter filter display order")}
+            value={filterDisplayOrder}
+            min={1}
+            onChange={handleOrderChange}
+            title={t("Enter fliter display order")}
+            disabled={viewMode}
+          />
+        </div>
+      </List>
 
       <List>
         <h5 className="fw-bold fs-18">
@@ -669,14 +702,14 @@ export default function CreateNewFilterDrawer({
         </h5>
         <div className="d-flex align-items-center mt-1">
           <input
-            className="mr-6 mt-3"
+            className="me-1 mt-3"
             type="checkbox"
             checked={isMyTasksEnabled}
             onChange={(e) => setIsMyTasksEnabled(e.target.checked)}
             title={t("Show only current user assigned task")}
             disabled={viewMode}
           />
-          <h5 className="assigned-user mt-3">
+          <h5 className="mt-3 fw-normal">
             <Translation>
               {(t) => t("Show only current user assigned task")}
             </Translation>
@@ -687,7 +720,7 @@ export default function CreateNewFilterDrawer({
           <>
             <div className="d-flex align-items-center mt-1">
               <input
-                className="mr-6"
+                className="me-1 mt-3"
                 type="checkbox"
                 checked={isTasksForCurrentUserGroupsEnabled}
                 onChange={(e) =>
@@ -696,7 +729,7 @@ export default function CreateNewFilterDrawer({
                 title={t("Display authorized tasks based on user roles")}
                 disabled={viewMode}
               />
-              <h5 className="assigned-user">
+              <h5 className="mt-3 fw-normal">
                 <Translation>
                   {(t) => t("Display authorized tasks based on user roles")}
                 </Translation>
@@ -715,7 +748,7 @@ export default function CreateNewFilterDrawer({
 
         <div className="my-2">
           <label htmlFor="select-workflow">
-            <h5 className="mt-2 fs-18 fw-bold">
+            <h5 className="mt-2 fw-bold">
               <Translation>{(t) => t("Workflow")}</Translation>
             </h5>
           </label>
@@ -725,9 +758,9 @@ export default function CreateNewFilterDrawer({
             options={processList}
             placeholder={t("Select Workflow")}
             isClearable
-            value={processList?.find((list) => list.label === definitionKeyId)}
+            value={processList?.find((list) => list.value === definitionKeyId)}
             onChange={(selectedOption) => {
-              setDefinitionKeyId(selectedOption?.label);
+              setDefinitionKeyId(selectedOption?.value);
             }}
             filterOption={filterSelectOptionByLabel}
             inputId="select-workflow"
@@ -825,7 +858,7 @@ export default function CreateNewFilterDrawer({
         </div>
         <Divider />
         <div className="child-container-two pt-2">
-          <h5 className="fw-bold">
+          <h5>
             <Translation>{(t) => t("Permission")}</Translation>{" "}
             <i
               title={t(
@@ -844,7 +877,7 @@ export default function CreateNewFilterDrawer({
             onChange={(e) => setPermissions(e.target.value)}
             disabled={viewMode}
           />
-          <label htmlFor="all-users" className="assigned-user">
+          <label htmlFor="all-users" className="assigned-user fs-18">
             <Translation>{(t) => t("Accessible for all users")}</Translation>
           </label>{" "}
           <br />

@@ -180,7 +180,7 @@ function ClientTable() {
                       onKeyDown={(e) =>
                         e.keyCode === 13 ? handleSearch() : ""
                       }
-                      className="bg-white"
+                      className="bg-white out-line"
                       data-testid="form-search-input-box"
                       placeholder={t("Search by form title")}
                       title={t("Search by form title")}

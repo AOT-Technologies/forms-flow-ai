@@ -3,13 +3,17 @@ import { kcServiceInstance } from "../PrivateRoute"; // Import the kcServiceInst
 import { ReactComponent as AccessDeniedIcon } from "./AccessDenied.svg";
 import './accessDenied.scss';
 import { useTranslation } from "react-i18next";
-import { BASE_ROUTE } from "../../constants/constants";
+import { useSelector } from "react-redux";
 import { useHistory } from "react-router-dom";
+import { MULTITENANCY_ENABLED } from "../../constants/constants";
 
 
 const AccessDenied = ({ userRoles }) => {
   const { t } = useTranslation();
   const history = useHistory();
+  const tenantKey = useSelector((state) => state.tenants?.tenantId);
+  const redirectUrl = MULTITENANCY_ENABLED ? `/tenant/${tenantKey}/` : "/";
+
 
   const handleLogout = () => {
     const kcInstance = kcServiceInstance(); 
@@ -17,7 +21,7 @@ const AccessDenied = ({ userRoles }) => {
   };
 
   const handleReturn = () => {
-    history.push(BASE_ROUTE);
+    history.push(redirectUrl);
   };
 
   const showReturnToLogin = userRoles?.length === 0;

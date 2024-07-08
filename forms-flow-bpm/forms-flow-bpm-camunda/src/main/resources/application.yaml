@@ -114,6 +114,13 @@ spring:
           issuer-uri: ${keycloak.url}${keycloak.url.httpRelativePath}/realms/${keycloak.url.realm}
   main:
     allow-bean-definition-overriding: true
+  cloud:
+    vault:
+      enabled: ${VAULT_ENABLED:false}
+      path: ${VAULT_PATH}
+      secret: ${VAULT_SECRET} # secret name
+      token: ${VAULT_TOKEN}
+      uri: ${VAULT_URL}
 
 # Keycloak JWT Client configuration
 keycloak.jwt.realm: ${KEYCLOAK_URL_REALM}

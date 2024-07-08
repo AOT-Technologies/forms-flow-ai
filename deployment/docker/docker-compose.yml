@@ -120,6 +120,11 @@ services:
       - REDIS_PORT=${REDIS_PORT:-6379}
       - REDIS_PASSCODE=${REDIS_PASSCODE:-changeme}
       - SESSION_COOKIE_SECURE=${SESSION_COOKIE_SECURE:-false}
+      - VAULT_ENABLED=${VAULT_ENABLED:-false}
+      - VAULT_URL=${VAULT_URL}
+      - VAULT_TOKEN=${VAULT_TOKEN}
+      - VAULT_PATH=${VAULT_PATH}
+      - VAULT_SECRET=${VAULT_SECRET}
     networks:
       - forms-flow-network
  

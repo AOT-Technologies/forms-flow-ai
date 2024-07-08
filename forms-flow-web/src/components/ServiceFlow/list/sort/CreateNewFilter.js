@@ -73,6 +73,7 @@ export default function CreateNewFilterDrawer({
 }) {
   const dispatch = useDispatch();
   const [filterName, setFilterName] = useState("");
+  const [createdBy, setCreatedBy] = useState("");
   const [showUndefinedVariable, setShowUndefinedVariable] = useState(false);
   const [definitionKeyId, setDefinitionKeyId] = useState("");
   const [candidateGroup, setCandidateGroup] = useState([]);
@@ -99,8 +100,8 @@ export default function CreateNewFilterDrawer({
   const userGroups = useSelector(
     (state) => state.userAuthorization?.userGroups
   );
-  const userName = useSelector(
-    (state) => state.user?.userDetail?.preferred_username
+  const userDetails = useSelector(
+    (state) => state.user?.userDetail
   );
   const sortParams = useSelector(
     (state) => state.bpmTasks.filterListSortParams
@@ -184,6 +185,7 @@ export default function CreateNewFilterDrawer({
   useEffect(() => {
     if (selectedFilterData) {
       setFilterName(selectedFilterData.name);
+      setCreatedBy(selectedFilterData.createdBy);
       setFIlterDisplayOrder(selectedFilterData.order);
       let processDefinitionName =
         selectedFilterData?.criteria?.processDefinitionKey;
@@ -373,7 +375,7 @@ export default function CreateNewFilterDrawer({
       roles = [];
     }
     if (permissions === PRIVATE_ONLY_YOU) {
-      users.push(userName);
+      users.push(userDetails.preferred_username);
     }
     if (
       selectUserGroupIcon === "user" &&
@@ -909,6 +911,13 @@ export default function CreateNewFilterDrawer({
             <Translation>{(t) => t("Specific Group")}</Translation>
           </label>{" "}
           <br />
+          {createdBy && <>
+            <h5 className="fw-bold ">
+              <Translation>{(t) => t("Filter Created by")}</Translation>
+            </h5>
+            <i className="fa-solid fa-user me-2"></i>
+            {createdBy}
+          </>}
           {permissions === SPECIFIC_USER_OR_GROUP &&
           specificUserGroup === SPECIFIC_USER_OR_GROUP ? (
             <div className="d-flex">
@@ -951,7 +960,7 @@ export default function CreateNewFilterDrawer({
                     <i
                       className={`fa fa-users ${
                         selectUserGroupIcon === "group" ? "highlight" : ""
-                      } cursor-pointer group-icon`}
+                        } cursor-pointer group-icon`}
                     />
                   </div>
                 </div>

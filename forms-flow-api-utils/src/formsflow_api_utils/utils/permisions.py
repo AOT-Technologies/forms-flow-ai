@@ -17,7 +17,17 @@ class Permissions(Enum):
     MANAGE_USERS = "manage_users"
     MANAGE_ROLES = "manage_roles"
     ADMIN= "admin"
+
+
     
+class PERMISSIONS:
+    pass
+
+# Dynamically adding attributes to the PERMISSIONS class
+for perm in Permissions:
+    setattr(PERMISSIONS, perm.name, perm.value)
+
+
 PERMISSION_DETAILS = [
     {"name": Permissions.CREATE_DESIGNS.value, "description": "Create Form, workflow designs", "depends_on": [Permissions.VIEW_DESIGNS.value]},
     {"name": Permissions.VIEW_DESIGNS.value, "description": "Access to design", "depends_on": []},

@@ -1,4 +1,5 @@
 """This exposes application service."""
+
 import asyncio
 import json
 from datetime import datetime
@@ -42,11 +43,11 @@ class ApplicationService:  # pylint: disable=too-many-public-methods
 
     @staticmethod
     def get_start_task_payload(
-            application: Application,
-            mapper: FormProcessMapper,
-            form_url: str,
-            web_form_url: str,
-            variables: Dict,
+        application: Application,
+        mapper: FormProcessMapper,
+        form_url: str,
+        web_form_url: str,
+        variables: Dict,
     ) -> Dict:
         """Returns the payload for initiating the task."""
         return {
@@ -65,7 +66,7 @@ class ApplicationService:  # pylint: disable=too-many-public-methods
 
     @staticmethod
     async def start_task(
-            mapper: FormProcessMapper, payload: Dict, token: str, application_id: int
+        mapper: FormProcessMapper, payload: Dict, token: str, application_id: int
     ) -> None:
         """Trigger bpmn workflow to create a task."""
         try:
@@ -93,7 +94,9 @@ class ApplicationService:  # pylint: disable=too-many-public-methods
                 "error": camunda_error,
             }
             current_app.logger.critical(response)
-            raise BusinessException(BusinessErrorCode.PROCESS_START_ERROR) from camunda_error
+            raise BusinessException(
+                BusinessErrorCode.PROCESS_START_ERROR
+            ) from camunda_error
 
     @staticmethod
     @user_context
@@ -139,12 +142,16 @@ class ApplicationService:  # pylint: disable=too-many-public-methods
                 application.commit()  # Commit the record
                 # Creating the process instance asynchronously.
                 asyncio.run(
-                    ApplicationService.start_task(mapper, payload, token, application.id)
+                    ApplicationService.start_task(
+                        mapper, payload, token, application.id
+                    )
                 )
 
         except Exception as e:
             current_app.logger.error("Error occurred during application creation %s", e)
-            if application:  # If application instance is created, rollback the transaction.
+            if (
+                application
+            ):  # If application instance is created, rollback the transaction.
                 application.rollback()
             raise BusinessException(BusinessErrorCode.APPLICATION_CREATE_ERROR) from e
 
@@ -178,19 +185,19 @@ class ApplicationService:  # pylint: disable=too-many-public-methods
     @staticmethod
     @user_context
     def get_auth_applications_and_count(  # pylint: disable=too-many-arguments,too-many-locals
-            page_no: int,
-            limit: int,
-            order_by: str,
-            created_from: datetime,
-            created_to: datetime,
-            modified_from: datetime,
-            modified_to: datetime,
-            application_id: int,
-            application_name: str,
-            application_status: str,
-            created_by: str,
-            sort_order: str,
-            **kwargs,
+        page_no: int,
+        limit: int,
+        order_by: str,
+        created_from: datetime,
+        created_to: datetime,
+        modified_from: datetime,
+        modified_to: datetime,
+        application_id: int,
+        application_name: str,
+        application_status: str,
+        created_by: str,
+        sort_order: str,
+        **kwargs,
     ):
         """Get applications only from authorized groups."""
         # access, resource_list = ApplicationService._application_access(token)
@@ -261,19 +268,19 @@ class ApplicationService:  # pylint: disable=too-many-public-methods
     @staticmethod
     @user_context
     def get_all_applications_by_user(  # pylint: disable=too-many-arguments,too-many-locals
-            page_no: int,
-            limit: int,
-            order_by: str,
-            sort_order: str,
-            created_from: datetime,
-            created_to: datetime,
-            modified_from: datetime,
-            modified_to: datetime,
-            created_by: str,
-            application_status: str,
-            application_name: str,
-            application_id: int,
-            **kwargs,
+        page_no: int,
+        limit: int,
+        order_by: str,
+        sort_order: str,
+        created_from: datetime,
+        created_to: datetime,
+        modified_from: datetime,
+        modified_to: datetime,
+        created_by: str,
+        application_status: str,
+        application_name: str,
+        application_id: int,
+        **kwargs,
     ):
         """Get all applications based on user."""
         user: UserContext = kwargs["user"]
@@ -328,7 +335,7 @@ class ApplicationService:  # pylint: disable=too-many-public-methods
     @staticmethod
     @user_context
     def get_all_applications_form_id_user(
-            form_id: str, page_no: int, limit: int, **kwargs
+        form_id: str, page_no: int, limit: int, **kwargs
     ):
         """Get all applications."""
         user: UserContext = kwargs["user"]
@@ -389,14 +396,14 @@ class ApplicationService:  # pylint: disable=too-many-public-methods
 
     @staticmethod
     def get_aggregated_applications(  # pylint: disable=too-many-arguments
-            from_date: str,
-            to_date: str,
-            page_no: int,
-            limit: int,
-            form_name: str,
-            sort_by: str,
-            sort_order: str,
-            order_by: str,
+        from_date: str,
+        to_date: str,
+        page_no: int,
+        limit: int,
+        form_name: str,
+        sort_by: str,
+        sort_order: str,
+        order_by: str,
     ):
         """Get aggregated applications."""
         applications, get_all_metrics_count = Application.find_aggregated_applications(
@@ -419,11 +426,11 @@ class ApplicationService:  # pylint: disable=too-many-public-methods
     @staticmethod
     @user_context
     def get_applications_status_by_parent_form_id(
-            parent_form_id: str,
-            from_date: datetime,
-            to_date: datetime,
-            order_by: str,
-            **kwargs,
+        parent_form_id: str,
+        from_date: datetime,
+        to_date: datetime,
+        order_by: str,
+        **kwargs,
     ):
         """Get aggregated application status by parent form id."""
         user: UserContext = kwargs["user"]
@@ -443,7 +450,7 @@ class ApplicationService:  # pylint: disable=too-many-public-methods
 
     @staticmethod
     def get_applications_status_by_form_id(
-            form_id: int, from_date: str, to_date: str, order_by: str
+        form_id: int, from_date: str, to_date: str, order_by: str
     ):
         """Get aggregated application status by form id."""
         application_status = Application.find_aggregated_application_status_by_form_id(

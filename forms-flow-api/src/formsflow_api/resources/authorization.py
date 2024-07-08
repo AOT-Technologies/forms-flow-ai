@@ -6,7 +6,7 @@ from flask import request
 from flask_restx import Namespace, Resource, fields
 from formsflow_api_utils.exceptions import BusinessException
 from formsflow_api_utils.utils import (
-    DESIGNER_GROUP,
+    PERMISSIONS,
     auth,
     cors_preflight,
     profiletime,
@@ -48,7 +48,7 @@ class AuthorizationList(Resource):
 
     @staticmethod
     @API.doc("list_authorization")
-    @auth.require
+    @auth.has_one_of_roles([PERMISSIONS.ADMIN])
     @profiletime
     @API.doc(
         responses={
@@ -107,7 +107,7 @@ class AuthorizationList(Resource):
             auth_service.create_authorization(
                 auth_type.upper(),
                 request.get_json(),
-                bool(auth.has_role([DESIGNER_GROUP])),
+                bool(auth.has_role([PERMISSIONS.CREATE_DESIGNS])),
             ),
             HTTPStatus.OK,
         )
@@ -121,7 +121,7 @@ class UserAuthorizationList(Resource):
 
     @staticmethod
     @API.doc("list_authorization")
-    @auth.require
+    @auth.has_one_of_roles([PERMISSIONS.VIEW_DASHBOARDS])
     @profiletime
     @API.doc(
         responses={
@@ -152,7 +152,7 @@ class AuthorizationDetail(Resource):
 
     @staticmethod
     @API.doc("Authorization detail by Id")
-    @auth.require
+    @auth.has_one_of_roles([PERMISSIONS.CREATE_DESIGNS, PERMISSIONS.VIEW_DESIGNS])
     @profiletime
     @API.doc(
         responses={
@@ -168,7 +168,9 @@ class AuthorizationDetail(Resource):
         Fetch Authorization details by resource id based on authorization type.
         """
         response = auth_service.get_resource_by_id(
-            auth_type.upper(), resource_id, bool(auth.has_role([DESIGNER_GROUP]))
+            auth_type.upper(),
+            resource_id,
+            bool(auth.has_role([PERMISSIONS.CREATE_DESIGNS])),
         )
         if response:
             return (
@@ -190,7 +192,7 @@ class AuthorizationListById(Resource):
 
     @staticmethod
     @API.doc("Authorization list by Id")
-    @auth.has_one_of_roles([DESIGNER_GROUP])
+    @auth.has_one_of_roles([PERMISSIONS.CREATE_DESIGNS])
     @profiletime
     @API.doc(
         responses={
@@ -212,7 +214,7 @@ class AuthorizationListById(Resource):
 
     @staticmethod
     @API.doc("Authorization create by Id")
-    @auth.has_one_of_roles([DESIGNER_GROUP])
+    @auth.has_one_of_roles([PERMISSIONS.CREATE_DESIGNS])
     @profiletime
     @API.doc(
         responses={
@@ -232,7 +234,7 @@ class AuthorizationListById(Resource):
                 auth_service.create_authorization(
                     auth_type.value.upper(),
                     data.get(auth_type.value.lower()),
-                    bool(auth.has_role([DESIGNER_GROUP])),
+                    bool(auth.has_role([PERMISSIONS.CREATE_DESIGNS])),
                 )
         response = auth_service.get_auth_list_by_id(resource_id)
         if response:

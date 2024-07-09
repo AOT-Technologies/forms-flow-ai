@@ -2,7 +2,7 @@
 
 from flask import current_app
 from formsflow_api_utils.exceptions import BusinessException
-from formsflow_api_utils.utils import ADMIN_GROUP
+from formsflow_api_utils.utils import PERMISSIONS
 from formsflow_api_utils.utils.user_context import UserContext, user_context
 
 from formsflow_api.constants import BusinessErrorCode
@@ -104,7 +104,7 @@ class FilterService:
             roles=user.group_or_roles,
             user=user.user_name,
             tenant=tenant_key,
-            admin=ADMIN_GROUP in user.roles,
+            admin=PERMISSIONS.ADMIN in user.roles,
         )
         filter_data = filter_schema.dump(filters, many=True)
         default_variables = [
@@ -114,7 +114,7 @@ class FilterService:
         # User who created the filter or admin have edit permission.
         for filter_item in filter_data:
             filter_item["editPermission"] = (
-                filter_item["createdBy"] == user.user_name or ADMIN_GROUP in user.roles
+                filter_item["createdBy"] == user.user_name or PERMISSIONS.ADMIN in user.roles
             )
             # Check and add default variables if not present
             filter_item["variables"] = filter_item["variables"] or []
@@ -138,7 +138,7 @@ class FilterService:
             roles=user.group_or_roles,
             user=user.user_name,
             tenant=tenant_key,
-            admin=ADMIN_GROUP in user.roles,
+            admin=PERMISSIONS.ADMIN in user.roles,
         )
         if filter_result:
             return filter_result
@@ -153,7 +153,7 @@ class FilterService:
         filter_result = Filter.find_active_auth_filter_by_id(
             filter_id=filter_id,
             user=user.user_name,
-            admin=ADMIN_GROUP in user.roles,
+            admin=PERMISSIONS.ADMIN in user.roles,
         )
         if filter_result:
             if (
@@ -176,7 +176,7 @@ class FilterService:
         filter_result = Filter.find_active_auth_filter_by_id(
             filter_id=filter_id,
             user=user.user_name,
-            admin=ADMIN_GROUP in user.roles,
+            admin=PERMISSIONS.ADMIN in user.roles,
         )
 
         if filter_result:

@@ -5,7 +5,7 @@ from http import HTTPStatus
 from flask import request
 from flask_restx import Namespace, Resource, fields
 from formsflow_api_utils.utils import (
-    DESIGNER_GROUP,
+    PERMISSIONS,
     auth,
     cors_preflight,
     profiletime,
@@ -73,7 +73,7 @@ class ProcessDataResource(Resource):
     """Resource to create and list process data."""
 
     @staticmethod
-    @auth.has_one_of_roles([DESIGNER_GROUP])
+    @auth.has_one_of_roles([PERMISSIONS.CREATE_DESIGNS])
     @profiletime
     @API.doc(
         params={
@@ -159,7 +159,7 @@ class ProcessDataResource(Resource):
         return response, HTTPStatus.OK
 
     @staticmethod
-    @auth.has_one_of_roles([DESIGNER_GROUP])
+    @auth.has_one_of_roles([PERMISSIONS.CREATE_DESIGNS])
     @profiletime
     @API.doc(
         responses={
@@ -182,7 +182,7 @@ class ProcessResourceById(Resource):
     """Resource for managing process by id."""
 
     @staticmethod
-    @auth.has_one_of_roles([DESIGNER_GROUP])
+    @auth.has_one_of_roles([PERMISSIONS.CREATE_DESIGNS])
     @profiletime
     @API.doc(
         responses={
@@ -199,7 +199,7 @@ class ProcessResourceById(Resource):
         return response, status
 
     @staticmethod
-    @auth.has_one_of_roles([DESIGNER_GROUP])
+    @auth.has_one_of_roles([PERMISSIONS.CREATE_DESIGNS])
     @profiletime
     @API.doc(
         responses={
@@ -219,7 +219,7 @@ class ProcessResourceById(Resource):
         return response, status
 
     @staticmethod
-    @auth.has_one_of_roles([DESIGNER_GROUP])
+    @auth.has_one_of_roles([PERMISSIONS.CREATE_DESIGNS])
     @profiletime
     @API.doc(
         responses={

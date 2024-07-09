@@ -19,7 +19,7 @@ const TaskSearchBarListView = React.memo(({ toggleAllTaskVariables }) => {
   const allTaskVariablesExpanded = useSelector((state) => state.bpmTasks.allTaskVariablesExpand);
   const selectedFilter = useSelector((state) => state.bpmTasks.selectedFilter);
   const filterList = useSelector((state) => state.bpmTasks.filtersAndCount);
-  const taskFilter = filterList.find((task)=>task.id === selectedFilter.id );
+  const taskFilter = filterList?.find((task)=>task.id === selectedFilter.id );
   const taskFiltercount = taskFilter ? taskFilter.count : 0; //Current Task filter count
   const dispatch = useDispatch();
   const { t } = useTranslation();

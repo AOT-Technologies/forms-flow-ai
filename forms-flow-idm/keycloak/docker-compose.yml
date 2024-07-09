@@ -39,7 +39,6 @@ services:
       - KC_DB_URL_DATABASE=${KEYCLOAK_JDBC_DB:-keycloak}
       - KC_DB_USERNAME=${KEYCLOAK_JDBC_USER:-admin}
       - KC_DB_PASSWORD=${KEYCLOAK_JDBC_PASSWORD:-changeme}
-      - KC_DB_URL=jdbc:postgresql://keycloak-db/keycloak
       - KEYCLOAK_ADMIN=${KEYCLOAK_ADMIN_USER:-admin}
       - KEYCLOAK_ADMIN_PASSWORD=${KEYCLOAK_ADMIN_PASSWORD:-changeme}
       - KEYCLOAK_START_MODE=${KEYCLOAK_START_MODE:-start-dev}

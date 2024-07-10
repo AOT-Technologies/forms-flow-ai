@@ -5,7 +5,9 @@ from http import HTTPStatus
 from flask import request
 from flask_restx import Namespace, Resource, fields
 from formsflow_api_utils.utils import (
-    PERMISSIONS,
+    CREATE_FILTERS,
+    MANAGE_ALL_FILTERS,
+    VIEW_FILTERS,
     auth,
     cors_preflight,
     profiletime,
@@ -86,7 +88,7 @@ class FilterResource(Resource):
     """Resource to create and list filter."""
 
     @staticmethod
-    @auth.has_one_of_roles([PERMISSIONS.MANAGE_ALL_FILTERS, PERMISSIONS.VIEW_FILTERS])
+    @auth.has_one_of_roles([MANAGE_ALL_FILTERS, VIEW_FILTERS])
     @profiletime
     @API.doc(
         responses={
@@ -105,7 +107,7 @@ class FilterResource(Resource):
         return response, status
 
     @staticmethod
-    @auth.has_one_of_roles([PERMISSIONS.MANAGE_ALL_FILTERS, PERMISSIONS.CREATE_FILTERS])
+    @auth.has_one_of_roles([MANAGE_ALL_FILTERS, CREATE_FILTERS])
     @profiletime
     @API.doc(
         responses={
@@ -159,7 +161,7 @@ class UsersFilterList(Resource):
     """Resource to list filters specific to current user."""
 
     @staticmethod
-    @auth.has_one_of_roles([PERMISSIONS.MANAGE_ALL_FILTERS, PERMISSIONS.VIEW_FILTERS])
+    @auth.has_one_of_roles([MANAGE_ALL_FILTERS, VIEW_FILTERS])
     @profiletime
     @API.doc(
         responses={
@@ -185,7 +187,7 @@ class FilterResourceById(Resource):
     """Resource for managing filter by id."""
 
     @staticmethod
-    @auth.has_one_of_roles([PERMISSIONS.MANAGE_ALL_FILTERS])
+    @auth.has_one_of_roles([MANAGE_ALL_FILTERS])
     @profiletime
     @API.doc(
         responses={
@@ -207,7 +209,7 @@ class FilterResourceById(Resource):
         return response, status
 
     @staticmethod
-    @auth.has_one_of_roles([PERMISSIONS.MANAGE_ALL_FILTERS, PERMISSIONS.CREATE_FILTERS])
+    @auth.has_one_of_roles([MANAGE_ALL_FILTERS, CREATE_FILTERS])
     @profiletime
     @API.doc(
         responses={
@@ -233,7 +235,7 @@ class FilterResourceById(Resource):
         return response, status
 
     @staticmethod
-    @auth.has_one_of_roles([PERMISSIONS.MANAGE_ALL_FILTERS, PERMISSIONS.CREATE_FILTERS])
+    @auth.has_one_of_roles([MANAGE_ALL_FILTERS, CREATE_FILTERS])
     @profiletime
     @API.doc(
         responses={

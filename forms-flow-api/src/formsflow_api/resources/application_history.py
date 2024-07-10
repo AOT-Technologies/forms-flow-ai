@@ -5,7 +5,7 @@ from http import HTTPStatus
 from flask import request
 from flask_restx import Namespace, Resource, fields
 from formsflow_api_utils.utils import (
-    PERMISSIONS,
+    VIEW_SUBMISSIONS,
     auth,
     cors_preflight,
     profiletime,
@@ -53,7 +53,7 @@ class ApplicationHistoryResource(Resource):
     """Resource for managing state."""
 
     @staticmethod
-    @auth.has_one_of_roles([PERMISSIONS.VIEW_SUBMISSIONS])
+    @auth.has_one_of_roles([VIEW_SUBMISSIONS])
     @profiletime
     @API.response(200, "OK:- Successful request.", model=application_history_list_model)
     @API.response(

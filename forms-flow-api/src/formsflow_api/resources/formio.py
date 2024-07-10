@@ -9,7 +9,12 @@ from flask import after_this_request, current_app
 from flask_restx import Namespace, Resource, fields
 from formsflow_api_utils.exceptions import BusinessException, ExternalError
 from formsflow_api_utils.utils import (
-    PERMISSIONS,
+    CREATE_DESIGNS,
+    CREATE_SUBMISSIONS,
+    MANAGE_TASKS,
+    VIEW_DESIGNS,
+    VIEW_SUBMISSIONS,
+    VIEW_TASKS,
     Cache,
     auth,
     cors_preflight,
@@ -86,19 +91,18 @@ class FormioResource(Resource):
             filter_list = []
             if any(
                 permission in user.roles
-                for permission in [PERMISSIONS.CREATE_DESIGNS, PERMISSIONS.VIEW_DESIGNS]
+                for permission in [CREATE_DESIGNS, VIEW_DESIGNS]
             ):
                 filter_list.append(FormioRoles.DESIGNER.name)
             if any(
-                permission in user_role
-                for permission in [PERMISSIONS.MANAGE_TASKS, PERMISSIONS.VIEW_TASKS]
+                permission in user_role for permission in [MANAGE_TASKS, VIEW_TASKS]
             ):
                 filter_list.append(FormioRoles.REVIEWER.name)
             if any(
                 permission in user_role
                 for permission in [
-                    PERMISSIONS.CREATE_SUBMISSIONS,
-                    PERMISSIONS.VIEW_SUBMISSIONS,
+                    CREATE_SUBMISSIONS,
+                    VIEW_SUBMISSIONS,
                 ]
             ):
                 filter_list.append(FormioRoles.CLIENT.name)
@@ -152,7 +156,7 @@ class FormioResource(Resource):
             response.headers["Access-Control-Expose-Headers"] = "x-jwt-token"
             if all(
                 permission not in user_role
-                for permission in [PERMISSIONS.CREATE_DESIGNS, PERMISSIONS.VIEW_DESIGNS]
+                for permission in [CREATE_DESIGNS, VIEW_DESIGNS]
             ):
                 response.set_data(json.dumps({"form": []}))
                 return response

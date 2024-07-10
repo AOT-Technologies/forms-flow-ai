@@ -5,7 +5,8 @@ from http import HTTPStatus
 from flask import request
 from flask_restx import Namespace, Resource, fields
 from formsflow_api_utils.utils import (
-    PERMISSIONS,
+    ADMIN,
+    VIEW_DASHBOARDS,
     auth,
     cors_preflight,
     profiletime,
@@ -76,7 +77,7 @@ class DashboardList(Resource):
     """Resource to fetch Dashboard List."""
 
     @staticmethod
-    @auth.has_one_of_roles([PERMISSIONS.ADMIN])
+    @auth.has_one_of_roles([ADMIN])
     @profiletime
     @API.doc(
         params={
@@ -132,7 +133,7 @@ class DashboardDetail(Resource):
     """Resource to fetch Dashboard Detail."""
 
     @staticmethod
-    @auth.has_one_of_roles([PERMISSIONS.VIEW_DASHBOARDS])
+    @auth.has_one_of_roles([VIEW_DASHBOARDS])
     @profiletime
     @API.response(200, "OK:- Successful request.", model=dashboard_model)
     @API.response(

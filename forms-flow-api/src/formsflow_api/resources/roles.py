@@ -5,8 +5,12 @@ from http import HTTPStatus
 from flask import request
 from flask_restx import Namespace, Resource, fields
 from formsflow_api_utils.utils import (
+    ADMIN,
+    CREATE_DESIGNS,
+    CREATE_FILTERS,
+    MANAGE_ALL_FILTERS,
     PERMISSION_DETAILS,
-    PERMISSIONS,
+    VIEW_FILTERS,
     auth,
     cors_preflight,
     profiletime,
@@ -38,11 +42,11 @@ class KeycloakRolesResource(Resource):
     @staticmethod
     @auth.has_one_of_roles(
         [
-            PERMISSIONS.ADMIN,
-            PERMISSIONS.CREATE_DESIGNS,
-            PERMISSIONS.MANAGE_ALL_FILTERS,
-            PERMISSIONS.CREATE_FILTERS,
-            PERMISSIONS.VIEW_FILTERS,
+            ADMIN,
+            CREATE_DESIGNS,
+            MANAGE_ALL_FILTERS,
+            CREATE_FILTERS,
+            VIEW_FILTERS,
         ]
     )
     @profiletime
@@ -68,7 +72,7 @@ class KeycloakRolesResource(Resource):
         return response, HTTPStatus.OK
 
     @staticmethod
-    @auth.has_one_of_roles([PERMISSIONS.ADMIN])
+    @auth.has_one_of_roles([ADMIN])
     @profiletime
     @API.doc(
         responses={
@@ -95,7 +99,7 @@ class KeycloakRolesResourceById(Resource):
     """Resource to manage keycloak roles/groups by id."""
 
     @staticmethod
-    @auth.has_one_of_roles([PERMISSIONS.ADMIN])
+    @auth.has_one_of_roles([ADMIN])
     @profiletime
     @API.doc(
         responses={
@@ -116,7 +120,7 @@ class KeycloakRolesResourceById(Resource):
         return response, HTTPStatus.OK
 
     @staticmethod
-    @auth.has_one_of_roles([PERMISSIONS.ADMIN])
+    @auth.has_one_of_roles([ADMIN])
     @profiletime
     @API.doc(
         responses={
@@ -135,7 +139,7 @@ class KeycloakRolesResourceById(Resource):
         return {"message": "Deleted successfully."}, HTTPStatus.OK
 
     @staticmethod
-    @auth.has_one_of_roles([PERMISSIONS.ADMIN])
+    @auth.has_one_of_roles([ADMIN])
     @profiletime
     @API.doc(
         responses={
@@ -159,10 +163,10 @@ class KeycloakRolesResourceById(Resource):
 @cors_preflight("GET, OPTIONS")
 @API.route("/permissions", methods=["GET", "OPTIONS"])
 class Permissions(Resource):
-    """Resource to list permissions."""
+    """Resource to list"""
 
     @staticmethod
-    @auth.has_one_of_roles([PERMISSIONS.ADMIN])
+    @auth.has_one_of_roles([ADMIN])
     @profiletime
     @API.doc(
         responses={

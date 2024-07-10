@@ -4,6 +4,7 @@ import os
 import requests
 from formsflow_api_utils.utils import (
     ANONYMOUS_USER,
+    PERMISSIONS,
     DRAFT_APPLICATION_STATUS,
     NEW_APPLICATION_STATUS,
 )
@@ -141,7 +142,7 @@ def test_draft_submission_resource(app, client, session, jwt):
 
 def test_draft_tenant_authorization(app, client, session, jwt):
     """Tests if the draft detail is tenant authorized."""
-    token = get_token(jwt, role="formsflow-designer", tenant_key="tenant1")
+    token = get_token(jwt, role=PERMISSIONS.CREATE_DESIGNS, tenant_key="tenant1")
     headers = {"Authorization": f"Bearer {token}", "content-type": "application/json"}
     rv = client.post("/form", headers=headers, json=get_form_request_payload())
     form_id = rv.json.get("formId")
@@ -251,7 +252,7 @@ def test_capture_process_variables_draft_create_method(
     app, client, session, jwt, mock_redis_client
 ):
     """Tests the capturing of process variables in the draft create method."""
-    token = get_token(jwt, role="formsflow-designer", username="designer")
+    token = get_token(jwt, role=PERMISSIONS.CREATE_DESIGNS, username="designer")
     headers = {
         "Authorization": f"Bearer {token}",
         "content-type": "application/json",

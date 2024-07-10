@@ -13,7 +13,7 @@ from formsflow_api_utils.exceptions import BusinessException, ExternalError
 from formsflow_api_utils.utils import (
     DRAFT_APPLICATION_STATUS,
     NEW_APPLICATION_STATUS,
-    REVIEWER_GROUP,
+    PERMISSIONS
 )
 from formsflow_api_utils.utils.user_context import UserContext, user_context
 
@@ -499,7 +499,7 @@ class ApplicationService:  # pylint: disable=too-many-public-methods
         user_name = user.user_name
         form_ids: Set[str] = []
         application_count = None
-        if auth.has_role([REVIEWER_GROUP]):
+        if auth.has_role([PERMISSIONS.MANAGE_TASKS]):
             forms = Authorization.find_all_resources_authorized(
                 auth_type=AuthType.APPLICATION,
                 roles=user.group_or_roles,

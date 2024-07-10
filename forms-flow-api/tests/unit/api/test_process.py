@@ -7,6 +7,7 @@ from tests.utilities.base_test import (
     get_process_request_payload,
     get_process_request_payload_low_code,
 )
+from formsflow_api_utils.utils import PERMISSIONS
 
 
 class TestProcessCreate:
@@ -14,7 +15,7 @@ class TestProcessCreate:
 
     def test_process_create_method(self, app, client, session, jwt):
         """Tests the process create method with valid payload."""
-        token = get_token(jwt, role="formsflow-designer", username="designer")
+        token = get_token(jwt, role=PERMISSIONS.CREATE_DESIGNS, username="designer")
         headers = {
             "Authorization": f"Bearer {token}",
             "content-type": "application/json",
@@ -29,7 +30,7 @@ class TestProcessCreate:
 
     def test_process_create_method_with_invalid_token(self, app, client, session, jwt):
         """Tests the process create method with invalid token."""
-        token = get_token(jwt, role="formsflow-reviewer", username="reviewer")
+        token = get_token(jwt, role=PERMISSIONS.MANAGE_TASKS, username="reviewer")
         headers = {
             "Authorization": f"Bearer {token}",
             "content-type": "application/json",
@@ -45,7 +46,7 @@ class TestProcessUpdate:
 
     def test_process_update(self, app, client, session, jwt):
         """Tests the process update method with valid payload."""
-        token = get_token(jwt, role="formsflow-designer", username="designer")
+        token = get_token(jwt, role=PERMISSIONS.CREATE_DESIGNS, username="designer")
         headers = {
             "Authorization": f"Bearer {token}",
             "content-type": "application/json",
@@ -66,7 +67,7 @@ class TestProcessUpdate:
 
     def test_process_update_invalid_token(self, app, client, session, jwt):
         """Tests the process update method with invalid token."""
-        token = get_token(jwt, role="formsflow-designer", username="designer")
+        token = get_token(jwt, role=PERMISSIONS.CREATE_DESIGNS, username="designer")
         headers = {
             "Authorization": f"Bearer {token}",
             "content-type": "application/json",
@@ -77,7 +78,7 @@ class TestProcessUpdate:
         assert response.status_code == 201
         assert response.json.get("id") is not None
         process_id = response.json.get("id")
-        token = get_token(jwt, role="formsflow-reviewer")
+        token = get_token(jwt, role=PERMISSIONS.MANAGE_TASKS)
         headers = {
             "Authorization": f"Bearer {token}",
             "content-type": "application/json",
@@ -95,7 +96,7 @@ class TestProcessList:
 
     def test_process_list(self, app, client, session, jwt):
         """Testing process listing API."""
-        token = get_token(jwt, role="formsflow-designer", username="designer")
+        token = get_token(jwt, role=PERMISSIONS.CREATE_DESIGNS, username="designer")
         headers = {
             "Authorization": f"Bearer {token}",
             "content-type": "application/json",
@@ -120,7 +121,7 @@ class TestProcessList:
         self, app, client, session, jwt, pageNo, limit, sortBy, sortOrder
     ):
         """Testing process listing API with pagination and sorted list."""
-        token = get_token(jwt, role="formsflow-designer", username="designer")
+        token = get_token(jwt, role=PERMISSIONS.CREATE_DESIGNS, username="designer")
         headers = {
             "Authorization": f"Bearer {token}",
             "content-type": "application/json",
@@ -144,7 +145,7 @@ class TestProcessList:
 
     def test_process_list_with_filters(self, app, client, session, jwt):
         """Testing process listing API with filters."""
-        token = get_token(jwt, role="formsflow-designer", username="designer")
+        token = get_token(jwt, role=PERMISSIONS.CREATE_DESIGNS, username="designer")
         headers = {
             "Authorization": f"Bearer {token}",
             "content-type": "application/json",
@@ -183,7 +184,7 @@ class TestProcessList:
 
     def test_process_list_with_invalid_token(self, app, client, session, jwt):
         """Testing process listing API."""
-        token = get_token(jwt, role="formsflow-reviewer", username="reviewer")
+        token = get_token(jwt, role=PERMISSIONS.MANAGE_TASKS, username="reviewer")
         headers = {
             "Authorization": f"Bearer {token}",
             "content-type": "application/json",
@@ -197,7 +198,7 @@ class TestProcessDelete:
 
     def test_process_delete_method(self, app, client, session, jwt):
         """Tests the process delete method."""
-        token = get_token(jwt, role="formsflow-designer", username="designer")
+        token = get_token(jwt, role=PERMISSIONS.CREATE_DESIGNS, username="designer")
         headers = {
             "Authorization": f"Bearer {token}",
             "content-type": "application/json",
@@ -216,7 +217,7 @@ class TestProcessDelete:
 
     def test_process_delete_method_with_invalid_token(self, app, client, session, jwt):
         """Tests the process delete method with invalid token."""
-        token = get_token(jwt, role="formsflow-designer", username="designer")
+        token = get_token(jwt, role=PERMISSIONS.CREATE_DESIGNS, username="designer")
         headers = {
             "Authorization": f"Bearer {token}",
             "content-type": "application/json",
@@ -227,7 +228,7 @@ class TestProcessDelete:
         assert response.status_code == 201
         assert response.json.get("id") is not None
         process_id = response.json.get("id")
-        token = get_token(jwt, role="formsflow-reviewer")
+        token = get_token(jwt, role=PERMISSIONS.MANAGE_TASKS)
         headers = {
             "Authorization": f"Bearer {token}",
             "content-type": "application/json",

@@ -10,7 +10,7 @@ from tests.utilities.base_test import (
     get_formio_form_request_payload,
     get_token,
 )
-
+from formsflow_api_utils.utils import PERMISSIONS
 
 def test_form_process_mapper_list(app, client, session, jwt):
     """Testing form process mapper listing API."""
@@ -295,7 +295,7 @@ def test_get_task_variable_based_on_form_process_mapper_id(app, client, session,
 
 def test_formio_form_creation(app, client, session, jwt, mock_redis_client):
     """Testing formio form create API."""
-    token = get_token(jwt, role="formsflow-designer", username="designer")
+    token = get_token(jwt, role=PERMISSIONS.CREATE_DESIGNS, username="designer")
     headers = {"Authorization": f"Bearer {token}", "content-type": "application/json"}
     response = client.post(
         "/form/form-design", headers=headers, json=get_formio_form_request_payload()

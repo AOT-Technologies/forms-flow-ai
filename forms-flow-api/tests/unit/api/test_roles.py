@@ -1,14 +1,14 @@
 """Test suite for keycloak roles API endpoint."""
 
 from tests.utilities.base_test import get_token
-
+from formsflow_api_utils.utils import PERMISSIONS
 
 class TestKeycloakRolesResource:
     """Test suite for the keycloak roles APIs."""
 
     def test_keycloak_roles_list(self, app, client, session, jwt):
         """Test roles list API."""
-        token = get_token(jwt, role="formsflow-admin")
+        token = get_token(jwt, role=PERMISSIONS.ADMIN)
         headers = {
             "Authorization": f"Bearer {token}",
             "content-type": "application/json",
@@ -18,7 +18,7 @@ class TestKeycloakRolesResource:
 
     def test_keycloak_role_crud(self, app, client, session, jwt):
         """Test role CRUD APIs."""
-        token = get_token(jwt, role="formsflow-admin")
+        token = get_token(jwt, role=PERMISSIONS.ADMIN)
         headers = {
             "Authorization": f"Bearer {token}",
             "content-type": "application/json",

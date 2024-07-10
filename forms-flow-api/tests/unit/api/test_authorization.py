@@ -3,7 +3,7 @@
 import json
 
 from tests.utilities.base_test import factory_auth, get_token
-
+from formsflow_api_utils.utils import PERMISSIONS
 
 class TestAuthorizationResource:
     """Test suite for the application endpoint."""
@@ -73,7 +73,7 @@ class TestAuthorizationResource:
         assert response.status_code == 200
         assert len(response.json) == 0
 
-        token = get_token(jwt, roles=["clerk"])
+        token = get_token(jwt, roles=[PERMISSIONS.MANAGE_TASKS])
         headers = {
             "Authorization": f"Bearer {token}",
             "content-type": "application/json",
@@ -82,7 +82,7 @@ class TestAuthorizationResource:
         assert response.status_code == 200
         assert len(response.json) == 2
 
-        token = get_token(jwt, roles=["approver"])
+        token = get_token(jwt, roles=[PERMISSIONS.MANAGE_TASKS])
         headers = {
             "Authorization": f"Bearer {token}",
             "content-type": "application/json",
@@ -183,7 +183,7 @@ class TestAuthorizationResource:
         assert response.status_code == 200
         assert len(response.json) == 0
 
-        token = get_token(jwt, roles=["formsflow-reviewer"])
+        token = get_token(jwt, roles=[PERMISSIONS.MANAGE_TASKS])
         headers = {
             "Authorization": f"Bearer {token}",
             "content-type": "application/json",

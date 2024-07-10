@@ -20,7 +20,14 @@ from .enums import (
     ProcessSortingParameters,
 )
 from .translations.translations import translations
-from .permisions import PERMISSIONS
+from .permisions import (
+    CREATE_DESIGNS,
+VIEW_DESIGNS,
+MANAGE_TASKS,
+VIEW_TASKS,
+CREATE_SUBMISSIONS,
+VIEW_SUBMISSIONS,
+)
 
 def cors_preflight(methods: str = "GET"):
     """Render an option method on the class."""
@@ -105,11 +112,11 @@ def get_role_ids_from_user_groups(role_ids, user_role):
     if role_ids is None or user_role is None:
         return None
 
-    if any(permission in user_role for permission in [PERMISSIONS.CREATE_DESIGNS,PERMISSIONS.VIEW_DESIGNS]):
+    if any(permission in user_role for permission in [ CREATE_DESIGNS, VIEW_DESIGNS]):
         return role_ids
-    if any(permission in user_role for permission in [PERMISSIONS.MANAGE_TASKS,PERMISSIONS.VIEW_TASKS]):
+    if any(permission in user_role for permission in [ MANAGE_TASKS, VIEW_TASKS]):
         return filter_list_by_user_role(FormioRoles.REVIEWER.name, role_ids)
-    if any(permission in user_role for permission in [PERMISSIONS.CREATE_SUBMISSIONS,PERMISSIONS.VIEW_SUBMISSIONS]):
+    if any(permission in user_role for permission in [ CREATE_SUBMISSIONS, VIEW_SUBMISSIONS]):
         return filter_list_by_user_role(FormioRoles.CLIENT.name, role_ids)
     return None
 

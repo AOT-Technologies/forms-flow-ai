@@ -12,7 +12,7 @@ from tests.utilities.base_test import (
     get_token,
 )
 
-from formsflow_api_utils.utils import PERMISSIONS
+from formsflow_api_utils.utils import CREATE_DESIGNS
 
 class TestApplicationResource:
     """Test suite for the application endpoint."""
@@ -355,7 +355,7 @@ def test_capture_process_variables_application_create(
     app, client, session, jwt, mock_redis_client
 ):
     """Tests the capturing of process variables in the application creation method."""
-    token = get_token(jwt, role=PERMISSIONS.CREATE_DESIGNS, username="designer")
+    token = get_token(jwt, role= CREATE_DESIGNS, username="designer")
     headers = {
         "Authorization": f"Bearer {token}",
         "content-type": "application/json",

@@ -21,7 +21,7 @@ from formsflow_api.schemas import (
     UsersListSchema,
 )
 from formsflow_api.services import KeycloakAdminAPIService, UserService
-from formsflow_api.services.factory import KeycloakFactory
+from formsflow_api.services.factory import KeycloakFactory, KeycloakGroupService
 
 API = Namespace("user", description="Keycloak user APIs")
 
@@ -204,7 +204,7 @@ class KeycloakUsersList(Resource):
         limit = int(request.args.get("limit", 0))
         role = request.args.get("role") == "true"
         count = request.args.get("count") == "true"
-        kc_admin = KeycloakFactory.get_instance()
+        kc_admin = KeycloakGroupService()
         if group_name:
             (users_list, users_count) = kc_admin.get_users(
                 page_no, limit, role, group_name, count, search
@@ -232,7 +232,7 @@ class KeycloakUsersList(Resource):
     methods=["PUT", "DELETE", "OPTIONS"],
 )
 class UserPermission(Resource):
-    """Resource to manage keycloak user"""
+    """Resource to manage keycloak user."""
 
     @staticmethod
     @auth.has_one_of_roles([ADMIN])
@@ -252,7 +252,7 @@ class UserPermission(Resource):
         json_payload = request.get_json()
         user_and_group = UserPermissionUpdateSchema().load(json_payload)
         current_app.logger.debug("Initializing admin API service...")
-        service = KeycloakFactory.get_instance()
+        service = KeycloakGroupService()
         current_app.logger.debug("Successfully initialized admin API service !")
         response = service.add_user_to_group_role(user_id, group_id, user_and_group)
         if not response:
@@ -281,7 +281,7 @@ class UserPermission(Resource):
         json_payload = request.get_json()
         user_and_group = UserPermissionUpdateSchema().load(json_payload)
         current_app.logger.debug("Initializing admin API service...")
-        service = KeycloakFactory.get_instance()
+        service = KeycloakGroupService()
         current_app.logger.debug("Successfully initialized admin API service !")
         response = service.remove_user_from_group_role(
             user_id, group_id, user_and_group

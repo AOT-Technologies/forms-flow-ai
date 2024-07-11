@@ -1,4 +1,5 @@
 """Unit test for APIs of Dashboards."""
+
 from tests.utilities.base_test import get_token
 
 

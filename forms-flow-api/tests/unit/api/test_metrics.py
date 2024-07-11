@@ -1,4 +1,5 @@
 """Test suite for metrics API endpoint."""
+
 import datetime
 
 import pytest

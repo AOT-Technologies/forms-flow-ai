@@ -1,4 +1,5 @@
 """Test suite for application API public endpoint."""
+
 from pytest import mark
 
 from formsflow_api.constants import BusinessErrorCode

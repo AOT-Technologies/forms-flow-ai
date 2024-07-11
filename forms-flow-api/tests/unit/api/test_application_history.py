@@ -1,4 +1,5 @@
 """Test suite for application History API endpoint."""
+
 from typing import Dict, List
 
 from tests.utilities.base_test import get_token

@@ -89,12 +89,11 @@ class ApplicationHistoryResource(Resource):
         """Post a new history entry using the request body."""
         application_history_json = request.get_json()
 
-        # try:
         application_history_schema = ApplicationHistorySchema()
         dict_data = application_history_schema.load(application_history_json)
         dict_data["application_id"] = application_id
         application_history = ApplicationHistoryService.create_application_history(
-            data=dict_data
+            data=dict_data, application_id=application_id
         )
 
         response, status = (

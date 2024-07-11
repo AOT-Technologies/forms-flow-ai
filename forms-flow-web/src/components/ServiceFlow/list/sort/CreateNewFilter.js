@@ -110,7 +110,6 @@ export default function CreateNewFilterDrawer({
     (state) => state.bpmTasks.filterListSearchParams
   );
   const selectedFilter = useSelector((state) => state.bpmTasks.selectedFilter);
-  const filterList = useSelector((state) => state.bpmTasks.filterList);
 
   const [variables, setVariables] = useState([]);
   const [forms, setForms] = useState({ data: [], isLoading: true });
@@ -325,14 +324,9 @@ export default function CreateNewFilterDrawer({
             })
             .finally(() => {
               if (selectedFilterData) {
-                const filterSelected = filterList?.find(
-                  (filter) => filter.id === selectedFilterData?.id
-                );
                 if (selectedFilterData?.id === selectedFilter?.id) {
                   dispatch(setSelectedBPMFilter(resData));
                   fetchTasks(resData);
-                } else {
-                  dispatch(setSelectedBPMFilter(filterSelected));
                 }
                 toast.success(t("Changes Applied Successfully"));
               } else {

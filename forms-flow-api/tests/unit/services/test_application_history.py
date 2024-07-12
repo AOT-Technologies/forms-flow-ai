@@ -13,7 +13,7 @@ def test_create_application_history(app, client, session):
     }
     payload["application_id"] = 1222  # sample value
     application_history = application_history_service.create_application_history(
-        data=payload
+        data=payload, application_id=1222
     )
     assert application_history.application_id == 1222
     assert application_history.application_status == "Pending"

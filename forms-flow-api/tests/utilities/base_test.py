@@ -5,10 +5,10 @@ import time
 
 from dotenv import find_dotenv, load_dotenv
 from flask import current_app
+from formsflow_api_utils.utils import CREATE_SUBMISSIONS
 from jose import jwt as json_web_token
 
 from formsflow_api.models import Authorization, AuthType
-from formsflow_api_utils.utils import CREATE_SUBMISSIONS
 
 load_dotenv(find_dotenv())
 
@@ -17,7 +17,7 @@ token_header = {"alg": "RS256", "typ": "JWT", "kid": "forms-flow-web"}
 
 def get_token(
     jwt,
-    role: str =  CREATE_SUBMISSIONS,
+    role: str = CREATE_SUBMISSIONS,
     username: str = "client",
     roles: list = [],
     tenant_key: str = None,

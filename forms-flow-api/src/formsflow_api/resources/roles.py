@@ -163,7 +163,7 @@ class KeycloakRolesResourceById(Resource):
 @cors_preflight("GET, OPTIONS")
 @API.route("/permissions", methods=["GET", "OPTIONS"])
 class Permissions(Resource):
-    """Resource to list"""
+    """Resource to list."""
 
     @staticmethod
     @auth.has_one_of_roles([ADMIN])

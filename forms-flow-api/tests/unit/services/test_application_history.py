@@ -1,4 +1,5 @@
 """Tests to assure the Application History Service."""
+
 from formsflow_api.services import ApplicationHistoryService
 
 application_history_service = ApplicationHistoryService()

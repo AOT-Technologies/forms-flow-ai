@@ -3,12 +3,13 @@
 # from tests import skip_in_ci
 import json
 
+from formsflow_api_utils.utils import MANAGE_TASKS
+
 from tests.utilities.base_test import (
     get_filter_payload,
     get_locale_update_valid_payload,
     get_token,
 )
-from formsflow_api_utils.utils import MANAGE_TASKS
 
 
 class TestKeycloakUserServiceResource:
@@ -79,7 +80,7 @@ def test_keycloak_users_list_invalid_group(app, client, session, jwt):
 
 def test_default_filter(app, client, session, jwt):
     """Test create a filter and update default filter of a user."""
-    token = get_token(jwt, role= MANAGE_TASKS, username="reviewer")
+    token = get_token(jwt, role=MANAGE_TASKS, username="reviewer")
     headers = {"Authorization": f"Bearer {token}", "content-type": "application/json"}
     # Create filter for clerk role
     response = client.post(

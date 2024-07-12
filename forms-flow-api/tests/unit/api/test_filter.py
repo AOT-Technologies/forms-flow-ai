@@ -1,11 +1,13 @@
 """Test suite for Filter API endpoint."""
 
-from tests.utilities.base_test import get_filter_payload, get_token
 from formsflow_api_utils.utils import MANAGE_TASKS
+
+from tests.utilities.base_test import get_filter_payload, get_token
+
 
 def test_create_filter(app, client, session, jwt):
     """Test create filter with valid payload."""
-    token = get_token(jwt, role= MANAGE_TASKS, username="reviewer")
+    token = get_token(jwt, role=MANAGE_TASKS, username="reviewer")
     headers = {"Authorization": f"Bearer {token}", "content-type": "application/json"}
     response = client.post(
         "/filter", headers=headers, json=get_filter_payload(roles=["clerk"])
@@ -17,7 +19,7 @@ def test_create_filter(app, client, session, jwt):
 
 def test_get_user_filters(app, client, session, jwt):
     """Test - Get filters based on user role."""
-    token = get_token(jwt, role= MANAGE_TASKS, username="reviewer")
+    token = get_token(jwt, role=MANAGE_TASKS, username="reviewer")
     headers = {"Authorization": f"Bearer {token}", "content-type": "application/json"}
     # Create filter for clerk role
     response = client.post(
@@ -44,7 +46,7 @@ def test_get_user_filters(app, client, session, jwt):
 
 def test_filter_update(app, client, session, jwt):
     """Test filter update with valid payload."""
-    token = get_token(jwt, role= MANAGE_TASKS, username="reviewer")
+    token = get_token(jwt, role=MANAGE_TASKS, username="reviewer")
     headers = {"Authorization": f"Bearer {token}", "content-type": "application/json"}
     response = client.post(
         "/filter",
@@ -61,7 +63,7 @@ def test_filter_update(app, client, session, jwt):
 
 def test_filter_delete(app, client, session, jwt):
     """Test filter delete."""
-    token = get_token(jwt, role= MANAGE_TASKS, username="reviewer")
+    token = get_token(jwt, role=MANAGE_TASKS, username="reviewer")
     headers = {"Authorization": f"Bearer {token}", "content-type": "application/json"}
     response = client.post(
         "/filter", headers=headers, json=get_filter_payload(roles=["clerk"])
@@ -77,7 +79,7 @@ def test_filter_delete(app, client, session, jwt):
 
 def test_create_filter_current_user_task(app, client, session, jwt):
     """Test create filter for current user's tasks."""
-    token = get_token(jwt, role= MANAGE_TASKS, username="reviewer")
+    token = get_token(jwt, role=MANAGE_TASKS, username="reviewer")
     headers = {"Authorization": f"Bearer {token}", "content-type": "application/json"}
     filter_payload = get_filter_payload(name="My Tasks")
     filter_payload.update({"isMyTasksEnabled": True})
@@ -122,7 +124,9 @@ def test_get_user_filters_by_order(app, client, session, jwt):
     response = client.post(
         "/filter",
         headers=headers,
-        json=get_filter_payload(name="Reviewer Task", order=1, roles=["formsflow-reviewer"]),
+        json=get_filter_payload(
+            name="Reviewer Task", order=1, roles=["formsflow-reviewer"]
+        ),
     )
     assert response.status_code == 201
     # Test '/filter/user' endpoint with reviewer token

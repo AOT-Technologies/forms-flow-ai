@@ -61,6 +61,7 @@ class BusinessErrorCode(ErrorCodeMixin, Enum):
     )
     THEME_NOT_FOUND = "The specified theme not exist", HTTPStatus.BAD_REQUEST
     THEME_EXIST = "The specified theme already exist", HTTPStatus.BAD_REQUEST
+    ROLE_MAPPING_FAILED = "Role mapping failed", HTTPStatus.BAD_REQUEST
 
     def __new__(cls, message, status_code):
         """Constructor."""

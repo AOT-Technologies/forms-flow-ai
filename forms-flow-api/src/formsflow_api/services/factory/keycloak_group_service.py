@@ -124,7 +124,12 @@ class KeycloakGroupService(KeycloakAdmin):
                         group_id = response["id"]
                 url_path = f"groups/{group_id}/children"
         client_id = self.client.get_client_id()
-        self.create_group_permission_mapping(group_id, permissions, client_id)
+        try:
+            self.create_group_permission_mapping(group_id, permissions, client_id)
+        except Exception as err:
+            current_app.logger.debug(f"Role mapping creation failed: {err}")
+            self.delete_group(group_id)
+            raise BusinessException(BusinessErrorCode.ROLE_MAPPING_FAILED) from err
         return {"id": group_id}
 
     def add_description(self, data: Dict):

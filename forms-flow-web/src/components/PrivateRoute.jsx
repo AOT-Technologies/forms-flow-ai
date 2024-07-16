@@ -54,6 +54,7 @@ import {
 import { AppConfig } from "../config";
 import { getFormioRoleIds } from "../apiManager/services/userservices";
 import AccessDenied from "./AccessDenied";
+import { LANGUAGE } from "../constants/constants";
 
 export const kcServiceInstance = (tenantId = null) => {
   return KeycloakService.getInstance(
@@ -159,12 +160,13 @@ const PrivateRoute = React.memo((props) => {
   }, [tenantId, props.store, dispatch]);
 
   useEffect(() => {
-    if (kcInstance) {
+    if (kcInstance ) {
       const lang =
         kcInstance?.userData?.locale ||
         tenant?.tenantData?.details?.locale ||
-        selectedLanguage;
-      dispatch(setLanguage(lang));
+        selectedLanguage ||
+        LANGUAGE;
+        dispatch(setLanguage(lang));
     }
   }, [kcInstance, tenant?.tenantData]);
 

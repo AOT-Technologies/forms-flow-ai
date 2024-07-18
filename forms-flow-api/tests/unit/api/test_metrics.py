@@ -3,7 +3,12 @@
 import datetime
 
 import pytest
-from formsflow_api_utils.utils import VIEW_DASHBOARDS, CREATE_DESIGNS, CREATE_SUBMISSIONS
+from formsflow_api_utils.utils import (
+    CREATE_DESIGNS,
+    CREATE_SUBMISSIONS,
+    VIEW_DASHBOARDS,
+)
+
 from tests.utilities.base_test import (
     get_application_create_payload,
     get_form_request_payload,

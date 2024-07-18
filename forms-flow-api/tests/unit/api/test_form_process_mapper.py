@@ -3,7 +3,13 @@
 import json
 
 import pytest
-from formsflow_api_utils.utils import CREATE_DESIGNS, VIEW_SUBMISSIONS, CREATE_SUBMISSIONS, ADMIN, VIEW_DESIGNS
+from formsflow_api_utils.utils import (
+    ADMIN,
+    CREATE_DESIGNS,
+    CREATE_SUBMISSIONS,
+    VIEW_DESIGNS,
+    VIEW_SUBMISSIONS,
+)
 
 from tests.utilities.base_test import (
     get_application_create_payload,
@@ -159,7 +165,7 @@ def test_form_process_mapper_id_deletion(app, client, session, jwt):
 
 def test_form_process_mapper_test_update(app, client, session, jwt):
     """Testing form process mapper update endpoint."""
-    token = get_token(jwt, role= CREATE_DESIGNS, roles=["/formsflow/formsflow-designer"])
+    token = get_token(jwt, role=CREATE_DESIGNS, roles=["/formsflow/formsflow-designer"])
     headers = {"Authorization": f"Bearer {token}", "content-type": "application/json"}
     response = client.post(
         "/form",
@@ -232,7 +238,7 @@ def test_get_application_count_based_on_form_process_mapper_id(
     app, client, session, jwt
 ):
     """Testing the count API for applications corresponding to mapper id."""
-    token = get_token(jwt, role= CREATE_DESIGNS, roles=["/formsflow/formsflow-designer"])
+    token = get_token(jwt, role=CREATE_DESIGNS, roles=["/formsflow/formsflow-designer"])
     headers = {"Authorization": f"Bearer {token}", "content-type": "application/json"}
     response = client.post(
         "/form",

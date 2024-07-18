@@ -193,7 +193,7 @@ def test_application_resource_by_form_id(app, client, session, jwt):
     }
     rv = client.post("/form", headers=headers, json=get_form_request_payload())
     assert rv.status_code == 201
-    
+
     form_id = rv.json.get("formId")
     token = get_token(jwt, role=CREATE_SUBMISSIONS)
     headers = {"Authorization": f"Bearer {token}", "content-type": "application/json"}

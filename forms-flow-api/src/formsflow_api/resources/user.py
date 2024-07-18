@@ -99,7 +99,7 @@ class KeycloakUserService(Resource):
             return {"message": "User not found"}, HTTPStatus.NOT_FOUND
         return response
 
-    @auth.has_one_of_roles([ADMIN])
+    @auth.require
     @profiletime
     @API.doc(body=locale_put_model)
     @API.response(200, "OK:- Successful request.")

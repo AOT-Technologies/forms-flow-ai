@@ -47,7 +47,7 @@ function FormTable() {
   const [search, setSearch] = useState(searchText || "");
   const redirectUrl = MULTITENANCY_ENABLED ? `/tenant/${tenantKey}/` : "/";
   const isApplicationCountLoading = useSelector((state) => state.process.isApplicationCountLoading);
-  const { createDesigns,  viewDesigns, createSubmissions} = userRoles();
+  const { createDesigns,  createSubmissions} = userRoles();
 
 
   const pageOptions = [
@@ -218,7 +218,7 @@ function FormTable() {
                 <th scope="col">{t("Created Date")}</th>
                 <th scope="col">{t("Type")}</th>
                 <th scope="col">{t("Visibility")}</th>
-                {createDesigns && <th scope="col">{t("Status")}</th>}               
+                <th scope="col">{t("Status")}</th>               
                 <th colSpan="4" aria-label="Search Forms by form title">
                   <InputGroup className="input-group p-0">
                     <FormControl
@@ -259,8 +259,7 @@ function FormTable() {
               <tbody>
                 {formData?.map((e, index) => {
                   return (
-                    <tr key={index}>
-                      {createDesigns && (
+                    <tr key={index}> 
                         <td>
                           <div className="d-flex"
                           >
@@ -270,7 +269,6 @@ function FormTable() {
                             <span className="ms-4">{e.title}</span>
                           </div>
                         </td>
-                      )}
                       <td>{HelperServices?.getLocaldate(e.created)}</td>
                       <td>{_.capitalize(e.formType)}</td>
                       <td>{e.anonymous ? t("Public") : t("Private")}</td>
@@ -315,7 +313,7 @@ function FormTable() {
                             <i className="fa-solid fa-ellipsis"></i>
                           </Dropdown.Toggle>
                           <Dropdown.Menu className="shadow  bg-white">
-                            {viewDesigns || createDesigns ? (
+                           
                               <Dropdown.Item
                               onClick={() => {
                                 viewOrEditForm(e?._id,'view-edit');
@@ -325,7 +323,7 @@ function FormTable() {
                               <i className="fa-solid me-2 fa-arrow-up-right-from-square text-primary"></i>
                               {t("View Details")}
                             </Dropdown.Item>
-                            ) : null}
+                             
                           
 
                             {createSubmissions ? (

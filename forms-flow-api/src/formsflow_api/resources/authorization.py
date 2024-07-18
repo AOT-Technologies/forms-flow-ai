@@ -6,10 +6,11 @@ from flask import request
 from flask_restx import Namespace, Resource, fields
 from formsflow_api_utils.exceptions import BusinessException
 from formsflow_api_utils.utils import (
-    ADMIN,
     CREATE_DESIGNS,
+    CREATE_SUBMISSIONS,
     VIEW_DASHBOARDS,
     VIEW_DESIGNS,
+    VIEW_SUBMISSIONS,
     auth,
     cors_preflight,
     profiletime,
@@ -51,7 +52,7 @@ class AuthorizationList(Resource):
 
     @staticmethod
     @API.doc("list_authorization")
-    @auth.has_one_of_roles([ADMIN])
+    @auth.require
     @profiletime
     @API.doc(
         responses={
@@ -155,7 +156,9 @@ class AuthorizationDetail(Resource):
 
     @staticmethod
     @API.doc("Authorization detail by Id")
-    @auth.has_one_of_roles([CREATE_DESIGNS, VIEW_DESIGNS])
+    @auth.has_one_of_roles(
+        [CREATE_DESIGNS, VIEW_DESIGNS, CREATE_SUBMISSIONS, VIEW_SUBMISSIONS]
+    )
     @profiletime
     @API.doc(
         responses={

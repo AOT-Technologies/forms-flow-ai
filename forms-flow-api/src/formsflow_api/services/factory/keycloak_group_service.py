@@ -76,9 +76,14 @@ class KeycloakGroupService(KeycloakAdmin):
         self.update_group_permission_mapping(group_id, permissions)
         return self.client.update_request(url_path=f"groups/{group_id}", data=data)
 
-    def get_groups_roles(self, search: str, sort_order: str):
+    @user_context
+    def get_groups_roles(self, search: str, sort_order: str, **kwargs):
         """Get groups."""
         response = self.client.get_groups()
+        if current_app.config.get("MULTI_TENANCY_ENABLED"):
+            current_app.logger.debug("Getting groups for tenant...")
+            user: UserContext = kwargs["user"]
+            response = [group for group in response if group['name'].startswith(user.tenant_key)]
         flat_response: List[Dict] = []
         result_list = self.sort_results(self.flat(response, flat_response), sort_order)
         if search:

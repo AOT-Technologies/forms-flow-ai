@@ -331,7 +331,7 @@ class ApplicationResourceByFormId(Resource):
             page_no = 0
             limit = 0
 
-        if auth.has_role(["formsflow-reviewer"]):
+        if auth.has_role([VIEW_TASKS]):
             application_schema = ApplicationService.get_all_applications_form_id(
                 form_id=form_id, page_no=page_no, limit=limit
             )

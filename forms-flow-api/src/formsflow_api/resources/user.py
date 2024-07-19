@@ -8,6 +8,7 @@ from formsflow_api_utils.utils import (
     ADMIN,
     CREATE_FILTERS,
     MANAGE_ALL_FILTERS,
+    VIEW_TASKS,
     auth,
     cors_preflight,
     profiletime,
@@ -151,7 +152,7 @@ class KeycloakUsersList(Resource):
     """Resource to fetch keycloak users."""
 
     @staticmethod
-    @auth.has_one_of_roles([ADMIN, CREATE_FILTERS, MANAGE_ALL_FILTERS])
+    @auth.has_one_of_roles([ADMIN, CREATE_FILTERS, MANAGE_ALL_FILTERS, VIEW_TASKS])
     @profiletime
     @API.doc(
         params={

@@ -905,15 +905,8 @@ export default function CreateNewFilterDrawer({
             <Translation>{(t) => t("Specific Group")}</Translation>
           </label>{" "}
           <br />
-          {createdBy && <>
-            <h5 className="fw-bold ">
-              <Translation>{(t) => t("Filter Created by")}</Translation>
-            </h5>
-            <i className="fa-solid fa-user me-2"></i>
-            {createdBy}
-          </>}
           {permissions === SPECIFIC_USER_OR_GROUP &&
-          specificUserGroup === SPECIFIC_USER_OR_GROUP ? (
+            specificUserGroup === SPECIFIC_USER_OR_GROUP ? (
             <div className="d-flex">
               <OverlayTrigger
                 placement="right"
@@ -981,7 +974,13 @@ export default function CreateNewFilterDrawer({
             </div>
           ) : null}
         </div>
-
+        {createdBy && <>
+          <h5 className="fw-bold ">
+            <Translation>{(t) => t("Filter Created by")}</Translation>
+          </h5>
+          <i className="fa-solid fa-user me-2"></i>
+          {createdBy}
+        </>}
         <Divider />
       </List>
 

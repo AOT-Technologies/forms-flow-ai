@@ -198,7 +198,7 @@ class AuthorizationListById(Resource):
 
     @staticmethod
     @API.doc("Authorization list by Id")
-    @auth.has_one_of_roles([CREATE_DESIGNS])
+    @auth.has_one_of_roles([CREATE_DESIGNS, VIEW_DESIGNS])
     @profiletime
     @API.doc(
         responses={

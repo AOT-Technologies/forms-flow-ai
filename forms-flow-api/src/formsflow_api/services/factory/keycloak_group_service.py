@@ -83,7 +83,9 @@ class KeycloakGroupService(KeycloakAdmin):
         if current_app.config.get("MULTI_TENANCY_ENABLED"):
             current_app.logger.debug("Getting groups for tenant...")
             user: UserContext = kwargs["user"]
-            response = [group for group in response if group['name'].startswith(user.tenant_key)]
+            response = [
+                group for group in response if group["name"].startswith(user.tenant_key)
+            ]
         flat_response: List[Dict] = []
         result_list = self.sort_results(self.flat(response, flat_response), sort_order)
         if search:

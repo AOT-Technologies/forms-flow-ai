@@ -250,7 +250,7 @@ class FormResourceList(Resource):
             sort_order=sort_order,
             form_type=form_type,
             is_active=is_active,
-            is_designer=auth.has_role([CREATE_DESIGNS]),
+            is_designer=auth.has_role([CREATE_DESIGNS, VIEW_DESIGNS]),
             active_forms=active_forms,
         )
         return (

@@ -259,7 +259,7 @@ class ApplicationResourceById(Resource):
         return application, status
 
     @staticmethod
-    @auth.has_one_of_roles([VIEW_SUBMISSIONS])
+    @auth.require
     @profiletime
     @API.doc(body=application_update_model)
     @API.response(200, "OK:- Successful request.")

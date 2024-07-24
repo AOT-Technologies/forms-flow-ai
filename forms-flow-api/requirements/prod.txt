@@ -16,4 +16,4 @@ sqlalchemy_utils
 markupsafe
 PyJWT
 redis
-git+https://github.com/AOT-Technologies/forms-flow-ai.git@feature/FWF-3316-permission-matrix#subdirectory=forms-flow-api-utils
+git+https://github.com/abilpraju-aot/forms-flow-ai.git@bugfix/FWF-3501-admin-role-added#egg=formsflow_api_utils&subdirectory=forms-flow-api-utils

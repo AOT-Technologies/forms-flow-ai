@@ -130,7 +130,6 @@ def test_form_process_mapper_by_formid(app, client, session, jwt):
 def test_form_process_mapper_id_deletion(app, client, session, jwt):
     """Testing form process mapper delete endpoint."""
     token = get_token(jwt, role=CREATE_DESIGNS, roles=["/formsflow/formsflow-designer"])
-    print(token, "token")
     headers = {"Authorization": f"Bearer {token}", "content-type": "application/json"}
     response = client.post(
         "/form",
@@ -143,7 +142,7 @@ def test_form_process_mapper_id_deletion(app, client, session, jwt):
         "resourceDetails": {},
         "roles": ["/formsflow/formsflow-designer"],
     }
-    token = get_token(jwt, role=ADMIN)
+    token = get_token(jwt, role=CREATE_DESIGNS)
     headers = {"Authorization": f"Bearer {token}", "content-type": "application/json"}
     response = client.post(
         "/authorizations/form", headers=headers, data=json.dumps(auth_payload)

@@ -91,6 +91,17 @@ class UserService:
         return data[start_index:end_index]
 
     @staticmethod
+    def filter_by_permission(users_with_roles, permission):
+        """Filter users by permission."""
+        update_user_list = []
+        for user in users_with_roles:
+            roles = [role["name"] for role in user.get("role", [])]
+            if permission in roles:
+                del user["role"]
+                update_user_list.append(user)
+        return update_user_list
+
+    @staticmethod
     @user_context
     def update_user_data(data, **kwargs):
         """Update user data."""
@@ -106,3 +117,15 @@ class UserService:
             data["created_by"] = user.user_name
             user_data = User.create_user(data)
         return UserSchema().dump(user_data)
+
+    @staticmethod
+    @user_context
+    def filter_user_by_tenant_key(users_list, **kwargs):
+        """Filter users by tenant key."""
+        user: UserContext = kwargs["user"]
+        tenant_key = user.tenant_key
+        return [
+            data
+            for data in users_list
+            if tenant_key in data["attributes"].get("tenantKey", [])
+        ]

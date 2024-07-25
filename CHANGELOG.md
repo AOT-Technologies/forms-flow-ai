@@ -2,6 +2,15 @@
 
 Mark  items as `Added`, `Changed`, `Fixed`, `Modified`, `Removed`, `Untested Features`, `Upcoming Features`, `Known Issues`
 
+## 6.1.0
+
+`Added`
+ 
+ **forms-flow-bpm**
+* Added support to fetch secrets from Vault.
+* Added environment variables 
+ `VAULT_ENABLED`, `VAULT_URL`, `VAULT_TOKEN`, `VAULT_PATH`, `VAULT_SECRET` to support Vault.
+
 ## 6.0.2 - 2024-06-05
 
 `Added`

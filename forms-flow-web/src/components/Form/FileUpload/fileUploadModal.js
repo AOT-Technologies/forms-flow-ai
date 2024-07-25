@@ -7,8 +7,8 @@ import { DesignerAccessDenied } from "../../../actions/checkListActions";
 import { Translation, useTranslation } from "react-i18next";
 
 // eslint-disable-next-line no-unused-vars
-const FileModal = React.memo(({ modalOpen = false, onClose, forms,
-  pathErrorMessage, isloading }) => {
+const FileModal = React.memo(({ modalOpen = false, onClose,
+  validationErrors, isloading }) => {
   const dispatch = useDispatch();
   const formUploadList = useSelector(
     (state) => state.formCheckList.formUploadFormList
@@ -77,7 +77,8 @@ const FileModal = React.memo(({ modalOpen = false, onClose, forms,
               <Translation>{(t) => t("No forms found")}</Translation>
             </div>
           )}
-          <div className="has-error">{pathErrorMessage}</div>
+          <div className="has-error">{validationErrors?.path}</div>
+          <div className="has-error">{validationErrors?.name}</div>
         </Modal.Body>
         <Modal.Footer style={{ justifyContent: `${noAccess ? "space-between" : ''}` }}>
           {noAccess && <span className="fileupload-fail">{t("Access restricted by its designer..!")}</span>}

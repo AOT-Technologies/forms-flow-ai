@@ -51,6 +51,7 @@ import {
 import { AppConfig } from "../config";
 import { getFormioRoleIds } from "../apiManager/services/userservices";
 import AccessDenied from "./AccessDenied";
+import { LANGUAGE } from "../constants/constants";
 
 export const kcServiceInstance = (tenantId = null) => {
   return KeycloakService.getInstance(
@@ -138,7 +139,7 @@ const PrivateRoute = React.memo((props) => {
     if (tenantId && MULTITENANCY_ENABLED) {
       validateTenant(tenantId)
         .then((res) => {
-          if (res.data.status === "INVALID") {
+          if (!res.data.tenantKeyExist) {
             setTenantValid(false);
           } else {
             setTenantValid(true);
@@ -165,12 +166,13 @@ const PrivateRoute = React.memo((props) => {
   }, [tenantId, props.store, dispatch]);
 
   useEffect(() => {
-    if (kcInstance) {
+    if (kcInstance ) {
       const lang =
         kcInstance?.userData?.locale ||
         tenant?.tenantData?.details?.locale ||
-        selectedLanguage;
-      dispatch(setLanguage(lang));
+        selectedLanguage ||
+        LANGUAGE;
+        dispatch(setLanguage(lang));
     }
   }, [kcInstance, tenant?.tenantData]);
 

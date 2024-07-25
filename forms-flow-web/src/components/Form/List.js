@@ -60,7 +60,10 @@ const List = React.memo((props) => {
   const { t } = useTranslation();
   const [showFormUploadModal, setShowFormUploadModal] = useState(false);
   const [isloading, setIsLoading] = useState(true);
-  const [pathErrorMessage, setPathErrorMessage] = useState('');
+  const [validationErrors, setValidationErrors] = useState({
+    path: '',
+    name: '',
+  });
   const dispatch = useDispatch();
   const uploadFormNode = useRef();
   const {
@@ -109,7 +112,7 @@ const List = React.memo((props) => {
 
   useEffect(() => {
     if (!showFormUploadModal) {
-      setPathErrorMessage("");
+      setValidationErrors((prevErrors) => ({ ...prevErrors, path: '', name: '' }));
       setIsLoading(true);
     }
   }, [showFormUploadModal]);
@@ -283,14 +286,17 @@ const List = React.memo((props) => {
                 .catch((err) => {
                   const errorResponse = err.response.data;
                   const pathErrorMessage = errorResponse.errors.path ? errorResponse.errors.path.message : '';
+                  const nameErrorMessage = errorResponse.errors.name ? errorResponse.errors.name.message : '';
                   newFormData.componentChanged = false;
-                  if (pathErrorMessage !== '') {
+                  if (pathErrorMessage !== '' || nameErrorMessage !== '') {
                     dispatch(formUploadFailureCount());
                     setIsLoading(false);
-                    setPathErrorMessage(pathErrorMessage);
+                    setValidationErrors({
+                      path: pathErrorMessage,
+                      name: nameErrorMessage,
+                    });
                   }
                   else {
-
                     dispatch(
                       fetchFormByAlias(newFormData.path, async (err, formObj) => {
                         if (!err) {
@@ -498,10 +504,10 @@ const List = React.memo((props) => {
         isloading={isloading}
         modalOpen={showFormUploadModal}
         onClose={() => setShowFormUploadModal(false)}
-        pathErrorMessage={pathErrorMessage}
+        validationErrors={validationErrors}
       />
       {(forms.isActive || designerFormLoading || isBPMFormListLoading) &&
-      !searchFormLoading ? (
+        !searchFormLoading ? (
         <div data-testid="Form-list-component-loader">
           <Loading />
         </div>

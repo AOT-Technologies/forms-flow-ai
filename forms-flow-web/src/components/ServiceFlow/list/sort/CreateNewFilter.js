@@ -73,6 +73,7 @@ export default function CreateNewFilterDrawer({
 }) {
   const dispatch = useDispatch();
   const [filterName, setFilterName] = useState("");
+  const [createdBy, setCreatedBy] = useState("");
   const [showUndefinedVariable, setShowUndefinedVariable] = useState(false);
   const [definitionKeyId, setDefinitionKeyId] = useState("");
   const [candidateGroup, setCandidateGroup] = useState([]);
@@ -98,8 +99,8 @@ export default function CreateNewFilterDrawer({
   const userGroups = useSelector(
     (state) => state.userAuthorization?.userGroups
   );
-  const userName = useSelector(
-    (state) => state.user?.userDetail?.preferred_username
+  const userDetails = useSelector(
+    (state) => state.user?.userDetail
   );
   const sortParams = useSelector(
     (state) => state.bpmTasks.filterListSortParams
@@ -108,7 +109,6 @@ export default function CreateNewFilterDrawer({
     (state) => state.bpmTasks.filterListSearchParams
   );
   const selectedFilter = useSelector((state) => state.bpmTasks.selectedFilter);
-  const filterList = useSelector((state) => state.bpmTasks.filterList);
 
   const [variables, setVariables] = useState([]);
   const [forms, setForms] = useState({ data: [], isLoading: true });
@@ -184,6 +184,7 @@ export default function CreateNewFilterDrawer({
   useEffect(() => {
     if (selectedFilterData) {
       setFilterName(selectedFilterData.name);
+      setCreatedBy(selectedFilterData.createdBy);
       setFIlterDisplayOrder(selectedFilterData.order);
       let processDefinitionName =
         selectedFilterData?.criteria?.processDefinitionKey;
@@ -323,14 +324,9 @@ export default function CreateNewFilterDrawer({
             })
             .finally(() => {
               if (selectedFilterData) {
-                const filterSelected = filterList?.find(
-                  (filter) => filter.id === selectedFilterData?.id
-                );
                 if (selectedFilterData?.id === selectedFilter?.id) {
                   dispatch(setSelectedBPMFilter(resData));
                   fetchTasks(resData);
-                } else {
-                  dispatch(setSelectedBPMFilter(filterSelected));
                 }
                 toast.success(t("Changes Applied Successfully"));
               } else {
@@ -373,7 +369,7 @@ export default function CreateNewFilterDrawer({
       roles = [];
     }
     if (permissions === PRIVATE_ONLY_YOU) {
-      users.push(userName);
+      users.push(userDetails.preferred_username);
     }
     if (
       selectUserGroupIcon === "user" &&
@@ -397,9 +393,9 @@ export default function CreateNewFilterDrawer({
 
     const data = {
       name: filterName,
-      order: filterDisplayOrder, 
+      order: filterDisplayOrder,
       criteria: {
-        processDefinitionKey : definitionKeyId ,
+        processDefinitionKey: definitionKeyId,
         candidateGroup:
           MULTITENANCY_ENABLED && candidateGroup
             ? tenantKey + "-" + candidateGroup
@@ -465,8 +461,9 @@ export default function CreateNewFilterDrawer({
               fetchBPMTaskCount(data.filters)
                 .then((res) => {
                   dispatch(setBPMFiltersAndCount(res.data));
-                  dispatch(fetchServiceTaskList(data.defaultFilter || data.filters[0]
-                    , null, firstResult));
+                  const filter = data.filters.find((i) => data.defaultFilter == i.id) ||
+                    data.filters[0];
+                  dispatch(fetchServiceTaskList(filter, null, firstResult));
                 })
                 .catch((err) => {
                   if (err) {
@@ -609,11 +606,13 @@ export default function CreateNewFilterDrawer({
     }
   };
 
-  const handleOrderChange = (e)=>{
+  const handleOrderChange = (e) => {
     const value = e.target.value;
     const pattern = /^[1-9]\d*$/;
     const validInput = pattern.test(e.target.value);
-    setFIlterDisplayOrder(()=> value ? Number(validInput ? value : filterDisplayOrder) : null);
+    setFIlterDisplayOrder(() =>
+      value ? Number(validInput ? value : filterDisplayOrder) : null
+    );
   };
 
   const list = () => (
@@ -670,7 +669,9 @@ export default function CreateNewFilterDrawer({
       </List>
       <List>
         <div className="form-group">
-          <label htmlFor="filterDisplayOrder">{t("Filter display order")}</label>
+          <label htmlFor="filterDisplayOrder">
+            {t("Filter display order")}
+          </label>
           <input
             type="text"
             className="form-control"
@@ -697,14 +698,14 @@ export default function CreateNewFilterDrawer({
         </h5>
         <div className="d-flex align-items-center mt-1">
           <input
-            className="mr-6 mt-3"
+            className="me-1 mt-3"
             type="checkbox"
             checked={isMyTasksEnabled}
             onChange={(e) => setIsMyTasksEnabled(e.target.checked)}
             title={t("Show only current user assigned task")}
             disabled={viewMode}
           />
-          <h5 className="assigned-user mt-3">
+          <h5 className="mt-3 fw-normal">
             <Translation>
               {(t) => t("Show only current user assigned task")}
             </Translation>
@@ -715,7 +716,7 @@ export default function CreateNewFilterDrawer({
           <>
             <div className="d-flex align-items-center mt-1">
               <input
-                className="mr-6"
+                className="me-1 mt-3"
                 type="checkbox"
                 checked={isTasksForCurrentUserGroupsEnabled}
                 onChange={(e) =>
@@ -724,7 +725,7 @@ export default function CreateNewFilterDrawer({
                 title={t("Display authorized tasks based on user roles")}
                 disabled={viewMode}
               />
-              <h5 className="assigned-user">
+              <h5 className="mt-3 fw-normal">
                 <Translation>
                   {(t) => t("Display authorized tasks based on user roles")}
                 </Translation>
@@ -743,7 +744,7 @@ export default function CreateNewFilterDrawer({
 
         <div className="my-2">
           <label htmlFor="select-workflow">
-            <h5 className="mt-2 fs-18 fw-bold">
+            <h5 className="mt-2 fw-bold">
               <Translation>{(t) => t("Workflow")}</Translation>
             </h5>
           </label>
@@ -853,7 +854,7 @@ export default function CreateNewFilterDrawer({
         </div>
         <Divider />
         <div className="child-container-two pt-2">
-          <h5 className="fw-bold">
+          <h5>
             <Translation>{(t) => t("Permission")}</Translation>{" "}
             <i
               title={t(
@@ -872,7 +873,7 @@ export default function CreateNewFilterDrawer({
             onChange={(e) => setPermissions(e.target.value)}
             disabled={viewMode}
           />
-          <label htmlFor="all-users" className="assigned-user">
+          <label htmlFor="all-users" className="assigned-user fs-18">
             <Translation>{(t) => t("Accessible for all users")}</Translation>
           </label>{" "}
           <br />
@@ -905,7 +906,7 @@ export default function CreateNewFilterDrawer({
           </label>{" "}
           <br />
           {permissions === SPECIFIC_USER_OR_GROUP &&
-          specificUserGroup === SPECIFIC_USER_OR_GROUP ? (
+            specificUserGroup === SPECIFIC_USER_OR_GROUP ? (
             <div className="d-flex">
               <OverlayTrigger
                 placement="right"
@@ -946,7 +947,7 @@ export default function CreateNewFilterDrawer({
                     <i
                       className={`fa fa-users ${
                         selectUserGroupIcon === "group" ? "highlight" : ""
-                      } cursor-pointer group-icon`}
+                        } cursor-pointer group-icon`}
                     />
                   </div>
                 </div>
@@ -973,7 +974,13 @@ export default function CreateNewFilterDrawer({
             </div>
           ) : null}
         </div>
-
+        {createdBy && <>
+          <h5 className="fw-bold ">
+            <Translation>{(t) => t("Filter Created by")}</Translation>
+          </h5>
+          <i className="fa-solid fa-user me-2"></i>
+          {createdBy}
+        </>}
         <Divider />
       </List>
 

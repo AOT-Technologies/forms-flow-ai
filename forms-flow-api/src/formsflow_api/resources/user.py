@@ -158,7 +158,7 @@ class KeycloakUsersList(Resource):
         params={
             "memberOfGroup": {
                 "in": "query",
-                "description": "Group/Role  name for fetching users.",
+                "description": "Group name for fetching users.",
                 "default": "",
             },
             "search": {
@@ -186,6 +186,11 @@ class KeycloakUsersList(Resource):
                 "description": "Boolean which defines whether count is returned.",
                 "default": "false",
             },
+            "permission": {
+                "in": "query",
+                "description": "A string to filter user by permission.",
+                "default": "",
+            },
         }
     )
     @API.response(200, "OK:- Successful request.", model=user_list_count_model)
@@ -200,13 +205,15 @@ class KeycloakUsersList(Resource):
     def get():  # pylint: disable=too-many-locals
         """Get users list."""
         group_name = request.args.get("memberOfGroup")
+        permission = request.args.get("permission")
         search = request.args.get("search")
         page_no = int(request.args.get("pageNo", 0))
         limit = int(request.args.get("limit", 0))
         role = request.args.get("role") == "true"
         count = request.args.get("count") == "true"
-        kc_admin = KeycloakGroupService()
+        kc_admin = KeycloakFactory.get_instance()
         if group_name:
+
             (users_list, users_count) = kc_admin.get_users(
                 page_no, limit, role, group_name, count, search
             )
@@ -217,12 +224,9 @@ class KeycloakUsersList(Resource):
             }
         else:
             (user_list, user_count) = kc_admin.search_realm_users(
-                search, page_no, limit, role, count
+                search, page_no, limit, role, count, permission
             )
-            user_list_response = []
-            for user in user_list:
-                user = UsersListSchema().dump(user)
-                user_list_response.append(user)
+            user_list_response = UsersListSchema().dump(user_list, many=True)
             response = {"data": user_list_response, "count": user_count}
         return response, HTTPStatus.OK
 
@@ -255,7 +259,7 @@ class UserPermission(Resource):
         current_app.logger.debug("Initializing admin API service...")
         service = KeycloakGroupService()
         current_app.logger.debug("Successfully initialized admin API service !")
-        response = service.add_user_to_group_role(user_id, group_id, user_and_group)
+        response = service.add_user_to_group(user_id, group_id, user_and_group)
         if not response:
             current_app.logger.error(f"Failed to add {user_id} to group {group_id}")
             return {
@@ -282,11 +286,9 @@ class UserPermission(Resource):
         json_payload = request.get_json()
         user_and_group = UserPermissionUpdateSchema().load(json_payload)
         current_app.logger.debug("Initializing admin API service...")
-        service = KeycloakGroupService()
+        service = KeycloakFactory.get_instance()
         current_app.logger.debug("Successfully initialized admin API service !")
-        response = service.remove_user_from_group_role(
-            user_id, group_id, user_and_group
-        )
+        response = service.remove_user_from_group(user_id, group_id, user_and_group)
         if not response:
             current_app.logger.error(
                 f"Failed to remove {user_id} from group {group_id}"

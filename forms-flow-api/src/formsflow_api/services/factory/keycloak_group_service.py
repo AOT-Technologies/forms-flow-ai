@@ -30,6 +30,14 @@ class KeycloakGroupService(KeycloakAdmin):
             )
         return user_list
 
+    def __populate_user_roles(self, user_list: List) -> List:
+        """Collects roles for a user list and populates the role attribute."""
+        for user in user_list:
+            user["role"] = (
+                self.client.get_user_roles(user.get("id")) if user.get("id") else []
+            )
+        return user_list
+
     def get_analytics_groups(self, page_no: int, limit: int):
         """Get analytics groups."""
         return self.client.get_analytics_groups(page_no, limit)
@@ -39,6 +47,7 @@ class KeycloakGroupService(KeycloakAdmin):
         response = self.client.get_request(url_path=f"groups/{group_id}")
         return self.format_response(response)
 
+    @user_context
     def get_users(  # pylint: disable-msg=too-many-arguments
         self,
         page_no: int,
@@ -47,23 +56,30 @@ class KeycloakGroupService(KeycloakAdmin):
         group_name: str,
         count: bool,
         search: str,
+        **kwargs,
     ):
         """Get users under formsflow-reviewer group."""
+        user: UserContext = kwargs["user"]
         user_list: List[Dict] = []
         current_app.logger.debug(
             f"Fetching users from keycloak under {group_name} group..."
         )
         user_count = None
+        user_list = []
         if group_name:
+            if current_app.config.get("MULTI_TENANCY_ENABLED"):
+                group_name = group_name.replace("/", f"/{user.tenant_key}-", 1)
+
             group = self.client.get_request(url_path=f"group-by-path/{group_name}")
             group_id = group.get("id")
             url_path = f"groups/{group_id}/members"
             user_list = self.client.get_request(url_path)
-            if search:
-                user_list = self.user_service.user_search(search, user_list)
-            user_count = len(user_list) if count else None
-            if page_no and limit:
-                user_list = self.user_service.paginate(user_list, page_no, limit)
+
+        if search:
+            user_list = self.user_service.user_search(search, user_list)
+        user_count = len(user_list) if count else None
+        if page_no and limit:
+            user_list = self.user_service.paginate(user_list, page_no, limit)
         if role:
             user_list = self.__populate_user_groups(user_list)
         return (user_list, user_count)
@@ -212,7 +228,7 @@ class KeycloakGroupService(KeycloakAdmin):
                 data["permissions"] = client_roles
         return data
 
-    def add_user_to_group_role(self, user_id: str, group_id: str, payload: Dict):
+    def add_user_to_group(self, user_id: str, group_id: str, payload: Dict):
         """Add user to group."""
         data = {
             "realm": current_app.config.get("KEYCLOAK_URL_REALM"),
@@ -223,21 +239,83 @@ class KeycloakGroupService(KeycloakAdmin):
             url_path=f"users/{user_id}/groups/{group_id}", data=data
         )
 
-    def remove_user_from_group_role(
-        self, user_id: str, group_id: str, payload: Dict = None
-    ):
+    def add_role_to_user(self, user_id: str, role_id: str, payload: Dict):
+        """Add user to role."""
+        client_id = self.client.get_client_id()
+        data = {
+            "containerId": client_id,
+            "id": role_id,
+            "name": payload.get("name"),
+        }
+        return self.client.create_request(
+            url_path=f"users/{user_id}/role-mappings/clients/{client_id}", data=[data]
+        )
+
+    def remove_user_from_group(self, user_id: str, group_id: str, payload: Dict = None):
         """Remove user to group."""
         return self.client.delete_request(url_path=f"users/{user_id}/groups/{group_id}")
 
+    def remove_role_from_user(self, user_id: str, group_id: str, payload: Dict = None):
+        """Remove role from user."""
+        client_id = self.client.get_client_id()
+        data = {
+            "containerId": client_id,
+            "id": group_id,
+            "name": payload.get("name"),
+        }
+        return self.client.delete_request(
+            url_path=f"users/{user_id}/role-mappings/clients/{client_id}", data=[data]
+        )
+
+    @user_context
     def search_realm_users(  # pylint: disable-msg=too-many-arguments
-        self, search: str, page_no: int, limit: int, role: bool, count: bool
+        self,
+        search: str,
+        page_no: int,
+        limit: int,
+        role: bool,
+        count: bool,
+        permission: str,
+        **kwargs,
     ):
         """Search users in a realm."""
-        if not page_no or not limit:
-            raise BusinessException(BusinessErrorCode.MISSING_PAGINATION_PARAMETERS)
+        user: UserContext = kwargs["user"]
+        multitenancy = current_app.config.get("MULTI_TENANCY_ENABLED", False)
 
-        user_list = self.client.get_realm_users(search, page_no, limit)
-        users_count = self.client.get_realm_users_count(search) if count else None
+        tenant_key = user.tenant_key
+        # Initial url
+        url = "users?"
+
+        if page_no and limit:
+            url = f"users?first={(page_no - 1) * limit}&max={limit}"
+
+        if search:
+            # to add additional query parameter need to check url ends with nothing or any other parameter
+            url += f"{'' if url.endswith('?') else '&'}search={search}"
+
+        # if multitenancy enabled
+        if multitenancy:
+            url = f"users?q=tenantKey:{tenant_key}"
+
+        current_app.logger.debug(
+            f"{'Getting tenant users...' if multitenancy else 'Getting users...'}"
+        )
+        user_list = self.client.get_request(url)
+
+        # checking the specific permission(roles)
+        if permission:
+            users_with_roles = self.__populate_user_roles(user_list=user_list)
+            user_list = self.user_service.filter_by_permission(
+                users_with_roles, permission=permission
+            )
+
+        if multitenancy and search:
+            user_list = self.user_service.user_search(search, user_list)
+        users_count = len(user_list) if count else None
+
+        if multitenancy and page_no and limit:
+            user_list = self.user_service.paginate(user_list, page_no, limit)
+
         if role:
             user_list = self.__populate_user_groups(user_list)
         return (user_list, users_count)

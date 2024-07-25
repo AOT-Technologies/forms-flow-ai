@@ -31,7 +31,7 @@ PERMISSION_DETAILS = [
     {"name": MANAGE_DASHBOARD_AUTHORIZATIONS , "description": "Manage Dashboard Authorization", "depends_on": [ VIEW_DASHBOARDS ]},
     {"name": MANAGE_USERS , "description": "Manage Users", "depends_on": []},
     {"name": MANAGE_ROLES , "description": "Manage Roles", "depends_on": [ MANAGE_USERS ]},
-    {"name": ADMIN , "description": "Administrator Role", "depends_on": []},
+    {"name": ADMIN , "description": "Administrator Role", "depends_on": [ MANAGE_ROLES , MANAGE_USERS ]},
 ]
 
 

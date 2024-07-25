@@ -115,6 +115,7 @@ export default function CreateNewFilterDrawer({
   const [selectedForm, setSelectedForm] = useState(null);
   const [taskVariablesKeys, setTaskVariablesKeys] = useState({});
   const [processLoading, setProcessLoading] = useState(false);
+  const loginedUserRoles = useSelector((state) => state.user.roles || []);
 
   const [overlayGroupShow, setOverlayGroupShow] = useState(false);
   const [overlayUserShow, setOverlayUserShow] = useState(false);
@@ -548,7 +549,7 @@ export default function CreateNewFilterDrawer({
 
   const candidateOptions = useMemo(() => {
     return MULTITENANCY_ENABLED
-      ? userRoles.map((role) => ({
+      ? loginedUserRoles.map((role) => ({
           value: role,
           label: role,
         }))
@@ -556,7 +557,7 @@ export default function CreateNewFilterDrawer({
           value: trimFirstSlash(group),
           label: group,
         }));
-  }, [candidateGroups, userRoles, MULTITENANCY_ENABLED]);
+  }, [candidateGroups, loginedUserRoles, MULTITENANCY_ENABLED]);
 
   const handleAssignee = (selectedOption) => {
     setAssignee(selectedOption ? selectedOption.value : null);

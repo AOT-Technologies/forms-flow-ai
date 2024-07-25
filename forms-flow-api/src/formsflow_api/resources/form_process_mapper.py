@@ -160,6 +160,52 @@ form_history_response_model = API.inherit(
         "change_log": fields.Nested(form_history_change_log_model),
     },
 )
+forms_list_model = API.model(
+    "Forms List Model",
+    {"formTitle": fields.String(), "type": fields.String(), "content": fields.Raw()},
+)
+workflows_list_model = API.model(
+    "Workflows List",
+    {
+        "processKey": fields.String(),
+        "processName": fields.String(),
+        "type": fields.String(),
+        "content": fields.String(),
+    },
+)
+dmns_list_model = API.model(
+    "DMN List",
+    {"key": fields.String(), "type": fields.String(), "content": fields.String()},
+)
+resource_details_model = API.model("resource_details", {"name": fields.String()})
+
+authorization_model = API.model(
+    "Authorization",
+    {
+        "resourceId": fields.String(),
+        "resourceDetails": fields.Nested(resource_details_model),
+        "roles": fields.List(fields.String),
+        "userName": fields.String(),
+    },
+)
+
+authorization_list_model = API.model(
+    "Authorization List",
+    {
+        "APPLICATION": fields.Nested(authorization_model),
+        "FORM": fields.Nested(authorization_model),
+        "DESIGNER": fields.Nested(authorization_model),
+    },
+)
+export_response_model = API.model(
+    "ExportResponse",
+    {
+        "forms": fields.List(fields.Nested(forms_list_model)),
+        "workflows": fields.List(fields.Nested(workflows_list_model)),
+        "rules": fields.List(fields.Nested(dmns_list_model)),
+        "authorizations": fields.List(fields.Nested(authorization_list_model)),
+    },
+)
 
 
 @cors_preflight("GET,POST,OPTIONS")
@@ -588,3 +634,33 @@ class FormHistoryResource(Resource):
         """Getting form history."""
         FormProcessMapperService.check_tenant_authorization_by_formid(form_id=form_id)
         return FormHistoryService.get_all_history(form_id)
+
+
+@cors_preflight("GET,OPTIONS")
+@API.route("/<int:mapper_id>/export", methods=["GET", "OPTIONS"])
+class ExportById(Resource):
+    """Resource to support export by mapper_id."""
+
+    @staticmethod
+    @auth.require
+    @profiletime
+    @API.response(200, "OK:- Successful request.", model=export_response_model)
+    @API.response(
+        400,
+        "BAD_REQUEST:- Invalid request.",
+    )
+    @API.response(
+        401,
+        "UNAUTHORIZED:- Authorization header not provided or an invalid token passed.",
+    )
+    @API.response(
+        403,
+        "FORBIDDEN:- Authorization will not help.",
+    )
+    def get(mapper_id: int):
+        """Export by mapper_id."""
+        form_service = FormProcessMapperService()
+        return (
+            form_service.export(mapper_id),
+            HTTPStatus.OK,
+        )

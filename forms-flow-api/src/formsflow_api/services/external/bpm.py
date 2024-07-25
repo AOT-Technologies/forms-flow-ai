@@ -17,6 +17,7 @@ class BPMEndpointType(IntEnum):
     PROCESS_DEFINITION = 1
     FORM_AUTH_DETAILS = 2
     MESSAGE_EVENT = 3
+    DECISION_DEFINITION = 4
 
 
 class BPMService(BaseBPMService):
@@ -77,6 +78,24 @@ class BPMService(BaseBPMService):
         return cls.post_request(url, token, data)
 
     @classmethod
+    def process_definition_xml(cls, process_key, token):
+        """Get process definition xml."""
+        url = (
+            f"{cls._get_url_(BPMEndpointType.PROCESS_DEFINITION)}/"
+            f"key/{process_key}/xml"
+        )
+        return cls.get_request(url, token)
+
+    @classmethod
+    def decision_definition_xml(cls, decision_key, token):
+        """Get decision definition xml."""
+        url = (
+            f"{cls._get_url_(BPMEndpointType.DECISION_DEFINITION)}/"
+            f"key/{decision_key}/xml"
+        )
+        return cls.get_request(url, token)
+
+    @classmethod
     def _get_url_(cls, endpoint_type: BPMEndpointType):
         """Get Url."""
         bpm_api_base = current_app.config.get("BPM_API_URL")
@@ -88,6 +107,8 @@ class BPMService(BaseBPMService):
                 url = f"{bpm_api_base}/engine-rest-ext/v1/admin/form/authorization"
             elif endpoint_type == BPMEndpointType.MESSAGE_EVENT:
                 url = f"{bpm_api_base}/engine-rest-ext/v1/message"
+            elif endpoint_type == BPMEndpointType.DECISION_DEFINITION:
+                url = f"{bpm_api_base}/engine-rest-ext/v1/decision-definition"
             return url
 
         except BaseException as e:  # pylint: disable=broad-except

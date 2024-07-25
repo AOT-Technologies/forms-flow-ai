@@ -20,6 +20,10 @@ class BusinessErrorCode(ErrorCodeMixin, Enum):
         HTTPStatus.BAD_REQUEST,
     )
     PROCESS_DEF_NOT_FOUND = "Process definition does not exist", HTTPStatus.BAD_REQUEST
+    DECISION_DEF_NOT_FOUND = (
+        "Decision definition does not exist",
+        HTTPStatus.BAD_REQUEST,
+    )
     INVALID_AUTH_RESOURCE_ID = (
         "Invalid authorization resource ID",
         HTTPStatus.BAD_REQUEST,

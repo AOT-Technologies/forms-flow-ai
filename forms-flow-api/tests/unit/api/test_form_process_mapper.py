@@ -1,8 +1,9 @@
 """Test suite for FormProcessMapper API endpoint."""
+
 import json
-
+from unittest.mock import MagicMock
 import pytest
-
+from formsflow_api.models import FormProcessMapper
 from tests.utilities.base_test import (
     get_application_create_payload,
     get_form_request_anonymous_payload,
@@ -301,3 +302,186 @@ def test_formio_form_creation(app, client, session, jwt, mock_redis_client):
         "/form/form-design", headers=headers, json=get_formio_form_request_payload()
     )
     assert response.status_code == 201
+
+
+def get_export(client, headers, mapper_id):
+    """Get export."""
+    return client.get(f"/form/{mapper_id}/export", headers=headers)
+
+
+def get_authorizations(form_id):
+    """Get authorizations."""
+    return {
+        "APPLICATION": {
+            "resourceId": form_id,
+            "resourceDetails": {},
+            "roles": [],
+            "userName": None,
+        },
+        "DESIGNER": {
+            "resourceId": form_id,
+            "resourceDetails": {},
+            "roles": [],
+            "userName": None,
+        },
+        "FORM": {
+            "resourceId": form_id,
+            "resourceDetails": {},
+            "roles": [],
+            "userName": None,
+        },
+    }
+
+
+def get_forms(form_name, scope_type):
+    """Get forms."""
+    return {"formTitle": form_name, "type": scope_type, "content": "json form content"}
+
+
+def get_workflows(process_key, process_name, scope_type, xml):
+    """Get workflows."""
+    return {
+        "processKey": process_key,
+        "processName": process_name,
+        "type": scope_type,
+        "content": xml,
+    }
+
+
+def get_dmns(dmn_key, scope_type, xml):
+    """Get DMN."""
+    return {"key": dmn_key, "type": scope_type, "content": xml}
+
+
+def mapper_payload(form_name, process_key, process_name):
+    """Mapper payload."""
+    return {
+        "form_id": "1234",
+        "form_name": form_name,
+        "process_key": process_key,
+        "process_name": process_name,
+        "status": "active",
+        "tenant": None,
+        "form_type": "form",
+        "parent_form_id": "1234",
+        "created_by": "test",
+    }
+
+
+def test_export(app, client, session, jwt, mock_redis_client):
+    """Testing export by mapper id."""
+    token = get_token(jwt, role="formsflow-designer", username="designer")
+    headers = {"Authorization": f"Bearer {token}", "content-type": "application/json"}
+
+    # Test export - no DMN - no subprocess -no task based forms(form connector)
+    form = FormProcessMapper(
+        **mapper_payload("sample form2", "onestepapproval", "One Step Approval")
+    )
+    form.save()
+    mapper_id = form.id
+    form_id = form.form_id
+
+    # Mock response
+    client = MagicMock()
+    mock_response = MagicMock()
+    mock_response.status_code = 200
+    mock_response.json = {
+        "forms": [get_forms("sample form1", "main")],
+        "workflows": [
+            get_workflows("onestepapproval", "One Step Approval", "main", "xml")
+        ],
+        "rules": [],
+        "authorizations": [get_authorizations(form_id)],
+    }
+    client.get.return_value = mock_response
+    response = get_export(client, headers, mapper_id)
+    assert response.status_code == 200
+    assert response.json is not None
+    assert len(response.json["forms"]) == 1
+    assert len(response.json["workflows"]) == 1
+    assert len(response.json["rules"]) == 0
+    assert len(response.json["authorizations"]) == 1
+
+    # Test export - with task based forms - no DMN - no subprocess
+    form = FormProcessMapper(
+        **mapper_payload("sample form2", "formconectflow", "FormConnectFlow")
+    )
+    form.save()
+    mapper_id = form.id
+    form_id = form.form_id
+
+    # Mock response
+    mock_response = MagicMock()
+    mock_response.status_code = 200
+    mock_response.json = {
+        "forms": [get_forms("sample form2", "main"), get_forms("sample form3", "sub")],
+        "workflows": [
+            get_workflows("formconectflow", "FormConnectFlow", "main", "xml")
+        ],
+        "rules": [],
+        "authorizations": [get_authorizations(form_id)],
+    }
+    client.get.return_value = mock_response
+    response = get_export(client, headers, mapper_id)
+    assert response.status_code == 200
+    assert response.json is not None
+    assert len(response.json["forms"]) == 2
+    assert len(response.json["workflows"]) == 1
+    assert len(response.json["rules"]) == 0
+    assert len(response.json["authorizations"]) == 1
+
+    # Test export - with DMN- no task based forms  - no subprocess
+    form = FormProcessMapper(
+        **mapper_payload("sample form2", "rulebasedflow", "RuleBasedFlow")
+    )
+    form.save()
+    mapper_id = form.id
+    form_id = form.form_id
+
+    # Mock response
+    mock_response = MagicMock()
+    mock_response.status_code = 200
+    mock_response.json = {
+        "forms": [get_forms("sample form2", "main")],
+        "workflows": [get_workflows("rulebasedflow", "RuleBasedFlow", "main", "xml")],
+        "rules": [get_dmns("dmn1", "main", "dmn xml")],
+        "authorizations": [get_authorizations(form_id)],
+    }
+    client.get.return_value = mock_response
+    response = get_export(client, headers, mapper_id)
+    assert response.status_code == 200
+    assert response.json is not None
+    assert len(response.json["forms"]) == 1
+    assert len(response.json["workflows"]) == 1
+    assert len(response.json["rules"]) == 1
+    assert len(response.json["authorizations"]) == 1
+
+    # Test export - with subprocess - no DMN- no task based forms
+    form = FormProcessMapper(
+        **mapper_payload("sample form2", "subprocessflow", "SubprocessFlow")
+    )
+    form.save()
+    mapper_id = form.id
+    form_id = form.form_id
+
+    # Mock response
+    mock_response = MagicMock()
+    mock_response.status_code = 200
+    mock_response.json = {
+        "forms": [get_forms("sample form2", "main")],
+        "workflows": [
+            get_workflows("subprocessflow", "SubprocessFlow", "main", "xml"),
+            get_workflows("subflow1", "subflow1", "sub", "xml"),
+            get_workflows("subflow2", "subflow2", "sub", "xml"),
+        ],
+        "rules": [],
+        "authorizations": [get_authorizations(form_id)],
+    }
+    client.get.return_value = mock_response
+    response = get_export(client, headers, mapper_id)
+    assert response.status_code == 200
+    assert response.json is not None
+    assert len(response.json["forms"]) == 1
+    assert len(response.json["workflows"]) == 3
+    assert len(response.json["rules"]) == 0
+    assert len(response.json["authorizations"]) == 1

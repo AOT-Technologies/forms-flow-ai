@@ -395,8 +395,9 @@ class FormProcessMapperService:
         for subprocess in sub_processes:
             subprocess_name = subprocess.attrib.get("calledElement")
             current_app.logger.info(f"Subprocess: {subprocess_name}")
-
-            sub_workflow = self._get_workflow(subprocess_name, None, "sub", user)
+            # Here subprocess_name will be the process key
+            # Since we didn't get process name, we will use the subprocess name as process name
+            sub_workflow = self._get_workflow(subprocess_name, subprocess_name, "sub", user)
             workflows.append(sub_workflow)
 
             sub_form_names, sub_dmn_names, sub_workflows = self._parse_xml(

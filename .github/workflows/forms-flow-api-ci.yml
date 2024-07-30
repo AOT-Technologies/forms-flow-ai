@@ -7,13 +7,11 @@ on:
       - develop
       - master
       - release/**
-      - feature/FWF-3316-permission-matrix
   pull_request:
     branches:
       - develop
       - master
       - release/**
-      - feature/FWF-3316-permission-matrix
     paths:
       - "forms-flow-api/**"
 

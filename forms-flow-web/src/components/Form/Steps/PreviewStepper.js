@@ -16,6 +16,7 @@ import {
 } from "../../../apiManager/services/authorizationService";
 import { Badge } from 'react-bootstrap';
 import "../Steps/steps.scss";
+import  userRoles  from "../../../constants/permissions";
 
 const Preview = React.memo(
   ({
@@ -42,6 +43,9 @@ const Preview = React.memo(
     const userGroups = useSelector(
       (state) => state.userAuthorization?.userGroups
     );
+    const { createDesigns } = userRoles();
+
+    // const userRoles = useSelector((state) => state.user.roles || []);
     const authorizationDetails = useSelector(
       (state) => state.process?.authorizationDetails
     );
@@ -237,8 +241,8 @@ if (reviewerSelectedOption === "Specific Reviewers") {
 
  
           
-            <Card>
-              <Card.Body>
+        <Card disabled={!createDesigns}>              
+          <Card.Body>
                 
                   <div>
                     <span className="fw-bold">{t("Overview")}</span>

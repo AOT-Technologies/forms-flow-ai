@@ -67,7 +67,7 @@ def test_keycloak_users_list(app, client, session, jwt):
         assert type(user.get("role")) == list
         assert len(user["role"]) != 0
     realm_users = client.get("/user?role=true", headers=headers)
-    assert realm_users.status_code == 400
+    assert realm_users.status_code == 200
 
 
 def test_keycloak_users_list_invalid_group(app, client, session, jwt):

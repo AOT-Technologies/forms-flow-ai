@@ -148,6 +148,9 @@ def test_form_process_mapper_id_deletion(app, client, session, jwt):
     response = client.post(
         "/authorizations/form", headers=headers, data=json.dumps(auth_payload)
     )
+    response = client.post(
+        "/authorizations/designer", headers=headers, data=json.dumps(auth_payload)
+    )
     assert response.status_code == 200
     token = get_token(jwt, role=VIEW_DESIGNS, roles=["/formsflow/formsflow-designer"])
     headers = {"Authorization": f"Bearer {token}", "content-type": "application/json"}
@@ -184,6 +187,9 @@ def test_form_process_mapper_test_update(app, client, session, jwt):
     response = client.post(
         "/authorizations/form", headers=headers, data=json.dumps(auth_payload)
     )
+    response = client.post(
+        "/authorizations/designer", headers=headers, data=json.dumps(auth_payload)
+    )
     assert response.status_code == 200
     token = get_token(jwt, role=VIEW_DESIGNS, roles=["/formsflow/formsflow-designer"])
     headers = {"Authorization": f"Bearer {token}", "content-type": "application/json"}
@@ -218,6 +224,9 @@ def test_anonymous_form_process_mapper_test_update(app, client, session, jwt):
     headers = {"Authorization": f"Bearer {token}", "content-type": "application/json"}
     response = client.post(
         "/authorizations/form", headers=headers, data=json.dumps(auth_payload)
+    )
+    response = client.post(
+        "/authorizations/designer", headers=headers, data=json.dumps(auth_payload)
     )
     assert response.status_code == 200
     token = get_token(jwt, role=VIEW_DESIGNS, roles=["/formsflow/formsflow-designer"])
@@ -256,6 +265,9 @@ def test_get_application_count_based_on_form_process_mapper_id(
     headers = {"Authorization": f"Bearer {token}", "content-type": "application/json"}
     response = client.post(
         "/authorizations/form", headers=headers, data=json.dumps(auth_payload)
+    )
+    response = client.post(
+        "/authorizations/designer", headers=headers, data=json.dumps(auth_payload)
     )
     assert response.status_code == 200
     token = get_token(jwt, role=VIEW_DESIGNS, roles=["/formsflow/formsflow-designer"])

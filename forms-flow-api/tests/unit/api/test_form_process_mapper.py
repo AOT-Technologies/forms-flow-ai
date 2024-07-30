@@ -398,7 +398,7 @@ def mapper_payload(form_name, process_key, process_name):
 
 def test_export(app, client, session, jwt, mock_redis_client):
     """Testing export by mapper id."""
-    token = get_token(jwt, role="formsflow-designer", username="designer")
+    token = get_token(jwt, role=CREATE_DESIGNS, username="designer")
     headers = {"Authorization": f"Bearer {token}", "content-type": "application/json"}
 
     # Test export - no DMN - no subprocess -no task based forms(form connector)

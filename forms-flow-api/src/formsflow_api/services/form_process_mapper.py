@@ -307,9 +307,21 @@ class FormProcessMapperService:
         """Get workflow details."""
         try:
             current_app.logger.info(f"Fetching xml for process: {process_key}")
-            xml = BPMService.process_definition_xml(process_key, user.bearer_token).get(
-                "bpmn20Xml"
-            )
+            process_tenant = None
+            if current_app.config.get("MULTI_TENANCY_ENABLED"):
+                url_path = (
+                    f"&includeProcessDefinitionsWithoutTenantId=true"
+                    f"&key={process_key}&tenantIdIn={user.tenant_key}"
+                )
+                process = BPMService.get_all_process(user.bearer_token, url_path)
+                if process:
+                    process_tenant = process[0].get("tenantId")
+                    current_app.logger.info(
+                        f"Found tenant ID {process_tenant} for process {process_key}"
+                    )
+            xml = BPMService.process_definition_xml(
+                process_key, user.bearer_token, process_tenant
+            ).get("bpmn20Xml")
             return {
                 "processKey": process_key,
                 "processName": process_name,
@@ -323,7 +335,22 @@ class FormProcessMapperService:
     def _get_dmn(self, dmn_key: str, scope_type: str, user: UserContext) -> dict:
         """Get DMN details."""
         try:
-            dmn_xml = BPMService.decision_definition_xml(dmn_key, user.bearer_token).get("dmnXml")
+            current_app.logger.info(f"Fetching xml for DMN: {dmn_key}")
+            dmn_tenant = None
+            if current_app.config.get("MULTI_TENANCY_ENABLED"):
+                url_path = (
+                    f"?latestVersion=true&includeDecisionDefinitionsWithoutTenantId=true"
+                    f"&key={dmn_key}&tenantIdIn={user.tenant_key}"
+                )
+                dmn = BPMService.get_decision(user.bearer_token, url_path)
+                if dmn:
+                    dmn_tenant = dmn[0].get("tenantId")
+                    current_app.logger.info(
+                        f"Found tenant ID: {dmn_tenant} for DMN: {dmn_key}"
+                    )
+            dmn_xml = BPMService.decision_definition_xml(
+                dmn_key, user.bearer_token, dmn_tenant
+            ).get("dmnXml")
             return {
                 "key": dmn_key,
                 "type": scope_type,
@@ -397,7 +424,9 @@ class FormProcessMapperService:
             current_app.logger.info(f"Subprocess: {subprocess_name}")
             # Here subprocess_name will be the process key
             # Since we didn't get process name, we will use the subprocess name as process name
-            sub_workflow = self._get_workflow(subprocess_name, subprocess_name, "sub", user)
+            sub_workflow = self._get_workflow(
+                subprocess_name, subprocess_name, "sub", user
+            )
             workflows.append(sub_workflow)
 
             sub_form_names, sub_dmn_names, sub_workflows = self._parse_xml(

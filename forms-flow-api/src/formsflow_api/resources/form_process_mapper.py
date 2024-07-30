@@ -8,7 +8,12 @@ from flask_restx import Namespace, Resource, fields
 from formsflow_api_utils.exceptions import BusinessException
 from formsflow_api_utils.services.external import FormioService
 from formsflow_api_utils.utils import (
-    DESIGNER_GROUP,
+    CREATE_DESIGNS,
+    CREATE_FILTERS,
+    CREATE_SUBMISSIONS,
+    MANAGE_ALL_FILTERS,
+    VIEW_DESIGNS,
+    VIEW_FILTERS,
     auth,
     cors_preflight,
     profiletime,
@@ -214,7 +219,16 @@ class FormResourceList(Resource):
     """Resource for getting forms."""
 
     @staticmethod
-    @auth.require
+    @auth.has_one_of_roles(
+        [
+            CREATE_DESIGNS,
+            VIEW_DESIGNS,
+            CREATE_SUBMISSIONS,
+            CREATE_FILTERS,
+            VIEW_FILTERS,
+            MANAGE_ALL_FILTERS,
+        ]
+    )
     @profiletime
     @API.doc(
         params={
@@ -282,7 +296,7 @@ class FormResourceList(Resource):
             sort_order=sort_order,
             form_type=form_type,
             is_active=is_active,
-            is_designer=auth.has_role([DESIGNER_GROUP]),
+            is_designer=auth.has_any_role([CREATE_DESIGNS, VIEW_DESIGNS]),
             active_forms=active_forms,
         )
         return (
@@ -298,7 +312,7 @@ class FormResourceList(Resource):
         )
 
     @staticmethod
-    @auth.require
+    @auth.has_one_of_roles([CREATE_DESIGNS])
     @profiletime
     @API.doc(body=mapper_create_model)
     @API.response(
@@ -335,7 +349,7 @@ class FormResourceById(Resource):
     """Resource for managing forms by mapper_id."""
 
     @staticmethod
-    @auth.require
+    @auth.has_one_of_roles([CREATE_DESIGNS])
     @profiletime
     @API.response(200, "OK:- Successful request.", model=mapper_create_response_model)
     @API.response(
@@ -358,7 +372,7 @@ class FormResourceById(Resource):
         )
 
     @staticmethod
-    @auth.require
+    @auth.has_one_of_roles([CREATE_DESIGNS])
     @profiletime
     @API.response(200, "OK:- Successful request.")
     @API.response(
@@ -381,7 +395,7 @@ class FormResourceById(Resource):
         return "Deleted", HTTPStatus.OK
 
     @staticmethod
-    @auth.require
+    @auth.has_one_of_roles([CREATE_DESIGNS])
     @API.doc(body=mapper_update_model)
     @API.response(
         200, "CREATED:- Successful request.", model=mapper_create_response_model
@@ -430,7 +444,16 @@ class FormResourceByFormId(Resource):
     """Resource for managing forms by corresponding form_id."""
 
     @staticmethod
-    @auth.require
+    @auth.has_one_of_roles(
+        [
+            CREATE_DESIGNS,
+            VIEW_DESIGNS,
+            CREATE_SUBMISSIONS,
+            CREATE_FILTERS,
+            VIEW_FILTERS,
+            MANAGE_ALL_FILTERS,
+        ]
+    )
     @profiletime
     @API.response(
         200, "CREATED:- Successful request.", model=mapper_create_response_model
@@ -468,7 +491,13 @@ class FormResourceApplicationCount(Resource):
     """Resource for getting applications count according to a mapper id."""
 
     @staticmethod
-    @auth.require
+    @auth.has_one_of_roles(
+        [
+            CREATE_DESIGNS,
+            VIEW_DESIGNS,
+            CREATE_SUBMISSIONS,
+        ]
+    )
     @profiletime
     @API.response(200, "OK:- Successful request.", model=application_count_model)
     @API.response(
@@ -530,7 +559,7 @@ class FormioFormResource(Resource):
     """Resource for formio form creation."""
 
     @staticmethod
-    @auth.has_one_of_roles([DESIGNER_GROUP])
+    @auth.has_one_of_roles([CREATE_DESIGNS])
     @profiletime
     @API.doc(body=form_create_model)
     @API.response(
@@ -582,7 +611,7 @@ class FormioFormUpdateResource(Resource):
     """Resource for formio form Update."""
 
     @staticmethod
-    @auth.has_one_of_roles([DESIGNER_GROUP])
+    @auth.has_one_of_roles([CREATE_DESIGNS])
     @profiletime
     def put(form_id: str):
         """Formio form update method."""
@@ -614,7 +643,7 @@ class FormHistoryResource(Resource):
     """Resource for form history."""
 
     @staticmethod
-    @auth.has_one_of_roles([DESIGNER_GROUP])
+    @auth.has_one_of_roles([CREATE_DESIGNS])
     @profiletime
     @API.doc(body=form_create_model)
     @API.response(200, "OK:- Successful request.", model=form_history_response_model)

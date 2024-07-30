@@ -56,6 +56,11 @@ class Auth:
     def has_role(cls, role):
         """Method to validate the role."""
         return jwt.validate_roles(role)
+    
+    @classmethod
+    def has_any_role(cls, role):
+        """Method to validate the role."""
+        return jwt.contains_role(role)
 
     @classmethod
     def require_custom(cls, f):

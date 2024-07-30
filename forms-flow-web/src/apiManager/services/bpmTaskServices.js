@@ -121,7 +121,7 @@ export const fetchProcessDefinitionList = (...rest) => {
 export const fetchUserList = (...rest) => {
   const done = rest.length ? rest[0] : () => {};
   /*TODO search with query /user?lastNameLike=%${lastName}%&memberOfGroup=${group}*/
-  const getReviewerUserListApi = `${API.GET_API_USER_LIST}?memberOfGroup=${REVIEWER_GROUP}`;
+  const getReviewerUserListApi = `${API.GET_API_USER_LIST}?permission=manage_tasks`;
   return (dispatch) => {
     RequestService.httpGETRequest(
       getReviewerUserListApi,

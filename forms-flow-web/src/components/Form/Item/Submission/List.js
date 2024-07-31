@@ -14,8 +14,7 @@ import cloneDeep from "lodash/cloneDeep";
 
 import Loading from "../../../../containers/Loading";
 import {
-  OPERATIONS,
-  STAFF_REVIEWER,
+  OPERATIONS, 
   MULTITENANCY_ENABLED,
 } from "../../../../constants/constants";
 import Confirm from "../../../../containers/Confirm";

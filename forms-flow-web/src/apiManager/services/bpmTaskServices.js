@@ -22,8 +22,7 @@ import {
 } from "../../actions/bpmTaskActions";
 import { replaceUrl } from "../../helper/helper";
 import axios from "axios";
-import { taskDetailVariableDataFormatter } from "./formatterService";
-import { REVIEWER_GROUP } from "../../constants/userContants";
+import { taskDetailVariableDataFormatter } from "./formatterService"; 
 import { MAX_RESULTS } from "../../components/ServiceFlow/constants/taskConstants";
 
 export const fetchServiceTaskList = (reqData, taskIdToRemove, firstResult, maxResults, ...rest) => {
@@ -150,7 +149,7 @@ export const fetchUserList = (...rest) => {
 
 export const fetchUserListWithSearch = ({ searchType, query }, ...rest) => {
   const done = rest.length ? rest[0] : () => {};
-  const paramData = { memberOfGroup: REVIEWER_GROUP };
+  const paramData = { permission: "manage_tasks" };
   /*TODO search with query /user?lastNameLike=%${lastName}%&memberOfGroup=${group}*/
   //let getReviewerUserListApi = `${API.GET_API_USER_LIST}?memberOfGroup=${REVIEWER_GROUP}`;
   if (searchType && query) {

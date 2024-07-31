@@ -3,7 +3,7 @@ name: Push Forms flow BPM to registry
 on:
   workflow_dispatch:
   push:
-    branches: [ master, develop, release/*, feature/FWF-3316-permission-matrix ]
+    branches: [ master, develop, release/* ]
     paths:
       - "forms-flow-bpm/**"
       - "VERSION"

@@ -29,9 +29,6 @@ const CustomButton = ({
       const buttonWidth = buttonRef.current.offsetWidth;
       const toggleWidth = toggleRef.current.offsetWidth;
       const totalWidth = buttonWidth + toggleWidth - 1;
-      console.log(buttonWidth,"btn");
-      console.log(toggleWidth,"tgl");
-      console.log(totalWidth,"total");
       setMenuStyle({
         minWidth: `${totalWidth}px`,
         borderTop: "none",

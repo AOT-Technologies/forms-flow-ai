@@ -439,7 +439,7 @@
       "name": "camunda-admin",
       "path": "/camunda-admin",
       "subGroups": [],
-      "attributes": {},
+      "attributes": {"description": ["Camunda Administrator Role."]},
       "realmRoles": [],
       "clientRoles": {}
     },
@@ -451,7 +451,7 @@
           "name": "formsflow-admin",
           "path": "/formsflow/formsflow-admin",
           "subGroups": [],
-          "attributes": {},
+          "attributes": {"description": ["Administrator Role."]},
           "realmRoles": [],
           "clientRoles": {
             "realm-management": [
@@ -477,7 +477,7 @@
           "name": "formsflow-client",
           "path": "/formsflow/formsflow-client",
           "subGroups": [],
-          "attributes": {},
+          "attributes": {"description": ["Client role to create & view submissions."]},
           "realmRoles": [],
           "clientRoles": {
             "forms-flow-web": ["view_submissions", "create_submissions"]
@@ -487,7 +487,7 @@
           "name": "formsflow-designer",
           "path": "/formsflow/formsflow-designer",
           "subGroups": [],
-          "attributes": {},
+          "attributes": {"description": ["Designer role to create forms and workflows."]},
           "realmRoles": [],
           "clientRoles": {
             "forms-flow-web": [
@@ -505,20 +505,32 @@
               "name": "approver",
               "path": "/formsflow/formsflow-reviewer/approver",
               "subGroups": [],
-              "attributes": {},
+              "attributes": {"description": ["Staff role for reviewing tasks."]},
               "realmRoles": [],
-              "clientRoles": {}
+              "clientRoles": {
+                "forms-flow-web": [
+                  "manage_tasks",
+                  "view_tasks",
+                  "view_filters"
+                ]
+              }
             },
             {
               "name": "clerk",
               "path": "/formsflow/formsflow-reviewer/clerk",
               "subGroups": [],
-              "attributes": {},
+              "attributes": {"description": ["Staff role for reviewing tasks."]},
               "realmRoles": [],
-              "clientRoles": {}
+              "clientRoles": {
+                "forms-flow-web": [
+                  "manage_tasks",
+                  "view_tasks",
+                  "view_filters"
+                ]
+              }
             }
           ],
-          "attributes": {},
+          "attributes": {"description": ["Staff role for monitoring submissions and performing tasks."]},
           "realmRoles": [],
           "clientRoles": {
             "forms-flow-web": [
@@ -544,22 +556,22 @@
           "name": "group1",
           "path": "/formsflow-analytics/group1",
           "subGroups": [],
-          "attributes": {},
+          "attributes": {"description": ["Role with dashboard authorization."]},
           "realmRoles": [],
-          "clientRoles": {}
+          "clientRoles": {"forms-flow-web": ["view_dashboards"]}
         },
         {
           "name": "group2",
           "path": "/formsflow-analytics/group2",
           "subGroups": [],
-          "attributes": {},
+          "attributes": {"description": ["Role with dashboard authorization."]},
           "realmRoles": [],
-          "clientRoles": {}
+          "clientRoles": {"forms-flow-web": ["view_dashboards"]}
         }
       ],
-      "attributes": {},
+      "attributes": {"description": ["Role with dashboard authorization."]},
       "realmRoles": [],
-      "clientRoles": {}
+      "clientRoles": {"forms-flow-web": ["view_dashboards"]}
     }
   ],
   "defaultRole": {

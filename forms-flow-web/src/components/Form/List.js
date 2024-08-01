@@ -34,6 +34,7 @@ import {
 import FormTable from "./constants/FormTable";
 import ClientTable from "./constants/ClientTable";
 import _ from "lodash";
+import Button from "../CustomComponents/Button";
 const List = React.memo((props) => {
   const { t } = useTranslation();
   const searchText = useSelector((state) => state.bpmForms.searchText);
@@ -143,16 +144,17 @@ const List = React.memo((props) => {
                 </InputGroup>
                 <div className=" d-md-flex justify-content-end align-items-center">
                   {isDesigner && (
-                    <button
-                      data-testid="create-form-btn"
+                    <Button
+                      variant="primary"
+                      size="md"
+                      label="New Form"
                       onClick={() =>
-                        dispatch(push(`${redirectUrl}formflow/create`))
+                         dispatch(push(`${redirectUrl}formflow/create`))
                       }
-                      className="btn btn-primary text-nowrap mx-2"
-                    >
-                      {/* <i className="fa fa-plus me-2" /> */}
-                      <Translation>{(t) => t("New Form")}</Translation>
-                    </button>
+                      className=""
+                      dataTestid="create-form-button"
+                      ariaLabel="Create Form"
+                    />
                   )}
                 </div>
               </div>

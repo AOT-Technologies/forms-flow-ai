@@ -14,11 +14,12 @@ import {
   STAFF_DESIGNER,
 } from "../../../constants/constants";
 import { useTranslation } from "react-i18next";
-import { Translation } from "react-i18next";
+// import { Translation } from "react-i18next";
 import {
   resetFormProcessData
 } from "../../../apiManager/services/processServices";
 import { HelperServices } from "@formsflow/service";
+import Button  from "../../CustomComponents/Button";
 
 function FormTable() {
   const tenantKey = useSelector((state) => state.tenants?.tenantId);
@@ -166,13 +167,16 @@ function FormTable() {
                         </span>
                       </td>
                       <td>
-                        <button
-                          data-testid={`form-edit-button-${e._id}`}
-                          className="btn btn-secondary"
+
+                        <Button
+                          variant="secondary"
+                          size="sm"
+                          label="Edit"
                           onClick={() => viewOrEditForm(e._id, 'edit')}
-                        >
-                          <Translation>{(t) => t("Edit")}</Translation>
-                        </button>
+                          className=""
+                          dataTestid={`form-edit-button-${e._id}`}
+                          ariaLabel="Edit Form Button"
+                        />
                       </td>
                     </tr>
                   );

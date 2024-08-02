@@ -5,10 +5,12 @@ from http import HTTPStatus
 from flask import request
 from flask_restx import Namespace, Resource, fields
 from formsflow_api_utils.utils import (
-    ADMIN_GROUP,
-    DESIGNER_GROUP,
-    PERMISSIONS,
-    REVIEWER_GROUP,
+    ADMIN,
+    CREATE_DESIGNS,
+    CREATE_FILTERS,
+    MANAGE_ALL_FILTERS,
+    PERMISSION_DETAILS,
+    VIEW_FILTERS,
     auth,
     cors_preflight,
     profiletime,
@@ -38,7 +40,15 @@ class KeycloakRolesResource(Resource):
     """Resource to manage keycloak list and create roles/groups."""
 
     @staticmethod
-    @auth.has_one_of_roles([ADMIN_GROUP, DESIGNER_GROUP, REVIEWER_GROUP])
+    @auth.has_one_of_roles(
+        [
+            ADMIN,
+            CREATE_DESIGNS,
+            MANAGE_ALL_FILTERS,
+            CREATE_FILTERS,
+            VIEW_FILTERS,
+        ]
+    )
     @profiletime
     @API.doc(
         responses={
@@ -62,7 +72,7 @@ class KeycloakRolesResource(Resource):
         return response, HTTPStatus.OK
 
     @staticmethod
-    @auth.has_one_of_roles([ADMIN_GROUP])
+    @auth.has_one_of_roles([ADMIN])
     @profiletime
     @API.doc(
         responses={
@@ -89,7 +99,7 @@ class KeycloakRolesResourceById(Resource):
     """Resource to manage keycloak roles/groups by id."""
 
     @staticmethod
-    @auth.has_one_of_roles([ADMIN_GROUP])
+    @auth.has_one_of_roles([ADMIN])
     @profiletime
     @API.doc(
         responses={
@@ -110,7 +120,7 @@ class KeycloakRolesResourceById(Resource):
         return response, HTTPStatus.OK
 
     @staticmethod
-    @auth.has_one_of_roles([ADMIN_GROUP])
+    @auth.has_one_of_roles([ADMIN])
     @profiletime
     @API.doc(
         responses={
@@ -129,7 +139,7 @@ class KeycloakRolesResourceById(Resource):
         return {"message": "Deleted successfully."}, HTTPStatus.OK
 
     @staticmethod
-    @auth.has_one_of_roles([ADMIN_GROUP])
+    @auth.has_one_of_roles([ADMIN])
     @profiletime
     @API.doc(
         responses={
@@ -153,10 +163,10 @@ class KeycloakRolesResourceById(Resource):
 @cors_preflight("GET, OPTIONS")
 @API.route("/permissions", methods=["GET", "OPTIONS"])
 class Permissions(Resource):
-    """Resource to list permissions."""
+    """Resource to list."""
 
     @staticmethod
-    @auth.has_one_of_roles([ADMIN_GROUP])
+    @auth.has_one_of_roles([ADMIN])
     @profiletime
     @API.doc(
         responses={
@@ -167,4 +177,4 @@ class Permissions(Resource):
     )
     def get():
         """Return permission list."""
-        return PERMISSIONS
+        return PERMISSION_DETAILS

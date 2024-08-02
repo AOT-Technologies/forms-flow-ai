@@ -1,5 +1,8 @@
 """Test suite for application History API endpoint."""
+
 from typing import Dict, List
+
+from formsflow_api_utils.utils import VIEW_SUBMISSIONS
 
 from tests.utilities.base_test import get_token
 from formsflow_api.models import Application
@@ -39,7 +42,7 @@ def test_post_application_history_create_method(app, client, session, jwt):
 
 def test_get_application_history(app, client, session, jwt):
     """Get the json request for application /application/{application_id}/history."""
-    token = get_token(jwt)
+    token = get_token(jwt, role=VIEW_SUBMISSIONS)
     headers = {"Authorization": f"Bearer {token}", "content-type": "application/json"}
     new_entry = client.post(
         "/application/1/history",

@@ -11,7 +11,6 @@ import {
 import LoadingOverlay from "react-loading-overlay-ts";
 import {
   MULTITENANCY_ENABLED,
-  STAFF_DESIGNER,
 } from "../../../constants/constants";
 import { useTranslation } from "react-i18next";
 import { Translation } from "react-i18next";
@@ -19,6 +18,7 @@ import {
   resetFormProcessData
 } from "../../../apiManager/services/processServices";
 import { HelperServices } from "@formsflow/service";
+import  userRoles  from "../../../constants/permissions";
 
 function FormTable() {
   const tenantKey = useSelector((state) => state.tenants?.tenantId);
@@ -26,7 +26,6 @@ function FormTable() {
   const { t } = useTranslation();
   const bpmForms = useSelector((state) => state.bpmForms);
   const formData = (() => bpmForms.forms)() || [];
-  const userRoles = useSelector((state) => state.user.roles || []);
   const pageNo = useSelector((state) => state.bpmForms.page);
   const limit = useSelector((state) => state.bpmForms.limit);
   const totalForms = useSelector((state) => state.bpmForms.totalForms);
@@ -34,11 +33,12 @@ function FormTable() {
   const searchFormLoading = useSelector(
     (state) => state.formCheckList.searchFormLoading
   );
-  const isDesigner = userRoles.includes(STAFF_DESIGNER);
   const [pageLimit, setPageLimit] = useState(5);
   const isAscending = sortOrder === "asc" ? true : false;
   const redirectUrl = MULTITENANCY_ENABLED ? `/tenant/${tenantKey}/` : "/";
   const isApplicationCountLoading = useSelector((state) => state.process.isApplicationCountLoading);
+  const { createDesigns } = userRoles();
+
 
   const pageOptions = [
     {
@@ -149,14 +149,12 @@ function FormTable() {
               <tbody>
                 {formData?.map((e, index) => {
                   return (
-                    <tr key={index}>
-                      {isDesigner && (
+                    <tr key={index}> 
                         <td>
                           <div className="d-flex">
                             <span className="ms-4">{e.title}</span>
                           </div>
                         </td>
-                      )}
                       <td className="col-4">{stripHtml(e.description)}</td>
                       <td>{HelperServices?.getLocaldate(e.created)}</td>
                       <td>{e.anonymous ? t("Public") : t("Private")}</td>
@@ -166,13 +164,15 @@ function FormTable() {
                         </span>
                       </td>
                       <td>
-                        <button
+                        {createDesigns && <button
                           data-testid={`form-edit-button-${e._id}`}
                           className="btn btn-secondary"
                           onClick={() => viewOrEditForm(e._id, 'edit')}
                         >
                           <Translation>{(t) => t("Edit")}</Translation>
                         </button>
+                        }
+                        
                       </td>
                     </tr>
                   );

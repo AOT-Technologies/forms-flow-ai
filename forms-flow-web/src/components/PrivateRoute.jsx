@@ -19,9 +19,6 @@ import {
 } from "../actions/bpmActions";
 import { setLanguage } from "../actions/languageSetAction";
 import {
-  CLIENT,
-  STAFF_REVIEWER,
-  STAFF_DESIGNER,
   ENABLE_APPLICATIONS_MODULE,
   ENABLE_DASHBOARDS_MODULE,
   ENABLE_FORMS_MODULE,
@@ -85,6 +82,15 @@ const PrivateRoute = React.memo((props) => {
   const [authError, setAuthError] = React.useState(false);
   const [kcInstance, setKcInstance] = React.useState(getKcInstance());
   const [tenantValid, setTenantValid] = React.useState(true); // State to track tenant validity
+  const createDesigns = userRoles.includes("create_designs");
+  const viewDesigns = userRoles.includes("view_designs");
+  const viewSubmissions = userRoles.includes("view_submissions");
+  const viewTasks = userRoles.includes("view_tasks");
+  const manageTasks = userRoles.includes("manage_tasks");
+  const viewDashboards = userRoles.includes("view_dashbaords");
+
+
+
 
   const authenticate = (instance, store) => {
     setKcInstance(instance);
@@ -177,7 +183,7 @@ const PrivateRoute = React.memo((props) => {
         <Route
           {...rest}
           render={(props) =>
-            userRoles.includes(STAFF_DESIGNER) ? (
+            createDesigns || viewDesigns  ? (
               <Component {...props} />
             ) : (
               <AccessDenied userRoles={userRoles} />
@@ -195,7 +201,7 @@ const PrivateRoute = React.memo((props) => {
         <Route
           {...rest}
           render={(props) =>
-            userRoles.includes(STAFF_REVIEWER) ? (
+            viewTasks || manageTasks || viewDashboards ? (
               <Component {...props} />
             ) : (
               <AccessDenied userRoles={userRoles} />
@@ -213,7 +219,7 @@ const PrivateRoute = React.memo((props) => {
         <Route
           {...rest}
           render={(props) =>
-            userRoles.includes(STAFF_REVIEWER) || userRoles.includes(CLIENT) ? (
+            viewSubmissions ? (
               <Component {...props} />
             ) : (
               <AccessDenied userRoles={userRoles} />
@@ -231,7 +237,7 @@ const PrivateRoute = React.memo((props) => {
         <Route
           {...rest}
           render={(props) =>
-            DRAFT_ENABLED && (userRoles.includes(STAFF_REVIEWER) || userRoles.includes(CLIENT)) ? (
+            DRAFT_ENABLED && viewSubmissions ? (
               <Component {...props} />
             ) : (
               <AccessDenied userRoles={userRoles} />
@@ -294,15 +300,16 @@ const PrivateRoute = React.memo((props) => {
             )}
 
             <Route exact path={BASE_ROUTE}>
-              {userRoles.length && (
-                <Redirect
-                  to={
-                    userRoles?.includes(STAFF_REVIEWER)
-                      ? `${redirecUrl}task`
-                      : `${redirecUrl}form`
-                  }
-                />
-              )}
+            {userRoles.length && (
+  <Redirect
+    to={
+      viewTasks || manageTasks
+        ? `${redirecUrl}task`
+        : `${redirecUrl}form`
+    }
+  />
+)}
+
             </Route>
             <Route path="/404" exact={true} component={NotFound} />
             <Redirect from="*" to="/404" />

@@ -8,10 +8,9 @@ import {
 } from "react-bootstrap";
 import { selectRoot, selectError, Errors, deleteForm } from "react-formio";
 import Loading from "../../containers/Loading";
-// import { textTruncate } from "../../helper/helper";
+import  userRoles  from "../../constants/permissions.js";
 import {
   MULTITENANCY_ENABLED,
-  STAFF_DESIGNER,
 } from "../../constants/constants";
 import "../Form/List.scss";
 import {
@@ -35,6 +34,7 @@ import FormTable from "./constants/FormTable";
 import ClientTable from "./constants/ClientTable";
 import _ from "lodash";
 const List = React.memo((props) => {
+  const { createDesigns, createSubmissions, viewDesigns} = userRoles();
   const { t } = useTranslation();
   const searchText = useSelector((state) => state.bpmForms.searchText);
   const [search, setSearch] = useState(searchText || "");
@@ -60,7 +60,6 @@ const List = React.memo((props) => {
     forms,
     getFormsInit,
     errors,
-    userRoles,
     tenants,
   } = props;
   const isBPMFormListLoading = useSelector((state) => state.bpmForms.isActive);
@@ -68,7 +67,6 @@ const List = React.memo((props) => {
     (state) => state.formCheckList.designerFormLoading
   );
 
-  const isDesigner = userRoles.includes(STAFF_DESIGNER);
   const pageNo = useSelector((state) => state.bpmForms.page);
   const limit = useSelector((state) => state.bpmForms.limit);
   const sortBy = useSelector((state) => state.bpmForms.sortBy);
@@ -98,7 +96,7 @@ const List = React.memo((props) => {
   }, [
     getFormsInit,
     dispatch,
-    isDesigner,
+    createDesigns,
     pageNo,
     limit,
     sortBy,
@@ -116,7 +114,7 @@ const List = React.memo((props) => {
       ) : (
         <div>
           <Errors errors={errors} />
-          {isDesigner ? (
+          {createDesigns && (
             <>
               <div className="d-md-flex  justify-content-between align-items-center pb-3">
 
@@ -142,7 +140,7 @@ const List = React.memo((props) => {
                   )}
                 </InputGroup>
                 <div className=" d-md-flex justify-content-end align-items-center">
-                  {isDesigner && (
+                  {createDesigns && (
                     <button
                       data-testid="create-form-btn"
                       onClick={() =>
@@ -157,8 +155,10 @@ const List = React.memo((props) => {
                 </div>
               </div>
             </>
-          ) : <></>}
-          {isDesigner ? <FormTable /> : !isDesigner ? <ClientTable /> : null}
+          )}
+
+          {createDesigns || viewDesigns ? <FormTable /> : 
+          createSubmissions ? <ClientTable /> : null}
         </div>
       )}
     </>

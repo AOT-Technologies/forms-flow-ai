@@ -20,6 +20,10 @@ class BusinessErrorCode(ErrorCodeMixin, Enum):
         HTTPStatus.BAD_REQUEST,
     )
     PROCESS_DEF_NOT_FOUND = "Process definition does not exist", HTTPStatus.BAD_REQUEST
+    DECISION_DEF_NOT_FOUND = (
+        "Decision definition does not exist",
+        HTTPStatus.BAD_REQUEST,
+    )
     INVALID_AUTH_RESOURCE_ID = (
         "Invalid authorization resource ID",
         HTTPStatus.BAD_REQUEST,
@@ -61,6 +65,7 @@ class BusinessErrorCode(ErrorCodeMixin, Enum):
     )
     THEME_NOT_FOUND = "The specified theme not exist", HTTPStatus.BAD_REQUEST
     THEME_EXIST = "The specified theme already exist", HTTPStatus.BAD_REQUEST
+    ROLE_MAPPING_FAILED = "Role mapping failed", HTTPStatus.BAD_REQUEST
 
     def __new__(cls, message, status_code):
         """Constructor."""

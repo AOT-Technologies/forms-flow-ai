@@ -11,6 +11,7 @@ import static org.camunda.bpm.extension.keycloak.json.JsonUtil.parseAsJsonObject
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import org.apache.commons.lang3.StringUtils;
 import org.camunda.bpm.engine.authorization.Groups;
@@ -69,10 +70,19 @@ public class KeycloakGroupService extends org.camunda.bpm.extension.keycloak.Key
 	public List<Group> requestGroupsByUserId(CacheableKeycloakGroupQuery query) {
 		LOG.debug("requestGroupsByUserId >> enableClientAuth value " + enableClientAuth);
 		List<Group> userGroups = null;
-		if (enableClientAuth) {
+		if (enableClientAuth && !enableMultiTenancy) {
 			userGroups = this.requestClientRolesByUserId(query);
+			userGroups = userGroups.stream().filter(group -> group.getName().startsWith("GROUP_")).collect(Collectors.toList());
 		} else {
 			userGroups = super.requestGroupsByUserId(query);
+		}
+		// Hacky solution, TODO Fix this. Here check if the group name ends with camunda-admin, then set the group as system group
+		for (Group group : userGroups) {
+			if (group.getName().endsWith(Groups.CAMUNDA_ADMIN) ||  group.getName().endsWith(keycloakConfiguration.getAdministratorGroupName())) {
+				group.setType(Groups.GROUP_TYPE_SYSTEM);
+				group.setId(keycloakConfiguration.getAdministratorGroupName());
+				group.setName(keycloakConfiguration.getAdministratorGroupName());
+			}
 		}
 		return userGroups;
 	}
@@ -92,6 +102,7 @@ public class KeycloakGroupService extends org.camunda.bpm.extension.keycloak.Key
 		}
 		return roles;
 	}
+
 	
 
 	/**

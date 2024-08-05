@@ -398,7 +398,7 @@ const View = React.memo((props) => {
         className="col-12"
       >
   <div className="ms-4 me-4">
-    {isPublic || formStatus === "active" ? (
+    {(isPublic || (formStatus === "active") ) ?  (
       <Form
         form={form}
         submission={submission}

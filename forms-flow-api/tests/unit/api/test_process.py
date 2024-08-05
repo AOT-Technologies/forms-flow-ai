@@ -1,11 +1,12 @@
 """Test suite for Process API endpoints."""
 
 import pytest
+from formsflow_api_utils.utils import CREATE_DESIGNS, MANAGE_TASKS
 
 from tests.utilities.base_test import (
-    get_token,
     get_process_request_payload,
     get_process_request_payload_low_code,
+    get_token,
 )
 
 
@@ -14,7 +15,7 @@ class TestProcessCreate:
 
     def test_process_create_method(self, app, client, session, jwt):
         """Tests the process create method with valid payload."""
-        token = get_token(jwt, role="formsflow-designer", username="designer")
+        token = get_token(jwt, role=CREATE_DESIGNS, username="designer")
         headers = {
             "Authorization": f"Bearer {token}",
             "content-type": "application/json",
@@ -29,7 +30,7 @@ class TestProcessCreate:
 
     def test_process_create_method_with_invalid_token(self, app, client, session, jwt):
         """Tests the process create method with invalid token."""
-        token = get_token(jwt, role="formsflow-reviewer", username="reviewer")
+        token = get_token(jwt, role=MANAGE_TASKS, username="reviewer")
         headers = {
             "Authorization": f"Bearer {token}",
             "content-type": "application/json",
@@ -45,7 +46,7 @@ class TestProcessUpdate:
 
     def test_process_update(self, app, client, session, jwt):
         """Tests the process update method with valid payload."""
-        token = get_token(jwt, role="formsflow-designer", username="designer")
+        token = get_token(jwt, role=CREATE_DESIGNS, username="designer")
         headers = {
             "Authorization": f"Bearer {token}",
             "content-type": "application/json",
@@ -66,7 +67,7 @@ class TestProcessUpdate:
 
     def test_process_update_invalid_token(self, app, client, session, jwt):
         """Tests the process update method with invalid token."""
-        token = get_token(jwt, role="formsflow-designer", username="designer")
+        token = get_token(jwt, role=CREATE_DESIGNS, username="designer")
         headers = {
             "Authorization": f"Bearer {token}",
             "content-type": "application/json",
@@ -77,7 +78,7 @@ class TestProcessUpdate:
         assert response.status_code == 201
         assert response.json.get("id") is not None
         process_id = response.json.get("id")
-        token = get_token(jwt, role="formsflow-reviewer")
+        token = get_token(jwt, role=MANAGE_TASKS)
         headers = {
             "Authorization": f"Bearer {token}",
             "content-type": "application/json",
@@ -95,7 +96,7 @@ class TestProcessList:
 
     def test_process_list(self, app, client, session, jwt):
         """Testing process listing API."""
-        token = get_token(jwt, role="formsflow-designer", username="designer")
+        token = get_token(jwt, role=CREATE_DESIGNS, username="designer")
         headers = {
             "Authorization": f"Bearer {token}",
             "content-type": "application/json",
@@ -120,7 +121,7 @@ class TestProcessList:
         self, app, client, session, jwt, pageNo, limit, sortBy, sortOrder
     ):
         """Testing process listing API with pagination and sorted list."""
-        token = get_token(jwt, role="formsflow-designer", username="designer")
+        token = get_token(jwt, role=CREATE_DESIGNS, username="designer")
         headers = {
             "Authorization": f"Bearer {token}",
             "content-type": "application/json",
@@ -144,7 +145,7 @@ class TestProcessList:
 
     def test_process_list_with_filters(self, app, client, session, jwt):
         """Testing process listing API with filters."""
-        token = get_token(jwt, role="formsflow-designer", username="designer")
+        token = get_token(jwt, role=CREATE_DESIGNS, username="designer")
         headers = {
             "Authorization": f"Bearer {token}",
             "content-type": "application/json",
@@ -160,9 +161,7 @@ class TestProcessList:
             json=get_process_request_payload_low_code(name="Test workflow 2"),
         )
         # testing with processType filter with status
-        response = client.get(
-            "/process?status=Draft", headers=headers
-        )
+        response = client.get("/process?status=Draft", headers=headers)
         assert response.status_code == 200
         assert response.json is not None
         assert response.json["totalCount"] == 2
@@ -183,7 +182,7 @@ class TestProcessList:
 
     def test_process_list_with_invalid_token(self, app, client, session, jwt):
         """Testing process listing API."""
-        token = get_token(jwt, role="formsflow-reviewer", username="reviewer")
+        token = get_token(jwt, role=MANAGE_TASKS, username="reviewer")
         headers = {
             "Authorization": f"Bearer {token}",
             "content-type": "application/json",
@@ -197,7 +196,7 @@ class TestProcessDelete:
 
     def test_process_delete_method(self, app, client, session, jwt):
         """Tests the process delete method."""
-        token = get_token(jwt, role="formsflow-designer", username="designer")
+        token = get_token(jwt, role=CREATE_DESIGNS, username="designer")
         headers = {
             "Authorization": f"Bearer {token}",
             "content-type": "application/json",
@@ -216,7 +215,7 @@ class TestProcessDelete:
 
     def test_process_delete_method_with_invalid_token(self, app, client, session, jwt):
         """Tests the process delete method with invalid token."""
-        token = get_token(jwt, role="formsflow-designer", username="designer")
+        token = get_token(jwt, role=CREATE_DESIGNS, username="designer")
         headers = {
             "Authorization": f"Bearer {token}",
             "content-type": "application/json",
@@ -227,7 +226,7 @@ class TestProcessDelete:
         assert response.status_code == 201
         assert response.json.get("id") is not None
         process_id = response.json.get("id")
-        token = get_token(jwt, role="formsflow-reviewer")
+        token = get_token(jwt, role=MANAGE_TASKS)
         headers = {
             "Authorization": f"Bearer {token}",
             "content-type": "application/json",

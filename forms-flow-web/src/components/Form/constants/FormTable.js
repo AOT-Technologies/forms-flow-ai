@@ -13,11 +13,12 @@ import {
   MULTITENANCY_ENABLED,
 } from "../../../constants/constants";
 import { useTranslation } from "react-i18next";
-import { Translation } from "react-i18next";
+// import { Translation } from "react-i18next";
 import {
   resetFormProcessData
 } from "../../../apiManager/services/processServices";
 import { HelperServices } from "@formsflow/service";
+import Button  from "../../CustomComponents/Button";
 import  userRoles  from "../../../constants/permissions";
 
 function FormTable() {
@@ -164,15 +165,15 @@ function FormTable() {
                         </span>
                       </td>
                       <td>
-                        {createDesigns && <button
-                          data-testid={`form-edit-button-${e._id}`}
-                          className="btn btn-secondary"
+                        {createDesigns && <Button
+                          variant="secondary"
+                          size="sm"
+                          label="Edit"
                           onClick={() => viewOrEditForm(e._id, 'edit')}
-                        >
-                          <Translation>{(t) => t("Edit")}</Translation>
-                        </button>
-                        }
-                        
+                          className=""
+                          dataTestid={`form-edit-button-${e._id}`}
+                          ariaLabel="Edit Form Button"
+                        />
                       </td>
                     </tr>
                   );

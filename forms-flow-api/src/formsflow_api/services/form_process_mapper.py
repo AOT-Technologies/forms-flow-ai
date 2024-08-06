@@ -282,18 +282,47 @@ class FormProcessMapperService:
             raise BusinessException(BusinessErrorCode.PERMISSION_DENIED)
         return
 
-    def _get_form(self, form_name: str, scope_type: str, form_id: str = None) -> dict:
+    def _get_form(  # pylint: disable=too-many-arguments
+        self,
+        title_or_path: str,
+        scope_type: str,
+        form_id: str = None,
+        description: str = None,
+        tenant_key: str = None,
+    ) -> dict:
         """Get form details."""
         try:
-            current_app.logger.info(f"Fetching form : {form_name}")
+            current_app.logger.info(f"Fetching form : {title_or_path}")
             formio_service = FormioService()
             form_io_token = formio_service.get_formio_access_token()
-            if form_id is None:
-                form_json = formio_service.get_form_by_path(form_name, form_io_token)
-            else:
+            if form_id:
                 form_json = formio_service.get_form_by_id(form_id, form_io_token)
+            else:
+                form_json = formio_service.get_form_by_path(
+                    title_or_path, form_io_token
+                )
+            if form_json:
+                form_json.pop("_id", None)
+                form_json.pop("machineName", None)
+                # In a (sub form)connected form, the workflow provides the form path,
+                # and the title is obtained from the form JSON
+                title_or_path = (
+                    form_json.get("title", "") if scope_type == "sub" else title_or_path
+                )
+                # Remove 'tenantkey-' from 'path' and 'name'
+                if current_app.config.get("MULTI_TENANCY_ENABLED"):
+                    tenant_prefix = f"{tenant_key}-"
+                    form_path = form_json.get("path", "")
+                    form_name = form_json.get("name", "")
+                    current_app.logger.info(f"Removing tenant key from path: {form_path} & name: {form_name}")
+                    if form_path.startswith(tenant_prefix):
+                        form_json["path"] = form_path[len(tenant_prefix) :]
+
+                    if form_name.startswith(tenant_prefix):
+                        form_json["name"] = form_name[len(tenant_prefix) :]
             return {
-                "formTitle": form_name,
+                "formTitle": title_or_path,
+                "formDescription": description,
                 "type": scope_type,
                 "content": form_json,
             }
@@ -459,7 +488,9 @@ class FormProcessMapperService:
             authorizations = []
 
             # Capture main form & workflow
-            forms.append(self._get_form(mapper.form_name, "main", mapper.form_id))
+            forms.append(
+                self._get_form(mapper.form_name, "main", mapper.form_id, mapper.description, tenant_key)
+            )
             workflow = self._get_workflow(
                 mapper.process_key, mapper.process_name, "main", user
             )
@@ -471,7 +502,9 @@ class FormProcessMapperService:
             )
 
             for form in set(forms_names):
-                forms.append(self._get_form(form, "sub"))
+                forms.append(
+                    self._get_form(form, "sub", form_id=None, description=None, tenant_key=tenant_key)
+                )
             for dmn in set(dmns):
                 rules.append(self._get_dmn(dmn, "sub", user))
 

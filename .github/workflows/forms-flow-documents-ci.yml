@@ -96,6 +96,17 @@ jobs:
         uses: actions/setup-python@v1
         with:
           python-version: ${{ matrix.python-version }}
+      - name: Install Docker Compose
+        run: |
+          sudo curl -L "https://github.com/docker/compose/releases/download/1.29.2/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose
+          sudo chmod +x /usr/local/bin/docker-compose
+          docker-compose --version
+      - name: Check for docker-compose.yml
+        run: |
+          if [ ! -f tests/docker/docker-compose.yml ]; then
+            echo "docker-compose.yml not found!"
+            exit 1
+          fi
       - name: Install dependencies
         run: |
           make build

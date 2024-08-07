@@ -115,7 +115,7 @@ export default function CreateNewFilterDrawer({
   const [selectedForm, setSelectedForm] = useState(null);
   const [taskVariablesKeys, setTaskVariablesKeys] = useState({});
   const [processLoading, setProcessLoading] = useState(false);
-  const loginedUserRoles = useSelector((state) => state.user.roles || []);
+  //const loginedUserRoles = useSelector((state) => state.user.roles || []);
 
   const [overlayGroupShow, setOverlayGroupShow] = useState(false);
   const [overlayUserShow, setOverlayUserShow] = useState(false);
@@ -398,7 +398,7 @@ export default function CreateNewFilterDrawer({
         processDefinitionKey: definitionKeyId,
         candidateGroup:
           MULTITENANCY_ENABLED && candidateGroup
-            ? tenantKey + "-" + candidateGroup
+            ? tenantKey + "-" + trimFirstSlash(candidateGroup)
             : candidateGroup,
         assignee: assignee,
         includeAssignedTasks:
@@ -420,6 +420,7 @@ export default function CreateNewFilterDrawer({
       isTasksForCurrentUserGroupsEnabled: isTasksForCurrentUserGroupsEnabled,
       isMyTasksEnabled: isMyTasksEnabled,
     };
+   
     /**
      * If a form is selected, set the formId property in the data object
      * to the id of the selected form.
@@ -544,18 +545,30 @@ export default function CreateNewFilterDrawer({
     }));
   }, [userList]);
 
+  const removeTenantKey = (value, tenantkey) => {
+    const tenantKeyCheck = value.match(`${tenantkey}-`);
+    if (
+      tenantKeyCheck &&
+      tenantKeyCheck[0].toLowerCase() === `${tenantkey.toLowerCase()}-`
+    ) {
+      return value.replace(`${tenantkey.toLowerCase()}-`, "");
+    } else {
+      return false;
+    }
+  };
+  
   const candidateOptions = useMemo(() => {
     return MULTITENANCY_ENABLED
-      ? loginedUserRoles.map((role) => ({
-          value: role,
-          label: role,
+      ? candidateGroups.map((group) => ({
+          value: removeTenantKey(group, tenantKey),
+          label: removeTenantKey(group, tenantKey),
         }))
       : candidateGroups.map((group) => ({
           value: trimFirstSlash(group),
           label: group,
         }));
-  }, [candidateGroups, loginedUserRoles, MULTITENANCY_ENABLED]);
-
+  }, [candidateGroups, MULTITENANCY_ENABLED]);
+  
   const handleAssignee = (selectedOption) => {
     setAssignee(selectedOption ? selectedOption.value : null);
   };

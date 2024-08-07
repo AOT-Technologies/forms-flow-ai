@@ -6,7 +6,7 @@ from typing import Dict, List
 import requests
 from flask import current_app
 from formsflow_api_utils.exceptions import BusinessException
-from formsflow_api_utils.utils.user_context import UserContext, user_context
+from formsflow_api_utils.utils import VIEW_DASHBOARDS, UserContext, user_context
 
 from formsflow_api.constants import BusinessErrorCode
 from formsflow_api.services import KeycloakAdminAPIService, UserService
@@ -40,7 +40,25 @@ class KeycloakGroupService(KeycloakAdmin):
 
     def get_analytics_groups(self, page_no: int, limit: int):
         """Get analytics groups."""
-        return self.client.get_analytics_groups(page_no, limit)
+        dashboard_group_list: list = []
+        group_list_response = self.client.get_request(
+            url_path="groups?briefRepresentation=false"
+        )
+        group_list_response = self.flat(group_list_response, dashboard_group_list)
+        response = [
+            group
+            for group in group_list_response
+            if VIEW_DASHBOARDS in group.get("permissions", [])
+        ]
+        if (
+            page_no
+            and limit
+            and current_app.config.get("MULTI_TENANCY_ENABLED") is False
+        ):
+            response = self.user_service.paginate(
+                response, page_number=page_no, page_size=limit
+            )
+        return response
 
     def get_group(self, group_id: str):
         """Get group by group_id."""

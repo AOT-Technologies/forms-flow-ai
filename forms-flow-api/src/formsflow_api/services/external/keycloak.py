@@ -5,9 +5,7 @@ import json
 import requests
 from flask import current_app
 from formsflow_api_utils.utils import (
-    FORMSFLOW_ROLES,
     HTTP_TIMEOUT,
-    KEYCLOAK_DASHBOARD_BASE_GROUP,
     UserContext,
     profiletime,
     user_context,
@@ -79,46 +77,6 @@ class KeycloakAdminAPIService:
         if response.ok:
             return response.json()
         return None
-
-    def get_analytics_groups(self, page_no: int, limit: int):
-        """Return groups for analytics users."""
-        dashboard_group_list: list = []
-        if page_no == 0 and limit == 0:
-            group_list_response = self.get_request(url_path="groups")
-        else:
-            group_list_response = self.get_paginated_request(
-                url_path="groups", first=page_no, max_results=limit
-            )
-
-        for group in group_list_response:
-            if group["name"] == KEYCLOAK_DASHBOARD_BASE_GROUP:
-                if group.get("subGroupCount", 0) > 0:
-                    dashboard_group_list = self.get_subgroups(group["id"])
-                else:
-                    dashboard_group_list = list(group["subGroups"])
-        return dashboard_group_list
-
-    def get_analytics_roles(self, page_no: int, limit: int):
-        """Return roles for analytics users."""
-        current_app.logger.debug("Getting analytics roles")
-        dashboard_roles_list: list = []
-        client_id = self.get_client_id()
-        # Look for exact match
-        if page_no == 0 and limit == 0:
-            roles = self.get_request(f"clients/{client_id}/roles")
-        else:
-            roles = self.get_paginated_request(
-                url_path=f"clients/{client_id}/roles",
-                first=page_no,
-                max_results=limit,
-            )
-        current_app.logger.debug("Client roles %s", roles)
-        for client_role in roles:
-            if client_role["name"] not in FORMSFLOW_ROLES:
-                client_role["path"] = client_role["name"]
-                dashboard_roles_list.append(client_role)
-        current_app.logger.debug("dashboard_roles_list %s", dashboard_roles_list)
-        return dashboard_roles_list
 
     @user_context
     def get_client_id(self, **kwargs):

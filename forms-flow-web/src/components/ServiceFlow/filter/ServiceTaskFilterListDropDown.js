@@ -27,7 +27,7 @@ const ServiceFlowFilterListDropDown = React.memo(
     const { t } = useTranslation();
     const tenantKey = useSelector((state) => state.tenants?.tenantId);
     const redirectUrl = MULTITENANCY_ENABLED ? `/tenant/${tenantKey}/` : "/";
-    const { viewFilters } = userRoles();
+    const { viewFilters,createFilters,manageAllFilters } = userRoles();
 
 
     const changeFilterSelection = (filter) => {
@@ -73,12 +73,12 @@ const ServiceFlowFilterListDropDown = React.memo(
                     </span>
                     <button
                         onClick={() => {
-                          handleFilter(filter?.id, editPermission);
+                          handleFilter(filter?.id, ((createFilters || manageAllFilters) && editPermission));
                         }}
                         className="btn btn-link"
                       >
-                        <i className={`me-1 fa fa-${editPermission ? "pencil" : (viewFilters ? `eye` : '')}`} />
-                        <Translation>{(t) => t(editPermission ? `Edit` : (viewFilters ? `View` : ''))}</Translation>
+                        <i className={`me-1 fa fa-${(createFilters || manageAllFilters) && editPermission  ? "pencil" : (viewFilters ? `eye` : '')}`} />
+                        <Translation>{(t) => t((createFilters || manageAllFilters) && editPermission ? `Edit` : (viewFilters ? `View` : ''))}</Translation>
                         </button>
                   </div>
                 </NavDropdown.Item>

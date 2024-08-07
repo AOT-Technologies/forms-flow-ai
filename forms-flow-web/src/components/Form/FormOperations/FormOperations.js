@@ -3,8 +3,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { push } from "connected-react-router";
 import {
   MULTITENANCY_ENABLED,
-} from "../../../constants/constants";
-import  userRoles  from "../../../constants/permissions";
+} from "../../../constants/constants"; 
 import {
   setIsApplicationCountLoading,
   setResetProcess,

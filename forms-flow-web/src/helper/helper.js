@@ -22,7 +22,6 @@ const removeTenantKey = (value, tenantkey) => {
     tenantKeyCheck &&  tenantKeyCheck.length &&
     tenantKeyCheck[0].toLowerCase() === `${tenantkey.toLowerCase()}-`
   ) {
-    console.log("hit inside");
     return value.replace(`${tenantkey.toLowerCase()}-`, "");
   } else {
     return false;

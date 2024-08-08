@@ -88,9 +88,10 @@ const PrivateRoute = React.memo((props) => {
   const viewTasks = userRoles.includes("view_tasks");
   const manageTasks = userRoles.includes("manage_tasks");
   const viewDashboards = userRoles.includes("view_dashbaords");
-
-
-
+  const isAdmin = userRoles.includes("admin");
+  const isCreateSubmissions = userRoles?.includes("create_submissions");
+  const isViewDesigns = userRoles?.includes("view_designs");
+  const isCreateDesigns = userRoles?.includes("create_designs");
 
   const authenticate = (instance, store) => {
     setKcInstance(instance);
@@ -298,18 +299,21 @@ const PrivateRoute = React.memo((props) => {
                 component={ServiceFlow}
               />
             )}
-
+            <Route exact path={`${redirecUrl}admin`} /> 
             <Route exact path={BASE_ROUTE}>
             {userRoles.length && (
-  <Redirect
-    to={
-      viewTasks || manageTasks
-        ? `${redirecUrl}task`
-        : `${redirecUrl}form`
-    }
-  />
-)}
-
+               <Redirect
+                 to={
+                     (viewTasks || manageTasks)
+                     ? `${redirecUrl}task`
+                     : ( isCreateSubmissions || isCreateDesigns || isViewDesigns)
+                     ? `${redirecUrl}form`
+                     : isAdmin  
+                     ? `${redirecUrl}admin` 
+                     : `${BASE_ROUTE}processes`
+                    }
+                />
+               )}
             </Route>
             <Route path="/404" exact={true} component={NotFound} />
             <Redirect from="*" to="/404" />

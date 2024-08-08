@@ -96,20 +96,18 @@ class KeycloakClientService(KeycloakGroupService):
                 tenant_keys.append(tenant_key)
             payload = {"attributes": {"tenantKey": tenant_keys}}
             self.client.update_request(f"users/{user_id}", payload)
-            # Add user to role
-            client_id = self.client.get_client_id()
+            # Add user to group
             for role in data.get("roles"):
+                group_id = role.get("role_id")
                 role_data = {
-                    "containerId": client_id,
-                    "id": role.get("role_id"),
-                    "name": role.get("name"),
+                    "userId": user_id,
+                    "groupId": group_id,
                 }
                 current_app.logger.debug(
                     f"Adding user: {user_email} to role {role.get('name')}."
                 )
-                self.client.create_request(
-                    url_path=f"users/{user_id}/role-mappings/clients/{client_id}",
-                    data=[role_data],
+                self.client.update_request(
+                    url_path=f"users/{user_id}/groups/{group_id}", data=role_data
                 )
             return {"message": "User added to tenant"}, HTTPStatus.OK
         raise BusinessException(BusinessErrorCode.USER_NOT_FOUND)

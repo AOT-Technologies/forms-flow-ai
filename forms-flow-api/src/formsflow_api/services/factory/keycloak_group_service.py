@@ -22,12 +22,21 @@ class KeycloakGroupService(KeycloakAdmin):
         self.client = KeycloakAdminAPIService()
         self.user_service = UserService()
 
-    def __populate_user_groups(self, user_list: List) -> List:
+    @user_context
+    def __populate_user_groups(self, user_list: List, **kwargs) -> List:
         """Collect groups for a user list and populate the role attribute."""
         for user in user_list:
-            user["role"] = (
+            user_groups = (
                 self.client.get_user_groups(user.get("id")) if user.get("id") else []
             )
+            if current_app.config.get("MULTI_TENANCY_ENABLED"):
+                logged_user: UserContext = kwargs["user"]
+                user_groups = [
+                    group
+                    for group in user_groups
+                    if group["name"].startswith(logged_user.tenant_key)
+                ]
+            user["role"] = user_groups
         return user_list
 
     def __populate_user_roles(self, user_list: List) -> List:

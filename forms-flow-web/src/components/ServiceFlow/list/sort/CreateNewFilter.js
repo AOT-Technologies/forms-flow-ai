@@ -53,6 +53,7 @@ import {
 import { fetchAllForms } from "../../../../apiManager/services/bpmFormServices";
 import { fetchUserList } from "../../../../apiManager/services/bpmTaskServices";
 import { filterSelectOptionByLabel } from "../../../../helper/helper";
+import { removeTenantKey } from "../../../../helper/helper";
 
 const initialValueOfTaskAttribute = {
   applicationId: true,
@@ -544,18 +545,6 @@ export default function CreateNewFilterDrawer({
       label: `${user.username}`,
     }));
   }, [userList]);
-
-  const removeTenantKey = (value, tenantkey) => {
-    const tenantKeyCheck = value.match(`${tenantkey}-`);
-    if (
-      tenantKeyCheck &&
-      tenantKeyCheck[0].toLowerCase() === `${tenantkey.toLowerCase()}-`
-    ) {
-      return value.replace(`${tenantkey.toLowerCase()}-`, "");
-    } else {
-      return false;
-    }
-  };
   
   const candidateOptions = useMemo(() => {
     return MULTITENANCY_ENABLED

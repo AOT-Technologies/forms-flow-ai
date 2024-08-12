@@ -34,7 +34,8 @@ export const ApplicationList = React.memo(() => {
    const page = useSelector((state) => state.applications.activePage);
    const tenantKey = useSelector((state) => state.tenants?.tenantId);
   const redirectUrl = MULTITENANCY_ENABLED ? `/tenant/${tenantKey}/` : "/"; 
- 
+  const userRoles = useSelector((state) => state.user.roles || []);
+  const create_submissions = userRoles.includes("create_submissions");
 
   useEffect(() => {
     dispatch(getAllApplicationStatus());
@@ -59,25 +60,30 @@ export const ApplicationList = React.memo(() => {
     return <Loading />;
   } 
  
-
   const headerList = () => {
-    return [
+    const headers = [
       {
         name: "Submissions",
         count: totalApplications,
         onClick: () => dispatch(push(`${redirectUrl}application`)),
         icon: "list",
-      },
-      {
+      }
+    ];
+
+    if (create_submissions) {
+      headers.push({
         name: "Drafts",
         count: draftCount,
         onClick: () => dispatch(push(`${redirectUrl}draft`)),
         icon: "edit",
-      },
-    ];
+      });
+    }
+
+    return headers;
   };
 
   let headOptions = headerList();
+
 
   if (!DRAFT_ENABLED) {
     headOptions.pop();

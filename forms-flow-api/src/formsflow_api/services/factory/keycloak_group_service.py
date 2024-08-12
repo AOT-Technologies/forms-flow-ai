@@ -338,7 +338,11 @@ class KeycloakGroupService(KeycloakAdmin):
 
         if multitenancy and search:
             user_list = self.user_service.user_search(search, user_list)
-        users_count = len(user_list) if count else None
+        users_count = (
+            len(user_list)
+            if current_app.config.get("MULTI_TENANCY_ENABLED")
+            else self.client.get_realm_users_count(search) if count else None
+        )
 
         if multitenancy and page_no and limit:
             user_list = self.user_service.paginate(user_list, page_no, limit)

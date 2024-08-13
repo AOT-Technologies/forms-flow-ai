@@ -1,0 +1,57 @@
+// $progress-bg-color: #f3f3f3;
+// $progress-bar-color: #4caf50;
+// $progress-bar-text-color: #fff;
+// $border-radius-small: 5px;
+// $border-radius-large: 24px;
+
+// .progress {
+//     background-color: $progress-bg-color;
+//     /* Background color of the progress bar container */
+//     border-radius: $border-radius-small;
+//     height: 24px !important;
+//     width: 100%;
+//     position: relative;
+// }
+
+// .upload-progress {
+//     display: flex;
+//     height: 24px;
+//     margin-bottom: 24px;
+//     flex-direction: column;
+//     align-items: flex-start;
+//     align-self: stretch;
+//     border-radius: $border-radius-large;
+// }
+
+// .progress-bar {
+//     background-color: $progress-bar-color;
+//     /* Color of the progress bar */
+//     height: 100%;
+//     width: 0%;
+//     /* Default width */
+//     transition: width 0.4s ease-in-out;
+//     /* Smooth transition for width change */
+//     border-radius: $border-radius-small;
+//     text-align: center;
+//     color: $progress-bar-text-color;
+//     line-height: 20px;
+//     /* Center the text vertically */
+// }
+
+// .upload-svg {
+//     padding-top: 16px;
+//     padding-bottom: 16px;
+//     width: 32px;
+//     height: 32px;
+//     display: flex;
+//     align-items: center;
+//     justify-content: center;
+//     background-image: var(--file-upload-svg);
+// }
+
+// .success-tic-svg {
+//     margin-top: 2px;
+//     width: 16px;
+//     height: 16px;
+//     background-image: var(--success-tic-svg);
+// }   

@@ -1,14 +1,14 @@
-import React, { useEffect, useState } from "react";
-import { connect, useDispatch, useSelector } from "react-redux";
+import React, { useEffect, useState, useReducer } from "react";
+import { connect, useSelector, useDispatch } from "react-redux";
+import CreateFormModal from "../Modals/CreateFormModal.js";
+import BuildFormModal from '../Modals/BuildFormModal';
+import ImportFormModal from "../Modals/ImportFormModal.js";
+import SearchBox from "../Modals/SearchBox";
 import { push } from "connected-react-router";
 import { toast } from "react-toastify";
-import {
-  InputGroup,
-  FormControl,
-} from "react-bootstrap";
+import { addTenantkey } from "../../helper/helper";
 import { selectRoot, selectError, Errors, deleteForm } from "react-formio";
 import Loading from "../../containers/Loading";
-import  userRoles  from "../../constants/permissions.js";
 import {
   MULTITENANCY_ENABLED,
 } from "../../constants/constants";
@@ -34,11 +34,64 @@ import FormTable from "./constants/FormTable";
 import ClientTable from "./constants/ClientTable";
 import _ from "lodash";
 import Button from "../CustomComponents/Button";
+import _set from "lodash/set";
+import _cloneDeep from "lodash/cloneDeep";
+import _camelCase from "lodash/camelCase";
+import { formCreate } from "../../apiManager/services/FormServices";
+import { addHiddenApplicationComponent } from "../../constants/applicationComponent";
+import { setFormSuccessData } from "../../actions/formActions";
+import { handleAuthorization } from "../../apiManager/services/authorizationService";
+import { saveFormProcessMapperPost } from "../../apiManager/services/processServices";
+import userRoles from "../../constants/permissions.js";
+
+
+
+const reducer = (form, { type, value }) => {
+  const formCopy = _cloneDeep(form);
+  switch (type) {
+    case "formChange":
+      for (let prop in value) {
+        if (Object.prototype.hasOwnProperty.call(value, prop)) {
+          form[prop] = value[prop];
+        }
+      }
+      return form;
+    case "replaceForm":
+      return _cloneDeep(value);
+    case "title":
+      if (type === "title" && !form._id) {
+        formCopy.name = _camelCase(value);
+        formCopy.path = _camelCase(value).toLowerCase();
+      }
+      break;
+    default:
+      break;
+  }
+  _set(formCopy, type, value);
+  return formCopy;
+};
+
 const List = React.memo((props) => {
-  const { createDesigns, createSubmissions, viewDesigns} = userRoles();
+  const { createDesigns, createSubmissions, viewDesigns } = userRoles();
   const { t } = useTranslation();
   const searchText = useSelector((state) => state.bpmForms.searchText);
   const [search, setSearch] = useState(searchText || "");
+  const [showBuildForm, setShowBuildForm] = useState(false);
+  const [importFormModal, SetImportFormModal] = useState(false);
+  const ActionType = {
+    BUILD: "BUILD",
+    IMPORT: "IMPORT"
+  };
+  const [formDescription, setFormDescription] = useState("");
+  const [nameError, setNameError] = useState("");
+  const dispatch = useDispatch();
+  const redirectUrl = MULTITENANCY_ENABLED ? `/tenant/${tenantKey}/` : "/";
+  const submissionAccess = useSelector((state) => state.user?.submissionAccess || []);
+  const formAccess = useSelector((state) => state.user?.formAccess || []);
+  const [formSubmitted, setFormSubmitted] = useState(false);
+  const formData = { display: "form" }; const tenantKey = useSelector((state) => state.tenants?.tenantId);
+  const [form, dispatchFormAction] = useReducer(reducer, _cloneDeep(formData));
+  const roleIds = useSelector((state) => state.user?.roleIds || {});
   useEffect(() => {
     setSearch(searchText);
   }, [searchText]);
@@ -56,12 +109,10 @@ const List = React.memo((props) => {
     setSearch("");
     dispatch(setBpmFormSearch(""));
   };
-  const dispatch = useDispatch();
   const {
     forms,
     getFormsInit,
     errors,
-    tenants,
   } = props;
   const isBPMFormListLoading = useSelector((state) => state.bpmForms.isActive);
   const designerFormLoading = useSelector(
@@ -75,8 +126,7 @@ const List = React.memo((props) => {
   const searchFormLoading = useSelector(
     (state) => state.formCheckList.searchFormLoading
   );
-  const tenantKey = tenants?.tenantId;
-  const redirectUrl = MULTITENANCY_ENABLED ? `/tenant/${tenantKey}/` : "/";
+  const [newFormModal, setNewFormModal] = useState(false);
 
   useEffect(() => {
     dispatch(setFormCheckList([]));
@@ -91,7 +141,32 @@ const List = React.memo((props) => {
     dispatch(setFormSearchLoading(true));
     dispatch(fetchBPMFormList(...filters));
   };
+  const onClose = () => {
+    setNewFormModal(false);
+  };
+  const onCloseimportModal = () => {
+    SetImportFormModal(false);
+  };
+  const onCloseBuildModal = () => {
+    setShowBuildForm(false);
+    setNameError("");
+    setFormSubmitted(false);
+  };
+  const handleAction = (actionType) => {
+    switch (actionType) {
+      case ActionType.BUILD:
+        setShowBuildForm(true);
+        break;
+      case ActionType.IMPORT:
+        SetImportFormModal(true);
+        break;
+    }
+    onClose();
+  };
 
+  const uploadAction = () => {
+    //write the form upload action here
+  };
   useEffect(() => {
     fetchForms();
   }, [
@@ -104,6 +179,100 @@ const List = React.memo((props) => {
     sortOrder,
     searchText,
   ]);
+
+  const validateForm = () => {
+    let errors = {};
+    if (!form.title || form.title.trim() === "") {
+      errors.title = "This field is required";
+    }
+    return errors;
+  };
+
+  const handleChange = (path, event) => {
+    setFormSubmitted(false);
+    const { target } = event;
+    const value = target.type === "checkbox" ? target.checked : target.value;
+    value == "" ? setNameError("This field is required") : setNameError("");
+    dispatchFormAction({ type: path, value });
+  };
+
+  const handleBuild = () => {
+    setFormSubmitted(true);
+    const errors = validateForm();
+    if (Object.keys(errors).length > 0) {
+      setNameError(errors.title);
+      return;
+    }
+
+    const newFormData = addHiddenApplicationComponent(form);
+    const newForm = {
+      ...newFormData,
+      tags: ["common"],
+    };
+    newForm.submissionAccess = submissionAccess;
+    newForm.componentChanged = true;
+    newForm.newVersion = true;
+    newForm.access = formAccess;
+    if (MULTITENANCY_ENABLED && tenantKey) {
+      newForm.tenantKey = tenantKey;
+      if (newForm.path) {
+        newForm.path = addTenantkey(newForm.path, tenantKey);
+      }
+      if (newForm.name) {
+        newForm.name = addTenantkey(newForm.name, tenantKey);
+      }
+    }
+    formCreate(newForm).then((res) => {
+      const form = res.data;
+      const data = {
+        formId: form._id,
+        formName: form.title,
+        description: formDescription,
+        formType: form.type,
+        formTypeChanged: true,
+        anonymousChanged: true,
+        parentFormId: form._id,
+        titleChanged: true,
+        formRevisionNumber: "V1", // to do
+        anonymous: formAccess[0]?.roles.includes(roleIds.ANONYMOUS),
+      };
+      let payload = {
+        resourceId: data.formId,
+        resourceDetails: {},
+        roles: []
+      };
+      dispatch(setFormSuccessData("form", form));
+      handleAuthorization(
+        { application: payload, designer: payload, form: payload },
+        data.formId
+      ).catch((err) => {
+        console.log(err);
+      });
+      dispatch(
+        saveFormProcessMapperPost(data, (err) => {
+          if (!err) {
+            dispatch(push(`${redirectUrl}formflow/${form._id}/edit/`));
+          } else {
+            setFormSubmitted(false);
+            console.log(err);
+          }
+        })
+      );
+
+    }).catch((err) => {
+      let error;
+      if (err.response?.data) {
+        error = err.response.data;
+        console.log(error);
+        setNameError(error?.errors?.name?.message);
+      } else {
+        error = err.message;
+        setNameError(error?.errors?.name?.message);
+      }
+    }).finally(() => {
+      setFormSubmitted(false);
+    });
+  };
 
   return (
     <>
@@ -118,28 +287,15 @@ const List = React.memo((props) => {
           {createDesigns && (
             <>
               <div className="d-md-flex  justify-content-between align-items-center pb-3">
-
-                <InputGroup className="input-group p-0 search-box" style={{ width: "24%" }}>
-                  <FormControl
-                    className="bg-white out-line search-box"
-                    value={search}
-                    onChange={(e) => {
-                      setSearch(e.target.value);
-                    }}
-                    onKeyDown={(e) => (e.keyCode == 13 ? handleSearch() : "")}
-                    placeholder={t("Search by form title")}
-                    title={t("Search Form Name and Description")}
-                    data-testid="form-search-input-box"
-                    aria-label={t("Search by form title")}
-                  />
-                  {search && (
-                    <InputGroup.Append onClick={handleClearSearch} data-testid="form-search-clear-button">
-                      <InputGroup.Text className="h-100">
-                        <i className="fa fa-times"></i>
-                      </InputGroup.Text>
-                    </InputGroup.Append>
-                  )}
-                </InputGroup>
+                <SearchBox
+                  search={search}
+                  setSearch={setSearch}
+                  handleSearch={handleSearch}
+                  searchFormLoading={searchFormLoading}
+                  handleClearSearch={handleClearSearch}
+                  placeholder={t("Search Form Name or Description")}
+                  title={t("Search Form Name and Description")}
+                />
                 <div className=" d-md-flex justify-content-end align-items-center">
                   {createDesigns && (
                     <Button
@@ -147,20 +303,39 @@ const List = React.memo((props) => {
                       size="md"
                       label="New Form"
                       onClick={() =>
-                         dispatch(push(`${redirectUrl}formflow/create`))
+                        setNewFormModal(true)
                       }
                       className=""
                       dataTestid="create-form-button"
                       ariaLabel="Create Form"
                     />
                   )}
+                  <CreateFormModal newFormModal={newFormModal}
+                    actionType={ActionType}
+                    onClose={onClose}
+                    onAction={handleAction}
+                  />
+                  <BuildFormModal showBuildForm={showBuildForm}
+                    formSubmitted={formSubmitted}
+                    onClose={onCloseBuildModal}
+                    onAction={handleAction}
+                    handleChange={handleChange}
+                    handleBuild={handleBuild}
+                    setFormDescription={setFormDescription}
+                    setNameError={setNameError}
+                    nameError={nameError}
+                  />
+                  <ImportFormModal importFormModal={importFormModal}
+                    onClose={onCloseimportModal}
+                    uploadAction={uploadAction}
+                  />
                 </div>
               </div>
             </>
           )}
 
-          {createDesigns || viewDesigns ? <FormTable /> : 
-          createSubmissions ? <ClientTable /> : null}
+          {createDesigns || viewDesigns ? <FormTable /> :
+            createSubmissions ? <ClientTable /> : null}
         </div>
       )}
     </>

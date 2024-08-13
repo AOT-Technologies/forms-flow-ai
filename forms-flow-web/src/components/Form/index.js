@@ -26,12 +26,8 @@ const CreateFormRoute = ({ component: Component, ...rest }) => (
 const FormSubmissionRoute = ({ component: Component, ...rest }) => (
   <Route
     {...rest}
-    render={(props) =>
-      user.includes('create_submissions')  ? (
-        <Component {...props} />
-      ) : (
-        <AccessDenied userRoles={user} />
-      )
+    render={(props) => 
+        (<Component {...props} /> )
     }
   />
 );

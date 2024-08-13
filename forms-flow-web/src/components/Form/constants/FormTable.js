@@ -173,7 +173,7 @@ function FormTable() {
                           className=""
                           dataTestid={`form-edit-button-${e._id}`}
                           ariaLabel="Edit Form Button"
-                        />
+                        />}
                       </td>
                     </tr>
                   );

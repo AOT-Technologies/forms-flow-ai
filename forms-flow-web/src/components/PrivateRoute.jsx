@@ -52,6 +52,7 @@ import { AppConfig } from "../config";
 import { getFormioRoleIds } from "../apiManager/services/userservices";
 import AccessDenied from "./AccessDenied";
 import { LANGUAGE } from "../constants/constants";
+import  useUserRoles  from "../constants/permissions";
 
 export const kcServiceInstance = (tenantId = null) => {
   return KeycloakService.getInstance(
@@ -82,16 +83,17 @@ const PrivateRoute = React.memo((props) => {
   const [authError, setAuthError] = React.useState(false);
   const [kcInstance, setKcInstance] = React.useState(getKcInstance());
   const [tenantValid, setTenantValid] = React.useState(true); // State to track tenant validity
-  const createDesigns = userRoles.includes("create_designs");
-  const viewDesigns = userRoles.includes("view_designs");
-  const viewSubmissions = userRoles.includes("view_submissions");
-  const viewTasks = userRoles.includes("view_tasks");
-  const manageTasks = userRoles.includes("manage_tasks");
-  const viewDashboards = userRoles.includes("view_dashbaords");
-  const isAdmin = userRoles.includes("admin");
-  const isCreateSubmissions = userRoles?.includes("create_submissions");
-  const isViewDesigns = userRoles?.includes("view_designs");
-  const isCreateDesigns = userRoles?.includes("create_designs");
+
+  const {
+          admin, 
+          createDesigns ,
+          createSubmissions ,
+          viewDesigns ,
+          viewSubmissions ,
+          viewTasks,
+          manageTasks,
+          viewDashboards 
+        } = useUserRoles();
 
   const authenticate = (instance, store) => {
     setKcInstance(instance);
@@ -194,6 +196,23 @@ const PrivateRoute = React.memo((props) => {
       ),
     [userRoles]
   );
+  const FormRoute = useMemo(
+    () =>
+      ({ component: Component, ...rest }) =>
+      (
+        <Route
+          {...rest}
+          render={(props) =>
+            createDesigns || viewDesigns || createSubmissions  ? (
+              <Component {...props} />
+            ) : (
+              <AccessDenied userRoles={userRoles} />
+            )
+          }
+        />
+      ),
+    [userRoles]
+  );
 
   const ReviewerRoute = useMemo(
     () =>
@@ -261,7 +280,7 @@ const PrivateRoute = React.memo((props) => {
         <Suspense fallback={<Loading />}>
           <Switch>
             {ENABLE_FORMS_MODULE && (
-              <Route path={`${BASE_ROUTE}form`} component={Form} />
+              <FormRoute path={`${BASE_ROUTE}form`} component={Form} />
             )}
             {ENABLE_FORMS_MODULE && (
               <DesignerRoute path={`${BASE_ROUTE}formflow`} component={Form} />
@@ -306,9 +325,9 @@ const PrivateRoute = React.memo((props) => {
                  to={
                      (viewTasks || manageTasks)
                      ? `${redirecUrl}task`
-                     : ( isCreateSubmissions || isCreateDesigns || isViewDesigns)
+                     : ( createSubmissions || createDesigns || viewDesigns)
                      ? `${redirecUrl}form`
-                     : isAdmin  
+                     : admin  
                      ? `${redirecUrl}admin` 
                      : `${BASE_ROUTE}processes`
                     }

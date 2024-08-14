@@ -27,7 +27,7 @@ export const fetchBPMFormList = (
       url += `&formType=${formType}`;
     }
     if (formName) {
-      url += `&formName=${encodeURIComponent(formName)}`;
+      url += `&search=${encodeURIComponent(formName)}`;
     }
     RequestService.httpGETRequest(url, {}, StorageService.get(StorageService.User.AUTH_TOKEN))
       .then((res) => {

@@ -11,6 +11,7 @@ from formsflow_api_utils.utils import (
     MANAGE_ALL_FILTERS,
     PERMISSION_DETAILS,
     VIEW_FILTERS,
+    VIEW_DESIGNS,
     auth,
     cors_preflight,
     profiletime,
@@ -47,6 +48,7 @@ class KeycloakRolesResource(Resource):
             MANAGE_ALL_FILTERS,
             CREATE_FILTERS,
             VIEW_FILTERS,
+            VIEW_DESIGNS,
         ]
     )
     @profiletime

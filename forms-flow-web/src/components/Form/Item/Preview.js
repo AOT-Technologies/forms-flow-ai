@@ -51,7 +51,7 @@ const Preview = ({handleNext, hideComponents, activeStep}) => {
   };
  
   useEffect(()=>{
-    if(formProcessList?.parentFormId){
+    if(createDesigns && formProcessList?.parentFormId){
       getFormHistory(formProcessList?.parentFormId).then((res) => {
         dispatch(setFormHistories(res.data));
       })

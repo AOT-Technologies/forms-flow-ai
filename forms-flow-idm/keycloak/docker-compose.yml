@@ -26,7 +26,7 @@ services:
       - keycloak-server-network
 
   keycloak:
-    image: quay.io/keycloak/keycloak:23.0.7
+    image: quay.io/keycloak/keycloak:25.0.2
     restart: unless-stopped
     container_name: keycloak
     volumes:

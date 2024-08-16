@@ -1,7 +1,7 @@
 /* eslint-disable no-unused-vars */
-import React, { useEffect, Suspense, lazy, useMemo,useCallback } from "react";
+import React, { useEffect, Suspense, lazy, useMemo, useCallback } from "react";
 import { Route, Switch, Redirect, useParams } from "react-router-dom";
-import { useDispatch, useSelector} from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import {
   BASE_ROUTE,
   DRAFT_ENABLED,
@@ -169,31 +169,49 @@ const PrivateRoute = React.memo((props) => {
   }, [tenantId, props.store, dispatch]);
 
   useEffect(() => {
-    if (kcInstance ) {
+    if (kcInstance) {
       const lang =
         kcInstance?.userData?.locale ||
         tenant?.tenantData?.details?.locale ||
         selectedLanguage ||
         LANGUAGE;
-        dispatch(setLanguage(lang));
+      dispatch(setLanguage(lang));
     }
   }, [kcInstance, tenant?.tenantData]);
 
   const DesignerRoute = useMemo(
     () =>
       ({ component: Component, ...rest }) =>
-      (
-        <Route
-          {...rest}
-          render={(props) =>
-            createDesigns || viewDesigns  ? (
-              <Component {...props} />
-            ) : (
-              <AccessDenied userRoles={userRoles} />
-            )
-          }
-        />
-      ),
+        (
+          <Route
+            {...rest}
+            render={(props) =>
+              createDesigns || viewDesigns ? (
+                <Component {...props} />
+              ) : (
+                <AccessDenied userRoles={userRoles} />
+              )
+            }
+          />
+        ),
+    [userRoles]
+  );
+
+  const DashBoardRoute = useMemo(
+    () =>
+      ({ component: Component, ...rest }) =>
+        (
+          <Route
+            {...rest}
+            render={(props) =>
+              viewDashboards ? (
+                <Component {...props} />
+              ) : (
+                <AccessDenied userRoles={userRoles} />
+              )
+            }
+          />
+        ),
     [userRoles]
   );
   const FormRoute = useMemo(
@@ -217,54 +235,54 @@ const PrivateRoute = React.memo((props) => {
   const ReviewerRoute = useMemo(
     () =>
       ({ component: Component, ...rest }) =>
-      (
-        <Route
-          {...rest}
-          render={(props) =>
-            viewTasks || manageTasks || viewDashboards ? (
-              <Component {...props} />
-            ) : (
-              <AccessDenied userRoles={userRoles} />
-            )
-          }
-        />
-      ),
+        (
+          <Route
+            {...rest}
+            render={(props) =>
+              viewTasks || manageTasks || viewDashboards ? (
+                <Component {...props} />
+              ) : (
+                <AccessDenied userRoles={userRoles} />
+              )
+            }
+          />
+        ),
     [userRoles]
   );
 
   const ClientReviewerRoute = useMemo(
     () =>
       ({ component: Component, ...rest }) =>
-      (
-        <Route
-          {...rest}
-          render={(props) =>
-            viewSubmissions ? (
-              <Component {...props} />
-            ) : (
-              <AccessDenied userRoles={userRoles} />
-            )
-          }
-        />
-      ),
+        (
+          <Route
+            {...rest}
+            render={(props) =>
+              viewSubmissions ? (
+                <Component {...props} />
+              ) : (
+                <AccessDenied userRoles={userRoles} />
+              )
+            }
+          />
+        ),
     [userRoles]
   );
 
   const DraftRoute = useMemo(
     () =>
       ({ component: Component, ...rest }) =>
-      (
-        <Route
-          {...rest}
-          render={(props) =>
-            DRAFT_ENABLED && viewSubmissions ? (
-              <Component {...props} />
-            ) : (
-              <AccessDenied userRoles={userRoles} />
-            )
-          }
-        />
-      ),
+        (
+          <Route
+            {...rest}
+            render={(props) =>
+              DRAFT_ENABLED && viewSubmissions ? (
+                <Component {...props} />
+              ) : (
+                <AccessDenied userRoles={userRoles} />
+              )
+            }
+          />
+        ),
     [userRoles]
   );
 
@@ -301,13 +319,13 @@ const PrivateRoute = React.memo((props) => {
               />
             )}
             {ENABLE_DASHBOARDS_MODULE && (
-              <ReviewerRoute
+              <DashBoardRoute
                 path={`${BASE_ROUTE}metrics`}
                 component={DashboardPage}
               />
             )}
             {ENABLE_DASHBOARDS_MODULE && (
-              <ReviewerRoute
+              <DashBoardRoute
                 path={`${BASE_ROUTE}insights`}
                 component={InsightsPage}
               />

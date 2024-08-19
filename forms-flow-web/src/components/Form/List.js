@@ -3,7 +3,6 @@ import { connect, useSelector, useDispatch } from "react-redux";
 import CreateFormModal from "../Modals/CreateFormModal.js";
 import BuildFormModal from '../Modals/BuildFormModal';
 import ImportFormModal from "../Modals/ImportFormModal.js";
-import SearchBox from "../Modals/SearchBox";
 import { push } from "connected-react-router";
 import { toast } from "react-toastify";
 import { addTenantkey } from "../../helper/helper";
@@ -42,6 +41,7 @@ import { addHiddenApplicationComponent } from "../../constants/applicationCompon
 import { setFormSuccessData } from "../../actions/formActions";
 import { handleAuthorization } from "../../apiManager/services/authorizationService";
 import { saveFormProcessMapperPost } from "../../apiManager/services/processServices";
+import CustomSearch from "../CustomComponents/Search.js";
 import userRoles from "../../constants/permissions.js";
 
 
@@ -286,51 +286,55 @@ const List = React.memo((props) => {
           <Errors errors={errors} />
           {createDesigns && (
             <>
-              <div className="d-md-flex  justify-content-between align-items-center pb-3">
-                <SearchBox
-                  search={search}
-                  setSearch={setSearch}
-                  handleSearch={handleSearch}
-                  searchFormLoading={searchFormLoading}
-                  handleClearSearch={handleClearSearch}
-                  placeholder={t("Search Form Name or Description")}
-                  title={t("Search Form Name and Description")}
-                />
-                <div className=" d-md-flex justify-content-end align-items-center">
-                  {createDesigns && (
-                    <Button
-                      variant="primary"
-                      size="md"
-                      label="New Form"
-                      onClick={() =>
-                        setNewFormModal(true)
-                      }
-                      className=""
-                      dataTestid="create-form-button"
-                      ariaLabel="Create Form"
-                    />
-                  )}
-                  <CreateFormModal newFormModal={newFormModal}
-                    actionType={ActionType}
-                    onClose={onClose}
-                    onAction={handleAction}
-                  />
-                  <BuildFormModal showBuildForm={showBuildForm}
-                    formSubmitted={formSubmitted}
-                    onClose={onCloseBuildModal}
-                    onAction={handleAction}
-                    handleChange={handleChange}
-                    handleBuild={handleBuild}
-                    setFormDescription={setFormDescription}
-                    setNameError={setNameError}
-                    nameError={nameError}
-                  />
-                  <ImportFormModal importFormModal={importFormModal}
-                    onClose={onCloseimportModal}
-                    uploadAction={uploadAction}
-                  />
-                </div>
-              </div>
+              <div className="d-md-flex justify-content-between align-items-center pb-3 flex-wrap">
+  <div className="d-md-flex align-items-center flex-grow-1 me-2">
+    <CustomSearch
+      search={search}
+      setSearch={setSearch}
+      handleSearch={handleSearch}
+      handleClearSearch={handleClearSearch}
+      placeholder={t("Search Form Name and Description")}
+      searchFormLoading={searchFormLoading}
+      title={t("Search Form Name and Description")}
+    />
+  </div>
+  <div className="d-md-flex justify-content-end align-items-center">
+    {createDesigns && (
+      <Button
+        variant="primary"
+        size="md"
+        label="New Form"
+        onClick={() => setNewFormModal(true)}
+        className=""
+        dataTestid="create-form-button"
+        ariaLabel="Create Form"
+      />
+    )}
+    <CreateFormModal
+      newFormModal={newFormModal}
+      actionType={ActionType}
+      onClose={onClose}
+      onAction={handleAction}
+    />
+    <BuildFormModal
+      showBuildForm={showBuildForm}
+      formSubmitted={formSubmitted}
+      onClose={onCloseBuildModal}
+      onAction={handleAction}
+      handleChange={handleChange}
+      handleBuild={handleBuild}
+      setFormDescription={setFormDescription}
+      setNameError={setNameError}
+      nameError={nameError}
+    />
+    <ImportFormModal
+      importFormModal={importFormModal}
+      onClose={onCloseimportModal}
+      uploadAction={uploadAction}
+    />
+  </div>
+</div>
+
             </>
           )}
 

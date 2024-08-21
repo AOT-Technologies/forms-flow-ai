@@ -20,7 +20,7 @@ import {
 } from "../../../apiManager/services/processServices";
 import { HelperServices } from "@formsflow/service";
 import Button from "../../CustomComponents/Button";
-import  userRoles  from "../../../constants/permissions";
+import userRoles from "../../../constants/permissions";
 
 function FormTable() {
   const tenantKey = useSelector((state) => state.tenants?.tenantId);
@@ -40,7 +40,7 @@ function FormTable() {
   const redirectUrl = MULTITENANCY_ENABLED ? `/tenant/${tenantKey}/` : "/";
   const isApplicationCountLoading = useSelector((state) => state.process.isApplicationCountLoading);
   const { createDesigns } = userRoles();
-
+  const [expandedRowIndex, setExpandedRowIndex] = useState(null);
 
   const pageOptions = [
     {
@@ -69,6 +69,7 @@ function FormTable() {
     dispatch(setBPMFormListSort(updatedSort));
     dispatch(setBPMFormListPage(1));
   };
+
   const viewOrEditForm = (formId, path) => {
     dispatch(resetFormProcessData());
     dispatch(push(`${redirectUrl}formflow/${formId}/${path}`));
@@ -87,6 +88,10 @@ function FormTable() {
   const stripHtml = (html) => {
     let doc = new DOMParser().parseFromString(html, 'text/html');
     return doc.body.textContent || "";
+  };
+
+  const toggleRow = (index) => {
+    setExpandedRowIndex(prevIndex => prevIndex === index ? null : index);
   };
 
   const noDataFound = () => {
@@ -150,6 +155,8 @@ function FormTable() {
             {formData?.length ? (
               <tbody>
                 {formData?.map((e, index) => {
+                  const isExpanded = expandedRowIndex === index;
+
                   return (
                     <tr key={index}>
                       <td className="width-30">
@@ -157,8 +164,12 @@ function FormTable() {
                           <span className="ms-4 text-container">{e.title}</span>
                         </div>
                       </td>
-                      <td className="col-4 width-30">
-                        <div className="text-container"> {stripHtml(e.description ? e.description : "Description is not added")}</div></td>
+                      <td className="col-4 width-40 cursor-pointer">
+                        <span className={isExpanded ? "text-container-expand" : "text-container"}
+                          onClick={() => toggleRow(index)}>
+                          {stripHtml(e.description ? e.description : "")}
+                        </span>
+                      </td>
                       <td>{HelperServices?.getLocaldate(e.created)}</td>
                       <td>{e.anonymous ? t("Public") : t("Private")}</td>
                       <td>
@@ -174,7 +185,7 @@ function FormTable() {
                         </span>
                       </td>
                       <td>
-                         {createDesigns && <Button
+                        {createDesigns && <Button
                           variant="secondary"
                           size="sm"
                           label={<Translation>{(t) => t("Edit")}</Translation>}

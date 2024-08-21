@@ -3,6 +3,7 @@ import { Dropdown } from "react-bootstrap";
 import { useDispatch, useSelector } from "react-redux";
 import { push } from "connected-react-router";
 import Pagination from "react-js-pagination";
+import downArrow from "../../Modals/downArrow.svg";
 import {
   setBPMFormLimit,
   setBPMFormListPage,
@@ -13,12 +14,12 @@ import {
   MULTITENANCY_ENABLED,
 } from "../../../constants/constants";
 import { useTranslation } from "react-i18next";
-// import { Translation } from "react-i18next";
+import { Translation } from "react-i18next";
 import {
   resetFormProcessData
 } from "../../../apiManager/services/processServices";
 import { HelperServices } from "@formsflow/service";
-import Button  from "../../CustomComponents/Button";
+import Button from "../../CustomComponents/Button";
 import  userRoles  from "../../../constants/permissions";
 
 function FormTable() {
@@ -138,10 +139,10 @@ function FormTable() {
                     </span>
                   </div>
                 </th>
-                <th scope="col">{t("Description")}</th>
-                <th scope="col">{t("Last Modified")}</th>
+                <th className="width-40" scope="col">{t("Description")}</th>
+                <th scope="col">{t("Last Edited")}</th>
                 <th scope="col">{t("Visibility")}</th>
-                <th scope="col">{t("Published")}</th>
+                <th scope="col">{t("Status")}</th>
                 <th colSpan="4" aria-label="Search Forms by form title"></th>
               </tr>
             </thead>
@@ -150,25 +151,33 @@ function FormTable() {
               <tbody>
                 {formData?.map((e, index) => {
                   return (
-                    <tr key={index}> 
-                        <td>
-                          <div className="d-flex">
-                            <span className="ms-4">{e.title}</span>
-                          </div>
-                        </td>
-                      <td className="col-4">{stripHtml(e.description)}</td>
+                    <tr key={index}>
+                      <td className="width-30">
+                        <div className="d-flex">
+                          <span className="ms-4 text-container">{e.title}</span>
+                        </div>
+                      </td>
+                      <td className="col-4 width-30">
+                        <div className="text-container"> {stripHtml(e.description ? e.description : "Description is not added")}</div></td>
                       <td>{HelperServices?.getLocaldate(e.created)}</td>
                       <td>{e.anonymous ? t("Public") : t("Private")}</td>
                       <td>
-                        <span data-testid={`form-status-${e._id}`}>
-                          {e.status === "active" ? t("Yes") : t("")}
+                        <span data-testid={`form-status-${e._id}`} className="d-flex align-items-center">
+                          {e.status === "active" ? (
+                            <>
+                              <div className="status-live"></div>
+                            </>
+                          ) : (
+                            <div className="status-draft"></div>
+                          )}
+                          {e.status === "active" ? t("Live") : t("Draft")}
                         </span>
                       </td>
                       <td>
-                        {createDesigns && <Button
+                         {createDesigns && <Button
                           variant="secondary"
                           size="sm"
-                          label="Edit"
+                          label={<Translation>{(t) => t("Edit")}</Translation>}
                           onClick={() => viewOrEditForm(e._id, 'edit')}
                           className=""
                           dataTestid={`form-edit-button-${e._id}`}
@@ -183,14 +192,14 @@ function FormTable() {
                     <>
                       <td colSpan={1}>
                         <div className="d-flex justify-content-between align-items-center flex-column flex-md-row">
-                          <span className="ms-2">
+                          <span className="ms-2 pagination-text">
                             {t("Showing")} {(limit * pageNo) - (limit - 1)} {t("to")}{" "}
                             {limit * pageNo > totalForms ? totalForms : limit * pageNo}{" "}
                             {t("of")} {totalForms} {t("results")}
                           </span>
                         </div>
                       </td>
-                      <td colSpan={1}>
+                      <td colSpan={3}>
                         <div className="d-flex align-items-center justify-content-around">
                           <Pagination
                             activePage={pageNo}
@@ -203,28 +212,31 @@ function FormTable() {
                           />
                         </div>
                       </td>
-                      <td colSpan={4}>
+                      <td colSpan={3}>
                         <div className="d-flex align-items-center justify-content-end">
-                          <span className="me-2">{t("Rows per page")}</span>
-                          <Dropdown data-testid="page-limit-dropdown">
-                            <Dropdown.Toggle variant="light" id="dropdown-basic" data-testid="page-limit-dropdown-toggle">
-                              {pageLimit}
-                            </Dropdown.Toggle>
-                            <Dropdown.Menu>
-                              {pageOptions.map((option, index) => (
-                                <Dropdown.Item
-                                  key={index}
-                                  type="button"
-                                  data-testid={`page-limit-dropdown-item-${option.value}`}
-                                  onClick={() => {
-                                    onSizePerPageChange(option.value);
-                                  }}
-                                >
-                                  {option.text}
-                                </Dropdown.Item>
-                              ))}
-                            </Dropdown.Menu>
-                          </Dropdown>
+                          <span className="pagination-text">{t("Rows per page")}</span>
+                          <div className="pagination-dropdown">
+                            <Dropdown data-testid="page-limit-dropdown">
+                              <Dropdown.Toggle variant="light" id="dropdown-basic" data-testid="page-limit-dropdown-toggle">
+                                {pageLimit}
+                              </Dropdown.Toggle>
+                              <Dropdown.Menu>
+                                {pageOptions.map((option, index) => (
+                                  <Dropdown.Item
+                                    key={index}
+                                    type="button"
+                                    data-testid={`page-limit-dropdown-item-${option.value}`}
+                                    onClick={() => {
+                                      onSizePerPageChange(option.value);
+                                    }}
+                                  >
+                                    {option.text}
+                                  </Dropdown.Item>
+                                ))}
+                              </Dropdown.Menu>
+                            </Dropdown>
+                            <img src={downArrow} alt="drppdown" />
+                          </div>
                         </div>
                       </td>
                     </>

@@ -197,11 +197,11 @@ public class OAuth2LoginSecurityConfig  {
 		return new RequestContextListener();
 	}
 
-	@Bean
-	public FilterRegistrationBean cockpitConfigurationFilter() {
-		return new KeycloakConfigurationFilterRegistrationBean(
-				keycloakCockpitConfiguration,
-				camundaBpmProperties.getWebapp().getApplicationPath()
-		);
-	}
+//	@Bean //UNCOMMENT FOR JWT AUTH
+//	public FilterRegistrationBean cockpitConfigurationFilter() {
+//		return new KeycloakConfigurationFilterRegistrationBean(
+//				keycloakCockpitConfiguration,
+//				camundaBpmProperties.getWebapp().getApplicationPath()
+//		);
+//	}
 }

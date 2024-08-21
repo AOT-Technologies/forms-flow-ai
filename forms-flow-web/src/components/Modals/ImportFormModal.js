@@ -59,7 +59,10 @@ const ImportFormModal = React.memo(({ importFormModal, onClose, uploadAction }) 
                         <button
                             type="button"
                             className="btn-close close-modal"
-                            onClick={onClose}
+                            onClick={() => {
+                                setSelectedFile(null);
+                                onClose();
+                            }}
                             aria-label="Close"
                             data-testid="form-history-modal-close-button"
                         ></button>
@@ -100,7 +103,7 @@ const ImportFormModal = React.memo(({ importFormModal, onClose, uploadAction }) 
                         label={<Translation>{(t) => t("Confirm and Edit form")}</Translation>}
                         onClick={uploadAction}
                         className=""
-                        dataTestid={`conform-and-edit-form`}
+                        dataTestid={`confirm-and-edit-form`}
                         ariaLabel="Confirm and Edit form"
                     />
                     <Button

@@ -1,23 +1,19 @@
 import React from 'react';
 import PropTypes from 'prop-types';
+import { ProgressBar } from 'react-bootstrap';
 
-const ProgressBar = ({ formsUploaded }) => {
+const CustomProgressBar = ({ progress }) => {
     return (
-        <div className="progress upload-progress">
-            <div
-                className="progress-bar"
-                role="progressbar"
-                aria-valuenow={formsUploaded}
-                aria-label="upload-status"
-                aria-valuemax={100} // Assuming the max value for the progress is 100
-                style={{ width: `${formsUploaded}%` }}
-            ></div>
-        </div>
+        <ProgressBar
+            now={progress}
+            aria-label="upload-status"
+            max={100}
+        />
     );
 };
 
-ProgressBar.propTypes = {
-    formsUploaded: PropTypes.number.isRequired,
+CustomProgressBar.propTypes = {
+    progress: PropTypes.number.isRequired,
 };
 
-export default ProgressBar;
+export default CustomProgressBar;

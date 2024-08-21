@@ -17,7 +17,8 @@ import {
 import { Badge } from 'react-bootstrap';
 import "../Steps/steps.scss";
 import  userRoles  from "../../../constants/permissions";
-
+import { MULTITENANCY_ENABLED } from "../../../constants/constants";
+import { removeTenantKey } from "../../../helper/helper";
 const Preview = React.memo(
   ({
     handleNext,
@@ -36,6 +37,8 @@ const Preview = React.memo(
     const [designerSelectedOption, setDesignerSelectedOption] = useState("");
     const [clientSelectedOption, setClientSelectedOption] = useState("");
     const [reviewerSelectedOption, setReviewerSelectedOption] = useState("");
+  const tenantKey = useSelector((state) => state.tenants?.tenantId);
+
     const processListData = useSelector(
       (state) => state.process.formProcessList
     );
@@ -375,7 +378,7 @@ if (reviewerSelectedOption === "Specific Reviewers") {
                       <div className="d-flex align-items-center flex-wrap">
                         {designerGroups?.map((e) => (
                           <Badge key={e} pill variant="outlined" className="d-flex align-items-center badge me-2 mt-2">
-                            {e}
+                            {MULTITENANCY_ENABLED ? removeTenantKey(e,tenantKey) : e}
                             <div
                               data-testid={`form-designer-delete-icon-${e}`}
                               className="badge-deleteIcon ms-2"
@@ -400,7 +403,8 @@ if (reviewerSelectedOption === "Specific Reviewers") {
                                         onClick={() => addDesignerGroups(item)}
                                         data-testid={`form-specific-designer-option-${key}`}
                                       >
-                                        {item.name}
+                                        {MULTITENANCY_ENABLED ?
+                                         removeTenantKey(item.name,tenantKey) : item.name}
                                       </ListGroup.Item>
                                     ))
                                   ) : (
@@ -469,7 +473,7 @@ if (reviewerSelectedOption === "Specific Reviewers") {
                           {clientGroups?.map((e) => {
                             return (
                               <Badge key={e} pill variant="outlined" className="d-flex align-items-center badge me-2 mt-2">
-                                {e}
+                                {MULTITENANCY_ENABLED ? removeTenantKey(e,tenantKey) : e}
                                 <div
                                   data-testid={`form-user-delete-icon-${e}`}
                                   className="badge-deleteIcon ms-2"
@@ -494,7 +498,8 @@ if (reviewerSelectedOption === "Specific Reviewers") {
                                           onClick={() => addClientGroups(item)}
                                           data-testid={`specific-user-option-${key}`}
                                         >
-                                          {item.name}
+                                          {MULTITENANCY_ENABLED ?
+                                         removeTenantKey(item.name,tenantKey) : item.name}
                                         </ListGroup.Item>
                                       ))
                                     ) : (
@@ -569,7 +574,7 @@ if (reviewerSelectedOption === "Specific Reviewers") {
                             {reviewerGroups?.map((e) => {
                               return (
                                 <Badge key={e} pill variant="outlined" className="d-flex align-items-center badge me-2 mt-2">
-                                  {e}
+                                  {MULTITENANCY_ENABLED ? removeTenantKey(e,tenantKey) : e}
                                   <div
                                     data-testid={`form-reviewer-delete-icon-${e}`}
                                     className="badge-deleteIcon ms-2"
@@ -595,7 +600,8 @@ if (reviewerSelectedOption === "Specific Reviewers") {
                                             onClick={() => addReviewerGroups(item)}
                                             data-testid={`form-specific-reviewer-option-${key}`}
                                           >
-                                            {item.name}
+                                            {MULTITENANCY_ENABLED ?
+                                         removeTenantKey(item.name,tenantKey) : item.name}
                                           </ListGroup.Item>
                                         ))
                                       ) : (

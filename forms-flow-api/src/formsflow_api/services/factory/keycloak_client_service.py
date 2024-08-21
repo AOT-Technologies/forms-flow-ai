@@ -16,9 +16,20 @@ from .keycloak_group_service import KeycloakGroupService
 class KeycloakClientService(KeycloakGroupService):
     """Keycloak Admin implementation for client related operations."""
 
-    def get_analytics_groups(self, page_no: int, limit: int):
+    @user_context
+    def get_analytics_groups(self, page_no: int, limit: int, **kwargs):
         """Get analytics roles."""
-        return self.client.get_analytics_roles(page_no, limit)
+        user: UserContext = kwargs["user"]
+        tenant_key = user.tenant_key
+        groups = super().get_analytics_groups(page_no=page_no, limit=limit)
+        response = [
+            group for group in groups if group["name"].startswith(f"/{tenant_key}")
+        ]
+        if page_no and limit:
+            response = self.user_service.paginate(
+                response, page_number=page_no, page_size=limit
+            )
+        return response
 
     def update_group(self, group_id: str, data: Dict):
         """Update keycloak group."""
@@ -85,20 +96,18 @@ class KeycloakClientService(KeycloakGroupService):
                 tenant_keys.append(tenant_key)
             payload = {"attributes": {"tenantKey": tenant_keys}}
             self.client.update_request(f"users/{user_id}", payload)
-            # Add user to role
-            client_id = self.client.get_client_id()
+            # Add user to group
             for role in data.get("roles"):
+                group_id = role.get("role_id")
                 role_data = {
-                    "containerId": client_id,
-                    "id": role.get("role_id"),
-                    "name": role.get("name"),
+                    "userId": user_id,
+                    "groupId": group_id,
                 }
                 current_app.logger.debug(
                     f"Adding user: {user_email} to role {role.get('name')}."
                 )
-                self.client.create_request(
-                    url_path=f"users/{user_id}/role-mappings/clients/{client_id}",
-                    data=[role_data],
+                self.client.update_request(
+                    url_path=f"users/{user_id}/groups/{group_id}", data=role_data
                 )
             return {"message": "User added to tenant"}, HTTPStatus.OK
         raise BusinessException(BusinessErrorCode.USER_NOT_FOUND)

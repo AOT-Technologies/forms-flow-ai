@@ -6,7 +6,7 @@ from typing import Dict, List
 import requests
 from flask import current_app
 from formsflow_api_utils.exceptions import BusinessException
-from formsflow_api_utils.utils.user_context import UserContext, user_context
+from formsflow_api_utils.utils import VIEW_DASHBOARDS, UserContext, user_context
 
 from formsflow_api.constants import BusinessErrorCode
 from formsflow_api.services import KeycloakAdminAPIService, UserService
@@ -22,12 +22,21 @@ class KeycloakGroupService(KeycloakAdmin):
         self.client = KeycloakAdminAPIService()
         self.user_service = UserService()
 
-    def __populate_user_groups(self, user_list: List) -> List:
+    @user_context
+    def __populate_user_groups(self, user_list: List, **kwargs) -> List:
         """Collect groups for a user list and populate the role attribute."""
         for user in user_list:
-            user["role"] = (
+            user_groups = (
                 self.client.get_user_groups(user.get("id")) if user.get("id") else []
             )
+            if current_app.config.get("MULTI_TENANCY_ENABLED"):
+                logged_user: UserContext = kwargs["user"]
+                user_groups = [
+                    group
+                    for group in user_groups
+                    if group["name"].startswith(logged_user.tenant_key)
+                ]
+            user["role"] = user_groups
         return user_list
 
     def __populate_user_roles(self, user_list: List) -> List:
@@ -40,7 +49,25 @@ class KeycloakGroupService(KeycloakAdmin):
 
     def get_analytics_groups(self, page_no: int, limit: int):
         """Get analytics groups."""
-        return self.client.get_analytics_groups(page_no, limit)
+        dashboard_group_list: list = []
+        group_list_response = self.client.get_request(
+            url_path="groups?briefRepresentation=false"
+        )
+        group_list_response = self.flat(group_list_response, dashboard_group_list)
+        response = [
+            group
+            for group in group_list_response
+            if VIEW_DASHBOARDS in group.get("permissions", [])
+        ]
+        if (
+            page_no
+            and limit
+            and current_app.config.get("MULTI_TENANCY_ENABLED") is False
+        ):
+            response = self.user_service.paginate(
+                response, page_number=page_no, page_size=limit
+            )
+        return response
 
     def get_group(self, group_id: str):
         """Get group by group_id."""
@@ -311,7 +338,11 @@ class KeycloakGroupService(KeycloakAdmin):
 
         if multitenancy and search:
             user_list = self.user_service.user_search(search, user_list)
-        users_count = len(user_list) if count else None
+        users_count = (
+            len(user_list)
+            if current_app.config.get("MULTI_TENANCY_ENABLED")
+            else self.client.get_realm_users_count(search) if count else None
+        )
 
         if multitenancy and page_no and limit:
             user_list = self.user_service.paginate(user_list, page_no, limit)

@@ -23,7 +23,7 @@
 
 		<!-- versions -->
 		<version.camundaKeycloak>7.21.5</version.camundaKeycloak>
-		<version.camunda>7.21.0</version.camunda><!-- 7.18.0 - 7.20.0 -->
+		<version.camunda>7.20.0</version.camunda><!-- 7.18.0 - 7.20.0 -->
 		<version.camundaConnect>1.5.4</version.camundaConnect><!-- 1.5.4 -->
 		<version.camundaMail>1.5.0</version.camundaMail><!-- 1.5.0 -->
 		<version.springBoot>3.1.10</version.springBoot><!-- 3.1.5 - 3.1.10 -->

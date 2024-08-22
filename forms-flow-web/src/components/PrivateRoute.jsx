@@ -221,7 +221,7 @@ const PrivateRoute = React.memo((props) => {
         <Route
           {...rest}
           render={(props) =>
-            createDesigns || viewDesigns || createSubmissions  ? (
+            createDesigns || viewDesigns || createSubmissions || viewSubmissions  ? (
               <Component {...props} />
             ) : (
               <AccessDenied userRoles={userRoles} />

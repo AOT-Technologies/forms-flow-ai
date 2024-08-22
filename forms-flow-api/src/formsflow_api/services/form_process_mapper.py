@@ -481,24 +481,20 @@ class FormProcessMapperService:
             workflows.append(workflow)
             authorizations.append(self._get_authorizations(mapper.form_id, user))
 
-            forms_names, dmns, sub_workflows = self._parse_xml(
-                workflow["content"], user
-            )
+            # Parse bpm xml to get subforms & workflows
+            # The following lines are currently commented out but may be needed for future use.
+            # forms_names, dmns, sub_workflows = self._parse_xml(
+            #     workflow["content"], user
+            # )
 
-            for form in set(forms_names):
-                forms.append(
-                    self._get_form(
-                        form,
-                        "sub",
-                        form_id=None,
-                        description=None,
-                        tenant_key=tenant_key,
-                    )
-                )
-            for dmn in set(dmns):
-                rules.append(self._get_dmn(dmn, "sub", user))
+            # for form in set(forms_names):
+            #     forms.append(
+            #         self._get_form(form, "sub", form_id=None, description=None, tenant_key=tenant_key)
+            #     )
+            # for dmn in set(dmns):
+            #     rules.append(self._get_dmn(dmn, "sub", user))
 
-            workflows.extend(sub_workflows)
+            # workflows.extend(sub_workflows)
 
             return {
                 "forms": forms,

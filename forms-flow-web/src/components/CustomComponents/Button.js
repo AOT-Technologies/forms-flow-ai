@@ -3,8 +3,23 @@ import { useRef, useEffect, useState } from "react";
 import Button from "react-bootstrap/Button";
 import ButtonGroup from "react-bootstrap/ButtonGroup";
 import Dropdown from "react-bootstrap/Dropdown";
-import Loader from "./Assets/Loader.svg";
-import Chevron from "./Assets/Chevron.svg";
+import {
+  ChevronIcon,
+  RefreshIcon,
+  PreviewIcon,
+  MessageIcon,
+  SwitchIcon,
+  AddIcon,
+  DuplicateIcon,
+  SaveTemplateIcon,
+  CloseIcon,
+  ExportIcon,
+  ImportIcon,
+  PencilIcon,
+  CurlyBracketsIcon,
+  AngleRightIcon,
+  UploadIcon,
+} from "@formsflow/components";
 
 const CustomButton = ({
   variant,
@@ -18,16 +33,20 @@ const CustomButton = ({
   className,
   dataTestid,
   ariaLabel,
+  iconColor,
+  buttonLoading
 }) => {
   const buttonRef = useRef(null);
   const toggleRef = useRef(null);
+  // const testbuttonRef = useRef(null);
+  // const [buttonWidth, setButtonWidth] = useState(null);
   const [menuStyle, setMenuStyle] = useState({});
-    const [dropdownOpen, setDropdownOpen] = useState(false);
+  const [dropdownOpen, setDropdownOpen] = useState(false);
 
-  useEffect(() => {
+  const updateMenuStyle = () => {
     if (buttonRef.current && toggleRef.current) {
-      const buttonWidth = buttonRef.current.offsetWidth;
-      const toggleWidth = toggleRef.current.offsetWidth;
+      const buttonWidth = buttonRef.current.getBoundingClientRect().width;
+      const toggleWidth = toggleRef.current.getBoundingClientRect().width;
       const totalWidth = buttonWidth + toggleWidth - 1;
       setMenuStyle({
         minWidth: `${totalWidth}px`,
@@ -37,7 +56,46 @@ const CustomButton = ({
         padding: "0",
       });
     }
+  };
+
+  // const updateButtonStyle = () => {
+  //   if (testbuttonRef.current) {
+  //     const width = testbuttonRef.current.getBoundingClientRect().width;
+  //     console.log(width);
+  //     setButtonWidth(width);
+  //   }
+  // };
+
+
+  // useEffect(() => {
+  //   updateButtonStyle();
+  // }, [buttonLoading]);
+
+  useEffect(() => {
+    updateMenuStyle();
+    window.addEventListener("resize", updateMenuStyle);
+    return () => window.removeEventListener("resize", updateMenuStyle);
   }, []);
+
+  const iconMapping = {
+    RefreshIcon: RefreshIcon,
+    SwitchIcon: SwitchIcon,
+    PreviewIcon: PreviewIcon,
+    MessageIcon: MessageIcon,
+    AddIcon: AddIcon,
+    DuplicateIcon: DuplicateIcon,
+    SaveTemplateIcon: SaveTemplateIcon,
+    CloseIcon: CloseIcon,
+    ExportIcon: ExportIcon,
+    ImportIcon: ImportIcon,
+    PencilIcon: PencilIcon,
+    CurlyBracketsIcon: CurlyBracketsIcon,
+    AngleRightIcon: AngleRightIcon,
+    UploadIcon: UploadIcon,
+  };
+
+  const IconComponent = icon ? iconMapping[icon] : null;
+  // const buttonStyle = buttonLoading ? { width: `${buttonWidth}px` } : {};
 
   if (isDropdown) {
     return (
@@ -62,9 +120,9 @@ const CustomButton = ({
           split
           variant={variant}
           id="dropdown-split-basic"
-          className={`default-arrow ${dropdownOpen ? '' : 'collapsed'}`}
+          className={`default-arrow ${dropdownOpen ? "collapsed" : ""}`}
         >
-          <img src={Chevron} alt="Chevron icon" />
+          <ChevronIcon color="white" />
         </Dropdown.Toggle>
 
         <Dropdown.Menu style={menuStyle}>
@@ -88,15 +146,24 @@ const CustomButton = ({
       variant={variant}
       size={size}
       onClick={onClick}
-      disabled={disabled}
+      disabled={disabled || buttonLoading}
       className={className}
       data-testid={dataTestid}
       aria-label={ariaLabel}
+      // ref={testbuttonRef}
+      // style={buttonStyle}
     >
-      {variant === "secondary" && !isDropdown && icon && (
-       <img src={Loader} alt="Loader icon" className="me-2"/>
-      )}
-      {label}
+      {buttonLoading ? ( 
+        <span className="dotted-spinner"></span>
+      ) : (
+        <>
+          {IconComponent && (
+            <span className="me-2">
+              <IconComponent color={iconColor} />
+            </span>
+          )}
+          {label}
+        </>)}
     </Button>
   );
 };

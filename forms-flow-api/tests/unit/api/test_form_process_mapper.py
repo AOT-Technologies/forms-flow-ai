@@ -68,9 +68,9 @@ def test_form_process_mapper_paginated_sorted_list(
 @pytest.mark.parametrize(
     ("pageNo", "limit", "filters"),
     (
-        (1, 5, "formName=free"),
-        (1, 10, "formName=Free"),
-        (1, 20, "formName=privacy"),
+        (1, 5, "search=free"),
+        (1, 10, "search=Free"),
+        (1, 20, "search=privacy"),
     ),
 )
 def test_form_process_mapper_paginated_filtered_list(

@@ -94,6 +94,19 @@ const PrivateRoute = React.memo((props) => {
           manageTasks,
           viewDashboards 
         } = useUserRoles();
+  
+       const BASE_ROUTE_PATH = (viewTasks || manageTasks)
+        ? `${redirecUrl}task`
+        : ( createSubmissions || createDesigns || viewDesigns)
+        ? `${redirecUrl}form`
+        : admin  
+        ? `${redirecUrl}admin` 
+        : viewSubmissions 
+        ? `${redirecUrl}application` 
+        : viewDashboards 
+        ? `${redirecUrl}metrics` 
+        : "/404";
+       
 
   const authenticate = (instance, store) => {
     setKcInstance(instance);
@@ -340,15 +353,7 @@ const PrivateRoute = React.memo((props) => {
             <Route exact path={BASE_ROUTE}>
             {userRoles.length && (
                <Redirect
-                 to={
-                     (viewTasks || manageTasks)
-                     ? `${redirecUrl}task`
-                     : ( createSubmissions || createDesigns || viewDesigns)
-                     ? `${redirecUrl}form`
-                     : admin  
-                     ? `${redirecUrl}admin` 
-                     : `${BASE_ROUTE}processes`
-                    }
+                 to={BASE_ROUTE_PATH}
                 />
                )}
             </Route>

@@ -3,21 +3,24 @@ import Modal from "react-bootstrap/Modal";
 import Button from "../../components/CustomComponents/Button";
 import { Translation } from "react-i18next";
 
-const ConfirmModal = React.memo(({ 
-    show, 
-    onCancel, 
-    title, 
-    message, 
+const ConfirmModal = React.memo(({
+    show,
+    onCancel,
+    title,
+    message,
     messageSecondary,
-    onConfirm, 
-    confirmText, 
-    cancelText 
+    onConfirm,
+    confirmText,
+    cancelText,
+    cancelBtndataTestid,
+    confirmBtndataTestid
 }) => {
+
     return (
         <>
-            <Modal 
-                show={show} 
-                onHide={onCancel} 
+            {!missingProps && <Modal
+                show={show}
+                onHide={onCancel}
                 dialogClassName="modal-50w"
                 data-testid="confirm-modal"
                 aria-labelledby="confirm-modal-title"
@@ -42,24 +45,26 @@ const ConfirmModal = React.memo(({
                     </div>
                 </Modal.Header>
                 <Modal.Body className="p-5">
-                    <div 
-                        className="d-flex flex-column" 
+                    <div
+                        className="d-flex flex-column"
                         id="confirm-modal-message"
                     >
-                        <div 
-                            className="message-primary" 
+                        <div
+                            className="message-primary"
                             data-testid="confirm-modal-primary-message"
                             aria-label="Primary message"
                         >
                             <Translation>{(t) => t(message)}</Translation>
                         </div>
-                        <div 
-                            className="message-secondary" 
-                            data-testid="confirm-modal-secondary-message"
-                            aria-label="Secondary message"
-                        >
-                            <Translation>{(t) => t(messageSecondary)}</Translation>
-                        </div>
+                        {messageSecondary && (
+                            <div
+                                className="message-secondary"
+                                data-testid="confirm-modal-secondary-message"
+                                aria-label="Secondary message"
+                            >
+                                <Translation>{(t) => t(messageSecondary)}</Translation>
+                            </div>
+                        )}
                     </div>
                 </Modal.Body>
                 <Modal.Footer className="d-flex justify-content-start">
@@ -68,23 +73,29 @@ const ConfirmModal = React.memo(({
                         size="md"
                         label={<Translation>{(t) => t(confirmText)}</Translation>}
                         onClick={onConfirm}
-                        className=""
-                        dataTestid="confirm-modal-confirm-button"
-                        ariaLabel="Confirm action"
+                        dataTestid={confirmBtndataTestid}
+                        ariaLabel={confirmBtnariaLabel}
                     />
                     <Button
                         variant="secondary"
                         size="md"
                         label={<Translation>{(t) => t(cancelText)}</Translation>}
                         onClick={onCancel}
-                        className=""
-                        dataTestid="confirm-modal-cancel-button"
-                        ariaLabel="Cancel action"
+                        dataTestid={cancelBtndataTestid}
+                        ariaLabel={cancelBtnariaLabel}
                     />
                 </Modal.Footer>
-            </Modal>
+            </Modal>}
         </>
     );
 });
+
+ConfirmModal.defaultProps = {
+    messageSecondary: '',
+    confirmBtndataTestid: 'Confire-button',
+    confirmBtnariaLabel: 'Confirm Button',
+    cancelBtndataTestid: 'cancel-button',
+    cancelBtnariaLabel: 'Cancel Button'
+};
 
 export default ConfirmModal;

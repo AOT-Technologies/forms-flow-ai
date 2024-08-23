@@ -27,6 +27,6 @@ window.camAdminConf = {
 export default {
     customScripts: [
         'custom/logout',
-		'../identity-keycloak/scripts/identity-keycloak-auth.js'
+		//UNCOMMENT FOR JWT AUTH '../identity-keycloak/scripts/identity-keycloak-auth.js'
     ]
 };

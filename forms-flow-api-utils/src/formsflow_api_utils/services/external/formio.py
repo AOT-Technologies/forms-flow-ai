@@ -158,3 +158,11 @@ class FormioService:
         headers = {"Content-Type": "application/json", "x-jwt-token": formio_token}
         url = f"{self.base_url}/{path_name}"
         return self._invoke_service(url, headers, method='GET')
+    
+    def get_form_search(self, query_params, formio_token):
+        """Get request to formio API to get form details by search."""
+        headers = {"Content-Type": "application/json", "x-jwt-token": formio_token}
+        url = f"{self.base_url}/forms/search"
+        if query_params:
+            url = f"{url}?{query_params}"
+        return self._invoke_service(url, headers, method='GET')

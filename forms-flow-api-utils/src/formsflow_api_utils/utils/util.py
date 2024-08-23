@@ -63,7 +63,9 @@ def validate_sort_order_and_order_by(order_by: str, sort_order: str) -> bool:
         ApplicationSortingParameters.Name,
         ApplicationSortingParameters.Status,
         ApplicationSortingParameters.Modified,
+        ApplicationSortingParameters.FormStatus,
         ApplicationSortingParameters.FormName,
+        ApplicationSortingParameters.visibility,
         DraftSortingParameters.Name,
         ProcessSortingParameters.Name,
         ProcessSortingParameters.Created,
@@ -73,6 +75,8 @@ def validate_sort_order_and_order_by(order_by: str, sort_order: str) -> bool:
     else:
         if order_by in [ApplicationSortingParameters.Name, DraftSortingParameters.Name]:
             order_by = ApplicationSortingParameters.FormName
+        if order_by == ApplicationSortingParameters.visibility:
+            order_by = ApplicationSortingParameters.is_anonymous
         order_by = camel_to_snake(order_by)
     if sort_order not in ["asc", "desc"]:
         sort_order = None

@@ -265,6 +265,7 @@ class FormProcessMapperService:
         form_id: str = None,
         description: str = None,
         tenant_key: str = None,
+        anonymous: bool = False,
     ) -> dict:
         """Get form details."""
         try:
@@ -301,6 +302,7 @@ class FormProcessMapperService:
             return {
                 "formTitle": title_or_path,
                 "formDescription": description,
+                "anonymous": anonymous,
                 "type": scope_type,
                 "content": form_json,
             }
@@ -473,6 +475,7 @@ class FormProcessMapperService:
                     mapper.form_id,
                     mapper.description,
                     tenant_key,
+                    mapper.is_anonymous,
                 )
             )
             workflow = self._get_workflow(

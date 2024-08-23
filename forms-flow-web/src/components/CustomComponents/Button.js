@@ -38,8 +38,6 @@ const CustomButton = ({
 }) => {
   const buttonRef = useRef(null);
   const toggleRef = useRef(null);
-  // const testbuttonRef = useRef(null);
-  // const [buttonWidth, setButtonWidth] = useState(null);
   const [menuStyle, setMenuStyle] = useState({});
   const [dropdownOpen, setDropdownOpen] = useState(false);
 
@@ -57,19 +55,6 @@ const CustomButton = ({
       });
     }
   };
-
-  // const updateButtonStyle = () => {
-  //   if (testbuttonRef.current) {
-  //     const width = testbuttonRef.current.getBoundingClientRect().width;
-  //     console.log(width);
-  //     setButtonWidth(width);
-  //   }
-  // };
-
-
-  // useEffect(() => {
-  //   updateButtonStyle();
-  // }, [buttonLoading]);
 
   useEffect(() => {
     updateMenuStyle();
@@ -95,7 +80,6 @@ const CustomButton = ({
   };
 
   const IconComponent = icon ? iconMapping[icon] : null;
-  // const buttonStyle = buttonLoading ? { width: `${buttonWidth}px` } : {};
 
   if (isDropdown) {
     return (
@@ -150,20 +134,19 @@ const CustomButton = ({
       className={className}
       data-testid={dataTestid}
       aria-label={ariaLabel}
-      // ref={testbuttonRef}
-      // style={buttonStyle}
     >
-      {buttonLoading ? ( 
+       <div className={` ${buttonLoading ? "button-content" : ""}`}>
+        {IconComponent && (
+          <span className="me-2">
+            <IconComponent color={iconColor} />
+          </span>
+        )}
+        {label}
+      </div>
+      {buttonLoading && (
         <span className="dotted-spinner"></span>
-      ) : (
-        <>
-          {IconComponent && (
-            <span className="me-2">
-              <IconComponent color={iconColor} />
-            </span>
-          )}
-          {label}
-        </>)}
+      )}
+       
     </Button>
   );
 };

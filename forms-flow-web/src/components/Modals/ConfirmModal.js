@@ -94,7 +94,7 @@ const ConfirmModal = React.memo(({
 
 ConfirmModal.defaultProps = {
     messageSecondary: '',
-    confirmBtndataTestid: 'Confire-button',
+    confirmBtndataTestid: 'Confirm-button',
     confirmBtnariaLabel: 'Confirm Button',
     cancelBtndataTestid: 'cancel-button',
     cancelBtnariaLabel: 'Cancel Button'

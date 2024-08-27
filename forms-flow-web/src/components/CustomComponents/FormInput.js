@@ -17,7 +17,7 @@ const FormInput = ({
   ariaLabel,
   className ,
   required = false,
-  icon = true,
+  icon,
   id
 }) => {
 

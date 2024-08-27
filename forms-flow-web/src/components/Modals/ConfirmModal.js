@@ -13,7 +13,9 @@ const ConfirmModal = React.memo(({
     confirmText,
     cancelText,
     cancelBtndataTestid,
-    confirmBtndataTestid
+    confirmBtndataTestid,
+    confirmBtnariaLabel,
+    cancelBtnariaLabel
 }) => {
 
     return (

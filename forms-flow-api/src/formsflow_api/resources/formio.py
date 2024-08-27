@@ -147,6 +147,7 @@ class FormioResource(Resource):
 
         roles = get_role_ids_from_user_groups(role_ids, user_role)
         print(roles,"roles",user_role,"user_roles",role_ids)
+        print(user)
         if roles is not None:
             roles.append(
                 {

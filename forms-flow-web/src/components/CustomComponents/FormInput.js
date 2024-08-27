@@ -24,10 +24,10 @@ const FormInput = ({
   const inputClassNames = "Form-control-input " + className ;
   return (
     <div className="Form-input-box" >
-      <Form.Group className={className} controlId={`form-${label}`}>
+      <Form.Group className={className} controlId={id}>
       {label && (
         <Form.Label  className='custom-form-control-label'>
-          <Translation>{(t) => t(label)}</Translation>  { required && <span className='required-icon'>*</span>}
+          <Translation>{(t) => t(label)}</Translation> { required && <span className='required-icon'>*</span>}
         </Form.Label>
       )}
       <InputGroup  className="custom-form-input-group" >
@@ -44,16 +44,15 @@ const FormInput = ({
           aria-label={ariaLabel}
           required={required}
           className={inputClassNames}
-          id={id}
         />
         {
           icon && (
-            <InputGroup.Text className="custom-icon" id="basic-addon1" >{icon}</InputGroup.Text>
+            <InputGroup.Text id="basic-addon1" >{icon}</InputGroup.Text>
           )
         }
         {isInvalid && (
           <Form.Control.Feedback className='custom-feedback' type="invalid">
-           <Translation > {(t) => t(feedback)}</Translation>
+           <Translation>{(t) => t(feedback)}</Translation>
           </Form.Control.Feedback>
         )}
 

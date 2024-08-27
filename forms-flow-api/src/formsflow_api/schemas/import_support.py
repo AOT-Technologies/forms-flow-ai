@@ -33,7 +33,6 @@ form_workflow_schema = {
             },
             "required": ["content", "processKey", "processName", "type"],
         },
-
         "authorizations": {
             "type": "array",
             "properties": {
@@ -66,7 +65,7 @@ form_workflow_schema = {
                         "userName": {"type": "string"},
                     },
                     "required": ["resourceId", "resourceDetails", "roles", "userName"],
-                }
+                },
             },
             "required": ["APPLICATION", "FORM", "DESIGNER"],
         },

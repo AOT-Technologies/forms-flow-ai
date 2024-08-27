@@ -74,8 +74,9 @@ class ImportService:
         try:
             validate(instance=data, schema=workflow_form_schema)
             current_app.logger.info("Valid json.")
-        except ValidationError as err:
-            raise BusinessException(BusinessErrorCode.INVALID_FILE_TYPE) from err
+            return True
+        except ValidationError:
+            return False
 
     def read_json_data(self, file):
         """Read JSON file."""
@@ -100,8 +101,16 @@ class ImportService:
                 raise BusinessException(BusinessErrorCode.INVALID_INPUT) from err
         return request_data, file
 
-    def valide_form_exists(self, query_params):
+    def valide_form_exists(self, form_json, tenant_key):
         """Validate form already exists."""
+        title = form_json.get("title")
+        name = form_json.get("name")
+        path = form_json.get("path")
+        # Add 'tenantkey-' from 'path' and 'name'
+        if current_app.config.get("MULTI_TENANCY_ENABLED"):
+            name = f"{tenant_key}-name"
+            path = f"{tenant_key}-path"
+        query_params = f"title={title}&name={name}&path={path}&select=title,path,name"
         current_app.logger.info(f"Validating form exists...{query_params}")
         response = self.formio.get_form_search(
             query_params, self.__get_formio_access_token()
@@ -195,7 +204,7 @@ class ImportService:
             "form_name": form_response.get("title"),
             "form_type": form_response.get("type"),
             "parent_form_id": form_id,
-            "is_anonymous": False,
+            "is_anonymous": file_data.get("forms")[0].get("anonymous") or False,
             "task_variable": "[]",
             "process_key": form_response.get("name"),
             "process_name": form_response.get("name"),
@@ -224,12 +233,16 @@ class ImportService:
     def find_mapper(self, mapper_id, tenant_key=None):
         """Find mapper."""
         mapper = FormProcessMapper.find_form_by_id(form_process_mapper_id=mapper_id)
+        if not mapper:
+            raise BusinessException(BusinessErrorCode.INVALID_FORM_PROCESS_MAPPER_ID)
         if mapper and tenant_key is not None and mapper.tenant != tenant_key:
             raise PermissionError(BusinessErrorCode.PERMISSION_DENIED)
         return mapper
 
     @user_context
-    def import_form_workflow(self, request, **kwargs):  # pylint: disable=too-many-locals, too-many-statements, too-many-branches
+    def import_form_workflow(
+        self, request, **kwargs
+    ):  # pylint: disable=too-many-locals, too-many-statements, too-many-branches
         """Import form/workflow."""
         current_app.logger.info("Processing import data...")
         request_data, file = self.validate_input_data(request)
@@ -252,17 +265,12 @@ class ImportService:
             current_app.logger.info("Valid json file type.")
             file_data = self.read_json_data(file)
             # Vaidate file data
-            self.validate_input_json(file_data, form_workflow_schema)
+            valid_input_json = self.validate_input_json(file_data, form_workflow_schema)
+            if not valid_input_json:
+                raise BusinessException(BusinessErrorCode.INVALID_FILE_TYPE)
             form_json = file_data.get("forms")[0].get("content")
             workflow_data = file_data.get("workflows")[0].get("content")
-            # Check the form name/path/title already exists
-            query_params = (
-                f"title={form_json.get('title')}&"
-                f"name={form_json.get('name')}&"
-                f"path={form_json.get('path')}&"
-                "select=title,path,name"
-            )
-            self.valide_form_exists(query_params)
+            self.valide_form_exists(form_json, tenant_key)
             if action == "validate":
                 # On Import new, version will be 1.0
                 return self.version_response(
@@ -279,12 +287,17 @@ class ImportService:
             if valid_file == ".json":
                 file_data = self.read_json_data(file)
                 # Validate input json file whether only form or form+workflow
-                try:
-                    validate(instance=file_data, schema=form_schema)
+                if self.validate_input_json(file_data, form_schema):
                     current_app.logger.info("Form only import inprogress...")
                     # TODO Only form import # pylint: disable=fixme
-                except ValidationError:
-                    self.validate_input_json(file_data, form_workflow_schema)
+                    return self.version_response(
+                        form_major=1,
+                        form_minor=0,
+                        workflow_major=None,
+                        workflow_minor=None,
+                    )
+                if self.validate_input_json(file_data, form_workflow_schema):
+                    current_app.logger.info("Form and workflow import inprogress...")
                     mapper = self.find_mapper(mapper_id, tenant_key)
                     if action == "validate":
                         major, minor = self.get_latest_version_workflow(
@@ -318,6 +331,8 @@ class ImportService:
                                 selected_workflow_version,
                             )
 
+                else:
+                    raise BusinessException(BusinessErrorCode.INVALID_FILE_TYPE)
             elif valid_file == ".bpmn":
                 current_app.logger.info("Workflow validated successfully.")
                 mapper = self.find_mapper(mapper_id, tenant_key)

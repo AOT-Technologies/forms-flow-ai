@@ -1,6 +1,6 @@
 import React from 'react';
 import { Form, InputGroup } from 'react-bootstrap';
-
+import { Translation } from "react-i18next";
 
 const FormInput = ({
   type = "text",
@@ -18,17 +18,16 @@ const FormInput = ({
   className ,
   required = false,
   icon = true,
-  onIconClick  //prop for icon click
+  id
 }) => {
 
   const inputClassNames = "Form-control-input " + className ;
- console.log(isInvalid);
   return (
     <div className="Form-input-box" >
       <Form.Group className={className} controlId={`form-${label}`}>
       {label && (
-        <Form.Label className='custom-form-control-label'>
-          {label} { required && <span className='required-icon'>*</span>}
+        <Form.Label  className='custom-form-control-label'>
+          <Translation>{(t) => t(label)}</Translation>  { required && <span className='required-icon'>*</span>}
         </Form.Label>
       )}
       <InputGroup  className="custom-form-input-group" >
@@ -44,16 +43,17 @@ const FormInput = ({
           data-testid={dataTestid}
           aria-label={ariaLabel}
           required={required}
-          className={inputClassNames} 
+          className={inputClassNames}
+          id={id}
         />
         {
           icon && (
-            <InputGroup.Text className="custom-icon" id="basic-addon1" onClick={onIconClick}>{icon}</InputGroup.Text>
+            <InputGroup.Text className="custom-icon" id="basic-addon1" >{icon}</InputGroup.Text>
           )
         }
         {isInvalid && (
           <Form.Control.Feedback className='custom-feedback' type="invalid">
-            {feedback}
+           <Translation > {(t) => t(feedback)}</Translation>
           </Form.Control.Feedback>
         )}
 

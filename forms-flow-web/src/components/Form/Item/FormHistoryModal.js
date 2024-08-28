@@ -110,8 +110,8 @@ const FormHistoryModal = ({ historyModal, handleModalChange, gotoEdit }) => {
                           formHistory.length > 1 && (
                             <span className="text-primary">{
                               history.changeLog?.new_version ? 
-                              t(history.changeLog?.version ? `Version ${history.changeLog.version} created` : "New version created") : 
-                              t(history.changeLog.version ? `Version ${history.changeLog.version}` : "")}
+                              t(history.version ? `Version ${history.version} created` : "New version created") : 
+                              t(history.version ? `Version ${history.version}` : "")}
                               </span>
                           )
                         }

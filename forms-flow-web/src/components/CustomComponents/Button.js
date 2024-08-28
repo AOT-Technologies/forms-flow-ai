@@ -3,8 +3,7 @@ import { useRef, useEffect, useState } from "react";
 import Button from "react-bootstrap/Button";
 import ButtonGroup from "react-bootstrap/ButtonGroup";
 import Dropdown from "react-bootstrap/Dropdown";
-import Loader from "./Assets/Loader.svg";
-import Chevron from "./Assets/Chevron.svg";
+import { ChevronIcon } from "@formsflow/components";
 
 const CustomButton = ({
   variant,
@@ -18,16 +17,17 @@ const CustomButton = ({
   className,
   dataTestid,
   ariaLabel,
+  buttonLoading,
 }) => {
   const buttonRef = useRef(null);
   const toggleRef = useRef(null);
   const [menuStyle, setMenuStyle] = useState({});
-    const [dropdownOpen, setDropdownOpen] = useState(false);
+  const [dropdownOpen, setDropdownOpen] = useState(false);
 
-  useEffect(() => {
+  const updateMenuStyle = () => {
     if (buttonRef.current && toggleRef.current) {
-      const buttonWidth = buttonRef.current.offsetWidth;
-      const toggleWidth = toggleRef.current.offsetWidth;
+      const buttonWidth = buttonRef.current.getBoundingClientRect().width;
+      const toggleWidth = toggleRef.current.getBoundingClientRect().width;
       const totalWidth = buttonWidth + toggleWidth - 1;
       setMenuStyle({
         minWidth: `${totalWidth}px`,
@@ -37,6 +37,12 @@ const CustomButton = ({
         padding: "0",
       });
     }
+  };
+
+  useEffect(() => {
+    updateMenuStyle();
+    window.addEventListener("resize", updateMenuStyle);
+    return () => window.removeEventListener("resize", updateMenuStyle);
   }, []);
 
   if (isDropdown) {
@@ -62,9 +68,9 @@ const CustomButton = ({
           split
           variant={variant}
           id="dropdown-split-basic"
-          className={`default-arrow ${dropdownOpen ? '' : 'collapsed'}`}
+          className={`default-arrow ${dropdownOpen ? "collapsed" : ""}`}
         >
-          <img src={Chevron} alt="Chevron icon" />
+          <ChevronIcon color="white" />
         </Dropdown.Toggle>
 
         <Dropdown.Menu style={menuStyle}>
@@ -88,15 +94,20 @@ const CustomButton = ({
       variant={variant}
       size={size}
       onClick={onClick}
-      disabled={disabled}
+      disabled={disabled || buttonLoading}
       className={className}
       data-testid={dataTestid}
       aria-label={ariaLabel}
     >
-      {variant === "secondary" && !isDropdown && icon && (
-       <img src={Loader} alt="Loader icon" className="me-2"/>
-      )}
-      {label}
+      <div
+        className={`d-inline-flex align-items-center ${
+          buttonLoading ? "button-content" : ""
+        }`}
+      >
+        {icon && <span className="me-2">{icon}</span>}
+        {label}
+      </div>
+      {buttonLoading && <span className="dotted-spinner"></span>}
     </Button>
   );
 };

@@ -24,7 +24,7 @@ const FormInput = ({
   const inputClassNames = "Form-control-input " + className ;
   return (
     <div className="Form-input-box" >
-      <Form.Group className={className} controlId={id}>
+      <Form.Group controlId={id}>
       {label && (
         <Form.Label  className='custom-form-control-label'>
           <Translation>{(t) => t(label)}</Translation> { required && <span className='required-icon'>*</span>}

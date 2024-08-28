@@ -674,7 +674,7 @@ class ExportById(Resource):
     """Resource to support export by mapper_id."""
 
     @staticmethod
-    @auth.require
+    @auth.has_one_of_roles([CREATE_DESIGNS])
     @profiletime
     @API.response(200, "OK:- Successful request.", model=export_response_model)
     @API.response(

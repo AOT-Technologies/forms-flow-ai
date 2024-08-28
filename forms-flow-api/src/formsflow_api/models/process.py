@@ -10,6 +10,7 @@ from formsflow_api_utils.utils import (
     validate_sort_order_and_order_by,
 )
 from formsflow_api_utils.utils.user_context import UserContext, user_context
+from sqlalchemy import LargeBinary
 from sqlalchemy.dialects.postgresql import ENUM
 from sqlalchemy.sql.expression import text
 
@@ -43,12 +44,14 @@ class Process(AuditDateTimeMixin, AuditUserMixin, BaseModel, db.Model):
     process_type = db.Column(
         ENUM(ProcessType, name="ProcessType"), nullable=False, index=True
     )
-    process_data = db.Column(db.String, nullable=False)
+    process_data = db.Column(LargeBinary, nullable=False)
     status = db.Column(ENUM(ProcessStatus, name="ProcessStatus"), nullable=False)
     form_process_mapper_id = db.Column(
         db.Integer, db.ForeignKey("form_process_mapper.id"), nullable=True
     )
     tenant = db.Column(db.String(100), nullable=True)
+    major_version = db.Column(db.Integer, nullable=False, index=True)
+    minor_version = db.Column(db.Integer, nullable=False, index=True)
 
     @classmethod
     @user_context
@@ -72,6 +75,8 @@ class Process(AuditDateTimeMixin, AuditUserMixin, BaseModel, db.Model):
                 "modified_by",
                 "form_process_mapper_id",
                 "modified",
+                "major_version",
+                "minor_version",
             ],
             process_info,
         )
@@ -120,3 +125,14 @@ class Process(AuditDateTimeMixin, AuditUserMixin, BaseModel, db.Model):
         limit = total_count if limit is None else limit
         query = query.paginate(page=page_no, per_page=limit, error_out=False)
         return query.items, total_count
+
+    @classmethod
+    def get_latest_version(cls, process_name):
+        """Get latest version of process."""
+        query = (
+            cls.query.filter(cls.name == process_name)
+            .order_by(cls.major_version.desc(), cls.minor_version.desc())
+            .first()
+        )
+
+        return query

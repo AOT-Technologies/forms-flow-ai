@@ -3,23 +3,7 @@ import { useRef, useEffect, useState } from "react";
 import Button from "react-bootstrap/Button";
 import ButtonGroup from "react-bootstrap/ButtonGroup";
 import Dropdown from "react-bootstrap/Dropdown";
-import {
-  ChevronIcon,
-  RefreshIcon,
-  PreviewIcon,
-  MessageIcon,
-  SwitchIcon,
-  AddIcon,
-  DuplicateIcon,
-  SaveTemplateIcon,
-  CloseIcon,
-  ExportIcon,
-  ImportIcon,
-  PencilIcon,
-  CurlyBracketsIcon,
-  AngleRightIcon,
-  UploadIcon,
-} from "@formsflow/components";
+import { ChevronIcon } from "@formsflow/components";
 
 const CustomButton = ({
   variant,
@@ -33,8 +17,7 @@ const CustomButton = ({
   className,
   dataTestid,
   ariaLabel,
-  iconColor,
-  buttonLoading
+  buttonLoading,
 }) => {
   const buttonRef = useRef(null);
   const toggleRef = useRef(null);
@@ -61,25 +44,6 @@ const CustomButton = ({
     window.addEventListener("resize", updateMenuStyle);
     return () => window.removeEventListener("resize", updateMenuStyle);
   }, []);
-
-  const iconMapping = {
-    RefreshIcon: RefreshIcon,
-    SwitchIcon: SwitchIcon,
-    PreviewIcon: PreviewIcon,
-    MessageIcon: MessageIcon,
-    AddIcon: AddIcon,
-    DuplicateIcon: DuplicateIcon,
-    SaveTemplateIcon: SaveTemplateIcon,
-    CloseIcon: CloseIcon,
-    ExportIcon: ExportIcon,
-    ImportIcon: ImportIcon,
-    PencilIcon: PencilIcon,
-    CurlyBracketsIcon: CurlyBracketsIcon,
-    AngleRightIcon: AngleRightIcon,
-    UploadIcon: UploadIcon,
-  };
-
-  const IconComponent = icon ? iconMapping[icon] : null;
 
   if (isDropdown) {
     return (
@@ -135,18 +99,15 @@ const CustomButton = ({
       data-testid={dataTestid}
       aria-label={ariaLabel}
     >
-       <div className={` ${buttonLoading ? "button-content" : ""}`}>
-        {IconComponent && (
-          <span className="me-2">
-            <IconComponent color={iconColor} />
-          </span>
-        )}
+      <div
+        className={`d-inline-flex align-items-center ${
+          buttonLoading ? "button-content" : ""
+        }`}
+      >
+        {icon && <span className="me-2">{icon}</span>}
         {label}
       </div>
-      {buttonLoading && (
-        <span className="dotted-spinner"></span>
-      )}
-       
+      {buttonLoading && <span className="dotted-spinner"></span>}
     </Button>
   );
 };

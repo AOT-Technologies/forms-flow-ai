@@ -696,3 +696,25 @@ class ExportById(Resource):
             form_service.export(mapper_id),
             HTTPStatus.OK,
         )
+
+
+@cors_preflight("GET,OPTIONS")
+@API.route("/validate", methods=["GET", "OPTIONS"])
+class ValidateFormName(Resource):
+    """Resource for validating a form name."""
+
+    @staticmethod
+    @auth.has_one_of_roles([CREATE_DESIGNS])
+    @profiletime
+    @API.response(200, "OK:- Successful request.")
+    @API.response(400, "BAD_REQUEST:- Invalid request.")
+    @API.response(401, "UNAUTHORIZED:- Authorization header not provided or an invalid token passed.")
+    @API.response(403, "FORBIDDEN:- Authorization will not help.")
+    def get():
+        """Handle GET requests for validating form names.
+
+        Retrieves the query parameters from the request, validates the form name,
+        and returns a response indicating whether the form name is valid or not.
+        """
+        response = FormProcessMapperService.validate_form_name_path_title(request)
+        return response, HTTPStatus.OK

@@ -21,9 +21,9 @@ const FormInput = ({
   id
 }) => {
 
-  const inputClassNames = "Form-control-input " + className ;
+  const inputClassNames = "form-control-input " + className ;
   return (
-    <div className="Form-input-box" >
+    <div className="form-input-box" >
       <Form.Group controlId={id}>
       {label && (
         <Form.Label  className='custom-form-control-label'>

@@ -528,7 +528,7 @@ def test_export(app, client, session, jwt, mock_redis_client):
     # assert len(response.json["authorizations"]) == 1
 
 
-def test_form_name_validate_valid(app, client, session, jwt):
+def test_form_name_validate_valid(app, client, session, jwt, mock_redis_client):
     """Testing form name validation with valid parameters."""
     token = get_token(jwt, role=CREATE_DESIGNS)
     headers = {"Authorization": f"Bearer {token}", "content-type": "application/json"}
@@ -553,7 +553,7 @@ def test_form_name_validate_valid(app, client, session, jwt):
         assert response.json["isValid"] is True
 
 
-def test_form_name_validate_missing_params(app, client, session, jwt):
+def test_form_name_validate_missing_params(app, client, session, jwt, mock_redis_client):
     """Testing form name validation with missing parameters."""
     token = get_token(jwt, role=CREATE_DESIGNS)
     headers = {"Authorization": f"Bearer {token}", "content-type": "application/json"}

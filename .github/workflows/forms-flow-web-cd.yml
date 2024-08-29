@@ -59,15 +59,18 @@ jobs:
 
   zap_scan:
     runs-on: ubuntu-latest
-    name: Scan the webapplication
+    name: Scan the web application
     steps:
       - name: Checkout
         uses: actions/checkout@v2
         with:
           ref: master
+      
       - name: Set up working directory
-        run: mkdir -p zap-reports
-     
+        run: |
+          mkdir -p zap-reports
+          ls -ld zap-reports
+
       - name: ZAP Scan
         uses: zaproxy/action-full-scan@v0.8.0
         with:
@@ -77,10 +80,16 @@ jobs:
           target: ${{ secrets.WEB_TARGET_URL }}
           rules_file_name: '.zap/rules.tsv'
           cmd_options: '-a -r zap-report.html'
+
+      - name: List Files
+        run: |
+          ls -la zap-reports
+
       - name: Install AWS CLI
         run: |
           sudo apt-get update
           sudo apt-get install -y awscli
+
       - name: Configure AWS credentials
         uses: aws-actions/configure-aws-credentials@v1
         with:

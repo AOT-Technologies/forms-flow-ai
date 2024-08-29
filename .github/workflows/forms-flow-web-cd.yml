@@ -79,26 +79,16 @@ jobs:
           target: ${{ secrets.BPM_TARGET_URL }}
           rules_file_name: '.zap/rules.tsv'
           cmd_options: '-a -r /tmp/zap-report.html'
-          # Disable issue creation
-          issue: false
-          
-      - name: List Files
-        run: |
-          ls -la zap-reports
 
       - name: Install AWS CLI
         run: |
           sudo apt-get update
           sudo apt-get install -y awscli
 
-      - name: Configure AWS credentials
-        uses: aws-actions/configure-aws-credentials@v1
-        with:
-          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
-          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-          aws-region: ${{ secrets.REGION }}
-
       - name: Upload ZAP Report to S3
-        working-directory: zap-reports
         run: |
-          aws s3 cp /tmp/zap-report.html s3://zap-report-formsflow/zap-reports/zap-report-$(date +%Y-%m-%d_%H-%M-%S).html
+          aws s3 cp /tmp/zap-report.html s3://your-bucket-name/zap-reports/zap-report-$(date +%Y%m%d%H%M%S).html
+        env:
+          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          AWS_DEFAULT_REGION: your-region

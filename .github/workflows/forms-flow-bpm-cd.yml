@@ -150,7 +150,6 @@ jobs:
           target: ${{ secrets.BPM_TARGET_URL }}
           rules_file_name: '.zap/rules.tsv'
           cmd_options: '-a -r /tmp/zap-report.html'
-
       - name: Upload ZAP Report
         uses: actions/upload-artifact@v2
         with:

@@ -47,7 +47,7 @@ const FormInput = ({
         />
         {
           icon && (
-            <InputGroup.Text id="basic-addon1" >{icon}</InputGroup.Text>
+            <InputGroup.Text id="basic-addon1" className={` ${disabled ? 'disabled-icon' : ''}`} >{icon}</InputGroup.Text>
           )
         }
         {isInvalid && (

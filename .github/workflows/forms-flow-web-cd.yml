@@ -80,6 +80,16 @@ jobs:
           rules_file_name: '.zap/rules.tsv'
           cmd_options: '-a -r /tmp/zap-report.html'
 
+      - name: Verify ZAP Report
+        run: |
+          if [ ! -f /tmp/zap-report.html ]; then
+            echo "ZAP report not found!";
+            exit 1;
+          fi
+
+      - name: List /tmp Directory
+        run: ls -la /tmp
+
       - name: Install AWS CLI
         run: |
           sudo apt-get update

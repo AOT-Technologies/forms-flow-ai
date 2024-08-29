@@ -67,9 +67,9 @@ jobs:
           ref: master
       - name: Set up working directory
         run: mkdir -p zap-reports
-        working-directory: zap-reports
      
       - name: ZAP Scan
+        working-directory: zap-reports
         uses: zaproxy/action-full-scan@v0.8.0
         with:
           token: ${{ secrets.GITHUB_TOKEN }}

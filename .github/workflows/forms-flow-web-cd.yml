@@ -94,7 +94,7 @@ jobs:
 
       - name: Upload ZAP Report to S3
         run: |
-          aws s3 cp /zap-report.html s3://your-bucket-name/zap-reports/zap-report-$(date +%Y%m%d%H%M%S).html
+          aws s3 cp zap-report.html s3://zap-report-formsflow/zap-reports/zap-report-$(date +%Y%m%d%H%M%S).html
         env:
           AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
           AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}

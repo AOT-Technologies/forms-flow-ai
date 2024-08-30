@@ -512,6 +512,7 @@ class FormProcessMapperService:
         title = request.args.get("title")
         name = request.args.get("name")
         path = request.args.get("path")
+        form_id = request.args.get("id")
 
         # Check if at least one query parameter is provided
         if not (title or name or path):
@@ -527,8 +528,12 @@ class FormProcessMapperService:
         validation_response = formio_service.get_form_search(query_params, form_io_token)
 
         # Check if the validation response has any results
-        if validation_response and len(validation_response) > 0:
-            # If there are results, the form name is considered invalid
-            return {"message": "Form name or path or title is invalid.", "isValid": False}
+        if validation_response:
+            # Check if the form ID matches
+            if form_id and len(validation_response) == 1 and validation_response[0].get('_id') == form_id:
+                return {"message": "Matching ID Present.", "isValid": True}
+            # If there are results but no matching ID, the form name is still considered invalid
+            return {"message": "Form name, path, or title is invalid.", "isValid": False}
+
         # If no results, the form name is valid
         return {"message": "Form name is valid.", "isValid": True}

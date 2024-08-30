@@ -16,12 +16,12 @@ class FormHistorySchema(Schema):
     created_by = fields.Str(data_key="createdBy")
     created = fields.Str(data_key="created")
     change_log = fields.Dict(data_key="changeLog")
-    major_version = fields.Str(data_key="majorVersion")
-    minor_version = fields.Str(data_key="minorVersion")
+    major_version = fields.Int(data_key="majorVersion")
+    minor_version = fields.Int(data_key="minorVersion")
     version = fields.Method("get_combined_version", dump_only=True)
 
     def get_combined_version(self, obj):
         """Combine major and minor versions."""
-        major_version = obj.major_version or "1"
-        minor_version = obj.minor_version or "0"
+        major_version = obj.major_version or 1
+        minor_version = obj.minor_version or 0
         return f"{major_version}.{minor_version}"

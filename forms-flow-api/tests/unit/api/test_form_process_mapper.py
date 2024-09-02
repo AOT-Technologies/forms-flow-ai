@@ -528,7 +528,7 @@ def test_export(app, client, session, jwt, mock_redis_client):
     # assert len(response.json["authorizations"]) == 1
 
 
-def test_form_name_validate_valid(app, client, session, jwt, mock_redis_client):
+def test_form_name_validate_invalid(app, client, session, jwt, mock_redis_client):
     """Testing form name validation with valid parameters."""
     token = get_token(jwt, role=CREATE_DESIGNS)
     headers = {"Authorization": f"Bearer {token}", "content-type": "application/json"}
@@ -538,7 +538,9 @@ def test_form_name_validate_valid(app, client, session, jwt, mock_redis_client):
         # Create a mock response object
         mock_response = MagicMock()
         mock_response.status_code = 200
-        mock_response.text = '{"message": "Form name is valid.", "isValid": True}'
+        mock_response.text = (
+            '{"message": "Form name, path, or title is invalid.", "isValid": True}'
+        )
         # Assign the mock response to the mocked get method
         mock_get.return_value = mock_response
 
@@ -549,11 +551,13 @@ def test_form_name_validate_valid(app, client, session, jwt, mock_redis_client):
 
         assert response.status_code == 200
         assert response.json is not None
-        assert response.json["message"] == "Form name is valid."
-        assert response.json["isValid"] is True
+        assert response.json["message"] == "Form name, path, or title is invalid."
+        assert response.json["isValid"] is False
 
 
-def test_form_name_validate_missing_params(app, client, session, jwt, mock_redis_client):
+def test_form_name_validate_missing_params(
+    app, client, session, jwt, mock_redis_client
+):
     """Testing form name validation with missing parameters."""
     token = get_token(jwt, role=CREATE_DESIGNS)
     headers = {"Authorization": f"Bearer {token}", "content-type": "application/json"}

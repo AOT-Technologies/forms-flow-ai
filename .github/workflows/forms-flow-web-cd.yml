@@ -87,6 +87,16 @@ jobs:
         run: |
           sudo apt-get update
           sudo apt-get install -y awscli
+
+      - name: Check if report was generated
+        run: |
+          if [ -f /tmp/zap-report.html ]; then
+            echo "Report generated successfully."
+          else
+            echo "Report not found!" >&2
+            exit 1
+          fi
+          
       - name: Configure AWS credentials
         uses: aws-actions/configure-aws-credentials@v1
         with:
@@ -95,6 +105,7 @@ jobs:
           aws-region: ${{ secrets.REGION }}
 
       - name: Upload ZAP Report to S3
+        if: success()
         working-directory: zap-reports
         run: |
           aws s3 cp /tmp/zap-report.html s3://zap-report-formsflow/zap-reports/zap-report-$(date +%Y-%m-%d_%H-%M-%S).html

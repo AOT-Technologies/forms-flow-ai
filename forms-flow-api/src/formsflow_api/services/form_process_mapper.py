@@ -28,9 +28,9 @@ class FormProcessMapperService:
     def get_all_forms(
         page_number: int,
         limit: int,
-        form_name: str,
-        sort_by: str,
-        sort_order: str,
+        search: list,
+        sort_by: list,
+        sort_order: list,
         form_type: str,
         is_active,
         is_designer: bool,
@@ -67,36 +67,12 @@ class FormProcessMapperService:
             mappers, get_all_mappers_count = list_form_mappers(
                 page_number=page_number,
                 limit=limit,
-                form_name=form_name,
+                search=search,
                 sort_by=sort_by,
                 sort_order=sort_order,
                 form_ids=authorized_form_ids,
                 **designer_filters if is_designer else {},
             )
-        mapper_schema = FormProcessMapperSchema()
-        return (
-            mapper_schema.dump(mappers, many=True),
-            get_all_mappers_count,
-        )
-
-    @staticmethod
-    def get_all_mappers(
-        page_number: int,
-        limit: int,
-        form_name: str,
-        sort_by: str,
-        sort_order: str,
-        process_key: list = None,
-    ):  # pylint: disable=too-many-arguments
-        """Get all form process mappers."""
-        mappers, get_all_mappers_count = FormProcessMapper.find_all_active(
-            page_number=page_number,
-            limit=limit,
-            form_name=form_name,
-            sort_by=sort_by,
-            sort_order=sort_order,
-            process_key=process_key,
-        )
         mapper_schema = FormProcessMapperSchema()
         return (
             mapper_schema.dump(mappers, many=True),
@@ -289,6 +265,7 @@ class FormProcessMapperService:
         form_id: str = None,
         description: str = None,
         tenant_key: str = None,
+        anonymous: bool = False,
     ) -> dict:
         """Get form details."""
         try:
@@ -314,7 +291,9 @@ class FormProcessMapperService:
                     tenant_prefix = f"{tenant_key}-"
                     form_path = form_json.get("path", "")
                     form_name = form_json.get("name", "")
-                    current_app.logger.info(f"Removing tenant key from path: {form_path} & name: {form_name}")
+                    current_app.logger.info(
+                        f"Removing tenant key from path: {form_path} & name: {form_name}"
+                    )
                     if form_path.startswith(tenant_prefix):
                         form_json["path"] = form_path[len(tenant_prefix) :]
 
@@ -323,6 +302,7 @@ class FormProcessMapperService:
             return {
                 "formTitle": title_or_path,
                 "formDescription": description,
+                "anonymous": anonymous,
                 "type": scope_type,
                 "content": form_json,
             }
@@ -489,7 +469,14 @@ class FormProcessMapperService:
 
             # Capture main form & workflow
             forms.append(
-                self._get_form(mapper.form_name, "main", mapper.form_id, mapper.description, tenant_key)
+                self._get_form(
+                    mapper.form_name,
+                    "main",
+                    mapper.form_id,
+                    mapper.description,
+                    tenant_key,
+                    mapper.is_anonymous,
+                )
             )
             workflow = self._get_workflow(
                 mapper.process_key, mapper.process_name, "main", user

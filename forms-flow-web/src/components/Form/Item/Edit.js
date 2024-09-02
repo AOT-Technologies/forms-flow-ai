@@ -43,6 +43,7 @@ import SaveAsNewVersionConfirmationModal from "./SaveAsNewVersionConfirmationMod
 import LoadingOverlay from "react-loading-overlay-ts";
 import RichText from "../RichText/index";
 import { Collapse } from 'react-bootstrap';
+import  userRoles  from "../../../constants/permissions";
 const reducer = (form, { type, value }) => {
   const formCopy = _cloneDeep(form);
   switch (type) {
@@ -77,7 +78,7 @@ const Edit = React.memo(() => {
   const formHistory = useSelector((state) => state.formRestore?.formHistory || []);
   const version = formHistory[0]?.changeLog?.version;
   const prviousData = useSelector((state) => state.process?.formPreviousData);
-
+  const { createDesigns } = userRoles();
   const applicationCount = useSelector(
     (state) => state.process?.applicationCount
   );
@@ -116,7 +117,7 @@ const Edit = React.memo(() => {
   };
 
   useEffect(() => {
-    if (processListData?.parentFormId && !formHistory.length) {
+    if (createDesigns && processListData?.parentFormId && !formHistory.length) {
       getFormHistory(processListData?.parentFormId).then((res) => {
         dispatch(setFormHistories(res.data));
       }).catch(() => {

@@ -252,9 +252,9 @@ class FormResourceList(Resource):
                 "description": "Specify sorting  order.",
                 "default": "desc",
             },
-            "formName": {
+            "search": {
                 "in": "query",
-                "description": "Retrieve form list based on form name.",
+                "description": "Retrieve form list based on form name or description.",
                 "default": "",
             },
         }
@@ -271,19 +271,22 @@ class FormResourceList(Resource):
     def get():  # pylint: disable=too-many-locals
         """Get form process mapper."""
         dict_data = FormProcessMapperListRequestSchema().load(request.args) or {}
-        form_name: str = dict_data.get("form_name")
+        search: str = dict_data.get("search", "")
         page_no: int = dict_data.get("page_no")
         limit: int = dict_data.get("limit")
-        sort_by: str = dict_data.get("sort_by", "id")
-        sort_order: str = dict_data.get("sort_order", "desc")
+        sort_by: str = dict_data.get("sort_by", "")
+        sort_order: str = dict_data.get("sort_order", "")
         form_type: str = dict_data.get("form_type", None)
         is_active = dict_data.get("is_active", None)
         active_forms = dict_data.get("active_forms", None)
 
+        sort_by = sort_by.split(",")
+        sort_order = sort_order.split(",")
         if form_type:
             form_type = form_type.split(",")
-        if form_name:
-            form_name: str = form_name.replace("%", r"\%").replace("_", r"\_")
+        if search:
+            search = search.replace("%", r"\%").replace("_", r"\_")
+            search = search.split(" ")
 
         (
             form_process_mapper_schema,
@@ -291,7 +294,7 @@ class FormResourceList(Resource):
         ) = FormProcessMapperService.get_all_forms(
             page_number=page_no,
             limit=limit,
-            form_name=form_name,
+            search=search if search else [],
             sort_by=sort_by,
             sort_order=sort_order,
             form_type=form_type,
@@ -671,7 +674,7 @@ class ExportById(Resource):
     """Resource to support export by mapper_id."""
 
     @staticmethod
-    @auth.require
+    @auth.has_one_of_roles([CREATE_DESIGNS])
     @profiletime
     @API.response(200, "OK:- Successful request.", model=export_response_model)
     @API.response(

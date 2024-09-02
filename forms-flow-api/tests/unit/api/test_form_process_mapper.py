@@ -4,6 +4,7 @@ import json
 from unittest.mock import MagicMock
 import pytest
 from formsflow_api.models import FormProcessMapper
+from formsflow_api.services import FormHistoryService
 from formsflow_api_utils.utils import (
     ADMIN,
     CREATE_DESIGNS,
@@ -68,9 +69,9 @@ def test_form_process_mapper_paginated_sorted_list(
 @pytest.mark.parametrize(
     ("pageNo", "limit", "filters"),
     (
-        (1, 5, "formName=free"),
-        (1, 10, "formName=Free"),
-        (1, 20, "formName=privacy"),
+        (1, 5, "search=free"),
+        (1, 10, "search=Free"),
+        (1, 20, "search=privacy"),
     ),
 )
 def test_form_process_mapper_paginated_filtered_list(
@@ -525,3 +526,45 @@ def test_export(app, client, session, jwt, mock_redis_client):
     # assert len(response.json["workflows"]) == 3
     # assert len(response.json["rules"]) == 0
     # assert len(response.json["authorizations"]) == 1
+
+
+def test_form_history(app, client, session, jwt, mock_redis_client):
+    """Testing form history."""
+    token = get_token(jwt, role=CREATE_DESIGNS, username="designer")
+    headers = {"Authorization": f"Bearer {token}", "content-type": "application/json"}
+    payload = get_formio_form_request_payload()
+    payload["componentChanged"] = True
+    payload["newVersion"] = True
+    response = client.post(
+        "/form/form-design", headers=headers, json=payload
+    )
+    assert response.status_code == 201
+    form_id = response.json["_id"]
+    # Assert form history with major version
+    response = client.get(f"/form/form-history/{form_id}", headers=headers)
+    assert response.status_code == 200
+    assert response.json is not None
+    assert len(response.json) == 1
+    assert response.json[0]["majorVersion"] == 1
+    assert response.json[0]["minorVersion"] == 0
+    assert response.json[0]["formId"] == form_id
+    assert response.json[0]["version"] == "1.0"
+
+    # Assert form history with minor version
+    update_payload = get_formio_form_request_payload()
+    update_payload["componentChanged"] = True
+    update_payload["parentFormId"] = form_id
+    update_payload["_id"] = form_id
+    FormHistoryService.create_form_log_with_clone(data=update_payload)
+    response = client.get(f"/form/form-history/{form_id}", headers=headers)
+    assert response.status_code == 200
+    assert response.json is not None
+    assert len(response.json) == 2
+    assert response.json[0]["majorVersion"] == 1
+    assert response.json[0]["minorVersion"] == 1
+    assert response.json[0]["formId"] == form_id
+    assert response.json[0]["version"] == "1.1"
+    assert response.json[1]["majorVersion"] == 1
+    assert response.json[1]["minorVersion"] == 0
+    assert response.json[1]["formId"] == form_id
+    assert response.json[1]["version"] == "1.0"

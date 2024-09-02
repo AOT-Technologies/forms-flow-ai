@@ -83,7 +83,7 @@ public class KeycloakAuthenticationProvider extends ContainerBasedAuthentication
 		List<String> keys = new ArrayList<>();
 		if (token.getClaims().containsKey(nodeName)) {
 			Object claimValue = token.getClaim(nodeName);
-			if (claimValue instanceof JSONArray jsonArray) {
+			if (claimValue instanceof ArrayList jsonArray) {
 				for (Object array : jsonArray) {
 					String keyString = array.toString();
 					keys.add(StringUtils.contains(keyString, "/") ? StringUtils.substringAfter(keyString, "/") : keyString);

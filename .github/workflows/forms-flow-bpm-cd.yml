@@ -136,13 +136,13 @@ jobs:
 
   zap_scan:
     runs-on: ubuntu-latest
-    name: Scan the webapplication
+    name: Scan the application
     steps:
       - name: Checkout
         uses: actions/checkout@v2
         with:
           ref: master
-          
+      
       - name: ZAP Scan
         uses: zaproxy/action-full-scan@v0.8.0
         with:

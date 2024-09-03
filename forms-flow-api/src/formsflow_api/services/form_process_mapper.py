@@ -534,7 +534,7 @@ class FormProcessMapperService:
         if validation_response:
             # Check if the form ID matches
             if form_id and len(validation_response) == 1 and validation_response[0].get('_id') == form_id:
-                return {"message": "Matching ID Present.", "isValid": True}
+                return {"message": "Form name is valid.", "isValid": True}
             # If there are results but no matching ID, the form name is still considered invalid
             return {"message": "Form name, path, or title is invalid.", "isValid": False}
 

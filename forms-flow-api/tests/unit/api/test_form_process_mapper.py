@@ -14,7 +14,6 @@ from formsflow_api_utils.utils import (
     VIEW_SUBMISSIONS,
 )
 
-from formsflow_api.models import FormProcessMapper
 from tests.utilities.base_test import (
     get_application_create_payload,
     get_form_request_anonymous_payload,
@@ -599,6 +598,8 @@ def test_form_name_validate_unauthorized(app, client):
         response = client.get("/form/validate?title=TestForm")
 
         assert response.status_code == 401
+
+
 def test_form_history(app, client, session, jwt, mock_redis_client):
     """Testing form history."""
     token = get_token(jwt, role=CREATE_DESIGNS, username="designer")

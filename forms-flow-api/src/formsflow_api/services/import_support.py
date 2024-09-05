@@ -157,16 +157,23 @@ class ImportService:  # pylint: disable=too-many-public-methods
     def validate_form_title(self, form_json, mapper):
         """Validate form tile in the form_process_mapper table."""
         # Exclude the current mapper from the query
-        mappers = FormProcessMapper.find_forms_by_title(
-            form_json.get("title"), exclude_id=mapper.id
-        )
-        if mappers:
+        current_app.logger.info(f"Validation for form title...{form_json.get('title')}")
+        mappers = FormProcessMapper.find_forms_by_title(form_json.get("title"))
+        current_app.logger.debug(f"mappers matching the title- {mappers}")
+        # If no mappers are found for the import form title, it's an invalid case
+        if not mappers:
+            raise BusinessException(BusinessErrorCode.FORM_EXISTS)
+        # Filter out the current mapper (mapper.id) from the results
+        other_mappers = [m for m in mappers if m.id != mapper.id]
+        # If there are other mappers (besides the current one), raise an error
+        if other_mappers:
+            current_app.logger.debug(f"Other mappers matching the title- {other_mappers}")
             raise BusinessException(BusinessErrorCode.FORM_EXISTS)
         return True
 
     def validate_edit_form_exists(self, form_json, mapper, tenant_key):
         """Validate form exists on edit import."""
-        current_app.logger.info(f"Validating form exists...{mapper.form_name}")
+        current_app.logger.info("Validating form exists in import edit...")
         # Validate title in mapper table.
         self.validate_form_title(form_json, mapper)
         # Validate path exists in formio.

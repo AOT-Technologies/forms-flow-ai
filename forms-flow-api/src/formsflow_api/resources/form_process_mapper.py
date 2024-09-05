@@ -286,7 +286,7 @@ class FormResourceList(Resource):
             form_type = form_type.split(",")
         if search:
             search = search.replace("%", r"\%").replace("_", r"\_")
-            search = search.split(" ")
+            search = [key for key in search.split(" ") if key.strip()]
 
         (
             form_process_mapper_schema,

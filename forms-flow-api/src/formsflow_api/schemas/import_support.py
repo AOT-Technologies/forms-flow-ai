@@ -114,5 +114,5 @@ class ImportEditRequestSchema(Schema):
         unknown = EXCLUDE
 
     mapper_id = fields.Str(data_key="mapperId", required=True)
-    forms = fields.Dict(data_key="forms")
-    workflows = fields.Dict(data_key="workflows")
+    form = fields.Dict(data_key="form")
+    workflow = fields.Dict(data_key="workflow")

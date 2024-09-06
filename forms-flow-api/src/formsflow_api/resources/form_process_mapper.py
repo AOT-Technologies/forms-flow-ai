@@ -708,7 +708,10 @@ class ValidateFormName(Resource):
     @profiletime
     @API.response(200, "OK:- Successful request.")
     @API.response(400, "BAD_REQUEST:- Invalid request.")
-    @API.response(401, "UNAUTHORIZED:- Authorization header not provided or an invalid token passed.")
+    @API.response(
+        401,
+        "UNAUTHORIZED:- Authorization header not provided or an invalid token passed.",
+    )
     @API.response(403, "FORBIDDEN:- Authorization will not help.")
     def get():
         """Handle GET requests for validating form names.

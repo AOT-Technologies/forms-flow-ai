@@ -158,16 +158,11 @@ class ImportService:  # pylint: disable=too-many-public-methods
         """Validate form tile in the form_process_mapper table."""
         # Exclude the current mapper from the query
         current_app.logger.info(f"Validation for form title...{form_json.get('title')}")
-        mappers = FormProcessMapper.find_forms_by_title(form_json.get("title"))
-        current_app.logger.debug(f"mappers matching the title- {mappers}")
-        # If no mappers are found for the import form title, it's an invalid case
-        if not mappers:
-            raise BusinessException(BusinessErrorCode.FORM_EXISTS)
-        # Filter out the current mapper (mapper.id) from the results
-        other_mappers = [m for m in mappers if m.id != mapper.id]
-        # If there are other mappers (besides the current one), raise an error
-        if other_mappers:
-            current_app.logger.debug(f"Other mappers matching the title- {other_mappers}")
+        mappers = FormProcessMapper.find_forms_by_title(
+            form_json.get("title"), exclude_id=mapper.id
+        )
+        if mappers:
+            current_app.logger.debug(f"Other mappers matching the title- {mappers}")
             raise BusinessException(BusinessErrorCode.FORM_EXISTS)
         return True
 
@@ -329,6 +324,7 @@ class ImportService:  # pylint: disable=too-many-public-methods
             name = current_form.get("name")
             title = current_form.get("title")
             new_path = form_json.get("path")
+            new_title = form_json.get("title")
             # Update name & path of current form
             form_json["path"] = f"{path}-v-{uuid1().hex}"
             form_json["name"] = f"{name}-v-{uuid1().hex}"
@@ -337,9 +333,9 @@ class ImportService:  # pylint: disable=too-many-public-methods
             # Create new form with current form name
             form_json["parentFormId"] = mapper.parent_form_id
             form_json["name"] = name
-            form_json["title"] = title
-            # Update path of current form with pathname from imported form in case of edit import
-            # But incase of form only no validation done, so use current form path itself.
+            # Update path of current form with pathname & title from imported form in case of edit import
+            # But incase of form only no validation done, so use current form path & title itself.
+            form_json["title"] = title if form_only else new_title
             form_json["path"] = path if form_only else new_path
             form_response = self.form_create(form_json)
             form_id = form_response.get("_id")
@@ -444,12 +440,15 @@ class ImportService:  # pylint: disable=too-many-public-methods
                 if self.validate_input_json(file_data, form_schema):
                     current_app.logger.info("Form only import inprogress...")
                     form_json = file_data.get("forms")[0]
+                    form_major, form_minor = self.get_latest_version_form(
+                        mapper.parent_form_id
+                    )
                     # No need to validate form exists
                     # Incoming form data need to be updated as either major or minor version
                     if action == "validate":
                         return self.version_response(
-                            form_major=1,
-                            form_minor=0,
+                            form_major=form_major + 1,
+                            form_minor=form_minor + 1,
                             workflow_major=None,
                             workflow_minor=None,
                         )

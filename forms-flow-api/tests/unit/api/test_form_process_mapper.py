@@ -538,9 +538,9 @@ def test_form_name_validate_invalid(app, client, session, jwt, mock_redis_client
     with patch("requests.get") as mock_get:
         # Create a mock response object
         mock_response = MagicMock()
-        mock_response.status_code = 200
+        mock_response.status_code = 400
         mock_response.text = (
-            '{"message": "Form name, path, or title is invalid.", "isValid": True}'
+            '{"message": "Form name, path, or title is invalid."}'
         )
         # Assign the mock response to the mocked get method
         mock_get.return_value = mock_response
@@ -550,10 +550,9 @@ def test_form_name_validate_invalid(app, client, session, jwt, mock_redis_client
             "/form/validate?title=TestForm&name=TestForm&path=TestForm", headers=headers
         )
 
-        assert response.status_code == 200
+        assert response.status_code == 400
         assert response.json is not None
-        assert response.json["message"] == "Form name, path, or title is invalid."
-        assert response.json["isValid"] is False
+        assert response.json["message"] == "Form validation failed: The Name or Path already exists. They must be unique."
 
 
 def test_form_name_validate_missing_params(
@@ -567,7 +566,7 @@ def test_form_name_validate_missing_params(
     with patch("requests.get") as mock_get:
         # Create a mock response object
         mock_response = MagicMock()
-        mock_response.status_code = 200
+        mock_response.status_code = 400
         mock_response.text = '{"message": "At least one query parameter (title, name, path) must be provided."}'
         # Assign the mock response to the mocked get method
         mock_get.return_value = mock_response
@@ -575,7 +574,7 @@ def test_form_name_validate_missing_params(
         # Test with missing query parameters
         response = client.get("/form/validate", headers=headers)
 
-        assert response.status_code == 200
+        assert response.status_code == 400
         assert response.json is not None
         assert (
             response.json["message"]

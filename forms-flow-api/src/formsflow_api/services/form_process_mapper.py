@@ -519,7 +519,7 @@ class FormProcessMapperService:
 
         # Check if at least one query parameter is provided
         if not (title or name or path):
-            return {"message": "At least one query parameter (title, name, path) must be provided."}
+            raise BusinessException(BusinessErrorCode.INVALID_FORM_VALIDATION_INPUT)
 
         # Combine them into query parameters dictionary
         query_params = f"title={title}&name={name}&path={path}&select=title,path,name"
@@ -534,9 +534,8 @@ class FormProcessMapperService:
         if validation_response:
             # Check if the form ID matches
             if form_id and len(validation_response) == 1 and validation_response[0].get('_id') == form_id:
-                return {"message": "Form name is valid.", "isValid": True}
+                return {}
             # If there are results but no matching ID, the form name is still considered invalid
-            return {"message": "Form name, path, or title is invalid.", "isValid": False}
-
+            raise BusinessException(BusinessErrorCode.FORM_EXISTS)
         # If no results, the form name is valid
-        return {"message": "Form name is valid.", "isValid": True}
+        return {}

@@ -287,7 +287,7 @@ class ImportService:  # pylint: disable=too-many-public-methods
             "process_key": form_response.get("name"),
             "process_name": form_response.get("name"),
             "status": "inactive",
-            "description": file_data.get("forms")[0].get("description") or "",
+            "description": file_data.get("forms")[0].get("formDescription") or "",
         }
         mapper = FormProcessMapperService.create_mapper(mapper_data)
         form_logs_data = {
@@ -310,26 +310,35 @@ class ImportService:  # pylint: disable=too-many-public-methods
             workflow_data, form_response.get("name"), mapper_id=mapper.id, is_new=True
         )
 
-    def import_form(self, selected_form_version, form_json, mapper, form_only=False):
+    def import_form(
+        self, selected_form_version, form_json, mapper, form_only=False, **kwargs
+    ):  # pylint: disable=too-many-locals
         """Import form as major or minor version."""
         current_app.logger.info("Form import inprogress...")
+        # Get current form by mapper form_id
+        current_form = self.get_form_by_formid(mapper.form_id)
+        new_path = form_json.get("path")
+        new_title = form_json.get("title")
+        anonymous = kwargs.get("anonymous", None)
+        description = kwargs.get("description", None)
+        title_changed = bool(not form_only and mapper.form_name != new_title)
+        anonymous_changed = bool(
+            anonymous is not None and mapper.is_anonymous != anonymous
+        )
         if selected_form_version == "major":
             # Update current form with random value to path, name & title
             # Create new form with current form name, title & path from incoming form
             # Create mapper entry for new form version, mark previous version inactive & delete
             # Capture form history
             current_app.logger.info("Form import major version inprogress...")
-            current_form = self.get_form_by_formid(mapper.form_id)
             path = current_form.get("path")
             name = current_form.get("name")
             title = current_form.get("title")
-            new_path = form_json.get("path")
-            new_title = form_json.get("title")
             # Update name & path of current form
-            form_json["path"] = f"{path}-v-{uuid1().hex}"
-            form_json["name"] = f"{name}-v-{uuid1().hex}"
-            form_json["title"] = f"{title}-v-{uuid1().hex}"
-            FormProcessMapperService.form_design_update(form_json, mapper.form_id)
+            current_form["path"] = f"{path}-v-{uuid1().hex}"
+            current_form["name"] = f"{name}-v-{uuid1().hex}"
+            current_form["title"] = f"{title}-v-{uuid1().hex}"
+            FormProcessMapperService.form_design_update(current_form, mapper.form_id)
             # Create new form with current form name
             form_json["parentFormId"] = mapper.parent_form_id
             form_json["name"] = name
@@ -350,25 +359,28 @@ class ImportService:  # pylint: disable=too-many-public-methods
             mapper_data = {
                 "formId": form_id,
                 "previousFormId": mapper.form_id,
-                "formName": mapper.form_name,
+                "formName": form_response.get("title"),
                 "formType": mapper.form_type,
                 "parentFormId": mapper.parent_form_id,
-                "anonymous": mapper.is_anonymous,
+                "anonymous": mapper.is_anonymous if form_only else anonymous,
                 "taskVariable": json.loads(mapper.task_variable),
                 "processKey": form_response.get("name"),
                 "processName": form_response.get("name"),
                 "version": str(mapper.version + 1),
-                "status": "active",
+                "status": mapper.status,
                 "id": str(mapper.id),
                 "formTypeChanged": False,
-                "titleChanged": False,
-                "anonymousChanged": False,
-                "description": mapper.description or "",
+                "titleChanged": title_changed,
+                "anonymousChanged": anonymous_changed,
+                "description": mapper.description if form_only else description,
             }
             FormProcessMapperService.mapper_create(mapper_data)
             FormProcessMapperService.mark_inactive_and_delete(mapper.id)
         else:
             current_app.logger.info("Form import minor version inprogress...")
+            FormProcessMapperService.check_tenant_authorization_by_formid(
+                form_id=mapper.form_id
+            )
             # Minor version update form components in formio & create form history.
             form_components = {}
             form_components["components"] = form_json.get("components")
@@ -376,6 +388,41 @@ class ImportService:  # pylint: disable=too-many-public-methods
             form_response["componentChanged"] = True
             form_response["parentFormId"] = mapper.parent_form_id
             FormHistoryService.create_form_log_with_clone(data=form_response)
+            if not form_only:
+                # Update description, anonymous & status in mapper if form+workflow import
+                current_app.logger.info("Updating mapper & form logs...")
+                mapper.description = description
+                mapper.is_anonymous = anonymous
+                mapper.save()
+                form_logs_data = {
+                    "titleChanged": title_changed,
+                    "formName": new_title,
+                    "anonymousChanged": anonymous_changed,
+                    "anonymous": anonymous,
+                    "formId": mapper.form_id,
+                    "parentFormId": mapper.parent_form_id,
+                }
+                FormHistoryService.create_form_logs_without_clone(data=form_logs_data)
+
+    def import_edit_form(self, file_data, selected_form_version, form_json, mapper):
+        """Import edit form."""
+        current_app.logger.info("Form import with form+workflow json inprogress...")
+        anonymous = file_data.get("forms")[0].get("anonymous")
+        description = file_data.get("forms")[0].get("formDescription", "")
+        self.import_form(
+            selected_form_version,
+            form_json,
+            mapper,
+            anonymous=anonymous,
+            description=description,
+        )
+        # Update authorizations with incoming form authorizations
+        # resourceId(formId) differ in incoming import form+workflow json
+        # Use parent_form_id from mapper & auth details from incoming data
+        for auth in file_data["authorizations"][0]:
+            file_data["authorizations"][0][auth]["resourceId"] = mapper.parent_form_id
+        # Update authorizations for the form
+        self.create_authorization(file_data["authorizations"][0])
 
     def find_mapper(self, mapper_id, tenant_key=None):
         """Find mapper."""
@@ -492,7 +539,10 @@ class ImportService:  # pylint: disable=too-many-public-methods
                         # major/minor based on workflow published/draft
 
                         if not skip_form:
-                            self.import_form(selected_form_version, form_json, mapper)
+                            # Import form
+                            self.import_edit_form(
+                                file_data, selected_form_version, form_json, mapper
+                            )
                         if not skip_workflow:
                             # import workflow
                             current_app.logger.info("Workflow import inprogress...")

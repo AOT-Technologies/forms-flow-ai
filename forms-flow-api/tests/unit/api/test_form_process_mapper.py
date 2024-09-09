@@ -1,7 +1,8 @@
 """Test suite for FormProcessMapper API endpoint."""
 
 import json
-from unittest.mock import MagicMock
+from unittest.mock import MagicMock, patch
+
 import pytest
 from formsflow_api.models import FormProcessMapper
 from formsflow_api.services import FormHistoryService
@@ -526,6 +527,76 @@ def test_export(app, client, session, jwt, mock_redis_client):
     # assert len(response.json["workflows"]) == 3
     # assert len(response.json["rules"]) == 0
     # assert len(response.json["authorizations"]) == 1
+
+
+def test_form_name_validate_invalid(app, client, session, jwt, mock_redis_client):
+    """Testing form name validation with valid parameters."""
+    token = get_token(jwt, role=CREATE_DESIGNS)
+    headers = {"Authorization": f"Bearer {token}", "content-type": "application/json"}
+
+    # Mock the requests.get method
+    with patch("requests.get") as mock_get:
+        # Create a mock response object
+        mock_response = MagicMock()
+        mock_response.status_code = 400
+        mock_response.text = (
+            '{"message": "Form name, path, or title is invalid."}'
+        )
+        # Assign the mock response to the mocked get method
+        mock_get.return_value = mock_response
+
+        # Test with valid parameters
+        response = client.get(
+            "/form/validate?title=TestForm&name=TestForm&path=TestForm", headers=headers
+        )
+
+        assert response.status_code == 400
+        assert response.json is not None
+        assert response.json["message"] == "Form validation failed: The Name or Path already exists. They must be unique."
+
+
+def test_form_name_validate_missing_params(
+    app, client, session, jwt, mock_redis_client
+):
+    """Testing form name validation with missing parameters."""
+    token = get_token(jwt, role=CREATE_DESIGNS)
+    headers = {"Authorization": f"Bearer {token}", "content-type": "application/json"}
+
+    # Mock the requests.get method
+    with patch("requests.get") as mock_get:
+        # Create a mock response object
+        mock_response = MagicMock()
+        mock_response.status_code = 400
+        mock_response.text = '{"message": "At least one query parameter (title, name, path) must be provided."}'
+        # Assign the mock response to the mocked get method
+        mock_get.return_value = mock_response
+
+        # Test with missing query parameters
+        response = client.get("/form/validate", headers=headers)
+
+        assert response.status_code == 400
+        assert response.json is not None
+        assert (
+            response.json["message"]
+            == "At least one query parameter (title, name, path) must be provided."
+        )
+
+
+def test_form_name_validate_unauthorized(app, client):
+    """Testing form name validation without proper authorization."""
+    # Mock the requests.get method
+    with patch("requests.get") as mock_get:
+        # Create a mock response object
+        mock_response = MagicMock()
+        mock_response.status_code = 401
+        mock_response.text = '{"message": "Unauthorized"}'
+        # Assign the mock response to the mocked get method
+        mock_get.return_value = mock_response
+
+        # Test without proper authorization
+        response = client.get("/form/validate?title=TestForm")
+
+        assert response.status_code == 401
 
 
 def test_form_history(app, client, session, jwt, mock_redis_client):

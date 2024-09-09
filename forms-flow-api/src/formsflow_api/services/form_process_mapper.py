@@ -507,3 +507,41 @@ class FormProcessMapperService:
             }
 
         raise BusinessException(BusinessErrorCode.INVALID_FORM_PROCESS_MAPPER_ID)
+
+    @staticmethod
+    def validate_form_name_path_title(request):
+        """Validate a form name by calling the external validation API."""
+        # Retrieve the parameters from the query string
+        title = request.args.get("title")
+        name = request.args.get("name")
+        path = request.args.get("path")
+        form_id = request.args.get("id")
+
+        # Check if at least one query parameter is provided
+        if not (title or name or path):
+            raise BusinessException(BusinessErrorCode.INVALID_FORM_VALIDATION_INPUT)
+
+        # Combine them into query parameters dictionary
+        query_params = f"title={title}&name={name}&path={path}&select=title,path,name"
+
+        # Initialize the FormioService and get the access token
+        formio_service = FormioService()
+        form_io_token = formio_service.get_formio_access_token()
+        # Call the external validation API
+        validation_response = formio_service.get_form_search(
+            query_params, form_io_token
+        )
+
+        # Check if the validation response has any results
+        if validation_response:
+            # Check if the form ID matches
+            if (
+                form_id
+                and len(validation_response) == 1
+                and validation_response[0].get("_id") == form_id
+            ):
+                return {}
+            # If there are results but no matching ID, the form name is still considered invalid
+            raise BusinessException(BusinessErrorCode.FORM_EXISTS)
+        # If no results, the form name is valid
+        return {}

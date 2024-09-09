@@ -40,7 +40,6 @@ services:
     tty: true # -t
     networks:
       - forms-flow-webapi-network
-      - redis
 
   redis:
     image: "redis:alpine"

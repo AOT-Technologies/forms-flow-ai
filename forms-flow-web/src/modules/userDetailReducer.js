@@ -3,7 +3,6 @@ import {
   setShowApplications,
   setUserRolesToObject,
 } from "../helper/user";
-import { LANGUAGE } from "../constants/constants";
 import { setFormAndSubmissionAccess } from "../helper/access";
 
 const getLanguages = localStorage.getItem("languages");
@@ -28,8 +27,9 @@ const initialState = {
   isAuthenticated: false,
   currentPage: "",
   showApplications: false,
-  lang: localStorage.getItem("lang") ? localStorage.getItem("lang") : LANGUAGE,
+  lang: localStorage.getItem("lang") ? localStorage.getItem("lang") : null,
   selectLanguages: getLanguages ? JSON.parse(getLanguages) : [],
+  defaultFilter: "",
 };
 
 const user = (state = initialState, action) => {
@@ -41,6 +41,8 @@ const user = (state = initialState, action) => {
       return { ...state, bearerToken: action.payload };
     case ACTION_CONSTANTS.SET_USER_ROLES:
       return { ...state, roles: action.payload };
+    case ACTION_CONSTANTS.DEFAULT_FILTER:
+      return { ...state, defaultFilter: action.payload };
     case ACTION_CONSTANTS.SET_USER_DETAILS:
       return {
         ...state,

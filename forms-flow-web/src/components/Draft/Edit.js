@@ -15,7 +15,8 @@ import LoadingOverlay from "react-loading-overlay-ts";
 import { toast } from "react-toastify";
 import isEqual from "lodash/isEqual";
 
-import { formio_resourceBundles } from "../../resourceBundles/formio_resourceBundles";
+import {RESOURCE_BUNDLES_DATA} from "../../resourceBundles/i18n";
+
 import useInterval from "../../customHooks/useInterval";
 import { CUSTOM_EVENT_TYPE } from "../ServiceFlow/constants/customEventTypes";
 import selectApplicationCreateAPI from "../Form/Item/apiSelectHelper";
@@ -313,7 +314,7 @@ const View = React.memo((props) => {
                 options={{
                   ...options,
                   language: lang,
-                  i18n: formio_resourceBundles,
+                  i18n: RESOURCE_BUNDLES_DATA,
                 }}
                 hideComponents={hideComponents}
                 onChange={(formData) => {

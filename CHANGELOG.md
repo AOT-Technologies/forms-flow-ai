@@ -2,6 +2,49 @@
 
 Mark  items as `Added`, `Changed`, `Fixed`, `Modified`, `Removed`, `Untested Features`, `Upcoming Features`, `Known Issues`
 
+## 6.1.0
+
+`Added`
+ 
+ **forms-flow-bpm**
+* Added support to fetch secrets from Vault.
+* Added environment variables 
+ `VAULT_ENABLED`, `VAULT_URL`, `VAULT_TOKEN`, `VAULT_PATH`, `VAULT_SECRET` to support Vault.
+
+## 6.0.2 - 2024-06-05
+
+`Added`
+
+**forms-flow-web-root-config**
+* Added env variable `LANGUAGE` for default language setting
+
+`Fixed`
+
+**forms-flow-web-root-config**
+* Fixed service worker cache issue
+
+**forms-flow-bpm**
+* Fixed white label error on login to bpm
+
+
+`Modified`
+
+**forms-flow-web**
+* The tenant user's default language is set from their data, tenant data, or the default application language.
+  
+
+## 6.0.1 - 2024-05-21
+
+`Added`
+
+**forms-flow-web-root-config**
+* Added resouce bundle for Spanish 
+  
+`Fixed`
+
+**forms-flow-web-root-config**
+* Fixed service worker cache issue
+  
 ## 6.0.0 - 2024-04-05
 
 `Added`

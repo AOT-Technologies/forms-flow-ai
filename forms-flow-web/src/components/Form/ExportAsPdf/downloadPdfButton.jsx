@@ -61,7 +61,9 @@ const DownloadPDFButton = React.memo(({ form_id, submission_id, title }) => {
       <ExportButton
         label={<Translation>{(t) => t("Export PDF")}</Translation>}
         labelLoading={<Translation>{(t) => t("Exporting..")}</Translation>}
+        icon={<i className="fa fa-print me-2" aria-hidden="true" />}
         buttonState={buttonState}
+        data-testid="export-pdf-button"
         onClick={download}
       />
       <Alert variant="danger" show={showAlert}>

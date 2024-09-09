@@ -5,13 +5,9 @@ import { useSelector } from "react-redux";
 import List from "./List";
 import Stepper from "./Stepper";
 import Item from "./Item/index";
-import {
-  STAFF_DESIGNER,
-  STAFF_REVIEWER,
-  CLIENT,
-  BASE_ROUTE,
-} from "../../constants/constants";
+import { BASE_ROUTE } from "../../constants/constants";
 import Loading from "../../containers/Loading";
+import AccessDenied from "../AccessDenied";
 
 let user = "";
 
@@ -19,10 +15,10 @@ const CreateFormRoute = ({ component: Component, ...rest }) => (
   <Route
     {...rest}
     render={(props) => {
-      if (user.includes(STAFF_DESIGNER)) {
+      if (user.includes('create_designs') || user.includes('view_designs')) {
         return <Component {...props} />;
       } else {
-        return <>Unauthorized</>;
+        return <AccessDenied userRoles={user} />;
       }
     }}
   />
@@ -30,12 +26,8 @@ const CreateFormRoute = ({ component: Component, ...rest }) => (
 const FormSubmissionRoute = ({ component: Component, ...rest }) => (
   <Route
     {...rest}
-    render={(props) =>
-      user.includes(STAFF_REVIEWER) || user.includes(CLIENT) ? (
-        <Component {...props} />
-      ) : (
-        <>Unauthorized</>
-      )
+    render={(props) => 
+        (<Component {...props} /> )
     }
   />
 );
@@ -46,6 +38,7 @@ export default React.memo(() => {
   if (!isAuthenticated) {
     return <Loading />;
   }
+
   return (
     <div data-testid="Form-index">
       <Switch>

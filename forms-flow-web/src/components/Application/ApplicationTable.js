@@ -1,11 +1,9 @@
 import React, { useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { getUserRolePermission } from "../../helper/user";
 import {
-  CLIENT,
   MULTITENANCY_ENABLED,
-  STAFF_REVIEWER,
 } from "../../constants/constants";
+
 import { CLIENT_EDIT_STATUS } from "../../constants/applicationConstants";
 import { HelperServices } from "@formsflow/service";
 import { Translation } from "react-i18next";
@@ -13,6 +11,7 @@ import ApplicationFilter from "./ApplicationFilter";
 import { Dropdown } from "react-bootstrap";
 import Pagination from "react-js-pagination";
 import { useTranslation } from "react-i18next";
+import  userRoles  from "../../constants/permissions";
 
 import {
   setApplicationListActivePage,
@@ -37,7 +36,7 @@ const ApplicationTable = () => {
 
   const tenantKey = useSelector((state) => state.tenants?.tenantId);
   const redirectUrl = MULTITENANCY_ENABLED ? `/tenant/${tenantKey}/` : "/";
-  const userRoles = useSelector((state) => state.user.roles);
+  const { createSubmissions } = userRoles();
   const pageNo = useSelector((state) => state.applications?.activePage);
   const limit = useSelector((state) => state.applications?.countPerPage);
   const sortOrder = useSelector((state) => state.applications?.sortOrder);
@@ -50,10 +49,7 @@ const ApplicationTable = () => {
     (state) => state.applications?.applicationCount
   );
   const isClientEdit = (applicationStatus) => {
-    if (
-      getUserRolePermission(userRoles, CLIENT) ||
-      getUserRolePermission(userRoles, STAFF_REVIEWER)
-    ) {
+    if (createSubmissions) {
       return CLIENT_EDIT_STATUS.includes(applicationStatus);
     } else {
       return false;

@@ -110,7 +110,7 @@ function DmnTable() {
                 <th scope="col">{t("Type")}</th>
                 <th colSpan="2">
                 <InputGroup className="input-group">
-              <FormControl
+               <FormControl
                 className="bg-white"
                 value={search}
                 onChange={(e) => {
@@ -122,7 +122,8 @@ function DmnTable() {
                 placeholder={t("Search by DMN name")}
                 title={t("Search by DMN name")}
                 data-testid="processes-search-dmn-input-box"
-              />
+                aria-label={t("Search by DMN name")}
+                />
               {search && (
                 <InputGroup.Append data-testid="processes-search-dmn-clear-button" onClick={onClearSearch}>
                   <InputGroup.Text className="h-100">
@@ -221,6 +222,10 @@ function DmnTable() {
                   itemClass="page-item"
                   linkClass="page-link"
                   onChange={handlePageChange}
+                  firstPageText={<span aria-label="Go to first page" title="Go to first page">«</span>}
+                  lastPageText={<span aria-label="Go to last page" title="Go to last page">»</span>}
+                  prevPageText={<span aria-label="Go to previous page" title="Go to previous page">⟨</span>}
+                  nextPageText={<span aria-label="Go to next page" title="Go to next page">⟩</span>}
                 />
               )}
             </div>

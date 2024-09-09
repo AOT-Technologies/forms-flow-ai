@@ -123,6 +123,61 @@ The example template will produce a PDF in a tabular form
 [Preview](https://github.com/sreehari-aot/forms-flow-ai/blob/pdf-template/.images/export_pdf_template_1.pdf)
 
 
+Example template for bundle 
+
+In case of a bundle, the form object contains a list of forms along with the submission data.
+```
+{% extends "template.html" %}
+{% block links %}
+  <style type="text/css">
+    .container{
+        margin-top: 10px;
+    }
+    .head{
+        text-align: center;
+        margin-bottom: 10px;
+    }
+    table {
+    font-family: arial, sans-serif;
+    border-collapse: collapse;
+    width: 100%;
+    }
+
+    td, th {
+    border: 1px solid #dddddd;
+    text-align: left;
+    padding: 15px;
+    }
+  </style>
+{% endblock %}
+{% block content %}
+  <div class="container">
+  {% for form_dict in form %}
+    {% for form_key, form_value in form_dict.items() %}
+    <div class="head">    
+      <h1>{{ form_value['form']['title'] }}</h1>       
+    </div>
+	  <table>
+      {% for item in form_value['data'] %}
+      <TR>
+         <TD>{{form_value['data'][item]['label']}}</TD>
+         {% if is_signature(form_value['data'][item]['value']) %}
+         <TD><img src="{{form_value['data'][item]['value']}}" /></TD>
+         {% else %}
+         <TD>{{form_value['data'][item]['value']}}</TD>
+         {% endif %}
+      </TR>
+      {% endfor %}
+      </table>
+	  {% endfor %}
+	{% endfor %}
+  </div>
+{% endblock %}
+```
+The example template will generate a PDF with a table for each form.
+
+[Preview](https://github.com/auslin-aot/forms-flow-ai/blob/feature/FWF-3257-export-pdf-bundle/.images/export_pdf_bundle_template.pdf)
+
 TODO: Provide details for `form` object 
 
 TODO: Add usecases 

@@ -17,15 +17,17 @@ class BPMEndpointType(IntEnum):
     PROCESS_DEFINITION = 1
     FORM_AUTH_DETAILS = 2
     MESSAGE_EVENT = 3
+    DECISION_DEFINITION = 4
 
 
 class BPMService(BaseBPMService):
     """This class manages all of the Camunda BPM Service."""
 
     @classmethod
-    def get_all_process(cls, token):
+    def get_all_process(cls, token, url_path=None):
         """Get all process."""
         url = cls._get_url_(BPMEndpointType.PROCESS_DEFINITION) + "?latestVersion=true"
+        url = url + url_path if url_path else url
         current_app.logger.debug(url)
         return cls.get_request(url, token)
 
@@ -43,6 +45,15 @@ class BPMService(BaseBPMService):
                 )
                 return process_definition
         return None
+
+    @classmethod
+    def get_decision(cls, token, url_path=None):
+        """Get decision details."""
+        current_app.logger.debug("Getting decision details.")
+        url = cls._get_url_(BPMEndpointType.DECISION_DEFINITION)
+        url = url + url_path if url_path else url
+        current_app.logger.debug(url)
+        return cls.get_request(url, token)
 
     @classmethod
     def post_process_start(cls, process_key, payload, token, tenant_key):
@@ -77,16 +88,41 @@ class BPMService(BaseBPMService):
         return cls.post_request(url, token, data)
 
     @classmethod
+    def process_definition_xml(cls, process_key, token, tenant_key):
+        """Get process definition xml."""
+        url = (
+            f"{cls._get_url_(BPMEndpointType.PROCESS_DEFINITION)}/"
+            f"key/{process_key}/xml"
+        )
+        if tenant_key:
+            url += f"?tenantId={tenant_key}"
+        return cls.get_request(url, token)
+
+    @classmethod
+    def decision_definition_xml(cls, decision_key, token, tenant_key):
+        """Get decision definition xml."""
+        url = (
+            f"{cls._get_url_(BPMEndpointType.DECISION_DEFINITION)}/"
+            f"key/{decision_key}/xml"
+        )
+        if tenant_key:
+            url += f"?tenantId={tenant_key}"
+        return cls.get_request(url, token)
+
+    @classmethod
     def _get_url_(cls, endpoint_type: BPMEndpointType):
         """Get Url."""
         bpm_api_base = current_app.config.get("BPM_API_URL")
         try:
+            url = None
             if endpoint_type == BPMEndpointType.PROCESS_DEFINITION:
                 url = f"{bpm_api_base}/engine-rest-ext/v1/process-definition"
             elif endpoint_type == BPMEndpointType.FORM_AUTH_DETAILS:
                 url = f"{bpm_api_base}/engine-rest-ext/v1/admin/form/authorization"
             elif endpoint_type == BPMEndpointType.MESSAGE_EVENT:
                 url = f"{bpm_api_base}/engine-rest-ext/v1/message"
+            elif endpoint_type == BPMEndpointType.DECISION_DEFINITION:
+                url = f"{bpm_api_base}/engine-rest-ext/v1/decision-definition"
             return url
 
         except BaseException as e:  # pylint: disable=broad-except

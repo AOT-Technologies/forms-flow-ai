@@ -1,3 +1,5 @@
+@import "../../variables.scss";
+
 .react-bootstrap-table table {
   table-layout: auto !important;
   position:relative !important;
@@ -11,5 +13,5 @@
 }
  
 #app {
-  background: var(--color-white);
+  background: $white;
 }

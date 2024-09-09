@@ -1,3 +1,5 @@
+@import "../../../variables.scss";
+
 #js-properties-panel {
   width: 400px;
   overflow: auto;
@@ -23,7 +25,7 @@
 }
 
 .properties-panel-parent {
-  border: 1px solid var(--color-black);
+  border: 1px solid $dark;
   border-left: none;
 }
 
@@ -33,7 +35,11 @@
 }
 
 .highlight:not(.djs-connection) .djs-visual > :nth-child(1) {
-  fill: var(--color-primary-dk) !important;
+  fill: $primary-500 !important;
+}
+
+.highlight .djs-label {
+  fill: $white !important;
 }
 
 .zoom-container {

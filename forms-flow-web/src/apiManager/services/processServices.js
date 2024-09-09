@@ -65,18 +65,21 @@ export const getProcessStatusList = (processId, taskId) => {
 export const fetchAllBpmProcesses = (  {tenant_key = null,
   firstResult,
   maxResults,
-  searchKey,} = {},
+  searchKey,
+  excludeInternal = false,} = {},
   ...rest) => {
   const done = rest.length ? rest[0] : () => {};
 
   let url =
     API.GET_BPM_PROCESS_LIST +
     "?latestVersion=true" +
-    "&excludeInternal=true" +
     "&includeProcessDefinitionsWithoutTenantId=true" +
     "&sortBy=tenantId" +
     "&sortOrder=asc";
 
+  if (excludeInternal) {
+      url = url + "&excludeInternal=true";
+  }
   if (tenant_key) {
     url = url + "&tenantIdIn=" + tenant_key;
   }

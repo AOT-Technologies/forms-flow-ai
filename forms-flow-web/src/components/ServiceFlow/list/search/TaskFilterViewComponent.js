@@ -273,11 +273,12 @@ const TaskFilterViewComponent = React.memo(
             <Row className="mt-2">
               {vissibleAttributes.taskVisibleAttributes?.assignee && (
                 <Col xs={6}>
-                  <label>{t("Assignee")}</label>
+                  <label htmlFor="search-assignee">{t("Assignee")}</label>
                   <select
                     value={assignee}
                     onChange={(e) => setAssignee(e.target.value)}
                     className="form-select w-100 text-dark"
+                    id="search-assignee"
                   >
                     <option value="" hidden>
                       {t("Select a user")}
@@ -319,7 +320,6 @@ const TaskFilterViewComponent = React.memo(
                     <input
                       title={t("Task variables")}
                       className="form-control"
-                      placeholder=""
                       name={e.name}
                       value={variable ? variable.value : ""}
                       onChange={(e) =>

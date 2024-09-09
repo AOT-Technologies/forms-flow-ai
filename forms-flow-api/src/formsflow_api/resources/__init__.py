@@ -25,6 +25,7 @@ from formsflow_api.resources.form_embed import API as FORM_EMBED_API
 from formsflow_api.resources.form_process_mapper import API as FORM_API
 from formsflow_api.resources.formio import API as FORMIO_API
 from formsflow_api.resources.groups import API as KEYCLOAK_GROUPS_API
+from formsflow_api.resources.import_support import API as IMPORT_API
 from formsflow_api.resources.ipaas import API as INTEGRATION_API
 from formsflow_api.resources.metrics import API as APPLICATION_METRICS_API
 from formsflow_api.resources.process import API as PROCESS_API
@@ -63,3 +64,4 @@ API.add_namespace(KEYCLOAK_ROLES_API, path="/roles")
 API.add_namespace(FORM_EMBED_API, path="/embed")
 API.add_namespace(INTEGRATION_API, path="/integrations")
 API.add_namespace(THEME_CUSTOMIZATION_API, path="/themes")
+API.add_namespace(IMPORT_API, path="/import")

@@ -17,7 +17,7 @@ import org.springframework.util.ObjectUtils;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
-
+import java.util.Collections;
 /**
  * Keycloak Authentication Provider.
  * OAuth2 Authentication Provider for usage with Keycloak and
@@ -49,6 +49,16 @@ public class KeycloakAuthenticationProvider extends ContainerBasedAuthentication
 		// Authentication successful
 		AuthenticationResult authenticationResult = new AuthenticationResult(userId, true);
 		authenticationResult.setGroups(getUserGroups(userId, engine, oidcUserPrincipal));
+		
+		String tenantKeyAttr = (String) oidcUserPrincipal.getAttributes().get("tenantKey");
+		if (tenantKeyAttr != null) {
+		    // Create a list with tenantKeyAttr and set it to the authentication result
+		    List<String> tenants = Collections.singletonList(tenantKeyAttr);
+		    authenticationResult.setTenants(tenants);
+		} else {
+		    // Handle the case where tenantKeyAttr is null
+		    authenticationResult.setTenants(Collections.emptyList());
+		}
 
 		return authenticationResult;
 	}
@@ -56,6 +66,7 @@ public class KeycloakAuthenticationProvider extends ContainerBasedAuthentication
 	private List<String> getUserGroups(String userId, ProcessEngine engine, OidcUser principal) {
 		List<String> groupIds = new ArrayList<>();
 		// Find groups or roles from the idToken.
+		// TODO Fix this to get the values from here itself, currently in all case if - else if are always FALSE. Fix this
 		if (!enableClientAuth && principal.getIdToken().getClaims().containsKey("groups")) {
 			groupIds.addAll(getKeys(principal.getIdToken(), "groups"));
 		} else if (enableClientAuth && principal.getIdToken().getClaims().containsKey("roles")) {
@@ -72,7 +83,7 @@ public class KeycloakAuthenticationProvider extends ContainerBasedAuthentication
 		List<String> keys = new ArrayList<>();
 		if (token.getClaims().containsKey(nodeName)) {
 			Object claimValue = token.getClaim(nodeName);
-			if (claimValue instanceof JSONArray jsonArray) {
+			if (claimValue instanceof ArrayList jsonArray) {
 				for (Object array : jsonArray) {
 					String keyString = array.toString();
 					keys.add(StringUtils.contains(keyString, "/") ? StringUtils.substringAfter(keyString, "/") : keyString);

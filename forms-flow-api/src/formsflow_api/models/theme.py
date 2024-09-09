@@ -1,6 +1,6 @@
 """This manages theme Database Models."""
 
-from sqlalchemy import JSON
+from sqlalchemy import JSON, UniqueConstraint
 
 from .audit_mixin import AuditDateTimeMixin, AuditUserMixin
 from .base_model import BaseModel
@@ -18,7 +18,8 @@ class Themes(AuditDateTimeMixin, AuditUserMixin, BaseModel, db.Model):
     )
     application_title = db.Column(db.String(50), nullable=False)
     theme = db.Column(JSON, nullable=False, comment="Json data")
-    tenant = db.Column(db.String(20), nullable=True, unique=True)
+    tenant = db.Column(db.String(20), nullable=True)
+    __table_args__ = (UniqueConstraint("tenant", name="uq_tenant"),)
 
     @classmethod
     def create_theme(cls, theme_info: dict):
@@ -41,7 +42,7 @@ class Themes(AuditDateTimeMixin, AuditUserMixin, BaseModel, db.Model):
             [
                 "logo_name",
                 "logo_type",
-                "value",
+                "logo_data",
                 "application_title",
                 "theme",
             ],

@@ -23,8 +23,11 @@ class ApplicationSortingParameters:  # pylint: disable=too-few-public-methods
     Created = "created"
     Name = "applicationName"
     Status = "applicationStatus"
+    FormStatus = "status"
     Modified = "modified"
     FormName = "formName"
+    visibility= "visibility"
+    is_anonymous= "is_anonymous"
 
 
 @unique

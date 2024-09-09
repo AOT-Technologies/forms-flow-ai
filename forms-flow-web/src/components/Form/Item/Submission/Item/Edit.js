@@ -9,7 +9,7 @@ import {
   Errors,
 } from "@arun-s-aot/formio-react";
 import { push } from "connected-react-router";
-import { formio_resourceBundles } from "../../../../../resourceBundles/formio_resourceBundles";
+import { RESOURCE_BUNDLES_DATA } from "../../../../../resourceBundles/i18n";
 import Loading from "../../../../../containers/Loading";
 
 import {
@@ -17,9 +17,7 @@ import {
   setFormSubmissionLoading,
 } from "../../../../../actions/formActions";
 import SubmissionError from "../../../../../containers/SubmissionError";
-import { getUserRolePermission } from "../../../../../helper/user";
 import {
-  CLIENT,
   CUSTOM_SUBMISSION_URL,
   CUSTOM_SUBMISSION_ENABLE,
   MULTITENANCY_ENABLED,
@@ -77,7 +75,7 @@ const Edit = React.memo((props) => {
     // In the new approach, we will use the "isResubmit" key
     if (applicationStatus && !onFormSubmit) {
       if (
-        getUserRolePermission(userRoles, CLIENT) &&
+        userRoles.includes('create_submissions') &&
         !CLIENT_EDIT_STATUS.includes(applicationStatus) &&
         !applicationDetail.isResubmit
       ) {
@@ -143,7 +141,7 @@ const Edit = React.memo((props) => {
             }
             options={{
               ...options,
-              i18n: formio_resourceBundles,
+              i18n: RESOURCE_BUNDLES_DATA,
               language: lang,
             }}
             onCustomEvent={onCustomEvent}

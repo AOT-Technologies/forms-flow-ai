@@ -18,10 +18,7 @@ import {
 import SelectFormForDownload from "../FileUpload/SelectFormForDownload";
 import LoadingOverlay from "react-loading-overlay-ts";
 import {
-  CLIENT,
   MULTITENANCY_ENABLED,
-  STAFF_DESIGNER,
-  STAFF_REVIEWER,
 } from "../../../constants/constants";
 import { useTranslation } from "react-i18next";
 import { Translation } from "react-i18next";
@@ -29,6 +26,7 @@ import { getAllApplicationCount, getFormProcesses, resetFormProcessData } from "
 import { setIsApplicationCountLoading } from "../../../actions/processActions";
 import { HelperServices } from "@formsflow/service";
 import _ from "lodash";
+import  userRoles  from "../../../constants/permissions";
 
 function FormTable() {
   const tenantKey = useSelector((state) => state.tenants?.tenantId);
@@ -36,7 +34,6 @@ function FormTable() {
   const { t } = useTranslation();
   const bpmForms = useSelector((state) => state.bpmForms);
   const formData = (() => bpmForms.forms)() || [];
-  const userRoles = useSelector((state) => state.user.roles || []);
   const pageNo = useSelector((state) => state.bpmForms.page);
   const limit = useSelector((state) => state.bpmForms.limit);
   const totalForms = useSelector((state) => state.bpmForms.totalForms);
@@ -44,13 +41,14 @@ function FormTable() {
   const searchFormLoading = useSelector(
     (state) => state.formCheckList.searchFormLoading
   );
-  const isDesigner = userRoles.includes(STAFF_DESIGNER);
   const [pageLimit, setPageLimit] = useState(5);
   const isAscending = sortOrder === "asc" ? true : false;
   const searchText = useSelector((state) => state.bpmForms.searchText);
   const [search, setSearch] = useState(searchText || "");
   const redirectUrl = MULTITENANCY_ENABLED ? `/tenant/${tenantKey}/` : "/";
   const isApplicationCountLoading = useSelector((state) => state.process.isApplicationCountLoading);
+  const { createDesigns,  createSubmissions} = userRoles();
+
 
   const pageOptions = [
     {
@@ -190,7 +188,7 @@ function FormTable() {
               <tr >
                 <th >
                   <div className="d-flex align-items-center">
-                    {isDesigner && <SelectFormForDownload type="all" />}
+                    {createDesigns && <SelectFormForDownload type="all" />}
                     <span className="ms-4 mt-1">{t("Form Title")}</span>
                     <span>
                       {isAscending ? (
@@ -220,11 +218,11 @@ function FormTable() {
                 <th scope="col">{t("Created Date")}</th>
                 <th scope="col">{t("Type")}</th>
                 <th scope="col">{t("Visibility")}</th>
-                <th scope="col">{t("Status")}</th>
+                <th scope="col">{t("Status")}</th>               
                 <th colSpan="4" aria-label="Search Forms by form title">
                   <InputGroup className="input-group p-0">
                     <FormControl
-                    className="bg-white"
+                    className="bg-white out-line"
                       value={search}
                       onChange={(e) => {
                         setSearch(e.target.value);
@@ -233,6 +231,7 @@ function FormTable() {
                       placeholder={t("Search by form title")}
                       title={t("Search by form title")}
                       data-testid="form-search-input-box"
+                      aria-label={t("Search by form title")}
                     />
                     {search && (
                       <InputGroup.Append onClick={handleClearSearch} data-testid="form-search-clear-button">
@@ -260,8 +259,7 @@ function FormTable() {
               <tbody>
                 {formData?.map((e, index) => {
                   return (
-                    <tr key={index}>
-                      {isDesigner && (
+                    <tr key={index}> 
                         <td>
                           <div className="d-flex"
                           >
@@ -271,7 +269,6 @@ function FormTable() {
                             <span className="ms-4">{e.title}</span>
                           </div>
                         </td>
-                      )}
                       <td>{HelperServices?.getLocaldate(e.created)}</td>
                       <td>{_.capitalize(e.formType)}</td>
                       <td>{e.anonymous ? t("Public") : t("Private")}</td>
@@ -291,13 +288,15 @@ function FormTable() {
                       </td>
 
                       <td>
-                        <button
+                        {createDesigns && <button
                           data-testid={`form-edit-button-${e._id}`}
                           className="btn btn-link text-primary mt-2"
                           onClick={() => viewOrEditForm(e._id,'edit')}
                         >
                           <Translation>{(t) => t("Edit Form")}</Translation>{" "}
                         </button>
+                        }
+                        
                       </td>
                       <td>
                         <Dropdown 
@@ -314,18 +313,20 @@ function FormTable() {
                             <i className="fa-solid fa-ellipsis"></i>
                           </Dropdown.Toggle>
                           <Dropdown.Menu className="shadow  bg-white">
-                          <Dropdown.Item
-                                onClick={() => {
-                                  viewOrEditForm(e?._id,'view-edit');
-                                }}
-                                data-testid={`designer-form-option-${e._id}-view-details`}
-                              > 
-                                <i className="fa-solid me-2 fa-arrow-up-right-from-square text-primary"></i>
-                                {t("View Details")}
-                              </Dropdown.Item>
+                           
+                              <Dropdown.Item
+                              onClick={() => {
+                                viewOrEditForm(e?._id,'view-edit');
+                              }}
+                              data-testid={`designer-form-option-${e._id}-view-details`}
+                            > 
+                              <i className="fa-solid me-2 fa-arrow-up-right-from-square text-primary"></i>
+                              {t("View Details")}
+                            </Dropdown.Item>
+                             
+                          
 
-                            {userRoles.includes(STAFF_REVIEWER) ||
-                            userRoles.includes(CLIENT) ? (
+                            {createSubmissions ? (
                               <Dropdown.Item
                                 onClick={() => {
                                   submitNewForm(e?._id);
@@ -337,12 +338,13 @@ function FormTable() {
                               </Dropdown.Item>
                             ) : null}
 
-
+                            {createDesigns ? (
                             <Dropdown.Item onClick={() => deleteForms(e)}
                              data-testid={`designer-form-option-${e._id}-delete`}>
                               <i className="fa fa-trash me-2 text-danger" />
                               {t("Delete")}
                             </Dropdown.Item>
+                            ) : null}
                           </Dropdown.Menu>
                         </Dropdown>
                       </td>

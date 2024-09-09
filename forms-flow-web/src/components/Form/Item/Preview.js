@@ -5,8 +5,9 @@ import { Form, Errors, Formio } from "@arun-s-aot/formio-react";
 import { push } from "connected-react-router";
 import Loading from "../../../containers/Loading";
 import { Translation } from "react-i18next";
-import { formio_resourceBundles } from "../../../resourceBundles/formio_resourceBundles";
+import { RESOURCE_BUNDLES_DATA } from "../../../resourceBundles/i18n";
 import { MULTITENANCY_ENABLED } from "../../../constants/constants";
+import  userRoles  from "../../../constants/permissions";
 import {
   setFormFailureErrorData,
   setFormHistories,
@@ -38,6 +39,8 @@ const Preview = ({handleNext, hideComponents, activeStep}) => {
   const {form, isActive: isFormActive, errors} = useSelector(state => state.form || {});
   const lang = useSelector(state => state.user.lang);
   const formProcessList = useSelector(state => state.process?.formProcessList);
+  const { createDesigns } = userRoles();
+
 
   const handleModalChange = () => {
     setHistoryModal(!historyModal);
@@ -48,7 +51,7 @@ const Preview = ({handleNext, hideComponents, activeStep}) => {
   };
  
   useEffect(()=>{
-    if(formProcessList?.parentFormId){
+    if(createDesigns && formProcessList?.parentFormId){
       getFormHistory(formProcessList?.parentFormId).then((res) => {
         dispatch(setFormHistories(res.data));
       })
@@ -157,42 +160,39 @@ const Preview = ({handleNext, hideComponents, activeStep}) => {
           <i className="fa-solid fa-file-lines" aria-hidden="true" /> &nbsp;{" "}
           {form?.title}
         </h3>
-      <div className=" d-flex flex-column flex-md-row justify-content-md-end align-items-md-center mb-3">
-    
-        
-          <button
-            className="btn btn-primary"
-            onClick={() => {
-              gotoEdit();
-          }}
-          data-testid="form-edit-button"
-          >
-            <i className="fa fa-pencil" aria-hidden="true" />
-            &nbsp;&nbsp;<Translation>{(t) => t("Edit Form")}</Translation>
-          </button>
-          <button
-            className="btn btn-outline-secondary ms-md-2 my-md-0 my-2 "
-            onClick={() => {
-              handleModalChange();
-            }}
-            data-testid="form-version-history-button"
-          >
-            <i className="fa fa-rotate-left  " aria-hidden="true" />
-            &nbsp;&nbsp;<Translation>{(t) => t("Form History")}</Translation>
-          </button>
-          <button
-            className="btn btn-outline-primary ms-md-2 my-md-0 my-2"
-            disabled={newpublishClicked}
-            onClick={() => {
-              publishConfirmModalChange();
-            }}
-            data-testid="form-duplicate-button"
-          >
-            <i className="fa fa-clone" aria-hidden="true"></i>
-            &nbsp;&nbsp;
-            <Translation>{(t) => t("Duplicate Form")}</Translation>
-          </button>
-          <button
+        <div className="d-flex flex-column flex-md-row justify-content-md-end align-items-md-center mb-3">
+  {createDesigns ? (
+    <>
+      <button
+        className="btn btn-primary"
+        onClick={gotoEdit}
+        data-testid="form-edit-button"
+      >
+        <i className="fa fa-pencil" aria-hidden="true" />
+        &nbsp;&nbsp;<Translation>{(t) => t("Edit Form")}</Translation>
+      </button>
+      <button
+        className="btn btn-outline-secondary ms-md-2 my-md-0 my-2"
+        onClick={handleModalChange}
+        data-testid="form-version-history-button"
+      >
+        <i className="fa fa-rotate-left" aria-hidden="true" />
+        &nbsp;&nbsp;<Translation>{(t) => t("Form History")}</Translation>
+      </button>
+      <button
+        className="btn btn-outline-primary ms-md-2 my-md-0 my-2"
+        disabled={newpublishClicked}
+        onClick={publishConfirmModalChange}
+        data-testid="form-duplicate-button"
+      >
+        <i className="fa fa-clone" aria-hidden="true" />
+        &nbsp;&nbsp;<Translation>{(t) => t("Duplicate Form")}</Translation>
+      </button>
+    </>
+  ) :  (
+    null
+  )}
+  <button
             onClick={handleNext}
             className="ms-md-2 my-md-0 my-2 btn btn-primary"
             data-testid="form-next-button"
@@ -230,7 +230,7 @@ const Preview = ({handleNext, hideComponents, activeStep}) => {
           },
           disableAlerts: true,
           noAlerts: true,
-          language: lang, i18n: formio_resourceBundles }}
+          language: lang, i18n: RESOURCE_BUNDLES_DATA }}
           
         />
       </LoadingOverlay>

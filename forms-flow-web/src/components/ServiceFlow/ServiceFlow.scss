@@ -1,19 +1,20 @@
+@import "../../variables.scss";
+
 .not-selected {
-  border: 3px solid var(--color-gray-500);
+  border: 3px solid $gray-500;
   padding: 10px;
-  color: var(--color-gray-500);
+  color: $gray-500;
   width: 100%;
 }
 
 .service-task-list {
-  // box-shadow: 0 0 10px 5px var(--color-gray-400);
   clip-path: inset(0px -15px 0px 0px);
   max-height: 80vh;
   min-height: 80vh;
   position: relative;
   overflow-y: auto;
   padding-right: 15px;
-  border-right: 1px solid var(--color-gray-400);
+  border-right: 1px solid $gray-400;
 }
 .service-task-details {
   min-height: 80vh;
@@ -29,7 +30,7 @@
 }
 
 .handle-view-details{
-  color: var(--color-primary-dkr);
+  color: $primary-500;
   text-decoration: none;
 }
 .word-break{
@@ -66,10 +67,7 @@
 .mr-6{
   margin-right: 6px;
 }
-.assigned-user{
-  font-size: 18px;
-  margin-bottom: 3px;
-}
+
 .z-index{
   z-index: 9999;
 }
@@ -83,15 +81,15 @@
 
 .filter-container {
   position: relative;
-  border: 1px solid var(--color-gray-700);
+  border: 1px solid $gray-700;
   border-radius: 5px;
   width: 100%;
   padding: 0;
   margin-bottom: 4px;
   .button {
-    border: 1px solid var(--color-gray-700);
-    background-color: var(--color-white);
-    color: var(--color-gray-700);
+    border: 1px solid $gray-700;
+    background-color: $white;
+    color: $gray-700;
     text-align: center;
     text-decoration: none;
     margin: 0px 5px;
@@ -131,10 +129,10 @@
 .filter-items {
   //width: 85%;
   margin: 5px;
-  border: 1px solid var(--color-gray-400);
+  border: 1px solid $gray-400;
   border-radius: 5px;
   position: absolute;
-  background-color: var(--color-white);
+  background-color: $white;
   background-clip: padding-box;
   z-index: 5;
   border-radius: 0px;
@@ -143,17 +141,16 @@
 
 .filters {
   margin-top: 3px;
-  border-color: var(--color-gray-700);
-  //border: bold 1px solid;
+  border-color: $gray-700;
 }
 .position-box {
   margin-left: 2.3rem;
 }
 .sort-items {
-  border: 1px solid var(--color-gray-600);
+  border: 1px solid $gray-600;
   border-radius: 3%;
   position: absolute;
-  background-color: var(--color-white);
+  background-color: $white;
   background-clip: padding-box;
   z-index: 5;
   padding: 5px;
@@ -173,10 +170,10 @@
   // border-left: 2px solid transparent;
 }
 .clickable:hover:not(.selected) {
-  border-left: 2px solid var(--color-primary-dkr) !important ;
+  border-left: 2px solid $primary-500 !important ;
 }
 .selected {
-  border-left: 3px solid var(--color-primary-dkst) !important;
+  border-left: 3px solid $primary-600 !important;
 }
 
 .font-size-16 {
@@ -185,14 +182,13 @@
 }
 
 .actionable {
-  color: var(--color-primary-dkr);
+  color: $primary-500;
   // text-decoration: underline;
   background-color: transparent;
   cursor: pointer;
   margin: 10px 0;
   font-size: 14px;
   font-weight: bold;
-  height: 71px;
   position: relative;
 }
 .task-header {
@@ -206,12 +202,12 @@
   font-style: italic;
 }
 .add {
-  color: var(--color-primary-dkr);
+  color: $primary-500;
   font-size: 13px;
   cursor: pointer;
 }
 .text-color {
-  color: var(--color-black);
+  color: $dark;
   width: 100%;
   padding: 2px 5px;
   outline: none;
@@ -243,8 +239,8 @@
 }
 
 .filter-details {
-  background-color: var(--color-info-background);
-  border-color: var(--color-info-background);
+  background-color: $danger-200;
+  border-color: $danger-200;
   // margin: 0.5em;
   margin-top: 15px;
   margin-left: 5px;
@@ -252,7 +248,7 @@
   margin-bottom: 0;
   padding: 0 0px 4px 8px;
   font-size: 14px;
-  color: var(--color-primary-dkr);
+  color: $primary-500;
   //border-radius: 5px;
   .close-btn {
     font-size: 12px;
@@ -275,18 +271,16 @@
     }
   }
   .btn {
-    background-color: var(--color-white);
+    background-color: $white;
     font-size: 12px;
     padding: 0 2px;
-    border: 1px solid var(--color-gray-500);
+    border: 1px solid $gray-500;
     width: 28px;
     border-radius: 0px;
   }
   input {
-    //border: none;
     outline: none;
     border: 1px solid;
-    //border-color: var(--color-gray-700);
   }
   .close-container {
     position: absolute;
@@ -307,30 +301,27 @@
   margin-bottom: 1.3rem;
 
   .pagination {
-    background-color: var(--color-white);
+    background-color: $white;
     li {
-      border: 1px solid var(--color-gray-200);
+      border: 1px solid $gray-200;
       padding: 0 4px;
     }
     .active {
-      background-color: var(--color-primary-dkr);
+      background-color: $primary-500;
       a {
-        color: var(--color-white);
+        color: $white;
       }
     }
     .disabled {
       cursor: not-allowed;
       a {
         cursor: not-allowed;
-        color: var(--color-gray-600);
+        color: $gray-600;
       }
     }
   }
 }
 
-.tab-width{
-  width:12rem;
-}
 .task-variable-coloum{
   width:80rem;
 }
@@ -342,7 +333,7 @@
   width: 90%;
   height: 44px;
   padding: 3%;
-  border: 3px solid var(--color-gray-400);
+  border: 3px solid $gray-400;
   font-size: 18px;
 }
 
@@ -350,7 +341,7 @@
   width: 80%;
   height: 40px;
   padding: 3%;
-  border: 3px solid var(--color-gray-400);
+  border: 3px solid $gray-400;
 }
 
 .access-all{
@@ -359,10 +350,6 @@
 .task-row{
   overflow: auto;
   max-height: 80vh;
-}
-.task-attr-row {
-  min-height: 110px;
-  margin-bottom: -2.5rem
 }
 .row-container {
   display: flex;
@@ -378,13 +365,13 @@
 .varible-input-boxes {
   width: 90%;
   height: 35px;
-  border: 3px solid var(--color-gray-400);
+  border: 3px solid $gray-400;
 }
 
 .fa.fa-minus-circle {
   cursor: pointer;
   font-size: 36px;
-  color: var(--color-danger);
+  color: $danger;
   margin-left: 17px;
 }
 
@@ -396,7 +383,7 @@
 }
 
 .highlight {
-  color: var(--color-primary-lt);
+  color: $primary-300;
 }
 
 .cursor-pointer{
@@ -409,7 +396,7 @@
   left: 0;
   width: 100%;
   height: 100%;
-  background-color: var(--color-box-shadow);
+  background-color: rgba($gray-100, 0.5);
  z-index: 1500;
 }
 .react-datepicker__close-icon {
@@ -424,9 +411,14 @@
   padding-left: 0px !important;
 }
 .filter-tooltip-icon {
-  color: var(--color-primary);
+  color: $primary;
 }
 .task-list{
+  width: 22rem;
   max-height: 60vh;
   overflow: auto;
+}
+.select-task-text{
+  font-size:  1.28571429rem;
+  font-weight: 700;
 }

@@ -1,3 +1,5 @@
+@import "../../variables.scss";
+
 .btn-create-new {
   height: 30px;
   padding: 0rem 0.75rem;
@@ -8,17 +10,11 @@
   display: flex;
 }
 
-.help-btn {
-  float: right;
-  background-color: var(--color-help);
-  color: var(--color-white);
-  margin-top: 16px;
-  height: 32px;
-}
 
 .card-body {
   padding-top: 16px !important;
   padding-bottom: 16px !important;
+  color: $dark;
 }
 
 .no-results{
@@ -38,7 +34,26 @@
   padding-top: 16px;
 }
 .card-border {
-  border-left: solid 1px var(--color-gray-200);
+  border-left: solid 1px $gray-200;
+}
+
+.card-header.bg-default .card-title {
+  color: $white;
+}
+
+.card-header .card-title {
+  color: $dark; 
+}
+
+
+.bg-default {
+  background-color: $primary-700;
+  border: $primary-700;
+  color: $white !important;
+}
+
+.text-muted{
+  color: $gray-700 !important;
 }
 .select-style {
   margin-bottom: 21px;
@@ -82,7 +97,7 @@ START: BPMN and DMN Toggle CSS
   left: 0;
   right: 0;
   bottom: 0;
-  background-color: var(--color-primary-ltr);
+  background-color: $primary-200;
   -webkit-transition: 0.4s;
   transition: 0.4s;
 }
@@ -94,17 +109,17 @@ START: BPMN and DMN Toggle CSS
   width: 20px;
   left: 3px;
   bottom: 3px;
-  background-color: var(--color-white);
+  background-color: $white;
   -webkit-transition: 0.4s;
   transition: 0.4s;
 }
 
 input:checked+.slider {
-  background-color: var(--color-primary-ltr);
+  background-color: $primary-200;
 }
 
 input:focus+.slider {
-  box-shadow: 0 0 1px var(--color-primary-ltr);
+  box-shadow: 0 0 1px $primary-200;
 }
 
 input:checked+.slider:before {
@@ -138,9 +153,9 @@ input:checked+.slider:before {
   content: attr(data-off);
   position: absolute;
   right: 14px;
-  color: var(--color-white);
+  color: $white;
   opacity: 1;
-  text-shadow: 1px 1px 2px var(--color-text-shadow);
+  text-shadow: 1px 1px 2px $gray-100;
   transition: all 0.4s ease-in-out;
 }
 
@@ -148,9 +163,9 @@ input:checked+.slider:before {
   content: attr(data-on);
   position: absolute;
   left: 8px;
-  color: var(--color-white);
+  color: $white;
   opacity: 0;
-  text-shadow: 1px 1px 2px var(--color-text-shadow);
+  text-shadow: 1px 1px 2px $gray-100;
   transition: all 0.4s ease-in-out;
 }
 
@@ -168,7 +183,7 @@ END: BPMN and DMN Toggle CSS
 
 */
 .solid{
-  border-bottom: 3px solid var(--color-gray-400);
+  border-bottom: 3px solid $gray-400;
 }
 .has-search .form-control {
   padding-left: 2.375rem;
@@ -183,13 +198,13 @@ END: BPMN and DMN Toggle CSS
   line-height: 2.375rem;
   text-align: center;
   pointer-events: none;
-  color: var(--color-gray-500);
+  color: $gray-500;
 }
 .scrolly{
   overflow-y: scroll;
 }
 .containerbox{
-  box-shadow: 0 4px 8px 0 var(--color-box-shadow);
+  box-shadow: 0 4px 8px 0 $gray-200;
   padding: 15px;
   overflow-y: auto;
   height: 700px;
@@ -215,14 +230,14 @@ END: BPMN and DMN Toggle CSS
   padding-left: 6px;
   padding-right: 6px;
   margin-right: 10px;
-  border: 1px solid var(--color-gray-400);
+  border: 1px solid $gray-400;
   border-radius: 5px;
-  box-shadow: 0 2px 4px var(--color-box-shadow);
+  box-shadow: 0 2px 4px $gray-200;
   text-align: center;
 }
 
 .card-content {
-  background-color: var(--color-main-bg);
+  background-color: $white;
   height: 60%;
   border-top-left-radius: 5px;
   border-top-right-radius: 5px;

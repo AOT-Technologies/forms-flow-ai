@@ -14,7 +14,8 @@ function TaskAttributeComponent({
   selectedTaskVariables,
   onSaveTaskAttribute,
   processLoading,
-  taskVariableFromMapperTable
+  taskVariableFromMapperTable,
+  viewMode
   // showUndefinedVariable,
 }) {
  
@@ -112,6 +113,7 @@ function TaskAttributeComponent({
           <Row>
             <Col xs={6}>
               <Form.Check
+                disabled={viewMode}
                 type="checkbox"
                 label={t("Submission Id")}
                 name="applicationId"
@@ -120,6 +122,7 @@ function TaskAttributeComponent({
                 className="m-2"
               />
               <Form.Check
+                disabled={viewMode}
                 type="checkbox"
                 label={t("Assignee")}
                 name="assignee"
@@ -128,6 +131,7 @@ function TaskAttributeComponent({
                 className="m-2"
               />
               <Form.Check
+                disabled={viewMode}
                 type="checkbox"
                 label={t("Created Date")}
                 name="createdDate"
@@ -138,6 +142,7 @@ function TaskAttributeComponent({
             </Col>
             <Col xs={6}>
               <Form.Check
+                disabled={viewMode}
                 type="checkbox"
                 label={t("Due Date")}
                 name="dueDate"
@@ -146,6 +151,7 @@ function TaskAttributeComponent({
                 className="m-2"
               />
               <Form.Check
+                disabled={viewMode}
                 type="checkbox"
                 label={t("Follow up Date")}
                 name="followUp"
@@ -154,6 +160,7 @@ function TaskAttributeComponent({
                 className="m-2"
               />
               <Form.Check
+                disabled={viewMode}
                 type="checkbox"
                 label={t("Priority")}
                 name="priority"
@@ -186,6 +193,7 @@ function TaskAttributeComponent({
                   variable.key !== "applicationId" ? (
                     <Col xs={12} md={6} key={variable.key}>
                       <Form.Check
+                        disabled={viewMode}
                         type="checkbox"
                         label={variable.label}
                         name={variable.key}
@@ -222,7 +230,8 @@ function TaskAttributeComponent({
           </div>
         </Form>
       </Modal.Body>
-      <Modal.Footer>
+      { !viewMode &&
+        <Modal.Footer>
         <button className="btn btn-link text-dark " onClick={onHide}>
           {t("Cancel")}
         </button>
@@ -230,6 +239,8 @@ function TaskAttributeComponent({
           {t("Save")}
         </button>
       </Modal.Footer>
+      }
+      
     </Modal>
   );
 }

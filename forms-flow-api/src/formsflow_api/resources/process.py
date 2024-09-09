@@ -5,7 +5,7 @@ from http import HTTPStatus
 from flask import request
 from flask_restx import Namespace, Resource, fields
 from formsflow_api_utils.utils import (
-    DESIGNER_GROUP,
+    CREATE_DESIGNS,
     auth,
     cors_preflight,
     profiletime,
@@ -39,29 +39,31 @@ process_response = API.inherit(
 )
 
 process_list_model = API.model(
-        "ProcessList",
-        {
-            "process": fields.List(
-                fields.Nested(
-                    API.model(
-                        "Process",
-                        {
-                            "id": fields.Integer(description="Unique id of the process"),
-                            "name": fields.String(description="Process name"),
-                            "status": fields.String(description="Process status"),
-                            "processType": fields.String(description="Process Type"),
-                            "processData": fields.String(description="Process data"),
-                            "tenant": fields.String(description="Authorized Tenant to the process"),
-                            "created": fields.DateTime(description="Created time"),
-                            "modified": fields.DateTime(description="Modified time"),
-                            "createdBy": fields.String(),
-                            "modifiedBy": fields.String()
-                        }
-                    )
+    "ProcessList",
+    {
+        "process": fields.List(
+            fields.Nested(
+                API.model(
+                    "Process",
+                    {
+                        "id": fields.Integer(description="Unique id of the process"),
+                        "name": fields.String(description="Process name"),
+                        "status": fields.String(description="Process status"),
+                        "processType": fields.String(description="Process Type"),
+                        "processData": fields.String(description="Process data"),
+                        "tenant": fields.String(
+                            description="Authorized Tenant to the process"
+                        ),
+                        "created": fields.DateTime(description="Created time"),
+                        "modified": fields.DateTime(description="Modified time"),
+                        "createdBy": fields.String(),
+                        "modifiedBy": fields.String(),
+                    },
                 )
-            ),
-            "totalCount": fields.Integer(),
-        }
+            )
+        ),
+        "totalCount": fields.Integer(),
+    },
 )
 
 
@@ -71,7 +73,7 @@ class ProcessDataResource(Resource):
     """Resource to create and list process data."""
 
     @staticmethod
-    @auth.has_one_of_roles([DESIGNER_GROUP])
+    @auth.has_one_of_roles([CREATE_DESIGNS])
     @profiletime
     @API.doc(
         params={
@@ -157,7 +159,7 @@ class ProcessDataResource(Resource):
         return response, HTTPStatus.OK
 
     @staticmethod
-    @auth.has_one_of_roles([DESIGNER_GROUP])
+    @auth.has_one_of_roles([CREATE_DESIGNS])
     @profiletime
     @API.doc(
         responses={
@@ -180,7 +182,7 @@ class ProcessResourceById(Resource):
     """Resource for managing process by id."""
 
     @staticmethod
-    @auth.has_one_of_roles([DESIGNER_GROUP])
+    @auth.has_one_of_roles([CREATE_DESIGNS])
     @profiletime
     @API.doc(
         responses={
@@ -197,7 +199,7 @@ class ProcessResourceById(Resource):
         return response, status
 
     @staticmethod
-    @auth.has_one_of_roles([DESIGNER_GROUP])
+    @auth.has_one_of_roles([CREATE_DESIGNS])
     @profiletime
     @API.doc(
         responses={
@@ -217,7 +219,7 @@ class ProcessResourceById(Resource):
         return response, status
 
     @staticmethod
-    @auth.has_one_of_roles([DESIGNER_GROUP])
+    @auth.has_one_of_roles([CREATE_DESIGNS])
     @profiletime
     @API.doc(
         responses={

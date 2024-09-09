@@ -59,7 +59,7 @@ def create_app(
         when=os.getenv("API_LOG_ROTATION_WHEN", "d"),
         interval=int(os.getenv("API_LOG_ROTATION_INTERVAL", "1")),
         backupCount=int(os.getenv("API_LOG_BACKUP_COUNT", "7")),
-        configure_log_file=app.config["CONFIGURE_LOGS"]
+        configure_log_file=app.config["CONFIGURE_LOGS"],
     )
 
     app.logger.propagate = False

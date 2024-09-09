@@ -5,6 +5,7 @@ import time
 
 from dotenv import find_dotenv, load_dotenv
 from flask import current_app
+from formsflow_api_utils.utils import CREATE_SUBMISSIONS
 from jose import jwt as json_web_token
 
 from formsflow_api.models import Authorization, AuthType
@@ -16,7 +17,7 @@ token_header = {"alg": "RS256", "typ": "JWT", "kid": "forms-flow-web"}
 
 def get_token(
     jwt,
-    role: str = "formsflow-client",
+    role: str = CREATE_SUBMISSIONS,
     username: str = "client",
     roles: list = [],
     tenant_key: str = None,
@@ -556,6 +557,7 @@ def get_filter_payload(
     name: str = "Test Task",
     roles: list = [],
     users: list = [],
+    order: int = None,
 ):
     """Return filter create payload."""
     return {
@@ -566,6 +568,7 @@ def get_filter_payload(
         "properties": {"priority": 10},
         "users": users,
         "roles": roles,
+        "order": order,
         "taskVisibleAttributes": {
             "applicationId": True,
             "assignee": True,
@@ -627,6 +630,8 @@ def get_process_request_payload(name="Test workflow"):
         <di:waypoint x=\"370\" y=\"177\" /><di:waypoint x=\"432\" y=\"177\" /></bpmndi:BPMNEdge><bpmndi:BPMNShape id=\"_BPMNShape_StartEvent_2\" bpmnElement=\"StartEvent_1\"><dc:Bounds x=\"179\" y=\"159\" width=\"36\" height=\"36\" />
         </bpmndi:BPMNShape><bpmndi:BPMNShape id=\"Activity_0s9h67c_di\" bpmnElement=\"Activity_0s9h67c\"><dc:Bounds x=\"270\" y=\"137\" width=\"100\" height=\"80\" /></bpmndi:BPMNShape><bpmndi:BPMNShape id=\"Event_1lz219j_di\" bpmnElement=\"Event_1lz219j\">
         <dc:Bounds x=\"432\" y=\"159\" width=\"36\" height=\"36\" /></bpmndi:BPMNShape></bpmndi:BPMNPlane></bpmndi:BPMNDiagram></bpmn:definitions>""",
+        "majorVersion": 1,
+        "minorVersion": 0,
     }
 
 
@@ -636,6 +641,8 @@ def get_process_request_payload_low_code(name="Lowcode workflow", status="Draft"
         "status": status,
         "processType": "LOWCODE",
         "name": name,
+        "majorVersion": 1,
+        "minorVersion": 0,
         "processData": [
             {
                 "id": "dndID5ade74badb758",

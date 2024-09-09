@@ -19,9 +19,27 @@ from .constants import (
     KEYCLOAK_DASHBOARD_BASE_GROUP,
     NEW_APPLICATION_STATUS,
     REVIEWER_GROUP,
-    HTTP_TIMEOUT
+    HTTP_TIMEOUT,
 )
 from .enums import ApplicationSortingParameters
+from .permisions import (
+    PERMISSION_DETAILS ,
+    CREATE_DESIGNS,
+    VIEW_DESIGNS,
+    CREATE_SUBMISSIONS,
+    VIEW_SUBMISSIONS,
+    VIEW_DASHBOARDS,
+    VIEW_TASKS,
+    MANAGE_TASKS,
+    MANAGE_ALL_FILTERS,
+    CREATE_FILTERS,
+    VIEW_FILTERS,
+    MANAGE_INTEGRATIONS,
+    MANAGE_DASHBOARD_AUTHORIZATIONS,
+    MANAGE_USERS,
+    MANAGE_ROLES,
+    ADMIN,
+)
 from .file_log_handler import CustomTimedRotatingFileHandler, register_log_handlers
 from .format import CustomFormatter
 from .logging import setup_logging, log_bpm_error

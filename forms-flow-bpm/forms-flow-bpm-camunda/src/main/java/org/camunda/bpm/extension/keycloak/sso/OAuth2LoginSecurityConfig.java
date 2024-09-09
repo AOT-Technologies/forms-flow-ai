@@ -189,11 +189,11 @@ public class OAuth2LoginSecurityConfig  {
 		return new RequestContextListener();
 	}
 
-	@Bean
-	public FilterRegistrationBean cockpitConfigurationFilter() {
-		return new KeycloakConfigurationFilterRegistrationBean(
-				keycloakCockpitConfiguration,
-				camundaBpmProperties.getWebapp().getApplicationPath()
-		);
-	}
+	//@Bean
+	//public FilterRegistrationBean cockpitConfigurationFilter() {
+	//	return new KeycloakConfigurationFilterRegistrationBean(
+	//			keycloakCockpitConfiguration,
+	//			camundaBpmProperties.getWebapp().getApplicationPath()
+	//	);
+	//}
 }

@@ -113,8 +113,9 @@ function FormTable() {
     <>
       <LoadingOverlay active={searchFormLoading || isApplicationCountLoading} spinner text={t("Loading...")}>
         <div className="min-height-400">
+        <div className="custom-tables-wrapper">
           <table className="table custom-tables table-responsive-sm">
-            <thead>
+            <thead className="table-header">
               <tr>
                 <th className="width-30">
                   <div className="d-flex align-items-center justify-content-between">
@@ -201,7 +202,7 @@ function FormTable() {
                 <tr>
                   {formData.length ? (
                     <>
-                      <td colSpan={1}>
+                      <td colSpan={3}>
                         <div className="d-flex justify-content-between align-items-center flex-column flex-md-row">
                           <span className="ms-2 pagination-text">
                             {t("Showing")} {(limit * pageNo) - (limit - 1)} {t("to")}{" "}
@@ -260,6 +261,7 @@ function FormTable() {
               noDataFound()
             ) : null}
           </table>
+          </div>
         </div>
       </LoadingOverlay>
     </>

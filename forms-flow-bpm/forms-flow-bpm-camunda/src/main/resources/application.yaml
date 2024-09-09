@@ -49,7 +49,7 @@ camunda.bpm:
   filter:
     create: All tasks
   webapp:
-    application-path: /
+    application-path: /workflow/camunda
     csrf:
       enable-secure-cookie: ${SESSION_COOKIE_SECURE:true}
     header-security:
@@ -152,7 +152,6 @@ plugin.identity.keycloak:
   enableClientAuth: ${KEYCLOAK_ENABLE_CLIENT_AUTH:false}
   enableMultiTenancy: ${MULTI_TENANCY_ENABLED:false}
   formsFlowAdminUrl: ${FORMSFLOW_ADMIN_URL:}
-  redirectUri: https://forms-flow-web-a1575c-dev.apps.gold.devops.gov.bc.ca/workflow/camunda/app/silent-check-sso.html
 
 app.security.origin: ${APP_SECURITY_ORIGIN}
 

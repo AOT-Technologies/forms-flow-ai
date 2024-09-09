@@ -5,7 +5,7 @@ import App from "./components/App";
 import StoreService from "./services/StoreService";
 import { featureFlags } from "./featureToogle";
 import { FlagsProvider } from 'flagged';
-import { Formio, Components } from "react-formio";
+import { Formio } from "@arun-s-aot/formiojs/lib";
 import { AppConfig } from "./config";
 import "react-bootstrap-table2-paginator/dist/react-bootstrap-table2-paginator.min.css"; 
 import "./resourceBundles/i18n.js";
@@ -22,11 +22,11 @@ if (typeof window.__REACT_DEVTOOLS_GLOBAL_HOOK__ === "object") {
   Formio.setBaseUrl(AppConfig.apiUrl);
   
   // Set custom formio elements - Code splitted
-  import("formsflow-formio-custom-elements/dist/customformio-ex").then(
-    (FormioCustomEx) => {
-      Components.setComponents(FormioCustomEx.components);
-    }
-  );
+  // import("formsflow-formio-custom-elements/dist/customformio-ex").then(
+  //   (FormioCustomEx) => {
+  //     Components.setComponents(FormioCustomEx.components);
+  //   }
+  // );
 const createRootComponent = (props)=>{
     const {publish, subscribe, getKcInstance} = props;
     const store = StoreService.configureStore();

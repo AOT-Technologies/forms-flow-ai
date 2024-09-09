@@ -1,4 +1,4 @@
-import utils from "formiojs/utils";
+import utils from "@arun-s-aot/formiojs/lib/utils";
 const applicationIDHiddenComponent = {
   "label": "applicationId",
   "customClass": "",

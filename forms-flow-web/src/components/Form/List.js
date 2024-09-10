@@ -41,7 +41,7 @@ import { addHiddenApplicationComponent } from "../../constants/applicationCompon
 import { setFormSuccessData } from "../../actions/formActions";
 import { handleAuthorization } from "../../apiManager/services/authorizationService";
 import { saveFormProcessMapperPost } from "../../apiManager/services/processServices";
-import CustomSearch from "../CustomComponents/Search.js";
+import { CustomSearch }  from "@formsflow/components";
 import userRoles from "../../constants/permissions.js";
 
 
@@ -287,7 +287,8 @@ const List = React.memo((props) => {
           {createDesigns && (
             <>
               <div className="d-md-flex justify-content-between align-items-center pb-3 flex-wrap">
-  <div className="d-md-flex align-items-center flex-grow-1 me-2">
+              <div className="d-md-flex align-items-center p-0 search-box input-group input-group" style={{ width: "320px" }}>
+
     <CustomSearch
       search={search}
       setSearch={setSearch}
@@ -296,6 +297,7 @@ const List = React.memo((props) => {
       placeholder={t("Search Form Name and Description")}
       searchFormLoading={searchFormLoading}
       title={t("Search Form Name and Description")}
+      dataTestId="form-search-input"
     />
   </div>
   <div className="d-md-flex justify-content-end align-items-center">

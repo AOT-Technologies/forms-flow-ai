@@ -389,3 +389,17 @@ class FormProcessMapper(AuditDateTimeMixin, AuditUserMixin, BaseModel, db.Model)
         limit = total_count if limit is None else limit
         query = query.paginate(page=page_number, per_page=limit, error_out=False)
         return query.items, total_count
+
+    @classmethod
+    def find_forms_by_title(cls, form_title, exclude_id) -> FormProcessMapper:
+        """Find all form process mapper that matches the provided form title."""
+        query = cls.query.filter(
+            and_(
+                FormProcessMapper.form_name == form_title,
+                FormProcessMapper.deleted.is_(False),
+            )
+        )
+        if exclude_id is not None:
+            query = query.filter(FormProcessMapper.id != exclude_id)
+        query = cls.tenant_authorization(query=query)
+        return query.all()

@@ -1,5 +1,6 @@
 """This exposes form process mapper service."""
 
+import json
 import xml.etree.ElementTree as ET
 from typing import List, Set, Tuple
 
@@ -18,6 +19,8 @@ from formsflow_api.models import (
 )
 from formsflow_api.schemas import FormProcessMapperSchema
 from formsflow_api.services.external.bpm import BPMService
+
+from .form_history_logs import FormHistoryService
 
 
 class FormProcessMapperService:
@@ -257,6 +260,32 @@ class FormProcessMapperService:
         if mapper is not None and mapper.tenant != tenant_key:
             raise BusinessException(BusinessErrorCode.PERMISSION_DENIED)
         return
+
+    @staticmethod
+    def mapper_create(mapper_json):
+        """Service to handle mapper create."""
+        mapper_json["taskVariable"] = json.dumps(mapper_json.get("taskVariable") or [])
+        mapper_schema = FormProcessMapperSchema()
+        dict_data = mapper_schema.load(mapper_json)
+        mapper = FormProcessMapperService.create_mapper(dict_data)
+
+        FormProcessMapperService.unpublish_previous_mapper(dict_data)
+
+        response = mapper_schema.dump(mapper)
+        response["taskVariable"] = json.loads(response["taskVariable"])
+
+        FormHistoryService.create_form_logs_without_clone(data=mapper_json)
+        return response
+
+    @staticmethod
+    def form_design_update(data, form_id):
+        """Service to handle form design update."""
+        FormProcessMapperService.check_tenant_authorization_by_formid(form_id=form_id)
+        formio_service = FormioService()
+        form_io_token = formio_service.get_formio_access_token()
+        response = formio_service.update_form(form_id, data, form_io_token)
+        FormHistoryService.create_form_log_with_clone(data=data)
+        return response
 
     def _get_form(  # pylint: disable=too-many-arguments
         self,

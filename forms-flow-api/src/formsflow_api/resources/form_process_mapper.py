@@ -332,17 +332,7 @@ class FormResourceList(Resource):
     def post():
         """Post a form process mapper using the request body."""
         mapper_json = request.get_json()
-        mapper_json["taskVariable"] = json.dumps(mapper_json.get("taskVariable") or [])
-        mapper_schema = FormProcessMapperSchema()
-        dict_data = mapper_schema.load(mapper_json)
-        mapper = FormProcessMapperService.create_mapper(dict_data)
-
-        FormProcessMapperService.unpublish_previous_mapper(dict_data)
-
-        response = mapper_schema.dump(mapper)
-        response["taskVariable"] = json.loads(response["taskVariable"])
-
-        FormHistoryService.create_form_logs_without_clone(data=mapper_json)
+        response = FormProcessMapperService.mapper_create(mapper_json)
         return response, HTTPStatus.CREATED
 
 
@@ -619,18 +609,9 @@ class FormioFormUpdateResource(Resource):
     def put(form_id: str):
         """Formio form update method."""
         try:
-            FormProcessMapperService.check_tenant_authorization_by_formid(
-                form_id=form_id
-            )
             data = request.get_json()
-            formio_service = FormioService()
-            form_io_token = formio_service.get_formio_access_token()
-            response, status = (
-                formio_service.update_form(form_id, data, form_io_token),
-                HTTPStatus.OK,
-            )
-            FormHistoryService.create_form_log_with_clone(data=data)
-            return response, status
+            response = FormProcessMapperService.form_design_update(data, form_id)
+            return response, HTTPStatus.OK
         except BusinessException as err:
             message = (
                 err.details[0]["message"]

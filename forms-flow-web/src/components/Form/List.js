@@ -287,7 +287,7 @@ const List = React.memo((props) => {
           {createDesigns && (
             <>
               <div className="d-md-flex justify-content-between align-items-center pb-3 flex-wrap">
-              <div className="d-md-flex align-items-center p-0 search-box input-group input-group" style={{ width: "320px" }}>
+              <div className="d-md-flex align-items-center p-0 search-box input-group input-group w-50">
 
     <CustomSearch
       search={search}

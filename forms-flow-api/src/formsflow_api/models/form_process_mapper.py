@@ -223,6 +223,7 @@ class FormProcessMapper(AuditDateTimeMixin, AuditUserMixin, BaseModel, db.Model)
         is_active=None,
         form_type=None,
         search=None,
+        **filters,
     ):  # pylint: disable=too-many-arguments
         """Fetch all active and inactive forms which are not deleted."""
         # Get latest row for each form_id group
@@ -230,8 +231,8 @@ class FormProcessMapper(AuditDateTimeMixin, AuditUserMixin, BaseModel, db.Model)
         filtered_form_ids = [
             data.id for data in filtered_form_query if data.parent_form_id in form_ids
         ]
-
-        query = cls.query.filter(
+        query = cls.filter_conditions(**filters)
+        query = query.filter(
             and_(FormProcessMapper.deleted.is_(False)),
             FormProcessMapper.id.in_(filtered_form_ids),
         )
@@ -276,6 +277,7 @@ class FormProcessMapper(AuditDateTimeMixin, AuditUserMixin, BaseModel, db.Model)
         sort_order=None,
         search=None,
         form_ids=None,
+        **filters,
     ):  # pylint: disable=too-many-arguments
         """Fetch all active form process mappers by authorized forms."""
         # Get latest row for each form_id group
@@ -283,7 +285,8 @@ class FormProcessMapper(AuditDateTimeMixin, AuditUserMixin, BaseModel, db.Model)
         filtered_form_ids = [
             data.id for data in filtered_form_query if data.parent_form_id in form_ids
         ]
-        query = cls.query.filter(
+        query = cls.filter_conditions(**filters)
+        query = query.filter(
             FormProcessMapper.id.in_(filtered_form_ids),
         )
         query = cls.add_search_filter(query=query, search=search)

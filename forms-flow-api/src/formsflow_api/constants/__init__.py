@@ -73,6 +73,10 @@ class BusinessErrorCode(ErrorCodeMixin, Enum):
         HTTPStatus.BAD_REQUEST,
     )
     INVALID_INPUT = "Invalid input parameter", HTTPStatus.BAD_REQUEST
+    INVALID_FORM_VALIDATION_INPUT = (
+        "At least one query parameter (title, name, path) must be provided.",
+        HTTPStatus.BAD_REQUEST,
+    )
 
     def __new__(cls, message, status_code):
         """Constructor."""

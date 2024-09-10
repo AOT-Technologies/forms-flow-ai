@@ -37,8 +37,8 @@
     "redux-mock-store": "^1.5.4"
   },
   "dependencies": {
-    "@arun-s-aot/formio-react": "^1.0.27",
-    "@arun-s-aot/formiojs": "^1.0.5",
+    "@arun-s-aot/formio-react": "^1.1.6",
+    "@arun-s-aot/formiojs": "^1.1.2",
     "@babel/generator": "7.24.1",
     "@babel/plugin-proposal-private-property-in-object": "7.21.11",
     "@bpmn-io/properties-panel": "^0.17.0",

@@ -66,14 +66,17 @@ class ProcessService:  # pylint: disable=too-few-public-methods
         tenant_key = user.tenant_key
         current_app.logger.debug("Save process data..")
         data = ProcessRequestSchema().load(payload)
+        process_data = data.get("process_data").encode("utf-8")
         process = Process(
             name=data.get("name"),
             process_type=data.get("process_type").upper(),
             status=data.get("status").upper(),
             tenant=tenant_key,
-            process_data=data.get("process_data"),
+            process_data=process_data,
             form_process_mapper_id=data.get("form_process_mapper_id"),
             created_by=user.user_name,
+            major_version=data.get("major_version"),
+            minor_version=data.get("minor_version"),
         )
         if process:
             process.save()
@@ -105,11 +108,12 @@ class ProcessService:  # pylint: disable=too-few-public-methods
             data = processSchema.load(payload)
             data["modified_by"] = user.user_name
             if process_data is not None:
-                data["process_data"] = (
+                process_data = (
                     json.dumps(process_data)
                     if process.process_type.value == "LOWCODE"
                     else process_data
                 )
+                data["process_data"] = process_data.encode("utf-8")
             process.update(data)
             return processSchema.dump(process)
         raise BusinessException(BusinessErrorCode.PROCESS_ID_NOT_FOUND)

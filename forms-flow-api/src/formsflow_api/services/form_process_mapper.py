@@ -1,5 +1,6 @@
 """This exposes form process mapper service."""
 
+import json
 import xml.etree.ElementTree as ET
 from typing import List, Set, Tuple
 
@@ -18,6 +19,8 @@ from formsflow_api.models import (
 )
 from formsflow_api.schemas import FormProcessMapperSchema
 from formsflow_api.services.external.bpm import BPMService
+
+from .form_history_logs import FormHistoryService
 
 
 class FormProcessMapperService:
@@ -258,6 +261,32 @@ class FormProcessMapperService:
             raise BusinessException(BusinessErrorCode.PERMISSION_DENIED)
         return
 
+    @staticmethod
+    def mapper_create(mapper_json):
+        """Service to handle mapper create."""
+        mapper_json["taskVariable"] = json.dumps(mapper_json.get("taskVariable") or [])
+        mapper_schema = FormProcessMapperSchema()
+        dict_data = mapper_schema.load(mapper_json)
+        mapper = FormProcessMapperService.create_mapper(dict_data)
+
+        FormProcessMapperService.unpublish_previous_mapper(dict_data)
+
+        response = mapper_schema.dump(mapper)
+        response["taskVariable"] = json.loads(response["taskVariable"])
+
+        FormHistoryService.create_form_logs_without_clone(data=mapper_json)
+        return response
+
+    @staticmethod
+    def form_design_update(data, form_id):
+        """Service to handle form design update."""
+        FormProcessMapperService.check_tenant_authorization_by_formid(form_id=form_id)
+        formio_service = FormioService()
+        form_io_token = formio_service.get_formio_access_token()
+        response = formio_service.update_form(form_id, data, form_io_token)
+        FormHistoryService.create_form_log_with_clone(data=data)
+        return response
+
     def _get_form(  # pylint: disable=too-many-arguments
         self,
         title_or_path: str,
@@ -265,6 +294,7 @@ class FormProcessMapperService:
         form_id: str = None,
         description: str = None,
         tenant_key: str = None,
+        anonymous: bool = False,
     ) -> dict:
         """Get form details."""
         try:
@@ -301,6 +331,7 @@ class FormProcessMapperService:
             return {
                 "formTitle": title_or_path,
                 "formDescription": description,
+                "anonymous": anonymous,
                 "type": scope_type,
                 "content": form_json,
             }
@@ -473,6 +504,7 @@ class FormProcessMapperService:
                     mapper.form_id,
                     mapper.description,
                     tenant_key,
+                    mapper.is_anonymous,
                 )
             )
             workflow = self._get_workflow(
@@ -504,3 +536,41 @@ class FormProcessMapperService:
             }
 
         raise BusinessException(BusinessErrorCode.INVALID_FORM_PROCESS_MAPPER_ID)
+
+    @staticmethod
+    def validate_form_name_path_title(request):
+        """Validate a form name by calling the external validation API."""
+        # Retrieve the parameters from the query string
+        title = request.args.get("title")
+        name = request.args.get("name")
+        path = request.args.get("path")
+        form_id = request.args.get("id")
+
+        # Check if at least one query parameter is provided
+        if not (title or name or path):
+            raise BusinessException(BusinessErrorCode.INVALID_FORM_VALIDATION_INPUT)
+
+        # Combine them into query parameters dictionary
+        query_params = f"title={title}&name={name}&path={path}&select=title,path,name"
+
+        # Initialize the FormioService and get the access token
+        formio_service = FormioService()
+        form_io_token = formio_service.get_formio_access_token()
+        # Call the external validation API
+        validation_response = formio_service.get_form_search(
+            query_params, form_io_token
+        )
+
+        # Check if the validation response has any results
+        if validation_response:
+            # Check if the form ID matches
+            if (
+                form_id
+                and len(validation_response) == 1
+                and validation_response[0].get("_id") == form_id
+            ):
+                return {}
+            # If there are results but no matching ID, the form name is still considered invalid
+            raise BusinessException(BusinessErrorCode.FORM_EXISTS)
+        # If no results, the form name is valid
+        return {}

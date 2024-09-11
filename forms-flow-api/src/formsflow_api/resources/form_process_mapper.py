@@ -286,7 +286,7 @@ class FormResourceList(Resource):
             form_type = form_type.split(",")
         if search:
             search = search.replace("%", r"\%").replace("_", r"\_")
-            search = search.split(" ")
+            search = [key for key in search.split(" ") if key.strip()]
 
         (
             form_process_mapper_schema,
@@ -332,17 +332,7 @@ class FormResourceList(Resource):
     def post():
         """Post a form process mapper using the request body."""
         mapper_json = request.get_json()
-        mapper_json["taskVariable"] = json.dumps(mapper_json.get("taskVariable") or [])
-        mapper_schema = FormProcessMapperSchema()
-        dict_data = mapper_schema.load(mapper_json)
-        mapper = FormProcessMapperService.create_mapper(dict_data)
-
-        FormProcessMapperService.unpublish_previous_mapper(dict_data)
-
-        response = mapper_schema.dump(mapper)
-        response["taskVariable"] = json.loads(response["taskVariable"])
-
-        FormHistoryService.create_form_logs_without_clone(data=mapper_json)
+        response = FormProcessMapperService.mapper_create(mapper_json)
         return response, HTTPStatus.CREATED
 
 
@@ -619,18 +609,9 @@ class FormioFormUpdateResource(Resource):
     def put(form_id: str):
         """Formio form update method."""
         try:
-            FormProcessMapperService.check_tenant_authorization_by_formid(
-                form_id=form_id
-            )
             data = request.get_json()
-            formio_service = FormioService()
-            form_io_token = formio_service.get_formio_access_token()
-            response, status = (
-                formio_service.update_form(form_id, data, form_io_token),
-                HTTPStatus.OK,
-            )
-            FormHistoryService.create_form_log_with_clone(data=data)
-            return response, status
+            response = FormProcessMapperService.form_design_update(data, form_id)
+            return response, HTTPStatus.OK
         except BusinessException as err:
             message = (
                 err.details[0]["message"]
@@ -674,7 +655,7 @@ class ExportById(Resource):
     """Resource to support export by mapper_id."""
 
     @staticmethod
-    @auth.require
+    @auth.has_one_of_roles([CREATE_DESIGNS])
     @profiletime
     @API.response(200, "OK:- Successful request.", model=export_response_model)
     @API.response(
@@ -696,3 +677,28 @@ class ExportById(Resource):
             form_service.export(mapper_id),
             HTTPStatus.OK,
         )
+
+
+@cors_preflight("GET,OPTIONS")
+@API.route("/validate", methods=["GET", "OPTIONS"])
+class ValidateFormName(Resource):
+    """Resource for validating a form name."""
+
+    @staticmethod
+    @auth.has_one_of_roles([CREATE_DESIGNS])
+    @profiletime
+    @API.response(200, "OK:- Successful request.")
+    @API.response(400, "BAD_REQUEST:- Invalid request.")
+    @API.response(
+        401,
+        "UNAUTHORIZED:- Authorization header not provided or an invalid token passed.",
+    )
+    @API.response(403, "FORBIDDEN:- Authorization will not help.")
+    def get():
+        """Handle GET requests for validating form names.
+
+        Retrieves the query parameters from the request, validates the form name,
+        and returns a response indicating whether the form name is valid or not.
+        """
+        response = FormProcessMapperService.validate_form_name_path_title(request)
+        return response, HTTPStatus.OK

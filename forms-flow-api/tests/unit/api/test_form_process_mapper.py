@@ -1,9 +1,11 @@
 """Test suite for FormProcessMapper API endpoint."""
 
 import json
-from unittest.mock import MagicMock
+from unittest.mock import MagicMock, patch
+
 import pytest
 from formsflow_api.models import FormProcessMapper
+from formsflow_api.services import FormHistoryService
 from formsflow_api_utils.utils import (
     ADMIN,
     CREATE_DESIGNS,
@@ -525,3 +527,115 @@ def test_export(app, client, session, jwt, mock_redis_client):
     # assert len(response.json["workflows"]) == 3
     # assert len(response.json["rules"]) == 0
     # assert len(response.json["authorizations"]) == 1
+
+
+def test_form_name_validate_invalid(app, client, session, jwt, mock_redis_client):
+    """Testing form name validation with valid parameters."""
+    token = get_token(jwt, role=CREATE_DESIGNS)
+    headers = {"Authorization": f"Bearer {token}", "content-type": "application/json"}
+
+    # Mock the requests.get method
+    with patch("requests.get") as mock_get:
+        # Create a mock response object
+        mock_response = MagicMock()
+        mock_response.status_code = 400
+        mock_response.text = (
+            '{"message": "Form name, path, or title is invalid."}'
+        )
+        # Assign the mock response to the mocked get method
+        mock_get.return_value = mock_response
+
+        # Test with valid parameters
+        response = client.get(
+            "/form/validate?title=TestForm&name=TestForm&path=TestForm", headers=headers
+        )
+
+        assert response.status_code == 400
+        assert response.json is not None
+        assert response.json["message"] == "Form validation failed: The Name or Path already exists. They must be unique."
+
+
+def test_form_name_validate_missing_params(
+    app, client, session, jwt, mock_redis_client
+):
+    """Testing form name validation with missing parameters."""
+    token = get_token(jwt, role=CREATE_DESIGNS)
+    headers = {"Authorization": f"Bearer {token}", "content-type": "application/json"}
+
+    # Mock the requests.get method
+    with patch("requests.get") as mock_get:
+        # Create a mock response object
+        mock_response = MagicMock()
+        mock_response.status_code = 400
+        mock_response.text = '{"message": "At least one query parameter (title, name, path) must be provided."}'
+        # Assign the mock response to the mocked get method
+        mock_get.return_value = mock_response
+
+        # Test with missing query parameters
+        response = client.get("/form/validate", headers=headers)
+
+        assert response.status_code == 400
+        assert response.json is not None
+        assert (
+            response.json["message"]
+            == "At least one query parameter (title, name, path) must be provided."
+        )
+
+
+def test_form_name_validate_unauthorized(app, client):
+    """Testing form name validation without proper authorization."""
+    # Mock the requests.get method
+    with patch("requests.get") as mock_get:
+        # Create a mock response object
+        mock_response = MagicMock()
+        mock_response.status_code = 401
+        mock_response.text = '{"message": "Unauthorized"}'
+        # Assign the mock response to the mocked get method
+        mock_get.return_value = mock_response
+
+        # Test without proper authorization
+        response = client.get("/form/validate?title=TestForm")
+
+        assert response.status_code == 401
+
+
+def test_form_history(app, client, session, jwt, mock_redis_client):
+    """Testing form history."""
+    token = get_token(jwt, role=CREATE_DESIGNS, username="designer")
+    headers = {"Authorization": f"Bearer {token}", "content-type": "application/json"}
+    payload = get_formio_form_request_payload()
+    payload["componentChanged"] = True
+    payload["newVersion"] = True
+    response = client.post(
+        "/form/form-design", headers=headers, json=payload
+    )
+    assert response.status_code == 201
+    form_id = response.json["_id"]
+    # Assert form history with major version
+    response = client.get(f"/form/form-history/{form_id}", headers=headers)
+    assert response.status_code == 200
+    assert response.json is not None
+    assert len(response.json) == 1
+    assert response.json[0]["majorVersion"] == 1
+    assert response.json[0]["minorVersion"] == 0
+    assert response.json[0]["formId"] == form_id
+    assert response.json[0]["version"] == "1.0"
+
+    # Assert form history with minor version
+    update_payload = get_formio_form_request_payload()
+    update_payload["componentChanged"] = True
+    update_payload["parentFormId"] = form_id
+    update_payload["_id"] = form_id
+    FormHistoryService.create_form_log_with_clone(data=update_payload)
+    response = client.get(f"/form/form-history/{form_id}", headers=headers)
+    assert response.status_code == 200
+    assert response.json is not None
+    assert len(response.json) == 2
+    assert response.json[0]["majorVersion"] == 1
+    assert response.json[0]["minorVersion"] == 1
+    assert response.json[0]["formId"] == form_id
+    assert response.json[0]["version"] == "1.1"
+    assert response.json[1]["majorVersion"] == 1
+    assert response.json[1]["minorVersion"] == 0
+    assert response.json[1]["formId"] == form_id
+    assert response.json[1]["version"] == "1.0"

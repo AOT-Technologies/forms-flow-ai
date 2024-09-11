@@ -82,7 +82,7 @@ const Edit = React.memo(() => {
   const [formSubmitted, setFormSubmitted] = useState(false);
   const formAccess = useSelector((state) => state.user?.formAccess || []);
   const submissionAccess = useSelector((state) => state.user?.submissionAccess || []);
-  const prviousData = useSelector((state) => state.process?.formPreviousData);
+  const previousData = useSelector((state) => state.process?.formPreviousData);
   const formDescription = form?.description;
   const restoredFormData = useSelector((state) => state.formRestore?.restoredFormData);
   const restoredFormId = useSelector((state) => state.formRestore?.restoredFormId);
@@ -110,8 +110,8 @@ const Edit = React.memo(() => {
   const isMapperSaveNeeded = (newData) => {
     // checks if the updates need to save to form_process_mapper too
     return (
-      prviousData.formName !== newData.title ||
-      prviousData.anonymous !== processListData.anonymous ||
+      previousData.formName !== newData.title ||
+      previousData.anonymous !== processListData.anonymous ||
       processListData.anonymous === null ||
       processListData.formType !== newData.type ||
       processListData.description !== formDescription
@@ -131,9 +131,9 @@ const Edit = React.memo(() => {
         : [],
       id: processListData.id,
       formId: submittedData._id,
-      formTypeChanged: prviousData.formType !== submittedData.type,
-      titleChanged: prviousData.formName !== submittedData.title,
-      anonymousChanged: prviousData.anonymous !== processListData.anonymous,
+      formTypeChanged: previousData.formType !== submittedData.type,
+      titleChanged: previousData.formName !== submittedData.title,
+      anonymousChanged: previousData.anonymous !== processListData.anonymous,
       description: formDescription
     };
     return data;
@@ -185,7 +185,7 @@ const Edit = React.memo(() => {
   };
 
   const isNewMapperNeeded = () => {
-    return prviousData.formName !== form.title && applicationCount > 0;
+    return previousData.formName !== form.title && applicationCount > 0;
   };
 
   const closeSaveModal = () => {
@@ -203,7 +203,7 @@ const Edit = React.memo(() => {
       submissionAccess
     );
     newFormData.componentChanged = isFormComponentsChanged();
-    newFormData.parentFormId = prviousData.parentFormId;
+    newFormData.parentFormId = previousData.parentFormId;
 
     formUpdate(newFormData._id, newFormData)
       .then((res) => {
@@ -215,9 +215,9 @@ const Edit = React.memo(() => {
           // POST request with updated version : when application count is positive.
 
           if (isNewMapperNeeded()) {
-            data["version"] = String(+prviousData.version + 1);
-            data["processKey"] = prviousData.processKey;
-            data["processName"] = prviousData.processName;
+            data["version"] = String(+previousData.version + 1);
+            data["processKey"] = previousData.processKey;
+            data["processName"] = previousData.processName;
             data.parentFormId = processListData.parentFormId;
             dispatch(saveFormProcessMapperPost(data));
           } else {
@@ -305,7 +305,7 @@ const Edit = React.memo(() => {
 
           <Card className="editor-header">
             <Card.Body>
-              <div className="d-flex justify-content-between align-items-center" style={{ width: "100%" }}>
+              <div className="d-flex justify-content-between align-items-center">
                 <div className="d-flex align-items-center justify-content-between">
                   <BackToPrevIcon onClick={backToForm} />
                   <div className="mx-4 editor-header-text">{form.title}</div>
@@ -326,25 +326,25 @@ const Edit = React.memo(() => {
                     size="md"
                     label={<Translation>{(t) => t("Settings")}</Translation>}
                     onClick={editorSettings}
-                    dataTestid={"cancelBtndataTestid"}
-                    ariaLabel={"cancelBtnariaLabel"}
+                    dataTestid="eidtor-settings-testid"
+                    ariaLabel={t("Designer Settings Button")}
                   />
                   <CustomButton
                     variant="dark"
                     size="md"
                     className="mx-2"
-                    label={<Translation>{(t) => t("Actions")}</Translation>}
+                    label={t("Actions")}
                     onClick={editorActions}
-                    dataTestid={"cancelBtndataTestid"}
-                    ariaLabel={"cancelBtnariaLabel"}
+                    dataTestid="designer-action-testid"
+                    ariaLabel={(t) => t("Designer Actions Button")}
                   />
                   <CustomButton
                     variant="light"
                     size="md"
-                    label={<Translation>{(t) => t(publisText)}</Translation>}
+                    label={t(publisText)}
                     onClick={handlePublish}
-                    dataTestid={"cancelBtndataTestid"}
-                    ariaLabel={"cancelBtnariaLabel"}
+                    dataTestid="handle-publish-testid"
+                    ariaLabel={`${t(publisText)} ${t("Button")}`}
                   />
                 </div>
               </div>
@@ -362,20 +362,20 @@ const Edit = React.memo(() => {
                           variant="secondary"
                           size="md"
                           icon={<HistoryIcon />}
-                          label={<Translation>{(t) => t("History")}</Translation>}
+                          label={t("History")}
                           onClick={handleHistory}
-                          dataTestid={"cancelBtndataTestid"}
-                          ariaLabel={"cancelBtnariaLabel"}
+                          dataTestid="handle-form-history-testid"
+                          ariaLabel={t("Form History Button")}
                         />
                         <CustomButton
                           variant="secondary"
                           size="md"
                           className="mx-2"
                           icon={<PreviewIcon />}
-                          label={<Translation>{(t) => t("Preview")}</Translation>}
+                          label={t("Preview")}
                           onClick={handlePreview}
-                          dataTestid={"cancelBtndataTestid"}
-                          ariaLabel={"cancelBtnariaLabel"}
+                          dataTestid="handle-preview-testid"
+                          ariaLabel={t("Preview Button")}
                         />
                       </div>
                     </div>
@@ -386,16 +386,16 @@ const Edit = React.memo(() => {
                         className="mx-2"
                         label={<Translation>{(t) => t("Save Layout")}</Translation>}
                         onClick={saveLayout}
-                        dataTestid={"save-form-layout"}
-                        ariaLabel={"Save Form Layout"}
+                        dataTestid="save-form-layout"
+                        ariaLabel={t("Save Form Layout")}
                       />
                       <CustomButton
                         variant="secondary"
                         size="md"
                         label={<Translation>{(t) => t("Discard Changes")}</Translation>}
                         onClick={discardChanges}
-                        dataTestid={"cancelBtndataTestid"}
-                        ariaLabel={"cancelBtnariaLabel"}
+                        dataTestid="discard-button-testid"
+                        ariaLabel={t("cancelBtnariaLabel")}
                       />
                     </div>
                   </div>
@@ -429,8 +429,8 @@ const Edit = React.memo(() => {
                           icon={<HistoryIcon />}
                           label={<Translation>{(t) => t("History")}</Translation>}
                           onClick={handleHistory}
-                          dataTestid={"cancelBtndataTestid"}
-                          ariaLabel={"cancelBtnariaLabel"}
+                          dataTestid="flow-history-button-testid"
+                          ariaLabel={t("Flow History Button")}
                         />
                         <CustomButton
                           variant="secondary"
@@ -438,8 +438,8 @@ const Edit = React.memo(() => {
                           className="mx-2"
                           label={<Translation>{(t) => t("Preview & Variables")}</Translation>}
                           onClick={handlePreviewAndVariables}
-                          dataTestid={"cancelBtndataTestid"}
-                          ariaLabel={"cancelBtnariaLabel"}
+                          dataTestid="preview-and-variables-testid"
+                          ariaLabel={t("{Preview and Variables Button}")}
                         />
                         {/* <CustomButton
                           variant="secondary"
@@ -459,16 +459,16 @@ const Edit = React.memo(() => {
                         className="mx-2"
                         label={<Translation>{(t) => t("Save Flow")}</Translation>}
                         onClick={saveFlow}
-                        dataTestid={"save-form-layout"}
-                        ariaLabel={"Save Form Layout"}
+                        dataTestid="save-flow-layout"
+                        ariaLabel={t("Save Flow Layout")}
                       />
                       <CustomButton
                         variant="secondary"
                         size="md"
                         label={<Translation>{(t) => t("Discard Changes")}</Translation>}
                         onClick={discardChanges}
-                        dataTestid={"cancelBtndataTestid"}
-                        ariaLabel={"cancelBtnariaLabel"}
+                        dataTestid="discard-flow-changes-testid"
+                        ariaLabel={t("Discard Flow Changes")}
                       />
                     </div>
                   </div>

@@ -25,6 +25,19 @@ process_request = API.model(
     },
 )
 
+process_history_response_model = API.model(
+    "ProcessHistoryResponse",
+    {
+        "tenant": fields.String(description="Authorized Tenant to the process"),
+        "id": fields.Integer(description="Unique id of the process"),
+        "created": fields.DateTime(description="Created time"),
+        "modified": fields.DateTime(description="Modified time"),
+        "createdBy": fields.String(),
+        "modifiedBy": fields.String(),
+        "processType": fields.String(description="Process Type"),
+    },
+)
+
 process_response = API.inherit(
     "ProcessResponse",
     process_request,
@@ -232,3 +245,33 @@ class ProcessResourceById(Resource):
         """Delete process data by id."""
         response, status = ProcessService.delete_process(process_id), HTTPStatus.OK
         return response, status
+
+@cors_preflight("GET, OPTIONS")
+@API.route("/process-history/<string:process_name>", methods=["GET", "OPTIONS"])
+class ProcessHistoryResource(Resource):
+    """Resource for retrieving process history."""
+
+    @staticmethod
+    @auth.has_one_of_roles([CREATE_DESIGNS])
+    @profiletime
+    @API.doc(
+        params={
+            "process_name": {
+                "description": "Unique name of the process",
+                "type": "string"
+            }
+        },
+        responses={
+            200: "OK:- Successful request.",
+            400: "BAD_REQUEST:- Invalid request.",
+            401: "UNAUTHORIZED:- Authorization header not provided or an invalid token passed.",
+            403: "FORBIDDEN:- Permission denied."
+        },
+        model=process_history_response_model
+    )
+    def get(process_name: str):
+        """Get history for a process by process_name."""        
+        # Retrieve all history related to the specified process
+
+        process_history = ProcessService.get_all_history(process_name)
+        return process_history, HTTPStatus.OK

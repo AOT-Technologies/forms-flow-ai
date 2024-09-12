@@ -139,7 +139,7 @@ class Process(AuditDateTimeMixin, AuditUserMixin, BaseModel, db.Model):
         return query
 
     @classmethod
-    def fetch_histories_by_process_name(cls, process_name: str) -> List["Process"]:
+    def fetch_histories_by_process_name(cls, process_name: str) -> List[Process]:
         """Fetch all versions (histories) of a process by process_name."""
         assert process_name is not None
         query = (

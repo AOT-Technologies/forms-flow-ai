@@ -128,7 +128,7 @@ class ProcessService:  # pylint: disable=too-few-public-methods
             process.delete()
             return {"message": "Process deleted."}
         raise BusinessException(BusinessErrorCode.PROCESS_ID_NOT_FOUND)
-             
+
     @staticmethod
     def get_all_history(process_name: str):
         """Get all history."""

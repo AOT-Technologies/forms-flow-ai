@@ -246,6 +246,7 @@ class ProcessResourceById(Resource):
         response, status = ProcessService.delete_process(process_id), HTTPStatus.OK
         return response, status
 
+
 @cors_preflight("GET, OPTIONS")
 @API.route("/process-history/<string:process_name>/versions", methods=["GET", "OPTIONS"])
 class ProcessHistoryResource(Resource):
@@ -270,7 +271,7 @@ class ProcessHistoryResource(Resource):
         model=process_history_response_model
     )
     def get(process_name: str):
-        """Get history for a process by process_name."""        
+        """Get history for a process by process_name."""
         # Retrieve all history related to the specified process
 
         process_history = ProcessService.get_all_history(process_name)

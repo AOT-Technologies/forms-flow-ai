@@ -142,8 +142,12 @@ class Process(AuditDateTimeMixin, AuditUserMixin, BaseModel, db.Model):
     def fetch_histories_by_process_name(cls, process_name: str) -> List[Process]:
         """Fetch all versions (histories) of a process by process_name."""
         assert process_name is not None
+
         query = (
-        cls.auth_query(cls.query.filter(cls.name == process_name))
-        .order_by(desc(cls.major_version), desc(cls.minor_version))
+            cls.auth_query(
+                cls.query.filter(cls.name == process_name)
+            )
+            .order_by(desc(cls.major_version), desc(cls.minor_version))
         )
+
         return query.all()

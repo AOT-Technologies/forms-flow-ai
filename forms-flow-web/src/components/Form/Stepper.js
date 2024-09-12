@@ -24,7 +24,7 @@ import { MULTITENANCY_ENABLED } from "../../constants/constants";
 import { push } from "connected-react-router";
 import WorkFlow from "./Steps/WorkFlow";
 import PreviewStepper from "./Steps/PreviewStepper";
-import Stepper from "../../containers/Stepper/index.js";
+// import Stepper from "../../containers/Stepper/index.js";
 import "./stepper.scss";
 import { Link } from "react-router-dom";
 import {
@@ -369,14 +369,14 @@ class StepperPage extends PureComponent {
               title={t("Back to Form List")}
               data-testid="back-to-form-list"
             >
-              <i className="fa fa-chevron-left fa-lg m-2" />
+              {/* <i className="fa fa-chevron-left fa-lg m-2" /> */}
             </Link>
           ) : null}
           <div className="paper-root">
             <Row>
               <Col xs={12}>
                 <div className="mb-3">
-                  <Stepper steps={steps} activeStep={this.state.activeStep}/>
+                  {/* <Stepper steps={steps} activeStep={this.state.activeStep}/> */}
                 </div>
                 <div>
                   {this.state.activeStep === steps.length ? (

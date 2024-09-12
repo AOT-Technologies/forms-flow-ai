@@ -131,7 +131,7 @@ class Process(AuditDateTimeMixin, AuditUserMixin, BaseModel, db.Model):
     def get_latest_version(cls, process_name):
         """Get latest version of process."""
         query = (
-            cls.query.filter(cls.name == process_name)
+            cls.auth_query(cls.query.filter(cls.name == process_name))
             .order_by(cls.major_version.desc(), cls.minor_version.desc())
             .first()
         )

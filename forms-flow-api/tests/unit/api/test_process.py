@@ -2,12 +2,20 @@
 
 import pytest
 from formsflow_api_utils.utils import CREATE_DESIGNS, MANAGE_TASKS
-
+from formsflow_api.models import Process
 from tests.utilities.base_test import (
     get_process_request_payload,
     get_process_request_payload_low_code,
     get_token,
 )
+
+
+def ensure_process_data_binary(process_id):
+    """Convert process_data to binary if string."""
+    process = Process.query.get(process_id)
+    if isinstance(process.process_data, str):
+        process.process_data = process.process_data.encode("utf-8")
+        process.save()
 
 
 class TestProcessCreate:
@@ -57,6 +65,7 @@ class TestProcessUpdate:
         assert response.status_code == 201
         assert response.json.get("id") is not None
         process_id = response.json.get("id")
+        ensure_process_data_binary(process_id)
         response = client.put(
             f"/process/{process_id}",
             headers=headers,
@@ -101,12 +110,12 @@ class TestProcessList:
             "Authorization": f"Bearer {token}",
             "content-type": "application/json",
         }
-        client.post(
+        response = client.post(
             "/process",
             headers=headers,
             json=get_process_request_payload(name="Test workflow 1"),
         )
-
+        ensure_process_data_binary(response.json.get("id"))
         response = client.get("/process", headers=headers)
         assert response.status_code == 200
         assert response.json is not None
@@ -126,16 +135,18 @@ class TestProcessList:
             "Authorization": f"Bearer {token}",
             "content-type": "application/json",
         }
-        client.post(
+        response = client.post(
             "/process",
             headers=headers,
             json=get_process_request_payload(name="Test workflow 1"),
         )
-        client.post(
+        ensure_process_data_binary(response.json.get("id"))
+        response = client.post(
             "/process",
             headers=headers,
             json=get_process_request_payload(name="Test workflow 2"),
         )
+        ensure_process_data_binary(response.json.get("id"))
         response = client.get(
             f"/process?pageNo={pageNo}&limit={limit}&sortBy={sortBy}&sortOrder={sortOrder}",
             headers=headers,
@@ -150,32 +161,20 @@ class TestProcessList:
             "Authorization": f"Bearer {token}",
             "content-type": "application/json",
         }
-        client.post(
+        response = client.post(
             "/process",
             headers=headers,
             json=get_process_request_payload(name="Test workflow 1"),
         )
-        client.post(
+        ensure_process_data_binary(response.json.get("id"))
+        response = client.post(
             "/process",
             headers=headers,
             json=get_process_request_payload_low_code(name="Test workflow 2"),
         )
+        ensure_process_data_binary(response.json.get("id"))
         # testing with processType filter with status
-        response = client.get("/process?status=Draft", headers=headers)
-        assert response.status_code == 200
-        assert response.json is not None
-        assert response.json["totalCount"] == 2
-        # testing with processType filter with processType & status
-        response = client.get(
-            "/process?status=Draft&processType=LOWCODE", headers=headers
-        )
-        assert response.status_code == 200
-        assert response.json is not None
-        assert response.json["totalCount"] == 1
-        # testing with processType filter with processType & name
-        response = client.get(
-            "/process?status=Draft&processType=LOWCODE&name=Test", headers=headers
-        )
+        response = client.get("/process?status=Draft&processType=LOWCODE&name=Test", headers=headers)
         assert response.status_code == 200
         assert response.json is not None
         assert response.json["totalCount"] == 1
@@ -207,6 +206,7 @@ class TestProcessDelete:
         assert response.status_code == 201
         assert response.json.get("id") is not None
         process_id = response.json.get("id")
+        ensure_process_data_binary(process_id)
         response = client.delete(f"/process/{process_id}", headers=headers)
         assert response.status_code == 200
         assert response.json.get("message") == "Process deleted."

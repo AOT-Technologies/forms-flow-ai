@@ -252,9 +252,9 @@ class FormResourceList(Resource):
                 "description": "Specify sorting  order.",
                 "default": "desc",
             },
-            "formName": {
+            "search": {
                 "in": "query",
-                "description": "Retrieve form list based on form name.",
+                "description": "Retrieve form list based on form name or description.",
                 "default": "",
             },
         }
@@ -271,19 +271,22 @@ class FormResourceList(Resource):
     def get():  # pylint: disable=too-many-locals
         """Get form process mapper."""
         dict_data = FormProcessMapperListRequestSchema().load(request.args) or {}
-        form_name: str = dict_data.get("form_name")
+        search: str = dict_data.get("search", "")
         page_no: int = dict_data.get("page_no")
         limit: int = dict_data.get("limit")
-        sort_by: str = dict_data.get("sort_by", "id")
-        sort_order: str = dict_data.get("sort_order", "desc")
+        sort_by: str = dict_data.get("sort_by", "")
+        sort_order: str = dict_data.get("sort_order", "")
         form_type: str = dict_data.get("form_type", None)
         is_active = dict_data.get("is_active", None)
         active_forms = dict_data.get("active_forms", None)
 
+        sort_by = sort_by.split(",")
+        sort_order = sort_order.split(",")
         if form_type:
             form_type = form_type.split(",")
-        if form_name:
-            form_name: str = form_name.replace("%", r"\%").replace("_", r"\_")
+        if search:
+            search = search.replace("%", r"\%").replace("_", r"\_")
+            search = [key for key in search.split(" ") if key.strip()]
 
         (
             form_process_mapper_schema,
@@ -291,7 +294,7 @@ class FormResourceList(Resource):
         ) = FormProcessMapperService.get_all_forms(
             page_number=page_no,
             limit=limit,
-            form_name=form_name,
+            search=search if search else [],
             sort_by=sort_by,
             sort_order=sort_order,
             form_type=form_type,
@@ -329,17 +332,7 @@ class FormResourceList(Resource):
     def post():
         """Post a form process mapper using the request body."""
         mapper_json = request.get_json()
-        mapper_json["taskVariable"] = json.dumps(mapper_json.get("taskVariable") or [])
-        mapper_schema = FormProcessMapperSchema()
-        dict_data = mapper_schema.load(mapper_json)
-        mapper = FormProcessMapperService.create_mapper(dict_data)
-
-        FormProcessMapperService.unpublish_previous_mapper(dict_data)
-
-        response = mapper_schema.dump(mapper)
-        response["taskVariable"] = json.loads(response["taskVariable"])
-
-        FormHistoryService.create_form_logs_without_clone(data=mapper_json)
+        response = FormProcessMapperService.mapper_create(mapper_json)
         return response, HTTPStatus.CREATED
 
 
@@ -616,18 +609,9 @@ class FormioFormUpdateResource(Resource):
     def put(form_id: str):
         """Formio form update method."""
         try:
-            FormProcessMapperService.check_tenant_authorization_by_formid(
-                form_id=form_id
-            )
             data = request.get_json()
-            formio_service = FormioService()
-            form_io_token = formio_service.get_formio_access_token()
-            response, status = (
-                formio_service.update_form(form_id, data, form_io_token),
-                HTTPStatus.OK,
-            )
-            FormHistoryService.create_form_log_with_clone(data=data)
-            return response, status
+            response = FormProcessMapperService.form_design_update(data, form_id)
+            return response, HTTPStatus.OK
         except BusinessException as err:
             message = (
                 err.details[0]["message"]
@@ -671,7 +655,7 @@ class ExportById(Resource):
     """Resource to support export by mapper_id."""
 
     @staticmethod
-    @auth.require
+    @auth.has_one_of_roles([CREATE_DESIGNS])
     @profiletime
     @API.response(200, "OK:- Successful request.", model=export_response_model)
     @API.response(
@@ -693,3 +677,28 @@ class ExportById(Resource):
             form_service.export(mapper_id),
             HTTPStatus.OK,
         )
+
+
+@cors_preflight("GET,OPTIONS")
+@API.route("/validate", methods=["GET", "OPTIONS"])
+class ValidateFormName(Resource):
+    """Resource for validating a form name."""
+
+    @staticmethod
+    @auth.has_one_of_roles([CREATE_DESIGNS])
+    @profiletime
+    @API.response(200, "OK:- Successful request.")
+    @API.response(400, "BAD_REQUEST:- Invalid request.")
+    @API.response(
+        401,
+        "UNAUTHORIZED:- Authorization header not provided or an invalid token passed.",
+    )
+    @API.response(403, "FORBIDDEN:- Authorization will not help.")
+    def get():
+        """Handle GET requests for validating form names.
+
+        Retrieves the query parameters from the request, validates the form name,
+        and returns a response indicating whether the form name is valid or not.
+        """
+        response = FormProcessMapperService.validate_form_name_path_title(request)
+        return response, HTTPStatus.OK

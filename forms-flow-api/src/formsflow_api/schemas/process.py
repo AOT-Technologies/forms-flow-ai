@@ -64,6 +64,7 @@ class ProcessDataSchema(Schema):
 
     def get_process_data(self, obj):
         """This method is to get the process data."""
+        obj.process_data = obj.process_data.decode("utf-8")
         if obj.process_type.value == "LOWCODE":
             return json.loads(obj.process_data)
         return obj.process_data
@@ -104,6 +105,8 @@ class ProcessListRequestSchema(Schema):
         data_key="modifiedTo", format="%Y-%m-%dT%H:%M:%S+00:00"
     )
     sort_order = fields.Str(data_key="sortOrder", required=False)
+    major_version = fields.Int(data_key="majorVersion")
+    minor_version = fields.Int(data_key="minorVersion")
 
 
 class ProcessRequestSchema(Schema):
@@ -121,6 +124,8 @@ class ProcessRequestSchema(Schema):
     form_process_mapper_id = fields.Int(
         data_key="formProcessMapperId", required=False, allow_none=True
     )
+    major_version = fields.Int(data_key="majorVersion")
+    minor_version = fields.Int(data_key="minorVersion")
 
     def load(self, data, *args, **kwargs):
         """Load method for deserializing data."""

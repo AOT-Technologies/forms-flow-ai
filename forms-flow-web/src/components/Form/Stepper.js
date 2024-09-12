@@ -19,7 +19,7 @@ import {
   saveFormProcessMapperPost,
   saveFormProcessMapperPut,
 } from "../../apiManager/services/processServices";
-import { selectRoot, selectError, Formio, getForm } from "react-formio";
+import { selectRoot, selectError, Formio, getForm } from "@arun-s-aot/formio-react";
 import { MULTITENANCY_ENABLED } from "../../constants/constants";
 import { push } from "connected-react-router";
 import WorkFlow from "./Steps/WorkFlow";

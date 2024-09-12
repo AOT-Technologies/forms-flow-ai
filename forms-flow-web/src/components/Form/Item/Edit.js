@@ -499,10 +499,11 @@ const Edit = React.memo(() => {
         show={showSaveModal}
         title={<Translation>{(t) => t("Save Your Changes")}</Translation>}
         message={<Translation>{(t) => t("Saving as an incrimental version will affect previous submissions. Saving as a new full version will not affect previous submissions.")}</Translation>}
-        onConfirm={saveFormData}
-        onCancel={closeSaveModal}
-        confirmText={<Translation>{(t) => t("Save as Version 3.5")}</Translation>}
-        cancelText={<Translation>{(t) => t("Save as Version 4.0")}</Translation>}
+        primaryBtnAction={saveFormData}
+        onClose={closeSaveModal}
+        secondayBtnAction={"add secondary button action"}
+        primaryBtnText={<Translation>{(t) => t("Save as Version 3.5")}</Translation>}
+        secondaryBtnText={<Translation>{(t) => t("Save as Version 4.0")}</Translation>}
         size="md"
       />
     </div >

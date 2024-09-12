@@ -148,7 +148,7 @@ function FormTable() {
                 <th className="width-40" scope="col">{t("Description")}</th>
                 <th scope="col">{t("Last Edited")}</th>
                 <th scope="col">{t("Visibility")}</th>
-                <th scope="col">{t("Status")}</th>
+                <th scope="col" colSpan="4">{t("Status")}</th>
                 <th colSpan="4" aria-label="Search Forms by form title"></th>
               </tr>
             </thead>

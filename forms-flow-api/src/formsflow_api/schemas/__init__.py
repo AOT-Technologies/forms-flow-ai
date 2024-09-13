@@ -42,5 +42,6 @@ from .process import (
     ProcessListSchema,
     ProcessRequestSchema,
 )
+from .process_history_logs import ProcessHistorySchema
 from .roles import RolesGroupsSchema
 from .theme import ThemeCustomizationSchema

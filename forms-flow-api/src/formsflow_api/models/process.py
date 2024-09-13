@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 from enum import Enum, unique
+from typing import List
 
 from flask_sqlalchemy.query import Query
 from formsflow_api_utils.utils import (
@@ -10,7 +11,7 @@ from formsflow_api_utils.utils import (
     validate_sort_order_and_order_by,
 )
 from formsflow_api_utils.utils.user_context import UserContext, user_context
-from sqlalchemy import LargeBinary
+from sqlalchemy import LargeBinary, desc
 from sqlalchemy.dialects.postgresql import ENUM
 from sqlalchemy.sql.expression import text
 
@@ -136,3 +137,17 @@ class Process(AuditDateTimeMixin, AuditUserMixin, BaseModel, db.Model):
         )
 
         return query
+
+    @classmethod
+    def fetch_histories_by_process_name(cls, process_name: str) -> List[Process]:
+        """Fetch all versions (histories) of a process by process_name."""
+        assert process_name is not None
+
+        query = (
+            cls.auth_query(
+                cls.query.filter(cls.name == process_name)
+            )
+            .order_by(desc(cls.major_version), desc(cls.minor_version))
+        )
+
+        return query.all()

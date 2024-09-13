@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useReducer } from "react";
-import { FormBuilder, Errors } from "@arun-s-aot/formio-react";
+import { FormBuilder, Errors } from "@aot-technologies/formio-react";
 import _set from "lodash/set";
 import _cloneDeep from "lodash/cloneDeep";
 import _camelCase from "lodash/camelCase";

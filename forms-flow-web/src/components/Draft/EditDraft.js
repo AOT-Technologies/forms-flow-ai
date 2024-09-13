@@ -3,7 +3,7 @@ import { useParams } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 
 import Loading from "../../containers/Loading";
-import { getForm, getSubmission } from "@arun-s-aot/formio-react";
+import { getForm, getSubmission } from "@aot-technologies/formio-react";
 // import { Translation } from "react-i18next";
 import { MULTITENANCY_ENABLED } from "../../constants/constants";
 import { getDraftById } from "../../apiManager/services/draftService";

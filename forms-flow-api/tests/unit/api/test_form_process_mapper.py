@@ -641,4 +641,4 @@ def test_form_history(app, client, session, jwt, mock_redis_client):
     assert response.json[1]["minorVersion"] == 0
     assert response.json[1]["formId"] == form_id
     assert response.json[1]["version"] == "1.0"
-    assert response.json[0]["isMajor"] is True
+    assert response.json[1]["isMajor"] is True

@@ -106,6 +106,7 @@ class FormProcessMapper(AuditDateTimeMixin, AuditUserMixin, BaseModel, db.Model)
                 "task_variable",
                 "process_tenant",
                 "description",
+                "prompt_new_version",
             ],
             mapper_info,
         )

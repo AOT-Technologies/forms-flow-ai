@@ -729,7 +729,7 @@ class PublishResource(Resource):
         """Publish by mapper_id."""
         form_service = FormProcessMapperService()
         return (
-            form_service.publish(mapper_id, request),
+            form_service.publish(mapper_id),
             HTTPStatus.OK,
         )
 
@@ -755,9 +755,10 @@ class UnpublishResource(Resource):
         403,
         "FORBIDDEN:- Authorization will not help.",
     )
-    def get(mapper_id: int):
+    def post(mapper_id: int):
         """Unpublish by mapper_id."""
+        form_service = FormProcessMapperService()
         return (
-            FormProcessMapperService.unpublish(mapper_id),
+            form_service.unpublish(mapper_id),
             HTTPStatus.OK,
         )

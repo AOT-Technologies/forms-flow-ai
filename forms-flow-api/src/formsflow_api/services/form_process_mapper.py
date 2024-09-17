@@ -25,7 +25,7 @@ from formsflow_api.services.external.bpm import BPMService
 from .form_history_logs import FormHistoryService
 
 
-class FormProcessMapperService:
+class FormProcessMapperService:  # pylint: disable=too-many-public-methods
     """This class manages form process mapper service."""
 
     @staticmethod
@@ -580,12 +580,12 @@ class FormProcessMapperService:
     def deploy_process(self, process_name, process_data, tenant_key, token):
         """Deploy process."""
         file_path = f"{process_name}.bpmn"
-        process_data = (
-            process_data.encode("utf-8")
-            if process_data
-            else default_flow_xml_data(process_name).encode("utf-8")
-        )
-        print(process_data, "process data", type(process_data))
+        # If process data empty deploy default workflow data.
+        if process_data:
+            if isinstance(process_data, str):
+                process_data = process_data.encode("utf-8")
+        else:
+            process_data = default_flow_xml_data(process_name).encode("utf-8")
 
         # Prepare the parameters for the deployment
         payload = {
@@ -598,42 +598,19 @@ class FormProcessMapperService:
         files = {"upload": (file_path, process_data, "text/bpmn")}
         BPMService.post_deployment(token, payload, tenant_key, files)
 
-    @user_context
-    def publish(self, mapper_id, request, **kwargs):
-        """Publish by mapper_id."""
-        user: UserContext = kwargs["user"]
-        tenant_key = user.tenant_key
-        token = user.bearer_token
-        data = request.get_json()
+    def validate_mapper(self, mapper_id, tenant_key):
+        """Validate mapper by mapper Id."""
         mapper = FormProcessMapper.find_form_by_id(form_process_mapper_id=mapper_id)
         if not mapper:
             raise BusinessException(BusinessErrorCode.INVALID_FORM_PROCESS_MAPPER_ID)
 
         # Check tenant authentication
         if tenant_key and mapper.tenant != tenant_key:
-            raise PermissionError("Tenant authentication failed.")
-        process_data = data.get("processData")
-        process_name = mapper.process_key
-        # Deploy process
-        self.deploy_process(process_name, process_data, tenant_key, token)
+            raise PermissionError(BusinessErrorCode.PERMISSION_DENIED)
+        return mapper
 
-        # Update status in process table.
-        process = Process.get_latest_version(process_name)
-        if not process:
-            # create entry in process & publish
-            process = Process(
-                name=process_name,
-                process_type="LOWCODE",
-                process_data="[]",
-                form_process_mapper_id=mapper_id,
-                tenant=tenant_key,
-                major_version=1,
-                minor_version=0,
-            )
-        process.status = "PUBLISHED"
-        process.save()
-
-        # Capture publish status in form history table.
+    def capture_form_history(self, mapper, data, user_name):
+        """Capture form history."""
         major_version, minor_version = 1, 0
         latest_form_history = FormHistory.get_latest_version(mapper.parent_form_id)
         if latest_form_history:
@@ -642,19 +619,61 @@ class FormProcessMapperService:
                 latest_form_history.minor_version,
             )
         FormHistory(
-            created_by=user.user_name,
+            created_by=user_name,
             parent_form_id=mapper.parent_form_id,
-            change_log={"status": "Publish"},
+            form_id=mapper.form_id,
+            change_log=data,
             status=True,
             major_version=major_version,
             minor_version=minor_version,
-        )
+        ).save()
 
-        # Update status in mapper table - discuss & do
-        mapper.prompt_new_version = False
-        mapper.save()
-
-    @staticmethod
-    def unpublish(mapper_id: int):
+    @user_context
+    def publish(self, mapper_id, **kwargs):
         """Publish by mapper_id."""
-        pass
+        user: UserContext = kwargs["user"]
+        tenant_key = user.tenant_key
+        token = user.bearer_token
+        user_name = user.user_name
+        mapper = self.validate_mapper(mapper_id, tenant_key)
+        process_name = mapper.process_key
+
+        # Fetch process data from process table
+        process = Process.get_latest_version(process_name)
+        process_data = process.process_data if process else None
+        # Deploy process
+        self.deploy_process(process_name, process_data, tenant_key, token)
+        if not process:
+            # create entry in process with default flow.
+            process = Process(
+                name=process_name,
+                process_type="BPMN",
+                process_data=default_flow_xml_data(process_name).encode("utf-8"),
+                form_process_mapper_id=mapper_id,
+                tenant=tenant_key,
+                major_version=1,
+                minor_version=0,
+                created_by=user_name,
+            )
+        # Update process status
+        process.status = "PUBLISHED"
+        process.save()
+
+        # Capture publish(active) status in form history table.
+        self.capture_form_history(mapper, {"status": "active"}, user_name)
+        # Update status in mapper table
+        mapper.update({"status": str(FormProcessMapperStatus.ACTIVE.value), "prompt_new_version": False})
+        return {}
+
+    @user_context
+    def unpublish(self, mapper_id: int, **kwargs):
+        """Publish by mapper_id."""
+        user: UserContext = kwargs["user"]
+        user_name = user.user_name
+        tenant_key = user.tenant_key
+        mapper = self.validate_mapper(mapper_id, tenant_key)
+        # Capture publish status in form history table.
+        self.capture_form_history(mapper, {"status": "inactive"}, user_name)
+        # Update status(inactive) in mapper table
+        mapper.update({"status": str(FormProcessMapperStatus.INACTIVE.value), "prompt_new_version": True})
+        return {}

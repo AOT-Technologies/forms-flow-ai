@@ -620,6 +620,7 @@ def test_form_history(app, client, session, jwt, mock_redis_client):
     assert response.json[0]["minorVersion"] == 0
     assert response.json[0]["formId"] == form_id
     assert response.json[0]["version"] == "1.0"
+    assert response.json[0]["isMajor"] is True
 
     # Assert form history with minor version
     update_payload = get_formio_form_request_payload()
@@ -635,7 +636,9 @@ def test_form_history(app, client, session, jwt, mock_redis_client):
     assert response.json[0]["minorVersion"] == 1
     assert response.json[0]["formId"] == form_id
     assert response.json[0]["version"] == "1.1"
+    assert response.json[0]["isMajor"] is False
     assert response.json[1]["majorVersion"] == 1
     assert response.json[1]["minorVersion"] == 0
     assert response.json[1]["formId"] == form_id
     assert response.json[1]["version"] == "1.0"
+    assert response.json[0]["isMajor"] is True

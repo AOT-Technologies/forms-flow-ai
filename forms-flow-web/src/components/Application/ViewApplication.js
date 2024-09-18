@@ -14,7 +14,7 @@ import {
 import ProcessDiagram from "../BPMN/ProcessDiagramHook";
 import History from "./ApplicationHistory";
 import View from "../Form/Item/Submission/Item/View";
-import { getForm, getSubmission } from "@arun-s-aot/formio-react";
+import { getForm, getSubmission } from "@aot-technologies/formio-react";
 import NotFound from "../NotFound";
 import { Translation,useTranslation } from "react-i18next";
 import { CUSTOM_SUBMISSION_URL,CUSTOM_SUBMISSION_ENABLE, MULTITENANCY_ENABLED } from "../../constants/constants";

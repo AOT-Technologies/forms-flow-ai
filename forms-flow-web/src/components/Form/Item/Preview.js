@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 
-import { Form, Errors, Formio } from "@arun-s-aot/formio-react";
+import { Form, Errors, Formio } from "@aot-technologies/formio-react";
 import { push } from "connected-react-router";
 import Loading from "../../../containers/Loading";
 import { Translation } from "react-i18next";

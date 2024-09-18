@@ -1,6 +1,6 @@
 
 import React, { useState, useEffect, useReducer } from "react";
-import { Errors, FormBuilder, Formio } from "@arun-s-aot/formio-react";
+import { Errors, FormBuilder, Formio } from "@aot-technologies/formio-react";
 import { push } from "connected-react-router";
 import { useHistory } from "react-router-dom";
 import _set from "lodash/set";
@@ -13,7 +13,7 @@ import { toast } from "react-toastify";
 import { useSelector, useDispatch } from "react-redux";
 import { setFormProcessesData } from "../../../actions/processActions";
 import { Translation, useTranslation } from "react-i18next";
-import utils from "@arun-s-aot/formiojs/lib/utils";
+import utils from "@aot-technologies/formiojs/lib/utils";
 import {
   deleteFormProcessMapper,
   saveFormProcessMapperPost,

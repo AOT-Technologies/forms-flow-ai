@@ -131,7 +131,7 @@ class Process(AuditDateTimeMixin, AuditUserMixin, BaseModel, db.Model):
     def get_latest_version(cls, process_name):
         """Get latest version of process."""
         query = (
-            cls.query.filter(cls.name == process_name)
+            cls.auth_query(cls.query.filter(cls.name == process_name))
             .order_by(cls.major_version.desc(), cls.minor_version.desc())
             .first()
         )
@@ -143,11 +143,8 @@ class Process(AuditDateTimeMixin, AuditUserMixin, BaseModel, db.Model):
         """Fetch all versions (histories) of a process by process_name."""
         assert process_name is not None
 
-        query = (
-            cls.auth_query(
-                cls.query.filter(cls.name == process_name)
-            )
-            .order_by(desc(cls.major_version), desc(cls.minor_version))
+        query = cls.auth_query(cls.query.filter(cls.name == process_name)).order_by(
+            desc(cls.major_version), desc(cls.minor_version)
         )
 
         return query.all()

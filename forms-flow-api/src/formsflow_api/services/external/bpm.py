@@ -18,6 +18,7 @@ class BPMEndpointType(IntEnum):
     FORM_AUTH_DETAILS = 2
     MESSAGE_EVENT = 3
     DECISION_DEFINITION = 4
+    DEPLOYMENT = 5
 
 
 class BPMService(BaseBPMService):
@@ -110,6 +111,12 @@ class BPMService(BaseBPMService):
         return cls.get_request(url, token)
 
     @classmethod
+    def post_deployment(cls, token, payload, tenant_key, files):
+        """Create new deployment."""
+        url = f"{cls._get_url_(BPMEndpointType.DEPLOYMENT)}"
+        return cls.post_request(url, token, payload, tenant_key, files)
+
+    @classmethod
     def _get_url_(cls, endpoint_type: BPMEndpointType):
         """Get Url."""
         bpm_api_base = current_app.config.get("BPM_API_URL")
@@ -123,6 +130,8 @@ class BPMService(BaseBPMService):
                 url = f"{bpm_api_base}/engine-rest-ext/v1/message"
             elif endpoint_type == BPMEndpointType.DECISION_DEFINITION:
                 url = f"{bpm_api_base}/engine-rest-ext/v1/decision-definition"
+            elif endpoint_type == BPMEndpointType.DEPLOYMENT:
+                url = f"{bpm_api_base}/engine-rest-ext/v1/deployment/create"
             return url
 
         except BaseException as e:  # pylint: disable=broad-except

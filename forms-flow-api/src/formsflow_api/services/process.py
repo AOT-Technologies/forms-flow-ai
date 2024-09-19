@@ -10,6 +10,7 @@ from formsflow_api.constants import BusinessErrorCode
 from formsflow_api.models import Process
 from formsflow_api.schemas import (
     ProcessDataSchema,
+    ProcessHistorySchema,
     ProcessListRequestSchema,
     ProcessRequestSchema,
 )
@@ -126,4 +127,14 @@ class ProcessService:  # pylint: disable=too-few-public-methods
         if process:
             process.delete()
             return {"message": "Process deleted."}
+        raise BusinessException(BusinessErrorCode.PROCESS_ID_NOT_FOUND)
+
+    @staticmethod
+    def get_all_history(process_name: str):
+        """Get all history."""
+        assert process_name is not None
+        process_histories = Process.fetch_histories_by_process_name(process_name)
+        if process_histories:
+            process_history_schema = ProcessHistorySchema(many=True)
+            return process_history_schema.dump(process_histories)
         raise BusinessException(BusinessErrorCode.PROCESS_ID_NOT_FOUND)

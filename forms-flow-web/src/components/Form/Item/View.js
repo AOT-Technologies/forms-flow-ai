@@ -11,7 +11,7 @@ import {
   Errors,
   getForm,
   Formio,
-} from "@arun-s-aot/formio-react";
+} from "@aot-technologies/formio-react";
 import { useTranslation, Translation } from "react-i18next";
 import isEqual from "lodash/isEqual";
 

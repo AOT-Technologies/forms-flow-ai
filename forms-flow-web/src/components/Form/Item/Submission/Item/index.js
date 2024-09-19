@@ -1,7 +1,7 @@
 import { Redirect, Route, Switch, useParams } from "react-router-dom";
 import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { getSubmission, selectRoot } from "@arun-s-aot/formio-react";
+import { getSubmission, selectRoot } from "@aot-technologies/formio-react";
 import View from "./View";
 import Edit from "./Edit";
 import { getApplicationById } from "../../../../../apiManager/services/applicationServices";

@@ -620,6 +620,7 @@ def test_form_history(app, client, session, jwt, mock_redis_client):
     assert response.json[0]["minorVersion"] == 0
     assert response.json[0]["formId"] == form_id
     assert response.json[0]["version"] == "1.0"
+    assert response.json[0]["isMajor"] is True
 
     # Assert form history with minor version
     update_payload = get_formio_form_request_payload()
@@ -635,7 +636,57 @@ def test_form_history(app, client, session, jwt, mock_redis_client):
     assert response.json[0]["minorVersion"] == 1
     assert response.json[0]["formId"] == form_id
     assert response.json[0]["version"] == "1.1"
+    assert response.json[0]["isMajor"] is False
     assert response.json[1]["majorVersion"] == 1
     assert response.json[1]["minorVersion"] == 0
     assert response.json[1]["formId"] == form_id
     assert response.json[1]["version"] == "1.0"
+    assert response.json[1]["isMajor"] is True
+
+
+def test_publish(app, client, session, jwt, mock_redis_client):
+    """Testing publish endpoint."""
+    token = get_token(jwt, role=CREATE_DESIGNS, username="designer")
+    headers = {"Authorization": f"Bearer {token}", "content-type": "application/json"}
+    response = client.post(
+        "/form",
+        headers=headers,
+        json=get_form_request_payload(),
+    )
+    assert response.status_code == 201
+    mapper_id = response.json.get("id")
+    rv = client.get(f"/form/{mapper_id}", headers=headers)
+    assert rv.status_code == 200
+    assert rv.json.get("id") == mapper_id
+    # Test publish endpoint with valid response.
+    with patch("requests.post") as mock_post:
+        mock_response = MagicMock()
+        mock_response.status_code = 200
+        mock_response.text = '{}'
+        mock_post.return_value = mock_response
+        response = client.post(f"/form/{mapper_id}/publish", headers=headers)
+        assert response.status_code == 200
+
+
+def test_unpublish(app, client, session, jwt, mock_redis_client):
+    """Testing unpublish endpoint."""
+    token = get_token(jwt, role=CREATE_DESIGNS, username="designer")
+    headers = {"Authorization": f"Bearer {token}", "content-type": "application/json"}
+    response = client.post(
+        "/form",
+        headers=headers,
+        json=get_form_request_payload(),
+    )
+    assert response.status_code == 201
+    mapper_id = response.json.get("id")
+    rv = client.get(f"/form/{mapper_id}", headers=headers)
+    assert rv.status_code == 200
+    assert rv.json.get("id") == mapper_id
+    # Test unpublish endpoint with valid response.
+    with patch("requests.post") as mock_post:
+        mock_response = MagicMock()
+        mock_response.text = '{}'
+        mock_response.status_code = 200
+        mock_post.return_value = mock_response
+        response = client.post(f"/form/{mapper_id}/unpublish", headers=headers)
+        assert response.status_code == 200

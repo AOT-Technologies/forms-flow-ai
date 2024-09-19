@@ -31,6 +31,7 @@ class FormProcessMapperSchema(Schema):
     process_tenant = fields.Str(data_key="processTenant")
     deleted = fields.Boolean(data_key="deleted")
     description = fields.Str(data_key="description")
+    prompt_new_version = fields.Bool(data_key="promptNewVersion", dump_only=True)
 
 
 class FormProcessMapperListReqSchema(Schema):

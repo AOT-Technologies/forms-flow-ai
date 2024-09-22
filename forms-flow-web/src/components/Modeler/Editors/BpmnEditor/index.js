@@ -35,9 +35,9 @@ import {
   BpmnPropertiesProviderModule,
   CamundaPlatformPropertiesProviderModule,
 } from "bpmn-js-properties-panel";
-
-import CamundaExtensionModule from "camunda-bpmn-moddle/lib";
-import camundaModdleDescriptors from "camunda-bpmn-moddle/resources/camunda";
+import camundaPlatformBehaviors from 'camunda-bpmn-js-behaviors/lib/camunda-platform';
+import zeebeModdleDescriptors from 'zeebe-bpmn-moddle/resources/zeebe.json';
+import { ZeebePropertiesProviderModule } from 'bpmn-js-properties-panel';
 
 import lintModule from "bpmn-js-bpmnlint";
 import "bpmn-js-bpmnlint/dist/assets/css/bpmn-js-bpmnlint.css";
@@ -90,12 +90,13 @@ export default React.memo(
           additionalModules: [
             BpmnPropertiesPanelModule,
             BpmnPropertiesProviderModule,
+            camundaPlatformBehaviors,
             CamundaPlatformPropertiesProviderModule,
-            CamundaExtensionModule,
+            ZeebePropertiesProviderModule,
             lintModule,
           ],
           moddleExtensions: {
-            camunda: camundaModdleDescriptors,
+            zeebe: zeebeModdleDescriptors
           },
         })
       );

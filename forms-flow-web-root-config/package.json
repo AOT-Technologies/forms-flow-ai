@@ -8,8 +8,7 @@
     "check-format": "prettier --check .",
     "build": "concurrently npm:build:*",
     "build:webpack": "webpack --mode=production",
-    "build-dev:webpack": "webpack --env isLocal --mode=development",
-    "preinstall": "npm install --package-lock-only --ignore-scripts && npx npm-force-resolutions"
+    "build-dev:webpack": "webpack --env isLocal --mode=development"
   },
   "devDependencies": {
     "concurrently": "^6.2.1",
@@ -21,8 +20,8 @@
     "jest-cli": "^27.0.6",
     "prettier": "^2.3.2",
     "pretty-quick": "^3.1.1",
-    "serve": "^12.0.0",
-    "webpack-dev-server": "^4.0.0"
+    "serve": "^14.2.3",
+    "webpack-dev-server": "^4.15.2"
   },
   "dependencies": {
     "@types/jest": "^27.0.1",
@@ -43,14 +42,5 @@
     "@babel/plugin-transform-runtime": "^7.15.0",
     "@babel/preset-env": "^7.15.0",
     "@babel/runtime": "^7.15.3"
-  },
-  "resolutions": {
-    "semver": "7.5.3",
-    "minimatch": "3.0.5",
-    "webpack": "5.76.0",
-    "tough-cookie": "4.1.3",
-    "word-wrap": "1.2.4",
-    "postcss": "8.4.31",
-    "path-to-regexp": "3.3.0"
   }
 }

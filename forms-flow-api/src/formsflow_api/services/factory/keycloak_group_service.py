@@ -75,7 +75,7 @@ class KeycloakGroupService(KeycloakAdmin):
         return self.format_response(response)
 
     @user_context
-    def get_users(  # pylint: disable-msg=too-many-arguments
+    def get_users(  # pylint: disable-msg=too-many-arguments, too-many-positional-arguments
         self,
         page_no: int,
         limit: int,
@@ -295,7 +295,7 @@ class KeycloakGroupService(KeycloakAdmin):
         )
 
     @user_context
-    def search_realm_users(  # pylint: disable-msg=too-many-arguments
+    def search_realm_users(  # pylint: disable-msg=too-many-arguments, too-many-positional-arguments
         self,
         search: str,
         page_no: int,

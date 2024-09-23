@@ -646,7 +646,16 @@ class FormHistoryResource(Resource):
     def get(form_id: str):
         """Getting form history."""
         FormProcessMapperService.check_tenant_authorization_by_formid(form_id=form_id)
-        return FormHistoryService.get_all_history(form_id)
+        form_history, count = FormHistoryService.get_all_history(form_id, request.args)
+        return (
+            (
+                {
+                    "formHistory": form_history,
+                    "totalCount": count,
+                }
+            ),
+            HTTPStatus.OK,
+        )
 
 
 @cors_preflight("GET,OPTIONS")

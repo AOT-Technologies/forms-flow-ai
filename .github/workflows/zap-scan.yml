@@ -33,7 +33,7 @@ jobs:
         if: always()
         run: |
           if [ -f report_html.html ]; then
-            aws s3 cp report_html.html s3://${{ secrets.ZAP_REPORT_BUCKET }}/zap-reports/zap-report-$(date +%Y-%m-%d_%H-%M-%S).html
+            aws s3 cp report_html.html s3://${{ secrets.ZAP_REPORT_BUCKET }}/zap-reports/zap-report-$(TZ='Asia/Kolkata' date +%Y-%m-%d_%H-%M-%S).html
           else
             echo "ZAP report not found!" >&2
             exit 1
@@ -55,7 +55,7 @@ jobs:
         id: create_ticket
         if: env.failures == '1'
         run: |
-          current_time=$(date +"%m/%d/%Y-%I:%M %p")
+          current_time=$(TZ='Asia/Kolkata' date +"%m/%d/%Y-%I:%M %p")
 
           response=$(curl -X POST -u ${{ secrets.JIRA_USERNAME }}:${{ secrets.JIRA_API_TOKEN }} \
           -H "Content-Type: application/json" \

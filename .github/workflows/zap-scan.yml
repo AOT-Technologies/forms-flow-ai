@@ -33,7 +33,7 @@ jobs:
         if: always()
         run: |
           if [ -f report_html.html ]; then
-            aws s3 cp report_html.html s3://zap-report-formsflow/zap-reports/zap-report-$(date +%Y-%m-%d_%H-%M-%S).html
+            aws s3 cp report_html.html ${{ secrets.S3_REPORT_PATH }}/zap-report-$(date +%Y-%m-%d_%H-%M-%S).html
           else
             echo "ZAP report not found!" >&2
             exit 1

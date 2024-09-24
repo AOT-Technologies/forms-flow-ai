@@ -1,4 +1,4 @@
-name: forms-flow-web-CD
+name: zap-scan
 
 on:
   workflow_dispatch:

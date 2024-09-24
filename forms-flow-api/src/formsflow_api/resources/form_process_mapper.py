@@ -6,7 +6,6 @@ from http import HTTPStatus
 from flask import request
 from flask_restx import Namespace, Resource, fields
 from formsflow_api_utils.exceptions import BusinessException
-from formsflow_api_utils.services.external import FormioService
 from formsflow_api_utils.utils import (
     CREATE_DESIGNS,
     CREATE_FILTERS,
@@ -25,6 +24,7 @@ from formsflow_api.schemas import (
 )
 from formsflow_api.services import (
     ApplicationService,
+    AuthorizationService,
     FilterService,
     FormHistoryService,
     FormProcessMapperService,
@@ -213,8 +213,8 @@ export_response_model = API.model(
 )
 
 
-@cors_preflight("GET,POST,OPTIONS")
-@API.route("", methods=["GET", "POST", "OPTIONS"])
+@cors_preflight("GET,OPTIONS")
+@API.route("", methods=["GET", "OPTIONS"])
 class FormResourceList(Resource):
     """Resource for getting forms."""
 
@@ -314,27 +314,6 @@ class FormResourceList(Resource):
             HTTPStatus.OK,
         )
 
-    @staticmethod
-    @auth.has_one_of_roles([CREATE_DESIGNS])
-    @profiletime
-    @API.doc(body=mapper_create_model)
-    @API.response(
-        200, "CREATED:- Successful request.", model=mapper_create_response_model
-    )
-    @API.response(
-        400,
-        "BAD_REQUEST:- Invalid request.",
-    )
-    @API.response(
-        401,
-        "UNAUTHORIZED:- Authorization header not provided or an invalid token passed.",
-    )
-    def post():
-        """Post a form process mapper using the request body."""
-        mapper_json = request.get_json()
-        response = FormProcessMapperService.mapper_create(mapper_json)
-        return response, HTTPStatus.CREATED
-
 
 @cors_preflight("GET,PUT,DELETE,OPTIONS")
 @API.route("/<int:mapper_id>", methods=["GET", "PUT", "DELETE", "OPTIONS"])
@@ -407,23 +386,30 @@ class FormResourceById(Resource):
     )
     def put(mapper_id: int):
         """Update form by mapper_id."""
-        application_json = request.get_json()
-
-        if "taskVariable" in application_json:
+        data = request.get_json()
+        mapper_data = data.get("mapperData")
+        authorization_data = data.get("authData")
+        task_variable = mapper_data.get("taskVariable")
+        if task_variable:
             FilterService.update_filter_variables(
-                application_json.get("taskVariable"), application_json.get("formId")
+                task_variable, mapper_data.get("formId")
             )
-            application_json["taskVariable"] = json.dumps(
-                application_json.get("taskVariable")
-            )
+            mapper_data["taskVariable"] = json.dumps(task_variable)
+
         mapper_schema = FormProcessMapperSchema()
-        dict_data = mapper_schema.load(application_json)
+
+        dict_data = mapper_schema.load(mapper_data)
         mapper = FormProcessMapperService.update_mapper(
             form_process_mapper_id=mapper_id, data=dict_data
         )
+        if authorization_data:
+            AuthorizationService.create_or_update_resource_authorization(
+                authorization_data, bool(auth.has_role([CREATE_DESIGNS]))
+            )
+
         response = mapper_schema.dump(mapper)
         response["taskVariable"] = json.loads(response["taskVariable"])
-        FormHistoryService.create_form_logs_without_clone(data=application_json)
+        FormHistoryService.create_form_logs_without_clone(data=mapper_data)
 
         return (
             response,
@@ -573,22 +559,13 @@ class FormioFormResource(Resource):
     def post():
         """Formio form creation method."""
         try:
+            # form data
             data = request.get_json()
-            formio_service = FormioService()
-            form_io_token = formio_service.get_formio_access_token()
-            response, status = (
-                formio_service.create_form(data, form_io_token),
-                HTTPStatus.CREATED,
+            response = FormProcessMapperService.create_form(
+                data, bool(auth.has_role([CREATE_DESIGNS]))
             )
-            FormHistoryService.create_form_log_with_clone(
-                data={
-                    **response,
-                    "parentFormId": data.get("parentFormId"),
-                    "newVersion": data.get("newVersion"),
-                    "componentChanged": True,
-                }
-            )
-            return response, status
+            return response, HTTPStatus.CREATED
+
         except BusinessException as err:
             message = (
                 err.details[0]["message"]

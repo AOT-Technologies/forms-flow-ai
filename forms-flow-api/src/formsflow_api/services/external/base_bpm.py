@@ -35,7 +35,9 @@ class BaseBPMService:
         return data
 
     @classmethod
-    def post_request(cls, url, token, payload=None, tenant_key=None, files=None):  # pylint: disable=too-many-arguments
+    def post_request(
+        cls, url, token, payload=None, tenant_key=None, files=None
+    ):  # pylint: disable=too-many-arguments
         """Post HTTP request to BPM API with auth header."""
         headers = cls._get_headers_(token, tenant_key, files)
         payload = payload if files else json.dumps(payload)

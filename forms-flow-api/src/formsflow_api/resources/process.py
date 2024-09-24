@@ -248,7 +248,9 @@ class ProcessResourceById(Resource):
 
 
 @cors_preflight("GET, OPTIONS")
-@API.route("/process-history/<string:process_name>/versions", methods=["GET", "OPTIONS"])
+@API.route(
+    "/process-history/<string:process_name>/versions", methods=["GET", "OPTIONS"]
+)
 class ProcessHistoryResource(Resource):
     """Resource for retrieving process history."""
 
@@ -259,16 +261,16 @@ class ProcessHistoryResource(Resource):
         params={
             "process_name": {
                 "description": "Unique name of the process",
-                "type": "string"
+                "type": "string",
             }
         },
         responses={
             200: "OK:- Successful request.",
             400: "BAD_REQUEST:- Invalid request.",
             401: "UNAUTHORIZED:- Authorization header not provided or an invalid token passed.",
-            403: "FORBIDDEN:- Permission denied."
+            403: "FORBIDDEN:- Permission denied.",
         },
-        model=process_history_response_model
+        model=process_history_response_model,
     )
     def get(process_name: str):
         """Get history for a process by process_name."""

@@ -10,45 +10,6 @@ defaults:
     shell: bash
 
 jobs:
-  build:
-    if: github.repository == 'AOT-Technologies/forms-flow-ai'
-    name: Build and push artifacts to s3
-    runs-on: ubuntu-20.04
-    steps:
-      - uses: actions/checkout@v3
-      - uses: actions/setup-node@v3
-        with:
-          node-version: '14.17.6'
-      - run: npm ci
-        working-directory: ./forms-flow-web
-      - run: npm run build
-        working-directory: ./forms-flow-web
-      - uses: aws-actions/configure-aws-credentials@v2
-        with:
-          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
-          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-          aws-region: ${{ secrets.REGION }}
-      - name: Set version
-        if: ${{ github.ref != 'refs/heads/master' }}
-        working-directory: .
-        run: |
-          VER=$(cat VERSION)
-          echo "VERSION=$VER" >> $GITHUB_ENV
-      - name: Set version for master branch
-        if: ${{ github.ref == 'refs/heads/master' }}
-        working-directory: .
-        run: |
-          VER=$(cat VERSION)
-          VER=${VER/-alpha/''}
-          echo "VERSION=$VER" >> $GITHUB_ENV
-      - run: echo ${{ env.VERSION }}
-      - run: npm ci
-        working-directory: ./forms-flow-web/scripts
-      - run: node index
-        env:
-          BUCKET: ${{ secrets.BUCKET }}
-          VERSION: ${{ env.VERSION }}
-        working-directory: ./forms-flow-web/scripts
 
   zap_scan:
     runs-on: ubuntu-latest
@@ -94,6 +55,8 @@ jobs:
         id: create_ticket
         if: env.failures == '1'
         run: |
+          current_time=$(date +"%m/%d/%Y-%I:%M %p")
+
           response=$(curl -X POST -u ${{ secrets.JIRA_USERNAME }}:${{ secrets.JIRA_API_TOKEN }} \
           -H "Content-Type: application/json" \
           --data '{
@@ -101,7 +64,7 @@ jobs:
               "project": {
                 "key": "'${{ secrets.JIRA_PROJECT_KEY }}'"
               },
-              "summary": "ZAP Scan detected issues in ${{ github.repository }}",
+              "summary": "ZAP Scan detected issues in '${{ github.repository }}' at '"${current_time}"'",
               "description": "ZAP Scan found issues in the scan. Please review the attached report.",
               "issuetype": {
                 "name": "Task"

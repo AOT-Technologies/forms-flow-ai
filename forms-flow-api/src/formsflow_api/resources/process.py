@@ -28,7 +28,7 @@ process_request = API.model(
 process_history_response_model = API.model(
     "ProcessHistoryResponse",
     {
-        "process": fields.List(
+        "processHistory": fields.List(
             fields.Nested(
                 API.model(
                     "ProcessHistory",
@@ -298,7 +298,7 @@ class ProcessHistoryResource(Resource):
         return (
             (
                 {
-                    "process": process_history,
+                    "processHistory": process_history,
                     "totalCount": count,
                 }
             ),

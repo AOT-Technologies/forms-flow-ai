@@ -158,11 +158,24 @@ form_history_change_log_model = API.model(
 form_history_response_model = API.inherit(
     "FormHistoryResponse",
     {
-        "id": fields.String(),
-        "form_id": fields.String(),
-        "created_by": fields.String(),
-        "created": fields.String(),
-        "change_log": fields.Nested(form_history_change_log_model),
+        "formHistory": fields.List(
+            fields.Nested(
+                API.model(
+                    "FormHistory",
+                    {
+                        "id": fields.String(),
+                        "formId": fields.String(),
+                        "createdBy": fields.String(),
+                        "created": fields.String(),
+                        "changeLog": fields.Nested(form_history_change_log_model),
+                        "majorVersion": fields.Integer(),
+                        "minorVersion": fields.Integer(),
+                        "isMajor": fields.Boolean(),
+                    },
+                )
+            )
+        ),
+        "totalCount": fields.Integer(),
     },
 )
 forms_list_model = API.model(

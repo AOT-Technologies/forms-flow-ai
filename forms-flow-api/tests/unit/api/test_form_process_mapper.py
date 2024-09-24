@@ -606,21 +606,21 @@ def test_form_history(app, client, session, jwt, mock_redis_client):
     payload = get_formio_form_request_payload()
     payload["componentChanged"] = True
     payload["newVersion"] = True
-    response = client.post(
-        "/form/form-design", headers=headers, json=payload
-    )
+    response = client.post("/form/form-design", headers=headers, json=payload)
     assert response.status_code == 201
     form_id = response.json["_id"]
     # Assert form history with major version
     response = client.get(f"/form/form-history/{form_id}", headers=headers)
     assert response.status_code == 200
     assert response.json is not None
-    assert len(response.json) == 1
-    assert response.json[0]["majorVersion"] == 1
-    assert response.json[0]["minorVersion"] == 0
-    assert response.json[0]["formId"] == form_id
-    assert response.json[0]["version"] == "1.0"
-    assert response.json[0]["isMajor"] is True
+    form_history = response.json["formHistory"]
+    assert len(form_history) == 1
+    assert form_history[0]["majorVersion"] == 1
+    assert form_history[0]["minorVersion"] == 0
+    assert form_history[0]["formId"] == form_id
+    assert form_history[0]["version"] == "1.0"
+    assert form_history[0]["isMajor"] is True
+    assert response.json["totalCount"] == 1
 
     # Assert form history with minor version
     update_payload = get_formio_form_request_payload()
@@ -631,17 +631,19 @@ def test_form_history(app, client, session, jwt, mock_redis_client):
     response = client.get(f"/form/form-history/{form_id}", headers=headers)
     assert response.status_code == 200
     assert response.json is not None
-    assert len(response.json) == 2
-    assert response.json[0]["majorVersion"] == 1
-    assert response.json[0]["minorVersion"] == 1
-    assert response.json[0]["formId"] == form_id
-    assert response.json[0]["version"] == "1.1"
-    assert response.json[0]["isMajor"] is False
-    assert response.json[1]["majorVersion"] == 1
-    assert response.json[1]["minorVersion"] == 0
-    assert response.json[1]["formId"] == form_id
-    assert response.json[1]["version"] == "1.0"
-    assert response.json[1]["isMajor"] is True
+    form_history = response.json["formHistory"]
+    assert len(form_history) == 2
+    assert form_history[0]["majorVersion"] == 1
+    assert form_history[0]["minorVersion"] == 1
+    assert form_history[0]["formId"] == form_id
+    assert form_history[0]["version"] == "1.1"
+    assert form_history[0]["isMajor"] is False
+    assert form_history[1]["majorVersion"] == 1
+    assert form_history[1]["minorVersion"] == 0
+    assert form_history[1]["formId"] == form_id
+    assert form_history[1]["version"] == "1.0"
+    assert form_history[1]["isMajor"] is True
+    assert response.json["totalCount"] == 2
 
 
 def test_publish(app, client, session, jwt, mock_redis_client):
@@ -662,7 +664,7 @@ def test_publish(app, client, session, jwt, mock_redis_client):
     with patch("requests.post") as mock_post:
         mock_response = MagicMock()
         mock_response.status_code = 200
-        mock_response.text = '{}'
+        mock_response.text = "{}"
         mock_post.return_value = mock_response
         response = client.post(f"/form/{mapper_id}/publish", headers=headers)
         assert response.status_code == 200
@@ -685,7 +687,7 @@ def test_unpublish(app, client, session, jwt, mock_redis_client):
     # Test unpublish endpoint with valid response.
     with patch("requests.post") as mock_post:
         mock_response = MagicMock()
-        mock_response.text = '{}'
+        mock_response.text = "{}"
         mock_response.status_code = 200
         mock_post.return_value = mock_response
         response = client.post(f"/form/{mapper_id}/unpublish", headers=headers)

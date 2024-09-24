@@ -121,10 +121,10 @@ flex-wrap: wrap;
 }
 
 
-.form-check-input{
-    width: 15px;
-    height: 15px;
-}
+// .form-check-input{
+//     width: 15px;
+//     height: 15px;
+// }
 
 .min-height-400{
     min-height: 400px;
@@ -159,12 +159,6 @@ flex-wrap: wrap;
     .flex-item-left {
         flex: 100%;justify-content: flex-start;
     }
-}
-.page-item .page-link {
-    color: $primary !important;
-}
-.page-item.active .page-link {
-    color: $white !important;
 }
 
 /* Style the dots */

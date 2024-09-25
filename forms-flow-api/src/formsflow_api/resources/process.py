@@ -200,7 +200,7 @@ class ProcessDataResource(Resource):
 
 
 @cors_preflight("GET, PUT, DELETE, OPTIONS")
-@API.route("/<int:process_id>", methods=["GET", "PUT", "DELETE", "OPTIONS"])
+@API.route("/<string:process_id>", methods=["GET", "PUT", "DELETE", "OPTIONS"])
 @API.doc(params={"process_id": "Process data corresponding to process_id"})
 class ProcessResourceById(Resource):
     """Resource for managing process by id."""
@@ -216,9 +216,9 @@ class ProcessResourceById(Resource):
         },
         model=process_response,
     )
-    def get(process_id: int):
+    def get(process_id: str):
         """Get process data by id."""
-        response, status = ProcessService.get_process_by_id(process_id), HTTPStatus.OK
+        response, status = ProcessService.get_process_by_key(process_id), HTTPStatus.OK
 
         return response, status
 
@@ -234,7 +234,7 @@ class ProcessResourceById(Resource):
         model=process_response,
     )
     @API.expect(process_request)
-    def put(process_id: int):
+    def put(process_id: str):
         """Update process data by id."""
         response, status = (
             ProcessService.update_process(process_id, request.get_json()),
@@ -252,7 +252,7 @@ class ProcessResourceById(Resource):
             403: "FORBIDDEN:- Permission denied",
         }
     )
-    def delete(process_id: int):
+    def delete(process_id: str):
         """Delete process data by id."""
         response, status = ProcessService.delete_process(process_id), HTTPStatus.OK
         return response, status

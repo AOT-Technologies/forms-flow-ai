@@ -86,10 +86,10 @@ class ProcessService:  # pylint: disable=too-few-public-methods
         raise BusinessException(BusinessErrorCode.PROCESS_ID_NOT_FOUND)
 
     @classmethod
-    def get_process_by_id(cls, process_id):
-        """Get process by id."""
-        current_app.logger.debug(f"Get process data for process id: {process_id}")
-        process = Process.find_process_by_id(process_id)
+    def get_process_by_key(cls, process_id):
+        """Get process by key."""
+        current_app.logger.debug(f"Get process data for process key: {process_id}")
+        process = Process.get_latest_version(process_id)
         if process:
             return processSchema.dump(process)
         raise BusinessException(BusinessErrorCode.PROCESS_ID_NOT_FOUND)

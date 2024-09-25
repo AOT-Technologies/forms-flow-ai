@@ -114,7 +114,7 @@ class Draft(AuditDateTimeMixin, BaseModel, db.Model):
         return FormProcessMapper.tenant_authorization(result).first()
 
     @classmethod
-    def find_all_active(  # pylint: disable=too-many-arguments
+    def find_all_active(  # pylint: disable=too-many-arguments,too-many-positional-arguments
         cls,
         user_name: str,
         page_number=None,

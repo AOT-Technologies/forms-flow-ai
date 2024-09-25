@@ -202,7 +202,7 @@ class ImportService:  # pylint: disable=too-many-public-methods
         updated_xml = '<?xml version="1.0" encoding="UTF-8"?>\n' + updated_xml
         return updated_xml
 
-    def save_process_data(  # pylint: disable=too-many-arguments
+    def save_process_data(  # pylint: disable=too-many-arguments, too-many-positional-arguments
         self,
         workflow_data,
         name,

@@ -77,6 +77,10 @@ class BusinessErrorCode(ErrorCodeMixin, Enum):
         "At least one query parameter (title, name, path) must be provided.",
         HTTPStatus.BAD_REQUEST,
     )
+    KEYCLOAK_REQUEST_FAIL = (
+        "Request to Keycloak Admin APIs failed.",
+        HTTPStatus.BAD_REQUEST,
+    )
 
     def __new__(cls, message, status_code):
         """Constructor."""

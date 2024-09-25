@@ -30,7 +30,7 @@ class FormProcessMapperService:  # pylint: disable=too-many-public-methods
 
     @staticmethod
     @user_context
-    def get_all_forms(
+    def get_all_forms(  # pylint: disable=too-many-positional-arguments
         page_number: int,
         limit: int,
         search: list,
@@ -289,7 +289,7 @@ class FormProcessMapperService:  # pylint: disable=too-many-public-methods
         FormHistoryService.create_form_log_with_clone(data=data)
         return response
 
-    def _get_form(  # pylint: disable=too-many-arguments
+    def _get_form(  # pylint: disable=too-many-arguments, too-many-positional-arguments
         self,
         title_or_path: str,
         scope_type: str,

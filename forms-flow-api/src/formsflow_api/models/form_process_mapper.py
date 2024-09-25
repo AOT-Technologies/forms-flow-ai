@@ -226,7 +226,7 @@ class FormProcessMapper(AuditDateTimeMixin, AuditUserMixin, BaseModel, db.Model)
         form_type=None,
         search=None,
         **filters,
-    ):  # pylint: disable=too-many-arguments
+    ):  # pylint: disable=too-many-arguments, too-many-positional-arguments
         """Fetch all active and inactive forms which are not deleted."""
         # Get latest row for each form_id group
         filtered_form_query = cls.get_latest_form_mapper_ids()
@@ -280,7 +280,7 @@ class FormProcessMapper(AuditDateTimeMixin, AuditUserMixin, BaseModel, db.Model)
         search=None,
         form_ids=None,
         **filters,
-    ):  # pylint: disable=too-many-arguments
+    ):  # pylint: disable=too-many-arguments, too-many-positional-arguments
         """Fetch all active form process mappers by authorized forms."""
         # Get latest row for each form_id group
         filtered_form_query = cls.get_latest_form_mapper_ids()

@@ -253,32 +253,35 @@ class TestProcessHistory:
             "content-type": "application/json",
         }
         with patch.object(ProcessService, "get_all_history") as mock_import_service:
-            mock_response = [
-                {
-                    "id": "3",
-                    "processName": "test",
-                    "createdBy": "formsflow-designer",
-                    "created": "2024-09-12 06:33:31.101156",
-                    "majorVersion": 3,
-                    "minorVersion": 0,
-                },
-                {
-                    "id": "2",
-                    "processName": "test",
-                    "createdBy": "formsflow-designer",
-                    "created": "2024-09-12 06:33:06.454344",
-                    "majorVersion": 2,
-                    "minorVersion": 0,
-                },
-                {
-                    "id": "1",
-                    "processName": "test",
-                    "createdBy": "formsflow-designer",
-                    "created": "2024-09-12 06:32:59.930011",
-                    "majorVersion": 1,
-                    "minorVersion": 0,
-                },
-            ]
+            mock_response = (
+                [
+                    {
+                        "id": "3",
+                        "processName": "test",
+                        "createdBy": "formsflow-designer",
+                        "created": "2024-09-12 06:33:31.101156",
+                        "majorVersion": 3,
+                        "minorVersion": 0,
+                    },
+                    {
+                        "id": "2",
+                        "processName": "test",
+                        "createdBy": "formsflow-designer",
+                        "created": "2024-09-12 06:33:06.454344",
+                        "majorVersion": 2,
+                        "minorVersion": 0,
+                    },
+                    {
+                        "id": "1",
+                        "processName": "test",
+                        "createdBy": "formsflow-designer",
+                        "created": "2024-09-12 06:32:59.930011",
+                        "majorVersion": 1,
+                        "minorVersion": 0,
+                    },
+                ],
+                3,
+            )
 
             mock_import_service.return_value = mock_response
             response = client.get(
@@ -287,7 +290,7 @@ class TestProcessHistory:
             # Assertions
             assert response.status_code == 200
             assert response.json is not None
-            response_json = response.json
+            response_json = response.json["processHistory"]
             assert len(response_json) == 3
             assert response_json[0]["id"] == "3"
             assert response_json[0]["processName"] == "test"
@@ -309,6 +312,8 @@ class TestProcessHistory:
             assert response_json[2]["created"] == "2024-09-12 06:32:59.930011"
             assert response_json[2]["majorVersion"] == 1
             assert response_json[2]["minorVersion"] == 0
+
+            assert response.json["totalCount"] == 3
 
     def test_process_version_history_non_existent_process(
         self, app, client, session, jwt

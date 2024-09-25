@@ -17,7 +17,7 @@ from tests.utilities.base_test import (
 class TestApplicationAnonymousResourcesByIds:
     """Test suite for anonymosu application endpoint."""
 
-    def test_application_valid_post(self, app, client, session, jwt):
+    def test_application_valid_post(self, app, client, session, jwt, mock_redis_client):
         """Assert that public API /application when passed with valid payload returns 201 status code."""
         token = get_token(jwt, role=CREATE_DESIGNS)
         headers = {

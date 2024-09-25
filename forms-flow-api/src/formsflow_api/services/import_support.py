@@ -309,6 +309,7 @@ class ImportService:  # pylint: disable=too-many-public-methods
         self.save_process_data(
             workflow_data, form_response.get("name"), mapper_id=mapper.id, is_new=True
         )
+        return form_id
 
     def import_form(
         self, selected_form_version, form_json, mapper, form_only=False, **kwargs
@@ -378,13 +379,14 @@ class ImportService:  # pylint: disable=too-many-public-methods
             FormProcessMapperService.mark_inactive_and_delete(mapper.id)
         else:
             current_app.logger.info("Form import minor version inprogress...")
+            form_id = mapper.form_id
             FormProcessMapperService.check_tenant_authorization_by_formid(
-                form_id=mapper.form_id
+                form_id=form_id
             )
             # Minor version update form components in formio & create form history.
             form_components = {}
             form_components["components"] = form_json.get("components")
-            form_response = self.form_update(form_components, mapper.form_id)
+            form_response = self.form_update(form_components, form_id)
             form_response["componentChanged"] = True
             form_response["parentFormId"] = mapper.parent_form_id
             FormHistoryService.create_form_log_with_clone(data=form_response)
@@ -399,17 +401,18 @@ class ImportService:  # pylint: disable=too-many-public-methods
                     "formName": new_title,
                     "anonymousChanged": anonymous_changed,
                     "anonymous": anonymous,
-                    "formId": mapper.form_id,
+                    "formId": form_id,
                     "parentFormId": mapper.parent_form_id,
                 }
                 FormHistoryService.create_form_logs_without_clone(data=form_logs_data)
+        return form_id
 
     def import_edit_form(self, file_data, selected_form_version, form_json, mapper):
         """Import edit form."""
         current_app.logger.info("Form import with form+workflow json inprogress...")
         anonymous = file_data.get("forms")[0].get("anonymous")
         description = file_data.get("forms")[0].get("formDescription", "")
-        self.import_form(
+        form_id = self.import_form(
             selected_form_version,
             form_json,
             mapper,
@@ -423,6 +426,7 @@ class ImportService:  # pylint: disable=too-many-public-methods
             file_data["authorizations"][0][auth]["resourceId"] = mapper.parent_form_id
         # Update authorizations for the form
         self.create_authorization(file_data["authorizations"][0])
+        return form_id
 
     def find_mapper(self, mapper_id, tenant_key=None):
         """Find mapper."""
@@ -446,6 +450,7 @@ class ImportService:  # pylint: disable=too-many-public-methods
         action = input_data.get("action")
         user: UserContext = kwargs["user"]
         tenant_key = user.tenant_key
+        form_id = None
 
         # Check if the action is valid
         if action not in ["validate", "import"]:
@@ -473,7 +478,9 @@ class ImportService:  # pylint: disable=too-many-public-methods
                     form_major=1, form_minor=0, workflow_major=1, workflow_minor=0
                 )
             if action == "import":
-                self.import_new_form_workflow(file_data, form_json, workflow_data)
+                form_id = self.import_new_form_workflow(
+                    file_data, form_json, workflow_data
+                )
         else:
             current_app.logger.info("Import edit processing..")
             edit_request = ImportEditRequestSchema().load(request_data)
@@ -481,6 +488,7 @@ class ImportService:  # pylint: disable=too-many-public-methods
             mapper_id = edit_request.get("mapper_id")
             # mapper is required for edit. Add validation
             mapper = self.find_mapper(mapper_id, tenant_key)
+            form_id = mapper.form_id
             if valid_file == ".json":
                 file_data = self.read_json_data(file)
                 # Validate input json file whether only form or form+workflow
@@ -503,7 +511,7 @@ class ImportService:  # pylint: disable=too-many-public-methods
                         selected_form_version = edit_request.get("form", {}).get(
                             "selectedVersion"
                         )
-                        self.import_form(
+                        form_id = self.import_form(
                             selected_form_version, form_json, mapper, form_only=True
                         )
                 elif self.validate_input_json(file_data, form_workflow_schema):
@@ -540,7 +548,7 @@ class ImportService:  # pylint: disable=too-many-public-methods
 
                         if not skip_form:
                             # Import form
-                            self.import_edit_form(
+                            form_id = self.import_edit_form(
                                 file_data, selected_form_version, form_json, mapper
                             )
                         if not skip_workflow:
@@ -577,4 +585,4 @@ class ImportService:  # pylint: disable=too-many-public-methods
                         mapper_id,
                         selected_workflow_version,
                     )
-        return {"message": "Imported successfully."}
+        return {"formId": form_id}

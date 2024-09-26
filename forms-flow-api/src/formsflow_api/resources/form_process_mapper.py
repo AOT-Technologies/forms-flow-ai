@@ -400,30 +400,53 @@ class FormResourceById(Resource):
     def put(mapper_id: int):
         """Update form by mapper_id."""
         data = request.get_json()
+
+        # Extract mapper and authorization data from the request
         mapper_data = data.get("mapperData")
         authorization_data = data.get("authData")
-        task_variable = mapper_data.get("taskVariable")
-        if task_variable:
+
+        # Get the parentFormId as resource id from mapper data if authorization data is provided
+        resource_id = mapper_data.get("parentFormId") if authorization_data else None
+        task_variable = mapper_data.get("taskVariable", [])
+
+        # If task variables are present, update filter variables and serialize them
+        if "taskVariable" in mapper_data:
             FilterService.update_filter_variables(
                 task_variable, mapper_data.get("formId")
             )
             mapper_data["taskVariable"] = json.dumps(task_variable)
 
+        # Load the mapper data into the schema
         mapper_schema = FormProcessMapperSchema()
-
         dict_data = mapper_schema.load(mapper_data)
+
+        # Update the mapper with the provided data
         mapper = FormProcessMapperService.update_mapper(
             form_process_mapper_id=mapper_id, data=dict_data
         )
-        if authorization_data:
+
+        # If authorization data and resource ID are provided, update resource authorization
+        if authorization_data and resource_id:
             AuthorizationService.create_or_update_resource_authorization(
                 authorization_data, bool(auth.has_role([CREATE_DESIGNS]))
             )
 
-        response = mapper_schema.dump(mapper)
-        response["taskVariable"] = json.loads(response["taskVariable"])
+        # Dump the updated mapper data into the response schema
+        mapper_response = mapper_schema.dump(mapper)
+        mapper_response["taskVariable"] = json.loads(mapper_response["taskVariable"])
+
+        # Create form logs without cloning
         FormHistoryService.create_form_logs_without_clone(data=mapper_data)
 
+        # Prepare the response
+        response = {}
+        response["mapperData"] = mapper_response
+        if resource_id:
+            response["authData"] = AuthorizationService().get_auth_list_by_id(
+                resource_id
+            )
+
+        # Return the response with HTTP status OK
         return (
             response,
             HTTPStatus.OK,

@@ -353,7 +353,7 @@ export const saveFormProcessMapperPost = (data, ...rest) => {
 export const saveFormProcessMapperPut = (data, ...rest) => {
   const done = rest.length ? rest[0] : () => {};
   return async (dispatch) => {
-    RequestService.httpPUTRequest(`${API.FORM}/${data.id}`, data)
+    RequestService.httpPUTRequest(`${API.FORM}/${data.mapperData.id}`, data)
       .then(async (res) => {
         if (res.data) {
           dispatch(getApplicationCount(res.data.id));

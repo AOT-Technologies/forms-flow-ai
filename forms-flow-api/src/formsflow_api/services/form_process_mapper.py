@@ -304,6 +304,7 @@ class FormProcessMapperService:  # pylint: disable=too-many-public-methods
         # creating form and get response from formio
         response = formio_service.create_form(data, form_io_token)
         form_id = response.get("_id")
+        parent_form_id = data.get("parentFormId", form_id)
         # create default data form mapper table
         mapper_data = {
             "formId": form_id,
@@ -313,15 +314,23 @@ class FormProcessMapperService:  # pylint: disable=too-many-public-methods
             "processKey": response.get("name"),
             "processName": response.get("name"),
             "formTypeChanged": True,
-            "parentFormId": data.get("parentFormId", form_id),
+            "parentFormId": parent_form_id,
             "titleChanged": True,
             "formRevisionNumber": "V1",
         }
         # create default data for authorization of the resource
         authorization_data = {
-            "application": {"resourceId": form_id, "resourceDetails": {}, "roles": []},
-            "designer": {"resourceId": form_id, "resourceDetails": {}, "roles": []},
-            "form": {"resourceId": form_id, "resourceDetails": {}, "roles": []},
+            "application": {
+                "resourceId": parent_form_id,
+                "resourceDetails": {},
+                "roles": [],
+            },
+            "designer": {
+                "resourceId": parent_form_id,
+                "resourceDetails": {},
+                "roles": [],
+            },
+            "form": {"resourceId": parent_form_id, "resourceDetails": {}, "roles": []},
         }
         FormProcessMapperService.mapper_create(mapper_data)
         AuthorizationService.create_or_update_resource_authorization(

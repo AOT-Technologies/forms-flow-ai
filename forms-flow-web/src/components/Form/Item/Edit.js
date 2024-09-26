@@ -195,40 +195,44 @@ const Edit = React.memo(() => {
     return previousData.formName !== form.title && applicationCount > 0;
   };
   const handleConfirmSettings = () => {
-    //   const data = {
-  //     formId: form._id,
-  //     formName: form.title,
-  //     description: formDescription,
-  //     status: processListData.status,
-  //     taskVariable: processListData.taskVariable
-  //       ? processListData.taskVariable
-  //       : [],
-  //       anonymous: formAccess[0]?.roles.includes(roleIds.ANONYMOUS),
-  //       parentFormId: form._id,
-  //     formType: form.type,
-  //     processKey: workflow?.value,
-  //     processName: workflow?.name,
-  //     id: processListData.formId,
-  //     workflowChanged: false,
-  //     statusChanged: false,
-  //     resourceId: form._id,
-  //     application: {
-  //       resourceId: form._id,
-  //       resourceDetails: {},
-  //       roles: []
-  //   },
-  //     designer: {
-  //       resourceId: form._id,
-  //       resourceDetails: {},
-  //       roles: []
-  //   },
-  //   form: {
-  //     resourceId: form._id,
-  //     resourceDetails: {},
-  //     roles: []
-  // }
-  //   };
-    dispatch(saveFormProcessMapperPut(data));
+    const parentFormId = processListData.parentFormId;
+      const mapperData = {
+      formId: form._id,
+      formName: form.title,
+      description: formDescription,
+      status: processListData.status || "inactive",
+      taskVariable: processListData.taskVariable
+        ? processListData.taskVariable
+        : [],
+        anonymous: formAccess[0]?.roles.includes(roleIds.ANONYMOUS),
+        parentFormId: parentFormId,
+      formType: form.type,
+      processKey: workflow?.value,
+      processName: workflow?.name,
+      id: processListData.id,
+      workflowChanged: false,
+      statusChanged: false,
+      resourceId: form._id,
+    };
+    
+    const authData = {
+      application: {
+        resourceId:parentFormId ,
+        resourceDetails: {},
+        roles: []
+    },
+      designer: {
+        resourceId: parentFormId,
+        resourceDetails: {},
+        roles: []
+    },
+    form: {
+      resourceId: parentFormId,
+      resourceDetails: {},
+      roles: []
+  }
+};
+    dispatch(saveFormProcessMapperPut({mapperData, authData}));
   
   //   console.log("Data:", data);
   };

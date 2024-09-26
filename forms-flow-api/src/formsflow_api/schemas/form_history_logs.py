@@ -30,3 +30,15 @@ class FormHistorySchema(Schema):
     def get_is_major(self, obj):
         """Determine if the version is major."""
         return obj.minor_version == 0
+
+
+class FormHistoryReqSchema(Schema):
+    """This is a general class for paginated request schema."""
+
+    class Meta:  # pylint: disable=too-few-public-methods
+        """Exclude unknown fields in the deserialized output."""
+
+        unknown = EXCLUDE
+
+    page_no = fields.Int(data_key="pageNo", required=False, allow_none=True)
+    limit = fields.Int(required=False, allow_none=True)

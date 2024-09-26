@@ -158,11 +158,24 @@ form_history_change_log_model = API.model(
 form_history_response_model = API.inherit(
     "FormHistoryResponse",
     {
-        "id": fields.String(),
-        "form_id": fields.String(),
-        "created_by": fields.String(),
-        "created": fields.String(),
-        "change_log": fields.Nested(form_history_change_log_model),
+        "formHistory": fields.List(
+            fields.Nested(
+                API.model(
+                    "FormHistory",
+                    {
+                        "id": fields.String(),
+                        "formId": fields.String(),
+                        "createdBy": fields.String(),
+                        "created": fields.String(),
+                        "changeLog": fields.Nested(form_history_change_log_model),
+                        "majorVersion": fields.Integer(),
+                        "minorVersion": fields.Integer(),
+                        "isMajor": fields.Boolean(),
+                    },
+                )
+            )
+        ),
+        "totalCount": fields.Integer(),
     },
 )
 forms_list_model = API.model(
@@ -623,7 +636,16 @@ class FormHistoryResource(Resource):
     def get(form_id: str):
         """Getting form history."""
         FormProcessMapperService.check_tenant_authorization_by_formid(form_id=form_id)
-        return FormHistoryService.get_all_history(form_id)
+        form_history, count = FormHistoryService.get_all_history(form_id, request.args)
+        return (
+            (
+                {
+                    "formHistory": form_history,
+                    "totalCount": count,
+                }
+            ),
+            HTTPStatus.OK,
+        )
 
 
 @cors_preflight("GET,OPTIONS")

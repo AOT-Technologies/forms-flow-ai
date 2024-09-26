@@ -203,7 +203,8 @@ const List = React.memo((props) => {
       setNameError(errors.title);
       return;
     }
-
+    console.log(form,"FORM");
+    form.components = [];
     const newFormData = addHiddenApplicationComponent(form);
     const newForm = {
       ...newFormData,
@@ -213,6 +214,7 @@ const List = React.memo((props) => {
     newForm.componentChanged = true;
     newForm.newVersion = true;
     newForm.access = formAccess;
+    newForm.description = formDescription;
     if (MULTITENANCY_ENABLED && tenantKey) {
       newForm.tenantKey = tenantKey;
       if (newForm.path) {
@@ -242,22 +244,22 @@ const List = React.memo((props) => {
         roles: []
       };
       dispatch(setFormSuccessData("form", form));
-      handleAuthorization(
-        { application: payload, designer: payload, form: payload },
-        data.formId
-      ).catch((err) => {
-        console.log(err);
-      });
-      dispatch(
-        saveFormProcessMapperPost(data, (err) => {
-          if (!err) {
-            dispatch(push(`${redirectUrl}formflow/${form._id}/edit/`));
-          } else {
-            setFormSubmitted(false);
-            console.log(err);
-          }
-        })
-      );
+      // handleAuthorization(
+      //   { application: payload, designer: payload, form: payload },
+      //   data.formId
+      // ).catch((err) => {
+      //   console.log(err);
+      // });
+      // dispatch(
+      //   saveFormProcessMapperPost(data, (err) => {
+      //     if (!err) {
+      //       dispatch(push(`${redirectUrl}formflow/${form._id}/edit/`));
+      //     } else {
+      //       setFormSubmitted(false);
+      //       console.log(err);
+      //     }
+      //   })
+      // );
 
     }).catch((err) => {
       let error;

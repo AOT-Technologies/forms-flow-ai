@@ -71,8 +71,7 @@ class _Config:  # pylint: disable=too-few-public-methods
 
 
     DATABASE_SUPPORT = os.getenv("DATABASE_SUPPORT", default=Service.DISABLED.value)
-
- 
+    
     # PostgreSQL configuration
     DB_USER = os.getenv("DATABASE_USERNAME", "general")
     DB_PASSWORD = os.getenv("DATABASE_PASSWORD", "changeme")
@@ -84,7 +83,7 @@ class _Config:  # pylint: disable=too-few-public-methods
     )
     
     MODEL_ID = os.getenv("MODEL_ID")
-
+    
     # Configure LOG
     CONFIGURE_LOGS = str(os.getenv("CONFIGURE_LOGS", default="true")).lower() == "true"
 

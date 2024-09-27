@@ -81,6 +81,14 @@ class BusinessErrorCode(ErrorCodeMixin, Enum):
         "Request to Keycloak Admin APIs failed.",
         HTTPStatus.BAD_REQUEST,
     )
+    PROCESS_EXISTS = (
+        "The BPMN name or ID already exists. It must be unique.",
+        HTTPStatus.BAD_REQUEST,
+    )
+    INVALID_PROCESS_VALIDATION_INPUT = (
+        "At least one query parameter (name, key) must be provided.",
+        HTTPStatus.BAD_REQUEST,
+    )
 
     def __new__(cls, message, status_code):
         """Constructor."""

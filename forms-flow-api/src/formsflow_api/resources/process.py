@@ -304,3 +304,28 @@ class ProcessHistoryResource(Resource):
             ),
             HTTPStatus.OK,
         )
+
+
+@cors_preflight("GET,OPTIONS")
+@API.route("/validate", methods=["GET", "OPTIONS"])
+class ValidateProcess(Resource):
+    """Resource for validating a process name or key."""
+
+    @staticmethod
+    @auth.has_one_of_roles([CREATE_DESIGNS])
+    @profiletime
+    @API.response(200, "OK:- Successful request.")
+    @API.response(400, "BAD_REQUEST:- Invalid request.")
+    @API.response(
+        401,
+        "UNAUTHORIZED:- Authorization header not provided or an invalid token passed.",
+    )
+    @API.response(403, "FORBIDDEN:- Authorization will not help.")
+    def get():
+        """Handle GET requests for validating process name/key.
+
+        Retrieves the query parameters from the request, validates the process name or key,
+        and returns a response indicating whether the process name/key is valid or not.
+        """
+        response = ProcessService.validate_process(request)
+        return response, HTTPStatus.OK

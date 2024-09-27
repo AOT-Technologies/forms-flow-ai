@@ -1,7 +1,7 @@
 import React, { useReducer, useState, useEffect } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import { Card } from 'react-bootstrap';
-import { Errors, FormBuilder, Formio } from "@arun-s-aot/formio-react";
+import { Errors, FormBuilder, Formio } from "@aot-technologies/formio-react";
 import { BackToPrevIcon } from "@formsflow/components";
 import ProcessDiagram from "../../BPMN/ProcessDiagramHook";
 import { CustomButton, ConfirmModal } from "@formsflow/components";
@@ -22,7 +22,7 @@ import {
 import { manipulatingFormData } from "../../../apiManager/services/formFormatterService";
 import { formUpdate } from "../../../apiManager/services/FormServices";
 import { INACTIVE } from "../constants/formListConstants";
-import utils from "@arun-s-aot/formiojs/lib/utils";
+import utils from "@aot-technologies/formiojs/lib/utils";
 import {
   setFormFailureErrorData,
   setFormSuccessData,

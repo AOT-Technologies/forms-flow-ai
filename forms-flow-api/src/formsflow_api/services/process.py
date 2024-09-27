@@ -10,6 +10,7 @@ from formsflow_api.constants import BusinessErrorCode
 from formsflow_api.models import Process
 from formsflow_api.schemas import (
     ProcessDataSchema,
+    ProcessHistorySchema,
     ProcessListRequestSchema,
     ProcessRequestSchema,
 )
@@ -85,10 +86,10 @@ class ProcessService:  # pylint: disable=too-few-public-methods
         raise BusinessException(BusinessErrorCode.PROCESS_ID_NOT_FOUND)
 
     @classmethod
-    def get_process_by_id(cls, process_id):
-        """Get process by id."""
-        current_app.logger.debug(f"Get process data for process id: {process_id}")
-        process = Process.find_process_by_id(process_id)
+    def get_process_by_key(cls, process_id):
+        """Get process by key."""
+        current_app.logger.debug(f"Get process data for process key: {process_id}")
+        process = Process.get_latest_version(process_id)
         if process:
             return processSchema.dump(process)
         raise BusinessException(BusinessErrorCode.PROCESS_ID_NOT_FOUND)
@@ -126,4 +127,19 @@ class ProcessService:  # pylint: disable=too-few-public-methods
         if process:
             process.delete()
             return {"message": "Process deleted."}
+        raise BusinessException(BusinessErrorCode.PROCESS_ID_NOT_FOUND)
+
+    @staticmethod
+    def get_all_history(process_name: str, request_args):
+        """Get all history."""
+        assert process_name is not None
+        dict_data = ProcessListRequestSchema().load(request_args) or {}
+        page_no = dict_data.get("page_no")
+        limit = dict_data.get("limit")
+        process_histories, count = Process.fetch_histories_by_process_name(
+            process_name, page_no, limit
+        )
+        if process_histories:
+            process_history_schema = ProcessHistorySchema(many=True)
+            return process_history_schema.dump(process_histories), count
         raise BusinessException(BusinessErrorCode.PROCESS_ID_NOT_FOUND)

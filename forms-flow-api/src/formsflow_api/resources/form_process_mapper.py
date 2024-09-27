@@ -158,11 +158,24 @@ form_history_change_log_model = API.model(
 form_history_response_model = API.inherit(
     "FormHistoryResponse",
     {
-        "id": fields.String(),
-        "form_id": fields.String(),
-        "created_by": fields.String(),
-        "created": fields.String(),
-        "change_log": fields.Nested(form_history_change_log_model),
+        "formHistory": fields.List(
+            fields.Nested(
+                API.model(
+                    "FormHistory",
+                    {
+                        "id": fields.String(),
+                        "formId": fields.String(),
+                        "createdBy": fields.String(),
+                        "created": fields.String(),
+                        "changeLog": fields.Nested(form_history_change_log_model),
+                        "majorVersion": fields.Integer(),
+                        "minorVersion": fields.Integer(),
+                        "isMajor": fields.Boolean(),
+                    },
+                )
+            )
+        ),
+        "totalCount": fields.Integer(),
     },
 )
 forms_list_model = API.model(
@@ -646,7 +659,16 @@ class FormHistoryResource(Resource):
     def get(form_id: str):
         """Getting form history."""
         FormProcessMapperService.check_tenant_authorization_by_formid(form_id=form_id)
-        return FormHistoryService.get_all_history(form_id)
+        form_history, count = FormHistoryService.get_all_history(form_id, request.args)
+        return (
+            (
+                {
+                    "formHistory": form_history,
+                    "totalCount": count,
+                }
+            ),
+            HTTPStatus.OK,
+        )
 
 
 @cors_preflight("GET,OPTIONS")
@@ -702,3 +724,63 @@ class ValidateFormName(Resource):
         """
         response = FormProcessMapperService.validate_form_name_path_title(request)
         return response, HTTPStatus.OK
+
+
+@cors_preflight("POST,OPTIONS")
+@API.route("/<int:mapper_id>/publish", methods=["POST", "OPTIONS"])
+class PublishResource(Resource):
+    """Resource to support publish."""
+
+    @staticmethod
+    @auth.has_one_of_roles([CREATE_DESIGNS])
+    @profiletime
+    @API.response(200, "OK:- Successful request.")
+    @API.response(
+        400,
+        "BAD_REQUEST:- Invalid request.",
+    )
+    @API.response(
+        401,
+        "UNAUTHORIZED:- Authorization header not provided or an invalid token passed.",
+    )
+    @API.response(
+        403,
+        "FORBIDDEN:- Authorization will not help.",
+    )
+    def post(mapper_id: int):
+        """Publish by mapper_id."""
+        form_service = FormProcessMapperService()
+        return (
+            form_service.publish(mapper_id),
+            HTTPStatus.OK,
+        )
+
+
+@cors_preflight("POST,OPTIONS")
+@API.route("/<int:mapper_id>/unpublish", methods=["POST", "OPTIONS"])
+class UnpublishResource(Resource):
+    """Resource to support unpublish."""
+
+    @staticmethod
+    @auth.has_one_of_roles([CREATE_DESIGNS])
+    @profiletime
+    @API.response(200, "OK:- Successful request.")
+    @API.response(
+        400,
+        "BAD_REQUEST:- Invalid request.",
+    )
+    @API.response(
+        401,
+        "UNAUTHORIZED:- Authorization header not provided or an invalid token passed.",
+    )
+    @API.response(
+        403,
+        "FORBIDDEN:- Authorization will not help.",
+    )
+    def post(mapper_id: int):
+        """Unpublish by mapper_id."""
+        form_service = FormProcessMapperService()
+        return (
+            form_service.unpublish(mapper_id),
+            HTTPStatus.OK,
+        )

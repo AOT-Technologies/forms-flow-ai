@@ -52,6 +52,7 @@ class FormProcessMapper(AuditDateTimeMixin, AuditUserMixin, BaseModel, db.Model)
     task_variable = db.Column(JSON, nullable=True)
     version = db.Column(db.Integer, nullable=False, default=1)
     description = db.Column(db.String, nullable=True)
+    prompt_new_version = db.Column(db.Boolean, nullable=True, default=False)
 
     __table_args__ = (
         UniqueConstraint("form_id", "version", "tenant", name="_form_version_uc"),
@@ -105,6 +106,7 @@ class FormProcessMapper(AuditDateTimeMixin, AuditUserMixin, BaseModel, db.Model)
                 "task_variable",
                 "process_tenant",
                 "description",
+                "prompt_new_version",
             ],
             mapper_info,
         )
@@ -224,7 +226,7 @@ class FormProcessMapper(AuditDateTimeMixin, AuditUserMixin, BaseModel, db.Model)
         form_type=None,
         search=None,
         **filters,
-    ):  # pylint: disable=too-many-arguments
+    ):  # pylint: disable=too-many-arguments, too-many-positional-arguments
         """Fetch all active and inactive forms which are not deleted."""
         # Get latest row for each form_id group
         filtered_form_query = cls.get_latest_form_mapper_ids()
@@ -278,7 +280,7 @@ class FormProcessMapper(AuditDateTimeMixin, AuditUserMixin, BaseModel, db.Model)
         search=None,
         form_ids=None,
         **filters,
-    ):  # pylint: disable=too-many-arguments
+    ):  # pylint: disable=too-many-arguments, too-many-positional-arguments
         """Fetch all active form process mappers by authorized forms."""
         # Get latest row for each form_id group
         filtered_form_query = cls.get_latest_form_mapper_ids()

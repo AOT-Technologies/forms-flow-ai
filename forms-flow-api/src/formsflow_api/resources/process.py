@@ -25,6 +25,30 @@ process_request = API.model(
     },
 )
 
+process_history_response_model = API.model(
+    "ProcessHistoryResponse",
+    {
+        "processHistory": fields.List(
+            fields.Nested(
+                API.model(
+                    "ProcessHistory",
+                    {
+                        "id": fields.Integer(description="Unique id of the process"),
+                        "created": fields.DateTime(description="Created time"),
+                        "createdBy": fields.String(),
+                        "processType": fields.String(description="Process Type"),
+                        "processName": fields.String(),
+                        "majorVersion": fields.Integer(),
+                        "minorVersion": fields.Integer(),
+                        "isMajor": fields.Boolean(),
+                    },
+                )
+            )
+        ),
+        "totalCount": fields.Integer(),
+    },
+)
+
 process_response = API.inherit(
     "ProcessResponse",
     process_request,
@@ -176,7 +200,7 @@ class ProcessDataResource(Resource):
 
 
 @cors_preflight("GET, PUT, DELETE, OPTIONS")
-@API.route("/<int:process_id>", methods=["GET", "PUT", "DELETE", "OPTIONS"])
+@API.route("/<string:process_id>", methods=["GET", "PUT", "DELETE", "OPTIONS"])
 @API.doc(params={"process_id": "Process data corresponding to process_id"})
 class ProcessResourceById(Resource):
     """Resource for managing process by id."""
@@ -192,9 +216,9 @@ class ProcessResourceById(Resource):
         },
         model=process_response,
     )
-    def get(process_id: int):
+    def get(process_id: str):
         """Get process data by id."""
-        response, status = ProcessService.get_process_by_id(process_id), HTTPStatus.OK
+        response, status = ProcessService.get_process_by_key(process_id), HTTPStatus.OK
 
         return response, status
 
@@ -210,7 +234,7 @@ class ProcessResourceById(Resource):
         model=process_response,
     )
     @API.expect(process_request)
-    def put(process_id: int):
+    def put(process_id: str):
         """Update process data by id."""
         response, status = (
             ProcessService.update_process(process_id, request.get_json()),
@@ -228,7 +252,55 @@ class ProcessResourceById(Resource):
             403: "FORBIDDEN:- Permission denied",
         }
     )
-    def delete(process_id: int):
+    def delete(process_id: str):
         """Delete process data by id."""
         response, status = ProcessService.delete_process(process_id), HTTPStatus.OK
         return response, status
+
+
+@cors_preflight("GET, OPTIONS")
+@API.route(
+    "/process-history/<string:process_name>/versions", methods=["GET", "OPTIONS"]
+)
+class ProcessHistoryResource(Resource):
+    """Resource for retrieving process history."""
+
+    @staticmethod
+    @auth.has_one_of_roles([CREATE_DESIGNS])
+    @profiletime
+    @API.doc(
+        params={
+            "process_name": {
+                "description": "Unique name of the process",
+                "type": "string",
+            },
+            "pageNo": {
+                "in": "query",
+                "description": "Page number for paginated results",
+            },
+            "limit": {"in": "query", "description": "Limit for paginated results"},
+        },
+        responses={
+            200: "OK:- Successful request.",
+            400: "BAD_REQUEST:- Invalid request.",
+            401: "UNAUTHORIZED:- Authorization header not provided or an invalid token passed.",
+            403: "FORBIDDEN:- Permission denied.",
+        },
+        model=process_history_response_model,
+    )
+    def get(process_name: str):
+        """Get history for a process by process_name."""
+        # Retrieve all history related to the specified process
+
+        process_history, count = ProcessService.get_all_history(
+            process_name, request.args
+        )
+        return (
+            (
+                {
+                    "processHistory": process_history,
+                    "totalCount": count,
+                }
+            ),
+            HTTPStatus.OK,
+        )

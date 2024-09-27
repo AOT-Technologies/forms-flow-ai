@@ -29,7 +29,7 @@ from formsflow_api.schemas.user import (
     UsersListSchema,
 )
 
-from .form_history_logs import FormHistorySchema
+from .form_history_logs import FormHistoryReqSchema, FormHistorySchema
 from .import_support import (
     ImportEditRequestSchema,
     ImportRequestSchema,
@@ -42,5 +42,6 @@ from .process import (
     ProcessListSchema,
     ProcessRequestSchema,
 )
+from .process_history_logs import ProcessHistorySchema
 from .roles import RolesGroupsSchema
 from .theme import ThemeCustomizationSchema

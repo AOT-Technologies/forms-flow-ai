@@ -7,7 +7,7 @@ import {
   Form,
   selectError,
   Errors,
-} from "@arun-s-aot/formio-react";
+} from "@aot-technologies/formio-react";
 import { push } from "connected-react-router";
 import { Link, useParams } from "react-router-dom";
 import { useTranslation, Translation } from "react-i18next";

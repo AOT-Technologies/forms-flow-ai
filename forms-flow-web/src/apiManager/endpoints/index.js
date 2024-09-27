@@ -29,6 +29,7 @@ const API = {
   PROCESS_ACTIVITIES: `${BPM_BASE_URL_EXT}/v1/process-instance/<process_instance_id>/activity-instances`,
   FORM: `${WEB_BASE_URL}/form`,
   FORM_DESIGN: `${WEB_BASE_URL}/form/form-design`,
+  FORM_IMPORT: `${WEB_BASE_URL}/import`,
   FORM_HISTORY: `${WEB_BASE_URL}/form/form-history`,
   LANG_UPDATE: `${WEB_BASE_URL}/user/locale`,
   FORM_PROCESSES: `${WEB_BASE_URL}/form/formid`,

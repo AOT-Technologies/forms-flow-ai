@@ -32,17 +32,18 @@ import {
 import FormTable from "./constants/FormTable";
 import ClientTable from "./constants/ClientTable";
 import _ from "lodash";
-import Button from "../CustomComponents/Button";
+import { CustomButton } from "@formsflow/components";
 import _set from "lodash/set";
 import _cloneDeep from "lodash/cloneDeep";
 import _camelCase from "lodash/camelCase";
-import { formCreate } from "../../apiManager/services/FormServices";
+import { formCreate, formImport } from "../../apiManager/services/FormServices";
 import { addHiddenApplicationComponent } from "../../constants/applicationComponent";
 import { setFormSuccessData } from "../../actions/formActions";
 import { handleAuthorization } from "../../apiManager/services/authorizationService";
 import { saveFormProcessMapperPost } from "../../apiManager/services/processServices";
-import { CustomSearch }  from "@formsflow/components";
+import { CustomSearch } from "@formsflow/components";
 import userRoles from "../../constants/permissions.js";
+import FileService from "../../services/FileService";
 
 
 
@@ -77,17 +78,26 @@ const List = React.memo((props) => {
   const searchText = useSelector((state) => state.bpmForms.searchText);
   const [search, setSearch] = useState(searchText || "");
   const [showBuildForm, setShowBuildForm] = useState(false);
-  const [importFormModal, SetImportFormModal] = useState(false);
+  const [importFormModal, setImportFormModal] = useState(false);
+  const [importError, setImportError] = useState("");
+  const [importLoader, setImportLoader] = useState(false);
+
   const ActionType = {
     BUILD: "BUILD",
     IMPORT: "IMPORT"
   };
+
+  const UploadActionType = {
+    IMPORT: "import",
+    VALIDATE: "validate"
+  };
+
   const [formDescription, setFormDescription] = useState("");
   const [nameError, setNameError] = useState("");
   const dispatch = useDispatch();
   const redirectUrl = MULTITENANCY_ENABLED ? `/tenant/${tenantKey}/` : "/";
   const submissionAccess = useSelector((state) => state.user?.submissionAccess || []);
-  const formAccess = useSelector((state) => state.user?.formAccess || []);
+
   const [formSubmitted, setFormSubmitted] = useState(false);
   const formData = { display: "form" }; const tenantKey = useSelector((state) => state.tenants?.tenantId);
   const [form, dispatchFormAction] = useReducer(reducer, _cloneDeep(formData));
@@ -123,16 +133,20 @@ const List = React.memo((props) => {
   const limit = useSelector((state) => state.bpmForms.limit);
   const sortBy = useSelector((state) => state.bpmForms.sortBy);
   const sortOrder = useSelector((state) => state.bpmForms.sortOrder);
+  const formAccess = useSelector((state) => state.user?.formAccess || []);
   const searchFormLoading = useSelector(
     (state) => state.formCheckList.searchFormLoading
   );
   const [newFormModal, setNewFormModal] = useState(false);
+  const [description, setUploadFormDescription] = useState("");
+  const [formTitle, setFormTitle] = useState("");
 
   useEffect(() => {
     dispatch(setFormCheckList([]));
   }, [dispatch]);
 
   useEffect(() => {
+    console.log("================", importError);
     dispatch(setBPMFormListLoading(true));
   }, []);
 
@@ -145,7 +159,8 @@ const List = React.memo((props) => {
     setNewFormModal(false);
   };
   const onCloseimportModal = () => {
-    SetImportFormModal(false);
+    setImportError("");
+    setImportFormModal(false);
   };
   const onCloseBuildModal = () => {
     setShowBuildForm(false);
@@ -158,15 +173,63 @@ const List = React.memo((props) => {
         setShowBuildForm(true);
         break;
       case ActionType.IMPORT:
-        SetImportFormModal(true);
+        setImportFormModal(true);
         break;
     }
     onClose();
   };
 
-  const uploadAction = () => {
-    //write the form upload action here
+  const handleImport = async (fileContent, UploadActionType) => {
+    setImportLoader(true);
+    let data = {};
+    switch (UploadActionType) {
+      case "validate":
+        data = {
+          importType: "new",
+          action: "validate",
+        };
+        break;
+      case "import":
+        setFormSubmitted(true);
+        data = {
+          importType: "new",
+          action: "import",
+        };
+        break;
+      default:
+        console.error("Invalid UploadActionType provided");
+        return;
+    }
+
+    const dataString = JSON.stringify(data);
+    formImport(fileContent, dataString)
+      .then((res) => {
+        console.log(res);
+        setImportLoader(false);
+        setFormSubmitted(false);
+
+        if (data.action == "validate") {
+          FileService.extractFormDetails(fileContent, (formExtracted) => {
+            if (formExtracted) {
+              setFormTitle(formExtracted.formTitle);
+              setUploadFormDescription(formExtracted.formDescription);
+            } else {
+              console.log("No valid form found.");
+            }
+          });
+        }
+        else {
+          dispatch(push(`${redirectUrl}formflow/${form._id}/edit/`));
+        }
+      })
+      .catch((err) => {
+        setImportLoader(false);
+        setFormSubmitted(false);
+        setImportError(err?.response?.data?.message);
+      });
   };
+
+
   useEffect(() => {
     fetchForms();
   }, [
@@ -287,55 +350,61 @@ const List = React.memo((props) => {
           {createDesigns && (
             <>
               <div className="d-md-flex justify-content-between align-items-center pb-3 flex-wrap">
-              <div className="d-md-flex align-items-center p-0 search-box input-group input-group w-50">
+                <div className="d-md-flex align-items-center p-0 search-box input-group input-group width-25">
 
-    <CustomSearch
-      search={search}
-      setSearch={setSearch}
-      handleSearch={handleSearch}
-      handleClearSearch={handleClearSearch}
-      placeholder={t("Search Form Name and Description")}
-      searchFormLoading={searchFormLoading}
-      title={t("Search Form Name and Description")}
-      dataTestId="form-search-input"
-    />
-  </div>
-  <div className="d-md-flex justify-content-end align-items-center">
-    {createDesigns && (
-      <Button
-        variant="primary"
-        size="md"
-        label="New Form"
-        onClick={() => setNewFormModal(true)}
-        className=""
-        dataTestid="create-form-button"
-        ariaLabel="Create Form"
-      />
-    )}
-    <CreateFormModal
-      newFormModal={newFormModal}
-      actionType={ActionType}
-      onClose={onClose}
-      onAction={handleAction}
-    />
-    <BuildFormModal
-      showBuildForm={showBuildForm}
-      formSubmitted={formSubmitted}
-      onClose={onCloseBuildModal}
-      onAction={handleAction}
-      handleChange={handleChange}
-      handleBuild={handleBuild}
-      setFormDescription={setFormDescription}
-      setNameError={setNameError}
-      nameError={nameError}
-    />
-    <ImportFormModal
-      importFormModal={importFormModal}
-      onClose={onCloseimportModal}
-      uploadAction={uploadAction}
-    />
-  </div>
-</div>
+                  <CustomSearch
+                    search={search}
+                    setSearch={setSearch}
+                    handleSearch={handleSearch}
+                    handleClearSearch={handleClearSearch}
+                    placeholder={t("Search Form Name and Description")}
+                    searchFormLoading={searchFormLoading}
+                    title={t("Search Form Name and Description")}
+                    dataTestId="form-search-input"
+                  />
+                </div>
+                <div className="d-md-flex justify-content-end align-items-center">
+                  {createDesigns && (
+                    <CustomButton
+                      variant="primary"
+                      size="md"
+                      label="New Form"
+                      onClick={() => setNewFormModal(true)}
+                      className=""
+                      dataTestid="create-form-button"
+                      ariaLabel="Create Form"
+                    />
+                  )}
+                  <CreateFormModal
+                    newFormModal={newFormModal}
+                    actionType={ActionType}
+                    onClose={onClose}
+                    onAction={handleAction}
+                  />
+                  <BuildFormModal
+                    showBuildForm={showBuildForm}
+                    formSubmitted={formSubmitted}
+                    onClose={onCloseBuildModal}
+                    onAction={handleAction}
+                    handleChange={handleChange}
+                    handleBuild={handleBuild}
+                    setFormDescription={setFormDescription}
+                    setNameError={setNameError}
+                    nameError={nameError}
+                  />
+                  <ImportFormModal
+                    importLoader={importLoader}
+                    importError={importError}
+                    importFormModal={importFormModal}
+                    uploadActionType={UploadActionType}
+                    formName={formTitle}
+                    formSubmitted={formSubmitted}
+                    description={description}
+                    onClose={onCloseimportModal}
+                    handleImport={handleImport}
+                  />
+                </div>
+              </div>
 
             </>
           )}

@@ -14,6 +14,7 @@ import { Translation, useTranslation } from "react-i18next";
 import { listProcess } from "../../../apiManager/services/formatterService";
 import { push } from "connected-react-router";
 import { HistoryIcon, PreviewIcon } from "@formsflow/components";
+import ActionModal from "../../Modals/ActionModal.js";
 import {
   MULTITENANCY_ENABLED,
 } from "../../../constants/constants";
@@ -21,7 +22,7 @@ import {
 import { manipulatingFormData } from "../../../apiManager/services/formFormatterService";
 import { formUpdate } from "../../../apiManager/services/FormServices";
 import { INACTIVE } from "../constants/formListConstants";
-import utils from "@arun-s-aot/formiojs/utils";
+import utils from "@arun-s-aot/formiojs/lib/utils";
 import {
   setFormFailureErrorData,
   setFormSuccessData,
@@ -90,8 +91,18 @@ const Edit = React.memo(() => {
   const [showSaveModal, setShowSaveModal] = useState(false);
   const [hasRendered, setHasRendered] = useState(false);
 
-  useEffect(() => {    
-    if(showFlow) { 
+  //action modal
+  const [newActionModal, setNewActionModal] = useState(false);
+  const onCloseActionModal = () => {
+      setNewActionModal(false);
+  };
+  const CategoryType = {
+    FORM: "FORM",
+    WORKFLOW: "WORKFLOW"
+  };
+
+  useEffect(() => {
+    if (showFlow) {
       setHasRendered(true);
     }
   }, [showFlow]);
@@ -282,7 +293,7 @@ const Edit = React.memo(() => {
     console.log("ecitorActions");
   };
   const editorActions = () => {
-    console.log("ecitorActions");
+    setNewActionModal(true);
   };
 
   const handlePublish = () => {
@@ -495,6 +506,12 @@ const Edit = React.memo(() => {
 
         </LoadingOverlay>
       </div>
+      <ActionModal
+        newActionModal={newActionModal}
+        onClose={onCloseActionModal}
+        CategoryType={CategoryType.FORM}
+      />
+
       <ConfirmModal
         show={showSaveModal}
         title={<Translation>{(t) => t("Save Your Changes")}</Translation>}

@@ -270,7 +270,7 @@ class FormProcessMapperService:  # pylint: disable=too-many-public-methods
     @staticmethod
     def mapper_create(mapper_json):
         """Service to handle mapper create."""
-        mapper_json["taskVariable"] = json.dumps(mapper_json.get("taskVariable") or [])
+        mapper_json["taskVariables"] = json.dumps(mapper_json.get("taskVariables") or [])
         mapper_schema = FormProcessMapperSchema()
         dict_data = mapper_schema.load(mapper_json)
         mapper = FormProcessMapperService.create_mapper(dict_data)
@@ -278,7 +278,7 @@ class FormProcessMapperService:  # pylint: disable=too-many-public-methods
         FormProcessMapperService.unpublish_previous_mapper(dict_data)
 
         response = mapper_schema.dump(mapper)
-        response["taskVariable"] = json.loads(response["taskVariable"])
+        response["taskVariables"] = json.loads(response["taskVariables"])
 
         FormHistoryService.create_form_logs_without_clone(data=mapper_json)
         return response

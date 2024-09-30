@@ -133,8 +133,8 @@ const Edit = React.memo(() => {
       parentFormId: processListData.parentFormId,
       formType: submittedData.type,
       status: processListData.status ? processListData.status : INACTIVE,
-      taskVariable: processListData.taskVariable
-        ? processListData.taskVariable
+      taskVariables: processListData.taskVariables
+        ? processListData.taskVariables
         : [],
       id: processListData.id,
       formId: submittedData._id,
@@ -196,13 +196,13 @@ const Edit = React.memo(() => {
   };
   const handleConfirmSettings = () => {
     const parentFormId = processListData.parentFormId;
-      const mapperData = {
+      const mapper = {
       formId: form._id,
       formName: form.title,
       description: formDescription,
       status: processListData.status || "inactive",
-      taskVariable: processListData.taskVariable
-        ? processListData.taskVariable
+      taskVariables: processListData.taskVariables
+        ? processListData.taskVariables
         : [],
         anonymous: formAccess[0]?.roles.includes(roleIds.ANONYMOUS),
         parentFormId: parentFormId,
@@ -215,7 +215,7 @@ const Edit = React.memo(() => {
       resourceId: form._id,
     };
     
-    const authData = {
+    const authorizations = {
       application: {
         resourceId:parentFormId ,
         resourceDetails: {},
@@ -232,7 +232,7 @@ const Edit = React.memo(() => {
       roles: []
   }
 };
-    dispatch(saveFormProcessMapperPut({mapperData, authData}));
+    dispatch(saveFormProcessMapperPut({mapper, authorizations}));
   
   //   console.log("Data:", data);
   };

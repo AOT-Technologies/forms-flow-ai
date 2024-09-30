@@ -241,8 +241,8 @@ class StepperPage extends PureComponent {
       formId: form.id,
       formName: form.form && form.form.title,
       status: processData.status ? processData.status : "inactive",
-      taskVariable: formProcessList.taskVariable
-        ? formProcessList.taskVariable
+      taskVariables: formProcessList.taskVariables
+        ? formProcessList.taskVariables
         : [],
       anonymous: formProcessList.anonymous ? true : false,
       selectedAllField: formProcessList.selectedAllField,

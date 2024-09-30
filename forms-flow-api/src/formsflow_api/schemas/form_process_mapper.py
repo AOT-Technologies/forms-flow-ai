@@ -26,7 +26,7 @@ class FormProcessMapperSchema(Schema):
     created = fields.Str(data_key="created")
     modified_by = fields.Str(data_key="modifiedBy")
     modified = fields.Str(data_key="modified")
-    task_variable = fields.Str(data_key="taskVariable")
+    task_variable = fields.Str(data_key="taskVariables")
     version = fields.Str(data_key="version")
     process_tenant = fields.Str(data_key="processTenant")
     deleted = fields.Boolean(data_key="deleted")

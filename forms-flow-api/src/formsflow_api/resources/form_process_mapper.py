@@ -402,19 +402,19 @@ class FormResourceById(Resource):
         data = request.get_json()
 
         # Extract mapper and authorization data from the request
-        mapper_data = data.get("mapperData")
-        authorization_data = data.get("authData")
+        mapper_data = data.get("mapper")
+        authorization_data = data.get("authorizations")
 
         # Get the parentFormId as resource id from mapper data if authorization data is provided
         resource_id = mapper_data.get("parentFormId") if authorization_data else None
-        task_variable = mapper_data.get("taskVariable", [])
+        task_variable = mapper_data.get("taskVariables", [])
 
         # If task variables are present, update filter variables and serialize them
-        if "taskVariable" in mapper_data:
+        if "taskVariables" in mapper_data:
             FilterService.update_filter_variables(
                 task_variable, mapper_data.get("formId")
             )
-            mapper_data["taskVariable"] = json.dumps(task_variable)
+            mapper_data["taskVariables"] = json.dumps(task_variable)
 
         # Load the mapper data into the schema
         mapper_schema = FormProcessMapperSchema()
@@ -433,7 +433,7 @@ class FormResourceById(Resource):
 
         # Dump the updated mapper data into the response schema
         mapper_response = mapper_schema.dump(mapper)
-        mapper_response["taskVariable"] = json.loads(mapper_response["taskVariable"])
+        mapper_response["taskVariables"] = json.loads(mapper_response["taskVariables"])
 
         # Create form logs without cloning
         FormHistoryService.create_form_logs_without_clone(data=mapper_data)
@@ -492,8 +492,8 @@ class FormResourceByFormId(Resource):
         : form_id:- Get details of only form corresponding to a particular formId
         """
         response = FormProcessMapperService.get_mapper_by_formid(form_id=form_id)
-        task_variable = response.get("taskVariable")
-        response["taskVariable"] = json.loads(task_variable) if task_variable else None
+        task_variable = response.get("taskVariables")
+        response["taskVariables"] = json.loads(task_variable) if task_variable else None
         return (
             response,
             HTTPStatus.OK,

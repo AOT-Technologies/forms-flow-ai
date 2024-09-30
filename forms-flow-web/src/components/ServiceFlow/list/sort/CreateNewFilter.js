@@ -162,7 +162,7 @@ export default function CreateNewFilterDrawer({
     setProcessLoading(true);
     fetchTaskVariables(formId)
       .then((res) => {
-        setTaskVariableFromMapperTable(res.data?.taskVariable || []);
+        setTaskVariableFromMapperTable(res.data?.taskVariables || []);
         setProcessLoading(false);
       })
       .catch((err) => {

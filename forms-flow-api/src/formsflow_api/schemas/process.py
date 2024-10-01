@@ -45,6 +45,9 @@ class ProcessDataSchema(Schema):
     process_type = fields.Method(
         "get_process_type", deserialize="load_process_type", data_key="processType"
     )
+    is_subflow = fields.Bool(data_key="isSubflow")
+    process_key = fields.Str(data_key="processKey")
+    parent_process_key = fields.Str(data_key="parentProcessKey")
 
     def get_status(self, obj):
         """This method is to get the status."""
@@ -126,6 +129,9 @@ class ProcessRequestSchema(Schema):
     )
     major_version = fields.Int(data_key="majorVersion")
     minor_version = fields.Int(data_key="minorVersion")
+    is_subflow = fields.Bool(data_key="isSubflow")
+    process_key = fields.Str(data_key="processKey")
+    parent_process_key = fields.Str(data_key="parentProcessKey")
 
     def load(self, data, *args, **kwargs):
         """Load method for deserializing data."""

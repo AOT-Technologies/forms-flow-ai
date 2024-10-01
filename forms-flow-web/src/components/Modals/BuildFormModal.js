@@ -1,6 +1,6 @@
 import React, { useRef, useEffect } from "react";
 import Modal from "react-bootstrap/Modal";
-import Button from "../../components/CustomComponents/Button";
+import { CloseIcon, CustomButton } from "@formsflow/components";
 
 
 import { Translation } from "react-i18next";
@@ -34,24 +34,15 @@ const BuildFormModal = React.memo(({ showBuildForm, onClose, handleChange, handl
                         </b>
                     </Modal.Title>
                     <div className="d-flex align-items-center">
-                        <button
-                            type="button"
-                            className="close-modal"
-                            onClick={onClose}
-                            aria-label="close New Form Modal"
-                            data-testid="close-new-form-modal"
-                        >
-                           X
-                        </button>
+                        <CloseIcon width="16.5" height="16.5"  onClick={onClose} />
                     </div>
                 </Modal.Header>
-                <Modal.Body className="p-5">
+                <Modal.Body className="build-modal-body">
                     <label className="form-label">Name</label>
                     <span className="valiation-astrisk">*</span>
                     <input
                         type="text"
-                        placeholder="Form 1"
-                        className={`form-input ${nameError ? "input-error" : ""}`}
+                        className={`form-input h-40 ${nameError ? "input-error" : "mb-4"}`}
                         aria-label="Name of the form"
                         onChange={(event) => {
                             // setName(event.target.value);
@@ -67,31 +58,25 @@ const BuildFormModal = React.memo(({ showBuildForm, onClose, handleChange, handl
                         onChange={(e) => setFormDescription(e.target.value)}
                         // value={formDescription}
                         ref={textareaRef}
-                        placeholder="Short description of the form"
-                        className="form-input"
+                        className="form-input h-40"
                         aria-label="Description of the new form"
                         rows="1"
                     ></textarea>
                 </Modal.Body>
                 <Modal.Footer className="d-flex justify-content-start">
-                    <Button
+                    <CustomButton
                         variant={nameError ? "dark" : "primary"}
                         size="md"
                         disabled={nameError || formSubmitted}
-                        label={
-                            !nameError && formSubmitted ? (
-                                <div className="stage">
-                                    <div className="dot-loader"></div>
-                                </div>
-                            ) : <Translation>{(t) => t("Save and Edit form")}</Translation>
-                        }
+                        label={<Translation>{(t) => t("Create and Edit form")}</Translation>}
+                        buttonLoading={!nameError && formSubmitted ? true : false}
                         onClick={handleBuild}
                         className=""
                         dataTestid={`build-form-button`}
                         ariaLabel="Build Form Button"
                     />
 
-                    <Button
+                    <CustomButton
                         variant="secondary"
                         size="md"
                         label={<Translation>{(t) => t("Close")}</Translation>}

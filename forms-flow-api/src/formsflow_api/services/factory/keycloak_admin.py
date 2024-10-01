@@ -23,7 +23,7 @@ class KeycloakAdmin(ABC):
         raise NotImplementedError("Method not implemented")
 
     @abstractmethod
-    def get_users(  # pylint: disable-msg=too-many-arguments
+    def get_users(  # pylint: disable-msg=too-many-arguments, too-many-positional-arguments
         self,
         page_no: int,
         limit: int,
@@ -71,7 +71,7 @@ class KeycloakAdmin(ABC):
         raise NotImplementedError("Method not implemented")
 
     @abstractmethod
-    def search_realm_users(  # pylint: disable-msg=too-many-arguments
+    def search_realm_users(  # pylint: disable-msg=too-many-arguments, too-many-positional-arguments
         self,
         search: str,
         page_no: int,

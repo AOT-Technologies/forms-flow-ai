@@ -155,7 +155,7 @@ const removeComponent  = (components, target) => {
 };
 
 export const addHiddenApplicationComponent = (form) => {
-  const {components} = form;
+  const components = form.components || [];
   const flatternComponent = utils.flattenComponents(components, true);
   
  

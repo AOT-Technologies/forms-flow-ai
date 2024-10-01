@@ -91,7 +91,7 @@ class Filter(AuditDateTimeMixin, AuditUserMixin, BaseModel, db.Model):
         return query.all()
 
     @classmethod
-    def _auth_query(  # pylint: disable=too-many-arguments
+    def _auth_query(  # pylint: disable=too-many-arguments, too-many-positional-arguments
         cls, roles, user, tenant, admin, filter_empty_tenant_key=False
     ):
         query = cls.query
@@ -123,7 +123,7 @@ class Filter(AuditDateTimeMixin, AuditUserMixin, BaseModel, db.Model):
         return cls.query.filter(Filter.id == filter_id).first()
 
     @classmethod
-    def find_active_filter_by_id(  # pylint: disable=too-many-arguments
+    def find_active_filter_by_id(  # pylint: disable=too-many-arguments,too-many-positional-arguments
         cls, filter_id, roles, user, tenant, admin
     ) -> Filter:
         """Find active filter by id."""

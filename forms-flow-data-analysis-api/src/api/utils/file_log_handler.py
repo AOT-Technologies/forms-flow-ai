@@ -64,7 +64,7 @@ class CustomTimedRotatingFileHandler(logging.handlers.TimedRotatingFileHandler):
         return result
 
 
-def register_log_handlers(  # pylint: disable=too-many-arguments
+def register_log_handlers(  # pylint: disable=too-many-arguments,too-many-positional-arguments
         app, log_file, when, interval, backup_count, configure_log_file: bool = True):
     """Configure console and file log handlers."""
     logs = logging.StreamHandler()

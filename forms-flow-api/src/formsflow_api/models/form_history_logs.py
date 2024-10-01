@@ -50,16 +50,18 @@ class FormHistory(ApplicationAuditDateTimeMixin, BaseModel, db.Model):
         return None
 
     @classmethod
-    def fetch_histories_by_parent_id(cls, parent_id) -> List["FormHistory"]:
+    def fetch_histories_by_parent_id(
+        cls, parent_id, page_no=None, limit=None
+    ) -> List["FormHistory"]:
         """Fetch all histories against a form id."""
         assert parent_id is not None
-        return (
-            cls.query.filter(
-                and_(cls.parent_form_id == parent_id, cls.component_change.is_(True))
-            )
-            .order_by(desc(FormHistory.created))
-            .all()
-        )
+        query = cls.query.filter(
+            and_(cls.parent_form_id == parent_id, cls.component_change.is_(True))
+        ).order_by(desc(FormHistory.created))
+        total_count = query.count()
+        limit = total_count if limit is None else limit
+        query = query.paginate(page=page_no, per_page=limit, error_out=False)
+        return query.items, total_count
 
     @classmethod
     def get_latest_version(cls, parent_form_id):

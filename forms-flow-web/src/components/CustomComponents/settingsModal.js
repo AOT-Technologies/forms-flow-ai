@@ -163,7 +163,7 @@ const SettingsModal = ({ show, handleClose, handleConfirm }) => {
           <h5 className='fw-bold'>{t("Basic")}</h5>
           <FormInput value={newFormName} label={t("Name")} onChange={handleFormNameChange} dataTestid="form-name" ariaLabel={t("Form Name")} />
 
-          <Form.Group className='settingsInput' controlId="descriptionInput">
+          <Form.Group className='settings-input' controlId="descriptionInput">
             <Form.Label className='field-label'>{t("Description")}</Form.Label>
             <Form.Control className='text-area' as="textarea" rows={3} value={NewFormDescription} onChange={handleFormDescriptionChange} dataTestid="form-description" ariaLabel={t("Form Description")} />
           </Form.Group>
@@ -300,7 +300,7 @@ const SettingsModal = ({ show, handleClose, handleConfirm }) => {
               {t("Making changes to your form URL will make your form inaccessible from your current URL.")}
             </div>
           </div>
-          <Form.Group controlId="url-input">
+          <Form.Group className='settings-input' controlId="url-input">
             <Form.Label className='field-label'>{t("URL Path")}</Form.Label>
             <InputGroup className='url-input'>
               <InputGroup.Text className='url-non-edit'>

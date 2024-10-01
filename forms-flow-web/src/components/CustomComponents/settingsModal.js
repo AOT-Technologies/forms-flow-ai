@@ -150,6 +150,8 @@ const SettingsModal = ({ show, handleClose, handleConfirm }) => {
     };
   }, []);
 
+  
+
   return (
     <Modal className="settingsModal" show={show} onHide={handleClose} dialogClassName="modal-50w" backdrop="static" >
       <Modal.Header>
@@ -183,17 +185,17 @@ const SettingsModal = ({ show, handleClose, handleConfirm }) => {
           )}
           {selectedOptionEdit === 'specifiedRoles' && (
             <>
-              <div className="position-relative w-100">
+              <div className='w-100'>
                 <div className="inputWithPills form-control cursor-pointer position-relative">
                   {selectedRolesEdit.map((role, index) => (
                     <CustomPill key={index} label={role} icon={true} bg="primary" onClick={() => removeRole(role, setSelectedRolesEdit)} />
                   ))}
                   <input type="text" value={roleInputEdit} onChange={handleRoleInputChangeEdit} className="roleInput" />
                 </div>
-              </div>
+              
 
               {filteredRolesEdit.length > 0 && (
-                <div className="input-drop-edit cursor-pointer" ref={dropEditRef}>
+                <div className="input-drop-edit cursor-pointer w-70" ref={dropEditRef}>
                   <ListGroup>
                     {filteredRolesEdit.map((role) => (
                       <ListGroup.Item key={role.id} onClick={() =>
@@ -204,6 +206,7 @@ const SettingsModal = ({ show, handleClose, handleConfirm }) => {
                   </ListGroup>
                 </div>
               )}
+              </div>
             </>
           )}
 
@@ -225,8 +228,8 @@ const SettingsModal = ({ show, handleClose, handleConfirm }) => {
           )}
           {selectedOptionCreate === 'specificRoles' && (
             <>
-              <div className="position-relative w-100">
-                <div className="inputWithPills form-control cursor-pointer">
+              <div className="w-100">
+                <div className="inputWithPills form-control cursor-pointer position-relative">
                   {selectedRolesCreate.map((role, index) => (
                     <CustomPill key={index} label={role} icon={true} bg="primary" onClick={() => removeRole(role, setSelectedRolesCreate)} />
                   ))}
@@ -235,7 +238,7 @@ const SettingsModal = ({ show, handleClose, handleConfirm }) => {
               </div>
 
               {filteredRolesCreate.length > 0 && (
-                <div className="input-drop-create cursor-pointer" ref={dropCreateRef}>
+                <div className="input-drop-create cursor-pointer w-70" ref={dropCreateRef}>
                   <ListGroup>
                     {filteredRolesCreate.map((role) => (
                       <ListGroup.Item key={role.id} onClick={() =>
@@ -259,8 +262,8 @@ const SettingsModal = ({ show, handleClose, handleConfirm }) => {
           )}
           {selectedOptionView === 'specifiedRoles' && (
             <>
-              <div className="position-relative w-100">
-                <div className="inputWithPills form-control cursor-pointer">
+              <div className="w-100">
+                <div className="inputWithPills form-control cursor-pointer position-relative ">
                   {selectedRolesView.map((role, index) => (
                     <CustomPill key={index} label={role} icon={true} bg="primary" onClick={() => removeRole(role, setSelectedRolesView)} />
                   ))}
@@ -269,7 +272,7 @@ const SettingsModal = ({ show, handleClose, handleConfirm }) => {
               </div>
 
               {filteredRolesView.length > 0 && (
-                <div className="input-drop-view cursor-pointer" ref={dropViewRef}>
+                <div className="input-drop-view cursor-pointer w-70" ref={dropViewRef}>
                   <ListGroup>
                     {filteredRolesView.map((role) => (
                       <ListGroup.Item key={role.id} onClick={() =>

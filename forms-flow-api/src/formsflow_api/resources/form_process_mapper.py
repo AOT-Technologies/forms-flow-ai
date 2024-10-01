@@ -440,9 +440,9 @@ class FormResourceById(Resource):
 
         # Prepare the response
         response = {}
-        response["mapperData"] = mapper_response
+        response["mapper"] = mapper_response
         if resource_id:
-            response["authData"] = AuthorizationService().get_auth_list_by_id(
+            response["authorizations"] = AuthorizationService().get_auth_list_by_id(
                 resource_id
             )
 

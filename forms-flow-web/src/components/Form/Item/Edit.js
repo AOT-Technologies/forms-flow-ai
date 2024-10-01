@@ -233,9 +233,7 @@ const Edit = React.memo(() => {
   }
 };
     dispatch(saveFormProcessMapperPut({mapper, authorizations}));
-  
-  //   console.log("Data:", data);
-  };
+    };
   
 
   const closeSaveModal = () => {

@@ -1,6 +1,7 @@
 """This exposes form process mapper service."""
 
 import json
+import re
 import xml.etree.ElementTree as ET
 from concurrent.futures import ThreadPoolExecutor
 from typing import List, Set, Tuple
@@ -268,20 +269,41 @@ class FormProcessMapperService:  # pylint: disable=too-many-public-methods
         return
 
     @staticmethod
+    def clean_form_name(name):
+        """Remove invalid characters from form_name before setting as process key."""
+        # Remove non-letters at the start, and any invalid characters elsewhere
+        name = re.sub(r"^[^a-zA-Z]+|[^a-zA-Z0-9\-_]", "", name)
+        return name
+
+    @staticmethod
+    def validate_process_and_update_mapper(name, mapper):
+        """Validate process name/key exists, if exists update name & update mapper."""
+        current_app.logger.info(f"Validating process key already exists. {name}")
+        process = Process.find_process_by_name_key(name=name, process_key=name)
+        if process:
+            # Since the process key/name already exists create updated process key by appending mapper Id
+            # Update mapper with updated value
+            updated_process_name = f"{name}_{mapper.id}"
+            mapper.process_key = updated_process_name
+            mapper.process_name = updated_process_name
+            mapper.save()
+            return updated_process_name
+        return None
+
+    @staticmethod
     def mapper_create(mapper_json):
         """Service to handle mapper create."""
-        mapper_json["taskVariables"] = json.dumps(mapper_json.get("taskVariables") or [])
+        mapper_json["taskVariables"] = json.dumps(
+            mapper_json.get("taskVariables") or []
+        )
         mapper_schema = FormProcessMapperSchema()
         dict_data = mapper_schema.load(mapper_json)
         mapper = FormProcessMapperService.create_mapper(dict_data)
 
         FormProcessMapperService.unpublish_previous_mapper(dict_data)
 
-        response = mapper_schema.dump(mapper)
-        response["taskVariables"] = json.loads(response["taskVariables"])
-
         FormHistoryService.create_form_logs_without_clone(data=mapper_json)
-        return response
+        return mapper
 
     @staticmethod
     def form_design_update(data, form_id):
@@ -306,14 +328,17 @@ class FormProcessMapperService:  # pylint: disable=too-many-public-methods
         form_id = response.get("_id")
         parent_form_id = data.get("parentFormId", form_id)
         # create default data form mapper table
-        # TODO create entry in process db with default flow before that need check if process key exists # pylint: disable=fixme
+        process_name = response.get("name")
+        # process key/Id doesn't support numbers & special characters at start
+        # special characters anywhere so clean them before setting as process key
+        process_name = FormProcessMapperService.clean_form_name(process_name)
         mapper_data = {
             "formId": form_id,
             "formName": response.get("title"),
             "description": data.get("description", ""),
             "formType": response.get("type"),
-            "processKey": response.get("name"),
-            "processName": response.get("name"),
+            "processKey": process_name,
+            "processName": process_name,
             "formTypeChanged": True,
             "parentFormId": parent_form_id,
             "titleChanged": True,
@@ -333,9 +358,13 @@ class FormProcessMapperService:  # pylint: disable=too-many-public-methods
             },
             "form": {"resourceId": parent_form_id, "resourceDetails": {}, "roles": []},
         }
-        FormProcessMapperService.mapper_create(mapper_data)
+        mapper = FormProcessMapperService.mapper_create(mapper_data)
         AuthorizationService.create_or_update_resource_authorization(
             authorization_data, is_designer=is_designer
+        )
+        # validate process key already exists, if exists append mapper id to process_key.
+        FormProcessMapperService.validate_process_and_update_mapper(
+            process_name, mapper
         )
         FormProcessMapperService.execute.submit(
             FormHistoryService.create_form_log_with_clone,

@@ -3,16 +3,60 @@
 import datetime
 import time
 
+import pytest
 from dotenv import find_dotenv, load_dotenv
 from flask import current_app
 from formsflow_api_utils.utils import CREATE_SUBMISSIONS
 from jose import jwt as json_web_token
 
-from formsflow_api.models import Authorization, AuthType
+from formsflow_api.models import Authorization, AuthType, FormProcessMapper
+from formsflow_api.schemas import FormProcessMapperSchema
 
 load_dotenv(find_dotenv())
 
 token_header = {"alg": "RS256", "typ": "JWT", "kid": "forms-flow-web"}
+
+
+@pytest.fixture
+def create_mapper():
+    """Create a mapper instance."""
+    mapper_data = FormProcessMapperSchema().load({**get_form_request_payload()})
+    response = FormProcessMapper.create_from_dict(
+        {**mapper_data, "created_by": "test", "tenant": None}
+    )
+    return FormProcessMapperSchema().dump(response)
+
+
+@pytest.fixture
+def create_mapper_anonymous():
+    """Create a mapper instance."""
+    mapper_data = FormProcessMapperSchema().load({**get_form_request_payload()})
+    response = FormProcessMapper.create_from_dict(
+        {**mapper_data, "created_by": "test", "tenant": None, "is_anonymous": True}
+    )
+    return FormProcessMapperSchema().dump(response)
+
+
+@pytest.fixture
+def create_mapper_custom():
+    """Create a custom mapper instance."""
+
+    def _create_mapper_custom(
+        data, created_by="test", tenant=None, is_anonymous=False
+    ):
+        """Create a custom mapper instance."""
+        mapper_data = FormProcessMapperSchema().load(data)
+        response = FormProcessMapper.create_from_dict(
+            {
+                **mapper_data,
+                "created_by": created_by,
+                "tenant": tenant,
+                "is_anonymous": is_anonymous,
+            }
+        )
+        return FormProcessMapperSchema().dump(response)
+
+    return _create_mapper_custom
 
 
 def get_token(
@@ -91,34 +135,6 @@ def get_form_request_payload_private():
     }
 
 
-def get_form_request_payload_public_inactive():
-    """Return a form request payload object which is not active."""
-    return {
-        "formId": "12",
-        "formName": "Sample private form",
-        "processKey": "onestepapproval",
-        "processName": "OneStep Approval",
-        "status": "Inactive",
-        "comments": "test",
-        "tenant": 11,
-        "anonymous": True,
-        "formType": "form",
-        "parentFormId": "12",
-    }
-
-
-def get_form_request_anonymous_payload():
-    """Return a form request payload object with anonymous true."""
-    return {
-        "formId": "1234",
-        "formName": "Sample form",
-        "anonymous": True,
-        "status": "active",
-        "formType": "form",
-        "parentFormId": "1234",
-    }
-
-
 def get_application_create_payload(form_id: str = "1234"):
     """Returns an application create payload."""
     return {
@@ -132,21 +148,6 @@ def get_application_create_payload(form_id: str = "1234"):
 def get_draft_create_payload(form_id: str = "1234"):
     """Return a payload for creating draft details."""
     return {"formId": form_id, "data": {"name": "testing sample"}}
-
-
-def get_form_service_payload():
-    """Return a form Service payload object."""
-    return {
-        "form_id": "1234",
-        "form_name": "Sample form",
-        "form_revision_number": "v1",
-        "process_key": "121312",
-        "process_name": "OneStep Approval",
-        "status": "active",
-        "comments": "test",
-        "tenant": 12,
-        "created_by": "test-user",
-    }
 
 
 def get_form_payload():
@@ -187,6 +188,7 @@ def get_formio_form_request_payload():
     """Return a formio form create request payload object."""
     return {
         "display": "form",
+        "description": "",
         "components": [
             {
                 "label": "Text Field",

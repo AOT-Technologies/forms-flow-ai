@@ -433,7 +433,11 @@ class FormResourceById(Resource):
 
         # Dump the updated mapper data into the response schema
         mapper_response = mapper_schema.dump(mapper)
-        mapper_response["taskVariables"] = json.loads(mapper_response["taskVariables"])
+
+        if mapper_response.get("taskVariables"):
+            mapper_response["taskVariables"] = json.loads(
+                mapper_response["taskVariables"]
+            )
 
         # Create form logs without cloning
         FormHistoryService.create_form_logs_without_clone(data=mapper_data)

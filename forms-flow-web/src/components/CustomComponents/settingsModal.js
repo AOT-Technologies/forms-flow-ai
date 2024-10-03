@@ -1,6 +1,5 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { Modal, Form, ListGroup, FormControl, InputGroup } from 'react-bootstrap';
-import "./settingsModal.scss";
 import { CopyIcon, InfoIcon, CustomPill, CustomRadioButton, CustomButton, FormInput } from "@formsflow/components";
 
 import { useDispatch, useSelector } from 'react-redux';
@@ -153,7 +152,7 @@ const SettingsModal = ({ show, handleClose, handleConfirm }) => {
   
 
   return (
-    <Modal className="settings-modal" show={show} onHide={handleClose} dialogClassName="modal-50w" backdrop="static" >
+    <Modal className="d-flex flex-column align-items-start w-100 mt-5 mb-5 settings-modal" show={show} onHide={handleClose} dialogClassName="modal-50w" backdrop="static" >
       <Modal.Header>
         <Modal.Title>{t("Settings")}</Modal.Title>
       </Modal.Header>
@@ -235,7 +234,7 @@ const SettingsModal = ({ show, handleClose, handleConfirm }) => {
                   ))}
                   <input type="text" value={roleInputCreate} onChange={handleRoleInputChangeCreate} className="role-input" />
                 </div>
-              </div>
+              
 
               {filteredRolesCreate.length > 0 && (
                 <div className="input-drop-create cursor-pointer w-70" ref={dropCreateRef}>
@@ -249,6 +248,7 @@ const SettingsModal = ({ show, handleClose, handleConfirm }) => {
                   </ListGroup>
                 </div>
               )}
+              </div>
             </>
           )}
 
@@ -269,7 +269,7 @@ const SettingsModal = ({ show, handleClose, handleConfirm }) => {
                   ))}
                   <input type="text" value={roleInputView} onChange={handleRoleInputChangeView} className="role-input" />
                 </div>
-              </div>
+              
 
               {filteredRolesView.length > 0 && (
                 <div className="input-drop-view cursor-pointer w-70" ref={dropViewRef}>
@@ -283,6 +283,7 @@ const SettingsModal = ({ show, handleClose, handleConfirm }) => {
                   </ListGroup>
                 </div>
               )}
+              </div>
             </>
           )}
         </div>

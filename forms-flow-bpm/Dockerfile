@@ -17,14 +17,14 @@ COPY forms-flow-bpm-utils/src ./forms-flow-bpm-utils/src/
 # RUN mvn -s /usr/share/maven/ref/settings-docker.xml dependency:resolve-plugins dependency:resolve dependency:go-offline -B -P camunda
 RUN mvn -s /usr/share/maven/ref/settings-docker.xml install -P camunda
 
-# Final custom slim java image (for apk command see 17-jdk-alpine-slim)
+
 FROM openjdk:21-ea-jdk
 
 # set label for image
 LABEL Name="formsflow"
 
 ENV JAVA_VERSION=21-ea+14
-ENV JAVA_HOME=/opt/java/openjdk-17\
+ENV JAVA_HOME=/opt/java/openjdk-21\
     PATH="/opt/java/openjdk-21/bin:$PATH"
 
 EXPOSE 8080

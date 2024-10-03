@@ -1,7 +1,7 @@
 """Test suite for application API endpoint."""
 
 import os
-
+import json
 import pytest
 import requests
 from formsflow_api_utils.utils import (
@@ -351,7 +351,7 @@ def test_application_resubmit(app, client, session, jwt, create_mapper_custom):
         "formType": "form",
         "parentFormId": "1234",
     }
-    rv = create_mapper_custom(payload)
+    rv = create_mapper_custom(json.dumps(payload))
 
     form_id = rv.get("formId")
 

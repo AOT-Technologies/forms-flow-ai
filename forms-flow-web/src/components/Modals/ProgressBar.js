@@ -10,7 +10,7 @@ const CustomProgressBar = ({ progress }) => {
             max={100}
         />
     );
-};
+};  
 
 CustomProgressBar.propTypes = {
     progress: PropTypes.number.isRequired,

@@ -613,7 +613,13 @@ def get_embed_application_create_payload(formId):
     }
 
 
-def get_process_request_payload(name="Test workflow"):
+def get_process_request_payload(
+    name="Testworkflow",
+    is_subflow=False,
+    parent_process_key="Testworkflow",
+    major_version=1,
+    minor_version=0,
+):
     """Return process request payload.""" ""
     return {
         "status": "Draft",
@@ -632,8 +638,11 @@ def get_process_request_payload(name="Test workflow"):
         <di:waypoint x=\"370\" y=\"177\" /><di:waypoint x=\"432\" y=\"177\" /></bpmndi:BPMNEdge><bpmndi:BPMNShape id=\"_BPMNShape_StartEvent_2\" bpmnElement=\"StartEvent_1\"><dc:Bounds x=\"179\" y=\"159\" width=\"36\" height=\"36\" />
         </bpmndi:BPMNShape><bpmndi:BPMNShape id=\"Activity_0s9h67c_di\" bpmnElement=\"Activity_0s9h67c\"><dc:Bounds x=\"270\" y=\"137\" width=\"100\" height=\"80\" /></bpmndi:BPMNShape><bpmndi:BPMNShape id=\"Event_1lz219j_di\" bpmnElement=\"Event_1lz219j\">
         <dc:Bounds x=\"432\" y=\"159\" width=\"36\" height=\"36\" /></bpmndi:BPMNShape></bpmndi:BPMNPlane></bpmndi:BPMNDiagram></bpmn:definitions>""",
-        "majorVersion": 1,
-        "minorVersion": 0,
+        "majorVersion": major_version,
+        "minorVersion": minor_version,
+        "isSubflow": is_subflow,
+        "processKey": name,
+        "parentProcessKey": parent_process_key,
     }
 
 

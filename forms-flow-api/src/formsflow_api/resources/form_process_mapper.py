@@ -446,7 +446,7 @@ class FormResourceById(Resource):
         response = {}
         response["mapper"] = mapper_response
         if resource_id:
-            response["authorization"] = AuthorizationService().get_auth_list_by_id(
+            response["authorizations"] = AuthorizationService().get_auth_list_by_id(
                 resource_id
             )
 

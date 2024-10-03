@@ -1,7 +1,7 @@
-import React, { useEffect, useState } from 'react';
-import { Modal,  Form, InputGroup, FormControl, Tooltip, OverlayTrigger, ListGroup } from 'react-bootstrap';
+import React, { useEffect, useRef, useState } from 'react';
+import { Modal, Form, ListGroup, FormControl, InputGroup } from 'react-bootstrap';
 import "./settingsModal.scss";
-import { CopyIcon, InfoIcon, CustomPill, CustomRadioButton, CustomButton } from "@formsflow/components";
+import { CopyIcon, InfoIcon, CustomPill, CustomRadioButton, CustomButton, FormInput } from "@formsflow/components";
 
 import { useDispatch, useSelector } from 'react-redux';
 import { getUserRoles } from '../../apiManager/services/authorizationService';
@@ -11,8 +11,8 @@ import { copyText } from '../../apiManager/services/formatterService';
 
 const SettingsModal = ({ show, handleClose, handleConfirm }) => {
   const { t } = useTranslation();
-  
-  
+
+
   const [roleInputEdit, setRoleInputEdit] = useState('');
   const [filteredRolesEdit, setFilteredRolesEdit] = useState([]);
   const [roleInputCreate, setRoleInputCreate] = useState('');
@@ -24,7 +24,7 @@ const SettingsModal = ({ show, handleClose, handleConfirm }) => {
   const [selectedRolesEdit, setSelectedRolesEdit] = useState([]);
   const [selectedRolesCreate, setSelectedRolesCreate] = useState([]);
   const [selectedRolesView, setSelectedRolesView] = useState([]);
-  
+
   const [selectedOptionEdit, setSelectedOptionEdit] = useState('onlyYou');
   const [selectedOptionCreate, setSelectedOptionCreate] = useState('registeredUsers');
   const [selectedOptionView, setSelectedOptionView] = useState('submitter');
@@ -38,6 +38,10 @@ const SettingsModal = ({ show, handleClose, handleConfirm }) => {
   const [newPath, setNewPath] = useState(formPath);
   const [newFormName, setNewFormName] = useState(formName);
   const [NewFormDescription, setNewFormDescription] = useState(formDescription);
+
+
+
+
 
   const handleFormNameChange = (e) => {
     setNewFormName(e.target.value);
@@ -60,9 +64,9 @@ const SettingsModal = ({ show, handleClose, handleConfirm }) => {
   }, [dispatch]);
 
   useEffect(() => {
-    const originUrl = window.location.origin; 
+    const originUrl = window.location.origin;
     const newUrl = `${originUrl}/public/form/${newPath}`;
-    setUrl(newUrl); 
+    setUrl(newUrl);
   }, [newPath]);
 
   const handleRoleInputChangeEdit = (e) => {
@@ -89,9 +93,9 @@ const SettingsModal = ({ show, handleClose, handleConfirm }) => {
   const handleRoleSelect = (role, setSelectedRoles) => {
     setSelectedRoles((prevRoles) =>
       !prevRoles.includes(role.name) ? [...prevRoles, role.name] : prevRoles);
-    clearRoleInputs(); 
+    clearRoleInputs();
   };
-  
+
   const clearRoleInputs = () => {
     setRoleInputEdit('');
     setRoleInputCreate('');
@@ -122,63 +126,76 @@ const SettingsModal = ({ show, handleClose, handleConfirm }) => {
     setNewPath(e.target.value);
   };
 
+  const dropEditRef = useRef(null);
+  const dropCreateRef = useRef(null);
+  const dropViewRef = useRef(null);
+
+
+  const handleClickOutside = (event) => {
+    if (dropEditRef.current && !dropEditRef.current.contains(event.target)) {
+      setFilteredRolesEdit([]);
+    }
+    if (dropCreateRef.current && !dropCreateRef.current.contains(event.target)) {
+      setFilteredRolesCreate([]);
+    }
+    if (dropViewRef.current && !dropViewRef.current.contains(event.target)) {
+      setFilteredRolesView([]);
+    }
+  };
+
+  useEffect(() => {
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside);
+    };
+  }, []);
+
+  
+
   return (
-    <Modal className="settingsModal" show={show} onHide={handleClose} dialogClassName="modal-50w" backdrop="static" >
+    <Modal className="settings-modal" show={show} onHide={handleClose} dialogClassName="modal-50w" backdrop="static" >
       <Modal.Header>
-        <Modal.Title className='modalTitle'>{t("Settings")}</Modal.Title>
+        <Modal.Title>{t("Settings")}</Modal.Title>
       </Modal.Header>
-      <Modal.Body>
+      <Modal.Body className="p-0">
         {/* Section 1: Basic */}
         <div className='section'>
-          <h5 className='basicTitle'>{t("Basic")}</h5>
-          <Form.Group className="settingsInput" controlId="nameInput">
-            <Form.Label className='fieldLabel'>{t("Name")}</Form.Label>
-            <Form.Control className='textField' type="text" value={newFormName} onChange={handleFormNameChange}/>
-            
-          </Form.Group>
-          <Form.Group className='settingsInput' controlId="descriptionInput">
-            <Form.Label className='fieldLabel'>{t("Description")}</Form.Label>
-            <Form.Control className='textArea' as="textarea" rows={3} value={NewFormDescription}  onChange={handleFormDescriptionChange}/>
+          <h5 className='fw-bold'>{t("Basic")}</h5>
+          <FormInput value={newFormName} label={t("Name")} onChange={handleFormNameChange} dataTestid="form-name" ariaLabel={t("Form Name")} />
+
+          <Form.Group className='settings-input' controlId="descriptionInput">
+            <Form.Label className='field-label'>{t("Description")}</Form.Label>
+            <Form.Control className='text-area' as="textarea" rows={3} value={NewFormDescription} onChange={handleFormDescriptionChange} dataTestid="form-description" ariaLabel={t("Form Description")} />
           </Form.Group>
         </div>
 
-        <hr className='modalhr' />
+        <hr className='modal-hr' />
 
-        {/* Section 2: Permission */}
         <div className="section">
-          <h5 className='secTitle'>{t("Permissions")}</h5>
+          <h5 className='fw-bold'>{t("Permissions")}</h5>
 
-          {/* Who can edit */}
-          <Form.Label className='fieldLabel'>{t("Who Can Edit This Form")}</Form.Label>
-            <CustomRadioButton items={[
-              { label: t("Only You"), onClick: () => setSelectedOptionEdit('onlyYou') },
-              { label: t("You and specified roles"), onClick: () => setSelectedOptionEdit('specifiedRoles') },
-            ]} />
-          
+          <Form.Label className='field-label'>{t("Who Can Edit This Form")}</Form.Label>
+          <CustomRadioButton items={[
+            { label: t("Only You"), onClick: () => setSelectedOptionEdit('onlyYou') },
+            { label: t("You and specified roles"), onClick: () => setSelectedOptionEdit('specifiedRoles') },
+          ]} dataTestid="edit-submission-role" ariaLabel={t("Edit Submission Role")} />
+
           {selectedOptionEdit === 'onlyYou' && (
-            <Form.Control className='disabledInput' disabled />
+            <FormInput disabled="true" />
           )}
           {selectedOptionEdit === 'specifiedRoles' && (
             <>
-              <div className="inputWithPills form-control">
-                {selectedRolesEdit.map((role, index) => (
-                  <CustomPill
-                    key={index}
-                    label={role}
-                    icon={true}
-                    bg="primary"
-                    onClick={() => removeRole(role, setSelectedRolesEdit)}
-                  />
-                ))}
-                <input
-                  type="text"
-                  value={roleInputEdit}
-                  onChange={handleRoleInputChangeEdit}
-                  className="roleInput"
-                />
-              </div>
+              <div className='w-100'>
+                <div className="input-with-pills form-control cursor-pointer position-relative">
+                  {selectedRolesEdit.map((role, index) => (
+                    <CustomPill key={index} label={role} icon={true} bg="primary" onClick={() => removeRole(role, setSelectedRolesEdit)} />
+                  ))}
+                  <input type="text" value={roleInputEdit} onChange={handleRoleInputChangeEdit} className="role-input" />
+                </div>
+              
+
               {filteredRolesEdit.length > 0 && (
-                <div className='input-drop-edit cursor-pointer'>
+                <div className="input-drop-edit cursor-pointer w-70" ref={dropEditRef}>
                   <ListGroup>
                     {filteredRolesEdit.map((role) => (
                       <ListGroup.Item key={role.id} onClick={() =>
@@ -189,47 +206,39 @@ const SettingsModal = ({ show, handleClose, handleConfirm }) => {
                   </ListGroup>
                 </div>
               )}
+              </div>
             </>
           )}
 
-          {/* Who can create */}
-          <Form.Label className='fieldLabel'>{t("Who Can Create Submissions")}</Form.Label>
-          <Form.Check 
-            type="checkbox" 
-            id="createCheckbox" 
-            label={t("Anonymous users")} 
-            checked={isCreateChecked} 
-            onChange={() => setIsCreateChecked(!isCreateChecked)} 
-            className='fieldLabel'
+          <Form.Label className='field-label mt-3'>{t("Who Can Create Submissions")}</Form.Label>
+          <Form.Check
+            type="checkbox"
+            id="createCheckbox"
+            label={t("Anonymous users")}
+            checked={isCreateChecked}
+            onChange={() => setIsCreateChecked(!isCreateChecked)}
+            className='field-label'
           />
-            <CustomRadioButton items={[
-              { label: t("Registered users"), onClick: () => setSelectedOptionCreate('registeredUsers') },
-              { label: t("Specific roles"), onClick: () => setSelectedOptionCreate('specificRoles') },
-            ]} />
+          <CustomRadioButton items={[
+            { label: t("Registered users"), onClick: () => setSelectedOptionCreate('registeredUsers') },
+            { label: t("Specific roles"), onClick: () => setSelectedOptionCreate('specificRoles') },
+          ]} dataTestid="create-submission-role" ariaLabel={t("Create Submission Role")} />
           {selectedOptionCreate === 'registeredUsers' && (
-            <Form.Control className='disabledInput' disabled />
+            <FormInput disabled="true" />
           )}
           {selectedOptionCreate === 'specificRoles' && (
             <>
-              <div className="inputWithPills form-control">
-                {selectedRolesCreate.map((role, index) => (
-                  <CustomPill
-                    key={index}
-                    label={role}
-                    icon={true}
-                    bg="primary"
-                    onClick={() => removeRole(role, setSelectedRolesCreate)}
-                  />
-                ))}
-                <input
-                  type="text"
-                  value={roleInputCreate}
-                  onChange={handleRoleInputChangeCreate}
-                  className="roleInput"
-                />
+              <div className="w-100">
+                <div className="input-with-pills form-control cursor-pointer position-relative">
+                  {selectedRolesCreate.map((role, index) => (
+                    <CustomPill key={index} label={role} icon={true} bg="primary" onClick={() => removeRole(role, setSelectedRolesCreate)} />
+                  ))}
+                  <input type="text" value={roleInputCreate} onChange={handleRoleInputChangeCreate} className="role-input" />
+                </div>
               </div>
+
               {filteredRolesCreate.length > 0 && (
-                <div className='input-drop-create  cursor-pointer'>
+                <div className="input-drop-create cursor-pointer w-70" ref={dropCreateRef}>
                   <ListGroup>
                     {filteredRolesCreate.map((role) => (
                       <ListGroup.Item key={role.id} onClick={() =>
@@ -243,36 +252,27 @@ const SettingsModal = ({ show, handleClose, handleConfirm }) => {
             </>
           )}
 
-          {/* Who can view */}
-          <Form.Label className='fieldLabel'>{t("Who Can View Submissions")}</Form.Label>
-            <CustomRadioButton items={[
-              { label: t("Submitter"), onClick: () => setSelectedOptionView('submitter') },
-              { label: t("Submitter and specified roles"), onClick: () => setSelectedOptionView('specifiedRoles') },
-            ]} />
+          <Form.Label className='field-label mt-3'>{t("Who Can View Submissions")}</Form.Label>
+          <CustomRadioButton items={[
+            { label: t("Submitter"), onClick: () => setSelectedOptionView('submitter') },
+            { label: t("Submitter and specified roles"), onClick: () => setSelectedOptionView('specifiedRoles') },
+          ]} dataTestid="view-submission-role" ariaLabel={t("View Submission Role")} />
           {selectedOptionView === 'submitter' && (
-            <Form.Control className='disabledInput' disabled />
+            <FormInput disabled="true" />
           )}
           {selectedOptionView === 'specifiedRoles' && (
             <>
-              <div className="inputWithPills form-control">
-                {selectedRolesView.map((role, index) => (
-                  <CustomPill
-                    key={index}
-                    label={role}
-                    icon={true}
-                    bg="primary"
-                    onClick={() => removeRole(role, setSelectedRolesView)}
-                  />
-                ))}
-                <input
-                  type="text"
-                  value={roleInputView}
-                  onChange={handleRoleInputChangeView}
-                  className="roleInput"
-                />
+              <div className="w-100">
+                <div className="input-with-pills form-control cursor-pointer position-relative ">
+                  {selectedRolesView.map((role, index) => (
+                    <CustomPill key={index} label={role} icon={true} bg="primary" onClick={() => removeRole(role, setSelectedRolesView)} />
+                  ))}
+                  <input type="text" value={roleInputView} onChange={handleRoleInputChangeView} className="role-input" />
+                </div>
               </div>
+
               {filteredRolesView.length > 0 && (
-                <div className='input-drop-view cursor-pointer'>
+                <div className="input-drop-view cursor-pointer w-70" ref={dropViewRef}>
                   <ListGroup>
                     {filteredRolesView.map((role) => (
                       <ListGroup.Item key={role.id} onClick={() =>
@@ -287,64 +287,62 @@ const SettingsModal = ({ show, handleClose, handleConfirm }) => {
           )}
         </div>
 
-        <hr className='modalhr' />
+        <hr className='modal-hr' />
 
-        {/* Section 3: Link */}
         <div className="section">
-        <h5 className='secTitle'>{t("Link for this form")}</h5>
-          <div className="noteSection">
+          <h5 className='fw-bold'>{t("Link for this form")}</h5>
+          <div className="info-panel">
             <div className='d-flex align-items-center'>
               <InfoIcon />
-              <div className='fieldLabel ms-2'>{t("Note")}</div>
+              <div className='field-label ms-2'>{t("Note")}</div>
             </div>
-            <div className='noteContent'>
+            <div className='info-content'>
               {t("Making changes to your form URL will make your form inaccessible from your current URL.")}
             </div>
           </div>
-          <Form.Group className='settingsInput' controlId="urlInput">
-            <Form.Label className='fieldLabel'>{t("URL Path")}</Form.Label>
-            <InputGroup className='urlInput'>
-        {/* Static */}
-        <InputGroup.Text className='urlNonEditField'>
-          {`${window.location.origin}/public/form/`}
-        </InputGroup.Text>
+          <Form.Group className='settings-input' controlId="url-input">
+            <Form.Label className='field-label'>{t("URL Path")}</Form.Label>
+            <InputGroup className='url-input'>
+              <InputGroup.Text className='url-non-edit'>
+                {`${window.location.origin}/public/form/`}
+              </InputGroup.Text>
 
-        {/* Editable*/}
-        <FormControl
-          type="text"
-          value={newPath}
-          className='editableField'
-          onChange={handleFormPathChange}
-          />
-              <OverlayTrigger overlay={<Tooltip>{t("Copy")}</Tooltip>}>
-                <InputGroup.Text className='copySec' onClick={copyPublicUrl}>
+              <FormControl
+                type="text"
+                value={newPath}
+                className='url-edit'
+                onChange={handleFormPathChange}
+              />
+              <InputGroup.Text className='url-copy' onClick={copyPublicUrl}>
                 {copied ? <i className="fa fa-check" /> : <CopyIcon />}
-                </InputGroup.Text>
-              </OverlayTrigger>
+              </InputGroup.Text>
             </InputGroup>
           </Form.Group>
+
+
+
+
+
         </div>
       </Modal.Body>
-      <Modal.Footer>
-        <div className='footerButtons'>
-          <CustomButton  
-          variant="primary" 
-          size="md" 
-          label={ t("Save Changes")}
+      <Modal.Footer className="d-flex justify-content-start">
+        <CustomButton
+          variant="primary"
+          size="md"
+          label={t("Save Changes")}
           onClick={handleConfirm}
           dataTestid="save-form-settings"
           ariaLabel={t("Save Form Settings")}
-          />
-             
-          <CustomButton  
-          variant="secondary" 
-          size="md" 
-          label={ t("Discard Changes")}
+        />
+
+        <CustomButton
+          variant="secondary"
+          size="md"
+          label={t("Discard Changes")}
           onClick={handleClose}
           dataTestid="cancel-form-settings"
           ariaLabel={t("Cancel Form Settings")}
-          />
-        </div>
+        />
       </Modal.Footer>
     </Modal>
   );

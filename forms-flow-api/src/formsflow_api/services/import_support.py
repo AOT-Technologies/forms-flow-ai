@@ -248,9 +248,11 @@ class ImportService:  # pylint: disable=too-many-public-methods
             "majorVersion": major_version,
             "minorVersion": minor_version,
             "formProcessMapperId": mapper_id,
+            "processKey": name,
+            "parentProcessKey": name,
         }
         ProcessService.create_process(payload=process_data)
-        current_app.logger.info("rocess data saved successfully...")
+        current_app.logger.info("Process data saved successfully...")
 
     def version_response(self, form_major, form_minor, workflow_major, workflow_minor):
         """Version response."""
@@ -277,6 +279,10 @@ class ImportService:  # pylint: disable=too-many-public-methods
                 "componentChanged": True,
             }
         )
+        process_name = form_response.get("name")
+        # process key/Id doesn't support numbers & special characters at start
+        # special characters anywhere so clean them before setting as process key
+        process_name = FormProcessMapperService.clean_form_name(process_name)
         mapper_data = {
             "form_id": form_id,
             "form_name": form_response.get("title"),
@@ -284,8 +290,8 @@ class ImportService:  # pylint: disable=too-many-public-methods
             "parent_form_id": form_id,
             "is_anonymous": file_data.get("forms")[0].get("anonymous") or False,
             "task_variable": "[]",
-            "process_key": form_response.get("name"),
-            "process_name": form_response.get("name"),
+            "process_key": process_name,
+            "process_name": process_name,
             "status": "inactive",
             "description": file_data.get("forms")[0].get("formDescription") or "",
         }
@@ -306,8 +312,16 @@ class ImportService:  # pylint: disable=too-many-public-methods
             file_data["authorizations"][0][auth]["resourceId"] = form_id
         # Create authorizations for the form
         self.create_authorization(file_data["authorizations"][0])
+        # validate process key already exists, if exists append mapper id to process_key.
+        updated_process_name = (
+            FormProcessMapperService.validate_process_and_update_mapper(
+                process_name, mapper
+            )
+        )
+        process_name = updated_process_name if updated_process_name else process_name
+        current_app.logger.info(f"Process Name: {process_name}")
         self.save_process_data(
-            workflow_data, form_response.get("name"), mapper_id=mapper.id, is_new=True
+            workflow_data, process_name, mapper_id=mapper.id, is_new=True
         )
         return form_id
 
@@ -365,8 +379,8 @@ class ImportService:  # pylint: disable=too-many-public-methods
                 "parentFormId": mapper.parent_form_id,
                 "anonymous": mapper.is_anonymous if form_only else anonymous,
                 "taskVariable": json.loads(mapper.task_variable),
-                "processKey": form_response.get("name"),
-                "processName": form_response.get("name"),
+                "processKey": mapper.process_key,
+                "processName": mapper.process_name,
                 "version": str(mapper.version + 1),
                 "status": mapper.status,
                 "id": str(mapper.id),

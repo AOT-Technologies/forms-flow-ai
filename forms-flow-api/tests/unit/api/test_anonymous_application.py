@@ -3,10 +3,7 @@
 from pytest import mark
 
 from formsflow_api.constants import BusinessErrorCode
-from tests.utilities.base_test import (
-    create_mapper_anonymous,
-    get_application_create_payload,
-)
+from tests.utilities.base_test import get_application_create_payload
 
 
 @mark.describe("Initialize application public API")
@@ -38,10 +35,10 @@ class TestApplicationAnonymousResourcesByIds:
         }
 
     def test_application_unauthorized_post(
-        self, app, client, session, jwt, create_mapper_anonymous
+        self, app, client, session, jwt, create_mapper
     ):
         """Assert that public API /application when passed with valid payload returns 403 status code when the form is not anonymos."""
-        form_id = create_mapper_anonymous["formId"]
+        form_id = create_mapper["formId"]
         response = client.post(
             "/public/application/create", json=get_application_create_payload(form_id)
         )
@@ -53,10 +50,20 @@ class TestApplicationAnonymousResourcesByIds:
         }
 
     def test_application_inactive_post(
-        self, app, client, session, jwt, create_mapper_anonymous
+        self, app, client, session, jwt, create_mapper_custom
     ):
         """Assert that public API /application when passed with valid payload returns 403 status code when the form is anonymous but Inactive."""
-        form_id = create_mapper_anonymous["formId"]
+        payload = {
+            "formId": "1234",
+            "formName": "Sample form",
+            "processKey": "two-step-approval",
+            "processName": "Two Step Approval",
+            "status": "inactive",
+            "formType": "form",
+            "parentFormId": "1234",
+        }
+        rv = create_mapper_custom(payload, is_anonymous=True)
+        form_id = rv["formId"]
         response = client.post(
             "/public/application/create", json=get_application_create_payload(form_id)
         )

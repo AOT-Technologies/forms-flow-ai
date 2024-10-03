@@ -3,8 +3,6 @@
 from formsflow_api_utils.utils import CREATE_DESIGNS
 
 from tests.utilities.base_test import (
-    create_mapper,
-    create_mapper_custom,
     get_embed_application_create_payload,
     get_embed_token,
     get_form_payload,

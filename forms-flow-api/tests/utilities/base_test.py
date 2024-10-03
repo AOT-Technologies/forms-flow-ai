@@ -3,58 +3,16 @@
 import datetime
 import time
 
-import pytest
 from dotenv import find_dotenv, load_dotenv
 from flask import current_app
 from formsflow_api_utils.utils import CREATE_SUBMISSIONS
 from jose import jwt as json_web_token
 
-from formsflow_api.models import Authorization, AuthType, FormProcessMapper
-from formsflow_api.schemas import FormProcessMapperSchema
+from formsflow_api.models import Authorization, AuthType
 
 load_dotenv(find_dotenv())
 
 token_header = {"alg": "RS256", "typ": "JWT", "kid": "forms-flow-web"}
-
-
-@pytest.fixture
-def create_mapper():
-    """Create a mapper instance."""
-    mapper_data = FormProcessMapperSchema().load({**get_form_request_payload()})
-    response = FormProcessMapper.create_from_dict(
-        {**mapper_data, "created_by": "test", "tenant": None}
-    )
-    return FormProcessMapperSchema().dump(response)
-
-
-@pytest.fixture
-def create_mapper_anonymous():
-    """Create a mapper instance."""
-    mapper_data = FormProcessMapperSchema().load({**get_form_request_payload()})
-    response = FormProcessMapper.create_from_dict(
-        {**mapper_data, "created_by": "test", "tenant": None, "is_anonymous": True}
-    )
-    return FormProcessMapperSchema().dump(response)
-
-
-@pytest.fixture
-def create_mapper_custom():
-    """Create a custom mapper instance."""
-
-    def _create_mapper_custom(data, created_by="test", tenant=None, is_anonymous=False):
-        """Create a custom mapper instance."""
-        mapper_data = FormProcessMapperSchema().load(data)
-        response = FormProcessMapper.create_from_dict(
-            {
-                **mapper_data,
-                "created_by": created_by,
-                "tenant": tenant,
-                "is_anonymous": is_anonymous,
-            }
-        )
-        return FormProcessMapperSchema().dump(response)
-
-    return _create_mapper_custom
 
 
 def get_token(

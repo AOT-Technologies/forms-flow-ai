@@ -14,7 +14,6 @@ from formsflow_api_utils.utils import (
 from formsflow_api.constants import BusinessErrorCode
 from formsflow_api.models import Application, Draft, FormProcessMapper
 from tests.utilities.base_test import (
-    create_mapper,
     get_anonymous_form_model_object,
     get_application_create_payload,
     get_draft_create_payload,
@@ -145,11 +144,23 @@ def test_draft_submission_resource(app, client, session, jwt, create_mapper):
     assert draft.application_id == response.json.get("id")
 
 
-def test_draft_tenant_authorization(app, client, session, jwt, create_mapper):
+def test_draft_tenant_authorization(app, client, session, jwt, create_mapper_custom):
     """Tests if the draft detail is tenant authorized."""
     token = get_token(jwt, role=CREATE_DESIGNS, tenant_key="tenant1")
     headers = {"Authorization": f"Bearer {token}", "content-type": "application/json"}
-    form_id = create_mapper["formId"]
+    payload = {
+        "formId": "1234",
+        "formName": "Sample form",
+        "processKey": "onestepapproval",
+        "processName": "One Step Approval",
+        "status": "active",
+        "comments": "test",
+        "anonymous": False,
+        "formType": "form",
+        "parentFormId": "1234",
+    }
+    rv = create_mapper_custom(payload, tenant="tenant1")
+    form_id = rv["formId"]
     assert FormProcessMapper().find_form_by_form_id(form_id) is not None
     assert FormProcessMapper().find_form_by_form_id(form_id).tenant == "tenant1"
     token = get_token(jwt, role=CREATE_SUBMISSIONS, tenant_key="tenant1")

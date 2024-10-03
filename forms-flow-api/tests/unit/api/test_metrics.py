@@ -5,11 +5,7 @@ import datetime
 import pytest
 from formsflow_api_utils.utils import CREATE_SUBMISSIONS, VIEW_DASHBOARDS
 
-from tests.utilities.base_test import (
-    create_mapper,
-    get_application_create_payload,
-    get_token,
-)
+from tests.utilities.base_test import get_application_create_payload, get_token
 
 METRICS_ORDER_BY_VALUES = ["created", "modified"]
 today = datetime.date.today().strftime("%Y-%m-%dT%H:%M:%S+00:00").replace("+", "%2B")

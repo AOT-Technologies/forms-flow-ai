@@ -15,7 +15,6 @@ from formsflow_api_utils.utils import (
 from formsflow_api.models import FormProcessMapper
 from formsflow_api.services import FormHistoryService
 from tests.utilities.base_test import (
-    create_mapper,
     get_application_create_payload,
     get_form_request_payload,
     get_formio_form_request_payload,

@@ -38,7 +38,7 @@ class TestProcessCreate:
 
         assert response.status_code == 201
         assert response.json.get("id") is not None
-        assert response.json.get("name") == "Test workflow"
+        assert response.json.get("name") == "Testworkflow"
 
     def test_process_create_method_with_invalid_token(self, app, client, session, jwt):
         """Tests the process create method with invalid token."""
@@ -117,14 +117,14 @@ class TestProcessList:
         response = client.post(
             "/process",
             headers=headers,
-            json=get_process_request_payload(name="Test workflow 1"),
+            json=get_process_request_payload(name="Testworkflow1"),
         )
         ensure_process_data_binary(response.json.get("id"))
         response = client.get("/process", headers=headers)
         assert response.status_code == 200
         assert response.json is not None
         assert response.json["totalCount"] == 1
-        assert response.json["process"][0]["name"] == "Test workflow 1"
+        assert response.json["process"][0]["name"] == "Testworkflow1"
 
     @pytest.mark.parametrize(
         ("pageNo", "limit", "sortBy", "sortOrder"),
@@ -142,13 +142,13 @@ class TestProcessList:
         response = client.post(
             "/process",
             headers=headers,
-            json=get_process_request_payload(name="Test workflow 1"),
+            json=get_process_request_payload(name="Testworkflow1"),
         )
         ensure_process_data_binary(response.json.get("id"))
         response = client.post(
             "/process",
             headers=headers,
-            json=get_process_request_payload(name="Test workflow 2"),
+            json=get_process_request_payload(name="Testworkflow2"),
         )
         ensure_process_data_binary(response.json.get("id"))
         response = client.get(
@@ -168,13 +168,13 @@ class TestProcessList:
         response = client.post(
             "/process",
             headers=headers,
-            json=get_process_request_payload(name="Test workflow 1"),
+            json=get_process_request_payload(name="Testworkflow1"),
         )
         ensure_process_data_binary(response.json.get("id"))
         response = client.post(
             "/process",
             headers=headers,
-            json=get_process_request_payload_low_code(name="Test workflow 2"),
+            json=get_process_request_payload_low_code(name="Testworkflow2"),
         )
         ensure_process_data_binary(response.json.get("id"))
         # testing with processType filter with status
@@ -341,6 +341,101 @@ class TestProcessHistory:
         }
 
         response = client.get(
-            "/process/process-history/Test workflow/versions", headers=headers
+            "/process/process-history/Testworkflow/versions", headers=headers
         )
         assert response.status_code == 401
+
+
+class TestProcessValidation:
+    """Test suite for the process validation endpoint."""
+
+    def test_process_validation_invalid(self, app, client, session, jwt):
+        """Test process validation api with already exists process key/name."""
+        token = get_token(jwt, role=CREATE_DESIGNS, username="designer")
+        headers = {
+            "Authorization": f"Bearer {token}",
+            "content-type": "application/json",
+        }
+        response = client.post(
+            "/process",
+            headers=headers,
+            json=get_process_request_payload(),
+        )
+        assert response.status_code == 201
+        assert response.json.get("id") is not None
+        ensure_process_data_binary(response.json.get("id"))
+        response = client.get(
+            "/process/validate?processKey=Testworkflow&processName=Testworkflow",
+            headers=headers,
+        )
+        assert response.status_code == 400
+        assert (
+            response.json.get("message")
+            == "The BPMN name or ID already exists. It must be unique."
+        )
+
+    def test_process_validate_missing_params(app, client, session, jwt):
+        """Testing process name validation with missing parameters."""
+        token = get_token(jwt, role=CREATE_DESIGNS)
+        headers = {
+            "Authorization": f"Bearer {token}",
+            "content-type": "application/json",
+        }
+        response = client.get("/process/validate", headers=headers)
+        assert response.status_code == 400
+        assert (
+            response.json.get("message")
+            == "At least one query parameter (name, key) must be provided."
+        )
+
+    def test_process_validate_unauthorized(app, client, session, jwt):
+        """Testing process name validation without proper authorization."""
+        response = client.get("/process/validate")
+        assert response.status_code == 401
+
+    def test_process_validation_success(self, app, client, session, jwt):
+        """Test process validation api with success."""
+        token = get_token(jwt, role=CREATE_DESIGNS, username="designer")
+        headers = {
+            "Authorization": f"Bearer {token}",
+            "content-type": "application/json",
+        }
+        # Validate process validate api with no exists process key & name
+        response = client.get(
+            "/process/validate?processKey=Testworkflow&processName=Testworkflow",
+            headers=headers,
+        )
+        assert response.status_code == 200
+
+        # Validate process validate api excluding a specific parent process key
+        # Which will be used in edit process
+        response = client.post(
+            "/process",
+            headers=headers,
+            json=get_process_request_payload(
+                name="Testworkflow", parent_process_key="Testworkflow"
+            ),
+        )
+        assert response.status_code == 201
+        assert response.json.get("id") is not None
+        ensure_process_data_binary(response.json.get("id"))
+        response = client.post(
+            "/process",
+            headers=headers,
+            json=get_process_request_payload(
+                name="Testworkflow",
+                parent_process_key="Testworkflow",
+                major_version=2,
+                minor_version=0,
+            ),
+        )
+        assert response.status_code == 201
+        assert response.json.get("id") is not None
+        ensure_process_data_binary(response.json.get("id"))
+        # Invoke the process validation endpoint with parentProcessKey=Testworkflow,
+        # which excludes rows with the specified parent key during validation.
+        response = client.get(
+            "/process/validate?processKey=Testworkflow&processName=Testworkflow&parentProcessKey=Testworkflow",
+            headers=headers,
+        )
+        assert response.status_code == 200

@@ -78,6 +78,9 @@ class ProcessService:  # pylint: disable=too-few-public-methods
             created_by=user.user_name,
             major_version=data.get("major_version"),
             minor_version=data.get("minor_version"),
+            is_subflow=data.get("is_subflow"),
+            process_key=data.get("process_key"),
+            parent_process_key=data.get("parent_process_key"),
         )
         if process:
             process.save()
@@ -143,3 +146,22 @@ class ProcessService:  # pylint: disable=too-few-public-methods
             process_history_schema = ProcessHistorySchema(many=True)
             return process_history_schema.dump(process_histories), count
         raise BusinessException(BusinessErrorCode.PROCESS_ID_NOT_FOUND)
+
+    @staticmethod
+    def validate_process(request):
+        """Validate process name/key."""
+        process_key = request.args.get("processKey")
+        process_name = request.args.get("processName")
+        parent_process_key = request.args.get("parentProcessKey")
+
+        if not (process_key or process_name):
+            raise BusinessException(BusinessErrorCode.INVALID_PROCESS_VALIDATION_INPUT)
+
+        validation_response = Process.find_process_by_name_key(
+            process_name, process_key, parent_process_key
+        )
+
+        if validation_response:
+            raise BusinessException(BusinessErrorCode.PROCESS_EXISTS)
+        # If no results, the process name/key is valid
+        return {}

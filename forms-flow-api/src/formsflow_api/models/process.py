@@ -11,7 +11,7 @@ from formsflow_api_utils.utils import (
     validate_sort_order_and_order_by,
 )
 from formsflow_api_utils.utils.user_context import UserContext, user_context
-from sqlalchemy import LargeBinary, desc
+from sqlalchemy import LargeBinary, desc, or_
 from sqlalchemy.dialects.postgresql import ENUM
 from sqlalchemy.sql.expression import text
 
@@ -53,6 +53,9 @@ class Process(AuditDateTimeMixin, AuditUserMixin, BaseModel, db.Model):
     tenant = db.Column(db.String(100), nullable=True)
     major_version = db.Column(db.Integer, nullable=False, index=True)
     minor_version = db.Column(db.Integer, nullable=False, index=True)
+    process_key = db.Column(db.String)
+    parent_process_key = db.Column(db.String)
+    is_subflow = db.Column(db.Boolean, default=False)
 
     @classmethod
     @user_context
@@ -78,6 +81,9 @@ class Process(AuditDateTimeMixin, AuditUserMixin, BaseModel, db.Model):
                 "modified",
                 "major_version",
                 "minor_version",
+                "process_key",
+                "parent_process_key",
+                "is_subflow",
             ],
             process_info,
         )
@@ -152,3 +158,16 @@ class Process(AuditDateTimeMixin, AuditUserMixin, BaseModel, db.Model):
         limit = total_count if limit is None else limit
         query = query.paginate(page=page_no, per_page=limit, error_out=False)
         return query.items, total_count
+
+    @classmethod
+    def find_process_by_name_key(
+        cls, name=None, process_key=None, parent_process_key=None
+    ) -> Process:
+        """Find all process that matches the provided name/key."""
+        query = Process.query.filter(
+            or_(Process.name == name, Process.process_key == process_key)
+        )
+        if parent_process_key:
+            query = query.filter(Process.parent_process_key != parent_process_key)
+        query = cls.auth_query(query=query)
+        return query.all()

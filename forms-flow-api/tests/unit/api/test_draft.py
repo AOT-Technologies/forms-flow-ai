@@ -292,7 +292,7 @@ def test_capture_process_variables_draft_create_method(
             }
         ],
     }
-    rv = client.put("/form", headers=headers, json={"mapper": payload})
+    rv = client.put(f"/form/{mapper_id}", headers=headers, json={"mapper": payload})
     assert rv.status_code == 200
     form_id = rv.json.get("mapper").get("formId")
     # Draft submission

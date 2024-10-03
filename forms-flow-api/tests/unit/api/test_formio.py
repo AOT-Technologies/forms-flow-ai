@@ -35,20 +35,17 @@ def test_formio_roles(app, client, session, jwt, mock_redis_client):
     headers = {"Authorization": f"Bearer {token}", "content-type": "application/json"}
     client = MagicMock()
     payload = {
-            "external": True,
-            "form": {
-                "_id": "62cc9223b5cad9348f5880a9"
-            },
-            "user": {
-                "_id": "test",
-                "roles": [
-                    "65f808c6d5af8b9fccc9c330",
-                    "65f808c8d5af8b9fccc9c35b"
-                ],
-                "customRoles": ["/formsflow-client"]
-            }
+        "external": True,
+        "form": {"_id": "62cc9223b5cad9348f5880a9"},
+        "user": {
+            "_id": "test",
+            "roles": ["65f808c6d5af8b9fccc9c330", "65f808c8d5af8b9fccc9c35b"],
+            "customRoles": ["/formsflow-client"],
+        },
     }
-    mock_jwt_token = pyjwt.encode(payload, app.config["FORMIO_JWT_SECRET"], algorithm="HS256")
+    mock_jwt_token = pyjwt.encode(
+        payload, app.config["FORMIO_JWT_SECRET"], algorithm="HS256"
+    )
 
     # Mock response
     mock_response = MagicMock()
@@ -91,7 +88,7 @@ def test_formio_roles(app, client, session, jwt, mock_redis_client):
             {"roleId": 1, "type": "CLIENT"},
             {"roleId": 2, "type": "REVIEWER"},
             {"roleId": 3, "type": "DESIGNER"},
-            {"roleId": "123456789", "type": "RESOURCE_ID"}
+            {"roleId": "123456789", "type": "RESOURCE_ID"},
         ]
     }
     client.get.return_value = mock_response

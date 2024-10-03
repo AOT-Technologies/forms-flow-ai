@@ -617,17 +617,11 @@ def test_form_history(
     assert response.json["totalCount"] == 2
 
 
-def test_publish(app, client, session, jwt, mock_redis_client):
+def test_publish(app, client, session, jwt, mock_redis_client, create_mapper):
     """Testing publish endpoint."""
     token = get_token(jwt, role=CREATE_DESIGNS, username="designer")
     headers = {"Authorization": f"Bearer {token}", "content-type": "application/json"}
-    response = client.post(
-        "/form",
-        headers=headers,
-        json=get_form_request_payload(),
-    )
-    assert response.status_code == 201
-    mapper_id = response.json.get("id")
+    mapper_id = create_mapper["id"]
     rv = client.get(f"/form/{mapper_id}", headers=headers)
     assert rv.status_code == 200
     assert rv.json.get("id") == mapper_id
@@ -641,17 +635,11 @@ def test_publish(app, client, session, jwt, mock_redis_client):
         assert response.status_code == 200
 
 
-def test_unpublish(app, client, session, jwt, mock_redis_client):
+def test_unpublish(app, client, session, jwt, mock_redis_client, create_mapper):
     """Testing unpublish endpoint."""
     token = get_token(jwt, role=CREATE_DESIGNS, username="designer")
     headers = {"Authorization": f"Bearer {token}", "content-type": "application/json"}
-    response = client.post(
-        "/form",
-        headers=headers,
-        json=get_form_request_payload(),
-    )
-    assert response.status_code == 201
-    mapper_id = response.json.get("id")
+    mapper_id = create_mapper["id"]
     rv = client.get(f"/form/{mapper_id}", headers=headers)
     assert rv.status_code == 200
     assert rv.json.get("id") == mapper_id

@@ -41,9 +41,7 @@ def create_mapper_anonymous():
 def create_mapper_custom():
     """Create a custom mapper instance."""
 
-    def _create_mapper_custom(
-        data, created_by="test", tenant=None, is_anonymous=False
-    ):
+    def _create_mapper_custom(data, created_by="test", tenant=None, is_anonymous=False):
         """Create a custom mapper instance."""
         mapper_data = FormProcessMapperSchema().load(data)
         response = FormProcessMapper.create_from_dict(

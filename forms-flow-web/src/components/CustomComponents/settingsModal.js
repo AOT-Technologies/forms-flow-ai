@@ -1,6 +1,6 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { Modal, Form, ListGroup, FormControl, InputGroup } from 'react-bootstrap';
-import { CopyIcon, InfoIcon, CustomPill, CustomRadioButton, CustomButton, FormInput } from "@formsflow/components";
+import { CopyIcon, InfoIcon, CustomPill, CustomRadioButton, CustomButton, FormInput, FormTextArea } from "@formsflow/components";
 
 import { useDispatch, useSelector } from 'react-redux';
 import { getUserRoles } from '../../apiManager/services/authorizationService';
@@ -10,46 +10,44 @@ import { copyText } from '../../apiManager/services/formatterService';
 
 const SettingsModal = ({ show, handleClose, handleConfirm }) => {
   const { t } = useTranslation();
+  const dispatch = useDispatch();
 
-
-  const [roleInputEdit, setRoleInputEdit] = useState('');
-  const [filteredRolesEdit, setFilteredRolesEdit] = useState([]);
-  const [roleInputCreate, setRoleInputCreate] = useState('');
-  const [filteredRolesCreate, setFilteredRolesCreate] = useState([]);
-  const [roleInputView, setRoleInputView] = useState('');
-  const [filteredRolesView, setFilteredRolesView] = useState([]);
+  const [rolesState, setRolesState] = useState({
+    edit: {
+      roleInput: '',
+      filteredRoles: [],
+      selectedRoles: [],
+      selectedOption: 'onlyYou',
+    },
+    create: {
+      roleInput: '',
+      filteredRoles: [],
+      selectedRoles: [],
+      selectedOption: 'registeredUsers',
+      isChecked: false,
+    },
+    view: {
+      roleInput: '',
+      filteredRoles: [],
+      selectedRoles: [],
+      selectedOption: 'submitter',
+    },
+  });
 
   const [userRoles, setUserRoles] = useState([]);
-  const [selectedRolesEdit, setSelectedRolesEdit] = useState([]);
-  const [selectedRolesCreate, setSelectedRolesCreate] = useState([]);
-  const [selectedRolesView, setSelectedRolesView] = useState([]);
-
-  const [selectedOptionEdit, setSelectedOptionEdit] = useState('onlyYou');
-  const [selectedOptionCreate, setSelectedOptionCreate] = useState('registeredUsers');
-  const [selectedOptionView, setSelectedOptionView] = useState('submitter');
-  const [isCreateChecked, setIsCreateChecked] = useState(false);
   const [url, setUrl] = useState('');
   const formName = useSelector((state) => state.form.form.name);
   const formDescription = useSelector((state) => state.process.formProcessList.description);
   const formPath = useSelector((state) => state.form.form.path);
-  const dispatch = useDispatch();
+
   const [copied, setCopied] = useState(false);
   const [newPath, setNewPath] = useState(formPath);
   const [newFormName, setNewFormName] = useState(formName);
-  const [NewFormDescription, setNewFormDescription] = useState(formDescription);
+  const [newFormDescription, setNewFormDescription] = useState(formDescription);
 
-
-
-
-
-  const handleFormNameChange = (e) => {
-    setNewFormName(e.target.value);
-  };
-
-  const handleFormDescriptionChange = (e) => {
-    setNewFormDescription(e.target.value);
-  };
-
+  const dropEditRef = useRef(null);
+  const dropCreateRef = useRef(null);
+  const dropViewRef = useRef(null);
 
   useEffect(() => {
     getUserRoles()
@@ -68,44 +66,42 @@ const SettingsModal = ({ show, handleClose, handleConfirm }) => {
     setUrl(newUrl);
   }, [newPath]);
 
-  const handleRoleInputChangeEdit = (e) => {
+  const handleRoleInputChange = (section) => (e) => {
     const inputValue = e.target.value;
-    setRoleInputEdit(inputValue);
-    setFilteredRolesEdit(userRoles.filter((role) =>
-      role.name.toLowerCase().includes(inputValue.toLowerCase())));
+    setRolesState((prevState) => ({
+      ...prevState,
+      [section]: {
+        ...prevState[section],
+        roleInput: inputValue,
+        filteredRoles: userRoles.filter((role) =>
+          role.name.toLowerCase().includes(inputValue.toLowerCase())
+        ),
+      },
+    }));
   };
 
-  const handleRoleInputChangeCreate = (e) => {
-    const inputValue = e.target.value;
-    setRoleInputCreate(inputValue);
-    setFilteredRolesCreate(userRoles.filter((role) =>
-      role.name.toLowerCase().includes(inputValue.toLowerCase())));
+  const handleRoleSelect = (role, section) => {
+    setRolesState((prevState) => ({
+      ...prevState,
+      [section]: {
+        ...prevState[section],
+        selectedRoles: !prevState[section].selectedRoles.includes(role.name)
+          ? [...prevState[section].selectedRoles, role.name]
+          : prevState[section].selectedRoles,
+        roleInput: '',
+        filteredRoles: [],
+      },
+    }));
   };
 
-  const handleRoleInputChangeView = (e) => {
-    const inputValue = e.target.value;
-    setRoleInputView(inputValue);
-    setFilteredRolesView(userRoles.filter((role) =>
-      role.name.toLowerCase().includes(inputValue.toLowerCase())));
-  };
-
-  const handleRoleSelect = (role, setSelectedRoles) => {
-    setSelectedRoles((prevRoles) =>
-      !prevRoles.includes(role.name) ? [...prevRoles, role.name] : prevRoles);
-    clearRoleInputs();
-  };
-
-  const clearRoleInputs = () => {
-    setRoleInputEdit('');
-    setRoleInputCreate('');
-    setRoleInputView('');
-    setFilteredRolesEdit([]);
-    setFilteredRolesCreate([]);
-    setFilteredRolesView([]);
-  };
-
-  const removeRole = (role, setSelectedRoles) => {
-    setSelectedRoles((prevRoles) => prevRoles.filter((r) => r !== role));
+  const removeRole = (role, section) => {
+    setRolesState((prevState) => ({
+      ...prevState,
+      [section]: {
+        ...prevState[section],
+        selectedRoles: prevState[section].selectedRoles.filter((r) => r !== role),
+      },
+    }));
   };
 
   const copyPublicUrl = () => {
@@ -125,20 +121,24 @@ const SettingsModal = ({ show, handleClose, handleConfirm }) => {
     setNewPath(e.target.value);
   };
 
-  const dropEditRef = useRef(null);
-  const dropCreateRef = useRef(null);
-  const dropViewRef = useRef(null);
-
-
   const handleClickOutside = (event) => {
     if (dropEditRef.current && !dropEditRef.current.contains(event.target)) {
-      setFilteredRolesEdit([]);
+      setRolesState((prevState) => ({
+        ...prevState,
+        edit: { ...prevState.edit, filteredRoles: [] },
+      }));
     }
     if (dropCreateRef.current && !dropCreateRef.current.contains(event.target)) {
-      setFilteredRolesCreate([]);
+      setRolesState((prevState) => ({
+        ...prevState,
+        create: { ...prevState.create, filteredRoles: [] },
+      }));
     }
     if (dropViewRef.current && !dropViewRef.current.contains(event.target)) {
-      setFilteredRolesView([]);
+      setRolesState((prevState) => ({
+        ...prevState,
+        view: { ...prevState.view, filteredRoles: [] },
+      }));
     }
   };
 
@@ -149,10 +149,8 @@ const SettingsModal = ({ show, handleClose, handleConfirm }) => {
     };
   }, []);
 
-  
-
   return (
-    <Modal className="d-flex flex-column align-items-start w-100 mt-5 mb-5 settings-modal" show={show} onHide={handleClose} dialogClassName="modal-50w" backdrop="static" >
+    <Modal className="d-flex flex-column align-items-start w-100 d-flex flex-column align-items-start w-100 my-5 settings-modal" show={show} onHide={handleClose} dialogClassName="modal-50w" backdrop="static">
       <Modal.Header>
         <Modal.Title>{t("Settings")}</Modal.Title>
       </Modal.Header>
@@ -160,12 +158,15 @@ const SettingsModal = ({ show, handleClose, handleConfirm }) => {
         {/* Section 1: Basic */}
         <div className='section'>
           <h5 className='fw-bold'>{t("Basic")}</h5>
-          <FormInput value={newFormName} label={t("Name")} onChange={handleFormNameChange} dataTestid="form-name" ariaLabel={t("Form Name")} />
-
-          <Form.Group className='settings-input' controlId="descriptionInput">
-            <Form.Label className='field-label'>{t("Description")}</Form.Label>
-            <Form.Control className='text-area' as="textarea" rows={3} value={NewFormDescription} onChange={handleFormDescriptionChange} dataTestid="form-description" ariaLabel={t("Form Description")} />
-          </Form.Group>
+          <FormInput value={newFormName} label={t("Name")} onChange={(e) => setNewFormName(e.target.value)} dataTestid="form-name" ariaLabel={t("Form Name")} />
+          <FormTextArea
+            label={t("Description")}
+            value={newFormDescription}
+            onChange={(e) => setNewFormDescription(e.target.value)}
+            aria-label={t("Description of the edited form")}
+            data-testid="form-description"
+            maxRows={3}
+          />
         </div>
 
         <hr className='modal-hr' />
@@ -175,36 +176,34 @@ const SettingsModal = ({ show, handleClose, handleConfirm }) => {
 
           <Form.Label className='field-label'>{t("Who Can Edit This Form")}</Form.Label>
           <CustomRadioButton items={[
-            { label: t("Only You"), onClick: () => setSelectedOptionEdit('onlyYou') },
-            { label: t("You and specified roles"), onClick: () => setSelectedOptionEdit('specifiedRoles') },
+            { label: t("Only You"), onClick: () => setRolesState((prev) => ({ ...prev, edit: { ...prev.edit, selectedOption: 'onlyYou' } })) },
+            { label: t("You and specified roles"), onClick: () => setRolesState((prev) => ({ ...prev, edit: { ...prev.edit, selectedOption: 'specifiedRoles' } })) },
           ]} dataTestid="edit-submission-role" ariaLabel={t("Edit Submission Role")} />
 
-          {selectedOptionEdit === 'onlyYou' && (
-            <FormInput disabled="true" />
+          {rolesState.edit.selectedOption === 'onlyYou' && (
+            <FormInput disabled={true} />
           )}
-          {selectedOptionEdit === 'specifiedRoles' && (
+          {rolesState.edit.selectedOption === 'specifiedRoles' && (
             <>
               <div className='w-100'>
                 <div className="input-with-pills form-control cursor-pointer position-relative">
-                  {selectedRolesEdit.map((role, index) => (
-                    <CustomPill key={index} label={role} icon={true} bg="primary" onClick={() => removeRole(role, setSelectedRolesEdit)} />
+                  {rolesState.edit.selectedRoles.map((role, index) => (
+                    <CustomPill key={index} label={role} icon={true} bg="primary" onClick={() => removeRole(role, 'edit')} />
                   ))}
-                  <input type="text" value={roleInputEdit} onChange={handleRoleInputChangeEdit} className="role-input" />
+                  <input type="text" value={rolesState.edit.roleInput} onChange={handleRoleInputChange('edit')} className="role-input" />
                 </div>
-              
 
-              {filteredRolesEdit.length > 0 && (
-                <div className="input-drop-edit cursor-pointer w-70" ref={dropEditRef}>
-                  <ListGroup>
-                    {filteredRolesEdit.map((role) => (
-                      <ListGroup.Item key={role.id} onClick={() =>
-                        handleRoleSelect(role, setSelectedRolesEdit)}>
-                        {role.name}
-                      </ListGroup.Item>
-                    ))}
-                  </ListGroup>
-                </div>
-              )}
+                {rolesState.edit.filteredRoles.length > 0 && (
+                  <div className="input-drop cursor-pointer w-70" ref={dropEditRef}>
+                    <ListGroup>
+                      {rolesState.edit.filteredRoles.map((role) => (
+                        <ListGroup.Item key={role.id} onClick={() => handleRoleSelect(role, 'edit')}>
+                          {role.name}
+                        </ListGroup.Item>
+                      ))}
+                    </ListGroup>
+                  </div>
+                )}
               </div>
             </>
           )}
@@ -214,75 +213,92 @@ const SettingsModal = ({ show, handleClose, handleConfirm }) => {
             type="checkbox"
             id="createCheckbox"
             label={t("Anonymous users")}
-            checked={isCreateChecked}
-            onChange={() => setIsCreateChecked(!isCreateChecked)}
+            checked={rolesState.create.isChecked}
+            onChange={() => setRolesState((prev) =>
+              ({ ...prev, create: { ...prev.create, isChecked: !prev.create.isChecked } }))}
             className='field-label'
           />
           <CustomRadioButton items={[
-            { label: t("Registered users"), onClick: () => setSelectedOptionCreate('registeredUsers') },
-            { label: t("Specific roles"), onClick: () => setSelectedOptionCreate('specificRoles') },
+            { label: t("Registered users"), onClick: () => setRolesState((prev) => ({ ...prev, create: { ...prev.create, selectedOption: 'registeredUsers' } })) },
+            { label: t("Specific roles"), onClick: () => setRolesState((prev) => ({ ...prev, create: { ...prev.create, selectedOption: 'specifiedRoles' } })) },
           ]} dataTestid="create-submission-role" ariaLabel={t("Create Submission Role")} />
-          {selectedOptionCreate === 'registeredUsers' && (
-            <FormInput disabled="true" />
-          )}
-          {selectedOptionCreate === 'specificRoles' && (
-            <>
-              <div className="w-100">
-                <div className="input-with-pills form-control cursor-pointer position-relative">
-                  {selectedRolesCreate.map((role, index) => (
-                    <CustomPill key={index} label={role} icon={true} bg="primary" onClick={() => removeRole(role, setSelectedRolesCreate)} />
-                  ))}
-                  <input type="text" value={roleInputCreate} onChange={handleRoleInputChangeCreate} className="role-input" />
-                </div>
-              
 
-              {filteredRolesCreate.length > 0 && (
-                <div className="input-drop-create cursor-pointer w-70" ref={dropCreateRef}>
-                  <ListGroup>
-                    {filteredRolesCreate.map((role) => (
-                      <ListGroup.Item key={role.id} onClick={() =>
-                        handleRoleSelect(role, setSelectedRolesCreate)}>
-                        {role.name}
-                      </ListGroup.Item>
-                    ))}
-                  </ListGroup>
+          {rolesState.create.selectedOption === 'registeredUsers' && (
+            <FormInput disabled={true} />
+          )}
+          {rolesState.create.selectedOption === 'specifiedRoles' && (
+            <>
+              <div className='w-100'>
+                <div className="input-with-pills form-control cursor-pointer position-relative">
+                  {rolesState.create.selectedRoles.map((role, index) => (
+                    <CustomPill key={index} label={role} icon={true} bg="primary" onClick={() => removeRole(role, 'create')} />
+                  ))}
+                  <input type="text" value={rolesState.create.roleInput} onChange={handleRoleInputChange('create')} className="role-input" />
                 </div>
-              )}
+
+                {rolesState.create.filteredRoles.length > 0 && (
+                  <div className="input-drop cursor-pointer w-70" ref={dropCreateRef}>
+                    <ListGroup>
+                      {rolesState.create.filteredRoles.map((role) => (
+                        <ListGroup.Item key={role.id} onClick={() => handleRoleSelect(role, 'create')}>
+                          {role.name}
+                        </ListGroup.Item>
+                      ))}
+                    </ListGroup>
+                  </div>
+                )}
               </div>
             </>
           )}
 
-          <Form.Label className='field-label mt-3'>{t("Who Can View Submissions")}</Form.Label>
-          <CustomRadioButton items={[
-            { label: t("Submitter"), onClick: () => setSelectedOptionView('submitter') },
-            { label: t("Submitter and specified roles"), onClick: () => setSelectedOptionView('specifiedRoles') },
-          ]} dataTestid="view-submission-role" ariaLabel={t("View Submission Role")} />
-          {selectedOptionView === 'submitter' && (
-            <FormInput disabled="true" />
+          <Form.Label className="field-label mt-3">{t("Who Can View Submissions")}</Form.Label>
+          <CustomRadioButton
+            items={[
+              { label: t("Submitter"), onClick: () => setRolesState((prev) => ({ ...prev, view: { ...prev.view, selectedOption: 'submitter' } })) },
+              { label: t("Submitter and specified roles"), onClick: () => setRolesState((prev) => ({ ...prev, view: { ...prev.view, selectedOption: 'specifiedRoles' } })) },
+            ]}
+            dataTestid="view-submission-role"
+            ariaLabel={t("View Submission Role")}
+          />
+
+          {rolesState.view.selectedOption === 'submitter' && (
+            <FormInput disabled={true} />
           )}
-          {selectedOptionView === 'specifiedRoles' && (
+
+          {rolesState.view.selectedOption === 'specifiedRoles' && (
             <>
               <div className="w-100">
-                <div className="input-with-pills form-control cursor-pointer position-relative ">
-                  {selectedRolesView.map((role, index) => (
-                    <CustomPill key={index} label={role} icon={true} bg="primary" onClick={() => removeRole(role, setSelectedRolesView)} />
+                <div className="input-with-pills form-control cursor-pointer position-relative">
+                  {rolesState.view.selectedRoles.map((role, index) => (
+                    <CustomPill
+                      key={index}
+                      label={role}
+                      icon={true}
+                      bg="primary"
+                      onClick={() => removeRole(role, 'view')}
+                    />
                   ))}
-                  <input type="text" value={roleInputView} onChange={handleRoleInputChangeView} className="role-input" />
+                  <input
+                    type="text"
+                    value={rolesState.view.roleInput}
+                    onChange={handleRoleInputChange('view')}
+                    className="role-input"
+                  />
                 </div>
-              
 
-              {filteredRolesView.length > 0 && (
-                <div className="input-drop-view cursor-pointer w-70" ref={dropViewRef}>
-                  <ListGroup>
-                    {filteredRolesView.map((role) => (
-                      <ListGroup.Item key={role.id} onClick={() =>
-                        handleRoleSelect(role, setSelectedRolesView)}>
-                        {role.name}
-                      </ListGroup.Item>
-                    ))}
-                  </ListGroup>
-                </div>
-              )}
+                {rolesState.view.filteredRoles.length > 0 && (
+                  <div className="input-drop-view cursor-pointer w-70" ref={dropViewRef}>
+                    <ListGroup>
+                      {rolesState.view.filteredRoles.map((role) => (
+                        <ListGroup.Item
+                          key={role.id}
+                          onClick={() => handleRoleSelect(role, 'view')}>
+                          {role.name}
+                        </ListGroup.Item>
+                      ))}
+                    </ListGroup>
+                  </div>
+                )}
               </div>
             </>
           )}

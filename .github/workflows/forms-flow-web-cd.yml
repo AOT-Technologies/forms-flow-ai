@@ -6,6 +6,7 @@ on:
       - master
       - develop
       - release/*
+      - Security-Fix-V7.0.0
     paths:
       - "forms-flow-web/**"
       - "VERSION"

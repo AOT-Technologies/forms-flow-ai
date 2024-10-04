@@ -1,7 +1,7 @@
 """Test suite for application API endpoint."""
 
 import os
-import json
+
 import pytest
 import requests
 from formsflow_api_utils.utils import (
@@ -11,8 +11,6 @@ from formsflow_api_utils.utils import (
 )
 
 from tests.utilities.base_test import (
-    create_mapper,
-    create_mapper_custom,
     get_application_create_payload,
     get_draft_create_payload,
     get_formio_form_request_payload,
@@ -258,7 +256,7 @@ def test_application_create_method(app, client, session, jwt, create_mapper):
 
 
 def test_application_create_method_tenant_based(
-    app, client, session, jwt, create_mapper
+    app, client, session, jwt, create_mapper_custom
 ):
     """Tests the tenant based application create method with valid payload."""
     token = get_token(jwt, tenant_key="test-tenant", role=CREATE_DESIGNS)
@@ -267,7 +265,17 @@ def test_application_create_method_tenant_based(
         "content-type": "application/json",
     }
 
-    form_id = create_mapper["formId"]
+    payload = {
+        "formId": "1234",
+        "formName": "Sample form",
+        "processKey": "two-step-approval",
+        "processName": "Two Step Approval",
+        "status": "active",
+        "formType": "form",
+        "parentFormId": "1234",
+    }
+    rv = create_mapper_custom(payload, tenant="test-tenant")
+    form_id = rv["formId"]
     token = get_token(jwt, tenant_key="test-tenant", role=CREATE_SUBMISSIONS)
     headers = {"Authorization": f"Bearer {token}", "content-type": "application/json"}
     rv = client.post(
@@ -350,8 +358,9 @@ def test_application_resubmit(app, client, session, jwt, create_mapper_custom):
         "status": "active",
         "formType": "form",
         "parentFormId": "1234",
+        "taskVariables": '[{"key":"abcd","label":"BusinessName"}]',
     }
-    rv = create_mapper_custom(json.dumps(payload))
+    rv = create_mapper_custom(payload)
 
     form_id = rv.get("formId")
 

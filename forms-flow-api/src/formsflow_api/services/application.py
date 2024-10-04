@@ -539,7 +539,7 @@ class ApplicationService:  # pylint: disable=too-many-public-methods
     def resubmit_application(application_id: int, payload: Dict, token: str):
         """Resubmit application and update process variables."""
         mapper = ApplicationService.get_application_form_mapper_by_id(application_id)
-        task_variable = json.loads(mapper.get("taskVariable"))
+        task_variable = json.loads(mapper.get("taskVariables"))
         form_data = payload.pop("data", None)
         payload["processVariables"] = ApplicationService.fetch_task_variable_values(
             task_variable, form_data

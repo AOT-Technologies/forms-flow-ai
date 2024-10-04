@@ -1,9 +1,16 @@
 """Resource to get Dashboard APIs from redash."""
+
 from http import HTTPStatus
 
 from flask import request
 from flask_restx import Namespace, Resource, fields
-from formsflow_api_utils.utils import auth, cors_preflight, profiletime
+from formsflow_api_utils.utils import (
+    MANAGE_DASHBOARD_AUTHORIZATIONS,
+    VIEW_DASHBOARDS,
+    auth,
+    cors_preflight,
+    profiletime,
+)
 
 from formsflow_api.schemas import ApplicationListReqSchema
 from formsflow_api.services import AuthorizationService, RedashAPIService
@@ -70,7 +77,7 @@ class DashboardList(Resource):
     """Resource to fetch Dashboard List."""
 
     @staticmethod
-    @auth.require
+    @auth.has_one_of_roles([MANAGE_DASHBOARD_AUTHORIZATIONS])
     @profiletime
     @API.doc(
         params={
@@ -126,7 +133,7 @@ class DashboardDetail(Resource):
     """Resource to fetch Dashboard Detail."""
 
     @staticmethod
-    @auth.require
+    @auth.has_one_of_roles([VIEW_DASHBOARDS])
     @profiletime
     @API.response(200, "OK:- Successful request.", model=dashboard_model)
     @API.response(

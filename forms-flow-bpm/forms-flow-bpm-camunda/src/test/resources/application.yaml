@@ -20,7 +20,7 @@ spring:
     oauth2:
       resourceserver:
         jwt:
-          issuer-uri: ${keycloak.url.client}/auth/realms/${KEYCLOAK_URL_REALM}
+          issuer-uri: ${keycloak.url.client}/${keycloak.url.httpRelativePath}realms/${KEYCLOAK_URL_REALM}
 
 # disable redis
 spring.data.redis.repositories.enabled: false
@@ -33,8 +33,8 @@ rest.security:
   required-audience: camunda-rest-api
 
 plugin.identity.keycloak:
-  keycloakIssuerUrl: http://localhost:8080/auth/realms/forms-flow-ai
-  keycloakAdminUrl: http://localhost:8080/auth/admin/realms/forms-flow-ai
+  keycloakIssuerUrl: http://localhost:8080/${keycloak.url.httpRelativePath}realms/forms-flow-ai
+  keycloakAdminUrl: http://localhost:8080/${keycloak.url.httpRelativePath}admin/realms/forms-flow-ai
   clientId: forms-flow-bpm
   clientSecret: e3238a38-5e5a-45bb-b4e6-d7eb5855cf3a
   useEmailAsCamundaUserId: false

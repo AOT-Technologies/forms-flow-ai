@@ -49,6 +49,7 @@ def create_app(run_mode=os.getenv("FLASK_ENV", "production")):
         when=os.getenv("API_LOG_ROTATION_WHEN", "d"),
         interval=int(os.getenv("API_LOG_ROTATION_INTERVAL", "1")),
         backup_count=int(os.getenv("API_LOG_BACKUP_COUNT", "7")),
+        configure_log_file=app.config["CONFIGURE_LOGS"],
     )
     app.logger.propagate = False
     app.logger.info("Welcome to formsflow-data-analysis server...!")

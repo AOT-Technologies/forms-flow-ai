@@ -86,8 +86,8 @@ jobs:
             MF_FORMSFLOW_WEB_URL=https://forms-flow-microfrontends.aot-technologies.com/forms-flow-web@${{ env.VERSION }}/forms-flow-web.gz.js
             MF_FORMSFLOW_NAV_URL=https://forms-flow-microfrontends.aot-technologies.com/forms-flow-nav@${{ env.VERSION }}/forms-flow-nav.gz.js
             MF_FORMSFLOW_SERVICE_URL=https://forms-flow-microfrontends.aot-technologies.com/forms-flow-service@${{ env.VERSION }}/forms-flow-service.gz.js
+            MF_FORMSFLOW_COMPONENTS_URL=https://forms-flow-microfrontends.aot-technologies.com/forms-flow-components@${{ env.VERSION }}/forms-flow-components.gz.js
             MF_FORMSFLOW_ADMIN_URL=https://forms-flow-microfrontends.aot-technologies.com/forms-flow-admin@${{ env.VERSION }}/forms-flow-admin.gz.js
-            MF_FORMSFLOW_THEME_URL=https://forms-flow-microfrontends.aot-technologies.com/forms-flow-theme@${{ env.VERSION }}/forms-flow-theme.gz.js
       - name: Build and push Docker image
         if: ${{ github.ref == 'refs/heads/master' }}
         uses: docker/build-push-action@v4
@@ -101,8 +101,8 @@ jobs:
             MF_FORMSFLOW_WEB_URL=https://forms-flow-microfrontends.aot-technologies.com/forms-flow-web@${{ env.VERSION }}/forms-flow-web.gz.js
             MF_FORMSFLOW_NAV_URL=https://forms-flow-microfrontends.aot-technologies.com/forms-flow-nav@${{ env.VERSION }}/forms-flow-nav.gz.js
             MF_FORMSFLOW_SERVICE_URL=https://forms-flow-microfrontends.aot-technologies.com/forms-flow-service@${{ env.VERSION }}/forms-flow-service.gz.js
-            MF_FORMSFLOW_ADMIN_URL=https://forms-flow-microfrontends.aot-technologies.com/forms-flow-admin@${{ env.VERSION }}/forms-flow-admin.gz.js
-            MF_FORMSFLOW_THEME_URL=https://forms-flow-microfrontends.aot-technologies.com/forms-flow-theme@${{ env.VERSION }}/forms-flow-theme.gz.js 
+            MF_FORMSFLOW_COMPONENTS_URL=https://forms-flow-microfrontends.aot-technologies.com/forms-flow-components@${{ env.VERSION }}/forms-flow-components.gz.js
+            MF_FORMSFLOW_ADMIN_URL=https://forms-flow-microfrontends.aot-technologies.com/forms-flow-admin@${{ env.VERSION }}/forms-flow-admin.gz.js 
       - name: Scan Docker image 🐳
         uses: snyk/actions/docker@master
         continue-on-error: true
@@ -120,8 +120,8 @@ jobs:
       - name: Set up AWS CLI
         uses: aws-actions/configure-aws-credentials@v1
         with:
-          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
-          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-access-key-id: ${{ secrets.AWS_DEPLOYMENT_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_DEPLOYMENT_SECRET_ACCESS_KEY }}
           aws-region: ca-central-1  # Change this to your desired region
       - name: Install kubectl
         run: |
@@ -129,10 +129,8 @@ jobs:
           chmod +x kubectl
           sudo mv kubectl /usr/local/bin/
       - name: Update Kube config
-        run: aws eks update-kubeconfig --region ca-central-1 --name formsflow-eks-qa
+        run: aws eks update-kubeconfig --region ca-central-1 --name ${{ secrets.DEV_EKS_CLUSTER }}
       - name: Deploy to eks
         run: |
-          kubectl -n dev patch deployment forms-flow-web -p '{"spec":{"template":{"spec":{"containers":[{"name":"forms-flow-web","image":"docker.io/formsflow/forms-flow-web:${{ env.VERSION }}"}]}}}}'
-          kubectl -n dev rollout restart deployment forms-flow-web
-          kubectl -n devmt patch deployment forms-flow-web -p '{"spec":{"template":{"spec":{"containers":[{"name":"forms-flow-web","image":"docker.io/formsflow/forms-flow-web:${{ env.VERSION }}"}]}}}}'
-          kubectl -n devmt rollout restart deployment forms-flow-web
+          kubectl -n ${{ secrets.DEV_OPENSOURCE_NAMESPACE }} patch deployment forms-flow-web -p '{"spec":{"template":{"spec":{"containers":[{"name":"forms-flow-web","image":"docker.io/formsflow/forms-flow-web:${{ env.VERSION }}"}]}}}}'
+          kubectl -n ${{ secrets.DEV_OPENSOURCE_NAMESPACE }} rollout restart deployment forms-flow-web

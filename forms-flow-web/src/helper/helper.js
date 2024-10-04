@@ -19,7 +19,7 @@ const addTenantkey = (value, tenantkey) => {
 const removeTenantKey = (value, tenantkey) => {
   const tenantKeyCheck = value.match(`${tenantkey}-`);
   if (
-    tenantKeyCheck &&
+    tenantKeyCheck &&  tenantKeyCheck.length &&
     tenantKeyCheck[0].toLowerCase() === `${tenantkey.toLowerCase()}-`
   ) {
     return value.replace(`${tenantkey.toLowerCase()}-`, "");
@@ -35,7 +35,7 @@ const textTruncate = (wordLength, targetLength, text) => {
 };
 
 const renderPage = (formStatus, processLoadError) => {
-  if (!processLoadError && ((formStatus === "inactive") || !formStatus)) {
+  if (!processLoadError && (formStatus === "inactive")) {
     return (
       <span>
         <div
@@ -48,4 +48,11 @@ const renderPage = (formStatus, processLoadError) => {
     );
   } 
 };
-export { replaceUrl, addTenantkey, removeTenantKey, textTruncate, renderPage };
+
+const filterSelectOptionByLabel = (option, searchText) => {
+  return option.data.label.toLowerCase().includes(searchText.toLowerCase());
+};
+
+
+export { replaceUrl, addTenantkey, removeTenantKey, textTruncate, renderPage, 
+  filterSelectOptionByLabel};

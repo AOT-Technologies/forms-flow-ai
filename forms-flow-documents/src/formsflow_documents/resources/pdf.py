@@ -1,4 +1,5 @@
 """API endpoints for managing form resource."""
+
 import string
 from http import HTTPStatus
 
@@ -6,8 +7,7 @@ from flask import current_app, make_response, render_template, request
 from flask_restx import Namespace, Resource
 from formsflow_api_utils.exceptions import BusinessException
 from formsflow_api_utils.utils import (
-    CLIENT_GROUP,
-    REVIEWER_GROUP,
+    VIEW_SUBMISSIONS,
     auth,
     cors_preflight,
     profiletime,
@@ -82,7 +82,7 @@ class FormResourceExportPdf(Resource):
 
     @staticmethod
     @auth.require
-    @auth.has_one_of_roles([REVIEWER_GROUP, CLIENT_GROUP])
+    @auth.has_one_of_roles([VIEW_SUBMISSIONS])
     @profiletime
     def post(form_id: string, submission_id: string):
         """PDF generation and rendering method."""

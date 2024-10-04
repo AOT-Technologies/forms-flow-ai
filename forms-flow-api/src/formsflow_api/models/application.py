@@ -52,7 +52,7 @@ class Application(
             ]
             application.submission_id = application_info["submission_id"]
             application.latest_form_id = application_info["form_id"]
-            application.save()
+            application.save_and_flush()
             return application
         return None
 
@@ -71,7 +71,7 @@ class Application(
             ],
             mapper_info,
         )
-        self.commit()
+        self.save_and_flush()
 
     @classmethod
     def find_by_id(cls, application_id: int) -> Application:
@@ -193,7 +193,7 @@ class Application(
         return query
 
     @classmethod
-    def find_all_by_user(  # pylint: disable=too-many-arguments
+    def find_all_by_user(  # pylint: disable=too-many-arguments, too-many-positional-arguments
         cls,
         user_id: str,
         page_no: int,
@@ -273,7 +273,7 @@ class Application(
         return result
 
     @classmethod
-    def find_by_form_names(  # pylint: disable=too-many-arguments
+    def find_by_form_names(  # pylint: disable=too-many-arguments, too-many-positional-arguments
         cls,
         form_names: list(str),
         page_no: int,
@@ -296,7 +296,7 @@ class Application(
         return pagination.items, total_count
 
     @classmethod
-    def find_applications_by_auth_formids_user(  # pylint: disable=too-many-arguments
+    def find_applications_by_auth_formids_user(  # pylint: disable=too-many-arguments, too-many-positional-arguments
         cls,
         page_no: int,
         limit: int,
@@ -466,7 +466,7 @@ class Application(
     @classmethod
     @user_context
     def find_aggregated_applications(
-        # pylint: disable-msg=too-many-arguments, too-many-locals
+        # pylint: disable-msg=too-many-arguments, too-many-locals, too-many-positional-arguments
         cls,
         from_date: str,
         to_date: str,

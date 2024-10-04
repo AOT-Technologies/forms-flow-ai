@@ -1,16 +1,18 @@
 """This exposes the Keycloak Admin APIs."""
+
 import json
 
 import requests
 from flask import current_app
 from formsflow_api_utils.utils import (
-    FORMSFLOW_ROLES,
     HTTP_TIMEOUT,
-    KEYCLOAK_DASHBOARD_BASE_GROUP,
     UserContext,
     profiletime,
     user_context,
 )
+from formsflow_api_utils.exceptions import BusinessException
+
+from formsflow_api.constants import BusinessErrorCode
 
 
 class KeycloakAdminAPIService:
@@ -42,7 +44,8 @@ class KeycloakAdminAPIService:
             }
         )
         self.base_url = (
-            f"{current_app.config.get('KEYCLOAK_URL')}/auth/admin/realms/"
+            f"{current_app.config.get('KEYCLOAK_URL')}{current_app.config.get('KEYCLOAK_URL_HTTP_RELATIVE_PATH')}"
+            f"/admin/realms/"
             f"{current_app.config.get('KEYCLOAK_URL_REALM')}"
         )
 
@@ -77,46 +80,6 @@ class KeycloakAdminAPIService:
         if response.ok:
             return response.json()
         return None
-
-    def get_analytics_groups(self, page_no: int, limit: int):
-        """Return groups for analytics users."""
-        dashboard_group_list: list = []
-        if page_no == 0 and limit == 0:
-            group_list_response = self.get_request(url_path="groups")
-        else:
-            group_list_response = self.get_paginated_request(
-                url_path="groups", first=page_no, max_results=limit
-            )
-
-        for group in group_list_response:
-            if group["name"] == KEYCLOAK_DASHBOARD_BASE_GROUP:
-                if group.get("subGroupCount", 0) > 0:
-                    dashboard_group_list = self.get_subgroups(group["id"])
-                else:
-                    dashboard_group_list = list(group["subGroups"])
-        return dashboard_group_list
-
-    def get_analytics_roles(self, page_no: int, limit: int):
-        """Return roles for analytics users."""
-        current_app.logger.debug("Getting analytics roles")
-        dashboard_roles_list: list = []
-        client_id = self.get_client_id()
-        # Look for exact match
-        if page_no == 0 and limit == 0:
-            roles = self.get_request(f"clients/{client_id}/roles")
-        else:
-            roles = self.get_paginated_request(
-                url_path=f"clients/{client_id}/roles",
-                first=page_no,
-                max_results=limit,
-            )
-        current_app.logger.debug("Client roles %s", roles)
-        for client_role in roles:
-            if client_role["name"] not in FORMSFLOW_ROLES:
-                client_role["path"] = client_role["name"]
-                dashboard_roles_list.append(client_role)
-        current_app.logger.debug("dashboard_roles_list %s", dashboard_roles_list)
-        return dashboard_roles_list
 
     @user_context
     def get_client_id(self, **kwargs):
@@ -155,7 +118,9 @@ class KeycloakAdminAPIService:
             current_app.logger.debug(f"Keycloak Admin PUT API payload {data}")
             current_app.logger.debug(f"Keycloak response: {response}")
         except Exception as err_code:
-            raise f"Request to Keycloak Admin APIs failed., {err_code}"
+            raise BusinessException(
+                BusinessErrorCode.KEYCLOAK_REQUEST_FAIL
+            ) from err_code
         response.raise_for_status()
         if response.status_code == 204:
             return f"Updated - {url_path}"
@@ -197,7 +162,9 @@ class KeycloakAdminAPIService:
             response = self.session.request("DELETE", url, data=json.dumps(data))
             current_app.logger.debug(f"keycloak Admin API DELETE request URL: {url}")
         except Exception as err_code:
-            raise f"Request to Keycloak Admin APIs failed., {err_code}"
+            raise BusinessException(
+                BusinessErrorCode.KEYCLOAK_REQUEST_FAIL
+            ) from err_code
         response.raise_for_status()
         return response.status_code == 204
 
@@ -221,7 +188,9 @@ class KeycloakAdminAPIService:
             current_app.logger.debug(f"Keycloak Admin POST API payload {data}")
             current_app.logger.debug(f"Keycloak response: {response}")
         except Exception as err_code:
-            raise f"Request to Keycloak Admin APIs failed., {err_code}"
+            raise BusinessException(
+                BusinessErrorCode.KEYCLOAK_REQUEST_FAIL
+            ) from err_code
         response.raise_for_status()
         return response
 

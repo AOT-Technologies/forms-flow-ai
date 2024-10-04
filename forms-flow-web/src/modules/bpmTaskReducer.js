@@ -5,7 +5,7 @@ import {
   getFormattedParams,
 } from "../apiManager/services/taskSearchParamsFormatterService";
 import { QUERY_TYPES } from "../components/ServiceFlow/constants/taskConstants";
-import { sortByPriorityList } from "../apiManager/services/filterListFormatterService";
+// import { sortByPriorityList } from "../apiManager/services/filterListFormatterService";
 
 const initialState = {
   isTaskListLoading: true,
@@ -68,11 +68,11 @@ const bpmTasks = (state = initialState, action) => {
     case ACTION_CONSTANTS.LIST_APPLICATION_HISTORY:
       return { ...state, appHistory: action.payload };
     case ACTION_CONSTANTS.BPM_FILTER_LIST:
-      return { ...state, filterList: sortByPriorityList(action.payload) };
+      return { ...state, filterList: action.payload };
     case ACTION_CONSTANTS.IS_BPM_FILTERS_LOADING:
       return { ...state, isFilterLoading: action.payload };
     case ACTION_CONSTANTS.BPM_SELECTED_FILTER:
-      return { ...state, selectedFilter: action.payload };
+      return { ...state, selectedFilter: action.payload,filterListSearchParams:{} };
     case ACTION_CONSTANTS.SELECTED_TASK_ID:
       return { ...state, taskId: action.payload, taskDetail: null };
     case ACTION_CONSTANTS.IS_TASK_GROUP_LOADING:

@@ -59,7 +59,7 @@
         },
         "notBefore":0,
         "groups":[
-           
+           "camunda-admin"
         ]
      }
   ],

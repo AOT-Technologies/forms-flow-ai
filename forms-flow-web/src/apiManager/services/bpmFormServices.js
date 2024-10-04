@@ -27,7 +27,7 @@ export const fetchBPMFormList = (
       url += `&formType=${formType}`;
     }
     if (formName) {
-      url += `&formName=${encodeURIComponent(formName)}`;
+      url += `&search=${encodeURIComponent(formName)}`;
     }
     RequestService.httpGETRequest(url, {}, StorageService.get(StorageService.User.AUTH_TOKEN))
       .then((res) => {
@@ -55,6 +55,11 @@ export const fetchBPMFormList = (
         done(error);
       });
   };
+};
+
+export const fetchAllForms = ()=>{
+  //activeForms means published forms only : status = Active
+  return RequestService.httpGETRequest(`${API.FORM}?activeForms=true`);
 };
 
 export const fetchFormByAlias = (path, ...rest) => {

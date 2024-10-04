@@ -22,7 +22,7 @@ afterEach(() => {
 
 test("Render Submission Detail Component with submission prop passed", () => {
   render(<ApplicationDetails application={mockApplication1} />);
-  expect(screen.getByText("Submission ID"));
+  expect(screen.getByText("Submission Id"));
   expect(screen.getByText("Form Name"));
   expect(screen.getByText("Created By"));
   expect(screen.getByText("Submission Status"));
@@ -34,7 +34,7 @@ test("Render Detail Component with submission prop passed", () => {
   useSelector.mockImplementation((callback) => callback(appState));
   const { rerender } = render(<Details application={mockApplication1} />);
   expect(screen.queryByText("Loading...")).toBeNull();
-  expect(screen.getByText("Submission ID"));
+  expect(screen.getByText("Submission Id"));
   expect(screen.getByTestId("application-id")).toHaveTextContent(
     mockApplication1.id
   );

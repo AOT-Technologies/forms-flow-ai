@@ -1,6 +1,5 @@
 """This exposes Form history service."""
 
-from http import HTTPStatus
 from uuid import uuid1
 
 from formsflow_api_utils.exceptions import BusinessException
@@ -9,7 +8,7 @@ from formsflow_api_utils.utils.user_context import UserContext, user_context
 
 from formsflow_api.constants import BusinessErrorCode
 from formsflow_api.models import FormHistory
-from formsflow_api.schemas import FormHistorySchema
+from formsflow_api.schemas import FormHistoryReqSchema, FormHistorySchema
 
 
 class FormHistoryService:
@@ -39,18 +38,16 @@ class FormHistoryService:
             response = formio_service.create_form(data, form_io_token)
             # Version details is used set version number
             version_data_schema = FormHistorySchema()
+            version_data = FormHistory.get_latest_version(parent_form_id)
+            major_version, minor_version = 0, 0
+            if version_data:
+                major_version = version_data.major_version
+                minor_version = version_data.minor_version
             if data.get("newVersion") is True:
-                version_number = "v" + str(
-                    FormHistory.get_version_count(parent_form_id) + 1
-                )
+                major_version += 1
+                minor_version = 0
             else:
-                version_data = version_data_schema.dump(
-                    FormHistory.get_latest_version(parent_form_id)
-                )
-                version_number = (
-                    version_data.get("changeLog")
-                    and version_data.get("changeLog").get("version")
-                ) or None
+                minor_version += 1
             # Form history data to save into form history table
             form_history_data = {
                 "form_id": form_id,
@@ -60,8 +57,9 @@ class FormHistoryService:
                 "change_log": {
                     "cloned_form_id": response.get("_id"),
                     "new_version": data.get("newVersion") or False,
-                    "version": version_number,
                 },
+                "major_version": major_version,
+                "minor_version": minor_version,
             }
             create_form_history = FormHistory.create_history(form_history_data)
             return version_data_schema.dump(create_form_history)
@@ -94,17 +92,27 @@ class FormHistoryService:
             form_logs_data["created_by"] = user_name
             form_logs_data["form_id"] = data.get("formId")
             form_logs_data["parent_form_id"] = data.get("parentFormId")
+            # Capture version details in form history
+            version_data = FormHistory.get_latest_version(data.get("parentFormId"))
+            if version_data:
+                form_logs_data["major_version"] = version_data.major_version
+                form_logs_data["minor_version"] = version_data.minor_version
             history_schema = FormHistorySchema()
             create_form_history = FormHistory.create_history(form_logs_data)
             return history_schema.dump(create_form_history)
         return None
 
     @staticmethod
-    def get_all_history(form_id: str):
+    def get_all_history(form_id: str, request_args):
         """Get all history."""
         assert form_id is not None
-        form_histories = FormHistory.fetch_histories_by_parent_id(form_id)
+        dict_data = FormHistoryReqSchema().load(request_args) or {}
+        page_no = dict_data.get("page_no")
+        limit = dict_data.get("limit")
+        form_histories, count = FormHistory.fetch_histories_by_parent_id(
+            form_id, page_no, limit
+        )
         if form_histories:
             form_history_schema = FormHistorySchema(many=True)
-            return form_history_schema.dump(form_histories), HTTPStatus.OK
+            return form_history_schema.dump(form_histories), count
         raise BusinessException(BusinessErrorCode.INVALID_FORM_ID)

@@ -114,29 +114,33 @@ const DraftFilter = ({ setDisplayFilter, filterParams, setFilterParams }) => {
           </Col>
         </Row>
       </div>
-      <hr className="m-0 w-100" />
-      <div className="m-3 d-flex flex-column col-4">
-        <label>{t("Modified Date")}</label>
-        <DateRangePicker
-          onChange={(selectedRange) => {
-            handleChange("modified", selectedRange);
-          }}
-          value={searchParams.modified}
-          maxDate={new Date()}
-          minDate={new Date("January 1, 0999 01:01:00")}
-          dayPlaceholder="dd"
-          monthPlaceholder="mm"
-          yearPlaceholder="yyyy"
-          calendarAriaLabel="Select the date"
-          dayAriaLabel="Select the day"
-          clearAriaLabel="Click to clear"
-          monthAriaLabel="Select the month"
-          yearAriaLabel="Select the year"
-          nativeInputAriaLabel="Date"
-          data-testid="draft-filter-modified-daterange"
-        />
-      </div>
       <hr className="mx-4" />
+      <div className="m-3">
+        <Row className="m-2">
+          <Col sm={6} >
+            <label>{t("Modified Date")}</label>
+            <DateRangePicker
+              onChange={(selectedRange) => {
+                handleChange("modified", selectedRange);
+              }}
+              value={searchParams.modified}
+              maxDate={new Date()}
+              minDate={new Date("January 1, 0999 01:01:00")}
+              dayPlaceholder="dd"
+              monthPlaceholder="mm"
+              yearPlaceholder="yyyy"
+              calendarAriaLabel="Select the date"
+              dayAriaLabel="Select the day"
+              clearAriaLabel="Click to clear"
+              monthAriaLabel="Select the month"
+              yearAriaLabel="Select the year"
+              nativeInputAriaLabel="Date"
+              data-testid="draft-filter-modified-daterange"
+            />
+          </Col>
+        </Row>
+      </div>
+      <hr className="m-0 w-100" />
       <Row className="m-3 filter-cancel-btn-container ">
         <Col className="text-left px-0">
           <button
@@ -147,7 +151,7 @@ const DraftFilter = ({ setDisplayFilter, filterParams, setFilterParams }) => {
             {t("Clear All Filters")}
           </button>
         </Col>
-        <Col className="text-right">
+        <Col className="d-flex justify-content-end">
           <button
             className="btn btn-link text-dark me-1 "
             onClick={closeFilterModal}

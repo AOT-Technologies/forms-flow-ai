@@ -1,5 +1,6 @@
 import React from "react";
 import { Translation } from "react-i18next";
+import "./styles.scss";
 
 const Head = React.memo((props) => {
   const { items = [], page, visibleHr = true, } = props;
@@ -13,12 +14,12 @@ const Head = React.memo((props) => {
             key={key}
             className={`head-item ${item.name === page ? "head-active" : ""} ${key > 0 ? 'padding-left-60' : ''}`}
           >
-            <h3   className="application-head">
+            <label className="application-head ">
               <i
-                className={`mt-1 fa fa-${item?.icon}`}
+                className={`fa fa-${item?.icon}`}
                 aria-hidden="true"
               />
-              <span className="application-text ms-2">
+              <span className="ms-2 pt-1">
                 <Translation>{(t) => t(item?.name)}</Translation>
               </span>
               {item?.count ? (
@@ -26,7 +27,7 @@ const Head = React.memo((props) => {
                   ({item?.count})
                 </div>
               ) : null}
-            </h3>
+            </label>
           </div>
         ))}
       </div>

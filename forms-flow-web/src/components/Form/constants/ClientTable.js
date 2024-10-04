@@ -16,19 +16,19 @@ import {
 import LoadingOverlay from "react-loading-overlay-ts";
 import {
   MULTITENANCY_ENABLED,
-  STAFF_DESIGNER,
 } from "../../../constants/constants";
 import { useTranslation } from "react-i18next";
 import { Translation } from "react-i18next";
 import { sanitize } from "dompurify";
+import  userRoles  from "../../../constants/permissions";
 
 function ClientTable() {
+  const { createDesigns } = userRoles();
   const tenantKey = useSelector((state) => state.tenants?.tenantId);
   const dispatch = useDispatch();
   const { t } = useTranslation();
   const bpmForms = useSelector((state) => state.bpmForms);
   const formData = (() => bpmForms.forms)() || [];
-  const userRoles = useSelector((state) => state.user.roles || []);
   const pageNo = useSelector((state) => state.bpmForms.page);
   const limit = useSelector((state) => state.bpmForms.limit);
   const totalForms = useSelector((state) => state.bpmForms.totalForms);
@@ -36,7 +36,6 @@ function ClientTable() {
   const searchFormLoading = useSelector(
     (state) => state.formCheckList.searchFormLoading
   );
-  const isDesigner = userRoles.includes(STAFF_DESIGNER);
   const [pageLimit, setPageLimit] = useState(5);
   const isAscending = sortOrder === "asc" ? true : false;
   const searchText = useSelector((state) => state.bpmForms.searchText);
@@ -180,10 +179,11 @@ function ClientTable() {
                       onKeyDown={(e) =>
                         e.keyCode === 13 ? handleSearch() : ""
                       }
-                      className="bg-white"
+                      className="bg-white out-line"
                       data-testid="form-search-input-box"
                       placeholder={t("Search by form title")}
                       title={t("Search by form title")}
+                      aria-label={t("Search by form title")}
                     />
                     {search && (
                       <InputGroup.Append
@@ -215,7 +215,7 @@ function ClientTable() {
                   <React.Fragment key={index}>
                     <tr>
                       <td className="col-4">
-                        {!isDesigner && (
+                        {!createDesigns && (
                           <button
                             data-testid={`form-description-expand-button-${e._id}`}
                             title={t("Form Description")}

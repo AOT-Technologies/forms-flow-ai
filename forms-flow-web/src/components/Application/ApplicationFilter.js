@@ -122,7 +122,7 @@ const ApplicationFilter = ({
               data-testid="submission-filter-id-input"
             />
           </Col>
-          <Col>
+          <Col className="px-2">
             <label htmlFor="applicationNameInput">{t("Form Title")}</label>
             <input
               id="applicationNameInput"
@@ -135,7 +135,7 @@ const ApplicationFilter = ({
           </Col>
         </Row>
       </div>
-      <hr className="m-0 w-100" />
+      <hr className="mx-4" />
       <div className="m-4 px-2">
         <Row className="mt-2">
           <Col>
@@ -144,7 +144,7 @@ const ApplicationFilter = ({
               id="applicationStatus"
               value={searchParams.applicationStatus}
               onChange={(e) => handleChange("applicationStatus", e.target.value)}
-              className="form-select p-1 w-100"
+              className="form-select w-100 text-truncate"
               data-testid="submission-filter-applicationstatus-dropdown"
             >
               <option value="" hidden>
@@ -162,7 +162,7 @@ const ApplicationFilter = ({
               )}
             </select>
           </Col>
-          <Col className="me-2" >
+          <Col className="ms-2 me-4" >
             <label htmlFor="modifiedDateRange" >{t("Modified Date")}</label>
             <DateRangePicker
               id="modifiedDateRange"
@@ -186,9 +186,9 @@ const ApplicationFilter = ({
           </Col>
         </Row>
       </div>
-      <hr className="mx-4" />
+      <hr className="w-100" />
       <Row className="m-3 filter-cancel-btn-container ">
-        <Col className="px-0 text-left">
+        <Col className="px-0">
           <button
             className="btn btn-link text-danger"
             onClick={clearAllFilters}
@@ -197,7 +197,7 @@ const ApplicationFilter = ({
             {t("Clear All Filters")}
           </button>
         </Col>
-        <Col className="text-right">
+        <Col className="d-flex justify-content-end">
           <button
             className="btn btn-link text-dark me-1 "
             onClick={closeFilterModal}

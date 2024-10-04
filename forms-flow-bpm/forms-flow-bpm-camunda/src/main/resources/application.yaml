@@ -3,6 +3,7 @@ spring.config.import: "optional:file:.env[.properties]"
 
 keycloak.url: ${KEYCLOAK_URL}
 keycloak.url.realm: ${KEYCLOAK_URL_REALM}
+keycloak.url.httpRelativePath: ${KEYCLOAK_URL_HTTP_RELATIVE_PATH:/auth}
 keycloak.clientId: ${KEYCLOAK_CLIENTID}
 keycloak.clientSecret: ${KEYCLOAK_CLIENTSECRET}
 
@@ -102,17 +103,24 @@ spring:
             authorizationGrantType: client_credentials
         provider:
           keycloak:
-            authorization-uri: ${keycloak.url}/auth/realms/${keycloak.url.realm}/protocol/openid-connect/auth
-            token-uri: ${keycloak.url}/auth/realms/${keycloak.url.realm}/protocol/openid-connect/token
-            user-info-uri: ${keycloak.url}/auth/realms/${keycloak.url.realm}/protocol/openid-connect/userinfo
+            authorization-uri: ${keycloak.url}${keycloak.url.httpRelativePath}/realms/${keycloak.url.realm}/protocol/openid-connect/auth
+            token-uri: ${keycloak.url}${keycloak.url.httpRelativePath}/realms/${keycloak.url.realm}/protocol/openid-connect/token
+            user-info-uri: ${keycloak.url}${keycloak.url.httpRelativePath}/realms/${keycloak.url.realm}/protocol/openid-connect/userinfo
             user-name-attribute: preferred_username
-            jwk-set-uri: ${keycloak.url}/auth/realms/${keycloak.url.realm}/protocol/openid-connect/certs
-            issuer-uri: ${keycloak.url}/auth/realms/${keycloak.url.realm}
+            jwk-set-uri: ${keycloak.url}${keycloak.url.httpRelativePath}/realms/${keycloak.url.realm}/protocol/openid-connect/certs
+            issuer-uri: ${keycloak.url}${keycloak.url.httpRelativePath}/realms/${keycloak.url.realm}
       resource-server:
         jwt:
-          issuer-uri: ${keycloak.url}/auth/realms/${keycloak.url.realm}
+          issuer-uri: ${keycloak.url}${keycloak.url.httpRelativePath}/realms/${keycloak.url.realm}
   main:
     allow-bean-definition-overriding: true
+  cloud:
+    vault:
+      enabled: ${VAULT_ENABLED:false}
+      path: ${VAULT_PATH}
+      secret: ${VAULT_SECRET} # secret name
+      token: ${VAULT_TOKEN}
+      uri: ${VAULT_URL}
 
 # Keycloak JWT Client configuration
 keycloak.jwt.realm: ${KEYCLOAK_URL_REALM}
@@ -137,8 +145,8 @@ plugin.identity.keycloak.rest:
   authorityAttributeName: groupIds
 
 plugin.identity.keycloak:
-  keycloakIssuerUrl: ${keycloak.url}/auth/realms/${keycloak.url.realm}
-  keycloakAdminUrl: ${keycloak.url}/auth/admin/realms/${keycloak.url.realm}
+  keycloakIssuerUrl: ${keycloak.url}${keycloak.url.httpRelativePath}/realms/${keycloak.url.realm}
+  keycloakAdminUrl: ${keycloak.url}${keycloak.url.httpRelativePath}/admin/realms/${keycloak.url.realm}
   clientId: ${keycloak.clientId}
   clientSecret: ${keycloak.clientSecret}
   useEmailAsCamundaUserId: false
@@ -201,8 +209,8 @@ logging:
     org.springframework.jdbc: ${CAMUNDA_APP_ROOT_LOG_FLAG}
     org.camunda.bpm: ${CAMUNDA_APP_ROOT_LOG_FLAG}
   pattern:
-    console: '%d{yyyy-MM-dd HH:mm:ss} - %msg%n'
-    file: '%d{yyyy-MM-dd HH:mm:ss} [%thread] %-5level %logger{36} - %msg%n'
+    console: '%X{tenantKey:-default} - %d{yyyy-MM-dd HH:mm:ss} - %msg%n'
+    file: '%X{tenantKey:-default} - %d{yyyy-MM-dd HH:mm:ss} [%thread] %-5level %logger{36} - %msg%n'
   logback:
     rollingpolicy:
       file-name-pattern: /logs/archive/forms-flow-bpm-%d{yyyy-MM-dd}.%i.log

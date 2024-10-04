@@ -1,17 +1,10 @@
 """Tests to assure the FormProcessMapper Service."""
+
 from formsflow_api.services import FormProcessMapperService
 
 # from tests.utilities.base_test import get_form_service_payload
 
 form_service = FormProcessMapperService()
-
-
-def test_form_get_all_mappers(app, client, session):
-    """Tests get_all_mappers handler when query params are None."""
-    rv = form_service.get_all_mappers(
-        page_number=None, limit=None, form_name=None, sort_by=None, sort_order=None
-    )
-    assert rv == ([], 0)
 
 
 def test_get_form_mapper_count(app, client, session):

@@ -1,7 +1,7 @@
 import { Redirect, Route, Switch, useParams } from "react-router-dom";
 import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { getSubmission, selectRoot } from "react-formio";
+import { getSubmission, selectRoot } from "@aot-technologies/formio-react";
 import View from "./View";
 import Edit from "./Edit";
 import { getApplicationById } from "../../../../../apiManager/services/applicationServices";
@@ -9,7 +9,6 @@ import { setApplicationDetailLoader } from "../../../../../actions/applicationAc
 import { getUserRolePermission } from "../../../../../helper/user";
 import {
   BASE_ROUTE,
-  CLIENT,
   CUSTOM_SUBMISSION_URL,
   CUSTOM_SUBMISSION_ENABLE,
   STAFF_REVIEWER,
@@ -66,7 +65,7 @@ const Item = React.memo(() => {
     if (getUserRolePermission(userRoles, STAFF_REVIEWER)) {
       setEditAllowed(true);
     } else if (applicationStatus) {
-      if (getUserRolePermission(userRoles, CLIENT)) {
+      if (userRoles.includes('create_submissions')) {
         setEditAllowed(CLIENT_EDIT_STATUS.includes(applicationStatus)
           || applicationDetail.isResubmit ? true : false);
         setShowSubmissionLoading(false);

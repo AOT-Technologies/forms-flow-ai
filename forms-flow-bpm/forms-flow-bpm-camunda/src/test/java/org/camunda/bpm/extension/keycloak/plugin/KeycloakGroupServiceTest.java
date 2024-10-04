@@ -55,6 +55,7 @@ public class KeycloakGroupServiceTest {
 				keycloakContextProvider, customConfig);
 		when(cacheableKeycloakGroupQuery.getUserId()).thenReturn(userId);
 		when(configuration.getKeycloakAdminUrl()).thenReturn(kcUrl);
+		when(configuration.getAdministratorGroupName()).thenReturn("camunda-admin");
 
 		HttpHeaders header = new HttpHeaders();
 		header.setContentType(MediaType.APPLICATION_JSON);
@@ -83,6 +84,7 @@ public class KeycloakGroupServiceTest {
 				keycloakContextProvider, customConfig);
 		when(cacheableKeycloakGroupQuery.getUserId()).thenReturn(userId);
 		when(configuration.getKeycloakAdminUrl()).thenReturn(kcUrl);
+		when(configuration.getAdministratorGroupName()).thenReturn("camunda-admin");
 
 		HttpHeaders header = new HttpHeaders();
 		header.setContentType(MediaType.APPLICATION_JSON);
@@ -100,7 +102,7 @@ public class KeycloakGroupServiceTest {
 				HttpMethod.GET, String.class)).thenReturn(clientRoleEntity);
 
 		List<Group> roles = groupService.requestGroupsByUserId(cacheableKeycloakGroupQuery);
-		assertEquals(roles.size(), 1);
+		assertEquals(roles.size(), 0);
 	}
 
 }

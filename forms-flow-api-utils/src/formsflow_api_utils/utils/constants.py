@@ -1,6 +1,5 @@
 """All constants for project."""
 import os
-
 from dotenv import find_dotenv, load_dotenv
 
 # this will load all the envars from a .env file located in the project root (api)
@@ -40,6 +39,9 @@ FILTER_MAPS = {
     "is_bundle": {"field": "is_bundle", "operator": "eq"},
     "title":{"field": "title", "operator": "ilike"},
     "category":{"field": "category", "operator": "ilike"},
+    "process_name": {"field": "name", "operator": "ilike"},
+    "process_status": {"field": "status", "operator": "eq"},
+    "process_type": {"field": "process_type", "operator": "eq"},
 }
 
 DEFAULT_PROCESS_KEY = "Defaultflow"

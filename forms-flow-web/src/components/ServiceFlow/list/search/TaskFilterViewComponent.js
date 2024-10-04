@@ -25,22 +25,22 @@ const TaskFilterViewComponent = React.memo(
       filterParams?.processVariables || []
     );
     const [dueStartDate, setDueStartDate] = useState(
-      filterParams.dueStartDate || null
+      filterParams.dueAfter || null
     );
     const [dueEndDate, setDueEndDate] = useState(
-      filterParams.dueEndDate || null
+      filterParams.dueBefore || null
     );
     const [followStartDate, setFollowStartDate] = useState(
-      filterParams.followStartDate || null
+      filterParams.followUpAfter || null
     );
     const [followEndDate, setFollowEndDate] = useState(
-      filterParams.followEndDate || null
+      filterParams.followUpBefore || null
     );
     const [createdStartDate, setCreatedStartDate] = useState(
-      filterParams.createdStartDate || null
+      filterParams.createdAfter || null
     );
     const [createdEndDate, setCreatedEndDate] = useState(
-      filterParams.createdEndDate || null
+      filterParams.createdBefore || null
     );
     const [priority, setPriority] = useState(filterParams.priority || null);
     const createSearchNode = useRef();
@@ -48,7 +48,7 @@ const TaskFilterViewComponent = React.memo(
     const { t } = useTranslation();
     const [assigneeOptions, setAssigneeOptions] = useState([]);
     const [inputValuesPresent, setInputValuesPresent] = useState(false); // State to track any input value is present or not
-
+    
     const handleClick = (e) => {
       if (createSearchNode?.current?.contains(e.target)) {
         return;
@@ -155,7 +155,45 @@ const TaskFilterViewComponent = React.memo(
       );
     }, [assignee, candidateGroup, processVariables, dueStartDate, dueEndDate,
       followStartDate, followEndDate, createdStartDate, createdEndDate, priority]);
+    
+     
+      const handleDueStartDateChange = (date) => {
+        setDueStartDate(date); 
+        const updatedParams = { ...filterParams, dueAfter: getISODateTime(date)}; 
+        setFilterParams(updatedParams); 
+      };
+
+      const handleDueEndtDateChange = (date) => {
+        setDueEndDate(date); 
+        const updatedParams = { ...filterParams, dueBefore: getISODateTime(date) }; 
+        setFilterParams(updatedParams); 
+      };
+
+      const handleFollowStartDateChange = (date) => {
+        setFollowStartDate(date); 
+        const updatedParams = { ...filterParams, followUpAfter: getISODateTime(date) }; 
+        setFilterParams(updatedParams); 
+      };
+
+      const handleFollowEndDateChange = (date) => {
+        setFollowEndDate(date); 
+        const updatedParams = { ...filterParams, followUpBefore: getISODateTime(date) }; 
+        setFilterParams(updatedParams); 
+      };
+
+      const handleCreatedStartDateChange = (date) => {
+        setCreatedStartDate(date); 
+        const updatedParams = { ...filterParams, createdAfter: getISODateTime(date) }; 
+        setFilterParams(updatedParams); 
+      };
+
+      const handleCreatedEndDateChange = (date) => {
+        setCreatedEndDate(date); 
+        const updatedParams = { ...filterParams, createdBefore: getISODateTime(date) }; 
+        setFilterParams(updatedParams); 
+      };
       
+
     const clearAllFilters = () => {
       setAssignee("");
       setCandidateGroup("");
@@ -181,6 +219,7 @@ const TaskFilterViewComponent = React.memo(
               onClick={onClick}
               ref={ref}
               placeholder={placeholder}
+              readOnly
             />
             <div className="input-group-prepend">
               <span className="input-group-text p-2">
@@ -234,11 +273,12 @@ const TaskFilterViewComponent = React.memo(
             <Row className="mt-2">
               {vissibleAttributes.taskVisibleAttributes?.assignee && (
                 <Col xs={6}>
-                  <label>{t("Assignee")}</label>
+                  <label htmlFor="search-assignee">{t("Assignee")}</label>
                   <select
                     value={assignee}
                     onChange={(e) => setAssignee(e.target.value)}
                     className="form-select w-100 text-dark"
+                    id="search-assignee"
                   >
                     <option value="" hidden>
                       {t("Select a user")}
@@ -280,7 +320,6 @@ const TaskFilterViewComponent = React.memo(
                     <input
                       title={t("Task variables")}
                       className="form-control"
-                      placeholder=""
                       name={e.name}
                       value={variable ? variable.value : ""}
                       onChange={(e) =>
@@ -304,14 +343,14 @@ const TaskFilterViewComponent = React.memo(
                   <Row>
                     <Col xs={6}>
                       <DatePicker
-                        placeholderText="From"
+                        placeholderText={t("From")}
                         showTimeSelect
                         selected={
                           filterParams.dueAfter
                             ? new Date(filterParams.dueAfter)
                             : dueStartDate
                         }
-                        onChange={(date) => setDueStartDate(date)}
+                        onChange={handleDueStartDateChange}
                         selectsStart
                         startDate={dueStartDate}
                         endDate={dueEndDate}
@@ -320,14 +359,14 @@ const TaskFilterViewComponent = React.memo(
                     </Col>
                     <Col xs={6}>
                       <DatePicker
-                        placeholderText="To"
+                        placeholderText={t("To")}
                         showTimeSelect
                         selected={
                           filterParams.dueBefore
                             ? new Date(filterParams.dueBefore)
                             : dueEndDate
                         }
-                        onChange={(date) => setDueEndDate(date)}
+                        onChange={handleDueEndtDateChange}
                         selectsEnd
                         startDate={dueStartDate}
                         endDate={dueEndDate}
@@ -345,30 +384,30 @@ const TaskFilterViewComponent = React.memo(
                     <Row>
                       <Col xs={6}>
                         <DatePicker
-                          placeholderText="From"
+                          placeholderText={t("From")}
                           showTimeSelect
                           selected={
                             filterParams.followUpAfter
                               ? new Date(filterParams.followUpAfter)
                               : followStartDate
                           }
-                          onChange={(date) => setFollowStartDate(date)}
+                          onChange={handleFollowStartDateChange}
                           selectsStart
                           startDate={followStartDate}
                           endDate={followEndDate}
                           customInput={<DatepickerCustomInput />}
                         />
                       </Col>
-                      <Col xs={6} max>
+                      <Col xs={6}>
                         <DatePicker
-                          placeholderText="To"
+                          placeholderText={t("To")}
                           showTimeSelect
                           selected={
                             filterParams.followUpBefore
                               ? new Date(filterParams.followUpBefore)
                               : followEndDate
                           }
-                          onChange={(date) => setFollowEndDate(date)}
+                          onChange={handleFollowEndDateChange}
                           selectsEnd
                           startDate={followStartDate}
                           endDate={followEndDate}
@@ -389,30 +428,30 @@ const TaskFilterViewComponent = React.memo(
                     <Row>
                       <Col xs={6}>
                         <DatePicker
-                          placeholderText="From"
+                          placeholderText={t("From")}
                           showTimeSelect
                           selected={
                             filterParams.createdAfter
                               ? new Date(filterParams.createdAfter)
                               : createdStartDate
                           }
-                          onChange={(date) => setCreatedStartDate(date)}
+                          onChange={handleCreatedStartDateChange}
                           selectsStart
                           startDate={createdStartDate}
                           endDate={createdEndDate}
                           customInput={<DatepickerCustomInput />}
                         />
                       </Col>
-                      <Col xs={6} max>
+                      <Col xs={6}>
                         <DatePicker
-                          placeholderText="To"
+                          placeholderText={t("To")}
                           showTimeSelect
                           selected={
                             filterParams.createdBefore
                               ? new Date(filterParams.createdBefore)
                               : createdEndDate
                           }
-                          onChange={(date) => setCreatedEndDate(date)}
+                          onChange={handleCreatedEndDateChange}
                           selectsEnd
                           startDate={createdStartDate}
                           endDate={createdEndDate}

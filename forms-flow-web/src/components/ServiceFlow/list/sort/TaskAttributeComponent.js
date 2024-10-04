@@ -1,84 +1,128 @@
-import React, { useEffect } from "react";
+import React, { useState } from "react";
 import { Row, Col } from "react-bootstrap";
 import Modal from "react-bootstrap/Modal";
 import ModalTitle from "react-bootstrap/ModalTitle";
 import Form from "react-bootstrap/Form";
-import {Translation, useTranslation } from "react-i18next";
-
+import { Translation, useTranslation } from "react-i18next";
+ 
 function TaskAttributeComponent({
   show,
+  selectedForm,
   onHide,
-  setCheckboxes,
-  checkboxes,
-  inputValues,
-  setInputValues,
-  showUndefinedVariable,
-  setShowUndefinedVariable,
+  selectedTaskAttrbutes,
+  selectedTaskVariablesKeys,
+  selectedTaskVariables,
+  onSaveTaskAttribute,
+  processLoading,
+  taskVariableFromMapperTable,
+  viewMode
+  // showUndefinedVariable,
 }) {
+ 
   const { t } = useTranslation();
+
+  const [variables, setVariables] = useState(selectedTaskVariables);
+  const [taskVariablesKeys, setTaskVariablesKeys] = useState(
+    selectedTaskVariablesKeys
+  );
+  const [checkboxes, setCheckboxes] = useState(selectedTaskAttrbutes);
+  // const [selectUndefinedVariable, setSelectUndefinedVariable] = useState(
+  //   showUndefinedVariable
+  // );
+
+  // const UndefinedVaribaleCheckboxChange = (e) => {
+  //   setSelectUndefinedVariable(e.target.checked);
+  // };
+
   const handleCheckboxChange = (event) => {
     const { name, checked } = event.target;
     setCheckboxes({ ...checkboxes, [name]: checked });
   };
 
-  const handleVariableInputChange = (index, field, value) => {
-    setInputValues((prevInputValues) => {
-      const updatedValues = [...prevInputValues];
-      updatedValues[index][field] = value;
-      return updatedValues;
-    });
-  };
-
-  const handleAddClick = () => {
-    setInputValues([...inputValues, { name: "", label: "" }]);
-  };
-
-  const handleRowDelete = (index) => {
-    setInputValues((prevInputValues) => {
-      const updatedValues = prevInputValues.filter((e, i) => i !== index);
-      return updatedValues;
-    });
-  };
-
-  useEffect(() => {
-    // If inputValues is empty , initialize it with a single object
-    if (Object.keys(inputValues).length === 0) {
-      setInputValues([{ name: "", label: "" }]);
+  /**
+   * Handles changing the selected task variables.
+   *
+   * When a variable is checked, adds it to the variables array.
+   * When a variable is unchecked, removes it from the variables array.
+   * Also updates the taskVariablesKeys object with the checked state.
+   */
+  const handleChangeTaskVariables = (e, variable) => {
+    const { checked } = e.target;
+    if (checked) {
+      setVariables((prev) => [
+        ...prev,
+        { name: variable.key, label: variable.label },
+      ]);
+    } else {
+      setVariables((prev) => prev.filter((i) => i.name !== variable.key));
     }
-  }, [inputValues, setInputValues]);
-  
-  const UndefinedVaribaleCheckboxChange = (e) => {
-    setShowUndefinedVariable(e.target.checked);
+    /**
+     * Updates the taskVariablesKeys object with the checked state
+     * of the variable. If checked is true, adds the variable key.
+     * If checked is false, removes the variable key.
+     */
+    setTaskVariablesKeys((prev) => ({
+      ...prev,
+      [variable.key]: checked ? variable.key : null,
+    }));
   };
+
+  const handleSave = () => {
+    onSaveTaskAttribute(
+      taskVariablesKeys,
+      variables,
+      checkboxes,
+      // selectUndefinedVariable
+    );
+    onHide();
+  };
+
   return (
     <Modal
       show={show}
       onHide={onHide}
-      disableEnforceFocus={true}
+      disableenforcefocus={"true"}
       className="modal-overlay"
       keyboard={false}
       size="lg"
       backdrop="static"
     >
       <Modal.Header className="bg-light">
-        <ModalTitle as={"h3"}><Translation>{(t) => t("Task Attribute")}</Translation></ModalTitle>
-        <button type="button" className="btn-close" aria-label="Close" onClick={onHide}></button>
+        <ModalTitle as={"h3"}>
+          <Translation>{(t) => t("Task Attribute")}</Translation>
+        </ModalTitle>
+        <button
+          type="button"
+          className="btn-close"
+          aria-label="Close"
+          onClick={onHide}
+        ></button>
       </Modal.Header>
       <Modal.Body className="p-4">
-        <p><Translation>{(t) => t("Only selected task attributes will be available on task list view")}</Translation> </p>
+        <p>
+          <Translation>
+            {(t) =>
+              t(
+                "Select the predefined attributes and custom task variables created as part of form submission you wish to display in the task list"
+              )
+            }
+          </Translation>{" "}
+        </p>
 
         <Form>
           <Row>
             <Col xs={6}>
               <Form.Check
+                disabled={viewMode}
                 type="checkbox"
-                label={t("Submission ID")}
+                label={t("Submission Id")}
                 name="applicationId"
                 checked={checkboxes.applicationId}
                 onChange={handleCheckboxChange}
                 className="m-2"
               />
               <Form.Check
+                disabled={viewMode}
                 type="checkbox"
                 label={t("Assignee")}
                 name="assignee"
@@ -87,14 +131,7 @@ function TaskAttributeComponent({
                 className="m-2"
               />
               <Form.Check
-                type="checkbox"
-                label={t("Task Title")}
-                name="taskTitle"
-                checked={checkboxes.taskTitle}
-                onChange={handleCheckboxChange}
-                className="m-2"
-              />
-              <Form.Check
+                disabled={viewMode}
                 type="checkbox"
                 label={t("Created Date")}
                 name="createdDate"
@@ -105,6 +142,7 @@ function TaskAttributeComponent({
             </Col>
             <Col xs={6}>
               <Form.Check
+                disabled={viewMode}
                 type="checkbox"
                 label={t("Due Date")}
                 name="dueDate"
@@ -113,6 +151,7 @@ function TaskAttributeComponent({
                 className="m-2"
               />
               <Form.Check
+                disabled={viewMode}
                 type="checkbox"
                 label={t("Follow up Date")}
                 name="followUp"
@@ -121,18 +160,11 @@ function TaskAttributeComponent({
                 className="m-2"
               />
               <Form.Check
+                disabled={viewMode}
                 type="checkbox"
                 label={t("Priority")}
                 name="priority"
                 checked={checkboxes.priority}
-                onChange={handleCheckboxChange}
-                className="m-2"
-              />
-              <Form.Check
-                type="checkbox"
-                label={t("Groups")}
-                name="groups"
-                checked={checkboxes.groups}
                 onChange={handleCheckboxChange}
                 className="m-2"
               />
@@ -141,88 +173,74 @@ function TaskAttributeComponent({
         </Form>
         <hr />
         <Form className="mt-2 ps-1">
-          <h5 className="fw-bold fs-18"
-          >
-            <Translation>{(t) => t("Variables")}</Translation>{" "}
-            <i title={t("You can define variables shown in the list")} className="fa fa-info-circle"></i>{" "}
+          <h5 className="fw-bold fs-18">
+            <Translation>{(t) => t("Task variables")}</Translation>
+            <i
+              title={t("You can define variables shown in the list")}
+              className="ms-1 fa fa-info-circle text-primary"
+            ></i>
           </h5>
-
-          <div className="d-flex align-items-center mt-2">
-            <input
-            className="mr-6"
-              type="checkbox"
-              id="my-checkbox"
-              checked={showUndefinedVariable}
-              onChange={UndefinedVaribaleCheckboxChange}
-            />
-            <h5 className="assigned-user">
-              <Translation>{(t) => t("Show undefined variables")}</Translation>
-            </h5>
+          {/* <Form.Check
+            type="checkbox"
+            label={t("Show undefined variables")}
+            checked={showUndefinedVariable}
+            onChange={UndefinedVaribaleCheckboxChange}
+          /> */}
+          <div className="d-flex mt-3 px-2 flex-wrap">
+            {selectedForm ? (
+              taskVariableFromMapperTable?.length > 0 ? (
+                taskVariableFromMapperTable.map((variable) =>
+                  variable.key !== "applicationId" ? (
+                    <Col xs={12} md={6} key={variable.key}>
+                      <Form.Check
+                        disabled={viewMode}
+                        type="checkbox"
+                        label={variable.label}
+                        name={variable.key}
+                        checked={
+                          taskVariablesKeys[variable.key] == variable.key
+                        }
+                        onChange={(e) => {
+                          handleChangeTaskVariables(e, variable);
+                        }}
+                      />
+                    </Col>
+                  ) : null
+                )
+              ) : (
+                !processLoading && (
+                  <div
+                    className="alert alert-primary text-center w-100"
+                    role="alert"
+                  >
+                    {t("No task variables found")}
+                  </div>
+                )
+              )
+            ) : (
+              <div
+                className="alert alert-primary text-center w-100"
+                role="alert"
+              >
+                {t(
+                  "To display task variables, select a form as part of the filter"
+                )}
+              </div>
+            )}
           </div>
-
-          {inputValues?.map((input, index) => {
-            return (
-              <Row key={index} className="align-items-center mt-1">
-                <Col>
-                  <Form.Group>
-                    <Form.Label>{t("Name")}</Form.Label>
-                    <Form.Control
-                      type="text"
-                      placeholder={t("Enter name")}
-                      value={input.name}
-                      onChange={(e) =>
-                        handleVariableInputChange(index, "name", e.target.value)
-                      }
-                    />
-                  </Form.Group>
-                </Col>
-                <Col>
-                  <Form.Group>
-                    <Form.Label>{t("Label")}</Form.Label>
-                    <Form.Control
-                      type="text"
-                      placeholder={t("Enter label")}
-                      value={input.label}
-                      onChange={(e) =>
-                        handleVariableInputChange(
-                          index,
-                          "label",
-                          e.target.value
-                        )
-                      }
-                    />
-                  </Form.Group>
-                </Col>
-                <Col xs="auto mt-3 me-2">
-                  {(inputValues.length - 1 === index) ? (
-                    <button
-                      type="button"
-                      disabled={!inputValues[index].name.length || !inputValues[index].label.length}
-                      className="btn btn-primary mt-3"
-                      onClick={() => handleAddClick()}
-                    >
-                      {t("Add")}
-                    </button>
-                  ) :  (
-                    <i
-                    className="fa fa-minus-circle fa-md mt-4"
-                    aria-hidden="true"
-                    onClick={() => handleRowDelete(index)}
-                  />)}
-                </Col>
-              </Row>
-            );
-          })}
         </Form>
       </Modal.Body>
-      <Modal.Footer>
-        <button className="btn btn-secondary" onClick={() => onHide()}>
+      { !viewMode &&
+        <Modal.Footer>
+        <button className="btn btn-link text-dark " onClick={onHide}>
           {t("Cancel")}
         </button>
-        <button className="btn btn-primary" onClick={onHide}>
+        <button className="btn btn-primary" onClick={handleSave}>
           {t("Save")}
         </button>
       </Modal.Footer>
+      }
+      
     </Modal>
   );
 }

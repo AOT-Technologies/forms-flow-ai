@@ -53,7 +53,16 @@ class _Config:  # pylint: disable=too-few-public-methods
     ALEMBIC_INI = "migrations/alembic.ini"
 
     # POSTGRESQL
-    SQLALCHEMY_DATABASE_URI = os.getenv("DATABASE_URL", "")
+    # PostgreSQL configuration
+    DB_USER = os.getenv("DATABASE_USERNAME", "postgres")
+    DB_PASSWORD = os.getenv("DATABASE_PASSWORD", "changeme")
+    DB_HOST = os.getenv("DATABASE_HOST", "localhost")
+    DB_PORT = os.getenv("DATABASE_PORT", "6432")
+    DB_NAME = os.getenv("DATABASE_NAME", "webapi")
+    SQLALCHEMY_DATABASE_URI = os.getenv(
+        "DATABASE_URL",
+        f"postgresql://{DB_USER}:{DB_PASSWORD}@{DB_HOST}:{DB_PORT}/{DB_NAME}",
+    )
 
     TESTING = False
     DEBUG = False
@@ -85,6 +94,9 @@ class _Config:  # pylint: disable=too-few-public-methods
     # Keycloak Admin Service
     KEYCLOAK_URL = os.getenv("KEYCLOAK_URL")
     KEYCLOAK_URL_REALM = os.getenv("KEYCLOAK_URL_REALM")
+    KEYCLOAK_URL_HTTP_RELATIVE_PATH = os.getenv(
+        "KEYCLOAK_URL_HTTP_RELATIVE_PATH", "/auth"
+    )
 
     # Web url
     WEB_BASE_URL = os.getenv("WEB_BASE_URL")
@@ -112,6 +124,9 @@ class _Config:  # pylint: disable=too-few-public-methods
 
     # REDIS CONFIG
     REDIS_URL = os.getenv("REDIS_URL", "redis://redis:6379/0")
+
+    # Configure LOG
+    CONFIGURE_LOGS = str(os.getenv("CONFIGURE_LOGS", default="true")).lower() == "true"
 
 
 class DevConfig(_Config):  # pylint: disable=too-few-public-methods

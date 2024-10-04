@@ -1,4 +1,4 @@
-import utils from "formiojs/utils";
+import utils from "@aot-technologies/formiojs/lib/utils";
 const applicationIDHiddenComponent = {
   "label": "applicationId",
   "customClass": "",
@@ -155,7 +155,7 @@ const removeComponent  = (components, target) => {
 };
 
 export const addHiddenApplicationComponent = (form) => {
-  const {components} = form;
+  const components = form.components || [];
   const flatternComponent = utils.flattenComponents(components, true);
   
  

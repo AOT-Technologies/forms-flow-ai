@@ -2,11 +2,8 @@ import React from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { push } from "connected-react-router";
 import {
-  CLIENT,
   MULTITENANCY_ENABLED,
-  STAFF_DESIGNER,
-  STAFF_REVIEWER,
-} from "../../../constants/constants";
+} from "../../../constants/constants"; 
 import {
   setIsApplicationCountLoading,
   setResetProcess,
@@ -21,6 +18,8 @@ import {
 import { Translation } from "react-i18next";
 
 const FormOperations = React.memo(({ formData }) => {
+  const { createDesigns, createSubmissions } = userRoles();
+
   const tenantKey = useSelector((state) => state.tenants?.tenantId);
   const redirectUrl = MULTITENANCY_ENABLED ? `/tenant/${tenantKey}/` : "/";
   const dispatch = useDispatch();
@@ -84,16 +83,16 @@ const FormOperations = React.memo(({ formData }) => {
   );
 
   let buttons = {
-    CLIENT_OR_REVIEWER: [submitNew],
-    STAFF_DESIGNER: [viewOrEdit, deleteForm],
+    SUBMIT_NEW: [submitNew],
+    CREATE_DESIGNS: [viewOrEdit, deleteForm],
   };
   const formButtonOperations = () => {
     let operationButtons = [];
-    if (userRoles.includes(CLIENT) || userRoles.includes(STAFF_REVIEWER)) {
-      operationButtons.push(buttons.CLIENT_OR_REVIEWER);
+    if (createSubmissions) {
+      operationButtons.push(buttons.SUBMIT_NEW);
     }
-    if (userRoles.includes(STAFF_DESIGNER)) {
-      operationButtons.push(buttons.STAFF_DESIGNER); //  OPERATIONS.edit,
+    if (createDesigns) {
+      operationButtons.push(buttons.CREATE_DESIGNS); //  OPERATIONS.edit,
     }
     return operationButtons;
   };

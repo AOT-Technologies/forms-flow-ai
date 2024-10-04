@@ -2,6 +2,123 @@
 
 Mark  items as `Added`, `Changed`, `Fixed`, `Modified`, `Removed`, `Untested Features`, `Upcoming Features`, `Known Issues`
 
+## 6.1.0
+
+`Added`
+ 
+ **forms-flow-bpm**
+* Added support to fetch secrets from Vault.
+* Added environment variables 
+ `VAULT_ENABLED`, `VAULT_URL`, `VAULT_TOKEN`, `VAULT_PATH`, `VAULT_SECRET` to support Vault.
+
+## 6.0.2 - 2024-06-05
+
+`Added`
+
+**forms-flow-web-root-config**
+* Added env variable `LANGUAGE` for default language setting
+
+`Fixed`
+
+**forms-flow-web-root-config**
+* Fixed service worker cache issue
+
+**forms-flow-bpm**
+* Fixed white label error on login to bpm
+
+
+`Modified`
+
+**forms-flow-web**
+* The tenant user's default language is set from their data, tenant data, or the default application language.
+  
+
+## 6.0.1 - 2024-05-21
+
+`Added`
+
+**forms-flow-web-root-config**
+* Added resouce bundle for Spanish 
+  
+`Fixed`
+
+**forms-flow-web-root-config**
+* Fixed service worker cache issue
+  
+## 6.0.0 - 2024-04-05
+
+`Added`
+
+**forms-flow-web**
+
+* Added user search by role for Admin
+* Added option to add registered user to the tenant
+* Implemented functionality to generate filters based on form
+
+
+**forms-flow-bpm**
+
+* Added new field to notify listener to support email address injection
+
+**forms-flow-api**
+
+* Added the feature to capture task variables on application creation without `FormBPMFilteredDataPipelineListener` during initial submission
+* Added user search by role for Admin
+* Added option to add registered user to the tenant
+
+**forms-flow-data-analysis-api**
+
+* Added environment variable API_LOG_ROTATION_WHEN for specifying the frequency of log file rotation
+* Added environment variable API_LOG_ROTATION_INTERVAL for setting the time interval for log file rotation
+* Added environment variable API_LOG_BACKUP_COUNT for determining the number of backup log files to keep
+
+`Modified`
+
+**forms-flow-web**
+* Task filter enhancements: 
+   * Updated default Tasks Filter to display tasks authorized for current logged-in user
+   * Modified candidate group listing based on logged user access in filter create
+   * Modified Assignee in create filter from manual input to select from list
+   * Modified Candidate group label to User group/ User role
+   * Modified definition key to workflow name select for workflow selection
+   * Modified "Show task based on logged user roles" to "Display authorized tasks based on user roles" which is visible to admin
+   users only, will be true by default
+   * Task variable create UI and UX change
+   * Adjusted task variables according to task attributes in card view 
+   * Updated default All Tasks Filter to display tasks authorized for current logged-in user
+* Modified user listings to exclusively display users associated with the respective tenant for multi-tenant admin
+
+**forms-flow-api**
+
+* Changes have been made to the Roles and Groups endpoint to accommodate modifications related to subgroups in Keycloak 23.
+
+*Upgrade notes:*
+
+**forms-flow-bpm**
+
+   * SpringBoot version upgraded to 3.1.10
+   * groovy version upgraded to 3.0.21
+   * postgresql version upgraded to 42.7.2
+   * graalvm version upgraded to 23.0.0
+   * snakeyaml version upgraded to 2.2
+
+**forms-flow-api**
+
+   * Python version upgraded to 3.12.1
+
+**forms-flow-documents**
+
+   * Python version upgraded to 3.12.1
+
+**forms-flow-data-analysis-api**
+
+   * Python version upgraded to 3.11.7
+
+`Generic Changes`
+
+* Fixed security vulnerabilities
+
+
 ## 5.3.1 - 2024-02-14
 
 `Fixed`

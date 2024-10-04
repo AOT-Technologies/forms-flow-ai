@@ -1,4 +1,5 @@
 """This manages Application audit data."""
+
 from __future__ import annotations
 
 from formsflow_api.models.audit_mixin import ApplicationAuditDateTimeMixin
@@ -54,3 +55,8 @@ class ApplicationHistory(ApplicationAuditDateTimeMixin, BaseModel, db.Model):
                 cls.submitted_by,
             )
         )
+
+    @classmethod
+    def get_application_history_by_id(cls, application_id: int):
+        """Find application history by id."""
+        return cls.query.filter(cls.application_id == application_id).first()

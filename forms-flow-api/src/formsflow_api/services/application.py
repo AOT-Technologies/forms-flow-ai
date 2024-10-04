@@ -1,4 +1,6 @@
 """This exposes application service."""
+
+import asyncio
 import json
 from datetime import datetime
 from functools import lru_cache
@@ -10,8 +12,8 @@ from flask import current_app
 from formsflow_api_utils.exceptions import BusinessException, ExternalError
 from formsflow_api_utils.utils import (
     DRAFT_APPLICATION_STATUS,
+    MANAGE_TASKS,
     NEW_APPLICATION_STATUS,
-    REVIEWER_GROUP,
 )
 from formsflow_api_utils.utils.user_context import UserContext, user_context
 
@@ -58,12 +60,13 @@ class ApplicationService:  # pylint: disable=too-many-public-methods
                 "submitterName": {"value": application.created_by},
                 "submissionDate": {"value": str(application.created)},
                 "tenantKey": {"value": mapper.tenant},
+                "formId": {"value": mapper.form_id},
             }
         }
 
     @staticmethod
-    def start_task(
-        mapper: FormProcessMapper, payload: Dict, token: str, application: Application
+    async def start_task(
+        mapper: FormProcessMapper, payload: Dict, token: str, application_id: int
     ) -> None:
         """Trigger bpmn workflow to create a task."""
         try:
@@ -81,13 +84,19 @@ class ApplicationService:  # pylint: disable=too-many-public-methods
                     token=token,
                     tenant_key=mapper.tenant,
                 )
+            # This is run as async, so the application model instance would be stale here, lookup and update
+            application = Application.find_by_id(application_id)
             application.update({"process_instance_id": camunda_start_task.get("id")})
+            application.commit()
         except TypeError as camunda_error:
             response = {
                 "message": "Camunda workflow not able to create a task",
                 "error": camunda_error,
             }
             current_app.logger.critical(response)
+            raise BusinessException(
+                BusinessErrorCode.PROCESS_START_ERROR
+            ) from camunda_error
 
     @staticmethod
     @user_context
@@ -115,19 +124,37 @@ class ApplicationService:  # pylint: disable=too-many-public-methods
         variables = ApplicationService.fetch_task_variable_values(
             task_variables, data.get("data", {})
         )
-        # Function to create application in DB
-        application = Application.create_from_dict(data)
-        # process_instance_id in request object is usually used in Scripts
-        if "process_instance_id" in data:
-            application.update({"process_instance_id": data["process_instance_id"]})
-        # In normal cases, it's through this else case task is being created
-        else:
-            form_url = data["form_url"]
-            web_form_url = data.get("web_form_url", "")
-            payload = ApplicationService.get_start_task_payload(
-                application, mapper, form_url, web_form_url, variables
-            )
-            ApplicationService.start_task(mapper, payload, token, application)
+        application = None
+        try:
+            # Function to create application in DB
+            application = Application.create_from_dict(data)
+            # process_instance_id in request object is usually used in Scripts
+            if "process_instance_id" in data:
+                application.update({"process_instance_id": data["process_instance_id"]})
+                application.commit()  # Commit the record
+            # In normal cases, it's through this else case task is being created
+            else:
+                form_url = data["form_url"]
+                web_form_url = data.get("web_form_url", "")
+                payload = ApplicationService.get_start_task_payload(
+                    application, mapper, form_url, web_form_url, variables
+                )
+                application.commit()  # Commit the record
+                # Creating the process instance asynchronously.
+                asyncio.run(
+                    ApplicationService.start_task(
+                        mapper, payload, token, application.id
+                    )
+                )
+
+        except Exception as e:
+            current_app.logger.error("Error occurred during application creation %s", e)
+            if (
+                application
+            ):  # If application instance is created, rollback the transaction.
+                application.rollback()
+            raise BusinessException(BusinessErrorCode.APPLICATION_CREATE_ERROR) from e
+
         return application, HTTPStatus.CREATED
 
     @staticmethod
@@ -157,7 +184,7 @@ class ApplicationService:  # pylint: disable=too-many-public-methods
 
     @staticmethod
     @user_context
-    def get_auth_applications_and_count(  # pylint: disable=too-many-arguments,too-many-locals
+    def get_auth_applications_and_count(  # pylint: disable=too-many-arguments,too-many-locals,too-many-positional-arguments
         page_no: int,
         limit: int,
         order_by: str,
@@ -240,7 +267,7 @@ class ApplicationService:  # pylint: disable=too-many-public-methods
 
     @staticmethod
     @user_context
-    def get_all_applications_by_user(  # pylint: disable=too-many-arguments,too-many-locals
+    def get_all_applications_by_user(  # pylint: disable=too-many-arguments,too-many-locals,too-many-positional-arguments
         page_no: int,
         limit: int,
         order_by: str,
@@ -363,11 +390,12 @@ class ApplicationService:  # pylint: disable=too-many-public-methods
             raise BusinessException(BusinessErrorCode.PERMISSION_DENIED)
         if application:
             application.update(data)
+            application.commit()
         else:
             raise BusinessException(BusinessErrorCode.APPLICATION_ID_NOT_FOUND)
 
     @staticmethod
-    def get_aggregated_applications(  # pylint: disable=too-many-arguments
+    def get_aggregated_applications(  # pylint: disable=too-many-arguments,too-many-positional-arguments
         from_date: str,
         to_date: str,
         page_no: int,
@@ -471,7 +499,7 @@ class ApplicationService:  # pylint: disable=too-many-public-methods
         user_name = user.user_name
         form_ids: Set[str] = []
         application_count = None
-        if auth.has_role([REVIEWER_GROUP]):
+        if auth.has_role([MANAGE_TASKS]):
             forms = Authorization.find_all_resources_authorized(
                 auth_type=AuthType.APPLICATION,
                 roles=user.group_or_roles,
@@ -497,9 +525,11 @@ class ApplicationService:  # pylint: disable=too-many-public-methods
         if task_variable and form_data:
             task_keys = [val["key"] for val in task_variable]
             variables = {
-                key: {"value": json.dumps(form_data[key])}
-                if isinstance(form_data[key], (dict, list))
-                else {"value": form_data[key]}
+                key: (
+                    {"value": json.dumps(form_data[key])}
+                    if isinstance(form_data[key], (dict, list))
+                    else {"value": form_data[key]}
+                )
                 for key in task_keys
                 if key in form_data
             }

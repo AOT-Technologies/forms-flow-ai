@@ -4,7 +4,7 @@
 ![webpack](https://img.shields.io/badge/webpack-5.76.0-blue)
 
 
-**formsflow.ai** delivers progressive web application with React version `17.0.2` and webpack version `5.76.0`. Also currently uses  [form.io](https://github.com/formio/formio) version `2.4.1`.
+**formsflow.ai** delivers progressive web application with React version `17.0.2` and webpack version `5.76.0`. Also currently uses  [form.io](https://github.com/formio/formio) version `3.2.0`.
 
 A React library for rendering out forms based on the form.io platform.
 
@@ -57,12 +57,14 @@ is mentioned on the [link](../forms-flow-idm/keycloak/README.md#create-forms-flo
 
  Variable name | Meaning | Possible values | Default value |
  --- | --- |----------| ---
- `MF_FORMSFLOW_WEB_URL`:triangular_flag_on_post:| For running locally/ if have custom changes | `//forms-flow-microfrontends.aot-technologies.com/forms-flow-web@v5.3.1/forms-flow-web.gz.js` <br> <br> For custom changes: `http://{your-ip-address}:3004/forms-flow-web.js` |  `//forms-flow-microfrontends.aot-technologies.com/forms-flow-web@v5.3.1/forms-flow-nav.gz.js`
- `MF_FORMSFLOW_NAV_UR`:triangular_flag_on_post:|For custom implementation of Navbar component, refer [here](https://github.com/AOT-Technologies/forms-flow-ai-micro-front-ends/tree/main/forms-flow-nav)|          |`//forms-flow-microfrontends.aot-technologies.com/forms-flow-nav@v5.3.1/forms-flow-nav.gz.js`
- `MF_FORMSFLOW_SERVICE_URL`:triangular_flag_on_post:|For custom implementation of Service component, refer [here](https://github.com/AOT-Technologies/forms-flow-ai-micro-front-ends/tree/main/forms-flow-service)|          |`//forms-flow-microfrontends.aot-technologies.com/forms-flow-nav@v5.3.1/forms-flow-service.gz.js`
- `MF_FORMSFLOW_ADMIN_URL`:triangular_flag_on_post:|For custom implementation of Admin component, refer [here](https://github.com/AOT-Technologies/forms-flow-ai-micro-front-ends/tree/main/forms-flow-admin)|          |`//forms-flow-microfrontends.aot-technologies.com/forms-flow-nav@v5.3.1/forms-flow-admin.gz.js`
- `MF_FORMSFLOW_THEME_URL`:triangular_flag_on_post:| For custom implementation of Theme component, refer [here](https://github.com/AOT-Technologies/forms-flow-ai-micro-front-ends/tree/main/forms-flow-theme) |          | `//forms-flow-microfrontends.aot-technologies.com/forms-flow-nav@v5.3.1/forms-flow-theme.gz.js`
+ `MF_FORMSFLOW_WEB_URL`:triangular_flag_on_post:| For running locally/ if have custom changes | `//forms-flow-microfrontends.aot-technologies.com/forms-flow-web@v6.0.2/forms-flow-web.gz.js` <br> <br> For custom changes: `http://{your-ip-address}:3004/forms-flow-web.js` |  `//forms-flow-microfrontends.aot-technologies.com/forms-flow-web@v6.0.2/forms-flow-nav.gz.js`
+ `MF_FORMSFLOW_NAV_UR`:triangular_flag_on_post:|For custom implementation of Navbar component, refer [here](https://github.com/AOT-Technologies/forms-flow-ai-micro-front-ends/tree/main/forms-flow-nav)|          |`//forms-flow-microfrontends.aot-technologies.com/forms-flow-nav@v6.0.2/forms-flow-nav.gz.js`
+ `MF_FORMSFLOW_SERVICE_URL`:triangular_flag_on_post:|For custom implementation of Service component, refer [here](https://github.com/AOT-Technologies/forms-flow-ai-micro-front-ends/tree/main/forms-flow-service)|          |`//forms-flow-microfrontends.aot-technologies.com/forms-flow-nav@v6.0.2/forms-flow-service.gz.js`
+ `MF_FORMSFLOW_COMPONENTS_URL`:triangular_flag_on_post:|For custom implementation of Formsflow components, refer [here](https://github.com/AOT-Technologies/forms-flow-ai-micro-front-ends/tree/main/forms-flow-components)|          |`//forms-flow-microfrontends.aot-technologies.com/forms-flow-components@v7.0.0/forms-flow-components.gz.js`
+ `MF_FORMSFLOW_ADMIN_URL`:triangular_flag_on_post:|For custom implementation of Admin component, refer [here](https://github.com/AOT-Technologies/forms-flow-ai-micro-front-ends/tree/main/forms-flow-admin)|          |`//forms-flow-microfrontends.aot-technologies.com/forms-flow-nav@v6.0.2/forms-flow-admin.gz.js`
+ `MF_FORMSFLOW_THEME_URL`:triangular_flag_on_post:| For custom implementation of Theme component, refer [here](https://github.com/AOT-Technologies/forms-flow-ai-micro-front-ends/tree/main/forms-flow-theme) |          | `//forms-flow-microfrontends.aot-technologies.com/forms-flow-nav@v6.0.2/forms-flow-theme.gz.js`
  `NODE_ENV`| Define project level configuration | `development, test, production` | `production`
+ `LANGUAGE`| Set Application default language | `en` `zh-CN` `pt` `fr` `bg` `de` `es` | `en`
  `FORMIO_DEFAULT_PROJECT_URL`:triangular_flag_on_post:|The URL of the form.io server|          |`http://{your-ip-address}:3001`
  `KEYCLOAK_WEB_CLIENTID`|Your Keycloak Client ID within the realm| eg. forms-flow-web | `forms-flow-web`
  `KEYCLOAK_URL_REALM`|	The Keycloak realm to use| eg. forms-flow-ai | `forms-flow-ai`

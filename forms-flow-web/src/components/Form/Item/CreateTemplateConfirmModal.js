@@ -19,7 +19,7 @@ const CreateTemplateConfirmModal = ({modalOpen,handleModalChange,onConfirm}) => 
               </Modal.Title>
             </div>
 
-            <div>
+            <div className="d-flex align-items-center">
               <button
                 type="button"
                 className="btn-close"
@@ -35,7 +35,7 @@ const CreateTemplateConfirmModal = ({modalOpen,handleModalChange,onConfirm}) => 
 
           <Modal.Body>
             <div className="d-flex align-items-start p-3">
-              <i className="fa fa-info-circle text-primary me-2"></i>
+              <i className="fa fa-info-circle text-primary pt-1 me-2"></i>
               <span > 
               {t("Do you want to create a duplicate form and associated workflow from existing form ?")} 
               </span>

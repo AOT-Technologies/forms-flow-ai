@@ -17,6 +17,10 @@ const TaskSearchBarListView = React.memo(({ toggleAllTaskVariables }) => {
   const [filterParams, setFilterParams] = useState({});
   const taskList = useSelector((state) => state.bpmTasks.tasksList);
   const allTaskVariablesExpanded = useSelector((state) => state.bpmTasks.allTaskVariablesExpand);
+  const selectedFilter = useSelector((state) => state.bpmTasks.selectedFilter);
+  const filterList = useSelector((state) => state.bpmTasks.filtersAndCount);
+  const taskFilter = filterList?.find((task)=>task.id === selectedFilter.id );
+  const taskFiltercount = taskFilter ? taskFilter.count : 0; //Current Task filter count
   const dispatch = useDispatch();
   const { t } = useTranslation();
   useEffect(() => {
@@ -29,11 +33,19 @@ const TaskSearchBarListView = React.memo(({ toggleAllTaskVariables }) => {
     });
     dispatch(setSelectedTaskVariables(taskVaribles));
   }, [taskList]);
+  
+  useEffect(() => {
+    //The search fields get clear when switching the filter
+    setFilterParams({});
+  }, [selectedFilter]);
 
   return (
     <>
-      <div className="d-flex justify-content-end filter-sort-bar mt-1">
-        <div className="sort-container task-filter-list-view">
+      {taskFiltercount > 0 && <div className="d-flex justify-content-end filter-sort-bar ">
+        {
+          tasksCount > 0 ? (
+          <>
+          <div className="sort-container task-filter-list-view">
           <button
             type="button"
             className="btn btn-outline-secondary"
@@ -41,7 +53,7 @@ const TaskSearchBarListView = React.memo(({ toggleAllTaskVariables }) => {
               setSortOptions(!SortOptions);
               setDisplayFilter(false);
             }}
-          >
+           >
             {t("Sort by")}
             <svg
               xmlns="http://www.w3.org/2000/svg"
@@ -59,8 +71,8 @@ const TaskSearchBarListView = React.memo(({ toggleAllTaskVariables }) => {
               <TaskSortSelectedList />
             </div>
           )}
-        </div>
-        <div className="Select-Task-Variables task-filter-list-view">
+           </div>
+           <div className="Select-Task-Variables task-filter-list-view">
           <button
             type="button"
             className="btn btn-outline-secondary"
@@ -82,8 +94,10 @@ const TaskSearchBarListView = React.memo(({ toggleAllTaskVariables }) => {
             </svg>
             {allTaskVariablesExpanded ? t("Collapse All") : t("Expand All")}
           </button>
-        </div>
-
+           </div>
+            </>
+          ) : null
+        }
         <div className="filter-container-list task-filter-list-view">
           <button
             type="button"
@@ -116,7 +130,7 @@ const TaskSearchBarListView = React.memo(({ toggleAllTaskVariables }) => {
             </div>
           )}
         </div>
-      </div>
+      </div>}
     </>
   );
 });

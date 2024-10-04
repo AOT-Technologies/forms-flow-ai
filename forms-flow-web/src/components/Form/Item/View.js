@@ -11,7 +11,7 @@ import {
   Errors,
   getForm,
   Formio,
-} from "react-formio";
+} from "@aot-technologies/formio-react";
 import { useTranslation, Translation } from "react-i18next";
 import isEqual from "lodash/isEqual";
 
@@ -20,7 +20,7 @@ import {
   getProcessReq,
   getDraftReqFormat,
 } from "../../../apiManager/services/bpmServices";
-import { formio_resourceBundles } from "../../../resourceBundles/formio_resourceBundles";
+import { RESOURCE_BUNDLES_DATA } from "../../../resourceBundles/i18n";
 import {
   setFormFailureErrorData,
   setFormRequestData,
@@ -398,7 +398,7 @@ const View = React.memo((props) => {
         className="col-12"
       >
   <div className="ms-4 me-4">
-    {isPublic || formStatus === "active" ? (
+    {(isPublic || (formStatus === "active") ) ?  (
       <Form
         form={form}
         submission={submission}
@@ -406,7 +406,7 @@ const View = React.memo((props) => {
         options={{
           ...options,
           language: lang,
-          i18n: formio_resourceBundles,
+          i18n: RESOURCE_BUNDLES_DATA,
         }}
         hideComponents={hideComponents}
         onChange={(data) => {

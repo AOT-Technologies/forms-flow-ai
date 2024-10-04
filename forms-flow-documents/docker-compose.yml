@@ -12,10 +12,15 @@ services:
       - ./:/app:rw
     environment:
       DATABASE_URL: ${FORMSFLOW_API_DB_URL:-postgresql://postgres:changeme@forms-flow-webapi-db:5432/webapi}
+      DATABASE_USERNAME: ${FORMSFLOW_API_DB_USER}
+      DATABASE_PASSWORD: ${FORMSFLOW_API_DB_PASSWORD}
+      DATABASE_HOST: ${FORMSFLOW_API_DB_HOST}
+      DATABASE_PORT: ${FORMSFLOW_API_DB_PORT}
+      DATABASE_NAME: ${FORMSFLOW_API_DB_NAME}
       FORMSFLOW_API_CORS_ORIGINS: ${FORMSFLOW_API_CORS_ORIGINS:-*}
-      JWT_OIDC_WELL_KNOWN_CONFIG: ${KEYCLOAK_URL}/auth/realms/${KEYCLOAK_URL_REALM:-forms-flow-ai}/.well-known/openid-configuration
-      JWT_OIDC_JWKS_URI: ${KEYCLOAK_URL}/auth/realms/${KEYCLOAK_URL_REALM:-forms-flow-ai}/protocol/openid-connect/certs
-      JWT_OIDC_ISSUER: ${KEYCLOAK_URL}/auth/realms/${KEYCLOAK_URL_REALM:-forms-flow-ai}
+      JWT_OIDC_WELL_KNOWN_CONFIG: ${KEYCLOAK_URL}${KEYCLOAK_URL_HTTP_RELATIVE_PATH:-/auth}/realms/${KEYCLOAK_URL_REALM:-forms-flow-ai}/.well-known/openid-configuration
+      JWT_OIDC_JWKS_URI: ${KEYCLOAK_URL}${KEYCLOAK_URL_HTTP_RELATIVE_PATH:-/auth}/realms/${KEYCLOAK_URL_REALM:-forms-flow-ai}/protocol/openid-connect/certs
+      JWT_OIDC_ISSUER: ${KEYCLOAK_URL}${KEYCLOAK_URL_HTTP_RELATIVE_PATH:-/auth}/realms/${KEYCLOAK_URL_REALM:-forms-flow-ai}
       JWT_OIDC_AUDIENCE: ${KEYCLOAK_WEB_CLIENT_ID:-forms-flow-web}
       JWT_OIDC_CACHING_ENABLED: 'True'
       KEYCLOAK_URL: ${KEYCLOAK_URL}
@@ -34,8 +39,17 @@ services:
       API_LOG_ROTATION_WHEN: ${API_LOG_ROTATION_WHEN:-d}
       API_LOG_ROTATION_INTERVAL: ${API_LOG_ROTATION_INTERVAL:-1}
       API_LOG_BACKUP_COUNT: ${API_LOG_BACKUP_COUNT:-7}
+      CONFIGURE_LOGS: ${CONFIGURE_LOGS:-true}
+      REDIS_URL: ${REDIS_URL:-redis://redis:6379/0}
     stdin_open: true # -i
     tty: true # -t
+    networks:
+      - forms-flow-webapi-network
+
+  redis:
+    image: "redis:alpine"
+    ports:
+      - "6379:6379"
     networks:
       - forms-flow-webapi-network
 

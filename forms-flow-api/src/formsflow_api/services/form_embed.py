@@ -22,12 +22,12 @@ class CombineFormAndApplicationCreate:  # pylint: disable=too-few-public-methods
         form_io_token = formio_service.get_formio_access_token()
         formio_data = formio_service.post_submission(data, form_io_token)
         application_data["submission_id"] = formio_data["_id"]
-        application_data[
-            "form_url"
-        ] = f"{formio_url}/form/{application_data['form_id']}/submission/{formio_data['_id']}"
-        application_data[
-            "web_form_url"
-        ] = f"{web_url}/form/{application_data['form_id']}/submission/{formio_data['_id']}"
+        application_data["form_url"] = (
+            f"{formio_url}/form/{application_data['form_id']}/submission/{formio_data['_id']}"
+        )
+        application_data["web_form_url"] = (
+            f"{web_url}/form/{application_data['form_id']}/submission/{formio_data['_id']}"
+        )
         application, status = ApplicationService.create_application(
             data=application_data, token=token
         )

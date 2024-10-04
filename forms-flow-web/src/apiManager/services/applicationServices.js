@@ -19,7 +19,7 @@ import { replaceUrl } from "../../helper/helper";
 import moment from "moment";
 import { getFormattedProcess } from "./formatterService";
 import { setPublicFormStatus } from "../../actions/formActions";
-import { setDraftCount } from "../../actions/draftActions";
+
 
 export const getAllApplicationsByFormId = (formId, ...rest) => {
   const done = rest.length ? rest[0] : () => {};
@@ -228,7 +228,7 @@ export const getAllApplications = (params, ...rest) => {
         if (res.data) {
           const applications = res.data.applications || [];
           dispatch(setApplicationListCount(res.data.totalCount || 0));
-          dispatch(setDraftCount(res.data?.draftCount || 0));
+
           dispatch(setApplicationList(applications));
           done(null, applications);
         } else {

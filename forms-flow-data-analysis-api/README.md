@@ -1,7 +1,7 @@
 # formsflow.ai Sentiment Analysis Component
 
-![Python](https://img.shields.io/badge/Python-3.8-blue) ![Flask](https://img.shields.io/badge/Flask-2.3.3-blue) ![postgres](https://img.shields.io/badge/postgres-13.0-blue)
-![Transformers](https://img.shields.io/badge/Transformers-4.33.2-blue)
+![Python](https://img.shields.io/badge/Python-3.11.7-blue) ![Flask](https://img.shields.io/badge/Flask-2.3.3-blue) ![postgres](https://img.shields.io/badge/postgres-13.0-blue)
+![Transformers](https://img.shields.io/badge/Transformers-4.36.2-blue)
 ![Torch](https://img.shields.io/badge/Torch-2.0.1-blue)
 
 Sentiment Analysisis used to understand the sentiments of the customer for products, movies, and other such things, whether they feel positive, negative, or neutral about it. BERT is a very good pre-trained language model which helps machines learn excellent representations of text with respect to context in many natural language tasks. 
@@ -60,7 +60,6 @@ Variable name | Meaning | Possible values | Default value |
 `DATA_ANALYSIS_DB_PASSWORD` |formsflow data analysis database postgres password|Used on installation to create the database.Choose your own|`changeme`
 `DATA_ANALYSIS_DB_NAME` |formsflow data analysis database name|Used on installation to create the database.Choose your own|`dataanalysis`
 `DATA_ANALYSIS_DB_URL` |JDBC DB Connection URL for formsflow||`postgresql://general:changeme@forms-flow-data-analysis-db:5432/dataanalysis`
-`DATA_ANALYSIS_API_BASE_URL`:triangular_flag_on_post:|formsflow.ai Data analysis API URL||`http://{your-ip-address}:5001`
 `MODEL_ID`:triangular_flag_on_post:|formsflow.ai Hugging face model id||`Seethal/sentiment_analysis_generic_dataset`
 
 **NOTE : Default realm is `forms-flow-ai`**

@@ -1,3 +1,5 @@
+@import "../../variables.scss";
+
 .bpm-container{
   height:100%;
   position: absolute;
@@ -14,7 +16,7 @@
    cursor: grab;
  }
 .highlight:not(.djs-connection) .djs-visual > :nth-child(1) {
-    fill: var(--color-primary-dk) !important;
+    fill: $primary-400 !important;
 }
 
 .btn_zoom{

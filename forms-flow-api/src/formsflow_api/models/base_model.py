@@ -15,10 +15,21 @@ class BaseModel:
         """Commit the session."""
         db.session.commit()
 
+    @staticmethod
+    def rollback():
+        """Rollback the session."""
+        db.session.rollback()
+
     def save(self):
         """Save and commit."""
         db.session.add(self)
         db.session.commit()
+        return self
+
+    def save_and_flush(self):
+        """Save and flush."""
+        db.session.add(self)
+        db.session.flush()
         return self
 
     def delete(self):

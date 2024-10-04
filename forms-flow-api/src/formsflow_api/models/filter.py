@@ -1,10 +1,11 @@
 """This manages Filter information."""
+
 from __future__ import annotations
 
 from typing import List
 
 from formsflow_api_utils.utils.enums import FilterStatus
-from sqlalchemy import JSON, and_, or_
+from sqlalchemy import JSON, and_, asc, case, or_
 from sqlalchemy.dialects.postgresql import ARRAY
 
 from formsflow_api.models.base_model import BaseModel
@@ -28,6 +29,7 @@ class Filter(AuditDateTimeMixin, AuditUserMixin, BaseModel, db.Model):
     users = db.Column(ARRAY(db.String), nullable=True, comment="Applicable users")
     status = db.Column(db.String(10), nullable=True)
     task_visible_attributes = db.Column(JSON, nullable=True)
+    order = db.Column(db.Integer, nullable=True, comment="Display order")
 
     @classmethod
     def find_all_active_filters(cls, tenant: str = None) -> List[Filter]:
@@ -60,6 +62,7 @@ class Filter(AuditDateTimeMixin, AuditUserMixin, BaseModel, db.Model):
             filter_obj.properties = filter_data.get("properties")
             filter_obj.roles = filter_data.get("roles")
             filter_obj.users = filter_data.get("users")
+            filter_obj.order = filter_data.get("order")
             filter_obj.status = str(FilterStatus.ACTIVE.value)
             filter_obj.task_visible_attributes = filter_data.get(
                 "task_visible_attributes"
@@ -81,10 +84,14 @@ class Filter(AuditDateTimeMixin, AuditUserMixin, BaseModel, db.Model):
             roles, user, tenant, admin, filter_empty_tenant_key=True
         )
         query = query.filter(Filter.status == str(FilterStatus.ACTIVE.value))
+        order_by_user_first = case((Filter.created_by == user, 1), else_=2)
+        query = query.order_by(
+            order_by_user_first, Filter.order, Filter.created_by, asc(Filter.name)
+        )
         return query.all()
 
     @classmethod
-    def _auth_query(  # pylint: disable=too-many-arguments
+    def _auth_query(  # pylint: disable=too-many-arguments, too-many-positional-arguments
         cls, roles, user, tenant, admin, filter_empty_tenant_key=False
     ):
         query = cls.query
@@ -116,7 +123,7 @@ class Filter(AuditDateTimeMixin, AuditUserMixin, BaseModel, db.Model):
         return cls.query.filter(Filter.id == filter_id).first()
 
     @classmethod
-    def find_active_filter_by_id(  # pylint: disable=too-many-arguments
+    def find_active_filter_by_id(  # pylint: disable=too-many-arguments,too-many-positional-arguments
         cls, filter_id, roles, user, tenant, admin
     ) -> Filter:
         """Find active filter by id."""
@@ -159,7 +166,21 @@ class Filter(AuditDateTimeMixin, AuditUserMixin, BaseModel, db.Model):
                 "modified_by",
                 "status",
                 "task_visible_attributes",
+                "order",
             ],
             filter_info,
         )
         self.commit()
+
+    @classmethod
+    def find_all_active_filters_formid(
+        cls, form_id, tenant: str = None
+    ) -> List[Filter]:
+        """Find all active filters with specific form id."""
+        query = cls.query.filter(
+            Filter.status == str(FilterStatus.ACTIVE.value),
+            Filter.properties.op("->>")("formId") == form_id,
+        )
+        if tenant:
+            query = query.filter(Filter.tenant == tenant)
+        return query.all() or []

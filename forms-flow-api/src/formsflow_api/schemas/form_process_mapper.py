@@ -31,6 +31,7 @@ class FormProcessMapperSchema(Schema):
     process_tenant = fields.Str(data_key="processTenant")
     deleted = fields.Boolean(data_key="deleted")
     description = fields.Str(data_key="description")
+    prompt_new_version = fields.Bool(data_key="promptNewVersion", dump_only=True)
 
 
 class FormProcessMapperListReqSchema(Schema):
@@ -48,8 +49,9 @@ class FormProcessMapperListReqSchema(Schema):
 class FormProcessMapperListRequestSchema(FormProcessMapperListReqSchema):
     """This class manages formprocessmapper list request schema."""
 
-    form_name = fields.Str(data_key="formName", required=False)
+    search = fields.Str(data_key="search", required=False)
     sort_by = fields.Str(data_key="sortBy", required=False)
     sort_order = fields.Str(data_key="sortOrder", required=False)
     form_type = fields.Str(data_key="formType", required=False)
     is_active = fields.Bool(data_key="isActive", required=False)
+    active_forms = fields.Bool(data_key="activeForms", required=False)

@@ -69,23 +69,23 @@ class _Config:  # pylint: disable=too-few-public-methods
     JWT_OIDC_CACHING_ENABLED = os.getenv("JWT_OIDC_CACHING_ENABLED")
     JWT_OIDC_JWKS_CACHE_TIMEOUT = 300
 
-    DATA_ANALYSIS_API_BASE_URL = os.getenv("DATA_ANALYSIS_API_BASE_URL", default="")
 
     DATABASE_SUPPORT = os.getenv("DATABASE_SUPPORT", default=Service.DISABLED.value)
 
-    DB_PG_CONFIG = {
-        "host": os.getenv("POSTGRES_DB_HOST", "forms-flow-data-analysis-db"),
-        "port": os.getenv("POSTGRES_DB_PORT", "5432"),
-        "dbname": os.getenv("POSTGRES_DB"),
-        "user": os.getenv("POSTGRES_USER"),
-        "password": os.getenv("POSTGRES_PASSWORD"),
-    }
-    SQLALCHEMY_DATABASE_URI = (
-        f"postgresql://"
-        f"{DB_PG_CONFIG['user']}:{DB_PG_CONFIG['password']}"
-        f"@{DB_PG_CONFIG['host']}:{int(DB_PG_CONFIG['port'])}/{DB_PG_CONFIG['dbname']}"
+    # PostgreSQL configuration
+    DB_USER = os.getenv("DATABASE_USERNAME", "general")
+    DB_PASSWORD = os.getenv("DATABASE_PASSWORD", "changeme")
+    DB_HOST = os.getenv("DATABASE_HOST", "localhost")
+    DB_PORT = os.getenv("DATABASE_PORT", "5432")
+    DB_NAME = os.getenv("DATABASE_NAME", "dataanalysis")
+    SQLALCHEMY_DATABASE_URI = os.getenv(
+        "DATABASE_URL", f"postgresql://{DB_USER}:{DB_PASSWORD}@{DB_HOST}:{DB_PORT}/{DB_NAME}"
     )
+
     MODEL_ID = os.getenv("MODEL_ID")
+
+    # Configure LOG
+    CONFIGURE_LOGS = str(os.getenv("CONFIGURE_LOGS", default="true")).lower() == "true"
 
 
 class DevConfig(_Config):  # pylint: disable=too-few-public-methods

@@ -9,6 +9,10 @@ const TaskVariable = ({ expandedTasks, setExpandedTasks,taskId, variables }) => 
   const allTaskVariablesExpanded = useSelector((state) => state.bpmTasks.allTaskVariablesExpand);
   const taskList = useSelector((state) => state.bpmTasks.tasksList);
 
+  const vissibleAttributes = useSelector(
+    (state) => state.bpmTasks.vissibleAttributes
+  );
+
   useEffect(() => {
     // Initialize expandedTasks based on the initial value of allTaskVariablesExpanded
     const updatedExpandedTasks = {};
@@ -27,6 +31,21 @@ const TaskVariable = ({ expandedTasks, setExpandedTasks,taskId, variables }) => 
       [taskId]: !prevExpandedTasks[taskId],
     }));
   };
+
+  const filterTaskVariables = (taskvariable)=>{
+    if(!vissibleAttributes.taskVisibleAttributes.applicationId){
+      return taskvariable = taskvariable.filter((item) => item.label !== 'Application Id');
+    }
+    return taskvariable;
+  };
+
+  const filterVariables = (variables)=>{
+    if(!vissibleAttributes.taskVisibleAttributes.applicationId){
+      return variables = variables.filter((item) => item.label !== 'applicationId');
+    }
+    return variables;
+  };
+
 
   const rowReturn = (taskItem, data, index) => {  
     return (
@@ -58,8 +77,8 @@ const TaskVariable = ({ expandedTasks, setExpandedTasks,taskId, variables }) => 
     <>
       <Row className=" mt-3 justify-content-between">
         {taskvariable &&
-          taskvariable.map((taskItem, index) => {
-            const data = variables.find(
+          filterTaskVariables(taskvariable)?.map((taskItem, index) => {
+            const data = filterVariables(variables)?.find(
               (variableItem) => variableItem.name === taskItem.name
             );
             if (data && data.value !== (undefined || null)) {

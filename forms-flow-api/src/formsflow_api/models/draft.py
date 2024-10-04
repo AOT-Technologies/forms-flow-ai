@@ -1,6 +1,5 @@
 """This manages Submission Database Models."""
 
-
 from __future__ import annotations
 
 import uuid
@@ -12,7 +11,7 @@ from formsflow_api_utils.utils import (
 )
 from formsflow_api_utils.utils.enums import DraftStatus
 from formsflow_api_utils.utils.user_context import UserContext, user_context
-from sqlalchemy import and_, update
+from sqlalchemy import and_
 from sqlalchemy.dialects.postgresql import JSON, UUID
 from sqlalchemy.sql.expression import text
 
@@ -51,6 +50,14 @@ class Draft(AuditDateTimeMixin, BaseModel, db.Model):
         """Update draft."""
         self.update_from_dict(
             ["data", "status"],
+            draft_info,
+        )
+        self.save_and_flush()
+
+    def update_draft_data_and_commit(self, draft_info: dict):
+        """Update & commit draft data."""
+        self.update_from_dict(
+            ["data"],
             draft_info,
         )
         self.commit()
@@ -107,7 +114,7 @@ class Draft(AuditDateTimeMixin, BaseModel, db.Model):
         return FormProcessMapper.tenant_authorization(result).first()
 
     @classmethod
-    def find_all_active(  # pylint: disable=too-many-arguments
+    def find_all_active(  # pylint: disable=too-many-arguments,too-many-positional-arguments
         cls,
         user_name: str,
         page_number=None,
@@ -159,16 +166,11 @@ class Draft(AuditDateTimeMixin, BaseModel, db.Model):
         draft = cls.get_by_id(draft_id, user_id)
         if not draft:
             return None
-        stmt = (
-            update(Application)
-            .where(Application.id == draft.application_id)
-            .values(
-                application_status=data["application_status"],
-                submission_id=data["submission_id"],
-            )
-        )
-        cls.execute(stmt)
-        # The update statement will be commited by the following update
+        application = Application.find_by_id(draft.application_id)
+        application.application_status = data["application_status"]
+        application.submission_id = data["submission_id"]
+
+        # The update statement will be flushed by the following update
         draft.update({"status": DraftStatus.INACTIVE.value, "data": {}})
         return draft
 

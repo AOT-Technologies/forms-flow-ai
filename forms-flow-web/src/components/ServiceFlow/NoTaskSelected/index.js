@@ -9,9 +9,9 @@ function NoTaskSelectedMessage() {
       className="w-100 no-filter-img"
         alt="Select a task from the List"
       />
-      <h3 className="text-center">
+      <label className="text-center select-task-text py-3">
         <Translation>{(t) => t("Select a task from the List.")}</Translation>
-      </h3>
+      </label>
       <p className="text-center">
         <Translation>
           {(t) =>

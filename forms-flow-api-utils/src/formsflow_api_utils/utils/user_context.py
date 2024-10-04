@@ -51,6 +51,11 @@ class UserContext:  # pylint: disable=too-many-instance-attributes
     def roles(self) -> List[str]:
         """Return the roles."""
         return self._roles
+    
+    @property
+    def groups(self) -> List[str]:
+        """Return the roles."""
+        return self._groups
 
     @property
     def group_or_roles(self) -> List[str]:

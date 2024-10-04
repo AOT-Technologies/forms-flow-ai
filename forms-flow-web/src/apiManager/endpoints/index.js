@@ -29,6 +29,7 @@ const API = {
   PROCESS_ACTIVITIES: `${BPM_BASE_URL_EXT}/v1/process-instance/<process_instance_id>/activity-instances`,
   FORM: `${WEB_BASE_URL}/form`,
   FORM_DESIGN: `${WEB_BASE_URL}/form/form-design`,
+  FORM_IMPORT: `${WEB_BASE_URL}/import`,
   FORM_HISTORY: `${WEB_BASE_URL}/form/form-history`,
   LANG_UPDATE: `${WEB_BASE_URL}/user/locale`,
   FORM_PROCESSES: `${WEB_BASE_URL}/form/formid`,
@@ -40,6 +41,7 @@ const API = {
   GET_BPM_PROCESS_LIST: `${BPM_BASE_URL_EXT}/v1/process-definition`,
   GET_DMN_PROCESS_LIST: `${BPM_BASE_URL_EXT}/v1/decision-definition`,
   GET_API_USER_LIST: `${WEB_BASE_URL}/user`,
+  UPDATE_DEFAULT_FILTER: `${WEB_BASE_URL}/user/default-filter`,
   GET_BPM_FILTERS: `${BPM_BASE_URL_EXT}/v1/filter`,
   GET_BPM_TASK_LIST_WITH_FILTER: `${BPM_BASE_URL_EXT}/v1/filter/<filter_id>/list`,
   GET_BPM_TASK_LIST_COUNT_WITH_FILTER: `${BPM_BASE_URL_EXT}/v1/filter/<filter_id>/count`,
@@ -77,6 +79,7 @@ const API = {
   HANDLE_AUTHORIZATION_FOR_DESIGNER: `${WEB_BASE_URL}/authorizations/resource/<resource_id>`,
   GET_FILTERS : `${WEB_BASE_URL}/filter`,
   GET_BPM_TASK_FILTERS : `${BPM_BASE_URL_EXT}/v1/task-filters`,
+  VALIDATE_TENANT: `${MT_ADMIN_BASE_URL}/${MT_ADMIN_BASE_URL_VERSION}/tenants/<tenant_id>/validate`,
 };
 
 export default API;

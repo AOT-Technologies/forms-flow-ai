@@ -19,14 +19,14 @@ import {
   saveFormProcessMapperPost,
   saveFormProcessMapperPut,
 } from "../../apiManager/services/processServices";
-import { selectRoot, selectError, Formio, getForm } from "react-formio";
+import { selectRoot, selectError, Formio, getForm } from "@aot-technologies/formio-react";
 import { MULTITENANCY_ENABLED } from "../../constants/constants";
 import { push } from "connected-react-router";
 import WorkFlow from "./Steps/WorkFlow";
 import PreviewStepper from "./Steps/PreviewStepper";
-import Stepper from "../../containers/Stepper/index.js";
+// import Stepper from "../../containers/Stepper/index.js";
 import "./stepper.scss";
-import { Link } from "react-router-dom";
+// import { Link } from "react-router-dom";
 import {
   FORM_CREATE_ROUTE,
   STEPPER_ROUTES,
@@ -245,6 +245,7 @@ class StepperPage extends PureComponent {
         ? formProcessList.taskVariable
         : [],
       anonymous: formProcessList.anonymous ? true : false,
+      selectedAllField: formProcessList.selectedAllField,
       parentFormId: formProcessList?.parentFormId,
       formType: formProcessList.formType,
     };
@@ -341,7 +342,7 @@ class StepperPage extends PureComponent {
   render() {
     // const { process } = this.props;
     const steps = this.getSteps();
-    const { t, formAuthVerifyLoading, apiCallError, match } = this.props;
+    const { formAuthVerifyLoading, apiCallError, match } = this.props;
     const handleReset = () => {
       this.setActiveStep(0);
     };
@@ -362,7 +363,7 @@ class StepperPage extends PureComponent {
     return (
       <>
         <div>
-          {this.props.isAuthenticated ? (
+          {/* {this.props.isAuthenticated  ? (
             <Link
               to={`${this.state.redirectUrl}form`}
               title={t("Back to Form List")}
@@ -370,12 +371,12 @@ class StepperPage extends PureComponent {
             >
               <i className="fa fa-chevron-left fa-lg m-2" />
             </Link>
-          ) : null}
+          ) : null} */}
           <div className="paper-root">
             <Row>
               <Col xs={12}>
-                <div className="mb-3">
-                  <Stepper steps={steps} activeStep={this.state.activeStep}/>
+                <div>
+                  {/* <Stepper steps={steps} activeStep={this.state.activeStep}/> */}
                 </div>
                 <div>
                   {this.state.activeStep === steps.length ? (

@@ -1,5 +1,5 @@
 #Author: Kurian Benoy
-FROM python:3.11.7-slim-bullseye
+FROM python:3.12.6-slim
 
 # set label for image
 LABEL Name="formsflow"
@@ -19,5 +19,5 @@ RUN pip install .
 EXPOSE 5000
 RUN python3 -c "from transformers import pipeline; pipeline('sentiment-analysis', model='$MODEL_ID', truncation=True)"
 
-RUN chmod u+x ./entrypoint
-ENTRYPOINT ["/bin/sh", "entrypoint"]
+RUN chmod u+x ./entrypoint.sh
+ENTRYPOINT ["/bin/sh", "entrypoint.sh"]

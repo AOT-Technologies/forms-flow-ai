@@ -14,7 +14,7 @@ from formsflow_api_utils.utils import (
 )
 from formsflow_api_utils.utils.enums import FormProcessMapperStatus
 from formsflow_api_utils.utils.user_context import UserContext, user_context
-from sqlalchemy import UniqueConstraint, and_, desc, func
+from sqlalchemy import UniqueConstraint, and_, desc, func, or_
 from sqlalchemy.dialects.postgresql import JSON
 from sqlalchemy.sql.expression import text
 
@@ -52,6 +52,7 @@ class FormProcessMapper(AuditDateTimeMixin, AuditUserMixin, BaseModel, db.Model)
     task_variable = db.Column(JSON, nullable=True)
     version = db.Column(db.Integer, nullable=False, default=1)
     description = db.Column(db.String, nullable=True)
+    prompt_new_version = db.Column(db.Boolean, nullable=True, default=False)
 
     __table_args__ = (
         UniqueConstraint("form_id", "version", "tenant", name="_form_version_uc"),
@@ -105,6 +106,7 @@ class FormProcessMapper(AuditDateTimeMixin, AuditUserMixin, BaseModel, db.Model)
                 "task_variable",
                 "process_tenant",
                 "description",
+                "prompt_new_version",
             ],
             mapper_info,
         )
@@ -183,6 +185,36 @@ class FormProcessMapper(AuditDateTimeMixin, AuditUserMixin, BaseModel, db.Model)
         )
 
     @classmethod
+    def add_sort_filter(cls, query, sort_by, sort_order):
+        """Adding sortBy and sortOrder."""
+        order = []
+        if sort_by and sort_order:
+            for sort_by_att, sort_order_attr in zip(sort_by, sort_order):
+                name, value = validate_sort_order_and_order_by(
+                    sort_order=sort_order_attr, order_by=sort_by_att
+                )
+                if name and value:
+                    order.append(text(f"form_process_mapper.{name} {value}"))
+
+            query = query.order_by(*order)
+        return query
+
+    @classmethod
+    def add_search_filter(cls, query, search):
+        """Adding search filter in query."""
+        if search:
+            filters = []
+            for term in search:
+                filters.append(
+                    or_(
+                        FormProcessMapper.form_name.ilike(f"%{term}%"),
+                        FormProcessMapper.description.ilike(f"%{term}%"),
+                    )
+                )
+            query = query.filter(or_(*filters))
+        return query
+
+    @classmethod
     def find_all_forms(
         cls,
         page_number=None,
@@ -192,8 +224,9 @@ class FormProcessMapper(AuditDateTimeMixin, AuditUserMixin, BaseModel, db.Model)
         form_ids=None,
         is_active=None,
         form_type=None,
+        search=None,
         **filters,
-    ):  # pylint: disable=too-many-arguments
+    ):  # pylint: disable=too-many-arguments, too-many-positional-arguments
         """Fetch all active and inactive forms which are not deleted."""
         # Get latest row for each form_id group
         filtered_form_query = cls.get_latest_form_mapper_ids()
@@ -205,6 +238,11 @@ class FormProcessMapper(AuditDateTimeMixin, AuditUserMixin, BaseModel, db.Model)
             and_(FormProcessMapper.deleted.is_(False)),
             FormProcessMapper.id.in_(filtered_form_ids),
         )
+
+        query = cls.add_search_filter(query=query, search=search)
+
+        query = cls.add_sort_filter(query=query, sort_by=sort_by, sort_order=sort_order)
+
         # form type is list of type to filter the form
         if form_type:
             query = query.filter(FormProcessMapper.form_type.in_(form_type))
@@ -214,9 +252,6 @@ class FormProcessMapper(AuditDateTimeMixin, AuditUserMixin, BaseModel, db.Model)
             query = query.filter(FormProcessMapper.status == value)
 
         query = cls.tenant_authorization(query=query)
-        sort_by, sort_order = validate_sort_order_and_order_by(sort_by, sort_order)
-        if sort_by and sort_order:
-            query = query.order_by(text(f"form_process_mapper.{sort_by} {sort_order}"))
 
         total_count = query.count()
         query = query.with_entities(
@@ -242,9 +277,10 @@ class FormProcessMapper(AuditDateTimeMixin, AuditUserMixin, BaseModel, db.Model)
         limit=None,
         sort_by=None,
         sort_order=None,
+        search=None,
         form_ids=None,
         **filters,
-    ):  # pylint: disable=too-many-arguments
+    ):  # pylint: disable=too-many-arguments, too-many-positional-arguments
         """Fetch all active form process mappers by authorized forms."""
         # Get latest row for each form_id group
         filtered_form_query = cls.get_latest_form_mapper_ids()
@@ -255,10 +291,9 @@ class FormProcessMapper(AuditDateTimeMixin, AuditUserMixin, BaseModel, db.Model)
         query = query.filter(
             FormProcessMapper.id.in_(filtered_form_ids),
         )
+        query = cls.add_search_filter(query=query, search=search)
         query = cls.access_filter(query=query)
-        sort_by, sort_order = validate_sort_order_and_order_by(sort_by, sort_order)
-        if sort_by and sort_order:
-            query = query.order_by(text(f"form_process_mapper.{sort_by} {sort_order}"))
+        query = cls.add_sort_filter(sort_by=sort_by, sort_order=sort_order, query=query)
 
         total_count = query.count()
         query = query.with_entities(
@@ -268,36 +303,6 @@ class FormProcessMapper(AuditDateTimeMixin, AuditUserMixin, BaseModel, db.Model)
             cls.form_name,
             cls.modified,
             cls.description,
-        )
-        limit = total_count if limit is None else limit
-        query = query.paginate(page=page_number, per_page=limit, error_out=False)
-        return query.items, total_count
-
-    @classmethod
-    def find_all_active(
-        cls,
-        page_number=None,
-        limit=None,
-        sort_by=None,
-        sort_order=None,
-        process_key=None,
-        **filters,
-    ):  # pylint: disable=too-many-arguments
-        """Fetch all active form process mappers."""
-        query = cls.filter_conditions(**filters)
-        if process_key is not None:
-            query = query.filter(FormProcessMapper.process_key.in_(process_key))
-        query = cls.access_filter(query=query)
-        sort_by, sort_order = validate_sort_order_and_order_by(sort_by, sort_order)
-        if sort_by and sort_order:
-            query = query.order_by(text(f"form_process_mapper.{sort_by} {sort_order}"))
-
-        total_count = query.count()
-        query = query.with_entities(
-            cls.id,
-            cls.process_key,
-            cls.form_id,
-            cls.form_name,
         )
         limit = total_count if limit is None else limit
         query = query.paginate(page=page_number, per_page=limit, error_out=False)
@@ -369,3 +374,34 @@ class FormProcessMapper(AuditDateTimeMixin, AuditUserMixin, BaseModel, db.Model)
         if tenant_key is not None:
             tenant_auth_query = tenant_auth_query.filter(cls.tenant == tenant_key)
         return tenant_auth_query
+
+    @classmethod
+    def find_all_active_forms(
+        cls,
+        page_number=None,
+        limit=None,
+    ):  # pylint: disable=too-many-arguments
+        """Fetch all active forms."""
+        query = cls.access_filter(query=cls.query)
+        total_count = query.count()
+        query = query.with_entities(
+            cls.form_id,
+            cls.form_name,
+        )
+        limit = total_count if limit is None else limit
+        query = query.paginate(page=page_number, per_page=limit, error_out=False)
+        return query.items, total_count
+
+    @classmethod
+    def find_forms_by_title(cls, form_title, exclude_id) -> FormProcessMapper:
+        """Find all form process mapper that matches the provided form title."""
+        query = cls.query.filter(
+            and_(
+                FormProcessMapper.form_name == form_title,
+                FormProcessMapper.deleted.is_(False),
+            )
+        )
+        if exclude_id is not None:
+            query = query.filter(FormProcessMapper.id != exclude_id)
+        query = cls.tenant_authorization(query=query)
+        return query.all()

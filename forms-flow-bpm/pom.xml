@@ -6,7 +6,7 @@
 
 	<groupId>formsflow.ai</groupId>
 	<artifactId>forms-flow-bpm</artifactId>
-	<version>6.0.0</version>
+	<version>7.0.0</version>
 	<packaging>pom</packaging>
 
 	<name>formsflow BPM Extension</name>
@@ -22,16 +22,16 @@
 		<failOnMissingWebXml>false</failOnMissingWebXml>
 
 		<!-- versions -->
-		<version.camundaKeycloak>7.20.0</version.camundaKeycloak>
+		<version.camundaKeycloak>7.21.5</version.camundaKeycloak>
 		<version.camunda>7.20.0</version.camunda><!-- 7.18.0 - 7.20.0 -->
 		<version.camundaConnect>1.5.4</version.camundaConnect><!-- 1.5.4 -->
 		<version.camundaMail>1.5.0</version.camundaMail><!-- 1.5.0 -->
-		<version.springBoot>3.1.5</version.springBoot><!-- 2.7.12 - 3.1.5 -->
+		<version.springBoot>3.1.10</version.springBoot><!-- 3.1.5 - 3.1.10 -->
 		<version.springSecurityOauth2>2.6.8</version.springSecurityOauth2><!--
 			2.6.7 - 2.6.8 -->
 		<version.jackson>2.15.0</version.jackson>
 		<version.commonsFileUpload>1.5</version.commonsFileUpload>
-		<version.snakeyaml>2.0</version.snakeyaml>
+		<version.snakeyaml>2.2</version.snakeyaml>
 	</properties>
 
 	<profiles>
@@ -192,7 +192,7 @@
 					<groupId>org.postgresql</groupId>
 					<artifactId>postgresql</artifactId>
 					<!--version>9.4-1205-jdbc41</version -->
-					<version>42.4.3</version>
+					<version>42.7.2</version>
 				</dependency>
 
 
@@ -250,7 +250,7 @@
 				<dependency>
 					<groupId>org.codehaus.groovy</groupId>
 					<artifactId>groovy-all</artifactId>
-					<version>3.0.19</version>
+					<version>3.0.21</version>
 					<type>pom</type>
 				</dependency>
 
@@ -310,13 +310,13 @@
 				<dependency>
 					<groupId>org.graalvm.js</groupId>
 					<artifactId>js-scriptengine</artifactId>
-					<version>22.3.3</version>
+					<version>23.0.0</version>
 				</dependency>
 
 				<dependency>
 					<groupId>org.graalvm.js</groupId>
 					<artifactId>js</artifactId>
-					<version>22.3.3</version>
+					<version>23.0.0</version>
 				</dependency>
 
 				<dependency>
@@ -334,7 +334,7 @@
 				<dependency>
 					<groupId>org.camunda.bpm</groupId>
 					<artifactId>camunda-engine-rest-core</artifactId>
-					<version>7.20.0</version>
+					<version>${version.camunda}</version>
 				</dependency>
 
 				<!-- Adding common file upload -->

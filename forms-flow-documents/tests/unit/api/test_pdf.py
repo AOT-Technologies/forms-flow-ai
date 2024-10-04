@@ -7,7 +7,7 @@ from tests.utilities.base_test import get_token
 class TestFormResourceRenderPdf:
     """Test suite for the render endpoint."""
 
-    def test_render_template(self, app, client, jwt):
+    def test_render_template(self, app, client, jwt, mock_redis_client):
         """Assert that API /render when passed with token returns 200 status code."""
         with app.app_context():
             token = get_token(jwt)

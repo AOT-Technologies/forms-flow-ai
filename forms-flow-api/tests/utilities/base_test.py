@@ -1,9 +1,11 @@
 """Base Test Class to be used by test suites. Used for getting JWT token purpose."""
+
 import datetime
 import time
 
 from dotenv import find_dotenv, load_dotenv
 from flask import current_app
+from formsflow_api_utils.utils import CREATE_SUBMISSIONS
 from jose import jwt as json_web_token
 
 from formsflow_api.models import Authorization, AuthType
@@ -15,7 +17,7 @@ token_header = {"alg": "RS256", "typ": "JWT", "kid": "forms-flow-web"}
 
 def get_token(
     jwt,
-    role: str = "formsflow-client",
+    role: str = CREATE_SUBMISSIONS,
     username: str = "client",
     roles: list = [],
     tenant_key: str = None,
@@ -555,6 +557,7 @@ def get_filter_payload(
     name: str = "Test Task",
     roles: list = [],
     users: list = [],
+    order: int = None,
 ):
     """Return filter create payload."""
     return {
@@ -565,6 +568,7 @@ def get_filter_payload(
         "properties": {"priority": 10},
         "users": users,
         "roles": roles,
+        "order": order,
         "taskVisibleAttributes": {
             "applicationId": True,
             "assignee": True,
@@ -584,11 +588,13 @@ def get_embed_token(
     """Return token for embed APIs."""
     return json_web_token.encode(
         {"preferred_username": user_name, "email": email, "tenant_key": tenant_key},
-        current_app.config.get(
-            "TEST_FORM_EMBED_JWT_SECRET", "f6a69a42-7f8a-11ed-a1eb-0242ac120002"
-        )
-        if not invalid
-        else "invalid-secret",
+        (
+            current_app.config.get(
+                "TEST_FORM_EMBED_JWT_SECRET", "f6a69a42-7f8a-11ed-a1eb-0242ac120002"
+            )
+            if not invalid
+            else "invalid-secret"
+        ),
         algorithm="HS256",
     )
 
@@ -602,4 +608,93 @@ def get_embed_application_create_payload(formId):
             "lastName": "Doe",
             "contact": {"addressLine1": "1234 Street", "email": "john.doe@example.com"},
         },
+    }
+
+
+def get_process_request_payload(
+    name="Testworkflow",
+    is_subflow=False,
+    parent_process_key="Testworkflow",
+    major_version=1,
+    minor_version=0,
+):
+    """Return process request payload.""" ""
+    return {
+        "status": "Draft",
+        "processType": "BPMN",
+        "name": name,
+        "processData": """<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n
+        <bpmn:definitions xmlns:bpmn=\"http://www.omg.org/spec/BPMN/20100524/MODEL\"
+        xmlns:bpmndi=\"http://www.omg.org/spec/BPMN/20100524/DI\" xmlns:dc=\"http://www.omg.org/spec/DD/20100524/DC\"
+        xmlns:di=\"http://www.omg.org/spec/DD/20100524/DI\" xmlns:modeler=\"http://camunda.org/schema/modeler/1.0\"
+        id=\"Definitions_a5sqptc\" targetNamespace=\"http://bpmn.io/schema/bpmn\" exporter=\"Camunda Modeler\" exporterVersion=\"5.0.0\" modeler:executionPlatform=\"Camunda Platform\" modeler:executionPlatformVersion=\"7.17.0\">
+        <bpmn:process id=\"Testworkflow\" name=\"Test workflow\" isExecutable=\"true\"><bpmn:startEvent id=\"StartEvent_1\"><bpmn:outgoing>Flow_01r7ulv</bpmn:outgoing></bpmn:startEvent>
+        <bpmn:task id=\"Activity_0s9h67c\"><bpmn:incoming>Flow_01r7ulv</bpmn:incoming><bpmn:outgoing>Flow_0worf4d</bpmn:outgoing></bpmn:task>
+        <bpmn:sequenceFlow id=\"Flow_01r7ulv\" sourceRef=\"StartEvent_1\" targetRef=\"Activity_0s9h67c\" /><bpmn:endEvent id=\"Event_1lz219j\"><bpmn:incoming>Flow_0worf4d</bpmn:incoming></bpmn:endEvent>
+        <bpmn:sequenceFlow id=\"Flow_0worf4d\" sourceRef=\"Activity_0s9h67c\" targetRef=\"Event_1lz219j\" /></bpmn:process><bpmndi:BPMNDiagram id=\"BPMNDiagram_1\"><bpmndi:BPMNPlane id=\"BPMNPlane_1\" bpmnElement=\"Testworkflow\">
+        <bpmndi:BPMNEdge id=\"Flow_01r7ulv_di\" bpmnElement=\"Flow_01r7ulv\"><di:waypoint x=\"215\" y=\"177\" /><di:waypoint x=\"270\" y=\"177\" /></bpmndi:BPMNEdge><bpmndi:BPMNEdge id=\"Flow_0worf4d_di\" bpmnElement=\"Flow_0worf4d\">
+        <di:waypoint x=\"370\" y=\"177\" /><di:waypoint x=\"432\" y=\"177\" /></bpmndi:BPMNEdge><bpmndi:BPMNShape id=\"_BPMNShape_StartEvent_2\" bpmnElement=\"StartEvent_1\"><dc:Bounds x=\"179\" y=\"159\" width=\"36\" height=\"36\" />
+        </bpmndi:BPMNShape><bpmndi:BPMNShape id=\"Activity_0s9h67c_di\" bpmnElement=\"Activity_0s9h67c\"><dc:Bounds x=\"270\" y=\"137\" width=\"100\" height=\"80\" /></bpmndi:BPMNShape><bpmndi:BPMNShape id=\"Event_1lz219j_di\" bpmnElement=\"Event_1lz219j\">
+        <dc:Bounds x=\"432\" y=\"159\" width=\"36\" height=\"36\" /></bpmndi:BPMNShape></bpmndi:BPMNPlane></bpmndi:BPMNDiagram></bpmn:definitions>""",
+        "majorVersion": major_version,
+        "minorVersion": minor_version,
+        "isSubflow": is_subflow,
+        "processKey": name,
+        "parentProcessKey": parent_process_key,
+    }
+
+
+def get_process_request_payload_low_code(name="Lowcode workflow", status="Draft"):
+    """Return process request payload for lowcode.""" ""
+    return {
+        "status": status,
+        "processType": "LOWCODE",
+        "name": name,
+        "majorVersion": 1,
+        "minorVersion": 0,
+        "processData": [
+            {
+                "id": "dndID5ade74badb758",
+                "type": "START",
+                "position": {"x": 305.4333267211914, "y": 97.29998779296875},
+                "data": {
+                    "label": "START",
+                    "type": "START",
+                    "color": "#FC4F00",
+                    "optionTitle": "Start",
+                    "title": "Start Task",
+                    "description": "Start Here",
+                    "attributes": {},
+                },
+                "width": 89,
+                "height": 42,
+            },
+            {
+                "id": "dndID48754650019b8",
+                "type": "END",
+                "position": {"x": 388.1499900817871, "y": 192.19998168945312},
+                "data": {
+                    "label": "END",
+                    "type": "END",
+                    "color": "#9bebd0",
+                    "title": "End Task",
+                    "optionTitle": "End",
+                    "description": "Process ends",
+                    "attributes": {},
+                },
+                "width": 91,
+                "height": 42,
+            },
+            {
+                "id": "dndID1f941f8b8dfbb",
+                "source": "dndID5ade74badb758",
+                "sourceHandle": "a",
+                "target": "dndID48754650019b8",
+                "targetHandle": "a",
+                "type": "smoothstep",
+                "data": {"label": ""},
+                "style": {"stroke": "#FC4F00"},
+                "animated": True,
+            },
+        ],
     }

@@ -301,8 +301,6 @@ class FormProcessMapperService:  # pylint: disable=too-many-public-methods
         mapper = FormProcessMapperService.create_mapper(dict_data)
 
         FormProcessMapperService.unpublish_previous_mapper(dict_data)
-
-        FormHistoryService.create_form_logs_without_clone(data=mapper_json)
         return mapper
 
     @staticmethod
@@ -312,9 +310,7 @@ class FormProcessMapperService:  # pylint: disable=too-many-public-methods
         formio_service = FormioService()
         form_io_token = formio_service.get_formio_access_token()
         response = formio_service.update_form(form_id, data, form_io_token)
-        FormProcessMapperService.execute.submit(
-            FormHistoryService.create_form_log_with_clone, data=data
-        )
+        FormHistoryService.create_form_log_with_clone(data=data)
         return response
 
     @staticmethod
@@ -366,14 +362,13 @@ class FormProcessMapperService:  # pylint: disable=too-many-public-methods
         FormProcessMapperService.validate_process_and_update_mapper(
             process_name, mapper
         )
-        FormProcessMapperService.execute.submit(
-            FormHistoryService.create_form_log_with_clone,
+        FormHistoryService.create_form_log_with_clone(
             data={
                 **response,
                 "parentFormId": data.get("parentFormId", form_id),
                 "newVersion": True,
                 "componentChanged": True,
-            },
+            }
         )
         return response
 

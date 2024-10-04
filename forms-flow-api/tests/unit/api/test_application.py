@@ -358,7 +358,7 @@ def test_application_resubmit(app, client, session, jwt, create_mapper_custom):
         "status": "active",
         "formType": "form",
         "parentFormId": "1234",
-        "taskVariables": [],
+        "taskVariables": '[{"key":"abcd","label":"BusinessName"}]',
     }
     rv = create_mapper_custom(payload)
 

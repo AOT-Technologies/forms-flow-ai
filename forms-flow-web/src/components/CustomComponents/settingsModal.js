@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useEffect, useRef, useState, useReducer } from 'react';
 import { Modal, Form, ListGroup, FormControl, InputGroup } from 'react-bootstrap';
 import { CopyIcon, InfoIcon, CustomPill, CustomRadioButton, CustomButton, FormInput, FormTextArea } from "@formsflow/components";
 
@@ -7,6 +7,9 @@ import { getUserRoles } from '../../apiManager/services/authorizationService';
 import { setUserGroups } from '../../actions/authorizationActions';
 import { useTranslation } from 'react-i18next';
 import { copyText } from '../../apiManager/services/formatterService';
+import _set from "lodash/set";
+import _cloneDeep from "lodash/cloneDeep";
+import _camelCase from "lodash/camelCase";
 
 const SettingsModal = ({ show, handleClose, handleConfirm }) => {
   const { t } = useTranslation();
@@ -44,10 +47,47 @@ const SettingsModal = ({ show, handleClose, handleConfirm }) => {
   const [newPath, setNewPath] = useState(formPath);
   const [newFormName, setNewFormName] = useState(formName);
   const [newFormDescription, setNewFormDescription] = useState(formDescription);
+  const formData = useSelector((state) => state.form?.form);
+  const reducer = (form, { type, value }) => {
+    const formCopy = _cloneDeep(form);
+    switch (type) {
+      case "formChange":
+        for (let prop in value) {
+          if (Object.prototype.hasOwnProperty.call(value, prop)) {
+            form[prop] = value[prop];
+          }
+        }
+        return form;
+      case "replaceForm":
+        return _cloneDeep(value);
+      case "title":
+        if (type === "title" && !form._id) {
+          formCopy.name = _camelCase(value);
+          formCopy.path = _camelCase(value).toLowerCase();
+        }
+        break;
+      default:
+        break;
+    }
+    _set(formCopy, type, value);
+    return formCopy;
+  };
+  const [form, dispatchFormAction] = useReducer(reducer, _cloneDeep(formData));
 
   const dropEditRef = useRef(null);
   const dropCreateRef = useRef(null);
   const dropViewRef = useRef(null);
+  const handleChange = (path, event) => {
+    const { target } = event;
+  
+    const value =
+      target.type === "checkbox"
+        ? target.checked ? "wizard" : "form"
+        : target.value;
+  
+    dispatchFormAction({ type: path, value });
+  };
+  
 
   useEffect(() => {
     getUserRoles()
@@ -150,7 +190,7 @@ const SettingsModal = ({ show, handleClose, handleConfirm }) => {
   }, []);
 
   return (
-    <Modal className="d-flex flex-column align-items-start w-100 d-flex flex-column align-items-start w-100 my-5 settings-modal" show={show} onHide={handleClose} dialogClassName="modal-50w" backdrop="static">
+    <Modal className="d-flex flex-column align-items-start w-100 settings-modal" show={show} onHide={handleClose} dialogClassName="modal-50w" backdrop="static">
       <Modal.Header>
         <Modal.Title>{t("Settings")}</Modal.Title>
       </Modal.Header>
@@ -167,9 +207,31 @@ const SettingsModal = ({ show, handleClose, handleConfirm }) => {
             data-testid="form-description"
             maxRows={3}
           />
+          <div className="info-panel">
+            <div className='d-flex align-items-center'>
+              <InfoIcon />
+              <div className='field-label ms-2'>{t("Note")}</div>
+            </div>
+            <div className='info-content'>
+              {t("Allowing the addition of multiple pages in a single form will prevent you from using this form in a bundle later.")}
+            </div>
+          </div>
+
+          <Form.Check
+            data-testid="form-edit-wizard-display"
+            type="checkbox"
+            id="createCheckbox"
+            label={t("Allow adding multiple pages in this form")}
+            checked={form.display === "wizard"}
+            onChange={(event) => handleChange("display", event)}
+
+
+            className='field-label'
+          />
+
         </div>
 
-        <hr className='modal-hr' />
+        <div className='modal-hr' />
 
         <div className="section">
           <h5 className='fw-bold'>{t("Permissions")}</h5>
@@ -304,7 +366,7 @@ const SettingsModal = ({ show, handleClose, handleConfirm }) => {
           )}
         </div>
 
-        <hr className='modal-hr' />
+        <div className='modal-hr' />
 
         <div className="section">
           <h5 className='fw-bold'>{t("Link for this form")}</h5>
@@ -317,7 +379,7 @@ const SettingsModal = ({ show, handleClose, handleConfirm }) => {
               {t("Making changes to your form URL will make your form inaccessible from your current URL.")}
             </div>
           </div>
-          <Form.Group className='settings-input' controlId="url-input">
+          <Form.Group className='settings-input w-100' controlId="url-input">
             <Form.Label className='field-label'>{t("URL Path")}</Form.Label>
             <InputGroup className='url-input'>
               <InputGroup.Text className='url-non-edit'>

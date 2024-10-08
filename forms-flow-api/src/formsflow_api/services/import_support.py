@@ -59,7 +59,7 @@ class ImportService:  # pylint: disable=too-many-public-methods
 
     def get_latest_version_workflow(self, process_name, include_status=False):
         """Get latest version of workflow by process name."""
-        process = Process.get_latest_version(process_name)
+        process = Process.get_latest_version_by_key(process_name)
         # If process not found, consider as initial version
         if not process:
             return (1, 0, None) if include_status else (1, 0)

@@ -639,7 +639,7 @@ class FormProcessMapperService:  # pylint: disable=too-many-public-methods
         process_name = mapper.process_key
 
         # Fetch process data from process table
-        process = Process.get_latest_version(process_name)
+        process = Process.get_latest_version_by_key(process_name)
         process_data = process.process_data if process else None
         # Deploy process
         self.deploy_process(process_name, process_data, tenant_key, token)
@@ -662,7 +662,12 @@ class FormProcessMapperService:  # pylint: disable=too-many-public-methods
         # Capture publish(active) status in form history table.
         self.capture_form_history(mapper, {"status": "active"}, user_name)
         # Update status in mapper table
-        mapper.update({"status": str(FormProcessMapperStatus.ACTIVE.value), "prompt_new_version": False})
+        mapper.update(
+            {
+                "status": str(FormProcessMapperStatus.ACTIVE.value),
+                "prompt_new_version": False,
+            }
+        )
         return {}
 
     @user_context
@@ -675,5 +680,10 @@ class FormProcessMapperService:  # pylint: disable=too-many-public-methods
         # Capture publish status in form history table.
         self.capture_form_history(mapper, {"status": "inactive"}, user_name)
         # Update status(inactive) in mapper table
-        mapper.update({"status": str(FormProcessMapperStatus.INACTIVE.value), "prompt_new_version": True})
+        mapper.update(
+            {
+                "status": str(FormProcessMapperStatus.INACTIVE.value),
+                "prompt_new_version": True,
+            }
+        )
         return {}

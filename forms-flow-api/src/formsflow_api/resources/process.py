@@ -195,13 +195,18 @@ class ProcessDataResource(Resource):
     )
     def post():
         """Create process data."""
-        response = ProcessService.create_process(request.get_json())
+        data = request.get_json()
+        process_data = data.get("processData")
+        process_type = data.get("processType")
+        response = ProcessService.create_process(
+            process_data=process_data, process_type=process_type, is_subflow=True
+        )
         return response, HTTPStatus.CREATED
 
 
 @cors_preflight("GET, PUT, DELETE, OPTIONS")
 @API.route("/<string:process_id>", methods=["GET", "PUT", "DELETE", "OPTIONS"])
-@API.doc(params={"process_id": "Process data corresponding to process_id"})
+@API.doc(params={"process_id": "Process data corresponding to process id"})
 class ProcessResourceById(Resource):
     """Resource for managing process by id."""
 
@@ -217,7 +222,7 @@ class ProcessResourceById(Resource):
         model=process_response,
     )
     def get(process_id: str):
-        """Get process data by id."""
+        """Get process data by process key, here the process id is actually process_key."""
         response, status = ProcessService.get_process_by_key(process_id), HTTPStatus.OK
 
         return response, status
@@ -236,8 +241,15 @@ class ProcessResourceById(Resource):
     @API.expect(process_request)
     def put(process_id: str):
         """Update process data by id."""
+        data = request.get_json()
+        process_data = data.get("processData")
+        process_type = data.get("processType")
         response, status = (
-            ProcessService.update_process(process_id, request.get_json()),
+            ProcessService.update_process(
+                process_id=process_id,
+                process_type=process_type,
+                process_data=process_data,
+            ),
             HTTPStatus.OK,
         )
         return response, status
@@ -260,7 +272,7 @@ class ProcessResourceById(Resource):
 
 @cors_preflight("GET, OPTIONS")
 @API.route(
-    "/process-history/<string:process_name>/versions", methods=["GET", "OPTIONS"]
+    "/process-history/<string:parent_process_key>/versions", methods=["GET", "OPTIONS"]
 )
 class ProcessHistoryResource(Resource):
     """Resource for retrieving process history."""
@@ -288,12 +300,12 @@ class ProcessHistoryResource(Resource):
         },
         model=process_history_response_model,
     )
-    def get(process_name: str):
+    def get(parent_process_key: str):
         """Get history for a process by process_name."""
         # Retrieve all history related to the specified process
 
         process_history, count = ProcessService.get_all_history(
-            process_name, request.args
+            parent_process_key, request.args
         )
         return (
             (

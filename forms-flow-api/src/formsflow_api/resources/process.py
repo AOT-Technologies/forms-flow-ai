@@ -341,3 +341,61 @@ class ValidateProcess(Resource):
         """
         response = ProcessService.validate_process(request)
         return response, HTTPStatus.OK
+
+
+@cors_preflight("POST,OPTIONS")
+@API.route("/<process_id>/publish", methods=["POST", "OPTIONS"])
+class PublishResource(Resource):
+    """Resource to support publish sub-process/worklfow."""
+
+    @staticmethod
+    @auth.has_one_of_roles([CREATE_DESIGNS])
+    @profiletime
+    @API.response(200, "OK:- Successful request.")
+    @API.response(
+        400,
+        "BAD_REQUEST:- Invalid request.",
+    )
+    @API.response(
+        401,
+        "UNAUTHORIZED:- Authorization header not provided or an invalid token passed.",
+    )
+    @API.response(
+        403,
+        "FORBIDDEN:- Authorization will not help.",
+    )
+    def post(process_id: int):
+        """Publish by process id."""
+        return (
+            ProcessService.publish(process_id),
+            HTTPStatus.OK,
+        )
+
+
+@cors_preflight("POST,OPTIONS")
+@API.route("/<process_id>/unpublish", methods=["POST", "OPTIONS"])
+class UnpublishResource(Resource):
+    """Resource to support unpublish sub-process/workflow."""
+
+    @staticmethod
+    @auth.has_one_of_roles([CREATE_DESIGNS])
+    @profiletime
+    @API.response(200, "OK:- Successful request.")
+    @API.response(
+        400,
+        "BAD_REQUEST:- Invalid request.",
+    )
+    @API.response(
+        401,
+        "UNAUTHORIZED:- Authorization header not provided or an invalid token passed.",
+    )
+    @API.response(
+        403,
+        "FORBIDDEN:- Authorization will not help.",
+    )
+    def post(process_id: int):
+        """Unpublish by process_id."""
+        return (
+            ProcessService.unpublish(process_id),
+            HTTPStatus.OK,
+        )

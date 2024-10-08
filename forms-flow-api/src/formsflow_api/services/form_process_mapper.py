@@ -647,6 +647,8 @@ class FormProcessMapperService:  # pylint: disable=too-many-public-methods
             # create entry in process with default flow.
             process = Process(
                 name=process_name,
+                process_key=process_name,
+                parent_process_key=process_name,
                 process_type="BPMN",
                 process_data=default_flow_xml_data(process_name).encode("utf-8"),
                 form_process_mapper_id=mapper_id,
@@ -677,7 +679,7 @@ class FormProcessMapperService:  # pylint: disable=too-many-public-methods
         user_name = user.user_name
         tenant_key = user.tenant_key
         mapper = self.validate_mapper(mapper_id, tenant_key)
-        # Capture publish status in form history table.
+        # Capture unpublish status in form history table.
         self.capture_form_history(mapper, {"status": "inactive"}, user_name)
         # Update status(inactive) in mapper table
         mapper.update(

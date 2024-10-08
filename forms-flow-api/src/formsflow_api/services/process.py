@@ -15,6 +15,7 @@ from formsflow_api.schemas import (
     ProcessHistorySchema,
     ProcessListRequestSchema,
 )
+from .form_process_mapper import FormProcessMapperService
 
 processSchema = ProcessDataSchema()
 
@@ -183,6 +184,14 @@ class ProcessService:  # pylint: disable=too-few-public-methods
         raise BusinessException(BusinessErrorCode.PROCESS_ID_NOT_FOUND)
 
     @classmethod
+    def validate_process_by_id(cls, process_id):
+        """Validate process by id."""
+        process = Process.find_process_by_id(process_id)
+        if not process:
+            raise BusinessException(BusinessErrorCode.PROCESS_ID_NOT_FOUND)
+        return process
+
+    @classmethod
     @user_context
     def update_process(cls, process_id, process_data, process_type, **kwargs):
         """Update process data."""
@@ -280,4 +289,45 @@ class ProcessService:  # pylint: disable=too-few-public-methods
         if validation_response:
             raise BusinessException(BusinessErrorCode.PROCESS_EXISTS)
         # If no results, the process name/key is valid
+        return {}
+
+    @classmethod
+    def update_process_status(cls, process, status, user):
+        """Update process status."""
+        process = Process(
+            name=process.name,
+            process_type=process.process_type,
+            status=status,
+            tenant=user.tenant_key,
+            process_data=process.process_data,
+            created_by=user.user_name,
+            major_version=process.major_version,
+            minor_version=process.minor_version,
+            is_subflow=process.is_subflow,
+            process_key=process.process_key,
+            parent_process_key=process.parent_process_key,
+            status_changed=True,
+        )
+        process.save()
+        return process
+
+    @classmethod
+    @user_context
+    def publish(cls, process_id, **kwargs):
+        """Publish by process_id."""
+        user: UserContext = kwargs["user"]
+        process = cls.validate_process_by_id(process_id)
+        cls.update_process_status(process, "PUBLISHED", user)
+        FormProcessMapperService().deploy_process(
+            process.name, process.process_data, user.tenant_key, user.bearer_token
+        )
+        return {}
+
+    @classmethod
+    @user_context
+    def unpublish(cls, process_id, **kwargs):
+        """Unpublish by process_id."""
+        user: UserContext = kwargs["user"]
+        process = cls.validate_process_by_id(process_id)
+        cls.update_process_status(process, "DRAFT", user)
         return {}

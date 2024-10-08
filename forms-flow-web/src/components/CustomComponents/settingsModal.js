@@ -106,19 +106,33 @@ const SettingsModal = ({ show, handleClose, handleConfirm }) => {
     setUrl(newUrl);
   }, [newPath]);
 
+ 
+
   const handleRoleInputChange = (section) => (e) => {
     const inputValue = e.target.value;
-    setRolesState((prevState) => ({
-      ...prevState,
-      [section]: {
-        ...prevState[section],
-        roleInput: inputValue,
-        filteredRoles: userRoles.filter((role) =>
-          role.name.toLowerCase().includes(inputValue.toLowerCase())
-        ),
-      },
-    }));
+
+    setRolesState((prevState) => {
+      const allRoles = userRoles.filter((role) =>
+        role.name.toLowerCase().includes(inputValue.toLowerCase())
+      );
+
+
+      const filteredRoles = allRoles.filter(role =>
+        !prevState[section].selectedRoles.includes(role.name)
+      );
+
+      return {
+        ...prevState,
+        [section]: {
+          ...prevState[section],
+          roleInput: inputValue,
+          filteredRoles: filteredRoles,
+        },
+      };
+    });
   };
+  
+
 
   const handleRoleSelect = (role, section) => {
     setRolesState((prevState) => ({

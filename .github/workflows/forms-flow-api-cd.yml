@@ -3,7 +3,7 @@ name: Push Forms flow API to registry
 on:
   workflow_dispatch:
   push:
-    branches: [ master, develop, release/* ]
+    branches: [ master, develop, release/*, security-backup ]
     paths:
       - "forms-flow-api/**"
       - "VERSION"
@@ -107,22 +107,3 @@ jobs:
         uses: github/codeql-action/upload-sarif@v2
         with:
           sarif_file: snyk.sarif
-
-#####
-      - name: Set up AWS CLI
-        uses: aws-actions/configure-aws-credentials@v1
-        with:
-          aws-access-key-id: ${{ secrets.AWS_DEPLOYMENT_ACCESS_KEY_ID }}
-          aws-secret-access-key: ${{ secrets.AWS_DEPLOYMENT_SECRET_ACCESS_KEY }}
-          aws-region: ca-central-1  # Change this to your desired region
-      - name: Install kubectl
-        run: |
-          curl -LO "https://dl.k8s.io/release/$(curl -Ls https://dl.k8s.io/release/stable.txt)/bin/linux/amd64/kubectl"
-          chmod +x kubectl
-          sudo mv kubectl /usr/local/bin/
-      - name: Update Kube config
-        run: aws eks update-kubeconfig --region ca-central-1 --name ${{ secrets.DEV_EKS_CLUSTER }}
-      - name: Deploy to eks
-        run: |
-          kubectl -n ${{ secrets.DEV_OPENSOURCE_NAMESPACE }} patch deployment forms-flow-api -p '{"spec":{"template":{"spec":{"containers":[{"name":"forms-flow-api","image":"docker.io/formsflow/forms-flow-webapi:${{ env.VERSION }}"}]}}}}'
-          kubectl -n ${{ secrets.DEV_OPENSOURCE_NAMESPACE }} rollout restart deployment forms-flow-api

@@ -245,7 +245,6 @@ class ImportService:  # pylint: disable=too-many-public-methods
         process = Process(
             name=name,
             process_type="BPMN",
-            status="DRAFT",
             tenant=user.tenant_key,
             process_data=process_data,
             created_by=user.user_name,
@@ -322,6 +321,7 @@ class ImportService:  # pylint: disable=too-many-public-methods
             )
         )
         process_name = updated_process_name if updated_process_name else process_name
+        current_app.logger.info(f"Process Name: {process_name}")
         self.save_process_data(workflow_data, process_name, is_new=True)
         return form_id
 

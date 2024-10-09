@@ -310,6 +310,24 @@ class FormProcessMapperService:  # pylint: disable=too-many-public-methods
         FormHistoryService.create_form_log_with_clone(data=data)
         return response
 
+    @classmethod
+    @user_context
+    def create_process(cls, process_name, **kwargs):
+        """Create process with default workflow."""
+        user: UserContext = kwargs["user"]
+        process = Process(
+            name=process_name,
+            process_key=process_name,
+            parent_process_key=process_name,
+            process_type="BPMN",
+            process_data=default_flow_xml_data(process_name).encode("utf-8"),
+            tenant=user.tenant_key,
+            major_version=1,
+            minor_version=0,
+            created_by=user.user_name,
+        )
+        process.save()
+
     @staticmethod
     def create_form(data, is_designer):
         """Service to handle form create."""
@@ -367,6 +385,8 @@ class FormProcessMapperService:  # pylint: disable=too-many-public-methods
                 "componentChanged": True,
             }
         )
+        # create entry in process with default flow.
+        FormProcessMapperService.create_process(process_name)
         return response
 
     def _get_form(  # pylint: disable=too-many-arguments, too-many-positional-arguments
@@ -708,6 +728,26 @@ class FormProcessMapperService:  # pylint: disable=too-many-public-methods
             minor_version=minor_version,
         ).save()
 
+    @classmethod
+    def update_process_status(cls, process, status, user):
+        """Update process status."""
+        process = Process(
+            name=process.name,
+            process_type=process.process_type,
+            status=status,
+            tenant=user.tenant_key,
+            process_data=process.process_data,
+            created_by=user.user_name,
+            major_version=process.major_version,
+            minor_version=process.minor_version,
+            is_subflow=process.is_subflow,
+            process_key=process.process_key,
+            parent_process_key=process.parent_process_key,
+            status_changed=True,
+        )
+        process.save()
+        return process
+
     @user_context
     def publish(self, mapper_id, **kwargs):
         """Publish by mapper_id."""
@@ -725,21 +765,10 @@ class FormProcessMapperService:  # pylint: disable=too-many-public-methods
         self.deploy_process(process_name, process_data, tenant_key, token)
         if not process:
             # create entry in process with default flow.
-            process = Process(
-                name=process_name,
-                process_key=process_name,
-                parent_process_key=process_name,
-                process_type="BPMN",
-                process_data=default_flow_xml_data(process_name).encode("utf-8"),
-                form_process_mapper_id=mapper_id,
-                tenant=tenant_key,
-                major_version=1,
-                minor_version=0,
-                created_by=user_name,
-            )
-        # Update process status
-        process.status = "PUBLISHED"
-        process.save()
+            FormProcessMapperService.create_process(process_name)
+        else:
+            # Update process status
+            FormProcessMapperService.update_process_status(process, "PUBLISHED", user)
 
         # Capture publish(active) status in form history table.
         self.capture_form_history(mapper, {"status": "active"}, user_name)
@@ -768,4 +797,8 @@ class FormProcessMapperService:  # pylint: disable=too-many-public-methods
                 "prompt_new_version": True,
             }
         )
+        # Update process status to Draft
+        process = Process.get_latest_version_by_key(mapper.process_key)
+        if process:
+            FormProcessMapperService.update_process_status(process, "DRAFT", user)
         return {}

@@ -207,7 +207,7 @@ const List = React.memo((props) => {
         console.log(res);
         setImportLoader(false);
         setFormSubmitted(false);
-
+        
         if (data.action == "validate") {
           FileService.extractFormDetails(fileContent, (formExtracted) => {
             if (formExtracted) {
@@ -219,7 +219,8 @@ const List = React.memo((props) => {
           });
         }
         else {
-          dispatch(push(`${redirectUrl}formflow/${form._id}/edit/`));
+          let form_id = res?.data?.formId;
+          dispatch(push(`${redirectUrl}formflow/${form_id}/edit/`));
         }
       })
       .catch((err) => {

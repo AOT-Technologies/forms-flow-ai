@@ -3,7 +3,6 @@
 import json
 import re
 import xml.etree.ElementTree as ET
-from concurrent.futures import ThreadPoolExecutor
 from typing import List, Set, Tuple
 
 from flask import current_app
@@ -30,8 +29,6 @@ from .form_history_logs import FormHistoryService
 
 class FormProcessMapperService:  # pylint: disable=too-many-public-methods
     """This class manages form process mapper service."""
-
-    execute = ThreadPoolExecutor(max_workers=5)
 
     @staticmethod
     @user_context

@@ -113,16 +113,20 @@ class Process(AuditDateTimeMixin, AuditUserMixin, BaseModel, db.Model):
         return query
 
     @classmethod
-    def find_all_process(
+    def find_all_process(  # pylint: disable=too-many-arguments, too-many-positional-arguments
         cls,
         page_no=None,
         limit=None,
         sort_by=None,
         sort_order=None,
+        is_subflow=False,
         **filters,
     ):
         """Find all processes."""
         query = cls.filter_conditions(**filters)
+        query = query.filter(cls.status_changed.is_(False))
+        if is_subflow:
+            query = query.filter(cls.is_subflow.is_(True))
         query = cls.auth_query(query=query)
         sort_by, sort_order = validate_sort_order_and_order_by(sort_by, sort_order)
         if sort_by and sort_order:

@@ -271,9 +271,7 @@ class ProcessResourceById(Resource):
 
 
 @cors_preflight("GET, OPTIONS")
-@API.route(
-    "/process-history/<string:parent_process_key>/versions", methods=["GET", "OPTIONS"]
-)
+@API.route("/<string:parent_process_key>/versions", methods=["GET", "OPTIONS"])
 class ProcessHistoryResource(Resource):
     """Resource for retrieving process history."""
 

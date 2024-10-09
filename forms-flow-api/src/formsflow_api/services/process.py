@@ -15,6 +15,7 @@ from formsflow_api.schemas import (
     ProcessHistorySchema,
     ProcessListRequestSchema,
 )
+
 from .form_process_mapper import FormProcessMapperService
 
 processSchema = ProcessDataSchema()
@@ -55,6 +56,7 @@ class ProcessService:  # pylint: disable=too-few-public-methods
             modified_from=modified_from_date,
             modified_to=modified_to_date,
             sort_by=sort_by,
+            is_subflow=True,  # now only for subflow listing
             sort_order=sort_order,
             created_by=created_by,
             id=process_id,
@@ -64,17 +66,20 @@ class ProcessService:  # pylint: disable=too-few-public-methods
             page_no=page_no,
             limit=limit,
         )
-        return processSchema.dump(process, many=True), count
+        return (
+            ProcessDataSchema(exclude=["process_data"]).dump(process, many=True),
+            count,
+        )
 
     @classmethod
-    def _upate_process_name_and_id(cls, xml_data, process_name):
+    def _upate_process_name_and_id(cls, xml_data, process_name, process_type):
         """Parse the workflow XML data & update process name."""
         current_app.logger.info("Updating workflow...")
         # pylint: disable=I1101
         root = cls._xml_parser(xml_data)
 
         # Find the bpmn:process element
-        process = root.find(".//{http://www.omg.org/spec/BPMN/20100524/MODEL}process")
+        process = cls.get_process_by_type(root, process_type)
         if process is not None:
             process.set("id", process_name)
             process.set("name", process_name)
@@ -145,6 +150,33 @@ class ProcessService:  # pylint: disable=too-few-public-methods
         # Return the serialized process data
         return processSchema.dump(process)
 
+    @staticmethod
+    def get_process_by_type(root, process_type):
+        """Get process name and id by type (BPMN or DMN)."""
+        # Define namespaces for BPMN and DMN
+        namespaces = {
+            "bpmn": "http://www.omg.org/spec/BPMN/20100524/MODEL",
+            "dmn": "https://www.omg.org/spec/DMN/20191111/MODEL/",
+        }
+
+        # Check if the provided type exists in the namespace dictionary
+        if process_type not in namespaces:
+            raise ValueError(f"Unsupported process type: {process_type}")
+
+        # Use the appropriate namespace for the type
+        target = (
+            f"{process_type}:decision"
+            if process_type == "dmn"
+            else f"{process_type}:process"
+        )
+        process = root.find(target, namespaces)
+
+        # Check if process is found
+        if process is None:
+            raise ValueError(f"No process found for the given type: {process_type}")
+
+        return process
+
     @classmethod
     def _process_data_name_and_key(  # pylint: disable=too-many-arguments, too-many-positional-arguments
         cls,
@@ -160,9 +192,11 @@ class ProcessService:  # pylint: disable=too-few-public-methods
         # if the process is of type LOWCODE, convert the process data to JSON format
         if is_subflow:
             # Parse the XML data to extract process name and key for subflows
-            parsed_data = cls._xml_parser(process_data)
+            root = cls._xml_parser(process_data)
+            process = cls.get_process_by_type(root, process_type)
+            process_key = process.get("id")
+            process_name = process.get("name")
             process_data = process_data.encode("utf-8")
-            process_name, process_key = parsed_data.get("name"), parsed_data.get("id")
         else:
             if process_type.upper() == "LOWCODE":
                 # Convert process data to JSON format for LOWCODE type processes
@@ -170,7 +204,7 @@ class ProcessService:  # pylint: disable=too-few-public-methods
             else:
                 # Update the process name and ID in the XML data for other process types
                 process_data = cls._upate_process_name_and_id(
-                    process_data, process_name
+                    process_data, process_name, process_type
                 )
         return process_data, process_name, process_key
 

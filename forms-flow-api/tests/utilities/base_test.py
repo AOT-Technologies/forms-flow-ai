@@ -91,34 +91,6 @@ def get_form_request_payload_private():
     }
 
 
-def get_form_request_payload_public_inactive():
-    """Return a form request payload object which is not active."""
-    return {
-        "formId": "12",
-        "formName": "Sample private form",
-        "processKey": "onestepapproval",
-        "processName": "OneStep Approval",
-        "status": "Inactive",
-        "comments": "test",
-        "tenant": 11,
-        "anonymous": True,
-        "formType": "form",
-        "parentFormId": "12",
-    }
-
-
-def get_form_request_anonymous_payload():
-    """Return a form request payload object with anonymous true."""
-    return {
-        "formId": "1234",
-        "formName": "Sample form",
-        "anonymous": True,
-        "status": "active",
-        "formType": "form",
-        "parentFormId": "1234",
-    }
-
-
 def get_application_create_payload(form_id: str = "1234"):
     """Returns an application create payload."""
     return {
@@ -132,21 +104,6 @@ def get_application_create_payload(form_id: str = "1234"):
 def get_draft_create_payload(form_id: str = "1234"):
     """Return a payload for creating draft details."""
     return {"formId": form_id, "data": {"name": "testing sample"}}
-
-
-def get_form_service_payload():
-    """Return a form Service payload object."""
-    return {
-        "form_id": "1234",
-        "form_name": "Sample form",
-        "form_revision_number": "v1",
-        "process_key": "121312",
-        "process_name": "OneStep Approval",
-        "status": "active",
-        "comments": "test",
-        "tenant": 12,
-        "created_by": "test-user",
-    }
 
 
 def get_form_payload():
@@ -187,6 +144,7 @@ def get_formio_form_request_payload():
     """Return a formio form create request payload object."""
     return {
         "display": "form",
+        "description": "",
         "components": [
             {
                 "label": "Text Field",

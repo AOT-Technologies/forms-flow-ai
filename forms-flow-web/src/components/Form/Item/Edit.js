@@ -38,6 +38,7 @@ import _isEquial from "lodash/isEqual";
 import { toast } from "react-toastify";
 
 
+import SettingsModal from "../../CustomComponents/settingsModal";
 const reducer = (form, { type, value }) => {
   const formCopy = _cloneDeep(form);
   switch (type) {
@@ -90,6 +91,12 @@ const Edit = React.memo(() => {
   const applicationCount = useSelector((state) => state.process?.applicationCount);
   const [showSaveModal, setShowSaveModal] = useState(false);
   const [hasRendered, setHasRendered] = useState(false);
+  const roleIds = useSelector((state) => state.user?.roleIds || {});
+
+  const [showSettingsModal, setShowSettingsModal] = useState(false);
+
+  const handleOpenModal = () => setShowSettingsModal(true);
+  const handleCloseModal = () => setShowSettingsModal(false);
 
   //action modal
   const [newActionModal, setNewActionModal] = useState(false);
@@ -137,8 +144,8 @@ const Edit = React.memo(() => {
       parentFormId: processListData.parentFormId,
       formType: submittedData.type,
       status: processListData.status ? processListData.status : INACTIVE,
-      taskVariable: processListData.taskVariable
-        ? processListData.taskVariable
+      taskVariables: processListData.taskVariables
+        ? processListData.taskVariables
         : [],
       id: processListData.id,
       formId: submittedData._id,
@@ -198,6 +205,47 @@ const Edit = React.memo(() => {
   const isNewMapperNeeded = () => {
     return previousData.formName !== form.title && applicationCount > 0;
   };
+  const handleConfirmSettings = () => {
+    const parentFormId = processListData.parentFormId;
+      const mapper = {
+      formId: form._id,
+      formName: form.title,
+      description: formDescription,
+      status: processListData.status || "inactive",
+      taskVariables: processListData.taskVariables
+        ? processListData.taskVariables
+        : [],
+        anonymous: formAccess[0]?.roles.includes(roleIds.ANONYMOUS),
+        parentFormId: parentFormId,
+      formType: form.type,
+      processKey: workflow?.value,
+      processName: workflow?.name,
+      id: processListData.id,
+      workflowChanged: false,
+      statusChanged: false,
+      resourceId: form._id,
+    };
+    
+    const authorizations = {
+      application: {
+        resourceId:parentFormId ,
+        resourceDetails: {},
+        roles: []
+    },
+      designer: {
+        resourceId: parentFormId,
+        resourceDetails: {},
+        roles: []
+    },
+    form: {
+      resourceId: parentFormId,
+      resourceDetails: {},
+      roles: []
+  }
+};
+    dispatch(saveFormProcessMapperPut({mapper, authorizations}));
+    };
+  
 
   const closeSaveModal = () => {
     setShowSaveModal(false);
@@ -289,9 +337,9 @@ const Edit = React.memo(() => {
     console.log("discardChanges");
   };
 
-  const editorSettings = () => {
-    console.log("ecitorActions");
-  };
+  // const editorSettings = () => {
+  //   console.log("ecitorActions");
+  // };
   const editorActions = () => {
     setNewActionModal(true);
   };
@@ -312,6 +360,10 @@ const Edit = React.memo(() => {
           spinner
           text={t("Loading...")}
         >
+
+<SettingsModal show={showSettingsModal} handleClose={handleCloseModal} 
+handleConfirm={handleConfirmSettings} />
+
           <Errors errors={errors} />
 
           <Card className="editor-header">
@@ -336,7 +388,7 @@ const Edit = React.memo(() => {
                     variant="dark"
                     size="md"
                     label={<Translation>{(t) => t("Settings")}</Translation>}
-                    onClick={editorSettings}
+                    onClick={handleOpenModal}
                     dataTestid="eidtor-settings-testid"
                     ariaLabel={t("Designer Settings Button")}
                   />
@@ -523,6 +575,9 @@ const Edit = React.memo(() => {
         secondaryBtnText={<Translation>{(t) => t("Save as Version 4.0")}</Translation>}
         size="md"
       />
+      <div>
+      </div>
+      
     </div >
   );
 });

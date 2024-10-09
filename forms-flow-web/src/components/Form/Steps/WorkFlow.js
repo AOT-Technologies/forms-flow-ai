@@ -108,7 +108,7 @@ const WorkFlow = React.memo(
           ...formProcessList,
           processKey: workflow.value,
           processName: workflow.label,
-          taskVariable: selectedVariables,
+          taskVariables: selectedVariables,
         })
       );
     };

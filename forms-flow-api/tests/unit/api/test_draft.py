@@ -18,18 +18,16 @@ from tests.utilities.base_test import (
     get_application_create_payload,
     get_draft_create_payload,
     get_form_model_object,
-    get_form_request_payload,
     get_formio_form_request_payload,
     get_token,
 )
 
 
-def test_draft_create_method(app, client, session, jwt):
+def test_draft_create_method(app, client, session, jwt, create_mapper):
     """Tests the draft create method with valid payload."""
     token = get_token(jwt, role=CREATE_DESIGNS)
     headers = {"Authorization": f"Bearer {token}", "content-type": "application/json"}
-    rv = client.post("/form", headers=headers, json=get_form_request_payload())
-    form_id = rv.json.get("formId")
+    form_id = create_mapper["formId"]
     token = get_token(jwt, role=CREATE_SUBMISSIONS)
     headers = {"Authorization": f"Bearer {token}", "content-type": "application/json"}
     response = client.post(
@@ -45,12 +43,11 @@ def test_draft_create_method(app, client, session, jwt):
     assert draft_application.application_status == DRAFT_APPLICATION_STATUS
 
 
-def test_draft_list(app, client, session, jwt):
+def test_draft_list(app, client, session, jwt, create_mapper):
     """Testing draft listing API."""
     token = get_token(jwt, role=CREATE_DESIGNS)
     headers = {"Authorization": f"Bearer {token}", "content-type": "application/json"}
-    rv = client.post("/form", headers=headers, json=get_form_request_payload())
-    form_id = rv.json.get("formId")
+    form_id = create_mapper["formId"]
     token = get_token(jwt, role=CREATE_SUBMISSIONS)
     headers = {"Authorization": f"Bearer {token}", "content-type": "application/json"}
     for _ in range(2):
@@ -70,15 +67,14 @@ def test_draft_list(app, client, session, jwt):
     assert len(response.json["drafts"]) == 0
 
 
-def test_draft_detail_view(app, client, session, jwt):
+def test_draft_detail_view(app, client, session, jwt, create_mapper):
     """Testing draft details endpoint."""
     token = get_token(jwt, role=CREATE_DESIGNS)
     headers = {"Authorization": f"Bearer {token}", "content-type": "application/json"}
-    rv = client.post("/form", headers=headers, json=get_form_request_payload())
-    assert rv.status_code == 201
+
     token = get_token(jwt, role=CREATE_SUBMISSIONS)
     headers = {"Authorization": f"Bearer {token}", "content-type": "application/json"}
-    form_id = rv.json.get("formId")
+    form_id = create_mapper["formId"]
     response = client.post(
         "/draft", headers=headers, json=get_draft_create_payload(form_id)
     )
@@ -98,17 +94,15 @@ def test_draft_detail_view(app, client, session, jwt):
     )
 
 
-def test_draft_update_details_api(app, client, session, jwt):
+def test_draft_update_details_api(app, client, session, jwt, create_mapper):
     """Tests the draft update endpoint with valid payload."""
     token = get_token(jwt, role=CREATE_DESIGNS)
     headers = {
         "Authorization": f"Bearer {token}",
         "content-type": "application/json",
     }
-    rv = client.post("/form", headers=headers, json=get_form_request_payload())
-    assert rv.status_code == 201
 
-    form_id = rv.json.get("formId")
+    form_id = create_mapper["formId"]
     token = get_token(jwt, role=CREATE_SUBMISSIONS)
     headers = {"Authorization": f"Bearer {token}", "content-type": "application/json"}
     response = client.post(
@@ -123,15 +117,14 @@ def test_draft_update_details_api(app, client, session, jwt):
     assert rv.status_code == 200
 
 
-def test_draft_submission_resource(app, client, session, jwt):
+def test_draft_submission_resource(app, client, session, jwt, create_mapper):
     """Tests the '/<int: draft_id>/submit' endpoint."""
     token = get_token(jwt, role=CREATE_DESIGNS)
     headers = {
         "Authorization": f"Bearer {token}",
         "content-type": "application/json",
     }
-    rv = client.post("/form", headers=headers, json=get_form_request_payload())
-    form_id = rv.json.get("formId")
+    form_id = create_mapper["formId"]
     token = get_token(jwt, role=CREATE_SUBMISSIONS)
     headers = {"Authorization": f"Bearer {token}", "content-type": "application/json"}
     draft = client.post(
@@ -151,12 +144,23 @@ def test_draft_submission_resource(app, client, session, jwt):
     assert draft.application_id == response.json.get("id")
 
 
-def test_draft_tenant_authorization(app, client, session, jwt):
+def test_draft_tenant_authorization(app, client, session, jwt, create_mapper_custom):
     """Tests if the draft detail is tenant authorized."""
     token = get_token(jwt, role=CREATE_DESIGNS, tenant_key="tenant1")
     headers = {"Authorization": f"Bearer {token}", "content-type": "application/json"}
-    rv = client.post("/form", headers=headers, json=get_form_request_payload())
-    form_id = rv.json.get("formId")
+    payload = {
+        "formId": "1234",
+        "formName": "Sample form",
+        "processKey": "onestepapproval",
+        "processName": "One Step Approval",
+        "status": "active",
+        "comments": "test",
+        "anonymous": False,
+        "formType": "form",
+        "parentFormId": "1234",
+    }
+    rv = create_mapper_custom(payload, tenant="tenant1")
+    form_id = rv["formId"]
     assert FormProcessMapper().find_form_by_form_id(form_id) is not None
     assert FormProcessMapper().find_form_by_form_id(form_id).tenant == "tenant1"
     token = get_token(jwt, role=CREATE_SUBMISSIONS, tenant_key="tenant1")
@@ -238,14 +242,12 @@ def test_anonymous_drafts(app, client, session, jwt):
     }
 
 
-def test_delete_draft(app, client, session, jwt):
+def test_delete_draft(app, client, session, jwt, create_mapper):
     """Tests the delete draft endpoint."""
     token = get_token(jwt, role=CREATE_DESIGNS)
     headers = {"Authorization": f"Bearer {token}", "content-type": "application/json"}
-    rv = client.post("/form", headers=headers, json=get_form_request_payload())
-    assert rv.status_code == 201
 
-    form_id = rv.json.get("formId")
+    form_id = create_mapper["formId"]
     token = get_token(jwt, role=CREATE_SUBMISSIONS)
     headers = {"Authorization": f"Bearer {token}", "content-type": "application/json"}
     response = client.post(
@@ -278,9 +280,15 @@ def test_capture_process_variables_draft_create_method(
     )
     assert response.status_code == 201
     form_id = response.json.get("_id")
+
+    # fetch mapper data
+    rv = client.get(f"/form/formid/{form_id}", headers=headers)
+    assert rv.status_code == 200
+    mapper_id = rv.json.get("id")
     # Added task variable to the form
     payload = {
         "formId": form_id,
+        "id": mapper_id,
         "formName": "Sample form",
         "processKey": "two-step-approval",
         "processName": "Two Step Approval",
@@ -295,9 +303,9 @@ def test_capture_process_variables_draft_create_method(
             }
         ],
     }
-    rv = client.post("/form", headers=headers, json=payload)
-    assert rv.status_code == 201
-    form_id = rv.json.get("formId")
+    rv = client.put(f"/form/{mapper_id}", headers=headers, json={"mapper": payload})
+    assert rv.status_code == 200
+    form_id = rv.json.get("mapper").get("formId")
     # Draft submission
     token = get_token(jwt, role=CREATE_SUBMISSIONS)
     headers = {

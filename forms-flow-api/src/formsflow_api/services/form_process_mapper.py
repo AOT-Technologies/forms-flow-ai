@@ -312,21 +312,22 @@ class FormProcessMapperService:  # pylint: disable=too-many-public-methods
 
     @classmethod
     @user_context
-    def create_process(cls, process_name, **kwargs):
+    def create_default_process(cls, process_name, **kwargs):
         """Create process with default workflow."""
         user: UserContext = kwargs["user"]
-        process = Process(
-            name=process_name,
-            process_key=process_name,
-            parent_process_key=process_name,
-            process_type="BPMN",
-            process_data=default_flow_xml_data(process_name).encode("utf-8"),
-            tenant=user.tenant_key,
-            major_version=1,
-            minor_version=0,
-            created_by=user.user_name,
-        )
-        process.save()
+        process_dict = {
+            "name": process_name,
+            "process_key": process_name,
+            "parent_process_key": process_name,
+            "process_type": "BPMN",
+            "process_data": default_flow_xml_data(process_name).encode("utf-8"),
+            "tenant": user.tenant_key,
+            "major_version": 1,
+            "minor_version": 0,
+            "created_by": user.user_name,
+        }
+        process = Process.create_from_dict(process_dict)
+        return process
 
     @staticmethod
     def create_form(data, is_designer):
@@ -386,7 +387,7 @@ class FormProcessMapperService:  # pylint: disable=too-many-public-methods
             }
         )
         # create entry in process with default flow.
-        FormProcessMapperService.create_process(process_name)
+        FormProcessMapperService.create_default_process(process_name)
         return response
 
     def _get_form(  # pylint: disable=too-many-arguments, too-many-positional-arguments
@@ -731,21 +732,21 @@ class FormProcessMapperService:  # pylint: disable=too-many-public-methods
     @classmethod
     def update_process_status(cls, process, status, user):
         """Update process status."""
-        process = Process(
-            name=process.name,
-            process_type=process.process_type,
-            status=status,
-            tenant=user.tenant_key,
-            process_data=process.process_data,
-            created_by=user.user_name,
-            major_version=process.major_version,
-            minor_version=process.minor_version,
-            is_subflow=process.is_subflow,
-            process_key=process.process_key,
-            parent_process_key=process.parent_process_key,
-            status_changed=True,
-        )
-        process.save()
+        process_dict = {
+            "name": process.name,
+            "process_type": process.process_type,
+            "status": status,
+            "tenant": user.tenant_key,
+            "process_data": process.process_data,
+            "created_by": user.user_name,
+            "major_version": process.major_version,
+            "minor_version": process.minor_version,
+            "is_subflow": process.is_subflow,
+            "process_key": process.process_key,
+            "parent_process_key": process.parent_process_key,
+            "status_changed": True,
+        }
+        process = Process.create_from_dict(process_dict)
         return process
 
     @user_context
@@ -765,7 +766,7 @@ class FormProcessMapperService:  # pylint: disable=too-many-public-methods
         self.deploy_process(process_name, process_data, tenant_key, token)
         if not process:
             # create entry in process with default flow.
-            FormProcessMapperService.create_process(process_name)
+            FormProcessMapperService.create_default_process(process_name)
         else:
             # Update process status
             FormProcessMapperService.update_process_status(process, "PUBLISHED", user)

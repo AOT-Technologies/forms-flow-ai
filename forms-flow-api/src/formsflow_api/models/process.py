@@ -63,8 +63,8 @@ class Process(AuditDateTimeMixin, AuditUserMixin, BaseModel, db.Model):
         if process_data:
             process = Process(
                 name=process_data.get("name"),
-                process_type=process_data.get("process_type").upper(),
-                tenant=process_data.process_data("tenant"),
+                process_type=process_data.get("process_type"),
+                tenant=process_data.get("tenant"),
                 process_data=process_data.get("process_data"),
                 created_by=process_data.get("created_by"),
                 major_version=process_data.get("major_version"),

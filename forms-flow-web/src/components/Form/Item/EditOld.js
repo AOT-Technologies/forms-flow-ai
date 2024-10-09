@@ -318,8 +318,8 @@ const Edit = React.memo(() => {
       parentFormId: processListData.parentFormId,
       formType: submittedData.type,
       status: processListData.status ? processListData.status : INACTIVE,
-      taskVariable: processListData.taskVariable
-        ? processListData.taskVariable
+      taskVariables: processListData.taskVariables
+        ? processListData.taskVariables
         : [],
       id: processListData.id,
       formId: submittedData._id,

@@ -44,6 +44,7 @@ import { getFormProcesses } from "../../../apiManager/services/processServices";
 //getting process diagram
 import { getProcessXml } from "../../../apiManager/services/processServices";
 
+import SettingsModal from "../../CustomComponents/settingsModal";
 const reducer = (form, { type, value }) => {
   const formCopy = _cloneDeep(form);
   switch (type) {
@@ -97,6 +98,12 @@ const Edit = React.memo(() => {
   const [isLoadingDiagram, setIsLoadingDiagram] = useState(true);
   //it returns the digram (old method);
   // const diagramXML = useSelector((state) => state.process.processDiagramXML);
+  const roleIds = useSelector((state) => state.user?.roleIds || {});
+  const [showSettingsModal, setShowSettingsModal] = useState(false);
+  const handleOpenModal = () => setShowSettingsModal(true);
+  const handleCloseModal = () => setShowSettingsModal(false);
+
+  //action modal
   const [newActionModal, setNewActionModal] = useState(false);
   const onCloseActionModal = () => {
     setNewActionModal(false);
@@ -162,8 +169,8 @@ useEffect(() => {
       parentFormId: processListData.parentFormId,
       formType: submittedData.type,
       status: processListData.status ? processListData.status : INACTIVE,
-      taskVariable: processListData.taskVariable
-        ? processListData.taskVariable
+      taskVariables: processListData.taskVariables
+        ? processListData.taskVariables
         : [],
       id: processListData.id,
       formId: submittedData._id,
@@ -223,6 +230,47 @@ useEffect(() => {
   const isNewMapperNeeded = () => {
     return previousData.formName !== form.title && applicationCount > 0;
   };
+  const handleConfirmSettings = () => {
+    const parentFormId = processListData.parentFormId;
+      const mapper = {
+      formId: form._id,
+      formName: form.title,
+      description: formDescription,
+      status: processListData.status || "inactive",
+      taskVariables: processListData.taskVariables
+        ? processListData.taskVariables
+        : [],
+        anonymous: formAccess[0]?.roles.includes(roleIds.ANONYMOUS),
+        parentFormId: parentFormId,
+      formType: form.type,
+      processKey: workflow?.value,
+      processName: workflow?.name,
+      id: processListData.id,
+      workflowChanged: false,
+      statusChanged: false,
+      resourceId: form._id,
+    };
+    
+    const authorizations = {
+      application: {
+        resourceId:parentFormId ,
+        resourceDetails: {},
+        roles: []
+    },
+      designer: {
+        resourceId: parentFormId,
+        resourceDetails: {},
+        roles: []
+    },
+    form: {
+      resourceId: parentFormId,
+      resourceDetails: {},
+      roles: []
+  }
+};
+    dispatch(saveFormProcessMapperPut({mapper, authorizations}));
+    };
+  
 
   const closeSaveModal = () => {
     setShowSaveModal(false);
@@ -314,9 +362,9 @@ useEffect(() => {
     console.log("discardChanges");
   };
 
-  const editorSettings = () => {
-    console.log("ecitorActions");
-  };
+  // const editorSettings = () => {
+  //   console.log("ecitorActions");
+  // };
   const editorActions = () => {
     setNewActionModal(true);
   };
@@ -337,6 +385,10 @@ useEffect(() => {
           spinner
           text={t("Loading...")}
         >
+
+<SettingsModal show={showSettingsModal} handleClose={handleCloseModal} 
+handleConfirm={handleConfirmSettings} />
+
           <Errors errors={errors} />
 
           <Card className="editor-header">
@@ -361,7 +413,7 @@ useEffect(() => {
                     variant="dark"
                     size="md"
                     label={<Translation>{(t) => t("Settings")}</Translation>}
-                    onClick={editorSettings}
+                    onClick={handleOpenModal}
                     dataTestid="eidtor-settings-testid"
                     ariaLabel={t("Designer Settings Button")}
                   />
@@ -552,6 +604,9 @@ useEffect(() => {
         secondaryBtnText={<Translation>{(t) => t("Save as Version 4.0")}</Translation>}
         size="md"
       />
+      <div>
+      </div>
+      
     </div >
   );
 });

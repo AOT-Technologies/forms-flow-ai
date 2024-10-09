@@ -38,10 +38,8 @@ import _cloneDeep from "lodash/cloneDeep";
 import _camelCase from "lodash/camelCase";
 import { formCreate, formImport } from "../../apiManager/services/FormServices";
 import { addHiddenApplicationComponent } from "../../constants/applicationComponent";
-import { setFormSuccessData } from "../../actions/formActions";
-import { handleAuthorization } from "../../apiManager/services/authorizationService";
-import { saveFormProcessMapperPost } from "../../apiManager/services/processServices";
-import { CustomSearch } from "@formsflow/components";
+import { setFormSuccessData } from "../../actions/formActions"; 
+import { CustomSearch }  from "@formsflow/components";
 import userRoles from "../../constants/permissions.js";
 import FileService from "../../services/FileService";
 
@@ -101,7 +99,7 @@ const List = React.memo((props) => {
   const [formSubmitted, setFormSubmitted] = useState(false);
   const formData = { display: "form" }; const tenantKey = useSelector((state) => state.tenants?.tenantId);
   const [form, dispatchFormAction] = useReducer(reducer, _cloneDeep(formData));
-  const roleIds = useSelector((state) => state.user?.roleIds || {});
+  // const roleIds = useSelector((state) => state.user?.roleIds || {});
   useEffect(() => {
     setSearch(searchText);
   }, [searchText]);
@@ -266,7 +264,8 @@ const List = React.memo((props) => {
       setNameError(errors.title);
       return;
     }
-
+    console.log(form,"FORM");
+    form.components = [];
     const newFormData = addHiddenApplicationComponent(form);
     const newForm = {
       ...newFormData,
@@ -276,6 +275,7 @@ const List = React.memo((props) => {
     newForm.componentChanged = true;
     newForm.newVersion = true;
     newForm.access = formAccess;
+    newForm.description = formDescription;
     if (MULTITENANCY_ENABLED && tenantKey) {
       newForm.tenantKey = tenantKey;
       if (newForm.path) {
@@ -287,40 +287,8 @@ const List = React.memo((props) => {
     }
     formCreate(newForm).then((res) => {
       const form = res.data;
-      const data = {
-        formId: form._id,
-        formName: form.title,
-        description: formDescription,
-        formType: form.type,
-        formTypeChanged: true,
-        anonymousChanged: true,
-        parentFormId: form._id,
-        titleChanged: true,
-        formRevisionNumber: "V1", // to do
-        anonymous: formAccess[0]?.roles.includes(roleIds.ANONYMOUS),
-      };
-      let payload = {
-        resourceId: data.formId,
-        resourceDetails: {},
-        roles: []
-      };
       dispatch(setFormSuccessData("form", form));
-      handleAuthorization(
-        { application: payload, designer: payload, form: payload },
-        data.formId
-      ).catch((err) => {
-        console.log(err);
-      });
-      dispatch(
-        saveFormProcessMapperPost(data, (err) => {
-          if (!err) {
-            dispatch(push(`${redirectUrl}formflow/${form._id}/edit/`));
-          } else {
-            setFormSubmitted(false);
-            console.log(err);
-          }
-        })
-      );
+      dispatch(push(`${redirectUrl}formflow/${form._id}/edit/`));
 
     }).catch((err) => {
       let error;

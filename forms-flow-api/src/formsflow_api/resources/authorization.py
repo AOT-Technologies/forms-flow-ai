@@ -17,7 +17,6 @@ from formsflow_api_utils.utils import (
 )
 
 from formsflow_api.constants import BusinessErrorCode
-from formsflow_api.models import AuthType
 from formsflow_api.services import AuthorizationService
 
 API = Namespace("authorization", description="Authorization APIs")
@@ -232,16 +231,9 @@ class AuthorizationListById(Resource):
     def post(resource_id: str):
         """Create or Update Authoization of Form by id."""
         data = request.get_json()
-        for auth_type in AuthType:
-            if (
-                data.get(auth_type.value.lower())
-                and auth_type.value != AuthType.DASHBOARD.value
-            ):
-                auth_service.create_authorization(
-                    auth_type.value.upper(),
-                    data.get(auth_type.value.lower()),
-                    bool(auth.has_role([CREATE_DESIGNS])),
-                )
+        AuthorizationService.create_or_update_resource_authorization(
+            data, bool(auth.has_role([CREATE_DESIGNS]))
+        )
         response = auth_service.get_auth_list_by_id(resource_id)
         if response:
             return (

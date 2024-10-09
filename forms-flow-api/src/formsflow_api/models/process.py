@@ -58,6 +58,30 @@ class Process(AuditDateTimeMixin, AuditUserMixin, BaseModel, db.Model):
     status_changed = db.Column(db.Boolean, default=False)
 
     @classmethod
+    def create_from_dict(cls, process_data: dict) -> Process:
+        """Create a new process from a dictionary."""
+        if process_data:
+            process = Process(
+                name=process_data.get("name"),
+                process_type=process_data.get("process_type").upper(),
+                tenant=process_data.process_data("tenant"),
+                process_data=process_data.get("process_data"),
+                created_by=process_data.get("created_by"),
+                major_version=process_data.get("major_version"),
+                minor_version=process_data.get("minor_version"),
+                is_subflow=process_data.get("is_subflow", False),
+                status=process_data.get("status", ProcessStatus.DRAFT),
+                status_changed=process_data.get("status_changed", False),
+                process_key=process_data.get("process_key"),
+                parent_process_key=process_data.get("parent_process_key"),
+            )
+
+            # Save the new process to the database
+            process.save()
+            return process
+        return None
+
+    @classmethod
     @user_context
     def auth_query(cls, query, **kwargs) -> Process:
         """Query to find authorized process."""

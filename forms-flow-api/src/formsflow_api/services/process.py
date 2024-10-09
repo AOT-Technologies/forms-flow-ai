@@ -72,7 +72,9 @@ class ProcessService:  # pylint: disable=too-few-public-methods
         )
 
     @classmethod
-    def _upate_process_name_and_id(cls, xml_data, process_name, process_type):
+    def _upate_process_name_and_id(
+        cls, xml_data, process_name, process_key, process_type
+    ):
         """Parse the workflow XML data & update process name."""
         current_app.logger.info("Updating workflow...")
         # pylint: disable=I1101
@@ -80,14 +82,16 @@ class ProcessService:  # pylint: disable=too-few-public-methods
 
         # Find the bpmn:process element
         process = cls.get_process_by_type(root, process_type)
+
         if process is not None:
             process.set("id", process_name)
-            process.set("name", process_name)
+            process.set("name", process_key or process_name)
 
         # Convert the XML tree back to a string
         updated_xml = etree.tostring(
             root, pretty_print=True, encoding="unicode", xml_declaration=False
         )
+
         # Prepend the XML declaration
         updated_xml = '<?xml version="1.0" encoding="UTF-8"?>\n' + updated_xml
         return updated_xml
@@ -131,21 +135,19 @@ class ProcessService:  # pylint: disable=too-few-public-methods
         major_version, minor_version = 1, 0
 
         # Create a new process instance
-        process = Process(
-            name=process_name,
-            process_type=process_type.upper(),
-            tenant=tenant_key,
-            process_data=process_data,
-            created_by=user.user_name,
-            major_version=major_version,
-            minor_version=minor_version,
-            is_subflow=is_subflow,
-            process_key=process_key,
-            parent_process_key=process_key,
-        )
-
-        # Save the new process to the database
-        process.save()
+        process_dict = {
+            "name": process_name,
+            "process_type": process_type.upper(),
+            "tenant": tenant_key,
+            "process_data": process_data,
+            "created_by": user.user_name,
+            "major_version": major_version,
+            "minor_version": minor_version,
+            "is_subflow": is_subflow,
+            "process_key": process_key,
+            "parent_process_key": process_key,
+        }
+        process = Process.create_from_dict(process_dict)
 
         # Return the serialized process data
         return processSchema.dump(process)
@@ -154,6 +156,7 @@ class ProcessService:  # pylint: disable=too-few-public-methods
     def get_process_by_type(root, process_type):
         """Get process name and id by type (BPMN or DMN)."""
         # Define namespaces for BPMN and DMN
+        process_type = process_type.lower()
         namespaces = {
             "bpmn": "http://www.omg.org/spec/BPMN/20100524/MODEL",
             "dmn": "https://www.omg.org/spec/DMN/20191111/MODEL/",
@@ -190,7 +193,7 @@ class ProcessService:  # pylint: disable=too-few-public-methods
         # if the process is not a subflow, update the process name and ID in the XML data
         # if the process is a subflow, parse the XML data to extract the process name and key
         # if the process is of type LOWCODE, convert the process data to JSON format
-        if is_subflow:
+        if is_subflow and process_type.upper() != "LOWCODE":
             # Parse the XML data to extract process name and key for subflows
             root = cls._xml_parser(process_data)
             process = cls.get_process_by_type(root, process_type)
@@ -204,7 +207,10 @@ class ProcessService:  # pylint: disable=too-few-public-methods
             else:
                 # Update the process name and ID in the XML data for other process types
                 process_data = cls._upate_process_name_and_id(
-                    process_data, process_name, process_type
+                    xml_data=process_data,
+                    process_name=process_name,
+                    process_key=process_key,
+                    process_type=process_type,
                 )
         return process_data, process_name, process_key
 
@@ -272,21 +278,19 @@ class ProcessService:  # pylint: disable=too-few-public-methods
         minor_version = 0 if is_unpublished else process.minor_version + 1
 
         # Create a new process instance with updated data
-        process = Process(
-            name=process_name,
-            process_type=process_type.upper(),
-            tenant=tenant_key,
-            process_data=process_data,
-            created_by=user.user_name,
-            major_version=major_version,
-            minor_version=minor_version,
-            is_subflow=process.is_subflow,
-            process_key=process_key,
-            parent_process_key=process.parent_process_key,
-        )
-
-        # Save the updated process to the database
-        process.save()
+        process_dict = {
+            "name": process_name,
+            "process_type": process_type.upper(),
+            "tenant": tenant_key,
+            "process_data": process_data,
+            "created_by": user.user_name,
+            "major_version": major_version,
+            "minor_version": minor_version,
+            "is_subflow": process.is_subflow,
+            "process_key": process_key,
+            "parent_process_key": process.parent_process_key,
+        }
+        process = Process.create_from_dict(process_dict)
 
         # Return the serialized process data
         return processSchema.dump(process)

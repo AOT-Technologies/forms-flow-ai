@@ -232,10 +232,19 @@ class ProcessService:  # pylint: disable=too-few-public-methods
         current_app.logger.debug(f"Update process data for process id: {process_id}")
         user: UserContext = kwargs["user"]
         tenant_key = user.tenant_key
+        # Find the process by its ID
         process = Process.find_process_by_id(process_id)
-
         if process is None:
+            # Raise an exception if the process is not found
             raise BusinessException(BusinessErrorCode.PROCESS_ID_NOT_FOUND)
+
+        # Get the latest version of the process by its parent key
+        latest_process = Process.get_latest_version_by_parent_key(
+            process.parent_process_key
+        )
+        if process.id != latest_process.id:
+            # Raise an exception if the process is not the latest version
+            raise BusinessException(BusinessErrorCode.PROCESS_NOT_LATEST_VERSION)
 
         # Process the data name and key based on the process type and subflow status
         process_data, process_name, process_key = cls._process_data_name_and_key(

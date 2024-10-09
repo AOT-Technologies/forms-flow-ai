@@ -20,6 +20,10 @@ class BusinessErrorCode(ErrorCodeMixin, Enum):
         HTTPStatus.BAD_REQUEST,
     )
     PROCESS_DEF_NOT_FOUND = "Process definition does not exist", HTTPStatus.BAD_REQUEST
+    PROCESS_NOT_LATEST_VERSION = (
+        "Passed process id is not latest version",
+        HTTPStatus.BAD_REQUEST,
+    )
     DECISION_DEF_NOT_FOUND = (
         "Decision definition does not exist",
         HTTPStatus.BAD_REQUEST,

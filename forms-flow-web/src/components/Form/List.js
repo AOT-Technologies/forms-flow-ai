@@ -219,8 +219,7 @@ const List = React.memo((props) => {
           });
         }
         else {
-          let form_id = res?.data?.formId;
-          dispatch(push(`${redirectUrl}formflow/${form_id}/edit/`));
+          res?.data?.formId && dispatch(push(`${redirectUrl}formflow/${res.data.formId}/edit/`));
         }
       })
       .catch((err) => {

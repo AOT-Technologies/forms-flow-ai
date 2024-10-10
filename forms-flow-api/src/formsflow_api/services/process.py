@@ -1,7 +1,7 @@
 """This exposes process service."""
 
 import json
-import xml.etree.ElementTree as ET
+
 
 from flask import current_app
 from formsflow_api_utils.exceptions import BusinessException
@@ -27,7 +27,7 @@ class ProcessService:  # pylint: disable=too-few-public-methods
     @classmethod
     def _xml_parser(cls, process_data):
         """Parse the process data."""
-        return ET.fromstring(process_data.encode("utf-8"))
+        return etree.fromstring(process_data.encode("utf-8"))
 
     @classmethod
     def get_all_process(cls, request_args):  # pylint:disable=too-many-locals

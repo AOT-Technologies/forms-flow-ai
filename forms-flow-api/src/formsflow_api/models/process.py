@@ -6,14 +6,10 @@ from enum import Enum, unique
 from typing import List
 
 from flask_sqlalchemy.query import Query
-from formsflow_api_utils.utils import (
-    FILTER_MAPS,
-    validate_sort_order_and_order_by,
-)
+from formsflow_api_utils.utils import FILTER_MAPS, add_sort_filter
 from formsflow_api_utils.utils.user_context import UserContext, user_context
 from sqlalchemy import LargeBinary, and_, desc, or_
 from sqlalchemy.dialects.postgresql import ENUM
-from sqlalchemy.sql.expression import text
 
 from .audit_mixin import AuditDateTimeMixin, AuditUserMixin
 from .base_model import BaseModel
@@ -63,8 +59,8 @@ class Process(AuditDateTimeMixin, AuditUserMixin, BaseModel, db.Model):
         if process_data:
             process = Process(
                 name=process_data.get("name"),
-                process_type=process_data.get("process_type").upper(),
-                tenant=process_data.process_data("tenant"),
+                process_type=process_data.get("process_type"),
+                tenant=process_data.get("tenant"),
                 process_data=process_data.get("process_data"),
                 created_by=process_data.get("created_by"),
                 major_version=process_data.get("major_version"),
@@ -152,9 +148,9 @@ class Process(AuditDateTimeMixin, AuditUserMixin, BaseModel, db.Model):
         if is_subflow:
             query = query.filter(cls.is_subflow.is_(True))
         query = cls.auth_query(query=query)
-        sort_by, sort_order = validate_sort_order_and_order_by(sort_by, sort_order)
-        if sort_by and sort_order:
-            query = query.order_by(text(f"process.{sort_by} {sort_order}"))
+        query = add_sort_filter(
+            query=query, sort_by=sort_by, sort_order=sort_order, model_name="process"
+        )
         total_count = query.count()
         limit = total_count if limit is None else limit
         query = query.paginate(page=page_no, per_page=limit, error_out=False)

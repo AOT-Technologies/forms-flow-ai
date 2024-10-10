@@ -27,7 +27,8 @@ class ProcessService:  # pylint: disable=too-few-public-methods
     @classmethod
     def _xml_parser(cls, process_data):
         """Parse the process data."""
-        return etree.fromstring(process_data.encode("utf-8"))
+        parser = etree.XMLParser(resolve_entities=False)
+        return etree.fromstring(process_data.encode("utf-8"),parser=parser)
 
     @classmethod
     def get_all_process(cls, request_args):  # pylint:disable=too-many-locals
@@ -35,7 +36,7 @@ class ProcessService:  # pylint: disable=too-few-public-methods
         dict_data = ProcessListRequestSchema().load(request_args) or {}
         page_no = dict_data.get("page_no")
         limit = dict_data.get("limit")
-        sort_by = dict_data.get("sort_by", "id")
+        sort_by = dict_data.get("sort_by", "")
         process_id = dict_data.get("process_id")
         process_name = dict_data.get("name")
         status = dict_data.get("status").upper() if dict_data.get("status") else None
@@ -49,7 +50,9 @@ class ProcessService:  # pylint: disable=too-few-public-methods
         created_to_date = dict_data.get("created_to_date")
         modified_from_date = dict_data.get("modified_from_date")
         modified_to_date = dict_data.get("modified_to_date")
-        sort_order = dict_data.get("sort_order", "desc")
+        sort_order = dict_data.get("sort_order", "")
+        sort_by = sort_by.split(",")
+        sort_order = sort_order.split(",")
         process, count = Process.find_all_process(
             created_from=created_from_date,
             created_to=created_to_date,

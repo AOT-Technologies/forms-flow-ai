@@ -28,6 +28,7 @@ VIEW_TASKS,
 CREATE_SUBMISSIONS,
 VIEW_SUBMISSIONS,
 )
+from sqlalchemy.sql.expression import text
 
 def cors_preflight(methods: str = "GET"):
     """Render an option method on the class."""
@@ -70,6 +71,7 @@ def validate_sort_order_and_order_by(order_by: str, sort_order: str) -> bool:
         ProcessSortingParameters.Name,
         ProcessSortingParameters.Created,
         ProcessSortingParameters.Modified,
+        ProcessSortingParameters.ProcessKey,
     ]:
         order_by = None
     else:
@@ -135,3 +137,18 @@ def get_form_and_submission_id_from_form_url(form_url: str) -> Tuple:
     form_id = form_url[form_url.find("/form/") + 6 : form_url.find("/submission/")]
     submission_id = form_url[form_url.find("/submission/") + 12 : len(form_url)]
     return (form_id, submission_id)
+
+
+def add_sort_filter(query, sort_by, sort_order, model_name):
+    """Adding sortBy and sortOrder."""
+    order = []
+    if sort_by and sort_order:
+        for sort_by_att, sort_order_attr in zip(sort_by, sort_order):
+            name, value = validate_sort_order_and_order_by(
+                sort_order=sort_order_attr, order_by=sort_by_att
+            )
+            if name and value:
+                order.append(text(f"{model_name}.{name} {value}"))
+
+        query = query.order_by(*order)
+    return query

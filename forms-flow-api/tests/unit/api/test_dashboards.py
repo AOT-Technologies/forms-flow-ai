@@ -48,7 +48,9 @@ def test_get_dashboard_error_details(app, client, session, jwt):
 
 def test_get_dashboard_error_details_tenant(app, client, session, jwt):
     """Get dashboards for tenant with analytics not created."""
-    token = get_token(jwt, tenant_key="test-tenant", role=MANAGE_DASHBOARD_AUTHORIZATIONS)
+    token = get_token(
+        jwt, tenant_key="test-tenant", role=MANAGE_DASHBOARD_AUTHORIZATIONS
+    )
     headers = {"Authorization": f"Bearer {token}", "content-type": "application/json"}
 
     rv = client.get("/dashboards", headers=headers)

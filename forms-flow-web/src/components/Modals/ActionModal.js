@@ -4,10 +4,11 @@ import { CustomButton } from "@formsflow/components";
 import { DuplicateIcon, ImportIcon, PencilIcon, SaveTemplateIcon, CloseIcon } from "@formsflow/components";
 
 const ActionModal = React.memo(({ newActionModal, onClose, CategoryType, onAction  }) => {
-    const handleAction = (actionType) => {
+      const handleAction = (actionType)=>{
         onAction(actionType);
-        onClose(); // Close the modal after action is triggered
-    };
+        onClose();
+      };
+      
     return (
         <>
             <Modal show={newActionModal} onHide={onClose} dialogClassName="modal-50w">

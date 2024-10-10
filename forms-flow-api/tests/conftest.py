@@ -11,7 +11,9 @@ from formsflow_api_utils.utils.startup import setup_jwt_manager
 from sqlalchemy import text
 
 from formsflow_api import create_app
+from formsflow_api.models import FormProcessMapper
 from formsflow_api.models import db as _db
+from formsflow_api.schemas import FormProcessMapperSchema
 
 
 @pytest.fixture(scope="session", autouse=True)
@@ -155,3 +157,59 @@ def mock_redis_client():
         return_value=mock_redis,
     ) as _mock:  # noqa
         yield mock_redis
+
+
+def get_form_request_payload():
+    """Return a form request payload object."""
+    return {
+        "formId": "1234",
+        "formName": "Sample form",
+        "processKey": "onestepapproval",
+        "processName": "One Step Approval",
+        "status": "active",
+        "comments": "test",
+        "tenant": 12,
+        "anonymous": False,
+        "formType": "form",
+        "parentFormId": "1234",
+    }
+
+
+@pytest.fixture
+def create_mapper():
+    """Create a mapper instance."""
+    mapper_data = FormProcessMapperSchema().load({**get_form_request_payload()})
+    response = FormProcessMapper.create_from_dict(
+        {**mapper_data, "created_by": "test", "tenant": None}
+    )
+    return FormProcessMapperSchema().dump(response)
+
+
+@pytest.fixture
+def create_mapper_anonymous():
+    """Create a mapper instance."""
+    mapper_data = FormProcessMapperSchema().load({**get_form_request_payload()})
+    response = FormProcessMapper.create_from_dict(
+        {**mapper_data, "created_by": "test", "tenant": None, "is_anonymous": True}
+    )
+    return FormProcessMapperSchema().dump(response)
+
+
+@pytest.fixture
+def create_mapper_custom():
+    """Create a custom mapper instance."""
+
+    def _create_mapper_custom(data, created_by="test", tenant=None, is_anonymous=False):
+        """Create a custom mapper instance."""
+        mapper_data = FormProcessMapperSchema().load(data)
+        response = FormProcessMapper.create_from_dict(
+            {
+                **mapper_data,
+                "created_by": created_by,
+                "tenant": tenant,
+                "is_anonymous": is_anonymous,
+            }
+        )
+        return FormProcessMapperSchema().dump(response)
+
+    return _create_mapper_custom

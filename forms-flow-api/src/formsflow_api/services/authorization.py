@@ -144,3 +144,15 @@ class AuthorizationService:
                 auth_detail[auth.auth_type.value] = self._as_dict(auth)
             return auth_detail
         raise BusinessException(BusinessErrorCode.PERMISSION_DENIED)
+
+    @staticmethod
+    def create_or_update_resource_authorization(data, is_designer):
+        """Create or update resource authorization."""
+        for auth_type in AuthType:
+            auth_data = data.get(auth_type.value.lower())
+            if auth_data and auth_type.value != AuthType.DASHBOARD.value:
+                AuthorizationService().create_authorization(
+                    auth_type.value,
+                    auth_data,
+                    is_designer,
+                )

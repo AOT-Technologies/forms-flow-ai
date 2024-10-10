@@ -4,8 +4,8 @@ from typing import Dict, List
 
 from formsflow_api_utils.utils import VIEW_SUBMISSIONS
 
-from tests.utilities.base_test import get_token
 from formsflow_api.models import Application
+from tests.utilities.base_test import get_token
 
 
 def get_history_create_payload():
@@ -92,8 +92,6 @@ def create_application_history_service_account(app, client, session, jwt):
     }
     token = get_token(jwt)
     headers = {"Authorization": f"Bearer {token}", "content-type": "application/json"}
-    new_entry = client.post(
-        "/application/1/history", headers=headers, json=payload
-    )
+    new_entry = client.post("/application/1/history", headers=headers, json=payload)
     assert new_entry.status_code == 201
     assert new_entry.submitted_by == "client"

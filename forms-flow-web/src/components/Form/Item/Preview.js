@@ -89,7 +89,7 @@ const Preview = ({handleNext, hideComponents, activeStep}) => {
         const columnsToPick = [
           "anonymous",
           "status",
-          "taskVariable",
+          "taskVariables",
           "tags",
           "components",
           "processKey",

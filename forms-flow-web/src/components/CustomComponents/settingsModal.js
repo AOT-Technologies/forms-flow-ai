@@ -13,7 +13,8 @@ import _camelCase from "lodash/camelCase";
 
 const SettingsModal =
  ({ show, handleClose, handleConfirm, rolesState, 
-  setRolesState, formDetails, updateFormName, updateFormDescription, formType, setFormType }) => {
+  setRolesState, formDetails, updateFormName, updateFormDescription, formType, 
+  setFormType, newPath, handleFormPathChange }) => {
   const { t } = useTranslation();
   const dispatch = useDispatch();
 
@@ -21,14 +22,15 @@ const SettingsModal =
 
   const [userRoles, setUserRoles] = useState([]);
   const [url, setUrl] = useState('');
+  
   // const formName = useSelector((state) => state.form.form.name);
   // const formDescription = useSelector((state) => state.process.formProcessList.description);
-  const formPath = useSelector((state) => state.form.form.path);
+  // const formPath = useSelector((state) => state.form.form.path);
   // const processListData = useSelector((state) => state.process?.formProcessList);
 
 
   const [copied, setCopied] = useState(false);
-  const [newPath, setNewPath] = useState(formPath);
+  // const [newPath, setNewPath] = useState(formPath);
   // const [newFormName, setNewFormName] = useState(formName);
   // const [newFormDescription, setNewFormDescription] = useState(formDescription);
   
@@ -158,9 +160,9 @@ const SettingsModal =
       });
   };
 
-  const handleFormPathChange = (e) => {
-    setNewPath(e.target.value);
-  };
+  // const handleFormPathChange = (e) => {
+  //   setNewPath(e.target.value);
+  // };
 
   const handleClickOutside = (event) => {
     if (dropEditRef.current && !dropEditRef.current.contains(event.target)) {
@@ -283,9 +285,9 @@ const SettingsModal =
             type="checkbox"
             id="createCheckbox"
             label={t("Anonymous users")}
-            checked={rolesState.create.isChecked}
+            checked={rolesState.create.isPublic}
             onChange={() => setRolesState((prev) =>
-              ({ ...prev, create: { ...prev.create, isChecked: !prev.create.isChecked } }))}
+              ({ ...prev, create: { ...prev.create, isPublic: !prev.create.isPublic } }))}
             className='field-label'
           />
           <CustomRadioButton items={[
@@ -375,8 +377,8 @@ const SettingsModal =
         </div>
 
         <div className='modal-hr' />
-
-        <div className="section">
+        {rolesState.create.isPublic && (
+          <div className="section">
           <h5 className='fw-bold'>{t("Link for this form")}</h5>
           <div className="info-panel">
             <div className='d-flex align-items-center'>
@@ -411,6 +413,8 @@ const SettingsModal =
 
 
         </div>
+        )}
+        
       </Modal.Body>
       <Modal.Footer className="d-flex justify-content-start">
         <CustomButton

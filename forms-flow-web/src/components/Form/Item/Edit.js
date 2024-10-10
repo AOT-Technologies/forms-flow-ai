@@ -99,6 +99,9 @@ const Edit = React.memo(() => {
   // const roleIds = useSelector((state) => state.user?.roleIds || {});
   // const formName = useSelector((state) => state.form.form.name);
   const [isLoadingDiagram, setIsLoadingDiagram] = useState(true);
+  const formPath = useSelector((state) => state.form.form.path);
+  const [newPath, setNewPath] = useState(formPath);
+
 
   const preferred_userName = useSelector(
     (state) => state.user?.userDetail?.preferred_username || ""
@@ -137,7 +140,8 @@ const Edit = React.memo(() => {
       filteredRoles: [],
       selectedRoles: formAuthorization.FORM?.roles,
       selectedOption: 'registeredUsers',
-      isChecked: processListData.anonymous,
+      isPublic: processListData.anonymous,
+
     },
     view: {
       roleInput: '',
@@ -153,6 +157,9 @@ const Edit = React.memo(() => {
     }
   }, [showFlow]);
 
+  const handleFormPathChange = (e) => {
+    setNewPath(e.target.value);
+  };
 
   const handleShowLayout = () => {
     setShowFlow(false);
@@ -290,7 +297,7 @@ useEffect(() => {
       taskVariables: processListData.taskVariables
         ? processListData.taskVariables
         : [],
-      anonymous: rolesState.create.isChecked,
+      anonymous: rolesState.create.isPublic,
       parentFormId: parentFormId,
       formType: formType,
       processKey: workflow?.value,
@@ -305,22 +312,19 @@ useEffect(() => {
       application: {
         resourceId:parentFormId ,
         resourceDetails: {},
-        roles: rolesState.view.selectedOption === "spcifiedRoles" ? rolesState.view.selectedRoles : [],
-        userName: rolesState.view.selectedOption === "submitter" && '' 
+        roles: rolesState.view.selectedOption === "specifiedRoles" ? rolesState.view.selectedRoles : [],
+        ...(rolesState.view.selectedOption === "submitter" && { userName: preferred_userName }) // TBD
       },
       designer: {
         resourceId: parentFormId,
         resourceDetails: {},
         roles: rolesState.edit.selectedOption === "specifiedRoles" ? rolesState.edit.selectedRoles : [],
-        userName: rolesState.edit.selectedOption === "onlyYou" ? preferred_userName : ''
-
-      },
+        ...(rolesState.edit.selectedOption === "onlyYou" && { userName: preferred_userName })
+    },
       form: {
         resourceId: parentFormId,
         resourceDetails: {},
         roles: rolesState.create.selectedOption === "specifiedRoles" ? rolesState.create.selectedRoles : [],
-        userName: rolesState.create.selectedOption === "registeredUsers" ? '' : ''
-
       }
     };
     dispatch(saveFormProcessMapperPut({ mapper, authorizations }));
@@ -447,7 +451,8 @@ useEffect(() => {
             rolesState={rolesState} setRolesState={setRolesState} 
             setFormDetails={setFormDetails} formDetails={formDetails} 
             updateFormName={updateFormName} formType={formType} setFormType={setFormType} 
-            updateFormDescription={updateFormDescription}/>
+            updateFormDescription={updateFormDescription} newPath={newPath} 
+            handleFormPathChange={handleFormPathChange}/>
 
           <Errors errors={errors} />
 

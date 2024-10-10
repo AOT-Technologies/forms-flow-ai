@@ -11,45 +11,32 @@ import _set from "lodash/set";
 import _cloneDeep from "lodash/cloneDeep";
 import _camelCase from "lodash/camelCase";
 
-const SettingsModal = ({ show, handleClose, handleConfirm }) => {
+const SettingsModal =
+ ({ show, handleClose, handleConfirm, rolesState, 
+  setRolesState, formDetails, updateFormName, updateFormDescription, formType, setFormType }) => {
   const { t } = useTranslation();
   const dispatch = useDispatch();
 
-  const [rolesState, setRolesState] = useState({
-    edit: {
-      roleInput: '',
-      filteredRoles: [],
-      selectedRoles: [],
-      selectedOption: 'onlyYou',
-    },
-    create: {
-      roleInput: '',
-      filteredRoles: [],
-      selectedRoles: [],
-      selectedOption: 'registeredUsers',
-      isChecked: false,
-    },
-    view: {
-      roleInput: '',
-      filteredRoles: [],
-      selectedRoles: [],
-      selectedOption: 'submitter',
-    },
-  });
+ 
 
   const [userRoles, setUserRoles] = useState([]);
   const [url, setUrl] = useState('');
-  const formName = useSelector((state) => state.form.form.name);
-  const formDescription = useSelector((state) => state.process.formProcessList.description);
+  // const formName = useSelector((state) => state.form.form.name);
+  // const formDescription = useSelector((state) => state.process.formProcessList.description);
   const formPath = useSelector((state) => state.form.form.path);
+  // const processListData = useSelector((state) => state.process?.formProcessList);
+
 
   const [copied, setCopied] = useState(false);
   const [newPath, setNewPath] = useState(formPath);
-  const [newFormName, setNewFormName] = useState(formName);
-  const [newFormDescription, setNewFormDescription] = useState(formDescription);
-  const formData = useSelector((state) => state.form?.form);
-  const reducer = (form, { type, value }) => {
-    const formCopy = _cloneDeep(form);
+  // const [newFormName, setNewFormName] = useState(formName);
+  // const [newFormDescription, setNewFormDescription] = useState(formDescription);
+  
+  
+  
+  const formData = useSelector((state) => state.form?.form.path);
+  const reducer = (path, { type, value }) => {
+    const formCopy = _cloneDeep(path);
     switch (type) {
       case "formChange":
         for (let prop in value) {
@@ -84,7 +71,7 @@ const SettingsModal = ({ show, handleClose, handleConfirm }) => {
       target.type === "checkbox"
         ? target.checked ? "wizard" : "form"
         : target.value;
-  
+    setFormType(value);
     dispatchFormAction({ type: path, value });
   };
   
@@ -203,6 +190,7 @@ const SettingsModal = ({ show, handleClose, handleConfirm }) => {
     };
   }, []);
 
+
   return (
     <Modal className="d-flex flex-column align-items-start w-100 settings-modal" show={show} onHide={handleClose} dialogClassName="modal-50w" backdrop="static">
       <Modal.Header>
@@ -212,11 +200,16 @@ const SettingsModal = ({ show, handleClose, handleConfirm }) => {
         {/* Section 1: Basic */}
         <div className='section'>
           <h5 className='fw-bold'>{t("Basic")}</h5>
-          <FormInput value={newFormName} label={t("Name")} onChange={(e) => setNewFormName(e.target.value)} dataTestid="form-name" ariaLabel={t("Form Name")} />
+          <FormInput 
+          value={formDetails.name} 
+          label={t("Name")} 
+          onChange={(e) => updateFormName(e.target.value)} 
+          dataTestid="form-name" 
+          ariaLabel={t("Form Name")} />
           <FormTextArea
             label={t("Description")}
-            value={newFormDescription}
-            onChange={(e) => setNewFormDescription(e.target.value)}
+            value={formDetails.description}
+            onChange={(e) => updateFormDescription(e.target.value)}
             aria-label={t("Description of the edited form")}
             data-testid="form-description"
             maxRows={3}
@@ -236,7 +229,7 @@ const SettingsModal = ({ show, handleClose, handleConfirm }) => {
             type="checkbox"
             id="createCheckbox"
             label={t("Allow adding multiple pages in this form")}
-            checked={form.display === "wizard"}
+            checked={formType === "wizard"}
             onChange={(event) => handleChange("display", event)}
 
 
@@ -255,6 +248,7 @@ const SettingsModal = ({ show, handleClose, handleConfirm }) => {
             { label: t("Only You"), onClick: () => setRolesState((prev) => ({ ...prev, edit: { ...prev.edit, selectedOption: 'onlyYou' } })) },
             { label: t("You and specified roles"), onClick: () => setRolesState((prev) => ({ ...prev, edit: { ...prev.edit, selectedOption: 'specifiedRoles' } })) },
           ]} dataTestid="edit-submission-role" ariaLabel={t("Edit Submission Role")} />
+
 
           {rolesState.edit.selectedOption === 'onlyYou' && (
             <FormInput disabled={true} />

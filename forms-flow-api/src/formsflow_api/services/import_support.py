@@ -28,6 +28,7 @@ from formsflow_api.schemas import (
 from .authorization import AuthorizationService
 from .form_history_logs import FormHistoryService
 from .form_process_mapper import FormProcessMapperService
+from .process import ProcessService
 
 
 class ImportService:  # pylint: disable=too-many-public-methods
@@ -184,8 +185,7 @@ class ImportService:  # pylint: disable=too-many-public-methods
     def update_workflow(self, xml_data, process_name):
         """Parse the workflow XML data & update process name."""
         current_app.logger.info("Updating workflow...")
-        # pylint: disable=I1101
-        root = etree.fromstring(xml_data.encode("utf-8"))
+        root = ProcessService.xml_parser(xml_data)
 
         # Find the bpmn:process element
         process = root.find(".//{http://www.omg.org/spec/BPMN/20100524/MODEL}process")

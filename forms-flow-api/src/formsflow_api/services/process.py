@@ -25,8 +25,9 @@ class ProcessService:  # pylint: disable=too-few-public-methods
     """This class manages process service."""
 
     @classmethod
-    def _xml_parser(cls, process_data):
+    def xml_parser(cls, process_data):
         """Parse the process data."""
+        # pylint: disable=I1101
         parser = etree.XMLParser(resolve_entities=False)
         return etree.fromstring(process_data.encode("utf-8"), parser=parser)
 
@@ -81,7 +82,7 @@ class ProcessService:  # pylint: disable=too-few-public-methods
         """Parse the workflow XML data & update process name."""
         current_app.logger.info("Updating workflow...")
         # pylint: disable=I1101
-        root = cls._xml_parser(xml_data)
+        root = cls.xml_parser(xml_data)
 
         # Find the bpmn:process element
         process = cls.get_process_by_type(root, process_type)
@@ -198,7 +199,7 @@ class ProcessService:  # pylint: disable=too-few-public-methods
         # if the process is of type LOWCODE, convert the process data to JSON format
         if is_subflow and process_type.upper() != "LOWCODE":
             # Parse the XML data to extract process name and key for subflows
-            root = cls._xml_parser(process_data)
+            root = cls.xml_parser(process_data)
             process = cls.get_process_by_type(root, process_type)
             process_key = process.get("id")
             process_name = process.get("name")

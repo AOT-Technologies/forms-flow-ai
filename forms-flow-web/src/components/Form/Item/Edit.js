@@ -48,13 +48,13 @@ import { getFormProcesses } from "../../../apiManager/services/processServices";
 import { getProcessXml } from "../../../apiManager/services/processServices";
 
 import SettingsModal from "../../CustomComponents/settingsModal";
-import DeleteFormModal from "../../Modals/DeleteFormModal.js";
+
 // constant values
 const DUPLICATE = "DUPLICATE";
 // const SAVE_AS_TEMPLATE= "SAVE_AS_TEMPLATE";
 // const IMPORT= "IMPORT";
 // const EXPORT= "EXPORT";
-const DELETE = "DELETE";
+//const DELETE = "DELETE";
 
 const reducer = (form, { type, value }) => {
   const formCopy = _cloneDeep(form);
@@ -141,10 +141,6 @@ const Edit = React.memo(() => {
     if (selectedAction === DUPLICATE) {
       setNameError("");
       setFormSubmitted(false);
-    }
-    if (selectedAction === DELETE) {
-      //setNameError("");
-      //setFormSubmitted(false);
     }
   };
 
@@ -750,11 +746,6 @@ const Edit = React.memo(() => {
         setNameError={setNameError}
         nameValidationOnBlur={validateFormNameOnBlur}
         nameError={nameError}
-      />
-      <DeleteFormModal
-      showDeleteModal={selectedAction === DELETE}
-      onClose={handleCloseSelectedAction}
-      //onAction={}
       />
       <ConfirmModal
         show={showSaveModal}

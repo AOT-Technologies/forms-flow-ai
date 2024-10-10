@@ -17,25 +17,9 @@ const SettingsModal =
   setFormType, newPath, handleFormPathChange }) => {
   const { t } = useTranslation();
   const dispatch = useDispatch();
-
- 
-
   const [userRoles, setUserRoles] = useState([]);
   const [url, setUrl] = useState('');
-  
-  // const formName = useSelector((state) => state.form.form.name);
-  // const formDescription = useSelector((state) => state.process.formProcessList.description);
-  // const formPath = useSelector((state) => state.form.form.path);
-  // const processListData = useSelector((state) => state.process?.formProcessList);
-
-
-  const [copied, setCopied] = useState(false);
-  // const [newPath, setNewPath] = useState(formPath);
-  // const [newFormName, setNewFormName] = useState(formName);
-  // const [newFormDescription, setNewFormDescription] = useState(formDescription);
-  
-  
-  
+  const [copied, setCopied] = useState(false); 
   const formData = useSelector((state) => state.form?.form.path);
   const reducer = (path, { type, value }) => {
     const formCopy = _cloneDeep(path);
@@ -159,10 +143,6 @@ const SettingsModal =
         console.error(err);
       });
   };
-
-  // const handleFormPathChange = (e) => {
-  //   setNewPath(e.target.value);
-  // };
 
   const handleClickOutside = (event) => {
     if (dropEditRef.current && !dropEditRef.current.contains(event.target)) {
@@ -407,11 +387,6 @@ const SettingsModal =
               </InputGroup.Text>
             </InputGroup>
           </Form.Group>
-
-
-
-
-
         </div>
         )}
         

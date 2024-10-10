@@ -96,8 +96,7 @@ const Edit = React.memo(() => {
   const applicationCount = useSelector((state) => state.process?.applicationCount);
   const [showSaveModal, setShowSaveModal] = useState(false);
   const [hasRendered, setHasRendered] = useState(false);
-  // const roleIds = useSelector((state) => state.user?.roleIds || {});
-  // const formName = useSelector((state) => state.form.form.name);
+
   const [isLoadingDiagram, setIsLoadingDiagram] = useState(true);
   const formPath = useSelector((state) => state.form.form.path);
   const [newPath, setNewPath] = useState(formPath);
@@ -422,9 +421,7 @@ useEffect(() => {
     console.log("discardChanges");
   };
 
-  // const editorSettings = () => {
-  //   console.log("ecitorActions");
-  // };
+  
   const editorActions = () => {
     setNewActionModal(true);
   };

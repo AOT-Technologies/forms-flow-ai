@@ -28,7 +28,7 @@ class ProcessService:  # pylint: disable=too-few-public-methods
     def _xml_parser(cls, process_data):
         """Parse the process data."""
         parser = etree.XMLParser(resolve_entities=False)
-        return etree.fromstring(process_data.encode("utf-8"),parser=parser)
+        return etree.fromstring(process_data.encode("utf-8"), parser=parser)
 
     @classmethod
     def get_all_process(cls, request_args):  # pylint:disable=too-many-locals

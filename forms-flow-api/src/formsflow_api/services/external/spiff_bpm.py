@@ -19,14 +19,14 @@ class BPMEndpointType(IntEnum):
     """This enum provides the list of bpm endpoints type."""
 
     PROCESS_DEFINITION = 1
-    FORM_AUTH_DETAILS = 2
+    PROCESS_INSTANCES = 2
     MESSAGE_EVENT = 3
     DECISION_DEFINITION = 4
     DEPLOYMENT = 5
 
 
-class BPMService(BaseBPMService):
-    """This class manages all of the Camunda BPM Service."""
+class SpiffBPMService(BaseBPMService):
+    """This class manages all of the Spiff BPM Service."""
 
     @classmethod
     def get_all_process(cls, token, url_path=None):
@@ -61,19 +61,27 @@ class BPMService(BaseBPMService):
         return cls.get_request(url, token)
 
     @classmethod
-    def post_process_start(cls, process_key, payload, token, tenant_key):
+    def post_process_start(cls, process_key, payload, token, tenant_key, message_key: str = None):
         """Post process start."""
+        # Using message events for start with spiff, construct the URL using the message key.
         url = (
-            f"{cls._get_url_(BPMEndpointType.PROCESS_DEFINITION)}/"
-            f"key/{process_key}/start"
+            f"{cls._get_url_(BPMEndpointType.PROCESS_INSTANCES)}/{process_key}/start"
         )
-        return cls.post_request(url, token, payload=payload, tenant_key=tenant_key)
+        cls.post_request(url, token, payload={}, tenant_key=tenant_key)
+
+        url = (
+            f"{cls._get_url_(BPMEndpointType.MESSAGE_EVENT)}/{message_key}"
+        )
+        send_event_req = cls.post_request(url, token, payload=payload, tenant_key=tenant_key)
+        current_app.logger.debug(f"Process start response payload---> {send_event_req}")
+        return send_event_req.get("process_instance")
 
     @classmethod
     def post_process_start_tenant(
             cls, process_key: str, payload: Dict, token: str, tenant_key: str
     ):
         """Post process start based on tenant key."""
+        # TODO
         url = (
                 f"{cls._get_url_(BPMEndpointType.PROCESS_DEFINITION)}/"
                 f"key/{process_key}/start?tenantId=" + tenant_key
@@ -127,15 +135,15 @@ class BPMService(BaseBPMService):
         try:
             url = None
             if endpoint_type == BPMEndpointType.PROCESS_DEFINITION:
-                url = f"{bpm_api_base}/engine-rest-ext/v1/process-definition"
-            elif endpoint_type == BPMEndpointType.FORM_AUTH_DETAILS:
-                url = f"{bpm_api_base}/engine-rest-ext/v1/admin/form/authorization"
+                url = f"{bpm_api_base}/v1.0/process-definition"
+            elif endpoint_type == BPMEndpointType.PROCESS_INSTANCES:
+                url = f"{bpm_api_base}/v1.0/key"
             elif endpoint_type == BPMEndpointType.MESSAGE_EVENT:
-                url = f"{bpm_api_base}/engine-rest-ext/v1/message"
+                url = f"{bpm_api_base}/v1.0/messages"
             elif endpoint_type == BPMEndpointType.DECISION_DEFINITION:
                 url = f"{bpm_api_base}/engine-rest-ext/v1/decision-definition"
             elif endpoint_type == BPMEndpointType.DEPLOYMENT:
-                url = f"{bpm_api_base}/engine-rest-ext/v1/deployment/create"
+                url = f"{bpm_api_base}/v1.0/deployment/create"
             return url
 
         except BaseException as e:  # pylint: disable=broad-except
@@ -150,18 +158,17 @@ class BPMService(BaseBPMService):
             variables: Dict,
     ) -> Dict:
         """Returns the payload for initiating the task."""
+
         return {
-            "variables": {
-                **variables,
-                "applicationId": {"value": application.id},
-                "formUrl": {"value": form_url},
-                "webFormUrl": {"value": web_form_url},
-                "formName": {"value": mapper.form_name},
-                "submitterName": {"value": application.created_by},
-                "submissionDate": {"value": str(application.created)},
-                "tenantKey": {"value": mapper.tenant},
-                "formId": {"value": mapper.form_id}
-            }
+            **variables,
+            "applicationId": application.id,
+            "formUrl": form_url,
+            "webFormUrl": web_form_url,
+            "formName": mapper.form_name,
+            "submitterName": application.created_by,
+            "submissionDate": str(application.created),
+            "tenantKey": mapper.tenant,
+            "formId": mapper.form_id
         }
 
     @staticmethod
@@ -171,11 +178,7 @@ class BPMService(BaseBPMService):
         if task_variable and form_data:
             task_keys = [val["key"] for val in task_variable]
             variables = {
-                key: (
-                    {"value": json.dumps(form_data[key])}
-                    if isinstance(form_data[key], (dict, list))
-                    else {"value": form_data[key]}
-                )
+                key: json.dumps(form_data[key]) if isinstance(form_data[key], (dict, list)) else form_data[key]
                 for key in task_keys
                 if key in form_data
             }

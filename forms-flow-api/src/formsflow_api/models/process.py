@@ -56,6 +56,7 @@ class Process(AuditDateTimeMixin, AuditUserMixin, BaseModel, db.Model):
     process_key = db.Column(db.String)
     parent_process_key = db.Column(db.String)
     is_subflow = db.Column(db.Boolean, default=False)
+    message_key = db.Column(db.String)
 
     @classmethod
     @user_context
@@ -138,6 +139,17 @@ class Process(AuditDateTimeMixin, AuditUserMixin, BaseModel, db.Model):
         """Get latest version of process."""
         query = (
             cls.auth_query(cls.query.filter(cls.name == process_name))
+            .order_by(cls.major_version.desc(), cls.minor_version.desc())
+            .first()
+        )
+
+        return query
+
+    @classmethod
+    def get_latest_version_by_mapper(cls, process_mapper_id) -> Process:
+        """Get latest version of process given form process mapper id."""
+        query = (
+            cls.auth_query(cls.query.filter(cls.form_process_mapper_id == process_mapper_id))
             .order_by(cls.major_version.desc(), cls.minor_version.desc())
             .first()
         )

@@ -8,6 +8,13 @@ export const setProcessList = (data) => (dispatch) => {
   });
 };
 
+export const setProcessXml = (data) => (dispatch) => {
+  dispatch({
+    type: ACTION_CONSTANTS.SET_PROCESSES_XML,
+    payload: data,
+  });
+};
+
 export const setProcessStatusLoading = (data) => (dispatch) => {
   dispatch({
     type: ACTION_CONSTANTS.IS_PROCESS_STATUS_LOADING,
@@ -51,7 +58,7 @@ export const setFormProcessLoadError = (data) => (dispatch) => {
 };
 
 export const setFormProcessesData = (data) => (dispatch) => {
-  dispatch({
+ dispatch({
     type: ACTION_CONSTANTS.FORM_PROCESS_LIST,
     payload: data,
   });

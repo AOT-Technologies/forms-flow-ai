@@ -13,6 +13,7 @@ import {
   setProcessDiagramXML,
   setProcessDiagramLoading,
   setFormPreviosData,
+  setProcessXml,
   setApplicationCountResponse,
   setUnPublishApiError,
   setResetProcess,
@@ -78,19 +79,19 @@ export const fetchAllBpmProcesses = (  {tenant_key = null,
     "&sortOrder=asc";
 
   if (excludeInternal) {
-      url = url + "&excludeInternal=true";
+    url = url + "&excludeInternal=true";
   }
   if (tenant_key) {
     url = url + "&tenantIdIn=" + tenant_key;
   }
- 
+
   if (firstResult) {
     url = url + "&firstResult=" + firstResult;
   }
   if (maxResults) {
     url = url + "&maxResults=" + maxResults;
   }
-  
+
   if (searchKey) {
     url = url + `&nameLike=%25${searchKey}%25`;
   }
@@ -123,7 +124,7 @@ export const fetchAllBpmProcesses = (  {tenant_key = null,
 export const fetchAllBpmProcessesCount = (tenant_key,searchKey,) => {
   let url =
     API.GET_BPM_PROCESS_LIST_COUNT +
-    "?latestVersion=true" + 
+    "?latestVersion=true" +
     "&includeProcessDefinitionsWithoutTenantId=true" +
     "&sortBy=tenantId" +
     "&sortOrder=asc";
@@ -220,7 +221,7 @@ export const getFormProcesses = (formId, ...rest) => {
     )
       .then((res) => {
         if (res.data) {
-          dispatch(setFormPreviosData(res.data));
+        dispatch(setFormPreviosData(res.data));
           dispatch(setFormProcessesData(res.data));
           // need to check api and put exact respose
           done(null, res.data);
@@ -234,20 +235,41 @@ export const getFormProcesses = (formId, ...rest) => {
       })
       // eslint-disable-next-line no-unused-vars
       .catch((error) => {
-        // dispatch(setProcessStatusLoading(false));
+       // dispatch(setProcessStatusLoading(false));
         dispatch(setFormProcessLoadError(true));
+      });
+  };
+};
+
+export const getProcessXml = (processKey) => {
+return (dispatch) => {
+    RequestService.httpGETRequest(
+      `${API.GET_PROCESSES_XML}/${processKey}`,
+      {},
+      StorageService.get(StorageService.User.AUTH_TOKEN),
+      true
+    )
+      .then((res, err) => {
+        if (res.data) {
+         dispatch(setProcessXml(res.data.processData));
+        } else {
+          console.log(err);
+        }
+      })
+      .catch((error) => {
+        console.log(error);
       });
   };
 };
 
 // fetching task variables
 export const fetchTaskVariables = (formId) =>{
-  let url =  `${API.FORM_PROCESSES}/${formId}`;
-  return  RequestService.httpGETRequest(url);
+  let url = `${API.FORM_PROCESSES}/${formId}`;
+  return RequestService.httpGETRequest(url);
 };
 
 export const fetchAllDmnProcessesCount = (tenant_key = null, searchKey) => {
- 
+
 
   let url =
     API.GET_DMN_PROCESS_LIST_COUNT +
@@ -259,8 +281,8 @@ export const fetchAllDmnProcessesCount = (tenant_key = null, searchKey) => {
   if (tenant_key) {
     url = url + "&tenantIdIn=" + tenant_key;
   }
- 
-  if(searchKey){
+
+  if (searchKey) {
     url = url + `&resourceNameLike=%${searchKey}%`;
   }
 
@@ -273,7 +295,7 @@ export const fetchAllDmnProcessesCount = (tenant_key = null, searchKey) => {
 };
 
 export const getApplicationCount = (mapperId, ...rest) => {
-  const done = rest.length ? rest[0] : () => {};
+  const done = rest.length ? rest[0] : () => { };
   return async (dispatch) => {
     let apiUrlClaimTask = replaceUrl(
       API.GET_FORM_COUNT,
@@ -298,7 +320,7 @@ export const getApplicationCount = (mapperId, ...rest) => {
 };
 
 export const getAllApplicationCount = (formId, ...rest) => {
-  const done = rest.length ? rest[0] : () => {};
+  const done = rest.length ? rest[0] : () => { };
   return async (dispatch) => {
     let apiUrlClaimTask = replaceUrl(
       API.GET_ALL_APPLICATIONS_COUNT_BY_FORM_ID,
@@ -323,7 +345,7 @@ export const getAllApplicationCount = (formId, ...rest) => {
 };
 
 export const saveFormProcessMapperPost = (data, ...rest) => {
-  const done = rest.length ? rest[0] : () => {};
+  const done = rest.length ? rest[0] : () => { };
   return async (dispatch) => {
     RequestService.httpPOSTRequest(`${API.FORM}`, data)
       .then(async (res) => {
@@ -351,7 +373,7 @@ export const saveFormProcessMapperPost = (data, ...rest) => {
 };
 
 export const saveFormProcessMapperPut = (data, ...rest) => {
-  const done = rest.length ? rest[0] : () => {};
+  const done = rest.length ? rest[0] : () => { };
   return async (dispatch) => {
     RequestService.httpPUTRequest(`${API.FORM}/${data.mapper.id}`, data)
       .then(async (res) => {
@@ -384,7 +406,7 @@ export const saveFormProcessMapperPut = (data, ...rest) => {
  * @param  {...any} rest
  */
 export const getProcessActivities = (process_instance_id, ...rest) => {
-  const done = rest.length ? rest[0] : () => {};
+  const done = rest.length ? rest[0] : () => { };
   const apiUrlProcessActivities = replaceUrl(
     API.PROCESS_ACTIVITIES,
     "<process_instance_id>",
@@ -429,7 +451,7 @@ export const fetchDiagram = (
     url = url + `?tenantId=${tenant_key}`;
   }
 
-  const done = rest.length ? rest[0] : () => {};
+  const done = rest.length ? rest[0] : () => { };
   return (dispatch) => {
     RequestService.httpGETRequest(
       url,
@@ -442,7 +464,7 @@ export const fetchDiagram = (
           dispatch(
             setProcessDiagramXML(isDmn ? res.data.dmnXml : res.data.bpmn20Xml)
           );
-          
+
           // console.log('res.data.bpmn20Xml>>',res.data.bpmn20Xml);
         } else {
           dispatch(setProcessDiagramXML(""));
@@ -465,7 +487,7 @@ export const resetFormProcessData = () => {
 };
 
 export const unPublishForm = (mapperId, ...rest) => {
-  const done = rest.length ? rest[0] : () => {};
+  const done = rest.length ? rest[0] : () => { };
   const url = replaceUrl(API.UNPUBLISH_FORMS, "<mapper id>", mapperId);
   return (dispatch) => {
     RequestService.httpDELETERequest(url)
@@ -482,7 +504,7 @@ export const unPublishForm = (mapperId, ...rest) => {
 };
 
 export const deleteFormProcessMapper = (mapperId, ...rest) => {
-  const done = rest.length ? rest[0] : () => {};
+  const done = rest.length ? rest[0] : () => { };
   const url = replaceUrl(API.UNPUBLISH_FORMS, "<mapper id>", mapperId);
   return (dispatch) => {
     RequestService.httpDELETERequest(url)

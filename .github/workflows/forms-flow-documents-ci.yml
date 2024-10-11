@@ -77,6 +77,9 @@ jobs:
       USE_DOCKER_MOCK: "True"
 
     runs-on: ubuntu-20.04
+    strategy:
+      matrix:
+        python-version: [3.12.6]
 
     services:
       postgres:

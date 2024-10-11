@@ -1,6 +1,6 @@
 """Test suite for Process API endpoints."""
 
-from unittest.mock import patch
+from unittest.mock import MagicMock, patch
 
 import pytest
 from formsflow_api_utils.utils import CREATE_DESIGNS, MANAGE_TASKS
@@ -10,6 +10,7 @@ from formsflow_api.services import ProcessService
 from tests.utilities.base_test import (
     get_process_request_payload,
     get_process_request_payload_low_code,
+    get_process_request_payload_for_dmn,
     get_token,
 )
 
@@ -22,23 +23,50 @@ def ensure_process_data_binary(process_id):
         process.save()
 
 
+@pytest.fixture
+def create_process(app, client, session, jwt):
+    """Create a process."""
+    process = Process(
+        name="Test Workflow",
+        process_type="BPMN",
+        tenant=None,
+        process_data=get_process_request_payload()["processData"].encode("utf-8"),
+        created_by="test",
+        major_version=1,
+        minor_version=0,
+        is_subflow=False,
+        process_key="testworkflow",
+        parent_process_key="testworkflow",
+    )
+    process.save()
+    return process
+
+
+@pytest.fixture
+def create_process_with_api_call(app, client, session, jwt):
+    """Create a process with API call."""
+    token = get_token(jwt, role=CREATE_DESIGNS, username="designer")
+    headers = {
+        "Authorization": f"Bearer {token}",
+        "content-type": "application/json",
+    }
+    response = client.post(
+        "/process", headers=headers, json=get_process_request_payload()
+    )
+    assert response.status_code == 201
+    return response
+
+
 class TestProcessCreate:
     """Test suite for the process create method."""
 
-    def test_process_create_method(self, app, client, session, jwt):
+    def test_process_create_method(
+        self, app, client, session, jwt, create_process_with_api_call
+    ):
         """Tests the process create method with valid payload."""
-        token = get_token(jwt, role=CREATE_DESIGNS, username="designer")
-        headers = {
-            "Authorization": f"Bearer {token}",
-            "content-type": "application/json",
-        }
-        response = client.post(
-            "/process", headers=headers, json=get_process_request_payload()
-        )
-
-        assert response.status_code == 201
+        response = create_process_with_api_call
         assert response.json.get("id") is not None
-        assert response.json.get("name") == "Testworkflow"
+        assert response.json.get("name") == "Test workflow"
 
     def test_process_create_method_with_invalid_token(self, app, client, session, jwt):
         """Tests the process create method with invalid token."""
@@ -56,41 +84,38 @@ class TestProcessCreate:
 class TestProcessUpdate:
     """Test suite for the process update method."""
 
-    def test_process_update(self, app, client, session, jwt):
+    def test_process_update_subflow(
+        self, app, client, session, jwt, create_process_with_api_call
+    ):
         """Tests the process update method with valid payload."""
         token = get_token(jwt, role=CREATE_DESIGNS, username="designer")
         headers = {
             "Authorization": f"Bearer {token}",
             "content-type": "application/json",
         }
-        response = client.post(
-            "/process", headers=headers, json=get_process_request_payload_low_code()
-        )
+        response = create_process_with_api_call
         assert response.status_code == 201
+        assert response.json.get("processType") == "BPMN"
         assert response.json.get("id") is not None
         process_id = response.json.get("id")
         ensure_process_data_binary(process_id)
         response = client.put(
             f"/process/{process_id}",
             headers=headers,
-            json=get_process_request_payload_low_code(status="Published"),
+            json=get_process_request_payload_for_dmn(),
         )
         assert response.status_code == 200
-        assert response.json.get("status") == "Published"
+        assert response.json.get("processType") == "DMN"
 
-    def test_process_update_invalid_token(self, app, client, session, jwt):
+    def test_process_update_invalid_token(
+        self, app, client, session, jwt, create_process_with_api_call
+    ):
         """Tests the process update method with invalid token."""
-        token = get_token(jwt, role=CREATE_DESIGNS, username="designer")
-        headers = {
-            "Authorization": f"Bearer {token}",
-            "content-type": "application/json",
-        }
-        response = client.post(
-            "/process", headers=headers, json=get_process_request_payload_low_code()
-        )
+        response = create_process_with_api_call
         assert response.status_code == 201
         assert response.json.get("id") is not None
         process_id = response.json.get("id")
+        ensure_process_data_binary(process_id)
         token = get_token(jwt, role=MANAGE_TASKS)
         headers = {
             "Authorization": f"Bearer {token}",
@@ -107,31 +132,38 @@ class TestProcessUpdate:
 class TestProcessList:
     """Test suite for the process list."""
 
-    def test_process_list(self, app, client, session, jwt):
+    def test_process_list(
+        self, app, client, session, jwt, create_process_with_api_call
+    ):
         """Testing process listing API."""
         token = get_token(jwt, role=CREATE_DESIGNS, username="designer")
         headers = {
             "Authorization": f"Bearer {token}",
             "content-type": "application/json",
         }
-        response = client.post(
-            "/process",
-            headers=headers,
-            json=get_process_request_payload(name="Testworkflow1"),
-        )
+        response = create_process_with_api_call
         ensure_process_data_binary(response.json.get("id"))
         response = client.get("/process", headers=headers)
         assert response.status_code == 200
         assert response.json is not None
         assert response.json["totalCount"] == 1
-        assert response.json["process"][0]["name"] == "Testworkflow1"
+        assert response.json["process"][0]["name"] == "Test workflow"
 
     @pytest.mark.parametrize(
         ("pageNo", "limit", "sortBy", "sortOrder"),
         ((1, 5, "id", "asc"), (1, 10, "id", "desc"), (1, 20, "id", "desc")),
     )
     def test_process_list_with_pagination_sorted_list(
-        self, app, client, session, jwt, pageNo, limit, sortBy, sortOrder
+        self,
+        app,
+        client,
+        session,
+        jwt,
+        pageNo,
+        limit,
+        sortBy,
+        sortOrder,
+        create_process_with_api_call,
     ):
         """Testing process listing API with pagination and sorted list."""
         token = get_token(jwt, role=CREATE_DESIGNS, username="designer")
@@ -139,17 +171,8 @@ class TestProcessList:
             "Authorization": f"Bearer {token}",
             "content-type": "application/json",
         }
-        response = client.post(
-            "/process",
-            headers=headers,
-            json=get_process_request_payload(name="Testworkflow1"),
-        )
-        ensure_process_data_binary(response.json.get("id"))
-        response = client.post(
-            "/process",
-            headers=headers,
-            json=get_process_request_payload(name="Testworkflow2"),
-        )
+
+        response = create_process_with_api_call
         ensure_process_data_binary(response.json.get("id"))
         response = client.get(
             f"/process?pageNo={pageNo}&limit={limit}&sortBy={sortBy}&sortOrder={sortOrder}",
@@ -158,28 +181,21 @@ class TestProcessList:
         assert response.status_code == 200
         assert response.json is not None
 
-    def test_process_list_with_filters(self, app, client, session, jwt):
+    def test_process_list_with_filters(
+        self, app, client, session, jwt, create_process_with_api_call
+    ):
         """Testing process listing API with filters."""
         token = get_token(jwt, role=CREATE_DESIGNS, username="designer")
         headers = {
             "Authorization": f"Bearer {token}",
             "content-type": "application/json",
         }
-        response = client.post(
-            "/process",
-            headers=headers,
-            json=get_process_request_payload(name="Testworkflow1"),
-        )
+        response = create_process_with_api_call
         ensure_process_data_binary(response.json.get("id"))
-        response = client.post(
-            "/process",
-            headers=headers,
-            json=get_process_request_payload_low_code(name="Testworkflow2"),
-        )
-        ensure_process_data_binary(response.json.get("id"))
+
         # testing with processType filter with status
         response = client.get(
-            "/process?status=Draft&processType=LOWCODE&name=Test", headers=headers
+            "/process?status=Draft&processType=BPMN&name=Test", headers=headers
         )
         assert response.status_code == 200
         assert response.json is not None
@@ -199,16 +215,16 @@ class TestProcessList:
 class TestProcessDelete:
     """Test suite for the process delete method."""
 
-    def test_process_delete_method(self, app, client, session, jwt):
+    def test_process_delete_method(
+        self, app, client, session, jwt, create_process_with_api_call
+    ):
         """Tests the process delete method."""
         token = get_token(jwt, role=CREATE_DESIGNS, username="designer")
         headers = {
             "Authorization": f"Bearer {token}",
             "content-type": "application/json",
         }
-        response = client.post(
-            "/process", headers=headers, json=get_process_request_payload()
-        )
+        response = create_process_with_api_call
         assert response.status_code == 201
         assert response.json.get("id") is not None
         process_id = response.json.get("id")
@@ -284,9 +300,7 @@ class TestProcessHistory:
             )
 
             mock_import_service.return_value = mock_response
-            response = client.get(
-                "/process/process-history/test/versions", headers=headers
-            )
+            response = client.get("/process/test/versions", headers=headers)
             # Assertions
             assert response.status_code == 200
             assert response.json is not None
@@ -326,9 +340,7 @@ class TestProcessHistory:
         }
 
         # Call the process version history endpoint with a non-existent process name
-        response = client.get(
-            "/process/process-history/non_existent_process/versions", headers=headers
-        )
+        response = client.get("/process/non_existent_process/versions", headers=headers)
         assert response.status_code == 400
         assert response.json.get("message") == "The specified process ID does not exist"
 
@@ -340,9 +352,7 @@ class TestProcessHistory:
             "content-type": "application/json",
         }
 
-        response = client.get(
-            "/process/process-history/Testworkflow/versions", headers=headers
-        )
+        response = client.get("/process/Testworkflow/versions", headers=headers)
         assert response.status_code == 401
 
 
@@ -402,7 +412,7 @@ class TestProcessValidation:
         }
         # Validate process validate api with no exists process key & name
         response = client.get(
-            "/process/validate?processKey=Testworkflow&processName=Testworkflow",
+            "/process/validate?processKey=testflow&processName=testflow",
             headers=headers,
         )
         assert response.status_code == 200
@@ -412,22 +422,7 @@ class TestProcessValidation:
         response = client.post(
             "/process",
             headers=headers,
-            json=get_process_request_payload(
-                name="Testworkflow", parent_process_key="Testworkflow"
-            ),
-        )
-        assert response.status_code == 201
-        assert response.json.get("id") is not None
-        ensure_process_data_binary(response.json.get("id"))
-        response = client.post(
-            "/process",
-            headers=headers,
-            json=get_process_request_payload(
-                name="Testworkflow",
-                parent_process_key="Testworkflow",
-                major_version=2,
-                minor_version=0,
-            ),
+            json=get_process_request_payload(),
         )
         assert response.status_code == 201
         assert response.json.get("id") is not None
@@ -439,3 +434,91 @@ class TestProcessValidation:
             headers=headers,
         )
         assert response.status_code == 200
+
+
+class TestProcessPublish:
+    """Test suite for the process publish."""
+
+    def test_process_publish_success(self, app, client, session, jwt):
+        """Test process publish success."""
+        token = get_token(jwt, role=CREATE_DESIGNS, username="designer")
+        headers = {
+            "Authorization": f"Bearer {token}",
+            "content-type": "application/json",
+        }
+        response = client.post(
+            "/process", headers=headers, json=get_process_request_payload()
+        )
+
+        assert response.status_code == 201
+        assert response.json.get("id") is not None
+        assert response.json.get("name") == "Test workflow"
+        process_id = response.json.get("id")
+        ensure_process_data_binary(process_id)
+
+        with patch("requests.post") as mock_post:
+            mock_response = MagicMock()
+            mock_response.status_code = 200
+            mock_response.text = "{}"
+            mock_post.return_value = mock_response
+
+            response = client.post(
+                f"/process/{process_id}/publish", headers=headers, json={}
+            )
+            assert response.status_code == 200
+
+    def test_process_publish_invalid_id(self, app, client, session, jwt):
+        """Test process publish with invalid id."""
+        token = get_token(jwt, role=CREATE_DESIGNS, username="designer")
+        headers = {
+            "Authorization": f"Bearer {token}",
+            "content-type": "application/json",
+        }
+        response = client.post("/process/55/publish", headers=headers, json={})
+        assert response.status_code == 400
+
+    def test_process_publish_unauthorized(app, client, session, jwt):
+        """Testing process publish without proper authorization."""
+        response = client.post("/process/55/publish", json={})
+        assert response.status_code == 401
+
+
+class TestProcessUnPublish:
+    """Test suite for the process unpublish."""
+
+    def test_process_unpublish_success(self, app, client, session, jwt):
+        """Test process unpublish success."""
+        token = get_token(jwt, role=CREATE_DESIGNS, username="designer")
+        headers = {
+            "Authorization": f"Bearer {token}",
+            "content-type": "application/json",
+        }
+        response = client.post(
+            "/process", headers=headers, json=get_process_request_payload()
+        )
+
+        assert response.status_code == 201
+        assert response.json.get("id") is not None
+        assert response.json.get("name") == "Test workflow"
+        process_id = response.json.get("id")
+        ensure_process_data_binary(process_id)
+
+        response = client.post(
+            f"/process/{process_id}/unpublish", headers=headers, json={}
+        )
+        assert response.status_code == 200
+
+    def test_process_unpublish_invalid_id(self, app, client, session, jwt):
+        """Test process unpublish with invalid id."""
+        token = get_token(jwt, role=CREATE_DESIGNS, username="designer")
+        headers = {
+            "Authorization": f"Bearer {token}",
+            "content-type": "application/json",
+        }
+        response = client.post("/process/55/unpublish", headers=headers, json={})
+        assert response.status_code == 400
+
+    def test_process_unpublish_unauthorized(app, client, session, jwt):
+        """Testing process unpublish without proper authorization."""
+        response = client.post("/process/55/publish", json={})
+        assert response.status_code == 401

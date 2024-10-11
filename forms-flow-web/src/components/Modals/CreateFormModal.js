@@ -1,5 +1,6 @@
 import React from "react";
 import Modal from "react-bootstrap/Modal";
+import { CloseIcon } from "@formsflow/components";
 
 const CreateFormModal = React.memo(({ newFormModal, onClose, onAction }) => {
     const ActionType = {
@@ -7,7 +8,7 @@ const CreateFormModal = React.memo(({ newFormModal, onClose, onAction }) => {
         IMPORT: "IMPORT",
         USE_TEMPLATE: "USE_TEMPLATE",
         USE_AI: "USE_AI"
-      };
+    };
     return (
         <>
             <Modal show={newFormModal} onHide={onClose} >
@@ -16,15 +17,7 @@ const CreateFormModal = React.memo(({ newFormModal, onClose, onAction }) => {
                         <div> Add Form</div>
                     </Modal.Title>
                     <div className="d-flex align-items-center">
-                        <button
-                            type="button"
-                            className="close-modal"
-                            onClick={onClose}
-                            aria-label="close New Form Modal"
-                            data-testid="close-new-form-modal"
-                        >
-                            X
-                        </button>
+                        <CloseIcon width="16.5" height="16.5" onClick={onClose} />
                     </div>
                 </Modal.Header>
                 <Modal.Body className="create-form-modal-body d-flex justify-content-around">
@@ -37,14 +30,6 @@ const CreateFormModal = React.memo(({ newFormModal, onClose, onAction }) => {
                             <span className="Modal-content-heading">Import</span>
                             <span className="modal-content-text">Upload form from a file</span>
                         </div>
-                            {/* <div className="border bg-light text-center content-wrapper" onClick={() => onAction(actionType.USE_TEMPLATE)}>
-                                <span className="Modal-content-heading">Use Template</span>
-                                <span className="modal-content-text">Start off from a template</span>
-                            </div>
-                            <div className="border bg-light text-center content-wrapper" onClick={() => onAction(actionType.}>
-                                <span className="Modal-content-heading">Use AI</span>
-                                <span className="modal-content-text">Build form using Flow-E AI chatbot</span>
-                            </div> */}
                     </div>
                 </Modal.Body>
             </Modal>

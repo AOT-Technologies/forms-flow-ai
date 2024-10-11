@@ -6,7 +6,6 @@ from http import HTTPStatus
 from flask import request
 from flask_restx import Namespace, Resource, fields
 from formsflow_api_utils.exceptions import BusinessException
-from formsflow_api_utils.services.external import FormioService
 from formsflow_api_utils.utils import (
     CREATE_DESIGNS,
     CREATE_FILTERS,
@@ -25,6 +24,7 @@ from formsflow_api.schemas import (
 )
 from formsflow_api.services import (
     ApplicationService,
+    AuthorizationService,
     FilterService,
     FormHistoryService,
     FormProcessMapperService,
@@ -158,11 +158,24 @@ form_history_change_log_model = API.model(
 form_history_response_model = API.inherit(
     "FormHistoryResponse",
     {
-        "id": fields.String(),
-        "form_id": fields.String(),
-        "created_by": fields.String(),
-        "created": fields.String(),
-        "change_log": fields.Nested(form_history_change_log_model),
+        "formHistory": fields.List(
+            fields.Nested(
+                API.model(
+                    "FormHistory",
+                    {
+                        "id": fields.String(),
+                        "formId": fields.String(),
+                        "createdBy": fields.String(),
+                        "created": fields.String(),
+                        "changeLog": fields.Nested(form_history_change_log_model),
+                        "majorVersion": fields.Integer(),
+                        "minorVersion": fields.Integer(),
+                        "isMajor": fields.Boolean(),
+                    },
+                )
+            )
+        ),
+        "totalCount": fields.Integer(),
     },
 )
 forms_list_model = API.model(
@@ -213,8 +226,8 @@ export_response_model = API.model(
 )
 
 
-@cors_preflight("GET,POST,OPTIONS")
-@API.route("", methods=["GET", "POST", "OPTIONS"])
+@cors_preflight("GET,OPTIONS")
+@API.route("", methods=["GET", "OPTIONS"])
 class FormResourceList(Resource):
     """Resource for getting forms."""
 
@@ -314,27 +327,6 @@ class FormResourceList(Resource):
             HTTPStatus.OK,
         )
 
-    @staticmethod
-    @auth.has_one_of_roles([CREATE_DESIGNS])
-    @profiletime
-    @API.doc(body=mapper_create_model)
-    @API.response(
-        200, "CREATED:- Successful request.", model=mapper_create_response_model
-    )
-    @API.response(
-        400,
-        "BAD_REQUEST:- Invalid request.",
-    )
-    @API.response(
-        401,
-        "UNAUTHORIZED:- Authorization header not provided or an invalid token passed.",
-    )
-    def post():
-        """Post a form process mapper using the request body."""
-        mapper_json = request.get_json()
-        response = FormProcessMapperService.mapper_create(mapper_json)
-        return response, HTTPStatus.CREATED
-
 
 @cors_preflight("GET,PUT,DELETE,OPTIONS")
 @API.route("/<int:mapper_id>", methods=["GET", "PUT", "DELETE", "OPTIONS"])
@@ -407,24 +399,56 @@ class FormResourceById(Resource):
     )
     def put(mapper_id: int):
         """Update form by mapper_id."""
-        application_json = request.get_json()
+        data = request.get_json()
 
-        if "taskVariable" in application_json:
+        # Extract mapper and authorization data from the request
+        mapper_data = data.get("mapper")
+        authorization_data = data.get("authorizations")
+
+        # Get the parentFormId as resource id from mapper data if authorization data is provided
+        resource_id = mapper_data.get("parentFormId") if authorization_data else None
+        task_variable = mapper_data.get("taskVariables", [])
+
+        # If task variables are present, update filter variables and serialize them
+        if "taskVariables" in mapper_data:
             FilterService.update_filter_variables(
-                application_json.get("taskVariable"), application_json.get("formId")
+                task_variable, mapper_data.get("formId")
             )
-            application_json["taskVariable"] = json.dumps(
-                application_json.get("taskVariable")
-            )
+            mapper_data["taskVariables"] = json.dumps(task_variable)
+
+        # Load the mapper data into the schema
         mapper_schema = FormProcessMapperSchema()
-        dict_data = mapper_schema.load(application_json)
+        dict_data = mapper_schema.load(mapper_data)
+
+        # Update the mapper with the provided data
         mapper = FormProcessMapperService.update_mapper(
             form_process_mapper_id=mapper_id, data=dict_data
         )
-        response = mapper_schema.dump(mapper)
-        response["taskVariable"] = json.loads(response["taskVariable"])
-        FormHistoryService.create_form_logs_without_clone(data=application_json)
 
+        # If authorization data and resource ID are provided, update resource authorization
+        if authorization_data and resource_id:
+            AuthorizationService.create_or_update_resource_authorization(
+                authorization_data, bool(auth.has_role([CREATE_DESIGNS]))
+            )
+
+        # Dump the updated mapper data into the response schema
+        mapper_response = mapper_schema.dump(mapper)
+
+        if task_variables := mapper_response.get("taskVariables"):
+            mapper_response["taskVariables"] = json.loads(task_variables)
+
+        # Create form logs without cloning
+        FormHistoryService.create_form_logs_without_clone(data=mapper_data)
+
+        # Prepare the response
+        response = {}
+        response["mapper"] = mapper_response
+        if resource_id:
+            response["authorizations"] = AuthorizationService().get_auth_list_by_id(
+                resource_id
+            )
+
+        # Return the response with HTTP status OK
         return (
             response,
             HTTPStatus.OK,
@@ -470,8 +494,8 @@ class FormResourceByFormId(Resource):
         : form_id:- Get details of only form corresponding to a particular formId
         """
         response = FormProcessMapperService.get_mapper_by_formid(form_id=form_id)
-        task_variable = response.get("taskVariable")
-        response["taskVariable"] = json.loads(task_variable) if task_variable else None
+        task_variable = response.get("taskVariables")
+        response["taskVariables"] = json.loads(task_variable) if task_variable else None
         return (
             response,
             HTTPStatus.OK,
@@ -573,22 +597,13 @@ class FormioFormResource(Resource):
     def post():
         """Formio form creation method."""
         try:
+            # form data
             data = request.get_json()
-            formio_service = FormioService()
-            form_io_token = formio_service.get_formio_access_token()
-            response, status = (
-                formio_service.create_form(data, form_io_token),
-                HTTPStatus.CREATED,
+            response = FormProcessMapperService.create_form(
+                data, bool(auth.has_role([CREATE_DESIGNS]))
             )
-            FormHistoryService.create_form_log_with_clone(
-                data={
-                    **response,
-                    "parentFormId": data.get("parentFormId"),
-                    "newVersion": data.get("newVersion"),
-                    "componentChanged": True,
-                }
-            )
-            return response, status
+            return response, HTTPStatus.CREATED
+
         except BusinessException as err:
             message = (
                 err.details[0]["message"]
@@ -646,7 +661,16 @@ class FormHistoryResource(Resource):
     def get(form_id: str):
         """Getting form history."""
         FormProcessMapperService.check_tenant_authorization_by_formid(form_id=form_id)
-        return FormHistoryService.get_all_history(form_id)
+        form_history, count = FormHistoryService.get_all_history(form_id, request.args)
+        return (
+            (
+                {
+                    "formHistory": form_history,
+                    "totalCount": count,
+                }
+            ),
+            HTTPStatus.OK,
+        )
 
 
 @cors_preflight("GET,OPTIONS")

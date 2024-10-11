@@ -184,7 +184,7 @@ class ApplicationService:  # pylint: disable=too-many-public-methods
 
     @staticmethod
     @user_context
-    def get_auth_applications_and_count(  # pylint: disable=too-many-arguments,too-many-locals
+    def get_auth_applications_and_count(  # pylint: disable=too-many-arguments,too-many-locals,too-many-positional-arguments
         page_no: int,
         limit: int,
         order_by: str,
@@ -267,7 +267,7 @@ class ApplicationService:  # pylint: disable=too-many-public-methods
 
     @staticmethod
     @user_context
-    def get_all_applications_by_user(  # pylint: disable=too-many-arguments,too-many-locals
+    def get_all_applications_by_user(  # pylint: disable=too-many-arguments,too-many-locals,too-many-positional-arguments
         page_no: int,
         limit: int,
         order_by: str,
@@ -395,7 +395,7 @@ class ApplicationService:  # pylint: disable=too-many-public-methods
             raise BusinessException(BusinessErrorCode.APPLICATION_ID_NOT_FOUND)
 
     @staticmethod
-    def get_aggregated_applications(  # pylint: disable=too-many-arguments
+    def get_aggregated_applications(  # pylint: disable=too-many-arguments,too-many-positional-arguments
         from_date: str,
         to_date: str,
         page_no: int,
@@ -539,7 +539,7 @@ class ApplicationService:  # pylint: disable=too-many-public-methods
     def resubmit_application(application_id: int, payload: Dict, token: str):
         """Resubmit application and update process variables."""
         mapper = ApplicationService.get_application_form_mapper_by_id(application_id)
-        task_variable = json.loads(mapper.get("taskVariable"))
+        task_variable = json.loads(mapper.get("taskVariables"))
         form_data = payload.pop("data", None)
         payload["processVariables"] = ApplicationService.fetch_task_variable_values(
             task_variable, form_data

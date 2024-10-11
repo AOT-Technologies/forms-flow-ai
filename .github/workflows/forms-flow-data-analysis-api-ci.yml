@@ -29,7 +29,7 @@ jobs:
 
     strategy:
       matrix:
-        python-version: [3.11.9]
+        python-version: [3.12.6]
 
     steps:
       - uses: actions/checkout@v2
@@ -44,7 +44,7 @@ jobs:
         id: pylint
         run: |
           pylint --rcfile=setup.cfg  src/api
-  
+
   Test:
     if: always()
     needs: setup-job
@@ -71,6 +71,10 @@ jobs:
       USE_DOCKER_MOCK: "True"
 
     runs-on: ubuntu-20.04
+
+    strategy:
+      matrix:
+        python-version: [3.12.6]
 
     services:
       postgres:
@@ -104,7 +108,11 @@ jobs:
   Build:
     if: always()
     runs-on: ubuntu-20.04
-    name: Build
+
+    strategy:
+      matrix:
+        python-version: [3.12.6]
+
     steps:
       - uses: actions/checkout@v2
       - name: Set up Python ${{ matrix.python-version }}

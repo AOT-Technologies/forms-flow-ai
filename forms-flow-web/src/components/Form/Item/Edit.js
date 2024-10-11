@@ -3,7 +3,6 @@ import { useSelector, useDispatch } from "react-redux";
 import { Card } from 'react-bootstrap';
 import { Errors, FormBuilder, Formio } from "@aot-technologies/formio-react";
 import { BackToPrevIcon } from "@formsflow/components";
-import ProcessDiagram from "../../BPMN/ProcessDiagramHook";
 import { CustomButton, ConfirmModal } from "@formsflow/components";
 import { RESOURCE_BUNDLES_DATA } from "../../../resourceBundles/i18n";
 import LoadingOverlay from "react-loading-overlay-ts";
@@ -11,9 +10,12 @@ import _set from "lodash/set";
 import _cloneDeep from "lodash/cloneDeep";
 import _camelCase from "lodash/camelCase";
 import { Translation, useTranslation } from "react-i18next";
-import { listProcess } from "../../../apiManager/services/formatterService";
 import { push } from "connected-react-router";
 import { HistoryIcon, PreviewIcon } from "@formsflow/components";
+import ActionModal from "../../Modals/ActionModal.js";
+import {
+  setProcessDiagramXML,
+} from "../../../actions/processActions";
 import {
   MULTITENANCY_ENABLED,
 } from "../../../constants/constants";
@@ -35,8 +37,14 @@ import {
 
 import _isEquial from "lodash/isEqual";
 import { toast } from "react-toastify";
+import BpmnEditor from '../../Modeler/Editors/BpmnEditor';
+import { useParams } from "react-router-dom";
+//getting process data
+import { getFormProcesses } from "../../../apiManager/services/processServices";
+//getting process diagram
+import { getProcessXml } from "../../../apiManager/services/processServices";
 
-
+import SettingsModal from "../../CustomComponents/settingsModal";
 const reducer = (form, { type, value }) => {
   const formCopy = _cloneDeep(form);
   switch (type) {
@@ -63,8 +71,6 @@ const reducer = (form, { type, value }) => {
 };
 const Edit = React.memo(() => {
   const dispatch = useDispatch();
-  const process = useSelector((state) => state.process.processList);
-  const processList = listProcess(process);
   const workflow = useSelector((state) => state.process.workflowAssociated);
   const lang = useSelector((state) => state.user.lang);
   const { t } = useTranslation();
@@ -77,8 +83,8 @@ const Edit = React.memo(() => {
   const [showLayout, setShowLayout] = useState(true);
   const tenantKey = useSelector((state) => state.tenants?.tenantId);
   const redirectUrl = MULTITENANCY_ENABLED ? `/tenant/${tenantKey}/` : "/";
-
-  //for save form 
+  const processXmlDiagram = useSelector((state) => state.process?.processXml);
+  const { formId } = useParams();
   const [formSubmitted, setFormSubmitted] = useState(false);
   const formAccess = useSelector((state) => state.user?.formAccess || []);
   const submissionAccess = useSelector((state) => state.user?.submissionAccess || []);
@@ -89,9 +95,26 @@ const Edit = React.memo(() => {
   const applicationCount = useSelector((state) => state.process?.applicationCount);
   const [showSaveModal, setShowSaveModal] = useState(false);
   const [hasRendered, setHasRendered] = useState(false);
+  const [isLoadingDiagram, setIsLoadingDiagram] = useState(true);
+  //it returns the digram (old method);
+  // const diagramXML = useSelector((state) => state.process.processDiagramXML);
+  const roleIds = useSelector((state) => state.user?.roleIds || {});
+  const [showSettingsModal, setShowSettingsModal] = useState(false);
+  const handleOpenModal = () => setShowSettingsModal(true);
+  const handleCloseModal = () => setShowSettingsModal(false);
 
-  useEffect(() => {    
-    if(showFlow) { 
+  //action modal
+  const [newActionModal, setNewActionModal] = useState(false);
+  const onCloseActionModal = () => {
+    setNewActionModal(false);
+  };
+  const CategoryType = {
+    FORM: "FORM",
+    WORKFLOW: "WORKFLOW"
+  };
+
+  useEffect(() => {
+    if (showFlow) {
       setHasRendered(true);
     }
   }, [showFlow]);
@@ -105,10 +128,30 @@ const Edit = React.memo(() => {
     setShowFlow(true);
     setShowLayout(false);
   };
+useEffect(() => {
+  if (formId) {
+    // Fetch form processes with formId
+    dispatch(getFormProcesses(formId));
+  }
+}, [formId]);
+
+useEffect(() => {
+  if (workflow?.value) {
+    // Fetch workflow diagram XML when the workflow value is present
+    dispatch(getProcessXml(workflow.value));
+  }
+
+  if (workflow?.value && processXmlDiagram) {
+    // Set the process diagram XML and stop the loading spinner when both workflow and XML are available
+    dispatch(setProcessDiagramXML(processXmlDiagram));
+    setIsLoadingDiagram(false);
+  }
+}, [workflow?.value, processXmlDiagram]);
+
+
 
   //for save farm 
   const isMapperSaveNeeded = (newData) => {
-    // checks if the updates need to save to form_process_mapper too
     return (
       previousData.formName !== newData.title ||
       previousData.anonymous !== processListData.anonymous ||
@@ -126,8 +169,8 @@ const Edit = React.memo(() => {
       parentFormId: processListData.parentFormId,
       formType: submittedData.type,
       status: processListData.status ? processListData.status : INACTIVE,
-      taskVariable: processListData.taskVariable
-        ? processListData.taskVariable
+      taskVariables: processListData.taskVariables
+        ? processListData.taskVariables
         : [],
       id: processListData.id,
       formId: submittedData._id,
@@ -187,6 +230,47 @@ const Edit = React.memo(() => {
   const isNewMapperNeeded = () => {
     return previousData.formName !== form.title && applicationCount > 0;
   };
+  const handleConfirmSettings = () => {
+    const parentFormId = processListData.parentFormId;
+      const mapper = {
+      formId: form._id,
+      formName: form.title,
+      description: formDescription,
+      status: processListData.status || "inactive",
+      taskVariables: processListData.taskVariables
+        ? processListData.taskVariables
+        : [],
+        anonymous: formAccess[0]?.roles.includes(roleIds.ANONYMOUS),
+        parentFormId: parentFormId,
+      formType: form.type,
+      processKey: workflow?.value,
+      processName: workflow?.name,
+      id: processListData.id,
+      workflowChanged: false,
+      statusChanged: false,
+      resourceId: form._id,
+    };
+    
+    const authorizations = {
+      application: {
+        resourceId:parentFormId ,
+        resourceDetails: {},
+        roles: []
+    },
+      designer: {
+        resourceId: parentFormId,
+        resourceDetails: {},
+        roles: []
+    },
+    form: {
+      resourceId: parentFormId,
+      resourceDetails: {},
+      roles: []
+  }
+};
+    dispatch(saveFormProcessMapperPut({mapper, authorizations}));
+    };
+  
 
   const closeSaveModal = () => {
     setShowSaveModal(false);
@@ -278,11 +362,11 @@ const Edit = React.memo(() => {
     console.log("discardChanges");
   };
 
-  const editorSettings = () => {
-    console.log("ecitorActions");
-  };
+  // const editorSettings = () => {
+  //   console.log("ecitorActions");
+  // };
   const editorActions = () => {
-    console.log("ecitorActions");
+    setNewActionModal(true);
   };
 
   const handlePublish = () => {
@@ -301,6 +385,10 @@ const Edit = React.memo(() => {
           spinner
           text={t("Loading...")}
         >
+
+<SettingsModal show={showSettingsModal} handleClose={handleCloseModal} 
+handleConfirm={handleConfirmSettings} />
+
           <Errors errors={errors} />
 
           <Card className="editor-header">
@@ -325,7 +413,7 @@ const Edit = React.memo(() => {
                     variant="dark"
                     size="md"
                     label={<Translation>{(t) => t("Settings")}</Translation>}
-                    onClick={editorSettings}
+                    onClick={handleOpenModal}
                     dataTestid="eidtor-settings-testid"
                     ariaLabel={t("Designer Settings Button")}
                   />
@@ -475,13 +563,17 @@ const Edit = React.memo(() => {
                 </Card.Header>
                 <Card.Body>
                   <div className="flow-builder">
-                    {processList.length && workflow?.value ? (
-                      <div className="my-4">
-                        <ProcessDiagram
-                          processKey={workflow?.value}
-                          tenant={workflow?.tenant}
-                        />
-                      </div>) : ""}
+                    {isLoadingDiagram ? (
+                      "loading..." // TBD: add a loader here
+                    ) : (
+                      <BpmnEditor
+                        processKey={workflow?.value}
+                        tenant={workflow?.tenant}
+                        isNewDiagram={false}
+                        bpmnXml={processXmlDiagram}
+                      />
+                    )
+                    }
                   </div>
                 </Card.Body>
               </Card>
@@ -495,6 +587,12 @@ const Edit = React.memo(() => {
 
         </LoadingOverlay>
       </div>
+      <ActionModal
+        newActionModal={newActionModal}
+        onClose={onCloseActionModal}
+        CategoryType={CategoryType.FORM}
+      />
+
       <ConfirmModal
         show={showSaveModal}
         title={<Translation>{(t) => t("Save Your Changes")}</Translation>}
@@ -506,6 +604,9 @@ const Edit = React.memo(() => {
         secondaryBtnText={<Translation>{(t) => t("Save as Version 4.0")}</Translation>}
         size="md"
       />
+      <div>
+      </div>
+      
     </div >
   );
 });

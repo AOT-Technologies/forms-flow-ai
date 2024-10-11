@@ -17,3 +17,13 @@ class ProcessHistorySchema(Schema):
     created = fields.Str(data_key="created")
     major_version = fields.Int(data_key="majorVersion")
     minor_version = fields.Int(data_key="minorVersion")
+    process_type = fields.Method("get_process_type", data_key="processType")
+    isMajor = fields.Method("get_is_major", dump_only=True)
+
+    def get_is_major(self, obj):
+        """Determine if the version is major."""
+        return obj.minor_version == 0
+
+    def get_process_type(self, obj):
+        """This method is to get the process type."""
+        return obj.process_type.value

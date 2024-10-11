@@ -1,6 +1,5 @@
 """This exposes Form history service."""
 
-from http import HTTPStatus
 from uuid import uuid1
 
 from formsflow_api_utils.exceptions import BusinessException
@@ -9,7 +8,7 @@ from formsflow_api_utils.utils.user_context import UserContext, user_context
 
 from formsflow_api.constants import BusinessErrorCode
 from formsflow_api.models import FormHistory
-from formsflow_api.schemas import FormHistorySchema
+from formsflow_api.schemas import FormHistoryReqSchema, FormHistorySchema
 
 
 class FormHistoryService:
@@ -104,11 +103,16 @@ class FormHistoryService:
         return None
 
     @staticmethod
-    def get_all_history(form_id: str):
+    def get_all_history(form_id: str, request_args):
         """Get all history."""
         assert form_id is not None
-        form_histories = FormHistory.fetch_histories_by_parent_id(form_id)
+        dict_data = FormHistoryReqSchema().load(request_args) or {}
+        page_no = dict_data.get("page_no")
+        limit = dict_data.get("limit")
+        form_histories, count = FormHistory.fetch_histories_by_parent_id(
+            form_id, page_no, limit
+        )
         if form_histories:
             form_history_schema = FormHistorySchema(many=True)
-            return form_history_schema.dump(form_histories), HTTPStatus.OK
+            return form_history_schema.dump(form_histories), count
         raise BusinessException(BusinessErrorCode.INVALID_FORM_ID)

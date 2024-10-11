@@ -4,12 +4,15 @@ import json
 
 import requests
 from flask import current_app
+from formsflow_api_utils.exceptions import BusinessException
 from formsflow_api_utils.utils import (
     HTTP_TIMEOUT,
     UserContext,
     profiletime,
     user_context,
 )
+
+from formsflow_api.constants import BusinessErrorCode
 
 
 class KeycloakAdminAPIService:
@@ -115,7 +118,9 @@ class KeycloakAdminAPIService:
             current_app.logger.debug(f"Keycloak Admin PUT API payload {data}")
             current_app.logger.debug(f"Keycloak response: {response}")
         except Exception as err_code:
-            raise f"Request to Keycloak Admin APIs failed., {err_code}"
+            raise BusinessException(
+                BusinessErrorCode.KEYCLOAK_REQUEST_FAIL
+            ) from err_code
         response.raise_for_status()
         if response.status_code == 204:
             return f"Updated - {url_path}"
@@ -157,7 +162,9 @@ class KeycloakAdminAPIService:
             response = self.session.request("DELETE", url, data=json.dumps(data))
             current_app.logger.debug(f"keycloak Admin API DELETE request URL: {url}")
         except Exception as err_code:
-            raise f"Request to Keycloak Admin APIs failed., {err_code}"
+            raise BusinessException(
+                BusinessErrorCode.KEYCLOAK_REQUEST_FAIL
+            ) from err_code
         response.raise_for_status()
         return response.status_code == 204
 
@@ -181,7 +188,9 @@ class KeycloakAdminAPIService:
             current_app.logger.debug(f"Keycloak Admin POST API payload {data}")
             current_app.logger.debug(f"Keycloak response: {response}")
         except Exception as err_code:
-            raise f"Request to Keycloak Admin APIs failed., {err_code}"
+            raise BusinessException(
+                BusinessErrorCode.KEYCLOAK_REQUEST_FAIL
+            ) from err_code
         response.raise_for_status()
         return response
 

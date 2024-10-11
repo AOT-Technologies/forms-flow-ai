@@ -7,6 +7,11 @@ export const formCreate = (formData) => {
   return RequestService.httpPOSTRequest(API.FORM_DESIGN, formData);
 };
 
+export const formImport = (importData, data) => {
+  console.log("reached back", importData, data);
+  return RequestService.httpMultipartPOSTRequest(API.FORM_IMPORT, importData, data);
+};
+
 export const formUpdate = (form_id,formData) => {
   return RequestService.httpPUTRequest(`${API.FORM_DESIGN}/${form_id}`, formData);
 };

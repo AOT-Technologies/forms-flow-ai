@@ -32,6 +32,11 @@ services:
       INSIGHT_API_KEY: ${INSIGHT_API_KEY}
       INSIGHT_API_URL: ${INSIGHT_API_URL}
       DATABASE_URL: ${FORMSFLOW_API_DB_URL:-postgresql://postgres:changeme@forms-flow-webapi-db:5432/webapi}
+      DATABASE_USERNAME: ${FORMSFLOW_API_DB_USER:-postgres}
+      DATABASE_PASSWORD: ${FORMSFLOW_API_DB_PASSWORD:-changeme}
+      DATABASE_HOST: ${FORMSFLOW_API_DB_HOST:-forms-flow-webapi-db}
+      DATABASE_PORT: ${FORMSFLOW_API_DB_PORT:-5432}
+      DATABASE_NAME: ${FORMSFLOW_API_DB_NAME:-webapi}
       BPM_TOKEN_API: ${KEYCLOAK_URL}${KEYCLOAK_URL_HTTP_RELATIVE_PATH:-/auth}/realms/${KEYCLOAK_URL_REALM:-forms-flow-ai}/protocol/openid-connect/token
       BPM_CLIENT_ID: ${KEYCLOAK_BPM_CLIENT_ID:-forms-flow-bpm}
       BPM_CLIENT_SECRET: ${KEYCLOAK_BPM_CLIENT_SECRET:-e4bdbd25-1467-4f7f-b993-bc4b1944c943}

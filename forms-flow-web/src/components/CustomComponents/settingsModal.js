@@ -21,6 +21,9 @@ const SettingsModal =
   const [url, setUrl] = useState('');
   const [copied, setCopied] = useState(false); 
   const formData = useSelector((state) => state.form?.form.path);
+  const [editIndexValue, setEditIndexValue] = useState(0);
+  const [createIndexValue, setCreateIndexValue] = useState(0);
+  const [viewIndexValue, setViewIndexValue] = useState(0);  
   const reducer = (path, { type, value }) => {
     const formCopy = _cloneDeep(path);
     switch (type) {
@@ -227,9 +230,31 @@ const SettingsModal =
 
           <Form.Label className='field-label'>{t("Who Can Edit This Form")}</Form.Label>
           <CustomRadioButton items={[
-            { label: t("Only You"), onClick: () => setRolesState((prev) => ({ ...prev, edit: { ...prev.edit, selectedOption: 'onlyYou' } })) },
-            { label: t("You and specified roles"), onClick: () => setRolesState((prev) => ({ ...prev, edit: { ...prev.edit, selectedOption: 'specifiedRoles' } })) },
-          ]} dataTestid="edit-submission-role" ariaLabel={t("Edit Submission Role")} />
+              {
+                label: t("Only You"),
+                onClick: () => {
+                  setRolesState((prev) => ({
+                    ...prev,
+                    edit: { ...prev.edit, selectedOption: 'onlyYou' }
+                  }));
+                  setEditIndexValue(0);
+                }
+              },
+              {
+                label: t("You and specified roles"),
+                onClick: () => {
+                  setRolesState((prev) => ({
+                    ...prev,
+                    edit: { ...prev.edit, selectedOption: 'specifiedRoles' }
+                  }));
+                  setEditIndexValue(1);
+                }
+              },
+            ]}
+            dataTestid="edit-submission-role"
+            ariaLabel={t("Edit Submission Role")}
+            indexValue={editIndexValue}
+          />
 
 
           {rolesState.edit.selectedOption === 'onlyYou' && (
@@ -270,10 +295,35 @@ const SettingsModal =
               ({ ...prev, create: { ...prev.create, isPublic: !prev.create.isPublic } }))}
             className='field-label'
           />
-          <CustomRadioButton items={[
-            { label: t("Registered users"), onClick: () => setRolesState((prev) => ({ ...prev, create: { ...prev.create, selectedOption: 'registeredUsers' } })) },
-            { label: t("Specific roles"), onClick: () => setRolesState((prev) => ({ ...prev, create: { ...prev.create, selectedOption: 'specifiedRoles' } })) },
-          ]} dataTestid="create-submission-role" ariaLabel={t("Create Submission Role")} />
+          <CustomRadioButton
+  items={[
+    { 
+      label: t("Registered users"), 
+      onClick: () => {
+        setRolesState((prev) => ({ 
+          ...prev, 
+          create: { ...prev.create, selectedOption: 'registeredUsers' } 
+        }));
+        setCreateIndexValue(0); 
+        // Set index value for Registered users
+      } 
+    },
+    { 
+      label: t("Specific roles"), 
+      onClick: () => {
+        setRolesState((prev) => ({ 
+          ...prev, 
+          create: { ...prev.create, selectedOption: 'specifiedRoles' } 
+        }));
+        setCreateIndexValue(1);  // Set index value for Specific roles
+      } 
+    },
+  ]}
+  dataTestid="create-submission-role"
+  ariaLabel={t("Create Submission Role")}
+  indexValue={createIndexValue}
+/>
+
 
           {rolesState.create.selectedOption === 'registeredUsers' && (
             <FormInput disabled={true} />
@@ -305,13 +355,33 @@ const SettingsModal =
 
           <Form.Label className="field-label mt-3">{t("Who Can View Submissions")}</Form.Label>
           <CustomRadioButton
-            items={[
-              { label: t("Submitter"), onClick: () => setRolesState((prev) => ({ ...prev, view: { ...prev.view, selectedOption: 'submitter' } })) },
-              { label: t("Submitter and specified roles"), onClick: () => setRolesState((prev) => ({ ...prev, view: { ...prev.view, selectedOption: 'specifiedRoles' } })) },
-            ]}
-            dataTestid="view-submission-role"
-            ariaLabel={t("View Submission Role")}
-          />
+  items={[
+    { 
+      label: t("Submitter"), 
+      onClick: () => {
+        setRolesState((prev) => ({ 
+          ...prev, 
+          view: { ...prev.view, selectedOption: 'submitter' } 
+        }));
+        setViewIndexValue(0);  // Set index value for Submitter
+      } 
+    },
+    { 
+      label: t("Submitter and specified roles"), 
+      onClick: () => {
+        setRolesState((prev) => ({ 
+          ...prev, 
+          view: { ...prev.view, selectedOption: 'specifiedRoles' } 
+        }));
+        setViewIndexValue(0); 
+      } 
+    },
+  ]}
+  dataTestid="view-submission-role"
+  ariaLabel={t("View Submission Role")}
+  indexValue={viewIndexValue}
+/>
+
 
           {rolesState.view.selectedOption === 'submitter' && (
             <FormInput disabled={true} />

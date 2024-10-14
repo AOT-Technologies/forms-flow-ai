@@ -123,6 +123,14 @@ class FormProcessMapperService:  # pylint: disable=too-many-public-methods
                 raise PermissionError("Tenant authentication failed.")
             mapper_schema = FormProcessMapperSchema()
             response = mapper_schema.dump(mapper)
+            # Include form versions
+            version_data = FormHistory.get_latest_version(mapper.parent_form_id)
+            major_version, minor_version = 1, 0
+            if version_data:
+                major_version = version_data.major_version
+                minor_version = version_data.minor_version
+            response["majorVersion"] = major_version
+            response["minorVersion"] = minor_version
             if response.get("deleted") is False:
                 return response
 

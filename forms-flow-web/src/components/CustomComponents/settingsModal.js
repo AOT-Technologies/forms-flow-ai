@@ -13,8 +13,8 @@ import _camelCase from "lodash/camelCase";
 
 const SettingsModal =
  ({ show, handleClose, handleConfirm, rolesState, 
-  setRolesState, formDetails, updateFormName, updateFormDescription, formType, 
-  setFormType, newPath, handleFormPathChange }) => {
+  setRolesState, formDetails, updateFormName, updateFormDescription, formDisplay, 
+  setFormDisplay, newPath, handleFormPathChange }) => {
   const { t } = useTranslation();
   const dispatch = useDispatch();
   const [userRoles, setUserRoles] = useState([]);
@@ -60,7 +60,7 @@ const SettingsModal =
       target.type === "checkbox"
         ? target.checked ? "wizard" : "form"
         : target.value;
-    setFormType(value);
+    setFormDisplay(value);
     dispatchFormAction({ type: path, value });
   };
   
@@ -214,7 +214,7 @@ const SettingsModal =
             type="checkbox"
             id="createCheckbox"
             label={t("Allow adding multiple pages in this form")}
-            checked={formType === "wizard"}
+            checked={formDisplay === "wizard"}
             onChange={(event) => handleChange("display", event)}
 
 

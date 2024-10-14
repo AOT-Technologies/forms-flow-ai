@@ -125,7 +125,7 @@ const Edit = React.memo(() => {
     description: processListData.description,
   });
 
-  const [formType, setFormType] = useState(processListData.formType);
+  const [formDisplay, setFormDisplay] = useState(processListData.formType);
 
   const [rolesState, setRolesState] = useState({
     edit: {
@@ -298,7 +298,8 @@ useEffect(() => {
         : [],
       anonymous: rolesState.create.isPublic,
       parentFormId: parentFormId,
-      formType: formType,
+      formType: form.type,
+      display: formDisplay, 
       processKey: workflow?.value,
       processName: workflow?.name,
       id: processListData.id,
@@ -447,7 +448,8 @@ useEffect(() => {
             handleConfirm={handleConfirmSettings} 
             rolesState={rolesState} setRolesState={setRolesState} 
             setFormDetails={setFormDetails} formDetails={formDetails} 
-            updateFormName={updateFormName} formType={formType} setFormType={setFormType} 
+            updateFormName={updateFormName} formDisplay={formDisplay} 
+            setFormDisplay={setFormDisplay} 
             updateFormDescription={updateFormDescription} newPath={newPath} 
             handleFormPathChange={handleFormPathChange}/>
 

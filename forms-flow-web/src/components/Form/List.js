@@ -79,7 +79,6 @@ const List = React.memo((props) => {
   const [importFormModal, setImportFormModal] = useState(false);
   const [importError, setImportError] = useState("");
   const [importLoader, setImportLoader] = useState(false);
-
   const ActionType = {
     BUILD: "BUILD",
     IMPORT: "IMPORT"
@@ -441,6 +440,7 @@ const mapDispatchToProps = (dispatch, ownProps) => {
         dispatch(deleteForm("form", formId));
       }
       if (formProcessData.id) {
+        console.log("aaaaaaaaa",formProcessData.id);
         dispatch(
           unPublishForm(formProcessData.id, (err) => {
             if (err) {

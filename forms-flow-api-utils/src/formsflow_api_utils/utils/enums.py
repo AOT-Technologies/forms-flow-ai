@@ -79,3 +79,4 @@ class ProcessSortingParameters:  # pylint: disable=too-few-public-methods
     Name = "name"
     Created = "created"
     Modified= "modified"
+    ProcessKey = "processKey"

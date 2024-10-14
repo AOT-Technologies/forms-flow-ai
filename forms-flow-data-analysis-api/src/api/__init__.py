@@ -12,8 +12,8 @@ from .models import db, migrate
 from .resources import data_analysis_api
 from .utils.auth import jwt
 from .utils.enumerator import Service
-from .utils.logging import setup_logging
 from .utils.file_log_handler import register_log_handlers
+from .utils.logging import setup_logging
 
 flask_logger = setup_logging(
     os.path.join(os.path.abspath(os.path.dirname(__file__)), "logging.conf")

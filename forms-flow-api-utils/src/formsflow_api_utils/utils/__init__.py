@@ -51,6 +51,7 @@ from .util import (
     get_role_ids_from_user_groups,
     translate,
     validate_sort_order_and_order_by,
+    add_sort_filter,
 )
 from .caching import Cache
 from .sentry import init_sentry

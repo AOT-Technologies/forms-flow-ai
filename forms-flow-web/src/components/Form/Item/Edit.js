@@ -76,6 +76,7 @@ const Edit = React.memo(() => {
   const { t } = useTranslation();
   const errors = useSelector((state) => state.form?.error);
   const processListData = useSelector((state) => state.process?.formProcessList);
+  const formAuthorization = useSelector((state) => state.process.authorizationDetails);
   const formData = useSelector((state) => state.form?.form);
   const [form, dispatchFormAction] = useReducer(reducer, _cloneDeep(formData));
   const publisText = processListData.status == "active" ? "Unpublish" : "Publish";
@@ -95,10 +96,16 @@ const Edit = React.memo(() => {
   const applicationCount = useSelector((state) => state.process?.applicationCount);
   const [showSaveModal, setShowSaveModal] = useState(false);
   const [hasRendered, setHasRendered] = useState(false);
+
   const [isLoadingDiagram, setIsLoadingDiagram] = useState(true);
-  //it returns the digram (old method);
-  // const diagramXML = useSelector((state) => state.process.processDiagramXML);
-  const roleIds = useSelector((state) => state.user?.roleIds || {});
+  const formPath = useSelector((state) => state.form.form.path);
+  const [newPath, setNewPath] = useState(formPath);
+
+
+  const preferred_userName = useSelector(
+    (state) => state.user?.userDetail?.preferred_username || ""
+  );
+
   const [showSettingsModal, setShowSettingsModal] = useState(false);
   const handleOpenModal = () => setShowSettingsModal(true);
   const handleCloseModal = () => setShowSettingsModal(false);
@@ -113,12 +120,45 @@ const Edit = React.memo(() => {
     WORKFLOW: "WORKFLOW"
   };
 
+  const [formDetails, setFormDetails] = useState({
+    name: processListData.formName,
+    description: processListData.description,
+  });
+
+  const [formDisplay, setFormDisplay] = useState(processListData.formType);
+
+  const [rolesState, setRolesState] = useState({
+    edit: {
+      roleInput: '',
+      filteredRoles: [],
+      selectedRoles: formAuthorization.DESIGNER?.roles,
+      selectedOption: 'onlyYou',
+    },
+    create: {
+      roleInput: '',
+      filteredRoles: [],
+      selectedRoles: formAuthorization.FORM?.roles,
+      selectedOption: 'registeredUsers',
+      isPublic: processListData.anonymous,
+
+    },
+    view: {
+      roleInput: '',
+      filteredRoles: [],
+      selectedRoles: formAuthorization.APPLICATION?.roles,
+      selectedOption: 'submitter',
+    },
+  });
+
   useEffect(() => {
     if (showFlow) {
       setHasRendered(true);
     }
   }, [showFlow]);
 
+  const handleFormPathChange = (e) => {
+    setNewPath(e.target.value);
+  };
 
   const handleShowLayout = () => {
     setShowFlow(false);
@@ -148,6 +188,22 @@ useEffect(() => {
   }
 }, [workflow?.value, processXmlDiagram]);
 
+
+
+  const updateFormName = (formName) => {
+    setFormDetails((prevState) => ({
+      ...prevState,
+      name: formName,
+  }));
+    dispatchFormAction({ type: "title", formName });
+  };
+  const updateFormDescription = (formDescription) => {
+    setFormDetails((prevState) => ({
+      ...prevState,
+      description: formDescription,
+  }));
+    dispatchFormAction({type: "description", formDescription});
+  };
 
 
   //for save farm 
@@ -232,17 +288,18 @@ useEffect(() => {
   };
   const handleConfirmSettings = () => {
     const parentFormId = processListData.parentFormId;
-      const mapper = {
+    const mapper = {
       formId: form._id,
-      formName: form.title,
-      description: formDescription,
+      formName: formDetails?.name,
+      description: formDetails?.description,
       status: processListData.status || "inactive",
       taskVariables: processListData.taskVariables
         ? processListData.taskVariables
         : [],
-        anonymous: formAccess[0]?.roles.includes(roleIds.ANONYMOUS),
-        parentFormId: parentFormId,
+      anonymous: rolesState.create.isPublic,
+      parentFormId: parentFormId,
       formType: form.type,
+      display: formDisplay, 
       processKey: workflow?.value,
       processName: workflow?.name,
       id: processListData.id,
@@ -250,27 +307,30 @@ useEffect(() => {
       statusChanged: false,
       resourceId: form._id,
     };
-    
+
     const authorizations = {
       application: {
         resourceId:parentFormId ,
         resourceDetails: {},
-        roles: []
-    },
+        roles: rolesState.view.selectedOption === "specifiedRoles" ? rolesState.view.selectedRoles : [],
+        ...(rolesState.view.selectedOption === "submitter" && { userName: preferred_userName }) // TBD
+      },
       designer: {
         resourceId: parentFormId,
         resourceDetails: {},
-        roles: []
+        roles: rolesState.edit.selectedOption === "specifiedRoles" ? rolesState.edit.selectedRoles : [],
+        ...(rolesState.edit.selectedOption === "onlyYou" && { userName: preferred_userName })
     },
-    form: {
-      resourceId: parentFormId,
-      resourceDetails: {},
-      roles: []
-  }
-};
-    dispatch(saveFormProcessMapperPut({mapper, authorizations}));
+      form: {
+        resourceId: parentFormId,
+        resourceDetails: {},
+        roles: rolesState.create.selectedOption === "specifiedRoles" ? rolesState.create.selectedRoles : [],
+      }
     };
-  
+    dispatch(saveFormProcessMapperPut({ mapper, authorizations }));
+    handleCloseModal();
+  };
+
 
   const closeSaveModal = () => {
     setShowSaveModal(false);
@@ -362,9 +422,7 @@ useEffect(() => {
     console.log("discardChanges");
   };
 
-  // const editorSettings = () => {
-  //   console.log("ecitorActions");
-  // };
+  
   const editorActions = () => {
     setNewActionModal(true);
   };
@@ -386,8 +444,14 @@ useEffect(() => {
           text={t("Loading...")}
         >
 
-<SettingsModal show={showSettingsModal} handleClose={handleCloseModal} 
-handleConfirm={handleConfirmSettings} />
+          <SettingsModal show={showSettingsModal} handleClose={handleCloseModal}
+            handleConfirm={handleConfirmSettings} 
+            rolesState={rolesState} setRolesState={setRolesState} 
+            setFormDetails={setFormDetails} formDetails={formDetails} 
+            updateFormName={updateFormName} formDisplay={formDisplay} 
+            setFormDisplay={setFormDisplay} 
+            updateFormDescription={updateFormDescription} newPath={newPath} 
+            handleFormPathChange={handleFormPathChange}/>
 
           <Errors errors={errors} />
 

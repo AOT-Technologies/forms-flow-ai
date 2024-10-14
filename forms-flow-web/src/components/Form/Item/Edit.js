@@ -1,6 +1,6 @@
 import React, { useReducer, useState, useEffect } from "react";
 import { useSelector, useDispatch } from "react-redux";
-import { Card } from 'react-bootstrap';
+import { Card } from "react-bootstrap";
 import { Errors, FormBuilder, Formio } from "@aot-technologies/formio-react";
 import { BackToPrevIcon } from "@formsflow/components";
 import { CustomButton, ConfirmModal } from "@formsflow/components";
@@ -13,16 +13,16 @@ import { Translation, useTranslation } from "react-i18next";
 import { push } from "connected-react-router";
 import { HistoryIcon, PreviewIcon } from "@formsflow/components";
 import ActionModal from "../../Modals/ActionModal.js";
-import {
-  setProcessDiagramXML,
-} from "../../../actions/processActions";
-import {
-  MULTITENANCY_ENABLED,
-} from "../../../constants/constants";
+import { setProcessDiagramXML } from "../../../actions/processActions";
+import { MULTITENANCY_ENABLED } from "../../../constants/constants";
 //for save form
 import { manipulatingFormData } from "../../../apiManager/services/formFormatterService";
-import { formUpdate } from "../../../apiManager/services/FormServices";
+import {
+  formUpdate,
+  validateFormName,
+} from "../../../apiManager/services/FormServices";
 import { INACTIVE } from "../constants/formListConstants";
+import { formCreate } from "../../../apiManager/services/FormServices";
 import utils from "@aot-technologies/formiojs/lib/utils";
 import {
   setFormFailureErrorData,
@@ -37,7 +37,10 @@ import {
 
 import _isEquial from "lodash/isEqual";
 import { toast } from "react-toastify";
-import BpmnEditor from '../../Modeler/Editors/BpmnEditor';
+import { FormBuilderModal } from "@formsflow/components";
+import _ from "lodash";
+
+import BpmnEditor from "../../Modeler/Editors/BpmnEditor";
 import { useParams } from "react-router-dom";
 //getting process data
 import { getFormProcesses } from "../../../apiManager/services/processServices";
@@ -45,6 +48,14 @@ import { getFormProcesses } from "../../../apiManager/services/processServices";
 import { getProcessXml } from "../../../apiManager/services/processServices";
 
 import SettingsModal from "../../CustomComponents/settingsModal";
+
+// constant values
+const DUPLICATE = "DUPLICATE";
+// const SAVE_AS_TEMPLATE= "SAVE_AS_TEMPLATE";
+// const IMPORT= "IMPORT";
+// const EXPORT= "EXPORT";
+//const DELETE = "DELETE";
+
 const reducer = (form, { type, value }) => {
   const formCopy = _cloneDeep(form);
   switch (type) {
@@ -75,25 +86,40 @@ const Edit = React.memo(() => {
   const lang = useSelector((state) => state.user.lang);
   const { t } = useTranslation();
   const errors = useSelector((state) => state.form?.error);
-  const processListData = useSelector((state) => state.process?.formProcessList);
+  const processListData = useSelector(
+    (state) => state.process?.formProcessList
+  );
   const formAuthorization = useSelector((state) => state.process.authorizationDetails);
   const formData = useSelector((state) => state.form?.form);
   const [form, dispatchFormAction] = useReducer(reducer, _cloneDeep(formData));
-  const publisText = processListData.status == "active" ? "Unpublish" : "Publish";
+  const publisText =
+    processListData.status == "active" ? "Unpublish" : "Publish";
   const [showFlow, setShowFlow] = useState(false);
   const [showLayout, setShowLayout] = useState(true);
   const tenantKey = useSelector((state) => state.tenants?.tenantId);
   const redirectUrl = MULTITENANCY_ENABLED ? `/tenant/${tenantKey}/` : "/";
   const processXmlDiagram = useSelector((state) => state.process?.processXml);
   const { formId } = useParams();
+  const [nameError, setNameError] = useState("");
+  //const formProcessList = useSelector(state => state.process?.formProcessList);
+
+  //for save form
   const [formSubmitted, setFormSubmitted] = useState(false);
   const formAccess = useSelector((state) => state.user?.formAccess || []);
-  const submissionAccess = useSelector((state) => state.user?.submissionAccess || []);
+  const submissionAccess = useSelector(
+    (state) => state.user?.submissionAccess || []
+  );
   const previousData = useSelector((state) => state.process?.formPreviousData);
   const formDescription = form?.description;
-  const restoredFormData = useSelector((state) => state.formRestore?.restoredFormData);
-  const restoredFormId = useSelector((state) => state.formRestore?.restoredFormId);
-  const applicationCount = useSelector((state) => state.process?.applicationCount);
+  const restoredFormData = useSelector(
+    (state) => state.formRestore?.restoredFormData
+  );
+  const restoredFormId = useSelector(
+    (state) => state.formRestore?.restoredFormId
+  );
+  const applicationCount = useSelector(
+    (state) => state.process?.applicationCount
+  );
   const [showSaveModal, setShowSaveModal] = useState(false);
   const [hasRendered, setHasRendered] = useState(false);
 
@@ -109,15 +135,20 @@ const Edit = React.memo(() => {
   const [showSettingsModal, setShowSettingsModal] = useState(false);
   const handleOpenModal = () => setShowSettingsModal(true);
   const handleCloseModal = () => setShowSettingsModal(false);
-
-  //action modal
+  const [selectedAction, setSelectedAction] = useState(null);
   const [newActionModal, setNewActionModal] = useState(false);
-  const onCloseActionModal = () => {
-    setNewActionModal(false);
-  };
+  const onCloseActionModal = () => setNewActionModal(false);
   const CategoryType = {
     FORM: "FORM",
-    WORKFLOW: "WORKFLOW"
+    WORKFLOW: "WORKFLOW",
+  };
+
+  const handleCloseSelectedAction = () => {
+    setSelectedAction(null);
+    if (selectedAction === DUPLICATE) {
+      setNameError("");
+      setFormSubmitted(false);
+    }
   };
 
   const [formDetails, setFormDetails] = useState({
@@ -168,25 +199,25 @@ const Edit = React.memo(() => {
     setShowFlow(true);
     setShowLayout(false);
   };
-useEffect(() => {
-  if (formId) {
-    // Fetch form processes with formId
-    dispatch(getFormProcesses(formId));
-  }
-}, [formId]);
+  useEffect(() => {
+    if (formId) {
+      // Fetch form processes with formId
+      dispatch(getFormProcesses(formId));
+    }
+  }, [formId]);
 
-useEffect(() => {
-  if (workflow?.value) {
-    // Fetch workflow diagram XML when the workflow value is present
-    dispatch(getProcessXml(workflow.value));
-  }
+  useEffect(() => {
+    if (workflow?.value) {
+      // Fetch workflow diagram XML when the workflow value is present
+      dispatch(getProcessXml(workflow.value));
+    }
 
-  if (workflow?.value && processXmlDiagram) {
-    // Set the process diagram XML and stop the loading spinner when both workflow and XML are available
-    dispatch(setProcessDiagramXML(processXmlDiagram));
-    setIsLoadingDiagram(false);
-  }
-}, [workflow?.value, processXmlDiagram]);
+    if (workflow?.value && processXmlDiagram) {
+      // Set the process diagram XML and stop the loading spinner when both workflow and XML are available
+      dispatch(setProcessDiagramXML(processXmlDiagram));
+      setIsLoadingDiagram(false);
+    }
+  }, [workflow?.value, processXmlDiagram]);
 
 
 
@@ -206,7 +237,33 @@ useEffect(() => {
   };
 
 
-  //for save farm 
+  //for save farm
+  //for save farm
+
+  const validateFormNameOnBlur = () => {
+    if (!form.title || form.title.trim() === "") {
+      setNameError("This field is required");
+      return;
+    }
+
+    validateFormName(form.title)
+      .then((response) => {
+        const data = response?.data;
+        if (data && data.code === "FORM_EXISTS") {
+          setNameError(data.message); // Set exact error message
+        } else {
+          setNameError("");
+        }
+      })
+      .catch((error) => {
+        const errorMessage =
+          error.response?.data?.message ||
+          "An error occurred while validating the form name.";
+        setNameError(errorMessage); // Set the error message from the server
+        console.error("Error validating form name:", errorMessage);
+      });
+  };
+  //for save farm
   const isMapperSaveNeeded = (newData) => {
     return (
       previousData.formName !== newData.title ||
@@ -233,7 +290,7 @@ useEffect(() => {
       formTypeChanged: previousData.formType !== submittedData.type,
       titleChanged: previousData.formName !== submittedData.title,
       anonymousChanged: previousData.anonymous !== processListData.anonymous,
-      description: formDescription
+      description: formDescription,
     };
     return data;
   };
@@ -299,7 +356,7 @@ useEffect(() => {
       anonymous: rolesState.create.isPublic,
       parentFormId: parentFormId,
       formType: form.type,
-      display: formDisplay, 
+      display: formDisplay,
       processKey: workflow?.value,
       processName: workflow?.name,
       id: processListData.id,
@@ -310,7 +367,7 @@ useEffect(() => {
 
     const authorizations = {
       application: {
-        resourceId:parentFormId ,
+        resourceId: parentFormId,
         resourceDetails: {},
         roles: rolesState.view.selectedOption === "specifiedRoles" ? rolesState.view.selectedRoles : [],
         ...(rolesState.view.selectedOption === "submitter" && { userName: preferred_userName }) // TBD
@@ -422,7 +479,7 @@ useEffect(() => {
     console.log("discardChanges");
   };
 
-  
+
   const editorActions = () => {
     setNewActionModal(true);
   };
@@ -431,10 +488,61 @@ useEffect(() => {
     console.log("publish");
   };
 
+  const handleChange = (path, event) => {
+    setFormSubmitted(false);
+    const { target } = event;
+    const value = target.type === "checkbox" ? target.checked : target.value;
+    value == "" ? setNameError("This field is required") : setNameError("");
 
+    dispatchFormAction({ type: path, value });
+  };
+
+  const handlePublishAsNewVersion = () => {
+    setFormSubmitted(true);
+    const newFormData = manipulatingFormData(
+      _.cloneDeep(form),
+      MULTITENANCY_ENABLED,
+      tenantKey,
+      formAccess,
+      submissionAccess
+    );
+
+    const newPathAndName =
+      "duplicate-version-" + Math.random().toString(16).slice(9);
+    newFormData.path = newPathAndName;
+    newFormData.title = form.title;
+    newFormData.name = form.title;
+    newFormData.componentChanged = true;
+    delete newFormData.machineName;
+    delete newFormData.parentFormId;
+    newFormData.newVersion = true;
+    delete newFormData._id;
+
+    formCreate(newFormData)
+      .then((res) => {
+        const form = res.data;
+        dispatch(setFormSuccessData("form", form));
+        dispatch(push(`${redirectUrl}formflow/${form._id}/edit/`));
+      })
+      .catch((err) => {
+        let error;
+        if (err.response?.data) {
+          error = err.response.data;
+          console.log(error);
+          setNameError(error?.errors?.name?.message);
+        } else {
+          error = err.message;
+          setNameError(error?.errors?.name?.message);
+        }
+      })
+      .finally(() => {
+        setFormSubmitted(false);
+      });
+  };
 
   const formChange = (newForm) =>
     dispatchFormAction({ type: "formChange", value: newForm });
+
   return (
     <div>
       <div>
@@ -445,12 +553,12 @@ useEffect(() => {
         >
 
           <SettingsModal show={showSettingsModal} handleClose={handleCloseModal}
-            handleConfirm={handleConfirmSettings} 
-            rolesState={rolesState} setRolesState={setRolesState} 
-            setFormDetails={setFormDetails} formDetails={formDetails} 
-            updateFormName={updateFormName} formDisplay={formDisplay} 
-            setFormDisplay={setFormDisplay} 
-            updateFormDescription={updateFormDescription} newPath={newPath} 
+            handleConfirm={handleConfirmSettings}
+            rolesState={rolesState} setRolesState={setRolesState}
+            setFormDetails={setFormDetails} formDetails={formDetails}
+            updateFormName={updateFormName} formDisplay={formDisplay}
+            setFormDisplay={setFormDisplay}
+            updateFormDescription={updateFormDescription} newPath={newPath}
             handleFormPathChange={handleFormPathChange}/>
 
           <Errors errors={errors} />
@@ -461,7 +569,10 @@ useEffect(() => {
                 <div className="d-flex align-items-center justify-content-between">
                   <BackToPrevIcon onClick={backToForm} />
                   <div className="mx-4 editor-header-text">{form.title}</div>
-                  <span data-testid={`form-status-${form._id}`} className="d-flex align-items-center white-text mx-3">
+                  <span
+                    data-testid={`form-status-${form._id}`}
+                    className="d-flex align-items-center white-text mx-3"
+                  >
                     {processListData.status == "active" ? (
                       <>
                         <div className="status-live"></div>
@@ -469,7 +580,9 @@ useEffect(() => {
                     ) : (
                       <div className="status-draft"></div>
                     )}
-                    {processListData.status == "active" ? t("Live") : t("Draft")}
+                    {processListData.status == "active"
+                      ? t("Live")
+                      : t("Draft")}
                   </span>
                 </div>
                 <div>
@@ -503,10 +616,15 @@ useEffect(() => {
             </Card.Body>
           </Card>
           <div className="d-flex mb-3">
-            <div className={`wraper form-wraper ${showLayout ? 'visible' : ''}`}>
+            <div
+              className={`wraper form-wraper ${showLayout ? "visible" : ""}`}
+            >
               <Card>
                 <Card.Header>
-                  <div className="d-flex justify-content-between align-items-center" style={{ width: "100%" }}>
+                  <div
+                    className="d-flex justify-content-between align-items-center"
+                    style={{ width: "100%" }}
+                  >
                     <div className="d-flex align-items-center justify-content-between">
                       <div className="mx-2 builder-header-text">Layout</div>
                       <div>
@@ -536,7 +654,9 @@ useEffect(() => {
                         variant="primary"
                         size="md"
                         className="mx-2"
-                        label={<Translation>{(t) => t("Save Layout")}</Translation>}
+                        label={
+                          <Translation>{(t) => t("Save Layout")}</Translation>
+                        }
                         onClick={saveLayout}
                         dataTestid="save-form-layout"
                         ariaLabel={t("Save Form Layout")}
@@ -544,14 +664,17 @@ useEffect(() => {
                       <CustomButton
                         variant="secondary"
                         size="md"
-                        label={<Translation>{(t) => t("Discard Changes")}</Translation>}
+                        label={
+                          <Translation>
+                            {(t) => t("Discard Changes")}
+                          </Translation>
+                        }
                         onClick={discardChanges}
                         dataTestid="discard-button-testid"
                         ariaLabel={t("cancelBtnariaLabel")}
                       />
                     </div>
                   </div>
-
                 </Card.Header>
                 <Card.Body>
                   <div className="form-builder">
@@ -568,10 +691,13 @@ useEffect(() => {
                 </Card.Body>
               </Card>
             </div>
-            <div className={`wraper flow-wraper ${showFlow ? 'visible' : ''}`}>
+            <div className={`wraper flow-wraper ${showFlow ? "visible" : ""}`}>
               <Card>
                 <Card.Header>
-                  <div className="d-flex justify-content-between align-items-center" style={{ width: "100%" }}>
+                  <div
+                    className="d-flex justify-content-between align-items-center"
+                    style={{ width: "100%" }}
+                  >
                     <div className="d-flex align-items-center justify-content-between">
                       <div className="mx-2 builder-header-text">Flow</div>
                       <div>
@@ -579,7 +705,9 @@ useEffect(() => {
                           variant="secondary"
                           size="md"
                           icon={<HistoryIcon />}
-                          label={<Translation>{(t) => t("History")}</Translation>}
+                          label={
+                            <Translation>{(t) => t("History")}</Translation>
+                          }
                           onClick={handleHistory}
                           dataTestid="flow-history-button-testid"
                           ariaLabel={t("Flow History Button")}
@@ -588,7 +716,11 @@ useEffect(() => {
                           variant="secondary"
                           size="md"
                           className="mx-2"
-                          label={<Translation>{(t) => t("Preview & Variables")}</Translation>}
+                          label={
+                            <Translation>
+                              {(t) => t("Preview & Variables")}
+                            </Translation>
+                          }
                           onClick={handlePreviewAndVariables}
                           dataTestid="preview-and-variables-testid"
                           ariaLabel={t("{Preview and Variables Button}")}
@@ -609,7 +741,9 @@ useEffect(() => {
                         variant="primary"
                         size="md"
                         className="mx-2"
-                        label={<Translation>{(t) => t("Save Flow")}</Translation>}
+                        label={
+                          <Translation>{(t) => t("Save Flow")}</Translation>
+                        }
                         onClick={saveFlow}
                         dataTestid="save-flow-layout"
                         ariaLabel={t("Save Flow Layout")}
@@ -617,7 +751,11 @@ useEffect(() => {
                       <CustomButton
                         variant="secondary"
                         size="md"
-                        label={<Translation>{(t) => t("Discard Changes")}</Translation>}
+                        label={
+                          <Translation>
+                            {(t) => t("Discard Changes")}
+                          </Translation>
+                        }
                         onClick={discardChanges}
                         dataTestid="discard-flow-changes-testid"
                         ariaLabel={t("Discard Flow Changes")}
@@ -636,42 +774,79 @@ useEffect(() => {
                         isNewDiagram={false}
                         bpmnXml={processXmlDiagram}
                       />
-                    )
-                    }
+                    )}
                   </div>
                 </Card.Body>
               </Card>
             </div>
-            {showFlow && <div className={`form-flow-wraper-left ${showFlow ? 'visible' : ''}`} onClick={handleShowLayout}>Layout</div>}
-            {showLayout && <div className={`form-flow-wraper-right ${showLayout && hasRendered ? 'visible' : ''}`}
-              onClick={handleShowFlow}>Flow</div>}
+            {showFlow && (
+              <div
+                className={`form-flow-wraper-left ${showFlow ? "visible" : ""}`}
+                onClick={handleShowLayout}
+              >
+                Layout
+              </div>
+            )}
+            {showLayout && (
+              <div
+                className={`form-flow-wraper-right ${
+                  showLayout && hasRendered ? "visible" : ""
+                }`}
+                onClick={handleShowFlow}
+              >
+                Flow
+              </div>
+            )}
 
             {/* {showLayout && <div className={`form-flow-wraper-right ${showLayout ? 'visible' : ''}`} onClick={handleShowFlow}>Flow</div>} */}
           </div>
-
         </LoadingOverlay>
       </div>
       <ActionModal
         newActionModal={newActionModal}
         onClose={onCloseActionModal}
         CategoryType={CategoryType.FORM}
+        onAction={setSelectedAction}
       />
-
+      <FormBuilderModal
+        modalHeader={t("Duplicate")}
+        nameLabel={t("New Form Name")}
+        descriptionLabel={t("New Form Description")}
+        showBuildForm={selectedAction === DUPLICATE}
+        formSubmitted={formSubmitted}
+        onClose={handleCloseSelectedAction}
+        handleChange={handleChange}
+        primaryBtnLabel={t("Save and Edit form")}
+        primaryBtnAction={handlePublishAsNewVersion}
+        setNameError={setNameError}
+        nameValidationOnBlur={validateFormNameOnBlur}
+        nameError={nameError}
+      />
       <ConfirmModal
         show={showSaveModal}
         title={<Translation>{(t) => t("Save Your Changes")}</Translation>}
-        message={<Translation>{(t) => t("Saving as an incrimental version will affect previous submissions. Saving as a new full version will not affect previous submissions.")}</Translation>}
+        message={
+          <Translation>
+            {(t) =>
+              t(
+                "Saving as an incrimental version will affect previous submissions. Saving as a new full version will not affect previous submissions."
+              )
+            }
+          </Translation>
+        }
         primaryBtnAction={saveFormData}
         onClose={closeSaveModal}
         secondayBtnAction={"add secondary button action"}
-        primaryBtnText={<Translation>{(t) => t("Save as Version 3.5")}</Translation>}
-        secondaryBtnText={<Translation>{(t) => t("Save as Version 4.0")}</Translation>}
+        primaryBtnText={
+          <Translation>{(t) => t("Save as Version 3.5")}</Translation>
+        }
+        secondaryBtnText={
+          <Translation>{(t) => t("Save as Version 4.0")}</Translation>
+        }
         size="md"
       />
-      <div>
-      </div>
-      
-    </div >
+      <div></div>
+    </div>
   );
 });
 

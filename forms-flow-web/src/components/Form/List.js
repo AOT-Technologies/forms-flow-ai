@@ -1,7 +1,7 @@
 import React, { useEffect, useState, useReducer } from "react";
 import { connect, useSelector, useDispatch } from "react-redux";
 import CreateFormModal from "../Modals/CreateFormModal.js";
-import BuildFormModal from '../Modals/BuildFormModal';
+//import BuildFormModal from '../Modals/BuildFormModal';
 import ImportFormModal from "../Modals/ImportFormModal.js";
 import { push } from "connected-react-router";
 import { toast } from "react-toastify";
@@ -36,13 +36,13 @@ import { CustomButton } from "@formsflow/components";
 import _set from "lodash/set";
 import _cloneDeep from "lodash/cloneDeep";
 import _camelCase from "lodash/camelCase";
-import { formCreate, formImport } from "../../apiManager/services/FormServices";
+import { formCreate, formImport,validateFormName } from "../../apiManager/services/FormServices";
 import { addHiddenApplicationComponent } from "../../constants/applicationComponent";
 import { setFormSuccessData } from "../../actions/formActions"; 
 import { CustomSearch }  from "@formsflow/components";
 import userRoles from "../../constants/permissions.js";
 import FileService from "../../services/FileService";
-
+import {FormBuilderModal} from "@formsflow/components";
 
 
 const reducer = (form, { type, value }) => {
@@ -249,6 +249,28 @@ const List = React.memo((props) => {
     return errors;
   };
 
+  const validateFormNameOnBlur = () => {
+    if (!form.title || form.title.trim() === "") {
+      setNameError("This field is required");
+      return;
+    }
+  
+    validateFormName(form.title)
+      .then((response) => {
+        const data = response?.data;
+        if (data && data.code === "FORM_EXISTS") {
+          setNameError(data.message);  // Set exact error message
+        } else {
+          setNameError("");
+        }
+      })
+      .catch((error) => {
+      const errorMessage = error.response?.data?.message || "An error occurred while validating the form name.";
+      setNameError(errorMessage);  // Set the error message from the server
+      console.error("Error validating form name:", errorMessage);
+      });
+  };
+  
   const handleChange = (path, event) => {
     setFormSubmitted(false);
     const { target } = event;
@@ -349,15 +371,19 @@ const List = React.memo((props) => {
                     onClose={onClose}
                     onAction={handleAction}
                   />
-                  <BuildFormModal
+                  <FormBuilderModal
+                    modalHeader="Build New Form"
+                    nameLabel="Form Name"
+                    descriptionLabel="Form Description"
                     showBuildForm={showBuildForm}
                     formSubmitted={formSubmitted}
                     onClose={onCloseBuildModal}
                     onAction={handleAction}
                     handleChange={handleChange}
-                    handleBuild={handleBuild}
+                    primaryBtnAction={handleBuild}
                     setFormDescription={setFormDescription}
                     setNameError={setNameError}
+                    nameValidationOnBlur={validateFormNameOnBlur}
                     nameError={nameError}
                   />
                   <ImportFormModal

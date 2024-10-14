@@ -8,7 +8,6 @@ export const formCreate = (formData) => {
 };
 
 export const formImport = (importData, data) => {
-  console.log("reached back", importData, data);
   return RequestService.httpMultipartPOSTRequest(API.FORM_IMPORT, importData, data);
 };
 
@@ -71,4 +70,15 @@ export const getCustomSubmission = (submissionId, formId, ...rest) => {
         done(err, null);
       });
   };
+};
+
+export const validateFormName = (title, name, id) => {
+  let url = `${API.VALIDATE_FORM_NAME}?title=${title}`;
+  if (name) {
+    url += `&name=${encodeURIComponent(name)}`;
+  }
+  if (id) {
+    url += `&id=${encodeURIComponent(id)}`;
+  }
+  return RequestService.httpGETRequest(url);
 };

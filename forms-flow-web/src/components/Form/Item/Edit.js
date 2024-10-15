@@ -3,7 +3,7 @@ import { useSelector, useDispatch } from "react-redux";
 import { Card } from 'react-bootstrap';
 import { Errors, FormBuilder, Formio } from "@aot-technologies/formio-react";
 import { BackToPrevIcon } from "@formsflow/components";
-import { CustomButton, ConfirmModal } from "@formsflow/components";
+import { CustomButton, ConfirmModal, HistoryModal } from "@formsflow/components";
 import { RESOURCE_BUNDLES_DATA } from "../../../resourceBundles/i18n";
 import LoadingOverlay from "react-loading-overlay-ts";
 import _set from "lodash/set";
@@ -21,7 +21,7 @@ import {
 } from "../../../constants/constants";
 //for save form
 import { manipulatingFormData } from "../../../apiManager/services/formFormatterService";
-import { formUpdate } from "../../../apiManager/services/FormServices";
+import { formUpdate, getFormHistory } from "../../../apiManager/services/FormServices";
 import { INACTIVE } from "../constants/formListConstants";
 import utils from "@aot-technologies/formiojs/lib/utils";
 import {
@@ -29,6 +29,7 @@ import {
   setFormSuccessData,
   setRestoreFormData,
   setRestoreFormId,
+  setFormHistories
 } from "../../../actions/formActions";
 import {
   saveFormProcessMapperPost,
@@ -93,15 +94,19 @@ const Edit = React.memo(() => {
   const restoredFormData = useSelector((state) => state.formRestore?.restoredFormData);
   const restoredFormId = useSelector((state) => state.formRestore?.restoredFormId);
   const applicationCount = useSelector((state) => state.process?.applicationCount);
+  const formHistory = useSelector((state) => state.formRestore?.formHistory || []);
   const [showSaveModal, setShowSaveModal] = useState(false);
   const [hasRendered, setHasRendered] = useState(false);
   const [isLoadingDiagram, setIsLoadingDiagram] = useState(true);
+  const [showHistoryModal, setshowHistoryModal] = useState(false);
   //it returns the digram (old method);
   // const diagramXML = useSelector((state) => state.process.processDiagramXML);
   const roleIds = useSelector((state) => state.user?.roleIds || {});
   const [showSettingsModal, setShowSettingsModal] = useState(false);
   const handleOpenModal = () => setShowSettingsModal(true);
   const handleCloseModal = () => setShowSettingsModal(false);
+  const pageNo = 1;
+  const limit = 4;
 
   //action modal
   const [newActionModal, setNewActionModal] = useState(false);
@@ -338,8 +343,29 @@ useEffect(() => {
     console.log("back", redirectUrl);
   };
 
+  const closeHistoryModal = () => {
+    setshowHistoryModal(false);
+  };
+
+  const fetchFormHistory = (parentFormId, page, limit) => {
+    getFormHistory(parentFormId, page, limit)
+      .then((res) => {
+        dispatch(setFormHistories(res.data.formHistory));
+      })
+      .catch(() => {
+        setFormHistories([]);
+      });
+  };
+
   const handleHistory = () => {
-    console.log("handleHistory");
+    setshowHistoryModal(true);
+     if (processListData?.parentFormId && !formHistory.length) {
+      fetchFormHistory(processListData?.parentFormId, pageNo, limit);
+    }
+  };
+
+  const loadMoreBtnAction = () => {
+    fetchFormHistory(processListData?.parentFormId);
   };
 
   const handlePreviewAndVariables = () => {
@@ -604,6 +630,15 @@ handleConfirm={handleConfirmSettings} />
         secondaryBtnText={<Translation>{(t) => t("Save as Version 4.0")}</Translation>}
         size="md"
       />
+       <HistoryModal
+        show={showHistoryModal}
+        onClose={closeHistoryModal}
+        title={<Translation>{(t) => t("History")}</Translation>}
+        loadMoreBtnText={<Translation>{(t) => t("Load More")}</Translation>}
+        revertBtnText={<Translation>{(t) => t("Revert To This")}</Translation>}
+        formHistory={formHistory}
+        loadMoreBtnAction={loadMoreBtnAction}
+       />
       <div>
       </div>
       

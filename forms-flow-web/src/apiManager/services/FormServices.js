@@ -16,8 +16,12 @@ export const formUpdate = (form_id,formData) => {
   return RequestService.httpPUTRequest(`${API.FORM_DESIGN}/${form_id}`, formData);
 };
 
-export const getFormHistory = (form_id) => {
-  return RequestService.httpGETRequest(`${API.FORM_HISTORY}/${form_id}`);
+export const getFormHistory = (form_id, page = null, limit = null) => {
+  let url = `${API.FORM_HISTORY}/${form_id}`;
+  if (page !== null && limit !== null) {
+    url += `?pageNo=${page}&limit=${limit}`;
+  }
+  return RequestService.httpGETRequest(url);
 };
 
 

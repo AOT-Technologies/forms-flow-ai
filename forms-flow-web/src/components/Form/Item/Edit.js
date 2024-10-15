@@ -170,7 +170,7 @@ const Edit = React.memo(() => {
       filteredRoles: [],
       selectedRoles: formAuthorization.FORM?.roles,
       selectedOption: 'registeredUsers',
-      isPublic: processListData.anonymous,
+      isPublic: processListData.anonymous ? processListData.anonymous : false,
 
     },
     view: {

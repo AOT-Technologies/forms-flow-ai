@@ -389,7 +389,7 @@ export const saveFormProcessMapperPut = (data, ...rest) => {
         }
       })
       .catch((error) => {
-        dispatch(getFormProcesses(data.formId));
+        dispatch(getFormProcesses(data.mapper.formId));
         dispatch(setFormProcessesData([]));
         toast.error(
           <Translation>{(t) => t("Form process failed")}</Translation>

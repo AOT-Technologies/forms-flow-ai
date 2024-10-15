@@ -433,10 +433,10 @@ const Edit = React.memo(() => {
     );
 
     const newPathAndName =
-      "duplicate-version-" + Math.random().toString(16).slice(9);
+    "duplicate-version-" + Math.random().toString(16).slice(9);
     newFormData.path = newPathAndName;
     newFormData.title = form.title;
-    newFormData.name = form.title;
+    newFormData.name = newPathAndName;
     newFormData.componentChanged = true;
     delete newFormData.machineName;
     delete newFormData.parentFormId;

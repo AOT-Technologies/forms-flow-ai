@@ -90,7 +90,7 @@ const List = React.memo((props) => {
     VALIDATE: "validate"
   };
 
-  const [formDescription, setFormDescription] = useState("");
+  // const [formDescription, setFormDescription] = useState("");
   const [nameError, setNameError] = useState("");
   const dispatch = useDispatch();
   const redirectUrl = MULTITENANCY_ENABLED ? `/tenant/${tenantKey}/` : "/";
@@ -279,7 +279,7 @@ const List = React.memo((props) => {
     dispatchFormAction({ type: path, value });
   };
 
-  const handleBuild = () => {
+  const handleBuild = (formName,formDescription) => {
     setFormSubmitted(true);
     const errors = validateForm();
     if (Object.keys(errors).length > 0) {
@@ -381,7 +381,6 @@ const List = React.memo((props) => {
                     onAction={handleAction}
                     handleChange={handleChange}
                     primaryBtnAction={handleBuild}
-                    setFormDescription={setFormDescription}
                     setNameError={setNameError}
                     nameValidationOnBlur={validateFormNameOnBlur}
                     nameError={nameError}

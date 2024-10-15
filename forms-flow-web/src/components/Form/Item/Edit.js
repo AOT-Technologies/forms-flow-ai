@@ -368,7 +368,8 @@ const Edit = React.memo(() => {
     );
     newFormData.componentChanged = isFormComponentsChanged();
     newFormData.parentFormId = previousData.parentFormId;
-
+    //To DO :  Below line to be fixed after Review
+    newFormData.title = processListData.formName;
     formUpdate(newFormData._id, newFormData)
       .then(() => {
         setPromptNewVersion(false);
@@ -421,7 +422,7 @@ const Edit = React.memo(() => {
     dispatchFormAction({ type: path, value });
   };
 
-  const handlePublishAsNewVersion = () => {
+  const handlePublishAsNewVersion = (formName,formDescription) => {
     setFormSubmitted(true);
     const newFormData = manipulatingFormData(
       _.cloneDeep(form),
@@ -440,6 +441,7 @@ const Edit = React.memo(() => {
     delete newFormData.machineName;
     delete newFormData.parentFormId;
     newFormData.newVersion = true;
+    newFormData.description = formDescription;
     delete newFormData._id;
 
     formCreate(newFormData)

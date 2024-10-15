@@ -13,7 +13,6 @@ import {
   setProcessDiagramXML,
   setProcessDiagramLoading,
   setFormPreviosData,
-  setProcessXml,
   setApplicationCountResponse,
   setUnPublishApiError,
   setResetProcess,
@@ -221,6 +220,7 @@ export const getFormProcesses = (formId, ...rest) => {
     )
       .then((res) => {
         if (res.data) {
+          console.log("res.data", res.data);
         dispatch(setFormPreviosData(res.data));
           dispatch(setFormProcessesData(res.data));
           // need to check api and put exact respose
@@ -241,26 +241,13 @@ export const getFormProcesses = (formId, ...rest) => {
   };
 };
 
-export const getProcessXml = (processKey) => {
-return (dispatch) => {
-    RequestService.httpGETRequest(
-      `${API.GET_PROCESSES_XML}/${processKey}`,
-      {},
-      StorageService.get(StorageService.User.AUTH_TOKEN),
-      true
-    )
-      .then((res, err) => {
-        if (res.data) {
-         dispatch(setProcessXml(res.data.processData));
-        } else {
-          console.log(err);
-        }
-      })
-      .catch((error) => {
-        console.log(error);
-      });
-  };
-};
+  export const getProcessDetails = (processKey) =>  
+    RequestService.httpGETRequest(`${API.GET_PROCESSES_DETAILS}/${processKey}`);
+
+  export const updateProcess = ({id,data,type}) => {
+    return RequestService.httpPUTRequest(`${API.GET_PROCESSES_DETAILS}/${id}`,
+      {processData:data,processType:type});
+    };
 
 // fetching task variables
 export const fetchTaskVariables = (formId) =>{

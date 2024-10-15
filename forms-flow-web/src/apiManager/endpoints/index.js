@@ -31,6 +31,8 @@ const API = {
   FORM: `${WEB_BASE_URL}/form`,
   FORM_DESIGN: `${WEB_BASE_URL}/form/form-design`,
   FORM_IMPORT: `${WEB_BASE_URL}/import`,
+  PUBLISH: `${WEB_BASE_URL}/form/<mapper_id>/publish`,
+  UN_PUBLISH: `${WEB_BASE_URL}/form/<mapper_id>/unpublish`,
   FORM_HISTORY: `${WEB_BASE_URL}/form/form-history`,
   LANG_UPDATE: `${WEB_BASE_URL}/user/locale`,
   FORM_PROCESSES: `${WEB_BASE_URL}/form/formid`,

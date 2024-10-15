@@ -15,9 +15,8 @@ import { HistoryIcon, PreviewIcon } from "@formsflow/components";
 import ActionModal from "../../Modals/ActionModal.js";
 import { setProcessDiagramXML } from "../../../actions/processActions";
 import { MULTITENANCY_ENABLED } from "../../../constants/constants";
-// import {
-//   unPublishForm,
-// } from "../../../apiManager/services/processServices";
+
+import { unPublishForm } from "../../../apiManager/services/processServices";
 //for save form
 import { manipulatingFormData } from "../../../apiManager/services/formFormatterService";
 import {
@@ -52,17 +51,14 @@ import { getProcessXml } from "../../../apiManager/services/processServices";
 
 import SettingsModal from "../../CustomComponents/settingsModal";
 import DeleteFormModal from "../../Modals/DeleteFormModal";
-import ConfirmSubmissionModal from "../../Modals/DeleteFormModal";
-// import {
-//   setFormDeleteStatus,
-// } from "../../../actions/formActions";
+
+import { setFormDeleteStatus } from "../../../actions/formActions";
 // constant values
 const DUPLICATE = "DUPLICATE";
 // const SAVE_AS_TEMPLATE= "SAVE_AS_TEMPLATE";
 // const IMPORT= "IMPORT";
 // const EXPORT= "EXPORT";
 const DELETE = "DELETE";
-const CONFIRM_SUBMISSION = "CONFIRM_SUBMISSION";
 
 const reducer = (form, { type, value }) => {
   const formCopy = _cloneDeep(form);
@@ -142,7 +138,7 @@ const Edit = React.memo(() => {
   const [selectedAction, setSelectedAction] = useState(null);
   const [newActionModal, setNewActionModal] = useState(false);
   const onCloseActionModal = () => setNewActionModal(false);
- 
+
   const CategoryType = {
     FORM: "FORM",
     WORKFLOW: "WORKFLOW",
@@ -156,7 +152,7 @@ const Edit = React.memo(() => {
     }
     // if(selectedAction === DELETE)
     // {
-     
+
     // }
   };
 
@@ -456,7 +452,7 @@ const Edit = React.memo(() => {
       formAccess,
       submissionAccess
     );
-    
+
     const newPathAndName =
       "duplicate-version-" + Math.random().toString(16).slice(9);
     newFormData.path = newPathAndName;
@@ -497,42 +493,52 @@ const Edit = React.memo(() => {
       dispatch(push(`${redirectUrl}form`));
     } else {
       // If submissions exist, open the confirm submission modal
-      console.log("hitting here..................",applicationCountResponse);
-      setSelectedAction(CONFIRM_SUBMISSION); 
-      console.log("selectedAction",selectedAction);
+      console.log("hitting here..................", applicationCountResponse);
+      console.log("selectedAction", selectedAction);
     }
 
     if (processListData.id) {
-      // const formDetails = {
-      //   modalOpen: false,
-      //   formId: "",
-      //   formName: "",
-      // };
-      // dispatch(setFormDeleteStatus(formDetails));
-      // dispatch(
-      //   unPublishForm(processListData.id, (err) => {
-      //     if (err) {
-      //       toast.error(
-      //         <Translation>
-      //           {(t) => t(`${_.capitalize(processListData?.formType)} deletion unsuccessful`)}
-      //         </Translation>
-      //       );
-      //     } else {
-      //       toast.success(
-      //         <Translation>
-      //           {(t) => t(`${_.capitalize(processListData?.formType)} deleted successfully`)}
-      //         </Translation>
-      //       );
-      //     }
-      //   })
-      // );
+      const formDetails = {
+        modalOpen: false,
+        formId: "",
+        formName: "",
+      };
+      dispatch(setFormDeleteStatus(formDetails));
+      dispatch(
+        unPublishForm(processListData.id, (err) => {
+          if (err) {
+            toast.error(
+              <Translation>
+                {(t) =>
+                  t(
+                    `${_.capitalize(
+                      processListData?.formType
+                    )} deletion unsuccessful`
+                  )
+                }
+              </Translation>
+            );
+          } else {
+            toast.success(
+              <Translation>
+                {(t) =>
+                  t(
+                    `${_.capitalize(
+                      processListData?.formType
+                    )} deleted successfully`
+                  )
+                }
+              </Translation>
+            );
+          }
+        })
+      );
     }
   };
 
   const handleCloseActionModal = () => {
     setSelectedAction(null); // Reset action
   };
- 
 
   const formChange = (newForm) =>
     dispatchFormAction({ type: "formChange", value: newForm });
@@ -811,12 +817,45 @@ const Edit = React.memo(() => {
         showDeleteModal={selectedAction === DELETE} // Show if DELETE action is selected
         onClose={handleCloseActionModal} // Close the modal
         onYes={deleteModal} // Confirm delete
-        onNo={handleCloseActionModal}
-      />
-      <ConfirmSubmissionModal
-        show={selectedAction === CONFIRM_SUBMISSION} // Show if confirmation action is selected
-        onClose={handleCloseActionModal} 
-        // Add other props as necessary
+        onNo={handleCloseActionModal} // Cancel delete
+        yesText={
+          processListData.id && applicationCount
+            ? t("Unpublish This Form")
+            : t("Yes Delete the Form")
+        } // Confirm button text
+        noText={
+          processListData.id && applicationCount
+            ? t("Keep This Form")
+            : t("No Keep This Form")
+        } // Cancel button text
+        modalHeadder={
+          processListData.id && applicationCount
+            ? t("You Cannot Delete This Form")
+            : t("Are You Sure You Want to Delete This Form?")
+        } // Modal title
+        e
+        message={
+          processListData.id && applicationCount ? (
+            // Case when form has associated submissions and cannot be deleted
+            <div>
+              <p>
+                {t(
+                  "You may not delete a form that has submissions associated with it."
+                )}
+              </p>
+              <p>
+                {t(
+                  "But you may unpublish it if you wish to not receive any more submissions."
+                )}
+              </p>
+            </div>
+          ) : (
+            // Case when form can be deleted
+            <div>
+              <p>{t("This action cannot be undone.")}</p>
+            </div>
+          )
+        }
       />
 
       <ConfirmModal

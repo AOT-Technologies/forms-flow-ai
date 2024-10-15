@@ -324,6 +324,8 @@ const Edit = React.memo(() => {
       workflowChanged: false,
       statusChanged: false,
       resourceId: form._id,
+      majorVersion:processListData.majorVersion,
+      minorVersion:processListData.minorVersion,
     };
 
     const authorizations = {

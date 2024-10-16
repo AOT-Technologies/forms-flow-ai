@@ -42,12 +42,13 @@ import { getFormProcesses } from "../../../apiManager/services/processServices";
 import { getProcessXml } from "../../../apiManager/services/processServices";
 
 import SettingsModal from "../../CustomComponents/settingsModal";
+import ExportModal from "../../Modals/ExportModal.js";
 
 // constant values
 const DUPLICATE = "DUPLICATE";
 // const SAVE_AS_TEMPLATE= "SAVE_AS_TEMPLATE";
 // const IMPORT= "IMPORT";
-// const EXPORT= "EXPORT";
+const EXPORT = "EXPORT";
 //const DELETE = "DELETE";
 
 const reducer = (form, { type, value }) => {
@@ -83,6 +84,7 @@ const Edit = React.memo(() => {
   const processListData = useSelector(
     (state) => state.process?.formProcessList
   );
+ 
   const formAuthorization = useSelector((state) => state.process.authorizationDetails);
   const formData = useSelector((state) => state.form?.form);
   const [form, dispatchFormAction] = useReducer(reducer, _cloneDeep(formData));
@@ -566,6 +568,8 @@ const Edit = React.memo(() => {
         setFormSubmitted(false);
       });
   };
+
+
   return (
     <div>
       <div>
@@ -840,6 +844,12 @@ const Edit = React.memo(() => {
         setNameError={setNameError}
         nameValidationOnBlur={validateFormNameOnBlur}
         nameError={nameError}
+      />
+
+      <ExportModal  
+       showExportModal={selectedAction === EXPORT}
+       onClose={handleCloseSelectedAction}
+       formId={processListData.id}
       />
       <ConfirmModal
         show={showSaveModal}

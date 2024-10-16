@@ -23,7 +23,6 @@ const FormInput = ({
 
   const inputClassNames = "form-control-input " + className ;
   return (
-    <div className="form-input-box" >
       <Form.Group controlId={id}>
       {label && (
         <Form.Label  className='custom-form-control-label'>
@@ -58,7 +57,6 @@ const FormInput = ({
 
       </InputGroup>
     </Form.Group>
-    </div>
   );
 };
 

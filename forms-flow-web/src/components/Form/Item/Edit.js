@@ -12,9 +12,9 @@ import { Translation, useTranslation } from "react-i18next";
 import { push } from "connected-react-router";
 import { HistoryIcon, PreviewIcon } from "@formsflow/components";
 import ActionModal from "../../Modals/ActionModal.js";
-import { setProcessDiagramXML } from "../../../actions/processActions";
-import { MULTITENANCY_ENABLED } from "../../../constants/constants";
 //for save form
+import { MULTITENANCY_ENABLED } from "../../../constants/constants";
+
 import { manipulatingFormData } from "../../../apiManager/services/formFormatterService";
 import {
   formUpdate,
@@ -28,20 +28,20 @@ import {
 } from "../../../actions/formActions";
 import {
   saveFormProcessMapperPut,
+  getProcessDetails,
+  getFormProcesses
 } from "../../../apiManager/services/processServices";
+ 
+import { setProcessData } from '../../../actions/processActions.js';
 
 import _isEquial from "lodash/isEqual";
 import { FormBuilderModal } from "@formsflow/components";
 import _ from "lodash";
 
-import BpmnEditor from "../../Modeler/Editors/BpmnEditor";
 import { useParams } from "react-router-dom";
-//getting process data
-import { getFormProcesses } from "../../../apiManager/services/processServices";
-//getting process diagram
-import { getProcessXml } from "../../../apiManager/services/processServices";
 
 import SettingsModal from "../../CustomComponents/settingsModal";
+import FlowEdit from "./FlowEdit.js";
 
 // constant values
 const DUPLICATE = "DUPLICATE";
@@ -90,9 +90,13 @@ const Edit = React.memo(() => {
   const [showLayout, setShowLayout] = useState(true);
   const tenantKey = useSelector((state) => state.tenants?.tenantId);
   const redirectUrl = MULTITENANCY_ENABLED ? `/tenant/${tenantKey}/` : "/";
-  const processXmlDiagram = useSelector((state) => state.process?.processXml);
   const { formId } = useParams();
   const [nameError, setNameError] = useState("");
+
+  // flow edit 
+  const [isProcessDetailsLoading, setIsProcessDetailsLoading] = useState(false);
+
+  //for save form
   const [promptNewVersion, setPromptNewVersion] = useState(processListData.promptNewVersion);
   const [version, setVersion] = useState({ major: 1, minor: 0 });
   const [isPublished, setIsPublished] = useState(processListData?.status == "active" ? true : false);
@@ -118,7 +122,6 @@ const Edit = React.memo(() => {
   const [showSaveModal, setShowSaveModal] = useState(false);
   const [hasRendered, setHasRendered] = useState(false);
 
-  const [isLoadingDiagram, setIsLoadingDiagram] = useState(true);
   const formPath = useSelector((state) => state.form.form.path);
   const [newPath, setNewPath] = useState(formPath);
 
@@ -194,25 +197,24 @@ const Edit = React.memo(() => {
     setShowFlow(true);
     setShowLayout(false);
   };
+
   useEffect(() => {
     if (formId) {
       // Fetch form processes with formId
-      dispatch(getFormProcesses(formId));
+      dispatch(getFormProcesses(formId,(err,data)=>{
+        if(err) return;
+        setIsProcessDetailsLoading(true);
+        getProcessDetails(data.processKey).then((response)=>{
+          const { data } = response;
+          dispatch(setProcessData(data));
+          setIsProcessDetailsLoading(false);
+        }
+      );
+      }));
     }
   }, [formId]);
 
-  useEffect(() => {
-    if (workflow?.value) {
-      // Fetch workflow diagram XML when the workflow value is present
-      dispatch(getProcessXml(workflow.value));
-    }
-
-    if (workflow?.value && processXmlDiagram) {
-      // Set the process diagram XML and stop the loading spinner when both workflow and XML are available
-      dispatch(setProcessDiagramXML(processXmlDiagram));
-      setIsLoadingDiagram(false);
-    }
-  }, [workflow?.value, processXmlDiagram]);
+ 
 
 
 
@@ -392,17 +394,13 @@ const Edit = React.memo(() => {
     console.log("handleHistory");
   };
 
-  const handlePreviewAndVariables = () => {
-    console.log("handlePreviewAndVariables");
-  };
+ 
 
   const handlePreview = () => {
     console.log("handlePreview");
   };
 
-  const saveFlow = () => {
-    console.log("saveFlow");
-  };
+ 
 
   const discardChanges = () => {
     console.log("discardChanges");
@@ -679,7 +677,7 @@ const Edit = React.memo(() => {
                         label={
                           <Translation>{(t) => t("Save Layout")}</Translation>
                         }
-                        onClick={versionSaved ? () => saveFormData() : () => handleVersioning()}
+                        onClick={versionSaved ? handleVersioning : handleVersioning}
                         dataTestid="save-form-layout"
                         ariaLabel={t("Save Form Layout")}
                       />
@@ -714,92 +712,8 @@ const Edit = React.memo(() => {
               </Card>
             </div>
             <div className={`wraper flow-wraper ${showFlow ? "visible" : ""}`}>
-              <Card>
-                <Card.Header>
-                  <div
-                    className="d-flex justify-content-between align-items-center"
-                    style={{ width: "100%" }}
-                  >
-                    <div className="d-flex align-items-center justify-content-between">
-                      <div className="mx-2 builder-header-text">Flow</div>
-                      <div>
-                        <CustomButton
-                          variant="secondary"
-                          size="md"
-                          icon={<HistoryIcon />}
-                          label={
-                            <Translation>{(t) => t("History")}</Translation>
-                          }
-                          onClick={handleHistory}
-                          dataTestid="flow-history-button-testid"
-                          ariaLabel={t("Flow History Button")}
-                        />
-                        <CustomButton
-                          variant="secondary"
-                          size="md"
-                          className="mx-2"
-                          label={
-                            <Translation>
-                              {(t) => t("Preview & Variables")}
-                            </Translation>
-                          }
-                          onClick={handlePreviewAndVariables}
-                          dataTestid="preview-and-variables-testid"
-                          ariaLabel={t("{Preview and Variables Button}")}
-                        />
-                        {/* <CustomButton
-                          variant="secondary"
-                          size="md"
-                          className="mx-2"
-                          label={<Translation>{(t) => t("Switch to BPMN")}</Translation>}
-                          onClick={setWorkflowType}
-                          dataTestid={"cancelBtndataTestid"}
-                          ariaLabel={"cancelBtnariaLabel"}
-                        /> */}
-                      </div>
-                    </div>
-                    <div>
-                      <CustomButton
-                        variant="primary"
-                        size="md"
-                        className="mx-2"
-                        label={
-                          <Translation>{(t) => t("Save Flow")}</Translation>
-                        }
-                        onClick={saveFlow}
-                        dataTestid="save-flow-layout"
-                        ariaLabel={t("Save Flow Layout")}
-                      />
-                      <CustomButton
-                        variant="secondary"
-                        size="md"
-                        label={
-                          <Translation>
-                            {(t) => t("Discard Changes")}
-                          </Translation>
-                        }
-                        onClick={discardChanges}
-                        dataTestid="discard-flow-changes-testid"
-                        ariaLabel={t("Discard Flow Changes")}
-                      />
-                    </div>
-                  </div>
-                </Card.Header>
-                <Card.Body>
-                  <div className="flow-builder">
-                    {isLoadingDiagram ? (
-                      "loading..." // TBD: add a loader here
-                    ) : (
-                      <BpmnEditor
-                        processKey={workflow?.value}
-                        tenant={workflow?.tenant}
-                        isNewDiagram={false}
-                        bpmnXml={processXmlDiagram}
-                      />
-                    )}
-                  </div>
-                </Card.Body>
-              </Card>
+            {isProcessDetailsLoading ? <>loading...</>  : 
+              <FlowEdit />}
             </div>
             {showFlow && (
               <div
@@ -854,7 +768,6 @@ const Edit = React.memo(() => {
         secondaryBtnText={<Translation>{(t) => t(`Save as Version ${version.major}`)}</Translation>}
         size="md"
       />
-      <div></div>
     </div>
   );
 });

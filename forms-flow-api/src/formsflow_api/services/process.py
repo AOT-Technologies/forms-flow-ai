@@ -98,7 +98,7 @@ class ProcessService:  # pylint: disable=too-few-public-methods
 
         # Prepend the XML declaration
         updated_xml = '<?xml version="1.0" encoding="UTF-8"?>\n' + updated_xml
-        return updated_xml
+        return updated_xml.encode("utf-8")
 
     @classmethod
     @user_context

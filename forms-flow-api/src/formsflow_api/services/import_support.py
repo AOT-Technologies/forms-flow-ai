@@ -59,7 +59,7 @@ class ImportService:  # pylint: disable=too-many-public-methods
 
     def get_latest_version_workflow(self, process_name, include_status=False):
         """Get latest version of workflow by process name."""
-        process = Process.get_latest_version(process_name)
+        process = Process.get_latest_version_by_key(process_name)
         # If process not found, consider as initial version
         if not process:
             return (1, 0, None) if include_status else (1, 0)
@@ -185,8 +185,7 @@ class ImportService:  # pylint: disable=too-many-public-methods
     def update_workflow(self, xml_data, process_name):
         """Parse the workflow XML data & update process name."""
         current_app.logger.info("Updating workflow...")
-        # pylint: disable=I1101
-        root = etree.fromstring(xml_data.encode("utf-8"))
+        root = ProcessService.xml_parser(xml_data)
 
         # Find the bpmn:process element
         process = root.find(".//{http://www.omg.org/spec/BPMN/20100524/MODEL}process")
@@ -202,16 +201,18 @@ class ImportService:  # pylint: disable=too-many-public-methods
         updated_xml = '<?xml version="1.0" encoding="UTF-8"?>\n' + updated_xml
         return updated_xml
 
+    @user_context
     def save_process_data(  # pylint: disable=too-many-arguments, too-many-positional-arguments
         self,
         workflow_data,
         name,
-        mapper_id,
         selected_workflow_version=None,
         is_new=False,
+        **kwargs,
     ):
         """Save process data."""
         current_app.logger.info("Saving process data...")
+        user: UserContext = kwargs["user"]
         updated_xml = self.update_workflow(workflow_data, name)
         # Save workflow on new import will have major version as 1 and minor version as 0
         major_version, minor_version = 1, 0
@@ -240,18 +241,19 @@ class ImportService:  # pylint: disable=too-many-public-methods
                 else:
                     minor_version += 1
         # Save workflow as draft
-        process_data = {
-            "status": "Draft",
-            "processType": "bpmn",
-            "name": name,
-            "processData": updated_xml,
-            "majorVersion": major_version,
-            "minorVersion": minor_version,
-            "formProcessMapperId": mapper_id,
-            "processKey": name,
-            "parentProcessKey": name,
-        }
-        ProcessService.create_process(payload=process_data)
+        process_data = updated_xml.encode("utf-8")
+        process = Process(
+            name=name,
+            process_type="BPMN",
+            tenant=user.tenant_key,
+            process_data=process_data,
+            created_by=user.user_name,
+            major_version=major_version,
+            minor_version=minor_version,
+            process_key=name,
+            parent_process_key=name,
+        )
+        process.save()
         current_app.logger.info("Process data saved successfully...")
 
     def version_response(self, form_major, form_minor, workflow_major, workflow_minor):
@@ -320,9 +322,7 @@ class ImportService:  # pylint: disable=too-many-public-methods
         )
         process_name = updated_process_name if updated_process_name else process_name
         current_app.logger.info(f"Process Name: {process_name}")
-        self.save_process_data(
-            workflow_data, process_name, mapper_id=mapper.id, is_new=True
-        )
+        self.save_process_data(workflow_data, process_name, is_new=True)
         return form_id
 
     def import_form(
@@ -572,7 +572,6 @@ class ImportService:  # pylint: disable=too-many-public-methods
                             self.save_process_data(
                                 workflow_data,
                                 mapper.process_key,
-                                mapper.id,
                                 selected_workflow_version,
                             )
 
@@ -596,7 +595,6 @@ class ImportService:  # pylint: disable=too-many-public-methods
                     self.save_process_data(
                         file_content,
                         mapper.process_key,
-                        mapper_id,
                         selected_workflow_version,
                     )
         return {"formId": form_id}

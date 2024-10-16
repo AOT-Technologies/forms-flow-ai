@@ -10,13 +10,12 @@ from formsflow_api_utils.utils import (
     DEFAULT_PROCESS_KEY,
     DEFAULT_PROCESS_NAME,
     FILTER_MAPS,
-    validate_sort_order_and_order_by,
+    add_sort_filter,
 )
 from formsflow_api_utils.utils.enums import FormProcessMapperStatus
 from formsflow_api_utils.utils.user_context import UserContext, user_context
 from sqlalchemy import UniqueConstraint, and_, desc, func, or_
 from sqlalchemy.dialects.postgresql import JSON
-from sqlalchemy.sql.expression import text
 
 from .audit_mixin import AuditDateTimeMixin, AuditUserMixin
 from .base_model import BaseModel
@@ -185,21 +184,6 @@ class FormProcessMapper(AuditDateTimeMixin, AuditUserMixin, BaseModel, db.Model)
         )
 
     @classmethod
-    def add_sort_filter(cls, query, sort_by, sort_order):
-        """Adding sortBy and sortOrder."""
-        order = []
-        if sort_by and sort_order:
-            for sort_by_att, sort_order_attr in zip(sort_by, sort_order):
-                name, value = validate_sort_order_and_order_by(
-                    sort_order=sort_order_attr, order_by=sort_by_att
-                )
-                if name and value:
-                    order.append(text(f"form_process_mapper.{name} {value}"))
-
-            query = query.order_by(*order)
-        return query
-
-    @classmethod
     def add_search_filter(cls, query, search):
         """Adding search filter in query."""
         if search:
@@ -241,7 +225,12 @@ class FormProcessMapper(AuditDateTimeMixin, AuditUserMixin, BaseModel, db.Model)
 
         query = cls.add_search_filter(query=query, search=search)
 
-        query = cls.add_sort_filter(query=query, sort_by=sort_by, sort_order=sort_order)
+        query = add_sort_filter(
+            query=query,
+            sort_by=sort_by,
+            sort_order=sort_order,
+            model_name="form_process_mapper",
+        )
 
         # form type is list of type to filter the form
         if form_type:
@@ -293,7 +282,12 @@ class FormProcessMapper(AuditDateTimeMixin, AuditUserMixin, BaseModel, db.Model)
         )
         query = cls.add_search_filter(query=query, search=search)
         query = cls.access_filter(query=query)
-        query = cls.add_sort_filter(sort_by=sort_by, sort_order=sort_order, query=query)
+        query = add_sort_filter(
+            sort_by=sort_by,
+            sort_order=sort_order,
+            query=query,
+            model_name="form_process_mapper",
+        )
 
         total_count = query.count()
         query = query.with_entities(

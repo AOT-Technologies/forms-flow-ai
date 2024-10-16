@@ -3,7 +3,12 @@ import Modal from "react-bootstrap/Modal";
 import { CustomButton } from "@formsflow/components";
 import { DuplicateIcon, ImportIcon, PencilIcon, SaveTemplateIcon, CloseIcon } from "@formsflow/components";
 
-const ActionModal = React.memo(({ newActionModal, onClose, CategoryType }) => {
+const ActionModal = React.memo(({ newActionModal, onClose, CategoryType, onAction  }) => {
+      const handleAction = (actionType)=>{
+        onAction(actionType);
+        onClose();
+      };
+      
     return (
         <>
             <Modal show={newActionModal} onHide={onClose} dialogClassName="modal-50w">
@@ -27,6 +32,7 @@ const ActionModal = React.memo(({ newActionModal, onClose, CategoryType }) => {
                                 className=""
                                 dataTestid="duplicate-form-button"
                                 ariaLabel="Duplicate Button"
+                                onClick={() => handleAction("DUPLICATE")}
                             />
 
                             <CustomButton
@@ -37,6 +43,7 @@ const ActionModal = React.memo(({ newActionModal, onClose, CategoryType }) => {
                                 className=""
                                 dataTestid="save-template-button"
                                 ariaLabel="Save as Template"
+                                onClick={() => handleAction("SAVE_AS_TEMPLATE")}
                             />
                             <CustomButton
                                 variant="secondary"
@@ -46,6 +53,7 @@ const ActionModal = React.memo(({ newActionModal, onClose, CategoryType }) => {
                                 className=""
                                 dataTestid="import-form-button"
                                 ariaLabel="Import Form"
+                                onClick={() => handleAction("IMPORT")}
                             />
 
                             <CustomButton
@@ -56,6 +64,7 @@ const ActionModal = React.memo(({ newActionModal, onClose, CategoryType }) => {
                                 className=""
                                 dataTestid="export-form-button"
                                 ariaLabel="Export Form"
+                                onClick={() => handleAction("EXPORT")}
                             />
 
                             <CustomButton
@@ -66,6 +75,7 @@ const ActionModal = React.memo(({ newActionModal, onClose, CategoryType }) => {
                                 className=""
                                 dataTestid="delete-form-button"
                                 ariaLabel="Delete Form"
+                                onClick={() => handleAction("DELETE")}
                             />
 
                         </div>

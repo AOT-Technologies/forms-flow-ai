@@ -112,6 +112,16 @@ class FormProcessMapperService:  # pylint: disable=too-many-public-methods
         raise BusinessException(BusinessErrorCode.INVALID_FORM_PROCESS_MAPPER_ID)
 
     @staticmethod
+    def get_form_version(mapper):
+        """Get form versions."""
+        version_data = FormHistory.get_latest_version(mapper.parent_form_id)
+        major_version, minor_version = 1, 0
+        if version_data:
+            major_version = version_data.major_version
+            minor_version = version_data.minor_version
+        return major_version, minor_version
+
+    @staticmethod
     @user_context
     def get_mapper_by_formid(form_id: str, **kwargs):
         """Get form process mapper."""
@@ -124,11 +134,9 @@ class FormProcessMapperService:  # pylint: disable=too-many-public-methods
             mapper_schema = FormProcessMapperSchema()
             response = mapper_schema.dump(mapper)
             # Include form versions
-            version_data = FormHistory.get_latest_version(mapper.parent_form_id)
-            major_version, minor_version = 1, 0
-            if version_data:
-                major_version = version_data.major_version
-                minor_version = version_data.minor_version
+            major_version, minor_version = FormProcessMapperService.get_form_version(
+                mapper
+            )
             response["majorVersion"] = major_version
             response["minorVersion"] = minor_version
             if response.get("deleted") is False:

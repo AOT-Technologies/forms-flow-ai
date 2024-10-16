@@ -77,7 +77,6 @@ const ExportModal = React.memo(({ showExportModal, onClose, formId }) => {
       onHide={onClose}
       dialogClassName="modal-50w" // This will control the modal width
       centered // Center the modal on the screen
-      size="lg" // Larger size modal on bigger screens
       aria-labelledby="contained-modal-title-vcenter"
       scrollable // Ensures content is scrollable on small screens
     >
@@ -139,7 +138,7 @@ const ExportModal = React.memo(({ showExportModal, onClose, formId }) => {
                 exportForm();
               }}
               className="mb-2"
-              dataTestid="Try Again"
+              dataTestid="try-again"
               ariaLabel="Try Again"
             />
             <CustomButton
@@ -148,7 +147,7 @@ const ExportModal = React.memo(({ showExportModal, onClose, formId }) => {
               label={<Translation>{(t) => t("Cancel")}</Translation>}
               onClick={onClose}
               className="mb-2"
-              dataTestid="Cancel"
+              dataTestid="cancel"
               ariaLabel="Cancel"
             />
           </>

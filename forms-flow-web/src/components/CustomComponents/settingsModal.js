@@ -198,6 +198,7 @@ const SettingsModal =
             aria-label={t("Description of the edited form")}
             data-testid="form-description"
             maxRows={3}
+            minRows={3}
           />
           <div className="info-panel">
             <div className='d-flex align-items-center'>
@@ -427,7 +428,6 @@ const SettingsModal =
         </div>
 
         <div className='modal-hr' />
-        {rolesState.create.isPublic && (
           <div className="section">
           <h5 className='fw-bold'>{t("Link for this form")}</h5>
           <div className="info-panel">
@@ -458,7 +458,7 @@ const SettingsModal =
             </InputGroup>
           </Form.Group>
         </div>
-        )}
+        
         
       </Modal.Body>
       <Modal.Footer className="d-flex justify-content-start">

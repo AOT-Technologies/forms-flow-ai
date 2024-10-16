@@ -427,7 +427,6 @@ const SettingsModal =
         </div>
 
         <div className='modal-hr' />
-        {rolesState.create.isPublic && (
           <div className="section">
           <h5 className='fw-bold'>{t("Link for this form")}</h5>
           <div className="info-panel">
@@ -458,7 +457,7 @@ const SettingsModal =
             </InputGroup>
           </Form.Group>
         </div>
-        )}
+        
         
       </Modal.Body>
       <Modal.Footer className="d-flex justify-content-start">

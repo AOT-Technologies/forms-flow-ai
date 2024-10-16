@@ -442,6 +442,9 @@ class FormResourceById(Resource):
 
         # Prepare the response
         response = {}
+        major_version, minor_version = FormProcessMapperService.get_form_version(mapper)
+        mapper_response["majorVersion"] = major_version
+        mapper_response["minorVersion"] = minor_version
         response["mapper"] = mapper_response
         if resource_id:
             response["authorizations"] = AuthorizationService().get_auth_list_by_id(

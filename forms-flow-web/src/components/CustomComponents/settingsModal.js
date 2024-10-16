@@ -198,6 +198,7 @@ const SettingsModal =
             aria-label={t("Description of the edited form")}
             data-testid="form-description"
             maxRows={3}
+            minRows={3}
           />
           <div className="info-panel">
             <div className='d-flex align-items-center'>

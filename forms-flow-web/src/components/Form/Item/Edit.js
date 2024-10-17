@@ -351,8 +351,17 @@ const Edit = React.memo(() => {
         roles: rolesState.create.selectedOption === "specifiedRoles" ? rolesState.create.selectedRoles : [],
       }
     };
-    dispatch(saveFormProcessMapperPut({ mapper, authorizations }));
-    handleCloseModal();
+  
+    const savePromise = dispatch(saveFormProcessMapperPut({ mapper, authorizations }));
+    const updatePromise = updateFormPath();
+  
+    Promise.all([savePromise, updatePromise])
+      .then(() => {
+        handleCloseModal();
+      })
+      .catch(error => {
+        console.error("Error saving form process:", error);
+      });
   };
 
 
@@ -386,6 +395,22 @@ const Edit = React.memo(() => {
       .finally(() => {
         setFormSubmitted(false);
       });
+  };
+
+
+  const updateFormPath = () => {
+    const newFormData = manipulatingFormData(
+      _.cloneDeep(form),
+      MULTITENANCY_ENABLED,
+      tenantKey,
+      formAccess,
+      submissionAccess
+    );
+    newFormData.path = newPath;
+    newFormData.title = formDetails.name;
+    formUpdate(newFormData._id, newFormData);
+
+
   };
 
   const backToForm = () => {

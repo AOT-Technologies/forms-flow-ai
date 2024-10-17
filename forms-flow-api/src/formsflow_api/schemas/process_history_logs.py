@@ -19,6 +19,8 @@ class ProcessHistorySchema(Schema):
     minor_version = fields.Int(data_key="minorVersion")
     process_type = fields.Method("get_process_type", data_key="processType")
     isMajor = fields.Method("get_is_major", dump_only=True)
+    published_on = fields.Str(data_key="publishedOn", dump_only=True)
+    published_by = fields.Str(data_key="publishedBy", dump_only=True)
 
     def get_is_major(self, obj):
         """Determine if the version is major."""

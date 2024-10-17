@@ -31,7 +31,7 @@ import {
   getProcessDetails,
   getFormProcesses
 } from "../../../apiManager/services/processServices";
- 
+
 import { setProcessData } from '../../../actions/processActions.js';
 
 import _isEquial from "lodash/isEqual";
@@ -42,12 +42,13 @@ import { useParams } from "react-router-dom";
 
 import SettingsModal from "../../CustomComponents/settingsModal";
 import FlowEdit from "./FlowEdit.js";
+import ExportModal from "../../Modals/ExportModal.js";
 
 // constant values
 const DUPLICATE = "DUPLICATE";
 // const SAVE_AS_TEMPLATE= "SAVE_AS_TEMPLATE";
 // const IMPORT= "IMPORT";
-// const EXPORT= "EXPORT";
+const EXPORT = "EXPORT";
 //const DELETE = "DELETE";
 
 const reducer = (form, { type, value }) => {
@@ -83,6 +84,7 @@ const Edit = React.memo(() => {
   const processListData = useSelector(
     (state) => state.process?.formProcessList
   );
+
   const formAuthorization = useSelector((state) => state.process.authorizationDetails);
   const formData = useSelector((state) => state.form?.form);
   const [form, dispatchFormAction] = useReducer(reducer, _cloneDeep(formData));
@@ -93,7 +95,7 @@ const Edit = React.memo(() => {
   const { formId } = useParams();
   const [nameError, setNameError] = useState("");
 
-  // flow edit 
+  // flow edit
   const [isProcessDetailsLoading, setIsProcessDetailsLoading] = useState(false);
 
   //for save form
@@ -214,7 +216,7 @@ const Edit = React.memo(() => {
     }
   }, [formId]);
 
- 
+
 
 
 
@@ -394,13 +396,13 @@ const Edit = React.memo(() => {
     console.log("handleHistory");
   };
 
- 
+
 
   const handlePreview = () => {
     console.log("handlePreview");
   };
 
- 
+
 
   const discardChanges = () => {
     console.log("discardChanges");
@@ -524,7 +526,7 @@ const Edit = React.memo(() => {
 
     //get mapper data
 
-    //call for new version save 
+    //call for new version save
     setShowSaveModal(true);
   };
 
@@ -566,6 +568,8 @@ const Edit = React.memo(() => {
         setFormSubmitted(false);
       });
   };
+
+
   return (
     <div>
       <div>
@@ -712,7 +716,7 @@ const Edit = React.memo(() => {
               </Card>
             </div>
             <div className={`wraper flow-wraper ${showFlow ? "visible" : ""}`}>
-            {isProcessDetailsLoading ? <>loading...</>  : 
+            {isProcessDetailsLoading ? <>loading...</>  :
               <FlowEdit />}
             </div>
             {showFlow && (
@@ -756,6 +760,12 @@ const Edit = React.memo(() => {
         setNameError={setNameError}
         nameValidationOnBlur={validateFormNameOnBlur}
         nameError={nameError}
+      />
+
+      <ExportModal
+       showExportModal={selectedAction === EXPORT}
+       onClose={handleCloseSelectedAction}
+       formId={processListData.id}
       />
       <ConfirmModal
         show={showSaveModal}

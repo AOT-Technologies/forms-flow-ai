@@ -9,14 +9,14 @@ import {
   BpmnPropertiesProviderModule,
   CamundaPlatformPropertiesProviderModule,
 } from "bpmn-js-properties-panel";
-
-import CamundaExtensionModule from "camunda-bpmn-moddle/lib";
+import camundaPlatformBehaviors from 'camunda-bpmn-js-behaviors/lib/camunda-platform';
+//import CamundaExtensionModule from "camunda-bpmn-moddle/lib";
 import camundaModdleDescriptors from "camunda-bpmn-moddle/resources/camunda";
 
 import lintModule from "bpmn-js-bpmnlint";
 import "bpmn-js-bpmnlint/dist/assets/css/bpmn-js-bpmnlint.css";
 import linterConfig from "../../lint-rules/packed-config";
- 
+
 const BpmnEditor = forwardRef(({ bpmnXml, setLintErrors }, ref) => {
   const [bpmnModeler, setBpmnModeler] = useState(null);
 
@@ -43,7 +43,7 @@ const BpmnEditor = forwardRef(({ bpmnXml, setLintErrors }, ref) => {
           BpmnPropertiesPanelModule,
           BpmnPropertiesProviderModule,
           CamundaPlatformPropertiesProviderModule,
-          CamundaExtensionModule,
+          camundaPlatformBehaviors,
           lintModule,
          ],
         moddleExtensions: {

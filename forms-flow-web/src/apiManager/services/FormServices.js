@@ -92,3 +92,8 @@ export const validateFormName = (title, name, id) => {
   }
   return RequestService.httpGETRequest(url);
 };
+
+export const getFormExport = (form_id) => {
+  const exportFormUrl = replaceUrl(API.EXPORT_FORM, "<form_id>",form_id);
+  return RequestService.httpGETRequest(exportFormUrl);
+};

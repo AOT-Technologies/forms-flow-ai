@@ -1,7 +1,6 @@
 import React, { useEffect, useState, useReducer } from "react";
 import { connect, useSelector, useDispatch } from "react-redux";
 import CreateFormModal from "../Modals/CreateFormModal.js";
-//import BuildFormModal from '../Modals/BuildFormModal';
 import ImportFormModal from "../Modals/ImportFormModal.js";
 import { push } from "connected-react-router";
 import { toast } from "react-toastify";

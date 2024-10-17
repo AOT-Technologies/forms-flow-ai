@@ -11,7 +11,7 @@ const ActionModal = React.memo(({ newActionModal, onClose, CategoryType, onActio
       
     return (
         <>
-            <Modal show={newActionModal} onHide={onClose} dialogClassName="modal-50w">
+            <Modal show={newActionModal} onHide={onClose} centered={true} size="sm">
                 <Modal.Header>
                     <Modal.Title className="modal-headder">
                         <div> Action</div>

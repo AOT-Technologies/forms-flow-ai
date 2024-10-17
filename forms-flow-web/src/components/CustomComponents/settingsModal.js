@@ -177,7 +177,7 @@ const SettingsModal =
 
 
   return (
-    <Modal className="d-flex flex-column align-items-start w-100 settings-modal" show={show} onHide={handleClose} dialogClassName="modal-50w" backdrop="static">
+    <Modal className="d-flex flex-column align-items-start w-100 settings-modal" show={show} onHide={handleClose} size="sm" backdrop="static">
       <Modal.Header>
         <Modal.Title>{t("Settings")}</Modal.Title>
       </Modal.Header>
@@ -461,7 +461,7 @@ const SettingsModal =
         
         
       </Modal.Body>
-      <Modal.Footer className="d-flex justify-content-start">
+      <Modal.Footer>
         <CustomButton
           variant="primary"
           size="md"

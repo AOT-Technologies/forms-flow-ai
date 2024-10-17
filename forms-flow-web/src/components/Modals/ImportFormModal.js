@@ -42,7 +42,7 @@ const ImportFormModal = React.memo(({ importFormModal, onClose, formSubmitted,
         }
     }, [selectedFile]);
     return (
-        <Modal show={importFormModal} onHide={onClose} dialogClassName="modal-50w">
+        <Modal show={importFormModal} onHide={onClose} centered={true} size="sm">
             <Modal.Header>
                 <Modal.Title>
                     <b><Translation>{(t) => t("Import New Form")}</Translation></b>
@@ -115,7 +115,7 @@ const ImportFormModal = React.memo(({ importFormModal, onClose, formSubmitted,
                     </div>
                 )}
             </Modal.Body>
-            <Modal.Footer className="d-flex justify-content-start">
+            <Modal.Footer>
                 <CustomButton
                     variant={importError && !selectedFile ? "dark" : "primary"}
                     disabled={importError}

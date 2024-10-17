@@ -32,6 +32,7 @@ const API = {
   FORM_DESIGN: `${WEB_BASE_URL}/form/form-design`,
   FORM_IMPORT: `${WEB_BASE_URL}/import`,
   FORM_HISTORY: `${WEB_BASE_URL}/form/form-history`,
+  PROCESS_HISTORY: `${WEB_BASE_URL}/process`,
   LANG_UPDATE: `${WEB_BASE_URL}/user/locale`,
   FORM_PROCESSES: `${WEB_BASE_URL}/form/formid`,
   GET_BPM_TASKS: `${BPM_BASE_URL_EXT}/v1/task`,

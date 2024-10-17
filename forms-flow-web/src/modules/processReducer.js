@@ -26,6 +26,7 @@ const initialState = {
   bpmnSearchText: "",
   dmnSearchText: "",
   isPublicDiagram: null,
+  processHistory:[]
 };
 
 const process = (state = initialState, action) => {
@@ -101,6 +102,8 @@ const process = (state = initialState, action) => {
       return { ...state, dmnSearchText: action.payload };
     case ACTION_CONSTANTS.IS_PUBLIC_DIAGRAM:
       return { ...state, isPublicDiagram: action.payload };
+    case ACTION_CONSTANTS.PROCESS_HISTORY:
+      return { ...state, processHistory: action.payload };
     default:
       return state;
   }

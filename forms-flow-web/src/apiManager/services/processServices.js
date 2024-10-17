@@ -518,3 +518,11 @@ export const deleteFormProcessMapper = (mapperId, ...rest) => {
       });
   };
 };
+
+export const getProcessHistory = (process_key, page = null, limit = null) => {
+  let url = `${API.PROCESS_HISTORY}/${process_key}/versions`;
+  if (page !== null && limit !== null) {
+    url += `?pageNo=${page}&limit=${limit}`;
+  }
+  return RequestService.httpGETRequest(url);
+};

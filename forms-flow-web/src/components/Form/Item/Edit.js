@@ -15,6 +15,7 @@ import { HistoryIcon, PreviewIcon } from "@formsflow/components";
 import ActionModal from "../../Modals/ActionModal.js";
 import {
   setProcessDiagramXML,
+  setProcessHistories
 } from "../../../actions/processActions";
 import {
   MULTITENANCY_ENABLED,
@@ -34,6 +35,7 @@ import {
 import {
   saveFormProcessMapperPost,
   saveFormProcessMapperPut,
+  getProcessHistory
 } from "../../../apiManager/services/processServices";
 
 import _isEquial from "lodash/isEqual";
@@ -77,6 +79,7 @@ const Edit = React.memo(() => {
   const { t } = useTranslation();
   const errors = useSelector((state) => state.form?.error);
   const processListData = useSelector((state) => state.process?.formProcessList);
+  const processHistory = useSelector((state) => state.process?.processHistory);
   const formData = useSelector((state) => state.form?.form);
   const [form, dispatchFormAction] = useReducer(reducer, _cloneDeep(formData));
   const publisText = processListData.status == "active" ? "Unpublish" : "Publish";
@@ -107,7 +110,7 @@ const Edit = React.memo(() => {
   const handleCloseModal = () => setShowSettingsModal(false);
   const pageNo = 1;
   const limit = 4;
-
+  const [ history, setHistory] = useState(true);
   //action modal
   const [newActionModal, setNewActionModal] = useState(false);
   const onCloseActionModal = () => {
@@ -357,15 +360,43 @@ useEffect(() => {
       });
   };
 
-  const handleHistory = () => {
-    setshowHistoryModal(true);
-     if (processListData?.parentFormId && !formHistory.length) {
+  const fetchProcessHistory = (processKey, page, limit) => {
+    getProcessHistory(processKey, page, limit)
+      .then((res) => {
+        dispatch(setProcessHistories(res.data.processHistory));
+      })
+      .catch(() => {
+        setProcessHistories([]);
+      });
+  };
+
+  useEffect(() => {
+    if (processListData?.parentFormId && !formHistory.length) {
       fetchFormHistory(processListData?.parentFormId, pageNo, limit);
+    }
+    if (processListData?.processKey && !processHistory.length) {
+      fetchProcessHistory(processListData?.processKey, pageNo, limit);
+    }
+  }, [processListData]);
+
+  const handleHistory = (type) => {
+    setshowHistoryModal(true);
+    if (type === 'WORKFLOW') {
+      setHistory(false);
+    }
+    else {
+      setHistory(true);
     }
   };
 
   const loadMoreBtnAction = () => {
-    fetchFormHistory(processListData?.parentFormId);
+    history 
+      ? fetchFormHistory(processListData?.parentFormId)
+      : fetchProcessHistory(processListData?.processKey);
+  };
+
+  const revertBtnAction = (cloneId) => {
+    dispatch(setRestoreFormId(cloneId));
   };
 
   const handlePreviewAndVariables = () => {
@@ -477,7 +508,7 @@ handleConfirm={handleConfirmSettings} />
                           size="md"
                           icon={<HistoryIcon />}
                           label={t("History")}
-                          onClick={handleHistory}
+                          onClick={() => handleHistory(CategoryType.FORM)}
                           dataTestid="handle-form-history-testid"
                           ariaLabel={t("Form History Button")}
                         />
@@ -542,7 +573,7 @@ handleConfirm={handleConfirmSettings} />
                           size="md"
                           icon={<HistoryIcon />}
                           label={<Translation>{(t) => t("History")}</Translation>}
-                          onClick={handleHistory}
+                          onClick={() => handleHistory(CategoryType.WORKFLOW)}
                           dataTestid="flow-history-button-testid"
                           ariaLabel={t("Flow History Button")}
                         />
@@ -636,8 +667,10 @@ handleConfirm={handleConfirmSettings} />
         title={<Translation>{(t) => t("History")}</Translation>}
         loadMoreBtnText={<Translation>{(t) => t("Load More")}</Translation>}
         revertBtnText={<Translation>{(t) => t("Revert To This")}</Translation>}
-        formHistory={formHistory}
+        formHistory={history ? formHistory : processHistory} 
         loadMoreBtnAction={loadMoreBtnAction}
+        categoryType={history ? CategoryType.FORM : CategoryType.WORKFLOW}
+        revertBtnAction={revertBtnAction}
        />
       <div>
       </div>

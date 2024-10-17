@@ -169,3 +169,10 @@ export const setIsPublicDiagram = (data) => (dispatch) => {
     payload: data,
   });
 };
+
+export const setProcessHistories = (historyData) => (dispatch) => {
+  dispatch({
+    type: ACTION_CONSTANTS.PROCESS_HISTORY,
+    payload:historyData,
+  });
+};

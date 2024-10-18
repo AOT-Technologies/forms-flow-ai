@@ -137,7 +137,9 @@ class Process(AuditDateTimeMixin, AuditUserMixin, BaseModel, db.Model):
         """Subquery to get the latest process by parent_process_key."""
         subquery = (
             db.session.query(
-                cls.parent_process_key, func.max(cls.id).label("latest_id")
+                cls.parent_process_key,
+                func.max(cls.major_version).label("latest_major_version"),
+                func.max(cls.minor_version).label("latest_minor_version"),
             )
             .group_by(cls.parent_process_key)
             .subquery()
@@ -160,10 +162,9 @@ class Process(AuditDateTimeMixin, AuditUserMixin, BaseModel, db.Model):
         subquery = cls.subquery_for_getting_latest_process()
         query = query.join(
             subquery,
-            and_(
-                cls.parent_process_key == subquery.c.parent_process_key,
-                cls.id == subquery.c.latest_id,
-            ),
+            (cls.parent_process_key == subquery.c.parent_process_key)
+            & (cls.major_version == subquery.c.latest_major_version)
+            & (cls.minor_version == subquery.c.latest_minor_version),
         )
 
         if is_subflow:

@@ -366,6 +366,10 @@ class ProcessService:  # pylint: disable=too-few-public-methods
         """Publish by process_id."""
         user: UserContext = kwargs["user"]
         process = cls.validate_process_by_id(process_id)
+        latest = Process.get_latest_version_by_parent_key(process.parent_process_key)
+        print(latest.id, process.id)
+        if process.id != latest.id:
+            raise BusinessException(BusinessErrorCode.PROCESS_NOT_LATEST_VERSION)
         FormProcessMapperService.update_process_status(process, "PUBLISHED", user)
         FormProcessMapperService().deploy_process(
             process.name, process.process_data, user.tenant_key, user.bearer_token

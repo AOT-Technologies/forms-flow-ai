@@ -91,34 +91,6 @@ def get_form_request_payload_private():
     }
 
 
-def get_form_request_payload_public_inactive():
-    """Return a form request payload object which is not active."""
-    return {
-        "formId": "12",
-        "formName": "Sample private form",
-        "processKey": "onestepapproval",
-        "processName": "OneStep Approval",
-        "status": "Inactive",
-        "comments": "test",
-        "tenant": 11,
-        "anonymous": True,
-        "formType": "form",
-        "parentFormId": "12",
-    }
-
-
-def get_form_request_anonymous_payload():
-    """Return a form request payload object with anonymous true."""
-    return {
-        "formId": "1234",
-        "formName": "Sample form",
-        "anonymous": True,
-        "status": "active",
-        "formType": "form",
-        "parentFormId": "1234",
-    }
-
-
 def get_application_create_payload(form_id: str = "1234"):
     """Returns an application create payload."""
     return {
@@ -132,21 +104,6 @@ def get_application_create_payload(form_id: str = "1234"):
 def get_draft_create_payload(form_id: str = "1234"):
     """Return a payload for creating draft details."""
     return {"formId": form_id, "data": {"name": "testing sample"}}
-
-
-def get_form_service_payload():
-    """Return a form Service payload object."""
-    return {
-        "form_id": "1234",
-        "form_name": "Sample form",
-        "form_revision_number": "v1",
-        "process_key": "121312",
-        "process_name": "OneStep Approval",
-        "status": "active",
-        "comments": "test",
-        "tenant": 12,
-        "created_by": "test-user",
-    }
 
 
 def get_form_payload():
@@ -187,6 +144,7 @@ def get_formio_form_request_payload():
     """Return a formio form create request payload object."""
     return {
         "display": "form",
+        "description": "",
         "components": [
             {
                 "label": "Text Field",
@@ -641,6 +599,14 @@ def get_process_request_payload(
         "isSubflow": is_subflow,
         "processKey": name,
         "parentProcessKey": parent_process_key,
+    }
+
+
+def get_process_request_payload_for_dmn():
+    """Return process request payload.""" ""
+    return {
+        "processType": "dmn",
+        "processData": """<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<definitions xmlns=\"https://www.omg.org/spec/DMN/20191111/MODEL/\" xmlns:dmndi=\"https://www.omg.org/spec/DMN/20191111/DMNDI/\" xmlns:dc=\"http://www.omg.org/spec/DMN/20180521/DC/\" xmlns:camunda=\"http://camunda.org/schema/1.0/dmn\" id=\"Definitions_1h338s2\" name=\"DRD\" namespace=\"http://camunda.org/schema/1.0/dmn\" exporter=\"Camunda Modeler\" exporterVersion=\"4.8.1\"><decision id=\"email-template-example\" name=\"email-template-example\" camunda:versionTag=\"1\"><decisionTable id=\"decisionTable_1\"><input id=\"input_1\" label=\"category\"><inputExpression id=\"inputExpression_1\" typeRef=\"string\"><text>category</text></inputExpression></input><output id=\"OutputClause_1aekr4b\" label=\"to\" name=\"to\" typeRef=\"string\" /><output id=\"OutputClause_03zviem\" label=\"cc\" name=\"cc\" typeRef=\"string\" /><output id=\"OutputClause_0f8t1qe\" label=\"subject\" name=\"subject\" typeRef=\"string\" /><output id=\"OutputClause_1o2aisg\" label=\"body\" name=\"body\" typeRef=\"string\" /><rule id=\"DecisionRule_0ycnss6\"><inputEntry id=\"UnaryTests_1g3piq1\"><text>\"assignment_notification\"</text></inputEntry><outputEntry id=\"LiteralExpression_1w28m1k\"><text></text></outputEntry><outputEntry id=\"LiteralExpression_08f869r\"><text></text></outputEntry><outputEntry id=\"LiteralExpression_1czkz3j\"><text>\"Task Assignment\"</text></outputEntry><outputEntry id=\"LiteralExpression_1qfdlgl\" expressionLanguage=\"juel\"><text>\"Hello @name,\r\n      \r\nYou have a new task for the process. Please click the following link to access your new task.\r\n\r\n@formUrl\r\n\r\n  \r\nBest Regards\"</text></outputEntry></rule><rule id=\"DecisionRule_1ntdgwj\"><inputEntry id=\"UnaryTests_05ov6ol\"><text>\"activity_reminder\"</text></inputEntry><outputEntry id=\"LiteralExpression_0lljnoh\"><text></text></outputEntry><outputEntry id=\"LiteralExpression_18fvdhg\"><text></text></outputEntry><outputEntry id=\"LiteralExpression_1fjwonv\"><text>\"Task Reminder\"</text></outputEntry><outputEntry id=\"LiteralExpression_1s9943x\"><text>\"Dear @name,\r\n\r\nThis is a reminder that your outstanding task is due in one day.\r\n\r\nApplication Number : @applicationId\r\n\r\n            \r\nPlease click the following link to access your new task.\r\n\r\nTo access the task through formsflow.ai please follow this link:  http://localhost:3000/task/@pid\r\n\r\n   \r\n Regards,   \r\n \"</text></outputEntry></rule><rule id=\"DecisionRule_0tnom8n\"><inputEntry id=\"UnaryTests_03h5bd8\"><text>\"activity_escalation\"</text></inputEntry><outputEntry id=\"LiteralExpression_0tzhose\"><text></text></outputEntry><outputEntry id=\"LiteralExpression_023tlbr\"><text></text></outputEntry><outputEntry id=\"LiteralExpression_0grdcc8\"><text>\"Task Escalation\"</text></outputEntry><outputEntry id=\"LiteralExpression_1bf9ywb\"><text>\"Dear @name,\r\n     \r\nYou have exceeded the deadline for the task.  \r\n\r\nApplication Number : @applicationId\r\n\r\n            \r\nPlease click the following link to access your new task.\r\n\r\nTo access the task through formsflow.ai please follow this link:  http://localhost:3000/task/@pid\r\n   \r\n Regards, \r\n \"</text></outputEntry></rule></decisionTable></decision><dmndi:DMNDI><dmndi:DMNDiagram id=\"DMNDiagram_1o977l7\"><dmndi:DMNShape id=\"DMNShape_0v83ejq\" dmnElementRef=\"email-template-example\"><dc:Bounds height=\"80\" width=\"180\" x=\"150\" y=\"80\" /></dmndi:DMNShape></dmndi:DMNDiagram></dmndi:DMNDI></definitions>""",
     }
 
 

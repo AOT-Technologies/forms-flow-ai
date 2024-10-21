@@ -1,6 +1,7 @@
 """This exposes form process mapper service."""
 
 import json
+import re
 import xml.etree.ElementTree as ET
 from typing import List, Set, Tuple
 
@@ -20,6 +21,7 @@ from formsflow_api.models import (
     Process,
 )
 from formsflow_api.schemas import FormProcessMapperSchema
+from formsflow_api.services.authorization import AuthorizationService
 from formsflow_api.services.external.bpm import BPMService
 
 from .form_history_logs import FormHistoryService
@@ -110,6 +112,16 @@ class FormProcessMapperService:  # pylint: disable=too-many-public-methods
         raise BusinessException(BusinessErrorCode.INVALID_FORM_PROCESS_MAPPER_ID)
 
     @staticmethod
+    def get_form_version(mapper):
+        """Get form versions."""
+        version_data = FormHistory.get_latest_version(mapper.parent_form_id)
+        major_version, minor_version = 1, 0
+        if version_data:
+            major_version = version_data.major_version
+            minor_version = version_data.minor_version
+        return major_version, minor_version
+
+    @staticmethod
     @user_context
     def get_mapper_by_formid(form_id: str, **kwargs):
         """Get form process mapper."""
@@ -121,6 +133,12 @@ class FormProcessMapperService:  # pylint: disable=too-many-public-methods
                 raise PermissionError("Tenant authentication failed.")
             mapper_schema = FormProcessMapperSchema()
             response = mapper_schema.dump(mapper)
+            # Include form versions
+            major_version, minor_version = FormProcessMapperService.get_form_version(
+                mapper
+            )
+            response["majorVersion"] = major_version
+            response["minorVersion"] = minor_version
             if response.get("deleted") is False:
                 return response
 
@@ -264,20 +282,39 @@ class FormProcessMapperService:  # pylint: disable=too-many-public-methods
         return
 
     @staticmethod
+    def clean_form_name(name):
+        """Remove invalid characters from form_name before setting as process key."""
+        # Remove non-letters at the start, and any invalid characters elsewhere
+        name = re.sub(r"^[^a-zA-Z]+|[^a-zA-Z0-9\-_]", "", name)
+        return name
+
+    @staticmethod
+    def validate_process_and_update_mapper(name, mapper):
+        """Validate process name/key exists, if exists update name & update mapper."""
+        current_app.logger.info(f"Validating process key already exists. {name}")
+        process = Process.find_process_by_name_key(name=name, process_key=name)
+        if process:
+            # Since the process key/name already exists create updated process key by appending mapper Id
+            # Update mapper with updated value
+            updated_process_name = f"{name}_{mapper.id}"
+            mapper.process_key = updated_process_name
+            mapper.process_name = updated_process_name
+            mapper.save()
+            return updated_process_name
+        return None
+
+    @staticmethod
     def mapper_create(mapper_json):
         """Service to handle mapper create."""
-        mapper_json["taskVariable"] = json.dumps(mapper_json.get("taskVariable") or [])
+        mapper_json["taskVariables"] = json.dumps(
+            mapper_json.get("taskVariables") or []
+        )
         mapper_schema = FormProcessMapperSchema()
         dict_data = mapper_schema.load(mapper_json)
         mapper = FormProcessMapperService.create_mapper(dict_data)
 
         FormProcessMapperService.unpublish_previous_mapper(dict_data)
-
-        response = mapper_schema.dump(mapper)
-        response["taskVariable"] = json.loads(response["taskVariable"])
-
-        FormHistoryService.create_form_logs_without_clone(data=mapper_json)
-        return response
+        return mapper
 
     @staticmethod
     def form_design_update(data, form_id):
@@ -287,6 +324,86 @@ class FormProcessMapperService:  # pylint: disable=too-many-public-methods
         form_io_token = formio_service.get_formio_access_token()
         response = formio_service.update_form(form_id, data, form_io_token)
         FormHistoryService.create_form_log_with_clone(data=data)
+        return response
+
+    @classmethod
+    @user_context
+    def create_default_process(cls, process_name, **kwargs):
+        """Create process with default workflow."""
+        user: UserContext = kwargs["user"]
+        process_dict = {
+            "name": process_name,
+            "process_key": process_name,
+            "parent_process_key": process_name,
+            "process_type": "BPMN",
+            "process_data": default_flow_xml_data(process_name).encode("utf-8"),
+            "tenant": user.tenant_key,
+            "major_version": 1,
+            "minor_version": 0,
+            "created_by": user.user_name,
+        }
+        process = Process.create_from_dict(process_dict)
+        return process
+
+    @staticmethod
+    def create_form(data, is_designer):
+        """Service to handle form create."""
+        # Initialize formio service and get formio token to create the form
+        formio_service = FormioService()
+        form_io_token = formio_service.get_formio_access_token()
+        # creating form and get response from formio
+        response = formio_service.create_form(data, form_io_token)
+        form_id = response.get("_id")
+        parent_form_id = data.get("parentFormId", form_id)
+        # create default data form mapper table
+        process_name = response.get("name")
+        # process key/Id doesn't support numbers & special characters at start
+        # special characters anywhere so clean them before setting as process key
+        process_name = FormProcessMapperService.clean_form_name(process_name)
+        mapper_data = {
+            "formId": form_id,
+            "formName": response.get("title"),
+            "description": data.get("description", ""),
+            "formType": response.get("type"),
+            "processKey": process_name,
+            "processName": process_name,
+            "formTypeChanged": True,
+            "parentFormId": parent_form_id,
+            "titleChanged": True,
+            "formRevisionNumber": "V1",
+        }
+        # create default data for authorization of the resource
+        authorization_data = {
+            "application": {
+                "resourceId": parent_form_id,
+                "resourceDetails": {},
+                "roles": [],
+            },
+            "designer": {
+                "resourceId": parent_form_id,
+                "resourceDetails": {},
+                "roles": [],
+            },
+            "form": {"resourceId": parent_form_id, "resourceDetails": {}, "roles": []},
+        }
+        mapper = FormProcessMapperService.mapper_create(mapper_data)
+        AuthorizationService.create_or_update_resource_authorization(
+            authorization_data, is_designer=is_designer
+        )
+        # validate process key already exists, if exists append mapper id to process_key.
+        FormProcessMapperService.validate_process_and_update_mapper(
+            process_name, mapper
+        )
+        FormHistoryService.create_form_log_with_clone(
+            data={
+                **response,
+                "parentFormId": data.get("parentFormId", form_id),
+                "newVersion": True,
+                "componentChanged": True,
+            }
+        )
+        # create entry in process with default flow.
+        FormProcessMapperService.create_default_process(process_name)
         return response
 
     def _get_form(  # pylint: disable=too-many-arguments, too-many-positional-arguments
@@ -628,6 +745,26 @@ class FormProcessMapperService:  # pylint: disable=too-many-public-methods
             minor_version=minor_version,
         ).save()
 
+    @classmethod
+    def update_process_status(cls, process, status, user):
+        """Update process status."""
+        process_dict = {
+            "name": process.name,
+            "process_type": process.process_type,
+            "status": status,
+            "tenant": user.tenant_key,
+            "process_data": process.process_data,
+            "created_by": user.user_name,
+            "major_version": process.major_version,
+            "minor_version": process.minor_version,
+            "is_subflow": process.is_subflow,
+            "process_key": process.process_key,
+            "parent_process_key": process.parent_process_key,
+            "status_changed": True,
+        }
+        process = Process.create_from_dict(process_dict)
+        return process
+
     @user_context
     def publish(self, mapper_id, **kwargs):
         """Publish by mapper_id."""
@@ -639,30 +776,26 @@ class FormProcessMapperService:  # pylint: disable=too-many-public-methods
         process_name = mapper.process_key
 
         # Fetch process data from process table
-        process = Process.get_latest_version(process_name)
+        process = Process.get_latest_version_by_key(process_name)
         process_data = process.process_data if process else None
         # Deploy process
         self.deploy_process(process_name, process_data, tenant_key, token)
         if not process:
             # create entry in process with default flow.
-            process = Process(
-                name=process_name,
-                process_type="BPMN",
-                process_data=default_flow_xml_data(process_name).encode("utf-8"),
-                form_process_mapper_id=mapper_id,
-                tenant=tenant_key,
-                major_version=1,
-                minor_version=0,
-                created_by=user_name,
-            )
-        # Update process status
-        process.status = "PUBLISHED"
-        process.save()
+            FormProcessMapperService.create_default_process(process_name)
+        else:
+            # Update process status
+            FormProcessMapperService.update_process_status(process, "PUBLISHED", user)
 
         # Capture publish(active) status in form history table.
         self.capture_form_history(mapper, {"status": "active"}, user_name)
         # Update status in mapper table
-        mapper.update({"status": str(FormProcessMapperStatus.ACTIVE.value), "prompt_new_version": False})
+        mapper.update(
+            {
+                "status": str(FormProcessMapperStatus.ACTIVE.value),
+                "prompt_new_version": False,
+            }
+        )
         return {}
 
     @user_context
@@ -672,8 +805,17 @@ class FormProcessMapperService:  # pylint: disable=too-many-public-methods
         user_name = user.user_name
         tenant_key = user.tenant_key
         mapper = self.validate_mapper(mapper_id, tenant_key)
-        # Capture publish status in form history table.
+        # Capture unpublish status in form history table.
         self.capture_form_history(mapper, {"status": "inactive"}, user_name)
         # Update status(inactive) in mapper table
-        mapper.update({"status": str(FormProcessMapperStatus.INACTIVE.value), "prompt_new_version": True})
+        mapper.update(
+            {
+                "status": str(FormProcessMapperStatus.INACTIVE.value),
+                "prompt_new_version": True,
+            }
+        )
+        # Update process status to Draft
+        process = Process.get_latest_version_by_key(mapper.process_key)
+        if process:
+            FormProcessMapperService.update_process_status(process, "DRAFT", user)
         return {}

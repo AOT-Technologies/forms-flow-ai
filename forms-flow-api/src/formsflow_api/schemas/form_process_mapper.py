@@ -13,7 +13,6 @@ class FormProcessMapperSchema(Schema):
 
     id = fields.Str(data_key="id")
     form_id = fields.Str(data_key="formId", required=True)
-    previous_form_id = fields.Str(data_key="previousFormId", load_only=True)
     form_name = fields.Str(data_key="formName", required=True)
     form_type = fields.Str(data_key="formType")
     parent_form_id = fields.Str(data_key="parentFormId")
@@ -26,7 +25,7 @@ class FormProcessMapperSchema(Schema):
     created = fields.Str(data_key="created")
     modified_by = fields.Str(data_key="modifiedBy")
     modified = fields.Str(data_key="modified")
-    task_variable = fields.Str(data_key="taskVariable")
+    task_variable = fields.Str(data_key="taskVariables")
     version = fields.Str(data_key="version")
     process_tenant = fields.Str(data_key="processTenant")
     deleted = fields.Boolean(data_key="deleted")

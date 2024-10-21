@@ -25,11 +25,14 @@ const API = {
   GET_ALL_APPLICATIONS_STATUS: `${WEB_BASE_URL}/application/status/list`,
   GET_PROCESS_DEFINITION: `${BPM_BASE_URL_EXT}/v1/process-definition/key/<process_key>`,
   PROCESSES_XML: `${BPM_BASE_URL_EXT}/v1/process-definition/key/<process_key>/xml`,
+  GET_PROCESSES_DETAILS: `${WEB_BASE_URL}/process`,
   DMN_XML: `${BPM_BASE_URL_EXT}/v1/decision-definition/key/<process_key>/xml`,
   PROCESS_ACTIVITIES: `${BPM_BASE_URL_EXT}/v1/process-instance/<process_instance_id>/activity-instances`,
   FORM: `${WEB_BASE_URL}/form`,
   FORM_DESIGN: `${WEB_BASE_URL}/form/form-design`,
   FORM_IMPORT: `${WEB_BASE_URL}/import`,
+  PUBLISH: `${WEB_BASE_URL}/form/<mapper_id>/publish`,
+  UN_PUBLISH: `${WEB_BASE_URL}/form/<mapper_id>/unpublish`,
   FORM_HISTORY: `${WEB_BASE_URL}/form/form-history`,
   LANG_UPDATE: `${WEB_BASE_URL}/user/locale`,
   FORM_PROCESSES: `${WEB_BASE_URL}/form/formid`,
@@ -80,6 +83,8 @@ const API = {
   GET_FILTERS : `${WEB_BASE_URL}/filter`,
   GET_BPM_TASK_FILTERS : `${BPM_BASE_URL_EXT}/v1/task-filters`,
   VALIDATE_TENANT: `${MT_ADMIN_BASE_URL}/${MT_ADMIN_BASE_URL_VERSION}/tenants/<tenant_id>/validate`,
+  VALIDATE_FORM_NAME: `${WEB_BASE_URL}/form/validate`,
+  EXPORT_FORM: `${WEB_BASE_URL}/form/<form_id>/export`
 };
 
 export default API;

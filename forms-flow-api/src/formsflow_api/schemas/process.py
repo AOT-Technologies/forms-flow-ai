@@ -35,7 +35,6 @@ class ProcessDataSchema(Schema):
     process_data = fields.Method(
         "get_process_data", data_key="processData", dump_only=True
     )
-    form_process_mapper_id = fields.Int(data_key="formProcessMapperId", allow_none=True)
     tenant = fields.Str(dump_only=True)
     created = fields.Str(dump_only=True)
     modified = fields.Str(dump_only=True)
@@ -120,18 +119,8 @@ class ProcessRequestSchema(Schema):
 
         unknown = EXCLUDE
 
-    name = fields.Str(required=True)
     process_type = fields.Str(data_key="processType", required=True)
     process_data = fields.Str(data_key="processData", required=True)
-    status = fields.Str(required=True)
-    form_process_mapper_id = fields.Int(
-        data_key="formProcessMapperId", required=False, allow_none=True
-    )
-    major_version = fields.Int(data_key="majorVersion")
-    minor_version = fields.Int(data_key="minorVersion")
-    is_subflow = fields.Bool(data_key="isSubflow")
-    process_key = fields.Str(data_key="processKey")
-    parent_process_key = fields.Str(data_key="parentProcessKey")
 
     def load(self, data, *args, **kwargs):
         """Load method for deserializing data."""

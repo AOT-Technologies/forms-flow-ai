@@ -4,6 +4,7 @@ const initialState = {
   isProcessLoading: true,
   processStatusList: [],
   processLoadError: false,
+  processXml: "",
   processList: [],
   dmnProcessList: [],
   formProcessError: false,
@@ -18,13 +19,14 @@ const initialState = {
   applicationCountResponse: false,
   unPublishApiError: false,
   workflowAssociated: null, //{label:'Workflow Name', value:'workflow_process_key'}
-  formStatusLoading:false,
-  authorizationDetails:{},
-  formAuthVerifyLoading:false,
-  isBpmnModel:true,
-  bpmnSearchText:"",
-  dmnSearchText:"",
-  isPublicDiagram:null,
+  formStatusLoading: false,
+  authorizationDetails: {},
+  formAuthVerifyLoading: false,
+  isBpmnModel: true,
+  bpmnSearchText: "",
+  dmnSearchText: "",
+  isPublicDiagram: null,
+  processData:{}
 };
 
 const process = (state = initialState, action) => {
@@ -35,6 +37,9 @@ const process = (state = initialState, action) => {
       return { ...state, isBpmnModel: action.payload };
     case ACTION_CONSTANTS.PROCESS_STATUS_LIST:
       return { ...state, processStatusList: action.payload };
+    case ACTION_CONSTANTS.SET_PROCESSES_XML:
+      return { ...state, processXml: action.payload };
+
     case ACTION_CONSTANTS.IS_PROCESS_STATUS_LOAD_ERROR:
       return { ...state, processLoadError: action.payload };
     case ACTION_CONSTANTS.IS_PROCESS_ACTIVITY_LOAD_ERROR:
@@ -46,15 +51,15 @@ const process = (state = initialState, action) => {
     case ACTION_CONSTANTS.IS_FORM_PROCESS_STATUS_LOAD_ERROR:
       return { ...state, formProcessError: action.payload };
     case ACTION_CONSTANTS.FORM_PROCESS_LIST:
-      return {
+     return {
         ...state,
         formProcessList: action.payload,
-        workflowAssociated: action.payload?.processKey
-          ? {
-              label: action.payload?.processName,
-              value: action.payload?.processKey,
-              tenant: action.payload?.processTenant,
-            }
+        workflowAssociated: action.payload?.processKey ?
+           {
+            label: action.payload?.processName,
+            value: action.payload?.processKey,
+            tenant: action.payload?.processTenant,
+          }
           : null,
       };
     case ACTION_CONSTANTS.PROCESS_ACTIVITIES:
@@ -88,15 +93,17 @@ const process = (state = initialState, action) => {
     case ACTION_CONSTANTS.FORM_STATUS_LOADING:
       return { ...state, formStatusLoading: action.payload };
     case ACTION_CONSTANTS.FORM_AUTHORIZATION_HANDLE:
-        return { ...state, authorizationDetails: action.payload };
+      return { ...state, authorizationDetails: action.payload };
     case ACTION_CONSTANTS.FORM_AUTH_VERIFY_LOADING:
-        return { ...state, formAuthVerifyLoading: action.payload };
+      return { ...state, formAuthVerifyLoading: action.payload };
     case ACTION_CONSTANTS.BPMN_SEARCH_TEXT:
-        return { ...state, bpmnSearchText: action.payload };
+      return { ...state, bpmnSearchText: action.payload };
     case ACTION_CONSTANTS.DMN_SEARCH_TEXT:
-        return { ...state, dmnSearchText: action.payload };
+      return { ...state, dmnSearchText: action.payload };
     case ACTION_CONSTANTS.IS_PUBLIC_DIAGRAM:
-        return { ...state, isPublicDiagram: action.payload };
+      return { ...state, isPublicDiagram: action.payload };
+    case ACTION_CONSTANTS.SET_PROCESS_DATA:
+        return { ...state, processData: action.payload };
     default:
       return state;
   }

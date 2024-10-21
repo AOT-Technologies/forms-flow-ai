@@ -1,5 +1,5 @@
 gunicorn
-Flask<3
+Flask
 Flask-SQLAlchemy
 flask-restx
 flask-jwt-oidc
@@ -10,6 +10,6 @@ attrs
 Werkzeug
 sqlalchemy_utils
 sqlalchemy
-spacy<3
+spacy
 nltk
 Flask-Migrate

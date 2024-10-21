@@ -1,7 +1,6 @@
 import React, { useEffect, useState, useReducer } from "react";
 import { connect, useSelector, useDispatch } from "react-redux";
 import CreateFormModal from "../Modals/CreateFormModal.js";
-import BuildFormModal from '../Modals/BuildFormModal';
 import ImportFormModal from "../Modals/ImportFormModal.js";
 import { push } from "connected-react-router";
 import { toast } from "react-toastify";
@@ -36,15 +35,13 @@ import { CustomButton } from "@formsflow/components";
 import _set from "lodash/set";
 import _cloneDeep from "lodash/cloneDeep";
 import _camelCase from "lodash/camelCase";
-import { formCreate, formImport } from "../../apiManager/services/FormServices";
+import { formCreate, formImport,validateFormName } from "../../apiManager/services/FormServices";
 import { addHiddenApplicationComponent } from "../../constants/applicationComponent";
-import { setFormSuccessData } from "../../actions/formActions";
-import { handleAuthorization } from "../../apiManager/services/authorizationService";
-import { saveFormProcessMapperPost } from "../../apiManager/services/processServices";
-import { CustomSearch } from "@formsflow/components";
+import { setFormSuccessData } from "../../actions/formActions"; 
+import { CustomSearch }  from "@formsflow/components";
 import userRoles from "../../constants/permissions.js";
 import FileService from "../../services/FileService";
-
+import {FormBuilderModal} from "@formsflow/components";
 
 
 const reducer = (form, { type, value }) => {
@@ -92,7 +89,7 @@ const List = React.memo((props) => {
     VALIDATE: "validate"
   };
 
-  const [formDescription, setFormDescription] = useState("");
+  // const [formDescription, setFormDescription] = useState("");
   const [nameError, setNameError] = useState("");
   const dispatch = useDispatch();
   const redirectUrl = MULTITENANCY_ENABLED ? `/tenant/${tenantKey}/` : "/";
@@ -101,7 +98,7 @@ const List = React.memo((props) => {
   const [formSubmitted, setFormSubmitted] = useState(false);
   const formData = { display: "form" }; const tenantKey = useSelector((state) => state.tenants?.tenantId);
   const [form, dispatchFormAction] = useReducer(reducer, _cloneDeep(formData));
-  const roleIds = useSelector((state) => state.user?.roleIds || {});
+  // const roleIds = useSelector((state) => state.user?.roleIds || {});
   useEffect(() => {
     setSearch(searchText);
   }, [searchText]);
@@ -207,7 +204,7 @@ const List = React.memo((props) => {
         console.log(res);
         setImportLoader(false);
         setFormSubmitted(false);
-
+        
         if (data.action == "validate") {
           FileService.extractFormDetails(fileContent, (formExtracted) => {
             if (formExtracted) {
@@ -219,7 +216,7 @@ const List = React.memo((props) => {
           });
         }
         else {
-          dispatch(push(`${redirectUrl}formflow/${form._id}/edit/`));
+          res?.data?.formId && dispatch(push(`${redirectUrl}formflow/${res.data.formId}/edit/`));
         }
       })
       .catch((err) => {
@@ -251,6 +248,28 @@ const List = React.memo((props) => {
     return errors;
   };
 
+  const validateFormNameOnBlur = () => {
+    if (!form.title || form.title.trim() === "") {
+      setNameError("This field is required");
+      return;
+    }
+  
+    validateFormName(form.title)
+      .then((response) => {
+        const data = response?.data;
+        if (data && data.code === "FORM_EXISTS") {
+          setNameError(data.message);  // Set exact error message
+        } else {
+          setNameError("");
+        }
+      })
+      .catch((error) => {
+      const errorMessage = error.response?.data?.message || "An error occurred while validating the form name.";
+      setNameError(errorMessage);  // Set the error message from the server
+      console.error("Error validating form name:", errorMessage);
+      });
+  };
+  
   const handleChange = (path, event) => {
     setFormSubmitted(false);
     const { target } = event;
@@ -259,14 +278,15 @@ const List = React.memo((props) => {
     dispatchFormAction({ type: path, value });
   };
 
-  const handleBuild = () => {
+  const handleBuild = (formName,formDescription) => {
     setFormSubmitted(true);
     const errors = validateForm();
     if (Object.keys(errors).length > 0) {
       setNameError(errors.title);
       return;
     }
-
+    console.log(form,"FORM");
+    form.components = [];
     const newFormData = addHiddenApplicationComponent(form);
     const newForm = {
       ...newFormData,
@@ -276,6 +296,7 @@ const List = React.memo((props) => {
     newForm.componentChanged = true;
     newForm.newVersion = true;
     newForm.access = formAccess;
+    newForm.description = formDescription;
     if (MULTITENANCY_ENABLED && tenantKey) {
       newForm.tenantKey = tenantKey;
       if (newForm.path) {
@@ -287,40 +308,8 @@ const List = React.memo((props) => {
     }
     formCreate(newForm).then((res) => {
       const form = res.data;
-      const data = {
-        formId: form._id,
-        formName: form.title,
-        description: formDescription,
-        formType: form.type,
-        formTypeChanged: true,
-        anonymousChanged: true,
-        parentFormId: form._id,
-        titleChanged: true,
-        formRevisionNumber: "V1", // to do
-        anonymous: formAccess[0]?.roles.includes(roleIds.ANONYMOUS),
-      };
-      let payload = {
-        resourceId: data.formId,
-        resourceDetails: {},
-        roles: []
-      };
       dispatch(setFormSuccessData("form", form));
-      handleAuthorization(
-        { application: payload, designer: payload, form: payload },
-        data.formId
-      ).catch((err) => {
-        console.log(err);
-      });
-      dispatch(
-        saveFormProcessMapperPost(data, (err) => {
-          if (!err) {
-            dispatch(push(`${redirectUrl}formflow/${form._id}/edit/`));
-          } else {
-            setFormSubmitted(false);
-            console.log(err);
-          }
-        })
-      );
+      dispatch(push(`${redirectUrl}formflow/${form._id}/edit/`));
 
     }).catch((err) => {
       let error;
@@ -381,15 +370,18 @@ const List = React.memo((props) => {
                     onClose={onClose}
                     onAction={handleAction}
                   />
-                  <BuildFormModal
+                  <FormBuilderModal
+                    modalHeader="Build New Form"
+                    nameLabel="Form Name"
+                    descriptionLabel="Form Description"
                     showBuildForm={showBuildForm}
                     formSubmitted={formSubmitted}
                     onClose={onCloseBuildModal}
                     onAction={handleAction}
                     handleChange={handleChange}
-                    handleBuild={handleBuild}
-                    setFormDescription={setFormDescription}
+                    primaryBtnAction={handleBuild}
                     setNameError={setNameError}
+                    nameValidationOnBlur={validateFormNameOnBlur}
                     nameError={nameError}
                   />
                   <ImportFormModal

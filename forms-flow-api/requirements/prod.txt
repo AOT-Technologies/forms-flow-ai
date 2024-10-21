@@ -1,12 +1,12 @@
 gunicorn
-Flask<3
+Flask
 Flask-Caching
 Flask-Migrate
 Flask-Moment
 Flask-SQLAlchemy
 flask-restx
 flask-marshmallow
-flask-jwt-oidc
+flask-jwt-oidc==0.7.0
 python-dotenv
 psycopg2-binary
 marshmallow-sqlalchemy

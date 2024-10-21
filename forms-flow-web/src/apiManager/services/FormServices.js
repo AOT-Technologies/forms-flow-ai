@@ -7,8 +7,17 @@ export const formCreate = (formData) => {
   return RequestService.httpPOSTRequest(API.FORM_DESIGN, formData);
 };
 
+export const publish = (mapperId) => {
+  const publishUrl = replaceUrl(API.PUBLISH, "<mapper_id>", mapperId);
+  return RequestService.httpPOSTRequest(publishUrl);
+};
+
+export const unPublish = (mapperId) => {
+  const unPublishUrl = replaceUrl(API.UN_PUBLISH, "<mapper_id>", mapperId);
+  return RequestService.httpPOSTRequest(unPublishUrl);
+};
+
 export const formImport = (importData, data) => {
-  console.log("reached back", importData, data);
   return RequestService.httpMultipartPOSTRequest(API.FORM_IMPORT, importData, data);
 };
 
@@ -71,4 +80,20 @@ export const getCustomSubmission = (submissionId, formId, ...rest) => {
         done(err, null);
       });
   };
+};
+
+export const validateFormName = (title, name, id) => {
+  let url = `${API.VALIDATE_FORM_NAME}?title=${title}`;
+  if (name) {
+    url += `&name=${encodeURIComponent(name)}`;
+  }
+  if (id) {
+    url += `&id=${encodeURIComponent(id)}`;
+  }
+  return RequestService.httpGETRequest(url);
+};
+
+export const getFormExport = (form_id) => {
+  const exportFormUrl = replaceUrl(API.EXPORT_FORM, "<form_id>",form_id);
+  return RequestService.httpGETRequest(exportFormUrl);
 };

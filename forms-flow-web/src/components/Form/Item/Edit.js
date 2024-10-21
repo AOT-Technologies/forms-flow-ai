@@ -371,10 +371,10 @@ useEffect(() => {
   };
 
   useEffect(() => {
-    if (processListData?.parentFormId && !formHistory.length) {
+    if (processListData?.parentFormId) {
       fetchFormHistory(processListData?.parentFormId, pageNo, limit);
     }
-    if (processListData?.processKey && !processHistory.length) {
+    if (processListData?.processKey) {
       fetchProcessHistory(processListData?.processKey, pageNo, limit);
     }
   }, [processListData]);
@@ -394,8 +394,9 @@ useEffect(() => {
       ? fetchFormHistory(processListData?.parentFormId)
       : fetchProcessHistory(processListData?.processKey);
   };
-
+console.log("test",restoredFormId);
   const revertBtnAction = (cloneId) => {
+    console.log("cloned",cloneId);
     dispatch(setRestoreFormId(cloneId));
   };
 

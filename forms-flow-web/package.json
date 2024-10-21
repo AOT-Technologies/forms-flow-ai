@@ -87,14 +87,14 @@
     "react-quill": "^2.0.0",
     "react-redux": "^7.2.4",
     "react-router-dom": "^5.1.2",
-    "react-scripts": "^5.0.0",
+    "react-scripts": "^5.0.1",
     "react-select": "^3.2.0",
     "react-toastify": "^7.0.4",
     "recharts": "^2.12.7",
     "redux": "^4.1.0",
     "redux-logger": "^3.0.6",
     "redux-thunk": "^2.3.0",
-    "sass": "^1.79.4",
+    "sass": "^1.80.3",
     "single-spa": "^5.9.4",
     "single-spa-layout": "^2.1.0",
     "single-spa-react": "^5.0.0",
@@ -105,13 +105,11 @@
     "ws": "^7.4.6"
   },
   "resolutions": {
-    "nth-check": "^2.0.1",
-    "underscore": "1.12.1",
-    "tar": "^6.1.11",
-    "d3-color": "3.1.0",
-    "postcss": "8.4.47",
-    "cookie": "0.7.1",
-    "sass-loader": "16.0.2"
+    "nth-check": "^2.1.1",
+    "underscore": "^1.13.7",
+    "tar": "^7.4.3",
+    "postcss": "^8.4.47",
+    "cookie": "^1.0.1"
   },
   "browserslist": [
     ">0.2%",

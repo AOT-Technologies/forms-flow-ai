@@ -11,7 +11,6 @@ import {
 } from "bpmn-js-properties-panel";
 import camundaPlatformBehaviors from 'camunda-bpmn-js-behaviors/lib/camunda-platform';
 //import CamundaExtensionModule from "camunda-bpmn-moddle/lib";
-import camundaPlatformBehaviors from 'camunda-bpmn-js-behaviors/lib/camunda-platform';
 import camundaModdleDescriptors from "camunda-bpmn-moddle/resources/camunda";
 
 import lintModule from "bpmn-js-bpmnlint";

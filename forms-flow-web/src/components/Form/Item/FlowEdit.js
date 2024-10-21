@@ -1,5 +1,5 @@
 import React, { forwardRef, useImperativeHandle, useRef, useState } from 'react';
-import { CustomButton, HistoryIcon } from "@formsflow/components";
+import { CustomButton, HistoryIcon, ConfirmModal } from "@formsflow/components";
 import { Card } from 'react-bootstrap';
 import { useTranslation } from 'react-i18next';
 import { useDispatch, useSelector } from 'react-redux';
@@ -17,10 +17,11 @@ const FlowEdit = forwardRef((_, ref) => {
   const processData = useSelector((state) => state.process?.processData);
   const [lintErrors, setLintErrors] = useState([]);
   const [historyModalShow, setHistoryModalShow] = useState(false);
- 
+  const [savingFlow, setSavingFlow] = useState(false);
+  const [showDiscardModal, setShowDiscardModal] = useState(false);
   // handle history modal
   const handleHistoryModal = () => setHistoryModalShow(!historyModalShow);
-
+  const handleHanldeDisacardModal = () => setShowDiscardModal(!showDiscardModal);
   //validate any erros in bpmn lint
   const validateBpmnLintErrors = () => {
     // only return false if there are errors, warnings are ok
@@ -54,40 +55,63 @@ const FlowEdit = forwardRef((_, ref) => {
 
 
   const saveFlow = async () => {
-    const bpmnModeler = bpmnRef.current?.getBpmnModeler();
-    const xml = await createXMLFromModeler(bpmnModeler);
-
-    //if xml is same as existing process data, no need to update
-    const isEqual = await compareXML(processData?.processData, xml);
-    if (isEqual) {
-      toast.success(t("Process updated successfully"));
-      return;
-    }
-    if (!validateProcess(xml)) {
-      return;
-    }
-    
-    updateProcess({ type:"BPMN", id: processData.id, data:xml }).then((response) => {
+    try{
+      const bpmnModeler = bpmnRef.current?.getBpmnModeler();
+      const xml = await createXMLFromModeler(bpmnModeler);
+  
+      //if xml is same as existing process data, no need to update
+      const isEqual = await compareXML(processData?.processData, xml);
+      if (isEqual) {
+        toast.success(t("Process updated successfully"));
+        return;
+      }
+      if (!validateProcess(xml)) {
+        return;
+      }
+      setSavingFlow(true);
+      const response = await updateProcess({ type:"BPMN", id: processData.id, data:xml });
       dispatch(setProcessData(response.data));
       toast.success(t("Process updated successfully"));
-    });
+      setSavingFlow(false);
+    }catch(error){
+      setSavingFlow(false);
+      toast.error(t("Failed to update process"));
+    }
   };
 
   //handle discard changes
-  const handleDiscard = ()=>{
+  const handleDiscardConfirm = ()=>{
     if(bpmnRef.current){
       //import the existing process data to bpmn
       bpmnRef.current?.handleImport(processData?.processData);
+      handleHanldeDisacardModal();
     }
 };
+
+ 
 
   useImperativeHandle(ref, () => ({
     saveFlow,
   }));
 
+ 
+
   return (
     <Card>
-
+      <ConfirmModal
+        show={showDiscardModal}
+        title={t(`Are you Sure you want to Discard Flow Changes`) }
+        message={ <>
+        <p>{t("Are you sure you want to discard all the changes of the Flow?")}</p>
+        <p className='fw-bold'>{t("This action cannot be undone.")}</p>
+        </> }
+        primaryBtnAction={handleDiscardConfirm}
+        onClose={handleHanldeDisacardModal}
+        primaryBtnText={t("Discard Changes")}
+        secondaryBtnText={t("Cancel")}
+        secondayBtnAction={handleHanldeDisacardModal}
+        size="sm"
+      />
       <Card.Header>
         <div className="d-flex justify-content-between align-items-center" style={{ width: "100%" }}>
           <div className="d-flex align-items-center justify-content-between">
@@ -123,12 +147,13 @@ const FlowEdit = forwardRef((_, ref) => {
               onClick={saveFlow}
               dataTestid="save-flow-layout"
               ariaLabel={t("Save Flow Layout")}
+              buttonLoading={savingFlow}
             />
             <CustomButton
               variant="secondary"
               size="md"
               label={t("Discard Changes")}
-              onClick={handleDiscard}
+              onClick={handleHanldeDisacardModal}
               dataTestid="discard-flow-changes-testid"
               ariaLabel={t("Discard Flow Changes")}
             />

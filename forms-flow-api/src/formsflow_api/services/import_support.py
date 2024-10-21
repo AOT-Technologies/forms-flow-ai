@@ -17,6 +17,7 @@ from formsflow_api.models import (
     FormProcessMapper,
     Process,
     ProcessStatus,
+    ProcessType,
 )
 from formsflow_api.schemas import (
     ImportEditRequestSchema,
@@ -91,6 +92,12 @@ class ImportService:  # pylint: disable=too-many-public-methods
         return self.formio.get_form_search(
             query_params, self.__get_formio_access_token()
         )
+
+    def get_process_details(self, file_data):
+        """Get workflow details from the imported file."""
+        process_data = file_data.get("workflows")[0].get("content")
+        process_type = file_data.get("workflows")[0].get("processType", "BPMN")
+        return process_data, process_type
 
     def validate_file_type(self, filename: str, file_types: tuple):
         """Validate file type."""
@@ -208,12 +215,17 @@ class ImportService:  # pylint: disable=too-many-public-methods
         name,
         selected_workflow_version=None,
         is_new=False,
+        process_type=ProcessType.BPMN.value,
         **kwargs,
     ):
         """Save process data."""
         current_app.logger.info("Saving process data...")
         user: UserContext = kwargs["user"]
-        updated_xml = self.update_workflow(workflow_data, name)
+        updated_xml = (
+            self.update_workflow(workflow_data, name)
+            if process_type == ProcessType.BPMN.value
+            else json.dumps(workflow_data)
+        )
         # Save workflow on new import will have major version as 1 and minor version as 0
         major_version, minor_version = 1, 0
         if not is_new:
@@ -244,7 +256,7 @@ class ImportService:  # pylint: disable=too-many-public-methods
         process_data = updated_xml.encode("utf-8")
         process = Process(
             name=name,
-            process_type="BPMN",
+            process_type=process_type,
             tenant=user.tenant_key,
             process_data=process_data,
             created_by=user.user_name,
@@ -269,7 +281,9 @@ class ImportService:  # pylint: disable=too-many-public-methods
             },
         }
 
-    def import_new_form_workflow(self, file_data, form_json, workflow_data):
+    def import_new_form_workflow(
+        self, file_data, form_json, workflow_data, process_type
+    ):
         """Import new form+workflow."""
         form_response = self.form_create(form_json)
         form_id = form_response.get("_id")
@@ -322,7 +336,9 @@ class ImportService:  # pylint: disable=too-many-public-methods
         )
         process_name = updated_process_name if updated_process_name else process_name
         current_app.logger.info(f"Process Name: {process_name}")
-        self.save_process_data(workflow_data, process_name, is_new=True)
+        self.save_process_data(
+            workflow_data, process_name, is_new=True, process_type=process_type
+        )
         return form_id
 
     def import_form(
@@ -381,7 +397,6 @@ class ImportService:  # pylint: disable=too-many-public-methods
                 "taskVariable": json.loads(mapper.task_variable),
                 "processKey": mapper.process_key,
                 "processName": mapper.process_name,
-                "version": str(mapper.version + 1),
                 "status": mapper.status,
                 "id": str(mapper.id),
                 "formTypeChanged": False,
@@ -424,7 +439,7 @@ class ImportService:  # pylint: disable=too-many-public-methods
     def import_edit_form(self, file_data, selected_form_version, form_json, mapper):
         """Import edit form."""
         current_app.logger.info("Form import with form+workflow json inprogress...")
-        anonymous = file_data.get("forms")[0].get("anonymous")
+        anonymous = file_data.get("forms")[0].get("anonymous") or False
         description = file_data.get("forms")[0].get("formDescription", "")
         form_id = self.import_form(
             selected_form_version,
@@ -441,15 +456,6 @@ class ImportService:  # pylint: disable=too-many-public-methods
         # Update authorizations for the form
         self.create_authorization(file_data["authorizations"][0])
         return form_id
-
-    def find_mapper(self, mapper_id, tenant_key=None):
-        """Find mapper."""
-        mapper = FormProcessMapper.find_form_by_id(form_process_mapper_id=mapper_id)
-        if not mapper:
-            raise BusinessException(BusinessErrorCode.INVALID_FORM_PROCESS_MAPPER_ID)
-        if mapper and tenant_key is not None and mapper.tenant != tenant_key:
-            raise PermissionError(BusinessErrorCode.PERMISSION_DENIED)
-        return mapper
 
     @user_context
     def import_form_workflow(
@@ -482,7 +488,7 @@ class ImportService:  # pylint: disable=too-many-public-methods
             if not valid_input_json:
                 raise BusinessException(BusinessErrorCode.INVALID_FILE_TYPE)
             form_json = file_data.get("forms")[0].get("content")
-            workflow_data = file_data.get("workflows")[0].get("content")
+            workflow_data, process_type = self.get_process_details(file_data)
             validate_form_response = self.validate_form_exists(form_json, tenant_key)
             if validate_form_response:
                 raise BusinessException(BusinessErrorCode.FORM_EXISTS)
@@ -493,7 +499,7 @@ class ImportService:  # pylint: disable=too-many-public-methods
                 )
             if action == "import":
                 form_id = self.import_new_form_workflow(
-                    file_data, form_json, workflow_data
+                    file_data, form_json, workflow_data, process_type
                 )
         else:
             current_app.logger.info("Import edit processing..")
@@ -501,7 +507,7 @@ class ImportService:  # pylint: disable=too-many-public-methods
             valid_file = self.validate_file_type(file.filename, (".json", ".bpmn"))
             mapper_id = edit_request.get("mapper_id")
             # mapper is required for edit. Add validation
-            mapper = self.find_mapper(mapper_id, tenant_key)
+            mapper = FormProcessMapperService().validate_mapper(mapper_id, tenant_key)
             form_id = mapper.form_id
             if valid_file == ".json":
                 file_data = self.read_json_data(file)
@@ -568,11 +574,14 @@ class ImportService:  # pylint: disable=too-many-public-methods
                         if not skip_workflow:
                             # import workflow
                             current_app.logger.info("Workflow import inprogress...")
-                            workflow_data = file_data.get("workflows")[0].get("content")
+                            workflow_data, process_type = self.get_process_details(
+                                file_data
+                            )
                             self.save_process_data(
                                 workflow_data,
                                 mapper.process_key,
                                 selected_workflow_version,
+                                process_type=process_type,
                             )
 
                 else:

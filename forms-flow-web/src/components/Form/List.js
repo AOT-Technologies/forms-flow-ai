@@ -143,7 +143,6 @@ const List = React.memo((props) => {
   }, [dispatch]);
 
   useEffect(() => {
-    console.log("================", importError);
     dispatch(setBPMFormListLoading(true));
   }, []);
 
@@ -201,7 +200,6 @@ const List = React.memo((props) => {
     const dataString = JSON.stringify(data);
     formImport(fileContent, dataString)
       .then((res) => {
-        console.log(res);
         setImportLoader(false);
         setFormSubmitted(false);
         
@@ -285,7 +283,6 @@ const List = React.memo((props) => {
       setNameError(errors.title);
       return;
     }
-    console.log(form,"FORM");
     form.components = [];
     const newFormData = addHiddenApplicationComponent(form);
     const newForm = {

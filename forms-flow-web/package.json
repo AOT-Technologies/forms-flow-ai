@@ -84,7 +84,6 @@
     "react-i18next": "^11.15.3",
     "react-js-pagination": "^3.0.3",
     "react-loading-overlay-ts": "^1.0.5",
-    "react-quill": "^2.0.0",
     "react-redux": "^7.2.4",
     "react-router-dom": "^5.1.2",
     "react-scripts": "^5.0.1",

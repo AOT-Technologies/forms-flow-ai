@@ -1,6 +1,5 @@
 import React, { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
-//import "@musicstory/react-bootstrap-table-next/dist/react-bootstrap-table2.min.css";
 import { Translation} from "react-i18next";
 import { fetchApplicationAuditHistoryList } from "../../apiManager/services/applicationAuditServices";
 import Loading from "../../containers/Loading";

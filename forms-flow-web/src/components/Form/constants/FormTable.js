@@ -175,10 +175,10 @@ function FormTable() {
                           <span data-testid={`form-status-${e._id}`} className="d-flex align-items-center">
                             {e.status === "active" ? (
                               <>
-                                <div className="status-live"></div>
+                                <span className="status-live"></span>
                               </>
                             ) : (
-                              <div className="status-draft"></div>
+                              <span className="status-draft"></span>
                             )}
                             {e.status === "active" ? t("Live") : t("Draft")}
                           </span>

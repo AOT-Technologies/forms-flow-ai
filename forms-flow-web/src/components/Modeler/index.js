@@ -3,6 +3,7 @@ import { Route, Switch, Redirect } from "react-router-dom";
 import { useSelector } from "react-redux";
 
 import Base from "./Main";
+import SubFlow from './SubFlowTable';
 import Edit from "./Edit";
 import CreateWorkflow from "./Create";
 import {
@@ -38,7 +39,7 @@ const Processes = () => {
   return (
     <div data-testid="Process-index">
       <Switch>
-        <Route exact path={`${BASE_ROUTE}processes`} component={Base} />
+        <Route exact path={`${BASE_ROUTE}processes`} component={SubFlow} />
         <DesignerProcessRoute
           exact
           path={`${BASE_ROUTE}processes/create`}

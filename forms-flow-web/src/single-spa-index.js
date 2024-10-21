@@ -7,6 +7,7 @@ import { featureFlags } from "./featureToogle";
 import { FlagsProvider } from 'flagged';
 import { Formio, Components } from "@aot-technologies/formio-react";
 import { AppConfig } from "./config";
+import "./resourceBundles/i18n.js";
 
 if (typeof window.__REACT_DEVTOOLS_GLOBAL_HOOK__ === "object") {
     for (let [key, value] of Object.entries(

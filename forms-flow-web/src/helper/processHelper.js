@@ -1,7 +1,7 @@
 import { extractDataFromDiagram } from "../components/Modeler/helpers/helper";
-import BpmnModeler from "bpmn-js/lib/Modeler";
+import BpmnModdle from 'bpmn-moddle';
 import isEqual from "lodash/isEqual";
-const modeler = new BpmnModeler();
+const bpmnModdle = new BpmnModdle();
 // export const createBpmnForm = (xml, deploymentName, tenantKey, applyAllTenants) => {
 //     const form = new FormData();
 //     // Deployment Name
@@ -31,18 +31,9 @@ const modeler = new BpmnModeler();
 
 
 
-export const parseBpmn = (xmlString) => {
-  return new Promise((resolve, reject) => {
-    modeler.importXML(xmlString, (err) => {
-      if (err) {
-        reject(err);
-      } else {
-        // Get the internal JSON representation
-        const definitions = modeler.getDefinitions();
-        resolve(definitions);
-      }
-    });
-  });
+export const parseBpmn = async(xmlString) => {
+  const { rootElement: definitionsA } = await bpmnModdle.fromXML(xmlString);
+  return definitionsA;
 };
 
 export const compareXML = async (xmlString1, xmlString2) => {
@@ -50,7 +41,6 @@ export const compareXML = async (xmlString1, xmlString2) => {
     // Parse both BPMN XMLs to their JSON structure
     const bpmn1 = await parseBpmn(xmlString1);
     const bpmn2 = await parseBpmn(xmlString2);
-
     // Compare the JSON structures
     return isEqual(bpmn1, bpmn2);
   } catch (error) {

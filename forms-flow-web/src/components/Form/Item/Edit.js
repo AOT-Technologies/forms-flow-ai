@@ -839,7 +839,7 @@ const Edit = React.memo(() => {
               </Card>
             </div>
             <div className={`wraper flow-wraper ${showFlow ? "visible" : ""}`}>
-              //TBD: Add a loader instead.
+              {/* TBD: Add a loader instead. */}
               {isProcessDetailsLoading ? <>loading...</> :
                 <FlowEdit />}
             </div>

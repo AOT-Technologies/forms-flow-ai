@@ -18,8 +18,9 @@ import {
   setResetProcess,
   setAllDmnProcessList,
   setBpmnModel,
+  setApplicationCount,
+  setSubflowCount 
 } from "../../actions/processActions";
-import { setApplicationCount,setSubflowCount } from "../../actions/processActions";
 import { replaceUrl } from "../../helper/helper";
 import { StorageService } from "@formsflow/service";
 

@@ -49,7 +49,7 @@ const NewVersionModal = React.memo(({ show, title, createNewVersion, onClose,
     }, [acceptState]);
 
     return (
-        <Modal show={show} onHide={clearState} dialogClassName="modal-50w">
+        <Modal show={show} onHide={clearState} dialogClassName="modal-50w" size="sm" centered={true}>
             <Modal.Header>
                 <Modal.Title>
                     <b>{title}</b>

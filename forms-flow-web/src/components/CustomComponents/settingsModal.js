@@ -11,45 +11,21 @@ import _set from "lodash/set";
 import _cloneDeep from "lodash/cloneDeep";
 import _camelCase from "lodash/camelCase";
 
-const SettingsModal = ({ show, handleClose, handleConfirm }) => {
+const SettingsModal =
+ ({ show, handleClose, handleConfirm, rolesState, 
+  setRolesState, formDetails, updateFormName, updateFormDescription, formDisplay, 
+  setFormDisplay, newPath, handleFormPathChange }) => {
   const { t } = useTranslation();
   const dispatch = useDispatch();
-
-  const [rolesState, setRolesState] = useState({
-    edit: {
-      roleInput: '',
-      filteredRoles: [],
-      selectedRoles: [],
-      selectedOption: 'onlyYou',
-    },
-    create: {
-      roleInput: '',
-      filteredRoles: [],
-      selectedRoles: [],
-      selectedOption: 'registeredUsers',
-      isChecked: false,
-    },
-    view: {
-      roleInput: '',
-      filteredRoles: [],
-      selectedRoles: [],
-      selectedOption: 'submitter',
-    },
-  });
-
   const [userRoles, setUserRoles] = useState([]);
   const [url, setUrl] = useState('');
-  const formName = useSelector((state) => state.form.form.name);
-  const formDescription = useSelector((state) => state.process.formProcessList.description);
-  const formPath = useSelector((state) => state.form.form.path);
-
-  const [copied, setCopied] = useState(false);
-  const [newPath, setNewPath] = useState(formPath);
-  const [newFormName, setNewFormName] = useState(formName);
-  const [newFormDescription, setNewFormDescription] = useState(formDescription);
-  const formData = useSelector((state) => state.form?.form);
-  const reducer = (form, { type, value }) => {
-    const formCopy = _cloneDeep(form);
+  const [copied, setCopied] = useState(false); 
+  const formData = useSelector((state) => state.form?.form.path);
+  const [editIndexValue, setEditIndexValue] = useState(0);
+  const [createIndexValue, setCreateIndexValue] = useState(0);
+  const [viewIndexValue, setViewIndexValue] = useState(0);  
+  const reducer = (path, { type, value }) => {
+    const formCopy = _cloneDeep(path);
     switch (type) {
       case "formChange":
         for (let prop in value) {
@@ -84,7 +60,7 @@ const SettingsModal = ({ show, handleClose, handleConfirm }) => {
       target.type === "checkbox"
         ? target.checked ? "wizard" : "form"
         : target.value;
-  
+    setFormDisplay(value);
     dispatchFormAction({ type: path, value });
   };
   
@@ -171,10 +147,6 @@ const SettingsModal = ({ show, handleClose, handleConfirm }) => {
       });
   };
 
-  const handleFormPathChange = (e) => {
-    setNewPath(e.target.value);
-  };
-
   const handleClickOutside = (event) => {
     if (dropEditRef.current && !dropEditRef.current.contains(event.target)) {
       setRolesState((prevState) => ({
@@ -203,8 +175,9 @@ const SettingsModal = ({ show, handleClose, handleConfirm }) => {
     };
   }, []);
 
+
   return (
-    <Modal className="d-flex flex-column align-items-start w-100 settings-modal" show={show} onHide={handleClose} dialogClassName="modal-50w" backdrop="static">
+    <Modal className="d-flex flex-column align-items-start w-100 settings-modal" show={show} onHide={handleClose} size="sm" backdrop="static">
       <Modal.Header>
         <Modal.Title>{t("Settings")}</Modal.Title>
       </Modal.Header>
@@ -212,14 +185,20 @@ const SettingsModal = ({ show, handleClose, handleConfirm }) => {
         {/* Section 1: Basic */}
         <div className='section'>
           <h5 className='fw-bold'>{t("Basic")}</h5>
-          <FormInput value={newFormName} label={t("Name")} onChange={(e) => setNewFormName(e.target.value)} dataTestid="form-name" ariaLabel={t("Form Name")} />
+          <FormInput 
+          value={formDetails.name} 
+          label={t("Name")} 
+          onChange={(e) => updateFormName(e.target.value)} 
+          dataTestid="form-name" 
+          ariaLabel={t("Form Name")} />
           <FormTextArea
             label={t("Description")}
-            value={newFormDescription}
-            onChange={(e) => setNewFormDescription(e.target.value)}
+            value={formDetails.description}
+            onChange={(e) => updateFormDescription(e.target.value)}
             aria-label={t("Description of the edited form")}
             data-testid="form-description"
             maxRows={3}
+            minRows={3}
           />
           <div className="info-panel">
             <div className='d-flex align-items-center'>
@@ -236,7 +215,7 @@ const SettingsModal = ({ show, handleClose, handleConfirm }) => {
             type="checkbox"
             id="createCheckbox"
             label={t("Allow adding multiple pages in this form")}
-            checked={form.display === "wizard"}
+            checked={formDisplay === "wizard"}
             onChange={(event) => handleChange("display", event)}
 
 
@@ -252,9 +231,32 @@ const SettingsModal = ({ show, handleClose, handleConfirm }) => {
 
           <Form.Label className='field-label'>{t("Who Can Edit This Form")}</Form.Label>
           <CustomRadioButton items={[
-            { label: t("Only You"), onClick: () => setRolesState((prev) => ({ ...prev, edit: { ...prev.edit, selectedOption: 'onlyYou' } })) },
-            { label: t("You and specified roles"), onClick: () => setRolesState((prev) => ({ ...prev, edit: { ...prev.edit, selectedOption: 'specifiedRoles' } })) },
-          ]} dataTestid="edit-submission-role" ariaLabel={t("Edit Submission Role")} />
+              {
+                label: t("Only You"),
+                onClick: () => {
+                  setRolesState((prev) => ({
+                    ...prev,
+                    edit: { ...prev.edit, selectedOption: 'onlyYou' }
+                  }));
+                  setEditIndexValue(0);
+                }
+              },
+              {
+                label: t("You and specified roles"),
+                onClick: () => {
+                  setRolesState((prev) => ({
+                    ...prev,
+                    edit: { ...prev.edit, selectedOption: 'specifiedRoles' }
+                  }));
+                  setEditIndexValue(1);
+                }
+              },
+            ]}
+            dataTestid="edit-submission-role"
+            ariaLabel={t("Edit Submission Role")}
+            indexValue={editIndexValue}
+          />
+
 
           {rolesState.edit.selectedOption === 'onlyYou' && (
             <FormInput disabled={true} />
@@ -289,15 +291,40 @@ const SettingsModal = ({ show, handleClose, handleConfirm }) => {
             type="checkbox"
             id="createCheckbox"
             label={t("Anonymous users")}
-            checked={rolesState.create.isChecked}
+            checked={rolesState.create.isPublic}
             onChange={() => setRolesState((prev) =>
-              ({ ...prev, create: { ...prev.create, isChecked: !prev.create.isChecked } }))}
+              ({ ...prev, create: { ...prev.create, isPublic: !prev.create.isPublic } }))}
             className='field-label'
           />
-          <CustomRadioButton items={[
-            { label: t("Registered users"), onClick: () => setRolesState((prev) => ({ ...prev, create: { ...prev.create, selectedOption: 'registeredUsers' } })) },
-            { label: t("Specific roles"), onClick: () => setRolesState((prev) => ({ ...prev, create: { ...prev.create, selectedOption: 'specifiedRoles' } })) },
-          ]} dataTestid="create-submission-role" ariaLabel={t("Create Submission Role")} />
+          <CustomRadioButton
+  items={[
+    { 
+      label: t("Registered users"), 
+      onClick: () => {
+        setRolesState((prev) => ({ 
+          ...prev, 
+          create: { ...prev.create, selectedOption: 'registeredUsers' } 
+        }));
+        setCreateIndexValue(0); 
+        // Set index value for Registered users
+      } 
+    },
+    { 
+      label: t("Specific roles"), 
+      onClick: () => {
+        setRolesState((prev) => ({ 
+          ...prev, 
+          create: { ...prev.create, selectedOption: 'specifiedRoles' } 
+        }));
+        setCreateIndexValue(1);  // Set index value for Specific roles
+      } 
+    },
+  ]}
+  dataTestid="create-submission-role"
+  ariaLabel={t("Create Submission Role")}
+  indexValue={createIndexValue}
+/>
+
 
           {rolesState.create.selectedOption === 'registeredUsers' && (
             <FormInput disabled={true} />
@@ -329,13 +356,33 @@ const SettingsModal = ({ show, handleClose, handleConfirm }) => {
 
           <Form.Label className="field-label mt-3">{t("Who Can View Submissions")}</Form.Label>
           <CustomRadioButton
-            items={[
-              { label: t("Submitter"), onClick: () => setRolesState((prev) => ({ ...prev, view: { ...prev.view, selectedOption: 'submitter' } })) },
-              { label: t("Submitter and specified roles"), onClick: () => setRolesState((prev) => ({ ...prev, view: { ...prev.view, selectedOption: 'specifiedRoles' } })) },
-            ]}
-            dataTestid="view-submission-role"
-            ariaLabel={t("View Submission Role")}
-          />
+  items={[
+    { 
+      label: t("Submitter"), 
+      onClick: () => {
+        setRolesState((prev) => ({ 
+          ...prev, 
+          view: { ...prev.view, selectedOption: 'submitter' } 
+        }));
+        setViewIndexValue(0);  // Set index value for Submitter
+      } 
+    },
+    { 
+      label: t("Submitter and specified roles"), 
+      onClick: () => {
+        setRolesState((prev) => ({ 
+          ...prev, 
+          view: { ...prev.view, selectedOption: 'specifiedRoles' } 
+        }));
+        setViewIndexValue(0); 
+      } 
+    },
+  ]}
+  dataTestid="view-submission-role"
+  ariaLabel={t("View Submission Role")}
+  indexValue={viewIndexValue}
+/>
+
 
           {rolesState.view.selectedOption === 'submitter' && (
             <FormInput disabled={true} />
@@ -381,8 +428,7 @@ const SettingsModal = ({ show, handleClose, handleConfirm }) => {
         </div>
 
         <div className='modal-hr' />
-
-        <div className="section">
+          <div className="section">
           <h5 className='fw-bold'>{t("Link for this form")}</h5>
           <div className="info-panel">
             <div className='d-flex align-items-center'>
@@ -411,14 +457,11 @@ const SettingsModal = ({ show, handleClose, handleConfirm }) => {
               </InputGroup.Text>
             </InputGroup>
           </Form.Group>
-
-
-
-
-
         </div>
+        
+        
       </Modal.Body>
-      <Modal.Footer className="d-flex justify-content-start">
+      <Modal.Footer>
         <CustomButton
           variant="primary"
           size="md"

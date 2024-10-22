@@ -8,7 +8,7 @@ from typing import List
 from flask_sqlalchemy.query import Query
 from formsflow_api_utils.utils import FILTER_MAPS, add_sort_filter
 from formsflow_api_utils.utils.user_context import UserContext, user_context
-from sqlalchemy import LargeBinary, and_, desc, or_
+from sqlalchemy import LargeBinary, and_, desc, func, or_
 from sqlalchemy.dialects.postgresql import ENUM
 
 from .audit_mixin import AuditDateTimeMixin, AuditUserMixin
@@ -133,6 +133,20 @@ class Process(AuditDateTimeMixin, AuditUserMixin, BaseModel, db.Model):
         return query
 
     @classmethod
+    def subquery_for_getting_latest_process(cls):
+        """Subquery to get the latest process by parent_process_key."""
+        subquery = (
+            db.session.query(
+                cls.parent_process_key,
+                func.max(cls.major_version).label("latest_major_version"),
+                func.max(cls.minor_version).label("latest_minor_version"),
+            )
+            .group_by(cls.parent_process_key)
+            .subquery()
+        )
+        return subquery
+
+    @classmethod
     def find_all_process(  # pylint: disable=too-many-arguments, too-many-positional-arguments
         cls,
         page_no=None,
@@ -144,7 +158,15 @@ class Process(AuditDateTimeMixin, AuditUserMixin, BaseModel, db.Model):
     ):
         """Find all processes."""
         query = cls.filter_conditions(**filters)
-        query = query.filter(cls.status_changed.is_(False))
+        # take the latest row by grouping parent_process_key
+        subquery = cls.subquery_for_getting_latest_process()
+        query = query.join(
+            subquery,
+            (cls.parent_process_key == subquery.c.parent_process_key)
+            & (cls.major_version == subquery.c.latest_major_version)
+            & (cls.minor_version == subquery.c.latest_minor_version),
+        )
+
         if is_subflow:
             query = query.filter(cls.is_subflow.is_(True))
         query = cls.auth_query(query=query)
@@ -166,6 +188,21 @@ class Process(AuditDateTimeMixin, AuditUserMixin, BaseModel, db.Model):
         )
 
         return query
+
+    @classmethod
+    def fetch_published_history_by_parent_process_key(
+        cls, parent_process_key: str
+    ) -> Process:
+        """Fetch published version of a process by parent_process_key."""
+        query = cls.auth_query(
+            cls.query.filter(
+                and_(
+                    cls.parent_process_key == parent_process_key,
+                    cls.status == ProcessStatus.PUBLISHED,
+                )
+            )
+        )
+        return query.all()
 
     @classmethod
     def get_latest_version_by_parent_key(cls, parent_process_key):

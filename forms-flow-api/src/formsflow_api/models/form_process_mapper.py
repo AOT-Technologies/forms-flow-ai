@@ -282,7 +282,7 @@ class FormProcessMapper(AuditDateTimeMixin, AuditUserMixin, BaseModel, db.Model)
         )
         query = cls.add_search_filter(query=query, search=search)
         query = cls.access_filter(query=query)
-        query = cls.add_sort_filter(
+        query = add_sort_filter(
             sort_by=sort_by,
             sort_order=sort_order,
             query=query,

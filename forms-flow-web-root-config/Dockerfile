@@ -1,5 +1,5 @@
 # Base image
-FROM node:16.18.0-alpine as build-stage
+FROM node:16.20.0-alpine as build-stage
 
 # Set working directory
 WORKDIR /forms-flow-web-root-config/app
@@ -46,7 +46,7 @@ RUN if [ $NODE_ENV == "development" ]; then \
 
 
 # Production stage
-FROM nginx:1.25.4-alpine as production-stage
+FROM nginx:1.27-alpine as production-stage
 
 # Set label for image
 LABEL Name="formsflow"

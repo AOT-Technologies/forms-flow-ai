@@ -2,7 +2,6 @@
 
 import json
 
-
 from flask import current_app
 from formsflow_api_utils.exceptions import BusinessException
 from formsflow_api_utils.utils.user_context import UserContext, user_context
@@ -98,7 +97,7 @@ class ProcessService:  # pylint: disable=too-few-public-methods
 
         # Prepend the XML declaration
         updated_xml = '<?xml version="1.0" encoding="UTF-8"?>\n' + updated_xml
-        return updated_xml
+        return updated_xml.encode("utf-8")
 
     @classmethod
     @user_context
@@ -319,7 +318,25 @@ class ProcessService:  # pylint: disable=too-few-public-methods
         process_histories, count = Process.fetch_histories_by_parent_process_key(
             parent_process_key, page_no, limit
         )
+
+        published_histories = Process.fetch_published_history_by_parent_process_key(
+            parent_process_key
+        )
+
         if process_histories:
+            # populating published on and publised by to the history
+            published_history_dict = {
+                f"{history.major_version}.{history.minor_version}": history
+                for history in published_histories
+            }
+            for history in process_histories:
+                published_history = published_history_dict.get(
+                    f"{history.major_version}.{history.minor_version}"
+                )
+                if published_history:
+                    history.published_on = published_history.created
+                    history.published_by = published_history.created_by
+
             process_history_schema = ProcessHistorySchema(many=True)
             return process_history_schema.dump(process_histories), count
         raise BusinessException(BusinessErrorCode.PROCESS_ID_NOT_FOUND)
@@ -349,6 +366,9 @@ class ProcessService:  # pylint: disable=too-few-public-methods
         """Publish by process_id."""
         user: UserContext = kwargs["user"]
         process = cls.validate_process_by_id(process_id)
+        latest = Process.get_latest_version_by_parent_key(process.parent_process_key)
+        if process.id != latest.id:
+            raise BusinessException(BusinessErrorCode.PROCESS_NOT_LATEST_VERSION)
         FormProcessMapperService.update_process_status(process, "PUBLISHED", user)
         FormProcessMapperService().deploy_process(
             process.name, process.process_data, user.tenant_key, user.bearer_token

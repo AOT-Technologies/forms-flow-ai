@@ -1,9 +1,8 @@
 import React, { useReducer, useState, useEffect } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import { Card } from "react-bootstrap";
-import { Errors, FormBuilder, Formio } from "@aot-technologies/formio-react";
-import { BackToPrevIcon } from "@formsflow/components";
-import { CustomButton, ConfirmModal } from "@formsflow/components";
+import { Errors, FormBuilder } from "@aot-technologies/formio-react";
+import { CustomButton, ConfirmModal, BackToPrevIcon } from "@formsflow/components";
 import { RESOURCE_BUNDLES_DATA } from "../../../resourceBundles/i18n";
 import LoadingOverlay from "react-loading-overlay-ts";
 import _set from "lodash/set";
@@ -15,41 +14,38 @@ import { HistoryIcon, PreviewIcon } from "@formsflow/components";
 import ActionModal from "../../Modals/ActionModal.js";
 import { setProcessDiagramXML } from "../../../actions/processActions";
 import { MULTITENANCY_ENABLED } from "../../../constants/constants";
-
-import { unPublishForm } from "../../../apiManager/services/processServices";
 //for save form
+import { MULTITENANCY_ENABLED } from "../../../constants/constants";
+
 import { manipulatingFormData } from "../../../apiManager/services/formFormatterService";
 import {
   formUpdate,
   validateFormName,
 } from "../../../apiManager/services/FormServices";
-import { INACTIVE } from "../constants/formListConstants";
-import { formCreate } from "../../../apiManager/services/FormServices";
+import { formCreate, publish, unPublish } from "../../../apiManager/services/FormServices";
 import utils from "@aot-technologies/formiojs/lib/utils";
 import {
   setFormFailureErrorData,
   setFormSuccessData,
-  setRestoreFormData,
-  setRestoreFormId,
 } from "../../../actions/formActions";
 import {
-  saveFormProcessMapperPost,
   saveFormProcessMapperPut,
+  getProcessDetails,
+  getFormProcesses
 } from "../../../apiManager/services/processServices";
 
+import { setProcessData } from '../../../actions/processActions.js';
+
 import _isEquial from "lodash/isEqual";
-import { toast } from "react-toastify";
 import { FormBuilderModal } from "@formsflow/components";
 import _ from "lodash";
 
-import BpmnEditor from "../../Modeler/Editors/BpmnEditor";
 import { useParams } from "react-router-dom";
-//getting process data
-import { getFormProcesses } from "../../../apiManager/services/processServices";
-//getting process diagram
-import { getProcessXml } from "../../../apiManager/services/processServices";
 
 import SettingsModal from "../../CustomComponents/settingsModal";
+import FlowEdit from "./FlowEdit.js";
+import ExportModal from "../../Modals/ExportModal.js";
+
 import DeleteFormModal from "../../Modals/DeleteFormModal";
 
 import { setFormDeleteStatus } from "../../../actions/formActions";
@@ -57,8 +53,8 @@ import { setFormDeleteStatus } from "../../../actions/formActions";
 const DUPLICATE = "DUPLICATE";
 // const SAVE_AS_TEMPLATE= "SAVE_AS_TEMPLATE";
 // const IMPORT= "IMPORT";
-// const EXPORT= "EXPORT";
-const DELETE = "DELETE";
+const EXPORT = "EXPORT";
+//const DELETE = "DELETE";
 
 const reducer = (form, { type, value }) => {
   const formCopy = _cloneDeep(form);
@@ -93,45 +89,57 @@ const Edit = React.memo(() => {
   const processListData = useSelector(
     (state) => state.process?.formProcessList
   );
+
+  const formAuthorization = useSelector((state) => state.process.authorizationDetails);
   const formData = useSelector((state) => state.form?.form);
   const [form, dispatchFormAction] = useReducer(reducer, _cloneDeep(formData));
-  const publisText =
-    processListData.status == "active" ? "Unpublish" : "Publish";
   const [showFlow, setShowFlow] = useState(false);
   const [showLayout, setShowLayout] = useState(true);
   const tenantKey = useSelector((state) => state.tenants?.tenantId);
   const redirectUrl = MULTITENANCY_ENABLED ? `/tenant/${tenantKey}/` : "/";
-  const processXmlDiagram = useSelector((state) => state.process?.processXml);
   const { formId } = useParams();
   const [nameError, setNameError] = useState("");
-  //const formProcessList = useSelector(state => state.process?.formProcessList);
+
+  // flow edit
+  const [isProcessDetailsLoading, setIsProcessDetailsLoading] = useState(false);
 
   //for save form
+  const [promptNewVersion, setPromptNewVersion] = useState(processListData.promptNewVersion);
+  const [version, setVersion] = useState({ major: 1, minor: 0 });
+  const [isPublished, setIsPublished] = useState(processListData?.status == "active" ? true : false);
+  const [isPublishLoading, setIsPublishLoading] = useState(false);
+  const publishText = isPublished ? "Unpublish" : "Publish";
+  const [versionSaved, setVersionSaved] = useState(false);
+  const prviousData = useSelector((state) => state.process?.formPreviousData);
   const [formSubmitted, setFormSubmitted] = useState(false);
   const formAccess = useSelector((state) => state.user?.formAccess || []);
   const submissionAccess = useSelector(
     (state) => state.user?.submissionAccess || []
   );
   const previousData = useSelector((state) => state.process?.formPreviousData);
-  const formDescription = form?.description;
   const restoredFormData = useSelector(
     (state) => state.formRestore?.restoredFormData
   );
   const restoredFormId = useSelector(
     (state) => state.formRestore?.restoredFormId
   );
-  const applicationCount = useSelector(
-    (state) => state.process?.applicationCount
-  );
+  // const applicationCount = useSelector(
+  //   (state) => state.process?.applicationCount
+  // );
   const applicationCountResponse = useSelector(
     (state) => state.process?.applicationCountResponse
   );
   const [showSaveModal, setShowSaveModal] = useState(false);
   const [hasRendered, setHasRendered] = useState(false);
-  const [isLoadingDiagram, setIsLoadingDiagram] = useState(true);
-  //it returns the digram (old method);
-  // const diagramXML = useSelector((state) => state.process.processDiagramXML);
-  const roleIds = useSelector((state) => state.user?.roleIds || {});
+
+  const formPath = useSelector((state) => state.form.form.path);
+  const [newPath, setNewPath] = useState(formPath);
+
+
+  const preferred_userName = useSelector(
+    (state) => state.user?.userDetail?.preferred_username || ""
+  );
+
   const [showSettingsModal, setShowSettingsModal] = useState(false);
   const handleOpenModal = () => setShowSettingsModal(true);
   const handleCloseModal = () => setShowSettingsModal(false);
@@ -156,11 +164,45 @@ const Edit = React.memo(() => {
     // }
   };
 
+  const [formDetails, setFormDetails] = useState({
+    name: processListData.formName,
+    description: processListData.description,
+  });
+
+  const [formDisplay, setFormDisplay] = useState(processListData.formType);
+
+  const [rolesState, setRolesState] = useState({
+    edit: {
+      roleInput: '',
+      filteredRoles: [],
+      selectedRoles: formAuthorization.DESIGNER?.roles,
+      selectedOption: 'onlyYou',
+    },
+    create: {
+      roleInput: '',
+      filteredRoles: [],
+      selectedRoles: formAuthorization.FORM?.roles,
+      selectedOption: 'registeredUsers',
+      isPublic: processListData.anonymous ? processListData.anonymous : false,
+
+    },
+    view: {
+      roleInput: '',
+      filteredRoles: [],
+      selectedRoles: formAuthorization.APPLICATION?.roles,
+      selectedOption: 'submitter',
+    },
+  });
+
   useEffect(() => {
     if (showFlow) {
       setHasRendered(true);
     }
   }, [showFlow]);
+
+  const handleFormPathChange = (e) => {
+    setNewPath(e.target.value);
+  };
 
   const handleShowLayout = () => {
     setShowFlow(false);
@@ -170,26 +212,44 @@ const Edit = React.memo(() => {
     setShowFlow(true);
     setShowLayout(false);
   };
+
   useEffect(() => {
     if (formId) {
       // Fetch form processes with formId
-      dispatch(getFormProcesses(formId));
+      dispatch(getFormProcesses(formId,(err,data)=>{
+        if(err) return;
+        setIsProcessDetailsLoading(true);
+        getProcessDetails(data.processKey).then((response)=>{
+          const { data } = response;
+          dispatch(setProcessData(data));
+          setIsProcessDetailsLoading(false);
+        }
+      );
+      }));
     }
   }, [formId]);
 
-  useEffect(() => {
-    if (workflow?.value) {
-      // Fetch workflow diagram XML when the workflow value is present
-      dispatch(getProcessXml(workflow.value));
-    }
 
-    if (workflow?.value && processXmlDiagram) {
-      // Set the process diagram XML and stop the loading spinner when both workflow and XML are available
-      dispatch(setProcessDiagramXML(processXmlDiagram));
-      setIsLoadingDiagram(false);
-    }
-  }, [workflow?.value, processXmlDiagram]);
 
+
+
+  const updateFormName = (formName) => {
+    setFormDetails((prevState) => ({
+      ...prevState,
+      name: formName,
+    }));
+    dispatchFormAction({ type: "title", formName });
+  };
+  const updateFormDescription = (formDescription) => {
+    setFormDetails((prevState) => ({
+      ...prevState,
+      description: formDescription,
+    }));
+    dispatchFormAction({ type: "description", formDescription });
+  };
+
+
+  //for save farm
   //for save farm
 
   const validateFormNameOnBlur = () => {
@@ -214,37 +274,6 @@ const Edit = React.memo(() => {
         setNameError(errorMessage); // Set the error message from the server
         console.error("Error validating form name:", errorMessage);
       });
-  };
-  //for save farm
-  const isMapperSaveNeeded = (newData) => {
-    return (
-      previousData.formName !== newData.title ||
-      previousData.anonymous !== processListData.anonymous ||
-      processListData.anonymous === null ||
-      processListData.formType !== newData.type ||
-      processListData.description !== formDescription
-    );
-  };
-
-  const setFormProcessDataToVariable = (submittedData) => {
-    const data = {
-      anonymous:
-        processListData.anonymous === null ? false : processListData.anonymous,
-      formName: submittedData.title,
-      parentFormId: processListData.parentFormId,
-      formType: submittedData.type,
-      status: processListData.status ? processListData.status : INACTIVE,
-      taskVariables: processListData.taskVariables
-        ? processListData.taskVariables
-        : [],
-      id: processListData.id,
-      formId: submittedData._id,
-      formTypeChanged: previousData.formType !== submittedData.type,
-      titleChanged: previousData.formName !== submittedData.title,
-      anonymousChanged: previousData.anonymous !== processListData.anonymous,
-      description: formDescription,
-    };
-    return data;
   };
   const isFormComponentsChanged = () => {
     if (restoredFormData && restoredFormId) {
@@ -292,49 +321,62 @@ const Edit = React.memo(() => {
     );
   };
 
-  const isNewMapperNeeded = () => {
-    return previousData.formName !== form.title && applicationCount > 0;
-  };
   const handleConfirmSettings = () => {
     const parentFormId = processListData.parentFormId;
     const mapper = {
       formId: form._id,
-      formName: form.title,
-      description: formDescription,
+      formName: formDetails?.name,
+      description: formDetails?.description,
       status: processListData.status || "inactive",
       taskVariables: processListData.taskVariables
         ? processListData.taskVariables
         : [],
-      anonymous: formAccess[0]?.roles.includes(roleIds.ANONYMOUS),
+      anonymous: rolesState.create.isPublic,
       parentFormId: parentFormId,
       formType: form.type,
+      display: formDisplay,
       processKey: workflow?.value,
       processName: workflow?.name,
       id: processListData.id,
       workflowChanged: false,
       statusChanged: false,
       resourceId: form._id,
+      majorVersion:processListData.majorVersion,
+      minorVersion:processListData.minorVersion,
     };
 
     const authorizations = {
       application: {
         resourceId: parentFormId,
         resourceDetails: {},
-        roles: [],
+        roles: rolesState.view.selectedOption === "specifiedRoles" ? rolesState.view.selectedRoles : [],
+        ...(rolesState.view.selectedOption === "submitter" && { userName: preferred_userName }) // TBD
       },
       designer: {
         resourceId: parentFormId,
         resourceDetails: {},
-        roles: [],
+        roles: rolesState.edit.selectedOption === "specifiedRoles" ? rolesState.edit.selectedRoles : [],
+        ...(rolesState.edit.selectedOption === "onlyYou" && { userName: preferred_userName })
       },
       form: {
         resourceId: parentFormId,
         resourceDetails: {},
-        roles: [],
-      },
+        roles: rolesState.create.selectedOption === "specifiedRoles" ? rolesState.create.selectedRoles : [],
+      }
     };
-    dispatch(saveFormProcessMapperPut({ mapper, authorizations }));
+
+    const savePromise = dispatch(saveFormProcessMapperPut({ mapper, authorizations }));
+    const updatePromise = updateFormPath();
+
+    Promise.all([savePromise, updatePromise])
+      .then(() => {
+        handleCloseModal();
+      })
+      .catch(error => {
+        console.error("Error saving form process:", error);
+      });
   };
+
 
   const closeSaveModal = () => {
     setShowSaveModal(false);
@@ -352,41 +394,12 @@ const Edit = React.memo(() => {
     );
     newFormData.componentChanged = isFormComponentsChanged();
     newFormData.parentFormId = previousData.parentFormId;
-
+    //To DO :  Below line to be fixed after Review
+    newFormData.title = processListData.formName;
     formUpdate(newFormData._id, newFormData)
-      .then((res) => {
-        const { data: submittedData } = res;
-        if (isMapperSaveNeeded(submittedData)) {
-          const data = setFormProcessDataToVariable(submittedData);
-
-          // PUT request : when application count is zero.
-          // POST request with updated version : when application count is positive.
-
-          if (isNewMapperNeeded()) {
-            data["version"] = String(+previousData.version + 1);
-            data["processKey"] = previousData.processKey;
-            data["processName"] = previousData.processName;
-            data.parentFormId = processListData.parentFormId;
-            dispatch(saveFormProcessMapperPost(data));
-          } else {
-            // For hadling uploaded forms case.
-
-            if (processListData && processListData.id) {
-              // For created forms we would be having a mapper
-
-              dispatch(saveFormProcessMapperPut(data));
-            } else {
-              // For uploaded forms we have to create new mapper.
-
-              dispatch(saveFormProcessMapperPost(data));
-            }
-          }
-        }
-        dispatch(setRestoreFormData({}));
-        dispatch(setRestoreFormId(null));
-        toast.success(t("Form saved"));
-        dispatch(setFormSuccessData("form", submittedData));
-        Formio.cache = {};
+      .then(() => {
+        setPromptNewVersion(false);
+        setVersionSaved(true);
       })
       .catch((err) => {
         const error = err.response?.data || err.message;
@@ -397,41 +410,45 @@ const Edit = React.memo(() => {
       });
   };
 
+
+  const updateFormPath = () => {
+    const newFormData = manipulatingFormData(
+      _.cloneDeep(form),
+      MULTITENANCY_ENABLED,
+      tenantKey,
+      formAccess,
+      submissionAccess
+    );
+    newFormData.path = newPath;
+    newFormData.title = formDetails.name;
+    formUpdate(newFormData._id, newFormData);
+
+
+  };
+
   const backToForm = () => {
     dispatch(push(`${redirectUrl}form/`));
-    console.log("back", redirectUrl);
   };
 
   const handleHistory = () => {
     console.log("handleHistory");
   };
 
-  const handlePreviewAndVariables = () => {
-    console.log("handlePreviewAndVariables");
-  };
+
 
   const handlePreview = () => {
     console.log("handlePreview");
   };
 
-  const saveFlow = () => {
-    console.log("saveFlow");
-  };
 
-  const saveLayout = () => {
-    setShowSaveModal(true);
-  };
 
   const discardChanges = () => {
     console.log("discardChanges");
   };
 
+
   const editorActions = () => {
     setNewActionModal(true);
-  };
-
-  const handlePublish = () => {
-    console.log("publish");
   };
 
   const handleChange = (path, event) => {
@@ -443,7 +460,7 @@ const Edit = React.memo(() => {
     dispatchFormAction({ type: path, value });
   };
 
-  const handlePublishAsNewVersion = () => {
+  const handlePublishAsNewVersion = (formName,formDescription) => {
     setFormSubmitted(true);
     const newFormData = manipulatingFormData(
       _.cloneDeep(form),
@@ -454,14 +471,15 @@ const Edit = React.memo(() => {
     );
 
     const newPathAndName =
-      "duplicate-version-" + Math.random().toString(16).slice(9);
+    "duplicate-version-" + Math.random().toString(16).slice(9);
     newFormData.path = newPathAndName;
     newFormData.title = form.title;
-    newFormData.name = form.title;
+    newFormData.name = newPathAndName;
     newFormData.componentChanged = true;
     delete newFormData.machineName;
     delete newFormData.parentFormId;
     newFormData.newVersion = true;
+    newFormData.description = formDescription;
     delete newFormData._id;
 
     formCreate(newFormData)
@@ -543,15 +561,125 @@ const Edit = React.memo(() => {
   const formChange = (newForm) =>
     dispatchFormAction({ type: "formChange", value: newForm });
 
+  const handlePublish = () => {
+    if (!promptNewVersion) {
+      setIsPublishLoading(true);
+      if (processListData.status === "active") {
+        unPublish(processListData.id)
+          .then(() => {
+            setPromptNewVersion(true);
+            setIsPublishLoading(false);
+            setIsPublished(!isPublished);
+            setVersionSaved(true);
+          })
+          .catch((err) => {
+            setIsPublishLoading(false);
+            const error = err.response?.data || err.message;
+            dispatch(setFormFailureErrorData("form", error));
+          });
+      }
+      else {
+        publish(processListData.id)
+          .then(() => {
+            setIsPublishLoading(false);
+            setIsPublished(!isPublished);
+            setVersionSaved(true);
+          })
+          .catch((err) => {
+            setIsPublishLoading(false);
+            const error = err.response?.data || err.message;
+            dispatch(setFormFailureErrorData("form", error));
+          })
+          .finally(() => {
+            setIsPublishLoading(false);
+            dispatch(push(`${redirectUrl}form/`));
+          });
+      }
+
+    }
+    else {
+      setVersion((prevVersion) => ({
+        ...prevVersion,
+        major: ((processListData.majorVersion + 1) + ".0"),  // Increment the major version
+        minor: processListData.majorVersion + "." + (processListData.minorVersion + 1),  // Reset the minor version to 0
+      }));
+      setShowSaveModal(true);
+    }
+
+
+  };
+
+  const handleVersioning = () => {
+    setVersion((prevVersion) => ({
+      ...prevVersion,
+      major: ((processListData.majorVersion + 1) + ".0"),  // Increment the major version
+      minor: processListData.majorVersion + "." + (processListData.minorVersion + 1),  // Reset the minor version to 0
+    }));
+
+    //get mapper data
+
+    //call for new version save
+    setShowSaveModal(true);
+  };
+
+  const saveAsNewVersion = async () => {
+    setFormSubmitted(true);
+    const newFormData = manipulatingFormData(
+      form,
+      MULTITENANCY_ENABLED,
+      tenantKey,
+      formAccess,
+      submissionAccess
+    );
+    const oldFormData = manipulatingFormData(
+      formData,
+      MULTITENANCY_ENABLED,
+      tenantKey,
+      formAccess,
+      submissionAccess
+    );
+
+    const newPathAndName = "-v" + Math.random().toString(16).slice(9);
+    oldFormData.path += newPathAndName;
+    oldFormData.name += newPathAndName;
+    await formUpdate(oldFormData._id, oldFormData);
+    newFormData.componentChanged = true;
+    newFormData.newVersion = true;
+    newFormData.parentFormId = prviousData.parentFormId;
+    delete newFormData.machineName;
+    delete newFormData._id;
+    formCreate(newFormData)
+      .then(() => {
+        setPromptNewVersion(false);
+      })
+      .catch((err) => {
+        const error = err.response.data || err.message;
+        dispatch(setFormFailureErrorData("form", error));
+      })
+      .finally(() => {
+        setFormSubmitted(false);
+      });
+  };
+
+
   return (
     <div>
       <div>
-        <LoadingOverlay active={formSubmitted} spinner text={t("Loading...")}>
-          <SettingsModal
-            show={showSettingsModal}
-            handleClose={handleCloseModal}
+        <LoadingOverlay
+          active={formSubmitted}
+          spinner
+          text={t("Loading...")}
+        >
+
+          <SettingsModal show={showSettingsModal} handleClose={handleCloseModal}
             handleConfirm={handleConfirmSettings}
-          />
+            rolesState={rolesState} setRolesState={setRolesState}
+            setFormDetails={setFormDetails} formDetails={formDetails}
+            updateFormName={updateFormName} formDisplay={formDisplay}
+            setFormDisplay={setFormDisplay}
+            updateFormDescription={updateFormDescription} newPath={newPath}
+            handleFormPathChange={handleFormPathChange} />
+
           <Errors errors={errors} />
 
           <Card className="editor-header">
@@ -560,20 +688,15 @@ const Edit = React.memo(() => {
                 <div className="d-flex align-items-center justify-content-between">
                   <BackToPrevIcon onClick={backToForm} />
                   <div className="mx-4 editor-header-text">{form.title}</div>
-                  <span
-                    data-testid={`form-status-${form._id}`}
-                    className="d-flex align-items-center white-text mx-3"
-                  >
-                    {processListData.status == "active" ? (
+                  <span data-testid={`form-status-${form._id}`} className="d-flex align-items-center white-text mx-3">
+                    {isPublished ? (
                       <>
                         <div className="status-live"></div>
                       </>
                     ) : (
                       <div className="status-draft"></div>
                     )}
-                    {processListData.status == "active"
-                      ? t("Live")
-                      : t("Draft")}
+                    {isPublished ? t("Live") : t("Draft")}
                   </span>
                 </div>
                 <div>
@@ -597,10 +720,11 @@ const Edit = React.memo(() => {
                   <CustomButton
                     variant="light"
                     size="md"
-                    label={t(publisText)}
+                    label={t(publishText)}
+                    buttonLoading={isPublishLoading ? true : false}
                     onClick={handlePublish}
                     dataTestid="handle-publish-testid"
-                    ariaLabel={`${t(publisText)} ${t("Button")}`}
+                    ariaLabel={`${t(publishText)} ${t("Button")}`}
                   />
                 </div>
               </div>
@@ -645,10 +769,11 @@ const Edit = React.memo(() => {
                         variant="primary"
                         size="md"
                         className="mx-2"
+                        disabled={isPublished}
                         label={
                           <Translation>{(t) => t("Save Layout")}</Translation>
                         }
-                        onClick={saveLayout}
+                        onClick={versionSaved ? handleVersioning : handleVersioning}
                         dataTestid="save-form-layout"
                         ariaLabel={t("Save Form Layout")}
                       />
@@ -683,92 +808,8 @@ const Edit = React.memo(() => {
               </Card>
             </div>
             <div className={`wraper flow-wraper ${showFlow ? "visible" : ""}`}>
-              <Card>
-                <Card.Header>
-                  <div
-                    className="d-flex justify-content-between align-items-center"
-                    style={{ width: "100%" }}
-                  >
-                    <div className="d-flex align-items-center justify-content-between">
-                      <div className="mx-2 builder-header-text">Flow</div>
-                      <div>
-                        <CustomButton
-                          variant="secondary"
-                          size="md"
-                          icon={<HistoryIcon />}
-                          label={
-                            <Translation>{(t) => t("History")}</Translation>
-                          }
-                          onClick={handleHistory}
-                          dataTestid="flow-history-button-testid"
-                          ariaLabel={t("Flow History Button")}
-                        />
-                        <CustomButton
-                          variant="secondary"
-                          size="md"
-                          className="mx-2"
-                          label={
-                            <Translation>
-                              {(t) => t("Preview & Variables")}
-                            </Translation>
-                          }
-                          onClick={handlePreviewAndVariables}
-                          dataTestid="preview-and-variables-testid"
-                          ariaLabel={t("{Preview and Variables Button}")}
-                        />
-                        {/* <CustomButton
-                          variant="secondary"
-                          size="md"
-                          className="mx-2"
-                          label={<Translation>{(t) => t("Switch to BPMN")}</Translation>}
-                          onClick={setWorkflowType}
-                          dataTestid={"cancelBtndataTestid"}
-                          ariaLabel={"cancelBtnariaLabel"}
-                        /> */}
-                      </div>
-                    </div>
-                    <div>
-                      <CustomButton
-                        variant="primary"
-                        size="md"
-                        className="mx-2"
-                        label={
-                          <Translation>{(t) => t("Save Flow")}</Translation>
-                        }
-                        onClick={saveFlow}
-                        dataTestid="save-flow-layout"
-                        ariaLabel={t("Save Flow Layout")}
-                      />
-                      <CustomButton
-                        variant="secondary"
-                        size="md"
-                        label={
-                          <Translation>
-                            {(t) => t("Discard Changes")}
-                          </Translation>
-                        }
-                        onClick={discardChanges}
-                        dataTestid="discard-flow-changes-testid"
-                        ariaLabel={t("Discard Flow Changes")}
-                      />
-                    </div>
-                  </div>
-                </Card.Header>
-                <Card.Body>
-                  <div className="flow-builder">
-                    {isLoadingDiagram ? (
-                      "loading..." // TBD: add a loader here
-                    ) : (
-                      <BpmnEditor
-                        processKey={workflow?.value}
-                        tenant={workflow?.tenant}
-                        isNewDiagram={false}
-                        bpmnXml={processXmlDiagram}
-                      />
-                    )}
-                  </div>
-                </Card.Body>
-              </Card>
+            {isProcessDetailsLoading ? <>loading...</>  :
+              <FlowEdit />}
             </div>
             {showFlow && (
               <div
@@ -780,9 +821,8 @@ const Edit = React.memo(() => {
             )}
             {showLayout && (
               <div
-                className={`form-flow-wraper-right ${
-                  showLayout && hasRendered ? "visible" : ""
-                }`}
+                className={`form-flow-wraper-right ${showLayout && hasRendered ? "visible" : ""
+                  }`}
                 onClick={handleShowFlow}
               >
                 Flow
@@ -813,6 +853,11 @@ const Edit = React.memo(() => {
         nameValidationOnBlur={validateFormNameOnBlur}
         nameError={nameError}
       />
+
+      <ExportModal
+       showExportModal={selectedAction === EXPORT}
+       onClose={handleCloseSelectedAction}
+       formId={processListData.id}
       <DeleteFormModal
         showDeleteModal={selectedAction === DELETE} // Show if DELETE action is selected
         onClose={handleCloseActionModal} // Close the modal
@@ -861,27 +906,14 @@ const Edit = React.memo(() => {
       <ConfirmModal
         show={showSaveModal}
         title={<Translation>{(t) => t("Save Your Changes")}</Translation>}
-        message={
-          <Translation>
-            {(t) =>
-              t(
-                "Saving as an incrimental version will affect previous submissions. Saving as a new full version will not affect previous submissions."
-              )
-            }
-          </Translation>
-        }
+        message={<Translation>{(t) => t("Saving as an incremental version will affect previous submissions. Saving as a new full version will not affect previous submissions.")}</Translation>}
         primaryBtnAction={saveFormData}
         onClose={closeSaveModal}
-        secondayBtnAction={"add secondary button action"}
-        primaryBtnText={
-          <Translation>{(t) => t("Save as Version 3.5")}</Translation>
-        }
-        secondaryBtnText={
-          <Translation>{(t) => t("Save as Version 4.0")}</Translation>
-        }
+        secondayBtnAction={saveAsNewVersion}
+        primaryBtnText={<Translation>{(t) => t(`Save as Version ${version.minor}`)}</Translation>}
+        secondaryBtnText={<Translation>{(t) => t(`Save as Version ${version.major}`)}</Translation>}
         size="md"
       />
-      <div></div>
     </div>
   );
 });

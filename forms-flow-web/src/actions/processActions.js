@@ -176,3 +176,10 @@ export const setIsPublicDiagram = (data) => (dispatch) => {
     payload: data,
   });
 };
+
+export const setSubflowCount = (data) => (dispatch) => {
+  dispatch({
+    type: ACTION_CONSTANTS.SET_SUBFLOW_COUNT,
+    payload: data,
+  });
+};

@@ -305,7 +305,7 @@ const SubFlow = React.memo(() => {
                   <td colSpan={3}>
                     <div className="d-flex justify-content-between align-items-center flex-column flex-md-row">
                       <span className="ms-2">
-                        {t("Showing")} {limit * activePage - (limit - 1)}{" "}
+                        {t("Showing")} {(limit * activePage) - (limit - 1)}{" "}
                         {t("to")}&nbsp;
                         {Math.min(limit * activePage, totalSubflowCount)}{" "}
                         {t("of")}&nbsp;

@@ -524,13 +524,14 @@ const Edit = React.memo(() => {
     unPublish(processListData.id)
       .then(() => {
         setPromptNewVersion(true);
-        setIsPublishLoading(false);
         setIsPublished(!isPublished);
       })
       .catch((err) => {
-        setIsPublishLoading(false);
         const error = err.response?.data || err.message;
         dispatch(setFormFailureErrorData("form", error));
+      })
+      .finally(() => {
+        setIsPublishLoading(false);
       });
   };
 
@@ -539,7 +540,7 @@ const Edit = React.memo(() => {
     setIsPublishLoading(true);
     publish(processListData.id)
       .then(() => {
-                setIsPublished(!isPublished);
+        setIsPublished(!isPublished);
       })
       .catch((err) => {
         const error = err.response?.data || err.message;

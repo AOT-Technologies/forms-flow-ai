@@ -62,53 +62,56 @@ const NewVersionModal = React.memo(({ show, title, createNewVersion, onClose,
             </Modal.Header>
             <Modal.Body className="newversion-modal-body">
                 <div className="d-flex justify-content-between align-items-center">
-                    <label className="form-check-label" htmlFor="acceptFirst">
+                    <label className="form-check-label" htmlFor="acceptVersion">
                         Will be saved as a Version {newVersion}
                     </label>
                     <div className="d-flex align-items-center">
                         <input
                             className="form-check-input"
                             type="checkbox"
-                            id="acceptFirst"
-                            checked={acceptState.acceptFirst}
+                            id="acceptVersion"
+                            checked={acceptState.acceptVersion}
                             onChange={handleAcceptFirst}
+                            data-testid="checkbox-save-as-version"
                         />
-                        <label className="form-check-label ms-2" htmlFor="acceptFirst">I understand</label>
+                        <label className="form-check-label ms-2" htmlFor="acceptVersion">I understand</label>
                     </div>
                 </div>
 
                 <div className="d-flex justify-content-between align-items-center">
-                    <label className="form-check-label" htmlFor="acceptSecond">
+                    <label className="form-check-label" htmlFor="affectSubmissions">
                         You will not be able to affect previous submissions after
                     </label>
                     <div className="d-flex align-items-center">
                         <input
                             className="form-check-input"
                             type="checkbox"
-                            id="acceptSecond"
-                            checked={acceptState.acceptSecond}
+                            id="affectSubmissions"
+                            checked={acceptState.affectSubmissions}
                             onChange={handleAcceptSecond}
+                            data-testid="checkbox-will-not-affect-previous-submissions"
                         />
-                        <label className="form-check-label ms-2" htmlFor="acceptSecond">I understand</label>
+                        <label className="form-check-label ms-2" htmlFor="affectSubmissions">I understand</label>
                     </div>
                 </div>
 
-
                 <div className="d-flex justify-content-between align-items-center">
-                    <label className="form-check-label" htmlFor="acceptThird">
+                    <label className="form-check-label" htmlFor="cannotUndo">
                         This action cannot be undone
                     </label>
                     <div className="d-flex align-items-center">
                         <input
                             className="form-check-input"
                             type="checkbox"
-                            id="acceptThird"
-                            checked={acceptState.acceptThird}
+                            id="cannotUndo"
+                            checked={acceptState.cannotUndo}
                             onChange={handleAcceptThird}
+                            data-testid="checkbox-action-cannot-undo"
                         />
-                        <label className="form-check-label ms-2" htmlFor="acceptThird">I understand</label>
+                        <label className="form-check-label ms-2" htmlFor="cannotUndo">I understand</label>
                     </div>
                 </div>
+
 
             </Modal.Body>
 

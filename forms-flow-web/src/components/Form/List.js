@@ -143,7 +143,7 @@ const List = React.memo((props) => {
   }, [dispatch]);
 
   useEffect(() => {
-    console.log("================", importError);
+    // console.log("================", importError);
     dispatch(setBPMFormListLoading(true));
   }, []);
 
@@ -201,7 +201,7 @@ const List = React.memo((props) => {
     const dataString = JSON.stringify(data);
     formImport(fileContent, dataString)
       .then((res) => {
-        console.log(res);
+        // console.log(res);
         setImportLoader(false);
         setFormSubmitted(false);
         
@@ -285,7 +285,7 @@ const List = React.memo((props) => {
       setNameError(errors.title);
       return;
     }
-    console.log(form,"FORM");
+    // console.log(form,"FORM");
     form.components = [];
     const newFormData = addHiddenApplicationComponent(form);
     const newForm = {
@@ -347,7 +347,7 @@ const List = React.memo((props) => {
                     handleSearch={handleSearch}
                     handleClearSearch={handleClearSearch}
                     placeholder={t("Search Form Name and Description")}
-                    searchFormLoading={searchFormLoading}
+                    searchLoading={searchFormLoading}
                     title={t("Search Form Name and Description")}
                     dataTestId="form-search-input"
                   />
@@ -356,7 +356,7 @@ const List = React.memo((props) => {
                   {createDesigns && (
                     <CustomButton
                       variant="primary"
-                      size="md"
+                      size="sm"
                       label="New Form"
                       onClick={() => setNewFormModal(true)}
                       className=""

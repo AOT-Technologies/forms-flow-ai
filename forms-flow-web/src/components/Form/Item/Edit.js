@@ -79,7 +79,8 @@ const Edit = React.memo(() => {
   const { t } = useTranslation();
   const errors = useSelector((state) => state.form?.error);
   const processListData = useSelector((state) => state.process?.formProcessList);
-  const processHistory = useSelector((state) => state.process?.processHistory);
+  const process = useSelector((state) => state.process?.processHistory || {});
+  const processHistory = process.processHistory || [];
   const formData = useSelector((state) => state.form?.form);
   const [form, dispatchFormAction] = useReducer(reducer, _cloneDeep(formData));
   const publisText = processListData.status == "active" ? "Unpublish" : "Publish";
@@ -97,7 +98,8 @@ const Edit = React.memo(() => {
   const restoredFormData = useSelector((state) => state.formRestore?.restoredFormData);
   const restoredFormId = useSelector((state) => state.formRestore?.restoredFormId);
   const applicationCount = useSelector((state) => state.process?.applicationCount);
-  const formHistory = useSelector((state) => state.formRestore?.formHistory || []);
+  const forms = useSelector((state) => state.formRestore?.formHistory || {});
+  const formHistory = forms.formHistory || [];
   const [showSaveModal, setShowSaveModal] = useState(false);
   const [hasRendered, setHasRendered] = useState(false);
   const [isLoadingDiagram, setIsLoadingDiagram] = useState(true);
@@ -353,7 +355,7 @@ useEffect(() => {
   const fetchFormHistory = (parentFormId, page, limit) => {
     getFormHistory(parentFormId, page, limit)
       .then((res) => {
-        dispatch(setFormHistories(res.data.formHistory));
+        dispatch(setFormHistories(res.data));
       })
       .catch(() => {
         setFormHistories([]);
@@ -363,29 +365,29 @@ useEffect(() => {
   const fetchProcessHistory = (processKey, page, limit) => {
     getProcessHistory(processKey, page, limit)
       .then((res) => {
-        dispatch(setProcessHistories(res.data.processHistory));
+        dispatch(setProcessHistories(res.data));
       })
       .catch(() => {
         setProcessHistories([]);
       });
   };
 
-  useEffect(() => {
-    if (processListData?.parentFormId) {
-      fetchFormHistory(processListData?.parentFormId, pageNo, limit);
-    }
-    if (processListData?.processKey) {
-      fetchProcessHistory(processListData?.processKey, pageNo, limit);
-    }
-  }, [processListData]);
 
   const handleHistory = (type) => {
     setshowHistoryModal(true);
     if (type === 'WORKFLOW') {
       setHistory(false);
+      dispatch(setProcessHistories({ processHistory: [], totalCount: 0 }));
+      if (processListData?.processKey) {
+        fetchProcessHistory(processListData?.processKey, pageNo, limit);
+      }
     }
     else {
       setHistory(true);
+      dispatch(setFormHistories({ formHistory: [], totalCount: 0 }));
+      if (processListData?.parentFormId) {
+        fetchFormHistory(processListData?.parentFormId, pageNo, limit);
+      }
     }
   };
 
@@ -668,10 +670,11 @@ handleConfirm={handleConfirmSettings} />
         title={<Translation>{(t) => t("History")}</Translation>}
         loadMoreBtnText={<Translation>{(t) => t("Load More")}</Translation>}
         revertBtnText={<Translation>{(t) => t("Revert To This")}</Translation>}
-        formHistory={history ? formHistory : processHistory} 
+        allHistory={history ? formHistory : processHistory} 
         loadMoreBtnAction={loadMoreBtnAction}
         categoryType={history ? CategoryType.FORM : CategoryType.WORKFLOW}
         revertBtnAction={revertBtnAction}
+        historyCount={history ? forms.totalCount : process.totalCount}
        />
       <div>
       </div>

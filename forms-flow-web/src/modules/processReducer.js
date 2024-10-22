@@ -26,7 +26,7 @@ const initialState = {
   bpmnSearchText: "",
   dmnSearchText: "",
   isPublicDiagram: null,
-  processHistory:[]
+  processHistory:{}
 };
 
 const process = (state = initialState, action) => {

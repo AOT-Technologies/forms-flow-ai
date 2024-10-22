@@ -142,7 +142,6 @@ const List = React.memo((props) => {
   }, [dispatch]);
 
   useEffect(() => {
-    console.log("================", importError);
     dispatch(setBPMFormListLoading(true));
   }, []);
 
@@ -438,7 +437,6 @@ const mapDispatchToProps = (dispatch, ownProps) => {
         dispatch(deleteForm("form", formId));
       }
       if (formProcessData.id) {
-        console.log("aaaaaaaaa",formProcessData.id);
         dispatch(
           unPublishForm(formProcessData.id, (err) => {
             if (err) {

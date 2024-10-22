@@ -769,6 +769,46 @@ const [showModal, setShowModal] = useState(false);
     setSelectedAction(null); // Reset action
   };
 
+  const renderDeleteModal = () => {
+    const hasSubmissions = processListData.id && applicationCount;
+    if (hasSubmissions) {
+      // Case when the form has associated submissions and cannot be deleted
+      return (
+        <ConfirmModal
+          show={selectedAction === DELETE}
+          title={t("You Cannot Delete This Form")}
+          message={t(
+            "But you may unpublish it if you wish to not receive any more submissions."
+          )}
+          messageSecondary={t(
+            "You may not delete a form that has submissions associated with it."
+          )}
+          primaryBtnAction={handleCloseActionModal}
+          onClose={handleCloseActionModal}
+          secondayBtnAction={unPublishActiveForm}
+          primaryBtnText={t("Keep This Form")}
+          secondaryBtnText={t("Unpublish This Form")}
+          size="md"
+        />
+      );
+    } else {
+      // Case when the form can be deleted
+      return (
+        <ConfirmModal
+          show={selectedAction === DELETE}
+          title={t("Are You Sure You Want to Delete This Form?")}
+          message={t("This action cannot be undone.")}
+          primaryBtnAction={handleCloseActionModal}
+          onClose={handleCloseActionModal}
+          secondayBtnAction={deleteModal}
+          primaryBtnText={t("No, Keep This Form")}
+          secondaryBtnText={t("Yes, Delete the Form")}
+          size="md"
+        />
+      );
+    }
+  };
+
   return (
     <div>
       <div>
@@ -998,77 +1038,7 @@ const [showModal, setShowModal] = useState(false);
           size="md"
         />
       )}
-      <ConfirmModal
-        show={selectedAction === DELETE}
-        title={
-          processListData.id && applicationCount
-            ? t("You Cannot Delete This Form")
-            : t("Are You Sure You Want to Delete This Form?")
-        }
-        message={
-          processListData.id && applicationCount ? (
-            // Case when form has associated submissions and cannot be deleted
-            <div>
-              <p className="fw-bold">
-                {t(
-                  "You may not delete a form that has submissions associated with it."
-                )}
-              </p>
-              <p>
-                {t(
-                  "But you may unpublish it if you wish to not receive any more submissions."
-                )}
-              </p>
-            </div>
-          ) : (
-            // Case when form can be deleted
-            <div>
-              <p className="fw-bold">{t("This action cannot be undone.")}</p>
-            </div>
-          )
-        }
-        primaryBtnAction={handleCloseActionModal}
-        onClose={handleCloseActionModal}
-        secondayBtnAction={ applicationCount ? unPublishActiveForm : deleteModal}
-        primaryBtnText={
-          processListData.id && applicationCount
-            ? t("Keep This Form")
-            : t("No Keep This Form")
-        }
-        secondaryBtnText={
-          processListData.id && applicationCount
-          ? t("Unpublish This Form")
-          : t("Yes Delete the Form")
-        }
-        size="md"
-      />
-      <ConfirmModal
-        show={showSaveModal}
-        title={<Translation>{(t) => t("Save Your Changes")}</Translation>}
-        message={
-          <Translation>
-            {(t) =>
-              t(
-                "Saving as an incremental version will affect previous submissions. Saving as a new full version will not affect previous submissions."
-              )
-            }
-          </Translation>
-        }
-        primaryBtnAction={saveFormData}
-        onClose={closeSaveModal}
-        secondayBtnAction={saveAsNewVersion}
-        primaryBtnText={
-          <Translation>
-            {(t) => t(`Save as Version ${version.minor}`)}
-          </Translation>
-        }
-        secondaryBtnText={
-          <Translation>
-            {(t) => t(`Save as Version ${version.major}`)}
-          </Translation>
-        }
-        size="md"
-      />
+     {renderDeleteModal()}
     </div>
   );
 });

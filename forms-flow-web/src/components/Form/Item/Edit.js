@@ -553,7 +553,7 @@ const Edit = React.memo(() => {
   };
 
   const handlePublish = () => {
-    if (processListData.status === "active") {
+    if (isPublished) {
       openUnpublishModal();
     }
     else {

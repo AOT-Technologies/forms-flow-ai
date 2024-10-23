@@ -28,6 +28,7 @@ class ApplicationSortingParameters:  # pylint: disable=too-few-public-methods
     FormName = "formName"
     visibility= "visibility"
     is_anonymous= "is_anonymous"
+    description = "description"
 
 
 @unique

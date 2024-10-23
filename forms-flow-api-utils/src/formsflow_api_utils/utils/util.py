@@ -67,6 +67,7 @@ def validate_sort_order_and_order_by(order_by: str, sort_order: str) -> bool:
         ApplicationSortingParameters.FormStatus,
         ApplicationSortingParameters.FormName,
         ApplicationSortingParameters.visibility,
+        ApplicationSortingParameters.description,
         DraftSortingParameters.Name,
         ProcessSortingParameters.Name,
         ProcessSortingParameters.Created,

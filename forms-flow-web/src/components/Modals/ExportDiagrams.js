@@ -83,6 +83,7 @@ const ExportDiagram = React.memo(
         centered
         aria-labelledby="contained-modal-title-vcenter"
         scrollable
+        size="sm"
       >
         <Modal.Header>
           <Modal.Title>
@@ -94,7 +95,7 @@ const ExportDiagram = React.memo(
             <CloseIcon width="16.5" height="16.5" onClick={onClose} />
           </div>
         </Modal.Header>
-        <Modal.Body>
+        <Modal.Body className="build-modal-body">
           <ProgressBar
             now={progress}
             animated={!isExportComplete && !isError}
@@ -132,8 +133,7 @@ const ExportDiagram = React.memo(
             </div>
           )}
         </Modal.Body>
-        <Modal.Footer className="d-flex justify-content-start flex-wrap">
-          {isError && (
+        {isError && <Modal.Footer className="d-flex justify-content-start flex-wrap">
             <>
               <CustomButton
                 variant="primary"
@@ -154,8 +154,8 @@ const ExportDiagram = React.memo(
                 ariaLabel="Cancel"
               />
             </>
-          )}
         </Modal.Footer>
+        }
       </Modal>
     );
   }

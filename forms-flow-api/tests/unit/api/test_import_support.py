@@ -532,7 +532,7 @@ def test_import_edit(app, client, session, jwt, mock_redis_client):
                 {
                     "importType": "edit",
                     "action": "validate",
-                    "mapperId": 1,
+                    "mapperId": "1",
                     "form": {"skip": "false", "selectedVersion": "major"},
                     "workflow": {"skip": "false", "selectedVersion": "major"},
                 }
@@ -562,7 +562,7 @@ def test_import_edit(app, client, session, jwt, mock_redis_client):
                 {
                     "importType": "edit",
                     "action": "import",
-                    "mapperId": 1,
+                    "mapperId": "1",
                     "form": {"skip": "false", "selectedVersion": "major"},
                     "workflow": {"skip": "false", "selectedVersion": "major"},
                 }
@@ -588,7 +588,7 @@ def test_import_edit(app, client, session, jwt, mock_redis_client):
                 {
                     "importType": "edit",
                     "action": "import",
-                    "mapperId": 1,
+                    "mapperId": "1",
                     "form": {"skip": "false", "selectedVersion": "major"},
                     "workflow": {"skip": "true", "selectedVersion": "major"},
                 }
@@ -618,7 +618,7 @@ def test_import_edit(app, client, session, jwt, mock_redis_client):
                 {
                     "importType": "edit",
                     "action": "import",
-                    "mapperId": 1,
+                    "mapperId": "1",
                     "form": {"skip": "true", "selectedVersion": "major"},
                     "workflow": {"skip": "false", "selectedVersion": "major"},
                 }

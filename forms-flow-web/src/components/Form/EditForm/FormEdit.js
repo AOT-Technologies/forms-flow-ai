@@ -2,15 +2,12 @@ import React, { useReducer, useState, useEffect } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import { Card } from "react-bootstrap";
 import { Errors, FormBuilder } from "@aot-technologies/formio-react";
-import { CustomButton, ConfirmModal, BackToPrevIcon } from "@formsflow/components";
+import { CustomButton, ConfirmModal, BackToPrevIcon, HistoryIcon, PreviewIcon, FormBuilderModal  } from "@formsflow/components";
 import { RESOURCE_BUNDLES_DATA } from "../../../resourceBundles/i18n";
 import LoadingOverlay from "react-loading-overlay-ts";
-import _set from "lodash/set";
 import _cloneDeep from "lodash/cloneDeep";
-import _camelCase from "lodash/camelCase";
 import { Translation, useTranslation } from "react-i18next";
 import { push } from "connected-react-router";
-import { HistoryIcon, PreviewIcon } from "@formsflow/components";
 import ActionModal from "../../Modals/ActionModal.js";
 //for save form
 import { MULTITENANCY_ENABLED } from "../../../constants/constants";
@@ -19,8 +16,8 @@ import { manipulatingFormData } from "../../../apiManager/services/formFormatter
 import {
   formUpdate,
   validateFormName,
+  formCreate, publish, unPublish
 } from "../../../apiManager/services/FormServices";
-import { formCreate, publish, unPublish } from "../../../apiManager/services/FormServices";
 import utils from "@aot-technologies/formiojs/lib/utils";
 import {
   setFormFailureErrorData,
@@ -30,19 +27,16 @@ import {
 } from "../../../actions/formActions";
 import {
   saveFormProcessMapperPut,
-  getProcessDetails,
-  getFormProcesses
+  getProcessDetails
 } from "../../../apiManager/services/processServices";
 import { setProcessData } from '../../../actions/processActions.js';
 import _isEquial from "lodash/isEqual";
-import { FormBuilderModal } from "@formsflow/components";
 import _ from "lodash";
-import { useParams } from "react-router-dom";
 import SettingsModal from "../../CustomComponents/settingsModal";
 import FlowEdit from "./FlowEdit.js";
 import ExportModal from "../../Modals/ExportModal.js";
 import NewVersionModal from "../../Modals/NewVersionModal";
-
+import {currentFormReducer} from "../../../modules/formReducer.js";
 // constant values
 const DUPLICATE = "DUPLICATE";
 // const SAVE_AS_TEMPLATE= "SAVE_AS_TEMPLATE";
@@ -50,30 +44,6 @@ const DUPLICATE = "DUPLICATE";
 const EXPORT = "EXPORT";
 //const DELETE = "DELETE";
 
-const reducer = (form, { type, value }) => {
-  const formCopy = _cloneDeep(form);
-  switch (type) {
-    case "formChange":
-      for (let prop in value) {
-        if (Object.prototype.hasOwnProperty.call(value, prop)) {
-          form[prop] = value[prop];
-        }
-      }
-      return form;
-    case "replaceForm":
-      return _cloneDeep(value);
-    case "title":
-      if (type === "title" && !form._id) {
-        formCopy.name = _camelCase(value);
-        formCopy.path = _camelCase(value).toLowerCase();
-      }
-      break;
-    default:
-      break;
-  }
-  _set(formCopy, type, value);
-  return formCopy;
-};
 const Edit = React.memo(() => {
   const dispatch = useDispatch();
   const workflow = useSelector((state) => state.process.workflowAssociated);
@@ -86,12 +56,11 @@ const Edit = React.memo(() => {
 
   const formAuthorization = useSelector((state) => state.process.authorizationDetails);
   const formData = useSelector((state) => state.form?.form);
-  const [form, dispatchFormAction] = useReducer(reducer, _cloneDeep(formData));
+  const [form, dispatchFormAction] = useReducer(currentFormReducer, _cloneDeep(formData));
   const [showFlow, setShowFlow] = useState(false);
   const [showLayout, setShowLayout] = useState(true);
   const tenantKey = useSelector((state) => state.tenants?.tenantId);
   const redirectUrl = MULTITENANCY_ENABLED ? `/tenant/${tenantKey}/` : "/";
-  const { formId } = useParams();
   const [nameError, setNameError] = useState("");
   const [newVersionModal, setNewVersionModal] = useState(false);
   const [isNewVersionLoading, setIsNewVersionLoading] = useState(false);
@@ -133,8 +102,7 @@ const Edit = React.memo(() => {
   );
 
   const [showSettingsModal, setShowSettingsModal] = useState(false);
-  const handleOpenModal = () => setShowSettingsModal(true);
-  const handleCloseModal = () => setShowSettingsModal(false);
+  const handleToggleSettingsModal = () => setShowSettingsModal(!showSettingsModal);
   const [selectedAction, setSelectedAction] = useState(null);
   const [newActionModal, setNewActionModal] = useState(false);
   const onCloseActionModal = () => setNewActionModal(false);
@@ -230,20 +198,16 @@ const Edit = React.memo(() => {
   }, [restoredFormId]);
 
   useEffect(() => {
-    if (formId) {
-      // Fetch form processes with formId
-      dispatch(getFormProcesses(formId, (err, data) => {
-        if (err) return;
-        setIsProcessDetailsLoading(true);
-        getProcessDetails(data.processKey).then((response) => {
-          const { data } = response;
-          dispatch(setProcessData(data));
-          setIsProcessDetailsLoading(false);
-        }
-        );
-      }));
+    if (processListData.processKey) {
+      setIsProcessDetailsLoading(true);
+      getProcessDetails(processListData.processKey).then((response) => {
+        const { data } = response;
+        dispatch(setProcessData(data));
+        setIsProcessDetailsLoading(false);
+      }
+      );
     }
-  }, [formId]);
+  }, [processListData.processKey]);
 
 
 
@@ -254,14 +218,14 @@ const Edit = React.memo(() => {
       ...prevState,
       name: formName,
     }));
-    dispatchFormAction({ type: "title", formName });
+    dispatchFormAction({ type: "title", value:formName });
   };
   const updateFormDescription = (formDescription) => {
     setFormDetails((prevState) => ({
       ...prevState,
       description: formDescription,
     }));
-    dispatchFormAction({ type: "description", formDescription });
+    dispatchFormAction({ type: "description", value:formDescription });
   };
 
 
@@ -386,7 +350,7 @@ const Edit = React.memo(() => {
 
     Promise.all([savePromise, updatePromise])
       .then(() => {
-        handleCloseModal();
+        handleToggleSettingsModal();
       })
       .catch(error => {
         console.error("Error saving form process:", error);
@@ -574,51 +538,49 @@ const Edit = React.memo(() => {
   };
 
   const saveAsNewVersion = async () => {
-    setIsNewVersionLoading(true);
-    const newFormData = manipulatingFormData(
-      form,
-      MULTITENANCY_ENABLED,
-      tenantKey,
-      formAccess,
-      submissionAccess
-    );
-    const oldFormData = manipulatingFormData(
-      formData,
-      MULTITENANCY_ENABLED,
-      tenantKey,
-      formAccess,
-      submissionAccess
-    );
+    try {
+      setIsNewVersionLoading(true);
+      const newFormData = manipulatingFormData(
+        form,
+        MULTITENANCY_ENABLED,
+        tenantKey,
+        formAccess,
+        submissionAccess
+      );
+      const oldFormData = manipulatingFormData(
+        formData,
+        MULTITENANCY_ENABLED,
+        tenantKey,
+        formAccess,
+        submissionAccess
+      );
 
-    const newPathAndName = "-v" + Math.random().toString(16).slice(9);
-    oldFormData.path += newPathAndName;
-    oldFormData.name += newPathAndName;
-    await formUpdate(oldFormData._id, oldFormData);
-    newFormData.componentChanged = true;
-    newFormData.newVersion = true;
-    newFormData.parentFormId = prviousData.parentFormId;
-    delete newFormData.machineName;
-    delete newFormData._id;
+      const newPathAndName = "-v" + Math.random().toString(16).slice(9);
+      oldFormData.path += newPathAndName;
+      oldFormData.name += newPathAndName;
+      await formUpdate(oldFormData._id, oldFormData);
 
-    formCreate(newFormData)
-      .then((res) => {
-        const form = res.data;
-        dispatch(setFormSuccessData("form", form));
-        dispatch(push(`${redirectUrl}formflow/${form._id}/edit/`));
-        setPromptNewVersion(false);
+      newFormData.componentChanged = true;
+      newFormData.newVersion = true;
+      newFormData.parentFormId = prviousData.parentFormId;
+      delete newFormData.machineName;
+      delete newFormData._id;
 
-      })
-      .catch((err) => {
-        //TBD: show error in modal
-        const error = err.response.data || err.message;
-        dispatch(setFormFailureErrorData("form", error));
-      })
-      .finally(() => {
-        setIsNewVersionLoading(false);
-        setNewVersionModal(false);
-        setFormSubmitted(false);
-      });
+      const res = await formCreate(newFormData);
+      const form = res.data;
+      dispatch(setFormSuccessData("form", form));
+      dispatch(push(`${redirectUrl}formflow/${form._id}/edit/`));
+      setPromptNewVersion(false);
+    } catch (err) {
+      const error = err.response?.data || err.message;
+      dispatch(setFormFailureErrorData("form", error));
+    } finally {
+      setIsNewVersionLoading(false);
+      setNewVersionModal(false);
+      setFormSubmitted(false);
+    }
   };
+ 
 
   const openSaveModal = () => {
     setModalType("save");
@@ -703,7 +665,7 @@ const Edit = React.memo(() => {
           text={t("Loading...")}
         >
 
-          <SettingsModal show={showSettingsModal} handleClose={handleCloseModal}
+          <SettingsModal show={showSettingsModal} handleClose={handleToggleSettingsModal}
             handleConfirm={handleConfirmSettings}
             rolesState={rolesState} setRolesState={setRolesState}
             setFormDetails={setFormDetails} formDetails={formDetails}
@@ -736,7 +698,7 @@ const Edit = React.memo(() => {
                     variant="dark"
                     size="md"
                     label={<Translation>{(t) => t("Settings")}</Translation>}
-                    onClick={handleOpenModal}
+                    onClick={handleToggleSettingsModal}
                     dataTestid="eidtor-settings-testid"
                     ariaLabel={t("Designer Settings Button")}
                   />

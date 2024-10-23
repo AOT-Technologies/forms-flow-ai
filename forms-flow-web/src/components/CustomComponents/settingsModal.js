@@ -66,7 +66,8 @@ const SettingsModal =
   
 
   useEffect(() => {
-    getUserRoles()
+    if(show){
+      getUserRoles()
       .then((res) => {
         if (res) {
           setUserRoles(res.data);
@@ -74,7 +75,9 @@ const SettingsModal =
         }
       })
       .catch((error) => console.error("error", error));
-  }, [dispatch]);
+    }
+
+  }, [dispatch, show]);
 
   useEffect(() => {
     const originUrl = window.location.origin;

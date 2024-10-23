@@ -96,7 +96,9 @@ class ImportService:  # pylint: disable=too-many-public-methods
     def get_process_details(self, file_data):
         """Get workflow details from the imported file."""
         process_data = file_data.get("workflows")[0].get("content")
-        process_type = file_data.get("workflows")[0].get("processType", "BPMN")
+        process_type = file_data.get("workflows")[0].get(
+            "processType", ProcessType.BPMN.value
+        )
         return process_data, process_type
 
     def validate_file_type(self, filename: str, file_types: tuple):

@@ -1,7 +1,11 @@
 import React, { useReducer, useState, useEffect } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import { Card } from "react-bootstrap";
-import { Errors, FormBuilder, deleteForm } from "@aot-technologies/formio-react";
+import {
+  Errors,
+  FormBuilder,
+  deleteForm,
+} from "@aot-technologies/formio-react";
 import {
   CustomButton,
   ConfirmModal,
@@ -149,7 +153,7 @@ const Edit = React.memo(() => {
 
   const formPath = useSelector((state) => state.form.form.path);
   const [newPath, setNewPath] = useState(formPath);
-const [showModal, setShowModal] = useState(false);
+  const [showModal, setShowModal] = useState(false);
   const [modalType, setModalType] = useState("");
   const preferred_userName = useSelector(
     (state) => state.user?.userDetail?.preferred_username || ""
@@ -426,7 +430,6 @@ const [showModal, setShowModal] = useState(false);
       });
   };
 
-
   const saveFormData = () => {
     setShowModal(false);
     setFormSubmitted(true);
@@ -580,8 +583,7 @@ const [showModal, setShowModal] = useState(false);
   const handlePublish = () => {
     if (processListData.status === "active") {
       openUnpublishModal();
-    }
-    else {
+    } else {
       openPublishModal();
     }
   };
@@ -632,7 +634,6 @@ const [showModal, setShowModal] = useState(false);
         dispatch(setFormSuccessData("form", form));
         dispatch(push(`${redirectUrl}formflow/${form._id}/edit/`));
         setPromptNewVersion(false);
-
       })
       .catch((err) => {
         //TBD: show error in modal
@@ -656,13 +657,25 @@ const [showModal, setShowModal] = useState(false);
           if (err) {
             toast.error(
               <Translation>
-                {(t) => t(`${_.capitalize(processListData?.formType)} deletion unsuccessful`)}
+                {(t) =>
+                  t(
+                    `${_.capitalize(
+                      processListData?.formType
+                    )} deletion unsuccessful`
+                  )
+                }
               </Translation>
             );
           } else {
             toast.success(
               <Translation>
-                {(t) => t(`${_.capitalize(processListData?.formType)} deleted successfully`)}
+                {(t) =>
+                  t(
+                    `${_.capitalize(
+                      processListData?.formType
+                    )} deleted successfully`
+                  )
+                }
               </Translation>
             );
           }
@@ -707,7 +720,8 @@ const [showModal, setShowModal] = useState(false);
       case "save":
         return {
           title: "Save Your Changes",
-          message: "Saving as an incremental version will affect previous submissions. Saving as a new full version will not affect previous submissions.",
+          message:
+            "Saving as an incremental version will affect previous submissions. Saving as a new full version will not affect previous submissions.",
           primaryBtnAction: saveFormData,
           secondayBtnAction: handleShowVersionModal,
           primaryBtnText: `Save as Version ${version.minor}`,
@@ -716,7 +730,8 @@ const [showModal, setShowModal] = useState(false);
       case "publish":
         return {
           title: "Confirm Publish",
-          message: "Publishing will save any unsaved changes and lock the entire form, including the layout and the flow. to perform any additional changes you will need to unpublish the form again.",
+          message:
+            "Publishing will save any unsaved changes and lock the entire form, including the layout and the flow. to perform any additional changes you will need to unpublish the form again.",
           primaryBtnAction: confirmPublishAction,
           secondayBtnAction: closeModal,
           primaryBtnText: "Publish This Form",
@@ -725,7 +740,8 @@ const [showModal, setShowModal] = useState(false);
       case "unpublish":
         return {
           title: "Confirm Unpublish",
-          message: "This form is currently live. To save changes to form edits, you need ot unpublish it first. By Unpublishing this form, you will make it unavailble for new submissin to those who currently have access to it. You can republish the form after making your edits. ",
+          message:
+            "This form is currently live. To save changes to form edits, you need ot unpublish it first. By Unpublishing this form, you will make it unavailble for new submissin to those who currently have access to it. You can republish the form after making your edits. ",
           primaryBtnAction: confirmUnpublishAction,
           secondayBtnAction: closeModal,
           primaryBtnText: "Unpublish and Edit This Form",
@@ -743,14 +759,12 @@ const [showModal, setShowModal] = useState(false);
     return (
       <div className="d-flex justify-content-center">
         <div className="spinner-grow" role="status">
-          <span className="sr-only">
-            {t("Loading...")}
-          </span>
+          <span className="sr-only">{t("Loading...")}</span>
         </div>
       </div>
     );
   }
-  const unPublishActiveForm = ()=> {
+  const unPublishActiveForm = () => {
     if (processListData.status === "active") {
       unPublish(processListData.id)
         .then(() => {
@@ -763,7 +777,8 @@ const [showModal, setShowModal] = useState(false);
           const error = err.response?.data || err.message;
           dispatch(setFormFailureErrorData("form", error));
         });
-  }};
+    }
+  };
 
   const handleCloseActionModal = () => {
     setSelectedAction(null); // Reset action
@@ -788,7 +803,10 @@ const [showModal, setShowModal] = useState(false);
           secondayBtnAction={unPublishActiveForm}
           primaryBtnText={t("Keep This Form")}
           secondaryBtnText={t("Unpublish This Form")}
-          size="md"
+          secondoryBtndataTestid="unpublish-button"
+          primaryBtndataTestid="keep-form-button"
+          primaryBtnariaLabel="Keep This Form"
+          secondoryBtnariaLabel="Unpublish This Form"
         />
       );
     } else {
@@ -803,7 +821,10 @@ const [showModal, setShowModal] = useState(false);
           secondayBtnAction={deleteModal}
           primaryBtnText={t("No, Keep This Form")}
           secondaryBtnText={t("Yes, Delete the Form")}
-          size="md"
+          secondoryBtndataTestid="yes-delete-button"
+          primaryBtndataTestid="no-delete-button"
+          primaryBtnariaLabel="No, Keep This Form"
+          secondoryBtnariaLabel="Yes, Delete the Form"
         />
       );
     }
@@ -1018,7 +1039,9 @@ const [showModal, setShowModal] = useState(false);
       <NewVersionModal
         show={newVersionModal}
         newVersion={version.major}
-        title={<Translation>{(t) => t("Create a New Full Version")}</Translation>}
+        title={
+          <Translation>{(t) => t("Create a New Full Version")}</Translation>
+        }
         createNewVersion={saveAsNewVersion}
         onClose={closeNewVersionModal}
         isNewVersionLoading={isNewVersionLoading}
@@ -1038,7 +1061,7 @@ const [showModal, setShowModal] = useState(false);
           size="md"
         />
       )}
-     {renderDeleteModal()}
+      {renderDeleteModal()}
     </div>
   );
 });

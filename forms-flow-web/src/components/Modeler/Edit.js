@@ -120,16 +120,30 @@ const EditWorkflow = () => {
         <Card.Body>
           <div className="d-flex justify-content-between align-items-center">
             <div className="d-flex align-items-center">
-              <BackToPrevIcon onClick={cancel} />
-              <div className="mx-4 editor-header-text">{deploymentName}</div>
+              <BackToPrevIcon onClick={cancel} data-testid="back-to-prev-icon-testid" aria-label={t("Back to Previous")} />
+              <div className="mx-4 editor-header-text" data-testid="deployment-name">{deploymentName}</div>
               <span className="d-flex align-items-center white-text mx-3">
                 <div className={processStatus === 'Live' ? "status-live" : "status-draft"}></div>
                 {t(processStatus === 'Live' ? "Live" : "Draft")}
               </span>
             </div>
             <div>
-              <CustomButton variant="dark" size="md" className="mx-2" label={t("Actions")} onClick={editorActions} />
-              <CustomButton variant="light" size="md" label={t("publish")} />
+              <CustomButton
+                variant="dark"
+                size="md"
+                className="mx-2"
+                label={t("Actions")}
+                onClick={editorActions}
+                dataTestid="designer-action-testid"
+                ariaLabel={t("Designer Actions Button")}
+              />
+              <CustomButton
+                variant="light"
+                size="md"
+                label={t("publish")}
+                dataTestid="handle-publish-testid"
+                ariaLabel={t("Publish Button")}
+              />
             </div>
           </div>
         </Card.Body>
@@ -140,12 +154,32 @@ const EditWorkflow = () => {
           <Card.Header>
             <div className="d-flex justify-content-between align-items-center" style={{ width: "100%" }}>
               <div className="d-flex align-items-center">
-                <div className="mx-2 builder-header-text">Flow</div>
-                <CustomButton variant="secondary" size="md" icon={<HistoryIcon />} label={t("History")} />
+                <div className="mx-2 builder-header-text">{t("Flow")}</div>
+                <CustomButton
+                  variant="secondary"
+                  size="md"
+                  icon={<HistoryIcon />}
+                  label={t("History")}
+                  dataTestid="bpmn-history-button-testid"
+                  ariaLabel={t("BPMN History Button")}
+                />
               </div>
               <div>
-                <CustomButton variant="primary" size="md" className="mx-2" label={t("Save BPMN")} />
-                <CustomButton variant="secondary" size="md" label={t("Discard Changes")} />
+                <CustomButton
+                  variant="primary"
+                  size="md"
+                  className="mx-2"
+                  label={t("Save BPMN")}
+                  dataTestid="save-bpmn-layout"
+                  ariaLabel={t("Save Bpmn Layout")}
+                />
+                <CustomButton
+                  variant="secondary"
+                  size="md"
+                  label={t("Discard Changes")}
+                  dataTestid="discard-bpmn-changes-testid"
+                  ariaLabel={t("Discard BPMN Changes")}
+                />
               </div>
             </div>
           </Card.Header>
@@ -182,8 +216,8 @@ const EditWorkflow = () => {
         onClose={() => setSelectedAction(null)}
         onExport={handleExport}
         fileName={deploymentName}
-        modalTitle="Export BPMN"
-        successMessage="Export Successful"
+        modalTitle={t("Export BPMN")}
+        successMessage={t("Export Successful")}
         errorMessage={exportError}
       />
     </div>

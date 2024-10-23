@@ -19,7 +19,8 @@ import {
   setAllDmnProcessList,
   setBpmnModel,
   setApplicationCount,
-  setSubflowCount 
+  setSubflowCount,
+  setProcessData 
 } from "../../actions/processActions";
 import { replaceUrl } from "../../helper/helper";
 import { StorageService } from "@formsflow/service";
@@ -470,11 +471,10 @@ export const getProcessActivities = (process_instance_id, ...rest) => {
 export const fetchDiagram = (
   process_key,
   tenant_key = null,
-  isDmn = false,
   ...rest
 ) => {
-  const api = isDmn ? API.DMN_XML : API.PROCESSES_XML;
-
+  const api = API.GET_PROCESS_XML;
+ console.log("api",api,process_key);
   let url = replaceUrl(api, "<process_key>", process_key);
 
   if (tenant_key) {
@@ -490,10 +490,10 @@ export const fetchDiagram = (
       true
     )
       .then((res) => {
-        if (res.data && (isDmn ? res.data.dmnXml : res.data.bpmn20Xml)) {
+        if (res.data) {
           dispatch(
-            setProcessDiagramXML(isDmn ? res.data.dmnXml : res.data.bpmn20Xml)
-          );
+            setProcessDiagramXML(res.data.processData));
+            dispatch(setProcessData(res.data));
 
           // console.log('res.data.bpmn20Xml>>',res.data.bpmn20Xml);
         } else {

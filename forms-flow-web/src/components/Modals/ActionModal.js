@@ -93,6 +93,7 @@ const ActionModal = React.memo(({ newActionModal, onClose, CategoryType, onActio
                                     className=""
                                     dataTestid="duplicate-workflow-button"
                                     ariaLabel="Duplicate Workflow"
+                                    onClick={() => handleAction("DUPLICATE")}
                                 />
                             
                            
@@ -104,6 +105,7 @@ const ActionModal = React.memo(({ newActionModal, onClose, CategoryType, onActio
                                     className=""
                                     dataTestid="import-workflow-button"
                                     ariaLabel="Import Workflow"
+                                    onClick={() => handleAction("IMPORT")}
                                 />
                             
                            
@@ -115,8 +117,18 @@ const ActionModal = React.memo(({ newActionModal, onClose, CategoryType, onActio
                                     className=""
                                     dataTestid="export-workflow-button"
                                     ariaLabel="Export Workflow"
+                                    onClick={() => handleAction("EXPORT")}
                                 />
-                           
+                           <CustomButton
+                                    variant="secondary"
+                                    size="sm"
+                                    label="Delete"
+                                    icon={<CloseIcon color="#253DF4" />}
+                                    className=""
+                                    dataTestid="delete-workflow-button"
+                                    ariaLabel="Delete Workflow"
+                                    onClick={() => handleAction("DELETE")}
+                                />
                         </div>
                     )}
                 </Modal.Body>

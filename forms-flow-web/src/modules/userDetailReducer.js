@@ -23,7 +23,7 @@ const initialState = {
   submissionAccess: roleIdsFromLocalStorage
     ? setFormAndSubmissionAccess("submissionAccess", roleIdsFromLocalStorage)
     : [],
-  userDetail: null,
+  userDetail: {},
   isAuthenticated: false,
   currentPage: "",
   showApplications: false,

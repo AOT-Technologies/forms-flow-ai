@@ -48,6 +48,7 @@ import { getFormProcesses } from "../../../apiManager/services/processServices";
 import { getProcessXml } from "../../../apiManager/services/processServices";
 
 import SettingsModal from "../../CustomComponents/settingsModal";
+import { fetchFormById } from "../../../apiManager/services/bpmFormServices";
 const reducer = (form, { type, value }) => {
   const formCopy = _cloneDeep(form);
   switch (type) {
@@ -396,10 +397,39 @@ useEffect(() => {
       ? fetchFormHistory(processListData?.parentFormId)
       : fetchProcessHistory(processListData?.processKey);
   };
-console.log("test",restoredFormId);
+
+  const fetchRestoredFormData = (restoredFormId) => {
+    if (restoredFormId) {
+      fetchFormById(restoredFormId)
+        .then((res) => {
+          if (res.data) {
+            const { data } = res;
+            dispatch(setRestoreFormData(res.data));
+            dispatchFormAction({
+              type: "components",
+              value: _cloneDeep(data.components),
+            });
+            dispatchFormAction({ type: "type", value: data.type });
+            dispatchFormAction({ type: "display", value: data.display });
+          }
+        })
+        .catch((err) => {
+          toast.error(err.response.data);
+        });
+    }
+  
+    const cleanup = () => {
+      dispatch(setRestoreFormData({}));
+      dispatch(setRestoreFormId(null));
+    };
+  
+    return cleanup; 
+  };
+  
+
   const revertBtnAction = (cloneId) => {
-    console.log("cloned",cloneId);
     dispatch(setRestoreFormId(cloneId));
+    fetchRestoredFormData(cloneId);
   };
 
   const handlePreviewAndVariables = () => {

@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from "react";
+import PropTypes from 'prop-types';
 import { Dropdown } from "react-bootstrap";
 import { useDispatch, useSelector } from "react-redux";
 import { push } from "connected-react-router";
@@ -119,10 +120,17 @@ function FormTable() {
     );
   };
   const SortableHeader = ({ columnKey, title, formSort, handleSort,className }) => {
+    const handleKeyDown = (event)=>{
+      if (event.key === 'Enter') {  
+        handleSort(columnKey);
+        }
+    };
     return (
       <div
         className= {`d-flex align-items-center justify-content-between cursor-pointer ${className}`}
         onClick={() => handleSort(columnKey)}
+        onKeyDown={handleKeyDown} 
+        role="button"
       >
         <span className="mt-1">{t(title)}</span>
         <span>
@@ -145,7 +153,16 @@ function FormTable() {
       </div>
     );
   };
-
+  SortableHeader.propTypes = {
+    columnKey: PropTypes.string.isRequired,  
+    title: PropTypes.string.isRequired,      
+    formSort: PropTypes.shape({
+      sortBy: PropTypes.string,
+      sortOrder: PropTypes.string
+    }).isRequired,                          
+    handleSort: PropTypes.func.isRequired,     
+    className: PropTypes.string              
+  };
   return (
     <>
       <LoadingOverlay active={searchFormLoading || isApplicationCountLoading} spinner text={t("Loading...")}>
@@ -156,12 +173,12 @@ function FormTable() {
                 <tr>
                   <th className="w-20">
                   <SortableHeader
-                     columnKey="formName"
-                     title="Form Name"
-                     formSort={formSort}
-                     handleSort={handleSort}
-                     className="ms-4"
-                   />
+                   columnKey="formName"
+                   title="Form Name"
+                   formSort={formSort}
+                   handleSort={handleSort}
+                   className="ms-4"
+                  />
                   </th>
                   <th className="w-30" scope="col">
                   <SortableHeader 

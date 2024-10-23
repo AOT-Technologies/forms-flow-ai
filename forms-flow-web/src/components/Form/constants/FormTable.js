@@ -39,7 +39,7 @@ function FormTable() {
   const isApplicationCountLoading = useSelector((state) => state.process.isApplicationCountLoading);
   const { createDesigns } = userRoles();
   const [expandedRowIndex, setExpandedRowIndex] = useState(null);
-  const [formSort ,setFormSort] = useState(formsort);  
+  const [currentFormSort ,setCurrentFormSort] = useState(formsort);  
 
   const pageOptions = [
     {
@@ -66,7 +66,7 @@ function FormTable() {
 
 
   const handleSort = (key) => {
-    setFormSort((prevSort) => {
+    setCurrentFormSort((prevSort) => {
       let newSortOrder = "asc";
       
       if (prevSort.sortBy === key) {
@@ -79,8 +79,8 @@ function FormTable() {
     });
   };
   useEffect(() => {
-    dispatch(setBpmFormSort(formSort));
-  },[formSort,dispatch]);
+    dispatch(setBpmFormSort(currentFormSort));
+  },[currentFormSort,dispatch]);
   
   const viewOrEditForm = (formId, path) => {
     dispatch(resetFormProcessData());
@@ -119,7 +119,9 @@ function FormTable() {
       </tbody>
     );
   };
-  const SortableHeader = ({ columnKey, title, formSort, handleSort,className }) => {
+  const SortableHeader = ({ columnKey, title, currentFormSort, handleSort,className }) => {
+    const isSorted = currentFormSort.sortBy === columnKey;
+    const sortedOrder = isSorted ? currentFormSort.sortOrder : "asc";
     const handleKeyDown = (event)=>{
       if (event.key === 'Enter') {  
         handleSort(columnKey);
@@ -134,19 +136,19 @@ function FormTable() {
       >
         <span className="mt-1">{t(title)}</span>
         <span>
-          {formSort.sortBy === columnKey && formSort.sortOrder === "asc" ? (
+          {sortedOrder === "asc" ? (
             <i
-              data-testid={`${columnKey}-desc-sort-icon`}
-              className="fa fa-arrow-up sort-icon fs-16 ms-2"
-              data-toggle="tooltip"
-              title={t("Ascending")}
-            ></i>
+            data-testid={`${columnKey}-desc-sort-icon`}
+            className="fa fa-arrow-down sort-icon fs-16 ms-2"
+            data-toggle="tooltip"
+            title={t("Descending")}
+          ></i>
           ) : (
             <i
               data-testid={`${columnKey}-asc-sort-icon`}
-              className="fa fa-arrow-down sort-icon cursor-pointer fs-16 ms-2"
+              className="fa fa-arrow-up sort-icon fs-16 ms-2"
               data-toggle="tooltip"
-              title={t("Descending")}
+              title={t("Ascending")}
             ></i>
           )}
         </span>
@@ -156,7 +158,7 @@ function FormTable() {
   SortableHeader.propTypes = {
     columnKey: PropTypes.string.isRequired,  
     title: PropTypes.string.isRequired,      
-    formSort: PropTypes.shape({
+    currentFormSort: PropTypes.shape({
       sortBy: PropTypes.string,
       sortOrder: PropTypes.string
     }).isRequired,                          
@@ -175,7 +177,7 @@ function FormTable() {
                   <SortableHeader
                    columnKey="formName"
                    title="Form Name"
-                   formSort={formSort}
+                   currentFormSort={currentFormSort}
                    handleSort={handleSort}
                    className="ms-4"
                   />
@@ -185,7 +187,7 @@ function FormTable() {
                   <SortableHeader 
                   columnKey="modified"
                   title="Last Edited"
-                  formSort={formSort}
+                  currentFormSort={currentFormSort}
                   handleSort={handleSort}
                   />
                   </th>
@@ -193,14 +195,14 @@ function FormTable() {
                   <SortableHeader 
                     columnKey="visibility"
                     title="Visibility"
-                    formSort={formSort}
+                    currentFormSort={currentFormSort}
                     handleSort={handleSort} />
                   </th>
                   <th className="w-12" scope="col" colSpan="4">
                     <SortableHeader 
                     columnKey="status"
                     title="Status"
-                    formSort={formSort}
+                    currentFormSort={currentFormSort}
                     handleSort={handleSort} />
                   </th>
                   <th className="w-12" colSpan="4" aria-label="Search Forms by form title"></th>

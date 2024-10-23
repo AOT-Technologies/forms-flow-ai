@@ -180,14 +180,7 @@ function FormTable() {
                    className="ms-4"
                   />
                   </th>
-                  <th className="w-30" scope="col">
-                  <SortableHeader 
-                  columnKey="description"
-                  title="Description"
-                  formSort={formSort}
-                  handleSort={handleSort}
-                  />
-                  </th>
+                  <th className="w-30" scope="col">{t("Description")}</th>
                   <th className="w-13" scope="col">
                   <SortableHeader 
                   columnKey="modified"

@@ -6,7 +6,8 @@ import Pagination from "react-js-pagination";
 import {
   setBPMFormLimit,
   setBPMFormListPage,
-  setBPMFormListSort,
+                   
+  setBpmFormSort,
 } from "../../../actions/formActions";
 import LoadingOverlay from "react-loading-overlay-ts";
 import {
@@ -29,16 +30,15 @@ function FormTable() {
   const pageNo = useSelector((state) => state.bpmForms.page);
   const limit = useSelector((state) => state.bpmForms.limit);
   const totalForms = useSelector((state) => state.bpmForms.totalForms);
-  const sortOrder = useSelector((state) => state.bpmForms.sortOrder);
+  const formsort = useSelector((state) => state.bpmForms.sort);
   const searchFormLoading = useSelector(
     (state) => state.formCheckList.searchFormLoading
   );
-  const isAscending = sortOrder === "asc" ? true : false;
   const redirectUrl = MULTITENANCY_ENABLED ? `/tenant/${tenantKey}/` : "/";
   const isApplicationCountLoading = useSelector((state) => state.process.isApplicationCountLoading);
   const { createDesigns } = userRoles();
   const [expandedRowIndex, setExpandedRowIndex] = useState(null);
-  const [assending, setAssending] = useState(true);
+  const [formSort ,setFormSort] = useState(formsort);  
 
   const pageOptions = [
     {
@@ -63,15 +63,24 @@ function FormTable() {
     },
   ];
 
-  const updateSort = (updatedSort) => {
-    dispatch(setBPMFormListSort(updatedSort));
-    dispatch(setBPMFormListPage(1));
+
+  const handleSort = (key) => {
+    setFormSort((prevSort) => {
+      let newSortOrder = "asc";
+      
+      if (prevSort.sortBy === key) {
+        newSortOrder = prevSort.sortOrder === "asc" ? "desc" : "asc";
+      }
+      return {
+        sortBy: key,
+        sortOrder: newSortOrder,
+      };
+    });
   };
-
   useEffect(() => {
-    assending ? updateSort("asc") : updateSort("desc");
-  },[assending]);
-
+    dispatch(setBpmFormSort(formSort));
+  },[formSort,dispatch]);
+  
   const viewOrEditForm = (formId, path) => {
     dispatch(resetFormProcessData());
     dispatch(push(`${redirectUrl}formflow/${formId}/${path}`));
@@ -109,6 +118,33 @@ function FormTable() {
       </tbody>
     );
   };
+  const SortableHeader = ({ columnKey, title, formSort, handleSort,className }) => {
+    return (
+      <div
+        className= {`d-flex align-items-center justify-content-between cursor-pointer ${className}`}
+        onClick={() => handleSort(columnKey)}
+      >
+        <span className="mt-1">{t(title)}</span>
+        <span>
+          {formSort.sortBy === columnKey && formSort.sortOrder === "asc" ? (
+            <i
+              data-testid={`${columnKey}-desc-sort-icon`}
+              className="fa fa-arrow-up sort-icon fs-16 ms-2"
+              data-toggle="tooltip"
+              title={t("Ascending")}
+            ></i>
+          ) : (
+            <i
+              data-testid={`${columnKey}-asc-sort-icon`}
+              className="fa fa-arrow-down sort-icon cursor-pointer fs-16 ms-2"
+              data-toggle="tooltip"
+              title={t("Descending")}
+            ></i>
+          )}
+        </span>
+      </div>
+    );
+  };
 
   return (
     <>
@@ -119,34 +155,44 @@ function FormTable() {
               <thead className="table-header">
                 <tr>
                   <th className="w-20">
-                    <div className="ms-4 d-flex align-items-center justify-content-between"
-                      onClick={() => {
-                        setAssending(!assending);
-                      }}>
-                      <span className="mt-1">{t("Form Name")}</span>
-                      <span>
-                        {isAscending ? (
-                          <i
-                            data-testid="form-desc-sort-icon"
-                            className="fa fa-arrow-up sort-icon cursor-pointer fs-16 ms-2"
-                            data-toggle="tooltip"
-                            title={t("Ascending")}
-                          ></i>
-                        ) : (
-                          <i
-                            data-testid="form-asc-sort-icon"
-                            className="fa fa-arrow-down sort-icon cursor-pointer fs-16 ms-2"
-                            data-toggle="tooltip"
-                            title={t("Descending")}
-                          ></i>
-                        )}
-                      </span>
-                    </div>
+                  <SortableHeader
+                     columnKey="formName"
+                     title="Form Name"
+                     formSort={formSort}
+                     handleSort={handleSort}
+                     className="ms-4"
+                   />
                   </th>
-                  <th className="w-30" scope="col">{t("Description")}</th>
-                  <th className="w-13" scope="col">{t("Last Edited")}</th>
-                  <th className="w-13" scope="col">{t("Visibility")}</th>
-                  <th className="w-12" scope="col" colSpan="4">{t("Status")}</th>
+                  <th className="w-30" scope="col">
+                  <SortableHeader 
+                  columnKey="description"
+                  title="Description"
+                  formSort={formSort}
+                  handleSort={handleSort}
+                  />
+                  </th>
+                  <th className="w-13" scope="col">
+                  <SortableHeader 
+                  columnKey="modified"
+                  title="Last Edited"
+                  formSort={formSort}
+                  handleSort={handleSort}
+                  />
+                  </th>
+                  <th className="w-13" scope="col">
+                  <SortableHeader 
+                    columnKey="visibility"
+                    title="Visibility"
+                    formSort={formSort}
+                    handleSort={handleSort} />
+                  </th>
+                  <th className="w-12" scope="col" colSpan="4">
+                    <SortableHeader 
+                    columnKey="status"
+                    title="Status"
+                    formSort={formSort}
+                    handleSort={handleSort} />
+                  </th>
                   <th className="w-12" colSpan="4" aria-label="Search Forms by form title"></th>
                 </tr>
               </thead>
@@ -169,7 +215,7 @@ function FormTable() {
                             {stripHtml(e.description ? e.description : "")}
                           </span>
                         </td>
-                        <td className="w-13">{HelperServices?.getLocaldate(e.created)}</td>
+                        <td className="w-13">{HelperServices?.getLocaldate(e.modified)}</td>
                         <td className="w-13">{e.anonymous ? t("Public") : t("Private")}</td>
                         <td className="w-12">
                           <span data-testid={`form-status-${e._id}`} className="d-flex align-items-center">

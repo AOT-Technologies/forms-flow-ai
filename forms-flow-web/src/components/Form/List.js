@@ -128,8 +128,7 @@ const List = React.memo((props) => {
 
   const pageNo = useSelector((state) => state.bpmForms.page);
   const limit = useSelector((state) => state.bpmForms.limit);
-  const sortBy = useSelector((state) => state.bpmForms.sortBy);
-  const sortOrder = useSelector((state) => state.bpmForms.sortOrder);
+  const formSort = useSelector((state) => state.bpmForms.sort);
   const formAccess = useSelector((state) => state.user?.formAccess || []);
   const searchFormLoading = useSelector(
     (state) => state.formCheckList.searchFormLoading
@@ -137,7 +136,7 @@ const List = React.memo((props) => {
   const [newFormModal, setNewFormModal] = useState(false);
   const [description, setUploadFormDescription] = useState("");
   const [formTitle, setFormTitle] = useState("");
-
+  
   useEffect(() => {
     dispatch(setFormCheckList([]));
   }, [dispatch]);
@@ -148,7 +147,7 @@ const List = React.memo((props) => {
   }, []);
 
   const fetchForms = () => {
-    let filters = [pageNo, limit, sortBy, sortOrder, searchText];
+    let filters = [pageNo, limit, formSort, searchText];
     dispatch(setFormSearchLoading(true));
     dispatch(fetchBPMFormList(...filters));
   };
@@ -235,8 +234,7 @@ const List = React.memo((props) => {
     createDesigns,
     pageNo,
     limit,
-    sortBy,
-    sortOrder,
+    formSort,
     searchText,
   ]);
 

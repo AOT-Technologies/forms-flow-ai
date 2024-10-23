@@ -13,6 +13,7 @@ const initialState = {
   sortOrder: "asc",
   formType:"form",
   searchText: "",
+  sort:{ sortBy : "formName", sortOrder: "asc"},
 };
 
 const bpmForms = (state = initialState, action) => {
@@ -37,6 +38,8 @@ const bpmForms = (state = initialState, action) => {
       return { ...state, bpmFormLoading: action.payload };
     case ACTION_CONSTANTS.BPM_FORM_TYPE:
       return { ...state, formType: action.payload };
+      case ACTION_CONSTANTS.BPM_FORM_SORT:
+      return { ...state, sort: action.payload };
     default:
       return state;
   }

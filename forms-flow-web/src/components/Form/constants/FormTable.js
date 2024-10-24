@@ -138,18 +138,18 @@ function FormTable() {
         <span>
           {sortedOrder === "asc" ? (
             <i
+            data-testid={`${columnKey}-asc-sort-icon`}
+            className="fa fa-arrow-up sort-icon fs-16 ms-2"
+            data-toggle="tooltip"
+            title={t("Ascending")}
+          ></i>
+          ) : (
+            <i
             data-testid={`${columnKey}-desc-sort-icon`}
             className="fa fa-arrow-down sort-icon fs-16 ms-2"
             data-toggle="tooltip"
             title={t("Descending")}
           ></i>
-          ) : (
-            <i
-              data-testid={`${columnKey}-asc-sort-icon`}
-              className="fa fa-arrow-up sort-icon fs-16 ms-2"
-              data-toggle="tooltip"
-              title={t("Ascending")}
-            ></i>
           )}
         </span>
       </div>

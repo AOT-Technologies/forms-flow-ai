@@ -286,7 +286,7 @@ export const getFormProcesses = (formId, ...rest) => {
 };
 
   export const getProcessDetails = (processKey) =>
-    RequestService.httpGETRequest(`${API.GET_PROCESSES_DETAILS}/${processKey}`);
+    RequestService.httpGETRequest(`${API.GET_PROCESSES_DETAILS}/key/${processKey}`);
 
   export const updateProcess = ({id,data,type}) => {
     return RequestService.httpPUTRequest(`${API.GET_PROCESSES_DETAILS}/${id}`,

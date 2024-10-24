@@ -7,6 +7,7 @@ import { resetFormData, setFormAuthVerifyLoading, setFormAuthorizationDetails } 
 import {
     getFormProcesses,
     resetFormProcessData,
+    getApplicationCount
   } from "../../../apiManager/services/processServices";
 
 import { fetchFormAuthorizationDetials } from "../../../apiManager/services/authorizationService.js";
@@ -51,7 +52,9 @@ const Index = () => {
         } else {
           try {
             //TODO:  need to combine these two calls 
-            dispatch(getFormProcesses(res._id));
+            dispatch(getFormProcesses(res._id,(err, res)=>{
+              dispatch(getApplicationCount(res.id));
+            }));
             const authResponse = await fetchFormAuthorizationDetials(
               res?.parentFormId || res._id
             );

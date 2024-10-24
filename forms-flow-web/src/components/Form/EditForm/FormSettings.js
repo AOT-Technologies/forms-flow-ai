@@ -20,8 +20,8 @@ import { useTranslation } from "react-i18next";
 import { copyText } from "../../../apiManager/services/formatterService";
 import _camelCase from "lodash/camelCase";
 import _cloneDeep from "lodash/cloneDeep";
-//CONST VARIABLES
 
+//CONST VARIABLES
 const DESIGN = "DESIGN";
 const FORM = "FORM";
 const APPLICATION = "APPLICATION";
@@ -29,33 +29,38 @@ const APPLICATION = "APPLICATION";
 const FormSettings = forwardRef((props, ref) => {
   const { t } = useTranslation();
   const dispatch = useDispatch();
-  const [userRoles, setUserRoles] = useState([]);
-  const [copied, setCopied] = useState(false);
+
+  /* ---------------------------- redux store data ---------------------------- */
   const processListData = useSelector((state) => state.process.formProcessList);
   const { path, display } = useSelector((state) => state.form.form);
-  const [editIndexValue, setEditIndexValue] = useState(0);
-  const [createIndexValue, setCreateIndexValue] = useState(0);
-  const [viewIndexValue, setViewIndexValue] = useState(0);
-  const [isAnonymous, setIsAnonymous] = useState(processListData.anonymous);
-  const roleIds = useSelector((state) => state.user?.roleIds || {});
   const { formAccess = [], submissionAccess = [] } = useSelector(
     (state) => state.user
   );
-  const [formAccessCopy, setFormAccess] = useState(_cloneDeep(formAccess));
-  const [submissionAccessCopy, setSubmissionAccess] = useState(
-    _cloneDeep(submissionAccess)
-  );
-
-
+  const roleIds = useSelector((state) => state.user?.roleIds || {});
   const { authorizationDetails: formAuthorization } = useSelector(
     (state) => state.process
   );
+
+  /* --------------------------- useState Variables --------------------------- */
+  const [userRoles, setUserRoles] = useState([]);
+  const [copied, setCopied] = useState(false);
+  const [editIndexValue, setEditIndexValue] = useState(0);
+  const [createIndexValue, setCreateIndexValue] = useState(0);
+  const [viewIndexValue, setViewIndexValue] = useState(0);
   const [formDetails, setFormDetails] = useState({
     title: processListData.formName,
     path: path,
     description: processListData.description,
     display: display,
   });
+  const [isAnonymous, setIsAnonymous] = useState(processListData.anonymous);
+
+  const [formAccessCopy, setFormAccess] = useState(_cloneDeep(formAccess));
+  const [submissionAccessCopy, setSubmissionAccess] = useState(
+    _cloneDeep(submissionAccess)
+  );
+
+  const publicUrlPath = `${window.location.origin}/public/form/`;
 
   /* ------------------------- authorization variables ------------------------ */
   const [rolesState, setRolesState] = useState({
@@ -135,17 +140,16 @@ const FormSettings = forwardRef((props, ref) => {
     }));
   };
 
-  const copyPublicUrl = () => {
-    copyText(formDetails.path)
-      .then(() => {
-        setCopied(true);
-        setTimeout(() => {
-          setCopied(false);
-        }, 3000);
-      })
-      .catch((err) => {
-        console.error(err);
-      });
+  const copyPublicUrl = async () => {
+    try {
+      await copyText(`${publicUrlPath}${formDetails.path}`);
+      setCopied(true);
+      setTimeout(() => {
+        setCopied(false);
+      }, 3000);
+    } catch (error) {
+      console.error(error);
+    }
   };
 
   useImperativeHandle(ref, () => {
@@ -266,7 +270,7 @@ const FormSettings = forwardRef((props, ref) => {
           }}
           className="field-label"
         />
- 
+
         <CustomRadioButton
           items={[
             {
@@ -374,7 +378,7 @@ const FormSettings = forwardRef((props, ref) => {
           <Form.Label className="field-label">{t("URL Path")}</Form.Label>
           <InputGroup className="url-input">
             <InputGroup.Text className="url-non-edit">
-              {`${window.location.origin}/public/form/`}
+              {publicUrlPath}
             </InputGroup.Text>
 
             <FormControl

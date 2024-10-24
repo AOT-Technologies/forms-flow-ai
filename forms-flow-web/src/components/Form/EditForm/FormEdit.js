@@ -1,4 +1,4 @@
-import React, { useReducer, useState, useEffect } from "react";
+import React, { useReducer, useState, useEffect, useRef } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import { useParams } from "react-router-dom";
 import { Card } from "react-bootstrap";
@@ -67,6 +67,8 @@ const Edit = React.memo(() => {
   const dispatch = useDispatch();
   const { formId } = useParams();
   const { t } = useTranslation();
+  //this variable handle the flow and layot tab switching 
+  const sideTabRef = useRef(null);
 
   /* ------------------------------- mapper data ------------------------------ */
   const { formProcessList: processListData, formPreviousData: previousData } =
@@ -141,7 +143,9 @@ const Edit = React.memo(() => {
   };
 
   // handling form layout and flow layout
-  const handleCurrentLayout = () => {
+  const handleCurrentLayout = (e) => {
+    //wehn the current is assigned with element then only the visible class will render
+    sideTabRef.current = e;
     setCurrentLayout(isFormLayout ? FLOW_LAYOUT : FORM_LAYOUT);
   };
 
@@ -822,8 +826,8 @@ const Edit = React.memo(() => {
             </div>
             <button
               className={`border-0 form-flow-wraper-${
-                isFlowLayout ? "left" : "right"
-              } visible`}
+                isFormLayout ? "right" : "left"
+              } ${sideTabRef.current && "visible"}`}
               onClick={handleCurrentLayout}
             >
               {isFormLayout ? "Flow" : "Layout"}

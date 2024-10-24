@@ -24,6 +24,10 @@ class BusinessErrorCode(ErrorCodeMixin, Enum):
         "Passed process id is not latest version",
         HTTPStatus.BAD_REQUEST,
     )
+    MAPPER_NOT_LATEST_VERSION = (
+        "The provided mapper ID is not the latest version.",
+        HTTPStatus.BAD_REQUEST,
+    )
     DECISION_DEF_NOT_FOUND = (
         "Decision definition does not exist",
         HTTPStatus.BAD_REQUEST,

@@ -7,15 +7,14 @@ from formsflow_api_utils.exceptions import BusinessException
 from formsflow_api_utils.utils.user_context import UserContext, user_context
 from lxml import etree
 
-from formsflow_api.constants import BusinessErrorCode
-from formsflow_api.models import Process
+from formsflow_api.constants import BusinessErrorCode, default_flow_xml_data
+from formsflow_api.models import Process, ProcessStatus, ProcessType
 from formsflow_api.schemas import (
     ProcessDataSchema,
     ProcessHistorySchema,
     ProcessListRequestSchema,
 )
-
-from .form_process_mapper import FormProcessMapperService
+from formsflow_api.services.external.bpm import BPMService
 
 processSchema = ProcessDataSchema()
 
@@ -361,6 +360,57 @@ class ProcessService:  # pylint: disable=too-few-public-methods
         return {}
 
     @classmethod
+    def deploy_process(  # pylint: disable=too-many-arguments, too-many-positional-arguments
+        cls, process_name, process_data, tenant_key, token, process_type
+    ):
+        """Deploy process."""
+        # file path and type based on process type
+        file_extension = (
+            "dmn"
+            if process_type and process_type.value == ProcessType.DMN.value
+            else "bpmn"
+        )
+        file_path = f"{process_name}.{file_extension}"
+        file_type = f"text/{file_extension}"
+        # If process data empty deploy default workflow data.
+        if process_data:
+            if isinstance(process_data, str):
+                process_data = process_data.encode("utf-8")
+        else:
+            process_data = default_flow_xml_data(process_name).encode("utf-8")
+
+        # Prepare the parameters for the deployment
+        payload = {
+            "deployment-name": process_name,
+            "enable-duplicate-filtering": "true",
+            "deploy-changed-only": "false",
+            "deployment-source": "Camunda Modeler",
+            "tenant-id": tenant_key,
+        }
+        files = {"upload": (file_path, process_data, file_type)}
+        BPMService.post_deployment(token, payload, tenant_key, files)
+
+    @classmethod
+    def update_process_status(cls, process, status, user):
+        """Update process status."""
+        process_dict = {
+            "name": process.name,
+            "process_type": process.process_type,
+            "status": status,
+            "tenant": user.tenant_key,
+            "process_data": process.process_data,
+            "created_by": user.user_name,
+            "major_version": process.major_version,
+            "minor_version": process.minor_version,
+            "is_subflow": process.is_subflow,
+            "process_key": process.process_key,
+            "parent_process_key": process.parent_process_key,
+            "status_changed": True,
+        }
+        process = Process.create_from_dict(process_dict)
+        return process
+
+    @classmethod
     @user_context
     def publish(cls, process_id, **kwargs):
         """Publish by process_id."""
@@ -369,9 +419,13 @@ class ProcessService:  # pylint: disable=too-few-public-methods
         latest = Process.get_latest_version_by_parent_key(process.parent_process_key)
         if process.id != latest.id:
             raise BusinessException(BusinessErrorCode.PROCESS_NOT_LATEST_VERSION)
-        FormProcessMapperService.update_process_status(process, "PUBLISHED", user)
-        FormProcessMapperService().deploy_process(
-            process.name, process.process_data, user.tenant_key, user.bearer_token
+        cls.update_process_status(process, ProcessStatus.PUBLISHED, user)
+        cls.deploy_process(
+            process.name,
+            process.process_data,
+            user.tenant_key,
+            user.bearer_token,
+            process.process_type,
         )
         return {}
 
@@ -381,5 +435,8 @@ class ProcessService:  # pylint: disable=too-few-public-methods
         """Unpublish by process_id."""
         user: UserContext = kwargs["user"]
         process = cls.validate_process_by_id(process_id)
-        FormProcessMapperService.update_process_status(process, "DRAFT", user)
+        latest = Process.get_latest_version_by_parent_key(process.parent_process_key)
+        if process.id != latest.id:
+            raise BusinessException(BusinessErrorCode.PROCESS_NOT_LATEST_VERSION)
+        cls.update_process_status(process, ProcessStatus.DRAFT, user)
         return {}

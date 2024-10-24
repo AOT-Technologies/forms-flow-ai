@@ -254,6 +254,9 @@ class ProcessService:  # pylint: disable=too-few-public-methods
         if process.id != latest_process.id:
             # Raise an exception if the process is not the latest version
             raise BusinessException(BusinessErrorCode.PROCESS_NOT_LATEST_VERSION)
+        if process.status == ProcessStatus.PUBLISHED:
+            # Raise an exception if the user try to update published process
+            raise BusinessException(BusinessErrorCode.PROCESS_INVALID_OPERATION)
 
         # Process the data name and key based on the process type and subflow status
         process_data, process_name, process_key = cls._process_data_name_and_key(

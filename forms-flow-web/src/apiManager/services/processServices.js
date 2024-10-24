@@ -474,7 +474,6 @@ export const fetchDiagram = (
   ...rest
 ) => {
   const api = API.GET_PROCESS_XML;
- console.log("api",api,process_key);
   let url = replaceUrl(api, "<process_key>", process_key);
 
   if (tenant_key) {

@@ -18,8 +18,9 @@ import {
   setResetProcess,
   setAllDmnProcessList,
   setBpmnModel,
+  setApplicationCount,
+  setSubflowCount 
 } from "../../actions/processActions";
-import { setApplicationCount } from "../../actions/processActions";
 import { replaceUrl } from "../../helper/helper";
 import { StorageService } from "@formsflow/service";
 
@@ -118,6 +119,48 @@ export const fetchAllBpmProcesses = (  {tenant_key = null,
         dispatch(setProcessLoadError(true));
       });
   };
+};
+
+export  const fetchAllProcesses = ({
+  limit,
+  searchKey = "",
+  sortOrder,
+  processType ,
+  sortBy,
+  pageNo = 1 ,} = {},
+  ...rest
+  ) => {
+    const done = rest.length ? rest[0] : () => {};
+
+    // let url = API.GET_PROCESSES_DETAILS
+   let url = `${API.GET_PROCESSES_DETAILS}?pageNo=${pageNo}&limit=${limit
+   }&sortOrder=${sortOrder}&processType=${processType}&sortBy=${sortBy}&name=${searchKey}`;
+    return (dispatch) => {
+      // eslint-disable-next-line max-len
+      RequestService.httpGETRequest(
+        url,
+        {},
+        StorageService.get(StorageService.User.AUTH_TOKEN),
+        true
+      )
+        .then((res) => {
+          if (res?.data) {
+            dispatch(setSubflowCount(res.data.totalCount));
+            // let unique = removeTenantDuplicates(res.data.process, tenant_key);
+            dispatch(setProcessStatusLoading(false));
+            dispatch(setAllProcessList(res.data.process));
+
+            done(null, res.data);
+          } else {
+            dispatch(setAllProcessList([]));
+          }
+        })
+        // eslint-disable-next-line no-unused-vars
+        .catch((error) => {
+          console.log(error);
+          dispatch(setProcessLoadError(true));
+        });
+    };
 };
 
 export const fetchAllBpmProcessesCount = (tenant_key,searchKey,) => {
@@ -220,7 +263,7 @@ export const getFormProcesses = (formId, ...rest) => {
     )
       .then((res) => {
         if (res.data) {
-          console.log("res.data", res.data);
+          // console.log("res.data", res.data);
         dispatch(setFormPreviosData(res.data));
           dispatch(setFormProcessesData(res.data));
           // need to check api and put exact respose
@@ -241,7 +284,7 @@ export const getFormProcesses = (formId, ...rest) => {
   };
 };
 
-  export const getProcessDetails = (processKey) =>  
+  export const getProcessDetails = (processKey) =>
     RequestService.httpGETRequest(`${API.GET_PROCESSES_DETAILS}/${processKey}`);
 
   export const updateProcess = ({id,data,type}) => {

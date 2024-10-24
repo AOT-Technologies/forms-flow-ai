@@ -28,10 +28,11 @@ form_workflow_schema = {
             "properties": {
                 "processKey": {"type": "string"},
                 "processName": {"type": "string"},
+                "processType": {"type": "string"},
                 "type": {"type": "string"},
                 "content": {"type": "string"},
             },
-            "required": ["content", "processKey", "processName", "type"],
+            "required": ["content", "processKey", "processName", "processType", "type"],
         },
         "authorizations": {
             "type": "array",

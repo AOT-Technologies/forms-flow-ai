@@ -148,7 +148,11 @@ def add_sort_filter(query, sort_by, sort_order, model_name):
                 sort_order=sort_order_attr, order_by=sort_by_att
             )
             if name and value:
-                order.append(text(f"{model_name}.{name} {value}"))
+                # Handle null values in is_anonymous to false
+                if name == "is_anonymous":
+                     order.append(text(f"COALESCE({model_name}.{name}, false) {value}"))
+                else:
+                    order.append(text(f"{model_name}.{name} {value}"))
 
         query = query.order_by(*order)
     return query

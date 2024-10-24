@@ -1,7 +1,7 @@
 //style.scss
 @charset "UTF-8";
 
-@import "./variables.scss";
+@use "./variables.scss";
 
 .nav-dropdown {
   .dropdown-menu {

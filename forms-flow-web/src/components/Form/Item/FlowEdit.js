@@ -101,10 +101,8 @@ const FlowEdit = forwardRef((_, ref) => {
       <ConfirmModal
         show={showDiscardModal}
         title={t(`Are you Sure you want to Discard Flow Changes`) }
-        message={ <>
-        <p>{t("Are you sure you want to discard all the changes of the Flow?")}</p>
-        <p className='fw-bold'>{t("This action cannot be undone.")}</p>
-        </> }
+        message={t("Are you sure you want to discard all the changes of the Flow?")}
+        messageSecondary={t("This action cannot be undone.")}
         primaryBtnAction={handleDiscardConfirm}
         onClose={handleHanldeDisacardModal}
         primaryBtnText={t("Discard Changes")}

@@ -17,9 +17,7 @@ import {
   ERROR_MSG,
 } from "../../constants/bpmnModelerConstants";
 
-import {
-  fetchDiagram,
-} from "../../../../apiManager/services/processServices";
+import { fetchDiagram } from "../../../../apiManager/services/processServices";
 
 import {
   setProcessDiagramLoading,
@@ -38,7 +36,9 @@ import {
 // a descriptor that defines Camunda related DMN 1.1 XML extensions
 import camundaModdleDescriptor from "camunda-dmn-moddle/resources/camunda";
 import { push } from "connected-react-router";
-export default React.memo(({ processKey, tenant, isNewDiagram, mode}) => {
+import ExportDiagram from "../../../../components/Modals/ExportDiagrams";
+
+export default React.memo(({ processKey, tenant, isNewDiagram, mode }) => {
   const { t } = useTranslation();
 
   const dispatch = useDispatch();
@@ -47,6 +47,10 @@ export default React.memo(({ processKey, tenant, isNewDiagram, mode}) => {
   const tenantKey = useSelector((state) => state.tenants?.tenantId);
   const [applyAllTenants, setApplyAllTenants] = useState(false);
   const [deploymentLoading, setDeploymentLoading] = useState(false);
+  const [showExportModal, setShowExportModal] = useState(false);
+  const [deploymentName, setDeploymentName] = useState("");
+  const [exportError, setExportError] = useState(null);
+
   const redirectUrl = MULTITENANCY_ENABLED ? `/tenant/${tenantKey}/` : "/";
   const containerRef = useCallback((node) => {
     if (node !== null) {
@@ -178,7 +182,7 @@ export default React.memo(({ processKey, tenant, isNewDiagram, mode}) => {
       .then((res) => {
         if (res?.data) {
           toast.success(t(SUCCESS_MSG_DMN));
-           setDeploymentLoading(false);
+          setDeploymentLoading(false);
           dispatch(push(`${redirectUrl}processes`));
         } else {
           setDeploymentLoading(false);
@@ -222,21 +226,32 @@ export default React.memo(({ processKey, tenant, isNewDiagram, mode}) => {
   };
 
   const handleExport = async () => {
-    let xml = await createXML(dmnModeler);
-
-    const isValidated = validateDecisionNames(xml);
-    if (isValidated) {
-      const element = document.createElement("a");
-      const file = new Blob([xml], { type: "text/dmn" });
-      element.href = URL.createObjectURL(file);
-      let deploymentName = extractDataFromDiagram(xml, true).name;
-      deploymentName = deploymentName.replaceAll(" ", "_") + ".dmn";
-      element.download = deploymentName.replaceAll(" ", "");
-      document.body.appendChild(element);
-      element.click();
+    try {
+      let xml = await createXML(dmnModeler);
+      const isValidated = validateDecisionNames(xml);
+      if (isValidated) {
+        const element = document.createElement("a");
+        const file = new Blob([xml], { type: "text/dmn" });
+        element.href = URL.createObjectURL(file);
+        let deploymentName = extractDataFromDiagram(xml, true).name;
+        deploymentName = deploymentName.replaceAll(" ", "_") + ".dmn";
+        setDeploymentName(deploymentName);
+        element.download = deploymentName.replaceAll(" ", "");
+        document.body.appendChild(element);
+        element.click();
+        setExportError(null); 
+      }
+      else{
+        console.error("Dmn validation failed.");
+        setExportError("Dmn validation failed.");
+      }
+    } catch (error) {
+      console.error("Export failed:", error);
+      setExportError(error.message || "Export failed due to an error."); 
     }
   };
 
+  const closeExportModal = () => setShowExportModal(false);
   const handleError = () => {
     document.getElementById("inputWorkflow").value = null;
     dispatch(setWorkflowAssociation(null));
@@ -283,23 +298,35 @@ export default React.memo(({ processKey, tenant, isNewDiagram, mode}) => {
             data-testid="prcosses-dmneditor-cancel-button"
             type="button"
             className="btn btn-link text-dark"
-            onClick={cancel}>
+            onClick={cancel}
+          >
             {t("Cancel")}
           </button>
           <Button
             variant="outline-dark"
             className="ms-3"
-            onClick={handleExport}
+            onClick={() => setShowExportModal(true)}
             data-testid="prcosses-dmneditor-export-button"
           >
             {t("Export")}
           </Button>
+
           <Button
             data-testid="prcosses-dmneditor-deploy-button"
             className="ms-3"
-            onClick={deployProcess}>
+            onClick={deployProcess}
+          >
             {t("Deploy")}
           </Button>
+          <ExportDiagram
+            showExportModal={showExportModal}
+            onClose={closeExportModal}
+            onExport={handleExport}
+            fileName={deploymentName}
+            modalTitle="Export DMN"
+            successMessage="Export Successful"
+            errorMessage={exportError}
+          />
         </div>
       </div>
       <div className="bpmn-main-container">
@@ -350,7 +377,8 @@ export default React.memo(({ processKey, tenant, isNewDiagram, mode}) => {
           data-testid="prcosses-dmneditorhelp-button"
           variant="info"
           className=" me-2"
-          onClick={handleHelp}>
+          onClick={handleHelp}
+        >
           {t("Help")}
         </Button>
       </div>

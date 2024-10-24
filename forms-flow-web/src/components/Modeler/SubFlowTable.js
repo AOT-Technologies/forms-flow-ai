@@ -99,7 +99,7 @@ const SubFlow = React.memo(() => {
     }
     //  dispatch(push(`${redirectUrl}process/${data.parentProcessKey}`));
     dispatch(
-      push(`${redirectUrl}processes/bpmn/${data.parentProcessKey}/edit`)
+      push(`${redirectUrl}subflow/edit/${data.parentProcessKey}`)
     );
   };
 

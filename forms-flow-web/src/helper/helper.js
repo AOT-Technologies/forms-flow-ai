@@ -53,6 +53,11 @@ const filterSelectOptionByLabel = (option, searchText) => {
   return option.data.label.toLowerCase().includes(searchText.toLowerCase());
 };
 
+const generateUniqueId = (prefix) => {
+  const array = new Uint32Array(1);
+  window.crypto.getRandomValues(array);
+  return  prefix + array[0].toString(16);
+};
 
-export { replaceUrl, addTenantkey, removeTenantKey, textTruncate, renderPage, 
+export { generateUniqueId, replaceUrl, addTenantkey, removeTenantKey, textTruncate, renderPage, 
   filterSelectOptionByLabel};

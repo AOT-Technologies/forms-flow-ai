@@ -54,6 +54,7 @@ import { currentFormReducer } from "../../../modules/formReducer.js";
 import { toast } from "react-toastify";
 import { setFormDeleteStatus } from "../../../actions/formActions";
 import { unPublishForm } from "../../../apiManager/services/processServices";
+import {generateUniqueId} from "../../../helper/helper.js";
 
 // constant values
 const DUPLICATE = "DUPLICATE";
@@ -395,8 +396,7 @@ const Edit = React.memo(() => {
       submissionAccess
     );
 
-    const newPathAndName =
-      "duplicate-version-" + Math.random().toString(16).slice(9);
+    const newPathAndName = generateUniqueId("duplicate-version-");
     newFormData.path = newPathAndName;
     newFormData.title = form.title;
     newFormData.name = newPathAndName;
@@ -481,7 +481,7 @@ const Edit = React.memo(() => {
         submissionAccess
       );
 
-      const newPathAndName = "-v" + Math.random().toString(16).slice(9);
+      const newPathAndName = generateUniqueId("-v");
       oldFormData.path += newPathAndName;
       oldFormData.name += newPathAndName;
       await formUpdate(oldFormData._id, oldFormData);
@@ -691,7 +691,7 @@ const Edit = React.memo(() => {
               <div className="d-flex justify-content-between align-items-center">
                 <div className="d-flex align-items-center justify-content-between">
                   <BackToPrevIcon onClick={backToForm} />
-                  <div className="mx-4 editor-header-text">{form.title}</div>
+                  <div className="mx-4 editor-header-text">{formData.title}</div>
                   <span
                     data-testid={`form-status-${form._id}`}
                     className="d-flex align-items-center white-text mx-3"

@@ -2,7 +2,7 @@
 
 from typing import List
 
-from sqlalchemy import JSON, and_, desc
+from sqlalchemy import JSON, and_, desc, text
 
 from formsflow_api.models.base_model import BaseModel
 from formsflow_api.models.db import db
@@ -42,12 +42,23 @@ class FormHistory(ApplicationAuditDateTimeMixin, BaseModel, db.Model):
             history.form_type = data.get("form_type")
             history.component_change = data.get("component_change")
             history.anonymous = data.get("anonymous")
-            history.status = data.get("status")
             history.major_version = data.get("major_version")
             history.minor_version = data.get("minor_version")
             history.save()
             return history
         return None
+
+    @classmethod
+    def fetch_published_history_by_parent_form_id(cls, parent_form_id):
+        """Fetch published version of a form by parent_form_id."""
+        query = cls.query.filter(
+            and_(
+                cls.parent_form_id == parent_form_id,
+                cls.status.is_(True),
+                text("change_log ->>'status' = 'active'"),
+            )
+        )
+        return query.all()
 
     @classmethod
     def fetch_histories_by_parent_id(

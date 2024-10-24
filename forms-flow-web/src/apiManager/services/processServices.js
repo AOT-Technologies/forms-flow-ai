@@ -285,8 +285,17 @@ export const getFormProcesses = (formId, ...rest) => {
   };
 };
 
-  export const getProcessDetails = (processKey) =>
-    RequestService.httpGETRequest(`${API.GET_PROCESSES_DETAILS}/key/${processKey}`);
+  export const getProcessDetails = (processKey, tenant_key) => {
+    const api = API.GET_PROCESS_XML;
+    let url = replaceUrl(api, "<process_key>", processKey);
+
+    if (tenant_key) {
+      url = url + `?tenantId=${tenant_key}`;
+    }
+
+    return RequestService.httpGETRequest(url);
+  };
+    
 
   export const updateProcess = ({id,data,type}) => {
     return RequestService.httpPUTRequest(`${API.GET_PROCESSES_DETAILS}/${id}`,
@@ -473,21 +482,11 @@ export const fetchDiagram = (
   tenant_key = null,
   ...rest
 ) => {
-  const api = API.GET_PROCESS_XML;
-  let url = replaceUrl(api, "<process_key>", process_key);
-
-  if (tenant_key) {
-    url = url + `?tenantId=${tenant_key}`;
-  }
+  
 
   const done = rest.length ? rest[0] : () => { };
   return (dispatch) => {
-    RequestService.httpGETRequest(
-      url,
-      {},
-      StorageService.get(StorageService.User.AUTH_TOKEN),
-      true
-    )
+    getProcessDetails(process_key,tenant_key)
       .then((res) => {
         if (res.data) {
           dispatch(

@@ -17,7 +17,7 @@ const CreateFormModal = React.memo(({ newFormModal, onClose, onAction }) => {
                         <div> Add Form</div>
                     </Modal.Title>
                     <div className="d-flex align-items-center">
-                        <CloseIcon width="16.5" height="16.5" onClick={onClose} />
+                        <CloseIcon width="16.5" height="16.5" onClick={onClose} data-testid="modal-close-icon" />
                     </div>
                 </Modal.Header>
                 <Modal.Body className="create-form-modal-body d-flex justify-content-around">

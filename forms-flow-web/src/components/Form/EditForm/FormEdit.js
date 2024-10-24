@@ -38,10 +38,12 @@ import {
   setFormSuccessData,
   setRestoreFormData,
   setRestoreFormId,
+  setFormDeleteStatus,
 } from "../../../actions/formActions";
 import {
   saveFormProcessMapperPut,
   getProcessDetails,
+  unPublishForm,
 } from "../../../apiManager/services/processServices";
 import { setProcessData } from "../../../actions/processActions.js";
 import _isEquial from "lodash/isEqual";
@@ -52,9 +54,7 @@ import ExportModal from "../../Modals/ExportModal.js";
 import NewVersionModal from "../../Modals/NewVersionModal";
 import { currentFormReducer } from "../../../modules/formReducer.js";
 import { toast } from "react-toastify";
-import { setFormDeleteStatus } from "../../../actions/formActions";
-import { unPublishForm } from "../../../apiManager/services/processServices";
-import {generateUniqueId} from "../../../helper/helper.js";
+import { generateUniqueId } from "../../../helper/helper.js";
 
 // constant values
 const DUPLICATE = "DUPLICATE";
@@ -116,7 +116,7 @@ const Edit = React.memo(() => {
   );
   const [version, setVersion] = useState({ major: 1, minor: 0 });
   const [isPublished, setIsPublished] = useState(
-    processListData?.status == "active" ? true : false
+    processListData?.status == "active"
   );
   const [isPublishLoading, setIsPublishLoading] = useState(false);
   const publishText = isPublished ? "Unpublish" : "Publish";
@@ -472,7 +472,7 @@ const Edit = React.memo(() => {
         formAccess,
         submissionAccess
       );
-      //TODO: need to only update path and name so no need to send whole data
+      //TBD: need to only update path and name so no need to send whole data
       const oldFormData = manipulatingFormData(
         formData,
         MULTITENANCY_ENABLED,
@@ -578,14 +578,14 @@ const Edit = React.memo(() => {
   if (!form?._id || restoreFormDataLoading) {
     return (
       <div className="d-flex justify-content-center">
-        <div className="spinner-grow" role="status">
+        <div className="spinner-grow" aria-live="polite">
           <span className="sr-only">{t("Loading...")}</span>
         </div>
       </div>
     );
   }
 
-  //TODO: check the behaviour when a form has some submission and still in draft mode
+  //TBD: check the behaviour when a form has some submission and still in draft mode
   const unPublishActiveForm = async () => {
     if (processListData.status === "active") {
       try {
@@ -691,18 +691,16 @@ const Edit = React.memo(() => {
               <div className="d-flex justify-content-between align-items-center">
                 <div className="d-flex align-items-center justify-content-between">
                   <BackToPrevIcon onClick={backToForm} />
-                  <div className="mx-4 editor-header-text">{formData.title}</div>
+                  <div className="mx-4 editor-header-text">
+                    {formData.title}
+                  </div>
                   <span
                     data-testid={`form-status-${form._id}`}
                     className="d-flex align-items-center white-text mx-3"
                   >
-                    {isPublished ? (
-                      <>
-                        <div className="status-live"></div>
-                      </>
-                    ) : (
-                      <div className="status-draft"></div>
-                    )}
+                    <div
+                      className={`status-${isPublished ? "live" : "draft"}`}
+                    ></div>
                     {isPublished ? t("Live") : t("Draft")}
                   </span>
                 </div>
@@ -728,7 +726,7 @@ const Edit = React.memo(() => {
                     variant="light"
                     size="md"
                     label={t(publishText)}
-                    buttonLoading={isPublishLoading ? true : false}
+                    buttonLoading={isPublishLoading}
                     onClick={() => {
                       isPublished
                         ? openConfirmModal("unpublish")
@@ -822,14 +820,14 @@ const Edit = React.memo(() => {
               {/* TBD: Add a loader instead. */}
               {isProcessDetailsLoading ? <>loading...</> : <FlowEdit />}
             </div>
-            <div
-              className={`form-flow-wraper-${
+            <button
+              className={`border-0 form-flow-wraper-${
                 isFlowLayout ? "left" : "right"
               } visible`}
               onClick={handleCurrentLayout}
             >
               {isFormLayout ? "Flow" : "Layout"}
-            </div>
+            </button>
           </div>
         </LoadingOverlay>
       </div>

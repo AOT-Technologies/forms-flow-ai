@@ -18,7 +18,7 @@ export const currentFormReducer = (form, { type, value }) => {
   switch (type) {
     case "formChange":
       for (let prop in value) {
-        if (Object.prototype.hasOwnProperty.call(value, prop)) {
+        if (Object.hasOwn(value, prop)) {
           form[prop] = value[prop];
         }
       }

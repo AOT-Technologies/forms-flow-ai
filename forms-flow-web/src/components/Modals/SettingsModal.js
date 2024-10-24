@@ -2,6 +2,7 @@ import React, { useRef } from "react";
 import { Modal } from "react-bootstrap";
 import { useTranslation } from "react-i18next";
 import { CustomButton } from "@formsflow/components";
+import PropTypes from 'prop-types';
 
 import FormSettings from "../Form/EditForm/FormSettings";
 const SettingsModal = ({ show, handleClose, handleConfirm }) => {
@@ -51,5 +52,13 @@ const SettingsModal = ({ show, handleClose, handleConfirm }) => {
     </Modal>
   );
 };
+
+
+SettingsModal.propTypes = {
+  show: PropTypes.bool,
+  handleClose: PropTypes.func.isRequired, 
+  handleConfirm: PropTypes.func.isRequired, 
+};
+ 
 
 export default SettingsModal;

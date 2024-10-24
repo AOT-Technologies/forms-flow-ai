@@ -30,10 +30,10 @@ const Index = () => {
     dispatch(
       setApiCallError({
         message:
-          response?.data?.message ||
-          "Bad Request" ||
+          response?.data?.message || 
           response?.statusText ||
-          err.message,
+          err.message ||
+          "Bad Request",
         status: response?.status || "400",
       })
     );
@@ -51,7 +51,7 @@ const Index = () => {
           dispatch(setFormAuthVerifyLoading(false));
         } else {
           try {
-            //TODO:  need to combine these two calls 
+            //TBD:  need to combine these two calls 
             dispatch(getFormProcesses(res._id,(err, res)=>{
               dispatch(getApplicationCount(res.id));
             }));

@@ -37,7 +37,7 @@ const FlowEdit = forwardRef((_, ref) => {
         }
       });
     }
-    return hasErrors ? false : true;
+    return hasErrors;
   };
 
   // validate the xml data and any erros in bpmn lint

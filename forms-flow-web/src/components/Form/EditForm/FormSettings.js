@@ -3,6 +3,7 @@ import React, {
   useState,
   useImperativeHandle,
   forwardRef,
+  useCallback
 } from "react";
 import { Form, FormControl, InputGroup } from "react-bootstrap";
 import {
@@ -55,8 +56,8 @@ const FormSettings = forwardRef((props, ref) => {
   });
   const [isAnonymous, setIsAnonymous] = useState(processListData.anonymous);
 
-  const [formAccessCopy, setFormAccess] = useState(_cloneDeep(formAccess));
-  const [submissionAccessCopy, setSubmissionAccess] = useState(
+  const [formAccessCopy, setFormAccessCopy] = useState(_cloneDeep(formAccess));
+  const [submissionAccessCopy, setSubmissionAccessCopy] = useState(
     _cloneDeep(submissionAccess)
   );
 
@@ -108,24 +109,26 @@ const FormSettings = forwardRef((props, ref) => {
       .catch((error) => console.error("error", error));
   }, [dispatch]);
 
+
+  const updateAccessRoles = useCallback((accessList, type, roleId) => {
+    return accessList.map((access) => {
+      if (access.type === type) {
+        const roles = isAnonymous
+          ? [...new Set([...access.roles, roleId])]
+          : access.roles.filter((id) => id !== roleId);
+        return { ...access, roles };
+      }
+      return access;
+    });
+  },[isAnonymous]);
+
+
   //  chaning the form access
   useEffect(() => {
-    const updateAccessRoles = (accessList, type, roleId) => {
-      return accessList.map((access) => {
-        if (access.type === type) {
-          const roles = isAnonymous
-            ? [...new Set([...access.roles, roleId])]
-            : access.roles.filter((id) => id !== roleId);
-          return { ...access, roles };
-        }
-        return access;
-      });
-    };
-
-    setFormAccess((prev) =>
+    setFormAccessCopy((prev) =>
       updateAccessRoles(prev, "read_all", roleIds.ANONYMOUS)
     );
-    setSubmissionAccess((prev) =>
+    setSubmissionAccessCopy((prev) =>
       updateAccessRoles(prev, "create_own", roleIds.ANONYMOUS)
     );
   }, [isAnonymous, roleIds.ANONYMOUS]);

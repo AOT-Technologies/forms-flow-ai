@@ -1,8 +1,9 @@
 import React, { useState, useRef, useEffect } from "react";
 import { ListGroup } from "react-bootstrap";
 import { CustomPill } from "@formsflow/components";
+import PropTypes from 'prop-types';
 
-const RoleSelector = ({ allRoles, selectedRoles, setSelectedRoles }) => {
+const RoleSelector = ({ allRoles = [], selectedRoles = [], setSelectedRoles }) => {
   const [roleInput, setRoleInput] = useState("");
   const [filteredRoles, setFilteredRoles] = useState([]);
   const [isDropdownOpen, setIsDropdownOpen] = useState(false); // To control dropdown visibility
@@ -59,7 +60,7 @@ const RoleSelector = ({ allRoles, selectedRoles, setSelectedRoles }) => {
       <div className="input-with-pills form-control cursor-pointer position-relative">
         {selectedRoles.map((role, index) => (
           <CustomPill
-            key={index}
+            key={role + index}
             label={role}
             icon={true}
             bg="primary"
@@ -82,7 +83,7 @@ const RoleSelector = ({ allRoles, selectedRoles, setSelectedRoles }) => {
           <ListGroup>
             {filteredRoles.map((role, index) => (
               <ListGroup.Item
-                key={index}
+                key={role + index}
                 onClick={() => handleRoleSelect(role)}
               >
                 {role}
@@ -95,4 +96,11 @@ const RoleSelector = ({ allRoles, selectedRoles, setSelectedRoles }) => {
   );
 };
 
+ 
+RoleSelector.propTypes = {
+  allRoles: PropTypes.array,
+  selectedRoles: PropTypes.array.isRequired, 
+  setSelectedRoles: PropTypes.func.isRequired, 
+};
+ 
 export default RoleSelector;

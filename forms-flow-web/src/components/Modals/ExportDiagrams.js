@@ -109,7 +109,7 @@ const ExportDiagram = React.memo(
                   <Translation>
                     {(t) => (
                       <>
-                        {t(exportStatus)} <FailedIcon color="red" />
+                        {t(exportStatus)} <FailedIcon color="ff-danger" />
                       </>
                     )}
                   </Translation>

@@ -187,10 +187,6 @@ const EditWorkflow = () => {
         <Card.Body>
           {diagramXML && (processType === "BPMN" ? (
             <BpmnEditor
-              mode="Edit"
-              processKey={processId}
-              tenant={tenantKey}
-              isNewDiagram={false}
               bpmnXml={diagramXML}
               setLintErrors={setLintErrors}
             />

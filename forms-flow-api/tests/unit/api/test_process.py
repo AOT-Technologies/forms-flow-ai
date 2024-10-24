@@ -527,7 +527,7 @@ class TestProcessUnPublish:
 class GetProcessByProcessKey:
     """Test suite for the process get by process key."""
 
-    def test_get_process_by_key_success(app, client, session, jwt):
+    def test_get_process_by_key_success(self, app, client, session, jwt):
         """Testing process get by process key with success."""
         token = get_token(jwt, role=CREATE_DESIGNS, username="designer")
         headers = {
@@ -546,12 +546,12 @@ class GetProcessByProcessKey:
         assert response.status_code == 200
         assert response.json.get("processKey") == "Testworkflow"
 
-    def test_process_get_process_by_key_unauthorized(app, client, session, jwt):
+    def test_process_get_process_by_key_unauthorized(self, app, client, session, jwt):
         """Testing process get by process key without proper authorization."""
         response = client.post("/process/key/Testworkflow", json={})
         assert response.status_code == 401
 
-    def test_get_process_by_key_invalid_key(app, client, session, jwt):
+    def test_get_process_by_key_invalid_key(self, app, client, session, jwt):
         """Testing process get by process key with invalid key."""
         token = get_token(jwt, role=CREATE_DESIGNS, username="designer")
         headers = {

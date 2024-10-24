@@ -29,7 +29,7 @@ import {
   saveFormProcessMapperPut,
   getProcessDetails
 } from "../../../apiManager/services/processServices";
-import { setProcessData } from '../../../actions/processActions.js';
+import { setProcessData } from "../../../actions/processActions.js";
 import _isEquial from "lodash/isEqual";
 import _ from "lodash";
 import SettingsModal from "../../Modals/SettingsModal";
@@ -97,7 +97,9 @@ const Edit = React.memo(() => {
   /* ------------------------------ for save form ----------------------------- */
   const [promptNewVersion, setPromptNewVersion] = useState(processListData.promptNewVersion);
   const [version, setVersion] = useState({ major: 1, minor: 0 });
-  const [isPublished, setIsPublished] = useState(processListData?.status == "active" ? true : false);
+  const [isPublished, setIsPublished] = useState(
+    processListData?.status == "active" ? true : false
+  );
   const [isPublishLoading, setIsPublishLoading] = useState(false);
   const publishText = isPublished ? "Unpublish" : "Publish"; 
   const [formSubmitted, setFormSubmitted] = useState(false);
@@ -178,7 +180,6 @@ const Edit = React.memo(() => {
       );
     }
   }, [processListData.processKey]);
-
 
 
   const validateFormNameOnBlur = () => {
@@ -306,7 +307,6 @@ const Edit = React.memo(() => {
     handleToggleSettingsModal();
   };
 
-
   const saveFormData = () => {
     setShowModal(false);
     setFormSubmitted(true);
@@ -343,18 +343,13 @@ const Edit = React.memo(() => {
     console.log("handleHistory");
   };
 
-
-
   const handlePreview = () => {
     console.log("handlePreview");
   };
 
-
-
   const discardChanges = () => {
     console.log("discardChanges");
   };
-
 
   const editorActions = () => {
     setNewActionModal(true);
@@ -453,16 +448,16 @@ const Edit = React.memo(() => {
   const handlePublish = () => {
     if (isPublished) {
       openUnpublishModal();
-    }
-    else {
+    } else {
       openPublishModal();
     }
   };
   const handleVersioning = () => {
     setVersion((prevVersion) => ({
       ...prevVersion,
-      major: ((processListData.majorVersion + 1) + ".0"),  // Increment the major version
-      minor: processListData.majorVersion + "." + (processListData.minorVersion + 1),  // Reset the minor version to 0
+      major: processListData.majorVersion + 1 + ".0", // Increment the major version
+      minor:
+        processListData.majorVersion + "." + (processListData.minorVersion + 1), // Reset the minor version to 0
     }));
     openSaveModal();
   };
@@ -546,7 +541,8 @@ const Edit = React.memo(() => {
       case "save":
         return {
           title: "Save Your Changes",
-          message: "Saving as an incremental version will affect previous submissions. Saving as a new full version will not affect previous submissions.",
+          message:
+            "Saving as an incremental version will affect previous submissions. Saving as a new full version will not affect previous submissions.",
           primaryBtnAction: saveFormData,
           secondayBtnAction: handleShowVersionModal,
           primaryBtnText: `Save as Version ${version.minor}`,
@@ -555,7 +551,8 @@ const Edit = React.memo(() => {
       case "publish":
         return {
           title: "Confirm Publish",
-          message: "Publishing will save any unsaved changes and lock the entire form, including the layout and the flow. to perform any additional changes you will need to unpublish the form again.",
+          message:
+            "Publishing will save any unsaved changes and lock the entire form, including the layout and the flow. to perform any additional changes you will need to unpublish the form again.",
           primaryBtnAction: confirmPublishAction,
           secondayBtnAction: closeModal,
           primaryBtnText: "Publish This Form",
@@ -564,7 +561,8 @@ const Edit = React.memo(() => {
       case "unpublish":
         return {
           title: "Confirm Unpublish",
-          message: "This form is currently live. To save changes to form edits, you need ot unpublish it first. By Unpublishing this form, you will make it unavailble for new submissin to those who currently have access to it. You can republish the form after making your edits. ",
+          message:
+            "This form is currently live. To save changes to form edits, you need ot unpublish it first. By Unpublishing this form, you will make it unavailble for new submissin to those who currently have access to it. You can republish the form after making your edits. ",
           primaryBtnAction: confirmUnpublishAction,
           secondayBtnAction: closeModal,
           primaryBtnText: "Unpublish and Edit This Form",
@@ -582,13 +580,76 @@ const Edit = React.memo(() => {
     return (
       <div className="d-flex justify-content-center">
         <div className="spinner-grow" role="status">
-          <span className="sr-only">
-            {t("Loading...")}
-          </span>
+          <span className="sr-only">{t("Loading...")}</span>
         </div>
       </div>
     );
   }
+  const unPublishActiveForm = () => {
+    if (processListData.status === "active") {
+      unPublish(processListData.id)
+        .then(() => {
+          setIsPublishLoading(false);
+          setIsPublished(!isPublished);
+          dispatch(push(`${redirectUrl}form`));
+        })
+        .catch((err) => {
+          setIsPublishLoading(false);
+          const error = err.response?.data || err.message;
+          dispatch(setFormFailureErrorData("form", error));
+        });
+    }
+  };
+
+  const handleCloseActionModal = () => {
+    setSelectedAction(null); // Reset action
+  };
+
+  const renderDeleteModal = () => {
+    const hasSubmissions = processListData.id && applicationCount;
+    if (hasSubmissions) {
+      // Case when the form has associated submissions and cannot be deleted
+      return (
+        <ConfirmModal
+          show={selectedAction === DELETE}
+          title={t("You Cannot Delete This Form")}
+          message={t(
+            "But you may unpublish it if you wish to not receive any more submissions."
+          )}
+          messageSecondary={t(
+            "You may not delete a form that has submissions associated with it."
+          )}
+          primaryBtnAction={handleCloseActionModal}
+          onClose={handleCloseActionModal}
+          secondayBtnAction={unPublishActiveForm}
+          primaryBtnText={t("Keep This Form")}
+          secondaryBtnText={t("Unpublish This Form")}
+          secondoryBtndataTestid="unpublish-button"
+          primaryBtndataTestid="keep-form-button"
+          primaryBtnariaLabel="Keep This Form"
+          secondoryBtnariaLabel="Unpublish This Form"
+        />
+      );
+    } else {
+      // Case when the form can be deleted
+      return (
+        <ConfirmModal
+          show={selectedAction === DELETE}
+          title={t("Are You Sure You Want to Delete This Form?")}
+          message={t("This action cannot be undone.")}
+          primaryBtnAction={handleCloseActionModal}
+          onClose={handleCloseActionModal}
+          secondayBtnAction={deleteModal}
+          primaryBtnText={t("No, Keep This Form")}
+          secondaryBtnText={t("Yes, Delete the Form")}
+          secondoryBtndataTestid="yes-delete-button"
+          primaryBtndataTestid="no-delete-button"
+          primaryBtnariaLabel="No, Keep This Form"
+          secondoryBtnariaLabel="Yes, Delete the Form"
+        />
+      );
+    }
+  };
 
   return (
     <div>
@@ -611,7 +672,10 @@ const Edit = React.memo(() => {
                 <div className="d-flex align-items-center justify-content-between">
                   <BackToPrevIcon onClick={backToForm} />
                   <div className="mx-4 editor-header-text">{form.title}</div>
-                  <span data-testid={`form-status-${form._id}`} className="d-flex align-items-center white-text mx-3">
+                  <span
+                    data-testid={`form-status-${form._id}`}
+                    className="d-flex align-items-center white-text mx-3"
+                  >
                     {isPublished ? (
                       <>
                         <div className="status-live"></div>
@@ -696,7 +760,9 @@ const Edit = React.memo(() => {
                         label={
                           <Translation>{(t) => t("Save Layout")}</Translation>
                         }
-                        onClick={promptNewVersion ? handleVersioning : saveFormData}
+                        onClick={
+                          promptNewVersion ? handleVersioning : saveFormData
+                        }
                         dataTestid="save-form-layout"
                         ariaLabel={t("Save Form Layout")}
                       />
@@ -732,8 +798,7 @@ const Edit = React.memo(() => {
             </div>
             <div className={`wraper flow-wraper ${isFlowLayout ? "visible" : ""}`}>
               {/* TBD: Add a loader instead. */}
-              {isProcessDetailsLoading ? <>loading...</> :
-                <FlowEdit />}
+              {isProcessDetailsLoading ? <>loading...</> : <FlowEdit />}
             </div>
       
 
@@ -778,7 +843,9 @@ const Edit = React.memo(() => {
       <NewVersionModal
         show={newVersionModal}
         newVersion={version.major}
-        title={<Translation>{(t) => t("Create a New Full Version")}</Translation>}
+        title={
+          <Translation>{(t) => t("Create a New Full Version")}</Translation>
+        }
         createNewVersion={saveAsNewVersion}
         onClose={closeNewVersionModal}
         isNewVersionLoading={isNewVersionLoading}
@@ -798,6 +865,7 @@ const Edit = React.memo(() => {
           size="md"
         />
       )}
+      {renderDeleteModal()}
     </div>
   );
 });

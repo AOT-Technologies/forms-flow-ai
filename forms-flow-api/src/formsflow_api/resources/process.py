@@ -205,7 +205,7 @@ class ProcessDataResource(Resource):
 
 
 @cors_preflight("GET, PUT, DELETE, OPTIONS")
-@API.route("/<string:process_id>", methods=["GET", "PUT", "DELETE", "OPTIONS"])
+@API.route("/<int:process_id>", methods=["GET", "PUT", "DELETE", "OPTIONS"])
 @API.doc(params={"process_id": "Process data corresponding to process id"})
 class ProcessResourceById(Resource):
     """Resource for managing process by id."""
@@ -221,9 +221,9 @@ class ProcessResourceById(Resource):
         },
         model=process_response,
     )
-    def get(process_id: str):
-        """Get process data by process key, here the process id is actually process_key."""
-        response, status = ProcessService.get_process_by_key(process_id), HTTPStatus.OK
+    def get(process_id: int):
+        """Get process data by process id."""
+        response, status = ProcessService.get_process_by_id(process_id), HTTPStatus.OK
 
         return response, status
 
@@ -239,7 +239,7 @@ class ProcessResourceById(Resource):
         model=process_response,
     )
     @API.expect(process_request)
-    def put(process_id: str):
+    def put(process_id: int):
         """Update process data by id."""
         data = request.get_json()
         process_data = data.get("processData")
@@ -264,7 +264,7 @@ class ProcessResourceById(Resource):
             403: "FORBIDDEN:- Permission denied",
         }
     )
-    def delete(process_id: str):
+    def delete(process_id: int):
         """Delete process data by id."""
         response, status = ProcessService.delete_process(process_id), HTTPStatus.OK
         return response, status
@@ -397,3 +397,26 @@ class UnpublishResource(Resource):
             ProcessService.unpublish(process_id),
             HTTPStatus.OK,
         )
+
+
+@cors_preflight("GET, OPTIONS")
+@API.route("/key/<string:process_key>", methods=["GET", "OPTIONS"])
+@API.doc(params={"process_key": "Process data corresponding to process key"})
+class ProcessResourceByProcessKey(Resource):
+    """Resource for managing process by process key."""
+
+    @staticmethod
+    @auth.has_one_of_roles([CREATE_DESIGNS])
+    @profiletime
+    @API.doc(
+        responses={
+            200: "OK:- Successful request.",
+            400: "BAD_REQUEST:- Invalid request.",
+            403: "FORBIDDEN:- Permission denied",
+        },
+        model=process_response,
+    )
+    def get(process_key: str):
+        """Get process data by process key."""
+        response, status = ProcessService.get_process_by_key(process_key), HTTPStatus.OK
+        return response, status

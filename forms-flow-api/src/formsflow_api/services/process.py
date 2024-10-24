@@ -308,6 +308,22 @@ class ProcessService:  # pylint: disable=too-few-public-methods
         raise BusinessException(BusinessErrorCode.PROCESS_ID_NOT_FOUND)
 
     @staticmethod
+    def populate_published_histories(histories, published_histories):
+        """Populating published on and publised by to the history."""
+        published_history_dict = {
+            f"{history.major_version}.{history.minor_version}": history
+            for history in published_histories
+        }
+        for history in histories:
+            published_history = published_history_dict.get(
+                f"{history.major_version}.{history.minor_version}"
+            )
+            if published_history:
+                history.published_on = published_history.created
+                history.published_by = published_history.created_by
+        return histories
+
+    @staticmethod
     def get_all_history(parent_process_key: str, request_args):
         """Get all history."""
         assert parent_process_key is not None
@@ -324,18 +340,9 @@ class ProcessService:  # pylint: disable=too-few-public-methods
 
         if process_histories:
             # populating published on and publised by to the history
-            published_history_dict = {
-                f"{history.major_version}.{history.minor_version}": history
-                for history in published_histories
-            }
-            for history in process_histories:
-                published_history = published_history_dict.get(
-                    f"{history.major_version}.{history.minor_version}"
-                )
-                if published_history:
-                    history.published_on = published_history.created
-                    history.published_by = published_history.created_by
-
+            process_histories = ProcessService.populate_published_histories(
+                process_histories, published_histories
+            )
             process_history_schema = ProcessHistorySchema(many=True)
             return process_history_schema.dump(process_histories), count
         raise BusinessException(BusinessErrorCode.PROCESS_ID_NOT_FOUND)
@@ -440,3 +447,12 @@ class ProcessService:  # pylint: disable=too-few-public-methods
             raise BusinessException(BusinessErrorCode.PROCESS_NOT_LATEST_VERSION)
         cls.update_process_status(process, ProcessStatus.DRAFT, user)
         return {}
+
+    @classmethod
+    def get_process_by_id(cls, process_id):
+        """Get process by id."""
+        current_app.logger.debug(f"Get process data for process id: {process_id}")
+        process = Process.find_process_by_id(process_id)
+        if process:
+            return processSchema.dump(process)
+        raise BusinessException(BusinessErrorCode.PROCESS_ID_NOT_FOUND)

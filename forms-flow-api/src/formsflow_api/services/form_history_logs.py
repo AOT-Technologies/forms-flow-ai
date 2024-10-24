@@ -10,6 +10,8 @@ from formsflow_api.constants import BusinessErrorCode
 from formsflow_api.models import FormHistory
 from formsflow_api.schemas import FormHistoryReqSchema, FormHistorySchema
 
+from .process import ProcessService
+
 
 class FormHistoryService:
     """This class manages form history service."""
@@ -112,7 +114,14 @@ class FormHistoryService:
         form_histories, count = FormHistory.fetch_histories_by_parent_id(
             form_id, page_no, limit
         )
+        published_histories = FormHistory.fetch_published_history_by_parent_form_id(
+            form_id
+        )
         if form_histories:
+            # populate published on and publised by to the history
+            form_histories = ProcessService.populate_published_histories(
+                form_histories, published_histories
+            )
             form_history_schema = FormHistorySchema(many=True)
             return form_history_schema.dump(form_histories), count
         raise BusinessException(BusinessErrorCode.INVALID_FORM_ID)

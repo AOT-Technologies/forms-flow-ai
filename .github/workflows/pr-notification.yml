@@ -22,7 +22,7 @@ jobs:
             "cards": [
               {
                 "header": {
-                  "title": "Pull Request Opened by ${{ github.event.pull_request.user.login }}",
+                  "title": "Open Source : Pull Request Opened by ${{ github.event.pull_request.user.login }}",
                   "subtitle": "Pull Request #${{ github.event.pull_request.number }}: ${{ github.event.pull_request.title }}"
                 },
                 "sections": [

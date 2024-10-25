@@ -2,14 +2,14 @@ name: PR Notification to Google Chat
 
 on:
   pull_request:
-    types: [opened]
+    types: [opened, synchronize]
     branches:
       - develop
 
 jobs:
   notify:
     runs-on: ubuntu-latest
-    if: github.event.pull_request.base.ref == 'develop'
+    if: github.repository == 'AOT-Technologies/forms-flow-ai'
 
     steps:
       - name: Send notification to Google Chat
@@ -23,7 +23,8 @@ jobs:
               {
                 "header": {
                   "title": "Open Source : Pull Request Opened by ${{ github.event.pull_request.user.login }}",
-                  "subtitle": "Pull Request #${{ github.event.pull_request.number }}: ${{ github.event.pull_request.title }}"
+                  "subtitle": "Pull Request #${{ github.event.pull_request.number }}: ${{ github.event.pull_request.title }}",
+                  "imageUrl": "${{ github.event.pull_request.user.avatar_url }}"
                 },
                 "sections": [
                   {

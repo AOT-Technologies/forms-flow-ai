@@ -209,9 +209,10 @@ const FormSettings = forwardRef((props, ref) => {
           dataTestid="form-name"
           name="title"
           ariaLabel={t("Form Name")}
+          isInvalid = {!!errors.name}
+          feedback = {errors.name}
           onBlur={() => validateField('name', formDetails.title)}
           />
-          {errors.name && <div className="validation-text">{errors.name}</div>}
         <FormTextArea
           label={t("Description")}
           name="description"

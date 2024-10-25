@@ -1,5 +1,4 @@
 import React, { useEffect, useState } from "react";
-import PropTypes from 'prop-types';
 import { Dropdown } from "react-bootstrap";
 import { useDispatch, useSelector } from "react-redux";
 import { push } from "connected-react-router";
@@ -22,6 +21,8 @@ import {
 import { HelperServices } from "@formsflow/service";
 import { CustomButton, DownArrowIcon } from "@formsflow/components";
 import userRoles from "../../../constants/permissions";
+import SortableHeader from '../../CustomComponents/SortableHeader';
+
 function FormTable() {
   const tenantKey = useSelector((state) => state.tenants?.tenantId);
   const dispatch = useDispatch();
@@ -119,52 +120,7 @@ function FormTable() {
       </tbody>
     );
   };
-  const SortableHeader = ({ columnKey, title, currentFormSort, handleSort,className }) => {
-    const isSorted = currentFormSort.sortBy === columnKey;
-    const sortedOrder = isSorted ? currentFormSort.sortOrder : "asc";
-    const handleKeyDown = (event)=>{
-      if (event.key === 'Enter') {  
-        handleSort(columnKey);
-        }
-    };
-    return (
-      <div
-        className= {`d-flex align-items-center justify-content-between cursor-pointer ${className}`}
-        onClick={() => handleSort(columnKey)}
-        onKeyDown={handleKeyDown} 
-        role="button"
-      >
-        <span className="mt-1">{t(title)}</span>
-        <span>
-          {sortedOrder === "asc" ? (
-            <i
-            data-testid={`${columnKey}-asc-sort-icon`}
-            className="fa fa-arrow-up sort-icon fs-16 ms-2"
-            data-toggle="tooltip"
-            title={t("Ascending")}
-          ></i>
-          ) : (
-            <i
-            data-testid={`${columnKey}-desc-sort-icon`}
-            className="fa fa-arrow-down sort-icon fs-16 ms-2"
-            data-toggle="tooltip"
-            title={t("Descending")}
-          ></i>
-          )}
-        </span>
-      </div>
-    );
-  };
-  SortableHeader.propTypes = {
-    columnKey: PropTypes.string.isRequired,  
-    title: PropTypes.string.isRequired,      
-    currentFormSort: PropTypes.shape({
-      sortBy: PropTypes.string,
-      sortOrder: PropTypes.string
-    }).isRequired,                          
-    handleSort: PropTypes.func.isRequired,     
-    className: PropTypes.string              
-  };
+
   return (
     <>
       <LoadingOverlay active={searchFormLoading || isApplicationCountLoading} spinner text={t("Loading...")}>
@@ -177,7 +133,7 @@ function FormTable() {
                   <SortableHeader
                    columnKey="formName"
                    title="Form Name"
-                   currentFormSort={currentFormSort}
+                   currentSort={currentFormSort}
                    handleSort={handleSort}
                    className="ms-4"
                   />
@@ -187,7 +143,7 @@ function FormTable() {
                   <SortableHeader 
                   columnKey="modified"
                   title="Last Edited"
-                  currentFormSort={currentFormSort}
+                  currentSort={currentFormSort}
                   handleSort={handleSort}
                   />
                   </th>
@@ -195,14 +151,14 @@ function FormTable() {
                   <SortableHeader 
                     columnKey="visibility"
                     title="Visibility"
-                    currentFormSort={currentFormSort}
+                    currentSort={currentFormSort}
                     handleSort={handleSort} />
                   </th>
                   <th className="w-12" scope="col" colSpan="4">
                     <SortableHeader 
                     columnKey="status"
                     title="Status"
-                    currentFormSort={currentFormSort}
+                    currentSort={currentFormSort}
                     handleSort={handleSort} />
                   </th>
                   <th className="w-12" colSpan="4" aria-label="Search Forms by form title"></th>

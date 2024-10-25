@@ -17,13 +17,13 @@ import {
 } from "../../actions/processActions";
 import { push } from "connected-react-router";
 import { MULTITENANCY_ENABLED } from "../../constants/constants";
+import SortableHeader from '../CustomComponents/SortableHeader';
 
 const SubFlow = React.memo(() => {
   const searchText = useSelector((state) => state.process.bpmnSearchText);
   const tenantKey = useSelector((state) => state.tenants?.tenantId);
   const redirectUrl = MULTITENANCY_ENABLED ? `/tenant/${tenantKey}/` : "/";
   const [limit, setLimit] = useState(5);
-  // const [totalProcess, setTotalProcess] = useState(0);
   const dispatch = useDispatch();
   const { t } = useTranslation();
   const [activePage, setActivePage] = useState(1);
@@ -31,7 +31,7 @@ const SubFlow = React.memo(() => {
   const process = useSelector((state) => state.process.processList);
   const totalSubflowCount = useSelector((state) => state.process.totalCount);
   const [search, setSearch] = useState(searchText || "");
-  const [sort, setSort] = useState({ name: "asc" });
+  const [currentBPMNsort, setSort] = useState({ sortBy:"name",sortOrder: "asc" });
   const [searchSubflowLoading, setSearchSubflowLoading] = useState(false);
   useEffect(() => {
     setIsLoading(true);
@@ -44,8 +44,8 @@ const SubFlow = React.memo(() => {
           processType: "BPMN",
           limit: limit,
           searchKey: search,
-          sortBy: Object.keys(sort),
-          sortOrder: Object.values(sort),
+          sortBy: currentBPMNsort.sortBy,
+          sortOrder: currentBPMNsort.sortOrder,
         },
         () => {
           setIsLoading(false);
@@ -53,10 +53,22 @@ const SubFlow = React.memo(() => {
         }
       )
     );
-  }, [dispatch, activePage, limit, searchText, sort]);
+  }, [dispatch, activePage, limit, searchText, currentBPMNsort]);
 
-  // const handleSort = (key,value)=> setSort(prev => ({...prev,[key]:value}));
-  const handleSort = (key, value) => setSort({ [key]: value });
+
+  const handleSort = (key) => {
+    setSort((prevSort) => {
+      let newSortOrder = "asc";
+
+      if (prevSort.sortBy === key) {
+        newSortOrder = prevSort.sortOrder === "asc" ? "desc" : "asc";
+      }
+      return {
+        sortBy: key,
+        sortOrder: newSortOrder,
+      };
+    });
+  };
   const pageOptions = [
     {
       text: "5",
@@ -97,7 +109,6 @@ const SubFlow = React.memo(() => {
     if (MULTITENANCY_ENABLED) {
       dispatch(setIsPublicDiagram(data.tenantId ? true : false));
     }
-    //  dispatch(push(`${redirectUrl}process/${data.parentProcessKey}`));
     dispatch(
       push(`${redirectUrl}processes/bpmn/${data.parentProcessKey}/edit`)
     );
@@ -134,121 +145,37 @@ const SubFlow = React.memo(() => {
               <thead className="table-header">
                 <tr>
                   <th className="w-25" scope="col">
-                    <div
-                      className="ms-4 d-flex align-items-center justify-content-between"
-                      onClick={() => {
-                        handleSort(
-                          "name",
-                          sort["name"] == "asc" ? "desc" : "asc"
-                        );
-                      }}
-                    >
-                      <span className="mt-1">{t("Name")}</span>
-                      <span>
-                        {sort["name"] == "asc" ? (
-                          <i
-                            data-testid="name-desc-sort-icon"
-                            className="fa fa-arrow-up sort-icon cursor-pointer fs-16 ms-2"
-                            data-toggle="tooltip"
-                            title={t("Ascending")}
-                          ></i>
-                        ) : (
-                          <i
-                            data-testid="name-asc-sort-icon"
-                            className="fa fa-arrow-down sort-icon cursor-pointer fs-16 ms-2"
-                            data-toggle="tooltip"
-                            title={t("Descending")}
-                          ></i>
-                        )}
-                      </span>
-                    </div>{" "}
+                    <SortableHeader 
+                    columnKey="name"
+                    title="Name"
+                    currentSort={currentBPMNsort}
+                    handleSort={handleSort}
+                     />
+
                   </th>
                   <th className="w-20" scope="col">
-                    <div
-                      className="d-flex align-items-center justify-content-between"
-                      onClick={() => {
-                        handleSort("id", sort["id"] == "asc" ? "desc" : "asc");
-                      }}
-                    >
-                      <span className="mt-1">{t("id")}</span>
-                      <span>
-                        {sort["id"] == "asc" ? (
-                          <i
-                            data-testid="id-desc-sort-icon"
-                            className="fa fa-arrow-up sort-icon cursor-pointer fs-16 ms-2"
-                            data-toggle="tooltip"
-                            title={t("Ascending")}
-                          ></i>
-                        ) : (
-                          <i
-                            data-testid="id-asc-sort-icon"
-                            className="fa fa-arrow-down sort-icon cursor-pointer fs-16 ms-2"
-                            data-toggle="tooltip"
-                            title={t("Descending")}
-                          ></i>
-                        )}
-                      </span>
-                    </div>
+                  <SortableHeader 
+                    columnKey="id"
+                    title="id"
+                    currentSort={currentBPMNsort}
+                    handleSort={handleSort}
+                  />
                   </th>
                   <th className="w-15" scope="col">
-                    <div
-                      className="d-flex align-items-center justify-content-between"
-                      onClick={() => {
-                        handleSort(
-                          "modified",
-                          sort["modified"] == "asc" ? "desc" : "asc"
-                        );
-                      }}
-                    >
-                      <span className="mt-1">{t("Last Edited")}</span>
-                      <span>
-                        {sort["modified"] == "asc" ? (
-                          <i
-                            data-testid="modified-desc-sort-icon"
-                            className="fa fa-arrow-up sort-icon cursor-pointer fs-16 ms-2"
-                            data-toggle="tooltip"
-                            title={t("Ascending")}
-                          ></i>
-                        ) : (
-                          <i
-                            data-testid="modified-asc-sort-icon"
-                            className="fa fa-arrow-down sort-icon cursor-pointer fs-16 ms-2"
-                            data-toggle="tooltip"
-                            title={t("Descending")}
-                          ></i>
-                        )}
-                      </span>
-                    </div>
+                  <SortableHeader 
+                    columnKey="modified"
+                    title="Last Edited"
+                    currentSort={currentBPMNsort}
+                    handleSort={handleSort}
+                  />
                   </th>
                   <th className="w-15" scope="col">
-                    <div
-                      className="d-flex align-items-center justify-content-between"
-                      onClick={() => {
-                        handleSort(
-                          "status",
-                          sort["status"] == "asc" ? "desc" : "asc"
-                        );
-                      }}
-                    >
-                      <span className="mt-1">{t("Status")}</span>
-                      <span>
-                        {sort["status"] == "asc" ? (
-                          <i
-                            data-testid="status-desc-sort-icon"
-                            className="fa fa-arrow-up sort-icon cursor-pointer fs-16 ms-2"
-                            data-toggle="tooltip"
-                            title={t("Ascending")}
-                          ></i>
-                        ) : (
-                          <i
-                            data-testid="status-asc-sort-icon"
-                            className="fa fa-arrow-down sort-icon cursor-pointer fs-16 ms-2"
-                            data-toggle="tooltip"
-                            title={t("Descending")}
-                          ></i>
-                        )}
-                      </span>
-                    </div>
+                  <SortableHeader 
+                    columnKey="status"
+                    title="Status"
+                    currentSort={currentBPMNsort}
+                    handleSort={handleSort}
+                  />
                   </th>
                   <th
                     className="w-25"

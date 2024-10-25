@@ -235,6 +235,17 @@ class ProcessService:  # pylint: disable=too-few-public-methods
         return process
 
     @classmethod
+    def determine_process_version(
+        cls, status, status_changed, major_version, minor_version
+    ):
+        """Determine process version."""
+        current_app.logger.debug("Identifying process version..")
+        is_unpublished = status == ProcessStatus.DRAFT and status_changed
+        major_version = major_version + 1 if is_unpublished else major_version
+        minor_version = 0 if is_unpublished else minor_version + 1
+        return major_version, minor_version
+
+    @classmethod
     @user_context
     def update_process(cls, process_id, process_data, process_type, **kwargs):
         """Update process data."""
@@ -276,11 +287,12 @@ class ProcessService:  # pylint: disable=too-few-public-methods
             raise BusinessException(BusinessErrorCode.PROCESS_EXISTS)
 
         # Determine version numbers based on the process status
-        is_unpublished = process.status == "Draft" and process.status_changed
-        major_version = (
-            process.major_version + 1 if is_unpublished else process.major_version
+        major_version, minor_version = cls.determine_process_version(
+            process.status,
+            process.status_changed,
+            process.major_version,
+            process.minor_version,
         )
-        minor_version = 0 if is_unpublished else process.minor_version + 1
 
         # Create a new process instance with updated data
         process_dict = {

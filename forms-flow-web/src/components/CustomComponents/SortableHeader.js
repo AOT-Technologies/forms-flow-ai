@@ -2,7 +2,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { useTranslation  } from "react-i18next";
 
-const SortableHeader = ({ columnKey, title, currentSort, handleSort,className }) => {
+const SortableHeader = ({ columnKey, title, currentSort, handleSort,className = "" }) => {
     const { t } = useTranslation();
     const isSorted = currentSort.sortBy === columnKey;
     const sortedOrder = isSorted ? currentSort.sortOrder : "asc";
@@ -13,7 +13,7 @@ const SortableHeader = ({ columnKey, title, currentSort, handleSort,className })
     };
     return (
       <div
-        className= {`d-flex align-items-center justify-content-between cursor-pointer ${className || ''}`}
+        className= {`d-flex align-items-center justify-content-between cursor-pointer ${className}`}
         onClick={() => handleSort(columnKey)}
         onKeyDown={handleKeyDown} 
         role="button"
@@ -22,22 +22,13 @@ const SortableHeader = ({ columnKey, title, currentSort, handleSort,className })
       >
         <span className="mt-1">{t(title)}</span>
         <span>
-          {sortedOrder === "asc" ? (
-            <i
-            data-testid={`${columnKey}-asc-sort-icon`}
-            className="fa fa-arrow-up sort-icon fs-16 ms-2"
-            data-toggle="tooltip"
-            title={t("Ascending")}
-          ></i>
-          ) : (
-            <i
-            data-testid={`${columnKey}-desc-sort-icon`}
-            className="fa fa-arrow-down sort-icon fs-16 ms-2"
-            data-toggle="tooltip"
-            title={t("Descending")}
-          ></i>
-          )}
-        </span>
+        <i
+          data-testid={`${columnKey}-${sortedOrder}-sort-icon`}
+          className={`fa fa-arrow-${sortedOrder === "asc" ? "up" : "down"} sort-icon fs-16 ms-2`}
+          data-toggle="tooltip"
+          title={t(sortedOrder === "asc" ? "Ascending" : "Descending")}
+        ></i>
+      </span>
       </div>
     );
   };

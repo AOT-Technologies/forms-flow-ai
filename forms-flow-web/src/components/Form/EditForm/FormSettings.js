@@ -90,7 +90,7 @@ const FormSettings = forwardRef((props, ref) => {
   const validateField = async (field, value) => {
     let errorMessage = "";
     if (!value.trim()) {
-      errorMessage = `${field} is required`;
+      errorMessage = `${field.charAt(0).toUpperCase() + field.slice(1)} is required`;
     } else {
       try {
         const response = field === 'name' ? await validateFormName(value) : await validatePathName(value);
@@ -428,7 +428,7 @@ const FormSettings = forwardRef((props, ref) => {
               {copied ? <i className="fa fa-check" /> : <CopyIcon />}
             </InputGroup.Text>
           </InputGroup>
-          {errors.path && <div className="validation-text">{errors.path}</div>}
+          {errors.path && <div className="validation-text mt-2">{errors.path}</div>}
 
         </Form.Group>
       </div>

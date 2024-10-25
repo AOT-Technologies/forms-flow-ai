@@ -1,7 +1,6 @@
 import React, { useEffect, useState, useReducer } from "react";
 import { connect, useSelector, useDispatch } from "react-redux";
 import CreateFormModal from "../Modals/CreateFormModal.js";
-import BuildFormModal from '../Modals/BuildFormModal';
 import ImportFormModal from "../Modals/ImportFormModal.js";
 import { push } from "connected-react-router";
 import { toast } from "react-toastify";
@@ -36,13 +35,13 @@ import { CustomButton } from "@formsflow/components";
 import _set from "lodash/set";
 import _cloneDeep from "lodash/cloneDeep";
 import _camelCase from "lodash/camelCase";
-import { formCreate, formImport } from "../../apiManager/services/FormServices";
+import { formCreate, formImport,validateFormName } from "../../apiManager/services/FormServices";
 import { addHiddenApplicationComponent } from "../../constants/applicationComponent";
-import { setFormSuccessData } from "../../actions/formActions"; 
+import { setFormSuccessData } from "../../actions/formActions";
 import { CustomSearch }  from "@formsflow/components";
 import userRoles from "../../constants/permissions.js";
 import FileService from "../../services/FileService";
-
+import {FormBuilderModal} from "@formsflow/components";
 
 
 const reducer = (form, { type, value }) => {
@@ -79,7 +78,6 @@ const List = React.memo((props) => {
   const [importFormModal, setImportFormModal] = useState(false);
   const [importError, setImportError] = useState("");
   const [importLoader, setImportLoader] = useState(false);
-
   const ActionType = {
     BUILD: "BUILD",
     IMPORT: "IMPORT"
@@ -90,7 +88,7 @@ const List = React.memo((props) => {
     VALIDATE: "validate"
   };
 
-  const [formDescription, setFormDescription] = useState("");
+  // const [formDescription, setFormDescription] = useState("");
   const [nameError, setNameError] = useState("");
   const dispatch = useDispatch();
   const redirectUrl = MULTITENANCY_ENABLED ? `/tenant/${tenantKey}/` : "/";
@@ -129,8 +127,7 @@ const List = React.memo((props) => {
 
   const pageNo = useSelector((state) => state.bpmForms.page);
   const limit = useSelector((state) => state.bpmForms.limit);
-  const sortBy = useSelector((state) => state.bpmForms.sortBy);
-  const sortOrder = useSelector((state) => state.bpmForms.sortOrder);
+  const formSort = useSelector((state) => state.bpmForms.sort);
   const formAccess = useSelector((state) => state.user?.formAccess || []);
   const searchFormLoading = useSelector(
     (state) => state.formCheckList.searchFormLoading
@@ -138,18 +135,17 @@ const List = React.memo((props) => {
   const [newFormModal, setNewFormModal] = useState(false);
   const [description, setUploadFormDescription] = useState("");
   const [formTitle, setFormTitle] = useState("");
-
+  
   useEffect(() => {
     dispatch(setFormCheckList([]));
   }, [dispatch]);
 
   useEffect(() => {
-    console.log("================", importError);
     dispatch(setBPMFormListLoading(true));
   }, []);
 
   const fetchForms = () => {
-    let filters = [pageNo, limit, sortBy, sortOrder, searchText];
+    let filters = [pageNo, limit, formSort, searchText];
     dispatch(setFormSearchLoading(true));
     dispatch(fetchBPMFormList(...filters));
   };
@@ -202,10 +198,9 @@ const List = React.memo((props) => {
     const dataString = JSON.stringify(data);
     formImport(fileContent, dataString)
       .then((res) => {
-        console.log(res);
         setImportLoader(false);
         setFormSubmitted(false);
-        
+
         if (data.action == "validate") {
           FileService.extractFormDetails(fileContent, (formExtracted) => {
             if (formExtracted) {
@@ -236,8 +231,7 @@ const List = React.memo((props) => {
     createDesigns,
     pageNo,
     limit,
-    sortBy,
-    sortOrder,
+    formSort,
     searchText,
   ]);
 
@@ -249,6 +243,28 @@ const List = React.memo((props) => {
     return errors;
   };
 
+  const validateFormNameOnBlur = () => {
+    if (!form.title || form.title.trim() === "") {
+      setNameError("This field is required");
+      return;
+    }
+
+    validateFormName(form.title)
+      .then((response) => {
+        const data = response?.data;
+        if (data && data.code === "FORM_EXISTS") {
+          setNameError(data.message);  // Set exact error message
+        } else {
+          setNameError("");
+        }
+      })
+      .catch((error) => {
+      const errorMessage = error.response?.data?.message || "An error occurred while validating the form name.";
+      setNameError(errorMessage);  // Set the error message from the server
+      console.error("Error validating form name:", errorMessage);
+      });
+  };
+
   const handleChange = (path, event) => {
     setFormSubmitted(false);
     const { target } = event;
@@ -257,14 +273,13 @@ const List = React.memo((props) => {
     dispatchFormAction({ type: path, value });
   };
 
-  const handleBuild = () => {
+  const handleBuild = (formName,formDescription) => {
     setFormSubmitted(true);
     const errors = validateForm();
     if (Object.keys(errors).length > 0) {
       setNameError(errors.title);
       return;
     }
-    console.log(form,"FORM");
     form.components = [];
     const newFormData = addHiddenApplicationComponent(form);
     const newForm = {
@@ -326,7 +341,7 @@ const List = React.memo((props) => {
                     handleSearch={handleSearch}
                     handleClearSearch={handleClearSearch}
                     placeholder={t("Search Form Name and Description")}
-                    searchFormLoading={searchFormLoading}
+                    searchLoading={searchFormLoading}
                     title={t("Search Form Name and Description")}
                     dataTestId="form-search-input"
                   />
@@ -335,7 +350,7 @@ const List = React.memo((props) => {
                   {createDesigns && (
                     <CustomButton
                       variant="primary"
-                      size="md"
+                      size="sm"
                       label="New Form"
                       onClick={() => setNewFormModal(true)}
                       className=""
@@ -349,15 +364,18 @@ const List = React.memo((props) => {
                     onClose={onClose}
                     onAction={handleAction}
                   />
-                  <BuildFormModal
+                  <FormBuilderModal
+                    modalHeader="Build New Form"
+                    nameLabel="Form Name"
+                    descriptionLabel="Form Description"
                     showBuildForm={showBuildForm}
                     formSubmitted={formSubmitted}
                     onClose={onCloseBuildModal}
                     onAction={handleAction}
                     handleChange={handleChange}
-                    handleBuild={handleBuild}
-                    setFormDescription={setFormDescription}
+                    primaryBtnAction={handleBuild}
                     setNameError={setNameError}
+                    nameValidationOnBlur={validateFormNameOnBlur}
                     nameError={nameError}
                   />
                   <ImportFormModal
@@ -452,4 +470,4 @@ const mapDispatchToProps = (dispatch, ownProps) => {
   };
 };
 
-export default connect(mapStateToProps, mapDispatchToProps)(List);  
+export default connect(mapStateToProps, mapDispatchToProps)(List);

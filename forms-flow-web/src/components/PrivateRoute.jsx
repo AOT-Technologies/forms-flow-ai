@@ -327,7 +327,7 @@ const PrivateRoute = React.memo((props) => {
             )}
             {ENABLE_PROCESSES_MODULE && (
               <DesignerRoute
-                path={`${BASE_ROUTE}processes`}
+                path={`${BASE_ROUTE}subflow`}
                 component={Modeler}
               />
             )}

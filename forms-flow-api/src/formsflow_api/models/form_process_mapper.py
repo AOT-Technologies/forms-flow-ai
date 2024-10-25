@@ -282,7 +282,7 @@ class FormProcessMapper(AuditDateTimeMixin, AuditUserMixin, BaseModel, db.Model)
         )
         query = cls.add_search_filter(query=query, search=search)
         query = cls.access_filter(query=query)
-        query = cls.add_sort_filter(
+        query = add_sort_filter(
             sort_by=sort_by,
             sort_order=sort_order,
             query=query,
@@ -399,3 +399,16 @@ class FormProcessMapper(AuditDateTimeMixin, AuditUserMixin, BaseModel, db.Model)
             query = query.filter(FormProcessMapper.id != exclude_id)
         query = cls.tenant_authorization(query=query)
         return query.all()
+
+    @classmethod
+    def get_latest_by_parent_form_id(cls, parent_form_id):
+        """Get latest of mapper row by parent form id."""
+        query = cls.tenant_authorization(query=cls.query)
+        query = (
+            query.filter(
+                cls.parent_form_id == parent_form_id,
+            )
+            .order_by(cls.id.desc())
+            .first()
+        )
+        return query

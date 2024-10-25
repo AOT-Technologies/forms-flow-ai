@@ -19,12 +19,15 @@ from formsflow_api.models import (
     FormHistory,
     FormProcessMapper,
     Process,
+    ProcessStatus,
+    ProcessType,
 )
 from formsflow_api.schemas import FormProcessMapperSchema
 from formsflow_api.services.authorization import AuthorizationService
 from formsflow_api.services.external.bpm import BPMService
 
 from .form_history_logs import FormHistoryService
+from .process import ProcessService
 
 
 class FormProcessMapperService:  # pylint: disable=too-many-public-methods
@@ -112,6 +115,16 @@ class FormProcessMapperService:  # pylint: disable=too-many-public-methods
         raise BusinessException(BusinessErrorCode.INVALID_FORM_PROCESS_MAPPER_ID)
 
     @staticmethod
+    def get_form_version(mapper):
+        """Get form versions."""
+        version_data = FormHistory.get_latest_version(mapper.parent_form_id)
+        major_version, minor_version = 1, 0
+        if version_data:
+            major_version = version_data.major_version
+            minor_version = version_data.minor_version
+        return major_version, minor_version
+
+    @staticmethod
     @user_context
     def get_mapper_by_formid(form_id: str, **kwargs):
         """Get form process mapper."""
@@ -123,6 +136,12 @@ class FormProcessMapperService:  # pylint: disable=too-many-public-methods
                 raise PermissionError("Tenant authentication failed.")
             mapper_schema = FormProcessMapperSchema()
             response = mapper_schema.dump(mapper)
+            # Include form versions
+            major_version, minor_version = FormProcessMapperService.get_form_version(
+                mapper
+            )
+            response["majorVersion"] = major_version
+            response["minorVersion"] = minor_version
             if response.get("deleted") is False:
                 return response
 
@@ -312,14 +331,15 @@ class FormProcessMapperService:  # pylint: disable=too-many-public-methods
 
     @classmethod
     @user_context
-    def create_default_process(cls, process_name, **kwargs):
+    def create_default_process(cls, process_name, status=ProcessStatus.DRAFT, **kwargs):
         """Create process with default workflow."""
         user: UserContext = kwargs["user"]
         process_dict = {
             "name": process_name,
             "process_key": process_name,
             "parent_process_key": process_name,
-            "process_type": "BPMN",
+            "process_type": ProcessType.BPMN,
+            "status": status,
             "process_data": default_flow_xml_data(process_name).encode("utf-8"),
             "tenant": user.tenant_key,
             "major_version": 1,
@@ -434,7 +454,7 @@ class FormProcessMapperService:  # pylint: disable=too-many-public-methods
             return {
                 "formTitle": title_or_path,
                 "formDescription": description,
-                "anonymous": anonymous,
+                "anonymous": anonymous or False,
                 "type": scope_type,
                 "content": form_json,
             }
@@ -443,35 +463,25 @@ class FormProcessMapperService:  # pylint: disable=too-many-public-methods
             raise BusinessException(BusinessErrorCode.FORM_ID_NOT_FOUND) from e
 
     def _get_workflow(
-        self, process_key: str, process_name: str, scope_type: str, user: UserContext
+        self, process_key: str, process_name: str, scope_type: str
     ) -> dict:
         """Get workflow details."""
-        try:
-            current_app.logger.info(f"Fetching xml for process: {process_key}")
-            process_tenant = None
-            if current_app.config.get("MULTI_TENANCY_ENABLED"):
-                url_path = (
-                    f"&includeProcessDefinitionsWithoutTenantId=true"
-                    f"&key={process_key}&tenantIdIn={user.tenant_key}"
-                )
-                process = BPMService.get_all_process(user.bearer_token, url_path)
-                if process:
-                    process_tenant = process[0].get("tenantId")
-                    current_app.logger.info(
-                        f"Found tenant ID {process_tenant} for process {process_key}"
-                    )
-            xml = BPMService.process_definition_xml(
-                process_key, user.bearer_token, process_tenant
-            ).get("bpmn20Xml")
+        current_app.logger.info(f"Fetching Process : {process_key}")
+        process = Process.get_latest_version_by_key(process_key)
+        if process:
+            process_data = process.process_data.decode("utf-8")
+            process_type = process.process_type.value
+            content = (
+                json.loads(process_data) if process_type == "LOWCODE" else process_data
+            )
             return {
                 "processKey": process_key,
                 "processName": process_name,
+                "processType": process_type,
                 "type": scope_type,
-                "content": xml,
+                "content": content,
             }
-        except Exception as e:
-            current_app.logger.error(e)
-            raise BusinessException(BusinessErrorCode.PROCESS_DEF_NOT_FOUND) from e
+        raise BusinessException(BusinessErrorCode.PROCESS_DEF_NOT_FOUND)
 
     def _get_dmn(self, dmn_key: str, scope_type: str, user: UserContext) -> dict:
         """Get DMN details."""
@@ -565,9 +575,7 @@ class FormProcessMapperService:  # pylint: disable=too-many-public-methods
             current_app.logger.info(f"Subprocess: {subprocess_name}")
             # Here subprocess_name will be the process key
             # Since we didn't get process name, we will use the subprocess name as process name
-            sub_workflow = self._get_workflow(
-                subprocess_name, subprocess_name, "sub", user
-            )
+            sub_workflow = self._get_workflow(subprocess_name, subprocess_name, "sub")
             workflows.append(sub_workflow)
 
             sub_form_names, sub_dmn_names, sub_workflows = self._parse_xml(
@@ -611,7 +619,7 @@ class FormProcessMapperService:  # pylint: disable=too-many-public-methods
                 )
             )
             workflow = self._get_workflow(
-                mapper.process_key, mapper.process_name, "main", user
+                mapper.process_key, mapper.process_name, "main"
             )
             workflows.append(workflow)
             authorizations.append(self._get_authorizations(mapper.form_id, user))
@@ -678,27 +686,6 @@ class FormProcessMapperService:  # pylint: disable=too-many-public-methods
         # If no results, the form name is valid
         return {}
 
-    def deploy_process(self, process_name, process_data, tenant_key, token):
-        """Deploy process."""
-        file_path = f"{process_name}.bpmn"
-        # If process data empty deploy default workflow data.
-        if process_data:
-            if isinstance(process_data, str):
-                process_data = process_data.encode("utf-8")
-        else:
-            process_data = default_flow_xml_data(process_name).encode("utf-8")
-
-        # Prepare the parameters for the deployment
-        payload = {
-            "deployment-name": process_name,
-            "enable-duplicate-filtering": "true",
-            "deploy-changed-only": "false",
-            "deployment-source": "Camunda Modeler",
-            "tenant-id": tenant_key,
-        }
-        files = {"upload": (file_path, process_data, "text/bpmn")}
-        BPMService.post_deployment(token, payload, tenant_key, files)
-
     def validate_mapper(self, mapper_id, tenant_key):
         """Validate mapper by mapper Id."""
         mapper = FormProcessMapper.find_form_by_id(form_process_mapper_id=mapper_id)
@@ -708,6 +695,10 @@ class FormProcessMapperService:  # pylint: disable=too-many-public-methods
         # Check tenant authentication
         if tenant_key and mapper.tenant != tenant_key:
             raise PermissionError(BusinessErrorCode.PERMISSION_DENIED)
+        # Check the mapper_id provided is the latest mapper for the specific parent_form_id.
+        latest = FormProcessMapper.get_latest_by_parent_form_id(mapper.parent_form_id)
+        if latest and mapper.id != latest.id:
+            raise BusinessException(BusinessErrorCode.MAPPER_NOT_LATEST_VERSION)
         return mapper
 
     def capture_form_history(self, mapper, data, user_name):
@@ -729,26 +720,6 @@ class FormProcessMapperService:  # pylint: disable=too-many-public-methods
             minor_version=minor_version,
         ).save()
 
-    @classmethod
-    def update_process_status(cls, process, status, user):
-        """Update process status."""
-        process_dict = {
-            "name": process.name,
-            "process_type": process.process_type,
-            "status": status,
-            "tenant": user.tenant_key,
-            "process_data": process.process_data,
-            "created_by": user.user_name,
-            "major_version": process.major_version,
-            "minor_version": process.minor_version,
-            "is_subflow": process.is_subflow,
-            "process_key": process.process_key,
-            "parent_process_key": process.parent_process_key,
-            "status_changed": True,
-        }
-        process = Process.create_from_dict(process_dict)
-        return process
-
     @user_context
     def publish(self, mapper_id, **kwargs):
         """Publish by mapper_id."""
@@ -761,15 +732,22 @@ class FormProcessMapperService:  # pylint: disable=too-many-public-methods
 
         # Fetch process data from process table
         process = Process.get_latest_version_by_key(process_name)
-        process_data = process.process_data if process else None
+        process_data, process_type = (
+            (process.process_data, process.process_type) if process else (None, None)
+        )
+
         # Deploy process
-        self.deploy_process(process_name, process_data, tenant_key, token)
+        ProcessService.deploy_process(
+            process_name, process_data, tenant_key, token, process_type
+        )
         if not process:
-            # create entry in process with default flow.
-            FormProcessMapperService.create_default_process(process_name)
+            # create entry in process with default flow with status "PUBLISHED".
+            FormProcessMapperService.create_default_process(
+                process_name, status=ProcessStatus.PUBLISHED
+            )
         else:
             # Update process status
-            FormProcessMapperService.update_process_status(process, "PUBLISHED", user)
+            ProcessService.update_process_status(process, ProcessStatus.PUBLISHED, user)
 
         # Capture publish(active) status in form history table.
         self.capture_form_history(mapper, {"status": "active"}, user_name)
@@ -801,5 +779,5 @@ class FormProcessMapperService:  # pylint: disable=too-many-public-methods
         # Update process status to Draft
         process = Process.get_latest_version_by_key(mapper.process_key)
         if process:
-            FormProcessMapperService.update_process_status(process, "DRAFT", user)
+            ProcessService.update_process_status(process, ProcessStatus.DRAFT, user)
         return {}

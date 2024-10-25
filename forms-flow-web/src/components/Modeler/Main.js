@@ -47,7 +47,7 @@ export default React.memo(() => {
     };
     dispatch(setWorkflowAssociation(newWorkflow));
     dispatch(setProcessDiagramXML(newWorkflow.xml));
-    dispatch(push(`${redirectUrl}processes/create`));
+    dispatch(push(`${redirectUrl}subflow/create`));
   };
 
   const handleChangeFile = (file) => {
@@ -68,7 +68,7 @@ export default React.memo(() => {
     dispatch(setWorkflowAssociation(null));
   };
   const handleCreateNew = () => {
-    dispatch(push(`${redirectUrl}processes/create`));
+    dispatch(push(`${redirectUrl}subflow/create`));
   };
 
   const uploadClick = (e) => {

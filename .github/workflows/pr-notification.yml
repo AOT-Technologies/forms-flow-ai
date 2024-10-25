@@ -1,0 +1,55 @@
+name: PR Notification to Google Chat
+
+on:
+  pull_request:
+    types: [opened]
+    branches:
+      - develop
+
+jobs:
+  notify:
+    runs-on: ubuntu-latest
+    if: github.event.pull_request.base.ref == 'develop'
+
+    steps:
+      - name: Send notification to Google Chat
+        uses: fjogeleit/http-request-action@v1.1.0
+        with:
+          url: ${{ secrets.WEBHOOK }}
+          method: POST
+          contentType: application/json
+          data: '{
+            "cards": [
+              {
+                "header": {
+                  "title": "Pull Request Opened by ${{ github.event.pull_request.user.login }}",
+                  "subtitle": "Pull Request #${{ github.event.pull_request.number }}: ${{ github.event.pull_request.title }}"
+                },
+                "sections": [
+                  {
+                    "widgets": [
+                      {
+                        "textParagraph": {
+                          "text": "Repository: ${{ github.repository }}"
+                        }
+                      },
+                      {
+                        "buttons": [
+                          {
+                            "textButton": {
+                              "text": "View Pull Request",
+                              "onClick": {
+                                "openLink": {
+                                  "url": "${{ github.event.pull_request.html_url }}"
+                                }
+                              }
+                            }
+                          }
+                        ]
+                      }
+                    ]
+                  }
+                ]
+              }
+            ]
+          }'

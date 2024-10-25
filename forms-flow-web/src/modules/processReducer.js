@@ -26,7 +26,7 @@ const initialState = {
   bpmnSearchText: "",
   dmnSearchText: "",
   isPublicDiagram: null,
-  processHistory:{},
+  processHistoryData:{},
   processData:{},
   totalCount:0,
 };
@@ -105,7 +105,7 @@ const process = (state = initialState, action) => {
     case ACTION_CONSTANTS.IS_PUBLIC_DIAGRAM:
       return { ...state, isPublicDiagram: action.payload };
     case ACTION_CONSTANTS.PROCESS_HISTORY:
-      return { ...state, processHistory: action.payload };
+      return { ...state, processHistoryData: action.payload };
     case ACTION_CONSTANTS.SET_PROCESS_DATA:
         return { ...state, processData: action.payload };
     case ACTION_CONSTANTS.SET_SUBFLOW_COUNT:

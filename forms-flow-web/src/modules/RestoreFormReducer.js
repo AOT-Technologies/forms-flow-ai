@@ -4,7 +4,7 @@ import ACTION_CONSTANTS from "../actions/actionConstants";
 const initialState = {
   restoredFormData: {},
   restoredFormId: null,
-  formHistory:{}
+  formHistoryData:{}
  
 };
 
@@ -15,7 +15,7 @@ const RestoreFormReducer = (state = initialState, action) => {
     case ACTION_CONSTANTS.RESTORE_FORM_DATA:
       return { ...state, restoredFormData: action.payload };
     case ACTION_CONSTANTS.FORM_HISTORY:
-      return { ...state, formHistory: action.payload};
+      return { ...state, formHistoryData: action.payload};
     default:
       return state;
   }

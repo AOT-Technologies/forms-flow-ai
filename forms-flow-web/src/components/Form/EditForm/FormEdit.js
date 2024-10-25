@@ -14,6 +14,7 @@ import {
   HistoryIcon,
   PreviewIcon,
   FormBuilderModal,
+  HistoryModal,
 } from "@formsflow/components";
 import { RESOURCE_BUNDLES_DATA } from "../../../resourceBundles/i18n";
 import LoadingOverlay from "react-loading-overlay-ts";
@@ -31,6 +32,7 @@ import {
   formCreate,
   publish,
   unPublish,
+  getFormHistory,
 } from "../../../apiManager/services/FormServices";
 import utils from "@aot-technologies/formiojs/lib/utils";
 import {
@@ -39,13 +41,19 @@ import {
   setRestoreFormData,
   setRestoreFormId,
   setFormDeleteStatus,
+  setFormHistories,
 } from "../../../actions/formActions";
 import {
   saveFormProcessMapperPut,
   getProcessDetails,
   unPublishForm,
+  getProcessHistory,
+  fetchRevertingProcessData
 } from "../../../apiManager/services/processServices";
-import { setProcessData } from "../../../actions/processActions.js";
+import {
+  setProcessData,
+  setProcessHistories,
+} from "../../../actions/processActions.js";
 import _isEquial from "lodash/isEqual";
 import _ from "lodash";
 import SettingsModal from "../../Modals/SettingsModal";
@@ -67,12 +75,15 @@ const Edit = React.memo(() => {
   const dispatch = useDispatch();
   const { formId } = useParams();
   const { t } = useTranslation();
-  //this variable handle the flow and layot tab switching 
+  //this variable handle the flow and layot tab switching
   const sideTabRef = useRef(null);
 
   /* ------------------------------- mapper data ------------------------------ */
-  const { formProcessList: processListData, formPreviousData: previousData } =
-    useSelector((state) => state.process);
+  const {
+    processHistoryData = {},
+    formProcessList: processListData,
+    formPreviousData: previousData,
+  } = useSelector((state) => state.process);
 
   /* -------------------------------- user data and form access data ------------------------------- */
   const {
@@ -105,9 +116,11 @@ const Edit = React.memo(() => {
   /* ------------------------- form history variables ------------------------- */
   const [isNewVersionLoading, setIsNewVersionLoading] = useState(false);
   const [restoreFormDataLoading, setRestoreFormDataLoading] = useState(false);
-  const { restoredFormData, restoredFormId } = useSelector(
-    (state) => state.formRestore
-  );
+  const {
+    formHistoryData = {},
+    restoredFormData,
+    restoredFormId,
+  } = useSelector((state) => state.formRestore);
 
   /* -------------------------- getting process data -------------------------- */
   const [isProcessDetailsLoading, setIsProcessDetailsLoading] = useState(false);
@@ -128,6 +141,12 @@ const Edit = React.memo(() => {
     (state) => state.process?.applicationCount
   );
 
+  const processHistory = processHistoryData.processHistory || [];
+  const formHistory = formHistoryData.formHistory || [];
+  const pageNo = 1;
+  const limit = 4;
+  const [history, setHistory] = useState(true);
+  const [showHistoryModal, setshowHistoryModal] = useState(false);
   const [showConfirmModal, setShowConfirmModal] = useState(false);
   const [modalType, setModalType] = useState("");
 
@@ -156,7 +175,6 @@ const Edit = React.memo(() => {
       setFormSubmitted(false);
     }
   };
-
   useEffect(() => {
     if (restoredFormId) {
       setRestoreFormDataLoading(true);
@@ -184,6 +202,38 @@ const Edit = React.memo(() => {
       dispatch(setRestoreFormData({}));
       dispatch(setRestoreFormId(null));
     };
+  }, [restoredFormId]);
+
+  const fetchRestoredFormData = (restoredFormId) => {
+    if (restoredFormId) {
+      fetchFormById(restoredFormId)
+        .then((res) => {
+          if (res.data) {
+            const { data } = res;
+            dispatch(setRestoreFormData(res.data));
+            dispatchFormAction({
+              type: "components",
+              value: _cloneDeep(data.components),
+            });
+            dispatchFormAction({ type: "type", value: data.type });
+            dispatchFormAction({ type: "display", value: data.display });
+          }
+        })
+        .catch((err) => {
+          toast.error(err.response.data);
+        });
+    }
+
+    const cleanup = () => {
+      dispatch(setRestoreFormData({}));
+      dispatch(setRestoreFormId(null));
+    };
+
+    return cleanup; 
+  };
+
+  useEffect(() => {
+    fetchRestoredFormData(restoredFormId);
   }, [restoredFormId]);
 
   useEffect(() => {
@@ -360,9 +410,69 @@ const Edit = React.memo(() => {
   const backToForm = () => {
     dispatch(push(`${redirectUrl}form/`));
   };
+  const closeHistoryModal = () => {
+    setshowHistoryModal(false);
+  };
+  const fetchFormHistory = (parentFormId, page, limit) => {
+    getFormHistory(parentFormId, page, limit)
+      .then((res) => {
+        dispatch(setFormHistories(res.data));
+      })
+      .catch(() => {
+        setFormHistories([]);
+      });
+  };
 
-  const handleHistory = () => {
-    console.log("handleHistory");
+  const fetchProcessHistory = (processKey, page, limit) => {
+    getProcessHistory(processKey, page, limit)
+      .then((res) => {
+        dispatch(setProcessHistories(res.data));
+      })
+      .catch(() => {
+        setProcessHistories([]);
+      });
+  };
+  const handleHistory = (type) => {
+    setshowHistoryModal(true);
+    if (type === "WORKFLOW") {
+      setHistory(false);
+      dispatch(setProcessHistories({ processHistory: [], totalCount: 0 }));
+      if (processListData?.processKey) {
+        fetchProcessHistory(processListData?.processKey, pageNo, limit);
+      }
+    } else {
+      setHistory(true);
+      dispatch(setFormHistories({ formHistory: [], totalCount: 0 }));
+      if (processListData?.parentFormId) {
+        fetchFormHistory(processListData?.parentFormId, pageNo, limit);
+      }
+    }
+  };
+
+  const loadMoreBtnAction = () => {
+    history
+      ? fetchFormHistory(processListData?.parentFormId)
+      : fetchProcessHistory(processListData?.processKey);
+  };
+
+  const revertFormBtnAction = (cloneId) => {
+    dispatch(setRestoreFormId(cloneId));
+    fetchRestoredFormData(cloneId);
+  };
+
+  const revertProcessBtnAction = (processId) => {
+    if(processId){
+      setIsProcessDetailsLoading(true);
+      fetchRevertingProcessData(processId).then((res) =>{
+        if(res.data){
+         const { data } = res;
+         dispatch(setProcessData(data));
+         setIsProcessDetailsLoading(false);
+        }
+       }).catch((err) =>{
+         console.log(err.response.data);
+       });  
+    }
   };
 
   const handlePreview = () => {
@@ -761,7 +871,7 @@ const Edit = React.memo(() => {
                           size="md"
                           icon={<HistoryIcon />}
                           label={t("History")}
-                          onClick={handleHistory}
+                          onClick={() => handleHistory(CategoryType.FORM)}
                           dataTestid="handle-form-history-testid"
                           ariaLabel={t("Form History Button")}
                         />
@@ -822,7 +932,9 @@ const Edit = React.memo(() => {
               className={`wraper flow-wraper ${isFlowLayout ? "visible" : ""}`}
             >
               {/* TBD: Add a loader instead. */}
-              {isProcessDetailsLoading ? <>loading...</> : <FlowEdit />}
+              {isProcessDetailsLoading ? <>loading...</> : <FlowEdit 
+              handleHistory={handleHistory}
+              CategoryType={CategoryType}/>}
             </div>
             <button
               className={`border-0 form-flow-wraper-${
@@ -886,6 +998,21 @@ const Edit = React.memo(() => {
           size="md"
         />
       )}
+      
+      <HistoryModal
+        show={showHistoryModal}
+        onClose={closeHistoryModal}
+        title={t("History")}
+        loadMoreBtnText={t("Load More")}
+        revertBtnText={t("Revert To This")}
+        allHistory={history ? formHistory : processHistory}
+        loadMoreBtnAction={loadMoreBtnAction}
+        categoryType={history ? CategoryType.FORM : CategoryType.WORKFLOW}
+        revertBtnAction={history ? revertFormBtnAction : revertProcessBtnAction}
+        historyCount={
+          history ? formHistoryData.totalCount : processHistoryData.totalCount
+        }
+      />
       {renderDeleteModal()}
     </div>
   );

@@ -10,17 +10,15 @@ import { toast } from 'react-toastify';
 import { createXMLFromModeler, validateProcessNames, compareXML } from '../../../helper/processHelper.js';
 import { ERROR_LINTING_CLASSNAME } from '../../Modeler/constants/bpmnModelerConstants.js';
 
-const FlowEdit = forwardRef((_, ref) => {
+const FlowEdit = forwardRef(({ handleHistory, CategoryType }, ref) => {
   const { t } = useTranslation();
   const dispatch = useDispatch();
   const bpmnRef = useRef();
   const processData = useSelector((state) => state.process?.processData);
   const [lintErrors, setLintErrors] = useState([]);
-  const [historyModalShow, setHistoryModalShow] = useState(false);
   const [savingFlow, setSavingFlow] = useState(false);
   const [showDiscardModal, setShowDiscardModal] = useState(false);
   // handle history modal
-  const handleHistoryModal = () => setHistoryModalShow(!historyModalShow);
   const handleHanldeDisacardModal = () => setShowDiscardModal(!showDiscardModal);
   //validate any erros in bpmn lint
   const validateBpmnLintErrors = () => {
@@ -120,7 +118,7 @@ const FlowEdit = forwardRef((_, ref) => {
                 size="md"
                 icon={<HistoryIcon />}
                 label={t("History")}
-                onClick={handleHistoryModal}
+                onClick={() => handleHistory(CategoryType.WORKFLOW)}
                 dataTestid="flow-history-button-testid"
                 ariaLabel={t("Flow History Button")}
               />

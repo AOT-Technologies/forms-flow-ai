@@ -554,3 +554,8 @@ export const getProcessHistory = (process_key, page = null, limit = null) => {
   }
   return RequestService.httpGETRequest(url);
 };
+
+export const fetchRevertingProcessData = (process_Id) => {
+  let url = `${API.PROCESS_HISTORY}/${process_Id}`;
+  return RequestService.httpGETRequest(url);
+};

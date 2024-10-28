@@ -222,7 +222,17 @@ class ProcessService:  # pylint: disable=too-few-public-methods
         current_app.logger.debug(f"Get process data for process key: {process_key}")
         process = Process.get_latest_version_by_key(process_key)
         if process:
-            return processSchema.dump(process)
+            process_data = processSchema.dump(process)
+            # Determine version numbers based on the process status
+            major_version, minor_version = cls.determine_process_version(
+                process.status,
+                process.status_changed,
+                process.major_version,
+                process.minor_version,
+            )
+            process_data["majorVersion"] = major_version
+            process_data["minorVersion"] = minor_version
+            return process_data
         raise BusinessException(BusinessErrorCode.PROCESS_ID_NOT_FOUND)
 
     @classmethod

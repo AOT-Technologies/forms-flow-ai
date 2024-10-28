@@ -68,17 +68,15 @@ function FormTable() {
 
   const handleSort = (key) => {
     setCurrentFormSort((prevSort) => {
-      let newSortOrder = "asc";
-      
-      if (prevSort.sortBy === key) {
-        newSortOrder = prevSort.sortOrder === "asc" ? "desc" : "asc";
-      }
+      const newSortOrder = prevSort[key].sortOrder === "asc" ? "desc" : "asc";
       return {
-        sortBy: key,
-        sortOrder: newSortOrder,
+        ...prevSort,
+        activeKey: key,
+        [key]: { sortOrder: newSortOrder },
       };
     });
   };
+
   useEffect(() => {
     dispatch(setBpmFormSort(currentFormSort));
   },[currentFormSort,dispatch]);

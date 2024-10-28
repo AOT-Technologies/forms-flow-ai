@@ -29,10 +29,16 @@ const SubFlow = React.memo(() => {
   const [activePage, setActivePage] = useState(1);
   const [isLoading, setIsLoading] = useState(true);
   const process = useSelector((state) => state.process.processList);
-  const totalSubflowCount = useSelector((state) => state.process.totalCount);
+  const totalCount = useSelector((state) => state.process.totalBpmnCount);
   const [search, setSearch] = useState(searchText || "");
-  const [currentBPMNsort, setCurrentBPMNsort] = useState({ sortBy:"name",sortOrder: "asc" });
   const [searchSubflowLoading, setSearchSubflowLoading] = useState(false);
+  const [currentBpmnSort, setCurrentBpmnsort] = useState({
+    activeKey: "name", 
+    name: { sortOrder: "asc" },
+    id: { sortOrder: "asc" },
+    modified: { sortOrder: "asc" },
+    status: { sortOrder: "asc" },
+  });
   useEffect(() => {
     setIsLoading(true);
     setSearchSubflowLoading(true);
@@ -44,8 +50,8 @@ const SubFlow = React.memo(() => {
           processType: "BPMN",
           limit: limit,
           searchKey: search,
-          sortBy: currentBPMNsort.sortBy,
-          sortOrder: currentBPMNsort.sortOrder,
+          sortBy: currentBpmnSort.activeKey,
+          sortOrder: currentBpmnSort[currentBpmnSort.activeKey].sortOrder,
         },
         () => {
           setIsLoading(false);
@@ -53,22 +59,20 @@ const SubFlow = React.memo(() => {
         }
       )
     );
-  }, [dispatch, activePage, limit, searchText, currentBPMNsort]);
+  }, [dispatch, activePage, limit, searchText, currentBpmnSort]);
 
 
   const handleSort = (key) => {
-    setCurrentBPMNsort((prevSort) => {
-      let newSortOrder = "asc";
-
-      if (prevSort.sortBy === key) {
-        newSortOrder = prevSort.sortOrder === "asc" ? "desc" : "asc";
-      }
+    setCurrentBpmnsort((prevSort) => {
+      const newSortOrder = prevSort[key].sortOrder === "asc" ? "desc" : "asc";
       return {
-        sortBy: key,
-        sortOrder: newSortOrder,
+        ...prevSort,
+        activeKey: key,
+        [key]: { sortOrder: newSortOrder },
       };
     });
   };
+
   const pageOptions = [
     {
       text: "5",
@@ -88,7 +92,7 @@ const SubFlow = React.memo(() => {
     },
     {
       text: "All",
-      value: totalSubflowCount,
+      value: totalCount,
     },
   ];
   const handlePageChange = (page) => setActivePage(page);
@@ -148,7 +152,7 @@ const SubFlow = React.memo(() => {
                     <SortableHeader 
                     columnKey="name"
                     title="Name"
-                    currentSort={currentBPMNsort}
+                    currentSort={currentBpmnSort}
                     handleSort={handleSort}
                      />
 
@@ -157,7 +161,7 @@ const SubFlow = React.memo(() => {
                   <SortableHeader 
                     columnKey="id"
                     title="id"
-                    currentSort={currentBPMNsort}
+                    currentSort={currentBpmnSort}
                     handleSort={handleSort}
                   />
                   </th>
@@ -165,7 +169,7 @@ const SubFlow = React.memo(() => {
                   <SortableHeader 
                     columnKey="modified"
                     title="Last Edited"
-                    currentSort={currentBPMNsort}
+                    currentSort={currentBpmnSort}
                     handleSort={handleSort}
                   />
                   </th>
@@ -173,7 +177,7 @@ const SubFlow = React.memo(() => {
                   <SortableHeader 
                     columnKey="status"
                     title="Status"
-                    currentSort={currentBPMNsort}
+                    currentSort={currentBpmnSort}
                     handleSort={handleSort}
                   />
                   </th>
@@ -233,9 +237,9 @@ const SubFlow = React.memo(() => {
                       <span className="ms-2">
                         {t("Showing")} {(limit * activePage) - (limit - 1)}{" "}
                         {t("to")}&nbsp;
-                        {Math.min(limit * activePage, totalSubflowCount)}{" "}
+                        {Math.min(limit * activePage, totalCount)}{" "}
                         {t("of")}&nbsp;
-                        {totalSubflowCount} {t("results")}
+                        {totalCount} {t("results")}
                       </span>
                     </div>
                   </td>
@@ -244,7 +248,7 @@ const SubFlow = React.memo(() => {
                       <Pagination
                         activePage={activePage}
                         itemsCountPerPage={limit}
-                        totalItemsCount={totalSubflowCount}
+                        totalItemsCount={totalCount}
                         pageRangeDisplayed={5}
                         itemClass="page-item"
                         linkClass="page-link"

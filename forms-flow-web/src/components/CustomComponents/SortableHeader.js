@@ -4,8 +4,8 @@ import { useTranslation  } from "react-i18next";
 
 const SortableHeader = ({ columnKey, title, currentSort, handleSort,className = "" }) => {
     const { t } = useTranslation();
-    const isSorted = currentSort.sortBy === columnKey;
-    const sortedOrder = isSorted ? currentSort.sortOrder : "asc";
+    const sortedOrder = currentSort[columnKey]?.sortOrder; 
+    const isSorted = currentSort[columnKey] !== undefined;
     const handleKeyDown = (event)=>{
       if (event.key === 'Enter') {  
         handleSort(columnKey);
@@ -33,14 +33,14 @@ const SortableHeader = ({ columnKey, title, currentSort, handleSort,className = 
     );
   };
   SortableHeader.propTypes = {
-    columnKey: PropTypes.string.isRequired,  
-    title: PropTypes.string.isRequired,      
+    columnKey: PropTypes.string.isRequired,
+    title: PropTypes.string.isRequired,
     currentSort: PropTypes.shape({
-      sortBy: PropTypes.string,
-      sortOrder: PropTypes.string
-    }).isRequired,                          
-    handleSort: PropTypes.func.isRequired,     
-    className: PropTypes.string              
+      activeKey: PropTypes.string.isRequired,
+      sortOrder: PropTypes.oneOf(['asc', 'desc']).isRequired, 
+    }).isRequired,
+    handleSort: PropTypes.func.isRequired,
+    className: PropTypes.string,              
   };
 
   SortableHeader.defaultProps = {

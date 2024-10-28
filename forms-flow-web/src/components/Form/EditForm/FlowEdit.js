@@ -8,8 +8,9 @@ import BpmnEditor from '../../Modeler/Editors/BpmnEditor/index.js';
 import { updateProcess } from "../../../apiManager/services/processServices.js";
 import { toast } from 'react-toastify';
 import { createXMLFromModeler, compareXML, validateProcess } from '../../../helper/processHelper.js';
- 
-const FlowEdit = forwardRef(({isPublished}, ref) => {
+import PropTypes from "prop-types";
+
+const FlowEdit = forwardRef(({isPublished = false}, ref) => {
   const { t } = useTranslation();
   const dispatch = useDispatch();
   const bpmnRef = useRef();
@@ -138,4 +139,7 @@ const FlowEdit = forwardRef(({isPublished}, ref) => {
   );
 });
 
+FlowEdit.propTypes = {
+  isPublished: PropTypes.bool.isRequired
+};
 export default FlowEdit;

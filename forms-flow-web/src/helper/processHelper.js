@@ -52,8 +52,7 @@ export const compareXML = async (xmlString1, xmlString2) => {
 };
 
 //validate any erros in bpmn lint
-export const validateBpmnLintErrors = (lintErrors, translation) => {
-  const t = translation ? translation : (i) => i;
+export const validateBpmnLintErrors = (lintErrors, translation = (i) => i) => {
   // only return false if there are errors, warnings are ok
   let hasErrors = false;
   for (const key in lintErrors) {
@@ -62,7 +61,7 @@ export const validateBpmnLintErrors = (lintErrors, translation) => {
       // Only toast errors, not warnings
       if (x.category === "error" || x.category === "warn") {
         hasErrors = true;
-        toast[x.category](t(x.message));
+        toast[x.category](translation(x.message));
       }
     });
   }
@@ -70,8 +69,7 @@ export const validateBpmnLintErrors = (lintErrors, translation) => {
 };
 
 // validate the xml data and any erros in bpmn lint
-export const validateProcess = (xml, lintErrors, translation) => {
-  const t = translation ? translation : (i) => i;
+export const validateProcess = (xml, lintErrors, translation = (i) => i) => {
   const errorElement = document.getElementsByClassName(ERROR_LINTING_CLASSNAME);
   const warningElement = document.getElementsByClassName(
     WARNING_LINTING_CLASSNAME
@@ -80,7 +78,7 @@ export const validateProcess = (xml, lintErrors, translation) => {
     return !validateBpmnLintErrors(lintErrors); // if hasErrors true then validate process is false
   }
   if (!validateProcessNames(xml)) {
-    toast.error(t("Process name(s) must not be empty"));
+    toast.error(translation("Process name(s) must not be empty"));
     return false;
   }
   return true;

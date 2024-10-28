@@ -32,7 +32,7 @@ const SubFlow = React.memo(() => {
   const totalCount = useSelector((state) => state.process.totalBpmnCount);
   const [search, setSearch] = useState(searchText || "");
   const [searchSubflowLoading, setSearchSubflowLoading] = useState(false);
-  const [currentBpmnSort, setCurrentBpmnsort] = useState({
+  const [currentBpmnSort, setCurrentBpmnSort] = useState({
     activeKey: "name", 
     name: { sortOrder: "asc" },
     id: { sortOrder: "asc" },
@@ -63,7 +63,7 @@ const SubFlow = React.memo(() => {
 
 
   const handleSort = (key) => {
-    setCurrentBpmnsort((prevSort) => {
+    setCurrentBpmnSort((prevSort) => {
       const newSortOrder = prevSort[key].sortOrder === "asc" ? "desc" : "asc";
       return {
         ...prevSort,

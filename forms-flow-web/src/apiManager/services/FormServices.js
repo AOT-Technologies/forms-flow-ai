@@ -93,6 +93,17 @@ export const validateFormName = (title, name, id) => {
   return RequestService.httpGETRequest(url);
 };
 
+export const validatePathName = (path, name, id) => {
+  let url = `${API.VALIDATE_FORM_NAME}?path=${path}`;
+  if (name) {
+    url += `&name=${encodeURIComponent(name)}`;
+  }
+  if (id) {
+    url += `&id=${encodeURIComponent(id)}`;
+  }
+  return RequestService.httpGETRequest(url);
+};
+
 export const getFormExport = (form_id) => {
   const exportFormUrl = replaceUrl(API.EXPORT_FORM, "<form_id>",form_id);
   return RequestService.httpGETRequest(exportFormUrl);

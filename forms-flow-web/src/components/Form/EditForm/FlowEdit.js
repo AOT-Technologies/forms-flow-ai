@@ -7,10 +7,9 @@ import { setProcessData } from '../../../actions/processActions.js';
 import BpmnEditor from '../../Modeler/Editors/BpmnEditor/index.js';
 import { updateProcess } from "../../../apiManager/services/processServices.js";
 import { toast } from 'react-toastify';
-import { createXMLFromModeler, validateProcessNames, compareXML } from '../../../helper/processHelper.js';
-import { ERROR_LINTING_CLASSNAME } from '../../Modeler/constants/bpmnModelerConstants.js';
-
-const FlowEdit = forwardRef((_, ref) => {
+import { createXMLFromModeler, compareXML, validateProcess } from '../../../helper/processHelper.js';
+ 
+const FlowEdit = forwardRef(({isPublished}, ref) => {
   const { t } = useTranslation();
   const dispatch = useDispatch();
   const bpmnRef = useRef();
@@ -22,35 +21,7 @@ const FlowEdit = forwardRef((_, ref) => {
   // handle history modal
   const handleHistoryModal = () => setHistoryModalShow(!historyModalShow);
   const handleHanldeDisacardModal = () => setShowDiscardModal(!showDiscardModal);
-  //validate any erros in bpmn lint
-  const validateBpmnLintErrors = () => {
-    // only return false if there are errors, warnings are ok
-    let hasErrors = false;
 
-    for (const key in lintErrors) {
-      const err = lintErrors[key];
-      err.forEach((x) => {
-        // Only toast errors, not warnings
-        if (x.category === "error") {
-          hasErrors = true;
-          toast.error(t(x.message));
-        }
-      });
-    }
-    return hasErrors;
-  };
-
-  // validate the xml data and any erros in bpmn lint
-  const validateProcess = (xml) => {
-    if (document.getElementsByClassName(ERROR_LINTING_CLASSNAME).length > 0) {
-      return validateBpmnLintErrors();
-    }
-    if (!validateProcessNames(xml)) {
-      toast.error(t("Process name(s) must not be empty"));
-      return false;
-    }
-    return true;
-  };
 
 
 
@@ -65,7 +36,7 @@ const FlowEdit = forwardRef((_, ref) => {
         toast.success(t("Process updated successfully"));
         return;
       }
-      if (!validateProcess(xml)) {
+      if (!validateProcess(xml,lintErrors)) { //if the validate process is not true
         return;
       }
       setSavingFlow(true);
@@ -143,6 +114,7 @@ const FlowEdit = forwardRef((_, ref) => {
               className="mx-2"
               label={t("Save Flow")}
               onClick={saveFlow}
+              disabled={isPublished}
               dataTestid="save-flow-layout"
               ariaLabel={t("Save Flow Layout")}
               buttonLoading={savingFlow}

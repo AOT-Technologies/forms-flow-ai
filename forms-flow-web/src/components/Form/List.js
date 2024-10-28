@@ -69,7 +69,7 @@ const List = React.memo((props) => {
   const [formSubmitted, setFormSubmitted] = useState(false);
 
   const tenantKey = useSelector((state) => state.tenants?.tenantId);
-  const [form, setFormData] = useState({display:"form", title:"", description:""});
+  const [form, setForm] = useState({display:"form", title:"", description:""});
   // const roleIds = useSelector((state) => state.user?.roleIds || {});
   useEffect(() => {
     setSearch(searchText);
@@ -243,7 +243,7 @@ const List = React.memo((props) => {
     const { target } = event;
     const value = target.type === "checkbox" ? target.checked : target.value;
     value == "" ? setNameError("This field is required") : setNameError("");
-    setFormData(prev=>({...prev,[path]:value}));
+    setForm(prev=>({...prev,[path]:value}));
   };
 
   const handleBuild = (formName,formDescription) => {

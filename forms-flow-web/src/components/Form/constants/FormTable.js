@@ -186,9 +186,7 @@ function FormTable() {
                         <td className="w-12">
                           <span data-testid={`form-status-${e._id}`} className="d-flex align-items-center">
                             {e.status === "active" ? (
-                              <>
                                 <span className="status-live"></span>
-                              </>
                             ) : (
                               <span className="status-draft"></span>
                             )}
@@ -243,9 +241,9 @@ function FormTable() {
                                   {limit}
                                 </Dropdown.Toggle>
                                 <Dropdown.Menu>
-                                  {pageOptions.map((option, index) => (
+                                  {pageOptions.map((option) => (
                                     <Dropdown.Item
-                                      key={index}
+                                      key={option.value}
                                       type="button"
                                       data-testid={`page-limit-dropdown-item-${option.value}`}
                                       onClick={() => {

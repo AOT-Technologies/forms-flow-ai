@@ -41,7 +41,6 @@ const SubFlow = React.memo(() => {
   });
   useEffect(() => {
     setIsLoading(true);
-    setSearchSubflowLoading(true);
     dispatch(
       fetchAllProcesses(
         {
@@ -106,12 +105,13 @@ const SubFlow = React.memo(() => {
     dispatch(setBpmnSearchText(""));
   };
   const handleSearch = () => {
+    setSearchSubflowLoading(true);
     setActivePage(1);
     dispatch(setBpmnSearchText(search));
   };
   const gotoEdit = (data) => {
     if (MULTITENANCY_ENABLED) {
-      dispatch(setIsPublicDiagram(data.tenantId ? true : false));
+      dispatch(setIsPublicDiagram(!!data.tenantId));
     }
     dispatch(
       push(`${redirectUrl}subflow/edit/${data.parentProcessKey}`)
@@ -154,6 +154,7 @@ const SubFlow = React.memo(() => {
                     title="Name"
                     currentSort={currentBpmnSort}
                     handleSort={handleSort}
+                    className="ms-4"
                      />
 
                   </th>
@@ -205,16 +206,8 @@ const SubFlow = React.memo(() => {
                         data-testid={`sub-flow-status-${processItem._id}`}
                         className="d-flex align-items-center"
                       >
-                        {processItem.status === "active" ? (
-                          <>
-                            <span className="status-live"></span>
-                          </>
-                        ) : (
-                          <span className="status-draft"></span>
-                        )}
-                        {processItem.status === "active"
-                          ? t("Live")
-                          : t("Draft")}
+                        <span className={processItem.status === "active" ? "status-live" : "status-draft"}></span>
+                        {processItem.status === "active" ? t("Live") : t("Draft")}
                       </span>
                     </td>
                     <td className="w-25">
@@ -271,9 +264,9 @@ const SubFlow = React.memo(() => {
                             {limit}
                           </Dropdown.Toggle>
                           <Dropdown.Menu>
-                            {pageOptions.map((option, index) => (
+                            {pageOptions.map((option) => (
                               <Dropdown.Item
-                                key={index}
+                                key={option.value}
                                 type="button"
                                 data-testid={`page-limit-dropdown-item-${option.value}`}
                                 onClick={() => {

@@ -28,6 +28,7 @@ import { StorageService } from "@formsflow/service";
 import { toast } from "react-toastify";
 import { Translation } from "react-i18next";
 import { setFormStatusLoading } from "../../actions/processActions";
+import { setFormAuthorizationDetails } from "../../actions/formActions";
 export const getProcessStatusList = (processId, taskId) => {
   return (dispatch) => {
     dispatch(setProcessStatusLoading(true));
@@ -418,9 +419,13 @@ export const saveFormProcessMapperPut = (data, ...rest) => {
     RequestService.httpPUTRequest(`${API.FORM}/${data.mapper.id}`, data)
       .then(async (res) => {
         if (res.data) {
-          dispatch(getApplicationCount(res.data.mapper.id));
-          dispatch(setFormPreviosData(res.data.mapper));
-          dispatch(setFormProcessesData(res.data.mapper));
+          const {data} = res;
+          dispatch(getApplicationCount(data.mapper.id));
+          dispatch(setFormPreviosData(data.mapper));
+          dispatch(setFormProcessesData(data.mapper));
+          if(data.authorizations){
+            dispatch(setFormAuthorizationDetails(data.authorizations));
+          }
           done(null, res.data);
         } else {
           dispatch(setFormProcessesData([]));

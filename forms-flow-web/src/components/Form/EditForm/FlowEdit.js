@@ -23,9 +23,6 @@ const FlowEdit = forwardRef(({isPublished = false}, ref) => {
   const handleHistoryModal = () => setHistoryModalShow(!historyModalShow);
   const handleHanldeDisacardModal = () => setShowDiscardModal(!showDiscardModal);
 
-
-
-
   const saveFlow = async () => {
     try{
       const bpmnModeler = bpmnRef.current?.getBpmnModeler();
@@ -60,13 +57,9 @@ const FlowEdit = forwardRef(({isPublished = false}, ref) => {
     }
 };
 
- 
-
   useImperativeHandle(ref, () => ({
     saveFlow,
   }));
-
- 
 
   return (
     <Card>

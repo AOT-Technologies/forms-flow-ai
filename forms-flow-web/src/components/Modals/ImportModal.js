@@ -7,7 +7,7 @@ import { CloseIcon, CustomButton, UploadIcon, SuccessIcon, FailedIcon, IButton, 
 
 const ImportModal = React.memo(({ importFormModal, onClose, formSubmitted,
     uploadActionType, importError, importLoader, formName, description,
-    handleImport, fileItems }) => {
+    handleImport, fileItems,  headerText, primaryButtonText}) => {
 
     const computedStyle = getComputedStyle(document.documentElement);
     const redColor = computedStyle.getPropertyValue("--ff-red-000");
@@ -55,6 +55,7 @@ const ImportModal = React.memo(({ importFormModal, onClose, formSubmitted,
     };
 
     const onImport = () => {
+        closeModal();
         handleImport(selectedFile, uploadActionType.IMPORT,
             selectedLayoutVersion?.value, selectedFlowVersion?.value);
     };
@@ -80,7 +81,7 @@ const ImportModal = React.memo(({ importFormModal, onClose, formSubmitted,
         <Modal show={importFormModal} onHide={closeModal} centered={true} size="sm">
             <Modal.Header>
                 <Modal.Title>
-                    <b><Translation>{(t) => t("Import New Form")}</Translation></b>
+                    <b><Translation>{(t) => t(headerText)}</Translation></b>
                 </Modal.Title>
                 <div className="d-flex align-items-center">
                     <CloseIcon width="16.5" height="16.5" onClick={() => {
@@ -239,7 +240,7 @@ const ImportModal = React.memo(({ importFormModal, onClose, formSubmitted,
                     variant={importError && !selectedFile ? "dark" : "primary"}
                     disabled={importError}
                     size="md"
-                    label={<Translation>{(t) => t("Confirm and Edit form")}</Translation>}
+                    label={<Translation>{(t) => t(primaryButtonText)}</Translation>}
                     onClick={onImport}
                     buttonLoading={!importError && formSubmitted ? true : false}
                     className=""

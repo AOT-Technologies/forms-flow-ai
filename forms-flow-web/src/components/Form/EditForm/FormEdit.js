@@ -983,6 +983,8 @@ const Edit = React.memo(() => {
         onClose={handleCloseSelectedAction}
         handleImport={handleImport}
         fileItems={fileItems}
+        headerText="Import File"
+        primaryButtonText="Confirm And Replace"
       />
 
       <ExportModal

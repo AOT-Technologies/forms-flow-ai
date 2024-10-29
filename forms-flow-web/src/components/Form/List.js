@@ -361,6 +361,8 @@ const List = React.memo((props) => {
                     description={description}
                     onClose={onCloseimportModal}
                     handleImport={handleImport}
+                    headerText="Import New Form"
+                    primaryButtonText="Confirm and Edit form"
                   />
                 </div>
               </div>

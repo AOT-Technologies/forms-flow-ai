@@ -139,7 +139,6 @@ class Process(AuditDateTimeMixin, AuditUserMixin, BaseModel, db.Model):
             db.session.query(
                 cls.parent_process_key,
                 func.max(cls.major_version).label("latest_major_version"),
-                func.max(cls.minor_version).label("latest_minor_version"),
                 func.max(cls.id).label("latest_id"),
             )
             .group_by(cls.parent_process_key)
@@ -165,7 +164,6 @@ class Process(AuditDateTimeMixin, AuditUserMixin, BaseModel, db.Model):
             subquery,
             (cls.parent_process_key == subquery.c.parent_process_key)
             & (cls.major_version == subquery.c.latest_major_version)
-            & (cls.minor_version == subquery.c.latest_minor_version)
             & (cls.id == subquery.c.latest_id),
         )
 
@@ -185,7 +183,7 @@ class Process(AuditDateTimeMixin, AuditUserMixin, BaseModel, db.Model):
         """Get latest version of process."""
         query = (
             cls.auth_query(cls.query.filter(cls.process_key == process_key))
-            .order_by(cls.major_version.desc(), cls.minor_version.desc())
+            .order_by(cls.major_version.desc(), cls.minor_version.desc(), cls.id.desc())
             .first()
         )
 

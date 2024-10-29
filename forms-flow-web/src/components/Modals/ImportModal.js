@@ -7,7 +7,7 @@ import { CloseIcon, CustomButton, UploadIcon, SuccessIcon, FailedIcon, IButton, 
 
 const ImportModal = React.memo(({ importFormModal, onClose, formSubmitted,
     uploadActionType, importError, importLoader, formName, description,
-    handleImport, fileItems,  headerText, primaryButtonText}) => {
+    handleImport, fileItems, headerText, primaryButtonText }) => {
 
     const computedStyle = getComputedStyle(document.documentElement);
     const redColor = computedStyle.getPropertyValue("--ff-red-000");
@@ -139,17 +139,17 @@ const ImportModal = React.memo(({ importFormModal, onClose, formSubmitted,
                         item?.majorVersion != null || item?.minorVersion != null) && (
                             <div className="import-container">
                                 {/* First Row */}
-                                    <div className="import-error-note d-block">
+                                <div className="import-error-note d-block">
 
-                                        <div className="mx-2 d-flex align-items-center">
-                                            <IButton />
-                                            <span className="ms-2">
-                                                <Translation>
-                                                    {(t) => t("Import will create a new version.")}
-                                                </Translation>
-                                            </span>
-                                        </div>
+                                    <div className="mx-2 d-flex align-items-center">
+                                        <IButton />
+                                        <span className="ms-2">
+                                            <Translation>
+                                                {(t) => t("Import will create a new version.")}
+                                            </Translation>
+                                        </span>
                                     </div>
+                                </div>
                                 <div className="import-details">
                                     <div className="file-item-header-text">Type</div>
                                     <div className="file-item-header-text">Import</div>
@@ -175,8 +175,8 @@ const ImportModal = React.memo(({ importFormModal, onClose, formSubmitted,
                                                     <Dropdown.Item
                                                         placeHolder="Skip, Donot Import"
                                                         key={index}
-                                                        onClick={() => 
-                                                        handleLayoutChange(option)
+                                                        onClick={() =>
+                                                            handleLayoutChange(option)
                                                         }                                    >
                                                         {option.label}
 
@@ -220,7 +220,17 @@ const ImportModal = React.memo(({ importFormModal, onClose, formSubmitted,
 
                 </>
                 ) : (
-                    <div className="file-upload" onClick={() => document.getElementById('file-input').click()}>
+                    <div
+                        className="file-upload"
+                        role="button"
+                        tabIndex={0}
+                        onClick={() => document.getElementById('file-input').click()}
+                        onKeyPress={(e) => {
+                            if (e.key === 'Enter' || e.key === ' ') {
+                                document.getElementById('file-input').click();
+                            }
+                        }}
+                    >
                         <input
                             id="file-input"
                             type="file"
@@ -229,8 +239,12 @@ const ImportModal = React.memo(({ importFormModal, onClose, formSubmitted,
                         />
                         <div className="upload-area">
                             <UploadIcon />
-                            <p className="upload-text"><Translation>{(t) => t("Click or drag a file to this area to import")}</Translation></p>
-                            <p className="upload-size-text"><Translation>{(t) => t("Support for a single file upload. Maximum file size 20MB.")}</Translation></p>
+                            <p className="upload-text">
+                                <Translation>{(t) => t("Click or drag a file to this area to import")}</Translation>
+                            </p>
+                            <p className="upload-size-text">
+                                <Translation>{(t) => t("Support for a single file upload. Maximum file size 20MB.")}</Translation>
+                            </p>
                         </div>
                     </div>
                 )}

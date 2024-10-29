@@ -1,17 +1,14 @@
 import React, { useState, useEffect } from "react";
 import { useSelector, useDispatch } from "react-redux";
-import {
-  CustomButton,
-  CustomSearch,
-  DownArrowIcon,
-} from "@formsflow/components";
+import { CustomButton, CustomSearch } from "@formsflow/components";
 import LoadingOverlay from "react-loading-overlay-ts";
 import { useTranslation } from "react-i18next";
 import SortableHeader from "../CustomComponents/SortableHeader";
+import {
+  ReusableTableRow,
+  TableFooter,
+} from "../CustomComponents/TableComponents";
 import { fetchAllProcesses } from "../../apiManager/services/processServices";
-import { Dropdown } from "react-bootstrap";
-import Pagination from "react-js-pagination";
-import { HelperServices } from "@formsflow/service";
 import { MULTITENANCY_ENABLED } from "../../constants/constants";
 import { push } from "connected-react-router";
 import {
@@ -97,7 +94,7 @@ const DecisionTable = React.memo(() => {
   const handlePageChange = (page) => setActivePage(page);
   const gotoEdit = (data) => {
     if (MULTITENANCY_ENABLED) {
-      dispatch(setIsPublicDiagram(data.tenantId ? true : false));
+      dispatch(setIsPublicDiagram(!!data.tenantId));
     }
     dispatch(push(`${redirectUrl}processes/dmn/${data.key}/edit`));
   };
@@ -172,107 +169,21 @@ const DecisionTable = React.memo(() => {
               </thead>
               <tbody>
                 {dmn.map((dmnItem) => (
-                  <tr key={dmnItem.id}>
-                    <td className="w-25">
-                      <span className="ms-4">{dmnItem.name}</span>
-                    </td>
-                    <td className="w-20">
-                      <span>{dmnItem.parentProcessKey}</span>
-                    </td>
-                    <td className="w-15">
-                      {HelperServices?.getLocaldate(dmnItem.modified)}
-                    </td>
-                    <td className="w-15">
-                      <span
-                        data-testid={`sub-flow-status-${dmnItem._id}`}
-                        className="d-flex align-items-center"
-                      >
-                        <span
-                          className={
-                            dmnItem.status === "active"
-                              ? "status-live"
-                              : "status-draft"
-                          }
-                        ></span>
-                        {dmnItem.status === "active"
-                          ? t("Live")
-                          : t("Draft")}
-                      </span>
-                    </td>
-                    <td className="w-25">
-                      <span className="d-flex justify-content-end">
-                        <CustomButton
-                          variant="secondary"
-                          size="sm"
-                          label={t("Edit")}
-                          className="float-right"
-                          ariaLabel="Edit DMN Button"
-                          onClick={() => gotoEdit(dmnItem)}
-                          dataTestid="Edit DMN Button"
-                        />
-                      </span>
-                    </td>
-                  </tr>
+                  <ReusableTableRow
+                    key={dmnItem.id}
+                    item={dmnItem}
+                    gotoEdit={gotoEdit}
+                    buttonLabel="Dmn"
+                  />
                 ))}
-                <tr>
-                  <td colSpan={3}>
-                    <div className="d-flex justify-content-between align-items-center flex-column flex-md-row">
-                      <span className="ms-2">
-                        {t("Showing")} {(limit * activePage) - (limit - 1)}{" "}
-                        {t("to")}&nbsp;
-                        {Math.min(limit * activePage, totalCount)} {t("of")}
-                        &nbsp;
-                        {totalCount} {t("results")}
-                      </span>
-                    </div>
-                  </td>
-                  <td colSpan={3}>
-                    <div className="d-flex align-items-center justify-content-around">
-                      <Pagination
-                        activePage={activePage}
-                        itemsCountPerPage={limit}
-                        totalItemsCount={totalCount}
-                        pageRangeDisplayed={5}
-                        itemClass="page-item"
-                        linkClass="page-link"
-                        onChange={handlePageChange}
-                      />
-                    </div>
-                  </td>
-                  <td colSpan={3}>
-                    <div className="d-flex align-items-center justify-content-end">
-                      <span className="pagination-text">
-                        {t("Rows per page")}
-                      </span>
-                      <div className="pagination-dropdown">
-                        <Dropdown data-testid="page-limit-dropdown">
-                          <Dropdown.Toggle
-                            variant="light"
-                            id="dropdown-basic"
-                            data-testid="page-limit-dropdown-toggle"
-                          >
-                            {limit}
-                          </Dropdown.Toggle>
-                          <Dropdown.Menu>
-                            {pageOptions.map((option) => (
-                              <Dropdown.Item
-                                key={option.value}
-                                type="button"
-                                data-testid={`page-limit-dropdown-item-${option.value}`}
-                                onClick={() => {
-                                  onLimitChange(option.value);
-                                }}
-                              >
-                                {option.text}
-                              </Dropdown.Item>
-                            ))}
-                          </Dropdown.Menu>
-                        </Dropdown>
-                        <DownArrowIcon />
-                      </div>
-                    </div>
-                  </td>
-                </tr>
+                <TableFooter
+                  limit={limit}
+                  activePage={activePage}
+                  totalCount={totalCount}
+                  handlePageChange={handlePageChange}
+                  onLimitChange={onLimitChange}
+                  pageOptions={pageOptions}
+                />
               </tbody>
             </table>
           </div>

@@ -1,15 +1,9 @@
 import React, { useEffect, useState } from "react";
-import {
-  CustomButton,
-  CustomSearch,
-  DownArrowIcon,
-} from "@formsflow/components";
+import { CustomButton, CustomSearch } from "@formsflow/components";
 import { useSelector, useDispatch } from "react-redux";
-import { useTranslation ,Translation } from "react-i18next";
-import { HelperServices } from "@formsflow/service";
+import { useTranslation } from "react-i18next";
+
 import { fetchAllProcesses } from "../../apiManager/services/processServices";
-import { Dropdown } from "react-bootstrap";
-import Pagination from "react-js-pagination";
 import LoadingOverlay from "react-loading-overlay-ts";
 import {
   setBpmnSearchText,
@@ -17,7 +11,11 @@ import {
 } from "../../actions/processActions";
 import { push } from "connected-react-router";
 import { MULTITENANCY_ENABLED } from "../../constants/constants";
-import SortableHeader from '../CustomComponents/SortableHeader';
+import SortableHeader from "../CustomComponents/SortableHeader";
+import {
+  ReusableTableRow,
+  TableFooter,
+} from "../CustomComponents/TableComponents";
 
 const SubFlow = React.memo(() => {
   const searchText = useSelector((state) => state.process.bpmnSearchText);
@@ -33,7 +31,7 @@ const SubFlow = React.memo(() => {
   const [search, setSearch] = useState(searchText || "");
   const [searchSubflowLoading, setSearchSubflowLoading] = useState(false);
   const [currentBpmnSort, setCurrentBpmnSort] = useState({
-    activeKey: "name", 
+    activeKey: "name",
     name: { sortOrder: "asc" },
     id: { sortOrder: "asc" },
     modified: { sortOrder: "asc" },
@@ -59,7 +57,6 @@ const SubFlow = React.memo(() => {
       )
     );
   }, [dispatch, activePage, limit, searchText, currentBpmnSort]);
-
 
   const handleSort = (key) => {
     setCurrentBpmnSort((prevSort) => {
@@ -113,9 +110,7 @@ const SubFlow = React.memo(() => {
     if (MULTITENANCY_ENABLED) {
       dispatch(setIsPublicDiagram(!!data.tenantId));
     }
-    dispatch(
-      push(`${redirectUrl}subflow/edit/${data.parentProcessKey}`)
-    );
+    dispatch(push(`${redirectUrl}subflow/edit/${data.parentProcessKey}`));
   };
 
   return (
@@ -149,38 +144,37 @@ const SubFlow = React.memo(() => {
               <thead className="table-header">
                 <tr>
                   <th className="w-25" scope="col">
-                    <SortableHeader 
-                    columnKey="name"
-                    title="Name"
-                    currentSort={currentBpmnSort}
-                    handleSort={handleSort}
-                    className="ms-4"
-                     />
-
+                    <SortableHeader
+                      columnKey="name"
+                      title="Name"
+                      currentSort={currentBpmnSort}
+                      handleSort={handleSort}
+                      className="ms-4"
+                    />
                   </th>
                   <th className="w-20" scope="col">
-                  <SortableHeader 
-                    columnKey="id"
-                    title="id"
-                    currentSort={currentBpmnSort}
-                    handleSort={handleSort}
-                  />
+                    <SortableHeader
+                      columnKey="id"
+                      title="id"
+                      currentSort={currentBpmnSort}
+                      handleSort={handleSort}
+                    />
                   </th>
                   <th className="w-15" scope="col">
-                  <SortableHeader 
-                    columnKey="modified"
-                    title="Last Edited"
-                    currentSort={currentBpmnSort}
-                    handleSort={handleSort}
-                  />
+                    <SortableHeader
+                      columnKey="modified"
+                      title="Last Edited"
+                      currentSort={currentBpmnSort}
+                      handleSort={handleSort}
+                    />
                   </th>
                   <th className="w-15" scope="col">
-                  <SortableHeader 
-                    columnKey="status"
-                    title="Status"
-                    currentSort={currentBpmnSort}
-                    handleSort={handleSort}
-                  />
+                    <SortableHeader
+                      columnKey="status"
+                      title="Status"
+                      currentSort={currentBpmnSort}
+                      handleSort={handleSort}
+                    />
                   </th>
                   <th
                     className="w-25"
@@ -191,98 +185,21 @@ const SubFlow = React.memo(() => {
               </thead>
               <tbody>
                 {process.map((processItem) => (
-                  <tr key={processItem.id}>
-                    <td className="w-25">
-                      <span className="ms-4">{processItem.name}</span>
-                    </td>
-                    <td className="w-20">
-                      <span className="">{processItem.parentProcessKey}</span>
-                    </td>
-                    <td className="w-15">
-                      {HelperServices?.getLocaldate(processItem.modified)}
-                    </td>
-                    <td className="w-15">
-                      <span
-                        data-testid={`sub-flow-status-${processItem._id}`}
-                        className="d-flex align-items-center"
-                      >
-                        <span className={processItem.status === "active" ? "status-live" : "status-draft"}></span>
-                        {processItem.status === "active" ? t("Live") : t("Draft")}
-                      </span>
-                    </td>
-                    <td className="w-25">
-                      <span className="d-flex justify-content-end">
-                        <CustomButton
-                          variant="secondary"
-                          size="sm"
-                          label={<Translation>{(t) => t("Edit")}</Translation>}
-                          className="float-right"
-                          ariaLabel="Edit Form Button"
-                          onClick={() => gotoEdit(processItem)}
-                        />
-                      </span>
-                    </td>
-                  </tr>
+                  <ReusableTableRow
+                    key={processItem.id}
+                    item={processItem}
+                    gotoEdit={gotoEdit}
+                    buttonLabel="Bpmn"
+                  />
                 ))}
-                <tr>
-                  <td colSpan={3}>
-                    <div className="d-flex justify-content-between align-items-center flex-column flex-md-row">
-                      <span className="ms-2">
-                        {t("Showing")} {(limit * activePage) - (limit - 1)}{" "}
-                        {t("to")}&nbsp;
-                        {Math.min(limit * activePage, totalCount)}{" "}
-                        {t("of")}&nbsp;
-                        {totalCount} {t("results")}
-                      </span>
-                    </div>
-                  </td>
-                  <td colSpan={3}>
-                    <div className="d-flex align-items-center justify-content-around">
-                      <Pagination
-                        activePage={activePage}
-                        itemsCountPerPage={limit}
-                        totalItemsCount={totalCount}
-                        pageRangeDisplayed={5}
-                        itemClass="page-item"
-                        linkClass="page-link"
-                        onChange={handlePageChange}
-                      />
-                    </div>
-                  </td>
-                  <td colSpan={3}>
-                    <div className="d-flex align-items-center justify-content-end">
-                      <span className="pagination-text">
-                        {t("Rows per page")}
-                      </span>
-                      <div className="pagination-dropdown">
-                        <Dropdown data-testid="page-limit-dropdown">
-                          <Dropdown.Toggle
-                            variant="light"
-                            id="dropdown-basic"
-                            data-testid="page-limit-dropdown-toggle"
-                          >
-                            {limit}
-                          </Dropdown.Toggle>
-                          <Dropdown.Menu>
-                            {pageOptions.map((option) => (
-                              <Dropdown.Item
-                                key={option.value}
-                                type="button"
-                                data-testid={`page-limit-dropdown-item-${option.value}`}
-                                onClick={() => {
-                                  onLimitChange(option.value);
-                                }}
-                              >
-                                {option.text}
-                              </Dropdown.Item>
-                            ))}
-                          </Dropdown.Menu>
-                        </Dropdown>
-                        <DownArrowIcon />
-                      </div>
-                    </div>
-                  </td>
-                </tr>
+                <TableFooter
+                  limit={limit}
+                  activePage={activePage}
+                  totalCount={totalCount}
+                  handlePageChange={handlePageChange}
+                  onLimitChange={onLimitChange}
+                  pageOptions={pageOptions}
+                />
               </tbody>
             </table>
           </div>

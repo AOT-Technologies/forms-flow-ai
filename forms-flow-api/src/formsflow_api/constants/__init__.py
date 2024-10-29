@@ -105,6 +105,11 @@ class BusinessErrorCode(ErrorCodeMixin, Enum):
         "Cannot update a published process",
         HTTPStatus.BAD_REQUEST,
     )
+    FORM_INVALID_OPERATION = (
+        "Cannot update a published form",
+        HTTPStatus.BAD_REQUEST,
+    )
+    FORM_VALIDATION_FAILED = "FORM_VALIDATION_FAILED.", HTTPStatus.BAD_REQUEST
 
     def __new__(cls, message, status_code):
         """Constructor."""

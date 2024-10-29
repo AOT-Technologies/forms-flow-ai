@@ -222,7 +222,17 @@ class ProcessService:  # pylint: disable=too-few-public-methods
         current_app.logger.debug(f"Get process data for process key: {process_key}")
         process = Process.get_latest_version_by_key(process_key)
         if process:
-            return processSchema.dump(process)
+            process_data = processSchema.dump(process)
+            # Determine version numbers based on the process status
+            major_version, minor_version = cls.determine_process_version(
+                process.status,
+                process.status_changed,
+                process.major_version,
+                process.minor_version,
+            )
+            process_data["majorVersion"] = major_version
+            process_data["minorVersion"] = minor_version
+            return process_data
         raise BusinessException(BusinessErrorCode.PROCESS_ID_NOT_FOUND)
 
     @classmethod
@@ -233,6 +243,17 @@ class ProcessService:  # pylint: disable=too-few-public-methods
         if not process or (process and process.is_subflow is False):
             raise BusinessException(BusinessErrorCode.PROCESS_ID_NOT_FOUND)
         return process
+
+    @classmethod
+    def determine_process_version(
+        cls, status, status_changed, major_version, minor_version
+    ):
+        """Determine process version."""
+        current_app.logger.debug("Identifying process version..")
+        is_unpublished = status == ProcessStatus.DRAFT and status_changed
+        major_version = major_version + 1 if is_unpublished else major_version
+        minor_version = 0 if is_unpublished else minor_version + 1
+        return major_version, minor_version
 
     @classmethod
     @user_context
@@ -276,11 +297,12 @@ class ProcessService:  # pylint: disable=too-few-public-methods
             raise BusinessException(BusinessErrorCode.PROCESS_EXISTS)
 
         # Determine version numbers based on the process status
-        is_unpublished = process.status == "Draft" and process.status_changed
-        major_version = (
-            process.major_version + 1 if is_unpublished else process.major_version
+        major_version, minor_version = cls.determine_process_version(
+            process.status,
+            process.status_changed,
+            process.major_version,
+            process.minor_version,
         )
-        minor_version = 0 if is_unpublished else process.minor_version + 1
 
         # Create a new process instance with updated data
         process_dict = {

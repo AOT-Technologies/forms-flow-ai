@@ -68,13 +68,6 @@ services:
     tty: true # -t
     networks:
       - forms-flow-webapi-network
-  redis:
-    image: "redis:alpine"
-    ports:
-      - "6379:6379"
-    networks:
-      - forms-flow-webapi-network
-
 
 networks:
   forms-flow-webapi-network:

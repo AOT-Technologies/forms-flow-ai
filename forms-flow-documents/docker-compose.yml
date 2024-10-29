@@ -6,6 +6,8 @@ services:
       context: ./
       dockerfile: Dockerfile
     restart: unless-stopped
+    depends_on:
+      - redis
     ports:
       - '5006:5006'
     volumes:

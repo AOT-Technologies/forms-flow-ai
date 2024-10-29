@@ -30,16 +30,16 @@ const FlowEdit = forwardRef(({isPublished = false}, ref) => {
     try{
       const bpmnModeler = bpmnRef.current?.getBpmnModeler();
       const xml = await createXMLFromModeler(bpmnModeler);
-  
+      if (!validateProcess(xml,lintErrors,t)) {
+        return;
+      }
       //if xml is same as existing process data, no need to update
       const isEqual = await compareXML(processData?.processData, xml);
       if (isEqual) {
         toast.success(t("Process updated successfully"));
         return;
       }
-      if (!validateProcess(xml,lintErrors)) { //if the validate process is not true
-        return;
-      }
+      
       setSavingFlow(true);
       const response = await updateProcess({ type:"BPMN", id: processData.id, data:xml });
       dispatch(setProcessData(response.data));

@@ -64,6 +64,7 @@ class SpiffBPMService(BaseBPMService):
     def post_process_start(cls, process_key, payload, token, tenant_key, message_key: str = None):
         """Post process start."""
         # Using message events for start with spiff, construct the URL using the message key.
+        #TODO This should be done as part of the publish endpoint, adding it here since we dont have that in this version.
         url = (
             f"{cls._get_url_(BPMEndpointType.PROCESS_INSTANCES)}/{process_key}/start"
         )

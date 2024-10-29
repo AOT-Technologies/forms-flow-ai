@@ -49,7 +49,7 @@ class ApplicationService:  # pylint: disable=too-many-public-methods
         """Trigger bpmn workflow to create a task."""
         bpm: BaseBPMService = BpmFactory.get_bpm_service()
         try:
-            process = Process.get_latest_version_by_mapper(mapper.id)
+            process = Process.get_latest_version_by_mapper(mapper.process_key)
             if mapper.process_tenant:
                 camunda_start_task = bpm.post_process_start_tenant(
                     process_key=mapper.process_key,

@@ -4,7 +4,9 @@ import Pagination from "react-js-pagination";
 import { Dropdown } from "react-bootstrap";
 import { HelperServices } from "@formsflow/service";
 import { CustomButton, DownArrowIcon } from "@formsflow/components";
-export const ReusableTableRow = ({ item, gotoEdit,buttonLabel }) => {
+import PropTypes from "prop-types";
+
+export const ReusableTableRow = ({ item, gotoEdit, buttonLabel }) => {
   const { t } = useTranslation();
   return (
     <tr>
@@ -42,6 +44,17 @@ export const ReusableTableRow = ({ item, gotoEdit,buttonLabel }) => {
       </td>
     </tr>
   );
+};
+ReusableTableRow.propTypes = {
+  item: PropTypes.shape({
+    name: PropTypes.string.isRequired,
+    parentProcessKey: PropTypes.string,
+    modified: PropTypes.string,
+    status: PropTypes.string,
+    _id: PropTypes.string.isRequired,
+  }).isRequired,
+  gotoEdit: PropTypes.func.isRequired,
+  buttonLabel: PropTypes.string.isRequired,
 };
 export const TableFooter = ({
   limit,
@@ -108,4 +121,17 @@ export const TableFooter = ({
       </td>
     </tr>
   );
+};
+TableFooter.propTypes = {
+  limit: PropTypes.number.isRequired,
+  activePage: PropTypes.number.isRequired,
+  totalCount: PropTypes.number.isRequired,
+  handlePageChange: PropTypes.func.isRequired,
+  onLimitChange: PropTypes.func.isRequired,
+  pageOptions: PropTypes.arrayOf(
+    PropTypes.shape({
+      value: PropTypes.number.isRequired,
+      text: PropTypes.string.isRequired,
+    })
+  ).isRequired,
 };

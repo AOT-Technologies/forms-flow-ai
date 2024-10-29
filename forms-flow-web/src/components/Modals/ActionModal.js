@@ -3,7 +3,7 @@ import Modal from "react-bootstrap/Modal";
 import { CustomButton } from "@formsflow/components";
 import { DuplicateIcon, ImportIcon, PencilIcon, SaveTemplateIcon, CloseIcon, TrashIcon } from "@formsflow/components";
 
-const ActionModal = React.memo(({ newActionModal, onClose, CategoryType, onAction  }) => {
+const ActionModal = React.memo(({ newActionModal, onClose, CategoryType, onAction, published }) => {
       const handleAction = (actionType)=>{
         onAction(actionType);
         onClose();
@@ -47,6 +47,7 @@ const ActionModal = React.memo(({ newActionModal, onClose, CategoryType, onActio
                             />
                             <CustomButton
                                 variant="secondary"
+                                disabled={published}
                                 size="sm"
                                 label="Import"
                                 icon={<ImportIcon />}
@@ -69,6 +70,7 @@ const ActionModal = React.memo(({ newActionModal, onClose, CategoryType, onActio
 
                             <CustomButton
                                 variant="secondary"
+                                disabled={published}
                                 size="sm"
                                 label="Delete"
                                 icon={<TrashIcon />}

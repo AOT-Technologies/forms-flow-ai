@@ -556,6 +556,9 @@ const Edit = React.memo(() => {
       if (isPublished) {
         await fetchProcessDetails(processListData);
       }
+      else {
+        backToForm();
+      }
       setPromptNewVersion(isPublished);
       setIsPublished(!isPublished);
     } catch (err) {
@@ -953,6 +956,7 @@ const Edit = React.memo(() => {
         onClose={onCloseActionModal}
         CategoryType={CategoryType.FORM}
         onAction={setSelectedAction}
+        published={isPublished}
       />
       <FormBuilderModal
         modalHeader={t("Duplicate")}

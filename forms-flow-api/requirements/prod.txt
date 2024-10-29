@@ -1,12 +1,12 @@
 gunicorn
-Flask<3
+Flask
 Flask-Caching
 Flask-Migrate
 Flask-Moment
 Flask-SQLAlchemy
 flask-restx
 flask-marshmallow
-flask-jwt-oidc
+flask-jwt-oidc==0.7.0
 python-dotenv
 psycopg2-binary
 marshmallow-sqlalchemy
@@ -17,4 +17,4 @@ markupsafe
 PyJWT
 redis
 lxml
-git+https://github.com/AOT-Technologies/forms-flow-ai.git@develop#subdirectory=forms-flow-api-utils
+git+https://github.com/auslin-aot/forms-flow-ai.git@fwf-3769-form-validation-changes#subdirectory=forms-flow-api-utils

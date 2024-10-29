@@ -2,10 +2,7 @@
 
 Test-suite
 """
-from api.services.transformers import (
-    sentiment_analysis_pipeline_transformers
-    
-)
+from api.services.transformers import sentiment_analysis_pipeline_transformers
 
 
 def sentiment_analysis_pipeline_transformers():

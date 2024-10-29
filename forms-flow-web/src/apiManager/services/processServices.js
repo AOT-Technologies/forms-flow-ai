@@ -13,14 +13,15 @@ import {
   setProcessDiagramXML,
   setProcessDiagramLoading,
   setFormPreviosData,
-  setProcessXml,
   setApplicationCountResponse,
   setUnPublishApiError,
   setResetProcess,
   setAllDmnProcessList,
   setBpmnModel,
+  setApplicationCount,
+  setSubflowCount,
+  setProcessData 
 } from "../../actions/processActions";
-import { setApplicationCount } from "../../actions/processActions";
 import { replaceUrl } from "../../helper/helper";
 import { StorageService } from "@formsflow/service";
 
@@ -119,6 +120,48 @@ export const fetchAllBpmProcesses = (  {tenant_key = null,
         dispatch(setProcessLoadError(true));
       });
   };
+};
+
+export  const fetchAllProcesses = ({
+  limit,
+  searchKey = "",
+  sortOrder,
+  processType ,
+  sortBy,
+  pageNo = 1 ,} = {},
+  ...rest
+  ) => {
+    const done = rest.length ? rest[0] : () => {};
+
+    // let url = API.GET_PROCESSES_DETAILS
+   let url = `${API.GET_PROCESSES_DETAILS}?pageNo=${pageNo}&limit=${limit
+   }&sortOrder=${sortOrder}&processType=${processType}&sortBy=${sortBy}&name=${searchKey}`;
+    return (dispatch) => {
+      // eslint-disable-next-line max-len
+      RequestService.httpGETRequest(
+        url,
+        {},
+        StorageService.get(StorageService.User.AUTH_TOKEN),
+        true
+      )
+        .then((res) => {
+          if (res?.data) {
+            dispatch(setSubflowCount(res.data.totalCount));
+            // let unique = removeTenantDuplicates(res.data.process, tenant_key);
+            dispatch(setProcessStatusLoading(false));
+            dispatch(setAllProcessList(res.data.process));
+
+            done(null, res.data);
+          } else {
+            dispatch(setAllProcessList([]));
+          }
+        })
+        // eslint-disable-next-line no-unused-vars
+        .catch((error) => {
+          console.log(error);
+          dispatch(setProcessLoadError(true));
+        });
+    };
 };
 
 export const fetchAllBpmProcessesCount = (tenant_key,searchKey,) => {
@@ -221,6 +264,7 @@ export const getFormProcesses = (formId, ...rest) => {
     )
       .then((res) => {
         if (res.data) {
+          // console.log("res.data", res.data);
         dispatch(setFormPreviosData(res.data));
           dispatch(setFormProcessesData(res.data));
           // need to check api and put exact respose
@@ -241,26 +285,22 @@ export const getFormProcesses = (formId, ...rest) => {
   };
 };
 
-export const getProcessXml = (processKey) => {
-return (dispatch) => {
-    RequestService.httpGETRequest(
-      `${API.GET_PROCESSES_XML}/${processKey}`,
-      {},
-      StorageService.get(StorageService.User.AUTH_TOKEN),
-      true
-    )
-      .then((res, err) => {
-        if (res.data) {
-         dispatch(setProcessXml(res.data.processData));
-        } else {
-          console.log(err);
-        }
-      })
-      .catch((error) => {
-        console.log(error);
-      });
+  export const getProcessDetails = (processKey, tenant_key) => {
+    const api = API.GET_PROCESS_XML;
+    let url = replaceUrl(api, "<process_key>", processKey);
+
+    if (tenant_key) {
+      url = url + `?tenantId=${tenant_key}`;
+    }
+
+    return RequestService.httpGETRequest(url);
   };
-};
+    
+
+  export const updateProcess = ({id,data,type}) => {
+    return RequestService.httpPUTRequest(`${API.GET_PROCESSES_DETAILS}/${id}`,
+      {processData:data,processType:type});
+    };
 
 // fetching task variables
 export const fetchTaskVariables = (formId) =>{
@@ -389,7 +429,7 @@ export const saveFormProcessMapperPut = (data, ...rest) => {
         }
       })
       .catch((error) => {
-        dispatch(getFormProcesses(data.formId));
+        dispatch(getFormProcesses(data.mapper.formId));
         dispatch(setFormProcessesData([]));
         toast.error(
           <Translation>{(t) => t("Form process failed")}</Translation>
@@ -440,30 +480,18 @@ export const getProcessActivities = (process_instance_id, ...rest) => {
 export const fetchDiagram = (
   process_key,
   tenant_key = null,
-  isDmn = false,
   ...rest
 ) => {
-  const api = isDmn ? API.DMN_XML : API.PROCESSES_XML;
-
-  let url = replaceUrl(api, "<process_key>", process_key);
-
-  if (tenant_key) {
-    url = url + `?tenantId=${tenant_key}`;
-  }
+  
 
   const done = rest.length ? rest[0] : () => { };
   return (dispatch) => {
-    RequestService.httpGETRequest(
-      url,
-      {},
-      StorageService.get(StorageService.User.AUTH_TOKEN),
-      true
-    )
+    getProcessDetails(process_key,tenant_key)
       .then((res) => {
-        if (res.data && (isDmn ? res.data.dmnXml : res.data.bpmn20Xml)) {
+        if (res.data) {
           dispatch(
-            setProcessDiagramXML(isDmn ? res.data.dmnXml : res.data.bpmn20Xml)
-          );
+            setProcessDiagramXML(res.data.processData));
+            dispatch(setProcessData(res.data));
 
           // console.log('res.data.bpmn20Xml>>',res.data.bpmn20Xml);
         } else {

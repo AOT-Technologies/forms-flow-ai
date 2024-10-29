@@ -1,4 +1,3 @@
-# Modified by Yichun Zhao and Walter Moar
 
 # Maven build
 FROM maven:3.8.1-openjdk-17-slim AS MAVEN_TOOL_CHAIN
@@ -18,17 +17,15 @@ COPY forms-flow-bpm-utils/src ./forms-flow-bpm-utils/src/
 # RUN mvn -s /usr/share/maven/ref/settings-docker.xml dependency:resolve-plugins dependency:resolve dependency:go-offline -B -P camunda
 RUN mvn -s /usr/share/maven/ref/settings-docker.xml install -P camunda
 
-# Final custom slim java image (for apk command see 17-jdk-alpine-slim)
-FROM openjdk:17-jdk-alpine
-# Update packages including OpenSSL
-RUN apk update && apk upgrade
+
+FROM openjdk:21-ea-jdk
 
 # set label for image
 LABEL Name="formsflow"
 
-ENV JAVA_VERSION=17-ea+14
-ENV JAVA_HOME=/opt/java/openjdk-17\
-    PATH="/opt/java/openjdk-17/bin:$PATH"
+ENV JAVA_VERSION=21-ea+14
+ENV JAVA_HOME=/opt/java/openjdk-21\
+    PATH="/opt/java/openjdk-21/bin:$PATH"
 
 EXPOSE 8080
 # OpenShift has /app in the image, but it's missing when doing local development - Create it when missing

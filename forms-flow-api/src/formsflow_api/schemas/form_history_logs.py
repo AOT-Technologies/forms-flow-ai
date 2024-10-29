@@ -20,6 +20,8 @@ class FormHistorySchema(Schema):
     minor_version = fields.Int(data_key="minorVersion")
     version = fields.Method("get_combined_version", dump_only=True)
     isMajor = fields.Method("get_is_major", dump_only=True)
+    published_on = fields.Str(data_key="publishedOn", dump_only=True)
+    published_by = fields.Str(data_key="publishedBy", dump_only=True)
 
     def get_combined_version(self, obj):
         """Combine major and minor versions."""

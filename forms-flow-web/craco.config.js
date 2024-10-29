@@ -1,4 +1,4 @@
-const SingleSpaAppcracoPlugin = require("craco-plugin-single-spa-app-aot");
+const SingleSpaAppcracoPlugin = require("craco-plugin-single-spa-app-aot-test");
 
 const shouldMinimize = process.env.NODE_ENV == "production";
 
@@ -18,6 +18,17 @@ const singleSpaAppPlugin = {
 // Keep any other configuration you are exporting from CRACO and add the plugin to the plugins array
 module.exports = {
   plugins: [singleSpaAppPlugin],
+  webpack: {
+    configure: {
+      resolve: {
+        fallback: {
+          stream: require.resolve("stream-browserify"),
+          buffer: require.resolve("buffer/"),
+          net: false,  // Unfortunately, net can't be polyfilled easily in the browser.
+        },
+      },
+    },
+  },
   devServer: {
     port: 3004,
     headers: {

@@ -195,13 +195,18 @@ class ProcessDataResource(Resource):
     )
     def post():
         """Create process data."""
-        response = ProcessService.create_process(request.get_json())
+        data = request.get_json()
+        process_data = data.get("processData")
+        process_type = data.get("processType")
+        response = ProcessService.create_process(
+            process_data=process_data, process_type=process_type, is_subflow=True
+        )
         return response, HTTPStatus.CREATED
 
 
 @cors_preflight("GET, PUT, DELETE, OPTIONS")
-@API.route("/<string:process_id>", methods=["GET", "PUT", "DELETE", "OPTIONS"])
-@API.doc(params={"process_id": "Process data corresponding to process_id"})
+@API.route("/<int:process_id>", methods=["GET", "PUT", "DELETE", "OPTIONS"])
+@API.doc(params={"process_id": "Process data corresponding to process id"})
 class ProcessResourceById(Resource):
     """Resource for managing process by id."""
 
@@ -216,9 +221,9 @@ class ProcessResourceById(Resource):
         },
         model=process_response,
     )
-    def get(process_id: str):
-        """Get process data by id."""
-        response, status = ProcessService.get_process_by_key(process_id), HTTPStatus.OK
+    def get(process_id: int):
+        """Get process data by process id."""
+        response, status = ProcessService.get_process_by_id(process_id), HTTPStatus.OK
 
         return response, status
 
@@ -234,10 +239,17 @@ class ProcessResourceById(Resource):
         model=process_response,
     )
     @API.expect(process_request)
-    def put(process_id: str):
+    def put(process_id: int):
         """Update process data by id."""
+        data = request.get_json()
+        process_data = data.get("processData")
+        process_type = data.get("processType")
         response, status = (
-            ProcessService.update_process(process_id, request.get_json()),
+            ProcessService.update_process(
+                process_id=process_id,
+                process_type=process_type,
+                process_data=process_data,
+            ),
             HTTPStatus.OK,
         )
         return response, status
@@ -252,16 +264,14 @@ class ProcessResourceById(Resource):
             403: "FORBIDDEN:- Permission denied",
         }
     )
-    def delete(process_id: str):
+    def delete(process_id: int):
         """Delete process data by id."""
         response, status = ProcessService.delete_process(process_id), HTTPStatus.OK
         return response, status
 
 
 @cors_preflight("GET, OPTIONS")
-@API.route(
-    "/process-history/<string:process_name>/versions", methods=["GET", "OPTIONS"]
-)
+@API.route("/<string:parent_process_key>/versions", methods=["GET", "OPTIONS"])
 class ProcessHistoryResource(Resource):
     """Resource for retrieving process history."""
 
@@ -288,12 +298,12 @@ class ProcessHistoryResource(Resource):
         },
         model=process_history_response_model,
     )
-    def get(process_name: str):
+    def get(parent_process_key: str):
         """Get history for a process by process_name."""
         # Retrieve all history related to the specified process
 
         process_history, count = ProcessService.get_all_history(
-            process_name, request.args
+            parent_process_key, request.args
         )
         return (
             (
@@ -329,3 +339,84 @@ class ValidateProcess(Resource):
         """
         response = ProcessService.validate_process(request)
         return response, HTTPStatus.OK
+
+
+@cors_preflight("POST,OPTIONS")
+@API.route("/<process_id>/publish", methods=["POST", "OPTIONS"])
+class PublishResource(Resource):
+    """Resource to support publish sub-process/worklfow."""
+
+    @staticmethod
+    @auth.has_one_of_roles([CREATE_DESIGNS])
+    @profiletime
+    @API.response(200, "OK:- Successful request.")
+    @API.response(
+        400,
+        "BAD_REQUEST:- Invalid request.",
+    )
+    @API.response(
+        401,
+        "UNAUTHORIZED:- Authorization header not provided or an invalid token passed.",
+    )
+    @API.response(
+        403,
+        "FORBIDDEN:- Authorization will not help.",
+    )
+    def post(process_id: int):
+        """Publish by process id."""
+        return (
+            ProcessService.publish(process_id),
+            HTTPStatus.OK,
+        )
+
+
+@cors_preflight("POST,OPTIONS")
+@API.route("/<process_id>/unpublish", methods=["POST", "OPTIONS"])
+class UnpublishResource(Resource):
+    """Resource to support unpublish sub-process/workflow."""
+
+    @staticmethod
+    @auth.has_one_of_roles([CREATE_DESIGNS])
+    @profiletime
+    @API.response(200, "OK:- Successful request.")
+    @API.response(
+        400,
+        "BAD_REQUEST:- Invalid request.",
+    )
+    @API.response(
+        401,
+        "UNAUTHORIZED:- Authorization header not provided or an invalid token passed.",
+    )
+    @API.response(
+        403,
+        "FORBIDDEN:- Authorization will not help.",
+    )
+    def post(process_id: int):
+        """Unpublish by process_id."""
+        return (
+            ProcessService.unpublish(process_id),
+            HTTPStatus.OK,
+        )
+
+
+@cors_preflight("GET, OPTIONS")
+@API.route("/key/<string:process_key>", methods=["GET", "OPTIONS"])
+@API.doc(params={"process_key": "Process data corresponding to process key"})
+class ProcessResourceByProcessKey(Resource):
+    """Resource for managing process by process key."""
+
+    @staticmethod
+    @auth.has_one_of_roles([CREATE_DESIGNS])
+    @profiletime
+    @API.doc(
+        responses={
+            200: "OK:- Successful request.",
+            400: "BAD_REQUEST:- Invalid request.",
+            403: "FORBIDDEN:- Permission denied",
+        },
+        model=process_response,
+    )
+    def get(process_key: str):
+        """Get process data by process key."""
+        response, status = ProcessService.get_process_by_key(process_key), HTTPStatus.OK
+        return response, status

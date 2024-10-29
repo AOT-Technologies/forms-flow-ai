@@ -20,6 +20,14 @@ class BusinessErrorCode(ErrorCodeMixin, Enum):
         HTTPStatus.BAD_REQUEST,
     )
     PROCESS_DEF_NOT_FOUND = "Process definition does not exist", HTTPStatus.BAD_REQUEST
+    PROCESS_NOT_LATEST_VERSION = (
+        "Passed process id is not latest version",
+        HTTPStatus.BAD_REQUEST,
+    )
+    MAPPER_NOT_LATEST_VERSION = (
+        "The provided mapper ID is not the latest version.",
+        HTTPStatus.BAD_REQUEST,
+    )
     DECISION_DEF_NOT_FOUND = (
         "Decision definition does not exist",
         HTTPStatus.BAD_REQUEST,
@@ -59,6 +67,10 @@ class BusinessErrorCode(ErrorCodeMixin, Enum):
     FILTER_NOT_FOUND = "The specified filter does not exist", HTTPStatus.BAD_REQUEST
     PROCESS_START_ERROR = "Cannot start process instance", HTTPStatus.BAD_REQUEST
     USER_NOT_FOUND = "User not found", HTTPStatus.BAD_REQUEST
+    INVALID_PROCESS_DATA = (
+        "Invalid process data passed; both data and process type are required",
+        HTTPStatus.BAD_REQUEST,
+    )
     PROCESS_ID_NOT_FOUND = (
         "The specified process ID does not exist",
         HTTPStatus.BAD_REQUEST,
@@ -89,6 +101,15 @@ class BusinessErrorCode(ErrorCodeMixin, Enum):
         "At least one query parameter (name, key) must be provided.",
         HTTPStatus.BAD_REQUEST,
     )
+    PROCESS_INVALID_OPERATION = (
+        "Cannot update a published process",
+        HTTPStatus.BAD_REQUEST,
+    )
+    FORM_INVALID_OPERATION = (
+        "Cannot update a published form",
+        HTTPStatus.BAD_REQUEST,
+    )
+    FORM_VALIDATION_FAILED = "FORM_VALIDATION_FAILED.", HTTPStatus.BAD_REQUEST
 
     def __new__(cls, message, status_code):
         """Constructor."""

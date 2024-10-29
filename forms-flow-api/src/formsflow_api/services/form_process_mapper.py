@@ -19,12 +19,15 @@ from formsflow_api.models import (
     FormHistory,
     FormProcessMapper,
     Process,
+    ProcessStatus,
+    ProcessType,
 )
 from formsflow_api.schemas import FormProcessMapperSchema
 from formsflow_api.services.authorization import AuthorizationService
 from formsflow_api.services.external.bpm import BPMService
 
 from .form_history_logs import FormHistoryService
+from .process import ProcessService
 
 
 class FormProcessMapperService:  # pylint: disable=too-many-public-methods
@@ -112,6 +115,16 @@ class FormProcessMapperService:  # pylint: disable=too-many-public-methods
         raise BusinessException(BusinessErrorCode.INVALID_FORM_PROCESS_MAPPER_ID)
 
     @staticmethod
+    def get_form_version(mapper):
+        """Get form versions."""
+        version_data = FormHistory.get_latest_version(mapper.parent_form_id)
+        major_version, minor_version = 1, 0
+        if version_data:
+            major_version = version_data.major_version
+            minor_version = version_data.minor_version
+        return major_version, minor_version
+
+    @staticmethod
     @user_context
     def get_mapper_by_formid(form_id: str, **kwargs):
         """Get form process mapper."""
@@ -123,6 +136,12 @@ class FormProcessMapperService:  # pylint: disable=too-many-public-methods
                 raise PermissionError("Tenant authentication failed.")
             mapper_schema = FormProcessMapperSchema()
             response = mapper_schema.dump(mapper)
+            # Include form versions
+            major_version, minor_version = FormProcessMapperService.get_form_version(
+                mapper
+            )
+            response["majorVersion"] = major_version
+            response["minorVersion"] = minor_version
             if response.get("deleted") is False:
                 return response
 
@@ -310,6 +329,26 @@ class FormProcessMapperService:  # pylint: disable=too-many-public-methods
         FormHistoryService.create_form_log_with_clone(data=data)
         return response
 
+    @classmethod
+    @user_context
+    def create_default_process(cls, process_name, status=ProcessStatus.DRAFT, **kwargs):
+        """Create process with default workflow."""
+        user: UserContext = kwargs["user"]
+        process_dict = {
+            "name": process_name,
+            "process_key": process_name,
+            "parent_process_key": process_name,
+            "process_type": ProcessType.BPMN,
+            "status": status,
+            "process_data": default_flow_xml_data(process_name).encode("utf-8"),
+            "tenant": user.tenant_key,
+            "major_version": 1,
+            "minor_version": 0,
+            "created_by": user.user_name,
+        }
+        process = Process.create_from_dict(process_dict)
+        return process
+
     @staticmethod
     def create_form(data, is_designer):
         """Service to handle form create."""
@@ -367,6 +406,8 @@ class FormProcessMapperService:  # pylint: disable=too-many-public-methods
                 "componentChanged": True,
             }
         )
+        # create entry in process with default flow.
+        FormProcessMapperService.create_default_process(process_name)
         return response
 
     def _get_form(  # pylint: disable=too-many-arguments, too-many-positional-arguments
@@ -413,7 +454,7 @@ class FormProcessMapperService:  # pylint: disable=too-many-public-methods
             return {
                 "formTitle": title_or_path,
                 "formDescription": description,
-                "anonymous": anonymous,
+                "anonymous": anonymous or False,
                 "type": scope_type,
                 "content": form_json,
             }
@@ -422,35 +463,25 @@ class FormProcessMapperService:  # pylint: disable=too-many-public-methods
             raise BusinessException(BusinessErrorCode.FORM_ID_NOT_FOUND) from e
 
     def _get_workflow(
-        self, process_key: str, process_name: str, scope_type: str, user: UserContext
+        self, process_key: str, process_name: str, scope_type: str
     ) -> dict:
         """Get workflow details."""
-        try:
-            current_app.logger.info(f"Fetching xml for process: {process_key}")
-            process_tenant = None
-            if current_app.config.get("MULTI_TENANCY_ENABLED"):
-                url_path = (
-                    f"&includeProcessDefinitionsWithoutTenantId=true"
-                    f"&key={process_key}&tenantIdIn={user.tenant_key}"
-                )
-                process = BPMService.get_all_process(user.bearer_token, url_path)
-                if process:
-                    process_tenant = process[0].get("tenantId")
-                    current_app.logger.info(
-                        f"Found tenant ID {process_tenant} for process {process_key}"
-                    )
-            xml = BPMService.process_definition_xml(
-                process_key, user.bearer_token, process_tenant
-            ).get("bpmn20Xml")
+        current_app.logger.info(f"Fetching Process : {process_key}")
+        process = Process.get_latest_version_by_key(process_key)
+        if process:
+            process_data = process.process_data.decode("utf-8")
+            process_type = process.process_type.value
+            content = (
+                json.loads(process_data) if process_type == "LOWCODE" else process_data
+            )
             return {
                 "processKey": process_key,
                 "processName": process_name,
+                "processType": process_type,
                 "type": scope_type,
-                "content": xml,
+                "content": content,
             }
-        except Exception as e:
-            current_app.logger.error(e)
-            raise BusinessException(BusinessErrorCode.PROCESS_DEF_NOT_FOUND) from e
+        raise BusinessException(BusinessErrorCode.PROCESS_DEF_NOT_FOUND)
 
     def _get_dmn(self, dmn_key: str, scope_type: str, user: UserContext) -> dict:
         """Get DMN details."""
@@ -544,9 +575,7 @@ class FormProcessMapperService:  # pylint: disable=too-many-public-methods
             current_app.logger.info(f"Subprocess: {subprocess_name}")
             # Here subprocess_name will be the process key
             # Since we didn't get process name, we will use the subprocess name as process name
-            sub_workflow = self._get_workflow(
-                subprocess_name, subprocess_name, "sub", user
-            )
+            sub_workflow = self._get_workflow(subprocess_name, subprocess_name, "sub")
             workflows.append(sub_workflow)
 
             sub_form_names, sub_dmn_names, sub_workflows = self._parse_xml(
@@ -590,7 +619,7 @@ class FormProcessMapperService:  # pylint: disable=too-many-public-methods
                 )
             )
             workflow = self._get_workflow(
-                mapper.process_key, mapper.process_name, "main", user
+                mapper.process_key, mapper.process_name, "main"
             )
             workflows.append(workflow)
             authorizations.append(self._get_authorizations(mapper.form_id, user))
@@ -619,6 +648,47 @@ class FormProcessMapperService:  # pylint: disable=too-many-public-methods
 
         raise BusinessException(BusinessErrorCode.INVALID_FORM_PROCESS_MAPPER_ID)
 
+    @classmethod
+    def is_valid_field(cls, field: str, pattern: str) -> bool:
+        """Checks if the given field matches the provided regex pattern."""
+        return bool(re.fullmatch(pattern, field))
+
+    @classmethod
+    def validate_title_name_path(cls, title: str, path: str, name: str):
+        """Validates the title, path, and name fields."""
+        title_pattern = r"(?=.*[A-Za-z])[A-Za-z0-9 ]+"
+        path_name = r"(?=.*[A-Za-z])[A-Za-z0-9]+"
+
+        invalid_fields = []
+
+        error_messages = {
+            "title": "Title: Only contain alphanumeric characters and spaces, and must include at least one letter.",
+            "path": "Path: Only contain alphanumeric characters, no spaces, and must include at least one letter.",
+            "name": "Name: Only contain alphanumeric characters, no spaces, and must include at least one letter.",
+        }
+
+        # Validate title
+        if title and not cls.is_valid_field(title, title_pattern):
+            invalid_fields.append("title")
+
+        # Validate path and name
+        for field_name, field_value in (("path", path), ("name", name)):
+            if field_value and not cls.is_valid_field(field_value, path_name):
+                invalid_fields.append(field_name)
+
+        # Determine overall validity
+        is_valid = len(invalid_fields) == 0
+        if not is_valid:
+            # Generate detailed validation error message
+            error_message = ",\n ".join(
+                error_messages[field] for field in invalid_fields
+            )
+            raise BusinessException(
+                BusinessErrorCode.FORM_VALIDATION_FAILED,
+                detail_message=error_message,
+                include_details=True,
+            )
+
     @staticmethod
     def validate_form_name_path_title(request):
         """Validate a form name by calling the external validation API."""
@@ -631,6 +701,8 @@ class FormProcessMapperService:  # pylint: disable=too-many-public-methods
         # Check if at least one query parameter is provided
         if not (title or name or path):
             raise BusinessException(BusinessErrorCode.INVALID_FORM_VALIDATION_INPUT)
+
+        FormProcessMapperService.validate_title_name_path(title, path, name)
 
         # Combine them into query parameters dictionary
         query_params = f"title={title}&name={name}&path={path}&select=title,path,name"
@@ -657,27 +729,6 @@ class FormProcessMapperService:  # pylint: disable=too-many-public-methods
         # If no results, the form name is valid
         return {}
 
-    def deploy_process(self, process_name, process_data, tenant_key, token):
-        """Deploy process."""
-        file_path = f"{process_name}.bpmn"
-        # If process data empty deploy default workflow data.
-        if process_data:
-            if isinstance(process_data, str):
-                process_data = process_data.encode("utf-8")
-        else:
-            process_data = default_flow_xml_data(process_name).encode("utf-8")
-
-        # Prepare the parameters for the deployment
-        payload = {
-            "deployment-name": process_name,
-            "enable-duplicate-filtering": "true",
-            "deploy-changed-only": "false",
-            "deployment-source": "Camunda Modeler",
-            "tenant-id": tenant_key,
-        }
-        files = {"upload": (file_path, process_data, "text/bpmn")}
-        BPMService.post_deployment(token, payload, tenant_key, files)
-
     def validate_mapper(self, mapper_id, tenant_key):
         """Validate mapper by mapper Id."""
         mapper = FormProcessMapper.find_form_by_id(form_process_mapper_id=mapper_id)
@@ -687,6 +738,10 @@ class FormProcessMapperService:  # pylint: disable=too-many-public-methods
         # Check tenant authentication
         if tenant_key and mapper.tenant != tenant_key:
             raise PermissionError(BusinessErrorCode.PERMISSION_DENIED)
+        # Check the mapper_id provided is the latest mapper for the specific parent_form_id.
+        latest = FormProcessMapper.get_latest_by_parent_form_id(mapper.parent_form_id)
+        if latest and mapper.id != latest.id:
+            raise BusinessException(BusinessErrorCode.MAPPER_NOT_LATEST_VERSION)
         return mapper
 
     def capture_form_history(self, mapper, data, user_name):
@@ -719,25 +774,23 @@ class FormProcessMapperService:  # pylint: disable=too-many-public-methods
         process_name = mapper.process_key
 
         # Fetch process data from process table
-        process = Process.get_latest_version(process_name)
-        process_data = process.process_data if process else None
+        process = Process.get_latest_version_by_key(process_name)
+        process_data, process_type = (
+            (process.process_data, process.process_type) if process else (None, None)
+        )
+
         # Deploy process
-        self.deploy_process(process_name, process_data, tenant_key, token)
+        ProcessService.deploy_process(
+            process_name, process_data, tenant_key, token, process_type
+        )
         if not process:
-            # create entry in process with default flow.
-            process = Process(
-                name=process_name,
-                process_type="BPMN",
-                process_data=default_flow_xml_data(process_name).encode("utf-8"),
-                form_process_mapper_id=mapper_id,
-                tenant=tenant_key,
-                major_version=1,
-                minor_version=0,
-                created_by=user_name,
+            # create entry in process with default flow with status "PUBLISHED".
+            FormProcessMapperService.create_default_process(
+                process_name, status=ProcessStatus.PUBLISHED
             )
-        # Update process status
-        process.status = "PUBLISHED"
-        process.save()
+        else:
+            # Update process status
+            ProcessService.update_process_status(process, ProcessStatus.PUBLISHED, user)
 
         # Capture publish(active) status in form history table.
         self.capture_form_history(mapper, {"status": "active"}, user_name)
@@ -757,7 +810,7 @@ class FormProcessMapperService:  # pylint: disable=too-many-public-methods
         user_name = user.user_name
         tenant_key = user.tenant_key
         mapper = self.validate_mapper(mapper_id, tenant_key)
-        # Capture publish status in form history table.
+        # Capture unpublish status in form history table.
         self.capture_form_history(mapper, {"status": "inactive"}, user_name)
         # Update status(inactive) in mapper table
         mapper.update(
@@ -766,4 +819,8 @@ class FormProcessMapperService:  # pylint: disable=too-many-public-methods
                 "prompt_new_version": True,
             }
         )
+        # Update process status to Draft
+        process = Process.get_latest_version_by_key(mapper.process_key)
+        if process:
+            ProcessService.update_process_status(process, ProcessStatus.DRAFT, user)
         return {}

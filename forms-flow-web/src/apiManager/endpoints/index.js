@@ -84,7 +84,8 @@ const API = {
   GET_BPM_TASK_FILTERS : `${BPM_BASE_URL_EXT}/v1/task-filters`,
   VALIDATE_TENANT: `${MT_ADMIN_BASE_URL}/${MT_ADMIN_BASE_URL_VERSION}/tenants/<tenant_id>/validate`,
   VALIDATE_FORM_NAME: `${WEB_BASE_URL}/form/validate`,
-  EXPORT_FORM: `${WEB_BASE_URL}/form/<form_id>/export`
+  EXPORT_FORM: `${WEB_BASE_URL}/form/<form_id>/export`,
+  GET_PROCESS_XML: `${WEB_BASE_URL}/process/key/<process_key>`
 };
 
 export default API;

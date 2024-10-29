@@ -648,6 +648,47 @@ class FormProcessMapperService:  # pylint: disable=too-many-public-methods
 
         raise BusinessException(BusinessErrorCode.INVALID_FORM_PROCESS_MAPPER_ID)
 
+    @classmethod
+    def is_valid_field(cls, field: str, pattern: str) -> bool:
+        """Checks if the given field matches the provided regex pattern."""
+        return bool(re.fullmatch(pattern, field))
+
+    @classmethod
+    def validate_title_name_path(cls, title: str, path: str, name: str):
+        """Validates the title, path, and name fields."""
+        title_pattern = r"(?=.*[A-Za-z])[A-Za-z0-9 ]+"
+        path_name = r"(?=.*[A-Za-z])[A-Za-z0-9]+"
+
+        invalid_fields = []
+
+        error_messages = {
+            "title": "Title: Only contain alphanumeric characters and spaces, and must include at least one letter.",
+            "path": "Path: Only contain alphanumeric characters, no spaces, and must include at least one letter.",
+            "name": "Name: Only contain alphanumeric characters, no spaces, and must include at least one letter.",
+        }
+
+        # Validate title
+        if title and not cls.is_valid_field(title, title_pattern):
+            invalid_fields.append("title")
+
+        # Validate path and name
+        for field_name, field_value in (("path", path), ("name", name)):
+            if field_value and not cls.is_valid_field(field_value, path_name):
+                invalid_fields.append(field_name)
+
+        # Determine overall validity
+        is_valid = len(invalid_fields) == 0
+        if not is_valid:
+            # Generate detailed validation error message
+            error_message = ",\n ".join(
+                error_messages[field] for field in invalid_fields
+            )
+            raise BusinessException(
+                BusinessErrorCode.FORM_VALIDATION_FAILED,
+                detail_message=error_message,
+                include_details=True,
+            )
+
     @staticmethod
     def validate_form_name_path_title(request):
         """Validate a form name by calling the external validation API."""
@@ -660,6 +701,8 @@ class FormProcessMapperService:  # pylint: disable=too-many-public-methods
         # Check if at least one query parameter is provided
         if not (title or name or path):
             raise BusinessException(BusinessErrorCode.INVALID_FORM_VALIDATION_INPUT)
+
+        FormProcessMapperService.validate_title_name_path(title, path, name)
 
         # Combine them into query parameters dictionary
         query_params = f"title={title}&name={name}&path={path}&select=title,path,name"

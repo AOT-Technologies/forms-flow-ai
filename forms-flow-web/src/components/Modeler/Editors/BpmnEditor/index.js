@@ -1,4 +1,10 @@
-import React, { useCallback, useEffect, useState, forwardRef, useImperativeHandle } from "react";
+import React, {
+  useCallback,
+  useEffect,
+  useState,
+  forwardRef,
+  useImperativeHandle,
+} from "react";
 
 import BpmnModeler from "bpmn-js/lib/Modeler";
 import "bpmn-js/dist/assets/diagram-js.css";
@@ -9,7 +15,7 @@ import {
   BpmnPropertiesProviderModule,
   CamundaPlatformPropertiesProviderModule,
 } from "bpmn-js-properties-panel";
-import camundaPlatformBehaviors from 'camunda-bpmn-js-behaviors/lib/camunda-platform';
+import camundaPlatformBehaviors from "camunda-bpmn-js-behaviors/lib/camunda-platform";
 //import CamundaExtensionModule from "camunda-bpmn-moddle/lib";
 import camundaModdleDescriptors from "camunda-bpmn-moddle/resources/camunda";
 
@@ -19,8 +25,6 @@ import linterConfig from "../../lint-rules/packed-config";
 
 const BpmnEditor = forwardRef(({ bpmnXml, setLintErrors }, ref) => {
   const [bpmnModeler, setBpmnModeler] = useState(null);
-
-
 
   const containerRef = useCallback((node) => {
     if (node !== null) {
@@ -45,10 +49,10 @@ const BpmnEditor = forwardRef(({ bpmnXml, setLintErrors }, ref) => {
           CamundaPlatformPropertiesProviderModule,
           camundaPlatformBehaviors,
           lintModule,
-         ],
+        ],
         moddleExtensions: {
           camunda: camundaModdleDescriptors,
-         },
+        },
       })
     );
   };
@@ -56,7 +60,6 @@ const BpmnEditor = forwardRef(({ bpmnXml, setLintErrors }, ref) => {
   useEffect(() => {
     handleImport(bpmnXml);
   }, [bpmnXml, bpmnModeler]);
-
 
   const handleImport = (bpmnXml) => {
     if (bpmnXml && bpmnModeler) {

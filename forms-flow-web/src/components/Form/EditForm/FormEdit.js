@@ -1,4 +1,4 @@
-import React, { useReducer, useState, useEffect } from "react";
+import React, { useReducer, useState, useEffect, useRef } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import { useParams } from "react-router-dom";
 import { Card } from "react-bootstrap";
@@ -67,6 +67,8 @@ const Edit = React.memo(() => {
   const dispatch = useDispatch();
   const { formId } = useParams();
   const { t } = useTranslation();
+  //this variable handle the flow and layot tab switching 
+  const sideTabRef = useRef(null);
 
   /* ------------------------------- mapper data ------------------------------ */
   const { formProcessList: processListData, formPreviousData: previousData } =
@@ -141,7 +143,9 @@ const Edit = React.memo(() => {
   };
 
   // handling form layout and flow layout
-  const handleCurrentLayout = () => {
+  const handleCurrentLayout = (e) => {
+    //wehn the current is assigned with element then only the visible class will render
+    sideTabRef.current = e;
     setCurrentLayout(isFormLayout ? FLOW_LAYOUT : FORM_LAYOUT);
   };
 
@@ -182,15 +186,18 @@ const Edit = React.memo(() => {
     };
   }, [restoredFormId]);
 
-  useEffect(() => {
+  const fetchProcessDetails = async(processListData)=>{
+    const response = await getProcessDetails(processListData.processKey);
+    dispatch(setProcessData(response.data));
+  };
+  
+  useEffect(async() => {
     if (processListData.processKey) {
       setIsProcessDetailsLoading(true);
-      getProcessDetails(processListData.processKey).then((response) => {
-        const { data } = response;
-        dispatch(setProcessData(data));
-        setIsProcessDetailsLoading(false);
-      });
-    }
+      await fetchProcessDetails(processListData);
+      setIsProcessDetailsLoading(false);
+
+   }
   }, [processListData.processKey]);
 
   const validateFormNameOnBlur = () => {
@@ -438,6 +445,9 @@ const Edit = React.memo(() => {
       closeModal();
       setIsPublishLoading(true);
       await actionFunction(processListData.id);
+      if(isPublished){
+       await fetchProcessDetails(processListData);
+      }
       setPromptNewVersion(isPublished);
       setIsPublished(!isPublished);
     } catch (err) {
@@ -818,12 +828,12 @@ const Edit = React.memo(() => {
               className={`wraper flow-wraper ${isFlowLayout ? "visible" : ""}`}
             >
               {/* TBD: Add a loader instead. */}
-              {isProcessDetailsLoading ? <>loading...</> : <FlowEdit />}
+              {isProcessDetailsLoading ? <>loading...</> : <FlowEdit isPublished={isPublished}/>}
             </div>
             <button
               className={`border-0 form-flow-wraper-${
-                isFlowLayout ? "left" : "right"
-              } visible`}
+                isFormLayout ? "right" : "left"
+              } ${sideTabRef.current && "visible"}`}
               onClick={handleCurrentLayout}
             >
               {isFormLayout ? "Flow" : "Layout"}

@@ -19,8 +19,9 @@ import {
   setAllDmnProcessList,
   setBpmnModel,
   setApplicationCount,
-  setSubflowCount ,
-  setTotalDmnCount
+  setSubflowCount,
+  setTotalDmnCount,
+  setProcessData 
 } from "../../actions/processActions";
 import { replaceUrl } from "../../helper/helper";
 import { StorageService } from "@formsflow/service";
@@ -293,8 +294,17 @@ export const getFormProcesses = (formId, ...rest) => {
   };
 };
 
-  export const getProcessDetails = (processKey) =>
-    RequestService.httpGETRequest(`${API.GET_PROCESSES_DETAILS}/${processKey}`);
+  export const getProcessDetails = (processKey, tenant_key) => {
+    const api = API.GET_PROCESS_XML;
+    let url = replaceUrl(api, "<process_key>", processKey);
+
+    if (tenant_key) {
+      url = url + `?tenantId=${tenant_key}`;
+    }
+
+    return RequestService.httpGETRequest(url);
+  };
+    
 
   export const updateProcess = ({id,data,type}) => {
     return RequestService.httpPUTRequest(`${API.GET_PROCESSES_DETAILS}/${id}`,
@@ -479,30 +489,18 @@ export const getProcessActivities = (process_instance_id, ...rest) => {
 export const fetchDiagram = (
   process_key,
   tenant_key = null,
-  isDmn = false,
   ...rest
 ) => {
-  const api = isDmn ? API.DMN_XML : API.PROCESSES_XML;
-
-  let url = replaceUrl(api, "<process_key>", process_key);
-
-  if (tenant_key) {
-    url = url + `?tenantId=${tenant_key}`;
-  }
+  
 
   const done = rest.length ? rest[0] : () => { };
   return (dispatch) => {
-    RequestService.httpGETRequest(
-      url,
-      {},
-      StorageService.get(StorageService.User.AUTH_TOKEN),
-      true
-    )
+    getProcessDetails(process_key,tenant_key)
       .then((res) => {
-        if (res.data && (isDmn ? res.data.dmnXml : res.data.bpmn20Xml)) {
+        if (res.data) {
           dispatch(
-            setProcessDiagramXML(isDmn ? res.data.dmnXml : res.data.bpmn20Xml)
-          );
+            setProcessDiagramXML(res.data.processData));
+            dispatch(setProcessData(res.data));
 
           // console.log('res.data.bpmn20Xml>>',res.data.bpmn20Xml);
         } else {

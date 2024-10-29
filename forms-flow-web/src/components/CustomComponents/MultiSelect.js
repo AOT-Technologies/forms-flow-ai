@@ -73,7 +73,6 @@ const RoleSelector = ({ allRoles = [], selectedRoles = [], setSelectedRoles }) =
           onChange={handleRoleInputChange}
           onFocus={() => setIsDropdownOpen(true)} // Open dropdown when input is focused
           className="role-input"
-          placeholder="Type to filter roles"
           ref={inputRef} // Reference to input for outside click handling
         />
       </div>

@@ -114,7 +114,7 @@ const SubFlow = React.memo(() => {
       dispatch(setIsPublicDiagram(data.tenantId ? true : false));
     }
     dispatch(
-      push(`${redirectUrl}processes/bpmn/${data.parentProcessKey}/edit`)
+      push(`${redirectUrl}subflow/edit/${data.parentProcessKey}`)
     );
   };
 

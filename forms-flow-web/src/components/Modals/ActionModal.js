@@ -1,7 +1,7 @@
 import React from "react";
 import Modal from "react-bootstrap/Modal";
 import { CustomButton } from "@formsflow/components";
-import { DuplicateIcon, ImportIcon, PencilIcon, SaveTemplateIcon, CloseIcon } from "@formsflow/components";
+import { DuplicateIcon, ImportIcon, PencilIcon, SaveTemplateIcon, CloseIcon, TrashIcon } from "@formsflow/components";
 
 const ActionModal = React.memo(({ newActionModal, onClose, CategoryType, onAction  }) => {
       const handleAction = (actionType)=>{
@@ -49,7 +49,7 @@ const ActionModal = React.memo(({ newActionModal, onClose, CategoryType, onActio
                                 variant="secondary"
                                 size="sm"
                                 label="Import"
-                                icon={<ImportIcon color="#253DF4" />}
+                                icon={<ImportIcon />}
                                 className=""
                                 dataTestid="import-form-button"
                                 ariaLabel="Import Form"
@@ -60,7 +60,7 @@ const ActionModal = React.memo(({ newActionModal, onClose, CategoryType, onActio
                                 variant="secondary"
                                 size="sm"
                                 label="Export"
-                                icon={<PencilIcon color="#253DF4" />}
+                                icon={<PencilIcon />}
                                 className=""
                                 dataTestid="export-form-button"
                                 ariaLabel="Export Form"
@@ -71,7 +71,7 @@ const ActionModal = React.memo(({ newActionModal, onClose, CategoryType, onActio
                                 variant="secondary"
                                 size="sm"
                                 label="Delete"
-                                icon={<CloseIcon color="#253DF4" />}
+                                icon={<TrashIcon />}
                                 className=""
                                 dataTestid="delete-form-button"
                                 ariaLabel="Delete Form"
@@ -89,10 +89,11 @@ const ActionModal = React.memo(({ newActionModal, onClose, CategoryType, onActio
                                     variant="secondary"
                                     size="sm"
                                     label="Duplicate"
-                                    icon={<DuplicateIcon color="#253DF4" />}
+                                    icon={<DuplicateIcon />}
                                     className=""
                                     dataTestid="duplicate-workflow-button"
                                     ariaLabel="Duplicate Workflow"
+                                    onClick={() => handleAction("DUPLICATE")}
                                 />
                             
                            
@@ -100,10 +101,11 @@ const ActionModal = React.memo(({ newActionModal, onClose, CategoryType, onActio
                                     variant="secondary"
                                     size="sm"
                                     label="Import"
-                                    icon={<ImportIcon color="#253DF4" />}
+                                    icon={<ImportIcon />}
                                     className=""
                                     dataTestid="import-workflow-button"
                                     ariaLabel="Import Workflow"
+                                    onClick={() => handleAction("IMPORT")}
                                 />
                             
                            
@@ -111,12 +113,22 @@ const ActionModal = React.memo(({ newActionModal, onClose, CategoryType, onActio
                                     variant="secondary"
                                     size="sm"
                                     label="Export"
-                                    icon={<PencilIcon color="#253DF4" />}
+                                    icon={<PencilIcon />}
                                     className=""
                                     dataTestid="export-workflow-button"
                                     ariaLabel="Export Workflow"
+                                    onClick={() => handleAction("EXPORT")}
                                 />
-                           
+                           <CustomButton
+                                    variant="secondary"
+                                    size="sm"
+                                    label="Delete"
+                                    icon={<TrashIcon />}
+                                    className=""
+                                    dataTestid="delete-workflow-button"
+                                    ariaLabel="Delete Workflow"
+                                    onClick={() => handleAction("DELETE")}
+                                />
                         </div>
                     )}
                 </Modal.Body>

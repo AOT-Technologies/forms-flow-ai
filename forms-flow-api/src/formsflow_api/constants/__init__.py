@@ -101,6 +101,15 @@ class BusinessErrorCode(ErrorCodeMixin, Enum):
         "At least one query parameter (name, key) must be provided.",
         HTTPStatus.BAD_REQUEST,
     )
+    PROCESS_INVALID_OPERATION = (
+        "Cannot update a published process",
+        HTTPStatus.BAD_REQUEST,
+    )
+    FORM_INVALID_OPERATION = (
+        "Cannot update a published form",
+        HTTPStatus.BAD_REQUEST,
+    )
+    FORM_VALIDATION_FAILED = "FORM_VALIDATION_FAILED.", HTTPStatus.BAD_REQUEST
 
     def __new__(cls, message, status_code):
         """Constructor."""

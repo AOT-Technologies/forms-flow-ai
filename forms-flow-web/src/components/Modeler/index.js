@@ -44,17 +44,17 @@ const Processes = () => {
         <Route exact path={`${BASE_ROUTE}descision-table`} component={descisiontable} />
         <DesignerProcessRoute
           exact
-          path={`${BASE_ROUTE}processes/create`}
+          path={`${BASE_ROUTE}subflow/create`}
           component={CreateWorkflow}
         />
         <DesignerProcessRoute
           exact
-          path={`${BASE_ROUTE}processes/:processId`}
+          path={`${BASE_ROUTE}subflow/:processId`}
           component={Base}
         />
         <DesignerProcessRoute
           exact
-          path={`${BASE_ROUTE}processes/:type/:processId/edit`}
+          path={`${BASE_ROUTE}subflow/edit/:processId`}
           component={Edit}
         />
         <Redirect exact to="/404" />

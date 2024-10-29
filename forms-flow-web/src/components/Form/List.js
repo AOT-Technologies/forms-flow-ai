@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useReducer } from "react";
+import React, { useEffect, useState } from "react";
 import { connect, useSelector, useDispatch } from "react-redux";
 import CreateFormModal from "../Modals/CreateFormModal.js";
 import ImportFormModal from "../Modals/ImportFormModal.js";
@@ -31,44 +31,16 @@ import {
 import FormTable from "./constants/FormTable";
 import ClientTable from "./constants/ClientTable";
 import _ from "lodash";
-import { CustomButton } from "@formsflow/components";
-import _set from "lodash/set";
-import _cloneDeep from "lodash/cloneDeep";
+import { CustomButton } from "@formsflow/components"; 
 import _camelCase from "lodash/camelCase";
 import { formCreate, formImport,validateFormName } from "../../apiManager/services/FormServices";
-import { addHiddenApplicationComponent } from "../../constants/applicationComponent";
 import { setFormSuccessData } from "../../actions/formActions";
 import { CustomSearch }  from "@formsflow/components";
 import userRoles from "../../constants/permissions.js";
 import FileService from "../../services/FileService";
 import {FormBuilderModal} from "@formsflow/components";
 
-
-const reducer = (form, { type, value }) => {
-  const formCopy = _cloneDeep(form);
-  switch (type) {
-    case "formChange":
-      for (let prop in value) {
-        if (Object.prototype.hasOwnProperty.call(value, prop)) {
-          form[prop] = value[prop];
-        }
-      }
-      return form;
-    case "replaceForm":
-      return _cloneDeep(value);
-    case "title":
-      if (type === "title" && !form._id) {
-        formCopy.name = _camelCase(value);
-        formCopy.path = _camelCase(value).toLowerCase();
-      }
-      break;
-    default:
-      break;
-  }
-  _set(formCopy, type, value);
-  return formCopy;
-};
-
+ 
 const List = React.memo((props) => {
   const { createDesigns, createSubmissions, viewDesigns } = userRoles();
   const { t } = useTranslation();
@@ -95,8 +67,9 @@ const List = React.memo((props) => {
   const submissionAccess = useSelector((state) => state.user?.submissionAccess || []);
 
   const [formSubmitted, setFormSubmitted] = useState(false);
-  const formData = { display: "form" }; const tenantKey = useSelector((state) => state.tenants?.tenantId);
-  const [form, dispatchFormAction] = useReducer(reducer, _cloneDeep(formData));
+
+  const tenantKey = useSelector((state) => state.tenants?.tenantId);
+  const [form, setForm] = useState({display:"form", title:"", description:""});
   // const roleIds = useSelector((state) => state.user?.roleIds || {});
   useEffect(() => {
     setSearch(searchText);
@@ -270,36 +243,36 @@ const List = React.memo((props) => {
     const { target } = event;
     const value = target.type === "checkbox" ? target.checked : target.value;
     value == "" ? setNameError("This field is required") : setNameError("");
-    dispatchFormAction({ type: path, value });
+    setForm(prev=>({...prev,[path]:value}));
   };
 
   const handleBuild = (formName,formDescription) => {
+    // TBD: no need to pass formName and formDescription instead of that pass every data in handleChange
     setFormSubmitted(true);
     const errors = validateForm();
     if (Object.keys(errors).length > 0) {
       setNameError(errors.title);
       return;
     }
-    form.components = [];
-    const newFormData = addHiddenApplicationComponent(form);
+
     const newForm = {
-      ...newFormData,
+      ...form,
       tags: ["common"],
     };
+
     newForm.submissionAccess = submissionAccess;
     newForm.componentChanged = true;
     newForm.newVersion = true;
     newForm.access = formAccess;
+    newForm.path = _camelCase(form.title).toLowerCase();
+    newForm.name = _camelCase(form.title);
     newForm.description = formDescription;
     if (MULTITENANCY_ENABLED && tenantKey) {
-      newForm.tenantKey = tenantKey;
-      if (newForm.path) {
+        newForm.tenantKey = tenantKey;
         newForm.path = addTenantkey(newForm.path, tenantKey);
-      }
-      if (newForm.name) {
         newForm.name = addTenantkey(newForm.name, tenantKey);
-      }
-    }
+    } 
+    
     formCreate(newForm).then((res) => {
       const form = res.data;
       dispatch(setFormSuccessData("form", form));

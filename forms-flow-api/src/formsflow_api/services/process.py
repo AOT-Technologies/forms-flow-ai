@@ -222,7 +222,17 @@ class ProcessService:  # pylint: disable=too-few-public-methods
         current_app.logger.debug(f"Get process data for process key: {process_key}")
         process = Process.get_latest_version_by_key(process_key)
         if process:
-            return processSchema.dump(process)
+            process_data = processSchema.dump(process)
+            # Determine version numbers based on the process status
+            major_version, minor_version = cls.determine_process_version(
+                process.status,
+                process.status_changed,
+                process.major_version,
+                process.minor_version,
+            )
+            process_data["majorVersion"] = major_version
+            process_data["minorVersion"] = minor_version
+            return process_data
         raise BusinessException(BusinessErrorCode.PROCESS_ID_NOT_FOUND)
 
     @classmethod
@@ -233,6 +243,17 @@ class ProcessService:  # pylint: disable=too-few-public-methods
         if not process or (process and process.is_subflow is False):
             raise BusinessException(BusinessErrorCode.PROCESS_ID_NOT_FOUND)
         return process
+
+    @classmethod
+    def determine_process_version(
+        cls, status, status_changed, major_version, minor_version
+    ):
+        """Determine process version."""
+        current_app.logger.debug("Identifying process version..")
+        is_unpublished = status == ProcessStatus.DRAFT and status_changed
+        major_version = major_version + 1 if is_unpublished else major_version
+        minor_version = 0 if is_unpublished else minor_version + 1
+        return major_version, minor_version
 
     @classmethod
     @user_context
@@ -254,6 +275,9 @@ class ProcessService:  # pylint: disable=too-few-public-methods
         if process.id != latest_process.id:
             # Raise an exception if the process is not the latest version
             raise BusinessException(BusinessErrorCode.PROCESS_NOT_LATEST_VERSION)
+        if process.status == ProcessStatus.PUBLISHED:
+            # Raise an exception if the user try to update published process
+            raise BusinessException(BusinessErrorCode.PROCESS_INVALID_OPERATION)
 
         # Process the data name and key based on the process type and subflow status
         process_data, process_name, process_key = cls._process_data_name_and_key(
@@ -273,11 +297,12 @@ class ProcessService:  # pylint: disable=too-few-public-methods
             raise BusinessException(BusinessErrorCode.PROCESS_EXISTS)
 
         # Determine version numbers based on the process status
-        is_unpublished = process.status == "Draft" and process.status_changed
-        major_version = (
-            process.major_version + 1 if is_unpublished else process.major_version
+        major_version, minor_version = cls.determine_process_version(
+            process.status,
+            process.status_changed,
+            process.major_version,
+            process.minor_version,
         )
-        minor_version = 0 if is_unpublished else process.minor_version + 1
 
         # Create a new process instance with updated data
         process_dict = {
@@ -308,6 +333,22 @@ class ProcessService:  # pylint: disable=too-few-public-methods
         raise BusinessException(BusinessErrorCode.PROCESS_ID_NOT_FOUND)
 
     @staticmethod
+    def populate_published_histories(histories, published_histories):
+        """Populating published on and publised by to the history."""
+        published_history_dict = {
+            f"{history.major_version}.{history.minor_version}": history
+            for history in published_histories
+        }
+        for history in histories:
+            published_history = published_history_dict.get(
+                f"{history.major_version}.{history.minor_version}"
+            )
+            if published_history:
+                history.published_on = published_history.created
+                history.published_by = published_history.created_by
+        return histories
+
+    @staticmethod
     def get_all_history(parent_process_key: str, request_args):
         """Get all history."""
         assert parent_process_key is not None
@@ -324,18 +365,9 @@ class ProcessService:  # pylint: disable=too-few-public-methods
 
         if process_histories:
             # populating published on and publised by to the history
-            published_history_dict = {
-                f"{history.major_version}.{history.minor_version}": history
-                for history in published_histories
-            }
-            for history in process_histories:
-                published_history = published_history_dict.get(
-                    f"{history.major_version}.{history.minor_version}"
-                )
-                if published_history:
-                    history.published_on = published_history.created
-                    history.published_by = published_history.created_by
-
+            process_histories = ProcessService.populate_published_histories(
+                process_histories, published_histories
+            )
             process_history_schema = ProcessHistorySchema(many=True)
             return process_history_schema.dump(process_histories), count
         raise BusinessException(BusinessErrorCode.PROCESS_ID_NOT_FOUND)
@@ -440,3 +472,12 @@ class ProcessService:  # pylint: disable=too-few-public-methods
             raise BusinessException(BusinessErrorCode.PROCESS_NOT_LATEST_VERSION)
         cls.update_process_status(process, ProcessStatus.DRAFT, user)
         return {}
+
+    @classmethod
+    def get_process_by_id(cls, process_id):
+        """Get process by id."""
+        current_app.logger.debug(f"Get process data for process id: {process_id}")
+        process = Process.find_process_by_id(process_id)
+        if process:
+            return processSchema.dump(process)
+        raise BusinessException(BusinessErrorCode.PROCESS_ID_NOT_FOUND)

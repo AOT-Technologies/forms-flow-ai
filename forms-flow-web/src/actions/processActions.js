@@ -182,4 +182,11 @@ export const setSubflowCount = (data) => (dispatch) => {
     type: ACTION_CONSTANTS.SET_SUBFLOW_COUNT,
     payload: data,
   });
+}; 
+
+export const setTotalDmnCount = (data) => (dispatch) => {
+  dispatch({
+    type: ACTION_CONSTANTS.SET_TOTAL_DMN_COUNT, 
+    payload: data,
+    }); 
 };

@@ -16,9 +16,9 @@ const SortableHeader = ({ columnKey, title, currentSort, handleSort,className = 
         className={`button-as-div ${className}`}
         onClick={() => handleSort(columnKey)}
         onKeyDown={handleKeyDown} 
-        role="button"
-        tabIndex = "0"
         aria-pressed={isSorted}
+        data-testid = {`${title}-header-btn`}
+        aria-label={`${title}-header-btn`}
       >
         <span className="mt-1">{t(title)}</span>
         <span>

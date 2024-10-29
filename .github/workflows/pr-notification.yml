@@ -13,7 +13,7 @@ jobs:
 
     steps:
       - name: Send notification to Google Chat
-        uses: fjogeleit/http-request-action@v1.1.0
+        uses: fjogeleit/http-request-action@v1.16.0
         with:
           url: ${{ secrets.WEBHOOK }}
           method: POST

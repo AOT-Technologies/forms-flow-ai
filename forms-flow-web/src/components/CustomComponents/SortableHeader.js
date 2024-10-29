@@ -12,8 +12,8 @@ const SortableHeader = ({ columnKey, title, currentSort, handleSort,className = 
         }
     };
     return (
-      <div
-        className= {`d-flex align-items-center justify-content-between cursor-pointer ${className}`}
+      <button
+        className={`button-as-div ${className}`}
         onClick={() => handleSort(columnKey)}
         onKeyDown={handleKeyDown} 
         role="button"
@@ -29,7 +29,7 @@ const SortableHeader = ({ columnKey, title, currentSort, handleSort,className = 
           title={t(sortedOrder === "asc" ? "Ascending" : "Descending")}
         ></i>
       </span>
-      </div>
+      </button>
     );
   };
   SortableHeader.propTypes = {

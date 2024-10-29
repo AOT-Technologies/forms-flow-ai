@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { connect, useSelector, useDispatch } from "react-redux";
 import CreateFormModal from "../Modals/CreateFormModal.js";
-import ImportFormModal from "../Modals/ImportFormModal.js";
+import ImportModal from "../Modals/ImportModal.js";
 import { push } from "connected-react-router";
 import { toast } from "react-toastify";
 import { addTenantkey } from "../../helper/helper";
@@ -351,7 +351,7 @@ const List = React.memo((props) => {
                     nameValidationOnBlur={validateFormNameOnBlur}
                     nameError={nameError}
                   />
-                  <ImportFormModal
+                  <ImportModal
                     importLoader={importLoader}
                     importError={importError}
                     importFormModal={importFormModal}

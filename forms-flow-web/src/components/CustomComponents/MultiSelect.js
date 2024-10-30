@@ -3,7 +3,7 @@ import { ListGroup } from "react-bootstrap";
 import { CustomPill } from "@formsflow/components";
 import PropTypes from 'prop-types';
 
-const RoleSelector = ({ allRoles = [], selectedRoles = [], setSelectedRoles }) => {
+const RoleSelector = ({ allRoles = [], selectedRoles = [], setSelectedRoles }) => { 
   const [roleInput, setRoleInput] = useState("");
   const [filteredRoles, setFilteredRoles] = useState([]);
   const [isDropdownOpen, setIsDropdownOpen] = useState(false); // To control dropdown visibility
@@ -56,7 +56,7 @@ const RoleSelector = ({ allRoles = [], selectedRoles = [], setSelectedRoles }) =
   }, []);
 
   return (
-    <div className="w-100">
+    <div className="multi-select w-100">
       <div className="input-with-pills form-control cursor-pointer position-relative">
         {selectedRoles.map((role, index) => (
           <CustomPill
@@ -73,7 +73,6 @@ const RoleSelector = ({ allRoles = [], selectedRoles = [], setSelectedRoles }) =
           onChange={handleRoleInputChange}
           onFocus={() => setIsDropdownOpen(true)} // Open dropdown when input is focused
           className="role-input"
-          placeholder="Type to filter roles"
           ref={inputRef} // Reference to input for outside click handling
         />
       </div>
@@ -83,6 +82,7 @@ const RoleSelector = ({ allRoles = [], selectedRoles = [], setSelectedRoles }) =
           <ListGroup>
             {filteredRoles.map((role, index) => (
               <ListGroup.Item
+                action={true}
                 key={role + index}
                 onClick={() => handleRoleSelect(role)}
               >

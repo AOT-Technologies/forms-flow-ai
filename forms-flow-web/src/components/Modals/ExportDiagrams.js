@@ -1,7 +1,8 @@
 import React, { useState, useEffect } from "react";
+import PropTypes from "prop-types"; // Import PropTypes
 import Modal from "react-bootstrap/Modal";
 import ProgressBar from "react-bootstrap/ProgressBar";
-import { CloseIcon, CustomButton, FailedIcon } from "@formsflow/components"; // Icons for success/failure
+import { CloseIcon, CustomButton, FailedIcon } from "@formsflow/components";
 import { Translation } from "react-i18next";
 
 const ExportDiagram = React.memo(
@@ -25,18 +26,17 @@ const ExportDiagram = React.memo(
 
     const { progress, exportStatus, isExportComplete, isError } = state;
 
-    // Helper function to reset state for retry or new export
     const resetState = (hasError = false) => {
       setState({
-        progress: hasError ? 100 : 0, // Set progress to 100 in case of error
+        progress: hasError ? 100 : 0,
         exportStatus: hasError ? "Export failed" : "Export in Progress",
-        isExportComplete: hasError, // Set complete only in case of error
+        isExportComplete: hasError,
         isError: hasError,
       });
     };
 
     const exportData = () => {
-      resetState(); // Reset to initial state for new export
+      resetState();
       onExport({
         onProgress: (percentCompleted) => {
           setState((prevState) => ({
@@ -50,13 +50,13 @@ const ExportDiagram = React.memo(
             ...prevState,
             progress: 100,
             isExportComplete: true,
-            isError: !!errorMessage, // If errorMessage exists, it's an error case
+            isError: !!errorMessage,
             exportStatus: errorMessage ? "Export failed" : successMessage,
           }));
         })
         .catch(() => {
           setState({
-            progress: 100, // Ensure progress reaches 100 in error case
+            progress: 100,
             exportStatus: "Export failed",
             isExportComplete: true,
             isError: true,
@@ -67,12 +67,12 @@ const ExportDiagram = React.memo(
     useEffect(() => {
       if (showExportModal) {
         if (!errorMessage) {
-          exportData(); // Start export if there's no error
+          exportData();
         } else {
-          resetState(true); // If errorMessage exists, set error state
+          resetState(true);
         }
       } else {
-        resetState(); // Reset modal state when closed
+        resetState();
       }
     }, [showExportModal, errorMessage]);
 
@@ -134,31 +134,41 @@ const ExportDiagram = React.memo(
           )}
         </Modal.Body>
         {isError && <Modal.Footer className="d-flex justify-content-start flex-wrap">
-            <>
-              <CustomButton
-                variant="primary"
-                size="md"
-                label={<Translation>{(t) => t(retryButtonText)}</Translation>}
-                onClick={exportData}
-                className="mb-2"
-                dataTestid="try-again"
-                ariaLabel="Try Again"
-              />
-              <CustomButton
-                variant="secondary"
-                size="md"
-                label={<Translation>{(t) => t(cancelButtonText)}</Translation>}
-                onClick={onClose}
-                className="mb-2"
-                dataTestid="cancel"
-                ariaLabel="Cancel"
-              />
-            </>
-        </Modal.Footer>
-        }
+            <CustomButton
+              variant="primary"
+              size="md"
+              label={<Translation>{(t) => t(retryButtonText)}</Translation>}
+              onClick={exportData}
+              className="mb-2"
+              dataTestid="try-again"
+              ariaLabel="Try Again"
+            />
+            <CustomButton
+              variant="secondary"
+              size="md"
+              label={<Translation>{(t) => t(cancelButtonText)}</Translation>}
+              onClick={onClose}
+              className="mb-2"
+              dataTestid="cancel"
+              ariaLabel="Cancel"
+            />
+        </Modal.Footer>}
       </Modal>
     );
   }
 );
+
+// Add PropTypes
+ExportDiagram.propTypes = {
+  showExportModal: PropTypes.bool.isRequired,
+  onClose: PropTypes.func.isRequired,
+  onExport: PropTypes.func.isRequired,
+  fileName: PropTypes.string.isRequired,
+  modalTitle: PropTypes.string,
+  successMessage: PropTypes.string,
+  errorMessage: PropTypes.string,
+  retryButtonText: PropTypes.string,
+  cancelButtonText: PropTypes.string,
+};
 
 export default ExportDiagram;

@@ -21,6 +21,7 @@ import { useTranslation } from "react-i18next";
 import { copyText } from "../../../apiManager/services/formatterService";
 import _camelCase from "lodash/camelCase";
 import _cloneDeep from "lodash/cloneDeep";
+import { validateFormName, validatePathName } from "../../../apiManager/services/FormServices";
 
 //CONST VARIABLES
 const DESIGN = "DESIGN";
@@ -44,58 +45,85 @@ const FormSettings = forwardRef((props, ref) => {
 
   /* --------------------------- useState Variables --------------------------- */
   const [userRoles, setUserRoles] = useState([]);
-  const [copied, setCopied] = useState(false);
-  const [editIndexValue, setEditIndexValue] = useState(0);
-  const [createIndexValue, setCreateIndexValue] = useState(0);
-  const [viewIndexValue, setViewIndexValue] = useState(0);
+  const [copied, setCopied] = useState(false); 
   const [formDetails, setFormDetails] = useState({
     title: processListData.formName,
     path: path,
     description: processListData.description,
     display: display,
   });
-  const [isAnonymous, setIsAnonymous] = useState(processListData.anonymous);
-
+  const [isAnonymous, setIsAnonymous] = useState(processListData.anonymous || false);
+  const [errors, setErrors] = useState({
+    name: "",
+    path: "",
+  });
   const [formAccessCopy, setFormAccessCopy] = useState(_cloneDeep(formAccess));
   const [submissionAccessCopy, setSubmissionAccessCopy] = useState(
     _cloneDeep(submissionAccess)
   );
 
   const publicUrlPath = `${window.location.origin}/public/form/`;
-
+  const setSelectedOption = (roles, option)=> roles.length ? "specifiedRoles" : option;
   /* ------------------------- authorization variables ------------------------ */
   const [rolesState, setRolesState] = useState({
     DESIGN: {
       selectedRoles: formAuthorization.DESIGNER?.roles,
-      selectedOption: "onlyYou",
+      selectedOption: setSelectedOption(formAuthorization.DESIGNER?.roles,"onlyYou"),
     },
     FORM: {
       roleInput: "",
       selectedRoles: formAuthorization.FORM?.roles,
-      selectedOption: "registeredUsers",
+      selectedOption: setSelectedOption(formAuthorization.FORM?.roles,"registeredUsers"),
     },
     APPLICATION: {
       roleInput: "",
       selectedRoles: formAuthorization.APPLICATION?.roles,
-      selectedOption: "submitter",
+      selectedOption: setSelectedOption(formAuthorization.APPLICATION?.roles, "submitter"),
     },
   });
 
+    /* ------------------------- validating form name and path ------------------------ */
+
+  const validateField = async (field, value) => {
+    let errorMessage = "";
+    if (!value.trim()) {
+      errorMessage = `${field.charAt(0).toUpperCase() + field.slice(1)} is required`;
+    } else {
+      try {
+        const response = field === 'name' ? await validateFormName(value) : await validatePathName(value);
+        const data = response?.data;
+        if (data && data.code === "FORM_EXISTS") {
+          errorMessage = data.message;
+        }
+      } catch (error) {
+        errorMessage = error.response?.data?.message || 
+        `An error occurred while validating the ${field}.`;
+        console.error(`Error validating ${field}:`, errorMessage);
+      }
+    }
+    setErrors((prev) => ({ ...prev, [field]: errorMessage }));
+  };
+
+
+  
   /* ---------------------- handling form details change ---------------------- */
+
   const handleFormDetailsChange = (e) => {
     const { name, value, type } = e.target;
     // if form name or path changed need to call validation api based on that
     let updatedValue =
       name === "path" ? _camelCase(value).toLowerCase() : value;
+    
     if (type === "checkbox") {
-      updatedValue = e.target.checked ? "wizard" : "form";
+      setFormDetails((prev) => ({ ...prev, [name]: e.target.checked ? "wizard" : "form" }));
+    } else {
+      setFormDetails((prev) => ({ ...prev, [name]: updatedValue }));
+      if (name === "title" || name === "path") {
+        validateField(name === "title" ? 'name' : 'path', updatedValue);
+      }
     }
-    setFormDetails((prev) => ({ ...prev, [name]: updatedValue }));
-
-    // if(name == "path" || name =="title"){
-    //   validationapi call
-    // }
   };
+  
 
   /* ---------------------------- Fetch user roles ---------------------------- */
   useEffect(() => {
@@ -178,7 +206,10 @@ const FormSettings = forwardRef((props, ref) => {
           dataTestid="form-name"
           name="title"
           ariaLabel={t("Form Name")}
-        />
+          isInvalid = {!!errors.name}
+          feedback = {errors.name}
+          onBlur={() => validateField('name', formDetails.title)}
+          />
         <FormTextArea
           label={t("Description")}
           name="description"
@@ -204,7 +235,7 @@ const FormSettings = forwardRef((props, ref) => {
         <Form.Check
           data-testid="form-edit-wizard-display"
           type="checkbox"
-          id="createCheckbox"
+          id="formDisplaychange"
           label={t("Allow adding multiple pages in this form")}
           checked={formDetails.display === "wizard"}
           name="display"
@@ -225,26 +256,22 @@ const FormSettings = forwardRef((props, ref) => {
           items={[
             {
               label: t("Only You"),
-              onClick: () => {
-                handleRoleStateChange(DESIGN, "selectedOption", "onlyYou");
-                setEditIndexValue(0);
-              },
+              value:"onlyYou",
             },
             {
               label: t("You and specified roles"),
-              onClick: () => {
-                handleRoleStateChange(
-                  DESIGN,
-                  "selectedOption",
-                  "specifiedRoles"
-                );
-                setEditIndexValue(1);
-              },
+              value: "specifiedRoles",
             },
           ]}
-          dataTestid="edit-submission-role"
-          ariaLabel={t("Edit Submission Role")}
-          indexValue={editIndexValue}
+          onChange={
+            (value) => {
+              handleRoleStateChange(DESIGN, "selectedOption", value);
+            }
+          }
+          dataTestid="who-can-edit-this-form"
+          id="who-can-edit-this-form"
+          ariaLabel={t("Edit Submission Role")} 
+          selectedValue={rolesState.DESIGN.selectedOption}
         />
 
         {rolesState.DESIGN.selectedOption === "onlyYou" && (
@@ -265,7 +292,7 @@ const FormSettings = forwardRef((props, ref) => {
         </Form.Label>
         <Form.Check
           type="checkbox"
-          id="createCheckbox"
+          id="anonymouseCheckbox"
           label={t("Anonymous users")}
           checked={isAnonymous}
           onChange={() => {
@@ -278,28 +305,22 @@ const FormSettings = forwardRef((props, ref) => {
           items={[
             {
               label: t("Registered users"),
-              onClick: () => {
-                handleRoleStateChange(
-                  FORM,
-                  "selectedOption",
-                  "registeredUsers"
-                );
-
-                setCreateIndexValue(0);
-                // Set index value for Registered users
-              },
+              value:"registeredUsers",
             },
             {
               label: t("Specific roles"),
-              onClick: () => {
-                handleRoleStateChange(FORM, "selectedOption", "specifiedRoles");
-                setCreateIndexValue(1); // Set index value for Specific roles
-              },
+              value:"specifiedRoles"
             },
           ]}
+          id="who-can-create-submission"
           dataTestid="create-submission-role"
           ariaLabel={t("Create Submission Role")}
-          indexValue={createIndexValue}
+          onChange={
+            (value) => {
+              handleRoleStateChange(FORM, "selectedOption", value);
+            }
+          }
+          selectedValue={rolesState.FORM.selectedOption}
         />
         {rolesState.FORM.selectedOption === "registeredUsers" && (
           <FormInput disabled={true} />
@@ -321,31 +342,22 @@ const FormSettings = forwardRef((props, ref) => {
           items={[
             {
               label: t("Submitter"),
-              onClick: () => {
-                handleRoleStateChange(
-                  APPLICATION,
-                  "selectedOption",
-                  "submitter"
-                );
-
-                setViewIndexValue(0); // Set index value for Submitter
-              },
+              value:"submitter"
             },
             {
               label: t("Submitter and specified roles"),
-              onClick: () => {
-                handleRoleStateChange(
-                  APPLICATION,
-                  "selectedOption",
-                  "specifiedRoles"
-                );
-                setViewIndexValue(0);
-              },
+              value:"specifiedRoles"
             },
           ]}
+          id="who-can-view-submission"
           dataTestid="view-submission-role"
           ariaLabel={t("View Submission Role")}
-          indexValue={viewIndexValue}
+          onChange={
+            (value) => {
+              handleRoleStateChange(APPLICATION, "selectedOption", value);
+            }
+          }
+          selectedValue={rolesState.APPLICATION.selectedOption}
         />
 
         {rolesState.APPLICATION.selectedOption === "submitter" && (
@@ -390,11 +402,13 @@ const FormSettings = forwardRef((props, ref) => {
               className="url-edit"
               name="path"
               onChange={handleFormDetailsChange}
-            />
+              onBlur={() => validateField('path', formDetails.path)}            />
             <InputGroup.Text className="url-copy" onClick={copyPublicUrl}>
               {copied ? <i className="fa fa-check" /> : <CopyIcon />}
             </InputGroup.Text>
           </InputGroup>
+          {errors.path && <div className="validation-text mt-2">{errors.path}</div>}
+
         </Form.Group>
       </div>
     </>

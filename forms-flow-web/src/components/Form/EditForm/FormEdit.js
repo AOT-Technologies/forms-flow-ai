@@ -47,12 +47,9 @@ import {
   saveFormProcessMapperPut,
   getProcessDetails,
   unPublishForm,
-  getProcessHistory,
-  fetchRevertingProcessData
 } from "../../../apiManager/services/processServices";
 import {
   setProcessData,
-  setProcessHistories,
 } from "../../../actions/processActions.js";
 import _isEquial from "lodash/isEqual";
 import _ from "lodash";
@@ -71,7 +68,7 @@ const FORM_LAYOUT = "FORM_LAYOUT";
 const FLOW_LAYOUT = "FLOW_LAYOUT";
 const DELETE = "DELETE";
 
-const Edit = React.memo(() => {
+const EditComponent = () => {
   const dispatch = useDispatch();
   const { formId } = useParams();
   const { t } = useTranslation();
@@ -80,7 +77,6 @@ const Edit = React.memo(() => {
 
   /* ------------------------------- mapper data ------------------------------ */
   const {
-    processHistoryData = {},
     formProcessList: processListData,
     formPreviousData: previousData,
   } = useSelector((state) => state.process);
@@ -141,12 +137,8 @@ const Edit = React.memo(() => {
     (state) => state.process?.applicationCount
   );
 
-  const processHistory = processHistoryData.processHistory || [];
   const formHistory = formHistoryData.formHistory || [];
-  const pageNo = 1;
-  const limit = 4;
-  const [history, setHistory] = useState(true);
-  const [showHistoryModal, setshowHistoryModal] = useState(false);
+  const [showHistoryModal, setShowHistoryModal] = useState(false);
   const [showConfirmModal, setShowConfirmModal] = useState(false);
   const [modalType, setModalType] = useState("");
 
@@ -210,7 +202,7 @@ const Edit = React.memo(() => {
         .then((res) => {
           if (res.data) {
             const { data } = res;
-            dispatch(setRestoreFormData(res.data));
+            dispatch(setRestoreFormData(data));
             dispatchFormAction({
               type: "components",
               value: _cloneDeep(data.components),
@@ -411,7 +403,7 @@ const Edit = React.memo(() => {
     dispatch(push(`${redirectUrl}form/`));
   };
   const closeHistoryModal = () => {
-    setshowHistoryModal(false);
+    setShowHistoryModal(false);
   };
   const fetchFormHistory = (parentFormId, page, limit) => {
     getFormHistory(parentFormId, page, limit)
@@ -423,56 +415,22 @@ const Edit = React.memo(() => {
       });
   };
 
-  const fetchProcessHistory = (processKey, page, limit) => {
-    getProcessHistory(processKey, page, limit)
-      .then((res) => {
-        dispatch(setProcessHistories(res.data));
-      })
-      .catch(() => {
-        setProcessHistories([]);
-      });
-  };
-  const handleHistory = (type) => {
-    setshowHistoryModal(true);
-    if (type === "WORKFLOW") {
-      setHistory(false);
-      dispatch(setProcessHistories({ processHistory: [], totalCount: 0 }));
-      if (processListData?.processKey) {
-        fetchProcessHistory(processListData?.processKey, pageNo, limit);
-      }
-    } else {
-      setHistory(true);
-      dispatch(setFormHistories({ formHistory: [], totalCount: 0 }));
-      if (processListData?.parentFormId) {
-        fetchFormHistory(processListData?.parentFormId, pageNo, limit);
-      }
+  const handleFormHistory = () => {
+    setShowHistoryModal(true);
+    dispatch(setFormHistories({ formHistory: [], totalCount: 0 }));
+    if (processListData?.parentFormId) {
+        fetchFormHistory(processListData?.parentFormId, 1, 4);
     }
-  };
+};
+
 
   const loadMoreBtnAction = () => {
-    history
-      ? fetchFormHistory(processListData?.parentFormId)
-      : fetchProcessHistory(processListData?.processKey);
+      fetchFormHistory(processListData?.parentFormId);
   };
 
   const revertFormBtnAction = (cloneId) => {
     dispatch(setRestoreFormId(cloneId));
     fetchRestoredFormData(cloneId);
-  };
-
-  const revertProcessBtnAction = (processId) => {
-    if(processId){
-      setIsProcessDetailsLoading(true);
-      fetchRevertingProcessData(processId).then((res) =>{
-        if(res.data){
-         const { data } = res;
-         dispatch(setProcessData(data));
-         setIsProcessDetailsLoading(false);
-        }
-       }).catch((err) =>{
-         console.log(err.response.data);
-       });  
-    }
   };
 
   const handlePreview = () => {
@@ -871,7 +829,7 @@ const Edit = React.memo(() => {
                           size="md"
                           icon={<HistoryIcon />}
                           label={t("History")}
-                          onClick={() => handleHistory(CategoryType.FORM)}
+                          onClick={() => handleFormHistory()}
                           dataTestid="handle-form-history-testid"
                           ariaLabel={t("Form History Button")}
                         />
@@ -933,8 +891,9 @@ const Edit = React.memo(() => {
             >
               {/* TBD: Add a loader instead. */}
               {isProcessDetailsLoading ? <>loading...</> : <FlowEdit 
-              handleHistory={handleHistory}
-              CategoryType={CategoryType}/>}
+              CategoryType={CategoryType}
+              setIsProcessDetailsLoading={setIsProcessDetailsLoading}
+              />}
             </div>
             <button
               className={`border-0 form-flow-wraper-${
@@ -1005,17 +964,15 @@ const Edit = React.memo(() => {
         title={t("History")}
         loadMoreBtnText={t("Load More")}
         revertBtnText={t("Revert To This")}
-        allHistory={history ? formHistory : processHistory}
+        allHistory={formHistory}
         loadMoreBtnAction={loadMoreBtnAction}
-        categoryType={history ? CategoryType.FORM : CategoryType.WORKFLOW}
-        revertBtnAction={history ? revertFormBtnAction : revertProcessBtnAction}
-        historyCount={
-          history ? formHistoryData.totalCount : processHistoryData.totalCount
-        }
+        categoryType={CategoryType.FORM}
+        revertBtnAction={revertFormBtnAction}
+        historyCount={formHistoryData.totalCount}
       />
       {renderDeleteModal()}
     </div>
   );
-});
+};
 
-export default Edit;
+export const Edit = React.memo(EditComponent);

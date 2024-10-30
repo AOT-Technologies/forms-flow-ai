@@ -1,16 +1,17 @@
 import React, { forwardRef, useImperativeHandle, useRef, useState } from 'react';
-import { CustomButton, HistoryIcon, ConfirmModal } from "@formsflow/components";
+import { CustomButton, HistoryIcon, ConfirmModal, HistoryModal } from "@formsflow/components";
 import { Card } from 'react-bootstrap';
 import { useTranslation } from 'react-i18next';
 import { useDispatch, useSelector } from 'react-redux';
-import { setProcessData } from '../../../actions/processActions.js';
+import { setProcessData, setProcessHistories } from '../../../actions/processActions.js';
 import BpmnEditor from '../../Modeler/Editors/BpmnEditor/index.js';
-import { updateProcess } from "../../../apiManager/services/processServices.js";
+import { updateProcess, getProcessHistory, fetchRevertingProcessData } from "../../../apiManager/services/processServices.js";
 import { toast } from 'react-toastify';
 import { createXMLFromModeler, validateProcessNames, compareXML } from '../../../helper/processHelper.js';
 import { ERROR_LINTING_CLASSNAME } from '../../Modeler/constants/bpmnModelerConstants.js';
+import PropTypes from 'prop-types';
 
-const FlowEdit = forwardRef(({ handleHistory, CategoryType }, ref) => {
+const FlowEdit = forwardRef(({ CategoryType, setIsProcessDetailsLoading  }, ref) => {
   const { t } = useTranslation();
   const dispatch = useDispatch();
   const bpmnRef = useRef();
@@ -18,6 +19,12 @@ const FlowEdit = forwardRef(({ handleHistory, CategoryType }, ref) => {
   const [lintErrors, setLintErrors] = useState([]);
   const [savingFlow, setSavingFlow] = useState(false);
   const [showDiscardModal, setShowDiscardModal] = useState(false);
+  const [showHistoryModal, setshowHistoryModal] = useState(false);
+  const {
+    processHistoryData = {},
+    formProcessList: processListData,
+  } = useSelector((state) => state.process);
+  const processHistory = processHistoryData.processHistory || [];
   // handle history modal
   const handleHanldeDisacardModal = () => setShowDiscardModal(!showDiscardModal);
   //validate any erros in bpmn lint
@@ -92,9 +99,48 @@ const FlowEdit = forwardRef(({ handleHistory, CategoryType }, ref) => {
     saveFlow,
   }));
 
- 
+  const closeHistoryModal = () => {
+    setshowHistoryModal(false);
+  };
+
+  const fetchProcessHistory = (processKey, page, limit) => {
+    getProcessHistory(processKey, page, limit)
+      .then((res) => {
+        dispatch(setProcessHistories(res.data));
+      })
+      .catch(() => {
+        setProcessHistories([]);
+      });
+  };
+  const handleProcessHistory = () => {
+    setshowHistoryModal(true);
+    dispatch(setProcessHistories({ processHistory: [], totalCount: 0 }));
+    if (processListData?.processKey) {
+        fetchProcessHistory(processListData?.processKey, 1, 4);
+    }
+  };
+
+  const loadMoreBtnAction = () => {
+    fetchProcessHistory(processListData?.processKey);
+  };
+
+  const revertProcessBtnAction = (processId) => {
+    if(processId){
+      setIsProcessDetailsLoading(true);
+      fetchRevertingProcessData(processId).then((res) =>{
+        if(res.data){
+         const { data } = res;
+         dispatch(setProcessData(data));
+         setIsProcessDetailsLoading(false);
+        }
+       }).catch((err) =>{
+         console.log(err.response.data);
+       });  
+    }
+  };
 
   return (
+    <>
     <Card>
       <ConfirmModal
         show={showDiscardModal}
@@ -118,7 +164,7 @@ const FlowEdit = forwardRef(({ handleHistory, CategoryType }, ref) => {
                 size="md"
                 icon={<HistoryIcon />}
                 label={t("History")}
-                onClick={() => handleHistory(CategoryType.WORKFLOW)}
+                onClick={() => handleProcessHistory()}
                 dataTestid="flow-history-button-testid"
                 ariaLabel={t("Flow History Button")}
               />
@@ -161,7 +207,27 @@ const FlowEdit = forwardRef(({ handleHistory, CategoryType }, ref) => {
              bpmnXml={processData?.processData} />
       </Card.Body>
     </Card>
+    <HistoryModal
+        show={showHistoryModal}
+        onClose={closeHistoryModal}
+        title={t("History")}
+        loadMoreBtnText={t("Load More")}
+        revertBtnText={t("Revert To This")}
+        allHistory={processHistory}
+        loadMoreBtnAction={loadMoreBtnAction}
+        categoryType={CategoryType.WORKFLOW}
+        revertBtnAction={revertProcessBtnAction}
+        historyCount={ processHistoryData.totalCount}
+      />
+</>
   );
 });
+
+FlowEdit.propTypes = {
+  CategoryType: PropTypes.shape({
+    WORKFLOW: PropTypes.string.isRequired,
+  }).isRequired,
+  setIsProcessDetailsLoading: PropTypes.func.isRequired,
+};
 
 export default FlowEdit;

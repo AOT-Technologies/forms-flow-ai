@@ -1,19 +1,21 @@
-import React, { useEffect, useState, useRef } from "react";
+import React, { useEffect, useState, useRef, useMemo } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import { useParams } from "react-router-dom";
 import { push } from "connected-react-router";
 import {
-  fetchDiagram,
   updateProcess,
   publish,
   unPublish,
   getProcessDetails,
-  createSubflow
+  createSubflow,
 } from "../../apiManager/services/processServices";
 import Loading from "../../containers/Loading";
 import { MULTITENANCY_ENABLED } from "../../constants/constants";
 import { useTranslation } from "react-i18next";
-import { extractDataFromDiagram } from "../../components/Modeler/helpers/helper";
+import {
+  createNewProcess,
+  extractDataFromDiagram,
+} from "../../components/Modeler/helpers/helper";
 import {
   CustomButton,
   HistoryIcon,
@@ -30,89 +32,84 @@ import {
   compareXML,
 } from "../../helper/processHelper";
 import BpmnEditor from "./Editors/BpmnEditor";
-import { createNewProcess } from "./helpers/helper";
-import { setProcessData } from "../../actions/processActions";
+import {
+  setProcessData,
+  setProcessDiagramXML,
+} from "../../actions/processActions";
 
 const EXPORT = "EXPORT";
 const CategoryType = { FORM: "FORM", WORKFLOW: "WORKFLOW" };
 
 const WorkflowEditor = () => {
-  const tenantKey = useSelector((state) => state.tenants?.tenantId);
-  const { processId } = useParams();
+  const { processKey, step } = useParams();
+  const isCreate = step === "create"; 
   const dispatch = useDispatch();
-  //const diagramXML = useSelector((state) => state.process.processDiagramXML);
-  const isPublicDiagram = useSelector((state) => state.process.isPublicDiagram);
-  //const processStatus = useSelector((state) => state.process?.processData?.status);
-  const [diagramLoading, setDiagramLoading] = useState(false);
+  const bpmnRef = useRef();
+  const { t } = useTranslation();
+
+  const tenantKey = useSelector((state) => state.tenants?.tenantId);
+  const redirectUrl = MULTITENANCY_ENABLED ? `/tenant/${tenantKey}/` : "/";
+  const processData = useSelector((state) => state.process?.processData);
   const [selectedAction, setSelectedAction] = useState(null);
   const [newActionModal, setNewActionModal] = useState(false);
   const [lintErrors, setLintErrors] = useState([]);
-  const [deploymentName, setDeploymentName] = useState("");
   const [exportError, setExportError] = useState(null);
-  const bpmnRef = useRef();
-  const processData = useSelector((state) => state.process?.processData);
+  const defaultProcessXmlData = useSelector(
+    (state) => state.process.defaultProcessXmlData
+  );
   const [savingFlow, setSavingFlow] = useState(false);
-  //const [publishFlow, setPublishFlow] = useState(false);
-  //const [showDiscardModal, setShowDiscardModal] = useState(false);
   const [historyModalShow, setHistoryModalShow] = useState(false);
-  // handle history modal
-  const handleHistoryModal = () => setHistoryModalShow(!historyModalShow);
-  //const handleHanldeDisacardModal = () => setShowDiscardModal(!showDiscardModal);
-
-  const redirectUrl = MULTITENANCY_ENABLED ? `/tenant/${tenantKey}/` : "/";
-  const { t } = useTranslation();
-  const [isPublished, setIsPublished] = useState( processData?.status == "Published" ? true : false  );
-  useEffect(() => {
-    processData.status === "Published" ? setIsPublished(true) : setIsPublished(false);
-  }, [processData]);
-
-  const publishText = isPublished ? "Unpublish" : "Publish";
+  const [isPublished, setIsPublished] = useState(
+    processData?.status === "Published"
+  );
   const [showConfirmModal, setShowConfirmModal] = useState(false);
   const [modalType, setModalType] = useState("");
   const [isPublishLoading, setIsPublishLoading] = useState(false);
-  const processList = useSelector((state) => state.process?.processList);
+  // handle history modal
+  const handleHistoryModal = () => setHistoryModalShow(!historyModalShow);
   const [isProcessDetailsLoading, setIsProcessDetailsLoading] = useState(false);
- 
-  useEffect(() => {
-    if (processList.processKey) {
-      setIsProcessDetailsLoading(true);
-      getProcessDetails(processList.processKey).then((response) => {
-        const { data } = response;
-        setIsPublished(!isPublished);
-        dispatch(setProcessData(data));
-        setIsProcessDetailsLoading(false);
-      });
-    }
-  }, [processList.processKey]);
+
 
   useEffect(() => {
-    if (processData) {
-      const extractedName = extractDataFromDiagram(
-        processData?.processData
-      ).name.replaceAll(" / ", "-");
-      setDeploymentName(extractedName);
-    }
+    setIsPublished(processData.status === "Published");
   }, [processData]);
 
-  useEffect(() => {
-    if (processId) {
-      setDiagramLoading(true);
-      if (MULTITENANCY_ENABLED && isPublicDiagram === null) {
-        dispatch(push(`${redirectUrl}subflow`));
-      } else {
-        const updatedTenantKey =
-          MULTITENANCY_ENABLED && !isPublicDiagram ? null : tenantKey;
-        dispatch(
-          fetchDiagram(processId, updatedTenantKey, () =>
-            setDiagramLoading(false)
-          )
-        );
+  const publishText = isPublished ? "Unpublish" : "Publish";
+
+  // get process name to dispaly 
+  const processName = useMemo(() => {
+    if (!processData.processData) return;
+    return extractDataFromDiagram(processData?.processData).name;
+  }, [processData]);
+
+  //fetch process details using processkey
+  useEffect(async () => {
+    if (processKey) {
+      try {
+        setIsProcessDetailsLoading(true);
+        const { data } = await getProcessDetails(processKey);
+        setIsPublished(!isPublished);
+        dispatch(setProcessData(data));
+      } catch (error) {
+        console.error(error);
+      } finally {
+        setIsProcessDetailsLoading(false);
       }
-    } else {
-      const newProcess = createNewProcess();
-      dispatch(setProcessData(newProcess.defaultWorkflow.xml));
     }
-  }, [processId, dispatch, tenantKey, isPublicDiagram]);
+  }, [processKey]);
+
+  //reset the data 
+  useEffect(() => {
+    if (isCreate) {
+      dispatch(setProcessData({}));
+    }
+    return () => {
+      //if we click duplicate the the data will exist on the redux, so need to reset
+      isCreate &&
+        dispatch(setProcessDiagramXML(createNewProcess().defaultWorkflow.xml));
+    };
+  }, [isCreate]);
+
 
   const handleToggleConfirmModal = () => setShowConfirmModal(!showConfirmModal);
   const openConfirmModal = (type) => {
@@ -120,57 +117,54 @@ const WorkflowEditor = () => {
     handleToggleConfirmModal();
   };
 
-// Function to handle publish/unpublish with XML validation
-// Function to handle publish/unpublish with XML validation
-const confirmPublishOrUnPublish = async () => {
-  try {
-    const bpmnModeler = bpmnRef.current?.getBpmnModeler();
-    const xml = await createXMLFromModeler(bpmnModeler);
+  // Function to handle publish/unpublish with XML validation
+  const confirmPublishOrUnPublish = async () => {
+    try {
+      const bpmnModeler = bpmnRef.current?.getBpmnModeler();
+      const xml = await createXMLFromModeler(bpmnModeler);
 
-    // Validate the XML before publishing/unpublishing
-    if (!validateProcess(xml,lintErrors)) {
-      return; // Stop if validation fails
-    }
+      // Validate the XML before publishing/unpublishing
+      if (!validateProcess(xml, lintErrors)) {
+        return; // Stop if validation fails
+      }
 
-    const actionFunction = isPublished ? unPublish : publish;
-    closeModal(); // Close confirmation modal
-    setIsPublishLoading(true);
+      const actionFunction = isPublished ? unPublish : publish;
+      closeModal(); // Close confirmation modal
+      setIsPublishLoading(true);
 
-    // Perform the publish/unpublish action
-    const response = await actionFunction({ id: processData.id, data: xml, type: "BPMN" });
-
-    // Handle unpublish success by immediately fetching updated process details
-    if (response?.status === 200 || response?.success) {
+      // Perform the publish/unpublish action
+      await actionFunction({ id: processData.id, data: xml, type: "BPMN" });
       if (isPublished) {
         // Fetch updated process details after unpublish
-        const updatedProcessDetails = await getProcessDetails(processId);
+        const updatedProcessDetails = await getProcessDetails(
+          processData.processKey
+        );
         dispatch(setProcessData(updatedProcessDetails.data));
         setIsPublished(false); // Set to unpublished
-      } else {
-        // If publishing, update state as published
-        setIsPublished(true);
       }
-      toast.success(t(`${isPublished ? "Unpublished" : "Published"} successfully`));
+      toast.success(
+        t(`${isPublished ? "Unpublished" : "Published"} successfully`)
+      );
+      // Handle unpublish success by immediately fetching updated process details
       if (!isPublished) {
         dispatch(push(`${redirectUrl}subflow`)); // Redirect on publish
       }
-    } else {
-      toast.error(t(`Failed to ${isPublished ? "unpublish" : "publish"} the BPMN`));
+      setIsPublished(!isPublished);
+    } catch (error) {
+      toast.error(
+        t(`Failed to ${isPublished ? "unpublish" : "publish"} the BPMN`)
+      );
+      console.error("Error in publish/unpublish:", error.message);
+    } finally {
+      setIsPublishLoading(false);
     }
-  } catch (error) {
-    toast.error(t(`Failed to ${isPublished ? "unpublish" : "publish"} the BPMN`));
-    console.error("Error in publish/unpublish:", error.message);
-  } finally {
-    setIsPublishLoading(false);
-  }
-};
+  };
 
-  
-  
   const closeModal = () => {
     setModalType("");
     handleToggleConfirmModal();
   };
+
   const handleExport = async () => {
     try {
       if (await validateProcess(processData?.processData)) {
@@ -179,12 +173,12 @@ const confirmPublishOrUnPublish = async () => {
           type: "text/bpmn",
         });
         element.href = URL.createObjectURL(file);
-        const deploymentName =
+        const processName =
           extractDataFromDiagram(processData?.processData).name.replaceAll(
             " / ",
             "-"
           ) + ".bpmn";
-        element.download = deploymentName.replaceAll(" ", "");
+        element.download = processName.replaceAll(" ", "");
         document.body.appendChild(element);
         element.click();
         setExportError(null);
@@ -196,7 +190,6 @@ const confirmPublishOrUnPublish = async () => {
     }
   };
 
-
   const cancel = () => dispatch(push(`${redirectUrl}subflow`));
 
   const editorActions = () => setNewActionModal(true);
@@ -205,48 +198,55 @@ const confirmPublishOrUnPublish = async () => {
     try {
       const bpmnModeler = bpmnRef.current?.getBpmnModeler();
       const xml = await createXMLFromModeler(bpmnModeler);
-      
+
       if (!validateProcess(xml, lintErrors, t)) {
         return;
       }
-  
-      // If XML is the same as existing process data, no need to update
-      const isEqual = await compareXML(processData?.processData, xml);
-      if (isEqual) {
-        toast.success(t("Process is already up to date"));
-        return;
+      if (!isCreate) {
+        // If XML is the same as existing process data, no need to update
+        const isEqual = await compareXML(processData?.processData, xml);
+        if (isEqual) {
+          toast.success(t("Process is already up to date"));
+          return;
+        }
       }
-  
+
       setSavingFlow(true);
-  
       // Check if `processId` exists; if so, update the process, otherwise create a new subflow
-      const response = processId
-        ? await updateProcess({ type: "BPMN", id: processData.id, data: xml })
-        : await createSubflow({ type: "BPMN", data: xml });
-  
+      const response = isCreate
+        ? await createSubflow({ type: "BPMN", data: xml })
+        : await updateProcess({ type: "BPMN", id: processData.id, data: xml });
+
       dispatch(setProcessData(response.data));
-      toast.success(t (processId ? "Process updated successfully" : "Subflow created successfully"));
-      setSavingFlow(false);
-  
+      toast.success(
+        t(`Subflow ${isCreate ? "created" : "updated"} successfully`)
+      );
+      if (isCreate) {
+        dispatch(
+          push(`${redirectUrl}subflow/edit/${response.data.processKey}`)
+        );
+      }
     } catch (error) {
-      setSavingFlow(false);
       toast.error(t("Failed to save process"));
+    } finally {
+      setSavingFlow(false);
     }
   };
-  
+
+  const handleDuplicateProcess = () => {
+    dispatch(setProcessDiagramXML(processData.processData));
+    dispatch(push(`${redirectUrl}subflow/create`));
+  };
 
   const handleDiscardConfirm = () => {
     if (bpmnRef.current) {
-      //import the existing process data to bpmn
-      //bpmnRef.current?.handleImport(processData?.processData);
-      processId
-        ? bpmnRef.current?.handleImport(processData?.processData)
-        : bpmnRef.current?.handleImport(processData);
+      bpmnRef.current?.handleImport(
+        isCreate ? defaultProcessXmlData : processData.processData
+      );
     }
   };
-  
-  if (diagramLoading) return <Loading />;
-  
+
+  if (isProcessDetailsLoading) return <Loading />;
 
   const getModalContent = () => {
     switch (modalType) {
@@ -299,18 +299,22 @@ const confirmPublishOrUnPublish = async () => {
                 data-testid="back-to-prev-icon-testid"
                 aria-label={t("Back to Previous")}
               />
-              <div
-                className="mx-4 editor-header-text"
-                data-testid="deployment-name"
-              >
-                {deploymentName}
-              </div>
-              <span className="d-flex align-items-center white-text mx-3">
-                <div
-                  className={`status-${isPublished ? "live" : "draft"}`}
-                ></div>
-                {isPublished ? t("Live") : t("Draft")}
-              </span>
+              {!isCreate && (
+                <>
+                  <div
+                    className="mx-4 editor-header-text"
+                    data-testid="deployment-name"
+                  >
+                    {processName}
+                  </div>
+                  <span className="d-flex align-items-center white-text mx-3">
+                    <div
+                      className={`status-${isPublished ? "live" : "draft"}`}
+                    ></div>
+                    {isPublished ? t("Live") : t("Draft")}
+                  </span>
+                </>
+              )}
             </div>
             <div>
               <CustomButton
@@ -349,15 +353,17 @@ const confirmPublishOrUnPublish = async () => {
             >
               <div className="d-flex align-items-center">
                 <div className="mx-2 builder-header-text">{t("Flow")}</div>
-                <CustomButton
-                  variant="secondary"
-                  size="md"
-                  icon={<HistoryIcon />}
-                  onClick={handleHistoryModal}
-                  label={t("History")}
-                  dataTestid="bpmn-history-button-testid"
-                  ariaLabel={t("BPMN History Button")}
-                />
+                {!isCreate && (
+                  <CustomButton
+                    variant="secondary"
+                    size="md"
+                    icon={<HistoryIcon />}
+                    onClick={handleHistoryModal}
+                    label={t("History")}
+                    dataTestid="bpmn-history-button-testid"
+                    ariaLabel={t("BPMN History Button")}
+                  />
+                )}
               </div>
               <div>
                 <CustomButton
@@ -389,7 +395,9 @@ const confirmPublishOrUnPublish = async () => {
           ) : (
             <BpmnEditor
               ref={bpmnRef}
-              bpmnXml={processId ? processData?.processData : processData}
+              bpmnXml={
+                isCreate ? defaultProcessXmlData : processData?.processData
+              }
               setLintErrors={setLintErrors}
             />
           )}
@@ -399,13 +407,18 @@ const confirmPublishOrUnPublish = async () => {
         newActionModal={newActionModal}
         onClose={() => setNewActionModal(false)}
         CategoryType={CategoryType.WORKFLOW}
-        onAction={setSelectedAction}
+        onAction={(action) => {
+          if (action === "DUPLICATE") {
+            handleDuplicateProcess();
+          }
+          setSelectedAction(action);
+        }}
       />
       <ExportDiagram
         showExportModal={selectedAction === EXPORT}
         onClose={() => setSelectedAction(null)}
         onExport={handleExport}
-        fileName={deploymentName}
+        fileName={processName}
         modalTitle={t("Export BPMN")}
         successMessage={t("Export Successful")}
         errorMessage={exportError}

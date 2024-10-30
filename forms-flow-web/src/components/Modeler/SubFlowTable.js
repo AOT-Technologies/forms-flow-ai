@@ -99,7 +99,13 @@ const SubFlow = React.memo(() => {
     }
     //  dispatch(push(`${redirectUrl}process/${data.parentProcessKey}`));
     dispatch(
-      push(`${redirectUrl}subflow/edit/${data.parentProcessKey}`)
+      push(`${redirectUrl}subflow/edit/${data.processKey}`)
+    );
+  };
+
+  const createProcess = ()=>{
+    dispatch(
+      push(`${redirectUrl}subflow/create`)
     );
   };
 
@@ -123,6 +129,7 @@ const SubFlow = React.memo(() => {
           size="sm"
           label="New BPMN"
           className=""
+          onClick={createProcess}
           dataTestid="create-BPMN-button"
           ariaLabel="Create BPMN"
         />

@@ -1,4 +1,5 @@
 import ACTION_CONSTANTS from "../actions/actionConstants";
+import { createNewProcess } from "../components/Modeler/helpers/helper";
 
 const initialState = {
   isProcessLoading: true,
@@ -10,8 +11,7 @@ const initialState = {
   formProcessError: false,
   formProcessList: [],
   formPreviousData: [],
-  processActivityList: null,
-  processDiagramXML: "",
+  processActivityList: null, 
   processActivityLoadError: false,
   isProcessDiagramLoading: false,
   applicationCount: 0,
@@ -28,6 +28,7 @@ const initialState = {
   isPublicDiagram: null,
   processData:{},
   totalCount:0,
+  defaultProcessXmlData:createNewProcess().defaultWorkflow.xml
 };
 
 const process = (state = initialState, action) => {
@@ -65,8 +66,8 @@ const process = (state = initialState, action) => {
       };
     case ACTION_CONSTANTS.PROCESS_ACTIVITIES:
       return { ...state, processActivityList: action.payload };
-    case ACTION_CONSTANTS.PROCESS_DIAGRAM_XML:
-      return { ...state, processDiagramXML: action.payload };
+    case ACTION_CONSTANTS.DEFAULT_PROCESS_DIAGRAM_XML:
+      return { ...state, defaultProcessXmlData: action.payload };
     case ACTION_CONSTANTS.IS_PROCESS_DIAGRAM_LOADING:
       return { ...state, isProcessDiagramLoading: action.payload };
     case ACTION_CONSTANTS.FORM_PREVIOUS_DATA:

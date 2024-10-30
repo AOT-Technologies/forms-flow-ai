@@ -87,7 +87,7 @@ export const setProcessActivityData = (data) => (dispatch) => {
 
 export const setProcessDiagramXML = (data) => (dispatch) => {
   dispatch({
-    type: ACTION_CONSTANTS.PROCESS_DIAGRAM_XML,
+    type: ACTION_CONSTANTS.DEFAULT_PROCESS_DIAGRAM_XML,
     payload: data,
   });
 };

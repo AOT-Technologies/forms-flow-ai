@@ -21,10 +21,7 @@ const FlowEdit = forwardRef(({isPublished = false}, ref) => {
   const [showDiscardModal, setShowDiscardModal] = useState(false);
   // handle history modal
   const handleHistoryModal = () => setHistoryModalShow(!historyModalShow);
-  const handleHanldeDisacardModal = () => setShowDiscardModal(!showDiscardModal);
-
-
-
+  const handleDiscardModal = () => setShowDiscardModal(!showDiscardModal);
 
   const saveFlow = async () => {
     try{
@@ -56,17 +53,13 @@ const FlowEdit = forwardRef(({isPublished = false}, ref) => {
     if(bpmnRef.current){
       //import the existing process data to bpmn
       bpmnRef.current?.handleImport(processData?.processData);
-      handleHanldeDisacardModal();
+      handleDiscardModal();
     }
 };
-
- 
 
   useImperativeHandle(ref, () => ({
     saveFlow,
   }));
-
- 
 
   return (
     <Card>
@@ -76,10 +69,10 @@ const FlowEdit = forwardRef(({isPublished = false}, ref) => {
         message={t("Are you sure you want to discard all the changes of the Flow?")}
         messageSecondary={t("This action cannot be undone.")}
         primaryBtnAction={handleDiscardConfirm}
-        onClose={handleHanldeDisacardModal}
+        onClose={handleDiscardModal}
         primaryBtnText={t("Discard Changes")}
         secondaryBtnText={t("Cancel")}
-        secondayBtnAction={handleHanldeDisacardModal}
+        secondayBtnAction={handleDiscardModal}
         size="sm"
       />
       <Card.Header>
@@ -124,7 +117,7 @@ const FlowEdit = forwardRef(({isPublished = false}, ref) => {
               variant="secondary"
               size="md"
               label={t("Discard Changes")}
-              onClick={handleHanldeDisacardModal}
+              onClick={handleDiscardModal}
               dataTestid="discard-flow-changes-testid"
               ariaLabel={t("Discard Flow Changes")}
             />

@@ -426,7 +426,7 @@ export const saveFormProcessMapperPut = (data, ...rest) => {
           if(data.authorizations){
             dispatch(setFormAuthorizationDetails(data.authorizations));
           }
-          done(null, res.data);
+          done(null, data);
         } else {
           dispatch(setFormProcessesData([]));
           dispatch(setFormPreviosData([]));

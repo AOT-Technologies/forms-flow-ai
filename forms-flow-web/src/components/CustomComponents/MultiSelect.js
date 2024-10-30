@@ -56,7 +56,7 @@ const RoleSelector = ({ allRoles = [], selectedRoles = [], setSelectedRoles }) =
   }, []);
 
   return (
-    <div className="w-100">
+    <div className="multi-select w-100">
       <div className="input-with-pills form-control cursor-pointer position-relative">
         {selectedRoles.map((role, index) => (
           <CustomPill

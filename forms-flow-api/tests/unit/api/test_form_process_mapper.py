@@ -563,6 +563,134 @@ def test_form_name_validate_unauthorized(app, client):
         assert response.status_code == 401
 
 
+def test_form_name_invalid_form_title(app, client, session, jwt, mock_redis_client):
+    """Testing invalid form title."""
+    token = get_token(jwt, role=CREATE_DESIGNS)
+    headers = {"Authorization": f"Bearer {token}", "content-type": "application/json"}
+    # With only numbers
+    response = client.get("/form/validate?title=1234", headers=headers)
+    assert response.status_code == 400
+    assert response.json is not None
+    assert (
+        response.json["message"]
+        == "Title: Only contain alphanumeric characters and spaces, and must include at least one letter."
+    )
+    # With special characters
+    response = client.get("/form/validate?title=$$", headers=headers)
+    assert response.status_code == 400
+    assert response.json is not None
+    assert (
+        response.json["message"]
+        == "Title: Only contain alphanumeric characters and spaces, and must include at least one letter."
+    )
+    response = client.get("/form/validate?title=1234$@@#test", headers=headers)
+    assert response.status_code == 400
+    assert response.json is not None
+    assert (
+        response.json["message"]
+        == "Title: Only contain alphanumeric characters and spaces, and must include at least one letter."
+    )
+
+
+def test_form_name_invalid_form_name(app, client, session, jwt, mock_redis_client):
+    """Testing with invalid form name."""
+    token = get_token(jwt, role=CREATE_DESIGNS)
+    headers = {"Authorization": f"Bearer {token}", "content-type": "application/json"}
+    # With only numbers
+    response = client.get("/form/validate?name=1234", headers=headers)
+    assert response.status_code == 400
+    assert response.json is not None
+    assert (
+        response.json["message"]
+        == "Name: Only contain alphanumeric characters, no spaces, and must include at least one letter."
+    )
+    # With special characters
+    response = client.get("/form/validate?name=1234", headers=headers)
+    assert response.status_code == 400
+    assert response.json is not None
+    assert (
+        response.json["message"]
+        == "Name: Only contain alphanumeric characters, no spaces, and must include at least one letter."
+    )
+    # With spaces
+    response = client.get("/form/validate?name=test form", headers=headers)
+    assert response.status_code == 400
+    assert response.json is not None
+    assert (
+        response.json["message"]
+        == "Name: Only contain alphanumeric characters, no spaces, and must include at least one letter."
+    )
+
+
+def test_form_name_invalid_form_path(app, client, session, jwt, mock_redis_client):
+    """Testing with invalid form path."""
+    token = get_token(jwt, role=CREATE_DESIGNS)
+    headers = {"Authorization": f"Bearer {token}", "content-type": "application/json"}
+    # With only numbers
+    response = client.get("/form/validate?path=1234", headers=headers)
+    assert response.status_code == 400
+    assert response.json is not None
+    assert (
+        response.json["message"]
+        == "Path: Only contain alphanumeric characters, no spaces, and must include at least one letter."
+    )
+    # With special characters
+    response = client.get("/form/validate?path=1234", headers=headers)
+    assert response.status_code == 400
+    assert response.json is not None
+    assert (
+        response.json["message"]
+        == "Path: Only contain alphanumeric characters, no spaces, and must include at least one letter."
+    )
+    # With spaces
+    response = client.get("/form/validate?path=test form", headers=headers)
+    assert response.status_code == 400
+    assert response.json is not None
+    assert (
+        response.json["message"]
+        == "Path: Only contain alphanumeric characters, no spaces, and must include at least one letter."
+    )
+
+
+def test_form_name_invalid_form_name_title_path(
+    app, client, session, jwt, mock_redis_client
+):
+    """Testing with invalid form name, title & path."""
+    token = get_token(jwt, role=CREATE_DESIGNS)
+    headers = {"Authorization": f"Bearer {token}", "content-type": "application/json"}
+
+    # Invalid path, title
+    response = client.get(
+        "/form/validate?name=testform&title=1234&path=$$$", headers=headers
+    )
+    assert response.status_code == 400
+    assert response.json is not None
+    assert (
+        response.json["message"]
+        == """Title: Only contain alphanumeric characters and spaces, and must include at least one letter.,\n Path: Only contain alphanumeric characters, no spaces, and must include at least one letter."""
+    )
+    # Invalid name, title
+    response = client.get(
+        "/form/validate?name=test form&title=1234&path=testform123", headers=headers
+    )
+    assert response.status_code == 400
+    assert response.json is not None
+    assert (
+        response.json["message"]
+        == """Title: Only contain alphanumeric characters and spaces, and must include at least one letter.,\n Name: Only contain alphanumeric characters, no spaces, and must include at least one letter."""
+    )
+    # Invalid path, name
+    response = client.get(
+        "/form/validate?name=test form&title=test form&path=$$$", headers=headers
+    )
+    assert response.status_code == 400
+    assert response.json is not None
+    assert (
+        response.json["message"]
+        == """Path: Only contain alphanumeric characters, no spaces, and must include at least one letter.,\n Name: Only contain alphanumeric characters, no spaces, and must include at least one letter."""
+    )
+
+
 def test_form_history(
     app,
     client,

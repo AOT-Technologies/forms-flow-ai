@@ -9,7 +9,7 @@ on:
 jobs:
   notify:
     runs-on: ubuntu-latest
-    if: github.repository == 'AOT-Technologies/forms-flow-ai'
+    if: github.event.pull_request.base.repo.full_name == 'AOT-Technologies/forms-flow-ai'
 
     steps:
       - name: Determine PR Status

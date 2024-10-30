@@ -29,11 +29,9 @@ const ImportModal = React.memo(({ importFormModal, onClose, formSubmitted,
 
     const handleLayoutChange = (option) => {
         setSelectedLayoutOption(option);
-        console.log("Selected Layout:", option.value);
     };
     const handFlowChange = (option) => {
         setSelectedFlowOption(option);
-        console.log("Selected Layout:", option.value);
     };
 
     const onUpload = (evt) => {

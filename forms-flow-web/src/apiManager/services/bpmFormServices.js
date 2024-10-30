@@ -21,8 +21,8 @@ export const fetchBPMFormList = (
 ) => {
   const done = rest.length ? rest[0] : () => { };
   return (dispatch) => {
-    let sortOrder = formSort.sortOrder ; 
-    let sortBy = formSort.sortBy; 
+    let sortBy = formSort.activeKey; 
+    let sortOrder = formSort[sortBy].sortOrder ; 
     let url = `${API.FORM}?pageNo=${pageNo}&limit=${limit}&sortBy=${sortBy
     }&sortOrder=${sortOrder}`;
     if (formType) {

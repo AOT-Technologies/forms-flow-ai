@@ -45,17 +45,14 @@ const FormSettings = forwardRef((props, ref) => {
 
   /* --------------------------- useState Variables --------------------------- */
   const [userRoles, setUserRoles] = useState([]);
-  const [copied, setCopied] = useState(false);
-  const [editIndexValue, setEditIndexValue] = useState(0);
-  const [createIndexValue, setCreateIndexValue] = useState(0);
-  const [viewIndexValue, setViewIndexValue] = useState(0);
+  const [copied, setCopied] = useState(false); 
   const [formDetails, setFormDetails] = useState({
     title: processListData.formName,
     path: path,
     description: processListData.description,
     display: display,
   });
-  const [isAnonymous, setIsAnonymous] = useState(processListData.anonymous);
+  const [isAnonymous, setIsAnonymous] = useState(processListData.anonymous || false);
   const [errors, setErrors] = useState({
     name: "",
     path: "",
@@ -66,22 +63,22 @@ const FormSettings = forwardRef((props, ref) => {
   );
 
   const publicUrlPath = `${window.location.origin}/public/form/`;
-
+  const setSelectedOption = (roles, option)=> roles.length ? "specifiedRoles" : option;
   /* ------------------------- authorization variables ------------------------ */
   const [rolesState, setRolesState] = useState({
     DESIGN: {
       selectedRoles: formAuthorization.DESIGNER?.roles,
-      selectedOption: "onlyYou",
+      selectedOption: setSelectedOption(formAuthorization.DESIGNER?.roles,"onlyYou"),
     },
     FORM: {
       roleInput: "",
       selectedRoles: formAuthorization.FORM?.roles,
-      selectedOption: "registeredUsers",
+      selectedOption: setSelectedOption(formAuthorization.FORM?.roles,"registeredUsers"),
     },
     APPLICATION: {
       roleInput: "",
       selectedRoles: formAuthorization.APPLICATION?.roles,
-      selectedOption: "submitter",
+      selectedOption: setSelectedOption(formAuthorization.APPLICATION?.roles, "submitter"),
     },
   });
 
@@ -238,7 +235,7 @@ const FormSettings = forwardRef((props, ref) => {
         <Form.Check
           data-testid="form-edit-wizard-display"
           type="checkbox"
-          id="createCheckbox"
+          id="formDisplaychange"
           label={t("Allow adding multiple pages in this form")}
           checked={formDetails.display === "wizard"}
           name="display"
@@ -259,26 +256,22 @@ const FormSettings = forwardRef((props, ref) => {
           items={[
             {
               label: t("Only You"),
-              onClick: () => {
-                handleRoleStateChange(DESIGN, "selectedOption", "onlyYou");
-                setEditIndexValue(0);
-              },
+              value:"onlyYou",
             },
             {
               label: t("You and specified roles"),
-              onClick: () => {
-                handleRoleStateChange(
-                  DESIGN,
-                  "selectedOption",
-                  "specifiedRoles"
-                );
-                setEditIndexValue(1);
-              },
+              value: "specifiedRoles",
             },
           ]}
-          dataTestid="edit-submission-role"
-          ariaLabel={t("Edit Submission Role")}
-          indexValue={editIndexValue}
+          onChange={
+            (value) => {
+              handleRoleStateChange(DESIGN, "selectedOption", value);
+            }
+          }
+          dataTestid="who-can-edit-this-form"
+          id="who-can-edit-this-form"
+          ariaLabel={t("Edit Submission Role")} 
+          selectedValue={rolesState.DESIGN.selectedOption}
         />
 
         {rolesState.DESIGN.selectedOption === "onlyYou" && (
@@ -299,7 +292,7 @@ const FormSettings = forwardRef((props, ref) => {
         </Form.Label>
         <Form.Check
           type="checkbox"
-          id="createCheckbox"
+          id="anonymouseCheckbox"
           label={t("Anonymous users")}
           checked={isAnonymous}
           onChange={() => {
@@ -312,28 +305,22 @@ const FormSettings = forwardRef((props, ref) => {
           items={[
             {
               label: t("Registered users"),
-              onClick: () => {
-                handleRoleStateChange(
-                  FORM,
-                  "selectedOption",
-                  "registeredUsers"
-                );
-
-                setCreateIndexValue(0);
-                // Set index value for Registered users
-              },
+              value:"registeredUsers",
             },
             {
               label: t("Specific roles"),
-              onClick: () => {
-                handleRoleStateChange(FORM, "selectedOption", "specifiedRoles");
-                setCreateIndexValue(1); // Set index value for Specific roles
-              },
+              value:"specifiedRoles"
             },
           ]}
+          id="who-can-create-submission"
           dataTestid="create-submission-role"
           ariaLabel={t("Create Submission Role")}
-          indexValue={createIndexValue}
+          onChange={
+            (value) => {
+              handleRoleStateChange(FORM, "selectedOption", value);
+            }
+          }
+          selectedValue={rolesState.FORM.selectedOption}
         />
         {rolesState.FORM.selectedOption === "registeredUsers" && (
           <FormInput disabled={true} />
@@ -355,31 +342,22 @@ const FormSettings = forwardRef((props, ref) => {
           items={[
             {
               label: t("Submitter"),
-              onClick: () => {
-                handleRoleStateChange(
-                  APPLICATION,
-                  "selectedOption",
-                  "submitter"
-                );
-
-                setViewIndexValue(0); // Set index value for Submitter
-              },
+              value:"submitter"
             },
             {
               label: t("Submitter and specified roles"),
-              onClick: () => {
-                handleRoleStateChange(
-                  APPLICATION,
-                  "selectedOption",
-                  "specifiedRoles"
-                );
-                setViewIndexValue(0);
-              },
+              value:"specifiedRoles"
             },
           ]}
+          id="who-can-view-submission"
           dataTestid="view-submission-role"
           ariaLabel={t("View Submission Role")}
-          indexValue={viewIndexValue}
+          onChange={
+            (value) => {
+              handleRoleStateChange(APPLICATION, "selectedOption", value);
+            }
+          }
+          selectedValue={rolesState.APPLICATION.selectedOption}
         />
 
         {rolesState.APPLICATION.selectedOption === "submitter" && (

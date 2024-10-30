@@ -20,6 +20,7 @@ import {
   setBpmnModel,
   setApplicationCount,
   setSubflowCount,
+  setTotalDmnCount,
   setProcessData 
 } from "../../actions/processActions";
 import { replaceUrl } from "../../helper/helper";
@@ -28,6 +29,7 @@ import { StorageService } from "@formsflow/service";
 import { toast } from "react-toastify";
 import { Translation } from "react-i18next";
 import { setFormStatusLoading } from "../../actions/processActions";
+import { setFormAuthorizationDetails } from "../../actions/formActions";
 export const getProcessStatusList = (processId, taskId) => {
   return (dispatch) => {
     dispatch(setProcessStatusLoading(true));
@@ -135,7 +137,10 @@ export  const fetchAllProcesses = ({
 
     // let url = API.GET_PROCESSES_DETAILS
    let url = `${API.GET_PROCESSES_DETAILS}?pageNo=${pageNo}&limit=${limit
-   }&sortOrder=${sortOrder}&processType=${processType}&sortBy=${sortBy}&name=${searchKey}`;
+   }&sortOrder=${sortOrder}&processType=${processType}&sortBy=${sortBy}`;
+   if (searchKey) {
+    url += `&name=${searchKey}`;
+  }
     return (dispatch) => {
       // eslint-disable-next-line max-len
       RequestService.httpGETRequest(
@@ -146,11 +151,16 @@ export  const fetchAllProcesses = ({
       )
         .then((res) => {
           if (res?.data) {
+            if(processType === "BPMN"){
             dispatch(setSubflowCount(res.data.totalCount));
             // let unique = removeTenantDuplicates(res.data.process, tenant_key);
-            dispatch(setProcessStatusLoading(false));
             dispatch(setAllProcessList(res.data.process));
-
+            }
+            if(processType === "DMN"){
+              dispatch(setAllDmnProcessList(res.data.process));
+              dispatch(setTotalDmnCount(res.data.totalCount));
+            }
+            dispatch(setProcessStatusLoading(false));
             done(null, res.data);
           } else {
             dispatch(setAllProcessList([]));
@@ -419,10 +429,14 @@ export const saveFormProcessMapperPut = (data, ...rest) => {
     RequestService.httpPUTRequest(`${API.FORM}/${data.mapper.id}`, data)
       .then(async (res) => {
         if (res.data) {
-          dispatch(getApplicationCount(res.data.mapper.id));
-          dispatch(setFormPreviosData(res.data.mapper));
-          dispatch(setFormProcessesData(res.data.mapper));
-          done(null, res.data);
+          const {data} = res;
+          dispatch(getApplicationCount(data.mapper.id));
+          dispatch(setFormPreviosData(data.mapper));
+          dispatch(setFormProcessesData(data.mapper));
+          if(data.authorizations){
+            dispatch(setFormAuthorizationDetails(data.authorizations));
+          }
+          done(null, data);
         } else {
           dispatch(setFormProcessesData([]));
           dispatch(setFormPreviosData([]));

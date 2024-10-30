@@ -331,6 +331,12 @@ const PrivateRoute = React.memo((props) => {
                 component={Modeler}
               />
             )}
+            {ENABLE_PROCESSES_MODULE && (
+              <DesignerRoute
+                path={`${BASE_ROUTE}descision-table`}
+                component={Modeler}
+              />
+            )}
             {ENABLE_DASHBOARDS_MODULE && (
               <DashBoardRoute
                 path={`${BASE_ROUTE}metrics`}

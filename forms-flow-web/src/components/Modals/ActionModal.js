@@ -119,16 +119,6 @@ const ActionModal = React.memo(({ newActionModal, onClose, CategoryType, onActio
                                     ariaLabel="Export Workflow"
                                     onClick={() => handleAction("EXPORT")}
                                 />
-                           <CustomButton
-                                    variant="secondary"
-                                    size="sm"
-                                    label="Delete"
-                                    icon={<TrashIcon />}
-                                    className=""
-                                    dataTestid="delete-workflow-button"
-                                    ariaLabel="Delete Workflow"
-                                    onClick={() => handleAction("DELETE")}
-                                />
                         </div>
                     )}
                 </Modal.Body>

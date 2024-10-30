@@ -274,14 +274,14 @@ const SubFlow = React.memo(() => {
                         data-testid={`sub-flow-status-${processItem._id}`}
                         className="d-flex align-items-center"
                       >
-                        {processItem.status === "active" ? (
+                        {processItem.status === "Published" ? (
                           <>
                             <span className="status-live"></span>
                           </>
                         ) : (
                           <span className="status-draft"></span>
                         )}
-                        {processItem.status === "active"
+                        {processItem.status === "Published"
                           ? t("Live")
                           : t("Draft")}
                       </span>

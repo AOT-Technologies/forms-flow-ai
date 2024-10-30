@@ -302,6 +302,7 @@ export const getFormProcesses = (formId, ...rest) => {
       {processData:data,processType:type});
     };
 
+
 // fetching task variables
 export const fetchTaskVariables = (formId) =>{
   let url = `${API.FORM_PROCESSES}/${formId}`;
@@ -546,3 +547,29 @@ export const deleteFormProcessMapper = (mapperId, ...rest) => {
       });
   };
 };
+
+
+export const publish = ({ id, data, type }) => {
+  const url = replaceUrl(API.PUBLISH_BPMN, "<process_id>", id);
+  return RequestService.httpPOSTRequest(url, {
+    processData: data,
+    processType: type,
+  });
+};
+
+export const unPublish = ({ id, data, type }) => {
+  const url = replaceUrl(API.UN_PUBLISH_BPMN, "<process_id>", id);
+  return RequestService.httpPOSTRequest(url, {
+    processData: data,
+    processType: type,
+  });
+};
+
+export const createSubflow = ({ data, type }) => {
+  return RequestService.httpPOSTRequest(API.GET_PROCESSES_DETAILS, {
+    processData: data,
+    processType: type,
+  });
+};
+
+

@@ -1,13 +1,9 @@
 import React, { useState, useEffect } from "react";
 import { useSelector, useDispatch } from "react-redux";
-import { CustomButton, CustomSearch } from "@formsflow/components";
+import { CustomButton, CustomSearch ,ReusableProcessTableRow ,TableFooter} from "@formsflow/components";
 import LoadingOverlay from "react-loading-overlay-ts";
 import { useTranslation } from "react-i18next";
 import SortableHeader from "../CustomComponents/SortableHeader";
-import {
-  ReusableTableRow,
-  TableFooter,
-} from "../CustomComponents/TableComponents";
 import { fetchAllProcesses } from "../../apiManager/services/processServices";
 import { MULTITENANCY_ENABLED } from "../../constants/constants";
 import { push } from "connected-react-router";
@@ -169,7 +165,7 @@ const DecisionTable = React.memo(() => {
               </thead>
               <tbody>
                 {dmn.map((dmnItem) => (
-                  <ReusableTableRow
+                  <ReusableProcessTableRow
                     key={dmnItem.id}
                     item={dmnItem}
                     gotoEdit={gotoEdit}

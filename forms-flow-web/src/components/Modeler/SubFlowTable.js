@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { CustomButton, CustomSearch } from "@formsflow/components";
+import { CustomButton, CustomSearch ,TableFooter ,ReusableProcessTableRow} from "@formsflow/components";
 import { useSelector, useDispatch } from "react-redux";
 import { useTranslation } from "react-i18next";
 
@@ -12,10 +12,7 @@ import {
 import { push } from "connected-react-router";
 import { MULTITENANCY_ENABLED } from "../../constants/constants";
 import SortableHeader from "../CustomComponents/SortableHeader";
-import {
-  ReusableTableRow,
-  TableFooter,
-} from "../CustomComponents/TableComponents";
+
 
 const SubFlow = React.memo(() => {
   const searchText = useSelector((state) => state.process.bpmnSearchText);
@@ -185,7 +182,7 @@ const SubFlow = React.memo(() => {
               </thead>
               <tbody>
                 {process.map((processItem) => (
-                  <ReusableTableRow
+                  <ReusableProcessTableRow
                     key={processItem.id}
                     item={processItem}
                     gotoEdit={gotoEdit}

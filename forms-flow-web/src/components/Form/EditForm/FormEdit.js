@@ -148,7 +148,7 @@ const Edit = React.memo(() => {
           skip: selectedLayoutVersion === true,
         };
 
-        data.form = {
+        data.workflow = {
           skip: selectedFlowVersion === true,
         };
       }

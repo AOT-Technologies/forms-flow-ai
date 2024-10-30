@@ -20,6 +20,7 @@ import {
   setBpmnModel,
   setApplicationCount,
   setSubflowCount,
+  setTotalDmnCount,
   setProcessData 
 } from "../../actions/processActions";
 import { replaceUrl } from "../../helper/helper";
@@ -136,7 +137,10 @@ export  const fetchAllProcesses = ({
 
     // let url = API.GET_PROCESSES_DETAILS
    let url = `${API.GET_PROCESSES_DETAILS}?pageNo=${pageNo}&limit=${limit
-   }&sortOrder=${sortOrder}&processType=${processType}&sortBy=${sortBy}&name=${searchKey}`;
+   }&sortOrder=${sortOrder}&processType=${processType}&sortBy=${sortBy}`;
+   if (searchKey) {
+    url += `&name=${searchKey}`;
+  }
     return (dispatch) => {
       // eslint-disable-next-line max-len
       RequestService.httpGETRequest(
@@ -147,11 +151,16 @@ export  const fetchAllProcesses = ({
       )
         .then((res) => {
           if (res?.data) {
+            if(processType === "BPMN"){
             dispatch(setSubflowCount(res.data.totalCount));
             // let unique = removeTenantDuplicates(res.data.process, tenant_key);
-            dispatch(setProcessStatusLoading(false));
             dispatch(setAllProcessList(res.data.process));
-
+            }
+            if(processType === "DMN"){
+              dispatch(setAllDmnProcessList(res.data.process));
+              dispatch(setTotalDmnCount(res.data.totalCount));
+            }
+            dispatch(setProcessStatusLoading(false));
             done(null, res.data);
           } else {
             dispatch(setAllProcessList([]));

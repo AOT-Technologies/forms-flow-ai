@@ -2,10 +2,11 @@ import React from "react";
 import { Route, Switch, Redirect } from "react-router-dom";
 import { useSelector } from "react-redux";
 import SubflowCreateEdit from "./SubflowCreateEdit";
+import DmnCreateEdit from "./DmnCreateEdit";
 import SubFlowList from './SubFlowTable';
 import descisiontable from './DecisionTable';
-import Edit from "./Edit";
-import CreateWorkflow from "./Create";
+//import Edit from "./Edit";
+//import CreateWorkflow from "./Create";
 import {
   BASE_ROUTE,
 } from "../../constants/constants";
@@ -45,6 +46,11 @@ const Processes = () => {
           exact
           path={`${BASE_ROUTE}subflow/:step/:processKey?`}
           component={SubflowCreateEdit}
+        />
+        <DesignerProcessRoute
+          exact
+          path={`${BASE_ROUTE}descision-table/:step/:processKey?`}
+          component={DmnCreateEdit}
         />
         <Redirect exact to="/404" />
       </Switch>

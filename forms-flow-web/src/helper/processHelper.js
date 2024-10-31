@@ -7,32 +7,6 @@ import {
   WARNING_LINTING_CLASSNAME,
 } from "../components/Modeler/constants/bpmnModelerConstants";
 const bpmnModdle = new BpmnModdle();
-// export const createBpmnForm = (xml, deploymentName, tenantKey, applyAllTenants) => {
-//     const form = new FormData();
-//     // Deployment Name
-//     form.append("deployment-name", deploymentName);
-//     // Deployment Source
-//     form.append("deployment-source", "Camunda Modeler");
-//     // Tenant ID
-//     if (tenantKey && !applyAllTenants && PUBLIC_WORKFLOW_ENABLED) {
-//       form.append("tenant-id", tenantKey);
-//     }
-//     //If the env value is false,and Multitenancy is enabled, then by default it will create a tenant based workflow.
-//     if (MULTITENANCY_ENABLED && !PUBLIC_WORKFLOW_ENABLED) {
-//       form.append("tenant-id", tenantKey);
-//     }
-//     // Make sure that we do not re-deploy already existing deployment
-//     form.append("enable-duplicate-filtering", "true");
-//     // Create 'bpmn file' using blob which includes the xml of the process
-//     const blob = new Blob([xml], { type: "text/bpmn" });
-//     // TODO: How to name the file
-//     let filename = deploymentName.replaceAll(" / ", "-");
-//     //filename = filename.replaceAll(' / ', '');
-
-//     form.append("upload", blob, filename + ".bpmn");
-
-//     return form;
-//   };
 
 export const parseBpmn = async (xmlString) => {
   const { rootElement: definitionsA } = await bpmnModdle.fromXML(xmlString);
@@ -107,4 +81,14 @@ export const validateProcessNames = (xml) => {
   }
 
   return isValidated;
+};
+
+
+export const validateDecisionName = (xml, t) => {
+  const extractedData = extractDataFromDiagram(xml, true);
+  if (!extractedData.name || extractedData.name.includes("undefined")) {
+    toast.error(t("Process name(s) must not be empty or undefined"));
+    return false;
+  }
+  return true;
 };

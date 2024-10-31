@@ -1,5 +1,5 @@
 import ACTION_CONSTANTS from "../actions/actionConstants";
-import { createNewProcess } from "../components/Modeler/helpers/helper";
+import { createNewProcess,createNewDecision } from "../components/Modeler/helpers/helper";
 
 const initialState = {
   isProcessLoading: true,
@@ -29,7 +29,9 @@ const initialState = {
   processData:{},
   totalBpmnCount:0,
   totalDmnCount:0,
-  defaultProcessXmlData:createNewProcess().defaultWorkflow.xml
+  defaultProcessXmlData:createNewProcess().defaultWorkflow.xml,
+  defaultDmnXmlData:createNewDecision().defaultWorkflow.xml,
+
 };
 
 const process = (state = initialState, action) => {
@@ -69,6 +71,8 @@ const process = (state = initialState, action) => {
       return { ...state, processActivityList: action.payload };
     case ACTION_CONSTANTS.DEFAULT_PROCESS_DIAGRAM_XML:
       return { ...state, defaultProcessXmlData: action.payload };
+    case ACTION_CONSTANTS.DEFAULT_DECISION_DIAGRAM_XML:
+      return { ...state, defaultDmnXmlData: action.payload };
     case ACTION_CONSTANTS.IS_PROCESS_DIAGRAM_LOADING:
       return { ...state, isProcessDiagramLoading: action.payload };
     case ACTION_CONSTANTS.FORM_PREVIOUS_DATA:

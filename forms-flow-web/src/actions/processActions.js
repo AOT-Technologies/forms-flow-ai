@@ -92,6 +92,12 @@ export const setProcessDiagramXML = (data) => (dispatch) => {
   });
 };
 
+export const setDescisionDiagramXML = (data) => (dispatch) => {
+  dispatch({
+    type: ACTION_CONSTANTS.DEFAULT_DECISION_DIAGRAM_XML,
+    payload: data,
+  });
+};
 export const setProcessDiagramLoading = (data) => (dispatch) => {
   dispatch({
     type: ACTION_CONSTANTS.IS_PROCESS_DIAGRAM_LOADING,

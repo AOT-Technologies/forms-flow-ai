@@ -28,10 +28,10 @@ import ExportDiagram from "../Modals/ExportDiagrams";
 import { toast } from "react-toastify";
 import {
   createXMLFromModeler,
-  validateProcess,
-  compareXML,
+  validateDecisionName,
+  //compareXML,
 } from "../../helper/processHelper";
-import BpmnEditor from "./Editors/BpmnEditor";
+import DmnEditor from './Editors/DmnEditor/index.js';
 import {
   setProcessData,
   setProcessDiagramXML,
@@ -40,11 +40,11 @@ import {
 const EXPORT = "EXPORT";
 const CategoryType = { FORM: "FORM", WORKFLOW: "WORKFLOW" };
 
-const WorkflowEditor = () => {
+const DecitionEditor = () => {
   const { processKey, step } = useParams();
   const isCreate = step === "create"; 
   const dispatch = useDispatch();
-  const bpmnRef = useRef();
+  const dmnRef = useRef();
   const { t } = useTranslation();
 
   const tenantKey = useSelector((state) => state.tenants?.tenantId);
@@ -52,10 +52,9 @@ const WorkflowEditor = () => {
   const processData = useSelector((state) => state.process?.processData);
   const [selectedAction, setSelectedAction] = useState(null);
   const [newActionModal, setNewActionModal] = useState(false);
-  const [lintErrors, setLintErrors] = useState([]);
   const [exportError, setExportError] = useState(null);
-  const defaultProcessXmlData = useSelector(
-    (state) => state.process.defaultProcessXmlData
+  const defaultDmnXmlData = useSelector(
+    (state) => state.process.defaultDmnXmlData
   );
   const [savingFlow, setSavingFlow] = useState(false);
   const [historyModalShow, setHistoryModalShow] = useState(false);
@@ -79,7 +78,7 @@ const WorkflowEditor = () => {
   // get process name to dispaly 
   const processName = useMemo(() => {
     if (!processData.processData) return;
-    return extractDataFromDiagram(processData?.processData).name;
+    return extractDataFromDiagram(processData?.processData,true).name;
   }, [processData]);
 
   //fetch process details using processkey
@@ -120,34 +119,33 @@ const WorkflowEditor = () => {
 
   const saveFlow = async () => {
     try {
-      const bpmnModeler = bpmnRef.current?.getBpmnModeler();
-      const xml = await createXMLFromModeler(bpmnModeler);
-
-      if (!validateProcess(xml, lintErrors, t)) {
+      const dmnModeler = dmnRef.current?.getDmnModeler();
+      const xml = await createXMLFromModeler(dmnModeler);
+      if (!validateDecisionName(xml)) {
         return;
       }
-      if (!isCreate) {
-        // If XML is the same as existing process data, no need to update
-        const isEqual = await compareXML(processData?.processData, xml);
-        if (isEqual) {
-          toast.success(t("Process is already up to date"));
-          return;
-        }
-      }
+      // if (!isCreate) {
+      //   // If XML is the same as existing process data, no need to update
+      //   const isEqual = await compareXML(processData?.processData, xml);
+      //   if (isEqual) {
+      //     toast.success(t("Process is already up to date"));
+      //     return;
+      //   }
+      // }
 
       setSavingFlow(true);
-      // Check if `processId` exists; if so, update the process, otherwise create a new subflow
+      // Check if `processId` exists; if so, update the process, otherwise create a new DMN
       const response = isCreate
-        ? await createSubflow({ type: "BPMN", data: xml })
-        : await updateProcess({ type: "BPMN", id: processData.id, data: xml });
+        ? await createSubflow({ type: "DMN", data: xml })
+        : await updateProcess({ type: "DMN", id: processData.id, data: xml });
 
       dispatch(setProcessData(response.data));
       toast.success(
-        t(`Subflow ${isCreate ? "created" : "updated"} successfully`)
+        t(`DMN ${isCreate ? "created" : "updated"} successfully`)
       );
       if (isCreate) {
         dispatch(
-          push(`${redirectUrl}subflow/edit/${response.data.processKey}`)
+          push(`${redirectUrl}descision-table/edit/${response.data.processKey}`)
         );
       }
     } catch (error) {
@@ -160,11 +158,11 @@ const WorkflowEditor = () => {
   // Function to handle publish/unpublish with XML validation
   const confirmPublishOrUnPublish = async () => {
     try {
-      const bpmnModeler = bpmnRef.current?.getBpmnModeler();
-      const xml = await createXMLFromModeler(bpmnModeler);
+      const dmnModeler = dmnRef.current?.getDmnModeler();
+      const xml = await createXMLFromModeler(dmnModeler);
 
       // Validate the XML before publishing/unpublishing
-      if (!validateProcess(xml, lintErrors)) {
+      if (!validateDecisionName(xml)) {
         return; // Stop if validation fails
       }
 
@@ -173,7 +171,7 @@ const WorkflowEditor = () => {
       setIsPublishLoading(true);
 
       // Perform the publish/unpublish action
-      await actionFunction({ id: processData.id, data: xml, type: "BPMN" });
+      await actionFunction({ id: processData.id, data: xml, type: "DMN" });
       if (isPublished) {
         // Fetch updated process details after unpublish
         const updatedProcessDetails = await getProcessDetails(
@@ -187,12 +185,12 @@ const WorkflowEditor = () => {
       );
       // Handle unpublish success by immediately fetching updated process details
       if (!isPublished) {
-        dispatch(push(`${redirectUrl}subflow`)); // Redirect on publish
+        dispatch(push(`${redirectUrl}descision-table`)); // Redirect on publish
       }
       setIsPublished(!isPublished);
     } catch (error) {
       toast.error(
-        t(`Failed to ${isPublished ? "unpublish" : "publish"} the BPMN`)
+        t(`Failed to ${isPublished ? "unpublish" : "publish"} the DMN`)
       );
       console.error("Error in publish/unpublish:", error.message);
     } finally {
@@ -207,17 +205,17 @@ const WorkflowEditor = () => {
 
   const handleExport = async () => {
     try {
-      if (await validateProcess(processData?.processData)) {
+      if (await validateDecisionName(processData?.processData)) {
         const element = document.createElement("a");
         const file = new Blob([processData?.processData], {
-          type: "text/bpmn",
+          type: "text/dmn",
         });
         element.href = URL.createObjectURL(file);
         const processName =
-          extractDataFromDiagram(processData?.processData).name.replaceAll(
+          extractDataFromDiagram(processData?.processData,true).name.replaceAll(
             " / ",
             "-"
-          ) + ".bpmn";
+          ) + ".dmn";
         element.download = processName.replaceAll(" ", "");
         document.body.appendChild(element);
         element.click();
@@ -229,20 +227,21 @@ const WorkflowEditor = () => {
       setExportError(error.message || "Export failed due to an error.");
     }
   };
+  
 
-  const cancel = () => dispatch(push(`${redirectUrl}subflow`));
+  const cancel = () => dispatch(push(`${redirectUrl}descision-table`));
 
   const editorActions = () => setNewActionModal(true);
 
   const handleDuplicateProcess = () => {
     dispatch(setProcessDiagramXML(processData.processData));
-    dispatch(push(`${redirectUrl}subflow/create`));
+    dispatch(push(`${redirectUrl}descision-table/create`));
   };
 
   const handleDiscardConfirm = () => {
-    if (bpmnRef.current) {
-      bpmnRef.current?.handleImport(
-        isCreate ? defaultProcessXmlData : processData.processData
+    if (dmnRef.current) {
+      dmnRef.current?.handleImport(
+        isCreate ? defaultDmnXmlData : processData.processData
       );
     }
     handleToggleConfirmModal();
@@ -256,27 +255,27 @@ const WorkflowEditor = () => {
         return {
           title: "Confirm Publish",
           message:
-            "Publishing will lock the BPMN. To save changes on further edits, you will need to unpublish the BPMN first.",
+            "Publishing will lock the DMN. To save changes on further edits, you will need to unpublish the DMN first.",
           primaryBtnAction: confirmPublishOrUnPublish,
           secondayBtnAction: closeModal,
-          primaryBtnText: "Publish This BPMN",
+          primaryBtnText: "Publish This DMN",
           secondaryBtnText: "Cancel",
         };
       case "unpublish":
         return {
           title: "Confirm Unpublish",
           message:
-            "This BPMN is currently live. To save changes to BPMN edits, you need to unpublish it first.By unpublishing this BPMN, you will make it unavailable for new submission to those who currently have access to it. You can republish the BPMN after making your edits.",
+            "This DMN is currently live. To save changes to DMN edits, you need to unpublish it first.By unpublishing this DMN, you will make it unavailable for new submission to those who currently have access to it. You can republish the DMN after making your edits.",
           primaryBtnAction: confirmPublishOrUnPublish,
           secondayBtnAction: closeModal,
-          primaryBtnText: "Unpublish and Edit This BPMN",
-          secondaryBtnText: "Cancel, Keep This BPMN published",
+          primaryBtnText: "Unpublish and Edit This DMN",
+          secondaryBtnText: "Cancel, Keep This DMN published",
         };
         case "discard":
         return {
-          title: "Are you Sure you want to Discard Subflow Changes",
+          title: "Are you Sure you want to Discard DMN Changes",
           message:
-            "Are you sure you want to discard all the changes to the subflow?",
+            "Are you sure you want to discard all the changes to the DMN?",
           messageSecondary: "This action cannot be undone.",
           primaryBtnAction: handleDiscardConfirm,
           secondayBtnAction: closeModal,
@@ -373,8 +372,8 @@ const WorkflowEditor = () => {
                     icon={<HistoryIcon />}
                     onClick={handleHistoryModal}
                     label={t("History")}
-                    dataTestid="bpmn-history-button-testid"
-                    ariaLabel={t("BPMN History Button")}
+                    dataTestid="DMN-history-button-testid"
+                    ariaLabel={t("DMN History Button")}
                   />
                 )}
               </div>
@@ -384,10 +383,10 @@ const WorkflowEditor = () => {
                   size="md"
                   className="mx-2"
                   onClick={saveFlow}
-                  label={t("Save BPMN")}
+                  label={t("Save DMN")}
                   buttonLoading={savingFlow}
-                  dataTestid="save-bpmn-layout"
-                  ariaLabel={t("Save Bpmn Layout")}
+                  dataTestid="save-DMN-layout"
+                  ariaLabel={t("Save DMN Layout")}
                   disabled={isPublished}
                 />
                 <CustomButton
@@ -397,8 +396,8 @@ const WorkflowEditor = () => {
                     openConfirmModal("discard");
                   }}
                   label={t("Discard Changes")}
-                  dataTestid="discard-bpmn-changes-testid"
-                  ariaLabel={t("Discard BPMN Changes")}
+                  dataTestid="discard-DMN-changes-testid"
+                  ariaLabel={t("Discard DMN Changes")}
                 />
               </div>
             </div>
@@ -408,12 +407,11 @@ const WorkflowEditor = () => {
           {isProcessDetailsLoading ? (
             <>loading...</>
           ) : (
-            <BpmnEditor
-              ref={bpmnRef}
-              bpmnXml={
-                isCreate ? defaultProcessXmlData : processData?.processData
-              }
-              setLintErrors={setLintErrors}
+            <DmnEditor
+            ref={dmnRef}
+            dmnXml={
+              isCreate ? defaultDmnXmlData : processData?.processData
+            }
             />
           )}
         </Card.Body>
@@ -434,7 +432,7 @@ const WorkflowEditor = () => {
         onClose={() => setSelectedAction(null)}
         onExport={handleExport}
         fileName={processName}
-        modalTitle={t("Export BPMN")}
+        modalTitle={t("Export DMN")}
         successMessage={t("Export Successful")}
         errorMessage={exportError}
       />
@@ -442,4 +440,4 @@ const WorkflowEditor = () => {
   );
 };
 
-export default WorkflowEditor;
+export default DecitionEditor;

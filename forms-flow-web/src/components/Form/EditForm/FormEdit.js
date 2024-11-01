@@ -14,6 +14,7 @@ import {
   HistoryIcon,
   PreviewIcon,
   FormBuilderModal,
+  HistoryModal,
 } from "@formsflow/components";
 import { RESOURCE_BUNDLES_DATA } from "../../../resourceBundles/i18n";
 import LoadingOverlay from "react-loading-overlay-ts";
@@ -32,6 +33,7 @@ import {
   formImport,
   publish,
   unPublish,
+  getFormHistory,
 } from "../../../apiManager/services/FormServices";
 import ImportModal from "../../Modals/ImportModal.js";
 import FileService from "../../../services/FileService";
@@ -42,13 +44,16 @@ import {
   setRestoreFormData,
   setRestoreFormId,
   setFormDeleteStatus,
+  setFormHistories,
 } from "../../../actions/formActions";
 import {
   saveFormProcessMapperPut,
   getProcessDetails,
   unPublishForm,
 } from "../../../apiManager/services/processServices";
-import { setProcessData } from "../../../actions/processActions.js";
+import {
+  setProcessData,
+} from "../../../actions/processActions.js";
 import _isEquial from "lodash/isEqual";
 import _ from "lodash";
 import SettingsModal from "../../Modals/SettingsModal";
@@ -67,16 +72,18 @@ const FORM_LAYOUT = "FORM_LAYOUT";
 const FLOW_LAYOUT = "FLOW_LAYOUT";
 const DELETE = "DELETE";
 
-const Edit = React.memo(() => {
+const EditComponent = () => {
   const dispatch = useDispatch();
   const { formId } = useParams();
   const { t } = useTranslation();
-  //this variable handle the flow and layot tab switching 
+  //this variable handle the flow and layot tab switching
   const sideTabRef = useRef(null);
 
   /* ------------------------------- mapper data ------------------------------ */
-  const { formProcessList: processListData, formPreviousData: previousData } =
-    useSelector((state) => state.process);
+  const {
+    formProcessList: processListData,
+    formPreviousData: previousData,
+  } = useSelector((state) => state.process);
 
   /* -------------------------------- user data and form access data ------------------------------- */
   const {
@@ -200,9 +207,11 @@ const Edit = React.memo(() => {
   /* ------------------------- form history variables ------------------------- */
   const [isNewVersionLoading, setIsNewVersionLoading] = useState(false);
   const [restoreFormDataLoading, setRestoreFormDataLoading] = useState(false);
-  const { restoredFormData, restoredFormId } = useSelector(
-    (state) => state.formRestore
-  );
+  const {
+    formHistoryData = {},
+    restoredFormData,
+    restoredFormId,
+  } = useSelector((state) => state.formRestore);
 
   /* -------------------------- getting process data -------------------------- */
   const [isProcessDetailsLoading, setIsProcessDetailsLoading] = useState(false);
@@ -223,6 +232,8 @@ const Edit = React.memo(() => {
     (state) => state.process?.applicationCount
   );
 
+  const formHistory = formHistoryData.formHistory || [];
+  const [showHistoryModal, setShowHistoryModal] = useState(false);
   const [showConfirmModal, setShowConfirmModal] = useState(false);
   const [modalType, setModalType] = useState("");
 
@@ -264,7 +275,6 @@ const Edit = React.memo(() => {
       setFormSubmitted(false);
     }
   };
-
   useEffect(() => {
     if (restoredFormId) {
       setRestoreFormDataLoading(true);
@@ -292,6 +302,38 @@ const Edit = React.memo(() => {
       dispatch(setRestoreFormData({}));
       dispatch(setRestoreFormId(null));
     };
+  }, [restoredFormId]);
+
+  const fetchRestoredFormData = (restoredFormId) => {
+    if (restoredFormId) {
+      fetchFormById(restoredFormId)
+        .then((res) => {
+          if (res.data) {
+            const { data } = res;
+            dispatch(setRestoreFormData(data));
+            dispatchFormAction({
+              type: "components",
+              value: _cloneDeep(data.components),
+            });
+            dispatchFormAction({ type: "type", value: data.type });
+            dispatchFormAction({ type: "display", value: data.display });
+          }
+        })
+        .catch((err) => {
+          toast.error(err.response.data);
+        });
+    }
+
+    const cleanup = () => {
+      dispatch(setRestoreFormData({}));
+      dispatch(setRestoreFormId(null));
+    };
+
+    return cleanup; 
+  };
+
+  useEffect(() => {
+    fetchRestoredFormData(restoredFormId);
   }, [restoredFormId]);
 
   const fetchProcessDetails = async (processListData) => {
@@ -471,9 +513,35 @@ const Edit = React.memo(() => {
   const backToForm = () => {
     dispatch(push(`${redirectUrl}form/`));
   };
+  const closeHistoryModal = () => {
+    setShowHistoryModal(false);
+  };
+  const fetchFormHistory = (parentFormId, page, limit) => {
+    getFormHistory(parentFormId, page, limit)
+      .then((res) => {
+        dispatch(setFormHistories(res.data));
+      })
+      .catch(() => {
+        setFormHistories([]);
+      });
+  };
 
-  const handleHistory = () => {
-    console.log("handleHistory");
+  const handleFormHistory = () => {
+    setShowHistoryModal(true);
+    dispatch(setFormHistories({ formHistory: [], totalCount: 0 }));
+    if (processListData?.parentFormId) {
+        fetchFormHistory(processListData?.parentFormId, 1, 4);
+    }
+};
+
+
+  const loadMoreBtnAction = () => {
+      fetchFormHistory(processListData?.parentFormId);
+  };
+
+  const revertFormBtnAction = (cloneId) => {
+    dispatch(setRestoreFormId(cloneId));
+    fetchRestoredFormData(cloneId);
   };
 
   const handlePreview = () => {
@@ -878,7 +946,7 @@ const Edit = React.memo(() => {
                           size="md"
                           icon={<HistoryIcon />}
                           label={t("History")}
-                          onClick={handleHistory}
+                          onClick={() => handleFormHistory()}
                           dataTestid="handle-form-history-testid"
                           ariaLabel={t("Form History Button")}
                         />
@@ -939,7 +1007,11 @@ const Edit = React.memo(() => {
               className={`wraper flow-wraper ${isFlowLayout ? "visible" : ""}`}
             >
               {/* TBD: Add a loader instead. */}
-              {isProcessDetailsLoading ? <>loading...</> : <FlowEdit isPublished={isPublished} />}
+              {isProcessDetailsLoading ? <>loading...</> : <FlowEdit 
+              CategoryType={CategoryType}
+              setIsProcessDetailsLoading={setIsProcessDetailsLoading}
+              isPublished={isPublished}
+              />}
             </div>
             <button
               className={`border-0 form-flow-wraper-${isFormLayout ? "right" : "left"
@@ -1017,9 +1089,22 @@ const Edit = React.memo(() => {
           size="md"
         />
       )}
+      
+      <HistoryModal
+        show={showHistoryModal}
+        onClose={closeHistoryModal}
+        title={t("History")}
+        loadMoreBtnText={t("Load More")}
+        revertBtnText={t("Revert To This")}
+        allHistory={formHistory}
+        loadMoreBtnAction={loadMoreBtnAction}
+        categoryType={CategoryType.FORM}
+        revertBtnAction={revertFormBtnAction}
+        historyCount={formHistoryData.totalCount}
+      />
       {renderDeleteModal()}
     </div>
   );
-});
+};
 
-export default Edit;
+export const Edit = React.memo(EditComponent);

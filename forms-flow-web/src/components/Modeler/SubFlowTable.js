@@ -34,6 +34,12 @@ const SubFlow = React.memo(() => {
     modified: { sortOrder: "asc" },
     status: { sortOrder: "asc" },
   });
+
+  useEffect(() => {
+    if (!search?.trim()) {
+      dispatch(setBpmnSearchText(""));
+    }
+  }, [search]);
   useEffect(() => {
     setIsLoading(true);
     dispatch(

@@ -8,7 +8,7 @@ import React, {
 import { Form, FormControl, InputGroup } from "react-bootstrap";
 import {
   CopyIcon,
-  InfoIcon,
+  CustomInfo,
   CustomRadioButton,
   FormInput,
   FormTextArea,
@@ -220,17 +220,8 @@ const FormSettings = forwardRef((props, ref) => {
           maxRows={3}
           minRows={3}
         />
-        <div className="info-panel">
-          <div className="d-flex align-items-center">
-            <InfoIcon />
-            <div className="field-label ms-2">{t("Note")}</div>
-          </div>
-          <div className="info-content">
-            {t(
-              "Allowing the addition of multiple pages in a single form will prevent you from using this form in a bundle later."
-            )}
-          </div>
-        </div>
+        <CustomInfo heading="Note" 
+        content="Allowing the addition of multiple pages in a single form will prevent you from using this form in a bundle later." />
 
         <Form.Check
           data-testid="form-edit-wizard-display"
@@ -378,17 +369,8 @@ const FormSettings = forwardRef((props, ref) => {
       <div className="modal-hr" />
       <div className="section">
         <h5 className="fw-bold">{t("Link for this form")}</h5>
-        <div className="info-panel">
-          <div className="d-flex align-items-center">
-            <InfoIcon />
-            <div className="field-label ms-2">{t("Note")}</div>
-          </div>
-          <div className="info-content">
-            {t(
-              "Making changes to your form URL will make your form inaccessible from your current URL."
-            )}
-          </div>
-        </div>
+        <CustomInfo heading="Note" 
+        content="Making changes to your form URL will make your form inaccessible from your current URL." />
         <Form.Group className="settings-input w-100" controlId="url-input">
           <Form.Label className="field-label">{t("URL Path")}</Form.Label>
           <InputGroup className="url-input">

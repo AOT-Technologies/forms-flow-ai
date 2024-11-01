@@ -1,7 +1,6 @@
 import React from "react";
 import Modal from "react-bootstrap/Modal";
-import { CustomButton } from "@formsflow/components";
-import { DuplicateIcon, ImportIcon, PencilIcon, SaveTemplateIcon, CloseIcon, TrashIcon } from "@formsflow/components";
+import { DuplicateIcon, ImportIcon, PencilIcon, SaveTemplateIcon, CloseIcon, TrashIcon, CustomInfo, CustomButton } from "@formsflow/components";
 
 const ActionModal = React.memo(({ newActionModal, onClose, CategoryType, onAction, published }) => {
       const handleAction = (actionType)=>{
@@ -20,9 +19,15 @@ const ActionModal = React.memo(({ newActionModal, onClose, CategoryType, onActio
                     <CloseIcon onClick={onClose} color="#253DF4" />
                     </div>
                 </Modal.Header>
-                <Modal.Body className="modal-body d-flex justify-content-around custom-modal-body">
+                <Modal.Body className="modal-body custom-modal-body">
+                    {published && 
+                    <CustomInfo 
+                    heading="Note"
+                    content="Importing and deleting is not available when the form is published.
+                     You must unpublish the form first if you wish to make any changes"
+                    />}
                     {CategoryType === "FORM" && (
-                        <div className="d-flex custom-action-flex action-form">
+                        <div className="custom-action-flex action-form">
 
                             <CustomButton
                                 variant="secondary"

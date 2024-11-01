@@ -3,7 +3,7 @@ import Modal from "react-bootstrap/Modal";
 import ProgressBar from "react-bootstrap/ProgressBar";
 import Dropdown from 'react-bootstrap/Dropdown';
 import { Translation } from "react-i18next";
-import { CloseIcon, CustomButton, UploadIcon, SuccessIcon, FailedIcon, IButton, DropdownIcon } from "@formsflow/components";
+import { CloseIcon, CustomButton, UploadIcon, SuccessIcon, FailedIcon, CustomInfo, DropdownIcon } from "@formsflow/components";
 
 const ImportModal = React.memo(({ importFormModal, onClose, formSubmitted,
     uploadActionType, importError, importLoader, formName, description,
@@ -114,19 +114,10 @@ const ImportModal = React.memo(({ importFormModal, onClose, formSubmitted,
                             {importError && <span className="upload-status-error">{importError}</span>}
                         </div>
                         {importError && importError.includes("already exists") &&
-                            <div className="import-error-note">
-                                <div className="d-flex gap-2 align-items-center">
-                                    <IButton />
-                                    <Translation>{(t) => t("Note")}</Translation>
-                                </div>
-                                <div>
-                                    <Translation>
-                                        {(t) => t(`If you want to replace an existing form,
+                        <CustomInfo Heading="Note" Content='If you want to replace an existing form,
                                          open the form in the design menu that you want to 
-                                         update, click "Actions", and then click "Import".`
-                                        )}
-                                    </Translation></div>
-                            </div>}
+                                         update, click "Actions", and then click "Import".' />
+                            }
                         <div>
                             {importError && !importError.includes("already exists")
                                 && <span className="upload-status-error"><Translation>{(t) =>
@@ -137,17 +128,9 @@ const ImportModal = React.memo(({ importFormModal, onClose, formSubmitted,
                         item?.majorVersion != null || item?.minorVersion != null) && (
                             <div className="import-container">
                                 {/* First Row */}
-                                <div className="import-error-note d-block">
 
-                                    <div className="mx-2 d-flex align-items-center">
-                                        <IButton />
-                                        <span className="ms-2">
-                                            <Translation>
-                                                {(t) => t("Import will create a new version.")}
-                                            </Translation>
-                                        </span>
-                                    </div>
-                                </div>
+                                <CustomInfo heading="Import will create a new version." />
+
                                 <div className="import-details">
                                     <div className="file-item-header-text">Type</div>
                                     <div className="file-item-header-text">Import</div>

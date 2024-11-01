@@ -333,7 +333,7 @@ const PrivateRoute = React.memo((props) => {
             )}
             {ENABLE_PROCESSES_MODULE && (
               <DesignerRoute
-                path={`${BASE_ROUTE}descision-table`}
+                path={`${BASE_ROUTE}decision-table`}
                 component={Modeler}
               />
             )}

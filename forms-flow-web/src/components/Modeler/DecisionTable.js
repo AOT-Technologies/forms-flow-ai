@@ -32,7 +32,12 @@ const DecisionTable = React.memo(() => {
   const [searchDmnLoading, setSearchDmnLoading] = useState(false);
   const redirectUrl = MULTITENANCY_ENABLED ? `/tenant/${tenantKey}/` : "/";
   const [search, setSearch] = useState(searchText || "");
-
+  
+  useEffect(() => {
+    if (!search?.trim()) {
+      dispatch(setBpmnSearchText(""));
+    }
+  }, [search]);
   useEffect(() => {
     setIsLoading(true);
     dispatch(

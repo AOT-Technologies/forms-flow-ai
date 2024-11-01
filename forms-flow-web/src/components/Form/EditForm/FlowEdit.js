@@ -40,7 +40,7 @@ const FlowEdit = forwardRef(
     const [lintErrors, setLintErrors] = useState([]);
     const [savingFlow, setSavingFlow] = useState(false);
     const [showDiscardModal, setShowDiscardModal] = useState(false);
-    const [showHistoryModal, setshowHistoryModal] = useState(false);
+    const [showHistoryModal, setShowHistoryModal] = useState(false);
     const { processHistoryData = {}, formProcessList: processListData } =
       useSelector((state) => state.process);
     const processHistory = processHistoryData.processHistory || [];
@@ -89,7 +89,7 @@ const FlowEdit = forwardRef(
     }));
 
     const closeHistoryModal = () => {
-      setshowHistoryModal(false);
+      setShowHistoryModal(false);
     };
 
     const fetchProcessHistory = (processKey, page, limit) => {
@@ -102,7 +102,7 @@ const FlowEdit = forwardRef(
         });
     };
     const handleProcessHistory = () => {
-      setshowHistoryModal(true);
+      setShowHistoryModal(true);
       dispatch(setProcessHistories({ processHistory: [], totalCount: 0 }));
       if (processListData?.processKey) {
         fetchProcessHistory(processListData?.processKey, 1, 4);

@@ -295,11 +295,13 @@ const List = React.memo((props) => {
   };
   console.log(form,"form");
   
-  const onChangeCheckBox = ()=>{
-    setWizardChecked(!wizardChecked);
-    if(wizardChecked){
-      setForm(prevForm=>({...prevForm,display:"wizard"}));
-    }
+  const onChangeCheckBox = () => {
+    const newWizardChecked = !wizardChecked;
+    setWizardChecked(newWizardChecked);
+    setForm(prevForm => ({
+      ...prevForm,
+      display: newWizardChecked ? "wizard" : "form"
+    }));
   };
 
   return (

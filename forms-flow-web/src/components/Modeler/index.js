@@ -4,6 +4,7 @@ import { useSelector } from "react-redux";
 
 import Base from "./Main";
 import SubFlowList from './SubFlowTable';
+import descisiontable from './DecisionTable';
 import Edit from "./Edit";
 import CreateWorkflow from "./Create";
 import {
@@ -40,6 +41,7 @@ const Processes = () => {
     <div data-testid="Process-index">
       <Switch>
         <Route exact path={`${BASE_ROUTE}subflow`} component={SubFlowList} />
+        <Route exact path={`${BASE_ROUTE}descision-table`} component={descisiontable} />
         <DesignerProcessRoute
           exact
           path={`${BASE_ROUTE}subflow/create`}

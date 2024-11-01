@@ -1,39 +1,38 @@
-import React, { useEffect, useState } from "react";
-import { CustomButton, CustomSearch ,TableFooter ,ReusableProcessTableRow} from "@formsflow/components";
+import React, { useState, useEffect } from "react";
 import { useSelector, useDispatch } from "react-redux";
-import { useTranslation } from "react-i18next";
-
-import { fetchAllProcesses } from "../../apiManager/services/processServices";
+import { CustomButton, CustomSearch ,ReusableProcessTableRow ,TableFooter} from "@formsflow/components";
 import LoadingOverlay from "react-loading-overlay-ts";
+import { useTranslation } from "react-i18next";
+import SortableHeader from "../CustomComponents/SortableHeader";
+import { fetchAllProcesses } from "../../apiManager/services/processServices";
+import { MULTITENANCY_ENABLED } from "../../constants/constants";
+import { push } from "connected-react-router";
 import {
-  setBpmnSearchText,
+  setDmnSearchText,
   setIsPublicDiagram,
 } from "../../actions/processActions";
-import { push } from "connected-react-router";
-import { MULTITENANCY_ENABLED } from "../../constants/constants";
-import SortableHeader from "../CustomComponents/SortableHeader";
 
-
-const SubFlow = React.memo(() => {
-  const searchText = useSelector((state) => state.process.bpmnSearchText);
-  const tenantKey = useSelector((state) => state.tenants?.tenantId);
-  const redirectUrl = MULTITENANCY_ENABLED ? `/tenant/${tenantKey}/` : "/";
-  const [limit, setLimit] = useState(5);
+const DecisionTable = React.memo(() => {
   const dispatch = useDispatch();
   const { t } = useTranslation();
-  const [activePage, setActivePage] = useState(1);
+  const dmn = useSelector((state) => state.process?.dmnProcessList);
   const [isLoading, setIsLoading] = useState(true);
-  const process = useSelector((state) => state.process.processList);
-  const totalCount = useSelector((state) => state.process.totalBpmnCount);
-  const [search, setSearch] = useState(searchText || "");
-  const [searchSubflowLoading, setSearchSubflowLoading] = useState(false);
-  const [currentBpmnSort, setCurrentBpmnSort] = useState({
+  const searchText = useSelector((state) => state.process?.dmnSearchText);
+  const [activePage, setActivePage] = useState(1);
+  const [limit, setLimit] = useState(5);
+  const tenantKey = useSelector((state) => state.tenants?.tenantId);
+  const totalCount = useSelector((state) => state.process.totalDmnCount);
+  const [currentDmnSort, setCurrentDmnSort] = useState({
     activeKey: "name",
     name: { sortOrder: "asc" },
     id: { sortOrder: "asc" },
     modified: { sortOrder: "asc" },
     status: { sortOrder: "asc" },
   });
+  const [searchDmnLoading, setSearchDmnLoading] = useState(false);
+  const redirectUrl = MULTITENANCY_ENABLED ? `/tenant/${tenantKey}/` : "/";
+  const [search, setSearch] = useState(searchText || "");
+
   useEffect(() => {
     setIsLoading(true);
     dispatch(
@@ -41,22 +40,21 @@ const SubFlow = React.memo(() => {
         {
           pageNo: activePage,
           tenant_key: tenantKey,
-          processType: "BPMN",
+          processType: "DMN",
           limit: limit,
           searchKey: search,
-          sortBy: currentBpmnSort.activeKey,
-          sortOrder: currentBpmnSort[currentBpmnSort.activeKey].sortOrder,
+          sortBy: currentDmnSort.activeKey,
+          sortOrder: currentDmnSort[currentDmnSort.activeKey].sortOrder,
         },
         () => {
           setIsLoading(false);
-          setSearchSubflowLoading(false);
+          setSearchDmnLoading(false);
         }
       )
     );
-  }, [dispatch, activePage, limit, searchText, currentBpmnSort]);
-
+  }, [dispatch, activePage, limit, searchText, currentDmnSort]);
   const handleSort = (key) => {
-    setCurrentBpmnSort((prevSort) => {
+    setCurrentDmnSort((prevSort) => {
       const newSortOrder = prevSort[key].sortOrder === "asc" ? "desc" : "asc";
       return {
         ...prevSort,
@@ -67,49 +65,35 @@ const SubFlow = React.memo(() => {
   };
 
   const pageOptions = [
-    {
-      text: "5",
-      value: 5,
-    },
-    {
-      text: "25",
-      value: 25,
-    },
-    {
-      text: "50",
-      value: 50,
-    },
-    {
-      text: "100",
-      value: 100,
-    },
-    {
-      text: "All",
-      value: totalCount,
-    },
+    { text: "5", value: 5 },
+    { text: "10", value: 10 },
+    { text: "25", value: 25 },
+    { text: "50", value: 50 },
+    { text: "100", value: 100 },
+    { text: "All", value: totalCount },
   ];
-  const handlePageChange = (page) => setActivePage(page);
-  const onLimitChange = (newLimit) => {
-    setLimit(newLimit);
-    setActivePage(1);
-  };
+
   const handleClearSearch = () => {
     setSearch("");
     setActivePage(1);
-    dispatch(setBpmnSearchText(""));
+    dispatch(setDmnSearchText(""));
   };
   const handleSearch = () => {
-    setSearchSubflowLoading(true);
+    setSearchDmnLoading(true);
     setActivePage(1);
-    dispatch(setBpmnSearchText(search));
+    dispatch(setDmnSearchText(search));
   };
+  const onLimitChange = (newLimit) => {
+    setLimit(newLimit);
+    handlePageChange(1);
+  };
+  const handlePageChange = (page) => setActivePage(page);
   const gotoEdit = (data) => {
     if (MULTITENANCY_ENABLED) {
       dispatch(setIsPublicDiagram(!!data.tenantId));
     }
-    dispatch(push(`${redirectUrl}subflow/edit/${data.parentProcessKey}`));
+    dispatch(push(`${redirectUrl}processes/dmn/${data.key}/edit`));
   };
-
   return (
     <div className="d-md-flex justify-content-between align-items-center pb-3 flex-wrap">
       <div className="d-md-flex align-items-center p-0 search-box input-group input-group width-25">
@@ -118,20 +102,19 @@ const SubFlow = React.memo(() => {
           setSearch={setSearch}
           handleSearch={handleSearch}
           handleClearSearch={handleClearSearch}
-          placeholder={t("Search BPMN Name")}
-          searchLoading={searchSubflowLoading}
-          title={t("Search BPMN Name")}
-          dataTestId="BPMN-search-input"
+          placeholder={t("Search Decision Table")}
+          searchLoading={searchDmnLoading}
+          title={t("Search DMN Name")}
+          dataTestId="DMN-search-input"
         />
       </div>
       <div className="d-md-flex justify-content-end align-items-center ">
         <CustomButton
           variant="primary"
           size="sm"
-          label="New BPMN"
-          className=""
-          dataTestid="create-BPMN-button"
-          ariaLabel="Create BPMN"
+          label={t("New DMN")}
+          dataTestid="create-DMN-button"
+          ariaLabel="Create DMN"
         />
       </div>
       <LoadingOverlay active={isLoading} spinner text={t("Loading...")}>
@@ -144,7 +127,7 @@ const SubFlow = React.memo(() => {
                     <SortableHeader
                       columnKey="name"
                       title="Name"
-                      currentSort={currentBpmnSort}
+                      currentSort={currentDmnSort}
                       handleSort={handleSort}
                       className="ms-4"
                     />
@@ -152,8 +135,8 @@ const SubFlow = React.memo(() => {
                   <th className="w-20" scope="col">
                     <SortableHeader
                       columnKey="id"
-                      title="id"
-                      currentSort={currentBpmnSort}
+                      title="ID"
+                      currentSort={currentDmnSort}
                       handleSort={handleSort}
                     />
                   </th>
@@ -161,7 +144,7 @@ const SubFlow = React.memo(() => {
                     <SortableHeader
                       columnKey="modified"
                       title="Last Edited"
-                      currentSort={currentBpmnSort}
+                      currentSort={currentDmnSort}
                       handleSort={handleSort}
                     />
                   </th>
@@ -169,7 +152,7 @@ const SubFlow = React.memo(() => {
                     <SortableHeader
                       columnKey="status"
                       title="Status"
-                      currentSort={currentBpmnSort}
+                      currentSort={currentDmnSort}
                       handleSort={handleSort}
                     />
                   </th>
@@ -181,12 +164,12 @@ const SubFlow = React.memo(() => {
                 </tr>
               </thead>
               <tbody>
-                {process.map((processItem) => (
+                {dmn.map((dmnItem) => (
                   <ReusableProcessTableRow
-                    key={processItem.id}
-                    item={processItem}
+                    key={dmnItem.id}
+                    item={dmnItem}
                     gotoEdit={gotoEdit}
-                    buttonLabel="Bpmn"
+                    buttonLabel="Dmn"
                   />
                 ))}
                 <TableFooter
@@ -206,4 +189,4 @@ const SubFlow = React.memo(() => {
   );
 });
 
-export default SubFlow;
+export default DecisionTable;

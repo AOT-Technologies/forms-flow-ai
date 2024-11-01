@@ -50,6 +50,7 @@ const List = React.memo((props) => {
   const [importFormModal, setImportFormModal] = useState(false);
   const [importError, setImportError] = useState("");
   const [importLoader, setImportLoader] = useState(false);
+  const [wizardChecked,setWizardChecked] = useState(false);
   const ActionType = {
     BUILD: "BUILD",
     IMPORT: "IMPORT"
@@ -292,6 +293,16 @@ const List = React.memo((props) => {
       setFormSubmitted(false);
     });
   };
+  console.log(form,"form");
+  
+  const onChangeCheckBox = () => {
+    const newWizardChecked = !wizardChecked;
+    setWizardChecked(newWizardChecked);
+    setForm(prevForm => ({
+      ...prevForm,
+      display: newWizardChecked ? "wizard" : "form"
+    }));
+  };
 
   return (
     <>
@@ -307,7 +318,6 @@ const List = React.memo((props) => {
             <>
               <div className="d-md-flex justify-content-between align-items-center pb-3 flex-wrap">
                 <div className="d-md-flex align-items-center p-0 search-box input-group input-group width-25">
-
                   <CustomSearch
                     search={search}
                     setSearch={setSearch}
@@ -350,6 +360,9 @@ const List = React.memo((props) => {
                     setNameError={setNameError}
                     nameValidationOnBlur={validateFormNameOnBlur}
                     nameError={nameError}
+                    buildForm={true}
+                    checked = {wizardChecked}
+                    setChecked={onChangeCheckBox}
                   />
                   <ImportModal
                     importLoader={importLoader}

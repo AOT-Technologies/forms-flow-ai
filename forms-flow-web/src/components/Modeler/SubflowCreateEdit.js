@@ -43,7 +43,7 @@ const CategoryType = { FORM: "FORM", WORKFLOW: "WORKFLOW" };
 
 const WorkflowEditor = () => {
   const { processKey, step } = useParams();
-  const isCreate = step === "create"; 
+  const isCreate = step === "create";
   const dispatch = useDispatch();
   const bpmnRef = useRef();
   const { t } = useTranslation();
@@ -69,7 +69,7 @@ const WorkflowEditor = () => {
   // handle history modal
   const handleHistoryModal = () => setHistoryModalShow(!historyModalShow);
   const [isProcessDetailsLoading, setIsProcessDetailsLoading] = useState(false);
-
+  const [isXmlChanged, setIsXmlChanged] = useState(false);
 
   useEffect(() => {
     setIsPublished(processData.status === "Published");
@@ -77,7 +77,7 @@ const WorkflowEditor = () => {
 
   const publishText = isPublished ? "Unpublish" : "Publish";
 
-  // get process name to dispaly 
+  // get process name to dispaly
   const processName = useMemo(() => {
     if (!processData.processData) return;
     return extractDataFromDiagram(processData?.processData).name;
@@ -99,7 +99,7 @@ const WorkflowEditor = () => {
     }
   }, [processKey]);
 
-  //reset the data 
+  //reset the data
   useEffect(() => {
     if (isCreate) {
       dispatch(setProcessData({}));
@@ -111,14 +111,26 @@ const WorkflowEditor = () => {
     };
   }, [isCreate]);
 
+  useEffect(() => {
+    const bpmnModeler = bpmnRef.current?.getBpmnModeler();
+
+    if (bpmnModeler) {
+      // Listen to changes in the BPMN model
+      bpmnModeler.on("commandStack.changed", handleXmlChange);
+    }
+
+    return () => {
+      if (bpmnModeler) {
+        bpmnModeler.off("commandStack.changed", handleXmlChange);
+      }
+    };
+  }, [bpmnRef.current]);
 
   const handleToggleConfirmModal = () => setShowConfirmModal(!showConfirmModal);
   const openConfirmModal = (type) => {
     setModalType(type);
     handleToggleConfirmModal();
   };
-
-
   const saveFlow = async () => {
     try {
       const bpmnModeler = bpmnRef.current?.getBpmnModeler();
@@ -128,7 +140,6 @@ const WorkflowEditor = () => {
         return;
       }
       if (!isCreate) {
-        // If XML is the same as existing process data, no need to update
         const isEqual = await compareXML(processData?.processData, xml);
         if (isEqual) {
           toast.success(t("Process is already up to date"));
@@ -137,12 +148,12 @@ const WorkflowEditor = () => {
       }
 
       setSavingFlow(true);
-      // Check if `processId` exists; if so, update the process, otherwise create a new subflow
       const response = isCreate
         ? await createSubflow({ type: "BPMN", data: xml })
         : await updateProcess({ type: "BPMN", id: processData.id, data: xml });
 
       dispatch(setProcessData(response.data));
+      setIsXmlChanged(false); // XML saved, no more unsaved changes
       toast.success(
         t(`Subflow ${isCreate ? "created" : "updated"} successfully`)
       );
@@ -157,38 +168,70 @@ const WorkflowEditor = () => {
       setSavingFlow(false);
     }
   };
+  // const saveFlow = async () => {
+  //   try {
+  //     const bpmnModeler = bpmnRef.current?.getBpmnModeler();
+  //     const xml = await createXMLFromModeler(bpmnModeler);
 
-  // Function to handle publish/unpublish with XML validation
+  //     if (!validateProcess(xml, lintErrors, t)) {
+  //       return;
+  //     }
+  //     if (!isCreate) {
+  //       // If XML is the same as existing process data, no need to update
+  //       const isEqual = await compareXML(processData?.processData, xml);
+  //       if (isEqual) {
+  //         toast.success(t("Process is already up to date"));
+  //         return;
+  //       }
+  //     }
+
+  //     setSavingFlow(true);
+  //     // Check if `processId` exists; if so, update the process, otherwise create a new subflow
+  //     const response = isCreate
+  //       ? await createSubflow({ type: "BPMN", data: xml })
+  //       : await updateProcess({ type: "BPMN", id: processData.id, data: xml });
+
+  //     dispatch(setProcessData(response.data));
+  //     toast.success(
+  //       t(`Subflow ${isCreate ? "created" : "updated"} successfully`)
+  //     );
+  //     if (isCreate) {
+  //       dispatch(
+  //         push(`${redirectUrl}subflow/edit/${response.data.processKey}`)
+  //       );
+  //     }
+  //   } catch (error) {
+  //     toast.error(t("Failed to save process"));
+  //   } finally {
+  //     setSavingFlow(false);
+  //   }
+  // };
   const confirmPublishOrUnPublish = async () => {
     try {
       const bpmnModeler = bpmnRef.current?.getBpmnModeler();
       const xml = await createXMLFromModeler(bpmnModeler);
 
-      // Validate the XML before publishing/unpublishing
-      if (!validateProcess(xml, lintErrors)) {
-        return; // Stop if validation fails
+      if (!isPublished && !validateProcess(xml, lintErrors)) {
+        return;
       }
 
       const actionFunction = isPublished ? unPublish : publish;
-      closeModal(); // Close confirmation modal
+      closeModal();
       setIsPublishLoading(true);
 
-      // Perform the publish/unpublish action
       await actionFunction({ id: processData.id, data: xml, type: "BPMN" });
       if (isPublished) {
-        // Fetch updated process details after unpublish
         const updatedProcessDetails = await getProcessDetails(
           processData.processKey
         );
         dispatch(setProcessData(updatedProcessDetails.data));
-        setIsPublished(false); // Set to unpublished
+        setIsPublished(false);
       }
       toast.success(
         t(`${isPublished ? "Unpublished" : "Published"} successfully`)
       );
-      // Handle unpublish success by immediately fetching updated process details
       if (!isPublished) {
-        dispatch(push(`${redirectUrl}subflow`)); // Redirect on publish
+        dispatch(push(`${redirectUrl}subflow`));
       }
       setIsPublished(!isPublished);
     } catch (error) {
@@ -200,6 +243,49 @@ const WorkflowEditor = () => {
       setIsPublishLoading(false);
     }
   };
+
+  // Function to handle publish/unpublish with XML validation
+  // const confirmPublishOrUnPublish = async () => {
+  //   try {
+  //     const bpmnModeler = bpmnRef.current?.getBpmnModeler();
+  //     const xml = await createXMLFromModeler(bpmnModeler);
+
+  //     // Validate the XML before publishing/unpublishing
+  //     if (!isPublished && !validateProcess(xml, lintErrors)) {
+  //       return; // Stop if validation fails
+  //     }
+
+  //     const actionFunction = isPublished ? unPublish : publish;
+  //     closeModal(); // Close confirmation modal
+  //     setIsPublishLoading(true);
+
+  //     // Perform the publish/unpublish action
+  //     await actionFunction({ id: processData.id, data: xml, type: "BPMN" });
+  //     if (isPublished) {
+  //       // Fetch updated process details after unpublish
+  //       const updatedProcessDetails = await getProcessDetails(
+  //         processData.processKey
+  //       );
+  //       dispatch(setProcessData(updatedProcessDetails.data));
+  //       setIsPublished(false); // Set to unpublished
+  //     }
+  //     toast.success(
+  //       t(`${isPublished ? "Unpublished" : "Published"} successfully`)
+  //     );
+  //     // Handle unpublish success by immediately fetching updated process details
+  //     if (!isPublished) {
+  //       dispatch(push(`${redirectUrl}subflow`)); // Redirect on publish
+  //     }
+  //     setIsPublished(!isPublished);
+  //   } catch (error) {
+  //     toast.error(
+  //       t(`Failed to ${isPublished ? "unpublish" : "publish"} the BPMN`)
+  //     );
+  //     console.error("Error in publish/unpublish:", error.message);
+  //   } finally {
+  //     setIsPublishLoading(false);
+  //   }
+  // };
 
   const closeModal = () => {
     setModalType("");
@@ -251,6 +337,13 @@ const WorkflowEditor = () => {
 
   if (isProcessDetailsLoading) return <Loading />;
 
+  const handleXmlChange = async () => {
+    const bpmnModeler = bpmnRef.current?.getBpmnModeler();
+    const currentXml = await createXMLFromModeler(bpmnModeler);
+    const isEqual = await compareXML(processData?.processData, currentXml);
+    setIsXmlChanged(!isEqual);
+  };
+
   const getModalContent = () => {
     switch (modalType) {
       case "publish":
@@ -273,7 +366,7 @@ const WorkflowEditor = () => {
           primaryBtnText: "Unpublish and Edit This BPMN",
           secondaryBtnText: "Cancel, Keep This BPMN published",
         };
-        case "discard":
+      case "discard":
         return {
           title: "Are you Sure you want to Discard Subflow Changes",
           message:
@@ -331,15 +424,17 @@ const WorkflowEditor = () => {
               )}
             </div>
             <div>
-              <CustomButton
-                variant="dark"
-                size="md"
-                className="mx-2"
-                label={t("Actions")}
-                onClick={editorActions}
-                dataTestid="designer-action-testid"
-                ariaLabel={t("Designer Actions Button")}
-              />
+              {!isCreate && (
+                <CustomButton
+                  variant="dark"
+                  size="md"
+                  className="mx-2"
+                  label={t("Actions")}
+                  onClick={editorActions}
+                  dataTestid="designer-action-testid"
+                  ariaLabel={t("Designer Actions Button")}
+                />
+              )}
               <CustomButton
                 variant="light"
                 size="md"
@@ -350,6 +445,7 @@ const WorkflowEditor = () => {
                     ? openConfirmModal("unpublish")
                     : openConfirmModal("publish");
                 }}
+                disabled={isXmlChanged || isPublishLoading}
                 dataTestid="handle-publish-testid"
                 ariaLabel={`${t(publishText)} ${t("Button")}`}
               />
@@ -387,9 +483,9 @@ const WorkflowEditor = () => {
                   onClick={saveFlow}
                   label={t("Save BPMN")}
                   buttonLoading={savingFlow}
+                  disabled={!isXmlChanged || savingFlow || isPublished}
                   dataTestid="save-bpmn-layout"
                   ariaLabel={t("Save Bpmn Layout")}
-                  disabled={isPublished}
                 />
                 <CustomButton
                   variant="secondary"
@@ -434,7 +530,7 @@ const WorkflowEditor = () => {
         showExportModal={selectedAction === EXPORT}
         onClose={() => setSelectedAction(null)}
         onExport={handleExport}
-        fileName={processName}
+        fileName={processName || "filename"}
         modalTitle={t("Export BPMN")}
         successMessage={t("Export Successful")}
         errorMessage={exportError}

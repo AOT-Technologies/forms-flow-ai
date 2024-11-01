@@ -1,5 +1,6 @@
 import { extractDataFromDiagram } from "../components/Modeler/helpers/helper";
 import BpmnModdle from "bpmn-moddle";
+import DmnModdle from "dmn-moddle";
 import isEqual from "lodash/isEqual";
 import { toast } from "react-toastify";
 import {
@@ -7,6 +8,7 @@ import {
   WARNING_LINTING_CLASSNAME,
 } from "../components/Modeler/constants/bpmnModelerConstants";
 const bpmnModdle = new BpmnModdle();
+const dmnModdle = new DmnModdle();
 
 export const parseBpmn = async (xmlString) => {
   const { rootElement: definitionsA } = await bpmnModdle.fromXML(xmlString);
@@ -84,7 +86,75 @@ export const validateProcessNames = (xml) => {
 };
 
 
-export const validateDecisionName = (xml, t) => {
+// Parse DMN XML into JSON structure
+export const parseDmn = async (xmlString) => {
+  try {
+    const { rootElement: definitions } = await dmnModdle.fromXML(xmlString);
+    return definitions;
+  } catch (error) {
+    console.error("Error parsing DMN XML:", error);
+    throw error;
+  }
+};
+
+// Validate DMN XML structure and check for naming and linting issues
+export const validateDmn = async (xmlString, lintErrors, translation = (i) => i) => {
+  try {
+    // Parse the XML to check structural correctness
+    const dmnDefinitions = await parseDmn(xmlString);
+    
+    // Validate lint errors (similar to BPMN validation)
+    if (validateDmnLintErrors(lintErrors, translation)) {
+      return false; // Validation failed due to errors
+    }
+
+    // Check for valid decision names
+    if (!validateDecisionNames(dmnDefinitions)) {
+      toast.error(translation("Decision name(s) must not be empty or undefined"));
+      return false;
+    }
+
+    return true; // Passed validation
+  } catch (error) {
+    console.error("Error validating DMN:", error);
+    return false;
+  }
+};
+
+// Compare two DMN XML strings to check if they are structurally identical
+export const compareDmnXML = async (xmlString1, xmlString2) => {
+  try {
+    // Parse both DMN XMLs to JSON structures
+    const dmn1 = await parseDmn(xmlString1);
+    const dmn2 = await parseDmn(xmlString2);
+    
+    // Compare the JSON structures
+    return isEqual(dmn1, dmn2);
+  } catch (error) {
+    console.error("Error comparing DMN XML:", error);
+    return false;
+  }
+};
+
+// Validate linting errors for DMN
+export const validateDmnLintErrors = (lintErrors, translation = (i) => i) => {
+  let hasErrors = false;
+  for (const key in lintErrors) {
+    const err = lintErrors[key];
+    err.forEach((x) => {
+      if (x.category === "error") {
+        hasErrors = true;
+        toast.error(translation(x.message));
+      } else if (x.category === "warn") {
+        toast.warn(translation(x.message));
+      }
+    });
+  }
+  return hasErrors;
+};
+
+// Validate that decision names are defined and not "undefined"
+export const validateDecisionNames = (xml, t) => {
   const extractedData = extractDataFromDiagram(xml, true);
   if (!extractedData.name || extractedData.name.includes("undefined")) {
     toast.error(t("Process name(s) must not be empty or undefined"));

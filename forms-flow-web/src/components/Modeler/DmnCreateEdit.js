@@ -29,8 +29,9 @@ import ExportDiagram from "../Modals/ExportDiagrams";
 import { toast } from "react-toastify";
 import {
   createXMLFromModeler,
-  validateDecisionName,
-  //compareXML,
+  compareDmnXML,
+  validateDmn,
+  validateDecisionNames
 } from "../../helper/processHelper";
 import DmnEditor from './Editors/DmnEditor/index.js';
 import {
@@ -68,7 +69,8 @@ const DecitionEditor = () => {
   // handle history modal
   const handleHistoryModal = () => setHistoryModalShow(!historyModalShow);
   const [isProcessDetailsLoading, setIsProcessDetailsLoading] = useState(false);
-
+  const [lintErrors, setLintErrors] = useState([]);
+  //const [isXmlChanged, setIsXmlChanged] = useState(false);
 
   useEffect(() => {
     setIsPublished(processData.status === "Published");
@@ -81,6 +83,7 @@ const DecitionEditor = () => {
     if (!processData.processData) return;
     return extractDataFromDiagram(processData?.processData,true).name;
   }, [processData]);
+
 
   //fetch process details using processkey
   useEffect(async () => {
@@ -111,6 +114,7 @@ const DecitionEditor = () => {
   }, [isCreate]);
 
 
+ 
   const handleToggleConfirmModal = () => setShowConfirmModal(!showConfirmModal);
   const openConfirmModal = (type) => {
     setModalType(type);
@@ -122,17 +126,17 @@ const DecitionEditor = () => {
     try {
       const dmnModeler = dmnRef.current?.getDmnModeler();
       const xml = await createXMLFromModeler(dmnModeler);
-      if (!validateDecisionName(xml)) {
+      if (!validateDmn(xml,lintErrors,t)) {
         return;
       }
-      // if (!isCreate) {
-      //   // If XML is the same as existing process data, no need to update
-      //   const isEqual = await compareXML(processData?.processData, xml);
-      //   if (isEqual) {
-      //     toast.success(t("Process is already up to date"));
-      //     return;
-      //   }
-      // }
+      if (!isCreate) {
+        // If XML is the same as existing process data, no need to update
+        const isEqual = await compareDmnXML(processData?.processData, xml);
+        if (isEqual) {
+          toast.success(t("Dmn is already up to date"));
+          return;
+        }
+      }
 
       setSavingFlow(true);
       // Check if `processId` exists; if so, update the process, otherwise create a new DMN
@@ -163,7 +167,7 @@ const DecitionEditor = () => {
       const xml = await createXMLFromModeler(dmnModeler);
 
       // Validate the XML before publishing/unpublishing
-      if (!validateDecisionName(xml)) {
+      if (!validateDmn(xml,lintErrors)) {
         return; // Stop if validation fails
       }
 
@@ -206,7 +210,7 @@ const DecitionEditor = () => {
 
   const handleExport = async () => {
     try {
-      if (await validateDecisionName(processData?.processData)) {
+      if (await validateDecisionNames(processData?.processData)) {
         const element = document.createElement("a");
         const file = new Blob([processData?.processData], {
           type: "text/dmn",
@@ -289,6 +293,13 @@ const DecitionEditor = () => {
   };
   const modalContent = getModalContent();
 
+  // const handleXmlChange = async () => {
+  //   const dmnModeler = dmnRef.current?.getDmnModeler();
+  //   const currentXml = await createXMLFromModeler(dmnModeler);
+  //   const isEqual = await compareDmnXML(processData?.processData, currentXml);
+  //   setIsXmlChanged(!isEqual);
+  // };
+
   return (
     <div>
       <ConfirmModal
@@ -350,6 +361,7 @@ const DecitionEditor = () => {
                     : openConfirmModal("publish");
                 }}
                 dataTestid="handle-publish-testid"
+                disabled={isPublishLoading}
                 ariaLabel={`${t(publishText)} ${t("Button")}`}
               />
             </div>
@@ -388,7 +400,7 @@ const DecitionEditor = () => {
                   buttonLoading={savingFlow}
                   dataTestid="save-DMN-layout"
                   ariaLabel={t("Save DMN Layout")}
-                  disabled={isPublished}
+                  disabled={ savingFlow || isPublished}
                 />
                 <CustomButton
                   variant="secondary"
@@ -413,6 +425,7 @@ const DecitionEditor = () => {
             dmnXml={
               isCreate ? defaultDmnXmlData : processData?.processData
             }
+            setLintErrors={setLintErrors}
             />
           )}
         </Card.Body>
@@ -432,7 +445,7 @@ const DecitionEditor = () => {
         showExportModal={selectedAction === EXPORT}
         onClose={() => setSelectedAction(null)}
         onExport={handleExport}
-        fileName={processName}
+        fileName={processName || "filename"}
         modalTitle={t("Export DMN")}
         successMessage={t("Export Successful")}
         errorMessage={exportError}

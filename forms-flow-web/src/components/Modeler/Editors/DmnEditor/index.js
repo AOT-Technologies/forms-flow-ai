@@ -51,6 +51,8 @@ const DmnEditor = forwardRef(({ dmnXml }, ref) => {
   useEffect(() => {
     handleImport(dmnXml);
   }, [dmnXml, dmnModeler]);
+
+  
   const handleImport = (dmnXml) => {
     if (dmnXml && dmnModeler) {
       dmnModeler

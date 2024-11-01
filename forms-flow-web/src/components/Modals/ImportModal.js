@@ -114,7 +114,7 @@ const ImportModal = React.memo(({ importFormModal, onClose, formSubmitted,
                             {importError && <span className="upload-status-error">{importError}</span>}
                         </div>
                         {importError && importError.includes("already exists") &&
-                        <CustomInfo Heading="Note" Content='If you want to replace an existing form,
+                        <CustomInfo heading="Note" content='If you want to replace an existing form,
                                          open the form in the design menu that you want to 
                                          update, click "Actions", and then click "Import".' />
                             }

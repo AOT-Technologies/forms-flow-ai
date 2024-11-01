@@ -336,7 +336,7 @@ const EditComponent = () => {
     fetchRestoredFormData(restoredFormId);
   }, [restoredFormId]);
 
-  const fetchProcessDetails = async(processListData)=>{
+  const fetchProcessDetails = async (processListData) => {
     const response = await getProcessDetails(processListData.processKey);
     dispatch(setProcessData(response.data));
   };

@@ -35,7 +35,7 @@ const DecisionTable = React.memo(() => {
   
   useEffect(() => {
     if (!search?.trim()) {
-      dispatch(setBpmnSearchText(""));
+      dispatch(setDmnSearchText(""));
     }
   }, [search]);
   useEffect(() => {

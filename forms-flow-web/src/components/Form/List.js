@@ -293,7 +293,6 @@ const List = React.memo((props) => {
       setFormSubmitted(false);
     });
   };
-  console.log(form,"form");
   
   const onChangeCheckBox = () => {
     const newWizardChecked = !wizardChecked;

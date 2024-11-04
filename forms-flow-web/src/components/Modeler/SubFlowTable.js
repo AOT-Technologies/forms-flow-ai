@@ -113,7 +113,13 @@ const SubFlow = React.memo(() => {
     if (MULTITENANCY_ENABLED) {
       dispatch(setIsPublicDiagram(!!data.tenantId));
     }
-    dispatch(push(`${redirectUrl}subflow/edit/${data.parentProcessKey}`));
+    dispatch(push(`${redirectUrl}subflow/edit/${data.processKey}`)
+    );
+  };
+
+  const createProcess = ()=>{
+    dispatch(
+      push(`${redirectUrl}subflow/create`));
   };
 
   return (
@@ -136,6 +142,7 @@ const SubFlow = React.memo(() => {
           size="sm"
           label="New BPMN"
           className=""
+          onClick={createProcess}
           dataTestid="create-BPMN-button"
           ariaLabel="Create BPMN"
         />

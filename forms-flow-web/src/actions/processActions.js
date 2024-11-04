@@ -87,11 +87,17 @@ export const setProcessActivityData = (data) => (dispatch) => {
 
 export const setProcessDiagramXML = (data) => (dispatch) => {
   dispatch({
-    type: ACTION_CONSTANTS.PROCESS_DIAGRAM_XML,
+    type: ACTION_CONSTANTS.DEFAULT_PROCESS_DIAGRAM_XML,
     payload: data,
   });
 };
 
+export const setDescisionDiagramXML = (data) => (dispatch) => {
+  dispatch({
+    type: ACTION_CONSTANTS.DEFAULT_DECISION_DIAGRAM_XML,
+    payload: data,
+  });
+};
 export const setProcessDiagramLoading = (data) => (dispatch) => {
   dispatch({
     type: ACTION_CONSTANTS.IS_PROCESS_DIAGRAM_LOADING,

@@ -35,10 +35,6 @@ import {
  
          {isBpmnModel ? (
             <BpmnEditor 
-              mode="Create"
-              processKey={''}
-              tenant={''}
-              isNewDiagram={true}
               bpmnXml={diagramXML}
             />
           ) : (

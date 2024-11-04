@@ -37,6 +37,7 @@ from .import_support import (
     form_workflow_schema,
 )
 from .process import (
+    MigrateRequestSchema,
     ProcessDataSchema,
     ProcessListRequestSchema,
     ProcessListSchema,

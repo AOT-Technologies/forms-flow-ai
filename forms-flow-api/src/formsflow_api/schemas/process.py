@@ -130,3 +130,15 @@ class ProcessRequestSchema(Schema):
         if process_type and process_type.upper() == "LOWCODE" and process_data:
             data["processData"] = json.dumps(process_data)
         return super().load(data, *args, **kwargs)
+
+
+class MigrateRequestSchema(Schema):
+    """This class manages migrate request schema."""
+
+    class Meta:  # pylint: disable=too-few-public-methods
+        """Exclude unknown fields in the deserialized output."""
+
+        unknown = EXCLUDE
+
+    process_key = fields.Str(data_key="processKey", required=True)
+    mapper_id = fields.Str(data_key="mapperId", required=True)

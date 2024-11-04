@@ -285,13 +285,6 @@ class FormProcessMapperService:  # pylint: disable=too-many-public-methods
         return
 
     @staticmethod
-    def clean_form_name(name):
-        """Remove invalid characters from form_name before setting as process key."""
-        # Remove non-letters at the start, and any invalid characters elsewhere
-        name = re.sub(r"^[^a-zA-Z]+|[^a-zA-Z0-9\-_]", "", name)
-        return name
-
-    @staticmethod
     def validate_process_and_update_mapper(name, mapper):
         """Validate process name/key exists, if exists update name & update mapper."""
         current_app.logger.info(f"Validating process key already exists. {name}")
@@ -363,7 +356,7 @@ class FormProcessMapperService:  # pylint: disable=too-many-public-methods
         process_name = response.get("name")
         # process key/Id doesn't support numbers & special characters at start
         # special characters anywhere so clean them before setting as process key
-        process_name = FormProcessMapperService.clean_form_name(process_name)
+        process_name = ProcessService.clean_form_name(process_name)
         mapper_data = {
             "formId": form_id,
             "formName": response.get("title"),

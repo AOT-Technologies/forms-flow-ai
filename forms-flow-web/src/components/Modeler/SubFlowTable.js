@@ -1,5 +1,9 @@
 import React, { useEffect, useState } from "react";
-import { CustomButton, CustomSearch ,TableFooter ,ReusableProcessTableRow} from "@formsflow/components";
+import { CustomButton,
+   CustomSearch ,
+   TableFooter ,
+   ReusableProcessTableRow,
+   BuildModal} from "@formsflow/components";
 import { useSelector, useDispatch } from "react-redux";
 import { useTranslation } from "react-i18next";
 
@@ -34,7 +38,29 @@ const SubFlow = React.memo(() => {
     modified: { sortOrder: "asc" },
     status: { sortOrder: "asc" },
   });
-
+  const [showBuildModal, setShowBuildModal] = useState(false);
+  const handleBuildClick = () => {
+      dispatch(
+      push(`${redirectUrl}subflow/create`));
+  };
+  
+  const handleImportClick = () => {
+    console.log("Import clicked");
+  };
+  const contents = [
+    { 
+      id: 1,
+      heading: "Build", 
+      body: "Create the BPMN from scratch",
+      onClick: handleBuildClick  
+    },
+    { 
+      id: 2,
+      heading: "Import", 
+      body: "Upload BPMN from a file",
+      onClick: handleImportClick 
+    }
+  ];
   useEffect(() => {
     if (!search?.trim()) {
       dispatch(setBpmnSearchText(""));
@@ -117,12 +143,15 @@ const SubFlow = React.memo(() => {
     );
   };
 
-  const createProcess = ()=>{
-    dispatch(
-      push(`${redirectUrl}subflow/create`));
+  const handleCreateBPMN = () => {
+    setShowBuildModal(true);
+  };
+  const handleBuildModal = () => {
+    setShowBuildModal(false);
   };
 
   return (
+    <>
     <div className="d-md-flex justify-content-between align-items-center pb-3 flex-wrap">
       <div className="d-md-flex align-items-center p-0 search-box input-group input-group width-25">
         <CustomSearch
@@ -142,9 +171,9 @@ const SubFlow = React.memo(() => {
           size="sm"
           label="New BPMN"
           className=""
-          onClick={createProcess}
           dataTestid="create-BPMN-button"
           ariaLabel="Create BPMN"
+          onClick={() => handleCreateBPMN()}
         />
       </div>
       <LoadingOverlay active={isLoading} spinner text={t("Loading...")}>
@@ -216,6 +245,12 @@ const SubFlow = React.memo(() => {
         </div>
       </LoadingOverlay>
     </div>
+    <BuildModal
+     show={showBuildModal}
+     onClose={handleBuildModal}
+     title={t(`New BPMN`)}
+     contents={contents}/>
+    </>
   );
 });
 

@@ -576,7 +576,7 @@ export const fetchRevertingProcessData = (process_Id) => {
 };
 
 export const publish = ({ id, data, type }) => {
-  const url = replaceUrl(API.PUBLISH_BPMN, "<process_id>", id);
+  const url = replaceUrl(API.PUBLISH_PROCESS, "<process_id>", id);
   return RequestService.httpPOSTRequest(url, {
     processData: data,
     processType: type,
@@ -584,14 +584,14 @@ export const publish = ({ id, data, type }) => {
 };
 
 export const unPublish = ({ id, data, type }) => {
-  const url = replaceUrl(API.UN_PUBLISH_BPMN, "<process_id>", id);
+  const url = replaceUrl(API.UN_PUBLISH_PROCESS, "<process_id>", id);
   return RequestService.httpPOSTRequest(url, {
     processData: data,
     processType: type,
   });
 };
 
-export const createSubflow = ({ data, type }) => {
+export const createProcess = ({ data, type }) => {
   return RequestService.httpPOSTRequest(API.GET_PROCESSES_DETAILS, {
     processData: data,
     processType: type,

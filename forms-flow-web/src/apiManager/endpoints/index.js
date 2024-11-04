@@ -86,8 +86,8 @@ const API = {
   VALIDATE_FORM_NAME: `${WEB_BASE_URL}/form/validate`,
   EXPORT_FORM: `${WEB_BASE_URL}/form/<form_id>/export`,
   GET_PROCESS_XML: `${WEB_BASE_URL}/process/key/<process_key>`,
-  PUBLISH_BPMN: `${WEB_BASE_URL}/process/<process_id>/publish`,
-  UN_PUBLISH_BPMN: `${WEB_BASE_URL}/process/<process_id>/unpublish`
+  PUBLISH_PROCESS: `${WEB_BASE_URL}/process/<process_id>/publish`,
+  UN_PUBLISH_PROCESS: `${WEB_BASE_URL}/process/<process_id>/unpublish`
 };
 
 export default API;

@@ -8,7 +8,7 @@ import {
   publish,
   unPublish,
   getProcessDetails,
-  createSubflow,
+  createProcess,
 } from "../../apiManager/services/processServices";
 import Loading from "../../containers/Loading";
 import { MULTITENANCY_ENABLED } from "../../constants/constants";
@@ -149,7 +149,7 @@ const WorkflowEditor = () => {
 
       setSavingFlow(true);
       const response = isCreate
-        ? await createSubflow({ type: "BPMN", data: xml })
+        ? await createProcess({ type: "BPMN", data: xml })
         : await updateProcess({ type: "BPMN", id: processData.id, data: xml });
 
       dispatch(setProcessData(response.data));
@@ -322,6 +322,7 @@ const WorkflowEditor = () => {
   const editorActions = () => setNewActionModal(true);
 
   const handleDuplicateProcess = () => {
+    handleToggleConfirmModal();
     dispatch(setProcessDiagramXML(processData.processData));
     dispatch(push(`${redirectUrl}subflow/create`));
   };
@@ -377,6 +378,16 @@ const WorkflowEditor = () => {
           primaryBtnText: "Discard Changes",
           secondaryBtnText: "Cancel",
         };
+      case "duplicate":
+        return {
+          title: "Create Duplicate",
+          message:
+          "Are you Sure want to Duplicate current BPMN",
+          primaryBtnAction: handleDuplicateProcess,
+          secondayBtnAction: closeModal,
+          primaryBtnText: "Yes, Duplicate This BPMN",
+          secondaryBtnText: "No, Do Not Duplicate This BPMN",
+          };
       default:
         return {};
     }
@@ -424,7 +435,6 @@ const WorkflowEditor = () => {
               )}
             </div>
             <div>
-              {!isCreate && (
                 <CustomButton
                   variant="dark"
                   size="md"
@@ -434,7 +444,6 @@ const WorkflowEditor = () => {
                   dataTestid="designer-action-testid"
                   ariaLabel={t("Designer Actions Button")}
                 />
-              )}
               <CustomButton
                 variant="light"
                 size="md"
@@ -521,10 +530,11 @@ const WorkflowEditor = () => {
         CategoryType={CategoryType.WORKFLOW}
         onAction={(action) => {
           if (action === "DUPLICATE") {
-            handleDuplicateProcess();
+            openConfirmModal("duplicate");
           }
           setSelectedAction(action);
         }}
+        isCreate={isCreate}
       />
       <ExportDiagram
         showExportModal={selectedAction === EXPORT}

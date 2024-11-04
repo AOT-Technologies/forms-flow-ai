@@ -8,7 +8,7 @@ import {
   publish,
   unPublish,
   getProcessDetails,
-  createSubflow,
+  createProcess,
 } from "../../apiManager/services/processServices";
 import Loading from "../../containers/Loading";
 import { MULTITENANCY_ENABLED } from "../../constants/constants";
@@ -30,7 +30,7 @@ import { toast } from "react-toastify";
 import {
   createXMLFromModeler,
   compareDmnXML,
-  validateDmn,
+  //validateDecisionNames,
   validateDecisionNames
 } from "../../helper/processHelper";
 import DmnEditor from './Editors/DmnEditor/index.js';
@@ -126,7 +126,7 @@ const DecitionEditor = () => {
     try {
       const dmnModeler = dmnRef.current?.getDmnModeler();
       const xml = await createXMLFromModeler(dmnModeler);
-      if (!validateDmn(xml,lintErrors,t)) {
+      if (!validateDecisionNames(xml,lintErrors,t)) {
         return;
       }
       if (!isCreate) {
@@ -141,7 +141,7 @@ const DecitionEditor = () => {
       setSavingFlow(true);
       // Check if `processId` exists; if so, update the process, otherwise create a new DMN
       const response = isCreate
-        ? await createSubflow({ type: "DMN", data: xml })
+        ? await createProcess({ type: "DMN", data: xml })
         : await updateProcess({ type: "DMN", id: processData.id, data: xml });
 
       dispatch(setProcessData(response.data));
@@ -150,7 +150,7 @@ const DecitionEditor = () => {
       );
       if (isCreate) {
         dispatch(
-          push(`${redirectUrl}descision-table/edit/${response.data.processKey}`)
+          push(`${redirectUrl}decision-table/edit/${response.data.processKey}`)
         );
       }
     } catch (error) {
@@ -166,11 +166,11 @@ const DecitionEditor = () => {
       const dmnModeler = dmnRef.current?.getDmnModeler();
       const xml = await createXMLFromModeler(dmnModeler);
 
-      // Validate the XML before publishing/unpublishing
-      if (!validateDmn(xml,lintErrors)) {
-        return; // Stop if validation fails
+      // Validate the XML before publishing
+      
+      if (!isPublished && !validateDecisionNames(xml, lintErrors,t)) {
+        return;
       }
-
       const actionFunction = isPublished ? unPublish : publish;
       closeModal(); // Close confirmation modal
       setIsPublishLoading(true);
@@ -190,7 +190,7 @@ const DecitionEditor = () => {
       );
       // Handle unpublish success by immediately fetching updated process details
       if (!isPublished) {
-        dispatch(push(`${redirectUrl}descision-table`)); // Redirect on publish
+        dispatch(push(`${redirectUrl}decision-table`)); // Redirect on publish
       }
       setIsPublished(!isPublished);
     } catch (error) {
@@ -234,13 +234,14 @@ const DecitionEditor = () => {
   };
   
 
-  const cancel = () => dispatch(push(`${redirectUrl}descision-table`));
+  const cancel = () => dispatch(push(`${redirectUrl}decision-table`));
 
   const editorActions = () => setNewActionModal(true);
 
   const handleDuplicateProcess = () => {
+    handleToggleConfirmModal();
     dispatch(setProcessDiagramXML(processData.processData));
-    dispatch(push(`${redirectUrl}descision-table/create`));
+    dispatch(push(`${redirectUrl}decision-table/create`));
   };
 
   const handleDiscardConfirm = () => {
@@ -286,6 +287,16 @@ const DecitionEditor = () => {
           secondayBtnAction: closeModal,
           primaryBtnText: "Discard Changes",
           secondaryBtnText: "Cancel",
+        };
+    case "duplicate":
+      return {
+        title: "Create Duplicate",
+        message:
+        "Are you Sure want to Duplicate current DMN",
+        primaryBtnAction: handleDuplicateProcess,
+        secondayBtnAction: closeModal,
+        primaryBtnText: "Yes, Duplicate This DMN",
+        secondaryBtnText: "No, Do Not Duplicate This DMN",
         };
       default:
         return {};
@@ -436,10 +447,11 @@ const DecitionEditor = () => {
         CategoryType={CategoryType.WORKFLOW}
         onAction={(action) => {
           if (action === "DUPLICATE") {
-            handleDuplicateProcess();
+            openConfirmModal("duplicate");
           }
           setSelectedAction(action);
         }}
+        isCreate={isCreate}
       />
       <ExportDiagram
         showExportModal={selectedAction === EXPORT}

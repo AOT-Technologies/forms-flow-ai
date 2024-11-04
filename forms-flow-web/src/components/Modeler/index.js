@@ -49,7 +49,7 @@ const Processes = () => {
         />
         <DesignerProcessRoute
           exact
-          path={`${BASE_ROUTE}descision-table/:step/:processKey?`}
+          path={`${BASE_ROUTE}decision-table/:step/:processKey?`}
           component={DmnCreateEdit}
         />
         <Redirect exact to="/404" />

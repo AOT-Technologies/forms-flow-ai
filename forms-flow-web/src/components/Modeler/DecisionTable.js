@@ -97,7 +97,7 @@ const DecisionTable = React.memo(() => {
     if (MULTITENANCY_ENABLED) {
       dispatch(setIsPublicDiagram(!!data.tenantId));
     }
-    dispatch(push(`${redirectUrl}descision-table/edit/${data.processKey}`));
+    dispatch(push(`${redirectUrl}decision-table/edit/${data.processKey}`));
   };
   return (
     <div className="d-md-flex justify-content-between align-items-center pb-3 flex-wrap">

@@ -379,8 +379,7 @@ const DecitionEditor = () => {
         <div className="wraper">
           <Card.Header>
             <div
-              className="d-flex justify-content-between align-items-center"
-              style={{ width: "100%" }}
+              className="d-flex justify-content-between align-items-center w-100"
             >
               <div className="d-flex align-items-center">
                 <div className="mx-2 builder-header-text">{t("Flow")}</div>

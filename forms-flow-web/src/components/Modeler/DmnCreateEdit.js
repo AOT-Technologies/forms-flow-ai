@@ -31,9 +31,9 @@ import {
   createXMLFromModeler,
   compareDmnXML,
   //validateDecisionNames,
-  validateDecisionNames
+  validateDecisionNames,
 } from "../../helper/processHelper";
-import DmnEditor from './Editors/DmnEditor/index.js';
+import DmnEditor from "./Editors/DmnEditor/index.js";
 import {
   setProcessData,
   setProcessDiagramXML,
@@ -44,7 +44,7 @@ const CategoryType = { FORM: "FORM", WORKFLOW: "WORKFLOW" };
 
 const DecitionEditor = () => {
   const { processKey, step } = useParams();
-  const isCreate = step === "create"; 
+  const isCreate = step === "create";
   const dispatch = useDispatch();
   const dmnRef = useRef();
   const { t } = useTranslation();
@@ -69,7 +69,7 @@ const DecitionEditor = () => {
   // handle history modal
   const handleHistoryModal = () => setHistoryModalShow(!historyModalShow);
   const [isProcessDetailsLoading, setIsProcessDetailsLoading] = useState(false);
-  const [lintErrors, setLintErrors] = useState([]);
+  //const [lintErrors, setLintErrors] = useState([]);
   //const [isXmlChanged, setIsXmlChanged] = useState(false);
 
   useEffect(() => {
@@ -78,12 +78,11 @@ const DecitionEditor = () => {
 
   const publishText = isPublished ? "Unpublish" : "Publish";
 
-  // get process name to dispaly 
+  // get process name to dispaly
   const processName = useMemo(() => {
     if (!processData.processData) return;
-    return extractDataFromDiagram(processData?.processData,true).name;
+    return extractDataFromDiagram(processData?.processData, true).name;
   }, [processData]);
-
 
   //fetch process details using processkey
   useEffect(async () => {
@@ -101,7 +100,7 @@ const DecitionEditor = () => {
     }
   }, [processKey]);
 
-  //reset the data 
+  //reset the data
   useEffect(() => {
     if (isCreate) {
       dispatch(setProcessData({}));
@@ -113,27 +112,24 @@ const DecitionEditor = () => {
     };
   }, [isCreate]);
 
-
- 
   const handleToggleConfirmModal = () => setShowConfirmModal(!showConfirmModal);
   const openConfirmModal = (type) => {
     setModalType(type);
     handleToggleConfirmModal();
   };
 
-
-  const saveFlow = async () => {
+  const saveFlow = async (isPublishing = false) => {
     try {
       const dmnModeler = dmnRef.current?.getDmnModeler();
       const xml = await createXMLFromModeler(dmnModeler);
-      if (!validateDecisionNames(xml,lintErrors,t)) {
+      if (!validateDecisionNames(xml, t)) {
         return;
       }
       if (!isCreate) {
         // If XML is the same as existing process data, no need to update
         const isEqual = await compareDmnXML(processData?.processData, xml);
         if (isEqual) {
-          toast.success(t("Dmn is already up to date"));
+          !isPublishing && toast.success(t("Dmn is already up to date"));
           return;
         }
       }
@@ -145,14 +141,16 @@ const DecitionEditor = () => {
         : await updateProcess({ type: "DMN", id: processData.id, data: xml });
 
       dispatch(setProcessData(response.data));
-      toast.success(
-        t(`DMN ${isCreate ? "created" : "updated"} successfully`)
-      );
-      if (isCreate) {
+      !isPublishing &&
+        toast.success(
+          t(`DMN ${isCreate ? "created" : "updated"} successfully`)
+        );
+      if (isCreate && !isPublishing) {
         dispatch(
           push(`${redirectUrl}decision-table/edit/${response.data.processKey}`)
         );
       }
+      return response.data;
     } catch (error) {
       toast.error(t("Failed to save process"));
     } finally {
@@ -167,16 +165,25 @@ const DecitionEditor = () => {
       const xml = await createXMLFromModeler(dmnModeler);
 
       // Validate the XML before publishing
-      
-      if (!isPublished && !validateDecisionNames(xml, lintErrors,t)) {
+
+      if (!isPublished && !validateDecisionNames(xml, t)) {
         return;
       }
       const actionFunction = isPublished ? unPublish : publish;
+      const response = !isPublished ? await saveFlow(!isPublished) : null;
       closeModal(); // Close confirmation modal
+      //incase of create if no response no need to call api
+      if (isCreate && !response) return;
+
       setIsPublishLoading(true);
 
       // Perform the publish/unpublish action
-      await actionFunction({ id: processData.id, data: xml, type: "DMN" });
+      await actionFunction({
+        id: response?.id || processData.id,
+        data: xml,
+        type: "DMN",
+      });
+
       if (isPublished) {
         // Fetch updated process details after unpublish
         const updatedProcessDetails = await getProcessDetails(
@@ -210,17 +217,16 @@ const DecitionEditor = () => {
 
   const handleExport = async () => {
     try {
-      if (await validateDecisionNames(processData?.processData)) {
+      const data = isCreate ? defaultDmnXmlData : processData?.processData;
+      if (await validateDecisionNames(data)) {
         const element = document.createElement("a");
-        const file = new Blob([processData?.processData], {
+        const file = new Blob([data], {
           type: "text/dmn",
         });
         element.href = URL.createObjectURL(file);
         const processName =
-          extractDataFromDiagram(processData?.processData,true).name.replaceAll(
-            " / ",
-            "-"
-          ) + ".dmn";
+          extractDataFromDiagram(data, true).name.replaceAll(" / ", "-") +
+          ".dmn";
         element.download = processName.replaceAll(" ", "");
         document.body.appendChild(element);
         element.click();
@@ -232,7 +238,6 @@ const DecitionEditor = () => {
       setExportError(error.message || "Export failed due to an error.");
     }
   };
-  
 
   const cancel = () => dispatch(push(`${redirectUrl}decision-table`));
 
@@ -277,7 +282,7 @@ const DecitionEditor = () => {
           primaryBtnText: "Unpublish and Edit This DMN",
           secondaryBtnText: "Cancel, Keep This DMN published",
         };
-        case "discard":
+      case "discard":
         return {
           title: "Are you Sure you want to Discard DMN Changes",
           message:
@@ -288,28 +293,20 @@ const DecitionEditor = () => {
           primaryBtnText: "Discard Changes",
           secondaryBtnText: "Cancel",
         };
-    case "duplicate":
-      return {
-        title: "Create Duplicate",
-        message:
-        "Are you Sure want to Duplicate current DMN",
-        primaryBtnAction: handleDuplicateProcess,
-        secondayBtnAction: closeModal,
-        primaryBtnText: "Yes, Duplicate This DMN",
-        secondaryBtnText: "No, Do Not Duplicate This DMN",
+      case "duplicate":
+        return {
+          title: "Create Duplicate",
+          message: "Are you Sure want to Duplicate current DMN",
+          primaryBtnAction: handleDuplicateProcess,
+          secondayBtnAction: closeModal,
+          primaryBtnText: "Yes, Duplicate This DMN",
+          secondaryBtnText: "No, Do Not Duplicate This DMN",
         };
       default:
         return {};
     }
   };
   const modalContent = getModalContent();
-
-  // const handleXmlChange = async () => {
-  //   const dmnModeler = dmnRef.current?.getDmnModeler();
-  //   const currentXml = await createXMLFromModeler(dmnModeler);
-  //   const isEqual = await compareDmnXML(processData?.processData, currentXml);
-  //   setIsXmlChanged(!isEqual);
-  // };
 
   return (
     <div>
@@ -334,21 +331,19 @@ const DecitionEditor = () => {
                 data-testid="back-to-prev-icon-testid"
                 aria-label={t("Back to Previous")}
               />
+              <div
+                className="mx-4 editor-header-text"
+                data-testid="deployment-name"
+              >
+                {isCreate ? t("Unsaved DMN") : processName}
+              </div>
               {!isCreate && (
-                <>
+                <span className="d-flex align-items-center white-text mx-3">
                   <div
-                    className="mx-4 editor-header-text"
-                    data-testid="deployment-name"
-                  >
-                    {processName}
-                  </div>
-                  <span className="d-flex align-items-center white-text mx-3">
-                    <div
-                      className={`status-${isPublished ? "live" : "draft"}`}
-                    ></div>
-                    {isPublished ? t("Live") : t("Draft")}
-                  </span>
-                </>
+                    className={`status-${isPublished ? "live" : "draft"}`}
+                  ></div>
+                  {isPublished ? t("Live") : t("Draft")}
+                </span>
               )}
             </div>
             <div>
@@ -411,7 +406,7 @@ const DecitionEditor = () => {
                   buttonLoading={savingFlow}
                   dataTestid="save-DMN-layout"
                   ariaLabel={t("Save DMN Layout")}
-                  disabled={ savingFlow || isPublished}
+                  disabled={savingFlow || isPublished}
                 />
                 <CustomButton
                   variant="secondary"
@@ -432,11 +427,8 @@ const DecitionEditor = () => {
             <>loading...</>
           ) : (
             <DmnEditor
-            ref={dmnRef}
-            dmnXml={
-              isCreate ? defaultDmnXmlData : processData?.processData
-            }
-            setLintErrors={setLintErrors}
+              ref={dmnRef}
+              dmnXml={isCreate ? defaultDmnXmlData : processData?.processData}
             />
           )}
         </Card.Body>

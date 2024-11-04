@@ -183,6 +183,12 @@ export const setIsPublicDiagram = (data) => (dispatch) => {
   });
 };
 
+export const setProcessHistories = (historyData) => (dispatch) => {
+  dispatch({
+    type: ACTION_CONSTANTS.PROCESS_HISTORY,
+    payload:historyData,
+  });
+};
 export const setSubflowCount = (data) => (dispatch) => {
   dispatch({
     type: ACTION_CONSTANTS.SET_SUBFLOW_COUNT,

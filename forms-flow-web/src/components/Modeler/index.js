@@ -41,7 +41,7 @@ const Processes = () => {
     <div data-testid="Process-index">
       <Switch>
         <Route exact path={`${BASE_ROUTE}subflow`} component={SubFlowList} />
-        <Route exact path={`${BASE_ROUTE}descision-table`} component={descisiontable} />
+        <Route exact path={`${BASE_ROUTE}decision-table`} component={descisiontable} />
         <DesignerProcessRoute
           exact
           path={`${BASE_ROUTE}subflow/:step/:processKey?`}

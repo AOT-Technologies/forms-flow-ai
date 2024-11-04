@@ -1,7 +1,7 @@
 import React, { useEffect } from "react";
 import { useParams } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
-import FormEdit from "./FormEdit.js";
+import { Edit as FormEdit } from './FormEdit.js';
 import { setApiCallError } from "../../../actions/ErroHandling.js";
 import { resetFormData, setFormAuthVerifyLoading, setFormAuthorizationDetails } from "../../../actions/formActions.js";
 import {

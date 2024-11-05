@@ -1,6 +1,10 @@
 import React, { useState, useEffect } from "react";
 import { useSelector, useDispatch } from "react-redux";
-import { CustomButton, CustomSearch ,ReusableProcessTableRow ,TableFooter} from "@formsflow/components";
+import { CustomButton,
+   CustomSearch ,
+   ReusableProcessTableRow ,
+   TableFooter,
+   BuildModal} from "@formsflow/components";
 import LoadingOverlay from "react-loading-overlay-ts";
 import { useTranslation } from "react-i18next";
 import SortableHeader from "../CustomComponents/SortableHeader";
@@ -32,6 +36,29 @@ const DecisionTable = React.memo(() => {
   const [searchDmnLoading, setSearchDmnLoading] = useState(false);
   const redirectUrl = MULTITENANCY_ENABLED ? `/tenant/${tenantKey}/` : "/";
   const [search, setSearch] = useState(searchText || "");
+  const [showBuildModal, setShowBuildModal] = useState(false);
+  const handleBuildClick = () => {
+    dispatch(
+    push(`${redirectUrl}decision-table/create`));
+};
+
+const handleImportClick = () => {
+  console.log("Import clicked");
+};
+const contents = [
+  { 
+    id: 1,
+    heading: "Build", 
+    body: "Create the DMN from scratch",
+    onClick: handleBuildClick  
+  },
+  { 
+    id: 2,
+    heading: "Import", 
+    body: "Upload DMN from a file",
+    onClick: handleImportClick 
+  }
+];
   
   useEffect(() => {
     if (!search?.trim()) {
@@ -99,7 +126,15 @@ const DecisionTable = React.memo(() => {
     }
     dispatch(push(`${redirectUrl}decision-table/edit/${data.processKey}`));
   };
+
+  const handleCreateDMN = () => {
+    setShowBuildModal(true);
+  };
+  const handleBuildModal = () => {
+    setShowBuildModal(false);
+  };
   return (
+    <>
     <div className="d-md-flex justify-content-between align-items-center pb-3 flex-wrap">
       <div className="d-md-flex align-items-center p-0 search-box input-group input-group width-25">
         <CustomSearch
@@ -120,6 +155,7 @@ const DecisionTable = React.memo(() => {
           label={t("New DMN")}
           dataTestid="create-DMN-button"
           ariaLabel="Create DMN"
+          onClick={() => handleCreateDMN()}
         />
       </div>
       <LoadingOverlay active={isLoading} spinner text={t("Loading...")}>
@@ -191,6 +227,12 @@ const DecisionTable = React.memo(() => {
         </div>
       </LoadingOverlay>
     </div>
+    <BuildModal
+     show={showBuildModal}
+     onClose={handleBuildModal}
+     title={t(`New DMN`)}
+     contents={contents}/>
+    </>
   );
 });
 

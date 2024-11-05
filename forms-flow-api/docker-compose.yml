@@ -22,7 +22,6 @@ services:
     restart: unless-stopped
     depends_on:
       - forms-flow-webapi-db
-      - redis
     entrypoint: "/wait-for-service.sh forms-flow-webapi-db:5432 -s -- ./entrypoint.sh"
     ports:
       - '5000:5000'

@@ -1,6 +1,6 @@
 import utils from "@aot-technologies/formiojs/lib/utils";
 const applicationIDHiddenComponent = {
-  "label": "applicationId",
+  "label": "Submission Id",
   "customClass": "",
   "addons": [],
   "modalEdit": false,
@@ -72,7 +72,7 @@ const applicationIDHiddenComponent = {
   "description": ""
 };
 const applicationStatusHiddenComponent = {
-  "label": "applicationStatus",
+  "label": "Submission Status",
   "addons": [],
   "customClass": "",
   "modalEdit": false,

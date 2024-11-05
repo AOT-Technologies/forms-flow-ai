@@ -682,6 +682,10 @@ class ProcessService:  # pylint: disable=too-few-public-methods,too-many-public-
         data = MigrateRequestSchema().load(request.get_json())
         process_key = data.get("process_key")
         mapper_id = data.get("mapper_id")
+        mapper = FormProcessMapper.find_form_by_id(mapper_id)
+        # If the process_key in the mapper is different from the process_key in the payload
+        if mapper.process_key != process_key:
+            raise BusinessException(BusinessErrorCode.INVALID_PROCESS)
         mappers = FormProcessMapper.get_mappers_by_process_key(process_key, mapper_id)
         current_app.logger.debug(f"Mappers found..{mappers}")
         if mappers:
@@ -717,6 +721,5 @@ class ProcessService:  # pylint: disable=too-few-public-methods,too-many-public-
                     }
                 )
             # Update is_migrated to main mapper by id.
-            mapper = FormProcessMapper.find_form_by_id(mapper_id)
             mapper.update({"is_migrated": True})
         return {}

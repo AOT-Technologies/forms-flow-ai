@@ -110,6 +110,7 @@ class BusinessErrorCode(ErrorCodeMixin, Enum):
         HTTPStatus.BAD_REQUEST,
     )
     FORM_VALIDATION_FAILED = "FORM_VALIDATION_FAILED.", HTTPStatus.BAD_REQUEST
+    INVALID_PROCESS = "Invalid process.", HTTPStatus.BAD_REQUEST
 
     def __new__(cls, message, status_code):
         """Constructor."""

@@ -46,7 +46,7 @@ import {
 const EXPORT = "EXPORT";
 const CategoryType = { FORM: "FORM", WORKFLOW: "WORKFLOW" };
 
-const processCreateEdit = ({ type }) => {
+const ProcessCreateEdit = ({ type }) => {
   const { processKey, step } = useParams();
   const isCreate = step === "create";
   const isBPMN = type === "BPMN";
@@ -598,4 +598,4 @@ const processCreateEdit = ({ type }) => {
   );
 };
 
-export default processCreateEdit;
+export default ProcessCreateEdit;

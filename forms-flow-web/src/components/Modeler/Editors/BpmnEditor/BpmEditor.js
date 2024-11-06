@@ -5,6 +5,7 @@ import React, {
   forwardRef,
   useImperativeHandle,
 } from "react";
+import PropTypes from "prop-types"; // Import PropTypes for validation
 import "../Editor.scss";
 import BpmnModeler from "bpmn-js/lib/Modeler";
 import "bpmn-js/dist/assets/diagram-js.css";
@@ -21,6 +22,7 @@ import lintModule from "bpmn-js-bpmnlint";
 import "bpmn-js-bpmnlint/dist/assets/css/bpmn-js-bpmnlint.css";
 import linterConfig from "../../lint-rules/packed-config";
 
+// External modeler configuration for reusability and readability
 const modelerConfig = {
   container: "#canvas",
   propertiesPanel: { parent: "#js-properties-panel" },
@@ -74,9 +76,9 @@ const BpmnEditor = forwardRef(({ bpmnXml, setLintErrors }, ref) => {
     document.getElementById("inputWorkflow").value = null;
   };
 
-  const zoom = () => bpmnModeler && bpmnModeler.get("zoomScroll").stepZoom(1);
-  const zoomOut = () => bpmnModeler && bpmnModeler.get("zoomScroll").stepZoom(-1);
-  const zoomReset = () => bpmnModeler && bpmnModeler.get("zoomScroll").reset();
+  const zoom = () => bpmnModeler?.get("zoomScroll")?.stepZoom(1);
+  const zoomOut = () => bpmnModeler?.get("zoomScroll")?.stepZoom(-1);
+  const zoomReset = () => bpmnModeler?.get("zoomScroll")?.reset();
 
   return (
     <div className="bpmn-main-container">
@@ -120,5 +122,11 @@ const BpmnEditor = forwardRef(({ bpmnXml, setLintErrors }, ref) => {
     </div>
   );
 });
+
+// Adding PropTypes validation for the props
+BpmnEditor.propTypes = {
+  bpmnXml: PropTypes.string.isRequired,
+  setLintErrors: PropTypes.func.isRequired,
+};
 
 export default React.memo(BpmnEditor);

@@ -17,7 +17,7 @@ import {
   setProcessData,
   setProcessHistories,
 } from "../../../actions/processActions.js";
-import BpmnEditor from "../../Modeler/Editors/BpmnEditor/index.js";
+import BpmnEditor from "../../Modeler/Editors/BpmnEditor/BpmEditor";
 import {
   updateProcess,
   getProcessHistory,

@@ -3,6 +3,7 @@ import "./Modeler.scss";
 import { useSelector, useDispatch } from "react-redux";
 import { useParams } from "react-router-dom";
 import { push } from "connected-react-router";
+import PropTypes from 'prop-types';
 import {
   updateProcess,
   publish,
@@ -285,11 +286,12 @@ const ProcessCreateEdit = ({ type }) => {
   const handleExport = async () => {
     try {
       // Select default data based on type and creation status
-      const data = isCreate
-        ? isBPMN
-          ? defaultProcessXmlData
-          : defaultDmnXmlData
-        : processData?.processData;
+      let data;
+      if (isCreate) {
+          data = isBPMN ? defaultProcessXmlData : defaultDmnXmlData;
+      } else {
+          data = processData?.processData;
+      }
 
       // Validate the data based on type
       const isValid = isBPMN
@@ -336,7 +338,6 @@ const ProcessCreateEdit = ({ type }) => {
 
   const handleDuplicateProcess = () => {
     handleToggleConfirmModal();
-    console.log("xfdfdfd");
     dispatch(setProcessDiagramXML(processData.processData));
     const route = isDmn ? "decision-table/create" : "subflow/create"; // Check for isDmn
     dispatch(push(`${redirectUrl}${route}`));
@@ -345,11 +346,13 @@ const ProcessCreateEdit = ({ type }) => {
   const handleDiscardConfirm = () => {
     // Check which editor is currently being used and import the appropriate data
     const editorRef = isBPMN ? bpmnRef.current : dmnRef.current;
-    const xmlData = isCreate
-      ? isBPMN
-        ? defaultProcessXmlData
-        : defaultDmnXmlData
-      : processData.processData;
+    // Determine the XML data based on the creation mode and editor type
+    let xmlData;
+    if (isCreate) {
+        xmlData = isBPMN ? defaultProcessXmlData : defaultDmnXmlData;
+    } else {
+        xmlData = processData.processData;
+    }
 
     if (editorRef) {
       editorRef.handleImport(xmlData);
@@ -432,6 +435,29 @@ const ProcessCreateEdit = ({ type }) => {
   };
 
   const modalContent = getModalContent(type);
+  // Define the editor content based on conditions
+
+let editorContent;
+
+if (isProcessDetailsLoading) {
+  editorContent = <>loading...</>;
+} else if (isBPMN) {
+  editorContent = (
+    <BpmnEditor
+      ref={bpmnRef}
+      bpmnXml={isCreate ? defaultProcessXmlData : processData?.processData}
+      setLintErrors={setLintErrors}
+    />
+  );
+} else {
+  editorContent = (
+    <DmnEditor
+      ref={dmnRef}
+      dmnXml={isCreate ? defaultDmnXmlData : processData?.processData}
+    />
+  );
+}
+
 
   return (
     <div>
@@ -543,22 +569,7 @@ const ProcessCreateEdit = ({ type }) => {
           </Card.Header>
         </div>
         <Card.Body>
-          {isProcessDetailsLoading ? (
-            <>loading...</>
-          ) : isBPMN ? (
-            <BpmnEditor
-              ref={bpmnRef}
-              bpmnXml={
-                isCreate ? defaultProcessXmlData : processData?.processData
-              }
-              setLintErrors={setLintErrors}
-            />
-          ) : (
-            <DmnEditor
-              ref={dmnRef}
-              dmnXml={isCreate ? defaultDmnXmlData : processData?.processData}
-            />
-          )}
+        {editorContent}
         </Card.Body>
       </Card>
 
@@ -596,6 +607,9 @@ const ProcessCreateEdit = ({ type }) => {
       )}
     </div>
   );
+};
+ProcessCreateEdit.propTypes = {
+  type: PropTypes.string.isRequired,
 };
 
 export default ProcessCreateEdit;

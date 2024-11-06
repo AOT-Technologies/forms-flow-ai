@@ -112,6 +112,8 @@ const EditComponent = () => {
 
   const [nameError, setNameError] = useState("");
   const [newVersionModal, setNewVersionModal] = useState(false);
+  /* ------------------------------ fowvariables ------------------------------ */
+  const flowRef = useRef(null);
   /* ------------------------- file import ------------------------- */
   const [formTitle, setFormTitle] = useState("");
   const [importError, setImportError] = useState("");
@@ -620,6 +622,9 @@ const EditComponent = () => {
       const actionFunction = isPublished ? unPublish : publish;
       closeModal();
       setIsPublishLoading(true);
+      if(!isPublished){
+        await flowRef.current.saveFlow(false);
+      }
       await actionFunction(processListData.id);
       if (isPublished) {
         await fetchProcessDetails(processListData);
@@ -1008,8 +1013,8 @@ const EditComponent = () => {
             >
               {/* TBD: Add a loader instead. */}
               {isProcessDetailsLoading ? <>loading...</> : <FlowEdit 
+              ref={flowRef}
               CategoryType={CategoryType}
-              setIsProcessDetailsLoading={setIsProcessDetailsLoading}
               isPublished={isPublished}
               />}
             </div>

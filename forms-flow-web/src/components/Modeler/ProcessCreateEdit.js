@@ -3,7 +3,7 @@ import "./Modeler.scss";
 import { useSelector, useDispatch } from "react-redux";
 import { useParams } from "react-router-dom";
 import { push } from "connected-react-router";
-import PropTypes from 'prop-types';
+import PropTypes from "prop-types";
 import {
   updateProcess,
   publish,
@@ -24,7 +24,7 @@ import {
   HistoryIcon,
   BackToPrevIcon,
   ConfirmModal,
-  ErrorModal
+  ErrorModal,
 } from "@formsflow/components";
 import { Card } from "react-bootstrap";
 import ActionModal from "../Modals/ActionModal";
@@ -138,145 +138,168 @@ const ProcessCreateEdit = ({ type }) => {
   };
   const saveFlow = async (isPublishing = false, isCreate = false) => {
     try {
-      const modeler = isBPMN
-        ? bpmnRef.current?.getBpmnModeler()
-        : dmnRef.current?.getDmnModeler();
+      const modeler = getModeler(isBPMN);
       const xml = await createXMLFromModeler(modeler);
-  
-      // Validation based on type
-      const isValid = isBPMN
-        ? validateProcess(xml, lintErrors, t)
-        : validateDecisionNames(xml, t);
-  
-      if (!isValid) {
-        return;
-      }
-  
-      // Check if the XML is equal to the existing process data (if updating)
-      if (!isCreate) {
-        const isEqual = isBPMN
-          ? await compareXML(processData?.processData, xml)
-          : await compareDmnXML(processData?.processData, xml);
-  
-        if (isEqual) {
-          if (!isPublishing) {
-            toast.success(
-              t(`${isBPMN ? "BPMN" : "DMN"} is already up to date`)
-            );
-          }
-          return;
-        }
-      }
-  
+
+      const isValid = validateXml(xml, isBPMN);
+      if (!isValid) return;
+
+      const isEqual = await checkIfEqual(isCreate, xml);
+      if (isEqual) return handleAlreadyUpToDate(isPublishing, isBPMN);
+
       setSavingFlow(true);
-  
-      // Determine if we are creating or updating the process
-      const response = isCreate
-        ? await createProcess({ type: isBPMN ? "BPMN" : "DMN", data: xml })
-        : await updateProcess({
-            type: isBPMN ? "BPMN" : "DMN",
-            id: processData.id,
-            data: xml,
-          });
-  
+
+      const response = await saveProcess(isCreate, xml);
       dispatch(setProcessData(response.data));
-  
-      const processType = isBPMN ? "BPMN" : "DMN";
-      const actionMessage = isCreate ? "created" : "updated";
-  
-      const processName =
-        response.data?.name || response.data?.processKey || "the process";
-  
-      if (!isPublishing) {
-        toast.success(
-          t(
-            `${processType} ${processName} has been ${actionMessage} successfully`
-          )
-        );
-      }
-  
-      // Redirect if creating a new process and not publishing
-      if (isCreate) {
-        const editPath = isBPMN ? "subflow" : "decision-table";
-        dispatch(
-          push(`${redirectUrl}${editPath}/edit/${response.data.processKey}`)
-        );
-      }
-  
+
+      handleSaveSuccess(response, isCreate, isBPMN, isPublishing);
+
       return response.data;
     } catch (error) {
-      setErrorMessage(isBPMN ? "The BPMN name already exists. It must be unique. Please make changes through the General section within this BPMN." : "The DMN name already exists. It must be unique. Please make changes through the General section within this DMN.");
-      setShowErrorModal(true);
+      handleError(isBPMN);
     } finally {
       setSavingFlow(false);
     }
   };
-  
+
+  // Helper Functions
+  const getModeler = (isBPMN) => {
+    return isBPMN
+      ? bpmnRef.current?.getBpmnModeler()
+      : dmnRef.current?.getDmnModeler();
+  };
+
+  const validateXml = (xml, isBPMN) => {
+    return isBPMN
+      ? validateProcess(xml, lintErrors, t)
+      : validateDecisionNames(xml, t);
+  };
+
+  const checkIfEqual = async (isCreate, xml) => {
+    if (isCreate) return false; // Skip comparison if creating
+    const comparisonFunc = isBPMN ? compareXML : compareDmnXML;
+    return await comparisonFunc(processData?.processData, xml);
+  };
+
+  const handleAlreadyUpToDate = (isPublishing, isBPMN) => {
+    if (!isPublishing) {
+      toast.success(t(`${isBPMN ? "BPMN" : "DMN"} is already up to date`));
+    }
+  };
+
+  const saveProcess = async (isCreate, xml) => {
+    const processType = isBPMN ? "BPMN" : "DMN";
+    return isCreate
+      ? await createProcess({ type: processType, data: xml })
+      : await updateProcess({
+          type: processType,
+          id: processData.id,
+          data: xml,
+        });
+  };
+
+  const handleSaveSuccess = (response, isCreate, isBPMN, isPublishing) => {
+    const processType = isBPMN ? "BPMN" : "DMN";
+    const actionMessage = isCreate ? "created" : "updated";
+    const processName =
+      response.data?.name || response.data?.processKey || "the process";
+
+    if (!isPublishing) {
+      toast.success(
+        t(
+          `${processType} ${processName} has been ${actionMessage} successfully`
+        )
+      );
+    }
+
+    if (isCreate) {
+      const editPath = isBPMN ? "subflow" : "decision-table";
+      dispatch(
+        push(`${redirectUrl}${editPath}/edit/${response.data.processKey}`)
+      );
+    }
+  };
+
+  const handleError = (isBPMN) => {
+    setErrorMessage(
+      isBPMN
+        ? "The BPMN name already exists. It must be unique. Please make changes through the General section within this BPMN."
+        : "The DMN name already exists. It must be unique. Please make changes through the General section within this DMN."
+    );
+    setShowErrorModal(true);
+  };
 
   const confirmPublishOrUnPublish = async () => {
     try {
-      const modeler = isBPMN
-        ? bpmnRef.current?.getBpmnModeler()
-        : dmnRef.current?.getDmnModeler();
+      const modeler = getModeler(isBPMN);
       const xml = await createXMLFromModeler(modeler);
-  
-      const isValid = isBPMN
-        ? validateProcess(xml, lintErrors, t)
-        : validateDecisionNames(xml, t);
-  
-      if (!isPublished && !isValid) {
-        return;
-      }
-  
+
+      const isValid = validateXml(xml, isBPMN);
+      if (!isPublished && !isValid) return;
+
       const actionFunction = isPublished ? unPublish : publish;
-  
-      // Save flow if not published yet
       let response = null;
+
       if (!isPublished) {
         response = await saveFlow(!isPublished, isCreate);
       }
-  
+
       closeModal();
-  
-      // Skip if creating a new process and response is null
+
       if (isCreate && !response) return;
-  
-      setIsPublishLoading(true);
-  
-      await actionFunction({
-        id: response?.id || processData.id,
-        data: xml,
-        type,
-      });
-  
-      if (isPublished) {
-        const updatedProcessDetails = await getProcessDetails(
-          processData.processKey
-        );
-        dispatch(setProcessData(updatedProcessDetails.data));
-        setIsPublished(false); 
-      }
-  
+
+      await performAction(actionFunction, xml, response);
+
       toast.success(
         t(`${isPublished ? "Unpublished" : "Published"} successfully`)
       );
-  
+
       if (!isPublished) {
-        const redirectPath = isBPMN ? "subflow" : "decision-table";
-        dispatch(push(`${redirectUrl}${redirectPath}`));
+        redirectToFlow(isBPMN);
       }
-  
+
       setIsPublished(!isPublished);
     } catch (error) {
-      toast.error(
-        t(`Failed to ${isPublished ? "unpublish" : "publish"} the ${type}`)
-      );
-      console.error("Error in publish/unpublish:", error.message);
+      handlePublishError(isPublished, type);
     } finally {
       setIsPublishLoading(false);
     }
   };
-  
+
+  // Helper Functions
+
+  const performAction = async (actionFunction, xml, response) => {
+    setIsPublishLoading(true);
+
+    await actionFunction({
+      id: response?.id || processData.id,
+      data: xml,
+      type,
+    });
+
+    if (isPublished) {
+      await updateProcessDetails();
+    }
+  };
+
+  const updateProcessDetails = async () => {
+    const updatedProcessDetails = await getProcessDetails(
+      processData.processKey
+    );
+    dispatch(setProcessData(updatedProcessDetails.data));
+    setIsPublished(false); // Resetting publish state after unpublishing
+  };
+
+  const redirectToFlow = (isBPMN) => {
+    const redirectPath = isBPMN ? "subflow" : "decision-table";
+    dispatch(push(`${redirectUrl}${redirectPath}`));
+  };
+
+  const handlePublishError = (isPublished, type) => {
+    toast.error(
+      t(`Failed to ${isPublished ? "unpublish" : "publish"} the ${type}`)
+    );
+  };
 
   const closeModal = () => {
     setModalType("");
@@ -288,9 +311,9 @@ const ProcessCreateEdit = ({ type }) => {
       // Select default data based on type and creation status
       let data;
       if (isCreate) {
-          data = isBPMN ? defaultProcessXmlData : defaultDmnXmlData;
+        data = isBPMN ? defaultProcessXmlData : defaultDmnXmlData;
       } else {
-          data = processData?.processData;
+        data = processData?.processData;
       }
 
       // Validate the data based on type
@@ -349,9 +372,9 @@ const ProcessCreateEdit = ({ type }) => {
     // Determine the XML data based on the creation mode and editor type
     let xmlData;
     if (isCreate) {
-        xmlData = isBPMN ? defaultProcessXmlData : defaultDmnXmlData;
+      xmlData = isBPMN ? defaultProcessXmlData : defaultDmnXmlData;
     } else {
-        xmlData = processData.processData;
+      xmlData = processData.processData;
     }
 
     if (editorRef) {
@@ -366,98 +389,100 @@ const ProcessCreateEdit = ({ type }) => {
 
   const getModalContent = (type) => {
     const isBPMN = type === "BPMN";
+    const contentType = isBPMN ? "BPMN" : "DMN";
+
+    const getModalConfig = (
+      title,
+      message,
+      primaryBtnText,
+      secondaryBtnText,
+      primaryAction,
+      secondaryAction
+    ) => {
+      return {
+        title,
+        message,
+        primaryBtnText,
+        secondaryBtnText,
+        primaryBtnAction: primaryAction,
+        secondayBtnAction: secondaryAction,
+      };
+    };
 
     switch (modalType) {
       case "publish":
-        return {
-          title: "Confirm Publish",
-          message: `Publishing will lock the ${
-            isBPMN ? "BPMN" : "DMN"
-          }. To save changes on further edits, you will need to unpublish the ${
-            isBPMN ? "BPMN" : "DMN"
-          } first.`,
-          primaryBtnAction: confirmPublishOrUnPublish,
-          secondayBtnAction: closeModal,
-          primaryBtnText: `Publish This ${isBPMN ? "BPMN" : "DMN"}`,
-          secondaryBtnText: "Cancel",
-        };
+        return getModalConfig(
+          "Confirm Publish",
+          `Publishing will lock the ${contentType}. To save changes on further edits, 
+          you will need to unpublish the ${contentType} first.`,
+          `Publish This ${contentType}`,
+          "Cancel",
+          confirmPublishOrUnPublish,
+          closeModal
+        );
+
       case "unpublish":
-        return {
-          title: "Confirm Unpublish",
-          message: `This ${
-            isBPMN ? "BPMN" : "DMN"
-          } is currently live. To save changes to ${
-            isBPMN ? "BPMN" : "DMN"
-          } edits, you need to unpublish it first. By unpublishing this ${
-            isBPMN ? "BPMN" : "DMN"
-          }, you will make it unavailable for new submissions to those 
-          who currently have access to it. 
-          You can republish the ${
-            isBPMN ? "BPMN" : "DMN"
-          } after making your edits.`,
-          primaryBtnAction: confirmPublishOrUnPublish,
-          secondayBtnAction: closeModal,
-          primaryBtnText: `Unpublish and Edit This ${isBPMN ? "BPMN" : "DMN"}`,
-          secondaryBtnText: `Cancel, Keep This ${
-            isBPMN ? "BPMN" : "DMN"
-          } published`,
-        };
+        return getModalConfig(
+          "Confirm Unpublish",
+          `This ${contentType} is currently live. To save changes to ${contentType} edits, 
+          you need to unpublish it first. By unpublishing this ${contentType},
+           you will make it unavailable for new submissions to those who currently 
+           have access to it. 
+           You can republish the ${contentType} after making your edits.`,
+          `Unpublish and Edit This ${contentType}`,
+          `Cancel, Keep This ${contentType} published`,
+          confirmPublishOrUnPublish,
+          closeModal
+        );
+
       case "discard":
-        return {
-          title: `Are you Sure you want to Discard ${
-            isBPMN ? "Subflow" : "DMN"
-          } Changes`,
-          message: `Are you sure you want to discard all the changes to the ${
-            isBPMN ? "subflow" : "DMN"
-          }?`,
-          messageSecondary: "This action cannot be undone.",
-          primaryBtnAction: handleDiscardConfirm,
-          secondayBtnAction: closeModal,
-          primaryBtnText: "Discard Changes",
-          secondaryBtnText: "Cancel",
-        };
+        return getModalConfig(
+          `Are you Sure you want to Discard ${contentType} Changes`,
+          `Are you sure you want to discard all the changes to the ${contentType}?`,
+          "Discard Changes",
+          "Cancel",
+          handleDiscardConfirm,
+          closeModal
+        );
+
       case "duplicate":
-        return {
-          title: "Create Duplicate",
-          message: `Are you sure you want to duplicate the current ${
-            isBPMN ? "BPMN" : "DMN"
-          }?`,
-          primaryBtnAction: handleDuplicateProcess,
-          secondayBtnAction: closeModal,
-          primaryBtnText: `Yes, Duplicate This ${isBPMN ? "BPMN" : "DMN"}`,
-          secondaryBtnText: `No, Do Not Duplicate This ${
-            isBPMN ? "BPMN" : "DMN"
-          }`,
-        };
+        return getModalConfig(
+          "Create Duplicate",
+          `Are you sure you want to duplicate the current ${contentType}?`,
+          `Yes, Duplicate This ${contentType}`,
+          `No, Do Not Duplicate This ${contentType}`,
+          handleDuplicateProcess,
+          closeModal
+        );
+
       default:
         return {};
     }
   };
 
   const modalContent = getModalContent(type);
+
   // Define the editor content based on conditions
+  let editorContent;
 
-let editorContent;
-
-if (isProcessDetailsLoading) {
-  editorContent = <>loading...</>;
-} else if (isBPMN) {
-  editorContent = (
-    <BpmnEditor
-      ref={bpmnRef}
-      bpmnXml={isCreate ? defaultProcessXmlData : processData?.processData}
-      setLintErrors={setLintErrors}
-    />
-  );
-} else {
-  editorContent = (
-    <DmnEditor
-      ref={dmnRef}
-      dmnXml={isCreate ? defaultDmnXmlData : processData?.processData}
-    />
-  );
-}
-
+  if (isProcessDetailsLoading) {
+    editorContent = <>loading...</>;
+  } else if (isBPMN) {
+    editorContent = (
+      <BpmnEditor
+        ref={bpmnRef}
+        bpmnXml={isCreate ? defaultProcessXmlData : processData?.processData}
+        setLintErrors={setLintErrors}
+      />
+    );
+  } else {
+    editorContent = (
+      <DmnEditor
+        ref={dmnRef}
+        dmnXml={isCreate ? defaultDmnXmlData : processData?.processData}
+      />
+    );
+  }
 
   return (
     <div>
@@ -568,9 +593,7 @@ if (isProcessDetailsLoading) {
             </div>
           </Card.Header>
         </div>
-        <Card.Body>
-        {editorContent}
-        </Card.Body>
+        <Card.Body>{editorContent}</Card.Body>
       </Card>
 
       <ActionModal

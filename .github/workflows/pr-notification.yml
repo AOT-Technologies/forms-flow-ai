@@ -31,7 +31,7 @@ jobs:
           if [[ -z "${{ secrets.PR_NOTIFICATION }}" ]]; then
             echo "PR_NOTIFICATION secret is not set."
           else
-            echo "PR_NOTIFICATION secret is set."
+            echo "PR_NOTIFICATION secret is set ."
           fi
 
       - name: Send notification to Google Chat

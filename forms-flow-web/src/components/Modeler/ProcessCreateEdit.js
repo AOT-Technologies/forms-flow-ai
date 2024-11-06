@@ -51,7 +51,6 @@ const ProcessCreateEdit = ({ type }) => {
   const { processKey, step } = useParams();
   const isCreate = step === "create";
   const isBPMN = type === "BPMN";
-  console.log("type", type, isBPMN);
   const isDmn = type === "DMN";
   const diagramType = isDmn ? "DMN" : "BPMN";
   const dispatch = useDispatch();
@@ -90,7 +89,7 @@ const ProcessCreateEdit = ({ type }) => {
     setIsPublished(processData.status === "Published");
   }, [processData]);
 
-  const publishText = isPublished ? "Unpublish" : "Publish";
+  const publishText = isPublished ? t("Unpublish") : t("Publish");
 
   const processName = useMemo(() => {
     if (!processData.processData) {
@@ -136,7 +135,7 @@ const ProcessCreateEdit = ({ type }) => {
     setModalType(type);
     handleToggleConfirmModal();
   };
-  const saveFlow = async (isPublishing = false, isCreate = false) => {
+  const saveFlow = async (isPublished = false, isCreateMode = isCreate) => {
     try {
       const modeler = getModeler(isBPMN);
       const xml = await createXMLFromModeler(modeler);
@@ -145,14 +144,14 @@ const ProcessCreateEdit = ({ type }) => {
       if (!isValid) return;
 
       const isEqual = await checkIfEqual(isCreate, xml);
-      if (isEqual) return handleAlreadyUpToDate(isPublishing, isBPMN);
+      if (isEqual && !isCreateMode) return handleAlreadyUpToDate(isPublished, isBPMN);
 
       setSavingFlow(true);
 
-      const response = await saveProcess(isCreate, xml);
+      const response = await saveProcess(isCreateMode, xml);
       dispatch(setProcessData(response.data));
 
-      handleSaveSuccess(response, isCreate, isBPMN, isPublishing);
+      handleSaveSuccess(response, isCreateMode, isBPMN, isPublished);
 
       return response.data;
     } catch (error) {
@@ -181,8 +180,8 @@ const ProcessCreateEdit = ({ type }) => {
     return await comparisonFunc(processData?.processData, xml);
   };
 
-  const handleAlreadyUpToDate = (isPublishing, isBPMN) => {
-    if (!isPublishing) {
+  const handleAlreadyUpToDate = (isPublished, isBPMN) => {
+    if (!isPublished) {
       toast.success(t(`${isBPMN ? "BPMN" : "DMN"} is already up to date`));
     }
   };
@@ -198,13 +197,13 @@ const ProcessCreateEdit = ({ type }) => {
         });
   };
 
-  const handleSaveSuccess = (response, isCreate, isBPMN, isPublishing) => {
+  const handleSaveSuccess = (response, isCreate, isBPMN, isPublished) => {
     const processType = isBPMN ? "BPMN" : "DMN";
-    const actionMessage = isCreate ? "created" : "updated";
+    const actionMessage = isCreate ? t("created") : t("updated");
     const processName =
-      response.data?.name || response.data?.processKey || "the process";
+      response.data?.name || response.data?.processKey ;
 
-    if (!isPublishing) {
+    if (!isPublished) {
       toast.success(
         t(
           `${processType} ${processName} has been ${actionMessage} successfully`
@@ -223,8 +222,8 @@ const ProcessCreateEdit = ({ type }) => {
   const handleError = (isBPMN) => {
     setErrorMessage(
       isBPMN
-        ? "The BPMN name already exists. It must be unique. Please make changes through the General section within this BPMN."
-        : "The DMN name already exists. It must be unique. Please make changes through the General section within this DMN."
+        ? t("The BPMN name already exists. It must be unique. Please make changes through the General section within this BPMN.")
+        : t("The DMN name already exists. It must be unique. Please make changes through the General section within this DMN.")
     );
     setShowErrorModal(true);
   };
@@ -315,42 +314,45 @@ const ProcessCreateEdit = ({ type }) => {
       } else {
         data = processData?.processData;
       }
-
+  
       // Validate the data based on type
       const isValid = isBPMN
         ? await validateProcess(data)
         : await validateDecisionNames(data);
-
+  
       if (isValid) {
         const fileType = isBPMN ? "text/bpmn" : "text/dmn";
         const extension = isBPMN ? ".bpmn" : ".dmn";
-
+  
         // Create a Blob for the file
         const file = new Blob([data], { type: fileType });
-
+  
         // Create a download link
         const element = document.createElement("a");
         element.href = URL.createObjectURL(file);
-
+  
         // Set the file name based on the type and clean up for download
         const processName =
           extractDataFromDiagram(data, !isBPMN).name.replaceAll(" / ", "-") +
           extension;
         element.download = processName.replaceAll(" ", "");
-
+  
         // Trigger the download
         document.body.appendChild(element);
         element.click();
         document.body.removeChild(element); // Cleanup
-
+  
         setExportError(null);
       } else {
-        setExportError("Process validation failed.");
+        setExportError(t("Process validation failed."));
       }
     } catch (error) {
-      setExportError(error.message || "Export failed due to an error.");
+      setExportError(
+        t(error.message || "Export failed due to an error.")
+      );
     }
   };
+  
 
   const cancel = () => {
     const route = isBPMN ? "subflow" : "decision-table";
@@ -390,7 +392,7 @@ const ProcessCreateEdit = ({ type }) => {
   const getModalContent = (type) => {
     const isBPMN = type === "BPMN";
     const contentType = isBPMN ? "BPMN" : "DMN";
-
+  
     const getModalConfig = (
       title,
       message,
@@ -408,57 +410,58 @@ const ProcessCreateEdit = ({ type }) => {
         secondayBtnAction: secondaryAction,
       };
     };
-
+  
     switch (modalType) {
       case "publish":
         return getModalConfig(
-          "Confirm Publish",
-          `Publishing will lock the ${contentType}. To save changes on further edits, 
-          you will need to unpublish the ${contentType} first.`,
-          `Publish This ${contentType}`,
-          "Cancel",
+          t("Confirm Publish"),
+          t(`Publishing will lock the ${contentType}. To save changes on further edits, 
+              you will need to unpublish the ${contentType} first.`),
+          t(`Publish This ${contentType}`),
+          t("Cancel"),
           confirmPublishOrUnPublish,
           closeModal
         );
-
+  
       case "unpublish":
         return getModalConfig(
-          "Confirm Unpublish",
-          `This ${contentType} is currently live. To save changes to ${contentType} edits, 
-          you need to unpublish it first. By unpublishing this ${contentType},
-           you will make it unavailable for new submissions to those who currently 
-           have access to it. 
-           You can republish the ${contentType} after making your edits.`,
-          `Unpublish and Edit This ${contentType}`,
-          `Cancel, Keep This ${contentType} published`,
+          t("Confirm Unpublish"),
+          t(`This ${contentType} is currently live. To save changes to ${contentType} edits, 
+              you need to unpublish it first. By unpublishing this ${contentType},
+              you will make it unavailable for new submissions to those who currently 
+              have access to it. 
+              You can republish the ${contentType} after making your edits.`),
+          t(`Unpublish and Edit This ${contentType}`),
+          t(`Cancel, Keep This ${contentType} published`),
           confirmPublishOrUnPublish,
           closeModal
         );
-
+  
       case "discard":
         return getModalConfig(
-          `Are you Sure you want to Discard ${contentType} Changes`,
-          `Are you sure you want to discard all the changes to the ${contentType}?`,
-          "Discard Changes",
-          "Cancel",
+          t(`Are you sure you want to discard ${contentType} changes?`),
+          t(`Are you sure you want to discard all the changes to the ${contentType}?`),
+          t("Discard Changes"),
+          t("Cancel"),
           handleDiscardConfirm,
           closeModal
         );
-
+  
       case "duplicate":
         return getModalConfig(
-          "Create Duplicate",
-          `Are you sure you want to duplicate the current ${contentType}?`,
-          `Yes, Duplicate This ${contentType}`,
-          `No, Do Not Duplicate This ${contentType}`,
+          t("Create Duplicate"),
+          t(`Are you sure you want to duplicate the current ${contentType}?`),
+          t(`Yes, Duplicate This ${contentType}`),
+          t(`No, Do Not Duplicate This ${contentType}`),
           handleDuplicateProcess,
           closeModal
         );
-
+  
       default:
         return {};
     }
   };
+  
 
   const modalContent = getModalContent(type);
 
@@ -574,7 +577,7 @@ const ProcessCreateEdit = ({ type }) => {
                   variant="primary"
                   size="md"
                   className="mx-2"
-                  onClick={saveFlow}
+                  onClick={() => saveFlow()}
                   label={t(`Save ${diagramType}`)}
                   buttonLoading={savingFlow}
                   disabled={savingFlow || isPublished}

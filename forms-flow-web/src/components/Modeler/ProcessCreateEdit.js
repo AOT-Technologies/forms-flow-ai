@@ -160,7 +160,7 @@ const ProcessCreateEdit = ({ type }) => {
 
       const isEqual = await checkIfEqual(isCreate, xml);
       if (isEqual && !isCreateMode)
-        return handleAlreadyUpToDate(isPublishing, isBPMN);
+        return handleAlreadyUpToDate(isPublishing);
 
       setSavingFlow(true);
 

@@ -191,6 +191,7 @@ class ProcessService:  # pylint: disable=too-few-public-methods,too-many-public-
         process, count = list_process()
         # If process empty consider it as subflows not migrated, so fetch from camunda
         if not process:
+            current_app.logger.debug("Fetching subflows...")
             cls.get_subflows_dmns(process_type)
             process, count = list_process()
         return (
@@ -359,20 +360,25 @@ class ProcessService:  # pylint: disable=too-few-public-methods,too-many-public-
         updated_process_key=None,
         is_subflow=False,
         process_name=None,
+        xml_data=None,
         **kwargs,
     ):
         """Fetch process xml from camunda & save in process."""
-        current_app.logger.debug(f"Fetching xml for process: {process_key}")
+        current_app.logger.debug(f"Fetch & save for process: {process_key}")
         user: UserContext = kwargs["user"]
-        if process_type == ProcessType.DMN.value:
-            xml_data = BPMService.decision_definition_xml(
-                process_key, user.bearer_token, tenant_key
-            ).get("dmnXml")
-        else:
-            xml_data = BPMService.process_definition_xml(
-                process_key, user.bearer_token, tenant_key
-            ).get("bpmn20Xml")
-        current_app.logger.debug(f"Completed fetching xml for process: {process_key}")
+        if not xml_data:
+            current_app.logger.debug(f"Fetching xml for process: {process_key}")
+            if process_type == ProcessType.DMN.value:
+                xml_data = BPMService.decision_definition_xml(
+                    process_key, user.bearer_token, tenant_key
+                ).get("dmnXml")
+            else:
+                xml_data = BPMService.process_definition_xml(
+                    process_key, user.bearer_token, tenant_key
+                ).get("bpmn20Xml")
+            current_app.logger.debug(
+                f"Completed fetching xml for process: {process_key}"
+            )
         # Incase of migration we need to use the filtered form name as process key
         process_key = updated_process_key if updated_process_key else process_key
         current_app.logger.debug(f"Create process: {process_key}")
@@ -676,19 +682,28 @@ class ProcessService:  # pylint: disable=too-few-public-methods,too-many-public-
         raise BusinessException(BusinessErrorCode.PROCESS_ID_NOT_FOUND)
 
     @classmethod
-    def migrate(cls, request):
+    @user_context
+    def migrate(cls, request, **kwargs):  # pylint:disable=too-many-locals
         """Migrate by process key."""
         current_app.logger.debug("Migrate process started..")
         data = MigrateRequestSchema().load(request.get_json())
         process_key = data.get("process_key")
         mapper_id = data.get("mapper_id")
-        mapper = FormProcessMapper.find_form_by_id(mapper_id)
+        request_mapper = FormProcessMapper.find_form_by_id(mapper_id)
         # If the process_key in the mapper is different from the process_key in the payload
-        if mapper.process_key != process_key:
+        if request_mapper.process_key != process_key:
             raise BusinessException(BusinessErrorCode.INVALID_PROCESS)
         mappers = FormProcessMapper.get_mappers_by_process_key(process_key, mapper_id)
         current_app.logger.debug(f"Mappers found..{mappers}")
         if mappers:
+            xml_data = None
+            if not current_app.config.get("MULTI_TENANCY_ENABLED"):
+                # Incase of non multitenant env, fetch once the process xml data
+                user: UserContext = kwargs["user"]
+                current_app.logger.debug("Fetching process..")
+                xml_data = BPMService.process_definition_xml(
+                    process_key, user.bearer_token, user.tenant_key
+                ).get("bpmn20Xml")
             for mapper in mappers:
                 formio_service = FormioService()
                 form_io_token = formio_service.get_formio_access_token()
@@ -711,6 +726,7 @@ class ProcessService:  # pylint: disable=too-few-public-methods,too-many-public-
                     process_key,
                     mapper.process_tenant,
                     updated_process_key=updated_process_key,
+                    xml_data=xml_data,
                 )
                 # Update mapper with new process key & is_migrated as True
                 mapper.update(
@@ -721,5 +737,5 @@ class ProcessService:  # pylint: disable=too-few-public-methods,too-many-public-
                     }
                 )
             # Update is_migrated to main mapper by id.
-            mapper.update({"is_migrated": True})
+            request_mapper.update({"is_migrated": True})
         return {}

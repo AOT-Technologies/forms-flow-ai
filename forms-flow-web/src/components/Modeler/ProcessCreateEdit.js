@@ -15,8 +15,8 @@ import Loading from "../../containers/Loading";
 import { MULTITENANCY_ENABLED } from "../../constants/constants";
 import { useTranslation } from "react-i18next";
 import {
-  //createNewProcess,
-  //createNewDecision,
+  createNewProcess,
+  createNewDecision,
   extractDataFromDiagram,
 } from "../../components/Modeler/helpers/helper";
 import {
@@ -51,8 +51,23 @@ const ProcessCreateEdit = ({ type }) => {
   const { processKey, step } = useParams();
   const isCreate = step === "create";
   const isBPMN = type === "BPMN";
-  const isDmn = type === "DMN";
-  const diagramType = isDmn ? "DMN" : "BPMN";
+  const Process = isBPMN
+    ? {
+        name: "Subflow",
+        type: "BPMN",
+        route: "subflow",
+        extension: ".bpmn",
+        fileType: "text/bpmn",
+      }
+    : {
+        name: "Decision Table",
+        type: "DMN",
+        route: "decision-table",
+        extension: ".dmn",
+        fileType: "text/dmn",
+      };
+
+  const diagramType = Process.type;
   const dispatch = useDispatch();
   const bpmnRef = useRef();
   const dmnRef = useRef();
@@ -95,8 +110,8 @@ const ProcessCreateEdit = ({ type }) => {
     if (!processData.processData) {
       return;
     }
-    return extractDataFromDiagram(processData?.processData, isDmn).name;
-  }, [processData, isDmn]);
+    return extractDataFromDiagram(processData?.processData, !isBPMN).name;
+  }, [processData, isBPMN]);
 
   //fetch process details using processkey
   useEffect(async () => {
@@ -114,28 +129,28 @@ const ProcessCreateEdit = ({ type }) => {
     }
   }, [processKey]);
 
-  // useEffect(() => {
-  //   if (isCreate) {
-  //     dispatch(setProcessData({}));
-  //   }
+  useEffect(() => {
+    if (isCreate) {
+      dispatch(setProcessData({}));
+    }
 
-  //   return () => {
-  //     // Check if it's BPMN or DMN and reset the respective data
-  //     if (isCreate) {
-  //       const newProcessXml = isDmn
-  //         ? createNewDecision().defaultWorkflow.xml
-  //         : createNewProcess().defaultWorkflow.xml;
-  //       dispatch(setProcessDiagramXML(newProcessXml));
-  //     }
-  //   };
-  // }, [isCreate,isDmn]);
+    return () => {
+      // Check if it's BPMN or DMN and reset the respective data
+      if (isCreate) {
+        const newProcessXml = isBPMN
+          ? createNewProcess().defaultWorkflow.xml
+          : createNewDecision().defaultWorkflow.xml;
+        dispatch(setProcessDiagramXML(newProcessXml));
+      }
+    };
+  }, [isCreate, isBPMN]);
 
   const handleToggleConfirmModal = () => setShowConfirmModal(!showConfirmModal);
   const openConfirmModal = (type) => {
     setModalType(type);
     handleToggleConfirmModal();
   };
-  const saveFlow = async (isPublished = false, isCreateMode = isCreate) => {
+  const saveFlow = async (isPublishing = false, isCreateMode = isCreate) => {
     try {
       const modeler = getModeler(isBPMN);
       const xml = await createXMLFromModeler(modeler);
@@ -144,18 +159,19 @@ const ProcessCreateEdit = ({ type }) => {
       if (!isValid) return;
 
       const isEqual = await checkIfEqual(isCreate, xml);
-      if (isEqual && !isCreateMode) return handleAlreadyUpToDate(isPublished, isBPMN);
+      if (isEqual && !isCreateMode)
+        return handleAlreadyUpToDate(isPublishing, isBPMN);
 
       setSavingFlow(true);
 
       const response = await saveProcess(isCreateMode, xml);
       dispatch(setProcessData(response.data));
 
-      handleSaveSuccess(response, isCreateMode, isBPMN, isPublished);
+      handleSaveSuccess(response, isCreateMode, isPublishing);
 
       return response.data;
     } catch (error) {
-      handleError(isBPMN);
+      handleError();
     } finally {
       setSavingFlow(false);
     }
@@ -180,29 +196,33 @@ const ProcessCreateEdit = ({ type }) => {
     return await comparisonFunc(processData?.processData, xml);
   };
 
-  const handleAlreadyUpToDate = (isPublished, isBPMN) => {
+  const handleAlreadyUpToDate = (isPublished) => {
     if (!isPublished) {
-      toast.success(t(`${isBPMN ? "BPMN" : "DMN"} is already up to date`));
+      toast.success(t(`${Process.name} is already up to date`));
     }
   };
 
   const saveProcess = async (isCreate, xml) => {
-    const processType = isBPMN ? "BPMN" : "DMN";
+    const processType = Process.type;  // Using centralized Process.type
+    const payload = {
+      type: processType,
+      data: xml,
+    };
+  
     return isCreate
-      ? await createProcess({ type: processType, data: xml })
+      ? await createProcess(payload)
       : await updateProcess({
-          type: processType,
-          id: processData.id,
-          data: xml,
+          ...payload,
+          id: processData.id,  // ID needed only for update
         });
   };
+  
 
-  const handleSaveSuccess = (response, isCreate, isBPMN, isPublished) => {
-    const processType = isBPMN ? "BPMN" : "DMN";
+  const handleSaveSuccess = (response, isCreate, isPublished) => {
+    const processType = Process.type;  // Uses Process.type directly
     const actionMessage = isCreate ? t("created") : t("updated");
-    const processName =
-      response.data?.name || response.data?.processKey ;
-
+    const processName = response.data?.name || response.data?.processKey;
+  
     if (!isPublished) {
       toast.success(
         t(
@@ -210,20 +230,20 @@ const ProcessCreateEdit = ({ type }) => {
         )
       );
     }
-
+  
     if (isCreate) {
-      const editPath = isBPMN ? "subflow" : "decision-table";
+      const editPath = Process.route;  // Uses Process.route for the edit path
       dispatch(
         push(`${redirectUrl}${editPath}/edit/${response.data.processKey}`)
       );
     }
   };
+  
 
-  const handleError = (isBPMN) => {
+  const handleError = () => {
     setErrorMessage(
-      isBPMN
-        ? t("The BPMN name already exists. It must be unique. Please make changes through the General section within this BPMN.")
-        : t("The DMN name already exists. It must be unique. Please make changes through the General section within this DMN.")
+      t(`The ${Process.type} name already exists. It must be unique. 
+        Please make changes through the General section within this ${Process.type}.`)
     );
     setShowErrorModal(true);
   };
@@ -254,7 +274,7 @@ const ProcessCreateEdit = ({ type }) => {
       );
 
       if (!isPublished) {
-        redirectToFlow(isBPMN);
+        redirectToFlow();
       }
 
       setIsPublished(!isPublished);
@@ -289,9 +309,8 @@ const ProcessCreateEdit = ({ type }) => {
     setIsPublished(false); // Resetting publish state after unpublishing
   };
 
-  const redirectToFlow = (isBPMN) => {
-    const redirectPath = isBPMN ? "subflow" : "decision-table";
-    dispatch(push(`${redirectUrl}${redirectPath}`));
+  const redirectToFlow = () => {
+    dispatch(push(`${redirectUrl}${Process.route}`));
   };
 
   const handlePublishError = (isPublished, type) => {
@@ -307,56 +326,40 @@ const ProcessCreateEdit = ({ type }) => {
 
   const handleExport = async () => {
     try {
-      // Select default data based on type and creation status
-      let data;
-      if (isCreate) {
-        data = isBPMN ? defaultProcessXmlData : defaultDmnXmlData;
-      } else {
-        data = processData?.processData;
-      }
+      const data = isCreate
+        ? isBPMN
+          ? defaultProcessXmlData
+          : defaultDmnXmlData
+        : processData?.processData;
   
-      // Validate the data based on type
       const isValid = isBPMN
         ? await validateProcess(data)
         : await validateDecisionNames(data);
   
       if (isValid) {
-        const fileType = isBPMN ? "text/bpmn" : "text/dmn";
-        const extension = isBPMN ? ".bpmn" : ".dmn";
-  
-        // Create a Blob for the file
-        const file = new Blob([data], { type: fileType });
-  
-        // Create a download link
         const element = document.createElement("a");
+        const file = new Blob([data], { type: Process.fileType });
         element.href = URL.createObjectURL(file);
   
-        // Set the file name based on the type and clean up for download
-        const processName =
-          extractDataFromDiagram(data, !isBPMN).name.replaceAll(" / ", "-") +
-          extension;
-        element.download = processName.replaceAll(" ", "");
+        // Using the `Process` object for the filename and extension
+        const processName = 
+          extractDataFromDiagram(data).name.replaceAll(" / ", "-") + Process.extension;
   
-        // Trigger the download
+        element.download = processName.replaceAll(" ", "");
         document.body.appendChild(element);
         element.click();
-        document.body.removeChild(element); // Cleanup
-  
+        document.body.removeChild(element);  // Cleanup after download
         setExportError(null);
       } else {
         setExportError(t("Process validation failed."));
       }
     } catch (error) {
-      setExportError(
-        t(error.message || "Export failed due to an error.")
-      );
+      setExportError(t(error.message || "Export failed due to an error."));
     }
   };
-  
 
   const cancel = () => {
-    const route = isBPMN ? "subflow" : "decision-table";
-    dispatch(push(`${redirectUrl}${route}`));
+    dispatch(push(`${redirectUrl}${Process.route}`));
   };
 
   const editorActions = () => setNewActionModal(true);
@@ -364,9 +367,10 @@ const ProcessCreateEdit = ({ type }) => {
   const handleDuplicateProcess = () => {
     handleToggleConfirmModal();
     dispatch(setProcessDiagramXML(processData.processData));
-    const route = isDmn ? "decision-table/create" : "subflow/create"; // Check for isDmn
+    const route = `${Process.route}/create`;  // Uses Process.route for the creation path
     dispatch(push(`${redirectUrl}${route}`));
   };
+  
 
   const handleDiscardConfirm = () => {
     // Check which editor is currently being used and import the appropriate data
@@ -389,10 +393,7 @@ const ProcessCreateEdit = ({ type }) => {
 
   if (isProcessDetailsLoading) return <Loading />;
 
-  const getModalContent = (type) => {
-    const isBPMN = type === "BPMN";
-    const contentType = isBPMN ? "BPMN" : "DMN";
-  
+  const getModalContent = () => {
     const getModalConfig = (
       title,
       message,
@@ -410,66 +411,64 @@ const ProcessCreateEdit = ({ type }) => {
         secondayBtnAction: secondaryAction,
       };
     };
-  
+
     switch (modalType) {
       case "publish":
         return getModalConfig(
           t("Confirm Publish"),
-          t(`Publishing will lock the ${contentType}. To save changes on further edits, 
-              you will need to unpublish the ${contentType} first.`),
-          t(`Publish This ${contentType}`),
+          t(
+            `Publishing will lock the ${Process.type}. To save changes on further edits,
+             you will need to unpublish the ${Process.type} first.`
+          ),
+          t(`Publish This ${Process.type}`),
           t("Cancel"),
           confirmPublishOrUnPublish,
           closeModal
         );
-  
       case "unpublish":
         return getModalConfig(
           t("Confirm Unpublish"),
-          t(`This ${contentType} is currently live. To save changes to ${contentType} edits, 
-              you need to unpublish it first. By unpublishing this ${contentType},
-              you will make it unavailable for new submissions to those who currently 
-              have access to it. 
-              You can republish the ${contentType} after making your edits.`),
-          t(`Unpublish and Edit This ${contentType}`),
-          t(`Cancel, Keep This ${contentType} published`),
+          t(
+            `This ${Process.type} is currently live. To save changes to ${Process.type} edits, 
+            you need to unpublish it first.`
+          ),
+          t(`Unpublish and Edit This ${Process.type}`),
+          t(`Cancel, Keep This ${Process.type} published`),
           confirmPublishOrUnPublish,
           closeModal
         );
-  
       case "discard":
         return getModalConfig(
-          t(`Are you sure you want to discard ${contentType} changes?`),
-          t(`Are you sure you want to discard all the changes to the ${contentType}?`),
+          t(`Are you sure you want to discard ${Process.type} changes?`),
+          t(
+            `Are you sure you want to discard all the changes to the ${Process.type}?`
+          ),
           t("Discard Changes"),
           t("Cancel"),
           handleDiscardConfirm,
           closeModal
         );
-  
       case "duplicate":
         return getModalConfig(
           t("Create Duplicate"),
-          t(`Are you sure you want to duplicate the current ${contentType}?`),
-          t(`Yes, Duplicate This ${contentType}`),
-          t(`No, Do Not Duplicate This ${contentType}`),
+          t(`Are you sure you want to duplicate the current ${Process.type}?`),
+          t(`Yes, Duplicate This ${Process.type}`),
+          t(`No, Do Not Duplicate This ${Process.type}`),
           handleDuplicateProcess,
           closeModal
         );
-  
       default:
         return {};
     }
   };
-  
 
-  const modalContent = getModalContent(type);
+  const modalContent = getModalContent();
 
   // Define the editor content based on conditions
   let editorContent;
 
   if (isProcessDetailsLoading) {
-    editorContent = <>loading...</>;
+    editorContent = <>{t("loading...")}</>;
   } else if (isBPMN) {
     editorContent = (
       <BpmnEditor

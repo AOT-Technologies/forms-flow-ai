@@ -94,7 +94,7 @@ class BusinessErrorCode(ErrorCodeMixin, Enum):
         HTTPStatus.BAD_REQUEST,
     )
     PROCESS_EXISTS = (
-        "The BPMN name or ID already exists. It must be unique.",
+        "The Process name or ID already exists. It must be unique.",
         HTTPStatus.BAD_REQUEST,
     )
     INVALID_PROCESS_VALIDATION_INPUT = (

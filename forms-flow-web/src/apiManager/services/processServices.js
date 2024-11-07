@@ -21,7 +21,7 @@ import {
   setApplicationCount,
   setSubflowCount,
   setTotalDmnCount,
-  setProcessData 
+  setProcessData
 } from "../../actions/processActions";
 import { replaceUrl } from "../../helper/helper";
 import { StorageService } from "@formsflow/service";
@@ -305,12 +305,13 @@ export const getFormProcesses = (formId, ...rest) => {
 
     return RequestService.httpGETRequest(url);
   };
-    
+
 
   export const updateProcess = ({id,data,type}) => {
     return RequestService.httpPUTRequest(`${API.GET_PROCESSES_DETAILS}/${id}`,
       {processData:data,processType:type});
     };
+
 
 // fetching task variables
 export const fetchTaskVariables = (formId) =>{
@@ -496,7 +497,7 @@ export const fetchDiagram = (
   tenant_key = null,
   ...rest
 ) => {
-  
+
 
   const done = rest.length ? rest[0] : () => { };
   return (dispatch) => {
@@ -561,15 +562,40 @@ export const deleteFormProcessMapper = (mapperId, ...rest) => {
   };
 };
 
-export const getProcessHistory = (process_key, page = null, limit = null) => {
-  let url = `${API.GET_PROCESSES_DETAILS}/${process_key}/versions`;
-  if (page !== null && limit !== null) {
+export const getProcessHistory = ({parentProcessKey, page = null, limit = null}) => {
+  let url = `${API.GET_PROCESSES_DETAILS}/${parentProcessKey}/versions`;
+  if (page && limit) {
     url += `?pageNo=${page}&limit=${limit}`;
   }
   return RequestService.httpGETRequest(url);
 };
 
-export const fetchRevertingProcessData = (process_Id) => {
-  let url = `${API.GET_PROCESSES_DETAILS}/${process_Id}`;
+export const fetchRevertingProcessData = (processId) => {
+  let url = `${API.GET_PROCESSES_DETAILS}/${processId}`;
   return RequestService.httpGETRequest(url);
 };
+
+export const publish = ({ id, data, type }) => {
+  const url = replaceUrl(API.PUBLISH_PROCESS, "<process_id>", id);
+  return RequestService.httpPOSTRequest(url, {
+    processData: data,
+    processType: type,
+  });
+};
+
+export const unPublish = ({ id, data, type }) => {
+  const url = replaceUrl(API.UN_PUBLISH_PROCESS, "<process_id>", id);
+  return RequestService.httpPOSTRequest(url, {
+    processData: data,
+    processType: type,
+  });
+};
+
+export const createProcess = ({ data, type }) => {
+  return RequestService.httpPOSTRequest(API.GET_PROCESSES_DETAILS, {
+    processData: data,
+    processType: type,
+  });
+};
+
+

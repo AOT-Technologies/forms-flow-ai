@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useEffect,useState } from "react";
 import { useParams } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { Edit as FormEdit } from './FormEdit.js';
@@ -22,7 +22,7 @@ const Index = () => {
     (state) => state.process?.formAuthVerifyLoading
   );
   const apiCallError = useSelector((state) => state.errors?.apiCallError);
-  
+  const [mapperDataLoading, setMapperDataLoading] = useState(false);
 
   // fetch form and mapper data along with authorization data
   const errorHandling = (err) => {
@@ -52,8 +52,10 @@ const Index = () => {
         } else {
           try {
             //TBD:  need to combine these two calls 
+            setMapperDataLoading(true);
             dispatch(getFormProcesses(res._id,(err, res)=>{
               dispatch(getApplicationCount(res.id));
+              setMapperDataLoading(false);
             }));
             const authResponse = await fetchFormAuthorizationDetials(
               res?.parentFormId || res._id
@@ -68,7 +70,7 @@ const Index = () => {
     );
   }, [formId]);
 
-  if (formAuthVerifyLoading) {
+  if (formAuthVerifyLoading || mapperDataLoading) {
     return <Loading />;
   }
   if (apiCallError) {

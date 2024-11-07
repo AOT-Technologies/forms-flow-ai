@@ -6,6 +6,7 @@ import {
   Errors,
   FormBuilder,
   deleteForm,
+  Form
 } from "@aot-technologies/formio-react";
 import {
   CustomButton,
@@ -63,6 +64,7 @@ import NewVersionModal from "../../Modals/NewVersionModal";
 import { currentFormReducer } from "../../../modules/formReducer.js";
 import { toast } from "react-toastify";
 import { generateUniqueId } from "../../../helper/helper.js";
+import userRoles from "../../../constants/permissions.js";
 
 // constant values
 const DUPLICATE = "DUPLICATE";
@@ -118,6 +120,7 @@ const EditComponent = () => {
   const [formTitle, setFormTitle] = useState("");
   const [importError, setImportError] = useState("");
   const [importLoader, setImportLoader] = useState(false);
+  const { createDesigns, viewDesigns } = userRoles();
   const UploadActionType = {
     IMPORT: "import",
     VALIDATE: "validate"
@@ -898,6 +901,7 @@ const EditComponent = () => {
                     {isPublished ? t("Live") : t("Draft")}
                   </span>
                 </div>
+                {createDesigns &&
                 <div>
                   <CustomButton
                     variant="dark"
@@ -929,7 +933,7 @@ const EditComponent = () => {
                     dataTestid="handle-publish-testid"
                     ariaLabel={`${t(publishText)} ${t("Button")}`}
                   />
-                </div>
+                </div>}
               </div>
             </Card.Body>
           </Card>
@@ -945,6 +949,7 @@ const EditComponent = () => {
                   >
                     <div className="d-flex align-items-center justify-content-between">
                       <div className="mx-2 builder-header-text">Layout</div>
+                      {createDesigns &&
                       <div>
                         <CustomButton
                           variant="secondary"
@@ -965,8 +970,9 @@ const EditComponent = () => {
                           dataTestid="handle-preview-testid"
                           ariaLabel={t("Preview Button")}
                         />
-                      </div>
+                      </div>}
                     </div>
+                    {createDesigns &&
                     <div>
                       <CustomButton
                         variant="primary"
@@ -990,20 +996,28 @@ const EditComponent = () => {
                         dataTestid="discard-button-testid"
                         ariaLabel={t("cancelBtnariaLabel")}
                       />
-                    </div>
+                    </div>}
                   </div>
                 </Card.Header>
                 <Card.Body>
                   <div className="form-builder">
-                    <FormBuilder
-                      key={form._id}
-                      form={form}
-                      onChange={formChange}
-                      options={{
-                        language: lang,
-                        i18n: RESOURCE_BUNDLES_DATA,
-                      }}
-                    />
+                    {viewDesigns ? (
+                      <div className="px-4 pt-4">
+                        <Form
+                        form={form}
+                        readOnly={true}
+                      />
+                      </div>
+                    ) : createDesigns ? (
+                      <FormBuilder
+                        key={form._id}
+                        form={form}
+                        onChange={formChange}
+                        options={{
+                          language: lang,
+                          i18n: RESOURCE_BUNDLES_DATA,
+                        }}
+                      /> ) : null}
                   </div>
                 </Card.Body>
               </Card>

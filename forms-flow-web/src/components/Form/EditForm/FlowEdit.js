@@ -29,6 +29,8 @@ import {
   validateProcess,
 } from "../../../helper/processHelper.js";
 import PropTypes from "prop-types";
+import userRoles from "../../../constants/permissions.js";
+import ProcessDiagram from "../../BPMN/ProcessDiagramHook.js";
 
 const FlowEdit = forwardRef(({ isPublished = false, CategoryType }, ref) => {
   const { t } = useTranslation();
@@ -40,6 +42,7 @@ const FlowEdit = forwardRef(({ isPublished = false, CategoryType }, ref) => {
   const [showDiscardModal, setShowDiscardModal] = useState(false);
   const [showHistoryModal, setShowHistoryModal] = useState(false);
   const [isReverted, setIsReverted] = useState(false);
+  const { createDesigns, viewDesigns } = userRoles();
   /* --------- fetching all process history when click history button --------- */
   const {
     data: { data: historiesData } = {}, // response data destructured
@@ -149,6 +152,7 @@ const FlowEdit = forwardRef(({ isPublished = false, CategoryType }, ref) => {
           >
             <div className="d-flex align-items-center justify-content-between">
               <div className="mx-2 builder-header-text">{t("Flow")}</div>
+              {createDesigns &&
               <div>
                 <CustomButton
                   variant="secondary"
@@ -168,8 +172,9 @@ const FlowEdit = forwardRef(({ isPublished = false, CategoryType }, ref) => {
                   dataTestid="preview-and-variables-testid"
                   ariaLabel={t("{Preview and Variables Button}")}
                 />
-              </div>
+              </div>}
             </div>
+            {createDesigns &&
             <div>
               <CustomButton
                 variant="primary"
@@ -190,7 +195,7 @@ const FlowEdit = forwardRef(({ isPublished = false, CategoryType }, ref) => {
                 dataTestid="discard-flow-changes-testid"
                 ariaLabel={t("Discard Flow Changes")}
               />
-            </div>
+            </div>}
           </div>
         </Card.Header>
         <Card.Body>
@@ -199,13 +204,19 @@ const FlowEdit = forwardRef(({ isPublished = false, CategoryType }, ref) => {
             spinner
             text={t("Loading...")}
           >
-            <BpmnEditor
-              ref={bpmnRef}
-              setLintErrors={setLintErrors}
-              bpmnXml={
-                isReverted ? historyData?.processData : processData?.processData
-              }
-            />
+          {viewDesigns ? (
+          <ProcessDiagram
+           processKey={processData?.processKey}
+          />
+          ) : createDesigns ? (
+          <BpmnEditor
+           ref={bpmnRef}
+           setLintErrors={setLintErrors}
+           bpmnXml={
+           isReverted ? historyData?.processData : processData?.processData
+           }
+          />
+          ) : null}
           </LoadingOverlay>
         </Card.Body>
       </Card>

@@ -15,7 +15,7 @@ import { useTranslation } from "react-i18next";
 import { useDispatch, useSelector } from "react-redux";
 import { useMutation } from "react-query";
 import { setProcessData } from "../../../actions/processActions.js";
-import BpmnEditor from "../../Modeler/Editors/BpmnEditor/index.js";
+import BpmnEditor from "../../Modeler/Editors/BpmnEditor/BpmEditor";
 import LoadingOverlay from "react-loading-overlay-ts";
 import {
   updateProcess,
@@ -70,7 +70,7 @@ const FlowEdit = forwardRef(({ isPublished = false, CategoryType }, ref) => {
   const handleDiscardConfirm = () => {
     if (bpmnRef.current) {
       //import the existing process data to bpmn
-      bpmnRef.current?.handleImport(processData?.processData); 
+      bpmnRef.current?.handleImport(processData?.processData);
       isReverted && setIsReverted(!isReverted); //once it reverted then need to make it false
       handleDiscardModal();
     }
@@ -89,7 +89,7 @@ const FlowEdit = forwardRef(({ isPublished = false, CategoryType }, ref) => {
     fetchHistories({ parentProcessKey: processData.parentProcessKey });
   };
 
-  
+
 
   const saveFlow = async (showToast = true) => {
     try {

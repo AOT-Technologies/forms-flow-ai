@@ -42,6 +42,7 @@ import DmnEditor from "./Editors/DmnEditor/DmnEditor.js";
 import {
   setProcessData,
   setProcessDiagramXML,
+  setDescisionDiagramXML
 } from "../../actions/processActions";
 
 const EXPORT = "EXPORT";
@@ -159,8 +160,7 @@ const ProcessCreateEdit = ({ type }) => {
       if (!isValid) return;
 
       const isEqual = await checkIfEqual(isCreate, xml);
-      if (isEqual && !isCreateMode)
-        return handleAlreadyUpToDate(isPublishing);
+      if (isEqual && !isCreateMode) return handleAlreadyUpToDate(isPublishing);
 
       setSavingFlow(true);
 
@@ -203,26 +203,25 @@ const ProcessCreateEdit = ({ type }) => {
   };
 
   const saveProcess = async (isCreate, xml) => {
-    const processType = Process.type;  // Using centralized Process.type
+    const processType = Process.type; // Using centralized Process.type
     const payload = {
       type: processType,
       data: xml,
     };
-  
+
     return isCreate
       ? await createProcess(payload)
       : await updateProcess({
           ...payload,
-          id: processData.id,  // ID needed only for update
+          id: processData.id, // ID needed only for update
         });
   };
-  
 
   const handleSaveSuccess = (response, isCreate, isPublished) => {
-    const processType = Process.type;  // Uses Process.type directly
+    const processType = Process.type; // Uses Process.type directly
     const actionMessage = isCreate ? t("created") : t("updated");
     const processName = response.data?.name || response.data?.processKey;
-  
+
     if (!isPublished) {
       toast.success(
         t(
@@ -230,15 +229,14 @@ const ProcessCreateEdit = ({ type }) => {
         )
       );
     }
-  
+
     if (isCreate) {
-      const editPath = Process.route;  // Uses Process.route for the edit path
+      const editPath = Process.route; // Uses Process.route for the edit path
       dispatch(
         push(`${redirectUrl}${editPath}/edit/${response.data.processKey}`)
       );
     }
   };
-  
 
   const handleError = () => {
     setErrorMessage(
@@ -326,29 +324,32 @@ const ProcessCreateEdit = ({ type }) => {
 
   const handleExport = async () => {
     try {
-      const data = isCreate
-        ? isBPMN
-          ? defaultProcessXmlData
-          : defaultDmnXmlData
-        : processData?.processData;
-  
+      let data;
+
+      if (isCreate) {
+        data = isBPMN ? defaultProcessXmlData : defaultDmnXmlData;
+      } else {
+        data = processData?.processData;
+      }
+
       const isValid = isBPMN
         ? await validateProcess(data)
         : await validateDecisionNames(data);
-  
+
       if (isValid) {
         const element = document.createElement("a");
         const file = new Blob([data], { type: Process.fileType });
         element.href = URL.createObjectURL(file);
-  
+
         // Using the `Process` object for the filename and extension
-        const processName = 
-          extractDataFromDiagram(data).name.replaceAll(" / ", "-") + Process.extension;
-  
+        const processName =
+          extractDataFromDiagram(data).name.replaceAll(" / ", "-") +
+          Process.extension;
+
         element.download = processName.replaceAll(" ", "");
         document.body.appendChild(element);
         element.click();
-        document.body.removeChild(element);  // Cleanup after download
+        document.body.removeChild(element); // Cleanup after download
         setExportError(null);
       } else {
         setExportError(t("Process validation failed."));
@@ -366,11 +367,15 @@ const ProcessCreateEdit = ({ type }) => {
 
   const handleDuplicateProcess = () => {
     handleToggleConfirmModal();
-    dispatch(setProcessDiagramXML(processData.processData));
-    const route = `${Process.route}/create`;  // Uses Process.route for the creation path
+    if(isBPMN){
+      dispatch(setProcessDiagramXML(processData.processData));
+    }
+    else{
+      dispatch(setDescisionDiagramXML(processData.processData));
+    }
+    const route = `${Process.route}/create`; // Uses Process.route for the creation path
     dispatch(push(`${redirectUrl}${route}`));
   };
-  
 
   const handleDiscardConfirm = () => {
     // Check which editor is currently being used and import the appropriate data

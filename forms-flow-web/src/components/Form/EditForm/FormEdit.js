@@ -63,6 +63,7 @@ import { currentFormReducer } from "../../../modules/formReducer.js";
 import { toast } from "react-toastify";
 import { generateUniqueId } from "../../../helper/helper.js";
 import userRoles from "../../../constants/permissions.js";
+import { useMutation } from "react-query";
 
 // constant values
 const DUPLICATE = "DUPLICATE";
@@ -117,6 +118,30 @@ const EditComponent = () => {
   const [importError, setImportError] = useState("");
   const [importLoader, setImportLoader] = useState(false);
   const { createDesigns } = userRoles();
+
+   /* --------- validate form title exist or not --------- */
+   const {
+    mutate: validateFormTitle, // this function will trigger the api call
+    isLoading: validationLoading,
+    // isError: error,
+  } = useMutation(
+    ({ title }) =>
+      validateFormName(title) ,
+    {
+      onSuccess:({data})=>{
+        if (data && data.code === "FORM_EXISTS") {
+          setNameError(data.message);  // Set exact error message
+        } else {
+          setNameError("");
+        }
+      },
+      onError:(error)=>{
+        const errorMessage = error.response?.data?.message || "An error occurred while validating the form name.";
+        setNameError(errorMessage);  // Set the error message from the server
+      }
+    }
+  );
+  
   const UploadActionType = {
     IMPORT: "import",
     VALIDATE: "validate",
@@ -354,28 +379,12 @@ const EditComponent = () => {
     }
   }, [processListData.processKey]);
 
-  const validateFormNameOnBlur = () => {
-    if (!form.title || form.title.trim() === "") {
+  const validateFormNameOnBlur = ({title}) => {
+    if (!title || title.trim() === "") {
       setNameError("This field is required");
       return;
     }
-
-    validateFormName(form.title)
-      .then((response) => {
-        const data = response?.data;
-        if (data && data.code === "FORM_EXISTS") {
-          setNameError(data.message); // Set exact error message
-        } else {
-          setNameError("");
-        }
-      })
-      .catch((error) => {
-        const errorMessage =
-          error.response?.data?.message ||
-          "An error occurred while validating the form name.";
-        setNameError(errorMessage); // Set the error message from the server
-        console.error("Error validating form name:", errorMessage);
-      });
+    validateFormTitle({title});
   };
 
   const isFormComponentsChanged = () => {
@@ -563,16 +572,8 @@ const EditComponent = () => {
     setNewActionModal(true);
   };
 
-  const handleChange = (path, event) => {
-    setFormSubmitted(false);
-    const { target } = event;
-    const value = target.type === "checkbox" ? target.checked : target.value;
-    value == "" ? setNameError("This field is required") : setNameError("");
-
-    dispatchFormAction({ type: path, value });
-  };
-
-  const handlePublishAsNewVersion = (formName, formDescription) => {
+ 
+  const handlePublishAsNewVersion = ({description, title}) => {
     setFormSubmitted(true);
     const newFormData = manipulatingFormData(
       _.cloneDeep(form),
@@ -584,13 +585,13 @@ const EditComponent = () => {
 
     const newPathAndName = generateUniqueId("duplicate-version-");
     newFormData.path = newPathAndName;
-    newFormData.title = form.title;
+    newFormData.title = title;
     newFormData.name = newPathAndName;
     newFormData.componentChanged = true;
     delete newFormData.machineName;
     delete newFormData.parentFormId;
     newFormData.newVersion = true;
-    newFormData.description = formDescription;
+    newFormData.description = description;
     delete newFormData._id;
 
     formCreate(newFormData)
@@ -1059,9 +1060,8 @@ const EditComponent = () => {
         nameLabel={t("New Form Name")}
         descriptionLabel={t("New Form Description")}
         showBuildForm={selectedAction === DUPLICATE}
-        formSubmitted={formSubmitted}
-        onClose={handleCloseSelectedAction}
-        handleChange={handleChange}
+        isLoading={formSubmitted || validationLoading}
+        onClose={handleCloseSelectedAction} 
         primaryBtnLabel={t("Save and Edit form")}
         primaryBtnAction={handlePublishAsNewVersion}
         setNameError={setNameError}

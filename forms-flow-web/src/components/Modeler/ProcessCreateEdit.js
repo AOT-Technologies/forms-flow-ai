@@ -1,5 +1,4 @@
-import React, { useEffect, useState, useRef, useMemo } from "react";
-import "./Modeler.scss";
+import React, { useEffect, useState, useRef } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import { useParams } from "react-router-dom";
 import { push } from "connected-react-router";
@@ -10,6 +9,8 @@ import {
   unPublish,
   getProcessDetails,
   createProcess,
+  getProcessHistory,
+  fetchRevertingProcessData,
 } from "../../apiManager/services/processServices";
 import Loading from "../../containers/Loading";
 import { MULTITENANCY_ENABLED } from "../../constants/constants";
@@ -25,6 +26,7 @@ import {
   BackToPrevIcon,
   ConfirmModal,
   ErrorModal,
+  HistoryModal,
 } from "@formsflow/components";
 import { Card } from "react-bootstrap";
 import ActionModal from "../Modals/ActionModal";
@@ -42,8 +44,10 @@ import DmnEditor from "./Editors/DmnEditor/DmnEditor.js";
 import {
   setProcessData,
   setProcessDiagramXML,
-  setDescisionDiagramXML
+  setDescisionDiagramXML,
 } from "../../actions/processActions";
+import { useMutation, useQuery } from "react-query";
+import LoadingOverlay from "react-loading-overlay-ts";
 
 const EXPORT = "EXPORT";
 const CategoryType = { FORM: "FORM", WORKFLOW: "WORKFLOW" };
@@ -97,38 +101,59 @@ const ProcessCreateEdit = ({ type }) => {
   const [showConfirmModal, setShowConfirmModal] = useState(false);
   const [modalType, setModalType] = useState("");
   const [isPublishLoading, setIsPublishLoading] = useState(false);
-  // handle history modal
-  const handleHistoryModal = () => setHistoryModalShow(!historyModalShow);
-  const [isProcessDetailsLoading, setIsProcessDetailsLoading] = useState(false);
+  const [isReverted, setIsReverted] = useState(false);
+  const isDataFetched = useRef();
 
-  useEffect(() => {
-    setIsPublished(processData.status === "Published");
-  }, [processData]);
+  // fetching process data
+  const { isLoading: isProcessDetailsLoading } = useQuery(
+    ["processDetails", processKey],
+    () => getProcessDetails(processKey),
+    {
+      cacheTime: 0, // Disable caching if not disabled the previous data will be cached
+      staleTime: 0, // Data is always treated as stale
+      enabled: !!processKey && !isDataFetched.current, // Run only if processKey exists and data hasn't been fetched
+      onSuccess: ({ data }) => {
+        isDataFetched.current = true;
+        setIsPublished(data.status === "Published");
+        dispatch(setProcessData(data));
+      },
+      onError: (error) => {
+        console.error(error);
+      },
+    }
+  );
+
+  /* --------- fetching all process history when click history button --------- */
+  const {
+    data: { data: historiesData } = {}, // response data destructured
+    mutate: fetchAllHistories, // mutate function used to call the api function and here mutate renamed to fetch histories
+    // isLoading: historiesLoading,
+    // isError: historiesError,
+  } = useMutation(
+    ({ parentProcessKey, page, limit }) =>
+      getProcessHistory({ parentProcessKey, page, limit }) // this is api calling function and mutate function accepting some parameter and passing to the apicalling function
+  );
+
+  /* --------- fetch a perticular history when click the revert button -------- */
+  const {
+    data: { data: historyData } = {},
+    mutate: fetchHistoryData,
+    isLoading: historyLoading,
+    // isError: historyDataError,
+  } = useMutation((processId) => fetchRevertingProcessData(processId), {
+    onSuccess: () => {
+      setIsReverted(true);
+    },
+  });
+
+  const processDataXML = isReverted
+    ? historyData?.processData
+    : processData?.processData;
+  // handle history modal
+  const handleToggleHistoryModal = () => setHistoryModalShow(!historyModalShow);
 
   const publishText = isPublished ? t("Unpublish") : t("Publish");
-
-  const processName = useMemo(() => {
-    if (!processData.processData) {
-      return;
-    }
-    return extractDataFromDiagram(processData?.processData, !isBPMN).name;
-  }, [processData, isBPMN]);
-
-  //fetch process details using processkey
-  useEffect(async () => {
-    if (processKey) {
-      try {
-        setIsProcessDetailsLoading(true);
-        const { data } = await getProcessDetails(processKey);
-        setIsPublished(!isPublished);
-        dispatch(setProcessData(data));
-      } catch (error) {
-        console.error(error);
-      } finally {
-        setIsProcessDetailsLoading(false);
-      }
-    }
-  }, [processKey]);
+  const processName = processData.name;
 
   useEffect(() => {
     if (isCreate) {
@@ -141,7 +166,8 @@ const ProcessCreateEdit = ({ type }) => {
         const newProcessXml = isBPMN
           ? createNewProcess().defaultWorkflow.xml
           : createNewDecision().defaultWorkflow.xml;
-        dispatch(setProcessDiagramXML(newProcessXml));
+        const action = isBPMN ? setProcessDiagramXML : setDescisionDiagramXML;
+        dispatch(action(newProcessXml));
       }
     };
   }, [isCreate, isBPMN]);
@@ -151,7 +177,10 @@ const ProcessCreateEdit = ({ type }) => {
     setModalType(type);
     handleToggleConfirmModal();
   };
-  const saveFlow = async (isPublishing = false, isCreateMode = isCreate) => {
+  const saveFlow = async ({
+    isPublishing = false,
+    isCreateMode = isCreate,
+  }) => {
     try {
       const modeler = getModeler(isBPMN);
       const xml = await createXMLFromModeler(modeler);
@@ -160,13 +189,14 @@ const ProcessCreateEdit = ({ type }) => {
       if (!isValid) return;
 
       const isEqual = await checkIfEqual(isCreate, xml);
-      if (isEqual && !isCreateMode) return handleAlreadyUpToDate(isPublishing);
+      if (!isReverted && !isCreateMode && isEqual)
+        return handleAlreadyUpToDate(isPublishing);
 
       setSavingFlow(true);
 
       const response = await saveProcess(isCreateMode, xml);
       dispatch(setProcessData(response.data));
-
+      isReverted && setIsReverted(!isReverted); //if it already reverted the need to make it false
       handleSaveSuccess(response, isCreateMode, isPublishing);
 
       return response.data;
@@ -200,6 +230,19 @@ const ProcessCreateEdit = ({ type }) => {
     if (!isPublished) {
       toast.success(t(`${Process.name} is already up to date`));
     }
+  };
+
+  const handleProcessHistory = () => {
+    handleToggleHistoryModal();
+    fetchAllHistories({
+      parentProcessKey: processData.parentProcessKey, // passing process key to get histories data
+      page: 1,
+      limit: 4,
+    });
+  };
+
+  const loadMoreBtnAction = () => {
+    fetchAllHistories({ parentProcessKey: processData.parentProcessKey });
   };
 
   const saveProcess = async (isCreate, xml) => {
@@ -258,7 +301,7 @@ const ProcessCreateEdit = ({ type }) => {
       let response = null;
 
       if (!isPublished) {
-        response = await saveFlow(!isPublished, isCreate);
+        response = await saveFlow({ isPublishing: !isPublished });
       }
 
       closeModal();
@@ -367,10 +410,9 @@ const ProcessCreateEdit = ({ type }) => {
 
   const handleDuplicateProcess = () => {
     handleToggleConfirmModal();
-    if(isBPMN){
+    if (isBPMN) {
       dispatch(setProcessDiagramXML(processData.processData));
-    }
-    else{
+    } else {
       dispatch(setDescisionDiagramXML(processData.processData));
     }
     const route = `${Process.route}/create`; // Uses Process.route for the creation path
@@ -391,7 +433,7 @@ const ProcessCreateEdit = ({ type }) => {
     if (editorRef) {
       editorRef.handleImport(xmlData);
     }
-
+    isReverted && setIsReverted(!isReverted); //once it reverted then need to make it false
     handleToggleConfirmModal();
   };
   const handleCloseErrorModal = () => setShowErrorModal(false);
@@ -468,28 +510,6 @@ const ProcessCreateEdit = ({ type }) => {
   };
 
   const modalContent = getModalContent();
-
-  // Define the editor content based on conditions
-  let editorContent;
-
-  if (isProcessDetailsLoading) {
-    editorContent = <>{t("loading...")}</>;
-  } else if (isBPMN) {
-    editorContent = (
-      <BpmnEditor
-        ref={bpmnRef}
-        bpmnXml={isCreate ? defaultProcessXmlData : processData?.processData}
-        setLintErrors={setLintErrors}
-      />
-    );
-  } else {
-    editorContent = (
-      <DmnEditor
-        ref={dmnRef}
-        dmnXml={isCreate ? defaultDmnXmlData : processData?.processData}
-      />
-    );
-  }
 
   return (
     <div>
@@ -569,7 +589,7 @@ const ProcessCreateEdit = ({ type }) => {
                     variant="secondary"
                     size="md"
                     icon={<HistoryIcon />}
-                    onClick={handleHistoryModal}
+                    onClick={handleProcessHistory}
                     label={t("History")}
                     dataTestid={`${diagramType.toLowerCase()}-history-button-testid`}
                     ariaLabel={t(`${diagramType} History Button`)}
@@ -581,7 +601,7 @@ const ProcessCreateEdit = ({ type }) => {
                   variant="primary"
                   size="md"
                   className="mx-2"
-                  onClick={() => saveFlow()}
+                  onClick={saveFlow}
                   label={t(`Save ${diagramType}`)}
                   buttonLoading={savingFlow}
                   disabled={savingFlow || isPublished}
@@ -600,7 +620,26 @@ const ProcessCreateEdit = ({ type }) => {
             </div>
           </Card.Header>
         </div>
-        <Card.Body>{editorContent}</Card.Body>
+        <Card.Body>
+          <LoadingOverlay
+            active={historyLoading}
+            spinner
+            text={t("Loading...")}
+          >
+            {isBPMN ? (
+              <BpmnEditor
+                ref={bpmnRef}
+                bpmnXml={isCreate ? defaultProcessXmlData : processDataXML}
+                setLintErrors={setLintErrors}
+              />
+            ) : (
+              <DmnEditor
+                ref={dmnRef}
+                dmnXml={isCreate ? defaultDmnXmlData : processDataXML}
+              />
+            )}
+          </LoadingOverlay>
+        </Card.Body>
       </Card>
 
       <ActionModal
@@ -635,6 +674,19 @@ const ProcessCreateEdit = ({ type }) => {
           primaryBtnText={t("Dismiss")}
         />
       )}
+      <HistoryModal
+        show={historyModalShow}
+        onClose={handleToggleHistoryModal}
+        title={t("History")}
+        loadMoreBtnText={t("Load More")}
+        revertBtnText={t("Revert To This")}
+        allHistory={historiesData?.processHistory || []}
+        loadMoreBtnAction={loadMoreBtnAction}
+        categoryType={CategoryType.WORKFLOW}
+        revertBtnAction={fetchHistoryData}
+        historyCount={historiesData?.totalCount || 0}
+        currentVersionId={processData.id}
+      />
     </div>
   );
 };

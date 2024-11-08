@@ -1002,12 +1002,9 @@ const EditComponent = () => {
                 <Card.Body>
                   <div className="form-builder">
                     {!createDesigns ? (
-                      <div className="px-4 pt-4">
+                      <div className="px-4 pt-4 form-preview">
                         <Form
                           form={form}
-                          options={{
-                            readOnly: true,
-                          }}
                         />
                       </div>
                     ) : (

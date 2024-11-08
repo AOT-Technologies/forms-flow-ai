@@ -42,7 +42,7 @@ const FlowEdit = forwardRef(({ isPublished = false, CategoryType }, ref) => {
   const [showDiscardModal, setShowDiscardModal] = useState(false);
   const [showHistoryModal, setShowHistoryModal] = useState(false);
   const [isReverted, setIsReverted] = useState(false);
-  const { createDesigns, viewDesigns } = userRoles();
+  const { createDesigns } = userRoles();
   /* --------- fetching all process history when click history button --------- */
   const {
     data: { data: historiesData } = {}, // response data destructured
@@ -92,8 +92,6 @@ const FlowEdit = forwardRef(({ isPublished = false, CategoryType }, ref) => {
     fetchHistories({ parentProcessKey: processData.parentProcessKey });
   };
 
-
-
   const saveFlow = async (showToast = true) => {
     try {
       const bpmnModeler = bpmnRef.current?.getBpmnModeler();
@@ -128,7 +126,6 @@ const FlowEdit = forwardRef(({ isPublished = false, CategoryType }, ref) => {
     saveFlow,
   }));
 
-
   return (
     <>
       <Card>
@@ -147,55 +144,55 @@ const FlowEdit = forwardRef(({ isPublished = false, CategoryType }, ref) => {
           size="sm"
         />
         <Card.Header>
-          <div
-            className="d-flex justify-content-between align-items-center w-100"
-          >
+          <div className="d-flex justify-content-between align-items-center w-100">
             <div className="d-flex align-items-center justify-content-between">
               <div className="mx-2 builder-header-text">{t("Flow")}</div>
-              {createDesigns &&
+              {createDesigns && (
+                <div>
+                  <CustomButton
+                    variant="secondary"
+                    size="md"
+                    icon={<HistoryIcon />}
+                    label={t("History")}
+                    onClick={handleProcessHistory}
+                    dataTestid="flow-history-button-testid"
+                    ariaLabel={t("Flow History Button")}
+                  />
+                  <CustomButton
+                    variant="secondary"
+                    size="md"
+                    className="mx-2"
+                    label={t("Preview & Variables")}
+                    onClick={() => console.log("handlePreviewAndVariables")}
+                    dataTestid="preview-and-variables-testid"
+                    ariaLabel={t("{Preview and Variables Button}")}
+                  />
+                </div>
+              )}
+            </div>
+            {createDesigns && (
               <div>
                 <CustomButton
-                  variant="secondary"
+                  variant="primary"
                   size="md"
-                  icon={<HistoryIcon />}
-                  label={t("History")}
-                  onClick={handleProcessHistory}
-                  dataTestid="flow-history-button-testid"
-                  ariaLabel={t("Flow History Button")}
+                  className="mx-2"
+                  label={t("Save Flow")}
+                  onClick={saveFlow}
+                  disabled={isPublished}
+                  dataTestid="save-flow-layout"
+                  ariaLabel={t("Save Flow Layout")}
+                  buttonLoading={savingFlow}
                 />
                 <CustomButton
                   variant="secondary"
                   size="md"
-                  className="mx-2"
-                  label={t("Preview & Variables")}
-                  onClick={() => console.log("handlePreviewAndVariables")}
-                  dataTestid="preview-and-variables-testid"
-                  ariaLabel={t("{Preview and Variables Button}")}
+                  label={t("Discard Changes")}
+                  onClick={handleDiscardModal}
+                  dataTestid="discard-flow-changes-testid"
+                  ariaLabel={t("Discard Flow Changes")}
                 />
-              </div>}
-            </div>
-            {createDesigns &&
-            <div>
-              <CustomButton
-                variant="primary"
-                size="md"
-                className="mx-2"
-                label={t("Save Flow")}
-                onClick={saveFlow}
-                disabled={isPublished}
-                dataTestid="save-flow-layout"
-                ariaLabel={t("Save Flow Layout")}
-                buttonLoading={savingFlow}
-              />
-              <CustomButton
-                variant="secondary"
-                size="md"
-                label={t("Discard Changes")}
-                onClick={handleDiscardModal}
-                dataTestid="discard-flow-changes-testid"
-                ariaLabel={t("Discard Flow Changes")}
-              />
-            </div>}
+              </div>
+            )}
           </div>
         </Card.Header>
         <Card.Body>
@@ -204,19 +201,21 @@ const FlowEdit = forwardRef(({ isPublished = false, CategoryType }, ref) => {
             spinner
             text={t("Loading...")}
           >
-          {viewDesigns ? (
-          <ProcessDiagram
-           processKey={processData?.processKey}
-          />
-          ) : createDesigns ? (
-          <BpmnEditor
-           ref={bpmnRef}
-           setLintErrors={setLintErrors}
-           bpmnXml={
-           isReverted ? historyData?.processData : processData?.processData
-           }
-          />
-          ) : null}
+            {!createDesigns ? (
+              <div className="px-4 pt-4">
+                <ProcessDiagram processKey={processData?.processKey} />
+              </div>
+            ) : (
+              <BpmnEditor
+                ref={bpmnRef}
+                setLintErrors={setLintErrors}
+                bpmnXml={
+                  isReverted
+                    ? historyData?.processData
+                    : processData?.processData
+                }
+              />
+            )}
           </LoadingOverlay>
         </Card.Body>
       </Card>

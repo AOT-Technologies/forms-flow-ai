@@ -360,6 +360,7 @@ class FormProcessMapperService:  # pylint: disable=too-many-public-methods
         anonymous = False
         description = data.get("description", "")
         task_variable = []
+        is_migrated = True
         current_app.logger.info(f"Creating new form {is_new_form}")
         # If creating new version for a existing form, fetch process key, name from mapper
         if not is_new_form:
@@ -370,6 +371,7 @@ class FormProcessMapperService:  # pylint: disable=too-many-public-methods
             anonymous = mapper.is_anonymous
             description = mapper.description
             task_variable = json.loads(mapper.task_variable)
+            is_migrated = mapper.is_migrated
         else:
             # if new form, form name is kept as process_name & process key
             process_name = response.get("name")
@@ -391,6 +393,7 @@ class FormProcessMapperService:  # pylint: disable=too-many-public-methods
             "status": FormProcessMapperStatus.INACTIVE.value,
             "anonymous": anonymous,
             "task_variable": task_variable,
+            "is_migrated": is_migrated,
         }
 
         mapper = FormProcessMapperService.mapper_create(mapper_data)

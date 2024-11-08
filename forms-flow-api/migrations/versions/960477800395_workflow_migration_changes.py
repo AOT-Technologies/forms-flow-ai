@@ -8,6 +8,7 @@ Create Date: 2024-10-29 11:24:12.569841
 from alembic import op
 import sqlalchemy as sa
 from sqlalchemy.sql import text
+from collections import Counter
 
 # revision identifiers, used by Alembic.
 revision = '960477800395'
@@ -26,6 +27,39 @@ def upgrade():
         WHERE process_name ~ '\\([a-zA-Z0-9_-]+\\)$';""")
     # Execute the SQL statement
     op.execute(update_query)
+    
+    # code to set the is_migrated field to TRUE for workflow(process) with only one form.
+    conn = op.get_bind()
+    # Subquery to get the latest non-deleted row per `parent_form_id`
+    latest_rows_sql = """
+        SELECT process_key, id
+        FROM (
+            SELECT process_key,
+                parent_form_id,
+                id,
+                ROW_NUMBER() OVER (PARTITION BY parent_form_id ORDER BY id DESC) AS row_num
+            FROM public.form_process_mapper
+            WHERE deleted = false
+        ) AS latest_rows
+        WHERE row_num = 1
+    """
+    latest_rows = conn.execute(sa.text(latest_rows_sql)).mappings().all()
+    #Count occurrences of each process_key within the latest rows
+    process_key_counts = Counter(row["process_key"] for row in latest_rows)
+
+    #Update is_migrated for each latest row based on the process_key count
+    for row in latest_rows:
+        process_key = row["process_key"]
+        row_id = row["id"]
+
+        # Update is_migrated to true if process_key appears in a single parent_form_id group
+        if process_key_counts[process_key] == 1:
+            update_sql = """
+                UPDATE public.form_process_mapper
+                SET is_migrated = true
+                WHERE id = :row_id
+            """
+            conn.execute(sa.text(update_sql), {"row_id": row_id})
     # ### end Alembic commands ###
 
 

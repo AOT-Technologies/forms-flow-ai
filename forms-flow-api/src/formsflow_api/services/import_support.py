@@ -417,6 +417,7 @@ class ImportService:  # pylint: disable=too-many-public-methods
                 "titleChanged": title_changed,
                 "anonymousChanged": anonymous_changed,
                 "description": mapper.description if form_only else description,
+                "is_migrated": mapper.is_migrated,
             }
             FormProcessMapperService.mapper_create(mapper_data)
             FormProcessMapperService.mark_unpublished(mapper.id)

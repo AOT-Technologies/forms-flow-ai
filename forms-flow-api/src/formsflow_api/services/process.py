@@ -259,6 +259,9 @@ class ProcessService:  # pylint: disable=too-few-public-methods,too-many-public-
             if Process.find_process_by_name_key(
                 name=process_name, process_key=process_key
             ):
+                current_app.logger.debug(
+                    f"Process already exists..{process_name}:-{process_key}"
+                )
                 raise BusinessException(BusinessErrorCode.PROCESS_EXISTS)
 
         # Initialize version numbers for the new process
@@ -399,27 +402,11 @@ class ProcessService:  # pylint: disable=too-few-public-methods,too-many-public-
         current_app.logger.debug(f"Get process data for process key: {process_key}")
         process = Process.get_latest_version_by_key(process_key)
         mapper_id = request.args.get("mapperId")
-        # If process is not found check whether it's migrated
+        # If process is not found, fetch & save to process table.
         if not process and mapper_id:
-            current_app.logger.debug(f"Checking mapper_id is_migrated: {mapper_id}")
+            current_app.logger.debug("Process not found in db. Fetching & save it.")
             mapper = FormProcessMapper.find_form_by_id(mapper_id)
-            if mapper and mapper.is_migrated is False:
-                current_app.logger.debug(f"Mapper Id: {mapper_id} is not migrated")
-                process = cls.fetch_save_xml(mapper.process_key, mapper.process_tenant)
-                # Check for mappers with process_key exists
-                mappers = FormProcessMapper.get_mappers_by_process_key(
-                    mapper.process_key, mapper_id
-                )
-                current_app.logger.debug(
-                    f"Found mappers: {mappers} with same process_key."
-                )
-                # If there are no mappers with the process key update is_migrated=True
-                if not mappers:
-                    current_app.logger.debug(
-                        f"Updating mapper_id is_migrated: {mapper_id}"
-                    )
-                    mapper.is_migrated = True
-                    mapper.save()
+            process = cls.fetch_save_xml(mapper.process_key, mapper.process_tenant)
         if process:
             process_data = processSchema.dump(process)
             # Determine version numbers based on the process status

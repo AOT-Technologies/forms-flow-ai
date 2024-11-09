@@ -106,6 +106,12 @@ public class KeycloakAuthenticationFilter implements Filter {
 				MDC.put("tenantKey", tenantKey);
 			}
 			userGroups = getUserGroups(userId, claims, tenantKey);
+			// Add role claims with prefix ROLE_ to match with dynamically created authorization.
+			if (claims.containsKey("role")) {
+				for (String role : getKeys(claims, "role")) {
+					userGroups.add("ROLE_"+role);
+				}
+			}
 			if (tenantKey != null)
 				identityService.setAuthentication(userId, userGroups, tenantIds);
 			else

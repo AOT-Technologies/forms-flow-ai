@@ -9,6 +9,8 @@ import {
   FormInput,
 } from "@formsflow/components";
 import { Form } from "@aot-technologies/formio-react";
+import PropTypes from "prop-types";
+
 
 //TBD in case of Bundle form display
 const PillList = React.memo(({ alternativeLabels, onRemove }) => {
@@ -19,7 +21,7 @@ const PillList = React.memo(({ alternativeLabels, onRemove }) => {
         Object.entries(alternativeLabels).map(
           ([key, { altVariable, labelOfComponent }], index) => (
             <CustomPill
-              key={index}
+              key={key}
               label={altVariable || labelOfComponent}
               icon={<CloseIcon color="#253DF4" data-testid="pill-remove-icon" />}
               bg="#E7E9FE"
@@ -34,7 +36,11 @@ const PillList = React.memo(({ alternativeLabels, onRemove }) => {
     </div>
   );
 });
-
+// PropTypes for PillList
+PillList.propTypes = {
+  alternativeLabels: PropTypes.object.isRequired,
+  onRemove: PropTypes.func.isRequired,
+};
 const FormComponent = React.memo(
   ({ form, 
     alternativeLabels, 
@@ -142,11 +148,11 @@ const FormComponent = React.memo(
           {showElement ? (
             <div className="details-section">
               <div className="d-flex flex-column">
-                {t("Type:")}
+                <span>{t("Type")}:</span>
                 <span className="text-bold"> {selectedComponent.type}</span>
               </div>
               <div className="d-flex flex-column">
-                {t("Variable:")}
+                <span>{t("Variable")}:</span>
                 <span className="text-bold">{selectedComponent.key}</span>
                 {/* TBD in case of Bundle  */}
               </div>
@@ -173,6 +179,7 @@ const FormComponent = React.memo(
                     : t("Add Variable")
                 }
                 onClick={handleAddAlternative}
+                className="w-75"
                 disabled={selectedComponent.
                     altVariable === alternativeLabels[selectedComponent.key]?.altVariable} //TBD need to create a variable to compare values 
               />
@@ -186,6 +193,14 @@ const FormComponent = React.memo(
   }
 );
 
+// PropTypes for FormComponent
+FormComponent.propTypes = {
+  form: PropTypes.object.isRequired,
+  alternativeLabels: PropTypes.object.isRequired,
+  setAlternativeLabels: PropTypes.func.isRequired,
+  selectedComponent: PropTypes.object.isRequired,
+  setSelectedComponent: PropTypes.func.isRequired,
+};
 const TaskVariableModal = React.memo(
   ({ showTaskVarModal, onClose, form, setTaskVariable, taskVariable }) => {
     const { t } = useTranslation();
@@ -296,4 +311,12 @@ const TaskVariableModal = React.memo(
   }
 );
 
+// PropTypes for TaskVariableModal
+TaskVariableModal.propTypes = {
+  showTaskVarModal: PropTypes.bool.isRequired,
+  onClose: PropTypes.func.isRequired,
+  form: PropTypes.object.isRequired,
+  setTaskVariable: PropTypes.func.isRequired,
+  taskVariable: PropTypes.array.isRequired,
+};
 export default TaskVariableModal;

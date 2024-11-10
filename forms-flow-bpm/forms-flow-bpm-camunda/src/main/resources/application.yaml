@@ -37,6 +37,8 @@ formsflow.ai:
       webclient:
         maxInMemorySize: ${DATA_BUFFER_SIZE:2}
         connectionTimeout: ${BPM_CLIENT_CONN_TIMEOUT:5000}
+  documentService:
+    url: ${FORMSFLOW_DOC_API_URL}
 
 
 camunda.bpm:

@@ -5,6 +5,7 @@ import React, {
   forwardRef,
   useImperativeHandle,
 } from "react";
+import PropTypes from "prop-types"; // Import PropTypes for validation
 import "../Editor.scss";
 import BpmnModeler from "bpmn-js/lib/Modeler";
 import "bpmn-js/dist/assets/diagram-js.css";
@@ -16,49 +17,41 @@ import {
   CamundaPlatformPropertiesProviderModule,
 } from "bpmn-js-properties-panel";
 import camundaPlatformBehaviors from "camunda-bpmn-js-behaviors/lib/camunda-platform";
-//import CamundaExtensionModule from "camunda-bpmn-moddle/lib";
 import camundaModdleDescriptors from "camunda-bpmn-moddle/resources/camunda";
-
 import lintModule from "bpmn-js-bpmnlint";
 import "bpmn-js-bpmnlint/dist/assets/css/bpmn-js-bpmnlint.css";
 import linterConfig from "../../lint-rules/packed-config";
 
+// External modeler configuration for reusability and readability
+const modelerConfig = {
+  container: "#canvas",
+  propertiesPanel: { parent: "#js-properties-panel" },
+  linting: { bpmnlint: linterConfig, active: true },
+  additionalModules: [
+    BpmnPropertiesPanelModule,
+    BpmnPropertiesProviderModule,
+    CamundaPlatformPropertiesProviderModule,
+    camundaPlatformBehaviors,
+    lintModule,
+  ],
+  moddleExtensions: { camunda: camundaModdleDescriptors },
+};
+
 const BpmnEditor = forwardRef(({ bpmnXml, setLintErrors }, ref) => {
   const [bpmnModeler, setBpmnModeler] = useState(null);
 
-  const containerRef = useCallback((node) => {
-    if (node !== null) {
-      initializeModeler();
-    }
+  const initializeModeler = useCallback(() => {
+    setBpmnModeler(new BpmnModeler(modelerConfig));
   }, []);
 
-  const initializeModeler = () => {
-    setBpmnModeler(
-      new BpmnModeler({
-        container: "#canvas",
-        propertiesPanel: {
-          parent: "#js-properties-panel",
-        },
-        linting: {
-          bpmnlint: linterConfig,
-          active: true,
-        },
-        additionalModules: [
-          BpmnPropertiesPanelModule,
-          BpmnPropertiesProviderModule,
-          CamundaPlatformPropertiesProviderModule,
-          camundaPlatformBehaviors,
-          lintModule,
-        ],
-        moddleExtensions: {
-          camunda: camundaModdleDescriptors,
-        },
-      })
-    );
-  };
+  const containerRef = useCallback((node) => {
+    if (node !== null) initializeModeler();
+  }, [initializeModeler]);
 
   useEffect(() => {
-    handleImport(bpmnXml);
+    if (bpmnModeler) {
+      handleImport(bpmnXml);
+    }
   }, [bpmnXml, bpmnModeler]);
 
   const handleImport = (bpmnXml) => {
@@ -66,17 +59,10 @@ const BpmnEditor = forwardRef(({ bpmnXml, setLintErrors }, ref) => {
       bpmnModeler
         .importXML(bpmnXml)
         .then(({ warnings }) => {
-          if (warnings.length) {
-            console.log("Warnings", warnings);
-          }
-          // Add event listeners for bpmn linting
-          bpmnModeler.on("linting.completed", function (event) {
-            setLintErrors(event.issues || []);
-          });
+          if (warnings.length) console.log("Warnings", warnings);
+          bpmnModeler.on("linting.completed", (event) => setLintErrors(event.issues || []));
         })
-        .catch((err) => {
-          handleError(err, "BPMN Import Error: ");
-        });
+        .catch((err) => handleError(err, "BPMN Import Error: "));
     }
   };
 
@@ -85,21 +71,14 @@ const BpmnEditor = forwardRef(({ bpmnXml, setLintErrors }, ref) => {
     handleImport: (bpmnXml) => handleImport(bpmnXml),
   }));
 
-  const handleError = () => {
+  const handleError = (err, message = "An error occurred") => {
+    console.error(message, err);
     document.getElementById("inputWorkflow").value = null;
   };
 
-  const zoom = () => {
-    bpmnModeler.get("zoomScroll").stepZoom(1);
-  };
-
-  const zoomOut = () => {
-    bpmnModeler.get("zoomScroll").stepZoom(-1);
-  };
-
-  const zoomReset = () => {
-    bpmnModeler.get("zoomScroll").reset();
-  };
+  const zoom = () => bpmnModeler?.get("zoomScroll")?.stepZoom(1);
+  const zoomOut = () => bpmnModeler?.get("zoomScroll")?.stepZoom(-1);
+  const zoomReset = () => bpmnModeler?.get("zoomScroll")?.reset();
 
   return (
     <div className="bpmn-main-container">
@@ -143,5 +122,11 @@ const BpmnEditor = forwardRef(({ bpmnXml, setLintErrors }, ref) => {
     </div>
   );
 });
+
+// Adding PropTypes validation for the props
+BpmnEditor.propTypes = {
+  bpmnXml: PropTypes.string.isRequired,
+  setLintErrors: PropTypes.func.isRequired,
+};
 
 export default React.memo(BpmnEditor);

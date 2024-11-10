@@ -39,6 +39,7 @@ import { CustomSearch }  from "@formsflow/components";
 import userRoles from "../../constants/permissions.js";
 import FileService from "../../services/FileService";
 import {FormBuilderModal} from "@formsflow/components";
+import { useMutation } from "react-query";
 
  
 const List = React.memo((props) => {
@@ -50,7 +51,6 @@ const List = React.memo((props) => {
   const [importFormModal, setImportFormModal] = useState(false);
   const [importError, setImportError] = useState("");
   const [importLoader, setImportLoader] = useState(false);
-  const [wizardChecked,setWizardChecked] = useState(false);
   const ActionType = {
     BUILD: "BUILD",
     IMPORT: "IMPORT"
@@ -70,8 +70,30 @@ const List = React.memo((props) => {
   const [formSubmitted, setFormSubmitted] = useState(false);
 
   const tenantKey = useSelector((state) => state.tenants?.tenantId);
-  const [form, setForm] = useState({display:"form", title:"", description:""});
-  // const roleIds = useSelector((state) => state.user?.roleIds || {});
+    /* --------- validate form title exist or not --------- */
+    const {
+      mutate: validateFormTitle, // this function will trigger the api call
+      isLoading: validationLoading,
+      // isError: error,
+    } = useMutation(
+      ({ title }) =>
+        validateFormName(title) ,
+      {
+        onSuccess:({data})=>{
+          if (data && data.code === "FORM_EXISTS") {
+            setNameError(data.message);  // Set exact error message
+          } else {
+            setNameError("");
+          }
+        },
+        onError:(error)=>{
+          const errorMessage = error.response?.data?.message || "An error occurred while validating the form name.";
+          setNameError(errorMessage);  // Set the error message from the server
+        }
+        
+      }
+    );
+
   useEffect(() => {
     setSearch(searchText);
   }, [searchText]);
@@ -209,65 +231,46 @@ const List = React.memo((props) => {
     searchText,
   ]);
 
-  const validateForm = () => {
-    let errors = {};
-    if (!form.title || form.title.trim() === "") {
-      errors.title = "This field is required";
+  const validateForm = ({title}) => {
+    if (!title || title.trim() === "") {
+       return  "This field is required";
     }
-    return errors;
+    return null;
   };
 
-  const validateFormNameOnBlur = () => {
-    if (!form.title || form.title.trim() === "") {
-      setNameError("This field is required");
+  const validateFormNameOnBlur = ({title}) => {
+
+    const error = validateForm({title});
+    if (error) {
+      setNameError(error);
       return;
     }
-
-    validateFormName(form.title)
-      .then((response) => {
-        const data = response?.data;
-        if (data && data.code === "FORM_EXISTS") {
-          setNameError(data.message);  // Set exact error message
-        } else {
-          setNameError("");
-        }
-      })
-      .catch((error) => {
-      const errorMessage = error.response?.data?.message || "An error occurred while validating the form name.";
-      setNameError(errorMessage);  // Set the error message from the server
-      console.error("Error validating form name:", errorMessage);
-      });
+    validateFormTitle({title});
+    
   };
 
-  const handleChange = (path, event) => {
-    setFormSubmitted(false);
-    const { target } = event;
-    const value = target.type === "checkbox" ? target.checked : target.value;
-    value == "" ? setNameError("This field is required") : setNameError("");
-    setForm(prev=>({...prev,[path]:value}));
-  };
-
-  const handleBuild = (formName,formDescription) => {
-    // TBD: no need to pass formName and formDescription instead of that pass every data in handleChange
+ 
+  const handleBuild = ({description, display, title}) => {
     setFormSubmitted(true);
-    const errors = validateForm();
-    if (Object.keys(errors).length > 0) {
-      setNameError(errors.title);
+    const error = validateForm({title});
+    if (error) {
+      setNameError(error);
       return;
     }
-
-    const newForm = {
-      ...form,
+    const name = _camelCase(title);
+    const newForm = { 
+      display,
       tags: ["common"],
+      submissionAccess:submissionAccess,
+      componentChanged:true,
+      newVersion:true,
+      access:formAccess,
+      title,
+      name,
+      description,
+      path:name.toLowerCase(),
     };
 
-    newForm.submissionAccess = submissionAccess;
-    newForm.componentChanged = true;
-    newForm.newVersion = true;
-    newForm.access = formAccess;
-    newForm.path = _camelCase(form.title).toLowerCase();
-    newForm.name = _camelCase(form.title);
-    newForm.description = formDescription;
     if (MULTITENANCY_ENABLED && tenantKey) {
         newForm.tenantKey = tenantKey;
         newForm.path = addTenantkey(newForm.path, tenantKey);
@@ -294,15 +297,7 @@ const List = React.memo((props) => {
     });
   };
   
-  const onChangeCheckBox = () => {
-    const newWizardChecked = !wizardChecked;
-    setWizardChecked(newWizardChecked);
-    setForm(prevForm => ({
-      ...prevForm,
-      display: newWizardChecked ? "wizard" : "form"
-    }));
-  };
-
+ 
   return (
     <>
       {(forms.isActive || designerFormLoading || isBPMFormListLoading) &&
@@ -351,17 +346,14 @@ const List = React.memo((props) => {
                     nameLabel="Form Name"
                     descriptionLabel="Form Description"
                     showBuildForm={showBuildForm}
-                    formSubmitted={formSubmitted}
+                    isLoading={formSubmitted || validationLoading}
                     onClose={onCloseBuildModal}
-                    onAction={handleAction}
-                    handleChange={handleChange}
+                    onAction={handleAction} 
                     primaryBtnAction={handleBuild}
                     setNameError={setNameError}
                     nameValidationOnBlur={validateFormNameOnBlur}
                     nameError={nameError}
-                    buildForm={true}
-                    checked = {wizardChecked}
-                    setChecked={onChangeCheckBox}
+                    buildForm={true}  
                   />
                   <ImportModal
                     importLoader={importLoader}

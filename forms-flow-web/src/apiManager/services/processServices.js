@@ -562,16 +562,16 @@ export const deleteFormProcessMapper = (mapperId, ...rest) => {
   };
 };
 
-export const getProcessHistory = (process_key, page = null, limit = null) => {
-  let url = `${API.GET_PROCESSES_DETAILS}/${process_key}/versions`;
-  if (page !== null && limit !== null) {
+export const getProcessHistory = ({parentProcessKey, page = null, limit = null}) => {
+  let url = `${API.GET_PROCESSES_DETAILS}/${parentProcessKey}/versions`;
+  if (page && limit) {
     url += `?pageNo=${page}&limit=${limit}`;
   }
   return RequestService.httpGETRequest(url);
 };
 
-export const fetchRevertingProcessData = (process_Id) => {
-  let url = `${API.GET_PROCESSES_DETAILS}/${process_Id}`;
+export const fetchRevertingProcessData = (processId) => {
+  let url = `${API.GET_PROCESSES_DETAILS}/${processId}`;
   return RequestService.httpGETRequest(url);
 };
 

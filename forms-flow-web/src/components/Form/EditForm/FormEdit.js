@@ -1011,6 +1011,7 @@ const EditComponent = () => {
               CategoryType={CategoryType}
               setIsProcessDetailsLoading={setIsProcessDetailsLoading}
               isPublished={isPublished}
+              form={form}
               />}
             </div>
             <button

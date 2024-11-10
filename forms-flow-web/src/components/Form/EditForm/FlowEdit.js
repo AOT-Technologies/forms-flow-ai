@@ -9,6 +9,7 @@ import {
   HistoryIcon,
   ConfirmModal,
   HistoryModal,
+  CurlyBracketsIcon
 } from "@formsflow/components";
 import { Card } from "react-bootstrap";
 import { useTranslation } from "react-i18next";
@@ -30,9 +31,10 @@ import {
   validateProcess,
 } from "../../../helper/processHelper.js";
 import PropTypes from "prop-types";
+import TaskVariableModal from "../../Modals/TaskVariableModal.js";
 
 const FlowEdit = forwardRef(
-  ({ isPublished = false, CategoryType, setIsProcessDetailsLoading }, ref) => {
+  ({ isPublished = false, CategoryType, setIsProcessDetailsLoading, form }, ref) => {
     const { t } = useTranslation();
     const dispatch = useDispatch();
     const bpmnRef = useRef();
@@ -45,6 +47,8 @@ const FlowEdit = forwardRef(
       useSelector((state) => state.process);
     const processHistory = processHistoryData.processHistory || [];
     const handleDiscardModal = () => setShowDiscardModal(!showDiscardModal);
+    const [showTaskVarModal, setShowTaskVarModal] = useState(false);
+    const [taskVariable ,setTaskVariable] = useState([]);
 
     const saveFlow = async () => {
       try {
@@ -129,7 +133,12 @@ const FlowEdit = forwardRef(
           });
       }
     };
-
+    const handlePreviewAndVariables = () => {
+      setShowTaskVarModal(true);
+    };
+    const CloseTaskVarModal = () => {
+      setShowTaskVarModal(false);
+    };
     return (
       <>
         <Card>
@@ -168,8 +177,9 @@ const FlowEdit = forwardRef(
                     variant="secondary"
                     size="md"
                     className="mx-2"
-                    label={t("Preview & Variables")}
-                    onClick={() => console.log("handlePreviewAndVariables")}
+                    icon={<CurlyBracketsIcon />}
+                    label={t("Variables")}
+                    onClick={() => handlePreviewAndVariables()}
                     dataTestid="preview-and-variables-testid"
                     ariaLabel={t("{Preview and Variables Button}")}
                   />
@@ -218,6 +228,15 @@ const FlowEdit = forwardRef(
           revertBtnAction={revertProcessBtnAction}
           historyCount={processHistoryData.totalCount}
         />
+        {showTaskVarModal && (
+          <TaskVariableModal
+            form={form}
+            showTaskVarModal={showTaskVarModal}
+            onClose={CloseTaskVarModal}
+            setTaskVariable={setTaskVariable}
+            taskVariable={taskVariable}
+          />
+        )}
       </>
     );
   }

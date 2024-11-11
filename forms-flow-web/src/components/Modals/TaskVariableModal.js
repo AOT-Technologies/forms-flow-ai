@@ -14,7 +14,7 @@ import { useDispatch ,useSelector } from "react-redux";
 import {
   saveFormProcessMapperPut,
 } from "../../apiManager/services/processServices";
-import utils from "@aot-technologies/formiojs/lib/utils";
+
 
 //TBD in case of Bundle form display
 const PillList = React.memo(({ alternativeLabels, onRemove }) => {

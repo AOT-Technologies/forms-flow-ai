@@ -29,7 +29,7 @@ const DecisionTable = React.memo(() => {
   const [currentDmnSort, setCurrentDmnSort] = useState({
     activeKey: "name",
     name: { sortOrder: "asc" },
-    id: { sortOrder: "asc" },
+    processKey: { sortOrder: "asc" },
     modified: { sortOrder: "asc" },
     status: { sortOrder: "asc" },
   });
@@ -175,7 +175,7 @@ const contents = [
                   </th>
                   <th className="w-20" scope="col">
                     <SortableHeader
-                      columnKey="id"
+                      columnKey="processKey"
                       title="ID"
                       currentSort={currentDmnSort}
                       handleSort={handleSort}

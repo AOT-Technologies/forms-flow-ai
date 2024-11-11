@@ -9,7 +9,7 @@ on:
 jobs:
   notify:
     runs-on: ubuntu-latest
-    if: github.event.pull_request.base.repo.full_name == 'AOT-Technologies/forms-flow-ai' || github.event.pull_request.head.repo.full_name == 'AOT-Technologies/forms-flow-ai'
+    if: github.event.pull_request.base.repo.full_name == 'AOT-Technologies/forms-flow-ai'
 
     steps:
       - name: Determine PR Status
@@ -37,7 +37,8 @@ jobs:
                 {
                   "header": {
                     "title": "Open source: Pull Request Opened by ${{ github.event.pull_request.user.login }}",
-                    "subtitle": "Pull Request #${{ github.event.pull_request.number }}: ${{ github.event.pull_request.title }}"
+                    "subtitle": "Pull Request #${{ github.event.pull_request.number }}: ${{ github.event.pull_request.title }}",
+                    "imageUrl": "${{ github.event.pull_request.user.avatar_url }}"
                   },
                   "sections": [
                     {

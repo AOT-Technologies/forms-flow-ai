@@ -43,7 +43,6 @@ const FlowEdit = forwardRef(({ isPublished = false, CategoryType,form }, ref) =>
   const [showHistoryModal, setShowHistoryModal] = useState(false);
   const [isReverted, setIsReverted] = useState(false);
   const [showTaskVarModal, setShowTaskVarModal] = useState(false);
-    const [taskVariable ,setTaskVariable] = useState([]);
   /* --------- fetching all process history when click history button --------- */
   const {
     data: { data: historiesData } = {}, // response data destructured
@@ -237,8 +236,6 @@ const FlowEdit = forwardRef(({ isPublished = false, CategoryType,form }, ref) =>
           form={form}
           showTaskVarModal={showTaskVarModal}
           onClose={CloseTaskVarModal}
-          setTaskVariable={setTaskVariable}
-          taskVariable={taskVariable}
         />
         )}
     </>

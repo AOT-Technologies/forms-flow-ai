@@ -10,7 +10,11 @@ import {
 } from "@formsflow/components";
 import { Form } from "@aot-technologies/formio-react";
 import PropTypes from "prop-types";
-
+import { useDispatch ,useSelector } from "react-redux";
+import {
+  saveFormProcessMapperPut,
+} from "../../apiManager/services/processServices";
+import utils from "@aot-technologies/formiojs/lib/utils";
 
 //TBD in case of Bundle form display
 const PillList = React.memo(({ alternativeLabels, onRemove }) => {
@@ -19,7 +23,7 @@ const PillList = React.memo(({ alternativeLabels, onRemove }) => {
     <div className="pill-container">
       {Object.entries(alternativeLabels).length > 0 ? (
         Object.entries(alternativeLabels).map(
-          ([key, { altVariable, labelOfComponent }], index) => (
+          ([key, { altVariable, labelOfComponent }]) => (
             <CustomPill
               key={key}
               label={altVariable || labelOfComponent}
@@ -52,9 +56,10 @@ const FormComponent = React.memo(
     const formRef = useRef(null);
     const { t } = useTranslation();
     
+    
     const handleClick = useCallback(
       (e) => {
-        setShowElement(true);
+        
         const formioComponent = e.target.closest(".formio-component");
         const highlightedElement = document.querySelector(".formio-hilighted");
 
@@ -63,14 +68,16 @@ const FormComponent = React.memo(
         }
 
         if (formioComponent) {
+          setShowElement(true);
           formioComponent.classList.add("formio-hilighted");
-
+          
           let classes = Array.from(formioComponent.classList);
           classes = classes.filter((cls) =>
             cls.startsWith("formio-component-")
           );
           const typeClass = classes[classes.length - 2];
           const keyClass = classes[classes.length - 1];
+         
           const labelElement = formioComponent.querySelector("label");
           let label = "";
           if (labelElement) {
@@ -88,6 +95,7 @@ const FormComponent = React.memo(
 
           const componentKey = keyClass?.split("-").pop();
           const componentType = typeClass?.split("-").pop();
+          // const currentComponent = utils.getComponent(form.components,componentKey);
           setSelectedComponent({
             key: componentKey,
             type: componentType,
@@ -123,9 +131,14 @@ const FormComponent = React.memo(
           [selectedComponent.key]: {
             altVariable: selectedComponent.altVariable,
             labelOfComponent: selectedComponent.label,
+            key:selectedComponent.key
           },
         }));
-      }
+        const highlightedElement = document.querySelector(".formio-hilighted");
+        if (highlightedElement) {
+          highlightedElement.classList.remove("formio-hilighted");
+        }
+      }     
       setShowElement(false);
     };
 
@@ -174,7 +187,7 @@ const FormComponent = React.memo(
                 ariaLabel="Add alternative label button"
                 size="sm"
                 label={
-                  alternativeLabels[selectedComponent.key]?.altVariable
+                  alternativeLabels[selectedComponent.key]
                     ? t("Update Variable")
                     : t("Add Variable")
                 }
@@ -202,15 +215,28 @@ FormComponent.propTypes = {
   setSelectedComponent: PropTypes.func.isRequired,
 };
 const TaskVariableModal = React.memo(
-  ({ showTaskVarModal, onClose, form, setTaskVariable, taskVariable }) => {
+  ({ showTaskVarModal, onClose, form }) => {
     const { t } = useTranslation();
-    const [alternativeLabels, setAlternativeLabels] = useState(() => {
-      const initialLabels = {};
-      taskVariable.forEach(({ key, label }) => {
-        initialLabels[key] = { altVariable: label, labelOfComponent: label };
-      });
-      return initialLabels;
-    });
+    const dispatch = useDispatch();
+    const formProcessList = useSelector(
+      (state) => state.process.formProcessList
+    );
+    
+    const [alternativeLabels, setAlternativeLabels] = useState({});
+
+    useEffect(() => {
+      if (formProcessList?.taskVariables?.length > 0) {
+        const updatedLabels = {};
+        formProcessList.taskVariables.forEach(({ key, label }) => {
+          updatedLabels[key] = {
+            key,
+            altVariable: label, // Use label from taskVariables as altVariable
+            labelOfComponent: label, // Set the same label for labelOfComponent
+          };
+        });
+        setAlternativeLabels(updatedLabels);
+      }
+    }, [formProcessList]);
     const [selectedComponent, setSelectedComponent] = useState({
         key: null,
         type: "",
@@ -232,18 +258,24 @@ const TaskVariableModal = React.memo(
 
     const handleClose = () => onClose();
 
-    const handleSaveTaskVariable = () => {
-      const taskVariables = Object.entries(alternativeLabels).map(
-        ([key, { altVariable, labelOfComponent }]) => ({
-          key: key,
-          label: altVariable || labelOfComponent, // If altVariable exists, use it, otherwise it will be  labelOfComponent
+    const handleSaveTaskVariable = async() => {
+      const currentTaskVariables = Object.values(alternativeLabels).map(
+        (i) => ({
+          key: i.key,
+          label: i.altVariable || i.labelOfComponent,    // If altVariable exists, use it, otherwise it will be  labelOfComponent
         })
       );
-
-      setTaskVariable(taskVariables);
-      onClose();
+      const mapper = {
+        formId: formProcessList.formId,
+        id: formProcessList.id,
+        parentFormId: formProcessList.parentFormId,
+        taskVariables:currentTaskVariables,
+        formName: formProcessList.formName
+      };
+       await dispatch(saveFormProcessMapperPut({ mapper}));
+       
+       onClose();
     };
-
     return (
       <Modal
         show={showTaskVarModal}
@@ -265,8 +297,8 @@ const TaskVariableModal = React.memo(
             <CustomInfo
               heading="Note"
               content="To use variables in the flow, as well as sorting by them in 
-        the submissions and tasks you need to specify which variables you want to import from the layout. Variables get imported into the system at the time of the submission, if the variables that are needed 
-        are not selected prior to the form submission THEY WILL NOT BE AVAILABLE in the flow, submissions, and tasks."
+              the submissions and tasks you need to specify which variables you want to import from the layout. Variables get imported into the system at the time of the submission, if the variables that are needed 
+             are not selected prior to the form submission THEY WILL NOT BE AVAILABLE in the flow, submissions, and tasks."
             />
             <div>
               <label className="selected-var-text">{t("Selected Variables")}</label>
@@ -315,8 +347,6 @@ const TaskVariableModal = React.memo(
 TaskVariableModal.propTypes = {
   showTaskVarModal: PropTypes.bool.isRequired,
   onClose: PropTypes.func.isRequired,
-  form: PropTypes.object.isRequired,
-  setTaskVariable: PropTypes.func.isRequired,
-  taskVariable: PropTypes.array.isRequired,
+  form: PropTypes.object.isRequired
 };
 export default TaskVariableModal;

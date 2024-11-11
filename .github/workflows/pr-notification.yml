@@ -9,7 +9,7 @@ on:
 jobs:
   notify:
     runs-on: ubuntu-latest
-    if: github.repository == 'AOT-Technologies/forms-flow-ai'
+    if: github.event.pull_request.base.repo.full_name == 'AOT-Technologies/forms-flow-ai'
 
     steps:
       - name: Determine PR Status
@@ -25,10 +25,20 @@ jobs:
             echo "status=🟢 Open" >> $GITHUB_ENV
           fi
 
+
+      - name: Confirm PR_NOTIFICATION Secret is Set
+        run: |
+          if [[ -z "${{ secrets.PR_NOTIFICATION }}" ]]; then
+            echo "PR_NOTIFICATION secret is not set."
+          else
+            echo "PR_NOTIFICATION secret is set."
+          fi
+
       - name: Send notification to Google Chat
-        uses: fjogeleit/http-request-action@v1.1.0
+        uses: fjogeleit/http-request-action@v1.16.0
         with:
-          url: ${{ secrets.WEBHOOK }}
+          url: ${{ secrets.PR_NOTIFICATION }}
+
           method: POST
           contentType: application/json
           data: |
@@ -73,3 +83,4 @@ jobs:
                 }
               ]
             }
+

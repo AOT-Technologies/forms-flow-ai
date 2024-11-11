@@ -1,5 +1,6 @@
 import { extractDataFromDiagram } from "../components/Modeler/helpers/helper";
 import BpmnModdle from "bpmn-moddle";
+import DmnModdle from "dmn-moddle";
 import isEqual from "lodash/isEqual";
 import { toast } from "react-toastify";
 import {
@@ -7,32 +8,7 @@ import {
   WARNING_LINTING_CLASSNAME,
 } from "../components/Modeler/constants/bpmnModelerConstants";
 const bpmnModdle = new BpmnModdle();
-// export const createBpmnForm = (xml, deploymentName, tenantKey, applyAllTenants) => {
-//     const form = new FormData();
-//     // Deployment Name
-//     form.append("deployment-name", deploymentName);
-//     // Deployment Source
-//     form.append("deployment-source", "Camunda Modeler");
-//     // Tenant ID
-//     if (tenantKey && !applyAllTenants && PUBLIC_WORKFLOW_ENABLED) {
-//       form.append("tenant-id", tenantKey);
-//     }
-//     //If the env value is false,and Multitenancy is enabled, then by default it will create a tenant based workflow.
-//     if (MULTITENANCY_ENABLED && !PUBLIC_WORKFLOW_ENABLED) {
-//       form.append("tenant-id", tenantKey);
-//     }
-//     // Make sure that we do not re-deploy already existing deployment
-//     form.append("enable-duplicate-filtering", "true");
-//     // Create 'bpmn file' using blob which includes the xml of the process
-//     const blob = new Blob([xml], { type: "text/bpmn" });
-//     // TODO: How to name the file
-//     let filename = deploymentName.replaceAll(" / ", "-");
-//     //filename = filename.replaceAll(' / ', '');
-
-//     form.append("upload", blob, filename + ".bpmn");
-
-//     return form;
-//   };
+const dmnModdle = new DmnModdle();
 
 export const parseBpmn = async (xmlString) => {
   const { rootElement: definitionsA } = await bpmnModdle.fromXML(xmlString);
@@ -107,4 +83,82 @@ export const validateProcessNames = (xml) => {
   }
 
   return isValidated;
+};
+
+
+// Parse DMN XML into JSON structure
+export const parseDmn = async (xmlString) => {
+  try {
+    const { rootElement: definitions } = await dmnModdle.fromXML(xmlString);
+    return definitions;
+  } catch (error) {
+    console.error("Error parsing DMN XML:", error);
+    throw error;
+  }
+};
+
+// Validate DMN XML structure and check for naming and linting issues
+export const validateDmn = async (xmlString, lintErrors, translation = (i) => i) => {
+  try {
+    // Parse the XML to check structural correctness
+    const dmnDefinitions = await parseDmn(xmlString);
+    
+    // Validate lint errors (similar to BPMN validation)
+    if (validateDmnLintErrors(lintErrors, translation)) {
+      return false; // Validation failed due to errors
+    }
+
+    // Check for valid decision names
+    if (!validateDecisionNames(dmnDefinitions)) {
+      toast.error(translation("Decision name(s) must not be empty or undefined"));
+      return false;
+    }
+
+    return true; // Passed validation
+  } catch (error) {
+    console.error("Error validating DMN:", error);
+    return false;
+  }
+};
+
+// Compare two DMN XML strings to check if they are structurally identical
+export const compareDmnXML = async (xmlString1, xmlString2) => {
+  try {
+    // Parse both DMN XMLs to JSON structures
+    const dmn1 = await parseDmn(xmlString1);
+    const dmn2 = await parseDmn(xmlString2);
+    
+    // Compare the JSON structures
+    return isEqual(dmn1, dmn2);
+  } catch (error) {
+    console.error("Error comparing DMN XML:", error);
+    return false;
+  }
+};
+
+// Validate linting errors for DMN
+export const validateDmnLintErrors = (lintErrors, translation = (i) => i) => {
+  let hasErrors = false;
+  for (const key in lintErrors) {
+    const err = lintErrors[key];
+    err.forEach((x) => {
+      if (x.category === "error") {
+        hasErrors = true;
+        toast.error(translation(x.message));
+      } else if (x.category === "warn") {
+        toast.warn(translation(x.message));
+      }
+    });
+  }
+  return hasErrors;
+};
+
+// Validate that decision names are defined and not "undefined"
+export const validateDecisionNames = (xml, t) => {
+  const extractedData = extractDataFromDiagram(xml, true);
+  if (!extractedData.name || extractedData.name.includes("undefined")) {
+    toast.error(t("Process name(s) must not be empty or undefined"));
+    return false;
+  }
+  return true;
 };

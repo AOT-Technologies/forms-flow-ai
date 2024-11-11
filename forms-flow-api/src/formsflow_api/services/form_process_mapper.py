@@ -219,7 +219,7 @@ class FormProcessMapperService:  # pylint: disable=too-many-public-methods
     @staticmethod
     def mark_unpublished(form_process_mapper_id):
         """Mark form process mapper as inactive."""
-        mapper = FormProcessMapper.find_form_by_id_active_status(
+        mapper = FormProcessMapper.find_form_by_id(
             form_process_mapper_id=form_process_mapper_id
         )
         if mapper:
@@ -309,6 +309,7 @@ class FormProcessMapperService:  # pylint: disable=too-many-public-methods
     @staticmethod
     def mapper_create(mapper_json):
         """Service to handle mapper create."""
+        current_app.logger.debug("Creating mapper..")
         mapper_json["taskVariables"] = json.dumps(
             mapper_json.get("taskVariables") or []
         )
@@ -350,8 +351,11 @@ class FormProcessMapperService:  # pylint: disable=too-many-public-methods
         return process
 
     @staticmethod
-    def create_form(data, is_designer):
+    @user_context
+    def create_form(data, is_designer, **kwargs):  # pylint:disable=too-many-locals
         """Service to handle form create."""
+        current_app.logger.info("Creating form..")
+        user: UserContext = kwargs["user"]
         # Initialize formio service and get formio token to create the form
         formio_service = FormioService()
         form_io_token = formio_service.get_formio_access_token()
@@ -359,55 +363,93 @@ class FormProcessMapperService:  # pylint: disable=too-many-public-methods
         response = formio_service.create_form(data, form_io_token)
         form_id = response.get("_id")
         parent_form_id = data.get("parentFormId", form_id)
-        # create default data form mapper table
-        process_name = response.get("name")
-        # process key/Id doesn't support numbers & special characters at start
-        # special characters anywhere so clean them before setting as process key
-        process_name = FormProcessMapperService.clean_form_name(process_name)
+        # is_new_form=True if creating a new form, False if creating a new version
+        is_new_form = parent_form_id == form_id
+        process_key = None
+        anonymous = False
+        description = data.get("description", "")
+        task_variable = []
+        current_app.logger.info(f"Creating new form {is_new_form}")
+        # If creating new version for a existing form, fetch process key, name from mapper
+        if not is_new_form:
+            current_app.logger.debug("Fetching details from mapper")
+            mapper = FormProcessMapper.get_latest_by_parent_form_id(parent_form_id)
+            process_name = mapper.process_name
+            process_key = mapper.process_key
+            anonymous = mapper.is_anonymous
+            description = mapper.description
+            task_variable = json.loads(mapper.task_variable)
+        else:
+            # if new form, form name is kept as process_name & process key
+            process_name = response.get("name")
+            # process key/Id doesn't support numbers & special characters at start
+            # special characters anywhere so clean them before setting as process key
+            process_name = FormProcessMapperService.clean_form_name(process_name)
+
         mapper_data = {
             "formId": form_id,
             "formName": response.get("title"),
-            "description": data.get("description", ""),
+            "description": description,
             "formType": response.get("type"),
             "processKey": process_name,
-            "processName": process_name,
+            "processName": process_key if process_key else process_name,
             "formTypeChanged": True,
             "parentFormId": parent_form_id,
             "titleChanged": True,
             "formRevisionNumber": "V1",
+            "status": FormProcessMapperStatus.INACTIVE.value,
+            "anonymous": anonymous,
+            "task_variable": task_variable,
         }
-        # create default data for authorization of the resource
-        authorization_data = {
-            "application": {
-                "resourceId": parent_form_id,
-                "resourceDetails": {},
-                "roles": [],
-            },
-            "designer": {
-                "resourceId": parent_form_id,
-                "resourceDetails": {},
-                "roles": [],
-            },
-            "form": {"resourceId": parent_form_id, "resourceDetails": {}, "roles": []},
-        }
+
         mapper = FormProcessMapperService.mapper_create(mapper_data)
-        AuthorizationService.create_or_update_resource_authorization(
-            authorization_data, is_designer=is_designer
-        )
-        # validate process key already exists, if exists append mapper id to process_key.
-        FormProcessMapperService.validate_process_and_update_mapper(
-            process_name, mapper
-        )
+        current_app.logger.debug("Creating form log with clone..")
         FormHistoryService.create_form_log_with_clone(
             data={
                 **response,
-                "parentFormId": data.get("parentFormId", form_id),
+                "parentFormId": parent_form_id,
                 "newVersion": True,
                 "componentChanged": True,
             }
         )
-        # create entry in process with default flow.
-        FormProcessMapperService.create_default_process(process_name)
+        if is_new_form:
+            # create default data for authorization of the resource
+            authorization_data = {
+                "application": {
+                    "resourceId": parent_form_id,
+                    "resourceDetails": {},
+                    "roles": [],
+                },
+                "designer": {
+                    "resourceId": parent_form_id,
+                    "resourceDetails": {},
+                    "roles": [],
+                    "userName": user.user_name,
+
+                },
+                "form": {
+                    "resourceId": parent_form_id,
+                    "resourceDetails": {},
+                    "roles": [],
+                },
+            }
+            current_app.logger.debug(
+                "Creating default data for authorization of the resource.."
+            )
+            AuthorizationService.create_or_update_resource_authorization(
+                authorization_data, is_designer=is_designer
+            )
+            # validate process key already exists, if exists append mapper id to process_key.
+            updated_process_name = (
+                FormProcessMapperService.validate_process_and_update_mapper(
+                    process_name, mapper
+                )
+            )
+            process_name = (
+                updated_process_name if updated_process_name else process_name
+            )
+            # create entry in process with default flow.
+            FormProcessMapperService.create_default_process(process_name)
         return response
 
     def _get_form(  # pylint: disable=too-many-arguments, too-many-positional-arguments
@@ -648,6 +690,47 @@ class FormProcessMapperService:  # pylint: disable=too-many-public-methods
 
         raise BusinessException(BusinessErrorCode.INVALID_FORM_PROCESS_MAPPER_ID)
 
+    @classmethod
+    def is_valid_field(cls, field: str, pattern: str) -> bool:
+        """Checks if the given field matches the provided regex pattern."""
+        return bool(re.fullmatch(pattern, field))
+
+    @classmethod
+    def validate_title_name_path(cls, title: str, path: str, name: str):
+        """Validates the title, path, and name fields."""
+        title_pattern = r"(?=.*[A-Za-z])[A-Za-z0-9 ]+"
+        path_name = r"(?=.*[A-Za-z])[A-Za-z0-9]+"
+
+        invalid_fields = []
+
+        error_messages = {
+            "title": "Title: Only contain alphanumeric characters and spaces, and must include at least one letter.",
+            "path": "Path: Only contain alphanumeric characters, no spaces, and must include at least one letter.",
+            "name": "Name: Only contain alphanumeric characters, no spaces, and must include at least one letter.",
+        }
+
+        # Validate title
+        if title and not cls.is_valid_field(title, title_pattern):
+            invalid_fields.append("title")
+
+        # Validate path and name
+        for field_name, field_value in (("path", path), ("name", name)):
+            if field_value and not cls.is_valid_field(field_value, path_name):
+                invalid_fields.append(field_name)
+
+        # Determine overall validity
+        is_valid = len(invalid_fields) == 0
+        if not is_valid:
+            # Generate detailed validation error message
+            error_message = ",\n ".join(
+                error_messages[field] for field in invalid_fields
+            )
+            raise BusinessException(
+                BusinessErrorCode.FORM_VALIDATION_FAILED,
+                detail_message=error_message,
+                include_details=True,
+            )
+
     @staticmethod
     def validate_form_name_path_title(request):
         """Validate a form name by calling the external validation API."""
@@ -660,6 +743,8 @@ class FormProcessMapperService:  # pylint: disable=too-many-public-methods
         # Check if at least one query parameter is provided
         if not (title or name or path):
             raise BusinessException(BusinessErrorCode.INVALID_FORM_VALIDATION_INPUT)
+
+        FormProcessMapperService.validate_title_name_path(title, path, name)
 
         # Combine them into query parameters dictionary
         query_params = f"title={title}&name={name}&path={path}&select=title,path,name"

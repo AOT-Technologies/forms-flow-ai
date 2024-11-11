@@ -6,6 +6,7 @@ from flask import request
 from flask_restx import Namespace, Resource, fields
 from formsflow_api_utils.utils import (
     CREATE_DESIGNS,
+    VIEW_DESIGNS,
     auth,
     cors_preflight,
     profiletime,
@@ -406,7 +407,7 @@ class ProcessResourceByProcessKey(Resource):
     """Resource for managing process by process key."""
 
     @staticmethod
-    @auth.has_one_of_roles([CREATE_DESIGNS])
+    @auth.has_one_of_roles([CREATE_DESIGNS, VIEW_DESIGNS])
     @profiletime
     @API.doc(
         responses={

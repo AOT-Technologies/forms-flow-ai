@@ -14,13 +14,14 @@ import {
   HistoryIcon,
   PreviewIcon,
   FormBuilderModal,
+  HistoryModal,
 } from "@formsflow/components";
 import { RESOURCE_BUNDLES_DATA } from "../../../resourceBundles/i18n";
 import LoadingOverlay from "react-loading-overlay-ts";
 import _cloneDeep from "lodash/cloneDeep";
 import { useTranslation } from "react-i18next";
 import { push } from "connected-react-router";
-import ActionModal from "../../Modals/ActionModal.js";
+import ActionModal from "../../Modals/ActionModal.js";  
 //for save form
 import { MULTITENANCY_ENABLED } from "../../../constants/constants";
 import { fetchFormById } from "../../../apiManager/services/bpmFormServices";
@@ -29,9 +30,13 @@ import {
   formUpdate,
   validateFormName,
   formCreate,
+  formImport,
   publish,
   unPublish,
+  getFormHistory,
 } from "../../../apiManager/services/FormServices";
+import ImportModal from "../../Modals/ImportModal.js";
+import FileService from "../../../services/FileService";
 import utils from "@aot-technologies/formiojs/lib/utils";
 import {
   setFormFailureErrorData,
@@ -39,13 +44,16 @@ import {
   setRestoreFormData,
   setRestoreFormId,
   setFormDeleteStatus,
+  setFormHistories,
 } from "../../../actions/formActions";
 import {
   saveFormProcessMapperPut,
   getProcessDetails,
   unPublishForm,
 } from "../../../apiManager/services/processServices";
-import { setProcessData } from "../../../actions/processActions.js";
+import {
+  setProcessData,
+} from "../../../actions/processActions.js";
 import _isEquial from "lodash/isEqual";
 import _ from "lodash";
 import SettingsModal from "../../Modals/SettingsModal";
@@ -55,24 +63,28 @@ import NewVersionModal from "../../Modals/NewVersionModal";
 import { currentFormReducer } from "../../../modules/formReducer.js";
 import { toast } from "react-toastify";
 import { generateUniqueId } from "../../../helper/helper.js";
+import { useMutation } from "react-query";
 
 // constant values
 const DUPLICATE = "DUPLICATE";
+const IMPORT = "IMPORT";
 const EXPORT = "EXPORT";
 const FORM_LAYOUT = "FORM_LAYOUT";
 const FLOW_LAYOUT = "FLOW_LAYOUT";
 const DELETE = "DELETE";
 
-const Edit = React.memo(() => {
+const EditComponent = () => {
   const dispatch = useDispatch();
   const { formId } = useParams();
   const { t } = useTranslation();
-  //this variable handle the flow and layot tab switching 
+  //this variable handle the flow and layot tab switching
   const sideTabRef = useRef(null);
 
   /* ------------------------------- mapper data ------------------------------ */
-  const { formProcessList: processListData, formPreviousData: previousData } =
-    useSelector((state) => state.process);
+  const {
+    formProcessList: processListData,
+    formPreviousData: previousData,
+  } = useSelector((state) => state.process);
 
   /* -------------------------------- user data and form access data ------------------------------- */
   const {
@@ -101,13 +113,132 @@ const Edit = React.memo(() => {
 
   const [nameError, setNameError] = useState("");
   const [newVersionModal, setNewVersionModal] = useState(false);
+  /* ------------------------------ fowvariables ------------------------------ */
+  const flowRef = useRef(null);
+  /* ------------------------- file import ------------------------- */
+  const [formTitle, setFormTitle] = useState("");
+  const [importError, setImportError] = useState("");
+  const [importLoader, setImportLoader] = useState(false);
 
+   /* --------- validate form title exist or not --------- */
+   const {
+    mutate: validateFormTitle, // this function will trigger the api call
+    isLoading: validationLoading,
+    // isError: error,
+  } = useMutation(
+    ({ title }) =>
+      validateFormName(title) ,
+    {
+      onSuccess:({data})=>{
+        if (data && data.code === "FORM_EXISTS") {
+          setNameError(data.message);  // Set exact error message
+        } else {
+          setNameError("");
+        }
+      },
+      onError:(error)=>{
+        const errorMessage = error.response?.data?.message || "An error occurred while validating the form name.";
+        setNameError(errorMessage);  // Set the error message from the server
+      }
+    }
+  );
+  
+  const UploadActionType = {
+    IMPORT: "import",
+    VALIDATE: "validate"
+  };
+  const [fileItems, setFileItems] = useState({
+    workflow: {
+      majorVersion: null,
+      minorVersion: null
+    },
+    form: {
+      majorVersion: null,
+      minorVersion: null
+    }
+  });
+
+  const handleImport = async (fileContent, UploadActionType,
+    selectedLayoutVersion, selectedFlowVersion) => {
+    setImportLoader(true);
+
+    // Validate UploadActionType before proceeding
+    if (!["validate", "import"].includes(UploadActionType)) {
+      console.error("Invalid UploadActionType provided");
+      setImportLoader(false);
+      return;
+    }
+
+    let data = {};
+    data.importType = "edit";
+    data.action = UploadActionType;
+    // Set form submission state for "import" action
+
+    if (UploadActionType === "import") {
+      setFormSubmitted(true);
+      // Handle selectedLayoutVersion logic
+      if (selectedLayoutVersion || selectedFlowVersion) {
+        data.form = {
+          skip: selectedLayoutVersion === true,
+        };
+
+        data.workflow = {
+          skip: selectedFlowVersion === true,
+        };
+      }
+    }
+
+    // Add mapperId if available
+    data.mapperId = processListData.id;
+
+    // Convert data to a JSON string for the API request
+    const dataString = JSON.stringify(data);
+    try {
+      const res = await formImport(fileContent, dataString);
+      setImportLoader(false);
+      setFormSubmitted(false);
+      const { data: responseData } = res;
+      if (responseData) {
+        const { workflow, form } = responseData;
+        setFileItems({
+          workflow: {
+            majorVersion: workflow?.majorVersion || null,
+            minorVersion: workflow?.minorVersion || null
+          },
+          form: {
+            majorVersion: form?.majorVersion || null,
+            minorVersion: form?.minorVersion || null
+          }
+        });
+      }
+      if (data.action === "validate") {
+        FileService.extractFormDetails(fileContent, (formExtracted) => {
+          if (formExtracted) {
+            setFormTitle(formExtracted.formTitle);
+          } else {
+            console.log("No valid form found.");
+          }
+        });
+      } else {
+        if (responseData?.formId) {
+          handleCloseSelectedAction();
+          dispatch(push(`${redirectUrl}formflow/${responseData.formId}/edit/`));
+        }
+      }
+    } catch (err) {
+      setImportLoader(false);
+      setFormSubmitted(false);
+      setImportError(err?.response?.data?.message || "An error occurred");
+    }
+  };
   /* ------------------------- form history variables ------------------------- */
   const [isNewVersionLoading, setIsNewVersionLoading] = useState(false);
   const [restoreFormDataLoading, setRestoreFormDataLoading] = useState(false);
-  const { restoredFormData, restoredFormId } = useSelector(
-    (state) => state.formRestore
-  );
+  const {
+    formHistoryData = {},
+    restoredFormData,
+    restoredFormId,
+  } = useSelector((state) => state.formRestore);
 
   /* -------------------------- getting process data -------------------------- */
   const [isProcessDetailsLoading, setIsProcessDetailsLoading] = useState(false);
@@ -128,6 +259,8 @@ const Edit = React.memo(() => {
     (state) => state.process?.applicationCount
   );
 
+  const formHistory = formHistoryData.formHistory || [];
+  const [showHistoryModal, setShowHistoryModal] = useState(false);
   const [showConfirmModal, setShowConfirmModal] = useState(false);
   const [modalType, setModalType] = useState("");
 
@@ -151,12 +284,24 @@ const Edit = React.memo(() => {
 
   const handleCloseSelectedAction = () => {
     setSelectedAction(null);
+    if (selectedAction === IMPORT) {
+      setFileItems({
+        workflow: {
+          majorVersion: null,
+          minorVersion: null
+        },
+        form: {
+          majorVersion: null,
+          minorVersion: null
+        }
+      });
+      setImportError("");
+    }
     if (selectedAction === DUPLICATE) {
       setNameError("");
       setFormSubmitted(false);
     }
   };
-
   useEffect(() => {
     if (restoredFormId) {
       setRestoreFormDataLoading(true);
@@ -186,42 +331,58 @@ const Edit = React.memo(() => {
     };
   }, [restoredFormId]);
 
-  const fetchProcessDetails = async(processListData)=>{
+  const fetchRestoredFormData = (restoredFormId) => {
+    if (restoredFormId) {
+      fetchFormById(restoredFormId)
+        .then((res) => {
+          if (res.data) {
+            const { data } = res;
+            dispatch(setRestoreFormData(data));
+            dispatchFormAction({
+              type: "components",
+              value: _cloneDeep(data.components),
+            });
+            dispatchFormAction({ type: "type", value: data.type });
+            dispatchFormAction({ type: "display", value: data.display });
+          }
+        })
+        .catch((err) => {
+          toast.error(err.response.data);
+        });
+    }
+
+    const cleanup = () => {
+      dispatch(setRestoreFormData({}));
+      dispatch(setRestoreFormId(null));
+    };
+
+    return cleanup; 
+  };
+
+  useEffect(() => {
+    fetchRestoredFormData(restoredFormId);
+  }, [restoredFormId]);
+
+  const fetchProcessDetails = async (processListData) => {
     const response = await getProcessDetails(processListData.processKey);
     dispatch(setProcessData(response.data));
   };
-  
-  useEffect(async() => {
+
+  useEffect(async () => {
     if (processListData.processKey) {
       setIsProcessDetailsLoading(true);
       await fetchProcessDetails(processListData);
       setIsProcessDetailsLoading(false);
 
-   }
+    }
   }, [processListData.processKey]);
 
-  const validateFormNameOnBlur = () => {
-    if (!form.title || form.title.trim() === "") {
+  const validateFormNameOnBlur = ({title}) => {
+    if (!title || title.trim() === "") {
       setNameError("This field is required");
       return;
     }
-
-    validateFormName(form.title)
-      .then((response) => {
-        const data = response?.data;
-        if (data && data.code === "FORM_EXISTS") {
-          setNameError(data.message); // Set exact error message
-        } else {
-          setNameError("");
-        }
-      })
-      .catch((error) => {
-        const errorMessage =
-          error.response?.data?.message ||
-          "An error occurred while validating the form name.";
-        setNameError(errorMessage); // Set the error message from the server
-        console.error("Error validating form name:", errorMessage);
-      });
+    validateFormTitle({title});
   };
 
   const isFormComponentsChanged = () => {
@@ -363,9 +524,35 @@ const Edit = React.memo(() => {
   const backToForm = () => {
     dispatch(push(`${redirectUrl}form/`));
   };
+  const closeHistoryModal = () => {
+    setShowHistoryModal(false);
+  };
+  const fetchFormHistory = (parentFormId, page, limit) => {
+    getFormHistory(parentFormId, page, limit)
+      .then((res) => {
+        dispatch(setFormHistories(res.data));
+      })
+      .catch(() => {
+        setFormHistories([]);
+      });
+  };
 
-  const handleHistory = () => {
-    console.log("handleHistory");
+  const handleFormHistory = () => {
+    setShowHistoryModal(true);
+    dispatch(setFormHistories({ formHistory: [], totalCount: 0 }));
+    if (processListData?.parentFormId) {
+        fetchFormHistory(processListData?.parentFormId, 1, 4);
+    }
+};
+
+
+  const loadMoreBtnAction = () => {
+      fetchFormHistory(processListData?.parentFormId);
+  };
+
+  const revertFormBtnAction = (cloneId) => {
+    dispatch(setRestoreFormId(cloneId));
+    fetchRestoredFormData(cloneId);
   };
 
   const handlePreview = () => {
@@ -384,16 +571,8 @@ const Edit = React.memo(() => {
     setNewActionModal(true);
   };
 
-  const handleChange = (path, event) => {
-    setFormSubmitted(false);
-    const { target } = event;
-    const value = target.type === "checkbox" ? target.checked : target.value;
-    value == "" ? setNameError("This field is required") : setNameError("");
-
-    dispatchFormAction({ type: path, value });
-  };
-
-  const handlePublishAsNewVersion = (formName, formDescription) => {
+ 
+  const handlePublishAsNewVersion = ({description, title}) => {
     setFormSubmitted(true);
     const newFormData = manipulatingFormData(
       _.cloneDeep(form),
@@ -405,13 +584,13 @@ const Edit = React.memo(() => {
 
     const newPathAndName = generateUniqueId("duplicate-version-");
     newFormData.path = newPathAndName;
-    newFormData.title = form.title;
+    newFormData.title = title;
     newFormData.name = newPathAndName;
     newFormData.componentChanged = true;
     delete newFormData.machineName;
     delete newFormData.parentFormId;
     newFormData.newVersion = true;
-    newFormData.description = formDescription;
+    newFormData.description = description;
     delete newFormData._id;
 
     formCreate(newFormData)
@@ -444,9 +623,15 @@ const Edit = React.memo(() => {
       const actionFunction = isPublished ? unPublish : publish;
       closeModal();
       setIsPublishLoading(true);
+      if(!isPublished){
+        await flowRef.current.saveFlow(false);
+      }
       await actionFunction(processListData.id);
-      if(isPublished){
-       await fetchProcessDetails(processListData);
+      if (isPublished) {
+        await fetchProcessDetails(processListData);
+      }
+      else {
+        backToForm();
       }
       setPromptNewVersion(isPublished);
       setIsPublished(!isPublished);
@@ -767,7 +952,7 @@ const Edit = React.memo(() => {
                           size="md"
                           icon={<HistoryIcon />}
                           label={t("History")}
-                          onClick={handleHistory}
+                          onClick={() => handleFormHistory()}
                           dataTestid="handle-form-history-testid"
                           ariaLabel={t("Form History Button")}
                         />
@@ -828,12 +1013,15 @@ const Edit = React.memo(() => {
               className={`wraper flow-wraper ${isFlowLayout ? "visible" : ""}`}
             >
               {/* TBD: Add a loader instead. */}
-              {isProcessDetailsLoading ? <>loading...</> : <FlowEdit isPublished={isPublished}/>}
+              {isProcessDetailsLoading ? <>loading...</> : <FlowEdit 
+              ref={flowRef}
+              CategoryType={CategoryType}
+              isPublished={isPublished}
+              />}
             </div>
             <button
-              className={`border-0 form-flow-wraper-${
-                isFormLayout ? "right" : "left"
-              } ${sideTabRef.current && "visible"}`}
+              className={`border-0 form-flow-wraper-${isFormLayout ? "right" : "left"
+                } ${sideTabRef.current && "visible"}`}
               onClick={handleCurrentLayout}
             >
               {isFormLayout ? "Flow" : "Layout"}
@@ -846,20 +1034,34 @@ const Edit = React.memo(() => {
         onClose={onCloseActionModal}
         CategoryType={CategoryType.FORM}
         onAction={setSelectedAction}
+        published={isPublished}
       />
       <FormBuilderModal
         modalHeader={t("Duplicate")}
         nameLabel={t("New Form Name")}
         descriptionLabel={t("New Form Description")}
         showBuildForm={selectedAction === DUPLICATE}
-        formSubmitted={formSubmitted}
-        onClose={handleCloseSelectedAction}
-        handleChange={handleChange}
+        isLoading={formSubmitted || validationLoading}
+        onClose={handleCloseSelectedAction} 
         primaryBtnLabel={t("Save and Edit form")}
         primaryBtnAction={handlePublishAsNewVersion}
         setNameError={setNameError}
         nameValidationOnBlur={validateFormNameOnBlur}
         nameError={nameError}
+      />
+
+      <ImportModal
+        importLoader={importLoader}
+        importError={importError}
+        importFormModal={selectedAction === IMPORT}
+        uploadActionType={UploadActionType}
+        formName={formTitle}
+        formSubmitted={formSubmitted}
+        onClose={handleCloseSelectedAction}
+        handleImport={handleImport}
+        fileItems={fileItems}
+        headerText="Import File"
+        primaryButtonText="Confirm And Replace"
       />
 
       <ExportModal
@@ -892,9 +1094,22 @@ const Edit = React.memo(() => {
           size="md"
         />
       )}
+      
+      <HistoryModal
+        show={showHistoryModal}
+        onClose={closeHistoryModal}
+        title={t("History")}
+        loadMoreBtnText={t("Load More")}
+        revertBtnText={t("Revert To This")}
+        allHistory={formHistory}
+        loadMoreBtnAction={loadMoreBtnAction}
+        categoryType={CategoryType.FORM}
+        revertBtnAction={revertFormBtnAction}
+        historyCount={formHistoryData.totalCount}
+      />
       {renderDeleteModal()}
     </div>
   );
-});
+};
 
-export default Edit;
+export const Edit = React.memo(EditComponent);

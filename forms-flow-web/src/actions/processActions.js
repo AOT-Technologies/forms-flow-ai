@@ -87,11 +87,17 @@ export const setProcessActivityData = (data) => (dispatch) => {
 
 export const setProcessDiagramXML = (data) => (dispatch) => {
   dispatch({
-    type: ACTION_CONSTANTS.PROCESS_DIAGRAM_XML,
+    type: ACTION_CONSTANTS.DEFAULT_PROCESS_DIAGRAM_XML,
     payload: data,
   });
 };
 
+export const setDescisionDiagramXML = (data) => (dispatch) => {
+  dispatch({
+    type: ACTION_CONSTANTS.DEFAULT_DECISION_DIAGRAM_XML,
+    payload: data,
+  });
+};
 export const setProcessDiagramLoading = (data) => (dispatch) => {
   dispatch({
     type: ACTION_CONSTANTS.IS_PROCESS_DIAGRAM_LOADING,
@@ -177,9 +183,22 @@ export const setIsPublicDiagram = (data) => (dispatch) => {
   });
 };
 
+export const setProcessHistories = (historyData) => (dispatch) => {
+  dispatch({
+    type: ACTION_CONSTANTS.PROCESS_HISTORY,
+    payload:historyData,
+  });
+};
 export const setSubflowCount = (data) => (dispatch) => {
   dispatch({
     type: ACTION_CONSTANTS.SET_SUBFLOW_COUNT,
     payload: data,
   });
+}; 
+
+export const setTotalDmnCount = (data) => (dispatch) => {
+  dispatch({
+    type: ACTION_CONSTANTS.SET_TOTAL_DMN_COUNT, 
+    payload: data,
+    }); 
 };

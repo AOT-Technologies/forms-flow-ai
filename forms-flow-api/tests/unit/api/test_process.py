@@ -381,7 +381,7 @@ class TestProcessValidation:
         assert response.status_code == 400
         assert (
             response.json.get("message")
-            == "The BPMN name or ID already exists. It must be unique."
+            == "The Process name or ID already exists. It must be unique."
         )
 
     def test_process_validate_missing_params(app, client, session, jwt):

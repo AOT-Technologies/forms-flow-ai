@@ -20,7 +20,7 @@ class FormProcessMapperSchema(Schema):
     process_name = fields.Str(data_key="processName")
     comments = fields.Str(data_key="comments")
     is_anonymous = fields.Bool(data_key="anonymous")
-    status = fields.Str(data_key="status")  # active/inactive
+    status = fields.Str(data_key="status", allow_none=True)  # active/inactive
     created_by = fields.Str(data_key="createdBy")
     created = fields.Str(data_key="created")
     modified_by = fields.Str(data_key="modifiedBy")

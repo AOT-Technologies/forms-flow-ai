@@ -1,4 +1,5 @@
 import ACTION_CONSTANTS from "../actions/actionConstants";
+import { createNewProcess,createNewDecision } from "../components/Modeler/helpers/helper";
 
 const initialState = {
   isProcessLoading: true,
@@ -11,7 +12,6 @@ const initialState = {
   formProcessList: [],
   formPreviousData: [],
   processActivityList: null,
-  processDiagramXML: "",
   processActivityLoadError: false,
   isProcessDiagramLoading: false,
   applicationCount: 0,
@@ -26,8 +26,13 @@ const initialState = {
   bpmnSearchText: "",
   dmnSearchText: "",
   isPublicDiagram: null,
+  processHistoryData:{},
   processData:{},
-  totalCount:0,
+  totalBpmnCount:0,
+  totalDmnCount:0,
+  defaultProcessXmlData:createNewProcess().defaultWorkflow.xml,
+  defaultDmnXmlData:createNewDecision().defaultWorkflow.xml,
+
 };
 
 const process = (state = initialState, action) => {
@@ -65,8 +70,10 @@ const process = (state = initialState, action) => {
       };
     case ACTION_CONSTANTS.PROCESS_ACTIVITIES:
       return { ...state, processActivityList: action.payload };
-    case ACTION_CONSTANTS.PROCESS_DIAGRAM_XML:
-      return { ...state, processDiagramXML: action.payload };
+    case ACTION_CONSTANTS.DEFAULT_PROCESS_DIAGRAM_XML:
+      return { ...state, defaultProcessXmlData: action.payload };
+    case ACTION_CONSTANTS.DEFAULT_DECISION_DIAGRAM_XML:
+      return { ...state, defaultDmnXmlData: action.payload };
     case ACTION_CONSTANTS.IS_PROCESS_DIAGRAM_LOADING:
       return { ...state, isProcessDiagramLoading: action.payload };
     case ACTION_CONSTANTS.FORM_PREVIOUS_DATA:
@@ -103,10 +110,14 @@ const process = (state = initialState, action) => {
       return { ...state, dmnSearchText: action.payload };
     case ACTION_CONSTANTS.IS_PUBLIC_DIAGRAM:
       return { ...state, isPublicDiagram: action.payload };
+    case ACTION_CONSTANTS.PROCESS_HISTORY:
+      return { ...state, processHistoryData: action.payload };
     case ACTION_CONSTANTS.SET_PROCESS_DATA:
         return { ...state, processData: action.payload };
     case ACTION_CONSTANTS.SET_SUBFLOW_COUNT:
-        return { ...state, totalCount: action.payload };
+        return { ...state, totalBpmnCount: action.payload };
+    case ACTION_CONSTANTS.SET_TOTAL_DMN_COUNT:
+        return { ...state, totalDmnCount: action.payload };
     default:
       return state;
   }

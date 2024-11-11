@@ -6,6 +6,7 @@ from uuid import uuid1
 from flask import current_app
 from formsflow_api_utils.exceptions import BusinessException
 from formsflow_api_utils.services.external import FormioService
+from formsflow_api_utils.utils.enums import FormProcessMapperStatus
 from formsflow_api_utils.utils.user_context import UserContext, user_context
 from jsonschema import ValidationError, validate
 from lxml import etree
@@ -16,7 +17,6 @@ from formsflow_api.models import (
     FormHistory,
     FormProcessMapper,
     Process,
-    ProcessStatus,
     ProcessType,
 )
 from formsflow_api.schemas import (
@@ -58,15 +58,27 @@ class ImportService:  # pylint: disable=too-many-public-methods
                     is_designer=True,
                 )
 
-    def get_latest_version_workflow(self, process_name, include_status=False):
+    def get_latest_version_workflow(self, process_name):
         """Get latest version of workflow by process name."""
         process = Process.get_latest_version_by_key(process_name)
         # If process not found, consider as initial version
         if not process:
-            return (1, 0, None) if include_status else (1, 0)
-        if include_status:
-            return process.major_version, process.minor_version, process.status
-        return process.major_version, process.minor_version
+            return (1, 0, None, None)
+        return (
+            process.major_version,
+            process.minor_version,
+            process.status,
+            process.status_changed,
+        )
+
+    def determine_process_version_by_key(self, name):
+        """Finding the process version by process key."""
+        major_version, minor_version, status, status_changed = (
+            self.get_latest_version_workflow(name)
+        )
+        return ProcessService.determine_process_version(
+            status, status_changed, major_version, minor_version
+        )
 
     def get_latest_version_form(self, parent_form_id):
         """Get latest version of form by parent ID."""
@@ -141,11 +153,15 @@ class ImportService:  # pylint: disable=too-many-public-methods
                 raise BusinessException(BusinessErrorCode.INVALID_INPUT) from err
         return request_data, file
 
-    def validate_form_exists(self, form_json, tenant_key, validate_path_only=False):
-        """Validate form already exists."""
+    def validate_form(
+        self, form_json, tenant_key, validate_path_only=False, mapper=None
+    ):
+        """Validate form already exists & title/path/name validation."""
         title = form_json.get("title")
         name = form_json.get("name")
         path = form_json.get("path")
+        # Validate form title, name, path
+        FormProcessMapperService.validate_title_name_path(title, path, name)
         # Add 'tenantkey-' from 'path' and 'name'
         if current_app.config.get("MULTI_TENANCY_ENABLED"):
             if not validate_path_only:
@@ -153,7 +169,9 @@ class ImportService:  # pylint: disable=too-many-public-methods
             path = f"{tenant_key}-path"
 
         # Build query params based on validation type
-        if validate_path_only:
+        if validate_path_only and mapper:
+            # In case of edit import validate title in mapper table & path in mapper table.
+            self.validate_form_title(title, mapper)
             query_params = f"path={path}&select=title,path,name,_id"
         else:
             query_params = (
@@ -163,12 +181,12 @@ class ImportService:  # pylint: disable=too-many-public-methods
         response = self.get_form_by_query(query_params)
         return response
 
-    def validate_form_title(self, form_json, mapper):
+    def validate_form_title(self, title, mapper):
         """Validate form tile in the form_process_mapper table."""
         # Exclude the current mapper from the query
-        current_app.logger.info(f"Validation for form title...{form_json.get('title')}")
+        current_app.logger.info(f"Validation for form title...{title}")
         mappers = FormProcessMapper.find_forms_by_title(
-            form_json.get("title"), exclude_id=mapper.id
+            title, exclude_id=mapper.parent_form_id
         )
         if mappers:
             current_app.logger.debug(f"Other mappers matching the title- {mappers}")
@@ -178,11 +196,8 @@ class ImportService:  # pylint: disable=too-many-public-methods
     def validate_edit_form_exists(self, form_json, mapper, tenant_key):
         """Validate form exists on edit import."""
         current_app.logger.info("Validating form exists in import edit...")
-        # Validate title in mapper table.
-        self.validate_form_title(form_json, mapper)
-        # Validate path exists in formio.
-        response = self.validate_form_exists(
-            form_json, tenant_key, validate_path_only=True
+        response = self.validate_form(
+            form_json, tenant_key, validate_path_only=True, mapper=mapper
         )
         # If response is not empty, check if the form_id is not the same as the mapper form_id
         # Then the path is taken by another form
@@ -236,7 +251,9 @@ class ImportService:  # pylint: disable=too-many-public-methods
                 f"Capturing version for process {name} in edit import..."
             )
             if selected_workflow_version:
-                major_version, minor_version = self.get_latest_version_workflow(name)
+                major_version, minor_version, _, _ = self.get_latest_version_workflow(
+                    name
+                )
                 if selected_workflow_version == "major":
                     major_version += 1
                     minor_version = 0
@@ -246,14 +263,9 @@ class ImportService:  # pylint: disable=too-many-public-methods
                 # If selected workflow version not specified
                 # Then update version as major if latest process data is published
                 # Otherwise update version as minor
-                major_version, minor_version, status = self.get_latest_version_workflow(
-                    name, include_status=True
+                major_version, minor_version = self.determine_process_version_by_key(
+                    name
                 )
-                if status and status == ProcessStatus.PUBLISHED:
-                    major_version += 1
-                    minor_version = 0
-                else:
-                    minor_version += 1
         # Save workflow as draft
         process_data = updated_xml.encode("utf-8")
         process = Process(
@@ -407,7 +419,7 @@ class ImportService:  # pylint: disable=too-many-public-methods
                 "description": mapper.description if form_only else description,
             }
             FormProcessMapperService.mapper_create(mapper_data)
-            FormProcessMapperService.mark_inactive_and_delete(mapper.id)
+            FormProcessMapperService.mark_unpublished(mapper.id)
         else:
             current_app.logger.info("Form import minor version inprogress...")
             form_id = mapper.form_id
@@ -491,7 +503,7 @@ class ImportService:  # pylint: disable=too-many-public-methods
                 raise BusinessException(BusinessErrorCode.INVALID_FILE_TYPE)
             form_json = file_data.get("forms")[0].get("content")
             workflow_data, process_type = self.get_process_details(file_data)
-            validate_form_response = self.validate_form_exists(form_json, tenant_key)
+            validate_form_response = self.validate_form(form_json, tenant_key)
             if validate_form_response:
                 raise BusinessException(BusinessErrorCode.FORM_EXISTS)
             if action == "validate":
@@ -510,6 +522,10 @@ class ImportService:  # pylint: disable=too-many-public-methods
             mapper_id = edit_request.get("mapper_id")
             # mapper is required for edit. Add validation
             mapper = FormProcessMapperService().validate_mapper(mapper_id, tenant_key)
+
+            if mapper.status == FormProcessMapperStatus.ACTIVE.value:
+                # Raise an exception if the user try to update published form
+                raise BusinessException(BusinessErrorCode.FORM_INVALID_OPERATION)
             form_id = mapper.form_id
             if valid_file == ".json":
                 file_data = self.read_json_data(file)
@@ -542,7 +558,7 @@ class ImportService:  # pylint: disable=too-many-public-methods
                     # Validate form exists
                     self.validate_edit_form_exists(form_json, mapper, tenant_key)
                     if action == "validate":
-                        major, minor = self.get_latest_version_workflow(
+                        major, minor = self.determine_process_version_by_key(
                             mapper.process_key
                         )
                         form_major, form_minor = self.get_latest_version_form(
@@ -551,8 +567,8 @@ class ImportService:  # pylint: disable=too-many-public-methods
                         return self.version_response(
                             form_major=form_major + 1,
                             form_minor=form_minor + 1,
-                            workflow_major=major + 1,
-                            workflow_minor=minor + 1,
+                            workflow_major=major,
+                            workflow_minor=minor,
                         )
                     if action == "import":
                         skip_form = edit_request.get("form", {}).get("skip")
@@ -591,12 +607,14 @@ class ImportService:  # pylint: disable=too-many-public-methods
             elif valid_file == ".bpmn":
                 current_app.logger.info("Workflow validated successfully.")
                 if action == "validate":
-                    major, minor = self.get_latest_version_workflow(mapper.process_key)
+                    major, minor = self.determine_process_version_by_key(
+                        mapper.process_key
+                    )
                     return self.version_response(
                         form_major=None,
                         form_minor=None,
-                        workflow_major=major + 1,
-                        workflow_minor=minor + 1,
+                        workflow_major=major,
+                        workflow_minor=minor,
                     )
                 if action == "import":
                     selected_workflow_version = edit_request.get("workflow", {}).get(

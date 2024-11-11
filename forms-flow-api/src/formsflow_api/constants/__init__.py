@@ -94,7 +94,7 @@ class BusinessErrorCode(ErrorCodeMixin, Enum):
         HTTPStatus.BAD_REQUEST,
     )
     PROCESS_EXISTS = (
-        "The BPMN name or ID already exists. It must be unique.",
+        "The Process name or ID already exists. It must be unique.",
         HTTPStatus.BAD_REQUEST,
     )
     INVALID_PROCESS_VALIDATION_INPUT = (
@@ -105,6 +105,11 @@ class BusinessErrorCode(ErrorCodeMixin, Enum):
         "Cannot update a published process",
         HTTPStatus.BAD_REQUEST,
     )
+    FORM_INVALID_OPERATION = (
+        "Cannot update a published form",
+        HTTPStatus.BAD_REQUEST,
+    )
+    FORM_VALIDATION_FAILED = "FORM_VALIDATION_FAILED.", HTTPStatus.BAD_REQUEST
 
     def __new__(cls, message, status_code):
         """Constructor."""

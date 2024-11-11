@@ -351,9 +351,11 @@ class FormProcessMapperService:  # pylint: disable=too-many-public-methods
         return process
 
     @staticmethod
-    def create_form(data, is_designer):  # pylint:disable=too-many-locals
+    @user_context
+    def create_form(data, is_designer, **kwargs):  # pylint:disable=too-many-locals
         """Service to handle form create."""
         current_app.logger.info("Creating form..")
+        user: UserContext = kwargs["user"]
         # Initialize formio service and get formio token to create the form
         formio_service = FormioService()
         form_io_token = formio_service.get_formio_access_token()
@@ -422,6 +424,8 @@ class FormProcessMapperService:  # pylint: disable=too-many-public-methods
                     "resourceId": parent_form_id,
                     "resourceDetails": {},
                     "roles": [],
+                    "userName": user.user_name,
+
                 },
                 "form": {
                     "resourceId": parent_form_id,

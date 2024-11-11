@@ -131,15 +131,15 @@ const FlowEdit = forwardRef(({ isPublished = false, CategoryType }, ref) => {
       <Card>
         <ConfirmModal
           show={showDiscardModal}
-          title={t(`Are you Sure you want to Discard Flow Changes`)}
+          title={t(`Discard Flow Changes?`)}
           message={t(
-            "Are you sure you want to discard all the changes of the Flow?"
+            "Are you sure you want to discard all unsaved changes to the flow of the form?"
           )}
           messageSecondary={t("This action cannot be undone.")}
           primaryBtnAction={handleDiscardConfirm}
           onClose={handleDiscardModal}
-          primaryBtnText={t("Discard Changes")}
-          secondaryBtnText={t("Cancel")}
+          primaryBtnText={t("Yes, Discard All Unsaved Changes")}
+          secondaryBtnText={t("No, Keep The Changes")}
           secondayBtnAction={handleDiscardModal}
           size="sm"
         />

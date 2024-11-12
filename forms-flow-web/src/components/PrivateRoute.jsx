@@ -1,5 +1,5 @@
 /* eslint-disable no-unused-vars */
-import React, { useEffect, Suspense, lazy, useMemo, useCallback } from "react";
+import React, { useEffect, Suspense, lazy, useMemo, useCallback ,useState} from "react";
 import { Route, Switch, Redirect, useParams } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import {
@@ -53,6 +53,7 @@ import { getFormioRoleIds } from "../apiManager/services/userservices";
 import AccessDenied from "./AccessDenied";
 import { LANGUAGE } from "../constants/constants";
 import  useUserRoles  from "../constants/permissions";
+import { getUserRoles } from "../apiManager/services/authorizationService";  // Assuming you have a service to get roles
 
 export const kcServiceInstance = (tenantId = null) => {
   return KeycloakService.getInstance(
@@ -83,7 +84,7 @@ const PrivateRoute = React.memo((props) => {
   const [authError, setAuthError] = React.useState(false);
   const [kcInstance, setKcInstance] = React.useState(getKcInstance());
   const [tenantValid, setTenantValid] = React.useState(true); // State to track tenant validity
-
+  const [allRoles, setAllRoles] = useState([]);
   const {
           admin, 
           createDesigns ,
@@ -150,6 +151,20 @@ const PrivateRoute = React.memo((props) => {
       }
     }
   }, [props.store, kcInstance, tenantId]);
+
+   // Fetch and set user roles
+   useEffect(() => {
+    getUserRoles()
+      .then((res) => {
+        if (res) {
+          const { data = [] } = res;
+          const roles = data.map((role) => role.name);
+          localStorage.setItem('AllUserRoles', JSON.stringify(roles));  // Set roles in localStorage
+          dispatch(setAllRoles(roles));
+        }
+      })
+      .catch((error) => console.error("Error fetching roles", error));
+  }, [dispatch]);
 
   useEffect(() => {
     if (tenantId && MULTITENANCY_ENABLED) {

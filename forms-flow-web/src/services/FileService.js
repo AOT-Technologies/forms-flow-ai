@@ -33,7 +33,7 @@ const uploadFile = (evt, callback) => {
   }  
 };
 
-const extractFormDetails = (fileContent, callback) => {
+const extractFileDetails = (fileContent, callback) => { 
   const fileObj = fileContent; // The file object passed directly
   if (fileObj) {
     const reader = new FileReader(); // Initialize FileReader to read the file
@@ -41,19 +41,37 @@ const extractFormDetails = (fileContent, callback) => {
 
     reader.onload = (e) => {
       try {
-        const fileContents = JSON.parse(e.target.result); // Parse file content as JSON
+        const fileExtension = fileObj.name.split('.').pop().toLowerCase();
+        
+        if (fileExtension === 'json') {
+          // Handle JSON file parsing
+          const fileContents = JSON.parse(e.target.result);
 
-        // Check if 'forms' exist and is an array in fileContents
-        if (fileContents && fileContents.forms && Array.isArray(fileContents.forms)) {
-          const formToUpload = fileContents.forms[0]; // Extract the first form (or adjust as needed)
-          callback(formToUpload); // Pass the extracted form details to the callback function
+          // Check if 'forms' exist and is an array in fileContents
+          if (fileContents && fileContents.forms && Array.isArray(fileContents.forms)) {
+            const formToUpload = fileContents.forms[0]; // Extract the first form
+            callback(formToUpload); // Pass the extracted form details to the callback function
+          } else {
+            console.error("No 'forms' array found in the file.");
+            callback(null); // Pass null if the 'forms' array is missing
+          }
+        } else if (['bpmn', 'dmn'].includes(fileExtension)) {
+          // Handle XML file parsing
+          const parser = new DOMParser();
+          const xmlDoc = parser.parseFromString(e.target.result, "application/xml");
+
+          if (xmlDoc.getElementsByTagName("parsererror").length > 0) {
+            callback(null); // Pass null in case of XML parsing error
+          } else {
+            // Return the entire XML document as a string
+            const xmlString = new XMLSerializer().serializeToString(xmlDoc);
+            callback(xmlString); // Pass the XML string to the callback function
+          }
         } else {
-          console.error("No 'forms' array found in the file.");
-          callback(null); // Pass null if the 'forms' array is missing
+         callback(null);
         }
       } catch (error) {
-        console.error("Error parsing JSON file:", error);
-        callback(null); // Pass null in case of JSON parsing error
+        callback(null); // Pass null in case of processing error
       }
     };
 
@@ -72,7 +90,7 @@ const extractFormDetails = (fileContent, callback) => {
 const FileService = {
   uploadFile,
   downloadFile,
-  extractFormDetails,
+  extractFileDetails,
 };
 
 export default FileService;

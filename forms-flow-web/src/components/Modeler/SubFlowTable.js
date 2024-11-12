@@ -16,6 +16,7 @@ import {
 import { push } from "connected-react-router";
 import { MULTITENANCY_ENABLED } from "../../constants/constants";
 import SortableHeader from "../CustomComponents/SortableHeader";
+import ImportSubflowTable from "../Modals/ImportSubFlow";
 
 
 const SubFlow = React.memo(() => {
@@ -38,27 +39,32 @@ const SubFlow = React.memo(() => {
     modified: { sortOrder: "asc" },
     status: { sortOrder: "asc" },
   });
+  const [importSubflow, setImportSubflow] = useState(false);
+  const closeBpmnImport = () => {
+    setImportSubflow(false);
+  };
   const [showBuildModal, setShowBuildModal] = useState(false);
   const handleBuildClick = () => {
-      dispatch(
+    dispatch(
       push(`${redirectUrl}subflow/create`));
   };
-  
+
   const handleImportClick = () => {
-    console.log("Import clicked");
+    setShowBuildModal(false);
+    setImportSubflow(true);
   };
   const contents = [
-    { 
+    {
       id: 1,
-      heading: "Build", 
+      heading: "Build",
       body: "Create the BPMN from scratch",
-      onClick: handleBuildClick  
+      onClick: handleBuildClick
     },
-    { 
+    {
       id: 2,
-      heading: "Import", 
+      heading: "Import",
       body: "Upload BPMN from a file",
-      onClick: handleImportClick 
+      onClick: handleImportClick
     }
   ];
   useEffect(() => {
@@ -152,104 +158,108 @@ const SubFlow = React.memo(() => {
 
   return (
     <>
-    <div className="d-md-flex justify-content-between align-items-center pb-3 flex-wrap">
-      <div className="d-md-flex align-items-center p-0 search-box input-group input-group width-25">
-        <CustomSearch
-          search={search}
-          setSearch={setSearch}
-          handleSearch={handleSearch}
-          handleClearSearch={handleClearSearch}
-          placeholder={t("Search BPMN Name")}
-          searchLoading={searchSubflowLoading}
-          title={t("Search BPMN Name")}
-          dataTestId="BPMN-search-input"
-        />
-      </div>
-      <div className="d-md-flex justify-content-end align-items-center ">
-        <CustomButton
-          variant="primary"
-          size="sm"
-          label="New BPMN"
-          className=""
-          dataTestid="create-BPMN-button"
-          ariaLabel="Create BPMN"
-          onClick={() => handleCreateBPMN()}
-        />
-      </div>
-      <LoadingOverlay active={isLoading} spinner text={t("Loading...")}>
-        <div className="min-height-400 pt-3">
-          <div className="custom-tables-wrapper">
-            <table className="table custom-tables table-responsive-sm">
-              <thead className="table-header">
-                <tr>
-                  <th className="w-25" scope="col">
-                    <SortableHeader
-                      columnKey="name"
-                      title="Name"
-                      currentSort={currentBpmnSort}
-                      handleSort={handleSort}
-                      className="ms-4"
-                    />
-                  </th>
-                  <th className="w-20" scope="col">
-                    <SortableHeader
-                      columnKey="id"
-                      title="id"
-                      currentSort={currentBpmnSort}
-                      handleSort={handleSort}
-                    />
-                  </th>
-                  <th className="w-15" scope="col">
-                    <SortableHeader
-                      columnKey="modified"
-                      title="Last Edited"
-                      currentSort={currentBpmnSort}
-                      handleSort={handleSort}
-                    />
-                  </th>
-                  <th className="w-15" scope="col">
-                    <SortableHeader
-                      columnKey="status"
-                      title="Status"
-                      currentSort={currentBpmnSort}
-                      handleSort={handleSort}
-                    />
-                  </th>
-                  <th
-                    className="w-25"
-                    colSpan="4"
-                    aria-label="edit bpmn button "
-                  ></th>
-                </tr>
-              </thead>
-              <tbody>
-                {process.map((processItem) => (
-                  <ReusableProcessTableRow
-                    key={processItem.id}
-                    item={processItem}
-                    gotoEdit={gotoEdit}
-                    buttonLabel="Bpmn"
-                  />
-                ))}
-                <TableFooter
-                  limit={limit}
-                  activePage={activePage}
-                  totalCount={totalCount}
-                  handlePageChange={handlePageChange}
-                  onLimitChange={onLimitChange}
-                  pageOptions={pageOptions}
-                />
-              </tbody>
-            </table>
-          </div>
+      <div className="d-md-flex justify-content-between align-items-center pb-3 flex-wrap">
+        <div className="d-md-flex align-items-center p-0 search-box input-group input-group width-25">
+          <CustomSearch
+            search={search}
+            setSearch={setSearch}
+            handleSearch={handleSearch}
+            handleClearSearch={handleClearSearch}
+            placeholder={t("Search BPMN Name")}
+            searchLoading={searchSubflowLoading}
+            title={t("Search BPMN Name")}
+            dataTestId="BPMN-search-input"
+          />
         </div>
-      </LoadingOverlay>
-    </div>
-    <BuildModal
-     show={showBuildModal}
-     onClose={handleBuildModal}
-     title={t(`New BPMN`)}
-     contents={contents}/>
+        <div className="d-md-flex justify-content-end align-items-center ">
+          <CustomButton
+            variant="primary"
+            size="sm"
+            label="New BPMN"
+            className=""
+            dataTestid="create-BPMN-button"
+            ariaLabel="Create BPMN"
+            onClick={() => handleCreateBPMN()}
+          />
+        </div>
+        <LoadingOverlay active={isLoading} spinner text={t("Loading...")}>
+          <div className="min-height-400 pt-3">
+            <div className="custom-tables-wrapper">
+              <table className="table custom-tables table-responsive-sm">
+                <thead className="table-header">
+                  <tr>
+                    <th className="w-25" scope="col">
+                      <SortableHeader
+                        columnKey="name"
+                        title="Name"
+                        currentSort={currentBpmnSort}
+                        handleSort={handleSort}
+                        className="ms-4"
+                      />
+                    </th>
+                    <th className="w-20" scope="col">
+                      <SortableHeader
+                        columnKey="id"
+                        title="id"
+                        currentSort={currentBpmnSort}
+                        handleSort={handleSort}
+                      />
+                    </th>
+                    <th className="w-15" scope="col">
+                      <SortableHeader
+                        columnKey="modified"
+                        title="Last Edited"
+                        currentSort={currentBpmnSort}
+                        handleSort={handleSort}
+                      />
+                    </th>
+                    <th className="w-15" scope="col">
+                      <SortableHeader
+                        columnKey="status"
+                        title="Status"
+                        currentSort={currentBpmnSort}
+                        handleSort={handleSort}
+                      />
+                    </th>
+                    <th
+                      className="w-25"
+                      colSpan="4"
+                      aria-label="edit bpmn button "
+                    ></th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {process.map((processItem) => (
+                    <ReusableProcessTableRow
+                      key={processItem.id}
+                      item={processItem}
+                      gotoEdit={gotoEdit}
+                      buttonLabel="Bpmn"
+                    />
+                  ))}
+                  <TableFooter
+                    limit={limit}
+                    activePage={activePage}
+                    totalCount={totalCount}
+                    handlePageChange={handlePageChange}
+                    onLimitChange={onLimitChange}
+                    pageOptions={pageOptions}
+                  />
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </LoadingOverlay>
+      </div>
+      <BuildModal
+        show={showBuildModal}
+        onClose={handleBuildModal}
+        title={t(`New BPMN`)}
+        contents={contents}/>
+      {importSubflow && <ImportSubflowTable
+        showModal={importSubflow}
+        closeImport={closeBpmnImport}
+      />}
     </>
   );
 });

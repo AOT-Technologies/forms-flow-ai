@@ -48,8 +48,11 @@ import {
 } from "../../actions/processActions";
 import { useMutation, useQuery } from "react-query";
 import LoadingOverlay from "react-loading-overlay-ts";
+import ImportSubFlow from "../Modals/ImportSubFlow";
+import ImportDecisionTable from "../Modals/ImportDecisionTable";
 
 const EXPORT = "EXPORT";
+const IMPORT = "IMPORT";
 const CategoryType = { FORM: "FORM", WORKFLOW: "WORKFLOW" };
 
 const ProcessCreateEdit = ({ type }) => {
@@ -58,19 +61,19 @@ const ProcessCreateEdit = ({ type }) => {
   const isBPMN = type === "BPMN";
   const Process = isBPMN
     ? {
-        name: "Subflow",
-        type: "BPMN",
-        route: "subflow",
-        extension: ".bpmn",
-        fileType: "text/bpmn",
-      }
+      name: "Subflow",
+      type: "BPMN",
+      route: "subflow",
+      extension: ".bpmn",
+      fileType: "text/bpmn",
+    }
     : {
-        name: "Decision Table",
-        type: "DMN",
-        route: "decision-table",
-        extension: ".dmn",
-        fileType: "text/dmn",
-      };
+      name: "Decision Table",
+      type: "DMN",
+      route: "decision-table",
+      extension: ".dmn",
+      fileType: "text/dmn",
+    };
 
   const diagramType = Process.type;
   const dispatch = useDispatch();
@@ -145,7 +148,7 @@ const ProcessCreateEdit = ({ type }) => {
       setIsReverted(true);
     },
   });
-
+  const ImportModal = isBPMN ? ImportSubFlow : ImportDecisionTable;
   const processDataXML = isReverted
     ? historyData?.processData
     : processData?.processData;
@@ -255,9 +258,9 @@ const ProcessCreateEdit = ({ type }) => {
     return isCreate
       ? await createProcess(payload)
       : await updateProcess({
-          ...payload,
-          id: processData.id, // ID needed only for update
-        });
+        ...payload,
+        id: processData.id, // ID needed only for update
+      });
   };
 
   const handleSaveSuccess = (response, isCreate, isPublished) => {
@@ -510,6 +513,13 @@ const ProcessCreateEdit = ({ type }) => {
   };
 
   const modalContent = getModalContent();
+  const resetSelectedAction = () => setSelectedAction(null);
+  const hanldeImportData = (xml) => {
+    const ref = isBPMN ? bpmnRef : dmnRef;
+    if (ref.current) {
+      ref.current?.handleImport(xml);
+    }
+  };
 
   return (
     <div>
@@ -653,6 +663,7 @@ const ProcessCreateEdit = ({ type }) => {
           setSelectedAction(action);
         }}
         isCreate={isCreate}
+        published={isPublished}
       />
 
       <ExportDiagram
@@ -687,6 +698,17 @@ const ProcessCreateEdit = ({ type }) => {
         historyCount={historiesData?.totalCount || 0}
         currentVersionId={processData.id}
       />
+      {selectedAction === IMPORT && <ImportModal
+        showModal={selectedAction === IMPORT}
+        closeImport={resetSelectedAction}
+        processId={processData.id}
+        processVersion={{
+          type: isBPMN ? "BPMN" : "DMN",
+          majorVersion: processData?.majorVersion,
+          minorVersion: processData?.minorVersion
+        }}
+        setImportXml={hanldeImportData}
+      />}
     </div>
   );
 };

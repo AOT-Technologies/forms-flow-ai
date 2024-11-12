@@ -31,17 +31,15 @@ import {
 import FormTable from "./constants/FormTable";
 import ClientTable from "./constants/ClientTable";
 import _ from "lodash";
-import { CustomButton } from "@formsflow/components"; 
+import { CustomButton } from "@formsflow/components";
 import _camelCase from "lodash/camelCase";
-import { formCreate, formImport,validateFormName } from "../../apiManager/services/FormServices";
+import { formCreate, formImport, validateFormName } from "../../apiManager/services/FormServices";
 import { setFormSuccessData } from "../../actions/formActions";
-import { CustomSearch }  from "@formsflow/components";
+import { CustomSearch } from "@formsflow/components";
 import userRoles from "../../constants/permissions.js";
 import FileService from "../../services/FileService";
-import {FormBuilderModal} from "@formsflow/components";
+import { FormBuilderModal } from "@formsflow/components";
 import { useMutation } from "react-query";
-
- 
 const List = React.memo((props) => {
   const { createDesigns, createSubmissions, viewDesigns } = userRoles();
   const { t } = useTranslation();
@@ -70,29 +68,28 @@ const List = React.memo((props) => {
   const [formSubmitted, setFormSubmitted] = useState(false);
 
   const tenantKey = useSelector((state) => state.tenants?.tenantId);
-    /* --------- validate form title exist or not --------- */
-    const {
-      mutate: validateFormTitle, // this function will trigger the api call
-      isLoading: validationLoading,
-      // isError: error,
-    } = useMutation(
-      ({ title }) =>
-        validateFormName(title) ,
-      {
-        onSuccess:({data})=>{
-          if (data && data.code === "FORM_EXISTS") {
-            setNameError(data.message);  // Set exact error message
-          } else {
-            setNameError("");
-          }
-        },
-        onError:(error)=>{
-          const errorMessage = error.response?.data?.message || "An error occurred while validating the form name.";
-          setNameError(errorMessage);  // Set the error message from the server
+  /* --------- validate form title exist or not --------- */
+  const {
+    mutate: validateFormTitle, // this function will trigger the api call
+    isLoading: validationLoading,
+    // isError: error,
+  } = useMutation(
+    ({ title }) =>
+      validateFormName(title),
+    {
+      onSuccess: ({ data }) => {
+        if (data && data.code === "FORM_EXISTS") {
+          setNameError(data.message);  // Set exact error message
+        } else {
+          setNameError("");
         }
-        
+      },
+      onError: (error) => {
+        const errorMessage = error.response?.data?.message || "An error occurred while validating the form name.";
+        setNameError(errorMessage);  // Set the error message from the server
       }
-    );
+    }
+  );
 
   useEffect(() => {
     setSearch(searchText);
@@ -131,7 +128,6 @@ const List = React.memo((props) => {
   const [newFormModal, setNewFormModal] = useState(false);
   const [description, setUploadFormDescription] = useState("");
   const [formTitle, setFormTitle] = useState("");
-  
   useEffect(() => {
     dispatch(setFormCheckList([]));
   }, [dispatch]);
@@ -170,7 +166,9 @@ const List = React.memo((props) => {
   };
 
   const handleImport = async (fileContent, UploadActionType) => {
-    setImportLoader(true);
+    if(UploadActionType === "import") {
+      setImportLoader(true);
+    }
     let data = {};
     switch (UploadActionType) {
       case "validate":
@@ -198,7 +196,7 @@ const List = React.memo((props) => {
         setFormSubmitted(false);
 
         if (data.action == "validate") {
-          FileService.extractFormDetails(fileContent, (formExtracted) => {
+          FileService.extractFileDetails(fileContent, (formExtracted) => {
             if (formExtracted) {
               setFormTitle(formExtracted.formTitle);
               setUploadFormDescription(formExtracted.formDescription);
@@ -231,52 +229,49 @@ const List = React.memo((props) => {
     searchText,
   ]);
 
-  const validateForm = ({title}) => {
+  const validateForm = ({ title }) => {
     if (!title || title.trim() === "") {
-       return  "This field is required";
+      return "This field is required";
     }
     return null;
   };
 
-  const validateFormNameOnBlur = ({title}) => {
+  const validateFormNameOnBlur = ({ title }) => {
 
-    const error = validateForm({title});
+    const error = validateForm({ title });
     if (error) {
       setNameError(error);
       return;
     }
     validateFormTitle({title});
-    
   };
 
- 
-  const handleBuild = ({description, display, title}) => {
+  const handleBuild = ({ description, display, title }) => {
     setFormSubmitted(true);
-    const error = validateForm({title});
+    const error = validateForm({ title });
     if (error) {
       setNameError(error);
       return;
     }
     const name = _camelCase(title);
-    const newForm = { 
+    const newForm = {
       display,
       tags: ["common"],
-      submissionAccess:submissionAccess,
-      componentChanged:true,
-      newVersion:true,
-      access:formAccess,
+      submissionAccess: submissionAccess,
+      componentChanged: true,
+      newVersion: true,
+      access: formAccess,
       title,
       name,
       description,
-      path:name.toLowerCase(),
+      path: name.toLowerCase(),
     };
 
     if (MULTITENANCY_ENABLED && tenantKey) {
-        newForm.tenantKey = tenantKey;
-        newForm.path = addTenantkey(newForm.path, tenantKey);
-        newForm.name = addTenantkey(newForm.name, tenantKey);
-    } 
-    
+      newForm.tenantKey = tenantKey;
+      newForm.path = addTenantkey(newForm.path, tenantKey);
+      newForm.name = addTenantkey(newForm.name, tenantKey);
+    }
     formCreate(newForm).then((res) => {
       const form = res.data;
       dispatch(setFormSuccessData("form", form));
@@ -296,8 +291,6 @@ const List = React.memo((props) => {
       setFormSubmitted(false);
     });
   };
-  
- 
   return (
     <>
       {(forms.isActive || designerFormLoading || isBPMFormListLoading) &&
@@ -348,17 +341,17 @@ const List = React.memo((props) => {
                     showBuildForm={showBuildForm}
                     isLoading={formSubmitted || validationLoading}
                     onClose={onCloseBuildModal}
-                    onAction={handleAction} 
+                    onAction={handleAction}
                     primaryBtnAction={handleBuild}
                     setNameError={setNameError}
                     nameValidationOnBlur={validateFormNameOnBlur}
                     nameError={nameError}
-                    buildForm={true}  
+                    buildForm={true}
                   />
-                  <ImportModal
+                  { importFormModal && <ImportModal
                     importLoader={importLoader}
                     importError={importError}
-                    importFormModal={importFormModal}
+                    importModal={importFormModal}
                     uploadActionType={UploadActionType}
                     formName={formTitle}
                     formSubmitted={formSubmitted}
@@ -367,7 +360,8 @@ const List = React.memo((props) => {
                     handleImport={handleImport}
                     headerText="Import New Form"
                     primaryButtonText="Confirm and Edit form"
-                  />
+                    fileType=".json"
+                  /> }
                 </div>
               </div>
 

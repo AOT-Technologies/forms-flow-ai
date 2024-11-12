@@ -119,34 +119,42 @@ const EditComponent = () => {
   const [formTitle, setFormTitle] = useState("");
   const [importError, setImportError] = useState("");
   const [importLoader, setImportLoader] = useState(false);
+  const defaultPrimaryBtnText = "Confirm And Replace";
+  const [primaryButtonText, setPrimaryButtonText] = useState(defaultPrimaryBtnText);
 
-   /* --------- validate form title exist or not --------- */
-   const {
+  /* --------- validate form title exist or not --------- */
+  const {
     mutate: validateFormTitle, // this function will trigger the api call
     isLoading: validationLoading,
     // isError: error,
   } = useMutation(
     ({ title }) =>
-      validateFormName(title) ,
+      validateFormName(title),
     {
-      onSuccess:({data})=>{
+      onSuccess: ({ data }) => {
         if (data && data.code === "FORM_EXISTS") {
           setNameError(data.message);  // Set exact error message
         } else {
           setNameError("");
         }
       },
-      onError:(error)=>{
+      onError: (error) => {
         const errorMessage = error.response?.data?.message || "An error occurred while validating the form name.";
         setNameError(errorMessage);  // Set the error message from the server
       }
     }
   );
-  
   const UploadActionType = {
     IMPORT: "import",
     VALIDATE: "validate"
   };
+
+  useEffect(() => {
+    if (importError !== "") {
+      setPrimaryButtonText("Try Again");
+    }
+  }, [importError]);
+
   const [fileItems, setFileItems] = useState({
     workflow: {
       majorVersion: null,
@@ -160,8 +168,6 @@ const EditComponent = () => {
 
   const handleImport = async (fileContent, UploadActionType,
     selectedLayoutVersion, selectedFlowVersion) => {
-    setImportLoader(true);
-
     // Validate UploadActionType before proceeding
     if (!["validate", "import"].includes(UploadActionType)) {
       console.error("Invalid UploadActionType provided");
@@ -175,6 +181,7 @@ const EditComponent = () => {
     // Set form submission state for "import" action
 
     if (UploadActionType === "import") {
+      setImportLoader(true);
       setFormSubmitted(true);
       // Handle selectedLayoutVersion logic
       if (selectedLayoutVersion || selectedFlowVersion) {
@@ -212,18 +219,17 @@ const EditComponent = () => {
         });
       }
       if (data.action === "validate") {
-        FileService.extractFormDetails(fileContent, (formExtracted) => {
+        FileService.extractFileDetails(fileContent, (formExtracted) => {
           if (formExtracted) {
             setFormTitle(formExtracted.formTitle);
           } else {
             console.log("No valid form found.");
           }
         });
-      } else {
-        if (responseData?.formId) {
-          handleCloseSelectedAction();
-          dispatch(push(`${redirectUrl}formflow/${responseData.formId}/edit/`));
-        }
+      } else if (responseData?.formId) {
+        handleCloseSelectedAction();
+        dispatch(push(`${redirectUrl}formflow/${responseData.formId}/edit/`));
+
       }
     } catch (err) {
       setImportLoader(false);
@@ -296,6 +302,7 @@ const EditComponent = () => {
         }
       });
       setImportError("");
+      setPrimaryButtonText(defaultPrimaryBtnText);
     }
     if (selectedAction === DUPLICATE) {
       setNameError("");
@@ -356,7 +363,7 @@ const EditComponent = () => {
       dispatch(setRestoreFormId(null));
     };
 
-    return cleanup; 
+    return cleanup;
   };
 
   useEffect(() => {
@@ -377,12 +384,12 @@ const EditComponent = () => {
     }
   }, [processListData.processKey]);
 
-  const validateFormNameOnBlur = ({title}) => {
+  const validateFormNameOnBlur = ({ title }) => {
     if (!title || title.trim() === "") {
       setNameError("This field is required");
       return;
     }
-    validateFormTitle({title});
+    validateFormTitle({ title });
   };
 
   const isFormComponentsChanged = () => {
@@ -541,13 +548,13 @@ const EditComponent = () => {
     setShowHistoryModal(true);
     dispatch(setFormHistories({ formHistory: [], totalCount: 0 }));
     if (processListData?.parentFormId) {
-        fetchFormHistory(processListData?.parentFormId, 1, 4);
+      fetchFormHistory(processListData?.parentFormId, 1, 4);
     }
-};
+  };
 
 
   const loadMoreBtnAction = () => {
-      fetchFormHistory(processListData?.parentFormId);
+    fetchFormHistory(processListData?.parentFormId);
   };
 
   const revertFormBtnAction = (cloneId) => {
@@ -571,8 +578,7 @@ const EditComponent = () => {
     setNewActionModal(true);
   };
 
- 
-  const handlePublishAsNewVersion = ({description, title}) => {
+  const handlePublishAsNewVersion = ({ description, title }) => {
     setFormSubmitted(true);
     const newFormData = manipulatingFormData(
       _.cloneDeep(form),
@@ -623,7 +629,7 @@ const EditComponent = () => {
       const actionFunction = isPublished ? unPublish : publish;
       closeModal();
       setIsPublishLoading(true);
-      if(!isPublished){
+      if (!isPublished) {
         await flowRef.current.saveFlow(false);
       }
       await actionFunction(processListData.id);
@@ -1042,7 +1048,7 @@ const EditComponent = () => {
         descriptionLabel={t("New Form Description")}
         showBuildForm={selectedAction === DUPLICATE}
         isLoading={formSubmitted || validationLoading}
-        onClose={handleCloseSelectedAction} 
+        onClose={handleCloseSelectedAction}
         primaryBtnLabel={t("Save and Edit form")}
         primaryBtnAction={handlePublishAsNewVersion}
         setNameError={setNameError}
@@ -1050,19 +1056,19 @@ const EditComponent = () => {
         nameError={nameError}
       />
 
-      <ImportModal
+      {selectedAction === IMPORT && <ImportModal
         importLoader={importLoader}
         importError={importError}
-        importFormModal={selectedAction === IMPORT}
+        importModal={selectedAction === IMPORT}
         uploadActionType={UploadActionType}
         formName={formTitle}
-        formSubmitted={formSubmitted}
         onClose={handleCloseSelectedAction}
         handleImport={handleImport}
         fileItems={fileItems}
         headerText="Import File"
-        primaryButtonText="Confirm And Replace"
-      />
+        primaryButtonText={primaryButtonText}
+        fileType=".json, .bpmn"
+      />}
 
       <ExportModal
         showExportModal={selectedAction === EXPORT}
@@ -1094,7 +1100,6 @@ const EditComponent = () => {
           size="md"
         />
       )}
-      
       <HistoryModal
         show={showHistoryModal}
         onClose={closeHistoryModal}

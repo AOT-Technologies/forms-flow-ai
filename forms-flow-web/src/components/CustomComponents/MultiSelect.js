@@ -1,6 +1,6 @@
 import React, { useState, useRef, useEffect } from "react";
 import { ListGroup } from "react-bootstrap";
-import { CustomPill } from "@formsflow/components";
+import { CustomPill,DeleteIcon } from "@formsflow/components";
 import PropTypes from 'prop-types';
 
 const RoleSelector = ({ allRoles = [], selectedRoles = [], setSelectedRoles }) => { 
@@ -62,7 +62,7 @@ const RoleSelector = ({ allRoles = [], selectedRoles = [], setSelectedRoles }) =
           <CustomPill
             key={role + index}
             label={role}
-            icon={true}
+            icon={<DeleteIcon color="#253DF4" />}
             bg="primary"
             onClick={() => removeRole(role)}
           />

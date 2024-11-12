@@ -2,10 +2,8 @@
 import React, {
   useEffect,
   Suspense,
-  lazy,
   useMemo,
-  useCallback,
-  useState,
+  useCallback
 } from "react";
 import { Route, Switch, Redirect, useParams } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
@@ -102,18 +100,22 @@ const PrivateRoute = React.memo((props) => {
     viewDashboards,
   } = useUserRoles();
 
-  const BASE_ROUTE_PATH =
-    viewTasks || manageTasks
-      ? `${redirecUrl}task`
-      : createSubmissions || createDesigns || viewDesigns
-      ? `${redirecUrl}form`
-      : admin
-      ? `${redirecUrl}admin`
-      : viewSubmissions
-      ? `${redirecUrl}application`
-      : viewDashboards
-      ? `${redirecUrl}metrics`
-      : "/404";
+  let BASE_ROUTE_PATH;
+
+if (viewTasks || manageTasks) {
+  BASE_ROUTE_PATH = `${redirecUrl}task`;
+} else if (createSubmissions || createDesigns || viewDesigns) {
+  BASE_ROUTE_PATH = `${redirecUrl}form`;
+} else if (admin) {
+  BASE_ROUTE_PATH = `${redirecUrl}admin`;
+} else if (viewSubmissions) {
+  BASE_ROUTE_PATH = `${redirecUrl}application`;
+} else if (viewDashboards) {
+  BASE_ROUTE_PATH = `${redirecUrl}metrics`;
+} else {
+  BASE_ROUTE_PATH = "/404";
+}
+
 
   const authenticate = (instance, store) => {
     setKcInstance(instance);

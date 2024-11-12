@@ -31,7 +31,7 @@ import {
 } from "../../../helper/processHelper.js";
 import PropTypes from "prop-types";
 import userRoles from "../../../constants/permissions.js";
-import ProcessDiagram from "../../BPMN/ProcessDiagramHook.js";
+import BPMNViewer from "../../BPMN/BpmnViewer.js";
 import TaskVariableModal from "../../Modals/TaskVariableModal.js";
 
 const FlowEdit = forwardRef(({ isPublished = false, CategoryType,form }, ref) => {
@@ -212,9 +212,7 @@ const FlowEdit = forwardRef(({ isPublished = false, CategoryType,form }, ref) =>
             text={t("Loading...")}
           >
             {!createDesigns ? (
-              <div className="px-4 pt-4">
-                <ProcessDiagram processKey={processData?.processKey} />
-              </div>
+                <BPMNViewer bpmnXml={processData?.processData || null} />
             ) : (
               <BpmnEditor
                 ref={bpmnRef}

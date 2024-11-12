@@ -36,8 +36,7 @@ import {
   getFormHistory,
 } from "../../../apiManager/services/FormServices";
 import ImportModal from "../../Modals/ImportModal.js";
-import FileService from "../../../services/FileService";
-import utils from "@aot-technologies/formiojs/lib/utils";
+import FileService from "../../../services/FileService"; 
 import {
   setFormFailureErrorData,
   setFormSuccessData,
@@ -53,8 +52,7 @@ import {
 } from "../../../apiManager/services/processServices";
 import {
   setProcessData,
-} from "../../../actions/processActions.js";
-import _isEquial from "lodash/isEqual";
+} from "../../../actions/processActions.js"; 
 import _ from "lodash";
 import SettingsModal from "../../Modals/SettingsModal";
 import FlowEdit from "./FlowEdit.js";
@@ -62,7 +60,7 @@ import ExportModal from "../../Modals/ExportModal.js";
 import NewVersionModal from "../../Modals/NewVersionModal";
 import { currentFormReducer } from "../../../modules/formReducer.js";
 import { toast } from "react-toastify";
-import { generateUniqueId } from "../../../helper/helper.js";
+import { generateUniqueId, isFormComponentsChanged} from "../../../helper/helper.js";
 import { useMutation } from "react-query";
 
 // constant values
@@ -309,6 +307,7 @@ const EditComponent = () => {
       setFormSubmitted(false);
     }
   };
+
   useEffect(() => {
     if (restoredFormId) {
       setRestoreFormDataLoading(true);
@@ -392,51 +391,6 @@ const EditComponent = () => {
     validateFormTitle({ title });
   };
 
-  const isFormComponentsChanged = () => {
-    if (restoredFormData && restoredFormId) {
-      return true;
-    }
-    let flatFormData = utils.flattenComponents(formData.components);
-    let flatForm = utils.flattenComponents(form.components);
-    const dateTimeOfFormData = Object.values(flatFormData).filter(
-      (component) => component.type == "day" || component.type == "datetime"
-    );
-    const dateTimeOfForm = Object.values(flatForm).filter(
-      (component) => component.type == "day" || component.type == "datetime"
-    );
-    let comparisonBetweenDateTimeComponent = true;
-    if (dateTimeOfFormData?.length === dateTimeOfForm.length) {
-      dateTimeOfFormData.forEach((formDataComponent) => {
-        if (comparisonBetweenDateTimeComponent) {
-          const isEqual = dateTimeOfForm.some(
-            (formComponent) => formComponent.type === formDataComponent.type
-          );
-          if (!isEqual) {
-            comparisonBetweenDateTimeComponent = isEqual;
-          }
-        }
-      });
-    } else {
-      return true;
-    }
-    // if existing all datetime components are same we need to remove those compoenent and need to check isEqual
-    if (comparisonBetweenDateTimeComponent) {
-      flatFormData = Object.values(flatFormData).filter(
-        (component) => component.type !== "day" && component.type !== "datetime"
-      );
-      flatForm = Object.values(flatForm).filter(
-        (component) => component.type !== "day" && component.type !== "datetime"
-      );
-    } else {
-      return true;
-    }
-
-    return (
-      !_isEquial(flatFormData, flatForm) ||
-      formData.display !== form.display ||
-      formData.type !== form.type
-    );
-  };
 
   /* ----------- save settings function to be used in settings modal ---------- */
   const filterAuthorizationData = (authorizationData) => {
@@ -503,8 +457,14 @@ const EditComponent = () => {
     handleToggleSettingsModal();
   };
 
-  const saveFormData = async () => {
+  const saveFormData = async ({showToast = true}) => {
     try {
+      const isFormChanged = isFormComponentsChanged({restoredFormData, 
+        restoredFormId, formData, form});
+      if(!isFormChanged && !promptNewVersion) {
+        showToast && toast.success(t("Form updated successfully"));
+        return;
+      }
       setShowConfirmModal(false);
       setFormSubmitted(true);
       const newFormData = manipulatingFormData(
@@ -514,11 +474,12 @@ const EditComponent = () => {
         formAccess,
         submissionAccess
       );
-      newFormData.componentChanged = isFormComponentsChanged();
+      newFormData.componentChanged = isFormChanged || promptNewVersion; //after unpublish need to save it in minor version on update
       newFormData.parentFormId = previousData.parentFormId;
       newFormData.title = processListData.formName;
 
-      await formUpdate(newFormData._id, newFormData);
+      const {data} = await formUpdate(newFormData._id, newFormData);
+      dispatch(setFormSuccessData("form", data));
       setPromptNewVersion(false);
     } catch (err) {
       const error = err.response?.data || err.message;
@@ -631,6 +592,7 @@ const EditComponent = () => {
       setIsPublishLoading(true);
       if (!isPublished) {
         await flowRef.current.saveFlow(false);
+        await saveFormData({showToast:false});
       }
       await actionFunction(processListData.id);
       if (isPublished) {
@@ -759,14 +721,14 @@ const EditComponent = () => {
         };
       case "discard":
         return {
-          title: "Are you Sure you want to Discard Layout Changes",
+          title: "Discard Layout Changes?",
           message:
             "Are you sure you want to discard all the changes to the layout of the form?",
           messageSecondary: "This action cannot be undone.",
           primaryBtnAction: discardChanges,
           secondayBtnAction: closeModal,
-          primaryBtnText: "Discard Changes",
-          secondaryBtnText: "Cancel",
+          primaryBtnText: "Yes, Discard Changes",
+          secondaryBtnText: "No, Keep My Changes",
         };
       default:
         return {};
@@ -1023,6 +985,7 @@ const EditComponent = () => {
               ref={flowRef}
               CategoryType={CategoryType}
               isPublished={isPublished}
+              form={form}
               />}
             </div>
             <button

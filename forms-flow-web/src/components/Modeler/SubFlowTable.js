@@ -35,7 +35,7 @@ const SubFlow = React.memo(() => {
   const [currentBpmnSort, setCurrentBpmnSort] = useState({
     activeKey: "name",
     name: { sortOrder: "asc" },
-    id: { sortOrder: "asc" },
+    processKey: { sortOrder: "asc" },
     modified: { sortOrder: "asc" },
     status: { sortOrder: "asc" },
   });
@@ -158,83 +158,68 @@ const SubFlow = React.memo(() => {
 
   return (
     <>
-      <div className="d-md-flex justify-content-between align-items-center pb-3 flex-wrap">
-        <div className="d-md-flex align-items-center p-0 search-box input-group input-group width-25">
-          <CustomSearch
-            search={search}
-            setSearch={setSearch}
-            handleSearch={handleSearch}
-            handleClearSearch={handleClearSearch}
-            placeholder={t("Search BPMN Name")}
-            searchLoading={searchSubflowLoading}
-            title={t("Search BPMN Name")}
-            dataTestId="BPMN-search-input"
-          />
-        </div>
-        <div className="d-md-flex justify-content-end align-items-center ">
-          <CustomButton
-            variant="primary"
-            size="sm"
-            label="New BPMN"
-            className=""
-            dataTestid="create-BPMN-button"
-            ariaLabel="Create BPMN"
-            onClick={() => handleCreateBPMN()}
-          />
-        </div>
-        <LoadingOverlay active={isLoading} spinner text={t("Loading...")}>
-          <div className="min-height-400 pt-3">
-            <div className="custom-tables-wrapper">
-              <table className="table custom-tables table-responsive-sm">
-                <thead className="table-header">
-                  <tr>
-                    <th className="w-25" scope="col">
-                      <SortableHeader
-                        columnKey="name"
-                        title="Name"
-                        currentSort={currentBpmnSort}
-                        handleSort={handleSort}
-                        className="ms-4"
-                      />
-                    </th>
-                    <th className="w-20" scope="col">
-                      <SortableHeader
-                        columnKey="id"
-                        title="id"
-                        currentSort={currentBpmnSort}
-                        handleSort={handleSort}
-                      />
-                    </th>
-                    <th className="w-15" scope="col">
-                      <SortableHeader
-                        columnKey="modified"
-                        title="Last Edited"
-                        currentSort={currentBpmnSort}
-                        handleSort={handleSort}
-                      />
-                    </th>
-                    <th className="w-15" scope="col">
-                      <SortableHeader
-                        columnKey="status"
-                        title="Status"
-                        currentSort={currentBpmnSort}
-                        handleSort={handleSort}
-                      />
-                    </th>
-                    <th
-                      className="w-25"
-                      colSpan="4"
-                      aria-label="edit bpmn button "
-                    ></th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {process.map((processItem) => (
-                    <ReusableProcessTableRow
-                      key={processItem.id}
-                      item={processItem}
-                      gotoEdit={gotoEdit}
-                      buttonLabel="Bpmn"
+
+    <div className="d-md-flex justify-content-between align-items-center pb-3 flex-wrap">
+      <div className="d-md-flex align-items-center p-0 search-box input-group input-group width-25">
+        <CustomSearch
+          search={search}
+          setSearch={setSearch}
+          handleSearch={handleSearch}
+          handleClearSearch={handleClearSearch}
+          placeholder={t("Search BPMN Name")}
+          searchLoading={searchSubflowLoading}
+          title={t("Search BPMN Name")}
+          dataTestId="BPMN-search-input"
+        />
+      </div>
+      <div className="d-md-flex justify-content-end align-items-center ">
+        <CustomButton
+          variant="primary"
+          size="sm"
+          label="New BPMN"
+          className=""
+          dataTestid="create-BPMN-button"
+          ariaLabel="Create BPMN"
+          onClick={() => handleCreateBPMN()}
+        />
+      </div>
+      <LoadingOverlay active={isLoading} spinner text={t("Loading...")}>
+        <div className="min-height-400 pt-3">
+          <div className="custom-tables-wrapper">
+            <table className="table custom-tables table-responsive-sm">
+              <thead className="table-header">
+                <tr>
+                  <th className="w-25" scope="col">
+                    <SortableHeader
+                      columnKey="name"
+                      title="Name"
+                      currentSort={currentBpmnSort}
+                      handleSort={handleSort}
+                      className="ms-4"
+                    />
+                  </th>
+                  <th className="w-20" scope="col">
+                    <SortableHeader
+                      columnKey="processKey"
+                      title="ID"
+                      currentSort={currentBpmnSort}
+                      handleSort={handleSort}
+                    />
+                  </th>
+                  <th className="w-15" scope="col">
+                    <SortableHeader
+                      columnKey="modified"
+                      title="Last Edited"
+                      currentSort={currentBpmnSort}
+                      handleSort={handleSort}
+                    />
+                  </th>
+                  <th className="w-15" scope="col">
+                    <SortableHeader
+                      columnKey="status"
+                      title="Status"
+                      currentSort={currentBpmnSort}
+                      handleSort={handleSort}
                     />
                   ))}
                   <TableFooter

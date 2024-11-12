@@ -30,7 +30,7 @@ const DecisionTable = React.memo(() => {
   const [currentDmnSort, setCurrentDmnSort] = useState({
     activeKey: "name",
     name: { sortOrder: "asc" },
-    id: { sortOrder: "asc" },
+    processKey: { sortOrder: "asc" },
     modified: { sortOrder: "asc" },
     status: { sortOrder: "asc" },
   });
@@ -141,82 +141,66 @@ const handleImportClick = () => {
   };
   return (
     <>
-      <div className="d-md-flex justify-content-between align-items-center pb-3 flex-wrap">
-        <div className="d-md-flex align-items-center p-0 search-box input-group input-group width-25">
-          <CustomSearch
-            search={search}
-            setSearch={setSearch}
-            handleSearch={handleSearch}
-            handleClearSearch={handleClearSearch}
-            placeholder={t("Search Decision Table")}
-            searchLoading={searchDmnLoading}
-            title={t("Search DMN Name")}
-            dataTestId="DMN-search-input"
-          />
-        </div>
-        <div className="d-md-flex justify-content-end align-items-center ">
-          <CustomButton
-            variant="primary"
-            size="sm"
-            label={t("New DMN")}
-            dataTestid="create-DMN-button"
-            ariaLabel="Create DMN"
-            onClick={() => handleCreateDMN()}
-          />
-        </div>
-        <LoadingOverlay active={isLoading} spinner text={t("Loading...")}>
-          <div className="min-height-400 pt-3">
-            <div className="custom-tables-wrapper">
-              <table className="table custom-tables table-responsive-sm">
-                <thead className="table-header">
-                  <tr>
-                    <th className="w-25" scope="col">
-                      <SortableHeader
-                        columnKey="name"
-                        title="Name"
-                        currentSort={currentDmnSort}
-                        handleSort={handleSort}
-                        className="ms-4"
-                      />
-                    </th>
-                    <th className="w-20" scope="col">
-                      <SortableHeader
-                        columnKey="id"
-                        title="ID"
-                        currentSort={currentDmnSort}
-                        handleSort={handleSort}
-                      />
-                    </th>
-                    <th className="w-15" scope="col">
-                      <SortableHeader
-                        columnKey="modified"
-                        title="Last Edited"
-                        currentSort={currentDmnSort}
-                        handleSort={handleSort}
-                      />
-                    </th>
-                    <th className="w-15" scope="col">
-                      <SortableHeader
-                        columnKey="status"
-                        title="Status"
-                        currentSort={currentDmnSort}
-                        handleSort={handleSort}
-                      />
-                    </th>
-                    <th
-                      className="w-25"
-                      colSpan="4"
-                      aria-label="edit bpmn button "
-                    ></th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {dmn.map((dmnItem) => (
-                    <ReusableProcessTableRow
-                      key={dmnItem.id}
-                      item={dmnItem}
-                      gotoEdit={gotoEdit}
-                      buttonLabel="Dmn"
+    <div className="d-md-flex justify-content-between align-items-center pb-3 flex-wrap">
+      <div className="d-md-flex align-items-center p-0 search-box input-group input-group width-25">
+        <CustomSearch
+          search={search}
+          setSearch={setSearch}
+          handleSearch={handleSearch}
+          handleClearSearch={handleClearSearch}
+          placeholder={t("Search Decision Table")}
+          searchLoading={searchDmnLoading}
+          title={t("Search DMN Name")}
+          dataTestId="DMN-search-input"
+        />
+      </div>
+      <div className="d-md-flex justify-content-end align-items-center ">
+        <CustomButton
+          variant="primary"
+          size="sm"
+          label={t("New DMN")}
+          dataTestid="create-DMN-button"
+          ariaLabel="Create DMN"
+          onClick={() => handleCreateDMN()}
+        />
+      </div>
+      <LoadingOverlay active={isLoading} spinner text={t("Loading...")}>
+        <div className="min-height-400 pt-3">
+          <div className="custom-tables-wrapper">
+            <table className="table custom-tables table-responsive-sm">
+              <thead className="table-header">
+                <tr>
+                  <th className="w-25" scope="col">
+                    <SortableHeader
+                      columnKey="name"
+                      title="Name"
+                      currentSort={currentDmnSort}
+                      handleSort={handleSort}
+                      className="ms-4"
+                    />
+                  </th>
+                  <th className="w-20" scope="col">
+                    <SortableHeader
+                      columnKey="processKey"
+                      title="ID"
+                      currentSort={currentDmnSort}
+                      handleSort={handleSort}
+                    />
+                  </th>
+                  <th className="w-15" scope="col">
+                    <SortableHeader
+                      columnKey="modified"
+                      title="Last Edited"
+                      currentSort={currentDmnSort}
+                      handleSort={handleSort}
+                    />
+                  </th>
+                  <th className="w-15" scope="col">
+                    <SortableHeader
+                      columnKey="status"
+                      title="Status"
+                      currentSort={currentDmnSort}
+                      handleSort={handleSort}
                     />
                   ))}
                   <TableFooter

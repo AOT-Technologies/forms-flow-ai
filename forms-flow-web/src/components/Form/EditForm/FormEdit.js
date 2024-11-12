@@ -753,14 +753,14 @@ const EditComponent = () => {
         };
       case "discard":
         return {
-          title: "Are you Sure you want to Discard Layout Changes",
+          title: "Discard Layout Changes?",
           message:
             "Are you sure you want to discard all the changes to the layout of the form?",
           messageSecondary: "This action cannot be undone.",
           primaryBtnAction: discardChanges,
           secondayBtnAction: closeModal,
-          primaryBtnText: "Discard Changes",
-          secondaryBtnText: "Cancel",
+          primaryBtnText: "Yes, Discard Changes",
+          secondaryBtnText: "No, Keep My Changes",
         };
       default:
         return {};
@@ -1034,15 +1034,12 @@ const EditComponent = () => {
               className={`wraper flow-wraper ${isFlowLayout ? "visible" : ""}`}
             >
               {/* TBD: Add a loader instead. */}
-              {isProcessDetailsLoading ? (
-                <>loading...</>
-              ) : (
-                <FlowEdit
-                  ref={flowRef}
-                  CategoryType={CategoryType}
-                  isPublished={isPublished}
-                />
-              )}
+              {isProcessDetailsLoading ? <>loading...</> : <FlowEdit 
+              ref={flowRef}
+              CategoryType={CategoryType}
+              isPublished={isPublished}
+              form={form}
+              />}
             </div>
             <button
               className={`border-0 form-flow-wraper-${

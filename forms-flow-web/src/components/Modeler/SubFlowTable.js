@@ -34,7 +34,7 @@ const SubFlow = React.memo(() => {
   const [currentBpmnSort, setCurrentBpmnSort] = useState({
     activeKey: "name",
     name: { sortOrder: "asc" },
-    id: { sortOrder: "asc" },
+    processKey: { sortOrder: "asc" },
     modified: { sortOrder: "asc" },
     status: { sortOrder: "asc" },
   });
@@ -193,8 +193,8 @@ const SubFlow = React.memo(() => {
                   </th>
                   <th className="w-20" scope="col">
                     <SortableHeader
-                      columnKey="id"
-                      title="id"
+                      columnKey="processKey"
+                      title="ID"
                       currentSort={currentBpmnSort}
                       handleSort={handleSort}
                     />

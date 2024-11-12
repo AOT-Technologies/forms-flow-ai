@@ -20,6 +20,7 @@ import { MULTITENANCY_ENABLED } from "../../constants/constants";
 import SortableHeader from "../CustomComponents/SortableHeader";
 import ImportSubflowTable from "../Modals/ImportSubFlow";
 
+
 const SubFlow = React.memo(() => {
   const searchText = useSelector((state) => state.process.bpmnSearchText);
   const tenantKey = useSelector((state) => state.tenants?.tenantId);
@@ -44,28 +45,40 @@ const SubFlow = React.memo(() => {
   const closeBpmnImport = () => {
     setImportSubflow(false);
   };
+  const [importSubflow, setImportSubflow] = useState(false);
+  const closeBpmnImport = () => {
+    setImportSubflow(false);
+  };
   const [showBuildModal, setShowBuildModal] = useState(false);
   const handleBuildClick = () => {
-    dispatch(push(`${redirectUrl}subflow/create`));
+    dispatch(
+      push(`${redirectUrl}subflow/create`));
   };
 
+
   const handleImportClick = () => {
+    setShowBuildModal(false);
+    setImportSubflow(true);
     setShowBuildModal(false);
     setImportSubflow(true);
   };
   const contents = [
     {
+    {
       id: 1,
       heading: "Build",
+      heading: "Build",
       body: "Create the BPMN from scratch",
-      onClick: handleBuildClick,
+      onClick: handleBuildClick
     },
+    {
     {
       id: 2,
       heading: "Import",
+      heading: "Import",
       body: "Upload BPMN from a file",
-      onClick: handleImportClick,
-    },
+      onClick: handleImportClick
+    }
   ];
 
   useEffect(() => {
@@ -159,7 +172,7 @@ const SubFlow = React.memo(() => {
             dataTestId="BPMN-search-input"
           />
         </div>
-        <div className="d-md-flex justify-content-end align-items-center">
+        <div className="d-md-flex justify-content-end align-items-center ">
           <CustomButton
             variant="primary"
             size="sm"
@@ -167,84 +180,87 @@ const SubFlow = React.memo(() => {
             className=""
             dataTestid="create-BPMN-button"
             ariaLabel="Create BPMN"
-            onClick={handleCreateBPMN}
+            onClick={() => handleCreateBPMN()}
           />
         </div>
-      </div>
-
-      <LoadingOverlay active={isLoading} spinner text={t("Loading...")}>
-        <div className="min-height-400 pt-3">
-          <div className="custom-tables-wrapper">
-            <table className="table custom-tables table-responsive-sm">
-              <thead className="table-header">
-                <tr>
-                  <th className="w-25" scope="col">
-                    <SortableHeader
-                      columnKey="name"
-                      title="Name"
-                      currentSort={currentBpmnSort}
-                      handleSort={handleSort}
-                      className="ms-4"
+        <LoadingOverlay active={isLoading} spinner text={t("Loading...")}>
+          <div className="min-height-400 pt-3">
+            <div className="custom-tables-wrapper">
+              <table className="table custom-tables table-responsive-sm">
+                <thead className="table-header">
+                  <tr>
+                    <th className="w-25" scope="col">
+                      <SortableHeader
+                        columnKey="name"
+                        title="Name"
+                        currentSort={currentBpmnSort}
+                        handleSort={handleSort}
+                        className="ms-4"
+                      />
+                    </th>
+                    <th className="w-20" scope="col">
+                      <SortableHeader
+                        columnKey="id"
+                        title="id"
+                        currentSort={currentBpmnSort}
+                        handleSort={handleSort}
+                      />
+                    </th>
+                    <th className="w-15" scope="col">
+                      <SortableHeader
+                        columnKey="modified"
+                        title="Last Edited"
+                        currentSort={currentBpmnSort}
+                        handleSort={handleSort}
+                      />
+                    </th>
+                    <th className="w-15" scope="col">
+                      <SortableHeader
+                        columnKey="status"
+                        title="Status"
+                        currentSort={currentBpmnSort}
+                        handleSort={handleSort}
+                      />
+                    </th>
+                    <th
+                      className="w-25"
+                      colSpan="4"
+                      aria-label="edit bpmn button "
+                    ></th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {process.map((processItem) => (
+                    <ReusableProcessTableRow
+                      key={processItem.id}
+                      item={processItem}
+                      gotoEdit={gotoEdit}
+                      buttonLabel="Bpmn"
                     />
-                  </th>
-                  <th className="w-20" scope="col">
-                    <SortableHeader
-                      columnKey="processKey"
-                      title="ID"
-                      currentSort={currentBpmnSort}
-                      handleSort={handleSort}
-                    />
-                  </th>
-                  <th className="w-15" scope="col">
-                    <SortableHeader
-                      columnKey="modified"
-                      title="Last Edited"
-                      currentSort={currentBpmnSort}
-                      handleSort={handleSort}
-                    />
-                  </th>
-                  <th className="w-15" scope="col">
-                    <SortableHeader
-                      columnKey="status"
-                      title="Status"
-                      currentSort={currentBpmnSort}
-                      handleSort={handleSort}
-                    />
-                  </th>
-                </tr>
-              </thead>
-              <tbody>
-                {/* Populate rows dynamically */}
-                {process.map((data) => (
-                  <ReusableProcessTableRow
-                    key={data.processKey}
-                    data={data}
-                    onEdit={() => gotoEdit(data)}
+                  ))}
+                  <TableFooter
+                    limit={limit}
+                    activePage={activePage}
+                    totalCount={totalCount}
+                    handlePageChange={handlePageChange}
+                    onLimitChange={onLimitChange}
+                    pageOptions={pageOptions}
                   />
-                ))}
-              </tbody>
-            </table>
-            <TableFooter
-              limit={limit}
-              activePage={activePage}
-              totalCount={totalCount}
-              handlePageChange={handlePageChange}
-              onLimitChange={onLimitChange}
-              pageOptions={pageOptions}
-            />
+                </tbody>
+              </table>
+            </div>
           </div>
-        </div>
-      </LoadingOverlay>
-
+        </LoadingOverlay>
+      </div>
       <BuildModal
         show={showBuildModal}
         onClose={handleBuildModal}
-        title={t("New BPMN")}
-        contents={contents}
-      />
-      {importSubflow && (
-        <ImportSubflowTable showModal={importSubflow} closeImport={closeBpmnImport} />
-      )}
+        title={t(`New BPMN`)}
+        contents={contents}/>
+      {importSubflow && <ImportSubflowTable
+        showModal={importSubflow}
+        closeImport={closeBpmnImport}
+      />}
     </>
   );
 });

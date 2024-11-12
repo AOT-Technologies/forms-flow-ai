@@ -7,7 +7,10 @@ import SortableHeader from "../CustomComponents/SortableHeader";
 import { fetchAllProcesses } from "../../apiManager/services/processServices";
 import { MULTITENANCY_ENABLED } from "../../constants/constants";
 import { push } from "connected-react-router";
-import { setDmnSearchText, setIsPublicDiagram } from "../../actions/processActions";
+import {
+  setDmnSearchText,
+  setIsPublicDiagram,
+} from "../../actions/processActions";
 import ImportDecesionTable from "../Modals/ImportDecisionTable";
 
 const DecisionTable = React.memo(() => {
@@ -31,6 +34,10 @@ const DecisionTable = React.memo(() => {
   const closeDmnImport = () => {
     setImportDecisionTable(false);
   };
+  const [importDecesionTable, setImportDecisionTable] = useState(false);
+  const closeDmnImport = () => {
+    setImportDecisionTable(false);
+  };
   const [searchDmnLoading, setSearchDmnLoading] = useState(false);
   const redirectUrl = MULTITENANCY_ENABLED ? `/tenant/${tenantKey}/` : "/";
   const [search, setSearch] = useState(searchText || "");
@@ -39,9 +46,9 @@ const DecisionTable = React.memo(() => {
     dispatch(push(`${redirectUrl}decision-table/create`));
   };
 
-  const handleImportClick = () => {
-    setShowBuildModal(false);
-    setImportDecisionTable(true);
+const handleImportClick = () => {
+  setShowBuildModal(false);
+  setImportDecisionTable(true);
   };
   const contents = [
     {
@@ -57,7 +64,7 @@ const DecisionTable = React.memo(() => {
       onClick: handleImportClick
     }
   ];
-
+  
   useEffect(() => {
     if (!search?.trim()) {
       dispatch(setDmnSearchText(""));
@@ -149,91 +156,94 @@ const DecisionTable = React.memo(() => {
             dataTestId="DMN-search-input"
           />
         </div>
-        <div className="d-md-flex justify-content-end align-items-center">
+        <div className="d-md-flex justify-content-end align-items-center ">
           <CustomButton
             variant="primary"
             size="sm"
             label={t("New DMN")}
             dataTestid="create-DMN-button"
             ariaLabel="Create DMN"
-            onClick={handleCreateDMN}
+            onClick={() => handleCreateDMN()}
           />
         </div>
-      </div>
-      <LoadingOverlay active={isLoading} spinner text={t("Loading...")}>
-        <div className="min-height-400 pt-3">
-          <div className="custom-tables-wrapper">
-            <table className="table custom-tables table-responsive-sm">
-              <thead className="table-header">
-                <tr>
-                  <th className="w-25" scope="col">
-                    <SortableHeader
-                      columnKey="name"
-                      title="Name"
-                      currentSort={currentDmnSort}
-                      handleSort={handleSort}
-                      className="ms-4"
+        <LoadingOverlay active={isLoading} spinner text={t("Loading...")}>
+          <div className="min-height-400 pt-3">
+            <div className="custom-tables-wrapper">
+              <table className="table custom-tables table-responsive-sm">
+                <thead className="table-header">
+                  <tr>
+                    <th className="w-25" scope="col">
+                      <SortableHeader
+                        columnKey="name"
+                        title="Name"
+                        currentSort={currentDmnSort}
+                        handleSort={handleSort}
+                        className="ms-4"
+                      />
+                    </th>
+                    <th className="w-20" scope="col">
+                      <SortableHeader
+                        columnKey="id"
+                        title="ID"
+                        currentSort={currentDmnSort}
+                        handleSort={handleSort}
+                      />
+                    </th>
+                    <th className="w-15" scope="col">
+                      <SortableHeader
+                        columnKey="modified"
+                        title="Last Edited"
+                        currentSort={currentDmnSort}
+                        handleSort={handleSort}
+                      />
+                    </th>
+                    <th className="w-15" scope="col">
+                      <SortableHeader
+                        columnKey="status"
+                        title="Status"
+                        currentSort={currentDmnSort}
+                        handleSort={handleSort}
+                      />
+                    </th>
+                    <th
+                      className="w-25"
+                      colSpan="4"
+                      aria-label="edit bpmn button "
+                    ></th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {dmn.map((dmnItem) => (
+                    <ReusableProcessTableRow
+                      key={dmnItem.id}
+                      item={dmnItem}
+                      gotoEdit={gotoEdit}
+                      buttonLabel="Dmn"
                     />
-                  </th>
-                  <th className="w-20" scope="col">
-                    <SortableHeader
-                      columnKey="processKey"
-                      title="ID"
-                      currentSort={currentDmnSort}
-                      handleSort={handleSort}
-                    />
-                  </th>
-                  <th className="w-15" scope="col">
-                    <SortableHeader
-                      columnKey="modified"
-                      title="Last Edited"
-                      currentSort={currentDmnSort}
-                      handleSort={handleSort}
-                    />
-                  </th>
-                  <th className="w-15" scope="col">
-                    <SortableHeader
-                      columnKey="status"
-                      title="Status"
-                      currentSort={currentDmnSort}
-                      handleSort={handleSort}
-                    />
-                  </th>
-                </tr>
-              </thead>
-              <tbody>
-                {dmn && dmn.map((data) => (
-                  <ReusableProcessTableRow
-                    key={data.id}
-                    data={data}
-                    gotoEdit={gotoEdit}
+                  ))}
+                  <TableFooter
+                    limit={limit}
+                    activePage={activePage}
+                    totalCount={totalCount}
+                    handlePageChange={handlePageChange}
+                    onLimitChange={onLimitChange}
+                    pageOptions={pageOptions}
                   />
-                ))}
-              </tbody>
-            </table>
-            <TableFooter
-              limit={limit}
-              activePage={activePage}
-              totalCount={totalCount}
-              handlePageChange={handlePageChange}
-              onLimitChange={onLimitChange}
-              pageOptions={pageOptions}
-            />
+                </tbody>
+              </table>
+            </div>
           </div>
-        </div>
-      </LoadingOverlay>
+        </LoadingOverlay>
+      </div>
       <BuildModal
         show={showBuildModal}
         onClose={handleBuildModal}
-        title={t("New DMN")}
-        contents={contents}
-      />
-      {importDecesionTable && (
-        <ImportDecesionTable
-          showModal={importDecesionTable}
-          closeImport={closeDmnImport}
-        />
-      )}
+        title={t(`New DMN`)}
+        contents={contents} />
+      {importDecesionTable && <ImportDecesionTable
+        showModal={importDecesionTable}
+        closeImport={closeDmnImport}
+      />}
     </>
   );
 });

@@ -373,135 +373,46 @@ const removeComponent = (components, target) => {
   }
 };
 
+const addHiddenComponent = (components, componentKey, componentConfig, form) => {
+  const flatternComponent = utils.flattenComponents(components, true);
+  
+  // Check if the component exists and remove it if necessary
+  if (flatternComponent[componentKey]) {
+    if (form.display === "wizard") {
+      removeComponent(components, componentKey);
+      let findPanel = components.find((component) => component.type == "panel");
+      if (findPanel) {
+        const componentExist = findPanel.components.some(
+          (item) => item.key === componentKey
+        );
+        if (!componentExist) {
+          findPanel.components.push(componentConfig);
+        }
+      }
+    }
+  } else {
+    // If the component doesn't exist, add it
+    if (form.display === "wizard") {
+      let findPanel = components.find((component) => component.type == "panel");
+      if (findPanel) {
+        findPanel.components.push(componentConfig);
+      }
+    } else {
+      components.push(componentConfig);
+    }
+  }
+};
+
 export const addHiddenApplicationComponent = (form) => {
   const components = form.components || [];
-  const flatternComponent = utils.flattenComponents(components, true);
 
-  if (flatternComponent[APPLICATION_ID_KEY]) {
-    if (form.display === "wizard") {
-      // if application id is exist : remove the component form if it is wizard display
-      removeComponent(components, APPLICATION_ID_KEY);
-      let findPanel = components.find((component) => component.type == "panel");
-      if (findPanel) {
-        const applicationExist = findPanel.components.some(
-          (item) => item.key === APPLICATION_ID_KEY
-        );
-        !applicationExist &&
-          findPanel.components.push(applicationIDHiddenComponent);
-      }
-    }
-  } else {
-    if (form.display === "wizard") {
-      let findPanel = components.find((component) => component.type == "panel");
-      if (findPanel) {
-        findPanel.components.push(applicationIDHiddenComponent);
-      }
-    } else {
-      components.push(applicationIDHiddenComponent);
-    }
-  }
-
-  if (flatternComponent[APPLICATION_STATUS_KEY]) {
-    if (form.display === "wizard") {
-      // if application status is exist : remove the component form if it is wizard display
-      removeComponent(components, APPLICATION_STATUS_KEY);
-      let findPanel = components.find((component) => component.type == "panel");
-      if (findPanel) {
-        const applicationExist = findPanel.components.some(
-          (item) => item.key === APPLICATION_STATUS_KEY
-        );
-        !applicationExist &&
-          findPanel.components.push(applicationStatusHiddenComponent);
-      }
-    }
-  } else {
-    if (form.display === "wizard") {
-      let findPanel = components.find((component) => component.type == "panel");
-      if (findPanel) {
-        findPanel.components.push(applicationStatusHiddenComponent);
-      }
-    } else {
-      components.push(applicationStatusHiddenComponent);
-    }
-  }
-  // Handle currentUser component
-  if (flatternComponent[CURRENT_USER_KEY]) {
-    if (form.display === "wizard") {
-      removeComponent(components, CURRENT_USER_KEY);
-      let findPanel = components.find(
-        (component) => component.type === "panel"
-      );
-      if (findPanel) {
-        const userExist = findPanel.components.some(
-          (item) => item.key === CURRENT_USER_KEY
-        );
-        !userExist && findPanel.components.push(currentUserNameHiddenComponent);
-      }
-    }
-  } else {
-    if (form.display === "wizard") {
-      let findPanel = components.find(
-        (component) => component.type === "panel"
-      );
-      if (findPanel) {
-        findPanel.components.push(currentUserNameHiddenComponent);
-      }
-    } else {
-      components.push(currentUserNameHiddenComponent);
-    }
-  }
-  // Handle currentUserRole component
-  if (flatternComponent[CURRENT_USER_ROLE]) {
-    if (form.display === "wizard") {
-      removeComponent(components, CURRENT_USER_ROLE);
-      let findPanel = components.find(
-        (component) => component.type === "panel"
-      );
-      if (findPanel) {
-        const roleExist = findPanel.components.some(
-          (item) => item.key === CURRENT_USER_ROLE
-        );
-        !roleExist && findPanel.components.push(currentUserRoleHiddenComponent);
-      }
-    }
-  } else {
-    if (form.display === "wizard") {
-      let findPanel = components.find(
-        (component) => component.type === "panel"
-      );
-      if (findPanel) {
-        findPanel.components.push(currentUserRoleHiddenComponent);
-      }
-    } else {
-      components.push(currentUserRoleHiddenComponent);
-    }
-  }
-  // Handle allUserRoles component
-  if (flatternComponent[ALL_USER_ROLES]) {
-    if (form.display === "wizard") {
-      removeComponent(components, ALL_USER_ROLES);
-      let findPanel = components.find(
-        (component) => component.type === "panel"
-      );
-      if (findPanel) {
-        const rolesExist = findPanel.components.some(
-          (item) => item.key === ALL_USER_ROLES
-        );
-        !rolesExist && findPanel.components.push(allUserRolesHiddenComponent);
-      }
-    }
-  } else {
-    if (form.display === "wizard") {
-      let findPanel = components.find(
-        (component) => component.type === "panel"
-      );
-      if (findPanel) {
-        findPanel.components.push(allUserRolesHiddenComponent);
-      }
-    } else {
-      components.push(allUserRolesHiddenComponent);
-    }
-  }
+  // Refactor the repeated logic for each component
+  addHiddenComponent(components, APPLICATION_ID_KEY, applicationIDHiddenComponent, form);
+  addHiddenComponent(components, APPLICATION_STATUS_KEY, applicationStatusHiddenComponent, form);
+  addHiddenComponent(components, CURRENT_USER_KEY, currentUserNameHiddenComponent, form);
+  addHiddenComponent(components, CURRENT_USER_ROLE, currentUserRoleHiddenComponent, form);
+  addHiddenComponent(components, ALL_USER_ROLES, allUserRolesHiddenComponent, form);
 
   return form;
 };
+

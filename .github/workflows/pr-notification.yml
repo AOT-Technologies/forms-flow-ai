@@ -1,7 +1,7 @@
 name: PR Notification to Google Chat
 
 on:
-  pull_request:
+  pull_request_target:
     types: [opened, synchronize, closed]
     branches:
       - develop
@@ -25,20 +25,10 @@ jobs:
             echo "status=🟢 Open" >> $GITHUB_ENV
           fi
 
-
-      - name: Confirm PR_NOTIFICATION Secret is Set
-        run: |
-          if [[ -z "${{ secrets.PR_NOTIFICATION }}" ]]; then
-            echo "PR_NOTIFICATION secret is not set."
-          else
-            echo "PR_NOTIFICATION secret is set."
-          fi
-
       - name: Send notification to Google Chat
         uses: fjogeleit/http-request-action@v1.16.0
         with:
           url: ${{ secrets.PR_NOTIFICATION }}
-
           method: POST
           contentType: application/json
           data: |
@@ -83,4 +73,3 @@ jobs:
                 }
               ]
             }
-

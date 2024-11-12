@@ -1,164 +1,21 @@
 import utils from "@aot-technologies/formiojs/lib/utils";
-const applicationIDHiddenComponent = {
-  label: "Submission Id",
-  customClass: "",
+
+// Factory function to create hidden components with dynamic configuration
+const createHiddenComponent = (label, key, customDefaultValue = null) => ({
+  label: label,
   addons: [],
+  customClass: "",
   modalEdit: false,
-  persistent: true,
-  protected: false,
-  dbIndex: false,
-  encrypted: false,
-  redrawOn: "",
-  customDefaultValue: "",
-  calculateValue: "",
-  calculateServer: false,
-  key: "applicationId",
-  tags: [],
-  properties: {},
-  logic: [],
-  attributes: {},
-  overlay: {
-    style: "",
-    page: "",
-    left: "",
-    top: "",
-    width: "",
-    height: "",
-  },
-  type: "hidden",
-  input: true,
-  placeholder: "",
-  prefix: "",
-  suffix: "",
-  multiple: false,
-  unique: false,
-  hidden: false,
-  clearOnHide: true,
-  refreshOn: "",
-  tableView: false,
-  labelPosition: "top",
-  Description: "",
-  errorLabel: "",
-  tooltip: "",
-  hideLabel: false,
-  tabindex: "",
-  disabled: false,
-  autofocus: false,
-  widget: {
-    type: "input",
-  },
-  validateOn: "change",
-  validate: {
-    required: false,
-    custom: "",
-    customPrivate: false,
-    strictDateValidation: false,
-    multiple: false,
-    unique: false,
-  },
-  conditional: {
-    show: null,
-    when: null,
-    eq: "",
-  },
-  allowCalculateOverride: false,
-  showCharCount: false,
-  showWordCount: false,
-  allowMultipleMasks: false,
-  inputType: "hidden",
-  id: "em1y8gd",
   defaultValue: "",
-  dataGridLabel: false,
-  description: "",
-};
-const applicationStatusHiddenComponent = {
-  label: "Submission Status",
-  addons: [],
-  customClass: "",
-  modalEdit: false,
-  defaultValue: null,
   persistent: true,
   protected: false,
   dbIndex: false,
   encrypted: false,
   redrawOn: "",
-  customDefaultValue: "",
+  customDefaultValue: customDefaultValue,
   calculateValue: "",
   calculateServer: false,
-  key: "applicationStatus",
-  tags: [],
-  properties: {},
-  logic: [],
-  attributes: {},
-  overlay: {
-    style: "",
-    page: "",
-    left: "",
-    top: "",
-    width: "",
-    height: "",
-  },
-  type: "hidden",
-  input: true,
-  tableView: false,
-  placeholder: "",
-  prefix: "",
-  suffix: "",
-  multiple: false,
-  unique: false,
-  hidden: false,
-  clearOnHide: true,
-  refreshOn: "",
-  dataGridLabel: false,
-  labelPosition: "top",
-  Description: "",
-  errorLabel: "",
-  tooltip: "",
-  hideLabel: false,
-  tabindex: "",
-  disabled: false,
-  autofocus: false,
-  widget: {
-    type: "input",
-  },
-  validateOn: "change",
-  validate: {
-    required: false,
-    custom: "",
-    customPrivate: false,
-    strictDateValidation: false,
-    multiple: false,
-    unique: false,
-  },
-  conditional: {
-    show: null,
-    when: null,
-    eq: "",
-  },
-  allowCalculateOverride: false,
-  showCharCount: false,
-  showWordCount: false,
-  allowMultipleMasks: false,
-  inputType: "hidden",
-  id: "e6z1qd9",
-  description: "",
-};
-const currentUserNameHiddenComponent = {
-  label: "Current User",
-  addons: [],
-  customClass: "",
-  modalEdit: false,
-  defaultValue: null,
-  persistent: true,
-  protected: false,
-  dbIndex: false,
-  encrypted: false,
-  redrawOn: "",
-  customDefaultValue:
-    "const localdata = JSON.parse(localStorage.getItem('UserDetails'));const preferredUsername = localdata.preferred_username;value = preferredUsername;",
-  calculateValue: "",
-  calculateServer: false,
-  key: "currentUser",
+  key: key,
   tags: [],
   properties: {},
   logic: [],
@@ -214,151 +71,7 @@ const currentUserNameHiddenComponent = {
   allowMultipleMasks: false,
   inputType: "hidden",
   description: "",
-};
-const currentUserRoleHiddenComponent = {
-  label: "Current User Role",
-  addons: [],
-  customClass: "",
-  modalEdit: false,
-  defaultValue: null,
-  persistent: true,
-  protected: false,
-  dbIndex: false,
-  encrypted: false,
-  redrawOn: "",
-  customDefaultValue:
-    "const localdata = JSON.parse(localStorage.getItem('UserDetails'));const preferredUserRole = localdata.role;value = preferredUserRole;",
-  calculateValue: "",
-  calculateServer: false,
-  key: "currentUserRole",
-  tags: [],
-  properties: {},
-  logic: [],
-  attributes: {},
-  overlay: {
-    style: "",
-    page: "",
-    left: "",
-    top: "",
-    width: "",
-    height: "",
-  },
-  type: "hidden",
-  input: true,
-  tableView: false,
-  placeholder: "",
-  prefix: "",
-  suffix: "",
-  multiple: false,
-  unique: false,
-  hidden: false,
-  clearOnHide: true,
-  refreshOn: "",
-  dataGridLabel: false,
-  labelPosition: "top",
-  Description: "",
-  errorLabel: "",
-  tooltip: "",
-  hideLabel: false,
-  tabindex: "",
-  disabled: false,
-  autofocus: false,
-  widget: {
-    type: "input",
-  },
-  validateOn: "change",
-  validate: {
-    required: false,
-    custom: "",
-    customPrivate: false,
-    strictDateValidation: false,
-    multiple: false,
-    unique: false,
-  },
-  conditional: {
-    show: null,
-    when: null,
-    eq: "",
-  },
-  allowCalculateOverride: false,
-  showCharCount: false,
-  showWordCount: false,
-  allowMultipleMasks: false,
-  inputType: "hidden",
-  description: "",
-};
-const allUserRolesHiddenComponent = {
-  label: "All User Role",
-  addons: [],
-  customClass: "",
-  modalEdit: false,
-  defaultValue: null,
-  persistent: true,
-  protected: false,
-  dbIndex: false,
-  encrypted: false,
-  redrawOn: "",
-  customDefaultValue:
-    "const localdata = JSON.parse(localStorage.getItem('AlluserRoles')); value = localdata;",
-  calculateValue: "",
-  calculateServer: false,
-  key: "allUserRoles",
-  tags: [],
-  properties: {},
-  logic: [],
-  attributes: {},
-  overlay: {
-    style: "",
-    page: "",
-    left: "",
-    top: "",
-    width: "",
-    height: "",
-  },
-  type: "hidden",
-  input: true,
-  tableView: false,
-  placeholder: "",
-  prefix: "",
-  suffix: "",
-  multiple: false,
-  unique: false,
-  hidden: false,
-  clearOnHide: true,
-  refreshOn: "",
-  dataGridLabel: false,
-  labelPosition: "top",
-  Description: "",
-  errorLabel: "",
-  tooltip: "",
-  hideLabel: false,
-  tabindex: "",
-  disabled: false,
-  autofocus: false,
-  widget: {
-    type: "input",
-  },
-  validateOn: "change",
-  validate: {
-    required: false,
-    custom: "",
-    customPrivate: false,
-    strictDateValidation: false,
-    multiple: false,
-    unique: false,
-  },
-  conditional: {
-    show: null,
-    when: null,
-    eq: "",
-  },
-  allowCalculateOverride: false,
-  showCharCount: false,
-  showWordCount: false,
-  allowMultipleMasks: false,
-  inputType: "hidden",
-  description: "",
-};
+});
 
 const APPLICATION_ID_KEY = "applicationId";
 const APPLICATION_STATUS_KEY = "applicationStatus";
@@ -366,6 +79,7 @@ const CURRENT_USER_KEY = "currentUser";
 const CURRENT_USER_ROLE = "currentUserRole";
 const ALL_USER_ROLES = "allUserRoles";
 
+// Function to remove a component based on its key
 const removeComponent = (components, target) => {
   const targetIndex = components.findIndex((item) => item.key === target);
   if (targetIndex !== -1) {
@@ -373,6 +87,7 @@ const removeComponent = (components, target) => {
   }
 };
 
+// Function to add a hidden component to the form
 const addHiddenComponent = (components, componentKey, componentConfig, form) => {
   const flatternComponent = utils.flattenComponents(components, true);
   
@@ -403,16 +118,24 @@ const addHiddenComponent = (components, componentKey, componentConfig, form) => 
   }
 };
 
+// Function to add all the required hidden components to the form
 export const addHiddenApplicationComponent = (form) => {
   const components = form.components || [];
 
-  // Refactor the repeated logic for each component
-  addHiddenComponent(components, APPLICATION_ID_KEY, applicationIDHiddenComponent, form);
-  addHiddenComponent(components, APPLICATION_STATUS_KEY, applicationStatusHiddenComponent, form);
-  addHiddenComponent(components, CURRENT_USER_KEY, currentUserNameHiddenComponent, form);
-  addHiddenComponent(components, CURRENT_USER_ROLE, currentUserRoleHiddenComponent, form);
-  addHiddenComponent(components, ALL_USER_ROLES, allUserRolesHiddenComponent, form);
+  // Data structure for each component configuration
+  const hiddenComponents = [
+    { label: "Submission Id", key: APPLICATION_ID_KEY },
+    { label: "Submission Status", key: APPLICATION_STATUS_KEY },
+    { label: "Current User", key: CURRENT_USER_KEY, customDefaultValue: "const localdata = JSON.parse(localStorage.getItem('UserDetails'));const preferredUsername = localdata.preferred_username;value = preferredUsername;" },
+    { label: "Current User Role", key: CURRENT_USER_ROLE, customDefaultValue: "const localdata = JSON.parse(localStorage.getItem('UserDetails'));const preferredUserRole = localdata.role;value = preferredUserRole;" },
+    { label: "All User Role", key: ALL_USER_ROLES, customDefaultValue: "const localdata = JSON.parse(localStorage.getItem('AlluserRoles')); value = localdata;" },
+  ];
+
+  // Loop through the hidden components and add each one
+  hiddenComponents.forEach(({ label, key, customDefaultValue }) => {
+    const componentConfig = createHiddenComponent(label, key, customDefaultValue);
+    addHiddenComponent(components, key, componentConfig, form);
+  });
 
   return form;
 };
-

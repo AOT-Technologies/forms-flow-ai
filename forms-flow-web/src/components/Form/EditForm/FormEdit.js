@@ -1003,13 +1003,10 @@ const EditComponent = () => {
                 <Card.Body>
                   <div className="form-builder">
                     {!createDesigns ? (
-                      <div className="px-4 pt-4">
+                      <div className="px-4 pt-4 form-preview">
                        <Form
                           form={form}
                           options={{
-                          buttonSettings: {
-                            showSubmit: false
-                          },
                           disableAlerts: true,
                           noAlerts: true,
                           language: lang, i18n: RESOURCE_BUNDLES_DATA }}

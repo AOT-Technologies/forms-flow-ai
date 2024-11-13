@@ -39,7 +39,19 @@ formsflow.ai:
         connectionTimeout: ${BPM_CLIENT_CONN_TIMEOUT:5000}
   documentService:
     url: ${FORMSFLOW_DOC_API_URL}
-
+  authorizations:
+    - groupId: "ROLE_create_submissions"
+      resourceType: "PROCESS_DEFINITION,PROCESS_INSTANCE"
+      resourceId: "*"
+      permissions: ["ALL"]
+    - groupId: "ROLE_view_designs"
+      resourceType: "PROCESS_DEFINITION,PROCESS_INSTANCE"
+      resourceId: "*"
+      permissions: ["ALL"]
+    - groupId: "ROLE_view_tasks"
+      resourceType: "PROCESS_DEFINITION,PROCESS_INSTANCE,TASK,FILTER,USER"
+      resourceId: "*"
+      permissions: ["ALL"]
 
 camunda.bpm:
   job-execution:

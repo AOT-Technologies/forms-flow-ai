@@ -66,6 +66,8 @@ class ProcessDataSchema(Schema):
 
     def get_process_data(self, obj):
         """This method is to get the process data."""
+        if not obj.process_data:
+            return None
         obj.process_data = obj.process_data.decode("utf-8")
         if obj.process_type.value == "LOWCODE":
             return json.loads(obj.process_data)

@@ -13,7 +13,7 @@ from formsflow_api_utils.utils.user_context import UserContext, user_context
 from formsflow_api.constants import BusinessErrorCode
 from formsflow_api.models import Application, Draft, FormProcessMapper
 from formsflow_api.schemas import DraftSchema
-
+from formsflow_api.services.external import BpmFactory, BaseBPMService
 from .application import ApplicationService
 
 
@@ -46,7 +46,7 @@ class DraftService:
                 raise BusinessException(BusinessErrorCode.PERMISSION_DENIED)
             raise BusinessException(BusinessErrorCode.FORM_ID_NOT_FOUND)
         if (mapper.status == FormProcessMapperStatus.INACTIVE.value) or (
-            not token and not mapper.is_anonymous
+                not token and not mapper.is_anonymous
         ):
             raise BusinessException(BusinessErrorCode.PERMISSION_DENIED)
         if tenant_key is not None and mapper.tenant != tenant_key:
@@ -120,6 +120,7 @@ class DraftService:
     def make_submission_from_draft(data: Dict, draft_id: str, token=None, **kwargs):
         """Makes the draft into an application."""
         user: UserContext = kwargs["user"]
+        bpm: BaseBPMService = BpmFactory.get_bpm_service()
         user_id: str = user.user_name or ANONYMOUS_USER
         application = None
         try:
@@ -138,10 +139,10 @@ class DraftService:
                 if mapper.task_variable is not None
                 else []
             )
-            variables = ApplicationService.fetch_task_variable_values(
+            variables = bpm.fetch_task_variable_values(
                 task_variables, data.get("data", {})
             )
-            payload = ApplicationService.get_start_task_payload(
+            payload = bpm.get_start_task_payload(
                 application, mapper, data["form_url"], data["web_form_url"], variables
             )
             application.commit()
@@ -153,7 +154,7 @@ class DraftService:
         except Exception as e:
             current_app.logger.error("Error occurred during application creation %s", e)
             if (
-                application
+                    application
             ):  # If application instance is created, rollback the transaction.
                 application.rollback()
             raise BusinessException(BusinessErrorCode.APPLICATION_CREATE_ERROR) from e

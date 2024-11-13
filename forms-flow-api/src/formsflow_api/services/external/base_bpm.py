@@ -8,6 +8,7 @@ from formsflow_api_utils.exceptions import BusinessException
 from formsflow_api_utils.utils import HTTP_TIMEOUT, log_bpm_error
 
 from formsflow_api.constants import BusinessErrorCode
+from typing import Dict
 
 
 class BaseBPMService:

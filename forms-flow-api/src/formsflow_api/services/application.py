@@ -24,6 +24,7 @@ from formsflow_api.models import (
     AuthType,
     Draft,
     FormProcessMapper,
+    Process,
 )
 from formsflow_api.schemas import (
     AggregatedApplicationSchema,
@@ -31,7 +32,7 @@ from formsflow_api.schemas import (
     ApplicationSchema,
     FormProcessMapperSchema,
 )
-from formsflow_api.services.external import BPMService
+from formsflow_api.services.external import BaseBPMService, BpmFactory
 
 from .form_process_mapper import FormProcessMapperService
 
@@ -42,47 +43,28 @@ class ApplicationService:  # pylint: disable=too-many-public-methods
     """This class manages application service."""
 
     @staticmethod
-    def get_start_task_payload(
-        application: Application,
-        mapper: FormProcessMapper,
-        form_url: str,
-        web_form_url: str,
-        variables: Dict,
-    ) -> Dict:
-        """Returns the payload for initiating the task."""
-        return {
-            "variables": {
-                **variables,
-                "applicationId": {"value": application.id},
-                "formUrl": {"value": form_url},
-                "webFormUrl": {"value": web_form_url},
-                "formName": {"value": mapper.form_name},
-                "submitterName": {"value": application.created_by},
-                "submissionDate": {"value": str(application.created)},
-                "tenantKey": {"value": mapper.tenant},
-                "formId": {"value": mapper.form_id},
-            }
-        }
-
-    @staticmethod
     async def start_task(
         mapper: FormProcessMapper, payload: Dict, token: str, application_id: int
     ) -> None:
         """Trigger bpmn workflow to create a task."""
+        bpm: BaseBPMService = BpmFactory.get_bpm_service()
         try:
+            process = Process.get_latest_version_by_mapper(mapper.process_key)
             if mapper.process_tenant:
-                camunda_start_task = BPMService.post_process_start_tenant(
+                camunda_start_task = bpm.post_process_start_tenant(
                     process_key=mapper.process_key,
                     payload=payload,
                     token=token,
                     tenant_key=mapper.process_tenant,
+                    message_key=process.message_key
                 )
             else:
-                camunda_start_task = BPMService.post_process_start(
+                camunda_start_task = bpm.post_process_start(
                     process_key=mapper.process_key,
                     payload=payload,
                     token=token,
                     tenant_key=mapper.tenant,
+                    message_key=process.message_key
                 )
             # This is run as async, so the application model instance would be stale here, lookup and update
             application = Application.find_by_id(application_id)
@@ -105,6 +87,7 @@ class ApplicationService:  # pylint: disable=too-many-public-methods
         user: UserContext = kwargs["user"]
         user_id: str = user.user_name
         tenant_key = user.tenant_key
+        bpm: BaseBPMService = BpmFactory.get_bpm_service()
         if user_id is not None:
             # for anonymous form submission
             data["created_by"] = user_id
@@ -121,7 +104,7 @@ class ApplicationService:  # pylint: disable=too-many-public-methods
         task_variables = (
             json.loads(mapper.task_variable) if mapper.task_variable is not None else []
         )
-        variables = ApplicationService.fetch_task_variable_values(
+        variables = bpm.fetch_task_variable_values(
             task_variables, data.get("data", {})
         )
         application = None
@@ -136,9 +119,10 @@ class ApplicationService:  # pylint: disable=too-many-public-methods
             else:
                 form_url = data["form_url"]
                 web_form_url = data.get("web_form_url", "")
-                payload = ApplicationService.get_start_task_payload(
+                payload = bpm.get_start_task_payload(
                     application, mapper, form_url, web_form_url, variables
                 )
+                current_app.logger.debug(f"Start process payload --- > {payload}")
                 application.commit()  # Commit the record
                 # Creating the process instance asynchronously.
                 asyncio.run(
@@ -166,7 +150,8 @@ class ApplicationService:  # pylint: disable=too-many-public-methods
         Used LRU cache to memoize results and parameter maxsize defines
         the no of function calls.
         """
-        response = BPMService.get_auth_form_details(token=token)
+        bpm: BaseBPMService = BpmFactory.get_bpm_service()
+        response = bpm.get_auth_form_details(token=token)
         return response
 
     @staticmethod
@@ -519,35 +504,19 @@ class ApplicationService:  # pylint: disable=too-many-public-methods
         return application_count
 
     @staticmethod
-    def fetch_task_variable_values(task_variable, form_data):
-        """Fetch task variable values from form data."""
-        variables: Dict = {}
-        if task_variable and form_data:
-            task_keys = [val["key"] for val in task_variable]
-            variables = {
-                key: (
-                    {"value": json.dumps(form_data[key])}
-                    if isinstance(form_data[key], (dict, list))
-                    else {"value": form_data[key]}
-                )
-                for key in task_keys
-                if key in form_data
-            }
-        return variables
-
-    @staticmethod
     def resubmit_application(application_id: int, payload: Dict, token: str):
         """Resubmit application and update process variables."""
+        bpm: BaseBPMService = BpmFactory.get_bpm_service()
         mapper = ApplicationService.get_application_form_mapper_by_id(application_id)
         task_variable = json.loads(mapper.get("taskVariables"))
         form_data = payload.pop("data", None)
-        payload["processVariables"] = ApplicationService.fetch_task_variable_values(
+        payload["processVariables"] = bpm.fetch_task_variable_values(
             task_variable, form_data
         )
         payload["processVariables"].update({"isResubmit": {"value": False}})
         ApplicationService.update_application(application_id, {"is_resubmit": False})
         try:
-            response = BPMService.send_message(data=payload, token=token)
+            response = bpm.send_message(data=payload, token=token)
             if not response:
                 raise BusinessException(BusinessErrorCode.PROCESS_DEF_NOT_FOUND)
         except requests.exceptions.ConnectionError as err:

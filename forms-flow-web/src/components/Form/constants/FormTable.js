@@ -38,7 +38,7 @@ function FormTable() {
   );
   const redirectUrl = MULTITENANCY_ENABLED ? `/tenant/${tenantKey}/` : "/";
   const isApplicationCountLoading = useSelector((state) => state.process.isApplicationCountLoading);
-  const { createDesigns } = userRoles();
+  const { createDesigns, viewDesigns } = userRoles();
   const [expandedRowIndex, setExpandedRowIndex] = useState(null);
   const [currentFormSort ,setCurrentFormSort] = useState(formsort);  
 
@@ -194,15 +194,20 @@ function FormTable() {
                           </span>
                         </td>
                         <td className="w-12">
-                          {createDesigns && <CustomButton
+                        {(createDesigns || viewDesigns) && (
+                          <CustomButton
                             variant="secondary"
                             size="sm"
-                            label={<Translation>{(t) => t("Edit")}</Translation>}
+                            label={
+                              <Translation>
+                                {(t) => t(createDesigns ? "Edit" : "View")}
+                              </Translation>
+                            }
                             onClick={() => viewOrEditForm(e._id, 'edit')}
                             className=""
-                            dataTestid={`form-edit-button-${e._id}`}
-                            ariaLabel="Edit Form Button"
-                          />}
+                            dataTestid={`form-${createDesigns ? 'edit' : 'view'}-button-${e._id}`}
+                            ariaLabel={`${createDesigns ? "Edit" : "View"} Form Button`}
+                          /> )}
                         </td>
                       </tr>
                     );

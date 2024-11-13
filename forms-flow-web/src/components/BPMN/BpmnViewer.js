@@ -2,6 +2,7 @@ import React, { useEffect, useState, useCallback } from 'react';
 import BpmnViewer from "bpmn-js/lib/NavigatedViewer"; // Use NavigatedViewer for read-only view with zoom controls
 import Nodata from "../Nodata";
 import { useTranslation } from 'react-i18next';
+import PropTypes from 'prop-types';
 
 const BPMNViewer = ({ bpmnXml }) => {
   const [viewer, setViewer] = useState(null);
@@ -45,6 +46,10 @@ const BPMNViewer = ({ bpmnXml }) => {
   }
 
   return <div ref={containerRef} id="canvas" style={{ height: '62vh' }}></div>;
+};
+
+BPMNViewer.propTypes = {
+    bpmnXml: PropTypes.string.isRequired,
 };
 
 export default BPMNViewer;

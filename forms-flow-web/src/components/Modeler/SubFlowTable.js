@@ -20,7 +20,6 @@ import { MULTITENANCY_ENABLED } from "../../constants/constants";
 import SortableHeader from "../CustomComponents/SortableHeader";
 import ImportSubflowTable from "../Modals/ImportSubFlow";
 
-
 const SubFlow = React.memo(() => {
   const searchText = useSelector((state) => state.process.bpmnSearchText);
   const tenantKey = useSelector((state) => state.tenants?.tenantId);
@@ -51,8 +50,7 @@ const SubFlow = React.memo(() => {
   };
   const [showBuildModal, setShowBuildModal] = useState(false);
   const handleBuildClick = () => {
-    dispatch(
-      push(`${redirectUrl}subflow/create`));
+    dispatch(push(`${redirectUrl}subflow/create`));
   };
 
 
@@ -69,7 +67,7 @@ const SubFlow = React.memo(() => {
       heading: "Build",
       heading: "Build",
       body: "Create the BPMN from scratch",
-      onClick: handleBuildClick
+      onClick: handleBuildClick,
     },
     {
     {
@@ -77,8 +75,8 @@ const SubFlow = React.memo(() => {
       heading: "Import",
       heading: "Import",
       body: "Upload BPMN from a file",
-      onClick: handleImportClick
-    }
+      onClick: handleImportClick,
+    },
   ];
 
   useEffect(() => {
@@ -255,12 +253,12 @@ const SubFlow = React.memo(() => {
       <BuildModal
         show={showBuildModal}
         onClose={handleBuildModal}
-        title={t(`New BPMN`)}
-        contents={contents}/>
-      {importSubflow && <ImportSubflowTable
-        showModal={importSubflow}
-        closeImport={closeBpmnImport}
-      />}
+        title={t("New BPMN")}
+        contents={contents}
+      />
+      {importSubflow && (
+        <ImportSubflowTable showModal={importSubflow} closeImport={closeBpmnImport} />
+      )}
     </>
   );
 });

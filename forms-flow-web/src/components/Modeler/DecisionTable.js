@@ -7,10 +7,7 @@ import SortableHeader from "../CustomComponents/SortableHeader";
 import { fetchAllProcesses } from "../../apiManager/services/processServices";
 import { MULTITENANCY_ENABLED } from "../../constants/constants";
 import { push } from "connected-react-router";
-import {
-  setDmnSearchText,
-  setIsPublicDiagram,
-} from "../../actions/processActions";
+import { setDmnSearchText, setIsPublicDiagram } from "../../actions/processActions";
 import ImportDecesionTable from "../Modals/ImportDecisionTable";
 
 const DecisionTable = React.memo(() => {
@@ -46,9 +43,9 @@ const DecisionTable = React.memo(() => {
     dispatch(push(`${redirectUrl}decision-table/create`));
   };
 
-const handleImportClick = () => {
-  setShowBuildModal(false);
-  setImportDecisionTable(true);
+  const handleImportClick = () => {
+    setShowBuildModal(false);
+    setImportDecisionTable(true);
   };
   const contents = [
     {
@@ -64,7 +61,7 @@ const handleImportClick = () => {
       onClick: handleImportClick
     }
   ];
-  
+
   useEffect(() => {
     if (!search?.trim()) {
       dispatch(setDmnSearchText(""));
@@ -238,12 +235,15 @@ const handleImportClick = () => {
       <BuildModal
         show={showBuildModal}
         onClose={handleBuildModal}
-        title={t(`New DMN`)}
-        contents={contents} />
-      {importDecesionTable && <ImportDecesionTable
-        showModal={importDecesionTable}
-        closeImport={closeDmnImport}
-      />}
+        title={t("New DMN")}
+        contents={contents}
+      />
+      {importDecesionTable && (
+        <ImportDecesionTable
+          showModal={importDecesionTable}
+          closeImport={closeDmnImport}
+        />
+      )}
     </>
   );
 });

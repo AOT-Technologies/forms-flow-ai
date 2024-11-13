@@ -272,7 +272,9 @@ const EditComponent = () => {
     setShowSettingsModal(!showSettingsModal);
   const [selectedAction, setSelectedAction] = useState(null);
   const [newActionModal, setNewActionModal] = useState(false);
+  const [isSettingsSaving, setIsSettingsSaving] = useState(false);
   const onCloseActionModal = () => setNewActionModal(false);
+
   const CategoryType = {
     FORM: "FORM",
     WORKFLOW: "WORKFLOW",
@@ -402,6 +404,7 @@ const EditComponent = () => {
     accessDetails,
     rolesState,
   }) => {
+    setIsSettingsSaving(true);
     const parentFormId = processListData.parentFormId;
     const mapper = {
       formId: form._id,
@@ -443,15 +446,21 @@ const EditComponent = () => {
       submissionAccess: accessDetails.submissionAccess,
       access: accessDetails.formAccess,
     };
-
-    await dispatch(saveFormProcessMapperPut({ mapper, authorizations }));
-    const updateFormResponse = await formUpdate(form._id, formData);
-    dispatchFormAction({
-      type: "formChange",
-      value: { ...updateFormResponse.data, components: form.components },
-    });
-    dispatch(setFormSuccessData("form", updateFormResponse.data));
-    handleToggleSettingsModal();
+    
+    try{
+      await dispatch(saveFormProcessMapperPut({ mapper, authorizations }));
+      const updateFormResponse = await formUpdate(form._id, formData);
+      dispatchFormAction({
+        type: "formChange",
+        value: { ...updateFormResponse.data, components: form.components },
+      });
+      dispatch(setFormSuccessData("form", updateFormResponse.data));
+    }catch(error){
+      console.error(error);
+    }finally{
+      setIsSettingsSaving(false);
+      handleToggleSettingsModal();
+    }
   };
 
   const saveFormData = async ({showToast = true}) => {
@@ -839,6 +848,7 @@ const EditComponent = () => {
         <LoadingOverlay active={formSubmitted} spinner text={t("Loading...")}>
           <SettingsModal
             show={showSettingsModal}
+            isSaving={isSettingsSaving}
             handleClose={handleToggleSettingsModal}
             handleConfirm={handleConfirmSettings}
           />

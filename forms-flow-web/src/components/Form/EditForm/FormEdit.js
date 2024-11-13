@@ -6,6 +6,7 @@ import {
   Errors,
   FormBuilder,
   deleteForm,
+  Form,
 } from "@aot-technologies/formio-react";
 import {
   CustomButton,
@@ -21,7 +22,7 @@ import LoadingOverlay from "react-loading-overlay-ts";
 import _cloneDeep from "lodash/cloneDeep";
 import { useTranslation } from "react-i18next";
 import { push } from "connected-react-router";
-import ActionModal from "../../Modals/ActionModal.js";  
+import ActionModal from "../../Modals/ActionModal.js";
 //for save form
 import { MULTITENANCY_ENABLED } from "../../../constants/constants";
 import { fetchFormById } from "../../../apiManager/services/bpmFormServices";
@@ -60,6 +61,7 @@ import ExportModal from "../../Modals/ExportModal.js";
 import NewVersionModal from "../../Modals/NewVersionModal";
 import { currentFormReducer } from "../../../modules/formReducer.js";
 import { toast } from "react-toastify";
+import userRoles from "../../../constants/permissions.js";
 import { generateUniqueId, isFormComponentsChanged} from "../../../helper/helper.js";
 import { useMutation } from "react-query";
 
@@ -79,10 +81,8 @@ const EditComponent = () => {
   const sideTabRef = useRef(null);
 
   /* ------------------------------- mapper data ------------------------------ */
-  const {
-    formProcessList: processListData,
-    formPreviousData: previousData,
-  } = useSelector((state) => state.process);
+  const { formProcessList: processListData, formPreviousData: previousData } =
+    useSelector((state) => state.process);
 
   /* -------------------------------- user data and form access data ------------------------------- */
   const {
@@ -117,6 +117,7 @@ const EditComponent = () => {
   const [formTitle, setFormTitle] = useState("");
   const [importError, setImportError] = useState("");
   const [importLoader, setImportLoader] = useState(false);
+  const { createDesigns } = userRoles();
 
    /* --------- validate form title exist or not --------- */
    const {
@@ -143,21 +144,25 @@ const EditComponent = () => {
   
   const UploadActionType = {
     IMPORT: "import",
-    VALIDATE: "validate"
+    VALIDATE: "validate",
   };
   const [fileItems, setFileItems] = useState({
     workflow: {
       majorVersion: null,
-      minorVersion: null
+      minorVersion: null,
     },
     form: {
       majorVersion: null,
-      minorVersion: null
-    }
+      minorVersion: null,
+    },
   });
 
-  const handleImport = async (fileContent, UploadActionType,
-    selectedLayoutVersion, selectedFlowVersion) => {
+  const handleImport = async (
+    fileContent,
+    UploadActionType,
+    selectedLayoutVersion,
+    selectedFlowVersion
+  ) => {
     setImportLoader(true);
 
     // Validate UploadActionType before proceeding
@@ -201,12 +206,12 @@ const EditComponent = () => {
         setFileItems({
           workflow: {
             majorVersion: workflow?.majorVersion || null,
-            minorVersion: workflow?.minorVersion || null
+            minorVersion: workflow?.minorVersion || null,
           },
           form: {
             majorVersion: form?.majorVersion || null,
-            minorVersion: form?.minorVersion || null
-          }
+            minorVersion: form?.minorVersion || null,
+          },
         });
       }
       if (data.action === "validate") {
@@ -286,12 +291,12 @@ const EditComponent = () => {
       setFileItems({
         workflow: {
           majorVersion: null,
-          minorVersion: null
+          minorVersion: null,
         },
         form: {
           majorVersion: null,
-          minorVersion: null
-        }
+          minorVersion: null,
+        },
       });
       setImportError("");
     }
@@ -355,7 +360,7 @@ const EditComponent = () => {
       dispatch(setRestoreFormId(null));
     };
 
-    return cleanup; 
+    return cleanup;
   };
 
   useEffect(() => {
@@ -372,7 +377,6 @@ const EditComponent = () => {
       setIsProcessDetailsLoading(true);
       await fetchProcessDetails(processListData);
       setIsProcessDetailsLoading(false);
-
     }
   }, [processListData.processKey]);
 
@@ -502,13 +506,12 @@ const EditComponent = () => {
     setShowHistoryModal(true);
     dispatch(setFormHistories({ formHistory: [], totalCount: 0 }));
     if (processListData?.parentFormId) {
-        fetchFormHistory(processListData?.parentFormId, 1, 4);
+      fetchFormHistory(processListData?.parentFormId, 1, 4);
     }
-};
-
+  };
 
   const loadMoreBtnAction = () => {
-      fetchFormHistory(processListData?.parentFormId);
+    fetchFormHistory(processListData?.parentFormId);
   };
 
   const revertFormBtnAction = (cloneId) => {
@@ -584,15 +587,14 @@ const EditComponent = () => {
       const actionFunction = isPublished ? unPublish : publish;
       closeModal();
       setIsPublishLoading(true);
-      if(!isPublished){
+      if (!isPublished) {
         await flowRef.current.saveFlow(false);
         await saveFormData({showToast:false});
       }
       await actionFunction(processListData.id);
       if (isPublished) {
         await fetchProcessDetails(processListData);
-      }
-      else {
+      } else {
         backToForm();
       }
       setPromptNewVersion(isPublished);
@@ -861,38 +863,40 @@ const EditComponent = () => {
                     {isPublished ? t("Live") : t("Draft")}
                   </span>
                 </div>
-                <div>
-                  <CustomButton
-                    variant="dark"
-                    size="md"
-                    label={t("Settings")}
-                    onClick={handleToggleSettingsModal}
-                    dataTestid="eidtor-settings-testid"
-                    ariaLabel={t("Designer Settings Button")}
-                  />
-                  <CustomButton
-                    variant="dark"
-                    size="md"
-                    className="mx-2"
-                    label={t("Actions")}
-                    onClick={editorActions}
-                    dataTestid="designer-action-testid"
-                    ariaLabel={(t) => t("Designer Actions Button")}
-                  />
-                  <CustomButton
-                    variant="light"
-                    size="md"
-                    label={t(publishText)}
-                    buttonLoading={isPublishLoading}
-                    onClick={() => {
-                      isPublished
-                        ? openConfirmModal("unpublish")
-                        : openConfirmModal("publish");
-                    }}
-                    dataTestid="handle-publish-testid"
-                    ariaLabel={`${t(publishText)} ${t("Button")}`}
-                  />
-                </div>
+                {createDesigns && (
+                  <div>
+                    <CustomButton
+                      variant="dark"
+                      size="md"
+                      label={t("Settings")}
+                      onClick={handleToggleSettingsModal}
+                      dataTestid="eidtor-settings-testid"
+                      ariaLabel={t("Designer Settings Button")}
+                    />
+                    <CustomButton
+                      variant="dark"
+                      size="md"
+                      className="mx-2"
+                      label={t("Actions")}
+                      onClick={editorActions}
+                      dataTestid="designer-action-testid"
+                      ariaLabel={(t) => t("Designer Actions Button")}
+                    />
+                    <CustomButton
+                      variant="light"
+                      size="md"
+                      label={t(publishText)}
+                      buttonLoading={isPublishLoading}
+                      onClick={() => {
+                        isPublished
+                          ? openConfirmModal("unpublish")
+                          : openConfirmModal("publish");
+                      }}
+                      dataTestid="handle-publish-testid"
+                      ariaLabel={`${t(publishText)} ${t("Button")}`}
+                    />
+                  </div>
+                )}
               </div>
             </Card.Body>
           </Card>
@@ -908,65 +912,81 @@ const EditComponent = () => {
                   >
                     <div className="d-flex align-items-center justify-content-between">
                       <div className="mx-2 builder-header-text">Layout</div>
+                      {createDesigns && (
+                        <div>
+                          <CustomButton
+                            variant="secondary"
+                            size="md"
+                            icon={<HistoryIcon />}
+                            label={t("History")}
+                            onClick={() => handleFormHistory()}
+                            dataTestid="handle-form-history-testid"
+                            ariaLabel={t("Form History Button")}
+                          />
+                          <CustomButton
+                            variant="secondary"
+                            size="md"
+                            className="mx-2"
+                            icon={<PreviewIcon />}
+                            label={t("Preview")}
+                            onClick={handlePreview}
+                            dataTestid="handle-preview-testid"
+                            ariaLabel={t("Preview Button")}
+                          />
+                        </div>
+                      )}
+                    </div>
+                    {createDesigns && (
                       <div>
                         <CustomButton
-                          variant="secondary"
+                          variant="primary"
                           size="md"
-                          icon={<HistoryIcon />}
-                          label={t("History")}
-                          onClick={() => handleFormHistory()}
-                          dataTestid="handle-form-history-testid"
-                          ariaLabel={t("Form History Button")}
+                          className="mx-2"
+                          disabled={isPublished}
+                          label={t("Save Layout")}
+                          onClick={
+                            promptNewVersion ? handleVersioning : saveFormData
+                          }
+                          dataTestid="save-form-layout"
+                          ariaLabel={t("Save Form Layout")}
                         />
                         <CustomButton
                           variant="secondary"
                           size="md"
-                          className="mx-2"
-                          icon={<PreviewIcon />}
-                          label={t("Preview")}
-                          onClick={handlePreview}
-                          dataTestid="handle-preview-testid"
-                          ariaLabel={t("Preview Button")}
+                          label={t("Discard Changes")}
+                          onClick={() => {
+                            openConfirmModal("discard");
+                          }}
+                          dataTestid="discard-button-testid"
+                          ariaLabel={t("cancelBtnariaLabel")}
                         />
                       </div>
-                    </div>
-                    <div>
-                      <CustomButton
-                        variant="primary"
-                        size="md"
-                        className="mx-2"
-                        disabled={isPublished}
-                        label={t("Save Layout")}
-                        onClick={
-                          promptNewVersion ? handleVersioning : saveFormData
-                        }
-                        dataTestid="save-form-layout"
-                        ariaLabel={t("Save Form Layout")}
-                      />
-                      <CustomButton
-                        variant="secondary"
-                        size="md"
-                        label={t("Discard Changes")}
-                        onClick={() => {
-                          openConfirmModal("discard");
-                        }}
-                        dataTestid="discard-button-testid"
-                        ariaLabel={t("cancelBtnariaLabel")}
-                      />
-                    </div>
+                    )}
                   </div>
                 </Card.Header>
                 <Card.Body>
                   <div className="form-builder">
-                    <FormBuilder
-                      key={form._id}
-                      form={form}
-                      onChange={formChange}
-                      options={{
-                        language: lang,
-                        i18n: RESOURCE_BUNDLES_DATA,
-                      }}
-                    />
+                    {!createDesigns ? (
+                      <div className="px-4 pt-4 form-preview">
+                       <Form
+                          form={form}
+                          options={{
+                          disableAlerts: true,
+                          noAlerts: true,
+                          language: lang, i18n: RESOURCE_BUNDLES_DATA }}
+                        />
+                      </div>
+                    ) : (
+                      <FormBuilder
+                        key={form._id}
+                        form={form}
+                        onChange={formChange}
+                        options={{
+                          language: lang,
+                          i18n: RESOURCE_BUNDLES_DATA,
+                        }}
+                      />
+                    )}
                   </div>
                 </Card.Body>
               </Card>
@@ -983,8 +1003,9 @@ const EditComponent = () => {
               />}
             </div>
             <button
-              className={`border-0 form-flow-wraper-${isFormLayout ? "right" : "left"
-                } ${sideTabRef.current && "visible"}`}
+              className={`border-0 form-flow-wraper-${
+                isFormLayout ? "right" : "left"
+              } ${sideTabRef.current && "visible"}`}
               onClick={handleCurrentLayout}
             >
               {isFormLayout ? "Flow" : "Layout"}
@@ -1057,7 +1078,7 @@ const EditComponent = () => {
           size="md"
         />
       )}
-      
+
       <HistoryModal
         show={showHistoryModal}
         onClose={closeHistoryModal}

@@ -6,6 +6,8 @@ import org.camunda.bpm.engine.authorization.Authorization;
 import org.camunda.bpm.engine.authorization.AuthorizationQuery;
 import org.camunda.bpm.engine.authorization.Permissions;
 import org.camunda.bpm.engine.authorization.Resources;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
@@ -15,6 +17,8 @@ import jakarta.annotation.PostConstruct;
 
 @Component
 public class CamundaAuthorizationInitializer {
+	
+	private static final Logger LOGGER = LoggerFactory.getLogger(CamundaAuthorizationInitializer.class);
 
     @Autowired
     private CamundaAuthorizationProperties authorizationProperties;
@@ -65,7 +69,7 @@ public class CamundaAuthorizationInitializer {
 	
 	                    authorizationService.saveAuthorization(authorization);
 	                } else {
-	                    System.out.println("Authorization already exists for: " + (config.getGroupId() != null ? "Group " + config.getGroupId() : "User " + config.getUserId()));
+	                	LOGGER.info("Authorization already exists for: " + (config.getGroupId() != null ? "Group " + config.getGroupId() : "User " + config.getUserId()));
 	                }
 	        	}
 	            

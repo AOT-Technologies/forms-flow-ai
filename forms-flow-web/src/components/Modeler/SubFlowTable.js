@@ -44,12 +44,10 @@ const SubFlow = React.memo(() => {
   const closeBpmnImport = () => {
     setImportSubflow(false);
   };
-  const [importSubflow, setImportSubflow] = useState(false);
-  const closeBpmnImport = () => {
-    setImportSubflow(false);
-  };
+
   const [showBuildModal, setShowBuildModal] = useState(false);
   const handleBuildClick = () => {
+    dispatch(push(`${redirectUrl}subflow/create`));
     dispatch(push(`${redirectUrl}subflow/create`));
   };
 
@@ -62,28 +60,26 @@ const SubFlow = React.memo(() => {
   };
   const contents = [
     {
-    {
       id: 1,
-      heading: "Build",
       heading: "Build",
       body: "Create the BPMN from scratch",
       onClick: handleBuildClick,
     },
     {
-    {
       id: 2,
-      heading: "Import",
       heading: "Import",
       body: "Upload BPMN from a file",
       onClick: handleImportClick,
     },
   ];
 
+
   useEffect(() => {
     if (!search?.trim()) {
       dispatch(setBpmnSearchText(""));
     }
   }, [search]);
+
 
   useEffect(() => {
     setIsLoading(true);
@@ -123,7 +119,13 @@ const SubFlow = React.memo(() => {
     { text: "50", value: 50 },
     { text: "100", value: 100 },
     { text: "All", value: totalCount },
+    { text: "5", value: 5 },
+    { text: "25", value: 25 },
+    { text: "50", value: 50 },
+    { text: "100", value: 100 },
+    { text: "All", value: totalCount },
   ];
+
 
   const handlePageChange = (page) => setActivePage(page);
   const onLimitChange = (newLimit) => {
@@ -141,10 +143,12 @@ const SubFlow = React.memo(() => {
     dispatch(setBpmnSearchText(search));
   };
 
+
   const gotoEdit = (data) => {
     if (MULTITENANCY_ENABLED) {
       dispatch(setIsPublicDiagram(!!data.tenantId));
     }
+    dispatch(push(`${redirectUrl}subflow/edit/${data.processKey}`));
     dispatch(push(`${redirectUrl}subflow/edit/${data.processKey}`));
   };
 

@@ -7,8 +7,8 @@ import SortableHeader from "../CustomComponents/SortableHeader";
 import { fetchAllProcesses } from "../../apiManager/services/processServices";
 import { MULTITENANCY_ENABLED } from "../../constants/constants";
 import { push } from "connected-react-router";
-import { setDmnSearchText, setIsPublicDiagram } from "../../actions/processActions";
 import ImportDecesionTable from "../Modals/ImportDecisionTable";
+import { setDmnSearchText, setIsPublicDiagram } from "../../actions/processActions";
 
 const DecisionTable = React.memo(() => {
   const dispatch = useDispatch();
@@ -31,10 +31,6 @@ const DecisionTable = React.memo(() => {
   const closeDmnImport = () => {
     setImportDecisionTable(false);
   };
-  const [importDecesionTable, setImportDecisionTable] = useState(false);
-  const closeDmnImport = () => {
-    setImportDecisionTable(false);
-  };
   const [searchDmnLoading, setSearchDmnLoading] = useState(false);
   const redirectUrl = MULTITENANCY_ENABLED ? `/tenant/${tenantKey}/` : "/";
   const [search, setSearch] = useState(searchText || "");
@@ -42,7 +38,6 @@ const DecisionTable = React.memo(() => {
   const handleBuildClick = () => {
     dispatch(push(`${redirectUrl}decision-table/create`));
   };
-
   const handleImportClick = () => {
     setShowBuildModal(false);
     setImportDecisionTable(true);
@@ -62,11 +57,13 @@ const DecisionTable = React.memo(() => {
     }
   ];
 
+
   useEffect(() => {
     if (!search?.trim()) {
       dispatch(setDmnSearchText(""));
     }
   }, [search]);
+
 
   useEffect(() => {
     setIsLoading(true);
@@ -88,6 +85,7 @@ const DecisionTable = React.memo(() => {
       )
     );
   }, [dispatch, activePage, limit, searchText, currentDmnSort]);
+
 
   const handleSort = (key) => {
     setCurrentDmnSort((prevSort) => {
@@ -137,7 +135,8 @@ const DecisionTable = React.memo(() => {
   const handleBuildModal = () => {
     setShowBuildModal(false);
   };
-  
+
+
   return (
     <>
       <div className="d-md-flex justify-content-between align-items-center pb-3 flex-wrap">

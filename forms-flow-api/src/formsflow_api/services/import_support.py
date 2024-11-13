@@ -185,7 +185,9 @@ class ImportService:  # pylint: disable=too-many-public-methods
         """Validate form tile in the form_process_mapper table."""
         # Exclude the current mapper from the query
         current_app.logger.info(f"Validation for form title...{title}")
-        mappers = FormProcessMapper.find_forms_by_title(title, exclude_id=mapper.id)
+        mappers = FormProcessMapper.find_forms_by_title(
+            title, exclude_id=mapper.parent_form_id
+        )
         if mappers:
             current_app.logger.debug(f"Other mappers matching the title- {mappers}")
             raise BusinessException(BusinessErrorCode.FORM_EXISTS)
@@ -417,7 +419,7 @@ class ImportService:  # pylint: disable=too-many-public-methods
                 "description": mapper.description if form_only else description,
             }
             FormProcessMapperService.mapper_create(mapper_data)
-            FormProcessMapperService.mark_inactive_and_delete(mapper.id)
+            FormProcessMapperService.mark_unpublished(mapper.id)
         else:
             current_app.logger.info("Form import minor version inprogress...")
             form_id = mapper.form_id

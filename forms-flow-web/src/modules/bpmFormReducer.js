@@ -13,7 +13,13 @@ const initialState = {
   sortOrder: "asc",
   formType:"form",
   searchText: "",
-  sort:{ sortBy : "formName", sortOrder: "asc"},
+  sort: {
+    activeKey: "formName", 
+    formName: { sortOrder: "asc" },
+    modified: { sortOrder: "asc" },
+    visibility: { sortOrder: "asc"},
+    status: { sortOrder: "asc" },
+  },
 };
 
 const bpmForms = (state = initialState, action) => {

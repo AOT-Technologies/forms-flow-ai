@@ -1,5 +1,4 @@
 import React, { useEffect, useState } from "react";
-import PropTypes from 'prop-types';
 import { Dropdown } from "react-bootstrap";
 import { useDispatch, useSelector } from "react-redux";
 import { push } from "connected-react-router";
@@ -22,6 +21,8 @@ import {
 import { HelperServices } from "@formsflow/service";
 import { CustomButton, DownArrowIcon } from "@formsflow/components";
 import userRoles from "../../../constants/permissions";
+import SortableHeader from '../../CustomComponents/SortableHeader';
+
 function FormTable() {
   const tenantKey = useSelector((state) => state.tenants?.tenantId);
   const dispatch = useDispatch();
@@ -37,7 +38,7 @@ function FormTable() {
   );
   const redirectUrl = MULTITENANCY_ENABLED ? `/tenant/${tenantKey}/` : "/";
   const isApplicationCountLoading = useSelector((state) => state.process.isApplicationCountLoading);
-  const { createDesigns } = userRoles();
+  const { createDesigns, viewDesigns } = userRoles();
   const [expandedRowIndex, setExpandedRowIndex] = useState(null);
   const [currentFormSort ,setCurrentFormSort] = useState(formsort);  
 
@@ -67,17 +68,15 @@ function FormTable() {
 
   const handleSort = (key) => {
     setCurrentFormSort((prevSort) => {
-      let newSortOrder = "asc";
-      
-      if (prevSort.sortBy === key) {
-        newSortOrder = prevSort.sortOrder === "asc" ? "desc" : "asc";
-      }
+      const newSortOrder = prevSort[key].sortOrder === "asc" ? "desc" : "asc";
       return {
-        sortBy: key,
-        sortOrder: newSortOrder,
+        ...prevSort,
+        activeKey: key,
+        [key]: { sortOrder: newSortOrder },
       };
     });
   };
+
   useEffect(() => {
     dispatch(setBpmFormSort(currentFormSort));
   },[currentFormSort,dispatch]);
@@ -119,52 +118,7 @@ function FormTable() {
       </tbody>
     );
   };
-  const SortableHeader = ({ columnKey, title, currentFormSort, handleSort,className }) => {
-    const isSorted = currentFormSort.sortBy === columnKey;
-    const sortedOrder = isSorted ? currentFormSort.sortOrder : "asc";
-    const handleKeyDown = (event)=>{
-      if (event.key === 'Enter') {  
-        handleSort(columnKey);
-        }
-    };
-    return (
-      <div
-        className= {`d-flex align-items-center justify-content-between cursor-pointer ${className}`}
-        onClick={() => handleSort(columnKey)}
-        onKeyDown={handleKeyDown} 
-        role="button"
-      >
-        <span className="mt-1">{t(title)}</span>
-        <span>
-          {sortedOrder === "asc" ? (
-            <i
-            data-testid={`${columnKey}-asc-sort-icon`}
-            className="fa fa-arrow-up sort-icon fs-16 ms-2"
-            data-toggle="tooltip"
-            title={t("Ascending")}
-          ></i>
-          ) : (
-            <i
-            data-testid={`${columnKey}-desc-sort-icon`}
-            className="fa fa-arrow-down sort-icon fs-16 ms-2"
-            data-toggle="tooltip"
-            title={t("Descending")}
-          ></i>
-          )}
-        </span>
-      </div>
-    );
-  };
-  SortableHeader.propTypes = {
-    columnKey: PropTypes.string.isRequired,  
-    title: PropTypes.string.isRequired,      
-    currentFormSort: PropTypes.shape({
-      sortBy: PropTypes.string,
-      sortOrder: PropTypes.string
-    }).isRequired,                          
-    handleSort: PropTypes.func.isRequired,     
-    className: PropTypes.string              
-  };
+
   return (
     <>
       <LoadingOverlay active={searchFormLoading || isApplicationCountLoading} spinner text={t("Loading...")}>
@@ -177,7 +131,7 @@ function FormTable() {
                   <SortableHeader
                    columnKey="formName"
                    title="Form Name"
-                   currentFormSort={currentFormSort}
+                   currentSort={currentFormSort}
                    handleSort={handleSort}
                    className="ms-4"
                   />
@@ -187,7 +141,7 @@ function FormTable() {
                   <SortableHeader 
                   columnKey="modified"
                   title="Last Edited"
-                  currentFormSort={currentFormSort}
+                  currentSort={currentFormSort}
                   handleSort={handleSort}
                   />
                   </th>
@@ -195,14 +149,14 @@ function FormTable() {
                   <SortableHeader 
                     columnKey="visibility"
                     title="Visibility"
-                    currentFormSort={currentFormSort}
+                    currentSort={currentFormSort}
                     handleSort={handleSort} />
                   </th>
                   <th className="w-12" scope="col" colSpan="4">
                     <SortableHeader 
                     columnKey="status"
                     title="Status"
-                    currentFormSort={currentFormSort}
+                    currentSort={currentFormSort}
                     handleSort={handleSort} />
                   </th>
                   <th className="w-12" colSpan="4" aria-label="Search Forms by form title"></th>
@@ -232,9 +186,7 @@ function FormTable() {
                         <td className="w-12">
                           <span data-testid={`form-status-${e._id}`} className="d-flex align-items-center">
                             {e.status === "active" ? (
-                              <>
                                 <span className="status-live"></span>
-                              </>
                             ) : (
                               <span className="status-draft"></span>
                             )}
@@ -242,15 +194,20 @@ function FormTable() {
                           </span>
                         </td>
                         <td className="w-12">
-                          {createDesigns && <CustomButton
+                        {(createDesigns || viewDesigns) && (
+                          <CustomButton
                             variant="secondary"
                             size="sm"
-                            label={<Translation>{(t) => t("Edit")}</Translation>}
+                            label={
+                              <Translation>
+                                {(t) => t(createDesigns ? "Edit" : "View")}
+                              </Translation>
+                            }
                             onClick={() => viewOrEditForm(e._id, 'edit')}
                             className=""
-                            dataTestid={`form-edit-button-${e._id}`}
-                            ariaLabel="Edit Form Button"
-                          />}
+                            dataTestid={`form-${createDesigns ? 'edit' : 'view'}-button-${e._id}`}
+                            ariaLabel={`${createDesigns ? "Edit" : "View"} Form Button`}
+                          /> )}
                         </td>
                       </tr>
                     );
@@ -289,9 +246,9 @@ function FormTable() {
                                   {limit}
                                 </Dropdown.Toggle>
                                 <Dropdown.Menu>
-                                  {pageOptions.map((option, index) => (
+                                  {pageOptions.map((option) => (
                                     <Dropdown.Item
-                                      key={index}
+                                      key={option.value}
                                       type="button"
                                       data-testid={`page-limit-dropdown-item-${option.value}`}
                                       onClick={() => {

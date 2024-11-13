@@ -52,7 +52,6 @@ formsflow.ai:
       resourceType: "PROCESS_DEFINITION,PROCESS_INSTANCE,TASK,FILTER,USER"
       resourceId: "*"
       permissions: ["ALL"]
-    
 
 camunda.bpm:
   job-execution:

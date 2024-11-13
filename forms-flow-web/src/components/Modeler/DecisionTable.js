@@ -1,20 +1,13 @@
 import React, { useState, useEffect } from "react";
 import { useSelector, useDispatch } from "react-redux";
-import { CustomButton,
-   CustomSearch ,
-   ReusableProcessTableRow ,
-   TableFooter,
-   BuildModal} from "@formsflow/components";
+import { CustomButton, CustomSearch, ReusableProcessTableRow, TableFooter, BuildModal } from "@formsflow/components";
 import LoadingOverlay from "react-loading-overlay-ts";
 import { useTranslation } from "react-i18next";
 import SortableHeader from "../CustomComponents/SortableHeader";
 import { fetchAllProcesses } from "../../apiManager/services/processServices";
 import { MULTITENANCY_ENABLED } from "../../constants/constants";
 import { push } from "connected-react-router";
-import {
-  setDmnSearchText,
-  setIsPublicDiagram,
-} from "../../actions/processActions";
+import { setDmnSearchText, setIsPublicDiagram } from "../../actions/processActions";
 import ImportDecesionTable from "../Modals/ImportDecisionTable";
 
 const DecisionTable = React.memo(() => {
@@ -43,13 +36,12 @@ const DecisionTable = React.memo(() => {
   const [search, setSearch] = useState(searchText || "");
   const [showBuildModal, setShowBuildModal] = useState(false);
   const handleBuildClick = () => {
-    dispatch(
-    push(`${redirectUrl}decision-table/create`));
-};
+    dispatch(push(`${redirectUrl}decision-table/create`));
+  };
 
-const handleImportClick = () => {
-  setShowBuildModal(false);
-  setImportDecisionTable(true);
+  const handleImportClick = () => {
+    setShowBuildModal(false);
+    setImportDecisionTable(true);
   };
   const contents = [
     {
@@ -65,12 +57,13 @@ const handleImportClick = () => {
       onClick: handleImportClick
     }
   ];
-  
+
   useEffect(() => {
     if (!search?.trim()) {
       dispatch(setDmnSearchText(""));
     }
   }, [search]);
+
   useEffect(() => {
     setIsLoading(true);
     dispatch(
@@ -91,6 +84,7 @@ const handleImportClick = () => {
       )
     );
   }, [dispatch, activePage, limit, searchText, currentDmnSort]);
+
   const handleSort = (key) => {
     setCurrentDmnSort((prevSort) => {
       const newSortOrder = prevSort[key].sortOrder === "asc" ? "desc" : "asc";
@@ -139,30 +133,32 @@ const handleImportClick = () => {
   const handleBuildModal = () => {
     setShowBuildModal(false);
   };
+  
   return (
     <>
-    <div className="d-md-flex justify-content-between align-items-center pb-3 flex-wrap">
-      <div className="d-md-flex align-items-center p-0 search-box input-group input-group width-25">
-        <CustomSearch
-          search={search}
-          setSearch={setSearch}
-          handleSearch={handleSearch}
-          handleClearSearch={handleClearSearch}
-          placeholder={t("Search Decision Table")}
-          searchLoading={searchDmnLoading}
-          title={t("Search DMN Name")}
-          dataTestId="DMN-search-input"
-        />
-      </div>
-      <div className="d-md-flex justify-content-end align-items-center ">
-        <CustomButton
-          variant="primary"
-          size="sm"
-          label={t("New DMN")}
-          dataTestid="create-DMN-button"
-          ariaLabel="Create DMN"
-          onClick={() => handleCreateDMN()}
-        />
+      <div className="d-md-flex justify-content-between align-items-center pb-3 flex-wrap">
+        <div className="d-md-flex align-items-center p-0 search-box input-group input-group width-25">
+          <CustomSearch
+            search={search}
+            setSearch={setSearch}
+            handleSearch={handleSearch}
+            handleClearSearch={handleClearSearch}
+            placeholder={t("Search Decision Table")}
+            searchLoading={searchDmnLoading}
+            title={t("Search DMN Name")}
+            dataTestId="DMN-search-input"
+          />
+        </div>
+        <div className="d-md-flex justify-content-end align-items-center">
+          <CustomButton
+            variant="primary"
+            size="sm"
+            label={t("New DMN")}
+            dataTestid="create-DMN-button"
+            ariaLabel="Create DMN"
+            onClick={handleCreateDMN}
+          />
+        </div>
       </div>
       <LoadingOverlay active={isLoading} spinner text={t("Loading...")}>
         <div className="min-height-400 pt-3">
@@ -202,30 +198,42 @@ const handleImportClick = () => {
                       currentSort={currentDmnSort}
                       handleSort={handleSort}
                     />
-                  ))}
-                  <TableFooter
-                    limit={limit}
-                    activePage={activePage}
-                    totalCount={totalCount}
-                    handlePageChange={handlePageChange}
-                    onLimitChange={onLimitChange}
-                    pageOptions={pageOptions}
+                  </th>
+                </tr>
+              </thead>
+              <tbody>
+                {dmn && dmn.map((data) => (
+                  <ReusableProcessTableRow
+                    key={data.id}
+                    data={data}
+                    gotoEdit={gotoEdit}
                   />
-                </tbody>
-              </table>
-            </div>
+                ))}
+              </tbody>
+            </table>
+            <TableFooter
+              limit={limit}
+              activePage={activePage}
+              totalCount={totalCount}
+              handlePageChange={handlePageChange}
+              onLimitChange={onLimitChange}
+              pageOptions={pageOptions}
+            />
           </div>
-        </LoadingOverlay>
-      </div>
+        </div>
+      </LoadingOverlay>
       <BuildModal
         show={showBuildModal}
         onClose={handleBuildModal}
-        title={t(`New DMN`)}
-        contents={contents} />
-      {importDecesionTable && <ImportDecesionTable
-        showModal={importDecesionTable}
-        closeImport={closeDmnImport}
-      />}
+        title={t("New DMN")}
+        contents={contents}
+      />
+      {importDecesionTable && (
+        <ImportDecesionTable
+          showModal={importDecesionTable}
+          closeImport={closeDmnImport}
+        />
+      )}
     </>
   );
 });

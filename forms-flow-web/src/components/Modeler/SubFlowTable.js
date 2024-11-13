@@ -1,9 +1,11 @@
 import React, { useEffect, useState } from "react";
-import { CustomButton,
-   CustomSearch ,
-   TableFooter ,
-   ReusableProcessTableRow,
-   BuildModal} from "@formsflow/components";
+import {
+  CustomButton,
+  CustomSearch,
+  TableFooter,
+  ReusableProcessTableRow,
+  BuildModal,
+} from "@formsflow/components";
 import { useSelector, useDispatch } from "react-redux";
 import { useTranslation } from "react-i18next";
 
@@ -17,7 +19,6 @@ import { push } from "connected-react-router";
 import { MULTITENANCY_ENABLED } from "../../constants/constants";
 import SortableHeader from "../CustomComponents/SortableHeader";
 import ImportSubflowTable from "../Modals/ImportSubFlow";
-
 
 const SubFlow = React.memo(() => {
   const searchText = useSelector((state) => state.process.bpmnSearchText);
@@ -45,8 +46,7 @@ const SubFlow = React.memo(() => {
   };
   const [showBuildModal, setShowBuildModal] = useState(false);
   const handleBuildClick = () => {
-    dispatch(
-      push(`${redirectUrl}subflow/create`));
+    dispatch(push(`${redirectUrl}subflow/create`));
   };
 
   const handleImportClick = () => {
@@ -58,20 +58,22 @@ const SubFlow = React.memo(() => {
       id: 1,
       heading: "Build",
       body: "Create the BPMN from scratch",
-      onClick: handleBuildClick
+      onClick: handleBuildClick,
     },
     {
       id: 2,
       heading: "Import",
       body: "Upload BPMN from a file",
-      onClick: handleImportClick
-    }
+      onClick: handleImportClick,
+    },
   ];
+
   useEffect(() => {
     if (!search?.trim()) {
       dispatch(setBpmnSearchText(""));
     }
   }, [search]);
+
   useEffect(() => {
     setIsLoading(true);
     dispatch(
@@ -105,27 +107,13 @@ const SubFlow = React.memo(() => {
   };
 
   const pageOptions = [
-    {
-      text: "5",
-      value: 5,
-    },
-    {
-      text: "25",
-      value: 25,
-    },
-    {
-      text: "50",
-      value: 50,
-    },
-    {
-      text: "100",
-      value: 100,
-    },
-    {
-      text: "All",
-      value: totalCount,
-    },
+    { text: "5", value: 5 },
+    { text: "25", value: 25 },
+    { text: "50", value: 50 },
+    { text: "100", value: 100 },
+    { text: "All", value: totalCount },
   ];
+
   const handlePageChange = (page) => setActivePage(page);
   const onLimitChange = (newLimit) => {
     setLimit(newLimit);
@@ -141,12 +129,12 @@ const SubFlow = React.memo(() => {
     setActivePage(1);
     dispatch(setBpmnSearchText(search));
   };
+
   const gotoEdit = (data) => {
     if (MULTITENANCY_ENABLED) {
       dispatch(setIsPublicDiagram(!!data.tenantId));
     }
-    dispatch(push(`${redirectUrl}subflow/edit/${data.processKey}`)
-    );
+    dispatch(push(`${redirectUrl}subflow/edit/${data.processKey}`));
   };
 
   const handleCreateBPMN = () => {
@@ -158,31 +146,32 @@ const SubFlow = React.memo(() => {
 
   return (
     <>
+      <div className="d-md-flex justify-content-between align-items-center pb-3 flex-wrap">
+        <div className="d-md-flex align-items-center p-0 search-box input-group input-group width-25">
+          <CustomSearch
+            search={search}
+            setSearch={setSearch}
+            handleSearch={handleSearch}
+            handleClearSearch={handleClearSearch}
+            placeholder={t("Search BPMN Name")}
+            searchLoading={searchSubflowLoading}
+            title={t("Search BPMN Name")}
+            dataTestId="BPMN-search-input"
+          />
+        </div>
+        <div className="d-md-flex justify-content-end align-items-center">
+          <CustomButton
+            variant="primary"
+            size="sm"
+            label="New BPMN"
+            className=""
+            dataTestid="create-BPMN-button"
+            ariaLabel="Create BPMN"
+            onClick={handleCreateBPMN}
+          />
+        </div>
+      </div>
 
-    <div className="d-md-flex justify-content-between align-items-center pb-3 flex-wrap">
-      <div className="d-md-flex align-items-center p-0 search-box input-group input-group width-25">
-        <CustomSearch
-          search={search}
-          setSearch={setSearch}
-          handleSearch={handleSearch}
-          handleClearSearch={handleClearSearch}
-          placeholder={t("Search BPMN Name")}
-          searchLoading={searchSubflowLoading}
-          title={t("Search BPMN Name")}
-          dataTestId="BPMN-search-input"
-        />
-      </div>
-      <div className="d-md-flex justify-content-end align-items-center ">
-        <CustomButton
-          variant="primary"
-          size="sm"
-          label="New BPMN"
-          className=""
-          dataTestid="create-BPMN-button"
-          ariaLabel="Create BPMN"
-          onClick={() => handleCreateBPMN()}
-        />
-      </div>
       <LoadingOverlay active={isLoading} spinner text={t("Loading...")}>
         <div className="min-height-400 pt-3">
           <div className="custom-tables-wrapper">
@@ -221,30 +210,41 @@ const SubFlow = React.memo(() => {
                       currentSort={currentBpmnSort}
                       handleSort={handleSort}
                     />
-                  ))}
-                  <TableFooter
-                    limit={limit}
-                    activePage={activePage}
-                    totalCount={totalCount}
-                    handlePageChange={handlePageChange}
-                    onLimitChange={onLimitChange}
-                    pageOptions={pageOptions}
+                  </th>
+                </tr>
+              </thead>
+              <tbody>
+                {/* Populate rows dynamically */}
+                {process.map((data) => (
+                  <ReusableProcessTableRow
+                    key={data.processKey}
+                    data={data}
+                    onEdit={() => gotoEdit(data)}
                   />
-                </tbody>
-              </table>
-            </div>
+                ))}
+              </tbody>
+            </table>
+            <TableFooter
+              limit={limit}
+              activePage={activePage}
+              totalCount={totalCount}
+              handlePageChange={handlePageChange}
+              onLimitChange={onLimitChange}
+              pageOptions={pageOptions}
+            />
           </div>
-        </LoadingOverlay>
-      </div>
+        </div>
+      </LoadingOverlay>
+
       <BuildModal
         show={showBuildModal}
         onClose={handleBuildModal}
-        title={t(`New BPMN`)}
-        contents={contents}/>
-      {importSubflow && <ImportSubflowTable
-        showModal={importSubflow}
-        closeImport={closeBpmnImport}
-      />}
+        title={t("New BPMN")}
+        contents={contents}
+      />
+      {importSubflow && (
+        <ImportSubflowTable showModal={importSubflow} closeImport={closeBpmnImport} />
+      )}
     </>
   );
 });

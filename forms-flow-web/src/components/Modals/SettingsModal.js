@@ -5,7 +5,7 @@ import { CustomButton } from "@formsflow/components";
 import PropTypes from 'prop-types';
 
 import FormSettings from "../Form/EditForm/FormSettings";
-const SettingsModal = ({ show, handleClose, handleConfirm, isSaving }) => {
+const SettingsModal = ({ show, handleClose, handleConfirm, isSaving = false }) => {
   const { t } = useTranslation();
   const FormSettingsRef = useRef();
 
@@ -60,6 +60,7 @@ SettingsModal.propTypes = {
   show: PropTypes.bool,
   handleClose: PropTypes.func.isRequired, 
   handleConfirm: PropTypes.func.isRequired, 
+  isSaving: PropTypes.bool,
 };
  
 

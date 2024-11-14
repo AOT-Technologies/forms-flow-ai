@@ -48,9 +48,9 @@ There are two groups
 Group | Sub Group | Roles | Description |
 --- | --- | --- | ---
 `camunda-admin`| | |Able to administer Camunda directly and create new workflows
-`formsflow`|`formsflow-designer` |formsflow-bpm|Able to design forms and publish for use.
-`formsflow`|`formsflow-reviewer` |formsflow-bpm|Able to access applications, tasks, metrics and Insight of formsflow UI
-`formsflow`|`formsflow-client` |formsflow-client|Able to access form fill-in only
+`formsflow`|`formsflow-designer` |`view_designs`,`create_designs`,`manage_integrations`|Able to design forms and publish for use.
+`formsflow`|`formsflow-reviewer` |`manage_tasks`, `view_tasks`, `create_filters`, `view_dashboards`, `view_filters`, `view_submissions`|Able to access applications, tasks, metrics and Insight of formsflow UI
+`formsflow`|`formsflow-client` |`create_submissions`, `view_submissions`|Able to access form fill-in only
      
 * Please note, it is possible to assign a user to multiple groups say `formsflow-designer` and `formsflow-reviewer`, in order to provide access to both designer and staff behavior. 
 * Also, based on the workflow process `user task` candidate groups; new groups (main or sub group of `formsflow-reviewer`) can be created in keycloak. 

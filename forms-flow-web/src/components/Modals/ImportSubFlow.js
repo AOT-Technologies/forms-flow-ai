@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import ImportModal from "./ImportModal";
+import { ImportModal } from "@formsflow/components";
 import FileService from "../../services/FileService";
 import { createProcess } from "../../apiManager/services/processServices";
 import { useSelector, useDispatch } from "react-redux";

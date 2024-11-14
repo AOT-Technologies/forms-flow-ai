@@ -36,7 +36,7 @@ import {
   unPublish,
   getFormHistory,
 } from "../../../apiManager/services/FormServices";
-import ImportModal from "../../Modals/ImportModal.js";
+import { ImportModal } from "@formsflow/components";
 import FileService from "../../../services/FileService"; 
 import {
   setFormFailureErrorData,

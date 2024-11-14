@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { connect, useSelector, useDispatch } from "react-redux";
 import CreateFormModal from "../Modals/CreateFormModal.js";
-import ImportModal from "../Modals/ImportModal.js";
 import { push } from "connected-react-router";
 import { toast } from "react-toastify";
 import { addTenantkey } from "../../helper/helper";
@@ -38,7 +37,7 @@ import { setFormSuccessData } from "../../actions/formActions";
 import { CustomSearch } from "@formsflow/components";
 import userRoles from "../../constants/permissions.js";
 import FileService from "../../services/FileService";
-import { FormBuilderModal } from "@formsflow/components";
+import { FormBuilderModal, ImportModal } from "@formsflow/components";
 import { useMutation } from "react-query";
 const List = React.memo((props) => {
   const { createDesigns, createSubmissions, viewDesigns } = userRoles();

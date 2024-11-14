@@ -1,0 +1,14 @@
+version: '3.7'
+
+services:
+  redis: 
+    container_name: redis
+    image: "redis:alpine"
+    ports:
+      - "6379:6379"
+    networks:
+      - formsflow-redis
+
+networks:
+  formsflow-redis:
+    driver: bridge

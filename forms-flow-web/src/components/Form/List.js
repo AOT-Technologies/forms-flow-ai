@@ -46,6 +46,7 @@ const List = React.memo((props) => {
   const { createDesigns, createSubmissions, viewDesigns } = userRoles();
   const { t } = useTranslation();
   const searchText = useSelector((state) => state.bpmForms.searchText);
+  const tenantKey = useSelector((state) => state.tenants?.tenantId);
   const [search, setSearch] = useState(searchText || "");
   const [showBuildForm, setShowBuildForm] = useState(false);
   const [importFormModal, setImportFormModal] = useState(false);
@@ -69,7 +70,6 @@ const List = React.memo((props) => {
 
   const [formSubmitted, setFormSubmitted] = useState(false);
 
-  const tenantKey = useSelector((state) => state.tenants?.tenantId);
     /* --------- validate form title exist or not --------- */
     const {
       mutate: validateFormTitle, // this function will trigger the api call
@@ -79,11 +79,16 @@ const List = React.memo((props) => {
       ({ title }) =>
         validateFormName(title) ,
       {
-        onSuccess:({data})=>{
+        onSuccess:({data},
+          {createButtonClicked,...variables})=>{
           if (data && data.code === "FORM_EXISTS") {
             setNameError(data.message);  // Set exact error message
           } else {
             setNameError("");
+            // if the modal clicked createButton need call handleBuild
+            if(createButtonClicked){
+              handleBuild(variables);
+            }
           }
         },
         onError:(error)=>{
@@ -238,14 +243,14 @@ const List = React.memo((props) => {
     return null;
   };
 
-  const validateFormNameOnBlur = ({title}) => {
-
+  const validateFormNameOnBlur = ({title,...rest}) => {
+    //the reset variable contain title, description, display  also sign for clicked in create button 
     const error = validateForm({title});
     if (error) {
       setNameError(error);
       return;
     }
-    validateFormTitle({title});
+    validateFormTitle({title, ...rest});
     
   };
 

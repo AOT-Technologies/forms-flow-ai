@@ -128,11 +128,14 @@ const EditComponent = () => {
     ({ title }) =>
       validateFormName(title) ,
     {
-      onSuccess:({data})=>{
+      onSuccess:({data}, {createButtonClicked,...variables})=>{
         if (data && data.code === "FORM_EXISTS") {
           setNameError(data.message);  // Set exact error message
         } else {
           setNameError("");
+          if(createButtonClicked){
+            handlePublishAsNewVersion(variables);
+          }
         }
       },
       onError:(error)=>{
@@ -382,12 +385,12 @@ const EditComponent = () => {
     }
   }, [processListData.processKey]);
 
-  const validateFormNameOnBlur = ({title}) => {
+  const validateFormNameOnBlur = ({title, ...rest}) => {
     if (!title || title.trim() === "") {
       setNameError("This field is required");
       return;
     }
-    validateFormTitle({title});
+    validateFormTitle({title, ...rest});
   };
 
 

@@ -2,11 +2,15 @@
 The **formsflow.ai** framework could be hooked up with any OpenID Connect compliant Identity Management Server. To date, we have only tested [Keycloak](https://github.com/keycloak/keycloak)
 
 ## Table of Contents
-* [Authentication](#authentication)
-* [Authorization](#authorization)
-  * [User Roles](#user-roles)
-  * [User Groups](#user-groups)
-* [Keycloak Setup](#keycloak-setup)
+- [Identity Management](#identity-management)
+  - [Table of Contents](#table-of-contents)
+  - [Authentication](#authentication)
+  - [Authorization](#authorization)
+    - [User Roles](#user-roles)
+    - [User Groups](#user-groups)
+  - [Keycloak Setup](#keycloak-setup)
+  - [Migration](#migration)
+    - [v7.0.0 (Permission Matrix)](#v700-permission-matrix)
 
 ## Authentication
 All the resources in the formsflow.ai solution require authentication i.e. users must be a member of a realm.
@@ -52,6 +56,18 @@ Group | Sub Group | Roles | Description |
 * Also, based on the workflow process `user task` candidate groups; new groups (main or sub group of `formsflow-reviewer`) can be created in keycloak. 
   * In case of creating the candidate group as main group; ensure to add the role `formsflow-reviewer` role to it.
 
-Keycloak Setup
+## Keycloak Setup
 ----------
 [Instructions for Keycloak setup](./keycloak/README.md)
+
+## Migration
+### v7.0.0 (Permission Matrix)
+For migrating default roles (formsflow-client, formsflow-designer, formsflow-reviewer) to use permission matrix introduced in v7.0.0 follow the steps
+- Login to keycloak admin console and select the realm
+- Create a back up of existing realm configuration (realm -> Realm Settings -> Action -> Partial export : select all)
+- Click on Partial Import (realm -> Realm Settings -> Action -> Partial Import)
+- Browse and select the [file](./migration/7.0.0/partial-realm.json) or copy and paste the file content into the partial import dialog
+- Check the Groups and Client roles checkbox
+- Select "Overwrite" for "If a resource already exists, specify what should be done:"
+- Click Import
+- Test and verify existing users are able to login and operate formsflow

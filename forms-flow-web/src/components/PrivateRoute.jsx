@@ -170,7 +170,7 @@ if (viewTasks || manageTasks) {
         if (res) {
           const { data = [] } = res;
           const roles = data.map((role) => role.name);
-          localStorage.setItem("AllUserRoles", JSON.stringify(roles)); // Set roles in localStorage
+          localStorage.setItem("allAvailableRoles", JSON.stringify(roles)); // Set roles in localStorage
         }
       })
       .catch((error) => console.error("Error fetching roles", error));

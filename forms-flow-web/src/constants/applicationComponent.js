@@ -105,9 +105,9 @@ export const addHiddenApplicationComponent = (form) => {
       customDefaultValue: "const localdata = JSON.parse(localStorage.getItem('UserDetails')); const preferredUserRole = localdata.role; value = preferredUserRole;" 
     },
     { 
-      label: "All User Role", 
-      key: "allUserRoles", 
-      customDefaultValue: "const localdata = JSON.parse(localStorage.getItem('AlluserRoles')); value = localdata;" 
+      label: "All Available Roles", 
+      key: "allAvailableRoles", 
+      customDefaultValue: "const localdata = JSON.parse(localStorage.getItem('allAvailableRoles')); value = localdata;" 
     },
   ];
 

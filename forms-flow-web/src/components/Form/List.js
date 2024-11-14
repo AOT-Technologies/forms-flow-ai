@@ -43,6 +43,7 @@ const List = React.memo((props) => {
   const { createDesigns, createSubmissions, viewDesigns } = userRoles();
   const { t } = useTranslation();
   const searchText = useSelector((state) => state.bpmForms.searchText);
+  const tenantKey = useSelector((state) => state.tenants?.tenantId);
   const [search, setSearch] = useState(searchText || "");
   const [showBuildForm, setShowBuildForm] = useState(false);
   const [importFormModal, setImportFormModal] = useState(false);
@@ -65,7 +66,7 @@ const List = React.memo((props) => {
   const submissionAccess = useSelector((state) => state.user?.submissionAccess || []);
 
   const [formSubmitted, setFormSubmitted] = useState(false);
-  const tenantKey = useSelector((state) => state.tenants?.tenantId);
+
     /* --------- validate form title exist or not --------- */
     const {
       mutate: validateFormTitle, // this function will trigger the api call

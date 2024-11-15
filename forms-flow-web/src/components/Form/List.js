@@ -68,7 +68,7 @@ const List = React.memo((props) => {
   const tenantKey = useSelector((state) => state.tenants?.tenantId);
     /* --------- validate form title exist or not --------- */
     const {
-      mutate: validateFormTitle, // this function will trigger the api call
+      mutate: validateFormTitle, // this function will trigger the API call
       isLoading: validationLoading,
       // isError: error,
     } = useMutation(
@@ -77,25 +77,20 @@ const List = React.memo((props) => {
       {
         onSuccess:({data},
           {createButtonClicked,...variables})=>{
-          if (data && data.code === "FORM_EXISTS") {
-            setNameError(data.message);  // Set exact error message
-          } else {
-            setNameError("");
-            // if the modal clicked createButton need call handleBuild
-            if(createButtonClicked){
-              handleBuild(variables);
-            }
+        if (data && data.code === "FORM_EXISTS") {
+          setNameError(data.message);  // Set exact error message
+        } else {
+          setNameError("");
+          // if the modal clicked createButton, need to call handleBuild
+          if (createButtonClicked) {
+            handleBuild(variables);
           }
-        },
-        onError:(error)=>{
-          const errorMessage = error.response?.data?.message || "An error occurred while validating the form name.";
-          setNameError(errorMessage);  // Set the error message from the server
         }
       },
       onError: (error) => {
-        const errorMessage = error.response?.data?.message || "An error occurred while validating the form name.";
+        const errorMessage = error?.response?.data?.message || "An error occurred while validating the form name.";
         setNameError(errorMessage);  // Set the error message from the server
-      }
+      },
     }
   );
 
@@ -204,13 +199,17 @@ const List = React.memo((props) => {
         setFormSubmitted(false);
 
         if (data.action == "validate") {
-          FileService.extractFileDetails(fileContent, (formExtracted) => {
+          FileService.extractFileDetails(fileContent)
+          .then((formExtracted) => {
             if (formExtracted) {
               setFormTitle(formExtracted.formTitle);
               setUploadFormDescription(formExtracted.formDescription);
             } else {
               console.log("No valid form found.");
             }
+          })
+          .catch((error) => {
+            console.error("Error extracting form:", error);
           });
         }
         else {
@@ -358,7 +357,7 @@ const List = React.memo((props) => {
                     buildForm={true}
                   />
                   { importFormModal && <ImportModal
-                    importLoader={importLoader}
+                    showModal={importLoader}
                     importError={importError}
                     importModal={importFormModal}
                     uploadActionType={UploadActionType}

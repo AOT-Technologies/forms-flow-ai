@@ -48,8 +48,7 @@ import {
 } from "../../actions/processActions";
 import { useMutation, useQuery } from "react-query";
 import LoadingOverlay from "react-loading-overlay-ts";
-import ImportSubFlow from "../Modals/ImportSubFlow";
-import ImportDecisionTable from "../Modals/ImportDecisionTable";
+import ImportProcess from "../Modals/ImportProcess";
 
 const EXPORT = "EXPORT";
 const IMPORT = "IMPORT";
@@ -148,7 +147,6 @@ const ProcessCreateEdit = ({ type }) => {
       setIsReverted(true);
     },
   });
-  const ImportModal = isBPMN ? ImportSubFlow : ImportDecisionTable;
   const processDataXML = isReverted
     ? historyData?.processData
     : processData?.processData;
@@ -698,7 +696,7 @@ const ProcessCreateEdit = ({ type }) => {
         historyCount={historiesData?.totalCount || 0}
         currentVersionId={processData.id}
       />
-      {selectedAction === IMPORT && <ImportModal
+      {selectedAction === IMPORT && <ImportProcess
         showModal={selectedAction === IMPORT}
         closeImport={resetSelectedAction}
         processId={processData.id}
@@ -708,6 +706,7 @@ const ProcessCreateEdit = ({ type }) => {
           minorVersion: processData?.minorVersion
         }}
         setImportXml={hanldeImportData}
+        fileType = {isBPMN ? ".bpmn" : ".dmn"}
       />}
     </div>
   );

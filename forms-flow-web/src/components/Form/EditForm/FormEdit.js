@@ -16,6 +16,7 @@ import {
   PreviewIcon,
   FormBuilderModal,
   HistoryModal,
+  ImportModal
 } from "@formsflow/components";
 import { RESOURCE_BUNDLES_DATA } from "../../../resourceBundles/i18n";
 import LoadingOverlay from "react-loading-overlay-ts";
@@ -36,8 +37,7 @@ import {
   unPublish,
   getFormHistory,
 } from "../../../apiManager/services/FormServices";
-import { ImportModal } from "@formsflow/components";
-import FileService from "../../../services/FileService"; 
+import FileService from "../../../services/FileService";
 import {
   setFormFailureErrorData,
   setFormSuccessData,
@@ -53,7 +53,7 @@ import {
 } from "../../../apiManager/services/processServices";
 import {
   setProcessData,
-} from "../../../actions/processActions.js"; 
+} from "../../../actions/processActions.js";
 import _ from "lodash";
 import SettingsModal from "../../Modals/SettingsModal";
 import FlowEdit from "./FlowEdit.js";
@@ -62,7 +62,7 @@ import NewVersionModal from "../../Modals/NewVersionModal";
 import { currentFormReducer } from "../../../modules/formReducer.js";
 import { toast } from "react-toastify";
 import userRoles from "../../../constants/permissions.js";
-import { generateUniqueId, isFormComponentsChanged} from "../../../helper/helper.js";
+import { generateUniqueId, isFormComponentsChanged } from "../../../helper/helper.js";
 import { useMutation } from "react-query";
 
 // constant values
@@ -219,13 +219,17 @@ const EditComponent = () => {
         });
       }
       if (data.action === "validate") {
-        FileService.extractFileDetails(fileContent, (formExtracted) => {
-          if (formExtracted) {
-            setFormTitle(formExtracted.formTitle);
-          } else {
-            console.log("No valid form found.");
-          }
-        });
+        FileService.extractFileDetails(fileContent)
+          .then((formExtracted) => {
+            if (formExtracted) {
+              setFormTitle(formExtracted.formTitle);  // Set the form title if form is found
+            } else {
+              console.log("No valid form found.");
+            }
+          })
+          .catch((error) => {
+            console.error("Error extracting file details:", error); // Catch any errors in the process
+          });
       } else if (responseData?.formId) {
         handleCloseSelectedAction();
         dispatch(push(`${redirectUrl}formflow/${responseData.formId}/edit/`));
@@ -450,7 +454,7 @@ const EditComponent = () => {
       submissionAccess: accessDetails.submissionAccess,
       access: accessDetails.formAccess,
     };
-    
+
     try{
       await dispatch(saveFormProcessMapperPut({ mapper, authorizations }));
       const updateFormResponse = await formUpdate(form._id, formData);
@@ -1048,7 +1052,7 @@ const EditComponent = () => {
       />
 
       {selectedAction === IMPORT && <ImportModal
-        importLoader={importLoader}
+        showModal={importLoader}
         importError={importError}
         importModal={selectedAction === IMPORT}
         uploadActionType={UploadActionType}

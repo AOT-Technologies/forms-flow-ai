@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from "react";
+import PropTypes from "prop-types";
 import { ImportModal } from "@formsflow/components";
 import FileService from "../../services/FileService";
 import { createProcess } from "../../apiManager/services/processServices";
@@ -6,16 +7,24 @@ import { useSelector, useDispatch } from "react-redux";
 import { push } from "connected-react-router";
 import { MULTITENANCY_ENABLED } from "../../constants/constants";
 
-const ImportSubflow = React.memo(({ showModal, closeImport, 
-    processId, processVersion, setImportXml }) => {
+const ImportProcess = React.memo(({
+  showModal,
+  closeImport,
+  processId,
+  processVersion,
+  setImportXml,
+  fileType
+}) => {
   const tenantKey = useSelector((state) => state.tenants?.tenantId);
   const dispatch = useDispatch();
 
-  // Determine redirect URL based on multitenancy setting
+  // Determine redirect URL and text based on file type
   const redirectUrl = MULTITENANCY_ENABLED ? `/tenant/${tenantKey}/` : "/";
+  const baseUrl = fileType === ".bpmn" ? "subflow/edit/" : "decision-table/edit/";
+  const defaultPrimaryBtnText = fileType === ".bpmn" ? "Create And Edit BPMN" : "Create And Edit DMN";
+  const headerText = processId ? "Import File" : `Import New ${fileType === ".bpmn" ? "BPMN" : "DMN"}`;
   const [importError, setImportError] = useState("");
   const [importLoader, setImportLoader] = useState(false);
-  const defaultPrimaryBtnText = "Create And Edit BPMN";
   const [primaryButtonText, setPrimaryButtonText] = useState(defaultPrimaryBtnText);
 
   const UploadActionType = {
@@ -35,7 +44,7 @@ const ImportSubflow = React.memo(({ showModal, closeImport,
     if (!isValidActionType(actionType)) return setImportLoader(false);
 
     if (actionType === UploadActionType.VALIDATE && !isValidFileType(fileContent)) {
-      setImportError("The file format is invalid. Please try again to import.");
+      setImportError(`The file format is invalid. Please import a ${fileType} file.`);
       return setImportLoader(false);
     }
 
@@ -47,16 +56,10 @@ const ImportSubflow = React.memo(({ showModal, closeImport,
   };
 
   // Check if the action type is valid
-  const isValidActionType = (actionType) => {
-    if (!["validate", "import"].includes(actionType)) {
-      console.error("Invalid UploadActionType provided");
-      return false;
-    }
-    return true;
-  };
+  const isValidActionType = (actionType) => ["validate", "import"].includes(actionType);
 
-  // Validate file type for .bpmn extension
-  const isValidFileType = (file) => file && file.name.endsWith(".bpmn");
+  // Validate file type
+  const isValidFileType = (file) => file && file.name.endsWith(fileType);
 
   // Handle importing process and dispatching upon success
   const processImport = async (fileContent) => {
@@ -69,9 +72,9 @@ const ImportSubflow = React.memo(({ showModal, closeImport,
         closeImport();
       } else {
         // Create a new process and redirect
-        const response = await createProcess({ data: extractedXml, type: "bpmn" });
+        const response = await createProcess({ data: extractedXml, type: fileType === ".bpmn" ? "bpmn" : "dmn" });
         if (response) {
-          dispatch(push(`${redirectUrl}subflow/edit/${response.data.processKey}`));
+          dispatch(push(`${redirectUrl}${baseUrl}${response.data.processKey}`));
         }
         closeImport();
       }
@@ -92,18 +95,27 @@ const ImportSubflow = React.memo(({ showModal, closeImport,
 
   return (
     <ImportModal
-      importModal={showModal}
+      showModal={showModal}
       importLoader={importLoader}
       importError={importError}
       uploadActionType={UploadActionType}
       onClose={closeImport}
       handleImport={handleImport}
-      fileType=".bpmn"
-      headerText="Import New BPMN"
+      fileType={fileType}
+      headerText={headerText}
       primaryButtonText={primaryButtonText}
       processVersion={processVersion}
     />
   );
 });
 
-export default ImportSubflow;
+ImportProcess.propTypes = {
+  showModal: PropTypes.bool.isRequired,
+  closeImport: PropTypes.func.isRequired,
+  processId: PropTypes.string,
+  processVersion: PropTypes.string,
+  setImportXml: PropTypes.func.isRequired,
+  fileType: PropTypes.oneOf([".bpmn", ".dmn"]).isRequired
+};
+
+export default ImportProcess;

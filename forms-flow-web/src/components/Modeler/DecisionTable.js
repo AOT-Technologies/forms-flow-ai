@@ -7,8 +7,9 @@ import SortableHeader from "../CustomComponents/SortableHeader";
 import { fetchAllProcesses } from "../../apiManager/services/processServices";
 import { MULTITENANCY_ENABLED } from "../../constants/constants";
 import { push } from "connected-react-router";
-import ImportDecesionTable from "../Modals/ImportDecisionTable";
+import ImportProcess from "../Modals/ImportProcess";
 import { setDmnSearchText, setIsPublicDiagram } from "../../actions/processActions";
+import PropTypes from "prop-types";
 
 const DecisionTable = React.memo(() => {
   const dispatch = useDispatch();
@@ -27,7 +28,7 @@ const DecisionTable = React.memo(() => {
     modified: { sortOrder: "asc" },
     status: { sortOrder: "asc" },
   });
-  const [importDecesionTable, setImportDecisionTable] = useState(false);
+  const [importDecisionTable, setImportDecisionTable] = useState(false);
   const closeDmnImport = () => {
     setImportDecisionTable(false);
   };
@@ -237,14 +238,22 @@ const DecisionTable = React.memo(() => {
         title={t("New DMN")}
         contents={contents}
       />
-      {importDecesionTable && (
-        <ImportDecesionTable
-          showModal={importDecesionTable}
+      {importDecisionTable && (
+        <ImportProcess
+          showModal={importDecisionTable}
           closeImport={closeDmnImport}
+          fileType=".bpmn"
         />
       )}
     </>
   );
 });
+
+DecisionTable.propTypes = {
+  showModal: PropTypes.bool.isRequired,
+  closeImport: PropTypes.func.isRequired,
+  processId: PropTypes.string,
+  setImportXml: PropTypes.func.isRequired
+};
 
 export default DecisionTable;

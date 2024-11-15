@@ -98,11 +98,15 @@ const ProcessCreateEdit = ({ type }) => {
   const [isPublished, setIsPublished] = useState(
     processData?.status === "Published"
   );
+  
   const [showConfirmModal, setShowConfirmModal] = useState(false);
   const [modalType, setModalType] = useState("");
   const [isPublishLoading, setIsPublishLoading] = useState(false);
   const [isReverted, setIsReverted] = useState(false);
   const isDataFetched = useRef();
+  useEffect(() => {
+    setIsPublished(processData.status === "Published");
+  }, [processData]);
 
   // fetching process data
   const { isLoading: isProcessDetailsLoading } = useQuery(
@@ -122,7 +126,7 @@ const ProcessCreateEdit = ({ type }) => {
       },
     }
   );
-  const publishText = (isCreate || !isPublished) ?  t("Publish") : t("Unpublish");
+  const publishText = isPublished ? t("Unpublish") : t("Publish");
 
   /* --------- fetching all process history when click history button --------- */
   const {
@@ -379,7 +383,6 @@ const ProcessCreateEdit = ({ type }) => {
       const isValid = isBPMN
         ? await validateProcess(data,lintErrors)
         : await validateDecisionNames(data);
-
 
       if (isValid) {
         const element = document.createElement("a");

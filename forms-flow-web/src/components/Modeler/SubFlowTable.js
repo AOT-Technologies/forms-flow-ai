@@ -3,6 +3,7 @@ import { CustomButton,
    CustomSearch ,
    TableFooter ,
    ReusableProcessTableRow,
+   NoDataFound,
    BuildModal} from "@formsflow/components";
 import { useSelector, useDispatch } from "react-redux";
 import { useTranslation } from "react-i18next";
@@ -30,7 +31,7 @@ const SubFlow = React.memo(() => {
   const process = useSelector((state) => state.process.processList);
   const totalCount = useSelector((state) => state.process.totalBpmnCount);
   const [search, setSearch] = useState(searchText || "");
-  const [searchSubflowLoading, setSearchSubflowLoading] = useState(false);
+  const [searchBpmnLoading, setSearchBpmnLoading] = useState(false);
   const [currentBpmnSort, setCurrentBpmnSort] = useState({
     activeKey: "name",
     name: { sortOrder: "asc" },
@@ -81,7 +82,7 @@ const SubFlow = React.memo(() => {
         },
         () => {
           setIsLoading(false);
-          setSearchSubflowLoading(false);
+          setSearchBpmnLoading(false);
         }
       )
     );
@@ -131,7 +132,7 @@ const SubFlow = React.memo(() => {
     dispatch(setBpmnSearchText(""));
   };
   const handleSearch = () => {
-    setSearchSubflowLoading(true);
+    setSearchBpmnLoading(true);
     setActivePage(1);
     dispatch(setBpmnSearchText(search));
   };
@@ -160,7 +161,7 @@ const SubFlow = React.memo(() => {
           handleSearch={handleSearch}
           handleClearSearch={handleClearSearch}
           placeholder={t("Search BPMN Name")}
-          searchLoading={searchSubflowLoading}
+          searchLoading={searchBpmnLoading}
           title={t("Search BPMN Name")}
           dataTestId="BPMN-search-input"
         />
@@ -222,7 +223,8 @@ const SubFlow = React.memo(() => {
                   ></th>
                 </tr>
               </thead>
-              <tbody>
+              {process.length ?
+               <tbody>
                 {process.map((processItem) => (
                   <ReusableProcessTableRow
                     key={processItem.id}
@@ -239,7 +241,9 @@ const SubFlow = React.memo(() => {
                   onLimitChange={onLimitChange}
                   pageOptions={pageOptions}
                 />
-              </tbody>
+              </tbody> : !isLoading ? (
+                <NoDataFound />
+              ) : null}
             </table>
           </div>
         </div>

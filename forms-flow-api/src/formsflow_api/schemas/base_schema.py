@@ -20,7 +20,7 @@ class AuditDateTimeSchema(Schema):
         format="iso", data_key="modified", required=False, dump_only=True
     )
 
-    def dump(self, obj, many=None, **kwargs):
+    def dump(self, obj, many=False, **kwargs):
         """Override the dump method to format datetime fields."""
         data = super().dump(obj, many=many, **kwargs)
 
@@ -28,16 +28,15 @@ class AuditDateTimeSchema(Schema):
             """Helper to format datetime fields for a single record."""
             for field in ["created", "modified"]:
                 field_value = record.get(field)
-                if field_value is not None:
-                    if isinstance(field_value, str):
-                        # Convert the string to datetime
-                        dt = datetime.datetime.fromisoformat(record[field])
-                        # Ensure it's UTC and return the ISO format with 'Z'
-                        record[field] = (
-                            dt.replace(tzinfo=datetime.timezone.utc)
-                            .isoformat()
-                            .replace("+00:00", "Z")
-                        )
+                if field_value is not None and isinstance(field_value, str):
+                    # Convert the string to datetime
+                    dt = datetime.datetime.fromisoformat(record[field])
+                    # Ensure it's UTC and return the ISO format with 'Z'
+                    record[field] = (
+                        dt.replace(tzinfo=datetime.timezone.utc)
+                        .isoformat()
+                        .replace("+00:00", "Z")
+                    )
             return record
 
         # If many=True, apply formatting to each item in the list

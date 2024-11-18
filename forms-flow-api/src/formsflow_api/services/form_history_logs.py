@@ -122,6 +122,6 @@ class FormHistoryService:
             form_histories = ProcessService.populate_published_histories(
                 form_histories, published_histories
             )
-            form_history_schema = FormHistorySchema(many=True)
-            return form_history_schema.dump(form_histories), count
+            form_history_schema = FormHistorySchema()
+            return form_history_schema.dump(form_histories, many=True), count
         raise BusinessException(BusinessErrorCode.INVALID_FORM_ID)

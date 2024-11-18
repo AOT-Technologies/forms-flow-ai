@@ -1103,6 +1103,7 @@ const EditComponent = () => {
         categoryType={CategoryType.FORM}
         revertBtnAction={revertFormBtnAction}
         historyCount={formHistoryData.totalCount}
+        disableAllRevertButton={isPublished}
       />
       {renderDeleteModal()}
     </div>

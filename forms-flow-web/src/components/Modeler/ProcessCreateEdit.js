@@ -686,6 +686,7 @@ const ProcessCreateEdit = ({ type }) => {
         revertBtnAction={fetchHistoryData}
         historyCount={historiesData?.totalCount || 0}
         currentVersionId={processData.id}
+        disableAllRevertButton={isPublished}
       />
     </div>
   );

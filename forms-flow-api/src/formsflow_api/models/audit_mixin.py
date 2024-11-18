@@ -15,7 +15,7 @@ class AuditDateTimeMixin:  # pylint: disable=too-few-public-methods
 
     created = db.Column(db.DateTime(timezone=True), nullable=False, default=iso_utcnow)
     modified = db.Column(
-        db.DateTime,
+        db.DateTime(timezone=True),
         default=iso_utcnow,
         onupdate=iso_utcnow,
     )
@@ -24,7 +24,7 @@ class AuditDateTimeMixin:  # pylint: disable=too-few-public-methods
 class ApplicationAuditDateTimeMixin:  # pylint: disable=too-few-public-methods
     """Inherit this class to extend the model with created and modified column."""
 
-    created = db.Column(db.DateTime, nullable=False, default=iso_utcnow)
+    created = db.Column(db.DateTime(timezone=True), nullable=False, default=iso_utcnow)
 
 
 class AuditUserMixin:  # pylint: disable=too-few-public-methods

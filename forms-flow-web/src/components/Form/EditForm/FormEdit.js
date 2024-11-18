@@ -1065,7 +1065,7 @@ const EditComponent = () => {
         showExportModal={selectedAction === EXPORT}
         onClose={handleCloseSelectedAction}
         mapperId={processListData.id}
-        formName={form.name}
+        formTitle={form.title}
       />
 
       <NewVersionModal

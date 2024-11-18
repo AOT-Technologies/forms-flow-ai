@@ -4,13 +4,13 @@ import { CloseIcon, CustomButton, FailedIcon } from "@formsflow/components";
 import ProgressBar from "react-bootstrap/ProgressBar";
 import { Translation } from "react-i18next";
 import { getFormExport } from "../../apiManager/services/FormServices";
-
-const ExportModal = React.memo(({ showExportModal, onClose, mapperId, formName }) => {
+import _ from "lodash";
+const ExportModal = React.memo(({ showExportModal, onClose, mapperId, formTitle }) => {
   const [progress, setProgress] = useState(0);
   const [exportStatus, setExportStatus] = useState("Export in Progress");
   const [isExportComplete, setIsExportComplete] = useState(false);
   const [isError, setIsError] = useState(false); // Flag to indicate if an error occurred
-  const fileName = `${formName}.json`;
+  const fileName = `${_.camelCase(formTitle)}.json`;
   const exportForm = () => {
     // Ensure the progress is reset before starting the export process
     setProgress(0);
@@ -96,7 +96,7 @@ const ExportModal = React.memo(({ showExportModal, onClose, mapperId, formName }
           animated={!isExportComplete && !isError}
           variant="primary" // Always primary for the progress bar
         />
-        <div className="mt-2 text-wrap d-flex align-items-center">
+        <div className="mt-2 flex-wrap  d-flex align-items-center">
           {/* Keep FileName.json black */}
           <span className="text-dark">{fileName}&nbsp;</span>
           <span className={isError ? "text-danger" : "text-primary"}>

@@ -4,8 +4,6 @@ import { useDispatch, useSelector } from "react-redux";
 import { MULTITENANCY_ENABLED } from "../../constants/constants";
 import { HelperServices } from "@formsflow/service";
 import { Translation } from "react-i18next";
-import { Dropdown, DropdownButton } from "react-bootstrap";
-import Pagination from "react-js-pagination";
 import { push } from "connected-react-router";
 import {
   setCountPerpage,
@@ -19,17 +17,16 @@ import DraftOperations from "./DraftOperations";
 
 import { useTranslation } from "react-i18next";
 import LoadingOverlay from "react-loading-overlay-ts";
+import { TableFooter } from "@formsflow/components"; 
 
 const DraftTable = () => {
   const dispatch = useDispatch();
   const [displayFilter, setDisplayFilter] = useState(false);
   const searchParams = useSelector((state) => state.draft.searchParams);
   const [filterParams, setFilterParams] = useState(searchParams);
-  const [pageLimit, setPageLimit] = useState(5);
   const drafts = useSelector((state) => state.draft.draftList);
   const tenantKey = useSelector((state) => state.tenants?.tenantId);
   const redirectUrl = MULTITENANCY_ENABLED ? `/tenant/${tenantKey}/` : "/";
-  const userRoles = useSelector((state) => state.user.roles);
   const pageNo = useSelector((state) => state.draft?.activePage);
   const limit = useSelector((state) => state.draft?.countPerPage);
   const totalForms = useSelector((state) => state.draft?.draftCount);
@@ -111,10 +108,9 @@ const DraftTable = () => {
     dispatch(setDraftListActivePage(page));
   };
 
-  const onSizePerPageChange = (limit) => {
+  const onLimitChange = (newLimit) => {
     dispatch(setDraftListLoading(true));
-    setPageLimit(limit);
-    dispatch(setCountPerpage(limit));
+    dispatch(setCountPerpage(newLimit));
     dispatch(setDraftListActivePage(1));
   };
 
@@ -244,50 +240,22 @@ const DraftTable = () => {
                 </tr>}
             </tbody>
           </table>
-        
-      </div>
-
-      {drafts.length ? <div className="d-flex justify-content-between align-items-center  flex-column flex-md-row">
-        <div className="d-flex align-items-center">
-          <span className="me-2"> {t("Rows per page")}</span>
-          <Dropdown size="sm" data-testid="page-limit-dropdown">
-            <Dropdown.Toggle variant="light" id="dropdown-basic" data-testid="page-limit-dropdown-toggle">
-              {pageLimit}
-            </Dropdown.Toggle>
-            <Dropdown.Menu>
-              {pageOptions.map((option, index) => (
-                <Dropdown.Item
-                  key={index}
-                  type="button"
-                  data-testid={`page-limit-dropdown-item-${option.value}`}
-                  onClick={() => {
-                    onSizePerPageChange(option.value);
-                  }}
-                >
-                  {option.text}
-                </Dropdown.Item>
-              ))}
-            </Dropdown.Menu>
-          </Dropdown>
-          <span className="ms-2">
-            {t("Showing")} {limit * pageNo - (limit - 1)} {t("to")}{" "}
-            {limit * pageNo > totalForms ? totalForms : limit * pageNo}{" "}
-            {t("of")} {totalForms} {t("results")}
-          </span>
         </div>
 
-        <div className="d-flex align-items-center">
-          <Pagination
-            activePage={pageNo}
-            itemsCountPerPage={limit}
-            totalItemsCount={totalForms}
-            pageRangeDisplayed={5}
-            itemClass="page-item"
-            linkClass="page-link"
-            onChange={handlePageChange}
-          />
-        </div>
-      </div> : null}
+        {drafts.length ? (
+          <table className="table">
+            <tfoot>
+            <TableFooter
+              limit={limit}
+              activePage={pageNo}
+              totalCount={totalForms}
+              handlePageChange={handlePageChange}
+              onLimitChange={onLimitChange}
+              pageOptions={pageOptions}
+            />
+            </tfoot>          
+          </table>
+        ) : null}
       </LoadingOverlay>
     </>
   );

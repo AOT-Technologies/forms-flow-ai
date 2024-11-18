@@ -10,16 +10,20 @@ jobs:
     steps:
     - name: Git Issue Details
       run: |
-          echo "Issue creator: ${{ github.event.issue.user.login }}"
-          echo "Issue title: ${{ github.event.issue.title }}"
-          echo "Issue number: ${{ github.event.issue.number }}"
-          echo "Issue url: ${{ github.event.issue.html_url }}"
-          echo "Issue body: ${{ github.event.issue.body }}"
-          echo "Assigned labels: " ${{ join(github.event.issue.labels.*.name) }}
-          echo "Assignees: " ${{ join(github.event.issue.assignees.*.login) }}
+          printf "Issue creator: %s\n" "${{ github.event.issue.user.login }}"
+          printf "Issue title: %s\n" "${{ github.event.issue.title }}"
+          printf "Issue number: %s\n" "${{ github.event.issue.number }}"
+          printf "Issue url: %s\n" "${{ github.event.issue.html_url }}"
+          printf "Issue body: %s\n" "${{ github.event.issue.body }}"
+          printf "Assigned labels: %s\n" "$(echo "${{ github.event.issue.labels }}" | jq -r 'map(.name) | join(", ")')"
+          printf "Assignees: %s\n" "$(echo "${{ github.event.issue.assignees }}" | jq -r 'map(.login) | join(", ")')"
+
     - name: Google Chat Notification
       run: |
-          curl --location --request POST '${{ secrets.NOTIFY_GITHUB_ISSUES }}' \
+          LABELS=$(echo "${{ github.event.issue.labels }}" | jq -r 'map(.name) | join(", ")')
+          ASSIGNEES=$(echo "${{ github.event.issue.assignees }}" | jq -r 'map(.login) | join(", ")')
+          
+          curl --location --request POST "${{ secrets.NOTIFY_GITHUB_ISSUES }}" \
           --header 'Content-Type: application/json' \
           --data-raw '{
               "cards": [
@@ -34,25 +38,25 @@ jobs:
                                   {
                                      "keyValue": {
                                           "topLabel": "Creator",
-                                          "content": "${{ github.event.issue.user.login }}"
-                                      },
-                                   },
-                                   {
-                                     "keyValue": {
-                                          "topLabel": "Title",
-                                          "content": "${{ github.event.issue.title }}"
+                                          "content": "'"${{ github.event.issue.user.login }}"'"
                                       }
                                    },
                                    {
                                      "keyValue": {
-                                          "topLabel": "Assigned Lables",
-                                          "content": "- ${{ join(github.event.issue.labels.*.name) }}"
+                                          "topLabel": "Title",
+                                          "content": "'"${{ github.event.issue.title }}"'"
+                                      }
+                                   },
+                                   {
+                                     "keyValue": {
+                                          "topLabel": "Assigned Labels",
+                                          "content": "'"${LABELS}"'"
                                       }
                                    },
                                    {
                                      "keyValue": {
                                           "topLabel": "Assignees",
-                                          "content": "- ${{ join(github.event.issue.assignees.*.login) }}"
+                                          "content": "'"${ASSIGNEES}"'"
                                       }
                                    },
                                    {
@@ -62,7 +66,7 @@ jobs:
                                                   "text": "OPEN ISSUE",
                                                   "onClick": {
                                                       "openLink": {
-                                                          "url": "${{ github.event.issue.html_url }}"
+                                                          "url": "'"${{ github.event.issue.html_url }}"'"
                                                       }
                                                   }
                                               }
@@ -75,3 +79,4 @@ jobs:
                   }
               ]
           }'
+      shell: bash

@@ -9,7 +9,6 @@ import { MULTITENANCY_ENABLED } from "../../constants/constants";
 import { push } from "connected-react-router";
 import ImportProcess from "../Modals/ImportProcess";
 import { setDmnSearchText, setIsPublicDiagram } from "../../actions/processActions";
-import PropTypes from "prop-types";
 
 const DecisionTable = React.memo(() => {
   const dispatch = useDispatch();
@@ -249,11 +248,6 @@ const DecisionTable = React.memo(() => {
   );
 });
 
-DecisionTable.propTypes = {
-  showModal: PropTypes.bool.isRequired,
-  closeImport: PropTypes.func.isRequired,
-  processId: PropTypes.string,
-  setImportXml: PropTypes.func.isRequired
-};
+DecisionTable.propTypes = {};
 
 export default DecisionTable;

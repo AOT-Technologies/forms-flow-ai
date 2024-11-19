@@ -22,11 +22,18 @@ const ImportProcess = React.memo(({
   const redirectUrl = MULTITENANCY_ENABLED ? `/tenant/${tenantKey}/` : "/";
   const baseUrl = fileType === ".bpmn" ? "subflow/edit/" : "decision-table/edit/";
   const defaultPrimaryBtnText = fileType === ".bpmn" ? "Create And Edit BPMN" : "Create And Edit DMN";
-  const headerText = processId ? "Import File" : `Import New ${fileType === ".bpmn" ? "BPMN" : "DMN"}`;
   const [importError, setImportError] = useState("");
   const [importLoader, setImportLoader] = useState(false);
   const [primaryButtonText, setPrimaryButtonText] = useState(defaultPrimaryBtnText);
 
+  const getHeaderText = () => {
+    if (processId) {
+      return "Import File";
+    }
+    return `Import New ${fileType === ".bpmn" ? "BPMN" : "DMN"}`;
+  };
+
+  const headerText = getHeaderText();
   const UploadActionType = {
     IMPORT: "import",
     VALIDATE: "validate"
@@ -59,7 +66,7 @@ const ImportProcess = React.memo(({
   const isValidActionType = (actionType) => ["validate", "import"].includes(actionType);
 
   // Validate file type
-  const isValidFileType = (file) => file && file.name.endsWith(fileType);
+  const isValidFileType = (file) => file?.name?.endsWith(fileType);
 
   // Handle importing process and dispatching upon success
   const processImport = async (fileContent) => {

@@ -49,7 +49,7 @@ const SubFlow = React.memo(() => {
   const ShowImportModal = () => {
     setShowBuildModal(false);
     setImportSubflow(true);
-    
+
   };
   // Modal contents
   const modalContents = [
@@ -150,8 +150,8 @@ const SubFlow = React.memo(() => {
               <table className="table custom-tables table-responsive-sm">
                 <thead className="table-header">
                   <tr>
-                    {["name", "id", "modified", "status"].map((key, index) => (
-                      <th key={index} className="w-20" scope="col">
+                    {["name", "id", "modified", "status"].map((key) => (
+                      <th key={key} className="w-20" scope="col">
                         <SortableHeader
                           columnKey={key}
                           title={key.charAt(0).toUpperCase() + key.slice(1)}

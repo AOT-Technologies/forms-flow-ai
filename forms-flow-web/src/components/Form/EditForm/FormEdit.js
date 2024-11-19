@@ -128,11 +128,14 @@ const EditComponent = () => {
     ({ title }) =>
       validateFormName(title) ,
     {
-      onSuccess:({data})=>{
+      onSuccess:({data}, {createButtonClicked,...variables})=>{
         if (data && data.code === "FORM_EXISTS") {
           setNameError(data.message);  // Set exact error message
         } else {
           setNameError("");
+          if(createButtonClicked){
+            handlePublishAsNewVersion(variables);
+          }
         }
       },
       onError:(error)=>{
@@ -382,12 +385,12 @@ const EditComponent = () => {
     }
   }, [processListData.processKey]);
 
-  const validateFormNameOnBlur = ({title}) => {
+  const validateFormNameOnBlur = ({title, ...rest}) => {
     if (!title || title.trim() === "") {
       setNameError("This field is required");
       return;
     }
-    validateFormTitle({title});
+    validateFormTitle({title, ...rest});
   };
 
 
@@ -1061,7 +1064,8 @@ const EditComponent = () => {
       <ExportModal
         showExportModal={selectedAction === EXPORT}
         onClose={handleCloseSelectedAction}
-        formId={processListData.id}
+        mapperId={processListData.id}
+        formTitle={form.title}
       />
 
       <NewVersionModal
@@ -1100,6 +1104,7 @@ const EditComponent = () => {
         categoryType={CategoryType.FORM}
         revertBtnAction={revertFormBtnAction}
         historyCount={formHistoryData.totalCount}
+        disableAllRevertButton={isPublished}
       />
       {renderDeleteModal()}
     </div>

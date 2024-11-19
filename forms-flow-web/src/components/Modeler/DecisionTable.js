@@ -1,6 +1,11 @@
 import React, { useState, useEffect } from "react";
 import { useSelector, useDispatch } from "react-redux";
-import { CustomButton, CustomSearch, ReusableProcessTableRow, TableFooter, BuildModal } from "@formsflow/components";
+import { CustomButton,
+   CustomSearch ,
+   ReusableProcessTableRow ,
+   TableFooter,
+   NoDataFound,
+   BuildModal} from "@formsflow/components";
 import LoadingOverlay from "react-loading-overlay-ts";
 import { useTranslation } from "react-i18next";
 import SortableHeader from "../CustomComponents/SortableHeader";
@@ -216,18 +221,37 @@ const DecisionTable = React.memo(() => {
                       gotoEdit={gotoEdit}
                       buttonLabel="Dmn"
                     />
-                  ))}
-                  <TableFooter
-                    limit={limit}
-                    activePage={activePage}
-                    totalCount={totalCount}
-                    handlePageChange={handlePageChange}
-                    onLimitChange={onLimitChange}
-                    pageOptions={pageOptions}
+
+                  </th>
+                  <th
+                    className="w-25"
+                    colSpan="4"
+                    aria-label="edit bpmn button "
+                  ></th>
+                </tr>
+              </thead>
+              {dmn.length  ?
+               <tbody>
+                {dmn.map((dmnItem) => (
+                  <ReusableProcessTableRow
+                    key={dmnItem.id}
+                    item={dmnItem}
+                    gotoEdit={gotoEdit}
+                    buttonLabel="Dmn"
                   />
-                </tbody>
-              </table>
-            </div>
+                ))}
+                <TableFooter
+                  limit={limit}
+                  activePage={activePage}
+                  totalCount={totalCount}
+                  handlePageChange={handlePageChange}
+                  onLimitChange={onLimitChange}
+                  pageOptions={pageOptions}
+                />
+              </tbody> :  !isLoading ? (
+                <NoDataFound />
+              ) : null}
+            </table>
           </div>
         </LoadingOverlay>
       </div>

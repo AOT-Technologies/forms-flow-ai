@@ -17,8 +17,7 @@ import { MULTITENANCY_ENABLED } from "../../constants/constants";
 import { useTranslation } from "react-i18next";
 import {
   createNewProcess,
-  createNewDecision,
-  extractDataFromDiagram,
+  createNewDecision, 
 } from "../../components/Modeler/helpers/helper";
 import {
   CustomButton,
@@ -37,7 +36,7 @@ import {
   validateProcess,
   compareXML,
   compareDmnXML,
-  validateDecisionNames,
+  validateDecisionNames
 } from "../../helper/processHelper";
 import BpmnEditor from "./Editors/BpmnEditor/BpmEditor.js";
 import DmnEditor from "./Editors/DmnEditor/DmnEditor.js";
@@ -100,11 +99,19 @@ const ProcessCreateEdit = ({ type }) => {
   const [isPublished, setIsPublished] = useState(
     processData?.status === "Published"
   );
+  
   const [showConfirmModal, setShowConfirmModal] = useState(false);
   const [modalType, setModalType] = useState("");
   const [isPublishLoading, setIsPublishLoading] = useState(false);
   const [isReverted, setIsReverted] = useState(false);
   const isDataFetched = useRef();
+  useEffect(() => {
+    setIsPublished(processData.status === "Published");
+  }, [processData]);
+
+  const publishText = isPublished ? t("Unpublish") : t("Publish");
+  const processName = processData.name;
+  const fileName = (processName + Process.extension).replaceAll(" ", "");
 
   // fetching process data
   const { isLoading: isProcessDetailsLoading } = useQuery(
@@ -152,9 +159,6 @@ const ProcessCreateEdit = ({ type }) => {
     : processData?.processData;
   // handle history modal
   const handleToggleHistoryModal = () => setHistoryModalShow(!historyModalShow);
-
-  const publishText = isPublished ? t("Unpublish") : t("Publish");
-  const processName = processData.name;
 
   useEffect(() => {
     if (isCreate) {
@@ -302,7 +306,9 @@ const ProcessCreateEdit = ({ type }) => {
       let response = null;
 
       if (!isPublished) {
-        response = await saveFlow({ isPublishing: !isPublished });
+        response = await saveFlow({
+          isPublishing: !isPublished
+        });
       }
 
       closeModal();
@@ -368,29 +374,24 @@ const ProcessCreateEdit = ({ type }) => {
 
   const handleExport = async () => {
     try {
-      let data;
-
-      if (isCreate) {
-        data = isBPMN ? defaultProcessXmlData : defaultDmnXmlData;
-      } else {
+      let data = "";
+      if(isCreate){
+        const modeler = getModeler(isBPMN);
+        data = await createXMLFromModeler(modeler);
+      }else{
         data = processData?.processData;
       }
 
       const isValid = isBPMN
-        ? await validateProcess(data)
+        ? await validateProcess(data,lintErrors)
         : await validateDecisionNames(data);
 
       if (isValid) {
         const element = document.createElement("a");
         const file = new Blob([data], { type: Process.fileType });
         element.href = URL.createObjectURL(file);
-
-        // Using the `Process` object for the filename and extension
-        const processName =
-          extractDataFromDiagram(data).name.replaceAll(" / ", "-") +
-          Process.extension;
-
-        element.download = processName.replaceAll(" ", "");
+ 
+        element.download = fileName;
         document.body.appendChild(element);
         element.click();
         document.body.removeChild(element); // Cleanup after download
@@ -444,51 +445,51 @@ const ProcessCreateEdit = ({ type }) => {
   const getModalContent = () => {
     // Helper function to construct modal content configuration
     const createModalConfig = (modalType) => {
-      const modalConfigurations = {
-        publish: {
-          title: t("Confirm Publish"),
-          message: t(
-            `Publishing will lock the ${Process.type}. To save changes on further edits,
-             you will need to unpublish the ${Process.type} first.`
-          ),
-          primaryBtnText: t(`Publish This ${Process.type}`),
-          secondaryBtnText: t("Cancel"),
-          primaryAction: confirmPublishOrUnPublish,
-          secondaryAction: closeModal,
-        },
-        unpublish: {
-          title: t("Confirm Unpublish"),
-          message: t(
-            `This ${Process.type} is currently live. To save changes to ${Process.type} edits, 
-            you need to unpublish it first.`
-          ),
-          primaryBtnText: t(`Unpublish and Edit This ${Process.type}`),
-          secondaryBtnText: t(`Cancel, Keep This ${Process.type} published`),
-          primaryAction: confirmPublishOrUnPublish,
-          secondaryAction: closeModal,
-        },
-        discard: {
-          title: t(`Are you sure you want to discard ${Process.type} changes?`),
-          message: t(
-            `Are you sure you want to discard all the changes to the ${Process.type}?`
-          ),
-          primaryBtnText: t("Discard Changes"),
-          secondaryBtnText: t("Cancel"),
-          primaryAction: handleDiscardConfirm,
-          secondaryAction: closeModal,
-        },
-        duplicate: {
-          title: t("Create Duplicate"),
-          message: t(`Are you sure you want to duplicate the current ${Process.type}?`),
-          primaryBtnText: t(`Yes, Duplicate This ${Process.type}`),
-          secondaryBtnText: t(`No, Do Not Duplicate This ${Process.type}`),
-          primaryAction: handleDuplicateProcess,
-          secondaryAction: closeModal,
-        },
-      };
+ const modalConfigurations = {
+  publish: {
+    title: t("Confirm Publish"),
+    message: t(
+      `Publishing will lock the ${Process.type}. To save changes on further edits,
+       you will need to unpublish the ${Process.type} first.`
+    ),
+    primaryBtnText: t(`Publish This ${Process.type}`),
+    secondaryBtnText: t("Cancel"),
+    primaryAction: confirmPublishOrUnPublish,
+    secondaryAction: closeModal,
+  },
+  unpublish: {
+    title: t("Confirm Unpublish"),
+    message: t(
+      `This ${Process.type} is currently live. To save changes to ${Process.type} edits, 
+      you need to unpublish it first.`
+    ),
+    primaryBtnText: t(`Unpublish and Edit This ${Process.type}`),
+    secondaryBtnText: t(`Cancel, Keep This ${Process.type} published`),
+    primaryAction: confirmPublishOrUnPublish,
+    secondaryAction: closeModal,
+  },
+  discard: {
+    title: t(`Are you sure you want to discard ${Process.type} changes?`),
+    message: t(
+      `Are you sure you want to discard all the changes to the ${Process.type}?`
+    ),
+    primaryBtnText: t("Discard Changes"),
+    secondaryBtnText: t("Cancel"),
+    primaryAction: handleDiscardConfirm,
+    secondaryAction: closeModal,
+  },
+  duplicate: {
+    title: t("Create Duplicate"),
+    message: t(`Are you sure you want to duplicate the current ${Process.type}?`),
+    primaryBtnText: t(`Yes, Duplicate This ${Process.type}`),
+    secondaryBtnText: t(`No, Do Not Duplicate This ${Process.type}`),
+    primaryAction: handleDuplicateProcess,
+    secondaryAction: closeModal,
+  },
+};
 
-      return modalConfigurations[modalType] || {};
-    };
+return modalConfigurations[modalType] || {};
+
 
     const { title, message, primaryBtnText, secondaryBtnText,
       primaryAction, secondaryAction } = createModalConfig(modalType);
@@ -670,7 +671,7 @@ const ProcessCreateEdit = ({ type }) => {
         showExportModal={selectedAction === EXPORT}
         onClose={() => setSelectedAction(null)}
         onExport={handleExport}
-        fileName={processName || "filename"}
+        fileName={fileName}
         modalTitle={t(`Export ${diagramType}`)}
         successMessage={t("Export Successful")}
         errorMessage={exportError}
@@ -697,6 +698,7 @@ const ProcessCreateEdit = ({ type }) => {
         revertBtnAction={fetchHistoryData}
         historyCount={historiesData?.totalCount || 0}
         currentVersionId={processData.id}
+        disableAllRevertButton={isPublished}
       />
       {selectedAction === IMPORT && <ImportProcess
         showModal={selectedAction === IMPORT}

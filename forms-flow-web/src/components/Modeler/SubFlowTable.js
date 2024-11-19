@@ -1,11 +1,10 @@
 import React, { useEffect, useState } from "react";
-import {
-  CustomButton,
-  CustomSearch,
-  TableFooter,
-  ReusableProcessTableRow,
-  BuildModal,
-} from "@formsflow/components";
+import { CustomButton,
+   CustomSearch ,
+   TableFooter ,
+   ReusableProcessTableRow,
+   NoDataFound,
+   BuildModal} from "@formsflow/components";
 import { useSelector, useDispatch } from "react-redux";
 import { useTranslation } from "react-i18next";
 
@@ -32,11 +31,8 @@ const SubFlow = React.memo(() => {
   const [activePage, setActivePage] = useState(1);
   const [limit, setLimit] = useState(5);
   const [search, setSearch] = useState(searchText || "");
-  const [isLoading, setIsLoading] = useState(true);
-  const [showBuildModal, setShowBuildModal] = useState(false);
-  const [importSubflow, setImportSubflow] = useState(false);
-  const [searchLoading, setSearchLoading] = useState(false);
-  const [sortConfig, setSortConfig] = useState({
+  const [searchBpmnLoading, setSearchBpmnLoading] = useState(false);
+  const [currentBpmnSort, setCurrentBpmnSort] = useState({
     activeKey: "name",
     name: { sortOrder: "asc" },
     processKey: { sortOrder: "asc" },
@@ -86,7 +82,7 @@ const SubFlow = React.memo(() => {
         },
         () => {
           setIsLoading(false);
-          setSearchLoading(false);
+          setSearchBpmnLoading(false);
         }
       )
     );
@@ -109,7 +105,7 @@ const SubFlow = React.memo(() => {
   ];
 
   const handleSearch = () => {
-    setSearchLoading(true);
+    setSearchBpmnLoading(true);
     setActivePage(1);
     dispatch(setBpmnSearchText(search));
   };
@@ -121,71 +117,98 @@ const SubFlow = React.memo(() => {
 
   return (
     <>
-      <div className="d-md-flex justify-content-between align-items-center pb-3 flex-wrap">
-        <div className="d-md-flex align-items-center p-0 search-box input-group input-group width-25">
-          <CustomSearch
-            search={search}
-            setSearch={setSearch}
-            handleSearch={handleSearch}
-            handleClearSearch={() => setSearch("")}
-            placeholder={t("Search BPMN Name")}
-            searchLoading={searchLoading}
-            title={t("Search BPMN Name")}
-            dataTestId="BPMN-search-input"
-          />
-        </div>
-        <div className="d-md-flex justify-content-end align-items-center">
-          <CustomButton
-            variant="primary"
-            size="sm"
-            label="New BPMN"
-            onClick={() => setShowBuildModal(true)}
-            dataTestid="create-BPMN-button"
-            ariaLabel="Create BPMN"
-          />
-        </div>
-        <LoadingOverlay active={isLoading} spinner text={t("Loading...")}>
-          <div className="min-height-400 pt-3">
-            <div className="custom-tables-wrapper">
-              <table className="table custom-tables table-responsive-sm">
-                <thead className="table-header">
-                  <tr>
-                    {["name", "id", "modified", "status"].map((key) => (
-                      <th key={key} className="w-20" scope="col">
-                        <SortableHeader
-                          columnKey={key}
-                          title={key.charAt(0).toUpperCase() + key.slice(1)}
-                          currentSort={sortConfig}
-                          handleSort={handleSort}
-                        />
-                      </th>
-                    ))}
-                    <th className="w-25" colSpan="4" aria-label="edit bpmn button" />
-                  </tr>
-                </thead>
-                <tbody>
-                  {processList.map((processItem) => (
-                    <ReusableProcessTableRow
-                      key={processItem.id}
-                      item={processItem}
-                      gotoEdit={gotoEdit}
-                      buttonLabel="Bpmn"
+    <div className="d-md-flex justify-content-between align-items-center pb-3 flex-wrap">
+      <div className="d-md-flex align-items-center p-0 search-box input-group input-group width-25">
+        <CustomSearch
+          search={search}
+          setSearch={setSearch}
+          handleSearch={handleSearch}
+          handleClearSearch={handleClearSearch}
+          placeholder={t("Search BPMN Name")}
+          searchLoading={searchBpmnLoading}
+          title={t("Search BPMN Name")}
+          dataTestId="BPMN-search-input"
+        />
+      </div>
+      <div className="d-md-flex justify-content-end align-items-center ">
+        <CustomButton
+          variant="primary"
+          size="sm"
+          label="New BPMN"
+          className=""
+          dataTestid="create-BPMN-button"
+          ariaLabel="Create BPMN"
+          onClick={() => handleCreateBPMN()}
+        />
+      </div>
+      <LoadingOverlay active={isLoading} spinner text={t("Loading...")}>
+        <div className="min-height-400 pt-3">
+          <div className="custom-tables-wrapper">
+            <table className="table custom-tables table-responsive-sm">
+              <thead className="table-header">
+                <tr>
+                  <th className="w-25" scope="col">
+                    <SortableHeader
+                      columnKey="name"
+                      title="Name"
+                      currentSort={currentBpmnSort}
+                      handleSort={handleSort}
+                      className="ms-4"
                     />
-                  ))}
-                  <TableFooter
-                    limit={limit}
-                    activePage={activePage}
-                    totalCount={totalCount}
-                    handlePageChange={setActivePage}
-                    onLimitChange={(newLimit) => {
-                      setLimit(newLimit);
-                      setActivePage(1);
-                    }}
-                    pageOptions={pageOptions}
+                  </th>
+                  <th className="w-20" scope="col">
+                    <SortableHeader
+                      columnKey="processKey"
+                      title="ID"
+                      currentSort={currentBpmnSort}
+                      handleSort={handleSort}
+                    />
+                  </th>
+                  <th className="w-15" scope="col">
+                    <SortableHeader
+                      columnKey="modified"
+                      title="Last Edited"
+                      currentSort={currentBpmnSort}
+                      handleSort={handleSort}
+                    />
+                  </th>
+                  <th className="w-15" scope="col">
+                    <SortableHeader
+                      columnKey="status"
+                      title="Status"
+                      currentSort={currentBpmnSort}
+                      handleSort={handleSort}
+                    />
+                  </th>
+                  <th
+                    className="w-25"
+                    colSpan="4"
+                    aria-label="edit bpmn button "
+                  ></th>
+                </tr>
+              </thead>
+              {process.length ?
+               <tbody>
+                {process.map((processItem) => (
+                  <ReusableProcessTableRow
+                    key={processItem.id}
+                    item={processItem}
+                    gotoEdit={gotoEdit}
+                    buttonLabel="Bpmn"
                   />
-                </tbody>
-              </table>
-            </div>
+                ))}
+                <TableFooter
+                  limit={limit}
+                  activePage={activePage}
+                  totalCount={totalCount}
+                  handlePageChange={handlePageChange}
+                  onLimitChange={onLimitChange}
+                  pageOptions={pageOptions}
+                />
+              </tbody> : !isLoading ? (
+                <NoDataFound />
+              ) : null}
+            </table>
           </div>
         </LoadingOverlay>
       </div>

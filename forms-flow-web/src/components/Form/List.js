@@ -358,9 +358,9 @@ const List = React.memo((props) => {
                     buildForm={true}
                   />
                   { importFormModal && <ImportModal
-                    showModal={importLoader}
+                    importLoader={importLoader}
                     importError={importError}
-                    importModal={importFormModal}
+                    showModal={importFormModal}
                     uploadActionType={UploadActionType}
                     formName={formTitle}
                     formSubmitted={formSubmitted}

@@ -1056,9 +1056,9 @@ const EditComponent = () => {
       />
 
       {selectedAction === IMPORT && <ImportModal
-        showModal={importLoader}
+        importLoader={importLoader}
         importError={importError}
-        importModal={selectedAction === IMPORT}
+        showModal={selectedAction === IMPORT}
         uploadActionType={UploadActionType}
         formName={formTitle}
         onClose={handleCloseSelectedAction}

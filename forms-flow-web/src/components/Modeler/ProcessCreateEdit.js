@@ -514,15 +514,19 @@ const ProcessCreateEdit = ({ type }) => {
   };
 
   const getEditorProps = () => {
+    const bpmnXml = isBPMN ? (isCreate ? defaultProcessXmlData : processDataXML) : undefined;
+    const dmnXml = !isBPMN ? (isCreate ? defaultDmnXmlData : processDataXML) : undefined;
+    const setLintErrorsAction = isBPMN ? setLintErrors : undefined;
     const commonProps = {
       ref: isBPMN ? bpmnRef : dmnRef,
-      bpmnXml: isBPMN ? (isCreate ? defaultProcessXmlData : processDataXML) : undefined,
-      dmnXml: isBPMN ? undefined : (isCreate ? defaultDmnXmlData : processDataXML),
-      setLintErrors: isBPMN ? setLintErrors : undefined,
+      bpmnXml,
+      dmnXml,
+      setLintErrors: setLintErrorsAction,
     };
   
     return commonProps;
   };
+  
 
   return (
     <div>

@@ -17,8 +17,7 @@ import { MULTITENANCY_ENABLED } from "../../constants/constants";
 import { useTranslation } from "react-i18next";
 import {
   createNewProcess,
-  createNewDecision,
-  extractDataFromDiagram,
+  createNewDecision, 
 } from "../../components/Modeler/helpers/helper";
 import {
   CustomButton,
@@ -104,6 +103,10 @@ const ProcessCreateEdit = ({ type }) => {
   const [isReverted, setIsReverted] = useState(false);
   const isDataFetched = useRef();
 
+  const publishText = isPublished ? t("Unpublish") : t("Publish");
+  const processName = processData.name;
+  const fileName = (processName + Process.extension).replaceAll(" ", "");
+
   // fetching process data
   const { isLoading: isProcessDetailsLoading } = useQuery(
     ["processDetails", processKey],
@@ -152,8 +155,6 @@ const ProcessCreateEdit = ({ type }) => {
   // handle history modal
   const handleToggleHistoryModal = () => setHistoryModalShow(!historyModalShow);
 
-  const publishText = isPublished ? t("Unpublish") : t("Publish");
-  const processName = processData.name;
 
   useEffect(() => {
     if (isCreate) {
@@ -383,13 +384,8 @@ const ProcessCreateEdit = ({ type }) => {
         const element = document.createElement("a");
         const file = new Blob([data], { type: Process.fileType });
         element.href = URL.createObjectURL(file);
-
-        // Using the `Process` object for the filename and extension
-        const processName =
-          extractDataFromDiagram(data).name.replaceAll(" / ", "-") +
-          Process.extension;
-
-        element.download = processName.replaceAll(" ", "");
+ 
+        element.download = fileName;
         document.body.appendChild(element);
         element.click();
         document.body.removeChild(element); // Cleanup after download
@@ -659,7 +655,7 @@ const ProcessCreateEdit = ({ type }) => {
         showExportModal={selectedAction === EXPORT}
         onClose={() => setSelectedAction(null)}
         onExport={handleExport}
-        fileName={processName || "filename"}
+        fileName={fileName}
         modalTitle={t(`Export ${diagramType}`)}
         successMessage={t("Export Successful")}
         errorMessage={exportError}

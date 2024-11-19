@@ -101,7 +101,7 @@ const ExportDiagram = React.memo(
             animated={!isExportComplete && !isError}
             variant="primary"
           />
-          <div className="mt-2 text-wrap d-flex align-items-center">
+          <div className="mt-2 text-container text-wrap d-flex align-items-center">
             <span className="text-dark">{fileName}&nbsp;</span>
             <span className={isError ? "text-danger" : "text-primary"}>
               {isError ? (

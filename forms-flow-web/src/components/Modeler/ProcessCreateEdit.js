@@ -36,7 +36,7 @@ import {
   validateProcess,
   compareXML,
   compareDmnXML,
-  validateDecisionNames,
+  validateDecisionNames
 } from "../../helper/processHelper";
 import BpmnEditor from "./Editors/BpmnEditor/BpmEditor.js";
 import DmnEditor from "./Editors/DmnEditor/DmnEditor.js";
@@ -97,11 +97,15 @@ const ProcessCreateEdit = ({ type }) => {
   const [isPublished, setIsPublished] = useState(
     processData?.status === "Published"
   );
+  
   const [showConfirmModal, setShowConfirmModal] = useState(false);
   const [modalType, setModalType] = useState("");
   const [isPublishLoading, setIsPublishLoading] = useState(false);
   const [isReverted, setIsReverted] = useState(false);
   const isDataFetched = useRef();
+  useEffect(() => {
+    setIsPublished(processData.status === "Published");
+  }, [processData]);
 
   const publishText = isPublished ? t("Unpublish") : t("Publish");
   const processName = processData.name;
@@ -154,7 +158,6 @@ const ProcessCreateEdit = ({ type }) => {
     : processData?.processData;
   // handle history modal
   const handleToggleHistoryModal = () => setHistoryModalShow(!historyModalShow);
-
 
   useEffect(() => {
     if (isCreate) {
@@ -302,7 +305,9 @@ const ProcessCreateEdit = ({ type }) => {
       let response = null;
 
       if (!isPublished) {
-        response = await saveFlow({ isPublishing: !isPublished });
+        response = await saveFlow({
+          isPublishing: !isPublished
+        });
       }
 
       closeModal();
@@ -368,16 +373,16 @@ const ProcessCreateEdit = ({ type }) => {
 
   const handleExport = async () => {
     try {
-      let data;
-
-      if (isCreate) {
-        data = isBPMN ? defaultProcessXmlData : defaultDmnXmlData;
-      } else {
+      let data = "";
+      if(isCreate){
+        const modeler = getModeler(isBPMN);
+        data = await createXMLFromModeler(modeler);
+      }else{
         data = processData?.processData;
       }
 
       const isValid = isBPMN
-        ? await validateProcess(data)
+        ? await validateProcess(data,lintErrors)
         : await validateDecisionNames(data);
 
       if (isValid) {
@@ -482,9 +487,9 @@ const ProcessCreateEdit = ({ type }) => {
         );
       case "discard":
         return getModalConfig(
-          t(`Are you sure you want to discard ${Process.type} changes?`),
+          t(`Are you sure want to discard ${Process.type} changes?`),
           t(
-            `Are you sure you want to discard all the changes to the ${Process.type}?`
+            `Are you sure want to discard all the changes to the ${Process.type}?`
           ),
           t("Discard Changes"),
           t("Cancel"),

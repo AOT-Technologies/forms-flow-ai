@@ -1,4 +1,4 @@
-import os, sys
+import os
 
 import requests
 from dotenv import load_dotenv
@@ -14,7 +14,7 @@ CLIENT_SECRET = os.getenv("CLIENT_SECRET")
 
 
 def _get_base_url():
-    base_url = KEYCLOAK_CONTEXT_PATH.rstrip('/')
+    base_url = KEYCLOAK_BASE_URL.rstrip('/')
     context = KEYCLOAK_CONTEXT_PATH.lstrip('/')
     if context:
         return f"{base_url}/{context}"

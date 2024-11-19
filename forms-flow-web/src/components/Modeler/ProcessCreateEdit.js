@@ -17,8 +17,7 @@ import { MULTITENANCY_ENABLED } from "../../constants/constants";
 import { useTranslation } from "react-i18next";
 import {
   createNewProcess,
-  createNewDecision,
-  extractDataFromDiagram,
+  createNewDecision, 
 } from "../../components/Modeler/helpers/helper";
 import {
   CustomButton,
@@ -37,7 +36,7 @@ import {
   validateProcess,
   compareXML,
   compareDmnXML,
-  validateDecisionNames,
+  validateDecisionNames
 } from "../../helper/processHelper";
 import BpmnEditor from "./Editors/BpmnEditor/BpmEditor.js";
 import DmnEditor from "./Editors/DmnEditor/DmnEditor.js";
@@ -98,11 +97,19 @@ const ProcessCreateEdit = ({ type }) => {
   const [isPublished, setIsPublished] = useState(
     processData?.status === "Published"
   );
+  
   const [showConfirmModal, setShowConfirmModal] = useState(false);
   const [modalType, setModalType] = useState("");
   const [isPublishLoading, setIsPublishLoading] = useState(false);
   const [isReverted, setIsReverted] = useState(false);
   const isDataFetched = useRef();
+  useEffect(() => {
+    setIsPublished(processData.status === "Published");
+  }, [processData]);
+
+  const publishText = isPublished ? t("Unpublish") : t("Publish");
+  const processName = processData.name;
+  const fileName = (processName + Process.extension).replaceAll(" ", "");
 
   // fetching process data
   const { isLoading: isProcessDetailsLoading } = useQuery(
@@ -151,9 +158,6 @@ const ProcessCreateEdit = ({ type }) => {
     : processData?.processData;
   // handle history modal
   const handleToggleHistoryModal = () => setHistoryModalShow(!historyModalShow);
-
-  const publishText = isPublished ? t("Unpublish") : t("Publish");
-  const processName = processData.name;
 
   useEffect(() => {
     if (isCreate) {
@@ -301,7 +305,9 @@ const ProcessCreateEdit = ({ type }) => {
       let response = null;
 
       if (!isPublished) {
-        response = await saveFlow({ isPublishing: !isPublished });
+        response = await saveFlow({
+          isPublishing: !isPublished
+        });
       }
 
       closeModal();
@@ -367,29 +373,24 @@ const ProcessCreateEdit = ({ type }) => {
 
   const handleExport = async () => {
     try {
-      let data;
-
-      if (isCreate) {
-        data = isBPMN ? defaultProcessXmlData : defaultDmnXmlData;
-      } else {
+      let data = "";
+      if(isCreate){
+        const modeler = getModeler(isBPMN);
+        data = await createXMLFromModeler(modeler);
+      }else{
         data = processData?.processData;
       }
 
       const isValid = isBPMN
-        ? await validateProcess(data)
+        ? await validateProcess(data,lintErrors)
         : await validateDecisionNames(data);
 
       if (isValid) {
         const element = document.createElement("a");
         const file = new Blob([data], { type: Process.fileType });
         element.href = URL.createObjectURL(file);
-
-        // Using the `Process` object for the filename and extension
-        const processName =
-          extractDataFromDiagram(data).name.replaceAll(" / ", "-") +
-          Process.extension;
-
-        element.download = processName.replaceAll(" ", "");
+ 
+        element.download = fileName;
         document.body.appendChild(element);
         element.click();
         document.body.removeChild(element); // Cleanup after download
@@ -486,9 +487,9 @@ const ProcessCreateEdit = ({ type }) => {
         );
       case "discard":
         return getModalConfig(
-          t(`Are you sure you want to discard ${Process.type} changes?`),
+          t(`Are you sure want to discard ${Process.type} changes?`),
           t(
-            `Are you sure you want to discard all the changes to the ${Process.type}?`
+            `Are you sure want to discard all the changes to the ${Process.type}?`
           ),
           t("Discard Changes"),
           t("Cancel"),
@@ -659,7 +660,7 @@ const ProcessCreateEdit = ({ type }) => {
         showExportModal={selectedAction === EXPORT}
         onClose={() => setSelectedAction(null)}
         onExport={handleExport}
-        fileName={processName || "filename"}
+        fileName={fileName}
         modalTitle={t(`Export ${diagramType}`)}
         successMessage={t("Export Successful")}
         errorMessage={exportError}

@@ -4,6 +4,7 @@ import { CustomButton,
    CustomSearch ,
    ReusableProcessTableRow ,
    TableFooter,
+   NoDataFound,
    BuildModal} from "@formsflow/components";
 import LoadingOverlay from "react-loading-overlay-ts";
 import { useTranslation } from "react-i18next";
@@ -204,7 +205,8 @@ const contents = [
                   ></th>
                 </tr>
               </thead>
-              <tbody>
+              {dmn.length  ?
+               <tbody>
                 {dmn.map((dmnItem) => (
                   <ReusableProcessTableRow
                     key={dmnItem.id}
@@ -221,7 +223,9 @@ const contents = [
                   onLimitChange={onLimitChange}
                   pageOptions={pageOptions}
                 />
-              </tbody>
+              </tbody> :  !isLoading ? (
+                <NoDataFound />
+              ) : null}
             </table>
           </div>
         </div>

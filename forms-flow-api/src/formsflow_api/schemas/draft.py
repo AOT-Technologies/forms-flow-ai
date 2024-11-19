@@ -1,6 +1,6 @@
 """This manages draft Response Schema."""
 
-from marshmallow import EXCLUDE, Schema, fields
+from marshmallow import EXCLUDE, fields
 
 from .base_schema import AuditDateTimeSchema
 
@@ -24,7 +24,7 @@ class DraftSchema(AuditDateTimeSchema):
     process_name = fields.Str(data_key="processName", dump_only=True)
 
 
-class DraftListSchema(Schema):
+class DraftListSchema(AuditDateTimeSchema):
     """This class manages the draft listing schema."""
 
     class Meta:  # pylint: disable=too-few-public-methods
@@ -34,7 +34,6 @@ class DraftListSchema(Schema):
 
     id = fields.Int(data_key="id")
     form_name = fields.Str(data_key="DraftName")
-    modified = fields.Str()
     page_no = fields.Int(data_key="pageNo", required=False, allow_none=True)
     limit = fields.Int(required=False, allow_none=True)
     modified_from_date = fields.DateTime(

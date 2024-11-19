@@ -129,7 +129,6 @@ const ProcessCreateEdit = ({ type }) => {
       },
     }
   );
-  const publishText = isPublished ? t("Unpublish") : t("Publish");
 
   /* --------- fetching all process history when click history button --------- */
   const {

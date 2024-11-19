@@ -11,6 +11,7 @@ The **formsflow.ai** framework could be hooked up with any OpenID Connect compli
   - [Keycloak Setup](#keycloak-setup)
   - [Migration](#migration)
     - [v7.0.0 (Permission Matrix)](#v700-permission-matrix)
+  - [For migrating default roles (formsflow-client, formsflow-designer, formsflow-reviewer) to use permission matrix introduced in v7.0.0 follow the steps mentioned here](#for-migrating-default-roles-formsflow-client-formsflow-designer-formsflow-reviewer-to-use-permission-matrix-introduced-in-v700-follow-the-steps-mentioned-here)
 
 ## Authentication
 All the resources in the formsflow.ai solution require authentication i.e. users must be a member of a realm.
@@ -62,12 +63,5 @@ Group | Sub Group | Roles | Description |
 
 ## Migration
 ### v7.0.0 (Permission Matrix)
-For migrating default roles (formsflow-client, formsflow-designer, formsflow-reviewer) to use permission matrix introduced in v7.0.0 follow the steps
-- Login to keycloak admin console and select the realm
-- Create a back up of existing realm configuration (realm -> Realm Settings -> Action -> Partial export : select all)
-- Click on Partial Import (realm -> Realm Settings -> Action -> Partial Import)
-- Browse and select the [file](./migration/7.0.0/partial-realm.json) or copy and paste the file content into the partial import dialog
-- Check the Groups and Client roles checkbox
-- Select "Overwrite" for "If a resource already exists, specify what should be done:"
-- Click Import
-- Test and verify existing users are able to login and operate formsflow
+For migrating default roles (formsflow-client, formsflow-designer, formsflow-reviewer) to use permission matrix introduced in v7.0.0 follow the steps mentioned [here](./migration/README.md)
+- 

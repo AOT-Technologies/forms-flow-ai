@@ -14,6 +14,7 @@ jobs:
           echo "Issue number: ${{ github.event.issue.number }}"
           echo "Issue url: ${{ github.event.issue.html_url }}"
           echo "Assigned labels: " ${{ join(github.event.issue.labels.*.name) }}
+          echo "Issue status: ${{ github.event.action }}"
     - name: Google Chat Notification
       run: |
           curl --location --request POST '${{ secrets.NOTIFY_GITHUB_ISSUES }}' \
@@ -32,12 +33,18 @@ jobs:
                                      "keyValue": {
                                           "topLabel": "Creator",
                                           "content": "${{ github.event.issue.user.login }}"
-                                      },
+                                      }
                                    },
                                    {
                                      "keyValue": {
-                                          "topLabel": "Assigned Lables",
+                                          "topLabel": "Assigned Labels",
                                           "content": "- ${{ join(github.event.issue.labels.*.name) }}"
+                                      }
+                                   },
+                                   {
+                                     "keyValue": {
+                                          "topLabel": "Status",
+                                          "content": "${{ github.event.action }}"
                                       }
                                    },
                                    {

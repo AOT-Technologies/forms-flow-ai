@@ -4,6 +4,7 @@ import { CloseIcon, CustomButton, FailedIcon } from "@formsflow/components";
 import ProgressBar from "react-bootstrap/ProgressBar";
 import { Translation } from "react-i18next";
 import { getFormExport } from "../../apiManager/services/FormServices";
+import PropTypes from "prop-types";
 import _ from "lodash";
 const ExportModal = React.memo(({ showExportModal, onClose, mapperId, formTitle }) => {
   const [progress, setProgress] = useState(0);
@@ -156,5 +157,12 @@ const ExportModal = React.memo(({ showExportModal, onClose, mapperId, formTitle 
     </Modal>
   );
 });
+
+ExportModal.propTypes = {
+  showExportModal:PropTypes.bool.isRequired, 
+  onClose:PropTypes.func.isRequired, 
+  mapperId: PropTypes.any.isRequired, 
+  formTitle:PropTypes.string.isRequired
+};
 
 export default ExportModal;

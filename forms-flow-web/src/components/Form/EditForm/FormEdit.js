@@ -225,11 +225,9 @@ const EditComponent = () => {
             console.log("No valid form found.");
           }
         });
-      } else {
-        if (responseData?.formId) {
+      } else if (responseData?.formId) {
           handleCloseSelectedAction();
           dispatch(push(`${redirectUrl}formflow/${responseData.formId}/edit/`));
-        }
       }
     } catch (err) {
       setImportLoader(false);

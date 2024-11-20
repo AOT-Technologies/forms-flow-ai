@@ -25,12 +25,8 @@ const SubmitList = React.memo((props) => {
   const searchText = useSelector((state) => state.bpmForms.searchText);
   // const tenantKey = useSelector((state) => state.tenants?.tenantId);
   const [search, setSearch] = useState(searchText || "");
-  const totalApplications = useSelector(
-    (state) => state.applications?.applicationCount
-  );
   const userRoles = useSelector((state) => state.user.roles || []);
   const create_submissions = userRoles.includes("create_submissions");
-  const draftCount = useSelector((state) => state.draft.draftCount);
   const dispatch = useDispatch();
 
   useEffect(() => {
@@ -92,7 +88,6 @@ const SubmitList = React.memo((props) => {
     const headers = [
       {
         name: "Submissions",
-        count: totalApplications,
         onClick: () => navigateToSubmitFormsApplicationRoute(),
       },
     ];
@@ -104,7 +99,6 @@ const SubmitList = React.memo((props) => {
       });
       headers.push({
         name: "Drafts",
-        count: draftCount,
         onClick: () => navigateToSubmitFormsDraftRoute(),
       });
     }

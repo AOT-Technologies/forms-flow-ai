@@ -46,6 +46,7 @@ const FlowEdit = forwardRef(({ isPublished = false, CategoryType }, ref) => {
   const [isReverted, setIsReverted] = useState(false);
   const { createDesigns } = userRoles();
   const [showTaskVarModal, setShowTaskVarModal] = useState(false);
+  const [isWorkflowChanged, setIsWorkflowChanged] = useState(false);
   const formData = useSelector((state) => state.form?.form || {});  
   /* --------- fetching all process history when click history button --------- */
   const {
@@ -79,6 +80,7 @@ const FlowEdit = forwardRef(({ isPublished = false, CategoryType }, ref) => {
       //import the existing process data to bpmn
       bpmnRef.current?.handleImport(processData?.processData);
       isReverted && setIsReverted(!isReverted); //once it reverted then need to make it false
+      setIsWorkflowChanged(false);
       handleDiscardModal();
     }
   };
@@ -117,6 +119,7 @@ const FlowEdit = forwardRef(({ isPublished = false, CategoryType }, ref) => {
         data: xml,
       });
       dispatch(setProcessData(response.data));
+      setIsWorkflowChanged(false);
       isReverted && setIsReverted(!isReverted); //if it already reverted the need to make it false
       showToast && toast.success(t("Process updated successfully"));
     } catch (error) {
@@ -189,7 +192,7 @@ const FlowEdit = forwardRef(({ isPublished = false, CategoryType }, ref) => {
                   className="mx-2"
                   label={t("Save Flow")}
                   onClick={saveFlow}
-                  disabled={isPublished}
+                  disabled={isPublished || !isWorkflowChanged}
                   dataTestid="save-flow-layout"
                   ariaLabel={t("Save Flow Layout")}
                   buttonLoading={savingFlow}
@@ -199,6 +202,7 @@ const FlowEdit = forwardRef(({ isPublished = false, CategoryType }, ref) => {
                   size="md"
                   label={t("Discard Changes")}
                   onClick={handleDiscardModal}
+                  disabled={!isWorkflowChanged}
                   dataTestid="discard-flow-changes-testid"
                   ariaLabel={t("Discard Flow Changes")}
                 />
@@ -216,6 +220,7 @@ const FlowEdit = forwardRef(({ isPublished = false, CategoryType }, ref) => {
                 <BPMNViewer bpmnXml={processData?.processData || null} />
             ) : (
               <BpmnEditor
+                onChange={()=>{setIsWorkflowChanged(true);}} //handled is workflow changed or not
                 ref={bpmnRef}
                 setLintErrors={setLintErrors}
                 bpmnXml={

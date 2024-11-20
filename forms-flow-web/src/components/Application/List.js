@@ -25,9 +25,7 @@ export const ApplicationList = React.memo(() => {
   const sortBy = useSelector((state) => state.applications?.sortBy);
   const pageNo = useSelector((state) => state.applications?.activePage);
   const limit = useSelector((state) => state.applications?.countPerPage);
-  const totalApplications = useSelector((state) => state.applications?.applicationCount);
   const searchParams = useSelector((state) => state.applications?.searchParams);
-  const draftCount = useSelector((state) => state.draft.draftCount);
   const dispatch = useDispatch();
    const page = useSelector((state) => state.applications.activePage);
   const userRoles = useSelector((state) => state.user.roles || []);
@@ -69,7 +67,6 @@ export const ApplicationList = React.memo(() => {
     const headers = [
       {
         name: "Submissions",
-        count: totalApplications,
         onClick: () => navigateToSubmitFormsApplicationRoute(),
       }
     ];
@@ -81,7 +78,6 @@ export const ApplicationList = React.memo(() => {
       });
       headers.push({
         name: "Drafts",
-        count: draftCount,
         onClick: () => navigateToSubmitFormsDraftRoute(),
       });
     }

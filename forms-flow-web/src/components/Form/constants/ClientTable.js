@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { push } from "connected-react-router";
-import LoadingOverlay from "react-loading-overlay-ts";
 import {
   setBPMFormLimit,
   setBPMFormListPage,
@@ -110,7 +109,7 @@ function ClientTable() {
 
   return (
     <>
-      <LoadingOverlay active={searchFormLoading} spinner text={t("Loading...")}>
+     
         <div className="min-height-400">
         <div className="table-responsive" style={{ maxHeight: "75vh", overflowY: "auto" }}>
           <table className="table custom-table table-responsive-sm">
@@ -145,8 +144,7 @@ function ClientTable() {
                   </div>
                 </th>
                 <th className="col-7">{t("Form Description")}</th>
-                <th className="col-2">
-                </th>
+                <th className="col-2"></th>
               </tr>
             </thead>
             {formData?.length ? (
@@ -209,7 +207,6 @@ function ClientTable() {
           </table>
           </div>
         </div>
-      </LoadingOverlay>
 
       {formData.length ? (
         <table className="table">

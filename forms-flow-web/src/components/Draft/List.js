@@ -27,10 +27,6 @@ export const DraftList = React.memo(() => {
   const isDraftListLoading = useSelector(
     (state) => state.draft.isDraftListLoading
   );
-  const applicationCount = useSelector(
-    (state) => state.applications.applicationCount
-  );
-  const draftCount = useSelector((state) => state.draft.draftCount);
   const dispatch = useDispatch();
   const page = useSelector((state) => state.draft.activePage);
   const sortOrder = useSelector((state) => state.draft.sortOrder);
@@ -111,12 +107,10 @@ export const DraftList = React.memo(() => {
       },
       {
         name: "Submissions",
-        count: applicationCount,
         onClick: () => navigateToSubmitFormsApplicationRoute(),
       },
       {
         name: "Drafts",
-        count: draftCount,
         onClick: () => navigateToSubmitFormsDraftRoute(),
       },
     ];

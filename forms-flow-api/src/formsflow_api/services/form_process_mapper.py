@@ -13,6 +13,7 @@ from formsflow_api_utils.utils.user_context import UserContext, user_context
 
 from formsflow_api.constants import BusinessErrorCode, default_flow_xml_data
 from formsflow_api.models import (
+    Application,
     Authorization,
     AuthType,
     Draft,
@@ -205,6 +206,11 @@ class FormProcessMapperService:  # pylint: disable=too-many-public-methods
         if application:
             if tenant_key is not None and application.tenant != tenant_key:
                 raise PermissionError("Tenant authentication failed.")
+            count = Application.get_total_application_corresponding_to_mapper_id(
+                form_process_mapper_id
+            )
+            if count > 0:
+                raise BusinessException(BusinessErrorCode.RESTRICT_FORM_DELETE)
             application.mark_inactive()
             # fetching all draft application application and delete it
             draft_applications = Draft.get_draft_by_parent_form_id(

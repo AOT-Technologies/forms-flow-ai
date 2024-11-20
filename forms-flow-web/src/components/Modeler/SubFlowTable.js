@@ -1,13 +1,14 @@
 import React, { useEffect, useState } from "react";
-import { CustomButton,
-   CustomSearch ,
-   TableFooter ,
-   ReusableProcessTableRow,
-   NoDataFound,
-   BuildModal} from "@formsflow/components";
+import {
+  CustomButton,
+  CustomSearch,
+  TableFooter,
+  ReusableProcessTableRow,
+  NoDataFound,
+  BuildModal,
+} from "@formsflow/components";
 import { useSelector, useDispatch } from "react-redux";
 import { useTranslation } from "react-i18next";
-
 import { fetchAllProcesses } from "../../apiManager/services/processServices";
 import LoadingOverlay from "react-loading-overlay-ts";
 import {
@@ -17,19 +18,21 @@ import {
 import { push } from "connected-react-router";
 import { MULTITENANCY_ENABLED } from "../../constants/constants";
 import SortableHeader from "../CustomComponents/SortableHeader";
-
+import ImportProcess from "../Modals/ImportProcess";
 
 const SubFlow = React.memo(() => {
-  const searchText = useSelector((state) => state.process.bpmnSearchText);
-  const tenantKey = useSelector((state) => state.tenants?.tenantId);
-  const redirectUrl = MULTITENANCY_ENABLED ? `/tenant/${tenantKey}/` : "/";
-  const [limit, setLimit] = useState(5);
   const dispatch = useDispatch();
   const { t } = useTranslation();
+  const searchText = useSelector((state) => state.process.bpmnSearchText);
+  const tenantKey = useSelector((state) => state.tenants?.tenantId);
+  const processList = useSelector((state) => state.process.processList);
+  const totalCount = useSelector((state) => state.process.totalBpmnCount);
+  const [importSubflow, setImportSubflow] = useState(false);
+
+  // Local states
   const [activePage, setActivePage] = useState(1);
   const [isLoading, setIsLoading] = useState(true);
-  const process = useSelector((state) => state.process.processList);
-  const totalCount = useSelector((state) => state.process.totalBpmnCount);
+  const [limit, setLimit] = useState(5);
   const [search, setSearch] = useState(searchText || "");
   const [searchBpmnLoading, setSearchBpmnLoading] = useState(false);
   const [currentBpmnSort, setCurrentBpmnSort] = useState({
@@ -40,33 +43,33 @@ const SubFlow = React.memo(() => {
     status: { sortOrder: "asc" },
   });
   const [showBuildModal, setShowBuildModal] = useState(false);
-  const handleBuildClick = () => {
-      dispatch(
-      push(`${redirectUrl}subflow/create`));
+  const redirectUrl = MULTITENANCY_ENABLED ? `/tenant/${tenantKey}/` : "/";
+
+  const ShowImportModal = () => {
+    setShowBuildModal(false);
+    setImportSubflow(true);
   };
-  
-  const handleImportClick = () => {
-    console.log("Import clicked");
-  };
-  const contents = [
-    { 
+
+  // Modal contents
+  const modalContents = [
+    {
       id: 1,
-      heading: "Build", 
+      heading: "Build",
       body: "Create the BPMN from scratch",
-      onClick: handleBuildClick  
+      onClick: () => dispatch(push(`${redirectUrl}subflow/create`)),
     },
-    { 
+    {
       id: 2,
-      heading: "Import", 
+      heading: "Import",
       body: "Upload BPMN from a file",
-      onClick: handleImportClick 
-    }
+      onClick: ShowImportModal,
+    },
   ];
+
   useEffect(() => {
-    if (!search?.trim()) {
-      dispatch(setBpmnSearchText(""));
-    }
-  }, [search]);
+    if (!search.trim()) dispatch(setBpmnSearchText(""));
+  }, [search, dispatch]);
+
   useEffect(() => {
     setIsLoading(true);
     dispatch(
@@ -75,7 +78,7 @@ const SubFlow = React.memo(() => {
           pageNo: activePage,
           tenant_key: tenantKey,
           processType: "BPMN",
-          limit: limit,
+          limit,
           searchKey: search,
           sortBy: currentBpmnSort.activeKey,
           sortOrder: currentBpmnSort[currentBpmnSort.activeKey].sortOrder,
@@ -86,41 +89,24 @@ const SubFlow = React.memo(() => {
         }
       )
     );
-  }, [dispatch, activePage, limit, searchText, currentBpmnSort]);
+  }, [dispatch, activePage, limit, search, tenantKey, currentBpmnSort]);
 
   const handleSort = (key) => {
-    setCurrentBpmnSort((prevSort) => {
-      const newSortOrder = prevSort[key].sortOrder === "asc" ? "desc" : "asc";
-      return {
-        ...prevSort,
-        activeKey: key,
-        [key]: { sortOrder: newSortOrder },
-      };
-    });
+    setCurrentBpmnSort((prevConfig) => ({
+      ...prevConfig,
+      activeKey: key,
+      [key]: { sortOrder: prevConfig[key].sortOrder === "asc" ? "desc" : "asc" },
+    }));
   };
 
   const pageOptions = [
-    {
-      text: "5",
-      value: 5,
-    },
-    {
-      text: "25",
-      value: 25,
-    },
-    {
-      text: "50",
-      value: 50,
-    },
-    {
-      text: "100",
-      value: 100,
-    },
-    {
-      text: "All",
-      value: totalCount,
-    },
+    { text: "5", value: 5 },
+    { text: "25", value: 25 },
+    { text: "50", value: 50 },
+    { text: "100", value: 100 },
+    { text: "All", value: totalCount },
   ];
+
   const handlePageChange = (page) => setActivePage(page);
   const onLimitChange = (newLimit) => {
     setLimit(newLimit);
@@ -131,17 +117,16 @@ const SubFlow = React.memo(() => {
     setActivePage(1);
     dispatch(setBpmnSearchText(""));
   };
+
   const handleSearch = () => {
     setSearchBpmnLoading(true);
     setActivePage(1);
     dispatch(setBpmnSearchText(search));
   };
+
   const gotoEdit = (data) => {
-    if (MULTITENANCY_ENABLED) {
-      dispatch(setIsPublicDiagram(!!data.tenantId));
-    }
-    dispatch(push(`${redirectUrl}subflow/edit/${data.processKey}`)
-    );
+    if (MULTITENANCY_ENABLED) dispatch(setIsPublicDiagram(!!data.tenantId));
+    dispatch(push(`${redirectUrl}subflow/edit/${data.processKey}`));
   };
 
   const handleCreateBPMN = () => {
@@ -153,29 +138,30 @@ const SubFlow = React.memo(() => {
 
   return (
     <>
-    <div className="d-md-flex justify-content-between align-items-center pb-3 flex-wrap">
-      <div className="d-md-flex align-items-center p-0 search-box input-group input-group width-25">
-        <CustomSearch
-          search={search}
-          setSearch={setSearch}
-          handleSearch={handleSearch}
-          handleClearSearch={handleClearSearch}
-          placeholder={t("Search BPMN Name")}
-          searchLoading={searchBpmnLoading}
-          title={t("Search BPMN Name")}
-          dataTestId="BPMN-search-input"
-        />
-      </div>
-      <div className="d-md-flex justify-content-end align-items-center ">
-        <CustomButton
-          variant="primary"
-          size="sm"
-          label="New BPMN"
-          className=""
-          dataTestid="create-BPMN-button"
-          ariaLabel="Create BPMN"
-          onClick={() => handleCreateBPMN()}
-        />
+      <div className="d-md-flex justify-content-between align-items-center pb-3 flex-wrap">
+        <div className="d-md-flex align-items-center p-0 search-box input-group input-group width-25">
+          <CustomSearch
+            search={search}
+            setSearch={setSearch}
+            handleSearch={handleSearch}
+            handleClearSearch={handleClearSearch}
+            placeholder={t("Search BPMN Name")}
+            searchLoading={searchBpmnLoading}
+            title={t("Search BPMN Name")}
+            dataTestId="BPMN-search-input"
+          />
+        </div>
+        <div className="d-md-flex justify-content-end align-items-center ">
+          <CustomButton
+            variant="primary"
+            size="sm"
+            label="New BPMN"
+            className=""
+            dataTestid="create-BPMN-button"
+            ariaLabel="Create BPMN"
+            onClick={handleCreateBPMN}
+          />
+        </div>
       </div>
       <LoadingOverlay active={isLoading} spinner text={t("Loading...")}>
         <div className="min-height-400 pt-3">
@@ -216,44 +202,43 @@ const SubFlow = React.memo(() => {
                       handleSort={handleSort}
                     />
                   </th>
-                  <th
-                    className="w-25"
-                    colSpan="4"
-                    aria-label="edit bpmn button "
-                  ></th>
+                  <th className="w-25" colSpan="4" aria-label="edit bpmn button "></th>
                 </tr>
               </thead>
-              {process.length ?
-               <tbody>
-                {process.map((processItem) => (
-                  <ReusableProcessTableRow
-                    key={processItem.id}
-                    item={processItem}
-                    gotoEdit={gotoEdit}
-                    buttonLabel="Bpmn"
+              {processList.length ? (
+                <tbody>
+                  {processList.map((processItem) => (
+                    <ReusableProcessTableRow
+                      key={processItem.id}
+                      item={processItem}
+                      gotoEdit={gotoEdit}
+                      buttonLabel="Bpmn"
+                    />
+                  ))}
+                  <TableFooter
+                    limit={limit}
+                    activePage={activePage}
+                    totalCount={totalCount}
+                    handlePageChange={handlePageChange}
+                    onLimitChange={onLimitChange}
+                    pageOptions={pageOptions}
                   />
-                ))}
-                <TableFooter
-                  limit={limit}
-                  activePage={activePage}
-                  totalCount={totalCount}
-                  handlePageChange={handlePageChange}
-                  onLimitChange={onLimitChange}
-                  pageOptions={pageOptions}
-                />
-              </tbody> : !isLoading ? (
-                <NoDataFound />
-              ) : null}
+                </tbody>
+              ) : !isLoading && <NoDataFound />
+              }
             </table>
           </div>
         </div>
       </LoadingOverlay>
-    </div>
-    <BuildModal
-     show={showBuildModal}
-     onClose={handleBuildModal}
-     title={t(`New BPMN`)}
-     contents={contents}/>
+      <BuildModal
+        show={showBuildModal}
+        onClose={handleBuildModal}
+        title={t(`New BPMN`)}
+        contents={modalContents}
+      />
+      {importSubflow && (
+        <ImportProcess showModal={importSubflow} closeImport={() => setImportSubflow(false)} fileType=".bpmn" />
+      )}
     </>
   );
 });

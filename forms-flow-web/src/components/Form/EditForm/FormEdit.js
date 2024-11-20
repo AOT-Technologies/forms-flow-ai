@@ -118,6 +118,7 @@ const EditComponent = () => {
   const [importError, setImportError] = useState("");
   const [importLoader, setImportLoader] = useState(false);
   const { createDesigns } = userRoles();
+  const [formChangeState, setFormChangeState] = useState({initial:false,changed:false});
 
    /* --------- validate form title exist or not --------- */
    const {
@@ -490,6 +491,7 @@ const EditComponent = () => {
       const {data} = await formUpdate(newFormData._id, newFormData);
       dispatch(setFormSuccessData("form", data));
       setPromptNewVersion(false);
+      setFormChangeState(prev=>({...prev,changed:false}));
     } catch (err) {
       const error = err.response?.data || err.message;
       dispatch(setFormFailureErrorData("form", error));
@@ -540,6 +542,7 @@ const EditComponent = () => {
       type: "components",
       value: _cloneDeep(formData.components),
     });
+    setFormChangeState(prev=>({...prev,changed:false}));
     handleToggleConfirmModal();
   };
 
@@ -591,8 +594,13 @@ const EditComponent = () => {
       });
   };
 
-  const formChange = (newForm) =>
+  const formChange = (newForm) =>{
+    setFormChangeState(prev=>{
+      const key = !prev.initial ? "initial" : !prev.changed ? "changed" : null;
+      return key ? {...prev, [key]:true} : prev;
+    });
     dispatchFormAction({ type: "formChange", value: newForm });
+  };
 
   const confirmPublishOrUnPublish = async () => {
     try {
@@ -955,7 +963,7 @@ const EditComponent = () => {
                           variant="primary"
                           size="md"
                           className="mx-2"
-                          disabled={isPublished}
+                          disabled={isPublished || !formChangeState.changed}
                           label={t("Save Layout")}
                           onClick={
                             promptNewVersion ? handleVersioning : saveFormData
@@ -970,6 +978,7 @@ const EditComponent = () => {
                           onClick={() => {
                             openConfirmModal("discard");
                           }}
+                          disabled={!formChangeState.changed}
                           dataTestid="discard-button-testid"
                           ariaLabel={t("cancelBtnariaLabel")}
                         />

@@ -102,6 +102,7 @@ const ProcessCreateEdit = ({ type }) => {
   const [modalType, setModalType] = useState("");
   const [isPublishLoading, setIsPublishLoading] = useState(false);
   const [isReverted, setIsReverted] = useState(false);
+  const [isWorkflowChanged, setIsWorkflowChanged] = useState(false);
   const isDataFetched = useRef();
   useEffect(() => {
     setIsPublished(processData.status === "Published");
@@ -202,7 +203,7 @@ const ProcessCreateEdit = ({ type }) => {
       dispatch(setProcessData(response.data));
       isReverted && setIsReverted(!isReverted); //if it already reverted the need to make it false
       handleSaveSuccess(response, isCreateMode, isPublishing);
-
+      setIsWorkflowChanged(false);
       return response.data;
     } catch (error) {
       handleError();
@@ -436,6 +437,7 @@ const ProcessCreateEdit = ({ type }) => {
     }
     isReverted && setIsReverted(!isReverted); //once it reverted then need to make it false
     handleToggleConfirmModal();
+    setIsWorkflowChanged(false);
   };
   const handleCloseErrorModal = () => setShowErrorModal(false);
 
@@ -605,7 +607,7 @@ const ProcessCreateEdit = ({ type }) => {
                   onClick={saveFlow}
                   label={t(`Save ${diagramType}`)}
                   buttonLoading={savingFlow}
-                  disabled={savingFlow || isPublished}
+                  disabled={savingFlow || isPublished || !isWorkflowChanged}
                   dataTestid={`save-${diagramType.toLowerCase()}-layout`}
                   ariaLabel={t(`Save ${diagramType} Layout`)}
                 />
@@ -614,6 +616,7 @@ const ProcessCreateEdit = ({ type }) => {
                   size="md"
                   onClick={() => openConfirmModal("discard")}
                   label={t("Discard Changes")}
+                  disabled={!isWorkflowChanged}
                   dataTestid={`discard-${diagramType.toLowerCase()}-changes-testid`}
                   ariaLabel={t(`Discard ${diagramType} Changes`)}
                 />
@@ -629,12 +632,14 @@ const ProcessCreateEdit = ({ type }) => {
           >
             {isBPMN ? (
               <BpmnEditor
+                onChange={()=>{setIsWorkflowChanged(true);}}
                 ref={bpmnRef}
                 bpmnXml={isCreate ? defaultProcessXmlData : processDataXML}
                 setLintErrors={setLintErrors}
               />
             ) : (
               <DmnEditor
+                onChange={()=>{setIsWorkflowChanged(true);}}
                 ref={dmnRef}
                 dmnXml={isCreate ? defaultDmnXmlData : processDataXML}
               />

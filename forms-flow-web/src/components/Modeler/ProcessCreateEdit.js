@@ -702,12 +702,12 @@ const ProcessCreateEdit = ({ type }) => {
         closeImport={() => setSelectedAction(null)}
         processId={processData.id}
         processVersion={{
-          type: isBPMN ? "BPMN" : "DMN",
+          type: process.type,
           majorVersion: processData?.majorVersion,
           minorVersion: processData?.minorVersion
         }}
         setImportXml={handleImportData}
-        fileType={isBPMN ? ".bpmn" : ".dmn"}
+        fileType={process.extension}
       />}
     </div>
   );

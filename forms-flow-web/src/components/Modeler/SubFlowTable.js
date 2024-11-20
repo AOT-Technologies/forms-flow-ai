@@ -224,9 +224,8 @@ const SubFlow = React.memo(() => {
                     pageOptions={pageOptions}
                   />
                 </tbody>
-              ) : !isLoading ? (
-                <NoDataFound />
-              ) : null}
+              ) : !isLoading && <NoDataFound />
+              }
             </table>
           </div>
         </div>

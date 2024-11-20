@@ -54,6 +54,7 @@ const FormComponent = React.memo(
  }) => {
     const [showElement, setShowElement] = useState(false);
     const formRef = useRef(null);
+    const detailsRef = useRef(null); // Ref for the details container
     const { t } = useTranslation();
     
     
@@ -113,14 +114,28 @@ const FormComponent = React.memo(
       },
       [alternativeLabels]
     );
-
+    // hide details when clicking outside form component and removinf the formio-highlighted class
     useEffect(() => {
       const formHilighter = document.querySelector(".form-hilighter");
 
+      const handleOutsideClick = (event) => {
+        const clickedInsideForm = formHilighter?.contains(event.target);
+        const clickedInsideDetails = detailsRef.current?.contains(event.target);
+    
+        if (!clickedInsideForm && !clickedInsideDetails) {
+          setShowElement(false); 
+          const highlightedElement = document.querySelector(".formio-hilighted");
+          if (highlightedElement) {
+            highlightedElement.classList.remove("formio-hilighted"); // Remove the highlight class
+          }
+        }
+      };
       formHilighter?.addEventListener("click", handleClick);
+      document.addEventListener("mousedown", handleOutsideClick);
 
       return () => {
         formHilighter?.removeEventListener("click", handleClick);
+        document.removeEventListener("mousedown", handleOutsideClick);
       };
     }, [handleClick]);
 
@@ -131,7 +146,8 @@ const FormComponent = React.memo(
           [selectedComponent.key]: {
             altVariable: selectedComponent.altVariable,
             labelOfComponent: selectedComponent.label,
-            key:selectedComponent.key
+            type:selectedComponent.type,
+            key:selectedComponent.key,
           },
         }));
         const highlightedElement = document.querySelector(".formio-hilighted");
@@ -157,7 +173,7 @@ const FormComponent = React.memo(
           />
         </div>
 
-        <div className="field-details-container">
+        <div className="field-details-container" ref={detailsRef}>
           {showElement ? (
             <div className="details-section">
               <div className="d-flex flex-column">
@@ -227,11 +243,12 @@ const TaskVariableModal = React.memo(
     useEffect(() => {
       if (formProcessList?.taskVariables?.length > 0) {
         const updatedLabels = {};
-        formProcessList.taskVariables.forEach(({ key, label }) => {
+        formProcessList.taskVariables.forEach(({ key, label, type }) => {
           updatedLabels[key] = {
             key,
             altVariable: label, // Use label from taskVariables as altVariable
             labelOfComponent: label, // Set the same label for labelOfComponent
+            type:type
           };
         });
         setAlternativeLabels(updatedLabels);
@@ -263,6 +280,7 @@ const TaskVariableModal = React.memo(
         (i) => ({
           key: i.key,
           label: i.altVariable || i.labelOfComponent,    // If altVariable exists, use it, otherwise it will be  labelOfComponent
+          type: i.type 
         })
       );
       const mapper = {
@@ -273,7 +291,6 @@ const TaskVariableModal = React.memo(
         formName: formProcessList.formName
       };
        await dispatch(saveFormProcessMapperPut({ mapper}));
-       
        onClose();
     };
     return (

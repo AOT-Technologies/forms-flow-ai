@@ -1012,7 +1012,6 @@ const EditComponent = () => {
               ref={flowRef}
               CategoryType={CategoryType}
               isPublished={isPublished}
-              form={form}
               />}
             </div>
             <button

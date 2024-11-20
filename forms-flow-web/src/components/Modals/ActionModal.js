@@ -120,6 +120,7 @@ const ActionModal = React.memo(
 
                 <CustomButton
                   variant="secondary"
+                  disabled={published}
                   size="sm"
                   label="Import"
                   icon={<ImportIcon />}

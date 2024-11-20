@@ -13,6 +13,7 @@ from formsflow_api_utils.utils.user_context import UserContext, user_context
 
 from formsflow_api.constants import BusinessErrorCode, default_flow_xml_data
 from formsflow_api.models import (
+    Application,
     Authorization,
     AuthType,
     Draft,
@@ -205,6 +206,11 @@ class FormProcessMapperService:  # pylint: disable=too-many-public-methods
         if application:
             if tenant_key is not None and application.tenant != tenant_key:
                 raise PermissionError("Tenant authentication failed.")
+            count = Application.get_total_application_corresponding_to_mapper_id(
+                form_process_mapper_id
+            )
+            if count > 0:
+                raise BusinessException(BusinessErrorCode.RESTRICT_FORM_DELETE)
             application.mark_inactive()
             # fetching all draft application application and delete it
             draft_applications = Draft.get_draft_by_parent_form_id(
@@ -292,13 +298,6 @@ class FormProcessMapperService:  # pylint: disable=too-many-public-methods
         return
 
     @staticmethod
-    def clean_form_name(name):
-        """Remove invalid characters from form_name before setting as process key."""
-        # Remove non-letters at the start, and any invalid characters elsewhere
-        name = re.sub(r"^[^a-zA-Z]+|[^a-zA-Z0-9\-_]", "", name)
-        return name
-
-    @staticmethod
     def validate_process_and_update_mapper(name, mapper):
         """Validate process name/key exists, if exists update name & update mapper."""
         current_app.logger.info(f"Validating process key already exists. {name}")
@@ -382,6 +381,7 @@ class FormProcessMapperService:  # pylint: disable=too-many-public-methods
         anonymous = False
         description = data.get("description", "")
         task_variable = []
+        is_migrated = True
         current_app.logger.info(f"Creating new form {is_new_form}")
         # If creating new version for a existing form, fetch process key, name from mapper
         if not is_new_form:
@@ -392,12 +392,13 @@ class FormProcessMapperService:  # pylint: disable=too-many-public-methods
             anonymous = mapper.is_anonymous
             description = mapper.description
             task_variable = json.loads(mapper.task_variable)
+            is_migrated = mapper.is_migrated
         else:
             # if new form, form name is kept as process_name & process key
             process_name = response.get("name")
             # process key/Id doesn't support numbers & special characters at start
             # special characters anywhere so clean them before setting as process key
-            process_name = FormProcessMapperService.clean_form_name(process_name)
+            process_name = ProcessService.clean_form_name(process_name)
 
         mapper_data = {
             "formId": form_id,
@@ -413,6 +414,7 @@ class FormProcessMapperService:  # pylint: disable=too-many-public-methods
             "status": FormProcessMapperStatus.INACTIVE.value,
             "anonymous": anonymous,
             "task_variable": task_variable,
+            "is_migrated": is_migrated,
         }
 
         mapper = FormProcessMapperService.mapper_create(mapper_data)

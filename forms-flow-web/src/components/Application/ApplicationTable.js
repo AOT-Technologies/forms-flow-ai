@@ -176,6 +176,7 @@ const ApplicationTable = () => {
         spinner
         text={t("Loading...")}
       >
+        <div className="table-responsive" style={{ maxHeight: "75vh", overflowY: "auto" }}>
         <table className="table custom-table table-responsive-sm">
           <thead>
             <tr>
@@ -310,6 +311,7 @@ const ApplicationTable = () => {
             )}
           </tbody>
         </table>
+        </div>
 
         {applications.length ? (
           <table className="table">

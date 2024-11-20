@@ -134,6 +134,7 @@ function ClientTable() {
     <>
       <LoadingOverlay active={searchFormLoading} spinner text={t("Loading...")}>
         <div className="min-height-400">
+        <div className="table-responsive" style={{ maxHeight: "75vh", overflowY: "auto" }}>
           <table className="table custom-table table-responsive-sm">
             <thead>
               <tr>
@@ -282,6 +283,7 @@ function ClientTable() {
               null
             )}
           </table>
+          </div>
         </div>
       </LoadingOverlay>
 

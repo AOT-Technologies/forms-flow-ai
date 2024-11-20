@@ -1,15 +1,24 @@
 """This exposes process service."""
 
 import json
+import re
+from collections import Counter
 
 from flask import current_app
 from formsflow_api_utils.exceptions import BusinessException
+from formsflow_api_utils.services.external import FormioService
 from formsflow_api_utils.utils.user_context import UserContext, user_context
 from lxml import etree
 
 from formsflow_api.constants import BusinessErrorCode, default_flow_xml_data
-from formsflow_api.models import Process, ProcessStatus, ProcessType
+from formsflow_api.models import (
+    FormProcessMapper,
+    Process,
+    ProcessStatus,
+    ProcessType,
+)
 from formsflow_api.schemas import (
+    MigrateRequestSchema,
     ProcessDataSchema,
     ProcessHistorySchema,
     ProcessListRequestSchema,
@@ -19,7 +28,7 @@ from formsflow_api.services.external.bpm import BPMService
 processSchema = ProcessDataSchema()
 
 
-class ProcessService:  # pylint: disable=too-few-public-methods
+class ProcessService:  # pylint: disable=too-few-public-methods,too-many-public-methods
     """This class manages process service."""
 
     @classmethod
@@ -28,6 +37,113 @@ class ProcessService:  # pylint: disable=too-few-public-methods
         # pylint: disable=I1101
         parser = etree.XMLParser(resolve_entities=False)
         return etree.fromstring(process_data.encode("utf-8"), parser=parser)
+
+    @classmethod
+    def remove_duplicate_multitenant(cls, process_list, process_type):
+        """Remove duplicates on default workflows provided."""
+        # Incase of multitenant env, there's possiblity of duplicate workflow with tenant & without tenant
+        # Exclude workflow without tenant in this scenario while migrating
+        default_bpm_list = [
+            "Defaultflow",
+            "onestepapproval",
+            "two-step-approval",
+            "EmailNotification",
+        ]
+        default_dmn_list = ["email-template-example"]
+        default_process_list = (
+            default_dmn_list
+            if process_type == ProcessType.DMN.value
+            else default_bpm_list
+        )
+        # Count occurrences of each key in default_list in process list
+        key_counts = Counter(
+            process["key"]
+            for process in process_list
+            if process["key"] in default_process_list
+        )
+
+        # Filter process_list based on key counts and tenant condition
+        filtered_process_list = [
+            process
+            for process in process_list
+            if process["key"] not in default_process_list
+            or key_counts[process["key"]] == 1
+            or process["tenant"] is not None
+        ]
+        return filtered_process_list
+
+    @classmethod
+    def check_duplicate_names(cls, process_list):
+        """Check for duplicate bpmn/dmn names before migrate."""
+        # DMN/BPMN keys will be unique but names can be duplicate
+        # To avoid exists error before migrate to process table make it unique
+        current_app.logger.info("Check for duplicate bpmn/dmn names...")
+        name_tenant_counts = {}
+        name_tenant_suffix_tracker = {}
+
+        # count occurrences and prepare suffix tracker
+        for item in process_list:
+            key = (item["name"], item["tenantId"])
+            name_tenant_counts[key] = name_tenant_counts.get(key, 0) + 1
+
+        # create the unique names based on the counts
+        unique_name_process_list = []
+        for item in process_list:
+            key = (item["name"], item["tenantId"])
+            if name_tenant_counts[key] > 1:
+                # Increment suffix count and create new name
+                name_tenant_suffix_tracker[key] = (
+                    name_tenant_suffix_tracker.get(key, 0) + 1
+                )
+                new_name = f"{item['name']}_{name_tenant_suffix_tracker[key] - 1}"
+            else:
+                new_name = item["name"]
+
+            # Append item with the unique name to the final list
+            unique_name_process_list.append({**item, "name": new_name})
+        return unique_name_process_list
+
+    @classmethod
+    @user_context
+    def get_subflows_dmns(cls, process_type, **kwargs):
+        """Fetch subflows & dmns from camunda & save to process table."""
+        current_app.logger.debug(f"Fetching DMN/BPMN...{process_type}")
+        user: UserContext = kwargs["user"]
+        tenant_key = user.tenant_key
+        token = user.bearer_token
+        process_list = []
+        mapper_process_keys = []
+        if process_type == ProcessType.BPMN.value:
+            mappers = FormProcessMapper.find_all()
+            mapper_process_keys = [mapper.process_key for mapper in mappers]
+            current_app.logger.debug(f"mapper_process_keys...{mapper_process_keys}")
+            url_path = "&includeProcessDefinitionsWithoutTenantId=true"
+            process_list = BPMService.get_all_process(token, url_path)
+        elif process_type == ProcessType.DMN.value:
+            url_path = (
+                "?latestVersion=true&includeDecisionDefinitionsWithoutTenantId=true"
+            )
+            process_list = BPMService.get_decision(token, url_path)
+        if process_list:
+            if current_app.config.get("MULTI_TENANCY_ENABLED"):
+                process_list = cls.remove_duplicate_multitenant(
+                    process_list, process_type
+                )
+            process_list = cls.check_duplicate_names(process_list)
+            # Exclude process keys from mapper to exclude any keys present in unique_mapper_keys
+            filtered_processes = [
+                (process["key"], process["name"])
+                for process in process_list
+                if process["key"] not in set(mapper_process_keys)
+            ]
+            for process_key, process_name in filtered_processes:
+                cls.fetch_save_xml(
+                    process_key,
+                    tenant_key=tenant_key,
+                    process_type=process_type,
+                    is_subflow=True,
+                    process_name=process_name,
+                )
 
     @classmethod
     def get_all_process(cls, request_args):  # pylint:disable=too-many-locals
@@ -52,22 +168,32 @@ class ProcessService:  # pylint: disable=too-few-public-methods
         sort_order = dict_data.get("sort_order", "")
         sort_by = sort_by.split(",")
         sort_order = sort_order.split(",")
-        process, count = Process.find_all_process(
-            created_from=created_from_date,
-            created_to=created_to_date,
-            modified_from=modified_from_date,
-            modified_to=modified_to_date,
-            sort_by=sort_by,
-            is_subflow=True,  # now only for subflow listing
-            sort_order=sort_order,
-            created_by=created_by,
-            id=process_id,
-            process_name=process_name,
-            process_status=status,
-            process_type=process_type,
-            page_no=page_no,
-            limit=limit,
-        )
+
+        def list_process():
+            process, count = Process.find_all_process(
+                created_from=created_from_date,
+                created_to=created_to_date,
+                modified_from=modified_from_date,
+                modified_to=modified_to_date,
+                sort_by=sort_by,
+                is_subflow=True,  # now only for subflow listing
+                sort_order=sort_order,
+                created_by=created_by,
+                id=process_id,
+                process_name=process_name,
+                process_status=status,
+                process_type=process_type,
+                page_no=page_no,
+                limit=limit,
+            )
+            return process, count
+
+        process, count = list_process()
+        # If process empty consider it as subflows not migrated, so fetch from camunda
+        if not process:
+            current_app.logger.debug("Fetching subflows...")
+            cls.get_subflows_dmns(process_type)
+            process, count = list_process()
         return (
             ProcessDataSchema(exclude=["process_data"]).dump(process, many=True),
             count,
@@ -107,6 +233,7 @@ class ProcessService:  # pylint: disable=too-few-public-methods
         process_name=None,
         process_key=None,
         is_subflow=False,
+        is_migrate=False,
         **kwargs,
     ):
         """Save process data."""
@@ -124,6 +251,7 @@ class ProcessService:  # pylint: disable=too-few-public-methods
             is_subflow=is_subflow,
             process_name=process_name,
             process_key=process_key,
+            is_migrate=is_migrate,
         )
 
         # Check if the process already exists if it is a subflow
@@ -131,6 +259,9 @@ class ProcessService:  # pylint: disable=too-few-public-methods
             if Process.find_process_by_name_key(
                 name=process_name, process_key=process_key
             ):
+                current_app.logger.debug(
+                    f"Process already exists..{process_name}:-{process_key}"
+                )
                 raise BusinessException(BusinessErrorCode.PROCESS_EXISTS)
 
         # Initialize version numbers for the new process
@@ -150,9 +281,7 @@ class ProcessService:  # pylint: disable=too-few-public-methods
             "parent_process_key": process_key,
         }
         process = Process.create_from_dict(process_dict)
-
-        # Return the serialized process data
-        return processSchema.dump(process)
+        return process
 
     @staticmethod
     def get_process_by_type(root, process_type):
@@ -190,12 +319,13 @@ class ProcessService:  # pylint: disable=too-few-public-methods
         is_subflow=False,
         process_name=None,
         process_key=None,
+        is_migrate=False,
     ):
         """Process data name key."""
         # if the process is not a subflow, update the process name and ID in the XML data
         # if the process is a subflow, parse the XML data to extract the process name and key
         # if the process is of type LOWCODE, convert the process data to JSON format
-        if is_subflow and process_type.upper() != "LOWCODE":
+        if is_subflow and process_type.upper() != "LOWCODE" and not is_migrate:
             # Parse the XML data to extract process name and key for subflows
             root = cls.xml_parser(process_data)
             process = cls.get_process_by_type(root, process_type)
@@ -216,11 +346,67 @@ class ProcessService:  # pylint: disable=too-few-public-methods
                 )
         return process_data, process_name, process_key
 
+    @staticmethod
+    def clean_form_name(name):
+        """Remove invalid characters from form_name before setting as process key."""
+        # Remove non-letters at the start, and any invalid characters elsewhere
+        name = re.sub(r"(^[^a-zA-Z]+)|([^a-zA-Z0-9\-_])", "", name)
+        return name
+
     @classmethod
-    def get_process_by_key(cls, process_key):
+    @user_context
+    def fetch_save_xml(  # pylint: disable=too-many-arguments, too-many-positional-arguments
+        cls,
+        process_key,
+        tenant_key,
+        process_type=ProcessType.BPMN.value,
+        updated_process_key=None,
+        is_subflow=False,
+        process_name=None,
+        xml_data=None,
+        **kwargs,
+    ):
+        """Fetch process xml from camunda & save in process."""
+        current_app.logger.debug(f"Fetch & save for process: {process_key}")
+        user: UserContext = kwargs["user"]
+        if not xml_data:
+            current_app.logger.debug(f"Fetching xml for process: {process_key}")
+            if process_type == ProcessType.DMN.value:
+                xml_data = BPMService.decision_definition_xml(
+                    process_key, user.bearer_token, tenant_key
+                ).get("dmnXml")
+            else:
+                xml_data = BPMService.process_definition_xml(
+                    process_key, user.bearer_token, tenant_key
+                ).get("bpmn20Xml")
+            current_app.logger.debug(
+                f"Completed fetching xml for process: {process_key}"
+            )
+        # Incase of migration we need to use the filtered form name as process key
+        process_key = updated_process_key if updated_process_key else process_key
+        current_app.logger.debug(f"Create process: {process_key}")
+        process = cls.create_process(
+            process_data=xml_data,
+            process_type=process_type,
+            process_key=process_key,
+            process_name=process_name if process_name else process_key,
+            is_subflow=is_subflow,
+            is_migrate=True,
+        )
+        current_app.logger.debug(f"Completed fetch &save process {process_key}")
+        return process
+
+    @classmethod
+    def get_process_by_key(cls, process_key, request):
         """Get process by key."""
         current_app.logger.debug(f"Get process data for process key: {process_key}")
         process = Process.get_latest_version_by_key(process_key)
+        mapper_id = request.args.get("mapperId")
+        # If process is not found, fetch & save to process table.
+        if not process and mapper_id:
+            current_app.logger.debug("Process not found in db. Fetching & save it.")
+            mapper = FormProcessMapper.find_form_by_id(mapper_id)
+            process = cls.fetch_save_xml(mapper.process_key, mapper.process_tenant)
         if process:
             process_data = processSchema.dump(process)
             # Determine version numbers based on the process status
@@ -368,8 +554,8 @@ class ProcessService:  # pylint: disable=too-few-public-methods
             process_histories = ProcessService.populate_published_histories(
                 process_histories, published_histories
             )
-            process_history_schema = ProcessHistorySchema(many=True)
-            return process_history_schema.dump(process_histories), count
+            process_history_schema = ProcessHistorySchema()
+            return process_history_schema.dump(process_histories, many=True), count
         raise BusinessException(BusinessErrorCode.PROCESS_ID_NOT_FOUND)
 
     @staticmethod
@@ -481,3 +667,62 @@ class ProcessService:  # pylint: disable=too-few-public-methods
         if process:
             return processSchema.dump(process)
         raise BusinessException(BusinessErrorCode.PROCESS_ID_NOT_FOUND)
+
+    @classmethod
+    @user_context
+    def migrate(cls, request, **kwargs):  # pylint:disable=too-many-locals
+        """Migrate by process key."""
+        current_app.logger.debug("Migrate process started..")
+        data = MigrateRequestSchema().load(request.get_json())
+        process_key = data.get("process_key")
+        mapper_id = data.get("mapper_id")
+        request_mapper = FormProcessMapper.find_form_by_id(mapper_id)
+        # If the process_key in the mapper is different from the process_key in the payload
+        if request_mapper.process_key != process_key:
+            raise BusinessException(BusinessErrorCode.INVALID_PROCESS)
+        mappers = FormProcessMapper.get_mappers_by_process_key(process_key, mapper_id)
+        current_app.logger.debug(f"Mappers found..{mappers}")
+        if mappers:
+            xml_data = None
+            if not current_app.config.get("MULTI_TENANCY_ENABLED"):
+                # Incase of non multitenant env, fetch once the process xml data
+                user: UserContext = kwargs["user"]
+                current_app.logger.debug("Fetching process..")
+                xml_data = BPMService.process_definition_xml(
+                    process_key, user.bearer_token, user.tenant_key
+                ).get("bpmn20Xml")
+            for mapper in mappers:
+                formio_service = FormioService()
+                form_io_token = formio_service.get_formio_access_token()
+                form_json = formio_service.get_form_by_id(mapper.form_id, form_io_token)
+                form_name = form_json.get("name")
+                # process key doesn't support numbers & special characters at start
+                # special characters anywhere so clean them before setting as process key
+                updated_process_key = cls.clean_form_name(form_name)
+                if updated_process_key:
+                    # validate process key already exists, if exists append mapper id to process_key.
+                    process = Process.find_process_by_name_key(
+                        name=updated_process_key, process_key=updated_process_key
+                    )
+                    if process:
+                        updated_process_key = f"{updated_process_key}_{mapper.id}"
+                # This is to avoid empty process_key after clean form name
+                else:
+                    updated_process_key = f"{process_key}_migrate_{mapper.id}"
+                cls.fetch_save_xml(
+                    process_key,
+                    mapper.process_tenant,
+                    updated_process_key=updated_process_key,
+                    xml_data=xml_data,
+                )
+                # Update mapper with new process key & is_migrated as True
+                mapper.update(
+                    {
+                        "is_migrated": True,
+                        "process_key": updated_process_key,
+                        "process_name": updated_process_key,
+                    }
+                )
+            # Update is_migrated to main mapper by id.
+            request_mapper.update({"is_migrated": True})
+        return {}

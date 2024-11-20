@@ -1,5 +1,4 @@
 import React, { useState, useEffect } from "react";
-
 import { useDispatch, useSelector } from "react-redux";
 import { push } from "connected-react-router";
 import {
@@ -14,11 +13,10 @@ import {
 import { useTranslation } from "react-i18next";
 import { Translation } from "react-i18next";
 import { sanitize } from "dompurify";
-import userRoles from "../../../constants/permissions";
-import { TableFooter, CustomSearch } from "@formsflow/components";
+import { TableFooter } from "@formsflow/components";
 
 function ClientTable() {
-  const { createDesigns } = userRoles();
+
   const tenantKey = useSelector((state) => state.tenants?.tenantId);
   const dispatch = useDispatch();
   const { t } = useTranslation();
@@ -63,11 +61,6 @@ function ClientTable() {
     }
   }, [search]);
 
-  const handleSearch = () => {
-    resetIndex();
-    dispatch(setBpmFormSearch(search));
-    dispatch(setBPMFormListPage(1));
-  };
 
   const submitNewForm = (formId) => {
     dispatch(push(`${redirectUrl}form/${formId}`));
@@ -75,12 +68,6 @@ function ClientTable() {
 
   const resetIndex = () => {
     if (openIndex !== null) setOpenIndex(null);
-  };
-
-  const handleClearSearch = () => {
-    resetIndex();
-    setSearch("");
-    dispatch(setBpmFormSearch(""));
   };
 
   const handlePageChange = (page) => {
@@ -119,13 +106,7 @@ function ClientTable() {
     return textContent;
   };
 
- 
 
-
-
-  const handleToggle = (index) => {
-    setOpenIndex(openIndex === index ? null : index);
-  };
   return (
     <>
      
@@ -134,7 +115,7 @@ function ClientTable() {
           <table className="table custom-table table-responsive-sm">
             <thead>
               <tr>
-                <th>
+                <th className="col-3">
                   <div className="d-flex align-items-center">
                     <span>{t("Form Title")}</span>
                     <span>
@@ -162,19 +143,8 @@ function ClientTable() {
                     </span>
                   </div>
                 </th>
-                <th>{t("Form Description")}</th>
-                <th colSpan="4" aria-label="Search Forms by form title" >
-                  <CustomSearch
-                    search={search}
-                    setSearch={setSearch}
-                    handleSearch={handleSearch}
-                    handleClearSearch={handleClearSearch}
-                    placeholder={t("Search by form title")}
-                    searchLoading={searchFormLoading}
-                    title={t("Search by form title")}
-                    dataTestId="client-form-search"
-                  />
-                </th>
+                <th className="col-7">{t("Form Description")}</th>
+                <th className="col-2"></th>
               </tr>
             </thead>
             {formData?.length ? (
@@ -182,24 +152,7 @@ function ClientTable() {
                 {formData.map((e, index) => (
                   <React.Fragment key={index}>
                     <tr>
-                      <td className="col-4">
-                        {!createDesigns && (
-                          <button
-                            data-testid={`form-description-expand-button-${e._id}`}
-                            title={t("Form Description")}
-                            className="btn btn-light btn-small me-2"
-                            onClick={() => handleToggle(index)}
-                            disabled={!e.description}
-                          >
-                            <i
-                              className={`fa ${
-                                openIndex === index
-                                  ? "fa-chevron-up"
-                                  : "fa-chevron-down"
-                              }`}
-                            ></i>
-                          </button>
-                        )}
+                      <td className="col-3">
                         <span
                           data-testid={`form-title-${e._id}`}
                           className="ms-2 mt-2"
@@ -208,12 +161,11 @@ function ClientTable() {
                         </span>
                       </td>
                       <td
-                        data-testid={`form-description${e._id}`}
-                        className="text-truncate">
+                        data-testid={`form-description${e._id}`}  className="col-7">
                         {extractContent(e.description)}
                       </td>
 
-                      <td className="text-center">
+                      <td className="col-2">
                         <button
                           data-testid={`form-submit-button-${e._id}`}
                           className="btn btn-primary"

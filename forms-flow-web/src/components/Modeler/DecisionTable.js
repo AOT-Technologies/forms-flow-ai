@@ -256,7 +256,7 @@ const DecisionTable = React.memo(() => {
         <ImportProcess
           showModal={importDecisionTable}
           closeImport={closeDmnImport}
-          fileType=".bpmn"
+          fileType=".dmn"
         />
       )}
     </>);

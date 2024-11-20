@@ -513,7 +513,7 @@ const ProcessCreateEdit = ({ type }) => {
   };
 
   const modalContent = getModalContent();
-  const hanldeImportData = (xml) => {
+  const handleImportData = (xml) => {
     const ref = isBPMN ? bpmnRef : dmnRef;
     if (ref.current) {
       ref.current?.handleImport(xml);
@@ -706,7 +706,7 @@ const ProcessCreateEdit = ({ type }) => {
           majorVersion: processData?.majorVersion,
           minorVersion: processData?.minorVersion
         }}
-        setImportXml={hanldeImportData}
+        setImportXml={handleImportData}
         fileType={isBPMN ? ".bpmn" : ".dmn"}
       />}
     </div>

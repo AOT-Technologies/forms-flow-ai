@@ -4,13 +4,14 @@ import { CloseIcon, CustomButton, FailedIcon } from "@formsflow/components";
 import ProgressBar from "react-bootstrap/ProgressBar";
 import { Translation } from "react-i18next";
 import { getFormExport } from "../../apiManager/services/FormServices";
-
-const ExportModal = React.memo(({ showExportModal, onClose, formId }) => {
+import PropTypes from "prop-types";
+import _ from "lodash";
+const ExportModal = React.memo(({ showExportModal, onClose, mapperId, formTitle }) => {
   const [progress, setProgress] = useState(0);
   const [exportStatus, setExportStatus] = useState("Export in Progress");
   const [isExportComplete, setIsExportComplete] = useState(false);
   const [isError, setIsError] = useState(false); // Flag to indicate if an error occurred
-
+  const fileName = `${_.camelCase(formTitle)}.json`;
   const exportForm = () => {
     // Ensure the progress is reset before starting the export process
     setProgress(0);
@@ -18,7 +19,7 @@ const ExportModal = React.memo(({ showExportModal, onClose, formId }) => {
     setIsExportComplete(false);
     setIsError(false); // Reset the error state on retry
 
-    getFormExport(formId, {
+    getFormExport(mapperId, {
       responseType: "blob", // Ensure the response is treated as binary
       onDownloadProgress: (progressEvent) => {
         if (progressEvent.lengthComputable) {
@@ -38,7 +39,7 @@ const ExportModal = React.memo(({ showExportModal, onClose, formId }) => {
         const downloadUrl = window.URL.createObjectURL(blob);
         const link = document.createElement("a");
         link.href = downloadUrl;
-        link.download = "FileName.json";
+        link.download = fileName;
         document.body.appendChild(link);
         link.click();
         document.body.removeChild(link);
@@ -69,7 +70,7 @@ const ExportModal = React.memo(({ showExportModal, onClose, formId }) => {
       setIsExportComplete(false);
       setIsError(false);
     }
-  }, [showExportModal, formId]);
+  }, [showExportModal, mapperId]);
 
   return (
     <Modal
@@ -96,9 +97,9 @@ const ExportModal = React.memo(({ showExportModal, onClose, formId }) => {
           animated={!isExportComplete && !isError}
           variant="primary" // Always primary for the progress bar
         />
-        <div className="mt-2 text-wrap d-flex align-items-center">
+        <div className="mt-2 flex-wrap  d-flex align-items-center">
           {/* Keep FileName.json black */}
-          <span className="text-dark">FileName.json&nbsp;</span>
+          <span className="text-dark">{fileName}&nbsp;</span>
           <span className={isError ? "text-danger" : "text-primary"}>
             {/* Display the failure message in red or success message in blue */}
             {isError ? (
@@ -156,5 +157,12 @@ const ExportModal = React.memo(({ showExportModal, onClose, formId }) => {
     </Modal>
   );
 });
+
+ExportModal.propTypes = {
+  showExportModal:PropTypes.bool.isRequired, 
+  onClose:PropTypes.func.isRequired, 
+  mapperId: PropTypes.any.isRequired, 
+  formTitle:PropTypes.string.isRequired
+};
 
 export default ExportModal;

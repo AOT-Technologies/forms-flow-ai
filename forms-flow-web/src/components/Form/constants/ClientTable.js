@@ -1,23 +1,20 @@
 import React, { useState, useEffect } from "react";
-import {
-  Dropdown,
-} from "react-bootstrap";
 import { useDispatch, useSelector } from "react-redux";
 import { push } from "connected-react-router";
-import Pagination from "react-js-pagination";
+import LoadingOverlay from "react-loading-overlay-ts";
 import {
   setBPMFormLimit,
   setBPMFormListPage,
   setBPMFormListSort,
   setBpmFormSearch,
 } from "../../../actions/formActions";
-import LoadingOverlay from "react-loading-overlay-ts";
 import {
   MULTITENANCY_ENABLED,
 } from "../../../constants/constants";
 import { useTranslation } from "react-i18next";
 import { Translation } from "react-i18next";
 import { sanitize } from "dompurify";
+import { TableFooter } from "@formsflow/components";
 
 function ClientTable() {
 
@@ -25,7 +22,7 @@ function ClientTable() {
   const dispatch = useDispatch();
   const { t } = useTranslation();
   const bpmForms = useSelector((state) => state.bpmForms);
-  const formData = (() => bpmForms.forms)() || [];
+  const formData = bpmForms?.forms || [];
   const pageNo = useSelector((state) => state.bpmForms.page);
   const limit = useSelector((state) => state.bpmForms.limit);
   const totalForms = useSelector((state) => state.bpmForms.totalForms);
@@ -33,10 +30,11 @@ function ClientTable() {
   const searchFormLoading = useSelector(
     (state) => state.formCheckList.searchFormLoading
   );
-  const [pageLimit, setPageLimit] = useState(5);
+  const [search, setSearch] = useState(useSelector((state) => state.bpmForms.searchText) || "");
   const isAscending = sortOrder === "asc" ? true : false;
+
   const searchText = useSelector((state) => state.bpmForms.searchText);
-  const [search, setSearch] = useState(searchText || "");
+
   const redirectUrl = MULTITENANCY_ENABLED ? `/tenant/${tenantKey}/` : "/";
   const [openIndex, setOpenIndex] = useState(null);
 
@@ -66,7 +64,6 @@ function ClientTable() {
 
 
   const submitNewForm = (formId) => {
-
     dispatch(push(`${redirectUrl}form/${formId}`));
   };
 
@@ -79,9 +76,8 @@ function ClientTable() {
     dispatch(setBPMFormListPage(page));
   };
 
-  const onSizePerPageChange = (limit) => {
-    setPageLimit(limit);
-    dispatch(setBPMFormLimit(limit));
+  const onSizePerPageChange = (newLimit) => {
+    dispatch(setBPMFormLimit(newLimit));
     dispatch(setBPMFormListPage(1));
   };
 
@@ -103,7 +99,6 @@ function ClientTable() {
 
   const extractContent = (htmlContent) => {
     const sanitizedHtml = sanitize(htmlContent);
-
     const tempElement = document.createElement("div");
     tempElement.innerHTML = sanitizedHtml;
 
@@ -117,6 +112,7 @@ function ClientTable() {
     <>
       <LoadingOverlay active={searchFormLoading} spinner text={t("Loading...")}>
         <div className="min-height-400">
+        <div className="table-responsive" style={{ maxHeight: "75vh", overflowY: "auto" }}>
           <table className="table custom-table table-responsive-sm">
             <thead>
               <tr>
@@ -211,58 +207,25 @@ function ClientTable() {
               null
             )}
           </table>
+          </div>
         </div>
       </LoadingOverlay>
 
       {formData.length ? (
-        <div className="d-flex justify-content-between align-items-center flex-column flex-md-row">
-          <div className="d-flex align-items-center">
-            <span className="me-2"> {t("Rows per page")}</span>
-            <Dropdown data-testid="page-limit-dropdown">
-              <Dropdown.Toggle
-                variant="light"
-                id="dropdown-basic"
-                data-testid="page-limit-dropdown-toggle"
-              >
-                {pageLimit}
-              </Dropdown.Toggle>
-
-              <Dropdown.Menu>
-                {pageOptions.map((option, index) => (
-                  <Dropdown.Item
-                    key={index}
-                    type="button"
-                    onClick={() => {
-                      onSizePerPageChange(option.value);
-                    }}
-                    data-testid={`page-limit-dropdown-item-${option.value}`} 
-                  >
-                    {option.text}
-                  </Dropdown.Item>
-                ))}
-              </Dropdown.Menu>
-            </Dropdown>
-            <span className="ms-2">
-              {t("Showing")} {(limit * pageNo) - (limit - 1)} {t("to")}{" "}
-              {limit * pageNo > totalForms ? totalForms : limit * pageNo}{" "}
-              {t("of")} {totalForms} {t("Results")}
-            </span>
-          </div>
-          <div className="d-flex align-items-center">
-            <Pagination
-              activePage={pageNo}
-              itemsCountPerPage={limit}
-              totalItemsCount={totalForms}
-              pageRangeDisplayed={5}
-              itemClass="page-item"
-              linkClass="page-link"
-              onChange={handlePageChange}
-            />
-          </div>
-        </div>
-      ) : (
-        ""
-      )}
+        <table className="table">
+          <tfoot>
+          <TableFooter
+            limit={limit}
+            activePage={pageNo}
+            totalCount={totalForms}
+            handlePageChange={handlePageChange}
+            onLimitChange={onSizePerPageChange}
+            pageOptions={pageOptions}
+          />
+          </tfoot>
+          
+        </table>
+      ) : null}
     </>
   );
 }

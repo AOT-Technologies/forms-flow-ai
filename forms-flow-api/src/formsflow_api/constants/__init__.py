@@ -110,6 +110,10 @@ class BusinessErrorCode(ErrorCodeMixin, Enum):
         HTTPStatus.BAD_REQUEST,
     )
     FORM_VALIDATION_FAILED = "FORM_VALIDATION_FAILED.", HTTPStatus.BAD_REQUEST
+    RESTRICT_FORM_DELETE = (
+        "Can't delete the form that has submissions associated with it.",
+        HTTPStatus.BAD_REQUEST,
+    )
 
     def __new__(cls, message, status_code):
         """Constructor."""

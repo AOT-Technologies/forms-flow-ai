@@ -76,7 +76,7 @@ const SubmitList = React.memo((props) => {
     fetchForms();
   }, [getFormsInit, dispatch, pageNo, limit, formSort, searchText]);
 
-  const navigateToSubmitForms = () => {
+  const navigateToSubmitFormsRoute = () => {
     navigateToSubmitFormsListing(dispatch);
   };
 
@@ -99,7 +99,7 @@ const SubmitList = React.memo((props) => {
     if (create_submissions) {
       headers.unshift({
         name: "All Forms",
-        onClick: () => navigateToSubmitForms(),
+        onClick: () => navigateToSubmitFormsRoute(),
       });
       headers.push({
         name: "Drafts",

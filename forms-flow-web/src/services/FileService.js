@@ -33,46 +33,65 @@ const uploadFile = (evt, callback) => {
   }  
 };
 
-const extractFormDetails = (fileContent, callback) => {
-  const fileObj = fileContent; // The file object passed directly
-  if (fileObj) {
-    const reader = new FileReader(); // Initialize FileReader to read the file
-    reader.readAsText(fileObj); // Read the file as text
+const extractFileDetails = (fileContent) => {
+  return new Promise((resolve, reject) => {
+    const fileObj = fileContent; // The file object passed directly
+    if (fileObj) {
+      const reader = new FileReader(); // Initialize FileReader to read the file
+      reader.readAsText(fileObj); // Read the file as text
 
-    reader.onload = (e) => {
-      try {
-        const fileContents = JSON.parse(e.target.result); // Parse file content as JSON
+      reader.onload = (e) => {
+        try {
+          const fileExtension = fileObj.name.split('.').pop().toLowerCase();
+          
+          if (fileExtension === 'json') {
+            // Handle JSON file parsing
+            const fileContents = JSON.parse(e.target.result);
 
-        // Check if 'forms' exist and is an array in fileContents
-        if (fileContents && fileContents.forms && Array.isArray(fileContents.forms)) {
-          const formToUpload = fileContents.forms[0]; // Extract the first form (or adjust as needed)
-          callback(formToUpload); // Pass the extracted form details to the callback function
-        } else {
-          console.error("No 'forms' array found in the file.");
-          callback(null); // Pass null if the 'forms' array is missing
+            // Check if 'forms' exist and is an array in fileContents
+            if (fileContents && fileContents.forms && Array.isArray(fileContents.forms)) {
+              const formToUpload = fileContents.forms[0]; // Extract the first form
+              resolve(formToUpload); // Resolve with the extracted form details
+            } else {
+              console.error("No 'forms' array found in the file.");
+              reject("No valid form found."); // Reject with an error message if 'forms' is missing
+            }
+          } else if (['bpmn', 'dmn'].includes(fileExtension)) {
+            // Handle XML file parsing
+            const parser = new DOMParser();
+            const xmlDoc = parser.parseFromString(e.target.result, "application/xml");
+
+            if (xmlDoc?.getElementsByTagName("parsererror").length > 0) {
+              reject("Invalid XML file."); // Reject if XML parsing fails
+            } else {
+              // Return the entire XML document as a string
+              const xmlString = new XMLSerializer().serializeToString(xmlDoc);
+              resolve(xmlString); // Resolve with the XML string
+            }
+          } else {
+            reject("Unsupported file type."); // Reject if the file type is unsupported
+          }
+        } catch (error) {
+          reject("Error processing file."); // Reject if there's a general error during processing
         }
-      } catch (error) {
-        console.error("Error parsing JSON file:", error);
-        callback(null); // Pass null in case of JSON parsing error
-      }
-    };
+      };
 
-    reader.onerror = () => {
-      console.error("Error reading the file.");
-      callback(null); // Pass null in case of a file reading error
-    };
-  } else {
-    console.error("No file selected.");
-    callback(null); // Pass null if no file is provided
-  }
+      reader.onerror = () => {
+        console.error("Error reading the file.");
+        reject("Error reading the file."); // Reject in case of a file reading error
+      };
+    } else {
+      console.error("No file selected.");
+      reject("No file selected."); // Reject if no file is provided
+    }
+  });
 };
-
 
 
 const FileService = {
   uploadFile,
   downloadFile,
-  extractFormDetails,
+  extractFileDetails,
 };
 
 export default FileService;

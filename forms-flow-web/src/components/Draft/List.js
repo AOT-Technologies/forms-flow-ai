@@ -107,7 +107,7 @@ export const DraftList = React.memo(() => {
     return [
       {
         name: "All Forms",
-        onClick: navigateToSubmitFormsRoute()//dispatch(push(`${redirectUrl}form`)),
+        onClick: () => navigateToSubmitFormsRoute()//dispatch(push(`${redirectUrl}form`)),
       },
       {
         name: "Submissions",

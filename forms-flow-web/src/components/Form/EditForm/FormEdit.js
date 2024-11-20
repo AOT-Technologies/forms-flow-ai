@@ -16,6 +16,7 @@ import {
   PreviewIcon,
   FormBuilderModal,
   HistoryModal,
+  ImportModal
 } from "@formsflow/components";
 import { RESOURCE_BUNDLES_DATA } from "../../../resourceBundles/i18n";
 import LoadingOverlay from "react-loading-overlay-ts";
@@ -36,8 +37,7 @@ import {
   unPublish,
   getFormHistory,
 } from "../../../apiManager/services/FormServices";
-import ImportModal from "../../Modals/ImportModal.js";
-import FileService from "../../../services/FileService"; 
+import FileService from "../../../services/FileService";
 import {
   setFormFailureErrorData,
   setFormSuccessData,
@@ -53,7 +53,7 @@ import {
 } from "../../../apiManager/services/processServices";
 import {
   setProcessData,
-} from "../../../actions/processActions.js"; 
+} from "../../../actions/processActions.js";
 import _ from "lodash";
 import SettingsModal from "../../Modals/SettingsModal";
 import FlowEdit from "./FlowEdit.js";
@@ -62,7 +62,7 @@ import NewVersionModal from "../../Modals/NewVersionModal";
 import { currentFormReducer } from "../../../modules/formReducer.js";
 import { toast } from "react-toastify";
 import userRoles from "../../../constants/permissions.js";
-import { generateUniqueId, isFormComponentsChanged} from "../../../helper/helper.js";
+import { generateUniqueId, isFormComponentsChanged } from "../../../helper/helper.js";
 import { useMutation } from "react-query";
 
 // constant values
@@ -117,18 +117,21 @@ const EditComponent = () => {
   const [formTitle, setFormTitle] = useState("");
   const [importError, setImportError] = useState("");
   const [importLoader, setImportLoader] = useState(false);
+  const defaultPrimaryBtnText = "Confirm And Replace";
+  const [primaryButtonText, setPrimaryButtonText] = useState(defaultPrimaryBtnText);
   const { createDesigns } = userRoles();
 
-   /* --------- validate form title exist or not --------- */
-   const {
+  /* --------- validate form title exist or not --------- */
+  const {
     mutate: validateFormTitle, // this function will trigger the api call
     isLoading: validationLoading,
     // isError: error,
   } = useMutation(
     ({ title }) =>
-      validateFormName(title) ,
+      validateFormName(title),
     {
       onSuccess:({data}, {createButtonClicked,...variables})=>{
+
         if (data && data.code === "FORM_EXISTS") {
           setNameError(data.message);  // Set exact error message
         } else {
@@ -138,17 +141,23 @@ const EditComponent = () => {
           }
         }
       },
-      onError:(error)=>{
+      onError: (error) => {
         const errorMessage = error.response?.data?.message || "An error occurred while validating the form name.";
         setNameError(errorMessage);  // Set the error message from the server
       }
     }
   );
-  
   const UploadActionType = {
     IMPORT: "import",
     VALIDATE: "validate",
   };
+
+  useEffect(() => {
+    if (importError !== "") {
+      setPrimaryButtonText("Try Again");
+    }
+  }, [importError]);
+
   const [fileItems, setFileItems] = useState({
     workflow: {
       majorVersion: null,
@@ -160,14 +169,9 @@ const EditComponent = () => {
     },
   });
 
-  const handleImport = async (
-    fileContent,
-    UploadActionType,
-    selectedLayoutVersion,
-    selectedFlowVersion
-  ) => {
-    setImportLoader(true);
 
+  const handleImport = async (fileContent, UploadActionType,
+    selectedLayoutVersion, selectedFlowVersion) => {
     // Validate UploadActionType before proceeding
     if (!["validate", "import"].includes(UploadActionType)) {
       console.error("Invalid UploadActionType provided");
@@ -181,6 +185,7 @@ const EditComponent = () => {
     // Set form submission state for "import" action
 
     if (UploadActionType === "import") {
+      setImportLoader(true);
       setFormSubmitted(true);
       // Handle selectedLayoutVersion logic
       if (selectedLayoutVersion || selectedFlowVersion) {
@@ -218,18 +223,21 @@ const EditComponent = () => {
         });
       }
       if (data.action === "validate") {
-        FileService.extractFormDetails(fileContent, (formExtracted) => {
-          if (formExtracted) {
-            setFormTitle(formExtracted.formTitle);
-          } else {
-            console.log("No valid form found.");
-          }
-        });
-      } else {
-        if (responseData?.formId) {
-          handleCloseSelectedAction();
-          dispatch(push(`${redirectUrl}formflow/${responseData.formId}/edit/`));
-        }
+        FileService.extractFileDetails(fileContent)
+          .then((formExtracted) => {
+            if (formExtracted) {
+              setFormTitle(formExtracted.formTitle);  // Set the form title if form is found
+            } else {
+              console.log("No valid form found.");
+            }
+          })
+          .catch((error) => {
+            console.error("Error extracting file details:", error); // Catch any errors in the process
+          });
+      } else if (responseData?.formId) {
+        handleCloseSelectedAction();
+        dispatch(push(`${redirectUrl}formflow/${responseData.formId}/edit/`));
+
       }
     } catch (err) {
       setImportLoader(false);
@@ -304,6 +312,7 @@ const EditComponent = () => {
         },
       });
       setImportError("");
+      setPrimaryButtonText(defaultPrimaryBtnText);
     }
     if (selectedAction === DUPLICATE) {
       setNameError("");
@@ -449,7 +458,7 @@ const EditComponent = () => {
       submissionAccess: accessDetails.submissionAccess,
       access: accessDetails.formAccess,
     };
-    
+
     try{
       await dispatch(saveFormProcessMapperPut({ mapper, authorizations }));
       const updateFormResponse = await formUpdate(form._id, formData);
@@ -547,8 +556,7 @@ const EditComponent = () => {
     setNewActionModal(true);
   };
 
- 
-  const handlePublishAsNewVersion = ({description, title}) => {
+  const handlePublishAsNewVersion = ({ description, title }) => {
     setFormSubmitted(true);
     const newFormData = manipulatingFormData(
       _.cloneDeep(form),
@@ -1039,7 +1047,7 @@ const EditComponent = () => {
         descriptionLabel={t("New Form Description")}
         showBuildForm={selectedAction === DUPLICATE}
         isLoading={formSubmitted || validationLoading}
-        onClose={handleCloseSelectedAction} 
+        onClose={handleCloseSelectedAction}
         primaryBtnLabel={t("Save and Edit form")}
         primaryBtnAction={handlePublishAsNewVersion}
         setNameError={setNameError}
@@ -1047,24 +1055,25 @@ const EditComponent = () => {
         nameError={nameError}
       />
 
-      <ImportModal
+      {selectedAction === IMPORT && <ImportModal
         importLoader={importLoader}
         importError={importError}
-        importFormModal={selectedAction === IMPORT}
+        showModal={selectedAction === IMPORT}
         uploadActionType={UploadActionType}
         formName={formTitle}
-        formSubmitted={formSubmitted}
         onClose={handleCloseSelectedAction}
         handleImport={handleImport}
         fileItems={fileItems}
         headerText="Import File"
-        primaryButtonText="Confirm And Replace"
-      />
+        primaryButtonText={primaryButtonText}
+        fileType=".json, .bpmn"
+      />}
 
       <ExportModal
         showExportModal={selectedAction === EXPORT}
         onClose={handleCloseSelectedAction}
-        formId={processListData.id}
+        mapperId={processListData.id}
+        formTitle={form.title}
       />
 
       <NewVersionModal
@@ -1103,6 +1112,7 @@ const EditComponent = () => {
         categoryType={CategoryType.FORM}
         revertBtnAction={revertFormBtnAction}
         historyCount={formHistoryData.totalCount}
+        disableAllRevertButton={isPublished}
       />
       {renderDeleteModal()}
     </div>

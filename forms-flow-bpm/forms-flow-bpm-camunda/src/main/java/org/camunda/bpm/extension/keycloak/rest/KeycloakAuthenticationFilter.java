@@ -106,6 +106,12 @@ public class KeycloakAuthenticationFilter implements Filter {
 				MDC.put("tenantKey", tenantKey);
 			}
 			userGroups = getUserGroups(userId, claims, tenantKey);
+			// Add role claims to match with dynamically created authorization.
+			if (claims.containsKey("role")) {
+				for (String role : getKeys(claims, "role")) {
+					userGroups.add("ROLE_"+role);
+				}
+			}
 			if (tenantKey != null)
 				identityService.setAuthentication(userId, userGroups, tenantIds);
 			else
@@ -155,9 +161,10 @@ public class KeycloakAuthenticationFilter implements Filter {
 			for (String role : roles) {
 				if (HARD_CODED_ROLES.contains(role)) {
 					if (enableMultiTenancy) {
-					groupIds.add(tenantKey+"-"+role);
+						//groupIds.add(tenantKey+"-"+role); // No need to add tenantKey to the role as ROLE_ prefix is there.
+						groupIds.add("ROLE_"+role);
 					}else{
-						groupIds.add(role);
+						groupIds.add("ROLE_"+role);
 					}
 				}
 		}

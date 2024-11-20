@@ -29,6 +29,7 @@ from formsflow_api.schemas.user import (
     UsersListSchema,
 )
 
+from .base_schema import AuditDateTimeSchema
 from .form_history_logs import FormHistoryReqSchema, FormHistorySchema
 from .import_support import (
     ImportEditRequestSchema,

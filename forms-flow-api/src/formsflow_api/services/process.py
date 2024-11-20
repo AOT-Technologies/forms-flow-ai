@@ -368,8 +368,8 @@ class ProcessService:  # pylint: disable=too-few-public-methods
             process_histories = ProcessService.populate_published_histories(
                 process_histories, published_histories
             )
-            process_history_schema = ProcessHistorySchema(many=True)
-            return process_history_schema.dump(process_histories), count
+            process_history_schema = ProcessHistorySchema()
+            return process_history_schema.dump(process_histories, many=True), count
         raise BusinessException(BusinessErrorCode.PROCESS_ID_NOT_FOUND)
 
     @staticmethod

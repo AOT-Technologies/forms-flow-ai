@@ -18,7 +18,6 @@ import { useTranslation } from "react-i18next";
 import {
   createNewProcess,
   createNewDecision,
-  extractDataFromDiagram,
 } from "../../components/Modeler/helpers/helper";
 import {
   CustomButton,
@@ -37,7 +36,7 @@ import {
   validateProcess,
   compareXML,
   compareDmnXML,
-  validateDecisionNames,
+  validateDecisionNames
 } from "../../helper/processHelper";
 import BpmnEditor from "./Editors/BpmnEditor/BpmEditor.js";
 import DmnEditor from "./Editors/DmnEditor/DmnEditor.js";
@@ -48,8 +47,10 @@ import {
 } from "../../actions/processActions";
 import { useMutation, useQuery } from "react-query";
 import LoadingOverlay from "react-loading-overlay-ts";
+import ImportProcess from "../Modals/ImportProcess";
 
 const EXPORT = "EXPORT";
+const IMPORT = "IMPORT";
 const CategoryType = { FORM: "FORM", WORKFLOW: "WORKFLOW" };
 
 const ProcessCreateEdit = ({ type }) => {
@@ -58,19 +59,19 @@ const ProcessCreateEdit = ({ type }) => {
   const isBPMN = type === "BPMN";
   const Process = isBPMN
     ? {
-        name: "Subflow",
-        type: "BPMN",
-        route: "subflow",
-        extension: ".bpmn",
-        fileType: "text/bpmn",
-      }
+      name: "Subflow",
+      type: "BPMN",
+      route: "subflow",
+      extension: ".bpmn",
+      fileType: "text/bpmn",
+    }
     : {
-        name: "Decision Table",
-        type: "DMN",
-        route: "decision-table",
-        extension: ".dmn",
-        fileType: "text/dmn",
-      };
+      name: "Decision Table",
+      type: "DMN",
+      route: "decision-table",
+      extension: ".dmn",
+      fileType: "text/dmn",
+    };
 
   const diagramType = Process.type;
   const dispatch = useDispatch();
@@ -98,11 +99,19 @@ const ProcessCreateEdit = ({ type }) => {
   const [isPublished, setIsPublished] = useState(
     processData?.status === "Published"
   );
+
   const [showConfirmModal, setShowConfirmModal] = useState(false);
   const [modalType, setModalType] = useState("");
   const [isPublishLoading, setIsPublishLoading] = useState(false);
   const [isReverted, setIsReverted] = useState(false);
   const isDataFetched = useRef();
+  useEffect(() => {
+    setIsPublished(processData.status === "Published");
+  }, [processData]);
+
+  const publishText = isPublished ? t("Unpublish") : t("Publish");
+  const processName = processData.name;
+  const fileName = (processName + Process.extension).replaceAll(" ", "");
 
   // fetching process data
   const { isLoading: isProcessDetailsLoading } = useQuery(
@@ -151,9 +160,6 @@ const ProcessCreateEdit = ({ type }) => {
     : processData?.processData;
   // handle history modal
   const handleToggleHistoryModal = () => setHistoryModalShow(!historyModalShow);
-
-  const publishText = isPublished ? t("Unpublish") : t("Publish");
-  const processName = processData.name;
 
   useEffect(() => {
     if (isCreate) {
@@ -255,9 +261,9 @@ const ProcessCreateEdit = ({ type }) => {
     return isCreate
       ? await createProcess(payload)
       : await updateProcess({
-          ...payload,
-          id: processData.id, // ID needed only for update
-        });
+        ...payload,
+        id: processData.id, // ID needed only for update
+      });
   };
 
   const handleSaveSuccess = (response, isCreate, isPublished) => {
@@ -301,7 +307,9 @@ const ProcessCreateEdit = ({ type }) => {
       let response = null;
 
       if (!isPublished) {
-        response = await saveFlow({ isPublishing: !isPublished });
+        response = await saveFlow({
+          isPublishing: !isPublished
+        });
       }
 
       closeModal();
@@ -367,16 +375,16 @@ const ProcessCreateEdit = ({ type }) => {
 
   const handleExport = async () => {
     try {
-      let data;
-
+      let data = "";
       if (isCreate) {
-        data = isBPMN ? defaultProcessXmlData : defaultDmnXmlData;
+        const modeler = getModeler(isBPMN);
+        data = await createXMLFromModeler(modeler);
       } else {
         data = processData?.processData;
       }
 
       const isValid = isBPMN
-        ? await validateProcess(data)
+        ? await validateProcess(data, lintErrors)
         : await validateDecisionNames(data);
 
       if (isValid) {
@@ -384,12 +392,7 @@ const ProcessCreateEdit = ({ type }) => {
         const file = new Blob([data], { type: Process.fileType });
         element.href = URL.createObjectURL(file);
 
-        // Using the `Process` object for the filename and extension
-        const processName =
-          extractDataFromDiagram(data).name.replaceAll(" / ", "-") +
-          Process.extension;
-
-        element.download = processName.replaceAll(" ", "");
+        element.download = fileName;
         document.body.appendChild(element);
         element.click();
         document.body.removeChild(element); // Cleanup after download
@@ -486,9 +489,9 @@ const ProcessCreateEdit = ({ type }) => {
         );
       case "discard":
         return getModalConfig(
-          t(`Are you sure you want to discard ${Process.type} changes?`),
+          t(`Are you sure want to discard ${Process.type} changes?`),
           t(
-            `Are you sure you want to discard all the changes to the ${Process.type}?`
+            `Are you sure want to discard all the changes to the ${Process.type}?`
           ),
           t("Discard Changes"),
           t("Cancel"),
@@ -510,6 +513,12 @@ const ProcessCreateEdit = ({ type }) => {
   };
 
   const modalContent = getModalContent();
+  const handleImportData = (xml) => {
+    const ref = isBPMN ? bpmnRef : dmnRef;
+    if (ref.current) {
+      ref.current?.handleImport(xml);
+    }
+  };
 
   return (
     <div>
@@ -659,7 +668,7 @@ const ProcessCreateEdit = ({ type }) => {
         showExportModal={selectedAction === EXPORT}
         onClose={() => setSelectedAction(null)}
         onExport={handleExport}
-        fileName={processName || "filename"}
+        fileName={fileName}
         modalTitle={t(`Export ${diagramType}`)}
         successMessage={t("Export Successful")}
         errorMessage={exportError}
@@ -686,7 +695,20 @@ const ProcessCreateEdit = ({ type }) => {
         revertBtnAction={fetchHistoryData}
         historyCount={historiesData?.totalCount || 0}
         currentVersionId={processData.id}
+        disableAllRevertButton={isPublished}
       />
+      {selectedAction === IMPORT && <ImportProcess
+        showModal={selectedAction === IMPORT}
+        closeImport={() => setSelectedAction(null)}
+        processId={processData.id}
+        processVersion={{
+          type: process.type,
+          majorVersion: processData?.majorVersion,
+          minorVersion: processData?.minorVersion
+        }}
+        setImportXml={handleImportData}
+        fileType={process.extension}
+      />}
     </div>
   );
 };

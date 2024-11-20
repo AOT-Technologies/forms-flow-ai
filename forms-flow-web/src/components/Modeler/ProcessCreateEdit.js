@@ -17,7 +17,7 @@ import { MULTITENANCY_ENABLED } from "../../constants/constants";
 import { useTranslation } from "react-i18next";
 import {
   createNewProcess,
-  createNewDecision, 
+  createNewDecision,
 } from "../../components/Modeler/helpers/helper";
 import {
   CustomButton,
@@ -99,7 +99,7 @@ const ProcessCreateEdit = ({ type }) => {
   const [isPublished, setIsPublished] = useState(
     processData?.status === "Published"
   );
-  
+
   const [showConfirmModal, setShowConfirmModal] = useState(false);
   const [modalType, setModalType] = useState("");
   const [isPublishLoading, setIsPublishLoading] = useState(false);
@@ -154,6 +154,7 @@ const ProcessCreateEdit = ({ type }) => {
       setIsReverted(true);
     },
   });
+
   const processDataXML = isReverted
     ? historyData?.processData
     : processData?.processData;
@@ -375,22 +376,22 @@ const ProcessCreateEdit = ({ type }) => {
   const handleExport = async () => {
     try {
       let data = "";
-      if(isCreate){
+      if (isCreate) {
         const modeler = getModeler(isBPMN);
         data = await createXMLFromModeler(modeler);
-      }else{
+      } else {
         data = processData?.processData;
       }
 
       const isValid = isBPMN
-        ? await validateProcess(data,lintErrors)
+        ? await validateProcess(data, lintErrors)
         : await validateDecisionNames(data);
 
       if (isValid) {
         const element = document.createElement("a");
         const file = new Blob([data], { type: Process.fileType });
         element.href = URL.createObjectURL(file);
- 
+
         element.download = fileName;
         document.body.appendChild(element);
         element.click();
@@ -443,91 +444,81 @@ const ProcessCreateEdit = ({ type }) => {
   if (isProcessDetailsLoading) return <Loading />;
 
   const getModalContent = () => {
-    // Helper function to construct modal content configuration
-    const createModalConfig = (modalType) => {
- const modalConfigurations = {
-  publish: {
-    title: t("Confirm Publish"),
-    message: t(
-      `Publishing will lock the ${Process.type}. To save changes on further edits,
-       you will need to unpublish the ${Process.type} first.`
-    ),
-    primaryBtnText: t(`Publish This ${Process.type}`),
-    secondaryBtnText: t("Cancel"),
-    primaryAction: confirmPublishOrUnPublish,
-    secondaryAction: closeModal,
-  },
-  unpublish: {
-    title: t("Confirm Unpublish"),
-    message: t(
-      `This ${Process.type} is currently live. To save changes to ${Process.type} edits, 
-      you need to unpublish it first.`
-    ),
-    primaryBtnText: t(`Unpublish and Edit This ${Process.type}`),
-    secondaryBtnText: t(`Cancel, Keep This ${Process.type} published`),
-    primaryAction: confirmPublishOrUnPublish,
-    secondaryAction: closeModal,
-  },
-  discard: {
-    title: t(`Are you sure you want to discard ${Process.type} changes?`),
-    message: t(
-      `Are you sure you want to discard all the changes to the ${Process.type}?`
-    ),
-    primaryBtnText: t("Discard Changes"),
-    secondaryBtnText: t("Cancel"),
-    primaryAction: handleDiscardConfirm,
-    secondaryAction: closeModal,
-  },
-  duplicate: {
-    title: t("Create Duplicate"),
-    message: t(`Are you sure you want to duplicate the current ${Process.type}?`),
-    primaryBtnText: t(`Yes, Duplicate This ${Process.type}`),
-    secondaryBtnText: t(`No, Do Not Duplicate This ${Process.type}`),
-    primaryAction: handleDuplicateProcess,
-    secondaryAction: closeModal,
-  },
-};
-
-return modalConfigurations[modalType] || {};
-
-
-    const { title, message, primaryBtnText, secondaryBtnText,
-      primaryAction, secondaryAction } = createModalConfig(modalType);
-
-    return {
+    const getModalConfig = (
       title,
       message,
       primaryBtnText,
       secondaryBtnText,
-      primaryBtnAction: primaryAction,
-      secondaryBtnAction: secondaryAction,
+      primaryAction,
+      secondaryAction
+    ) => {
+      return {
+        title,
+        message,
+        primaryBtnText,
+        secondaryBtnText,
+        primaryBtnAction: primaryAction,
+        secondayBtnAction: secondaryAction,
+      };
     };
+
+    switch (modalType) {
+      case "publish":
+        return getModalConfig(
+          t("Confirm Publish"),
+          t(
+            `Publishing will lock the ${Process.type}. To save changes on further edits,
+             you will need to unpublish the ${Process.type} first.`
+          ),
+          t(`Publish This ${Process.type}`),
+          t("Cancel"),
+          confirmPublishOrUnPublish,
+          closeModal
+        );
+      case "unpublish":
+        return getModalConfig(
+          t("Confirm Unpublish"),
+          t(
+            `This ${Process.type} is currently live. To save changes to ${Process.type} edits, 
+            you need to unpublish it first.`
+          ),
+          t(`Unpublish and Edit This ${Process.type}`),
+          t(`Cancel, Keep This ${Process.type} published`),
+          confirmPublishOrUnPublish,
+          closeModal
+        );
+      case "discard":
+        return getModalConfig(
+          t(`Are you sure want to discard ${Process.type} changes?`),
+          t(
+            `Are you sure want to discard all the changes to the ${Process.type}?`
+          ),
+          t("Discard Changes"),
+          t("Cancel"),
+          handleDiscardConfirm,
+          closeModal
+        );
+      case "duplicate":
+        return getModalConfig(
+          t("Create Duplicate"),
+          t(`Are you sure you want to duplicate the current ${Process.type}?`),
+          t(`Yes, Duplicate This ${Process.type}`),
+          t(`No, Do Not Duplicate This ${Process.type}`),
+          handleDuplicateProcess,
+          closeModal
+        );
+      default:
+        return {};
+    }
   };
 
-
   const modalContent = getModalContent();
-  const resetSelectedAction = () => setSelectedAction(null);
   const hanldeImportData = (xml) => {
     const ref = isBPMN ? bpmnRef : dmnRef;
     if (ref.current) {
       ref.current?.handleImport(xml);
     }
   };
-
-  const getEditorProps = () => {
-    const bpmnXml = isBPMN ? (isCreate ? defaultProcessXmlData : processDataXML) : undefined;
-    const dmnXml = !isBPMN ? (isCreate ? defaultDmnXmlData : processDataXML) : undefined;
-    const setLintErrorsAction = isBPMN ? setLintErrors : undefined;
-    const commonProps = {
-      ref: isBPMN ? bpmnRef : dmnRef,
-      bpmnXml,
-      dmnXml,
-      setLintErrors: setLintErrorsAction,
-    };
-  
-    return commonProps;
-  };
-  
 
   return (
     <div>
@@ -645,9 +636,16 @@ return modalConfigurations[modalType] || {};
             text={t("Loading...")}
           >
             {isBPMN ? (
-              <BpmnEditor {...getEditorProps()} />
+              <BpmnEditor
+                ref={bpmnRef}
+                bpmnXml={isCreate ? defaultProcessXmlData : processDataXML}
+                setLintErrors={setLintErrors}
+              />
             ) : (
-              <DmnEditor {...getEditorProps()} />
+              <DmnEditor
+                ref={dmnRef}
+                dmnXml={isCreate ? defaultDmnXmlData : processDataXML}
+              />
             )}
           </LoadingOverlay>
         </Card.Body>
@@ -664,7 +662,6 @@ return modalConfigurations[modalType] || {};
           setSelectedAction(action);
         }}
         isCreate={isCreate}
-        published={isPublished}
       />
 
       <ExportDiagram
@@ -702,7 +699,7 @@ return modalConfigurations[modalType] || {};
       />
       {selectedAction === IMPORT && <ImportProcess
         showModal={selectedAction === IMPORT}
-        closeImport={resetSelectedAction}
+        closeImport={() => setSelectedAction(null)}
         processId={processData.id}
         processVersion={{
           type: isBPMN ? "BPMN" : "DMN",

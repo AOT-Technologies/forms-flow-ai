@@ -34,7 +34,7 @@ import userRoles from "../../../constants/permissions.js";
 import BPMNViewer from "../../BPMN/BpmnViewer.js";
 import TaskVariableModal from "../../Modals/TaskVariableModal.js";
 
-const FlowEdit = forwardRef(({ isPublished = false, CategoryType,form }, ref) => {
+const FlowEdit = forwardRef(({ isPublished = false, CategoryType }, ref) => {
   const { t } = useTranslation();
   const dispatch = useDispatch();
   const bpmnRef = useRef();
@@ -46,6 +46,7 @@ const FlowEdit = forwardRef(({ isPublished = false, CategoryType,form }, ref) =>
   const [isReverted, setIsReverted] = useState(false);
   const { createDesigns } = userRoles();
   const [showTaskVarModal, setShowTaskVarModal] = useState(false);
+  const formData = useSelector((state) => state.form?.form || {});  
   /* --------- fetching all process history when click history button --------- */
   const {
     data: { data: historiesData } = {}, // response data destructured
@@ -242,7 +243,7 @@ const FlowEdit = forwardRef(({ isPublished = false, CategoryType,form }, ref) =>
       />
       {showTaskVarModal && (
         <TaskVariableModal
-          form={form}
+          form={formData}
           showTaskVarModal={showTaskVarModal}
           onClose={CloseTaskVarModal}
         />
@@ -256,7 +257,6 @@ FlowEdit.propTypes = {
     WORKFLOW: PropTypes.string.isRequired,
   }).isRequired,
   isPublished: PropTypes.bool.isRequired,
-  form: PropTypes.object.isRequired,
 };
 
 export default FlowEdit;

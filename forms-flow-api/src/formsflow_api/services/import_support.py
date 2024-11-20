@@ -312,7 +312,7 @@ class ImportService:  # pylint: disable=too-many-public-methods
         process_name = form_response.get("name")
         # process key/Id doesn't support numbers & special characters at start
         # special characters anywhere so clean them before setting as process key
-        process_name = FormProcessMapperService.clean_form_name(process_name)
+        process_name = ProcessService.clean_form_name(process_name)
         mapper_data = {
             "form_id": form_id,
             "form_name": form_response.get("title"),
@@ -417,6 +417,7 @@ class ImportService:  # pylint: disable=too-many-public-methods
                 "titleChanged": title_changed,
                 "anonymousChanged": anonymous_changed,
                 "description": mapper.description if form_only else description,
+                "is_migrated": mapper.is_migrated,
             }
             FormProcessMapperService.mapper_create(mapper_data)
             FormProcessMapperService.mark_unpublished(mapper.id)

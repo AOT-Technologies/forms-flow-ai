@@ -237,7 +237,7 @@ const SubFlow = React.memo(() => {
         contents={modalContents}
       />
       {importSubflow && (
-        <ImportProcess showModal={importSubflow} closeImport={() => setImportSubflow(false)} FileType=".bpmn" />
+        <ImportProcess showModal={importSubflow} closeImport={() => setImportSubflow(false)} fileType=".bpmn" />
       )}
     </>
   );

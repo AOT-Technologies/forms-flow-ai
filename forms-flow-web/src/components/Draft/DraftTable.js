@@ -125,7 +125,7 @@ const DraftTable = () => {
     <>
      <LoadingOverlay active={isDraftLoading} spinner text={t("Loading...")}>
       <div className="draftTable">
-       
+      <div className="table-responsive" style={{ maxHeight: "75vh", overflowY: "auto" }}>
           <table className="table custom-table table-responsive-sm">
             <thead>
               <tr>
@@ -240,6 +240,7 @@ const DraftTable = () => {
                 </tr>}
             </tbody>
           </table>
+          </div>
         </div>
 
         {drafts.length ? (

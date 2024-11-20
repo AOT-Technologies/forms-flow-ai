@@ -30,13 +30,10 @@ import {
   FormControl,
   InputGroup,
 } from "react-bootstrap";
-import { push } from "connected-react-router";
-import { MULTITENANCY_ENABLED } from "../../constants/constants";
 const Dashboard = React.memo(() => {
   const { t } = useTranslation();
   const dispatch = useDispatch();
   const submissionsList = useSelector((state) => state.metrics.submissionsList);
-  const tenantKey = useSelector((state) => state.tenants?.tenantId);
   const submissionsStatusList = useSelector(
     (state) => state.metrics.submissionsStatusList
   );

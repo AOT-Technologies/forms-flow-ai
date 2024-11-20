@@ -18,6 +18,7 @@ import ClientTable from "./constants/ClientTable";
 import { CustomSearch } from "@formsflow/components";
 import Head from "../../containers/Head";
 import {navigateToSubmitFormsListing, navigateToSubmitFormsDraft, navigateToSubmitFormsApplication} from "../../helper/routerHelper";
+import PropTypes from "prop-types";
 
 const SubmitList = React.memo((props) => {
   const { t } = useTranslation();
@@ -136,5 +137,9 @@ const SubmitList = React.memo((props) => {
     </div>
   );
 });
+
+SubmitList.propTypes = {
+  getFormsInit: PropTypes.bool.isRequired,
+};
 
 export default SubmitList;

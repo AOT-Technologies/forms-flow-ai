@@ -60,7 +60,7 @@ import AccessDenied from "./AccessDenied";
 import { LANGUAGE } from "../constants/constants";
 import useUserRoles from "../constants/permissions";
 import { getUserRoles } from "../apiManager/services/authorizationService"; // Assuming you have a service to get roles
-
+import PropTypes from "prop-types";
 export const kcServiceInstance = (tenantId = null) => {
   return KeycloakService.getInstance(
     KEYCLOAK_AUTH_URL,
@@ -84,7 +84,6 @@ const PrivateRoute = React.memo((props) => {
   const isAuth = useSelector((state) => state.user.isAuthenticated);
   const userRoles = useSelector((state) => state.user.roles || []);
   const { tenantId } = useParams();
-  const redirecUrl = MULTITENANCY_ENABLED ? `/tenant/${tenantId}/` : `/`;
   const selectedLanguage = useSelector((state) => state.user.lang);
   const tenant = useSelector((state) => state.tenants);
   const [authError, setAuthError] = React.useState(false);
@@ -247,26 +246,6 @@ const PrivateRoute = React.memo((props) => {
         ),
     [userRoles]
   );
-  const FormRoute = useMemo(
-    () =>
-      ({ component: Component, ...rest }) =>
-        (
-          <Route
-            {...rest}
-            render={(props) =>
-              createDesigns ||
-              viewDesigns ||
-              createSubmissions ||
-              viewSubmissions ? (
-                <Component {...props} />
-              ) : (
-                <AccessDenied userRoles={userRoles} />
-              )
-            }
-          />
-        ),
-    [userRoles]
-  );
 
   const ReviewerRoute = useMemo(
     () =>
@@ -339,6 +318,10 @@ const PrivateRoute = React.memo((props) => {
       ),
     [userRoles]
   );
+
+  ClientRoute.propTypes = {
+    component: PropTypes.elementType.isRequired,
+  };
 
   if (!tenantValid) {
     return <NotFound />;

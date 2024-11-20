@@ -233,7 +233,7 @@ class Process(AuditDateTimeMixin, AuditUserMixin, BaseModel, db.Model):
             cls.query.filter(
                 and_(
                     cls.parent_process_key == parent_process_key,
-                    cls.status_changed.is_(False),
+                    or_(cls.status_changed.is_(False), cls.status_changed.is_(None)),
                 )
             )
         ).order_by(desc(cls.major_version), desc(cls.minor_version))

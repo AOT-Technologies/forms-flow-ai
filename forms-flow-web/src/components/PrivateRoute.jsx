@@ -1,5 +1,10 @@
 /* eslint-disable no-unused-vars */
-import React, { useEffect, Suspense, lazy, useMemo, useCallback } from "react";
+import React, {
+  useEffect,
+  Suspense,
+  useMemo,
+  useCallback
+} from "react";
 import { Route, Switch, Redirect, useParams } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import {
@@ -52,7 +57,8 @@ import { AppConfig } from "../config";
 import { getFormioRoleIds } from "../apiManager/services/userservices";
 import AccessDenied from "./AccessDenied";
 import { LANGUAGE } from "../constants/constants";
-import  useUserRoles  from "../constants/permissions";
+import useUserRoles from "../constants/permissions";
+import { getUserRoles } from "../apiManager/services/authorizationService"; // Assuming you have a service to get roles
 
 export const kcServiceInstance = (tenantId = null) => {
   return KeycloakService.getInstance(
@@ -83,30 +89,33 @@ const PrivateRoute = React.memo((props) => {
   const [authError, setAuthError] = React.useState(false);
   const [kcInstance, setKcInstance] = React.useState(getKcInstance());
   const [tenantValid, setTenantValid] = React.useState(true); // State to track tenant validity
-
   const {
-          admin, 
-          createDesigns ,
-          createSubmissions ,
-          viewDesigns ,
-          viewSubmissions ,
-          viewTasks,
-          manageTasks,
-          viewDashboards 
-        } = useUserRoles();
-  
-       const BASE_ROUTE_PATH = (viewTasks || manageTasks)
-        ? `${redirecUrl}task`
-        : ( createSubmissions || createDesigns || viewDesigns)
-        ? `${redirecUrl}form`
-        : admin  
-        ? `${redirecUrl}admin` 
-        : viewSubmissions 
-        ? `${redirecUrl}application` 
-        : viewDashboards 
-        ? `${redirecUrl}metrics` 
-        : "/404";
-       
+    admin,
+    createDesigns,
+    createSubmissions,
+    viewDesigns,
+    viewSubmissions,
+    viewTasks,
+    manageTasks,
+    viewDashboards,
+  } = useUserRoles();
+
+  let BASE_ROUTE_PATH;
+
+if (viewTasks || manageTasks) {
+  BASE_ROUTE_PATH = `${redirecUrl}task`;
+} else if (createSubmissions || createDesigns || viewDesigns) {
+  BASE_ROUTE_PATH = `${redirecUrl}form`;
+} else if (admin) {
+  BASE_ROUTE_PATH = `${redirecUrl}admin`;
+} else if (viewSubmissions) {
+  BASE_ROUTE_PATH = `${redirecUrl}application`;
+} else if (viewDashboards) {
+  BASE_ROUTE_PATH = `${redirecUrl}metrics`;
+} else {
+  BASE_ROUTE_PATH = "/404";
+}
+
 
   const authenticate = (instance, store) => {
     setKcInstance(instance);
@@ -150,6 +159,22 @@ const PrivateRoute = React.memo((props) => {
       }
     }
   }, [props.store, kcInstance, tenantId]);
+
+  // Remove this line since 'allRoles' is not used elsewhere
+  // const [allRoles, setAllRoles] = useState([]);
+
+  // Updated useEffect to fetch and set user roles without the 'allRoles' assignment
+  useEffect(() => {
+    getUserRoles()
+      .then((res) => {
+        if (res) {
+          const { data = [] } = res;
+          const roles = data.map((role) => role.name);
+          localStorage.setItem("allAvailableRoles", JSON.stringify(roles)); // Set roles in localStorage
+        }
+      })
+      .catch((error) => console.error("Error fetching roles", error));
+  }, [dispatch]);
 
   useEffect(() => {
     if (tenantId && MULTITENANCY_ENABLED) {
@@ -230,18 +255,21 @@ const PrivateRoute = React.memo((props) => {
   const FormRoute = useMemo(
     () =>
       ({ component: Component, ...rest }) =>
-      (
-        <Route
-          {...rest}
-          render={(props) =>
-            createDesigns || viewDesigns || createSubmissions || viewSubmissions  ? (
-              <Component {...props} />
-            ) : (
-              <AccessDenied userRoles={userRoles} />
-            )
-          }
-        />
-      ),
+        (
+          <Route
+            {...rest}
+            render={(props) =>
+              createDesigns ||
+              viewDesigns ||
+              createSubmissions ||
+              viewSubmissions ? (
+                <Component {...props} />
+              ) : (
+                <AccessDenied userRoles={userRoles} />
+              )
+            }
+          />
+        ),
     [userRoles]
   );
 
@@ -355,13 +383,9 @@ const PrivateRoute = React.memo((props) => {
                 component={ServiceFlow}
               />
             )}
-            <Route exact path={`${redirecUrl}admin`} /> 
+            <Route exact path={`${redirecUrl}admin`} />
             <Route exact path={BASE_ROUTE}>
-            {userRoles.length && (
-               <Redirect
-                 to={BASE_ROUTE_PATH}
-                />
-               )}
+              {userRoles.length && <Redirect to={BASE_ROUTE_PATH} />}
             </Route>
             <Route path="/404" exact={true} component={NotFound} />
             <Redirect from="*" to="/404" />

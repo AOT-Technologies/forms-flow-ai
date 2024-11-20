@@ -1,7 +1,7 @@
 """Workflow Migration changes
 
 Revision ID: 960477800395
-Revises: 8feb43e1e408
+Revises: b338018ad0e9
 Create Date: 2024-10-29 11:24:12.569841
 
 """
@@ -12,7 +12,7 @@ from collections import Counter
 
 # revision identifiers, used by Alembic.
 revision = '960477800395'
-down_revision = '8feb43e1e408'
+down_revision = 'b338018ad0e9'
 branch_labels = None
 depends_on = None
 

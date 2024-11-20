@@ -1,8 +1,6 @@
 import React, { useEffect, useState } from "react";
-import { Dropdown } from "react-bootstrap";
 import { useDispatch, useSelector } from "react-redux";
 import { push } from "connected-react-router";
-import Pagination from "react-js-pagination";
 import {
   setBPMFormLimit,
   setBPMFormListPage,
@@ -19,7 +17,7 @@ import {
   resetFormProcessData
 } from "../../../apiManager/services/processServices";
 import { HelperServices } from "@formsflow/service";
-import { CustomButton, DownArrowIcon } from "@formsflow/components";
+import { CustomButton,TableFooter ,NoDataFound } from "@formsflow/components";
 import userRoles from "../../../constants/permissions";
 import SortableHeader from '../../CustomComponents/SortableHeader';
 
@@ -38,7 +36,7 @@ function FormTable() {
   );
   const redirectUrl = MULTITENANCY_ENABLED ? `/tenant/${tenantKey}/` : "/";
   const isApplicationCountLoading = useSelector((state) => state.process.isApplicationCountLoading);
-  const { createDesigns } = userRoles();
+  const { createDesigns, viewDesigns } = userRoles();
   const [expandedRowIndex, setExpandedRowIndex] = useState(null);
   const [currentFormSort ,setCurrentFormSort] = useState(formsort);  
 
@@ -104,20 +102,6 @@ function FormTable() {
     setExpandedRowIndex(prevIndex => prevIndex === index ? null : index);
   };
 
-  const noDataFound = () => {
-    return (
-      <tbody>
-        <tr>
-          <td colSpan="10">
-            <div className="d-flex align-items-center justify-content-center clientForm-table-col flex-column w-100">
-              <h3>{t("No forms found")}</h3>
-              <p>{t("Please change the selected filters to view Forms")}</p>
-            </div>
-          </td>
-        </tr>
-      </tbody>
-    );
-  };
 
   return (
     <>
@@ -194,79 +178,41 @@ function FormTable() {
                           </span>
                         </td>
                         <td className="w-12">
-                          {createDesigns && <CustomButton
+                        {(createDesigns || viewDesigns) && (
+                          <CustomButton
                             variant="secondary"
                             size="sm"
-                            label={<Translation>{(t) => t("Edit")}</Translation>}
+                            label={
+                              <Translation>
+                                {(t) => t(createDesigns ? "Edit" : "View")}
+                              </Translation>
+                            }
                             onClick={() => viewOrEditForm(e._id, 'edit')}
                             className=""
-                            dataTestid={`form-edit-button-${e._id}`}
-                            ariaLabel="Edit Form Button"
-                          />}
+                            dataTestid={`form-${createDesigns ? 'edit' : 'view'}-button-${e._id}`}
+                            ariaLabel={`${createDesigns ? "Edit" : "View"} Form Button`}
+                          /> )}
                         </td>
                       </tr>
                     );
                   })}
                   <tr>
                     {formData.length ? (
-                      <>
-                        <td colSpan={3}>
-                          <div className="d-flex justify-content-between align-items-center flex-column flex-md-row">
-                            <span className="ms-2 pagination-text">
-                              {t("Showing")} {(limit * pageNo) - (limit - 1)} {t("to")}{" "}
-                              {limit * pageNo > totalForms ? totalForms : limit * pageNo}{" "}
-                              {t("of")} {totalForms} {t("results")}
-                            </span>
-                          </div>
-                        </td>
-                        <td colSpan={3}>
-                          <div className="d-flex align-items-center justify-content-around">
-                            <Pagination
-                              activePage={pageNo}
-                              itemsCountPerPage={limit}
-                              totalItemsCount={totalForms}
-                              pageRangeDisplayed={5}
-                              itemClass="page-item"
-                              linkClass="page-link"
-                              onChange={handlePageChange}
-                            />
-                          </div>
-                        </td>
-                        <td colSpan={3}>
-                          <div className="d-flex align-items-center justify-content-end">
-                            <span className="pagination-text">{t("Rows per page")}</span>
-                            <div className="pagination-dropdown">
-                              <Dropdown data-testid="page-limit-dropdown">
-                                <Dropdown.Toggle variant="light" id="dropdown-basic" data-testid="page-limit-dropdown-toggle">
-                                  {limit}
-                                </Dropdown.Toggle>
-                                <Dropdown.Menu>
-                                  {pageOptions.map((option) => (
-                                    <Dropdown.Item
-                                      key={option.value}
-                                      type="button"
-                                      data-testid={`page-limit-dropdown-item-${option.value}`}
-                                      onClick={() => {
-                                        onSizePerPageChange(option.value);
-                                      }}
-                                    >
-                                      {option.text}
-                                    </Dropdown.Item>
-                                  ))}
-                                </Dropdown.Menu>
-                              </Dropdown>
-                              < DownArrowIcon />
-                            </div>
-                          </div>
-                        </td>
-                      </>
+                      <TableFooter
+                      limit={limit}
+                      activePage={pageNo}
+                      totalCount={totalForms}
+                      handlePageChange={handlePageChange}
+                      onLimitChange={onSizePerPageChange}
+                      pageOptions={pageOptions}
+                    />
                     ) : (
                       <td colSpan={3}></td>
                     )}
                   </tr>
                 </tbody>
               ) : !searchFormLoading ? (
-                noDataFound()
+                <NoDataFound />
               ) : null}
             </table>
           </div>

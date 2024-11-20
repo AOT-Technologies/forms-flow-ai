@@ -9,6 +9,7 @@ import {
   HistoryIcon,
   ConfirmModal,
   HistoryModal,
+  CurlyBracketsIcon
 } from "@formsflow/components";
 import { Card } from "react-bootstrap";
 import { useTranslation } from "react-i18next";
@@ -29,8 +30,11 @@ import {
   validateProcess,
 } from "../../../helper/processHelper.js";
 import PropTypes from "prop-types";
+import userRoles from "../../../constants/permissions.js";
+import BPMNViewer from "../../BPMN/BpmnViewer.js";
+import TaskVariableModal from "../../Modals/TaskVariableModal.js";
 
-const FlowEdit = forwardRef(({ isPublished = false, CategoryType }, ref) => {
+const FlowEdit = forwardRef(({ isPublished = false, CategoryType,form }, ref) => {
   const { t } = useTranslation();
   const dispatch = useDispatch();
   const bpmnRef = useRef();
@@ -40,6 +44,8 @@ const FlowEdit = forwardRef(({ isPublished = false, CategoryType }, ref) => {
   const [showDiscardModal, setShowDiscardModal] = useState(false);
   const [showHistoryModal, setShowHistoryModal] = useState(false);
   const [isReverted, setIsReverted] = useState(false);
+  const { createDesigns } = userRoles();
+  const [showTaskVarModal, setShowTaskVarModal] = useState(false);
   /* --------- fetching all process history when click history button --------- */
   const {
     data: { data: historiesData } = {}, // response data destructured
@@ -89,8 +95,6 @@ const FlowEdit = forwardRef(({ isPublished = false, CategoryType }, ref) => {
     fetchHistories({ parentProcessKey: processData.parentProcessKey });
   };
 
-
-
   const saveFlow = async (showToast = true) => {
     try {
       const bpmnModeler = bpmnRef.current?.getBpmnModeler();
@@ -124,73 +128,81 @@ const FlowEdit = forwardRef(({ isPublished = false, CategoryType }, ref) => {
   useImperativeHandle(ref, () => ({
     saveFlow,
   }));
-
+  const handlePreviewAndVariables = () => {
+    setShowTaskVarModal(true);
+  };
+  const CloseTaskVarModal = () => {
+    setShowTaskVarModal(false);
+  };
 
   return (
     <>
       <Card>
         <ConfirmModal
           show={showDiscardModal}
-          title={t(`Are you Sure you want to Discard Flow Changes`)}
+          title={t(`Discard Flow Changes?`)}
           message={t(
-            "Are you sure you want to discard all the changes of the Flow?"
+            "Are you sure you want to discard all unsaved changes to the flow of the form?"
           )}
           messageSecondary={t("This action cannot be undone.")}
           primaryBtnAction={handleDiscardConfirm}
           onClose={handleDiscardModal}
-          primaryBtnText={t("Discard Changes")}
-          secondaryBtnText={t("Cancel")}
+          primaryBtnText={t("Yes, Discard All Unsaved Changes")}
+          secondaryBtnText={t("No, Keep The Changes")}
           secondayBtnAction={handleDiscardModal}
           size="sm"
         />
         <Card.Header>
-          <div
-            className="d-flex justify-content-between align-items-center w-100"
-          >
+          <div className="d-flex justify-content-between align-items-center w-100">
             <div className="d-flex align-items-center justify-content-between">
               <div className="mx-2 builder-header-text">{t("Flow")}</div>
+              {createDesigns && (
+                <div>
+                  <CustomButton
+                    variant="secondary"
+                    size="md"
+                    icon={<HistoryIcon />}
+                    label={t("History")}
+                    onClick={handleProcessHistory}
+                    dataTestid="flow-history-button-testid"
+                    ariaLabel={t("Flow History Button")}
+                  />
+                  <CustomButton
+                    variant="secondary"
+                    size="md"
+                    className="mx-2"
+                    icon={<CurlyBracketsIcon />}
+                    label={t("Variables")}
+                    onClick={() => handlePreviewAndVariables()}
+                    dataTestid="preview-and-variables-testid"
+                    ariaLabel={t("{Preview and Variables Button}")}
+                  />
+                </div>
+              )}
+            </div>
+            {createDesigns && (
               <div>
                 <CustomButton
-                  variant="secondary"
+                  variant="primary"
                   size="md"
-                  icon={<HistoryIcon />}
-                  label={t("History")}
-                  onClick={handleProcessHistory}
-                  dataTestid="flow-history-button-testid"
-                  ariaLabel={t("Flow History Button")}
+                  className="mx-2"
+                  label={t("Save Flow")}
+                  onClick={saveFlow}
+                  disabled={isPublished}
+                  dataTestid="save-flow-layout"
+                  ariaLabel={t("Save Flow Layout")}
+                  buttonLoading={savingFlow}
                 />
                 <CustomButton
                   variant="secondary"
                   size="md"
-                  className="mx-2"
-                  label={t("Preview & Variables")}
-                  onClick={() => console.log("handlePreviewAndVariables")}
-                  dataTestid="preview-and-variables-testid"
-                  ariaLabel={t("{Preview and Variables Button}")}
+                  label={t("Discard Changes")}
+                  onClick={handleDiscardModal}
+                  dataTestid="discard-flow-changes-testid"
+                  ariaLabel={t("Discard Flow Changes")}
                 />
               </div>
-            </div>
-            <div>
-              <CustomButton
-                variant="primary"
-                size="md"
-                className="mx-2"
-                label={t("Save Flow")}
-                onClick={saveFlow}
-                disabled={isPublished}
-                dataTestid="save-flow-layout"
-                ariaLabel={t("Save Flow Layout")}
-                buttonLoading={savingFlow}
-              />
-              <CustomButton
-                variant="secondary"
-                size="md"
-                label={t("Discard Changes")}
-                onClick={handleDiscardModal}
-                dataTestid="discard-flow-changes-testid"
-                ariaLabel={t("Discard Flow Changes")}
-              />
-            </div>
+            )}
           </div>
         </Card.Header>
         <Card.Body>
@@ -199,13 +211,19 @@ const FlowEdit = forwardRef(({ isPublished = false, CategoryType }, ref) => {
             spinner
             text={t("Loading...")}
           >
-            <BpmnEditor
-              ref={bpmnRef}
-              setLintErrors={setLintErrors}
-              bpmnXml={
-                isReverted ? historyData?.processData : processData?.processData
-              }
-            />
+            {!createDesigns ? (
+                <BPMNViewer bpmnXml={processData?.processData || null} />
+            ) : (
+              <BpmnEditor
+                ref={bpmnRef}
+                setLintErrors={setLintErrors}
+                bpmnXml={
+                  isReverted
+                    ? historyData?.processData
+                    : processData?.processData
+                }
+              />
+            )}
           </LoadingOverlay>
         </Card.Body>
       </Card>
@@ -220,8 +238,15 @@ const FlowEdit = forwardRef(({ isPublished = false, CategoryType }, ref) => {
         categoryType={CategoryType.WORKFLOW}
         revertBtnAction={fetchHistoryData}
         historyCount={historiesData?.totalCount || 0}
-        currentVersionId={processData.id}
+        disableAllRevertButton={processData.status === "Published"}
       />
+      {showTaskVarModal && (
+        <TaskVariableModal
+          form={form}
+          showTaskVarModal={showTaskVarModal}
+          onClose={CloseTaskVarModal}
+        />
+        )}
     </>
   );
 });
@@ -231,6 +256,7 @@ FlowEdit.propTypes = {
     WORKFLOW: PropTypes.string.isRequired,
   }).isRequired,
   isPublished: PropTypes.bool.isRequired,
+  form: PropTypes.object.isRequired,
 };
 
 export default FlowEdit;

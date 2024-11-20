@@ -408,7 +408,7 @@ class ImportService:  # pylint: disable=too-many-public-methods
                 "formType": mapper.form_type,
                 "parentFormId": mapper.parent_form_id,
                 "anonymous": mapper.is_anonymous if form_only else anonymous,
-                "taskVariable": json.loads(mapper.task_variable),
+                "taskVariables": json.loads(mapper.task_variable),
                 "processKey": mapper.process_key,
                 "processName": mapper.process_name,
                 "status": mapper.status,

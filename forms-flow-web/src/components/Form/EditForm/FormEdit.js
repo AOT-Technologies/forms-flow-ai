@@ -6,6 +6,7 @@ import {
   Errors,
   FormBuilder,
   deleteForm,
+  Form,
 } from "@aot-technologies/formio-react";
 import {
   CustomButton,
@@ -15,13 +16,14 @@ import {
   PreviewIcon,
   FormBuilderModal,
   HistoryModal,
+  ImportModal
 } from "@formsflow/components";
 import { RESOURCE_BUNDLES_DATA } from "../../../resourceBundles/i18n";
 import LoadingOverlay from "react-loading-overlay-ts";
 import _cloneDeep from "lodash/cloneDeep";
 import { useTranslation } from "react-i18next";
 import { push } from "connected-react-router";
-import ActionModal from "../../Modals/ActionModal.js";  
+import ActionModal from "../../Modals/ActionModal.js";
 //for save form
 import { MULTITENANCY_ENABLED } from "../../../constants/constants";
 import { fetchFormById } from "../../../apiManager/services/bpmFormServices";
@@ -35,9 +37,7 @@ import {
   unPublish,
   getFormHistory,
 } from "../../../apiManager/services/FormServices";
-import ImportModal from "../../Modals/ImportModal.js";
 import FileService from "../../../services/FileService";
-import utils from "@aot-technologies/formiojs/lib/utils";
 import {
   setFormFailureErrorData,
   setFormSuccessData,
@@ -54,7 +54,6 @@ import {
 import {
   setProcessData,
 } from "../../../actions/processActions.js";
-import _isEquial from "lodash/isEqual";
 import _ from "lodash";
 import SettingsModal from "../../Modals/SettingsModal";
 import FlowEdit from "./FlowEdit.js";
@@ -62,7 +61,9 @@ import ExportModal from "../../Modals/ExportModal.js";
 import NewVersionModal from "../../Modals/NewVersionModal";
 import { currentFormReducer } from "../../../modules/formReducer.js";
 import { toast } from "react-toastify";
-import { generateUniqueId } from "../../../helper/helper.js";
+import userRoles from "../../../constants/permissions.js";
+import { generateUniqueId, isFormComponentsChanged } from "../../../helper/helper.js";
+import { useMutation } from "react-query";
 
 // constant values
 const DUPLICATE = "DUPLICATE";
@@ -80,10 +81,8 @@ const EditComponent = () => {
   const sideTabRef = useRef(null);
 
   /* ------------------------------- mapper data ------------------------------ */
-  const {
-    formProcessList: processListData,
-    formPreviousData: previousData,
-  } = useSelector((state) => state.process);
+  const { formProcessList: processListData, formPreviousData: previousData } =
+    useSelector((state) => state.process);
 
   /* -------------------------------- user data and form access data ------------------------------- */
   const {
@@ -118,25 +117,61 @@ const EditComponent = () => {
   const [formTitle, setFormTitle] = useState("");
   const [importError, setImportError] = useState("");
   const [importLoader, setImportLoader] = useState(false);
+  const defaultPrimaryBtnText = "Confirm And Replace";
+  const [primaryButtonText, setPrimaryButtonText] = useState(defaultPrimaryBtnText);
+  const { createDesigns } = userRoles();
+
+  /* --------- validate form title exist or not --------- */
+  const {
+    mutate: validateFormTitle, // this function will trigger the api call
+    isLoading: validationLoading,
+    // isError: error,
+  } = useMutation(
+    ({ title }) =>
+      validateFormName(title),
+    {
+      onSuccess:({data}, {createButtonClicked,...variables})=>{
+
+        if (data && data.code === "FORM_EXISTS") {
+          setNameError(data.message);  // Set exact error message
+        } else {
+          setNameError("");
+          if(createButtonClicked){
+            handlePublishAsNewVersion(variables);
+          }
+        }
+      },
+      onError: (error) => {
+        const errorMessage = error.response?.data?.message || "An error occurred while validating the form name.";
+        setNameError(errorMessage);  // Set the error message from the server
+      }
+    }
+  );
   const UploadActionType = {
     IMPORT: "import",
-    VALIDATE: "validate"
+    VALIDATE: "validate",
   };
+
+  useEffect(() => {
+    if (importError !== "") {
+      setPrimaryButtonText("Try Again");
+    }
+  }, [importError]);
+
   const [fileItems, setFileItems] = useState({
     workflow: {
       majorVersion: null,
-      minorVersion: null
+      minorVersion: null,
     },
     form: {
       majorVersion: null,
-      minorVersion: null
-    }
+      minorVersion: null,
+    },
   });
+
 
   const handleImport = async (fileContent, UploadActionType,
     selectedLayoutVersion, selectedFlowVersion) => {
-    setImportLoader(true);
-
     // Validate UploadActionType before proceeding
     if (!["validate", "import"].includes(UploadActionType)) {
       console.error("Invalid UploadActionType provided");
@@ -150,6 +185,7 @@ const EditComponent = () => {
     // Set form submission state for "import" action
 
     if (UploadActionType === "import") {
+      setImportLoader(true);
       setFormSubmitted(true);
       // Handle selectedLayoutVersion logic
       if (selectedLayoutVersion || selectedFlowVersion) {
@@ -178,27 +214,30 @@ const EditComponent = () => {
         setFileItems({
           workflow: {
             majorVersion: workflow?.majorVersion || null,
-            minorVersion: workflow?.minorVersion || null
+            minorVersion: workflow?.minorVersion || null,
           },
           form: {
             majorVersion: form?.majorVersion || null,
-            minorVersion: form?.minorVersion || null
-          }
+            minorVersion: form?.minorVersion || null,
+          },
         });
       }
       if (data.action === "validate") {
-        FileService.extractFormDetails(fileContent, (formExtracted) => {
-          if (formExtracted) {
-            setFormTitle(formExtracted.formTitle);
-          } else {
-            console.log("No valid form found.");
-          }
-        });
-      } else {
-        if (responseData?.formId) {
-          handleCloseSelectedAction();
-          dispatch(push(`${redirectUrl}formflow/${responseData.formId}/edit/`));
-        }
+        FileService.extractFileDetails(fileContent)
+          .then((formExtracted) => {
+            if (formExtracted) {
+              setFormTitle(formExtracted.formTitle);  // Set the form title if form is found
+            } else {
+              console.log("No valid form found.");
+            }
+          })
+          .catch((error) => {
+            console.error("Error extracting file details:", error); // Catch any errors in the process
+          });
+      } else if (responseData?.formId) {
+        handleCloseSelectedAction();
+        dispatch(push(`${redirectUrl}formflow/${responseData.formId}/edit/`));
+
       }
     } catch (err) {
       setImportLoader(false);
@@ -244,7 +283,9 @@ const EditComponent = () => {
     setShowSettingsModal(!showSettingsModal);
   const [selectedAction, setSelectedAction] = useState(null);
   const [newActionModal, setNewActionModal] = useState(false);
+  const [isSettingsSaving, setIsSettingsSaving] = useState(false);
   const onCloseActionModal = () => setNewActionModal(false);
+
   const CategoryType = {
     FORM: "FORM",
     WORKFLOW: "WORKFLOW",
@@ -263,20 +304,22 @@ const EditComponent = () => {
       setFileItems({
         workflow: {
           majorVersion: null,
-          minorVersion: null
+          minorVersion: null,
         },
         form: {
           majorVersion: null,
-          minorVersion: null
-        }
+          minorVersion: null,
+        },
       });
       setImportError("");
+      setPrimaryButtonText(defaultPrimaryBtnText);
     }
     if (selectedAction === DUPLICATE) {
       setNameError("");
       setFormSubmitted(false);
     }
   };
+
   useEffect(() => {
     if (restoredFormId) {
       setRestoreFormDataLoading(true);
@@ -331,7 +374,7 @@ const EditComponent = () => {
       dispatch(setRestoreFormId(null));
     };
 
-    return cleanup; 
+    return cleanup;
   };
 
   useEffect(() => {
@@ -348,79 +391,17 @@ const EditComponent = () => {
       setIsProcessDetailsLoading(true);
       await fetchProcessDetails(processListData);
       setIsProcessDetailsLoading(false);
-
     }
   }, [processListData.processKey]);
 
-  const validateFormNameOnBlur = () => {
-    if (!form.title || form.title.trim() === "") {
+  const validateFormNameOnBlur = ({title, ...rest}) => {
+    if (!title || title.trim() === "") {
       setNameError("This field is required");
       return;
     }
-
-    validateFormName(form.title)
-      .then((response) => {
-        const data = response?.data;
-        if (data && data.code === "FORM_EXISTS") {
-          setNameError(data.message); // Set exact error message
-        } else {
-          setNameError("");
-        }
-      })
-      .catch((error) => {
-        const errorMessage =
-          error.response?.data?.message ||
-          "An error occurred while validating the form name.";
-        setNameError(errorMessage); // Set the error message from the server
-        console.error("Error validating form name:", errorMessage);
-      });
+    validateFormTitle({title, ...rest});
   };
 
-  const isFormComponentsChanged = () => {
-    if (restoredFormData && restoredFormId) {
-      return true;
-    }
-    let flatFormData = utils.flattenComponents(formData.components);
-    let flatForm = utils.flattenComponents(form.components);
-    const dateTimeOfFormData = Object.values(flatFormData).filter(
-      (component) => component.type == "day" || component.type == "datetime"
-    );
-    const dateTimeOfForm = Object.values(flatForm).filter(
-      (component) => component.type == "day" || component.type == "datetime"
-    );
-    let comparisonBetweenDateTimeComponent = true;
-    if (dateTimeOfFormData?.length === dateTimeOfForm.length) {
-      dateTimeOfFormData.forEach((formDataComponent) => {
-        if (comparisonBetweenDateTimeComponent) {
-          const isEqual = dateTimeOfForm.some(
-            (formComponent) => formComponent.type === formDataComponent.type
-          );
-          if (!isEqual) {
-            comparisonBetweenDateTimeComponent = isEqual;
-          }
-        }
-      });
-    } else {
-      return true;
-    }
-    // if existing all datetime components are same we need to remove those compoenent and need to check isEqual
-    if (comparisonBetweenDateTimeComponent) {
-      flatFormData = Object.values(flatFormData).filter(
-        (component) => component.type !== "day" && component.type !== "datetime"
-      );
-      flatForm = Object.values(flatForm).filter(
-        (component) => component.type !== "day" && component.type !== "datetime"
-      );
-    } else {
-      return true;
-    }
-
-    return (
-      !_isEquial(flatFormData, flatForm) ||
-      formData.display !== form.display ||
-      formData.type !== form.type
-    );
-  };
 
   /* ----------- save settings function to be used in settings modal ---------- */
   const filterAuthorizationData = (authorizationData) => {
@@ -435,6 +416,7 @@ const EditComponent = () => {
     accessDetails,
     rolesState,
   }) => {
+    setIsSettingsSaving(true);
     const parentFormId = processListData.parentFormId;
     const mapper = {
       formId: form._id,
@@ -477,18 +459,30 @@ const EditComponent = () => {
       access: accessDetails.formAccess,
     };
 
-    await dispatch(saveFormProcessMapperPut({ mapper, authorizations }));
-    const updateFormResponse = await formUpdate(form._id, formData);
-    dispatchFormAction({
-      type: "formChange",
-      value: { ...updateFormResponse.data, components: form.components },
-    });
-    dispatch(setFormSuccessData("form", updateFormResponse.data));
-    handleToggleSettingsModal();
+    try{
+      await dispatch(saveFormProcessMapperPut({ mapper, authorizations }));
+      const updateFormResponse = await formUpdate(form._id, formData);
+      dispatchFormAction({
+        type: "formChange",
+        value: { ...updateFormResponse.data, components: form.components },
+      });
+      dispatch(setFormSuccessData("form", updateFormResponse.data));
+    }catch(error){
+      console.error(error);
+    }finally{
+      setIsSettingsSaving(false);
+      handleToggleSettingsModal();
+    }
   };
 
-  const saveFormData = async () => {
+  const saveFormData = async ({showToast = true}) => {
     try {
+      const isFormChanged = isFormComponentsChanged({restoredFormData, 
+        restoredFormId, formData, form});
+      if(!isFormChanged && !promptNewVersion) {
+        showToast && toast.success(t("Form updated successfully"));
+        return;
+      }
       setShowConfirmModal(false);
       setFormSubmitted(true);
       const newFormData = manipulatingFormData(
@@ -498,11 +492,12 @@ const EditComponent = () => {
         formAccess,
         submissionAccess
       );
-      newFormData.componentChanged = isFormComponentsChanged();
+      newFormData.componentChanged = isFormChanged || promptNewVersion; //after unpublish need to save it in minor version on update
       newFormData.parentFormId = previousData.parentFormId;
       newFormData.title = processListData.formName;
 
-      await formUpdate(newFormData._id, newFormData);
+      const {data} = await formUpdate(newFormData._id, newFormData);
+      dispatch(setFormSuccessData("form", data));
       setPromptNewVersion(false);
     } catch (err) {
       const error = err.response?.data || err.message;
@@ -532,13 +527,12 @@ const EditComponent = () => {
     setShowHistoryModal(true);
     dispatch(setFormHistories({ formHistory: [], totalCount: 0 }));
     if (processListData?.parentFormId) {
-        fetchFormHistory(processListData?.parentFormId, 1, 4);
+      fetchFormHistory(processListData?.parentFormId, 1, 4);
     }
-};
-
+  };
 
   const loadMoreBtnAction = () => {
-      fetchFormHistory(processListData?.parentFormId);
+    fetchFormHistory(processListData?.parentFormId);
   };
 
   const revertFormBtnAction = (cloneId) => {
@@ -562,16 +556,7 @@ const EditComponent = () => {
     setNewActionModal(true);
   };
 
-  const handleChange = (path, event) => {
-    setFormSubmitted(false);
-    const { target } = event;
-    const value = target.type === "checkbox" ? target.checked : target.value;
-    value == "" ? setNameError("This field is required") : setNameError("");
-
-    dispatchFormAction({ type: path, value });
-  };
-
-  const handlePublishAsNewVersion = (formName, formDescription) => {
+  const handlePublishAsNewVersion = ({ description, title }) => {
     setFormSubmitted(true);
     const newFormData = manipulatingFormData(
       _.cloneDeep(form),
@@ -583,13 +568,13 @@ const EditComponent = () => {
 
     const newPathAndName = generateUniqueId("duplicate-version-");
     newFormData.path = newPathAndName;
-    newFormData.title = form.title;
+    newFormData.title = title;
     newFormData.name = newPathAndName;
     newFormData.componentChanged = true;
     delete newFormData.machineName;
     delete newFormData.parentFormId;
     newFormData.newVersion = true;
-    newFormData.description = formDescription;
+    newFormData.description = description;
     delete newFormData._id;
 
     formCreate(newFormData)
@@ -622,14 +607,14 @@ const EditComponent = () => {
       const actionFunction = isPublished ? unPublish : publish;
       closeModal();
       setIsPublishLoading(true);
-      if(!isPublished){
+      if (!isPublished) {
         await flowRef.current.saveFlow(false);
+        await saveFormData({showToast:false});
       }
       await actionFunction(processListData.id);
       if (isPublished) {
         await fetchProcessDetails(processListData);
-      }
-      else {
+      } else {
         backToForm();
       }
       setPromptNewVersion(isPublished);
@@ -752,14 +737,14 @@ const EditComponent = () => {
         };
       case "discard":
         return {
-          title: "Are you Sure you want to Discard Layout Changes",
+          title: "Discard Layout Changes?",
           message:
             "Are you sure you want to discard all the changes to the layout of the form?",
           messageSecondary: "This action cannot be undone.",
           primaryBtnAction: discardChanges,
           secondayBtnAction: closeModal,
-          primaryBtnText: "Discard Changes",
-          secondaryBtnText: "Cancel",
+          primaryBtnText: "Yes, Discard Changes",
+          secondaryBtnText: "No, Keep My Changes",
         };
       default:
         return {};
@@ -874,6 +859,7 @@ const EditComponent = () => {
         <LoadingOverlay active={formSubmitted} spinner text={t("Loading...")}>
           <SettingsModal
             show={showSettingsModal}
+            isSaving={isSettingsSaving}
             handleClose={handleToggleSettingsModal}
             handleConfirm={handleConfirmSettings}
           />
@@ -898,38 +884,40 @@ const EditComponent = () => {
                     {isPublished ? t("Live") : t("Draft")}
                   </span>
                 </div>
-                <div>
-                  <CustomButton
-                    variant="dark"
-                    size="md"
-                    label={t("Settings")}
-                    onClick={handleToggleSettingsModal}
-                    dataTestid="eidtor-settings-testid"
-                    ariaLabel={t("Designer Settings Button")}
-                  />
-                  <CustomButton
-                    variant="dark"
-                    size="md"
-                    className="mx-2"
-                    label={t("Actions")}
-                    onClick={editorActions}
-                    dataTestid="designer-action-testid"
-                    ariaLabel={(t) => t("Designer Actions Button")}
-                  />
-                  <CustomButton
-                    variant="light"
-                    size="md"
-                    label={t(publishText)}
-                    buttonLoading={isPublishLoading}
-                    onClick={() => {
-                      isPublished
-                        ? openConfirmModal("unpublish")
-                        : openConfirmModal("publish");
-                    }}
-                    dataTestid="handle-publish-testid"
-                    ariaLabel={`${t(publishText)} ${t("Button")}`}
-                  />
-                </div>
+                {createDesigns && (
+                  <div>
+                    <CustomButton
+                      variant="dark"
+                      size="md"
+                      label={t("Settings")}
+                      onClick={handleToggleSettingsModal}
+                      dataTestid="eidtor-settings-testid"
+                      ariaLabel={t("Designer Settings Button")}
+                    />
+                    <CustomButton
+                      variant="dark"
+                      size="md"
+                      className="mx-2"
+                      label={t("Actions")}
+                      onClick={editorActions}
+                      dataTestid="designer-action-testid"
+                      ariaLabel={(t) => t("Designer Actions Button")}
+                    />
+                    <CustomButton
+                      variant="light"
+                      size="md"
+                      label={t(publishText)}
+                      buttonLoading={isPublishLoading}
+                      onClick={() => {
+                        isPublished
+                          ? openConfirmModal("unpublish")
+                          : openConfirmModal("publish");
+                      }}
+                      dataTestid="handle-publish-testid"
+                      ariaLabel={`${t(publishText)} ${t("Button")}`}
+                    />
+                  </div>
+                )}
               </div>
             </Card.Body>
           </Card>
@@ -945,65 +933,81 @@ const EditComponent = () => {
                   >
                     <div className="d-flex align-items-center justify-content-between">
                       <div className="mx-2 builder-header-text">Layout</div>
+                      {createDesigns && (
+                        <div>
+                          <CustomButton
+                            variant="secondary"
+                            size="md"
+                            icon={<HistoryIcon />}
+                            label={t("History")}
+                            onClick={() => handleFormHistory()}
+                            dataTestid="handle-form-history-testid"
+                            ariaLabel={t("Form History Button")}
+                          />
+                          <CustomButton
+                            variant="secondary"
+                            size="md"
+                            className="mx-2"
+                            icon={<PreviewIcon />}
+                            label={t("Preview")}
+                            onClick={handlePreview}
+                            dataTestid="handle-preview-testid"
+                            ariaLabel={t("Preview Button")}
+                          />
+                        </div>
+                      )}
+                    </div>
+                    {createDesigns && (
                       <div>
                         <CustomButton
-                          variant="secondary"
+                          variant="primary"
                           size="md"
-                          icon={<HistoryIcon />}
-                          label={t("History")}
-                          onClick={() => handleFormHistory()}
-                          dataTestid="handle-form-history-testid"
-                          ariaLabel={t("Form History Button")}
+                          className="mx-2"
+                          disabled={isPublished}
+                          label={t("Save Layout")}
+                          onClick={
+                            promptNewVersion ? handleVersioning : saveFormData
+                          }
+                          dataTestid="save-form-layout"
+                          ariaLabel={t("Save Form Layout")}
                         />
                         <CustomButton
                           variant="secondary"
                           size="md"
-                          className="mx-2"
-                          icon={<PreviewIcon />}
-                          label={t("Preview")}
-                          onClick={handlePreview}
-                          dataTestid="handle-preview-testid"
-                          ariaLabel={t("Preview Button")}
+                          label={t("Discard Changes")}
+                          onClick={() => {
+                            openConfirmModal("discard");
+                          }}
+                          dataTestid="discard-button-testid"
+                          ariaLabel={t("cancelBtnariaLabel")}
                         />
                       </div>
-                    </div>
-                    <div>
-                      <CustomButton
-                        variant="primary"
-                        size="md"
-                        className="mx-2"
-                        disabled={isPublished}
-                        label={t("Save Layout")}
-                        onClick={
-                          promptNewVersion ? handleVersioning : saveFormData
-                        }
-                        dataTestid="save-form-layout"
-                        ariaLabel={t("Save Form Layout")}
-                      />
-                      <CustomButton
-                        variant="secondary"
-                        size="md"
-                        label={t("Discard Changes")}
-                        onClick={() => {
-                          openConfirmModal("discard");
-                        }}
-                        dataTestid="discard-button-testid"
-                        ariaLabel={t("cancelBtnariaLabel")}
-                      />
-                    </div>
+                    )}
                   </div>
                 </Card.Header>
                 <Card.Body>
                   <div className="form-builder">
-                    <FormBuilder
-                      key={form._id}
-                      form={form}
-                      onChange={formChange}
-                      options={{
-                        language: lang,
-                        i18n: RESOURCE_BUNDLES_DATA,
-                      }}
-                    />
+                    {!createDesigns ? (
+                      <div className="px-4 pt-4 form-preview">
+                       <Form
+                          form={form}
+                          options={{
+                          disableAlerts: true,
+                          noAlerts: true,
+                          language: lang, i18n: RESOURCE_BUNDLES_DATA }}
+                        />
+                      </div>
+                    ) : (
+                      <FormBuilder
+                        key={form._id}
+                        form={form}
+                        onChange={formChange}
+                        options={{
+                          language: lang,
+                          i18n: RESOURCE_BUNDLES_DATA,
+                        }}
+                      />
+                    )}
                   </div>
                 </Card.Body>
               </Card>
@@ -1016,11 +1020,13 @@ const EditComponent = () => {
               ref={flowRef}
               CategoryType={CategoryType}
               isPublished={isPublished}
+              form={form}
               />}
             </div>
             <button
-              className={`border-0 form-flow-wraper-${isFormLayout ? "right" : "left"
-                } ${sideTabRef.current && "visible"}`}
+              className={`border-0 form-flow-wraper-${
+                isFormLayout ? "right" : "left"
+              } ${sideTabRef.current && "visible"}`}
               onClick={handleCurrentLayout}
             >
               {isFormLayout ? "Flow" : "Layout"}
@@ -1040,9 +1046,8 @@ const EditComponent = () => {
         nameLabel={t("New Form Name")}
         descriptionLabel={t("New Form Description")}
         showBuildForm={selectedAction === DUPLICATE}
-        formSubmitted={formSubmitted}
+        isLoading={formSubmitted || validationLoading}
         onClose={handleCloseSelectedAction}
-        handleChange={handleChange}
         primaryBtnLabel={t("Save and Edit form")}
         primaryBtnAction={handlePublishAsNewVersion}
         setNameError={setNameError}
@@ -1050,24 +1055,25 @@ const EditComponent = () => {
         nameError={nameError}
       />
 
-      <ImportModal
+      {selectedAction === IMPORT && <ImportModal
         importLoader={importLoader}
         importError={importError}
-        importFormModal={selectedAction === IMPORT}
+        showModal={selectedAction === IMPORT}
         uploadActionType={UploadActionType}
         formName={formTitle}
-        formSubmitted={formSubmitted}
         onClose={handleCloseSelectedAction}
         handleImport={handleImport}
         fileItems={fileItems}
         headerText="Import File"
-        primaryButtonText="Confirm And Replace"
-      />
+        primaryButtonText={primaryButtonText}
+        fileType=".json, .bpmn"
+      />}
 
       <ExportModal
         showExportModal={selectedAction === EXPORT}
         onClose={handleCloseSelectedAction}
-        formId={processListData.id}
+        mapperId={processListData.id}
+        formTitle={form.title}
       />
 
       <NewVersionModal
@@ -1094,7 +1100,7 @@ const EditComponent = () => {
           size="md"
         />
       )}
-      
+
       <HistoryModal
         show={showHistoryModal}
         onClose={closeHistoryModal}
@@ -1106,6 +1112,7 @@ const EditComponent = () => {
         categoryType={CategoryType.FORM}
         revertBtnAction={revertFormBtnAction}
         historyCount={formHistoryData.totalCount}
+        disableAllRevertButton={isPublished}
       />
       {renderDeleteModal()}
     </div>

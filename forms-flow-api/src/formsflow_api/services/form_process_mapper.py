@@ -13,6 +13,7 @@ from formsflow_api_utils.utils.user_context import UserContext, user_context
 
 from formsflow_api.constants import BusinessErrorCode, default_flow_xml_data
 from formsflow_api.models import (
+    Application,
     Authorization,
     AuthType,
     Draft,
@@ -205,6 +206,11 @@ class FormProcessMapperService:  # pylint: disable=too-many-public-methods
         if application:
             if tenant_key is not None and application.tenant != tenant_key:
                 raise PermissionError("Tenant authentication failed.")
+            count = Application.get_total_application_corresponding_to_mapper_id(
+                form_process_mapper_id
+            )
+            if count > 0:
+                raise BusinessException(BusinessErrorCode.RESTRICT_FORM_DELETE)
             application.mark_inactive()
             # fetching all draft application application and delete it
             draft_applications = Draft.get_draft_by_parent_form_id(
@@ -273,13 +279,20 @@ class FormProcessMapperService:  # pylint: disable=too-many-public-methods
 
     @staticmethod
     @user_context
-    def check_tenant_authorization_by_formid(form_id: int, **kwargs) -> int:
+    def check_tenant_authorization_by_formid(
+        form_id: int, mapper_data=None, **kwargs
+    ) -> int:
         """Check if tenant has permission to access the resource."""
         user: UserContext = kwargs["user"]
         tenant_key = user.tenant_key
         if tenant_key is None:
             return
-        mapper = FormProcessMapper.find_form_by_form_id(form_id=form_id)
+        # If mapper data is provided as an argument, there's no need to fetch it from the database
+        mapper = (
+            mapper_data
+            if mapper_data
+            else FormProcessMapper.find_form_by_form_id(form_id=form_id)
+        )
         if mapper is not None and mapper.tenant != tenant_key:
             raise BusinessException(BusinessErrorCode.PERMISSION_DENIED)
         return
@@ -316,10 +329,16 @@ class FormProcessMapperService:  # pylint: disable=too-many-public-methods
     @staticmethod
     def form_design_update(data, form_id):
         """Service to handle form design update."""
-        FormProcessMapperService.check_tenant_authorization_by_formid(form_id=form_id)
+        mapper = FormProcessMapper.find_form_by_form_id(form_id=form_id)
+        FormProcessMapperService.check_tenant_authorization_by_formid(
+            form_id=form_id, mapper_data=mapper
+        )
         formio_service = FormioService()
         form_io_token = formio_service.get_formio_access_token()
         response = formio_service.update_form(form_id, data, form_io_token)
+        # if user selected to continue with minor version after unpublish
+        if mapper.prompt_new_version:
+            mapper.update({"prompt_new_version": False})
         FormHistoryService.create_form_log_with_clone(data=data)
         return response
 
@@ -344,9 +363,11 @@ class FormProcessMapperService:  # pylint: disable=too-many-public-methods
         return process
 
     @staticmethod
-    def create_form(data, is_designer):  # pylint:disable=too-many-locals
+    @user_context
+    def create_form(data, is_designer, **kwargs):  # pylint:disable=too-many-locals
         """Service to handle form create."""
         current_app.logger.info("Creating form..")
+        user: UserContext = kwargs["user"]
         # Initialize formio service and get formio token to create the form
         formio_service = FormioService()
         form_io_token = formio_service.get_formio_access_token()
@@ -418,6 +439,7 @@ class FormProcessMapperService:  # pylint: disable=too-many-public-methods
                     "resourceId": parent_form_id,
                     "resourceDetails": {},
                     "roles": [],
+                    "userName": user.user_name,
                 },
                 "form": {
                     "resourceId": parent_form_id,

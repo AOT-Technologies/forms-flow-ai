@@ -8,8 +8,7 @@ import { CLIENT_EDIT_STATUS } from "../../constants/applicationConstants";
 import { HelperServices } from "@formsflow/service";
 import { Translation } from "react-i18next";
 import ApplicationFilter from "./ApplicationFilter";
-import { Dropdown } from "react-bootstrap";
-import Pagination from "react-js-pagination";
+
 import { useTranslation } from "react-i18next";
 import  userRoles  from "../../constants/permissions";
 
@@ -22,13 +21,13 @@ import {
 } from "../../actions/applicationActions";
 import { push } from "connected-react-router";
 import LoadingOverlay from "react-loading-overlay-ts";
+import { TableFooter } from "@formsflow/components"; 
 
 const ApplicationTable = () => {
   const dispatch = useDispatch();
   const [displayFilter, setDisplayFilter] = useState(false);
   const searchParams = useSelector((state) => state.applications.searchParams);
   const [filterParams, setFilterParams] = useState(searchParams);
-  const [pageLimit, setPageLimit] = useState(5);
   const applications = useSelector(
     (state) => state.applications.applicationsList
   );
@@ -159,7 +158,6 @@ const ApplicationTable = () => {
 
   const onSizePerPageChange = (limit) => {
     dispatch(setApplicationLoading(true));
-    setPageLimit(limit);
     dispatch(setCountPerpage(limit));
     dispatch(setApplicationListActivePage(1));
   };
@@ -178,6 +176,7 @@ const ApplicationTable = () => {
         spinner
         text={t("Loading...")}
       >
+        <div className="table-responsive" style={{ maxHeight: "75vh", overflowY: "auto" }}>
         <table className="table custom-table table-responsive-sm">
           <thead>
             <tr>
@@ -312,49 +311,22 @@ const ApplicationTable = () => {
             )}
           </tbody>
         </table>
+        </div>
 
         {applications.length ? (
-          <div className="d-flex justify-content-between align-items-center  flex-column flex-md-row">
-            <div className="d-flex align-items-center">
-              <span className="me-2"> {t("Rows per page")}</span>
-              <Dropdown size="sm">
-                <Dropdown.Toggle variant="light" id="dropdown-basic" data-testid="page-limit-dropdown-toggle">
-                  {pageLimit}
-                </Dropdown.Toggle>
-                <Dropdown.Menu>
-                  {pageOptions.map((option) => (
-                    <Dropdown.Item
-                      key={option.value}
-                      type="button"
-                      onClick={() => {
-                        onSizePerPageChange(option.value);
-                      }}
-                      data-testid={`page-limit-dropdown-item-${option.value}`}
-                    >
-                      {option.text}
-                    </Dropdown.Item>
-                  ))}
-                </Dropdown.Menu>
-              </Dropdown>
-              <span className="ms-2">
-                {t("Showing")} {(limit * pageNo) - (limit - 1)} {t("to")}{" "}
-                {limit * pageNo > totalForms ? totalForms : limit * pageNo}{" "}
-                {t("of")} {totalForms} {t("results")}
-              </span>
-            </div>
-            <div className="d-flex align-items-center">
-              <Pagination
-                activePage={pageNo}
-                itemsCountPerPage={limit}
-                totalItemsCount={totalForms}
-                pageRangeDisplayed={5}
-                itemClass="page-item"
-                linkClass="page-link"
-                onChange={handlePageChange}
-              />
-            </div>
-          </div>
-        ) : null}
+          <table className="table">
+            <tfoot>
+             <TableFooter
+            limit={limit}
+            activePage={pageNo}
+            totalCount={totalForms}
+            handlePageChange={handlePageChange}
+            onLimitChange={onSizePerPageChange}
+            pageOptions={pageOptions}
+          />
+          </tfoot>
+          </table>
+          ) : null}
       </LoadingOverlay>
     </>
   );

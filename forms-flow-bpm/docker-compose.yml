@@ -73,6 +73,7 @@ services:
       - REDIS_PORT=${REDIS_PORT:-6379}
       - REDIS_PASSCODE=${REDIS_PASSCODE:-changeme}
       - SESSION_COOKIE_SECURE=${SESSION_COOKIE_SECURE:-false}
+      - FORMSFLOW_DOC_API_URL=${FORMSFLOW_DOC_API_URL}
 
     networks:
       - forms-flow-bpm-network

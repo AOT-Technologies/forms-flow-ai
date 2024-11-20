@@ -2,8 +2,10 @@
 
 from marshmallow import EXCLUDE, Schema, fields
 
+from .base_schema import AuditDateTimeSchema
 
-class FormProcessMapperSchema(Schema):
+
+class FormProcessMapperSchema(AuditDateTimeSchema):
     """This class manages form process mapper request and response schema."""
 
     class Meta:  # pylint: disable=too-few-public-methods
@@ -22,9 +24,7 @@ class FormProcessMapperSchema(Schema):
     is_anonymous = fields.Bool(data_key="anonymous")
     status = fields.Str(data_key="status", allow_none=True)  # active/inactive
     created_by = fields.Str(data_key="createdBy")
-    created = fields.Str(data_key="created")
     modified_by = fields.Str(data_key="modifiedBy")
-    modified = fields.Str(data_key="modified")
     task_variable = fields.Str(data_key="taskVariables")
     version = fields.Str(data_key="version")
     process_tenant = fields.Str(data_key="processTenant")

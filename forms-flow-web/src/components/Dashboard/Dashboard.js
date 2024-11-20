@@ -32,7 +32,6 @@ import {
 } from "react-bootstrap";
 import { push } from "connected-react-router";
 import { MULTITENANCY_ENABLED } from "../../constants/constants";
-import Head from "../../containers/Head";
 const Dashboard = React.memo(() => {
   const { t } = useTranslation();
   const dispatch = useDispatch();
@@ -63,7 +62,6 @@ const Dashboard = React.memo(() => {
   const limit = useSelector((state) => state.metrics.limit);
   const totalItems = useSelector((state) => state.metrics.totalItems);
   const pageRange = useSelector((state) => state.metrics.pagination.numPages);
-  const redirectUrl = MULTITENANCY_ENABLED ? `/tenant/${tenantKey}/` : "/";
   const submissionStatusCountLoader = useSelector(
     (state) => state.metrics.submissionStatusCountLoader
   );
@@ -182,21 +180,6 @@ const Dashboard = React.memo(() => {
       dispatch(setMetricsDateChange([firstDay, lastDay]));
     }
   };
-  const headerList = () => {
-    return [
-      {
-        name: "Metrics",
-        count: totalItems,
-        onClick: () => dispatch(push(`${redirectUrl}metrics`)),
-        icon: "line-chart me-2",
-      },
-      {
-        name: "Insights",
-        onClick: () => dispatch(push(`${redirectUrl}insights`)),
-        icon: "lightbulb-o me-2",
-      },
-    ];
-  };
 
   const noOfApplicationsAvailable = submissionsList?.length || 0;
   if (metricsLoadError) {
@@ -216,7 +199,6 @@ const Dashboard = React.memo(() => {
           id="main"
           role="complementary"
         >
-          <Head items={headerList()} page="Metrics" />
           <div className="d-flex flex-wrap justify-content-between col-md-12">
           <div className="custom-input-group col-12 col-md-4 px-0">
       <InputGroup>

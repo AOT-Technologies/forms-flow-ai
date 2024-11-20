@@ -11,12 +11,10 @@ import {
 import Loading from "../../containers/Loading";  
 import { 
   DRAFT_ENABLED,
-  MULTITENANCY_ENABLED, 
 } from "../../constants/constants"; 
- 
 import Head from "../../containers/Head";
-import { push } from "connected-react-router";
  import ApplicationTable from "./ApplicationTable";
+ import {navigateToSubmitFormsListing, navigateToSubmitFormsDraft, navigateToSubmitFormsApplication} from "../../helper/routerHelper";
 
 export const ApplicationList = React.memo(() => {
  
@@ -32,8 +30,6 @@ export const ApplicationList = React.memo(() => {
   const draftCount = useSelector((state) => state.draft.draftCount);
   const dispatch = useDispatch();
    const page = useSelector((state) => state.applications.activePage);
-   const tenantKey = useSelector((state) => state.tenants?.tenantId);
-  const redirectUrl = MULTITENANCY_ENABLED ? `/tenant/${tenantKey}/` : "/"; 
   const userRoles = useSelector((state) => state.user.roles || []);
   const create_submissions = userRoles.includes("create_submissions");
 
@@ -59,23 +55,34 @@ export const ApplicationList = React.memo(() => {
   if (isApplicationListLoading) {
     return <Loading />;
   } 
- 
+  const navigateToSubmitFormsRoute = () => {
+    navigateToSubmitFormsListing(dispatch);
+  };
+
+  const navigateToSubmitFormsDraftRoute = () => {
+    navigateToSubmitFormsDraft(dispatch);
+  };
+  const navigateToSubmitFormsApplicationRoute = () => {
+    navigateToSubmitFormsApplication(dispatch);
+  };
   const headerList = () => {
     const headers = [
       {
         name: "Submissions",
         count: totalApplications,
-        onClick: () => dispatch(push(`${redirectUrl}application`)),
-        icon: "list",
+        onClick: () => navigateToSubmitFormsApplicationRoute(),
       }
     ];
 
     if (create_submissions) {
+      headers.unshift({
+        name: "All Forms",
+        onClick: () => navigateToSubmitFormsRoute(),
+      });
       headers.push({
         name: "Drafts",
         count: draftCount,
-        onClick: () => dispatch(push(`${redirectUrl}draft`)),
-        icon: "edit",
+        onClick: () => navigateToSubmitFormsDraftRoute(),
       });
     }
 

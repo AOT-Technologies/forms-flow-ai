@@ -4,6 +4,7 @@ import { Route, Switch, Redirect, useParams } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import {
   BASE_ROUTE,
+  ROUTE_TO,
   DRAFT_ENABLED,
   MULTITENANCY_ENABLED,
   KEYCLOAK_AUTH_URL,
@@ -95,18 +96,15 @@ const PrivateRoute = React.memo((props) => {
           viewDashboards 
         } = useUserRoles();
   
-       const BASE_ROUTE_PATH = (viewTasks || manageTasks)
-        ? `${redirecUrl}task`
-        : ( createSubmissions || createDesigns || viewDesigns)
-        ? `${redirecUrl}form`
-        : admin  
-        ? `${redirecUrl}admin` 
-        : viewSubmissions 
-        ? `${redirecUrl}application` 
-        : viewDashboards 
-        ? `${redirecUrl}metrics` 
-        : "/404";
-       
+        const BASE_ROUTE_PATH = (() => {
+          if (viewTasks || manageTasks) return ROUTE_TO.TASK;
+          if (createSubmissions) return ROUTE_TO.FORM;
+          if (createDesigns || viewDesigns) return ROUTE_TO.FORMFLOW;
+          if (admin) return ROUTE_TO.ADMIN;
+          if (viewSubmissions) return ROUTE_TO.APPLICATION;
+          if (viewDashboards) return ROUTE_TO.METRICS;
+          return ROUTE_TO.NOTFOUND;
+        })();
 
   const authenticate = (instance, store) => {
     setKcInstance(instance);
@@ -299,6 +297,24 @@ const PrivateRoute = React.memo((props) => {
     [userRoles]
   );
 
+  const ClientRoute = useMemo(
+    () =>
+      ({ component: Component, ...rest }) =>
+      (
+        <Route
+          {...rest}
+          render={(props) =>
+            createSubmissions || viewSubmissions  ? (
+              <Component {...props} />
+            ) : (
+              <AccessDenied userRoles={userRoles} />
+            )
+          }
+        />
+      ),
+    [userRoles]
+  );
+
   if (!tenantValid) {
     return <NotFound />;
   }
@@ -311,51 +327,51 @@ const PrivateRoute = React.memo((props) => {
         <Suspense fallback={<Loading />}>
           <Switch>
             {ENABLE_FORMS_MODULE && (
-              <FormRoute path={`${BASE_ROUTE}form`} component={Form} />
+              <ClientRoute path={ROUTE_TO.FORM} component={Form} />
             )}
             {ENABLE_FORMS_MODULE && (
-              <DesignerRoute path={`${BASE_ROUTE}formflow`} component={Form} />
+              <DesignerRoute path={ROUTE_TO.FORMFLOW} component={Form} />
             )}
             {ENABLE_APPLICATIONS_MODULE && (
-              <DraftRoute path={`${BASE_ROUTE}draft`} component={Drafts} />
+              <DraftRoute path={ROUTE_TO.DRAFT} component={Drafts} />
             )}
             {ENABLE_APPLICATIONS_MODULE && (
               <ClientReviewerRoute
-                path={`${BASE_ROUTE}application`}
+                path={ROUTE_TO.APPLICATION}
                 component={Application}
               />
             )}
             {ENABLE_PROCESSES_MODULE && (
               <DesignerRoute
-                path={`${BASE_ROUTE}subflow`}
+                path={ROUTE_TO.SUBFLOW}
                 component={Modeler}
               />
             )}
             {ENABLE_PROCESSES_MODULE && (
               <DesignerRoute
-                path={`${BASE_ROUTE}decision-table`}
+                path={ROUTE_TO.DECISIONTABLE}
                 component={Modeler}
               />
             )}
             {ENABLE_DASHBOARDS_MODULE && (
               <DashBoardRoute
-                path={`${BASE_ROUTE}metrics`}
+                path={ROUTE_TO.METRICS}
                 component={DashboardPage}
               />
             )}
             {ENABLE_DASHBOARDS_MODULE && (
               <DashBoardRoute
-                path={`${BASE_ROUTE}insights`}
+                path={ROUTE_TO.INSIGHTS}
                 component={InsightsPage}
               />
             )}
             {ENABLE_TASKS_MODULE && (
               <ReviewerRoute
-                path={`${BASE_ROUTE}task`}
+                path={ROUTE_TO.TASK}
                 component={ServiceFlow}
               />
             )}
-            <Route exact path={`${redirecUrl}admin`} /> 
+            <Route exact path={ROUTE_TO.ADMIN} /> 
             <Route exact path={BASE_ROUTE}>
             {userRoles.length && (
                <Redirect
@@ -363,8 +379,8 @@ const PrivateRoute = React.memo((props) => {
                 />
                )}
             </Route>
-            <Route path="/404" exact={true} component={NotFound} />
-            <Redirect from="*" to="/404" />
+            <Route path={ROUTE_TO.NOTFOUND} exact={true} component={NotFound} />
+            <Redirect from="*" to={ROUTE_TO.NOTFOUND} />
           </Switch>
         </Suspense>
       ) : (

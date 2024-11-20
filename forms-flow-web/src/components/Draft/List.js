@@ -3,14 +3,12 @@ import React, { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux"; 
 import Loading from "../../containers/Loading";
  import { useTranslation } from "react-i18next"; 
-import { MULTITENANCY_ENABLED } from "../../constants/constants";
  
 import {
   fetchDrafts,
 } from "../../apiManager/services/draftService";
 import Confirm from "../../containers/Confirm";
 import Head from "../../containers/Head";
-import { push } from "connected-react-router";
 import {
   setDraftDelete,
   setDraftListLoading,
@@ -19,6 +17,7 @@ import { deleteDraftbyId } from "../../apiManager/services/draftService";
  import { toast } from "react-toastify";
 import { textTruncate } from "../../helper/helper";
 import DraftTable from "./DraftTable";
+import {navigateToSubmitFormsListing, navigateToSubmitFormsDraft, navigateToSubmitFormsApplication} from "../../helper/routerHelper";
 
 export const DraftList = React.memo(() => {
   const { t } = useTranslation();
@@ -40,8 +39,6 @@ export const DraftList = React.memo(() => {
     (state) => state.draft.searchParams
   );
  
-   const tenantKey = useSelector((state) => state.tenants?.tenantId);
-   const redirectUrl = MULTITENANCY_ENABLED ? `/tenant/${tenantKey}/` : "/";
    let filterParams = {
       ...draftListSearchParams,
       page: page,
@@ -49,11 +46,6 @@ export const DraftList = React.memo(() => {
       sortOrder,
       sortBy
   };
-
- 
-
- 
- 
 
   useEffect(() => {
     dispatch(fetchDrafts(filterParams,() => {
@@ -101,20 +93,31 @@ export const DraftList = React.memo(() => {
     return <Loading />;
   }
 
- 
+  const navigateToSubmitFormsRoute = () => {
+    navigateToSubmitFormsListing(dispatch);
+  };
+
+  const navigateToSubmitFormsDraftRoute = () => {
+    navigateToSubmitFormsDraft(dispatch);
+  };
+  const navigateToSubmitFormsApplicationRoute = () => {
+    navigateToSubmitFormsApplication(dispatch);
+  };
   const headerList = () => {
     return [
       {
+        name: "All Forms",
+        onClick: navigateToSubmitFormsRoute()//dispatch(push(`${redirectUrl}form`)),
+      },
+      {
         name: "Submissions",
         count: applicationCount,
-        onClick: () => dispatch(push(`${redirectUrl}application`)),
-        icon: "list",
+        onClick: () => navigateToSubmitFormsApplicationRoute(),
       },
       {
         name: "Drafts",
         count: draftCount,
-        onClick: () => dispatch(push(`${redirectUrl}draft`)),
-        icon: "edit",
+        onClick: () => navigateToSubmitFormsDraftRoute(),
       },
     ];
   };

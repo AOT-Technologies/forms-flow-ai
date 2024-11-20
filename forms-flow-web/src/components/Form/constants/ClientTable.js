@@ -1,11 +1,7 @@
 import React, { useState, useEffect } from "react";
-import {
-  InputGroup,
-  FormControl,
-} from "react-bootstrap";
+
 import { useDispatch, useSelector } from "react-redux";
 import { push } from "connected-react-router";
-import LoadingOverlay from "react-loading-overlay-ts";
 import {
   setBPMFormLimit,
   setBPMFormListPage,
@@ -19,7 +15,7 @@ import { useTranslation } from "react-i18next";
 import { Translation } from "react-i18next";
 import { sanitize } from "dompurify";
 import userRoles from "../../../constants/permissions";
-import { TableFooter } from "@formsflow/components";
+import { TableFooter, CustomSearch } from "@formsflow/components";
 
 function ClientTable() {
   const { createDesigns } = userRoles();
@@ -132,7 +128,7 @@ function ClientTable() {
   };
   return (
     <>
-      <LoadingOverlay active={searchFormLoading} spinner text={t("Loading...")}>
+     
         <div className="min-height-400">
           <table className="table custom-table table-responsive-sm">
             <thead>
@@ -167,42 +163,16 @@ function ClientTable() {
                 </th>
                 <th>{t("Form Description")}</th>
                 <th colSpan="4" aria-label="Search Forms by form title" >
-                  <InputGroup className="input-group p-0 w-100">
-                    <FormControl
-                      value={search}
-                      onChange={(e) => {
-                        setSearch(e.target.value);
-                      }}
-                      onKeyDown={(e) =>
-                        e.keyCode === 13 ? handleSearch() : ""
-                      }
-                      className="bg-white out-line"
-                      data-testid="form-search-input-box"
-                      placeholder={t("Search by form title")}
-                      title={t("Search by form title")}
-                      aria-label={t("Search by form title")}
-                    />
-                    {search && (
-                      <InputGroup.Append
-                        onClick={handleClearSearch}
-                        data-testid="form-search-clear-button"
-                      >
-                        <InputGroup.Text className="h-100">
-                          <i className="fa fa-times "></i>
-                        </InputGroup.Text>
-                      </InputGroup.Append>
-                    )}
-                    <InputGroup.Append
-                      className="cursor-pointer"
-                      onClick={handleSearch}
-                      data-testid="form-search-click-button"
-                      disabled={!search?.trim()}
-                    >
-                      <InputGroup.Text className="h-100 bg-white">
-                        <i className="fa fa-search"></i>
-                      </InputGroup.Text>
-                    </InputGroup.Append>
-                  </InputGroup>
+                  <CustomSearch
+                    search={search}
+                    setSearch={setSearch}
+                    handleSearch={handleSearch}
+                    handleClearSearch={handleClearSearch}
+                    placeholder={t("Search by form title")}
+                    searchLoading={searchFormLoading}
+                    title={t("Search by form title")}
+                    dataTestId="client-form-search"
+                  />
                 </th>
               </tr>
             </thead>
@@ -283,7 +253,6 @@ function ClientTable() {
             )}
           </table>
         </div>
-      </LoadingOverlay>
 
       {formData.length ? (
         <table className="table">

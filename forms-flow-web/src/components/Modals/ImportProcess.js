@@ -92,12 +92,9 @@ const ImportProcess = React.memo(({
   };
 
   // Extract file details asynchronously
-  const extractFileDetails = (fileContent) => {
-    return new Promise((resolve, reject) => {
-      FileService.extractFileDetails(fileContent, (result) => {
-        result ? resolve(result) : reject("No valid XML found in the file.");
-      });
-    });
+  const extractFileDetails = async (fileContent) => {
+    const extractedXml = await FileService.extractFileDetails(fileContent);
+    return extractedXml;
   };
 
   return (

@@ -94,7 +94,6 @@ def get_group_id(token, group_name):
             if sub_group['path'] == f"/{group_name}":
                 return sub_group['id']
     return None
-    # raise ValueError(f"Group '{group_name}' not found.")
 
 
 def assign_roles_to_group(token, group_id, client_id, roles):

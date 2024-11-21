@@ -707,12 +707,12 @@ const ProcessCreateEdit = ({ type }) => {
         closeImport={() => setSelectedAction(null)}
         processId={processData.id}
         processVersion={{
-          type: process.type,
+          type: Process.type,
           majorVersion: processData?.majorVersion,
           minorVersion: processData?.minorVersion
         }}
         setImportXml={handleImportData}
-        fileType={process.extension}
+        fileType={Process.extension}
       />}
     </div>
   );

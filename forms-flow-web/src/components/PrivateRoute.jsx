@@ -9,7 +9,7 @@ import { Route, Switch, Redirect, useParams } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import {
   BASE_ROUTE,
-  ROUTE_TO,
+  getRoute,
   DRAFT_ENABLED,
   MULTITENANCY_ENABLED,
   KEYCLOAK_AUTH_URL,
@@ -89,6 +89,7 @@ const PrivateRoute = React.memo((props) => {
   const [authError, setAuthError] = React.useState(false);
   const [kcInstance, setKcInstance] = React.useState(getKcInstance());
   const [tenantValid, setTenantValid] = React.useState(true); // State to track tenant validity
+  const ROUTE_TO = getRoute(tenantId);
   const {
     admin,
     createDesigns,

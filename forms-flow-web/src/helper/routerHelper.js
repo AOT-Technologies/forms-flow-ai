@@ -1,5 +1,5 @@
 import { push } from "connected-react-router";
-import { ROUTE_TO } from "../constants/constants";
+import { getRoute } from "../constants/constants";
 
 
 const navigateTo = (dispatch,baseUrl) => {
@@ -7,29 +7,29 @@ const navigateTo = (dispatch,baseUrl) => {
 };
 
 /* ---------------------------  Designer Routes --------------------------- */
-const navigateToDesignFormsListing = (dispatch) => {
-  navigateTo(dispatch,ROUTE_TO.FORMFLOW);
+const navigateToDesignFormsListing = (dispatch,tenantId) => {
+  navigateTo(dispatch,getRoute(tenantId).FORMFLOW);
 };
 
-const navigateToDesignFormCreate = (dispatch) => {
-  navigateTo(dispatch,`${ROUTE_TO.FORMFLOW}/create`);
+const navigateToDesignFormCreate = (dispatch,tenantId) => {
+  navigateTo(dispatch,`${getRoute(tenantId).FORMFLOW}/create`);
 };
 
-const navigateToDesignFormEdit = (dispatch,formId) => {
-  navigateTo(dispatch,`${ROUTE_TO.FORMFLOW}/${formId}/edit`);
+const navigateToDesignFormEdit = (dispatch,tenantId,formId) => {
+  navigateTo(dispatch,`${getRoute(tenantId).FORMFLOW}/${formId}/edit`);
 };
 
 /* ---------------------------  Client Submission Routes --------------------------- */
-const navigateToSubmitFormsApplication = (dispatch) => {
-  navigateTo(dispatch,ROUTE_TO.APPLICATION);
+const navigateToSubmitFormsApplication = (dispatch,tenantId) => {
+  navigateTo(dispatch,getRoute(tenantId).APPLICATION);
 };
 
-const navigateToSubmitFormsDraft = (dispatch) => {
-  navigateTo(dispatch,ROUTE_TO.DRAFT);
+const navigateToSubmitFormsDraft = (dispatch,tenantId) => {
+  navigateTo(dispatch,getRoute(tenantId).DRAFT);
 };
 
-const navigateToSubmitFormsListing = (dispatch) => {
-  navigateTo(dispatch,ROUTE_TO.FORM);
+const navigateToSubmitFormsListing = (dispatch,tenantId) => {
+  navigateTo(dispatch,getRoute(tenantId).FORM);
 };
 
 export {

@@ -23,7 +23,7 @@ import PropTypes from "prop-types";
 const SubmitList = React.memo((props) => {
   const { t } = useTranslation();
   const searchText = useSelector((state) => state.bpmForms.searchText);
-  // const tenantKey = useSelector((state) => state.tenants?.tenantId);
+  const tenantId = useSelector((state) => state.tenants?.tenantId);
   const [search, setSearch] = useState(searchText || "");
   const userRoles = useSelector((state) => state.user.roles || []);
   const create_submissions = userRoles.includes("create_submissions");
@@ -61,6 +61,9 @@ const SubmitList = React.memo((props) => {
 
   useEffect(() => {
     dispatch(setBPMFormListLoading(true));
+    if (!create_submissions) {
+      navigateToSubmitFormsApplicationRoute();
+    }
   }, []);
 
   const fetchForms = () => {
@@ -72,16 +75,16 @@ const SubmitList = React.memo((props) => {
   useEffect(() => {
     fetchForms();
   }, [getFormsInit, dispatch, pageNo, limit, formSort, searchText]);
-
+  
   const navigateToSubmitFormsRoute = () => {
-    navigateToSubmitFormsListing(dispatch);
+    navigateToSubmitFormsListing(dispatch,tenantId);
   };
 
   const navigateToSubmitFormsDraftRoute = () => {
-    navigateToSubmitFormsDraft(dispatch);
+    navigateToSubmitFormsDraft(dispatch,tenantId);
   };
   const navigateToSubmitFormsApplicationRoute = () => {
-    navigateToSubmitFormsApplication(dispatch);
+    navigateToSubmitFormsApplication(dispatch,tenantId);
   };
 
   const headerList = () => {

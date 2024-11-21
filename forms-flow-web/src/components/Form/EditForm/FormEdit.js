@@ -510,7 +510,7 @@ const EditComponent = () => {
   };
 
   const backToForm = () => {
-    dispatch(push(`${redirectUrl}form/`));
+    dispatch(push(`${redirectUrl}formflow`));
   };
   const closeHistoryModal = () => {
     setShowHistoryModal(false);
@@ -778,7 +778,7 @@ const EditComponent = () => {
       try {
         await unPublish(processListData.id);
         setIsPublished(false);
-        dispatch(push(`${redirectUrl}form`));
+        dispatch(push(`${redirectUrl}formflow`));
       } catch (err) {
         const error = err.response?.data || err.message;
         dispatch(setFormFailureErrorData("form", error));
@@ -796,7 +796,7 @@ const EditComponent = () => {
   const deleteModal = () => {
     if (!applicationCount) {
       dispatch(deleteForm("form", formId));
-      dispatch(push(`${redirectUrl}form`));
+      dispatch(push(`${redirectUrl}formflow`));
     }
 
     if (processListData.id) {

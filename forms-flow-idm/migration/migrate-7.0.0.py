@@ -153,6 +153,9 @@ def main():
         for group_name in groups_to_role_mappings.keys():
             # Assign roles to group
             group_id = get_group_id(token, group_name)
+            if not group_id:
+                print(f"Group {group_name} not found, skipping and continuing the migration.")
+                continue
             roles = []
             roles_to_lookup = groups_to_role_mappings.get(group_name)
             print(f"Updating {group_name} with roles : {roles_to_lookup}")

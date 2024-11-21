@@ -46,7 +46,9 @@ def get_client_id(token, client_name):
     for client in clients:
         if client['clientId'] == client_name:
             return client['id']
-    raise ValueError(f"Client '{client_name}' not found.")
+    raise ValueError(f"Client '{client_name}' not found. "
+                     f"Please make sure the client ({CLIENT_ID}) have manage-clients role from realm-management, "
+                     f"under Service account roles")
 
 
 def get_client_roles(token, client_id):
@@ -91,7 +93,8 @@ def get_group_id(token, group_name):
         for sub_group in group.get("subGroups"):
             if sub_group['path'] == f"/{group_name}":
                 return sub_group['id']
-    raise ValueError(f"Group '{group_name}' not found.")
+    return None
+    # raise ValueError(f"Group '{group_name}' not found.")
 
 
 def assign_roles_to_group(token, group_id, client_id, roles):

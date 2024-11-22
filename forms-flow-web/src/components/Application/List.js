@@ -30,6 +30,7 @@ export const ApplicationList = React.memo(() => {
    const page = useSelector((state) => state.applications.activePage);
   const userRoles = useSelector((state) => state.user.roles || []);
   const create_submissions = userRoles.includes("create_submissions");
+  const tenantId = useSelector((state) => state.tenants?.tenantId);
 
   useEffect(() => {
     dispatch(getAllApplicationStatus());
@@ -54,14 +55,14 @@ export const ApplicationList = React.memo(() => {
     return <Loading />;
   } 
   const navigateToSubmitFormsRoute = () => {
-    navigateToSubmitFormsListing(dispatch);
+    navigateToSubmitFormsListing(dispatch,tenantId);
   };
 
   const navigateToSubmitFormsDraftRoute = () => {
-    navigateToSubmitFormsDraft(dispatch);
+    navigateToSubmitFormsDraft(dispatch,tenantId);
   };
   const navigateToSubmitFormsApplicationRoute = () => {
-    navigateToSubmitFormsApplication(dispatch);
+    navigateToSubmitFormsApplication(dispatch,tenantId);
   };
   const headerList = () => {
     const headers = [

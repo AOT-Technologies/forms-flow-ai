@@ -34,7 +34,7 @@ export const DraftList = React.memo(() => {
   const draftListSearchParams = useSelector(
     (state) => state.draft.searchParams
   );
- 
+  const tenantId = useSelector((state) => state.tenants?.tenantId);
    let filterParams = {
       ...draftListSearchParams,
       page: page,
@@ -90,14 +90,14 @@ export const DraftList = React.memo(() => {
   }
 
   const navigateToSubmitFormsRoute = () => {
-    navigateToSubmitFormsListing(dispatch);
+    navigateToSubmitFormsListing(dispatch,tenantId);
   };
 
   const navigateToSubmitFormsDraftRoute = () => {
-    navigateToSubmitFormsDraft(dispatch);
+    navigateToSubmitFormsDraft(dispatch,tenantId);
   };
   const navigateToSubmitFormsApplicationRoute = () => {
-    navigateToSubmitFormsApplication(dispatch);
+    navigateToSubmitFormsApplication(dispatch,tenantId);
   };
   const headerList = () => {
     return [

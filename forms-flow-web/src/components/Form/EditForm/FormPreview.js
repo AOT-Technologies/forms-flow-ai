@@ -42,7 +42,7 @@ const FormPreview = () => {
   return (
     <div className="form-preview-tab">
       <div className="preview-header-text mb-4">{form?.title}</div>
-      <div className="form-container">
+      <div>
         <Form
           form={form}
           options={{

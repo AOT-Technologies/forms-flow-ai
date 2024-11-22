@@ -8,6 +8,7 @@ import Item from "./Item/index";
 import { BASE_ROUTE } from "../../constants/constants";
 import Loading from "../../containers/Loading";
 import AccessDenied from "../AccessDenied";
+import FormPreview from "./EditForm/FormPreview";
 
 let user = "";
 
@@ -24,6 +25,15 @@ const FormDesignRoute = ({ component: Component, ...rest }) => (
   />
 );
 const FormSubmissionRoute = ({ component: Component, ...rest }) => (
+  <Route
+    {...rest}
+    render={(props) => 
+        (<Component {...props} /> )
+    }
+  />
+);
+
+const FormPreviewRoute = ({ component: Component, ...rest }) => (
   <Route
     {...rest}
     render={(props) => 
@@ -50,6 +60,10 @@ export default React.memo(() => {
         <FormSubmissionRoute
           path={`${BASE_ROUTE}form/:formId/`}
           component={Item}
+        />
+        <FormPreviewRoute 
+          path={`${BASE_ROUTE}formflow/:formId?/view-edit`}
+          component={FormPreview}
         />
       </Switch>
     </div>

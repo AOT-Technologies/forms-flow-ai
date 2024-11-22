@@ -531,8 +531,9 @@ const EditComponent = () => {
     fetchRestoredFormData(cloneId);
   };
 
-  const handlePreview = () => {
-    console.log("handlePreview");
+  const handlePreview = () => { 
+    const newTabUrl = `${redirectUrl}formflow/${form._id}/view-edit`; 
+    window.open(newTabUrl, "_blank"); 
   };
 
   const discardChanges = () => {

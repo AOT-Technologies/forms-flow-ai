@@ -17,6 +17,7 @@ export const fetchBPMFormList = (
   formSort,
   formName,
   formType,
+  showForOnlyCreateSubmissionUsers,
   ...rest
 ) => {
   const done = rest.length ? rest[0] : () => { };
@@ -30,6 +31,9 @@ export const fetchBPMFormList = (
     }
     if (formName) {
       url += `&search=${encodeURIComponent(formName)}`;
+    }
+    if(showForOnlyCreateSubmissionUsers){
+      url += `&showForOnlyCreateSubmissionUsers=${showForOnlyCreateSubmissionUsers}`;
     }
     RequestService.httpGETRequest(url, {}, StorageService.get(StorageService.User.AUTH_TOKEN))
       .then((res) => {

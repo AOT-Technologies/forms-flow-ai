@@ -68,14 +68,14 @@ const FlowEdit = forwardRef(({ isPublished = false, CategoryType }, ref) => {
   } = useMutation((processId) => fetchRevertingProcessData(processId), {
     onSuccess: () => {
       setIsReverted(true);
-      enabelWorkflowChange();
+      enableWorkflowChange();
     },
   });
 
   const handleDiscardModal = () => setShowDiscardModal(!showDiscardModal);
   const handleToggleHistoryModal = () => setShowHistoryModal(!showHistoryModal);
 
-  const enabelWorkflowChange = ()=>{
+  const enableWorkflowChange = ()=>{
     !isWorkflowChanged && setIsWorkflowChanged(true);
   };
 
@@ -229,7 +229,7 @@ const FlowEdit = forwardRef(({ isPublished = false, CategoryType }, ref) => {
                 <BPMNViewer bpmnXml={processData?.processData || null} />
             ) : (
               <BpmnEditor
-                onChange={enabelWorkflowChange} //handled is workflow changed or not
+                onChange={enableWorkflowChange} //handled is workflow changed or not
                 ref={bpmnRef}
                 setLintErrors={setLintErrors}
                 bpmnXml={

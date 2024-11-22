@@ -153,7 +153,7 @@ const ProcessCreateEdit = ({ type }) => {
   } = useMutation((processId) => fetchRevertingProcessData(processId), {
     onSuccess: () => {
       setIsReverted(true);
-      enabelWorkflowChange();
+      enableWorkflowChange();
     },
   });
 
@@ -163,7 +163,7 @@ const ProcessCreateEdit = ({ type }) => {
   // handle history modal
   const handleToggleHistoryModal = () => setHistoryModalShow(!historyModalShow);
 
-  const enabelWorkflowChange = ()=>{
+  const enableWorkflowChange = ()=>{
     !isWorkflowChanged && setIsWorkflowChanged(true);
   };
 
@@ -649,14 +649,14 @@ const ProcessCreateEdit = ({ type }) => {
           >
             {isBPMN ? (
               <BpmnEditor
-                onChange={enabelWorkflowChange}
+                onChange={enableWorkflowChange}
                 ref={bpmnRef}
                 bpmnXml={isCreate ? defaultProcessXmlData : processDataXML}
                 setLintErrors={setLintErrors}
               />
             ) : (
               <DmnEditor
-                onChange={enabelWorkflowChange}
+                onChange={enableWorkflowChange}
                 ref={dmnRef}
                 dmnXml={isCreate ? defaultDmnXmlData : processDataXML}
               />

@@ -608,7 +608,7 @@ const EditComponent = () => {
       if(!prev.initial){
         key = "initial";
       }else if(!prev.changed){
-        key = "changed"
+        key = "changed";
       }
       return key ? {...prev, [key]:true} : prev;
     });

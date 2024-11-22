@@ -192,10 +192,14 @@ const EditComponent = () => {
       if (selectedLayoutVersion || selectedFlowVersion) {
         data.form = {
           skip: selectedLayoutVersion === true,
+          ...(selectedLayoutVersion !== true && selectedLayoutVersion !== false 
+            && { selectedVersion: selectedLayoutVersion })
         };
 
         data.workflow = {
           skip: selectedFlowVersion === true,
+          ...(selectedFlowVersion !== true && selectedFlowVersion !== false 
+            && { selectedVersion: selectedFlowVersion })
         };
       }
     }

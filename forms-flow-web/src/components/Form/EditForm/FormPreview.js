@@ -7,7 +7,7 @@ import { fetchFormById } from "../../../apiManager/services/bpmFormServices.js";
 import Loading from "../../../containers/Loading.js";
 
 const FormPreview = () => {
-  const { lang } = useSelector((state) => state.user);
+  const lang = useSelector((state) => state.user.lang);
   const { formId } = useParams();
   const [form, setForm] = useState(null);
   const [loading, setLoading] = useState(false);

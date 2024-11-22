@@ -51,6 +51,7 @@ class FormProcessMapperService:  # pylint: disable=too-many-public-methods
         """Get all forms."""
         user: UserContext = kwargs["user"]
         authorized_form_ids: Set[str] = []
+        current_app.logger.info(f"Listing forms for designer: {is_designer}")
         if active_forms:
             mappers, get_all_mappers_count = FormProcessMapper.find_all_active_forms(
                 page_number=page_number,

@@ -9,7 +9,6 @@ import "../Form/Create.scss";
 import {
   MULTITENANCY_ENABLED,
 } from "../../constants/constants";
-import { addHiddenApplicationComponent } from "../../constants/applicationComponent";
 import { saveFormProcessMapperPost } from "../../apiManager/services/processServices";
 import { useDispatch, useSelector } from "react-redux";
 import { toast } from "react-toastify";
@@ -129,12 +128,12 @@ const Create = React.memo(() => {
     }
   }, [form]);
 
+  
   // submitting form
   const saveFormData = () => {
     setFormSubmitted(true);
-    const newFormData = addHiddenApplicationComponent(form);
     const newForm = {
-      ...newFormData,
+      ...form,
       tags: ["common"],
     };
 

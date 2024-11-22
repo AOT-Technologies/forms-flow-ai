@@ -146,8 +146,8 @@ def main():
 
         # Get client and group IDs
         client_id = get_client_id(token, "forms-flow-web")
-        client_roles = get_client_roles(token, client_id)
         update_client_roles(token, client_id, roles_to_update)
+        client_roles = get_client_roles(token, client_id)
         print("Client roles updated successfully.")
         print("Starting group update")
         for group_name in groups_to_role_mappings.keys():

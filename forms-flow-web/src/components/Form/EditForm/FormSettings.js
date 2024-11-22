@@ -110,18 +110,18 @@ const FormSettings = forwardRef((props, ref) => {
 
   const handleFormDetailsChange = (e) => {
     const { name, value, type } = e.target;
-    // if form name or path changed need to call validation api based on that
     let updatedValue =
       name === "path" ? _camelCase(value).toLowerCase() : value;
-    
+  
     if (type === "checkbox") {
       setFormDetails((prev) => ({ ...prev, [name]: e.target.checked ? "wizard" : "form" }));
     } else {
       setFormDetails((prev) => ({ ...prev, [name]: updatedValue }));
-      if (name === "title" || name === "path") {
-        validateField(name === "title" ? 'name' : 'path', updatedValue);
-      }
     }
+  };
+  
+  const handleBlur = (field, value) => {
+    validateField(field, value);
   };
   
 
@@ -208,8 +208,8 @@ const FormSettings = forwardRef((props, ref) => {
           ariaLabel={t("Form Name")}
           isInvalid = {!!errors.name}
           feedback = {errors.name}
-          onBlur={() => validateField('name', formDetails.title)}
-          />
+          onBlur={() => handleBlur('name', formDetails.title)}         
+           />
         <FormTextArea
           label={t("Description")}
           name="description"
@@ -384,7 +384,7 @@ const FormSettings = forwardRef((props, ref) => {
               className="url-edit"
               name="path"
               onChange={handleFormDetailsChange}
-              onBlur={() => validateField('path', formDetails.path)}            />
+              onBlur={() => handleBlur('path', formDetails.path)}           />
             <InputGroup.Text className="url-copy" onClick={copyPublicUrl}>
               {copied ? <i className="fa fa-check" /> : <CopyIcon />}
             </InputGroup.Text>

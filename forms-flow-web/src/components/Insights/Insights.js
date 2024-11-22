@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { connect, useSelector, useDispatch } from "react-redux";
+import { connect, useDispatch } from "react-redux";
 import Select from "react-select";
 import NoData from "./nodashboard";
 import { Route, Redirect } from "react-router";
@@ -13,9 +13,7 @@ import {
 import LoadingOverlay from "react-loading-overlay-ts";
 import Loading from "../../containers/Loading";
 import { useTranslation, Translation } from "react-i18next";
-import { BASE_ROUTE, MULTITENANCY_ENABLED } from "../../constants/constants";
-import { push } from "connected-react-router";
-import Head from "../../containers/Head";
+import { BASE_ROUTE } from "../../constants/constants";
 import { runCleanup } from "../../actions/insightActions";
 
 const Insights = React.memo((props) => {
@@ -31,11 +29,7 @@ const Insights = React.memo((props) => {
   const dispatch = useDispatch();
   const [dashboardSelected, setDashboardSelected] = useState(null);
   const [options, setOptions] = useState([]);
-  const tenantKey = useSelector((state) => state.tenants?.tenantId);
-  const totalItems = useSelector((state) => state.metrics.totalItems);
-
   const { t } = useTranslation();
-  const redirectUrl = MULTITENANCY_ENABLED ? `/tenant/${tenantKey}/` : "/";
 
   useEffect(() => {
     getDashboards();
@@ -63,21 +57,6 @@ const Insights = React.memo((props) => {
     };
   }, []);
 
-  const headerList = () => {
-    return [
-      {
-        name: "Metrics",
-        count: totalItems,
-        onClick: () => dispatch(push(`${redirectUrl}metrics`)),
-        icon: "line-chart me-2",
-      },
-      {
-        name: "Insights",
-        onClick: () => dispatch(push(`${redirectUrl}insights`)),
-        icon: "lightbulb-o me-2",
-      },
-    ];
-  };
   const NoPublicUrlMessage = () => (
     <div className="h-100 col-12 text-center div-middle">
       <i className="fa fa-tachometer fa-lg" />
@@ -93,11 +72,6 @@ const Insights = React.memo((props) => {
     <>
 
       <div className="mb-2">
-
-
-        <Head items={headerList()} page="Insights" />
-
-
         <div className="d-flex align-items-center flex-md-row flex-colum justify-content-between mt-3"
           data-testid="Insight"
           role="main"

@@ -14,6 +14,7 @@ from formsflow_api_utils.utils import (
     profiletime,
 )
 
+from formsflow_api.schemas import ProcessDataSchema
 from formsflow_api.services import ProcessService
 
 API = Namespace("Process", description="Process")
@@ -204,7 +205,8 @@ class ProcessDataResource(Resource):
         response = ProcessService.create_process(
             process_data=process_data, process_type=process_type, is_subflow=True
         )
-        return response, HTTPStatus.CREATED
+        response_data = ProcessDataSchema().dump(response)
+        return response_data, HTTPStatus.CREATED
 
 
 @cors_preflight("GET, PUT, DELETE, OPTIONS")
@@ -421,5 +423,37 @@ class ProcessResourceByProcessKey(Resource):
     )
     def get(process_key: str):
         """Get process data by process key."""
-        response, status = ProcessService.get_process_by_key(process_key), HTTPStatus.OK
+        response, status = (
+            ProcessService.get_process_by_key(process_key, request),
+            HTTPStatus.OK,
+        )
         return response, status
+
+
+@cors_preflight("POST,OPTIONS")
+@API.route("/migrate", methods=["POST", "OPTIONS"])
+class MigrateResource(Resource):
+    """Resource to support migration."""
+
+    @staticmethod
+    @auth.has_one_of_roles([CREATE_DESIGNS])
+    @profiletime
+    @API.response(200, "OK:- Successful request.")
+    @API.response(
+        400,
+        "BAD_REQUEST:- Invalid request.",
+    )
+    @API.response(
+        401,
+        "UNAUTHORIZED:- Authorization header not provided or an invalid token passed.",
+    )
+    @API.response(
+        403,
+        "FORBIDDEN:- Authorization will not help.",
+    )
+    def post():
+        """Migrate by process_key."""
+        return (
+            ProcessService.migrate(request),
+            HTTPStatus.OK,
+        )

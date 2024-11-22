@@ -8,7 +8,7 @@ from typing import List
 from flask_sqlalchemy.query import Query
 from formsflow_api_utils.utils import FILTER_MAPS, add_sort_filter
 from formsflow_api_utils.utils.user_context import UserContext, user_context
-from sqlalchemy import LargeBinary, and_, desc, func, or_
+from sqlalchemy import LargeBinary, UniqueConstraint, and_, desc, func, or_
 from sqlalchemy.dialects.postgresql import ENUM
 
 from .audit_mixin import AuditDateTimeMixin, AuditUserMixin
@@ -52,6 +52,11 @@ class Process(AuditDateTimeMixin, AuditUserMixin, BaseModel, db.Model):
     parent_process_key = db.Column(db.String)
     is_subflow = db.Column(db.Boolean, default=False)
     status_changed = db.Column(db.Boolean, default=False)
+
+    __table_args__ = (
+        UniqueConstraint("process_key", "tenant", name="uq_tenant_process_key"),
+        UniqueConstraint("name", "tenant", name="uq_tenant_process_name"),
+    )
 
     @classmethod
     def create_from_dict(cls, process_data: dict) -> Process:

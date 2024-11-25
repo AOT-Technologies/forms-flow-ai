@@ -219,7 +219,7 @@ const EditComponent = () => {
   // Helper function to prepare version data
   const prepareVersionData = (version) => ({
     skip: version === true,
-    ...(version !== true && version !== false && { selectedVersion: version }),
+    ...(typeof version === 'string' && { selectedVersion: version }),
   });
   
   // Helper function to handle the API response

@@ -166,7 +166,7 @@ export default function CreateNewFilterDrawer({
         setProcessLoading(false);
       })
       .catch((err) => {
-        console.err(err);
+        console.error(err);
         setProcessLoading(false);
       });
   };

@@ -64,7 +64,7 @@ import { toast } from "react-toastify";
 import userRoles from "../../../constants/permissions.js";
 import { generateUniqueId, isFormComponentsChanged } from "../../../helper/helper.js";
 import { useMutation } from "react-query";
-
+import NavigateBlocker from "../../CustomComponents/NavigateBlocker";
 // constant values
 const DUPLICATE = "DUPLICATE";
 const IMPORT = "IMPORT";
@@ -121,6 +121,7 @@ const EditComponent = () => {
   const [primaryButtonText, setPrimaryButtonText] = useState(defaultPrimaryBtnText);
   const { createDesigns } = userRoles();
   const [formChangeState, setFormChangeState] = useState({initial:false,changed:false});
+  const [workflowIsChanged, setWorkflowIsChanged] = useState(false);
 
   /* --------- validate form title exist or not --------- */
   const {
@@ -908,6 +909,7 @@ const EditComponent = () => {
   return (
     <div>
       <div>
+      <NavigateBlocker isBlock={formChangeState.changed || workflowIsChanged} message={"You have made changes that are not saved yet. The unsaved changes could be either on the Layout or the Flow side."} />
         <LoadingOverlay active={formSubmitted} spinner text={t("Loading...")}>
           <SettingsModal
             show={showSettingsModal}
@@ -1071,6 +1073,7 @@ const EditComponent = () => {
               {/* TBD: Add a loader instead. */}
               {isProcessDetailsLoading ? <>loading...</> : <FlowEdit 
               ref={flowRef}
+              setWorkflowIsChanged={setWorkflowIsChanged}
               CategoryType={CategoryType}
               isPublished={isPublished}
               />}

@@ -14,6 +14,8 @@ import { useTranslation } from "react-i18next";
 import { Translation } from "react-i18next";
 import { sanitize } from "dompurify";
 import { TableFooter } from "@formsflow/components";
+import LoadingOverlay from "react-loading-overlay-ts";
+
 
 function ClientTable() {
 
@@ -109,8 +111,12 @@ function ClientTable() {
 
   return (
     <>
-     
-        <div className="min-height-400">
+     <LoadingOverlay
+        active={searchFormLoading}
+        spinner
+        text={t("Loading...")}
+      >
+      <div className="min-height-400">
         <div className="table-responsive" style={{ maxHeight: "75vh", overflowY: "auto" }}>
           <table className="table custom-table table-responsive-sm">
             <thead>
@@ -211,18 +217,19 @@ function ClientTable() {
       {formData.length ? (
         <table className="table">
           <tfoot>
-          <TableFooter
-            limit={limit}
-            activePage={pageNo}
-            totalCount={totalForms}
-            handlePageChange={handlePageChange}
-            onLimitChange={onSizePerPageChange}
-            pageOptions={pageOptions}
-          />
+            <TableFooter
+              limit={limit}
+              activePage={pageNo}
+              totalCount={totalForms}
+              handlePageChange={handlePageChange}
+              onLimitChange={onSizePerPageChange}
+              pageOptions={pageOptions}
+            />
           </tfoot>
-          
         </table>
       ) : null}
+            </LoadingOverlay>
+
     </>
   );
 }

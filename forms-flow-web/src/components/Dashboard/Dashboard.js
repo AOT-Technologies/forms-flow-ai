@@ -25,11 +25,9 @@ import {
   setMetricsDateChange,
 } from "../../actions/metricsActions";
 import LoadingOverlay from "@ronchalant/react-loading-overlay";
-import {
-  Dropdown, 
-  FormControl,
-  InputGroup,
-} from "react-bootstrap";
+import { Dropdown, FormControl } from "react-bootstrap";
+import { CustomSearch } from "@formsflow/components"; 
+
 const Dashboard = React.memo(() => {
   const { t } = useTranslation();
   const dispatch = useDispatch();
@@ -90,10 +88,9 @@ const Dashboard = React.memo(() => {
   const handleSearch = () => {
     dispatch(setMetricsSubmissionPageChange(1));
     dispatch(setMetricsSubmissionLimitChange(9));
-    dispatch(setMetricsSubmissionSearch(searchInputBox.current.value));
+    dispatch(setMetricsSubmissionSearch(searchTextInput));
   };
   const onClear = () => {
-    searchInputBox.current.value = "";
     setSearchTextInput("");
     setShowClearButton(false);
     handleSearch();
@@ -197,44 +194,19 @@ const Dashboard = React.memo(() => {
           role="complementary"
         >
           <div className="d-flex flex-wrap justify-content-between col-md-12">
-          <div className="custom-input-group col-12 col-md-4 px-0">
-      <InputGroup>
-        <FormControl
-          type="search"
-          title={t("Search")}
-          ref={searchInputBox}
-          onKeyPress={(e) => e.key === "Enter" && handleSearch()}
-          onChange={(e) => {
-            setShowClearButton(e.target.value);
-            setSearchTextInput(e.target.value);
-            e.target.value === "" && handleSearch();
-          }}
-          autoComplete="off"
-          value={searchTextInput}
-          placeholder={t("Search by form name")}
-          className="bg-white"
-          aria-label={t("Search by form name")}
-          
-        />
-        {showClearButton && (
-          <InputGroup.Append className="d-flex cursor-pointer"onClick={() => onClear()}>
-            <InputGroup.Text className= "bg-white rounded-0">
-              <i className="fa fa-times"></i>
-            </InputGroup.Text>
-          </InputGroup.Append>
-        )}
+            <div className="custom-input-group col-12 col-md-4 px-0">
+              <CustomSearch
+                handleClearSearch={onClear}
+                search={searchTextInput}
+                setSearch={setSearchTextInput}
+                searchLoading={isMetricsLoading}
 
-        <InputGroup.Append
-          title={t("Click to search")}
-          onClick={() => handleSearch()}
-          className="d-flex cursor-pointer"
-        >
-          <InputGroup.Text className= "bg-white rounded-start-0">
-            <i className="fa fa-search"></i>
-          </InputGroup.Text>
-        </InputGroup.Append>
-        </InputGroup>
-    </div>
+                handleSearch={handleSearch}
+                placeholder={t("Search by form name")}
+                title={t("Search")}
+                dataTestId="form-search-input"
+              />
+            </div>
 
             <div className="d-flex justify-content-end align-items-center col-12 col-md-4 px-0">
               <div className="input-group me-2">

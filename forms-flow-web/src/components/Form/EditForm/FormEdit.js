@@ -571,8 +571,9 @@ const EditComponent = () => {
     fetchRestoredFormData(cloneId);
   };
 
-  const handlePreview = () => {
-    console.log("handlePreview");
+  const handlePreview = () => { 
+    const newTabUrl = `${redirectUrl}formflow/${form._id}/view-edit`; 
+    window.open(newTabUrl, "_blank"); 
   };
 
   const discardChanges = () => {
@@ -630,12 +631,13 @@ const EditComponent = () => {
         setFormSubmitted(false);
       });
   };
-  const formChange = (newForm) =>{
-    setFormChangeState(prev=>{
-      let key = null;
-      if(!prev.initial){
+
+  const formChange = (newForm) => {
+    setFormChangeState((prev) => {
+      let key = null; 
+      if (!prev.initial) {
         key = "initial";
-      }else if(!prev.changed){
+      } else if (!prev.changed) {
         key = "changed";
       }
       return key ? {...prev, [key]:true} : prev;

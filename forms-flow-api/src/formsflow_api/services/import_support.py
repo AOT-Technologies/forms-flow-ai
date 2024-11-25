@@ -541,8 +541,8 @@ class ImportService:  # pylint: disable=too-many-public-methods
                     # Incoming form data need to be updated as either major or minor version
                     if action == "validate":
                         return self.version_response(
-                            form_major=form_major + 1,
-                            form_minor=form_minor + 1,
+                            form_major=form_major,
+                            form_minor=form_minor,
                             workflow_major=None,
                             workflow_minor=None,
                         )
@@ -566,8 +566,8 @@ class ImportService:  # pylint: disable=too-many-public-methods
                             mapper.parent_form_id
                         )
                         return self.version_response(
-                            form_major=form_major + 1,
-                            form_minor=form_minor + 1,
+                            form_major=form_major,
+                            form_minor=form_minor,
                             workflow_major=major,
                             workflow_minor=minor,
                         )

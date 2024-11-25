@@ -292,7 +292,12 @@ class FormResourceList(Resource):
         form_type: str = dict_data.get("form_type", None)
         is_active = dict_data.get("is_active", None)
         active_forms = dict_data.get("active_forms", None)
-
+        # when ignore_designer true, exclude designer priorities like
+        # listing both active and inactive forms or listing forms created by the designer.
+        ignore_designer = dict_data.get("ignore_designer", False)
+        is_designer = (
+            auth.has_any_role([CREATE_DESIGNS, VIEW_DESIGNS]) and not ignore_designer
+        )
         sort_by = sort_by.split(",")
         sort_order = sort_order.split(",")
         if form_type:
@@ -312,7 +317,7 @@ class FormResourceList(Resource):
             sort_order=sort_order,
             form_type=form_type,
             is_active=is_active,
-            is_designer=auth.has_any_role([CREATE_DESIGNS, VIEW_DESIGNS]),
+            is_designer=is_designer,
             active_forms=active_forms,
         )
         return (

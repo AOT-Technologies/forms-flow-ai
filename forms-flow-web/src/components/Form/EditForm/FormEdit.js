@@ -603,9 +603,14 @@ const EditComponent = () => {
       });
   };
 
-  const formChange = (newForm) =>{
-    setFormChangeState(prev=>{
-      const key = !prev.initial ? "initial" : !prev.changed ? "changed" : null;
+  const formChange = (newForm) => {
+    setFormChangeState((prev) => {
+      let key = null; 
+      if (!prev.initial) {
+        key = "initial";
+      } else if (!prev.changed) {
+        key = "changed";
+      }
       return key ? {...prev, [key]:true} : prev;
     });
     dispatchFormAction({ type: "formChange", value: newForm });

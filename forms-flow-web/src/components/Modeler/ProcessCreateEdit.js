@@ -105,11 +105,13 @@ const ProcessCreateEdit = ({ type }) => {
   const [isPublishLoading, setIsPublishLoading] = useState(false);
   const [isReverted, setIsReverted] = useState(false);
   const [isWorkflowChanged, setIsWorkflowChanged] = useState(false);
+  
   const isDataFetched = useRef();
   useEffect(() => {
     setIsPublished(processData.status === "Published");
   }, [processData]);
 
+  
   const publishText = isPublished ? t("Unpublish") : t("Publish");
   const processName = processData.name;
   const fileName = (processName + Process.extension).replaceAll(" ", "");
@@ -164,11 +166,11 @@ const ProcessCreateEdit = ({ type }) => {
   const handleToggleHistoryModal = () => setHistoryModalShow(!historyModalShow);
 
   const enableWorkflowChange = ()=>{
-    !isWorkflowChanged && setIsWorkflowChanged(true);
+    setIsWorkflowChanged(true);
   };
 
   const disableWorkflowChange = ()=>{
-    isWorkflowChanged && setIsWorkflowChanged(false);
+    setIsWorkflowChanged(false);
   };
 
   useEffect(() => {

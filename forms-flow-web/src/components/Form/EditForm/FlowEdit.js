@@ -68,11 +68,20 @@ const FlowEdit = forwardRef(({ isPublished = false, CategoryType }, ref) => {
   } = useMutation((processId) => fetchRevertingProcessData(processId), {
     onSuccess: () => {
       setIsReverted(true);
+      enableWorkflowChange();
     },
   });
 
   const handleDiscardModal = () => setShowDiscardModal(!showDiscardModal);
   const handleToggleHistoryModal = () => setShowHistoryModal(!showHistoryModal);
+
+  const enableWorkflowChange = ()=>{
+    !isWorkflowChanged && setIsWorkflowChanged(true);
+  };
+
+  const disableWorkflowChange = ()=>{
+    isWorkflowChanged && setIsWorkflowChanged(false);
+  };
 
   //handle discard changes
   const handleDiscardConfirm = () => {
@@ -80,7 +89,7 @@ const FlowEdit = forwardRef(({ isPublished = false, CategoryType }, ref) => {
       //import the existing process data to bpmn
       bpmnRef.current?.handleImport(processData?.processData);
       isReverted && setIsReverted(!isReverted); //once it reverted then need to make it false
-      setIsWorkflowChanged(false);
+      disableWorkflowChange();
       handleDiscardModal();
     }
   };
@@ -119,7 +128,7 @@ const FlowEdit = forwardRef(({ isPublished = false, CategoryType }, ref) => {
         data: xml,
       });
       dispatch(setProcessData(response.data));
-      setIsWorkflowChanged(false);
+      disableWorkflowChange();
       isReverted && setIsReverted(!isReverted); //if it already reverted the need to make it false
       showToast && toast.success(t("Process updated successfully"));
     } catch (error) {
@@ -220,7 +229,7 @@ const FlowEdit = forwardRef(({ isPublished = false, CategoryType }, ref) => {
                 <BPMNViewer bpmnXml={processData?.processData || null} />
             ) : (
               <BpmnEditor
-                onChange={()=>{setIsWorkflowChanged(true);}} //handled is workflow changed or not
+                onChange={enableWorkflowChange} //handled is workflow changed or not
                 ref={bpmnRef}
                 setLintErrors={setLintErrors}
                 bpmnXml={

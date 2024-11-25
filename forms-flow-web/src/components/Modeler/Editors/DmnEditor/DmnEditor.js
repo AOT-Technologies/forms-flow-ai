@@ -152,6 +152,7 @@ const DmnEditor = forwardRef(({ dmnXml, onChange = ()=>{} }, ref) => {
 // Adding PropTypes validation for the props
 DmnEditor.propTypes = {
   dmnXml: PropTypes.string.isRequired,
+  onChange: PropTypes.func,
 };
 
 export default React.memo(DmnEditor);

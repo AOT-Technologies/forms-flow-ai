@@ -153,6 +153,7 @@ const ProcessCreateEdit = ({ type }) => {
   } = useMutation((processId) => fetchRevertingProcessData(processId), {
     onSuccess: () => {
       setIsReverted(true);
+      enableWorkflowChange();
     },
   });
 
@@ -161,6 +162,14 @@ const ProcessCreateEdit = ({ type }) => {
     : processData?.processData;
   // handle history modal
   const handleToggleHistoryModal = () => setHistoryModalShow(!historyModalShow);
+
+  const enableWorkflowChange = ()=>{
+    !isWorkflowChanged && setIsWorkflowChanged(true);
+  };
+
+  const disableWorkflowChange = ()=>{
+    isWorkflowChanged && setIsWorkflowChanged(false);
+  };
 
   useEffect(() => {
     if (isCreate) {
@@ -205,7 +214,7 @@ const ProcessCreateEdit = ({ type }) => {
       dispatch(setProcessData(response.data));
       isReverted && setIsReverted(!isReverted); //if it already reverted the need to make it false
       handleSaveSuccess(response, isCreateMode, isPublishing);
-      setIsWorkflowChanged(false);
+      disableWorkflowChange();
       return response.data;
     } catch (error) {
       handleError();
@@ -439,7 +448,7 @@ const ProcessCreateEdit = ({ type }) => {
     }
     isReverted && setIsReverted(!isReverted); //once it reverted then need to make it false
     handleToggleConfirmModal();
-    setIsWorkflowChanged(false);
+    disableWorkflowChange();
   };
   const handleCloseErrorModal = () => setShowErrorModal(false);
 
@@ -640,14 +649,14 @@ const ProcessCreateEdit = ({ type }) => {
           >
             {isBPMN ? (
               <BpmnEditor
-                onChange={()=>{setIsWorkflowChanged(true);}}
+                onChange={enableWorkflowChange}
                 ref={bpmnRef}
                 bpmnXml={isCreate ? defaultProcessXmlData : processDataXML}
                 setLintErrors={setLintErrors}
               />
             ) : (
               <DmnEditor
-                onChange={()=>{setIsWorkflowChanged(true);}}
+                onChange={enableWorkflowChange}
                 ref={dmnRef}
                 dmnXml={isCreate ? defaultDmnXmlData : processDataXML}
               />
@@ -707,12 +716,12 @@ const ProcessCreateEdit = ({ type }) => {
         closeImport={() => setSelectedAction(null)}
         processId={processData.id}
         processVersion={{
-          type: process.type,
+          type: Process.type,
           majorVersion: processData?.majorVersion,
           minorVersion: processData?.minorVersion
         }}
         setImportXml={handleImportData}
-        fileType={process.extension}
+        fileType={Process.extension}
       />}
     </div>
   );

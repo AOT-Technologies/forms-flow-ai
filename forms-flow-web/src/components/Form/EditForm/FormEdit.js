@@ -172,80 +172,109 @@ const EditComponent = () => {
 
 
   const handleImport = async (fileContent, UploadActionType,
-    selectedLayoutVersion, selectedFlowVersion) => {
-    // Validate UploadActionType before proceeding
-    if (!["validate", "import"].includes(UploadActionType)) {
-      console.error("Invalid UploadActionType provided");
-      setImportLoader(false);
-      return;
-    }
-
-    let data = {};
-    data.importType = "edit";
-    data.action = UploadActionType;
-    // Set form submission state for "import" action
-
-    if (UploadActionType === "import") {
-      setImportLoader(true);
-      setFormSubmitted(true);
-      // Handle selectedLayoutVersion logic
-      if (selectedLayoutVersion || selectedFlowVersion) {
-        data.form = {
-          skip: selectedLayoutVersion === true,
-        };
-
-        data.workflow = {
-          skip: selectedFlowVersion === true,
-        };
-      }
-    }
-
-    // Add mapperId if available
-    data.mapperId = processListData.id;
-
-    // Convert data to a JSON string for the API request
-    const dataString = JSON.stringify(data);
+     selectedLayoutVersion, selectedFlowVersion) => {
+    if (!isValidUploadActionType(UploadActionType)) return;
+  
+    const data = prepareImportData(UploadActionType, selectedLayoutVersion, selectedFlowVersion);
+  
     try {
-      const res = await formImport(fileContent, dataString);
-      setImportLoader(false);
-      setFormSubmitted(false);
-      const { data: responseData } = res;
-      if (responseData) {
-        const { workflow, form } = responseData;
-        setFileItems({
-          workflow: {
-            majorVersion: workflow?.majorVersion || null,
-            minorVersion: workflow?.minorVersion || null,
-          },
-          form: {
-            majorVersion: form?.majorVersion || null,
-            minorVersion: form?.minorVersion || null,
-          },
-        });
-      }
-      if (data.action === "validate") {
-        FileService.extractFileDetails(fileContent)
-          .then((formExtracted) => {
-            if (formExtracted) {
-              setFormTitle(formExtracted.formTitle);  // Set the form title if form is found
-            } else {
-              console.log("No valid form found.");
-            }
-          })
-          .catch((error) => {
-            console.error("Error extracting file details:", error); // Catch any errors in the process
-          });
-      } else if (responseData?.formId) {
-        handleCloseSelectedAction();
-        dispatch(push(`${redirectUrl}formflow/${responseData.formId}/edit/`));
-
-      }
+      const res = await formImport(fileContent, JSON.stringify(data));
+      await handleImportResponse(res, fileContent, data.action);
     } catch (err) {
-      setImportLoader(false);
-      setFormSubmitted(false);
-      setImportError(err?.response?.data?.message || "An error occurred");
+      handleImportError(err);
     }
   };
+  
+  // Helper function to validate the action type
+  const isValidUploadActionType = (actionType) => {
+    if (!["validate", "import"].includes(actionType)) {
+      console.error("Invalid UploadActionType provided");
+      setImportLoader(false);
+      return false;
+    }
+    return true;
+  };
+  
+  // Helper function to prepare data for the API request
+  const prepareImportData = (actionType, selectedLayoutVersion, selectedFlowVersion) => {
+    const data = {
+      importType: "edit",
+      action: actionType,
+      mapperId: processListData.id,
+    };
+  
+    if (actionType === "import") {
+      setImportLoader(true);
+      setFormSubmitted(true);
+  
+      if (selectedLayoutVersion || selectedFlowVersion) {
+        data.form = prepareVersionData(selectedLayoutVersion);
+        data.workflow = prepareVersionData(selectedFlowVersion);
+      }
+    }
+  
+    return data;
+  };
+  
+  // Helper function to prepare version data
+  const prepareVersionData = (version) => ({
+    skip: version === true,
+    ...(typeof version === 'string' && { selectedVersion: version }),
+  });
+  
+  // Helper function to handle the API response
+  const handleImportResponse = async (res, fileContent, action) => {
+    setImportLoader(false);
+    setFormSubmitted(false);
+  
+    const { data: responseData } = res;
+    if (responseData) {
+      setFileItems({
+        workflow: extractVersionInfo(responseData.workflow),
+        form: extractVersionInfo(responseData.form),
+      });
+  
+      if (action === "validate") {
+        await handleValidation(fileContent);
+      } else if (responseData?.formId) {
+        navigateToEditForm(responseData.formId);
+      }
+    }
+  };
+  
+  // Helper function to extract version information
+  const extractVersionInfo = (versionData) => ({
+    majorVersion: versionData?.majorVersion || null,
+    minorVersion: versionData?.minorVersion || null,
+  });
+  
+  // Helper function to handle validation
+  const handleValidation = async (fileContent) => {
+    try {
+      const formExtracted = await FileService.extractFileDetails(fileContent);
+      if (formExtracted) {
+        setFormTitle(formExtracted.formTitle);
+      } else {
+        console.log("No valid form found.");
+      }
+    } catch (error) {
+      console.error("Error extracting file details:", error);
+    }
+  };
+  
+  // Helper function to navigate to the edit form
+  const navigateToEditForm = (formId) => {
+    handleCloseSelectedAction();
+    dispatch(push(`${redirectUrl}formflow/${formId}/edit/`));
+  };
+  
+  // Helper function to handle errors
+  const handleImportError = (err) => {
+    setImportLoader(false);
+    setFormSubmitted(false);
+    setImportError(err?.response?.data?.message || "An error occurred");
+  };
+  
   /* ------------------------- form history variables ------------------------- */
   const [isNewVersionLoading, setIsNewVersionLoading] = useState(false);
   const [restoreFormDataLoading, setRestoreFormDataLoading] = useState(false);
@@ -613,8 +642,10 @@ const EditComponent = () => {
       }
       return key ? {...prev, [key]:true} : prev;
     });
+  
     dispatchFormAction({ type: "formChange", value: newForm });
   };
+  
 
   const confirmPublishOrUnPublish = async () => {
     try {

@@ -630,18 +630,15 @@ const EditComponent = () => {
         setFormSubmitted(false);
       });
   };
-
-  const formChange = (newForm) => {
-    setFormChangeState((prev) => {
+  const formChange = (newForm) =>{
+    setFormChangeState(prev=>{
       let key = null;
-  
-      if (!prev.initial) {
+      if(!prev.initial){
         key = "initial";
-      } else if (!prev.changed) {
+      }else if(!prev.changed){
         key = "changed";
       }
-  
-      return key ? { ...prev, [key]: true } : prev;
+      return key ? {...prev, [key]:true} : prev;
     });
   
     dispatchFormAction({ type: "formChange", value: newForm });

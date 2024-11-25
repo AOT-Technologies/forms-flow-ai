@@ -149,6 +149,7 @@ const BpmnEditor = forwardRef(({ bpmnXml, setLintErrors, onChange = ()=>{} }, re
 BpmnEditor.propTypes = {
   bpmnXml: PropTypes.string.isRequired,
   setLintErrors: PropTypes.func.isRequired,
+  onChange: PropTypes.func,
 };
 
 export default React.memo(BpmnEditor);

@@ -1,5 +1,5 @@
 /* eslint-disable no-unused-vars */
-import React, { Fragment, useEffect, useRef, useState } from "react";
+import React, { Fragment, useEffect, useState } from "react";
 import ApplicationCounter from "./ApplicationCounter";
 import { useDispatch, useSelector } from "react-redux";
 import { Route, Redirect } from "react-router";

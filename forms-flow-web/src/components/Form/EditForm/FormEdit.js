@@ -639,7 +639,7 @@ const EditComponent = () => {
       });
   };
 
-  const formChange = (newForm) => {
+  const captureFormChanges = ()=>{
     setFormChangeState((prev) => {
       let key = null; 
       if (!prev.initial) {
@@ -649,7 +649,10 @@ const EditComponent = () => {
       }
       return key ? {...prev, [key]:true} : prev;
     });
-  
+  };
+
+  const formChange = (newForm) => { 
+    captureFormChanges();
     dispatchFormAction({ type: "formChange", value: newForm });
   };
   
@@ -1055,10 +1058,13 @@ const EditComponent = () => {
                         key={form._id}
                         form={form}
                         onChange={formChange}
+
                         options={{
                           language: lang,
+                          alwaysConfirmComponentRemoval:true,
                           i18n: RESOURCE_BUNDLES_DATA,
                         }}
+                        onDeleteComponent={captureFormChanges}
                       />
                     )}
                   </div>

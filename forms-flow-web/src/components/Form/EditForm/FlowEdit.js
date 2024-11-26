@@ -273,6 +273,7 @@ FlowEdit.propTypes = {
     WORKFLOW: PropTypes.string.isRequired,
   }).isRequired,
   isPublished: PropTypes.bool.isRequired,
+  setWorkflowIsChanged: PropTypes.func
 };
 
 export default FlowEdit;

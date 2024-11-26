@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import { useHistory } from "react-router-dom";
 import { ConfirmModal, CustomInfo } from "@formsflow/components";
 import { useTranslation } from "react-i18next";
+import PropTypes from "prop-types";
 
 const NavigateBlocker = React.memo(({ isBlock, message, secondaryMessage }) => {
   const history = useHistory();
@@ -79,5 +80,11 @@ const NavigateBlocker = React.memo(({ isBlock, message, secondaryMessage }) => {
     </>
   );
 });
+
+NavigateBlocker.propTypes = {
+  isBlock: PropTypes.bool.isRequired,
+  message: PropTypes.string,
+  secondaryMessage: PropTypes.string,
+};
 
 export default NavigateBlocker;

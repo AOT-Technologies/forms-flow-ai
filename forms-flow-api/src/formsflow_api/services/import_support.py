@@ -165,8 +165,8 @@ class ImportService:  # pylint: disable=too-many-public-methods
         # Add 'tenantkey-' from 'path' and 'name'
         if current_app.config.get("MULTI_TENANCY_ENABLED"):
             if not validate_path_only:
-                name = f"{tenant_key}-name"
-            path = f"{tenant_key}-path"
+                name = f"{tenant_key}-{name}"
+            path = f"{tenant_key}-{path}"
 
         # Build query params based on validation type
         if validate_path_only and mapper:

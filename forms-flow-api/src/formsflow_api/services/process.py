@@ -61,16 +61,24 @@ class ProcessService:  # pylint: disable=too-few-public-methods,too-many-public-
             for process in process_list
             if process["key"] in default_process_list
         )
-
+        # This variable is used to fetch default process which is found once & is without tenant
+        unique_default_process_non_tenant_list = []
+        for process in process_list:
+            if (
+                process["key"] in default_process_list
+                and key_counts[process["key"]] == 1
+                and process["tenantId"] is None
+            ):
+                unique_default_process_non_tenant_list.append(process["key"])
         # Filter process_list based on key counts and tenant condition
         filtered_process_list = [
             process
             for process in process_list
             if process["key"] not in default_process_list
             or key_counts[process["key"]] == 1
-            or process["tenant"] is not None
+            or process["tenantId"] is not None
         ]
-        return filtered_process_list
+        return filtered_process_list, unique_default_process_non_tenant_list
 
     @classmethod
     def check_duplicate_names(cls, process_list):
@@ -125,8 +133,9 @@ class ProcessService:  # pylint: disable=too-few-public-methods,too-many-public-
             )
             process_list = BPMService.get_decision(token, url_path)
         if process_list:
+            unique_default_non_tenant_list = []
             if current_app.config.get("MULTI_TENANCY_ENABLED"):
-                process_list = cls.remove_duplicate_multitenant(
+                process_list, unique_default_non_tenant_list = cls.remove_duplicate_multitenant(
                     process_list, process_type
                 )
             process_list = cls.check_duplicate_names(process_list)
@@ -137,6 +146,8 @@ class ProcessService:  # pylint: disable=too-few-public-methods,too-many-public-
                 if process["key"] not in set(mapper_process_keys)
             ]
             for process_key, process_name in filtered_processes:
+                if process_key in unique_default_non_tenant_list:
+                    tenant_key = None
                 cls.fetch_save_xml(
                     process_key,
                     tenant_key=tenant_key,

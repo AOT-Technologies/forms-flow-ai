@@ -156,7 +156,7 @@ class FormProcessMapperService:  # pylint: disable=too-many-public-methods
         user: UserContext = kwargs["user"]
         data["created_by"] = user.user_name
         data["tenant"] = user.tenant_key
-        FormProcessMapperService._update_process_tenant(data, user)
+        data["process_tenant"] = user.tenant_key
         return FormProcessMapper.create_from_dict(data)
 
     @staticmethod
@@ -180,16 +180,12 @@ class FormProcessMapperService:  # pylint: disable=too-many-public-methods
         mapper = FormProcessMapper.find_form_by_id(
             form_process_mapper_id=form_process_mapper_id
         )
-        if not data.get("process_key") and data.get("process_name"):
-            data["process_key"] = None
-            data["process_name"] = None
 
         if not data.get("comments"):
             data["comments"] = None
         if mapper:
             if tenant_key is not None and mapper.tenant != tenant_key:
                 raise BusinessException(BusinessErrorCode.PERMISSION_DENIED)
-            FormProcessMapperService._update_process_tenant(data, user)
             mapper.update(data)
             return mapper
 

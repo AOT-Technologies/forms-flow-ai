@@ -225,6 +225,7 @@ const FlowEdit = forwardRef(({ isPublished = false, CategoryType }, ref) => {
             spinner
             text={t("Loading...")}
           >
+            <div className="flow-builder">
             {!createDesigns ? (
                 <BPMNViewer bpmnXml={processData?.processData || null} />
             ) : (
@@ -239,6 +240,7 @@ const FlowEdit = forwardRef(({ isPublished = false, CategoryType }, ref) => {
                 }
               />
             )}
+              </div>
           </LoadingOverlay>
         </Card.Body>
       </Card>

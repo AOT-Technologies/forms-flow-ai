@@ -226,18 +226,22 @@ const EditComponent = () => {
   const handleImportResponse = async (res, fileContent, action) => {
     setImportLoader(false);
     setFormSubmitted(false);
-  
+    const formExtracted = await extractForm(fileContent);
     const { data: responseData } = res;
     if (responseData) {
       setFileItems({
         workflow: extractVersionInfo(responseData.workflow),
         form: extractVersionInfo(responseData.form),
       });
-  
+
       if (action === "validate") {
-        await handleValidation(fileContent);
+        if (formExtracted) {
+          setFormTitle(formExtracted.formTitle);
+        }
       } else if (responseData?.formId) {
-        navigateToEditForm(responseData.formId);
+        if (formExtracted) {
+          navigateToEditForm(formExtracted);
+        }
       }
     }
   };
@@ -249,23 +253,26 @@ const EditComponent = () => {
   });
   
   // Helper function to handle validation
-  const handleValidation = async (fileContent) => {
+  const extractForm = async (fileContent) => {
     try {
       const formExtracted = await FileService.extractFileDetails(fileContent);
       if (formExtracted) {
-        setFormTitle(formExtracted.formTitle);
+        return formExtracted;
       } else {
-        console.log("No valid form found.");
+        setImportError("No valid form found.");
       }
     } catch (error) {
-      console.error("Error extracting file details:", error);
+      setImportError(error);
     }
   };
   
   // Helper function to navigate to the edit form
-  const navigateToEditForm = (formId) => {
+  const navigateToEditForm = (formExtracted) => {
+    dispatchFormAction({
+      type: "components",
+      value: _cloneDeep(formExtracted?.content?.components),
+    });
     handleCloseSelectedAction();
-    dispatch(push(`${redirectUrl}formflow/${formId}/edit/`));
   };
   
   // Helper function to handle errors

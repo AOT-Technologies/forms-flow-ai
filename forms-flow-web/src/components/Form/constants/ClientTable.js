@@ -110,7 +110,7 @@ function ClientTable() {
 
 
   return (
-    <>
+    
      <LoadingOverlay
         active={searchFormLoading}
         spinner
@@ -230,7 +230,6 @@ function ClientTable() {
       ) : null}
             </LoadingOverlay>
 
-    </>
   );
 }
 

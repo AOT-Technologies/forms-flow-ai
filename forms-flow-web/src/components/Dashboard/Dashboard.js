@@ -75,8 +75,6 @@ const Dashboard = React.memo(() => {
   const [showSubmissionData, setSHowSubmissionData] = useState(submissionsList[0]);
   const [show, setShow] = useState(false);
   // State to set search text for submission data
-  const [showClearButton, setShowClearButton] = useState("");
-  const searchInputBox = useRef("");
   //Array for pagination dropdown
   const options = [
     { value: "9", label: "9" },
@@ -92,7 +90,6 @@ const Dashboard = React.memo(() => {
   };
   const onClear = () => {
     setSearchTextInput("");
-    setShowClearButton(false);
     handleSearch();
   };
 
@@ -125,7 +122,6 @@ const Dashboard = React.memo(() => {
     const fromDate = getFormattedDate(dateRange[0]);
     const toDate = getFormattedDate(dateRange[1]);
     dispatch(setMetricsDateRangeLoading(true));
-    setShowClearButton(searchText);
     setSelectedLimitValue(limit);
     /*eslint max-len: ["error", { "code": 170 }]*/
     dispatch(fetchMetricsSubmissionCount(fromDate, toDate, searchBy, searchText, activePage, limit, sortsBy, sortOrder, (err, data) => { }));

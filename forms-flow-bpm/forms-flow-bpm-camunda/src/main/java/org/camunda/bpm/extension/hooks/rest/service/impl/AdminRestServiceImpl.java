@@ -4,6 +4,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.camunda.bpm.engine.AuthorizationService;
 import org.camunda.bpm.engine.ProcessEngines;
 import org.camunda.bpm.engine.RepositoryService;
+import org.camunda.bpm.engine.authorization.AuthorizationQuery;
 import org.camunda.bpm.engine.authorization.Permissions;
 import org.camunda.bpm.engine.authorization.ProcessDefinitionPermissions;
 import org.camunda.bpm.engine.authorization.Resources;
@@ -80,16 +81,16 @@ public class AdminRestServiceImpl implements AdminRestService {
         String tenantKey = dto.getTenantKey();
         // Add all the roles with correct authorizations for multi tenancy
         // for camunda-admin, group name would start with tenantKey. For other users, it's a REST operation and role is retrieved from token.
-        createAuthorization(tenantKey, tenantKey+"-camunda-admin", Resources.APPLICATION, "tasklist");
-        createAuthorization(tenantKey, tenantKey+"-camunda-admin", Resources.APPLICATION, "cockpit");
-        createAuthorization(tenantKey, tenantKey+"-camunda-admin", Resources.PROCESS_DEFINITION, "*");
-        createAuthorization(tenantKey, tenantKey+"-camunda-admin", Resources.PROCESS_INSTANCE, "*");
-        createAuthorization(tenantKey, tenantKey+"-camunda-admin", Resources.TASK, "*");
-        createAuthorization(tenantKey, tenantKey+"-camunda-admin", Resources.TENANT, tenantKey);
-        createAuthorization(tenantKey, tenantKey+"-camunda-admin", Resources.DEPLOYMENT, "*");
-        createAuthorization(tenantKey, tenantKey+"-camunda-admin", Resources.FILTER, "*");
-        createAuthorization(tenantKey, tenantKey+"-camunda-admin", Resources.DECISION_DEFINITION, "*");
-        createAuthorization(tenantKey, tenantKey+"-camunda-admin", Resources.DECISION_REQUIREMENTS_DEFINITION, "*");
+        createAuthorization(tenantKey, tenantKey+"-admin", Resources.APPLICATION, "tasklist");
+        createAuthorization(tenantKey, tenantKey+"-admin", Resources.APPLICATION, "cockpit");
+        createAuthorization(tenantKey, tenantKey+"-admin", Resources.PROCESS_DEFINITION, "*");
+        createAuthorization(tenantKey, tenantKey+"-admin", Resources.PROCESS_INSTANCE, "*");
+        createAuthorization(tenantKey, tenantKey+"-admin", Resources.TASK, "*");
+        createAuthorization(tenantKey, tenantKey+"-admin", Resources.TENANT, tenantKey);
+        createAuthorization(tenantKey, tenantKey+"-admin", Resources.DEPLOYMENT, "*");
+        createAuthorization(tenantKey, tenantKey+"-admin", Resources.FILTER, "*");
+        createAuthorization(tenantKey, tenantKey+"-admin", Resources.DECISION_DEFINITION, "*");
+        createAuthorization(tenantKey, tenantKey+"-admin", Resources.DECISION_REQUIREMENTS_DEFINITION, "*");
         
         // Client role
         createAuthorization(tenantKey, "ROLE_create_submissions", Resources.PROCESS_DEFINITION, "*");
@@ -225,12 +226,24 @@ public class AdminRestServiceImpl implements AdminRestService {
      * @param resourceId
      */
     private void createAuthorization(String tenantKey, String role, Resources resourceType, String resourceId) {
-        AuthorizationEntity authEntity = new AuthorizationEntity();
-        authEntity.setAuthorizationType(AUTH_TYPE_GRANT);
-        authEntity.setGroupId(/*tenantKey + "-" +*/ role);
-        authEntity.addPermission(Permissions.ALL);
-        authEntity.setResourceId(resourceId);
-        authEntity.setResourceType(resourceType.resourceType());
-        this.authService.saveAuthorization(authEntity);
+    	// Check if authorization exists
+    	AuthorizationQuery query = authService.createAuthorizationQuery()
+                .resourceType(resourceType.resourceType())
+                .resourceId(resourceId);
+
+        query.groupIdIn(role);
+
+        // Check if there is any matching authorization
+        org.camunda.bpm.engine.authorization.Authorization existingAuthorization = query.singleResult();
+
+        if (existingAuthorization == null) {
+	        AuthorizationEntity authEntity = new AuthorizationEntity();
+	        authEntity.setAuthorizationType(AUTH_TYPE_GRANT);
+	        authEntity.setGroupId(/*tenantKey + "-" +*/ role);
+	        authEntity.addPermission(Permissions.ALL);
+	        authEntity.setResourceId(resourceId);
+	        authEntity.setResourceType(resourceType.resourceType());
+	        this.authService.saveAuthorization(authEntity);
+        }
     }
 }

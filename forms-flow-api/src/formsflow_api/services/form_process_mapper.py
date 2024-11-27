@@ -742,8 +742,22 @@ class FormProcessMapperService:  # pylint: disable=too-many-public-methods
                 include_details=True,
             )
 
+    @classmethod
+    def validate_form_title(cls, title, exclude_id=None):
+        """Validate form tile in the form_process_mapper table."""
+        # Exclude the current mapper from the query
+        current_app.logger.info(
+            f"Validation for form title...{title}..with exclude id-{exclude_id}"
+        )
+        mappers = FormProcessMapper.find_forms_by_title(title, exclude_id=exclude_id)
+        if mappers:
+            current_app.logger.debug(f"Other mappers matching the title- {mappers}")
+            raise BusinessException(BusinessErrorCode.FORM_EXISTS)
+        return True
+
     @staticmethod
-    def validate_form_name_path_title(request):
+    @user_context
+    def validate_form_name_path_title(request, **kwargs):
         """Validate a form name by calling the external validation API."""
         # Retrieve the parameters from the query string
         title = request.args.get("title")
@@ -757,8 +771,20 @@ class FormProcessMapperService:  # pylint: disable=too-many-public-methods
 
         FormProcessMapperService.validate_title_name_path(title, path, name)
 
-        # Combine them into query parameters dictionary
-        query_params = f"title={title}&name={name}&path={path}&select=title,path,name"
+        if current_app.config.get("MULTI_TENANCY_ENABLED"):
+            # In multitenant environment, validate title exists validation on mapper & path, name in formio.
+            if title:
+                FormProcessMapperService.validate_form_title(title)
+            user: UserContext = kwargs["user"]
+            tenant_key = user.tenant_key
+            name = f"{tenant_key}-{name}"
+            path = f"{tenant_key}-{path}"
+            query_params = f"name={name}&path={path}&select=title,path,name"
+        else:
+            # In non-multitenant environment, validate title, path, name in formio.
+            query_params = (
+                f"title={title}&name={name}&path={path}&select=title,path,name"
+            )
 
         # Initialize the FormioService and get the access token
         formio_service = FormioService()

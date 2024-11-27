@@ -12,13 +12,7 @@ from jsonschema import ValidationError, validate
 from lxml import etree
 
 from formsflow_api.constants import BusinessErrorCode
-from formsflow_api.models import (
-    AuthType,
-    FormHistory,
-    FormProcessMapper,
-    Process,
-    ProcessType,
-)
+from formsflow_api.models import AuthType, FormHistory, Process, ProcessType
 from formsflow_api.schemas import (
     ImportEditRequestSchema,
     ImportRequestSchema,
@@ -170,9 +164,13 @@ class ImportService:  # pylint: disable=too-many-public-methods
 
         # Build query params based on validation type
         if validate_path_only and mapper:
-            # In case of edit import validate title in mapper table & path in mapper table.
-            self.validate_form_title(title, mapper)
+            # In case of edit import validate title in mapper table & path in formio.
+            FormProcessMapperService.validate_form_title(title, mapper.parent_form_id)
             query_params = f"path={path}&select=title,path,name,_id"
+        elif not validate_path_only and current_app.config.get("MULTI_TENANCY_ENABLED"):
+            # In case of new import in multitenant env, validate title in mapper table & path,name in formio.
+            FormProcessMapperService.validate_form_title(title, exclude_id=None)
+            query_params = f"path={path}&name={name}&select=title,path,name,_id"
         else:
             query_params = (
                 f"title={title}&name={name}&path={path}&select=title,path,name"
@@ -180,18 +178,6 @@ class ImportService:  # pylint: disable=too-many-public-methods
         current_app.logger.info(f"Validating form exists...{query_params}")
         response = self.get_form_by_query(query_params)
         return response
-
-    def validate_form_title(self, title, mapper):
-        """Validate form tile in the form_process_mapper table."""
-        # Exclude the current mapper from the query
-        current_app.logger.info(f"Validation for form title...{title}")
-        mappers = FormProcessMapper.find_forms_by_title(
-            title, exclude_id=mapper.parent_form_id
-        )
-        if mappers:
-            current_app.logger.debug(f"Other mappers matching the title- {mappers}")
-            raise BusinessException(BusinessErrorCode.FORM_EXISTS)
-        return True
 
     def validate_edit_form_exists(self, form_json, mapper, tenant_key):
         """Validate form exists on edit import."""
@@ -572,8 +558,10 @@ class ImportService:  # pylint: disable=too-many-public-methods
                             workflow_minor=minor,
                         )
                     if action == "import":
-                        skip_form = edit_request.get("form", {}).get("skip")
-                        skip_workflow = edit_request.get("workflow", {}).get("skip")
+                        skip_form = edit_request.get("form", {}).get("skip", True)
+                        skip_workflow = edit_request.get("workflow", {}).get(
+                            "skip", True
+                        )
                         # selected version of form and workflow: major/minor
                         selected_form_version = edit_request.get("form", {}).get(
                             "selectedVersion"

@@ -203,7 +203,7 @@ class ProcessService:  # pylint: disable=too-few-public-methods,too-many-public-
         # If process empty consider it as subflows not migrated, so fetch from camunda
         if not process:
             # Check subflows exists without search before fetching from camunda.
-            check_subflows_exists = Process.find_all_process(
+            check_subflows_exists, count = Process.find_all_process(
                 is_subflow=True,
                 process_type=process_type,
             )

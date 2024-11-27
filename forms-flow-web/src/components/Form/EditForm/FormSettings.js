@@ -241,7 +241,7 @@ const FormSettings = forwardRef((props, ref) => {
         <h5 className="fw-bold">{t("Permissions")}</h5>
 
         <Form.Label className="field-label">
-          {t("Who Can Edit This Form")}
+          {t("Who Can View/Edit This Form")}
         </Form.Label>
         <CustomRadioButton
           items={[

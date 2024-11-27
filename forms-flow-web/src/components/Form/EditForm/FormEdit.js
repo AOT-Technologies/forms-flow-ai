@@ -1,5 +1,4 @@
 import React, { useReducer, useState, useEffect, useRef } from "react";
-import { addHiddenApplicationComponent } from "../../../constants/applicationComponent";
 import { useSelector, useDispatch } from "react-redux";
 import { useParams } from "react-router-dom";
 import { Card } from "react-bootstrap";
@@ -387,12 +386,7 @@ const EditComponent = () => {
       dispatch(setRestoreFormId(null));
     };
   }, [restoredFormId]);
-  useEffect(() => {
-    // Automatically add hidden application components to the form on render/update
-    const updatedForm = addHiddenApplicationComponent(form);
-    dispatchFormAction({ type: "replaceForm", value: updatedForm });
-  }, []);
-  
+ 
   const fetchRestoredFormData = (restoredFormId) => {
     if (restoredFormId) {
       fetchFormById(restoredFormId)

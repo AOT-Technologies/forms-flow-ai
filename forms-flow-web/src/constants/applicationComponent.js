@@ -60,23 +60,32 @@ const createHiddenComponent = (label, key, customDefaultValue = null) => ({
   description: "",
 });
 
-// Function to add a hidden component if not already present
 const addHiddenComponent = (components, componentConfig, form) => {
-  const flatternComponent = utils.flattenComponents(components, true);
+  const flatComponents = utils.flattenComponents(components, true);
   const { key } = componentConfig;
-
-  if (!flatternComponent[key]) {
-    // Add component to the correct location in the form
+  if (!flatComponents[key]) {
     if (form.display === "wizard") {
-      const panel = components.find((component) => component.type === "panel");
-      if (panel) {
+      let panel = components.find((component) => component.type === "panel");
+
+      if (!panel) {
+        // Create a default panel if none exists
+        panel = {
+          type: "panel",
+          title: "Page 1",
+          key: "defaultPanel",
+          components: [componentConfig],
+        };
+        components.push(panel);
+      }else{
         panel.components.push(componentConfig);
       }
+
     } else {
+      // For non-wizard forms, push the component directly
       components.push(componentConfig);
     }
   } else {
-    // If it already exists, remove and re-add for wizard forms
+    // If the component already exists, remove and re-add it for wizard forms
     if (form.display === "wizard") {
       const panel = components.find((component) => component.type === "panel");
       if (panel && !panel.components.some((item) => item.key === key)) {
@@ -111,9 +120,23 @@ export const addHiddenApplicationComponent = (form) => {
     },
   ];
 
+  // Add a submit button only if the form is not a wizard
+  if (form.display !== "wizard") {
+    hiddenComponents.push({
+      type: "button",
+      label: "Submit",
+      key: "submit",
+      disableOnInvalid: true,
+      input: true,
+      tableView: false
+    });
+  }
+
   // Loop through and add each hidden component
-  hiddenComponents.forEach(({ label, key, customDefaultValue }) => {
-    const componentConfig = createHiddenComponent(label, key, customDefaultValue);
+  hiddenComponents.forEach(({ label, key, customDefaultValue, ...rest }) => {
+    const componentConfig = key === "submit" 
+      ? { key, label, ...rest } 
+      : createHiddenComponent(label, key, customDefaultValue);
     addHiddenComponent(components, componentConfig, form);
   });
 

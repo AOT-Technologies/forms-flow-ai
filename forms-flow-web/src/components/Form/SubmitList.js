@@ -67,7 +67,9 @@ const SubmitList = React.memo((props) => {
   }, []);
 
   const fetchForms = () => {
-    let filters = [pageNo, limit, formSort, searchText];
+    const showForOnlyCreateSubmissionUsers = true;
+    const formType = "";
+    let filters = [pageNo, limit, formSort, searchText,formType,showForOnlyCreateSubmissionUsers];
     dispatch(setFormSearchLoading(true));
     dispatch(fetchBPMFormList(...filters));
   };

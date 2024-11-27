@@ -76,11 +76,11 @@ const FlowEdit = forwardRef(({ isPublished = false, CategoryType }, ref) => {
   const handleToggleHistoryModal = () => setShowHistoryModal(!showHistoryModal);
 
   const enableWorkflowChange = ()=>{
-    !isWorkflowChanged && setIsWorkflowChanged(true);
+    setIsWorkflowChanged(true);
   };
 
   const disableWorkflowChange = ()=>{
-    isWorkflowChanged && setIsWorkflowChanged(false);
+    setIsWorkflowChanged(false);
   };
 
   //handle discard changes

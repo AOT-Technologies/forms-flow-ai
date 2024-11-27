@@ -186,7 +186,7 @@ const DecisionTable = React.memo(() => {
                     </th>
                     <th className="w-20" scope="col">
                       <SortableHeader
-                        columnKey="id"
+                        columnKey="processKey"
                         title="ID"
                         currentSort={currentDmnSort}
                         handleSort={handleSort}
@@ -208,16 +208,7 @@ const DecisionTable = React.memo(() => {
                         handleSort={handleSort}
                       />
                     </th>
-                    <th
-                      className="w-25"
-                      colSpan="4"
-                      aria-label="edit bpmn button "
-                    ></th>
-                    <th
-                      className="w-25"
-                      colSpan="4"
-                      aria-label="edit bpmn button "
-                    ></th>
+                    <th className="w-25" colSpan="4" aria-label="edit bpmn button "></th>
                   </tr>
                 </thead>
                 {dmn.length ?

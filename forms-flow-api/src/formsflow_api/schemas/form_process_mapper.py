@@ -54,3 +54,6 @@ class FormProcessMapperListRequestSchema(FormProcessMapperListReqSchema):
     form_type = fields.Str(data_key="formType", required=False)
     is_active = fields.Bool(data_key="isActive", required=False)
     active_forms = fields.Bool(data_key="activeForms", required=False)
+    ignore_designer = fields.Bool(
+        data_key="showForOnlyCreateSubmissionUsers", required=False
+    )

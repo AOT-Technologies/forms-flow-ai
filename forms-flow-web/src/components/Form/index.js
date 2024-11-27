@@ -1,7 +1,7 @@
 import React from "react";
 import { Route, Switch } from "react-router-dom";
 import { useSelector } from "react-redux";
-
+import PropTypes from "prop-types";
 import List from "./List";
 import SubmitList from "./SubmitList";
 import EditForm from "./EditForm";
@@ -9,33 +9,38 @@ import Item from "./Item/index";
 import { BASE_ROUTE } from "../../constants/constants";
 import Loading from "../../containers/Loading";
 import AccessDenied from "../AccessDenied";
+import FormPreview from "./EditForm/FormPreview";
 
-let user = "";
-
-const FormDesignRoute = ({ component: Component, ...rest }) => (
-  <Route
-    {...rest}
-    render={(props) => {
-      if (user.includes('create_designs') || user.includes('view_designs')) {
+const GenericRoute = ({ component: Component, roles, ...rest }) => {
+  const userRoles = useSelector((state) => state.user.roles || []);
+  
+  return (
+    <Route
+      {...rest}
+      render={(props) => {
+        if (roles) {
+          // Check for role-based access
+          if (roles.some((role) => userRoles.includes(role))) {
+            return <Component {...props} />;
+          } else {
+            return <AccessDenied userRoles={userRoles} />;
+          }
+        }
         return <Component {...props} />;
-      } else {
-        return <AccessDenied userRoles={user} />;
-      }
-    }}
-  />
-);
-const FormSubmissionRoute = ({ component: Component, ...rest }) => (
-  <Route
-    {...rest}
-    render={(props) => 
-        (<Component {...props} /> )
-    }
-  />
-);
+      }}
+    />
+  );
+};
+
+// PropTypes validation for the GenericRoute component
+GenericRoute.propTypes = {
+  component: PropTypes.elementType.isRequired,
+  roles: PropTypes.arrayOf(PropTypes.string),
+};
 
 export default React.memo(() => {
-  user = useSelector((state) => state.user.roles || []);
   const isAuthenticated = useSelector((state) => state.user.isAuthenticated);
+
   if (!isAuthenticated) {
     return <Loading />;
   }
@@ -45,13 +50,18 @@ export default React.memo(() => {
       <Switch>
         <Route exact path={`${BASE_ROUTE}formflow`} component={List} />
         <Route exact path={`${BASE_ROUTE}form`} component={SubmitList} />
-        <FormDesignRoute
+        <GenericRoute
           path={`${BASE_ROUTE}formflow/:formId?/edit`}
           component={EditForm}
+          roles={['create_designs', 'view_designs']}
         />
-        <FormSubmissionRoute
+        <GenericRoute
           path={`${BASE_ROUTE}form/:formId/`}
           component={Item}
+        />
+        <GenericRoute
+          path={`${BASE_ROUTE}formflow/:formId?/view-edit`}
+          component={FormPreview}
         />
       </Switch>
     </div>

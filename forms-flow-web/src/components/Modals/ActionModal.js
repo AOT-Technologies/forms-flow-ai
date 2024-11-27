@@ -4,7 +4,6 @@ import {
   DuplicateIcon,
   ImportIcon,
   PencilIcon,
-  SaveTemplateIcon,
   CloseIcon,
   TrashIcon,
   CustomInfo,
@@ -55,17 +54,6 @@ const ActionModal = React.memo(
                   dataTestid="duplicate-form-button"
                   ariaLabel="Duplicate Button"
                   onClick={() => handleAction("DUPLICATE")}
-                />
-
-                <CustomButton
-                  variant="secondary"
-                  size="sm"
-                  label="Save as template"
-                  icon={<SaveTemplateIcon color="#253DF4" />}
-                  className=""
-                  dataTestid="save-template-button"
-                  ariaLabel="Save as Template"
-                  onClick={() => handleAction("SAVE_AS_TEMPLATE")}
                 />
                 <CustomButton
                   variant="secondary"

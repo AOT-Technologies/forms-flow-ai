@@ -48,6 +48,7 @@ import {
 import { useMutation, useQuery } from "react-query";
 import LoadingOverlay from "react-loading-overlay-ts";
 import ImportProcess from "../Modals/ImportProcess";
+import NavigateBlocker from "../CustomComponents/NavigateBlocker.jsx";
 
 const EXPORT = "EXPORT";
 const IMPORT = "IMPORT";
@@ -535,6 +536,7 @@ const ProcessCreateEdit = ({ type }) => {
 
   return (
     <div>
+      <NavigateBlocker isBlock={isWorkflowChanged} message={"You have made changes that are not saved yet"}  />
       <ConfirmModal
         show={showConfirmModal}
         title={modalContent.title}

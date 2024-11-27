@@ -34,7 +34,7 @@ import userRoles from "../../../constants/permissions.js";
 import BPMNViewer from "../../BPMN/BpmnViewer.js";
 import TaskVariableModal from "../../Modals/TaskVariableModal.js";
 
-const FlowEdit = forwardRef(({ isPublished = false, CategoryType }, ref) => {
+const FlowEdit = forwardRef(({ isPublished = false, CategoryType, setWorkflowIsChanged }, ref) => {
   const { t } = useTranslation();
   const dispatch = useDispatch();
   const bpmnRef = useRef();
@@ -77,10 +77,12 @@ const FlowEdit = forwardRef(({ isPublished = false, CategoryType }, ref) => {
 
   const enableWorkflowChange = ()=>{
     setIsWorkflowChanged(true);
+    setWorkflowIsChanged(true); // this function passed from parent
   };
 
   const disableWorkflowChange = ()=>{
     setIsWorkflowChanged(false);
+    setWorkflowIsChanged(false); // this function passed from parent
   };
 
   //handle discard changes
@@ -273,6 +275,7 @@ FlowEdit.propTypes = {
     WORKFLOW: PropTypes.string.isRequired,
   }).isRequired,
   isPublished: PropTypes.bool.isRequired,
+  setWorkflowIsChanged: PropTypes.func
 };
 
 export default FlowEdit;

@@ -25,6 +25,8 @@ the system. It is built using Python :snake: .
 
 * For docker based installation [Docker](https://docker.com) need to be installed.
 * Admin access to [Keycloak](../forms-flow-idm/keycloak) server and ensure audience(camunda-rest-api) is setup in Keycloak-bpm server.
+* Ensure that the `forms-flow-redis` service is running and accessible on port `6379`. For more details, refer to the [forms-flow-redis README](../forms-flow-redis/README.md).
+
 
 ## Solution Setup
 

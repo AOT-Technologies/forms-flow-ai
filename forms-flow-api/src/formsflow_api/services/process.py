@@ -203,7 +203,7 @@ class ProcessService:  # pylint: disable=too-few-public-methods,too-many-public-
         # If process empty consider it as subflows not migrated, so fetch from camunda
         if not process:
             # Check subflows exists without search before fetching from camunda.
-            check_subflows_exists = Process.find_all_process(
+            check_subflows_exists, count = Process.find_all_process(
                 is_subflow=True,
                 process_type=process_type,
             )
@@ -227,10 +227,11 @@ class ProcessService:  # pylint: disable=too-few-public-methods,too-many-public-
 
         # Find the bpmn:process element
         process = cls.get_process_by_type(root, process_type)
-
+        current_app.logger.debug(f"Process key: {process_key}, Process name: {process_name}")
+        # Note: If id have space in name, then process view in bpmn modeller throws error
         if process is not None:
-            process.set("id", process_name)
-            process.set("name", process_key or process_name)
+            process.set("id", process_key or process_name)
+            process.set("name", process_name)
 
         # Convert the XML tree back to a string
         updated_xml = etree.tostring(

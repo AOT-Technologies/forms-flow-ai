@@ -37,6 +37,8 @@ import userRoles from "../../constants/permissions.js";
 import FileService from "../../services/FileService";
 import { FormBuilderModal, ImportModal, CustomSearch, CustomButton } from "@formsflow/components";
 import { useMutation } from "react-query";
+import { addHiddenApplicationComponent } from "../../constants/applicationComponent";
+
 const List = React.memo((props) => {
   const { createDesigns, createSubmissions, viewDesigns } = userRoles();
   const { t } = useTranslation();
@@ -267,12 +269,14 @@ const List = React.memo((props) => {
       submissionAccess: submissionAccess,
       componentChanged: true,
       newVersion: true,
+      components: [],
       access: formAccess,
       title,
       name,
       description,
       path: name.toLowerCase(),
     };
+    newForm.components = addHiddenApplicationComponent(newForm).components;
 
     if (MULTITENANCY_ENABLED && tenantKey) {
       newForm.tenantKey = tenantKey;

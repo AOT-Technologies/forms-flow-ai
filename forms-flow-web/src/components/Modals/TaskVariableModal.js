@@ -11,6 +11,7 @@ import {
 import { Form } from "@aot-technologies/formio-react";
 import PropTypes from "prop-types";
 import { useDispatch ,useSelector } from "react-redux";
+import utils from "@aot-technologies/formiojs/lib/utils";
 import {
   saveFormProcessMapperPut,
 } from "../../apiManager/services/processServices";
@@ -27,7 +28,7 @@ const PillList = React.memo(({ alternativeLabels, onRemove }) => {
             <CustomPill
               key={key}
               label={altVariable || labelOfComponent}
-              icon={<CloseIcon color="#253DF4" data-testid="pill-remove-icon" />}
+              icon={(key !== "applicationId" && key !== "applicationStatus") && <CloseIcon color="#253DF4" data-testid="pill-remove-icon" />}
               bg="#E7E9FE"
               onClick={() => onRemove(key)}
               secondaryLabel={key}
@@ -241,18 +242,32 @@ const TaskVariableModal = React.memo(
     const [alternativeLabels, setAlternativeLabels] = useState({});
 
     useEffect(() => {
-      if (formProcessList?.taskVariables?.length > 0) {
-        const updatedLabels = {};
-        formProcessList.taskVariables.forEach(({ key, label, type }) => {
-          updatedLabels[key] = {
-            key,
-            altVariable: label, // Use label from taskVariables as altVariable
-            labelOfComponent: label, // Set the same label for labelOfComponent
-            type:type
-          };
-        });
-        setAlternativeLabels(updatedLabels);
-      }
+      //filtering applicationId and applicationStatus components from form
+      const filteredComponents = Object.values(utils.flattenComponents(form.components)).filter(
+          ({ key }) => key === "applicationStatus" || key === "applicationId"
+        );
+
+      const updatedLabels = {};
+      // Add filtered components to updatedLabels
+      filteredComponents.forEach(({ key, label, type }) => {
+        updatedLabels[key] = {
+          key,
+          altVariable: label,
+          labelOfComponent: label,
+          type: type,
+        };
+      });
+
+      // Add taskVariables to updatedLabels
+      formProcessList?.taskVariables?.forEach(({ key, label, type }) => {
+        updatedLabels[key] = {
+          key,
+          altVariable: label, // Use label from taskVariables as altVariable
+          labelOfComponent: label, // Set the same label for labelOfComponent
+          type: type,
+        };
+      });
+      setAlternativeLabels(updatedLabels);
     }, [formProcessList]);
     const [selectedComponent, setSelectedComponent] = useState({
         key: null,

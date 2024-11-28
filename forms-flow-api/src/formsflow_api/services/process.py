@@ -227,10 +227,11 @@ class ProcessService:  # pylint: disable=too-few-public-methods,too-many-public-
 
         # Find the bpmn:process element
         process = cls.get_process_by_type(root, process_type)
-
+        current_app.logger.debug(f"Process key: {process_key}, Process name: {process_name}")
+        # Note: If id have space in name, then process view in bpmn modeller throws error
         if process is not None:
-            process.set("id", process_name)
-            process.set("name", process_key or process_name)
+            process.set("id", process_key or process_name)
+            process.set("name", process_name)
 
         # Convert the XML tree back to a string
         updated_xml = etree.tostring(

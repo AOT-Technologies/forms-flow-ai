@@ -208,8 +208,10 @@ const ProcessCreateEdit = ({ type }) => {
       if (!isValid) return;
 
       const isEqual = await checkIfEqual(isCreate, xml);
-      if (!isReverted && !isCreateMode && isEqual)
+      if (!isReverted && !isCreateMode && isEqual){
+        disableWorkflowChange();
         return handleAlreadyUpToDate(isPublishing);
+      }
 
       setSavingFlow(true);
 

@@ -58,30 +58,66 @@ const FormComponent = React.memo(
     const detailsRef = useRef(null); // Ref for the details container
     const { t } = useTranslation();
     
-    
+    const ignoredTypes = new Set([
+      "button",
+      "columns",
+      "panel",
+      "well",
+      "container",
+      "htmlelement",
+      "tabs",
+    ]);
+    const ignoredKeys = new Set([
+      "hidden", 
+    ]);
     const handleClick = useCallback(
       (e) => {
-        
         const formioComponent = e.target.closest(".formio-component");
         const highlightedElement = document.querySelector(".formio-hilighted");
-
+    
         if (highlightedElement) {
           highlightedElement.classList.remove("formio-hilighted");
         }
-
+    
         if (formioComponent) {
-          setShowElement(true);
-          formioComponent.classList.add("formio-hilighted");
           
-          let classes = Array.from(formioComponent.classList);
-          classes = classes.filter((cls) =>
+          let classes = Array.from(formioComponent.classList).filter((cls) =>
             cls.startsWith("formio-component-")
           );
-          const typeClass = classes[classes.length - 2];
           const keyClass = classes[classes.length - 1];
-         
+          const typeClass = classes[classes.length - 2];
+          //if key and type are same , then there will be only one class for both
+          const componentType = typeClass ? typeClass.split("-").pop() : keyClass.split("-").pop();
+    
+          // Check if the component type is in the ignored list
+          if (ignoredTypes.has(componentType)) {
+            setShowElement(false);
+            setSelectedComponent({
+              key: null,
+              type: "",
+              label: "",
+              altVariable: "",
+            });
+            return; 
+          }
+    
+          
+          const componentKey = keyClass?.split("-").pop();
+          // Check if the component key is in the ignored list
+          if (ignoredKeys.has(componentKey)) {
+            setShowElement(false); 
+            setSelectedComponent({
+              key: null,
+              type: "",
+              label: "",
+              altVariable: "",
+            });
+            return; 
+          }
+    
           const labelElement = formioComponent.querySelector("label");
           let label = "";
+    
           if (labelElement) {
             label = Array.from(labelElement.childNodes)
               .filter(
@@ -94,10 +130,12 @@ const FormComponent = React.memo(
               .map((node) => node.textContent.trim())
               .join(" ");
           }
-
-          const componentKey = keyClass?.split("-").pop();
-          const componentType = typeClass?.split("-").pop();
-          // const currentComponent = utils.getComponent(form.components,componentKey);
+              
+          // Highlight the selected component
+          formioComponent.classList.add("formio-hilighted");
+          setShowElement(true);
+    
+          // Update the selected component state
           setSelectedComponent({
             key: componentKey,
             type: componentType,
@@ -167,7 +205,7 @@ const FormComponent = React.memo(
             options={{
               viewAsHtml: true,
               readOnly: true,
-            }}
+                          }}
             formReady={(e) => {
               formRef.current = e;
             }}

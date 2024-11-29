@@ -1,5 +1,4 @@
 import { extractDataFromDiagram } from "../components/Modeler/helpers/helper";
-import BpmnModdle from "bpmn-moddle";
 import DmnModdle from "dmn-moddle";
 import isEqual from "lodash/isEqual";
 import { toast } from "react-toastify";
@@ -7,21 +6,25 @@ import {
   ERROR_LINTING_CLASSNAME,
   WARNING_LINTING_CLASSNAME,
 } from "../components/Modeler/constants/bpmnModelerConstants";
-const bpmnModdle = new BpmnModdle();
 const dmnModdle = new DmnModdle();
 
-export const parseBpmn = async (xmlString) => {
-  const { rootElement: definitionsA } = await bpmnModdle.fromXML(xmlString);
-  return definitionsA;
+ 
+
+const normalizeXML = (xmlString) => {
+  const parser = new DOMParser();
+  const serializer = new XMLSerializer();
+  // Parse the XML string to a DOM object
+  const xmlDoc = parser.parseFromString(xmlString, "application/xml");
+  // Serialize the DOM back to a string (minimized formatting differences)
+  return serializer.serializeToString(xmlDoc);
 };
 
 export const compareXML = async (xmlString1, xmlString2) => {
   try {
-    // Parse both BPMN XMLs to their JSON structure
-    const bpmn1 = await parseBpmn(xmlString1);
-    const bpmn2 = await parseBpmn(xmlString2);
+    const bpmn1 = normalizeXML(xmlString1);
+    const bpmn2 = normalizeXML(xmlString2);
     // Compare the JSON structures
-    return isEqual(bpmn1, bpmn2);
+     return bpmn1 == bpmn2;
   } catch (error) {
     console.error("Error while comparing BPMN:", error);
   }
@@ -63,7 +66,7 @@ export const validateProcess = (xml, lintErrors, translation = (i) => i) => {
 export const createXMLFromModeler = async (modeler) => {
   try {
     // Convert diagram to xml
-    let { xml } = await modeler.saveXML();
+    let { xml } = await modeler.saveXML({ format: true });
     // Set isExecutable to true
     xml = xml.replaceAll('isExecutable="false"', 'isExecutable="true"');
     return xml;

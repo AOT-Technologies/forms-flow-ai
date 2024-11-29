@@ -118,8 +118,10 @@ const FlowEdit = forwardRef(({ isPublished = false, CategoryType, setWorkflowIsC
       }
       //if xml is same as existing process data, no need to update
       const isEqual = await compareXML(processData?.processData, xml);
+
       if (isEqual && !isReverted) {
         showToast && toast.success(t("Process updated successfully"));
+        disableWorkflowChange();
         return;
       }
 

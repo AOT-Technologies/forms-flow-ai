@@ -31,8 +31,8 @@ jobs:
       - name: Build and Push Multi-Arch Image
         uses: docker/build-push-action@v5
         with:
-          context: forms-flow-documents
-          file: forms-flow-documents/Dockerfile-ARM64
+          context: ./forms-flow-documents
+          platforms: linux/amd64,linux/arm64
           push: true
           tags: alanraju007/forms-flow-documents-api:v7.0.0
           outputs: type=image

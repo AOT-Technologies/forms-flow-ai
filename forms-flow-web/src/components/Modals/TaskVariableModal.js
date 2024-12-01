@@ -270,7 +270,7 @@ FormComponent.propTypes = {
   setSelectedComponent: PropTypes.func.isRequired,
 };
 const TaskVariableModal = React.memo(
-  ({ showTaskVarModal, onClose, form }) => {
+  ({ showTaskVarModal, isPublished = false ,onClose, form }) => {
     const { t } = useTranslation();
     const dispatch = useDispatch();
     const formProcessList = useSelector(
@@ -393,6 +393,7 @@ const TaskVariableModal = React.memo(
             variant="primary"
             size="md"
             className=""
+            disabled={isPublished}
             label={t("Save")}
             ariaLabel="save task variable btn"
             dataTestid="save-task-variable-btn"
@@ -417,6 +418,7 @@ const TaskVariableModal = React.memo(
 TaskVariableModal.propTypes = {
   showTaskVarModal: PropTypes.bool.isRequired,
   onClose: PropTypes.func.isRequired,
-  form: PropTypes.object.isRequired
+  form: PropTypes.object.isRequired,
+  isPublished: PropTypes.bool.isRequired,
 };
 export default TaskVariableModal;

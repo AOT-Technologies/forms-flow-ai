@@ -16,7 +16,7 @@ RUN  apt-get update \
   && rm -rf /var/lib/apt/lists/*
 
 # Install Chrome WebDriver - version 116.0.5845.96
-RUN apt-get install -y wget xvfb unzip
+#RUN apt-get install -y wget xvfb unzip
 # Set up the Chrome PPA
 RUN wget -q -O - https://dl-ssl.google.com/linux/linux_signing_key.pub | apt-key add -
 RUN echo "deb http://dl.google.com/linux/chrome/deb/ stable main" >> /etc/apt/sources.list.d/google.list

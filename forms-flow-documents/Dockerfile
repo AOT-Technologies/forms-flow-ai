@@ -16,12 +16,16 @@ RUN  apt-get update \
   && rm -rf /var/lib/apt/lists/*
 
 # Install Chrome WebDriver - version 116.0.5845.96
-RUN mkdir -p /opt/chromedriver && \
-    curl -sS -o /tmp/chromedriver_linux64.zip https://formsflow-documentsapi.aot-technologies.com/chromedriver-linux64.zip && \
-    unzip -qq /tmp/chromedriver_linux64.zip -d /opt/chromedriver && \
-    rm /tmp/chromedriver_linux64.zip && \
-    chmod +x /opt/chromedriver/chromedriver-linux64/chromedriver && \
-    ln -fs /opt/chromedriver/chromedriver-linux64/chromedriver /usr/local/bin/chromedriver
+RUN apt-get update && \
+    apt-get install -y gnupg wget curl unzip --no-install-recommends && \
+    wget -q -O - https://dl-ssl.google.com/linux/linux_signing_key.pub | apt-key add - && \
+    echo "deb http://dl.google.com/linux/chrome/deb/ stable main" >> /etc/apt/sources.list.d/google.list && \
+    apt-get update -y && \
+    apt-get install -y google-chrome-stable && \
+    CHROMEVER=$(google-chrome --product-version | grep -o "[^\.]\.[^\.]\.[^\.]*") && \
+    DRIVERVER=$(curl -s "https://chromedriver.storage.googleapis.com/LATEST_RELEASE_$CHROMEVER") && \
+    wget -q --continue -P /chromedriver "http://chromedriver.storage.googleapis.com/$DRIVERVER/chromedriver_linux64.zip" && \
+    unzip /chromedriver/chromedriver* -d /chromedriver
 
 # Install Google Chrome
 RUN wget --no-verbose -O /tmp/chrome.deb https://formsflow-documentsapi.aot-technologies.com/google-chrome-stable_116.0.5845.140-1_amd64.deb || (echo "Failed to download Chrome package" && exit 1) && \

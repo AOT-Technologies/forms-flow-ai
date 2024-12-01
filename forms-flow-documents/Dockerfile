@@ -24,10 +24,12 @@ RUN mkdir -p /opt/chromedriver && \
     ln -fs /opt/chromedriver/chromedriver-linux64/chromedriver /usr/local/bin/chromedriver
 
 # Install Google Chrome
-RUN wget --no-verbose -O /tmp/chrome.deb https://formsflow-documentsapi.aot-technologies.com/google-chrome-stable_116.0.5845.140-1_amd64.deb &&\
-    apt-get update  && \
-    apt install -y /tmp/chrome.deb &&\
+RUN wget --no-verbose -O /tmp/chrome.deb https://formsflow-documentsapi.aot-technologies.com/google-chrome-stable_116.0.5845.140-1_amd64.deb || (echo "Failed to download Chrome package" && exit 1) && \
+    apt-get update && \
+    apt-get install -y /tmp/chrome.deb || (echo "Failed to install Chrome package" && exit 1) && \
     rm /tmp/chrome.deb
+
+
 
 
 # set display port to avoid crash

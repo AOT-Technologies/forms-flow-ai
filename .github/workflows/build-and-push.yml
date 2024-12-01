@@ -32,8 +32,9 @@ jobs:
         uses: docker/build-push-action@v5
         with:
           context: ./forms-flow-documents
-          platforms: linux/amd64,linux/arm64
+          file: forms-flow-documents/Dockerfile
           push: true
+          platforms: linux/amd64,linux/arm64
           tags: alanraju007/forms-flow-documents-api:v7.0.0
           outputs: type=image
           build-args: |
@@ -41,8 +42,8 @@ jobs:
           metadata: |
             variant={{.Variant}}
           files: |
-            linux/amd64=Dockerfile
-            linux/arm64=Dockerfile-ARM64
+            linux/amd64=Dockerfile=./forms-flow-documents/Dockerfile
+            linux/arm64=Dockerfile=./forms-flow-documents/Dockerfile-ARM64
 
       - name: Verify Image in Registry
         run: |

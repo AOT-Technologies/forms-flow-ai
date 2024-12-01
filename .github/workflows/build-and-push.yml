@@ -5,11 +5,6 @@ on:
     branches:
       - develop
 
-defaults:
-  run:
-    shell: bash
-    working-directory: ./forms-flow-documents
-
 jobs:
   build-and-push:
     name: Build and Push Multi-Architecture Image
@@ -32,7 +27,7 @@ jobs:
         uses: docker/build-push-action@v5
         with:
           context: ./forms-flow-documents
-          file: forms-flow-documents/Dockerfile
+          file: ./forms-flow-documents/Dockerfile
           push: true
           platforms: linux/amd64,linux/arm64
           tags: alanraju007/forms-flow-documents-api:v7.0.0

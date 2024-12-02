@@ -31,13 +31,6 @@ jobs:
           platforms: linux/amd64,linux/arm64
           tags: alanraju007/forms-flow-documents-api:v7.0.0
           outputs: type=image
-          build-args: |
-            TARGETPLATFORM={{.TargetPlatform}}
-          metadata: |
-            variant={{.Variant}}
-          files: |
-            linux/amd64=Dockerfile=./forms-flow-documents/Dockerfile
-            linux/arm64=Dockerfile=./forms-flow-documents/Dockerfile-ARM64
 
       - name: Verify Image in Registry
         run: |

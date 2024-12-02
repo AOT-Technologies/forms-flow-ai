@@ -11,6 +11,7 @@ import {
 import { Form } from "@aot-technologies/formio-react";
 import PropTypes from "prop-types";
 import { useDispatch ,useSelector } from "react-redux";
+import utils from "@aot-technologies/formiojs/lib/utils";
 import {
   saveFormProcessMapperPut,
 } from "../../apiManager/services/processServices";
@@ -27,7 +28,7 @@ const PillList = React.memo(({ alternativeLabels, onRemove }) => {
             <CustomPill
               key={key}
               label={altVariable || labelOfComponent}
-              icon={<CloseIcon color="#253DF4" data-testid="pill-remove-icon" />}
+              icon={(key !== "applicationId" && key !== "applicationStatus") && <CloseIcon color="#253DF4" data-testid="pill-remove-icon" />}
               bg="#E7E9FE"
               onClick={() => onRemove(key)}
               secondaryLabel={key}
@@ -57,30 +58,66 @@ const FormComponent = React.memo(
     const detailsRef = useRef(null); // Ref for the details container
     const { t } = useTranslation();
     
-    
+    const ignoredTypes = new Set([
+      "button",
+      "columns",
+      "panel",
+      "well",
+      "container",
+      "htmlelement",
+      "tabs",
+    ]);
+    const ignoredKeys = new Set([
+      "hidden", 
+    ]);
     const handleClick = useCallback(
       (e) => {
-        
         const formioComponent = e.target.closest(".formio-component");
         const highlightedElement = document.querySelector(".formio-hilighted");
-
+    
         if (highlightedElement) {
           highlightedElement.classList.remove("formio-hilighted");
         }
-
+    
         if (formioComponent) {
-          setShowElement(true);
-          formioComponent.classList.add("formio-hilighted");
           
-          let classes = Array.from(formioComponent.classList);
-          classes = classes.filter((cls) =>
+          let classes = Array.from(formioComponent.classList).filter((cls) =>
             cls.startsWith("formio-component-")
           );
-          const typeClass = classes[classes.length - 2];
           const keyClass = classes[classes.length - 1];
-         
+          const typeClass = classes[classes.length - 2];
+          //if key and type are same , then there will be only one class for both
+          const componentType = typeClass ? typeClass.split("-").pop() : keyClass.split("-").pop();
+    
+          // Check if the component type is in the ignored list
+          if (ignoredTypes.has(componentType)) {
+            setShowElement(false);
+            setSelectedComponent({
+              key: null,
+              type: "",
+              label: "",
+              altVariable: "",
+            });
+            return; 
+          }
+    
+          
+          const componentKey = keyClass?.split("-").pop();
+          // Check if the component key is in the ignored list
+          if (ignoredKeys.has(componentKey)) {
+            setShowElement(false); 
+            setSelectedComponent({
+              key: null,
+              type: "",
+              label: "",
+              altVariable: "",
+            });
+            return; 
+          }
+    
           const labelElement = formioComponent.querySelector("label");
           let label = "";
+    
           if (labelElement) {
             label = Array.from(labelElement.childNodes)
               .filter(
@@ -93,10 +130,12 @@ const FormComponent = React.memo(
               .map((node) => node.textContent.trim())
               .join(" ");
           }
-
-          const componentKey = keyClass?.split("-").pop();
-          const componentType = typeClass?.split("-").pop();
-          // const currentComponent = utils.getComponent(form.components,componentKey);
+              
+          // Highlight the selected component
+          formioComponent.classList.add("formio-hilighted");
+          setShowElement(true);
+    
+          // Update the selected component state
           setSelectedComponent({
             key: componentKey,
             type: componentType,
@@ -166,7 +205,7 @@ const FormComponent = React.memo(
             options={{
               viewAsHtml: true,
               readOnly: true,
-            }}
+                          }}
             formReady={(e) => {
               formRef.current = e;
             }}
@@ -231,7 +270,7 @@ FormComponent.propTypes = {
   setSelectedComponent: PropTypes.func.isRequired,
 };
 const TaskVariableModal = React.memo(
-  ({ showTaskVarModal, onClose, form }) => {
+  ({ showTaskVarModal, isPublished = false ,onClose, form }) => {
     const { t } = useTranslation();
     const dispatch = useDispatch();
     const formProcessList = useSelector(
@@ -241,18 +280,32 @@ const TaskVariableModal = React.memo(
     const [alternativeLabels, setAlternativeLabels] = useState({});
 
     useEffect(() => {
-      if (formProcessList?.taskVariables?.length > 0) {
-        const updatedLabels = {};
-        formProcessList.taskVariables.forEach(({ key, label, type }) => {
-          updatedLabels[key] = {
-            key,
-            altVariable: label, // Use label from taskVariables as altVariable
-            labelOfComponent: label, // Set the same label for labelOfComponent
-            type:type
-          };
-        });
-        setAlternativeLabels(updatedLabels);
-      }
+      //filtering applicationId and applicationStatus components from form
+      const filteredComponents = Object.values(utils.flattenComponents(form.components)).filter(
+          ({ key }) => key === "applicationStatus" || key === "applicationId"
+        );
+
+      const updatedLabels = {};
+      // Add filtered components to updatedLabels
+      filteredComponents.forEach(({ key, label, type }) => {
+        updatedLabels[key] = {
+          key,
+          altVariable: label,
+          labelOfComponent: label,
+          type: type,
+        };
+      });
+
+      // Add taskVariables to updatedLabels
+      formProcessList?.taskVariables?.forEach(({ key, label, type }) => {
+        updatedLabels[key] = {
+          key,
+          altVariable: label, // Use label from taskVariables as altVariable
+          labelOfComponent: label, // Set the same label for labelOfComponent
+          type: type,
+        };
+      });
+      setAlternativeLabels(updatedLabels);
     }, [formProcessList]);
     const [selectedComponent, setSelectedComponent] = useState({
         key: null,
@@ -340,6 +393,7 @@ const TaskVariableModal = React.memo(
             variant="primary"
             size="md"
             className=""
+            disabled={isPublished}
             label={t("Save")}
             ariaLabel="save task variable btn"
             dataTestid="save-task-variable-btn"
@@ -364,6 +418,7 @@ const TaskVariableModal = React.memo(
 TaskVariableModal.propTypes = {
   showTaskVarModal: PropTypes.bool.isRequired,
   onClose: PropTypes.func.isRequired,
-  form: PropTypes.object.isRequired
+  form: PropTypes.object.isRequired,
+  isPublished: PropTypes.bool.isRequired,
 };
 export default TaskVariableModal;

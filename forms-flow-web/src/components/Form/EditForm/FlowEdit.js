@@ -266,6 +266,7 @@ const FlowEdit = forwardRef(({ isPublished = false, CategoryType, setWorkflowIsC
           form={formData}
           showTaskVarModal={showTaskVarModal}
           onClose={CloseTaskVarModal}
+          isPublished={isPublished}       
         />
         )}
     </>

@@ -48,16 +48,21 @@ const extractFileDetails = (fileContent) => {
             // Handle JSON file parsing
             const fileContents = JSON.parse(e.target.result);
 
-            // Check if 'forms' exist and is an array in fileContents
-            if (fileContents && fileContents.forms && Array.isArray(fileContents.forms)) {
-              const formToUpload = fileContents.forms[0]; // Extract the first form
-              resolve(formToUpload); // Resolve with the extracted form details
+            // Extract forms (if present in the JSON)
+            const forms = Array.isArray(fileContents.forms) ? fileContents.forms : [];
+            
+            // Extract workflows and their content (XML)
+            const workflows = Array.isArray(fileContents.workflows) ? fileContents.workflows : [];
+            const xml = workflows.length > 0 ? workflows.map(workflow => workflow.content).join('') : null;
+
+            if (forms.length === 0 && !xml) {
+              reject("No valid form or XML found.");
             } else {
-              console.error("No 'forms' array found in the file.");
-              reject("No valid form found."); // Reject with an error message if 'forms' is missing
+              // Resolve with both forms and xml
+              resolve({ forms, xml });
             }
           } else if (['bpmn', 'dmn'].includes(fileExtension)) {
-            // Handle XML file parsing
+            // Handle XML file parsing (not relevant in this case but kept for completeness)
             const parser = new DOMParser();
             const xmlDoc = parser.parseFromString(e.target.result, "application/xml");
 
@@ -66,7 +71,7 @@ const extractFileDetails = (fileContent) => {
             } else {
               // Return the entire XML document as a string
               const xmlString = new XMLSerializer().serializeToString(xmlDoc);
-              resolve(xmlString); // Resolve with the XML string
+              resolve({ xml: xmlString, forms: [] }); // Resolve with the XML string
             }
           } else {
             reject("Unsupported file type."); // Reject if the file type is unsupported

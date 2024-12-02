@@ -51,9 +51,6 @@ import {
   getProcessDetails,
   unPublishForm,
 } from "../../../apiManager/services/processServices";
-import {
-  setProcessData,
-} from "../../../actions/processActions.js";
 import _ from "lodash";
 import SettingsModal from "../../Modals/SettingsModal";
 import FlowEdit from "./FlowEdit.js";
@@ -65,6 +62,8 @@ import userRoles from "../../../constants/permissions.js";
 import { generateUniqueId, isFormComponentsChanged } from "../../../helper/helper.js";
 import { useMutation } from "react-query";
 import NavigateBlocker from "../../CustomComponents/NavigateBlocker";
+import { setProcessData } from "../../../actions/processActions.js";
+
 // constant values
 const DUPLICATE = "DUPLICATE";
 const IMPORT = "IMPORT";
@@ -203,86 +202,91 @@ const EditComponent = () => {
       action: actionType,
       mapperId: processListData.id,
     };
-  
+
     if (actionType === "import") {
       setImportLoader(true);
       setFormSubmitted(true);
-  
+
       if (selectedLayoutVersion || selectedFlowVersion) {
         data.form = prepareVersionData(selectedLayoutVersion);
-        data.workflow = prepareVersionData(selectedFlowVersion);
+        //the workflow shoul send only the value of skip.
+        data.workflow = {
+          skip: typeof selectedFlowVersion === 'string' ? false : true,
+        };
       }
     }
-  
+
     return data;
   };
-  
+
   // Helper function to prepare version data
   const prepareVersionData = (version) => ({
-    skip: version === true,
-    ...(typeof version === 'string' && { selectedVersion: version }),
+    skip: typeof version === 'string' ? false : true, // skip is false if version is a string, true otherwise
+    ...(typeof version === 'string' && { selectedVersion: version }), // Include selectedVersion only if version is a string
   });
-  
+
   // Helper function to handle the API response
   const handleImportResponse = async (res, fileContent, action) => {
     setImportLoader(false);
     setFormSubmitted(false);
     const formExtracted = await extractForm(fileContent);
     const { data: responseData } = res;
-    if (responseData) {
-      setFileItems({
-        workflow: extractVersionInfo(responseData.workflow),
-        form: extractVersionInfo(responseData.form),
-      });
+    if (!responseData) return;
+    // Set file items based on response data
+    setFileItems({
+      workflow: extractVersionInfo(responseData.workflow),
+      form: extractVersionInfo(responseData.form),
+    });
 
+    // Handle actions based on extracted form and action type
+    if (formExtracted) {
       if (action === "validate") {
-        if (formExtracted) {
-          setFormTitle(formExtracted.formTitle);
-        }
-      } else if (responseData?.formId) {
-        if (formExtracted) {
-          navigateToEditForm(formExtracted);
-        }
+        setFormTitle(formExtracted.forms[0]?.formTitle || ""); 
+      } else if (responseData.formId) {
+        updateLayout(formExtracted);
       }
     }
   };
-  
+
   // Helper function to extract version information
-  const extractVersionInfo = (versionData) => ({
-    majorVersion: versionData?.majorVersion || null,
-    minorVersion: versionData?.minorVersion || null,
-  });
-  
-  // Helper function to handle validation
+  const extractVersionInfo = (versionData) => (
+    {
+      majorVersion: versionData?.majorVersion,
+      minorVersion: versionData?.minorVersion
+    });
+
   const extractForm = async (fileContent) => {
     try {
       const formExtracted = await FileService.extractFileDetails(fileContent);
-      if (formExtracted) {
-        return formExtracted;
-      } else {
-        setImportError("No valid form found.");
-      }
+      return formExtracted;
     } catch (error) {
       setImportError(error);
+      return null;
     }
   };
-  
-  // Helper function to navigate to the edit form
-  const navigateToEditForm = (formExtracted) => {
+
+
+
+  const updateLayout = (formExtracted) => {
+    const { forms, xml } = formExtracted || {};
+    const extractedFormComponents = forms[0]?.components || forms[0]?.content?.components;
     dispatchFormAction({
       type: "components",
-      value: _cloneDeep(formExtracted?.content?.components),
+      value: _cloneDeep(extractedFormComponents),
     });
+    if (xml) {
+      flowRef.current?.handleImport(xml);
+    }
     handleCloseSelectedAction();
   };
-  
+
   // Helper function to handle errors
   const handleImportError = (err) => {
     setImportLoader(false);
     setFormSubmitted(false);
     setImportError(err?.response?.data?.message || "An error occurred");
   };
-  
+
   /* ------------------------- form history variables ------------------------- */
   const [isNewVersionLoading, setIsNewVersionLoading] = useState(false);
   const [restoreFormDataLoading, setRestoreFormDataLoading] = useState(false);
@@ -432,12 +436,12 @@ const EditComponent = () => {
     }
   }, [processListData.processKey]);
 
-  const validateFormNameOnBlur = ({title, ...rest}) => {
+  const validateFormNameOnBlur = ({ title, ...rest }) => {
     if (!title || title.trim() === "") {
       setNameError("This field is required");
       return;
     }
-    validateFormTitle({title, ...rest});
+    validateFormTitle({ title, ...rest });
   };
 
 
@@ -497,7 +501,7 @@ const EditComponent = () => {
       access: accessDetails.formAccess,
     };
 
-    try{
+    try {
       await dispatch(saveFormProcessMapperPut({ mapper, authorizations }));
       const updateFormResponse = await formUpdate(form._id, formData);
       dispatchFormAction({
@@ -505,19 +509,21 @@ const EditComponent = () => {
         value: { ...updateFormResponse.data, components: form.components },
       });
       dispatch(setFormSuccessData("form", updateFormResponse.data));
-    }catch(error){
+    } catch (error) {
       console.error(error);
-    }finally{
+    } finally {
       setIsSettingsSaving(false);
       handleToggleSettingsModal();
     }
   };
 
-  const saveFormData = async ({showToast = true}) => {
+  const saveFormData = async ({ showToast = true }) => {
     try {
-      const isFormChanged = isFormComponentsChanged({restoredFormData, 
-        restoredFormId, formData, form});
-      if(!isFormChanged && !promptNewVersion) {
+      const isFormChanged = isFormComponentsChanged({
+        restoredFormData,
+        restoredFormId, formData, form
+      });
+      if (!isFormChanged && !promptNewVersion) {
         showToast && toast.success(t("Form updated successfully"));
         return;
       }
@@ -534,10 +540,10 @@ const EditComponent = () => {
       newFormData.parentFormId = previousData.parentFormId;
       newFormData.title = processListData.formName;
 
-      const {data} = await formUpdate(newFormData._id, newFormData);
+      const { data } = await formUpdate(newFormData._id, newFormData);
       dispatch(setFormSuccessData("form", data));
       setPromptNewVersion(false);
-      setFormChangeState(prev=>({...prev,changed:false}));
+      setFormChangeState(prev => ({ ...prev, changed: false }));
     } catch (err) {
       const error = err.response?.data || err.message;
       dispatch(setFormFailureErrorData("form", error));
@@ -579,9 +585,9 @@ const EditComponent = () => {
     fetchRestoredFormData(cloneId);
   };
 
-  const handlePreview = () => { 
-    const newTabUrl = `${redirectUrl}formflow/${form._id}/view-edit`; 
-    window.open(newTabUrl, "_blank"); 
+  const handlePreview = () => {
+    const newTabUrl = `${redirectUrl}formflow/${form._id}/view-edit`;
+    window.open(newTabUrl, "_blank");
   };
 
   const discardChanges = () => {
@@ -1047,12 +1053,13 @@ const EditComponent = () => {
                   <div className="form-builder">
                     {!createDesigns ? (
                       <div className="px-4 pt-4 form-preview">
-                       <Form
+                        <Form
                           form={form}
                           options={{
-                          disableAlerts: true,
-                          noAlerts: true,
-                          language: lang, i18n: RESOURCE_BUNDLES_DATA }}
+                            disableAlerts: true,
+                            noAlerts: true,
+                            language: lang, i18n: RESOURCE_BUNDLES_DATA
+                          }}
                         />
                       </div>
                     ) : (

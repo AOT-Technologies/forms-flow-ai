@@ -9,18 +9,24 @@ WORKDIR /forms-flow-documents/app
 
 # Install necessary dependencies
 RUN apt-get update \
-    && apt-get install -y --no-install-recommends gnupg2 curl wget unzip git ca-certificates xvfb \
+    && apt-get install -y --no-install-recommends \
+       gnupg2 \
+       curl \
+       wget \
+       unzip \
+       git \
+       ca-certificates \
+       xvfb \
     && rm -rf /var/lib/apt/lists/*
 
-# Set Chromedriver version and directory
-ENV CHROMEDRIVER_VERSION 116.0.5845.96
-ENV CHROMEDRIVER_DIR /usr/local/bin
+# Set environment variables
+ENV CHROMEDRIVER_VERSION=116.0.5845.96
+ENV CHROMEDRIVER_DIR=/usr/local/bin
 
 # Download and install Chromedriver
-RUN mkdir -p $CHROMEDRIVER_DIR \
-    && wget -q -P $CHROMEDRIVER_DIR "https://chromedriver.storage.googleapis.com/$CHROMEDRIVER_VERSION/chromedriver_linux64.zip" \
-    && unzip $CHROMEDRIVER_DIR/chromedriver_linux64.zip -d $CHROMEDRIVER_DIR \
-    && rm $CHROMEDRIVER_DIR/chromedriver_linux64.zip \
+RUN wget -q "https://chromedriver.storage.googleapis.com/${CHROMEDRIVER_VERSION}/chromedriver_linux64.zip" \
+    && unzip chromedriver_linux64.zip -d $CHROMEDRIVER_DIR \
+    && rm chromedriver_linux64.zip \
     && chmod +x $CHROMEDRIVER_DIR/chromedriver
 
 # Install Google Chrome

@@ -28,11 +28,8 @@ jobs:
         with:
           context: forms-flow-documents
           push: true
-          platforms: linux/amd64
+          platforms: linux/amd64,linux/arm64
           tags: alanraju007/forms-flow-documents-api:v7.0.0
-          outputs: type=image
-
-      - name: Verify Image in Registry
-        run: |
-          echo "Image pushed successfully!"
-          docker run --rm alanraju007/forms-flow-documents-api:v7.0.0 --version
+          file: |
+            forms-flow-documents/Dockerfile
+            forms-flow-documents/Dockerfile-ARM64

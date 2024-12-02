@@ -1,51 +1,57 @@
-#Author: Kurian Benoy
+# Author: Kurian Benoy
 FROM python:3.12.6-slim
 
-# set label for image
+# Set label for the image
 LABEL Name="formsflow"
 
+# Set working directory
 WORKDIR /forms-flow-documents/app
 
-# install curl, gnupg2 and unzip
-RUN  apt-get update \
-  && apt-get install -y gnupg2 \
-  && apt-get install -y curl \
-  && apt-get install -y wget \
-  && apt-get install -y unzip \
-  && apt-get install -y git \
-  && rm -rf /var/lib/apt/lists/*
+# Install necessary dependencies
+RUN apt-get update \
+    && apt-get install -y --no-install-recommends gnupg2 curl wget unzip git ca-certificates xvfb \
+    && rm -rf /var/lib/apt/lists/*
 
-# Install Chrome WebDriver - version 116.0.5845.96
-#RUN apt-get install -y wget xvfb unzip
-# Set up the Chrome PPA
-#RUN wget -q -O - https://dl-ssl.google.com/linux/linux_signing_key.pub | apt-key add -
-#RUN echo "deb http://dl.google.com/linux/chrome/deb/ stable main" >> /etc/apt/sources.list.d/google.list
-# Update the package list and install chrome
-#RUN apt-get update -y
-#RUN apt-get install -y google-chrome-stable
-# Set up Chromedriver Environment variables
-#ENV CHROMEDRIVER_VERSION 2.19
-#ENV CHROMEDRIVER_DIR /chromedriver
-#RUN mkdir $CHROMEDRIVER_DIR
-## Download and install Chromedriver
-RUN wget -q --continue -P $CHROMEDRIVER_DIR "http://chromedriver.storage.googleapis.com/$CHROMEDRIVER_VERSION/chromedriver_linux64.zip"
-#RUN unzip $CHROMEDRIVER_DIR/chromedriver* -d $CHROMEDRIVER_DIR
-# Put Chromedriver into the PATH
-#ENV PATH $CHROMEDRIVER_DIR:$PATH
+# Set Chromedriver version and directory
+ENV CHROMEDRIVER_VERSION 116.0.5845.96
+ENV CHROMEDRIVER_DIR /usr/local/bin
 
-# set display port to avoid crash
+# Download and install Chromedriver
+RUN mkdir -p $CHROMEDRIVER_DIR \
+    && wget -q -P $CHROMEDRIVER_DIR "https://chromedriver.storage.googleapis.com/$CHROMEDRIVER_VERSION/chromedriver_linux64.zip" \
+    && unzip $CHROMEDRIVER_DIR/chromedriver_linux64.zip -d $CHROMEDRIVER_DIR \
+    && rm $CHROMEDRIVER_DIR/chromedriver_linux64.zip \
+    && chmod +x $CHROMEDRIVER_DIR/chromedriver
+
+# Install Google Chrome
+RUN wget -q -O - https://dl-ssl.google.com/linux/linux_signing_key.pub | gpg --dearmor -o /usr/share/keyrings/google-chrome.gpg \
+    && echo "deb [signed-by=/usr/share/keyrings/google-chrome.gpg] http://dl.google.com/linux/chrome/deb/ stable main" > /etc/apt/sources.list.d/google-chrome.list \
+    && apt-get update \
+    && apt-get install -y --no-install-recommends google-chrome-stable \
+    && rm -rf /var/lib/apt/lists/*
+
+# Set display port to avoid crash
 ENV DISPLAY=:99
+
+# Install Python dependencies
 COPY requirements.txt .
 ENV PATH=/venv/bin:$PATH
 
-RUN : \
-    && python3 -m venv /venv \
-    && pip install --upgrade pip \
-    && pip install -r requirements.txt 
+RUN python3 -m venv /venv \
+    && /venv/bin/pip install --upgrade pip \
+    && /venv/bin/pip install -r requirements.txt
 
+# Add application code
 ADD . /forms-flow-documents/app
-RUN pip install -e .
 
+# Install the application in editable mode
+RUN /venv/bin/pip install -e .
+
+# Expose application port
 EXPOSE 5006
-RUN chmod u+x ./entrypoint
+
+# Make the entrypoint script executable
+RUN chmod +x ./entrypoint
+
+# Set entrypoint
 ENTRYPOINT ["/bin/sh", "entrypoint"]

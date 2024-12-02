@@ -119,6 +119,14 @@ class BusinessErrorCode(ErrorCodeMixin, Enum):
         "Can't delete the form that has submissions associated with it.",
         HTTPStatus.BAD_REQUEST,
     )
+    ADMIN_SERVICE_UNAVAILABLE = (
+        "Admin service is not available",
+        HTTPStatus.SERVICE_UNAVAILABLE,
+    )
+    INVALID_ADMIN_RESPONSE = (
+        "Invalid response received from admin service",
+        HTTPStatus.BAD_REQUEST,
+    )
 
     def __new__(cls, message, status_code):
         """Constructor."""

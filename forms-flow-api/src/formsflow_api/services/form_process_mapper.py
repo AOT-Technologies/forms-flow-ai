@@ -492,6 +492,13 @@ class FormProcessMapperService:  # pylint: disable=too-many-public-methods
                 title_or_path = (
                     form_json.get("title", "") if scope_type == "sub" else title_or_path
                 )
+                # Remove access & submissionAccess from form json
+                for key in ["access", "submissionAccess"]:
+                    if key in form_json:
+                        current_app.logger.info(
+                            "Removing access & submissionAccess from form json.."
+                        )
+                        form_json.pop(key)
                 # Remove 'tenantkey-' from 'path' and 'name'
                 if current_app.config.get("MULTI_TENANCY_ENABLED"):
                     tenant_prefix = f"{tenant_key}-"

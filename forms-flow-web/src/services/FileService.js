@@ -92,7 +92,7 @@ const handleXMLFile = (fileContent, resolve, reject) => {
   const parser = new DOMParser();
   const xmlDoc = parser.parseFromString(fileContent, "application/xml");
 
-  if (xmlDoc?.getElementsByTagName("parsererror").length > 0) {
+  if (xmlDoc?.getElementsByTagName("parsererror")?.length > 0) {
     return reject("Invalid XML file.");
   }
 

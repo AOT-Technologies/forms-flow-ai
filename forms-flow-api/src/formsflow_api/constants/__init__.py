@@ -89,6 +89,10 @@ class BusinessErrorCode(ErrorCodeMixin, Enum):
         "At least one query parameter (title, name, path) must be provided.",
         HTTPStatus.BAD_REQUEST,
     )
+    INVALID_FORM_TITLE_LENGTH = (
+        "The form title should not exceed 200 characters.",
+        HTTPStatus.BAD_REQUEST,
+    )
     KEYCLOAK_REQUEST_FAIL = (
         "Request to Keycloak Admin APIs failed.",
         HTTPStatus.BAD_REQUEST,

@@ -29,7 +29,7 @@ class FormProcessMapper(
 
     id = db.Column(db.Integer, primary_key=True)
     form_id = db.Column(db.String(50), nullable=False)
-    form_name = db.Column(db.String(100), nullable=False)
+    form_name = db.Column(db.String(200), nullable=False)
     form_type = db.Column(db.String(20), nullable=False)
     parent_form_id = db.Column(db.String(50), nullable=False)
     process_key = db.Column(db.String(50), nullable=True, default=DEFAULT_PROCESS_KEY)

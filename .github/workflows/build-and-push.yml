@@ -28,7 +28,7 @@ jobs:
         with:
           context: forms-flow-documents
           push: true
-          platforms: linux/amd64,linux/arm64
+          platforms: linux/amd64
           tags: alanraju007/forms-flow-documents-api:v7.0.0
           outputs: type=image
 

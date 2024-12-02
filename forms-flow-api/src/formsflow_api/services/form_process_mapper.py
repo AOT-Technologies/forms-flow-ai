@@ -769,7 +769,7 @@ class FormProcessMapperService:  # pylint: disable=too-many-public-methods
         if not (title or name or path):
             raise BusinessException(BusinessErrorCode.INVALID_FORM_VALIDATION_INPUT)
 
-        if len(title) > 200:
+        if title and len(title) > 200:
             raise BusinessException(BusinessErrorCode.INVALID_FORM_TITLE_LENGTH)
 
         FormProcessMapperService.validate_title_name_path(title, path, name)

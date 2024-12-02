@@ -25,7 +25,8 @@ ENV CHROMEDRIVER_DIR=/usr/local/bin
 
 # Download and install Chromedriver
 RUN wget -q "https://storage.googleapis.com/chrome-for-testing-public/131.0.6778.85/linux64/chromedriver-linux64.zip" \
-    && unzip chromedriver-linux64.zip -d /usr/local/bin \
+    && unzip chromedriver-linux64.zip -d /usr/local \
+    && cp -rf /usr/local/chromedriver-linux64/* /usr/local/bin \
     && rm chromedriver-linux64.zip \
     && chmod +x /usr/local/bin/chromedriver
 

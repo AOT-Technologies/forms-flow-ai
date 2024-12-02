@@ -35,57 +35,71 @@ const uploadFile = (evt, callback) => {
 
 const extractFileDetails = (fileContent) => {
   return new Promise((resolve, reject) => {
-    const fileObj = fileContent; // The file object passed directly
-    if (fileObj) {
-      const reader = new FileReader(); // Initialize FileReader to read the file
-      reader.readAsText(fileObj); // Read the file as text
-
-      reader.onload = (e) => {
-        try {
-          const fileExtension = fileObj.name.split('.').pop().toLowerCase();
-          
-          if (fileExtension === 'json') {
-            // Handle JSON file parsing
-            const fileContents = JSON.parse(e.target.result);
-
-            // Check if 'forms' exist and is an array in fileContents
-            if (fileContents && fileContents.forms && Array.isArray(fileContents.forms)) {
-              const formToUpload = fileContents.forms[0]; // Extract the first form
-              resolve(formToUpload); // Resolve with the extracted form details
-            } else {
-              console.error("No 'forms' array found in the file.");
-              reject("No valid form found."); // Reject with an error message if 'forms' is missing
-            }
-          } else if (['bpmn', 'dmn'].includes(fileExtension)) {
-            // Handle XML file parsing
-            const parser = new DOMParser();
-            const xmlDoc = parser.parseFromString(e.target.result, "application/xml");
-
-            if (xmlDoc?.getElementsByTagName("parsererror").length > 0) {
-              reject("Invalid XML file."); // Reject if XML parsing fails
-            } else {
-              // Return the entire XML document as a string
-              const xmlString = new XMLSerializer().serializeToString(xmlDoc);
-              resolve(xmlString); // Resolve with the XML string
-            }
-          } else {
-            reject("Unsupported file type."); // Reject if the file type is unsupported
-          }
-        } catch (error) {
-          reject("Error processing file."); // Reject if there's a general error during processing
-        }
-      };
-
-      reader.onerror = () => {
-        console.error("Error reading the file.");
-        reject("Error reading the file."); // Reject in case of a file reading error
-      };
-    } else {
+    if (!fileContent) {
       console.error("No file selected.");
-      reject("No file selected."); // Reject if no file is provided
+      return reject("No file selected.");
     }
+
+    const reader = new FileReader();
+    reader.readAsText(fileContent);
+
+    reader.onload = (e) => {
+      try {
+        const fileExtension = getFileExtension(fileContent.name);
+
+        if (fileExtension === 'json') {
+          handleJSONFile(e.target.result, resolve, reject);
+        } else if (['bpmn', 'dmn'].includes(fileExtension)) {
+          handleXMLFile(e.target.result, resolve, reject);
+        } else {
+          reject("Unsupported file type.");
+        }
+      } catch (error) {
+        reject("Error processing file.");
+      }
+    };
+
+    reader.onerror = () => {
+      console.error("Error reading the file.");
+      reject("Error reading the file.");
+    };
   });
 };
+
+// Helper to get the file extension
+const getFileExtension = (fileName) => fileName.split('.').pop().toLowerCase();
+
+// Helper to handle JSON files
+const handleJSONFile = (fileContent, resolve, reject) => {
+  try {
+    const fileContents = JSON.parse(fileContent);
+    const forms = Array.isArray(fileContents.forms) ? fileContents.forms : [];
+    const workflows = Array.isArray(fileContents.workflows) ? fileContents.workflows : [];
+    const xml = workflows.length > 0 ? workflows.map(wf => wf.content).join('') : null;
+
+    if (forms.length === 0 && !xml) {
+      return reject("No valid form or XML found.");
+    }
+
+    resolve({ forms, xml });
+  } catch {
+    reject("Invalid JSON file.");
+  }
+};
+
+// Helper to handle XML files
+const handleXMLFile = (fileContent, resolve, reject) => {
+  const parser = new DOMParser();
+  const xmlDoc = parser.parseFromString(fileContent, "application/xml");
+
+  if (xmlDoc?.getElementsByTagName("parsererror")?.length > 0) {
+    return reject("Invalid XML file.");
+  }
+
+  const xmlString = new XMLSerializer().serializeToString(xmlDoc);
+  resolve({ xml: xmlString, forms: [] });
+};
+
 
 
 const FileService = {

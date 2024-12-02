@@ -187,7 +187,6 @@ def add_group_membership_mapper(access_token, client_id):
     response = requests.post(url, headers=headers, json=payload)
     response.raise_for_status()
     print("Group membership mapper created successfully.")
-    # return response.json()
 
 
 def check_client_role_exists(access_token, client_id, role_name):

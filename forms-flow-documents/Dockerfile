@@ -24,10 +24,10 @@ ENV CHROMEDRIVER_VERSION=116.0.5845.96
 ENV CHROMEDRIVER_DIR=/usr/local/bin
 
 # Download and install Chromedriver
-RUN wget -q "https://chromedriver.storage.googleapis.com/${CHROMEDRIVER_VERSION}/chromedriver_linux64.zip" \
-    && unzip chromedriver_linux64.zip -d $CHROMEDRIVER_DIR \
+RUN wget -q "https://chromedriver.storage.googleapis.com/116.0.5845.96/chromedriver_linux64.zip" \
+    && unzip chromedriver_linux64.zip -d /usr/local/bin \
     && rm chromedriver_linux64.zip \
-    && chmod +x $CHROMEDRIVER_DIR/chromedriver
+    && chmod +x /usr/local/bin/chromedriver
 
 # Install Google Chrome
 RUN wget -q -O - https://dl-ssl.google.com/linux/linux_signing_key.pub | gpg --dearmor -o /usr/share/keyrings/google-chrome.gpg \

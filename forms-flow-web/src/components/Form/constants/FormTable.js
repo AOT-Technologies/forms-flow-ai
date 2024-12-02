@@ -196,7 +196,6 @@ function FormTable() {
                       </tr>
                     );
                   })}
-                  <tr>
                     {formData.length ? (
                       <TableFooter
                       limit={limit}
@@ -209,7 +208,6 @@ function FormTable() {
                     ) : (
                       <td colSpan={3}></td>
                     )}
-                  </tr>
                 </tbody>
               ) : !searchFormLoading ? (
                 <NoDataFound />

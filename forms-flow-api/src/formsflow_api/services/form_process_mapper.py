@@ -410,8 +410,8 @@ class FormProcessMapperService:  # pylint: disable=too-many-public-methods
             "formRevisionNumber": "V1",
             "status": FormProcessMapperStatus.INACTIVE.value,
             "anonymous": anonymous,
-            "task_variable": task_variable,
-            "is_migrated": is_migrated,
+            "taskVariables": task_variable,
+            "isMigrated": is_migrated,
         }
 
         mapper = FormProcessMapperService.mapper_create(mapper_data)
@@ -431,6 +431,7 @@ class FormProcessMapperService:  # pylint: disable=too-many-public-methods
                     "resourceId": parent_form_id,
                     "resourceDetails": {},
                     "roles": [],
+                    "userName": user.user_name,
                 },
                 "designer": {
                     "resourceId": parent_form_id,

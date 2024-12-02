@@ -211,7 +211,7 @@ const EditComponent = () => {
         data.form = prepareVersionData(selectedLayoutVersion);
         //the workflow shoul send only the value of skip.
         data.workflow = {
-          skip: typeof selectedFlowVersion === 'string' ? false : true,
+          skip: typeof selectedFlowVersion !== 'string',
         };
       }
     }
@@ -221,7 +221,7 @@ const EditComponent = () => {
 
   // Helper function to prepare version data
   const prepareVersionData = (version) => ({
-    skip: typeof version === 'string' ? false : true, // skip is false if version is a string, true otherwise
+    skip: typeof version !== 'string', // skip is false if version is a string, true otherwise
     ...(typeof version === 'string' && { selectedVersion: version }), // Include selectedVersion only if version is a string
   });
 

@@ -62,5 +62,11 @@ PS : The keycloak client provided for this script needs `manage-clients` role fr
 ```
 In v7.0.0, permission matrix has been introduced, so existing groups needs new client roles. Run the following command to migrate the groups:
 ```bash
+[Default setup]
 python migrate-7.0.0.py
+```
+
+```bash
+[Multitenant setup]
+python migrate-7.0.0.py --multitenant=True --tenants=tenant1,tenant2
 ```

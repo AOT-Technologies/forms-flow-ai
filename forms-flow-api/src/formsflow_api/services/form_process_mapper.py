@@ -683,7 +683,7 @@ class FormProcessMapperService:  # pylint: disable=too-many-public-methods
                 mapper.process_key, mapper.process_name, "main"
             )
             workflows.append(workflow)
-            authorizations.append(self._get_authorizations(mapper.form_id, user))
+            authorizations.append(self._get_authorizations(mapper.parent_form_id, user))
 
             # Parse bpm xml to get subforms & workflows
             # The following lines are currently commented out but may be needed for future use.

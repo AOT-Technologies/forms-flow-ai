@@ -41,12 +41,24 @@ class ImportService:  # pylint: disable=too-many-public-methods
         """Returns formio access token."""
         return self.formio.get_formio_access_token()
 
+    def append_tenant_key_form_name_path(self, form_json, tenant_key):
+        """Append tenant key to form name & path."""
+        name = form_json.get("name")
+        path = form_json.get("path")
+        current_app.logger.debug(
+            f"Appending tenant key: {tenant_key} to form name: {name}  & path: {path}.."
+        )
+        form_json["name"] = f"{tenant_key}-{name}"
+        form_json["path"] = f"{tenant_key}-{path}"
+        return form_json
+
     @user_context
     def set_form_and_submission_access(self, form_data, anonymous, **kwargs):
         """Add form and submission access to form."""
         if current_app.config.get("MULTI_TENANCY_ENABLED"):
             user: UserContext = kwargs["user"]
             url = f"{current_app.config.get('ADMIN_URL')}/tenant"
+            current_app.logger.debug(f"Admin url: {url}")
             response = AdminService.get_request(url, user.bearer_token)
             role_ids = response["form"]
         else:
@@ -562,7 +574,7 @@ class ImportService:  # pylint: disable=too-many-public-methods
         if action not in ["validate", "import"]:
             raise BusinessException(BusinessErrorCode.INVALID_INPUT)
 
-        if import_type == "new":
+        if import_type == "new":  # pylint: disable=too-many-nested-blocks
             current_app.logger.info("Import new processing..")
             # Validate input file type whether it is json
             if not self.validate_file_type(file.filename, (".json",)):
@@ -584,6 +596,10 @@ class ImportService:  # pylint: disable=too-many-public-methods
                     form_major=1, form_minor=0, workflow_major=1, workflow_minor=0
                 )
             if action == "import":
+                if current_app.config.get("MULTI_TENANCY_ENABLED"):
+                    form_json = self.append_tenant_key_form_name_path(
+                        form_json, tenant_key
+                    )
                 form_id = self.import_new_form_workflow(
                     file_data, form_json, workflow_data, process_type
                 )
@@ -660,6 +676,10 @@ class ImportService:  # pylint: disable=too-many-public-methods
 
                         if not skip_form:
                             # Import form
+                            if current_app.config.get("MULTI_TENANCY_ENABLED"):
+                                form_json = self.append_tenant_key_form_name_path(
+                                    form_json, tenant_key
+                                )
                             form_id = self.import_edit_form(
                                 file_data, selected_form_version, form_json, mapper
                             )

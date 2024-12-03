@@ -17,11 +17,11 @@ import java.io.Serializable;
 public class FormProcessMappingData implements IResponse, Serializable {
 
 	private static final long serialVersionUID = 1L;
-	private String taskVariable;
+	private String taskVariables;
 	private String processName;
 	private String processKey;
 
 	public FilterInfo[] getTaskVariableList(ObjectMapper objectMapper) throws JsonProcessingException {
-		return objectMapper.readValue(this.taskVariable, FilterInfo[].class);
+		return objectMapper.readValue(this.taskVariables, FilterInfo[].class);
 	}
 }

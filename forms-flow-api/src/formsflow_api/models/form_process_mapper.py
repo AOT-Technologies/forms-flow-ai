@@ -65,8 +65,6 @@ class FormProcessMapper(
     @classmethod
     def create_from_dict(cls, mapper_info: dict) -> FormProcessMapper:
         """Create new mapper between form and process."""
-        print("0000000000000000000000000000000000000000000000000 mapperinfor 0000000000000000000000000000000000000")
-        print(mapper_info)
         try:
             if mapper_info:
                 mapper = FormProcessMapper()
@@ -89,7 +87,6 @@ class FormProcessMapper(
                 mapper.save()
                 return mapper
         except Exception as err:  # pylint: disable=broad-except
-            print(err, "thississsssssssssss")
             current_app.logger.critical(err)
         response, status = {
             "type": "Bad Request Error",

@@ -464,6 +464,31 @@ class FormProcessMapperService:  # pylint: disable=too-many-public-methods
             FormProcessMapperService.create_default_process(process_name)
         return response
 
+    def _remove_tenant_key(self, form_json, tenant_key):
+        """Remove tenant key from path & name."""
+        tenant_prefix = f"{tenant_key}-"
+        form_path = form_json.get("path", "")
+        form_name = form_json.get("name", "")
+        current_app.logger.info(
+            f"Removing tenant key from path: {form_path} & name: {form_name}"
+        )
+        if form_path.startswith(tenant_prefix):
+            form_json["path"] = form_path[len(tenant_prefix) :]
+
+        if form_name.startswith(tenant_prefix):
+            form_json["name"] = form_name[len(tenant_prefix) :]
+        return form_json
+
+    def _sanitize_form_json(self, form_json, tenant_key):
+        """Clean form JSON data for export."""
+        keys_to_remove = ["_id", "machineName", "access", "submissionAccess"]
+        for key in keys_to_remove:
+            form_json.pop(key, None)
+        # Remove 'tenantkey-' from 'path' and 'name'
+        if current_app.config.get("MULTI_TENANCY_ENABLED"):
+            form_json = self._remove_tenant_key(form_json, tenant_key)
+        return form_json
+
     def _get_form(  # pylint: disable=too-many-arguments, too-many-positional-arguments
         self,
         title_or_path: str,
@@ -484,34 +509,15 @@ class FormProcessMapperService:  # pylint: disable=too-many-public-methods
                 form_json = formio_service.get_form_by_path(
                     title_or_path, form_io_token
                 )
-            if form_json:
-                form_json.pop("_id", None)
-                form_json.pop("machineName", None)
-                # In a (sub form)connected form, the workflow provides the form path,
-                # and the title is obtained from the form JSON
-                title_or_path = (
-                    form_json.get("title", "") if scope_type == "sub" else title_or_path
-                )
-                # Remove access & submissionAccess from form json
-                for key in ["access", "submissionAccess"]:
-                    if key in form_json:
-                        current_app.logger.info(
-                            "Removing access & submissionAccess from form json.."
-                        )
-                        form_json.pop(key)
-                # Remove 'tenantkey-' from 'path' and 'name'
-                if current_app.config.get("MULTI_TENANCY_ENABLED"):
-                    tenant_prefix = f"{tenant_key}-"
-                    form_path = form_json.get("path", "")
-                    form_name = form_json.get("name", "")
-                    current_app.logger.info(
-                        f"Removing tenant key from path: {form_path} & name: {form_name}"
-                    )
-                    if form_path.startswith(tenant_prefix):
-                        form_json["path"] = form_path[len(tenant_prefix) :]
+            if not form_json:
+                raise BusinessException(BusinessErrorCode.INVALID_FORM_ID)
+            # In a (sub form)connected form, the workflow provides the form path,
+            # and the title is obtained from the form JSON
+            title_or_path = (
+                form_json.get("title", "") if scope_type == "sub" else title_or_path
+            )
+            form_json = self._sanitize_form_json(form_json, tenant_key)
 
-                    if form_name.startswith(tenant_prefix):
-                        form_json["name"] = form_name[len(tenant_prefix) :]
             return {
                 "formTitle": title_or_path,
                 "formDescription": description,

@@ -135,8 +135,8 @@ class ProcessService:  # pylint: disable=too-few-public-methods,too-many-public-
         if process_list:
             unique_default_non_tenant_list = []
             if current_app.config.get("MULTI_TENANCY_ENABLED"):
-                process_list, unique_default_non_tenant_list = cls.remove_duplicate_multitenant(
-                    process_list, process_type
+                process_list, unique_default_non_tenant_list = (
+                    cls.remove_duplicate_multitenant(process_list, process_type)
                 )
             process_list = cls.check_duplicate_names(process_list)
             # Exclude process keys from mapper to exclude any keys present in unique_mapper_keys
@@ -227,7 +227,9 @@ class ProcessService:  # pylint: disable=too-few-public-methods,too-many-public-
 
         # Find the bpmn:process element
         process = cls.get_process_by_type(root, process_type)
-        current_app.logger.debug(f"Process key: {process_key}, Process name: {process_name}")
+        current_app.logger.debug(
+            f"Process key: {process_key}, Process name: {process_name}"
+        )
         # Note: If id have space in name, then process view in bpmn modeller throws error
         if process is not None:
             process.set("id", process_key or process_name)

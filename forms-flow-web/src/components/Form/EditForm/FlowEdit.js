@@ -144,6 +144,7 @@ const FlowEdit = forwardRef(({ isPublished = false, CategoryType, setWorkflowIsC
 
   useImperativeHandle(ref, () => ({
     saveFlow,
+    handleImport: (xml)=>{bpmnRef.current?.handleImport(xml);}
   }));
   const handlePreviewAndVariables = () => {
     setShowTaskVarModal(true);

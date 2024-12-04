@@ -96,6 +96,40 @@ def get_group_id(token, group_name):
     return None
 
 
+def check_group_exists(access_token, group_name):
+    """Check if a group with the specified name already exists in Keycloak."""
+    url = f"{_get_base_url()}/admin/realms/{REALM}/groups"
+    headers = {"Authorization": f"Bearer {access_token}"}
+
+    response = requests.get(url, headers=headers)
+    response.raise_for_status()
+
+    groups = response.json()
+    for group in groups:
+        if group["name"] == group_name:
+            return group["id"]  # Return the group ID if it exists
+    return None
+
+
+def create_group(access_token, group_name):
+    """Create a group in Keycloak if it doesn't already exist."""
+    existing_group_id = check_group_exists(access_token, group_name)
+    if existing_group_id:
+        print(f"Group '{group_name}' already exists with ID: {existing_group_id}. Skipping creation.")
+        return existing_group_id
+
+    url = f"{_get_base_url()}/admin/realms/{REALM}/groups"
+    headers = {"Authorization": f"Bearer {access_token}", "Content-Type": "application/json"}
+    payload = {"name": group_name}
+
+    response = requests.post(url, headers=headers, json=payload)
+    response.raise_for_status()
+
+    group_id = check_group_exists(access_token, group_name)
+    print(f"Group '{group_name}' created successfully with ID: {group_id}.")
+    return group_id
+
+
 def assign_roles_to_group(token, group_id, client_id, roles):
     """Assign client roles to a group."""
     group_url = f"{_get_base_url()}/admin/realms/{REALM}/groups/{group_id}/role-mappings/clients/{client_id}"
@@ -108,3 +142,87 @@ def assign_roles_to_group(token, group_id, client_id, roles):
     response = requests.post(group_url, headers=headers, json=roles)
     if response.status_code != 204:  # 204 = No content (success)
         print(f"Failed to assign roles to group: {response.text}")
+
+
+def check_group_membership_mapper_exists(access_token, client_id, mapper_name="groups"):
+    """Check if a Group Membership Mapper already exists for the client."""
+    url = f"{_get_base_url()}/admin/realms/{REALM}/clients/{client_id}/protocol-mappers/models"
+    headers = {"Authorization": f"Bearer {access_token}"}
+
+    response = requests.get(url, headers=headers)
+    response.raise_for_status()
+
+    mappers = response.json()
+    for mapper in mappers:
+        if mapper["name"] == mapper_name:
+            return True  # Mapper already exists
+    return False
+
+
+def add_group_membership_mapper(access_token, client_id):
+    """Add a Group Membership Mapper to the client if it doesn't exist."""
+    url = f"{_get_base_url()}/admin/realms/{REALM}/clients/{client_id}/protocol-mappers/models"
+    headers = {"Authorization": f"Bearer {access_token}", "Content-Type": "application/json"}
+
+    # Check if the mapper already exists
+    if check_group_membership_mapper_exists(access_token, client_id):
+        print("Group membership mapper already exists. Skipping creation.")
+        return
+
+    # Mapper configuration payload
+    payload = {
+        "name": "groups",
+        "protocol": "openid-connect",
+        "protocolMapper": "oidc-group-membership-mapper",
+        "consentRequired": False,
+        "config": {
+            "full.path": "true",  # Include full group path
+            "id.token.claim": "true",  # Include in ID Token
+            "access.token.claim": "true",  # Include in Access Token
+            "userinfo.token.claim": "true",  # Include in UserInfo
+            "claim.name": "groups",  # Claim name
+        }
+    }
+
+    response = requests.post(url, headers=headers, json=payload)
+    response.raise_for_status()
+    print("Group membership mapper created successfully.")
+
+
+def check_client_role_exists(access_token, client_id, role_name):
+    """Check if a specific client role exists in Keycloak."""
+    url = f"{_get_base_url()}/admin/realms/{REALM}/clients/{client_id}/roles"
+    headers = {"Authorization": f"Bearer {access_token}"}
+
+    response = requests.get(url, headers=headers)
+    response.raise_for_status()
+
+    roles = response.json()
+    for role in roles:
+        if role["name"].upper() == role_name.upper():
+            return role["name"]  # Role exists
+    return None
+
+
+def get_users_with_client_role(access_token, client_id, role_name):
+    """Get all users assigned to a specific client role, if the role exists."""
+    # Check if the role exists
+    if not (role_name := check_client_role_exists(access_token, client_id, role_name)):
+        print(f"Client role '{role_name}' does not exist for client ID {client_id}.")
+        return []
+
+    # Fetch users with the specified role
+    url = f"{_get_base_url()}/admin/realms/{REALM}/clients/{client_id}/roles/{role_name}/users"
+    headers = {"Authorization": f"Bearer {access_token}"}
+    response = requests.get(url, headers=headers)
+    response.raise_for_status()
+
+    return response.json()
+
+
+def add_user_to_group(access_token, user_id, group_id):
+    """Add a user to a group in Keycloak."""
+    url = f"{_get_base_url()}/admin/realms/{REALM}/users/{user_id}/groups/{group_id}"
+    headers = {"Authorization": f"Bearer {access_token}"}
+    response = requests.put(url, headers=headers)
+    response.raise_for_status()

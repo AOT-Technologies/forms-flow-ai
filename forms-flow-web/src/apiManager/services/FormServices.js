@@ -25,6 +25,12 @@ export const formUpdate = (form_id,formData) => {
   return RequestService.httpPUTRequest(`${API.FORM_DESIGN}/${form_id}`, formData);
 };
 
+export const processMigrate = (migrationData) => {
+  const migrationUrl = replaceUrl(API.PROCESS_MIGRATE);
+  return RequestService.httpPOSTRequest(migrationUrl, migrationData );
+};
+
+
 export const getFormHistory = (form_id, page = null, limit = null) => {
   let url = `${API.FORM_HISTORY}/${form_id}`;
   if (page !== null && limit !== null) {

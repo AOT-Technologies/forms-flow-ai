@@ -3,13 +3,15 @@ import React, {
   useImperativeHandle,
   useRef,
   useState,
+  useEffect
 } from "react";
 import {
   CustomButton,
   HistoryIcon,
   ConfirmModal,
   HistoryModal,
-  CurlyBracketsIcon
+  CurlyBracketsIcon,
+  StrokeLine
 } from "@formsflow/components";
 import { Card } from "react-bootstrap";
 import { useTranslation } from "react-i18next";
@@ -18,6 +20,8 @@ import { useMutation } from "react-query";
 import { setProcessData } from "../../../actions/processActions.js";
 import BpmnEditor from "../../Modeler/Editors/BpmnEditor/BpmEditor";
 import LoadingOverlay from "react-loading-overlay-ts";
+import { push } from "connected-react-router";
+import { processMigrate } from "../../../apiManager/services/FormServices";
 import {
   updateProcess,
   getProcessHistory,
@@ -34,7 +38,9 @@ import userRoles from "../../../constants/permissions.js";
 import BPMNViewer from "../../BPMN/BpmnViewer.js";
 import TaskVariableModal from "../../Modals/TaskVariableModal.js";
 
-const FlowEdit = forwardRef(({ isPublished = false, CategoryType, setWorkflowIsChanged }, ref) => {
+const FlowEdit = forwardRef(({ isPublished = false, CategoryType,
+  setWorkflowIsChanged, migration, setMigration, redirectUrl,
+  isMigrated = true, mapperId }, ref) => {
   const { t } = useTranslation();
   const dispatch = useDispatch();
   const bpmnRef = useRef();
@@ -47,7 +53,11 @@ const FlowEdit = forwardRef(({ isPublished = false, CategoryType, setWorkflowIsC
   const { createDesigns } = userRoles();
   const [showTaskVarModal, setShowTaskVarModal] = useState(false);
   const [isWorkflowChanged, setIsWorkflowChanged] = useState(false);
-  const formData = useSelector((state) => state.form?.form || {});  
+  const formData = useSelector((state) => state.form?.form || {});
+  const [isMigrationChecked, setIsMigrationChecked] = useState(false);
+  const [showMigrationModal, setShowMigrationModal] = useState(false);
+  const computedStyle = getComputedStyle(document.documentElement);
+  const lightGray = computedStyle.getPropertyValue("--ff-gray-200");
   /* --------- fetching all process history when click history button --------- */
   const {
     data: { data: historiesData } = {}, // response data destructured
@@ -75,14 +85,46 @@ const FlowEdit = forwardRef(({ isPublished = false, CategoryType, setWorkflowIsC
   const handleDiscardModal = () => setShowDiscardModal(!showDiscardModal);
   const handleToggleHistoryModal = () => setShowHistoryModal(!showHistoryModal);
 
-  const enableWorkflowChange = ()=>{
+  const enableWorkflowChange = () => {
     setIsWorkflowChanged(true);
     setWorkflowIsChanged(true); // this function passed from parent
   };
 
-  const disableWorkflowChange = ()=>{
+  const disableWorkflowChange = () => {
     setIsWorkflowChanged(false);
     setWorkflowIsChanged(false); // this function passed from parent
+  };
+
+  useEffect(() => {
+    if (migration) {
+      setShowMigrationModal(true);
+      setMigration(false);
+    }
+  }, [migration]);
+
+  const handleSaveClick = () => {
+    if (!isMigrated) {
+      setShowMigrationModal(true);
+    } else {
+      saveFlow();
+    }
+  };
+
+  const handleMigraion = () => {
+    const migrationData = {
+      mapperId: mapperId,
+      processKey: processData.processKey
+    };
+    processMigrate(migrationData)
+      .then(() => {
+        dispatch(push(`${redirectUrl}formflow`));
+      })
+      .catch((err) => {
+        console.log(err);
+      })
+      .finally(() => {
+        setShowMigrationModal(false);
+      });
   };
 
   //handle discard changes
@@ -144,13 +186,17 @@ const FlowEdit = forwardRef(({ isPublished = false, CategoryType, setWorkflowIsC
 
   useImperativeHandle(ref, () => ({
     saveFlow,
-    handleImport: (xml)=>{bpmnRef.current?.handleImport(xml);}
+    handleImport: (xml) => { bpmnRef.current?.handleImport(xml); }
   }));
   const handlePreviewAndVariables = () => {
     setShowTaskVarModal(true);
   };
   const CloseTaskVarModal = () => {
     setShowTaskVarModal(false);
+  };
+
+  const handleCloseMigration = () => {
+    setShowMigrationModal(false);
   };
 
   return (
@@ -205,7 +251,7 @@ const FlowEdit = forwardRef(({ isPublished = false, CategoryType, setWorkflowIsC
                   size="md"
                   className="mx-2"
                   label={t("Save Flow")}
-                  onClick={saveFlow}
+                  onClick={handleSaveClick}
                   disabled={isPublished || !isWorkflowChanged}
                   dataTestid="save-flow-layout"
                   ariaLabel={t("Save Flow Layout")}
@@ -231,24 +277,82 @@ const FlowEdit = forwardRef(({ isPublished = false, CategoryType, setWorkflowIsC
             text={t("Loading...")}
           >
             <div className="flow-builder">
-            {!createDesigns ? (
+              {!createDesigns ? (
                 <BPMNViewer bpmnXml={processData?.processData || null} />
-            ) : (
-              <BpmnEditor
-                onChange={enableWorkflowChange} //handled is workflow changed or not
-                ref={bpmnRef}
-                setLintErrors={setLintErrors}
-                bpmnXml={
-                  isReverted
-                    ? historyData?.processData
-                    : processData?.processData
-                }
-              />
-            )}
-              </div>
+              ) : (
+                <BpmnEditor
+                  onChange={enableWorkflowChange} //handled is workflow changed or not
+                  ref={bpmnRef}
+                  setLintErrors={setLintErrors}
+                  bpmnXml={
+                    isReverted
+                      ? historyData?.processData
+                      : processData?.processData
+                  }
+                />
+              )}
+            </div>
           </LoadingOverlay>
         </Card.Body>
       </Card>
+      {showMigrationModal && <ConfirmModal
+        show={showMigrationModal}
+        title={t("***Migration Notice***")}
+        message={
+          <div>
+            <div className="message-primary mb-3">
+              {t(`We have switched to a new 1-to-1 relationship structure, 
+              where 1 form contains both the layout (visual of the form)
+               and the flow (the actions that get executed after the 
+               form's submission). Due to this 1-to-1 relationship, 
+               each layout (previously known as "form") will have a 
+               flow associated with it, so you cannot reuse flows -
+                one flow cannot be executed by different forms.`)}
+            </div>
+            <div className="message-primary mb-3">
+              {t(`This form shares a flow with a few other forms. As this is
+               not allowed under the new structure, we will permanently
+                link this flow with this form. For the other forms reusing
+                 this flow, we will automatically duplicate the flow. When 
+                 flows are duplicated, their history is not carried over. 
+                 You need to pick which form keeps the history and which 
+                 forms get duplicates without history.`)}
+            </div>
+            <div className="message-primary mb-3">
+              {t(`If this is the form you wish to keep the flow's history with,
+               confirm below. If this is not the form, then hit cancel, find
+                the form you want, make a minor change, press "Save Layout"
+                 or "Save Flow," and confirm it there.`)}
+            </div>
+            <div className="d-flex justify-content-between align-items-center">
+              <label className="message-primary">
+                {t(`This is the form that will keep the current 
+                flow and its history.`)}
+                {" "}
+              </label>
+              <StrokeLine color={lightGray} />
+              <div className="custom-checkbox d-flex justify-content-between align-items-center gap-2">
+                <input
+                  type="checkbox"
+                  className="form-check-input mb-2"
+                  onChange={() => setIsMigrationChecked(prev => !prev)}
+                  checked={isMigrationChecked}
+                />
+                <label className="message-primary">{t(`I confirm`)}</label>
+              </div>
+            </div>
+          </div >
+        }
+        primaryBtnDisable={!isMigrationChecked}
+        messageSecondary={null} // You can set this to `null` or remove it entirely if unused
+        primaryBtnAction={handleMigraion}
+        onClose={handleCloseMigration}
+        primaryBtnText={t("Link this form that will keep the current flow and its history")}
+        secondaryBtnText={t("Cancel")}
+        secondayBtnAction={handleCloseMigration}
+        size="sm"
+      />}
+
       <HistoryModal
         show={showHistoryModal}
         onClose={handleToggleHistoryModal}
@@ -267,9 +371,9 @@ const FlowEdit = forwardRef(({ isPublished = false, CategoryType, setWorkflowIsC
           form={formData}
           showTaskVarModal={showTaskVarModal}
           onClose={CloseTaskVarModal}
-          isPublished={isPublished}       
+          isPublished={isPublished}
         />
-        )}
+      )}
     </>
   );
 });

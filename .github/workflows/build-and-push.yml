@@ -14,9 +14,6 @@ jobs:
       - name: Checkout Code
         uses: actions/checkout@v3
 
-      - name: Check file structure
-        run: ls -R ./forms-flow-documents
-
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v2
 
@@ -27,12 +24,10 @@ jobs:
           password: ${{ secrets.DOCKER_PASSWORD }}
 
       - name: Build and Push Multi-Arch Image
-        uses: docker/build-push-action@v5
-        with:
-          context: ./forms-flow-documents 
-          push: true
-          platforms: linux/amd64,linux/arm64
-          tags: alanraju007/forms-flow-documents-api:v7.0.0
-          file: |
-            ./forms-flow-documents/Dockerfile        
-            ./forms-flow-documents/Dockerfile-ARM64  
+        run: |
+          docker buildx build \
+            --platform linux/amd64,linux/arm64 \
+            --file Dockerfile --file Dockerfile-ARM64 \
+            --tag alanraju007/forms-flow-documents-api:latest \
+            --push .
+          

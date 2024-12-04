@@ -14,6 +14,9 @@ jobs:
       - name: Checkout Code
         uses: actions/checkout@v3
 
+      - name: Check file structure
+        run: ls -R ./forms-flow-documents
+
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v2
 
@@ -27,10 +30,9 @@ jobs:
         uses: docker/build-push-action@v5
         with:
           context: ./forms-flow-documents
-          run: ls -R
           push: true
           platforms: linux/amd64,linux/arm64
           tags: alanraju007/forms-flow-documents-api:v7.0.0
-          files: |
+          file: |
             ./forms-flow-documents/Dockerfile
             ./forms-flow-documents/Dockerfile-ARM64

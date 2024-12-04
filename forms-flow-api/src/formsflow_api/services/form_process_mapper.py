@@ -481,7 +481,13 @@ class FormProcessMapperService:  # pylint: disable=too-many-public-methods
 
     def _sanitize_form_json(self, form_json, tenant_key):
         """Clean form JSON data for export."""
-        keys_to_remove = ["_id", "machineName", "access", "submissionAccess"]
+        keys_to_remove = [
+            "_id",
+            "machineName",
+            "access",
+            "submissionAccess",
+            "parentFormId",
+        ]
         for key in keys_to_remove:
             form_json.pop(key, None)
         # Remove 'tenantkey-' from 'path' and 'name'

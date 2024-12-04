@@ -128,6 +128,9 @@ class _Config:  # pylint: disable=too-few-public-methods
     # Configure LOG
     CONFIGURE_LOGS = str(os.getenv("CONFIGURE_LOGS", default="true")).lower() == "true"
 
+    # Admin url
+    ADMIN_URL = os.getenv("FORMSFLOW_ADMIN_URL")
+
 
 class DevConfig(_Config):  # pylint: disable=too-few-public-methods
     """Development environment configuration."""

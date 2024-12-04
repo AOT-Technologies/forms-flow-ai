@@ -78,8 +78,11 @@ const FormSettings = forwardRef((props, ref) => {
     APPLICATION: {
       roleInput: "",
       selectedRoles: formAuthorization.APPLICATION?.roles,
-      selectedOption: setSelectedOption(formAuthorization.APPLICATION?.roles, "submitter"),
-    },
+      selectedOption: setSelectedOption(formAuthorization.APPLICATION?.roles, "submitter"), 
+      /* The 'submitter' key is stored in 'resourceDetails'. If the roles array is not empty
+       we assume that the submitter is true. */
+    }
+
   });
 
     /* ------------------------- validating form name and path ------------------------ */

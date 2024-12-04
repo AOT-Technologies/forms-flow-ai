@@ -1,5 +1,5 @@
 #Author: Kurian Benoy
-FROM python:python:3.12.6-slim
+FROM python:3.12.6-slim
 
 WORKDIR /forms-flow-documents/app
 

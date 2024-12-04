@@ -5,7 +5,7 @@ from __future__ import annotations
 from enum import Enum, unique
 from typing import List, Optional
 
-from sqlalchemy import JSON, and_, or_
+from sqlalchemy import JSON, and_, or_, text
 from sqlalchemy.dialects.postgresql import ARRAY, ENUM
 
 from .audit_mixin import AuditDateTimeMixin, AuditUserMixin
@@ -71,17 +71,27 @@ class Authorization(AuditDateTimeMixin, AuditUserMixin, BaseModel, db.Model):
         cls, auth_type, roles, tenant, user_name, include_created_by=False
     ):  # pylint: disable=too-many-arguments,too-many-positional-arguments
         role_condition = [Authorization.roles.contains([role]) for role in roles]
-        query = cls.query.filter(Authorization.auth_type == auth_type).filter(
-            or_(
-                *role_condition,
-                include_created_by and Authorization.created_by == user_name,
-                Authorization.user_name == user_name,
-                and_(
-                    Authorization.user_name.is_(None),
-                    or_(Authorization.roles == {}, Authorization.roles.is_(None)),
-                ),
+        query = cls.query.filter(Authorization.auth_type == auth_type)
+        if auth_type == AuthType.APPLICATION:
+            # if the authtype is application then need to check role id exist or if submitter true
+            query = query.filter(
+                or_(
+                    *role_condition,
+                    text("resource_details ->>'submitter' = 'True'"),
+                )
             )
-        )
+        else:
+            query = query.filter(
+                or_(
+                    *role_condition,
+                    include_created_by and Authorization.created_by == user_name,
+                    Authorization.user_name == user_name,
+                    and_(
+                        Authorization.user_name.is_(None),
+                        or_(Authorization.roles == {}, Authorization.roles.is_(None)),
+                    ),
+                )
+            )
 
         if tenant:
             query = query.filter(Authorization.tenant == tenant)

@@ -447,6 +447,9 @@ const EditComponent = () => {
 
   /* ----------- save settings function to be used in settings modal ---------- */
   const filterAuthorizationData = (authorizationData) => {
+    if(authorizationData.selectedOption === "submitter"){
+      return {roles: [], userName:null, resourceDetails:{submitter:true}};
+    }
     if (authorizationData.selectedOption === "specifiedRoles") {
       return { roles: authorizationData.selectedRoles, userName: "" };
     }
@@ -475,7 +478,7 @@ const EditComponent = () => {
     const authorizations = {
       application: {
         resourceId: parentFormId,
-        resourceDetails: {},
+        resourceDetails:{submitter:false},
         ...filterAuthorizationData(rolesState.APPLICATION),
       },
       designer: {

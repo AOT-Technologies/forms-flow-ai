@@ -29,10 +29,10 @@ jobs:
       - name: Build and Push Multi-Arch Image
         uses: docker/build-push-action@v5
         with:
-          context: ./forms-flow-documents
+          context: ./forms-flow-documents 
           push: true
           platforms: linux/amd64,linux/arm64
           tags: alanraju007/forms-flow-documents-api:v7.0.0
           file: |
-            ./forms-flow-documents/Dockerfile
-            ./forms-flow-documents/Dockerfile-ARM64
+            ./forms-flow-documents/Dockerfile        
+            ./forms-flow-documents/Dockerfile-ARM64  

@@ -75,24 +75,30 @@ jobs:
           key: ${{ runner.os }}-buildx-${{ matrix.name }}-${{ github.sha }}
           restore-keys: |
             ${{ runner.os }}-buildx-${{ matrix.name }}
-      
-      - name: Build and push Docker image for amd64
-        uses: docker/build-push-action@v4
-        with:
-          context: forms-flow-documents
-          file: forms-flow-documents/Dockerfile
-          push: true
-          platforms: linux/amd64
-          tags: ${{ steps.meta.outputs.tags }}, formsflow/forms-flow-documents-api:latest
-          labels: ${{ steps.meta.outputs.labels }}
 
-      - name: Build and push Docker image for arm64
+      - name: Build and push Docker image
+        if: ${{ github.ref != 'refs/heads/master' }}
         uses: docker/build-push-action@v4
         with:
           context: forms-flow-documents
-          file: forms-flow-documents/Dockerfile-ARM64
           push: true
-          platforms: linux/arm64/v8
+          file: |
+            forms-flow-documents/Dockerfile
+            forms-flow-documents/Dockerfile-ARM64
+          platforms: linux/amd64,linux/arm64/v8
+          tags: ${{ steps.meta.outputs.tags }}
+          labels: ${{ steps.meta.outputs.labels }}      
+      
+      - name: Build and push Docker image
+        if: ${{ github.ref != 'refs/heads/master' }}
+        uses: docker/build-push-action@v2
+        with:
+          context: forms-flow-documents
+          file: |
+            forms-flow-documents/Dockerfile
+            forms-flow-documents/Dockerfile-ARM64
+          push: true
+          platforms: linux/amd64,linux/arm64/v8
           tags: ${{ steps.meta.outputs.tags }}, formsflow/forms-flow-documents-api:latest
           labels: ${{ steps.meta.outputs.labels }}
 

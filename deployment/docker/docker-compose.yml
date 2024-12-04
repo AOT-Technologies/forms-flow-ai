@@ -259,6 +259,7 @@ services:
       API_LOG_BACKUP_COUNT: ${API_LOG_BACKUP_COUNT:-7}
       CONFIGURE_LOGS: ${CONFIGURE_LOGS:-true}
       REDIS_URL: ${REDIS_URL:-redis://redis:6379/0}
+      FORMSFLOW_ADMIN_URL: ${FORMSFLOW_ADMIN_URL}
 
     stdin_open: true # -i
     tty: true # -t

@@ -6,7 +6,9 @@ from uuid import uuid1
 from flask import current_app
 from formsflow_api_utils.exceptions import BusinessException
 from formsflow_api_utils.services.external import FormioService
+from formsflow_api_utils.utils import Cache
 from formsflow_api_utils.utils.enums import FormProcessMapperStatus
+from formsflow_api_utils.utils.startup import collect_role_ids
 from formsflow_api_utils.utils.user_context import UserContext, user_context
 from jsonschema import ValidationError, validate
 from lxml import etree
@@ -19,6 +21,7 @@ from formsflow_api.schemas import (
     form_schema,
     form_workflow_schema,
 )
+from formsflow_api.services.external.admin import AdminService
 
 from .authorization import AuthorizationService
 from .form_history_logs import FormHistoryService
@@ -37,6 +40,97 @@ class ImportService:  # pylint: disable=too-many-public-methods
     def __get_formio_access_token(self):
         """Returns formio access token."""
         return self.formio.get_formio_access_token()
+
+    def append_tenant_key_form_name_path(self, form_json, tenant_key):
+        """Append tenant key to form name & path."""
+        name = form_json.get("name")
+        path = form_json.get("path")
+        current_app.logger.debug(
+            f"Appending tenant key: {tenant_key} to form name: {name}  & path: {path}.."
+        )
+        form_json["name"] = f"{tenant_key}-{name}"
+        form_json["path"] = f"{tenant_key}-{path}"
+        return form_json
+
+    @user_context
+    def set_form_and_submission_access(self, form_data, anonymous, **kwargs):
+        """Add form and submission access to form."""
+        if current_app.config.get("MULTI_TENANCY_ENABLED"):
+            user: UserContext = kwargs["user"]
+            url = f"{current_app.config.get('ADMIN_URL')}/tenant"
+            current_app.logger.debug(f"Admin url: {url}")
+            response = AdminService.get_request(url, user.bearer_token)
+            role_ids = response["form"]
+        else:
+            role_ids = Cache.get("formio_role_ids")
+            if not role_ids:
+                collect_role_ids(current_app)
+                role_ids = Cache.get("formio_role_ids")
+
+        role_dict = {role["type"]: role["roleId"] for role in role_ids}
+
+        client_id = role_dict.get("CLIENT")
+        designer_id = role_dict.get("DESIGNER")
+        reviewer_id = role_dict.get("REVIEWER")
+        anonymous_id = role_dict.get("ANONYMOUS")
+
+        # Include anonymous_id, if anonymous is True
+        read_all_roles = [client_id, designer_id, reviewer_id]
+        create_own_roles = [client_id]
+        if anonymous:
+            read_all_roles.append(anonymous_id)
+            create_own_roles.append(anonymous_id)
+
+        form_data["access"] = [
+            {
+                "type": "read_all",
+                "roles": read_all_roles,
+            },
+            {
+                "type": "update_all",
+                "roles": [designer_id],
+            },
+            {
+                "type": "delete_all",
+                "roles": [designer_id],
+            },
+        ]
+
+        form_data["submissionAccess"] = [
+            {
+                "roles": [designer_id],
+                "type": "create_all",
+            },
+            {
+                "roles": [reviewer_id],
+                "type": "read_all",
+            },
+            {
+                "roles": [reviewer_id],
+                "type": "update_all",
+            },
+            {
+                "roles": [designer_id, reviewer_id],
+                "type": "delete_all",
+            },
+            {
+                "roles": create_own_roles,
+                "type": "create_own",
+            },
+            {
+                "roles": [client_id],
+                "type": "read_own",
+            },
+            {
+                "roles": [client_id],
+                "type": "update_own",
+            },
+            {
+                "roles": [reviewer_id],
+                "type": "delete_own",
+            },
+        ]
+        return form_data
 
     def create_authorization(self, data):
         """Create authorization."""
@@ -285,6 +379,8 @@ class ImportService:  # pylint: disable=too-many-public-methods
         self, file_data, form_json, workflow_data, process_type
     ):
         """Import new form+workflow."""
+        anonymous = file_data.get("forms")[0].get("anonymous") or False
+        form_json = self.set_form_and_submission_access(form_json, anonymous)
         form_response = self.form_create(form_json)
         form_id = form_response.get("_id")
         FormHistoryService.create_form_log_with_clone(
@@ -350,7 +446,7 @@ class ImportService:  # pylint: disable=too-many-public-methods
         current_form = self.get_form_by_formid(mapper.form_id)
         new_path = form_json.get("path")
         new_title = form_json.get("title")
-        anonymous = kwargs.get("anonymous", None)
+        anonymous = kwargs.get("anonymous", False)
         description = kwargs.get("description", None)
         title_changed = bool(not form_only and mapper.form_name != new_title)
         anonymous_changed = bool(
@@ -377,6 +473,7 @@ class ImportService:  # pylint: disable=too-many-public-methods
             # But incase of form only no validation done, so use current form path & title itself.
             form_json["title"] = title if form_only else new_title
             form_json["path"] = path if form_only else new_path
+            form_json = self.set_form_and_submission_access(form_json, anonymous)
             form_response = self.form_create(form_json)
             form_id = form_response.get("_id")
             FormHistoryService.create_form_log_with_clone(
@@ -477,7 +574,7 @@ class ImportService:  # pylint: disable=too-many-public-methods
         if action not in ["validate", "import"]:
             raise BusinessException(BusinessErrorCode.INVALID_INPUT)
 
-        if import_type == "new":
+        if import_type == "new":  # pylint: disable=too-many-nested-blocks
             current_app.logger.info("Import new processing..")
             # Validate input file type whether it is json
             if not self.validate_file_type(file.filename, (".json",)):
@@ -499,6 +596,10 @@ class ImportService:  # pylint: disable=too-many-public-methods
                     form_major=1, form_minor=0, workflow_major=1, workflow_minor=0
                 )
             if action == "import":
+                if current_app.config.get("MULTI_TENANCY_ENABLED"):
+                    form_json = self.append_tenant_key_form_name_path(
+                        form_json, tenant_key
+                    )
                 form_id = self.import_new_form_workflow(
                     file_data, form_json, workflow_data, process_type
                 )
@@ -575,6 +676,10 @@ class ImportService:  # pylint: disable=too-many-public-methods
 
                         if not skip_form:
                             # Import form
+                            if current_app.config.get("MULTI_TENANCY_ENABLED"):
+                                form_json = self.append_tenant_key_form_name_path(
+                                    form_json, tenant_key
+                                )
                             form_id = self.import_edit_form(
                                 file_data, selected_form_version, form_json, mapper
                             )

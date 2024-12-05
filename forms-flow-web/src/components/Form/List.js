@@ -170,10 +170,11 @@ const List = React.memo((props) => {
   };
 
   const handleImport = async (fileContent, UploadActionType) => {
-    if(UploadActionType === "import") {
+    if (UploadActionType === "import") {
       setImportLoader(true);
     }
-    let data = {};
+  
+    let data;
     switch (UploadActionType) {
       case "validate":
         data = {
@@ -192,38 +193,40 @@ const List = React.memo((props) => {
         console.error("Invalid UploadActionType provided");
         return;
     }
-
-    const dataString = JSON.stringify(data);
-    formImport(fileContent, dataString)
-      .then((res) => {
-        setImportLoader(false);
-        setFormSubmitted(false);
-
-        if (data.action == "validate") {
-          FileService.extractFileDetails(fileContent)
-          .then((formExtracted) => {
-            if (formExtracted) {
-              setFormTitle(formExtracted.formTitle);
-              setUploadFormDescription(formExtracted.formDescription);
-            } else {
-              console.log("No valid form found.");
-            }
-          })
-          .catch((error) => {
-            console.error("Error extracting form:", error);
-          });
+  
+    try {
+      const dataString = JSON.stringify(data);
+      const res = await formImport(fileContent, dataString);
+      const { data: responseData } = res;
+      const formId = responseData.mapper?.formId;
+  
+      setImportLoader(false);
+      setFormSubmitted(false);
+  
+      if (data.action === "validate") {
+        try {
+          const formExtracted = await FileService.extractFileDetails(fileContent);
+  
+          if (formExtracted) {
+            const {forms} = formExtracted;
+            setFormTitle(forms[0]?.formTitle);
+            setUploadFormDescription(forms[0]?.formDescription);
+          } else {
+            console.log("No valid form found.");
+          }
+        } catch (error) {
+          console.error("Error extracting form:", error);
         }
-        else {
-          res?.data?.formId && dispatch(push(`${redirectUrl}formflow/${res.data.formId}/edit/`));
-        }
-      })
-      .catch((err) => {
-        setImportLoader(false);
-        setFormSubmitted(false);
-        setImportError(err?.response?.data?.message);
-      });
+      } else if (formId) {
+        dispatch(push(`${redirectUrl}formflow/${formId}/edit/`));
+      }
+    } catch (err) {
+      setImportLoader(false);
+      setFormSubmitted(false);
+      setImportError(err?.response?.data?.message);
+    }
   };
-
+  
 
   useEffect(() => {
     fetchForms();

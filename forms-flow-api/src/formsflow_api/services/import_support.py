@@ -467,12 +467,12 @@ class ImportService:  # pylint: disable=too-many-public-methods
             # Update name & path of current form
             current_form["path"] = f"{path}-v-{uuid1().hex}"
             current_form["name"] = f"{name}-v-{uuid1().hex}"
-            current_form["title"] = f"{title}-v-{uuid1().hex}"
             FormProcessMapperService.form_design_update(current_form, mapper.form_id)
             # Create new form with current form name
             # But incase of form only no validation done, so use current form path & title itself.
             form_json["title"] = title if form_only else new_title
             form_json["path"] = path if form_only else new_path
+            form_json["parentFormId"] = mapper.parent_form_id
             form_json = self.set_form_and_submission_access(form_json, anonymous)
             form_response = self.form_create(form_json)
             form_id = form_response.get("_id")
@@ -516,6 +516,7 @@ class ImportService:  # pylint: disable=too-many-public-methods
             # Incase of form+workflow title/path is updated even in minor version
             form_components["title"] = title if form_only else new_title
             form_components["path"] = path if form_only else new_path
+            form_components["parentFormId"] = mapper.parent_form_id
             form_response = self.form_update(form_components, form_id)
             form_response["componentChanged"] = True
             form_response["parentFormId"] = mapper.parent_form_id

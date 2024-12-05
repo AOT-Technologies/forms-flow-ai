@@ -429,9 +429,9 @@ class FormProcessMapperService:  # pylint: disable=too-many-public-methods
             authorization_data = {
                 "application": {
                     "resourceId": parent_form_id,
-                    "resourceDetails": {},
+                    "resourceDetails": {"submitter": True},
                     "roles": [],
-                    "userName": user.user_name,
+                    "userName": None,
                 },
                 "designer": {
                     "resourceId": parent_form_id,

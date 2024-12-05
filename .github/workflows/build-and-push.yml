@@ -23,6 +23,14 @@ jobs:
           username: alanraju007
           password: ${{ secrets.DOCKER_PASSWORD }}
 
+      - name: Cache Docker layers
+        uses: actions/cache@v2
+        with:
+          path: /tmp/.buildx-cache
+          key: ${{ runner.os }}-buildx-${{ matrix.name }}-${{ github.sha }}
+          restore-keys: |
+            ${{ runner.os }}-buildx-${{ matrix.name }}
+
       - name: Build and Push Multi-Arch Image
         run: |
           docker buildx build \

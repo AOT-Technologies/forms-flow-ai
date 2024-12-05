@@ -102,14 +102,6 @@ const FlowEdit = forwardRef(({ isPublished = false, CategoryType,
     }
   }, [migration]);
 
-  const handleSaveClick = () => {
-    if (!isMigrated) {
-      setShowMigrationModal(true);
-    } else {
-      saveFlow();
-    }
-  };
-
   const handleMigraion = () => {
     const migrationData = {
       mapperId: mapperId,
@@ -251,7 +243,7 @@ const FlowEdit = forwardRef(({ isPublished = false, CategoryType,
                   size="md"
                   className="mx-2"
                   label={t("Save Flow")}
-                  onClick={handleSaveClick}
+                  onClick={() => {!isMigrated ? setShowMigrationModal(true) : saveFlow();}}
                   disabled={isPublished || !isWorkflowChanged}
                   dataTestid="save-flow-layout"
                   ariaLabel={t("Save Flow Layout")}
@@ -383,7 +375,12 @@ FlowEdit.propTypes = {
     WORKFLOW: PropTypes.string.isRequired,
   }).isRequired,
   isPublished: PropTypes.bool.isRequired,
-  setWorkflowIsChanged: PropTypes.func
+  setWorkflowIsChanged: PropTypes.func,
+  migration: PropTypes.bool,
+  setMigration: PropTypes.func,
+  redirectUrl: PropTypes.string, 
+  isMigrated: PropTypes.bool, 
+  mapperId: PropTypes.string
 };
 
 export default FlowEdit;

@@ -295,16 +295,20 @@ export const getFormProcesses = (formId, ...rest) => {
   };
 };
 
-  export const getProcessDetails = (processKey, tenant_key) => {
-    const api = API.GET_PROCESS_XML;
-    let url = replaceUrl(api, "<process_key>", processKey);
+export const getProcessDetails = (processKey, tenant_key = null, mapperId = null) => {
+  const api = API.GET_PROCESS_XML;
+  let url = replaceUrl(api, "<process_key>", processKey);
+  // Append tenant_key if available
+  if (tenant_key) {
+    url += `?tenantId=${tenant_key}`;
+  }
+  // Append mapperId if available
+  if (mapperId) {
+    url += tenant_key ? `&mapperId=${mapperId}` : `?mapperId=${mapperId}`;
+  }
+  return RequestService.httpGETRequest(url);
+};
 
-    if (tenant_key) {
-      url = url + `?tenantId=${tenant_key}`;
-    }
-
-    return RequestService.httpGETRequest(url);
-  };
 
 
   export const updateProcess = ({id,data,type}) => {

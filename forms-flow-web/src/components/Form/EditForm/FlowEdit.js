@@ -10,8 +10,7 @@ import {
   HistoryIcon,
   ConfirmModal,
   HistoryModal,
-  CurlyBracketsIcon,
-  StrokeLine
+  CurlyBracketsIcon
 } from "@formsflow/components";
 import { Card } from "react-bootstrap";
 import { useTranslation } from "react-i18next";
@@ -56,9 +55,8 @@ const FlowEdit = forwardRef(({ isPublished = false, CategoryType,
   const formData = useSelector((state) => state.form?.form || {});
   const [isMigrationChecked, setIsMigrationChecked] = useState(false);
   const [showMigrationModal, setShowMigrationModal] = useState(false);
-  const computedStyle = getComputedStyle(document.documentElement);
-  const lightGray = computedStyle.getPropertyValue("--ff-gray-200");
-  /* --------- fetching all process history when click history button --------- */
+  const [isMigraionLoading, setIsMigraionLoading] = useState(false);
+   /* --------- fetching all process history when click history button --------- */
   const {
     data: { data: historiesData } = {}, // response data destructured
     mutate: fetchHistories, // mutate function used to call the api function and here mutate renamed to fetch histories
@@ -103,6 +101,7 @@ const FlowEdit = forwardRef(({ isPublished = false, CategoryType,
   }, [migration]);
 
   const handleMigraion = () => {
+    setIsMigraionLoading(true);
     const migrationData = {
       mapperId: mapperId,
       processKey: processData.processKey
@@ -115,6 +114,7 @@ const FlowEdit = forwardRef(({ isPublished = false, CategoryType,
         console.log(err);
       })
       .finally(() => {
+        setIsMigraionLoading(false);
         setShowMigrationModal(false);
       });
   };
@@ -332,7 +332,7 @@ const FlowEdit = forwardRef(({ isPublished = false, CategoryType,
                 flow and its history.`)}
                 {" "}
               </label>
-              <StrokeLine color={lightGray} />
+              <div className="dashed-line"></div>
               <div className="custom-checkbox d-flex justify-content-between align-items-center gap-2">
                 <input
                   type="checkbox"
@@ -352,6 +352,7 @@ const FlowEdit = forwardRef(({ isPublished = false, CategoryType,
         primaryBtnText={t("Link this form that will keep the current flow and its history")}
         secondaryBtnText={t("Cancel")}
         secondayBtnAction={handleCloseMigration}
+        buttonLoading={isMigraionLoading}
         size="sm"
       />}
 

@@ -487,6 +487,7 @@ class FormProcessMapperService:  # pylint: disable=too-many-public-methods
             "access",
             "submissionAccess",
             "parentFormId",
+            "owner",
         ]
         for key in keys_to_remove:
             form_json.pop(key, None)
@@ -795,39 +796,34 @@ class FormProcessMapperService:  # pylint: disable=too-many-public-methods
         FormProcessMapperService.validate_title_name_path(title, path, name)
 
         if current_app.config.get("MULTI_TENANCY_ENABLED"):
-            # In multitenant environment, validate title exists validation on mapper & path, name in formio.
-            if title:
-                FormProcessMapperService.validate_form_title(title)
             user: UserContext = kwargs["user"]
             tenant_key = user.tenant_key
             name = f"{tenant_key}-{name}"
             path = f"{tenant_key}-{path}"
+        # Validate title exists validation on mapper & path, name in formio.
+        if title:
+            FormProcessMapperService.validate_form_title(title)
+        # Validate path, name exits in formio.
+        if path or name:
             query_params = f"name={name}&path={path}&select=title,path,name"
-        else:
-            # In non-multitenant environment, validate title, path, name in formio.
-            query_params = (
-                f"title={title}&name={name}&path={path}&select=title,path,name"
+            # Initialize the FormioService and get the access token
+            formio_service = FormioService()
+            form_io_token = formio_service.get_formio_access_token()
+            validation_response = formio_service.get_form_search(
+                query_params, form_io_token
             )
 
-        # Initialize the FormioService and get the access token
-        formio_service = FormioService()
-        form_io_token = formio_service.get_formio_access_token()
-        # Call the external validation API
-        validation_response = formio_service.get_form_search(
-            query_params, form_io_token
-        )
-
-        # Check if the validation response has any results
-        if validation_response:
-            # Check if the form ID matches
-            if (
-                form_id
-                and len(validation_response) == 1
-                and validation_response[0].get("_id") == form_id
-            ):
-                return {}
-            # If there are results but no matching ID, the form name is still considered invalid
-            raise BusinessException(BusinessErrorCode.FORM_EXISTS)
+            # Check if the validation response has any results
+            if validation_response:
+                # Check if the form ID matches
+                if (
+                    form_id
+                    and len(validation_response) == 1
+                    and validation_response[0].get("_id") == form_id
+                ):
+                    return {}
+                # If there are results but no matching ID, the form name is still considered invalid
+                raise BusinessException(BusinessErrorCode.FORM_EXISTS)
         # If no results, the form name is valid
         return {}
 

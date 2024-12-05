@@ -258,19 +258,18 @@ class ImportService:  # pylint: disable=too-many-public-methods
                 name = f"{tenant_key}-{name}"
             path = f"{tenant_key}-{path}"
 
+        if len(title) > 200 or len(name) > 200:
+            raise BusinessException(BusinessErrorCode.INVALID_FORM_TITLE_LENGTH)
+
         # Build query params based on validation type
         if validate_path_only and mapper:
             # In case of edit import validate title in mapper table & path in formio.
             FormProcessMapperService.validate_form_title(title, mapper.parent_form_id)
             query_params = f"path={path}&select=title,path,name,_id"
-        elif not validate_path_only and current_app.config.get("MULTI_TENANCY_ENABLED"):
-            # In case of new import in multitenant env, validate title in mapper table & path,name in formio.
+        else:
+            # In case of new import validate title in mapper table & path,name in formio.
             FormProcessMapperService.validate_form_title(title, exclude_id=None)
             query_params = f"path={path}&name={name}&select=title,path,name,_id"
-        else:
-            query_params = (
-                f"title={title}&name={name}&path={path}&select=title,path,name"
-            )
         current_app.logger.info(f"Validating form exists...{query_params}")
         response = self.get_form_by_query(query_params)
         return response

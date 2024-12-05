@@ -389,11 +389,23 @@ class FormProcessMapper(
     @classmethod
     def find_forms_by_title(cls, form_title, exclude_id) -> FormProcessMapper:
         """Find all form process mapper that matches the provided form title."""
-        query = cls.query.filter(
-            FormProcessMapper.form_name == form_title, cls.deleted.is_(False)
+        latest_mapper = (
+            db.session.query(
+                func.max(cls.id).label("latest_id"),
+                cls.parent_form_id,
+            )
+            .group_by(cls.parent_form_id)
+            .subquery()
         )
+        query = (
+            db.session.query(cls)
+            .join(latest_mapper, cls.id == latest_mapper.c.latest_id)
+            .filter(cls.form_name == form_title, cls.deleted.is_(False))
+        )
+
         if exclude_id is not None:
-            query = query.filter(FormProcessMapper.parent_form_id != exclude_id)
+            query = query.filter(cls.parent_form_id != exclude_id)
+
         query = cls.tenant_authorization(query=query)
         return query.all()
 

@@ -203,3 +203,9 @@ export const setBpmFormSort = (data) => (dispatch) => {
     });
 };
 
+export const setClientFormSearch = ( data ) => (dispatch) => {
+  dispatch({
+    type: ACTION_CONSTANTS.BPM_CLIENT_FORM_SEARCH,
+    payload: data,
+    });
+};

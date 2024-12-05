@@ -27,7 +27,8 @@ jobs:
         run: |
           docker buildx build \
             --platform linux/amd64,linux/arm64 \
-            --file Dockerfile --file Dockerfile-ARM64 \
+            --file Dockerfile \
+            --file Dockerfile-ARM64 \
             --tag alanraju007/forms-flow-documents-api:latest \
             --push .
           

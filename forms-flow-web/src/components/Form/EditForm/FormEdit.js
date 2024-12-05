@@ -425,7 +425,9 @@ const EditComponent = () => {
   }, [restoredFormId]);
 
   const fetchProcessDetails = async (processListData) => {
-    const response = await getProcessDetails(processListData.processKey);
+    //for the migration, if the diagram is not available in the db, it will fetch from camunda using maper id. 
+    const mapperId = !processListData.isMigrated ? processListData.id : null;
+    const response = await getProcessDetails(processListData.processKey, mapperId);
     dispatch(setProcessData(response.data));
   };
 

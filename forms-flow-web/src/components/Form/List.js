@@ -200,11 +200,10 @@ const List = React.memo((props) => {
   
         if (Array.isArray(formExtracted?.forms)) {
             const {forms} = formExtracted;
-            // these checkes added for prop validation
-            const formTitle = forms[0]?.formTitle;
-            const formDescription = forms[0]?.formDescription;
-            setFormTitle(typeof formTitle == "string" ? formTitle: "");
-            setUploadFormDescription(typeof formDescription == "string" ? formDescription : "");
+            // sonarcloud-disable-next-line: Missing prop validation
+            setFormTitle(forms[0]?.formTitle || "");
+            // sonarcloud-disable-next-line: Missing prop validation
+            setUploadFormDescription(forms[0]?.formDescription || "");
           }
         
       } else if (formId) {

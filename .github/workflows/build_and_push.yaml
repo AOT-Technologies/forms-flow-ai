@@ -38,7 +38,7 @@ jobs:
       
       - run: echo ${{ env.VERSION }}
 
-      - name: Docker meta
+      #- name: Docker meta
         id: meta
         uses: docker/metadata-action@v3
         with:

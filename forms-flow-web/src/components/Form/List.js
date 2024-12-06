@@ -180,7 +180,6 @@ const List = React.memo((props) => {
       return;
     }
 
-
     if (actionType === UploadActionType.IMPORT) {
       setImportLoader(true);
       setFormSubmitted(true);
@@ -201,8 +200,12 @@ const List = React.memo((props) => {
   
         if (Array.isArray(formExtracted?.forms)) {
             const {forms} = formExtracted;
-            setFormTitle(forms[0]?.formTitle || "");
-            setUploadFormDescription(forms[0]?.formDescription || "");
+                // Update state with the first form's title and description
+            const formTitle = forms[0]?.formTitle || "";
+            const formDescription = forms[0]?.formDescription || "";
+
+            setFormTitle(formTitle);
+            setUploadFormDescription(formDescription);
           }
         
       } else if (formId) {

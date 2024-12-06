@@ -169,31 +169,23 @@ const List = React.memo((props) => {
     onClose();
   };
 
-  const handleImport = async (fileContent, UploadActionType) => {
-    if (UploadActionType === "import") {
+  const handleImport = async (fileContent, actionType) => {
+
+
+    let data; 
+    if(UploadActionType[actionType]){
+      data = { importType: "new", action: UploadActionType[actionType?.toUpperCase()]};
+    }else{
+      console.error("Invalid UploadActionType provided");
+      return;
+    }
+
+
+    if (actionType === UploadActionType.IMPORT) {
       setImportLoader(true);
+      setFormSubmitted(true);
     }
-  
-    let data;
-    switch (UploadActionType) {
-      case "validate":
-        data = {
-          importType: "new",
-          action: "validate",
-        };
-        break;
-      case "import":
-        setFormSubmitted(true);
-        data = {
-          importType: "new",
-          action: "import",
-        };
-        break;
-      default:
-        console.error("Invalid UploadActionType provided");
-        return;
-    }
-  
+
     try {
       const dataString = JSON.stringify(data);
       const res = await formImport(fileContent, dataString);
@@ -203,22 +195,16 @@ const List = React.memo((props) => {
       setImportLoader(false);
       setFormSubmitted(false);
   
-      if (data.action === "validate") {
-        try {
-          const formExtracted = await FileService.extractFileDetails(fileContent);
+      if (actionType === UploadActionType.VALIDATE ) {
+      
+        const formExtracted = await FileService.extractFileDetails(fileContent);
   
-          if (formExtracted && Array.isArray(formExtracted.forms)) {
+        if (Array.isArray(formExtracted?.forms)) {
             const {forms} = formExtracted;
-            setFormTitle(typeof forms[0]?.formTitle === "string" ? forms[0].formTitle : "");
-            setUploadFormDescription(
-              typeof forms[0]?.formDescription === "string" ? forms[0].formDescription : ""
-            );
-          } else {
-            console.log("No valid form found.");
+            setFormTitle(forms[0]?.formTitle || "");
+            setUploadFormDescription(forms[0]?.formDescription || "");
           }
-        } catch (error) {
-          console.error("Error extracting form:", error);
-        }
+        
       } else if (formId) {
         dispatch(push(`${redirectUrl}formflow/${formId}/edit/`));
       }

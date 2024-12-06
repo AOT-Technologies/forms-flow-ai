@@ -198,12 +198,9 @@ const List = React.memo((props) => {
       
         const formExtracted = await FileService.extractFileDetails(fileContent);
   
-        if (Array.isArray(formExtracted?.forms)) {
-            const {forms} = formExtracted;
-            // sonarcloud-disable-next-line: Missing prop validation
-            setFormTitle(forms[0]?.formTitle || "");
-            // sonarcloud-disable-next-line: Missing prop validation
-            setUploadFormDescription(forms[0]?.formDescription || "");
+        if (Array.isArray(formExtracted?.forms)) {  
+            setFormTitle(formExtracted?.forms[0]?.formTitle || ""); 
+            setUploadFormDescription(formExtracted?.forms[0]?.formDescription || "");
           }
         
       } else if (formId) {

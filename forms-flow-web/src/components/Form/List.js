@@ -200,12 +200,11 @@ const List = React.memo((props) => {
   
         if (Array.isArray(formExtracted?.forms)) {
             const {forms} = formExtracted;
-                // Update state with the first form's title and description
-            const formTitle = forms[0]?.formTitle || "";
-            const formDescription = forms[0]?.formDescription || "";
-
-            setFormTitle(formTitle);
-            setUploadFormDescription(formDescription);
+            // these checkes added for prop validation
+            const formTitle = forms[0]?.formTitle;
+            const formDescription = forms[0]?.formDescription;
+            setFormTitle(typeof formTitle == "string" ? formTitle: "");
+            setUploadFormDescription(typeof formDescription == "string" ? formDescription : "");
           }
         
       } else if (formId) {

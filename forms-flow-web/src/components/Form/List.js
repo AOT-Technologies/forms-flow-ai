@@ -209,8 +209,10 @@ const List = React.memo((props) => {
   
           if (formExtracted && Array.isArray(formExtracted.forms)) {
             const {forms} = formExtracted;
-            setFormTitle(forms[0]?.formTitle || "");
-            setUploadFormDescription(forms[0]?.formDescription || "");
+            setFormTitle(typeof forms[0]?.formTitle === "string" ? forms[0].formTitle : "");
+            setUploadFormDescription(
+              typeof forms[0]?.formDescription === "string" ? forms[0].formDescription : ""
+            );
           } else {
             console.log("No valid form found.");
           }

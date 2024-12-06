@@ -207,7 +207,7 @@ const List = React.memo((props) => {
         try {
           const formExtracted = await FileService.extractFileDetails(fileContent);
   
-          if (formExtracted && formExtracted.forms) {
+          if (formExtracted && Array.isArray(formExtracted.forms)) {
             const {forms} = formExtracted;
             setFormTitle(forms[0]?.formTitle || "");
             setUploadFormDescription(forms[0]?.formDescription || "");

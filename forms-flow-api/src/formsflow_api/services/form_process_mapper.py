@@ -460,8 +460,16 @@ class FormProcessMapperService:  # pylint: disable=too-many-public-methods
             process_name = (
                 updated_process_name if updated_process_name else process_name
             )
-            # create entry in process with default flow.
-            FormProcessMapperService.create_default_process(process_name)
+            process_data = data.get("processData")
+            process_type = data.get("processType")
+            if process_data and process_type:
+                # Incase of duplicate form we get process data from payload
+                ProcessService.create_process(
+                    process_data, process_type, process_name, process_name
+                )
+            else:
+                # create entry in process with default flow.
+                FormProcessMapperService.create_default_process(process_name)
         return response
 
     def _remove_tenant_key(self, form_json, tenant_key):

@@ -1092,6 +1092,7 @@ const EditComponent = () => {
               setWorkflowIsChanged={setWorkflowIsChanged}
               CategoryType={CategoryType}
               isPublished={isPublished}
+              layoutNotsaved={formChangeState.changed}
               />}
             </div>
             <button

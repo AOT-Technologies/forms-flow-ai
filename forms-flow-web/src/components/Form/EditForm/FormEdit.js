@@ -119,8 +119,9 @@ const EditComponent = () => {
   const defaultPrimaryBtnText = "Confirm And Replace";
   const [primaryButtonText, setPrimaryButtonText] = useState(defaultPrimaryBtnText);
   const { createDesigns } = userRoles();
-  const [formChangeState, setFormChangeState] = useState({initial:false,changed:false});
+  const [formChangeState, setFormChangeState] = useState({ initial: false, changed: false });
   const [workflowIsChanged, setWorkflowIsChanged] = useState(false);
+  const [migration, setMigration] = useState(false);
 
   /* --------- validate form title exist or not --------- */
   const {
@@ -131,13 +132,13 @@ const EditComponent = () => {
     ({ title }) =>
       validateFormName(title),
     {
-      onSuccess:({data}, {createButtonClicked,...variables})=>{
+      onSuccess: ({ data }, { createButtonClicked, ...variables }) => {
 
         if (data && data.code === "FORM_EXISTS") {
           setNameError(data.message);  // Set exact error message
         } else {
           setNameError("");
-          if(createButtonClicked){
+          if (createButtonClicked) {
             handlePublishAsNewVersion(variables);
           }
         }
@@ -172,11 +173,11 @@ const EditComponent = () => {
 
 
   const handleImport = async (fileContent, UploadActionType,
-     selectedLayoutVersion, selectedFlowVersion) => {
+    selectedLayoutVersion, selectedFlowVersion) => {
     if (!isValidUploadActionType(UploadActionType)) return;
-  
+
     const data = prepareImportData(UploadActionType, selectedLayoutVersion, selectedFlowVersion);
-  
+
     try {
       const res = await formImport(fileContent, JSON.stringify(data));
       await handleImportResponse(res, fileContent, data.action);
@@ -184,7 +185,7 @@ const EditComponent = () => {
       handleImportError(err);
     }
   };
-  
+
   // Helper function to validate the action type
   const isValidUploadActionType = (actionType) => {
     if (!["validate", "import"].includes(actionType)) {
@@ -194,7 +195,7 @@ const EditComponent = () => {
     }
     return true;
   };
-  
+
   // Helper function to prepare data for the API request
   const prepareImportData = (actionType, selectedLayoutVersion, selectedFlowVersion) => {
     const data = {
@@ -241,7 +242,7 @@ const EditComponent = () => {
     // Handle actions based on extracted form and action type
     if (formExtracted) {
       if (action === "validate") {
-        setFormTitle(formExtracted.forms[0]?.formTitle || ""); 
+        setFormTitle(formExtracted.forms[0]?.formTitle || "");
       } else if (responseData.formId) {
         updateLayout(formExtracted);
       }
@@ -424,7 +425,9 @@ const EditComponent = () => {
   }, [restoredFormId]);
 
   const fetchProcessDetails = async (processListData) => {
-    const response = await getProcessDetails(processListData.processKey);
+    //for the migration, if the diagram is not available in the db, it will fetch from camunda using maper id. 
+    const mapperId = !processListData.isMigrated ? processListData.id : null;
+    const response = await getProcessDetails(processListData.processKey, mapperId);
     dispatch(setProcessData(response.data));
   };
 
@@ -598,7 +601,7 @@ const EditComponent = () => {
       type: "components",
       value: _cloneDeep(formData.components),
     });
-    setFormChangeState(prev=>({...prev,changed:false}));
+    setFormChangeState(prev => ({ ...prev, changed: false }));
     handleToggleConfirmModal();
   };
 
@@ -649,23 +652,23 @@ const EditComponent = () => {
       });
   };
 
-  const captureFormChanges = ()=>{
+  const captureFormChanges = () => {
     setFormChangeState((prev) => {
-      let key = null; 
+      let key = null;
       if (!prev.initial) {
         key = "initial";
       } else if (!prev.changed) {
         key = "changed";
       }
-      return key ? {...prev, [key]:true} : prev;
+      return key ? { ...prev, [key]: true } : prev;
     });
   };
 
-  const formChange = (newForm) => { 
+  const formChange = (newForm) => {
     captureFormChanges();
     dispatchFormAction({ type: "formChange", value: newForm });
   };
-  
+
 
   const confirmPublishOrUnPublish = async () => {
     try {
@@ -674,7 +677,7 @@ const EditComponent = () => {
       setIsPublishLoading(true);
       if (!isPublished) {
         await flowRef.current.saveFlow(false);
-        await saveFormData({showToast:false});
+        await saveFormData({ showToast: false });
       }
       await actionFunction(processListData.id);
       if (isPublished) {
@@ -918,10 +921,22 @@ const EditComponent = () => {
     }
   };
 
+  const handlePublishClick = () => {
+    if (!processListData.isMigrated) {
+      if (!isPublished) {
+        setMigration(true);
+      } else {
+        openConfirmModal("unpublish");
+      }
+    } else {
+      openConfirmModal(isPublished ? "unpublish" : "publish");
+    }
+  };
+
   return (
     <div>
       <div>
-      <NavigateBlocker isBlock={formChangeState.changed || workflowIsChanged} message={"You have made changes that are not saved yet. The unsaved changes could be either on the Layout or the Flow side."} />
+        <NavigateBlocker isBlock={formChangeState.changed || workflowIsChanged} message={"You have made changes that are not saved yet. The unsaved changes could be either on the Layout or the Flow side."} />
         <LoadingOverlay active={formSubmitted} spinner text={t("Loading...")}>
           <SettingsModal
             show={showSettingsModal}
@@ -974,11 +989,7 @@ const EditComponent = () => {
                       size="md"
                       label={t(publishText)}
                       buttonLoading={isPublishLoading}
-                      onClick={() => {
-                        isPublished
-                          ? openConfirmModal("unpublish")
-                          : openConfirmModal("publish");
-                      }}
+                      onClick={handlePublishClick}
                       dataTestid="handle-publish-testid"
                       ariaLabel={`${t(publishText)} ${t("Button")}`}
                     />
@@ -1073,7 +1084,7 @@ const EditComponent = () => {
 
                         options={{
                           language: lang,
-                          alwaysConfirmComponentRemoval:true,
+                          alwaysConfirmComponentRemoval: true,
                           i18n: RESOURCE_BUNDLES_DATA,
                         }}
                         onDeleteComponent={captureFormChanges}
@@ -1087,16 +1098,20 @@ const EditComponent = () => {
               className={`wraper flow-wraper ${isFlowLayout ? "visible" : ""}`}
             >
               {/* TBD: Add a loader instead. */}
-              {isProcessDetailsLoading ? <>loading...</> : <FlowEdit 
-              ref={flowRef}
-              setWorkflowIsChanged={setWorkflowIsChanged}
-              CategoryType={CategoryType}
-              isPublished={isPublished}
+              {isProcessDetailsLoading ? <>loading...</> : <FlowEdit
+                ref={flowRef}
+                setWorkflowIsChanged={setWorkflowIsChanged}
+                CategoryType={CategoryType}
+                isPublished={isPublished}
+                migration={migration}
+                redirectUrl={redirectUrl}
+                setMigration={setMigration}
+                isMigrated = {processListData.isMigrated}
+                mapperId={processListData.id}
               />}
             </div>
             <button
-              className={`border-0 form-flow-wraper-${
-                isFormLayout ? "right" : "left"
+              className={`border-0 form-flow-wraper-${ isFormLayout ? "right" : "left"
               } ${sideTabRef.current && "visible"}`}
               onClick={handleCurrentLayout}
             >

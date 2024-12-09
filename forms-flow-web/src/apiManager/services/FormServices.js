@@ -26,8 +26,7 @@ export const formUpdate = (form_id,formData) => {
 };
 
 export const processMigrate = (migrationData) => {
-  const migrationUrl = replaceUrl(API.PROCESS_MIGRATE);
-  return RequestService.httpPOSTRequest(migrationUrl, migrationData );
+  return RequestService.httpPOSTRequest(API.PROCESS_MIGRATE, migrationData );
 };
 
 

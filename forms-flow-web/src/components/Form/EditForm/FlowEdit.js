@@ -143,6 +143,7 @@ const FlowEdit = forwardRef(({ isPublished = false, CategoryType,
     fetchHistories({ parentProcessKey: processData.parentProcessKey });
   };
   const handleSaveFlowClick = () => {
+    //On clicking the save flow it checks if the current flow has already been migrated, if not, it tries to migrate first.
     if (shouldShowMigrationModal()) {
       setShowMigrationModal(true);
     } else {

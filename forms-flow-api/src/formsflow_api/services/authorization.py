@@ -7,7 +7,7 @@ from formsflow_api_utils.exceptions import BusinessException
 from formsflow_api_utils.utils.user_context import UserContext, user_context
 
 from formsflow_api.constants import BusinessErrorCode
-from formsflow_api.models import Authorization, AuthType
+from formsflow_api.models import Application, Authorization, AuthType
 from formsflow_api.schemas import ApplicationSchema
 
 application_schema = ApplicationSchema()
@@ -103,6 +103,38 @@ class AuthorizationService:
             )
         auth = auth.save()
         return self._as_dict(auth)
+
+    @user_context
+    def get_application_resource_by_id(
+        self, auth_type: str, resource_id: str, form_id: str = None, **kwargs
+    ):
+        """Get application authorization resource by ID."""
+        user: UserContext = kwargs["user"]
+        auth_type_enum = AuthType(auth_type)
+
+        auth = Authorization.find_resource_by_id(
+            auth_type=auth_type_enum,
+            resource_id=resource_id,
+            ignore_role_chek=True,
+            tenant=user.tenant_key,
+        )
+
+        if not auth:
+            raise BusinessException(BusinessErrorCode.PERMISSION_DENIED)
+
+        response = self._as_dict(auth)
+
+        # Check if the user has the required roles
+        if set(user.group_or_roles).intersection(auth.roles):
+            return response
+
+        # Check if the user created the application associated with the form
+        if form_id and Application.get_application_by_formid_and_user_name(
+            formid=form_id, user_name=user.user_name
+        ):
+            return response
+
+        raise BusinessException(BusinessErrorCode.PERMISSION_DENIED)
 
     @user_context
     def get_resource_by_id(

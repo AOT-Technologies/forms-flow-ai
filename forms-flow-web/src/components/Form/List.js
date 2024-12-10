@@ -173,9 +173,9 @@ const List = React.memo((props) => {
 
 
     let data; 
-    if(UploadActionType[actionType]){
-      data = { importType: "new", action: UploadActionType[actionType?.toUpperCase()]};
-    }else{
+    if ([UploadActionType.VALIDATE, UploadActionType.IMPORT].includes(actionType)) {
+         data = { importType: "new", action: actionType };
+    } else {
       console.error("Invalid UploadActionType provided");
       return;
     }

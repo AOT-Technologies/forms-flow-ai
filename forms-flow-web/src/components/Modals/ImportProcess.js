@@ -71,15 +71,15 @@ const ImportProcess = React.memo(({
   // Handle importing process and dispatching upon success
   const processImport = async (fileContent) => {
     try {
-      const extractedXml = await extractFileDetails(fileContent);
-
+      const {xml} = await extractFileDetails(fileContent);
+      if(!xml) return;
       if (processId) {
         // Update an existing process
-        setImportXml(extractedXml);
+        setImportXml(xml);
         closeImport();
       } else {
         // Create a new process and redirect
-        const response = await createProcess({ data: extractedXml, type: fileType === ".bpmn" ? "bpmn" : "dmn" });
+        const response = await createProcess({ data: xml, type: fileType === ".bpmn" ? "bpmn" : "dmn" });
         if (response) {
           dispatch(push(`${redirectUrl}${baseUrl}${response.data.processKey}`));
         }

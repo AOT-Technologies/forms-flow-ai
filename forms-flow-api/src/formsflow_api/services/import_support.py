@@ -441,22 +441,32 @@ class ImportService:  # pylint: disable=too-many-public-methods
 
     def import_form(
         self, selected_form_version, form_json, mapper, form_only=False, **kwargs
-    ):  # pylint: disable=too-many-locals
+    ):  # pylint: disable=too-many-locals, too-many-statements
         """Import form as major or minor version."""
         current_app.logger.info("Form import inprogress...")
         # Get current form by mapper form_id
         current_form = self.get_form_by_formid(mapper.form_id)
-        path = current_form.get("path")
         name = current_form.get("name")
-        title = current_form.get("title")
-        new_path = form_json.get("path")
-        new_title = form_json.get("title")
-        anonymous = kwargs.get("anonymous", False)
-        description = kwargs.get("description", None)
-        title_changed = bool(not form_only and mapper.form_name != new_title)
+        title_changed = bool(
+            not form_only and mapper.form_name != form_json.get("title")
+        )
+        if form_only:
+            # In case of form only import take title, path from current form
+            # and anonymous, description from mapper
+            path = current_form.get("path")
+            title = current_form.get("title")
+            anonymous = mapper.is_anonymous
+            description = mapper.description
+        else:
+            # form+workflow import take title, path, anonymous, description from incoming form json
+            path = form_json.get("path")
+            title = form_json.get("title")
+            anonymous = kwargs.get("anonymous", False)
+            description = kwargs.get("description", None)
         anonymous_changed = bool(
             anonymous is not None and mapper.is_anonymous != anonymous
         )
+
         if selected_form_version == "major":
             # Update current form with random value to path, name & title
             # Create new form with current form name, title & path from incoming form
@@ -464,13 +474,13 @@ class ImportService:  # pylint: disable=too-many-public-methods
             # Capture form history
             current_app.logger.info("Form import major version inprogress...")
             # Update name & path of current form
-            current_form["path"] = f"{path}-v-{uuid1().hex}"
+            current_form["path"] = f"{current_form['path']}-v-{uuid1().hex}"
             current_form["name"] = f"{name}-v-{uuid1().hex}"
             FormProcessMapperService.form_design_update(current_form, mapper.form_id)
             # Create new form with current form name
             # But incase of form only no validation done, so use current form path & title itself.
-            form_json["title"] = title if form_only else new_title
-            form_json["path"] = path if form_only else new_path
+            form_json["title"] = title
+            form_json["path"] = path
             form_json["parentFormId"] = mapper.parent_form_id
             form_json = self.set_form_and_submission_access(form_json, anonymous)
             form_response = self.form_create(form_json)
@@ -489,7 +499,7 @@ class ImportService:  # pylint: disable=too-many-public-methods
                 "formName": form_response.get("title"),
                 "formType": mapper.form_type,
                 "parentFormId": mapper.parent_form_id,
-                "anonymous": mapper.is_anonymous if form_only else anonymous,
+                "anonymous": anonymous,
                 "taskVariables": json.loads(mapper.task_variable),
                 "processKey": mapper.process_key,
                 "processName": mapper.process_name,
@@ -498,7 +508,7 @@ class ImportService:  # pylint: disable=too-many-public-methods
                 "formTypeChanged": False,
                 "titleChanged": title_changed,
                 "anonymousChanged": anonymous_changed,
-                "description": mapper.description if form_only else description,
+                "description": description,
                 "isMigrated": mapper.is_migrated,
             }
             mapper = FormProcessMapperService.mapper_create(mapper_data)
@@ -513,8 +523,8 @@ class ImportService:  # pylint: disable=too-many-public-methods
             form_components = {}
             form_components["components"] = form_json.get("components")
             # Incase of form+workflow title/path is updated even in minor version
-            form_components["title"] = title if form_only else new_title
-            form_components["path"] = path if form_only else new_path
+            form_components["title"] = title
+            form_components["path"] = path
             form_components["parentFormId"] = mapper.parent_form_id
             form_response = self.form_update(form_components, form_id)
             form_response["componentChanged"] = True
@@ -525,11 +535,11 @@ class ImportService:  # pylint: disable=too-many-public-methods
                 current_app.logger.info("Updating mapper & form logs...")
                 mapper.description = description
                 mapper.is_anonymous = anonymous
-                mapper.form_name = new_title
+                mapper.form_name = title
                 mapper.save()
                 form_logs_data = {
                     "titleChanged": title_changed,
-                    "formName": new_title,
+                    "formName": title,
                     "anonymousChanged": anonymous_changed,
                     "anonymous": anonymous,
                     "formId": form_id,

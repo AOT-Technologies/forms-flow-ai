@@ -4,7 +4,7 @@ import { DRAFT_ENABLED } from "../../constants/constants";
 import "../Form/List.scss";
 import {
   setBPMFormListLoading,
-  setBpmFormSearch,
+  setClientFormSearch,
   setBPMFormListPage,
 } from "../../actions/formActions";
 import { fetchBPMFormList } from "../../apiManager/services/bpmFormServices";
@@ -22,7 +22,7 @@ import PropTypes from "prop-types";
 
 const SubmitList = React.memo((props) => {
   const { t } = useTranslation();
-  const searchText = useSelector((state) => state.bpmForms.searchText);
+  const searchText = useSelector((state) => state.bpmForms.clientFormSearch);
   const tenantId = useSelector((state) => state.tenants?.tenantId);
   const [search, setSearch] = useState(searchText || "");
   const userRoles = useSelector((state) => state.user.roles || []);
@@ -35,16 +35,16 @@ const SubmitList = React.memo((props) => {
 
   useEffect(() => {
     if (!search?.trim()) {
-      dispatch(setBpmFormSearch(""));
+      dispatch(setClientFormSearch(""));
     }
   }, [search]);
   const handleSearch = () => {
-    dispatch(setBpmFormSearch(search));
+    dispatch(setClientFormSearch(search));
     dispatch(setBPMFormListPage(1));
   };
   const handleClearSearch = () => {
     setSearch("");
-    dispatch(setBpmFormSearch(""));
+    dispatch(setClientFormSearch(""));
   };
   const { getFormsInit } = props;
 

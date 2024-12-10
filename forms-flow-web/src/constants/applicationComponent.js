@@ -1,13 +1,13 @@
 import utils from "@aot-technologies/formiojs/lib/utils";
 
 // Factory function to create a hidden component with dynamic properties
-const createHiddenComponent = (label, key, customDefaultValue = null) => ({
+const createHiddenComponent = ({label, key, persistent, customDefaultValue = null}) => ({
   label,
   addons: [],
   customClass: "",
   modalEdit: false,
   defaultValue: "",
-  persistent: true,
+  persistent: persistent,
   protected: false,
   dbIndex: false,
   encrypted: false,
@@ -101,20 +101,23 @@ export const addHiddenApplicationComponent = (form) => {
 
   // Define configuration for all hidden components
   const hiddenComponents = [
-    { label: "Submission Id", key: "applicationId" },
-    { label: "Submission Status", key: "applicationStatus" },
+    { label: "Submission Id", key: "applicationId", persistent: true},
+    { label: "Submission Status", key: "applicationStatus", persistent:true },
     { 
       label: "Current User", 
+      persistent: false,
       key: "currentUser", 
       customDefaultValue: "const localdata = JSON.parse(localStorage.getItem('UserDetails')); const preferredUsername = localdata.preferred_username; value = preferredUsername;" 
     },
     { 
       label: "Current User Role", 
+      persistent: false,
       key: "currentUserRole", 
       customDefaultValue: "const localdata = JSON.parse(localStorage.getItem('UserDetails')); const preferredUserRole = localdata.role; value = preferredUserRole;" 
     },
     { 
       label: "All Available Roles", 
+      persistent: false,
       key: "allAvailableRoles", 
       customDefaultValue: "const localdata = JSON.parse(localStorage.getItem('allAvailableRoles')); value = localdata;" 
     },
@@ -136,7 +139,7 @@ export const addHiddenApplicationComponent = (form) => {
   hiddenComponents.forEach(({ label, key, customDefaultValue, ...rest }) => {
     const componentConfig = key === "submit" 
       ? { key, label, ...rest } 
-      : createHiddenComponent(label, key, customDefaultValue);
+      : createHiddenComponent({label, key, customDefaultValue, persistent:rest.persistent });
     addHiddenComponent(components, componentConfig, form);
   });
 

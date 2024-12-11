@@ -357,6 +357,27 @@
           "composite": false,
           "clientRole": true,
           "attributes": {}
+        },
+        {
+          "name": "create_bpmn_flows",
+          "description": "Access to BPMN worflows",
+          "composite": false,
+          "clientRole": true,
+          "attributes": {}
+        },
+        {
+          "name": "manage_subflows",
+          "description": "Access to Subflows",
+          "composite": false,
+          "clientRole": true,
+          "attributes": {}
+        },
+        {
+          "name": "manage_decision_tables",
+          "description": "Access to Decision Tables",
+          "composite": false,
+          "clientRole": true,
+          "attributes": {}
         }
       ],
       "security-admin-console": [],

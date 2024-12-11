@@ -792,3 +792,18 @@ class Application(
         )
         query = cls.filter_draft_applications(query=query)
         return query.count()
+
+    @classmethod
+    def get_application_by_formid_and_user_name(
+        cls, formid: str, user_name: str
+    ) -> Application:
+        """Get application by checking formid and created by."""
+        query = FormProcessMapper.tenant_authorization(
+            query=cls.query.join(
+                FormProcessMapper, cls.form_process_mapper_id == FormProcessMapper.id
+            )
+        )
+        query = query.filter(
+            and_(cls.latest_form_id == formid, cls.created_by == user_name)
+        )
+        return query.first()

@@ -121,13 +121,13 @@ class Authorization(AuditDateTimeMixin, AuditUserMixin, BaseModel, db.Model):
         user_name: str = None,
         tenant: str = None,
         include_created_by: bool = False,
-        ignore_role_chek: bool = False,
+        ignore_role_check: bool = False,
     ) -> Optional[Authorization]:
         """Find resource authorization by id."""
         if (
             (is_designer and auth_type != AuthType.DESIGNER)
             or auth_type == AuthType.DASHBOARD
-            or ignore_role_chek
+            or ignore_role_check
         ):
             query = cls.query.filter(Authorization.auth_type == auth_type)
         else:

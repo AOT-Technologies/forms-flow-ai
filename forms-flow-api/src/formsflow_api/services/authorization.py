@@ -115,7 +115,7 @@ class AuthorizationService:
         auth = Authorization.find_resource_by_id(
             auth_type=auth_type_enum,
             resource_id=resource_id,
-            ignore_role_chek=True,
+            ignore_role_check=True,
             tenant=user.tenant_key,
         )
 
@@ -123,15 +123,19 @@ class AuthorizationService:
             raise BusinessException(BusinessErrorCode.PERMISSION_DENIED)
 
         response = self._as_dict(auth)
+        authorized_user = False
 
         # Check if the user has the required roles
         if set(user.group_or_roles).intersection(auth.roles):
-            return response
+            authorized_user = True
 
         # Check if the user created the application associated with the form
         if form_id and Application.get_application_by_formid_and_user_name(
             formid=form_id, user_name=user.user_name
         ):
+            authorized_user = True
+
+        if authorized_user:
             return response
 
         raise BusinessException(BusinessErrorCode.PERMISSION_DENIED)

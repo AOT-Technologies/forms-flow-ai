@@ -1109,6 +1109,7 @@ const EditComponent = () => {
                 isMigrated = {processListData.isMigrated}
                 mapperId={processListData.id}
                 layoutNotsaved={formChangeState.changed}
+                handleCurrentLayout={handleCurrentLayout}
 
               />}
             </div>

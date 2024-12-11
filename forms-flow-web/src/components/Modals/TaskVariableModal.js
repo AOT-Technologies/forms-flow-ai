@@ -276,7 +276,14 @@ FormComponent.propTypes = {
   setSelectedComponent: PropTypes.func.isRequired,
 };
 const TaskVariableModal = React.memo(
-  ({ showTaskVarModal, isPublished = false, onClose, form,layoutNotsaved }) => {
+  ({
+    showTaskVarModal,
+    isPublished = false,
+    onClose,
+    form,
+    layoutNotsaved,
+    handleCurrentLayout,
+  }) => {
     const { t } = useTranslation();
     const dispatch = useDispatch();
     const formProcessList = useSelector(
@@ -352,6 +359,59 @@ const TaskVariableModal = React.memo(
       await dispatch(saveFormProcessMapperPut({ mapper }));
       onClose();
     };
+    const handleBackToLayout = () => {
+      handleClose();
+      handleCurrentLayout();
+    };
+    // Define the content for when layoutNotsaved is true
+    const layoutNotSavedContent = (
+      <>
+        <CustomButton
+          variant="primary"
+          size="md"
+          className=""
+          label={t("Back to Layout")}
+          ariaLabel="Back to Layout btn"
+          dataTestid="back-to-layout-btn"
+          onClick={handleBackToLayout}
+        />
+        <CustomButton
+          variant="secondary"
+          size="md"
+          className=""
+          label={t("Cancel")}
+          ariaLabel="Cancel btn"
+          dataTestid="cancel-btn"
+          onClick={handleClose}
+        />
+      </>
+    );
+
+    // Define the content for when layoutNotsaved is false
+    const layoutSavedContent = (
+      <>
+        <CustomButton
+          variant="primary"
+          size="md"
+          className=""
+          disabled={isPublished}
+          label={t("Save")}
+          ariaLabel="save task variable btn"
+          dataTestid="save-task-variable-btn"
+          onClick={handleSaveTaskVariable}
+        />
+        <CustomButton
+          variant="secondary"
+          size="md"
+          className=""
+          label={t("Cancel")}
+          ariaLabel="Cancel btn"
+          dataTestid="cancel-btn"
+          onClick={handleClose}
+        />
+      </>
+    );
+
     return (
       <Modal
         show={showTaskVarModal}
@@ -414,52 +474,7 @@ const TaskVariableModal = React.memo(
           )}
         </Modal.Body>
         <Modal.Footer>
-        {layoutNotsaved ? (
-    // Footer content when layoutNotsaved is true
-    <>
-    <CustomButton
-      variant="primary"
-      size="md"
-      className=""
-      label={t("Back to Layout")}
-      ariaLabel="Back to Layout btn"
-      dataTestid="back-to-layout-btn"
-      onClick={handleClose}
-    />
-    <CustomButton
-        variant="secondary"
-        size="md"
-        className=""
-        label={t("Cancel")}
-        ariaLabel="Cancel btn"
-        dataTestid="cancel-btn"
-        onClick={handleClose}
-      />
-    </>
-  ) : (
-    // Footer content when layoutNotsaved is false
-    <>
-      <CustomButton
-        variant="primary"
-        size="md"
-        className=""
-        disabled={isPublished}
-        label={t("Save")}
-        ariaLabel="save task variable btn"
-        dataTestid="save-task-variable-btn"
-        onClick={handleSaveTaskVariable}
-      />
-      <CustomButton
-        variant="secondary"
-        size="md"
-        className=""
-        label={t("Cancel")}
-        ariaLabel="Cancel btn"
-        dataTestid="cancel-btn"
-        onClick={handleClose}
-      />
-    </>
-  )}
+          {layoutNotsaved ? layoutNotSavedContent : layoutSavedContent}
         </Modal.Footer>
       </Modal>
     );
@@ -472,6 +487,7 @@ TaskVariableModal.propTypes = {
   onClose: PropTypes.func.isRequired,
   form: PropTypes.object.isRequired,
   isPublished: PropTypes.bool.isRequired,
-  layoutNotsaved: PropTypes.bool.isRequired
+  layoutNotsaved: PropTypes.bool.isRequired,
+  handleCurrentLayout: PropTypes.func.isRequired,
 };
 export default TaskVariableModal;

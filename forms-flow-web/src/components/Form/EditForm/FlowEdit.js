@@ -39,7 +39,7 @@ import TaskVariableModal from "../../Modals/TaskVariableModal.js";
 
 const FlowEdit = forwardRef(({ isPublished = false, CategoryType,
   setWorkflowIsChanged, migration, setMigration, redirectUrl,
-  isMigrated = true, mapperId,layoutNotsaved }, ref) => {
+  isMigrated = true, mapperId,layoutNotsaved, handleCurrentLayout }, ref) => {
   const { t } = useTranslation();
   const dispatch = useDispatch();
   const bpmnRef = useRef();
@@ -374,6 +374,7 @@ const FlowEdit = forwardRef(({ isPublished = false, CategoryType,
             onClose={CloseTaskVarModal}
             isPublished={isPublished}
             layoutNotsaved={layoutNotsaved}
+            handleCurrentLayout={handleCurrentLayout}
           />
         )}
       </>
@@ -392,7 +393,8 @@ FlowEdit.propTypes = {
   redirectUrl: PropTypes.string,
   isMigrated: PropTypes.bool,
   mapperId: PropTypes.string,
-  layoutNotsaved: PropTypes.bool.isRequired
+  layoutNotsaved: PropTypes.bool.isRequired,
+  handleCurrentLayout: PropTypes.func
 };
 
 export default FlowEdit;

@@ -9,7 +9,7 @@
 	<name>idp-selector</name>
 	<url>http://maven.apache.org</url>
 	<properties>
-		<keycloak.version>25.0.4</keycloak.version>
+		<keycloak.version>26.0.6</keycloak.version>
 	</properties>
 	<dependencies>
 		<dependency>

@@ -496,6 +496,7 @@ class FormProcessMapperService:  # pylint: disable=too-many-public-methods
             "submissionAccess",
             "parentFormId",
             "owner",
+            "tenantKey",
         ]
         for key in keys_to_remove:
             form_json.pop(key, None)
@@ -602,7 +603,7 @@ class FormProcessMapperService:  # pylint: disable=too-many-public-methods
                 "resourceId": auth.resource_id,
                 "resourceDetails": auth.resource_details,
                 "roles": auth.roles,
-                "userName": auth.user_name,
+                "userName": None,
             }
         return auth_detail
 

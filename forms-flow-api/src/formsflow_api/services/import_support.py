@@ -63,6 +63,7 @@ class ImportService:  # pylint: disable=too-many-public-methods
             current_app.logger.debug(f"Admin url: {url}")
             response = AdminService.get_request(url, user.bearer_token)
             role_ids = response["form"]
+            form_data["tenantKey"] = user.tenant_key
         else:
             role_ids = Cache.get("formio_role_ids")
             if not role_ids:
@@ -134,7 +135,8 @@ class ImportService:  # pylint: disable=too-many-public-methods
         ]
         return form_data
 
-    def create_authorization(self, data):
+    @user_context
+    def create_authorization(self, data, new_import=False, **kwargs):
         """Create authorization."""
         for auth_type in AuthType:
             if auth_type.value in [
@@ -142,10 +144,19 @@ class ImportService:  # pylint: disable=too-many-public-methods
                 AuthType.FORM.value,
                 AuthType.DESIGNER.value,
             ]:
+                auth_data = data.get(auth_type.value.upper())
+                is_designer = auth_type.value == AuthType.DESIGNER.value
+                # If edit import, add created_by user as username in case of designer
+                edit_import_designer = not new_import and is_designer
+                # Update designer's username if new_import
+                if new_import is True and is_designer:
+                    user: UserContext = kwargs["user"]
+                    auth_data["userName"] = user.user_name
                 self.auth_service.create_authorization(
                     auth_type.value.upper(),
-                    data.get(auth_type.value.upper()),
+                    auth_data,
                     is_designer=True,
+                    edit_import_designer=edit_import_designer,
                 )
 
     def get_latest_version_workflow(self, process_name):
@@ -425,7 +436,7 @@ class ImportService:  # pylint: disable=too-many-public-methods
         for auth in file_data["authorizations"][0]:
             file_data["authorizations"][0][auth]["resourceId"] = form_id
         # Create authorizations for the form
-        self.create_authorization(file_data["authorizations"][0])
+        self.create_authorization(file_data["authorizations"][0], new_import=True)
         # validate process key already exists, if exists append mapper id to process_key.
         updated_process_name = (
             FormProcessMapperService.validate_process_and_update_mapper(

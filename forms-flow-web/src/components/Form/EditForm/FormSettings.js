@@ -219,7 +219,7 @@ const FormSettings = forwardRef((props, ref) => {
           ariaLabel={t("Form Name")}
           isInvalid = {!!errors.name}
           feedback = {errors.name}
-          isValidating={isValidating.name}
+          turnOnLoader={isValidating.name}
           onBlur={() => handleBlur('name', formDetails.title)}         
            />
         <FormTextArea

@@ -12,7 +12,7 @@ import {
 } from "../../../constants/constants";
 import { useTranslation } from "react-i18next";
 import { Translation } from "react-i18next";
-import { sanitize } from "dompurify";
+import DOMPurify  from "dompurify";
 import { TableFooter } from "@formsflow/components";
 import LoadingOverlay from "react-loading-overlay-ts";
 
@@ -99,7 +99,7 @@ function ClientTable() {
   };
 
   const extractContent = (htmlContent) => {
-    const sanitizedHtml = sanitize(htmlContent);
+    const sanitizedHtml = DOMPurify.sanitize(htmlContent);
     const tempElement = document.createElement("div");
     tempElement.innerHTML = sanitizedHtml;
 
@@ -193,7 +193,7 @@ function ClientTable() {
                             <div
                               className="form-description-p-tag "
                               dangerouslySetInnerHTML={{
-                                __html: sanitize(e?.description, {
+                                __html: DOMPurify.sanitize(e?.description, {
                                   ADD_ATTR: ["target"],
                                 }),
                               }}

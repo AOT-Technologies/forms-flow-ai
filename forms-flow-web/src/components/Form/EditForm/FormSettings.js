@@ -52,6 +52,10 @@ const FormSettings = forwardRef((props, ref) => {
     description: processListData.description,
     display: display,
   });
+  const [isValidating, setIsValidating] = useState({
+    name: false,
+    path: false,
+  });
   const [isAnonymous, setIsAnonymous] = useState(processListData.anonymous || false);
   const [errors, setErrors] = useState({
     name: "",
@@ -89,6 +93,8 @@ const FormSettings = forwardRef((props, ref) => {
 
   const validateField = async (field, value) => {
     let errorMessage = "";
+    setIsValidating((prev) => ({ ...prev, [field]: true }));
+
     if (!value.trim()) {
       errorMessage = `${field.charAt(0).toUpperCase() + field.slice(1)} is required`;
     } else {
@@ -105,6 +111,8 @@ const FormSettings = forwardRef((props, ref) => {
       }
     }
     setErrors((prev) => ({ ...prev, [field]: errorMessage }));
+    setIsValidating((prev) => ({ ...prev, [field]: false }));
+
   };
 
 
@@ -211,6 +219,7 @@ const FormSettings = forwardRef((props, ref) => {
           ariaLabel={t("Form Name")}
           isInvalid = {!!errors.name}
           feedback = {errors.name}
+          turnOnLoader={isValidating.name}
           onBlur={() => handleBlur('name', formDetails.title)}         
            />
         <FormTextArea

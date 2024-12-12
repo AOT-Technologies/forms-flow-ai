@@ -744,9 +744,12 @@ class FormProcessMapperService:  # pylint: disable=too-many-public-methods
         invalid_fields = []
 
         error_messages = {
-            "title": "Title: Only contain alphanumeric characters, hyphens(not at the start or end), spaces, and must include at least one letter.",
-            "path": "Path: Only contain alphanumeric characters, hyphens(not at the start or end), no spaces, and must include at least one letter.",
-            "name": "Name: Only contain alphanumeric characters, hyphens(not at the start or end), no spaces, and must include at least one letter.",
+            "title": "Title: Only contain alphanumeric characters, hyphens(not at the start or end), spaces,"
+            "and must include at least one letter.",
+            "path": "Path: Only contain alphanumeric characters, hyphens(not at the start or end), no spaces,"
+            "and must include at least one letter.",
+            "name": "Name: Only contain alphanumeric characters, hyphens(not at the start or end), no spaces,"
+            "and must include at least one letter.",
         }
 
         # Validate title
@@ -793,6 +796,7 @@ class FormProcessMapperService:  # pylint: disable=too-many-public-methods
         name = request.args.get("name")
         path = request.args.get("path")
         form_id = request.args.get("id")
+        current_app.logger.info(f"Title:{title}, Name:{name}, Path:{path}")
 
         # Check if at least one query parameter is provided
         if not (title or name or path):

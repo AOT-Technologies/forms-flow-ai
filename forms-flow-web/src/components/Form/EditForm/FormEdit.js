@@ -1156,7 +1156,8 @@ const EditComponent = () => {
         nameLabel={t("New Form Name")}
         descriptionLabel={t("New Form Description")}
         showBuildForm={selectedAction === DUPLICATE}
-        isLoading={formSubmitted || validationLoading}
+        isSaveBtnLoading={formSubmitted}
+        isFormNameValidating={validationLoading}
         onClose={handleCloseSelectedAction}
         primaryBtnLabel={t("Save and Edit form")}
         primaryBtnAction={handlePublishAsNewVersion}

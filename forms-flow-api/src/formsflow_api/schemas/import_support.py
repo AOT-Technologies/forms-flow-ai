@@ -8,67 +8,100 @@ form_workflow_schema = {
     "properties": {
         "forms": {
             "type": "array",
-            "properties": {
-                "formTitle": {"type": "string"},
-                "formDescription": {"type": "string"},
-                "anonymous": {"type": "boolean"},
-                "type": {"type": "string"},
-                "content": {"type": "object"},
+            "minItems": 1,
+            "items": {
+                "type": "object",
+                "properties": {
+                    "formTitle": {"type": "string"},
+                    "formDescription": {"type": "string"},
+                    "anonymous": {"type": "boolean"},
+                    "type": {"type": "string"},
+                    "content": {"type": "object"},
+                },
+                "required": [
+                    "formTitle",
+                    "formDescription",
+                    "content",
+                    "anonymous",
+                    "type",
+                ],
             },
-            "required": [
-                "formTitle",
-                "formDescription",
-                "content",
-                "anonymous",
-                "type",
-            ],
         },
         "workflows": {
             "type": "array",
-            "properties": {
-                "processKey": {"type": "string"},
-                "processName": {"type": "string"},
-                "processType": {"type": "string"},
-                "type": {"type": "string"},
-                "content": {"type": "string"},
+            "minItems": 1,
+            "items": {
+                "type": "object",
+                "properties": {
+                    "processKey": {"type": "string"},
+                    "processName": {"type": "string"},
+                    "processType": {"type": "string"},
+                    "type": {"type": "string"},
+                    "content": {"type": "string"},
+                },
+                "required": [
+                    "content",
+                    "processKey",
+                    "processName",
+                    "processType",
+                    "type",
+                ],
             },
-            "required": ["content", "processKey", "processName", "processType", "type"],
         },
         "authorizations": {
             "type": "array",
-            "properties": {
-                "APPLICATION": {
-                    "type": "array",
-                    "properties": {
-                        "resourceId": {"type": "string"},
-                        "resourceDetails": {"type": "object"},
-                        "roles": {"type": "array"},
-                        "userName": {"type": "string"},
+            "minItems": 1,
+            "items": {
+                "type": "object",
+                "properties": {
+                    "APPLICATION": {
+                        "type": "object",
+                        "properties": {
+                            "resourceId": {"type": "string"},
+                            "resourceDetails": {"type": "object"},
+                            "roles": {"type": "array", "items": {"type": "string"}},
+                            "userName": {"type": ["string", "null"]},
+                        },
+                        "required": [
+                            "resourceId",
+                            "resourceDetails",
+                            "roles",
+                            "userName",
+                        ],
                     },
-                    "required": ["resourceId", "resourceDetails", "roles", "userName"],
-                },
-                "FORM": {
-                    "type": "array",
-                    "properties": {
-                        "resourceId": {"type": "string"},
-                        "resourceDetails": {"type": "object"},
-                        "roles": {"type": "array"},
-                        "userName": {"type": "string"},
+                    "FORM": {
+                        "type": "object",
+                        "properties": {
+                            "resourceId": {"type": "string"},
+                            "resourceDetails": {"type": "object"},
+                            "roles": {"type": "array", "items": {"type": "string"}},
+                            "userName": {"type": ["string", "null"]},
+                        },
+                        "required": [
+                            "resourceId",
+                            "resourceDetails",
+                            "roles",
+                            "userName",
+                        ],
                     },
-                    "required": ["resourceId", "resourceDetails", "roles", "userName"],
-                },
-                "DESIGNER": {
-                    "type": "array",
-                    "properties": {
-                        "resourceId": {"type": "string"},
-                        "resourceDetails": {"type": "object"},
-                        "roles": {"type": "array"},
-                        "userName": {"type": "string"},
+                    "DESIGNER": {
+                        "type": "object",
+                        "properties": {
+                            "resourceId": {"type": "string"},
+                            "resourceDetails": {"type": "object"},
+                            "roles": {"type": "array", "items": {"type": "string"}},
+                            "userName": {"type": ["string", "null"]},
+                        },
+                        "required": [
+                            "resourceId",
+                            "resourceDetails",
+                            "roles",
+                            "userName",
+                        ],
                     },
-                    "required": ["resourceId", "resourceDetails", "roles", "userName"],
                 },
+                "required": ["APPLICATION", "FORM", "DESIGNER"],
             },
-            "required": ["APPLICATION", "FORM", "DESIGNER"],
         },
     },
     "required": ["forms", "workflows", "rules", "authorizations"],

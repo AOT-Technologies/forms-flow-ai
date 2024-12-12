@@ -23,10 +23,10 @@
 
 		<!-- versions -->
 		<version.camundaKeycloak>7.21.5</version.camundaKeycloak>
-		<version.camunda>7.20.0</version.camunda><!-- 7.18.0 - 7.20.0 -->
+		<version.camunda>7.21.0</version.camunda><!-- 7.18.0 - 7.20.0 -->
 		<version.camundaConnect>1.5.4</version.camundaConnect><!-- 1.5.4 -->
 		<version.camundaMail>1.5.0</version.camundaMail><!-- 1.5.0 -->
-		<version.springBoot>3.1.10</version.springBoot><!-- 3.1.5 - 3.1.10 -->
+		<version.springBoot>3.3.0</version.springBoot><!-- 3.1.5 - 3.1.10 -->
 		<version.springSecurityOauth2>2.6.8</version.springSecurityOauth2><!--
 			2.6.7 - 2.6.8 -->
 		<version.jackson>2.15.0</version.jackson>
@@ -296,15 +296,15 @@
 				</dependency>
 
 				<dependency>
-					<groupId>org.springframework</groupId>
-					<artifactId>spring-websocket</artifactId>
-					<version>6.0.11</version>
-				</dependency>
+		            <groupId>org.springframework</groupId>
+		            <artifactId>spring-websocket</artifactId>
+		            <version>6.1.12</version>
+		        </dependency>
 
 				<dependency>
 					<groupId>org.springframework</groupId>
 					<artifactId>spring-messaging</artifactId>
-					<version>6.0.11</version>
+					<version>6.1.12</version>
 				</dependency>
 
 				<dependency>

@@ -136,6 +136,8 @@ spring:
       secret: ${VAULT_SECRET} # secret name
       token: ${VAULT_TOKEN}
       uri: ${VAULT_URL}
+    compatibility-verifier:
+      enabled: false
 
 # Keycloak JWT Client configuration
 keycloak.jwt.realm: ${KEYCLOAK_URL_REALM}

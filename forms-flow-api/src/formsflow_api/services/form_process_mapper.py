@@ -11,7 +11,11 @@ from formsflow_api_utils.services.external import FormioService
 from formsflow_api_utils.utils.enums import FormProcessMapperStatus
 from formsflow_api_utils.utils.user_context import UserContext, user_context
 
-from formsflow_api.constants import BusinessErrorCode, default_flow_xml_data
+from formsflow_api.constants import (
+    BusinessErrorCode,
+    default_flow_xml_data,
+    default_task_variables,
+)
 from formsflow_api.models import (
     Application,
     Authorization,
@@ -377,7 +381,7 @@ class FormProcessMapperService:  # pylint: disable=too-many-public-methods
         process_key = None
         anonymous = False
         description = data.get("description", "")
-        task_variable = []
+        task_variable = [*default_task_variables]
         is_migrated = True
         current_app.logger.info(f"Creating new form {is_new_form}")
         # If creating new version for a existing form, fetch process key, name from mapper

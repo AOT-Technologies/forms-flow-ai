@@ -13,7 +13,7 @@ from formsflow_api_utils.utils.user_context import UserContext, user_context
 from jsonschema import ValidationError, validate
 from lxml import etree
 
-from formsflow_api.constants import BusinessErrorCode
+from formsflow_api.constants import BusinessErrorCode, default_task_variables
 from formsflow_api.models import AuthType, FormHistory, Process, ProcessType
 from formsflow_api.schemas import (
     FormProcessMapperSchema,
@@ -414,7 +414,7 @@ class ImportService:  # pylint: disable=too-many-public-methods
             "form_type": form_response.get("type"),
             "parent_form_id": form_id,
             "is_anonymous": file_data.get("forms")[0].get("anonymous") or False,
-            "task_variable": "[]",
+            "task_variable": json.dumps(default_task_variables),
             "process_key": process_name,
             "process_name": process_name,
             "status": "inactive",

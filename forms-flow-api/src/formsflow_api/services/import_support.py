@@ -16,8 +16,10 @@ from lxml import etree
 from formsflow_api.constants import BusinessErrorCode
 from formsflow_api.models import AuthType, FormHistory, Process, ProcessType
 from formsflow_api.schemas import (
+    FormProcessMapperSchema,
     ImportEditRequestSchema,
     ImportRequestSchema,
+    ProcessDataSchema,
     form_schema,
     form_workflow_schema,
 )
@@ -61,6 +63,7 @@ class ImportService:  # pylint: disable=too-many-public-methods
             current_app.logger.debug(f"Admin url: {url}")
             response = AdminService.get_request(url, user.bearer_token)
             role_ids = response["form"]
+            form_data["tenantKey"] = user.tenant_key
         else:
             role_ids = Cache.get("formio_role_ids")
             if not role_ids:
@@ -132,7 +135,8 @@ class ImportService:  # pylint: disable=too-many-public-methods
         ]
         return form_data
 
-    def create_authorization(self, data):
+    @user_context
+    def create_authorization(self, data, new_import=False, **kwargs):
         """Create authorization."""
         for auth_type in AuthType:
             if auth_type.value in [
@@ -140,10 +144,19 @@ class ImportService:  # pylint: disable=too-many-public-methods
                 AuthType.FORM.value,
                 AuthType.DESIGNER.value,
             ]:
+                auth_data = data.get(auth_type.value.upper())
+                is_designer = auth_type.value == AuthType.DESIGNER.value
+                # If edit import, add created_by user as username in case of designer
+                edit_import_designer = not new_import and is_designer
+                # Update designer's username if new_import
+                if new_import is True and is_designer:
+                    user: UserContext = kwargs["user"]
+                    auth_data["userName"] = user.user_name
                 self.auth_service.create_authorization(
                     auth_type.value.upper(),
-                    data.get(auth_type.value.upper()),
+                    auth_data,
                     is_designer=True,
+                    edit_import_designer=edit_import_designer,
                 )
 
     def get_latest_version_workflow(self, process_name):
@@ -256,19 +269,18 @@ class ImportService:  # pylint: disable=too-many-public-methods
                 name = f"{tenant_key}-{name}"
             path = f"{tenant_key}-{path}"
 
+        if len(title) > 200 or len(name) > 200:
+            raise BusinessException(BusinessErrorCode.INVALID_FORM_TITLE_LENGTH)
+
         # Build query params based on validation type
         if validate_path_only and mapper:
             # In case of edit import validate title in mapper table & path in formio.
             FormProcessMapperService.validate_form_title(title, mapper.parent_form_id)
             query_params = f"path={path}&select=title,path,name,_id"
-        elif not validate_path_only and current_app.config.get("MULTI_TENANCY_ENABLED"):
-            # In case of new import in multitenant env, validate title in mapper table & path,name in formio.
+        else:
+            # In case of new import validate title in mapper table & path,name in formio.
             FormProcessMapperService.validate_form_title(title, exclude_id=None)
             query_params = f"path={path}&name={name}&select=title,path,name,_id"
-        else:
-            query_params = (
-                f"title={title}&name={name}&path={path}&select=title,path,name"
-            )
         current_app.logger.info(f"Validating form exists...{query_params}")
         response = self.get_form_by_query(query_params)
         return response
@@ -361,6 +373,7 @@ class ImportService:  # pylint: disable=too-many-public-methods
         )
         process.save()
         current_app.logger.info("Process data saved successfully...")
+        return process
 
     def version_response(self, form_major, form_minor, workflow_major, workflow_minor):
         """Version response."""
@@ -423,7 +436,7 @@ class ImportService:  # pylint: disable=too-many-public-methods
         for auth in file_data["authorizations"][0]:
             file_data["authorizations"][0][auth]["resourceId"] = form_id
         # Create authorizations for the form
-        self.create_authorization(file_data["authorizations"][0])
+        self.create_authorization(file_data["authorizations"][0], new_import=True)
         # validate process key already exists, if exists append mapper id to process_key.
         updated_process_name = (
             FormProcessMapperService.validate_process_and_update_mapper(
@@ -432,47 +445,54 @@ class ImportService:  # pylint: disable=too-many-public-methods
         )
         process_name = updated_process_name if updated_process_name else process_name
         current_app.logger.info(f"Process Name: {process_name}")
-        self.save_process_data(
+        process = self.save_process_data(
             workflow_data, process_name, is_new=True, process_type=process_type
         )
-        return form_id
+        return mapper, process
 
     def import_form(
         self, selected_form_version, form_json, mapper, form_only=False, **kwargs
-    ):  # pylint: disable=too-many-locals
+    ):  # pylint: disable=too-many-locals, too-many-statements
         """Import form as major or minor version."""
         current_app.logger.info("Form import inprogress...")
         # Get current form by mapper form_id
         current_form = self.get_form_by_formid(mapper.form_id)
-        new_path = form_json.get("path")
-        new_title = form_json.get("title")
-        anonymous = kwargs.get("anonymous", False)
-        description = kwargs.get("description", None)
-        title_changed = bool(not form_only and mapper.form_name != new_title)
+        name = current_form.get("name")
+        title_changed = bool(
+            not form_only and mapper.form_name != form_json.get("title")
+        )
+        if form_only:
+            # In case of form only import take title, path from current form
+            # and anonymous, description from mapper
+            path = current_form.get("path")
+            title = current_form.get("title")
+            anonymous = mapper.is_anonymous
+            description = mapper.description
+        else:
+            # form+workflow import take title, path, anonymous, description from incoming form json
+            path = form_json.get("path")
+            title = form_json.get("title")
+            anonymous = kwargs.get("anonymous", False)
+            description = kwargs.get("description", None)
         anonymous_changed = bool(
             anonymous is not None and mapper.is_anonymous != anonymous
         )
+
         if selected_form_version == "major":
             # Update current form with random value to path, name & title
             # Create new form with current form name, title & path from incoming form
             # Create mapper entry for new form version, mark previous version inactive & delete
             # Capture form history
             current_app.logger.info("Form import major version inprogress...")
-            path = current_form.get("path")
-            name = current_form.get("name")
-            title = current_form.get("title")
             # Update name & path of current form
-            current_form["path"] = f"{path}-v-{uuid1().hex}"
+            current_form["path"] = f"{current_form['path']}-v-{uuid1().hex}"
             current_form["name"] = f"{name}-v-{uuid1().hex}"
-            current_form["title"] = f"{title}-v-{uuid1().hex}"
             FormProcessMapperService.form_design_update(current_form, mapper.form_id)
             # Create new form with current form name
-            form_json["parentFormId"] = mapper.parent_form_id
-            form_json["name"] = name
-            # Update path of current form with pathname & title from imported form in case of edit import
             # But incase of form only no validation done, so use current form path & title itself.
-            form_json["title"] = title if form_only else new_title
-            form_json["path"] = path if form_only else new_path
+            form_json["title"] = title
+            form_json["path"] = path
+            form_json["parentFormId"] = mapper.parent_form_id
             form_json = self.set_form_and_submission_access(form_json, anonymous)
             form_response = self.form_create(form_json)
             form_id = form_response.get("_id")
@@ -490,7 +510,7 @@ class ImportService:  # pylint: disable=too-many-public-methods
                 "formName": form_response.get("title"),
                 "formType": mapper.form_type,
                 "parentFormId": mapper.parent_form_id,
-                "anonymous": mapper.is_anonymous if form_only else anonymous,
+                "anonymous": anonymous,
                 "taskVariables": json.loads(mapper.task_variable),
                 "processKey": mapper.process_key,
                 "processName": mapper.process_name,
@@ -499,10 +519,10 @@ class ImportService:  # pylint: disable=too-many-public-methods
                 "formTypeChanged": False,
                 "titleChanged": title_changed,
                 "anonymousChanged": anonymous_changed,
-                "description": mapper.description if form_only else description,
+                "description": description,
                 "isMigrated": mapper.is_migrated,
             }
-            FormProcessMapperService.mapper_create(mapper_data)
+            mapper = FormProcessMapperService.mapper_create(mapper_data)
             FormProcessMapperService.mark_unpublished(mapper.id)
         else:
             current_app.logger.info("Form import minor version inprogress...")
@@ -513,6 +533,10 @@ class ImportService:  # pylint: disable=too-many-public-methods
             # Minor version update form components in formio & create form history.
             form_components = {}
             form_components["components"] = form_json.get("components")
+            # Incase of form+workflow title/path is updated even in minor version
+            form_components["title"] = title
+            form_components["path"] = path
+            form_components["parentFormId"] = mapper.parent_form_id
             form_response = self.form_update(form_components, form_id)
             form_response["componentChanged"] = True
             form_response["parentFormId"] = mapper.parent_form_id
@@ -522,24 +546,25 @@ class ImportService:  # pylint: disable=too-many-public-methods
                 current_app.logger.info("Updating mapper & form logs...")
                 mapper.description = description
                 mapper.is_anonymous = anonymous
+                mapper.form_name = title
                 mapper.save()
                 form_logs_data = {
                     "titleChanged": title_changed,
-                    "formName": new_title,
+                    "formName": title,
                     "anonymousChanged": anonymous_changed,
                     "anonymous": anonymous,
                     "formId": form_id,
                     "parentFormId": mapper.parent_form_id,
                 }
                 FormHistoryService.create_form_logs_without_clone(data=form_logs_data)
-        return form_id
+        return mapper
 
     def import_edit_form(self, file_data, selected_form_version, form_json, mapper):
         """Import edit form."""
         current_app.logger.info("Form import with form+workflow json inprogress...")
         anonymous = file_data.get("forms")[0].get("anonymous") or False
         description = file_data.get("forms")[0].get("formDescription", "")
-        form_id = self.import_form(
+        mapper = self.import_form(
             selected_form_version,
             form_json,
             mapper,
@@ -553,7 +578,7 @@ class ImportService:  # pylint: disable=too-many-public-methods
             file_data["authorizations"][0][auth]["resourceId"] = mapper.parent_form_id
         # Update authorizations for the form
         self.create_authorization(file_data["authorizations"][0])
-        return form_id
+        return mapper
 
     @user_context
     def import_form_workflow(
@@ -568,7 +593,9 @@ class ImportService:  # pylint: disable=too-many-public-methods
         action = input_data.get("action")
         user: UserContext = kwargs["user"]
         tenant_key = user.tenant_key
-        form_id = None
+        mapper = None
+        process = None
+        response = {}
 
         # Check if the action is valid
         if action not in ["validate", "import"]:
@@ -600,7 +627,7 @@ class ImportService:  # pylint: disable=too-many-public-methods
                     form_json = self.append_tenant_key_form_name_path(
                         form_json, tenant_key
                     )
-                form_id = self.import_new_form_workflow(
+                mapper, process = self.import_new_form_workflow(
                     file_data, form_json, workflow_data, process_type
                 )
         else:
@@ -614,7 +641,6 @@ class ImportService:  # pylint: disable=too-many-public-methods
             if mapper.status == FormProcessMapperStatus.ACTIVE.value:
                 # Raise an exception if the user try to update published form
                 raise BusinessException(BusinessErrorCode.FORM_INVALID_OPERATION)
-            form_id = mapper.form_id
             if valid_file == ".json":
                 file_data = self.read_json_data(file)
                 # Validate input json file whether only form or form+workflow
@@ -637,7 +663,7 @@ class ImportService:  # pylint: disable=too-many-public-methods
                         selected_form_version = edit_request.get("form", {}).get(
                             "selectedVersion"
                         )
-                        form_id = self.import_form(
+                        mapper = self.import_form(
                             selected_form_version, form_json, mapper, form_only=True
                         )
                 elif self.validate_input_json(file_data, form_workflow_schema):
@@ -680,7 +706,7 @@ class ImportService:  # pylint: disable=too-many-public-methods
                                 form_json = self.append_tenant_key_form_name_path(
                                     form_json, tenant_key
                                 )
-                            form_id = self.import_edit_form(
+                            mapper = self.import_edit_form(
                                 file_data, selected_form_version, form_json, mapper
                             )
                         if not skip_workflow:
@@ -689,7 +715,7 @@ class ImportService:  # pylint: disable=too-many-public-methods
                             workflow_data, process_type = self.get_process_details(
                                 file_data
                             )
-                            self.save_process_data(
+                            process = self.save_process_data(
                                 workflow_data,
                                 mapper.process_key,
                                 selected_workflow_version,
@@ -715,9 +741,13 @@ class ImportService:  # pylint: disable=too-many-public-methods
                         "selectedVersion"
                     )
                     file_content = file.read().decode("utf-8")
-                    self.save_process_data(
+                    process = self.save_process_data(
                         file_content,
                         mapper.process_key,
                         selected_workflow_version,
                     )
-        return {"formId": form_id}
+        if mapper:
+            response["mapper"] = FormProcessMapperSchema().dump(mapper)
+        if process:
+            response["process"] = ProcessDataSchema().dump(process)
+        return response

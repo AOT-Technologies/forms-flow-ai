@@ -573,7 +573,7 @@ def test_form_name_invalid_form_title(app, client, session, jwt, mock_redis_clie
     assert response.json is not None
     assert (
         response.json["message"]
-        == "Title: Only contain alphanumeric characters and spaces, and must include at least one letter."
+        == "Title: Only contain alphanumeric characters, hyphens(not at the start or end), spaces,and must include at least one letter."
     )
     # With special characters
     response = client.get("/form/validate?title=$$", headers=headers)
@@ -581,14 +581,14 @@ def test_form_name_invalid_form_title(app, client, session, jwt, mock_redis_clie
     assert response.json is not None
     assert (
         response.json["message"]
-        == "Title: Only contain alphanumeric characters and spaces, and must include at least one letter."
+        == "Title: Only contain alphanumeric characters, hyphens(not at the start or end), spaces,and must include at least one letter."
     )
     response = client.get("/form/validate?title=1234$@@#test", headers=headers)
     assert response.status_code == 400
     assert response.json is not None
     assert (
         response.json["message"]
-        == "Title: Only contain alphanumeric characters and spaces, and must include at least one letter."
+        == "Title: Only contain alphanumeric characters, hyphens(not at the start or end), spaces,and must include at least one letter."
     )
 
 
@@ -602,7 +602,7 @@ def test_form_name_invalid_form_name(app, client, session, jwt, mock_redis_clien
     assert response.json is not None
     assert (
         response.json["message"]
-        == "Name: Only contain alphanumeric characters, no spaces, and must include at least one letter."
+        == "Name: Only contain alphanumeric characters, hyphens(not at the start or end), no spaces,and must include at least one letter."
     )
     # With special characters
     response = client.get("/form/validate?name=1234", headers=headers)
@@ -610,7 +610,7 @@ def test_form_name_invalid_form_name(app, client, session, jwt, mock_redis_clien
     assert response.json is not None
     assert (
         response.json["message"]
-        == "Name: Only contain alphanumeric characters, no spaces, and must include at least one letter."
+        == "Name: Only contain alphanumeric characters, hyphens(not at the start or end), no spaces,and must include at least one letter."
     )
     # With spaces
     response = client.get("/form/validate?name=test form", headers=headers)
@@ -618,7 +618,7 @@ def test_form_name_invalid_form_name(app, client, session, jwt, mock_redis_clien
     assert response.json is not None
     assert (
         response.json["message"]
-        == "Name: Only contain alphanumeric characters, no spaces, and must include at least one letter."
+        == "Name: Only contain alphanumeric characters, hyphens(not at the start or end), no spaces,and must include at least one letter."
     )
 
 
@@ -632,7 +632,7 @@ def test_form_name_invalid_form_path(app, client, session, jwt, mock_redis_clien
     assert response.json is not None
     assert (
         response.json["message"]
-        == "Path: Only contain alphanumeric characters, no spaces, and must include at least one letter."
+        == "Path: Only contain alphanumeric characters, hyphens(not at the start or end), no spaces,and must include at least one letter."
     )
     # With special characters
     response = client.get("/form/validate?path=1234", headers=headers)
@@ -640,7 +640,7 @@ def test_form_name_invalid_form_path(app, client, session, jwt, mock_redis_clien
     assert response.json is not None
     assert (
         response.json["message"]
-        == "Path: Only contain alphanumeric characters, no spaces, and must include at least one letter."
+        == "Path: Only contain alphanumeric characters, hyphens(not at the start or end), no spaces,and must include at least one letter."
     )
     # With spaces
     response = client.get("/form/validate?path=test form", headers=headers)
@@ -648,7 +648,7 @@ def test_form_name_invalid_form_path(app, client, session, jwt, mock_redis_clien
     assert response.json is not None
     assert (
         response.json["message"]
-        == "Path: Only contain alphanumeric characters, no spaces, and must include at least one letter."
+        == "Path: Only contain alphanumeric characters, hyphens(not at the start or end), no spaces,and must include at least one letter."
     )
 
 
@@ -667,7 +667,7 @@ def test_form_name_invalid_form_name_title_path(
     assert response.json is not None
     assert (
         response.json["message"]
-        == """Title: Only contain alphanumeric characters and spaces, and must include at least one letter.,\n Path: Only contain alphanumeric characters, no spaces, and must include at least one letter."""
+        == """Title: Only contain alphanumeric characters, hyphens(not at the start or end), spaces,and must include at least one letter.,\n Path: Only contain alphanumeric characters, hyphens(not at the start or end), no spaces,and must include at least one letter."""
     )
     # Invalid name, title
     response = client.get(
@@ -677,7 +677,7 @@ def test_form_name_invalid_form_name_title_path(
     assert response.json is not None
     assert (
         response.json["message"]
-        == """Title: Only contain alphanumeric characters and spaces, and must include at least one letter.,\n Name: Only contain alphanumeric characters, no spaces, and must include at least one letter."""
+        == """Title: Only contain alphanumeric characters, hyphens(not at the start or end), spaces,and must include at least one letter.,\n Name: Only contain alphanumeric characters, hyphens(not at the start or end), no spaces,and must include at least one letter."""
     )
     # Invalid path, name
     response = client.get(
@@ -687,7 +687,7 @@ def test_form_name_invalid_form_name_title_path(
     assert response.json is not None
     assert (
         response.json["message"]
-        == """Path: Only contain alphanumeric characters, no spaces, and must include at least one letter.,\n Name: Only contain alphanumeric characters, no spaces, and must include at least one letter."""
+        == """Path: Only contain alphanumeric characters, hyphens(not at the start or end), no spaces,and must include at least one letter.,\n Name: Only contain alphanumeric characters, hyphens(not at the start or end), no spaces,and must include at least one letter."""
     )
 
 

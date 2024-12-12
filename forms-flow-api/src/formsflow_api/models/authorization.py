@@ -5,7 +5,7 @@ from __future__ import annotations
 from enum import Enum, unique
 from typing import List, Optional
 
-from sqlalchemy import JSON, and_, or_, text
+from sqlalchemy import JSON, and_, or_
 from sqlalchemy.dialects.postgresql import ARRAY, ENUM
 
 from .audit_mixin import AuditDateTimeMixin, AuditUserMixin
@@ -73,11 +73,10 @@ class Authorization(AuditDateTimeMixin, AuditUserMixin, BaseModel, db.Model):
         role_condition = [Authorization.roles.contains([role]) for role in roles]
         query = cls.query.filter(Authorization.auth_type == auth_type)
         if auth_type == AuthType.APPLICATION:
-            # if the authtype is application then need to check role id exist or if submitter true
+            # if the authtype is application then need to fetch the resource id associated with roles
             query = query.filter(
                 or_(
                     *role_condition,
-                    text("resource_details ->>'submitter' = 'True'"),
                 )
             )
         else:
@@ -122,11 +121,14 @@ class Authorization(AuditDateTimeMixin, AuditUserMixin, BaseModel, db.Model):
         user_name: str = None,
         tenant: str = None,
         include_created_by: bool = False,
+        ignore_role_check: bool = False,
     ) -> Optional[Authorization]:
         """Find resource authorization by id."""
         if (
-            is_designer and auth_type != AuthType.DESIGNER
-        ) or auth_type == AuthType.DASHBOARD:
+            (is_designer and auth_type != AuthType.DESIGNER)
+            or auth_type == AuthType.DASHBOARD
+            or ignore_role_check
+        ):
             query = cls.query.filter(Authorization.auth_type == auth_type)
         else:
             query = cls._auth_query(

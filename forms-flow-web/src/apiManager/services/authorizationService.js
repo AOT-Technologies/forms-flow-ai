@@ -31,11 +31,9 @@ export const getUserRoles = () => {
 };
 
 
-export const getClientList = (id) => {
+export const getClientList = ({parentFormId}) => {
   let url = API.CLIENT_LIST;
-  if (id) {
-    url += `/${id}`;
-  }
+  if (parentFormId) url += `/${parentFormId}`;
   return RequestService.httpGETRequest(url);
 };
 
@@ -43,11 +41,10 @@ export const getClientList = (id) => {
  
 
 
-export const getReviewerList = (id) => {
+export const getReviewerList = ({parentFormId,currentFormId}) => {
   let url = API.APPLICATION_LIST;
-  if (id) {
-    url += `/${id}`;
-  }
+  if (parentFormId) url += `/${parentFormId}`;
+  if(currentFormId) url += `?formId=${currentFormId}`;
   return RequestService.httpGETRequest(url);
 };
 

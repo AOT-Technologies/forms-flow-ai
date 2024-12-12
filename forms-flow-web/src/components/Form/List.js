@@ -169,61 +169,50 @@ const List = React.memo((props) => {
     onClose();
   };
 
-  const handleImport = async (fileContent, UploadActionType) => {
-    if(UploadActionType === "import") {
+  const handleImport = async (fileContent, actionType) => {
+
+
+    let data; 
+    if ([UploadActionType.VALIDATE, UploadActionType.IMPORT].includes(actionType)) {
+         data = { importType: "new", action: actionType };
+    } else {
+      console.error("Invalid UploadActionType provided");
+      return;
+    }
+
+    if (actionType === UploadActionType.IMPORT) {
       setImportLoader(true);
-    }
-    let data = {};
-    switch (UploadActionType) {
-      case "validate":
-        data = {
-          importType: "new",
-          action: "validate",
-        };
-        break;
-      case "import":
-        setFormSubmitted(true);
-        data = {
-          importType: "new",
-          action: "import",
-        };
-        break;
-      default:
-        console.error("Invalid UploadActionType provided");
-        return;
+      setFormSubmitted(true);
     }
 
-    const dataString = JSON.stringify(data);
-    formImport(fileContent, dataString)
-      .then((res) => {
-        setImportLoader(false);
-        setFormSubmitted(false);
-
-        if (data.action == "validate") {
-          FileService.extractFileDetails(fileContent)
-          .then((formExtracted) => {
-            if (formExtracted) {
-              setFormTitle(formExtracted.formTitle);
-              setUploadFormDescription(formExtracted.formDescription);
-            } else {
-              console.log("No valid form found.");
-            }
-          })
-          .catch((error) => {
-            console.error("Error extracting form:", error);
-          });
-        }
-        else {
-          res?.data?.formId && dispatch(push(`${redirectUrl}formflow/${res.data.formId}/edit/`));
-        }
-      })
-      .catch((err) => {
-        setImportLoader(false);
-        setFormSubmitted(false);
-        setImportError(err?.response?.data?.message);
-      });
+    try {
+      const dataString = JSON.stringify(data);
+      const res = await formImport(fileContent, dataString);
+      const { data: responseData } = res;
+      const formId = responseData.mapper?.formId;
+  
+      setImportLoader(false);
+      setFormSubmitted(false);
+  
+      if (actionType === UploadActionType.VALIDATE ) {
+      
+        const formExtracted = await FileService.extractFileDetails(fileContent);
+  
+        if (Array.isArray(formExtracted?.forms)) {  
+            setFormTitle(formExtracted?.forms[0]?.formTitle || ""); 
+            setUploadFormDescription(formExtracted?.forms[0]?.formDescription || "");
+          }
+        
+      } else if (formId) {
+        dispatch(push(`${redirectUrl}formflow/${formId}/edit/`));
+      }
+    } catch (err) {
+      setImportLoader(false);
+      setFormSubmitted(false);
+      setImportError(err?.response?.data?.message);
+    }
   };
-
+  
 
   useEffect(() => {
     fetchForms();
@@ -350,7 +339,8 @@ const List = React.memo((props) => {
                     nameLabel="Form Name"
                     descriptionLabel="Form Description"
                     showBuildForm={showBuildForm}
-                    isLoading={formSubmitted || validationLoading}
+                    isSaveBtnLoading={formSubmitted}
+                    isFormNameValidating={validationLoading}
                     onClose={onCloseBuildModal}
                     onAction={handleAction}
                     primaryBtnAction={handleBuild}

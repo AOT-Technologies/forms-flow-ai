@@ -738,15 +738,15 @@ class FormProcessMapperService:  # pylint: disable=too-many-public-methods
     @classmethod
     def validate_title_name_path(cls, title: str, path: str, name: str):
         """Validates the title, path, and name fields."""
-        title_pattern = r"(?=.*[A-Za-z])[A-Za-z0-9 ]+"
-        path_name = r"(?=.*[A-Za-z])[A-Za-z0-9]+"
+        title_pattern = r"(?=.*[A-Za-z])^[A-Za-z0-9 ]+(-{1,}[A-Za-z0-9 ]+)*$"
+        path_name = r"(?=.*[A-Za-z])^[A-Za-z0-9]+(-{1,}[A-Za-z0-9]+)*$"
 
         invalid_fields = []
 
         error_messages = {
-            "title": "Title: Only contain alphanumeric characters and spaces, and must include at least one letter.",
-            "path": "Path: Only contain alphanumeric characters, no spaces, and must include at least one letter.",
-            "name": "Name: Only contain alphanumeric characters, no spaces, and must include at least one letter.",
+            "title": "Title: Only contain alphanumeric characters, hyphens(not at the start or end), spaces, and must include at least one letter.",
+            "path": "Path: Only contain alphanumeric characters, hyphens(not at the start or end), no spaces, and must include at least one letter.",
+            "name": "Name: Only contain alphanumeric characters, hyphens(not at the start or end), no spaces, and must include at least one letter.",
         }
 
         # Validate title

@@ -339,7 +339,8 @@ const List = React.memo((props) => {
                     nameLabel="Form Name"
                     descriptionLabel="Form Description"
                     showBuildForm={showBuildForm}
-                    isLoading={formSubmitted || validationLoading}
+                    isSaveBtnLoading={formSubmitted}
+                    isFormNameValidating={validationLoading}
                     onClose={onCloseBuildModal}
                     onAction={handleAction}
                     primaryBtnAction={handleBuild}

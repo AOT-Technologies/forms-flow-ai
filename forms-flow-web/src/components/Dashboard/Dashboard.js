@@ -182,7 +182,7 @@ const Dashboard = React.memo(() => {
     );
   }
   return (
-    <Fragment>
+
       <LoadingOverlay active={submissionStatusCountLoader} spinner>
         <div
           className="mb-4"
@@ -336,7 +336,7 @@ const Dashboard = React.memo(() => {
             ) : (
               <Modal
                 show={show}
-                size="lg"
+                size="sm"
                 onHide={() => setShow(false)}
                 aria-labelledby="example-custom-modal-styling-title"
               >
@@ -368,7 +368,7 @@ const Dashboard = React.memo(() => {
           <Redirect exact to="/404" />
         </Route>
       </LoadingOverlay>
-    </Fragment>
+
   );
 });
 

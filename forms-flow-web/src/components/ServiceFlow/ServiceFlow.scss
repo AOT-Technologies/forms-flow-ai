@@ -52,6 +52,8 @@
 
 .filter-listview{
   min-width: 700px;
+  max-height: 80vh;
+  overflow-y: auto;
 }
 
 .filter-list{

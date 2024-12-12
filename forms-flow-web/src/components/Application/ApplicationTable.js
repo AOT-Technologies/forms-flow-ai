@@ -21,7 +21,7 @@ import {
 } from "../../actions/applicationActions";
 import { push } from "connected-react-router";
 import LoadingOverlay from "react-loading-overlay-ts";
-import { TableFooter } from "@formsflow/components"; 
+import { TableFooter, CustomButton } from "@formsflow/components"; 
 
 const ApplicationTable = () => {
   const dispatch = useDispatch();
@@ -170,7 +170,7 @@ const ApplicationTable = () => {
   };
 
   return (
-    <>
+
       <LoadingOverlay
         active={isApplicationLoading}
         spinner
@@ -255,27 +255,16 @@ const ApplicationTable = () => {
               <th colSpan="4">
                 <div className="d-flex justify-content-end filter-sort-bar mt-1">
                   <div className="filter-container-list application-filter-list-view">
-                    <button
-                      type="button"
-                      className="btn btn-outline-secondary tooltiptext"
-                      onClick={() => {
-                        setDisplayFilter(true);
-                      }}
-                      data-testid="submission-filter-btn"
-                    >
-                      <svg
-                        xmlns="http://www.w3.org/2000/svg"
-                        width="16"
-                        height="16"
-                        fill="currentColor"
-                        className="bi bi-filter me-2"
-                        viewBox="0 0 16 16"
-                      >
-                        <path d="M6 10.5a.5.5 0 0 1 .5-.5h3a.5.5 0 0 1 0 1h-3a.5.5 0 0 1-.5-.5zm-2-3a.5.5 0 0 1 .5-.5h7a.5.5 0 0 1 0 1h-7a.5.5 0 0 1-.5-.5zm-2-3a.5.5 0 0 1 .5-.5h11a.5.5 0 0 1 0 1h-11a.5.5 0 0 1-.5-.5z" />
-                      </svg>
-                      {t("Filter")}
-                    </button>
-
+                  <CustomButton
+                    variant="secondary"
+                    size="md"
+                    label={t("Filter")}
+                    onClick={() => {
+                      setDisplayFilter(true);
+                    }}
+                    dataTestid="application-filter"
+                    ariaLabel={t("Application Filter Button")}
+                   />
                     {displayFilter && (
                       <div className="clickable shadow border filter-list-view m-0 p-0">
                         <ApplicationFilter
@@ -328,7 +317,7 @@ const ApplicationTable = () => {
           </table>
           ) : null}
       </LoadingOverlay>
-    </>
+
   );
 };
 

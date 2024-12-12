@@ -784,7 +784,7 @@ const EditComponent = () => {
         return {
           title: "Confirm Publish",
           message:
-            "Publishing will save any unsaved changes and lock the entire form, including the layout and the flow. to perform any additional changes you will need to unpublish the form again.",
+            "Publishing will save any unsaved changes and lock the entire form, including the layout and the flow. To perform any additional changes you will need to unpublish the form again.",
           primaryBtnAction: confirmPublishOrUnPublish,
           secondayBtnAction: closeModal,
           primaryBtnText: "Publish This Form",
@@ -794,7 +794,7 @@ const EditComponent = () => {
         return {
           title: "Confirm Unpublish",
           message:
-            "This form is currently live. To save changes to form edits, you need ot unpublish it first. By Unpublishing this form, you will make it unavailble for new submissin to those who currently have access to it. You can republish the form after making your edits. ",
+            "This form is currently live. To save changes to form edits, you need to unpublish it first. By Unpublishing this form, you will make it unavailble for new submissin to those who currently have access to it. You can republish the form after making your edits. ",
           primaryBtnAction: confirmPublishOrUnPublish,
           secondayBtnAction: closeModal,
           primaryBtnText: "Unpublish and Edit This Form",

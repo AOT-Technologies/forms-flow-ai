@@ -4,18 +4,18 @@ import { push } from "connected-react-router";
 import {
   setBPMFormLimit,
   setBPMFormListPage,
-  setBPMFormListSort,
+  // setBPMFormListSort,
   setBpmFormSearch,
+  setBpmFormSort,
 } from "../../../actions/formActions";
 import {
   MULTITENANCY_ENABLED,
 } from "../../../constants/constants";
-import { useTranslation } from "react-i18next";
-import { Translation } from "react-i18next";
+import { useTranslation, Translation } from "react-i18next";
 import { sanitize } from "dompurify";
 import { TableFooter } from "@formsflow/components";
 import LoadingOverlay from "react-loading-overlay-ts";
-
+import SortableHeader from '../../CustomComponents/SortableHeader';
 
 function ClientTable() {
 
@@ -27,12 +27,14 @@ function ClientTable() {
   const pageNo = useSelector((state) => state.bpmForms.page);
   const limit = useSelector((state) => state.bpmForms.limit);
   const totalForms = useSelector((state) => state.bpmForms.totalForms);
-  const sortOrder = useSelector((state) => state.bpmForms.sortOrder);
+  const [currentFormSort ,setCurrentFormSort] = useState({
+  activeKey: "formName",
+  formName: { sortOrder: "asc" },
+  }); 
   const searchFormLoading = useSelector(
     (state) => state.formCheckList.searchFormLoading
   );
   const [search, setSearch] = useState(useSelector((state) => state.bpmForms.searchText) || "");
-  const isAscending = sortOrder === "asc" ? true : false;
 
   const searchText = useSelector((state) => state.bpmForms.searchText);
 
@@ -47,10 +49,15 @@ function ClientTable() {
     { text: "All", value: totalForms },
   ];
 
-  const updateSort = (updatedSort) => {
-    resetIndex();
-    dispatch(setBPMFormListSort(updatedSort));
-    dispatch(setBPMFormListPage(1));
+  const handleSort = (key) => {
+    setCurrentFormSort((prevSort) => {
+      const newSortOrder = prevSort[key].sortOrder === "asc" ? "desc" : "asc";
+      return {
+        ...prevSort,
+        activeKey: key,
+        [key]: { sortOrder: newSortOrder },
+      };
+    });
   };
 
   useEffect(() => {
@@ -81,6 +88,9 @@ function ClientTable() {
     dispatch(setBPMFormLimit(newLimit));
     dispatch(setBPMFormListPage(1));
   };
+  useEffect(() => {
+    dispatch(setBpmFormSort(currentFormSort));
+  },[currentFormSort,dispatch]);
 
   const noDataFound = () => {
     return (
@@ -122,32 +132,13 @@ function ClientTable() {
             <thead>
               <tr>
                 <th className="col-3">
-                  <div className="d-flex align-items-center">
-                    <span>{t("Form Title")}</span>
-                    <span>
-                      {isAscending ? (
-                        <i 
-                          data-testid="form-desc-sort-icon"
-                          className="fa fa-sort-alpha-asc ms-2 cursor-pointer fs-16"
-                          onClick={() => {
-                            updateSort("desc");
-                          }}
-                          data-toggle="tooltip"
-                          title={t("Descending")}>
-                        </i>
-                      ) : (
-                        <i
-                          data-testid="form-asc-sort-icon"
-                          className="fa fa-sort-alpha-desc ms-2 cursor-pointer fs-16"
-                          onClick={() => {
-                            updateSort("asc");
-                          }}
-                          data-toggle="tooltip"
-                          title={t("Ascending")}>
-                        </i>
-                      )}
-                    </span>
-                  </div>
+                  <SortableHeader
+                   columnKey="formName"
+                   title="Form Name"
+                   currentSort={currentFormSort}
+                   handleSort={handleSort}
+                   className="d-flex justify-content-start"
+                  />
                 </th>
                 <th className="col-7">{t("Form Description")}</th>
                 <th className="col-2"></th>
@@ -161,7 +152,7 @@ function ClientTable() {
                       <td className="col-3">
                         <span
                           data-testid={`form-title-${e._id}`}
-                          className="ms-2 mt-2"
+                          className="mt-2"
                         >
                           {e.title}
                         </span>

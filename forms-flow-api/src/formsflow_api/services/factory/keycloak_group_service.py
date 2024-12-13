@@ -34,7 +34,7 @@ class KeycloakGroupService(KeycloakAdmin):
                 user_groups = [
                     group
                     for group in user_groups
-                    if group["name"].startswith(logged_user.tenant_key)
+                    if group["path"].startswith(f"/{logged_user.tenant_key}")
                 ]
             user["role"] = user_groups
         return user_list

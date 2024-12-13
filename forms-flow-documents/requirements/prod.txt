@@ -14,8 +14,9 @@ Werkzeug
 sqlalchemy_utils
 markupsafe
 PyJWT
-selenium
+selenium==4.25.0
 selenium-wire
 blinker<1.8.0 # latest selenium-wire have breaking changes with blinker
 nested-lookup
+setuptools
 git+https://github.com/AOT-Technologies/forms-flow-ai.git@develop#egg=formsflow_api_utils&subdirectory=forms-flow-api-utils

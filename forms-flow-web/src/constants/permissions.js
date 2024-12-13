@@ -7,6 +7,9 @@ const userRoles = () => {
   return {
     createDesigns: role('create_designs'),
     viewDesigns: role('view_designs'),
+    createBpmn: role('create_bpmn_flows'),
+    manageSubflows: role('manage_subflows'),
+    manageDmn: role('manage_decision_tables'),
     createSubmissions: role('create_submissions'),
     viewSubmissions: role('view_submissions'),
     viewTasks: role('view_tasks'),

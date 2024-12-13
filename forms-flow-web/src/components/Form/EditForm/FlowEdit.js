@@ -49,7 +49,7 @@ const FlowEdit = forwardRef(({ isPublished = false, CategoryType,
   const [showDiscardModal, setShowDiscardModal] = useState(false);
   const [showHistoryModal, setShowHistoryModal] = useState(false);
   const [isReverted, setIsReverted] = useState(false);
-  const { createDesigns } = userRoles();
+  const { createDesigns, createBpmn } = userRoles();
   const [showTaskVarModal, setShowTaskVarModal] = useState(false);
   const [isWorkflowChanged, setIsWorkflowChanged] = useState(false);
   const [isMigrationChecked, setIsMigrationChecked] = useState(false);
@@ -279,7 +279,7 @@ const FlowEdit = forwardRef(({ isPublished = false, CategoryType,
             text={t("Loading...")}
           >
             <div className="flow-builder">
-              {!createDesigns ? (
+              {!createBpmn ? (
                 <BPMNViewer bpmnXml={processData?.processData || null} />
               ) : (
                 <BpmnEditor

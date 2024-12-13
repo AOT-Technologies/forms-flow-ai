@@ -6,7 +6,7 @@ from uuid import uuid1
 from flask import current_app
 from formsflow_api_utils.exceptions import BusinessException
 from formsflow_api_utils.services.external import FormioService
-from formsflow_api_utils.utils import Cache
+from formsflow_api_utils.utils import CREATE_BPMN_FLOWS, Cache
 from formsflow_api_utils.utils.enums import FormProcessMapperStatus
 from formsflow_api_utils.utils.startup import collect_role_ids
 from formsflow_api_utils.utils.user_context import UserContext, user_context
@@ -725,6 +725,8 @@ class ImportService:  # pylint: disable=too-many-public-methods
                 else:
                     raise BusinessException(BusinessErrorCode.INVALID_FILE_TYPE)
             elif valid_file == ".bpmn":
+                if CREATE_BPMN_FLOWS not in user.roles:
+                    raise BusinessException(BusinessErrorCode.PERMISSION_DENIED)
                 current_app.logger.info("Workflow validated successfully.")
                 if action == "validate":
                     major, minor = self.determine_process_version_by_key(

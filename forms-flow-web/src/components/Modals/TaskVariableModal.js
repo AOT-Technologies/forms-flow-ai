@@ -11,20 +11,19 @@ import {
 import { Form } from "@aot-technologies/formio-react";
 import PropTypes from "prop-types";
 import { useDispatch ,useSelector } from "react-redux";
-import utils from "@aot-technologies/formiojs/lib/utils";
 import {
   saveFormProcessMapperPut,
 } from "../../apiManager/services/processServices";
 
-
+ 
 //TBD in case of Bundle form display
 const PillList = React.memo(({ alternativeLabels, onRemove }) => {
   const { t } = useTranslation();
   return (
     <div className="pill-container">
-      {Object.entries(alternativeLabels).length > 0 ? (
-        Object.entries(alternativeLabels).map(
-          ([key, { altVariable, labelOfComponent }]) => (
+      {Object.values(alternativeLabels).length ? (
+        Object.values(alternativeLabels).map(
+          ({key, altVariable, labelOfComponent }) => (
             <CustomPill
               key={key}
               label={altVariable || labelOfComponent}
@@ -46,6 +45,7 @@ PillList.propTypes = {
   alternativeLabels: PropTypes.object.isRequired,
   onRemove: PropTypes.func.isRequired,
 };
+
 const FormComponent = React.memo(
   ({ form, 
     alternativeLabels, 
@@ -270,32 +270,19 @@ FormComponent.propTypes = {
   setSelectedComponent: PropTypes.func.isRequired,
 };
 const TaskVariableModal = React.memo(
-  ({ showTaskVarModal, isPublished = false ,onClose, form }) => {
+  ({ showTaskVarModal, isPublished = false ,onClose }) => {
     const { t } = useTranslation();
     const dispatch = useDispatch();
     const formProcessList = useSelector(
       (state) => state.process.formProcessList
     );
     
+    const form = useSelector((state) => state.form?.form || {});
     const [alternativeLabels, setAlternativeLabels] = useState({});
 
     useEffect(() => {
-      //filtering applicationId and applicationStatus components from form
-      const filteredComponents = Object.values(utils.flattenComponents(form.components)).filter(
-          ({ key }) => key === "applicationStatus" || key === "applicationId"
-        );
 
-      const updatedLabels = {};
-      // Add filtered components to updatedLabels
-      filteredComponents.forEach(({ key, label, type }) => {
-        updatedLabels[key] = {
-          key,
-          altVariable: label,
-          labelOfComponent: label,
-          type: type,
-        };
-      });
-
+       const updatedLabels = {};
       // Add taskVariables to updatedLabels
       formProcessList?.taskVariables?.forEach(({ key, label, type }) => {
         updatedLabels[key] = {
@@ -307,12 +294,14 @@ const TaskVariableModal = React.memo(
       });
       setAlternativeLabels(updatedLabels);
     }, [formProcessList]);
+
     const [selectedComponent, setSelectedComponent] = useState({
         key: null,
         type: "",
         label: "",
         altVariable: "",
       });
+      
     const removeSelectedVariable = useCallback((key) => {
         setSelectedComponent((prev) => ({
             ...prev,
@@ -418,7 +407,6 @@ const TaskVariableModal = React.memo(
 TaskVariableModal.propTypes = {
   showTaskVarModal: PropTypes.bool.isRequired,
   onClose: PropTypes.func.isRequired,
-  form: PropTypes.object.isRequired,
   isPublished: PropTypes.bool.isRequired,
 };
 export default TaskVariableModal;

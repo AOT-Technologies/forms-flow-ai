@@ -52,7 +52,6 @@ const FlowEdit = forwardRef(({ isPublished = false, CategoryType,
   const { createDesigns } = userRoles();
   const [showTaskVarModal, setShowTaskVarModal] = useState(false);
   const [isWorkflowChanged, setIsWorkflowChanged] = useState(false);
-  const formData = useSelector((state) => state.form?.form || {});
   const [isMigrationChecked, setIsMigrationChecked] = useState(false);
   const [showMigrationModal, setShowMigrationModal] = useState(false);
   const [isMigraionLoading, setIsMigraionLoading] = useState(false);
@@ -371,8 +370,7 @@ const FlowEdit = forwardRef(({ isPublished = false, CategoryType,
         disableAllRevertButton={processData.status === "Published"}
       />
       {showTaskVarModal && (
-        <TaskVariableModal
-          form={formData}
+        <TaskVariableModal 
           showTaskVarModal={showTaskVarModal}
           onClose={CloseTaskVarModal}
           isPublished={isPublished}

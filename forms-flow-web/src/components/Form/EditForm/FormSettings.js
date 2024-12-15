@@ -15,6 +15,8 @@ import {
 } from "@formsflow/components";
 
 import MultiSelectComponent from "../../CustomComponents/MultiSelect";
+import { MULTITENANCY_ENABLED } from "../../../constants/constants";
+import { addTenantkey } from "../../../helper/helper";
 import { useDispatch, useSelector } from "react-redux";
 import { getUserRoles } from "../../../apiManager/services/authorizationService";
 import { useTranslation } from "react-i18next";
@@ -65,8 +67,10 @@ const FormSettings = forwardRef((props, ref) => {
   const [submissionAccessCopy, setSubmissionAccessCopy] = useState(
     _cloneDeep(submissionAccess)
   );
+  const tenantKey = useSelector((state) => state.tenants?.tenantId);
 
   const publicUrlPath = `${window.location.origin}/public/form/`;
+  const [urlPath,setUrlPath] = useState(publicUrlPath);
   const setSelectedOption = (roles, option)=> roles.length ? "specifiedRoles" : option;
   /* ------------------------- authorization variables ------------------------ */
   const [rolesState, setRolesState] = useState({
@@ -89,6 +93,41 @@ const FormSettings = forwardRef((props, ref) => {
 
   });
 
+  /* --------Updating path if multitenant enabled-------------------------- */
+  useEffect(()=>{
+    if(MULTITENANCY_ENABLED){
+      const updatedDisplayPath = removeTenantKeyFromPath(formDetails.path,tenantKey);
+      setFormDetails((prev) => {
+        return {
+          ...prev,
+          path: updatedDisplayPath
+        };
+      });
+      const updatedUrlPath = addTenantkeyAsSuffix(publicUrlPath,tenantKey);
+      setUrlPath(updatedUrlPath);
+    }
+  },[MULTITENANCY_ENABLED]);
+
+  const addTenantkeyAsSuffix = (value, tenantkey) => {
+    if (value.toLowerCase().endsWith(`-${tenantkey}`)) {
+      return value.toLowerCase();
+    } else {
+      return `${value.toLowerCase()}${tenantkey}-`;
+    }
+  };
+
+  const removeTenantKeyFromPath = (value, tenantkey) => {
+    const tenantKeyCheck = value.match(`${tenantkey}-`);
+    if (
+      tenantKeyCheck &&
+      tenantKeyCheck.length &&
+      tenantKeyCheck[0].toLowerCase() === `${tenantkey.toLowerCase()}-`
+    ) {
+      return value.replace(`${tenantkey.toLowerCase()}-`, "");
+    } else {
+      return value;
+    }
+  };
     /* ------------------------- validating form name and path ------------------------ */
 
   const validateField = async (field, value) => {
@@ -132,7 +171,10 @@ const FormSettings = forwardRef((props, ref) => {
   };
   
   const handleBlur = (field, value) => {
-    validateField(field, value);
+    const updatedValue = MULTITENANCY_ENABLED
+      ? addTenantkey(value, tenantKey)
+      : value;
+    validateField(field, updatedValue);
   };
   
 
@@ -184,7 +226,7 @@ const FormSettings = forwardRef((props, ref) => {
 
   const copyPublicUrl = async () => {
     try {
-      await copyText(`${publicUrlPath}${formDetails.path}`);
+      await copyText(`${urlPath}${formDetails.path}`);
       setCopied(true);
       setTimeout(() => {
         setCopied(false);
@@ -387,7 +429,7 @@ const FormSettings = forwardRef((props, ref) => {
           <Form.Label className="field-label">{t("URL Path")}</Form.Label>
           <InputGroup className="url-input">
             <InputGroup.Text className="url-non-edit">
-              {publicUrlPath}
+              {urlPath}
             </InputGroup.Text>
 
             <FormControl

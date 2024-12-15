@@ -63,6 +63,7 @@ import { generateUniqueId, isFormComponentsChanged } from "../../../helper/helpe
 import { useMutation } from "react-query";
 import NavigateBlocker from "../../CustomComponents/NavigateBlocker";
 import { setProcessData, setFormPreviosData, setFormProcessesData } from "../../../actions/processActions.js";
+import { addTenantkey } from "../../../helper/helper";
 
 // constant values
 const DUPLICATE = "DUPLICATE";
@@ -522,11 +523,14 @@ const EditComponent = () => {
             : [],
       },
     };
+    const updatepath = MULTITENANCY_ENABLED
+      ? addTenantkey(formDetails.path, tenantKey)
+      : formDetails.path;
 
     const formData = {
       title: formDetails.title,
       display: formDetails.display,
-      path: formDetails.path,
+      path: updatepath,
       submissionAccess: accessDetails.submissionAccess,
       access: accessDetails.formAccess,
     };

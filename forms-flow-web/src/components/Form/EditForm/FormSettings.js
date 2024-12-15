@@ -116,18 +116,13 @@ const FormSettings = forwardRef((props, ref) => {
     }
   };
 
-  const removeTenantKeyFromPath = (value, tenantkey) => {
-    const tenantKeyCheck = value.match(`${tenantkey}-`);
-    if (
-      tenantKeyCheck &&
-      tenantKeyCheck.length &&
-      tenantKeyCheck[0].toLowerCase() === `${tenantkey.toLowerCase()}-`
-    ) {
-      return value.replace(`${tenantkey.toLowerCase()}-`, "");
-    } else {
-      return value;
-    }
+  const removeTenantKeyFromPath = (value, tenantKey) => {
+    const tenantKeyCheck = value.match(`${tenantKey}-`)?.[0];
+    return tenantKeyCheck?.toLowerCase() === `${tenantKey.toLowerCase()}-`
+      ? value.replace(`${tenantKey.toLowerCase()}-`, "")
+      : value;
   };
+  
     /* ------------------------- validating form name and path ------------------------ */
 
   const validateField = async (field, value) => {

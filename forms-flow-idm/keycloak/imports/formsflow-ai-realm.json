@@ -123,7 +123,7 @@
         },
         {
           "name": "create_bpmn_flows",
-          "description": "Access to BPMN worflows",
+          "description": "Access to BPMN workflows",
           "composite": false,
           "clientRole": true,
           "attributes": {}

@@ -59,7 +59,7 @@ import NewVersionModal from "../../Modals/NewVersionModal";
 import { currentFormReducer } from "../../../modules/formReducer.js";
 import { toast } from "react-toastify";
 import userRoles from "../../../constants/permissions.js";
-import { generateUniqueId, isFormComponentsChanged } from "../../../helper/helper.js";
+import { generateUniqueId, isFormComponentsChanged, addTenantkey } from "../../../helper/helper.js";
 import { useMutation } from "react-query";
 import NavigateBlocker from "../../CustomComponents/NavigateBlocker";
 import { setProcessData, setFormPreviosData, setFormProcessesData } from "../../../actions/processActions.js";
@@ -522,11 +522,14 @@ const EditComponent = () => {
             : [],
       },
     };
+    const updatepath = MULTITENANCY_ENABLED
+      ? addTenantkey(formDetails.path, tenantKey)
+      : formDetails.path;
 
     const formData = {
       title: formDetails.title,
       display: formDetails.display,
-      path: formDetails.path,
+      path: updatepath,
       submissionAccess: accessDetails.submissionAccess,
       access: accessDetails.formAccess,
     };

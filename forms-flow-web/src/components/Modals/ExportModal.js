@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import Modal from "react-bootstrap/Modal";
-import { CloseIcon, CustomButton, FailedIcon } from "@formsflow/components";
+import { CloseIcon, FailedIcon } from "@formsflow/components";
 import ProgressBar from "react-bootstrap/ProgressBar";
 import { Translation } from "react-i18next";
 import { getFormExport } from "../../apiManager/services/FormServices";
@@ -127,33 +127,6 @@ const ExportModal = React.memo(({ showExportModal, onClose, mapperId, formTitle 
           </div>
         )}
       </Modal.Body>
-      <Modal.Footer className="d-flex justify-content-start flex-wrap">
-        {isError && ( // Only show buttons if there's an error
-          <>
-            <CustomButton
-              variant="primary"
-              size="md"
-              label={<Translation>{(t) => t("Try Again")}</Translation>}
-              onClick={() => {
-                setProgress(0); // Reset progress before retrying
-                exportForm();
-              }}
-              className="mb-2"
-              dataTestid="try-again"
-              ariaLabel="Try Again"
-            />
-            <CustomButton
-              variant="secondary"
-              size="md"
-              label={<Translation>{(t) => t("Cancel")}</Translation>}
-              onClick={onClose}
-              className="mb-2"
-              dataTestid="cancel"
-              ariaLabel="Cancel"
-            />
-          </>
-        )}
-      </Modal.Footer>
     </Modal>
   );
 });

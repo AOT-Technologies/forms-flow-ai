@@ -65,9 +65,10 @@ const NewVersionModal = React.memo(({ show, title, createNewVersion, onClose,
                     <label className="form-check-label" htmlFor="acceptVersion">
                         Will be saved as a Version {newVersion}
                     </label>
+                    <span className="dashed-line"></span>
                     <div className="d-flex align-items-center">
                         <input
-                            className="form-check-input"
+                            className="form-check-input mt-0"
                             type="checkbox"
                             id="acceptVersion"
                             checked={acceptState.acceptVersion}
@@ -82,9 +83,10 @@ const NewVersionModal = React.memo(({ show, title, createNewVersion, onClose,
                     <label className="form-check-label" htmlFor="affectSubmissions">
                         You will not be able to affect previous submissions after
                     </label>
+                    <span className="dashed-line"></span>
                     <div className="d-flex align-items-center">
                         <input
-                            className="form-check-input"
+                            className="form-check-input mt-0"
                             type="checkbox"
                             id="affectSubmissions"
                             checked={acceptState.affectSubmissions}
@@ -99,9 +101,10 @@ const NewVersionModal = React.memo(({ show, title, createNewVersion, onClose,
                     <label className="form-check-label" htmlFor="cannotUndo">
                         This action cannot be undone
                     </label>
+                    <span className="dashed-line"></span>
                     <div className="d-flex align-items-center">
                         <input
-                            className="form-check-input"
+                            className="form-check-input mt-0"
                             type="checkbox"
                             id="cannotUndo"
                             checked={acceptState.cannotUndo}

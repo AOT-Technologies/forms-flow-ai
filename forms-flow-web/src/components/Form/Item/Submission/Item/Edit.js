@@ -120,7 +120,7 @@ const Edit = React.memo((props) => {
         text={t("Loading...")}
         className="col-12"
       >
-        <div className="ms-4 me-4">
+        <div className="ms-4 me-4 wizard-tab">
           <Form
             form={form}
             submission={isFormSubmissionLoading ? updatedSubmissionData : updatedSubmission}

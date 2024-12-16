@@ -397,7 +397,7 @@ const View = React.memo((props) => {
         text={<Translation>{(t) => t("Loading...")}</Translation>}
         className="col-12"
       >
-  <div className="ms-4 me-4">
+  <div className="ms-4 me-4 wizard-tab">
     {(isPublic || (formStatus === "active") ) ?  (
       <Form
         form={form}

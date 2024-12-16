@@ -220,3 +220,9 @@ def default_flow_xml_data(name="Defaultflow"):
             </bpmndi:BPMNPlane>
         </bpmndi:BPMNDiagram>
     </bpmn:definitions>"""
+
+
+default_task_variables = [
+    {"key": "applicationId", "label": "Submission Id", "type": "hidden"},
+    {"key": "applicationStatus", "label": "Submission Status", "type": "hidden"},
+]

@@ -62,7 +62,7 @@ import userRoles from "../../../constants/permissions.js";
 import { generateUniqueId, isFormComponentsChanged } from "../../../helper/helper.js";
 import { useMutation } from "react-query";
 import NavigateBlocker from "../../CustomComponents/NavigateBlocker";
-import { setProcessData } from "../../../actions/processActions.js";
+import { setProcessData, setFormPreviosData, setFormProcessesData } from "../../../actions/processActions.js";
 
 // constant values
 const DUPLICATE = "DUPLICATE";
@@ -232,20 +232,23 @@ const EditComponent = () => {
     setFormSubmitted(false);
     const formExtracted = await extractForm(fileContent);
     const { data: responseData } = res;
-    if (!responseData) return;
-    // Set file items based on response data
-    setFileItems({
-      workflow: extractVersionInfo(responseData.workflow),
-      form: extractVersionInfo(responseData.form),
-    });
+    if (!responseData || !formExtracted) return;
 
-    // Handle actions based on extracted form and action type
-    if (formExtracted) {
-      if (action === "validate") {
-        setFormTitle(formExtracted.forms[0]?.formTitle || "");
-      } else if (responseData.formId) {
-        updateLayout(formExtracted);
+    /* -------------------------- if action is validate ------------------------- */
+    if (action === "validate") {
+      setFileItems({
+        workflow: extractVersionInfo(responseData.workflow),
+        form: extractVersionInfo(responseData.form),
+      });
+      setFormTitle(formExtracted.forms[0]?.formTitle || ""); 
+    }else{
+      /* ------------------------- if the form id changed ------------------------- */
+      const formId = responseData.mapper?.formId;
+      if(formId && formData._id != formId){
+        dispatch(push(`${redirectUrl}formflow/${formId}/edit/`));
+        return;
       }
+      updateLayout({formExtracted, responseData});
     }
   };
 
@@ -268,16 +271,37 @@ const EditComponent = () => {
 
 
 
-  const updateLayout = (formExtracted) => {
-    const { forms, xml } = formExtracted || {};
-    const extractedFormComponents = forms[0]?.components || forms[0]?.content?.components;
-    dispatchFormAction({
-      type: "components",
-      value: _cloneDeep(extractedFormComponents),
-    });
-    if (xml) {
-      flowRef.current?.handleImport(xml);
+  const updateLayout = ({formExtracted, responseData}) => {
+    /* --------- the response data will contain' mapper and process' key -------- */
+    const { forms } = formExtracted || {};
+    const { process, mapper } = responseData;
+    const isNotFormPlusWorkflow = !forms[0]?.content;
+    const extractedForm = forms[0]?.content || forms[0];
+
+    /* if form changed then the response contain mapper key and will update
+    1. formio's form data
+    2. mapper data
+    3. current form data */
+    if(mapper && extractedForm){
+      if(isNotFormPlusWorkflow){
+        dispatchFormAction({
+          type: "components",
+          value: _cloneDeep(extractedForm.components),
+        });
+      }else{ 
+      const currentFormDataWithImportedData = {...formData, ...extractedForm};
+      dispatch(setFormSuccessData("form", currentFormDataWithImportedData));
+      dispatch(setFormPreviosData(mapper));
+      dispatch(setFormProcessesData(mapper));
+      dispatchFormAction({type:"replaceForm",value: currentFormDataWithImportedData});
+      }
     }
+
+    /* ---------- if workflow changed then need to updated process dat ---------- */
+    if (process) {
+      dispatch(setProcessData(process));
+    }
+
     handleCloseSelectedAction();
   };
 
@@ -427,7 +451,7 @@ const EditComponent = () => {
   const fetchProcessDetails = async (processListData) => {
     //for the migration, if the diagram is not available in the db, it will fetch from camunda using maper id.
     const mapperId = !processListData.isMigrated ? processListData.id : null;
-    const response = await getProcessDetails(processListData.processKey, mapperId);
+    const response = await getProcessDetails({processKey:processListData.processKey, mapperId});
     dispatch(setProcessData(response.data));
   };
 
@@ -1135,7 +1159,8 @@ const EditComponent = () => {
         nameLabel={t("New Form Name")}
         descriptionLabel={t("New Form Description")}
         showBuildForm={selectedAction === DUPLICATE}
-        isLoading={formSubmitted || validationLoading}
+        isSaveBtnLoading={formSubmitted}
+        isFormNameValidating={validationLoading}
         onClose={handleCloseSelectedAction}
         primaryBtnLabel={t("Save and Edit form")}
         primaryBtnAction={handlePublishAsNewVersion}

@@ -11,17 +11,15 @@ import {
 import { Form } from "@aot-technologies/formio-react";
 import PropTypes from "prop-types";
 import { useDispatch, useSelector } from "react-redux";
-import utils from "@aot-technologies/formiojs/lib/utils";
-import { saveFormProcessMapperPut } from "../../apiManager/services/processServices";
-
+import  { saveFormProcessMapperPut } from "../../apiManager/services/processServices";
 //TBD in case of Bundle form display
 const PillList = React.memo(({ alternativeLabels, onRemove }) => {
   const { t } = useTranslation();
   return (
     <div className="pill-container">
-      {Object.entries(alternativeLabels).length > 0 ? (
-        Object.entries(alternativeLabels).map(
-          ([key, { altVariable, labelOfComponent }]) => (
+      {Object.values(alternativeLabels).length ? (
+        Object.values(alternativeLabels).map(
+          ({key, altVariable, labelOfComponent }) => (
             <CustomPill
               key={key}
               label={altVariable || labelOfComponent}
@@ -48,6 +46,7 @@ PillList.propTypes = {
   alternativeLabels: PropTypes.object.isRequired,
   onRemove: PropTypes.func.isRequired,
 };
+
 const FormComponent = React.memo(
   ({
     form,
@@ -276,40 +275,19 @@ FormComponent.propTypes = {
   setSelectedComponent: PropTypes.func.isRequired,
 };
 const TaskVariableModal = React.memo(
-  ({
-    showTaskVarModal,
-    isPublished = false,
-    onClose,
-    form,
-    layoutNotsaved,
-    handleCurrentLayout,
-  }) => {
+  ({ showTaskVarModal, isPublished = false ,onClose,layoutNotsaved,handleCurrentLayout }) => {
     const { t } = useTranslation();
     const dispatch = useDispatch();
     const formProcessList = useSelector(
       (state) => state.process.formProcessList
     );
+
+    const form = useSelector((state) => state.form?.form || {});
     const [alternativeLabels, setAlternativeLabels] = useState({});
 
     useEffect(() => {
-      //filtering applicationId and applicationStatus components from form
-      const filteredComponents = Object.values(
-        utils.flattenComponents(form.components)
-      ).filter(
-        ({ key }) => key === "applicationStatus" || key === "applicationId"
-      );
 
-      const updatedLabels = {};
-      // Add filtered components to updatedLabels
-      filteredComponents.forEach(({ key, label, type }) => {
-        updatedLabels[key] = {
-          key,
-          altVariable: label,
-          labelOfComponent: label,
-          type: type,
-        };
-      });
-
+       const updatedLabels = {};
       // Add taskVariables to updatedLabels
       formProcessList?.taskVariables?.forEach(({ key, label, type }) => {
         updatedLabels[key] = {
@@ -321,12 +299,14 @@ const TaskVariableModal = React.memo(
       });
       setAlternativeLabels(updatedLabels);
     }, [formProcessList]);
+
     const [selectedComponent, setSelectedComponent] = useState({
       key: null,
       type: "",
       label: "",
       altVariable: "",
     });
+
     const removeSelectedVariable = useCallback((key) => {
       setSelectedComponent((prev) => ({
         ...prev,
@@ -447,8 +427,8 @@ const TaskVariableModal = React.memo(
               <div className="info-pill-container">
                 <CustomInfo
                   heading="Note"
-                  content="To use variables in the flow, as well as sorting by them in 
-                  the submissions and tasks you need to specify which variables you want to import from the layout. Variables get imported into the system at the time of the submission, if the variables that are needed 
+                  content="To use variables in the flow, as well as sorting by them in
+                  the submissions and tasks you need to specify which variables you want to import from the layout. Variables get imported into the system at the time of the submission, if the variables that are needed
                  are not selected prior to the form submission THEY WILL NOT BE AVAILABLE in the flow, submissions, and tasks."
                 />
                 <div>
@@ -485,7 +465,6 @@ const TaskVariableModal = React.memo(
 TaskVariableModal.propTypes = {
   showTaskVarModal: PropTypes.bool.isRequired,
   onClose: PropTypes.func.isRequired,
-  form: PropTypes.object.isRequired,
   isPublished: PropTypes.bool.isRequired,
   layoutNotsaved: PropTypes.bool.isRequired,
   handleCurrentLayout: PropTypes.func.isRequired,

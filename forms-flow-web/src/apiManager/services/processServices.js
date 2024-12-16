@@ -295,7 +295,7 @@ export const getFormProcesses = (formId, ...rest) => {
   };
 };
 
-export const getProcessDetails = (processKey, tenant_key = null, mapperId = null) => {
+export const getProcessDetails = ({processKey, tenant_key = null, mapperId = null}) => {
   const api = API.GET_PROCESS_XML;
   let url = replaceUrl(api, "<process_key>", processKey);
 
@@ -506,7 +506,7 @@ export const fetchDiagram = (
 
   const done = rest.length ? rest[0] : () => { };
   return (dispatch) => {
-    getProcessDetails(process_key,tenant_key)
+    getProcessDetails({processKey:process_key,tenant_key})
       .then((res) => {
         if (res.data) {
           dispatch(

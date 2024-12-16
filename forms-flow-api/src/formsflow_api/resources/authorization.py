@@ -172,11 +172,18 @@ class AuthorizationDetail(Resource):
 
         Fetch Authorization details by resource id based on authorization type.
         """
-        response = auth_service.get_resource_by_id(
-            auth_type.upper(),
-            resource_id,
-            bool(auth.has_role([CREATE_DESIGNS])),
-        )
+        if auth_type.upper() == "APPLICATION":
+            response = auth_service.get_application_resource_by_id(
+                auth_type=auth_type.upper(),
+                resource_id=resource_id,
+                form_id=request.args.get("formId"),
+            )
+        else:
+            response = auth_service.get_resource_by_id(
+                auth_type.upper(),
+                resource_id,
+                bool(auth.has_role([CREATE_DESIGNS])),
+            )
         if response:
             return (
                 response,

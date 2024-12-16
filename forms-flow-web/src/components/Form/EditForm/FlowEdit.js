@@ -368,7 +368,6 @@ const FlowEdit = forwardRef(({ isPublished = false, CategoryType,
         />
         {showTaskVarModal && (
           <TaskVariableModal
-
             showTaskVarModal={showTaskVarModal}
             onClose={CloseTaskVarModal}
             isPublished={isPublished}

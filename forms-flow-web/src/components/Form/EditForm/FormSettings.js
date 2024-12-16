@@ -16,7 +16,7 @@ import {
 
 import MultiSelectComponent from "../../CustomComponents/MultiSelect";
 import { MULTITENANCY_ENABLED } from "../../../constants/constants";
-import { addTenantkey } from "../../../helper/helper";
+import { addTenantkey, addTenantkeyAsSuffix,removeTenantKeyFromPath } from "../../../helper/helper";
 import { useDispatch, useSelector } from "react-redux";
 import { getUserRoles } from "../../../apiManager/services/authorizationService";
 import { useTranslation } from "react-i18next";
@@ -108,21 +108,6 @@ const FormSettings = forwardRef((props, ref) => {
     }
   },[MULTITENANCY_ENABLED]);
 
-  const addTenantkeyAsSuffix = (value, tenantkey) => {
-    if (value.toLowerCase().endsWith(`-${tenantkey}`)) {
-      return value.toLowerCase();
-    } else {
-      return `${value.toLowerCase()}${tenantkey}-`;
-    }
-  };
-
-  const removeTenantKeyFromPath = (value, tenantKey) => {
-    const tenantKeyCheck = value.match(`${tenantKey}-`)?.[0];
-    return tenantKeyCheck?.toLowerCase() === `${tenantKey.toLowerCase()}-`
-      ? value.replace(`${tenantKey.toLowerCase()}-`, "")
-      : value;
-  };
-  
     /* ------------------------- validating form name and path ------------------------ */
 
   const validateField = async (field, value) => {

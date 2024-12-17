@@ -41,6 +41,7 @@ const TaskHeaderListView = React.memo(({task,taskId,groupView = true}) => {
 
   const dispatch = useDispatch();
   const { t } = useTranslation();
+  const RETRY_DELAY_TIME = 2000;
 
   useEffect(() => {
     const followUp = task?.followUp ? new Date(task?.followUp) : null;
@@ -70,11 +71,7 @@ const TaskHeaderListView = React.memo(({task,taskId,groupView = true}) => {
     // Above code commented and added below 3 lines for refreshing the tasks on each update operation without checking conditions.
     if(err)
       console.log('Error in task updation-',err);
-    setTimeout(() => {
-      dispatch(getBPMTaskDetail(taskId));
-      dispatch(fetchServiceTaskList(reqData,null,firstResult));
-      dispatch(setBPMTaskDetailUpdating(false));
-    },2000);
+    retryTaskUpdate(taskId, reqData, firstResult, dispatch);
   };
 
   const onClaim = () => {
@@ -153,6 +150,15 @@ const TaskHeaderListView = React.memo(({task,taskId,groupView = true}) => {
 
   const getGroups = (groups) => {
     return groups?.map((group) => group.groupId).join(", ");
+  };
+
+  // Utility function for retry logic
+  const retryTaskUpdate = (taskId, reqData, firstResult, dispatch) => {
+    setTimeout(() => {
+      dispatch(getBPMTaskDetail(taskId));
+      dispatch(fetchServiceTaskList(reqData, null, firstResult));
+      dispatch(setBPMTaskDetailUpdating(false));
+    }, RETRY_DELAY_TIME);
   };
 
   return (

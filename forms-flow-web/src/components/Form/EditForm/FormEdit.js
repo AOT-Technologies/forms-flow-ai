@@ -980,7 +980,9 @@ const EditComponent = () => {
                 <div className="d-flex align-items-center justify-content-between">
                   <BackToPrevIcon onClick={backToForm} />
                   <div className="mx-4 editor-header-text">
-                    {formData.title}
+                    {formData.title.length > 90
+                    ? `${formData.title.slice(0, 90)}...` 
+                    : formData.title}
                   </div>
                   <span
                     data-testid={`form-status-${form._id}`}

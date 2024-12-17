@@ -89,7 +89,7 @@ const SubFlow = React.memo(() => {
         }
       )
     );
-  }, [dispatch, activePage, limit, search, tenantKey, currentBpmnSort]);
+  }, [dispatch, activePage, limit, searchText, tenantKey, currentBpmnSort]);
 
   const handleSort = (key) => {
     setCurrentBpmnSort((prevConfig) => ({

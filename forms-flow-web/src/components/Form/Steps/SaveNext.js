@@ -75,7 +75,7 @@ const SaveNext = React.memo(
           </Modal.Header>
           <Modal.Body>
             {t(
-              "Changing the form workflow will not affect the existing submissions. " +
+              "Changing the flow will not affect the existing submissions. " +
               "It will only update in the newly created submissions. " +
               "Press Save Changes to continue or cancel the changes."
             )}

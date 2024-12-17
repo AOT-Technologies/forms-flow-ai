@@ -206,7 +206,7 @@ const WorkFlow = React.memo(
                     href="#"
                     data-testid="form-workflow-tab"
                   >
-                    {t("Associate Workflow")}
+                    {t("Associate Flow")}
                   </a>
                 </li>
                 <li className="nav-item">
@@ -232,7 +232,7 @@ const WorkFlow = React.memo(
                 htmlFor="select-workflow"
                 className="fontsize-16  col-md-6"
               >
-                {t("Please select from one of the following workflows.")}
+                {t("Please select from one of the following Flows.")}
               </label>
               <Select
                 className="mb-3 col-md-6"

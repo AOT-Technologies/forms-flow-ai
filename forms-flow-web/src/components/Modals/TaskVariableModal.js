@@ -20,8 +20,9 @@ import {
 const PillList = React.memo(({ alternativeLabels, onRemove }) => {
   const { t } = useTranslation();
   // Filter out applicationId and applicationStatus
+  const ignoreKeywords = new Set(["applicationId", "applicationStatus"]);
   const filteredVariablePills = Object.values(alternativeLabels).filter(
-    ({ key }) => key !== "applicationId" && key !== "applicationStatus"
+    ({ key }) => !ignoreKeywords.has(key)
   );
   return (
     <div className="pill-container">

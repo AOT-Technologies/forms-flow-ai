@@ -1093,7 +1093,7 @@ const EditComponent = () => {
                   </div>
                 </Card.Header>
                 <Card.Body>
-                  <div className="form-builder">
+                  <div className="form-builder custom-scroll">
                     {!createDesigns ? (
                       <div className="px-4 pt-4 form-preview">
                         <Form

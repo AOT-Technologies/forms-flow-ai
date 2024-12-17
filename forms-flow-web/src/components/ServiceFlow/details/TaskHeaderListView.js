@@ -20,7 +20,7 @@ import {
 } from "../../../apiManager/services/bpmTaskServices";
 import { setBPMTaskDetailUpdating } from "../../../actions/bpmTaskActions";
 import UserSelectionDebounce from "./UserSelectionDebounce";
-import SocketIOService from "../../../services/SocketIOService";
+// import SocketIOService from "../../../services/SocketIOService";
 import { useTranslation } from "react-i18next";
 import  userRoles   from "../../../constants/permissions";
 
@@ -29,7 +29,7 @@ const TaskHeaderListView = React.memo(({task,taskId,groupView = true}) => {
     (state) => state.user?.userDetail?.preferred_username || ""
   );
   const taskGroups = useSelector((state) => state.bpmTasks.taskGroups);
-  const selectedFilter = useSelector((state) => state.bpmTasks.selectedFilter);
+  // const selectedFilter = useSelector((state) => state.bpmTasks.selectedFilter);
   const reqData = useSelector((state) => state.bpmTasks.listReqParams);
   const vissibleAttributes = useSelector((state) => state.bpmTasks.vissibleAttributes);
   const firstResult = useSelector((state) => state.bpmTasks.firstResult);
@@ -53,20 +53,28 @@ const TaskHeaderListView = React.memo(({task,taskId,groupView = true}) => {
   }, [task?.due]);
 
   const updateBpmTasksAndDetails = (err) =>{
-    if (!err) {
-      if (!SocketIOService.isConnected()) {
-        if (selectedFilter) {
-          dispatch(getBPMTaskDetail(taskId));
-          dispatch(
-            fetchServiceTaskList(reqData,null,firstResult)
-          );
-        } else {
-          dispatch(setBPMTaskDetailUpdating(false));
-        }
-      }
-    } else {
+    // if (!err) {
+    //   if (!SocketIOService.isConnected()) {
+    //     if (selectedFilter) {
+    //       dispatch(getBPMTaskDetail(taskId));
+    //       dispatch(
+    //         fetchServiceTaskList(reqData,null,firstResult)
+    //       );
+    //     } else {
+    //       dispatch(setBPMTaskDetailUpdating(false));
+    //     }
+    //   }
+    // } else {
+    //   dispatch(setBPMTaskDetailUpdating(false));
+    // }
+    // Above code commented and added below 3 lines for refreshing the tasks on each update operation without checking conditions.
+    if(err)
+      console.log('Error in task updation-',err);
+    setTimeout(() => {
+      dispatch(getBPMTaskDetail(taskId));
+      dispatch(fetchServiceTaskList(reqData,null,firstResult));
       dispatch(setBPMTaskDetailUpdating(false));
-    }
+    },2000);
   };
 
   const onClaim = () => {

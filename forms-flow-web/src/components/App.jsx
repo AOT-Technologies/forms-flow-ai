@@ -1,4 +1,4 @@
-import React from "react";
+import React,{useState, useEffect} from "react";
 import PropTypes from "prop-types";
 import { Provider } from "react-redux";
 import { ConnectedRouter } from "connected-react-router";
@@ -14,8 +14,15 @@ import {
 const queryClient = new QueryClient();
 const App = React.memo((props) => {
   const { store, history, publish, subscribe, getKcInstance } = props;
+  const [isPreviewRoute,setIsPreviewRoute] = useState(false);
+  useEffect(()=> {
+    const location = window.location.pathname;
+    if(location.includes("view-edit")){
+      setIsPreviewRoute(true);
+    }
+  },[]);
   return (
-    <div className="main-container">
+    <div className={`main-container ${isPreviewRoute ? 'margin-0' : ''}`}>
       <Helmet>
         {KEYCLOAK_URL ? <link rel="preconnect" href={KEYCLOAK_URL} /> : null}
       </Helmet>

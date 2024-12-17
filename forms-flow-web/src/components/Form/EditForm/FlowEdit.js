@@ -10,7 +10,7 @@ import {
   HistoryIcon,
   ConfirmModal,
   HistoryModal,
-  CurlyBracketsIcon
+  CurlyBracketsIcon,
 } from "@formsflow/components";
 import { Card } from "react-bootstrap";
 import { useTranslation } from "react-i18next";
@@ -39,7 +39,7 @@ import TaskVariableModal from "../../Modals/TaskVariableModal.js";
 
 const FlowEdit = forwardRef(({ isPublished = false, CategoryType,
   setWorkflowIsChanged, migration, setMigration, redirectUrl,
-  isMigrated = true, mapperId }, ref) => {
+  isMigrated = true, mapperId,layoutNotsaved, handleCurrentLayout }, ref) => {
   const { t } = useTranslation();
   const dispatch = useDispatch();
   const bpmnRef = useRef();
@@ -52,7 +52,6 @@ const FlowEdit = forwardRef(({ isPublished = false, CategoryType,
   const { createDesigns } = userRoles();
   const [showTaskVarModal, setShowTaskVarModal] = useState(false);
   const [isWorkflowChanged, setIsWorkflowChanged] = useState(false);
-  const formData = useSelector((state) => state.form?.form || {});
   const [isMigrationChecked, setIsMigrationChecked] = useState(false);
   const [showMigrationModal, setShowMigrationModal] = useState(false);
   const [isMigraionLoading, setIsMigraionLoading] = useState(false);
@@ -67,33 +66,34 @@ const FlowEdit = forwardRef(({ isPublished = false, CategoryType,
       getProcessHistory({ parentProcessKey, page, limit }) // this is api calling function and mutate function accepting some parameter and passing to the apicalling function
   );
 
-  /* --------- fetch a perticular history when click the revert button -------- */
-  const {
-    data: { data: historyData } = {},
-    mutate: fetchHistoryData,
-    isLoading: historyLoading,
-    // isError: historyDataError,
-  } = useMutation((processId) => fetchRevertingProcessData(processId), {
-    onSuccess: () => {
-      setIsReverted(true);
-      enableWorkflowChange();
-    },
-  });
+    /* --------- fetch a perticular history when click the revert button -------- */
+    const {
+      data: { data: historyData } = {},
+      mutate: fetchHistoryData,
+      isLoading: historyLoading,
+      // isError: historyDataError,
+    } = useMutation((processId) => fetchRevertingProcessData(processId), {
+      onSuccess: () => {
+        setIsReverted(true);
+        enableWorkflowChange();
+      },
+    });
 
-  const handleDiscardModal = () => setShowDiscardModal(!showDiscardModal);
-  const handleToggleHistoryModal = () => setShowHistoryModal(!showHistoryModal);
+    const handleDiscardModal = () => setShowDiscardModal(!showDiscardModal);
+    const handleToggleHistoryModal = () =>
+      setShowHistoryModal(!showHistoryModal);
 
-  const enableWorkflowChange = () => {
-    setIsWorkflowChanged(true);
-    setWorkflowIsChanged(true); // this function passed from parent
-  };
+    const enableWorkflowChange = () => {
+      setIsWorkflowChanged(true);
+      setWorkflowIsChanged(true); // this function passed from parent
+    };
 
-  const disableWorkflowChange = () => {
-    setIsWorkflowChanged(false);
-    setWorkflowIsChanged(false); // this function passed from parent
-  };
+    const disableWorkflowChange = () => {
+      setIsWorkflowChanged(false);
+      setWorkflowIsChanged(false); // this function passed from parent
+    };
 
-  useEffect(() => {
+    useEffect(() => {
     if (migration) {
       setShowMigrationModal(true);
       setMigration(false);
@@ -117,31 +117,29 @@ const FlowEdit = forwardRef(({ isPublished = false, CategoryType,
         setIsMigraionLoading(false);
         setShowMigrationModal(false);
       });
-  };
+  };//handle discard changes
+    const handleDiscardConfirm = () => {
+      if (bpmnRef.current) {
+        //import the existing process data to bpmn
+        bpmnRef.current?.handleImport(processData?.processData);
+        isReverted && setIsReverted(!isReverted); //once it reverted then need to make it false
+        disableWorkflowChange();
+        handleDiscardModal();
+      }
+    };
 
-  //handle discard changes
-  const handleDiscardConfirm = () => {
-    if (bpmnRef.current) {
-      //import the existing process data to bpmn
-      bpmnRef.current?.handleImport(processData?.processData);
-      isReverted && setIsReverted(!isReverted); //once it reverted then need to make it false
-      disableWorkflowChange();
-      handleDiscardModal();
-    }
-  };
+    const handleProcessHistory = () => {
+      handleToggleHistoryModal();
+      fetchHistories({
+        parentProcessKey: processData.parentProcessKey, // passing process key to get histories data
+        page: 1,
+        limit: 4,
+      });
+    };
 
-  const handleProcessHistory = () => {
-    handleToggleHistoryModal();
-    fetchHistories({
-      parentProcessKey: processData.parentProcessKey, // passing process key to get histories data
-      page: 1,
-      limit: 4,
-    });
-  };
-
-  const loadMoreBtnAction = () => {
-    fetchHistories({ parentProcessKey: processData.parentProcessKey });
-  };
+    const loadMoreBtnAction = () => {
+      fetchHistories({ parentProcessKey: processData.parentProcessKey });
+    };
   const handleSaveFlowClick = () => {
     //On clicking the save flow it checks if the current flow has already been migrated, if not, it tries to migrate first.
     if (shouldShowMigrationModal()) {
@@ -154,161 +152,160 @@ const FlowEdit = forwardRef(({ isPublished = false, CategoryType,
     return !isMigrated;
   };
 
-  const saveFlow = async (showToast = true) => {
-    try {
-      const bpmnModeler = bpmnRef.current?.getBpmnModeler();
-      const xml = await createXMLFromModeler(bpmnModeler);
-      if (!validateProcess(xml, lintErrors, t)) {
-        return;
-      }
-      //if xml is same as existing process data, no need to update
-      const isEqual = await compareXML(processData?.processData, xml);
+    const saveFlow = async (showToast = true) => {
+      try {
+        const bpmnModeler = bpmnRef.current?.getBpmnModeler();
+        const xml = await createXMLFromModeler(bpmnModeler);
+        if (!validateProcess(xml, lintErrors, t)) {
+          return;
+        }
+        //if xml is same as existing process data, no need to update
+        const isEqual = await compareXML(processData?.processData, xml);
 
-      if (isEqual && !isReverted) {
-        showToast && toast.success(t("Process updated successfully"));
+        if (isEqual && !isReverted) {
+          showToast && toast.success(t("Process updated successfully"));
+          disableWorkflowChange();
+          return;
+        }
+
+        setSavingFlow(true);
+        const response = await updateProcess({
+          type: "BPMN",
+          id: processData.id,
+          data: xml,
+        });
+        dispatch(setProcessData(response.data));
         disableWorkflowChange();
-        return;
+        isReverted && setIsReverted(!isReverted); //if it already reverted the need to make it false
+        showToast && toast.success(t("Process updated successfully"));
+      } catch (error) {
+        toast.error(t("Failed to update process"));
+      } finally {
+        setSavingFlow(false);
       }
+    };
 
-      setSavingFlow(true);
-      const response = await updateProcess({
-        type: "BPMN",
-        id: processData.id,
-        data: xml,
-      });
-      dispatch(setProcessData(response.data));
-      disableWorkflowChange();
-      isReverted && setIsReverted(!isReverted); //if it already reverted the need to make it false
-      showToast && toast.success(t("Process updated successfully"));
-    } catch (error) {
-      toast.error(t("Failed to update process"));
-    } finally {
-      setSavingFlow(false);
-    }
-  };
+    useImperativeHandle(ref, () => ({
+      saveFlow,
+      handleImport: (xml) => {
+        bpmnRef.current?.handleImport(xml);
+      },
+    }));
+    const handlePreviewAndVariables = () => {
+      setShowTaskVarModal(true);
+    };
+    const CloseTaskVarModal = () => {
+      setShowTaskVarModal(false);
+    };
 
-  useImperativeHandle(ref, () => ({
-    saveFlow,
-    handleImport: (xml) => { bpmnRef.current?.handleImport(xml); }
-  }));
-  const handlePreviewAndVariables = () => {
-    setShowTaskVarModal(true);
-  };
-  const CloseTaskVarModal = () => {
-    setShowTaskVarModal(false);
-  };
-
-  const handleCloseMigration = () => {
+    const handleCloseMigration = () => {
     setShowMigrationModal(false);
-  };
-
-  return (
-    <>
-      <Card>
-        <ConfirmModal
-          show={showDiscardModal}
-          title={t(`Discard Flow Changes?`)}
-          message={t(
-            "Are you sure you want to discard all unsaved changes to the flow of the form?"
-          )}
-          messageSecondary={t("This action cannot be undone.")}
-          primaryBtnAction={handleDiscardConfirm}
-          onClose={handleDiscardModal}
-          primaryBtnText={t("Yes, Discard All Unsaved Changes")}
-          secondaryBtnText={t("No, Keep The Changes")}
-          secondayBtnAction={handleDiscardModal}
-          size="sm"
-        />
-        <Card.Header>
-          <div className="d-flex justify-content-between align-items-center w-100">
-            <div className="d-flex align-items-center justify-content-between">
-              <div className="mx-2 builder-header-text">{t("Flow")}</div>
+  };return (
+      <>
+        <Card>
+          <ConfirmModal
+            show={showDiscardModal}
+            title={t(`Discard Flow Changes?`)}
+            message={t(
+              "Are you sure you want to discard all unsaved changes to the flow of the form?"
+            )}
+            messageSecondary={t("This action cannot be undone.")}
+            primaryBtnAction={handleDiscardConfirm}
+            onClose={handleDiscardModal}
+            primaryBtnText={t("Yes, Discard All Unsaved Changes")}
+            secondaryBtnText={t("No, Keep The Changes")}
+            secondayBtnAction={handleDiscardModal}
+            size="sm"
+          />
+          <Card.Header>
+            <div className="d-flex justify-content-between align-items-center w-100">
+              <div className="d-flex align-items-center justify-content-between">
+                <div className="mx-2 builder-header-text">{t("Flow")}</div>
+                {createDesigns && (
+                  <div>
+                    <CustomButton
+                      variant="secondary"
+                      size="md"
+                      icon={<HistoryIcon />}
+                      label={t("History")}
+                      onClick={handleProcessHistory}
+                      dataTestid="flow-history-button-testid"
+                      ariaLabel={t("Flow History Button")}
+                    />
+                    <CustomButton
+                      variant="secondary"
+                      size="md"
+                      className="mx-2"
+                      icon={<CurlyBracketsIcon />}
+                      label={t("Variables")}
+                      onClick={() => handlePreviewAndVariables()}
+                      dataTestid="preview-and-variables-testid"
+                      ariaLabel={t("{Preview and Variables Button}")}
+                    />
+                  </div>
+                )}
+              </div>
               {createDesigns && (
                 <div>
                   <CustomButton
-                    variant="secondary"
+                    variant="primary"
                     size="md"
-                    icon={<HistoryIcon />}
-                    label={t("History")}
-                    onClick={handleProcessHistory}
-                    dataTestid="flow-history-button-testid"
-                    ariaLabel={t("Flow History Button")}
+                    className="mx-2"
+                    label={t("Save Flow")}
+                    onClick={handleSaveFlowClick}
+                    disabled={isPublished || !isWorkflowChanged}
+                    dataTestid="save-flow-layout"
+                    ariaLabel={t("Save Flow Layout")}
+                    buttonLoading={savingFlow}
                   />
                   <CustomButton
                     variant="secondary"
                     size="md"
-                    className="mx-2"
-                    icon={<CurlyBracketsIcon />}
-                    label={t("Variables")}
-                    onClick={() => handlePreviewAndVariables()}
-                    dataTestid="preview-and-variables-testid"
-                    ariaLabel={t("{Preview and Variables Button}")}
+                    label={t("Discard Changes")}
+                    onClick={handleDiscardModal}
+                    disabled={!isWorkflowChanged}
+                    dataTestid="discard-flow-changes-testid"
+                    ariaLabel={t("Discard Flow Changes")}
                   />
                 </div>
               )}
             </div>
-            {createDesigns && (
-              <div>
-                <CustomButton
-                  variant="primary"
-                  size="md"
-                  className="mx-2"
-                  label={t("Save Flow")}
-                  onClick={handleSaveFlowClick}
-                  disabled={isPublished || !isWorkflowChanged}
-                  dataTestid="save-flow-layout"
-                  ariaLabel={t("Save Flow Layout")}
-                  buttonLoading={savingFlow}
-                />
-                <CustomButton
-                  variant="secondary"
-                  size="md"
-                  label={t("Discard Changes")}
-                  onClick={handleDiscardModal}
-                  disabled={!isWorkflowChanged}
-                  dataTestid="discard-flow-changes-testid"
-                  ariaLabel={t("Discard Flow Changes")}
-                />
+          </Card.Header>
+          <Card.Body>
+            <LoadingOverlay
+              active={historyLoading}
+              spinner
+              text={t("Loading...")}
+            >
+              <div className="flow-builder">
+                {!createDesigns ? (
+                  <BPMNViewer bpmnXml={processData?.processData || null} />
+                ) : (
+                  <BpmnEditor
+                    onChange={enableWorkflowChange} //handled is workflow changed or not
+                    ref={bpmnRef}
+                    setLintErrors={setLintErrors}
+                    bpmnXml={
+                      isReverted
+                        ? historyData?.processData
+                        : processData?.processData
+                    }
+                  />
+                )}
               </div>
-            )}
-          </div>
-        </Card.Header>
-        <Card.Body>
-          <LoadingOverlay
-            active={historyLoading}
-            spinner
-            text={t("Loading...")}
-          >
-            <div className="flow-builder">
-              {!createDesigns ? (
-                <BPMNViewer bpmnXml={processData?.processData || null} />
-              ) : (
-                <BpmnEditor
-                  onChange={enableWorkflowChange} //handled is workflow changed or not
-                  ref={bpmnRef}
-                  setLintErrors={setLintErrors}
-                  bpmnXml={
-                    isReverted
-                      ? historyData?.processData
-                      : processData?.processData
-                  }
-                />
-              )}
-            </div>
-          </LoadingOverlay>
-        </Card.Body>
-      </Card>
-      {showMigrationModal && <ConfirmModal
+            </LoadingOverlay>
+          </Card.Body>
+        </Card>{showMigrationModal && <ConfirmModal
         show={showMigrationModal}
         title={t("***Migration Notice***")}
         message={
           <div>
             <div className="message-primary mb-3">
-              {t(`We have switched to a new 1-to-1 relationship structure, 
+              {t(`We have switched to a new 1-to-1 relationship structure,
               where 1 form contains both the layout (visual of the form)
-               and the flow (the actions that get executed after the 
-               form's submission). Due to this 1-to-1 relationship, 
-               each layout (previously known as "form") will have a 
+               and the flow (the actions that get executed after the
+               form's submission). Due to this 1-to-1 relationship,
+               each layout (previously known as "form") will have a
                flow associated with it, so you cannot reuse flows -
                 one flow cannot be executed by different forms.`)}
             </div>
@@ -316,9 +313,9 @@ const FlowEdit = forwardRef(({ isPublished = false, CategoryType,
               {t(`This form shares a flow with a few other forms. As this is
                not allowed under the new structure, we will permanently
                 link this flow with this form. For the other forms reusing
-                 this flow, we will automatically duplicate the flow. When 
-                 flows are duplicated, their history is not carried over. 
-                 You need to pick which form keeps the history and which 
+                 this flow, we will automatically duplicate the flow. When
+                 flows are duplicated, their history is not carried over.
+                 You need to pick which form keeps the history and which
                  forms get duplicates without history.`)}
             </div>
             <div className="message-primary mb-3">
@@ -329,7 +326,7 @@ const FlowEdit = forwardRef(({ isPublished = false, CategoryType,
             </div>
             <div className="d-flex justify-content-between align-items-center">
               <label className="message-primary">
-                {t(`This is the form that will keep the current 
+                {t(`This is the form that will keep the current
                 flow and its history.`)}
                 {" "}
               </label>
@@ -356,31 +353,32 @@ const FlowEdit = forwardRef(({ isPublished = false, CategoryType,
         buttonLoading={isMigraionLoading}
         size="sm"
       />}
-
-      <HistoryModal
-        show={showHistoryModal}
-        onClose={handleToggleHistoryModal}
-        title={t("History")}
-        loadMoreBtnText={t("Load More")}
-        revertBtnText={t("Revert To This")}
-        allHistory={historiesData?.processHistory || []}
-        loadMoreBtnAction={loadMoreBtnAction}
-        categoryType={CategoryType.WORKFLOW}
-        revertBtnAction={fetchHistoryData}
-        historyCount={historiesData?.totalCount || 0}
-        disableAllRevertButton={processData.status === "Published"}
-      />
-      {showTaskVarModal && (
-        <TaskVariableModal
-          form={formData}
-          showTaskVarModal={showTaskVarModal}
-          onClose={CloseTaskVarModal}
-          isPublished={isPublished}
+        <HistoryModal
+          show={showHistoryModal}
+          onClose={handleToggleHistoryModal}
+          title={t("History")}
+          loadMoreBtnText={t("Load More")}
+          revertBtnText={t("Revert To This")}
+          allHistory={historiesData?.processHistory || []}
+          loadMoreBtnAction={loadMoreBtnAction}
+          categoryType={CategoryType.WORKFLOW}
+          revertBtnAction={fetchHistoryData}
+          historyCount={historiesData?.totalCount || 0}
+          disableAllRevertButton={processData.status === "Published"}
         />
-      )}
-    </>
-  );
-});
+        {showTaskVarModal && (
+          <TaskVariableModal
+            showTaskVarModal={showTaskVarModal}
+            onClose={CloseTaskVarModal}
+            isPublished={isPublished}
+            layoutNotsaved={layoutNotsaved}
+            handleCurrentLayout={handleCurrentLayout}
+          />
+        )}
+      </>
+    );
+  }
+);
 
 FlowEdit.propTypes = {
   CategoryType: PropTypes.shape({
@@ -392,7 +390,9 @@ FlowEdit.propTypes = {
   setMigration: PropTypes.func,
   redirectUrl: PropTypes.string,
   isMigrated: PropTypes.bool,
-  mapperId: PropTypes.string
+  mapperId: PropTypes.string,
+  layoutNotsaved: PropTypes.bool.isRequired,
+  handleCurrentLayout: PropTypes.func
 };
 
 export default FlowEdit;

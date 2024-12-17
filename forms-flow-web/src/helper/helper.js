@@ -105,5 +105,21 @@ const isFormComponentsChanged = ({restoredFormData, restoredFormId, formData, fo
   );
 };
 
+// Adding tenantKey as suffix
+const addTenantkeyAsSuffix = (value, tenantkey) => {
+  if (value.toLowerCase().endsWith(`-${tenantkey}`)) {
+    return value.toLowerCase();
+  } else {
+    return `${value.toLowerCase()}${tenantkey}-`;
+  }
+};
+//removing Tenantkey from path if there is tenantkey ekse return the value  
+const removeTenantKeyFromPath = (value, tenantKey) => {
+  const tenantKeyCheck = value.match(`${tenantKey}-`)?.[0];
+  return tenantKeyCheck?.toLowerCase() === `${tenantKey.toLowerCase()}-`
+    ? value.replace(`${tenantKey.toLowerCase()}-`, "")
+    : value;
+};
+
 export { generateUniqueId, replaceUrl, addTenantkey, removeTenantKey, textTruncate, renderPage, 
-  filterSelectOptionByLabel, isFormComponentsChanged};
+  filterSelectOptionByLabel, isFormComponentsChanged, removeTenantKeyFromPath,addTenantkeyAsSuffix};

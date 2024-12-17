@@ -111,7 +111,7 @@ roles_to_update = [
     },
     {
         "name": "create_bpmn_flows",
-        "description": "Access to BPMN worflows",
+        "description": "Access to BPMN workflows",
         "composite": False,
         "clientRole": True,
         "attributes": {}

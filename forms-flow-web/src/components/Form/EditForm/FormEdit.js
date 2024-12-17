@@ -59,7 +59,7 @@ import NewVersionModal from "../../Modals/NewVersionModal";
 import { currentFormReducer } from "../../../modules/formReducer.js";
 import { toast } from "react-toastify";
 import userRoles from "../../../constants/permissions.js";
-import { generateUniqueId, isFormComponentsChanged } from "../../../helper/helper.js";
+import { generateUniqueId, isFormComponentsChanged, addTenantkey } from "../../../helper/helper.js";
 import { useMutation } from "react-query";
 import NavigateBlocker from "../../CustomComponents/NavigateBlocker";
 import { setProcessData, setFormPreviosData, setFormProcessesData } from "../../../actions/processActions.js";
@@ -449,9 +449,9 @@ const EditComponent = () => {
   }, [restoredFormId]);
 
   const fetchProcessDetails = async (processListData) => {
-    //for the migration, if the diagram is not available in the db, it will fetch from camunda using maper id. 
+    //for the migration, if the diagram is not available in the db, it will fetch from camunda using maper id.
     const mapperId = !processListData.isMigrated ? processListData.id : null;
-    const response = await getProcessDetails(processListData.processKey, mapperId);
+    const response = await getProcessDetails({processKey:processListData.processKey, mapperId});
     dispatch(setProcessData(response.data));
   };
 
@@ -522,11 +522,14 @@ const EditComponent = () => {
             : [],
       },
     };
+    const updatepath = MULTITENANCY_ENABLED
+      ? addTenantkey(formDetails.path, tenantKey)
+      : formDetails.path;
 
     const formData = {
       title: formDetails.title,
       display: formDetails.display,
-      path: formDetails.path,
+      path: updatepath,
       submissionAccess: accessDetails.submissionAccess,
       access: accessDetails.formAccess,
     };
@@ -811,7 +814,7 @@ const EditComponent = () => {
         return {
           title: "Confirm Publish",
           message:
-            "Publishing will save any unsaved changes and lock the entire form, including the layout and the flow. to perform any additional changes you will need to unpublish the form again.",
+            "Publishing will save any unsaved changes and lock the entire form, including the layout and the flow. To perform any additional changes you will need to unpublish the form again.",
           primaryBtnAction: confirmPublishOrUnPublish,
           secondayBtnAction: closeModal,
           primaryBtnText: "Publish This Form",
@@ -821,7 +824,7 @@ const EditComponent = () => {
         return {
           title: "Confirm Unpublish",
           message:
-            "This form is currently live. To save changes to form edits, you need ot unpublish it first. By Unpublishing this form, you will make it unavailble for new submissin to those who currently have access to it. You can republish the form after making your edits. ",
+            "This form is currently live. To save changes to form edits, you need to unpublish it first. By Unpublishing this form, you will make it unavailble for new submissin to those who currently have access to it. You can republish the form after making your edits. ",
           primaryBtnAction: confirmPublishOrUnPublish,
           secondayBtnAction: closeModal,
           primaryBtnText: "Unpublish and Edit This Form",
@@ -1132,6 +1135,9 @@ const EditComponent = () => {
                 setMigration={setMigration}
                 isMigrated = {processListData.isMigrated}
                 mapperId={processListData.id}
+                layoutNotsaved={formChangeState.changed}
+                handleCurrentLayout={handleCurrentLayout}
+
               />}
             </div>
             <button
@@ -1156,7 +1162,8 @@ const EditComponent = () => {
         nameLabel={t("New Form Name")}
         descriptionLabel={t("New Form Description")}
         showBuildForm={selectedAction === DUPLICATE}
-        isLoading={formSubmitted || validationLoading}
+        isSaveBtnLoading={formSubmitted}
+        isFormNameValidating={validationLoading}
         onClose={handleCloseSelectedAction}
         primaryBtnLabel={t("Save and Edit form")}
         primaryBtnAction={handlePublishAsNewVersion}

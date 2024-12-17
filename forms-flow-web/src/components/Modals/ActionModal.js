@@ -35,7 +35,7 @@ const ActionModal = React.memo(
               <CloseIcon onClick={onClose} color="#253DF4" />
             </div>
           </Modal.Header>
-          <Modal.Body className="modal-body custom-modal-body">
+          <Modal.Body className="action-modal-body">
             {published && (
               <CustomInfo
                 heading="Note"

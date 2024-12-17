@@ -11,20 +11,19 @@ import {
 import { Form } from "@aot-technologies/formio-react";
 import PropTypes from "prop-types";
 import { useDispatch ,useSelector } from "react-redux";
-import utils from "@aot-technologies/formiojs/lib/utils";
 import {
   saveFormProcessMapperPut,
 } from "../../apiManager/services/processServices";
 
-
+ 
 //TBD in case of Bundle form display
 const PillList = React.memo(({ alternativeLabels, onRemove }) => {
   const { t } = useTranslation();
   return (
     <div className="pill-container">
-      {Object.entries(alternativeLabels).length > 0 ? (
-        Object.entries(alternativeLabels).map(
-          ([key, { altVariable, labelOfComponent }]) => (
+      {Object.values(alternativeLabels).length ? (
+        Object.values(alternativeLabels).map(
+          ({key, altVariable, labelOfComponent }) => (
             <CustomPill
               key={key}
               label={altVariable || labelOfComponent}
@@ -46,6 +45,7 @@ PillList.propTypes = {
   alternativeLabels: PropTypes.object.isRequired,
   onRemove: PropTypes.func.isRequired,
 };
+
 const FormComponent = React.memo(
   ({ form, 
     alternativeLabels, 
@@ -270,32 +270,19 @@ FormComponent.propTypes = {
   setSelectedComponent: PropTypes.func.isRequired,
 };
 const TaskVariableModal = React.memo(
-  ({ showTaskVarModal, isPublished = false ,onClose, form }) => {
+  ({ showTaskVarModal, isPublished = false ,onClose, layoutNotsaved, handleCurrentLayout }) => {
     const { t } = useTranslation();
     const dispatch = useDispatch();
     const formProcessList = useSelector(
       (state) => state.process.formProcessList
     );
     
+    const form = useSelector((state) => state.form?.form || {});
     const [alternativeLabels, setAlternativeLabels] = useState({});
 
     useEffect(() => {
-      //filtering applicationId and applicationStatus components from form
-      const filteredComponents = Object.values(utils.flattenComponents(form.components)).filter(
-          ({ key }) => key === "applicationStatus" || key === "applicationId"
-        );
 
-      const updatedLabels = {};
-      // Add filtered components to updatedLabels
-      filteredComponents.forEach(({ key, label, type }) => {
-        updatedLabels[key] = {
-          key,
-          altVariable: label,
-          labelOfComponent: label,
-          type: type,
-        };
-      });
-
+       const updatedLabels = {};
       // Add taskVariables to updatedLabels
       formProcessList?.taskVariables?.forEach(({ key, label, type }) => {
         updatedLabels[key] = {
@@ -307,12 +294,14 @@ const TaskVariableModal = React.memo(
       });
       setAlternativeLabels(updatedLabels);
     }, [formProcessList]);
+
     const [selectedComponent, setSelectedComponent] = useState({
         key: null,
         type: "",
         label: "",
         altVariable: "",
       });
+      
     const removeSelectedVariable = useCallback((key) => {
         setSelectedComponent((prev) => ({
             ...prev,
@@ -346,6 +335,60 @@ const TaskVariableModal = React.memo(
        await dispatch(saveFormProcessMapperPut({ mapper}));
        onClose();
     };
+
+    const handleBackToLayout = () => {
+      handleClose();
+      handleCurrentLayout();
+    };
+    // Define the content for when layoutNotsaved is true
+    const layoutNotSavedContent = (
+      <>
+        <CustomButton
+          variant="primary"
+          size="md"
+          className=""
+          label={t("Back to Layout")}
+          ariaLabel="Back to Layout btn"
+          dataTestid="back-to-layout-btn"
+          onClick={handleBackToLayout}
+        />
+        <CustomButton
+          variant="secondary"
+          size="md"
+          className=""
+          label={t("Cancel")}
+          ariaLabel="Cancel btn"
+          dataTestid="cancel-btn"
+          onClick={handleClose}
+        />
+      </>
+    );
+
+    // Define the content for when layoutNotsaved is false
+    const layoutSavedContent = (
+      <>
+        <CustomButton
+          variant="primary"
+          size="md"
+          className=""
+          disabled={isPublished}
+          label={t("Save")}
+          ariaLabel="save task variable btn"
+          dataTestid="save-task-variable-btn"
+          onClick={handleSaveTaskVariable}
+        />
+        <CustomButton
+          variant="secondary"
+          size="md"
+          className=""
+          label={t("Cancel")}
+          ariaLabel="Cancel btn"
+          dataTestid="cancel-btn"
+          onClick={handleClose}
+        />
+      </>
+    );
+
     return (
       <Modal
         show={showTaskVarModal}
@@ -356,58 +399,59 @@ const TaskVariableModal = React.memo(
       >
         <Modal.Header>
           <Modal.Title>
-            {t("Variables for Flow, Submissions, and Tasks")}
+            {layoutNotsaved
+              ? t("Selecting Variables Is Not Available")
+              : t("Variables for Flow, Submissions, and Tasks")}
           </Modal.Title>
           <div className="d-flex align-items-center">
             <CloseIcon width="16.5" height="16.5" onClick={handleClose} />
           </div>
         </Modal.Header>
         <Modal.Body>
-          <div className="info-pill-container">
-            <CustomInfo
-              heading="Note"
-              content="To use variables in the flow, as well as sorting by them in 
-              the submissions and tasks you need to specify which variables you want to import from the layout. Variables get imported into the system at the time of the submission, if the variables that are needed 
-             are not selected prior to the form submission THEY WILL NOT BE AVAILABLE in the flow, submissions, and tasks."
-            />
-            <div>
-              <label className="selected-var-text">{t("Selected Variables")}</label>
-              <PillList
-                alternativeLabels={alternativeLabels}
-                onRemove={removeSelectedVariable}
+          {layoutNotsaved ? (
+            // Content when layoutNotsaved is true
+            <div className="info-pill-container">
+              <CustomInfo
+                heading={t("Note")}
+                content={t(
+                  "Variables can be accessed only when there are no pending changes to the layout. Please go back to the layout section and save or discard your changes."
+                )}
               />
             </div>
-          </div>
-          <div className="variable-container">
-            <FormComponent
-              form={form}
-              alternativeLabels={alternativeLabels}
-              setAlternativeLabels={setAlternativeLabels}
-              setSelectedComponent={setSelectedComponent}
-              selectedComponent={selectedComponent}
-            />
-          </div>
+          ) : (
+            // Content when layoutNotsaved is false
+            <>
+              <div className="info-pill-container">
+                <CustomInfo
+                  heading="Note"
+                  content="To use variables in the flow, as well as sorting by them in
+                  the submissions and tasks you need to specify which variables you want to import from the layout. Variables get imported into the system at the time of the submission, if the variables that are needed
+                 are not selected prior to the form submission THEY WILL NOT BE AVAILABLE in the flow, submissions, and tasks."
+                />
+                <div>
+                  <label className="selected-var-text">
+                    {t("Selected Variables")}
+                  </label>
+                  <PillList
+                    alternativeLabels={alternativeLabels}
+                    onRemove={removeSelectedVariable}
+                  />
+                </div>
+              </div>
+              <div className="variable-container">
+                <FormComponent
+                  form={form}
+                  alternativeLabels={alternativeLabels}
+                  setAlternativeLabels={setAlternativeLabels}
+                  setSelectedComponent={setSelectedComponent}
+                  selectedComponent={selectedComponent}
+                />
+              </div>
+            </>
+          )}
         </Modal.Body>
         <Modal.Footer>
-          <CustomButton
-            variant="primary"
-            size="md"
-            className=""
-            disabled={isPublished}
-            label={t("Save")}
-            ariaLabel="save task variable btn"
-            dataTestid="save-task-variable-btn"
-            onClick={handleSaveTaskVariable}
-          />
-          <CustomButton
-            variant="secondary"
-            size="md"
-            className=""
-            label={t("Cancel")}
-            ariaLabel="Cancel btn"
-            dataTestid="Cancel-btn"
-            onClick={handleClose}
-          />
+          {layoutNotsaved ? layoutNotSavedContent : layoutSavedContent}
         </Modal.Footer>
       </Modal>
     );
@@ -418,7 +462,8 @@ const TaskVariableModal = React.memo(
 TaskVariableModal.propTypes = {
   showTaskVarModal: PropTypes.bool.isRequired,
   onClose: PropTypes.func.isRequired,
-  form: PropTypes.object.isRequired,
   isPublished: PropTypes.bool.isRequired,
+  layoutNotsaved: PropTypes.bool.isRequired,
+  handleCurrentLayout: PropTypes.func.isRequired,
 };
 export default TaskVariableModal;

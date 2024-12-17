@@ -70,7 +70,12 @@ class AuthorizationService:
 
     @user_context
     def create_authorization(
-        self, auth_type: str, resource: Dict[str, str], is_designer: bool, **kwargs
+        self,
+        auth_type: str,
+        resource: Dict[str, str],
+        is_designer: bool,
+        edit_import_designer=False,
+        **kwargs
     ) -> Dict[str, any]:
         """Create authorization record."""
         user: UserContext = kwargs["user"]
@@ -86,9 +91,13 @@ class AuthorizationService:
         )
         roles = resource.get("roles")
         if auth:
+            # Incase of edit import, user_name default to the user who created it
+            user_name = (
+                auth.created_by if edit_import_designer else resource.get("userName")
+            )
             auth.roles = roles
             auth.resource_details = resource.get("resourceDetails")
-            auth.user_name = resource.get("userName")
+            auth.user_name = user_name
             auth.modified = datetime.datetime.now()
             auth.modified_by = user.user_name
         else:

@@ -23,7 +23,7 @@ MANAGE_DECISION_TABLES = "manage_decision_tables"
 PERMISSION_DETAILS = [
     {"name": CREATE_DESIGNS , "description": "Create Form, workflow designs", "depends_on": [ VIEW_DESIGNS ]},
     {"name": VIEW_DESIGNS , "description": "Access to design", "depends_on": []},
-    {"name": CREATE_BPMN_FLOWS , "description": "Access to BPMN worflows", "depends_on": [CREATE_DESIGNS]},
+    {"name": CREATE_BPMN_FLOWS , "description": "Access to BPMN workflows", "depends_on": [CREATE_DESIGNS]},
     {"name": MANAGE_SUBFLOWS , "description": "Access to Subflows", "depends_on": [CREATE_DESIGNS]},
     {"name": MANAGE_DECISION_TABLES , "description": "Access to Decision Tables", "depends_on": [CREATE_DESIGNS]},
     {"name": CREATE_SUBMISSIONS , "description": "Create submissions", "depends_on": []},

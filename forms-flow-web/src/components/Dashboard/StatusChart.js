@@ -43,7 +43,7 @@ const ChartForm = React.memo((props) => {
           <div className=" d-flex align-items-center justify-content-between">
           <div>
           <div className="d-flex align-items-center">
-            <span className="text-primary me-2 mt-2" >{t("Form Name")} : </span>
+            <span className="text-primary me-2" >{t("Form Name")} : </span>
             <h2 className="text-truncate mt-0" style={{ maxWidth: version > 1 ? "500px" : "700px"}}>{formName}</h2>
           </div>
           <p>
@@ -71,8 +71,8 @@ const ChartForm = React.memo((props) => {
         spinner
         text={t("Loading...")}
       >
-          <div className="white-box status-container flex-row d-md-flex flex-wrap align-items-center">
-            <div className="chart text-center">
+          <div className="white-box status-container flex-row d-md-flex flex-wrap align-items-center justify-content-around">
+            <div className="col-md-6">
               <PieChart width={400} height={400}>
                 <Pie
                   paddingAngle={1}

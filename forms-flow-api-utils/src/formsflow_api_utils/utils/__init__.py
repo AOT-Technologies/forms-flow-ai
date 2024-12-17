@@ -39,6 +39,9 @@ from .permisions import (
     MANAGE_USERS,
     MANAGE_ROLES,
     ADMIN,
+    CREATE_BPMN_FLOWS,
+    MANAGE_DECISION_TABLES,
+    MANAGE_SUBFLOWS,
 )
 from .file_log_handler import CustomTimedRotatingFileHandler, register_log_handlers
 from .format import CustomFormatter

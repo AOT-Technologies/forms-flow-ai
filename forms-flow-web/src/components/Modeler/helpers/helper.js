@@ -33,7 +33,7 @@ const createNewProcess = () => {
   const blankProcessXML = `<?xml version="1.0" encoding="UTF-8"?>
     <bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" id="${definitionID}" targetNamespace="http://bpmn.io/schema/bpmn" xmlns:modeler="http://camunda.org/schema/modeler/1.0" exporter="Camunda Modeler" exporterVersion="5.0.0" modeler:executionPlatform="Camunda Platform" modeler:executionPlatformVersion="7.17.0">
       <bpmn:process id="${processID}" isExecutable="${isExecutable}">
-        <bpmn:startEvent id="StartEvent_1" camunda:asyncAfter="true"/>
+        <bpmn:startEvent id="StartEvent_1"/>
       </bpmn:process>
       <bpmndi:BPMNDiagram id="BPMNDiagram_1">
         <bpmndi:BPMNPlane id="BPMNPlane_1" bpmnElement="${processID}">

@@ -6,6 +6,8 @@ from flask import request
 from flask_restx import Namespace, Resource, fields
 from formsflow_api_utils.utils import (
     CREATE_DESIGNS,
+    MANAGE_DECISION_TABLES,
+    MANAGE_SUBFLOWS,
     VIEW_DESIGNS,
     VIEW_SUBMISSIONS,
     VIEW_TASKS,
@@ -101,7 +103,7 @@ class ProcessDataResource(Resource):
     """Resource to create and list process data."""
 
     @staticmethod
-    @auth.has_one_of_roles([CREATE_DESIGNS])
+    @auth.has_one_of_roles([MANAGE_SUBFLOWS, MANAGE_DECISION_TABLES])
     @profiletime
     @API.doc(
         params={
@@ -179,7 +181,11 @@ class ProcessDataResource(Resource):
     )
     def get():
         """List all process data."""
-        process_list, count = ProcessService.get_all_process(request.args)
+        process_list, count = ProcessService.get_all_process(
+            request.args,
+            auth.has_role([MANAGE_SUBFLOWS]),
+            auth.has_role([MANAGE_DECISION_TABLES]),
+        )
         response = {
             "process": process_list,
             "totalCount": count,
@@ -187,7 +193,7 @@ class ProcessDataResource(Resource):
         return response, HTTPStatus.OK
 
     @staticmethod
-    @auth.has_one_of_roles([CREATE_DESIGNS])
+    @auth.has_one_of_roles([CREATE_DESIGNS, MANAGE_SUBFLOWS, MANAGE_DECISION_TABLES])
     @profiletime
     @API.doc(
         responses={
@@ -216,7 +222,7 @@ class ProcessResourceById(Resource):
     """Resource for managing process by id."""
 
     @staticmethod
-    @auth.has_one_of_roles([CREATE_DESIGNS])
+    @auth.has_one_of_roles([CREATE_DESIGNS, MANAGE_SUBFLOWS, MANAGE_DECISION_TABLES])
     @profiletime
     @API.doc(
         responses={
@@ -233,7 +239,7 @@ class ProcessResourceById(Resource):
         return response, status
 
     @staticmethod
-    @auth.has_one_of_roles([CREATE_DESIGNS])
+    @auth.has_one_of_roles([CREATE_DESIGNS, MANAGE_SUBFLOWS, MANAGE_DECISION_TABLES])
     @profiletime
     @API.doc(
         responses={
@@ -281,7 +287,7 @@ class ProcessHistoryResource(Resource):
     """Resource for retrieving process history."""
 
     @staticmethod
-    @auth.has_one_of_roles([CREATE_DESIGNS])
+    @auth.has_one_of_roles([CREATE_DESIGNS, MANAGE_SUBFLOWS, MANAGE_DECISION_TABLES])
     @profiletime
     @API.doc(
         params={
@@ -327,7 +333,7 @@ class ValidateProcess(Resource):
     """Resource for validating a process name or key."""
 
     @staticmethod
-    @auth.has_one_of_roles([CREATE_DESIGNS])
+    @auth.has_one_of_roles([CREATE_DESIGNS, MANAGE_SUBFLOWS, MANAGE_DECISION_TABLES])
     @profiletime
     @API.response(200, "OK:- Successful request.")
     @API.response(400, "BAD_REQUEST:- Invalid request.")
@@ -352,7 +358,7 @@ class PublishResource(Resource):
     """Resource to support publish sub-process/worklfow."""
 
     @staticmethod
-    @auth.has_one_of_roles([CREATE_DESIGNS])
+    @auth.has_one_of_roles([CREATE_DESIGNS, MANAGE_SUBFLOWS, MANAGE_DECISION_TABLES])
     @profiletime
     @API.response(200, "OK:- Successful request.")
     @API.response(
@@ -381,7 +387,7 @@ class UnpublishResource(Resource):
     """Resource to support unpublish sub-process/workflow."""
 
     @staticmethod
-    @auth.has_one_of_roles([CREATE_DESIGNS])
+    @auth.has_one_of_roles([CREATE_DESIGNS, MANAGE_SUBFLOWS, MANAGE_DECISION_TABLES])
     @profiletime
     @API.response(200, "OK:- Successful request.")
     @API.response(
@@ -411,7 +417,16 @@ class ProcessResourceByProcessKey(Resource):
     """Resource for managing process by process key."""
 
     @staticmethod
-    @auth.has_one_of_roles([CREATE_DESIGNS, VIEW_DESIGNS, VIEW_SUBMISSIONS, VIEW_TASKS])
+    @auth.has_one_of_roles(
+        [
+            CREATE_DESIGNS,
+            VIEW_DESIGNS,
+            VIEW_SUBMISSIONS,
+            VIEW_TASKS,
+            MANAGE_SUBFLOWS,
+            MANAGE_DECISION_TABLES,
+        ]
+    )
     @profiletime
     @API.doc(
         responses={

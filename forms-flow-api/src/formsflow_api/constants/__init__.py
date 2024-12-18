@@ -161,7 +161,7 @@ def default_flow_xml_data(name="Defaultflow"):
         modeler:executionPlatform="Camunda Platform"
         modeler:executionPlatformVersion="7.15.0">
         <bpmn:process id="{name}" name="{name}" isExecutable="true">
-            <bpmn:startEvent id="StartEvent_1" name="Default Flow Started">
+            <bpmn:startEvent id="StartEvent_1" name="Default Flow Started" camunda:asyncAfter="true">
                 <bpmn:outgoing>Flow_09rbji4</bpmn:outgoing>
             </bpmn:startEvent>
             <bpmn:task id="Audit_Task_Executed" name="Execute Audit Task">
@@ -220,3 +220,9 @@ def default_flow_xml_data(name="Defaultflow"):
             </bpmndi:BPMNPlane>
         </bpmndi:BPMNDiagram>
     </bpmn:definitions>"""
+
+
+default_task_variables = [
+    {"key": "applicationId", "label": "Submission Id", "type": "hidden"},
+    {"key": "applicationStatus", "label": "Submission Status", "type": "hidden"},
+]

@@ -224,7 +224,7 @@ const View = React.memo((props) => {
   return (
     <div className=" overflow-y-auto">
       {
-        <>
+
           <span className="pe-2  me-2 d-flex justify-content-end align-items-center">
             {poll && showNotification && (
               <SavingLoading
@@ -237,7 +237,7 @@ const View = React.memo((props) => {
               />
             )}
           </span>
-        </>
+
       }
       <div className="d-flex align-items-center justify-content-between">
         <div className="d-flex align-items-center">
@@ -332,7 +332,7 @@ const View = React.memo((props) => {
           ) : (
             <span>
               <div
-                className="container-md d-flex align-items-center justify-content-center draft-edit">
+                className="container-md d-flex align-items-center justify-content-center draft-edit flex-column">
                 <h3>{t("Form not published")}</h3>
                 <p>{t("You can't submit this form until it is published")}</p>
               </div>

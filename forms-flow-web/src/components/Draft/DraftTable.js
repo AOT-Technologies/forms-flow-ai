@@ -17,7 +17,7 @@ import DraftOperations from "./DraftOperations";
 
 import { useTranslation } from "react-i18next";
 import LoadingOverlay from "react-loading-overlay-ts";
-import { TableFooter } from "@formsflow/components"; 
+import { TableFooter, CustomButton } from "@formsflow/components"; 
 
 const DraftTable = () => {
   const dispatch = useDispatch();
@@ -122,7 +122,7 @@ const DraftTable = () => {
   };
 
   return (
-    <>
+
      <LoadingOverlay active={isDraftLoading} spinner text={t("Loading...")}>
       <div className="draftTable">
       <div className="table-responsive" style={{ maxHeight: "75vh", overflowY: "auto" }}>
@@ -186,27 +186,16 @@ const DraftTable = () => {
                 <th colSpan="4">
                   <div className="d-flex justify-content-end filter-sort-bar mt-1">
                     <div className="filter-container-list application-filter-list-view">
-                      <button
-                        data-testid="draft-filter-button"
-                        type="button"
-                        className="btn btn-outline-secondary "
-                        onClick={() => {
-                          setDisplayFilter(true);
-                        }}
-                      >
-                        <svg
-                          xmlns="http://www.w3.org/2000/svg"
-                          width="16"
-                          height="16"
-                          fill="currentColor"
-                          className="bi bi-filter me-2"
-                          viewBox="0 0 16 16"
-                        >
-                          <path d="M6 10.5a.5.5 0 0 1 .5-.5h3a.5.5 0 0 1 0 1h-3a.5.5 0 0 1-.5-.5zm-2-3a.5.5 0 0 1 .5-.5h7a.5.5 0 0 1 0 1h-7a.5.5 0 0 1-.5-.5zm-2-3a.5.5 0 0 1 .5-.5h11a.5.5 0 0 1 0 1h-11a.5.5 0 0 1-.5-.5z" />
-                        </svg>
-                        {t("Filter")}
-                      </button>
-
+                    <CustomButton
+                    variant="secondary"
+                    size="md"
+                    label={t("Filter")}
+                    onClick={() => {
+                      setDisplayFilter(true);
+                    }}
+                    dataTestid="draft filter"
+                    ariaLabel={t("Draft Filter Button")}
+                    />
                       {displayFilter && (
                         <div className="clickable shadow border filter-list-view m-0 p-0">
                           <DraftFilter
@@ -258,7 +247,7 @@ const DraftTable = () => {
           </table>
         ) : null}
       </LoadingOverlay>
-    </>
+
   );
 };
 

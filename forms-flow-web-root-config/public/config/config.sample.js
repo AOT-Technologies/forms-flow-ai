@@ -72,10 +72,25 @@ window["_env_"] = {
   public/themeConfig/customTheme.json inside forms-flow-web-root-config.
   the json data should be below format.
   `{
-  "--navbar-background": "blue",
-  "--navbar-items": "grey",
-  "--navbar-active": "white"
-  }`
+  "--navbar-active-submenu-bg-color": "#fbe9d0",
+  "--navbar-active-submenu-font-color": "#d79922",
+  "--navbar-menu-hover-bg-color": "#192d42",
+  "--navbar-main-menu-active-bg-color": "#446c7c",
+  "--navbar-main-menu-active-font-color": "#FFFFFF",
+  "--navbar-bg-color": "#83b2b7",
+  "--custom-logo-path": "https://logos-world.net/wp-content/uploads/2020/06/Amazon-Logo.png",
+  "--custom-title": "Amazon.in",
+  "--primary-btn-font-color": "black",
+  "--primary-btn-bg-color": "yellow",
+  "--primary-btn-hover-bg-color": "#FFFFC5",
+  "--secondary-btn-font-color": "yellow",
+  "--secondary-btn-bg-color": "black",
+  "--secondary-btn-hover-bg-color": "#353535",
+  "--default-font-color": "red",
+  "--default-font-size": "1rem",
+  "--ff-primary": "violet",
+  "--ff-secondary": "green"
+}`
   */
   // REACT_APP_CUSTOM_THEME_URL: "<CUSTOM_THEME_URL>",
 

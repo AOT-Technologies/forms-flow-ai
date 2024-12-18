@@ -121,6 +121,18 @@ const PrivateRoute = React.memo((props) => {
     store.dispatch(setUserToken(instance.getToken()));
     // Set Cammunda/Formio Base URL
     setApiBaseUrlToLocalStorage();
+  
+    // Fetch user roles and update the local storage
+    getUserRoles()
+      .then((res) => {
+        if (res) {
+          const { data = [] } = res;
+          const roles = data.map((role) => role.name);
+          localStorage.setItem("allAvailableRoles", JSON.stringify(roles));
+        }
+      })
+      .catch((error) => console.error("Error fetching roles", error));
+  
     // Get formio roles
     store.dispatch(
       getFormioRoleIds((err) => {
@@ -136,6 +148,7 @@ const PrivateRoute = React.memo((props) => {
       })
     );
   };
+  
 
   const keycloakInitialize = useCallback(() => {
     let instance = tenantId ? kcServiceInstance(tenantId) : kcServiceInstance();
@@ -155,21 +168,6 @@ const PrivateRoute = React.memo((props) => {
     }
   }, [props.store, kcInstance, tenantId]);
 
-  // Remove this line since 'allRoles' is not used elsewhere
-  // const [allRoles, setAllRoles] = useState([]);
-
-  // Updated useEffect to fetch and set user roles without the 'allRoles' assignment
-  useEffect(() => {
-    getUserRoles()
-      .then((res) => {
-        if (res) {
-          const { data = [] } = res;
-          const roles = data.map((role) => role.name);
-          localStorage.setItem("allAvailableRoles", JSON.stringify(roles)); // Set roles in localStorage
-        }
-      })
-      .catch((error) => console.error("Error fetching roles", error));
-  }, [dispatch]);
 
   useEffect(() => {
     if (tenantId && MULTITENANCY_ENABLED) {

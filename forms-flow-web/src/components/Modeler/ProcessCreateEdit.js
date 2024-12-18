@@ -120,7 +120,7 @@ const ProcessCreateEdit = ({ type }) => {
   // fetching process data
   const { isLoading: isProcessDetailsLoading } = useQuery(
     ["processDetails", processKey],
-    () => getProcessDetails(processKey),
+    () => getProcessDetails({processKey}),
     {
       cacheTime: 0, // Disable caching if not disabled the previous data will be cached
       staleTime: 0, // Data is always treated as stale
@@ -367,7 +367,7 @@ const ProcessCreateEdit = ({ type }) => {
 
   const updateProcessDetails = async () => {
     const updatedProcessDetails = await getProcessDetails(
-      processData.processKey
+      {processKey:processData.processKey}
     );
     dispatch(setProcessData(updatedProcessDetails.data));
     setIsPublished(false); // Resetting publish state after unpublishing

@@ -108,6 +108,27 @@ roles_to_update = [
         "composite": False,
         "clientRole": True,
         "attributes": {}
+    },
+    {
+        "name": "create_bpmn_flows",
+        "description": "Access to BPMN workflows",
+        "composite": False,
+        "clientRole": True,
+        "attributes": {}
+    },
+    {
+        "name": "manage_subflows",
+        "description": "Access to Subflows",
+        "composite": False,
+        "clientRole": True,
+        "attributes": {}
+    },
+    {
+        "name": "manage_decision_tables",
+        "description": "Access to Decision Tables",
+        "composite": False,
+        "clientRole": True,
+        "attributes": {}
     }
 ]
 
@@ -159,7 +180,11 @@ def _migrate_tenants(tenant_keys: List[str]):
                                   "view_submissions",
                                   "manage_tasks",
                                   "manage_all_filters",
-                                  "view_dashboards"]))
+                                  "view_dashboards",
+                                  "create_bpmn_flows",
+                                  "manage_subflows",
+                                  "manage_decision_tables"
+                                  ]))
         # Migrate users
         users = get_users_with_client_role(token, client_id, "formsflow-reviewer")
         print(f"Found {len(users)} users with role formsflow-reviewer.")
@@ -253,7 +278,10 @@ def _migrate_default():
             "formsflow/formsflow-designer": [
                 "manage_integrations",
                 "view_designs",
-                "create_designs"
+                "create_designs",
+                "create_bpmn_flows",
+                "manage_subflows",
+                "manage_decision_tables"
             ],
             "formsflow/formsflow-reviewer": [
                 "view_dashboards",

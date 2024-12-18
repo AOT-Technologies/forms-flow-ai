@@ -5,7 +5,10 @@ import TaskFilterViewComponent from "./TaskFilterViewComponent";
 import "./TaskSearchBarListView.scss";
 import { setSelectedTaskVariables } from "../../../../actions/bpmTaskActions";
 import { useTranslation } from "react-i18next"; 
-
+import {
+  CustomButton,
+} from "@formsflow/components";
+import PropTypes from 'prop-types';
 
 const TaskSearchBarListView = React.memo(({ toggleAllTaskVariables }) => {
   const isTaskListLoading = useSelector(
@@ -13,7 +16,7 @@ const TaskSearchBarListView = React.memo(({ toggleAllTaskVariables }) => {
   );
   const tasksCount = useSelector((state) => state.bpmTasks.tasksCount);
   const [displayFilter, setDisplayFilter] = useState(false);
-  const [SortOptions, setSortOptions] = useState(false);
+  const [sortOptions, setSortOptions] = useState(false);
   const [filterParams, setFilterParams] = useState({});
   const taskList = useSelector((state) => state.bpmTasks.tasksList);
   const allTaskVariablesExpanded = useSelector((state) => state.bpmTasks.allTaskVariablesExpand);
@@ -46,79 +49,51 @@ const TaskSearchBarListView = React.memo(({ toggleAllTaskVariables }) => {
           tasksCount > 0 ? (
           <>
           <div className="sort-container task-filter-list-view">
-          <button
-            type="button"
-            className="btn btn-outline-secondary"
+          <CustomButton
+            variant="secondary"
+            size="md"
+            label={t("Sort by")}
             onClick={() => {
-              setSortOptions(!SortOptions);
+              setSortOptions(!sortOptions);
               setDisplayFilter(false);
             }}
-           >
-            {t("Sort by")}
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              width="20"
-              height="20"
-              viewBox="0 0 24 24"
-              id="arrow-drop-down"
-            >
-              <path fill="none" d="M0 0h24v24H0V0z"></path>
-              <path d="M7 10l5 5 5-5H7z"></path>
-            </svg>
-          </button>
-          {SortOptions && (
+            dataTestid="task-sorby"
+            ariaLabel={t("Task Sortby Button")}
+            />
+          {sortOptions && (
             <div className="clickable shadow border filter-list-view">
               <TaskSortSelectedList />
             </div>
           )}
            </div>
            <div className="Select-Task-Variables task-filter-list-view">
-          <button
-            type="button"
-            className="btn btn-outline-secondary"
+           <CustomButton
+            variant="secondary"
+            size="md"
+            label={allTaskVariablesExpanded ? t("Collapse All") : t("Expand All")}
             onClick={() => {
               toggleAllTaskVariables();
               setDisplayFilter(false); 
               setSortOptions(false);
             }}
-          >
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              width="16"
-              height="16"
-              fill="currentColor"
-              className="bi bi-columns-gap me-2"
-              viewBox="0 0 16 16"
-            >
-              <path d="M6 1v3H1V1h5zM1 0a1 1 0 0 0-1 1v3a1 1 0 0 0 1 1h5a1 1 0 0 0 1-1V1a1 1 0 0 0-1-1H1zm14 12v3h-5v-3h5zm-5-1a1 1 0 0 0-1 1v3a1 1 0 0 0 1 1h5a1 1 0 0 0 1-1v-3a1 1 0 0 0-1-1h-5zM6 8v7H1V8h5zM1 7a1 1 0 0 0-1 1v7a1 1 0 0 0 1 1h5a1 1 0 0 0 1-1V8a1 1 0 0 0-1-1H1zm14-6v7h-5V1h5zm-5-1a1 1 0 0 0-1 1v7a1 1 0 0 0 1 1h5a1 1 0 0 0 1-1V1a1 1 0 0 0-1-1h-5z" />
-            </svg>
-            {allTaskVariablesExpanded ? t("Collapse All") : t("Expand All")}
-          </button>
+            dataTestid="task-expand"
+            ariaLabel={t("Task Expand Button")}
+            />
            </div>
             </>
           ) : null
         }
         <div className="filter-container-list task-filter-list-view">
-          <button
-            type="button"
-            className="btn btn-outline-secondary "
+        <CustomButton
+            variant="secondary"
+            size="md"
+            label={t("Search")}
             onClick={() => {
               setDisplayFilter(true); setSortOptions(false);
             }}
-          >
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              width="16"
-              height="16"
-              fill="currentColor"
-              className="bi bi-filter me-2"
-              viewBox="0 0 16 16"
-            >
-              <path d="M6 10.5a.5.5 0 0 1 .5-.5h3a.5.5 0 0 1 0 1h-3a.5.5 0 0 1-.5-.5zm-2-3a.5.5 0 0 1 .5-.5h7a.5.5 0 0 1 0 1h-7a.5.5 0 0 1-.5-.5zm-2-3a.5.5 0 0 1 .5-.5h11a.5.5 0 0 1 0 1h-11a.5.5 0 0 1-.5-.5z" />
-            </svg>
-            {t("Search")}
-          </button>
-
+            dataTestid="task-search"
+            ariaLabel={t("Task Search Button")}
+            />
           {displayFilter && (
             <div className="clickable shadow border filter-list-view m-0 p-0">
               <TaskFilterViewComponent
@@ -134,5 +109,9 @@ const TaskSearchBarListView = React.memo(({ toggleAllTaskVariables }) => {
     </>
   );
 });
+
+TaskSearchBarListView.propTypes = {
+  toggleAllTaskVariables: PropTypes.func.isRequired,
+};
 
 export default TaskSearchBarListView;

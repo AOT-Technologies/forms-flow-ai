@@ -70,7 +70,9 @@ class Authorization(AuditDateTimeMixin, AuditUserMixin, BaseModel, db.Model):
     def _auth_query(
         cls, auth_type, roles, tenant, user_name, include_created_by=False
     ):  # pylint: disable=too-many-arguments,too-many-positional-arguments
-        role_condition = [Authorization.roles.contains([role]) for role in roles]
+        role_condition = []
+        if roles:
+            role_condition = [Authorization.roles.contains([role]) for role in roles]
         query = cls.query.filter(Authorization.auth_type == auth_type)
         if auth_type == AuthType.APPLICATION:
             # if the authtype is application then need to fetch the resource id associated with roles

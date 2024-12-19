@@ -19,15 +19,20 @@ import {
 //TBD in case of Bundle form display
 const PillList = React.memo(({ alternativeLabels, onRemove }) => {
   const { t } = useTranslation();
+  // Filter out applicationId and applicationStatus
+  const ignoreKeywords = new Set(["applicationId", "applicationStatus"]);
+  const filteredVariablePills = Object.values(alternativeLabels).filter(
+    ({ key }) => !ignoreKeywords.has(key)
+  );
   return (
     <div className="pill-container">
-      {Object.values(alternativeLabels).length ? (
-        Object.values(alternativeLabels).map(
+      {filteredVariablePills.length ? (
+        filteredVariablePills.map(
           ({key, altVariable, labelOfComponent }) => (
             <CustomPill
               key={key}
               label={altVariable || labelOfComponent}
-              icon={(key !== "applicationId" && key !== "applicationStatus") && <CloseIcon color="#253DF4" data-testid="pill-remove-icon" />}
+              icon={<CloseIcon color="#253DF4" data-testid="pill-remove-icon" />}
               bg="#E7E9FE"
               onClick={() => onRemove(key)}
               secondaryLabel={key}

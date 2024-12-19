@@ -91,9 +91,9 @@ class AuthorizationService:
         )
         roles = resource.get("roles")
         if auth:
-            # Incase of edit import, user_name default to the user who created it
+            # Incase of edit import-desiger auth, user_name default to the username already present in auth.user_name
             user_name = (
-                auth.created_by if edit_import_designer else resource.get("userName")
+                auth.user_name if edit_import_designer else resource.get("userName")
             )
             auth.roles = roles
             auth.resource_details = resource.get("resourceDetails")

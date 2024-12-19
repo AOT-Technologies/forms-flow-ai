@@ -16,7 +16,7 @@ import {
 
 import MultiSelectComponent from "../../CustomComponents/MultiSelect";
 import { MULTITENANCY_ENABLED } from "../../../constants/constants";
-import { addTenantkey, addTenantkeyAsSuffix,removeTenantKeyFromPath } from "../../../helper/helper";
+import { addTenantkey, addTenantkeyAsSuffix,removeTenantKeyFromData } from "../../../helper/helper";
 import { useDispatch, useSelector } from "react-redux";
 import { getUserRoles } from "../../../apiManager/services/authorizationService";
 import { useTranslation } from "react-i18next";
@@ -96,7 +96,7 @@ const FormSettings = forwardRef((props, ref) => {
   /* --------Updating path if multitenant enabled-------------------------- */
   useEffect(()=>{
     if(MULTITENANCY_ENABLED){
-      const updatedDisplayPath = removeTenantKeyFromPath(formDetails.path,tenantKey);
+      const updatedDisplayPath = removeTenantKeyFromData(formDetails.path,tenantKey);
       setFormDetails((prev) => {
         return {
           ...prev,

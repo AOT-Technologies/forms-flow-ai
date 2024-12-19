@@ -1,7 +1,9 @@
 import React, { useState, useRef, useEffect } from "react";
+import {  useSelector } from "react-redux";
 import { ListGroup } from "react-bootstrap";
 import { CustomPill,DeleteIcon } from "@formsflow/components";
 import PropTypes from 'prop-types';
+import { removeTenantKeyFromData } from "../../helper/helper";
 
 const RoleSelector = ({ allRoles = [], selectedRoles = [], setSelectedRoles }) => { 
   const [roleInput, setRoleInput] = useState("");
@@ -9,7 +11,8 @@ const RoleSelector = ({ allRoles = [], selectedRoles = [], setSelectedRoles }) =
   const [isDropdownOpen, setIsDropdownOpen] = useState(false); // To control dropdown visibility
   const dropDownRef = useRef(null);
   const inputRef = useRef(null);
- 
+  const tenantKey = useSelector((state) => state.tenants?.tenantId);
+
   // Filter roles based on input
   useEffect(() => {
     const filtered = allRoles.filter(
@@ -61,7 +64,7 @@ const RoleSelector = ({ allRoles = [], selectedRoles = [], setSelectedRoles }) =
         {selectedRoles.map((role, index) => (
           <CustomPill
             key={role + index}
-            label={role}
+            label={removeTenantKeyFromData(role,tenantKey)}
             icon={<DeleteIcon color="#253DF4" />}
             bg="primary"
             onClick={() => removeRole(role)}
@@ -86,7 +89,7 @@ const RoleSelector = ({ allRoles = [], selectedRoles = [], setSelectedRoles }) =
                 key={role + index}
                 onClick={() => handleRoleSelect(role)}
               >
-                {role}
+                {removeTenantKeyFromData(role,tenantKey)}
               </ListGroup.Item>
             ))}
           </ListGroup>

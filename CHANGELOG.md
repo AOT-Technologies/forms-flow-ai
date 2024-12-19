@@ -18,12 +18,15 @@ Mark  items as `Added`, `Changed`, `Fixed`, `Modified`, `Removed`, `Untested Fea
 
 **forms-flow-api**
    * Added new endpoints for:
-      * form validation, import and export, migration, publish, subflow and decision table redesign
+      * form validation 
+      * import and export
+      * migration 
+      * publish 
+      * subflow and decision table redesign
 
  
  **forms-flow-bpm**
 * Added support to fetch secrets from Vault.
-
 <br><br>
 
 `Modified`
@@ -59,6 +62,9 @@ Mark  items as `Added`, `Changed`, `Fixed`, `Modified`, `Removed`, `Untested Fea
 
 *Upgrade notes:*
 
+**forms-flow-web**
+* Npm package version upgraded to 16.20.0
+
 **forms-flow-api**
 
    * Python version upgraded to 3.12.6
@@ -68,6 +74,10 @@ Mark  items as `Added`, `Changed`, `Fixed`, `Modified`, `Removed`, `Untested Fea
    * SpringBoot version upgraded to 3.3.5
    * Camunda version upgarded to 7.21
    * spring-websocket version upgarded to 6.1
+
+**forms-flow-idm**
+
+* Keycloak Version upgraded to 25.0.0
 
 
 **forms-flow-documents**
@@ -82,6 +92,7 @@ Mark  items as `Added`, `Changed`, `Fixed`, `Modified`, `Removed`, `Untested Fea
 
 `Generic Changes`
 * Designer page redesign
+* Workflow selection from edit page is not available now, instead usersuser have to create workflow while form creation itself
 * Added new micro-frontend : forms-flow-components
 * Refer [version documentation](https://aot-technologies.github.io/forms-flow-ai-doc/#version_upgrade) for environment variable changes
 

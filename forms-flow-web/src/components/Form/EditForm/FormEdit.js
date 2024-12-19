@@ -59,11 +59,10 @@ import NewVersionModal from "../../Modals/NewVersionModal";
 import { currentFormReducer } from "../../../modules/formReducer.js";
 import { toast } from "react-toastify";
 import userRoles from "../../../constants/permissions.js";
-import { generateUniqueId, isFormComponentsChanged, addTenantkey } from "../../../helper/helper.js";
+import { generateUniqueId, isFormComponentsChanged, addTenantkey, textTruncate } from "../../../helper/helper.js";
 import { useMutation } from "react-query";
 import NavigateBlocker from "../../CustomComponents/NavigateBlocker";
 import { setProcessData, setFormPreviosData, setFormProcessesData } from "../../../actions/processActions.js";
-import { textTruncate } from "../../../helper/helper.js";
 
 // constant values
 const DUPLICATE = "DUPLICATE";

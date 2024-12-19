@@ -3,12 +3,10 @@
 Initialize app and the dependencies.
 """
 
-import json
 import logging
 import os
-from http import HTTPStatus
 
-from flask import Flask, g, request
+from flask import Flask, request
 from flask.logging import default_handler
 from formsflow_api_utils.exceptions import (
     register_db_error_handlers,
@@ -21,7 +19,6 @@ from formsflow_api_utils.utils import (
     jwt,
     register_log_handlers,
     setup_logging,
-    translate,
 )
 from formsflow_api_utils.utils.startup import (
     collect_role_ids,
@@ -94,24 +91,6 @@ def create_app(
     @app.after_request
     def add_additional_headers(response):  # pylint: disable=unused-variable
         response.headers["X-Frame-Options"] = "DENY"
-        return response
-
-    @app.after_request
-    def translate_response(response):  # pylint: disable=unused-variable
-        """Select the client specific language from the token locale attribute."""
-        if response.status_code in [
-            HTTPStatus.BAD_REQUEST,
-            HTTPStatus.UNAUTHORIZED,
-            HTTPStatus.FORBIDDEN,
-            HTTPStatus.NOT_FOUND,
-        ]:
-            lang = g.token_info.get("locale", "en") if "token_info" in g else "en"
-            if lang == "en":
-                return response
-            json_response = response.get_json()
-            translated_response = translate(lang, json_response)
-            str_response = json.dumps(translated_response)
-            response.set_data(str_response)
         return response
 
     register_shellcontext(app)

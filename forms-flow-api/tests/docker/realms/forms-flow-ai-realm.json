@@ -262,7 +262,7 @@
         },
         {
           "name": "manage_tasks",
-          "description": "Can claim and work on tasks",
+          "description": "Can assign, re-assign and work on tasks",
           "composite": false,
           "clientRole": true,
           "attributes": {}
@@ -297,7 +297,7 @@
         },
         {
           "name": "view_designs",
-          "description": "Access to design",
+          "description": "Access to designs",
           "composite": false,
           "clientRole": true,
           "attributes": {}
@@ -346,7 +346,7 @@
         },
         {
           "name": "create_designs",
-          "description": "Create Form, workflow designs",
+          "description": "Design layout and flow",
           "composite": false,
           "clientRole": true,
           "attributes": {}

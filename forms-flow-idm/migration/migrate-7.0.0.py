@@ -13,14 +13,14 @@ roles_to_update = [
     },
     {
         "name": "view_designs",
-        "description": "Access to design",
+        "description": "Access to designs",
         "composite": False,
         "clientRole": True,
         "attributes": {}
     },
     {
         "name": "create_designs",
-        "description": "Create Form, workflow designs",
+        "description": "Design layout and flow",
         "composite": False,
         "clientRole": True,
         "attributes": {}
@@ -55,7 +55,7 @@ roles_to_update = [
     },
     {
         "name": "manage_tasks",
-        "description": "Can claim and work on tasks",
+        "description": "Can assign, re-assign and work on tasks",
         "composite": False,
         "clientRole": True,
         "attributes": {}

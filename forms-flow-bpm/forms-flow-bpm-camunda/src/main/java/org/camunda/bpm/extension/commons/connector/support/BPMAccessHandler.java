@@ -5,6 +5,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.camunda.bpm.extension.commons.ro.req.IRequest;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
@@ -31,7 +32,8 @@ public class BPMAccessHandler extends AbstractAccessHandler{
     private final Properties properties;
     private final WebClient webClient;
 
-    public BPMAccessHandler(Properties integrationCredentialProperties, WebClient unauthenticatedWebClient){
+    public BPMAccessHandler(@Qualifier("integrationCredentialProperties") Properties integrationCredentialProperties, 
+    		@Qualifier("unauthenticatedWebClient") WebClient unauthenticatedWebClient){
         this.properties = integrationCredentialProperties;
         this.webClient = unauthenticatedWebClient;
     }

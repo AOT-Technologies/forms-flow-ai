@@ -321,7 +321,8 @@ const TaskFilterViewComponent = React.memo(
                       title={t("Task variables")}
                       className="form-control"
                       name={e.name}
-                      value={variable ? variable.value : ""}
+                      type="number"
+                      value={variable?.value ? variable.value : ""}
                       onChange={(e) =>
                         handleProcessVariables(e.target.name, e.target.value)
                       }

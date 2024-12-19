@@ -3,14 +3,18 @@
 from unittest.mock import MagicMock, patch
 
 import pytest
-from formsflow_api_utils.utils import CREATE_DESIGNS, MANAGE_TASKS
+from formsflow_api_utils.utils import (
+    CREATE_DESIGNS,
+    MANAGE_SUBFLOWS,
+    MANAGE_TASKS,
+)
 
 from formsflow_api.models import Process
 from formsflow_api.services import ProcessService
 from tests.utilities.base_test import (
     get_process_request_payload,
-    get_process_request_payload_low_code,
     get_process_request_payload_for_dmn,
+    get_process_request_payload_low_code,
     get_token,
 )
 
@@ -150,7 +154,7 @@ class TestProcessList:
         self, app, client, session, jwt, create_process_with_api_call
     ):
         """Testing process listing API."""
-        token = get_token(jwt, role=CREATE_DESIGNS, username="designer")
+        token = get_token(jwt, role=MANAGE_SUBFLOWS, username="designer")
         headers = {
             "Authorization": f"Bearer {token}",
             "content-type": "application/json",
@@ -180,7 +184,7 @@ class TestProcessList:
         create_process_with_api_call,
     ):
         """Testing process listing API with pagination and sorted list."""
-        token = get_token(jwt, role=CREATE_DESIGNS, username="designer")
+        token = get_token(jwt, role=MANAGE_SUBFLOWS, username="designer")
         headers = {
             "Authorization": f"Bearer {token}",
             "content-type": "application/json",
@@ -199,7 +203,7 @@ class TestProcessList:
         self, app, client, session, jwt, create_process_with_api_call
     ):
         """Testing process listing API with filters."""
-        token = get_token(jwt, role=CREATE_DESIGNS, username="designer")
+        token = get_token(jwt, role=MANAGE_SUBFLOWS, username="designer")
         headers = {
             "Authorization": f"Bearer {token}",
             "content-type": "application/json",

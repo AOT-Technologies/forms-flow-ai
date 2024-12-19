@@ -21,8 +21,8 @@ MANAGE_DECISION_TABLES = "manage_decision_tables"
 
 
 PERMISSION_DETAILS = [
-    {"name": CREATE_DESIGNS , "description": "Create Form, workflow designs", "depends_on": [ VIEW_DESIGNS ]},
-    {"name": VIEW_DESIGNS , "description": "Access to design", "depends_on": []},
+    {"name": CREATE_DESIGNS , "description": "Design layout and flow", "depends_on": [ VIEW_DESIGNS ]},
+    {"name": VIEW_DESIGNS , "description": "Access to designs", "depends_on": []},
     {"name": CREATE_BPMN_FLOWS , "description": "Access to BPMN workflows", "depends_on": [CREATE_DESIGNS]},
     {"name": MANAGE_SUBFLOWS , "description": "Access to Subflows", "depends_on": [CREATE_DESIGNS]},
     {"name": MANAGE_DECISION_TABLES , "description": "Access to Decision Tables", "depends_on": [CREATE_DESIGNS]},
@@ -30,7 +30,7 @@ PERMISSION_DETAILS = [
     {"name": VIEW_SUBMISSIONS , "description": "Access to submissions", "depends_on": []},
     {"name": VIEW_DASHBOARDS , "description": "Access to dashboards", "depends_on": []},
     {"name": VIEW_TASKS , "description": "Access to tasks", "depends_on": [ VIEW_FILTERS ]},
-    {"name": MANAGE_TASKS , "description": "Can claim and work on tasks", "depends_on": [ VIEW_TASKS , VIEW_FILTERS ]},
+    {"name": MANAGE_TASKS , "description": "Can assign, re-assign and work on tasks", "depends_on": [ VIEW_TASKS , VIEW_FILTERS ]},
     {"name": MANAGE_ALL_FILTERS , "description": "Manage all filters", "depends_on": [ VIEW_FILTERS , CREATE_FILTERS ]},
     {"name": CREATE_FILTERS , "description": "Access to create filters", "depends_on": [ VIEW_FILTERS ]},
     {"name": VIEW_FILTERS , "description": "Access to view filters", "depends_on": []},

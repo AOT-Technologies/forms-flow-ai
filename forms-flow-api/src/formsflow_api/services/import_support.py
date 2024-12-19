@@ -394,6 +394,7 @@ class ImportService:  # pylint: disable=too-many-public-methods
         """Import new form+workflow."""
         anonymous = file_data.get("forms")[0].get("anonymous") or False
         form_json = self.set_form_and_submission_access(form_json, anonymous)
+        form_json.pop("parentFormId", None)
         form_response = self.form_create(form_json)
         form_id = form_response.get("_id")
         FormHistoryService.create_form_log_with_clone(

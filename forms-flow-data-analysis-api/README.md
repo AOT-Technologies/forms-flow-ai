@@ -1,6 +1,6 @@
 # formsflow.ai Sentiment Analysis Component
 
-![Python](https://img.shields.io/badge/Python-3.11.7-blue) ![Flask](https://img.shields.io/badge/Flask-2.3.3-blue) ![postgres](https://img.shields.io/badge/postgres-13.0-blue)
+![Python](https://img.shields.io/badge/Python-3.12.6-blue) ![Flask](https://img.shields.io/badge/Flask-2.3.3-blue) ![postgres](https://img.shields.io/badge/postgres-13.0-blue)
 ![Transformers](https://img.shields.io/badge/Transformers-4.36.2-blue)
 ![Torch](https://img.shields.io/badge/Torch-2.0.1-blue)
 

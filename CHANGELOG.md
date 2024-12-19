@@ -2,14 +2,90 @@
 
 Mark  items as `Added`, `Changed`, `Fixed`, `Modified`, `Removed`, `Untested Features`, `Upcoming Features`, `Known Issues`
 
-## 6.1.0
+
+
+## 7.0.0 - 'release date'
 
 `Added`
+
+**formsflow-web**
+* Added redesigned form and workflow UI for designer 
+   * Form and Subflow listing
+   * Form and Subflow Create/ Edit page:
+      * Import, export, duplicate, delete, history, preview, authorization settings
+* Added subflow builder to design page
+* Added new user settings option in sidebar
+
+**forms-flow-api**
+   * Added new endpoints for:
+      * form validation, import and export, migration, publish, subflow and decision table redesign
+
  
  **forms-flow-bpm**
 * Added support to fetch secrets from Vault.
-* Added environment variables 
- `VAULT_ENABLED`, `VAULT_URL`, `VAULT_TOKEN`, `VAULT_PATH`, `VAULT_SECRET` to support Vault.
+
+<br><br>
+
+`Modified`
+
+**formsflow-web**
+* Modified  Flow and Layout to a one-to-one association, with the combination now referred to as a Form.
+* Modified Navbar and converted to Sidebar:
+   * Categorized UI to menus and sub-menus based on functionality 
+   * Menus visibility is controlled based on user permissions.
+   * Moved language selection to the user settings modal, accessible by clicking the username in the bottom-left corner of the sidebar.
+   * Moved client submission from the Forms tab to the Submit tab (Submit → Forms → All Forms)
+   * Moved form design to Design menu
+   * Moved Subflows (BPMN) and Decision Tables (DMN) to individual submenus under the Design
+   * Moved Manage roles, users and dashboards under Manage menu
+   * Moved Insights and Metrics  under Analyze menu
+   * Moved Tasks under  Review menu
+
+* Modified form history management to include major and minor versions.
+* Modified RBAC mechanism:
+   * Users can create new roles with specific permissions for more granular application access control. Refer [here](https://msergeyenko-aot.github.io/forms-flow-ai-doc/#permissions) for more.
+
+
+**forms-flow-api**
+* Modified authorization endpoints based on updated  permissions
+<br><br>
+
+
+`Removed`
+
+**formsflow-web**
+* Removed workflow selection from form edit page
+<br><br>
+
+*Upgrade notes:*
+
+**forms-flow-api**
+
+   * Python version upgraded to 3.12.6
+
+**forms-flow-bpm**
+
+   * SpringBoot version upgraded to 3.3.5
+   * Camunda version upgarded to 7.21
+   * spring-websocket version upgarded to 6.1
+
+
+**forms-flow-documents**
+
+   * Python version upgraded to 3.12.6
+
+**forms-flow-data-analysis-api**
+
+   * Python version upgraded to 3.12.6
+<br><br>
+
+
+`Generic Changes`
+* Designer page redesign
+* Added new micro-frontend : forms-flow-components
+* Refer [version documentation](https://aot-technologies.github.io/forms-flow-ai-doc/#version_upgrade) for environment variable changes
+
+
 
 ## 6.0.2 - 2024-06-05
 

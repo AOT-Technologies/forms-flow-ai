@@ -264,7 +264,7 @@ if (reviewerSelectedOption === "Specific Reviewers") {
                   </div>
                   <div className="d-flex flex-column flex-md-row my-2 px-3">
                   <div className="fw-bold col-md-2 col-12">
-                      {t("Workflow Name")} :{" "}
+                      {t("Flow Name")} :{" "}
                     </div>
                     <span className="col-md-8 col-12">
                       {workflow && workflow.label ? workflow.label : "-"}

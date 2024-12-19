@@ -3,7 +3,7 @@ import {  useSelector } from "react-redux";
 import { ListGroup } from "react-bootstrap";
 import { CustomPill,DeleteIcon } from "@formsflow/components";
 import PropTypes from 'prop-types';
-import { removeTenantKeyFromData } from "../../helper/helper";
+import { HelperServices } from "@formsflow/service";
 
 const RoleSelector = ({ allRoles = [], selectedRoles = [], setSelectedRoles }) => { 
   const [roleInput, setRoleInput] = useState("");
@@ -64,7 +64,7 @@ const RoleSelector = ({ allRoles = [], selectedRoles = [], setSelectedRoles }) =
         {selectedRoles.map((role, index) => (
           <CustomPill
             key={role + index}
-            label={removeTenantKeyFromData(role,tenantKey)}
+            label={HelperServices.removeTenantKeyFromData(role,tenantKey)}
             icon={<DeleteIcon color="#253DF4" />}
             bg="primary"
             onClick={() => removeRole(role)}
@@ -89,7 +89,7 @@ const RoleSelector = ({ allRoles = [], selectedRoles = [], setSelectedRoles }) =
                 key={role + index}
                 onClick={() => handleRoleSelect(role)}
               >
-                {removeTenantKeyFromData(role,tenantKey)}
+                {HelperServices.removeTenantKeyFromData(role,tenantKey)}
               </ListGroup.Item>
             ))}
           </ListGroup>

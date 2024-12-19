@@ -2,7 +2,6 @@ import { Translation } from "react-i18next";
 import "./helper.scss";
 import _ from "lodash";
 import utils from "@aot-technologies/formiojs/lib/utils";
-import { MULTITENANCY_ENABLED } from "../constants/constants";
 
 const replaceUrl = (URL, key, value) => {
   return URL.replace(key, value);
@@ -114,17 +113,6 @@ const addTenantkeyAsSuffix = (value, tenantkey) => {
     return `${value.toLowerCase()}${tenantkey}-`;
   }
 };
-//removing Tenantkey from path if there is tenantkey ekse return the value  
-const removeTenantKeyFromData = (value, tenantKey) => {
-  const tenantKeyCheck = value.match(`${tenantKey}-`)?.[0];
-  const startWithSlash = value.startsWith("/");
-
-  if (MULTITENANCY_ENABLED && tenantKey && 
-    tenantKeyCheck?.toLowerCase() === `${tenantKey.toLowerCase()}-`) {
-    return value.replace(`${startWithSlash ? "/" : ""}${tenantKey.toLowerCase()}-`, "");
-  }
-  return value;
-};
 
 export { generateUniqueId, replaceUrl, addTenantkey, removeTenantKey, textTruncate, renderPage, 
-  filterSelectOptionByLabel, isFormComponentsChanged, removeTenantKeyFromData,addTenantkeyAsSuffix};
+  filterSelectOptionByLabel, isFormComponentsChanged,addTenantkeyAsSuffix};

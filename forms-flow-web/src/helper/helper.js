@@ -118,10 +118,12 @@ const addTenantkeyAsSuffix = (value, tenantkey) => {
 const removeTenantKeyFromData = (value, tenantKey) => {
   const tenantKeyCheck = value.match(`${tenantKey}-`)?.[0];
   const startWithSlash = value.startsWith("/");
-  return (MULTITENANCY_ENABLED && tenantKey && 
-    tenantKeyCheck?.toLowerCase() === `${tenantKey.toLowerCase()}-`)
-    ? value.replace(`${startWithSlash ? "/" : ""}${tenantKey.toLowerCase()}-`, "")
-    : value;
+
+  if (MULTITENANCY_ENABLED && tenantKey && 
+    tenantKeyCheck?.toLowerCase() === `${tenantKey.toLowerCase()}-`) {
+    return value.replace(`${startWithSlash ? "/" : ""}${tenantKey.toLowerCase()}-`, "");
+  }
+  return value;
 };
 
 export { generateUniqueId, replaceUrl, addTenantkey, removeTenantKey, textTruncate, renderPage, 

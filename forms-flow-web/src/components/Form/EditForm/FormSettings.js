@@ -16,7 +16,7 @@ import {
 
 import MultiSelectComponent from "../../CustomComponents/MultiSelect";
 import { MULTITENANCY_ENABLED } from "../../../constants/constants";
-import { addTenantkey, addTenantkeyAsSuffix,removeTenantKeyFromData } from "../../../helper/helper";
+import {  addTenantkeyAsSuffix,removeTenantKeyFromData } from "../../../helper/helper";
 import { useDispatch, useSelector } from "react-redux";
 import { getUserRoles } from "../../../apiManager/services/authorizationService";
 import { useTranslation } from "react-i18next";
@@ -151,10 +151,7 @@ const FormSettings = forwardRef((props, ref) => {
   };
   
   const handleBlur = (field, value) => {
-    const updatedValue = MULTITENANCY_ENABLED
-      ? addTenantkey(value, tenantKey)
-      : value;
-    validateField(field, updatedValue);
+        validateField(field, value);
   };
   
 

@@ -12,17 +12,18 @@ import {
   QueryClientProvider,
 } from 'react-query';
 const queryClient = new QueryClient();
+import { HelperServices } from '@formsflow/service';
+
 const App = React.memo((props) => {
   const { store, history, publish, subscribe, getKcInstance } = props;
   const [isPreviewRoute,setIsPreviewRoute] = useState(false);
   useEffect(()=> {
     const location = window.location.pathname;
-    if(location.includes("view-edit")){
-      setIsPreviewRoute(true);
-    }
+    const viewOnlyRoutes = new Set (["view-edit"]);
+    setIsPreviewRoute(() => HelperServices.isViewOnlyRoute(location,viewOnlyRoutes));
   },[]);
   return (
-    <div className={`main-container ${isPreviewRoute ? 'm-0' : ''}`}>
+    <div className={`main-container ${isPreviewRoute && 'm-0'}`}>
       <Helmet>
         {KEYCLOAK_URL ? <link rel="preconnect" href={KEYCLOAK_URL} /> : null}
       </Helmet>

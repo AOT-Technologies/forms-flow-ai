@@ -16,7 +16,7 @@ import {
 
 import MultiSelectComponent from "../../CustomComponents/MultiSelect";
 import { MULTITENANCY_ENABLED } from "../../../constants/constants";
-import { addTenantkey, addTenantkeyAsSuffix,removeTenantKeyFromPath } from "../../../helper/helper";
+import {  addTenantkeyAsSuffix } from "../../../helper/helper";
 import { useDispatch, useSelector } from "react-redux";
 import { getUserRoles } from "../../../apiManager/services/authorizationService";
 import { useTranslation } from "react-i18next";
@@ -24,6 +24,7 @@ import { copyText } from "../../../apiManager/services/formatterService";
 import _camelCase from "lodash/camelCase";
 import _cloneDeep from "lodash/cloneDeep";
 import { validateFormName, validatePathName } from "../../../apiManager/services/FormServices";
+import { HelperServices } from "@formsflow/service";
 
 //CONST VARIABLES
 const DESIGN = "DESIGN";
@@ -96,7 +97,7 @@ const FormSettings = forwardRef((props, ref) => {
   /* --------Updating path if multitenant enabled-------------------------- */
   useEffect(()=>{
     if(MULTITENANCY_ENABLED){
-      const updatedDisplayPath = removeTenantKeyFromPath(formDetails.path,tenantKey);
+      const updatedDisplayPath = HelperServices.removeTenantKeyFromData(formDetails.path,tenantKey);
       setFormDetails((prev) => {
         return {
           ...prev,
@@ -151,10 +152,7 @@ const FormSettings = forwardRef((props, ref) => {
   };
   
   const handleBlur = (field, value) => {
-    const updatedValue = MULTITENANCY_ENABLED
-      ? addTenantkey(value, tenantKey)
-      : value;
-    validateField(field, updatedValue);
+        validateField(field, value);
   };
   
 

@@ -113,13 +113,6 @@ const addTenantkeyAsSuffix = (value, tenantkey) => {
     return `${value.toLowerCase()}${tenantkey}-`;
   }
 };
-//removing Tenantkey from path if there is tenantkey ekse return the value  
-const removeTenantKeyFromPath = (value, tenantKey) => {
-  const tenantKeyCheck = value.match(`${tenantKey}-`)?.[0];
-  return tenantKeyCheck?.toLowerCase() === `${tenantKey.toLowerCase()}-`
-    ? value.replace(`${tenantKey.toLowerCase()}-`, "")
-    : value;
-};
 
 export { generateUniqueId, replaceUrl, addTenantkey, removeTenantKey, textTruncate, renderPage, 
-  filterSelectOptionByLabel, isFormComponentsChanged, removeTenantKeyFromPath,addTenantkeyAsSuffix};
+  filterSelectOptionByLabel, isFormComponentsChanged,addTenantkeyAsSuffix};

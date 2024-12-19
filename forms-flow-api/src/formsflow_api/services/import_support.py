@@ -594,7 +594,7 @@ class ImportService:  # pylint: disable=too-many-public-methods
         action = input_data.get("action")
         user: UserContext = kwargs["user"]
         tenant_key = user.tenant_key
-        mapper = None
+        mapper_response = None
         process = None
         response = {}
 
@@ -628,7 +628,7 @@ class ImportService:  # pylint: disable=too-many-public-methods
                     form_json = self.append_tenant_key_form_name_path(
                         form_json, tenant_key
                     )
-                mapper, process = self.import_new_form_workflow(
+                mapper_response, process = self.import_new_form_workflow(
                     file_data, form_json, workflow_data, process_type
                 )
         else:
@@ -664,7 +664,7 @@ class ImportService:  # pylint: disable=too-many-public-methods
                         selected_form_version = edit_request.get("form", {}).get(
                             "selectedVersion"
                         )
-                        mapper = self.import_form(
+                        mapper_response = self.import_form(
                             selected_form_version, form_json, mapper, form_only=True
                         )
                 elif self.validate_input_json(file_data, form_workflow_schema):
@@ -707,7 +707,7 @@ class ImportService:  # pylint: disable=too-many-public-methods
                                 form_json = self.append_tenant_key_form_name_path(
                                     form_json, tenant_key
                                 )
-                            mapper = self.import_edit_form(
+                            mapper_response = self.import_edit_form(
                                 file_data, selected_form_version, form_json, mapper
                             )
                         if not skip_workflow:
@@ -747,8 +747,8 @@ class ImportService:  # pylint: disable=too-many-public-methods
                         mapper.process_key,
                         selected_workflow_version,
                     )
-        if mapper:
-            response["mapper"] = FormProcessMapperSchema().dump(mapper)
+        if mapper_response:
+            response["mapper"] = FormProcessMapperSchema().dump(mapper_response)
         if process:
             response["process"] = ProcessDataSchema().dump(process)
         return response

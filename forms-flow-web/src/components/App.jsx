@@ -22,7 +22,7 @@ const App = React.memo((props) => {
     }
   },[]);
   return (
-    <div className={`main-container ${isPreviewRoute ? 'margin-0' : ''}`}>
+    <div className={`main-container ${isPreviewRoute ? 'm-0' : ''}`}>
       <Helmet>
         {KEYCLOAK_URL ? <link rel="preconnect" href={KEYCLOAK_URL} /> : null}
       </Helmet>

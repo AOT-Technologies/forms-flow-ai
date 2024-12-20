@@ -747,14 +747,14 @@ export default function CreateNewFilterDrawer({
         <div className="my-2">
           <label htmlFor="select-workflow">
             <p className="mt-2 fw-bold  mb-0">
-              <Translation>{(t) => t("Workflow")}</Translation>
+              <Translation>{(t) => t("Flow")}</Translation>
             </p>
           </label>
           <Select
             isDisabled={viewMode}
             className="mb-3"
             options={processList}
-            placeholder={t("Select Workflow")}
+            placeholder={t("Select Flow")}
             isClearable
             value={processList?.find((list) => list.value === definitionKeyId)}
             onChange={(selectedOption) => {

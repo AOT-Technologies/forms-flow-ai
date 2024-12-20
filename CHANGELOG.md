@@ -8,7 +8,7 @@ Mark  items as `Added`, `Changed`, `Fixed`, `Modified`, `Removed`, `Untested Fea
 
 `Added`
 
-**formsflow-web**
+**forms-flow-web**
 * Added redesigned form and workflow UI for designer 
    * Form and Subflow listing
    * Form and Subflow Create/ Edit page:
@@ -21,11 +21,11 @@ Mark  items as `Added`, `Changed`, `Fixed`, `Modified`, `Removed`, `Untested Fea
 **forms-flow-api**
    * Added new endpoints for:
       * form validation: `form/validate`
-      * layout + import:  `/import`
-      * layout + export:  `/form/mapper_id/export`
-      * form migration: `/process/migrate `
-      * layout + publish: `/form/mapper_id/publish` 
-      * layout + unpublish:  `/form/mapper_id/unpublish`
+      * layout + flow:  `/import`
+      * layout + flow:  `/form/mapper_id/export`
+      * form migration: `/process/migrate`
+      * layout + flow: `/form/mapper_id/publish` 
+      * layout + flow:  `/form/mapper_id/unpublish`
       * list permissions:  `/roles/permissions`
       * theme customization:
          * Create, Get, Update theme: `/themes`
@@ -139,6 +139,9 @@ Mark  items as `Added`, `Changed`, `Fixed`, `Modified`, `Removed`, `Untested Fea
 * Added new micro-frontend : forms-flow-components
 * Refer [version documentation](https://aot-technologies.github.io/forms-flow-ai-doc/#version_upgrade) for environment variable changes
 
+`Known Issues`
+* The language translation of the entire UI is not perfect at the moment, so some glitches may be expected.
+<br><br>
 
 
 ## 6.0.2 - 2024-06-05

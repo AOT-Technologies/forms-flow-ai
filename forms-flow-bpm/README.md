@@ -117,6 +117,12 @@ To know more about Camunda, visit https://camunda.com/.
  `IDENTITY_PROVIDER_MAX_RESULT_SIZE`|Maximum result size for Keycloak user queries||`250`
  `BPM_CLIENT_CONN_TIMEOUT`|Webclient Connection timeout in milli seconds||`5000`
  `BPM_API_URL`:triangular_flag_on_post:|BPM Client URL||`http://{your-ip-address}:8000/camunda`
+ `VAULT_ENABLED`|Support to fetch secrets from vault|`true`/`false`|`false`
+ `VAULT_URL`|Support to fetch secrets from vault
+ `VAULT_TOKEN`|Support to fetch secrets from vault
+ `VAULT_PATH`|Support to fetch secrets from vault
+ `VAULT_SECRET`|Support to fetch secrets from vault
+ `FORMSFLOW_DOC_API_URL`|To support forms-flow-documents sevice||`http://localhost:5006`
    
  **Additionally, you may want to change these**  
 *   The value of Datastore credentials (especially if this instance is not just for testing purposes)

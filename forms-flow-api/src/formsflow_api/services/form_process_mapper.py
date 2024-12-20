@@ -801,7 +801,10 @@ class FormProcessMapperService:  # pylint: disable=too-many-public-methods
         name = request.args.get("name")
         path = request.args.get("path")
         form_id = request.args.get("id")
-        current_app.logger.info(f"Title:{title}, Name:{name}, Path:{path}")
+        parent_form_id = request.args.get("parentFormId")
+        current_app.logger.info(
+            f"Title:{title}, Name:{name}, Path:{path}, form_id:{form_id}, parent_form_id: {parent_form_id}"
+        )
 
         # Check if at least one query parameter is provided
         if not (title or name or path):
@@ -819,7 +822,7 @@ class FormProcessMapperService:  # pylint: disable=too-many-public-methods
             path = f"{tenant_key}-{path}"
         # Validate title exists validation on mapper & path, name in formio.
         if title:
-            FormProcessMapperService.validate_form_title(title)
+            FormProcessMapperService.validate_form_title(title, parent_form_id)
         # Validate path, name exits in formio.
         if path or name:
             query_params = f"name={name}&path={path}&select=title,path,name"

@@ -15,28 +15,53 @@ Mark  items as `Added`, `Changed`, `Fixed`, `Modified`, `Removed`, `Untested Fea
       * Import, export, duplicate, delete, history, preview, authorization settings
 * Added subflow builder to design page
 * Added new user settings option in sidebar
+* Added new css variables to support dynamic theming of application using customTheme file
+* Added advanced logic conditioning in formio component settings to allow chaining of conditions for forms
 
 **forms-flow-api**
    * Added new endpoints for:
-      * form validation 
-      * import and export
-      * migration 
-      * publish 
+      * form validation: `form/validate`
+      * layout + import:  `/import`
+      * layout + export:  `/form/mapper_id/export`
+      * form migration: `/process/migrate `
+      * layout + publish: `/form/mapper_id/publish` 
+      * layout + unpublish:  `/form/mapper_id/unpublish`
+      * list permissions:  `/roles/permissions`
+      * theme customization:
+         * Create, Get, Update theme: `/themes`
       * subflow and decision table redesign
+         *  Create/List: `/process` 
+         *  Get/Update/Delete by id:    `/process/id`
+         *  Get by key:   `/process/key`
+         *  Get history:   `/process/key/versions`
+         *  Validate:  `/process/validate`
+         *  Publish:  `/process/id/publish`
+         *  Unpublish:  `/process/id/unpublish`
+
+
+   * Added Alembic scripts to implement the following changes:
+      * Created tables for theme customization, Process, and User
+      * Updated the filter table to include filter_order, the form history table to add major_version and minor_version, and the form_process_mapper table to include prompt_new_version & is_migrated
+      * Populated major_version and minor_version columns in existing form history records
+      * Altered audit datetime fields to be timezone-aware
+      * Updated the process_name format from process_name(process_key) to process_name
+      * Increased the length of form_name, process_key, and process_name fields in the form_process_mapper table
+
 
  
  **forms-flow-bpm**
-* Added support to fetch secrets from Vault.
+* Added support to fetch secrets from Vault
+* Added BPM authorizations dynamically upon startup
 <br><br>
 
 `Modified`
 
 **formsflow-web**
-* Modified  Flow and Layout to a one-to-one association, with the combination now referred to as a Form.
+* Modified  Flow and Layout to a one-to-one association, with the combination now referred to as a Form
 * Modified Navbar and converted to Sidebar:
    * Categorized UI to menus and sub-menus based on functionality 
-   * Menus visibility is controlled based on user permissions.
-   * Moved language selection to the user settings modal, accessible by clicking the username in the bottom-left corner of the sidebar.
+   * Menus visibility is controlled based on user permissions
+   * Moved language selection to the user settings modal, accessible by clicking the username in the bottom-left corner of the sidebar
    * Moved client submission from the Forms tab to the Submit tab (Submit → Forms → All Forms)
    * Moved form design to Design menu
    * Moved Subflows (BPMN) and Decision Tables (DMN) to individual submenus under the Design
@@ -44,13 +69,28 @@ Mark  items as `Added`, `Changed`, `Fixed`, `Modified`, `Removed`, `Untested Fea
    * Moved Insights and Metrics  under Analyze menu
    * Moved Tasks under  Review menu
 
-* Modified form history management to include major and minor versions.
+* Modified form history management to include major and minor versions
 * Modified RBAC mechanism:
-   * Users can create new roles with specific permissions for more granular application access control. Refer [here](https://msergeyenko-aot.github.io/forms-flow-ai-doc/#permissions) for more.
+   * Users can create new roles with specific permissions for more granular application access control. Refer [here](https://msergeyenko-aot.github.io/forms-flow-ai-doc/#permissions) for more
+* Authorization updates:
+   * Permissions options in settings for Designers are changed : 
+      * ‘All Designers’ option is removed 
+   * Permissions options in settings for reviewer to view submission are changed to generic view Submission permissions:
+      * ‘ All Reviewers' changed to 'Submitter',
+      * ‘Specific Reviewers’ changed to ‘Submitter and specified roles’
 
 
 **forms-flow-api**
-* Modified authorization endpoints based on updated  permissions
+* Modified authorization endpoints for:
+   * updated  permissions
+   * sub flow and decision table redesign
+   * Form create, mapper create and authorization create apis combined into form-design
+
+**forms-flow-documents**
+* Modified endpoint authorizations  based on updated  permission mechanism
+
+**forms-flow-idm**
+* Refer [here](https://github.com/AOT-Technologies/forms-flow-ai/blob/develop/forms-flow-idm/README.md)Permission matrix migration changes in IDM 
 <br><br>
 
 
@@ -58,6 +98,9 @@ Mark  items as `Added`, `Changed`, `Fixed`, `Modified`, `Removed`, `Untested Fea
 
 **formsflow-web**
 * Removed workflow selection from form edit page
+
+**forms-flow-api**
+* Removed form_mapper create API
 <br><br>
 
 *Upgrade notes:*

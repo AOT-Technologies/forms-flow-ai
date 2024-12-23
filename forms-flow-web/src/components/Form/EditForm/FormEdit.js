@@ -123,6 +123,9 @@ const EditComponent = () => {
   const [workflowIsChanged, setWorkflowIsChanged] = useState(false);
   const [migration, setMigration] = useState(false);
 
+  /* ------------------------- migration states ------------------------- */
+  const [isMigrationLoading, setIsMigrationLoading] = useState(false);
+
   /* --------- validate form title exist or not --------- */
   const {
     mutate: validateFormTitle, // this function will trigger the api call
@@ -963,7 +966,7 @@ const EditComponent = () => {
   return (
     <div>
       <div>
-        <NavigateBlocker isBlock={formChangeState.changed || workflowIsChanged} message={"You have made changes that are not saved yet. The unsaved changes could be either on the Layout or the Flow side."} />
+        <NavigateBlocker isBlock={(formChangeState.changed || workflowIsChanged) && !isMigrationLoading} message={"You have made changes that are not saved yet. The unsaved changes could be either on the Layout or the Flow side."} />
         <LoadingOverlay active={formSubmitted} spinner text={t("Loading...")}>
           <SettingsModal
             show={showSettingsModal}
@@ -1139,7 +1142,8 @@ const EditComponent = () => {
                 mapperId={processListData.id}
                 layoutNotsaved={formChangeState.changed}
                 handleCurrentLayout={handleCurrentLayout}
-
+                isMigrationLoading={isMigrationLoading}
+                setIsMigrationLoading={setIsMigrationLoading}
               />}
             </div>
             <button

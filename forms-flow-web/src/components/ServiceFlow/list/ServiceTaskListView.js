@@ -128,7 +128,7 @@ const ServiceTaskListView = React.memo((props) => {
     if ((tasksCount || taskList.length) && selectedFilter) {
       return (
         <>
-          <div className="list-container ">
+          <div className="list-container service-task-details">
             {taskList?.map((task, index) => {
               const adjustedValues = adjustTaskAttributes(
                 task?._embedded?.variable

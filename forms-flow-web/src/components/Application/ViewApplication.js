@@ -11,7 +11,6 @@ import {
   setApplicationDetailLoader,
   setApplicationDetailStatusCode,
 } from "../../actions/applicationActions";
-import ProcessDiagram from "../BPMN/ProcessDiagramHook";
 import History from "./ApplicationHistory";
 import View from "../Form/Item/Submission/Item/View";
 import { getForm, getSubmission } from "@aot-technologies/formio-react";
@@ -32,9 +31,6 @@ const ViewApplication = React.memo(() => {
   );
   const isApplicationDetailLoading = useSelector(
     (state) => state.applications.isApplicationDetailLoading
-  );
-  const applicationProcess = useSelector(
-    (state) => state.applications.applicationProcess
   );
   const tenantKey = useSelector((state) => state.tenants?.tenantId);
   const dispatch = useDispatch();
@@ -120,17 +116,6 @@ const ViewApplication = React.memo(() => {
           title={<Translation>{(t) => t("History")}</Translation>}
         >
           <History page="application-detail" applicationId={applicationId} />
-        </Tab>
-        <Tab
-          data-testid="submissions-process-diagram-tab"
-          eventKey="process-diagram"
-          title={<Translation>{(t) => t("Process Diagram")}</Translation>}
-        >
-          <ProcessDiagram
-            processKey={applicationProcess.processKey}
-            processInstanceId={applicationDetail.processInstanceId}
-            tenant={applicationDetail.processTenant}
-          />
         </Tab>
       </Tabs>
     </div>

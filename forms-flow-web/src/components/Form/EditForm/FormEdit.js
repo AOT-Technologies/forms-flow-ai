@@ -357,12 +357,29 @@ const EditComponent = () => {
     FORM: "FORM",
     WORKFLOW: "WORKFLOW",
   };
+  useEffect(() => {
+    const queryParams = new URLSearchParams(location.search);
+    const view = queryParams.get("view");
+    if (view === "flow") {
+      setCurrentLayout(FLOW_LAYOUT);
+      sideTabRef.current = true;
+    } else {
+      setCurrentLayout(FORM_LAYOUT);
+    }
+  }, [location.search]);
 
-  // handling form layout and flow layout
   const handleCurrentLayout = (e) => {
     //wehn the current is assigned with element then only the visible class will render
     sideTabRef.current = e;
-    setCurrentLayout(isFormLayout ? FLOW_LAYOUT : FORM_LAYOUT);
+    const newLayout = isFormLayout ? FLOW_LAYOUT : FORM_LAYOUT;
+    setCurrentLayout(newLayout);
+
+    const queryParams = newLayout === FLOW_LAYOUT ? "view=flow" : "";
+    const newUrl = `${redirectUrl}formflow/${formId}/edit${
+      queryParams ? `?${queryParams}` : ""
+    }`;
+
+    dispatch(push(newUrl));
   };
 
   const handleCloseSelectedAction = () => {
@@ -661,7 +678,7 @@ const EditComponent = () => {
       .then((res) => {
         const form = res.data;
         dispatch(setFormSuccessData("form", form));
-        dispatch(push(`${redirectUrl}formflow/${form._id}/edit/`));
+        dispatch(push(`${redirectUrl}formflow/${form._id}/edit`));
       })
       .catch((err) => {
         let error;
@@ -709,8 +726,6 @@ const EditComponent = () => {
       await actionFunction(processListData.id);
       if (isPublished) {
         await fetchProcessDetails(processListData);
-      } else {
-        backToForm();
       }
       setPromptNewVersion(isPublished);
       setIsPublished(!isPublished);

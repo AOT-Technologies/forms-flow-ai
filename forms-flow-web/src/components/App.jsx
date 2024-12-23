@@ -19,8 +19,7 @@ const App = React.memo((props) => {
   const [isPreviewRoute,setIsPreviewRoute] = useState(false);
   useEffect(()=> {
     const location = window.location.pathname;
-    const viewOnlyRoutes = new Set (["view-edit"]);
-    setIsPreviewRoute(() => HelperServices.isViewOnlyRoute(location,viewOnlyRoutes));
+    setIsPreviewRoute(() => HelperServices.HideSideBarRoute(location));
   },[]);
   return (
     <div className={`main-container ${isPreviewRoute && 'm-0'}`}>

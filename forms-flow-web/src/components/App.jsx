@@ -19,7 +19,7 @@ const App = React.memo((props) => {
   const [isPreviewRoute,setIsPreviewRoute] = useState(false);
   useEffect(()=> {
     const location = window.location.pathname;
-    setIsPreviewRoute(() => HelperServices.HideSideBarRoute(location));
+    setIsPreviewRoute(() => HelperServices.hideSideBarRoute(location));
   },[]);
   return (
     <div className={`main-container ${isPreviewRoute && 'm-0'}`}>

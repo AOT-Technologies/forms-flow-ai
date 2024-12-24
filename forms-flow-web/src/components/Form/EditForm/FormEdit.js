@@ -65,12 +65,14 @@ import NavigateBlocker from "../../CustomComponents/NavigateBlocker";
 import { setProcessData, setFormPreviosData, setFormProcessesData } from "../../../actions/processActions.js";
 
 // constant values
-const DUPLICATE = "DUPLICATE";
-const IMPORT = "IMPORT";
-const EXPORT = "EXPORT";
+const ACTION_OPERATIONS = {
+  DUPLICATE : "DUPLICATE",
+  IMPORT : "IMPORT",
+  EXPORT : "EXPORT",
+  DELETE : "DELETE"
+};
 const FORM_LAYOUT = "FORM_LAYOUT";
 const FLOW_LAYOUT = "FLOW_LAYOUT";
-const DELETE = "DELETE";
 
 const EditComponent = () => {
   const dispatch = useDispatch();
@@ -122,6 +124,13 @@ const EditComponent = () => {
   const [formChangeState, setFormChangeState] = useState({ initial: false, changed: false });
   const [workflowIsChanged, setWorkflowIsChanged] = useState(false);
   const [migration, setMigration] = useState(false);
+
+  /* ------------------------- migration states ------------------------- */
+  const [isMigrationLoading, setIsMigrationLoading] = useState(false);
+
+  /* ------------------------- deletion states ------------------------- */
+  const [isDeletionLoading, setIsDeletionLoading] = useState(false);
+
 
   /* --------- validate form title exist or not --------- */
   const {
@@ -245,7 +254,7 @@ const EditComponent = () => {
       /* ------------------------- if the form id changed ------------------------- */
       const formId = responseData.mapper?.formId;
       if(formId && formData._id != formId){
-        dispatch(push(`${redirectUrl}formflow/${formId}/edit/`));
+        dispatch(push(`${redirectUrl}formflow/${formId}/edit`));
         return;
       }
       updateLayout({formExtracted, responseData});
@@ -375,16 +384,17 @@ const EditComponent = () => {
     setCurrentLayout(newLayout);
 
     const queryParams = newLayout === FLOW_LAYOUT ? "view=flow" : "";
-    const newUrl = `${redirectUrl}formflow/${formId}/edit${
-      queryParams ? `?${queryParams}` : ""
-    }`;
+    const newUrl = `${redirectUrl}formflow/${formId}/edit`;
 
-    dispatch(push(newUrl));
+    dispatch(push({
+      pathname: newUrl,
+      search: queryParams && `?${queryParams}`
+    }));
   };
 
   const handleCloseSelectedAction = () => {
     setSelectedAction(null);
-    if (selectedAction === IMPORT) {
+    if (selectedAction === ACTION_OPERATIONS.IMPORT) {
       setFileItems({
         workflow: {
           majorVersion: null,
@@ -398,7 +408,7 @@ const EditComponent = () => {
       setImportError("");
       setPrimaryButtonText(defaultPrimaryBtnText);
     }
-    if (selectedAction === DUPLICATE) {
+    if (selectedAction === ACTION_OPERATIONS.DUPLICATE) {
       setNameError("");
       setFormSubmitted(false);
     }
@@ -575,6 +585,7 @@ const EditComponent = () => {
       });
       if (!isFormChanged && !promptNewVersion) {
         showToast && toast.success(t("Form updated successfully"));
+        setFormChangeState(prev => ({ ...prev, changed: false }));
         return;
       }
       setShowConfirmModal(false);
@@ -784,7 +795,7 @@ const EditComponent = () => {
       const res = await formCreate(newFormData);
       const response = res.data;
       dispatch(setFormSuccessData("form", response));
-      dispatch(push(`${redirectUrl}formflow/${response._id}/edit/`));
+      dispatch(push(`${redirectUrl}formflow/${response._id}/edit`));
       setPromptNewVersion(false);
     } catch (err) {
       const error = err.response?.data || err.message;
@@ -897,8 +908,11 @@ const EditComponent = () => {
   // deleting form hardly from formio and mark inactive in mapper table
   const deleteModal = () => {
     if (!applicationCount) {
-      dispatch(deleteForm("form", formId));
-      dispatch(push(`${redirectUrl}formflow`));
+      setIsDeletionLoading(true);
+      dispatch(deleteForm("form", formId,() => {
+        // Callback after form deletion;
+        dispatch(push(`${redirectUrl}formflow`));
+      }));
     }
 
     if (processListData.id) {
@@ -920,7 +934,7 @@ const EditComponent = () => {
   const renderDeleteModal = () => {
     const hasSubmissions = processListData.id && applicationCount;
     const commonProps = {
-      show: selectedAction === DELETE,
+      show: selectedAction === ACTION_OPERATIONS.DELETE,
       primaryBtnAction: handleCloseActionModal,
       onClose: handleCloseActionModal,
     };
@@ -958,6 +972,8 @@ const EditComponent = () => {
           primaryBtndataTestid="no-delete-button"
           primaryBtnariaLabel="No, Keep This Form"
           secondoryBtnariaLabel="Yes, Delete the Form"
+          secondaryBtnDisable={isDeletionLoading}
+          secondaryBtnLoading={isDeletionLoading}
         />
       );
     }
@@ -978,7 +994,7 @@ const EditComponent = () => {
   return (
     <div>
       <div>
-        <NavigateBlocker isBlock={formChangeState.changed || workflowIsChanged} message={"You have made changes that are not saved yet. The unsaved changes could be either on the Layout or the Flow side."} />
+        <NavigateBlocker isBlock={(formChangeState.changed || workflowIsChanged) && (!isMigrationLoading && !isDeletionLoading)} message={"You have made changes that are not saved yet. The unsaved changes could be either on the Layout or the Flow side."} />
         <LoadingOverlay active={formSubmitted} spinner text={t("Loading...")}>
           <SettingsModal
             show={showSettingsModal}
@@ -1154,7 +1170,8 @@ const EditComponent = () => {
                 mapperId={processListData.id}
                 layoutNotsaved={formChangeState.changed}
                 handleCurrentLayout={handleCurrentLayout}
-
+                isMigrationLoading={isMigrationLoading}
+                setIsMigrationLoading={setIsMigrationLoading}
               />}
             </div>
             <button
@@ -1178,7 +1195,7 @@ const EditComponent = () => {
         modalHeader={t("Duplicate")}
         nameLabel={t("New Form Name")}
         descriptionLabel={t("New Form Description")}
-        showBuildForm={selectedAction === DUPLICATE}
+        showBuildForm={selectedAction === ACTION_OPERATIONS.DUPLICATE}
         isSaveBtnLoading={formSubmitted}
         isFormNameValidating={validationLoading}
         onClose={handleCloseSelectedAction}
@@ -1189,10 +1206,10 @@ const EditComponent = () => {
         nameError={nameError}
       />
 
-      {selectedAction === IMPORT && <ImportModal
+      {selectedAction === ACTION_OPERATIONS.IMPORT && <ImportModal
         importLoader={importLoader}
         importError={importError}
-        showModal={selectedAction === IMPORT}
+        showModal={selectedAction === ACTION_OPERATIONS.IMPORT}
         uploadActionType={UploadActionType}
         formName={formTitle}
         onClose={handleCloseSelectedAction}
@@ -1204,7 +1221,7 @@ const EditComponent = () => {
       />}
 
       <ExportModal
-        showExportModal={selectedAction === EXPORT}
+        showExportModal={selectedAction === ACTION_OPERATIONS.EXPORT}
         onClose={handleCloseSelectedAction}
         mapperId={processListData.id}
         formTitle={form.title}

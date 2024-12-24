@@ -134,7 +134,7 @@ const ExportModal = React.memo(({ showExportModal, onClose, mapperId, formTitle 
 ExportModal.propTypes = {
   showExportModal:PropTypes.bool.isRequired, 
   onClose:PropTypes.func.isRequired, 
-  mapperId: PropTypes.any.isRequired, 
+  mapperId: PropTypes.any, 
   formTitle:PropTypes.string.isRequired
 };
 

@@ -39,7 +39,8 @@ import TaskVariableModal from "../../Modals/TaskVariableModal.js";
 
 const FlowEdit = forwardRef(({ isPublished = false, CategoryType,
   setWorkflowIsChanged, migration, setMigration, redirectUrl,
-  isMigrated = true, mapperId,layoutNotsaved, handleCurrentLayout }, ref) => {
+  isMigrated = true, mapperId,layoutNotsaved, handleCurrentLayout,
+  isMigrationLoading, setIsMigrationLoading  }, ref) => {
   const { t } = useTranslation();
   const dispatch = useDispatch();
   const bpmnRef = useRef();
@@ -54,7 +55,6 @@ const FlowEdit = forwardRef(({ isPublished = false, CategoryType,
   const [isWorkflowChanged, setIsWorkflowChanged] = useState(false);
   const [isMigrationChecked, setIsMigrationChecked] = useState(false);
   const [showMigrationModal, setShowMigrationModal] = useState(false);
-  const [isMigraionLoading, setIsMigraionLoading] = useState(false);
    /* --------- fetching all process history when click history button --------- */
   const {
     data: { data: historiesData } = {}, // response data destructured
@@ -100,8 +100,8 @@ const FlowEdit = forwardRef(({ isPublished = false, CategoryType,
     }
   }, [migration]);
 
-  const handleMigraion = () => {
-    setIsMigraionLoading(true);
+  const handleMigration = () => {
+    setIsMigrationLoading(true);
     const migrationData = {
       mapperId: mapperId,
       processKey: processData.processKey
@@ -111,13 +111,14 @@ const FlowEdit = forwardRef(({ isPublished = false, CategoryType,
         dispatch(push(`${redirectUrl}formflow`));
       })
       .catch((err) => {
+        setIsMigrationLoading(false); // this is not added in finally as this props value is used for overriding navigation blocker during routing
         console.log(err);
       })
       .finally(() => {
-        setIsMigraionLoading(false);
         setShowMigrationModal(false);
       });
-  };//handle discard changes
+  };
+  //handle discard changes
     const handleDiscardConfirm = () => {
       if (bpmnRef.current) {
         //import the existing process data to bpmn
@@ -295,7 +296,8 @@ const FlowEdit = forwardRef(({ isPublished = false, CategoryType,
               </div>
             </LoadingOverlay>
           </Card.Body>
-        </Card>{showMigrationModal && <ConfirmModal
+        </Card>
+        {showMigrationModal && <ConfirmModal
         show={showMigrationModal}
         title={t("***Migration Notice***")}
         message={
@@ -336,23 +338,26 @@ const FlowEdit = forwardRef(({ isPublished = false, CategoryType,
                   type="checkbox"
                   className="form-check-input mb-2"
                   onChange={() => setIsMigrationChecked(prev => !prev)}
+                  data-testid="migration-confirm"
                   checked={isMigrationChecked}
                 />
                 <label className="message-primary">{t(`I confirm`)}</label>
+                
               </div>
             </div>
           </div >
         }
         primaryBtnDisable={!isMigrationChecked}
         messageSecondary={null} // You can set this to `null` or remove it entirely if unused
-        primaryBtnAction={handleMigraion}
+        primaryBtnAction={handleMigration}
         onClose={handleCloseMigration}
         primaryBtnText={t("Link this form that will keep the current flow and its history")}
         secondaryBtnText={t("Cancel")}
         secondayBtnAction={handleCloseMigration}
-        buttonLoading={isMigraionLoading}
+        buttonLoading={isMigrationLoading}
         size="sm"
       />}
+      
         <HistoryModal
           show={showHistoryModal}
           onClose={handleToggleHistoryModal}
@@ -392,7 +397,9 @@ FlowEdit.propTypes = {
   isMigrated: PropTypes.bool,
   mapperId: PropTypes.string,
   layoutNotsaved: PropTypes.bool.isRequired,
-  handleCurrentLayout: PropTypes.func
+  handleCurrentLayout: PropTypes.func,
+  isMigrationLoading: PropTypes.bool,
+  setIsMigrationLoading: PropTypes.func
 };
 
 export default FlowEdit;

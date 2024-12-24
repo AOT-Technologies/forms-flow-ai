@@ -399,7 +399,7 @@ const TaskVariableModal = React.memo(
         show={showTaskVarModal}
         onHide={handleClose}
         className="task-variable-modal"
-        size="lg"
+        size="sm"
         centered={true}
       >
         <Modal.Header>

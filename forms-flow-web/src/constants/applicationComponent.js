@@ -99,7 +99,7 @@ const addHiddenComponent = (components, componentConfig, form) => {
 export const addHiddenApplicationComponent = (form) => {
   const components = form.components || [];
 
-  // Define configuration for all hidden components
+  // Define configuration for all additional components
   const hiddenComponents = [
     { label: "Submission Id", key: "applicationId", persistent: true},
     { label: "Submission Status", key: "applicationStatus", persistent:true },
@@ -123,9 +123,11 @@ export const addHiddenApplicationComponent = (form) => {
     },
   ];
 
+
+  const additionalComponents = [];
   // Add a submit button only if the form is not a wizard
   if (form.display !== "wizard") {
-    hiddenComponents.push({
+    additionalComponents.push({
       type: "button",
       label: "Submit",
       key: "submit",
@@ -134,9 +136,11 @@ export const addHiddenApplicationComponent = (form) => {
       tableView: false
     });
   }
+  additionalComponents.push(...hiddenComponents);
 
-  // Loop through and add each hidden component
-  hiddenComponents.forEach(({ label, key, customDefaultValue, ...rest }) => {
+
+  // Loop through and add each additional component
+  additionalComponents.forEach(({ label, key, customDefaultValue, ...rest }) => {
     const componentConfig = key === "submit" 
       ? { key, label, ...rest } 
       : createHiddenComponent({label, key, customDefaultValue, persistent:rest.persistent });

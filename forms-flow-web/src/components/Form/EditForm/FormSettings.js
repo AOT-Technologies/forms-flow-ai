@@ -453,4 +453,8 @@ const FormSettings = forwardRef((props, ref) => {
   );
 });
 
+FormSettings.propTypes = {
+  setIsSaveButtonDisabled: PropTypes.func.isRequired,
+};
+
 export default FormSettings;

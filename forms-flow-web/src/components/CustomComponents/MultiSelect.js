@@ -113,6 +113,7 @@ RoleSelector.propTypes = {
   allRoles: PropTypes.array,
   selectedRoles: PropTypes.array.isRequired, 
   setSelectedRoles: PropTypes.func.isRequired, 
+  openByDefault: PropTypes.bool,
 };
  
 export default RoleSelector;

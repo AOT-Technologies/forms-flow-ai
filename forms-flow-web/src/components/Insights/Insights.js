@@ -113,9 +113,8 @@ const Insights = React.memo((props) => {
 
             {activeDashboard.public_url ? (
               <iframe
-                height="436"
                 title="dashboard"
-                className="w-100 min-vh-60 overflow-visible border-none"
+                className="insight-iframe"
                 src={activeDashboard.public_url}
               />
             ) : !isDashboardDetailUpdated ? (

@@ -37,7 +37,7 @@ const SortableHeader = ({ columnKey, title, currentSort, handleSort,className = 
     title: PropTypes.string.isRequired,
     currentSort: PropTypes.shape({
       activeKey: PropTypes.string.isRequired,
-      sortOrder: PropTypes.oneOf(['asc', 'desc']).isRequired, 
+      sortOrder: PropTypes.oneOf(['asc', 'desc']), 
     }).isRequired,
     handleSort: PropTypes.func.isRequired,
     className: PropTypes.string,              

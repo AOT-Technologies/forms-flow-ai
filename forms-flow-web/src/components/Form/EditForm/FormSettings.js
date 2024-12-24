@@ -25,6 +25,7 @@ import _camelCase from "lodash/camelCase";
 import _cloneDeep from "lodash/cloneDeep";
 import { validateFormName, validatePathName } from "../../../apiManager/services/FormServices";
 import { HelperServices } from "@formsflow/service";
+import PropTypes from 'prop-types';
 
 //CONST VARIABLES
 const DESIGN = "DESIGN";

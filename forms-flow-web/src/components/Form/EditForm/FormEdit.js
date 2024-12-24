@@ -254,7 +254,7 @@ const EditComponent = () => {
       /* ------------------------- if the form id changed ------------------------- */
       const formId = responseData.mapper?.formId;
       if(formId && formData._id != formId){
-        dispatch(push(`${redirectUrl}formflow/${formId}/edit/`));
+        dispatch(push(`${redirectUrl}formflow/${formId}/edit`));
         return;
       }
       updateLayout({formExtracted, responseData});
@@ -384,11 +384,12 @@ const EditComponent = () => {
     setCurrentLayout(newLayout);
 
     const queryParams = newLayout === FLOW_LAYOUT ? "view=flow" : "";
-    const newUrl = `${redirectUrl}formflow/${formId}/edit${
-      queryParams ? `?${queryParams}` : ""
-    }`;
+    const newUrl = `${redirectUrl}formflow/${formId}/edit`;
 
-    dispatch(push(newUrl));
+    dispatch(push({
+      pathname: newUrl,
+      search: queryParams && `?${queryParams}`
+    }));
   };
 
   const handleCloseSelectedAction = () => {
@@ -794,7 +795,7 @@ const EditComponent = () => {
       const res = await formCreate(newFormData);
       const response = res.data;
       dispatch(setFormSuccessData("form", response));
-      dispatch(push(`${redirectUrl}formflow/${response._id}/edit/`));
+      dispatch(push(`${redirectUrl}formflow/${response._id}/edit`));
       setPromptNewVersion(false);
     } catch (err) {
       const error = err.response?.data || err.message;

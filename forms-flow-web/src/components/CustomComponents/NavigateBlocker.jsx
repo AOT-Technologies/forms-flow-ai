@@ -13,7 +13,8 @@ const NavigateBlocker = React.memo(({ isBlock, message, secondaryMessage }) => {
   useEffect(() => {
     if (isBlock) {
       const unblock = history.block((location) => {
-        if (location.pathname == nextLocation.currentPath) return true;
+        const currentPathname = history.location.pathname;
+        if (location?.pathname == currentPathname) return true;
         if (!nextLocation.onOk) {
           setNextLocation((prev) => ({
             ...prev,

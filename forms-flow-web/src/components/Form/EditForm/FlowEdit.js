@@ -397,7 +397,9 @@ FlowEdit.propTypes = {
   isMigrated: PropTypes.bool,
   mapperId: PropTypes.string,
   layoutNotsaved: PropTypes.bool.isRequired,
-  handleCurrentLayout: PropTypes.func
+  handleCurrentLayout: PropTypes.func,
+  isMigrationLoading: PropTypes.bool,
+  setIsMigrationLoading: PropTypes.func
 };
 
 export default FlowEdit;

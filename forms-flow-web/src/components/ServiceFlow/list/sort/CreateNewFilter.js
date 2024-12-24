@@ -918,7 +918,7 @@ export default function CreateNewFilterDrawer({
                 overlay={
                   <Popover className="z-index">
                     <div className="poper">
-                      <ListGroup>
+                      <ListGroup  className="preview-list-group" >
                         {userGroups.length > 0 &&
                           userGroups?.map((e, i) => (
                             <ListGroup.Item
@@ -964,7 +964,7 @@ export default function CreateNewFilterDrawer({
                     {identifierId}
                     {!viewMode && (
                       <div
-                        className="badge-deleteIcon ms-2"
+                        className="badge-deleteIcon ms-2 cursor-pointer"
                         onClick={() => setIdentifierId(null)}
                       >
                         &times;

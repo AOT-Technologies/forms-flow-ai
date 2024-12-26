@@ -114,6 +114,7 @@ const ViewApplication = React.memo(() => {
           data-testid="submissions-history-tab"
           eventKey="history"
           title={<Translation>{(t) => t("History")}</Translation>}
+          className="service-task-details"
         >
           <History page="application-detail" applicationId={applicationId} />
         </Tab>

@@ -204,7 +204,7 @@ const Dashboard = React.memo(() => {
               />
             </div>
 
-            <div className="d-flex justify-content-end align-items-center col-12 col-md-4 px-0">
+            <div className="d-flex justify-content-end align-items-center col-12 col-md-6 px-0">
               <div className="input-group me-2">
                 <FormControl
                   as="select"
@@ -255,7 +255,7 @@ const Dashboard = React.memo(() => {
             </div>
           </div>
 
-          <div className="dashboard dashboard-height d-flex">
+          <div className="dashboard dashboard-height d-flex service-task-details">
             {submissionsList.length ? (
               <div className="col-12 px-0">
                 {!metricsDateRangeLoader && (

@@ -46,7 +46,7 @@ const FormSettings = forwardRef((props, ref) => {
   const { authorizationDetails: formAuthorization } = useSelector(
     (state) => state.process
   );
-
+  const {parentFormId,formId} = useSelector((state) => state.process.formProcessList);
   /* --------------------------- useState Variables --------------------------- */
   const [userRoles, setUserRoles] = useState([]);
   const [copied, setCopied] = useState(false); 
@@ -120,7 +120,7 @@ const FormSettings = forwardRef((props, ref) => {
       errorMessage = `${field.charAt(0).toUpperCase() + field.slice(1)} is required`;
     } else {
       try {
-        const response = field === 'name' ? await validateFormName(value) : await validatePathName(value);
+        const response = field === 'name' ? await validateFormName(value,parentFormId) : await validatePathName(value,formId);
         const data = response?.data;
         if (data && data.code === "FORM_EXISTS") {
           errorMessage = data.message;

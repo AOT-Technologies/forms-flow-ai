@@ -59,6 +59,8 @@ formsflow.ai:
 
 
 camunda.bpm:
+  database:
+    schema-update: true
   job-execution:
     enabled: true
   history-level: ${CAMUNDA_BPM_HISTORY_LEVEL:none}

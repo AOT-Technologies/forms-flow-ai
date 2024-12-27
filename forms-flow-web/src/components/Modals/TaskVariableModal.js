@@ -211,6 +211,7 @@ const FormComponent = React.memo(
               viewAsHtml: true,
               readOnly: true,
                           }}
+            showHiddenFields={false}
             formReady={(e) => {
               formRef.current = e;
             }}
@@ -399,7 +400,7 @@ const TaskVariableModal = React.memo(
         show={showTaskVarModal}
         onHide={handleClose}
         className="task-variable-modal"
-        size="sm"
+        size="lg"
         centered={true}
       >
         <Modal.Header>

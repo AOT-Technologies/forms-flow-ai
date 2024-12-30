@@ -1011,7 +1011,7 @@ const EditComponent = () => {
                 <div className="d-flex align-items-center justify-content-between">
                   <BackToPrevIcon onClick={backToForm} />
                   <div className="mx-4 editor-header-text">
-                    {textTruncate(90,90,formData.title)}
+                    {textTruncate(75,75,formData.title)}
                   </div>
                   <span
                     data-testid={`form-status-${form._id}`}

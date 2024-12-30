@@ -17,10 +17,17 @@ import { HelperServices } from '@formsflow/service';
 const App = React.memo((props) => {
   const { store, history, publish, subscribe, getKcInstance } = props;
   const [isPreviewRoute,setIsPreviewRoute] = useState(false);
-  useEffect(()=> {
-    const location = window.location.pathname;
-    setIsPreviewRoute(() => HelperServices.hideSideBarRoute(location));
-  },[]);
+
+  useEffect(() => {
+    props.subscribe("ES_ROUTE", (msg,data) => {
+      if (data) {
+        const location = data.pathname;
+        if(location)
+          setIsPreviewRoute(() => HelperServices.hideSideBarRoute(location));
+      }
+    });
+  }, []);
+
   return (
     <div className={`main-container ${isPreviewRoute && 'm-0'}`}>
       <Helmet>

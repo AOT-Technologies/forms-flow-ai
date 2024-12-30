@@ -52,6 +52,7 @@ const App = React.memo((props) => {
 App.propTypes = {
   history: PropTypes.any.isRequired,
   store: PropTypes.any.isRequired,
+  subscribe: PropTypes.func,
 };
 
 export default App;

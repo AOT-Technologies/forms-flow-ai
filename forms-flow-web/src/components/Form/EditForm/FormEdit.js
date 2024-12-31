@@ -50,6 +50,7 @@ import {
   saveFormProcessMapperPut,
   getProcessDetails,
   unPublishForm,
+  getFormProcesses
 } from "../../../apiManager/services/processServices";
 import _ from "lodash";
 import SettingsModal from "../../Modals/SettingsModal";
@@ -737,6 +738,7 @@ const EditComponent = () => {
       await actionFunction(processListData.id);
       if (isPublished) {
         await fetchProcessDetails(processListData);
+        dispatch(getFormProcesses(formId));
       }
       setPromptNewVersion(isPublished);
       setIsPublished(!isPublished);

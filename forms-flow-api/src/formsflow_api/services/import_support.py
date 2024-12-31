@@ -748,7 +748,10 @@ class ImportService:  # pylint: disable=too-many-public-methods
                         selected_workflow_version,
                     )
         if mapper_response:
-            response["mapper"] = FormProcessMapperSchema().dump(mapper_response)
+            mapper_response = FormProcessMapperSchema().dump(mapper_response)
+            if task_variables := mapper_response.get("taskVariables"):
+                mapper_response["taskVariables"] = json.loads(task_variables)
+            response["mapper"] = mapper_response
         if process:
             response["process"] = ProcessDataSchema().dump(process)
         return response

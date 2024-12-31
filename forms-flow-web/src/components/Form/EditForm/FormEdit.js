@@ -361,6 +361,7 @@ const EditComponent = () => {
   const [newActionModal, setNewActionModal] = useState(false);
   const [isSettingsSaving, setIsSettingsSaving] = useState(false);
   const onCloseActionModal = () => setNewActionModal(false);
+  const processData = useSelector((state) => state.process?.processData);
 
   const CategoryType = {
     FORM: "FORM",
@@ -683,7 +684,13 @@ const EditComponent = () => {
     delete newFormData.parentFormId;
     newFormData.newVersion = true;
     newFormData.description = description;
-    delete newFormData._id;
+    delete newFormData._id; 
+
+    //Process details for duplicate .
+    if (selectedAction == ACTION_OPERATIONS.DUPLICATE) {
+      newFormData.processData = processData?.processData;
+      newFormData.processType = processData?.processType;
+    }
 
     formCreate(newFormData)
       .then((res) => {

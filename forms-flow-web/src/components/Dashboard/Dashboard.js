@@ -82,6 +82,11 @@ const Dashboard = React.memo(() => {
     { value: "30", label: "30" },
     { value: totalItems, label: "All" },
   ];
+   useEffect(() => {
+      if (!searchTextInput?.trim()) {
+        dispatch(setMetricsSubmissionSearch(""));
+      }
+    }, [searchTextInput]);
   // Function to handle search text
   const handleSearch = () => {
     dispatch(setMetricsSubmissionPageChange(1));
@@ -90,8 +95,9 @@ const Dashboard = React.memo(() => {
   };
   const onClear = () => {
     setSearchTextInput("");
-    handleSearch();
+    dispatch(setMetricsSubmissionSearch(""));
   };
+  
 
   // Function to handle sort for submission data
   const handleSort = (updateSort) => {

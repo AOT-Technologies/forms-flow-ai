@@ -62,7 +62,6 @@ const List = React.memo((props) => {
   // const [formDescription, setFormDescription] = useState("");
   const [nameError, setNameError] = useState("");
   const dispatch = useDispatch();
-  const redirectUrl = MULTITENANCY_ENABLED ? `/tenant/${tenantKey}/` : "/";
   const submissionAccess = useSelector((state) => state.user?.submissionAccess || []);
 
   const [formSubmitted, setFormSubmitted] = useState(false);

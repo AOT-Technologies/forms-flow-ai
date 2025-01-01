@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { connect, useSelector, useDispatch } from "react-redux";
 import CreateFormModal from "../Modals/CreateFormModal.js";
-import { push } from "connected-react-router";
 import { toast } from "react-toastify";
 import { addTenantkey } from "../../helper/helper";
 import { selectRoot, selectError, Errors, deleteForm } from "@aot-technologies/formio-react";
@@ -38,6 +37,7 @@ import FileService from "../../services/FileService";
 import { FormBuilderModal, ImportModal, CustomSearch, CustomButton } from "@formsflow/components";
 import { useMutation } from "react-query";
 import { addHiddenApplicationComponent } from "../../constants/applicationComponent";
+import { navigateToDesignFormEdit } from "../../helper/routerHelper.js";
 
 const List = React.memo((props) => {
   const { createDesigns, createSubmissions, viewDesigns } = userRoles();
@@ -204,7 +204,7 @@ const List = React.memo((props) => {
           }
         
       } else if (formId) {
-        dispatch(push(`${redirectUrl}formflow/${formId}/edit/`));
+        navigateToDesignFormEdit(dispatch,tenantKey,formId);
       }
     } catch (err) {
       setImportLoader(false);
@@ -275,8 +275,7 @@ const List = React.memo((props) => {
     formCreate(newForm).then((res) => {
       const form = res.data;
       dispatch(setFormSuccessData("form", form));
-      dispatch(push(`${redirectUrl}formflow/${form._id}/edit/`));
-
+      navigateToDesignFormEdit(dispatch,tenantKey,form._id);
     }).catch((err) => {
       let error;
       if (err.response?.data) {

@@ -96,7 +96,7 @@ export default function CreateNewFilterDrawer({
   const tenantKey = useSelector((state) => state.tenants?.tenantId);
   const process = useSelector((state) => state.process?.processList);
   const processList = useMemo(() => listProcess(process, true), [process]);
-  const { createFilters, admin, manageAllFilters } = userRoles();
+  const { createFilters, admin } = userRoles();
   const userGroups = useSelector(
     (state) => state.userAuthorization?.userGroups
   );
@@ -1041,7 +1041,7 @@ export default function CreateNewFilterDrawer({
   return (
     <div>
       <React.Fragment key="left">
-        {(createFilters || manageAllFilters) && (
+        {createFilters  && (
       <button
         onClick={() => {
           toggleDrawer();

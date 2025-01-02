@@ -44,7 +44,7 @@ const ChartForm = React.memo((props) => {
           <div>
           <div className="d-flex align-items-center">
             <span className="text-primary me-2" >{t("Form Name")} : </span>
-            <h2 className="text-truncate mt-0" style={{ maxWidth: version > 1 ? "500px" : "450px"}}>{formName}</h2>
+            <h2 className="text-truncate mt-0" style={{ maxWidth: version > 1 ? "500px" : "700px"}}>{formName}</h2>
           </div>
           <p>
             <span className="text-primary" >{t("Latest Version")} :</span>{" "}

@@ -86,11 +86,14 @@ Mark  items as `Added`, `Changed`, `Fixed`, `Modified`, `Removed`, `Untested Fea
    * sub flow and decision table redesign
    * Form create, mapper create and authorization create apis combined into form-design
 
+**forms-flow-bpm**
+* Existing users, refer [here](./forms-flow-bpm/migration#migration-tasks-for-bpm) for forms-flow-bpm migration changes
+
 **forms-flow-documents**
 * Modified endpoint authorizations  based on updated  permission mechanism
 
 **forms-flow-idm**
-* Refer [here](https://github.com/AOT-Technologies/forms-flow-ai/blob/develop/forms-flow-idm/README.md)Permission matrix migration changes in IDM 
+* Refer [here](./forms-flow-idm/README.md)Permission matrix migration changes in IDM 
 <br><br>
 
 

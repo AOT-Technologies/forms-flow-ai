@@ -306,7 +306,7 @@ const View = React.memo((props) => {
   }}
 />
           {processData?.status === "active" ? (
-            <div className="form-view-wrapper wizard-tab">
+            <div className="form-view-wrapper wizard-tab service-task-details">
               <Form
                 form={form}
                 submission={submission.submission}

@@ -73,7 +73,7 @@ const View = React.memo((props) => {
         text={t("Loading...")}
         className="col-12"
       >
-        <div className="sub-container">
+        <div className="sub-container wizard-tab">
           <Form
             form={form}
             submission={updatedSubmission}

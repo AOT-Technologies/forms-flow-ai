@@ -49,7 +49,7 @@ const BPMNViewer = ({ bpmnXml }) => {
 };
 
 BPMNViewer.propTypes = {
-    bpmnXml: PropTypes.string.isRequired,
+    bpmnXml: PropTypes.string,
 };
 
 export default BPMNViewer;

@@ -96,7 +96,7 @@ export default function CreateNewFilterDrawer({
   const tenantKey = useSelector((state) => state.tenants?.tenantId);
   const process = useSelector((state) => state.process?.processList);
   const processList = useMemo(() => listProcess(process, true), [process]);
-  const { createFilters, admin, manageAllFilters } = userRoles();
+  const { createFilters, admin } = userRoles();
   const userGroups = useSelector(
     (state) => state.userAuthorization?.userGroups
   );
@@ -918,7 +918,7 @@ export default function CreateNewFilterDrawer({
                 overlay={
                   <Popover className="z-index">
                     <div className="poper">
-                      <ListGroup>
+                      <ListGroup  className="preview-list-group" >
                         {userGroups.length > 0 &&
                           userGroups?.map((e, i) => (
                             <ListGroup.Item
@@ -964,7 +964,7 @@ export default function CreateNewFilterDrawer({
                     {identifierId}
                     {!viewMode && (
                       <div
-                        className="badge-deleteIcon ms-2"
+                        className="badge-deleteIcon ms-2 cursor-pointer"
                         onClick={() => setIdentifierId(null)}
                       >
                         &times;
@@ -1041,7 +1041,7 @@ export default function CreateNewFilterDrawer({
   return (
     <div>
       <React.Fragment key="left">
-        {(createFilters || manageAllFilters) && (
+        {createFilters  && (
       <button
         onClick={() => {
           toggleDrawer();

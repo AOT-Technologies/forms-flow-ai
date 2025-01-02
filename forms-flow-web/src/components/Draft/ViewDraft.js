@@ -15,7 +15,6 @@ import { fetchAllBpmProcesses } from "../../apiManager/services/processServices"
 import { getDraftById } from "../../apiManager/services/draftService";
 import { setDraftDetailStatusCode } from "../../actions/draftActions";
 import { setDraftDetail } from "../../actions/draftActions";
-import ProcessDiagram from "../BPMN/ProcessDiagramHook";
 
 const ViewDraft = React.memo(() => {
   const { t } = useTranslation();
@@ -95,16 +94,6 @@ const ViewDraft = React.memo(() => {
           title={<Translation>{(t) => t("Form")}</Translation>}
         >
           <View page="draft-detail" showPrintButton={false} />
-        </Tab>
-        <Tab
-          data-testid="draft-process-diagram-tab"
-          eventKey="process-diagram"
-          title={<Translation>{(t) => t("Process Diagram")}</Translation>}
-        >
-          <ProcessDiagram
-            processKey={draftDetail.processKey}
-            tenant={draftDetail?.processTenant}
-          />
         </Tab>
       </Tabs>
     </div>

@@ -126,7 +126,7 @@ function ClientTable() {
         spinner
         text={t("Loading...")}
       >
-      <div className="min-height-400">
+      <div>
         <div className="table-responsive" style={{ maxHeight: "75vh", overflowY: "auto" }}>
           <table className="table custom-table table-responsive-sm">
             <thead>

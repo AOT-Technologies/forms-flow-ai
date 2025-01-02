@@ -138,7 +138,7 @@ const SubmitList = React.memo((props) => {
 });
 
 SubmitList.propTypes = {
-  getFormsInit: PropTypes.bool.isRequired,
+  getFormsInit: PropTypes.bool,
 };
 
 export default SubmitList;

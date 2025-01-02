@@ -147,7 +147,7 @@ const BpmnEditor = forwardRef(({ bpmnXml, setLintErrors, onChange = ()=>{} }, re
 
 // Adding PropTypes validation for the props
 BpmnEditor.propTypes = {
-  bpmnXml: PropTypes.string.isRequired,
+  bpmnXml: PropTypes.string,
   setLintErrors: PropTypes.func.isRequired,
   onChange: PropTypes.func,
 };

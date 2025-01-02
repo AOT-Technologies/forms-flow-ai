@@ -25,6 +25,7 @@ import _camelCase from "lodash/camelCase";
 import _cloneDeep from "lodash/cloneDeep";
 import { validateFormName, validatePathName } from "../../../apiManager/services/FormServices";
 import { HelperServices } from "@formsflow/service";
+import PropTypes from 'prop-types';
 
 //CONST VARIABLES
 const DESIGN = "DESIGN";
@@ -45,7 +46,7 @@ const FormSettings = forwardRef((props, ref) => {
   const { authorizationDetails: formAuthorization } = useSelector(
     (state) => state.process
   );
-
+  const {parentFormId,formId} = useSelector((state) => state.process.formProcessList);
   /* --------------------------- useState Variables --------------------------- */
   const [userRoles, setUserRoles] = useState([]);
   const [copied, setCopied] = useState(false); 
@@ -119,7 +120,7 @@ const FormSettings = forwardRef((props, ref) => {
       errorMessage = `${field.charAt(0).toUpperCase() + field.slice(1)} is required`;
     } else {
       try {
-        const response = field === 'name' ? await validateFormName(value) : await validatePathName(value);
+        const response = field === 'name' ? await validateFormName(value,parentFormId) : await validatePathName(value,formId);
         const data = response?.data;
         if (data && data.code === "FORM_EXISTS") {
           errorMessage = data.message;
@@ -223,7 +224,27 @@ const FormSettings = forwardRef((props, ref) => {
       },
       rolesState: rolesState,
     };
-  });
+  }); 
+  
+  useEffect(() => {
+    const isAnyRoleEmpty = Object.values(rolesState).some(
+      (section) =>
+        section.selectedOption === "specifiedRoles" &&
+        section.selectedRoles.length === 0
+    );
+  
+    const hasFormErrors =
+      errors.path !== "" ||
+      errors.name !== "" ||
+      formDetails.title === "" ||
+      formDetails.path === "";
+  
+    // checking both values for disabling the save changes button  
+    const shouldDisableSaveButton = isAnyRoleEmpty || hasFormErrors;
+
+    props.setIsSaveButtonDisabled(shouldDisableSaveButton);
+  }, [rolesState, errors, formDetails]);
+  
 
   return (
     <>
@@ -231,6 +252,7 @@ const FormSettings = forwardRef((props, ref) => {
       <div className="section">
         <h5 className="fw-bold">{t("Basic")}</h5>
         <FormInput
+          required
           value={formDetails.title}
           label={t("Name")}
           onChange={handleFormDetailsChange}
@@ -240,7 +262,7 @@ const FormSettings = forwardRef((props, ref) => {
           isInvalid = {!!errors.name}
           feedback = {errors.name}
           turnOnLoader={isValidating.name}
-          onBlur={() => handleBlur('name', formDetails.title)}         
+          onBlur={() => handleBlur('name', formDetails.title)}    
            />
         <FormTextArea
           label={t("Description")}
@@ -302,6 +324,7 @@ const FormSettings = forwardRef((props, ref) => {
         )}
         {rolesState.DESIGN.selectedOption === "specifiedRoles" && (
           <MultiSelectComponent
+            openByDefault
             allRoles={userRoles}
             selectedRoles={rolesState.DESIGN.selectedRoles}
             setSelectedRoles={(roles) =>
@@ -350,6 +373,7 @@ const FormSettings = forwardRef((props, ref) => {
         )}
         {rolesState.FORM.selectedOption === "specifiedRoles" && (
           <MultiSelectComponent
+            openByDefault 
             allRoles={userRoles}
             selectedRoles={rolesState.FORM.selectedRoles}
             setSelectedRoles={(roles) =>
@@ -389,6 +413,7 @@ const FormSettings = forwardRef((props, ref) => {
 
         {rolesState.APPLICATION.selectedOption === "specifiedRoles" && (
           <MultiSelectComponent
+            openByDefault
             allRoles={userRoles}
             selectedRoles={rolesState.APPLICATION.selectedRoles}
             setSelectedRoles={(roles) =>
@@ -404,7 +429,7 @@ const FormSettings = forwardRef((props, ref) => {
         <CustomInfo heading="Note" 
         content="Making changes to your form URL will make your form inaccessible from your current URL." />
         <Form.Group className="settings-input w-100" controlId="url-input">
-          <Form.Label className="field-label">{t("URL Path")}</Form.Label>
+          <Form.Label className="field-label">{t("URL")} <span className='required-icon'>*</span></Form.Label>
           <InputGroup className="url-input">
             <InputGroup.Text className="url-non-edit">
               {urlPath}
@@ -428,5 +453,9 @@ const FormSettings = forwardRef((props, ref) => {
     </>
   );
 });
+
+FormSettings.propTypes = {
+  setIsSaveButtonDisabled: PropTypes.func.isRequired,
+};
 
 export default FormSettings;

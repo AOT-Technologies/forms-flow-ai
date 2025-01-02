@@ -5,14 +5,23 @@ import { CustomPill,DeleteIcon } from "@formsflow/components";
 import PropTypes from 'prop-types';
 import { HelperServices } from "@formsflow/service";
 
-const RoleSelector = ({ allRoles = [], selectedRoles = [], setSelectedRoles }) => { 
+const RoleSelector = ({
+  allRoles = [],
+  selectedRoles = [],
+  setSelectedRoles,
+  openByDefault = false,
+}) => {
   const [roleInput, setRoleInput] = useState("");
   const [filteredRoles, setFilteredRoles] = useState([]);
   const [isDropdownOpen, setIsDropdownOpen] = useState(false); // To control dropdown visibility
   const dropDownRef = useRef(null);
   const inputRef = useRef(null);
   const tenantKey = useSelector((state) => state.tenants?.tenantId);
-
+  useEffect(() => {
+    if (openByDefault && inputRef.current && !selectedRoles.length) {
+      inputRef.current.focus();
+    }
+  }, [openByDefault]);
   // Filter roles based on input
   useEffect(() => {
     const filtered = allRoles.filter(
@@ -104,6 +113,7 @@ RoleSelector.propTypes = {
   allRoles: PropTypes.array,
   selectedRoles: PropTypes.array.isRequired, 
   setSelectedRoles: PropTypes.func.isRequired, 
+  openByDefault: PropTypes.bool,
 };
  
 export default RoleSelector;

@@ -110,6 +110,24 @@ export const addHiddenApplicationComponent = (form) => {
       customDefaultValue: "const localdata = JSON.parse(localStorage.getItem('UserDetails')); const preferredUsername = localdata.preferred_username; value = preferredUsername;" 
     },
     { 
+      label: "Submitter Email", 
+      persistent: false,
+      key: "submitterEmail", 
+      customDefaultValue: "const localdata = JSON.parse(localStorage.getItem('UserDetails')); value= localdata?.email;" 
+    },
+    { 
+      label: "Submitter First Name", 
+      persistent: false,
+      key: "submitterFirstName", 
+      customDefaultValue: "const localdata = JSON.parse(localStorage.getItem('UserDetails')); value= localdata?.given_name;" 
+    },
+    { 
+      label: "Submitter Last Name", 
+      persistent: false,
+      key: "submitterLastName", 
+      customDefaultValue: "const localdata = JSON.parse(localStorage.getItem('UserDetails')); value= localdata?.family_name;" 
+    },
+    { 
       label: "Current User Role", 
       persistent: false,
       key: "currentUserRole", 

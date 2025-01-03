@@ -57,6 +57,7 @@ const Item = React.memo(() => {
     dispatch(setApiCallError(null));
     dispatch(setFormAuthVerifyLoading(true));
     dispatch(resetFormData("form", formId));
+    Formio.cache = {}; //clearing formio cache
     dispatch(clearSubmissionError("submission"));
     if (checkIsObjectId(formId)) {
       dispatch(getForm("form", formId,(err,res)=>{

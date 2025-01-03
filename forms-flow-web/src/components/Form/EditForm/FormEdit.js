@@ -479,7 +479,7 @@ const EditComponent = () => {
 
   const fetchProcessDetails = async (processListData) => {
     //for the migration, if the diagram is not available in the db, it will fetch from camunda using maper id.
-    const mapperId = !processListData.isMigrated ? processListData.id : null;
+    const mapperId = processListData.id;
     const response = await getProcessDetails({processKey:processListData.processKey, mapperId});
     dispatch(setProcessData(response.data));
   };
@@ -1199,6 +1199,7 @@ const EditComponent = () => {
         CategoryType={CategoryType.FORM}
         onAction={setSelectedAction}
         published={isPublished}
+        isMigrated = {processListData.isMigrated}
       />
       <FormBuilderModal
         modalHeader={t("Duplicate")}

@@ -18,6 +18,7 @@ const ActionModal = React.memo(
     onAction,
     published,
     isCreate,
+    isMigrated
   }) => {
     const handleAction = (actionType) => {
       onAction(actionType);
@@ -49,6 +50,7 @@ const ActionModal = React.memo(
                   variant="secondary"
                   size="sm"
                   label="Duplicate"
+                  disabled={published || !isMigrated}
                   icon={<DuplicateIcon color="#253DF4" />}
                   className=""
                   dataTestid="duplicate-form-button"
@@ -57,7 +59,7 @@ const ActionModal = React.memo(
                 />
                 <CustomButton
                   variant="secondary"
-                  disabled={published}
+                  disabled={published || !isMigrated}
                   size="sm"
                   label="Import"
                   icon={<ImportIcon />}

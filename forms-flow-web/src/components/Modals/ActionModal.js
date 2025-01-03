@@ -1,5 +1,6 @@
 import React from "react";
 import Modal from "react-bootstrap/Modal";
+import PropTypes from "prop-types";
 import {
   DuplicateIcon,
   ImportIcon,
@@ -138,5 +139,15 @@ const ActionModal = React.memo(
     );
   }
 );
+
+ActionModal.propTypes = {
+  newActionModal: PropTypes.bool.isRequired,
+  onClose: PropTypes.func.isRequired,
+  CategoryType: PropTypes.string.isRequired,
+  onAction: PropTypes.func.isRequired,
+  published: PropTypes.bool.isRequired,
+  isCreate: PropTypes.bool,
+  isMigrated: PropTypes.bool, // Adding validation for isMigrated
+};
 
 export default ActionModal;

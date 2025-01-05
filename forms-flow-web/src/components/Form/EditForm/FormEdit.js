@@ -92,7 +92,11 @@ const EditComponent = () => {
     submissionAccess = [],
     lang,
     userDetail: { preferred_username },
+    roleIds = {}
   } = useSelector((state) => state.user);
+  // created a copy for access and submissin access
+  const [formAccessRoles, setFormAccessRoles] = useState(_cloneDeep(formAccess));
+  const [submissionAccessRoles, setSubmissionAccessRoles] = useState(_cloneDeep(submissionAccess));
 
   /* ---------------------------  form data --------------------------- */
   const { form: formData, error: errors } = useSelector((state) => state.form);
@@ -163,6 +167,29 @@ const EditComponent = () => {
     IMPORT: "import",
     VALIDATE: "validate",
   };
+
+  // add and remove anonymouse access
+  const addAndRemoveAnonymouseId = (data, type, isAnonymouse)=>{
+    return data.map(access=>{
+      if (isAnonymouse) {
+        if (access.type === type) {
+          access.roles.push(roleIds.ANONYMOUS);
+        }
+      } else {
+        if (access.type === type) {
+          access.roles = access.roles.filter((id) => id !== roleIds.ANONYMOUS);
+        }
+      }
+      return access;
+    });
+  };
+
+  useEffect(() => {
+    // if anonymouse changed then the role ids add or remove from the state
+    setFormAccessRoles(prev =>addAndRemoveAnonymouseId(prev, "read_all", processListData.anonymous ));
+    setSubmissionAccessRoles(prev=> addAndRemoveAnonymouseId(prev, "create_own",processListData.anonymous ));
+  }, [processListData?.anonymous]);
+
 
   useEffect(() => {
     if (importError !== "") {
@@ -513,8 +540,7 @@ const EditComponent = () => {
   };
 
   const handleConfirmSettings = async ({
-    formDetails,
-    accessDetails,
+    formDetails, 
     rolesState,
   }) => {
     setIsSettingsSaving(true);
@@ -555,12 +581,15 @@ const EditComponent = () => {
       ? addTenantkey(formDetails.path, tenantKey)
       : formDetails.path;
 
+    // update the form Access and submission access if anonymouse changed
+    const formAccess = addAndRemoveAnonymouseId(_cloneDeep(formAccessRoles), "read_all", formDetails.anonymous);
+    const submissionAccess = addAndRemoveAnonymouseId(_cloneDeep(submissionAccessRoles), "create_own", formDetails.anonymous);
     const formData = {
       title: formDetails.title,
       display: formDetails.display,
       path: updatepath,
-      submissionAccess: accessDetails.submissionAccess,
-      access: accessDetails.formAccess,
+      submissionAccess: submissionAccess,
+      access: formAccess,
     };
 
     try {
@@ -596,8 +625,8 @@ const EditComponent = () => {
         form,
         MULTITENANCY_ENABLED,
         tenantKey,
-        formAccess,
-        submissionAccess
+        formAccessRoles,
+        submissionAccessRoles
       );
       newFormData.componentChanged = isFormChanged || promptNewVersion; //after unpublish need to save it in minor version on update
       newFormData.parentFormId = previousData.parentFormId;
@@ -672,8 +701,8 @@ const EditComponent = () => {
       _.cloneDeep(form),
       MULTITENANCY_ENABLED,
       tenantKey,
-      formAccess,
-      submissionAccess
+      formAccessRoles,
+      submissionAccessRoles
     );
 
     const newPathAndName = generateUniqueId("duplicate-version-");
@@ -778,16 +807,16 @@ const EditComponent = () => {
         form,
         MULTITENANCY_ENABLED,
         tenantKey,
-        formAccess,
-        submissionAccess
+        formAccessRoles,
+        submissionAccessRoles
       );
       //TBD: need to only update path and name so no need to send whole data
       const oldFormData = manipulatingFormData(
         formData,
         MULTITENANCY_ENABLED,
         tenantKey,
-        formAccess,
-        submissionAccess
+        formAccessRoles,
+        submissionAccessRoles
       );
 
       const newPathAndName = generateUniqueId("-v");

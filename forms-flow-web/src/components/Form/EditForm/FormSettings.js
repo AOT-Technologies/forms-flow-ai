@@ -2,8 +2,7 @@ import React, {
   useEffect,
   useState,
   useImperativeHandle,
-  forwardRef,
-  useCallback
+  forwardRef, 
 } from "react";
 import { Form, FormControl, InputGroup } from "react-bootstrap";
 import {
@@ -22,7 +21,6 @@ import { getUserRoles } from "../../../apiManager/services/authorizationService"
 import { useTranslation } from "react-i18next";
 import { copyText } from "../../../apiManager/services/formatterService";
 import _camelCase from "lodash/camelCase";
-import _cloneDeep from "lodash/cloneDeep";
 import { validateFormName, validatePathName } from "../../../apiManager/services/FormServices";
 import { HelperServices } from "@formsflow/service";
 import PropTypes from 'prop-types';
@@ -39,10 +37,7 @@ const FormSettings = forwardRef((props, ref) => {
   /* ---------------------------- redux store data ---------------------------- */
   const processListData = useSelector((state) => state.process.formProcessList);
   const { path, display } = useSelector((state) => state.form.form);
-  const { formAccess = [], submissionAccess = [] } = useSelector(
-    (state) => state.user
-  );
-  const roleIds = useSelector((state) => state.user?.roleIds || {});
+ 
   const { authorizationDetails: formAuthorization } = useSelector(
     (state) => state.process
   );
@@ -65,10 +60,6 @@ const FormSettings = forwardRef((props, ref) => {
     name: "",
     path: "",
   });
-  const [formAccessCopy, setFormAccessCopy] = useState(_cloneDeep(formAccess));
-  const [submissionAccessCopy, setSubmissionAccessCopy] = useState(
-    _cloneDeep(submissionAccess)
-  );
   const tenantKey = useSelector((state) => state.tenants?.tenantId);
 
   const publicUrlPath = `${window.location.origin}/public/form/`;
@@ -170,28 +161,6 @@ const FormSettings = forwardRef((props, ref) => {
   }, [dispatch]);
 
 
-  const updateAccessRoles = useCallback((accessList, type, roleId) => {
-    return accessList.map((access) => {
-      if (access.type === type) {
-        const roles = isAnonymous
-          ? [...new Set([...access.roles, roleId])]
-          : access.roles.filter((id) => id !== roleId);
-        return { ...access, roles };
-      }
-      return access;
-    });
-  },[isAnonymous]);
-
-
-  //  chaning the form access
-  useEffect(() => {
-    setFormAccessCopy((prev) =>
-      updateAccessRoles(prev, "read_all", roleIds.ANONYMOUS)
-    );
-    setSubmissionAccessCopy((prev) =>
-      updateAccessRoles(prev, "create_own", roleIds.ANONYMOUS)
-    );
-  }, [isAnonymous, roleIds.ANONYMOUS]);
 
   const handleRoleStateChange = (section, key, value) => {
     setRolesState((prevState) => ({
@@ -218,10 +187,6 @@ const FormSettings = forwardRef((props, ref) => {
   useImperativeHandle(ref, () => {
     return {
       formDetails: { ...formDetails, anonymous: isAnonymous },
-      accessDetails: {
-        formAccess: formAccessCopy,
-        submissionAccess: submissionAccessCopy,
-      },
       rolesState: rolesState,
     };
   }); 

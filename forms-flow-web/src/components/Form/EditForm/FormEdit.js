@@ -171,12 +171,10 @@ const EditComponent = () => {
   // add and remove anonymouse access
   const addAndRemoveAnonymouseId = (data, type, isAnonymouse)=>{
     return data.map(access=>{
-      if (isAnonymouse) {
-        if (access.type === type) {
+      if (access.type === type) {
+        if (isAnonymouse) {
           access.roles.push(roleIds.ANONYMOUS);
-        }
-      } else {
-        if (access.type === type) {
+        } else {
           access.roles = access.roles.filter((id) => id !== roleIds.ANONYMOUS);
         }
       }

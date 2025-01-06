@@ -105,40 +105,40 @@ export const addHiddenApplicationComponent = (form) => {
     { label: "Submission Status", key: "applicationStatus", persistent:true },
     { 
       label: "Current User", 
-      persistent: false,
+      persistent: true,
       key: "currentUser", 
-      customDefaultValue: "const localdata = JSON.parse(localStorage.getItem('UserDetails')); const preferredUsername = localdata.preferred_username; value = preferredUsername;" 
+      customDefaultValue: "const localdata = localStorage.getItem('UserDetails') && JSON.parse(localStorage.getItem('UserDetails'));  value = localdata?.preferred_username || '';" 
     },
     { 
       label: "Submitter Email", 
-      persistent: false,
+      persistent: true,
       key: "submitterEmail", 
-      customDefaultValue: "const localdata = JSON.parse(localStorage.getItem('UserDetails')); value= localdata?.email;" 
+      customDefaultValue: "const localdata = localStorage.getItem('UserDetails') && JSON.parse(localStorage.getItem('UserDetails')); value= localdata?.email || '';" 
     },
     { 
       label: "Submitter First Name", 
-      persistent: false,
+      persistent: true,
       key: "submitterFirstName", 
-      customDefaultValue: "const localdata = JSON.parse(localStorage.getItem('UserDetails')); value= localdata?.given_name;" 
+      customDefaultValue: "const localdata = localStorage.getItem('UserDetails') &&  JSON.parse(localStorage.getItem('UserDetails')); value= localdata?.given_name || '';" 
     },
     { 
       label: "Submitter Last Name", 
-      persistent: false,
+      persistent: true,
       key: "submitterLastName", 
-      customDefaultValue: "const localdata = JSON.parse(localStorage.getItem('UserDetails')); value= localdata?.family_name;" 
+      customDefaultValue: "const localdata = localStorage.getItem('UserDetails') &&  JSON.parse(localStorage.getItem('UserDetails')); value= localdata?.family_name || '';" 
     },
     { 
       label: "Current User Role", 
-      persistent: false,
+      persistent: true,
       key: "currentUserRole", 
-      customDefaultValue: "const localdata = JSON.parse(localStorage.getItem('UserDetails')); const preferredUserRole = localdata.role; value = preferredUserRole;" 
+      customDefaultValue: "const localdata = localStorage.getItem('UserDetails') &&  JSON.parse(localStorage.getItem('UserDetails'));  value = localdata?.role || [];" 
     },
-    { 
-      label: "All Available Roles", 
-      persistent: false,
-      key: "allAvailableRoles", 
-      customDefaultValue: "const localdata = JSON.parse(localStorage.getItem('allAvailableRoles')); value = localdata;" 
-    },
+    // { 
+    //   label: "All Available Roles", 
+    //   persistent: false,
+    //   key: "allAvailableRoles", 
+    //   customDefaultValue: "const localdata = JSON.parse(localStorage.getItem('allAvailableRoles')); value = localdata;" 
+    // },
   ];
 
 

@@ -20,7 +20,14 @@ import {
 const PillList = React.memo(({ alternativeLabels, onRemove }) => {
   const { t } = useTranslation();
   // Filter out applicationId and applicationStatus
-  const ignoreKeywords = new Set(["applicationId", "applicationStatus"]);
+  const ignoreKeywords = new Set([
+    "applicationId", 
+    "applicationStatus", 
+    "currentUser",
+    "submitterEmail",
+    "submitterFirstName",
+    "submitterLastName",
+    "currentUserRole",]);
   const filteredVariablePills = Object.values(alternativeLabels).filter(
     ({ key }) => !ignoreKeywords.has(key)
   );

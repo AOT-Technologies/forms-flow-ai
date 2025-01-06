@@ -111,9 +111,9 @@ const ChartForm = React.memo((props) => {
             position="insideTop"
             angle="45"
           />
-          {pieData.map((entry, index) => (
-            <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
-          ))}
+          {pieData.map((entry) => (
+  <Cell key={entry.statusName} fill={COLORS[pieData.indexOf(entry) % COLORS.length]} />
+))}
         </Pie>
       </PieChart>
     </div>

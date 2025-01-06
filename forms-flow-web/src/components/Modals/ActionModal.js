@@ -25,6 +25,20 @@ const ActionModal = React.memo(
       onAction(actionType);
       onClose();
     };
+     // Determine CustomInfo content based on conditions
+     const customInfo = published
+     ? {
+         heading: "Note",
+         content:
+           "Importing and deleting is not available when the form is published. You must unpublish the form first if you wish to make any changes.",
+       }
+     : !isMigrated
+     ? {
+         heading: "Note",
+         content:
+         "Some actions are disabled as this form has not been migrated to the new 1 to 1 relationship structure. To migrate this form exit this popup and click \"Save layout\" or \"Save flow\".",
+        }
+     : null;
 
     return (
       <>
@@ -38,20 +52,7 @@ const ActionModal = React.memo(
             </div>
           </Modal.Header>
           <Modal.Body className="action-modal-body">
-            {published && (
-              <CustomInfo
-                heading="Note"
-                content="Importing and deleting is not available when the form is published.
-                     You must unpublish the form first if you wish to make any changes"
-              />
-            )}
-             {!isMigrated && !published && (
-              <CustomInfo
-                heading="Note"
-                content="Some actions are disabled as this form has not been migrated to the new 1 to 1 relationship structure.
-             To migrate this form exit this popup and click “Save layout” or “Save flow”."
-              />
-            )}
+          {customInfo && <CustomInfo heading={customInfo.heading} content={customInfo.content} />}
             {CategoryType === "FORM" && (
               <div className="custom-action-flex action-form">
                 <CustomButton

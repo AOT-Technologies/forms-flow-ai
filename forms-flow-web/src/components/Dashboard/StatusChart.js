@@ -46,7 +46,7 @@ const ChartForm = React.memo((props) => {
   <span className="text-primary me-2" style={{ whiteSpace: 'nowrap' }}>
     {t("Form Name")} :
   </span>
-  <h2 className="mt-0" style={{ maxWidth: version > 1 ? "500px" : "700px", marginBottom: 0, fontSize: "medium" }}>
+  <h2 className="mt-0 mb-0 fs-6">
     {formName}
   </h2>
 </div>

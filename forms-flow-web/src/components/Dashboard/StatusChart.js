@@ -40,16 +40,18 @@ const ChartForm = React.memo((props) => {
     <div className="row">
       <div className="col-12">
         <div className="card-counter">
-          <div className=" d-flex align-items-center justify-content-between">
-          <div>
-          <div className="d-flex">
-  <span className="text-primary me-2" style={{ whiteSpace: 'nowrap' }}>
-    {t("Form Name")} :
-  </span>
-  <h2 className="mt-0 mb-0 fs-6">
-    {formName}
-  </h2>
-</div>
+          <div className="d-flex align-items-center justify-content-between flex-wrap">
+            <div className="d-flex flex-column">
+              <div className="d-flex">
+                <span className="text-primary me-2" style={{ whiteSpace: "nowrap" }}>
+                  {t("Form Name")} :
+                </span>
+                <h2
+                  className="mt-0 mb-2 fs-6"
+                >
+                  {formName}
+                </h2>
+              </div>
 
           <p>
             <span className="text-primary" >{t("Latest Version")} :</span>{" "}

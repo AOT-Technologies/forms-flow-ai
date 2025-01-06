@@ -40,88 +40,90 @@ const ChartForm = React.memo((props) => {
     <div className="row">
       <div className="col-12">
         <div className="card-counter">
-          <div className=" d-flex align-items-center justify-content-between">
-          <div>
-          <div className="d-flex align-items-center">
-            <span className="text-primary me-2" >{t("Form Name")} : </span>
-            <h2 className="text-truncate mt-0" style={{ maxWidth: version > 1 ? "500px" : "700px"}}>{formName}</h2>
-          </div>
+          <div className="d-flex align-items-center justify-content-between flex-wrap">
+            <div className="d-flex flex-column">
+              <div className="d-flex">
+                <span className="text-primary me-2" style={{ whiteSpace: "nowrap" }}>
+                  {t("Form Name")} :
+                </span>
+                <h2
+                  className="mt-0 mb-2 fs-6"
+                >
+                  {formName}
+                </h2>
+              </div>
+
           <p>
             <span className="text-primary" >{t("Latest Version")} :</span>{" "}
             {`v${version}`}
           </p>
           </div>
-          {
-            sortedVersions.length > 1 ? (
-              <div className="col-3">
-            <p className="form-label mb-0">{t("Select form version")}</p>
-            <select className="form-select" aria-label="Default select example"  onChange={(e) =>{ handlePieData(e.target.value);}}>
-                {
-                  sortedVersions.map((option)=> <option key={option.formId}
-                  value={option.formId}>v{option.version}</option>)
-                }
-                <option selected value={"all"}>{t("All")}</option>
-            </select>
-          </div>
-            ) : ""
-          }
+          {sortedVersions.length > 1 && (
+  <div className="d-flex align-items-center">
+    <p className="text-primary mb-0 me-2" style={{ whiteSpace: "nowrap" }}>
+      {t("Select form version")}:
+    </p>
+    <select
+      className="form-select"
+      aria-label="Default select example"
+      onChange={(e) => {
+        handlePieData(e.target.value);
+      }}
+    >
+      {sortedVersions.map((option) => (
+        <option key={option.formId} value={option.formId}>
+          v{option.version}
+        </option>
+      ))}
+      <option selected value={"all"}>
+        {t("All")}
+      </option>
+    </select>
+  </div>
+)}
+
+
           </div>
           <LoadingOverlay
         active={submissionStatusCountLoader}
         spinner
         text={t("Loading...")}
       >
-          <div className="white-box status-container flex-row d-md-flex flex-wrap align-items-center justify-content-around">
-            <div className="col-md-6">
-              <PieChart width={400} height={400}>
-                <Pie
-                  paddingAngle={1}
-                  minAngle={1}
-                  data={pieData}
-                  labelLine={false}
-                  outerRadius={90}
-                  fill="#8884d8"
-                  dataKey="count"
-                  nameKey="statusName"
-                  label
-                >
-                  <Legend />
-                  <LabelList
-                    dataKey="statusName"
-                    nameKey="statusName"
-                    position="insideTop"
-                    angle="45"
-                  />
-                  {pieData.map((entry, index) => (
-                    <Cell
-                      key={`cell-${index}`}
-                      fill={COLORS[index % COLORS.length]}
-                    />
-                  ))}
-                </Pie>
-              </PieChart>
-            </div>
+         <div className="white-box status-container flex-row d-md-flex flex-wrap align-items-center justify-content-around">
+  {pieData.length ? (
+    <div className="col-md-6">
+      <PieChart width={400} height={400}>
+        <Pie
+          paddingAngle={1}
+          minAngle={1}
+          data={pieData}
+          labelLine={false}
+          outerRadius={90}
+          fill="#8884d8"
+          dataKey="count"
+          nameKey="statusName"
+          label
+        >
+          <Legend />
+          <LabelList
+            dataKey="statusName"
+            nameKey="statusName"
+            position="insideTop"
+            angle="45"
+          />
+          {pieData.map((entry) => (
+  <Cell key={entry.statusName} fill={COLORS[pieData.indexOf(entry) % COLORS.length]} />
+))}
+        </Pie>
+      </PieChart>
+    </div>
+  ) : (
+    <div className="d-flex justify-content-center align-items-center w-100" style={{ minHeight: "200px" }}>
+      <span className="text-center">{t("No submissions")}</span>
+    </div>
+  )}
+</div>
 
-            {
-              pieData.length ? (
-                <div className="d-flex border flex-wrap rounded p-4   ">
-              {pieData.map((entry, index) => (
-                <div className=" d-flex align-items-center m-3" key={index}>
-                  <span
-                    className="rounded-circle shadow  me-2"
-                    style={{
-                      backgroundColor: COLORS[index % COLORS.length],
-                      width: "25px",
-                      height: "25px",
-                    }}
-                  ></span>
-                  <div className="legent-text">{entry.statusName}</div>
-                </div>
-              ))}
-            </div>
-              ) : "No submissions"
-            }
-          </div>
           </LoadingOverlay>
         </div>
       </div>

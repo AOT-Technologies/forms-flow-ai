@@ -58,20 +58,30 @@ const ChartForm = React.memo((props) => {
             {`v${version}`}
           </p>
           </div>
-          {
-  sortedVersions.length > 1 ? (
-    <div className="col-3 d-flex align-items-center">
-      <p className="text-primary mb-0 me-2">{t("Select form version")}:</p>
-      <select className="form-select" aria-label="Default select example" onChange={(e) => { handlePieData(e.target.value); }}>
-        {
-          sortedVersions.map((option) => <option key={option.formId} 
-          value={option.formId}>v{option.version}</option>)
-        }
-        <option selected value={"all"}>{t("All")}</option>
-      </select>
-    </div>
-  ) : ""
-}
+          {sortedVersions.length > 1 && (
+  <div className="d-flex align-items-center">
+    <p className="text-primary mb-0 me-2" style={{ whiteSpace: "nowrap" }}>
+      {t("Select form version")}:
+    </p>
+    <select
+      className="form-select"
+      aria-label="Default select example"
+      onChange={(e) => {
+        handlePieData(e.target.value);
+      }}
+    >
+      {sortedVersions.map((option) => (
+        <option key={option.formId} value={option.formId}>
+          v{option.version}
+        </option>
+      ))}
+      <option selected value={"all"}>
+        {t("All")}
+      </option>
+    </select>
+  </div>
+)}
+
 
           </div>
           <LoadingOverlay

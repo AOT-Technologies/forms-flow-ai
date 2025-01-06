@@ -1,5 +1,6 @@
 import React from "react";
 import Modal from "react-bootstrap/Modal";
+import PropTypes from "prop-types";
 import {
   DuplicateIcon,
   ImportIcon,
@@ -18,12 +19,25 @@ const ActionModal = React.memo(
     onAction,
     published,
     isCreate,
+    isMigrated
   }) => {
     const handleAction = (actionType) => {
       onAction(actionType);
       onClose();
     };
+    let customInfo = null;
 
+    if (published || !isMigrated) {
+      customInfo = {
+        heading: "Note",
+        content: `
+          ${published ? "Importing and deleting is not available when the form is published. You must unpublish the form first if you wish to make any changes." : ""}
+          ${!isMigrated ? "\nSome actions are disabled as this form has not been migrated to the new 1 to 1 relationship structure. To migrate this form exit this popup and click \"Save layout\" or \"Save flow\"." : ""}
+        `.trim(),
+      };
+    }
+    
+    
     return (
       <>
         <Modal show={newActionModal} onHide={onClose} centered={true} size="sm">
@@ -36,19 +50,14 @@ const ActionModal = React.memo(
             </div>
           </Modal.Header>
           <Modal.Body className="action-modal-body">
-            {published && (
-              <CustomInfo
-                heading="Note"
-                content="Importing and deleting is not available when the form is published.
-                     You must unpublish the form first if you wish to make any changes"
-              />
-            )}
+          {customInfo && <CustomInfo heading={customInfo.heading} content={customInfo.content} />}
             {CategoryType === "FORM" && (
               <div className="custom-action-flex action-form">
                 <CustomButton
                   variant="secondary"
                   size="sm"
                   label="Duplicate"
+                  disabled={published || !isMigrated}
                   icon={<DuplicateIcon color="#253DF4" />}
                   className=""
                   dataTestid="duplicate-form-button"
@@ -57,7 +66,7 @@ const ActionModal = React.memo(
                 />
                 <CustomButton
                   variant="secondary"
-                  disabled={published}
+                  disabled={published || !isMigrated}
                   size="sm"
                   label="Import"
                   icon={<ImportIcon />}
@@ -136,5 +145,15 @@ const ActionModal = React.memo(
     );
   }
 );
+
+ActionModal.propTypes = {
+  newActionModal: PropTypes.bool.isRequired,
+  onClose: PropTypes.func.isRequired,
+  CategoryType: PropTypes.string.isRequired,
+  onAction: PropTypes.func.isRequired,
+  published: PropTypes.bool.isRequired,
+  isCreate: PropTypes.bool,
+  isMigrated: PropTypes.bool, // Adding validation for isMigrated
+};
 
 export default ActionModal;

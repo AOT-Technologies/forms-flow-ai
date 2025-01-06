@@ -45,6 +45,13 @@ const ActionModal = React.memo(
                      You must unpublish the form first if you wish to make any changes"
               />
             )}
+             {!isMigrated && !published && (
+              <CustomInfo
+                heading="Note"
+                content="Some actions are disabled as this form has not been migrated to the new 1 to 1 relationship structure.
+             To migrate this form exit this popup and click “Save layout” or “Save flow”."
+              />
+            )}
             {CategoryType === "FORM" && (
               <div className="custom-action-flex action-form">
                 <CustomButton

@@ -25,21 +25,20 @@ const ActionModal = React.memo(
       onAction(actionType);
       onClose();
     };
-     // Determine CustomInfo content based on conditions
-     const customInfo = published
-     ? {
-         heading: "Note",
-         content:
-           "Importing and deleting is not available when the form is published. You must unpublish the form first if you wish to make any changes.",
-       }
-     : !isMigrated
-     ? {
-         heading: "Note",
-         content:
-         "Some actions are disabled as this form has not been migrated to the new 1 to 1 relationship structure. To migrate this form exit this popup and click \"Save layout\" or \"Save flow\".",
-        }
-     : null;
-
+    let customInfo = null;
+    if (published) {
+      customInfo = {
+        heading: "Note",
+        content:
+          "Importing and deleting is not available when the form is published. You must unpublish the form first if you wish to make any changes.",
+      };
+    } else if (!isMigrated) {
+      customInfo = {
+        heading: "Note",
+        content:
+          "Some actions are disabled as this form has not been migrated to the new 1 to 1 relationship structure. To migrate this form exit this popup and click \"Save layout\" or \"Save flow\".",
+      };
+    }
     return (
       <>
         <Modal show={newActionModal} onHide={onClose} centered={true} size="sm">

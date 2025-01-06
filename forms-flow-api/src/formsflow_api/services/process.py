@@ -701,6 +701,7 @@ class ProcessService:  # pylint: disable=too-few-public-methods,too-many-public-
     def migrate(cls, request, **kwargs):  # pylint:disable=too-many-locals
         """Migrate by process key."""
         current_app.logger.debug("Migrate process started..")
+        user: UserContext = kwargs["user"]
         data = MigrateRequestSchema().load(request.get_json())
         process_key = data.get("process_key")
         mapper_id = data.get("mapper_id")
@@ -714,7 +715,6 @@ class ProcessService:  # pylint: disable=too-few-public-methods,too-many-public-
             xml_data = None
             if not current_app.config.get("MULTI_TENANCY_ENABLED"):
                 # Incase of non multitenant env, fetch once the process xml data
-                user: UserContext = kwargs["user"]
                 current_app.logger.debug("Fetching process..")
                 xml_data = BPMService.process_definition_xml(
                     process_key, user.bearer_token, user.tenant_key
@@ -737,7 +737,7 @@ class ProcessService:  # pylint: disable=too-few-public-methods,too-many-public-
                 # This is to avoid empty process_key after clean form name
                 else:
                     updated_process_key = f"{process_key}_migrate_{mapper.id}"
-                cls.fetch_save_xml(
+                process = cls.fetch_save_xml(
                     process_key,
                     mapper.process_tenant,
                     updated_process_key=updated_process_key,
@@ -750,6 +750,14 @@ class ProcessService:  # pylint: disable=too-few-public-methods,too-many-public-
                         "process_key": updated_process_key,
                         "process_name": updated_process_key,
                     }
+                )
+                # Deploy process to camunda
+                cls.deploy_process(
+                    updated_process_key,
+                    process.process_data,
+                    user.tenant_key,
+                    user.bearer_token,
+                    ProcessType.BPMN,
                 )
             # Update is_migrated to main mapper by id.
             request_mapper.update({"is_migrated": True})

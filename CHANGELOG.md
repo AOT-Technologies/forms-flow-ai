@@ -74,10 +74,10 @@ Mark  items as `Added`, `Changed`, `Fixed`, `Modified`, `Removed`, `Untested Fea
    * Users can create new roles with specific permissions for more granular application access control. Refer [here](https://aot-technologies.github.io/forms-flow-ai-doc/#permissions) for more
 * Authorization updates:
    * Permissions options in settings for Designers are changed : 
-      * ‘All Designers’ option is removed 
+      * 'All Designers' option is removed 
    * Permissions options in settings for reviewer to view submission are changed to generic view Submission permissions:
-      * ‘ All Reviewers' changed to 'Submitter',
-      * ‘Specific Reviewers’ changed to ‘Submitter and specified roles’
+      * 'All Reviewers' changed to 'Submitter',
+      * 'Specific Reviewers' changed to 'Submitter and specified roles'
 
 
 **forms-flow-api**
@@ -140,6 +140,7 @@ Mark  items as `Added`, `Changed`, `Fixed`, `Modified`, `Removed`, `Untested Fea
 * Designer page redesign
 * Workflow selection from edit page is not available now, instead users have to create workflow while form creation itself
 * Added new micro-frontend : forms-flow-components
+* Fixed security vulnerabilities
 * Refer [version documentation](https://aot-technologies.github.io/forms-flow-ai-doc/#version_upgrade) for environment variable changes
 
 `Known Issues`

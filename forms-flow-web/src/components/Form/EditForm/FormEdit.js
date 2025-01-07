@@ -418,6 +418,21 @@ const EditComponent = () => {
       search: queryParams && `?${queryParams}`
     }));
   };
+  const handleSaveLayout = (showPrompt) => {
+    if (promptNewVersion || showPrompt) {
+      handleVersioning();
+      return;
+    }
+    saveFormData({ showToast: false });
+  };
+
+const handleSavePublishChanged = () => {
+  if (isPublished && formChangeState.changed) {
+    setModalType("unpublishBeforeSaving");
+    setShowConfirmModal(true);
+    return;
+  }
+};
 
   const handleCloseSelectedAction = () => {
     setSelectedAction(null);
@@ -686,7 +701,8 @@ const EditComponent = () => {
       value: _cloneDeep(formData.components),
     });
     setFormChangeState(prev => ({ ...prev, changed: false }));
-    handleToggleConfirmModal();
+    setShowConfirmModal(false);
+    //handleToggleConfirmModal();
   };
 
   const editorActions = () => {
@@ -783,7 +799,10 @@ const EditComponent = () => {
       setIsPublishLoading(false);
     }
   };
-
+  const handleConfirmation = async () => {
+   await confirmPublishOrUnPublish();
+   handleSaveLayout(true);
+  };
   const handleVersioning = () => {
     setVersion((prevVersion) => ({
       ...prevVersion,
@@ -845,14 +864,16 @@ const EditComponent = () => {
 
   /* ------------------------- handling confirm modal ------------------------- */
 
-  const handleToggleConfirmModal = () => setShowConfirmModal(!showConfirmModal);
+  //const handleToggleConfirmModal = () => setShowConfirmModal(!showConfirmModal);
   const openConfirmModal = (type) => {
     setModalType(type);
-    handleToggleConfirmModal();
+    setShowConfirmModal(true);
+    //handleToggleConfirmModal();
   };
   const closeModal = () => {
     setModalType("");
-    handleToggleConfirmModal();
+    setShowConfirmModal(false);
+    //handleToggleConfirmModal();
   };
 
   const handleShowVersionModal = () => {
@@ -903,6 +924,16 @@ const EditComponent = () => {
           primaryBtnText: "Yes, Discard Changes",
           secondaryBtnText: "No, Keep My Changes",
         };
+      case "unpublishBeforeSaving":
+        return {
+          title: "Unpublish Before Saving",
+          message:
+            "This form is currently live. To save the changes to your form, you need to unpublish it first. By unpublishing this form, you will make it unavailable for new submissions. You can republish this form after making your edits.",
+          primaryBtnAction: handleConfirmation,
+          secondayBtnAction: closeModal,
+          primaryBtnText: "Unpublish and Save Layout",
+          secondaryBtnText: "Cancel, Keep This Form Published",
+          };
       default:
         return {};
     }
@@ -1134,10 +1165,10 @@ const EditComponent = () => {
                           variant="primary"
                           size="md"
                           className="mx-2"
-                          disabled={isPublished || !formChangeState.changed}
+                          disabled={!formChangeState.changed}
                           label={t("Save Layout")}
                           onClick={
-                            promptNewVersion ? handleVersioning : saveFormData
+                            isPublished ? handleSavePublishChanged : handleSaveLayout
                           }
                           dataTestid="save-form-layout"
                           ariaLabel={t("Save Form Layout")}
@@ -1208,6 +1239,7 @@ const EditComponent = () => {
                 handleCurrentLayout={handleCurrentLayout}
                 isMigrationLoading={isMigrationLoading}
                 setIsMigrationLoading={setIsMigrationLoading}
+                confirmPublishOrUnPublish={confirmPublishOrUnPublish}
               />}
             </div>
             <button

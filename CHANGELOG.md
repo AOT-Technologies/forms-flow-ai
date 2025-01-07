@@ -31,7 +31,7 @@ Mark  items as `Added`, `Changed`, `Fixed`, `Modified`, `Removed`, `Untested Fea
          * Create, Get, Update theme: `/themes`
       * Subflow and decision table redesign
          *  Create/List: `/process` 
-         *  Get/Update/Delete by id:    `/process/id`
+         *  Get/Update/Delete by id:    `/process/<id>`
          *  Get by key:   `/process/<key>`
          *  Get history:   `/process/<key>/versions`
          *  Validate:  `/process/validate`

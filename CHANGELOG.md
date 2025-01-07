@@ -62,8 +62,7 @@ Mark  items as `Added`, `Changed`, `Fixed`, `Modified`, `Removed`, `Untested Fea
    * Categorized UI to menus and sub-menus based on functionality 
    * Menus visibility is controlled based on user permissions
    * Moved language selection to the user settings modal, accessible by clicking the username in the bottom-left corner of the sidebar
-   * Moved Forms menu to the Submit menu
-   * Moved client submission from the Forms tab to the Submit tab (Submit → Forms → All Forms)
+   * Moved client submission from the Forms menu to the Submit menu (Submit → Forms → All Forms)
    * Moved form design to Design menu
    * Moved Subflows (BPMN) and Decision Tables (DMN) to individual submenus under the Design
    * Moved Manage roles, users and dashboards under Manage menu

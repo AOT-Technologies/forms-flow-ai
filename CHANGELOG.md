@@ -27,7 +27,7 @@ Mark  items as `Added`, `Changed`, `Fixed`, `Modified`, `Removed`, `Untested Fea
 
 **forms-flow-api**
    * Added new endpoints for:
-      * Form validation: `form/validate`
+      * Form validation: `/form/validate`
       * Layout + Flow import:  `/import`
       * Layout + Flow export:  `/form/<mapper_id>/export`
       * Flow migration - `/process/migrate`

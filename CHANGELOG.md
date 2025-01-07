@@ -17,6 +17,7 @@ Mark  items as `Added`, `Changed`, `Fixed`, `Modified`, `Removed`, `Untested Fea
 * Added new user settings option in sidebar
 * Added new css variables to support dynamic theming of application using customTheme file
 * Added advanced logic conditioning in formio component settings to allow chaining of conditions for forms
+* Added the displayForRole custom property to the form component to display data for a specific role
 
 **forms-flow-api**
    * Added new endpoints for:

@@ -268,10 +268,10 @@ const ServiceFlowTaskDetails = React.memo(() => {
         <Card className="me-2 bg-light">
                         <Card.Body>
                             <div className="d-flex justify-content-between">
-                            <Col >
+                            <Col className="text-truncate">
                                     <Row className="ms-0 task-header">{task?.name}</Row>
                                     <Row className="ms-0 fs-5 fw-normal">
-                                        <span className="application-id" title={t("Flow")}>
+                                        <span className="application-id text-truncate" title={t("Flow")}>
                                             {" "}
                                             {
                                                 getProcessDataObjectFromList(processList,

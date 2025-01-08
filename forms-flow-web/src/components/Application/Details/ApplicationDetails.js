@@ -24,7 +24,7 @@ const ApplicationDetails = React.memo((props) => {
             <Translation>{(t) => t("Form Name")}</Translation>
           </td>
           <td className="border-0">:</td>
-          <td className="border-0 text-truncate" id="application-name">
+          <td className="border-0" id="application-name">
             {startCase(application.applicationName)}
           </td>
         </tr>

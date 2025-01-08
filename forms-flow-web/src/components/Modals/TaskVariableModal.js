@@ -76,7 +76,7 @@ const FormComponent = React.memo(
     const { t } = useTranslation();
 
     /* ------------- manipulate the hidden variable to show in form ------------- */
-    const [updatedForm, setUpdatedForm] = useState(form);
+    const [updatedForm, setUpdatedForm] = useState(null);
     const [manipulatedKeys, setManipulatedKeys] = useState(new Set());
     useEffect(()=>{
       const data = _.cloneDeep(form);
@@ -238,7 +238,7 @@ const FormComponent = React.memo(
         </div>
 
         <div className="field-details-container" ref={detailsRef}>
-          {showElement ? (
+          {showElement  && selectedComponent.key ? (
             <div className="details-section">
               <div className="d-flex flex-column">
                 <span>{t("Type")}:</span>

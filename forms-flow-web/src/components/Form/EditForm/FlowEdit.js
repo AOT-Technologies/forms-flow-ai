@@ -153,7 +153,7 @@ const FlowEdit = forwardRef(({ isPublished = false, CategoryType,
     return !isMigrated;
   };
 
-    const saveFlow = async (showToast = true,processId) => {
+    const saveFlow = async (processId, showToast = true) => {
       try {
         const bpmnModeler = bpmnRef.current?.getBpmnModeler();
         const xml = await createXMLFromModeler(bpmnModeler);
@@ -399,7 +399,8 @@ FlowEdit.propTypes = {
   layoutNotsaved: PropTypes.bool.isRequired,
   handleCurrentLayout: PropTypes.func,
   isMigrationLoading: PropTypes.bool,
-  setIsMigrationLoading: PropTypes.func
+  setIsMigrationLoading: PropTypes.func,
+  handleSavePublishChanged: PropTypes.func
 };
 
 export default FlowEdit;

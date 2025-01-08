@@ -430,7 +430,6 @@ const handleSavePublishChanged = () => {
   if ((isPublished && formChangeState.changed) || (isPublished && workflowIsChanged)) {
     setModalType("unpublishBeforeSaving");
     setShowConfirmModal(true);
-    return;
   }
 };
 
@@ -702,7 +701,6 @@ const handleSavePublishChanged = () => {
     });
     setFormChangeState(prev => ({ ...prev, changed: false }));
     setShowConfirmModal(false);
-    //handleToggleConfirmModal();
   };
 
   const editorActions = () => {
@@ -875,16 +873,14 @@ const handleConfirmation = async () => {
 
   /* ------------------------- handling confirm modal ------------------------- */
 
-  //const handleToggleConfirmModal = () => setShowConfirmModal(!showConfirmModal);
+
   const openConfirmModal = (type) => {
     setModalType(type);
     setShowConfirmModal(true);
-    //handleToggleConfirmModal();
   };
   const closeModal = () => {
     setModalType("");
     setShowConfirmModal(false);
-    //handleToggleConfirmModal();
   };
 
   const handleShowVersionModal = () => {

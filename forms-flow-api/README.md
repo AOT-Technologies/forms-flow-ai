@@ -73,14 +73,14 @@ Variable name | Meaning | Possible values | Default value |
 `FORMSFLOW_API_URL`:triangular_flag_on_post:|formsflow.ai Rest API URL||`http://{your-ip-address}:5000`
 `FORMSFLOW_API_CORS_ORIGINS`| formsflow.ai Rest API allowed origins, for allowing multiple origins you can separate host address using a comma seperated string or use * to allow all origins |eg:`host1, host2, host3`| `*`
 `FORMSFLOW_ADMIN_URL`|To fetch formio roles in multi tenancy||`http://{your-ip-address}:5010/api/v1`
-`REDIS_URL`| To support single/cluster node||`redis://{your-ip-address}:6379/0`
+`REDIS_URL`| Redis url||`redis://{your-ip-address}:6379/0`
 `REDIS_CLUSTER`|To support single/cluster node|`true`/`false`|`false`
-`DATABASE_URL`|To support local setup
-`DATABASE_USERNAME`|Instead of DATABASE URL| `postgres` 
-`DATABASE_PASSWORD`|Instead of DATABASE URL|`changeme`
-`DATABASE_HOST`|Instead of DATABASE URL|`forms-flow-webapi-db`
-`DATABASE_PORT`|Instead of DATABASE URL|`5432`
-`DATABASE_NAME`|Instead of DATABASE URL|`webapi`
+`DATABASE_URL`|Database Connection URL||postgresql://postgres:changeme@forms-flow-webapi-db:5432
+`DATABASE_USERNAME`|Database username. Instead of DATABASE URL| `postgres` 
+`DATABASE_PASSWORD`|Database password. Instead of DATABASE URL|`changeme`
+`DATABASE_HOST`|Database host. Instead of DATABASE URL|`forms-flow-webapi-db`
+`DATABASE_PORT`|Database port. Instead of DATABASE URL|`5432`
+`DATABASE_NAME`|Database name. Instead of DATABASE URL|`webapi`
 
 
 **NOTE : Default realm is `forms-flow-ai`**

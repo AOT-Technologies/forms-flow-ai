@@ -252,11 +252,6 @@ Variable name | Meaning | Possible values | Default value |
 `FORMSFLOW_API_URL`:triangular_flag_on_post:|formsflow.ai Rest API URL||`http://{your-ip-address}:5000`
 `FORMSFLOW_DOC_API_URL`:triangular_flag_on_post:|formsflow.ai Document service URL||`http://{your-ip-address}:5006`
 `FORMSFLOW_API_CORS_ORIGINS`| formsflow.ai Rest API allowed origins, for allowing multiple origins you can separate host address using a comma seperated string or use * to allow all origins |eg:`host1, host2, host3`| `*`
-`DATABASE_USERNAME`|Instead of DATABASE URL| `postgres` 
-`DATABASE_PASSWORD`|Instead of DATABASE URL|`changeme`
-`DATABASE_HOST`|Instead of DATABASE URL|`forms-flow-webapi-db`
-`DATABASE_PORT`|Instead of DATABASE URL|`5432`
-`DATABASE_NAME`|Instead of DATABASE URL|`webapi`
 
 
 **NOTE : Default realm is `forms-flow-ai`**

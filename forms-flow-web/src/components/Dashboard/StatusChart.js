@@ -2,7 +2,7 @@ import React, { useMemo } from "react";
 import { useTranslation } from "react-i18next";
 import LoadingOverlay from "react-loading-overlay-ts";
 
-import { Legend, PieChart, Pie, Cell, LabelList } from "recharts";
+import { Legend, PieChart, Pie, Cell } from "recharts";
 
 const COLORS = [
   "#0088FE",
@@ -90,7 +90,7 @@ const ChartForm = React.memo((props) => {
         text={t("Loading...")}
       >
          <div className="white-box status-container flex-row d-md-flex flex-wrap align-items-center justify-content-around">
-  {pieData.length ? (
+ 
     <div className="col-md-6">
       <PieChart width={400} height={400}>
         <Pie
@@ -105,19 +105,31 @@ const ChartForm = React.memo((props) => {
           label
         >
           <Legend />
-          <LabelList
-            dataKey="statusName"
-            nameKey="statusName"
-            position="insideTop"
-            angle="45"
-          />
+
           {pieData.map((entry) => (
   <Cell key={entry.statusName} fill={COLORS[pieData.indexOf(entry) % COLORS.length]} />
 ))}
         </Pie>
       </PieChart>
     </div>
-  ) : (
+    {
+              pieData.length ? (
+                <div className="d-flex border flex-wrap rounded p-4   ">
+              {pieData.map((entry, index) => (
+                <div className=" d-flex align-items-center m-3" key={index}>
+                  <span
+                    className="rounded-circle shadow  me-2"
+                    style={{
+                      backgroundColor: COLORS[index % COLORS.length],
+                      width: "25px",
+                      height: "25px",
+                    }}
+                  ></span>
+                  <div className="legent-text">{entry.statusName}</div>
+                </div>
+              ))}
+            </div>
+              )  : (
     <div className="d-flex justify-content-center align-items-center w-100" style={{ minHeight: "200px" }}>
       <span className="text-center">{t("No submissions")}</span>
     </div>

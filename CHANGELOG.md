@@ -23,7 +23,7 @@ Mark  items as `Added`, `Changed`, `Fixed`, `Modified`, `Removed`, `Untested Fea
    * Submitter Email
    * Submitter First Name
    * Submitter Last Name
-   * Current User Role
+   * Current User Roles
 
 **forms-flow-api**
    * Added new endpoints for:
@@ -153,8 +153,43 @@ Mark  items as `Added`, `Changed`, `Fixed`, `Modified`, `Removed`, `Untested Fea
 `Known Issues`
 * The language translation of the entire UI is not perfect at the moment, so some glitches may be expected.
 * forms-flow-web test cases are not fully covered
-<br><br>
 
+#### <ins>Enterprise Edition Changes </ins>
+
+`Added` 
+
+**forms-flow-web**
+* Added no-code creation
+* Added regenerate option for form creation with Flow-E
+
+**forms-flow-api**
+* Added process_type  column to templates
+
+**forms-flow-documents**
+* Added export pdf for bundle
+
+**forms-flow-data-analysis-api**
+* Added regenerate support in chat bot form creation
+
+`Modified`
+
+**forms-flow-web**
+* Modified premium icons
+* Moved Bundle as separate sub-menu under Design menu in sidebar
+* Moved Build using AI feature (Flow-E)  to form creation page from edit page.
+* Moved select from template feature to form listing page from edit page.
+* Modified design for save as template
+* Modified the bundle submission logic to retrieve submission data for the currently viewed form instead of fetching all submission data.
+
+**forms-flow-api**
+* Updated the `bundles/execute-rules` API to expect only the currently edited data instead of the entire data. The API fetch the necessary data from Form.io to execute rule.
+
+`Removed`
+
+**forms-flow-web**
+* Forms that should be included in the bundle no longer require selecting 'enable bundling' from the edit page.
+* Removed short intro from template creation modal
+<br><br>
 
 ## 6.0.2 - 2024-06-05
 

@@ -14,10 +14,13 @@ import { useDispatch ,useSelector } from "react-redux";
 import {
   saveFormProcessMapperPut,
 } from "../../apiManager/services/processServices";
+import { StyleServices } from "@formsflow/service";
 
  
 //TBD in case of Bundle form display
 const PillList = React.memo(({ alternativeLabels, onRemove }) => {
+  const primaryColor = StyleServices.getCSSVariable('primary'); 
+  const secondaryColor = StyleServices.getCSSVariable('secondary'); 
   const { t } = useTranslation();
   // Filter out applicationId and applicationStatus
   const ignoreKeywords = new Set([
@@ -39,8 +42,8 @@ const PillList = React.memo(({ alternativeLabels, onRemove }) => {
             <CustomPill
               key={key}
               label={altVariable || labelOfComponent}
-              icon={<CloseIcon color="#253DF4" data-testid="pill-remove-icon" />}
-              bg="#E7E9FE"
+              icon={<CloseIcon color={primaryColor} data-testid="pill-remove-icon" />}
+              bg={secondaryColor}
               onClick={() => onRemove(key)}
               secondaryLabel={key}
             />

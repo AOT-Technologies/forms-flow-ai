@@ -10,6 +10,7 @@ import {
   CustomInfo,
   CustomButton,
 } from "@formsflow/components";
+import { StyleServices } from "@formsflow/service";
 
 const ActionModal = React.memo(
   ({
@@ -21,6 +22,7 @@ const ActionModal = React.memo(
     isCreate,
     isMigrated
   }) => {
+    const primaryColor = StyleServices.getCSSVariable('primary'); 
     const handleAction = (actionType) => {
       onAction(actionType);
       onClose();
@@ -46,7 +48,7 @@ const ActionModal = React.memo(
               <div> Action</div>
             </Modal.Title>
             <div className="d-flex align-items-center">
-              <CloseIcon onClick={onClose} color="#253DF4" />
+              <CloseIcon onClick={onClose} color={primaryColor} />
             </div>
           </Modal.Header>
           <Modal.Body className="action-modal-body">
@@ -58,7 +60,7 @@ const ActionModal = React.memo(
                   size="sm"
                   label="Duplicate"
                   disabled={published || !isMigrated}
-                  icon={<DuplicateIcon color="#253DF4" />}
+                  icon={<DuplicateIcon color={primaryColor} />}
                   className=""
                   dataTestid="duplicate-form-button"
                   ariaLabel="Duplicate Button"

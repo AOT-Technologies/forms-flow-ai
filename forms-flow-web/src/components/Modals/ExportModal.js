@@ -99,7 +99,7 @@ const ExportModal = React.memo(({ showExportModal, onClose, mapperId, formTitle 
         />
         <div className="mt-2 flex-wrap  d-flex align-items-center">
           {/* Keep FileName.json black */}
-          <span className="text-dark">{fileName}&nbsp;</span>
+          <span className="text-dark long-form-name my-2">{fileName}&nbsp;</span>
           <span className={isError ? "text-danger" : "text-primary"}>
             {/* Display the failure message in red or success message in blue */}
             {isError ? (

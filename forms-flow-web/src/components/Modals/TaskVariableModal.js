@@ -8,20 +8,16 @@ import {
   CustomPill,
   FormInput,
 } from "@formsflow/components";
-import { Form } from "@aot-technologies/formio-react";
+import { Form, Utils } from "@aot-technologies/formio-react";
 import PropTypes from "prop-types";
 import { useDispatch ,useSelector } from "react-redux";
 import {
   saveFormProcessMapperPut,
 } from "../../apiManager/services/processServices";
+import _ from "lodash";
 import { StyleServices } from "@formsflow/service";
 
- 
-//TBD in case of Bundle form display
-const PillList = React.memo(({ alternativeLabels, onRemove }) => {
-  const primaryColor = StyleServices.getCSSVariable('primary'); 
-  const secondaryColor = StyleServices.getCSSVariable('secondary'); 
-  const { t } = useTranslation();
+
   // Filter out applicationId and applicationStatus
   const ignoreKeywords = new Set([
     "applicationId", 
@@ -30,7 +26,16 @@ const PillList = React.memo(({ alternativeLabels, onRemove }) => {
     "submitterEmail",
     "submitterFirstName",
     "submitterLastName",
-    "currentUserRole",]);
+    "currentUserRole",
+    "allAvailableRoles"
+  ]);
+ 
+//TBD in case of Bundle form display
+const PillList = React.memo(({ alternativeLabels, onRemove }) => {
+  const { t } = useTranslation();
+  const primaryColor = StyleServices.getCSSVariable('primary'); 
+  const secondaryColor = StyleServices.getCSSVariable('secondary'); 
+
   const filteredVariablePills = Object.values(alternativeLabels).filter(
     ({ key }) => !ignoreKeywords.has(key)
   );
@@ -60,6 +65,7 @@ PillList.propTypes = {
   alternativeLabels: PropTypes.object.isRequired,
   onRemove: PropTypes.func.isRequired,
 };
+/* ------------------------------ end pill list ----------------------------- */
 
 const FormComponent = React.memo(
   ({ form, 
@@ -72,7 +78,25 @@ const FormComponent = React.memo(
     const formRef = useRef(null);
     const detailsRef = useRef(null); // Ref for the details container
     const { t } = useTranslation();
-    
+
+    /* ------------- manipulate the hidden variable to show in form ------------- */
+    const [updatedForm, setUpdatedForm] = useState(null);
+    const [manipulatedKeys, setManipulatedKeys] = useState(new Set());
+    useEffect(()=>{
+      const data = _.cloneDeep(form);
+      const manipulatedKeys = [];
+      Utils.eachComponent(data.components,(component)=>{
+        //Keys ignored for the default task variable that don't need to be displayed in the form.
+        if(component.type == "hidden" && !ignoreKeywords.has(component.key)){
+          component.type = "textfield";
+          manipulatedKeys.push(component.key);
+          component.customClass = "taskvariable-hiddent-component";
+        }
+      },true);
+      setUpdatedForm(data);
+      setManipulatedKeys(new Set(manipulatedKeys));
+    },[]);
+
     const ignoredTypes = new Set([
       "button",
       "columns",
@@ -103,9 +127,11 @@ const FormComponent = React.memo(
           const typeClass = classes[classes.length - 2];
           //if key and type are same , then there will be only one class for both
           const componentType = typeClass ? typeClass.split("-").pop() : keyClass.split("-").pop();
-    
+          const componentKey = keyClass?.split("-").pop();
           // Check if the component type is in the ignored list
-          if (ignoredTypes.has(componentType)) {
+          // Check if the component key is in the ignored list
+
+          if (ignoredTypes.has(componentType) || ignoredKeys.has(componentKey)) {
             setShowElement(false);
             setSelectedComponent({
               key: null,
@@ -115,20 +141,7 @@ const FormComponent = React.memo(
             });
             return; 
           }
-    
-          
-          const componentKey = keyClass?.split("-").pop();
-          // Check if the component key is in the ignored list
-          if (ignoredKeys.has(componentKey)) {
-            setShowElement(false); 
-            setSelectedComponent({
-              key: null,
-              type: "",
-              label: "",
-              altVariable: "",
-            });
-            return; 
-          }
+     
     
           const labelElement = formioComponent.querySelector("label");
           let label = "";
@@ -153,7 +166,7 @@ const FormComponent = React.memo(
           // Update the selected component state
           setSelectedComponent({
             key: componentKey,
-            type: componentType,
+            type: manipulatedKeys.has(componentKey) ? "hidden" : componentType,
             label,
             altVariable: alternativeLabels[componentKey]?.altVariable || "",
           });
@@ -166,7 +179,7 @@ const FormComponent = React.memo(
           });
         }
       },
-      [alternativeLabels]
+      [alternativeLabels, manipulatedKeys]
     );
     // hide details when clicking outside form component and removinf the formio-highlighted class
     useEffect(() => {
@@ -216,7 +229,7 @@ const FormComponent = React.memo(
       <div className="d-flex">
         <div className="flex-grow-1 form-hilighter form-field-container wizard-tab">
           <Form
-            form={form}
+            form={updatedForm}
             options={{
               viewAsHtml: true,
               readOnly: true,
@@ -229,7 +242,7 @@ const FormComponent = React.memo(
         </div>
 
         <div className="field-details-container" ref={detailsRef}>
-          {showElement ? (
+          {showElement  && selectedComponent.key ? (
             <div className="details-section">
               <div className="d-flex flex-column">
                 <span>{t("Type")}:</span>
@@ -276,7 +289,6 @@ const FormComponent = React.memo(
     );
   }
 );
-
 // PropTypes for FormComponent
 FormComponent.propTypes = {
   form: PropTypes.object.isRequired,
@@ -285,6 +297,8 @@ FormComponent.propTypes = {
   selectedComponent: PropTypes.object.isRequired,
   setSelectedComponent: PropTypes.func.isRequired,
 };
+/* --------------------------- end form component --------------------------- */
+
 const TaskVariableModal = React.memo(
   ({ showTaskVarModal, isPublished = false ,onClose, layoutNotsaved, handleCurrentLayout }) => {
     const { t } = useTranslation();

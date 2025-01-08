@@ -229,5 +229,5 @@ default_task_variables = [
     {"key": "submitterFirstName", "label": "Submitter First Name", "type": "hidden"},
     {"key": "submitterEmail", "label": "Submitter Email", "type": "hidden"},
     {"key": "currentUser", "label": "Current User", "type": "hidden"},
-    {"key": "currentUserRole", "label": "Current User Role", "type": "hidden"},
+    {"key": "currentUserRole", "label": "Current User Roles", "type": "hidden"},
 ]

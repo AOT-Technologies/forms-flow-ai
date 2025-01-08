@@ -427,7 +427,7 @@ const EditComponent = () => {
   };
 
 const handleSavePublishChanged = () => {
-  if (isPublished && formChangeState.changed) {
+  if ((isPublished && formChangeState.changed) || (isPublished && workflowIsChanged)) {
     setModalType("unpublishBeforeSaving");
     setShowConfirmModal(true);
     return;
@@ -799,10 +799,21 @@ const handleSavePublishChanged = () => {
       setIsPublishLoading(false);
     }
   };
-  const handleConfirmation = async () => {
-   await confirmPublishOrUnPublish();
+  
+const handleConfirmation = async () => {
+  await unPublish(processListData.id);
+   closeModal();
+   if (!isFormLayout) {
+   const processDetails = await getProcessDetails({processKey:processListData.processKey});
+   dispatch(setProcessData(processDetails.data));
+   await flowRef.current.saveFlow(false,processDetails.data.id);
+  }
+  else{
    handleSaveLayout(true);
-  };
+  }
+  setIsPublished(!isPublished);
+ };
+
   const handleVersioning = () => {
     setVersion((prevVersion) => ({
       ...prevVersion,
@@ -931,7 +942,7 @@ const handleSavePublishChanged = () => {
             "This form is currently live. To save the changes to your form, you need to unpublish it first. By unpublishing this form, you will make it unavailable for new submissions. You can republish this form after making your edits.",
           primaryBtnAction: handleConfirmation,
           secondayBtnAction: closeModal,
-          primaryBtnText: "Unpublish and Save Layout",
+          primaryBtnText: isFlowLayout ? "Unpublish and Save Flow" : "Unpublish and Save Layout",
           secondaryBtnText: "Cancel, Keep This Form Published",
           };
       default:
@@ -1239,7 +1250,7 @@ const handleSavePublishChanged = () => {
                 handleCurrentLayout={handleCurrentLayout}
                 isMigrationLoading={isMigrationLoading}
                 setIsMigrationLoading={setIsMigrationLoading}
-                confirmPublishOrUnPublish={confirmPublishOrUnPublish}
+                handleSavePublishChanged={handleSavePublishChanged}
               />}
             </div>
             <button

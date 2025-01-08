@@ -37,51 +37,34 @@ import userRoles from "../../../constants/permissions.js";
 import BPMNViewer from "../../BPMN/BpmnViewer.js";
 import TaskVariableModal from "../../Modals/TaskVariableModal.js";
 
-const FlowEdit = forwardRef(
-  (
-    {
-      isPublished = false,
-      CategoryType,
-      setWorkflowIsChanged,
-      migration,
-      setMigration,
-      redirectUrl,
-      isMigrated = true,
-      mapperId,
-      layoutNotsaved,
-      handleCurrentLayout,
-      isMigrationLoading,
-      setIsMigrationLoading,
-      confirmPublishOrUnPublish,
-    },
-    ref
-  ) => {
-    const { t } = useTranslation();
-    const dispatch = useDispatch();
-    const bpmnRef = useRef();
-    const processData = useSelector((state) => state.process?.processData);
-    const [lintErrors, setLintErrors] = useState([]);
-    const [savingFlow, setSavingFlow] = useState(false);
-    const [showDiscardModal, setShowDiscardModal] = useState(false);
-    const [showHistoryModal, setShowHistoryModal] = useState(false);
-    const [isReverted, setIsReverted] = useState(false);
-    const { createDesigns } = userRoles();
-    const [showTaskVarModal, setShowTaskVarModal] = useState(false);
-    const [isWorkflowChanged, setIsWorkflowChanged] = useState(false);
-    const [isMigrationChecked, setIsMigrationChecked] = useState(false);
-    const [showMigrationModal, setShowMigrationModal] = useState(false);
-    const [showUnpublishModal, setShowUnpublishModal] = useState(false);
-
-    /* --------- fetching all process history when click history button --------- */
-    const {
-      data: { data: historiesData } = {}, // response data destructured
-      mutate: fetchHistories, // mutate function used to call the api function and here mutate renamed to fetch histories
-      // isLoading: historiesLoading,
-      // isError: historiesError,
-    } = useMutation(
-      ({ parentProcessKey, page, limit }) =>
-        getProcessHistory({ parentProcessKey, page, limit }) // this is api calling function and mutate function accepting some parameter and passing to the apicalling function
-    );
+const FlowEdit = forwardRef(({ isPublished = false, CategoryType,
+  setWorkflowIsChanged, migration, setMigration, redirectUrl,
+  isMigrated = true, mapperId,layoutNotsaved, handleCurrentLayout,
+  isMigrationLoading, setIsMigrationLoading, handleSavePublishChanged  }, ref) => {
+  const { t } = useTranslation();
+  const dispatch = useDispatch();
+  const bpmnRef = useRef();
+  const processData = useSelector((state) => state.process?.processData);
+  const [lintErrors, setLintErrors] = useState([]);
+  const [savingFlow, setSavingFlow] = useState(false);
+  const [showDiscardModal, setShowDiscardModal] = useState(false);
+  const [showHistoryModal, setShowHistoryModal] = useState(false);
+  const [isReverted, setIsReverted] = useState(false);
+  const { createDesigns } = userRoles();
+  const [showTaskVarModal, setShowTaskVarModal] = useState(false);
+  const [isWorkflowChanged, setIsWorkflowChanged] = useState(false);
+  const [isMigrationChecked, setIsMigrationChecked] = useState(false);
+  const [showMigrationModal, setShowMigrationModal] = useState(false);
+   /* --------- fetching all process history when click history button --------- */
+  const {
+    data: { data: historiesData } = {}, // response data destructured
+    mutate: fetchHistories, // mutate function used to call the api function and here mutate renamed to fetch histories
+    // isLoading: historiesLoading,
+    // isError: historiesError,
+  } = useMutation(
+    ({ parentProcessKey, page, limit }) =>
+      getProcessHistory({ parentProcessKey, page, limit }) // this is api calling function and mutate function accepting some parameter and passing to the apicalling function
+  );
 
     /* --------- fetch a perticular history when click the revert button -------- */
     const {
@@ -111,31 +94,31 @@ const FlowEdit = forwardRef(
     };
 
     useEffect(() => {
-      if (migration) {
-        setShowMigrationModal(true);
-        setMigration(false);
-      }
-    }, [migration]);
+    if (migration) {
+      setShowMigrationModal(true);
+      setMigration(false);
+    }
+  }, [migration]);
 
-    const handleMigration = () => {
-      setIsMigrationLoading(true);
-      const migrationData = {
-        mapperId: mapperId,
-        processKey: processData.processKey,
-      };
-      processMigrate(migrationData)
-        .then(() => {
-          dispatch(push(`${redirectUrl}formflow`));
-        })
-        .catch((err) => {
-          setIsMigrationLoading(false); // this is not added in finally as this props value is used for overriding navigation blocker during routing
-          console.log(err);
-        })
-        .finally(() => {
-          setShowMigrationModal(false);
-        });
+  const handleMigration = () => {
+    setIsMigrationLoading(true);
+    const migrationData = {
+      mapperId: mapperId,
+      processKey: processData.processKey
     };
-    //handle discard changes
+    processMigrate(migrationData)
+      .then(() => {
+        dispatch(push(`${redirectUrl}formflow`));
+      })
+      .catch((err) => {
+        setIsMigrationLoading(false); // this is not added in finally as this props value is used for overriding navigation blocker during routing
+        console.log(err);
+      })
+      .finally(() => {
+        setShowMigrationModal(false);
+      });
+  };
+  //handle discard changes
     const handleDiscardConfirm = () => {
       if (bpmnRef.current) {
         //import the existing process data to bpmn
@@ -158,36 +141,19 @@ const FlowEdit = forwardRef(
     const loadMoreBtnAction = () => {
       fetchHistories({ parentProcessKey: processData.parentProcessKey });
     };
-    const handleSaveFlowClick = () => {
-      // If the form is published and the workflow has changed, open the unpublish modal
-      if (isPublished && isWorkflowChanged) {
-        setShowUnpublishModal(true);
-      }
-      // If the flow has not been migrated, show the migration modal
-      else if (shouldShowMigrationModal()) {
-        setShowMigrationModal(true);
-      }
-      // Otherwise, proceed to save the flow
-      else {
-        saveFlow();
-      }
-    };
+  const handleSaveFlowClick = () => {
+    //On clicking the save flow it checks if the current flow has already been migrated, if not, it tries to migrate first.
+    if (shouldShowMigrationModal()) {
+      setShowMigrationModal(true);
+    } else {
+      saveFlow();
+    }
+  };
+  const shouldShowMigrationModal = () => {
+    return !isMigrated;
+  };
 
-    const shouldShowMigrationModal = () => {
-      return !isMigrated;
-    };
-
-    const handleCloseUnpublishModal = () => {
-      setShowUnpublishModal(false);
-    };
-    
-    const handleUnpublishAndSave = async () => {
-      handleCloseUnpublishModal();
-      confirmPublishOrUnPublish();
-     };
-    
-
-    const saveFlow = async (showToast = true) => {
+    const saveFlow = async (showToast = true,processId) => {
       try {
         const bpmnModeler = bpmnRef.current?.getBpmnModeler();
         const xml = await createXMLFromModeler(bpmnModeler);
@@ -206,7 +172,7 @@ const FlowEdit = forwardRef(
         setSavingFlow(true);
         const response = await updateProcess({
           type: "BPMN",
-          id: processData.id,
+          id: processId || processData.id,
           data: xml,
         });
         dispatch(setProcessData(response.data));
@@ -234,9 +200,8 @@ const FlowEdit = forwardRef(
     };
 
     const handleCloseMigration = () => {
-      setShowMigrationModal(false);
-    };
-    return (
+    setShowMigrationModal(false);
+  };return (
       <>
         <Card>
           <ConfirmModal
@@ -253,20 +218,6 @@ const FlowEdit = forwardRef(
             secondayBtnAction={handleDiscardModal}
             size="sm"
           />
-         {showUnpublishModal && <ConfirmModal
-            show={showUnpublishModal}
-            title={t("Unpublish Before Saving")}
-            message={t(
-              "This form is currently live. To save the changes to your form, you need to unpublish it first. By unpublishing this form, you will make it unavailable for new submissions. You can republish this form after making your edits."
-            )}
-            primaryBtnText={t("Unpublish and Save Flow")}
-            secondaryBtnText={t("Cancel, Keep This Form Published")}
-            primaryBtnAction={handleUnpublishAndSave}
-            secondaryBtnAction={handleCloseUnpublishModal}
-            onClose={handleCloseUnpublishModal}
-            size="sm"
-          />
-          }
           <Card.Header>
             <div className="d-flex justify-content-between align-items-center w-100">
               <div className="d-flex align-items-center justify-content-between">
@@ -302,7 +253,7 @@ const FlowEdit = forwardRef(
                     size="md"
                     className="mx-2"
                     label={t("Save Flow")}
-                    onClick={handleSaveFlowClick}
+                    onClick={isPublished ? handleSavePublishChanged : handleSaveFlowClick}
                     disabled={!isWorkflowChanged}
                     dataTestid="save-flow-layout"
                     ariaLabel={t("Save Flow Layout")}
@@ -346,69 +297,67 @@ const FlowEdit = forwardRef(
             </LoadingOverlay>
           </Card.Body>
         </Card>
-        {showMigrationModal && (
-          <ConfirmModal
-            show={showMigrationModal}
-            title={t("***Migration Notice***")}
-            message={
-              <div>
-                <div className="message-primary mb-3">
-                  {t(`We have switched to a new 1-to-1 relationship structure,
+        {showMigrationModal && <ConfirmModal
+        show={showMigrationModal}
+        title={t("***Migration Notice***")}
+        message={
+          <div>
+            <div className="message-primary mb-3">
+              {t(`We have switched to a new 1-to-1 relationship structure,
               where 1 form contains both the layout (visual of the form)
                and the flow (the actions that get executed after the
                form's submission). Due to this 1-to-1 relationship,
                each layout (previously known as "form") will have a
                flow associated with it, so you cannot reuse flows -
                 one flow cannot be executed by different forms.`)}
-                </div>
-                <div className="message-primary mb-3">
-                  {t(`This form shares a flow with a few other forms. As this is
+            </div>
+            <div className="message-primary mb-3">
+              {t(`This form shares a flow with a few other forms. As this is
                not allowed under the new structure, we will permanently
                 link this flow with this form. For the other forms reusing
                  this flow, we will automatically duplicate the flow. When
                  flows are duplicated, their history is not carried over.
                  You need to pick which form keeps the history and which
                  forms get duplicates without history.`)}
-                </div>
-                <div className="message-primary mb-3">
-                  {t(`If this is the form you wish to keep the flow's history with,
+            </div>
+            <div className="message-primary mb-3">
+              {t(`If this is the form you wish to keep the flow's history with,
                confirm below. If this is not the form, then hit cancel, find
                 the form you want, make a minor change, press "Save Layout"
                  or "Save Flow," and confirm it there.`)}
-                </div>
-                <div className="d-flex justify-content-between align-items-center">
-                  <label className="message-primary">
-                    {t(`This is the form that will keep the current
-                flow and its history.`)}{" "}
-                  </label>
-                  <div className="dashed-line"></div>
-                  <div className="custom-checkbox d-flex justify-content-between align-items-center gap-2">
-                    <input
-                      type="checkbox"
-                      className="form-check-input mb-2"
-                      onChange={() => setIsMigrationChecked((prev) => !prev)}
-                      data-testid="migration-confirm"
-                      checked={isMigrationChecked}
-                    />
-                    <label className="message-primary">{t(`I confirm`)}</label>
-                  </div>
-                </div>
+            </div>
+            <div className="d-flex justify-content-between align-items-center">
+              <label className="message-primary">
+                {t(`This is the form that will keep the current
+                flow and its history.`)}
+                {" "}
+              </label>
+              <div className="dashed-line"></div>
+              <div className="custom-checkbox d-flex justify-content-between align-items-center gap-2">
+                <input
+                  type="checkbox"
+                  className="form-check-input mb-2"
+                  onChange={() => setIsMigrationChecked(prev => !prev)}
+                  data-testid="migration-confirm"
+                  checked={isMigrationChecked}
+                />
+                <label className="message-primary">{t(`I confirm`)}</label>
+                
               </div>
-            }
-            primaryBtnDisable={!isMigrationChecked}
-            messageSecondary={null} // You can set this to `null` or remove it entirely if unused
-            primaryBtnAction={handleMigration}
-            onClose={handleCloseMigration}
-            primaryBtnText={t(
-              "Link this form that will keep the current flow and its history"
-            )}
-            secondaryBtnText={t("Cancel")}
-            secondayBtnAction={handleCloseMigration}
-            buttonLoading={isMigrationLoading}
-            size="sm"
-          />
-        )}
-
+            </div>
+          </div >
+        }
+        primaryBtnDisable={!isMigrationChecked}
+        messageSecondary={null} // You can set this to `null` or remove it entirely if unused
+        primaryBtnAction={handleMigration}
+        onClose={handleCloseMigration}
+        primaryBtnText={t("Link this form that will keep the current flow and its history")}
+        secondaryBtnText={t("Cancel")}
+        secondayBtnAction={handleCloseMigration}
+        buttonLoading={isMigrationLoading}
+        size="sm"
+      />}
+      
         <HistoryModal
           show={showHistoryModal}
           onClose={handleToggleHistoryModal}
@@ -450,7 +399,7 @@ FlowEdit.propTypes = {
   layoutNotsaved: PropTypes.bool.isRequired,
   handleCurrentLayout: PropTypes.func,
   isMigrationLoading: PropTypes.bool,
-  setIsMigrationLoading: PropTypes.func,
+  setIsMigrationLoading: PropTypes.func
 };
 
 export default FlowEdit;

@@ -45,11 +45,11 @@ class Process(AuditDateTimeMixin, AuditUserMixin, BaseModel, db.Model):
         nullable=False,
         default=ProcessStatus.DRAFT,
     )
-    tenant = db.Column(db.String(100), nullable=True)
+    tenant = db.Column(db.String(100), nullable=True, index=True)
     major_version = db.Column(db.Integer, nullable=False, index=True)
     minor_version = db.Column(db.Integer, nullable=False, index=True)
     process_key = db.Column(db.String)
-    parent_process_key = db.Column(db.String)
+    parent_process_key = db.Column(db.String, index=True)
     is_subflow = db.Column(db.Boolean, default=False)
     status_changed = db.Column(db.Boolean, default=False)
 

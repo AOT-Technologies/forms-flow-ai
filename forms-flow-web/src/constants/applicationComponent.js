@@ -131,7 +131,7 @@ export const addHiddenApplicationComponent = (form) => {
       label: "Current User Roles", 
       persistent: true,
       key: "currentUserRole", 
-      customDefaultValue: "const localdata = localStorage.getItem('UserDetails') &&  JSON.parse(localStorage.getItem('UserDetails'));  value = localdata?.role || [];" 
+      customDefaultValue: "const localdata = localStorage.getItem('UserDetails') && (JSON.parse(localStorage.getItem('UserDetails'))) || []; value = localdata?.groups?.map(group => group.replace(new RegExp('^/+|/+$', 'g'), '')) || [];" 
     },
     // { 
     //   label: "All Available Roles", 

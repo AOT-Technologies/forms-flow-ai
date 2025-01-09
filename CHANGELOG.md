@@ -154,7 +154,7 @@ Mark  items as `Added`, `Changed`, `Fixed`, `Modified`, `Removed`, `Untested Fea
 * The language translation of the entire UI is not perfect at the moment, so some glitches may be expected.
 * forms-flow-web test cases are not fully covered
 
-#### <ins>Enterprise Edition Changes </ins>
+#### <ins>Premium Features </ins>
 
 `Added` 
 
@@ -298,6 +298,33 @@ Mark  items as `Added`, `Changed`, `Fixed`, `Modified`, `Removed`, `Untested Fea
 
 * Fixed security vulnerabilities
 
+#### <ins>Premium Features </ins>
+
+`Added` 
+
+**froms-flow-web**
+* Added IPASS integration
+* Added task variables from forms of a bundle to filter creation
+
+**forms-flow-data-analysis-api**
+* Added new env variable `CHAT_BOT_CONTEXT_KEY` to define the context for chat bot
+
+**forms-flow-bpm**
+* Added `iPaasListener` to support IPASS integration
+
+**forms-flow-api**
+* Added new endpoints to support IPASS
+
+`Modified`
+
+**forms-flow-data-analysis-api**
+* CHAT_URL port number updated
+
+`Fixed`
+
+**froms-flow-web**
+* Fixed task details view of bundle in list view
+  
 
 ## 5.3.1 - 2024-02-14
 
@@ -322,6 +349,19 @@ Mark  items as `Added`, `Changed`, `Fixed`, `Modified`, `Removed`, `Untested Fea
 **forms-flow-api**
 
 * Changes have been made to the Roles and Groups endpoint to accommodate modifications related to subgroups in Keycloak 23.
+
+#### <ins>Premium Features </ins>
+
+`Fixed`
+
+* Fixed category listing for pre-built templates for multi-tenant environment.
+
+`Added`
+
+**forms-flow-bpm**
+
+* Added new field injection `emailAddress` in Notify Listener to allow email addresses in addition to group names.
+
 
 ## 5.3.0 - 2023-11-24
 
@@ -399,6 +439,32 @@ Mark  items as `Added`, `Changed`, `Fixed`, `Modified`, `Removed`, `Untested Fea
 
 * Flask upgraded to 2.3.3 and fixed security vulnerabilities
 
+#### <ins>Premium Features </ins>
+
+`Added`
+
+**forms-flow-web**
+
+* Added RBAC(Role Based Access Control) support in form bundling, refer [here](https://aot-technologies.github.io/forms-flow-ai-doc/#rbac).
+* Added Templates feature, refer [here](https://aot-technologies.github.io/forms-flow-ai-doc/#templates) for more.
+* Added AI chat assist support in form creation, refer [here](https://aot-technologies.github.io/forms-flow-ai-doc/#chatbot) for more.
+* Added environment variables `ENABLE_CHATBOT`, `CHATBOT_URL` for AI chat assist support.
+
+**forms-flow-data-analysis-api**
+
+* Added environment variables `OPENAI_API_KEY`, `CHAT_BOT_MODEL_ID` for AI chat assist support.
+
+
+**forms-flow-api**
+
+* Added RBAC(Role Based Access Control) support in form bundling.
+
+`Fixed`
+
+**forms-flow-api**
+
+* Fixed task variable updation issue on resubmit in form bundling.
+  
 
 ## 5.2.1 - 2023-09-01
 
@@ -483,6 +549,30 @@ Mark  items as `Added`, `Changed`, `Fixed`, `Modified`, `Removed`, `Untested Fea
      * forms-flow-theme (contains the common style sheet shared by all micro-front-ends)<br>
         Refer the [forms-flow-ai-micro-front-ends](https://github.com/AOT-Technologies/forms-flow-ai-micro-front-end) repository for further details.
 * Dashboard authorization is moved from designer role to admin user.
+
+#### <ins>Premium Features </ins>
+
+`Added`
+
+**forms-flow-web**
+
+* Added `form bundling` feature as a premium feature, refer [here](https://aot-technologies.github.io/forms-flow-ai-doc/#formBundling) for more details.
+
+**forms-flow-bpm**
+
+* Added CombineSubmissionBundleListener to support form bundling feature.
+* Added RequestStateListener to support Request status.
+* Added skip-sanitize flag to request header for calls from BPM to Form.io.
+
+`Modified`
+
+**forms-flow-web**
+
+* To enable tracking of individual requests within the bundle, the application history has been updated to Application status and Request status.
+
+`Generic changes`
+
+* During the process of form bundling, it is necessary to configure task variables while designing each individual form.
 
 
 ## 5.1.1 - 2023-05-18

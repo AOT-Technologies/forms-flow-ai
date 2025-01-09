@@ -116,7 +116,7 @@ const ChartForm = React.memo((props) => {
               pieData.length ? (
                 <div className="d-flex border flex-wrap rounded p-4   ">
               {pieData.map((entry, index) => (
-                <div className=" d-flex align-items-center m-3" key={index}>
+                <div className=" d-flex align-items-center m-3" key={entry.statusName}>
                   <span
                     className="rounded-circle shadow  me-2"
                     style={{

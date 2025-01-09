@@ -369,7 +369,7 @@ const FlowEdit = forwardRef(({ isPublished = false, CategoryType,
           categoryType={CategoryType.WORKFLOW}
           revertBtnAction={fetchHistoryData}
           historyCount={historiesData?.totalCount || 0}
-          disableAllRevertButton={processData.status === "Published"}
+          disableAllRevertButton={processData.status === "Published" || isPublished }
         />
         {showTaskVarModal && (
           <TaskVariableModal

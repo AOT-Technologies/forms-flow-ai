@@ -213,7 +213,7 @@ const TaskHeaderListView = React.memo(({task,taskId,groupView = true}) => {
       )}
 
       {vissibleAttributes?.taskVisibleAttributes?.dueDate && (
-        <Col xs={2}>
+        <Col xs={2} className="px-0">
           <div className="">
             <div>
                <h6 className="fw-bold">{t("Due Date")}</h6>

@@ -420,7 +420,7 @@ const TaskVariableModal = React.memo(
         show={showTaskVarModal}
         onHide={handleClose}
         className="task-variable-modal"
-        size="lg"
+        size={layoutNotsaved ? "sm" : "lg"}
         centered={true}
       >
         <Modal.Header>

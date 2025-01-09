@@ -40,7 +40,7 @@ import TaskVariableModal from "../../Modals/TaskVariableModal.js";
 const FlowEdit = forwardRef(({ isPublished = false, CategoryType,
   setWorkflowIsChanged, migration, setMigration, redirectUrl,
   isMigrated = true, mapperId,layoutNotsaved, handleCurrentLayout,
-  isMigrationLoading, setIsMigrationLoading  }, ref) => {
+  isMigrationLoading, setIsMigrationLoading, handleUnpublishAndSaveChanges  }, ref) => {
   const { t } = useTranslation();
   const dispatch = useDispatch();
   const bpmnRef = useRef();
@@ -153,7 +153,7 @@ const FlowEdit = forwardRef(({ isPublished = false, CategoryType,
     return !isMigrated;
   };
 
-    const saveFlow = async (showToast = true) => {
+    const saveFlow = async ({processId = null, showToast = true} = {}) => {
       try {
         const bpmnModeler = bpmnRef.current?.getBpmnModeler();
         const xml = await createXMLFromModeler(bpmnModeler);
@@ -172,7 +172,7 @@ const FlowEdit = forwardRef(({ isPublished = false, CategoryType,
         setSavingFlow(true);
         const response = await updateProcess({
           type: "BPMN",
-          id: processData.id,
+          id: processId || processData.id,
           data: xml,
         });
         dispatch(setProcessData(response.data));
@@ -253,8 +253,8 @@ const FlowEdit = forwardRef(({ isPublished = false, CategoryType,
                     size="md"
                     className="mx-2"
                     label={t("Save Flow")}
-                    onClick={handleSaveFlowClick}
-                    disabled={isPublished || !isWorkflowChanged}
+                    onClick={isPublished ? handleUnpublishAndSaveChanges : handleSaveFlowClick}
+                    disabled={!isWorkflowChanged}
                     dataTestid="save-flow-layout"
                     ariaLabel={t("Save Flow Layout")}
                     buttonLoading={savingFlow}
@@ -399,7 +399,8 @@ FlowEdit.propTypes = {
   layoutNotsaved: PropTypes.bool.isRequired,
   handleCurrentLayout: PropTypes.func,
   isMigrationLoading: PropTypes.bool,
-  setIsMigrationLoading: PropTypes.func
+  setIsMigrationLoading: PropTypes.func,
+  handleUnpublishAndSaveChanges: PropTypes.func
 };
 
 export default FlowEdit;

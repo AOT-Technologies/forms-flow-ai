@@ -129,6 +129,8 @@ const EditComponent = () => {
   const [formChangeState, setFormChangeState] = useState({ initial: false, changed: false });
   const [workflowIsChanged, setWorkflowIsChanged] = useState(false);
   const [migration, setMigration] = useState(false);
+  const [loadingVersioning, setLoadingVersioning] = useState(false); // Loader state for versioning
+
 
   /* ------------------------- migration states ------------------------- */
   const [isMigrationLoading, setIsMigrationLoading] = useState(false);
@@ -418,6 +420,14 @@ const EditComponent = () => {
       search: queryParams && `?${queryParams}`
     }));
   };
+  
+const handleSaveLayout = () => {
+  if (promptNewVersion) {
+    handleVersioning();
+    return;
+  }
+  saveFormData({ showToast: false });
+};
 
   const handleCloseSelectedAction = () => {
     setSelectedAction(null);
@@ -606,6 +616,13 @@ const EditComponent = () => {
     }
   };
 
+  const handleUnpublishAndSaveChanges = () => {
+    if  (isPublished && (formChangeState.changed || workflowIsChanged)) {
+      setModalType("unpublishBeforeSaving");
+      setShowConfirmModal(true);
+    }
+  };
+
   const saveFormData = async ({ showToast = true }) => {
     try {
       const isFormChanged = isFormComponentsChanged({
@@ -686,7 +703,7 @@ const EditComponent = () => {
       value: _cloneDeep(formData.components),
     });
     setFormChangeState(prev => ({ ...prev, changed: false }));
-    handleToggleConfirmModal();
+    setShowConfirmModal(false);
   };
 
   const editorActions = () => {
@@ -766,7 +783,8 @@ const EditComponent = () => {
       closeModal();
       setIsPublishLoading(true);
       if (!isPublished) {
-        await flowRef.current.saveFlow(false);
+       
+        await flowRef.current.saveFlow({processId: processData.id,showToast: false});
         await saveFormData({ showToast: false });
       }
       await actionFunction(processListData.id);
@@ -784,15 +802,51 @@ const EditComponent = () => {
     }
   };
 
-  const handleVersioning = () => {
+  const handleConfirmUnpublishAndSave = async () => {
+    try {
+      closeModal(); 
+      setLoadingVersioning(true);
+      await unPublish(processListData.id); // Unpublish the process
+      // Fetch mapper data
+      dispatch(
+        getFormProcesses(formId, async (error, data) => {
+          if(error){ //handling error
+            console.log(error);
+            setLoadingVersioning(false);
+            return;
+          }
+          /* ----------------------------- saving the data ---------------------------- */
+          if (!isFormLayout) {
+            const response = await getProcessDetails({
+              processKey: processListData.processKey,
+            });
+            dispatch(setProcessData(response.data));
+            await flowRef.current.saveFlow({processId: response.data.id,showToast: false});
+            setLoadingVersioning(false); //setloading false after all function complete
+          } else {
+            setLoadingVersioning(false); //no longer keep loading
+            handleVersioning(data.majorVersion, data.minorVersion); // Handle versioning
+          }
+          /* ----------------------------------- ... ---------------------------------- */
+          setIsPublished(!isPublished); // Toggle publish state
+          setPromptNewVersion(isPublished); // Prompt for new version
+        })
+      );
+    } catch (error) {
+      setLoadingVersioning(false);
+      console.error("Error during confirmation:", error); 
+    } 
+  };
+  
+  const handleVersioning = (majorVersion, minorVersion) => {
     setVersion((prevVersion) => ({
       ...prevVersion,
-      major: processListData.majorVersion + 1 + ".0", // Increment the major version
-      minor:
-        processListData.majorVersion + "." + (processListData.minorVersion + 1), // Reset the minor version to 0
+      major: (majorVersion || processListData.majorVersion) + 1 + ".0", // Increment the major version
+      minor: (majorVersion || processListData.majorVersion) + "." + ((minorVersion || processListData.minorVersion) + 1), // Reset the minor version to 0
     }));
     openConfirmModal("save");
   };
+  
 
   const closeNewVersionModal = () => {
     setNewVersionModal(false);
@@ -845,14 +899,14 @@ const EditComponent = () => {
 
   /* ------------------------- handling confirm modal ------------------------- */
 
-  const handleToggleConfirmModal = () => setShowConfirmModal(!showConfirmModal);
+
   const openConfirmModal = (type) => {
     setModalType(type);
-    handleToggleConfirmModal();
+    setShowConfirmModal(true);
   };
   const closeModal = () => {
     setModalType("");
-    handleToggleConfirmModal();
+    setShowConfirmModal(false);
   };
 
   const handleShowVersionModal = () => {
@@ -903,6 +957,16 @@ const EditComponent = () => {
           primaryBtnText: "Yes, Discard Changes",
           secondaryBtnText: "No, Keep My Changes",
         };
+      case "unpublishBeforeSaving":
+        return {
+          title: "Unpublish Before Saving",
+          message:
+            "This form is currently live. To save the changes to your form, you need to unpublish it first. By unpublishing this form, you will make it unavailable for new submissions. You can republish this form after making your edits.",
+          primaryBtnAction: handleConfirmUnpublishAndSave,
+          secondayBtnAction: closeModal,
+          primaryBtnText: isFlowLayout ? "Unpublish and Save Flow" : "Unpublish and Save Layout",
+          secondaryBtnText: "Cancel, Keep This Form Published",
+          };
       default:
         return {};
     }
@@ -1031,7 +1095,7 @@ const EditComponent = () => {
     <div>
       <div>
         <NavigateBlocker isBlock={(formChangeState.changed || workflowIsChanged) && (!isMigrationLoading && !isDeletionLoading)} message={"You have made changes that are not saved yet. The unsaved changes could be either on the Layout or the Flow side."} />
-        <LoadingOverlay active={formSubmitted} spinner text={t("Loading...")}>
+        <LoadingOverlay active={formSubmitted || loadingVersioning} spinner text={t("Loading...")}>
           <SettingsModal
             show={showSettingsModal}
             isSaving={isSettingsSaving}
@@ -1134,10 +1198,11 @@ const EditComponent = () => {
                           variant="primary"
                           size="md"
                           className="mx-2"
-                          disabled={isPublished || !formChangeState.changed}
+                          disabled={!formChangeState.changed}
                           label={t("Save Layout")}
                           onClick={
-                            promptNewVersion ? handleVersioning : saveFormData
+                            isPublished ? handleUnpublishAndSaveChanges :  handleSaveLayout
+
                           }
                           dataTestid="save-form-layout"
                           ariaLabel={t("Save Form Layout")}
@@ -1208,6 +1273,7 @@ const EditComponent = () => {
                 handleCurrentLayout={handleCurrentLayout}
                 isMigrationLoading={isMigrationLoading}
                 setIsMigrationLoading={setIsMigrationLoading}
+                handleUnpublishAndSaveChanges={handleUnpublishAndSaveChanges}
               />}
             </div>
             <button

@@ -429,13 +429,6 @@ const handleSaveLayout = () => {
   saveFormData({ showToast: false });
 };
 
-const handleSavePublishChanged = () => {
-  if ((isPublished && formChangeState.changed) || (isPublished && workflowIsChanged)) {
-    setModalType("unpublishBeforeSaving");
-    setShowConfirmModal(true);
-  }
-};
-
   const handleCloseSelectedAction = () => {
     setSelectedAction(null);
     if (selectedAction === ACTION_OPERATIONS.IMPORT) {
@@ -623,6 +616,13 @@ const handleSavePublishChanged = () => {
     }
   };
 
+  const handleUnpublishAndSaveChanges = () => {
+    if ((isPublished && formChangeState.changed) || (isPublished && workflowIsChanged)) {
+      setModalType("unpublishBeforeSaving");
+      setShowConfirmModal(true);
+    }
+  };
+
   const saveFormData = async ({ showToast = true }) => {
     try {
       const isFormChanged = isFormComponentsChanged({
@@ -783,7 +783,8 @@ const handleSavePublishChanged = () => {
       closeModal();
       setIsPublishLoading(true);
       if (!isPublished) {
-        await flowRef.current.saveFlow(processData.id,false);
+       
+        await flowRef.current.saveFlow({processId: processData.id,showToast: false});
         await saveFormData({ showToast: false });
       }
       await actionFunction(processListData.id);
@@ -800,33 +801,39 @@ const handleSavePublishChanged = () => {
       setIsPublishLoading(false);
     }
   };
-  const handleConfirmation = async () => {
+
+  const handleConfirmUnpublishAndSave = async () => {
     try {
+      closeModal(); 
       setLoadingVersioning(true);
       await unPublish(processListData.id); // Unpublish the process
-      closeModal(); // Close the modal
-  
-      // Fetch form processes
-      await dispatch(
+      // Fetch mapper data
+      dispatch(
         getFormProcesses(formId, async (error, data) => {
+          if(error){ //handling error
+            console.log(error);
+            return;
+          }
+          /* ----------------------------- saving the data ---------------------------- */
           if (!isFormLayout) {
-            const processDetails = await getProcessDetails({
+            const response = await getProcessDetails({
               processKey: processListData.processKey,
             });
-            dispatch(setProcessData(processDetails.data));
-            await flowRef.current.saveFlow(processDetails.data.id, false);
+            dispatch(setProcessData(response.data));
+            await flowRef.current.saveFlow({processId: response.data.id,showToast: false});
+            setLoadingVersioning(false); //setloading false after all function complete
           } else {
+            setLoadingVersioning(false); //no longer keep loading
             handleVersioning(data.majorVersion, data.minorVersion); // Handle versioning
           }
+          /* ----------------------------------- ... ---------------------------------- */
           setIsPublished(!isPublished); // Toggle publish state
           setPromptNewVersion(isPublished); // Prompt for new version
         })
       );
     } catch (error) {
       console.error("Error during confirmation:", error); 
-    } finally {
-      setLoadingVersioning(false);
-    }
+    } 
   };
   
   const handleVersioning = (majorVersion, minorVersion) => {
@@ -837,8 +844,6 @@ const handleSavePublishChanged = () => {
     }));
     openConfirmModal("save");
   };
-  
- 
   
 
   const closeNewVersionModal = () => {
@@ -955,7 +960,7 @@ const handleSavePublishChanged = () => {
           title: "Unpublish Before Saving",
           message:
             "This form is currently live. To save the changes to your form, you need to unpublish it first. By unpublishing this form, you will make it unavailable for new submissions. You can republish this form after making your edits.",
-          primaryBtnAction: handleConfirmation,
+          primaryBtnAction: handleConfirmUnpublishAndSave,
           secondayBtnAction: closeModal,
           primaryBtnText: isFlowLayout ? "Unpublish and Save Flow" : "Unpublish and Save Layout",
           secondaryBtnText: "Cancel, Keep This Form Published",
@@ -1194,7 +1199,7 @@ const handleSavePublishChanged = () => {
                           disabled={!formChangeState.changed}
                           label={t("Save Layout")}
                           onClick={
-                            isPublished ? handleSavePublishChanged :  handleSaveLayout
+                            isPublished ? handleUnpublishAndSaveChanges :  handleSaveLayout
 
                           }
                           dataTestid="save-form-layout"
@@ -1266,7 +1271,7 @@ const handleSavePublishChanged = () => {
                 handleCurrentLayout={handleCurrentLayout}
                 isMigrationLoading={isMigrationLoading}
                 setIsMigrationLoading={setIsMigrationLoading}
-                handleSavePublishChanged={handleSavePublishChanged}
+                handleUnpublishAndSaveChanges={handleUnpublishAndSaveChanges}
               />}
             </div>
             <button

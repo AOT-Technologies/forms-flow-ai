@@ -40,7 +40,7 @@ import TaskVariableModal from "../../Modals/TaskVariableModal.js";
 const FlowEdit = forwardRef(({ isPublished = false, CategoryType,
   setWorkflowIsChanged, migration, setMigration, redirectUrl,
   isMigrated = true, mapperId,layoutNotsaved, handleCurrentLayout,
-  isMigrationLoading, setIsMigrationLoading, handleSavePublishChanged  }, ref) => {
+  isMigrationLoading, setIsMigrationLoading, handleUnpublishAndSaveChanges  }, ref) => {
   const { t } = useTranslation();
   const dispatch = useDispatch();
   const bpmnRef = useRef();
@@ -153,7 +153,7 @@ const FlowEdit = forwardRef(({ isPublished = false, CategoryType,
     return !isMigrated;
   };
 
-    const saveFlow = async (processId, showToast = true) => {
+    const saveFlow = async ({processId = null, showToast = true} = {}) => {
       try {
         const bpmnModeler = bpmnRef.current?.getBpmnModeler();
         const xml = await createXMLFromModeler(bpmnModeler);
@@ -253,7 +253,7 @@ const FlowEdit = forwardRef(({ isPublished = false, CategoryType,
                     size="md"
                     className="mx-2"
                     label={t("Save Flow")}
-                    onClick={isPublished ? handleSavePublishChanged : handleSaveFlowClick}
+                    onClick={isPublished ? handleUnpublishAndSaveChanges : handleSaveFlowClick}
                     disabled={!isWorkflowChanged}
                     dataTestid="save-flow-layout"
                     ariaLabel={t("Save Flow Layout")}
@@ -400,7 +400,7 @@ FlowEdit.propTypes = {
   handleCurrentLayout: PropTypes.func,
   isMigrationLoading: PropTypes.bool,
   setIsMigrationLoading: PropTypes.func,
-  handleSavePublishChanged: PropTypes.func
+  handleUnpublishAndSaveChanges: PropTypes.func
 };
 
 export default FlowEdit;

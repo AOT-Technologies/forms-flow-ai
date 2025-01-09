@@ -617,7 +617,7 @@ const handleSaveLayout = () => {
   };
 
   const handleUnpublishAndSaveChanges = () => {
-    if ((isPublished && formChangeState.changed) || (isPublished && workflowIsChanged)) {
+    if  (isPublished && (formChangeState.changed || workflowIsChanged)) {
       setModalType("unpublishBeforeSaving");
       setShowConfirmModal(true);
     }
@@ -812,6 +812,7 @@ const handleSaveLayout = () => {
         getFormProcesses(formId, async (error, data) => {
           if(error){ //handling error
             console.log(error);
+            setLoadingVersioning(false);
             return;
           }
           /* ----------------------------- saving the data ---------------------------- */
@@ -832,6 +833,7 @@ const handleSaveLayout = () => {
         })
       );
     } catch (error) {
+      setLoadingVersioning(false);
       console.error("Error during confirmation:", error); 
     } 
   };

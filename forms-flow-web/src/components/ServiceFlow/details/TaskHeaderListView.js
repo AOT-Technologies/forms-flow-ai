@@ -316,7 +316,7 @@ const TaskHeaderListView = React.memo(({task,taskId,groupView = true}) => {
               <h6 className="fw-bold">{t("Groups")}</h6>
             </div>
             <div
-              className="actionable"
+              className="actionable d-flex"
               onClick={() => manageTasks && setModal(true)}
               title={t("Groups")}
               style={{ cursor: !manageTasks ? 'default' : 'pointer' }}

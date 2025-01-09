@@ -41,11 +41,11 @@ formsflow.ai:
     url: ${FORMSFLOW_DOC_API_URL}
   authorizations:
     - groupId: "ROLE_create_submissions"
-      resourceType: "PROCESS_DEFINITION,PROCESS_INSTANCE"
+      resourceType: "PROCESS_DEFINITION,PROCESS_INSTANCE,DECISION_DEFINITION,DECISION_REQUIREMENTS_DEFINITION"
       resourceId: "*"
       permissions: ["ALL"]
     - groupId: "ROLE_view_designs"
-      resourceType: "PROCESS_DEFINITION,PROCESS_INSTANCE"
+      resourceType: "PROCESS_DEFINITION,PROCESS_INSTANCE,DECISION_DEFINITION,DECISION_REQUIREMENTS_DEFINITION"
       resourceId: "*"
       permissions: ["ALL"]
     - groupId: "ROLE_create_designs"
@@ -53,7 +53,7 @@ formsflow.ai:
       resourceId: "*"
       permissions: ["ALL"]
     - groupId: "ROLE_view_tasks"
-      resourceType: "PROCESS_DEFINITION,PROCESS_INSTANCE,TASK,FILTER,USER"
+      resourceType: "PROCESS_DEFINITION,PROCESS_INSTANCE,TASK,FILTER,USER,DECISION_DEFINITION,DECISION_REQUIREMENTS_DEFINITION"
       resourceId: "*"
       permissions: ["ALL"]
 

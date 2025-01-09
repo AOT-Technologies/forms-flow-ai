@@ -76,11 +76,11 @@ Variable name | Meaning | Possible values | Default value |
 `REDIS_URL`| Redis url||`redis://{your-ip-address}:6379/0`
 `REDIS_CLUSTER`|To support single/cluster node|`true`/`false`|`false`
 `DATABASE_URL`|Database Connection URL||postgresql://postgres:changeme@forms-flow-webapi-db:5432
-`DATABASE_USERNAME`|Database username. Instead of DATABASE URL| `postgres` 
-`DATABASE_PASSWORD`|Database password. Instead of DATABASE URL|`changeme`
-`DATABASE_HOST`|Database host. Instead of DATABASE URL|`forms-flow-webapi-db`
-`DATABASE_PORT`|Database port. Instead of DATABASE URL|`5432`
-`DATABASE_NAME`|Database name. Instead of DATABASE URL|`webapi`
+`DATABASE_USERNAME`|Database username(This is not needed if we are having DATABASE_URL)| `postgres` 
+`DATABASE_PASSWORD`|Database password(This is not needed if we are having DATABASE_URL)|`changeme`
+`DATABASE_HOST`|Database host(This is not needed if we are having DATABASE_URL)|`forms-flow-webapi-db`
+`DATABASE_PORT`|Database port(This is not needed if we are having DATABASE_URL)|`5432`
+`DATABASE_NAME`|Database name(This is not needed if we are having DATABASE_URL)|`webapi`
 
 
 **NOTE : Default realm is `forms-flow-ai`**

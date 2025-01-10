@@ -8,7 +8,7 @@ from typing import List
 from flask_sqlalchemy.query import Query
 from formsflow_api_utils.utils import FILTER_MAPS, add_sort_filter
 from formsflow_api_utils.utils.user_context import UserContext, user_context
-from sqlalchemy import LargeBinary, and_, desc, func, or_
+from sqlalchemy import Index, LargeBinary, and_, desc, func, or_
 from sqlalchemy.dialects.postgresql import ENUM
 
 from .audit_mixin import AuditDateTimeMixin, AuditUserMixin
@@ -37,7 +37,7 @@ class Process(AuditDateTimeMixin, AuditUserMixin, BaseModel, db.Model):
     """This class manages process data."""
 
     id = db.Column(db.Integer, primary_key=True)
-    name = db.Column(db.String, nullable=False)
+    name = db.Column(db.String, nullable=False, index=True)
     process_type = db.Column(ENUM(ProcessType, name="ProcessType"), nullable=False)
     process_data = db.Column(LargeBinary, nullable=False)
     status = db.Column(
@@ -52,6 +52,11 @@ class Process(AuditDateTimeMixin, AuditUserMixin, BaseModel, db.Model):
     parent_process_key = db.Column(db.String, index=True)
     is_subflow = db.Column(db.Boolean, default=False)
     status_changed = db.Column(db.Boolean, default=False)
+
+    __table_args__ = (
+        Index("idx_tenant_is_subflow", "tenant", "is_subflow"),
+        Index("idx_tenant_parent_process_key", "tenant", "parent_process_key"),
+    )
 
     @classmethod
     def create_from_dict(cls, process_data: dict) -> Process:

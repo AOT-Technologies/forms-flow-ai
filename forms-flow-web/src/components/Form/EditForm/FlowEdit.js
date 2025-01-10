@@ -38,7 +38,7 @@ import BPMNViewer from "../../BPMN/BpmnViewer.js";
 import TaskVariableModal from "../../Modals/TaskVariableModal.js";
 
 const FlowEdit = forwardRef(({ isPublished = false, CategoryType,
-  setWorkflowIsChanged, migration, setMigration, redirectUrl,
+  setWorkflowIsChanged,workflowIsChanged, migration, setMigration, redirectUrl,
   isMigrated = true, mapperId,layoutNotsaved, handleCurrentLayout,
   isMigrationLoading, setIsMigrationLoading, handleUnpublishAndSaveChanges  }, ref) => {
   const { t } = useTranslation();
@@ -52,7 +52,6 @@ const FlowEdit = forwardRef(({ isPublished = false, CategoryType,
   const [isReverted, setIsReverted] = useState(false);
   const { createDesigns } = userRoles();
   const [showTaskVarModal, setShowTaskVarModal] = useState(false);
-  const [isWorkflowChanged, setIsWorkflowChanged] = useState(false);
   const [isMigrationChecked, setIsMigrationChecked] = useState(false);
   const [showMigrationModal, setShowMigrationModal] = useState(false);
    /* --------- fetching all process history when click history button --------- */
@@ -84,12 +83,10 @@ const FlowEdit = forwardRef(({ isPublished = false, CategoryType,
       setShowHistoryModal(!showHistoryModal);
 
     const enableWorkflowChange = () => {
-      setIsWorkflowChanged(true);
       setWorkflowIsChanged(true); // this function passed from parent
     };
 
     const disableWorkflowChange = () => {
-      setIsWorkflowChanged(false);
       setWorkflowIsChanged(false); // this function passed from parent
     };
 
@@ -254,7 +251,7 @@ const FlowEdit = forwardRef(({ isPublished = false, CategoryType,
                     className="mx-2"
                     label={t("Save Flow")}
                     onClick={isPublished ? handleUnpublishAndSaveChanges : handleSaveFlowClick}
-                    disabled={!isWorkflowChanged}
+                    disabled={!workflowIsChanged}
                     dataTestid="save-flow-layout"
                     ariaLabel={t("Save Flow Layout")}
                     buttonLoading={savingFlow}
@@ -264,7 +261,7 @@ const FlowEdit = forwardRef(({ isPublished = false, CategoryType,
                     size="md"
                     label={t("Discard Changes")}
                     onClick={handleDiscardModal}
-                    disabled={!isWorkflowChanged}
+                    disabled={!workflowIsChanged}
                     dataTestid="discard-flow-changes-testid"
                     ariaLabel={t("Discard Flow Changes")}
                   />
@@ -391,6 +388,7 @@ FlowEdit.propTypes = {
   }).isRequired,
   isPublished: PropTypes.bool.isRequired,
   setWorkflowIsChanged: PropTypes.func,
+  workflowIsChanged: PropTypes.bool,
   migration: PropTypes.bool,
   setMigration: PropTypes.func,
   redirectUrl: PropTypes.string,

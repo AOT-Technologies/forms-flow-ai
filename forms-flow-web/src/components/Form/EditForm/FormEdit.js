@@ -816,11 +816,12 @@ const handleSaveLayout = () => {
             return;
           }
           /* ----------------------------- saving the data ---------------------------- */
+          const response = await getProcessDetails({
+            processKey: processListData.processKey,
+          });
+          dispatch(setProcessData(response.data));
           if (!isFormLayout) {
-            const response = await getProcessDetails({
-              processKey: processListData.processKey,
-            });
-            dispatch(setProcessData(response.data));
+            if(response)
             await flowRef.current.saveFlow({processId: response.data.id,showToast: false});
             setLoadingVersioning(false); //setloading false after all function complete
           } else {
@@ -1262,6 +1263,7 @@ const handleSaveLayout = () => {
               {isProcessDetailsLoading ? <>loading...</> : <FlowEdit
                 ref={flowRef}
                 setWorkflowIsChanged={setWorkflowIsChanged}
+                workflowIsChanged={workflowIsChanged}
                 CategoryType={CategoryType}
                 isPublished={isPublished}
                 migration={migration}

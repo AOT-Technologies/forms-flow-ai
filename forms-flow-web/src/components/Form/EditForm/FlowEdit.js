@@ -388,6 +388,7 @@ FlowEdit.propTypes = {
   }).isRequired,
   isPublished: PropTypes.bool.isRequired,
   setWorkflowIsChanged: PropTypes.func,
+  workflowIsChanged: PropTypes.bool,
   migration: PropTypes.bool,
   setMigration: PropTypes.func,
   redirectUrl: PropTypes.string,

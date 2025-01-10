@@ -18,7 +18,7 @@ class Themes(AuditDateTimeMixin, AuditUserMixin, BaseModel, db.Model):
     )
     application_title = db.Column(db.String(50), nullable=False)
     theme = db.Column(JSON, nullable=False, comment="Json data")
-    tenant = db.Column(db.String(20), nullable=True)
+    tenant = db.Column(db.String(20), nullable=True, index=True)
     __table_args__ = (UniqueConstraint("tenant", name="uq_tenant"),)
 
     @classmethod

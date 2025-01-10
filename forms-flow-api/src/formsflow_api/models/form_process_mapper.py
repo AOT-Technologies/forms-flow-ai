@@ -38,7 +38,7 @@ class FormProcessMapper(
     )
     status = db.Column(db.String(10), nullable=True)
     comments = db.Column(db.String(300), nullable=True)
-    tenant = db.Column(db.String(100), nullable=True)
+    tenant = db.Column(db.String(100), nullable=True, index=True)
     process_tenant = db.Column(
         db.String(),
         nullable=True,

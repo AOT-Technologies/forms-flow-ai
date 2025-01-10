@@ -8,7 +8,7 @@ from typing import List
 from flask_sqlalchemy.query import Query
 from formsflow_api_utils.utils import FILTER_MAPS, add_sort_filter
 from formsflow_api_utils.utils.user_context import UserContext, user_context
-from sqlalchemy import LargeBinary, and_, desc, func, or_
+from sqlalchemy import Index, LargeBinary, and_, desc, func, or_
 from sqlalchemy.dialects.postgresql import ENUM
 
 from .audit_mixin import AuditDateTimeMixin, AuditUserMixin
@@ -37,7 +37,7 @@ class Process(AuditDateTimeMixin, AuditUserMixin, BaseModel, db.Model):
     """This class manages process data."""
 
     id = db.Column(db.Integer, primary_key=True)
-    name = db.Column(db.String, nullable=False)
+    name = db.Column(db.String, nullable=False, index=True)
     process_type = db.Column(ENUM(ProcessType, name="ProcessType"), nullable=False)
     process_data = db.Column(LargeBinary, nullable=False)
     status = db.Column(
@@ -45,13 +45,18 @@ class Process(AuditDateTimeMixin, AuditUserMixin, BaseModel, db.Model):
         nullable=False,
         default=ProcessStatus.DRAFT,
     )
-    tenant = db.Column(db.String(100), nullable=True)
+    tenant = db.Column(db.String(100), nullable=True, index=True)
     major_version = db.Column(db.Integer, nullable=False, index=True)
     minor_version = db.Column(db.Integer, nullable=False, index=True)
     process_key = db.Column(db.String)
-    parent_process_key = db.Column(db.String)
+    parent_process_key = db.Column(db.String, index=True)
     is_subflow = db.Column(db.Boolean, default=False)
     status_changed = db.Column(db.Boolean, default=False)
+
+    __table_args__ = (
+        Index("idx_tenant_is_subflow", "tenant", "is_subflow"),
+        Index("idx_tenant_parent_process_key", "tenant", "parent_process_key"),
+    )
 
     @classmethod
     def create_from_dict(cls, process_data: dict) -> Process:
@@ -133,15 +138,19 @@ class Process(AuditDateTimeMixin, AuditUserMixin, BaseModel, db.Model):
         return query
 
     @classmethod
-    def subquery_for_getting_latest_process(cls):
+    @user_context
+    def subquery_for_getting_latest_process(cls, **kwargs):
         """Subquery to get the latest process by parent_process_key."""
+        user: UserContext = kwargs["user"]
         subquery = (
             db.session.query(
                 cls.parent_process_key,
+                cls.tenant,
                 func.max(cls.major_version).label("latest_major_version"),
                 func.max(cls.id).label("latest_id"),
             )
-            .group_by(cls.parent_process_key)
+            .filter(cls.tenant == user.tenant_key)
+            .group_by(cls.parent_process_key, cls.tenant)
             .subquery()
         )
         return subquery
@@ -169,7 +178,6 @@ class Process(AuditDateTimeMixin, AuditUserMixin, BaseModel, db.Model):
 
         if is_subflow:
             query = query.filter(cls.is_subflow.is_(True))
-        query = cls.auth_query(query=query)
         query = add_sort_filter(
             query=query, sort_by=sort_by, sort_order=sort_order, model_name="process"
         )

@@ -4,7 +4,8 @@ import redis
 from flask import current_app
 from redis.client import Redis
 import json
-
+import os
+from redis import RedisCluster as rc
 
 class RedisManager:
     """
@@ -28,11 +29,15 @@ class RedisManager:
         Raises:
             Exception: If the Redis client has not been initialized and no app context is provided.
         """
+        redis_cluster = os.getenv('REDIS_CLUSTER', 'false').lower() == 'true'
         if cls._redis_client is None:
             if app is None:
                 app = current_app
             redis_url = app.config.get("REDIS_URL")
-            cls._redis_client = redis.StrictRedis.from_url(redis_url)
+            if redis_cluster:
+                cls._redis_client = rc.from_url(redis_url)
+            else:
+                cls._redis_client = redis.StrictRedis.from_url(redis_url)
             app.logger.info("Redis client initiated successfully")
         return cls._redis_client
 
@@ -75,4 +80,3 @@ class Cache:
             return json.loads(val_json)  # Deserialize the JSON string back into Python object
         else:
             return None
-

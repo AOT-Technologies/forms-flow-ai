@@ -1,4 +1,5 @@
 """Helper module for PDF export."""
+
 import json
 import os
 import urllib.parse
@@ -70,24 +71,42 @@ class PDFService:
 
     def __get_form_data(self) -> Any:
         """Returns the form data from formio."""
-        return self.formio.get_form(
-            {"form_id": self.form_id}, self.__get_formio_access_token()
+        return self.formio.get_form_by_id(
+            self.form_id, self.__get_formio_access_token()
         )
 
     def __get_chrome_driver_path(self) -> str:
         """Returns the configured chrome driver path."""
         return self.__chrome_driver_path
 
+    def __get_headers(self, token):
+        """Returns the headers."""
+        return {"Authorization": token, "content-type": "application/json"}
+
+    def __fetch_custom_submission_data(self, token: str) -> Any:
+        """Returns the submission data from form adapter."""
+        sub_url = self.__get_custom_submission_url()
+        submission_url = (
+            f"{sub_url}/form/" + self.form_id + "/submission/" + self.submission_id
+        )
+        current_app.logger.debug(f"Fetching custom submission data..{submission_url}")
+        headers = self.__get_headers(token)
+        response = requests.get(submission_url, headers=headers, timeout=HTTP_TIMEOUT)
+        current_app.logger.debug(
+            f"Custom submission response code: {response.status_code}"
+        )
+        data = {}
+        if response.status_code == 200:
+            data = response.json()
+        return data
+
     def __get_form_and_submission_urls(self, token: str) -> Tuple[str, str, str]:
-        """Returns the appropriate form and submission url based on the config."""
+        """Returns the appropriate form url and submission data based on the config."""
         form_io_url = self.__get_formio_url()
+        current_app.logger.debug("Fetching form and submission data..")
         if self.__is_form_adapter():
-            sub_url = self.__get_custom_submission_url()
             form_url = form_io_url + "/form/" + self.form_id
-            submission_url = (
-                sub_url + "/form/" + self.form_id + "/submission/" + self.submission_id
-            )
-            auth_token = token
+            submission_data = self.__fetch_custom_submission_data(token)
         else:
             form_url = (
                 form_io_url
@@ -96,25 +115,21 @@ class PDFService:
                 + "/submission/"
                 + self.submission_id
             )
-            submission_url = None
-            auth_token = None
-        return (form_url, submission_url, auth_token)
+            submission_data = None
+        return (form_url, submission_data)
 
     def __get_template_params(self, token: str) -> dict:
         """Returns the jinja template parameters for pdf export with formio renderer."""
         form_io_url = self.__get_formio_url()
-        (form_url, submission_url, auth_token) = self.__get_form_and_submission_urls(
-            token
-        )
+        (form_url, submission_data) = self.__get_form_and_submission_urls(token)
         return {
             "form": {
                 "base_url": form_io_url,
                 "project_url": form_io_url,
                 "form_url": form_url,
                 "token": self.__get_formio_access_token(),
-                "submission_url": submission_url,
                 "form_adapter": self.__is_form_adapter(),
-                "auth_token": auth_token,
+                "submission_data": submission_data,
             }
         }
 
@@ -237,7 +252,11 @@ class PDFService:
         if template_variable_name:
             return self.__read_json(template_variable_name)
 
-        submission_data = self.__get_submission_data()
+        submission_data = (
+            self.__fetch_custom_submission_data(token)
+            if self.__is_form_adapter()
+            else self.__get_submission_data()
+        )
         form_data = self.__get_form_data()
 
         return self.__get_formatted_data(form_data, submission_data)

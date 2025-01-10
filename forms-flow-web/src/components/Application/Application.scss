@@ -1,3 +1,5 @@
+@import "../../variables.scss";
+
 .div-no-application {
     margin-top: 10%;
     margin-bottom: 10%;
@@ -26,9 +28,7 @@
     min-width: 500px;
 }
 
-.draftTable{
-    min-height: 400px;
-}
+
 
 .draft-disacard{
     width: 8.5em;
@@ -52,7 +52,7 @@
     .filter-list-view {
         position: absolute;
         z-index: 1000;
-        background-color: var(--color-white);
+        background-color: $white;
         top: 31px;;
         min-width: 180px;
     }

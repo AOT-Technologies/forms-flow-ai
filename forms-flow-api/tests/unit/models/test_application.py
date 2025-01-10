@@ -1,4 +1,5 @@
 """Unit tests for application Model."""
+
 from formsflow_api.models import Application, FormProcessMapper
 
 

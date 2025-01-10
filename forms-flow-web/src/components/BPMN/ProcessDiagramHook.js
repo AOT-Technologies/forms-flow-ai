@@ -24,7 +24,8 @@ const ProcessDiagram = React.memo(
     const isProcessDiagramLoading = useSelector(
       (state) => state.process.isProcessDiagramLoading
     );
-    const diagramXML = useSelector((state) => state.process.processDiagramXML);
+    // Using "defaultProcessXmlData" instead of "processDiagramXML" as it is no longer available in the process reducer.
+    const diagramXML = useSelector((state) => state.process.defaultProcessXmlData);
     const markers = useSelector((state) => state.process.processActivityList);
     const prevMarkers = usePrevious(markers);
     const [bpmnViewer, setBpmnViewer] = useState(null);

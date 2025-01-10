@@ -12,6 +12,11 @@ services:
       - ./:/app:rw
     environment:
       DATABASE_URL: ${FORMSFLOW_API_DB_URL:-postgresql://postgres:changeme@forms-flow-webapi-db:5432/webapi}
+      DATABASE_USERNAME: ${FORMSFLOW_API_DB_USER}
+      DATABASE_PASSWORD: ${FORMSFLOW_API_DB_PASSWORD}
+      DATABASE_HOST: ${FORMSFLOW_API_DB_HOST}
+      DATABASE_PORT: ${FORMSFLOW_API_DB_PORT}
+      DATABASE_NAME: ${FORMSFLOW_API_DB_NAME}
       FORMSFLOW_API_CORS_ORIGINS: ${FORMSFLOW_API_CORS_ORIGINS:-*}
       JWT_OIDC_WELL_KNOWN_CONFIG: ${KEYCLOAK_URL}${KEYCLOAK_URL_HTTP_RELATIVE_PATH:-/auth}/realms/${KEYCLOAK_URL_REALM:-forms-flow-ai}/.well-known/openid-configuration
       JWT_OIDC_JWKS_URI: ${KEYCLOAK_URL}${KEYCLOAK_URL_HTTP_RELATIVE_PATH:-/auth}/realms/${KEYCLOAK_URL_REALM:-forms-flow-ai}/protocol/openid-connect/certs
@@ -38,14 +43,6 @@ services:
       REDIS_URL: ${REDIS_URL:-redis://redis:6379/0}
     stdin_open: true # -i
     tty: true # -t
-    networks:
-      - forms-flow-webapi-network
-      - redis
-
-  redis:
-    image: "redis:alpine"
-    ports:
-      - "6379:6379"
     networks:
       - forms-flow-webapi-network
 

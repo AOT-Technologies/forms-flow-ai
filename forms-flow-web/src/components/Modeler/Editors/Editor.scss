@@ -1,3 +1,5 @@
+@import "../../../variables.scss";
+
 #js-properties-panel {
   width: 400px;
   overflow: auto;
@@ -8,11 +10,40 @@
   display: flex;
   margin-bottom: 20px;
   margin-top: 10px;
-  min-height: 450px;
-  max-height: 600px;
+  height: auto;
   resize: vertical;
   overflow: hidden;
+  max-height: 600px;
+  min-height: 450px;
 }
+
+/* ------------------- this is for diagram settings icons start  ------------------- */
+.card-body {
+  padding-top: 16px !important;
+  padding-bottom: 16px !important;
+  color: $dark;
+}
+
+.card-overflow {
+  padding-left: 14px !important;
+}
+
+.card-layout {
+  padding-left: 16px;
+  padding-top: 16px;
+}
+.card-border {
+  border-left: solid 1px $gray-200;
+}
+
+.card-header.bg-default .card-title {
+  color: $white;
+}
+
+.card-header .card-title {
+  color: $dark; 
+}
+/* ------------------- this is for diagram settings icons end  ------------------- */
 
 .bpm-modeler-container {
   height: 100%;
@@ -23,7 +54,7 @@
 }
 
 .properties-panel-parent {
-  border: 1px solid var(--color-black);
+  border: 1px solid $dark;
   border-left: none;
 }
 
@@ -33,12 +64,16 @@
 }
 
 .highlight:not(.djs-connection) .djs-visual > :nth-child(1) {
-  fill: var(--color-primary-dk) !important;
+  fill: $primary-500 !important;
+}
+
+.highlight .djs-label {
+  fill: $white !important;
 }
 
 .zoom-container {
   position: relative;
-  bottom: 10em;
+  bottom: 18em;
   right: 15px;
   pointer-events: none;
 }

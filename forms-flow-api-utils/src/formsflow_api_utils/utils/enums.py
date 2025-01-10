@@ -23,8 +23,11 @@ class ApplicationSortingParameters:  # pylint: disable=too-few-public-methods
     Created = "created"
     Name = "applicationName"
     Status = "applicationStatus"
+    FormStatus = "status"
     Modified = "modified"
     FormName = "formName"
+    visibility= "visibility"
+    is_anonymous= "is_anonymous"
 
 
 @unique
@@ -68,3 +71,12 @@ class FilterStatus(Enum):
 
     ACTIVE = "active"
     INACTIVE = "inactive"
+
+
+class ProcessSortingParameters:  # pylint: disable=too-few-public-methods
+    """This enum provides the list of Sorting Parameters."""
+
+    Name = "name"
+    Created = "created"
+    Modified= "modified"
+    ProcessKey = "processKey"

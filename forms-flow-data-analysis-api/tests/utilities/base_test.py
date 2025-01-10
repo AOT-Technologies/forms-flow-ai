@@ -1,9 +1,9 @@
 """Utils for Test Suite"""
 import ast
 import os
+import time
 
 import requests
-import time
 from dotenv import find_dotenv, load_dotenv
 from flask import current_app
 

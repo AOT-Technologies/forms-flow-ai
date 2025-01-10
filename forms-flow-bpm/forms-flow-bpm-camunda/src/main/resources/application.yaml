@@ -37,9 +37,30 @@ formsflow.ai:
       webclient:
         maxInMemorySize: ${DATA_BUFFER_SIZE:2}
         connectionTimeout: ${BPM_CLIENT_CONN_TIMEOUT:5000}
+  documentService:
+    url: ${FORMSFLOW_DOC_API_URL}
+  authorizations:
+    - groupId: "ROLE_create_submissions"
+      resourceType: "PROCESS_DEFINITION,PROCESS_INSTANCE,DECISION_DEFINITION,DECISION_REQUIREMENTS_DEFINITION"
+      resourceId: "*"
+      permissions: ["ALL"]
+    - groupId: "ROLE_view_designs"
+      resourceType: "PROCESS_DEFINITION,PROCESS_INSTANCE,DECISION_DEFINITION,DECISION_REQUIREMENTS_DEFINITION"
+      resourceId: "*"
+      permissions: ["ALL"]
+    - groupId: "ROLE_create_designs"
+      resourceType: "DEPLOYMENT"
+      resourceId: "*"
+      permissions: ["ALL"]
+    - groupId: "ROLE_view_tasks"
+      resourceType: "PROCESS_DEFINITION,PROCESS_INSTANCE,TASK,FILTER,USER,DECISION_DEFINITION,DECISION_REQUIREMENTS_DEFINITION"
+      resourceId: "*"
+      permissions: ["ALL"]
 
 
 camunda.bpm:
+  database:
+    schema-update: true
   job-execution:
     enabled: true
   history-level: ${CAMUNDA_BPM_HISTORY_LEVEL:none}
@@ -114,6 +135,15 @@ spring:
           issuer-uri: ${keycloak.url}${keycloak.url.httpRelativePath}/realms/${keycloak.url.realm}
   main:
     allow-bean-definition-overriding: true
+  cloud:
+    vault:
+      enabled: ${VAULT_ENABLED:false}
+      path: ${VAULT_PATH}
+      secret: ${VAULT_SECRET} # secret name
+      token: ${VAULT_TOKEN}
+      uri: ${VAULT_URL}
+    compatibility-verifier:
+      enabled: false
 
 # Keycloak JWT Client configuration
 keycloak.jwt.realm: ${KEYCLOAK_URL_REALM}
@@ -202,8 +232,8 @@ logging:
     org.springframework.jdbc: ${CAMUNDA_APP_ROOT_LOG_FLAG}
     org.camunda.bpm: ${CAMUNDA_APP_ROOT_LOG_FLAG}
   pattern:
-    console: '%d{yyyy-MM-dd HH:mm:ss} - %msg%n'
-    file: '%d{yyyy-MM-dd HH:mm:ss} [%thread] %-5level %logger{36} - %msg%n'
+    console: '%X{tenantKey:-default} - %d{yyyy-MM-dd HH:mm:ss} - %msg%n'
+    file: '%X{tenantKey:-default} - %d{yyyy-MM-dd HH:mm:ss} [%thread] %-5level %logger{36} - %msg%n'
   logback:
     rollingpolicy:
       file-name-pattern: /logs/archive/forms-flow-bpm-%d{yyyy-MM-dd}.%i.log

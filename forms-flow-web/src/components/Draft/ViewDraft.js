@@ -7,7 +7,7 @@ import { Tabs, Tab } from "react-bootstrap";
 import Details from "./Details";
 import Loading from "../../containers/Loading";
 import View from "../Form/Item/Submission/Item/View";
-import { getForm } from "react-formio";
+import { getForm } from "@aot-technologies/formio-react";
 import NotFound from "../NotFound";
 import { Translation, useTranslation } from "react-i18next";
 import { MULTITENANCY_ENABLED } from "../../constants/constants";
@@ -15,7 +15,6 @@ import { fetchAllBpmProcesses } from "../../apiManager/services/processServices"
 import { getDraftById } from "../../apiManager/services/draftService";
 import { setDraftDetailStatusCode } from "../../actions/draftActions";
 import { setDraftDetail } from "../../actions/draftActions";
-import ProcessDiagram from "../BPMN/ProcessDiagramHook";
 
 const ViewDraft = React.memo(() => {
   const { t } = useTranslation();
@@ -95,16 +94,6 @@ const ViewDraft = React.memo(() => {
           title={<Translation>{(t) => t("Form")}</Translation>}
         >
           <View page="draft-detail" showPrintButton={false} />
-        </Tab>
-        <Tab
-          data-testid="draft-process-diagram-tab"
-          eventKey="process-diagram"
-          title={<Translation>{(t) => t("Process Diagram")}</Translation>}
-        >
-          <ProcessDiagram
-            processKey={draftDetail.processKey}
-            tenant={draftDetail?.processTenant}
-          />
         </Tab>
       </Tabs>
     </div>

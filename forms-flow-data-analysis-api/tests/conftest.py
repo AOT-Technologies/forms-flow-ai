@@ -3,6 +3,7 @@ import pytest
 from flask_migrate import Migrate, upgrade
 from sqlalchemy import event, text
 from sqlalchemy.schema import DropConstraint, MetaData
+
 from api import create_app, setup_jwt_manager
 from api.models import db as _db
 from api.utils import jwt as _jwt

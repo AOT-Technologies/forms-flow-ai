@@ -7,13 +7,13 @@ import {
   Form,
   selectError,
   Errors,
-} from "react-formio";
+} from "@aot-technologies/formio-react";
 import { push } from "connected-react-router";
 import Loading from "../../../../../containers/Loading";
 import { setFormSubmissionLoading } from "../../../../../actions/formActions";
 import LoadingOverlay from "react-loading-overlay-ts";
 import { useTranslation } from "react-i18next";
-import { formio_resourceBundles } from "../../../../../resourceBundles/formio_resourceBundles";
+import { RESOURCE_BUNDLES_DATA } from "../../../../../resourceBundles/i18n";
 import {
   CUSTOM_SUBMISSION_URL,
   CUSTOM_SUBMISSION_ENABLE,
@@ -52,11 +52,11 @@ const View = React.memo((props) => {
   }
 
   return (
-    <div className="container row task-container bg-white p-2 m-0">
+    <div className="scrollable-overview  bg-white ps-3 pe-3 m-0">
       <div className="d-flex py-2 form-title">
         <h3 className="task-head text-truncate"> {form.title}</h3>
         {showPrintButton && form?._id ? (
-          <div className="btn-right d-flex flex-row">
+          <div className="ms-auto float-auto d-flex flex-row">
             <DownloadPDFButton
               form_id={form._id}
               submission_id={updatedSubmission._id}
@@ -73,14 +73,14 @@ const View = React.memo((props) => {
         text={t("Loading...")}
         className="col-12"
       >
-        <div className="sub-container">
+        <div className="sub-container wizard-tab">
           <Form
             form={form}
             submission={updatedSubmission}
             url={url}
             hideComponents={hideComponents}
             onSubmit={onSubmit}
-            options={{ ...options, i18n: formio_resourceBundles, viewAsHtml: true }}
+            options={{ ...options, i18n: RESOURCE_BUNDLES_DATA, viewAsHtml: true }}
           />
         </div>
       </LoadingOverlay>

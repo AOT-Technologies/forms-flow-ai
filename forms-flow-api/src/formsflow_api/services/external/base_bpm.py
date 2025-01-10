@@ -35,11 +35,15 @@ class BaseBPMService:
         return data
 
     @classmethod
-    def post_request(cls, url, token, payload=None, tenant_key=None):
+    def post_request(
+        cls, url, token, payload=None, tenant_key=None, files=None
+    ):  # pylint: disable=too-many-arguments, too-many-positional-arguments
         """Post HTTP request to BPM API with auth header."""
-        headers = cls._get_headers_(token, tenant_key)
-        payload = json.dumps(payload)
-        response = requests.post(url, data=payload, headers=headers, timeout=120)
+        headers = cls._get_headers_(token, tenant_key, files)
+        payload = payload if files else json.dumps(payload)
+        response = requests.post(
+            url, data=payload, headers=headers, timeout=120, files=files
+        )
         current_app.logger.debug(
             "POST URL : %s, Response Code : %s", url, response.status_code
         )
@@ -61,7 +65,7 @@ class BaseBPMService:
         return data
 
     @classmethod
-    def _get_headers_(cls, token, tenant_key=None):
+    def _get_headers_(cls, token, tenant_key=None, files=None):
         """Generate headers."""
         bpm_token_api = current_app.config.get("BPM_TOKEN_API")
         bpm_client_id = current_app.config.get("BPM_CLIENT_ID")
@@ -77,6 +81,8 @@ class BaseBPMService:
             "grant_type": bpm_grant_type,
         }
         if token:
+            if files:
+                return {"Authorization": token}
             return {"Authorization": token, "content-type": "application/json"}
 
         response = requests.post(

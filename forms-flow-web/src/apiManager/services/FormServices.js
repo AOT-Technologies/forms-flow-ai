@@ -7,12 +7,35 @@ export const formCreate = (formData) => {
   return RequestService.httpPOSTRequest(API.FORM_DESIGN, formData);
 };
 
+export const publish = (mapperId) => {
+  const publishUrl = replaceUrl(API.PUBLISH, "<mapper_id>", mapperId);
+  return RequestService.httpPOSTRequest(publishUrl);
+};
+
+export const unPublish = (mapperId) => {
+  const unPublishUrl = replaceUrl(API.UN_PUBLISH, "<mapper_id>", mapperId);
+  return RequestService.httpPOSTRequest(unPublishUrl);
+};
+
+export const formImport = (importData, data) => {
+  return RequestService.httpMultipartPOSTRequest(API.FORM_IMPORT, importData, data);
+};
+
 export const formUpdate = (form_id,formData) => {
   return RequestService.httpPUTRequest(`${API.FORM_DESIGN}/${form_id}`, formData);
 };
 
-export const getFormHistory = (form_id) => {
-  return RequestService.httpGETRequest(`${API.FORM_HISTORY}/${form_id}`);
+export const processMigrate = (migrationData) => {
+  return RequestService.httpPOSTRequest(API.PROCESS_MIGRATE, migrationData );
+};
+
+
+export const getFormHistory = (form_id, page = null, limit = null) => {
+  let url = `${API.FORM_HISTORY}/${form_id}`;
+  if (page !== null && limit !== null) {
+    url += `?pageNo=${page}&limit=${limit}`;
+  }
+  return RequestService.httpGETRequest(url);
 };
 
 
@@ -66,4 +89,31 @@ export const getCustomSubmission = (submissionId, formId, ...rest) => {
         done(err, null);
       });
   };
+};
+
+export const validateFormName = (title, parentFormId) => {
+  let url = `${API.VALIDATE_FORM_NAME}?title=${title}`;
+    // if (name) {
+  //   url += `&name=${encodeURIComponent(name)}`;
+  // }
+  if (parentFormId) {
+    url += `&parentFormId=${encodeURIComponent(parentFormId)}`;
+  }
+  return RequestService.httpGETRequest(url);
+};
+
+export const validatePathName = (path,formId) => {
+  let url = `${API.VALIDATE_FORM_NAME}?path=${path}`;
+    // if (name) {
+  //   url += `&name=${encodeURIComponent(name)}`;
+  // }
+  if (formId) {
+    url += `&id=${encodeURIComponent(formId)}`;
+  }
+  return RequestService.httpGETRequest(url);
+};
+
+export const getFormExport = (form_id) => {
+  const exportFormUrl = replaceUrl(API.EXPORT_FORM, "<form_id>",form_id);
+  return RequestService.httpGETRequest(exportFormUrl);
 };

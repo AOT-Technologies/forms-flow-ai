@@ -101,6 +101,13 @@ export const setBPMFilterList = (data) => (dispatch) => {
   });
 };
 
+export const setDefaultFilter = (data) => (dispatch) => {
+  dispatch({
+    type: ACTION_CONSTANTS.DEFAULT_FILTER,
+    payload: data,
+  });
+};
+
 export const setSelectedBPMFilter = (data) => (dispatch) => {
   dispatch({
     type: ACTION_CONSTANTS.BPM_SELECTED_FILTER,

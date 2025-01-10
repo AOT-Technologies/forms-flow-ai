@@ -2,6 +2,195 @@
 
 Mark  items as `Added`, `Changed`, `Fixed`, `Modified`, `Removed`, `Untested Features`, `Upcoming Features`, `Known Issues`
 
+
+
+## 7.0.0 - 2025-01-10
+
+`Added`
+
+**forms-flow-web**
+* Added redesigned form and workflow UI for designer 
+   * Layout and Flow listing
+   * Layout and Flow Create/ Edit page:
+      * Import, export, duplicate, delete, history, preview, authorization settings
+* Added flow builder to design page
+* Added new user settings option in sidebar
+* Added new css variables to support dynamic theming of application using customTheme file
+* Added advanced logic conditioning in formio component settings to allow chaining of conditions for forms
+* Added the displayForRole custom property to the form component to display data for a specific role
+* Added certain user data as hidden variables in the form design by default:
+   * Current User
+   * Submitter Email
+   * Submitter First Name
+   * Submitter Last Name
+   * Current User Roles
+
+**forms-flow-api**
+   * Added new endpoints for:
+      * Form validation: `/form/validate`
+      * Layout + Flow import:  `/import`
+      * Layout + Flow export:  `/form/<mapper_id>/export`
+      * Flow migration - `/process/migrate`
+      * Layout + Flow publish: `/form/<mapper_id>/publish` 
+      * Layout + Flow unpublish:  `/form/<mapper_id>/unpublish`
+      * List permissions:  `/roles/permissions`
+      * Theme customization:
+         * Create, Get, Update theme: `/themes`
+      * Subflow and decision table redesign
+         *  Create/List: `/process` 
+         *  Get/Update/Delete by id:    `/process/<id>`
+         *  Get by key:   `/process/<key>`
+         *  Get history:   `/process/<key>/versions`
+         *  Validate:  `/process/validate`
+         *  Publish:  `/process/<id>/publish`
+         *  Unpublish:  `/process/<id>/unpublish`
+
+
+   * Added Alembic scripts to implement the following changes:
+      * Created tables for theme customization(Themes), Process, and User
+      * Updated the filter table to include filter_order, the form history table to add major_version and minor_version, and the form_process_mapper table to include prompt_new_version & is_migrated
+      * Populated major_version and minor_version columns in existing form history records
+      * Altered audit datetime fields to be timezone-aware
+      * Updated the process_name format from process_name(process_key) to process_name
+      * Increased the length of form_name, process_key, and process_name fields in the form_process_mapper table to 200
+
+
+ 
+ **forms-flow-bpm**
+* Added support to fetch secrets from Vault
+* Added BPM authorizations dynamically upon startup
+<br><br>
+
+`Modified`
+
+**formsflow-web**
+* Modified  Flow and Layout to a one-to-one association, with the combination now referred to as a Form
+* Modified Navbar and converted to Sidebar:
+   * Categorized UI to menus and sub-menus based on functionality 
+   * Menus visibility is controlled based on user permissions
+   * Moved language selection to the user settings modal, accessible by clicking the username in the bottom-left corner of the sidebar
+   * Moved client submission from the Forms menu to the Submit menu (Submit → Forms → All Forms)
+   * Moved form design to Design menu
+   * Moved Subflows (BPMN) and Decision Tables (DMN) to individual submenus under the Design
+   * Moved Manage roles, users and dashboards under Manage menu
+   * Moved Insights and Metrics  under Analyze menu
+   * Moved Tasks under  Review menu
+
+* Modified form history management to include major and minor versions
+* Modified RBAC mechanism:
+   * Users can create new roles with specific permissions for more granular application access control. Refer [here](https://aot-technologies.github.io/forms-flow-ai-doc/#permissions) for more
+* Authorization updates:
+   * Permissions options in settings for Designers are changed : 
+      * 'All Designers' option is removed 
+   * Permissions options in settings for reviewer to view submission are changed to generic view Submission permissions:
+      * 'All Reviewers' changed to 'Submitter',
+      * 'Specific Reviewers' changed to 'Submitter and specified roles'
+
+
+**forms-flow-api**
+* Modified authorization endpoints for:
+   * updated  permissions
+   * sub flow and decision table redesign
+   * Form create, mapper create and authorization create apis combined into form-design
+
+**forms-flow-bpm**
+* Existing users, refer [here](./forms-flow-bpm/migration#migration-tasks-for-bpm) for forms-flow-bpm migration changes
+
+**forms-flow-documents**
+* Modified endpoint authorizations  based on updated  permission mechanism
+
+**forms-flow-idm**
+* Refer [here](./forms-flow-idm/README.md) for Permission matrix migration changes in IDM 
+<br><br>
+
+
+`Removed`
+
+**formsflow-web**
+* Removed workflow selection from form edit page
+
+**forms-flow-api**
+* Removed form_mapper create API
+<br><br>
+
+*Upgrade notes:*
+
+**forms-flow-web**
+* Npm package version upgraded to 16.20.0
+
+**forms-flow-api**
+
+   * Python version upgraded to 3.12.6
+
+**forms-flow-bpm**
+
+   * SpringBoot version upgraded to 3.3.5
+   * Camunda version upgarded to 7.21
+   * spring-websocket version upgarded to 6.1
+
+**forms-flow-idm**
+
+* Keycloak Version upgraded to 25.0.0
+
+
+**forms-flow-documents**
+
+   * Python version upgraded to 3.12.6
+
+**forms-flow-data-analysis-api**
+
+   * Python version upgraded to 3.12.6
+<br><br>
+
+
+`Generic Changes`
+* Designer page redesign
+* Workflow selection from edit page is not available now, instead users have to create workflow while form creation itself
+* Added new micro-frontend : forms-flow-components
+* Fixed security vulnerabilities
+* Refer [version documentation](https://aot-technologies.github.io/forms-flow-ai-doc/#version_upgrade) for environment variable changes
+
+`Known Issues`
+* The language translation of the entire UI is not perfect at the moment, so some glitches may be expected.
+* forms-flow-web test cases are not fully covered
+
+#### <ins>Premium Features </ins>
+
+`Added` 
+
+**forms-flow-web**
+* Added no-code creation
+* Added regenerate option for form creation with Flow-E
+
+**forms-flow-api**
+* Added process_type  column to templates
+
+**forms-flow-documents**
+* Added export pdf for bundle
+
+**forms-flow-data-analysis-api**
+* Added regenerate support in chat bot form creation
+
+`Modified`
+
+**forms-flow-web**
+* Modified premium icons
+* Moved Bundle as separate sub-menu under Design menu in sidebar
+* Moved Build using AI feature (Flow-E)  to form creation page from edit page.
+* Moved select from template feature to form listing page from edit page.
+* Modified design for save as template
+* Modified the bundle submission logic to retrieve submission data for the currently viewed form instead of fetching all submission data.
+
+**forms-flow-api**
+* Updated the `bundles/execute-rules` API to expect only the currently edited data instead of the entire data. The API fetch the necessary data from Form.io to execute rule.
+
+`Removed`
+
+**forms-flow-web**
+* Forms that should be included in the bundle no longer require selecting 'enable bundling' from the edit page.
+* Removed short intro from template creation modal
+<br><br>
+
 ## 6.0.2 - 2024-06-05
 
 `Added`
@@ -109,6 +298,33 @@ Mark  items as `Added`, `Changed`, `Fixed`, `Modified`, `Removed`, `Untested Fea
 
 * Fixed security vulnerabilities
 
+#### <ins>Premium Features </ins>
+
+`Added` 
+
+**froms-flow-web**
+* Added IPASS integration
+* Added task variables from forms of a bundle to filter creation
+
+**forms-flow-data-analysis-api**
+* Added new env variable `CHAT_BOT_CONTEXT_KEY` to define the context for chat bot
+
+**forms-flow-bpm**
+* Added `iPaasListener` to support IPASS integration
+
+**forms-flow-api**
+* Added new endpoints to support IPASS
+
+`Modified`
+
+**forms-flow-data-analysis-api**
+* CHAT_URL port number updated
+
+`Fixed`
+
+**froms-flow-web**
+* Fixed task details view of bundle in list view
+  
 
 ## 5.3.1 - 2024-02-14
 
@@ -133,6 +349,19 @@ Mark  items as `Added`, `Changed`, `Fixed`, `Modified`, `Removed`, `Untested Fea
 **forms-flow-api**
 
 * Changes have been made to the Roles and Groups endpoint to accommodate modifications related to subgroups in Keycloak 23.
+
+#### <ins>Premium Features </ins>
+
+`Fixed`
+
+* Fixed category listing for pre-built templates for multi-tenant environment.
+
+`Added`
+
+**forms-flow-bpm**
+
+* Added new field injection `emailAddress` in Notify Listener to allow email addresses in addition to group names.
+
 
 ## 5.3.0 - 2023-11-24
 
@@ -210,6 +439,32 @@ Mark  items as `Added`, `Changed`, `Fixed`, `Modified`, `Removed`, `Untested Fea
 
 * Flask upgraded to 2.3.3 and fixed security vulnerabilities
 
+#### <ins>Premium Features </ins>
+
+`Added`
+
+**forms-flow-web**
+
+* Added RBAC(Role Based Access Control) support in form bundling, refer [here](https://aot-technologies.github.io/forms-flow-ai-doc/#rbac).
+* Added Templates feature, refer [here](https://aot-technologies.github.io/forms-flow-ai-doc/#templates) for more.
+* Added AI chat assist support in form creation, refer [here](https://aot-technologies.github.io/forms-flow-ai-doc/#chatbot) for more.
+* Added environment variables `ENABLE_CHATBOT`, `CHATBOT_URL` for AI chat assist support.
+
+**forms-flow-data-analysis-api**
+
+* Added environment variables `OPENAI_API_KEY`, `CHAT_BOT_MODEL_ID` for AI chat assist support.
+
+
+**forms-flow-api**
+
+* Added RBAC(Role Based Access Control) support in form bundling.
+
+`Fixed`
+
+**forms-flow-api**
+
+* Fixed task variable updation issue on resubmit in form bundling.
+  
 
 ## 5.2.1 - 2023-09-01
 
@@ -294,6 +549,30 @@ Mark  items as `Added`, `Changed`, `Fixed`, `Modified`, `Removed`, `Untested Fea
      * forms-flow-theme (contains the common style sheet shared by all micro-front-ends)<br>
         Refer the [forms-flow-ai-micro-front-ends](https://github.com/AOT-Technologies/forms-flow-ai-micro-front-end) repository for further details.
 * Dashboard authorization is moved from designer role to admin user.
+
+#### <ins>Premium Features </ins>
+
+`Added`
+
+**forms-flow-web**
+
+* Added `form bundling` feature as a premium feature, refer [here](https://aot-technologies.github.io/forms-flow-ai-doc/#formBundling) for more details.
+
+**forms-flow-bpm**
+
+* Added CombineSubmissionBundleListener to support form bundling feature.
+* Added RequestStateListener to support Request status.
+* Added skip-sanitize flag to request header for calls from BPM to Form.io.
+
+`Modified`
+
+**forms-flow-web**
+
+* To enable tracking of individual requests within the bundle, the application history has been updated to Application status and Request status.
+
+`Generic changes`
+
+* During the process of form bundling, it is necessary to configure task variables while designing each individual form.
 
 
 ## 5.1.1 - 2023-05-18

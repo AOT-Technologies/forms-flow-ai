@@ -8,6 +8,13 @@ export const setProcessList = (data) => (dispatch) => {
   });
 };
 
+export const setProcessXml = (data) => (dispatch) => {
+  dispatch({
+    type: ACTION_CONSTANTS.SET_PROCESSES_XML,
+    payload: data,
+  });
+};
+
 export const setProcessStatusLoading = (data) => (dispatch) => {
   dispatch({
     type: ACTION_CONSTANTS.IS_PROCESS_STATUS_LOADING,
@@ -18,6 +25,13 @@ export const setProcessStatusLoading = (data) => (dispatch) => {
 export const setProcessLoadError = (data) => (dispatch) => {
   dispatch({
     type: ACTION_CONSTANTS.IS_PROCESS_STATUS_LOAD_ERROR,
+    payload: data,
+  });
+};
+
+export const setProcessData = (data) => (dispatch) => {
+  dispatch({
+    type: ACTION_CONSTANTS.SET_PROCESS_DATA,
     payload: data,
   });
 };
@@ -51,7 +65,7 @@ export const setFormProcessLoadError = (data) => (dispatch) => {
 };
 
 export const setFormProcessesData = (data) => (dispatch) => {
-  dispatch({
+ dispatch({
     type: ACTION_CONSTANTS.FORM_PROCESS_LIST,
     payload: data,
   });
@@ -73,11 +87,17 @@ export const setProcessActivityData = (data) => (dispatch) => {
 
 export const setProcessDiagramXML = (data) => (dispatch) => {
   dispatch({
-    type: ACTION_CONSTANTS.PROCESS_DIAGRAM_XML,
+    type: ACTION_CONSTANTS.DEFAULT_PROCESS_DIAGRAM_XML,
     payload: data,
   });
 };
 
+export const setDescisionDiagramXML = (data) => (dispatch) => {
+  dispatch({
+    type: ACTION_CONSTANTS.DEFAULT_DECISION_DIAGRAM_XML,
+    payload: data,
+  });
+};
 export const setProcessDiagramLoading = (data) => (dispatch) => {
   dispatch({
     type: ACTION_CONSTANTS.IS_PROCESS_DIAGRAM_LOADING,
@@ -161,4 +181,24 @@ export const setIsPublicDiagram = (data) => (dispatch) => {
     type: ACTION_CONSTANTS.IS_PUBLIC_DIAGRAM,
     payload: data,
   });
+};
+
+export const setProcessHistories = (historyData) => (dispatch) => {
+  dispatch({
+    type: ACTION_CONSTANTS.PROCESS_HISTORY,
+    payload:historyData,
+  });
+};
+export const setSubflowCount = (data) => (dispatch) => {
+  dispatch({
+    type: ACTION_CONSTANTS.SET_SUBFLOW_COUNT,
+    payload: data,
+  });
+}; 
+
+export const setTotalDmnCount = (data) => (dispatch) => {
+  dispatch({
+    type: ACTION_CONSTANTS.SET_TOTAL_DMN_COUNT, 
+    payload: data,
+    }); 
 };

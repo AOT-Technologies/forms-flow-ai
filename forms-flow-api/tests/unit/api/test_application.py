@@ -1,13 +1,18 @@
 """Test suite for application API endpoint."""
+
 import os
 
 import pytest
 import requests
+from formsflow_api_utils.utils import (
+    CREATE_DESIGNS,
+    CREATE_SUBMISSIONS,
+    VIEW_SUBMISSIONS,
+)
 
 from tests.utilities.base_test import (
     get_application_create_payload,
     get_draft_create_payload,
-    get_form_request_payload,
     get_formio_form_request_payload,
     get_token,
 )
@@ -28,7 +33,7 @@ class TestApplicationResource:
 
     def test_application_list(self, app, client, session, jwt):
         """Assert that API/application when passed with valid token returns 200 status code."""
-        token = get_token(jwt)
+        token = get_token(jwt, role=VIEW_SUBMISSIONS)
         headers = {
             "Authorization": f"Bearer {token}",
             "content-type": "application/json",
@@ -40,7 +45,7 @@ class TestApplicationResource:
     @pytest.mark.parametrize(("pageNo", "limit"), ((1, 5), (1, 10), (1, 20)))
     def test_application_paginated_list(self, app, client, session, jwt, pageNo, limit):
         """Tests the API/application endpoint with pageNo and limit query params."""
-        token = get_token(jwt)
+        token = get_token(jwt, role=VIEW_SUBMISSIONS)
         headers = {
             "Authorization": f"Bearer {token}",
             "content-type": "application/json",
@@ -58,7 +63,7 @@ class TestApplicationResource:
         self, app, client, session, jwt, pageNo, limit, sortBy, sortOrder
     ):
         """Tests the API/application endpoint with pageNo, limit, sortBy and SortOrder params."""
-        token = get_token(jwt)
+        token = get_token(jwt, role=VIEW_SUBMISSIONS)
         headers = {
             "Authorization": f"Bearer {token}",
             "content-type": "application/json",
@@ -78,25 +83,21 @@ class TestApplicationResource:
         ),
     )
     def test_application_paginated_filtered_list(
-        self,
-        app,
-        client,
-        session,
-        jwt,
-        pageNo,
-        limit,
-        filters,
+        self, app, client, session, jwt, pageNo, limit, filters, create_mapper
     ):
         """Tests the API/application endpoint with filter params."""
-        token = get_token(jwt)
+        token = get_token(jwt, role=CREATE_DESIGNS)
         headers = {
             "Authorization": f"Bearer {token}",
             "content-type": "application/json",
         }
-        rv = client.post("/form", headers=headers, json=get_form_request_payload())
-        assert rv.status_code == 201
 
-        form_id = rv.json.get("formId")
+        token = get_token(jwt, role=CREATE_SUBMISSIONS)
+        headers = {
+            "Authorization": f"Bearer {token}",
+            "content-type": "application/json",
+        }
+        form_id = create_mapper["formId"]
         rv = client.post(
             "/application/create",
             headers=headers,
@@ -104,29 +105,43 @@ class TestApplicationResource:
         )
 
         assert rv.status_code == 201
+
+        token = get_token(jwt, role=VIEW_SUBMISSIONS)
+        headers = {
+            "Authorization": f"Bearer {token}",
+            "content-type": "application/json",
+        }
         response = client.get(
             f"/application?pageNo={pageNo}&limit={limit}&{filters}",
             headers=headers,
         )
         assert response.status_code == 200
 
-    def test_application_list_with_no_draft(self, app, client, session, jwt):
+    def test_application_list_with_no_draft(
+        self, app, client, session, jwt, create_mapper
+    ):
         """Application list should not contain draft applications."""
-        for role in ["formsflow-client", "formsflow-designer", "formsflow-reviewer"]:
-            token = get_token(jwt, role=role)
-            headers = {
-                "Authorization": f"Bearer {token}",
-                "content-type": "application/json",
-            }
-            rv = client.post("/form", headers=headers, json=get_form_request_payload())
-            form_id = rv.json.get("formId")
-            # creating a draft will create a draft application
-            client.post(
-                "/draft", headers=headers, json=get_draft_create_payload(form_id)
-            )
-
-            response = client.get("/application", headers=headers)
-            assert len(response.json["applications"]) == 0
+        token = get_token(jwt, role=CREATE_DESIGNS)
+        headers = {
+            "Authorization": f"Bearer {token}",
+            "content-type": "application/json",
+        }
+        form_id = create_mapper["formId"]
+        # creating a draft will create a draft application
+        token = get_token(jwt, role=CREATE_SUBMISSIONS)
+        headers = {
+            "Authorization": f"Bearer {token}",
+            "content-type": "application/json",
+        }
+        client.post("/draft", headers=headers, json=get_draft_create_payload(form_id))
+        token = get_token(jwt, role=VIEW_SUBMISSIONS)
+        headers = {
+            "Authorization": f"Bearer {token}",
+            "content-type": "application/json",
+        }
+        response = client.get("/application", headers=headers)
+        assert response.status_code == 200
+        assert len(response.json["applications"]) == 0
 
 
 class TestApplicationDetailView:
@@ -142,17 +157,20 @@ class TestApplicationDetailView:
             "details": [],
         }
 
-    def test_application_detailed_view(self, app, client, session, jwt):
+    def test_application_detailed_view(self, app, client, session, jwt, create_mapper):
         """Tests the endpoint with valid token."""
-        token = get_token(jwt)
+        token = get_token(jwt, role=CREATE_DESIGNS)
         headers = {
             "Authorization": f"Bearer {token}",
             "content-type": "application/json",
         }
-        rv = client.post("/form", headers=headers, json=get_form_request_payload())
-        assert rv.status_code == 201
 
-        form_id = rv.json.get("formId")
+        form_id = create_mapper["formId"]
+        token = get_token(jwt, role=CREATE_SUBMISSIONS)
+        headers = {
+            "Authorization": f"Bearer {token}",
+            "content-type": "application/json",
+        }
         rv = client.post(
             "/application/create",
             headers=headers,
@@ -160,70 +178,75 @@ class TestApplicationDetailView:
         )
         assert rv.status_code == 201
         application_id = rv.json.get("id")
-
+        token = get_token(jwt, role=VIEW_SUBMISSIONS)
+        headers = {
+            "Authorization": f"Bearer {token}",
+            "content-type": "application/json",
+        }
         response = client.get(f"/application/{application_id}", headers=headers)
         assert response.status_code == 200
         assert response.json["applicationName"] == "Sample form"
         assert response.json["processKey"] == "onestepapproval"
 
 
-def test_application_resource_by_form_id(app, client, session, jwt):
+def test_application_resource_by_form_id(app, client, session, jwt, create_mapper):
     """Tests the application by formid endpoint with valid token."""
-    token = get_token(jwt)
+    token = get_token(jwt, CREATE_DESIGNS)
     headers = {
         "Authorization": f"Bearer {token}",
         "content-type": "application/json",
     }
-    rv = client.post("/form", headers=headers, json=get_form_request_payload())
-    assert rv.status_code == 201
 
-    form_id = rv.json.get("formId")
+    form_id = create_mapper["formId"]
+    token = get_token(jwt, role=CREATE_SUBMISSIONS)
+    headers = {"Authorization": f"Bearer {token}", "content-type": "application/json"}
     rv = client.post(
         "/application/create",
         headers=headers,
         json=get_application_create_payload(form_id),
     )
     assert rv.status_code == 201
-
+    token = get_token(jwt, role=VIEW_SUBMISSIONS)
+    headers = {"Authorization": f"Bearer {token}", "content-type": "application/json"}
     response = client.get(f"/application/formid/{form_id}", headers=headers)
     assert response.status_code == 200
 
 
-def test_application_status_list(app, client, session, jwt):
+def test_application_status_list(app, client, session, jwt, create_mapper):
     """Tests the application status list endpoint with valid payload."""
-    token = get_token(jwt)
+    token = get_token(jwt, role=CREATE_DESIGNS)
     headers = {
         "Authorization": f"Bearer {token}",
         "content-type": "application/json",
     }
-    rv = client.post("/form", headers=headers, json=get_form_request_payload())
-    assert rv.status_code == 201
 
-    form_id = rv.json.get("formId")
-
+    form_id = create_mapper["formId"]
+    token = get_token(jwt, role=CREATE_SUBMISSIONS)
+    headers = {"Authorization": f"Bearer {token}", "content-type": "application/json"}
     rv = client.post(
         "/application/create",
         headers=headers,
         json=get_application_create_payload(form_id),
     )
     assert rv.status_code == 201
+    token = get_token(jwt, role=VIEW_SUBMISSIONS)
+    headers = {"Authorization": f"Bearer {token}", "content-type": "application/json"}
     response = client.get("/application/status/list", headers=headers)
     assert response.status_code == 200
     assert response.json["applicationStatus"]
 
 
-def test_application_create_method(app, client, session, jwt):
+def test_application_create_method(app, client, session, jwt, create_mapper):
     """Tests the application create method with valid payload."""
-    token = get_token(jwt)
+    token = get_token(jwt, role=CREATE_DESIGNS)
     headers = {
         "Authorization": f"Bearer {token}",
         "content-type": "application/json",
     }
-    rv = client.post("/form", headers=headers, json=get_form_request_payload())
-    assert rv.status_code == 201
 
-    form_id = rv.json.get("formId")
-
+    form_id = create_mapper["formId"]
+    token = get_token(jwt, role=CREATE_SUBMISSIONS)
+    headers = {"Authorization": f"Bearer {token}", "content-type": "application/json"}
     rv = client.post(
         "/application/create",
         headers=headers,
@@ -232,18 +255,29 @@ def test_application_create_method(app, client, session, jwt):
     assert rv.status_code == 201
 
 
-def test_application_create_method_tenant_based(app, client, session, jwt):
+def test_application_create_method_tenant_based(
+    app, client, session, jwt, create_mapper_custom
+):
     """Tests the tenant based application create method with valid payload."""
-    token = get_token(jwt, tenant_key="test-tenant")
+    token = get_token(jwt, tenant_key="test-tenant", role=CREATE_DESIGNS)
     headers = {
         "Authorization": f"Bearer {token}",
         "content-type": "application/json",
     }
-    rv = client.post("/form", headers=headers, json=get_form_request_payload())
-    assert rv.status_code == 201
 
-    form_id = rv.json.get("formId")
-
+    payload = {
+        "formId": "1234",
+        "formName": "Sample form",
+        "processKey": "two-step-approval",
+        "processName": "Two Step Approval",
+        "status": "active",
+        "formType": "form",
+        "parentFormId": "1234",
+    }
+    rv = create_mapper_custom(payload, tenant="test-tenant")
+    form_id = rv["formId"]
+    token = get_token(jwt, tenant_key="test-tenant", role=CREATE_SUBMISSIONS)
+    headers = {"Authorization": f"Bearer {token}", "content-type": "application/json"}
     rv = client.post(
         "/application/create",
         headers=headers,
@@ -252,18 +286,17 @@ def test_application_create_method_tenant_based(app, client, session, jwt):
     assert rv.status_code == 201
 
 
-def test_application_payload(app, client, session, jwt):
+def test_application_payload(app, client, session, jwt, create_mapper):
     """Tests the application create endpoint with valid payload."""
-    token = get_token(jwt)
+    token = get_token(jwt, role=CREATE_DESIGNS)
     headers = {
         "Authorization": f"Bearer {token}",
         "content-type": "application/json",
     }
-    rv = client.post("/form", headers=headers, json=get_form_request_payload())
-    assert rv.status_code == 201
 
-    form_id = rv.json.get("formId")
-
+    form_id = create_mapper["formId"]
+    token = get_token(jwt, role=CREATE_SUBMISSIONS)
+    headers = {"Authorization": f"Bearer {token}", "content-type": "application/json"}
     rv = client.post(
         "/application/create",
         headers=headers,
@@ -275,18 +308,17 @@ def test_application_payload(app, client, session, jwt):
     assert application_response["submissionId"] == "1233432"
 
 
-def test_application_update_details_api(app, client, session, jwt):
+def test_application_update_details_api(app, client, session, jwt, create_mapper):
     """Tests the application update endpoint with valid payload."""
-    token = get_token(jwt)
+    token = get_token(jwt, role=CREATE_DESIGNS)
     headers = {
         "Authorization": f"Bearer {token}",
         "content-type": "application/json",
     }
-    rv = client.post("/form", headers=headers, json=get_form_request_payload())
-    assert rv.status_code == 201
 
-    form_id = rv.json.get("formId")
-
+    form_id = create_mapper["formId"]
+    token = get_token(jwt, role=CREATE_SUBMISSIONS)
+    headers = {"Authorization": f"Bearer {token}", "content-type": "application/json"}
     rv = client.post(
         "/application/create",
         headers=headers,
@@ -295,7 +327,8 @@ def test_application_update_details_api(app, client, session, jwt):
     assert rv.status_code == 201
     application_id = rv.json.get("id")
     assert rv != {}
-
+    token = get_token(jwt, role=VIEW_SUBMISSIONS)
+    headers = {"Authorization": f"Bearer {token}", "content-type": "application/json"}
     rv = client.get(f"/application/{application_id}", headers=headers)
     payload = rv.json
     payload["applicationStatus"] = "New"
@@ -310,9 +343,9 @@ def test_application_update_details_api(app, client, session, jwt):
     assert application.json.get("submissionId") == "1234"
 
 
-def test_application_resubmit(app, client, session, jwt):
+def test_application_resubmit(app, client, session, jwt, create_mapper_custom):
     """Tests the application resubmit endpoint."""
-    token = get_token(jwt)
+    token = get_token(jwt, role=CREATE_DESIGNS)
     headers = {
         "Authorization": f"Bearer {token}",
         "content-type": "application/json",
@@ -325,12 +358,14 @@ def test_application_resubmit(app, client, session, jwt):
         "status": "active",
         "formType": "form",
         "parentFormId": "1234",
+        "taskVariables": '[{"key":"abcd","label":"BusinessName"}]',
     }
-    rv = client.post("/form", headers=headers, json=payload)
-    assert rv.status_code == 201
+    rv = create_mapper_custom(payload)
 
-    form_id = rv.json.get("formId")
+    form_id = rv.get("formId")
 
+    token = get_token(jwt, role=CREATE_SUBMISSIONS)
+    headers = {"Authorization": f"Bearer {token}", "content-type": "application/json"}
     rv = client.post(
         "/application/create",
         headers=headers,
@@ -354,7 +389,7 @@ def test_capture_process_variables_application_create(
     app, client, session, jwt, mock_redis_client
 ):
     """Tests the capturing of process variables in the application creation method."""
-    token = get_token(jwt, role="formsflow-designer", username="designer")
+    token = get_token(jwt, role=CREATE_DESIGNS, username="designer")
     headers = {
         "Authorization": f"Bearer {token}",
         "content-type": "application/json",
@@ -365,26 +400,35 @@ def test_capture_process_variables_application_create(
     )
     assert response.status_code == 201
     form_id = response.json.get("_id")
+
+    # fetch mapper data
+    rv = client.get(f"/form/formid/{form_id}", headers=headers)
+    assert rv.status_code == 200
+    mapper_id = rv.json.get("id")
+
     # Added task variable to the form
     payload = {
-        "formId": form_id,
-        "formName": "Sample form",
-        "processKey": "two-step-approval",
-        "processName": "Two Step Approval",
-        "status": "active",
-        "formType": "form",
-        "parentFormId": "1234",
-        "taskVariable": [
-            {
-                "key": "textField",
-                "defaultLabel": "Text Field",
-                "label": "Text Field",
-            }
-        ],
+        "mapper": {
+            "id": mapper_id,
+            "formId": form_id,
+            "formName": "Sample form",
+            "processKey": "two-step-approval",
+            "processName": "Two Step Approval",
+            "status": "active",
+            "formType": "form",
+            "parentFormId": "1234",
+            "taskVariable": [
+                {
+                    "key": "textField",
+                    "defaultLabel": "Text Field",
+                    "label": "Text Field",
+                }
+            ],
+        }
     }
-    rv = client.post("/form", headers=headers, json=payload)
-    assert rv.status_code == 201
-    form_id = rv.json.get("formId")
+    rv = client.put(f"/form/{mapper_id}", headers=headers, json=payload)
+    assert rv.status_code == 200
+    form_id = rv.json.get("mapper").get("formId")
 
     # Submit new application as client
     payload = get_application_create_payload(form_id)
@@ -393,7 +437,7 @@ def test_capture_process_variables_application_create(
         "applicationId": "",
         "applicationStatus": "",
     }
-    token = get_token(jwt)
+    token = get_token(jwt, role=CREATE_SUBMISSIONS)
     headers = {
         "Authorization": f"Bearer {token}",
         "content-type": "application/json",

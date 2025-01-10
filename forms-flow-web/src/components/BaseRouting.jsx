@@ -1,10 +1,10 @@
 import React from "react";
-import { Route, Switch, Redirect, useLocation } from "react-router-dom";
+import { Route, Switch, useLocation } from "react-router-dom";
 import { useSelector } from "react-redux";
 
 import PublicRoute from "./PublicRoute";
 import PrivateRoute from "./PrivateRoute";
-import { BASE_ROUTE } from "../constants/constants";
+import { BASE_ROUTE, MULTITENANCY_ENABLED } from "../constants/constants";
 
 import Footer from "../components/Footer";
 import { ToastContainer } from "react-toastify";
@@ -15,6 +15,7 @@ import i18n from "../resourceBundles/i18n";
 import { setLanguage } from "../actions/languageSetAction";
 import { initPubSub } from "../actions/pubSubActions";
 import { push } from "connected-react-router";
+import LandingPage from "./MultiTenant";
 
 const BaseRouting = React.memo(
   ({ store, publish, subscribe, getKcInstance }) => {
@@ -50,36 +51,50 @@ const BaseRouting = React.memo(
       publish("ES_ROUTE", location);
     }, [location]);
 
+    if (
+      MULTITENANCY_ENABLED &&
+      !location.pathname.startsWith("/tenant/") &&
+      !location.pathname.startsWith("/public")
+    ) {
+      return <LandingPage />;
+    }
     return (
-    
- 
-        <div className="container  mt-5">
+      <div className="container  mt-4">
         <div className="min-container-height ps-md-3">
-        <ToastContainer />
-            <Switch>
-              <Route path="/public">
-                <PublicRoute
-                  store={store}
-                  publish={publish}
-                  subscribe={subscribe}
-                  getKcInstance={getKcInstance}
-                />
-              </Route>
-              <Route path={BASE_ROUTE}>
-                <PrivateRoute
-                  store={store}
-                  publish={publish}
-                  subscribe={subscribe}
-                  getKcInstance={getKcInstance}
-                />
-              </Route>
-              <Route path="/404" exact={true} component={NotFound} />
-              <Redirect from="*" to="/404" />
-            </Switch>
+          <ToastContainer
+          position="bottom-right"
+          autoClose={3000}
+          hideProgressBar
+          newestOnTop={false}
+          closeOnClick
+          rtl={false}
+          pauseOnFocusLoss
+          draggable
+          pauseOnHover={false}
+          theme="colored"
+           />
+          <Switch>
+            <Route path="/public">
+              <PublicRoute
+                store={store}
+                publish={publish}
+                subscribe={subscribe}
+                getKcInstance={getKcInstance}
+              />
+            </Route>
+            <Route path={BASE_ROUTE}>
+              <PrivateRoute
+                store={store}
+                publish={publish}
+                subscribe={subscribe}
+                getKcInstance={getKcInstance}
+              />
+            </Route>
+            <Route path="/404" exact={true} component={NotFound} />
+          </Switch>
         </div>
-            {isAuth ? <Footer /> : null}
-        </div>
-
+        {isAuth ? <Footer /> : null}
+      </div>
     );
   }
 );

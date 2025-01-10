@@ -43,8 +43,8 @@ export const searchData = [
   },
   {
     label: <Translation>{(t) => t("Process Definition Name")}</Translation>,
-    compares: ["like", "="],
-    values: ["processDefinitionNameLike", "processDefinitionName"],
+    compares: ["="],
+    values: ["processDefinitionKey", "processDefinitionName"],
   },
   {
     label: <Translation>{(t) => t("Assignee")}</Translation>,

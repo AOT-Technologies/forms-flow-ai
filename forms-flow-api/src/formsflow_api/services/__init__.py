@@ -12,7 +12,9 @@ from formsflow_api.services.filter import FilterService
 from formsflow_api.services.form_embed import CombineFormAndApplicationCreate
 from formsflow_api.services.form_history_logs import FormHistoryService
 from formsflow_api.services.form_process_mapper import FormProcessMapperService
+from formsflow_api.services.import_support import ImportService
 from formsflow_api.services.process import ProcessService
+from formsflow_api.services.theme import ThemeCustomizationService
 from formsflow_api.services.user import UserService
 
 __all__ = [
@@ -29,4 +31,6 @@ __all__ = [
     "UserService",
     "FormHistoryService",
     "CombineFormAndApplicationCreate",
+    "ThemeCustomizationService",
+    "ImportService",
 ]

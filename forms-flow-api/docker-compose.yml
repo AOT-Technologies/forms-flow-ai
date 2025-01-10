@@ -22,7 +22,6 @@ services:
     restart: unless-stopped
     depends_on:
       - forms-flow-webapi-db
-      - redis
     entrypoint: "/wait-for-service.sh forms-flow-webapi-db:5432 -s -- ./entrypoint.sh"
     ports:
       - '5000:5000'
@@ -32,6 +31,11 @@ services:
       INSIGHT_API_KEY: ${INSIGHT_API_KEY}
       INSIGHT_API_URL: ${INSIGHT_API_URL}
       DATABASE_URL: ${FORMSFLOW_API_DB_URL:-postgresql://postgres:changeme@forms-flow-webapi-db:5432/webapi}
+      DATABASE_USERNAME: ${FORMSFLOW_API_DB_USER:-postgres}
+      DATABASE_PASSWORD: ${FORMSFLOW_API_DB_PASSWORD:-changeme}
+      DATABASE_HOST: ${FORMSFLOW_API_DB_HOST:-forms-flow-webapi-db}
+      DATABASE_PORT: ${FORMSFLOW_API_DB_PORT:-5432}
+      DATABASE_NAME: ${FORMSFLOW_API_DB_NAME:-webapi}
       BPM_TOKEN_API: ${KEYCLOAK_URL}${KEYCLOAK_URL_HTTP_RELATIVE_PATH:-/auth}/realms/${KEYCLOAK_URL_REALM:-forms-flow-ai}/protocol/openid-connect/token
       BPM_CLIENT_ID: ${KEYCLOAK_BPM_CLIENT_ID:-forms-flow-bpm}
       BPM_CLIENT_SECRET: ${KEYCLOAK_BPM_CLIENT_SECRET:-e4bdbd25-1467-4f7f-b993-bc4b1944c943}
@@ -58,18 +62,12 @@ services:
       API_LOG_BACKUP_COUNT: ${API_LOG_BACKUP_COUNT:-7}
       CONFIGURE_LOGS: ${CONFIGURE_LOGS:-true}
       REDIS_URL: ${REDIS_URL:-redis://redis:6379/0}
+      FORMSFLOW_ADMIN_URL: ${FORMSFLOW_ADMIN_URL}
 
     stdin_open: true # -i
     tty: true # -t
     networks:
       - forms-flow-webapi-network
-  redis:
-    image: "redis:alpine"
-    ports:
-      - "6379:6379"
-    networks:
-      - forms-flow-webapi-network
-
 
 networks:
   forms-flow-webapi-network:

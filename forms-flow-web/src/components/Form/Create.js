@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useReducer } from "react";
-import { FormBuilder, Errors } from "react-formio";
+import { FormBuilder, Errors } from "@aot-technologies/formio-react";
 import _set from "lodash/set";
 import _cloneDeep from "lodash/cloneDeep";
 import _camelCase from "lodash/camelCase";
@@ -14,7 +14,7 @@ import { saveFormProcessMapperPost } from "../../apiManager/services/processServ
 import { useDispatch, useSelector } from "react-redux";
 import { toast } from "react-toastify";
 import { useTranslation, Translation } from "react-i18next";
-import { formio_resourceBundles } from "../../resourceBundles/formio_resourceBundles";
+import {RESOURCE_BUNDLES_DATA} from "../../resourceBundles/i18n";
 import {
   clearFormError,
   setFormFailureErrorData,
@@ -24,9 +24,8 @@ import { addTenantkey } from "../../helper/helper";
 import { formCreate } from "../../apiManager/services/FormServices";
 import { Form } from 'react-bootstrap';
 import { handleAuthorization } from "../../apiManager/services/authorizationService";
-import RichText from "../Form/RichText";
 import { Collapse } from 'react-bootstrap';
-
+import { FormTextArea } from "@formsflow/components";
 
 // reducer from react-formio code
 const reducer = (form, { type, value }) => {
@@ -259,7 +258,7 @@ const Create = React.memo(() => {
                 {t("Description")}
               </label>
               <div className="bg-white">
-                <RichText data-testid="create-form-description" onChange={setFormDescription} value={formDescription} />
+                <FormTextArea data-testid="create-form-description" onChange={setFormDescription} value={formDescription}  aria-label={t("Create Form Description")} label={t("Description")}/>
               </div>
             </div>
           </div>
@@ -429,7 +428,7 @@ const Create = React.memo(() => {
             onChange={formChange}
             options={{
               language: lang,
-              i18n: formio_resourceBundles,
+              i18n: RESOURCE_BUNDLES_DATA,
             }}
           />
         </div>

@@ -1,206 +1,169 @@
-import utils from "formiojs/utils";
-const applicationIDHiddenComponent = {
-  "label": "applicationId",
-  "customClass": "",
-  "addons": [],
-  "modalEdit": false,
-  "persistent": true,
-  "protected": false,
-  "dbIndex": false,
-  "encrypted": false,
-  "redrawOn": "",
-  "customDefaultValue": "",
-  "calculateValue": "",
-  "calculateServer": false,
-  "key": "applicationId",
-  "tags": [],
-  "properties": {},
-  "logic": [],
-  "attributes": {},
-  "overlay": {
-      "style": "",
-      "page": "",
-      "left": "",
-      "top": "",
-      "width": "",
-      "height": ""
-  },
-  "type": "hidden",
-  "input": true,
-  "placeholder": "",
-  "prefix": "",
-  "suffix": "",
-  "multiple": false,
-  "unique": false,
-  "hidden": false,
-  "clearOnHide": true,
-  "refreshOn": "",
-  "tableView": false,
-  "labelPosition": "top",
-  "Description": "",
-  "errorLabel": "",
-  "tooltip": "",
-  "hideLabel": false,
-  "tabindex": "",
-  "disabled": false,
-  "autofocus": false,
-  "widget": {
-      "type": "input"
-  },
-  "validateOn": "change",
-  "validate": {
-      "required": false,
-      "custom": "",
-      "customPrivate": false,
-      "strictDateValidation": false,
-      "multiple": false,
-      "unique": false
-  },
-  "conditional": {
-      "show": null,
-      "when": null,
-      "eq": ""
-  },
-  "allowCalculateOverride": false,
-  "showCharCount": false,
-  "showWordCount": false,
-  "allowMultipleMasks": false,
-  "inputType": "hidden",
-  "id": "em1y8gd",
-  "defaultValue": "",
-  "dataGridLabel": false,
-  "description": ""
-};
-const applicationStatusHiddenComponent = {
-  "label": "applicationStatus",
-  "addons": [],
-  "customClass": "",
-  "modalEdit": false,
-  "defaultValue": null,
-  "persistent": true,
-  "protected": false,
-  "dbIndex": false,
-  "encrypted": false,
-  "redrawOn": "",
-  "customDefaultValue": "",
-  "calculateValue": "",
-  "calculateServer": false,
-  "key": "applicationStatus",
-  "tags": [],
-  "properties": {},
-  "logic": [],
-  "attributes": {},
-  "overlay": {
-      "style": "",
-      "page": "",
-      "left": "",
-      "top": "",
-      "width": "",
-      "height": ""
-  },
-  "type": "hidden",
-  "input": true,
-  "tableView": false,
-  "placeholder": "",
-  "prefix": "",
-  "suffix": "",
-  "multiple": false,
-  "unique": false,
-  "hidden": false,
-  "clearOnHide": true,
-  "refreshOn": "",
-  "dataGridLabel": false,
-  "labelPosition": "top",
-  "Description": "",
-  "errorLabel": "",
-  "tooltip": "",
-  "hideLabel": false,
-  "tabindex": "",
-  "disabled": false,
-  "autofocus": false,
-  "widget": {
-      "type": "input"
-  },
-  "validateOn": "change",
-  "validate": {
-      "required": false,
-      "custom": "",
-      "customPrivate": false,
-      "strictDateValidation": false,
-      "multiple": false,
-      "unique": false
-  },
-  "conditional": {
-      "show": null,
-      "when": null,
-      "eq": ""
-  },
-  "allowCalculateOverride": false,
-  "showCharCount": false,
-  "showWordCount": false,
-  "allowMultipleMasks": false,
-  "inputType": "hidden",
-  "id": "e6z1qd9",
-  "description": ""
-};
+import utils from "@aot-technologies/formiojs/lib/utils";
 
-const APPLICATION_ID_KEY = "applicationId";
-const APPLICATION_STATUS_KEY = "applicationStatus";
+// Factory function to create a hidden component with dynamic properties
+const createHiddenComponent = ({label, key, persistent, customDefaultValue = null}) => ({
+  label,
+  addons: [],
+  customClass: "",
+  modalEdit: false,
+  defaultValue: "",
+  persistent: persistent,
+  protected: false,
+  dbIndex: false,
+  encrypted: false,
+  redrawOn: "",
+  customDefaultValue,
+  calculateValue: "",
+  calculateServer: false,
+  key,
+  tags: [],
+  properties: {},
+  logic: [],
+  attributes: {},
+  overlay: { style: "", page: "", left: "", top: "", width: "", height: "" },
+  type: "hidden",
+  input: true,
+  tableView: false,
+  placeholder: "",
+  prefix: "",
+  suffix: "",
+  multiple: false,
+  unique: false,
+  hidden: false,
+  clearOnHide: true,
+  refreshOn: "",
+  dataGridLabel: false,
+  labelPosition: "top",
+  Description: "",
+  errorLabel: "",
+  tooltip: "",
+  hideLabel: false,
+  tabindex: "",
+  disabled: false,
+  autofocus: false,
+  widget: { type: "input" },
+  validateOn: "change",
+  validate: {
+    required: false,
+    custom: "",
+    customPrivate: false,
+    strictDateValidation: false,
+    multiple: false,
+    unique: false,
+  },
+  conditional: { show: null, when: null, eq: "" },
+  allowCalculateOverride: false,
+  showCharCount: false,
+  showWordCount: false,
+  allowMultipleMasks: false,
+  inputType: "hidden",
+  description: "",
+});
 
-const removeComponent  = (components, target) => {
-  const targetIndex = components.findIndex(item=> item.key === target);
-  if(targetIndex !== -1){
-    components.splice(targetIndex,1);
-  }
-};
-
-export const addHiddenApplicationComponent = (form) => {
-  const {components} = form;
-  const flatternComponent = utils.flattenComponents(components, true);
-  
- 
-  if (flatternComponent[APPLICATION_ID_KEY]) {
+const addHiddenComponent = (components, componentConfig, form) => {
+  const flatComponents = utils.flattenComponents(components, true);
+  const { key } = componentConfig;
+  if (!flatComponents[key]) {
     if (form.display === "wizard") {
-       // if application id is exist : remove the component form if it is wizard display
-      removeComponent(components, APPLICATION_ID_KEY);
-      let findPanel = components.find(component=> component.type == "panel");
-       if(findPanel){
-        const applicationExist = findPanel.components.some(item => item.key === APPLICATION_ID_KEY);
-        !applicationExist && findPanel.components.push(applicationIDHiddenComponent);  
-       }
-       
-    }
-  }else{
-    if(form.display === "wizard"){
-      let findPanel = components.find(component=> component.type == "panel");
-      if(findPanel){
-        findPanel.components.push(applicationIDHiddenComponent);
+      let panel = components.find((component) => component.type === "panel");
+
+      if (!panel) {
+        // Create a default panel if none exists
+        panel = {
+          type: "panel",
+          title: "Page 1",
+          key: "defaultPanel",
+          components: [componentConfig],
+        };
+        components.push(panel);
+      }else{
+        panel.components.push(componentConfig);
       }
-  }else{
-    components.push(applicationIDHiddenComponent);
-  }
-}
-  
-  if (flatternComponent[APPLICATION_STATUS_KEY]) {
-    if (form.display === "wizard") {
-     // if application status is exist : remove the component form if it is wizard display
-      removeComponent(components, APPLICATION_STATUS_KEY);
-      let findPanel = components.find(component=> component.type == "panel");
-       if(findPanel){
-        const applicationExist = findPanel.components.some(item => 
-          item.key === APPLICATION_STATUS_KEY);
-          !applicationExist && findPanel.components.push(applicationStatusHiddenComponent);
-       }
+
+    } else {
+      // For non-wizard forms, push the component directly
+      components.push(componentConfig);
     }
   } else {
-    if(form.display === "wizard"){
-      let findPanel = components.find(component=> component.type == "panel");
-      if(findPanel){
-        findPanel.components.push(applicationStatusHiddenComponent);
+    // If the component already exists, remove and re-add it for wizard forms
+    if (form.display === "wizard") {
+      const panel = components.find((component) => component.type === "panel");
+      if (panel && !panel.components.some((item) => item.key === key)) {
+        panel.components.push(componentConfig);
       }
-    }else{
-      components.push(applicationStatusHiddenComponent);
     }
   }
+};
+
+// Main function to add all hidden components to the form
+export const addHiddenApplicationComponent = (form) => {
+  const components = form.components || [];
+
+  // Define configuration for all additional components
+  const hiddenComponents = [
+    { label: "Submission Id", key: "applicationId", persistent: true},
+    { label: "Submission Status", key: "applicationStatus", persistent:true },
+    { 
+      label: "Current User", 
+      persistent: true,
+      key: "currentUser", 
+      customDefaultValue: "const localdata = localStorage.getItem('UserDetails') && JSON.parse(localStorage.getItem('UserDetails'));  value = localdata?.preferred_username || '';" 
+    },
+    { 
+      label: "Submitter Email", 
+      persistent: true,
+      key: "submitterEmail", 
+      customDefaultValue: "const localdata = localStorage.getItem('UserDetails') && JSON.parse(localStorage.getItem('UserDetails')); value= localdata?.email || '';" 
+    },
+    { 
+      label: "Submitter First Name", 
+      persistent: true,
+      key: "submitterFirstName", 
+      customDefaultValue: "const localdata = localStorage.getItem('UserDetails') &&  JSON.parse(localStorage.getItem('UserDetails')); value= localdata?.given_name || '';" 
+    },
+    { 
+      label: "Submitter Last Name", 
+      persistent: true,
+      key: "submitterLastName", 
+      customDefaultValue: "const localdata = localStorage.getItem('UserDetails') &&  JSON.parse(localStorage.getItem('UserDetails')); value= localdata?.family_name || '';" 
+    },
+    { 
+      label: "Current User Roles", 
+      persistent: true,
+      key: "currentUserRole", 
+      customDefaultValue: "const localdata = localStorage.getItem('UserDetails') && (JSON.parse(localStorage.getItem('UserDetails'))) || []; value = localdata?.groups?.map(group => group.replace(new RegExp('^/+|/+$', 'g'), '')) || [];" 
+    },
+    // { 
+    //   label: "All Available Roles", 
+    //   persistent: false,
+    //   key: "allAvailableRoles", 
+    //   customDefaultValue: "const localdata = JSON.parse(localStorage.getItem('allAvailableRoles')); value = localdata;" 
+    // },
+  ];
+
+
+  const additionalComponents = [];
+  // Add a submit button only if the form is not a wizard
+  if (form.display !== "wizard") {
+    additionalComponents.push({
+      type: "button",
+      label: "Submit",
+      key: "submit",
+      disableOnInvalid: true,
+      input: true,
+      tableView: false
+    });
+  }
+  additionalComponents.push(...hiddenComponents);
+
+
+  // Loop through and add each additional component
+  additionalComponents.forEach(({ label, key, customDefaultValue, ...rest }) => {
+    const componentConfig = key === "submit" 
+      ? { key, label, ...rest } 
+      : createHiddenComponent({label, key, customDefaultValue, persistent:rest.persistent });
+    addHiddenComponent(components, componentConfig, form);
+  });
+
   return form;
 };

@@ -24,9 +24,8 @@ class TestPDFService:
             assert "project_url" in render_data["form"]
             assert "form_url" in render_data["form"]
             assert "token" in render_data["form"]
-            assert "submission_url" in render_data["form"]
+            assert "submission_data" in render_data["form"]
             assert "form_adapter" in render_data["form"]
-            assert "auth_token" in render_data["form"]
 
     def test_get_render_data_with_template_and_template_variable(self, app):
         """Test get_render_data method for the request with template and template variables."""

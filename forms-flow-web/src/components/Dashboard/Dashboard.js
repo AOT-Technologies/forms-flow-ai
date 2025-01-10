@@ -1,5 +1,5 @@
 /* eslint-disable no-unused-vars */
-import React, { Fragment, useEffect, useRef, useState } from "react";
+import React, { useEffect, useState } from "react";
 import ApplicationCounter from "./ApplicationCounter";
 import { useDispatch, useSelector } from "react-redux";
 import { Route, Redirect } from "react-router";
@@ -25,19 +25,13 @@ import {
   setMetricsDateChange,
 } from "../../actions/metricsActions";
 import LoadingOverlay from "@ronchalant/react-loading-overlay";
-import {
-  Dropdown, 
-  FormControl,
-  InputGroup,
-} from "react-bootstrap";
-import { push } from "connected-react-router";
-import { MULTITENANCY_ENABLED } from "../../constants/constants";
-import Head from "../../containers/Head";
+import { Dropdown, FormControl } from "react-bootstrap";
+import { CustomSearch } from "@formsflow/components"; 
+
 const Dashboard = React.memo(() => {
   const { t } = useTranslation();
   const dispatch = useDispatch();
   const submissionsList = useSelector((state) => state.metrics.submissionsList);
-  const tenantKey = useSelector((state) => state.tenants?.tenantId);
   const submissionsStatusList = useSelector(
     (state) => state.metrics.submissionsStatusList
   );
@@ -63,7 +57,6 @@ const Dashboard = React.memo(() => {
   const limit = useSelector((state) => state.metrics.limit);
   const totalItems = useSelector((state) => state.metrics.totalItems);
   const pageRange = useSelector((state) => state.metrics.pagination.numPages);
-  const redirectUrl = MULTITENANCY_ENABLED ? `/tenant/${tenantKey}/` : "/";
   const submissionStatusCountLoader = useSelector(
     (state) => state.metrics.submissionStatusCountLoader
   );
@@ -82,8 +75,6 @@ const Dashboard = React.memo(() => {
   const [showSubmissionData, setSHowSubmissionData] = useState(submissionsList[0]);
   const [show, setShow] = useState(false);
   // State to set search text for submission data
-  const [showClearButton, setShowClearButton] = useState("");
-  const searchInputBox = useRef("");
   //Array for pagination dropdown
   const options = [
     { value: "9", label: "9" },
@@ -91,18 +82,22 @@ const Dashboard = React.memo(() => {
     { value: "30", label: "30" },
     { value: totalItems, label: "All" },
   ];
+   useEffect(() => {
+      if (!searchTextInput?.trim()) {
+        dispatch(setMetricsSubmissionSearch(""));
+      }
+    }, [searchTextInput]);
   // Function to handle search text
   const handleSearch = () => {
     dispatch(setMetricsSubmissionPageChange(1));
     dispatch(setMetricsSubmissionLimitChange(9));
-    dispatch(setMetricsSubmissionSearch(searchInputBox.current.value));
+    dispatch(setMetricsSubmissionSearch(searchTextInput));
   };
   const onClear = () => {
-    searchInputBox.current.value = "";
     setSearchTextInput("");
-    setShowClearButton(false);
-    handleSearch();
+    dispatch(setMetricsSubmissionSearch(""));
   };
+  
 
   // Function to handle sort for submission data
   const handleSort = (updateSort) => {
@@ -133,7 +128,6 @@ const Dashboard = React.memo(() => {
     const fromDate = getFormattedDate(dateRange[0]);
     const toDate = getFormattedDate(dateRange[1]);
     dispatch(setMetricsDateRangeLoading(true));
-    setShowClearButton(searchText);
     setSelectedLimitValue(limit);
     /*eslint max-len: ["error", { "code": 170 }]*/
     dispatch(fetchMetricsSubmissionCount(fromDate, toDate, searchBy, searchText, activePage, limit, sortsBy, sortOrder, (err, data) => { }));
@@ -182,21 +176,6 @@ const Dashboard = React.memo(() => {
       dispatch(setMetricsDateChange([firstDay, lastDay]));
     }
   };
-  const headerList = () => {
-    return [
-      {
-        name: "Metrics",
-        count: totalItems,
-        onClick: () => dispatch(push(`${redirectUrl}metrics`)),
-        icon: "line-chart me-2",
-      },
-      {
-        name: "Insights",
-        onClick: () => dispatch(push(`${redirectUrl}insights`)),
-        icon: "lightbulb-o me-2",
-      },
-    ];
-  };
 
   const noOfApplicationsAvailable = submissionsList?.length || 0;
   if (metricsLoadError) {
@@ -209,53 +188,29 @@ const Dashboard = React.memo(() => {
     );
   }
   return (
-    <Fragment>
+
       <LoadingOverlay active={submissionStatusCountLoader} spinner>
         <div
           className="mb-4"
           id="main"
           role="complementary"
         >
-          <Head items={headerList()} page="Metrics" />
           <div className="d-flex flex-wrap justify-content-between col-md-12">
-          <div className="custom-input-group col-12 col-md-4 px-0">
-      <InputGroup>
-        <FormControl
-          type="search"
-          title={t("Search")}
-          ref={searchInputBox}
-          onKeyPress={(e) => e.key === "Enter" && handleSearch()}
-          onChange={(e) => {
-            setShowClearButton(e.target.value);
-            setSearchTextInput(e.target.value);
-            e.target.value === "" && handleSearch();
-          }}
-          autoComplete="off"
-          value={searchTextInput}
-          placeholder={t("Search...")}
-          className="bg-white"
-        />
-        {showClearButton && (
-          <InputGroup.Append className="d-flex cursor-pointer"onClick={() => onClear()}>
-            <InputGroup.Text className= "bg-white rounded-0">
-              <i className="fa fa-times"></i>
-            </InputGroup.Text>
-          </InputGroup.Append>
-        )}
+            <div className="custom-input-group col-12 col-md-4 px-0">
+              <CustomSearch
+                handleClearSearch={onClear}
+                search={searchTextInput}
+                setSearch={setSearchTextInput}
+                searchLoading={isMetricsLoading}
 
-        <InputGroup.Append
-          title={t("Click to search")}
-          onClick={() => handleSearch()}
-          className="d-flex cursor-pointer"
-        >
-          <InputGroup.Text className= "bg-white rounded-start-0">
-            <i className="fa fa-search"></i>
-          </InputGroup.Text>
-        </InputGroup.Append>
-        </InputGroup>
-    </div>
+                handleSearch={handleSearch}
+                placeholder={t("Search by form name")}
+                title={t("Search")}
+                dataTestId="form-search-input"
+              />
+            </div>
 
-            <div className="d-flex justify-content-end align-items-center col-12 col-md-4 px-0">
+            <div className="d-flex justify-content-end align-items-center col-12 col-md-6 px-0">
               <div className="input-group me-2">
                 <FormControl
                   as="select"
@@ -306,7 +261,7 @@ const Dashboard = React.memo(() => {
             </div>
           </div>
 
-          <div className="dashboard dashboard-height d-flex">
+          <div className="dashboard dashboard-height d-flex service-task-details">
             {submissionsList.length ? (
               <div className="col-12 px-0">
                 {!metricsDateRangeLoader && (
@@ -371,6 +326,10 @@ const Dashboard = React.memo(() => {
                   itemClass="page-item"
                   linkClass="page-link"
                   onChange={handlePageChange}
+                  firstPageText={<span aria-label="Go to first page" title="Go to first page">«</span>}
+                  lastPageText={<span aria-label="Go to last page" title="Go to last page">»</span>}
+                  prevPageText={<span aria-label="Go to previous page" title="Go to previous page">⟨</span>}
+                  nextPageText={<span aria-label="Go to next page" title="Go to next page">⟩</span>}
                 />
               </div>
             </div>
@@ -383,9 +342,11 @@ const Dashboard = React.memo(() => {
             ) : (
               <Modal
                 show={show}
-                size="lg"
+                size="sm"
                 onHide={() => setShow(false)}
                 aria-labelledby="example-custom-modal-styling-title"
+                centered
+                className="align-content-center"
               >
                 <Modal.Header>
                   <Modal.Title id="example-custom-modal-styling-title">
@@ -415,7 +376,7 @@ const Dashboard = React.memo(() => {
           <Redirect exact to="/404" />
         </Route>
       </LoadingOverlay>
-    </Fragment>
+
   );
 });
 

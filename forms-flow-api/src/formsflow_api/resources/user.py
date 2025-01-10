@@ -5,7 +5,10 @@ from http import HTTPStatus
 from flask import current_app, g, request
 from flask_restx import Namespace, Resource, fields
 from formsflow_api_utils.utils import (
-    ADMIN_GROUP,
+    ADMIN,
+    CREATE_FILTERS,
+    MANAGE_ALL_FILTERS,
+    VIEW_TASKS,
     auth,
     cors_preflight,
     profiletime,
@@ -15,10 +18,11 @@ from formsflow_api.schemas import (
     TenantUserAddSchema,
     UserlocaleReqSchema,
     UserPermissionUpdateSchema,
+    UserSchema,
     UsersListSchema,
 )
 from formsflow_api.services import KeycloakAdminAPIService, UserService
-from formsflow_api.services.factory import KeycloakFactory
+from formsflow_api.services.factory import KeycloakFactory, KeycloakGroupService
 
 API = Namespace("user", description="Keycloak user APIs")
 
@@ -67,6 +71,7 @@ tenant_add_user_model = API.model(
 )
 
 locale_put_model = API.model("Locale", {"locale": fields.String()})
+default_filter_model = API.model("DefaulFilter", {"defaultFilter": fields.String()})
 
 
 @cors_preflight("PUT, OPTIONS")
@@ -115,6 +120,29 @@ class KeycloakUserService(Resource):
         response = self.client.update_request(url_path=f"users/{user['id']}", data=user)
         if response is None:
             return {"message": "User not found"}, HTTPStatus.NOT_FOUND
+        # Capture "locale" changes in user table
+        UserService.update_user_data({"locale": dict_data["locale"]})
+        return response, HTTPStatus.OK
+
+
+@cors_preflight("POST, OPTIONS")
+@API.route("/default-filter", methods=["OPTIONS", "POST"])
+class UserDefaultFilter(Resource):
+    """Resource to create or update user's default filter."""
+
+    @staticmethod
+    @auth.has_one_of_roles([ADMIN, CREATE_FILTERS, MANAGE_ALL_FILTERS])
+    @profiletime
+    @API.doc(body=default_filter_model)
+    @API.response(200, "OK:- Successful request.")
+    @API.response(
+        400,
+        "BAD_REQUEST:- Invalid request.",
+    )
+    def post():
+        """Update the user's default task filter."""
+        data = UserSchema().load(request.get_json())
+        response = UserService().update_user_data(data=data)
         return response, HTTPStatus.OK
 
 
@@ -124,13 +152,13 @@ class KeycloakUsersList(Resource):
     """Resource to fetch keycloak users."""
 
     @staticmethod
-    @auth.require
+    @auth.has_one_of_roles([ADMIN, CREATE_FILTERS, MANAGE_ALL_FILTERS, VIEW_TASKS])
     @profiletime
     @API.doc(
         params={
             "memberOfGroup": {
                 "in": "query",
-                "description": "Group/Role  name for fetching users.",
+                "description": "Group name for fetching users.",
                 "default": "",
             },
             "search": {
@@ -158,6 +186,11 @@ class KeycloakUsersList(Resource):
                 "description": "Boolean which defines whether count is returned.",
                 "default": "false",
             },
+            "permission": {
+                "in": "query",
+                "description": "A string to filter user by permission.",
+                "default": "",
+            },
         }
     )
     @API.response(200, "OK:- Successful request.", model=user_list_count_model)
@@ -172,6 +205,7 @@ class KeycloakUsersList(Resource):
     def get():  # pylint: disable=too-many-locals
         """Get users list."""
         group_name = request.args.get("memberOfGroup")
+        permission = request.args.get("permission")
         search = request.args.get("search")
         page_no = int(request.args.get("pageNo", 0))
         limit = int(request.args.get("limit", 0))
@@ -179,6 +213,7 @@ class KeycloakUsersList(Resource):
         count = request.args.get("count") == "true"
         kc_admin = KeycloakFactory.get_instance()
         if group_name:
+
             (users_list, users_count) = kc_admin.get_users(
                 page_no, limit, role, group_name, count, search
             )
@@ -189,12 +224,9 @@ class KeycloakUsersList(Resource):
             }
         else:
             (user_list, user_count) = kc_admin.search_realm_users(
-                search, page_no, limit, role, count
+                search, page_no, limit, role, count, permission
             )
-            user_list_response = []
-            for user in user_list:
-                user = UsersListSchema().dump(user)
-                user_list_response.append(user)
+            user_list_response = UsersListSchema().dump(user_list, many=True)
             response = {"data": user_list_response, "count": user_count}
         return response, HTTPStatus.OK
 
@@ -205,10 +237,10 @@ class KeycloakUsersList(Resource):
     methods=["PUT", "DELETE", "OPTIONS"],
 )
 class UserPermission(Resource):
-    """Resource to manage keycloak user permissions."""
+    """Resource to manage keycloak user."""
 
     @staticmethod
-    @auth.has_one_of_roles([ADMIN_GROUP])
+    @auth.has_one_of_roles([ADMIN])
     @profiletime
     @API.doc(body=user_permission_update_model)
     @API.response(204, "NO CONTENT:- Successful request.")
@@ -225,9 +257,9 @@ class UserPermission(Resource):
         json_payload = request.get_json()
         user_and_group = UserPermissionUpdateSchema().load(json_payload)
         current_app.logger.debug("Initializing admin API service...")
-        service = KeycloakFactory.get_instance()
+        service = KeycloakGroupService()
         current_app.logger.debug("Successfully initialized admin API service !")
-        response = service.add_user_to_group_role(user_id, group_id, user_and_group)
+        response = service.add_user_to_group(user_id, group_id, user_and_group)
         if not response:
             current_app.logger.error(f"Failed to add {user_id} to group {group_id}")
             return {
@@ -237,7 +269,7 @@ class UserPermission(Resource):
         return None, HTTPStatus.NO_CONTENT
 
     @staticmethod
-    @auth.has_one_of_roles([ADMIN_GROUP])
+    @auth.has_one_of_roles([ADMIN])
     @profiletime
     @API.doc(body=user_permission_update_model)
     @API.response(204, "NO CONTENT:- Successful request.")
@@ -256,9 +288,7 @@ class UserPermission(Resource):
         current_app.logger.debug("Initializing admin API service...")
         service = KeycloakFactory.get_instance()
         current_app.logger.debug("Successfully initialized admin API service !")
-        response = service.remove_user_from_group_role(
-            user_id, group_id, user_and_group
-        )
+        response = service.remove_user_from_group(user_id, group_id, user_and_group)
         if not response:
             current_app.logger.error(
                 f"Failed to remove {user_id} from group {group_id}"
@@ -279,7 +309,7 @@ class TenantAddUser(Resource):
     """Resource to manage add user to a tenant."""
 
     @staticmethod
-    @auth.has_one_of_roles([ADMIN_GROUP])
+    @auth.has_one_of_roles([ADMIN])
     @profiletime
     @API.doc(body=tenant_add_user_model)
     @API.response(200, "OK:- Successful request.")

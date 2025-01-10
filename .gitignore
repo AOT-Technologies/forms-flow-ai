@@ -44,3 +44,6 @@ jobs/sentiment-analysis/dbms/__pycache__
 postgres/
 mongodb/
 forms-flow-web/scripts/node_modules
+forms-flow-idm/keycloak/idp-selector/.settings/*
+*.pyc
+*.pyc

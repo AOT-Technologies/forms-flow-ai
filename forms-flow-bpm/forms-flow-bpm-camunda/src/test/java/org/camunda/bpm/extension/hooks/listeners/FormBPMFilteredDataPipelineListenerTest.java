@@ -1,34 +1,37 @@
 package org.camunda.bpm.extension.hooks.listeners;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
+import java.lang.reflect.Field;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Properties;
+
 import org.camunda.bpm.engine.delegate.DelegateExecution;
 import org.camunda.bpm.engine.delegate.DelegateTask;
 import org.camunda.bpm.extension.commons.connector.HTTPServiceInvoker;
-import org.camunda.bpm.extension.hooks.listeners.data.FilterInfo;
+import static org.camunda.bpm.extension.commons.utils.VariableConstants.APPLICATION_ID;
+import static org.camunda.bpm.extension.commons.utils.VariableConstants.FORM_URL;
 import org.camunda.bpm.extension.hooks.listeners.data.FormProcessMappingData;
 import org.camunda.bpm.extension.hooks.services.FormSubmissionService;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.ArgumentCaptor;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyString;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.util.ReflectionTestUtils;
 
-import java.lang.reflect.Field;
-import java.util.*;
-
-import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.anyString;
-import static org.mockito.Mockito.*;
-
-import static org.camunda.bpm.extension.commons.utils.VariableConstants.FORM_URL;
-import static org.camunda.bpm.extension.commons.utils.VariableConstants.APPLICATION_ID;
+import com.fasterxml.jackson.databind.ObjectMapper;
 
 /**
  * FormBPM FilteredData Pipeline Listener Test.
@@ -81,7 +84,7 @@ public class FormBPMFilteredDataPipelineListenerTest {
         FormProcessMappingData formProcessMappingData = new FormProcessMappingData();
         formProcessMappingData.setProcessKey("onestepapproval");
         formProcessMappingData.setProcessKey("onestepapproval");
-        formProcessMappingData.setTaskVariable("[{\"key\" : \"businessOwner\", \"defaultLabel\" : \"Business Owner\", \"label\" : \"Business Owner\"}]");
+        formProcessMappingData.setTaskVariables("[{\"key\" : \"businessOwner\", \"defaultLabel\" : \"Business Owner\", \"label\" : \"Business Owner\"}]");
         when(httpServiceInvoker.execute(anyString(), any(HttpMethod.class), any(), any()))
                 .thenReturn(ResponseEntity.ok(formProcessMappingData));
 
@@ -115,7 +118,7 @@ public class FormBPMFilteredDataPipelineListenerTest {
         FormProcessMappingData formProcessMappingData = new FormProcessMappingData();
         formProcessMappingData.setProcessKey("onestepapproval");
         formProcessMappingData.setProcessKey("onestepapproval");
-        formProcessMappingData.setTaskVariable("[{\"key\" : \"businessOwner\", \"defaultLabel\" : \"Business Owner\", \"label\" : \"Business Owner\"}]");
+        formProcessMappingData.setTaskVariables("[{\"key\" : \"businessOwner\", \"defaultLabel\" : \"Business Owner\", \"label\" : \"Business Owner\"}]");
         when(httpServiceInvoker.execute(anyString(), any(HttpMethod.class), any(), any()))
                 .thenReturn(ResponseEntity.ok(formProcessMappingData));
 
@@ -153,7 +156,7 @@ public class FormBPMFilteredDataPipelineListenerTest {
         FormProcessMappingData formProcessMappingData = new FormProcessMappingData();
         formProcessMappingData.setProcessKey("onestepapproval");
         formProcessMappingData.setProcessKey("onestepapproval");
-        formProcessMappingData.setTaskVariable("[{\"key\" : \"businessOwner\", \"value\" : \"john\", \"label\" : \"Business Owner\"}]");
+        formProcessMappingData.setTaskVariables("[{\"key\" : \"businessOwner\", \"value\" : \"john\", \"label\" : \"Business Owner\"}]");
         when(httpServiceInvoker.execute(anyString(), any(HttpMethod.class), any(), any()))
                 .thenReturn(ResponseEntity.ok(formProcessMappingData));
         formBPMFilteredDataPipelineListener.notify(delegateTask);

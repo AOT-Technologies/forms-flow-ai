@@ -19,6 +19,11 @@
                 "name": "formsflow-designer",
                 "clientRole": true,
                 "attributes": {}
+            },
+            {
+               "name": "formsflow-admin",
+               "clientRole": true,
+               "attributes": {}
             }
          ],
          "{project-unique-key}-forms-flow-bpm":[

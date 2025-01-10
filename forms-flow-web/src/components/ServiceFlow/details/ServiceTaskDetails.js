@@ -23,7 +23,7 @@ import History from "../../Application/ApplicationHistory";
 import FormEdit from "../../Form/Item/Submission/Item/Edit";
 import FormView from "../../Form/Item/Submission/Item/View";
 import LoadingOverlay from "react-loading-overlay-ts";
-import { getForm, getSubmission, Formio, resetSubmission } from "react-formio";
+import { getForm, getSubmission, Formio, resetSubmission } from "@aot-technologies/formio-react";
 import { CUSTOM_EVENT_TYPE } from "../constants/customEventTypes";
 import { getTaskSubmitFormReq } from "../../../apiManager/services/bpmServices";
 import { useParams } from "react-router-dom";
@@ -268,10 +268,10 @@ const ServiceFlowTaskDetails = React.memo(() => {
         <Card className="me-2 bg-light">
                         <Card.Body>
                             <div className="d-flex justify-content-between">
-                            <Col >
+                            <Col>
                                     <Row className="ms-0 task-header">{task?.name}</Row>
                                     <Row className="ms-0 fs-5 fw-normal">
-                                        <span className="application-id" title={t("Workflow")}>
+                                        <span className="application-id" title={t("Flow")} style={{wordBreak:"break-all"}}>
                                             {" "}
                                             {
                                                 getProcessDataObjectFromList(processList,
@@ -285,7 +285,7 @@ const ServiceFlowTaskDetails = React.memo(() => {
                                             {t("Submission Id")}# {task?.applicationId}
                                         </span>
                                     </Row>
-                                    <Row className="ms-0 mt-3">
+                                    <Row className="ms-0 me-0 mt-3 justify-content-around">
                                     <TaskHeaderListView
                                         task={task} taskId={task?.id} groupView={true}
                                     />

@@ -27,6 +27,7 @@ import static org.springframework.security.config.Customizer.withDefaults;
 import static org.springframework.security.web.util.matcher.AntPathRequestMatcher.antMatcher;
 
 import org.camunda.bpm.engine.IdentityService;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.context.ApplicationContext;
 import org.springframework.http.HttpMethod;
@@ -70,6 +71,13 @@ public class OAuth2LoginSecurityConfig  {
 
 	@Inject
 	private KeycloakCockpitConfiguration keycloakCockpitConfiguration;
+	
+	@Value("${plugin.identity.keycloak.enableClientAuth}")
+	private boolean enableClientAuth;
+	
+	
+	@Value("${plugin.identity.keycloak.enableMultiTenancy}")
+	private boolean enableMultiTenancy;
 
 	@Bean
 	@Order(1)
@@ -154,7 +162,7 @@ public class OAuth2LoginSecurityConfig  {
 		String userNameAttribute = this.applicationContext.getEnvironment().getRequiredProperty(
 				"spring.security.oauth2.client.provider." + this.configProps.getProvider() + ".user-name-attribute");
 
-		filterRegistration.setFilter(new KeycloakAuthenticationFilter(identityService, clientService, userNameAttribute));
+		filterRegistration.setFilter(new KeycloakAuthenticationFilter(identityService, clientService, userNameAttribute, enableMultiTenancy, enableClientAuth));
 		filterRegistration.setOrder(102);
 		filterRegistration.addUrlPatterns("/engine-rest/*");
 		filterRegistration.addUrlPatterns("/engine-rest-ext/*");
@@ -189,11 +197,11 @@ public class OAuth2LoginSecurityConfig  {
 		return new RequestContextListener();
 	}
 
-	@Bean
-	public FilterRegistrationBean cockpitConfigurationFilter() {
-		return new KeycloakConfigurationFilterRegistrationBean(
-				keycloakCockpitConfiguration,
-				camundaBpmProperties.getWebapp().getApplicationPath()
-		);
-	}
+//	@Bean //UNCOMMENT FOR JWT AUTH
+//	public FilterRegistrationBean cockpitConfigurationFilter() {
+//		return new KeycloakConfigurationFilterRegistrationBean(
+//				keycloakCockpitConfiguration,
+//				camundaBpmProperties.getWebapp().getApplicationPath()
+//		);
+//	}
 }

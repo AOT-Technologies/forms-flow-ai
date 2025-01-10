@@ -1,10 +1,10 @@
 """This exposes submission service."""
+
 import asyncio
 import json
-
 from typing import Dict
-from flask import current_app
 
+from flask import current_app
 from formsflow_api_utils.exceptions import BusinessException
 from formsflow_api_utils.utils import ANONYMOUS_USER, DRAFT_APPLICATION_STATUS
 from formsflow_api_utils.utils.enums import FormProcessMapperStatus
@@ -134,7 +134,9 @@ class DraftService:
                 # was created, update the application with new mapper
                 application.update({"form_process_mapper_id": mapper.id})
             task_variables = (
-                json.loads(mapper.task_variable) if mapper.task_variable is not None else []
+                json.loads(mapper.task_variable)
+                if mapper.task_variable is not None
+                else []
             )
             variables = ApplicationService.fetch_task_variable_values(
                 task_variables, data.get("data", {})
@@ -150,7 +152,9 @@ class DraftService:
 
         except Exception as e:
             current_app.logger.error("Error occurred during application creation %s", e)
-            if application:  # If application instance is created, rollback the transaction.
+            if (
+                application
+            ):  # If application instance is created, rollback the transaction.
                 application.rollback()
             raise BusinessException(BusinessErrorCode.APPLICATION_CREATE_ERROR) from e
         return application

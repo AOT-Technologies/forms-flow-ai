@@ -6,26 +6,26 @@
   <meta http-equiv="X-UA-Compatible" content="ie=edge">
   <title>formsflow.ai</title>
   <script src="/config/config.js"></script>
-  <link rel="stylesheet" href="https://unpkg.com/bpmn-js-properties-panel@1.3.0/dist/assets/element-templates.css">
-  <link rel="stylesheet" href="https://unpkg.com/bpmn-js-properties-panel@1.3.0/dist/assets/properties-panel.css">
+  <link rel="stylesheet" href="https://unpkg.com/@bpmn-io/properties-panel/dist/assets/properties-panel.css">
+
   <!-- required dmn modeler styles -->
-  <link rel="stylesheet" href="https://unpkg.com/dmn-js@12.3.0/dist/assets/diagram-js.css">
-  <link rel="stylesheet" href="https://unpkg.com/dmn-js@12.3.0/dist/assets/dmn-js-shared.css">
-  <link rel="stylesheet" href="https://unpkg.com/dmn-js@12.3.0/dist/assets/dmn-js-drd.css">
-  <link rel="stylesheet" href="https://unpkg.com/dmn-js@12.3.0/dist/assets/dmn-js-decision-table.css">
-  <link rel="stylesheet" href="https://unpkg.com/dmn-js@12.3.0/dist/assets/dmn-js-decision-table-controls.css">
-  <link rel="stylesheet" href="https://unpkg.com/dmn-js@12.3.0/dist/assets/dmn-js-literal-expression.css">
-  <link rel="stylesheet" href="https://unpkg.com/dmn-js@12.3.0/dist/assets/dmn-font/css/dmn.css">
+  <link rel="stylesheet" href="https://unpkg.com/dmn-js@16.8.0/dist/assets/diagram-js.css">
+  <link rel="stylesheet" href="https://unpkg.com/dmn-js@16.8.0/dist/assets/dmn-js-shared.css">
+  <link rel="stylesheet" href="https://unpkg.com/dmn-js@16.8.0/dist/assets/dmn-js-drd.css">
+  <link rel="stylesheet" href="https://unpkg.com/dmn-js@16.8.0/dist/assets/dmn-js-decision-table.css">
+  <link rel="stylesheet" href="https://unpkg.com/dmn-js@16.8.0/dist/assets/dmn-js-decision-table-controls.css">
+  <link rel="stylesheet" href="https://unpkg.com/dmn-js@16.8.0/dist/assets/dmn-js-literal-expression.css">
+  <link rel="stylesheet" href="https://unpkg.com/dmn-js@16.8.0/dist/assets/dmn-font/css/dmn.css">
+  <link rel="stylesheet" href="https://forms-flow-microfrontends.aot-technologies.com/forms-flow-theme@v7.0.0/forms-flow-theme.min.css">
 
   <!-- required styles from cdn -->
   <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Nunito+Sans:wght@400;600;700&display=swap">
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/semantic-ui/2.4.1/semantic.min.css">
-  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" crossorigin="anonymous">
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/formiojs@4.13.1/dist/formio.full.min.css">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css" integrity="sha512-z3gLpd7yknf1YoNbCzqRKc4qyor8gaKU1qmn+CShxbuBusANI9QpRohGBreCFkKxLhei6S9CQXFEbbKuqLg0DA==" crossorigin="anonymous" referrerpolicy="no-referrer" />
     <script src="https://cdn.form.io/flatpickr/flatpickr.min.js"></script>
   <link rel="stylesheet" href="https://cdn.form.io/flatpickr/flatpickr.min.css">
   <script src="https://npmcdn.com/flatpickr/dist/l10n/ar.js"></script>
+
   <!--
     Remove this if you only support browsers that support async/await.
     This is needed by babel to share largeish helper code for compiling async/await in older
@@ -72,7 +72,7 @@
               "@formsflow/formsflow-web": "<%= process.env.MF_FORMSFLOW_WEB_URL %>",
               "@formsflow/admin":"<%=process.env.MF_FORMSFLOW_ADMIN_URL %>",
               "@formsflow/service":"<%= process.env.MF_FORMSFLOW_SERVICE_URL %>",
-              "@formsflow/theme":"<%= process.env.MF_FORMSFLOW_THEME_URL %>"
+              "@formsflow/components":"<%= process.env.MF_FORMSFLOW_COMPONENTS_URL %>"
           }
         }
       </script>
@@ -118,7 +118,6 @@
   </noscript>
   <script>
     System.import('@formsflow/root-config');
-    System.import('@formsflow/theme');
   </script>
   <import-map-overrides-full show-when-local-storage="devtools" dev-libs></import-map-overrides-full>
 </body>

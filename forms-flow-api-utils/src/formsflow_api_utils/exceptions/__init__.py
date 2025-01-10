@@ -55,9 +55,12 @@ class ExternalError(ErrorCodeMixin, Enum):
 class BusinessException(Exception):
     """Exception that adds error code and error."""
 
-    def __init__(self, error_code: ErrorCodeMixin, details=None, detail_message=None):
+    def __init__(self, error_code: ErrorCodeMixin, details=None, detail_message=None, include_details=False):
         super().__init__(error_code.message)
-        self.message = error_code.message
+        
+        # Include the detailed message in the main message if include_details is True
+        self.message = detail_message if include_details and detail_message else error_code.message
+            
         self.code = error_code.code
         self.status_code = error_code.status_code
         if detail_message:

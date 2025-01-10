@@ -1,3 +1,5 @@
+@import "../../variables.scss";
+
 .grid-forms {
     .col-md-4 {
         flex: 0 0 50% !important;
@@ -12,18 +14,18 @@
 }
 
 .published-forms-label{
-    color: var(--published-form-label);
+    color: $success;
     // #52C41A;
-    background: var(--published-background) 0% 0% no-repeat padding-box;
-    border: 1px solid var(--published-form-label);
+    background: $success-200 0% 0% no-repeat padding-box;
+    border: 1px solid $success;
     border-radius: 7px;
 }
 
 .unpublished-forms-label{
-    background: var(--unpublished-background) 0% 0% no-repeat padding-box;
+    background: $primary-100 0% 0% no-repeat padding-box;
     border-radius: 7px;
-    border: 1px solid var(--unpublished-label);
-    color: var(--unpublished-label);
+    border: 1px solid $primary-400;
+    color: $primary-400;
 }
 .custom-grid {
     .col {
@@ -62,10 +64,6 @@
         text-decoration: none !important;
     }
 
-    .btn-right {
-        float: right;
-        margin-left: auto;
-    }
 
     .btn {
         margin-right: 0px;
@@ -113,20 +111,20 @@ flex-wrap: wrap;
 }
 
 .progress-bar {
-    background-color: var(--color-danger);
+    background-color: $primary;
 }
 
 .fileupload-fail {
-    color: var(--color-danger-ltr);
+    color: $danger-100;
     float: right;
     font-weight: normal
 }
 
 
-.form-check-input{
-    width: 15px;
-    height: 15px;
-}
+// .form-check-input{
+//     width: 15px;
+//     height: 15px;
+// }
 
 .min-height-400{
     min-height: 400px;
@@ -140,9 +138,7 @@ flex-wrap: wrap;
 .description-content{
     max-width: 68vw;
 }
-.clientForm-table-col{
-    min-height: 300px;
-}
+
 .upload-progress{
     height: 5px;
     margin-top: 11px;
@@ -161,12 +157,6 @@ flex-wrap: wrap;
     .flex-item-left {
         flex: 100%;justify-content: flex-start;
     }
-}
-.page-item .page-link {
-    color: var(--color-primary)!important;
-}
-.page-item.active .page-link {
-    color: var(--color-white) !important;
 }
 
 /* Style the dots */

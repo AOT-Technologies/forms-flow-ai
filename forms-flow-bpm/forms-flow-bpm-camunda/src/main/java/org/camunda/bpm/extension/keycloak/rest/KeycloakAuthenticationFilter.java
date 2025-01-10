@@ -2,8 +2,10 @@ package org.camunda.bpm.extension.keycloak.rest;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 import jakarta.servlet.Filter;
 import jakarta.servlet.FilterChain;
@@ -16,6 +18,7 @@ import org.camunda.bpm.engine.IdentityService;
 import org.camunda.bpm.extension.commons.utils.RestAPIBuilderUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.slf4j.MDC;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.oauth2.client.OAuth2AuthorizedClientService;
@@ -33,6 +36,9 @@ public class KeycloakAuthenticationFilter implements Filter {
 
 	/** This class' logger. */
 	private static final Logger LOG = LoggerFactory.getLogger(KeycloakAuthenticationFilter.class);
+	
+	private static List<String> HARD_CODED_ROLES = Arrays.asList("create_designs", "view_designs", "create_submissions", "view_submissions", "view_tasks", "manage_tasks", "admin");
+	
 
 	private final String userNameAttribute;
 
@@ -42,15 +48,24 @@ public class KeycloakAuthenticationFilter implements Filter {
 	/** Access to the OAuth2 client service. */
 	private OAuth2AuthorizedClientService clientService;
 
+	private boolean enableClientAuth;
+	
+	
+	private boolean enableMultiTenancy;
+	
+	
+	
 	/**
 	 * Creates a new KeycloakAuthenticationFilter.
 	 *
 	 * @param identityService access to Camunda's IdentityService
 	 */
-	public KeycloakAuthenticationFilter(IdentityService identityService, OAuth2AuthorizedClientService clientService, String userNameAttribute) {
+	public KeycloakAuthenticationFilter(IdentityService identityService, OAuth2AuthorizedClientService clientService, String userNameAttribute, boolean enableClientAuth, boolean enableMultiTenancy) {
 		this.identityService = identityService;
 		this.clientService = clientService;
 		this.userNameAttribute = userNameAttribute;
+		this.enableClientAuth = enableClientAuth;
+		this.enableMultiTenancy = enableMultiTenancy;
 	}
 
 	/**
@@ -78,6 +93,8 @@ public class KeycloakAuthenticationFilter implements Filter {
 		}
 
 		LOG.debug("Extracted userId from bearer token: {}", userId);
+		LOG.debug("enableClientAuth--> {}", enableClientAuth);
+		LOG.debug("enableMultiTenancy--> {}", enableMultiTenancy);
 
 		try {
 			String tenantKey = null;
@@ -86,8 +103,15 @@ public class KeycloakAuthenticationFilter implements Filter {
 			if (claims != null && claims.containsKey("tenantKey")) {
 				tenantKey = claims.get("tenantKey").toString();
 				tenantIds.add(tenantKey);
+				MDC.put("tenantKey", tenantKey);
 			}
 			userGroups = getUserGroups(userId, claims, tenantKey);
+			// Add role claims to match with dynamically created authorization.
+			if (claims.containsKey("role")) {
+				for (String role : getKeys(claims, "role")) {
+					userGroups.add("ROLE_"+role);
+				}
+			}
 			if (tenantKey != null)
 				identityService.setAuthentication(userId, userGroups, tenantIds);
 			else
@@ -110,24 +134,52 @@ public class KeycloakAuthenticationFilter implements Filter {
 		List<String> groupIds = new ArrayList<>();
 
 		if (claims != null && claims.containsKey("groups")) {
-			groupIds.addAll(getKeys(claims, "groups", null));
+			List<String> groups = getKeys(claims, "groups");
+			if (enableMultiTenancy) { // For multi-tenant setup filter out the groups which are not part of the current tenant.
+				groups = groups.stream().filter(group -> group.startsWith(tenantKey)).collect(Collectors.toList());
+				// For existing setup we may need to use existing camunda-admin role
+				List<String> roles =  getKeys(claims, "roles");
+				if (roles.indexOf("camunda-admin") >= 0 ) {
+					groups.add(tenantKey+"-camunda-admin");
+				}
+			}
+			groupIds.addAll(groups);
 		} else if (claims != null && claims.containsKey("roles")) { // Treat roles as alternative to groups
-			groupIds.addAll(getKeys(claims, "roles", tenantKey));
+			List<String> groups = getKeys(claims, "roles");
+			if (enableClientAuth) { // If client-auth is enabled, means customer cannot create group and is using client roles instead. In this case create each group as role with prefix GROUP_.   
+				groups = groups.stream().filter(group -> group.startsWith("GROUP_")).collect(Collectors.toList());
+			}
+			groupIds.addAll(groups); 
 		} else {
 			identityService.createGroupQuery().groupMember(userId).list().forEach(g -> groupIds.add(g.getId()));
 		}
+		// Set the permission roles to match with the authorizations.
+		// Iterate the user's roles with HARD_CODED_ROLES, and set the matching ones as groups.
+		if (claims != null &&  claims.containsKey("roles")) {
+
+			List<String> roles = getKeys(claims, "roles");
+			for (String role : roles) {
+				if (HARD_CODED_ROLES.contains(role)) {
+					if (enableMultiTenancy) {
+						//groupIds.add(tenantKey+"-"+role); // No need to add tenantKey to the role as ROLE_ prefix is there.
+						groupIds.add("ROLE_"+role);
+					}else{
+						groupIds.add("ROLE_"+role);
+					}
+				}
+		}
+		
+	}
 		return groupIds;
 	}
 
 
-	private List<String> getKeys(Map<String, Object> claims, String nodeName, String tenantKey) {
+	private List<String> getKeys(Map<String, Object> claims, String nodeName) {
 		List<String> keys = new ArrayList<>();
 		if (claims.containsKey(nodeName)) {
 			for (Object key : (List<String>) claims.get(nodeName)) {
 				String keyValue = key.toString();
 				keyValue = StringUtils.contains(keyValue, "/") ? StringUtils.substringAfter(keyValue, "/") : keyValue;
-				if (tenantKey != null)
-					keyValue = tenantKey + "-" + keyValue;
 				keys.add(keyValue);
 			}
 		}

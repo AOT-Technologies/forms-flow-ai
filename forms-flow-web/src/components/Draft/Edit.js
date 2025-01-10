@@ -7,7 +7,7 @@ import {
   Form,
   selectError,
   Errors,
-} from "react-formio";
+} from "@aot-technologies/formio-react";
 import { push } from "connected-react-router";
 import { Link, useParams } from "react-router-dom";
 import { useTranslation, Translation } from "react-i18next";
@@ -15,7 +15,8 @@ import LoadingOverlay from "react-loading-overlay-ts";
 import { toast } from "react-toastify";
 import isEqual from "lodash/isEqual";
 
-import { formio_resourceBundles } from "../../resourceBundles/formio_resourceBundles";
+import {RESOURCE_BUNDLES_DATA} from "../../resourceBundles/i18n";
+
 import useInterval from "../../customHooks/useInterval";
 import { CUSTOM_EVENT_TYPE } from "../ServiceFlow/constants/customEventTypes";
 import selectApplicationCreateAPI from "../Form/Item/apiSelectHelper";
@@ -223,7 +224,7 @@ const View = React.memo((props) => {
   return (
     <div className=" overflow-y-auto">
       {
-        <>
+
           <span className="pe-2  me-2 d-flex justify-content-end align-items-center">
             {poll && showNotification && (
               <SavingLoading
@@ -236,7 +237,7 @@ const View = React.memo((props) => {
               />
             )}
           </span>
-        </>
+
       }
       <div className="d-flex align-items-center justify-content-between">
         <div className="d-flex align-items-center">
@@ -305,7 +306,7 @@ const View = React.memo((props) => {
   }}
 />
           {processData?.status === "active" ? (
-            <div className="form-view-wrapper">
+            <div className="form-view-wrapper wizard-tab service-task-details">
               <Form
                 form={form}
                 submission={submission.submission}
@@ -313,7 +314,7 @@ const View = React.memo((props) => {
                 options={{
                   ...options,
                   language: lang,
-                  i18n: formio_resourceBundles,
+                  i18n: RESOURCE_BUNDLES_DATA,
                 }}
                 hideComponents={hideComponents}
                 onChange={(formData) => {
@@ -331,7 +332,7 @@ const View = React.memo((props) => {
           ) : (
             <span>
               <div
-                className="container-md d-flex align-items-center justify-content-center draft-edit">
+                className="container-md d-flex align-items-center justify-content-center draft-edit flex-column">
                 <h3>{t("Form not published")}</h3>
                 <p>{t("You can't submit this form until it is published")}</p>
               </div>

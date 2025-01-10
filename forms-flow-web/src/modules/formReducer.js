@@ -1,4 +1,7 @@
 import ACTION_CONSTANTS from "../actions/actionConstants";
+import _cloneDeep from 'lodash/cloneDeep';
+import _camelCase from 'lodash/camelCase';
+import _set from 'lodash/set';
 
 const initialState = {
   formSubMissionDelete: { modalOpen: false, submissionId: "", formId: "" },
@@ -8,6 +11,31 @@ const initialState = {
   isFormWorkflowSaved: false,
   formSubmitted: false,
   publicFormStatus: null, //expected values sample {anonymous:false,status:'inactive'}
+};
+
+export const currentFormReducer = (form, { type, value }) => {
+  const formCopy = _cloneDeep(form);
+  switch (type) {
+    case "formChange":
+      for (let prop in value) {
+        if (Object.hasOwn(value, prop)) {
+          form[prop] = value[prop];
+        }
+      }
+      return form;
+    case "replaceForm":
+      return _cloneDeep(value);
+    case "title":
+      if (type === "title" && !form._id) {
+        formCopy.name = _camelCase(value);
+        formCopy.path = _camelCase(value).toLowerCase();
+      }
+      break;
+    default:
+      break;
+  }
+  _set(formCopy, type, value);
+  return formCopy;
 };
 
 const formDelete = (state = initialState, action) => {

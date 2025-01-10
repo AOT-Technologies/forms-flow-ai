@@ -5,7 +5,9 @@ from http import HTTPStatus
 from flask import request
 from flask_restx import Namespace, Resource, fields
 from formsflow_api_utils.utils import (
-    REVIEWER_GROUP,
+    CREATE_FILTERS,
+    MANAGE_ALL_FILTERS,
+    VIEW_FILTERS,
     auth,
     cors_preflight,
     profiletime,
@@ -71,6 +73,14 @@ filter_response = API.inherit(
     },
 )
 
+filter_response_with_default_filter = API.model(
+    "FilterResponse",
+    {
+        "filters": fields.List(fields.Nested(filter_response)),
+        "defaultFilter": fields.String(description="Default filter"),
+    },
+)
+
 
 @cors_preflight("GET, POST, OPTIONS")
 @API.route("", methods=["GET", "POST", "OPTIONS"])
@@ -78,7 +88,7 @@ class FilterResource(Resource):
     """Resource to create and list filter."""
 
     @staticmethod
-    @auth.has_one_of_roles([REVIEWER_GROUP])
+    @auth.has_one_of_roles([MANAGE_ALL_FILTERS, VIEW_FILTERS])
     @profiletime
     @API.doc(
         responses={
@@ -97,7 +107,7 @@ class FilterResource(Resource):
         return response, status
 
     @staticmethod
-    @auth.has_one_of_roles([REVIEWER_GROUP])
+    @auth.has_one_of_roles([MANAGE_ALL_FILTERS, CREATE_FILTERS])
     @profiletime
     @API.doc(
         responses={
@@ -151,14 +161,14 @@ class UsersFilterList(Resource):
     """Resource to list filters specific to current user."""
 
     @staticmethod
-    @auth.has_one_of_roles([REVIEWER_GROUP])
+    @auth.has_one_of_roles([MANAGE_ALL_FILTERS, VIEW_FILTERS])
     @profiletime
     @API.doc(
         responses={
             200: "OK:- Successful request.",
             403: "FORBIDDEN:- Permission denied",
         },
-        model=[filter_response],
+        model=filter_response_with_default_filter,
     )
     def get():
         """
@@ -177,7 +187,7 @@ class FilterResourceById(Resource):
     """Resource for managing filter by id."""
 
     @staticmethod
-    @auth.has_one_of_roles([REVIEWER_GROUP])
+    @auth.has_one_of_roles([MANAGE_ALL_FILTERS])
     @profiletime
     @API.doc(
         responses={
@@ -199,7 +209,7 @@ class FilterResourceById(Resource):
         return response, status
 
     @staticmethod
-    @auth.has_one_of_roles([REVIEWER_GROUP])
+    @auth.has_one_of_roles([MANAGE_ALL_FILTERS, CREATE_FILTERS])
     @profiletime
     @API.doc(
         responses={
@@ -225,7 +235,7 @@ class FilterResourceById(Resource):
         return response, status
 
     @staticmethod
-    @auth.has_one_of_roles([REVIEWER_GROUP])
+    @auth.has_one_of_roles([MANAGE_ALL_FILTERS, CREATE_FILTERS])
     @profiletime
     @API.doc(
         responses={

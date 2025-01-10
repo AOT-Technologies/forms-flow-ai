@@ -67,6 +67,7 @@ export default React.memo(() => {
   const taskListRef = useRef(taskList);
   const tenantKey = useSelector((state) => state.tenants?.tenantId);
   const cardView = useSelector((state) => state.bpmTasks.viewType);
+  const defaultFilter = useSelector((state)=> state.user.defaultFilter);
   const [expandedTasks, setExpandedTasks] = useState({});
   const redirectUrl = useRef(
     MULTITENANCY_ENABLED ? `/tenant/${tenantKey}/` : "/"
@@ -114,7 +115,7 @@ export default React.memo(() => {
     dispatch(
       fetchFilterList((err, data) => {
         if (data) {
-          fetchBPMTaskCount(data)
+          fetchBPMTaskCount(data.filters)
             .then((res) => {
               dispatch(setBPMFiltersAndCount(res.data));
             })
@@ -133,7 +134,7 @@ export default React.memo(() => {
       let filterSelected;
       if (filterList.length > 1) {
         filterSelected = filterList?.find(
-          (filter) => filter.name === ALL_TASKS
+          (filter) =>  filter.id === defaultFilter || filter.name === ALL_TASKS
         );
         if (!filterSelected) {
           filterSelected = filterList[0];
@@ -162,6 +163,16 @@ export default React.memo(() => {
     dispatch(setIsAllTaskVariableExpand(newExpandedState));
   };
 
+  // if all tasks are expanded or collpased individually then update the  allTaskVariablesExpand variable
+  useEffect(() => {
+    if (taskList.every((task) => expandedTasks[task.id])) {
+      dispatch(setIsAllTaskVariableExpand(true));
+    }
+    if (taskList.every((task) => !expandedTasks[task.id])) {
+      dispatch(setIsAllTaskVariableExpand(false));
+    }
+
+  }, [expandedTasks]);
   const SocketIOCallback = useCallback(
     (refreshedTaskId, forceReload, isUpdateEvent) => {
       const reqParamData = {

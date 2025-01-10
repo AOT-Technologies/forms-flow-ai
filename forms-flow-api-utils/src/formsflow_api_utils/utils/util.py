@@ -12,17 +12,23 @@ from typing import Tuple
 
 from .constants import (
     ALLOW_ALL_ORIGINS,
-    CLIENT_GROUP,
-    DESIGNER_GROUP,
-    REVIEWER_GROUP,
 )
 from .enums import (
     ApplicationSortingParameters,
     DraftSortingParameters,
     FormioRoles,
+    ProcessSortingParameters,
 )
 from .translations.translations import translations
-
+from .permisions import (
+    CREATE_DESIGNS,
+VIEW_DESIGNS,
+MANAGE_TASKS,
+VIEW_TASKS,
+CREATE_SUBMISSIONS,
+VIEW_SUBMISSIONS,
+)
+from sqlalchemy.sql.expression import text
 
 def cors_preflight(methods: str = "GET"):
     """Render an option method on the class."""
@@ -58,13 +64,21 @@ def validate_sort_order_and_order_by(order_by: str, sort_order: str) -> bool:
         ApplicationSortingParameters.Name,
         ApplicationSortingParameters.Status,
         ApplicationSortingParameters.Modified,
+        ApplicationSortingParameters.FormStatus,
         ApplicationSortingParameters.FormName,
+        ApplicationSortingParameters.visibility,
         DraftSortingParameters.Name,
+        ProcessSortingParameters.Name,
+        ProcessSortingParameters.Created,
+        ProcessSortingParameters.Modified,
+        ProcessSortingParameters.ProcessKey,
     ]:
         order_by = None
     else:
         if order_by in [ApplicationSortingParameters.Name, DraftSortingParameters.Name]:
             order_by = ApplicationSortingParameters.FormName
+        if order_by == ApplicationSortingParameters.visibility:
+            order_by = ApplicationSortingParameters.is_anonymous
         order_by = camel_to_snake(order_by)
     if sort_order not in ["asc", "desc"]:
         sort_order = None
@@ -104,11 +118,11 @@ def get_role_ids_from_user_groups(role_ids, user_role):
     if role_ids is None or user_role is None:
         return None
 
-    if DESIGNER_GROUP in user_role:
+    if any(permission in user_role for permission in [ CREATE_DESIGNS, VIEW_DESIGNS]):
         return role_ids
-    if REVIEWER_GROUP in user_role:
+    if any(permission in user_role for permission in [ MANAGE_TASKS, VIEW_TASKS]):
         return filter_list_by_user_role(FormioRoles.REVIEWER.name, role_ids)
-    if CLIENT_GROUP in user_role:
+    if any(permission in user_role for permission in [ CREATE_SUBMISSIONS, VIEW_SUBMISSIONS]):
         return filter_list_by_user_role(FormioRoles.CLIENT.name, role_ids)
     return None
 
@@ -123,3 +137,22 @@ def get_form_and_submission_id_from_form_url(form_url: str) -> Tuple:
     form_id = form_url[form_url.find("/form/") + 6 : form_url.find("/submission/")]
     submission_id = form_url[form_url.find("/submission/") + 12 : len(form_url)]
     return (form_id, submission_id)
+
+
+def add_sort_filter(query, sort_by, sort_order, model_name):
+    """Adding sortBy and sortOrder."""
+    order = []
+    if sort_by and sort_order:
+        for sort_by_att, sort_order_attr in zip(sort_by, sort_order):
+            name, value = validate_sort_order_and_order_by(
+                sort_order=sort_order_attr, order_by=sort_by_att
+            )
+            if name and value:
+                # Handle null values in is_anonymous to false
+                if name == "is_anonymous":
+                     order.append(text(f"COALESCE({model_name}.{name}, false) {value}"))
+                else:
+                    order.append(text(f"{model_name}.{name} {value}"))
+
+        query = query.order_by(*order)
+    return query

@@ -140,6 +140,11 @@ Mark  items as `Added`, `Changed`, `Fixed`, `Modified`, `Removed`, `Untested Fea
 **forms-flow-data-analysis-api**
 
    * Python version upgraded to 3.12.6
+
+**forms-flow-analytics**
+
+   * Redash version upgraded to 24.04.0
+
 <br><br>
 
 
